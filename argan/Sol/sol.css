@@ -1,809 +1,31 @@
 /* ==========================================================================
-   ARGAN THEME SOL — the single stylesheet of the theme
-   Absorbs the DevThink design engine (sol theme + liquid glass) and every
-   inline style of the old pages, deduplicated and organized in sections:
-   tokens, base, layout, components, pages, motion, runtime.
+   ARGAN — SOL STYLESHEET (the reform wave)
+   One stylesheet, ordered sections, written on the TRYLLE foundation
+   (canvas #0a0a0b, ink #fafafa, the surface ladder, hairlines by color-mix,
+   the ring-plus-doubling shadow ladder, 13px/450 body, Inter + Geist Mono)
+   wearing the WINDOWS hands (press .7, dtPopIntro, 2px accent focus
+   underlines, Fluent entrance curves, the window chrome with the red close,
+   the Win11 scrollbar, acrylic toasts). The argan jade survives ONLY in the
+   brand mark, the content CTAs and the active indicators — focus and control
+   accents ride the Windows #4cc2ff. Append-only from here on.
+   Sections: 1 tokens · 2 base · 3 layout · 4 components · 5 the mark ·
+   6 the window · 7 intro/onboarding · 8 shared page furniture · 9 landing ·
+   10 settings deck · 11 motion · 12 responsive · 13 guards.
    ========================================================================== */
 
-/* ---------- 1. TOKENS — sol theme (argan identity: the resolve green) ---------- */
+/* ---------- 1. TOKENS — the trylle foundation with the windows hands ---------- */
+
 :root {
-  /* surfaces (the argan slate-green dark) */
-  --sol-bg: #0a0d0c;
-  --sol-bg-2: #101514;
-  --sol-panel: rgba(237, 247, 242, 0.045);
-  --sol-panel-strong: rgba(237, 247, 242, 0.08);
-  --sol-line: rgb(52 216 168 / 0.16);
-  --sol-line-strong: rgb(52 216 168 / 0.32);
-
-  /* text */
-  --sol-text: #f1f7f4;
-  --sol-muted: #9fb3ab;
-  --sol-faint: #6b7d75;
-
-  /* accents — one signal green carries the page (the resolved record) */
-  --sol-signal: 52 216 168;
-  --sol-primary: #34d8a8;
-  --sol-primary-ink: #062019;
-  --sol-ember: #2fc394;
-  --sol-tangerine: #5ce0bb;
-  --sol-gold: #8ef0cf;
-
-  /* semantic (states 5+8) */
-  --sol-success: #34d8a8;
-  --sol-error: #ff7b8e;
-  --sol-warning: #ffd166;
-  --sol-info: #a8e6d8;
-
-  /* radius ladder (the pill token is retired: the family law bans the
-     stadium — circles stay true 50% circles, buttons stay 4–10px) */
-  --r-sm: 10px;
-  --r-md: 14px;
-  --r-lg: 20px;
-  --r-xl: 28px;
-
-  /* shadows, five levels */
-  --sh-1: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --sh-2: 0 4px 12px rgba(0, 0, 0, 0.45);
-  --sh-3: 0 12px 32px rgba(0, 0, 0, 0.5);
-  --sh-4: 0 24px 64px rgba(0, 0, 0, 0.55);
-  --sh-glow: 0 0 0 1px rgb(var(--sol-signal) / 0.35), 0 8px 40px rgb(var(--sol-signal) / 0.12);
-
-  /* timing master (micro 120–250ms) */
-  --t-fast: 120ms;
-  --t-base: 180ms;
-  --t-slow: 250ms;
-  --ease: cubic-bezier(0.22, 1, 0.36, 1); /* easeOutQuart */
-
-  /* glass */
-  --glass-blur: 35px;
-  --glass-sat: 140%;
-
-  /* typography — the NeoSkills doctrine triad wired into the existing stacks:
-     Bricolage Grotesque rides display/heroes, Outfit rides the UI body and
-     JetBrains Mono rides detail (loaded in index.html with preconnect +
-     display=swap; the previous Sol faces stay as the fallback chain, never
-     FOUT-blocked) */
-  --font-display: "Bricolage Grotesque", "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-ui: "Outfit", "Segoe UI Variable", "Segoe UI", ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --sol-sans: var(--font-ui);
-  --sol-mono: var(--font-mono);
-
-  /* z-index bands (documented): atmosphere 0 · content 10 · float 20 · bar 50 · modal 200 · toast 300 · tooltip 400 */
-  --z-atmosphere: 0;
-  --z-content: 10;
-  --z-float: 20;
-  --z-bar: 50;
-  --z-modal: 200;
-  --z-toast: 300;
-  --z-tooltip: 400;
-
-  /* the height of the Windows taskbar row (the sticky navbar) */
-  --shell-top: 48px;
-
-  /* core aliases — signal color, page/ink floors, base radius, spring motion */
-  --sig: var(--sol-primary);
-  --page: var(--sol-bg);
-  --ink: var(--sol-text);
-  --r: var(--r-md);
-  --spring: cubic-bezier(0.2, 1.2, 0.4, 1);
-
-  font-size: 16px;
   color-scheme: dark;
-}
 
-/* light variant (same rules, two theme tokens) */
-[data-theme="light"] {
-  --sol-bg: #f4f8f6;
-  --sol-bg-2: #e7efeb;
-  --sol-panel: rgba(10, 13, 12, 0.04);
-  --sol-panel-strong: rgba(10, 13, 12, 0.07);
-  --sol-line: rgba(19, 92, 70, 0.2);
-  --sol-line-strong: rgba(19, 92, 70, 0.38);
-  --sol-text: #101d18;
-  --sol-muted: #46584f;
-  --sol-faint: #6d7f76;
-  color-scheme: light;
-}
+  /* the canvas — trylle */
+  --sol-canvas: #0a0a0b;
+  --sol-canvas-deep: #060607;
+  --sol-ink: #fafafa;
+  --sol-muted: #a1a1aa;
+  --sol-faint: #71717a;
 
-/* ---------- 2. BASE ---------- */
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  margin: 0;
-  min-height: 100vh;
-  background:
-    radial-gradient(1100px 500px at 85% -10%, rgb(var(--sol-signal) / 0.1), transparent 60%),
-    radial-gradient(800px 420px at -10% 110%, rgb(var(--sol-signal) / 0.06), transparent 55%),
-    var(--sol-bg);
-  color: var(--sol-text);
-  font-family: var(--sol-sans);
-  line-height: 1.55;
-  -webkit-font-smoothing: antialiased;
-  transition: background var(--t-slow) var(--ease);
-}
-main { display: block; }
-a { color: var(--sol-tangerine); text-decoration: none; }
-a:hover { text-decoration: underline; text-underline-offset: 3px; }
-h1, h2, h3 { letter-spacing: -0.03em; line-height: 1.12; margin: 0 0 0.5em; }
-p { margin: 0 0 1em; color: var(--sol-muted); }
-::selection { background: var(--win-accent); color: var(--win-accent-ink); }
-:focus-visible { outline: 3px solid var(--sol-primary); outline-offset: 2px; border-radius: 4px; }
-kbd, code {
-  font-family: var(--sol-mono);
-  font-size: 0.85em;
-  background: var(--sol-panel-strong);
-  border: 1px solid var(--sol-line);
-  border-radius: 6px;
-  padding: 1px 6px;
-  font-variant-numeric: tabular-nums;
-}
-[hidden] { display: none !important; }
-
-/* thin scrollbar (the Win11 hover grammar rides the WINDOWS IDENTITY PASS) */
-* { scrollbar-width: thin; scrollbar-color: transparent transparent; }
-*::-webkit-scrollbar { width: 10px; height: 10px; }
-*::-webkit-scrollbar-thumb { background: transparent; border: 3px solid transparent; border-radius: 8px; }
-
-/* ---------- 3. LAYOUT ---------- */
-/* the app frame replaces the old inline body flex: column shell, main stretches, footer sticks */
-.app-frame { min-height: 100vh; display: flex; flex-direction: column; }
-.app-main { flex: 1; display: block; }
-
-.shell { max-width: 1160px; margin: 0 auto; padding: clamp(20px, 4vw, 56px) clamp(16px, 4vw, 40px); }
-.grid { display: grid; gap: 18px; }
-.grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-.grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
-.grid.cols-4 { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
-.section { padding: clamp(28px, 6vw, 72px) 0; }
-.section-head { max-width: 640px; margin-bottom: 30px; }
-
-.footer {
-  margin-top: auto;
-  border-top: 1px solid var(--sol-line);
-  padding: 26px clamp(16px, 4vw, 40px);
-  color: var(--sol-faint);
-  font-size: 0.85rem;
-  display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
-}
-.footer a { color: var(--sol-muted); }
-.footer a:hover { color: var(--sol-tangerine); }
-.footer .spacer { flex: 1; }
-
-/* ---------- 4. COMPONENTS ---------- */
-/* colossal wordmark */
-.wordmark {
-  font-size: clamp(2.6rem, 8vw, 6rem);
-  font-weight: 800;
-  letter-spacing: -0.055em;
-  background: linear-gradient(180deg, var(--sol-text) 30%, var(--sol-tangerine) 105%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  margin: 0;
-}
-.eyebrow {
-  color: var(--sol-primary);
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  margin: 0 0 14px;
-}
-
-/* liquid glass */
-.glass {
-  background: linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
-  border: 1px solid var(--sol-line);
-  border-radius: var(--r-lg);
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
-  box-shadow: var(--sh-2), inset 0 1px 0 rgba(241, 247, 244, 0.07);
-  transition: transform var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease), border-color var(--t-base) var(--ease);
-}
-.glass-hover:hover {
-  transform: translateY(-3px);
-  border-color: var(--sol-line-strong);
-  box-shadow: var(--sh-3), inset 0 1px 0 rgba(241, 247, 244, 0.09);
-}
-.card { padding: 22px; }
-
-/* buttons */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 44px; /* touch-friendly */
-  padding: 0 20px;
-  border-radius: var(--r-md);
-  border: 1px solid transparent;
-  font: inherit;
-  font-weight: 700;
-  cursor: pointer;
-  color: var(--sol-primary-ink);
-  background: linear-gradient(180deg, var(--sol-tangerine), var(--sol-primary));
-  box-shadow: var(--sh-1);
-  transition: transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease), filter var(--t-fast) var(--ease);
-}
-.btn:hover { filter: brightness(1.06); box-shadow: var(--sh-2); transform: translateY(-1px); text-decoration: none; }
-.btn:active { transform: translateY(0) scale(0.98); }
-.btn:disabled, .btn[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; transform: none; }
-.btn.secondary {
-  background: transparent;
-  color: var(--sol-text);
-  border-color: var(--sol-line-strong);
-}
-.btn.secondary:hover { border-color: var(--sol-primary); color: var(--sol-tangerine); background: var(--sol-panel); }
-.btn.danger { background: transparent; color: var(--sol-error); border-color: color-mix(in srgb, var(--sol-error) 50%, transparent); }
-.btn.small { min-height: 34px; padding: 0 14px; font-size: 0.85rem; }
-
-/* navigation — the SHELL CHROME PASS: the Windows 11 taskbar pinned to the
-   top edge — a 48px dark acrylic surface (saturate(3) blur(20px)) over a
-   dark bottom hairline, flat (no window light, no diffuse shadow, no pills,
-   no white borders) — carrying the drawn argan mark on the LEFT EDGE (the
-   mark IS the Start trigger and opens the floating menu), the pages as
-   icon-only 38px pins whose names surface in the hover tooltip, the
-   call-to-action and the tray. The chrome stays neutral; the jade lives in
-   the drawn mark, the active-pin ladder and the content accents only. */
-.dt-nav { position: sticky; top: 0; z-index: var(--z-bar); display: flex; align-items: stretch; min-width: 0; height: var(--shell-top); padding: 0 8px; background-color: rgba(32, 32, 32, 0.75); background-image: var(--win-noise); border-bottom: 1px solid rgb(0 0 0 / 55%); backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); }
-/* the start trigger: a 38px rounded square on the full-height 48px column —
-   hover wash at white 10%, press compressing to scale(.7) in 100ms, the
-   entry popping in with the Windows popintro bounce */
-.dt-nav__start { position: relative; display: grid; place-items: center; flex: none; width: 38px; height: var(--shell-top); margin: 0 3px; color: #eef1f7; background: transparent; border: 0; border-radius: 4px; transform-origin: center; animation: dtPopIntro 800ms ease-in-out; transition: transform 100ms ease-in-out; }
-.dt-nav__start::before { content: ""; position: absolute; inset: 5px 0; border-radius: 4px; background: rgb(255 255 255 / 10%); opacity: 0; transition: opacity 0.2s ease; }
-.dt-nav__start:hover::before { opacity: 1; }
-.dt-nav__start[aria-expanded="true"]::before { opacity: 1; background: rgb(255 255 255 / 12%); }
-.dt-nav__start:active { transform: scale(0.7); }
-.dt-nav__start .sol-mark { width: 26px; height: 26px; }
-/* the pinned pages: icons only — each page a 38px rounded square on the
-   full-height column with a lucide glyph; the name surfaces in the hover
-   tooltip below the icon (the daedalOS peek window grammar) and the ::after
-   ladder marks the active page (3px, 6px open gray → 12px signal jade) —
-   the win11 tsIcon recipe */
-.dt-nav__pins { display: flex; align-items: stretch; min-width: 0; }
-.dt-nav__app { position: relative; display: grid; place-items: center; flex: none; width: 38px; height: var(--shell-top); margin: 0 3px; color: var(--sol-muted); background: transparent; border: 0; border-radius: 4px; transform-origin: center; animation: dtPopIntro 800ms ease-in-out; transition: transform 100ms ease-in-out, color 0.2s ease; }
-.dt-nav__app::before { content: ""; position: absolute; inset: 5px 0; border-radius: 4px; background: rgb(255 255 255 / 10%); opacity: 0; transition: opacity 0.2s ease; }
-.dt-nav__app:hover { color: #eef1f7; text-decoration: none; }
-.dt-nav__app:hover::before { opacity: 1; }
-.dt-nav__app:active { transform: scale(0.7); }
-.dt-nav__app[aria-current="page"] { color: #f3f5fa; }
-.dt-nav__app svg { display: block; }
-.dt-nav__app::after { content: ""; position: absolute; bottom: 0; display: block; width: 0; height: 3px; border-radius: 4px; background: #858585; transition: width 0.2s ease-in-out, background 0.2s ease-in-out; }
-.dt-nav__app[data-open="true"]::after { width: 6px; }
-.dt-nav__app[data-active="true"]::after { width: 12px; background: var(--sol-primary); }
-.dt-nav__tip { position: absolute; z-index: 1; top: calc(100% + 6px); left: 50%; padding: 5px 9px; color: #fafafa; background-color: rgba(32, 32, 32, 0.9); background-image: var(--win-noise); border: 1px solid rgb(255 255 255 / 8%); border-radius: 4px; font: 500 12px var(--sol-sans); white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, -4px); transition: opacity 0.2s ease, transform 0.2s ease; backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); box-shadow: var(--win-shadow-flyout); }
-.dt-nav__app:hover .dt-nav__tip, .dt-nav__app:focus-visible .dt-nav__tip { opacity: 1; transform: translate(-50%, 0); }
-/* the tray: the call-to-action chip and the domain and clock at the 11px
-   Windows tray scale */
-.dt-nav__tray { display: flex; align-items: center; flex: none; margin-left: auto; color: var(--sol-muted); font: 400 11px var(--sol-sans); }
-.dt-nav__tray span { display: inline-flex; align-items: center; height: 38px; margin: 0 2px; padding: 0 8px; color: var(--sol-faint); border-radius: 4px; font-size: 11px; text-transform: lowercase; transition: background 0.2s ease, color 0.2s ease; }
-.dt-nav__tray span:hover { background: rgb(255 255 255 / 6%); }
-.dt-nav__tray time { display: inline-flex; align-items: center; justify-content: center; min-width: 56px; height: 38px; margin: 0 2px; padding: 0 8px; color: var(--sol-muted); border-radius: 4px; font-variant-numeric: tabular-nums; transition: background 0.2s ease; }
-.dt-nav__tray time:hover { background: rgb(255 255 255 / 6%); }
-.dt-nav__cta { display: inline-flex; align-items: center; align-self: center; min-height: 44px; margin: 0 2px 0 8px; padding: 0 14px; border-radius: 4px; background: var(--win-accent); color: var(--win-accent-ink); font: 700 11px var(--sol-mono); letter-spacing: .04em; text-decoration: none; text-transform: lowercase; box-shadow: 0 1px 3px rgb(0 0 0 / 40%); transition: filter 140ms var(--ease), transform 140ms var(--ease); }
-.dt-nav__cta:hover { filter: brightness(1.06); text-decoration: none; }
-.dt-nav__cta:active { transform: scale(.96); }
-/* the Windows popintro bounce of the taskbar entries (taskbar.scss) — the
-   entry floor rides .7 (the design law: entries never leave the zero mark) */
-@keyframes dtPopIntro { 0% { transform: scale(0.7); } 40% { transform: scale(1.125); } 70% { transform: scale(0.975); } 100% { transform: scale(1); } }
-
-/* the start menu: the Windows 11 start panel — a 640px centered acrylic at
-   rgba(36,36,36,.8) with the grain, 8px corners, the focused-window shadow
-   and the Fluent 200ms slide-up entry from the bar */
-.dt-start__backdrop { position: fixed; z-index: var(--z-modal); inset: 0; display: block; width: 100%; padding: 0; background: rgb(5 6 9 / 46%); border: 0; cursor: default; appearance: none; -webkit-appearance: none; }
-.dt-start__backdrop:focus-visible { outline: none; }
-.dt-start { position: fixed; z-index: calc(var(--z-modal) + 1); top: calc(var(--shell-top) + 12px); left: 50%; margin-left: -320px; display: flex; flex-direction: column; width: min(640px, calc(100vw - 20px)); max-height: calc(100dvh - var(--shell-top) - 24px); overflow-y: auto; overscroll-behavior: contain; background-color: rgba(36, 36, 36, 0.8); background-image: var(--win-noise); border: 1px solid rgb(0 0 0 / 68%); border-radius: 8px; box-shadow: var(--win-shadow-window), inset 0 1px 0 rgb(255 255 255 / 7%), inset 0 0 0 1px rgb(255 255 255 / 4%); transform-origin: top center; animation: dtStartIn 200ms var(--win-ease-entry); }
-@media (max-width: 700px) { .dt-start { left: 10px; right: 10px; width: auto; margin-left: 0; } }
-@keyframes dtStartIn { from { opacity: 0; transform: translateY(100px); } to { opacity: 1; transform: translateY(0); } }
-.dt-start__search { display: flex; align-items: center; gap: 9px; flex: none; height: 40px; margin: 24px 32px 0; padding: 0 12px; color: rgb(255 255 255 / 55%); background: rgb(255 255 255 / 5%); border: 0; border-bottom: 1px solid rgb(255 255 255 / 8%); border-radius: 4px; box-shadow: none; }
-.dt-start__search:focus-within { border-color: rgb(255 255 255 / 8%); box-shadow: inset 0 -2px 0 0 var(--win-accent); }
-.dt-start__search input { flex: 1; min-width: 0; color: #ffffff; background: transparent; border: 0; outline: 0; font: 400 12px var(--sol-sans); }
-.dt-start__search input::placeholder { color: rgb(255 255 255 / 55%); }
-.dt-start__search button { display: grid; place-items: center; width: 26px; height: 26px; flex: none; color: var(--sol-muted); background: transparent; border: 0; border-radius: 7px; transition: color 140ms var(--ease); }
-.dt-start__search button:hover { color: var(--sol-text); background: rgb(255 255 255 / 6%); }
-.dt-start__search button:active { transform: scale(.94); }
-.dt-start__label { margin: 20px 32px 10px; color: #ffffff; font: 600 14px var(--sol-sans); letter-spacing: 0; text-transform: none; }
-/* the pinned tiles: the exact win11 pnApp cell — 96×84px, 4px corners, the
-   hover wash arriving in 100ms ease-in-out, the 12px label under the icon
-   (the page detail rides the title attribute) */
-.dt-start__grid { display: grid; grid-template-columns: repeat(auto-fill, 96px); gap: 0; padding: 0 32px 24px; }
-.dt-start__app { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 96px; height: 84px; padding: 8px 4px 0; color: inherit; background: transparent; border: 0; border-radius: 4px; text-align: center; text-decoration: none; animation: riseIn .3s var(--ease) backwards; transition: background 100ms ease-in-out, transform 100ms ease-in-out; }
-.dt-start__app:hover { background: rgb(255 255 255 / 10%); text-decoration: none; }
-.dt-start__app:active { transform: scale(.96); }
-.dt-start__app .dt-tile { width: 32px; height: 32px; border-radius: 6px; box-shadow: none; }
-.dt-start__app strong { overflow: hidden; max-width: 88px; margin-top: 6px; color: #ffffff; font: 400 12px var(--sol-sans); text-overflow: ellipsis; white-space: nowrap; }
-.dt-start__empty { margin: 0; padding: 18px; color: rgb(255 255 255 / 60%); font: 400 12px var(--sol-sans); text-align: center; }
-/* the menu footer: the win11 menuBar — 64px, the deep hairline top, the
-   darkened floor, brand left */
-.dt-start__foot { display: flex; align-items: center; gap: 9px; flex: none; margin-top: auto; height: 64px; padding: 0 48px; background: rgb(0 0 0 / 15%); border-top: 1px solid rgb(255 255 255 / 7%); color: rgb(255 255 255 / 70%); font: 500 12px var(--sol-sans); letter-spacing: 0; text-transform: none; }
-.dt-start__foot .sol-mark { width: 13px; height: 13px; }
-
-/* the app tile: the one colored element of the chrome — a fluent squircle
-   tinted by the identity color (--app-tint) over the Windows graphite base,
-   an inset top highlight, a dark hairline and layered diffuse shadows with
-   one soft glow borrowed from the identity color */
-.dt-tile {
-  display: grid; place-items: center; width: 40px; height: 40px; flex: none;
-  color: var(--app-tint, #dfe5ee);
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--app-tint, #dfe5ee) 20%, rgba(43, 43, 43, 0.92)),
-    color-mix(in srgb, var(--app-tint, #dfe5ee) 8%, rgba(32, 32, 32, 0.96))
-  );
-  border: 1px solid color-mix(in srgb, var(--app-tint, #dfe5ee) 26%, rgb(255 255 255 / 5%));
-  border-radius: 11px;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 13%),
-    inset 0 -1px 0 rgb(0 0 0 / 24%),
-    0 1px 2px rgb(0 0 0 / 34%),
-    0 5px 14px -4px rgb(0 0 0 / 32%),
-    0 3px 12px -4px color-mix(in srgb, var(--app-tint, #dfe5ee) 28%, transparent);
-  transition: box-shadow 160ms var(--ease), transform 160ms var(--ease);
-}
-
-/* chrome focus: one neutral ring for every chrome control (the search field
-   rings inward so the well keeps its shape; the content keeps the signal
-   ring it already has) */
-.dt-nav__start:focus-visible, .dt-nav__app:focus-visible,
-.dt-nav__cta:focus-visible, .dt-start__search button:focus-visible, .dt-start__app:focus-visible {
-  outline: 2px solid #dfe5ee;
-  outline-offset: 2px;
-}
-.dt-start__search input:focus-visible { outline-offset: -2px; }
-
-/* the drawn app mark (Sol/shell/Shell.tsx): the premium icon of the chrome.
-   All motion is plain transform/opacity/filter — the story glow breathes,
-   the mid layer floats, the face tilts in perspective and the glyph lifts
-   toward the viewer on hover while one sheen band sweeps the face once. */
-.sol-mark { position: relative; display: block; flex: none; isolation: isolate; }
-.sol-mark__glow {
-  position: absolute; left: 10%; right: 10%; bottom: -6%; height: 44%; z-index: 0;
-  border-radius: 50%; pointer-events: none;
-  background: radial-gradient(52% 60% at 50% 62%, rgb(20 185 140 / 45%), transparent 76%);
-  filter: blur(9px); -webkit-filter: blur(9px);
-  opacity: .34;
-  animation: solMarkGlow 4.5s ease-in-out infinite;
-  transition: opacity .55s var(--ease);
-}
-.sol-mark__svg {
-  position: relative; z-index: 1; display: block; width: 100%; height: 100%;
-  overflow: visible; shape-rendering: geometricPrecision;
-  transform: perspective(340px) rotateX(0deg) rotateY(0deg);
-  -webkit-transform: perspective(340px) rotateX(0deg) rotateY(0deg);
-  will-change: transform;
-  filter: drop-shadow(0 4px 7px rgb(11 125 94 / 26%)) drop-shadow(0 1.5px 3px rgb(11 125 94 / 14%));
-  -webkit-filter: drop-shadow(0 4px 7px rgb(11 125 94 / 26%)) drop-shadow(0 1.5px 3px rgb(11 125 94 / 14%));
-  transition: transform .55s var(--ease);
-}
-.sol-mark__mid { transform-box: view-box; -webkit-transform-box: view-box; animation: solMarkFloat 6s ease-in-out infinite; }
-.sol-mark__sheen {
-  transform-box: view-box; -webkit-transform-box: view-box;
-  transform: translateX(-100px); -webkit-transform: translateX(-100px);
-  opacity: 0; pointer-events: none; will-change: transform, opacity;
-}
-.sol-mark__glyph { transform-box: view-box; -webkit-transform-box: view-box; transition: transform .55s var(--ease); will-change: transform; }
-.sol-mark:hover .sol-mark__glow, .dt-nav__start:hover .sol-mark__glow { opacity: .62; animation: none; }
-.sol-mark:hover .sol-mark__svg, .dt-nav__start:hover .sol-mark__svg { transform: perspective(340px) rotateX(4.5deg) rotateY(-5.5deg) scale(1.02); -webkit-transform: perspective(340px) rotateX(4.5deg) rotateY(-5.5deg) scale(1.02); }
-.sol-mark:hover .sol-mark__glyph, .dt-nav__start:hover .sol-mark__glyph { transform: translateY(-2.2px) scale(1.035); -webkit-transform: translateY(-2.2px) scale(1.035); }
-.sol-mark:hover .sol-mark__sheen, .dt-nav__start:hover .sol-mark__sheen { animation: solMarkSheen .9s cubic-bezier(.3, .5, .25, 1) forwards; }
-@keyframes solMarkGlow { 0%, 100% { opacity: .28; } 50% { opacity: .46; } }
-@keyframes solMarkFloat { 0%, 100% { transform: translateY(0); -webkit-transform: translateY(0); } 50% { transform: translateY(-1.4px); -webkit-transform: translateY(-1.4px); } }
-@keyframes solMarkSheen {
-  0% { opacity: 0; transform: translateX(-100px); -webkit-transform: translateX(-100px); }
-  16% { opacity: .42; }
-  60% { opacity: .3; }
-  100% { opacity: 0; transform: translateX(118px); -webkit-transform: translateX(118px); }
-}
-
-/* the hero flow: the light band travelling INSIDE the glyph strokes (the
-   spec §9 signature — the gradient moves through the stroke, never behind
-   it); a dash-offset loop on the gradient-stroked overlay copy, stopped
-   dead under reduced motion */
-.sol-mark__flow { pointer-events: none; }
-@media (prefers-reduced-motion: no-preference) {
-  .sol-mark--flow .sol-mark__flow { stroke-dasharray: 42 122; animation: solGlyphFlow 3200ms linear infinite; }
-}
-@keyframes solGlyphFlow { from { stroke-dashoffset: 164; } to { stroke-dashoffset: 0; } }
-
-/* chrome responsive: the pinned pages stay (they scroll sideways on narrow
-   screens; the floating menu remains the whole map), the tray domain chip
-   folds before the clock */
-@media (max-width: 640px) {
-  .dt-nav__pins { overflow-x: auto; scrollbar-width: none; }
-  .dt-nav__pins::-webkit-scrollbar { display: none; }
-}
-@media (max-width: 560px) {
-  .dt-nav__tray span { display: none; }
-}
-
-/* mark guards: touch devices keep the mark still, reduced motion stops the
-   loops, the sweep and the hover drama */
-@media (hover: none), (pointer: coarse) {
-  .sol-mark:hover .sol-mark__svg, .dt-nav__start:hover .sol-mark__svg,
-  .sol-mark:hover .sol-mark__glyph, .dt-nav__start:hover .sol-mark__glyph { transform: none; -webkit-transform: none; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .dt-nav__start, .dt-nav__app { animation: none; }
-  .dt-nav__start, .dt-nav__start::before, .dt-nav__app, .dt-nav__app::before,
-  .dt-nav__app::after, .dt-nav__tip,
-  .dt-nav__tray span, .dt-nav__tray time, .dt-nav__cta { transition: none; }
-  .dt-nav__start:active, .dt-nav__app:active, .dt-nav__cta:active { transform: none; }
-  .sol-mark__glow, .sol-mark__mid { animation: none; }
-  .sol-mark__svg, .sol-mark__glyph { transition: none; }
-  .sol-mark:hover .sol-mark__svg, .dt-nav__start:hover .sol-mark__svg,
-  .sol-mark:hover .sol-mark__glyph, .dt-nav__start:hover .sol-mark__glyph { transform: none; -webkit-transform: none; }
-  .sol-mark:hover .sol-mark__sheen, .dt-nav__start:hover .sol-mark__sheen { animation: none; }
-  .sol-mark__flow { animation: none; }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .dt-nav, .dt-nav__tip { background: #242832; backdrop-filter: none; -webkit-backdrop-filter: none; }
-}
-
-/* pill tabs (the stadium retires: 8px track, 6px segments) */
-.tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: 8px; background: var(--sol-panel); border: 1px solid var(--sol-line); }
-.tabs a, .tabs button {
-  border: 0; background: transparent; color: var(--sol-muted);
-  font: inherit; font-weight: 650; font-size: 0.9rem;
-  padding: 8px 14px; border-radius: 4px; cursor: pointer;
-  transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease), transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
-}
-.tabs a:hover, .tabs button:hover { color: var(--sol-text); }
-.tabs a:active, .tabs button:active { transform: translateY(1px) scale(0.97); }
-.tabs a[aria-selected="true"], .tabs button[aria-selected="true"], .tabs a[aria-current="page"] {
-  background: var(--sol-primary); color: var(--sol-primary-ink);
-}
-
-/* badges and states */
-.badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 3px 11px;
-  border-radius: 4px;
-  border: 1px solid var(--sol-line-strong);
-  color: var(--sol-tangerine);
-  font-size: 0.7rem; font-weight: 800;
-  letter-spacing: 0.09em; text-transform: uppercase;
-  font-variant-numeric: tabular-nums;
-}
-.badge.success { border-color: color-mix(in srgb, var(--sol-success) 55%, transparent); color: var(--sol-success); }
-.badge.error { border-color: color-mix(in srgb, var(--sol-error) 55%, transparent); color: var(--sol-error); }
-.badge.warning { border-color: color-mix(in srgb, var(--sol-warning) 55%, transparent); color: var(--sol-warning); }
-.badge.info { border-color: color-mix(in srgb, var(--sol-info) 55%, transparent); color: var(--sol-info); }
-/* the status dot: a quiet signal point, never a ping orb (the anti-vibe ban
-   list kills the animate-ping family) */
-.dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
-
-/* tables */
-.table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-.table th { text-align: left; color: var(--sol-faint); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; padding: 10px 14px; border-bottom: 1px solid var(--sol-line); }
-.table td { padding: 12px 14px; border-bottom: 1px solid var(--sol-line); color: var(--sol-muted); font-variant-numeric: tabular-nums; }
-.table tr:hover td { background: var(--sol-panel); color: var(--sol-text); }
-.scroll-x { overflow-x: auto; }
-
-/* inputs */
-.input, .field input, .field textarea, .field select {
-  width: 100%;
-  min-height: 44px;
-  background: color-mix(in srgb, var(--sol-bg-2) 80%, transparent);
-  border: 1px solid var(--sol-line);
-  border-radius: var(--r-sm);
-  color: var(--sol-text);
-  font: inherit;
-  padding: 11px 14px;
-  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
-}
-.field input:focus, .field textarea:focus, .field select:focus {
-  outline: none;
-  border-color: var(--sol-primary);
-  box-shadow: 0 0 0 3px rgb(var(--sol-signal) / 0.22);
-}
-.field label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--sol-muted); margin: 0 0 6px; }
-.field { margin-bottom: 16px; }
-
-/* toggle */
-.toggle { position: relative; display: inline-block; width: 46px; height: 26px; flex: none; }
-.toggle input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
-.toggle .track {
-  position: absolute; inset: 0; border-radius: 13px;
-  background: var(--sol-panel-strong); border: 1px solid var(--sol-line-strong);
-  transition: background var(--t-base) var(--ease);
-}
-.toggle .track::after {
-  content: ""; position: absolute; top: 2px; left: 2px;
-  width: 20px; height: 20px; border-radius: 50%;
-  background: var(--sol-muted);
-  transition: transform var(--t-base) var(--ease), background var(--t-base) var(--ease);
-}
-.toggle input:checked + .track { background: rgb(var(--sol-signal) / 0.25); border-color: var(--sol-primary); }
-.toggle input:checked + .track::after { transform: translateX(20px); background: var(--win-accent-ink); }
-.toggle input:focus-visible + .track { outline: 3px solid var(--sol-primary); outline-offset: 2px; }
-
-/* ---------- 5. PAGES — shared page furniture ---------- */
-.page-title { font-size: clamp(2rem, 5vw, 3.2rem); }
-.h2-xl { font-size: clamp(1.6rem, 3.4vw, 2.4rem); }
-.card-h { font-size: 1.05rem; }
-.h3-sm { font-size: 1.02rem; }
-.p-sm { font-size: 0.9rem; }
-.flush { margin: 0; }
-.ink-strong { color: var(--sol-text); }
-.lede { max-width: 640px; }
-.mt-30 { margin-top: 30px; }
-.mt-18 { margin-top: 18px; }
-
-.hero-section { padding-top: clamp(48px, 9vw, 110px); padding-bottom: clamp(32px, 6vw, 72px); }
-.hero-split { display: flex; gap: clamp(28px, 6vw, 72px); align-items: center; flex-wrap: wrap; }
-.hero-copy { flex: 1 1 460px; }
-.hero-lede { max-width: 560px; font-size: 1.12rem; margin-top: 18px; }
-.btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 26px; }
-.btn-row-tight { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
-.badge-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 34px; }
-
-.card-link { display: block; color: inherit; }
-.card-link:hover { text-decoration: none; }
-.card-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.card-title { margin: 0; }
-.card-text { margin: 10px 0 0; }
-.cta-panel { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; justify-content: space-between; padding: clamp(24px, 4vw, 40px); }
-.cta-copy { max-width: 560px; }
-.cta-title { font-size: clamp(1.3rem, 2.6vw, 1.9rem); margin-bottom: 8px; }
-
-/* home — the wire globe */
-.globe-wrap { position: relative; display: grid; place-items: center; flex: 0 1 360px; margin: 0 auto; }
-.globe {
-  position: relative; width: min(320px, 74vw); aspect-ratio: 1; border-radius: 50%;
-  border: 1px solid var(--sol-line-strong);
-  background:
-    repeating-linear-gradient(0deg, var(--sol-line) 0 1px, transparent 1px 12.5%),
-    repeating-linear-gradient(90deg, var(--sol-line) 0 1px, transparent 1px 12.5%),
-    radial-gradient(circle at 34% 28%, var(--sol-panel-strong), var(--sol-panel) 58%, transparent 80%);
-  box-shadow: var(--sh-glow), inset 0 0 70px rgb(var(--sol-signal) / 0.07);
-  animation: orbFloat 7s var(--ease) infinite;
-}
-.globe::before, .globe::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 0 solid var(--sol-line-strong); }
-.globe::before { border-left-width: 1px; border-right-width: 1px; transform: scaleX(0.42); }
-.globe::after { border-top-width: 1px; border-bottom-width: 1px; transform: scaleY(0.42); }
-.g-dot {
-  position: absolute; width: 10px; height: 10px; border-radius: 50%;
-  background: var(--sol-primary); box-shadow: 0 0 10px rgb(var(--sol-signal) / 0.45);
-}
-
-/* zones / dnssec / gateway — code blocks, step grids */
-.code-block {
-  margin: 0;
-  background: var(--sol-bg-2);
-  border: 1px solid var(--sol-line);
-  border-radius: var(--r-md);
-  padding: 18px 20px;
-  overflow: auto;
-  box-shadow: var(--sh-1);
-}
-.code-block code {
-  background: none; border: 0; padding: 0;
-  font-size: 0.85rem; line-height: 1.65; color: var(--sol-muted);
-  font-variant-numeric: tabular-nums;
-}
-.grid-steps { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
-.step-title { font-size: 1.02rem; margin: 12px 0 6px; }
-.step-text { margin: 0; }
-
-/* settings */
-.stack { max-width: 640px; margin-top: 30px; }
-.card-gap { margin-bottom: 16px; }
-.pref-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--sol-line); }
-.pref-row-last { border-bottom: 0; }
-.pref-title { margin: 0; color: var(--sol-text); font-weight: 650; }
-.pref-hint { margin: 0; font-size: 0.85rem; }
-.url-out { margin-top: 14px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-.url-out.error { border-color: var(--sol-error); color: var(--sol-error); }
-.url-out.ok { border-color: color-mix(in srgb, var(--sol-success) 55%, transparent); color: var(--sol-success); }
-.measure { max-width: 320px; }
-.measure-sm { max-width: 280px; }
-
-/* notfound */
-.wordmark-xl { font-size: clamp(3rem, 10vw, 7rem); }
-.lede-tight { max-width: 520px; font-size: 1.08rem; }
-
-/* ---------- 6. MOTION — keyframes, reveal, reduced motion ---------- */
-@keyframes riseIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes orbFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-@keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
-
-.reveal { opacity: 0; transform: translateY(14px); }
-.reveal.in { animation: riseIn 0.55s var(--ease) forwards; }
-.reveal.in:nth-child(2) { animation-delay: 60ms; }
-.reveal.in:nth-child(3) { animation-delay: 120ms; }
-.reveal.in:nth-child(4) { animation-delay: 180ms; }
-
-/* skeleton loading */
-.skeleton {
-  border-radius: var(--r-sm);
-  background: linear-gradient(90deg, var(--sol-panel) 25%, var(--sol-panel-strong) 50%, var(--sol-panel) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s linear infinite;
-  color: transparent !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
-  .reveal { opacity: 1; transform: none; }
-  html { scroll-behavior: auto; }
-}
-
-/* ---------- 7. RUNTIME — toast ---------- */
-.toast-stack {
-  position: fixed;
-  bottom: 22px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  z-index: var(--z-toast);
-}
-/* the toast: the Windows notification — the acrylic panel with the grain,
-   8px corners and the flyout shadow */
-.toast {
-  padding: 12px 20px;
-  border: 1px solid var(--sol-hairline);
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 650;
-  color: var(--sol-text);
-  background-color: var(--sol-surface-4);
-  background-image: var(--win-noise);
-  backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  box-shadow: var(--win-shadow-flyout);
-  transition: opacity 0.25s var(--ease);
-}
-.toast.success { border-color: color-mix(in srgb, var(--sol-success) 60%, transparent); }
-.toast.error { border-color: color-mix(in srgb, var(--sol-error) 60%, transparent); }
-.toast.info { border-color: color-mix(in srgb, var(--sol-info) 60%, transparent); }
-.toast-out { opacity: 0; }
-
-/* ---------- 8. RENOVATION — ambient loops, toggle spring, reduced transparency ---------- */
-/* ambient/loop keyframes only run when motion is allowed; the wire globe
-   drift is the one idle of the home, the skeleton shimmer is feedback */
-@media (prefers-reduced-motion: no-preference) {
-  .globe { animation: orbFloat 7s var(--ease) infinite; }
-  .skeleton { animation: shimmer 1.4s linear infinite; }
-}
-
-/* the toggle knob springs (Apple-Silicon motion) */
-.toggle .track::after {
-  transition: transform 260ms var(--spring), background var(--t-base) var(--ease);
-}
-
-/* focus ring parity for the interactive furniture outside the chrome */
-.tabs a:focus-visible,
-.tabs button:focus-visible,
-.footer a:focus-visible,
-.card-link:focus-visible {
-  outline: 2px solid var(--sol-primary);
-  outline-offset: 2px;
-  border-radius: 6px;
-  box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18);
-}
-
-/* reduced transparency: every glass panel gets a solid floor */
-@media (prefers-reduced-transparency: reduce) {
-  .glass, .tabs, .toast, .code-block,
-  .input, .field input, .field textarea, .field select {
-    background: var(--sol-bg-2);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-  .dt-nav { background: #202020; }
-  .dt-start { background: #2c2c2c; }
-}
-
-/* ==========================================================================
-   STUDIO PASS — the windows-studio fusion materialized on the argan theme:
-   Windows 11 fluency (mica chrome at two elevations, micro-shadowed
-   controls, visible focus) + browser chrome (pill grammar on the cta) +
-   apple-silicon liquid glass (radial window light, inset highlight, layered
-   diffuse shadow). The shell chrome (Shell.tsx) was rebuilt on the fusion
-   pattern — the neutral graphite navbar carries the identity color only in
-   the brand tile and the cta; every other rule restyles an existing
-   selector with the studio material or adds a missing control state.
-   ========================================================================== */
-:root {
-  /* two-level fluent elevation: level 1 for controls, level 2 for surfaces */
-  --elev-1: 0 1px 2px rgb(0 0 0 / 38%), 0 2px 6px rgb(0 0 0 / 24%);
-  --elev-2: 0 2px 6px rgb(0 0 0 / 30%), 0 18px 44px -14px rgb(0 0 0 / 58%);
-}
-
-/* liquid glass: the radial window light over the tint, the layered diffuse
-   shadow at rest, the deeper diffuse at the hover lift (house -4px) */
-.glass {
-  background:
-    radial-gradient(120% 70% at 50% 0%, rgb(255 255 255 / 4%), transparent 58%),
-    linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
-  box-shadow: var(--elev-1), inset 0 1px 0 rgba(241, 247, 244, 0.08);
-}
-.glass-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--elev-2), inset 0 1px 0 rgba(241, 247, 244, 0.1);
-}
-/* card links lift their glass at the anchor hover (the card itself keeps
-   the resting shadow) */
-.card-link { transition: transform var(--t-base) var(--ease); }
-.card-link:hover { transform: translateY(-4px); }
-
-/* mica topnav: the tinted floor gains the inset top window light and the
-   floating-bar elevation */
-.topnav {
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), var(--elev-1);
-}
-
-/* segmented control: the fluent track (inner shadow) and the raised active
-   pill; disabled parity on the pills */
-.tabs { box-shadow: inset 0 1px 2px rgb(0 0 0 / 28%); }
-.tabs a[aria-selected="true"], .tabs button[aria-selected="true"],
-.tabs a[aria-current="page"], .tabs button[aria-current="page"] { box-shadow: var(--elev-1); }
-.tabs a:disabled, .tabs button:disabled { opacity: 0.45; cursor: not-allowed; }
-
-/* buttons: pressed depth, the busy spinner on the aria-busy flag and the
-   focus halo in the signal color */
-.btn:active { box-shadow: inset 0 2px 6px rgb(0 0 0 / 22%); }
-.btn:focus-visible { outline: 2px solid var(--sol-primary); outline-offset: 2px; box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18); }
-.btn[aria-busy="true"] { color: transparent; pointer-events: none; position: relative; }
-.btn[aria-busy="true"]::after {
-  content: ""; position: absolute; top: 50%; left: 50%; width: 15px; height: 15px; margin: -7.5px 0 0 -7.5px;
-  border-radius: 50%; border: 2px solid rgb(var(--sol-signal) / 0.35); border-top-color: var(--sol-primary);
-  animation: solSpin 700ms linear infinite;
-}
-@keyframes solSpin { to { transform: rotate(1turn); } }
-
-/* inputs and toggle: fluent disabled floor */
-.input:disabled, .field input:disabled, .field textarea:disabled, .field select:disabled { opacity: 0.5; cursor: not-allowed; }
-.toggle input:disabled + .track { opacity: 0.5; }
-
-/* the brand mark reads as the app tile of the chrome (Sol/shell/Shell.tsx):
-   the .dt-tile treatment carries the gradient, the inset highlight and the
-   layered shadows, so no orb language remains */
-
-/* toast: the spring entrance of the house motion master */
-.toast { animation: riseIn 0.35s var(--spring) backwards; }
-.toast-out { opacity: 0; transform: translateY(6px); transition: opacity 0.25s var(--ease), transform 0.25s var(--ease); }
-
-/* text disciplines: display lines balance, paragraphs pretty */
-h1, h2, h3 { text-wrap: balance; }
-p, .hero-lede, .card-text { text-wrap: pretty; }
-
-/* motion and transparency guards for the studio material */
-@media (prefers-reduced-motion: reduce) {
-  .btn[aria-busy="true"]::after { animation: none; }
-  .toast { animation: none; }
-  .dt-start, .dt-start__app { animation: none; }
-  .dt-start__app, .dt-start__app::before, .dt-tile, .dt-nav__cta,
-  .dt-nav__start, .dt-nav__start::before, .dt-nav__app, .dt-nav__app::before,
-  .dt-nav__app::after, .dt-nav__tip { transition: none; }
-  .dt-start__app:active, .dt-nav__start:active, .dt-nav__app:active,
-  .dt-nav__cta:active { transform: none; }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .glass { background: var(--sol-bg-2); box-shadow: var(--sh-2); }
-  .dt-nav { background: #202020; backdrop-filter: none; -webkit-backdrop-filter: none; }
-  .dt-nav__tip { background: #2b2b2b; backdrop-filter: none; -webkit-backdrop-filter: none; }
-  .dt-start { background: #2c2c2c; }
-}
-
-/* ==========================================================================
-   TRYLLE PASS — the trylle.com ruler over the argan theme. One deep unified
-   canvas per theme, eight surface steps (elevation by color, never by
-   border), Linear-style shadows (top window light + ring + short drops),
-   neutral hairlines mixed from the foreground, mono metadata at .13em, the
-   fluid type ladder at -0.02em and the 150ms micro motion on the trylle
-   entry easing. The jade stays reserved for action and state — CTA, active,
-   focus; everything else reads rich neutral. The taskbar grammar keeps its
-   Windows durations untouched; only the floating brand panel climbs the
-   step ladder.
-   ========================================================================== */
-:root {
-  /* the eight surface steps (dark ladder) */
+  /* the surfaces ladder — trylle 1..8 */
   --sol-surface-1: #171717;
   --sol-surface-2: #1e1e1e;
   --sol-surface-3: #252525;
@@ -812,379 +34,788 @@ p, .hero-lede, .card-text { text-wrap: pretty; }
   --sol-surface-6: #3a3a3a;
   --sol-surface-7: #414141;
   --sol-surface-8: #484848;
+  --sol-bg: var(--sol-surface-1);
+  --sol-bg-2: var(--sol-surface-2);
 
-  /* hairlines mixed from the foreground; the thin neutral focus ring */
-  --sol-hairline: color-mix(in oklab, var(--sol-text) 5%, transparent);
-  --sol-hairline-strong: color-mix(in oklab, var(--sol-text) 10%, transparent);
-  --sol-focus: color-mix(in oklab, var(--sol-text) 55%, transparent);
+  /* hairlines — ink 5% / strong 10% (color-mix, never flat greys) */
+  --sol-hairline: color-mix(in oklab, var(--sol-ink) 5%, transparent);
+  --sol-hairline-strong: color-mix(in oklab, var(--sol-ink) 10%, transparent);
 
-  /* Linear shadow primitives (dark): window light, rings and short drops */
-  --sol-hi-base: rgb(255 255 255 / 2%);
-  --sol-hi-mid: rgb(255 255 255 / 5%);
-  --sol-hi-high: rgb(255 255 255 / 8%);
-  --sol-hi-peak: rgb(255 255 255 / 11%);
-  --sol-ring-base: rgb(255 255 255 / 2%);
-  --sol-ring-mid: rgb(255 255 255 / 4%);
-  --sol-ring-high: rgb(255 255 255 / 6%);
-  --sol-ring-out: rgb(0 0 0 / 12%);
-  --sol-drop: rgb(0 0 0 / 18%);
-  --sol-drop-deep: rgb(0 0 0 / 40%);
+  /* typography — the real trylle stacks; body rides 13px / 450 */
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-sans);
+  --font-mono: "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, SFMono-Regular, monospace;
+  --sol-track-display: -0.02em;
+  --sol-track-label: 0.14em;
 
-  /* the Linear shadow ladder 1–8 */
-  --sol-shadow-1: inset 0 0 0 1px var(--sol-ring-base);
-  --sol-shadow-2: inset 0 1px 0 0 var(--sol-hi-base), inset 0 0 0 1px var(--sol-ring-base), 0 1px 1px -.5px var(--sol-drop);
-  --sol-shadow-3: inset 0 1px 0 0 var(--sol-hi-mid), inset 0 0 0 1px var(--sol-ring-base), 0 0 0 1px var(--sol-ring-out), 0 1px 1px -.5px var(--sol-drop), 0 3px 3px -1.5px var(--sol-drop);
-  --sol-shadow-4: inset 0 1px 0 0 var(--sol-hi-mid), inset 0 0 0 1px var(--sol-ring-mid), 0 0 0 1px var(--sol-ring-out), 0 1px 1px -.5px var(--sol-drop), 0 3px 3px -1.5px var(--sol-drop), 0 6px 6px -3px var(--sol-drop);
-  --sol-shadow-5: inset 0 1px 0 0 var(--sol-hi-high), inset 0 0 0 1px var(--sol-ring-mid), 0 0 0 1px var(--sol-ring-out), 0 1px 1px -.5px var(--sol-drop), 0 3px 3px -1.5px var(--sol-drop), 0 6px 6px -3px var(--sol-drop), 0 12px 12px -6px var(--sol-drop);
-  --sol-shadow-6: inset 0 1px 0 0 var(--sol-hi-high), inset 0 0 0 1px var(--sol-ring-high), 0 0 0 1px var(--sol-ring-out), 0 1px 1px -.5px var(--sol-drop), 0 3px 3px -1.5px var(--sol-drop), 0 6px 6px -3px var(--sol-drop), 0 12px 12px -6px var(--sol-drop), 0 24px 24px -12px var(--sol-drop-deep);
-  --sol-shadow-7: inset 0 1px 0 0 var(--sol-hi-peak), inset 0 0 0 1px var(--sol-ring-high), 0 0 0 1px var(--sol-ring-out), 0 1px 1px -.5px var(--sol-drop), 0 3px 3px -1.5px var(--sol-drop), 0 6px 6px -3px var(--sol-drop), 0 12px 12px -6px var(--sol-drop), 0 24px 24px -12px var(--sol-drop-deep), 0 48px 48px -24px var(--sol-drop-deep);
-  --sol-shadow-8: inset 0 1px 0 0 var(--sol-hi-peak), inset 0 0 0 1px var(--sol-ring-high), 0 0 0 1px var(--sol-ring-out), 0 1px 1px -.5px var(--sol-drop), 0 3px 3px -1.5px var(--sol-drop), 0 6px 6px -3px var(--sol-drop), 0 12px 12px -6px var(--sol-drop), 0 24px 24px -12px var(--sol-drop-deep), 0 48px 48px -24px var(--sol-drop-deep), 0 96px 96px -48px var(--sol-drop-deep);
-
-  /* radius base .625rem with the ±2/4px derivates; trylle micro motion */
+  /* radius — trylle .625rem core (windows controls keep the 4px face) */
   --sol-radius: 0.625rem;
   --sol-radius-sm: calc(var(--sol-radius) - 2px);
   --sol-radius-lg: calc(var(--sol-radius) + 2px);
   --sol-radius-xl: calc(var(--sol-radius) + 4px);
-  --sol-dur-micro: 150ms;
-  --sol-ease-entry: cubic-bezier(0.22, 1, 0.36, 1);
-}
+  --sol-radius-2xl: 16px;
+  --sol-radius-3xl: 24px;
+  --sol-radius-ctl: 4px;
 
-/* the light theme: the steps collapse to the near-white ladder, the window
-   light and rings retire, the drops thin out */
-[data-theme="light"] {
-  --sol-surface-1: #fafafa;
-  --sol-surface-2: #fcfcfc;
-  --sol-surface-3: oklch(100% 0 0);
-  --sol-surface-4: oklch(100% 0 0);
-  --sol-surface-5: oklch(100% 0 0);
-  --sol-surface-6: oklch(100% 0 0);
-  --sol-surface-7: oklch(100% 0 0);
-  --sol-surface-8: oklch(100% 0 0);
-  --sol-hi-base: transparent;
-  --sol-hi-mid: transparent;
-  --sol-hi-high: transparent;
-  --sol-hi-peak: transparent;
-  --sol-ring-base: transparent;
-  --sol-ring-mid: transparent;
-  --sol-ring-high: transparent;
-  --sol-ring-out: rgb(0 0 0 / 6%);
-  --sol-drop: rgb(0 0 0 / 6%);
-  --sol-drop-deep: rgb(0 0 0 / 10%);
-}
+  /* motion — trylle micro at the ease-out; fluent curves for the windows hands */
+  --sol-micro: 150ms;
+  --sol-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --sol-ease-win: cubic-bezier(0.85, 0.14, 0.14, 0.85);
+  --win-ease-entry: cubic-bezier(0.1, 0.9, 0.2, 1);
+  --win-ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
+  --sol-ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
 
-/* ---- typography: the fluid ladder at -0.02em, wordmark fades to muted ---- */
-h1, h2, h3 { letter-spacing: -0.02em; }
-.page-title { font-size: clamp(2.25rem, 5vw, 3.75rem); }
-.h2-xl { font-size: clamp(1.65rem, 3vw, 2rem); }
-.h3-sm, .card-h { font-size: clamp(1.3rem, 2vw, 1.5rem); }
-.wordmark {
-  font-size: clamp(2.25rem, 5vw, 3.75rem);
-  letter-spacing: -0.02em;
-  line-height: 1.05;
-  background: linear-gradient(180deg, var(--sol-text) 38%, var(--sol-muted) 108%);
-  -webkit-background-clip: text;
-  background-clip: text;
-}
-
-/* ---- metadata: the mono label at .13em, muted; the accent leaves the
-   eyebrow and the resting badge ---- */
-.eyebrow {
-  color: var(--sol-muted);
-  font-family: var(--sol-mono);
-  font-weight: 600;
-  letter-spacing: 0.13em;
-}
-.badge {
-  font-family: var(--sol-mono);
-  font-weight: 600;
-  letter-spacing: 0.13em;
-}
-.badge:not(.success):not(.error):not(.warning):not(.info) {
-  border-color: var(--sol-hairline-strong);
-  color: var(--sol-muted);
-}
-
-/* ---- focus: the thin neutral ring everywhere outside the accent states ---- */
-:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; }
-.tabs a:focus-visible,
-.tabs button:focus-visible,
-.footer a:focus-visible,
-.card-link:focus-visible {
-  outline: 2px solid var(--sol-focus);
-  outline-offset: 2px;
-  border-radius: 6px;
-  box-shadow: none;
-}
-
-/* ---- links: the neutral ink with the Windows hyperlink hover ---- */
-a { color: inherit; }
-a:hover { color: var(--win-accent); }
-
-/* ---- neutral hairline scrollbar ---- */
-* { scrollbar-color: transparent transparent; }
-*::-webkit-scrollbar-thumb { background: transparent; border: 3px solid transparent; border-radius: 8px; background-clip: padding-box; }
-
-/* ---- panels: solid step material, elevation by ring and shadow, never by
-   border — the glass blur retires with the tinted wash ---- */
-.glass {
-  background: var(--sol-surface-2);
-  border: 0;
-  border-radius: var(--sol-radius-lg);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  box-shadow: var(--sol-shadow-3);
-  transition: transform var(--sol-dur-micro) var(--ease), box-shadow var(--sol-dur-micro) var(--ease), background var(--sol-dur-micro) var(--ease);
-}
-.glass-hover:hover {
-  transform: translateY(-2px);
-  border-color: transparent;
-  background: var(--sol-surface-3);
-  box-shadow: var(--sol-shadow-4);
-}
-
-/* ---- buttons: the flat signal action over the Windows geometry (4px, no
-   lift — the Windows button washes, it never floats), complete states ---- */
-.btn {
-  border-radius: 4px;
-  background: var(--sol-primary);
-  box-shadow: var(--sol-shadow-2);
-  transition: transform 100ms var(--win-ease-exit), background 150ms var(--win-ease-entry), box-shadow 150ms var(--win-ease-entry);
-}
-.btn:hover {
-  filter: none;
-  background: color-mix(in oklab, var(--sol-primary) 90%, var(--sol-primary-ink));
-  box-shadow: var(--sol-shadow-3);
-  transform: none;
-}
-.btn:active { box-shadow: inset 0 1px 2px rgb(0 0 0 / 22%); }
-.btn:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; box-shadow: var(--sol-shadow-2); }
-.btn.secondary {
-  background: color-mix(in oklab, var(--sol-text) 7%, var(--sol-surface-2));
-  border-color: transparent;
-  box-shadow: var(--sol-shadow-2);
-}
-.btn.secondary:hover {
-  border-color: transparent;
-  color: var(--sol-text);
-  background: color-mix(in oklab, var(--sol-text) 11%, var(--sol-surface-2));
-}
-
-/* ---- segmented tabs: the Windows control — 4px track and segments, the
-   selected segment lit in the accent (the toggle ON of the shell) ---- */
-.tabs {
-  background: var(--sol-surface-1);
-  border: 1px solid var(--sol-hairline);
-  border-radius: 4px;
-  padding: 4px;
-  box-shadow: none;
-}
-.tabs a[aria-selected="true"], .tabs button[aria-selected="true"],
-.tabs a[aria-current="page"], .tabs button[aria-current="page"] {
-  background: var(--win-accent);
-  color: var(--win-accent-ink);
-  box-shadow: none;
-}
-
-/* ---- tables: hairline rows, mono headers at .13em ---- */
-.table th {
-  font-family: var(--sol-mono);
-  letter-spacing: 0.13em;
-  color: var(--sol-faint);
-  border-bottom-color: var(--sol-hairline-strong);
-}
-.table td { border-bottom-color: var(--sol-hairline); }
-.table tr:hover td { background: var(--win-page-wash); }
-
-/* ---- inputs: the Windows text box — the flat well, the bottom hairline and
-   the 2px accent underline on focus ---- */
-.input, .field input, .field textarea, .field select {
-  background: var(--sol-surface-1);
-  border: 0;
-  border-radius: 4px;
-  box-shadow: var(--sol-shadow-2), inset 0 -1px 0 0 var(--sol-hairline-strong);
-  transition: box-shadow var(--sol-dur-micro) var(--ease);
-}
-.input:hover, .field input:hover, .field textarea:hover, .field select:hover {
-  box-shadow: var(--sol-shadow-2), inset 0 -1px 0 0 var(--sol-hairline-strong), inset 0 0 0 1px var(--sol-hairline-strong);
-}
-.input:focus, .field input:focus, .field textarea:focus, .field select:focus {
-  outline: none;
-  border-color: transparent;
-  box-shadow: var(--sol-shadow-2), inset 0 -2px 0 0 var(--win-accent);
-}
-
-/* ---- toggle: the Windows toggle — the accent track with the contrasting
-   knob ink when ON ---- */
-.toggle .track {
-  background: var(--sol-surface-1);
-  border-color: var(--sol-hairline-strong);
-  box-shadow: var(--sol-shadow-1);
-}
-.toggle input:checked + .track {
-  background: var(--win-accent);
-  border-color: transparent;
-  box-shadow: none;
-}
-
-/* ---- code, kbd and footer on the neutral material ---- */
-.code-block {
-  background: var(--sol-surface-1);
-  border: 0;
-  border-radius: var(--sol-radius-lg);
-  box-shadow: var(--sol-shadow-2);
-}
-kbd, code {
-  background: var(--sol-surface-3);
-  border-color: var(--sol-hairline-strong);
-}
-.footer { border-top-color: var(--sol-hairline-strong); }
-.pref-row { border-bottom-color: var(--sol-hairline); }
-.url-out { background: var(--sol-surface-2); border-color: var(--sol-hairline-strong); }
-
-/* ---- toast: the acrylic notification carries the flyout shadow on every
-   state; the exit at 150ms ---- */
-.toast:not(.success):not(.error):not(.info) {
-  background-color: var(--sol-surface-4);
-  background-image: var(--win-noise);
-  border-color: var(--sol-hairline);
-  box-shadow: var(--win-shadow-flyout);
-}
-.toast-out { transition: opacity 150ms var(--ease), transform 150ms var(--ease); }
-
-/* ---- the floating brand panel: the Windows start panel material (acrylic
-   rgba(36,36,36,.8) + grain + 8px + window shadow) lives in the shell chrome
-   rule above; this pass keeps no override over it ---- */
-
-/* ==========================================================================
-   WINDOWS IDENTITY PASS — the Windows 11 identity restored over the neutral
-   passes. The shell speaks the real Windows 11 material again: the dark
-   #202020 canvas with the #2b2b2b–#2c2c2c surface ladder, acrylic panels at
-   rgba(36,36,36,.8) and the bar at rgba(32,32,32,.75), the REAL shell accent
-   --clrPrm back on focus, selection, links, toggle ON, tabs and scrollbars
-   (#0067c0 light / #4cc2ff dark), the Mica wallpaper under both themes
-   (#202020→#1a1f35 dark · #f3f3f3→#eff4f9 light), the Fluent motion curves
-   (entry cubic-bezier(.1,.9,.2,1) · exit cubic-bezier(.7,0,1,.5)) and the two
-   Windows shadows: focused window 0 32px 64px rgba(0,0,0,.24) + 0 0 8px
-   rgba(0,0,0,.2), flyout 0 4px 8px rgba(0,0,0,.14) + 0 0 2px rgba(0,0,0,.12).
-   The acrylic carries the Win11 NOISE again — an inline feTurbulence
-   data-URI grain at 5% over the bar, the Start panel, the tooltip and the
-   toasts (no image files). The taskbar grammar keeps every signature (48px
-   acrylic bar, 38px pins, 96×84 tiles, popintro 800ms, press scale(.7)
-   100ms, dtStartIn 200ms, the 3px 6→12px ::after ladder): the active ladder
-   stays in the argan jade (the app's --clrPrm equivalent) while the chrome
-   states — focus, selection, links, the start CTA — follow the Windows
-   accent as the Windows shell does; the app identity stays in the mark, the
-   tiles and the content accents. Sections: tokens · themes · mica ·
-   scrollbar · guards. The selector overrides ride the original rules above.
-   ========================================================================== */
-:root {
-  /* the Windows shell accent (--clrPrm) and the dark Mica */
+  /* the windows accent governs focus and control states */
   --win-accent: #4cc2ff;
   --win-accent-ink: #000000;
-  --win-mica: #202020 radial-gradient(#1a1f35 25%, #202020 100%) no-repeat fixed;
-  /* the dark Windows ladder replaces the zinc ladder */
-  --sol-bg: #202020;
-  --sol-bg-2: #2b2b2b;
-  --sol-surface-1: #242424;
-  --sol-surface-2: #2b2b2b;
-  --sol-surface-3: #2c2c2c;
-  --sol-surface-4: #323232;
-  --sol-surface-5: #373737;
-  --sol-surface-6: #3d3d3d;
-  --sol-surface-7: #434343;
-  --sol-surface-8: #494949;
-  /* the content focus rides the accent token */
   --sol-focus: var(--win-accent);
-  /* the dark acrylic surfaces, their washes and scroll thumb */
-  --win-bar: rgba(32, 32, 32, 0.75);
-  --win-panel: rgba(36, 36, 36, 0.8);
-  --win-wash: rgba(255, 255, 255, 0.1);
-  --win-page-wash: rgba(255, 255, 255, 0.06);
-  --win-scroll: rgba(255, 255, 255, 0.4);
-  /* the feTurbulence grain over the acrylic (monochrome, opacity 5%) */
-  --win-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
-  /* the Windows shadows and the Fluent curves */
-  --win-shadow-window: 0 32px 64px rgba(0, 0, 0, 0.24), 0 0 8px rgba(0, 0, 0, 0.2);
-  --win-shadow-flyout: 0 4px 8px rgba(0, 0, 0, 0.14), 0 0 2px rgba(0, 0, 0, 0.12);
-  --win-ease-entry: cubic-bezier(0.22, 1, 0.36, 1);
-  --win-ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
+
+  /* the argan identity — jade rides brand, content CTAs and active indicators only */
+  --arg-jade: #34d8a8;
+  --arg-jade-deep: #0b7d5e;
+  --sol-primary: #34d8a8;
+  --sol-btn-accent-bg: var(--arg-jade);
+  --sol-btn-accent-ink: #04231a;
+
+  /* semantic signals (status = dot, never a fill) */
+  --sol-success: var(--arg-jade);
+  --sol-warning: #edb200;
+  --sol-error: #fb2c36;
+  --sol-info: var(--win-accent);
+
+  /* the shadow ladder — ring + doubling layers, level 3+ adds the inset light */
+  --sol-shadow-1: 0 0 0 1px var(--sol-hairline), 0 1px 1px -0.5px rgb(0 0 0 / 24%);
+  --sol-shadow-2:
+    0 0 0 1px var(--sol-hairline), 0 2px 2px -1px rgb(0 0 0 / 24%), 0 8px 16px -8px rgb(0 0 0 / 24%);
+  --sol-shadow-3:
+    0 0 0 1px var(--sol-hairline), 0 4px 4px -2px rgb(0 0 0 / 24%), 0 24px 48px -16px rgb(0 0 0 / 24%),
+    0 96px 96px -48px rgb(0 0 0 / 24%), inset 0 1px 0 rgb(255 255 255 / 4%);
+
+  /* the windows fluent shadows (floats stay flat) */
+  --win-shadow-window: 0 32px 64px rgb(0 0 0 / 24%), 0 0 8px rgb(0 0 0 / 20%);
+  --win-shadow-flyout: 0 4px 8px rgb(0 0 0 / 14%), 0 0 2px rgb(0 0 0 / 12%);
+
+  /* the real trylle button tone stack (captured from the site) */
+  --sol-btn-tone: inset 0 1.2px 0 0 #ffffff73, inset 0 8px 14px -6px #ffffff38;
+  --sol-btn-tone-hover: inset 0 1.2px 0 0 #ffffff8c, inset 0 8px 14px -6px #ffffff52;
+
+  /* the windows chrome */
+  --win-close: rgb(232, 17, 35);
+  --win-close-hot: rgb(139, 10, 20);
+  --win-wash: rgb(255 255 255 / 6%);
+  --win-wash-strong: rgb(255 255 255 / 10%);
+  --win-open: #858585;
+  --win-bar: rgb(23 23 23 / 78%);
+
+  /* the grain texture — one data-uri, zero image files */
+  --win-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* the light Windows theme: #0067c0 accent, the light Mica and the light
-   ladder (the chrome stays the dark acrylic, as the Windows taskbar does) */
+/* the light face: the trylle daylight ladder, the win10 accent #0067c0 */
 [data-theme="light"] {
+  color-scheme: light;
+  --sol-canvas: #f4f4f5;
+  --sol-canvas-deep: #ececee;
+  --sol-ink: #18181b;
+  --sol-muted: #52525b;
+  --sol-faint: #71717a;
+  --sol-surface-1: #f4f4f5;
+  --sol-surface-2: #f7f7f8;
+  --sol-surface-3: #fafafa;
+  --sol-surface-4: #fbfbfc;
+  --sol-surface-5: #fcfcfc;
+  --sol-surface-6: #fcfcfc;
+  --sol-surface-7: #fdfdfd;
+  --sol-surface-8: #fdfdfd;
+  --sol-hairline: color-mix(in oklab, var(--sol-ink) 8%, transparent);
+  --sol-hairline-strong: color-mix(in oklab, var(--sol-ink) 16%, transparent);
   --win-accent: #0067c0;
   --win-accent-ink: #ffffff;
-  --win-mica: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat fixed;
-  --sol-bg: #f3f3f3;
-  --sol-bg-2: #fbfbfb;
-  --sol-surface-1: #f0f0f0;
-  --sol-surface-2: #f9f9f9;
-  --sol-surface-3: #fcfcfc;
-  --sol-surface-4: #ffffff;
-  --sol-surface-5: #ffffff;
-  --sol-surface-6: #ffffff;
-  --sol-surface-7: #ffffff;
-  --sol-surface-8: #ffffff;
-  --win-page-wash: rgba(0, 0, 0, 0.04);
-  --win-scroll: rgba(0, 0, 0, 0.35);
+  --sol-focus: var(--win-accent);
+  --sol-btn-accent-bg: var(--arg-jade-deep);
+  --sol-btn-accent-ink: #ffffff;
+  --sol-btn-tone: inset 0 1.2px 0 0 rgb(255 255 255 / 55%), inset 0 8px 14px -6px rgb(255 255 255 / 25%);
+  --sol-btn-tone-hover: inset 0 1.2px 0 0 rgb(255 255 255 / 75%), inset 0 8px 14px -6px rgb(255 255 255 / 35%);
+  --sol-shadow-1: 0 0 0 1px var(--sol-hairline), 0 1px 1px -0.5px rgb(0 0 0 / 10%);
+  --sol-shadow-2:
+    0 0 0 1px var(--sol-hairline), 0 2px 2px -1px rgb(0 0 0 / 10%), 0 8px 16px -8px rgb(0 0 0 / 10%);
+  --sol-shadow-3:
+    0 0 0 1px var(--sol-hairline), 0 4px 4px -2px rgb(0 0 0 / 10%), 0 24px 48px -16px rgb(0 0 0 / 10%),
+    0 96px 96px -48px rgb(0 0 0 / 10%), inset 0 1px 0 rgb(255 255 255 / 60%);
+  --win-shadow-window: 0 32px 64px rgb(0 0 0 / 16%), 0 0 8px rgb(0 0 0 / 8%);
+  --win-shadow-flyout: 0 4px 8px rgb(0 0 0 / 10%), 0 0 2px rgb(0 0 0 / 8%);
+  --win-wash: rgb(0 0 0 / 4%);
+  --win-wash-strong: rgb(0 0 0 / 8%);
+  --win-open: #858585;
+  --win-bar: rgb(244 244 245 / 82%);
 }
 
-/* the Mica wallpaper: the canvas of both themes (the theme token swap
-   retints it automatically) */
-body { background: var(--win-mica); }
+/* ---------- 2. BASE — the canvas, the reading face, the windows scrollbar ---------- */
 
-/* the Win11 scrollbar: invisible until the surface is hovered, the thin
-   4px thumb breathing to 6px under the pointer */
-*:hover { scrollbar-color: var(--win-scroll) transparent; }
-*:hover::-webkit-scrollbar-thumb { background-color: var(--win-scroll); }
-*::-webkit-scrollbar-thumb:hover { border-width: 2px; }
-
-/* ==========================================================================
-   WINDOW APP PASS — the application window chrome rides the family identity
-   (F-argan: the OS grammar retires — no taskbar, no start menu, no desktop
-   navigation. The theme opens as ONE application window over the Mica
-   backdrop: title bar with the brand, left rail for the pages, Fluent
-   caption buttons, restore chip when minimized; /intro and /onboarding run
-   full-viewport over the same backdrop. The identity accent of the family
-   takes the shell: the argan jade #34d8a8 rides --win-accent (the Windows
-   blue retires from the chrome). Tokens only, append-only pass.)
-   ========================================================================== */
-
-/* the family accent: the argan jade takes the shell accent token on both
-   themes (the ink is the deep green-black the jade carries) */
-:root {
-  --win-accent: #34d8a8;
-  --win-accent-ink: #04231a;
-}
-[data-theme="light"] {
-  --win-accent: #34d8a8;
-  --win-accent-ink: #04231a;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-/* the backdrop: the Mica wallpaper stays and the frame pads it — nothing
-   interactive is left behind the window */
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background-color: var(--sol-canvas);
+  color: var(--sol-ink);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 450;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: var(--sol-track-display);
+  text-wrap: balance;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img,
+svg {
+  display: block;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+code,
+kbd,
+pre {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--win-accent) 35%, transparent);
+  color: var(--sol-ink);
+}
+
+/* the windows focus hand: a 2px accent underline wherever a caret lives,
+   a 2px accent outline on every other interactive */
+:focus-visible {
+  outline: 2px solid var(--sol-focus);
+  outline-offset: 1px;
+}
+
+/* the win11 scrollbar: invisible until the surface is hovered, lane 10px,
+   thumb 4px that widens to 6px under the pointer */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background: transparent;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 5px;
+  background-clip: padding-box;
+  background-color: transparent;
+}
+
+*:hover {
+  scrollbar-color: color-mix(in oklab, var(--sol-ink) 22%, transparent) transparent;
+}
+
+*:hover::-webkit-scrollbar-thumb {
+  background-color: color-mix(in oklab, var(--sol-ink) 22%, transparent);
+}
+
+*:hover::-webkit-scrollbar-thumb:hover {
+  border-width: 2px;
+  background-color: color-mix(in oklab, var(--sol-ink) 30%, transparent);
+}
+
+/* ---------- 3. LAYOUT — the measure, the frame, the shared utilities ---------- */
+
+.shell {
+  width: min(1120px, 100%);
+  margin-inline: auto;
+}
+
 .appframe {
   position: relative;
   isolation: isolate;
+  display: flex;
+  flex-direction: column;
   align-items: stretch;
   justify-content: center;
   min-height: 100dvh;
   padding: clamp(12px, 3vh, 40px) clamp(12px, 2.5vw, 48px);
+  background-color: var(--sol-canvas);
 }
+
 .appframe::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: 0;
   background-image: var(--win-noise);
+  opacity: 0.04;
   pointer-events: none;
 }
-.appframe[data-maximized="true"] { padding: 0; }
 
-/* the window: the Fluent frame — hairline, window shadow, 8px corners,
-   open 250ms scale .95→1 at the emphatic curve; the drag rides the
-   --winapp-* offsets */
+.appframe[data-maximized="true"] {
+  padding: 0;
+}
+
+/* full-bleed stages escape the page padding and carry their own */
+.r3a-bleed {
+  margin-inline: calc(-1 * clamp(20px, 4vw, 44px));
+  padding-inline: clamp(20px, 4vw, 44px);
+}
+
+/* the dot-grid hand: the halftone texture under the hero and the window */
+.halftone {
+  position: relative;
+}
+
+.halftone::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: radial-gradient(color-mix(in oklab, var(--sol-ink) 3%, transparent) 1px, transparent 1.4px);
+  background-size: 22px 22px;
+  pointer-events: none;
+}
+
+/* the grain hand: the windows noise over acrylic and hero surfaces */
+.grain {
+  position: relative;
+}
+
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: var(--win-noise);
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.grain > * {
+  position: relative;
+  z-index: 1;
+}
+
+.small {
+  font-size: 12px;
+}
+
+/* the display wordmark of the 404 face */
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: 640;
+  letter-spacing: var(--sol-track-display);
+}
+
+.wordmark-xl {
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  line-height: 1.05;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--sol-muted);
+  letter-spacing: var(--sol-track-label);
+  text-transform: uppercase;
+}
+
+.lede-tight {
+  max-width: 62ch;
+  font-size: 14px;
+  color: var(--sol-muted);
+}
+
+.flush {
+  margin: 0;
+}
+
+.r3a-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.scroll-x {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+/* ---------- 4. COMPONENTS — the trylle faces with the windows hands ---------- */
+
+/* the button: the real trylle tone stack (inset highlight + inner glow +
+   1px ring + two-level drop), the 4px control face, the hover wash without
+   lift; jade is reserved for the content CTA voice */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: var(--sol-radius-ctl);
+  background-color: var(--sol-surface-4);
+  color: var(--sol-ink);
+  font-size: 13px;
+  font-weight: 550;
+  box-shadow: var(--sol-btn-tone), inset 0 0 0 1px var(--sol-hairline), 0 0 0 1px var(--sol-hairline-strong),
+    0 1px 2px rgb(0 0 0 / 22%), 0 3px 5px -1px rgb(0 0 0 / 28%);
+  transition: background-color var(--sol-micro) var(--sol-ease-out), box-shadow var(--sol-micro) var(--sol-ease-out),
+    transform 100ms var(--win-ease-exit);
+}
+
+.btn:hover {
+  background-color: var(--sol-surface-5);
+  box-shadow: var(--sol-btn-tone-hover), inset 0 0 0 1px var(--sol-hairline), 0 0 0 1px var(--sol-hairline-strong),
+    0 1px 2px rgb(0 0 0 / 26%), 0 4px 8px -2px rgb(0 0 0 / 30%);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn.secondary {
+  background-color: transparent;
+  box-shadow: 0 0 0 1px var(--sol-hairline-strong);
+}
+
+.btn.secondary:hover {
+  background-color: var(--win-wash);
+}
+
+.btn.small {
+  min-height: 32px;
+  padding: 0 12px;
+  font-size: 12px;
+}
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.btn-row-tight {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+/* the content CTA voice: the jade face carries the same tone stack */
+.btn:not(.secondary) {
+  background-color: var(--sol-btn-accent-bg);
+  color: var(--sol-btn-accent-ink);
+  box-shadow: var(--sol-btn-tone), inset 0 0 0 1px color-mix(in oklab, var(--arg-jade-deep) 40%, transparent),
+    0 0 0 1px color-mix(in oklab, var(--arg-jade-deep) 55%, transparent), 0 1px 2px rgb(0 0 0 / 22%),
+    0 3px 5px -1px rgb(0 0 0 / 28%);
+}
+
+.btn:not(.secondary):hover {
+  background-color: color-mix(in oklab, var(--sol-btn-accent-bg) 90%, var(--sol-ink));
+}
+
+/* the badge: a tone-coded chip — the status is the dot, never a fill */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 24px;
+  padding: 3px 10px;
+  border-radius: var(--sol-radius-sm);
+  background-color: var(--sol-surface-2);
+  box-shadow: 0 0 0 1px var(--sol-hairline);
+  color: var(--sol-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 450;
+  white-space: nowrap;
+}
+
+.badge .dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--arg-jade);
+}
+
+.badge.success {
+  color: var(--sol-success);
+}
+
+.badge.info {
+  color: var(--sol-info);
+}
+
+.badge.warning {
+  color: var(--sol-warning);
+}
+
+.badge.error {
+  color: var(--sol-error);
+}
+
+.badge.ok {
+  color: var(--sol-success);
+}
+
+.url-out {
+  display: block;
+  max-width: 100%;
+  margin-top: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background-color: var(--sol-surface-1);
+}
+
+.url-out.error {
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--sol-error) 55%, transparent);
+}
+
+.url-out.ok {
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--sol-success) 55%, transparent);
+}
+
+/* the input: the windows text box — flat well, bottom hairline, the 2px
+   accent focus underline */
+.input {
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 1px solid var(--sol-hairline);
+  border-bottom-color: var(--sol-hairline-strong);
+  border-radius: var(--sol-radius-ctl);
+  background-color: color-mix(in oklab, var(--sol-ink) 4%, transparent);
+  color: var(--sol-ink);
+  font-size: 13px;
+  transition: border-color var(--sol-micro) var(--sol-ease-out), box-shadow var(--sol-micro) var(--sol-ease-out);
+}
+
+.input:hover {
+  border-color: var(--sol-hairline-strong);
+}
+
+.input:focus-visible {
+  outline: none;
+  border-color: transparent;
+  box-shadow: inset 0 -2px 0 0 var(--sol-focus), 0 0 0 1px var(--sol-hairline-strong);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field > label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--sol-muted);
+  letter-spacing: var(--sol-track-label);
+  text-transform: uppercase;
+}
+
+.field select.input {
+  appearance: none;
+  padding-right: 28px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23a1a1aa' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+/* the toggle: ON rides the accent track with the contrast knob */
+.toggle {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  cursor: pointer;
+}
+
+.toggle input {
+  position: absolute;
+  opacity: 0;
+  width: 44px;
+  height: 22px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.track {
+  position: relative;
+  width: 40px;
+  height: 20px;
+  border-radius: 10px;
+  background-color: color-mix(in oklab, var(--sol-ink) 10%, transparent);
+  box-shadow: inset 0 0 0 1px var(--sol-hairline-strong);
+  transition: background-color var(--sol-micro) var(--sol-ease-out);
+}
+
+.track::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--sol-muted);
+  transition: transform var(--sol-micro) var(--sol-ease-out), background-color var(--sol-micro) var(--sol-ease-out);
+}
+
+.toggle input:checked + .track {
+  background-color: var(--win-accent);
+  box-shadow: none;
+}
+
+.toggle input:checked + .track::after {
+  background-color: var(--win-accent-ink);
+  transform: translateX(20px);
+}
+
+.toggle input:focus-visible + .track {
+  outline: 2px solid var(--sol-focus);
+  outline-offset: 2px;
+}
+
+/* the table: hairline rows, mono headers at the label track, wash on hover */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.table th {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--sol-hairline-strong);
+  color: var(--sol-faint);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: var(--sol-track-label);
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--sol-hairline);
+}
+
+.table tbody tr {
+  transition: background-color var(--sol-micro) var(--sol-ease-out);
+}
+
+.table tbody tr:hover {
+  background-color: var(--win-wash);
+}
+
+.table tr.is-featured td {
+  background-color: var(--sol-surface-2);
+}
+
+.is-key {
+  font-weight: 550;
+}
+
+.is-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* the empty state: the glyph in the jade wash, one honest line, one way out */
+.emptystate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.emptystate__glyph {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--sol-radius-lg);
+  background-color: color-mix(in oklab, var(--arg-jade) 10%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--arg-jade) 22%, transparent);
+  color: var(--arg-jade);
+}
+
+.emptystate__note {
+  max-width: 46ch;
+  font-size: 13px;
+  color: var(--sol-muted);
+}
+
+.emptystate__action {
+  margin-top: 4px;
+}
+
+/* the toast: acrylic + grain + 8px + the flyout shadow, tone as a left bar */
+.toast-stack {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 120;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.glass,
+.toast {
+  background-color: rgb(36 36 36 / 80%);
+  background-image: var(--win-noise);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  backdrop-filter: saturate(3) blur(20px);
+}
+
+.toast {
+  max-width: 380px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: inset 3px 0 0 0 var(--win-accent), var(--win-shadow-flyout);
+  color: var(--sol-ink);
+  font-size: 13px;
+  animation: toastIn 200ms var(--win-ease-entry) backwards;
+}
+
+[data-theme="light"] .toast {
+  background-color: rgb(250 250 250 / 86%);
+}
+
+.toast.success {
+  box-shadow: inset 3px 0 0 0 var(--sol-success), var(--win-shadow-flyout);
+}
+
+.toast.error {
+  box-shadow: inset 3px 0 0 0 var(--win-close), var(--win-shadow-flyout);
+}
+
+.toast-out {
+  animation: toastOut 300ms var(--win-ease-exit) forwards;
+}
+
+/* ---------- 5. THE MARK — the drawn argan brand and its one motions ---------- */
+
+.sol-mark {
+  position: relative;
+  display: inline-block;
+  flex: none;
+}
+
+.sol-mark__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.sol-mark__glow {
+  position: absolute;
+  inset: -14%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--arg-jade) 26%, transparent), transparent 72%);
+  opacity: 0.45;
+  filter: blur(6px);
+  animation: markBreathe 6s ease-in-out infinite;
+}
+
+.sol-mark__mid,
+.sol-mark__sheen,
+.sol-mark__glyph,
+.sol-mark__flow {
+  transform-box: fill-box;
+}
+
+.sol-mark__sheen {
+  opacity: 0;
+  transform: translateX(-90px);
+  transition: transform 700ms var(--sol-ease-out), opacity 300ms var(--sol-ease-out);
+}
+
+.sol-mark:hover .sol-mark__sheen {
+  opacity: 1;
+  transform: translateX(90px);
+}
+
+.sol-mark--flow .sol-mark__flow {
+  stroke-dasharray: 10 46;
+  animation: markFlow 3.2s linear infinite;
+}
+
+/* the ONE signature motion: the leaf sway on the stem (8deg ceiling) */
+[data-motion="leaf-sway"] {
+  transform-origin: 50% 88%;
+}
+
+[data-motion="leaf-sway"]:hover {
+  animation: leafSway 1.2s ease-in-out;
+}
+
+/* ---------- 6. THE WINDOW — the application chrome with the windows hands ---------- */
+
 .winapp {
   position: relative;
   z-index: 10;
@@ -1193,28 +824,115 @@ body { background: var(--win-mica); }
   flex: 1;
   width: min(1200px, 100%);
   min-height: 0;
-  border: 1px solid var(--sol-hairline);
   border-radius: 8px;
   background-color: var(--sol-bg);
-  box-shadow: var(--win-shadow-window);
+  box-shadow: 0 0 0 1px var(--sol-hairline-strong), var(--win-shadow-window);
   overflow: hidden;
   transform: translate(var(--winapp-x, 0px), var(--winapp-y, 0px));
-  animation: winappOpen 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85) backwards;
+  animation: dtWinIn 250ms var(--sol-ease-win) backwards;
 }
-.winapp[hidden] { display: none; }
+
+.winapp[hidden] {
+  display: none;
+}
+
 .winapp[data-maximized="true"] {
   width: 100%;
   border-radius: 0;
   transform: none;
 }
-@keyframes winappOpen {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+
+.winapp[data-dragging="true"] {
+  cursor: grabbing;
 }
 
-/* the title bar: the drag handle — bar acrylic + grain over a bottom
-   hairline, brand at the left, caption zone flush at the right edge */
+/* the inactive window hand (the chrome declares it; grayscale, windows-real) */
+.winapp[data-inactive="true"] {
+  filter: grayscale(80%);
+}
+
+/* the eight resize handles of the real frame — invisible zones with the
+   win10 corner grips shown while the window is hovered */
+.winapp__handle {
+  position: absolute;
+  z-index: 24;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--sol-micro) var(--sol-ease-out);
+}
+
+.winapp:hover .winapp__handle {
+  opacity: 1;
+}
+
+.winapp__handle[data-handle="n"] {
+  top: 0;
+  right: 24px;
+  left: 24px;
+  height: 3px;
+}
+
+.winapp__handle[data-handle="s"] {
+  right: 24px;
+  bottom: 0;
+  left: 24px;
+  height: 3px;
+}
+
+.winapp__handle[data-handle="e"] {
+  top: 24px;
+  right: 0;
+  bottom: 24px;
+  width: 3px;
+}
+
+.winapp__handle[data-handle="w"] {
+  top: 24px;
+  bottom: 24px;
+  left: 0;
+  width: 3px;
+}
+
+.winapp__handle[data-handle="nw"] {
+  top: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  border-top: 1px solid var(--sol-hairline-strong);
+  border-left: 1px solid var(--sol-hairline-strong);
+}
+
+.winapp__handle[data-handle="ne"] {
+  top: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-top: 1px solid var(--sol-hairline-strong);
+  border-right: 1px solid var(--sol-hairline-strong);
+}
+
+.winapp__handle[data-handle="sw"] {
+  bottom: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  border-bottom: 1px solid var(--sol-hairline-strong);
+  border-left: 1px solid var(--sol-hairline-strong);
+}
+
+.winapp__handle[data-handle="se"] {
+  right: 0;
+  bottom: 0;
+  width: 12px;
+  height: 12px;
+  border-right: 1px solid var(--sol-hairline-strong);
+  border-bottom: 1px solid var(--sol-hairline-strong);
+}
+
+/* the title bar: the drag handle — acrylic + grain over a bottom hairline */
 .winapp__title {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   flex: 0 0 auto;
@@ -1230,14 +948,33 @@ body { background: var(--win-mica); }
   user-select: none;
   -webkit-user-select: none;
 }
-.winapp__title[data-dragging="true"] { cursor: grabbing; }
+
+.winapp__title[data-dragging="true"] {
+  cursor: grabbing;
+}
+
 .winapp__brand {
   display: flex;
   align-items: center;
   gap: 10px;
   min-width: 0;
+  transition: opacity var(--sol-micro) var(--sol-ease-out);
 }
-.winapp__name { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; color: var(--sol-text); white-space: nowrap; }
+
+/* the logo discipline: the hero lockup owns the mark on the landing */
+[data-landing] .winapp__brand {
+  opacity: 0.4;
+}
+
+.winapp__name {
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--sol-ink);
+  white-space: nowrap;
+}
+
 .winapp__role {
   overflow: hidden;
   font-size: 12px;
@@ -1246,28 +983,56 @@ body { background: var(--win-mica); }
   white-space: nowrap;
 }
 
-/* the caption buttons: full bar height, 44px targets — close rides the
-   Fluent red on hover */
-.winapp__caption { display: flex; align-self: stretch; margin-left: auto; }
+/* the caption buttons: full bar height, 44px targets, the fluent red close */
+.winapp__caption {
+  display: flex;
+  align-self: stretch;
+  margin-left: auto;
+}
+
 .winapp__cap {
   display: grid;
   place-items: center;
-  width: 44px;
+  width: 46px;
   border: 0;
   background: transparent;
   color: var(--sol-muted);
-  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+  transition: background-color 100ms var(--win-ease-exit), color var(--sol-micro) var(--win-ease-entry);
 }
-.winapp__cap:hover { background-color: var(--win-wash); color: var(--sol-text); }
-.winapp__cap:active { background-color: var(--win-page-wash); }
-.winapp__cap--close:hover { background-color: rgb(232, 17, 35); color: var(--win-accent-ink); }
+
+.winapp__cap > svg {
+  transition: transform 100ms ease-in-out;
+}
+
+.winapp__cap:active > svg {
+  transform: scale(0.7);
+}
+
+.winapp__cap:hover {
+  background-color: var(--win-wash-strong);
+  color: var(--sol-ink);
+}
+
+.winapp__cap--close:hover {
+  background-color: var(--win-close);
+  color: rgb(255 255 255 / 92%);
+}
+
+.winapp__cap--close:active {
+  background-color: var(--win-close-hot);
+}
 
 /* the body: rail + stage */
-.winapp__body { display: flex; flex: 1; min-height: 0; }
+.winapp__body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
 
-/* the rail: the pages of the app — icon + label entries, the active one
-   marked by the jade ladder on the left edge; the theme flip lives at
-   the foot */
+/* the rail: the page pins — icon + label, the windows press and the popintro
+   bounce on the icons, the state ladder on the left edge */
 .winapp__rail {
   display: flex;
   flex-direction: column;
@@ -1275,16 +1040,19 @@ body { background: var(--win-mica); }
   width: 216px;
   padding: 10px 8px;
   border-right: 1px solid var(--sol-hairline);
-  background-color: var(--win-page-wash);
+  background-color: color-mix(in oklab, var(--sol-surface-2) 55%, transparent);
 }
+
 .winapp__railhead {
   margin: 2px 10px 8px;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--sol-muted);
-  letter-spacing: 0.14em;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--sol-faint);
+  letter-spacing: var(--sol-track-label);
   text-transform: uppercase;
 }
+
 .winapp__raillink {
   position: relative;
   display: flex;
@@ -1292,25 +1060,68 @@ body { background: var(--win-mica); }
   gap: 10px;
   min-height: 44px;
   padding: 0 12px;
-  border-radius: 4px;
+  border-radius: var(--sol-radius-ctl);
   color: var(--sol-muted);
-  text-decoration: none;
-  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+  transition: background-color 200ms ease, color var(--sol-micro) var(--sol-ease-out);
 }
-.winapp__raillink:hover { background-color: var(--win-wash); color: var(--sol-text); }
-.winapp__raillink[aria-current="page"] { background-color: var(--win-wash); color: var(--sol-text); }
-.winapp__raillink[aria-current="page"]::before {
+
+.winapp__raillink > svg {
+  transition: transform 100ms ease-in-out;
+  animation: dtPopIntro 800ms ease-in-out backwards;
+}
+
+.winapp__raillink:hover {
+  background-color: var(--win-wash-strong);
+  color: var(--sol-ink);
+}
+
+/* the windows press hand on the pin icon */
+.winapp__raillink:active > svg,
+.winapp__theme:active > svg {
+  transform: scale(0.7);
+}
+
+/* the state indicator: 0 closed → 6px open → 12px active (the jade ladder) */
+.winapp__raillink::after {
   content: "";
   position: absolute;
-  top: 10px;
-  bottom: 10px;
+  top: 50%;
   left: 0;
-  width: 3px;
+  width: 0;
+  height: 3px;
   border-radius: 2px;
-  background: var(--win-accent);
+  background-color: var(--win-open);
+  transform: translateY(-50%);
+  transition: width 200ms ease-in-out, background-color 200ms ease-in-out;
 }
-.winapp__raillabel { overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
-.winapp__railfoot { margin-top: auto; padding: 8px 4px 2px; border-top: 1px solid var(--sol-hairline); }
+
+.winapp__raillink:hover::after {
+  width: 6px;
+}
+
+.winapp__raillink[aria-current="page"] {
+  background-color: var(--win-wash);
+  color: var(--sol-ink);
+}
+
+.winapp__raillink[aria-current="page"]::after {
+  width: 12px;
+  background-color: var(--arg-jade);
+}
+
+.winapp__raillabel {
+  overflow: hidden;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.winapp__railfoot {
+  margin-top: auto;
+  padding: 8px 4px 2px;
+  border-top: 1px solid var(--sol-hairline);
+}
+
 .winapp__theme {
   display: flex;
   align-items: center;
@@ -1319,17 +1130,24 @@ body { background: var(--win-mica); }
   min-height: 44px;
   padding: 0 12px;
   border: 0;
-  border-radius: 4px;
+  border-radius: var(--sol-radius-ctl);
   background: transparent;
   color: var(--sol-muted);
   font-size: 13px;
-  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+  transition: background-color 200ms ease, color var(--sol-micro) var(--sol-ease-out);
 }
-.winapp__theme:hover { background-color: var(--win-wash); color: var(--sol-text); }
 
-/* the family row of the rail foot: the eight siblings at their own deploy —
-   one accent dot each (the inline style carries the spec §12 accent), the
-   wash on hover, Fluent 4px corners, mono-clean lowercase names */
+.winapp__theme > svg {
+  transition: transform 100ms ease-in-out;
+  animation: dtPopIntro 800ms ease-in-out 240ms backwards;
+}
+
+.winapp__theme:hover {
+  background-color: var(--win-wash-strong);
+  color: var(--sol-ink);
+}
+
+/* the family row of the rail foot: the siblings at their own deploys */
 .winapp__familyhead {
   margin: 2px 10px 6px;
   font-family: var(--font-mono);
@@ -1338,40 +1156,74 @@ body { background: var(--win-mica); }
   color: var(--sol-faint);
   letter-spacing: 0.08em;
 }
-.winapp__family { display: flex; flex-direction: column; gap: 2px; margin: 0 2px 8px; }
+
+.winapp__family {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0 2px 8px;
+}
+
 .winapp__familylink {
   display: flex;
   align-items: center;
   gap: 10px;
   min-height: 28px;
   padding: 0 10px;
-  border-radius: 4px;
+  border-radius: var(--sol-radius-ctl);
   color: var(--sol-muted);
   font-size: 12px;
-  text-decoration: none;
-  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+  transition: background-color 200ms ease, color var(--sol-micro) var(--sol-ease-out);
 }
-.winapp__familylink:hover { background-color: var(--win-wash); color: var(--sol-text); text-decoration: none; }
-.winapp__familyname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.winapp__familylink:hover {
+  background-color: var(--win-wash);
+  color: var(--sol-ink);
+}
+
+.winapp__familyname {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .winapp__familydot {
   flex: none;
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--win-accent);
+  background: currentcolor;
   opacity: 0.6;
-  transition: opacity 150ms var(--win-ease-entry), box-shadow 150ms var(--win-ease-entry);
+  transition: opacity var(--sol-micro) var(--sol-ease-out);
 }
+
 .winapp__familylink:hover .winapp__familydot {
   opacity: 1;
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--win-accent) 22%, transparent);
 }
 
 /* the stage: the routed page, scrolling inside the window */
-.winapp__stage { flex: 1; min-width: 0; overflow-y: auto; overscroll-behavior: contain; }
+.winapp__stage {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
 
-/* the restore chip: the minimized window collapses here (bottom-left, the
-   acrylic of the family, 8px corners) */
+/* the sticky-footer law: the page is a column, the footer rides the floor */
+main.shell {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  max-width: none;
+  padding: 32px clamp(20px, 4vw, 44px) 0;
+}
+
+.winapp__stage > main.shell {
+  flex-direction: column;
+}
+
+/* the restore chip: the minimized window collapses here */
 .winchip {
   position: fixed;
   bottom: 20px;
@@ -1382,88 +1234,123 @@ body { background: var(--win-mica); }
   gap: 10px;
   min-height: 44px;
   padding: 0 16px 0 12px;
-  border: 1px solid var(--sol-hairline);
+  border: 0;
   border-radius: 8px;
-  background-color: var(--win-panel);
+  background-color: rgb(36 36 36 / 80%);
   background-image: var(--win-noise);
   box-shadow: var(--win-shadow-flyout);
-  color: var(--sol-text);
+  color: var(--sol-ink);
   font-size: 13px;
   -webkit-backdrop-filter: saturate(3) blur(20px);
   backdrop-filter: saturate(3) blur(20px);
-  animation: winchipIn 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85) backwards;
-  transition: background-color 150ms var(--win-ease-entry);
-}
-.winchip:hover { background-color: var(--win-wash); }
-@keyframes winchipIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  animation: chipIn 250ms var(--sol-ease-win) backwards;
+  transition: background-color var(--sol-micro) var(--sol-ease-out);
 }
 
-/* the intro: the opening splash — full-viewport Mica, the mark springs in
-   (Akash overshoot), the name rises backOut, 1.6s hold, slide-up exit;
-   no dots, no spinner */
+[data-theme="light"] .winchip {
+  background-color: rgb(250 250 250 / 86%);
+}
+
+.winchip:hover {
+  background-color: color-mix(in oklab, var(--sol-surface-4) 82%, transparent);
+}
+
+/* the error face of the root boundary */
+.workbench-failure {
+  display: grid;
+  min-height: 100dvh;
+  place-content: center;
+  justify-items: start;
+  gap: 16px;
+  padding: 48px 24px;
+  background-color: var(--sol-canvas);
+  color: var(--sol-ink);
+}
+
+.workbench-failure pre {
+  max-width: 720px;
+  overflow: auto;
+  padding: 12px 14px;
+  border-radius: var(--sol-radius-sm);
+  background-color: var(--sol-surface-1);
+  box-shadow: 0 0 0 1px var(--sol-hairline);
+  color: var(--sol-muted);
+  font-size: 11px;
+}
+
+/* ---------- 7. INTRO + ONBOARDING — the first-run flow over the deep canvas ---------- */
+
+/* the intro: the brand lands with the akash spring, holds, slides up and
+   hands the surface to the onboarding; no dots, no spinner */
 .winintro {
   position: fixed;
   inset: 0;
   z-index: 100;
   display: grid;
   place-items: center;
-  background: var(--win-mica);
   overflow: hidden;
+  background: var(--sol-canvas-deep);
   cursor: pointer;
 }
+
 .winintro::before {
   content: "";
   position: absolute;
   inset: 0;
   background-image: var(--win-noise);
+  opacity: 0.05;
   pointer-events: none;
 }
+
 .winintro__stage {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 14px;
 }
+
 .winintro__mark {
   display: block;
   width: 96px;
   height: 96px;
-  animation: winintroSpring 500ms cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  animation: introSpring 500ms var(--sol-ease-back) backwards;
 }
+
+.winintro__mark [data-motion="leaf-sway"] {
+  animation: leafSway 1.2s ease-in-out 600ms 1;
+}
+
 .winintro__name {
-  margin: 0;
   font-size: clamp(2rem, 5vw, 3rem);
-  letter-spacing: -0.02em;
-  color: var(--sol-text);
-  animation: winintroRise 450ms cubic-bezier(0.34, 1.56, 0.64, 1) 120ms backwards;
+  font-weight: 620;
+  letter-spacing: var(--sol-track-display);
+  color: var(--sol-ink);
+  animation: introRise 450ms var(--sol-ease-back) 120ms backwards;
 }
+
 .winintro__role {
-  margin: 0;
+  font-family: var(--font-mono);
   font-size: 12px;
   color: var(--sol-muted);
-  letter-spacing: 0.14em;
+  letter-spacing: var(--sol-track-label);
   text-transform: uppercase;
-  animation: winintroFade 250ms var(--win-ease-entry) 420ms backwards;
+  animation: introFade 250ms var(--win-ease-entry) 420ms backwards;
 }
+
 .winintro__skip {
   position: absolute;
   bottom: 24px;
-  margin: 0;
   font-size: 12px;
-  color: var(--sol-muted);
-  animation: winintroFade 250ms var(--win-ease-entry) 1000ms backwards;
+  color: var(--sol-faint);
+  animation: introFade 250ms var(--win-ease-entry) 1000ms backwards;
 }
-.winintro[data-leaving="true"] { animation: winintroLeave 800ms cubic-bezier(0.76, 0, 0.24, 1) forwards; }
-@keyframes winintroSpring { from { opacity: 0; transform: scale(0.7); } }
-@keyframes winintroRise { from { opacity: 0; transform: translateY(18px); } }
-@keyframes winintroFade { from { opacity: 0; } }
-@keyframes winintroLeave { to { transform: translateY(-100%); } }
 
-/* the onboarding: the first-run dialog — a dialog-sized window over the
-   Mica backdrop, 250ms entry, frames remount per step, the 3-segment
-   ladder tracks the position */
+.winintro[data-leaving="true"] {
+  animation: introLeave 800ms cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+/* the onboarding: the first-run dialog — a window-sized card over the deep
+   canvas, the start-menu entry, frames remount per step at the entry curve */
 .winonboard {
   position: fixed;
   inset: 0;
@@ -1471,29 +1358,29 @@ body { background: var(--win-mica); }
   display: grid;
   place-items: center;
   padding: 20px;
-  background: var(--win-mica);
   overflow-y: auto;
+  background: var(--sol-canvas-deep);
 }
+
 .winonboard::before {
   content: "";
   position: absolute;
   inset: 0;
   background-image: var(--win-noise);
+  opacity: 0.05;
   pointer-events: none;
 }
+
 .winonboard__card {
   position: relative;
   width: min(560px, 100%);
-  border: 1px solid var(--sol-hairline);
   border-radius: 8px;
-  background-color: var(--win-panel);
-  background-image: var(--win-noise);
-  box-shadow: var(--win-shadow-window);
+  background-color: var(--sol-surface-2);
+  box-shadow: 0 0 0 1px var(--sol-hairline-strong), var(--win-shadow-window);
   overflow: hidden;
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  backdrop-filter: saturate(3) blur(20px);
-  animation: winappOpen 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85) backwards;
+  animation: dtStartIn 200ms var(--sol-ease-win) backwards;
 }
+
 .winonboard__head {
   display: flex;
   align-items: center;
@@ -1506,47 +1393,84 @@ body { background: var(--win-mica); }
   -webkit-backdrop-filter: saturate(3) blur(20px);
   backdrop-filter: saturate(3) blur(20px);
 }
-.winonboard__title { font-size: 13px; font-weight: 600; color: var(--sol-text); }
-.winonboard__body { display: flex; flex-direction: column; min-height: 264px; padding: 24px 20px; }
+
+.winonboard__title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sol-ink);
+}
+
+.winonboard__body {
+  display: flex;
+  flex-direction: column;
+  min-height: 264px;
+  padding: 24px 20px;
+}
+
 .winonboard__step {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  animation: winonboardIn 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85) backwards;
+  animation: stepIn 250ms var(--win-ease-entry) backwards;
 }
-@keyframes winonboardIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+
 .winonboard__eyebrow {
-  margin: 0;
+  font-family: var(--font-mono);
   font-size: 11px;
-  font-weight: 600;
-  color: var(--win-accent);
-  letter-spacing: 0.14em;
+  font-weight: 500;
+  color: var(--arg-jade);
+  letter-spacing: var(--sol-track-label);
   text-transform: uppercase;
 }
+
 .winonboard__lead {
-  margin: 0;
   font-size: clamp(1.25rem, 3vw, 1.6rem);
-  letter-spacing: -0.02em;
-  color: var(--sol-text);
+  font-weight: 600;
+  color: var(--sol-ink);
 }
-.winonboard__lede { margin: 0; font-size: 14px; line-height: 1.65; color: var(--sol-muted); }
-.winonboard__facts { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+
+.winonboard__lede {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--sol-muted);
+}
+
+.winonboard__facts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
 .winonboard__fact {
   display: flex;
   align-items: center;
   gap: 12px;
   min-height: 44px;
   padding: 0 12px;
-  border: 1px solid var(--sol-hairline);
-  border-radius: 4px;
+  border-radius: var(--sol-radius-ctl);
+  box-shadow: 0 0 0 1px var(--sol-hairline);
   color: var(--sol-muted);
   font-size: 13px;
+  transition: background-color var(--sol-micro) var(--sol-ease-out);
 }
-.winonboard__fact svg { flex: 0 0 auto; color: var(--win-accent); }
-.winonboard__fact strong { color: var(--sol-text); font-weight: 600; }
+
+.winonboard__fact:hover {
+  background-color: var(--win-wash);
+}
+
+.winonboard__fact svg {
+  flex: 0 0 auto;
+  color: var(--arg-jade);
+}
+
+.winonboard__fact strong {
+  color: var(--sol-ink);
+  font-weight: 600;
+}
+
 .winonboard__foot {
   display: flex;
   align-items: center;
@@ -1554,41 +1478,1261 @@ body { background: var(--win-mica); }
   padding: 14px 20px;
   border-top: 1px solid var(--sol-hairline);
 }
-.winonboard__ladder { display: flex; flex: 1; gap: 6px; }
+
+.winonboard__ladder {
+  display: flex;
+  flex: 1;
+  gap: 6px;
+}
+
 .winonboard__segrun {
   height: 3px;
   flex: 1;
   border-radius: 2px;
-  background: var(--win-wash);
-  transition: background-color 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85);
+  background-color: var(--sol-hairline-strong);
+  transition: background-color 250ms var(--sol-ease-win);
 }
-.winonboard__segrun[data-active="true"] { background: var(--win-accent); }
-.winonboard__actions { display: flex; gap: 8px; margin-left: auto; }
+
+.winonboard__segrun[data-active="true"] {
+  background-color: var(--arg-jade);
+}
+
+.winonboard__actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
 .winonboard__act {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 44px;
+  min-height: 40px;
   padding: 0 16px;
-  border: 1px solid var(--sol-hairline);
-  border-radius: 4px;
-  background: transparent;
-  color: var(--sol-text);
+  border: 0;
+  border-radius: var(--sol-radius-ctl);
+  background-color: var(--sol-surface-4);
+  color: var(--sol-ink);
   font-size: 13px;
-  transition: background-color 150ms var(--win-ease-entry), border-color 150ms var(--win-ease-entry);
+  font-weight: 550;
+  box-shadow: var(--sol-btn-tone), 0 0 0 1px var(--sol-hairline-strong), 0 1px 2px rgb(0 0 0 / 22%),
+    0 3px 5px -1px rgb(0 0 0 / 28%);
+  transition: background-color var(--sol-micro) var(--sol-ease-out), box-shadow var(--sol-micro) var(--sol-ease-out);
 }
-.winonboard__act:hover { background-color: var(--win-wash); }
-.winonboard__act--primary {
-  border-color: transparent;
-  background: var(--win-accent);
-  color: var(--win-accent-ink);
-}
-.winonboard__act--primary:hover { background: color-mix(in oklab, var(--win-accent) 88%, var(--sol-bg)); }
 
-/* narrow windows: the rail becomes a top strip, the role line steps aside */
+.winonboard__act:hover {
+  background-color: var(--sol-surface-5);
+  box-shadow: var(--sol-btn-tone-hover), 0 0 0 1px var(--sol-hairline-strong), 0 1px 2px rgb(0 0 0 / 26%),
+    0 4px 8px -2px rgb(0 0 0 / 30%);
+}
+
+.winonboard__act:active {
+  transform: scale(0.98);
+}
+
+.winonboard__act--primary {
+  background-color: var(--sol-btn-accent-bg);
+  color: var(--sol-btn-accent-ink);
+  box-shadow: var(--sol-btn-tone), 0 0 0 1px color-mix(in oklab, var(--arg-jade-deep) 55%, transparent),
+    0 1px 2px rgb(0 0 0 / 22%), 0 3px 5px -1px rgb(0 0 0 / 28%);
+}
+
+.winonboard__act--primary:hover {
+  background-color: color-mix(in oklab, var(--sol-btn-accent-bg) 90%, var(--sol-ink));
+}
+
+.winonboard__skip {
+  min-height: 40px;
+  padding: 0 10px;
+  border: 0;
+  background: transparent;
+  color: var(--sol-faint);
+  font-size: 12px;
+  transition: color var(--sol-micro) var(--sol-ease-out);
+}
+
+.winonboard__skip:hover {
+  color: var(--sol-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---------- 8. SHARED PAGE FURNITURE — heads, ruled sections, ledgers ---------- */
+
+.r3a-head {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 8px 0 28px;
+}
+
+.r3a-head__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--sol-muted);
+  letter-spacing: var(--sol-track-label);
+  text-transform: uppercase;
+}
+
+.r3a-head__title {
+  font-size: clamp(1.65rem, 3vw, 2rem);
+  font-weight: 620;
+}
+
+.r3a-head__lede {
+  max-width: 62ch;
+  font-size: 14px;
+  color: var(--sol-muted);
+}
+
+.r3a-sec {
+  padding-block: 44px;
+}
+
+.r3a-sec--ruled {
+  border-top: 1px solid var(--sol-hairline);
+}
+
+.r3a-h {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 16px;
+  row-gap: 4px;
+  margin-bottom: 18px;
+}
+
+.r3a-h__no {
+  grid-row: span 2;
+  padding-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--sol-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.r3a-h__title {
+  font-size: clamp(1.3rem, 2vw, 1.5rem);
+  font-weight: 600;
+}
+
+.r3a-h__aside {
+  grid-column: 2;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--sol-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.r3a-h__note {
+  grid-column: 2;
+  max-width: 70ch;
+  font-size: 13px;
+  color: var(--sol-muted);
+}
+
+.r3a-h__note code {
+  font-size: 12px;
+  color: var(--sol-ink);
+}
+
+/* the ruled ledger: hairline rows, one raised featured row */
+.r3a-ledger {
+  border-top: 1px solid var(--sol-hairline);
+}
+
+/* the flow ledger is an ol riding the row grammar */
+.r3a-ledger--flow {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.r3a-row {
+  display: grid;
+  align-items: center;
+  column-gap: 16px;
+  min-height: 44px;
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--sol-hairline);
+  transition: background-color var(--sol-micro) var(--sol-ease-out);
+}
+
+a.r3a-row {
+  color: inherit;
+}
+
+a.r3a-row:hover {
+  background-color: var(--win-wash);
+}
+
+.r3a-row--zone {
+  grid-template-columns: 2.5rem minmax(12ch, 1fr) auto auto minmax(10ch, auto);
+}
+
+.r3a-row--lib {
+  grid-template-columns: 2.5rem auto auto 1fr;
+}
+
+.r3a-row--rec {
+  grid-template-columns: minmax(14ch, 1.2fr) auto 2fr auto;
+}
+
+.r3a-row--flow {
+  grid-template-columns: 2rem auto 1fr;
+}
+
+.r3a-row.is-featured {
+  background-color: var(--sol-surface-2);
+  box-shadow: var(--sol-shadow-2);
+}
+
+.r3a-idx {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--sol-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.r3a-zone__origin {
+  overflow: hidden;
+  font-weight: 550;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.r3a-kbd {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: var(--sol-radius-ctl);
+  background-color: var(--sol-surface-2);
+  box-shadow: 0 0 0 1px var(--sol-hairline);
+  color: var(--sol-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.r3a-kbd--sig {
+  color: var(--arg-jade);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--arg-jade) 30%, transparent);
+}
+
+/* the record-type chip inside the apex ledger rows reads as the key */
+.r3a-rec__type {
+  color: var(--sol-ink);
+}
+
+.r3a-zone__serial {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--sol-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.r3a-lib__title {
+  font-weight: 550;
+  white-space: nowrap;
+}
+
+.r3a-lib__phrase {
+  overflow: hidden;
+  font-size: 12px;
+  color: var(--sol-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.r3a-rec__name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.r3a-rec__data {
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--sol-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.r3a-rec__note {
+  font-size: 11px;
+  color: var(--sol-faint);
+}
+
+.r3a-flow__title {
+  font-size: 13px;
+  font-weight: 550;
+  white-space: nowrap;
+}
+
+.r3a-flow__text {
+  overflow: hidden;
+  font-size: 12px;
+  color: var(--sol-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.r3a-sec__more {
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--sol-muted);
+}
+
+.r3a-sec__more a {
+  color: var(--arg-jade);
+  transition: color var(--sol-micro) var(--sol-ease-out);
+}
+
+.r3a-sec__more a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* the split: the working console — a dominant pane and a ruled rail */
+.r3a-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(260px, 1fr);
+  gap: 32px;
+}
+
+.r3a-pane {
+  min-width: 0;
+}
+
+.r3a-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-left: 24px;
+  border-left: 1px solid var(--sol-hairline);
+}
+
+.r3a-railblock__name {
+  margin-bottom: 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--sol-faint);
+  letter-spacing: var(--sol-track-label);
+  text-transform: uppercase;
+}
+
+.r3a-railblock__text {
+  font-size: 13px;
+  color: var(--sol-muted);
+}
+
+.r3a-railblock__text em {
+  color: var(--sol-ink);
+}
+
+.r3a-railblock__text code {
+  font-size: 12px;
+  color: var(--sol-ink);
+}
+
+/* the tables of the console ride the shared .table grammar */
+.r3a-table th {
+  white-space: nowrap;
+}
+
+/* the status dots: signed/live/preferred ride the jade, unsigned/planned
+   rest faint, warnings amber, errors red — the pulse marks the fresh serial */
+.zstate {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--sol-muted);
+}
+
+.zdot,
+.r3a-dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--sol-faint);
+}
+
+.zdot[data-state="signed"],
+.zdot[data-state="success"],
+.zdot[data-state="live"],
+.zdot[data-state="preferred"],
+.r3a-dot[data-state="success"] {
+  background-color: var(--arg-jade);
+}
+
+.zdot[data-state="info"],
+.r3a-dot[data-state="info"] {
+  background-color: var(--sol-info);
+}
+
+.zdot[data-state="warning"],
+.r3a-dot[data-state="warning"] {
+  background-color: var(--sol-warning);
+}
+
+.zdot[data-state="error"],
+.r3a-dot[data-state="error"] {
+  background-color: var(--sol-error);
+}
+
+.zdot[data-fresh="true"] {
+  animation: dotPulse 2.4s ease-in-out infinite;
+}
+
+/* the verbatim surfaces: the code block and the zone-file summary */
+.r3a-code {
+  display: block;
+  overflow-x: auto;
+  padding: 10px 14px;
+  border-radius: var(--sol-radius-sm);
+  background-color: var(--sol-canvas-deep);
+  box-shadow: 0 0 0 1px var(--sol-hairline);
+  color: var(--sol-muted);
+  font-size: 12px;
+}
+
+.r3a-term {
+  overflow: auto;
+  padding: 16px 18px;
+  border-radius: var(--sol-radius-sm);
+  background-color: var(--sol-canvas-deep);
+  box-shadow: 0 0 0 1px var(--sol-hairline);
+  color: color-mix(in oklab, var(--sol-ink) 88%, transparent);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.r3a-file {
+  margin-top: 16px;
+  border-top: 1px solid var(--sol-hairline);
+}
+
+.r3a-file summary {
+  padding: 12px 0;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--sol-muted);
+  transition: color var(--sol-micro) var(--sol-ease-out);
+}
+
+.r3a-file summary:hover {
+  color: var(--sol-ink);
+}
+
+.r3a-file[open] summary {
+  color: var(--sol-ink);
+}
+
+.r3a-alg {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--sol-muted);
+}
+
+.r3a-keyrow__main {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  grid-column: 2 / -1;
+}
+
+.r3a-keyrow__name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.r3a-keyrow__detail {
+  grid-column: 2 / -1;
+  font-size: 13px;
+  color: var(--sol-muted);
+}
+
+.r3a-row--key .r3a-code {
+  grid-column: 2 / -1;
+  margin-top: 2px;
+}
+
+.r3a-row--key {
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  row-gap: 6px;
+  padding-block: 14px;
+}
+
+/* ---------- 9. THE LANDING — one jade light, the dig object, the meta-quad ---------- */
+
+.r3a-hero {
+  position: relative;
+  padding-block: clamp(48px, 8vh, 88px);
+  overflow: hidden;
+}
+
+/* the one light of the page: a single jade wash, never a naked flat color */
+.r3a-hero__light {
+  position: absolute;
+  top: -20%;
+  left: 8%;
+  width: min(680px, 70vw);
+  height: min(680px, 70vw);
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--arg-jade) 13%, transparent), transparent 72%);
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+.r3a-hero__in {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  width: min(1120px, 100%);
+  margin-inline: auto;
+}
+
+.r3a-lockup {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.r3a-ripple {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+}
+
+.r3a-ripple__ring {
+  position: absolute;
+  inset: 0;
+  border: 1px solid color-mix(in oklab, var(--arg-jade) 35%, transparent);
+  border-radius: 50%;
+  animation: rippleOut 3.2s var(--sol-ease-out) infinite;
+}
+
+.r3a-ripple__ring:nth-child(2) {
+  animation-delay: 1.05s;
+}
+
+.r3a-ripple__ring:nth-child(3) {
+  animation-delay: 2.1s;
+}
+
+.r3a-lockup__name {
+  font-size: 20px;
+  font-weight: 650;
+  letter-spacing: var(--sol-track-display);
+}
+
+.r3a-lockup__role {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--sol-faint);
+  letter-spacing: var(--sol-track-label);
+  text-transform: uppercase;
+}
+
+.r3a-hero__title {
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  font-weight: 640;
+  line-height: 1.05;
+}
+
+.r3a-hero__lede {
+  max-width: 58ch;
+  font-size: 15px;
+  color: var(--sol-muted);
+}
+
+.r3a-hero__lede code {
+  padding: 1px 5px;
+  border-radius: var(--sol-radius-ctl);
+  background-color: var(--sol-surface-2);
+  box-shadow: 0 0 0 1px var(--sol-hairline);
+  font-size: 13px;
+  color: var(--sol-ink);
+}
+
+/* the hero object: the dig bar resolved against the served snapshot */
+.r3a-dig {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(720px, 100%);
+  margin-top: 8px;
+}
+
+.r3a-dig__bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 8px 0 14px;
+  border-radius: var(--sol-radius);
+  background-color: var(--sol-surface-1);
+  box-shadow: var(--sol-shadow-2);
+  transition: box-shadow var(--sol-micro) var(--sol-ease-out);
+}
+
+.r3a-dig__bar:focus-within {
+  box-shadow: var(--sol-shadow-2), inset 0 -2px 0 0 var(--sol-focus);
+}
+
+.r3a-dig__mark {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--arg-jade);
+}
+
+.r3a-dig__input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--sol-ink);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.r3a-dig__input:focus-visible {
+  outline: none;
+}
+
+.r3a-dig__key {
+  flex: none;
+  min-height: 36px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: var(--sol-radius-ctl);
+  background-color: var(--sol-btn-accent-bg);
+  color: var(--sol-btn-accent-ink);
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: var(--sol-btn-tone), 0 0 0 1px color-mix(in oklab, var(--arg-jade-deep) 55%, transparent),
+    0 1px 2px rgb(0 0 0 / 22%);
+  transition: background-color var(--sol-micro) var(--sol-ease-out), transform 100ms var(--win-ease-exit);
+}
+
+.r3a-dig__key:hover {
+  background-color: color-mix(in oklab, var(--sol-btn-accent-bg) 90%, var(--sol-ink));
+}
+
+.r3a-dig__key:active {
+  transform: scale(0.98);
+}
+
+.r3a-dig__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.r3a-chip {
+  min-height: 28px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--sol-radius-ctl);
+  background-color: transparent;
+  box-shadow: 0 0 0 1px var(--sol-hairline-strong);
+  color: var(--sol-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  transition: background-color var(--sol-micro) var(--sol-ease-out), color var(--sol-micro) var(--sol-ease-out),
+    box-shadow var(--sol-micro) var(--sol-ease-out);
+}
+
+.r3a-chip:hover {
+  background-color: var(--win-wash);
+  color: var(--sol-ink);
+}
+
+.r3a-chip[aria-pressed="true"] {
+  background-color: var(--win-wash);
+  color: var(--arg-jade);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--arg-jade) 35%, transparent), inset 0 -2px 0 0 var(--arg-jade);
+}
+
+/* the dig output: the ruled mono surface */
+.r3a-dig__out {
+  padding: 14px 16px;
+  border-radius: var(--sol-radius-sm);
+  background-color: var(--sol-canvas-deep);
+  box-shadow: 0 0 0 1px var(--sol-hairline);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.7;
+  font-variant-numeric: tabular-nums;
+}
+
+.r3a-dig__out .is-head {
+  color: var(--sol-faint);
+}
+
+.r3a-dig__out .is-name {
+  color: var(--sol-ink);
+}
+
+.r3a-dig__out .is-nx {
+  color: var(--sol-warning);
+}
+
+.r3a-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.r3a-hero__meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--sol-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* the publication steps 01–03 */
+.r3a-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.r3a-steps--wide {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.r3a-step {
+  padding-top: 16px;
+  border-top: 1px solid var(--sol-hairline-strong);
+}
+
+.r3a-step__no {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--sol-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.r3a-step__title {
+  margin-top: 8px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.r3a-step__text {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--sol-muted);
+}
+
+/* the apex CTA: one ruled block, the jade content CTA */
+.r3a-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-block: 44px;
+  padding: 28px;
+  border-radius: var(--sol-radius-xl);
+  background-color: var(--sol-surface-1);
+  box-shadow: var(--sol-shadow-3);
+}
+
+.r3a-cta__title {
+  font-size: clamp(1.3rem, 2vw, 1.5rem);
+  font-weight: 600;
+}
+
+.r3a-cta__code {
+  display: block;
+  margin-top: 10px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--sol-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* the meta-quad footer, flush to the window floor */
+.r3a-foot {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px;
+  width: 100%;
+  max-width: 1120px;
+  margin-inline: auto;
+  margin-top: auto;
+  padding: 40px 0 24px;
+  border-top: 1px solid var(--sol-hairline-strong);
+}
+
+.r3a-foot__col {
+  min-width: 0;
+}
+
+.r3a-foot__head {
+  margin-bottom: 12px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--sol-faint);
+  letter-spacing: var(--sol-track-label);
+  text-transform: uppercase;
+}
+
+.r3a-foot__col ul {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.r3a-foot__col li {
+  font-size: 13px;
+  color: var(--sol-muted);
+}
+
+.r3a-foot__col a {
+  transition: color var(--sol-micro) var(--sol-ease-out);
+}
+
+.r3a-foot__col a:hover {
+  color: var(--sol-ink);
+}
+
+.r3a-foot__line {
+  font-size: 13px;
+  color: var(--sol-muted);
+}
+
+.r3a-foot__family {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  grid-column: 1 / -1;
+  padding-top: 14px;
+  border-top: 1px solid var(--sol-hairline);
+}
+
+.r3a-foot__familyhead {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--sol-faint);
+  letter-spacing: var(--sol-track-label);
+  text-transform: uppercase;
+}
+
+.r3a-foot__famlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--sol-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  transition: color var(--sol-micro) var(--sol-ease-out);
+}
+
+.r3a-foot__famlink:hover {
+  color: var(--sol-ink);
+}
+
+.r3a-foot__famdot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.r3a-foot__base {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  grid-column: 1 / -1;
+  padding-top: 14px;
+  border-top: 1px solid var(--sol-hairline);
+  color: var(--sol-faint);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+/* ---------- 10. THE SETTINGS DECK — the sticky mono rail, no boxes ---------- */
+
+.r3a-set {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 40px;
+  align-items: start;
+  padding-bottom: 48px;
+}
+
+.r3a-set__rail {
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.r3a-set__rail a {
+  color: var(--sol-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  transition: color var(--sol-micro) var(--sol-ease-out);
+}
+
+.r3a-set__rail a:hover {
+  color: var(--sol-ink);
+}
+
+.r3a-set__body {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  min-width: 0;
+}
+
+.r3a-set__sec {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.r3a-set__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--sol-hairline);
+}
+
+.r3a-set__copy {
+  max-width: 70ch;
+  margin: 8px 0;
+  font-size: 13px;
+  color: var(--sol-muted);
+}
+
+.r3a-set__copy code {
+  font-size: 12px;
+  color: var(--sol-ink);
+}
+
+.r3a-set__fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.pref-title {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.pref-hint {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--sol-muted);
+}
+
+/* ---------- 11. MOTION — the windows keyframes, the reveal, the mark loop ---------- */
+
+@keyframes dtPopIntro {
+  0% { transform: scale(0); }
+  40% { transform: scale(1.125); }
+  70% { transform: scale(0.725); }
+  100% { transform: scale(1); }
+}
+
+@keyframes dtWinIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes dtStartIn {
+  from {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes stepIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes chipIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes introSpring {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+}
+
+@keyframes introRise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+@keyframes introFade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes introLeave {
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toastOut {
+  to {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+
+@keyframes markBreathe {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@keyframes markFlow {
+  to {
+    stroke-dashoffset: -56;
+  }
+}
+
+@keyframes leafSway {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(8deg);
+  }
+  50% {
+    transform: rotate(-5deg);
+  }
+  75% {
+    transform: rotate(3deg);
+  }
+}
+
+@keyframes rippleOut {
+  from {
+    opacity: 0.7;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+@keyframes dotPulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* the reveal: riseIn on scroll, the observer adds .in */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+.reveal.in {
+  animation: riseIn 0.55s var(--sol-ease-out) forwards;
+}
+
+.reveal.in:nth-child(2) {
+  animation-delay: 60ms;
+}
+
+.reveal.in:nth-child(3) {
+  animation-delay: 120ms;
+}
+
+.reveal.in:nth-child(4) {
+  animation-delay: 180ms;
+}
+
+/* the window layer guard: the chrome movers stop */
+@media (prefers-reduced-motion: reduce) {
+  .winapp,
+  .winchip,
+  .winapp__raillink > svg,
+  .winapp__theme > svg,
+  .winonboard__card,
+  .winonboard__step {
+    animation: none !important;
+  }
+}
+
+/* the mark layer guard: the brand loops and the sheen stay still */
+@media (prefers-reduced-motion: reduce) {
+  .sol-mark__glow,
+  .sol-mark--flow .sol-mark__flow,
+  [data-motion="leaf-sway"]:hover {
+    animation: none !important;
+  }
+}
+
+/* the landing layer guard: the ripple, the pulse and the sheen stop */
+@media (prefers-reduced-motion: reduce) {
+  .r3a-ripple__ring,
+  .zdot[data-fresh="true"] {
+    animation: none !important;
+  }
+}
+
+/* the intro layer guard: the splash plays honestly or not at all */
+@media (prefers-reduced-motion: reduce) {
+  .winintro,
+  .winintro__mark,
+  .winintro__mark [data-motion="leaf-sway"],
+  .winintro__name,
+  .winintro__role,
+  .winintro__skip {
+    animation: none !important;
+  }
+}
+
+/* ---------- 12. RESPONSIVE — the rail folds, the decks restack ---------- */
+
+@media (max-width: 900px) {
+  .r3a-split {
+    grid-template-columns: 1fr;
+  }
+
+  .r3a-rail {
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid var(--sol-hairline);
+    padding-top: 18px;
+  }
+
+  .r3a-set {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .r3a-set__rail {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .r3a-steps,
+  .r3a-steps--wide {
+    grid-template-columns: 1fr;
+  }
+
+  .r3a-set__fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 860px) {
+  .r3a-foot {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 720px) {
-  .winapp__role { display: none; }
-  .winapp__body { flex-direction: column; }
+  .winapp__role {
+    display: none;
+  }
+
+  .winapp__body {
+    flex-direction: column;
+  }
+
   .winapp__rail {
     flex-direction: row;
     align-items: center;
@@ -1598,1052 +2742,126 @@ body { background: var(--win-mica); }
     border-right: 0;
     border-bottom: 1px solid var(--sol-hairline);
   }
-  .winapp__railhead { display: none; }
-  .winapp__familyhead { display: none; }
-  .winapp__family { flex-direction: row; flex-wrap: wrap; gap: 4px; margin: 0 4px 6px; }
-  .winapp__railfoot { margin: 0 0 0 auto; padding: 0; border-top: 0; }
-  .winapp__theme { width: auto; }
-  .winapp__raillink[aria-current="page"]::before {
+
+  .winapp__railhead {
+    display: none;
+  }
+
+  .winapp__familyhead {
+    display: none;
+  }
+
+  .winapp__family {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 0 4px 6px;
+  }
+
+  .winapp__railfoot {
+    margin: 0 0 0 auto;
+    padding: 0;
+    border-top: 0;
+  }
+
+  .winapp__theme {
+    width: auto;
+  }
+
+  .winapp__raillink::after {
     top: auto;
     right: 12px;
     bottom: 2px;
     left: 12px;
-    width: auto;
+    width: 0;
     height: 3px;
+    transform: none;
   }
-  .winonboard__foot { flex-wrap: wrap; }
+
+  .winapp__raillink:hover::after {
+    width: 6px;
+  }
+
+  .winapp__raillink[aria-current="page"]::after {
+    width: 12px;
+  }
+
+  .winonboard__foot {
+    flex-wrap: wrap;
+  }
 }
 
-/* guards: the new chrome obeys the reduced-motion hard stop and the
-   transparency floors keep the acrylic readable on both themes */
-@media (prefers-reduced-motion: reduce) {
-  .winapp,
-  .winchip,
-  .winintro,
-  .winintro__mark,
-  .winintro__name,
-  .winintro__role,
-  .winintro__skip,
-  .winonboard__card,
-  .winonboard__step {
-    animation: none !important;
+@media (max-width: 560px) {
+  .r3a-foot {
+    grid-template-columns: 1fr;
+  }
+
+  .r3a-row--zone,
+  .r3a-row--lib {
+    grid-template-columns: 2rem 1fr auto;
+  }
+
+  .r3a-zone__serial,
+  .r3a-lib__phrase {
+    display: none;
   }
 }
+
+/* ---------- 13. GUARDS — the transparency floors and the motion hard stop ---------- */
+
 @media (prefers-reduced-transparency: reduce) {
   .winapp__title,
   .winonboard__head,
   .winchip,
-  .winonboard__card {
-    background-color: var(--sol-surface-1);
+  .glass,
+  .toast {
+    background-color: #202020;
     background-image: none;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
-}
 
-/* ==========================================================================
-   NEOSKILLS PASS — wave C1 (argan · jade #34d8a8 · the NeoSkills bar)
-   The anti-vibe-code doctrine (design-campaign-v2.md) over the window:
-   atmosphere (named light source + halftone edge + film grain), the display
-   face riding heroes, lowercase mono micro-labels, asymmetric page layouts,
-   ONE orchestrated entrance per view and the single signature motion of the
-   mark (leaf sway). APPEND-ONLY: every rule above stays; this block only
-   adds and, where the doctrine demands, overrides.
-   ========================================================================== */
+  .winapp,
+  .winonboard__card {
+    background-color: #2c2c2c;
+  }
 
-/* ---- 1. ATMOSPHERE — the named light source, never a naked flat color ----
-   jade key light low-alpha top-right, a mint fill light bottom-left; the
-   recipes below are the doctrine spellings adapted to #34d8a8 = rgb 52 216 168 */
-.winapp {
-  background-color: var(--sol-bg);
-  background-image:
-    radial-gradient(1200px 700px at 72% -12%, rgb(52 216 168 / 0.08), transparent 62%),
-    radial-gradient(900px 620px at 8% 108%, rgb(92 224 187 / 0.05), transparent 58%);
-}
-.winintro {
-  background:
-    radial-gradient(1100px 640px at 72% -10%, rgb(52 216 168 / 0.09), transparent 62%),
-    var(--win-mica);
-}
-/* the halftone edge (Modulify-style jade dot dissolve) — utility per doctrine */
-.halftone::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background-image: radial-gradient(rgb(52 216 168 / 0.15) 1px, transparent 1.4px);
-  background-size: 11px 11px;
-  -webkit-mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
-  mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
-  pointer-events: none;
-}
-/* the film grain (one data-uri, reused everywhere) — utility per doctrine */
-.grain::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
-  pointer-events: none;
-}
-/* the window carries both recipes (Shell.tsx class hooks); the chrome and
-   the body ride above the atmosphere layers */
-.winapp__title { position: relative; z-index: 2; }
-.winapp__body { position: relative; z-index: 1; }
+  .winapp__rail {
+    background-color: #2b2b2b;
+  }
 
-/* ---- 2. DISPLAY FACE — heroes and titles ride Bricolage Grotesque ---- */
-.wordmark,
-.page-title,
-.h2-xl,
-.cta-title,
-.winintro__name,
-.winonboard__lead {
-  font-family: var(--font-display);
-  letter-spacing: -0.035em;
-}
-/* micro-labels: lowercase mono, ≤0.08em tracking (doctrine kill-switch for
-   the all-caps 0.2em slop) */
-.eyebrow {
-  font-family: var(--font-mono);
-  font-weight: 500;
-  text-transform: none;
-  letter-spacing: 0.08em;
-}
-.winapp__railhead,
-.winintro__role,
-.winonboard__eyebrow {
-  font-family: var(--font-mono);
-  text-transform: none;
-  letter-spacing: 0.08em;
-}
-.table th {
-  font-family: var(--font-mono);
-  font-weight: 500;
-  text-transform: none;
-  letter-spacing: 0.08em;
-}
-.badge {
-  font-family: var(--font-mono);
-  font-weight: 600;
-  text-transform: none;
-  letter-spacing: 0.04em;
-}
+  [data-theme="light"] .winapp__title,
+  [data-theme="light"] .winonboard__head,
+  [data-theme="light"] .winchip,
+  [data-theme="light"] .glass,
+  [data-theme="light"] .toast {
+    background-color: #f4f4f5;
+  }
 
-/* ---- 3. ASYMMETRY — break the uniform card grid ----
-   one dominant zone card + a support rail; editorial rows instead of
-   repeated identical cards */
-.ns-split {
-  display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  gap: 18px;
-  align-items: start;
-  margin-top: 30px;
-}
-/* the support rail: lighter than the dominant glass card, flat panel */
-.ns-rail {
-  padding: 22px;
-  border: 1px solid var(--sol-line);
-  border-radius: var(--r-md);
-  background: var(--sol-panel);
-}
-.ns-rail__title {
-  margin: 0 0 10px;
-  font-family: var(--font-display);
-  font-size: 1.3rem;
-  letter-spacing: -0.025em;
-  color: var(--sol-text);
-}
-.ns-rail__lede {
-  margin: 0;
-  font-size: 0.9rem;
-}
-/* the editorial ladder: numbered hairline rows, never a card stack */
-.ns-steps {
-  list-style: none;
-  margin: 18px 0 0;
-  padding: 0;
-}
-.ns-step {
-  display: flex;
-  gap: 14px;
-  padding: 14px 0;
-  border-top: 1px solid var(--sol-line);
-}
-.ns-step:first-child { border-top: 0; padding-top: 2px; }
-.ns-step__no {
-  flex: none;
-  padding-top: 3px;
-  color: var(--win-accent);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.08em;
-}
-.ns-step__title {
-  margin: 0 0 4px;
-  font-size: 0.98rem;
-  letter-spacing: -0.01em;
-  color: var(--sol-text);
-}
-.ns-step__text {
-  margin: 0;
-  font-size: 0.86rem;
-  color: var(--sol-muted);
-}
-.ns-step__window {
-  margin-left: 8px;
-  color: var(--sol-faint);
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.04em;
-}
-/* the wide ladder (rollover): two editorial columns of rows */
-.ns-steps-wide {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: 44px;
-  margin-top: 0;
-}
-/* the dominant library card: full-width editorial split on the home grid */
-.ns-dominant > :first-child {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-  gap: 8px 28px;
-  align-items: center;
-  background:
-    radial-gradient(520px 240px at 12% 0%, rgb(52 216 168 / 0.09), transparent 72%),
-    linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
-}
-.ns-dominant > :first-child .card-row {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-}
-.ns-dominant > :first-child .card-title {
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  letter-spacing: -0.03em;
-}
-/* the dnssec key pair: KSK dominant, ZSK support */
-.ns-keygrid {
-  display: grid;
-  grid-template-columns: minmax(0, 11fr) minmax(0, 9fr);
-  gap: 18px;
-  align-items: stretch;
-}
-.ns-keygrid > :first-child {
-  background:
-    radial-gradient(420px 220px at 16% 0%, rgb(52 216 168 / 0.1), transparent 70%),
-    linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
-}
-.ns-keygrid > :first-child .card-title {
-  font-family: var(--font-display);
-  font-size: 1.6rem;
-  letter-spacing: -0.03em;
-}
-/* the DoH trio: probe dominant, switch and serve support */
-.ns-trio {
-  display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr) minmax(0, 1fr);
-  gap: 18px;
-}
-.ns-trio > :first-child {
-  background:
-    radial-gradient(420px 220px at 16% 0%, rgb(52 216 168 / 0.1), transparent 70%),
-    linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
-}
-.ns-trio > :first-child .h3-sm {
-  font-family: var(--font-display);
-  font-size: 1.3rem;
-  letter-spacing: -0.03em;
-}
-/* the editorial table rows with the ladder status dots: filled jade = live,
-   jade ring = supporting, hollow = pending — never identical badge chips */
-.ztable th { text-align: left; }
-.ztable tr:last-child td { border-bottom: 0; }
-.ztable td:first-child {
-  color: var(--sol-text);
-  font-weight: 600;
-  font-family: var(--font-mono);
-  font-size: 0.88rem;
-}
-.ztable td:nth-child(3) {
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-}
-.zstate {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  letter-spacing: 0.04em;
-}
-.zdot {
-  flex: none;
-  width: 8px;
-  height: 8px;
-  border: 1.5px solid var(--sol-faint);
-  border-radius: 50%;
-  background: transparent;
-}
-.zdot[data-state="signed"],
-.zdot[data-state="success"] {
-  border-color: var(--win-accent);
-  background: var(--win-accent);
-}
-.zdot[data-state="info"] {
-  border-color: var(--win-accent);
-  background: color-mix(in srgb, var(--win-accent) 38%, transparent);
-}
-@media (max-width: 900px) {
-  .ns-split { grid-template-columns: 1fr; }
-  .ns-steps-wide { grid-template-columns: 1fr; }
-}
-@media (max-width: 820px) {
-  .ns-keygrid, .ns-trio { grid-template-columns: 1fr; }
-}
-@media (max-width: 720px) {
-  .ns-dominant > :first-child { grid-template-columns: 1fr; }
-}
+  [data-theme="light"] .winapp,
+  [data-theme="light"] .winonboard__card {
+    background-color: #fcfcfc;
+  }
 
-/* ---- 4. THE ONE ENTRANCE — staggered on mount, then stillness ----
-   the scroll observer retires: the stage children rise once per view with
-   the animation-delay ladder (the forbidden per-block scroll fade is gone
-   from the page anchors) */
-.winapp__stage > main > * { animation: riseIn 0.5s var(--ease) backwards; }
-.winapp__stage > main > :nth-child(2) { animation-delay: 60ms; }
-.winapp__stage > main > :nth-child(3) { animation-delay: 120ms; }
-.winapp__stage > main > :nth-child(4) { animation-delay: 180ms; }
-.winapp__stage > main > :nth-child(5) { animation-delay: 240ms; }
-.winapp__stage > main > :nth-child(6) { animation-delay: 300ms; }
-.winapp__stage > main > :nth-child(7) { animation-delay: 360ms; }
-.winapp__stage > main > :nth-child(n + 8) { animation-delay: 420ms; }
-
-/* ---- 5. THE MARK MOTION — leaf sway (the ONE signature motion) ----
-   transform-origin at the stem (the base of the face), 8deg ceiling,
-   1.2s ease, hover/entry only; prefers-reduced-motion turns it off.
-   The hook [data-motion="leaf-sway"] lives inside ArganMark (Shell.tsx). */
-.sol-mark[data-motion="leaf-sway"] {
-  transform-origin: 50% 96%;
-}
-@keyframes leafSway {
-  0% { transform: rotate(0deg); }
-  32% { transform: rotate(4.6deg); }
-  64% { transform: rotate(-3.4deg); }
-  86% { transform: rotate(1.4deg); }
-  100% { transform: rotate(0deg); }
-}
-.winapp__brand:hover .sol-mark[data-motion="leaf-sway"],
-.winchip:hover .sol-mark[data-motion="leaf-sway"] {
-  animation: leafSway 1.2s ease;
-}
-.winintro__mark .sol-mark[data-motion="leaf-sway"] {
-  animation: leafSway 1.2s ease 520ms 1 backwards;
-}
-
-/* ---- 6. GUARDS — reduced motion stops every new mover ---- */
-@media (prefers-reduced-motion: reduce) {
-  .winapp__stage > main > * { animation: none !important; }
-  .sol-mark[data-motion="leaf-sway"],
-  .winapp__brand:hover .sol-mark[data-motion="leaf-sway"],
-  .winchip:hover .sol-mark[data-motion="leaf-sway"],
-  .winintro__mark .sol-mark[data-motion="leaf-sway"] {
-    animation: none !important;
+  [data-theme="light"] .winapp__rail {
+    background-color: #fafafa;
   }
 }
 
-/* ==========================================================================
-   CAMPAIGN V3 · R3-ARGAN — the landing × platform pass (jade #34d8a8 · 90/10)
-   Two interfaces on one identity. The home page is the public presentation:
-   ONE jade light (color-mix 14%), halftone dot dissolve, grain ≤5%, the dig
-   prompt-giga as the hero object (an honest resolver over the served apex
-   snapshot), hairline zone ledgers with one raised featured row, steps 01–03
-   and a meta-quad footer. dnssec/gateway/zones/settings are working consoles:
-   asymmetric 1.6fr/1fr, ruled ledgers (no card grids), mono kbd chips,
-   section rails, status colors as dots. The animated mark ripples at 4.8s
-   (concentric stroke rings, transform/opacity only); zone rows pulse on
-   propagate. APPEND-ONLY: everything above stays; this block adds and, where
-   the doctrine demands, overrides. Never an all-properties transition,
-   never a zero-scale entry.
-   ========================================================================== */
-
-/* ---- 0a. IDENTITY CASCADE — the deep green-black base, jade the one signal -- */
-:root {
-  --arg-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --arg-spring: cubic-bezier(0.2, 1.2, 0.4, 1);
-  --arg-jade: #34d8a8;
-  /* the deep green-black ladder retakes the canvas (the windows graphite retires) */
-  --win-mica: #060a08 radial-gradient(#0a120d 25%, #060a08 100%) no-repeat fixed;
-  --sol-bg: #060a08;
-  --sol-bg-2: #0c120e;
-  --sol-surface-1: #080d0a;
-  --sol-surface-2: #0e1511;
-  --sol-surface-3: #131c16;
-  --sol-surface-4: #18241d;
-  --sol-surface-5: #1e2c24;
-  --sol-surface-6: #25362b;
-  --sol-surface-7: #2c4032;
-  --sol-surface-8: #334a39;
-  --sol-panel: rgb(220 248 232 / 0.04);
-  --sol-panel-strong: rgb(220 248 232 / 0.07);
-  --sol-line: rgb(52 216 168 / 0.16);
-  --sol-line-strong: rgb(52 216 168 / 0.32);
-  --sol-hairline: rgb(220 248 232 / 0.07);
-  --sol-hairline-strong: rgb(220 248 232 / 0.14);
-  --sol-signal: 52 216 168;
-  --sol-primary: #34d8a8;
-  --sol-primary-ink: #04231a;
-  --sol-ember: #24b98a;
-  --sol-tangerine: #7ee8c4;
-  --sol-gold: #a7f0d4;
-  --sol-success: #34d8a8;
-  --sol-info: #9edcd0;
-  --sol-text: #edf7f0;
-  --sol-muted: #9fb8a8;
-  --sol-faint: #66806f;
-}
-[data-theme="light"] {
-  --arg-jade: #0c7d5a;
-  --win-mica: #edf3ee radial-gradient(#e2ece4 75%, #edf3ee 100%) no-repeat fixed;
-  --sol-bg: #edf3ee;
-  --sol-bg-2: #f6faf7;
-  --sol-surface-1: #e8efe9;
-  --sol-surface-2: #f5f9f6;
-  --sol-surface-3: #fafcfa;
-  --sol-surface-4: #ffffff;
-  --sol-surface-5: #ffffff;
-  --sol-surface-6: #ffffff;
-  --sol-surface-7: #ffffff;
-  --sol-surface-8: #ffffff;
-  --sol-panel: rgb(6 30 17 / 0.045);
-  --sol-panel-strong: rgb(6 30 17 / 0.08);
-  --sol-line: rgb(10 110 55 / 0.24);
-  --sol-line-strong: rgb(10 110 55 / 0.42);
-  --sol-hairline: rgb(6 30 17 / 0.09);
-  --sol-hairline-strong: rgb(6 30 17 / 0.16);
-  --sol-text: #0a1a11;
-  --sol-muted: #40584a;
-  --sol-faint: #637d6e;
-  --sol-primary: #0c7d5a;
-  --sol-primary-ink: #f2fbf5;
-  --sol-ember: #0c7d5a;
-  --sol-tangerine: #0a6b50;
-  --sol-gold: #085a43;
-  --sol-info: #15654a;
-}
-
-/* ---- 0b. ONE LIGHT PER SURFACE — the window's single jade key ---- */
-.winapp {
-  background-color: var(--sol-bg);
-  background-image: radial-gradient(1300px 760px at 82% -14%, rgb(52 216 168 / 0.09), transparent 64%);
-}
-/* on the landing the hero owns the light; the window's ambient rests */
-.winapp[data-landing="true"] { background-image: none; }
-.winapp[data-landing="true"] .winapp__brand .sol-mark { opacity: 0.32; }
-.winapp[data-landing="true"] .winapp__brand .sol-mark__glow { animation: none; opacity: 0.16; }
-/* the drawn mark's story glow retints to the charter jade */
-.sol-mark__glow { background: radial-gradient(52% 60% at 50% 62%, rgb(52 216 168 / 45%), transparent 76%); }
-
-/* ---- 0c. FULL-BLEED — landing stages escape the shell padding ---- */
-.r3a-bleed { margin-inline: calc(clamp(16px, 4vw, 40px) * -1); }
-/* the landing shell is a floor-reaching column: the footer pins to the
-   window floor when the content runs short (the spec §4 sticky-footer law) */
-.winapp__stage > main.shell { display: flex; flex-direction: column; min-height: 100%; }
-.r3a-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
-
-/* ---- 1. THE LANDING HERO — one light, the halftone edge, the dig object ---- */
-.r3a-hero {
-  position: relative;
-  overflow: hidden;
-  margin-top: calc(clamp(20px, 4vw, 56px) * -1);
-  padding: clamp(52px, 8vw, 104px) clamp(16px, 4vw, 40px) clamp(46px, 7vw, 88px);
-  border-bottom: 1px solid var(--sol-hairline-strong);
-}
-.r3a-hero__light {
-  position: absolute;
-  z-index: 0;
-  top: -260px;
-  left: 50%;
-  width: min(1020px, 130vw);
-  height: 680px;
-  margin-left: calc(min(1020px, 130vw) / -2);
-  background: radial-gradient(50% 50% at 50% 50%, color-mix(in srgb, var(--arg-jade) 14%, transparent), transparent 70%);
-  pointer-events: none;
-}
-/* the halftone dissolve re-aims at the hero's bottom edge */
-.r3a-hero.halftone::after {
-  background-size: 13px 13px;
-  -webkit-mask-image: linear-gradient(180deg, transparent 38%, #000 94%);
-  mask-image: linear-gradient(180deg, transparent 38%, #000 94%);
-}
-.r3a-hero__in { position: relative; z-index: 1; max-width: 1160px; margin: 0 auto; }
-.r3a-lockup { display: flex; align-items: center; gap: 14px; margin-bottom: clamp(26px, 4vw, 46px); }
-.r3a-lockup__name { font-family: var(--font-mono); font-size: 15px; font-weight: 600; letter-spacing: -0.01em; color: var(--sol-text); }
-.r3a-lockup__role { font-family: var(--font-mono); font-size: 12px; color: var(--sol-faint); }
-.r3a-hero__title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: clamp(2.7rem, 7vw, 4.9rem);
-  letter-spacing: -0.045em;
-  line-height: 1.02;
-}
-.r3a-hero__lede { max-width: 580px; margin: 18px 0 0; font-size: 1.05rem; }
-.r3a-strip { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
-.r3a-hero__meta { margin: 26px 0 0; font-family: var(--font-mono); font-size: 12px; color: var(--sol-faint); font-variant-numeric: tabular-nums; }
-
-/* the animated mark: signal ripple — concentric stroke rings, transform/opacity only */
-.r3a-ripple { position: relative; display: inline-grid; place-items: center; width: 42px; height: 42px; }
-.r3a-ripple__ring {
-  position: absolute;
-  inset: -4px;
-  border: 1px solid color-mix(in srgb, var(--arg-jade) 55%, transparent);
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-/* the dig prompt-giga: giant mono field, embedded resolve key, type chips */
-.r3a-dig { max-width: 760px; margin: 32px 0 0; }
-.r3a-dig__bar {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  border-bottom: 1px solid var(--sol-hairline-strong);
-  transition: border-color 180ms var(--arg-ease);
-}
-.r3a-dig__bar:focus-within { border-color: color-mix(in srgb, var(--arg-jade) 55%, transparent); }
-.r3a-dig__mark { flex: none; font-family: var(--font-mono); font-size: 14px; color: var(--sol-faint); }
-.r3a-dig__input {
-  flex: 1;
-  min-width: 0;
-  padding: 16px 0;
-  background: transparent;
-  border: 0;
-  outline: none;
-  color: var(--sol-text);
-  font-family: var(--font-mono);
-  font-size: clamp(16px, 2.2vw, 19px);
-  letter-spacing: -0.01em;
-}
-.r3a-dig__input::placeholder { color: var(--sol-faint); }
-.r3a-dig__key {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  min-height: 38px;
-  padding: 0 16px;
-  border: 0;
-  border-radius: 4px;
-  background: var(--arg-jade);
-  color: var(--sol-primary-ink);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: lowercase;
-  cursor: pointer;
-  transition: transform 140ms var(--arg-spring), filter 140ms var(--arg-ease);
-}
-.r3a-dig__key:hover { filter: brightness(1.07); }
-.r3a-dig__key:active { transform: scale(0.96); }
-.r3a-dig__chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; padding: 0; border: 0; }
-.r3a-chip {
-  padding: 5px 11px;
-  border: 1px solid var(--sol-hairline-strong);
-  border-radius: 4px;
-  background: transparent;
-  color: var(--sol-muted);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-variant-numeric: tabular-nums;
-  cursor: pointer;
-  transition: color 140ms var(--arg-ease), border-color 140ms var(--arg-ease), background-color 140ms var(--arg-ease);
-}
-.r3a-chip:hover { color: var(--sol-text); border-color: color-mix(in srgb, var(--arg-jade) 40%, transparent); }
-.r3a-chip[aria-pressed="true"] {
-  color: var(--arg-jade);
-  border-color: color-mix(in srgb, var(--arg-jade) 55%, transparent);
-  background: color-mix(in srgb, var(--arg-jade) 12%, transparent);
-}
-/* the honest answer: a ruled mono readout under the field */
-.r3a-dig__out {
-  margin-top: 18px;
-  padding-top: 14px;
-  border-top: 1px solid var(--sol-hairline);
-  overflow-x: auto;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  line-height: 1.8;
-  color: var(--sol-muted);
-  font-variant-numeric: tabular-nums;
-}
-.r3a-dig__out .is-head { color: var(--sol-faint); }
-.r3a-dig__out .is-ok { color: var(--arg-jade); }
-.r3a-dig__out .is-nx { color: var(--sol-warning); }
-.r3a-dig__out .is-name { color: var(--sol-text); }
-
-/* ---- 2. EDITORIAL GRAMMAR — heads, ruled sections, ledger rows, kbd, dots -- */
-.r3a-head { padding-bottom: clamp(22px, 3vw, 34px); border-bottom: 1px solid var(--sol-hairline-strong); }
-.r3a-head__eyebrow {
-  margin: 0 0 12px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  color: var(--arg-jade);
-}
-.r3a-head__title {
-  margin: 0 0 12px;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(2rem, 4.6vw, 3.1rem);
-  letter-spacing: -0.04em;
-  color: var(--sol-text);
-}
-.r3a-head__lede { max-width: 640px; margin: 0; font-size: 1.02rem; }
-
-.r3a-h {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  column-gap: 16px;
-  row-gap: 8px;
-  align-items: baseline;
-  margin-bottom: 16px;
-}
-.r3a-h__no { font-family: var(--font-mono); font-size: 12px; color: var(--arg-jade); font-variant-numeric: tabular-nums; }
-.r3a-h__title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 650;
-  font-size: clamp(1.25rem, 2.6vw, 1.7rem);
-  letter-spacing: -0.025em;
-  color: var(--sol-text);
-}
-.r3a-h__aside {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--sol-faint);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-.r3a-h__note { grid-column: 2 / -1; max-width: 640px; margin: 0; font-size: 0.92rem; color: var(--sol-muted); }
-
-.r3a-sec { margin-top: clamp(44px, 6vw, 80px); }
-.r3a-sec--ruled { border-top: 1px solid var(--sol-hairline-strong); padding-top: 22px; }
-.r3a-pane { min-width: 0; }
-.r3a-sec__more { margin: 14px 0 0; font-family: var(--font-mono); font-size: 12.5px; color: var(--sol-faint); }
-.r3a-sec__more a { color: var(--sol-muted); }
-.r3a-sec__more a:hover { color: var(--arg-jade); text-decoration: none; }
-
-/* the asymmetric console body: 1.6fr dominant / 1fr rail */
-.r3a-split {
-  display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
-  gap: clamp(20px, 3vw, 44px);
-  align-items: start;
-  margin-top: clamp(24px, 4vw, 40px);
-}
-.r3a-rail { min-width: 0; border-top: 1px solid var(--sol-hairline-strong); }
-.r3a-railblock { padding: 16px 0 18px; border-bottom: 1px solid var(--sol-hairline); }
-.r3a-railblock:last-child { border-bottom: 0; }
-.r3a-railblock__name { margin: 0 0 10px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--sol-faint); }
-.r3a-railblock__text { margin: 0; font-size: 0.9rem; color: var(--sol-muted); }
-
-/* the ruled ledger: hairline rows, jade 10% hover, one raised featured row */
-.r3a-ledger { border-top: 1px solid var(--sol-hairline-strong); }
-.r3a-row {
-  padding: 14px 10px;
-  border-bottom: 1px solid var(--sol-hairline);
-  transition: background-color 160ms var(--arg-ease);
-}
-.r3a-row:hover { background-color: color-mix(in srgb, var(--arg-jade) 10%, transparent); }
-.r3a-row.is-featured {
-  background-color: color-mix(in srgb, var(--arg-jade) 6%, transparent);
-  box-shadow: inset 2px 0 0 var(--arg-jade);
-}
-a.r3a-row { color: inherit; text-decoration: none; }
-a.r3a-row:hover { text-decoration: none; }
-.r3a-idx { flex: none; font-family: var(--font-mono); font-size: 12px; color: var(--sol-faint); font-variant-numeric: tabular-nums; }
-
-/* zone rows: domain mono + records meta + status live-dot (wraps at any width) */
-.r3a-row--zone { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
-.r3a-zone__origin { font-family: var(--font-mono); font-weight: 600; font-size: 0.95rem; color: var(--sol-text); }
-.r3a-zone__serial { margin-left: auto; font-family: var(--font-mono); font-size: 12px; color: var(--sol-muted); font-variant-numeric: tabular-nums; }
-
-/* library rows: index + title + badge + one phrase */
-.r3a-row--lib { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; }
-.r3a-lib__title { font-family: var(--font-display); font-weight: 600; font-size: 1.02rem; letter-spacing: -0.015em; color: var(--sol-text); }
-.r3a-lib__phrase { flex-basis: 100%; margin: 0; font-size: 0.9rem; color: var(--sol-muted); }
-
-/* flow rows (rails): numbered one-phrase moves */
-.r3a-row--flow { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px; }
-.r3a-flow__title { font-family: var(--font-display); font-weight: 600; font-size: 0.98rem; color: var(--sol-text); }
-.r3a-flow__text { flex-basis: 100%; margin: 0; font-size: 0.88rem; color: var(--sol-muted); }
-.r3a-ledger--flow { list-style: none; margin: 0; padding: 0; }
-.r3a-alg { font-family: var(--font-mono); font-size: 12.5px; color: var(--sol-muted); }
-
-/* key rows (dnssec): name + rollover kbd + detail + the DS line */
-.r3a-row--key { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; }
-.r3a-keyrow__main { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
-.r3a-keyrow__name { margin: 0; font-family: var(--font-mono); font-weight: 700; font-size: 1.05rem; color: var(--sol-text); }
-.r3a-keyrow__detail { flex-basis: 100%; margin: 4px 0 0; font-size: 0.9rem; color: var(--sol-muted); }
-.r3a-code {
-  display: block;
-  margin-top: 10px;
-  background: none;
-  border: 0;
-  padding: 0;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--sol-tangerine);
-  overflow-wrap: anywhere;
-}
-
-/* record rows (apex ledger): name / type kbd / data / note as ruled grid areas */
-.r3a-row--rec {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) auto minmax(0, 2.2fr) minmax(0, 1fr);
-  grid-template-areas: "name type data note";
-  column-gap: 18px;
-  align-items: baseline;
-}
-.r3a-rec__name { grid-area: name; font-family: var(--font-mono); font-weight: 600; font-size: 0.92rem; color: var(--sol-text); overflow-wrap: anywhere; }
-.r3a-rec__type { grid-area: type; }
-.r3a-rec__data { grid-area: data; font-family: var(--font-mono); font-size: 12.5px; color: var(--sol-muted); overflow-wrap: anywhere; }
-.r3a-rec__note { grid-area: note; font-family: var(--font-mono); font-size: 11.5px; color: var(--sol-faint); }
-
-/* kbd chips + status dots (colors live in dots, never fills) */
-.r3a-kbd {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 8px;
-  border: 1px solid var(--sol-hairline-strong);
-  border-radius: 4px;
-  color: var(--sol-muted);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-}
-.r3a-kbd--sig {
-  color: var(--arg-jade);
-  border-color: color-mix(in srgb, var(--arg-jade) 45%, transparent);
-  background: color-mix(in srgb, var(--arg-jade) 8%, transparent);
-}
-.r3a-dot { position: relative; flex: none; display: inline-block; width: 8px; height: 8px; border: 1.5px solid var(--sol-faint); border-radius: 50%; background: transparent; }
-.r3a-dot[data-state="signed"], .r3a-dot[data-state="success"],
-.r3a-dot[data-state="live"], .r3a-dot[data-state="preferred"] { border-color: var(--arg-jade); background: var(--arg-jade); }
-.r3a-dot[data-state="info"], .r3a-dot[data-state="opt-in"] { border-color: var(--arg-jade); background: color-mix(in srgb, var(--arg-jade) 38%, transparent); }
-.r3a-dot[data-state="warning"] { border-color: var(--sol-warning); background: color-mix(in srgb, var(--sol-warning) 55%, transparent); }
-/* the zone/transport dots ride the same grammar + the propagate halo */
-.zdot { position: relative; }
-.zdot[data-state="warning"] { border-color: var(--sol-warning); background: color-mix(in srgb, var(--sol-warning) 55%, transparent); }
-.zdot[data-fresh="true"] { border-color: var(--arg-jade); background: var(--arg-jade); }
-.zdot[data-fresh="true"]::after {
-  content: "";
-  position: absolute;
-  inset: -4px;
-  border: 1px solid color-mix(in srgb, var(--arg-jade) 60%, transparent);
-  border-radius: 50%;
-}
-
-/* ruled console tables: hairline rows, mono keys, jade 10% hover */
-.r3a-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-.r3a-table th {
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--sol-hairline-strong);
-  text-align: left;
-  font-family: var(--font-mono);
-  font-weight: 500;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  color: var(--sol-faint);
-}
-.r3a-table td { padding: 13px 12px; border-bottom: 1px solid var(--sol-hairline); color: var(--sol-muted); font-variant-numeric: tabular-nums; }
-.r3a-table tbody tr { transition: background-color 160ms var(--arg-ease); }
-.r3a-table tbody tr:hover td { background-color: color-mix(in srgb, var(--arg-jade) 10%, transparent); color: var(--sol-text); }
-.r3a-table .is-key { font-family: var(--font-mono); font-weight: 600; font-size: 0.92rem; color: var(--sol-text); }
-.r3a-table .is-mono { font-family: var(--font-mono); font-size: 0.85rem; }
-.r3a-table tr.is-featured td { background-color: color-mix(in srgb, var(--arg-jade) 7%, transparent); }
-.r3a-table tr.is-featured td:first-child { box-shadow: inset 2px 0 0 var(--arg-jade); }
-
-/* terminals: the pipeline output and the corefile */
-.r3a-term {
-  margin: 0;
-  padding: 16px 18px;
-  background: var(--sol-surface-1);
-  border: 1px solid var(--sol-hairline);
-  border-radius: 6px;
-  overflow-x: auto;
-  box-shadow: var(--sol-shadow-1);
-}
-.r3a-term code {
-  background: none;
-  border: 0;
-  padding: 0;
-  font-family: var(--font-mono);
-  font-size: 0.84rem;
-  line-height: 1.7;
-  color: var(--sol-muted);
-  font-variant-numeric: tabular-nums;
-}
-.r3a-file { margin-top: 18px; }
-.r3a-file summary { cursor: pointer; font-family: var(--font-mono); font-size: 12px; color: var(--sol-muted); }
-.r3a-file summary:hover { color: var(--arg-jade); }
-.r3a-file[open] summary { margin-bottom: 12px; color: var(--sol-text); }
-
-/* ---- 3. LANDING FLOW — steps 01–03, the CTA, the meta-quad footer ---- */
-.r3a-steps {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  column-gap: clamp(24px, 4vw, 48px);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  border-top: 1px solid var(--sol-hairline-strong);
-}
-.r3a-steps--wide { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-.r3a-step { padding: 20px 0 16px; border-bottom: 1px solid var(--sol-hairline); }
-.r3a-step__no { margin: 0 0 10px; font-family: var(--font-mono); font-size: 13px; color: var(--arg-jade); font-variant-numeric: tabular-nums; }
-.r3a-step__title { margin: 0 0 6px; font-family: var(--font-display); font-weight: 600; font-size: 1.08rem; letter-spacing: -0.015em; color: var(--sol-text); }
-.r3a-step__text { margin: 0; font-size: 0.9rem; color: var(--sol-muted); }
-
-.r3a-cta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px 28px;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: clamp(44px, 6vw, 80px);
-  margin-bottom: clamp(52px, 7vw, 88px); /* the foot gap rides the cta: the footer itself runs margin-top:auto (the sticky-footer law below) */
-  border-top: 1px solid var(--sol-hairline-strong);
-  padding-top: clamp(24px, 4vw, 40px);
-}
-.r3a-cta__title { margin: 0 0 12px; font-family: var(--font-display); font-weight: 700; font-size: 1.4rem; letter-spacing: -0.025em; color: var(--sol-text); }
-.r3a-cta__code {
-  display: block;
-  margin: 0;
-  padding: 10px 14px;
-  background: var(--sol-surface-1);
-  border: 1px solid var(--sol-hairline);
-  border-radius: 6px;
-  font-family: var(--font-mono);
-  font-size: 12.5px;
-  color: var(--sol-muted);
-  overflow-x: auto;
-  white-space: nowrap;
-}
-
-.r3a-foot {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 24px clamp(20px, 3vw, 40px);
-  margin-top: auto; /* the sticky-footer law: the last element eats the slack so the meta-quad sits flush on the window floor even on short viewports */
-  margin-bottom: calc(clamp(20px, 4vw, 56px) * -1);
-  padding: 34px clamp(16px, 4vw, 40px) 42px;
-  border-top: 1px solid var(--sol-hairline-strong);
-  background: color-mix(in srgb, var(--arg-jade) 3%, transparent);
-}
-.r3a-foot__head { margin: 0 0 12px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; color: var(--sol-faint); }
-.r3a-foot__col ul { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
-.r3a-foot__col a { color: var(--sol-muted); font-size: 13px; }
-.r3a-foot__col a:hover { color: var(--arg-jade); text-decoration: none; }
-.r3a-foot__line { font-family: var(--font-mono); font-size: 12px; color: var(--sol-muted); }
-.r3a-foot__base {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: space-between;
-  margin-top: 6px;
-  padding-top: 18px;
-  border-top: 1px solid var(--sol-hairline);
-  font-family: var(--font-mono);
-  font-size: 11.5px;
-  color: var(--sol-faint);
-}
-
-/* ---- 4. SETTINGS DECK — the sectioned console (sticky mono rail, no boxes) -- */
-.r3a-set {
-  display: grid;
-  grid-template-columns: 190px minmax(0, 1fr);
-  gap: 24px clamp(24px, 4vw, 56px);
-  align-items: start;
-  margin-top: clamp(24px, 4vw, 40px);
-}
-.r3a-set__rail { position: sticky; top: 14px; display: grid; gap: 2px; align-self: start; }
-.r3a-set__rail a {
-  padding: 6px 10px;
-  border-left: 1px solid var(--sol-hairline-strong);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--sol-faint);
-  transition: color 140ms var(--arg-ease), border-color 140ms var(--arg-ease);
-}
-.r3a-set__rail a:hover { color: var(--sol-text); border-color: color-mix(in srgb, var(--arg-jade) 45%, transparent); text-decoration: none; }
-.r3a-set__body { min-width: 0; }
-.r3a-set__sec { padding: 20px 0 26px; border-top: 1px solid var(--sol-hairline-strong); scroll-margin-top: 18px; }
-.r3a-set__sec:first-child { padding-top: 6px; border-top: 0; }
-.r3a-set__row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--sol-hairline);
-}
-.r3a-set__row:last-child { border-bottom: 0; }
-.r3a-set__copy { max-width: 640px; }
-.r3a-set__fields { display: grid; gap: 14px; max-width: 460px; margin-bottom: 18px; }
-
-/* ---- 5. MOTION — entrances 400–800ms @ 60–90ms, loops 2.4–7s, both guards -- */
-@media (prefers-reduced-motion: no-preference) {
-  .r3a-hero__light { animation: argBreathe 7s var(--arg-ease) infinite; }
-  .r3a-ripple__ring { animation: argRipple 4.8s var(--arg-ease) infinite; }
-  .r3a-ripple__ring:nth-child(2) { animation-delay: -1.6s; }
-  .r3a-ripple__ring:nth-child(3) { animation-delay: -3.2s; }
-  .zdot[data-fresh="true"]::after { animation: argHalo 2.4s var(--arg-ease) infinite; }
-  .r3a-dig__out { animation: argRise 240ms var(--arg-ease); }
-  .r3a-hero__in > * { animation: argRise 640ms var(--arg-ease) backwards; }
-  .r3a-hero__in > :nth-child(2) { animation-delay: 80ms; }
-  .r3a-hero__in > :nth-child(3) { animation-delay: 160ms; }
-  .r3a-hero__in > :nth-child(4) { animation-delay: 240ms; }
-  .r3a-hero__in > :nth-child(5) { animation-delay: 320ms; }
-  .r3a-hero__in > :nth-child(6) { animation-delay: 400ms; }
-  .r3a-sec .r3a-ledger > * { animation: argRise 480ms var(--arg-ease) backwards; }
-  .r3a-sec .r3a-ledger > :nth-child(2) { animation-delay: 60ms; }
-  .r3a-sec .r3a-ledger > :nth-child(3) { animation-delay: 120ms; }
-  .r3a-sec .r3a-ledger > :nth-child(4) { animation-delay: 180ms; }
-  .r3a-sec .r3a-ledger > :nth-child(5) { animation-delay: 240ms; }
-  .r3a-sec .r3a-ledger > :nth-child(n + 6) { animation-delay: 300ms; }
-}
-@keyframes argBreathe {
-  0%, 100% { opacity: 0.75; transform: translateY(0) scale(1); }
-  50% { opacity: 1; transform: translateY(10px) scale(1.04); }
-}
-@keyframes argRipple {
-  0% { transform: scale(0.55); opacity: 0; }
-  20% { opacity: 0.7; }
-  100% { transform: scale(2.05); opacity: 0; }
-}
-@keyframes argHalo {
-  0% { transform: scale(0.5); opacity: 0.85; }
-  100% { transform: scale(1.8); opacity: 0; }
-}
-@keyframes argRise {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ---- 6. RESPONSIVE — the split and the deck collapse, rows restack ---- */
-@media (max-width: 900px) {
-  .r3a-split { grid-template-columns: 1fr; }
-  .r3a-steps--wide { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .r3a-set { grid-template-columns: 1fr; }
-  .r3a-set__rail { position: static; display: flex; flex-wrap: wrap; gap: 6px; }
-  .r3a-set__rail a { padding: 4px 10px; border: 1px solid var(--sol-hairline-strong); border-radius: 4px; }
-  .r3a-foot { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (max-width: 760px) {
-  .r3a-row--rec {
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas:
-      "name type"
-      "data data"
-      "note note";
-    row-gap: 5px;
-  }
-  .r3a-zone__serial { margin-left: 0; flex-basis: 100%; order: 5; }
-}
-@media (max-width: 640px) {
-  .r3a-h { grid-template-columns: auto minmax(0, 1fr); }
-  .r3a-h__aside { grid-column: 2; justify-self: start; }
-  .r3a-h__note { grid-column: 2; }
-  .r3a-steps, .r3a-steps--wide { grid-template-columns: 1fr; }
-  .r3a-foot { grid-template-columns: 1fr; }
-}
-
-/* ---- 7. GUARDS — reduced motion stops every new mover; reduced transparency
-   drops the decorative dissolve and the tinted footer floor ---- */
+/* the hard stop: the last word of the file — every animation and transition
+   collapses to 0.01ms and the reveal rests visible */
 @media (prefers-reduced-motion: reduce) {
-  .r3a-hero__light, .r3a-ripple__ring, .zdot[data-fresh="true"]::after,
-  .r3a-dig__out, .r3a-hero__in > *, .r3a-sec .r3a-ledger > * { animation: none !important; }
-  .r3a-hero__in > *, .r3a-sec .r3a-ledger > * { opacity: 1 !important; transform: none !important; }
-  .r3a-dig__bar, .r3a-dig__key, .r3a-chip, .r3a-row, .r3a-table tbody tr,
-  .r3a-set__rail a { transition: none; }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .r3a-hero.halftone::after { display: none; }
-  .r3a-foot { background: var(--sol-surface-1); }
-}
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 
-/* ---- 8. FAMILY + EMPTY STATES — the 6-a polish (the family contract in the
-   chrome, the honest empty frame on every served ledger) ---- */
-
-/* the empty state: glyph in the jade wash, one line of truth, one real
-   action — never a dry "nothing here" (the family recipe) */
-.emptystate {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 22px 18px;
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
 }
-.emptystate__glyph {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border: 1px solid color-mix(in srgb, var(--arg-jade) 38%, transparent);
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--arg-jade) 9%, transparent);
-  color: var(--arg-jade);
-}
-.emptystate__note {
-  margin: 0;
-  max-width: 52ch;
-  font-size: 0.88rem;
-  line-height: 1.55;
-  color: var(--sol-muted);
-}
-.emptystate__action { display: flex; flex-wrap: wrap; gap: 10px; }
-
-/* the landing footer family row: the eight siblings with their §12 accents,
-   one hairline above the base line (the same table the rail foot rides) */
-.r3a-foot__family {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 18px;
-  padding-top: 16px;
-  border-top: 1px solid var(--sol-hairline);
-}
-.r3a-foot__familyhead {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  color: var(--sol-faint);
-}
-.r3a-foot__famlink {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--sol-muted);
-  text-decoration: none;
-  transition: color 150ms var(--arg-ease);
-}
-.r3a-foot__famlink:hover { color: var(--sol-text); text-decoration: none; }
-.r3a-foot__famdot {
-  flex: none;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  transition: transform 150ms var(--arg-ease);
-}
-.r3a-foot__famlink:hover .r3a-foot__famdot { transform: scale(1.35); }
