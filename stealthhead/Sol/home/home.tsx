@@ -17,9 +17,12 @@ import { ArrowRight, Boxes, Crosshair, PlugZap, Swords, Trophy, Volume2 } from "
 // owns the mark on the landing (the title-bar mark rests, data-landing).
 import { type CSSProperties, useEffect, useState } from "react";
 import { Link } from "wouter";
+import { familyrow } from "../../family";
+import { familyurl } from "../../familyurl";
 import { currentround, listmatches, type MatchLobby, orderlobbies, roundcounts } from "../../match.ts";
 import { progressof } from "../../matchrules.ts";
 import { observeReveals } from "../../reveal";
+import { BrandMark } from "../shell/BrandMark";
 import { toast } from "../toast/Toast";
 import { Scope } from "./scope";
 
@@ -96,7 +99,16 @@ export function Home() {
         <div className="shstage__light" aria-hidden="true" />
         <div className="shstage__grid">
           <div className="shstage__copy">
-            <p className="eyebrow reveal">stealthhead · fps platform</p>
+            {/* the mark lockup: the ONE mark of the landing zone (the title-bar
+                mark rests under data-landing) — the drawn scope mark with the
+                light band riding INSIDE the glyph strokes (the spec §9 family
+                signature; the chrome and intro marks stay still) */}
+            <div className="shstage__lockup reveal">
+              <span className="shstage__mark">
+                <BrandMark size={38} flow />
+              </span>
+              <p className="eyebrow">stealthhead · fps platform</p>
+            </div>
             <h1 className="shstage__h reveal" id="shstage-h">
               Sights on. Stage set.
             </h1>
@@ -110,9 +122,12 @@ export function Home() {
                 enter a match
                 <ArrowRight size={16} />
               </Link>
+              {/* the ONE CTA law: the hero closes with the single machined key;
+                  the honest data note rides beside it as a quiet mono cue —
+                  a cue answers, it never competes with the CTA */}
               <button
                 type="button"
-                className="btn secondary press"
+                className="shstage__cue press"
                 onClick={() =>
                   toast("the ladder answers from the site DB over HTTPS — nothing is stored on your machine", "info")
                 }
@@ -234,6 +249,29 @@ export function Home() {
           <p className="shquad__line">pre-compiled on the family domains</p>
           <p className="shquad__line">one db layer · zero client storage</p>
         </div>
+        {/* the family row of the landing footer: the same family.ts table the
+            rail foot renders (spec §12 accents, familyurl links) — the two
+            surfaces share one source, so the row can never drift */}
+        <nav className="shquad__family" aria-label="the family apps">
+          <span className="shquad__familyhead">the devthink family</span>
+          {familyrow().map((member) => (
+            <a
+              key={member.slug}
+              className="shquad__famlink"
+              href={familyurl(member.slug)}
+              target="_blank"
+              rel="noreferrer"
+              title={`open ${member.slug} in its own deploy`}
+            >
+              <span
+                className="shquad__famdot"
+                aria-hidden="true"
+                style={{ "--fam-dot": member.accent } as CSSProperties}
+              />
+              <span className="shquad__famlabel">{member.slug}</span>
+            </a>
+          ))}
+        </nav>
       </footer>
     </>
   );

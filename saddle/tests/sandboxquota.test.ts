@@ -163,14 +163,26 @@ test('accountlimitsfromenv maps the environment onto the plan table', () => {
   });
   assert.deepEqual(limits, { sandboxes: 5, vcpus: 32, ramgb: 128, vgpus: 2, diskgb: 500 });
   const unset = accountlimitsfromenv({});
-  assert.deepEqual(unset, { sandboxes: undefined, vcpus: undefined, ramgb: undefined, vgpus: undefined, diskgb: undefined });
+  assert.deepEqual(unset, {
+    sandboxes: undefined,
+    vcpus: undefined,
+    ramgb: undefined,
+    vgpus: undefined,
+    diskgb: undefined,
+  });
   const relaxed = accountlimitsfromenv({ SADDLE_MAX_SANDBOXES: '0' });
   assert.equal(relaxed.sandboxes, undefined);
 });
 
 test('the ledger walks every resource family of the plan table', () => {
   const ledger = createaccountledger({ sandboxes: 2, vcpus: 8, ramgb: 32, vgpus: 1, diskgb: 100 });
-  const verdict = ledger.reserve('acct-11', { sandboxes: 2, vcpus: 8, ramgb: 32, vgpus: 1, diskgb: 100 });
+  const verdict = ledger.reserve('acct-11', {
+    sandboxes: 2,
+    vcpus: 8,
+    ramgb: 32,
+    vgpus: 1,
+    diskgb: 100,
+  });
   assert.equal(verdict.remaining.vgpus, 0);
   assert.equal(verdict.remaining.diskgb, 0);
   assert.equal(ledger.admits('acct-11', { vgpus: 1 }), false);

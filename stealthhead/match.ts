@@ -69,9 +69,7 @@ export const MATCHSEED: MatchLobby[] = [
     region: "eu-west",
     state: "open",
     capacity: 12,
-    rounds: [
-      { id: "r-6", index: 1, map: "emberline", mode: "control", state: "pending" },
-    ],
+    rounds: [{ id: "r-6", index: 1, map: "emberline", mode: "control", state: "pending" }],
   },
   {
     id: "m-2204",
@@ -139,7 +137,9 @@ export async function listmatchplayers(lobbyid?: string): Promise<MatchPlayer[]>
   try {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), fetchbudget);
-    const response = await fetch(`/api/v1/matches/players${lobbyid ? `?lobby=${encodeURIComponent(lobbyid)}` : ""}`, { signal: controller.signal });
+    const response = await fetch(`/api/v1/matches/players${lobbyid ? `?lobby=${encodeURIComponent(lobbyid)}` : ""}`, {
+      signal: controller.signal,
+    });
     clearTimeout(timer);
     if (!response.ok) throw new Error(`players answered ${response.status}`);
     const fetched = (await response.json()) as MatchPlayer[];
@@ -158,7 +158,9 @@ export async function listmatchplayers(lobbyid?: string): Promise<MatchPlayer[]>
  */
 export function orderlobbies(lobbies: MatchLobby[]): MatchLobby[] {
   const weight: Record<MatchLobby["state"], number> = { live: 0, open: 1, closed: 2 };
-  return [...lobbies].sort((left, right) => weight[left.state] - weight[right.state] || left.id.localeCompare(right.id));
+  return [...lobbies].sort(
+    (left, right) => weight[left.state] - weight[right.state] || left.id.localeCompare(right.id),
+  );
 }
 
 /**
@@ -182,7 +184,11 @@ export function roundcounts(lobby: MatchLobby): { pending: number; live: number;
  * @returns the current round or null when the lobby is closed.
  */
 export function currentround(lobby: MatchLobby): MatchRound | null {
-  return lobby.rounds.find((round) => round.state === "live") ?? lobby.rounds.find((round) => round.state === "pending") ?? null;
+  return (
+    lobby.rounds.find((round) => round.state === "live") ??
+    lobby.rounds.find((round) => round.state === "pending") ??
+    null
+  );
 }
 
 /**

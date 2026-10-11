@@ -8,11 +8,11 @@
  * whole route tree lives behind the theme anchor; no page or component of the
  * theme is ever imported here.
  */
-import { createRoot } from "react-dom/client";
-import { ErrorBoundary, ThemeProvider, Toaster, TooltipProvider } from "./Sol/shell/Shell";
-import { Router as WouterRouter } from "wouter";
-import Sol from "./Sol/Sol";
-import "./Sol/sol.css";
+import { createRoot } from 'react-dom/client';
+import { Router as WouterRouter } from 'wouter';
+import Sol from './Sol/Sol';
+import { ErrorBoundary, ThemeProvider, Toaster, TooltipProvider } from './Sol/shell/Shell';
+import './Sol/sol.css';
 
 // NOTE: About Theme
 // - First choose a default theme according to your design style (dark or light bg), than change color palette in Sol/sol.css
@@ -26,33 +26,33 @@ import "./Sol/sol.css";
  * wouter never has to match against a relative prefix). The absolute bases
  * carry through unchanged. */
 function routerBase(): string {
-  const declaredBase = import.meta.env.BASE_URL;
-  if (declaredBase !== "/" && declaredBase !== "./") return declaredBase.replace(/\/$/, "");
-  const bootPath = window.location.pathname.replace(/index\.html$/, "").replace(/\/$/, "");
-  return bootPath === "" ? "" : bootPath;
+	const declaredBase = import.meta.env.BASE_URL;
+	if (declaredBase !== '/' && declaredBase !== './') return declaredBase.replace(/\/$/, '');
+	const bootPath = window.location.pathname.replace(/index\.html$/, '').replace(/\/$/, '');
+	return bootPath === '' ? '' : bootPath;
 }
 
 function App() {
-  return (
-    <ErrorBoundary>
-      <ThemeProvider defaultTheme="light">
-        <TooltipProvider>
-          <Toaster />
-          <WouterRouter base={routerBase()}>
-            <Sol />
-          </WouterRouter>
-        </TooltipProvider>
-      </ThemeProvider>
-    </ErrorBoundary>
-  );
+	return (
+		<ErrorBoundary>
+			<ThemeProvider defaultTheme="light">
+				<TooltipProvider>
+					<Toaster />
+					<WouterRouter base={routerBase()}>
+						<Sol />
+					</WouterRouter>
+				</TooltipProvider>
+			</ThemeProvider>
+		</ErrorBoundary>
+	);
 }
 
 /* The self-mount: the app owns its bootstrap — the retired main.tsx
  * wrapper is gone, so this module is the single entry the html loads
  * (the doctrine of the 2.1.0 universal interface: one tsx app, the
  * router and the mount live together). */
-if (typeof document !== "undefined" && document.getElementById("root")) {
-  createRoot(document.getElementById("root")!).render(<App />);
+if (typeof document !== 'undefined' && document.getElementById('root')) {
+	createRoot(document.getElementById('root')!).render(<App />);
 }
 
 export default App;

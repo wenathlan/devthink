@@ -130,15 +130,40 @@ export function transitionlobby(lobby: MatchLobby, to: LobbyState): MatchLobby {
  */
 export function openround(lobby: MatchLobby, roundid: string): MatchLobby {
   if (lobby.state !== "live") {
-    throw new matchruleserror("bad-transition", lobby.id, lobby.state, "live", `match rules round ${roundid} needs a live lobby, got ${lobby.state}`);
+    throw new matchruleserror(
+      "bad-transition",
+      lobby.id,
+      lobby.state,
+      "live",
+      `match rules round ${roundid} needs a live lobby, got ${lobby.state}`,
+    );
   }
   const round = lobby.rounds.find((row) => row.id === roundid);
-  if (!round) throw new matchruleserror("unknown-round", lobby.id, null, null, `match rules round ${roundid} is not seated in lobby ${lobby.id}`);
+  if (!round)
+    throw new matchruleserror(
+      "unknown-round",
+      lobby.id,
+      null,
+      null,
+      `match rules round ${roundid} is not seated in lobby ${lobby.id}`,
+    );
   if (!canroundtransition(round.state, "live")) {
-    throw new matchruleserror("bad-transition", lobby.id, round.state, "live", `match rules round ${roundid} cannot move from ${round.state} to live`);
+    throw new matchruleserror(
+      "bad-transition",
+      lobby.id,
+      round.state,
+      "live",
+      `match rules round ${roundid} cannot move from ${round.state} to live`,
+    );
   }
   if (lobby.rounds.some((row) => row.state === "live")) {
-    throw new matchruleserror("bad-transition", lobby.id, "live", "live", `match rules lobby ${lobby.id} already runs a live round`);
+    throw new matchruleserror(
+      "bad-transition",
+      lobby.id,
+      "live",
+      "live",
+      `match rules lobby ${lobby.id} already runs a live round`,
+    );
   }
   return withround(lobby, roundid, { ...round, state: "live" });
 }
@@ -151,10 +176,25 @@ export function openround(lobby: MatchLobby, roundid: string): MatchLobby {
  * @returns the lobby with the round scored (a new row).
  */
 export function scoreround(lobby: MatchLobby, roundid?: string): MatchLobby {
-  const round = roundid ? lobby.rounds.find((row) => row.id === roundid) : lobby.rounds.find((row) => row.state === "live");
-  if (!round) throw new matchruleserror("unknown-round", lobby.id, null, null, `match rules no scoreable round in lobby ${lobby.id}`);
+  const round = roundid
+    ? lobby.rounds.find((row) => row.id === roundid)
+    : lobby.rounds.find((row) => row.state === "live");
+  if (!round)
+    throw new matchruleserror(
+      "unknown-round",
+      lobby.id,
+      null,
+      null,
+      `match rules no scoreable round in lobby ${lobby.id}`,
+    );
   if (!canroundtransition(round.state, "scored")) {
-    throw new matchruleserror("bad-transition", lobby.id, round.state, "scored", `match rules round ${round.id} cannot move from ${round.state} to scored`);
+    throw new matchruleserror(
+      "bad-transition",
+      lobby.id,
+      round.state,
+      "scored",
+      `match rules round ${round.id} cannot move from ${round.state} to scored`,
+    );
   }
   return withround(lobby, round.id, { ...round, state: "scored" });
 }
@@ -168,7 +208,13 @@ export function scoreround(lobby: MatchLobby, roundid?: string): MatchLobby {
  */
 export function seatplayers(lobby: MatchLobby, players: MatchPlayer[]): MatchPlayer[] {
   if (players.length > lobby.capacity) {
-    throw new matchruleserror("lobby-full", lobby.id, null, null, `match rules lobby ${lobby.id} seats ${lobby.capacity}, got ${players.length}`);
+    throw new matchruleserror(
+      "lobby-full",
+      lobby.id,
+      null,
+      null,
+      `match rules lobby ${lobby.id} seats ${lobby.capacity}, got ${players.length}`,
+    );
   }
   return players;
 }
@@ -181,7 +227,14 @@ export function seatplayers(lobby: MatchLobby, players: MatchPlayer[]): MatchPla
  * @returns the seat with the new score (a new row).
  */
 export function addscore(player: MatchPlayer, points: number): MatchPlayer {
-  if (!Number.isFinite(points)) throw new matchruleserror("bad-input", player.lobbyid, null, null, `match rules seat ${player.id} got a non finite score delta`);
+  if (!Number.isFinite(points))
+    throw new matchruleserror(
+      "bad-input",
+      player.lobbyid,
+      null,
+      null,
+      `match rules seat ${player.id} got a non finite score delta`,
+    );
   return { ...player, score: Math.max(0, player.score + points) };
 }
 
@@ -195,12 +248,22 @@ export function addscore(player: MatchPlayer, points: number): MatchPlayer {
  * @param options the budget and the autoadvance flag.
  * @returns the new lobby plus the events the tick produced.
  */
-export function advancelobby(lobby: MatchLobby, seconds: number, options: AdvanceOptions): { lobby: MatchLobby; events: MatchEvent[] } {
+export function advancelobby(
+  lobby: MatchLobby,
+  seconds: number,
+  options: AdvanceOptions,
+): { lobby: MatchLobby; events: MatchEvent[] } {
   if (!Number.isFinite(seconds) || seconds < 0) {
     throw new matchruleserror("bad-input", lobby.id, null, null, `match rules tick needs seconds >= 0, got ${seconds}`);
   }
   if (!Number.isFinite(options.roundbudgetseconds) || options.roundbudgetseconds <= 0) {
-    throw new matchruleserror("bad-input", lobby.id, null, null, `match rules tick needs a round budget > 0, got ${options.roundbudgetseconds}`);
+    throw new matchruleserror(
+      "bad-input",
+      lobby.id,
+      null,
+      null,
+      `match rules tick needs a round budget > 0, got ${options.roundbudgetseconds}`,
+    );
   }
   let current = lobby;
   const events: MatchEvent[] = [];

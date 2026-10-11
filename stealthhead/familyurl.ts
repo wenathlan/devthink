@@ -1,18 +1,25 @@
 /**
- * familyurl.ts — the family address book of the stealthhead theme (wave D1
- * polish): one helper turns a family slug into the relative URL of the
- * sibling application one folder above this app ("../cadria/" beside
- * "stealthhead/"), so the window chrome links the whole wenathlan family
- * without hardcoding a host — the family redirects both ways.
+ * familyurl.ts — the url of a family application beside this one (root
+ * layer).
+ *
+ * the family deploys as sibling folders on one host: stealthhead lives at
+ * /stealthhead/, the other deploy units at /<slug>/, and every
+ * cross-application link must survive any mount point (project pages,
+ * self-hosted domains, bare local preview servers) without trusting a build
+ * constant or reading the live location. the helper therefore builds a
+ * RELATIVE url — one level up from the current deploy unit, then into the
+ * sibling folder — so the chrome of the window resolves the family from
+ * wherever the app is mounted. pure and multi-mode: the same call runs in
+ * the browser and in node (the unit tests), with zero storage.
  */
 
-/**
- * Builds the relative URL of a family application from its slug.
+/** resolves the url of a family deploy unit that shares this host.
  *
- * @param slug the folder slug of the family app (for example "cadria").
- * @returns the relative URL one level above this app, edge slashes trimmed,
- * trailing slash included.
+ * @param slug the deploy unit segment (the app folder name); decorative
+ *   slashes are stripped.
+ * @returns the relative path of the family application, slash-terminated.
  */
 export function familyurl(slug: string): string {
-  return `../${slug.replace(/^\/+|\/+$/g, "")}/`;
+  // biome-ignore lint/style/useTemplate: the family contract body stays verbatim — every app of the family copies this exact line
+  return "../" + slug.replace(/^\/+|\/+$/g, "") + "/";
 }

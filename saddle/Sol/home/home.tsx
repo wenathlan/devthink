@@ -30,10 +30,12 @@ import {
 	Package,
 } from 'lucide-react';
 // Signal & Ledger: home as the landing — declare the sandbox, read the matrix, boot the console.
-import { useEffect, useMemo, useState } from 'react';
+import { type CSSProperties, useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'wouter';
-import { SectionRail } from '@/shell/Shell';
+import { SaddleMark, SectionRail } from '@/shell/Shell';
 import { type MediaSlot, mediaSlots } from '../../catalog';
+import { familyrow } from '../../family';
+import { familyurl } from '../../familyurl';
 import { specenvlimits } from '../../sandboxenvprofile.ts';
 import {
 	SANDBOXARCHES,

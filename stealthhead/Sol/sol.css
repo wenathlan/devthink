@@ -24,7 +24,7 @@
   /* accents — one signal ember-red carries the page (the live match) */
   --sol-signal: 232 86 63;
   --sol-primary: #e8563f;
-  --sol-primary-ink: #2a0b06;
+  --sol-primary-ink: #2c0703;
   --sol-ember: #d04530;
   --sol-tangerine: #f07a63;
   --sol-gold: #f2a08c;
@@ -35,12 +35,12 @@
   --sol-warning: #ffd166;
   --sol-info: #f2c0b4;
 
-  /* radius ladder (SPEC 17) */
+  /* radius ladder (SPEC 17) — the pill token is retired: the family law
+     bans the stadium radius from buttons, badges, tabs and chips */
   --r-sm: 10px;
   --r-md: 14px;
   --r-lg: 20px;
   --r-xl: 28px;
-  --r-pill: 999px;
 
   /* 5-level shadows */
   --sh-1: 0 1px 2px rgba(0, 0, 0, 0.4);
@@ -58,9 +58,15 @@
   --glass-blur: 35px;
   --glass-sat: 140%;
 
-  /* typography — the Sol triad: Space Grotesk display, system reading, Plex mono detail */
-  --sol-sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --sol-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  /* typography — the family triad (the NeoSkills doctrine): Bricolage
+     Grotesque rides display/heroes, Outfit rides the UI body, JetBrains
+     Mono rides micro-labels (loaded in index.html with preconnect +
+     display=swap; Space Grotesk and IBM Plex Mono stay as fallbacks only) */
+  --font-display: "Bricolage Grotesque", "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-ui: "Outfit", "Segoe UI Variable", "Segoe UI", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --sol-sans: var(--font-ui);
+  --sol-mono: var(--font-mono);
 
   /* z-index bands (documented): atmosphere 0 · content 10 · float 20 · bar 50 · modal 200 · toast 300 · tooltip 400 */
   --z-atmosphere: 0;
@@ -252,8 +258,9 @@ kbd, code {
 .dt-nav__tip { position: absolute; z-index: 1; top: calc(100% + 6px); left: 50%; padding: 5px 9px; color: #fafafa; background: rgb(32 32 32 / 85%); border: 1px solid rgb(255 255 255 / 12%); border-radius: 4px; font: 500 12px var(--sol-sans); white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, -4px); transition: opacity 0.2s ease, transform 0.2s ease; backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px); box-shadow: 0 4px 12px rgb(0 0 0 / 35%); }
 .dt-nav__app:hover .dt-nav__tip, .dt-nav__app:focus-visible .dt-nav__tip { opacity: 1; transform: translate(-50%, 0); }
 
-/* the Windows popintro bounce of the taskbar entries */
-@keyframes dtPopIntro { 0% { transform: scale(0); } 40% { transform: scale(1.125); } 70% { transform: scale(0.725); } 100% { transform: scale(1); } }
+/* the Windows popintro bounce of the taskbar entries — with the family
+   floor: the entry never leaves from the zero scale, it springs from .7 */
+@keyframes dtPopIntro { 0% { transform: scale(0.7); } 40% { transform: scale(1.125); } 70% { transform: scale(0.975); } 100% { transform: scale(1); } }
 
 /* the tray: the theme toggle and the clock at the 11px Windows scale */
 .dt-nav__tray { display: flex; align-items: center; flex: none; margin-left: auto; color: var(--sol-muted); font: 400 11px var(--sol-sans); }
@@ -309,7 +316,7 @@ kbd, code {
     0 1px 2px rgb(0 0 0 / 34%),
     0 5px 14px -4px rgb(0 0 0 / 32%),
     0 3px 12px -4px color-mix(in srgb, var(--app-tint, #dfe5ee) 28%, transparent);
-  transition: box-shadow 160ms var(--ease), transform 160ms var(--ease);
+  transition: box-shadow 150ms var(--ease), transform 150ms var(--ease);
 }
 .dt-tile svg { display: block; }
 
@@ -346,12 +353,13 @@ kbd, code {
   .dt-nav, .dt-nav__tip, .dt-start { background: #202020; backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
 
-/* pill tabs + segmented */
-.tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: var(--r-pill); background: var(--sol-panel); border: 1px solid var(--sol-line); }
+/* pill tabs + segmented (the stadium radius is retired: the track and its
+   segments ride the ladder radii — the later passes retune the rest) */
+.tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: var(--r-sm); background: var(--sol-panel); border: 1px solid var(--sol-line); }
 .tabs a, .tabs button {
   border: 0; background: transparent; color: var(--sol-muted);
   font: inherit; font-weight: 650; font-size: 0.9rem;
-  padding: 9px 16px; border-radius: var(--r-pill); cursor: pointer;
+  padding: 9px 16px; border-radius: calc(var(--r-sm) - 4px); cursor: pointer;
   transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease), transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
 }
 .tabs a:hover, .tabs button:hover { color: var(--sol-text); }
@@ -373,7 +381,7 @@ kbd, code {
 .badge {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 3px 11px;
-  border-radius: var(--r-pill);
+  border-radius: 4px;
   border: 1px solid var(--sol-line-strong);
   color: var(--sol-tangerine);
   font-size: 0.7rem; font-weight: 800;
@@ -418,7 +426,7 @@ kbd, code {
 .toggle { position: relative; display: inline-block; width: 46px; height: 26px; flex: none; }
 .toggle input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
 .toggle .track {
-  position: absolute; inset: 0; border-radius: var(--r-pill);
+  position: absolute; inset: 0; border-radius: 13px;
   background: var(--sol-panel-strong); border: 1px solid var(--sol-line-strong);
   transition: background var(--t-base) var(--ease);
 }
@@ -490,10 +498,10 @@ kbd, code {
 }
 .appframe > .shell { flex: 1; width: 100%; }
 
-/* display face of the family (Space Grotesk) + stat mono (IBM Plex Mono) */
-.wordmark, h1, h2, h3 { font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif; }
+/* display face of the family (Bricolage Grotesque) + stat mono (JetBrains Mono) */
+.wordmark, h1, h2, h3 { font-family: var(--font-display); }
 .mono, .table td, .badge, .stat .statvalue {
-  font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  font-family: var(--font-mono);
 }
 
 /* ---------- 15. HERO ---------- */
@@ -543,7 +551,7 @@ kbd, code {
 }
 .roundlist .roundindex {
   color: var(--sol-faint); font-size: 0.72rem;
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-mono);
   width: 22px; flex: none;
 }
 .roundlist .roundmap { color: var(--sol-text); font-weight: 650; }
@@ -553,7 +561,7 @@ kbd, code {
 .podium { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 26px; }
 .podiumcard { text-align: left; }
 .podiumcard .position {
-  font-family: "Space Grotesk", ui-sans-serif, sans-serif;
+  font-family: var(--font-display);
   font-size: 2rem; font-weight: 800; letter-spacing: -0.04em;
   color: var(--sol-tangerine);
 }
@@ -579,7 +587,7 @@ kbd, code {
 }
 .weaponmeta .metarow { display: flex; justify-content: space-between; gap: 10px; }
 .weaponmeta .metarow b { color: var(--sol-faint); font-weight: 700; }
-.damagebar { height: 5px; border-radius: var(--r-pill); background: var(--sol-panel-strong); margin-top: 16px; overflow: hidden; }
+.damagebar { height: 5px; border-radius: 3px; background: var(--sol-panel-strong); margin-top: 16px; overflow: hidden; }
 .damagebar span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--sol-gold), var(--sol-ember)); }
 
 /* ---------- 20. WORLD GALLERY ---------- */
@@ -588,7 +596,7 @@ kbd, code {
 .assetcard h3 { margin: 0 0 6px; font-size: 1rem; }
 .assetcard .assetpath {
   display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-mono);
   font-size: 0.78rem; color: var(--sol-tangerine);
   padding: 6px 9px;
   background: var(--sol-panel-strong);
@@ -597,7 +605,7 @@ kbd, code {
 }
 .assetcard .assethash {
   display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-mono);
   font-size: 0.72rem; color: var(--sol-faint);
   margin-top: 8px;
 }
@@ -671,7 +679,7 @@ kbd, code {
 .toast button:focus-visible {
   outline: 2px solid var(--sol-primary);
   outline-offset: 2px;
-  border-radius: var(--r-pill);
+  border-radius: var(--r-sm);
   box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18);
 }
 
@@ -1570,7 +1578,7 @@ a:hover { color: var(--win-accent); }
   animation: winintroFade 250ms var(--win-ease-entry) 1000ms backwards;
 }
 .winintro[data-leaving="true"] { animation: winintroLeave 800ms cubic-bezier(0.76, 0, 0.24, 1) forwards; }
-@keyframes winintroSpring { from { opacity: 0; transform: scale(0.6); } }
+@keyframes winintroSpring { from { opacity: 0; transform: scale(0.7); } }
 @keyframes winintroRise { from { opacity: 0; transform: translateY(18px); } }
 @keyframes winintroFade { from { opacity: 0; } }
 @keyframes winintroLeave { to { transform: translateY(-100%); } }
@@ -1757,7 +1765,7 @@ a:hover { color: var(--win-accent); }
    POLISH PASS — wave D1 (F-stealthhead): the professional polish of the
    window application. The WINDOW APP PASS grammar is verified and
    tightened, never replaced: the app identity accent lands (--sh-accent,
-   the stealthhead red #f87171) on the rail ladder, the armory damage bars
+   the stealthhead ember #e8563f) on the rail ladder, the armory damage bars
    and the first-run dialog; the rail foot gains the FAMILY section (the
    sibling links built by familyurl.ts — accent dot + name, new-tab
    targets); the HUD-ish control ladder standardizes at 28–36px; the
@@ -1768,8 +1776,8 @@ a:hover { color: var(--win-accent); }
 /* the identity accent of the app chrome and content accents (both themes;
    the Windows shell accent stays on selection, links, toggle and tabs) */
 :root {
-  --sh-accent: #f87171;
-  --sh-accent-ink: #2a0b06;
+  --sh-accent: #e8563f;
+  --sh-accent-ink: #2c0703;
 }
 
 /* the rail ladder per the campaign doctrine: 3px wide, 6px neutral on
@@ -1911,17 +1919,17 @@ a:hover { color: var(--win-accent); }
    stealthhead. Doctrine (design-campaign-v2.md) lands on the window app:
    the campaign faces load (Bricolage Grotesque display + JetBrains Mono
    detail over the previous stacks, never FOUT-blocked), the window stage
-   gains the NAMED RED LIGHT SOURCE (#f87171), the Modulify-style halftone
+   gains the NAMED EMBER LIGHT SOURCE (#e8563f), the Modulify-style halftone
    dissolve and the film grain (one data-uri, reused), page heroes ride the
    display face with lowercase mono eyebrows at 0.08em max, and the page
    bodies break the uniform card grids (match board with a dominant feed
-   column + varied stat rail, the editorial armory list on the red ladder,
+   column + varied stat rail, the editorial armory list on the ember ladder,
    the specimen-grade ladder table). Logo discipline: the title bar carries
    the ONE chrome mark — heroes speak through type, never the mark again.
    Append-only overrides; every rule above stays untouched.
    ========================================================================== */
 
-/* ---- tokens: the campaign faces + the red identity atmosphere ---- */
+/* ---- tokens: the campaign faces + the ember identity atmosphere ---- */
 :root {
   /* display face over the previous stack (previous names stay as fallback) */
   --font-display: "Bricolage Grotesque", "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -1931,11 +1939,11 @@ a:hover { color: var(--win-accent); }
      (eyebrows, badges, tables, stat labels, code) rides JetBrains Mono */
   --sol-mono: var(--font-mono);
 
-  /* the named red light source of the app (stealthhead red over the canvas) */
-  --sh-light: radial-gradient(1200px 700px at 72% -12%, #f8717114, transparent 62%),
-    radial-gradient(900px 620px at 8% 108%, #f871710f, transparent 58%);
+  /* the named ember light source of the app (the match ember over the canvas) */
+  --sh-light: radial-gradient(1200px 700px at 72% -12%, rgb(232 86 63 / 8%), transparent 62%),
+    radial-gradient(900px 620px at 8% 108%, rgb(232 86 63 / 6%), transparent 58%);
   /* the halftone edge (Modulify-style dot dissolve) */
-  --sh-halftone-dot: #f8717126;
+  --sh-halftone-dot: rgb(232 86 63 / 15%);
   /* the film grain (one data-uri, reused everywhere) */
   --sh-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
 }
@@ -2105,12 +2113,12 @@ a:hover { color: var(--win-accent); }
 /* ===== campaign v3 · r3-stealthhead ===== */
 /* ==========================================================================
    CAMPAIGN V3 · R3-STEALTHHEAD — the tactical landing + platform pass
-   The theme retints to its charter identity: the signal red #f87171 (the
+   The theme retints to its charter identity: the match ember #e8563f (the
    90/10 discipline) over the dark tactical base — the neutral charcoal
    mica (the blue Windows gradient retires). Tokens are RESTATED (the
    cascade retints — every earlier pass keeps its place, nothing is
    removed). TWO interfaces: the LANDING (home = the cinematic stage — one
-   red rim light, the sweeping scope reticle, the tactical-caps display
+   ember rim light, the sweeping scope reticle, the tactical-caps display
    headline, machined CTA keys, the featured match as the ONE raised tile,
    the domain ledger and the footer meta-quad) and the PLATFORM (match /
    ranking / weapons / world = the game consoles — scoreboard ledgers with
@@ -2118,25 +2126,25 @@ a:hover { color: var(--win-accent); }
    hairline stat meters, the seamed map plates). Mark discipline: the scope
    owns the mark on the landing — the title-bar mark rests there
    (data-landing). Motion: entrances 560ms on the campaign ease, stagger
-   70–80ms, micro 120–200ms, the reticle sweep and the live ping as the only
-   ambient loops (double-guarded), never transition: all.
+   70–80ms, micro 150ms, press 100ms, the reticle sweep and the live ping
+   as the only ambient loops (double-guarded), never all-property fades.
    Sections: tokens · motion kit · landing stage · scope · featured tile ·
    domain ledger · meta-quad · mark rest · armory ledger · scoreboard
    ledgers · map plates · responsive · guards.
    ========================================================================== */
 
-/* ---- tokens: the red signal + the tactical charcoal ladder ---------------- */
+/* ---- tokens: the ember signal + the tactical charcoal ladder ---------------- */
 :root {
-  /* the charter signal: red #f87171 (dark theme: dark ink on the fill) */
-  --win-accent: #f87171;
-  --win-accent-ink: #230806;
-  --dt-accent: #f87171;
-  --sol-signal: 248 113 113;
-  --sol-primary: #f87171;
-  --sol-primary-ink: #230806;
-  --sol-ember: #e4544a;
-  --sol-tangerine: #f79e95;
-  --sol-gold: #fbb3ab;
+  /* the charter signal: the match ember #e8563f (dark ink on the fill) */
+  --win-accent: #e8563f;
+  --win-accent-ink: #2c0703;
+  --dt-accent: #e8563f;
+  --sol-signal: 232 86 63;
+  --sol-primary: #e8563f;
+  --sol-primary-ink: #2c0703;
+  --sol-ember: #d04530;
+  --sol-tangerine: #f07a63;
+  --sol-gold: #f2a08c;
   /* the tactical dark base: neutral charcoal, no blue in the mica */
   --sol-canvas: #1b1918;
   --sol-canvas-deep: #131211;
@@ -2149,6 +2157,8 @@ a:hover { color: var(--win-accent); }
   --sh-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 [data-theme="light"] {
+  /* the tempered ember: the accessible twin of the signal on the light
+     paper (the stealthhead twin: #e8563f dark / #c0392f light) */
   --win-accent: #c0392f;
   --win-accent-ink: #ffffff;
   --dt-accent: #c0392f;
@@ -2162,9 +2172,9 @@ a:hover { color: var(--win-accent); }
 }
 
 /* ---- motion kit: the machined press key + the reveal retime --------------- */
-.press { transition: transform 120ms var(--sh-ease); }
+.press { transition: transform 100ms var(--sh-ease); }
 .press:active { transform: scale(0.96); }
-.btn.press { transition: transform 120ms var(--sh-ease), background-color 150ms var(--win-ease-entry), box-shadow 150ms var(--win-ease-entry); }
+.btn.press { transition: transform 100ms var(--sh-ease), background-color 150ms var(--win-ease-entry), box-shadow 150ms var(--win-ease-entry); }
 .reveal.in { animation-duration: 560ms; animation-timing-function: var(--sh-ease); }
 .reveal.in:nth-child(2) { animation-delay: 70ms; }
 .reveal.in:nth-child(3) { animation-delay: 140ms; }
@@ -2172,7 +2182,10 @@ a:hover { color: var(--win-accent); }
 .reveal.in:nth-child(5) { animation-delay: 280ms; }
 .reveal.in:nth-child(6) { animation-delay: 350ms; }
 
-/* ---- the landing stage: full-bleed inside the window, ONE red rim light --- */
+/* ---- the landing stage: full-bleed inside the window, ONE ember rim light --- */
+/* the sticky-footer law: the routed stage is a column that eats the slack,
+   so the meta-quad sits flush on the window floor even on short viewports */
+.winapp__stage > main.shell { display: flex; flex-direction: column; min-height: 100%; }
 .shstage {
   position: relative;
   margin: calc(clamp(20px, 4vw, 56px) * -1) calc(clamp(16px, 4vw, 40px) * -1) 0;
@@ -2187,6 +2200,12 @@ a:hover { color: var(--win-accent); }
   pointer-events: none;
   background: radial-gradient(680px 520px at 72% 0%, color-mix(in srgb, var(--sh-accent) 13%, transparent), transparent 72%);
 }
+/* the mark lockup of the hero: the drawn scope mark with the flow band, the
+   lowercase mono eyebrow beside it (the ONE mark of the landing zone — the
+   title-bar mark rests under data-landing) */
+.shstage__lockup { display: flex; align-items: center; gap: 12px; margin-bottom: 2px; }
+.shstage__lockup .eyebrow { margin: 0; }
+.shstage__mark { display: inline-flex; flex: none; }
 .shstage__grid {
   position: relative;
   display: grid;
@@ -2207,7 +2226,28 @@ a:hover { color: var(--win-accent); }
   text-wrap: balance;
 }
 .shstage__lede { max-width: 640px; margin: 0 0 26px; font-size: clamp(1rem, 1.5vw, 1.14rem); color: var(--sol-muted); text-wrap: pretty; }
-.shstage__actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.shstage__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+/* the hero cue (the ONE CTA law): a quiet mono cue beside the machined key —
+   no fill, no border, no competition; it lifts on hover the family way
+   (micro 150ms on the campaign ease) and presses at the 100ms law */
+.shstage__cue {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 2px;
+  border: 0;
+  background: none;
+  color: var(--sol-muted);
+  font: 600 12px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, var(--sh-accent) 42%, transparent);
+  text-underline-offset: 5px;
+  cursor: pointer;
+  transition: color 150ms var(--sh-ease), text-decoration-color 150ms var(--sh-ease);
+}
+.shstage__cue:hover { color: var(--sol-text); text-decoration-color: var(--sh-accent); }
 .shstage__chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
 .shstage__chips .badge { background: var(--sol-surface-2); }
 .shstage__wait { margin: 4px 0 0; font-size: 0.78rem; color: var(--sol-faint); letter-spacing: 0.06em; }
@@ -2244,7 +2284,7 @@ a:hover { color: var(--win-accent); }
     var(--sol-shadow-6);
   color: inherit;
   text-decoration: none;
-  transition: transform 200ms var(--sh-ease), box-shadow 200ms var(--sh-ease);
+  transition: transform 150ms var(--sh-ease), box-shadow 150ms var(--sh-ease);
 }
 .shfeat:hover {
   transform: translateY(-3px);
@@ -2261,11 +2301,11 @@ a:hover { color: var(--win-accent); }
 .shfeat__map { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; margin-top: 4px; }
 .shfeat__mapname { font-family: var(--font-display); font-size: 1.45rem; font-weight: 700; letter-spacing: -0.02em; color: var(--sh-accent); }
 .shfeat__mapmode { font-size: 0.76rem; color: var(--sol-muted); }
-.shfeat__cta { display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; font: 600 13px var(--sol-mono); color: var(--sol-muted); transition: color 160ms var(--sh-ease); }
+.shfeat__cta { display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; font: 600 13px var(--sol-mono); color: var(--sol-muted); transition: color 150ms var(--sh-ease); }
 .shfeat:hover .shfeat__cta { color: var(--sol-text); }
 
 /* the hairline meter (featured tile + match round ledger) */
-.shmeter { position: relative; height: 3px; border-radius: var(--r-pill); background: var(--sol-surface-4); overflow: hidden; }
+.shmeter { position: relative; height: 3px; border-radius: 2px; background: var(--sol-surface-4); overflow: hidden; }
 .shmeter span { position: absolute; inset: 0 auto 0 0; display: block; border-radius: inherit; background: var(--sh-accent); }
 .shmeter--rail { margin-top: 10px; }
 
@@ -2280,7 +2320,7 @@ a:hover { color: var(--win-accent); }
   border-bottom: 1px solid var(--sol-hairline);
   color: inherit;
   text-decoration: none;
-  transition: background-color 160ms var(--sh-ease);
+  transition: background-color 150ms var(--sh-ease);
 }
 .shledger__row:hover { background: color-mix(in oklab, var(--sh-accent) 10%, transparent); text-decoration: none; }
 .shledger__no { font: 600 12px var(--sol-mono); color: var(--sol-faint); font-variant-numeric: tabular-nums; }
@@ -2289,7 +2329,7 @@ a:hover { color: var(--win-accent); }
 .shledger__name { font-family: var(--font-display); font-size: 1.16rem; font-weight: 600; letter-spacing: -0.02em; color: var(--sol-text); }
 .shledger__about { margin: 0; font-size: 0.86rem; color: var(--sol-muted); text-wrap: pretty; }
 .shledger__meta { font-size: 0.72rem; color: var(--sol-faint); letter-spacing: 0.04em; text-align: right; font-variant-numeric: tabular-nums; }
-.shledger__arrow { display: inline-flex; color: var(--sol-faint); transition: color 160ms var(--sh-ease), transform 160ms var(--sh-ease); }
+.shledger__arrow { display: inline-flex; color: var(--sol-faint); transition: color 150ms var(--sh-ease), transform 150ms var(--sh-ease); }
 .shledger__row:hover .shledger__arrow { color: var(--sh-accent); transform: translateX(3px); }
 .shledger__row.reveal.in { animation-delay: calc(var(--sh-d, 0) * 80ms); }
 
@@ -2299,6 +2339,7 @@ a:hover { color: var(--win-accent); }
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: clamp(18px, 3vw, 32px);
   margin: clamp(34px, 6vw, 64px) calc(clamp(16px, 4vw, 40px) * -1) calc(clamp(20px, 4vw, 56px) * -1);
+  margin-top: auto; /* the sticky-footer law: the meta-quad eats the slack of short pages */
   padding: clamp(24px, 4vw, 40px) clamp(16px, 4vw, 40px) clamp(30px, 5vw, 52px);
   border-top: 1px solid var(--sol-hairline);
   background: var(--sol-surface-1);
@@ -2306,8 +2347,55 @@ a:hover { color: var(--win-accent); }
 .shquad__col { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .shquad__head { margin: 0 0 2px; font: 600 11px var(--sol-mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--sol-faint); }
 .shquad__line { margin: 0; color: var(--sol-muted); font-size: 0.86rem; }
-.shquad__link { width: fit-content; color: var(--sol-muted); font-size: 0.9rem; text-decoration: none; transition: color 140ms var(--sh-ease); }
+.shquad__link { width: fit-content; color: var(--sol-muted); font-size: 0.9rem; text-decoration: none; transition: color 150ms var(--sh-ease); }
 .shquad__link:hover { color: var(--sh-accent); text-decoration: none; }
+
+/* the family row of the landing footer: a full-width strip under the quad
+   columns — the spec §12 dots with the familyurl links (the same table the
+   rail foot consumes); true circles, the dot ink law honored */
+.shquad__family {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  margin-top: clamp(14px, 2vw, 24px);
+  padding-top: clamp(14px, 2vw, 24px);
+  border-top: 1px solid var(--sol-hairline);
+}
+.shquad__familyhead {
+  flex: none;
+  margin-right: 8px;
+  font: 600 10px var(--sol-mono);
+  letter-spacing: 0.14em;
+  text-transform: lowercase;
+  color: var(--sol-faint);
+}
+.shquad__famlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 28px;
+  padding: 0 6px;
+  color: var(--sol-muted);
+  font-size: 12.5px;
+  text-decoration: none;
+  transition: color 150ms var(--sh-ease);
+}
+.shquad__famlink:hover { color: var(--sol-text); text-decoration: none; }
+.shquad__famdot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--fam-dot, var(--sh-accent));
+  box-shadow: 0 0 0 0 color-mix(in oklab, var(--fam-dot, var(--sh-accent)) 30%, transparent);
+  transition: box-shadow 150ms var(--sh-ease);
+}
+.shquad__famlink:hover .shquad__famdot {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--fam-dot, var(--sh-accent)) 22%, transparent);
+}
+.shquad__famlabel { white-space: nowrap; }
 
 /* ---- mark discipline: the scope owns the mark on the landing -------------- */
 .winapp[data-landing="true"] .winapp__brand .shMark { display: none; }

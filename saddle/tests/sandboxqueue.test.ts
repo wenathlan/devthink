@@ -19,8 +19,8 @@ import {
   cansandboxstep,
   createsandboxqueue,
   issandboxterminal,
-  sandboxqueueerror,
   type sandboxphase,
+  sandboxqueueerror,
 } from '../sandboxqueue.ts';
 
 /** walks the full happy path of the machine. */
