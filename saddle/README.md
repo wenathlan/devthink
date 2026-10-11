@@ -32,7 +32,7 @@ domain modules land beside the saddle domains:
 | `security.ts`, `alternatives.ts` | hardening gates and the alternative-stack catalog |
 | `index.html`, `App.tsx`, `Sol/` | the single SPA shell and the Sol theme (one tsx app with one stylesheet per theme) |
 | `server.ts`, `sandbox.ts` | the zero-dependency self-hosted API of the 2.1.6 grand-merge envelope (`node server.ts`; the api answers its version at `/api/v1/health`) and the browser-pure engine port |
-| `caddyfile`, `vercel.json`, `netlify.toml` | the self-hosted and platform deploy adapters beside the surface they publish |
+| `vercel.json`, `netlify.toml` | the platform deploy adapters beside the surface they publish (the caddy ghost stays out of the tree) |
 | `specs/*` package exports | processors, gpus, cores, boards and the qemu/mttg/passage/docker envelopes |
 
 The full pre-merge documentation of the engine lives in

@@ -13,7 +13,7 @@
  *  no padding. maene's `generatePKCE` uses 64 random bytes -> 86 chars,
  *  method "S256".
  *
- *  Uses `node:test` + `node:assert/strict`. Imports only leaf modules; the
+ *  Runs on the vitest runner with `node:assert/strict` assertions. Imports only leaf modules; the
  *  consolidated auth module pulls only `node:*` builtins + global fetch.
  */
 

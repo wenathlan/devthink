@@ -3,7 +3,7 @@
  */
 
 import assert from "node:assert/strict";
-import { test } from "node:test";
+import { describe, it } from "vitest";
 import { createcommand, createerror, createsnapshot, isfreshsnapshot, snapshotdiff } from "../browser.js";
 import { createworkerrouter } from "../browser.js";
 import { startworker } from "../browser.js";
@@ -22,7 +22,8 @@ const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
    the former side-effect imports of extension/content.js and
    extension/pagebridge.js are covered by the browser.js imports above. */
 
-test("creates versioned extension commands and correlated responses", async () => {
+describe("the extension surface", () => {
+it("creates versioned extension commands and correlated responses", async () => {
   const command = createcommand("snapshot", { tabid: 7 }, { id: "request1" });
   assert.deepEqual(command, { version: 1, type: "command", id: "request1", command: "snapshot", payload: { tabid: 7 } });
   const error = createerror(command, new Error("stale page"), { code: "stale_snapshot" });
@@ -30,14 +31,14 @@ test("creates versioned extension commands and correlated responses", async () =
   assert.equal(error.error.code, "stale_snapshot");
 });
 
-test("creates snapshots and rejects stale references by identity", () => {
+it("creates snapshots and rejects stale references by identity", () => {
   const snapshot = createsnapshot({ snapshotid: "snap1", url: "https://example.com", elements: [{ ref: "e1", role: "button", name: "Run" }] });
   assert.equal(snapshot.elements[0].ref, "e1");
   assert.equal(isfreshsnapshot("snap1", snapshot.snapshotid), true);
   assert.equal(isfreshsnapshot("snap0", snapshot.snapshotid), false);
 });
 
-test("computes extension snapshot diffs and detects context changes", () => {
+it("computes extension snapshot diffs and detects context changes", () => {
   const previous = createsnapshot({ snapshotid: "snap1", windowid: "window1", tabid: "tab1", frameid: "main", elements: [{ ref: "e1", role: "button", name: "Run" }, { ref: "e2", role: "link", name: "Docs" }] });
   const current = createsnapshot({ snapshotid: "snap2", windowid: "window1", tabid: "tab1", frameid: "frame2", elements: [{ ref: "e1", role: "button", name: "Running" }, { ref: "e3", role: "link", name: "Guide" }] });
   const diff = snapshotdiff(previous, current);
@@ -47,7 +48,7 @@ test("computes extension snapshot diffs and detects context changes", () => {
   assert.equal(diff.changed[0].name, "Running");
 });
 
-test("routes commands through scripting and tabs while persisting snapshot state", async () => {
+it("routes commands through scripting and tabs while persisting snapshot state", async () => {
   const calls = [];
   const router = createworkerrouter({
     scripting: { async executeScript(input) { calls.push(["script", input]); } },
@@ -63,7 +64,7 @@ test("routes commands through scripting and tabs while persisting snapshot state
   assert.deepEqual(await router.readstate(), { snapshotid: "snap1" });
 });
 
-test("content bridge returns bounded snapshots and executes only referenced clicks", () => {
+it("content bridge returns bounded snapshots and executes only referenced clicks", () => {
   let clicked = false;
   const element = { tagName: "BUTTON", innerText: "Run", getAttribute(name) { return name === "role" ? "button" : null; }, click() { clicked = true; } };
   const documentref = { location: { href: "https://example.com" }, title: "Example", body: { innerText: "Visible content" }, querySelectorAll() { return [element]; } };
@@ -76,7 +77,7 @@ test("content bridge returns bounded snapshots and executes only referenced clic
   assert.throws(() => bridge.handle(createcommand("clickref", { ref: "e1", snapshotid: "stale" })), (error) => error.code === "stale_snapshot");
 });
 
-test("content isolation reads page-world facts through a correlated message boundary", async () => {
+it("content isolation reads page-world facts through a correlated message boundary", async () => {
   const events = new Set();
   const documentref = { location: { href: "https://example.com/page" }, title: "Page world", body: { innerText: "Facts from the page world" } };
   const windowref = {
@@ -96,7 +97,7 @@ test("content isolation reads page-world facts through a correlated message boun
   events.delete(pagebridge.listener);
 });
 
-test("content isolation rejects a missing page-world response with a stable timeout", async () => {
+it("content isolation rejects a missing page-world response with a stable timeout", async () => {
   const events = new Set();
   const windowref = { addEventListener(type, listener) { if (type === "message") events.add(listener); }, removeEventListener(type, listener) { if (type === "message") events.delete(listener); }, setTimeout, clearTimeout, postMessage() {} };
   const channel = globalThis.saddlecontent.createpagechannel(windowref, () => 100, 5);
@@ -104,7 +105,7 @@ test("content isolation rejects a missing page-world response with a stable time
   channel.dispose();
 });
 
-test("keeps extension permissions minimal and optional escalation caller-owned", async () => {
+it("keeps extension permissions minimal and optional escalation caller-owned", async () => {
   const policy = permissionpolicy({ optional: ["activeTab"] });
   assert.deepEqual(policy.hostpermissions, []);
   assert.equal(policy.allows("storage"), true);
@@ -114,7 +115,7 @@ test("keeps extension permissions minimal and optional escalation caller-owned",
   await assert.rejects(() => requestpermission(policy, "storage", async () => true), /not optional/);
 });
 
-test("builds a versioned unpacked extension artifact without mutating the source manifest", async () => {
+it("builds a versioned unpacked extension artifact without mutating the source manifest", async () => {
   /* the monorepo flat contract: the tracked extension source surface lives
      at the app root (manifest.json, the popup page and stylesheet, and the
      seed icon ladder beside the single icon source) and the retired web/
@@ -144,7 +145,7 @@ test("builds a versioned unpacked extension artifact without mutating the source
   }
 });
 
-test("rehydrates and explicitly resumes pending commands after worker termination", async () => {
+it("rehydrates and explicitly resumes pending commands after worker termination", async () => {
   const command = createcommand("snapshot", { tabid: 11 }, { id: "pending1" });
   const writes = [];
   const router = createworkerrouter({
@@ -161,7 +162,7 @@ test("rehydrates and explicitly resumes pending commands after worker terminatio
   await assert.rejects(() => router.resume("missing"), (error) => error.code === "PENDING_NOT_FOUND");
 });
 
-test("registers startup rehydration without automatic command replay", async () => {
+it("registers startup rehydration without automatic command replay", async () => {
   let startup;
   let added;
   let removed;
@@ -176,4 +177,5 @@ test("registers startup rehydration without automatic command replay", async () 
   assert.equal(typeof added, "function");
   worker.dispose();
   assert.equal(removed, startup);
+});
 });

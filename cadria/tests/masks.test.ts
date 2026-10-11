@@ -1,13 +1,13 @@
 // # masks.test — the mask plane algebra of the studio: the grid builders,
 // the add, subtract and intersect combination, the inversion, threshold
 // and boolean bridges, the bounds, the crop and the shape generators,
-// runnable with the node built-in runner (no dependencies, no install):
-//   node --test tests/masks.test.ts
+// runnable with vitest:
+//   pnpm vitest run tests/masks.test.ts
 // Every test watches the two invariants the module promises: the ops
 // fold planes cell by cell with clamped values and mismatched or empty
 // input answers null or the empty plane instead of throwing.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   alphatoboolean,
   booleantoalpha,

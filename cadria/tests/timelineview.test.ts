@@ -1,13 +1,13 @@
 // # timelineview.test — the pure view-model of the edit surface, runnable
-// with the node built-in runner (no dependencies, no install):
-//   node --test tests/timelineview.test.ts
+// with vitest:
+//   pnpm vitest run tests/timelineview.test.ts
 // Every test watches the three promises the module makes: the tick↔pixel
 // mapping never invents time (pixels floor, ticks saturate), the ruler picks
 // the smallest readable step deterministically and labels with the exact
 // SMPTE display, and the playhead helpers (edit points, magnet, quantized
 // advance) only ever land on boundaries the algebra itself knows about.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import type { EditIssue, EditItem, EditTrack } from "../timelineedit.ts";
 import {
   advanceplayhead,

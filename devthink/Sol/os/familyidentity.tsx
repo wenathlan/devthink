@@ -5,10 +5,10 @@
  * ledger:
  *
  * - `FAMILY_ACCENT`     the per-app identity accents of the design spec
- *                       (section 12): forge lime-brasa, foundry têmpera,
- *                       vault gelo-de-cofre, getry violeta, argan jade,
- *                       cadria rosa, debonair latão, stealthhead ember,
- *                       saddle ember-couro, devthink âmbar-Sol. The table
+ *                       (section 12): forge ember-lime, foundry temper,
+ *                       vault ice-box, getry violet, argan jade,
+ *                       cadria pink, debonair brass, stealthhead ember,
+ *                       saddle leather-ember, devthink Sol-amber. The table
  *                       itself lives in familyaccent.ts (pure data — the
  *                       tests import it without the JSX layer); this
  *                       module re-exports it for the views.

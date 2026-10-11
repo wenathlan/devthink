@@ -186,7 +186,7 @@
     "build:engine": "node tests/scripts/buildengine.mjs",
     "check": "npm run build:engine && node --check dist/index.js && node --check dist/execution.js && node --check dist/cli.js && node --check dist/browser.js && node --check dist/distribution.js",
     "formatcheck": "node --import tsx format.ts",
-    "test": "npm run build:engine && node --import tsx --test tests/engine.test.ts tests/extension.test.ts tests/package.test.ts tests/release.test.ts tests/virtualengine.test.ts tests/features.test.ts tests/media.test.ts tests/render.test.ts tests/simulation.test.ts tests/specs.test.ts tests/virtualcpu.test.ts tests/virtualgpu.test.ts tests/virtualmemory.test.ts tests/web.test.ts tests/workflow.test.ts",
+    "test": "vitest run",
     "test:legacy": "vitest run tests/agent-utils.test.ts tests/cache.test.ts tests/chunking.test.ts tests/core.test.ts tests/errors.test.ts tests/llms-txt.test.ts tests/middleware.test.ts tests/proxy.test.ts tests/tokens.test.ts",
     "run": "npm run build:engine && node dist/cli.js",
     "extension:build": "npm run build:engine && node dist/browser.js",

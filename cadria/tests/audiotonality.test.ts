@@ -1,15 +1,15 @@
 // # audiotonality.test — the tonality layer: the hann-windowed STFT stand-in,
 // the a440 bin→pitch-class chroma fold, the Krumhansl-Schmuckler key estimate,
 // the chord timeline with greedy smoothing and the HarmonicStats summary,
-// runnable with the node built-in runner (no dependencies, no install):
-//   node --test tests/audiotonality.test.ts
+// runnable with vitest:
+//   pnpm vitest run tests/audiotonality.test.ts
 // Every fixture is a deterministic synthetic waveform (sines at
 // equal-tempered a440 pitches, octave 4+) and every test watches the two
 // invariants the module promises: clean tonal input lands on the right
 // tonic/chord, and damaged or silent input answers zeros or an empty
 // timeline instead of NaN.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   chromagram,
   chromaVector,

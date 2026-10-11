@@ -11,7 +11,7 @@
  *  of the canonical hardened validators — plus the charset variant
  *  `validateModelIdCharset`).
  *
- *  Uses `node:test` + `node:assert/strict`. Imports only leaf modules.
+ *  Runs on the vitest runner with `node:assert/strict` assertions. Imports only leaf modules.
  */
 
 import assert from "node:assert/strict";

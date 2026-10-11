@@ -11,14 +11,15 @@
  * build target; what changes per target is the TYPE OF INTRO and the
  * hand-over sequence. The build declares its target through
  * VITE_DT_TARGET (resolved by the root module introtarget.ts): every target
- * plays its one variant and goes DIRETO to the OS desktop at /panel — the
- * panel resolves the local identity silently, no login screen ever stands
- * in the chain (the retired /auth surface is a compat handover only). Each
- * variant keeps the motion budget of the spec (≤800ms end to end, one
- * orchestrated pass, one click or key to skip). The bell is opt-in only
- * (localStorage dt.intro.sound === "on"; default mute, autoplay-safe) and
- * the sessionStorage flag dt.intro.seen avoids a replay on client-side
- * re-navigation — a cold load always plays. */
+ * plays its one variant and hands the surface to the landing SaaS at
+ * /explore — the free catalog page (the YouTube/Apple register) whose
+ * "enter devthink" CTA opens the authentication page-app at /auth, which
+ * continues to the OS desktop at /panel. Each variant keeps the motion
+ * budget of the spec (≤800ms end to end, one orchestrated pass, one click
+ * or key to skip). The bell is opt-in only (localStorage dt.intro.sound ===
+ * "on"; default mute, autoplay-safe) and the sessionStorage flag
+ * dt.intro.seen avoids a replay on client-side re-navigation — a cold load
+ * always plays. */
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { INTRO_SEEN_KEY, type IntroTarget, resolveintrotarget } from "../../introtarget";
@@ -59,17 +60,19 @@ export function markIntroSeen(): void {
 }
 
 /**
- * The route the intro hands over to, per build target: every target lands
- * on the OS desktop (the creation panel) — the owner doctrine is an OS
- * entry, never a landing page and never the login screen (the pairing
- * panel stays reachable from settings).
+ * The route the intro hands over to, per build target: the entry flow of the
+ * doctrine is intro → the landing SaaS (/explore) → the authentication
+ * page-app (/auth) → the OS desktop (/panel). The web target opens the free
+ * catalog landing first; the owned targets (installer, android, extension)
+ * share the same chain — the landing is part of the ONE interface. The
+ * target stays a parameter so a future per-target sequence keeps its seam.
  *
  * @param target the resolved build target.
  * @returns the route of the next page in the entry flow.
  */
 export function introHandover(target: IntroTarget): string {
   void target;
-  return "/panel";
+  return "/explore";
 }
 
 /** The intro page: resolves the target, guards the replay flag and mounts

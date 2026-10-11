@@ -462,6 +462,7 @@ export function nvidiaVgpuProfiles(): {
       return { profileSize, fbReservation, fb: profileSize - fbReservation };
     };
     return {
+      // biome-ignore lint/security/noSecrets: a memory layout formula string, not a credential
       formula: 'profileSize=X*0x40000000, fbReservation=0x8000000+(profileSize-0x40000000)/0x10',
       min: '384 MiB',
       example: calc(2),

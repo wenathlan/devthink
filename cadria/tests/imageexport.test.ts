@@ -1,6 +1,6 @@
 // # imageexport.test — the export/integration layer contract AND the wave-2
-// end-to-end. Runnable with the node built-in runner (no deps, no install):
-//   node --test tests/imageexport.test.ts
+// end-to-end. Runnable with vitest:
+//   pnpm vitest run tests/imageexport.test.ts
 // The fixture is a fully documented 32-dim AudioDescriptor (every value pinned
 // to its audiofeatures.ts DIM_ORDER position), and the integration chain runs
 // exactly what wave 2 shipped: synthPalette (b1) → compositionGrid /
@@ -11,7 +11,7 @@
 // documented structural contract (see imageexport.ts header). Every assertion
 // is deterministic: no randomness, no clock, same inputs → same digests.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import type { AudioDescriptor } from "../audioattributes.ts";
 import type { ExportProject } from "../imageexport.ts";
 import {

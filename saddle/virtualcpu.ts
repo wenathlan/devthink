@@ -192,6 +192,7 @@ export const ZEN5FLAGS: readonly string[] = [
   'avx512vbmi',
   'avx512vbmi2',
   'avx512ifma',
+  // biome-ignore lint/security/noSecrets: a cpu capability flag list, not a credential
   'avx512vp2intersect',
   'sha_ni',
   'gfni',

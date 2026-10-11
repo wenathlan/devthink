@@ -3,7 +3,7 @@
  */
 
 import assert from "node:assert/strict";
-import { test } from "node:test";
+import { describe, it } from "vitest";
 import { readFile, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -12,7 +12,8 @@ import { retentionplan } from "../distribution.js";
 import { verifyassets } from "../distribution.js";
 import { evaluateevidence, evidencefromverification } from "../distribution.js";
 
-test("creates reproducible checksums, SBOM and provenance subjects", async () => {
+describe("the release assets", () => {
+it("creates reproducible checksums, SBOM and provenance subjects", async () => {
   const directory = await mkdtemp(join(tmpdir(), "saddle-release-"));
   try {
     const artifact = join(directory, "saddle.tgz");
@@ -41,7 +42,7 @@ test("creates reproducible checksums, SBOM and provenance subjects", async () =>
   }
 });
 
-test("rejects helper binaries and underscore-based public names", async () => {
+it("rejects helper binaries and underscore-based public names", async () => {
   const directory = await mkdtemp(join(tmpdir(), "saddle-release-invalid-"));
   try {
     const packagefile = join(directory, "package.json");
@@ -56,7 +57,7 @@ test("rejects helper binaries and underscore-based public names", async () => {
   }
 });
 
-test("verifies release checksums and explicit signing status", async () => {
+it("verifies release checksums and explicit signing status", async () => {
   const directory = await mkdtemp(join(tmpdir(), "saddle-release-verify-"));
   try {
     const artifact = join(directory, "saddle.browser.1.8.12.x64.exe");
@@ -77,7 +78,7 @@ test("verifies release checksums and explicit signing status", async () => {
   }
 });
 
-test("maps verified local checksums into policy-evaluable release evidence", async () => {
+it("maps verified local checksums into policy-evaluable release evidence", async () => {
   const directory = await mkdtemp(join(tmpdir(), "saddle-release-evidence-"));
   try {
     const artifact = join(directory, "saddle.browser.1.8.16.x64.exe");
@@ -101,7 +102,7 @@ test("maps verified local checksums into policy-evaluable release evidence", asy
   }
 });
 
-test("records deterministic retention metadata without deleting caller artifacts", async () => {
+it("records deterministic retention metadata without deleting caller artifacts", async () => {
   const directory = await mkdtemp(join(tmpdir(), "saddle-release-retention-"));
   try {
     const artifact = join(directory, "saddle.browser.1.8.14.x64.exe");
@@ -120,4 +121,5 @@ test("records deterministic retention metadata without deleting caller artifacts
   } finally {
     await rm(directory, { force: true, recursive: true });
   }
+});
 });

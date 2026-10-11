@@ -1,13 +1,13 @@
 // # matiz.test — the cadria pixel engine: the channel adjustments, the
 // grayscale and sepia tints, the 3x3 convolution, the box blur, the bilinear
-// resize and the composed pipeline, runnable with the node built-in runner
-// (no canvas, no dependencies, no install):
-//   node --test tests/matiz.test.ts
+// resize and the composed pipeline, runnable with vitest
+// (no canvas):
+//   pnpm vitest run tests/matiz.test.ts
 // The fixture is a synthetic rgba buffer shaped like ImageData, and every
 // test also watches the one invariant the engine promises: the input never
 // mutates.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   adjustimage,
   boxblurimage,
