@@ -7,108 +7,93 @@
  * which now lives here as the page mount itself.
  */
 
-// The opening of the vault APPLICATION (the FAM-APPS reform): a full-viewport
-// Mica + noise splash where the drawn mark springs in on the overshoot curve
-// cubic-bezier(.34,1.56,.64,1) and the name rises with the backOut — no
-// loading dots, no OS boot. The role rides the line: vault GUARDS. The beat
-// plan is ~1.6s of open and 0.8s of slide-up exit on cubic-bezier(0.76,0,0.24,1);
-// a click or any key skips straight to the hand-over. The sessionStorage flag
-// (modeled on the devthink dt.intro.seen key) avoids a replay on client-side
-// re-navigation — a cold load always plays — and closing the application
-// window lifts the flag so the relaunch plays the opening again.
+// The opening of the vault APPLICATION (the flow law: intro → onboarding →
+// the platform): a full-viewport splash over the deep canvas + noise where
+// the drawn mark springs in on the overshoot curve cubic-bezier(.34,1.56,.64,1)
+// (the backOut of the akash floor) and the name rises with the same spring —
+// no loading dots, no OS boot. The role rides the line: vault GUARDS. The
+// beat plan is ~1.6s of open and 0.8s of slide-up exit on cubic-bezier
+// (0.76,0,0.24,1); a click or any key skips straight to the hand-over and
+// reduced motion hands over instantly. The seen flag rides the ONE accessor
+// (onboardingstate.ts — database, cache, memory; the seen-wins law): while
+// the read resolves the page renders null, a seen intro hands the flow
+// straight over (the relaunch lands in the application, never a replay),
+// and the leave marks introseen before the DIRECT hand to /onboarding.
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
+import { markOnboardingStage, readOnboardingState } from "../../onboardingstate.ts";
 import { BrandMark } from "../shell/BrandMark";
 
-/** the sessionStorage flag of the opening (modeled on the family flag
- * `<app>.intro.seen`; a cold load always plays) */
-const INTRO_SEEN_KEY = "vault.intro.seen";
-
-/**
- * Reads the seen flag of this browser session.
- *
- * @returns true when the intro already played this session.
- */
-export function introSeen(): boolean {
-  try {
-    return window.sessionStorage.getItem(INTRO_SEEN_KEY) === "1";
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Raises the seen flag so a client-side re-navigation never replays the
- * opening (a cold load starts with a fresh sessionStorage and always plays).
- * Storage failures keep the intro playing on every visit.
- */
-export function markIntroSeen(): void {
-  try {
-    window.sessionStorage.setItem(INTRO_SEEN_KEY, "1");
-  } catch {
-    /* storage unavailable: the intro simply plays on every visit */
-  }
-}
-
-/**
- * Lifts the seen flag: closing the application window is a relaunch, and a
- * relaunch plays the opening again.
- */
-export function resetIntro(): void {
-  try {
-    window.sessionStorage.removeItem(INTRO_SEEN_KEY);
-  } catch {
-    /* storage unavailable: the flag never existed */
-  }
-}
-
-/** the opening hands the flow to the onboarding walk */
-const HANDOVER = "/onboarding";
 /** the beat plan of the intro (ms): 1.6s of open, 0.8s of slide-up exit */
 const OPEN_MS = 1600;
 const EXIT_MS = 800;
 
-/** The intro page: the splash of the vault application, with the skip and
- * the replay guard of the family intro model. */
+/** the intro lifecycle: resolving (the state read) → playing → handing over. */
+type IntroPhase = "resolving" | "playing" | "exit";
+
+/**
+ * The intro page: the splash of the vault application, with the skip and
+ * the seen law of the flow contract.
+ *
+ * @returns the intro element (null while the state resolves).
+ */
 export default function Intro() {
   const [, navigate] = useLocation();
-  const [phase, setPhase] = useState<"open" | "exit">("open");
-  const [replay] = useState(() => introSeen());
+  const [phase, setPhase] = useState<IntroPhase>("resolving");
   const handed = useRef(false);
 
-  const done = useCallback(() => {
+  /** the guarded hand-over: the intro counts as seen (leaving counts — the
+   * visitor answered the stage) and the flow hands DIRECTLY to /onboarding. */
+  const handOver = useCallback(() => {
     if (handed.current) return;
     handed.current = true;
-    navigate(HANDOVER, { replace: true });
+    void markOnboardingStage("intro").then(() => navigate("/onboarding", { replace: true }));
+  }, [navigate]);
+
+  /** the seen hand-over: the visitor already answered this stage — the flow
+   * lands where the law says (onboarding unseen → the walk; else the home). */
+  const handThrough = useCallback(() => {
+    if (handed.current) return;
+    handed.current = true;
+    void readOnboardingState().then((state) =>
+      navigate(state.onboardingseen ? "/" : "/onboarding", { replace: true }),
+    );
   }, [navigate]);
 
   useEffect(() => {
-    // the replay guard: the opening already played this session
-    if (replay) {
-      done();
-      return;
-    }
-    markIntroSeen();
-    // reduced motion: no splash, straight to the walk
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      done();
-      return;
-    }
-    const exitTimer = window.setTimeout(() => setPhase("exit"), OPEN_MS);
-    const doneTimer = window.setTimeout(done, OPEN_MS + EXIT_MS + 60);
+    let live = true;
+    let exitTimer = 0;
+    let doneTimer = 0;
     // skip: any click or key hands the flow over at once
-    const skip = () => done();
-    window.addEventListener("keydown", skip);
-    window.addEventListener("pointerdown", skip);
+    const skip = () => handOver();
+    readOnboardingState().then((state) => {
+      if (!live) return;
+      // the seen law: the splash never replays for a visitor that answered it
+      if (state.introseen) {
+        handThrough();
+        return;
+      }
+      // reduced motion: no splash, straight to the walk
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        handOver();
+        return;
+      }
+      setPhase("playing");
+      exitTimer = window.setTimeout(() => setPhase("exit"), OPEN_MS);
+      doneTimer = window.setTimeout(handOver, OPEN_MS + EXIT_MS + 60);
+      window.addEventListener("keydown", skip);
+      window.addEventListener("pointerdown", skip);
+    });
     return () => {
+      live = false;
       window.clearTimeout(exitTimer);
       window.clearTimeout(doneTimer);
       window.removeEventListener("keydown", skip);
       window.removeEventListener("pointerdown", skip);
     };
-  }, [replay, done]);
+  }, [handOver, handThrough]);
 
-  if (replay) return null;
+  if (phase === "resolving") return null;
 
   return (
     <div className={phase === "exit" ? "intro intro--exit" : "intro"} role="status" aria-label="vault is opening">
