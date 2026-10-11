@@ -1,5 +1,30 @@
 # DevThink release notes
 
+## 2.0.96 — the family wears the real windows face and the onboarding rides the db
+
+### Added
+
+| Area | Change |
+| --- | --- |
+| The onboarding page of the os | The devthink sol gains the onboarding page the flow law demanded: the frame-a-frame tour in window grammar registers its anchor and route, the intro hands over to it and only a finished visitor reaches the explore surface. |
+| The onboarding state catalog | Every application of the family gains the onboardingstate module (the one writer of the introseen and onboardingseen flags), the OnboardingState model in the prisma schema and the prepared-statement accessors in the db layer, so the seen state rides the database catalogue instead of a private browser flag. |
+| The entry gate | The home anchor of every theme consults the entry gate before painting: an unseen intro replaces onto /intro, an unseen onboarding onto /onboarding and the orphan-route bug that let a first visit bypass the opening flow is dead. The devthink server answers the GET and POST of /api/v1/onboarding. |
+| The devthink onboarding state test | The suite pins the https-only host validation, the doctrine keys and the base resolver of the state accessor. |
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The windows identity | The sol stylesheets of the whole family were rewritten integrally on the windows foundation — the mica desktop, the acrylic 48px bar, the 38×38 pins with the popintro bounce and the press scale, the ladder state indicator, the fluent window curve with the red close, the win11 scrollbars and the win10 blend on the inner controls — and the trylle ruler rides over the surfaces: the canvas ladder, the hairlines, the ring shadows, the 13px body on the inter and geist mono stacks, the .625rem radii and the real button tone stack. |
+| The navigation shells | Every theme shell answers the windows hands — the resize handles, the inactive law, the caption buttons — while the amber general accent retires: each app keeps its own identity color on the mark and the content, and the focus and the bar cta wear the windows accent. |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The cobaia install contract | The cobaia pnpm workspace carries the allowBuilds map and the family override pins, so the frozen install builds the db engines and the osv scan answers clean. |
+| The flat structure contract | The entry gates of debonair and getry answer their own name, the duplicate-content scan passes and the dependency updates of the ladder ride the sync. |
+
 ## 2.0.95 — the cobaia rides the family and the doctrine audit closes the gates
 
 ### Added
