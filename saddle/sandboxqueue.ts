@@ -190,7 +190,13 @@ export function createsandboxqueue(options?: sandboxqueueoptions): {
   const ring: sandboxqueueevent[] = [];
 
   /** stamps one event into the bounded ring. */
-  function record(id: string, from: sandboxphase, to: sandboxphase, at: number, reason: sandboxqueueevent['reason']): void {
+  function record(
+    id: string,
+    from: sandboxphase,
+    to: sandboxphase,
+    at: number,
+    reason: sandboxqueueevent['reason'],
+  ): void {
     ring.push({ id, from, to, at, reason });
     if (ring.length > eventcap) {
       ring.splice(0, ring.length - eventcap);

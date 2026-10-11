@@ -17,11 +17,7 @@
  * carries is overridable.
  */
 
-import type {
-  sandboxbaselimit,
-  sandboxbaseid,
-  sandboxspeclimits,
-} from './sandboxprofile.ts';
+import type { sandboxbaseid, sandboxbaselimit, sandboxspeclimits } from './sandboxprofile.ts';
 import { SANDBOXBASES } from './sandboxprofile.ts';
 
 /** documented development bootstrap table; production overrides it with
@@ -31,16 +27,31 @@ import { SANDBOXBASES } from './sandboxprofile.ts';
 const bootstraplimits: sandboxspeclimits = {
   bases: {
     lite: {
-      maxvcpus: 4, maxramgb: 8, maxvgpus: 0, maxdiskgb: 32,
-      maxtimeoutseconds: 900, defaultvcpus: 2, defaultramgb: 4,
+      maxvcpus: 4,
+      maxramgb: 8,
+      maxvgpus: 0,
+      maxdiskgb: 32,
+      maxtimeoutseconds: 900,
+      defaultvcpus: 2,
+      defaultramgb: 4,
     },
     balanced: {
-      maxvcpus: 16, maxramgb: 32, maxvgpus: 1, maxdiskgb: 128,
-      maxtimeoutseconds: 3600, defaultvcpus: 8, defaultramgb: 16,
+      maxvcpus: 16,
+      maxramgb: 32,
+      maxvgpus: 1,
+      maxdiskgb: 128,
+      maxtimeoutseconds: 3600,
+      defaultvcpus: 8,
+      defaultramgb: 16,
     },
     max: {
-      maxvcpus: 64, maxramgb: 256, maxvgpus: 2, maxdiskgb: 512,
-      maxtimeoutseconds: 14400, defaultvcpus: 32, defaultramgb: 64,
+      maxvcpus: 64,
+      maxramgb: 256,
+      maxvgpus: 2,
+      maxdiskgb: 512,
+      maxtimeoutseconds: 14400,
+      defaultvcpus: 32,
+      defaultramgb: 64,
     },
   },
   defaulttimeoutseconds: 900,
@@ -67,7 +78,10 @@ export function specenvlimits(env: Record<string, string | undefined>): sandboxs
       for (const key of SANDBOXBASES) {
         const override = parsed.bases[key as sandboxbaseid];
         if (typeof override === 'object' && override !== null) {
-          bases[key as sandboxbaseid] = { ...bootstraplimits.bases[key as sandboxbaseid], ...override };
+          bases[key as sandboxbaseid] = {
+            ...bootstraplimits.bases[key as sandboxbaseid],
+            ...override,
+          };
         }
       }
     }

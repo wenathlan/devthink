@@ -55,6 +55,8 @@ import {
 import { Toaster as Sonner, type ToasterProps } from 'sonner';
 import { Link, useLocation } from 'wouter';
 import type { MediaSlot } from '../../catalog';
+import { familyrow } from '../../family';
+import { familyurl } from '../../familyurl';
 import { cn } from '../../utils';
 
 /* ============================ theme context ============================ */
@@ -215,6 +217,9 @@ type SaddleMarkProps = {
 	size?: number;
 	/** hides the mark from the accessibility tree (decorative placements) */
 	hidden?: boolean;
+	/** the hero flow: the light band riding INSIDE the glyph strokes (spec §9);
+	 * only the landing hero consumes it — the chrome and intro sizes stay still */
+	flow?: boolean;
 };
 
 /** The sandbox engine glyph: the crate drawn in light isometric. */
@@ -228,14 +233,14 @@ function MarkGlyph() {
 	);
 }
 
-export function SaddleMark({ className, label = 'Saddle', size, hidden }: SaddleMarkProps) {
+export function SaddleMark({ className, label = 'Saddle', size, hidden, flow }: SaddleMarkProps) {
 	const a11y =
 		label && !hidden
 			? ({ role: 'img', 'aria-label': label } as const)
 			: ({ 'aria-hidden': true } as const);
 	const sized = size ? ({ width: size, height: size } as CSSProperties) : undefined;
 	return (
-		<span className={cn('sol-mark', className)} style={sized} {...a11y}>
+		<span className={cn('sol-mark', flow && 'sol-mark--flow', className)} style={sized} {...a11y}>
 			<span className="sol-mark__glow" />
 			<svg className="sol-mark__svg" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
 				<defs>
@@ -268,6 +273,18 @@ export function SaddleMark({ className, label = 'Saddle', size, hidden }: Saddle
 						<stop offset=".45" stopColor="#ffffff" stopOpacity=".5" />
 						<stop offset=".55" stopColor="#ffffff" stopOpacity=".5" />
 						<stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+					</linearGradient>
+					<linearGradient
+						id="sdlm-flow-band"
+						x1="0"
+						y1="0"
+						x2="1"
+						y2="0"
+						gradientUnits="userSpaceOnUse"
+					>
+						<stop offset="0" stopColor={MARK_SOFT} stopOpacity="0" />
+						<stop offset=".5" stopColor={MARK_SOFT} stopOpacity=".95" />
+						<stop offset="1" stopColor={MARK_SOFT} stopOpacity="0" />
 					</linearGradient>
 					<filter id="sdlm-soft" x="-40%" y="-40%" width="180%" height="180%">
 						<feGaussianBlur stdDeviation="3" />
@@ -385,6 +402,24 @@ export function SaddleMark({ className, label = 'Saddle', size, hidden }: Saddle
 						<MarkGlyph />
 					</g>
 				</g>
+
+				{/* the hero flow: the light band riding INSIDE the glyph strokes
+                                    (the spec §9 signature — the gradient moves through the
+                                    stroke, never behind it); a dash-offset loop on the
+                                    gradient-stroked overlay copy, stopped dead under reduced
+                                    motion (the CSS gate lives in Sol/sol.css) */}
+				{flow ? (
+					<g
+						className="sol-mark__flow"
+						fill="none"
+						stroke="url(#sdlm-flow-band)"
+						strokeWidth="3.5"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+					>
+						<MarkGlyph />
+					</g>
+				) : null}
 			</svg>
 		</span>
 	);
@@ -509,6 +544,32 @@ const RESTART_ROUTE = '/intro';
 
 /** the role line of the title bar (the honest description of the app). */
 const APP_ROLE = 'the sandbox engine of the family';
+
+/** one accent-dotted family link of the rail foot (spec §12): the sibling
+ * deploy units beside saddle, each linked by the familyurl contract with the
+ * accent dot riding the shared family.ts table — the same row the node:test
+ * suite pins, so the rail foot can never drift from the landing footer. */
+function FamilyRail() {
+	return (
+		<div className="winapp__family">
+			{familyrow().map((member) => (
+				<a
+					key={member.slug}
+					className="winapp__famlink"
+					href={familyurl(member.slug)}
+					target="_blank"
+					rel="noreferrer"
+					title={`${member.slug} — opens in a new tab`}
+					aria-label={`open ${member.slug} in a new tab`}
+					style={{ '--fam-dot': member.accent } as CSSProperties}
+				>
+					<span className="winapp__famdot" aria-hidden="true" />
+					<span className="winapp__famlabel">{member.slug}</span>
+				</a>
+			))}
+		</div>
+	);
+}
 
 /** one pointer session over the title bar: where the press started and the
  * offset the window carried when it did. */
@@ -643,6 +704,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
 				className="winapp grain"
 				hidden={minimized}
 				data-maximized={maximized ? 'true' : undefined}
+				data-landing={location === '/' ? 'true' : undefined}
 				aria-label="saddle"
 				style={{ '--winapp-x': `${drag.x}px`, '--winapp-y': `${drag.y}px` } as CSSProperties}
 			>
@@ -719,6 +781,10 @@ export function Shell({ children, themeButton = true }: ShellProps) {
 						))}
 						{themeButton ? (
 							<div className="winapp__railfoot">
+								<p className="winapp__familyhead" aria-hidden="true">
+									family
+								</p>
+								<FamilyRail />
 								<ThemeToggle />
 							</div>
 						) : null}

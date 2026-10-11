@@ -96,9 +96,11 @@ export function expectedscore(rating: number, opponentrating: number, options: P
  * @returns the k factor of the covering band.
  */
 export function kfactor(rating: number, ktable: readonly KBand[]): number {
-  if (!Array.isArray(ktable) || ktable.length === 0) throw new laddererror("bad-ktable", null, "ladder ktable must list at least one band");
+  if (!Array.isArray(ktable) || ktable.length === 0)
+    throw new laddererror("bad-ktable", null, "ladder ktable must list at least one band");
   for (const band of ktable) {
-    if (!Number.isFinite(band.k) || band.k <= 0) throw new laddererror("bad-ktable", band.k, `ladder band k must be a positive number, got ${band.k}`);
+    if (!Number.isFinite(band.k) || band.k <= 0)
+      throw new laddererror("bad-ktable", band.k, `ladder band k must be a positive number, got ${band.k}`);
     if (rating >= band.minrating && rating < band.maxrating) return band.k;
   }
   throw new laddererror("bad-ktable", rating, `ladder ktable does not cover rating ${rating}`);
@@ -114,8 +116,14 @@ export function kfactor(rating: number, ktable: readonly KBand[]): number {
  * @param options the ladder config (ktable, maxdelta, scale).
  * @returns the (possibly clamped) delta.
  */
-export function ratingdelta(rating: number, opponentrating: number, outcome: LadderOutcome, options: Pick<LadderOptions, "ktable" | "maxdelta" | "scale">): number {
-  if (outcome !== "win" && outcome !== "loss" && outcome !== "draw") throw new laddererror("bad-outcome", null, `ladder outcome must be win, loss or draw, got ${outcome}`);
+export function ratingdelta(
+  rating: number,
+  opponentrating: number,
+  outcome: LadderOutcome,
+  options: Pick<LadderOptions, "ktable" | "maxdelta" | "scale">,
+): number {
+  if (outcome !== "win" && outcome !== "loss" && outcome !== "draw")
+    throw new laddererror("bad-outcome", null, `ladder outcome must be win, loss or draw, got ${outcome}`);
   const observed = outcome === "win" ? 1 : outcome === "loss" ? 0 : 0.5;
   const expected = expectedscore(rating, opponentrating, options);
   const k = kfactor(rating, options.ktable);
@@ -146,14 +154,23 @@ export function applydelta(rating: number, delta: number, floor: number): number
  * @param options the ladder config.
  * @returns both sides with their new ratings, deltas and the expected score.
  */
-export function rankduel(player: LadderSide, opponent: LadderSide, outcome: LadderOutcome, options: Pick<LadderOptions, "ktable" | "maxdelta" | "floorrating" | "scale">): DuelResult {
+export function rankduel(
+  player: LadderSide,
+  opponent: LadderSide,
+  outcome: LadderOutcome,
+  options: Pick<LadderOptions, "ktable" | "maxdelta" | "floorrating" | "scale">,
+): DuelResult {
   const mirrored: LadderOutcome = outcome === "win" ? "loss" : outcome === "loss" ? "win" : "draw";
   const playerdelta = ratingdelta(player.rating, opponent.rating, outcome, options);
   const opponentdelta = ratingdelta(opponent.rating, player.rating, mirrored, options);
   const expected = expectedscore(player.rating, opponent.rating, options);
   return {
     player: { ...player, rating: applydelta(player.rating, playerdelta, options.floorrating), delta: playerdelta },
-    opponent: { ...opponent, rating: applydelta(opponent.rating, opponentdelta, options.floorrating), delta: opponentdelta },
+    opponent: {
+      ...opponent,
+      rating: applydelta(opponent.rating, opponentdelta, options.floorrating),
+      delta: opponentdelta,
+    },
     expected,
   };
 }
@@ -168,7 +185,11 @@ export function rankduel(player: LadderSide, opponent: LadderSide, outcome: Ladd
  * @param options the ladder config.
  * @returns the rating after the run.
  */
-export function projectedrating(rating: number, matches: readonly { opponent: number; outcome: LadderOutcome }[], options: Pick<LadderOptions, "ktable" | "maxdelta" | "floorrating" | "scale">): number {
+export function projectedrating(
+  rating: number,
+  matches: readonly { opponent: number; outcome: LadderOutcome }[],
+  options: Pick<LadderOptions, "ktable" | "maxdelta" | "floorrating" | "scale">,
+): number {
   let current = rating;
   for (const match of matches) {
     const side: LadderSide = { id: "subject", rating: current };
@@ -181,6 +202,10 @@ export function projectedrating(rating: number, matches: readonly { opponent: nu
 /** validates the options shape once so every helper can trust it. */
 function validateoptions(options: Pick<LadderOptions, "scale">): void {
   if (!options || !Number.isFinite(options.scale) || options.scale <= 0) {
-    throw new laddererror("bad-options", options?.scale ?? null, `ladder scale must be a positive number, got ${options?.scale}`);
+    throw new laddererror(
+      "bad-options",
+      options?.scale ?? null,
+      `ladder scale must be a positive number, got ${options?.scale}`,
+    );
   }
 }

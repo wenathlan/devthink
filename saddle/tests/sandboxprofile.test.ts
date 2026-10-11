@@ -15,6 +15,7 @@
 
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
+import { specenvlimits } from '../sandboxenvprofile.ts';
 import {
   enginespecfor,
   osfamily,
@@ -22,7 +23,6 @@ import {
   sandboxspecerror,
   type sandboxspeclimits,
 } from '../sandboxprofile.ts';
-import { specenvlimits } from '../sandboxenvprofile.ts';
 
 /** a compact limits table for the tests (max carries a vgpu ceiling). */
 const limits: sandboxspeclimits = {
@@ -268,7 +268,9 @@ test('specenvlimits reads the SADDLE_SPEC_LIMITS json and keeps the fallback', (
   assert.equal(fallback.bases.lite?.maxvcpus, 4);
   const merged = specenvlimits({
     SADDLE_SPEC_LIMITS: JSON.stringify({
-      bases: { lite: { maxvcpus: 2, maxramgb: 4, maxvgpus: 0, maxdiskgb: 8, maxtimeoutseconds: 300 } },
+      bases: {
+        lite: { maxvcpus: 2, maxramgb: 4, maxvgpus: 0, maxdiskgb: 8, maxtimeoutseconds: 300 },
+      },
     }),
   });
   assert.equal(merged.bases.lite?.maxvcpus, 2);

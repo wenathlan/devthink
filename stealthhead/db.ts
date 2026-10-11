@@ -17,8 +17,9 @@
  * rows over HTTPS from the self-hosted answer and fall back to the
  * in-memory seeds, and the visitor machine stores nothing.
  */
-import Database from "better-sqlite3";
+
 import process from "node:process";
+import Database from "better-sqlite3";
 import { MATCHPLAYERSEED, MATCHSEED, type MatchLobby, type MatchPlayer, type MatchRound } from "./match.ts";
 import { RANKINGSEED, type RankingEntry } from "./ranking.ts";
 import { WEAPONCATALOG, type Weapon } from "./weapons.ts";
@@ -91,20 +92,42 @@ sqlite.exec(`
 `);
 
 /** every write below is a prepared statement with bound parameters. */
-const insertmatch = sqlite.prepare("insert or replace into matches (id, title, region, state, capacity, rounds) values (?, ?, ?, ?, ?, ?)");
-const insertplayer = sqlite.prepare("insert or replace into matchplayers (id, lobbyid, handle, squad, score, ping) values (?, ?, ?, ?, ?, ?)");
-const insertranking = sqlite.prepare("insert or replace into rankingentries (id, player, squad, region, season, score, wins, matches, kd) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-const insertweapon = sqlite.prepare("insert or replace into weapons (id, name, kind, damage, firerate, rangemeters, magazine, recoil, reloadseconds) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-const insertworldasset = sqlite.prepare("insert or replace into worldassets (name, kind, path, sha256, size, precompiled) values (?, ?, ?, ?, ?, ?)");
+const insertmatch = sqlite.prepare(
+  "insert or replace into matches (id, title, region, state, capacity, rounds) values (?, ?, ?, ?, ?, ?)",
+);
+const insertplayer = sqlite.prepare(
+  "insert or replace into matchplayers (id, lobbyid, handle, squad, score, ping) values (?, ?, ?, ?, ?, ?)",
+);
+const insertranking = sqlite.prepare(
+  "insert or replace into rankingentries (id, player, squad, region, season, score, wins, matches, kd) values (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+);
+const insertweapon = sqlite.prepare(
+  "insert or replace into weapons (id, name, kind, damage, firerate, rangemeters, magazine, recoil, reloadseconds) values (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+);
+const insertworldasset = sqlite.prepare(
+  "insert or replace into worldassets (name, kind, path, sha256, size, precompiled) values (?, ?, ?, ?, ?, ?)",
+);
 
 /** every read below is a prepared statement with bound parameters. */
 const selectmatchbyid = sqlite.prepare("select id, title, region, state, capacity, rounds from matches where id = ?");
-const selectplayersbylobby = sqlite.prepare("select id, lobbyid, handle, squad, score, ping from matchplayers where lobbyid = ? order by score desc");
-const selectallplayers = sqlite.prepare("select id, lobbyid, handle, squad, score, ping from matchplayers order by lobbyid, score desc");
-const selectranking = sqlite.prepare("select id, player, squad, region, season, score, wins, matches, kd from rankingentries order by score desc");
-const selectweaponbykind = sqlite.prepare("select id, name, kind, damage, firerate, rangemeters, magazine, recoil, reloadseconds from weapons where kind = ? order by damage desc");
-const selectallweapons = sqlite.prepare("select id, name, kind, damage, firerate, rangemeters, magazine, recoil, reloadseconds from weapons order by damage desc");
-const selectworldassets = sqlite.prepare("select name, kind, path, sha256, size, precompiled from worldassets order by kind, name");
+const selectplayersbylobby = sqlite.prepare(
+  "select id, lobbyid, handle, squad, score, ping from matchplayers where lobbyid = ? order by score desc",
+);
+const selectallplayers = sqlite.prepare(
+  "select id, lobbyid, handle, squad, score, ping from matchplayers order by lobbyid, score desc",
+);
+const selectranking = sqlite.prepare(
+  "select id, player, squad, region, season, score, wins, matches, kd from rankingentries order by score desc",
+);
+const selectweaponbykind = sqlite.prepare(
+  "select id, name, kind, damage, firerate, rangemeters, magazine, recoil, reloadseconds from weapons where kind = ? order by damage desc",
+);
+const selectallweapons = sqlite.prepare(
+  "select id, name, kind, damage, firerate, rangemeters, magazine, recoil, reloadseconds from weapons order by damage desc",
+);
+const selectworldassets = sqlite.prepare(
+  "select name, kind, path, sha256, size, precompiled from worldassets order by kind, name",
+);
 
 /** true once the seed pass has run for this boot. */
 let seeded = false;
@@ -124,10 +147,30 @@ function seedonfirstrun(): void {
       insertplayer.run(player.id, player.lobbyid, player.handle, player.squad, player.score, player.ping);
     }
     for (const entry of RANKINGSEED) {
-      insertranking.run(entry.id, entry.player, entry.squad, entry.region, entry.season, entry.score, entry.wins, entry.matches, entry.kd);
+      insertranking.run(
+        entry.id,
+        entry.player,
+        entry.squad,
+        entry.region,
+        entry.season,
+        entry.score,
+        entry.wins,
+        entry.matches,
+        entry.kd,
+      );
     }
     for (const weapon of WEAPONCATALOG) {
-      insertweapon.run(weapon.id, weapon.name, weapon.kind, weapon.damage, weapon.firerate, weapon.rangemeters, weapon.magazine, weapon.recoil, weapon.reloadseconds);
+      insertweapon.run(
+        weapon.id,
+        weapon.name,
+        weapon.kind,
+        weapon.damage,
+        weapon.firerate,
+        weapon.rangemeters,
+        weapon.magazine,
+        weapon.recoil,
+        weapon.reloadseconds,
+      );
     }
     for (const asset of WORLDCATALOG) {
       insertworldasset.run(asset.name, asset.kind, asset.path, asset.sha256, asset.size, asset.precompiled ? 1 : 0);
@@ -146,7 +189,9 @@ seedonfirstrun();
  * @returns the lobby row or null.
  */
 export function getlobby(id: string): MatchLobby | null {
-  const row = selectmatchbyid.get(id) as { id: string; title: string; region: string; state: MatchLobby["state"]; capacity: number; rounds: string } | undefined;
+  const row = selectmatchbyid.get(id) as
+    | { id: string; title: string; region: string; state: MatchLobby["state"]; capacity: number; rounds: string }
+    | undefined;
   if (!row) return null;
   const rounds = JSON.parse(row.rounds) as MatchRound[];
   return { id: row.id, title: row.title, region: row.region, state: row.state, capacity: row.capacity, rounds };
@@ -160,7 +205,7 @@ export function getlobby(id: string): MatchLobby | null {
  * @returns the player rows.
  */
 export function getlobbyplayers(lobbyid?: string): MatchPlayer[] {
-  return (lobbyid ? (selectplayersbylobby.all(lobbyid) as MatchPlayer[]) : (selectallplayers.all() as MatchPlayer[]));
+  return lobbyid ? (selectplayersbylobby.all(lobbyid) as MatchPlayer[]) : (selectallplayers.all() as MatchPlayer[]);
 }
 
 /**
@@ -197,7 +242,14 @@ export function getworldassets(): WorldAsset[] {
     size: number;
     precompiled: number;
   }>;
-  return rows.map((row) => ({ name: row.name, kind: row.kind, path: row.path, sha256: row.sha256, size: row.size, precompiled: true }));
+  return rows.map((row) => ({
+    name: row.name,
+    kind: row.kind,
+    path: row.path,
+    sha256: row.sha256,
+    size: row.size,
+    precompiled: true,
+  }));
 }
 
 /** the raw driver, exported for the migration and backup tooling. */

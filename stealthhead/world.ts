@@ -56,14 +56,70 @@ export const RENDERINTENT: RenderIntent = { engine: "versawase", library: "@wena
 
 /** the in-memory seed the DB layer persists on first run. */
 export const WORLDCATALOG: WorldAsset[] = [
-  { name: "steelhead dam", kind: "map", path: "assets/glb/steelhead.dam.glb", sha256: "9f2c41a7c0d54b8eaf61d0b73e2c88a1d94f6027c3b5811e70ada9be4f2c119d", size: 48231424, precompiled: true },
-  { name: "cold harbor", kind: "map", path: "assets/glb/cold.harbor.glb", sha256: "3ab81c95e6f74d120cd9a5b0f8e37641d02ca9f5b61e8437f09d2cbe5a741e88", size: 39871232, precompiled: true },
-  { name: "rift yard", kind: "map", path: "assets/glb/rift.yard.glb", sha256: "c47de0192ab63f85d07e4b1c92a68350fe1bd2744a90c8361e5fb7d203a9c461", size: 44118784, precompiled: true },
-  { name: "emberline crate set", kind: "prop", path: "assets/glb/emberline.crates.glb", sha256: "7d90f3b26a184ce5b0912d74f3a6c821e0b5d9384c671af205e3d8b94a6c0f72", size: 2411520, precompiled: true },
-  { name: "operator ember", kind: "character", path: "assets/glb/operator.ember.glb", sha256: "b16a48d07f2c359e8417a0dc65b3f29107cd84ea5f206b39c1873de20a4bf5c3", size: 8720384, precompiled: true },
-  { name: "operator tide", kind: "character", path: "assets/glb/operator.tide.glb", sha256: "52c9e1fa37b84d06a590c3e72f14b8d6930ac5217be08f44d9c2a6e08137b0d5", size: 8654848, precompiled: true },
-  { name: "muzzle ember fx", kind: "effect", path: "assets/glb/fx.muzzle.ember.glb", sha256: "e0834b6d92a57c1f04b3d8e26a71c9f5402bd9638e1a74c50f3d629be7a1c842", size: 638976, precompiled: true },
-  { name: "solstice banner fx", kind: "effect", path: "assets/glb/fx.solstice.banner.glb", sha256: "1a6d93c07f48b25ed31a7f5c802e94b6d17c0f38a9427e15c6d0b38f42a95e70", size: 512000, precompiled: true },
+  {
+    name: "steelhead dam",
+    kind: "map",
+    path: "assets/glb/steelhead.dam.glb",
+    sha256: "9f2c41a7c0d54b8eaf61d0b73e2c88a1d94f6027c3b5811e70ada9be4f2c119d",
+    size: 48231424,
+    precompiled: true,
+  },
+  {
+    name: "cold harbor",
+    kind: "map",
+    path: "assets/glb/cold.harbor.glb",
+    sha256: "3ab81c95e6f74d120cd9a5b0f8e37641d02ca9f5b61e8437f09d2cbe5a741e88",
+    size: 39871232,
+    precompiled: true,
+  },
+  {
+    name: "rift yard",
+    kind: "map",
+    path: "assets/glb/rift.yard.glb",
+    sha256: "c47de0192ab63f85d07e4b1c92a68350fe1bd2744a90c8361e5fb7d203a9c461",
+    size: 44118784,
+    precompiled: true,
+  },
+  {
+    name: "emberline crate set",
+    kind: "prop",
+    path: "assets/glb/emberline.crates.glb",
+    sha256: "7d90f3b26a184ce5b0912d74f3a6c821e0b5d9384c671af205e3d8b94a6c0f72",
+    size: 2411520,
+    precompiled: true,
+  },
+  {
+    name: "operator ember",
+    kind: "character",
+    path: "assets/glb/operator.ember.glb",
+    sha256: "b16a48d07f2c359e8417a0dc65b3f29107cd84ea5f206b39c1873de20a4bf5c3",
+    size: 8720384,
+    precompiled: true,
+  },
+  {
+    name: "operator tide",
+    kind: "character",
+    path: "assets/glb/operator.tide.glb",
+    sha256: "52c9e1fa37b84d06a590c3e72f14b8d6930ac5217be08f44d9c2a6e08137b0d5",
+    size: 8654848,
+    precompiled: true,
+  },
+  {
+    name: "muzzle ember fx",
+    kind: "effect",
+    path: "assets/glb/fx.muzzle.ember.glb",
+    sha256: "e0834b6d92a57c1f04b3d8e26a71c9f5402bd9638e1a74c50f3d629be7a1c842",
+    size: 638976,
+    precompiled: true,
+  },
+  {
+    name: "solstice banner fx",
+    kind: "effect",
+    path: "assets/glb/fx.solstice.banner.glb",
+    sha256: "1a6d93c07f48b25ed31a7f5c802e94b6d17c0f38a9427e15c6d0b38f42a95e70",
+    size: 512000,
+    precompiled: true,
+  },
 ];
 
 /**
@@ -109,9 +165,26 @@ export function glbpath(name: string): string {
  * @param glbname the optional glb file name (defaults to the slug).
  * @returns the cataloged asset row.
  */
-export function catalogasset(name: string, kind: WorldAssetKind, sha256: string, size: number, glbname?: string): WorldAsset {
-  const slug = name.trim().toLowerCase().replace(/[^a-z0-9]+/g, ".").replace(/^\.+|\.+$/g, "");
-  return { name, kind, path: glbpath(glbname ?? `${slug}.glb`), sha256: sha256.trim().toLowerCase(), size, precompiled: true };
+export function catalogasset(
+  name: string,
+  kind: WorldAssetKind,
+  sha256: string,
+  size: number,
+  glbname?: string,
+): WorldAsset {
+  const slug = name
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ".")
+    .replace(/^\.+|\.+$/g, "");
+  return {
+    name,
+    kind,
+    path: glbpath(glbname ?? `${slug}.glb`),
+    sha256: sha256.trim().toLowerCase(),
+    size,
+    precompiled: true,
+  };
 }
 
 /**
@@ -122,7 +195,12 @@ export function catalogasset(name: string, kind: WorldAssetKind, sha256: string,
  * @returns true when the row is catalog-safe.
  */
 export function verifyasset(asset: WorldAsset): boolean {
-  return ishashshape(asset.sha256) && asset.path === normalizepath(asset.path) && asset.path.endsWith(".glb") && asset.precompiled;
+  return (
+    ishashshape(asset.sha256) &&
+    asset.path === normalizepath(asset.path) &&
+    asset.path.endsWith(".glb") &&
+    asset.precompiled
+  );
 }
 
 /**

@@ -27,6 +27,7 @@ import {
   useState,
 } from "react";
 import { Link, useLocation } from "wouter";
+import { familyrow } from "../../family";
 import { familyurl } from "../../familyurl";
 import { currentTheme, type ThemeName, toggleTheme } from "../../theme";
 import { BrandMark } from "./BrandMark";
@@ -50,32 +51,12 @@ export const START_APPS: readonly StartApp[] = [
   { href: "/ranking", label: "ranking", detail: "the competitive ladder of the season", icon: Trophy },
 ];
 
-/** one entry of the rail-foot family section: a sibling application with
- * its identity accent (the family accents of the campaign). */
-export type FamilyApp = {
-  slug: string;
-  name: string;
-  accent: string;
-};
-
-/** the family the rail foot links: the DevThink OS and every sibling
- * application, in the campaign order. exported for the family tests. */
-export const FAMILY_APPS: readonly FamilyApp[] = [
-  { slug: "devthink", name: "devthink", accent: "#ff5f00" },
-  { slug: "cadria", name: "cadria", accent: "#f472b6" },
-  { slug: "debonair", name: "debonair", accent: "#a78bfa" },
-  { slug: "argan", name: "argan", accent: "#1dcf64" },
-  { slug: "saddle", name: "saddle", accent: "#d6b483" },
-  { slug: "forge", name: "forge", accent: "#fb923c" },
-  { slug: "foundry", name: "foundry", accent: "#d97706" },
-  { slug: "vault", name: "vault", accent: "#eab308" },
-  { slug: "getry", name: "getry", accent: "#60a5fa" },
-];
-
 /** the hand-over route of the close caption: closing the window restarts the
  * application at the intro (the relaunch metaphor). Campaign v3 · r3-stealthhead
  * nav polish: the window carries data-landing on the home route so the
- * landing zone owns the mark (the title-bar mark rests there, CSS-enforced). */
+ * landing zone owns the mark (the title-bar mark rests there, CSS-enforced).
+ * The family row itself rides the shared family.ts table (spec §12) — the
+ * same row the vitest suite pins, so the rail foot can never drift. */
 const RESTART_ROUTE = "/intro";
 
 /** one pointer session over the title bar: where the press started and the
@@ -244,19 +225,19 @@ export function Shell({ children }: { children: ReactNode }) {
                 family
               </p>
               <div className="winapp__family">
-                {FAMILY_APPS.map((app) => (
+                {familyrow().map((member) => (
                   <a
-                    key={app.slug}
+                    key={member.slug}
                     className="winapp__famlink"
-                    href={familyurl(app.slug)}
+                    href={familyurl(member.slug)}
                     target="_blank"
                     rel="noreferrer"
-                    title={`${app.name} — opens in a new tab`}
-                    aria-label={`open ${app.name} in a new tab`}
-                    style={{ "--fam-dot": app.accent } as CSSProperties}
+                    title={`${member.slug} — opens in a new tab`}
+                    aria-label={`open ${member.slug} in a new tab`}
+                    style={{ "--fam-dot": member.accent } as CSSProperties}
                   >
                     <span className="winapp__famdot" aria-hidden="true" />
-                    <span className="winapp__famlabel">{app.name}</span>
+                    <span className="winapp__famlabel">{member.slug}</span>
                   </a>
                 ))}
               </div>

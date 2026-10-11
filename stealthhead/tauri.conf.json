@@ -30,13 +30,7 @@
     "shortDescription": "The Stealthhead FPS world and game app as a desktop shell",
     "longDescription": "Stealthhead desktop shell wrapping the built theme bundle: the same Sol/ surface the browser, the mobile apps and the container ship, framed as a native desktop application for the FPS world and game app.",
     "publisher": "wenathlan",
-    "icon": [
-      "icons/32x32.png",
-      "icons/128x128.png",
-      "icons/128x128@2x.png",
-      "icons/icon.icns",
-      "icons/icon.ico"
-    ],
+    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.icns", "icons/icon.ico"],
     "windows": {}
   }
 }

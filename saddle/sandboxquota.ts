@@ -164,7 +164,10 @@ export function createaccountledger(limits: accountlimits): {
   reserve: (accountid: string, wish: resourcewish) => accountquotasnapshot;
   release: (accountid: string, wish: resourcewish) => accountquotasnapshot;
   usage: (accountid: string) => accountquotasnapshot;
-  reconcile: (accountid: string, observed: accountusage) => { before: accountquotasnapshot; after: accountquotasnapshot };
+  reconcile: (
+    accountid: string,
+    observed: accountusage,
+  ) => { before: accountquotasnapshot; after: accountquotasnapshot };
   reset: (accountid?: string) => void;
 } {
   const books = new Map<string, accountusage>();
@@ -258,7 +261,8 @@ export function createaccountledger(limits: accountlimits): {
       const before = snapshotOf(accountid, used);
       for (const resource of RESOURCES) {
         const value = observed[resource];
-        used[resource] = typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : 0;
+        used[resource] =
+          typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : 0;
       }
       const after = snapshotOf(accountid, used);
       return { before, after };

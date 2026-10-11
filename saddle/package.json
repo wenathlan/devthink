@@ -3,7 +3,7 @@
   "version": "2.1.6",
   "description": "binary computing engine that turns distributed storage into a publishable working set carrying the merged virtual-hardware engine (the saddle + e2ugh grand merge)",
   "type": "module",
-  "private": true,
+  "private": false,
   "license": "GPL-3.0-only",
   "author": "Wenathlan",
   "sideEffects": false,
@@ -63,7 +63,7 @@
     "ecmascript": "^5.0.0",
     "firefox": ">=0.8.0",
     "iojs": "^1.0.0",
-    "node": "^26.8.2",
+    "node": ">=26.7.0",
     "npm": "^12.1.0",
     "pnpm": "^12.6.0",
     "teleport": ">=0.2.0",
@@ -341,7 +341,7 @@
     "firecracker": "1.16.1",
     "docker": "29.7.2"
   },
-  "//grand-merge": "v2.0.0 — e2ugh merged into saddle: root TS domains carry both engines; the e2ugh static console and self-hosted API live at the web root; the specs/* exports carry the virtual-hardware envelopes",
+  "//grand-merge": "v2.0.0 \u2014 e2ugh merged into saddle: root TS domains carry both engines; the e2ugh static console and self-hosted API live at the web root; the specs/* exports carry the virtual-hardware envelopes",
   "saddle": {
     "date": "2026-08-23",
     "toolchain": {

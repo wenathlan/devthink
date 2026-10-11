@@ -56,7 +56,9 @@ export type TtkResult = {
 };
 
 /** the inclusive bounds one balance field must respect. */
-export type BalanceBounds = Partial<Record<"damage" | "firerate" | "rangemeters" | "magazine" | "recoil" | "reloadseconds", { min: number; max: number }>>;
+export type BalanceBounds = Partial<
+  Record<"damage" | "firerate" | "rangemeters" | "magazine" | "recoil" | "reloadseconds", { min: number; max: number }>
+>;
 
 /** one balance violation the validator found. */
 export type BalanceViolation = {
@@ -86,7 +88,8 @@ export type TtkOptions = {
 export function damageatmeters(weapon: Weapon, meters: number, falloff: FalloffSpec): number {
   validateweapon(weapon);
   validatefalloff(falloff);
-  if (!Number.isFinite(meters) || meters < 0) throw new weaponstatserror("bad-weapon", weapon.id, `weapon stats distance must be >= 0, got ${meters}`);
+  if (!Number.isFinite(meters) || meters < 0)
+    throw new weaponstatserror("bad-weapon", weapon.id, `weapon stats distance must be >= 0, got ${meters}`);
   if (meters <= falloff.startmeters) return weapon.damage;
   if (meters >= falloff.endmeters) return weapon.damage * falloff.retainfraction;
   const span = falloff.endmeters - falloff.startmeters;
@@ -106,10 +109,18 @@ export function damageatmeters(weapon: Weapon, meters: number, falloff: FalloffS
  * @param options the hit-zone options (defaults to the body).
  * @returns the shots to kill, at least one.
  */
-export function shotstokill(weapon: Weapon, meters: number, health: number, falloff: FalloffSpec, options: TtkOptions = {}): number {
-  if (!Number.isFinite(health) || health <= 0) throw new weaponstatserror("bad-health", weapon.id, `weapon stats health must be > 0, got ${health}`);
+export function shotstokill(
+  weapon: Weapon,
+  meters: number,
+  health: number,
+  falloff: FalloffSpec,
+  options: TtkOptions = {},
+): number {
+  if (!Number.isFinite(health) || health <= 0)
+    throw new weaponstatserror("bad-health", weapon.id, `weapon stats health must be > 0, got ${health}`);
   const vital = options.vitalmultiplier ?? 1;
-  if (!Number.isFinite(vital) || vital <= 0) throw new weaponstatserror("bad-health", weapon.id, `weapon stats vital multiplier must be > 0, got ${vital}`);
+  if (!Number.isFinite(vital) || vital <= 0)
+    throw new weaponstatserror("bad-health", weapon.id, `weapon stats vital multiplier must be > 0, got ${vital}`);
   const per = damageatmeters(weapon, meters, falloff) * vital;
   if (per <= 0) throw new weaponstatserror("bad-weapon", weapon.id, `weapon stats damage at ${meters}m must be > 0`);
   return Math.max(1, Math.ceil(health / per));
@@ -127,7 +138,13 @@ export function shotstokill(weapon: Weapon, meters: number, health: number, fall
  * @param options the hit-zone options (defaults to the body).
  * @returns the shots, the reloads and the seconds to kill.
  */
-export function timetokill(weapon: Weapon, meters: number, health: number, falloff: FalloffSpec, options: TtkOptions = {}): TtkResult {
+export function timetokill(
+  weapon: Weapon,
+  meters: number,
+  health: number,
+  falloff: FalloffSpec,
+  options: TtkOptions = {},
+): TtkResult {
   validateweapon(weapon);
   const shots = shotstokill(weapon, meters, health, falloff, options);
   const reloads = Math.max(0, Math.ceil(shots / weapon.magazine) - 1);
@@ -147,7 +164,13 @@ export function timetokill(weapon: Weapon, meters: number, health: number, fallo
  * @param options the hit-zone options (defaults to the body).
  * @returns one result per distance, in the order given.
  */
-export function ttkbydistance(weapon: Weapon, distances: readonly number[], health: number, falloff: FalloffSpec, options: TtkOptions = {}): TtkResult[] {
+export function ttkbydistance(
+  weapon: Weapon,
+  distances: readonly number[],
+  health: number,
+  falloff: FalloffSpec,
+  options: TtkOptions = {},
+): TtkResult[] {
   return distances.map((meters) => timetokill(weapon, meters, health, falloff, options));
 }
 
@@ -174,20 +197,42 @@ export function validatebalance(weapon: Weapon, bounds: BalanceBounds): BalanceV
 
 /** validates the weapon row shape once so every helper can trust it. */
 function validateweapon(weapon: Weapon): void {
-  if (!weapon || typeof weapon.id !== "string") throw new weaponstatserror("bad-weapon", null, "weapon stats needs a weapon row with an id");
-  if (!Number.isFinite(weapon.damage) || weapon.damage <= 0) throw new weaponstatserror("bad-weapon", weapon.id, `weapon stats damage must be > 0, got ${weapon.damage}`);
-  if (!Number.isFinite(weapon.firerate) || weapon.firerate <= 0) throw new weaponstatserror("bad-weapon", weapon.id, `weapon stats fire rate must be > 0, got ${weapon.firerate}`);
-  if (!Number.isInteger(weapon.magazine) || weapon.magazine <= 0) throw new weaponstatserror("bad-weapon", weapon.id, `weapon stats magazine must be a positive integer, got ${weapon.magazine}`);
+  if (!weapon || typeof weapon.id !== "string")
+    throw new weaponstatserror("bad-weapon", null, "weapon stats needs a weapon row with an id");
+  if (!Number.isFinite(weapon.damage) || weapon.damage <= 0)
+    throw new weaponstatserror("bad-weapon", weapon.id, `weapon stats damage must be > 0, got ${weapon.damage}`);
+  if (!Number.isFinite(weapon.firerate) || weapon.firerate <= 0)
+    throw new weaponstatserror("bad-weapon", weapon.id, `weapon stats fire rate must be > 0, got ${weapon.firerate}`);
+  if (!Number.isInteger(weapon.magazine) || weapon.magazine <= 0)
+    throw new weaponstatserror(
+      "bad-weapon",
+      weapon.id,
+      `weapon stats magazine must be a positive integer, got ${weapon.magazine}`,
+    );
 }
 
 /** validates the falloff spec once so every helper can trust it. */
 function validatefalloff(falloff: FalloffSpec): void {
-  if (!Number.isFinite(falloff.startmeters) || falloff.startmeters < 0) throw new weaponstatserror("bad-falloff", null, `weapon stats falloff start must be >= 0, got ${falloff.startmeters}`);
+  if (!Number.isFinite(falloff.startmeters) || falloff.startmeters < 0)
+    throw new weaponstatserror(
+      "bad-falloff",
+      null,
+      `weapon stats falloff start must be >= 0, got ${falloff.startmeters}`,
+    );
   if (!Number.isFinite(falloff.endmeters) || falloff.endmeters <= falloff.startmeters) {
-    throw new weaponstatserror("bad-falloff", null, `weapon stats falloff end must sit past the start, got ${falloff.endmeters}`);
+    throw new weaponstatserror(
+      "bad-falloff",
+      null,
+      `weapon stats falloff end must sit past the start, got ${falloff.endmeters}`,
+    );
   }
   if (!Number.isFinite(falloff.retainfraction) || falloff.retainfraction < 0 || falloff.retainfraction > 1) {
-    throw new weaponstatserror("bad-falloff", null, `weapon stats retained fraction must be within [0, 1], got ${falloff.retainfraction}`);
+    throw new weaponstatserror(
+      "bad-falloff",
+      null,
+      `weapon stats retained fraction must be within [0, 1], got ${falloff.retainfraction}`,
+    );
   }
-  if (!Number.isFinite(falloff.curve) || falloff.curve <= 0) throw new weaponstatserror("bad-falloff", null, `weapon stats curve must be > 0, got ${falloff.curve}`);
+  if (!Number.isFinite(falloff.curve) || falloff.curve <= 0)
+    throw new weaponstatserror("bad-falloff", null, `weapon stats curve must be > 0, got ${falloff.curve}`);
 }

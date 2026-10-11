@@ -151,8 +151,19 @@ html.sh-mark-fx .shMarkMid {
   .shMark:hover .shMarkGlyph { transform: none; -webkit-transform: none; }
   .shMark:hover .shMarkTicks { animation: none; -webkit-animation: none; }
 }
+/* the hero flow: the light band travelling INSIDE the glyph strokes (the
+   spec §9 signature — the gradient moves through the stroke, never behind
+   it); a dash-offset loop on the gradient-stroked overlay copy, stopped
+   dead under reduced motion. Only the hero consumes the flow variant —
+   the chrome and intro sizes stay still. */
+.shMarkFlow { pointer-events: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .shMark--flow .shMarkFlow { stroke-dasharray: 42 122; animation: shGlyphFlow 3200ms linear infinite; -webkit-animation: shGlyphFlow 3200ms linear infinite; }
+}
+@keyframes shGlyphFlow { from { stroke-dashoffset: 164; } to { stroke-dashoffset: 0; } }
+@-webkit-keyframes shGlyphFlow { from { stroke-dashoffset: 164; } to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: reduce) {
-  .shMark, .shMarkSvg, .shMarkGlyph, .shMarkTicks, .shMarkSheen, .shMarkGlow, .shMarkMid {
+  .shMark, .shMarkSvg, .shMarkGlyph, .shMarkTicks, .shMarkSheen, .shMarkGlow, .shMarkMid, .shMarkFlow {
     animation: none !important; -webkit-animation: none !important;
     transition: none !important; -webkit-transition: none !important;
   }
@@ -200,6 +211,8 @@ function useMarkMotion(): void {
 type BrandMarkProps = {
   /** rendered square size in px; omitted, the mark fills its box */
   size?: number;
+  /** the hero flow: the light band riding INSIDE the glyph strokes (spec §9) */
+  flow?: boolean;
 };
 
 /**
@@ -221,7 +234,7 @@ function useTickBreathe(): boolean {
 }
 
 /** The drawn brand mark of stealthhead. */
-export function BrandMark({ size }: BrandMarkProps) {
+export function BrandMark({ size, flow }: BrandMarkProps) {
   ensureMarkCss();
   useMarkMotion();
   const entering = useTickBreathe();
@@ -233,7 +246,12 @@ export function BrandMark({ size }: BrandMarkProps) {
     vars.height = size;
   }
   return (
-    <span className="shMark" style={vars} data-breathe={entering ? "in" : undefined} aria-hidden="true">
+    <span
+      className={`shMark${flow ? " shMark--flow" : ""}`}
+      style={vars}
+      data-breathe={entering ? "in" : undefined}
+      aria-hidden="true"
+    >
       <span className="shMarkGlow" />
       <svg className="shMarkSvg" viewBox="0 0 96 96" aria-hidden="true" focusable="false">
         <defs>
@@ -266,6 +284,11 @@ export function BrandMark({ size }: BrandMarkProps) {
             <stop offset=".45" stopColor="#ffffff" stopOpacity=".5" />
             <stop offset=".55" stopColor="#ffffff" stopOpacity=".5" />
             <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+          </linearGradient>
+          <linearGradient id="shm-flow-band" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stopColor={SOFT} stopOpacity="0" />
+            <stop offset=".5" stopColor={SOFT} stopOpacity=".95" />
+            <stop offset="1" stopColor={SOFT} stopOpacity="0" />
           </linearGradient>
           <filter id="shm-soft" x="-40%" y="-40%" width="180%" height="180%">
             <feGaussianBlur stdDeviation="3" />
@@ -341,6 +364,20 @@ export function BrandMark({ size }: BrandMarkProps) {
             {GLYPH}
           </g>
         </g>
+
+        {/* the hero flow: the light band riding INSIDE the strokes (spec §9) */}
+        {flow ? (
+          <g
+            className="shMarkFlow"
+            stroke="url(#shm-flow-band)"
+            strokeWidth="5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          >
+            {GLYPH}
+          </g>
+        ) : null}
       </svg>
     </span>
   );

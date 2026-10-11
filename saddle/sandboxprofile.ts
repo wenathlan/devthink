@@ -57,12 +57,14 @@ export type sandboxosfamily = 'android' | 'linux' | 'windows';
 /** fixed product vocabulary; only the capacities are configuration. */
 export const SANDBOXBASES: readonly sandboxbaseid[] = ['max', 'balanced', 'lite'];
 export const SANDBOXOSES: readonly sandboxosid[] = [
-  'android', 'grapheneos', 'linux', 'omarchy', 'windows',
+  'android',
+  'grapheneos',
+  'linux',
+  'omarchy',
+  'windows',
 ];
 export const SANDBOXARCHES: readonly sandboxarchid[] = ['arm64', 'amd64'];
-export const SANDBOXFORMS: readonly sandboxformid[] = [
-  'runtime-node', 'full-docker', 'published',
-];
+export const SANDBOXFORMS: readonly sandboxformid[] = ['runtime-node', 'full-docker', 'published'];
 export const SANDBOXNETWORKS: readonly sandboxnetworkid[] = ['nat', 'bridged', 'isolated'];
 
 /* ------------------------------------------------------------------ */
@@ -209,8 +211,18 @@ export function resolvesandboxspec(
       ok: false,
       error:
         declared.base === undefined
-          ? new sandboxspecerror('missing-base', 'base', undefined, `one of ${SANDBOXBASES.join(', ')}`)
-          : new sandboxspecerror('invalid-base', 'base', declared.base, `one of ${SANDBOXBASES.join(', ')}`),
+          ? new sandboxspecerror(
+              'missing-base',
+              'base',
+              undefined,
+              `one of ${SANDBOXBASES.join(', ')}`,
+            )
+          : new sandboxspecerror(
+              'invalid-base',
+              'base',
+              declared.base,
+              `one of ${SANDBOXBASES.join(', ')}`,
+            ),
     };
   }
   const row: sandboxbaselimit | undefined = limits.bases[base];
@@ -218,7 +230,10 @@ export function resolvesandboxspec(
     return {
       ok: false,
       error: new sandboxspecerror(
-        'unknown-base-limits', 'base', base, 'a base present in the limits table',
+        'unknown-base-limits',
+        'base',
+        base,
+        'a base present in the limits table',
       ),
     };
   }
@@ -234,7 +249,10 @@ export function resolvesandboxspec(
       return {
         ok: false,
         error: new sandboxspecerror(
-          code, field, declared[field], `one of ${vocabulary.join(', ')}`,
+          code,
+          field,
+          declared[field],
+          `one of ${vocabulary.join(', ')}`,
         ),
       };
     }
@@ -260,7 +278,10 @@ export function resolvesandboxspec(
       return {
         ok: false,
         error: new sandboxspecerror(
-          code, field, declared[field], `an integer between 1 and ${ceiling} on the ${base} base`,
+          code,
+          field,
+          declared[field],
+          `an integer between 1 and ${ceiling} on the ${base} base`,
         ),
       };
     }
@@ -277,7 +298,10 @@ export function resolvesandboxspec(
     return {
       ok: false,
       error: new sandboxspecerror(
-        'vgpu-not-available', 'vgpu', true, `a base with vgpu slices (the ${base} base exposes none)`,
+        'vgpu-not-available',
+        'vgpu',
+        true,
+        `a base with vgpu slices (the ${base} base exposes none)`,
       ),
     };
   }
@@ -289,7 +313,10 @@ export function resolvesandboxspec(
       return {
         ok: false,
         error: new sandboxspecerror(
-          'invalid-timeout', 'timeoutseconds', declared.timeoutseconds, 'a positive integer of seconds',
+          'invalid-timeout',
+          'timeoutseconds',
+          declared.timeoutseconds,
+          'a positive integer of seconds',
         ),
       };
     }
@@ -297,7 +324,9 @@ export function resolvesandboxspec(
       return {
         ok: false,
         error: new sandboxspecerror(
-          'timeout-above-limit', 'timeoutseconds', declared.timeoutseconds,
+          'timeout-above-limit',
+          'timeoutseconds',
+          declared.timeoutseconds,
           `at most ${row.maxtimeoutseconds} seconds on the ${base} base`,
         ),
       };
@@ -366,4 +395,3 @@ export function enginespecfor(
     mig: options?.mig ?? 'off',
   };
 }
-

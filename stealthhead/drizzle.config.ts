@@ -7,8 +7,9 @@
  * committed. the config imports nothing at runtime beyond drizzle-kit
  * itself so typecheck never depends on the kit being installed.
  */
-import { defineConfig } from "drizzle-kit";
+
 import process from "node:process";
+import { defineConfig } from "drizzle-kit";
 
 /** the database location from the environment (required, never default). */
 const url = process.env.DATABASE_URL ?? "";
