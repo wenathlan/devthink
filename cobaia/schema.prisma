@@ -1,0 +1,31 @@
+// cobaia prisma schema — the self-hosted database of the family site. cobaia
+// is the monetization surface of the family: the content site that carries
+// the plans, the support rails and the honest advertisement slots while the
+// family apps stay clean.
+//
+// family sync contract (devthink master): a table of the same kind carries
+// the same columns and the same pointers in every application that holds
+// the kind — identity pointers are text, counts are 32-bit ints, time is
+// datetime or iso text, and byte-scale pointers (sizes, lengths, offsets)
+// are 64-bit BigInt, the pointer that holds terabytes. The sqlite
+// autoincrement rowid is 64-bit by the engine contract. This file is the
+// documentation of record: the runtime runs better-sqlite3 beside it and
+// mirrors the same columns in its boot DDL (db.ts).
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// the first-run state of one visitor (the flow contract: intro, then onboarding,
+/// never replayed) — the platform gateway serves it over /api/v1/onboarding
+model OnboardingState {
+  id             Int      @id @default(autoincrement())
+  visitor        String   @unique
+  introseen      Boolean  @default(false)
+  onboardingseen Boolean  @default(false)
+  updatedAt      DateTime @updatedAt
+}

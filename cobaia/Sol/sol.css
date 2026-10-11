@@ -1,24 +1,27 @@
 /* ==========================================================================
-   COBAIA THEME SOL — the single stylesheet of the site
-   The trylle ruler (the family's design law) on the dark canvas, with the
-   one accent of this site: the amber sun #f59e0b the whole devthink family
-   shares. cobaia is a CONTENT site — no window, no taskbar, no intro — so
-   the stylesheet covers only page furniture: the chrome (top bar + footer),
-   the landing scaffolding, the cards, the pricing table, the honest empty
-   states and the reserved ad container. Sections: tokens, base, chrome,
-   page, components, ad slot, motion, guards. Pure css: every animation
-   respects the reduced-motion opt-out, every surface respects the
-   reduced-transparency opt-out.
+   COBAIA THEME SOL — the single stylesheet of the site (the reform wave)
+   The trylle foundation (canvas #0a0a0b, the 8-surface ladder #171717→
+   #484848, hairlines at ink 5%/10%, the ring+doubling shadows, Inter
+   Variable 13px/450, the .625rem radius, 150ms micro on the trylle out
+   curve) wearing the WINDOWS hands: the press bounce (scale .7, 100ms),
+   the dtPopIntro mount pop on the nav pins, the 3px ladder indicator, the
+   focus underline on the Windows accent, the Fluent window curve on the
+   flow cards, the caption close, the Win11 scrollbar. The amber sun
+   #f59e0b stays the identity of the site — brand mark, content CTAs and
+   active indicators only; focus and chrome answer #4cc2ff. cobaia mounts
+   the entry flow of the family: the intro splash, the onboarding window
+   walk, then the content under the shell. Sections: tokens, base, chrome,
+   page, components, flow (intro + onboarding), brand mark, responsive,
+   keyframes, guards (reduced-motion hard-stop last). One stylesheet:
+   every existing class keeps its name, everything else is value.
    ========================================================================== */
 
-/* ---------- 1. TOKENS — the trylle pass (dark, amber accent) ---------- */
+/* ---------- 1. TOKENS — the trylle foundation with the windows hands ---------- */
 :root {
-  /* canvas and ink */
+  /* the trylle canvas and the 8 surface rungs (elevation by color, never
+     by border): the real ladder of the ruler site */
   --sol-canvas: #0a0a0b;
   --sol-canvas-deep: #060607;
-  --sol-ink: #fafafa;
-
-  /* the trylle surface ladder */
   --sol-surface-1: #171717;
   --sol-surface-2: #1e1e1e;
   --sol-surface-3: #252525;
@@ -26,59 +29,95 @@
   --sol-surface-5: #333333;
   --sol-surface-6: #3a3a3a;
   --sol-surface-7: #414141;
-  --sol-surface-8: #484848;
+  --sol-surface-8: #484848; /* the hover pole */
 
-  /* text: ink, muted, faint (fixed grays, AA on the canvas) */
-  --sol-muted: #a6a6ad;
-  --sol-faint: #85858e;
+  /* ink — primary / muted / faint, AA on the canvas */
+  --sol-ink: #fafafa;
+  --sol-muted: #a1a1aa;
+  --sol-faint: #71717a;
 
-  /* hairlines: ink at 5% and 10% */
+  /* hairlines mixed from the ink (5% / 10%) */
   --sol-hairline: color-mix(in oklab, var(--sol-ink) 5%, transparent);
   --sol-hairline-strong: color-mix(in oklab, var(--sol-ink) 10%, transparent);
 
-  /* the linear shadows: a 1px ring plus doubling layers */
+  /* the linear shadows: the 1px ring plus doubling layers; level 3+ adds
+     the inset top light — and the two Fluent shadows for real windows */
   --sol-shadow-1: 0 0 0 1px rgb(0 0 0 / 38%), 0 1px 1px -0.5px rgb(0 0 0 / 40%);
   --sol-shadow-2: var(--sol-shadow-1), 0 3px 3px -1.5px rgb(0 0 0 / 38%);
   --sol-shadow-3: var(--sol-shadow-2), inset 0 1px 0 rgb(255 255 255 / 4%), 0 6px 6px -3px rgb(0 0 0 / 36%);
   --sol-shadow-4: var(--sol-shadow-3), 0 12px 12px -6px rgb(0 0 0 / 36%);
   --sol-shadow-5: var(--sol-shadow-4), 0 24px 24px -12px rgb(0 0 0 / 42%);
+  --sol-shadow-6: var(--sol-shadow-5), 0 48px 48px -24px rgb(0 0 0 / 46%);
+  --sol-shadow-7: var(--sol-shadow-6), 0 96px 96px -48px rgb(0 0 0 / 50%);
+  --win-shadow-window: 0 32px 64px rgb(0 0 0 / 24%), 0 0 8px rgb(0 0 0 / 20%);
+  --win-shadow-flyout: 0 4px 8px rgb(0 0 0 / 14%), 0 0 2px rgb(0 0 0 / 12%);
 
-  /* typography: inter for everything, geist mono for the detail voice */
-  --sol-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --sol-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  /* typography — the trylle triad: Inter Variable rides every surface,
+     Geist Mono Variable rides micro-labels and every number */
+  --sol-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --sol-mono: "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, "SF Mono", Menlo, monospace;
   --sol-track-display: -0.02em;
   --sol-track-label: 0.14em;
   --sol-text-h1: clamp(2.25rem, 5vw, 3.75rem);
   --sol-text-h2: clamp(1.65rem, 3vw, 2rem);
   --sol-text-h3: clamp(1.3rem, 2vw, 1.5rem);
 
-  /* radius ladder */
+  /* radius — the trylle base .625rem (±2/4px; 2xl 16, 3xl 24) beside the
+     windows blend: the window wears 8 (the 11), the controls wear 4 (the 10) */
   --sol-radius: 0.625rem;
   --sol-radius-sm: calc(var(--sol-radius) - 2px);
   --sol-radius-lg: calc(var(--sol-radius) + 2px);
   --sol-radius-xl: calc(var(--sol-radius) + 4px);
   --sol-radius-2xl: 16px;
   --sol-radius-3xl: 24px;
+  --win-radius: 8px;
+  --win-radius-ctl: 4px;
 
-  /* motion: 150ms micro on the trylle out curve */
+  /* motion — micro 150ms · windows/panels 250ms · press 100ms; the fluent
+     curves beside the trylle out curve and the akash spring/leave pair */
   --sol-micro: 150ms;
   --sol-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --win-ease-window: cubic-bezier(0.85, 0.14, 0.14, 0.85);
+  --win-ease-entry: cubic-bezier(0.1, 0.9, 0.2, 1);
+  --win-ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
+  --win-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --win-ease-leave: cubic-bezier(0.76, 0, 0.24, 1);
+  --win-dur-window: 250ms;
 
-  /* the ONE accent of the site: the family amber sun */
+  /* the amber sun — the ONE identity accent of the site (brand mark,
+     content CTAs, active indicators); the WINDOWS accent governs focus
+     and chrome */
   --sol-accent: #f59e0b;
+  --sol-accent-deep: #b45309;
   --sol-accent-ink: #1c1002;
-  --sol-focus: #dfe5ee;
+  --win-accent: #4cc2ff;
+  --win-accent-ink: #060607;
+  --sol-focus: var(--win-accent);
+
+  /* washes, the bar acrylic and the scrollbar thumb (never the native blue) */
+  --wash: rgb(255 255 255 / 10%);
+  --wash-soft: rgb(255 255 255 / 5%);
+  --bar-acrylic: rgb(32 32 32 / 75%);
+  --bar-hairline: rgb(0 0 0 / 55%);
+  --scroll: rgb(255 255 255 / 26%);
+  --scroll-hover: rgb(255 255 255 / 40%);
+
+  /* the windows grain: one data-uri turbulence, tile 140×140, drawn at
+     5% over the acrylic surfaces — zero image files */
+  --win-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
 
   /* the content measure and the z bands (documented) */
   --cb-maxw: 1060px;
   --z-content: 10;
   --z-bar: 50;
+  --z-onboard: 60;
+  --z-intro: 70;
 
   color-scheme: dark;
   font-size: 16px;
 }
 
-/* ---------- 2. BASE ---------- */
+/* ---------- 2. BASE — the trylle body on the windows controls ---------- */
 * {
   box-sizing: border-box;
 }
@@ -88,11 +127,11 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  background:
-    radial-gradient(900px 440px at 78% -12%, rgb(245 158 11 / 5%), transparent 62%),
-    var(--sol-canvas);
+  background: var(--sol-canvas);
   color: var(--sol-ink);
   font-family: var(--sol-sans);
+  font-size: 13px;
+  font-weight: 450;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
 }
@@ -104,15 +143,16 @@ a {
   text-decoration: none;
 }
 a:hover {
-  color: var(--sol-accent);
+  color: var(--sol-ink);
 }
 h1,
 h2,
 h3 {
   margin: 0 0 0.5em;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: var(--sol-track-display);
   line-height: 1.1;
+  color: var(--sol-ink);
 }
 h1 {
   font-size: var(--sol-text-h1);
@@ -127,14 +167,17 @@ p {
   margin: 0 0 1em;
   color: var(--sol-muted);
 }
+strong {
+  color: var(--sol-ink);
+}
 ::selection {
-  background: color-mix(in oklab, var(--sol-accent) 32%, transparent);
+  background: color-mix(in oklab, var(--win-accent) 32%, transparent);
   color: var(--sol-ink);
 }
 :focus-visible {
   outline: 2px solid var(--sol-focus);
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: var(--win-radius-ctl);
 }
 kbd,
 code {
@@ -150,37 +193,53 @@ code {
   display: none !important;
 }
 
-/* thin scrollbar */
+/* the win11 scrollbar: invisible until the surface is hovered — lane 10px,
+   thumb 4px, 6px under the pointer (the border trims the paint) */
 * {
   scrollbar-width: thin;
-  scrollbar-color: color-mix(in oklab, var(--sol-ink) 20%, transparent) transparent;
+  scrollbar-color: transparent transparent;
 }
-*::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+*:hover {
+  scrollbar-color: var(--scroll) transparent;
 }
-*::-webkit-scrollbar-thumb {
-  background: color-mix(in oklab, var(--sol-ink) 20%, transparent);
-  border-radius: var(--sol-radius);
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  background-clip: padding-box;
+}
+*:hover::-webkit-scrollbar-thumb {
+  background-color: var(--scroll);
+}
+*:hover::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scroll-hover);
+  border-width: 2px;
 }
 
-/* ---------- 3. CHROME — the sticky top bar and the footer row ---------- */
+/* ---------- 3. CHROME — the acrylic bar, the nav pins, the footer ---------- */
 .cb-root {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-/* the skip link: hidden until keyboard focus */
+/* the skip link: hidden until keyboard focus; chrome answers the windows accent */
 .cb-skip {
   position: absolute;
   top: -48px;
   left: 16px;
   z-index: var(--z-bar);
   padding: 10px 14px;
-  border-radius: var(--sol-radius);
-  background: var(--sol-accent);
-  color: var(--sol-accent-ink);
+  border-radius: var(--win-radius-ctl);
+  background: var(--win-accent);
+  color: var(--win-accent-ink);
   font: 600 13px/1 var(--sol-sans);
   transition: top var(--sol-micro) var(--sol-ease-out);
 }
@@ -188,6 +247,8 @@ code {
   top: 12px;
 }
 
+/* the top bar: the taskbar acrylic — saturate(3) blur(20px), one black
+   hairline under, flat (zero gradient, zero diffuse shadow) */
 .cb-top {
   position: sticky;
   top: 0;
@@ -198,26 +259,41 @@ code {
   gap: 16px;
   max-width: var(--cb-maxw);
   margin: 0 auto;
-  padding: 12px clamp(16px, 4vw, 32px);
+  padding: 6px clamp(16px, 4vw, 32px);
   width: 100%;
-  border-bottom: 1px solid var(--sol-hairline);
-  background: color-mix(in oklab, var(--sol-canvas) 86%, transparent);
-  -webkit-backdrop-filter: blur(12px) saturate(1.4);
-  backdrop-filter: blur(12px) saturate(1.4);
+  border-bottom: 1px solid var(--bar-hairline);
+  background-color: var(--bar-acrylic);
+  background-image: var(--win-noise);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  backdrop-filter: saturate(3) blur(20px);
 }
+
+/* the brand: the mark rides the pin grammar — 38px wash box, r4, the press
+   bounce lands on the mark itself */
 .cb-brand {
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  min-height: 38px;
+  margin: 0 3px;
+  padding: 4px 10px 4px 4px;
+  border-radius: var(--win-radius-ctl);
   font-size: 0.95rem;
   letter-spacing: var(--sol-track-display);
+  transition: background-color 200ms ease, color var(--sol-micro) var(--sol-ease-out);
+}
+.cb-brand:hover {
+  background: var(--wash);
+  color: var(--sol-ink);
 }
 .cb-brand strong {
   color: var(--sol-ink);
-  font-weight: 800;
+  font-weight: 600;
 }
-.cb-brand:hover strong {
-  color: var(--sol-accent);
+.cb-brand:active .cbMarkSvg {
+  transform: scale(0.7);
+  transition-duration: 100ms;
+  transition-timing-function: ease-in-out;
 }
 .cb-brandtag {
   color: var(--sol-faint);
@@ -225,25 +301,66 @@ code {
   letter-spacing: var(--sol-track-label);
   text-transform: uppercase;
 }
+
+/* the section links: the windows pins of the bar — r4 wash boxes with the
+   press bounce, the mount pop and the 3px ladder indicator underneath
+   (0 closed → 6px gray open → 12px amber active) */
 .cb-nav {
   display: flex;
-  gap: clamp(10px, 2.4vw, 22px);
+  gap: clamp(6px, 2vw, 16px);
 }
 .cb-navlink {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  margin: 0 3px;
+  padding: 6px 10px;
+  border-radius: var(--win-radius-ctl);
   color: var(--sol-muted);
   font: 600 13.5px/1.4 var(--sol-sans);
   letter-spacing: 0.01em;
-  padding: 6px 2px;
-  border-bottom: 2px solid transparent;
-  transition: color var(--sol-micro) var(--sol-ease-out), border-color var(--sol-micro) var(--sol-ease-out);
+  transition:
+    background-color 200ms ease,
+    color var(--sol-micro) var(--sol-ease-out),
+    transform 100ms ease-in-out;
 }
 .cb-navlink:hover {
+  background: var(--wash);
   color: var(--sol-ink);
   text-decoration: none;
 }
+.cb-navlink:active {
+  transform: scale(0.7);
+}
+.cb-navlink:focus-visible {
+  outline: none;
+  box-shadow: inset 0 -2px 0 var(--sol-focus);
+}
+.cb-navlink::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  width: 12px;
+  height: 3px;
+  border-radius: var(--win-radius-ctl);
+  background: var(--sol-accent);
+  transform: translateX(-50%) scaleX(0);
+  transition:
+    transform 0.2s ease-in-out,
+    background-color 0.2s ease-in-out;
+}
+.cb-navlink:hover::after {
+  background: #858585;
+  transform: translateX(-50%) scaleX(0.5);
+}
 .cb-navlink[aria-current="page"] {
   color: var(--sol-ink);
-  border-bottom-color: var(--sol-accent);
+}
+.cb-navlink[aria-current="page"]::after {
+  background: var(--sol-accent);
+  transform: translateX(-50%) scaleX(1);
 }
 
 .cb-main {
@@ -267,6 +384,12 @@ code {
   max-width: var(--cb-maxw);
   margin: 0 auto;
   padding: clamp(28px, 4vw, 44px) clamp(16px, 4vw, 32px) 20px;
+}
+.cb-footcol {
+  min-width: 0;
+}
+.cb-footabout .cb-foottext {
+  max-width: 42ch;
 }
 .cb-foothead {
   margin: 0 0 12px;
@@ -364,16 +487,13 @@ code {
   animation: cbRise 640ms var(--sol-ease-out) backwards;
   animation-delay: calc(var(--cb-d, 0) * 80ms);
 }
-@keyframes cbRise {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-}
 
 /* ---------- 5. COMPONENTS ---------- */
 
-/* buttons: one amber primary, one hairline ghost — no pills, 44px touch */
+/* buttons: the trylle tone stack over the windows 4px control — the inset
+   top highlight, the inset pool, the 1px ring and the two amber drop
+   levels; hover raises the alphas, the press dips on the exit curve, no
+   lift on the wash */
 .cb-btnrow {
   display: flex;
   flex-wrap: wrap;
@@ -387,27 +507,40 @@ code {
   gap: 8px;
   min-height: 44px;
   padding: 0 20px;
-  border: 1px solid transparent;
-  border-radius: var(--sol-radius);
+  border: 0;
+  border-radius: var(--win-radius-ctl);
   background: var(--sol-accent);
   color: var(--sol-accent-ink);
-  font: 700 14px/1 var(--sol-sans);
+  font: 600 14px/1 var(--sol-sans);
   cursor: pointer;
-  box-shadow: var(--sol-shadow-2);
+  box-shadow:
+    inset 0 1.2px 0 0 rgb(255 255 255 / 45%),
+    inset 0 8px 14px -6px rgb(255 255 255 / 22%),
+    0 0 0 1px var(--sol-accent-deep),
+    0 1px 2px rgb(120 53 15 / 18%),
+    0 3px 5px -1px rgb(120 53 15 / 24%);
   transition:
-    transform var(--sol-micro) var(--sol-ease-out),
+    background-color var(--sol-micro) var(--sol-ease-out),
     box-shadow var(--sol-micro) var(--sol-ease-out),
-    background-color var(--sol-micro) var(--sol-ease-out);
+    color var(--sol-micro) var(--sol-ease-out),
+    transform 100ms var(--win-ease-exit);
 }
 .cb-btn:hover {
-  background: color-mix(in oklab, var(--sol-accent) 88%, #ffffff);
-  box-shadow: var(--sol-shadow-3);
-  transform: translateY(-1px);
+  background: color-mix(in oklab, var(--sol-accent) 90%, #ffffff);
+  box-shadow:
+    inset 0 1.2px 0 0 rgb(255 255 255 / 55%),
+    inset 0 8px 14px -6px rgb(255 255 255 / 30%),
+    0 0 0 1px var(--sol-accent-deep),
+    0 2px 3px rgb(120 53 15 / 22%),
+    0 4px 7px -1px rgb(120 53 15 / 28%);
   text-decoration: none;
 }
 .cb-btn:active {
-  transform: translateY(0) scale(0.98);
-  box-shadow: var(--sol-shadow-1);
+  transform: scale(0.97);
+  box-shadow:
+    inset 0 1.2px 0 0 rgb(255 255 255 / 30%),
+    0 0 0 1px var(--sol-accent-deep),
+    0 1px 2px rgb(120 53 15 / 16%);
 }
 .cb-btn:disabled,
 .cb-btn[aria-disabled="true"] {
@@ -417,14 +550,21 @@ code {
   box-shadow: var(--sol-shadow-1);
 }
 .cb-btn--ghost {
-  background: transparent;
+  background: var(--wash-soft);
   color: var(--sol-ink);
-  border-color: var(--sol-hairline-strong);
+  box-shadow:
+    inset 0 1.2px 0 0 rgb(255 255 255 / 10%),
+    0 0 0 1px var(--sol-hairline-strong),
+    0 1px 2px rgb(0 0 0 / 24%);
 }
 .cb-btn--ghost:hover {
-  background: var(--sol-surface-1);
-  border-color: color-mix(in oklab, var(--sol-accent) 45%, transparent);
+  background: var(--wash);
+  border-color: transparent;
   color: var(--sol-ink);
+  box-shadow:
+    inset 0 1.2px 0 0 rgb(255 255 255 / 14%),
+    0 0 0 1px color-mix(in oklab, var(--sol-ink) 16%, transparent),
+    0 2px 3px rgb(0 0 0 / 28%);
 }
 
 /* the text link voice */
@@ -454,7 +594,7 @@ code {
   color: var(--sol-muted);
 }
 
-/* cards: surface well, ring shadow, one hover lift */
+/* cards: surface well, ring shadow, one hover raise */
 .cb-grid {
   display: grid;
   gap: 16px;
@@ -528,7 +668,7 @@ code {
 .cb-planprice {
   margin: 0;
   font-size: 2.2rem;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: var(--sol-track-display);
   color: var(--sol-ink);
   font-variant-numeric: tabular-nums;
@@ -579,6 +719,11 @@ code {
   background: var(--sol-surface-2);
   box-shadow: var(--sol-shadow-3);
   transform: translateY(-2px);
+}
+.cb-appcard:active {
+  transform: translateY(0) scale(0.99);
+  transition-duration: 100ms;
+  transition-timing-function: ease-in-out;
 }
 .cb-apphead {
   display: flex;
@@ -635,7 +780,7 @@ code {
   transition: background-color var(--sol-micro) var(--sol-ease-out);
 }
 .cb-postrow:hover {
-  background: color-mix(in oklab, var(--sol-accent) 4%, transparent);
+  background: var(--wash-soft);
 }
 .cb-postdate {
   margin: 0 0 2px;
@@ -646,7 +791,7 @@ code {
 }
 .cb-postlink {
   color: var(--sol-ink);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 1.05rem;
   letter-spacing: var(--sol-track-display);
 }
@@ -723,7 +868,253 @@ code {
   justify-content: center;
 }
 
-/* ---------- 8. THE BRAND MARK MOTION — transform only, guarded ---------- */
+/* ---------- 8. FLOW — the intro splash and the onboarding window walk ---------- */
+
+/* the intro: the akash floor — the deep canvas, the drawn mark springing in
+   on the backOut overshoot, the name rising, the role line fading late, the
+   exit sliding the whole stage up over 0.8s on the leave curve; no dots,
+   no spinner: the mark speaks */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-intro);
+  display: grid;
+  place-items: center;
+  background: var(--sol-canvas-deep);
+  overflow: hidden;
+  cursor: pointer;
+}
+.intro::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--win-noise);
+  opacity: 0.05;
+  pointer-events: none;
+}
+.intro__stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.intro__mark {
+  display: block;
+  animation: introSpring 500ms var(--win-ease-spring) backwards;
+}
+.intro__word {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 600;
+  letter-spacing: var(--sol-track-display);
+  color: var(--sol-ink);
+  animation: introRise 450ms var(--win-ease-spring) 120ms backwards;
+}
+.intro__line {
+  margin: 0;
+  font-size: 12px;
+  color: var(--sol-muted);
+  letter-spacing: var(--sol-track-label);
+  text-transform: lowercase;
+  animation: introFade var(--win-dur-window) var(--sol-ease-out) 420ms backwards;
+}
+.intro__skip {
+  position: absolute;
+  bottom: 24px;
+  margin: 0;
+  font-family: var(--sol-mono);
+  font-size: 11px;
+  letter-spacing: var(--sol-track-label);
+  color: var(--sol-faint);
+  animation: introFade var(--win-dur-window) var(--sol-ease-out) 1000ms backwards;
+}
+.intro--exit {
+  animation: introLeave 800ms var(--win-ease-leave) forwards;
+}
+
+/* the onboarding: the first-run dialog — a real window card over the deep
+   canvas: the fluent entry (250ms, scale .95→1), the acrylic title bar with
+   the brand and the caption close (r4, the red close of the windows
+   chrome), the frames remounting per step so the entry plays each time,
+   the 3px segment ladder tracking the position */
+.ob {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-onboard);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: var(--sol-canvas-deep);
+  overflow-y: auto;
+}
+.ob::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--win-noise);
+  opacity: 0.05;
+  pointer-events: none;
+}
+.ob__card {
+  position: relative;
+  width: min(560px, 100%);
+  border: 1px solid var(--sol-hairline-strong);
+  border-radius: var(--win-radius);
+  background-color: rgb(36 36 36 / 85%);
+  background-image: var(--win-noise);
+  box-shadow: var(--win-shadow-window);
+  overflow: hidden;
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  backdrop-filter: saturate(3) blur(20px);
+  animation: winOpen var(--win-dur-window) var(--win-ease-window) backwards;
+}
+.ob__bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 4px 0 14px;
+  background-color: var(--bar-acrylic);
+  background-image: var(--win-noise);
+  border-bottom: 1px solid var(--bar-hairline);
+}
+.ob__bartitle {
+  font: 500 12px/1.4 var(--sol-sans);
+  letter-spacing: var(--sol-track-display);
+  color: var(--sol-muted);
+}
+.ob__cap {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 30px;
+  margin-left: auto;
+  border: 0;
+  border-radius: var(--win-radius-ctl);
+  background: transparent;
+  color: var(--sol-muted);
+  cursor: pointer;
+  transition:
+    background-color 100ms var(--win-ease-exit),
+    color 100ms var(--win-ease-exit),
+    transform 100ms ease-in-out;
+}
+.ob__cap svg {
+  width: 10px;
+  height: 10px;
+}
+.ob__cap:hover {
+  background: rgb(232 17 35);
+  color: rgb(255 255 255 / 92%);
+}
+.ob__cap:active {
+  background: rgb(139 10 20);
+  transform: scale(0.94);
+}
+.ob__body {
+  display: flex;
+  flex-direction: column;
+  min-height: 218px;
+  padding: 24px;
+}
+.ob__step {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: winStepIn var(--win-dur-window) var(--win-ease-entry) backwards;
+}
+.ob__eyebrow {
+  margin: 0;
+  font-family: var(--sol-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--sol-accent);
+  letter-spacing: var(--sol-track-label);
+  text-transform: lowercase;
+}
+.ob__title {
+  margin: 0;
+  font-size: clamp(1.25rem, 3vw, 1.6rem);
+  letter-spacing: var(--sol-track-display);
+  color: var(--sol-ink);
+}
+.ob__text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--sol-muted);
+}
+.ob__meter {
+  display: flex;
+  gap: 6px;
+  padding: 0 24px 16px;
+}
+.ob__seg {
+  height: 3px;
+  flex: 1;
+  border-radius: var(--win-radius-ctl);
+  background: var(--wash-soft);
+  transition: background-color 0.2s ease-in-out;
+}
+.ob__seg[data-done="true"] {
+  background: var(--sol-accent);
+}
+.ob__foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 14px 16px;
+  border-top: 1px solid var(--sol-hairline);
+  background: rgb(0 0 0 / 15%);
+}
+.ob__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: var(--win-radius-ctl);
+  background: var(--wash-soft);
+  color: var(--sol-ink);
+  font: 600 13px/1 var(--sol-sans);
+  cursor: pointer;
+  box-shadow:
+    inset 0 1.2px 0 0 rgb(255 255 255 / 10%),
+    0 0 0 1px var(--sol-hairline-strong),
+    0 1px 2px rgb(0 0 0 / 24%);
+  transition:
+    background-color var(--sol-micro) var(--sol-ease-out),
+    box-shadow var(--sol-micro) var(--sol-ease-out),
+    transform 100ms var(--win-ease-exit);
+}
+.ob__btn:hover {
+  background: var(--wash);
+}
+.ob__btn:active {
+  transform: scale(0.97);
+}
+.ob__btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+.ob__btn--accent {
+  background: var(--sol-accent);
+  color: var(--sol-accent-ink);
+  box-shadow:
+    inset 0 1.2px 0 0 rgb(255 255 255 / 45%),
+    inset 0 8px 14px -6px rgb(255 255 255 / 22%),
+    0 0 0 1px var(--sol-accent-deep),
+    0 1px 2px rgb(120 53 15 / 18%),
+    0 3px 5px -1px rgb(120 53 15 / 24%);
+}
+.ob__btn--accent:hover {
+  background: color-mix(in oklab, var(--sol-accent) 90%, #ffffff);
+}
+
+/* ---------- 9. THE BRAND MARK MOTION — transform only, guarded ---------- */
 .cbMark {
   display: inline-block;
   flex: none;
@@ -747,7 +1138,7 @@ code {
   }
 }
 
-/* ---------- 9. RESPONSIVE — one design, only the ratio changes ---------- */
+/* ---------- 10. RESPONSIVE — one design, only the ratio changes ---------- */
 @media (max-width: 760px) {
   .cb-brandtag {
     display: none;
@@ -760,15 +1151,122 @@ code {
   }
 }
 
-/* ---------- 10. GUARDS — the house stops ---------- */
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
+/* ---------- 11. KEYFRAMES — the entrances, the flow, the windows pop ---------- */
+@keyframes cbRise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
   }
-  .cb-in {
+}
+@keyframes introSpring {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+@keyframes introRise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+@keyframes introFade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes introLeave {
+  to {
+    transform: translateY(-100%);
+  }
+}
+@keyframes winOpen {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+@keyframes winStepIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+/* dtPopIntro — the pin entrance of the windows recipe: 0 → 1.125 (40%) →
+   0.725 (70%) → 1 (the bounce); the bar entries pop on mount, staggered */
+@media (prefers-reduced-motion: no-preference) {
+  .cb-brand {
+    animation: dtPopIntro 800ms ease-in-out backwards;
+  }
+  .cb-navlink {
+    animation: dtPopIntro 800ms ease-in-out backwards;
+  }
+  .cb-navlink:nth-child(2) {
+    animation-delay: 60ms;
+  }
+  .cb-navlink:nth-child(3) {
+    animation-delay: 120ms;
+  }
+  .cb-navlink:nth-child(4) {
+    animation-delay: 180ms;
+  }
+}
+@keyframes dtPopIntro {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.125);
+  }
+  70% {
+    transform: scale(0.725);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ---------- 12. GUARDS — the house stops (reduced motion WINS, last) ---------- */
+@media (prefers-reduced-transparency: reduce) {
+  /* the solid floors: every acrylic surface lands on a rung, the blur dies */
+  .cb-top {
+    background-color: #202020;
+    background-image: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .ob__card {
+    background-color: #2c2c2c;
+    background-image: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .ob__bar {
+    background-color: #2b2b2b;
+    background-image: none;
+  }
+  .intro::before,
+  .ob::before {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cb-in,
+  .cb-brand,
+  .cb-navlink,
+  .intro__mark,
+  .intro__word,
+  .intro__line,
+  .intro__skip,
+  .ob__card,
+  .ob__step {
     animation: none !important;
   }
   .cb-skip,
+  .cb-brand,
   .cb-navlink,
   .cb-btn,
   .cb-card,
@@ -778,20 +1276,35 @@ code {
   .cb-footlink,
   .cb-famlink,
   .cb-link,
+  .ob__cap,
+  .ob__btn,
+  .ob__seg,
   .cbMarkSvg {
     transition: none !important;
+  }
+  .cb-navlink:active,
+  .cb-brand:active .cbMarkSvg,
+  .cb-btn:active,
+  .cb-appcard:active,
+  .ob__cap:active,
+  .ob__btn:active {
+    transform: none;
   }
   .cbMark:hover .cbMarkSvg {
     transform: none;
   }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .cb-top {
-    background: var(--sol-canvas);
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
+  html {
+    scroll-behavior: auto;
   }
-  .cb-postrow:hover {
-    background: var(--sol-surface-1);
+}
+/* the hard stop: every animation and transition dies — this block is LAST
+   so it wins every earlier duration in the file */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
