@@ -4,21 +4,25 @@
  * it imports the loose components beside it, mounts the page and re-exports
  * the public component surface. Only the theme anchor (Sol/Sol.tsx) consumes
  * this file. This anchor carries the former main component of the folder,
- * which now lives here as the page mount itself.
+ * which now lives here as the page mount itself. Since the reform the mount
+ * consults the entry gate (entrygate.tsx beside this anchor) before rendering
+ * the landing: the first-run flow (intro, onboarding) decides, the landing
+ * renders only behind a finished flow.
  */
 
-// The landing of the foundry application (campaign v3 · R3): the herd floor
-// as a Suno-grade SaaS surface with an industrial-store console heart. ONE
-// amber furnace light (color-mix 14%) over the deep bronze dark, with the
-// .halftone dissolve and the ≤5% grain riding the theme utilities. The mark
-// owns the zone once — the shell rests its title-bar mark behind the
-// data-landing flag — and carries the conveyor tick: a 2.4s transform-only
-// belt beside the lockup. The forge console is the prompt-giga field: a
-// giant mono input drafting the herd name, the three real clone formats as
-// chips (.tzst, .tar.gz, .tar.xz) and the embedded forge key — the readout
-// stays a DRAFT, this staging surface stores nothing. Below: the herd shelf
-// presents the format capabilities honestly (no herd data lives locally, so
-// no sizes are invented), the tzst row leads raised with the center-pop;
+// The landing of the foundry application (campaign v3 · R3, restated on the
+// trylle foundation wearing the windows hands): the herd floor as a Suno-grade
+// SaaS surface with an industrial-store console heart. ONE azul furnace light
+// (the foundry identity #4d8edd at the 90/10 discipline) over the trylle deep
+// canvas, with the .halftone dissolve and the ≤5% grain riding the theme
+// utilities. The mark owns the zone once — the shell rests its title-bar mark
+// behind the data-landing flag — and carries the conveyor tick: a 2.4s
+// transform-only belt beside the lockup. The forge console is the prompt-giga
+// field: a giant mono input drafting the herd name, the three real clone
+// formats as chips (.tzst, .tar.gz, .tar.xz) and the embedded forge key — the
+// readout stays a DRAFT, this staging surface stores nothing. Below: the herd
+// shelf presents the format capabilities honestly (no herd data lives locally,
+// so no sizes are invented), the tzst row leads raised with the center-pop;
 // the 01–03 capability steps (run · store · clone) and the footer meta-quad
 // close the page flush to the window floor. Styled entirely by Sol/sol.css.
 import { type CSSProperties, useEffect, useRef, useState } from "react";
@@ -26,6 +30,7 @@ import { familyrow } from "../../family";
 import { familyurl } from "../../familyurl";
 import { BrandMark } from "../shell/BrandMark";
 import { Entry } from "./entry";
+import { EntryGate } from "./entrygate";
 import { Tabs } from "./tabs";
 import type { HomeProps } from "./types";
 
@@ -126,134 +131,136 @@ export function Home(props: HomeProps) {
   }
 
   return (
-    <main className="page fd-page">
-      {/* the hero stage: the one amber furnace light of the landing */}
-      <section className="fdx-stage halftone grain" aria-label="foundry — the foundry of clone herds">
-        <span className="fdx-light" aria-hidden="true" />
-        <div className="fdx-lockup fdx-in">
-          <span className="fdx-mark">
-            <BrandMark size={56} />
-          </span>
-          <span className="fdx-belt" aria-hidden="true">
-            <i />
-          </span>
-        </div>
-        <p className="fdx-eyebrow fdx-in" style={{ "--fdx-d": 1 } as CSSProperties}>
-          foundry · runs and stores
-        </p>
-        <h1 className="fdx-title fdx-in" style={{ "--fdx-d": 2 } as CSSProperties}>
-          One floor. Every herd.
-        </h1>
-        <p className="fdx-lede fdx-in" style={{ "--fdx-d": 3 } as CSSProperties}>
-          the foundry of clone herds — the working set of the family runs here and stays stored as .tzst, .tar.gz and
-          .tar.xz clones.
-        </p>
-      </section>
-
-      {/* the industrial-store heart: the forge console and the herd shelf */}
-      <section id="surface" aria-label="the forge console and the herd shelf">
-        <div className="fdx-forge fdx-in" style={{ "--fdx-d": 4 } as CSSProperties}>
-          <p className="fdx-forgehead">the forge · name a herd, pick the clone format</p>
-          <div className="fdx-field">
-            <span className="fdx-sigil" aria-hidden="true">
-              ›
+    <EntryGate>
+      <main className="page fd-page">
+        {/* the hero stage: the one amber furnace light of the landing */}
+        <section className="fdx-stage halftone grain" aria-label="foundry — the foundry of clone herds">
+          <span className="fdx-light" aria-hidden="true" />
+          <div className="fdx-lockup fdx-in">
+            <span className="fdx-mark">
+              <BrandMark size={56} />
             </span>
-            <input
-              className="fdx-input"
-              type="text"
-              value={draft}
-              maxLength={48}
-              placeholder="forge a clone — name the herd"
-              aria-label="name the herd to clone"
-              onChange={(event) => setDraft(event.target.value)}
-            />
-            <button type="button" className="fdx-key" onClick={stamp}>
-              forge
-            </button>
+            <span className="fdx-belt" aria-hidden="true">
+              <i />
+            </span>
           </div>
-          <div className="fdx-console">
-            <fieldset className="fdx-chips">
-              <legend className="fdx-chipslegend">clone format</legend>
-              {FORMATS.map((f) => (
-                <button
-                  key={f.id}
-                  type="button"
-                  className="fdx-chip"
-                  aria-pressed={f.id === format}
-                  onClick={() => setFormat(f.id)}
-                >
-                  {f.ext}
-                </button>
-              ))}
-            </fieldset>
-            <p className={stamped ? "fdx-readout is-stamped" : "fdx-readout"} role="status">
-              {readout}
-            </p>
-          </div>
-        </div>
+          <p className="fdx-eyebrow fdx-in" style={{ "--fdx-d": 1 } as CSSProperties}>
+            foundry · runs and stores
+          </p>
+          <h1 className="fdx-title fdx-in" style={{ "--fdx-d": 2 } as CSSProperties}>
+            One floor. Every herd.
+          </h1>
+          <p className="fdx-lede fdx-in" style={{ "--fdx-d": 3 } as CSSProperties}>
+            the foundry of clone herds — the working set of the family runs here and stays stored as .tzst, .tar.gz and
+            .tar.xz clones.
+          </p>
+        </section>
 
-        <div className="fdx-shelf">
-          <p className="fdx-shelfhead">the herd shelf · the clone formats the store keeps</p>
-          <ul className="fdx-rows">
-            {FORMATS.map((f, index) => (
-              <li
-                key={f.id}
-                className={index === 0 ? "fdx-row is-lead" : "fdx-row"}
-                style={{ "--fdx-d": index } as CSSProperties}
-              >
-                <span className="fdx-name">{f.herd}</span>
-                <span className="fdx-format">{f.ext}</span>
-                <span className="fdx-trait">{f.line}</span>
-                <span className="fdx-state">
-                  <i className="fdx-dot" aria-hidden="true" />
-                  {f.state}
-                </span>
-              </li>
-            ))}
-          </ul>
-          <p className="fdx-note">{SHELF_NOTE}</p>
-        </div>
-
-        <div className="fdx-steps">
-          {STEPS.map((step, index) => (
-            <div key={step.n} className="fdx-step" style={{ "--fdx-d": index } as CSSProperties}>
-              <p className="fdx-stepn">{step.n}</p>
-              <h2 className="fdx-steptitle">{step.title}</h2>
-              <p className="fdx-steptext">{step.text}</p>
+        {/* the industrial-store heart: the forge console and the herd shelf */}
+        <section id="surface" aria-label="the forge console and the herd shelf">
+          <div className="fdx-forge fdx-in" style={{ "--fdx-d": 4 } as CSSProperties}>
+            <p className="fdx-forgehead">the forge · name a herd, pick the clone format</p>
+            <div className="fdx-field">
+              <span className="fdx-sigil" aria-hidden="true">
+                ›
+              </span>
+              <input
+                className="fdx-input"
+                type="text"
+                value={draft}
+                maxLength={48}
+                placeholder="forge a clone — name the herd"
+                aria-label="name the herd to clone"
+                onChange={(event) => setDraft(event.target.value)}
+              />
+              <button type="button" className="fdx-key" onClick={stamp}>
+                forge
+              </button>
             </div>
-          ))}
-        </div>
+            <div className="fdx-console">
+              <fieldset className="fdx-chips">
+                <legend className="fdx-chipslegend">clone format</legend>
+                {FORMATS.map((f) => (
+                  <button
+                    key={f.id}
+                    type="button"
+                    className="fdx-chip"
+                    aria-pressed={f.id === format}
+                    onClick={() => setFormat(f.id)}
+                  >
+                    {f.ext}
+                  </button>
+                ))}
+              </fieldset>
+              <p className={stamped ? "fdx-readout is-stamped" : "fdx-readout"} role="status">
+                {readout}
+              </p>
+            </div>
+          </div>
 
-        <Entry note={props.input} />
-      </section>
+          <div className="fdx-shelf">
+            <p className="fdx-shelfhead">the herd shelf · the clone formats the store keeps</p>
+            <ul className="fdx-rows">
+              {FORMATS.map((f, index) => (
+                <li
+                  key={f.id}
+                  className={index === 0 ? "fdx-row is-lead" : "fdx-row"}
+                  style={{ "--fdx-d": index } as CSSProperties}
+                >
+                  <span className="fdx-name">{f.herd}</span>
+                  <span className="fdx-format">{f.ext}</span>
+                  <span className="fdx-trait">{f.line}</span>
+                  <span className="fdx-state">
+                    <i className="fdx-dot" aria-hidden="true" />
+                    {f.state}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <p className="fdx-note">{SHELF_NOTE}</p>
+          </div>
 
-      {/* FAMILY ROW — the nine siblings, one §12 dot each (the same table
+          <div className="fdx-steps">
+            {STEPS.map((step, index) => (
+              <div key={step.n} className="fdx-step" style={{ "--fdx-d": index } as CSSProperties}>
+                <p className="fdx-stepn">{step.n}</p>
+                <h2 className="fdx-steptitle">{step.title}</h2>
+                <p className="fdx-steptext">{step.text}</p>
+              </div>
+            ))}
+          </div>
+
+          <Entry note={props.input} />
+        </section>
+
+        {/* FAMILY ROW — the nine siblings, one §12 dot each (the same table
           the rail foot and the tests read — zero drift) */}
-      <FamilyRow />
+        <FamilyRow />
 
-      {/* the footer meta-quad, flush to the window floor */}
-      <footer className="fdx-quad">
-        <div className="fdx-quads">
-          <div className="fdx-cell">
-            <p className="fdx-quadh">foundry</p>
-            <p className="fdx-quadt">the family foundry — runs the floor and stores the herds.</p>
+        {/* the footer meta-quad, flush to the window floor */}
+        <footer className="fdx-quad">
+          <div className="fdx-quads">
+            <div className="fdx-cell">
+              <p className="fdx-quadh">foundry</p>
+              <p className="fdx-quadt">the family foundry — runs the floor and stores the herds.</p>
+            </div>
+            <div className="fdx-cell">
+              <p className="fdx-quadh">the store</p>
+              <p className="fdx-quadt">clone archives kept as .tzst · .tar.gz · .tar.xz.</p>
+            </div>
+            <div className="fdx-cell">
+              <p className="fdx-quadh">the floor</p>
+              <p className="fdx-quadt">the platform answers on /sandboxes · /images · /artifacts.</p>
+            </div>
+            <div className="fdx-cell">
+              <p className="fdx-quadh">the family</p>
+              <p className="fdx-quadt">nine deploy units share the engine — foundry keeps their working set.</p>
+            </div>
           </div>
-          <div className="fdx-cell">
-            <p className="fdx-quadh">the store</p>
-            <p className="fdx-quadt">clone archives kept as .tzst · .tar.gz · .tar.xz.</p>
-          </div>
-          <div className="fdx-cell">
-            <p className="fdx-quadh">the floor</p>
-            <p className="fdx-quadt">the platform answers on /sandboxes · /images · /artifacts.</p>
-          </div>
-          <div className="fdx-cell">
-            <p className="fdx-quadh">the family</p>
-            <p className="fdx-quadt">nine deploy units share the engine — foundry keeps their working set.</p>
-          </div>
-        </div>
-        <Tabs />
-      </footer>
-    </main>
+          <Tabs />
+        </footer>
+      </main>
+    </EntryGate>
   );
 }
 

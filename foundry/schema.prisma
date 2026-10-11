@@ -34,3 +34,13 @@ model Image {
   size      BigInt   @default(0)
   createdAt DateTime @default(now())
 }
+
+/// the first-run state of one visitor (the flow contract: intro, then onboarding,
+/// never replayed) — the platform gateway serves it over /api/v1/onboarding
+model OnboardingState {
+  id             Int      @id @default(autoincrement())
+  visitor        String   @unique
+  introseen      Boolean  @default(false)
+  onboardingseen Boolean  @default(false)
+  updatedAt      DateTime @updatedAt
+}

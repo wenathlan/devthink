@@ -1,119 +1,73 @@
+// the foundry intro of the theme.
 /**
- * intro page anchor — layer 3 of the anchor architecture.
- * The file carrying the folder's own name is the path manager of the page:
- * it imports the loose components beside it, mounts the page and re-exports
- * the public component surface. Only the theme anchor (Sol/Sol.tsx) consumes
- * this file. This anchor carries the former main component of the folder,
- * which now lives here as the page mount itself.
+ * intro.tsx — the opening splash of the APPLICATION (the flow contract of the
+ * reform): the app announces itself before the window — the trylle deep
+ * canvas, the drawn mark landing with the Akash spring (the overshoot curve
+ * cubic-bezier(.34,1.56,.64,1)), the name rising with the backOut lift and
+ * the honest role line fading in under the 1.6s hold. The exit slides the
+ * whole stage up over 0.8s (cubic-bezier(0.76,0,0.24,1)) and hands the flow
+ * DIRECTLY to the onboarding at /onboarding. No loading dots, no spinner: the
+ * mark speaks. A click or any key skips; prefers-reduced-motion hands over
+ * straight away. The seen stage rides the shared onboardingstate accessor
+ * (DB-backed, cache-mirrored — this page is the intro writer only; the home
+ * entry gate decides whether the splash plays at all).
  */
-
-// The opening of the foundry APPLICATION (the FAM-APPS reform): a
-// full-viewport Mica + noise splash where the drawn mark springs in on the
-// overshoot curve cubic-bezier(.34,1.56,.64,1) and the name rises with the
-// backOut — no loading dots, no OS boot. The role rides the line: foundry
-// RUNS AND STORES (campaign v3 · R3 — the herd floor over the deep bronze
-// dark). The beat plan is ~1.6s of open and 0.8s of slide-up exit
-// on cubic-bezier(0.76,0,0.24,1); a click or any key skips straight to the
-// hand-over. The sessionStorage flag (the family recipe key
-// <app>.intro.seen) avoids a replay on client-side re-navigation — a cold load always
-// plays — and closing the application window lifts the flag so the relaunch
-// plays the opening again.
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
+import { markIntroSeen } from "../../onboardingstate";
 import { BrandMark } from "../shell/BrandMark";
 
-/** the sessionStorage flag of the opening (the family recipe key, cold
- * load always plays) */
-const INTRO_SEEN_KEY = "foundry.intro.seen";
-
-/**
- * Reads the seen flag of this browser session.
- *
- * @returns true when the intro already played this session.
- */
-export function introSeen(): boolean {
-  try {
-    return window.sessionStorage.getItem(INTRO_SEEN_KEY) === "1";
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Raises the seen flag so a client-side re-navigation never replays the
- * opening (a cold load starts with a fresh sessionStorage and always plays).
- * Storage failures keep the intro playing on every visit.
- */
-export function markIntroSeen(): void {
-  try {
-    window.sessionStorage.setItem(INTRO_SEEN_KEY, "1");
-  } catch {
-    /* storage unavailable: the intro simply plays on every visit */
-  }
-}
-
-/**
- * Lifts the seen flag: closing the application window is a relaunch, and a
- * relaunch plays the opening again.
- */
-export function resetIntro(): void {
-  try {
-    window.sessionStorage.removeItem(INTRO_SEEN_KEY);
-  } catch {
-    /* storage unavailable: the flag never existed */
-  }
-}
-
-/** the opening hands the flow to the onboarding walk */
+/** how long the brand holds before the exit (ms) — the doctrine asks ~1.6s */
+const HOLD_MS = 1600;
+/** how long the slide-up exit runs before the hand-over (ms) */
+const LEAVE_MS = 800;
+/** the walk the intro hands the flow to (the direct hand-over of the flow law) */
 const HANDOVER = "/onboarding";
-/** the beat plan of the intro (ms): 1.6s of open, 0.8s of slide-up exit */
-const OPEN_MS = 1600;
-const EXIT_MS = 800;
 
-/** The intro page: the splash of the foundry application, with the skip and
- * the replay guard of the family intro model. */
+/**
+ * The intro page: the brand lands, holds ~1.6s, slides up and hands the flow
+ * to the onboarding. Click, any key or reduced motion skips.
+ *
+ * @returns the intro element.
+ */
 export default function Intro() {
   const [, navigate] = useLocation();
-  const [phase, setPhase] = useState<"open" | "exit">("open");
-  const [replay] = useState(() => introSeen());
-  const handed = useRef(false);
+  const [leaving, setLeaving] = useState(false);
 
-  const done = useCallback(() => {
-    if (handed.current) return;
-    handed.current = true;
-    navigate(HANDOVER, { replace: true });
-  }, [navigate]);
+  /** slides the stage up and marks the intro stage seen (skips included). */
+  const leave = useCallback(() => {
+    markIntroSeen();
+    setLeaving(true);
+  }, []);
 
   useEffect(() => {
-    // the replay guard: the opening already played this session
-    if (replay) {
-      done();
-      return;
-    }
-    markIntroSeen();
-    // reduced motion: no splash, straight to the walk
+    // reduced motion skips the choreography and hands over at once
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      done();
+      markIntroSeen();
+      navigate(HANDOVER, { replace: true });
       return;
     }
-    const exitTimer = window.setTimeout(() => setPhase("exit"), OPEN_MS);
-    const doneTimer = window.setTimeout(done, OPEN_MS + EXIT_MS + 60);
+    const hold = window.setTimeout(leave, HOLD_MS);
     // skip: any click or key hands the flow over at once
-    const skip = () => done();
+    const skip = () => leave();
     window.addEventListener("keydown", skip);
     window.addEventListener("pointerdown", skip);
     return () => {
-      window.clearTimeout(exitTimer);
-      window.clearTimeout(doneTimer);
+      window.clearTimeout(hold);
       window.removeEventListener("keydown", skip);
       window.removeEventListener("pointerdown", skip);
     };
-  }, [replay, done]);
+  }, [leave, navigate]);
 
-  if (replay) return null;
+  useEffect(() => {
+    // the slide-up runs first; the router hands the paint only after it ends
+    if (!leaving) return;
+    const handover = window.setTimeout(() => navigate(HANDOVER, { replace: true }), LEAVE_MS);
+    return () => window.clearTimeout(handover);
+  }, [leaving, navigate]);
 
   return (
-    <div className={phase === "exit" ? "intro intro--exit" : "intro"} role="status" aria-label="foundry is opening">
+    <div className={leaving ? "intro intro--exit" : "intro"} role="status" aria-label="foundry is opening">
       <div className="intro__stage" aria-hidden="true">
         <span className="intro__mark">
           <BrandMark size={96} />
@@ -121,7 +75,9 @@ export default function Intro() {
         <strong className="intro__word">foundry</strong>
         <p className="intro__line">foundry runs and stores the working set of the family.</p>
       </div>
-      <span className="intro__skip">click or press any key to continue</span>
+      <span className="intro__skip" aria-hidden="true">
+        click or press any key to continue
+      </span>
     </div>
   );
 }

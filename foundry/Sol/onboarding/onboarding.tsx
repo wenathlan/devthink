@@ -7,14 +7,18 @@
  * which now lives here as the page mount itself.
  */
 
-// The onboarding walk of the foundry APPLICATION (the FAM-APPS reform): three
-// short steps on the Mica stage — what the application is, what it does and
-// the door into the window. The role stays honest: foundry RUNS AND STORES —
-// the vault shelf beside the forge floor, while the engine lives in saddle.
-// The enter button hands the flow to the window at "/". The step copy swaps
-// on a keyed 240ms rise (the campaign v3 · R3 beat).
-import { useState } from "react";
+// The onboarding walk of the foundry APPLICATION (the flow law: intro →
+// onboarding → the platform): three short steps on the deep canvas — what the
+// application is, what it does and the door into the window. The role stays
+// honest: foundry RUNS AND STORES — the vault shelf beside the forge floor,
+// while the engine lives in saddle. The copy is third-person lowercase per the
+// family grammar; the frames ride the 250ms window entry (winOpen) and the
+// reduced-motion hard stop of the stylesheet. The finish AND the skip mark
+// onboardingseen through the one accessor (onboardingstate.ts — seen = may
+// skip, the flow is never forced again) and the walk hands the window at "/".
+import { useCallback, useState } from "react";
 import { useLocation } from "wouter";
+import { markOnboardingSeen } from "../../onboardingstate";
 import { BrandMark } from "../shell/BrandMark";
 
 /** the three beats of the walk, in the family copy grammar (third-person,
@@ -34,12 +38,20 @@ const STEPS = [
   },
 ] as const;
 
-/** The onboarding page: the three-step walk into the application window. */
+/** The onboarding page: the three-step walk into the application window —
+ * the finish and the skip both count the stage seen. */
 export default function Onboarding() {
   const [, navigate] = useLocation();
   const [step, setStep] = useState(0);
   const last = step === STEPS.length - 1;
   const current = STEPS[step];
+
+  /** the hand-over: the onboarding counts as seen (finish and skip alike —
+   * seen = may skip; never forced again) and the platform opens on the home. */
+  const enterPlatform = useCallback(() => {
+    markOnboardingSeen();
+    navigate("/", { replace: true });
+  }, [navigate]);
 
   return (
     <main className="ob">
@@ -50,6 +62,9 @@ export default function Onboarding() {
             <p className="ob__eyebrow">foundry onboarding</p>
             <h1 className="ob__title">{current.title}</h1>
           </div>
+          <button type="button" className="ob__skip" onClick={enterPlatform}>
+            skip
+          </button>
         </header>
         <p className="ob__text" key={current.title}>
           {current.text}
@@ -69,7 +84,7 @@ export default function Onboarding() {
             back
           </button>
           {last ? (
-            <button type="button" className="ob__btn ob__btn--accent" onClick={() => navigate("/")}>
+            <button type="button" className="ob__btn ob__btn--accent" onClick={enterPlatform}>
               enter foundry
             </button>
           ) : (

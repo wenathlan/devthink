@@ -9,11 +9,14 @@
  * this file follows the new name and App.tsx keeps importing the anchor by
  * the folder path.
  *
- * The foundry mounts the APPLICATION flow (the FAM-APPS reform): the intro
- * opens the application, the onboarding walks the honest role, and the
- * surfaces ride the application window — the landing first, then the three
- * platform pages of the machine room (sandboxes, images, artifacts), the
- * 404 and the catch-all, all as the content zone of the ONE shared shell.
+ * The foundry mounts the APPLICATION flow (the reform wave): the entry flow
+ * opens the route table — /intro (the splash), /onboarding (the first-run
+ * frames) — and every other route renders as the content of the ONE shared
+ * application window. The home anchor consults the entry gate (beside it in
+ * the home folder) on the bare root route: the first-run state decides, the
+ * landing renders only behind a finished flow — the landing first, then the
+ * three platform pages of the machine room (sandboxes, images, artifacts),
+ * the 404 and the catch-all, all as the content zone of the window.
  */
 import type { ReactNode } from "react";
 import { Route, Switch } from "wouter";
