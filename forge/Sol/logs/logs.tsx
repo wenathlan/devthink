@@ -3,120 +3,186 @@
  * The file carrying the folder's own name is the path manager of the page:
  * it mounts the page and is consumed only by the theme anchor (Sol/Sol.tsx).
  *
- * Logs — the seeded replay console of the forge, the third real platform
- * page: the console replays the lines the runner floor answered across the
- * ticks of a seed. The replay derives every line from the fleet rehearsal
- * (fleet.ts through logreplay.ts) and the copy says so — no live tail
- * claim, no invented streams. Every clock is tabular; every level carries
- * its color and its text.
+ * Logs — the live tail of a run, replayed deterministically: one integer
+ * seed unrolls the whole line stream (runstream.ts), the player walks it
+ * on a timer, prefers-reduced-motion renders the full stream at once. The
+ * stream says what it is: a seeded replay of a run on the saddle engine
+ * boundary — never a live floor tail. Clocks, census and outcome are
+ * tabular and pinned by the tests.
  */
 
-import { ListTree, ScrollText, TriangleAlert } from "lucide-react";
-import { useMemo, useState } from "react";
-import { seedFleet } from "../../fleet.ts";
-import { logreplay, REPLAY_SEEDS, replaycount } from "../../logreplay.ts";
+import { Pause, Play, RotateCcw, Terminal } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  formatLogTime,
+  linesWithin,
+  logCensus,
+  logDuration,
+  logOutcome,
+  logText,
+  runLogLines,
+} from "../../runstream.ts";
 import { EmptyState } from "../shell/EmptyState";
 
-/** the fleet size of the replay (the same floor the runs page shows) */
-const FLEET_SIZE = 8;
-/** the lines the console keeps in view */
-const REPLAY_KEEP = 40;
+/** the seed of the replayed run (shown on the page, pinned by the tests) */
+export const LOG_SEED = 421337;
+/** the replay cadence: the wall clock multiplier over the run clock */
+const PLAY_MS = 120;
 
-/** the readable label of a level */
-const LEVEL_LABEL: Readonly<Record<"info" | "warn" | "error", string>> = {
-  info: "info",
-  warn: "warn",
-  error: "error",
-};
+/** the seeds the page offers as one-click replays (stable, memorable) */
+const PRESET_SEEDS: readonly number[] = [421337, 90012, 5124, 77031];
 
-/** The logs page: the seeded replay console of the floor. */
+/** The logs page: the deterministic replay of one run. */
 export default function Logs() {
-  const [seed, setSeed] = useState(REPLAY_SEEDS[0]);
-  const [tick, setTick] = useState(12);
-  const fleet = useMemo(() => seedFleet(seed, FLEET_SIZE), [seed]);
-  const lines = useMemo(() => logreplay(fleet, seed, tick, REPLAY_KEEP), [fleet, seed, tick]);
-  const counts = useMemo(() => replaycount(lines), [lines]);
+  const [seed, setSeed] = useState(LOG_SEED);
+  const [playing, setPlaying] = useState(true);
+  const [clock, setClock] = useState(0);
+  const timer = useRef<number | null>(null);
+
+  const lines = useMemo(() => runLogLines(seed), [seed]);
+  const duration = useMemo(() => logDuration(lines), [lines]);
+  const visible = useMemo(() => linesWithin(lines, clock), [lines, clock]);
+  const outcome = useMemo(() => logOutcome(lines), [lines]);
+  const census = useMemo(() => logCensus(visible), [visible]);
+  const done = clock >= duration;
+
+  /** the replay clock: one interval tick advances the run clock; reduced
+   * motion never starts the timer (the full stream renders at once). */
+  useEffect(() => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) {
+      setClock(duration);
+      return;
+    }
+    if (!playing) return;
+    timer.current = window.setInterval(() => {
+      setClock((value) => Math.min(duration, value + 180));
+    }, PLAY_MS);
+    return () => {
+      if (timer.current !== null) window.clearInterval(timer.current);
+    };
+  }, [playing, duration]);
+
+  /** restarts the replay from zero on the current seed */
+  function replay() {
+    setClock(0);
+    setPlaying(true);
+  }
 
   return (
     <main className="shell fl-page">
       <header className="pagehead">
-        <p className="pagehead__eyebrow">logs · the seeded replay</p>
-        <h1 className="pagehead__title">Console replay</h1>
+        <p className="pagehead__eyebrow">logs · the run evidence</p>
+        <h1 className="pagehead__title">Logs ao vivo — a seeded replay</h1>
         <p className="pagehead__lede">
-          The console replays the lines the runner floor answered across the ticks of seed {seed}. The replay derives
-          every line from the fleet rehearsal — nothing here claims a live tail.
+          One run of the floor, replayed line by line from seed {seed} — the same seed always answers the same stream,
+          in the browser and in the tests. Outcome and evidence stay beside the runner.
         </p>
         <div className="pagehead__actions">
-          <button type="button" className="btn" onClick={() => setTick((value) => value + 1)}>
-            <ScrollText size={14} aria-hidden="true" />
-            advance the replay
+          <button
+            type="button"
+            className="btn"
+            onClick={() => (done ? replay() : setPlaying((value) => !value))}
+            aria-pressed={playing && !done}
+          >
+            {done ? (
+              <RotateCcw size={14} aria-hidden="true" />
+            ) : playing ? (
+              <Pause size={14} aria-hidden="true" />
+            ) : (
+              <Play size={14} aria-hidden="true" />
+            )}
+            {done ? "replay the run" : playing ? "pause the tail" : "resume the tail"}
+          </button>
+          <button type="button" className="btn secondary" onClick={replay}>
+            <RotateCcw size={14} aria-hidden="true" />
+            restart from zero
           </button>
         </div>
       </header>
 
-      <section className="fl-console" aria-label="the replay console">
-        <fieldset className="fl-seedrow">
-          <legend className="fl-console__head">
-            <ListTree size={12} aria-hidden="true" />
-            the floor console — the replay seed
-          </legend>
-          {REPLAY_SEEDS.map((value) => (
-            <button
-              key={value}
-              type="button"
-              className="fl-seed"
-              aria-pressed={value === seed}
-              onClick={() => {
-                setSeed(value);
-                setTick(12);
-              }}
-            >
-              seed {value}
-            </button>
-          ))}
-        </fieldset>
+      <section className="fl-console" aria-label="the replay controls">
+        <div className="fl-console__seeds">
+          <p className="fl-console__head">
+            <Terminal size={13} aria-hidden="true" />
+            seeds
+          </p>
+          <div className="fl-seedrow">
+            {PRESET_SEEDS.map((preset) => (
+              <button
+                key={preset}
+                type="button"
+                className="fl-seed"
+                aria-pressed={preset === seed}
+                onClick={() => {
+                  setSeed(preset);
+                  setClock(0);
+                  setPlaying(true);
+                }}
+              >
+                {preset}
+              </button>
+            ))}
+          </div>
+        </div>
         <dl className="fl-console__facts">
           <div className="fl-fact">
+            <dt>run clock</dt>
+            <dd>
+              {formatLogTime(clock)} / {formatLogTime(duration)}
+            </dd>
+          </div>
+          <div className="fl-fact">
             <dt>lines</dt>
-            <dd>{lines.length}</dd>
+            <dd>
+              {visible.length} / {lines.length}
+            </dd>
           </div>
           <div className="fl-fact">
-            <dt>info</dt>
-            <dd data-outcome="success">{counts.info}</dd>
+            <dt>census</dt>
+            <dd>
+              {census.info} info · {census.warn} warn · {census.error} error
+            </dd>
           </div>
           <div className="fl-fact">
-            <dt>warn</dt>
-            <dd>{counts.warn}</dd>
-          </div>
-          <div className="fl-fact">
-            <dt>error</dt>
-            <dd data-outcome="failed">{counts.error}</dd>
+            <dt>outcome</dt>
+            <dd data-outcome={outcome}>{outcome}</dd>
           </div>
         </dl>
-
-        {lines.length ? (
-          <div className="fl-stream">
-            <ol className="fl-stream__lines">
-              {lines.map((line) => (
-                <li key={`${line.clock} ${line.text}`} className="fl-line" data-level={line.level}>
-                  <span className="fl-line__clock">{line.clock}</span>
-                  <span className="fl-line__level">{LEVEL_LABEL[line.level]}</span>
-                  <span className="fl-line__text">{line.text}</span>
-                </li>
-              ))}
-            </ol>
-            <p className="fl-stream__cursor">
-              <TriangleAlert size={11} aria-hidden="true" /> the replay holds at tick {tick} — advance to extend it
-            </p>
-          </div>
-        ) : (
-          <EmptyState
-            icon={ScrollText}
-            title="the replay answered no lines yet"
-            line="The seed produced no runner lines at this tick — advance the replay or pick another seed to extend the console."
-          />
-        )}
       </section>
+
+      {lines.length === 0 ? (
+        <EmptyState
+          icon={Terminal}
+          title="no stream for this seed"
+          line="The replay engine answered nothing — pick one of the preset seeds to roll a run."
+        />
+      ) : (
+        <section className="fl-stream" aria-label="the log stream" aria-live="polite">
+          <div className="fl-stream__head" aria-hidden="true">
+            <span>clock</span>
+            <span>level</span>
+            <span>line</span>
+          </div>
+          <ol className="fl-stream__lines">
+            {visible.map((line) => (
+              <li key={`${line.t}-${line.text}`} className="fl-line" data-level={line.level}>
+                <span className="fl-line__clock">{formatLogTime(line.t)}</span>
+                <span className="fl-line__level">{line.level}</span>
+                <span className="fl-line__text">{line.text}</span>
+              </li>
+            ))}
+          </ol>
+          <p className="fl-stream__cursor" data-done={done ? "true" : "false"}>
+            {done ? "— end of stream — outcome reported over https" : "— tailing —"}
+          </p>
+        </section>
+      )}
+
+      <p className="fr-footnote">
+        the copyable form of the stream rides the same engine: logText(seed) — {logText(lines).split("\n").length} lines
+        total for seed {seed}.
+      </p>
     </main>
   );
 }
