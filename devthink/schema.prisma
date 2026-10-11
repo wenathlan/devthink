@@ -183,3 +183,16 @@ model ApiKey {
   @@index([active])
   @@index([status])
 }
+
+/// the catalogued visitor state of the entry flow: one row per visitor
+/// carrying the seen flags of the opening (intro) and the frame-a-frame
+/// onboarding tour — the flags the /api/v1/onboarding route serves
+model OnboardingState {
+  id             Int      @id @default(autoincrement())
+  visitor        String   @unique
+  introseen      Boolean  @default(false)
+  onboardingseen Boolean  @default(false)
+  updatedAt      DateTime @updatedAt
+
+  @@index([onboardingseen])
+}

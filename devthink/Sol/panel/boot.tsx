@@ -9,10 +9,10 @@
  * the fill completes exactly when the leave starts) and bootOut .45s
  * carrying the handover. Plays once per browser session and skips instantly
  * under reduced motion. When the intro page already carried the
- * session-opening animation (dt.intro.seen), the desktop never replays a
- * second boot on top of it. */
+ * session-opening animation (the catalogued intro flag of
+ * onboardingstate.ts), the desktop never replays a second boot on top of it. */
 import { useEffect, useRef, useState } from "react";
-import { INTRO_SEEN_KEY } from "../../introtarget";
+import { peekonboardingstate } from "../../onboardingstate";
 import { SolLogoMark } from "./logo.tsx";
 
 const BOOT_KEY = "devthink.boot.done";
@@ -31,9 +31,10 @@ function prefersReducedMotion(): boolean {
 
 export function shouldBoot(): boolean {
   try {
-    // the intro page owns the session-opening animation: once it played this
-    // session, the desktop hands straight over without a second boot screen
-    if (window.sessionStorage.getItem(INTRO_SEEN_KEY) === "1") return false;
+    // the intro page owns the session-opening animation: once the intro
+    // played (the catalogued flag), the desktop hands straight over without
+    // a second boot screen
+    if (peekonboardingstate().introseen) return false;
     return window.sessionStorage.getItem(BOOT_KEY) !== "1";
   } catch {
     return true;

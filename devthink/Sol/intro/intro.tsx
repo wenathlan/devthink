@@ -11,18 +11,18 @@
  * build target; what changes per target is the TYPE OF INTRO and the
  * hand-over sequence. The build declares its target through
  * VITE_DT_TARGET (resolved by the root module introtarget.ts): every target
- * plays its one variant and hands the surface to the landing SaaS at
- * /explore — the free catalog page (the YouTube/Apple register) whose
- * "enter devthink" CTA opens the authentication page-app at /auth, which
- * continues to the OS desktop at /panel. Each variant keeps the motion
- * budget of the spec (≤800ms end to end, one orchestrated pass, one click
- * or key to skip). The bell is opt-in only (localStorage dt.intro.sound ===
- * "on"; default mute, autoplay-safe) and the sessionStorage flag
- * dt.intro.seen avoids a replay on client-side re-navigation — a cold load
- * always plays. */
+ * plays its one variant. The seen state of the flow is the CATALOGUED
+ * visitor state (root module onboardingstate.ts — the only writer): when
+ * the onboarding was already seen the intro never replays (straight to
+ * /explore); when only the intro was seen the visitor goes straight to
+ * /onboarding; otherwise the intro plays once and hands the surface to
+ * /onboarding, raising the intro flag on the way out. The bell is opt-in
+ * only (localStorage dt.intro.sound === "on"; default mute, autoplay-safe).
+ * The gate renders nothing while the state is being read — nothing flashes. */
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { INTRO_SEEN_KEY, type IntroTarget, resolveintrotarget } from "../../introtarget";
+import { readonboardingstate, writeonboardingstage } from "../../onboardingstate";
+import { type IntroTarget, resolveintrotarget } from "../../introtarget";
 import { AndroidIntro } from "./androidintro.tsx";
 import { playIntroChime } from "./chime.ts";
 import { InstallerIntro } from "./installerintro.tsx";
@@ -34,68 +34,62 @@ export * from "./installerintro.tsx";
 export * from "./webintro.tsx";
 
 /**
- * Reads the seen flag of this browser session.
- *
- * @returns true when the intro already played this session.
- */
-export function introSeen(): boolean {
-  try {
-    return window.sessionStorage.getItem(INTRO_SEEN_KEY) === "1";
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Raises the seen flag so a client-side re-navigation of "/" never replays
- * the opening (a cold load starts with a fresh sessionStorage and always
- * plays). Storage failures keep the intro playing on every visit.
- */
-export function markIntroSeen(): void {
-  try {
-    window.sessionStorage.setItem(INTRO_SEEN_KEY, "1");
-  } catch {
-    /* storage unavailable: the intro simply plays on every visit */
-  }
-}
-
-/**
  * The route the intro hands over to, per build target: the entry flow of the
- * doctrine is intro → the landing SaaS (/explore) → the authentication
- * page-app (/auth) → the OS desktop (/panel). The web target opens the free
- * catalog landing first; the owned targets (installer, android, extension)
- * share the same chain — the landing is part of the ONE interface. The
- * target stays a parameter so a future per-target sequence keeps its seam.
+ * doctrine is intro → the onboarding tour (/onboarding) → the landing SaaS
+ * (/explore) → the authentication page-app (/auth) → the OS desktop
+ * (/panel). The web target opens the tour first; the owned targets
+ * (installer, android, extension) share the same chain — the tour is part of
+ * the ONE interface. The target stays a parameter so a future per-target
+ * sequence keeps its seam.
  *
  * @param target the resolved build target.
  * @returns the route of the next page in the entry flow.
  */
 export function introHandover(target: IntroTarget): string {
   void target;
-  return "/explore";
+  return "/onboarding";
 }
 
-/** The intro page: resolves the target, guards the replay flag and mounts
- * the one variant the build target declared. */
+/** The gate poses of the intro page while (and after) it reads the catalogued
+ * visitor state: "reading" renders nothing, "play" mounts the variant, the
+ * seen poses redirect without any animation. */
+type introgate = "reading" | "play" | "onboarding" | "explore";
+
+/** The intro page: resolves the target, consults the catalogued onboarding
+ * state (the DB-backed flag through onboardingstate.ts) and either plays the
+ * one variant the build target declared or walks straight into the flow. */
 export default function Intro() {
   const target = resolveintrotarget(import.meta.env.VITE_DT_TARGET as string | undefined);
   const [, navigate] = useLocation();
-  const [replay] = useState(() => introSeen());
+  const [gate, setGate] = useState<introgate>("reading");
 
   useEffect(() => {
-    if (replay) {
-      navigate(introHandover(target));
-      return;
-    }
-    markIntroSeen();
-  }, [replay, navigate, target]);
+    let alive = true;
+    readonboardingstate().then((state) => {
+      if (!alive) return;
+      // the seen ladder: onboarding seen buries the intro forever; intro seen
+      // goes straight to the tour; a fresh visitor watches it once
+      if (state.onboardingseen) setGate("explore");
+      else if (state.introseen) setGate("onboarding");
+      else setGate("play");
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (gate === "explore") navigate("/explore");
+    if (gate === "onboarding") navigate("/onboarding");
+  }, [gate, navigate]);
 
   const done = useCallback(() => {
     playIntroChime();
+    writeonboardingstage("intro");
     navigate(introHandover(target));
   }, [navigate, target]);
 
-  if (replay) return null;
+  if (gate !== "play") return null;
   if (target === "web") return <WebIntro onDone={done} />;
   if (target === "android") return <AndroidIntro onDone={done} />;
   return <InstallerIntro onDone={done} />;
