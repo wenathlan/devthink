@@ -3,11 +3,16 @@
  * bar (the drawn cobaia mark, the wordmark, the four section links) and a
  * worked footer carrying the family row — every deploy unit of the family
  * linked through familyurl(), because the family redirects both ways. The
+ * bar rides the trylle canvas with the Windows hands: the section links are
+ * the pins — the acrylic bar, the hover wash, the press bounce
+ * (scale 0.7, 100ms), the dtPopIntro mount pop and the 3px ladder indicator
+ * that grows under the active section; the focus underline answers the
+ * Windows accent while the active pin keeps the amber of the site. The
  * chrome is solid canvas with one hairline (no glass panels on a content
- * site, no window frame — the cobaia is a page, not an app). The active
- * section link reads the location so the visitor always knows where they
- * stand. Styled entirely by Sol/sol.css; a copy-per-deploy of the family
- * shell pattern reduced to content-site duties.
+ * site beyond the bar itself — the cobaia is a page, not an app). The
+ * active section link reads the location so the visitor always knows where
+ * they stand. Styled entirely by Sol/sol.css; a copy-per-deploy of the
+ * family shell pattern reduced to content-site duties.
  */
 import type { CSSProperties, ReactNode } from "react";
 import { useLocation } from "wouter";
