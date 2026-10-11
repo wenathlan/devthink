@@ -257,7 +257,7 @@ export interface ExtractOptions { readable?: boolean; preserveLinks?: boolean; p
 export interface ExtractedContent { content: string; text: string; links: LinkInfo[]; images: ImageInfo[]; tables: TableInfo[]; metadata: PageMetadata; jsonLd: unknown[]; }
 
 /** Extracts the compact active scrape result without a DOM dependency. */
-export function extracthtml(html: string, url?: string) { const title = match(html, /<title\b[^<>]*>([\s\S]*?)<\/title\s*>/i); const description = match(html, /<meta\b[^<>]+name=["']description["'][^<>]+content=["']([^"']*)["']/i) ?? match(html, /<meta\b[^<>]+content=["']([^"']*)["'][^<>]+name=["']description["']/i); const links = [...html.matchAll(/<a\b[^<>]+href=["']([^"']+)["'][^<>]*>/gi)].map((item) => resolveurl(item[1], url)).filter((value): value is string => Boolean(value)); const text = htmltotext(html); return { url, title: decode(title ?? ""), description: decode(description ?? ""), text, links: [...new Set(links)] }; }
+export function extracthtml(html: string, url?: string) { const title = firsttag(html, "title")?.body.trim(); const description = metaname(html, "description"); const links: string[] = []; for (const { attrs } of tagchunks(html, "a")) { const href = attrvalue(attrs, "href"); if (!href) continue; const resolved = resolveurl(href, url); if (resolved) links.push(resolved); } const text = htmltotext(html); return { url, title: decode(title ?? ""), description: decode(description ?? ""), text, links: [...new Set(links)] }; }
 
 /** Extracts structured content for historical TypeScript callers. */
 export async function extractContent(html: string, options: ExtractOptions = {}): Promise<ExtractedContent> {
@@ -272,7 +272,66 @@ export async function extractContent(html: string, options: ExtractOptions = {})
 /** Extracts readable page text from a document string. */
 export async function extractReadable(html: string): Promise<string> { return (await extractContent(html, { readable: true })).content; }
 
-function match(value: string, expression: RegExp): string | undefined { return value.match(expression)?.[1]?.trim(); }
+/* Linear tag scanning: every helper below walks the document once with `indexOf` so no pattern can backtrack polynomially on hostile input. */
+/** Yields every open tag of `tag` in document order: the raw attribute chunk, the body up to the first closing tag, and the start offset. */
+function* tagchunks(html: string, tag: string): Generator<{ attrs: string; body: string; start: number }> {
+  const lower = html.toLowerCase();
+  const open = `<${tag}`;
+  let cursor = 0;
+  while (cursor <= html.length) {
+    const at = lower.indexOf(open, cursor);
+    if (at < 0) return;
+    const after = lower.charCodeAt(at + open.length);
+    if ((after >= 97 && after <= 122) || (after >= 48 && after <= 57)) { cursor = at + open.length; continue; }
+    const gt = html.indexOf(">", at);
+    if (gt < 0) return;
+    const close = lower.indexOf(`</${tag}`, gt);
+    if (close < 0) { yield { attrs: html.slice(at + open.length, gt), body: "", start: at }; return; }
+    const closegt = html.indexOf(">", close);
+    yield { attrs: html.slice(at + open.length, gt), body: html.slice(gt + 1, close), start: at };
+    cursor = closegt < 0 ? html.length : closegt + 1;
+  }
+}
+/** Reads one attribute value from a raw open-tag chunk without regex: quotes are matched by `indexOf`, so backtracking never happens. */
+function attrvalue(chunk: string, name: string): string | undefined {
+  const lower = chunk.toLowerCase();
+  const target = `${name.toLowerCase()}=`;
+  let at = lower.indexOf(target);
+  while (at >= 0) {
+    const before = at === 0 ? " " : lower[at - 1];
+    if (before === " " || before === "\t" || before === "\n" || before === "\r") {
+      const quote = lower[at + target.length];
+      if (quote === '"' || quote === "'") {
+        const end = lower.indexOf(quote, at + target.length + 1);
+        if (end > at + target.length) return chunk.slice(at + target.length + 1, end);
+      }
+    }
+    at = lower.indexOf(target, at + target.length);
+  }
+  return undefined;
+}
+/** First open tag of `tag` with its body (the title case and similar single-element reads). */
+function firsttag(html: string, tag: string): { attrs: string; body: string } | undefined {
+  for (const chunk of tagchunks(html, tag)) return chunk;
+  return undefined;
+}
+/** First meta tag whose `name` or `property` equals `name`, answered by its content attribute. */
+function metaname(html: string, name: string): string | undefined {
+  const wanted = name.toLowerCase();
+  for (const { attrs } of tagchunks(html, "meta")) {
+    const key = attrvalue(attrs, "name") ?? attrvalue(attrs, "property");
+    if (key && key.toLowerCase() === wanted) return attrvalue(attrs, "content");
+  }
+  return undefined;
+}
+/** First link tag whose `rel` matches one of the wanted values, answered by its href attribute. */
+function linkrel(html: string, ...rels: string[]): string | undefined {
+  for (const { attrs } of tagchunks(html, "link")) {
+    const rel = attrvalue(attrs, "rel")?.toLowerCase();
+    if (rel && rels.includes(rel)) return attrvalue(attrs, "href");
+  }
+  return undefined;
+}
 /** Single-pass XML/HTML entity decode: the pattern never re-examines its own output, so a double-escaped `&amp;lt;` decodes once to the literal text `&lt;` and never again to `<`. */
 const ENTITIES: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', "#39": "'" };
 function decode(value: string): string { return value.replace(/&(amp|lt|gt|quot|#39);/g, (whole: string, entity: string) => ENTITIES[entity] ?? whole); }
@@ -308,13 +367,12 @@ function readabletext(html: string): string {
   }
   return htmltotext(html);
 }
-function extractmetadata(html: string): PageMetadata { return { title: match(html, /<title\b[^<>]*>([\s\S]*?)<\/title\s*>/i) ?? match(html, /<meta\b[^<>]+property=["']og:title["'][^<>]+content=["']([^"']*)["']/i) ?? "", description: matchmeta(html, "description") ?? matchmeta(html, "og:description"), favicon: match(html, /<link\b[^<>]+rel=["'](?:icon|shortcut icon)["'][^<>]+href=["']([^"']*)["']/i), language: match(html, /<html\b[^<>]+lang=["']([^"']*)["']/i), author: matchmeta(html, "author"), ogImage: matchmeta(html, "og:image"), ogType: matchmeta(html, "og:type"), keywords: matchmeta(html, "keywords")?.split(",").map((value) => value.trim()) }; }
-function matchmeta(html: string, name: string): string | undefined { return match(html, new RegExp(`<meta\\b[^<>]+(?:name|property)=["']${name}["'][^<>]+content=["']([^"']*)["']`, "i")) ?? match(html, new RegExp(`<meta\\b[^<>]+content=["']([^"']*)["'][^<>]+(?:name|property)=["']${name}["']`, "i")); }
-function extractlinks(html: string): LinkInfo[] { return [...html.matchAll(/<a\b[^<>]+href=["']([^"']+)["'][^<>]*>([\s\S]*?)<\/a\s*>/gi)].map((item) => ({ href: resolveurl(item[1]) ?? item[1], text: htmltotext(item[2]).slice(0, 200), isInternal: false, isExternal: true })); }
-function extractimages(html: string): ImageInfo[] { return [...html.matchAll(/<img\b[^<>]+src=["']([^"']+)["'][^<>]*>/gi)].map((item) => ({ src: item[1], alt: match(item[0], /alt=["']([^"']*)["']/i) ?? "", width: numberattribute(item[0], "width"), height: numberattribute(item[0], "height") })); }
-function numberattribute(value: string, name: string): number | undefined { const parsed = Number(match(value, new RegExp(`${name}=["'](\\d+)["']`, "i"))); return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined; }
+function extractmetadata(html: string): PageMetadata { return { title: firsttag(html, "title")?.body.trim() ?? metaname(html, "og:title") ?? "", description: metaname(html, "description") ?? metaname(html, "og:description"), favicon: linkrel(html, "icon", "shortcut icon"), language: attrvalue(firsttag(html, "html")?.attrs ?? "", "lang"), author: metaname(html, "author"), ogImage: metaname(html, "og:image"), ogType: metaname(html, "og:type"), keywords: metaname(html, "keywords")?.split(",").map((value) => value.trim()) }; }
+function extractlinks(html: string): LinkInfo[] { const out: LinkInfo[] = []; for (const { attrs, body } of tagchunks(html, "a")) { const href = attrvalue(attrs, "href") ?? ""; out.push({ href: resolveurl(href) ?? href, text: htmltotext(body).slice(0, 200), isInternal: false, isExternal: true }); } return out; }
+function extractimages(html: string): ImageInfo[] { const out: ImageInfo[] = []; for (const { attrs } of tagchunks(html, "img")) { const src = attrvalue(attrs, "src"); if (!src) continue; out.push({ src, alt: attrvalue(attrs, "alt") ?? "", width: numberattribute(attrs, "width"), height: numberattribute(attrs, "height") }); } return out; }
+function numberattribute(attrs: string, name: string): number | undefined { const value = attrvalue(attrs, name) ?? ""; const digits = value.match(/^\d+/)?.[0]; const parsed = digits ? Number(digits) : Number.NaN; return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined; }
 function extracttables(html: string): TableInfo[] { return [...html.matchAll(/<table\b[^<>]*>[\s\S]*?<\/table\s*>/gi)].map((table) => { const source = table[0]; const body = source.match(/<tbody\b[^<>]*>[\s\S]*?<\/tbody\s*>/i)?.[0] ?? source; return { headers: [...source.matchAll(/<th\b[^<>]*>([\s\S]*?)<\/th\s*>/gi)].map((item) => htmltotext(item[1])), rows: [...body.matchAll(/<tr\b[^<>]*>([\s\S]*?)<\/tr\s*>/gi)].map((row) => [...row[1].matchAll(/<td\b[^<>]*>([\s\S]*?)<\/td\s*>/gi)].map((item) => htmltotext(item[1]))).filter((row) => row.length) }; }); }
-function extractjsonld(html: string): unknown[] { const values: unknown[] = []; for (const item of html.matchAll(/<script\b[^<>]+type=["']application\/ld\+json["'][^<>]*>([\s\S]*?)<\/script\s*>/gi)) try { values.push(JSON.parse(item[1])); } catch { /* malformed structured data remains non fatal */ } return values; }
+function extractjsonld(html: string): unknown[] { const values: unknown[] = []; for (const { attrs, body } of tagchunks(html, "script")) { const type = attrvalue(attrs, "type"); if (!type || type.toLowerCase() !== "application/ld+json") continue; try { values.push(JSON.parse(body)); } catch { /* malformed structured data remains non fatal */ } } return values; }
 function removeSelector(html: string, selector: string): string { const tag = selector.match(/^\s*([a-z][a-z0-9]*)\s*$/i)?.[1]; if (tag) return html.replace(new RegExp(`<${tag}[^>]*>[\\s\\S]*?<\/${tag}>`, "gi"), ""); const className = selector.match(/^\.([a-z0-9_-]+)$/i)?.[1]; return className ? html.replace(new RegExp(`<([a-z][a-z0-9]*)[^>]*class=["'][^"']*\\b${className}\\b[^"']*["'][^>]*>[\\s\\S]*?<\\/\\1>`, "gi"), "") : html; }
 
 /* ════════════════════════════════════════════════════════════════════ */
@@ -354,7 +412,7 @@ function extractfield(html, descriptor, url) {
   if (typeof descriptor === "function") return descriptor({ html, url });
   if (typeof descriptor === "string") return textfromselector(html, descriptor);
   if (!descriptor || typeof descriptor.selector !== "string") throw new TypeError("schema field requires selector or function");
-  if (descriptor.selector === "title") return html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.trim() ?? null;
+  if (descriptor.selector === "title") return firsttag(html, "title")?.body.trim() ?? null;
   const escaped = descriptor.selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const attribute = descriptor.attribute;
   const pattern = attribute ? new RegExp(`<[^>]+${escaped}[^>]*${attribute}=["']([^"']+)["'][^>]*>`, "i") : new RegExp(`<${escaped}[^>]*>([\\s\\S]*?)<\\/${escaped}>`, "i");
@@ -413,8 +471,14 @@ export function extractsemantic(html, url) {
   const headings = [...source.matchAll(/<h([1-6])\b[^>]*>([\s\S]*?)<\/h\1>/gi)].slice(0, 100).map((match) => ({ level: Number(match[1]), text: clean(match[2]) })).filter((item) => item.text);
   const landmarks = [...source.matchAll(/<(main|nav|header|footer|aside|section|article)\b([^>]*)>/gi)].slice(0, 100).map((match) => ({ role: match[1].toLowerCase(), label: attribute(match[2], "aria-label") ?? attribute(match[2], "id") ?? "" }));
   const controls = controlmatches(source).slice(0, 200).map((control, index) => ({ ref: `e${index + 1}`, role: attribute(control.attrs, "role") ?? control.tag, name: attribute(control.attrs, "aria-label") ?? attribute(control.attrs, "placeholder") ?? clean(control.content), type: attribute(control.attrs, "type") }));
-  const links = [...source.matchAll(/<a\b([^<>]*)href=["']([^"']+)["'][^<>]*>([\s\S]*?)<\/a\s*>/gi)].slice(0, 500).map((match) => ({ url: resolveurlhelper(match[2], url), text: clean(match[3]), rel: attribute(match[1], "rel") })).filter((link) => link.url);
-  return { url, title: clean(source.match(/<title\b[^<>]*>([\s\S]*?)<\/title\s*>/i)?.[1] ?? ""), headings, landmarks, controls, links: dedupe(links, (item) => item.url), semantictext: clean(stripblocks(source, "script", "style").replace(/<[^<>]+>/g, " ")).slice(0, 100000) };
+  const links: { url: string | null; text: string; rel: string | null }[] = [];
+  for (const { attrs, body } of tagchunks(source, "a")) {
+    const href = attrvalue(attrs, "href");
+    if (!href) continue;
+    links.push({ url: resolveurlhelper(href, url), text: clean(body), rel: attrvalue(attrs, "rel") });
+  }
+  const boundedlinks = links.slice(0, 500).filter((link) => link.url);
+  return { url, title: clean(firsttag(source, "title")?.body ?? ""), headings, landmarks, controls, links: dedupe(boundedlinks, (item) => item.url), semantictext: clean(stripblocks(source, "script", "style").replace(/<[^<>]+>/g, " ")).slice(0, 100000) };
 }
 
 /** Strips remaining tags, collapses whitespace and decodes entities exactly once in a single pass. */
@@ -426,7 +490,7 @@ function controlmatches(source) {
   const standalone = [...source.matchAll(/<input\b([^<>]*)>/gi)].filter((match) => !pairedstarts.has(match.index ?? 0)).map((match) => ({ index: match.index ?? 0, tag: "input", attrs: match[1], content: "" }));
   return [...paired, ...standalone].sort((left, right) => left.index - right.index);
 }
-function attribute(value, name) { return value.match(new RegExp(`${name}=["']([^"']*)["']`, "i"))?.[1] ?? null; }
+function attribute(value, name) { return attrvalue(value, name) ?? null; }
 function resolveurlhelper(value, base) { try { return new URL(value, base).href; } catch { return null; } }
 function dedupe(values, key) { const seen = new Set(); return values.filter((value) => { const item = key(value); if (seen.has(item)) return false; seen.add(item); return true; }); }
 
