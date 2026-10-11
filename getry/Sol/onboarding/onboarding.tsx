@@ -1,20 +1,23 @@
 // the getry onboarding of the theme.
 /**
- * onboarding.tsx — the first-run steps of the APPLICATION (FAM-APPS-B):
- * three short frames presented like a Windows 11 first-run dialog over the
- * Mica backdrop — what the app IS (the honest role: the AI gateway console
- * of the family, not an operating system), what it DOES (the surfaces the
- * window hosts, read straight from the rail map) and the ENTER frame with
- * the hand-over button. The finish navigates to "/" and the window takes
- * it from there. Frames remount on step change so the 250ms entry plays
- * each time; reduced motion rides the stylesheet hard stop. No opt-in
- * switches here: the console holds no account, no provider key and no
- * visitor storage.
+ * onboarding.tsx — the first-run steps of the APPLICATION: three short
+ * frames presented like a Windows 11 first-run dialog over the trylle
+ * canvas — what the app IS (the honest role: the AI gateway console of the
+ * family, not an operating system), what it DOES (the surfaces the window
+ * hosts, read straight from the rail map) and the ENTER frame with the
+ * hand-over button. The finish and the skip both mark onboardingseen
+ * through the one accessor (onboardingstate.ts — seen = may skip; the flow
+ * is never forced again) and the window takes the visitor to the home at
+ * "/". Frames remount on step change so the 250ms window entry plays each
+ * time; reduced motion rides the stylesheet hard stop. No opt-in switches
+ * here: the console holds no account, no provider key and no visitor
+ * storage — the seen flags alone ride onboardingstate.ts.
  */
 
 import { ArrowLeft, ArrowRight, LayoutDashboard } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useLocation } from "wouter";
+import { markOnboardingSeen } from "../../onboardingstate.ts";
 import { BrandMark } from "../shell/BrandMark";
 import { START_APPS } from "../shell/Shell";
 
@@ -40,12 +43,22 @@ export default function Onboarding() {
   const [step, setStep] = useState(0);
   const last = step === STEPS.length - 1;
 
+  /** the hand-over: the onboarding counts as seen (finish and skip alike —
+   * seen = may skip; never forced again) and the window opens on the home. */
+  const enterHome = useCallback(() => {
+    markOnboardingSeen();
+    navigate("/");
+  }, [navigate]);
+
   return (
     <div className="winonboard">
       <section className="winonboard__card" aria-label="getry first run">
         <header className="winonboard__head">
           <BrandMark size={18} />
           <span className="winonboard__title">welcome to getry</span>
+          <button type="button" className="winonboard__skip" onClick={enterHome}>
+            skip ahead
+          </button>
         </header>
 
         <div className="winonboard__body">
@@ -98,7 +111,7 @@ export default function Onboarding() {
               </button>
             )}
             {last ? (
-              <button type="button" className="winonboard__act winonboard__act--primary" onClick={() => navigate("/")}>
+              <button type="button" className="winonboard__act winonboard__act--primary" onClick={enterHome}>
                 enter getry
                 <ArrowRight size={14} aria-hidden="true" />
               </button>
