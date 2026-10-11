@@ -26,6 +26,10 @@ onlyBuiltDependencies:
   - prisma
   - protobufjs
   - workerd
+# the ssh2 native accelerator stays unbuilt on purpose (the js fallback
+# carries the line); pnpm must not fail the install over the ignored build.
+ignoredBuiltDependencies:
+  - ssh2
 dangerouslyAllowAllBuilds: false
 minimumReleaseAgeExclude:
   - '@opencode-ai/sdk@1.18.34'
