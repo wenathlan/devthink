@@ -4,7 +4,10 @@
  * it imports the loose components beside it, mounts the page and re-exports
  * the public component surface. Only the theme anchor (Sol/Sol.tsx) consumes
  * this file. This anchor carries the former main component of the folder,
- * which now lives here as the page mount itself.
+ * which now lives here as the page mount itself. Since the reform the mount
+ * consults the entry gate (entrygate.tsx beside this anchor) before rendering
+ * the landing: the first-run flow (intro, onboarding) decides, the landing
+ * renders only behind a finished flow.
  */
 
 import { ArrowRight, Boxes, Crosshair, PlugZap, Swords, Trophy, Volume2 } from "lucide-react";
@@ -24,6 +27,7 @@ import { progressof } from "../../matchrules.ts";
 import { observeReveals } from "../../reveal";
 import { BrandMark } from "../shell/BrandMark";
 import { toast } from "../toast/Toast";
+import { EntryGate } from "./entrygate";
 import { Scope } from "./scope";
 
 /** the four game domains of the platform (navigation, not data). */
@@ -59,12 +63,13 @@ const domains: { href: string; label: string; about: string; meta: string; icon:
 ];
 
 /**
- * the home page: the landing stage, the featured match tile, the domain
- * ledger and the footer meta-quad.
+ * the landing content of the home: the cinematic stage, the featured match
+ * tile, the domain ledger and the footer meta-quad — rendered by the anchor
+ * only behind a finished first-run flow.
  *
- * @returns the home element.
+ * @returns the landing element.
  */
-export function Home() {
+function HomeLanding() {
   const [featured, setFeatured] = useState<MatchLobby | null>(null);
   const [boardwait, setBoardwait] = useState(true);
 
@@ -277,4 +282,17 @@ export function Home() {
   );
 }
 
-export default Home;
+/**
+ * the home anchor: the entry gate decides first (intro unseen hands to
+ * /intro, onboarding unseen hands to /onboarding, null renders while the
+ * state resolves) and the landing mounts only behind a finished flow.
+ *
+ * @returns the gated home element.
+ */
+export default function Home() {
+  return (
+    <EntryGate>
+      <HomeLanding />
+    </EntryGate>
+  );
+}

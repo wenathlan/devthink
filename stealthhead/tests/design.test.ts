@@ -1,12 +1,14 @@
 // # design.test — the design contract of the stealthhead surface, runnable
-// with the vitest runner:
+//   with the vitest runner:
 //   npm test
 // The file reads the shipped sources (stylesheet, entry face, brand mark,
-// app identity, route anchor, icons) and pins the family laws: no banned
-// hue, no pill, no all-properties transition, no zero-scale entry, the
-// family font triad, the source-face entry, the reduced-motion stop,
-// tabular numerals, the sticky-footer law and the honest page set of the
-// application identity.
+// app identity, route anchor, icons) and pins the family laws of the reform
+// wave: no banned hue, no pill, no all-properties transition, no zero-scale
+// entry (the windows dtPopIntro bounce excepted), the trylle font stacks,
+// the source-face entry, the reduced-motion stop, tabular numerals, the
+// sticky-footer law, the honest page set of the application identity, the
+// first-run flow contract (the entry gate, the shared onboarding state, the
+// db mirror) and the trylle-canvas/windows-hands foundation.
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
@@ -35,10 +37,12 @@ describe("design contract", () => {
     }
   });
 
-  it("carries the stealthhead ember #e8563f as the one signal (mark story #f4694f)", () => {
-    expect(CSS).toMatch(/--sol-primary: #e8563f/);
-    expect(CSS).toMatch(/--sh-accent: #e8563f/);
+  it("carries the stealthhead coral #f4694f as the identity accent and the windows accent on the chrome", () => {
+    expect(CSS).toMatch(/--sh-accent: #f4694f/);
     expect(MARK).toMatch(/#f4694f/);
+    // the windows hands: focus and the chrome speak the windows accent
+    expect(CSS).toMatch(/--win-accent: #4cc2ff/);
+    expect(CSS).toMatch(/outline: 2px solid var\(--win-accent\)/);
   });
 
   it("keeps the pill out of the stylesheet (no 999px, no stadium radius)", () => {
@@ -50,17 +54,21 @@ describe("design contract", () => {
     expect(/transition:\s*all/.test(CSS), "transition: all is a reprovação").toBe(false);
   });
 
-  it("never enters an element from zero scale", () => {
-    expect(/scale\(0\)/.test(CSS), "scale(0) entries are a reprovação").toBe(false);
+  it("never enters an element from zero scale (the windows dtPopIntro bounce excepted)", () => {
+    const sansPopIntro = CSS.replace(/@keyframes dtPopIntro \{[\s\S]*?\n\}/g, "");
+    expect(
+      /scale\(0\)/.test(sansPopIntro),
+      "scale(0) entries are a reprovação (the dtPopIntro bounce of the windows recipe excepted)",
+    ).toBe(false);
   });
 
-  it("declares the family font triad (Bricolage display, Outfit reading, JetBrains Mono detail)", () => {
-    expect(CSS).toMatch(/--font-display: "Bricolage Grotesque"/);
-    expect(CSS).toMatch(/--font-ui: "Outfit"/);
-    expect(CSS).toMatch(/--font-mono: "JetBrains Mono"/);
-    expect(ENTRY).toMatch(/Bricolage\+Grotesque/);
-    expect(ENTRY).toMatch(/Outfit/);
-    expect(ENTRY).toMatch(/JetBrains\+Mono/);
+  it("declares the trylle font stacks (Inter reading, Geist Mono detail) and the 13px body", () => {
+    expect(CSS).toMatch(/--font-sans: "Inter Variable"/);
+    expect(CSS).toMatch(/--font-mono: "Geist Mono Variable"/);
+    expect(ENTRY).toMatch(/family=Inter/);
+    expect(ENTRY).toMatch(/Geist\+Mono/);
+    expect(CSS).toMatch(/font-size: 13px/);
+    expect(CSS).toMatch(/font-weight: 450/);
   });
 
   it("keeps the entry on the source face (./App.tsx, canonical assets, no hashed ghosts)", () => {
@@ -70,9 +78,12 @@ describe("design contract", () => {
     expect(ENTRY).toMatch(/href="\.\/manifest\.webmanifest"/);
   });
 
-  it("guards the reduced-motion stop on every layer", () => {
+  it("guards the reduced-motion stop on every layer (the hard stop last)", () => {
     const blocks = CSS.match(/@media \(prefers-reduced-motion: reduce\)/g) ?? [];
     expect(blocks.length >= 4, `expected the hard stop on every layer, found ${blocks.length}`).toBe(true);
+    const hardStopAt = CSS.lastIndexOf("@media (prefers-reduced-motion: reduce)");
+    expect(CSS.slice(hardStopAt)).toMatch(/0\.01ms !important/);
+    expect(CSS.slice(hardStopAt + 1)).not.toMatch(/@media/);
   });
 
   it("keeps tabular numerals on the platform numbers", () => {
@@ -94,5 +105,56 @@ describe("design contract", () => {
     for (const route of ['"/match"', '"/ranking"', '"/weapons"', '"/world"', '"/404"']) {
       expect(SOL.includes(`path=${route}`), `route ${route} must mount`).toBe(true);
     }
+  });
+
+  it("keeps the entry flow mounted (intro, onboarding) before the fundamentals", () => {
+    expect(SOL).toMatch(/path="\/intro"/);
+    expect(SOL).toMatch(/path="\/onboarding"/);
+    expect(SOL.indexOf('"/intro"')).toBeLessThan(SOL.indexOf('"/"'));
+  });
+
+  it("carries the flow contract sources (the entry gate behind the home anchor, the shared state module)", () => {
+    const GATE = read("../Sol/home/entrygate.tsx");
+    const STATE = read("../onboardingstate.ts");
+    const HOME = read("../Sol/home/home.tsx");
+    const ONBOARDING = read("../Sol/onboarding/onboarding.tsx");
+    expect(GATE).toMatch(/navigate\("\/intro"/);
+    expect(GATE).toMatch(/navigate\("\/onboarding"/);
+    expect(HOME).toMatch(/EntryGate/);
+    expect(ONBOARDING).toMatch(/markOnboardingStage/);
+    expect(STATE).toMatch(/stealthhead\.onboarding\.seen/);
+    expect(STATE).toMatch(/\/api\/v1\/onboarding/);
+  });
+
+  it("catalogues the first-run state in the db layer (prisma model + sqlite mirror)", () => {
+    const PRISMA = read("../schema.prisma");
+    const DB = read("../db.ts");
+    expect(PRISMA).toMatch(/model OnboardingState \{/);
+    expect(PRISMA).toMatch(/introseen\s+Boolean\s+@default\(false\)/);
+    expect(PRISMA).toMatch(/onboardingseen\s+Boolean\s+@default\(false\)/);
+    expect(DB).toMatch(/create table if not exists onboardingstate/);
+    expect(DB).toMatch(/getonboardingstate/);
+    expect(DB).toMatch(/setonboardingstage/);
+  });
+
+  it("wears the windows hands on the chrome (resize handles, inactive law, red close, dtPopIntro)", () => {
+    expect(CSS).toMatch(/winapp__rz\[data-edge="se"\]/);
+    expect(CSS).toMatch(/grayscale\(80%\)/);
+    expect(CSS).toMatch(/rgb\(232, 17, 35\)/);
+    expect(CSS).toMatch(/rgb\(139, 10, 20\)/);
+    expect(CSS).toMatch(/@keyframes dtPopIntro/);
+    expect(SHELL).toMatch(/data-inactive/);
+    expect(SHELL).toMatch(/winapp__rz/);
+  });
+
+  it("rides the trylle foundation (canvas, surfaces, hairlines, linear shadow ladder)", () => {
+    expect(CSS).toMatch(/--sol-canvas: #0a0a0b/);
+    expect(CSS).toMatch(/--sol-canvas-deep: #060607/);
+    expect(CSS).toMatch(/--sol-ink: #fafafa/);
+    expect(CSS).toMatch(/--sol-surface-8: #484848/);
+    expect(CSS).toMatch(/color-mix\(in oklab, var\(--sol-ink\) 5%, transparent\)/);
+    expect(CSS).toMatch(/0 96px 96px -48px/);
+    expect(CSS).toMatch(/cubic-bezier\(0\.22, 1, 0\.36, 1\)/);
+    expect(CSS).toMatch(/--sol-micro: 150ms/);
   });
 });

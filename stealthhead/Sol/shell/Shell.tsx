@@ -1,20 +1,22 @@
 // the stealthhead shell of the theme.
 /**
- * Shell.tsx — the ONE chrome of the theme, converted from the OS grammar to
- * the APPLICATION grammar (FAM-APPS-B): the routed pages render inside one
- * Windows 11 application window floating over the Mica backdrop — a title
- * bar carrying the drawn stealthhead mark and the app name (the drag handle,
- * double-click toggles maximize), the Fluent caption buttons at the right
- * edge (minimize collapses the window into a restore chip, maximize fills
- * the backdrop, close relaunches the app at /intro) and a left rail that
- * switches the pages as the window content. The window rides the WINDOWS
- * IDENTITY PASS tokens (--win-mica, --win-shadow-window, --win-accent) and
- * opens with the 250ms scale .95→1 entry; there is no taskbar, no start
- * menu and no desktop navigation anymore. The rail foot carries the FAMILY
- * section (wave D1 polish): the sibling applications of the wenathlan family
- * as accent-dotted links built by the familyurl helper — the family
- * redirects both ways. The chrome is a copy-per-deploy minimum:
- * consolidation belongs to the future @wenathlan/* package.
+ * Shell.tsx — the ONE chrome of the theme, riding the APPLICATION grammar
+ * over the trylle canvas: the routed pages render inside one Windows 11
+ * application window — a title bar carrying the drawn stealthhead mark and
+ * the app name (the drag handle, double-click toggles maximize), the Fluent
+ * caption buttons at the right edge (minimize collapses the window into a
+ * restore chip, maximize fills the backdrop, close relaunches the app at
+ * /intro), the eight resize handles of the real window chrome (functional
+ * pointer sessions, clamped to the viewport) and a left rail of page pins
+ * with the Windows hands — the press rides scale(.7), the mount pops the
+ * pins in, the state ladder marks hover/active. A window the document is
+ * not focused on turns inactive — grayscale(80%), the Windows law. The
+ * window opens with the 250ms Fluent scale .95→1 entry; there is no
+ * taskbar, no start menu and no desktop navigation anymore. The rail foot
+ * carries the FAMILY section (wave D1 polish): the sibling applications of
+ * the wenathlan family as accent-dotted links built by the familyurl
+ * helper — the family redirects both ways. The chrome is a copy-per-deploy
+ * minimum: consolidation belongs to the future @wenathlan/* package.
  */
 
 import { Copy, Crosshair, Globe, LayoutDashboard, Minus, Moon, Square, Sun, Swords, Trophy, X } from "lucide-react";
@@ -23,6 +25,7 @@ import {
   type MouseEvent as ReactMouseEvent,
   type ReactNode,
   type PointerEvent as ReactPointerEvent,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -58,6 +61,26 @@ export const START_APPS: readonly StartApp[] = [
  * The family row itself rides the shared family.ts table (spec §12) — the
  * same row the vitest suite pins, so the rail foot can never drift. */
 const RESTART_ROUTE = "/intro";
+
+/** the eight resize edges of the window chrome (the Windows handles). */
+const RESIZE_EDGES = ["n", "s", "e", "w", "ne", "nw", "se", "sw"] as const;
+
+/** the edge set as a type. */
+type ResizeEdge = (typeof RESIZE_EDGES)[number];
+
+/** the smallest window the resize allows (px). */
+const MIN_SIZE = { w: 640, h: 440 } as const;
+
+/** one pointer session over a resize handle: the edge, where the press
+ * started and the window size it carried when it did. */
+type ResizeTrack = {
+  pointerId: number;
+  edge: ResizeEdge;
+  originX: number;
+  originY: number;
+  baseW: number;
+  baseH: number;
+};
 
 /** one pointer session over the title bar: where the press started and the
  * offset the window carried when it did. */
@@ -104,7 +127,76 @@ export function Shell({ children }: { children: ReactNode }) {
   const [maximized, setMaximized] = useState(false);
   const [minimized, setMinimized] = useState(false);
   const [drag, setDrag] = useState({ x: 0, y: 0 });
+  const [size, setSize] = useState<{ w: number; h: number } | null>(null);
+  const [inactive, setInactive] = useState(false);
   const trackRef = useRef<DragTrack | null>(null);
+  const resizeRef = useRef<ResizeTrack | null>(null);
+  const winRef = useRef<HTMLElement | null>(null);
+
+  // the Windows inactive law: a window the document is not focused on turns
+  // grayscale — the state rides the document focus alone (session scope)
+  useEffect(() => {
+    const sync = (): void => setInactive(!document.hasFocus());
+    sync();
+    window.addEventListener("focus", sync);
+    window.addEventListener("blur", sync);
+    return () => {
+      window.removeEventListener("focus", sync);
+      window.removeEventListener("blur", sync);
+    };
+  }, []);
+
+  /** clamps a resize candidate to the viewport and the minimum window size. */
+  function clampSize(w: number, h: number): { w: number; h: number } {
+    const maxW = Math.max(MIN_SIZE.w, window.innerWidth - 24);
+    const maxH = Math.max(MIN_SIZE.h, window.innerHeight - 24);
+    return {
+      w: Math.min(maxW, Math.max(MIN_SIZE.w, Math.round(w))),
+      h: Math.min(maxH, Math.max(MIN_SIZE.h, Math.round(h))),
+    };
+  }
+
+  /** arms a resize session from one of the eight handles. */
+  function onResizePointerDown(edge: ResizeEdge) {
+    return (event: ReactPointerEvent<HTMLSpanElement>) => {
+      if (maximized) return;
+      const rect = winRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      resizeRef.current = {
+        pointerId: event.pointerId,
+        edge,
+        originX: event.clientX,
+        originY: event.clientY,
+        baseW: rect.width,
+        baseH: rect.height,
+      };
+      event.preventDefault();
+      event.currentTarget.setPointerCapture(event.pointerId);
+    };
+  }
+
+  /** rides the pointer while a resize session is armed. */
+  function onResizePointerMove(event: ReactPointerEvent<HTMLSpanElement>) {
+    const track = resizeRef.current;
+    if (!track || track.pointerId !== event.pointerId) return;
+    const dx = event.clientX - track.originX;
+    const dy = event.clientY - track.originY;
+    let w = track.baseW;
+    let h = track.baseH;
+    if (track.edge.includes("e")) w = track.baseW + dx;
+    if (track.edge.includes("w")) w = track.baseW - dx;
+    if (track.edge.includes("s")) h = track.baseH + dy;
+    if (track.edge.includes("n")) h = track.baseH - dy;
+    setSize(clampSize(w, h));
+  }
+
+  /** releases the resize session. */
+  function onResizePointerUp(event: ReactPointerEvent<HTMLSpanElement>) {
+    const track = resizeRef.current;
+    if (!track || track.pointerId !== event.pointerId) return;
+    resizeRef.current = null;
+    event.currentTarget.releasePointerCapture(event.pointerId);
+  }
 
   /** maximizes over the backdrop or restores the windowed frame (the drag offset resets). */
   function toggleMaximize() {
@@ -154,12 +246,21 @@ export function Shell({ children }: { children: ReactNode }) {
   return (
     <div className="appframe" data-maximized={maximized ? "true" : undefined}>
       <section
+        ref={winRef}
         className="winapp"
         hidden={minimized}
         data-maximized={maximized ? "true" : undefined}
+        data-sized={size && !maximized ? "true" : undefined}
+        data-inactive={inactive ? "true" : undefined}
         data-landing={location === "/" ? "true" : undefined}
         aria-label="stealthhead"
-        style={{ "--winapp-x": `${drag.x}px`, "--winapp-y": `${drag.y}px` } as CSSProperties}
+        style={
+          {
+            "--winapp-x": `${drag.x}px`,
+            "--winapp-y": `${drag.y}px`,
+            ...(size && !maximized ? { width: `${size.w}px`, height: `${size.h}px` } : {}),
+          } as CSSProperties
+        }
       >
         {/* biome-ignore lint/a11y/noStaticElementInteractions: the title bar is the drag surface; the window controls inside it are real buttons */}
         <header
@@ -248,6 +349,20 @@ export function Shell({ children }: { children: ReactNode }) {
             <main className="shell">{children}</main>
           </div>
         </div>
+
+        {/* the eight resize handles of the window chrome (n/s/e/w + the corners) */}
+        {RESIZE_EDGES.map((edge) => (
+          <span
+            key={edge}
+            data-edge={edge}
+            className="winapp__rz"
+            aria-hidden="true"
+            onPointerDown={onResizePointerDown(edge)}
+            onPointerMove={onResizePointerMove}
+            onPointerUp={onResizePointerUp}
+            onPointerCancel={onResizePointerUp}
+          />
+        ))}
       </section>
 
       {minimized && (
