@@ -1,0 +1,5 @@
+# application identity on the platform
+app = "cobaia"
+role = "the monetization site of the family: the front door of the ten deployable apps — pricing, support, the app directory, the update blog and the legal pages, real content with honest ad slots and zero tracking"
+theme = "Sol"
+pages = ["home", "pricing", "support", "apps", "legal", "blog", "notfound"]

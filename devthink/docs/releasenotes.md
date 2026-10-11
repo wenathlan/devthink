@@ -1,14 +1,24 @@
-# Devthink 2.0.94
+# Devthink 2.0.95
 
-— the family envelopes answer the stealthhead name over the refreshed ladder
+— the cobaia rides the family and the doctrine audit closes the gates
+
+### Added
+
+| Area | Change |
+| --- | --- |
+| The cobaia surface | The cobaia application joins the family as the monetization surface: the home, pricing, support, apps, legal and blog pages ride the family tree with the honest advertisement slots, the empty-state checkout links and the support rails, so the family sites stay clean while the plans and the support links carry the revenue. |
+| The family pages lane | The family pages lane builds and deploys the cobaia under its own subpath, the envelope description answers the complete tree and the hashed build ghosts stay out of the tracked tree. |
+| The engine tests | The cadria image render paint and the debonair katexis engine answer their own vitest suites, and the image pipeline holds the deterministic byte contract. |
 
 ### Fixed
 
 | Area | Change |
 | --- | --- |
-| The publish lanes | The family publish lanes checkout the release tag where the stealthhead envelope exists under its corrected name, so the pack lanes no longer miss the module on the recorded tag. |
-| The dependency ladder | The dependency ladder re-records over the fresh non-breaking updates, keeping the resolved lockfile aligned with the declared ranges. |
-| The maintenance metadata | The maintenance metadata re-syncs at pnpm 12.10.1, so the maintenance gate reads zero drift across the ladder. |
+| The entry chain | The devthink entry chain rides the owner doctrine again: the intro hands over to the explore landing, the explore CTA walks the auth application page and the auth answers the panel, instead of the shortcut that jumped the visitor straight into the panel. |
+| The window grammar | The cadria studio wears the family window again (the title bar, the drag, the maximize and the restore chip) and the intro CTAs walk the onboarding before the studio. |
+| The pill ban | The saddle, stealthhead, forge, foundry and vault surfaces lose the 999px pills through the anti-pill pass appended per application, and the radius token answers the 0.625rem base. |
+| The vitest suites | The saddle and cadria test suites ride the vitest runner (every node:test import left the tree), so the CI gate ladder reads the whole suite instead of refusing the files. |
+| The release metadata | The release metadata resyncs across the envelope (the README, the release gates and the release notes answer the version again) and the caddy ghosts leave the family tree. |
 
 ## Distribution channels
 
@@ -16,22 +26,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.94.tgz`
+- `wenathlan-devthink-2.0.95.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.94.nupkg`
+- `devthink.2.0.95.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.94.pom`
-- `devthink-2.0.94.jar`
-- `devthink2.0.94.zip`
-- `devthink-declarations-2.0.94.zip`
+- `devthink-2.0.95.pom`
+- `devthink-2.0.95.jar`
+- `devthink2.0.95.zip`
+- `devthink-declarations-2.0.95.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -45,77 +55,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.94.gem`
+- `devthink-2.0.95.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.94.vsix`
+- `devthink-vscode-2.0.95.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.94.xpi`
+- `devthink-firefox-2.0.95.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.94.zip`
+- `devthink-safari-2.0.95.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.94.zip`
-- `devthink-2.0.94-source.tar.xz`
-- `devthink-nativehost-2.0.94.template.json`
+- `devthink2.0.95.zip`
+- `devthink-2.0.95-source.tar.xz`
+- `devthink-nativehost-2.0.95.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.94.zip`
+- `devthink-site-2.0.95.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.94.zip`
+- `devthink-declarations-2.0.95.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.94.json`
-- `devthink-attestations-2.0.94.json`
-- `devthink-artifactmanifest-2.0.94.json`
+- `devthink-sbom-2.0.95.json`
+- `devthink-attestations-2.0.95.json`
+- `devthink-artifactmanifest-2.0.95.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.94.tgz`
-- `devthink.2.0.94.nupkg`
-- `devthink-2.0.94.pom`
-- `devthink-2.0.94.jar`
-- `devthink-2.0.94.gem`
+- `wenathlan-devthink-2.0.95.tgz`
+- `devthink.2.0.95.nupkg`
+- `devthink-2.0.95.pom`
+- `devthink-2.0.95.jar`
+- `devthink-2.0.95.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.94.vsix`
-- `devthink-firefox-2.0.94.xpi`
-- `devthink-safari-2.0.94.zip`
-- `devthink2.0.94.zip`
-- `devthink-2.0.94-source.tar.xz`
-- `devthink-nativehost-2.0.94.template.json`
-- `devthink-site-2.0.94.zip`
-- `devthink-declarations-2.0.94.zip`
-- `devthink-sbom-2.0.94.json`
-- `devthink-attestations-2.0.94.json`
-- `devthink-artifactmanifest-2.0.94.json`
+- `devthink-vscode-2.0.95.vsix`
+- `devthink-firefox-2.0.95.xpi`
+- `devthink-safari-2.0.95.zip`
+- `devthink2.0.95.zip`
+- `devthink-2.0.95-source.tar.xz`
+- `devthink-nativehost-2.0.95.template.json`
+- `devthink-site-2.0.95.zip`
+- `devthink-declarations-2.0.95.zip`
+- `devthink-sbom-2.0.95.json`
+- `devthink-attestations-2.0.95.json`
+- `devthink-artifactmanifest-2.0.95.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 

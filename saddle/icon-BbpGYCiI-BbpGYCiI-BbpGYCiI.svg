@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Saddle mark</title>
+  <desc id="desc">A saddle bridge connecting storage and compute nodes.</desc>
+  <path d="M48 147c0-58 36-99 80-99s80 41 80 99" fill="none" stroke="#202a2f" stroke-linecap="round" stroke-width="28"/>
+  <path d="M48 147c0-58 36-99 80-99s80 41 80 99" fill="none" stroke="#d35d3d" stroke-linecap="round" stroke-width="13"/>
+  <path d="M48 147c0 31 24 57 54 57h52c30 0 54-26 54-57" fill="none" stroke="#202a2f" stroke-linecap="round" stroke-width="17"/>
+  <circle cx="48" cy="147" r="17" fill="#f7f1e8" stroke="#202a2f" stroke-width="8"/>
+  <circle cx="208" cy="147" r="17" fill="#f7f1e8" stroke="#202a2f" stroke-width="8"/>
+  <circle cx="128" cy="48" r="13" fill="#d35d3d" stroke="#202a2f" stroke-width="7"/>
+</svg>

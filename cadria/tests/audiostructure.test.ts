@@ -1,8 +1,8 @@
-// # audiostructure.test — honest unit tests for the structure layer, runnable with
-// the node built-in runner (no install, no dependencies):
-//   node --test tests/audiostructure.test.ts
+// # audiostructure.test — honest unit tests for the structure layer, runnable
+// with vitest:
+//   pnpm vitest run tests/audiostructure.test.ts
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   analyzeStructure,
   energyCurve,

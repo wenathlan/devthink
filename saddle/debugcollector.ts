@@ -59,7 +59,7 @@
     if (value === undefined) return undefined;
 
     if (typeof value === 'string') {
-      return value.length > 1000 ? value.slice(0, 1000) + '...[truncated]' : value;
+      return value.length > 1000 ? `${value.slice(0, 1000)}...[truncated]` : value;
     }
 
     if (typeof value !== 'object') return value;
@@ -89,7 +89,7 @@
       }
       if (typeof arg === 'object') return sanitizeValue(arg);
       return String(arg);
-    } catch (e) {
+    } catch (_e) {
       return '[Unserializable]';
     }
   }
@@ -108,7 +108,7 @@
     if (typeof str !== 'string') return str;
     try {
       return JSON.parse(str);
-    } catch (e) {
+    } catch (_e) {
       return str;
     }
   }
@@ -121,7 +121,7 @@
     try {
       if (!target || !(target instanceof Element)) return false;
       return !!target.closest('.manus-no-record');
-    } catch (e) {
+    } catch (_e) {
       return false;
     }
   }
@@ -130,8 +130,8 @@
     try {
       var t = (s || '').trim().replace(/\s+/g, ' ');
       if (!t) return '';
-      return t.length > maxLen ? t.slice(0, maxLen) + '…' : t;
-    } catch (e) {
+      return t.length > maxLen ? `${t.slice(0, maxLen)}…` : t;
+    } catch (_e) {
       return '';
     }
   }
@@ -140,7 +140,7 @@
     try {
       var t = el.innerText || el.textContent || '';
       return compactText(t, CONFIG.uiTextMaxLen);
-    } catch (e) {
+    } catch (_e) {
       return '';
     }
   }
@@ -164,9 +164,9 @@
 
     // a small, stable hint for agents (avoid building full CSS paths)
     var selectorHint = null;
-    if (testId) selectorHint = '[data-testid="' + testId + '"]';
-    else if (dataLoc) selectorHint = '[data-loc="' + dataLoc + '"]';
-    else if (id) selectorHint = '#' + id;
+    if (testId) selectorHint = `[data-testid="${testId}"]`;
+    else if (dataLoc) selectorHint = `[data-loc="${dataLoc}"]`;
+    else if (id) selectorHint = `#${id}`;
     else selectorHint = tag || 'unknown';
 
     return {
@@ -206,13 +206,13 @@
     var v = '';
     try {
       v = el.value != null ? String(el.value) : '';
-    } catch (e) {
+    } catch (_e) {
       v = '';
     }
 
     if (isSensitiveField(el)) return { masked: true, length: v.length };
 
-    if (v.length > CONFIG.uiInputMaxLen) v = v.slice(0, CONFIG.uiInputMaxLen) + '…';
+    if (v.length > CONFIG.uiInputMaxLen) v = `${v.slice(0, CONFIG.uiInputMaxLen)}…`;
     return v;
   }
 
@@ -412,16 +412,16 @@
       args: [
         {
           type: 'UnhandledRejection',
-          reason: reason && reason.message ? reason.message : String(reason),
-          stack: reason && reason.stack ? reason.stack : null,
+          reason: reason?.message ? reason.message : String(reason),
+          stack: reason?.stack ? reason.stack : null,
         },
       ],
-      stack: reason && reason.stack ? reason.stack : null,
+      stack: reason?.stack ? reason.stack : null,
     });
     pruneBuffer(store.consoleLogs, CONFIG.bufferSize.console);
 
     logUiEvent('unhandledrejection', {
-      reason: reason && reason.message ? reason.message : String(reason),
+      reason: reason?.message ? reason.message : String(reason),
     });
   });
 
@@ -439,7 +439,7 @@
       typeof input === 'string'
         ? input
         : (input && (input.url || input.href || String(input))) || '';
-    var method = init.method || (input && input.method) || 'GET';
+    var method = init.method || input?.method || 'GET';
 
     // Don't intercept internal requests
     if (url.indexOf('/debuglogs') === 0) {
@@ -452,7 +452,7 @@
       if (init.headers) {
         requestHeaders = Object.fromEntries(new Headers(init.headers).entries());
       }
-    } catch (e) {
+    } catch (_e) {
       requestHeaders = { _parseError: true };
     }
 
@@ -509,7 +509,7 @@
 
         // Skip body capture for large responses to avoid memory issues
         if (contentLength && parseInt(contentLength, 10) > CONFIG.maxBodyLength) {
-          entry.response.body = '[Response too large: ' + contentLength + ' bytes]';
+          entry.response.body = `[Response too large: ${contentLength} bytes]`;
           store.networkRequests.push(entry);
           pruneBuffer(store.networkRequests, CONFIG.bufferSize.network);
           return response;
@@ -524,7 +524,7 @@
           contentType.indexOf('application/pdf') !== -1 ||
           contentType.indexOf('application/zip') !== -1;
         if (isBinary) {
-          entry.response.body = '[Binary content: ' + contentType + ']';
+          entry.response.body = `[Binary content: ${contentType}]`;
           store.networkRequests.push(entry);
           pruneBuffer(store.networkRequests, CONFIG.bufferSize.network);
           return response;
@@ -540,7 +540,7 @@
             if (text.length <= CONFIG.maxBodyLength) {
               entry.response.body = sanitizeValue(tryParseJson(text));
             } else {
-              entry.response.body = text.slice(0, CONFIG.maxBodyLength) + '...[truncated]';
+              entry.response.body = `${text.slice(0, CONFIG.maxBodyLength)}...[truncated]`;
             }
           })
           .catch(() => {
@@ -589,11 +589,7 @@
   };
 
   XMLHttpRequest.prototype.send = function (body) {
-    if (
-      this._manusData &&
-      this._manusData.url &&
-      this._saddleData.url.indexOf('/debuglogs') !== 0
-    ) {
+    if (this._manusData?.url && this._saddleData.url.indexOf('/debuglogs') !== 0) {
       this._manusData.startTime = Date.now();
       this._manusData.requestBody = body ? sanitizeValue(tryParseJson(body)) : null;
 
@@ -619,19 +615,19 @@
         if (isStreaming) {
           responseBody = '[Streaming response - not captured]';
         } else if (isBinary) {
-          responseBody = '[Binary content: ' + contentType + ']';
+          responseBody = `[Binary content: ${contentType}]`;
         } else {
           // Safe to read responseText for text responses
           try {
             var text = this.responseText || '';
             if (text.length > CONFIG.maxBodyLength) {
-              responseBody = text.slice(0, CONFIG.maxBodyLength) + '...[truncated]';
+              responseBody = `${text.slice(0, CONFIG.maxBodyLength)}...[truncated]`;
             } else {
               responseBody = sanitizeValue(tryParseJson(text));
             }
           } catch (e) {
             // responseText may throw for non-text responses
-            responseBody = '[Unable to read response: ' + e.message + ']';
+            responseBody = `[Unable to read response: ${e.message}]`;
           }
         }
 
@@ -780,9 +776,7 @@
   // Install semantic UI listeners ASAP
   try {
     installUiEventListeners();
-  } catch (e) {
-    console.warn('[Manus] Failed to install UI listeners:', e);
-  }
+  } catch (_e) {}
 
   // Mark as initialized
   window.__SADDLE_DEBUG_COLLECTOR__ = {
@@ -790,6 +784,4 @@
     store: store,
     forceReport: reportLogs,
   };
-
-  console.debug('[Manus] Debug collector initialized (no rrweb, UI events only)');
 })();

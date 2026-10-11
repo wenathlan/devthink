@@ -1,15 +1,14 @@
 // # timelineedit.test — the editing algebra of the timeline: the
 // overwrite, insert, lift and extract spans, the split with the fresh
 // right id, the trims with handles and neighbours, the roll, slip,
-// slide and rate stretch, runnable with the node built-in runner (no
-// dependencies, no install):
-//   node --test tests/timelineedit.test.ts
+// slide and rate stretch, runnable with vitest:
+//   pnpm vitest run tests/timelineedit.test.ts
 // Every test watches the two invariants the module promises: edits
 // never throw — every refusal rides the outcome type — and the media
 // window of a piece only moves through the source in point its speed
 // computes.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   type EditItem,
   type EditTrack,

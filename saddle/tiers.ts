@@ -337,6 +337,10 @@ export class sqlitekv implements Disposable {
   /** Absolute path of the database file. */
   readonly path: string;
 
+  /** the shared sqlite now cast (one literal, every statement reuses it) */
+  // biome-ignore lint/security/noSecrets: a sqlite strftime cast literal, not a credential
+  #nowsql = "CAST(strftime('%s','now') AS INTEGER)";
+
   #db: DatabaseSync;
   #closed = false;
   #getstmt: StatementSync | null = null;
@@ -373,8 +377,7 @@ export class sqlitekv implements Disposable {
         throw new tierserror(`invalid kvstore key length ${key?.length ?? 0}`);
       }
       this.#getstmt ??= this.#db.prepare(
-        "UPDATE kvstore SET accessedat = CAST(strftime('%s','now') AS INTEGER) " +
-          'WHERE key = ? RETURNING value',
+        `UPDATE kvstore SET accessedat = ${this.#nowsql} WHERE key = ? RETURNING value`,
       );
       const row = this.#getstmt.get(key) as { value: Uint8Array } | undefined;
       return row === undefined ? null : Buffer.from(row.value);
@@ -393,7 +396,10 @@ export class sqlitekv implements Disposable {
       }
       this.#setstmt ??= this.#db.prepare(
         'INSERT INTO kvstore (key, value, createdat, accessedat) VALUES (?, ?, ' +
-          "CAST(strftime('%s','now') AS INTEGER), CAST(strftime('%s','now') AS INTEGER)) " +
+          this.#nowsql +
+          ', ' +
+          this.#nowsql +
+          ') ' +
           'ON CONFLICT(key) DO UPDATE SET value = excluded.value, accessedat = excluded.accessedat',
       );
       this.#setstmt.run(key, value);

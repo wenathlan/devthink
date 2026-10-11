@@ -1,14 +1,13 @@
 // # colorconvert.test — the color space conversions of the studio: the
 // sRGB transfer curve through the decode table, the HSL and HSV cylinders,
 // the OKLab and OKLCH spheres, the studio-swing YCbCr families and the
-// hex round trip, runnable with the node built-in runner (no dependencies,
-// no install):
-//   node --test tests/colorconvert.test.ts
+// hex round trip, runnable with vitest:
+//   pnpm vitest run tests/colorconvert.test.ts
 // Every test watches the two invariants the module promises: conversions
 // round trip inside one byte of drift and clamped or damaged input never
 // throws — the channel clamp answers the nearest legal byte.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   clamp01,
   clamprgb,

@@ -2,10 +2,12 @@
  * installerintro.tsx — the intro of the binary targets (installer and
  * extension): a Windows boot/installation surface. The literal #202020 slab
  * carries the wordmark and the progress lines ("preparing the os…"), which
- * advance once and hand the surface straight to the OS desktop — the
- * sandbox/binary feeling of a program starting, no SaaS stage, no spinning
- * loop: the choreography is one deterministic 800ms pass. One click or any
- * key skips straight to the hand-over; reduced motion hands over instantly.
+ * advance once and hand the surface to the entry flow at /explore (the
+ * landing SaaS continues to the authentication page-app and the OS desktop)
+ * — the sandbox/binary feeling of a program starting, no SaaS stage, no
+ * spinning loop: the choreography is one deterministic 800ms pass. One
+ * click or any key skips straight to the hand-over; reduced motion hands
+ * over instantly.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { SolLogoMark } from "../panel/logo.tsx";
@@ -15,7 +17,7 @@ const LINE_MS = 160;
 const DONE_MS = 800;
 
 /** the progress lines of the boot, in the owner's own wording */
-const LINES = ["preparing the os…", "mounting the apps…", "preparing the session…", "opening the panel…"] as const;
+const LINES = ["preparing the os…", "mounting the apps…", "preparing the session…", "opening the surface…"] as const;
 
 type InstallerIntroProps = {
   /** the hand-over: fired once, after the last progress line settles */

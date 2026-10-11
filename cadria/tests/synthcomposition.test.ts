@@ -1,6 +1,6 @@
 // # synthcomposition.test — the composition grammar of the cadria image wave,
-// runnable with the node built-in runner (no dependencies, no install):
-//   node --test tests/synthcomposition.test.ts
+// runnable with vitest:
+//   pnpm vitest run tests/synthcomposition.test.ts
 // The tests watch the promises the module makes: the grid grammar tracks
 // section density and repetition (dense → more columns, repetitive → a tight
 // regular lattice), the role cast is exact (one hero, always the largest and
@@ -10,7 +10,7 @@
 // tolerance, weights summing to 1) and everything is deterministic — same
 // descriptor, same blocks; different seed, different jitter.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import type { AudioDescriptor } from "../audioattributes.ts";
 import { DIM_ORDER, NARRATIVE_CONTOUR } from "../audiofeatures.ts";
 import {

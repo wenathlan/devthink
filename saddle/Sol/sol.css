@@ -1435,13 +1435,13 @@ a:focus-visible {
 }
 .surface-arrow {
 	margin-left: auto;
-	color: var(--muted-foreground) !important;
+	color: var(--muted-foreground);
 	transition:
 		transform 180ms var(--ease-out),
 		color 180ms var(--ease-out);
 }
 .surface-row:hover .surface-arrow {
-	color: var(--ember) !important;
+	color: var(--ember);
 	transform: translate(3px, -3px);
 }
 .closing-section {
@@ -2403,9 +2403,9 @@ a:focus-visible {
 	*,
 	*::before,
 	*::after {
-		scroll-behavior: auto !important;
-		transition-duration: 0.01ms !important;
-		animation-duration: 0.01ms !important;
+		scroll-behavior: auto;
+		transition-duration: 0.01ms;
+		animation-duration: 0.01ms;
 	}
 }
 
@@ -3514,7 +3514,7 @@ a:focus-visible {
 	box-shadow: inset 0 2px 5px rgba(24, 37, 33, 0.18);
 }
 .button[aria-busy="true"] {
-	color: transparent !important;
+	color: transparent;
 	pointer-events: none;
 	position: relative;
 }
@@ -5043,7 +5043,7 @@ body {
 	.winintro__skip,
 	.winonboard__card,
 	.winonboard__step {
-		animation: none !important;
+		animation: none;
 	}
 }
 @media (prefers-reduced-transparency: reduce) {
@@ -6663,7 +6663,7 @@ body::before {
 	.r3-matrix,
 	.r3-step,
 	.r3-form-row {
-		animation: none !important;
+		animation: none;
 	}
 	.term[data-state="running"] .term-prompt::after {
 		content: none;
@@ -6675,7 +6675,7 @@ body::before {
 	.dash-rolebadge.clone::before,
 	.winapp__brand .sol-mark__svg,
 	.winchip .sol-mark__svg {
-		animation: none !important;
+		animation: none;
 	}
 	.spec-range::-webkit-slider-thumb {
 		transition: none;
@@ -6692,4 +6692,18 @@ body::before {
 	.r3-matrix-table tr.is-featured td {
 		background: none;
 	}
+}
+
+/* ==========================================================================
+   ANTI-PILL PASS — the doctrine gate "zero 999px pills" closed at the
+   selector level. The dashboard and console badges/chips were full pills;
+   they retire to the trylle base radius (order wins: this later block
+   prevails). No earlier pass is rewritten — append-only per the doctrine.
+   ========================================================================== */
+.console-signin,
+.api-badge,
+.dash-rolebadge,
+.dash-userbadge,
+.dash-chip {
+	border-radius: var(--sol-radius);
 }

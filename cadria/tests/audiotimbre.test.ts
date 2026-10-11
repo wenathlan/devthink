@@ -1,7 +1,7 @@
 // # audiotimbre.test — the timbre layer of the audio→image paint feed
 // (mel/MFCC, envelopes, dynamics, onset shapes and the spectral descriptors),
-// runnable with the node built-in runner (no dependencies, no install):
-//   node --test tests/audiotimbre.test.ts
+// runnable with vitest:
+//   pnpm vitest run tests/audiotimbre.test.ts
 // Every test watches the three invariants the module promises: the
 // descriptors separate the fixtures they were built for (noise vs tone, pad
 // vs click, warm vs bright, loud vs quiet), every answer stays finite under
@@ -9,7 +9,7 @@
 // answers the same numbers on every run. Fixtures are synthesized (sines,
 // ramps, an LCG pseudo-noise) so the suite never touches the filesystem.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   brightness,
   DEFAULT_COEFFICIENTS,

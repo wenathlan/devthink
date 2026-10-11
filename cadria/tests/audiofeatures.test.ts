@@ -1,6 +1,6 @@
 // # audiofeatures.test — the descriptor contract of the cadria audio wave,
-// runnable with the node built-in runner (no dependencies, no install):
-//   node --test tests/audiofeatures.test.ts
+// runnable with vitest:
+//   pnpm vitest run tests/audiofeatures.test.ts
 // The tests watch the three promises the module makes: the 32-dim vector is
 // total (right length, finite, clamped 0-1) no matter how damaged the input,
 // the answer is deterministic (same stats or same pcm → same descriptor and
@@ -8,7 +8,7 @@
 // mappings hold (louder dynamics range → higher contrast dim, faster bpm →
 // higher tempo dim) so the image-mapping wave can trust every dim by index.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import type { DescriptorStats } from "../audioattributes.ts";
 import {
   audioSeed,

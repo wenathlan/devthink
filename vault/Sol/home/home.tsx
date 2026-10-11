@@ -454,7 +454,7 @@ export function Home(props: HomeProps) {
       <FamilyRow />
 
       {/* the footer meta-quad, flush to the window floor */}
-      <footer className="vt-quad" aria-label="vault footer">
+      <footer className="vt-quad">
         <div className="vt-quad__grid">
           <div className="vt-quad__col">
             <p className="vt-quad__head">store</p>

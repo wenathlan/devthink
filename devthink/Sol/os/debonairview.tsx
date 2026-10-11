@@ -12,7 +12,7 @@
  * one staggered entrance per view switch (reveal.ts, reduced-motion
  * guarded).
  *
- * Task 3-c identity pass: the hero carries the latão accent with the
+ * Task 3-c identity pass: the hero carries the brass accent with the
  * audio-lines glyph breathing inside its own stroke; the queue and the
  * library got honest family empty states with real actions.
  */

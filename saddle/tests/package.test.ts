@@ -3,10 +3,10 @@
  */
 
 import assert from "node:assert/strict";
+import { describe, it } from "vitest";
 import { readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
-import { test } from "node:test";
 import { releaseartifactmatrix } from "../distribution.js";
 
 /* The transport-neutral graph of the grand merge: the flat domain files
@@ -16,7 +16,8 @@ import { releaseartifactmatrix } from "../distribution.js";
    their deep exports (./memory-*, ./sessions-file, ./release-*, ...). */
 const transportneutral = ["dist/foundation.js", "dist/intelligence.js", "dist/automation.js"];
 
-test("imports every declared package export target in Node", async () => {
+describe("the package surface", () => {
+it("imports every declared package export target in Node", async () => {
   const root = dirname(new URL(import.meta.url).pathname);
   const packagejson = JSON.parse(await readFile(resolve(root, "../package.json"), "utf8"));
   for (const target of Object.values(packagejson.exports)) {
@@ -32,7 +33,7 @@ test("imports every declared package export target in Node", async () => {
   }
 });
 
-test("declares runtime metadata and an optional browser provider peer", async () => {
+it("declares runtime metadata and an optional browser provider peer", async () => {
   const root = dirname(new URL(import.meta.url).pathname);
   const packagejson = JSON.parse(await readFile(resolve(root, "../package.json"), "utf8"));
   assert.equal(packagejson.private, false);
@@ -43,7 +44,7 @@ test("declares runtime metadata and an optional browser provider peer", async ()
   assert.equal(packagejson.exports["./browser-playwright"], "./dist/browser.js");
 });
 
-test("keeps transport-neutral export graphs free of Node-only imports", async () => {
+it("keeps transport-neutral export graphs free of Node-only imports", async () => {
   const root = dirname(new URL(import.meta.url).pathname);
   const seen = new Set();
   const pending = transportneutral.map((entry) => resolve(root, "..", entry));
@@ -64,10 +65,11 @@ test("keeps transport-neutral export graphs free of Node-only imports", async ()
   assert.equal(seen.has(resolve(root, "..", "dist/automation.js")), true);
 });
 
-test("creates the expanded release matrix without vendor coupling", () => {
+it("creates the expanded release matrix without vendor coupling", () => {
   const matrix = releaseartifactmatrix("1.8.14", { signing: "caller-owned" });
   assert.equal(matrix.entries.length, 11);
   assert.deepEqual(matrix.entries.find((entry) => entry.platform === "windows" && entry.architecture === "x86")?.files, ["saddle.browser.1.8.14.x86.exe", "saddle.browser.1.8.14.x86.msi"]);
   assert.deepEqual(matrix.entries.find((entry) => entry.surface === "android")?.files, ["saddle.apk.1.8.14.apk", "saddle.aab.1.8.14.aab"]);
   assert.equal(matrix.entries.find((entry) => entry.surface === "container")?.manifest, "manifest.container.1.8.14.json");
+});
 });

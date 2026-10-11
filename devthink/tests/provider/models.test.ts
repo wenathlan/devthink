@@ -6,7 +6,7 @@
  *  `mapModelFor9Router`) plus catalog smoke checks: catalog presence,
  *  lookup determinism, unknown-id fallback.
  *
- *  Uses `node:test` + `node:assert/strict`. Imports only leaf modules; the
+ *  Runs on the vitest runner with `node:assert/strict` assertions. Imports only leaf modules; the
  *  models module pulls only `node:crypto` + `node:os`.
  */
 

@@ -1,13 +1,12 @@
 // # blendmodes.test — the separable blend formulas of the compositing
 // standard over the 0-1 and 0-255 domains, the non-separable luminance
-// modes and the W3C alpha composite, runnable with the node built-in
-// runner (no dependencies, no install):
-//   node --test tests/blendmodes.test.ts
+// modes and the W3C alpha composite, runnable with vitest:
+//   pnpm vitest run tests/blendmodes.test.ts
 // Every test watches the two invariants the module promises: the channel
 // formulas match the published equations exactly and clamped inputs
 // never throw — damaged input answers the clamped or source value.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   alphacomposite,
   blendchannel,

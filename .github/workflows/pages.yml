@@ -5,7 +5,8 @@ name: Family Pages
 # and the extension — only the conversion workflow differs). This lane builds
 # every family theme and ships ONE GitHub Pages site where each application
 # answers under its own subpath: /devthink/, /argan/, /cadria/, /debonair/,
-# /forge/, /foundry/, /saddle/, /stealthhead/, /vault/ and /getry/. Every vite
+# /forge/, /foundry/, /saddle/, /stealthhead/, /vault/, /getry/ and /cobaia/.
+# Every vite
 # theme installs from its committed lockfile through the package manager its
 # manifest pins (the matrix carries the manager per application) and builds
 # straight at the application root — the hashed bundles emit flat beside the
@@ -30,6 +31,7 @@ on:
       - "stealthhead/**"
       - "vault/**"
       - "getry/**"
+      - "cobaia/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -54,10 +56,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # the canonical family pass order (the owner doctrine): the nine
+        # the canonical family pass order (the owner doctrine): the ten
         # applications first - devthink, argan, cadria, debonair, forge,
-        # foundry, stealthhead, vault, getry - and saddle always last, the
-        # heaviest leg of the pass.
+        # foundry, stealthhead, vault, getry, cobaia - and saddle always
+        # last, the heaviest leg of the pass.
         include:
           - { app: devthink, pm: bun }
           - { app: argan, pm: pnpm }
@@ -68,6 +70,7 @@ jobs:
           - { app: stealthhead, pm: pnpm }
           - { app: vault, pm: pnpm }
           - { app: getry, pm: pnpm }
+          - { app: cobaia, pm: pnpm }
           - { app: saddle, pm: npm }
     steps:
       - name: Checkout
@@ -332,7 +335,7 @@ jobs:
               <script>
                 (function () {
                   var repo = "${REPO_NAME}";
-                  var family = ["saddle", "argan", "cadria", "debonair", "stealthhead", "forge", "foundry", "vault", "getry"];
+                  var family = ["saddle", "argan", "cadria", "debonair", "stealthhead", "forge", "foundry", "vault", "getry", "cobaia"];
                   var parts = location.pathname.split("/").filter(Boolean);
                   if (parts[0] === repo) parts = parts.slice(1);
                   var head = parts[0] || "";

@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/devthink",
-  "version": "2.0.94",
+  "version": "2.0.95",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
@@ -34,7 +34,7 @@
     "@capacitor/core": "^8.5.3",
     "@capacitor/ios": "^8.5.3",
     "@hookform/resolvers": "^5.9.1",
-    "@opencode-ai/sdk": "^1.18.35",
+    "@opencode-ai/sdk": "^1.19.0",
     "@radix-ui/react-accordion": "^1.2.21",
     "@radix-ui/react-alert-dialog": "^1.1.24",
     "@radix-ui/react-aspect-ratio": "^1.1.16",

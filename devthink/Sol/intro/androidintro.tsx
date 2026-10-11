@@ -3,7 +3,9 @@
  * Android app as ONE orchestrated cinematic (800ms, the motion budget of
  * the spec) — the tile mark lands with the one spring, the wordmark rides
  * in on the display face, then the tile expands over the stage on the
- * sheet curve and the surface hands over to the OS desktop. Every beat
+ * sheet curve and the surface hands over to the entry flow at /explore (the
+ * landing SaaS continues to the authentication page-app and the OS desktop).
+ * Every beat
  * animates transform/opacity exactly once (no loops, no scattered fades);
  * one click or any key skips straight to the hand-over; reduced motion
  * hands over instantly.

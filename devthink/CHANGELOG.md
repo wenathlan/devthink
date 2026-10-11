@@ -1,5 +1,25 @@
 # DevThink release notes
 
+## 2.0.95 — the cobaia rides the family and the doctrine audit closes the gates
+
+### Added
+
+| Area | Change |
+| --- | --- |
+| The cobaia surface | The cobaia application joins the family as the monetization surface: the home, pricing, support, apps, legal and blog pages ride the family tree with the honest advertisement slots, the empty-state checkout links and the support rails, so the family sites stay clean while the plans and the support links carry the revenue. |
+| The family pages lane | The family pages lane builds and deploys the cobaia under its own subpath, the envelope description answers the complete tree and the hashed build ghosts stay out of the tracked tree. |
+| The engine tests | The cadria image render paint and the debonair katexis engine answer their own vitest suites, and the image pipeline holds the deterministic byte contract. |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The entry chain | The devthink entry chain rides the owner doctrine again: the intro hands over to the explore landing, the explore CTA walks the auth application page and the auth answers the panel, instead of the shortcut that jumped the visitor straight into the panel. |
+| The window grammar | The cadria studio wears the family window again (the title bar, the drag, the maximize and the restore chip) and the intro CTAs walk the onboarding before the studio. |
+| The pill ban | The saddle, stealthhead, forge, foundry and vault surfaces lose the 999px pills through the anti-pill pass appended per application, and the radius token answers the 0.625rem base. |
+| The vitest suites | The saddle and cadria test suites ride the vitest runner (every node:test import left the tree), so the CI gate ladder reads the whole suite instead of refusing the files. |
+| The release metadata | The release metadata resyncs across the envelope (the README, the release gates and the release notes answer the version again) and the caddy ghosts leave the family tree. |
+
 ## 2.0.94 — the family envelopes answer the stealthhead name over the refreshed ladder
 
 ### Fixed

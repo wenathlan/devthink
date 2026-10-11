@@ -2554,7 +2554,7 @@ export function buildvmcrdmanifest(opts?: {
       'metadata:',
       `  name: ${plural}.${group}`,
       'spec:',
-      '  group: ' + group,
+      `  group: ${group}`,
       '  scope: Namespaced',
       '  names:',
       `    plural: ${plural}`,
@@ -2562,7 +2562,7 @@ export function buildvmcrdmanifest(opts?: {
       `    kind: ${kind}`,
       '    shortNames: [vm, evm]',
       '  versions:',
-      '    - name: ' + version,
+      `    - name: ${version}`,
       '      served: true',
       '      storage: true',
       '      subresources:',
@@ -2618,8 +2618,8 @@ export function buildvmcrdmanifest(opts?: {
       '',
     ].join('\n');
     const sample = [
-      'apiVersion: ' + group + '/' + version,
-      'kind: ' + kind,
+      `apiVersion: ${group}/${version}`,
+      `kind: ${kind}`,
       'metadata:',
       '  name: demo-vm',
       '  namespace: saddle',

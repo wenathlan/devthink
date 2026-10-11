@@ -1,0 +1,55 @@
+{
+  "name": "@wenathlan/cobaia",
+  "version": "2.0.94",
+  "description": "cobaia is the monetization surface of the wenathlan family: the content site that carries the plans, the support rails and the honest advertisement slots while the family apps stay clean; the name is provisional until the owner picks the official one",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wenathlan/devthink"
+  },
+  "private": true,
+  "author": "Wenathlan",
+  "sideEffects": false,
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "start": "vite preview --host",
+    "preview": "vite preview --host",
+    "check": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "wouter": "^3.13.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.15",
+    "@types/node": "^26.6.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.2",
+    "vitest": "^5.0.3"
+  },
+  "engines": {
+    "bare": "^1.18.0",
+    "bun": "^1.4.2",
+    "chrome": "^16.0.912",
+    "cnpm": "^9.4.0",
+    "corepack": "^0.35.0",
+    "deno": "^2.9.5",
+    "ecmascript": "^5.0.0",
+    "firefox": ">=0.8.0",
+    "iojs": "^1.0.0",
+    "node": "^26.8.2",
+    "npm": "^12.1.0",
+    "pnpm": "^12.6.0",
+    "teleport": ">=0.2.0",
+    "typescript": "^5.8.0",
+    "vscode": "^1.118.0",
+    "yarn": "^4.17.1"
+  }
+}

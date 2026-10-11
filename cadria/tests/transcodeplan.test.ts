@@ -1,8 +1,8 @@
-// # transcodeplan.test — honest unit tests for the transcode planner, runnable with
-// the node built-in runner (no install, no dependencies):
-//   node --test tests/transcodeplan.test.ts
+// # transcodeplan.test — honest unit tests for the transcode planner, runnable
+// with vitest:
+//   pnpm vitest run tests/transcodeplan.test.ts
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   buildTranscodePlan,
   estimateVariantBytes,
