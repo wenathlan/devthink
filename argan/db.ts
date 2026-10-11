@@ -92,6 +92,13 @@ CREATE TABLE IF NOT EXISTS content_rows (
   payload TEXT NOT NULL,
   PRIMARY KEY (kind, ordinal)
 );
+CREATE TABLE IF NOT EXISTS onboarding_state (
+  id             INTEGER PRIMARY KEY AUTOINCREMENT,
+  visitor        TEXT NOT NULL UNIQUE,
+  introseen      INTEGER NOT NULL DEFAULT 0,
+  onboardingseen INTEGER NOT NULL DEFAULT 0,
+  "updatedAt"    TEXT NOT NULL DEFAULT ''
+);
 `;
 
 /** Creates the tables when they do not exist (idempotent, mirrors the prisma schema). */
@@ -156,4 +163,41 @@ export function zoneRow(origin: string): { origin: string; kind: string; serial:
 /** Typed accessor of the record set lines (parameterized by nothing: the apex snapshot). */
 export function recordSetRows(): { ordinal: number; kind: string; line: string }[] {
   return queryAll("SELECT ordinal, kind, line FROM record_sets ORDER BY ordinal");
+}
+
+/** Typed row of the onboarding_state table (the first-run state of one visitor). */
+export type OnboardingStateRow = {
+  visitor: string;
+  introseen: boolean;
+  onboardingseen: boolean;
+  updatedAt: string;
+};
+
+/** Typed accessor of one visitor's first-run state (parameterized by visitor). */
+export function getonboardingstate(visitor: string): OnboardingStateRow | undefined {
+  const row = queryOne<{ visitor: string; introseen: number; onboardingseen: number; updatedAt: string }>(
+    'SELECT visitor, introseen, onboardingseen, "updatedAt" AS updatedAt FROM onboarding_state WHERE visitor = ?',
+    [visitor],
+  );
+  if (!row) return undefined;
+  return {
+    visitor: row.visitor,
+    introseen: row.introseen === 1,
+    onboardingseen: row.onboardingseen === 1,
+    updatedAt: row.updatedAt,
+  };
+}
+
+/** Writes one stage of the first run for a visitor (upsert, seen-monotonic —
+ * "intro" marks the splash, "onboarding" marks the splash and the finish). */
+export function setonboardingstage(visitor: string, stage: "intro" | "onboarding"): void {
+  execute(
+    `INSERT INTO onboarding_state (visitor, introseen, onboardingseen, "updatedAt")
+     VALUES (?, ?, ?, ?)
+     ON CONFLICT(visitor) DO UPDATE SET
+       introseen = MAX(introseen, excluded.introseen),
+       onboardingseen = MAX(onboardingseen, excluded.onboardingseen),
+       "updatedAt" = excluded."updatedAt"`,
+    [visitor, 1, stage === "onboarding" ? 1 : 0, new Date().toISOString()],
+  );
 }

@@ -4,7 +4,10 @@
  * it imports the loose components beside it, mounts the page and re-exports
  * the public component surface. Only the theme anchor (Sol/Sol.tsx) consumes
  * this file. This anchor carries the former main component of the folder,
- * which now lives here as the page mount itself.
+ * which now lives here as the page mount itself. Since the reform the mount
+ * consults the entry gate (entrygate.tsx beside this anchor) before rendering
+ * the landing: the first-run flow (intro, onboarding) decides, the landing
+ * renders only behind a finished flow.
  */
 
 // # Home — the public presentation (campaign v3 · r3-argan): ONE jade light
@@ -33,6 +36,7 @@ import {
 import { familyrow } from "../../family";
 import { familyurl } from "../../familyurl";
 import { ArganMark, type NavLink, Shell } from "../shell/Shell";
+import { EntryGate } from "./entrygate";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Zones", href: "/zones" },
@@ -104,7 +108,13 @@ function digName(label: string, name: string): string {
   return `${label}.${APEX}.`;
 }
 
-export default function Home() {
+/**
+ * The landing content of the home: hero, ledgers, flow, CTA and footer —
+ * rendered by the anchor only behind a finished first-run flow.
+ *
+ * @returns the landing element.
+ */
+function HomeLanding() {
   const [cards, setCards] = useState<readonly FeatureCard[]>([]);
   const [badges, setBadges] = useState<readonly SignalBadge[]>([]);
   const [zones, setZones] = useState<readonly ZoneSnapshot[]>([]);
@@ -444,5 +454,20 @@ export default function Home() {
         </div>
       </footer>
     </Shell>
+  );
+}
+
+/**
+ * The home anchor: the entry gate decides first (intro unseen hands to
+ * /intro, onboarding unseen hands to /onboarding, null renders while the
+ * state resolves) and the landing mounts only behind a finished flow.
+ *
+ * @returns the gated home element.
+ */
+export default function Home() {
+  return (
+    <EntryGate>
+      <HomeLanding />
+    </EntryGate>
   );
 }

@@ -457,6 +457,17 @@ export function Shell({ children, themeButton = true }: ShellProps) {
           </div>
         </header>
 
+        {/* the windows resize chrome: the eight handle zones of the real
+            frame (visual grips, CSS-drawn; the drag belongs to the title bar) */}
+        <span className="winapp__handle" data-handle="n" aria-hidden="true" />
+        <span className="winapp__handle" data-handle="s" aria-hidden="true" />
+        <span className="winapp__handle" data-handle="e" aria-hidden="true" />
+        <span className="winapp__handle" data-handle="w" aria-hidden="true" />
+        <span className="winapp__handle" data-handle="nw" aria-hidden="true" />
+        <span className="winapp__handle" data-handle="ne" aria-hidden="true" />
+        <span className="winapp__handle" data-handle="sw" aria-hidden="true" />
+        <span className="winapp__handle" data-handle="se" aria-hidden="true" />
+
         <div className="winapp__body">
           <nav className="winapp__rail" aria-label="Pages">
             <p className="winapp__railhead" aria-hidden="true">
