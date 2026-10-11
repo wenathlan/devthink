@@ -2,23 +2,28 @@
 /**
  * Shell.tsx — the ONE chrome of the theme, riding the family APPLICATION
  * grammar: the routed pages render inside one Windows 11 application window
- * floating over the Mica backdrop — a title bar carrying the brand lockup,
+ * floating over the trylle canvas — a title bar carrying the brand lockup,
  * the app name and the role line (the drag handle, double-click toggles
  * maximize), the Fluent caption buttons at the right edge (minimize
  * collapses the window into a restore chip, maximize fills the backdrop,
- * close relaunches the app at /intro) and the 48px icon rail that switches
- * the pages as the window content (the rail foot repeats the family row so
- * the chrome itself links the siblings through familyurl). The window rides
- * the WINDOW APP PASS primitives of sol.css (.winapp, --winapp-x/y,
- * --shadow-window) and opens with the 250ms scale .95→1 entry; there is no
- * taskbar, no start menu and no desktop navigation. The presentation intro
- * (/intro) stays outside the window — it hands the surface over through the
- * onboarding, and every seat after it mounts inside this ONE window. The
- * chrome styles ride the sol.css primitives (.titlebar .railnav .icon-anim
- * .appframe .winapp); the only css the shell owns is the glue block below
- * (skip link, stage gutter, the page transition — 250ms window ease, fade +
- * 4px rise). Session scope only: the theme flip writes a data-theme
- * attribute on <html> and nothing else — zero storage, zero persistence.
+ * close relaunches the app at /intro), the eight resize handles of the real
+ * window chrome and the 48px icon rail that switches the pages as the window
+ * content (Windows pins: 38×38 r4 washes, the press rides scale .7, the
+ * mount pops the pins in, the ladder indicator marks hover/active and the
+ * acrylic tooltip names the page; the rail foot repeats the family row so
+ * the chrome itself links the siblings through familyurl). A window the
+ * document is not focused on turns inactive — grayscale(80%), the Windows
+ * law. The window rides the WINDOW APP PASS primitives of sol.css (.winapp,
+ * --winapp-x/y, --shadow-window) and opens with the 250ms scale .95→1 entry;
+ * there is no taskbar, no start menu and no desktop navigation. The
+ * presentation intro (/intro) stays outside the window — it hands the
+ * surface over through the onboarding, and every seat after it mounts inside
+ * this ONE window. The chrome styles ride the sol.css primitives (.titlebar
+ * .railnav .icon-anim .appframe .winapp); the only css the shell owns is the
+ * glue block below (skip link, stage gutter, the page transition — 250ms
+ * window ease, fade + 4px rise). Session scope only: the theme flip writes a
+ * data-theme attribute on <html> and nothing else — zero storage, zero
+ * persistence.
  *
  * Mount law: the shell mounts ONCE — Sol/Sol.tsx wraps the routed Switch and
  * the page anchors render bare inside .sol-page (the shell keeps accepting
@@ -26,7 +31,20 @@
  * consumed beyond themeButton).
  */
 
-import { Copy, Image, LayoutDashboard, Minus, Moon, PlayCircle, Scissors, Settings2, Square, Sun, Wand2, X } from "lucide-react";
+import {
+  Copy,
+  Image,
+  LayoutDashboard,
+  Minus,
+  Moon,
+  PlayCircle,
+  Scissors,
+  Settings2,
+  Square,
+  Sun,
+  Wand2,
+  X,
+} from "lucide-react";
 import {
   type CSSProperties,
   type MouseEvent as ReactMouseEvent,
@@ -96,6 +114,26 @@ function routeTitle(location: string): string {
 /** the hand-over route of the close caption: closing the window restarts the
  * application at the intro (the relaunch metaphor). */
 const RESTART_ROUTE = "/intro";
+
+/** the eight resize edges of the window chrome (the Windows handles). */
+const RESIZE_EDGES = ["n", "s", "e", "w", "ne", "nw", "se", "sw"] as const;
+
+/** the edge set as a type. */
+type ResizeEdge = (typeof RESIZE_EDGES)[number];
+
+/** the smallest window the resize allows (px). */
+const MIN_SIZE = { w: 640, h: 440 } as const;
+
+/** one pointer session over a resize handle: the edge, where the press
+ * started and the window size it carried when it did. */
+type ResizeTrack = {
+  pointerId: number;
+  edge: ResizeEdge;
+  originX: number;
+  originY: number;
+  baseW: number;
+  baseH: number;
+};
 
 /** one pointer session over the title bar: where the press started and the
  * offset the window carried when it did. */
@@ -188,8 +226,12 @@ export function Shell({ children, themeButton = true }: ShellProps) {
   const [maximized, setMaximized] = useState(false);
   const [minimized, setMinimized] = useState(false);
   const [drag, setDrag] = useState({ x: 0, y: 0 });
+  const [size, setSize] = useState<{ w: number; h: number } | null>(null);
+  const [inactive, setInactive] = useState(false);
   const trackRef = useRef<DragTrack | null>(null);
+  const resizeRef = useRef<ResizeTrack | null>(null);
   const stageRef = useRef<HTMLDivElement | null>(null);
+  const winRef = useRef<HTMLElement | null>(null);
 
   // every navigation lands at the top of the stage (the scroll lives on the
   // stage column, so the rail and the title bar never move)
@@ -197,6 +239,71 @@ export function Shell({ children, themeButton = true }: ShellProps) {
   useEffect(() => {
     stageRef.current?.scrollTo({ top: 0 });
   }, [location]);
+
+  // the Windows inactive law: a window the document is not focused on turns
+  // grayscale — the state rides the document focus alone (session scope)
+  useEffect(() => {
+    const sync = (): void => setInactive(!document.hasFocus());
+    sync();
+    window.addEventListener("focus", sync);
+    window.addEventListener("blur", sync);
+    return () => {
+      window.removeEventListener("focus", sync);
+      window.removeEventListener("blur", sync);
+    };
+  }, []);
+
+  /** clamps a resize candidate to the viewport and the minimum window size. */
+  function clampSize(w: number, h: number): { w: number; h: number } {
+    const maxW = Math.max(MIN_SIZE.w, window.innerWidth - 24);
+    const maxH = Math.max(MIN_SIZE.h, window.innerHeight - 24);
+    return {
+      w: Math.min(maxW, Math.max(MIN_SIZE.w, Math.round(w))),
+      h: Math.min(maxH, Math.max(MIN_SIZE.h, Math.round(h))),
+    };
+  }
+
+  /** arms a resize session from one of the eight handles. */
+  function onResizePointerDown(edge: ResizeEdge) {
+    return (event: ReactPointerEvent<HTMLSpanElement>) => {
+      if (maximized) return;
+      const rect = winRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      resizeRef.current = {
+        pointerId: event.pointerId,
+        edge,
+        originX: event.clientX,
+        originY: event.clientY,
+        baseW: rect.width,
+        baseH: rect.height,
+      };
+      event.preventDefault();
+      event.currentTarget.setPointerCapture(event.pointerId);
+    };
+  }
+
+  /** rides the pointer while a resize session is armed. */
+  function onResizePointerMove(event: ReactPointerEvent<HTMLSpanElement>) {
+    const track = resizeRef.current;
+    if (!track || track.pointerId !== event.pointerId) return;
+    const dx = event.clientX - track.originX;
+    const dy = event.clientY - track.originY;
+    let w = track.baseW;
+    let h = track.baseH;
+    if (track.edge.includes("e")) w = track.baseW + dx;
+    if (track.edge.includes("w")) w = track.baseW - dx;
+    if (track.edge.includes("s")) h = track.baseH + dy;
+    if (track.edge.includes("n")) h = track.baseH - dy;
+    setSize(clampSize(w, h));
+  }
+
+  /** releases the resize session. */
+  function onResizePointerUp(event: ReactPointerEvent<HTMLSpanElement>) {
+    const track = resizeRef.current;
+    if (!track || track.pointerId !== event.pointerId) return;
+    resizeRef.current = null;
+    event.currentTarget.releasePointerCapture(event.pointerId);
+  }
 
   /** maximizes over the backdrop or restores the windowed frame (the drag offset resets). */
   function toggleMaximize() {
@@ -253,11 +360,20 @@ export function Shell({ children, themeButton = true }: ShellProps) {
       </a>
 
       <section
+        ref={winRef}
         className="winapp"
         hidden={minimized}
         data-maximized={maximized ? "true" : undefined}
+        data-sized={size && !maximized ? "true" : undefined}
+        data-inactive={inactive ? "true" : undefined}
         aria-label="cadria"
-        style={{ "--winapp-x": `${drag.x}px`, "--winapp-y": `${drag.y}px` } as CSSProperties}
+        style={
+          {
+            "--winapp-x": `${drag.x}px`,
+            "--winapp-y": `${drag.y}px`,
+            ...(size && !maximized ? { width: size.w, height: size.h } : {}),
+          } as CSSProperties
+        }
       >
         {/* biome-ignore lint/a11y/noStaticElementInteractions: the title bar is the drag surface; the window controls inside it are real buttons */}
         <header
@@ -315,7 +431,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
                   key={app.href}
                   href={app.href}
                   className="railnav__item"
-                  title={app.detail}
+                  data-tip={app.label}
                   aria-label={app.label}
                   aria-current={isActive(app.href) ? "page" : undefined}
                 >
@@ -345,6 +461,20 @@ export function Shell({ children, themeButton = true }: ShellProps) {
             </main>
           </div>
         </div>
+
+        {/* the eight resize handles of the window chrome (n/s/e/w + the corners) */}
+        {RESIZE_EDGES.map((edge) => (
+          <span
+            key={edge}
+            data-edge={edge}
+            className="winapp__rz"
+            aria-hidden="true"
+            onPointerDown={onResizePointerDown(edge)}
+            onPointerMove={onResizePointerMove}
+            onPointerUp={onResizePointerUp}
+            onPointerCancel={onResizePointerUp}
+          />
+        ))}
       </section>
 
       {minimized && (
