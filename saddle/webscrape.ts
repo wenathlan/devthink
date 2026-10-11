@@ -1031,6 +1031,7 @@ function plainText(html: string): string {
     .replace(/<\/th>/gi, ' | ')
     .replace(/<[^<>]+>/g, '')
     .replace(/<\/?(?:script|style)\b[^<>]*$/i, '')
+    .replace(/[<>]/g, '')
     .replace(/&nbsp;/g, ' ')
     .replace(/&(amp|lt|gt|quot|#39);/g, (whole: string, entity: string) => ENTITIES[entity] ?? whole)
     .replace(/\n{3,}/g, '\n\n')

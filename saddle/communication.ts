@@ -286,7 +286,7 @@ export function controlservice(options = {}) {
       return jsonresponse({ requestid: context.requestid, data: result }, { status: result.ok ? 200 : 409 });
     } catch (error) {
       console.error(error);
-      return errorresponse(error?.code ?? "CONTROL_REQUEST_FAILED", error instanceof Error && (error as { code?: string }).code ? error.message : "control request failed", { status: error?.code === "UNAUTHORIZED" ? 401 : 400, requestid: context.requestid });
+      return errorresponse(error?.code ?? "CONTROL_REQUEST_FAILED", "control request failed", { status: error?.code === "UNAUTHORIZED" ? 401 : 400, requestid: context.requestid });
     }
   }
 
