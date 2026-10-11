@@ -33,6 +33,7 @@ import { ROTATIONEVERY } from "../../sessions";
 import { budgetof, DEFAULTTHINKINGLEVEL, formatbudget, THINKINGLEVELS } from "../../thinking";
 import { BrandMark } from "../shell/BrandMark";
 import { toast } from "../toast/Toast";
+import EntryGate from "./entrygate.tsx";
 
 /** the honest answer of the send key: the surface stores nothing. */
 const SENDTOAST = "answers on the self-hosted gateway over HTTPS — this surface stores nothing";
@@ -81,11 +82,30 @@ const STEPS: { step: string; title: string; phrase: string }[] = [
 ];
 
 /**
- * the home page.
+ * The home page: the entry gate rides the surface — the flow law (intro →
+ * onboarding → the platform) is consulted before the home shows.
+ *
+ * @returns the gated home element.
+ */
+export function Home() {
+  return (
+    <EntryGate>
+      <HomeSurface />
+    </EntryGate>
+  );
+}
+
+/**
+ * The home surface the gate reveals: the Suno-grade gateway hero — one
+ * violet light, the prompt-giga endpoint field (send a completion), the
+ * replica matrix ledger (the five provider gateways as the copies the meta
+ * model spins), the 01–03 deploy steps and the meta-quad footer. no tabular
+ * fabrication: every row reads the root gateway registry (gateway.ts) and
+ * the thinking ladder (thinking.ts).
  *
  * @returns the home element.
  */
-export function Home() {
+function HomeSurface() {
   const [endpoint, setEndpoint] = useState("/v1/chat/completions");
 
   useEffect(() => {

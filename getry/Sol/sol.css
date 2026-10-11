@@ -1,3356 +1,842 @@
 /* ==========================================================================
-   DEVTHINK DESIGN ENGINE — sol theme + liquid glass
-   Canonical source: docs/regras.md SPEC 29 (sol theme curated), SPEC 31-60,
-   onda5 (timing master, radius ladder, 5-level shadows, states 5+8).
-   Zero build, zero dependencies. Vendor: copy this file to
-   <app>/site/assets/css/engine.css when creating a new site.
-   getry surface: the reasoning violet over the charcoal-violet dark, the
-   green accent "live" reserved for active-service badges, the family fusion
-   chrome (neutral graphite navbar) on top.
+   getry theme sol — the single stylesheet of the theme
+   the trylle foundation wearing the windows hands (the reform wave): the
+   trylle.com canvas, surfaces, hairlines, type, shadow ladder and button
+   tone stack as the base, the windows 11/10 interactions and
+   micro-animations on top — the press .7 on the rail pins and icon buttons,
+   the dtPopIntro pin entrance, the fluent window curve, the caption buttons
+   with the fluent red close, the inactive grayscale law, the eight resize
+   handles, the win11 scrollbar, the focus underlines.
+   sections: tokens · light theme · base · primitives · window chrome ·
+   pages · entries · motion · guards.
+   doctrine: trylle canvas #0a0a0b over the 8-surface ladder #171717→#484848
+   · hairlines ink 5%/10% (color-mix) · the getry violet #9a7ce0 as the app
+   identity ONLY (brand mark, content cta, active indicator) — focus and the
+   chrome answer the windows accent #4cc2ff · body 13px weight 450 · Inter
+   Variable everywhere, Geist Mono on labels and numbers · radii .625rem
+   (window 8, controls 4 — the 11+10 blend) · micro 150ms
+   cubic-bezier(0.22,1,0.36,1) · windows 250ms cubic-bezier(0.85,0.14,0.14,
+   0.85) · trylle shadow ladder (ring + doubling layers) with the flat
+   fluent float for windows · no pills · no all-properties transitions ·
+   no glow · no scale-from-zero except the windows pin law · scrollbar
+   invisible until hover · reduced-motion hard stop last.
    ========================================================================== */
 
-/* ---------- 1. TOKENS — sol theme (getry identity: the reasoning violet) ---------- */
+/* ---------- 1. tokens — the trylle foundation ---------- */
 :root {
-  /* surfaces (the getry charcoal-violet dark) */
-  --sol-bg: #0c0a12;
-  --sol-bg-2: #121019;
-  --sol-panel: rgba(245, 242, 250, 0.045);
-  --sol-panel-strong: rgba(245, 242, 250, 0.08);
-  --sol-line: rgb(139 92 246 / 0.16);
-  --sol-line-strong: rgb(139 92 246 / 0.32);
-
-  /* text */
-  --sol-text: #f5f2fa;
-  --sol-muted: #aaa2b8;
-  --sol-faint: #746c84;
-
-  /* accents — one signal violet carries the page (the routed token stream) */
-  --sol-signal: 139 92 246;
-  --sol-primary: #8b5cf6;
-  --sol-primary-ink: #170a2e;
-  --sol-ember: #7a45e0;
-  --sol-tangerine: #a67ff8;
-  --sol-gold: #c4a8f5;
-
-  /* identity tint of the brand tile (the fusion chrome stays neutral) */
-  --app-tint: #8b5cf6;
-
-  /* semantic (states 5+8) — live green stays reserved for badges */
-  --sol-success: #9ae6b4;
-  --sol-error: #ff7b8e;
-  --sol-warning: #ffd166;
-  --sol-info: #d8ccf5;
-
-  /* radius ladder (SPEC 17) */
-  --r-sm: 10px;
-  --r-md: 14px;
-  --r-lg: 20px;
-  --r-xl: 28px;
-
-  /* 5-level shadows */
-  --sh-1: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --sh-2: 0 4px 12px rgba(0, 0, 0, 0.45);
-  --sh-3: 0 12px 32px rgba(0, 0, 0, 0.5);
-  --sh-4: 0 24px 64px rgba(0, 0, 0, 0.55);
-
-  /* timing master (onda5: micro 120–250ms) */
-  --t-fast: 120ms;
-  --t-base: 180ms;
-  --t-slow: 250ms;
-  --ease: cubic-bezier(0.22, 1, 0.36, 1); /* easeOutQuart */
-
-  /* glass */
-  --glass-blur: 35px;
-  --glass-sat: 140%;
-
-  /* typography — the Sol triad: Space Grotesk display, system reading, Plex mono detail */
-  --sol-sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --sol-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
-
-  /* z-index bands (documented): atmosphere 0 · content 10 · float 20 · bar 50 · modal 200 · toast 300 · tooltip 400 */
-  --z-atmosphere: 0;
-  --z-content: 10;
-  --z-float: 20;
-  --z-bar: 50;
-  --z-modal: 200;
-  --z-toast: 300;
-  --z-tooltip: 400;
-
-  /* core aliases — signal color, page/ink floors, base radius, spring motion */
-  --sig: var(--sol-primary);
-  --page: var(--sol-bg);
-  --ink: var(--sol-text);
-  --r: var(--r-md);
-  --spring: cubic-bezier(0.2, 1.2, 0.4, 1);
-
-  font-size: 16px;
-  color-scheme: dark;
-}
-
-/* light variant (same rules, 2 theme tokens — SPEC 18) */
-[data-theme="light"] {
-  --sol-bg: #f7f5fb;
-  --sol-bg-2: #ece8f4;
-  --sol-panel: rgba(12, 10, 18, 0.04);
-  --sol-panel-strong: rgba(12, 10, 18, 0.07);
-  --sol-line: rgba(70, 38, 140, 0.2);
-  --sol-line-strong: rgba(70, 38, 140, 0.38);
-  --sol-text: #17121f;
-  --sol-muted: #554c66;
-  --sol-faint: #7b7189;
-  color-scheme: light;
-}
-
-/* ---------- 2. BASE ---------- */
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  margin: 0;
-  min-height: 100vh;
-  background:
-    radial-gradient(1100px 500px at 85% -10%, rgb(var(--sol-signal) / 0.1), transparent 60%),
-    var(--sol-bg);
-  color: var(--sol-text);
-  font-family: var(--sol-sans);
-  line-height: 1.55;
-  -webkit-font-smoothing: antialiased;
-  transition: background var(--t-slow) var(--ease);
-}
-main { display: block; }
-a { color: var(--sol-tangerine); text-decoration: none; }
-a:hover { text-decoration: underline; text-underline-offset: 3px; }
-h1, h2, h3 { letter-spacing: -0.03em; line-height: 1.12; margin: 0 0 0.5em; }
-p { margin: 0 0 1em; color: var(--sol-muted); }
-::selection { background: rgb(var(--sol-signal) / 0.32); color: var(--sol-text); }
-:focus-visible { outline: 3px solid var(--sol-primary); outline-offset: 2px; border-radius: 4px; }
-kbd, code {
-  font-family: var(--sol-mono);
-  font-size: 0.85em;
-  background: var(--sol-panel-strong);
-  border: 1px solid var(--sol-line);
-  border-radius: 6px;
-  padding: 1px 6px;
-  font-variant-numeric: tabular-nums;
-}
-
-/* thin scrollbar */
-* { scrollbar-width: thin; scrollbar-color: var(--sol-line-strong) transparent; }
-*::-webkit-scrollbar { width: 8px; height: 8px; }
-*::-webkit-scrollbar-thumb { background: var(--sol-line-strong); border-radius: 99px; }
-
-/* ---------- 3. WORDMARK COLOSSAL (onda7d SPEC 60) ---------- */
-.wordmark {
-  font-size: clamp(2.6rem, 8vw, 6rem);
-  font-weight: 800;
-  letter-spacing: -0.055em;
-  background: linear-gradient(180deg, var(--sol-text) 30%, var(--sol-gold) 105%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  margin: 0;
-}
-.eyebrow {
-  color: var(--sol-primary);
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  margin: 0 0 14px;
-}
-
-/* ---------- 4. LIQUID GLASS ---------- */
-.glass {
-  background: linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
-  border: 1px solid var(--sol-line);
-  border-radius: var(--r-lg);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
-  box-shadow: var(--sh-2), inset 0 1px 0 rgba(245, 242, 250, 0.07);
-  transition: transform var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease), border-color var(--t-base) var(--ease);
-}
-.glass-hover:hover {
-  transform: translateY(-3px);
-  border-color: var(--sol-line-strong);
-  box-shadow: var(--sh-3), inset 0 1px 0 rgba(245, 242, 250, 0.09);
-}
-.card { padding: 22px; }
-
-/* ---------- 5. BUTTONS ---------- */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 44px; /* touch-friendly */
-  padding: 0 20px;
-  border-radius: var(--r-md);
-  border: 1px solid transparent;
-  font: inherit;
-  font-weight: 700;
-  cursor: pointer;
-  color: var(--sol-primary-ink);
-  background: linear-gradient(180deg, var(--sol-tangerine), var(--sol-primary));
-  box-shadow: var(--sh-1);
-  transition: transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease), filter var(--t-fast) var(--ease);
-}
-.btn:hover { filter: brightness(1.06); box-shadow: var(--sh-2); transform: translateY(-1px); }
-.btn:active { transform: translateY(0) scale(0.98); }
-.btn:disabled, .btn[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; transform: none; }
-.btn.secondary {
-  background: transparent;
-  color: var(--sol-text);
-  border-color: var(--sol-line-strong);
-}
-.btn.secondary:hover { border-color: var(--sol-primary); color: var(--sol-tangerine); background: var(--sol-panel); }
-.btn.danger { background: transparent; color: var(--sol-error); border-color: color-mix(in srgb, var(--sol-error) 50%, transparent); }
-.btn.small { min-height: 34px; padding: 0 14px; font-size: 0.85rem; }
-
-/* ---------- 6. NAVIGATION — the fusion chrome of the family ---------- */
-/* the fusion navbar styles live in the FUSION CHROME PASS at the bottom of
-   this sheet; this section keeps the segmented tab grammar */
-.tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: 8px; background: var(--sol-panel); border: 1px solid var(--sol-line); }
-.tabs a, .tabs button {
-  border: 0; background: transparent; color: var(--sol-muted);
-  font: inherit; font-weight: 650; font-size: 0.9rem;
-  padding: 9px 16px; border-radius: 6px; cursor: pointer;
-  transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease), transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
-}
-.tabs a:hover, .tabs button:hover { color: var(--sol-text); }
-.tabs a:active, .tabs button:active { transform: translateY(1px) scale(0.97); }
-.tabs a[aria-selected="true"], .tabs button[aria-selected="true"], .tabs a[aria-current="page"] {
-  background: var(--sol-primary); color: var(--sol-primary-ink);
-}
-
-/* ---------- 7. GRID / LAYOUT ---------- */
-.shell { max-width: 1160px; margin: 0 auto; padding: clamp(20px, 4vw, 56px) clamp(16px, 4vw, 40px); }
-/* the landing shell is a floor-reaching column: the footer pins to the
-   window floor when the content runs short (the spec §4 sticky-footer law) */
-.winapp__stage > main.shell { display: flex; flex-direction: column; min-height: 100%; }
-.grid { display: grid; gap: 18px; }
-.grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-.grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
-.grid.cols-4 { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
-.section { padding: clamp(28px, 6vw, 72px) 0; }
-.section-head { max-width: 640px; margin-bottom: 30px; }
-.section-head h2 { display: inline-flex; align-items: center; gap: 10px; }
-
-/* ---------- 8. BADGES / STATES ---------- */
-.badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 3px 11px;
-  border-radius: 4px;
-  border: 1px solid var(--sol-line-strong);
-  color: var(--sol-tangerine);
-  font-size: 0.7rem; font-weight: 800;
-  letter-spacing: 0.09em; text-transform: uppercase;
-  font-variant-numeric: tabular-nums;
-}
-.badge.success { border-color: color-mix(in srgb, var(--sol-success) 55%, transparent); color: var(--sol-success); }
-.badge.error { border-color: color-mix(in srgb, var(--sol-error) 55%, transparent); color: var(--sol-error); }
-.badge.warning { border-color: color-mix(in srgb, var(--sol-warning) 55%, transparent); color: var(--sol-warning); }
-.badge.info { border-color: color-mix(in srgb, var(--sol-info) 55%, transparent); color: var(--sol-info); }
-.dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex: none; }
-
-/* ---------- 9. TABELAS / LISTAS ---------- */
-.table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-.table th { text-align: left; color: var(--sol-faint); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; padding: 10px 14px; border-bottom: 1px solid var(--sol-line); }
-.table td { padding: 12px 14px; border-bottom: 1px solid var(--sol-line); color: var(--sol-muted); font-variant-numeric: tabular-nums; }
-.table tr:hover td { background: var(--sol-panel); color: var(--sol-text); }
-.table.ladder td:first-child { color: var(--sol-tangerine); font-weight: 700; }
-
-/* ---------- 10. INPUTS ---------- */
-.input, .field input, .field textarea, .field select {
-  width: 100%;
-  min-height: 44px;
-  background: color-mix(in srgb, var(--sol-bg-2) 80%, transparent);
-  border: 1px solid var(--sol-line);
-  border-radius: var(--r-sm);
-  color: var(--sol-text);
-  font: inherit;
-  padding: 11px 14px;
-  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
-}
-.field input:focus, .field textarea:focus, .field select:focus {
-  outline: none;
-  border-color: var(--sol-primary);
-  box-shadow: 0 0 0 3px rgb(var(--sol-signal) / 0.22);
-}
-.field label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--sol-muted); margin: 0 0 6px; }
-.field { margin-bottom: 16px; }
-
-/* toggle sem JS (SPEC 30) */
-.toggle { position: relative; display: inline-block; width: 46px; height: 26px; flex: none; }
-.toggle input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
-.toggle .track {
-  position: absolute; inset: 0; border-radius: 13px;
-  background: var(--sol-panel-strong); border: 1px solid var(--sol-line-strong);
-  transition: background var(--t-base) var(--ease);
-}
-.toggle .track::after {
-  content: ""; position: absolute; top: 2px; left: 2px;
-  width: 20px; height: 20px; border-radius: 50%;
-  background: var(--sol-muted);
-  transition: transform var(--t-base) var(--ease), background var(--t-base) var(--ease);
-}
-.toggle input:checked + .track { background: rgb(var(--sol-signal) / 0.25); border-color: var(--sol-primary); }
-.toggle input:checked + .track::after { transform: translateX(20px); background: var(--sol-primary); }
-.toggle input:focus-visible + .track { outline: 3px solid var(--sol-primary); outline-offset: 2px; }
-
-/* ---------- 11. KEYFRAMES (verbatim from the waves) ---------- */
-@keyframes riseIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes drawIn { from { stroke-dashoffset: var(--dash, 300); } to { stroke-dashoffset: 0; } }
-@keyframes ringHue { to { filter: hue-rotate(360deg); } }
-@keyframes marq { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-@keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
-
-.reveal { opacity: 0; transform: translateY(14px); }
-.reveal.in { animation: riseIn 0.55s var(--ease) forwards; }
-.reveal.in:nth-child(2) { animation-delay: 60ms; }
-.reveal.in:nth-child(3) { animation-delay: 120ms; }
-.reveal.in:nth-child(4) { animation-delay: 180ms; }
-
-/* skeleton loading */
-.skeleton {
-  border-radius: var(--r-sm);
-  background: linear-gradient(90deg, var(--sol-panel) 25%, var(--sol-panel-strong) 50%, var(--sol-panel) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s linear infinite;
-  color: transparent !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
-  .reveal { opacity: 1; transform: none; }
-  html { scroll-behavior: auto; }
-}
-
-/* ---------- 12. FOOTER (sticky via mt-auto no wrapper) ---------- */
-.footer {
-  margin-top: auto;
-  border-top: 1px solid var(--sol-line);
-  padding: 26px clamp(16px, 4vw, 40px);
-  color: var(--sol-faint);
-  font-size: 0.85rem;
-  display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
-}
-.footer a { color: var(--sol-muted); }
-.footer a:hover { color: var(--sol-tangerine); }
-.footer .spacer { flex: 1; }
-
-/* ---------- 13. anti-vibe-code BAN LIST (obeyed by construction) ----------
-   - no default purple/blue, no gradient-text in body copy, no emoji as icon
-   - no mixed border-radius outside the ladder, no random box-shadow
-   - every icon: inline SVG stroke 1.8, 24px viewBox (Lucide family)
-   -------------------------------------------------------------------------- */
-
-/* ==========================================================================
-   GETRY GATEWAY UI — the AI gateway layer over the shared engine
-   (app frame, hero, version cards, route chips, thinking ladder, key
-   cards, code block, session tables, toasts, failure panel). Same
-   tokens, same ban list.
-   ========================================================================== */
-
-/* ---------- 14. APP FRAME ---------- */
-.appframe {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-.appframe > .shell { flex: 1; width: 100%; }
-
-/* display face of the family (Space Grotesk) + stat mono (IBM Plex Mono) */
-.wordmark, h1, h2, h3 { font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif; }
-.mono, .table td, .badge, .routechip, .keymask, .ladderbudget {
-  font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
-}
-
-/* ---------- 15. HERO ---------- */
-.hero { padding: clamp(28px, 7vw, 88px) 0 clamp(20px, 4vw, 44px); }
-.hero .lede { font-size: clamp(1.02rem, 1.6vw, 1.2rem); max-width: 640px; }
-.hero .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
-.hero .importstrip {
-  display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px;
-}
-.importstrip .badge { background: var(--sol-panel); }
-
-/* ---------- 16. DOMAIN CARDS ---------- */
-.domaincards { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-.domaincard { display: block; color: inherit; }
-.domaincard:hover { text-decoration: none; }
-.domaincard .cardicon {
-  width: 40px; height: 40px;
-  display: inline-flex; align-items: center; justify-content: center;
-  border-radius: var(--r-md);
-  color: var(--sol-tangerine);
-  background: var(--sol-panel-strong);
-  border: 1px solid var(--sol-line);
-  margin-bottom: 14px;
-}
-.domaincard h3 { margin-bottom: 6px; font-size: 1.08rem; }
-.domaincard p { margin: 0; font-size: 0.92rem; }
-.domaincard .cardlink {
-  display: inline-flex; align-items: center; gap: 6px;
-  margin-top: 14px;
-  color: var(--sol-tangerine);
-  font-weight: 700; font-size: 0.85rem;
-}
-
-/* ---------- 17. VERSION CARDS + ROUTE CHIPS ---------- */
-.versiongrid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
-.versionhead { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
-.versionhead h3 { margin: 0; font-size: 1.25rem; }
-.versionfield { color: var(--sol-muted); font-size: 0.88rem; margin: 0 0 8px; }
-.versionfield strong { color: var(--sol-text); font-weight: 700; }
-.versionnote { color: var(--sol-faint); font-size: 0.78rem; font-style: italic; margin: 0 0 14px; }
-.routecount {
-  color: var(--sol-faint);
-  font-size: 0.68rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-weight: 800;
-  margin: 0 0 8px;
-}
-.routechips { display: flex; flex-wrap: wrap; gap: 6px; }
-.routechip {
-  padding: 4px 10px;
-  background: var(--sol-panel);
-  border: 1px solid var(--sol-line);
-  border-radius: var(--r-sm);
-  font-size: 0.6875rem;
-  color: var(--sol-muted);
-  cursor: pointer;
-  transition: border-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
-}
-.routechip:hover { border-color: var(--sol-line-strong); color: var(--sol-tangerine); background: var(--sol-panel-strong); }
-
-/* ---------- 18. CODE BLOCK + PARSER LIST ---------- */
-.codeblock {
-  background: color-mix(in srgb, var(--sol-bg-2) 80%, transparent);
-  border: 1px solid var(--sol-line);
-  border-radius: var(--r-md);
-  padding: 16px;
-  overflow: auto;
-  font-size: 0.75rem;
-  line-height: 1.7;
-  color: var(--sol-muted);
-  margin: 0;
-}
-.codeblock:first-line { color: var(--sol-text); }
-.parserlist { color: var(--sol-muted); font-size: 0.88rem; line-height: 1.8; padding-left: 20px; margin: 0; }
-.parserlist li::marker { color: var(--sol-tangerine); font-family: "IBM Plex Mono", ui-monospace, monospace; }
-
-/* ---------- 19. THINKING LADDER ---------- */
-.thinkingladder { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-.laddercard { position: relative; }
-.laddercard.default { border-color: color-mix(in srgb, var(--sol-primary) 55%, transparent); box-shadow: var(--elev-2); }
-.ladderhead { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
-.laddername { font-weight: 800; font-size: 0.95rem; color: var(--sol-text); }
-.ladderbudget { font-size: 1.05rem; color: var(--sol-tangerine); font-weight: 600; margin: 0 0 4px; font-variant-numeric: tabular-nums; }
-.ladderbudget small { font-size: 0.68rem; color: var(--sol-faint); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
-.ladderdesc { margin: 0; font-size: 0.8rem; color: var(--sol-faint); }
-
-/* ---------- 20. KEY CARDS ---------- */
-.keycards { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-.keyhead { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
-.keymask {
-  font-size: 0.8rem;
-  color: var(--sol-tangerine);
-  padding: 6px 9px;
-  background: var(--sol-panel-strong);
-  border: 1px solid var(--sol-line);
-  border-radius: var(--r-sm);
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.keymeta { margin: 0; font-size: 0.82rem; color: var(--sol-muted); }
-.keymeta strong { color: var(--sol-text); }
-
-/* ---------- 21. TOASTS + FAILURE ---------- */
-.toaststack {
-  position: fixed; right: 18px; bottom: 18px; z-index: var(--z-toast);
-  display: grid; gap: 10px; max-width: min(360px, calc(100vw - 36px));
-}
-.toast {
-  display: flex; align-items: center; gap: 10px;
-  padding: 12px 14px;
-  border-radius: var(--r-md);
-  border: 1px solid var(--sol-line-strong);
-  background: color-mix(in srgb, var(--sol-bg-2) 88%, transparent);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
-  box-shadow: var(--sh-3);
-  color: var(--sol-text); font-size: 0.9rem;
-  animation: riseIn 0.35s var(--ease);
-}
-.toast.success { border-color: color-mix(in srgb, var(--sol-success) 55%, transparent); }
-.toast.success > svg { color: var(--sol-success); }
-.toast.error { border-color: color-mix(in srgb, var(--sol-error) 55%, transparent); }
-.toast.error > svg { color: var(--sol-error); }
-.toast.info > svg { color: var(--sol-info); }
-.toast button {
-  margin-left: auto; border: 0; background: transparent; color: var(--sol-faint);
-  cursor: pointer; display: inline-flex; padding: 4px; border-radius: var(--r-sm);
-}
-.toast button:hover { color: var(--sol-text); background: var(--sol-panel-strong); }
-
-.failure {
-  min-height: 60vh;
-  display: grid; place-content: center; justify-items: center; gap: 14px;
-  text-align: center; color: var(--sol-muted);
-}
-.failure pre {
-  max-width: min(680px, 90vw); overflow: auto;
-  text-align: left; font-size: 0.75rem;
-  color: var(--sol-faint);
-  background: var(--sol-panel); border: 1px solid var(--sol-line);
-  border-radius: var(--r-md); padding: 14px;
-}
-
-/* ---------- 22. PAGE SCAFFOLD ---------- */
-.pagehead { margin-bottom: 26px; }
-.pagehead p { max-width: 620px; }
-.pagehead h1 { font-size: clamp(1.9rem, 4.5vw, 3rem); }
-.notfound-page { min-height: 40vh; }
-
-/* ---------- 23. RENOVATION — ambient loops, toggle spring, reduced transparency ---------- */
-/* ambient/loop keyframes only run when motion is allowed */
-@media (prefers-reduced-motion: no-preference) {
-  .skeleton { animation: shimmer 1.4s linear infinite; }
-}
-
-/* the toggle knob springs (Apple-Silicon motion) */
-.toggle .track::after {
-  transition: transform 260ms var(--spring), background var(--t-base) var(--ease);
-}
-
-/* focus ring parity for the interactive furniture outside .btn (the chrome
-   controls keep the neutral ring of the shell chrome pass) */
-.tabs a:focus-visible,
-.tabs button:focus-visible,
-.footer a:focus-visible,
-.card-link:focus-visible,
-.toast button:focus-visible {
-  outline: 2px solid var(--sol-primary);
-  outline-offset: 2px;
-  border-radius: 6px;
-  box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18);
-}
-
-/* session/version cards: hover lift parity with .glass-hover */
-.glass-hover:hover { transform: translateY(-3px); border-color: var(--sol-line-strong); box-shadow: var(--sh-3), inset 0 1px 0 rgba(245, 242, 250, 0.09); }
-
-/* reduced transparency: every glass panel gets a solid floor (the chrome
-   bar and the navigation panel are already solid graphite) */
-@media (prefers-reduced-transparency: reduce) {
-  .glass, .tabs, .toast, .failure pre,
-  .input, .field input, .field textarea, .field select {
-    background: var(--sol-bg-2);
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-  }
-}
-/* ==========================================================================
-   STUDIO PASS — the windows-studio fusion materialized on the getry theme:
-   Windows 11 fluency (mica surfaces at two elevations, micro-shadowed
-   controls, visible focus) + console density (key masks, code block, route
-   chips) + apple-silicon liquid glass (radial window light, inset
-   highlight, layered diffuse shadow). Additive layer: every rule restyles
-   an existing selector with the studio material or adds a missing control
-   state — no markup changes, the reasoning violet stays the one signal.
-   ========================================================================== */
-:root {
-  /* two-level fluent elevation: level 1 for controls, level 2 for surfaces */
-  --elev-1: 0 1px 2px rgb(0 0 0 / 38%), 0 2px 6px rgb(0 0 0 / 24%);
-  --elev-2: 0 2px 6px rgb(0 0 0 / 30%), 0 18px 44px -14px rgb(0 0 0 / 58%);
-}
-
-/* liquid glass: the radial window light over the tint, the layered diffuse
-   shadow at rest, the deeper diffuse at the hover lift (house -4px) */
-.glass {
-  background:
-    radial-gradient(120% 70% at 50% 0%, rgb(255 255 255 / 4%), transparent 58%),
-    linear-gradient(160deg, var(--sol-panel-strong), var(--sol-panel));
-  box-shadow: var(--elev-1), inset 0 1px 0 rgba(245, 242, 250, 0.08);
-}
-.glass-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--elev-2), inset 0 1px 0 rgba(245, 242, 250, 0.1);
-}
-
-/* mica topnav retired: the theme carries the family fusion chrome (.dt-nav) */
-
-/* segmented control: the fluent track and the raised active pill; disabled
-   parity on the pills */
-.tabs { box-shadow: inset 0 1px 2px rgb(0 0 0 / 28%); }
-.tabs a[aria-selected="true"], .tabs button[aria-selected="true"],
-.tabs a[aria-current="page"], .tabs button[aria-current="page"] { box-shadow: var(--elev-1); }
-.tabs a:disabled, .tabs button:disabled { opacity: 0.45; cursor: not-allowed; }
-
-/* buttons: pressed depth, the busy spinner on the aria-busy flag and the
-   focus halo in the signal color */
-.btn:active { box-shadow: inset 0 2px 6px rgb(0 0 0 / 22%); }
-.btn:focus-visible { outline: 2px solid var(--sol-primary); outline-offset: 2px; box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18); }
-.btn[aria-busy="true"] { color: transparent; pointer-events: none; position: relative; }
-.btn[aria-busy="true"]::after {
-  content: ""; position: absolute; top: 50%; left: 50%; width: 15px; height: 15px; margin: -7.5px 0 0 -7.5px;
-  border-radius: 50%; border: 2px solid rgb(var(--sol-signal) / 0.35); border-top-color: var(--sol-primary);
-  animation: solSpin 700ms linear infinite;
-}
-@keyframes solSpin { to { transform: rotate(1turn); } }
-
-/* route chips: the complete control set — press, active route, disabled and
-   the focus halo; the version and domain cards lift -4px */
-.routechip:active { transform: translateY(1px) scale(0.97); }
-.routechip[aria-pressed="true"], .routechip.is-active { border-color: var(--sol-primary); color: var(--sol-tangerine); background: rgb(var(--sol-signal) / 0.1); }
-.routechip:disabled { opacity: 0.45; cursor: not-allowed; }
-.routechip:focus-visible {
-  outline: 2px solid var(--sol-primary); outline-offset: 2px;
-  box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18);
-}
-.domaincard { transition: transform var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease); }
-.domaincard:hover { transform: translateY(-4px); box-shadow: var(--elev-2); }
-.domaincard:focus-visible { outline: 2px solid var(--sol-primary); outline-offset: 2px; box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18); }
-
-/* console density: the code block and the key masks sit on the numeral grid */
-.codeblock, .keymask, .assetpath { font-variant-numeric: tabular-nums; }
-
-/* inputs and toggle: fluent disabled floor */
-.input:disabled, .field input:disabled, .field textarea:disabled, .field select:disabled { opacity: 0.5; cursor: not-allowed; }
-.toggle input:disabled + .track { opacity: 0.5; }
-
-/* text disciplines: display lines balance, paragraphs pretty */
-h1, h2, h3 { text-wrap: balance; }
-p, .hero-lede, .card-text { text-wrap: pretty; }
-
-/* motion and transparency guards for the studio material */
-@media (prefers-reduced-motion: reduce) {
-  .btn[aria-busy="true"]::after { animation: none; }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .glass { background: var(--sol-bg-2); box-shadow: var(--sh-2); }
-}
-
-/* ==========================================================================
-   SHELL CHROME PASS — the ONE chrome of the DevThink family (the
-   devthink/Sol/shell/ShellChrome.tsx standard) on the getry theme: the
-   Windows 11 taskbar pinned to the top edge — a 48px dark acrylic surface
-   (rgb(32 32 32 / 75%) + saturate(3) blur(20px), -webkit- prefixed) over a
-   dark bottom hairline, flat: zero gradient, zero pills, zero white
-   borders — carrying the drawn getry mark on the left edge as the floating
-   panel trigger, the pages as icon-only 38px pins with hover tooltips and
-   the ::after open/active ladder, and the tray with the theme toggle at the
-   11px Windows scale. The chrome is neutral graphite in both themes; the
-   reasoning violet lives only in the mark, the active pin and the content
-   accents. Sections: taskbar · pins · tooltip · tray · start panel ·
-   app tile · theme toggle · focus · responsive · guards.
-   ========================================================================== */
-
-:root {
-  /* the height of the taskbar chrome row (the sticky navbar) */
-  --shell-top: 48px;
-  /* the active pin accent (the reasoning violet story of the mark) */
-  --dt-accent: #9a7ce0;
-}
-
-/* ---- the taskbar: sticky dark acrylic strip — saturate(3) blur(20px) over
-   a dark bottom hairline, flat over the page content ---- */
-.dt-nav {
-  position: sticky;
-  top: 0;
-  z-index: var(--z-bar);
-  display: flex;
-  align-items: stretch;
-  min-width: 0;
-  height: var(--shell-top);
-  padding: 0 8px;
-  background: rgb(32 32 32 / 75%);
-  border-bottom: 1px solid rgb(0 0 0 / 55%);
-  backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-}
-
-/* ---- the mark is the start trigger: a full-height 38px column with the
-   popintro bounce on entry, the wash on hover and the Windows press
-   compression (no labeled start button, no brand text) ---- */
-.dt-nav__start {
-  position: relative;
-  display: grid;
-  place-items: center;
-  flex: none;
-  width: 38px;
-  height: var(--shell-top);
-  margin: 0 3px;
-  color: #eef1f7;
-  background: transparent;
-  border: 0;
-  border-radius: 4px;
-  transform-origin: center;
-  animation: dtPopIntro 800ms ease-in-out;
-  transition: transform 100ms ease-in-out;
-}
-.dt-nav__start::before {
-  content: "";
-  position: absolute;
-  inset: 5px 0;
-  border-radius: 4px;
-  background: rgb(255 255 255 / 10%);
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-.dt-nav__start:hover::before { opacity: 1; }
-.dt-nav__start[aria-expanded="true"]::before { opacity: 1; background: rgb(255 255 255 / 12%); }
-.dt-nav__start:active { transform: scale(0.7); }
-.dt-nav__start .grMark { width: 24px; height: 24px; }
-
-/* ---- the pinned pages: icon-only 38px columns — the name shows in the
-   hover tooltip, the ::after ladder marks open (6px #858585) and active
-   (12px reasoning violet) states ---- */
-.dt-nav__pins {
-  display: flex;
-  align-items: stretch;
-  min-width: 0;
-}
-.dt-nav__app {
-  position: relative;
-  display: grid;
-  place-items: center;
-  flex: none;
-  width: 38px;
-  height: var(--shell-top);
-  margin: 0 3px;
-  color: var(--sol-muted);
-  background: transparent;
-  border: 0;
-  border-radius: 4px;
-  transform-origin: center;
-  animation: dtPopIntro 800ms ease-in-out;
-  transition: transform 100ms ease-in-out, color 0.2s ease;
-}
-.dt-nav__app::before {
-  content: "";
-  position: absolute;
-  inset: 5px 0;
-  border-radius: 4px;
-  background: rgb(255 255 255 / 10%);
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-.dt-nav__app:hover { color: #eef1f7; text-decoration: none; }
-.dt-nav__app:hover::before { opacity: 1; }
-.dt-nav__app:active { transform: scale(0.7); }
-.dt-nav__app[aria-current="page"] { color: #f3f5fa; }
-.dt-nav__app svg { display: block; }
-.dt-nav__app::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  display: block;
-  width: 0;
-  height: 3px;
-  border-radius: 4px;
-  background: #858585;
-  transition: width 0.2s ease-in-out, background 0.2s ease-in-out;
-}
-.dt-nav__app[data-open="true"]::after { width: 6px; }
-.dt-nav__app[data-active="true"]::after { width: 12px; background: var(--dt-accent); }
-
-/* ---- the pin tooltip: the Windows peek bubble under the icon ---- */
-.dt-nav__tip {
-  position: absolute;
-  z-index: 1;
-  top: calc(100% + 6px);
-  left: 50%;
-  padding: 5px 9px;
-  color: #fafafa;
-  background: rgb(32 32 32 / 85%);
-  border: 1px solid rgb(255 255 255 / 12%);
-  border-radius: 4px;
-  font: 500 12px var(--sol-sans);
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transform: translate(-50%, -4px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  box-shadow: 0 4px 12px rgb(0 0 0 / 35%);
-}
-.dt-nav__app:hover .dt-nav__tip,
-.dt-nav__app:focus-visible .dt-nav__tip { opacity: 1; transform: translate(-50%, 0); }
-
-/* ---- the Windows popintro bounce of the taskbar entries (the entry floor
-   rides .7 — the design law: entries never leave the zero mark) ---- */
-@keyframes dtPopIntro {
-  0% { transform: scale(0.7); }
-  40% { transform: scale(1.125); }
-  70% { transform: scale(0.975); }
-  100% { transform: scale(1); }
-}
-
-/* ---- the tray: the theme toggle lives here, restyled for the always-dark
-   acrylic bar at the 11px Windows scale so it keeps its contrast in the
-   light theme too ---- */
-.dt-nav__tray {
-  display: flex;
-  align-items: center;
-  flex: none;
-  margin-left: auto;
-  color: var(--sol-muted);
-  font: 400 11px var(--sol-sans);
-}
-.dt-nav__theme {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 38px;
-  margin: 0 2px;
-  padding: 0 8px;
-  color: var(--sol-faint);
-  background: transparent;
-  border: 0;
-  border-radius: 4px;
-  font: 400 11px var(--sol-sans);
-  text-transform: lowercase;
-  cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-.dt-nav__theme:hover { color: #f3f5fa; background: rgb(255 255 255 / 6%); }
-.dt-nav__theme:active { transform: scale(0.96); }
-
-/* ---- the navigation panel: the floating acrylic panel dropping from the
-   mark — rgb(36 36 36 / 80%) + saturate(3) blur(20px), 8px corners, the
-   Windows slide-and-fade entry from the taskbar; the backdrop sits below
-   the panel so the mark keeps toggling ---- */
-.dt-start__backdrop {
-  position: fixed;
-  z-index: var(--z-modal);
-  inset: 0;
-  display: block;
-  width: 100%;
-  padding: 0;
-  background: rgb(5 6 9 / 46%);
-  border: 0;
-  cursor: default;
-  appearance: none;
-  -webkit-appearance: none;
-}
-.dt-start__backdrop:focus-visible { outline: none; }
-.dt-start {
-  position: fixed;
-  z-index: calc(var(--z-modal) + 1);
-  top: calc(var(--shell-top) + 12px);
-  left: 50%;
-  margin-left: -320px;
-  display: flex;
-  flex-direction: column;
-  width: 640px;
-  max-height: calc(100dvh - var(--shell-top) - 24px);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  color: var(--sol-text);
-  background: rgb(36 36 36 / 96%);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%);
-  backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  transform-origin: top center;
-  animation: dtStartIn 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86);
-}
-@keyframes dtStartIn { from { opacity: 0; transform: translateY(100px); } to { opacity: 1; transform: translateY(0); } }
-.dt-start__search {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  flex: none;
-  height: 40px;
-  margin: 24px 32px 0;
-  padding: 0 12px;
-  color: var(--sol-muted);
-  background: rgb(255 255 255 / 6%);
-  border: 1px solid rgb(255 255 255 / 6%);
-  border-radius: 4px;
-  transition: border-color 0.2s ease;
-}
-.dt-start__search:focus-within { border-color: rgb(255 255 255 / 20%); }
-.dt-start__search input {
-  flex: 1;
-  min-width: 0;
-  color: var(--sol-text);
-  background: transparent;
-  border: 0;
-  outline: 0;
-  font: 400 12px var(--sol-sans);
-}
-.dt-start__search input::placeholder { color: var(--sol-faint); }
-.dt-start__search button {
-  display: grid;
-  place-items: center;
-  width: 26px;
-  height: 26px;
-  flex: none;
-  color: var(--sol-muted);
-  background: transparent;
-  border: 0;
-  border-radius: 4px;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-.dt-start__search button:hover { color: var(--sol-text); background: rgb(255 255 255 / 10%); }
-.dt-start__label {
-  margin: 20px 32px 10px;
-  color: var(--sol-text);
-  font: 500 14px var(--sol-sans);
-}
-.dt-start__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 96px);
-  gap: 0;
-  padding: 0 32px 24px;
-}
-.dt-start__app {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 96px;
-  height: 84px;
-  padding: 8px 4px 0;
-  color: var(--sol-text);
-  background: transparent;
-  border: 0;
-  border-radius: 4px;
-  text-align: center;
-  animation: riseIn 0.3s var(--ease) backwards;
-  transition: background 100ms ease-in-out, transform 100ms ease-in-out;
-}
-.dt-start__app:hover { background: rgb(255 255 255 / 10%); }
-.dt-start__app:active { transform: scale(0.96); }
-.dt-start__app .dt-tile {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  box-shadow: none;
-}
-.dt-start__app strong {
-  overflow: hidden;
-  max-width: 88px;
-  margin-top: 6px;
-  font: 400 12px var(--sol-sans);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.dt-start__empty {
-  margin: 0;
-  padding: 24px 32px 32px;
-  color: var(--sol-faint);
-  font: 400 12px var(--sol-sans);
-  text-align: center;
-}
-.dt-start__foot {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  flex: none;
-  margin-top: auto;
-  height: 64px;
-  padding: 0 32px;
-  background: rgb(0 0 0 / 15%);
-  border-top: 1px solid rgb(255 255 255 / 7%);
-  color: var(--sol-muted);
-  font: 500 11px var(--sol-sans);
-}
-.dt-start__foot .grMark { width: 13px; height: 13px; flex: none; }
-
-/* ---- the app tile of the panel: the one colored element of the chrome — a
-   fluent squircle tinted by the identity color (--app-tint): a subtle
-   tinted gradient over the graphite base, an inset top highlight, a dark
-   hairline and layered diffuse shadows with one soft tinted glow (the
-   taskbar panel sizes it down to the 32px Windows tile) ---- */
-.dt-tile {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  flex: none;
-  color: var(--app-tint, #dfe5ee);
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--app-tint, #dfe5ee) 22%, rgb(47 52 65 / 88%)),
-    color-mix(in srgb, var(--app-tint, #dfe5ee) 9%, rgb(27 30 38 / 94%))
-  );
-  border: 1px solid color-mix(in srgb, var(--app-tint, #dfe5ee) 26%, rgb(255 255 255 / 5%));
-  border-radius: 11px;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 13%),
-    inset 0 -1px 0 rgb(0 0 0 / 24%),
-    0 1px 2px rgb(0 0 0 / 34%),
-    0 5px 14px -4px rgb(0 0 0 / 32%),
-    0 3px 12px -4px color-mix(in srgb, var(--app-tint, #dfe5ee) 28%, transparent);
-  transition: box-shadow 160ms var(--ease), transform 160ms var(--ease);
-}
-.dt-tile svg { display: block; }
-
-/* ---- chrome focus: one neutral ring for every chrome control (the search
-   field rings inward so the well keeps its shape) ---- */
-.dt-nav__start:focus-visible,
-.dt-nav__app:focus-visible,
-.dt-nav__theme:focus-visible,
-.dt-start__search button:focus-visible,
-.dt-start__search input:focus-visible,
-.dt-start__app:focus-visible {
-  outline: 2px solid #dfe5ee;
-  outline-offset: 2px;
-}
-.dt-start__search input:focus-visible { outline-offset: -2px; }
-
-/* ---- chrome responsive: the pins scroll horizontally on narrow columns,
-   the theme label folds, the panel hugs the viewport ---- */
-@media (max-width: 760px) {
-  .dt-nav__pins { overflow-x: auto; scrollbar-width: none; }
-  .dt-nav__pins::-webkit-scrollbar { display: none; }
-}
-@media (max-width: 640px) {
-  .dt-nav__theme span { display: none; }
-  .dt-start { left: 8px; margin-left: 0; width: calc(100vw - 16px); }
-}
-
-/* ---- chrome motion and transparency guards ---- */
-@media (prefers-reduced-motion: reduce) {
-  .dt-nav__start, .dt-nav__app, .dt-start__app { animation: none; }
-  .dt-nav__start, .dt-nav__start::before, .dt-nav__app, .dt-nav__app::before,
-  .dt-nav__app::after, .dt-nav__tip, .dt-nav__theme,
-  .dt-start__search, .dt-start__search button, .dt-start__app, .dt-tile { transition: none; }
-  .dt-nav__start:active, .dt-nav__app:active, .dt-nav__theme:active, .dt-start__app:active { transform: none; }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .dt-nav, .dt-nav__tip, .dt-start { background: #202020; backdrop-filter: none; -webkit-backdrop-filter: none; }
-}
-
-/* ==========================================================================
-   TRYLLE PASS — the trylle.com ruler fused onto the getry theme without
-   undoing the Windows grammar. One unified deep canvas (#0a0a0b floor), the
-   reasoning violet leaving every decorative surface, elevation by eight
-   surface steps (color, never border), the Linear shadow stack (a 1px ring
-   plus doubling layers), color-mix hairlines (ink at 5%), mono uppercase
-   labels at .14em, display titles at -0.02em on the fluid clamp scale, ONE
-   violet accent reserved to action/state (--dt-accent via --sol-accent),
-   150ms micro-feedback with single-property transitions, cubic-bezier
-   (0.22,1,0.36,1) entrances, complete control states and the reduced-motion
-   hard stop (.01ms). The protected Windows grammar (acrylic taskbar
-   rgb(32 32 32 / 75%), 38px pins, the ::after ladder, popintro, the start
-   panel physics) is untouched — the floating panel only gains the Linear
-   ring-and-drop shadow and mono discipline. Order wins: every rule below
-   restyles an existing selector with equal specificity.
-   Sections: foundation · light foundation · canvas · typography · cards ·
-   buttons · tabs · badges · inputs and toggle · tables · versions and
-   routes · code and keys · thinking ladder · toasts and failure · footer ·
-   start panel · motion guards.
-   ========================================================================== */
-:root {
-  /* the unified canvas: one deep floor under every view (trylle zinc-950) */
+  /* the trylle canvas + the 8 surface rungs (elevation by color, never by
+     border): #171717 → #484848, the real ladder of the ruler site */
   --sol-canvas: #0a0a0b;
   --sol-canvas-deep: #060607;
+  --deep: #060607;
+  --bg: #0a0a0b;
+  --surface-1: #171717; --surface-2: #1e1e1e; --surface-3: #252525; --surface-4: #2c2c2c;
+  --surface-5: #333333; --surface-6: #3a3a3a; --surface-7: #414141; --surface-8: #484848; /* the hover pole */
+  /* ink — primary / secondary / muted */
   --sol-ink: #fafafa;
-
-  /* eight surface steps: elevation by color, never by border */
-  --sol-surface-1: #171717;
-  --sol-surface-2: #1e1e1e;
-  --sol-surface-3: #252525;
-  --sol-surface-4: #2c2c2c;
-  --sol-surface-5: #333333;
-  --sol-surface-6: #3a3a3a;
-  --sol-surface-7: #414141;
-  --sol-surface-8: #484848;
-
-  /* hairlines: the ink mixed to transparency — never a strong border */
-  --sol-hairline: color-mix(in oklab, var(--sol-ink) 5%, transparent);
-  --sol-hairline-strong: color-mix(in oklab, var(--sol-ink) 10%, transparent);
-
-  /* the linear shadow stack: ring + doubling layers; cards from level 3 on
-     carry the dark-mode inset top light */
-  --sol-shadow-1: 0 0 0 1px rgb(0 0 0 / 38%), 0 1px 1px -.5px rgb(0 0 0 / 40%);
-  --sol-shadow-2: var(--sol-shadow-1), 0 3px 3px -1.5px rgb(0 0 0 / 38%);
-  --sol-shadow-3: var(--sol-shadow-2), inset 0 1px 0 rgb(255 255 255 / 4%), 0 6px 6px -3px rgb(0 0 0 / 36%);
-  --sol-shadow-4: var(--sol-shadow-3), 0 12px 12px -6px rgb(0 0 0 / 36%);
-  --sol-shadow-5: var(--sol-shadow-4), 0 24px 24px -12px rgb(0 0 0 / 42%);
-  --sol-shadow-6: var(--sol-shadow-5), 0 48px 48px -24px rgb(0 0 0 / 46%);
-  --sol-shadow-7: var(--sol-shadow-6), 0 96px 96px -48px rgb(0 0 0 / 50%);
-  --sol-shadow-8: var(--sol-shadow-7);
-
-  /* typography: display tracking, the label tracking, the fluid clamps */
+  --ink: #fafafa; --ink-2: #a1a1aa; --ink-3: #71717a;
+  /* hairlines mixed from the foreground (they re-mix per theme) */
+  --line: color-mix(in oklab, var(--ink) 5%, transparent);
+  --line-strong: color-mix(in oklab, var(--ink) 10%, transparent);
+  /* the violet ramp — the getry identity, 90/10: brand mark, content cta,
+     active indicator; focus and the chrome answer the windows accent */
+  --violet-300: #c3b0f2; /* the light tint */
+  --violet-500: #9a7ce0; /* the signal — the getry violet of the spec §12 */
+  --violet-600: #7c5cc9; /* the deep pole */
+  /* the accents: the app identity rides the violet; the WINDOWS accent
+     governs focus, the chrome states and the bar */
+  --accent: var(--violet-500); --accent-ink: #150b26;
+  --win-accent: #4cc2ff; --win-accent-ink: #060607;
+  --focus: var(--win-accent);
+  --ok: #86efac; --err: #ff8f9a; --warn: #ffd166; --info: #cdbdf5;
+  /* washes + the scrollbar thumb (themed, never the native blue) */
+  --wash: rgb(255 255 255 / 10%); --wash-soft: rgb(255 255 255 / 5%); --scroll: rgb(255 255 255 / 42%);
+  /* radii — the trylle base .625rem (±2/4px; 2xl 16, 3xl 24) beside the
+     windows blend: the window wears 8 (the 11), the controls wear 4 (the 10) */
+  --sol-radius: 0.625rem;
+  --radius-sm: calc(var(--sol-radius) - 2px);
+  --radius-md: var(--sol-radius);
+  --radius-lg: calc(var(--sol-radius) + 2px);
+  --radius-xl: calc(var(--sol-radius) + 4px);
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
+  --win-radius: 8px;
+  --win-radius-ctl: 4px;
+  /* the 4px spacing ladder */
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px;
+  /* motion — micro 150ms · windows/panels 250ms · spring 300ms · enter 640ms · press 100ms */
+  --dur-1: 150ms; --dur-2: 250ms; --dur-3: 300ms; --dur-enter: 640ms; --dur-press: 100ms;
+  --sol-micro: 150ms;
+  --sol-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out: var(--sol-ease-out);
+  --ease-window: cubic-bezier(0.85, 0.14, 0.14, 0.85);
+  --ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-leave: cubic-bezier(0.76, 0, 0.24, 1);
+  --win-ease-entry: cubic-bezier(0.1, 0.9, 0.2, 1);
+  --win-ease-exit: var(--ease-exit);
+  /* type — the trylle triad: Inter Variable rides every surface, Geist Mono
+     rides micro-labels and every number (tabular-nums) */
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-ui: var(--font-sans);
+  --font-display: var(--font-sans);
   --sol-track-display: -0.02em;
   --sol-track-label: 0.14em;
   --sol-text-h1: clamp(2.25rem, 5vw, 3.75rem);
   --sol-text-h2: clamp(1.65rem, 3vw, 2rem);
   --sol-text-h3: clamp(1.3rem, 2vw, 1.5rem);
-
-  /* radius: the .625rem base with calc derivatives */
-  --sol-radius: 0.625rem;
-  --sol-radius-sm: calc(var(--sol-radius) - 2px);
-  --sol-radius-lg: calc(var(--sol-radius) + 2px);
-  --sol-radius-xl: calc(var(--sol-radius) + 4px);
-  --sol-radius-2xl: 16px;
-  --sol-radius-3xl: 24px;
-
-  /* motion: 150ms micro unit, the trylle entrance, the windows exit */
-  --sol-micro: 150ms;
-  --sol-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --sol-ease-win: cubic-bezier(0.79, 0.14, 0.15, 0.86);
-
-  /* the one accent: action and state only; the thin neutral focus ring;
-     the content motion master retimed to the 150ms micro unit */
-  --sol-accent: var(--dt-accent);
-  --sol-accent-ink: var(--sol-primary-ink);
-  --sol-focus: #dfe5ee;
-  --t-fast: 150ms;
-  --t-base: 150ms;
+  /* the trylle shadow ladder: the 1px ring + the doubling drop layers,
+     levels 3+ carry the inset highlight; the drop alphas follow trylle */
+  --sol-drop: rgb(0 0 0 / 18%);
+  --sol-hi: rgb(255 255 255 / 5%);
+  --shadow-1: 0 0 0 1px var(--line), 0 1px 1px -0.5px var(--sol-drop);
+  --shadow-2: 0 0 0 1px var(--line), 0 1px 1px -0.5px var(--sol-drop), 0 3px 3px -1.5px var(--sol-drop),
+    0 6px 6px -3px var(--sol-drop);
+  --shadow-3: inset 0 1px 0 var(--sol-hi), 0 0 0 1px var(--line), 0 1px 1px -0.5px var(--sol-drop),
+    0 3px 3px -1.5px var(--sol-drop), 0 6px 6px -3px var(--sol-drop), 0 12px 12px -6px var(--sol-drop);
+  --shadow-4: var(--shadow-3), 0 24px 24px -12px var(--sol-drop);
+  --shadow-5: var(--shadow-4), 0 48px 48px -24px var(--sol-drop);
+  --shadow-6: var(--shadow-5), 0 96px 96px -48px var(--sol-drop);
+  --shadow-7: var(--shadow-6);
+  --shadow-8: var(--shadow-7);
+  /* the two fluent elevations (window + flyout) — floats stay flat windows */
+  --shadow-window: 0 32px 64px rgb(0 0 0 / 24%), 0 0 8px rgb(0 0 0 / 20%);
+  --shadow-flyout: 0 4px 8px rgb(0 0 0 / 14%), 0 0 2px rgb(0 0 0 / 12%);
+  /* the trylle tone stack of the buttons (the real site recipe): the inset
+     highlight + the inset bloom + the 1px ring + the two drop levels */
+  --sol-btn-inset: inset 0 1.2px 0 0 rgb(255 255 255 / 45%), inset 0 8px 14px -6px rgb(255 255 255 / 22%);
+  --sol-btn-inset-hover: inset 0 1.2px 0 0 rgb(255 255 255 / 55%), inset 0 8px 14px -6px rgb(255 255 255 / 30%);
+  /* chrome material: the canvas light, the feTurbulence grain, the acrylic floors */
+  --mica: var(--sol-canvas);
+  --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  --bar: rgb(23 23 23 / 78%); --panel: rgb(30 30 30 / 85%);
+  /* the tooltip acrylic of the windows pins */
+  --win-tip: rgb(43 43 43 / 88%);
+  /* z bands: atmosphere 0 · content 10 · float 20 · bar 50 · modal 200 · toast 300 */
+  --z-atmosphere: 0; --z-content: 10; --z-float: 20; --z-bar: 50; --z-modal: 200; --z-toast: 300; --z-tooltip: 400;
+  /* the family aliases the pages and the older passes read — every one
+     resolves to a canonical token above */
+  --sol-bg: var(--bg); --sol-bg-2: var(--surface-2); --sol-text: var(--ink); --sol-muted: var(--ink-2); --sol-faint: var(--ink-3);
+  --sol-panel: var(--wash-soft); --sol-panel-strong: var(--wash);
+  --sol-line: var(--line); --sol-line-strong: var(--line-strong);
+  --sol-hairline: var(--line); --sol-hairline-strong: var(--line-strong);
+  --sol-signal: 154 124 224;
+  --sol-primary: var(--accent); --sol-primary-ink: var(--accent-ink);
+  --sol-ember: var(--violet-600); --sol-tangerine: var(--violet-300); --sol-gold: var(--violet-300);
+  --sol-accent: var(--accent); --sol-accent-ink: var(--accent-ink);
+  --sol-focus: var(--focus);
+  --sol-success: var(--ok); --sol-error: var(--err); --sol-warning: var(--warn); --sol-info: var(--info);
+  --sol-surface-1: var(--surface-1); --sol-surface-2: var(--surface-2); --sol-surface-3: var(--surface-3); --sol-surface-4: var(--surface-4);
+  --sol-surface-5: var(--surface-5); --sol-surface-6: var(--surface-6); --sol-surface-7: var(--surface-7); --sol-surface-8: var(--surface-8);
+  --sol-shadow-1: var(--shadow-1); --sol-shadow-2: var(--shadow-2); --sol-shadow-3: var(--shadow-3);
+  --sol-shadow-4: var(--shadow-4); --sol-shadow-5: var(--shadow-5); --sol-shadow-6: var(--shadow-6);
+  --sol-shadow-7: var(--shadow-7); --sol-shadow-8: var(--shadow-8);
+  --sol-shadow-window: var(--shadow-window); --sol-shadow-flyout: var(--shadow-flyout);
+  --gr-violet: var(--accent); --app-tint: var(--accent); --dt-accent: var(--accent);
+  --win-noise: var(--noise); --win-mica: var(--mica);
+  --win-bar: var(--bar); --win-panel: var(--panel); --win-wash: var(--wash); --win-page-wash: var(--wash-soft); --win-scroll: var(--scroll);
+  --win-shadow-window: var(--shadow-window); --win-shadow-flyout: var(--shadow-flyout);
+  --win-ease-window: var(--ease-window);
+  /* the older engine aliases (the legacy ladders and timings) */
+  --r-sm: var(--radius-sm); --r-md: var(--radius-md); --r-lg: var(--radius-lg); --r-xl: var(--radius-xl);
+  --sh-1: var(--shadow-1); --sh-2: var(--shadow-2); --sh-3: var(--shadow-3); --sh-4: var(--shadow-4);
+  --t-fast: var(--dur-1); --t-base: var(--dur-2); --t-slow: var(--dur-3);
+  --ease: var(--sol-ease-out); --spring: var(--ease-spring);
+  --glass-blur: 20px; --glass-sat: 180%;
+  --elev-1: var(--shadow-1); --elev-2: var(--shadow-2);
+  /* the fixed glyph ink of the red close hover (fluent: white over red) */
+  --win-caption-ink: rgb(255 255 255);
+  font-size: 16px;
+  color-scheme: dark;
 }
 
+/* the light theme: the SAME trylle ladder inverted (the site's own light
+   rungs), the violet steps down to the deep pole, the windows accent follows */
 [data-theme="light"] {
-  --sol-canvas: #fafafa;
-  --sol-canvas-deep: #f4f4f5;
-  --sol-ink: #18181b;
-  --sol-surface-1: #f4f4f5;
-  --sol-surface-2: #fafafa;
-  --sol-surface-3: #fcfcfc;
-  --sol-surface-4: #ffffff;
-  --sol-surface-5: #ffffff;
-  --sol-surface-6: #ffffff;
-  --sol-surface-7: #e4e4e7;
-  --sol-surface-8: #d4d4d8;
-  --sol-hairline: color-mix(in oklab, var(--sol-ink) 8%, transparent);
-  --sol-hairline-strong: color-mix(in oklab, var(--sol-ink) 16%, transparent);
-  --sol-shadow-1: 0 0 0 1px rgb(0 0 0 / 6%), 0 1px 1px -.5px rgb(0 0 0 / 7%);
-  --sol-shadow-2: var(--sol-shadow-1), 0 3px 3px -1.5px rgb(0 0 0 / 7%);
-  --sol-shadow-3: var(--sol-shadow-2), 0 6px 6px -3px rgb(0 0 0 / 6%);
-  --sol-shadow-4: var(--sol-shadow-3), 0 12px 12px -6px rgb(0 0 0 / 6%);
-  --sol-shadow-5: var(--sol-shadow-4), 0 24px 24px -12px rgb(0 0 0 / 8%);
-  --sol-shadow-6: var(--sol-shadow-5), 0 48px 48px -24px rgb(0 0 0 / 10%);
-  --sol-shadow-7: var(--sol-shadow-6), 0 96px 96px -48px rgb(0 0 0 / 12%);
-  --sol-shadow-8: var(--sol-shadow-7);
+  --deep: #e4e4e7;
+  --bg: #f4f4f5;
+  --surface-1: #f4f4f5; --surface-2: #fafafa; --surface-3: #fcfcfc; --surface-4: rgb(255 255 255);
+  --surface-5: #ececee; --surface-6: #e4e4e7; --surface-7: #dcdce0; --surface-8: #d4d4d8;
+  --ink: #131316; --ink-2: #52525b; --ink-3: #71717a;
+  --accent: #6d28d9; --accent-ink: rgb(255 255 255);
+  --violet-300: #5b21b6; --violet-500: #6d28d9; --violet-600: #4c1d95;
+  --win-accent: #0067c0; --win-accent-ink: rgb(255 255 255);
+  --ok: #15803d; --err: #be123c; --warn: #a16207; --info: #6d5bb8;
+  --wash: rgb(0 0 0 / 8%); --wash-soft: rgb(0 0 0 / 4%); --scroll: rgb(0 0 0 / 35%);
+  --sol-drop: rgb(0 0 0 / 10%);
+  --sol-hi: rgb(255 255 255 / 60%);
+  --shadow-window: 0 24px 48px rgb(0 0 0 / 14%), 0 0 6px rgb(0 0 0 / 8%);
+  --shadow-flyout: 0 4px 8px rgb(0 0 0 / 10%), 0 0 2px rgb(0 0 0 / 6%);
+  --mica: #f4f4f5;
+  --bar: rgb(244 244 245 / 82%); --panel: rgb(252 252 252 / 88%);
+  --win-tip: rgb(56 56 56 / 92%);
+  color-scheme: light;
 }
 
-/* ---- canvas: one deep floor under every view — the violet corner radial
-        leaves ---- */
-html, body { background: var(--sol-canvas); }
-
-/* ---- typography: titles at -0.02em on the trylle clamps, mono uppercase
-        labels at the .14em discipline, the wordmark fading to neutral ink ---- */
-h1, h2, h3 { letter-spacing: var(--sol-track-display); }
-.pagehead h1 { font-size: var(--sol-text-h1); letter-spacing: var(--sol-track-display); }
-.section-head h2 { font-size: var(--sol-text-h2); letter-spacing: var(--sol-track-display); }
-.versionhead h3 { font-size: var(--sol-text-h3); letter-spacing: var(--sol-track-display); }
-.wordmark { background: linear-gradient(180deg, var(--sol-ink) 30%, color-mix(in oklab, var(--sol-ink) 55%, transparent) 105%); -webkit-background-clip: text; background-clip: text; }
-.eyebrow { color: var(--sol-muted); font-family: var(--sol-mono); font-weight: 600; letter-spacing: var(--sol-track-label); }
-.table th { font-family: var(--sol-mono); font-weight: 600; letter-spacing: var(--sol-track-label); }
-.routecount { font-family: var(--sol-mono); font-weight: 600; letter-spacing: var(--sol-track-label); }
-
-/* ---- links and selection: the neutral ink discipline — accent stays on
-        action and state ---- */
-a { color: var(--sol-muted); }
-a:hover { color: var(--sol-text); }
-::selection { background: color-mix(in oklab, var(--sol-accent) 32%, transparent); }
-:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; }
-
-/* ---- the scrollbar joins the neutral discipline ---- */
-* { scrollbar-color: color-mix(in oklab, var(--sol-ink) 20%, transparent) transparent; }
-*::-webkit-scrollbar-thumb { background: color-mix(in oklab, var(--sol-ink) 20%, transparent); }
-
-/* ---- cards: the step material over the blur — elevation by color on the
-        surface ladder, the Linear ring+drop stack, hairline joints, the
-        16px card radius; hover climbs one step, no translate ---- */
-.glass {
-  background: var(--sol-surface-2);
-  border-color: var(--sol-hairline);
-  border-radius: var(--sol-radius-2xl);
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-  box-shadow: var(--sol-shadow-3);
-  transition: background-color var(--sol-micro) var(--sol-ease-out), border-color var(--sol-micro) var(--sol-ease-out), box-shadow var(--sol-micro) var(--sol-ease-out);
+/* ---------- 2. base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { overscroll-behavior: none; scroll-behavior: smooth; }
+body {
+  margin: 0; min-height: 100dvh; -webkit-font-smoothing: antialiased;
+  color: var(--ink); font-family: var(--font-ui); font-size: 13px; font-weight: 450; line-height: 1.6;
+  background:
+    radial-gradient(1100px 620px at 74% -12%, color-mix(in srgb, var(--accent) 6%, transparent), transparent 62%),
+    var(--mica);
 }
-.glass-hover:hover {
-  transform: none;
-  background-color: var(--sol-surface-3);
-  border-color: var(--sol-hairline);
-  box-shadow: var(--sol-shadow-4);
-}
-kbd, code { background: var(--sol-surface-2); border-color: var(--sol-hairline); }
-
-/* ---- buttons: the flat violet CTA (the one accent of the theme), the
-        filled neutral secondary, complete states at 150ms ---- */
-.btn {
-  border-radius: var(--sol-radius);
-  color: var(--sol-accent-ink);
-  background: var(--sol-accent);
-  box-shadow: var(--sol-shadow-1);
-  transition: background-color var(--sol-micro) var(--sol-ease-out), box-shadow var(--sol-micro) var(--sol-ease-out), transform var(--sol-micro) var(--sol-ease-out);
-}
-.btn:hover { filter: none; transform: none; text-decoration: none; background-color: color-mix(in oklab, var(--sol-accent) 88%, var(--sol-accent-ink)); box-shadow: var(--sol-shadow-2); }
-.btn:active { transform: translateY(0) scale(0.98); box-shadow: var(--sol-shadow-1); }
-.btn:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; box-shadow: var(--sol-shadow-1); }
-.btn[aria-busy="true"]::after { border-color: color-mix(in oklab, var(--sol-accent-ink) 35%, transparent); border-top-color: var(--sol-accent-ink); }
-.btn.secondary { color: var(--sol-text); background: var(--sol-surface-4); border-color: var(--sol-hairline-strong); }
-.btn.secondary:hover { color: var(--sol-text); background-color: var(--sol-surface-5); border-color: var(--sol-hairline-strong); }
-.btn.danger { background: transparent; }
-
-/* ---- tabs: the de-pilled segmented control on the steps — the track on
-        surface 2, the raised selection on surface 5 with the ring shadow,
-        the accent leaving the selection ---- */
-.tabs { border-radius: var(--sol-radius); border-color: var(--sol-hairline); background: var(--sol-surface-2); box-shadow: none; }
-.tabs a, .tabs button { border-radius: calc(var(--sol-radius) - 2px); }
-.tabs a:hover, .tabs button:hover { text-decoration: none; background-color: var(--sol-surface-3); }
-.tabs a[aria-selected="true"], .tabs button[aria-selected="true"], .tabs a[aria-current="page"] {
-  color: var(--sol-text); background: var(--sol-surface-5); box-shadow: var(--sol-shadow-1);
-}
-.tabs a:focus-visible, .tabs button:focus-visible, .footer a:focus-visible, .card-link:focus-visible,
-.toast button:focus-visible, .routechip:focus-visible {
-  outline: 2px solid var(--sol-focus); outline-offset: 2px; border-radius: var(--sol-radius-sm); box-shadow: none;
-}
-
-/* ---- badges: mono micro-labels at the .14em discipline, the 4px radius,
-        the neutral default; semantic variants keep their state colors ---- */
-.badge {
-  border-radius: 4px;
-  color: var(--sol-muted);
-  border-color: var(--sol-hairline-strong);
-  font-family: var(--sol-mono);
-  font-weight: 600;
-  letter-spacing: var(--sol-track-label);
-}
-.importstrip .badge { background: var(--sol-surface-2); }
-
-/* ---- inputs and toggle: step wells with hairline joints, the violet focus
-        state, the knob on the accent ---- */
-.input, .field input, .field textarea, .field select {
-  background: var(--sol-surface-1);
-  border-color: var(--sol-hairline-strong);
-  border-radius: var(--sol-radius-sm);
-}
-.field input:focus, .field textarea:focus, .field select:focus {
-  border-color: var(--sol-accent);
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--sol-accent) 20%, transparent);
-}
-.field label { font-family: var(--sol-mono); font-size: 0.68rem; font-weight: 600; letter-spacing: var(--sol-track-label); text-transform: uppercase; }
-.toggle input:checked + .track { border-color: var(--sol-accent); }
-.toggle input:checked + .track::after { background: var(--sol-accent); }
-.toggle input:focus-visible + .track { outline: 2px solid var(--sol-focus); outline-offset: 2px; }
-
-/* ---- tables: hairline joints, mono headers, the hover on the step ---- */
-.table th, .table td { border-bottom-color: var(--sol-hairline); }
-.table tr:hover td { background: var(--sol-surface-2); color: var(--sol-text); }
-.table.ladder td:first-child { color: var(--sol-text); }
-
-/* ---- versions and routes: the chips de-pill to the radius ladder, the
-        active route keeps the violet as state, the domain icon on the step,
-        the budget numeral reads in ink ---- */
-.routechip { border-radius: var(--sol-radius-sm); }
-.routechip:hover { border-color: var(--sol-hairline-strong); color: var(--sol-text); background: var(--sol-surface-3); }
-.routechip[aria-pressed="true"], .routechip.is-active { border-color: var(--sol-accent); color: var(--sol-accent); background: color-mix(in oklab, var(--sol-accent) 10%, transparent); }
-.domaincard .cardicon { color: var(--sol-muted); background: var(--sol-surface-3); border-color: var(--sol-hairline); }
-.domaincard:hover { transform: none; border-color: var(--sol-hairline-strong); box-shadow: var(--sol-shadow-4); }
-.domaincard:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; box-shadow: var(--sol-shadow-1); border-radius: var(--sol-radius-2xl); }
-.cardlink { color: var(--sol-muted); }
-.domaincard:hover .cardlink { color: var(--sol-text); }
-.ladderbudget { color: var(--sol-text); }
-.laddercard.default { border-color: color-mix(in oklab, var(--sol-accent) 55%, transparent); box-shadow: var(--sol-shadow-4); }
-
-/* ---- code and keys: the wells drop to the deep canvas, the masked key is
-        data and reads muted ---- */
-.codeblock { background: var(--sol-canvas-deep); border-color: var(--sol-hairline); border-radius: var(--sol-radius); }
-.parserlist li::marker { color: var(--sol-faint); }
-.keymask { color: var(--sol-muted); background: var(--sol-canvas-deep); border-color: var(--sol-hairline); }
-
-/* ---- toasts and failure: the float on the step material with the deep
-        Linear stack ---- */
-.toast {
-  border-color: var(--sol-hairline-strong);
-  background: var(--sol-surface-2);
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-  border-radius: var(--sol-radius-lg);
-  box-shadow: var(--sol-shadow-6);
-}
-.failure pre { background: var(--sol-canvas-deep); border-color: var(--sol-hairline); }
-
-/* ---- footer: the hairline joint ---- */
-.footer { border-top-color: var(--sol-hairline); }
-
-/* ---- the floating panel: the Windows material keeps its acrylic and
-        physics; it gains the Linear ring+drop stack, hairline search well,
-        the mono uppercase section label and the hairline foot joint ---- */
-.dt-start { box-shadow: 0 0 0 1px rgb(0 0 0 / 50%), 0 2px 8px rgb(0 0 0 / 30%), 0 16px 48px rgb(0 0 0 / 45%), 0 48px 96px -24px rgb(0 0 0 / 55%); }
-.dt-start__search { border-color: var(--sol-hairline); }
-.dt-start__search:focus-within { border-color: var(--sol-hairline-strong); background: rgb(255 255 255 / 7%); }
-.dt-start__label { color: var(--sol-faint); font: 600 10px var(--sol-mono); letter-spacing: var(--sol-track-label); text-transform: uppercase; }
-.dt-start__foot { border-top-color: var(--sol-hairline); }
-
-/* ---- reduced transparency: the solid floors move to the steps ---- */
-@media (prefers-reduced-transparency: reduce) {
-  .glass, .tabs, .toast { background: var(--sol-surface-2); }
-  .input, .field input, .field textarea, .field select { background: var(--sol-surface-1); }
-}
-
-/* ---- the reduced-motion hard stop: the trylle .01ms opt-out ---- */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: .01ms !important;
-    transition-delay: 0ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-[data-motion="reduced"] *, [data-motion="reduced"] *::before, [data-motion="reduced"] *::after {
-  animation-duration: .01ms !important;
-  animation-iteration-count: 1 !important;
-  transition-duration: .01ms !important;
-  transition-delay: 0ms !important;
-  scroll-behavior: auto !important;
-}
-
-/* ==========================================================================
-   WINDOWS IDENTITY PASS — the Windows 11 identity restored over the neutral
-   passes. The shell speaks the real Windows 11 material again: the dark
-   #202020 canvas with the #2b2b2b–#2c2c2c surface ladder, acrylic panels at
-   rgba(36,36,36,.8) and the bar at rgba(32,32,32,.75), the REAL shell accent
-   --clrPrm back on focus, selection, links, toggle ON, tabs and scrollbars
-   (#0067c0 light / #4cc2ff dark), the Mica wallpaper under both themes
-   (#202020→#1a1f35 dark · #f3f3f3→#eff4f9 light), the Fluent motion curves
-   (entry cubic-bezier(.1,.9,.2,1) · exit cubic-bezier(.7,0,1,.5)) and the two
-   Windows shadows: focused window 0 32px 64px rgba(0,0,0,.24) + 0 0 8px
-   rgba(0,0,0,.2), flyout 0 4px 8px rgba(0,0,0,.14) + 0 0 2px rgba(0,0,0,.12).
-   The acrylic carries the Win11 NOISE again — an inline feTurbulence
-   data-URI grain at 5% over the bar, the Start panel, the tooltip and the
-   toasts (no image files). The taskbar grammar keeps every signature (48px
-   acrylic bar, 38px pins, 96×84 tiles, popintro 800ms, press scale(.7)
-   100ms, dtStartIn 200ms, the 3px 6→12px ::after ladder): the active ladder
-   stays in the reasoning violet (the app's --clrPrm equivalent) while the
-   chrome states — focus, selection, links, toggle ON, the tab segments —
-   follow the Windows accent as the Windows shell does; the app identity
-   stays in the mark, the tiles and the content accents. Sections: tokens ·
-   themes · mica · selection and links · taskbar · tooltip · start menu ·
-   buttons · tabs · inputs and toggle · tables · toasts · Fluent motion ·
-   scrollbar · guards.
-   ========================================================================== */
-:root {
-  /* the Windows shell accent (--clrPrm) and the dark Mica */
-  --win-accent: #4cc2ff;
-  --win-accent-ink: #000000;
-  --win-mica: #202020 radial-gradient(#1a1f35 25%, #202020 100%) no-repeat fixed;
-  /* the dark Windows ladder replaces the zinc ladder */
-  --sol-canvas: #202020;
-  --sol-canvas-deep: #191919;
-  --sol-bg: #202020;
-  --sol-bg-2: #2b2b2b;
-  --sol-surface-1: #242424;
-  --sol-surface-2: #2b2b2b;
-  --sol-surface-3: #2c2c2c;
-  --sol-surface-4: #323232;
-  --sol-surface-5: #373737;
-  --sol-surface-6: #3d3d3d;
-  --sol-surface-7: #434343;
-  --sol-surface-8: #494949;
-  /* the Windows text grays (#fff ink, #c3c3c3 muted, #999 faint) */
-  --sol-ink: #ffffff;
-  --sol-text: #ffffff;
-  --sol-muted: #c3c3c3;
-  --sol-faint: #999999;
-  /* the content focus rides the accent token */
-  --sol-focus: var(--win-accent);
-  /* the dark acrylic surfaces, their washes and scroll thumb */
-  --win-bar: rgba(32, 32, 32, 0.75);
-  --win-panel: rgba(36, 36, 36, 0.8);
-  --win-wash: rgba(255, 255, 255, 0.1);
-  --win-page-wash: rgba(255, 255, 255, 0.06);
-  --win-scroll: rgba(255, 255, 255, 0.4);
-  /* the feTurbulence grain over the acrylic (monochrome, opacity 5%) */
-  --win-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
-  /* the Windows shadows and the Fluent curves */
-  --win-shadow-window: 0 32px 64px rgba(0, 0, 0, 0.24), 0 0 8px rgba(0, 0, 0, 0.2);
-  --win-shadow-flyout: 0 4px 8px rgba(0, 0, 0, 0.14), 0 0 2px rgba(0, 0, 0, 0.12);
-  --win-ease-entry: cubic-bezier(0.22, 1, 0.36, 1);
-  --win-ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
-}
-
-/* the light Windows theme: the #0067c0 accent, the light Mica and the light
-   ladder (the chrome stays the dark acrylic, as the Windows taskbar does) */
-[data-theme="light"] {
-  --win-accent: #0067c0;
-  --win-accent-ink: #ffffff;
-  --win-mica: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat fixed;
-  --sol-canvas: #f3f3f3;
-  --sol-canvas-deep: #ebebeb;
-  --sol-bg: #f3f3f3;
-  --sol-bg-2: #fbfbfb;
-  --sol-ink: #1a1a1a;
-  --sol-text: #1a1a1a;
-  --sol-muted: #3c3c3c;
-  --sol-faint: #555555;
-  --sol-surface-1: #f0f0f0;
-  --sol-surface-2: #f9f9f9;
-  --sol-surface-3: #fcfcfc;
-  --sol-surface-4: #ffffff;
-  --sol-surface-5: #ffffff;
-  --sol-surface-6: #ffffff;
-  --sol-surface-7: #ffffff;
-  --sol-surface-8: #ffffff;
-  --win-wash: rgba(0, 0, 0, 0.06);
-  --win-page-wash: rgba(0, 0, 0, 0.04);
-  --win-scroll: rgba(0, 0, 0, 0.35);
-  --sol-focus: var(--win-accent);
-}
-
-/* the Mica wallpaper: the canvas of both themes (the theme token swap
-   retints it automatically) */
-body { background: var(--win-mica); }
-
-/* the accent selection (the Windows selection color) */
-::selection { background: var(--win-accent); color: var(--win-accent-ink); }
-
-/* links: the neutral ink with the Windows hyperlink hover */
-a { color: inherit; }
+main { display: block; }
+a { color: inherit; text-decoration: none; }
 a:hover { color: var(--win-accent); }
-.footer a:hover { color: var(--win-accent); }
-
-/* the taskbar: the same dark acrylic, now with the grain */
-.dt-nav {
-  background-color: rgba(32, 32, 32, 0.75);
-  background-image: var(--win-noise);
-}
-
-/* the pin tooltip: the acrylic peek with the grain and the flyout shadow */
-.dt-nav__tip {
-  background-color: rgba(43, 43, 43, 0.88);
-  background-image: var(--win-noise);
-  border-color: rgb(255 255 255 / 8%);
-  box-shadow: var(--win-shadow-flyout);
-  transition: opacity 150ms var(--win-ease-entry), transform 150ms var(--win-ease-entry);
-}
-
-/* the Start menu: the Windows material — the 640px centered acrylic at
-   rgba(36,36,36,.8) with the grain, the focused-window shadow and the
-   Fluent 200ms slide-up entry (the disposition stays untouched) */
-.dt-start {
-  color: #ffffff;
-  background-color: rgba(36, 36, 36, 0.8);
-  background-image: var(--win-noise);
-  box-shadow: var(--win-shadow-window), inset 0 1px 0 rgb(255 255 255 / 7%), inset 0 0 0 1px rgb(255 255 255 / 4%);
-  animation: dtStartIn 200ms var(--win-ease-entry);
-}
-/* the Start search: the Windows search well — the bottom hairline and the
-   2px accent underline on focus */
-.dt-start__search {
-  background: rgb(255 255 255 / 5%);
-  border: 0;
-  border-bottom: 1px solid rgb(255 255 255 / 8%);
-  box-shadow: none;
-}
-.dt-start__search:focus-within {
-  border-color: rgb(255 255 255 / 8%);
-  box-shadow: inset 0 -2px 0 0 var(--win-accent);
-}
-.dt-start__search input { color: #ffffff; }
-.dt-start__search input::placeholder { color: rgb(255 255 255 / 55%); }
-.dt-start__search button:hover { color: #ffffff; background: rgb(255 255 255 / 10%); }
-/* the section header: the Windows 14px sans label (the mono caps retire) */
-.dt-start__label {
-  margin: 20px 32px 10px;
-  color: #ffffff;
-  font: 600 14px var(--sol-sans);
-  letter-spacing: 0;
-  text-transform: none;
-}
-.dt-start__grid { padding: 0 32px 24px; }
-.dt-start__app strong { color: #ffffff; }
-.dt-start__empty { color: rgb(255 255 255 / 60%); }
-.dt-start__foot {
-  height: 64px;
-  padding: 0 48px;
-  background: rgb(0 0 0 / 15%);
-  border-top: 1px solid rgb(255 255 255 / 7%);
-  color: rgb(255 255 255 / 70%);
-  font: 500 12px var(--sol-sans);
-  letter-spacing: 0;
-  text-transform: none;
-}
-
-/* buttons: the Windows geometry — 4px corners, the wash hover, no lift */
-.btn {
-  border-radius: 4px;
-  transition: background-color 150ms var(--win-ease-entry), box-shadow 150ms var(--win-ease-entry), transform 100ms var(--win-ease-exit);
-}
-.btn:hover { transform: none; background-color: color-mix(in oklab, var(--sol-accent) 90%, #ffffff); }
-
-/* tabs: the Windows segmented control — the selected segment filled in the
-   accent (the toggle ON of the shell), the hover a wash */
-.tabs { background: var(--sol-surface-1); border: 1px solid var(--sol-hairline); border-radius: 4px; padding: 4px; box-shadow: none; }
-.tabs a, .tabs button { border-radius: 4px; }
-.tabs a:hover, .tabs button:hover { background-color: var(--win-wash); }
-.tabs a[aria-selected="true"], .tabs button[aria-selected="true"], .tabs a[aria-current="page"] {
-  color: var(--win-accent-ink);
-  background: var(--win-accent);
-  box-shadow: none;
-}
-
-/* inputs: the Windows text box — the flat well, the bottom hairline and the
-   2px accent underline on focus */
-.input, .field input, .field textarea, .field select {
-  background: var(--sol-surface-1);
-  border: 0;
-  border-radius: 4px;
-  box-shadow: var(--sol-shadow-2), inset 0 -1px 0 0 var(--sol-hairline-strong);
-  transition: box-shadow var(--sol-micro) var(--ease);
-}
-.input:hover, .field input:hover, .field textarea:hover, .field select:hover {
-  box-shadow: var(--sol-shadow-2), inset 0 -1px 0 0 var(--sol-hairline-strong), inset 0 0 0 1px var(--sol-hairline-strong);
-}
-.input:focus, .field input:focus, .field textarea:focus, .field select:focus {
-  outline: none;
-  border-color: transparent;
-  box-shadow: var(--sol-shadow-2), inset 0 -2px 0 0 var(--win-accent);
-}
-
-/* toggle: the Windows toggle — the accent track with the contrasting knob
-   ink when ON */
-.toggle .track { background: var(--sol-surface-1); border-color: var(--sol-hairline-strong); box-shadow: var(--sol-shadow-1); }
-.toggle input:checked + .track { background: var(--win-accent); border-color: transparent; }
-.toggle input:checked + .track::after { background: var(--win-accent-ink); }
-
-/* tables: hairline rows and the Windows hover wash */
-.table th, .table td { border-bottom-color: var(--sol-hairline); }
-.table tr:hover td { background: var(--win-page-wash); color: var(--sol-text); }
-
-/* toasts: the Windows notification — the acrylic panel with the grain, the
-   8px corners and the flyout shadow */
-.toast {
-  border-color: var(--sol-hairline);
-  border-radius: 8px;
-  background-color: var(--win-panel);
-  background-image: var(--win-noise);
-  box-shadow: var(--win-shadow-flyout);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  backdrop-filter: saturate(3) blur(20px);
-  animation: riseIn 250ms var(--win-ease-entry) backwards;
-}
-
-/* Fluent motion: the decelerate entries on the content reveals — the
-   protected signatures (popintro 800ms, dtStartIn 200ms, press scale(.7)
-   100ms) keep their durations */
-.reveal.in { animation-duration: 250ms; animation-timing-function: var(--win-ease-entry); }
-.dt-start__app { animation-duration: 250ms; animation-timing-function: var(--win-ease-entry); }
-
-/* the Win11 scrollbar: invisible until the surface is hovered, the thin
-   4px thumb breathing to 6px under the pointer */
-* { scrollbar-color: transparent transparent; }
+h1, h2, h3 { margin: 0 0 0.5em; font-family: var(--font-display); font-weight: 650; line-height: 1.1; letter-spacing: var(--sol-track-display); text-wrap: balance; }
+h1 { font-size: var(--sol-text-h1); }
+h2 { font-size: var(--sol-text-h2); }
+h3 { font-size: var(--sol-text-h3); }
+p { margin: 0 0 1em; color: var(--ink-2); text-wrap: pretty; }
+strong { color: var(--ink); font-weight: 650; }
+img, svg, video { display: block; max-width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--surface-3); border: 1px solid var(--line); border-radius: var(--win-radius-ctl); padding: 1px 6px; font-variant-numeric: tabular-nums; }
+[hidden] { display: none !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+::selection { background: color-mix(in srgb, var(--win-accent) 32%, transparent); color: var(--ink); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+/* the win11 scrollbar: invisible until the surface is hovered — the 4px thumb
+   breathes to 6px under the pointer; themed from the ink, never inherited */
+* { scrollbar-width: thin; scrollbar-color: transparent transparent; }
 *::-webkit-scrollbar { width: 10px; height: 10px; }
-*::-webkit-scrollbar-thumb { background: transparent; border: 3px solid transparent; border-radius: 8px; background-clip: padding-box; }
-*:hover { scrollbar-color: var(--win-scroll) transparent; }
-*:hover::-webkit-scrollbar-thumb { background-color: var(--win-scroll); }
+*::-webkit-scrollbar-thumb { background-color: transparent; border: 3px solid transparent; border-radius: 8px; background-clip: padding-box; }
+*:hover { scrollbar-color: var(--scroll) transparent; }
+*:hover::-webkit-scrollbar-thumb { background-color: var(--scroll); }
 *::-webkit-scrollbar-thumb:hover { border-width: 2px; }
 
-/* guards: the acrylic floors go solid at the Windows values (reduced motion
-   is already covered by the .01ms hard stop above) */
-@media (prefers-reduced-transparency: reduce) {
-  .dt-nav { background-color: #202020; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
-  .dt-nav__tip { background-color: #2b2b2b; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
-  .dt-start { background-color: #2c2c2c; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
-  .toast { background-color: #2c2c2c; background-image: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+/* ---------- 3. primitives ---------- */
+/* surfaces: the elevated rung panel, the flat hairline card */
+.glass { background: var(--surface-1); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow-1); transition: background-color var(--sol-micro) var(--sol-ease-out), border-color var(--sol-micro) var(--sol-ease-out); }
+.glass:hover { background-color: var(--surface-2); }
+.card { padding: var(--space-5); background: var(--surface-1); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow-1); }
+.shell { width: 100%; max-width: 1160px; margin: 0 auto; padding: clamp(20px, 4vw, 56px) clamp(16px, 4vw, 40px); }
+.section { padding: clamp(28px, 6vw, 72px) 0; }
+.section-head { max-width: 640px; margin-bottom: 30px; }
+.section-head h2, .card h2 { display: inline-flex; align-items: center; gap: 10px; }
+.actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+/* the page head of the platform pages */
+.pagehead { margin-bottom: 26px; }
+.pagehead h1 { font-size: var(--sol-text-h2); }
+.pagehead p { max-width: 620px; }
+.notfound-page { min-height: 40vh; }
+.notfound-page .glass { text-align: center; }
+
+/* the eyebrow: mono, lowercase, tracked at the label discipline */
+.eyebrow { margin: 0 0 14px; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: var(--sol-track-label); text-transform: lowercase; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+
+/* the texture classes of the landing: the halftone dissolve at the edges and
+   the film grain (one data-uri, zero image files) */
+.halftone { position: relative; isolation: isolate; }
+.halftone::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background-image: radial-gradient(color-mix(in srgb, var(--accent) 26%, transparent) 1px, transparent 1.4px); background-size: 11px 11px; -webkit-mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%); mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%); }
+.grain { position: relative; isolation: isolate; }
+.grain::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background-image: var(--noise); }
+
+/* buttons — the trylle tone stack over the windows 4px control: the inset
+   highlight and bloom ride the stack, the ring and the two drops follow the
+   tone; the wash hovers, no lift, no glow; the 44px target stands */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); min-height: 44px; padding: 0 var(--space-5);
+  border: 0; border-radius: var(--win-radius-ctl); background: var(--accent); color: var(--accent-ink); font-weight: 600;
+  box-shadow: var(--sol-btn-inset), 0 0 0 1px rgb(0 0 0 / 20%), 0 2px 3px color-mix(in srgb, var(--accent) 26%, transparent),
+    0 4px 7px -1px color-mix(in srgb, var(--accent) 34%, transparent);
+  transition: background-color var(--sol-micro) var(--sol-ease-out), color var(--sol-micro) var(--sol-ease-out),
+    box-shadow var(--sol-micro) var(--sol-ease-out), transform var(--dur-press) ease-in-out;
 }
+.btn:hover { background: color-mix(in oklab, var(--accent) 88%, var(--accent-ink)); text-decoration: none; box-shadow: var(--sol-btn-inset-hover), 0 0 0 1px rgb(0 0 0 / 28%), 0 2px 3px color-mix(in srgb, var(--accent) 34%, transparent), 0 4px 7px -1px color-mix(in srgb, var(--accent) 44%, transparent); }
+.btn:active { transform: scale(0.97); }
+.btn:disabled, .btn[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; transform: none; }
+/* the flat recipes: the secondary rides the rungs, the small tightens */
+.btn.secondary { background: var(--surface-2); border: 1px solid var(--line-strong); color: var(--ink); box-shadow: 0 1px 1px -0.5px var(--sol-drop); }
+.btn.secondary:hover { background: var(--surface-3); border-color: var(--ink-3); color: var(--ink); }
+.btn.danger { background: transparent; border: 1px solid color-mix(in srgb, var(--err) 50%, transparent); color: var(--err); box-shadow: none; }
+.btn.small { min-height: 34px; padding: 0 14px; font-size: 0.85rem; }
 
-/* ==========================================================================
-   WINDOW APP PASS — the application window chrome rides the family identity
-   (FAM-APPS-B: the OS grammar retires — no taskbar, no start menu, no
-   desktop navigation. The theme opens as ONE application window over the
-   Mica backdrop: title bar with the brand, left rail for the pages, Fluent
-   caption buttons, restore chip when minimized; /intro and /onboarding run
-   full-viewport over the same backdrop. Tokens only, append-only pass.)
-   ========================================================================== */
+/* badge — the 4px mono tag (never a pill) */
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 3px 11px; border: 1px solid var(--line-strong); border-radius: var(--win-radius-ctl); color: var(--ink-2); font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; letter-spacing: var(--sol-track-label); text-transform: lowercase; font-variant-numeric: tabular-nums; }
+.badge.success { border-color: color-mix(in srgb, var(--ok) 55%, transparent); color: var(--ok); }
+.badge.error { border-color: color-mix(in srgb, var(--err) 55%, transparent); color: var(--err); }
+.badge.warning { border-color: color-mix(in srgb, var(--warn) 55%, transparent); color: var(--warn); }
+.badge.info { border-color: color-mix(in srgb, var(--info) 55%, transparent); color: var(--info); }
 
-/* the backdrop: the Mica wallpaper stays and the frame pads it — nothing
-   interactive is left behind the window */
+/* code block + parser list: the deep canvas wells with hairline joints */
+.codeblock { margin: 0; padding: var(--space-4); overflow: auto; background: var(--sol-canvas-deep); border: 1px solid var(--line); border-radius: var(--radius-md); color: var(--ink-2); font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.7; font-variant-numeric: tabular-nums; }
+.codeblock:first-line { color: var(--ink); }
+.parserlist { margin: 0; padding-left: var(--space-5); color: var(--ink-2); font-size: 0.88rem; line-height: 1.8; }
+.parserlist li::marker { color: var(--accent); font-family: var(--font-mono); }
+
+/* reveal — the one orchestrated entrance per view, then stillness */
+.reveal { opacity: 0; transform: translateY(14px); }
+.reveal.in { opacity: 1; transform: none; animation: riseIn var(--dur-enter) var(--sol-ease-out) backwards; }
+.reveal.in:nth-child(2) { animation-delay: 70ms; }
+.reveal.in:nth-child(3) { animation-delay: 140ms; }
+.reveal.in:nth-child(4) { animation-delay: 210ms; }
+.reveal.in:nth-child(5) { animation-delay: 280ms; }
+.reveal.in:nth-child(6) { animation-delay: 350ms; }
+.reveal.in:nth-child(7) { animation-delay: 420ms; }
+.reveal.in:nth-child(8) { animation-delay: 490ms; }
+.reveal.in:nth-child(9) { animation-delay: 560ms; }
+
+/* the error boundary face of the app anchor */
+.failure { min-height: 60vh; display: grid; place-content: center; justify-items: center; gap: 14px; text-align: center; color: var(--ink-2); }
+.failure pre { max-width: min(680px, 90vw); overflow: auto; padding: 14px; background: var(--sol-canvas-deep); border: 1px solid var(--line); border-radius: var(--radius-md); color: var(--ink-3); font-size: 0.75rem; text-align: left; font-variant-numeric: tabular-nums; }
+
+/* ---------- 4. window chrome — the app window over the trylle canvas ---------- */
 .appframe {
-  position: relative;
-  isolation: isolate;
-  align-items: stretch;
-  justify-content: center;
-  min-height: 100dvh;
-  padding: clamp(12px, 3vh, 40px) clamp(12px, 2.5vw, 48px);
+  position: relative; isolation: isolate; display: flex; flex-direction: column; align-items: stretch; justify-content: center;
+  min-height: 100dvh; padding: clamp(12px, 3vh, 40px) clamp(12px, 2.5vw, 48px);
 }
-.appframe::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  background-image: var(--win-noise);
-  pointer-events: none;
-}
+.appframe::before { content: ""; position: fixed; inset: 0; z-index: 0; background-image: var(--noise); pointer-events: none; }
 .appframe[data-maximized="true"] { padding: 0; }
-
-/* the window: the Fluent frame — hairline, window shadow, 8px corners,
-   open 250ms scale .95→1 at the emphatic curve; the drag rides the
-   --winapp-* offsets */
 .winapp {
-  position: relative;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  width: min(1200px, 100%);
-  min-height: 0;
-  border: 1px solid var(--sol-hairline);
-  border-radius: 8px;
-  background-color: var(--sol-canvas);
-  box-shadow: var(--win-shadow-window);
-  overflow: hidden;
+  position: relative; z-index: var(--z-content); display: flex; flex-direction: column; flex: 1;
+  width: min(1200px, 100%); min-height: 0; border: 1px solid var(--line-strong); border-radius: var(--win-radius);
+  background: var(--bg); box-shadow: var(--shadow-window); overflow: hidden;
   transform: translate(var(--winapp-x, 0px), var(--winapp-y, 0px));
-  animation: winappOpen 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85) backwards;
+  animation: winappOpen var(--dur-2) var(--ease-window) backwards;
 }
 .winapp[hidden] { display: none; }
-.winapp[data-maximized="true"] {
-  width: 100%;
-  border-radius: 0;
-  transform: none;
-}
-@keyframes winappOpen {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-/* the title bar: the drag handle — bar acrylic + grain over a bottom
-   hairline, brand at the left, caption zone flush at the right edge */
+.winapp[data-maximized="true"] { width: 100%; border-radius: 0; transform: none; }
+.winapp[data-sized="true"] { flex: none; }
+/* the windows inactive law: a window the document is not focused on turns grayscale */
+.winapp[data-inactive="true"] { filter: grayscale(80%); }
+/* the title bar: brand at the left (the ONE logo slot), the caption zone
+   flush at the right edge; the acrylic rides the grain */
 .winapp__title {
-  display: flex;
-  align-items: center;
-  flex: 0 0 auto;
-  height: 48px;
-  padding-left: 14px;
-  background-color: var(--win-bar);
-  background-image: var(--win-noise);
-  border-bottom: 1px solid var(--sol-hairline);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  backdrop-filter: saturate(3) blur(20px);
-  cursor: default;
-  touch-action: none;
-  user-select: none;
-  -webkit-user-select: none;
+  display: flex; align-items: center; flex: none; height: 44px; padding-left: 12px;
+  background-color: var(--bar); background-image: var(--noise); border-bottom: 1px solid var(--line);
+  backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px);
+  cursor: default; touch-action: none; user-select: none; -webkit-user-select: none;
 }
-.winapp__title[data-dragging="true"] { cursor: grabbing; }
-.winapp__brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-.winapp__name { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; color: var(--sol-text); white-space: nowrap; }
-.winapp__role {
-  overflow: hidden;
-  font-size: 12px;
-  color: var(--sol-muted);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* the caption buttons: full bar height, 44px targets — close rides the
-   Fluent red on hover */
-.winapp__caption { display: flex; align-self: stretch; margin-left: auto; }
+.winapp__title[data-dragging="true"] { cursor: grabbing; transition: none !important; }
+.winapp__brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.winapp__brand .grMark { flex: none; }
+.winapp__name { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); white-space: nowrap; }
+.winapp__role { overflow: hidden; font-size: 12px; color: var(--ink-2); text-overflow: ellipsis; white-space: nowrap; }
+/* mark discipline: the title-bar mark rests while the landing owns it */
+.winapp[data-landing="true"] .winapp__brand .grMark { opacity: 0.32; transition: opacity var(--t-slow) var(--sol-ease-out); }
+.winapp[data-landing="true"] .winapp__brand .grMarkGlow { opacity: 0; }
+.winapp__caption { display: flex; align-self: stretch; margin-left: auto; align-items: center; }
+/* the caption buttons: full bar targets with the hairline dividers, the
+   fluent red close (rgb(232,17,35), hover deepens rgb(139,10,20)) */
 .winapp__cap {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  border: 0;
-  background: transparent;
-  color: var(--sol-muted);
-  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+  display: grid; place-items: center; width: 44px; border: 0; border-radius: var(--win-radius-ctl); background: transparent; color: var(--ink-2);
+  transition: background-color var(--sol-micro) var(--sol-ease-out), color var(--sol-micro) var(--sol-ease-out);
 }
-.winapp__cap:hover { background-color: var(--win-wash); color: var(--sol-text); }
-.winapp__cap:active { background-color: var(--win-page-wash); }
-.winapp__cap--close:hover { background-color: rgb(232, 17, 35); color: var(--win-accent-ink); }
-
-/* the body: rail + stage */
+.winapp__cap + .winapp__cap, .winapp__theme + .winapp__cap { border-left: 1px solid var(--line); }
+.winapp__cap:hover { background-color: var(--wash); color: var(--ink); }
+.winapp__cap:active { background-color: var(--wash-soft); }
+.winapp__cap--close:hover { background-color: rgb(232 17 35); color: var(--win-caption-ink); }
+.winapp__cap--close:active { background-color: rgb(139 10 20); }
+.winapp__cap:focus-visible, .winapp__theme:focus-visible { outline-offset: -4px; }
+/* the theme flip of the caption: an icon pin riding the pin law */
+.winapp__theme {
+  position: relative; display: grid; place-items: center; width: 38px; height: 38px; flex: none; margin-right: 4px;
+  border: 0; border-radius: var(--win-radius-ctl); background: transparent; color: var(--ink-2);
+  transition: color var(--sol-micro) var(--sol-ease-out), background-color var(--sol-micro) var(--sol-ease-out), transform var(--dur-press) ease-in-out;
+}
+.winapp__theme:hover { color: var(--ink); background: var(--wash); }
+.winapp__theme:active { transform: scale(0.7); }
+/* the eight resize handles of the window chrome (n/s/e/w + the corners) —
+   laid inside the edge (the window clips its overflow, the border is still
+   the first px of the frame, exactly where the resize cursor belongs) */
+.winapp__rz { position: absolute; z-index: var(--z-float); touch-action: none; }
+.winapp__rz[data-edge="n"] { top: 0; left: 10px; right: 10px; height: 6px; cursor: ns-resize; }
+.winapp__rz[data-edge="s"] { bottom: 0; left: 10px; right: 10px; height: 6px; cursor: ns-resize; }
+.winapp__rz[data-edge="e"] { right: 0; top: 10px; bottom: 10px; width: 6px; cursor: ew-resize; }
+.winapp__rz[data-edge="w"] { left: 0; top: 10px; bottom: 10px; width: 6px; cursor: ew-resize; }
+.winapp__rz[data-edge="ne"] { top: 0; right: 0; width: 13px; height: 13px; cursor: nesw-resize; }
+.winapp__rz[data-edge="nw"] { top: 0; left: 0; width: 13px; height: 13px; cursor: nwse-resize; }
+.winapp__rz[data-edge="se"] { bottom: 0; right: 0; width: 13px; height: 13px; cursor: nwse-resize; }
+.winapp__rz[data-edge="sw"] { bottom: 0; left: 0; width: 13px; height: 13px; cursor: nesw-resize; }
+.winapp[data-maximized="true"] .winapp__rz { display: none; }
 .winapp__body { display: flex; flex: 1; min-height: 0; }
 
-/* the rail: the pages of the app — icon + label entries, the active one
-   marked by the accent ladder on the left edge; the theme flip lives at
-   the foot */
-.winapp__rail {
-  display: flex;
-  flex-direction: column;
-  flex: 0 0 auto;
-  width: 216px;
-  padding: 10px 8px;
-  border-right: 1px solid var(--sol-hairline);
-  background-color: var(--win-page-wash);
+/* railnav — the 48px vertical icon rail riding the windows pin law: 38×38
+   r4 pins (the 10 control corners on the 11 rail), the hover wash on 0.2s
+   ease, the press at scale .7 on 100ms, the mount pops the pins in
+   (dtPopIntro), the ladder indicator marks hover/active and the acrylic
+   tooltip names the page */
+.railnav { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 48px; flex: none; padding: var(--space-2) 0; border-right: 1px solid var(--line); }
+.railnav__item {
+  position: relative; display: grid; place-items: center; width: 38px; height: 38px; flex: none;
+  border: 0; border-radius: var(--win-radius-ctl); background: transparent; color: var(--ink-2);
+  transition: background-color 0.2s ease, color 0.2s ease, transform var(--dur-press) ease-in-out;
 }
-.winapp__railhead {
-  margin: 2px 10px 8px;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--sol-muted);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+.railnav__item:hover { background: var(--wash); color: var(--ink); text-decoration: none; }
+.railnav__item:active { transform: scale(0.7); }
+.railnav__item:focus-visible { outline: 2px solid var(--win-accent); outline-offset: -2px; }
+/* the ladder indicator: 12px track, scaleX 0 closed → 0.5 hover (#858585) →
+   1 active on the app accent; transform only */
+.railnav__item::after { content: ""; position: absolute; bottom: 2px; left: 50%; width: 12px; height: 3px; border-radius: 4px; background: #858585; opacity: 0; transform: translateX(-50%) scaleX(0); transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out, background-color 0.2s ease-in-out; }
+.railnav__item:hover::after, .railnav__item:focus-visible::after { opacity: 1; transform: translateX(-50%) scaleX(0.5); }
+.railnav__item[aria-current="page"]::after { opacity: 1; transform: translateX(-50%) scaleX(1); background: var(--accent); }
+/* the acrylic tooltip: the pin's name, fade + slide on 0.2s, also by focus */
+.railnav__item::before {
+  content: attr(data-tip); position: absolute; left: calc(100% + 10px); top: 50%; z-index: var(--z-bar);
+  padding: 5px 9px; border-radius: var(--win-radius-ctl); background-color: var(--win-tip); background-image: var(--noise);
+  box-shadow: var(--shadow-flyout); color: var(--ink); font-size: 12px; font-weight: 500; line-height: 1.3; white-space: nowrap;
+  opacity: 0; transform: translateY(-50%) translateX(-4px); pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
-.winapp__raillink {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 44px;
-  padding: 0 12px;
-  border-radius: 4px;
-  color: var(--sol-muted);
-  text-decoration: none;
-  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
+.railnav__item:hover::before, .railnav__item:focus-visible::before { opacity: 1; transform: translateY(-50%) translateX(0); }
+@media (prefers-reduced-motion: no-preference) {
+  .railnav--enter .railnav__item { animation: dtPopIntro 800ms ease-in-out backwards; }
+  .railnav--enter .railnav__item:nth-child(2) { animation-delay: 60ms; }
+  .railnav--enter .railnav__item:nth-child(3) { animation-delay: 120ms; }
+  .railnav--enter .railnav__item:nth-child(4) { animation-delay: 180ms; }
+  .railnav--enter .railnav__item:nth-child(5) { animation-delay: 240ms; }
+  .railnav--enter .railnav__item:nth-child(6) { animation-delay: 300ms; }
 }
-.winapp__raillink:hover { background-color: var(--win-wash); color: var(--sol-text); }
-.winapp__raillink[aria-current="page"] { background-color: var(--win-wash); color: var(--sol-text); }
-.winapp__raillink[aria-current="page"]::before {
-  content: "";
-  position: absolute;
-  top: 10px;
-  bottom: 10px;
-  left: 0;
-  width: 3px;
-  border-radius: 2px;
-  background: var(--win-accent);
-}
-.winapp__raillabel { overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
-.winapp__railfoot { margin-top: auto; padding: 8px 4px 2px; border-top: 1px solid var(--sol-hairline); }
-.winapp__theme {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  min-height: 44px;
-  padding: 0 12px;
-  border: 0;
-  border-radius: 4px;
-  background: transparent;
-  color: var(--sol-muted);
-  font-size: 13px;
-  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
-}
-.winapp__theme:hover { background-color: var(--win-wash); color: var(--sol-text); }
+/* the rail foot — the family row of the window chrome: one accent dot per
+   sibling (a true dot, never a pill), hover wash + dot lift, press on the
+   family pin law; the fieldset reset keeps the row chromeless */
+.railnav__foot { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; margin: auto 0 0; padding: 8px 0 2px; border: 0; border-top: 1px solid var(--line); min-inline-size: 0; }
+.railnav__fam { display: grid; place-items: center; width: 36px; height: 20px; border-radius: var(--win-radius-ctl); transition: background-color var(--sol-micro) var(--sol-ease-out), transform var(--dur-press) ease-in-out; }
+.railnav__fam:hover { background: var(--wash); }
+.railnav__fam:active { transform: scale(0.7); }
+.railnav__famdot { width: 8px; height: 8px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgb(0 0 0 / 22%); transition: transform var(--sol-micro) var(--sol-ease-out); }
+.railnav__fam:hover .railnav__famdot { transform: scale(1.3); }
 
-/* the stage: the routed page, scrolling inside the window */
-.winapp__stage { flex: 1; min-width: 0; overflow-y: auto; overscroll-behavior: contain; }
-
-/* the restore chip: the minimized window collapses here (bottom-left, the
-   acrylic of the family, 8px corners) */
-.winchip {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  z-index: 30;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 44px;
-  padding: 0 16px 0 12px;
-  border: 1px solid var(--sol-hairline);
-  border-radius: 8px;
-  background-color: var(--win-panel);
-  background-image: var(--win-noise);
-  box-shadow: var(--win-shadow-flyout);
-  color: var(--sol-text);
-  font-size: 13px;
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  backdrop-filter: saturate(3) blur(20px);
-  animation: winchipIn 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85) backwards;
-  transition: background-color 150ms var(--win-ease-entry);
-}
-.winchip:hover { background-color: var(--win-wash); }
-@keyframes winchipIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* the intro: the opening splash — full-viewport Mica, the mark springs in
-   (Akash overshoot), the name rises backOut, 1.6s hold, slide-up exit;
-   no dots, no spinner */
-.winintro {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: grid;
-  place-items: center;
-  background: var(--win-mica);
-  overflow: hidden;
-  cursor: pointer;
-}
-.winintro::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: var(--win-noise);
-  pointer-events: none;
-}
-.winintro__stage {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-}
-.winintro__mark {
-  display: block;
-  width: 96px;
-  height: 96px;
-  animation: winintroSpring 500ms cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
-}
-.winintro__name {
-  margin: 0;
-  font-size: clamp(2rem, 5vw, 3rem);
-  letter-spacing: -0.02em;
-  color: var(--sol-text);
-  animation: winintroRise 450ms cubic-bezier(0.34, 1.56, 0.64, 1) 120ms backwards;
-}
-.winintro__role {
-  margin: 0;
-  font-size: 12px;
-  color: var(--sol-muted);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  animation: winintroFade 250ms var(--win-ease-entry) 420ms backwards;
-}
-.winintro__skip {
-  position: absolute;
-  bottom: 24px;
-  margin: 0;
-  font-size: 12px;
-  color: var(--sol-muted);
-  animation: winintroFade 250ms var(--win-ease-entry) 1000ms backwards;
-}
-.winintro[data-leaving="true"] { animation: winintroLeave 800ms cubic-bezier(0.76, 0, 0.24, 1) forwards; }
-@keyframes winintroSpring { from { opacity: 0; transform: scale(0.7); } }
-@keyframes winintroRise { from { opacity: 0; transform: translateY(18px); } }
-@keyframes winintroFade { from { opacity: 0; } }
-@keyframes winintroLeave { to { transform: translateY(-100%); } }
-
-/* the onboarding: the first-run dialog — a dialog-sized window over the
-   Mica backdrop, 250ms entry, frames remount per step, the 3-segment
-   ladder tracks the position */
-.winonboard {
-  position: fixed;
-  inset: 0;
-  z-index: 90;
-  display: grid;
-  place-items: center;
-  padding: 20px;
-  background: var(--win-mica);
-  overflow-y: auto;
-}
-.winonboard::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: var(--win-noise);
-  pointer-events: none;
-}
-.winonboard__card {
-  position: relative;
-  width: min(560px, 100%);
-  border: 1px solid var(--sol-hairline);
-  border-radius: 8px;
-  background-color: var(--win-panel);
-  background-image: var(--win-noise);
-  box-shadow: var(--win-shadow-window);
-  overflow: hidden;
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  backdrop-filter: saturate(3) blur(20px);
-  animation: winappOpen 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85) backwards;
-}
-.winonboard__head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  height: 48px;
-  padding: 0 16px;
-  background-color: var(--win-bar);
-  background-image: var(--win-noise);
-  border-bottom: 1px solid var(--sol-hairline);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  backdrop-filter: saturate(3) blur(20px);
-}
-.winonboard__title { font-size: 13px; font-weight: 600; color: var(--sol-text); }
-.winonboard__body { display: flex; flex-direction: column; min-height: 264px; padding: 24px 20px; }
-.winonboard__step {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  animation: winonboardIn 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85) backwards;
-}
-@keyframes winonboardIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.winonboard__eyebrow {
-  margin: 0;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--win-accent);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-.winonboard__lead {
-  margin: 0;
-  font-size: clamp(1.25rem, 3vw, 1.6rem);
-  letter-spacing: -0.02em;
-  color: var(--sol-text);
-}
-.winonboard__lede { margin: 0; font-size: 14px; line-height: 1.65; color: var(--sol-muted); }
-.winonboard__facts { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
-.winonboard__fact {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-height: 44px;
-  padding: 0 12px;
-  border: 1px solid var(--sol-hairline);
-  border-radius: 4px;
-  color: var(--sol-muted);
-  font-size: 13px;
-}
-.winonboard__fact svg { flex: 0 0 auto; color: var(--win-accent); }
-.winonboard__fact strong { color: var(--sol-text); font-weight: 600; }
-.winonboard__foot {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 14px 20px;
-  border-top: 1px solid var(--sol-hairline);
-}
-.winonboard__ladder { display: flex; flex: 1; gap: 6px; }
-.winonboard__segrun {
-  height: 3px;
-  flex: 1;
-  border-radius: 2px;
-  background: var(--win-wash);
-  transition: background-color 250ms cubic-bezier(0.85, 0.14, 0.14, 0.85);
-}
-.winonboard__segrun[data-active="true"] { background: var(--win-accent); }
-.winonboard__actions { display: flex; gap: 8px; margin-left: auto; }
-.winonboard__act {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 0 16px;
-  border: 1px solid var(--sol-hairline);
-  border-radius: 4px;
-  background: transparent;
-  color: var(--sol-text);
-  font-size: 13px;
-  transition: background-color 150ms var(--win-ease-entry), border-color 150ms var(--win-ease-entry);
-}
-.winonboard__act:hover { background-color: var(--win-wash); }
-.winonboard__act--primary {
-  border-color: transparent;
-  background: var(--win-accent);
-  color: var(--win-accent-ink);
-}
-.winonboard__act--primary:hover { background: color-mix(in oklab, var(--win-accent) 88%, var(--sol-canvas)); }
-
-/* narrow windows: the rail becomes a top strip, the role line steps aside */
-@media (max-width: 720px) {
-  .winapp__role { display: none; }
-  .winapp__body { flex-direction: column; }
-  .winapp__rail {
-    flex-direction: row;
-    align-items: center;
-    width: 100%;
-    padding: 6px 8px;
-    overflow-x: auto;
-    border-right: 0;
-    border-bottom: 1px solid var(--sol-hairline);
-  }
-  .winapp__railhead { display: none; }
-  .winapp__railfoot { margin: 0 0 0 auto; padding: 0; border-top: 0; }
-  .winapp__theme { width: auto; }
-  .winapp__raillink[aria-current="page"]::before {
-    top: auto;
-    right: 12px;
-    bottom: 2px;
-    left: 12px;
-    width: auto;
-    height: 3px;
-  }
-  .winonboard__foot { flex-wrap: wrap; }
-}
-
-/* guards: the new chrome obeys the reduced-motion hard stop and the
-   transparency floors keep the acrylic readable on both themes */
-@media (prefers-reduced-motion: reduce) {
-  .winapp,
-  .winchip,
-  .winintro,
-  .winintro__mark,
-  .winintro__name,
-  .winintro__role,
-  .winintro__skip,
-  .winonboard__card,
-  .winonboard__step {
-    animation: none !important;
-  }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .winapp__title,
-  .winonboard__head,
-  .winchip,
-  .winonboard__card {
-    background-color: var(--sol-surface-1);
-    background-image: none;
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-  }
-}
-
-/* ==========================================================================
-   POLISH PASS — wave D1 (the professional polish of the family window)
-   The getry window verified against the family recipe and retinted to the
-   ONE identity accent: the reasoning violet #8b5cf6 carries the shell chrome,
-   the content states and the rail ladder alike (the light theme deepens
-   the violet so the white chrome ink keeps its ratio). The pass closes the
-   grammar gaps the audit found: the Fluent hairline dividers between the
-   caption buttons, the white glyph over the close red, the window-surface
-   grammar of the data tables (8px radius, hairline joint, scroll), the
-   app-density paddings of the stage, the focus rings of the window chrome,
-   the rail-foot family registry and the loading/empty discipline of the
-   session tables. Append-only overrides — earlier passes stay intact.
-   ========================================================================== */
-
-/* the ONE accent: the getry violet (the identity accent of the family list);
-   --dt-accent rides it so the rail ladder, the content states and the
-   chrome ladders all answer the same token */
-:root {
-  --win-accent: #8b5cf6;
-  --dt-accent: var(--win-accent);
-}
-[data-theme="light"] {
-  --win-accent: #6d28d9;
-  --dt-accent: var(--win-accent);
-  --sol-accent-ink: #ffffff;
-}
-
-/* the caption grammar: the Fluent hairline dividers between the buttons and
-   the white glyph over the close red (the Fluent red takes the white glyph
-   in both themes) */
-.winapp__cap + .winapp__cap { border-left: 1px solid var(--sol-hairline); }
-.winapp__cap--close:hover { color: #ffffff; }
-
-/* the drag doctrine: nothing transitions while the title bar owns the pointer */
-.winapp__title[data-dragging="true"] { transition: none !important; }
-
-/* the rail: the page entries scroll when the family registry grows the foot */
-.winapp__rail { overflow-y: auto; }
-
-/* the rail-foot family registry: the sibling deploy units of the family,
-   one 28px entry each — the accent dot plus the name, the wash on hover,
-   the Fluent 4px corners, mono-clean lowercase names */
-.winapp__familyhead {
-  margin: 10px 10px 6px;
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--sol-faint);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-.winapp__family { display: flex; flex-direction: column; gap: 2px; margin: 0 2px 8px; }
-.winapp__familylink {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 28px;
-  padding: 0 10px;
-  border-radius: 4px;
-  color: var(--sol-muted);
-  font-size: 12px;
-  text-decoration: none;
-  transition: background-color 150ms var(--win-ease-entry), color 150ms var(--win-ease-entry);
-}
-.winapp__familylink:hover { background-color: var(--win-wash); color: var(--sol-text); text-decoration: none; }
-.winapp__familyname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.winapp__familydot {
-  flex: none;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--win-accent);
-  opacity: 0.55;
-  transition: opacity 150ms var(--win-ease-entry), box-shadow 150ms var(--win-ease-entry);
-}
-.winapp__familylink:hover .winapp__familydot {
-  opacity: 1;
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--win-accent) 22%, transparent);
-}
-
-/* the stage: the app-density paddings of the window content — the p-4/p-6
-   rhythm at the edges and between sections instead of the web-page scroll,
-   the hero wordmark and the page titles rescaled to the window frame */
+/* the stage: the routed page, scrolling inside the window — one faint
+   violet light upper right (the ONE light of the content) */
+.winapp__stage { flex: 1; min-width: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; background: radial-gradient(1100px 640px at 78% -10%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 60%); }
+.winapp__stage > main.shell { display: flex; flex-direction: column; flex: 1 0 auto; width: 100%; }
+/* the app-density rhythm of the window content */
 .winapp__stage .shell { padding: 24px clamp(16px, 3vw, 32px) 32px; }
 .winapp__stage .hero { padding: 18px 0 8px; }
-.winapp__stage .section { padding: 18px 0 6px; }
+.winapp__stage .section { padding: 26px 0 12px; }
 .winapp__stage .section-head { margin-bottom: 16px; }
 .winapp__stage .pagehead { margin-bottom: 16px; }
-.winapp__stage .wordmark { font-size: clamp(2.4rem, 5vw, 3.6rem); }
-.winapp__stage .pagehead h1 { font-size: clamp(1.6rem, 3vw, 2.25rem); }
+.winapp__stage .pagehead h1 { font-size: var(--sol-text-h3); }
 
-/* the data tables: the window-surface grammar — 8px radius, hairline joint,
-   the step floor, the horizontal scroll on narrow stages; the loading and
-   empty cells read as one muted line on the same floor */
-.tablewrap {
-  overflow-x: auto;
-  border: 1px solid var(--sol-hairline);
-  border-radius: 8px;
-  background: var(--sol-surface-1);
+/* the restore chip: the minimized window collapses here (the acrylic, the
+   window radius, the fluent entry) */
+.winchip {
+  position: fixed; bottom: 20px; left: 20px; z-index: var(--z-float);
+  display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px 0 12px;
+  border: 1px solid var(--line-strong); border-radius: var(--win-radius);
+  background-color: var(--panel); background-image: var(--noise);
+  box-shadow: var(--shadow-flyout); color: var(--ink); font-size: 13px;
+  backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px);
+  animation: winchipIn var(--dur-2) var(--ease-window) backwards;
+  transition: border-color var(--sol-micro) var(--sol-ease-out);
 }
-.table td.tableempty { padding: 18px 14px; color: var(--sol-faint); font-size: 0.82rem; }
+.winchip:hover { border-color: var(--ink-3); }
+.winchip .grMark { flex: none; }
 
-/* the focus rings of the window chrome: every control of the frame rings in
-   the accent (the stage controls already ride the global :focus-visible) */
-.winapp__raillink:focus-visible,
-.winapp__familylink:focus-visible,
-.winapp__theme:focus-visible,
-.winapp__cap:focus-visible,
-.winchip:focus-visible,
-.winonboard__act:focus-visible {
-  outline: 2px solid var(--win-accent);
-  outline-offset: 2px;
-}
+/* ---------- 5. pages — the landing and the platform ledgers ---------- */
 
-/* narrow windows: the family registry joins the horizontal strip */
-@media (max-width: 720px) {
-  .winapp__familyhead { display: none; }
-  .winapp__family { flex-direction: row; flex-wrap: wrap; gap: 4px; margin: 0 4px 6px; }
-}
-
-/* guards: the registry and the table chrome obey the reduced-motion hard stop
-   (the .01ms rule above) and the transparency floors keep the surfaces
-   readable on both themes */
-@media (prefers-reduced-transparency: reduce) {
-  .tablewrap { background: var(--sol-surface-1); }
+/* the hero: one violet light, headline + phrase left, the gateway mark right */
+.hero { position: relative; padding: clamp(28px, 7vw, 88px) 0 clamp(20px, 4vw, 44px); }
+.r3-hero { position: relative; padding: 34px 0 26px; }
+.r3-hero::before { content: ""; position: absolute; inset: 0 -8% auto; height: 140%; z-index: 0; pointer-events: none; background: radial-gradient(46% 54% at 30% 8%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 72%); }
+.r3-hero__grid { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 24px; align-items: center; }
+.r3-hero__main { min-width: 0; }
+.r3-hero__side { display: grid; place-items: center; }
+.r3-heromark { display: block; width: 128px; height: 128px; }
+.r3-headline { margin: 0 0 14px; font-size: clamp(2.5rem, 5.4vw, 4.1rem); font-weight: 800; letter-spacing: -0.045em; line-height: 0.98; text-wrap: balance; }
+.r3-phrase { max-width: 58ch; margin: 0; font-size: clamp(1rem, 1.5vw, 1.14rem); color: var(--ink-2); }
+.importstrip { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+.importstrip .badge { background: var(--surface-2); }
+@media (max-width: 860px) {
+  .r3-hero__grid { grid-template-columns: 1fr; }
+  .r3-hero__side { display: none; }
 }
 
-/* ==========================================================================
-   NEOSKILLS PASS — wave C1 (the NeoSkills bar)
-   The getry registry reaches the NeoSkills doctrine. The reasoning violet
-   #8b5cf6 becomes the ONE source-lit accent (the engine tokens wire to
-   it, the drawn mark already carries it), the display face is Bricolage
-   Grotesque with JetBrains Mono as the detail face (index.html loads
-   them with preconnect + display=swap), every surface breathes — the
-   violet light source on the stage, the .halftone violet dissolve at the hero
-   edges, the .grain film — and the registry tables turn into editorial
-   ledgers: a dominant table column with a meta rail, varied data-driven
-   row rhythm and the ladder dots as the state grammar. The uniform card
-   grids retire: home composes its domains as one lead plate plus a
-   stacked pair, the thinking ladder climbs as a staircase, the five
-   gateways read as one gateway ledger. Eyebrows and labels keep mono
-   lowercase at 0.08em max. Append-only overrides — earlier passes stay
-   intact. prefers-reduced-motion rides the global .01ms hard stop.
-   ========================================================================== */
-
-/* ---------- C1 tokens: the violet accent wired through the engine ---------- */
-:root {
-  /* the doctrine faces: display = Bricolage Grotesque, detail = JetBrains Mono
-     (the previous Sol stacks stay as the fallback rungs) */
-  --font-display: "Bricolage Grotesque", "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-ui: "Outfit", "Segoe UI Variable", "Segoe UI", ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --sol-sans: var(--font-ui);
-  --sol-mono: var(--font-mono);
-  /* the ONE accent: the getry violet — the signal ramp retints to it */
-  --gr-violet: #8b5cf6;
-  --sol-signal: 139 92 246;
-  --sol-primary: #8b5cf6;
-  --sol-ember: #7c3aed;
-  --sol-tangerine: #a78bfa;
-  --sol-gold: #c4b5fd;
-  --sol-info: #c4b5fd;
-  --app-tint: #8b5cf6;
-  /* the label discipline: lowercase mono micro-labels, 0.08em max */
-  --sol-track-label: 0.08em;
+/* the prompt-giga field: giant mono input + the violet key (the ONE content
+   cta of the hero — the identity accent speaks here), windows underline on
+   focus */
+.r3-prompt { max-width: 720px; margin: 30px 0 0; }
+.r3-prompt__field { position: relative; display: flex; align-items: center; min-height: 68px; border-bottom: 1px solid color-mix(in srgb, var(--accent) 34%, transparent); background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 7%, transparent), transparent 78%); transition: border-color var(--sol-micro) var(--sol-ease-out), background-color var(--sol-micro) var(--sol-ease-out); }
+.r3-prompt__field:focus-within { border-bottom-color: transparent; box-shadow: inset 0 -2px 0 0 var(--accent); background-color: color-mix(in srgb, var(--accent) 4%, transparent); }
+.r3-prompt__label { position: absolute; top: -17px; left: 0; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: var(--sol-track-label); color: var(--ink-3); }
+.r3-prompt__input { flex: 1; min-width: 0; height: 64px; padding: 0 4px; border: 0; background: transparent; color: var(--ink); font-family: var(--font-mono); font-size: clamp(1.05rem, 2.4vw, 1.45rem); letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.r3-prompt__input:focus { outline: none; }
+.r3-prompt__key {
+  display: inline-flex; align-items: center; gap: 7px; flex: none; min-height: 40px; padding: 0 16px; margin-left: 10px;
+  border: 0; border-radius: var(--win-radius-ctl); background: var(--accent); color: var(--accent-ink);
+  font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600;
+  box-shadow: var(--sol-btn-inset), 0 0 0 1px rgb(0 0 0 / 22%), 0 1px 2px rgb(0 0 0 / 24%), 0 3px 5px -1px rgb(0 0 0 / 28%);
+  transition: background-color var(--sol-micro) var(--sol-ease-out), box-shadow var(--sol-micro) var(--sol-ease-out), transform var(--dur-press) ease-in-out;
 }
-[data-theme="light"] {
-  --gr-violet: #6d28d9;
-  --sol-signal: 109 40 217;
-  --sol-primary: #6d28d9;
-  --sol-ember: #5b21b6;
-  --sol-tangerine: #7c3aed;
-  --sol-gold: #a78bfa;
-  --sol-info: #ede9fe;
-  --app-tint: #6d28d9;
+.r3-prompt__key:hover { background: color-mix(in oklab, var(--accent) 88%, var(--accent-ink)); box-shadow: var(--sol-btn-inset-hover), 0 0 0 1px rgb(0 0 0 / 30%), 0 2px 3px rgb(0 0 0 / 28%), 0 4px 7px -1px rgb(0 0 0 / 36%); }
+.r3-prompt__key:active { transform: scale(0.96); }
+.r3-prompt__key:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.r3-prompt__status { min-height: 1.15em; margin: 10px 0 0; font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.r3-prompt__chips { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; }
+.r3-chipset { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; border: 0; min-inline-size: 0; }
+.r3-chipset__legend { flex-basis: 100%; margin: 0 0 2px; padding: 0; font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: var(--sol-track-label); color: var(--ink-3); }
+/* the chips: the windows 4px control, the violet as the pressed state */
+.r3-chip { padding: 5px 11px; border: 1px solid var(--line-strong); border-radius: var(--win-radius-ctl); background: transparent; color: var(--ink-2); font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.02em; cursor: pointer; transition: color var(--sol-micro) var(--sol-ease-out), border-color var(--sol-micro) var(--sol-ease-out), background-color var(--sol-micro) var(--sol-ease-out), transform var(--dur-press) ease-in-out; }
+.r3-chip:hover { color: var(--ink); border-color: var(--ink-3); background: var(--wash-soft); }
+.r3-chip:active { transform: scale(0.96); }
+.r3-chip[aria-pressed="true"] { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 55%, transparent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.r3-chip--route { padding: 4px 9px; font-size: 0.66rem; }
+.r3-chip:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* the replica matrix ledger: hairline rows, mono headers, the featured row
+   carries the violet edge */
+.r3-matrix { width: 100%; border-collapse: collapse; }
+.r3-matrix th { padding: 0 10px 8px; border-bottom: 1px solid var(--line); font-family: var(--font-mono); font-size: 0.66rem; font-weight: 600; text-align: left; letter-spacing: var(--sol-track-label); color: var(--ink-3); }
+.r3-matrix td { padding: 14px 10px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; vertical-align: middle; }
+.r3-matrix tbody tr { transition: background-color var(--sol-micro) var(--sol-ease-out); }
+.r3-matrix tbody tr:hover { background: var(--wash-soft); }
+.r3-matrix tbody tr[data-featured="true"] { background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 9%, transparent), transparent 65%); box-shadow: inset 2px 0 0 var(--accent); }
+.r3-matrix__id { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.r3-matrix__id strong { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 600; color: var(--ink); }
+.r3-matrix__id small { overflow: hidden; font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink-3); text-overflow: ellipsis; white-space: nowrap; }
+.r3-matrix__serves { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.r3-matrix__featnote { font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink-3); }
+.r3-matrix__lane { overflow: hidden; font-family: var(--font-mono); font-size: 0.76rem; color: var(--ink-2); text-overflow: ellipsis; white-space: nowrap; }
+.r3-matrix__count { font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink); }
+.r3-matrix__state { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.04em; color: var(--ink-2); }
+.r3-matrix__note { max-width: 74ch; margin: 12px 0 0; font-size: 0.78rem; color: var(--ink-3); }
+@media (max-width: 640px) {
+  .r3-matrix th:nth-child(3), .r3-matrix td:nth-child(3),
+  .r3-matrix th:nth-child(4), .r3-matrix td:nth-child(4) { display: none; }
 }
+/* the tag chip and the live dot: the state grammar of the registry */
+.r3-tag { display: inline-flex; align-items: center; padding: 2px 8px; border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); border-radius: var(--win-radius-ctl); background: color-mix(in srgb, var(--accent) 8%, transparent); color: var(--accent); font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.04em; white-space: nowrap; }
+.r3-livedot { position: relative; flex: none; width: 7px; height: 7px; border-radius: 50%; background: color-mix(in srgb, var(--accent) 28%, transparent); }
+.r3-livedot[data-live="true"] { background: var(--accent); }
 
-/* ---------- C1 atmosphere: the named violet light, the halftone, the grain ---------- */
-
-/* the stage: the window content breathes — the violet light source upper
-   right, a low violet wash lower left, over the canvas (never a naked flat
-   color); the light rides the accent token so both themes deepen it */
-.winapp__stage {
-  background:
-    radial-gradient(1200px 700px at 72% -12%, color-mix(in oklab, var(--gr-violet) 9%, transparent), transparent 62%),
-    radial-gradient(900px 620px at 8% 108%, color-mix(in oklab, var(--gr-violet) 6%, transparent), transparent 58%);
-}
-
-/* the entry surfaces run full viewport: the same violet light over their Mica */
-.winintro,
-.winonboard {
-  background:
-    radial-gradient(1200px 700px at 72% -12%, color-mix(in oklab, var(--gr-violet) 10%, transparent), transparent 62%),
-    radial-gradient(900px 620px at 8% 108%, color-mix(in oklab, var(--gr-violet) 7%, transparent), transparent 58%),
-    var(--win-mica);
-}
-
-/* the halftone edge: the Modulify-style violet dot dissolve at the top-right
-   of every surface that asks for it (the heroes) */
-.halftone { position: relative; }
-.halftone::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image: radial-gradient(color-mix(in oklab, var(--gr-violet) 26%, transparent) 1px, transparent 1.4px);
-  background-size: 11px 11px;
-  -webkit-mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
-  mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
+/* the 01–03 deploy steps: one ruled strip, no card grid */
+.r3-steps { display: grid; grid-template-columns: 1.2fr 1fr 1fr; border-top: 1px solid var(--line); }
+.r3-step { padding: 22px 22px 22px 0; border-bottom: 1px solid var(--line); }
+.r3-step + .r3-step { padding-left: 22px; border-left: 1px solid var(--line); }
+.r3-step__index { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; color: var(--accent); font-variant-numeric: tabular-nums; }
+.r3-step__title { margin: 10px 0 6px; font-size: 1.12rem; }
+.r3-step__phrase { max-width: 40ch; margin: 0; font-size: 0.84rem; color: var(--ink-2); }
+@media (max-width: 860px) {
+  .r3-steps { grid-template-columns: 1fr; }
+  .r3-step + .r3-step { padding-left: 0; border-left: 0; }
 }
 
-/* the film grain: one data-uri, reused everywhere (the doctrine recipe);
-   the appframe already carries its grain, the hero layer adds its own */
-.grain { position: relative; }
-.grain::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+/* the meta-quad footer: the sticky-footer law — the quad eats the slack and
+   sits flush on the window floor */
+.r3-quad { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin: auto 0 8px; padding: 22px 0 6px; border-top: 1px solid var(--line); }
+.r3-quad__col { min-width: 0; }
+.r3-quad__head { margin: 0 0 6px; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: var(--sol-track-label); color: var(--ink-3); }
+.r3-quad__meta { margin: 0; font-family: var(--font-mono); font-size: 0.74rem; line-height: 1.7; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.r3-quad__links { display: flex; flex-direction: column; gap: 2px; }
+.r3-quad__links a { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); text-decoration: none; transition: color var(--sol-micro) var(--sol-ease-out); }
+.r3-quad__links a:hover { color: var(--accent); text-decoration: none; }
+/* the landing footer family row: the eight siblings with their §12 accents,
+   one hairline above the base (the row links OUT, never back) */
+.r3-quad__family { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; padding-top: 16px; border-top: 1px solid var(--line); }
+.r3-quad__familyhead { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: var(--sol-track-label); color: var(--ink-3); }
+.r3-quad__famlink { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-2); text-decoration: none; transition: color var(--sol-micro) var(--sol-ease-out); }
+.r3-quad__famlink:hover { color: var(--ink); text-decoration: none; }
+.r3-quad__famdot { flex: none; width: 7px; height: 7px; border-radius: 50%; transition: transform var(--sol-micro) var(--sol-ease-out); }
+.r3-quad__famlink:hover .r3-quad__famdot { transform: scale(1.35); }
+@media (max-width: 860px) {
+  .r3-quad { grid-template-columns: 1fr 1fr; }
 }
 
-/* ---------- C1 display face: the heroes and the label discipline ---------- */
-
-/* heroes and titles ride the display face (the body keeps the same face
-   at reading sizes; the mono detail face carries the labels) */
-h1, h2, h3, .wordmark, .pagehead h1, .hero h1, .winapp__name, .winintro__name, .winonboard__lead {
-  font-family: var(--font-display);
+/* the operational split: the dominant ledger beside the meta rail */
+.r3-split { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 26px; align-items: start; }
+.r3-rail { position: sticky; top: 12px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.r3-rail__lede { margin: 0 0 12px; font-size: 0.8rem; line-height: 1.65; color: var(--ink-2); }
+.r3-ledger { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); }
+@media (max-width: 960px) {
+  .r3-split { grid-template-columns: 1fr; }
+  .r3-rail { position: static; }
 }
-
-/* the eyebrow grammar: mono, lowercase, 0.08em max — the all-caps tracked
-   micro-labels retire everywhere the app still draws them */
-.eyebrow,
-.winapp__railhead,
-.winapp__familyhead,
-.winonboard__eyebrow,
-.winintro__role,
-.table th,
-.routecount,
-.badge,
-.field label {
-  text-transform: none;
-  letter-spacing: var(--sol-track-label);
-}
-
-/* one orchestrated entrance per view, then stillness: the ledger rows
-   join the existing reveal stagger (the observer plays each once) */
-.reveal.in:nth-child(5) { animation-delay: 240ms; }
-.reveal.in:nth-child(6) { animation-delay: 300ms; }
-.reveal.in:nth-child(7) { animation-delay: 360ms; }
-.reveal.in:nth-child(8) { animation-delay: 420ms; }
-
-/* ---------- C1 helper: the editorial ledger (dominant column + meta rail) ---------- */
-
-.ledger {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(228px, 26%, 300px);
-  gap: 18px;
-  align-items: start;
-}
+.ledger { display: grid; grid-template-columns: minmax(0, 1fr) clamp(228px, 26%, 300px); gap: 18px; align-items: start; }
 .ledger__main { min-width: 0; }
-.ledger__rail {
-  position: sticky;
-  top: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  min-width: 0;
-  padding-top: 2px;
-}
+.ledger__rail { position: sticky; top: 12px; display: flex; flex-direction: column; gap: 14px; min-width: 0; padding-top: 2px; }
 @media (max-width: 960px) {
   .ledger { grid-template-columns: 1fr; }
   .ledger__rail { position: static; }
 }
 
 /* the meta rail blocks: hairline-topped mono summaries */
-.railmeta { border-top: 1px solid var(--sol-hairline); padding-top: 12px; }
-.railmeta__head {
-  margin: 0 0 8px;
-  font-family: var(--sol-mono);
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: var(--sol-track-label);
-  color: var(--sol-faint);
-}
-.railmeta__row {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
-  min-height: 24px;
-  font-size: 0.8rem;
-  color: var(--sol-muted);
-}
-.railmeta__row strong {
-  color: var(--sol-text);
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-.railmeta__foot { margin: 10px 0 0; font-size: 0.74rem; line-height: 1.5; color: var(--sol-faint); }
+.railmeta { border-top: 1px solid var(--line); padding-top: 12px; }
+.railmeta__head { display: flex; align-items: center; gap: 6px; margin: 0 0 8px; font-family: var(--font-mono); font-size: 0.68rem; font-weight: 600; letter-spacing: var(--sol-track-label); color: var(--ink-3); }
+.railmeta__row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; min-height: 24px; font-size: 0.8rem; color: var(--ink-2); }
+.railmeta__row strong { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; }
+.railmeta__foot { margin: 10px 0 0; font-size: 0.74rem; line-height: 1.5; color: var(--ink-3); }
 
-/* the key ledger entries of the rail (the uniform keycard grid retires) */
-.edgerow {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 2px 10px;
-  padding: 9px 11px;
-  border: 1px solid var(--sol-hairline);
-  border-radius: 8px;
-  background: var(--sol-surface-1);
-  transition: border-color var(--t-fast) var(--ease), background-color var(--t-fast) var(--ease);
-}
-.edgerow:hover { border-color: var(--sol-hairline-strong); background: var(--sol-surface-2); }
-.edgerow__mask {
-  overflow: hidden;
-  font-family: var(--sol-mono);
-  font-size: 0.76rem;
-  color: var(--sol-text);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.edgerow__meta { font-size: 0.71rem; color: var(--sol-faint); }
-.edgerow__state { grid-row: span 2; align-self: center; }
-
-/* the ladder dots: the state grammar of the registry (filled = on) */
-.ladderdots { display: inline-flex; align-items: center; gap: 4px; }
-.ladderdots i {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: color-mix(in oklab, var(--gr-violet) 30%, transparent);
-  transition: background-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
-}
-.ladderdots i[data-on="true"] {
-  background: var(--gr-violet);
-  box-shadow: 0 0 0 2px color-mix(in oklab, var(--gr-violet) 18%, transparent);
-}
-.ladderdots--wide i { width: 7px; height: 7px; }
-
-/* ---------- C1 ledger: the session store (dominant table, varied rhythm) ---------- */
-
-/* the dominant first column: the session id reads first, the provider
-   rides under it; idle rows (no messages yet) step back visually */
-.ledgename { display: flex; flex-direction: column; gap: 1px; }
-.ledgename strong { font-family: var(--sol-mono); font-size: 0.84rem; font-weight: 600; color: var(--sol-text); }
-.ledgename small { font-family: var(--sol-mono); font-size: 0.69rem; color: var(--sol-faint); }
+/* the data tables: the window-surface grammar — hairline rows, the hover
+   wash, the horizontal scroll on narrow stages */
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--win-radius); background: var(--surface-1); }
+.table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.table th { padding: 10px 14px; border-bottom: 1px solid var(--line); text-align: left; color: var(--ink-3); font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; letter-spacing: var(--sol-track-label); }
+.table td { padding: 12px 14px; border-bottom: 1px solid var(--line); color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.table tr:hover td { background: var(--wash-soft); color: var(--ink); }
+.table.ladder td:first-child { color: var(--ink); }
+.table td.tableempty { padding: 18px 14px; color: var(--ink-3); font-size: 0.82rem; }
 .table td.cellrot, .table td.cellthink, .table td.cellstamp { white-space: nowrap; }
-.table tbody tr[data-idle="true"] td { color: var(--sol-faint); }
-.table tbody tr[data-idle="true"] .ledgename strong { color: var(--sol-muted); }
+.table td.cellmeter { white-space: nowrap; }
+.table tbody tr[data-idle="true"] td { color: var(--ink-3); }
+.ledgename { display: flex; align-items: center; gap: 9px; }
+.ledgename__stack { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.ledgename__stack strong { font-family: var(--font-mono); font-size: 0.84rem; font-weight: 600; color: var(--ink); }
+.ledgename__stack small { font-family: var(--font-mono); font-size: 0.69rem; color: var(--ink-3); }
+.table tbody tr[data-idle="true"] .ledgename__stack strong { color: var(--ink-2); }
 .table td .ladderdots { vertical-align: middle; }
+.tablewrap .emptystate { padding: 10px 0; }
+.r3-ops .tablewrap, .r3-log .tablewrap { border: 0; border-radius: 0; background: transparent; }
+.r3-ops .table tr:hover td, .r3-log .table tr:hover td { background: var(--wash-soft); color: var(--ink); }
 
-/* ---------- C1 ledger: the thinking staircase (one climb, no card grid) ---------- */
+/* the context meter: a hairline bar with the violet fill */
+.r3-meter { display: inline-block; width: 72px; height: 2px; margin-right: 8px; overflow: hidden; vertical-align: middle; border-radius: 1px; background: var(--line-strong); }
+.r3-meter i { display: block; height: 100%; background: var(--accent); }
 
+/* the key ledger entries of the rail (masked keys, one row each) */
+.edgerow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; padding: 9px 11px; border: 1px solid var(--line); border-radius: var(--win-radius); background: var(--surface-1); transition: border-color var(--sol-micro) var(--sol-ease-out), background-color var(--sol-micro) var(--sol-ease-out); }
+.edgerow:hover { border-color: var(--line-strong); background: var(--surface-2); }
+.edgerow__mask { overflow: hidden; font-family: var(--font-mono); font-size: 0.76rem; color: var(--ink); text-overflow: ellipsis; white-space: nowrap; }
+.edgerow__meta { font-size: 0.71rem; color: var(--ink-3); }
+.edgerow__state { grid-row: span 2; align-self: center; }
+.r3-ledger .edgerow:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); border-color: color-mix(in srgb, var(--accent) 26%, transparent); }
+
+/* the ladder dots: the state grammar of rotation and thinking (filled = on) */
+.ladderdots { display: inline-flex; align-items: center; gap: 4px; }
+.ladderdots i { width: 5px; height: 5px; border-radius: 50%; background: color-mix(in srgb, var(--accent) 30%, transparent); }
+.ladderdots i[data-on="true"] { background: var(--accent); }
+
+/* the thinking ladder: mono rungs with hairline budget bars, the default
+   rung rides the violet edge */
 .ladderledger { display: flex; flex-direction: column; }
-.ladderrung {
-  display: grid;
-  grid-template-columns: 30px minmax(0, 1fr) auto auto;
-  gap: 4px 18px;
-  align-items: baseline;
-  margin-left: calc(var(--rung-step, 0) * 24px);
-  padding: 15px 12px 15px 0;
-  border-bottom: 1px solid var(--sol-hairline);
-  transition: background-color var(--t-fast) var(--ease);
-}
-.ladderrung:hover { background: var(--win-page-wash); }
-.ladderrung:first-child { border-top: 1px solid var(--sol-hairline); }
+.ladderrung { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto auto; gap: 4px 18px; align-items: baseline; margin-left: calc(var(--rung-step, 0) * 24px); padding: 15px 12px 15px 0; border-bottom: 1px solid var(--line); transition: background-color var(--sol-micro) var(--sol-ease-out); }
+.ladderrung:hover { background: var(--wash-soft); }
+.ladderrung:first-child { border-top: 1px solid var(--line); }
 .ladderrung:nth-child(2) { --rung-step: 1; }
 .ladderrung:nth-child(3) { --rung-step: 2; }
 .ladderrung:nth-child(4) { --rung-step: 3; }
 .ladderrung:nth-child(5) { --rung-step: 4; }
 .ladderrung:nth-child(6) { --rung-step: 5; }
 .ladderrung:nth-child(7) { --rung-step: 6; }
-.ladderrung__index {
-  font-family: var(--sol-mono);
-  font-size: 0.7rem;
-  color: var(--sol-faint);
-  font-variant-numeric: tabular-nums;
-}
-.ladderrung__name { margin: 0; font-size: clamp(1.02rem, 2vw, 1.35rem); letter-spacing: -0.02em; color: var(--sol-text); }
-.ladderrung__desc { margin: 0; font-size: 0.81rem; color: var(--sol-muted); }
-.ladderrung__budget {
-  margin: 0;
-  font-family: var(--sol-mono);
-  font-size: 0.9rem;
-  color: var(--sol-text);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-.ladderrung__budget small { font-size: 0.67rem; color: var(--sol-faint); }
+.ladderrung.default { border-left: 2px solid var(--accent); padding-left: 14px; }
+.ladderrung__index { font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.ladderrung__body { min-width: 0; }
+.ladderrung__name { margin: 0; font-size: clamp(1.02rem, 2vw, 1.35rem); font-family: var(--font-mono); font-weight: 600; letter-spacing: 0; color: var(--ink); }
+.ladderrung__desc { margin: 0; font-size: 0.81rem; color: var(--ink-2); }
+.ladderrung__budget { margin: 0; font-family: var(--font-mono); font-size: 0.9rem; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ladderrung__budget small { font-size: 0.67rem; color: var(--ink-3); }
 .ladderrung__dots { justify-self: end; }
-
-/* the default rung: the violet ladder marks where the gateway lands */
-.ladderrung.default { border-left: 2px solid var(--gr-violet); padding-left: 14px; }
 @media (max-width: 720px) {
   .ladderrung { --rung-step: 0; }
 }
+.r3-rung:hover { background: var(--wash-soft); }
+.r3-budget { display: block; width: min(260px, 100%); height: 2px; margin-top: 8px; background: var(--line-strong); }
+.r3-budget i { display: block; height: 100%; background: var(--accent); }
+.r3-ladder .ladderrung__name { font-size: 0.95rem; }
 
-/* ---------- C1 ledger: the gateway registry (five rows, no card grid) ---------- */
-
-.gatelog { display: flex; flex-direction: column; border-top: 1px solid var(--sol-hairline); }
-.gaterow {
-  display: grid;
-  grid-template-columns: clamp(88px, 11vw, 124px) minmax(0, 1fr) minmax(190px, 290px);
-  gap: 6px 22px;
-  align-items: start;
-  padding: 22px 0;
-  border-bottom: 1px solid var(--sol-hairline);
-}
+/* the gateway registry: five ruled rows, the version as the display column */
+.gatelog { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+.gaterow { display: grid; grid-template-columns: clamp(88px, 11vw, 124px) minmax(0, 1fr) minmax(190px, 290px); gap: 6px 22px; align-items: start; padding: 22px 0; border-bottom: 1px solid var(--line); transition: background-color var(--sol-micro) var(--sol-ease-out); }
+.gaterow:hover { background: var(--wash-soft); }
 .gaterow__id { display: flex; flex-direction: column; gap: 8px; }
-.gaterow__v {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(1.9rem, 4vw, 2.7rem);
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 0.95;
-  color: var(--sol-text);
-}
-.gaterow__state {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-family: var(--sol-mono);
-  font-size: 0.7rem;
-  letter-spacing: var(--sol-track-label);
-  color: var(--sol-muted);
-}
-.gaterow__state i {
-  flex: none;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--gr-violet);
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--gr-violet) 20%, transparent);
-}
-.gaterow[data-paused="true"] .gaterow__v { color: var(--sol-faint); }
-.gaterow[data-paused="true"] .gaterow__state i {
-  background: var(--sol-warning);
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--sol-warning) 18%, transparent);
-}
+.gaterow__v { margin: 0; font-family: var(--font-display); font-size: clamp(1.9rem, 4vw, 2.7rem); font-weight: 800; letter-spacing: -0.04em; line-height: 0.95; color: var(--ink); }
+.gaterow__state { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: var(--sol-track-label); color: var(--ink-2); }
+.gaterow[data-paused="true"] .gaterow__v { color: var(--ink-3); }
+.gaterow[data-paused="true"] .gaterow__state .r3-livedot { background: var(--warn); }
 .gaterow[data-paused="true"] .gaterow__body { opacity: 0.74; }
 .gaterow__body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.gaterow__provider { margin: 0; font-size: 0.98rem; font-weight: 600; color: var(--sol-text); }
-.gaterow__pattern { margin: 0; font-size: 0.8rem; color: var(--sol-muted); }
-.gaterow__models {
-  margin: 0;
-  font-family: var(--sol-mono);
-  font-size: 0.71rem;
-  line-height: 1.55;
-  color: var(--sol-faint);
-}
-.gaterow__note { margin: 4px 0 0; font-size: 0.78rem; color: var(--sol-muted); }
+.gaterow__provider { margin: 0; font-size: 0.98rem; font-weight: 600; color: var(--ink); }
+.gaterow__pattern { margin: 0; font-size: 0.8rem; color: var(--ink-2); }
+.gaterow__models { margin: 0; font-family: var(--font-mono); font-size: 0.71rem; line-height: 1.55; color: var(--ink-3); }
+.gaterow__note { margin: 4px 0 0; font-size: 0.78rem; color: var(--ink-2); }
 .gaterow__routes { display: flex; flex-direction: column; gap: 9px; align-items: flex-start; }
-.gaterow__count {
-  margin: 0;
-  font-family: var(--sol-mono);
-  font-size: 0.7rem;
-  letter-spacing: var(--sol-track-label);
-  color: var(--sol-faint);
-}
+.gaterow__count { margin: 0; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: var(--sol-track-label); color: var(--ink-3); }
 .gaterow__chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.r3-gatelog .gaterow__id .r3-tag { align-self: flex-start; margin-top: 2px; }
 @media (max-width: 860px) {
   .gaterow { grid-template-columns: 1fr; }
 }
+.r3-parser { padding-left: 18px; font-family: var(--font-mono); font-size: 0.72rem; line-height: 1.75; }
 
-/* ---------- C1 composition: the home domains as one broken plate ---------- */
-
-/* the uniform icon+title+text grid retires: one dominant lead plate with
-   the two secondary domains stacked beside it */
-.domaincards { grid-template-columns: 1.35fr 1fr; }
-.domaincard:first-child {
-  grid-row: 1 / span 2;
-  display: flex;
-  flex-direction: column;
-}
-.domaincard:first-child .cardicon { width: 44px; height: 44px; }
-.domaincard:first-child h3 { font-size: 1.35rem; }
-.domaincard:first-child p { max-width: 42ch; font-size: 0.97rem; }
-.domaincard:first-child .cardlink { margin-top: auto; }
-@media (max-width: 860px) {
-  .domaincards { grid-template-columns: 1fr; }
-  .domaincard:first-child { grid-row: auto; }
-}
-
-/* the hero: the wordmark rides the display face as the one giant specimen
-   of the view (the window-frame rescale above gives way) */
-.winapp__stage .hero .wordmark { font-size: clamp(3rem, 8vw, 4.6rem); }
-
-/* ---------- C1 guards ---------- */
-@media (prefers-reduced-motion: reduce) {
-  .ladderdots i, .gaterow__state i, .edgerow, .ladderrung { transition: none; }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .halftone::after, .grain::before { display: none; }
-  .edgerow { background: var(--sol-surface-1); }
-}
-
-/* ===== campaign v3 · r3-getry =====
-   The getry wave R3: TWO interfaces on one deep navy-black base —
-   the LANDING (home: one violet light, the prompt-giga endpoint field, the
-   replica matrix ledger, the 01–03 deploy steps, the meta-quad footer)
-   and the PLATFORM (sessions/thinking/versions: asymmetric 1.6fr/1fr
-   splits, ruled rows hovering at violet 10%, the mono thinking ladder with
-   hairline budget bars, version rows with tag chips, session rows with
-   live dots). The violet #8b5cf6 stays the ONE flat signal (color-mix
-   tints, never purple-blue gradients); motion rides one ease
-   cubic-bezier(.2,.8,.2,1) — entrances 400–800ms staggered 60–90ms,
-   micro 120–250ms, loops 2–16s, ambient behind no-preference guards,
-   never an all-properties transition. Append-only: every earlier pass stays intact.
-   ===== */
-
-/* ---------- r3 tokens: the deep navy-black base ---------- */
-:root {
-  /* the navy-black canvas and the navy surface ladder (the graphite retires) */
-  --sol-canvas: #070b14;
-  --sol-canvas-deep: #05080f;
-  --sol-bg: #070b14;
-  --sol-bg-2: #0c1220;
-  --sol-surface-1: #0a0f1b;
-  --sol-surface-2: #0e1424;
-  --sol-surface-3: #121a2d;
-  --sol-surface-4: #16203a;
-  --sol-surface-5: #1b2745;
-  --sol-surface-6: #223052;
-  --sol-surface-7: #2a3a60;
-  --sol-surface-8: #33456e;
-  --sol-ink: #eef3fb;
-  --sol-text: #eef3fb;
-  --sol-muted: #9aa8c3;
-  --sol-faint: #647191;
-  /* the window acrylic rides the navy (the chrome stays dark in both themes) */
-  --win-bar: rgba(7, 11, 20, 0.78);
-  --win-panel: rgba(10, 15, 27, 0.84);
-  --win-mica: #070b14 radial-gradient(#0b1120 25%, #070b14 100%) no-repeat fixed;
-  /* the one motion ease of the wave */
-  --r3-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-[data-theme="light"] {
-  /* the quiet daylight paper of the gateway (restated after the dark block) */
-  --sol-canvas: #f3f5f9;
-  --sol-canvas-deep: #e9edf4;
-  --sol-bg: #f3f5f9;
-  --sol-bg-2: #fbfcfe;
-  --sol-surface-1: #eef1f7;
-  --sol-surface-2: #f8fafd;
-  --sol-surface-3: #fbfcfe;
-  --sol-surface-4: #ffffff;
-  --sol-surface-5: #ffffff;
-  --sol-surface-6: #ffffff;
-  --sol-surface-7: #ffffff;
-  --sol-surface-8: #ffffff;
-  --sol-ink: #101623;
-  --sol-text: #101623;
-  --sol-muted: #3d4a63;
-  --sol-faint: #5c6a86;
-  --win-mica: #f3f5f9 radial-gradient(#eef2f9 75%, #f3f5f9 100%) no-repeat fixed;
-}
-
-/* ---------- r3 atmosphere: ONE light per view ---------- */
-
-/* the stage: one faint violet wash upper right (the C1 double radial retires) */
-.winapp__stage {
-  background: radial-gradient(1100px 640px at 78% -10%, color-mix(in oklab, var(--gr-violet) 7%, transparent), transparent 60%);
-}
-
-/* the entry surfaces: the same single wash over the Mica */
-.winintro,
-.winonboard {
-  background:
-    radial-gradient(1100px 640px at 78% -10%, color-mix(in oklab, var(--gr-violet) 8%, transparent), transparent 60%),
-    var(--win-mica);
-}
-
-/* the landing hero: THE violet light source of the view (13% at the headline) */
-.r3-hero {
-  position: relative;
-}
-.r3-hero::before {
-  content: "";
-  position: absolute;
-  inset: 0 -8% auto;
-  height: 140%;
-  z-index: 0;
-  pointer-events: none;
-  background: radial-gradient(46% 54% at 30% 8%, color-mix(in oklab, var(--gr-violet) 13%, transparent), transparent 72%);
-}
-.winapp__stage .r3-hero {
-  padding: 34px 0 26px;
-}
-.winapp__stage .section {
-  padding: 26px 0 12px;
-}
-
-/* the hero grid: headline + phrase left, the gateway mark right */
-.r3-hero__grid {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
-  gap: 24px;
-  align-items: center;
-}
-.r3-hero__main {
-  min-width: 0;
-}
-.r3-hero__side {
-  display: grid;
-  place-items: center;
-}
-.r3-heromark {
-  display: block;
-  width: 128px;
-  height: 128px;
-  filter: drop-shadow(0 18px 44px color-mix(in oklab, var(--gr-violet) 20%, transparent));
-}
-.r3-headline {
-  margin: 0 0 14px;
-  font-size: clamp(2.5rem, 5.4vw, 4.1rem);
-  font-weight: 800;
-  letter-spacing: -0.045em;
-  line-height: 0.98;
-  text-wrap: balance;
-}
-.r3-phrase {
-  max-width: 58ch;
-  margin: 0;
-  font-size: clamp(1rem, 1.5vw, 1.14rem);
-  color: var(--sol-muted);
-}
-@media (max-width: 860px) {
-  .r3-hero__grid {
-    grid-template-columns: 1fr;
-  }
-  .r3-hero__side {
-    display: none;
-  }
-}
-
-/* the gateway mark carries the plate slide 5.2s — the stacked plates
-   deploy like gateway instances (transform/opacity only, loop with rest) */
-@media (prefers-reduced-motion: no-preference) {
-  .r3-hero .r3-heromark .grMarkGlyph path {
-    animation: r3PlateDeploy 5.2s var(--r3-ease) infinite;
-  }
-  .r3-hero .r3-heromark .grMarkGlyph path:nth-child(2) {
-    animation-delay: 220ms;
-  }
-  .r3-hero .r3-heromark .grMarkGlyph path:nth-child(3) {
-    animation-delay: 440ms;
-  }
-}
-@keyframes r3PlateDeploy {
-  0%,
-  12% {
-    transform: translate(0, 0);
-    opacity: 1;
-  }
-  26% {
-    transform: translate(0, -7px);
-    opacity: 0.55;
-  }
-  40% {
-    transform: translate(1.4px, -2px);
-    opacity: 0.9;
-  }
-  52%,
-  100% {
-    transform: translate(0, 0);
-    opacity: 1;
-  }
-}
-
-/* ---------- r3 landing: the prompt-giga field ---------- */
-.r3-prompt {
-  max-width: 720px;
-  margin: 30px 0 0;
-}
-.r3-prompt__field {
-  position: relative;
-  display: flex;
-  align-items: center;
-  min-height: 68px;
-  border-bottom: 1px solid color-mix(in oklab, var(--gr-violet) 34%, transparent);
-  background: linear-gradient(180deg, color-mix(in oklab, var(--gr-violet) 7%, transparent), transparent 78%);
-  transition: border-color var(--t-base) var(--r3-ease), background-color var(--t-base) var(--r3-ease);
-}
-.r3-prompt__field:focus-within {
-  border-bottom-color: var(--gr-violet);
-  background-color: color-mix(in oklab, var(--gr-violet) 4%, transparent);
-}
-.r3-prompt__label {
-  position: absolute;
-  top: -17px;
-  left: 0;
-  font-family: var(--sol-mono);
-  font-size: 0.68rem;
-  letter-spacing: var(--sol-track-label);
-  color: var(--sol-faint);
-}
-.r3-prompt__input {
-  flex: 1;
-  min-width: 0;
-  height: 64px;
-  padding: 0 4px;
-  border: 0;
-  background: transparent;
-  color: var(--sol-text);
-  font-family: var(--sol-mono);
-  font-size: clamp(1.05rem, 2.4vw, 1.45rem);
-  letter-spacing: -0.01em;
-  font-variant-numeric: tabular-nums;
-}
-.r3-prompt__input:focus {
-  outline: none;
-}
-.r3-prompt__key {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  flex: none;
-  min-height: 40px;
-  padding: 0 16px;
-  margin-left: 10px;
-  border: 1px solid color-mix(in oklab, var(--gr-violet) 44%, transparent);
-  border-radius: 6px;
-  background: color-mix(in oklab, var(--gr-violet) 16%, transparent);
-  color: var(--sol-text);
-  font-family: var(--sol-mono);
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  cursor: pointer;
-  transition: background-color var(--t-fast) var(--r3-ease), border-color var(--t-fast) var(--r3-ease),
-    transform var(--t-fast) var(--r3-ease);
-}
-.r3-prompt__key:hover {
-  background-color: color-mix(in oklab, var(--gr-violet) 26%, transparent);
-  border-color: var(--gr-violet);
-}
-.r3-prompt__key:active {
-  transform: scale(0.96);
-}
-.r3-prompt__key:focus-visible {
-  outline: 2px solid var(--sol-focus);
-  outline-offset: 2px;
-}
-.r3-prompt__status {
-  min-height: 1.15em;
-  margin: 10px 0 0;
-  font-family: var(--sol-mono);
-  font-size: 0.72rem;
-  color: var(--sol-faint);
-  font-variant-numeric: tabular-nums;
-}
-.r3-prompt__chips {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 14px;
-}
-.r3-chipset {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  min-inline-size: 0;
-}
-.r3-chipset__legend {
-  flex-basis: 100%;
-  margin: 0 0 2px;
-  padding: 0;
-  font-family: var(--sol-mono);
-  font-size: 0.62rem;
-  letter-spacing: var(--sol-track-label);
-  color: var(--sol-faint);
-}
-.r3-chip {
-  padding: 5px 11px;
-  border: 1px solid var(--sol-hairline-strong);
-  border-radius: 5px;
-  background: transparent;
-  color: var(--sol-muted);
-  font-family: var(--sol-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.02em;
-  cursor: pointer;
-  transition: color var(--t-fast) var(--r3-ease), border-color var(--t-fast) var(--r3-ease),
-    background-color var(--t-fast) var(--r3-ease);
-}
-.r3-chip:hover {
-  color: var(--sol-text);
-  border-color: color-mix(in oklab, var(--gr-violet) 45%, transparent);
-}
-.r3-chip[aria-pressed="true"] {
-  color: var(--gr-violet);
-  border-color: color-mix(in oklab, var(--gr-violet) 55%, transparent);
-  background: color-mix(in oklab, var(--gr-violet) 10%, transparent);
-}
-.r3-chip--route {
-  padding: 4px 9px;
-  font-size: 0.66rem;
-}
-.r3-chip:focus-visible {
-  outline: 2px solid var(--sol-focus);
-  outline-offset: 2px;
-}
-
-/* ---------- r3 landing: the replica matrix ledger ---------- */
-.r3-matrix {
-  width: 100%;
-  border-collapse: collapse;
-}
-.r3-matrix th {
-  padding: 0 10px 8px;
-  border-bottom: 1px solid var(--sol-hairline);
-  font-family: var(--sol-mono);
-  font-size: 0.66rem;
-  font-weight: 600;
-  text-align: left;
-  letter-spacing: var(--sol-track-label);
-  color: var(--sol-faint);
-}
-.r3-matrix td {
-  padding: 14px 10px;
-  border-bottom: 1px solid var(--sol-hairline);
-  font-variant-numeric: tabular-nums;
-  vertical-align: middle;
-}
-.r3-matrix tbody tr {
-  transition: background-color var(--t-fast) var(--r3-ease);
-}
-.r3-matrix tbody tr:hover {
-  background: color-mix(in oklab, var(--gr-violet) 10%, transparent);
-}
-.r3-matrix tbody tr[data-featured="true"] {
-  background: linear-gradient(90deg, color-mix(in oklab, var(--gr-violet) 9%, transparent), transparent 65%);
-  box-shadow: inset 2px 0 0 var(--gr-violet);
-}
-.r3-matrix__id {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  min-width: 0;
-}
-.r3-matrix__id strong {
-  font-family: var(--sol-mono);
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--sol-text);
-}
-.r3-matrix__id small {
-  overflow: hidden;
-  font-family: var(--sol-mono);
-  font-size: 0.68rem;
-  color: var(--sol-faint);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.r3-matrix__serves {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-}
-.r3-matrix__featnote {
-  font-family: var(--sol-mono);
-  font-size: 0.68rem;
-  color: var(--sol-faint);
-}
-.r3-matrix__lane {
-  overflow: hidden;
-  font-family: var(--sol-mono);
-  font-size: 0.76rem;
-  color: var(--sol-muted);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.r3-matrix__count {
-  font-family: var(--sol-mono);
-  font-size: 0.8rem;
-  color: var(--sol-text);
-}
-.r3-matrix__state {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--sol-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.04em;
-  color: var(--sol-muted);
-}
-.r3-matrix__note {
-  max-width: 74ch;
-  margin: 12px 0 0;
-  font-size: 0.78rem;
-  color: var(--sol-faint);
-}
-@media (max-width: 640px) {
-  .r3-matrix th:nth-child(3),
-  .r3-matrix td:nth-child(3),
-  .r3-matrix th:nth-child(4),
-  .r3-matrix td:nth-child(4) {
-    display: none;
-  }
-}
-
-/* the tag chip: the provider/free-tag vocabulary of the registry */
-.r3-tag {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 8px;
-  border: 1px solid color-mix(in oklab, var(--gr-violet) 30%, transparent);
-  border-radius: 4px;
-  background: color-mix(in oklab, var(--gr-violet) 8%, transparent);
-  color: var(--gr-violet);
-  font-family: var(--sol-mono);
-  font-size: 0.66rem;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-}
-
-/* the live dot: the state grammar of replicas and sessions */
-.r3-livedot {
-  position: relative;
-  flex: none;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: color-mix(in oklab, var(--gr-violet) 28%, transparent);
-}
-.r3-livedot[data-live="true"] {
-  background: var(--gr-violet);
-}
-@media (prefers-reduced-motion: no-preference) {
-  .r3-livedot[data-live="true"]::after {
-    content: "";
-    position: absolute;
-    inset: -3px;
-    border-radius: 50%;
-    border: 1px solid color-mix(in oklab, var(--gr-violet) 55%, transparent);
-    animation: r3LivePing 2.4s var(--r3-ease) infinite;
-  }
-}
-@keyframes r3LivePing {
-  0% {
-    transform: scale(0.6);
-    opacity: 0.9;
-  }
-  70%,
-  100% {
-    transform: scale(1.5);
-    opacity: 0;
-  }
-}
-
-/* ---------- r3 landing: the 01–03 deploy steps ---------- */
-.r3-steps {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr;
-  border-top: 1px solid var(--sol-hairline);
-}
-.r3-step {
-  padding: 22px 22px 22px 0;
-  border-bottom: 1px solid var(--sol-hairline);
-}
-.r3-step + .r3-step {
-  padding-left: 22px;
-  border-left: 1px solid var(--sol-hairline);
-}
-.r3-step__index {
-  font-family: var(--sol-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  color: var(--gr-violet);
-  font-variant-numeric: tabular-nums;
-}
-.r3-step__title {
-  margin: 10px 0 6px;
-  font-size: 1.12rem;
-  letter-spacing: -0.02em;
-}
-.r3-step__phrase {
-  max-width: 40ch;
-  margin: 0;
-  font-size: 0.84rem;
-  color: var(--sol-muted);
-}
-@media (max-width: 860px) {
-  .r3-steps {
-    grid-template-columns: 1fr;
-  }
-  .r3-step + .r3-step {
-    padding-left: 0;
-    border-left: 0;
-  }
-}
-
-/* ---------- r3 landing: the meta-quad footer ---------- */
-.r3-quad {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
-  margin: auto 0 8px; /* the sticky-footer law: the meta-quad eats the slack and sits flush on the window floor */
-  padding: 22px 0 6px;
-  border-top: 1px solid var(--sol-hairline);
-}
-.r3-quad__col {
-  min-width: 0;
-}
-.r3-quad__head {
-  margin: 0 0 6px;
-  font-family: var(--sol-mono);
-  font-size: 0.66rem;
-  letter-spacing: var(--sol-track-label);
-  color: var(--sol-faint);
-}
-.r3-quad__meta {
-  margin: 0;
-  font-family: var(--sol-mono);
-  font-size: 0.74rem;
-  line-height: 1.7;
-  color: var(--sol-muted);
-  font-variant-numeric: tabular-nums;
-}
-.r3-quad__links {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.r3-quad__links a {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--sol-muted);
-  text-decoration: none;
-  transition: color var(--t-fast) var(--r3-ease);
-}
-.r3-quad__links a:hover {
-  color: var(--gr-violet);
-  text-decoration: none;
-}
-
-/* the landing footer family row: the eight siblings with their §12 accents,
-   one hairline above the base (the same family.ts table the rail foot and
-   the design tests ride — the row links OUT, never back) */
-.r3-quad__family {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 18px;
-  padding-top: 16px;
-  border-top: 1px solid var(--sol-hairline);
-}
-.r3-quad__familyhead {
-  font-family: var(--sol-mono);
-  font-size: 0.66rem;
-  letter-spacing: var(--sol-track-label);
-  color: var(--sol-faint);
-}
-.r3-quad__famlink {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--sol-mono);
-  font-size: 0.74rem;
-  color: var(--sol-muted);
-  text-decoration: none;
-  transition: color var(--t-fast) var(--r3-ease);
-}
-.r3-quad__famlink:hover {
-  color: var(--sol-text);
-  text-decoration: none;
-}
-.r3-quad__famdot {
-  flex: none;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  transition: transform var(--t-fast) var(--r3-ease);
-}
-.r3-quad__famlink:hover .r3-quad__famdot {
-  transform: scale(1.35);
-}
-@media (max-width: 860px) {
-  .r3-quad {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-/* ---------- r3 platform: the operational splits ---------- */
-.r3-split {
-  display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
-  gap: 26px;
-  align-items: start;
-}
-.r3-rail {
-  position: sticky;
-  top: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  min-width: 0;
-}
-@media (max-width: 960px) {
-  .r3-split {
-    grid-template-columns: 1fr;
-  }
-  .r3-rail {
-    position: static;
-  }
-}
-
-/* the sessions ledger rides 1.6fr/1fr and drops its box (ruled rows only) */
-.r3-ledger {
-  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
-}
-.r3-ops .tablewrap,
-.r3-log .tablewrap {
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-}
-.r3-ops .table tr:hover td,
-.r3-log .table tr:hover td {
-  background: color-mix(in oklab, var(--gr-violet) 10%, transparent);
-  color: var(--sol-text);
-}
-.ledgename {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 9px;
-}
-.ledgename__stack {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  min-width: 0;
-}
-.cellmeter {
-  white-space: nowrap;
-}
-.r3-meter {
-  display: inline-block;
-  width: 72px;
-  height: 2px;
-  margin-right: 8px;
-  overflow: hidden;
-  vertical-align: middle;
-  border-radius: 1px;
-  background: var(--sol-hairline-strong);
-}
-.r3-meter i {
-  display: block;
-  height: 100%;
-  background: var(--gr-violet);
-}
-.r3-ledger .edgerow:hover {
-  background: color-mix(in oklab, var(--gr-violet) 10%, transparent);
-  border-color: color-mix(in oklab, var(--gr-violet) 26%, transparent);
-}
-
-/* the thinking ladder: mono rungs with hairline budget bars */
-.r3-rung {
-  transition: background-color var(--t-fast) var(--r3-ease);
-}
-.r3-rung:hover {
-  background: color-mix(in oklab, var(--gr-violet) 10%, transparent);
-}
-.r3-ladder .ladderrung__name {
-  font-family: var(--sol-mono);
-  font-size: 0.95rem;
-  font-weight: 600;
-  letter-spacing: 0;
-}
-.r3-budget {
-  display: block;
-  width: min(260px, 100%);
-  height: 2px;
-  margin-top: 8px;
-  background: var(--sol-hairline-strong);
-}
-.r3-budget i {
-  display: block;
-  height: 100%;
-  background: var(--gr-violet);
-}
-.r3-rail__lede {
-  margin: 0 0 12px;
-  font-size: 0.8rem;
-  line-height: 1.65;
-  color: var(--sol-muted);
-}
-.r3-rail .railmeta__row strong {
-  text-align: right;
-}
-.r3-parser {
-  padding-left: 18px;
-  font-family: var(--sol-mono);
-  font-size: 0.72rem;
-  line-height: 1.75;
-}
-.r3-parser li::marker {
-  color: var(--gr-violet);
-}
-.r3-gatelog .gaterow {
-  transition: background-color var(--t-fast) var(--r3-ease);
-}
-.r3-gatelog .gaterow:hover {
-  background: color-mix(in oklab, var(--gr-violet) 10%, transparent);
-}
-.r3-gatelog .gaterow__id .r3-tag {
-  align-self: flex-start;
-  margin-top: 2px;
-}
-
-/* ---------- r3 shell: the landing rest (logo discipline, CSS-enforced) ---------- */
-.winapp[data-landing="true"] .winapp__brand .grMark {
-  opacity: 0.32;
-  transition: opacity var(--t-slow) var(--r3-ease);
-}
-.winapp[data-landing="true"] .winapp__brand .grMarkGlow {
-  opacity: 0;
-}
-
-/* ---------- r3 entries: intro, onboarding, 404 (token-driven polish) ---------- */
-.winintro__role {
-  color: var(--gr-violet);
-}
-.winonboard__fact {
-  border: 0;
-  border-bottom: 1px solid var(--sol-hairline);
-  border-radius: 0;
-  background: transparent;
-}
-.winonboard__fact:last-child {
-  border-bottom: 0;
-}
-.notfound-page .glass {
-  background: transparent;
-  border: 0;
-  border-top: 1px solid var(--sol-hairline);
-  border-bottom: 1px solid var(--sol-hairline);
-  border-radius: 0;
-  box-shadow: none;
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-}
-
-/* ---------- r3 motion: the entrance scale of the wave ---------- */
-.reveal.in {
-  animation-duration: 560ms;
-  animation-timing-function: var(--r3-ease);
-}
-.reveal.in:nth-child(2) {
-  animation-delay: 70ms;
-}
-.reveal.in:nth-child(3) {
-  animation-delay: 140ms;
-}
-.reveal.in:nth-child(4) {
-  animation-delay: 210ms;
-}
-.reveal.in:nth-child(5) {
-  animation-delay: 280ms;
-}
-.reveal.in:nth-child(6) {
-  animation-delay: 350ms;
-}
-.reveal.in:nth-child(7) {
-  animation-delay: 420ms;
-}
-.reveal.in:nth-child(8) {
-  animation-delay: 490ms;
-}
-.reveal.in:nth-child(9) {
-  animation-delay: 560ms;
-}
-
-/* ---------- r3 guards ---------- */
-@media (prefers-reduced-motion: reduce) {
-  .r3-hero .r3-heromark .grMarkGlyph path,
-  .r3-livedot[data-live="true"]::after {
-    animation: none !important;
-  }
-  .r3-matrix tbody tr,
-  .r3-chip,
-  .r3-prompt__key,
-  .r3-prompt__field,
-  .r3-gatelog .gaterow,
-  .r3-quad__links a {
-    transition: none;
-  }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .r3-prompt__field {
-    background: transparent;
-  }
-  .r3-matrix tbody tr[data-featured="true"] {
-    background: var(--sol-surface-2);
-  }
-  .r3-heromark {
-    filter: none;
-  }
-}
-
-/* ===== wave 6-a — the family accents + the honest empty frame =====
-   The rail-foot family dots ride the shared family.ts table (one §12 accent
-   each, inline style), the empty surfaces answer with the family recipe
-   (glyph in the violet wash + one line of truth + one real action) and the
-   landing footer carries the family row. Append-only. ===== */
+/* route chips: the windows 4px control with the violet pressed state */
+.routechip { padding: 4px 10px; background: transparent; border: 1px solid var(--line-strong); border-radius: var(--win-radius-ctl); font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-2); cursor: pointer; transition: border-color var(--sol-micro) var(--sol-ease-out), color var(--sol-micro) var(--sol-ease-out), background-color var(--sol-micro) var(--sol-ease-out), transform var(--dur-press) ease-in-out; }
+.routechip:hover { border-color: var(--ink-3); color: var(--ink); background: var(--wash-soft); }
+.routechip:active { transform: scale(0.96); }
+.routechip[aria-pressed="true"], .routechip.is-active { border-color: color-mix(in srgb, var(--accent) 55%, transparent); color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.routechip:disabled { opacity: 0.45; cursor: not-allowed; }
+.routechip:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 
 /* the empty state: glyph in the violet wash, one line of truth, one real
    action — never a dry "nothing here" (the family recipe) */
-.emptystate {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 22px 18px;
-}
-.emptystate__glyph {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border: 1px solid color-mix(in oklab, var(--gr-violet) 38%, transparent);
-  border-radius: 8px;
-  background: color-mix(in oklab, var(--gr-violet) 9%, transparent);
-  color: var(--gr-violet);
-}
-.emptystate__note {
-  margin: 0;
-  max-width: 52ch;
-  font-size: 0.88rem;
-  line-height: 1.55;
-  color: var(--sol-muted);
-}
+.emptystate { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 22px 18px; }
+.emptystate__glyph { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent); border-radius: var(--win-radius); background: color-mix(in srgb, var(--accent) 9%, transparent); color: var(--accent); }
+.emptystate__note { margin: 0; max-width: 52ch; font-size: 0.88rem; line-height: 1.55; color: var(--ink-2); }
 .emptystate__action { display: flex; flex-wrap: wrap; gap: 10px; }
-.tableempty .emptystate { padding: 10px 0; }
 
-/* guards: the empty frame obeys the reduced-motion hard stop (the .01ms rule
-   above rides every animation) and the transparency floors keep the wash
-   readable */
+/* toast — the acrylic notification: the window radius, the grain, the
+   flyout shadow, tone on the border only, the fluent entry */
+.toaststack { position: fixed; right: 18px; bottom: 18px; z-index: var(--z-toast); display: grid; gap: 10px; max-width: min(360px, calc(100vw - 36px)); }
+.toast {
+  display: flex; align-items: center; gap: 10px; padding: 12px 14px;
+  border: 1px solid var(--line); border-radius: var(--win-radius);
+  font-size: 0.9rem; color: var(--ink);
+  background-color: var(--panel); background-image: var(--noise);
+  backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px);
+  box-shadow: var(--shadow-flyout);
+  animation: riseIn var(--dur-2) var(--ease-window) backwards;
+}
+.toast.success { border-color: color-mix(in srgb, var(--ok) 60%, transparent); }
+.toast.success > svg { color: var(--ok); }
+.toast.error { border-color: color-mix(in srgb, var(--err) 60%, transparent); }
+.toast.error > svg { color: var(--err); }
+.toast.info > svg { color: var(--info); }
+.toast button { margin-left: auto; display: inline-flex; padding: 4px; border: 0; border-radius: var(--win-radius-ctl); background: transparent; color: var(--ink-3); transition: color var(--sol-micro) var(--sol-ease-out), background-color var(--sol-micro) var(--sol-ease-out); }
+.toast button:hover { color: var(--ink); background: var(--wash-soft); }
+
+/* ---------- 6. entries — the intro and the onboarding over the canvas ---------- */
+
+/* the intro splash — the akash floor: the mark springs in on the family
+   spring (backOut), the name rises backOut, the role fades late, the exit
+   slides the stage up 0.8s on the leave curve; no dots, no spinner */
+.winintro { position: fixed; inset: 0; z-index: var(--z-modal); display: grid; place-items: center; overflow: hidden; cursor: pointer; background: radial-gradient(1100px 640px at 74% -12%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 62%), var(--mica); }
+.winintro::before { content: ""; position: absolute; inset: 0; background-image: var(--noise); pointer-events: none; }
+.winintro__stage { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.winintro__mark { display: block; width: 96px; height: 96px; animation: winintroSpring 500ms var(--ease-spring) backwards; }
+.winintro__name { margin: 0; font-size: clamp(2rem, 5vw, 3rem); font-weight: 750; letter-spacing: var(--sol-track-display); color: var(--ink); animation: winintroRise 450ms var(--ease-spring) 120ms backwards; }
+.winintro__role { margin: 0; font-size: 12px; font-family: var(--font-mono); color: var(--accent); letter-spacing: var(--sol-track-label); text-transform: lowercase; animation: winintroFade var(--dur-2) var(--sol-ease-out) 420ms backwards; }
+.winintro__skip { position: absolute; bottom: 24px; margin: 0; font-family: var(--font-mono); font-size: 11px; letter-spacing: var(--sol-track-label); color: var(--ink-3); animation: winintroFade var(--dur-2) var(--sol-ease-out) 1000ms backwards; }
+.winintro[data-leaving="true"] { animation: winintroLeave 800ms var(--ease-leave) forwards; }
+
+/* the onboarding: the first-run dialog — a dialog-sized window over the
+   canvas, the 250ms window entry, frames remount per step so the entry
+   plays each time, the 3-segment ladder tracks the position, the skip rides
+   the header (seen = may skip; the flow never forces twice) */
+.winonboard { position: fixed; inset: 0; z-index: calc(var(--z-modal) - 10); display: grid; place-items: center; padding: 20px; overflow-y: auto; background: radial-gradient(1100px 640px at 74% -12%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 62%), var(--mica); }
+.winonboard::before { content: ""; position: absolute; inset: 0; background-image: var(--noise); pointer-events: none; }
+.winonboard__card {
+  position: relative; width: min(560px, 100%); border: 1px solid var(--line-strong); border-radius: var(--win-radius);
+  background-color: var(--panel); background-image: var(--noise); box-shadow: var(--shadow-window); overflow: hidden;
+  backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px);
+  animation: winappOpen var(--dur-2) var(--ease-window) backwards;
+}
+.winonboard__head { display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 16px; background-color: var(--bar); background-image: var(--noise); border-bottom: 1px solid var(--line); }
+.winonboard__head .grMark { flex: none; }
+.winonboard__title { font-size: 13px; font-weight: 600; color: var(--ink); }
+.winonboard__skip { margin-left: auto; min-height: 44px; padding: 0 10px; border: 0; background: transparent; color: var(--ink-3); font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: var(--sol-track-label); text-transform: lowercase; transition: color var(--sol-micro) var(--sol-ease-out), background-color var(--sol-micro) var(--sol-ease-out), transform var(--dur-press) ease-in-out; }
+.winonboard__skip:hover { color: var(--ink); background: var(--wash-soft); }
+.winonboard__skip:active { transform: scale(0.97); }
+.winonboard__body { display: flex; flex-direction: column; min-height: 264px; padding: var(--space-6); }
+.winonboard__step { display: flex; flex-direction: column; gap: 14px; animation: winonboardIn var(--dur-2) var(--ease-window) backwards; }
+.winonboard__eyebrow { margin: 0; font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--accent); letter-spacing: var(--sol-track-label); text-transform: lowercase; }
+.winonboard__lead { margin: 0; font-size: clamp(1.25rem, 3vw, 1.6rem); letter-spacing: var(--sol-track-display); color: var(--ink); }
+.winonboard__lede { margin: 0; font-size: 14px; line-height: 1.65; color: var(--ink-2); }
+.winonboard__facts { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.winonboard__fact { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 12px; border-bottom: 1px solid var(--line); color: var(--ink-2); font-size: 13px; }
+.winonboard__fact:last-child { border-bottom: 0; }
+.winonboard__fact svg { flex: 0 0 auto; color: var(--win-accent); }
+.winonboard__fact strong { color: var(--ink); font-weight: 600; }
+.winonboard__foot { display: flex; align-items: center; gap: 16px; padding: 14px 20px; border-top: 1px solid var(--line); }
+.winonboard__ladder { display: flex; flex: 1; gap: 6px; }
+.winonboard__segrun { height: 3px; flex: 1; border-radius: 2px; background: var(--wash); transition: background-color var(--dur-2) var(--ease-window); }
+.winonboard__segrun[data-active="true"] { background: var(--win-accent); }
+.winonboard__actions { display: flex; gap: 8px; margin-left: auto; }
+.winonboard__act {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px;
+  border: 1px solid var(--line-strong); border-radius: var(--win-radius-ctl); background: var(--surface-2); color: var(--ink);
+  box-shadow: 0 1px 1px -0.5px var(--sol-drop);
+  transition: background-color var(--sol-micro) var(--sol-ease-out), border-color var(--sol-micro) var(--sol-ease-out), transform var(--dur-press) ease-in-out;
+}
+.winonboard__act:hover { background-color: var(--surface-3); }
+.winonboard__act:active { transform: scale(0.97); }
+.winonboard__act--primary { border-color: transparent; background: var(--accent); color: var(--accent-ink); box-shadow: var(--sol-btn-inset), 0 0 0 1px rgb(0 0 0 / 20%), 0 2px 3px color-mix(in srgb, var(--accent) 26%, transparent), 0 4px 7px -1px color-mix(in srgb, var(--accent) 34%, transparent); }
+.winonboard__act--primary:hover { background: color-mix(in oklab, var(--accent) 88%, var(--accent-ink)); }
+
+/* narrow windows: the role line steps aside, the onboard foot wraps */
+@media (max-width: 720px) {
+  .winapp__role { display: none; }
+  .winonboard__foot { flex-wrap: wrap; }
+}
+
+/* ---------- 7. motion — the keyframes of the wave ---------- */
+@keyframes riseIn { from { opacity: 0; transform: translateY(14px); } }
+@keyframes winappOpen { from { opacity: 0; transform: scale(0.95); } }
+@keyframes winchipIn { from { opacity: 0; transform: translateY(8px); } }
+@keyframes winonboardIn { from { opacity: 0; transform: translateY(10px); } }
+@keyframes winintroSpring { from { opacity: 0; transform: scale(0.6); } }
+@keyframes winintroRise { from { opacity: 0; transform: translateY(18px); } }
+@keyframes winintroFade { from { opacity: 0; } }
+@keyframes winintroLeave { to { transform: translateY(-100%); } }
+/* dtPopIntro — the pin entrance of the windows recipe: 0 → 1.125 (40%) →
+   0.725 (70%) → 1 (the bounce); the one lawful scale-from-zero */
+@keyframes dtPopIntro { 0% { opacity: 0; transform: scale(0); } 40% { opacity: 1; transform: scale(1.125); } 70% { transform: scale(0.725); } 100% { opacity: 1; transform: scale(1); } }
+/* the gateway mark carries the plate deploy on the hero — the stacked plates
+   shift once per cycle with rest (transform/opacity only) */
+@media (prefers-reduced-motion: no-preference) {
+  .r3-heromark .grMarkGlyph path { animation: plateDeploy 5.2s var(--sol-ease-out) infinite; }
+  .r3-heromark .grMarkGlyph path:nth-child(2) { animation-delay: 220ms; }
+  .r3-heromark .grMarkGlyph path:nth-child(3) { animation-delay: 440ms; }
+}
+@keyframes plateDeploy {
+  0%, 12% { transform: translate(0, 0); opacity: 1; }
+  26% { transform: translate(0, -7px); opacity: 0.55; }
+  40% { transform: translate(1.4px, -2px); opacity: 0.9; }
+  52%, 100% { transform: translate(0, 0); opacity: 1; }
+}
+
+/* ---------- 8. guards — the hard stops, last so nothing overrides them ------ */
+/* the in-session reduce-motion switch: the mirror of the media-query kills,
+   on top of the OS preference, never against it */
+[data-motion="reduced"] *,
+[data-motion="reduced"] *::before,
+[data-motion="reduced"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  transition-delay: 0ms !important;
+  scroll-behavior: auto !important;
+}
+[data-motion="reduced"] .railnav__item,
+[data-motion="reduced"] .railnav__item::before,
+[data-motion="reduced"] .railnav__item::after,
+[data-motion="reduced"] .winapp,
+[data-motion="reduced"] .winapp__rz,
+[data-motion="reduced"] .winapp__theme,
+[data-motion="reduced"] .winapp__cap,
+[data-motion="reduced"] .winchip,
+[data-motion="reduced"] .winintro,
+[data-motion="reduced"] .winintro__mark,
+[data-motion="reduced"] .winintro__name,
+[data-motion="reduced"] .winintro__role,
+[data-motion="reduced"] .winintro__skip,
+[data-motion="reduced"] .winonboard__card,
+[data-motion="reduced"] .winonboard__step,
+[data-motion="reduced"] .r3-heromark .grMarkGlyph path,
+[data-motion="reduced"] .reveal {
+  animation: none !important;
+  transition: none !important;
+}
+[data-motion="reduced"] .reveal { opacity: 1; transform: none; }
+[data-motion="reduced"] .railnav__item:active,
+[data-motion="reduced"] .winapp__theme:active,
+[data-motion="reduced"] .railnav__fam:active { transform: none; }
 @media (prefers-reduced-transparency: reduce) {
-  .emptystate__glyph { background: var(--sol-surface-2); }
+  /* the solid floors: every acrylic surface lands on a rung, the blur dies */
+  .winapp__title, .winonboard__head, .winonboard__card, .winchip, .toast {
+    background-color: var(--surface-2);
+    background-image: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .railnav__item::before { background-color: var(--surface-3); background-image: none; }
+  .winintro, .winonboard { background: var(--mica); }
+  .winintro::before, .winonboard::before, .appframe::before, .halftone::after, .grain::before { display: none; }
+  .r3-prompt__field { background: transparent; }
+  .r3-matrix tbody tr[data-featured="true"] { background: var(--surface-2); }
+  .emptystate__glyph { background: var(--surface-2); }
+  .tablewrap, .edgerow { background: var(--surface-1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; transition-delay: 0ms !important; scroll-behavior: auto !important; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+  .railnav__item:active, .winapp__theme:active, .railnav__fam:active, .btn:active, .r3-chip:active, .routechip:active { transform: none; }
+  html { scroll-behavior: auto; }
 }

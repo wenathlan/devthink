@@ -106,3 +106,15 @@ model TownKey {
 
   @@index([active, expiresAt])
 }
+
+/// the onboarding state of one visitor — the entry-flow gates catalogued on
+/// the database (intro → onboarding → the platform): the browser accessor
+/// (onboardingstate.ts) rides GET/POST /api/v1/onboarding against this table,
+/// the sqlite mirror lives in db.ts (onboarding_states)
+model OnboardingState {
+  id             Int      @id @default(autoincrement())
+  visitor        String   @unique
+  introseen      Boolean  @default(false)
+  onboardingseen Boolean  @default(false)
+  updatedAt      DateTime @updatedAt
+}
