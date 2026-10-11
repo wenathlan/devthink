@@ -28,3 +28,14 @@ model RunLog {
   detail    String   @default("")
   createdAt DateTime @default(now())
 }
+
+// the first-run state of one visitor (the flow contract of the reform):
+// the intro splash and the onboarding walk are catalogued here, seen-wins —
+// the flags never regress once a stage is marked.
+model OnboardingState {
+  id             Int      @id @default(autoincrement())
+  visitor        String   @unique
+  introseen      Boolean  @default(false)
+  onboardingseen Boolean  @default(false)
+  updatedAt      DateTime @updatedAt
+}
