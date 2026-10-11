@@ -1,0 +1,797 @@
+/* ==========================================================================
+   COBAIA THEME SOL — the single stylesheet of the site
+   The trylle ruler (the family's design law) on the dark canvas, with the
+   one accent of this site: the amber sun #f59e0b the whole devthink family
+   shares. cobaia is a CONTENT site — no window, no taskbar, no intro — so
+   the stylesheet covers only page furniture: the chrome (top bar + footer),
+   the landing scaffolding, the cards, the pricing table, the honest empty
+   states and the reserved ad container. Sections: tokens, base, chrome,
+   page, components, ad slot, motion, guards. Pure css: every animation
+   respects the reduced-motion opt-out, every surface respects the
+   reduced-transparency opt-out.
+   ========================================================================== */
+
+/* ---------- 1. TOKENS — the trylle pass (dark, amber accent) ---------- */
+:root {
+  /* canvas and ink */
+  --sol-canvas: #0a0a0b;
+  --sol-canvas-deep: #060607;
+  --sol-ink: #fafafa;
+
+  /* the trylle surface ladder */
+  --sol-surface-1: #171717;
+  --sol-surface-2: #1e1e1e;
+  --sol-surface-3: #252525;
+  --sol-surface-4: #2c2c2c;
+  --sol-surface-5: #333333;
+  --sol-surface-6: #3a3a3a;
+  --sol-surface-7: #414141;
+  --sol-surface-8: #484848;
+
+  /* text: ink, muted, faint (fixed grays, AA on the canvas) */
+  --sol-muted: #a6a6ad;
+  --sol-faint: #85858e;
+
+  /* hairlines: ink at 5% and 10% */
+  --sol-hairline: color-mix(in oklab, var(--sol-ink) 5%, transparent);
+  --sol-hairline-strong: color-mix(in oklab, var(--sol-ink) 10%, transparent);
+
+  /* the linear shadows: a 1px ring plus doubling layers */
+  --sol-shadow-1: 0 0 0 1px rgb(0 0 0 / 38%), 0 1px 1px -0.5px rgb(0 0 0 / 40%);
+  --sol-shadow-2: var(--sol-shadow-1), 0 3px 3px -1.5px rgb(0 0 0 / 38%);
+  --sol-shadow-3: var(--sol-shadow-2), inset 0 1px 0 rgb(255 255 255 / 4%), 0 6px 6px -3px rgb(0 0 0 / 36%);
+  --sol-shadow-4: var(--sol-shadow-3), 0 12px 12px -6px rgb(0 0 0 / 36%);
+  --sol-shadow-5: var(--sol-shadow-4), 0 24px 24px -12px rgb(0 0 0 / 42%);
+
+  /* typography: inter for everything, geist mono for the detail voice */
+  --sol-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --sol-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --sol-track-display: -0.02em;
+  --sol-track-label: 0.14em;
+  --sol-text-h1: clamp(2.25rem, 5vw, 3.75rem);
+  --sol-text-h2: clamp(1.65rem, 3vw, 2rem);
+  --sol-text-h3: clamp(1.3rem, 2vw, 1.5rem);
+
+  /* radius ladder */
+  --sol-radius: 0.625rem;
+  --sol-radius-sm: calc(var(--sol-radius) - 2px);
+  --sol-radius-lg: calc(var(--sol-radius) + 2px);
+  --sol-radius-xl: calc(var(--sol-radius) + 4px);
+  --sol-radius-2xl: 16px;
+  --sol-radius-3xl: 24px;
+
+  /* motion: 150ms micro on the trylle out curve */
+  --sol-micro: 150ms;
+  --sol-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* the ONE accent of the site: the family amber sun */
+  --sol-accent: #f59e0b;
+  --sol-accent-ink: #1c1002;
+  --sol-focus: #dfe5ee;
+
+  /* the content measure and the z bands (documented) */
+  --cb-maxw: 1060px;
+  --z-content: 10;
+  --z-bar: 50;
+
+  color-scheme: dark;
+  font-size: 16px;
+}
+
+/* ---------- 2. BASE ---------- */
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(900px 440px at 78% -12%, rgb(245 158 11 / 5%), transparent 62%),
+    var(--sol-canvas);
+  color: var(--sol-ink);
+  font-family: var(--sol-sans);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+main {
+  display: block;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a:hover {
+  color: var(--sol-accent);
+}
+h1,
+h2,
+h3 {
+  margin: 0 0 0.5em;
+  font-weight: 800;
+  letter-spacing: var(--sol-track-display);
+  line-height: 1.1;
+}
+h1 {
+  font-size: var(--sol-text-h1);
+}
+h2 {
+  font-size: var(--sol-text-h2);
+}
+h3 {
+  font-size: var(--sol-text-h3);
+}
+p {
+  margin: 0 0 1em;
+  color: var(--sol-muted);
+}
+::selection {
+  background: color-mix(in oklab, var(--sol-accent) 32%, transparent);
+  color: var(--sol-ink);
+}
+:focus-visible {
+  outline: 2px solid var(--sol-focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+kbd,
+code {
+  font-family: var(--sol-mono);
+  font-size: 0.85em;
+  background: var(--sol-surface-2);
+  border: 1px solid var(--sol-hairline);
+  border-radius: 6px;
+  padding: 1px 6px;
+  font-variant-numeric: tabular-nums;
+}
+[hidden] {
+  display: none !important;
+}
+
+/* thin scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--sol-ink) 20%, transparent) transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--sol-ink) 20%, transparent);
+  border-radius: var(--sol-radius);
+}
+
+/* ---------- 3. CHROME — the sticky top bar and the footer row ---------- */
+.cb-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* the skip link: hidden until keyboard focus */
+.cb-skip {
+  position: absolute;
+  top: -48px;
+  left: 16px;
+  z-index: var(--z-bar);
+  padding: 10px 14px;
+  border-radius: var(--sol-radius);
+  background: var(--sol-accent);
+  color: var(--sol-accent-ink);
+  font: 600 13px/1 var(--sol-sans);
+  transition: top var(--sol-micro) var(--sol-ease-out);
+}
+.cb-skip:focus-visible {
+  top: 12px;
+}
+
+.cb-top {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-bar);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: var(--cb-maxw);
+  margin: 0 auto;
+  padding: 12px clamp(16px, 4vw, 32px);
+  width: 100%;
+  border-bottom: 1px solid var(--sol-hairline);
+  background: color-mix(in oklab, var(--sol-canvas) 86%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  backdrop-filter: blur(12px) saturate(1.4);
+}
+.cb-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  letter-spacing: var(--sol-track-display);
+}
+.cb-brand strong {
+  color: var(--sol-ink);
+  font-weight: 800;
+}
+.cb-brand:hover strong {
+  color: var(--sol-accent);
+}
+.cb-brandtag {
+  color: var(--sol-faint);
+  font: 500 10.5px/1.4 var(--sol-mono);
+  letter-spacing: var(--sol-track-label);
+  text-transform: uppercase;
+}
+.cb-nav {
+  display: flex;
+  gap: clamp(10px, 2.4vw, 22px);
+}
+.cb-navlink {
+  color: var(--sol-muted);
+  font: 600 13.5px/1.4 var(--sol-sans);
+  letter-spacing: 0.01em;
+  padding: 6px 2px;
+  border-bottom: 2px solid transparent;
+  transition: color var(--sol-micro) var(--sol-ease-out), border-color var(--sol-micro) var(--sol-ease-out);
+}
+.cb-navlink:hover {
+  color: var(--sol-ink);
+  text-decoration: none;
+}
+.cb-navlink[aria-current="page"] {
+  color: var(--sol-ink);
+  border-bottom-color: var(--sol-accent);
+}
+
+.cb-main {
+  flex: 1;
+  width: 100%;
+  max-width: var(--cb-maxw);
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 32px);
+}
+
+/* the footer: hairline top, three columns, the family row with the accents */
+.cb-foot {
+  margin-top: clamp(48px, 8vw, 88px);
+  border-top: 1px solid var(--sol-hairline);
+  background: var(--sol-canvas-deep);
+}
+.cb-footgrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.6fr) minmax(0, 1.2fr);
+  gap: clamp(24px, 4vw, 48px);
+  max-width: var(--cb-maxw);
+  margin: 0 auto;
+  padding: clamp(28px, 4vw, 44px) clamp(16px, 4vw, 32px) 20px;
+}
+.cb-foothead {
+  margin: 0 0 12px;
+  color: var(--sol-faint);
+  font: 600 10.5px/1.4 var(--sol-mono);
+  letter-spacing: var(--sol-track-label);
+  text-transform: uppercase;
+}
+.cb-foottext {
+  margin: 0;
+  max-width: 42ch;
+  color: var(--sol-muted);
+  font-size: 0.85rem;
+}
+.cb-footlink {
+  display: block;
+  padding: 3px 0;
+  color: var(--sol-muted);
+  font: 500 13px/1.5 var(--sol-sans);
+  transition: color var(--sol-micro) var(--sol-ease-out);
+}
+.cb-famgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+  gap: 6px 14px;
+}
+.cb-famlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+  color: var(--sol-muted);
+  font: 500 12.5px/1.5 var(--sol-mono);
+  transition: color var(--sol-micro) var(--sol-ease-out);
+}
+.cb-famlink:hover {
+  color: var(--sol-ink);
+}
+.cb-famdot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--cb-dot, var(--sol-accent));
+}
+.cb-colophon {
+  max-width: var(--cb-maxw);
+  margin: 0 auto;
+  padding: 14px clamp(16px, 4vw, 32px) 22px;
+  border-top: 1px solid var(--sol-hairline);
+  color: var(--sol-faint);
+  font: 400 11px/1.6 var(--sol-mono);
+}
+
+/* ---------- 4. PAGE SCAFFOLDING — hero, sections, entrance ---------- */
+.cb-page {
+  padding-bottom: 8px;
+}
+.cb-hero {
+  padding: clamp(48px, 9vw, 110px) 0 clamp(20px, 4vw, 36px);
+}
+.cb-eyebrow {
+  margin: 0 0 16px;
+  color: var(--sol-accent);
+  font: 600 11px/1.4 var(--sol-mono);
+  letter-spacing: var(--sol-track-label);
+  text-transform: uppercase;
+}
+.cb-title {
+  margin: 0 0 18px;
+  max-width: 22ch;
+}
+.cb-lede {
+  margin: 0;
+  max-width: 58ch;
+  font-size: 1.125rem;
+  color: var(--sol-muted);
+}
+.cb-section {
+  padding: clamp(28px, 5vw, 52px) 0 0;
+}
+.cb-secthead {
+  max-width: 620px;
+  margin-bottom: 24px;
+}
+.cb-secttitle {
+  margin: 0 0 8px;
+  font-size: var(--sol-text-h2);
+}
+.cb-sectlede {
+  margin: 0;
+  color: var(--sol-muted);
+}
+.cb-in {
+  animation: cbRise 640ms var(--sol-ease-out) backwards;
+  animation-delay: calc(var(--cb-d, 0) * 80ms);
+}
+@keyframes cbRise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+/* ---------- 5. COMPONENTS ---------- */
+
+/* buttons: one amber primary, one hairline ghost — no pills, 44px touch */
+.cb-btnrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 26px;
+}
+.cb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 1px solid transparent;
+  border-radius: var(--sol-radius);
+  background: var(--sol-accent);
+  color: var(--sol-accent-ink);
+  font: 700 14px/1 var(--sol-sans);
+  cursor: pointer;
+  box-shadow: var(--sol-shadow-2);
+  transition:
+    transform var(--sol-micro) var(--sol-ease-out),
+    box-shadow var(--sol-micro) var(--sol-ease-out),
+    background-color var(--sol-micro) var(--sol-ease-out);
+}
+.cb-btn:hover {
+  background: color-mix(in oklab, var(--sol-accent) 88%, #ffffff);
+  box-shadow: var(--sol-shadow-3);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+.cb-btn:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--sol-shadow-1);
+}
+.cb-btn:disabled,
+.cb-btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: var(--sol-shadow-1);
+}
+.cb-btn--ghost {
+  background: transparent;
+  color: var(--sol-ink);
+  border-color: var(--sol-hairline-strong);
+}
+.cb-btn--ghost:hover {
+  background: var(--sol-surface-1);
+  border-color: color-mix(in oklab, var(--sol-accent) 45%, transparent);
+  color: var(--sol-ink);
+}
+
+/* the text link voice */
+.cb-link {
+  color: var(--sol-ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--sol-hairline-strong);
+  transition: color var(--sol-micro) var(--sol-ease-out), text-decoration-color var(--sol-micro) var(--sol-ease-out);
+}
+.cb-link:hover {
+  color: var(--sol-accent);
+  text-decoration-color: color-mix(in oklab, var(--sol-accent) 55%, transparent);
+}
+
+/* the honest note: mono, quiet, a hairline left edge */
+.cb-note {
+  margin: 10px 0 0;
+  padding: 8px 12px;
+  border-left: 2px solid var(--sol-hairline-strong);
+  color: var(--sol-faint);
+  font: 400 11.5px/1.6 var(--sol-mono);
+}
+.cb-note.is-live {
+  border-left-color: color-mix(in oklab, var(--sol-accent) 55%, transparent);
+  color: var(--sol-muted);
+}
+
+/* cards: surface well, ring shadow, one hover lift */
+.cb-grid {
+  display: grid;
+  gap: 16px;
+}
+.cb-grid--2 {
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+}
+.cb-grid--3 {
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+}
+.cb-card {
+  padding: 22px;
+  border-radius: var(--sol-radius-lg);
+  background: var(--sol-surface-1);
+  box-shadow: var(--sol-shadow-1);
+  transition:
+    background-color var(--sol-micro) var(--sol-ease-out),
+    box-shadow var(--sol-micro) var(--sol-ease-out),
+    transform var(--sol-micro) var(--sol-ease-out);
+}
+.cb-card:hover {
+  background: var(--sol-surface-2);
+  box-shadow: var(--sol-shadow-3);
+  transform: translateY(-2px);
+}
+.cb-cardtitle {
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+}
+.cb-cardtext {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--sol-muted);
+}
+.cb-cardmeta {
+  margin: 12px 0 0;
+  color: var(--sol-faint);
+  font: 500 11px/1.5 var(--sol-mono);
+  letter-spacing: 0.06em;
+}
+
+/* the pricing table: three honest plans, the studio plan leads raised */
+.cb-plans {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 16px;
+  align-items: stretch;
+}
+.cb-plan {
+  display: flex;
+  flex-direction: column;
+  padding: 26px 24px 22px;
+  border-radius: var(--sol-radius-lg);
+  background: var(--sol-surface-1);
+  box-shadow: var(--sol-shadow-2);
+}
+.cb-plan--lead {
+  background: var(--sol-surface-2);
+  box-shadow: var(--sol-shadow-3), inset 0 2px 0 var(--sol-accent);
+}
+.cb-planname {
+  margin: 0 0 4px;
+  font: 600 12px/1.4 var(--sol-mono);
+  letter-spacing: var(--sol-track-label);
+  text-transform: uppercase;
+  color: var(--sol-faint);
+}
+.cb-plan--lead .cb-planname {
+  color: var(--sol-accent);
+}
+.cb-planprice {
+  margin: 0;
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: var(--sol-track-display);
+  color: var(--sol-ink);
+  font-variant-numeric: tabular-nums;
+}
+.cb-planper {
+  margin: 0 0 10px;
+  color: var(--sol-faint);
+  font: 500 12px/1.5 var(--sol-mono);
+}
+.cb-planblurb {
+  margin: 0 0 14px;
+  font-size: 0.9rem;
+  color: var(--sol-muted);
+}
+.cb-planfeats {
+  margin: 0 0 20px;
+  padding: 0;
+  list-style: none;
+  flex: 1;
+}
+.cb-planfeat {
+  padding: 9px 0;
+  border-top: 1px solid var(--sol-hairline);
+  font-size: 0.86rem;
+  color: var(--sol-muted);
+}
+
+/* the app directory: cards with the one accent dot each */
+.cb-appgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+  gap: 14px;
+}
+.cb-appcard {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 18px 16px;
+  border-radius: var(--sol-radius-lg);
+  background: var(--sol-surface-1);
+  box-shadow: var(--sol-shadow-1);
+  transition:
+    background-color var(--sol-micro) var(--sol-ease-out),
+    box-shadow var(--sol-micro) var(--sol-ease-out),
+    transform var(--sol-micro) var(--sol-ease-out);
+}
+.cb-appcard:hover {
+  background: var(--sol-surface-2);
+  box-shadow: var(--sol-shadow-3);
+  transform: translateY(-2px);
+}
+.cb-apphead {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 4px;
+}
+.cb-appdot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--cb-dot, var(--sol-accent));
+}
+.cb-appname {
+  margin: 0;
+  color: var(--sol-ink);
+  font: 600 14.5px/1.4 var(--sol-mono);
+  letter-spacing: -0.01em;
+}
+.cb-approle {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--sol-muted);
+}
+.cb-appopen {
+  margin: 10px 0 0;
+  color: var(--sol-faint);
+  font: 500 10.5px/1.4 var(--sol-mono);
+  letter-spacing: var(--sol-track-label);
+  text-transform: uppercase;
+  transition: color var(--sol-micro) var(--sol-ease-out);
+}
+.cb-appcard:hover .cb-appopen {
+  color: var(--sol-accent);
+}
+
+/* the support channels: one honest card per way to help */
+.cb-channeltext {
+  margin: 0 0 12px;
+  font-size: 0.9rem;
+  color: var(--sol-muted);
+}
+
+/* the blog index and the article bodies */
+.cb-postlist {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cb-postrow {
+  padding: 16px 2px;
+  border-top: 1px solid var(--sol-hairline);
+  transition: background-color var(--sol-micro) var(--sol-ease-out);
+}
+.cb-postrow:hover {
+  background: color-mix(in oklab, var(--sol-accent) 4%, transparent);
+}
+.cb-postdate {
+  margin: 0 0 2px;
+  color: var(--sol-faint);
+  font: 500 11px/1.5 var(--sol-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+}
+.cb-postlink {
+  color: var(--sol-ink);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: var(--sol-track-display);
+}
+.cb-postlink:hover {
+  color: var(--sol-accent);
+}
+.cb-postexcerpt {
+  margin: 6px 0 0;
+  max-width: 64ch;
+  font-size: 0.9rem;
+  color: var(--sol-muted);
+}
+.cb-posttags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.cb-tag {
+  color: var(--sol-faint);
+  font: 500 10.5px/1.4 var(--sol-mono);
+  letter-spacing: 0.08em;
+}
+.cb-article {
+  margin-top: clamp(30px, 5vw, 48px);
+  padding-top: clamp(18px, 3vw, 28px);
+  border-top: 1px solid var(--sol-hairline-strong);
+}
+.cb-article .cb-secttitle {
+  max-width: 30ch;
+}
+.cb-articlebody {
+  max-width: 65ch;
+}
+.cb-articlebody p {
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+/* ---------- 6. THE AD SLOT — reserved, labeled, honest ---------- */
+.cb-ads {
+  margin-top: clamp(32px, 5vw, 56px);
+  border-top: 1px solid var(--sol-hairline);
+  padding-top: 14px;
+}
+.cb-adslabel {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--sol-faint);
+  font: 600 10px/1.4 var(--sol-mono);
+  letter-spacing: var(--sol-track-label);
+  text-transform: uppercase;
+}
+.cb-adsbox {
+  display: grid;
+  place-items: center;
+  aspect-ratio: var(--cb-ads-ratio, 728 / 90);
+  border: 1px dashed var(--sol-hairline-strong);
+  border-radius: var(--sol-radius);
+  background: var(--sol-surface-1);
+  max-width: 100%;
+}
+.cb-adsnote {
+  color: var(--sol-faint);
+  font: 400 11.5px/1.5 var(--sol-mono);
+  letter-spacing: 0.04em;
+}
+
+/* ---------- 7. THE 404 ---------- */
+.cb-missing {
+  min-height: 42vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ---------- 8. THE BRAND MARK MOTION — transform only, guarded ---------- */
+.cbMark {
+  display: inline-block;
+  flex: none;
+  line-height: 0;
+}
+.cbMarkSvg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  shape-rendering: geometricPrecision;
+  transition: transform 260ms var(--sol-ease-out);
+  will-change: transform;
+}
+.cbMark:hover .cbMarkSvg {
+  transform: perspective(340px) rotateX(4deg) rotateY(-5deg) scale(1.02);
+}
+@media (hover: none), (pointer: coarse) {
+  .cbMark:hover .cbMarkSvg {
+    transform: none;
+  }
+}
+
+/* ---------- 9. RESPONSIVE — one design, only the ratio changes ---------- */
+@media (max-width: 760px) {
+  .cb-brandtag {
+    display: none;
+  }
+  .cb-top {
+    flex-wrap: wrap;
+  }
+  .cb-footgrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- 10. GUARDS — the house stops ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .cb-in {
+    animation: none !important;
+  }
+  .cb-skip,
+  .cb-navlink,
+  .cb-btn,
+  .cb-card,
+  .cb-appcard,
+  .cb-appopen,
+  .cb-postrow,
+  .cb-footlink,
+  .cb-famlink,
+  .cb-link,
+  .cbMarkSvg {
+    transition: none !important;
+  }
+  .cbMark:hover .cbMarkSvg {
+    transform: none;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .cb-top {
+    background: var(--sol-canvas);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .cb-postrow:hover {
+    background: var(--sol-surface-1);
+  }
+}
