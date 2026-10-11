@@ -8,7 +8,7 @@
  */
 
 import assert from 'node:assert/strict';
-import { test } from 'node:test';
+import { describe, it } from 'vitest';
 import { defaultgpuregistry, smiadapterbuilder } from '../render.js';
 import {
   composemigcatalog,
@@ -26,7 +26,8 @@ import {
 /* verified identity bank                                              */
 /* ------------------------------------------------------------------ */
 
-test('the gpu bank pins the rtx 5090 at 10DE:2B85 with 32 GB', () => {
+describe('the virtualgpu contract', () => {
+it('the gpu bank pins the rtx 5090 at 10DE:2B85 with 32 GB', () => {
   const rtx5090 = GPU_BANK.find((spec) => spec.id === 'rtx5090');
   assert.ok(rtx5090 !== undefined, 'bank must contain rtx5090');
   assert.equal(rtx5090.pcivendor, '10DE');
@@ -36,7 +37,7 @@ test('the gpu bank pins the rtx 5090 at 10DE:2B85 with 32 GB', () => {
   assert.equal(rtx5090.memtype, 'GDDR7');
 });
 
-test('the rtx pro 6000 carries the corrected 26B5 device id, never 2BB5', () => {
+it('the rtx pro 6000 carries the corrected 26B5 device id, never 2BB5', () => {
   const pro = GPU_BANK.find((spec) => spec.id === 'rtxpro6000');
   assert.ok(pro !== undefined, 'bank must contain rtxpro6000');
   assert.equal(pro.pcidevice, '26B5');
@@ -50,7 +51,7 @@ test('the rtx pro 6000 carries the corrected 26B5 device id, never 2BB5', () => 
   }
 });
 
-test('the b200 entry exposes the 192 GB HBM3e capacity', () => {
+it('the b200 entry exposes the 192 GB HBM3e capacity', () => {
   const b200 = GPU_BANK.find((spec) => spec.id === 'b200');
   assert.ok(b200 !== undefined, 'bank must contain b200');
   assert.equal(b200.vrammib, 196608);
@@ -58,7 +59,7 @@ test('the b200 entry exposes the 192 GB HBM3e capacity', () => {
   assert.equal(fullpciid(b200), '10DE:2665');
 });
 
-test('the gpu registry resolves every bank id and rejects unknown ones', () => {
+it('the gpu registry resolves every bank id and rejects unknown ones', () => {
   const ids = listgpus();
   for (const id of ['rtx5090', 'rtxpro6000', 'b200', 'h100', 'a100', 'rx9070xt', 'mi350x']) {
     assert.ok(ids.includes(id), `registry must list ${id}`);
@@ -71,7 +72,7 @@ test('the gpu registry resolves every bank id and rejects unknown ones', () => {
 /* blackwell MIG density                                               */
 /* ------------------------------------------------------------------ */
 
-test('the blackwell MIG mirror lists the eight compute-slice profiles', () => {
+it('the blackwell MIG mirror lists the eight compute-slice profiles', () => {
   assert.equal(MIGLAYOUTBLACKWELL.length, 8);
   const profiles = MIGLAYOUTBLACKWELL.map((row) => row.profile);
   assert.deepEqual(profiles, [
@@ -90,7 +91,7 @@ test('the blackwell MIG mirror lists the eight compute-slice profiles', () => {
   assert.equal(monolithic?.smcount, 192);
 });
 
-test('validatedensity enforces 7 slices and 192 GB physical limits', () => {
+it('validatedensity enforces 7 slices and 192 GB physical limits', () => {
   const one = MIGLAYOUTBLACKWELL.find((row) => row.profile === '1g.12gb');
   const three = MIGLAYOUTBLACKWELL.find((row) => row.profile === '3g.48gb');
   const four = MIGLAYOUTBLACKWELL.find((row) => row.profile === '4g.96gb');
@@ -109,7 +110,7 @@ test('validatedensity enforces 7 slices and 192 GB physical limits', () => {
   assert.equal(validatedensity([seven]), true);
 });
 
-test('composemigcatalog merges the guest slices with the blackwell layouts', () => {
+it('composemigcatalog merges the guest slices with the blackwell layouts', () => {
   const catalog = composemigcatalog();
   assert.equal(catalog.length, 11);
   assert.deepEqual(catalog.slice(0, 3), ['1g.24gb', '2g.48gb', '4g.96gb']);
@@ -122,7 +123,7 @@ test('composemigcatalog merges the guest slices with the blackwell layouts', () 
 /* virtual nvidia-smi adapter table                                    */
 /* ------------------------------------------------------------------ */
 
-test('the smi adapter renders the 89-char wide summary table', () => {
+it('the smi adapter renders the 89-char wide summary table', () => {
   const profile = defaultgpuregistry.require('rtx5090');
   const report = new smiadapterbuilder(profile)
     .withmemused(4096)
@@ -159,4 +160,5 @@ test('the smi adapter renders the 89-char wide summary table', () => {
   assert.ok(report.includes('NVIDIA RTX 5090'));
   assert.ok(report.includes('4096MiB / 32768MiB'));
   assert.ok(report.includes('No running processes found'));
+});
 });

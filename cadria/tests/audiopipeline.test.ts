@@ -1,11 +1,11 @@
 // # audiopipeline.test — deterministic end-to-end tests for the wave-1
-// orchestrator, runnable with the node built-in runner:
-//   node --test tests/audiopipeline.test.ts
+// orchestrator, runnable with vitest:
+//   pnpm vitest run tests/audiopipeline.test.ts
 // The fixture synthesizes a 4-second 4-phase song (saw intro, hats, c-major
 // triad, decaying pad) straight into pcm — no binary files on disk.
 
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import { decodeWav } from "../audiodecode.ts";
 import { analyzePcm, analyzeWavBytes, PipelineError, reportDigest } from "../audiopipeline.ts";
 

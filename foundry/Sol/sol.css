@@ -2722,3 +2722,12 @@ body,
   .fa-form__grid { align-items: stretch; }
   .fa-form__field input { min-width: 0; width: 100%; }
 }
+/* ==========================================================================
+   ANTI-PILL PASS — the doctrine gate "zero 999px pills" closed at the token
+   level. The pre-conversion passes styled tabs, buttons and badges as full
+   pills through --r-pill (999px); the family window reform keeps those
+   selectors alive, so the token itself retires to the trylle base radius
+   (order wins: this later :root declaration prevails). No earlier pass is
+   rewritten — append-only per the doctrine.
+   ========================================================================== */
+:root { --r-pill: var(--sol-radius); }

@@ -1,13 +1,12 @@
 // # easecurves.test — the influence and speed easing model: the handle
 // algebra of the presets, the cubic bezier solver, the linear detection
-// and the key track evaluation with hold segments, runnable with the
-// node built-in runner (no dependencies, no install):
-//   node --test tests/easecurves.test.ts
+// and the key track evaluation with hold segments, runnable with vitest:
+//   pnpm vitest run tests/easecurves.test.ts
 // Every test watches the two invariants the module promises: the linear
 // preset answers the identity of its parameter and damaged curves or
 // times answer null or the nearest key instead of throwing.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   bezierprogress,
   curvefromhandles,

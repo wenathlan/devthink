@@ -6693,3 +6693,15 @@ body::before {
 		background: none;
 	}
 }
+
+/* ==========================================================================
+   ANTI-PILL PASS — the doctrine gate "zero 999px pills" closed at the
+   selector level. The dashboard and console badges/chips were full pills;
+   they retire to the trylle base radius (order wins: this later block
+   prevails). No earlier pass is rewritten — append-only per the doctrine.
+   ========================================================================== */
+.console-signin,
+.api-badge,
+.dash-rolebadge,
+.dash-userbadge,
+.dash-chip { border-radius: var(--sol-radius); }

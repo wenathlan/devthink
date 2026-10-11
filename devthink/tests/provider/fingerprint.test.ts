@@ -9,7 +9,7 @@
  *  The fingerprint module uses `node:crypto` + `node:os` + `node:path`
  *  only — safe to import. Does NOT touch the network.
  *
- *  Uses `node:test` + `node:assert/strict`. Imports only leaf modules.
+ *  Runs on the vitest runner with `node:assert/strict` assertions. Imports only leaf modules.
  */
 
 import assert from "node:assert/strict";

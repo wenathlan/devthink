@@ -8,7 +8,7 @@
 
 import assert from 'node:assert/strict';
 import process from 'node:process';
-import { test } from 'node:test';
+import { describe, it } from 'vitest';
 import {
   buildEndpoint,
   createVirtualEngine,
@@ -29,7 +29,8 @@ import {
 /* engineversions                                                      */
 /* ------------------------------------------------------------------ */
 
-test('engineversions carries the critical toolchain anchors', () => {
+describe('the virtualengine contract', () => {
+it('engineversions carries the critical toolchain anchors', () => {
   assert.ok(typeof engineversions === 'object');
   for (const key of [
     'nodecurrent',
@@ -49,7 +50,7 @@ test('engineversions carries the critical toolchain anchors', () => {
   assert.equal(engineversions.typescript, '7.0.2');
 });
 
-test('enginelimits advertise the 1-192 vcpu and 30000-59999 port ranges', () => {
+it('enginelimits advertise the 1-192 vcpu and 30000-59999 port ranges', () => {
   assert.equal(enginelimits.minvcpu, 1);
   assert.equal(enginelimits.maxvcpu, 192);
   assert.equal(enginelimits.minport, 30000);
@@ -60,7 +61,7 @@ test('enginelimits advertise the 1-192 vcpu and 30000-59999 port ranges', () => 
 /* randomPort                                                          */
 /* ------------------------------------------------------------------ */
 
-test('randomPort draws 100 samples inside the 30000-59999 range', () => {
+it('randomPort draws 100 samples inside the 30000-59999 range', () => {
   const samples: number[] = [];
   for (let i = 0; i < 100; i += 1) {
     const port = randomPort();
@@ -72,7 +73,7 @@ test('randomPort draws 100 samples inside the 30000-59999 range', () => {
   assert.ok(distinct >= 50, `100 crypto draws produced only ${distinct} distinct ports`);
 });
 
-test('randomPort honors valid overrides and rejects invalid ones', () => {
+it('randomPort honors valid overrides and rejects invalid ones', () => {
   assert.equal(randomPort(30000), 30000);
   assert.equal(randomPort(59999), 59999);
   assert.throws(() => randomPort(29999), engineerror);
@@ -84,7 +85,7 @@ test('randomPort honors valid overrides and rejects invalid ones', () => {
 /* resolveHost / buildEndpoint                                         */
 /* ------------------------------------------------------------------ */
 
-test('resolveHost requires an explicit host and never assumes a default address', () => {
+it('resolveHost requires an explicit host and never assumes a default address', () => {
   const savedhost = process.env.virtualenginehost;
   const savedalias = process.env.vhehost;
   delete process.env.virtualenginehost;
@@ -100,7 +101,7 @@ test('resolveHost requires an explicit host and never assumes a default address'
   }
 });
 
-test('buildEndpoint combines host and random port into a concrete url', () => {
+it('buildEndpoint combines host and random port into a concrete url', () => {
   const endpoint = buildEndpoint('test.local', 31234);
   assert.equal(endpoint.host, 'test.local');
   assert.equal(endpoint.port, 31234);
@@ -126,7 +127,7 @@ const goodspec: enginespec = {
   metricsintervalms: 1000,
 };
 
-test('validateSpec accepts a fully valid specification', () => {
+it('validateSpec accepts a fully valid specification', () => {
   const result = validateSpec(goodspec);
   assert.equal(result.valid, true);
   assert.deepEqual(result.errors, []);
@@ -136,7 +137,7 @@ test('validateSpec accepts a fully valid specification', () => {
   assert.ok(Object.isFrozen(result.normalized), 'normalized spec must be frozen');
 });
 
-test('validateSpec rejects boundary violations with field specific errors', () => {
+it('validateSpec rejects boundary violations with field specific errors', () => {
   const zerovcpu = validateSpec({ ...goodspec, vcpus: 0 });
   assert.equal(zerovcpu.valid, false);
   assert.ok(zerovcpu.errors.some((message) => message.startsWith('vcpus')));
@@ -158,7 +159,7 @@ test('validateSpec rejects boundary violations with field specific errors', () =
   assert.ok(emptyhost.errors.some((message) => message.startsWith('host')));
 });
 
-test('validateSpec reports a missing host as a required field error', () => {
+it('validateSpec reports a missing host as a required field error', () => {
   const { host: _omitted, ...nohost } = goodspec;
   const result = validateSpec(nohost as enginespec);
   assert.equal(result.valid, false);
@@ -168,7 +169,7 @@ test('validateSpec reports a missing host as a required field error', () => {
   assert.equal(result.normalized, null);
 });
 
-test('validateSpec warns when vramgb exceeds ramgb', () => {
+it('validateSpec warns when vramgb exceeds ramgb', () => {
   const result = validateSpec({ ...goodspec, vramgb: 96, ramgb: 16 });
   assert.equal(result.valid, true);
   assert.ok(result.warnings.some((message) => message.includes('vramgb exceeds ramgb')));
@@ -178,7 +179,7 @@ test('validateSpec warns when vramgb exceeds ramgb', () => {
 /* createVirtualEngine lifecycle                                       */
 /* ------------------------------------------------------------------ */
 
-test('createVirtualEngine builds a registered engine from an explicit host', () => {
+it('createVirtualEngine builds a registered engine from an explicit host', () => {
   const engine = createVirtualEngine({ host: 'test.local' });
   assert.equal(engine.state, 'created');
   assert.equal(engine.spec.host, 'test.local');
@@ -213,12 +214,12 @@ test('createVirtualEngine builds a registered engine from an explicit host', () 
   assert.equal(engineRegistry.has(engine.id), false);
 });
 
-test('createVirtualEngine rejects an invalid option set with engineerror', () => {
+it('createVirtualEngine rejects an invalid option set with engineerror', () => {
   assert.throws(() => createVirtualEngine({ host: 'test.local', vcpus: 0 }), engineerror);
   assert.throws(() => createVirtualEngine({ host: 'test.local', port: 70000 }), engineerror);
 });
 
-test('createVirtualEngine refuses to run without a host', () => {
+it('createVirtualEngine refuses to run without a host', () => {
   const savedhost = process.env.virtualenginehost;
   const savedalias = process.env.vhehost;
   delete process.env.virtualenginehost;
@@ -235,7 +236,7 @@ test('createVirtualEngine refuses to run without a host', () => {
 /* export barrel                                                       */
 /* ------------------------------------------------------------------ */
 
-test('the index barrel re-exports the v2 module surface as real functions', async () => {
+it('the index barrel re-exports the v2 module surface as real functions', async () => {
   const barrel = await import('../index.ts');
   const functions = [
     'createVirtualEngine',
@@ -278,4 +279,5 @@ test('the index barrel re-exports the v2 module surface as real functions', asyn
   assert.ok(Array.isArray(barrel.MIGPROFILES));
   assert.equal(barrel.MIGPROFILES.length, 3);
   assert.ok(barrel.engineRegistry instanceof Map);
+});
 });

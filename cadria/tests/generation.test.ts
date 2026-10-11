@@ -1,6 +1,6 @@
-// # generation.test — the storage seam of the generation pipeline, runnable with
-// the node built-in runner (no dependencies, no install):
-//   node --test tests/generation.test.ts
+// # generation.test — the storage seam of the generation pipeline, runnable
+// with vitest:
+//   pnpm vitest run tests/generation.test.ts
 // Two documented patterns live in the prologue below: (1) the TEMP database is
 // chosen by setting process.env.DATABASE_URL to file:./.tmp/generation.test.db
 // BEFORE the dynamic import of the db modules — db.ts resolves the url once at
@@ -15,7 +15,7 @@
 import assert from "node:assert/strict";
 import { rmSync } from "node:fs";
 import { registerHooks } from "node:module";
-import { after, describe, it } from "node:test";
+import { afterAll, describe, it } from "vitest";
 import type { AnalysisRecord, GenerationRecord } from "../generation.ts";
 
 const TMP_DIR = ".tmp";
@@ -44,13 +44,13 @@ const { db } = await import("../db.ts");
 const store = generationStore();
 const MAX_JSON = 512 * 1024;
 
-after(() => {
+afterAll(() => {
   db.close();
   rmSync(TMP_DIR, { recursive: true, force: true });
 });
 
 // one monotonic iso clock for every save, so newest-first stays exact even when
-// several suites share the temp database (node --test runs the its in order).
+// several suites share the temp database (vitest runs the its in order).
 const BASE = 1_700_000_000_000;
 let step = 0;
 function stamp(): string {

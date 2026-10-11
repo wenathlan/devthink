@@ -1,6 +1,5 @@
-// # imageproject.test — the PROJECT layer's contract, runnable with the node
-// built-in runner (no dependencies, no install):
-//   node --test tests/imageproject.test.ts
+// # imageproject.test — the PROJECT layer's contract, runnable with vitest:
+//   pnpm vitest run tests/imageproject.test.ts
 // The tests watch five promises: the seeded rng replays bit-for-bit and stays
 // uniform, buildImageProject validates every field and derives the rest
 // (audio stats, id slug, orientation), the bundle is deep-frozen while its
@@ -8,7 +7,7 @@
 // other versions), and projectVariants keep the audio while rotating seed +
 // anchor hue. Every damage path answers ProjectError with its taxonomy code.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import type { AudioDescriptor } from "../audioattributes.ts";
 import type { ImageProject } from "../imageproject.ts";
 import {

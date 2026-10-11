@@ -1,11 +1,11 @@
 // # audiorhythm.test — deterministic unit tests for the cadria rhythm layer,
-// runnable with the node built-in runner (no install):
-//   node --test tests/audiorhythm.test.ts
+// runnable with vitest:
+//   pnpm vitest run tests/audiorhythm.test.ts
 // Fixtures synthesize click tracks, swings and jitter straight into PCM —
 // no binary files, no randomness.
 
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import { onsetEnvelope, onsetPeaks, rhythmStats } from "../audiorhythm.ts";
 import { canonicalTempo, RhythmError } from "../audiorhythmbeat.ts";
 

@@ -1,6 +1,5 @@
-// # synthtexture.test — the texture layer's contract, runnable with the node
-// built-in runner (no dependencies, no install):
-//   node --test tests/synthtexture.test.ts
+// # synthtexture.test — the texture layer's contract, runnable with vitest:
+//   pnpm vitest run tests/synthtexture.test.ts
 // The tests watch four promises: the timbre → texture ramps are monotonic in
 // their documented drivers (noise densifies, warmth softens and thickens,
 // brightness sheens, contrast agitates, flatness stacks, flux jitters, zcr
@@ -9,7 +8,7 @@
 // canvas preset, and everything — synthesis, scatter fields, presets,
 // blends — is deterministic bit-for-bit.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import type { AudioDescriptor } from "../audioattributes.ts";
 import { DIM_ORDER } from "../audiofeatures.ts";
 import type { TexturePresetName, TextureSpec } from "../synthtexture.ts";

@@ -8,7 +8,7 @@
  * whole stage up over 0.8s (cubic-bezier(0.76,0,0.24,1)) and hands the
  * surface to the onboarding at /onboarding. No loading dots, no spinner:
  * the mark speaks. A click or any key skips; prefers-reduced-motion hands
- * over straight away. The seen flag (<app>.intro.seen) mirrors the
+ * over straight away. The seen flag (getry.intro.seen) mirrors the
  * devthink/Sol/intro pattern: a cold load always plays, and the flag marks
  * the session opening for future consumers.
  */

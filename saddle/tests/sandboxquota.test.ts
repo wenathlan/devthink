@@ -9,13 +9,13 @@
  * the limits table is always a parameter — the suite proves the ledger
  * never invents capacities.
  *
- * run with plain node (no install): node --test tests/sandboxquota.test.ts
+ * run with plain node (no install): vitest run tests/sandboxquota.test.ts
  * the .ts import specifiers rely on the native type stripping of the
  * supported node versions.
  */
 
 import assert from 'node:assert/strict';
-import { test } from 'node:test';
+import { describe, it } from 'vitest';
 import {
   accountlimitsfromenv,
   createaccountledger,
@@ -23,7 +23,8 @@ import {
   usagefromrows,
 } from '../sandboxquota.ts';
 
-test('reserve and release keep the counters in balance', () => {
+describe('the sandboxquota contract', () => {
+it('reserve and release keep the counters in balance', () => {
   const ledger = createaccountledger({ sandboxes: 3, vcpus: 16, ramgb: 64 });
   const reserved = ledger.reserve('acct-1', { sandboxes: 1, vcpus: 8, ramgb: 32 });
   assert.equal(reserved.used.sandboxes, 1);
@@ -36,7 +37,7 @@ test('reserve and release keep the counters in balance', () => {
   assert.equal(released.remaining.vcpus, 16);
 });
 
-test('reserve throws a traceable typed error when a limit is exceeded', () => {
+it('reserve throws a traceable typed error when a limit is exceeded', () => {
   const ledger = createaccountledger({ vcpus: 8 });
   ledger.reserve('acct-2', { vcpus: 6 });
   assert.throws(() => ledger.reserve('acct-2', { vcpus: 4 }), quotaerror);
@@ -55,7 +56,7 @@ test('reserve throws a traceable typed error when a limit is exceeded', () => {
   }
 });
 
-test('admits is the dry-run that never mutates the counters', () => {
+it('admits is the dry-run that never mutates the counters', () => {
   const ledger = createaccountledger({ sandboxes: 1 });
   assert.equal(ledger.admits('acct-3', { sandboxes: 1 }), true);
   ledger.reserve('acct-3', { sandboxes: 1 });
@@ -64,7 +65,7 @@ test('admits is the dry-run that never mutates the counters', () => {
   assert.equal(ledger.admits('acct-3', { vcpus: 1000 }), true);
 });
 
-test('the plan table is a parameter: the ledger never invents limits', () => {
+it('the plan table is a parameter: the ledger never invents limits', () => {
   const generous = createaccountledger({});
   for (let index = 0; index < 50; index += 1) {
     generous.reserve('acct-4', { sandboxes: 1, vcpus: 192, ramgb: 1024 });
@@ -76,14 +77,14 @@ test('the plan table is a parameter: the ledger never invents limits', () => {
   assert.equal(snapshot.remaining.sandboxes, null);
 });
 
-test('absent, zero and negative limits all mean unlimited', () => {
+it('absent, zero and negative limits all mean unlimited', () => {
   const ledger = createaccountledger({ sandboxes: 0, vcpus: -5 });
   assert.equal(ledger.admits('acct-5', { sandboxes: 99, vcpus: 99 }), true);
   assert.equal(ledger.usage('acct-5').remaining.sandboxes, null);
   assert.equal(ledger.usage('acct-5').remaining.vcpus, null);
 });
 
-test('each account keeps its own book', () => {
+it('each account keeps its own book', () => {
   const ledger = createaccountledger({ sandboxes: 2 });
   ledger.reserve('acct-a', { sandboxes: 2 });
   assert.equal(ledger.admits('acct-b', { sandboxes: 1 }), true);
@@ -91,7 +92,7 @@ test('each account keeps its own book', () => {
   assert.equal(ledger.usage('acct-b').used.sandboxes, 0);
 });
 
-test('release floors at zero and ignores stale releases', () => {
+it('release floors at zero and ignores stale releases', () => {
   const ledger = createaccountledger({ sandboxes: 5 });
   ledger.release('acct-6', { sandboxes: 3, vcpus: 10 });
   assert.equal(ledger.usage('acct-6').used.sandboxes, 0);
@@ -100,7 +101,7 @@ test('release floors at zero and ignores stale releases', () => {
   assert.equal(ledger.usage('acct-6').used.sandboxes, 0);
 });
 
-test('malformed wishes are rejected with the invalid-wish code', () => {
+it('malformed wishes are rejected with the invalid-wish code', () => {
   const ledger = createaccountledger({ vcpus: 8 });
   assert.throws(() => ledger.reserve('acct-7', { vcpus: 0 }), quotaerror);
   assert.throws(() => ledger.reserve('acct-7', { vcpus: -1 }), quotaerror);
@@ -116,7 +117,7 @@ test('malformed wishes are rejected with the invalid-wish code', () => {
   }
 });
 
-test('reconcile overwrites the counters from the authoritative rows', () => {
+it('reconcile overwrites the counters from the authoritative rows', () => {
   const ledger = createaccountledger({ sandboxes: 3, vcpus: 16 });
   ledger.reserve('acct-8', { sandboxes: 1, vcpus: 4 });
   const observed = usagefromrows([
@@ -132,7 +133,7 @@ test('reconcile overwrites the counters from the authoritative rows', () => {
   assert.equal(ledger.usage('acct-8').used.sandboxes, 2);
 });
 
-test('usagefromrows counts every non destroyed row like the api cap', () => {
+it('usagefromrows counts every non destroyed row like the api cap', () => {
   const usage = usagefromrows([
     { vcpus: 4, ramgb: 16, state: 'running' },
     { vcpus: 2, ramgb: 8, state: 'expired' },
@@ -142,7 +143,7 @@ test('usagefromrows counts every non destroyed row like the api cap', () => {
   assert.deepEqual(usage, { sandboxes: 3, vcpus: 6, ramgb: 24, vgpus: 0, diskgb: 0 });
 });
 
-test('reset clears one account or the whole book', () => {
+it('reset clears one account or the whole book', () => {
   const ledger = createaccountledger({});
   ledger.reserve('acct-9', { sandboxes: 1 });
   ledger.reserve('acct-10', { sandboxes: 1 });
@@ -153,7 +154,7 @@ test('reset clears one account or the whole book', () => {
   assert.equal(ledger.usage('acct-10').used.sandboxes, 0);
 });
 
-test('accountlimitsfromenv maps the environment onto the plan table', () => {
+it('accountlimitsfromenv maps the environment onto the plan table', () => {
   const limits = accountlimitsfromenv({
     SADDLE_MAX_SANDBOXES: '5',
     SADDLE_ACCOUNT_MAX_VCPUS: '32',
@@ -168,11 +169,12 @@ test('accountlimitsfromenv maps the environment onto the plan table', () => {
   assert.equal(relaxed.sandboxes, undefined);
 });
 
-test('the ledger walks every resource family of the plan table', () => {
+it('the ledger walks every resource family of the plan table', () => {
   const ledger = createaccountledger({ sandboxes: 2, vcpus: 8, ramgb: 32, vgpus: 1, diskgb: 100 });
   const verdict = ledger.reserve('acct-11', { sandboxes: 2, vcpus: 8, ramgb: 32, vgpus: 1, diskgb: 100 });
   assert.equal(verdict.remaining.vgpus, 0);
   assert.equal(verdict.remaining.diskgb, 0);
   assert.equal(ledger.admits('acct-11', { vgpus: 1 }), false);
   assert.equal(ledger.admits('acct-11', { diskgb: 1 }), false);
+});
 });

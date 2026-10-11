@@ -1,11 +1,10 @@
 /**
- * authflow.test.ts — the pure guards of the entry flow. The retired /auth
- * entry pass survives only as a compat handover: it navigates through these
- * guards to the destination the OS already resolves silently — the
- * post-session redirect (default /panel, a safe ?next= override honored),
- * the silent handover path (the same target with the pairing invitation
- * fields passed through untouched), the gateway normalization and the
- * pairing readiness verdict.
+ * authflow.test.ts — the pure guards of the entry flow. The authentication
+ * page-app (Sol/auth/auth.tsx) rides them on the owner entry chain intro →
+ * explore → auth → panel: the post-session redirect (default /panel, a safe
+ * ?next= override honored), the invitation passthrough (the pairing fields
+ * carried untouched), the gateway normalization and the pairing readiness
+ * verdict.
  */
 import { describe, expect, it } from "vitest";
 import { afterAuthTarget, handoverPath, normalizeGateway, pairingReadiness } from "../Sol/auth/authgate";

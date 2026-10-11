@@ -8,13 +8,13 @@
  * traceable errors) and the timeout bound inherited from the opensandbox
  * server contract.
  *
- * run with plain node (no install): node --test tests/sandboxprofile.test.ts
+ * run with plain node (no install): vitest run tests/sandboxprofile.test.ts
  * the .ts import specifiers rely on the native type stripping of the
  * supported node versions.
  */
 
 import assert from 'node:assert/strict';
-import { test } from 'node:test';
+import { describe, it } from 'vitest';
 import {
   enginespecfor,
   osfamily,
@@ -58,7 +58,8 @@ const limits: sandboxspeclimits = {
   defaulttimeoutseconds: 900,
 };
 
-test('a full declaration resolves every vocabulary field', () => {
+describe('the sandboxprofile contract', () => {
+it('a full declaration resolves every vocabulary field', () => {
   const verdict = resolvesandboxspec(
     {
       base: 'max',
@@ -90,7 +91,7 @@ test('a full declaration resolves every vocabulary field', () => {
   }
 });
 
-test('defaults fill the omitted fields (linux, amd64, runtime-node, nat)', () => {
+it('defaults fill the omitted fields (linux, amd64, runtime-node, nat)', () => {
   const verdict = resolvesandboxspec({ base: 'balanced' }, limits);
   assert.ok(verdict.ok);
   if (verdict.ok) {
@@ -106,7 +107,7 @@ test('defaults fill the omitted fields (linux, amd64, runtime-node, nat)', () =>
   }
 });
 
-test('an unknown base is rejected with a traceable typed error', () => {
+it('an unknown base is rejected with a traceable typed error', () => {
   const verdict = resolvesandboxspec({ base: 'mega' }, limits);
   assert.ok(!verdict.ok);
   if (!verdict.ok) {
@@ -118,7 +119,7 @@ test('an unknown base is rejected with a traceable typed error', () => {
   }
 });
 
-test('a missing base is its own error code', () => {
+it('a missing base is its own error code', () => {
   const verdict = resolvesandboxspec({ os: 'linux' }, limits);
   assert.ok(!verdict.ok);
   if (!verdict.ok) {
@@ -126,7 +127,7 @@ test('a missing base is its own error code', () => {
   }
 });
 
-test('an invalid architecture is rejected (only arm64 and amd64 exist)', () => {
+it('an invalid architecture is rejected (only arm64 and amd64 exist)', () => {
   for (const arch of ['x86', 'aarch64', 'riscv', 42]) {
     const verdict = resolvesandboxspec({ base: 'lite', arch }, limits);
     assert.ok(!verdict.ok, `arch ${String(arch)} must not resolve`);
@@ -138,7 +139,7 @@ test('an invalid architecture is rejected (only arm64 and amd64 exist)', () => {
   }
 });
 
-test('an invalid guest os is rejected', () => {
+it('an invalid guest os is rejected', () => {
   const verdict = resolvesandboxspec({ base: 'lite', os: 'plan9' }, limits);
   assert.ok(!verdict.ok);
   if (!verdict.ok) {
@@ -147,7 +148,7 @@ test('an invalid guest os is rejected', () => {
   }
 });
 
-test('per-base ceilings bound the resource wishes', () => {
+it('per-base ceilings bound the resource wishes', () => {
   const litecpu = resolvesandboxspec({ base: 'lite', vcpus: 5 }, limits);
   assert.ok(!litecpu.ok);
   if (!litecpu.ok) {
@@ -166,7 +167,7 @@ test('per-base ceilings bound the resource wishes', () => {
   }
 });
 
-test('non positive integer wishes are rejected before the ceiling check', () => {
+it('non positive integer wishes are rejected before the ceiling check', () => {
   const verdict = resolvesandboxspec({ base: 'lite', vcpus: 0 }, limits);
   assert.ok(!verdict.ok);
   if (!verdict.ok) {
@@ -180,7 +181,7 @@ test('non positive integer wishes are rejected before the ceiling check', () => 
   }
 });
 
-test('the declared timeout is bounded by the base maximum', () => {
+it('the declared timeout is bounded by the base maximum', () => {
   const verdict = resolvesandboxspec({ base: 'lite', timeoutseconds: 901 }, limits);
   assert.ok(!verdict.ok);
   if (!verdict.ok) {
@@ -194,7 +195,7 @@ test('the declared timeout is bounded by the base maximum', () => {
   }
 });
 
-test('the limits table is a parameter: the resolver never invents capacities', () => {
+it('the limits table is a parameter: the resolver never invents capacities', () => {
   const strict: sandboxspeclimits = {
     bases: {
       lite: {
@@ -217,7 +218,7 @@ test('the limits table is a parameter: the resolver never invents capacities', (
   }
 });
 
-test('a non object declaration fails at the envelope', () => {
+it('a non object declaration fails at the envelope', () => {
   for (const bad of [null, 'max', 7, [1, 2]]) {
     const verdict = resolvesandboxspec(bad, limits);
     assert.ok(!verdict.ok);
@@ -227,7 +228,7 @@ test('a non object declaration fails at the envelope', () => {
   }
 });
 
-test('the limits table must know every base it validates', () => {
+it('the limits table must know every base it validates', () => {
   const partial: sandboxspeclimits = {
     bases: { balanced: limits.bases.balanced, max: limits.bases.max, lite: undefined as never },
   };
@@ -238,7 +239,7 @@ test('the limits table must know every base it validates', () => {
   }
 });
 
-test('osfamily groups the guests into android, linux and windows', () => {
+it('osfamily groups the guests into android, linux and windows', () => {
   assert.equal(osfamily('android'), 'android');
   assert.equal(osfamily('grapheneos'), 'android');
   assert.equal(osfamily('linux'), 'linux');
@@ -246,7 +247,7 @@ test('osfamily groups the guests into android, linux and windows', () => {
   assert.equal(osfamily('windows'), 'windows');
 });
 
-test('enginespecfor bridges onto the createSandboxState surface', () => {
+it('enginespecfor bridges onto the createSandboxState surface', () => {
   const verdict = resolvesandboxspec({ base: 'max', vcpus: 32, ramgb: 64, vgpu: true }, limits);
   assert.ok(verdict.ok);
   if (verdict.ok) {
@@ -263,7 +264,7 @@ test('enginespecfor bridges onto the createSandboxState surface', () => {
   }
 });
 
-test('specenvlimits reads the SADDLE_SPEC_LIMITS json and keeps the fallback', () => {
+it('specenvlimits reads the SADDLE_SPEC_LIMITS json and keeps the fallback', () => {
   const fallback = specenvlimits({});
   assert.equal(fallback.bases.lite?.maxvcpus, 4);
   const merged = specenvlimits({
@@ -276,4 +277,5 @@ test('specenvlimits reads the SADDLE_SPEC_LIMITS json and keeps the fallback', (
   assert.equal(merged.bases.balanced?.maxvcpus, 16);
   const broken = specenvlimits({ SADDLE_SPEC_LIMITS: '{not json' });
   assert.equal(broken.bases.lite?.maxvcpus, 4);
+});
 });

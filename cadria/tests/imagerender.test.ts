@@ -1,6 +1,6 @@
-// # imagerender.test — the render layer of the cadria image wave, runnable with
-// the node built-in runner (no dependencies, no install):
-//   node --test tests/imagerender.test.ts
+// # imagerender.test — the render layer of the cadria image wave, runnable
+// with vitest:
+//   pnpm vitest run tests/imagerender.test.ts
 // The tests watch the promises the module makes: the same project compiles to
 // bit-identical commands, svg and signature; geometry stays normalized 0-1 and
 // every color is well-formed hex; the z bands are monotonic (background first,
@@ -11,7 +11,7 @@
 // is the identity at 0, wipe shifts exactly the documented middle-third band);
 // an empty cast renders background-only; grain count tracks grainDensity.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   COMMAND_BUDGET,
   type DrawCommand,

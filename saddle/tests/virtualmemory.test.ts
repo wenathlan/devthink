@@ -7,7 +7,7 @@
  */
 
 import assert from 'node:assert/strict';
-import { test } from 'node:test';
+import { describe, it } from 'vitest';
 import {
   buildnumatopology,
   dockerMemoryFlags,
@@ -40,7 +40,8 @@ function meminfovalue(text: string, key: string): number {
 /* /proc/meminfo generation                                            */
 /* ------------------------------------------------------------------ */
 
-test('generateVirtualMeminfo renders the full 128 GB payload in kB', () => {
+describe('the virtualmemory contract', () => {
+it('generateVirtualMeminfo renders the full 128 GB payload in kB', () => {
   const text = generateVirtualMeminfo(128, { freefraction: 0.4, availablefraction: 0.9 });
   for (const key of [
     'MemTotal',
@@ -77,18 +78,18 @@ test('generateVirtualMeminfo renders the full 128 GB payload in kB', () => {
   assert.equal(meminfovalue(huge, 'Hugetlb'), 30 * 1048576);
 });
 
-test('generateVirtualMeminfo rejects non-positive totals', () => {
+it('generateVirtualMeminfo rejects non-positive totals', () => {
   assert.throws(() => generateVirtualMeminfo(0), memoryerror);
   assert.throws(() => generateVirtualMeminfo(-4), memoryerror);
 });
 
-test('the 128g artifact keeps the physical anchor and the carveout behavior', () => {
+it('the 128g artifact keeps the physical anchor and the carveout behavior', () => {
   assert.equal(meminfo128gtotalkb, 134217728);
   const text = generatememinfo128g({ freefraction: 0.5, availablefraction: 0.9 });
   assert.equal(meminfovalue(text, 'MemTotal'), 134086656);
 });
 
-test('meminfoForMiB renders the page-aligned one-line form', () => {
+it('meminfoForMiB renders the page-aligned one-line form', () => {
   assert.equal(meminfoForMiB(2048), 'MemTotal: 2097152 kB\n');
   assert.equal(meminfoForMiB(1), 'MemTotal: 1024 kB\n');
   assert.equal(meminfoForMiB(1.5), 'MemTotal: 1536 kB\n');
@@ -96,7 +97,7 @@ test('meminfoForMiB renders the page-aligned one-line form', () => {
   assert.throws(() => meminfoForMiB(0), memoryerror);
 });
 
-test('pagealign rounds down to 4 kB boundaries', () => {
+it('pagealign rounds down to 4 kB boundaries', () => {
   assert.equal(pagealign(2049), 2048);
   assert.equal(pagealign(2051), 2048);
   assert.equal(pagealign(2052), 2052);
@@ -107,7 +108,7 @@ test('pagealign rounds down to 4 kB boundaries', () => {
 /* MIG profiles                                                        */
 /* ------------------------------------------------------------------ */
 
-test('the MIG catalog covers the three guest-side slices of the 96 GB device', () => {
+it('the MIG catalog covers the three guest-side slices of the 96 GB device', () => {
   assert.equal(MIGPROFILES.length, 3);
   const byid = new Map(MIGPROFILES.map((profile) => [profile.id, profile]));
   assert.deepEqual(byid.get('1g.24gb'), { id: '1g.24gb', slicegb: 24, maxinstances: 4 });
@@ -118,7 +119,7 @@ test('the MIG catalog covers the three guest-side slices of the 96 GB device', (
   }
 });
 
-test('getmigprofile resolves ids and treats off as no slicing', () => {
+it('getmigprofile resolves ids and treats off as no slicing', () => {
   assert.equal(getmigprofile('off'), null);
   assert.equal(getmigprofile('2g.48gb')?.maxinstances, 2);
   assert.throws(() => getmigprofile('8g.12gb' as migprofileid), memoryerror);
@@ -128,7 +129,7 @@ test('getmigprofile resolves ids and treats off as no slicing', () => {
 /* docker memory flags                                                 */
 /* ------------------------------------------------------------------ */
 
-test('dockerMemoryFlags emits the canonical unlimited-swap plan', () => {
+it('dockerMemoryFlags emits the canonical unlimited-swap plan', () => {
   const flags = dockerMemoryFlags();
   assert.deepEqual(flags.run, [
     '--memory=32g',
@@ -145,7 +146,7 @@ test('dockerMemoryFlags emits the canonical unlimited-swap plan', () => {
   assert.ok(flags.rationale.length >= 3);
 });
 
-test('dockerMemoryFlags honors custom capacity and bounded swap', () => {
+it('dockerMemoryFlags honors custom capacity and bounded swap', () => {
   const flags = dockerMemoryFlags({ ramgb: 64, shmsizegb: 4, unlimitedswap: false });
   assert.ok(flags.run.includes('--memory=64g'));
   assert.ok(flags.run.includes('--memory-swap=128g'));
@@ -153,7 +154,7 @@ test('dockerMemoryFlags honors custom capacity and bounded swap', () => {
   assert.equal(flags.compose.memswap_limit, '128g');
 });
 
-test('the module pins the docker swap and shm sentinels', () => {
+it('the module pins the docker swap and shm sentinels', () => {
   assert.equal(memorySwap, '-1');
   assert.equal(shmSize, '2g');
 });
@@ -162,7 +163,7 @@ test('the module pins the docker swap and shm sentinels', () => {
 /* limits, request validation and huge pages                           */
 /* ------------------------------------------------------------------ */
 
-test('memorylimits mirrors the 1-192 vcpu and 1-1024 GB RAM extremes', () => {
+it('memorylimits mirrors the 1-192 vcpu and 1-1024 GB RAM extremes', () => {
   assert.deepEqual(
     { ...memorylimits },
     {
@@ -176,14 +177,14 @@ test('memorylimits mirrors the 1-192 vcpu and 1-1024 GB RAM extremes', () => {
   );
 });
 
-test('validatememoryrequest accepts a coherent request and builds a plan', () => {
+it('validatememoryrequest accepts a coherent request and builds a plan', () => {
   const result = validatememoryrequest({ vcpus: 16, ramgb: 128, vramgb: 24, mig: '1g.24gb' });
   assert.equal(result.valid, true);
   assert.deepEqual(result.errors, []);
   assert.ok(result.plan !== null);
 });
 
-test('validatememoryrequest rejects limit violations and MIG mismatches', () => {
+it('validatememoryrequest rejects limit violations and MIG mismatches', () => {
   const badvcpu = validatememoryrequest({ vcpus: 500, ramgb: 32, vramgb: 24 });
   assert.equal(badvcpu.valid, false);
   assert.ok(badvcpu.errors.some((message) => message.startsWith('vcpus')));
@@ -193,7 +194,7 @@ test('validatememoryrequest rejects limit violations and MIG mismatches', () => 
   assert.equal(mismatch.plan, null);
 });
 
-test('planhugepages splits large machines into 1G and 2M pools', () => {
+it('planhugepages splits large machines into 1G and 2M pools', () => {
   const large = planhugepages(512);
   assert.deepEqual(large, [
     { size: '1G', count: 256, coversgb: 256 },
@@ -210,7 +211,7 @@ test('planhugepages splits large machines into 1G and 2M pools', () => {
 /* NUMA presets                                                        */
 /* ------------------------------------------------------------------ */
 
-test('buildnumatopology renders cpu ranges with the 10/32 distance matrix', () => {
+it('buildnumatopology renders cpu ranges with the 10/32 distance matrix', () => {
   const topo = buildnumatopology(16, 2);
   assert.equal(topo.nodes, 2);
   assert.deepEqual(topo.cpuranges, ['0-7', '8-15']);
@@ -223,7 +224,7 @@ test('buildnumatopology renders cpu ranges with the 10/32 distance matrix', () =
   assert.throws(() => buildnumatopology(16, 17), memoryerror);
 });
 
-test('NUMATOPOLOGIES curates the common EPYC thread counts', () => {
+it('NUMATOPOLOGIES curates the common EPYC thread counts', () => {
   const expected = [
     [192, 4],
     [192, 8],
@@ -248,4 +249,5 @@ test('NUMATOPOLOGIES curates the common EPYC thread counts', () => {
       }
     }
   });
+});
 });

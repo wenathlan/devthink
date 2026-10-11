@@ -1,13 +1,13 @@
 /**
  * authgate.ts — the pure guards of the entry flow (root-free, side-effect-
- * free, unit-tested in tests/authflow.test.ts). The entry pass itself is
- * retired: the OS never gates the entry on a login screen — the intro hands
- * straight to the desktop and the panel resolves the local identity
- * silently (browserIdentity through db.ts). The /auth route survives only
- * as a manual compat surface that walks through these guards to the same
- * destination the retired form produced, and the opt-in local CLI pairing
- * (POST /pairings/consume — the same gateway contract the panel speaks)
- * stays mounted on the panel and the Settings identity section.
+ * free, unit-tested in tests/authflow.test.ts). The authentication page-app
+ * (Sol/auth/auth.tsx) rides these guards on the owner entry chain intro →
+ * explore → auth → panel: afterAuthTarget resolves the post-session
+ * destination (default /panel, a safe same-origin ?next= honored), the
+ * opt-in local CLI pairing (POST /pairings/consume — the same gateway
+ * contract the panel speaks) validates its fields with pairingReadiness
+ * before the page ever calls the gateway, and normalizeGateway cleans the
+ * URL the whole shell treats one way.
  */
 
 /**

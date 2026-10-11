@@ -1,10 +1,10 @@
 // # audiospectrum.test — honest unit tests for the spectral layer, runnable
-// with the node built-in runner (no audio files, no dependencies, no install):
-//   node --test tests/audiospectrum.test.ts
+// with vitest:
+//   pnpm vitest run tests/audiospectrum.test.ts
 // Fixtures are synthetic: pure sines on exact bins, DC, seeded noise and a
 // two-tone onset signal — every test is deterministic.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   blackman,
   FftError,
