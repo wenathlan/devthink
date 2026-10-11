@@ -1,49 +1,49 @@
 /* ==========================================================================
    FOUNDRY THEME SOL — the single stylesheet of the theme
    The DevThink design engine (sol theme + liquid glass) with the foundry
-   identity: the pipeline blue over the container dark. Sections: tokens,
+   identity: the têmpera steel over the fornalha dark. Sections: tokens,
    base, layout, components, pages, motion, runtime. Pure css: every
    animation respects the reduced-motion opt-out.
    ========================================================================== */
 
-/* ---------- 1. TOKENS — sol theme (foundry identity: the pipeline blue) ---------- */
+/* ---------- 1. TOKENS — sol theme (foundry identity: the têmpera steel) ---------- */
 :root {
-  /* surfaces (the foundry container dark) */
-  --sol-bg: #0a0c11;
-  --sol-bg-2: #10131a;
+  /* surfaces (the foundry fornalha dark) */
+  --sol-bg: #0a1210;
+  --sol-bg-2: #0e1715;
   --sol-panel: rgba(240, 245, 252, 0.045);
   --sol-panel-strong: rgba(240, 245, 252, 0.08);
-  --sol-line: rgb(30 111 242 / 0.18);
-  --sol-line-strong: rgb(30 111 242 / 0.34);
+  --sol-line: rgb(47 184 181 / 0.18);
+  --sol-line-strong: rgb(47 184 181 / 0.34);
 
   /* text */
-  --sol-text: #f0f4fa;
-  --sol-muted: #9dabbd;
-  --sol-faint: #697889;
+  --sol-text: #eef6f3;
+  --sol-muted: #9db5ae;
+  --sol-faint: #6f8780;
 
-  /* accents — one signal blue carries the page (the running container) */
-  --sol-signal: 30 111 242;
-  --sol-primary: #1e6ff2;
-  --sol-primary-ink: #04122e;
-  --sol-ember: #1a5fd0;
-  --sol-tangerine: #5c95f6;
-  --sol-gold: #a7c6fa;
+  /* accents — one têmpera signal carries the page (the tempered steel) */
+  --sol-signal: 47 184 181;
+  --sol-primary: #2fb8b5;
+  --sol-primary-ink: #03211f;
+  --sol-ember: #1f8a87;
+  --sol-tangerine: #5fd4d0;
+  --sol-gold: #a9ecea;
 
   /* identity tint of the brand tile (the fusion chrome stays neutral) */
-  --app-tint: #1e6ff2;
+  --app-tint: #2fb8b5;
 
   /* semantic (states 5+8) */
   --sol-success: #34d8a8;
   --sol-error: #ff7b8e;
   --sol-warning: #ffd166;
-  --sol-info: #bcd4f7;
+  --sol-info: #bfe9e7;
 
   /* radius ladder */
   --r-sm: 10px;
   --r-md: 14px;
   --r-lg: 20px;
   --r-xl: 28px;
-  --r-pill: 999px;
+  /* the pill radius is retired (the spec bans stadium shapes) */
 
   /* shadows, five levels */
   --sh-1: 0 1px 2px rgba(0, 0, 0, 0.4);
@@ -51,8 +51,8 @@
   --sh-3: 0 12px 32px rgba(0, 0, 0, 0.5);
   --sh-4: 0 24px 64px rgba(0, 0, 0, 0.55);
 
-  /* timing master (micro 120–250ms) */
-  --t-fast: 120ms;
+  /* timing master (micro 150ms, per the family motion law) */
+  --t-fast: 150ms;
   --t-base: 180ms;
   --t-slow: 250ms;
   --ease: cubic-bezier(0.22, 1, 0.36, 1); /* easeOutQuart */
@@ -61,9 +61,10 @@
   --glass-blur: 35px;
   --glass-sat: 140%;
 
-  /* typography — the Sol triad: Space Grotesk display, system reading, Plex mono detail */
-  --sol-sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --sol-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  /* typography — the Sol triad: Bricolage Grotesque display, Outfit reading,
+     JetBrains Mono detail (the family triad; the later pass re-aliases mono) */
+  --sol-sans: "Outfit", "Segoe UI Variable", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --sol-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
   /* z-index bands (documented): atmosphere 0 · content 10 · float 20 · bar 50 · modal 200 · toast 300 · tooltip 400 */
   --z-atmosphere: 0;
@@ -87,15 +88,15 @@
 
 /* light variant (same rules, two theme tokens) */
 [data-theme="light"] {
-  --sol-bg: #f3f6fa;
-  --sol-bg-2: #e4ebf4;
-  --sol-panel: rgba(10, 12, 17, 0.04);
-  --sol-panel-strong: rgba(10, 12, 17, 0.07);
-  --sol-line: rgba(16, 62, 140, 0.2);
-  --sol-line-strong: rgba(16, 62, 140, 0.38);
-  --sol-text: #0e1420;
-  --sol-muted: #485564;
-  --sol-faint: #6d7a8a;
+  --sol-bg: #eef4f2;
+  --sol-bg-2: #e0ebe8;
+  --sol-panel: rgba(6, 12, 10, 0.04);
+  --sol-panel-strong: rgba(6, 12, 10, 0.07);
+  --sol-line: rgba(19, 95, 92, 0.2);
+  --sol-line-strong: rgba(19, 95, 92, 0.38);
+  --sol-text: #0d1f1c;
+  --sol-muted: #3c534d;
+  --sol-faint: #5f7771;
   color-scheme: light;
 }
 
@@ -200,7 +201,7 @@ kbd, code {
 
 .badge {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 3px 11px; border-radius: var(--r-pill);
+  padding: 3px 11px; border-radius: 4px;
   border: 1px solid var(--sol-line-strong);
   color: var(--sol-tangerine);
   font-size: 0.7rem; font-weight: 800;
@@ -234,11 +235,11 @@ kbd, code {
 .entry .entry-pipe { margin-left: auto; color: var(--sol-faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
 
 /* the pill tabs of the staging surface */
-.tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: var(--r-pill); background: var(--sol-panel); border: 1px solid var(--sol-line); flex-wrap: wrap; margin-top: 26px; }
+.tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: 6px; background: var(--sol-panel); border: 1px solid var(--sol-line); flex-wrap: wrap; margin-top: 26px; }
 .tabs a, .tabs button {
   border: 0; background: transparent; color: var(--sol-muted);
   font: inherit; font-weight: 650; font-size: 0.9rem;
-  padding: 9px 16px; min-height: 38px; border-radius: var(--r-pill); cursor: pointer;
+  padding: 9px 16px; min-height: 38px; border-radius: 4px; cursor: pointer;
   transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
 }
 .tabs a:hover, .tabs button:hover { color: var(--sol-text); background: var(--sol-panel-strong); text-decoration: none; }
@@ -249,7 +250,7 @@ kbd, code {
 .tabs a:focus-visible, .tabs button:focus-visible, .entry:focus-visible {
   outline: 2px solid var(--sol-primary);
   outline-offset: 2px;
-  border-radius: var(--r-pill);
+  border-radius: 4px;
   box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18);
 }
 
@@ -362,7 +363,7 @@ p, .hero-lede, .card-text { text-wrap: pretty; }
   /* the height of the taskbar chrome row (the sticky navbar) */
   --shell-top: 48px;
   /* the active pin accent (the pipeline blue story of the mark) */
-  --dt-accent: #4d8edd;
+  --dt-accent: #2fb8b5;
 }
 
 /* ---- the taskbar: sticky dark acrylic strip — saturate(3) blur(20px) over
@@ -1121,7 +1122,7 @@ a:hover { color: var(--win-accent); }
    spring on the overshoot curve, name rising with the backOut, slide-up
    exit) and the three-step onboarding walk. Every color rides the WINDOWS
    IDENTITY PASS tokens — no orange, no dots, no pills, no pure #000/#fff
-   fills, no transition:all; the window motion is 250ms on the window curve
+   fills, no all-shorthand transitions; the window motion is 250ms on the window curve
    cubic-bezier(.85,.14,.14,.85); the chrome stays neutral graphite in both
    themes (the light theme swaps only the window body). Sections: tokens ·
    stage · window · title bar · caption buttons · chip · intro ·
@@ -1326,7 +1327,7 @@ a:hover { color: var(--win-accent); }
 /* ==========================================================================
    POLISH PASS — wave D1
    The professional polish of the family window ("the family foundry"): the
-   foundry identity accent (amber #d97706) rides --win-accent, the title bar
+   foundry identity accent (têmpera #2fb8b5) rides --win-accent, the title bar
    reaches the 48px recipe height with the 44px Fluent caption targets and a
    real drag surface (pointer capture in the component, the offsets riding
    --win-x/--win-y), the rail enters with the page entries on the accent
@@ -1347,13 +1348,13 @@ a:hover { color: var(--win-accent); }
    selection and the accent controls (near-black, the house stop), and the
    light canvas deepens the amber for the same weight */
 :root {
-  --win-accent: #d97706;
+  --win-accent: #2fb8b5;
   --win-accent-ink: #1a1a1a;
   /* the recipe title bar: 48px (the window pass shipped 40px) */
   --win-titlebar-h: 48px;
 }
 [data-theme="light"] {
-  --win-accent: #b45309;
+  --win-accent: #17706d;
   --win-accent-ink: #ffffff;
 }
 
@@ -1567,7 +1568,7 @@ a:hover { color: var(--win-accent); }
 
 /* ==========================================================================
    NEOSKILLS PASS — wave C1
-   The NeoSkills bar for the foundry (app accent: amber #d97706, the molten
+   The NeoSkills bar for the foundry (app accent: têmpera #2fb8b5, the molten
    floor). ATMOSPHERE: the named amber light source rides the Mica wall
    (body), the intro splash and the window content zone per the campaign
    recipe; the .halftone dot dissolve and the .grain film overlay arrive as
@@ -1586,35 +1587,35 @@ a:hover { color: var(--win-accent); }
    ========================================================================== */
 
 /* tokens: the doctrine font pairing wired over the previous stacks, the
-   molten pair of the amber identity, and the mono alias every label rides */
+   têmpera pair of the steel identity, and the mono alias every label rides */
 :root {
-  --font-display: "Bricolage Grotesque", "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
   --sol-mono: var(--font-mono);
-  --fd-molten: #f59e0b;
-  --fd-molten-deep: #b45309;
+  --fd-molten: #2fb8b5;
+  --fd-molten-deep: #17706d;
 }
 
-/* ---------- atmosphere: the named amber light source ---------- */
-/* the Mica wall behind the application window warms toward the furnace */
+/* ---------- atmosphere: the named steel light source ---------- */
+/* the Mica wall behind the application window cools toward the fornalha */
 body {
   background:
-    radial-gradient(1200px 700px at 72% -12%, #d9770614, transparent 62%),
-    radial-gradient(900px 620px at 8% 108%, #b453090f, transparent 58%),
+    radial-gradient(1200px 700px at 72% -12%, #2fb8b51a, transparent 62%),
+    radial-gradient(900px 620px at 8% 108%, #17706d14, transparent 58%),
     var(--win-mica);
 }
 /* the opening splash carries the same light */
 .intro {
   background:
-    radial-gradient(1200px 700px at 72% -12%, #d9770614, transparent 62%),
-    radial-gradient(900px 620px at 8% 108%, #b453090f, transparent 58%),
+    radial-gradient(1200px 700px at 72% -12%, #2fb8b51a, transparent 62%),
+    radial-gradient(900px 620px at 8% 108%, #17706d14, transparent 58%),
     var(--win-mica);
 }
 /* the content zone: the light source of the page itself */
 .win-content {
   background:
-    radial-gradient(1200px 700px at 72% -12%, #d9770614, transparent 62%),
-    radial-gradient(900px 620px at 8% 108%, #b453090f, transparent 58%),
+    radial-gradient(1200px 700px at 72% -12%, #2fb8b51a, transparent 62%),
+    radial-gradient(900px 620px at 8% 108%, #17706d14, transparent 58%),
     var(--sol-bg);
 }
 
@@ -1626,7 +1627,7 @@ body {
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  background-image: radial-gradient(#d9770626 1px, transparent 1.4px);
+  background-image: radial-gradient(#2fb8b526 1px, transparent 1.4px);
   background-size: 11px 11px;
   mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
   -webkit-mask-image: radial-gradient(560px 380px at 100% 0%, #000 0%, transparent 72%);
@@ -1852,7 +1853,7 @@ h1, h2, h3, .intro__word { font-family: var(--font-display); }
    The foundry reads as what it is: the family foundry of clone herds — it
    RUNS the floor and STORES the herd archives (.tzst / .tar.gz / .tar.xz).
    The identity restates over a deep bronze-dark base with the amber
-   #d97706 signal at the 90/10 discipline: one furnace light per zone,
+   #2fb8b5 signal at the 90/10 discipline: one steel light per zone,
    hairline seams instead of boxes, mono console copy, zero box design.
    Append-only: every earlier rule stands; this tail wins the cascade.
    Sections: tokens · bronze climate · shell discipline · landing stage ·
@@ -1860,88 +1861,89 @@ h1, h2, h3, .intro__word { font-family: var(--font-display); }
    onboarding beat · narrow · guards.
    ========================================================================== */
 
-/* ---- tokens: the deep bronze-dark base (append-only restatement — the
-        ladder warms, the one signal stays the amber of the furnace) ---- */
+/* ---- tokens: the deep fornalha-teal base (campaign 6-b retint — the
+        ladder cools into steel, the one signal becomes the spec §12
+        têmpera #2fb8b5 of the tempered steel) ---- */
 :root {
   --fdx-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --fdx-signal: #d97706;
-  --fdx-ink: #f6eddc;
-  --win-accent: #d97706;
-  --win-accent-ink: #211102;
-  --app-tint: #d97706;
-  --win-mica: #150f08 radial-gradient(#261806 25%, #150f08 100%) no-repeat fixed;
-  --sol-canvas: #150f08;
-  --sol-canvas-deep: #100b06;
-  --sol-bg: #150f08;
-  --sol-bg-2: #1d150b;
-  --sol-surface-1: #191208;
-  --sol-surface-2: #20180c;
-  --sol-surface-3: #261d0f;
-  --sol-surface-4: #2c2212;
-  --sol-surface-5: #332815;
-  --sol-surface-6: #3a2e18;
-  --sol-surface-7: #41351c;
-  --sol-surface-8: #483c20;
+  --fdx-signal: #2fb8b5;
+  --fdx-ink: #eef6f3;
+  --win-accent: #2fb8b5;
+  --win-accent-ink: #03211f;
+  --app-tint: #2fb8b5;
+  --win-mica: #0a1210 radial-gradient(#0e1c19 25%, #0a1210 100%) no-repeat fixed;
+  --sol-canvas: #0a1210;
+  --sol-canvas-deep: #060c0a;
+  --sol-bg: #0a1210;
+  --sol-bg-2: #0e1715;
+  --sol-surface-1: #111c18;
+  --sol-surface-2: #152119;
+  --sol-surface-3: #192621;
+  --sol-surface-4: #1e2b25;
+  --sol-surface-5: #233028;
+  --sol-surface-6: #28352c;
+  --sol-surface-7: #2d3a30;
+  --sol-surface-8: #323f33;
   --sol-ink: var(--fdx-ink);
   --sol-text: var(--fdx-ink);
-  --sol-muted: #bda887;
-  --sol-faint: #8d795b;
+  --sol-muted: #9db5ae;
+  --sol-faint: #6f8780;
   --sol-hairline: color-mix(in oklab, var(--fdx-ink) 6%, transparent);
   --sol-hairline-strong: color-mix(in oklab, var(--fdx-ink) 12%, transparent);
-  --sol-signal: 217 119 6;
-  --sol-primary: #d97706;
-  --sol-primary-ink: #211102;
-  --sol-ember: #b45309;
-  --sol-tangerine: #f59e0b;
-  --sol-gold: #f3c76b;
+  --sol-signal: 47 184 181;
+  --sol-primary: #2fb8b5;
+  --sol-primary-ink: #03211f;
+  --sol-ember: #1f8a87;
+  --sol-tangerine: #5fd4d0;
+  --sol-gold: #a9ecea;
 }
 
-/* the light theme: bronze on cream (the same ladder, the deep-bronze
+/* the light theme: têmpera on cool paper (the same ladder, the deep-têmpera
    accent carrying the light) */
 [data-theme="light"] {
-  --win-mica: #f2ead9 radial-gradient(#fbf5e5 75%, #f2ead9 100%) no-repeat fixed;
-  --sol-canvas: #f2ead9;
-  --sol-canvas-deep: #e9dfc9;
-  --sol-bg: #f2ead9;
-  --sol-bg-2: #f8f1e1;
-  --sol-surface-1: #ede3cd;
-  --sol-surface-2: #f4ecda;
-  --sol-surface-3: #f8f1e1;
-  --sol-surface-4: #fbf6e9;
-  --sol-surface-5: #fdf9ee;
-  --sol-surface-6: #fefaf1;
-  --sol-surface-7: #fffdf6;
-  --sol-surface-8: #fffef9;
-  --fdx-ink: #241703;
-  --sol-ink: #241703;
-  --sol-text: #241703;
-  --sol-muted: #6d5836;
-  --sol-faint: #99824f;
-  --sol-hairline: color-mix(in oklab, #241703 10%, transparent);
-  --sol-hairline-strong: color-mix(in oklab, #241703 16%, transparent);
-  --win-accent: #b45309;
+  --win-mica: #eef4f2 radial-gradient(#e2efec 75%, #eef4f2 100%) no-repeat fixed;
+  --sol-canvas: #eef4f2;
+  --sol-canvas-deep: #e0ebe8;
+  --sol-bg: #eef4f2;
+  --sol-bg-2: #f3f8f6;
+  --sol-surface-1: #e7eeeb;
+  --sol-surface-2: #eff5f2;
+  --sol-surface-3: #f3f8f6;
+  --sol-surface-4: #f8fbfa;
+  --sol-surface-5: #fbfdfc;
+  --sol-surface-6: #fcfefd;
+  --sol-surface-7: #fefefe;
+  --sol-surface-8: #ffffff;
+  --fdx-ink: #0d1f1c;
+  --sol-ink: #0d1f1c;
+  --sol-text: #0d1f1c;
+  --sol-muted: #3c534d;
+  --sol-faint: #5f7771;
+  --sol-hairline: color-mix(in oklab, #0d1f1c 10%, transparent);
+  --sol-hairline-strong: color-mix(in oklab, #0d1f1c 16%, transparent);
+  --win-accent: #17706d;
   --win-accent-ink: #ffffff;
-  --sol-primary: #b45309;
+  --sol-primary: #17706d;
   --sol-primary-ink: #ffffff;
-  --sol-ember: #92400e;
-  --sol-tangerine: #b45309;
-  --sol-gold: #92400e;
+  --sol-ember: #135f5c;
+  --sol-tangerine: #17706d;
+  --sol-gold: #0f514e;
 }
 
-/* ---- the bronze climate: one furnace light per stage — the Mica wall,
-        the intro splash and the window content zone share the same warm
-        source (append-only restatement of the atmosphere) ---- */
+/* ---- the têmpera climate: one steel light per stage — the Mica wall,
+        the intro splash and the window content zone share the same cool
+        source (6-b restatement of the atmosphere) ---- */
 body,
 .intro {
   background:
-    radial-gradient(1200px 700px at 72% -12%, color-mix(in srgb, #d97706 14%, transparent), transparent 62%),
-    radial-gradient(900px 620px at 8% 108%, color-mix(in srgb, #b45309 10%, transparent), transparent 58%),
+    radial-gradient(1200px 700px at 72% -12%, color-mix(in srgb, #2fb8b5 12%, transparent), transparent 62%),
+    radial-gradient(900px 620px at 8% 108%, color-mix(in srgb, #17706d 9%, transparent), transparent 58%),
     var(--win-mica);
 }
 .win-content {
   background:
-    radial-gradient(1200px 700px at 72% -12%, color-mix(in srgb, #d97706 14%, transparent), transparent 62%),
-    radial-gradient(900px 620px at 8% 108%, color-mix(in srgb, #b45309 10%, transparent), transparent 58%),
+    radial-gradient(1200px 700px at 72% -12%, color-mix(in srgb, #2fb8b5 12%, transparent), transparent 62%),
+    radial-gradient(900px 620px at 8% 108%, color-mix(in srgb, #17706d 9%, transparent), transparent 58%),
     var(--sol-bg);
 }
 
@@ -1966,7 +1968,7 @@ body,
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(680px 400px at 74% -4%, color-mix(in srgb, #d97706 14%, transparent), transparent 70%);
+  background: radial-gradient(680px 400px at 74% -4%, color-mix(in srgb, #2fb8b5 14%, transparent), transparent 70%);
 }
 .fdx-lockup {
   position: relative;
@@ -2007,7 +2009,7 @@ body,
   width: calc(100% + 36px);
   height: 7px;
   margin-top: -3.5px;
-  background-image: repeating-linear-gradient(90deg, color-mix(in srgb, #d97706 62%, transparent) 0 3px, transparent 3px 18px);
+  background-image: repeating-linear-gradient(90deg, color-mix(in srgb, #2fb8b5 62%, transparent) 0 3px, transparent 3px 18px);
   will-change: transform;
 }
 .fdx-eyebrow {
@@ -2165,7 +2167,7 @@ body,
 }
 .fdx-chip:hover {
   color: var(--sol-text);
-  border-color: color-mix(in srgb, #d97706 45%, transparent);
+  border-color: color-mix(in srgb, #2fb8b5 45%, transparent);
 }
 .fdx-chip:active {
   transform: scale(0.96);
@@ -2221,7 +2223,7 @@ body,
   border-bottom: 1px solid var(--sol-hairline);
 }
 .fdx-row:hover {
-  background: color-mix(in srgb, #d97706 8%, transparent);
+  background: color-mix(in srgb, #2fb8b5 8%, transparent);
 }
 .fdx-name {
   color: var(--sol-text);
@@ -2259,18 +2261,18 @@ body,
 }
 /* the ONE raised herd row: the lead capability, center-popped on entry */
 .fdx-row.is-lead {
-  background: color-mix(in srgb, #d97706 9%, var(--sol-surface-2));
+  background: color-mix(in srgb, #2fb8b5 9%, var(--sol-surface-2));
   box-shadow: inset 2px 0 0 var(--win-accent);
   animation: fdxPop 640ms var(--fdx-ease) 140ms backwards;
 }
 .fdx-row.is-lead:hover {
-  background: color-mix(in srgb, #d97706 12%, var(--sol-surface-2));
+  background: color-mix(in srgb, #2fb8b5 12%, var(--sol-surface-2));
 }
 .fdx-row.is-lead .fdx-name {
   color: var(--fdx-ink);
 }
 .fdx-row.is-lead .fdx-format {
-  border-color: color-mix(in srgb, #d97706 55%, transparent);
+  border-color: color-mix(in srgb, #2fb8b5 55%, transparent);
   color: var(--win-accent);
 }
 .fdx-row.is-lead .fdx-dot {
@@ -2328,7 +2330,7 @@ body,
   margin: clamp(30px, 5vw, 52px) -32px -24px;
   padding: 20px 32px 24px;
   border-top: 1px solid var(--sol-hairline);
-  background: linear-gradient(180deg, transparent, color-mix(in srgb, #d97706 4%, transparent));
+  background: linear-gradient(180deg, transparent, color-mix(in srgb, #2fb8b5 4%, transparent));
 }
 .fdx-quads {
   display: grid;
@@ -2446,4 +2448,277 @@ body,
   .fdx-quad {
     background: transparent;
   }
+}
+
+/* ===== campaign 6-b · the real platform (sandboxes · images · artifacts) ==
+   The second face of the foundry: the machine room. Same grammar as the
+   landing — hairline ledgers on the surface ladder, ONE têmpera signal at
+   the 90/10 split, tabular numbers everywhere, dot+text states, motion
+   150ms [0.22,1,0.36,1], press scales .94–.97, reduced-motion hard stop.
+   ========================================================================== */
+
+/* ---- shared platform grammar ---------------------------------------------- */
+.fs-page, .fi-page, .fa-page { padding-bottom: clamp(28px, 5vw, 48px); }
+.fr-footnote {
+  margin: 26px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--sol-hairline);
+  color: var(--sol-faint);
+  font: 500 11.5px var(--font-mono);
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* the summary band: cells over one surface plate, hairline joints */
+.fs-summary, .fa-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  margin: 26px 0 24px;
+  background: var(--sol-hairline);
+  border: 1px solid var(--sol-hairline);
+  border-radius: var(--sol-radius);
+  overflow: hidden;
+}
+.fs-summary__cell, .fa-summary__cell {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 16px 18px;
+  background: var(--sol-surface-1);
+}
+.fs-summary__label, .fa-summary__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  color: var(--sol-faint);
+  font: 600 10.5px var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.fs-summary__value, .fa-summary__value {
+  margin: 0;
+  font: 650 clamp(1.4rem, 2.4vw, 1.9rem) / 1.05 var(--font-display);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--sol-text);
+}
+.fa-summary__mono { font: 600 0.9rem var(--font-mono); }
+.fs-summary__cell--wide { grid-column: span 2; }
+.fs-summary__ladder { display: flex; align-items: baseline; gap: 14px; font-size: 0.95rem; }
+.fs-statecount { display: inline-flex; align-items: center; gap: 6px; font: 500 12px var(--font-mono); font-variant-numeric: tabular-nums; }
+.fs-statecount i { width: 7px; height: 7px; border-radius: 50%; background: var(--sol-faint); }
+.fs-statecount[data-state="cold"] { color: var(--sol-muted); }
+.fs-statecount[data-state="warm"] { color: var(--sol-tangerine); }
+.fs-statecount[data-state="hot"] { color: var(--sol-primary); }
+.fs-refusal {
+  margin: 0 0 18px;
+  padding: 10px 14px;
+  border: 1px solid color-mix(in srgb, var(--sol-tangerine) 40%, transparent);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--sol-primary) 7%, transparent);
+  color: var(--sol-tangerine);
+  font: 500 12.5px var(--font-mono);
+}
+.fs-refusal[data-idle="true"] { border-color: var(--sol-hairline); background: transparent; color: var(--sol-faint); }
+
+/* ---- sandboxes: the herd ---------------------------------------------------- */
+.fs-herd { display: flex; flex-direction: column; border-top: 1px solid var(--sol-hairline-strong); }
+.fs-herd__head, .fi-shelf__head, .fa-line__head {
+  display: grid;
+  gap: 14px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--sol-hairline);
+  color: var(--sol-faint);
+  font: 600 10px var(--font-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.fs-herd__head { grid-template-columns: 1fr 1fr 1.4fr; }
+.fi-shelf__head { grid-template-columns: 1.6fr 0.5fr 1fr; }
+.fa-line__head { grid-template-columns: 1.6fr 0.6fr 0.6fr 0.6fr; }
+.fs-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.4fr;
+  gap: 14px;
+  align-items: center;
+  padding: 14px;
+  border-bottom: 1px solid var(--sol-hairline);
+  transition: background var(--t-fast) var(--ease);
+}
+.fs-row:hover { background: color-mix(in srgb, var(--sol-primary) 5%, transparent); }
+.fs-row__name { margin: 0; font: 600 14px var(--font-mono); color: var(--sol-text); }
+.fs-row__image { margin: 2px 0 0; font: 500 11px var(--font-mono); color: var(--sol-faint); }
+.fs-state { display: inline-flex; align-items: center; gap: 7px; font: 500 12.5px var(--font-mono); color: var(--sol-muted); }
+.fs-state i { width: 7px; height: 7px; border-radius: 50%; background: var(--sol-faint); }
+.fs-row[data-state="warm"] .fs-state i { background: var(--sol-tangerine); }
+.fs-row[data-state="hot"] .fs-state i { background: var(--sol-primary); }
+.fs-row__facts { display: block; margin-top: 3px; color: var(--sol-faint); font: 500 11.5px var(--font-mono); font-variant-numeric: tabular-nums; }
+.fs-row__actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+.fs-act {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 32px;
+  padding: 0 11px;
+  border: 1px solid var(--sol-hairline-strong);
+  border-radius: 4px;
+  background: var(--sol-bg-2);
+  color: var(--sol-muted);
+  font: 600 11.5px var(--font-mono);
+  cursor: pointer;
+  transition: color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease), transform 100ms var(--ease);
+}
+.fs-act:hover { color: var(--sol-text); border-color: rgb(var(--sol-signal) / 0.5); }
+.fs-act:active { transform: scale(0.95); }
+.fs-act:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; }
+.fs-act--step { color: var(--sol-tangerine); border-color: rgb(var(--sol-signal) / 0.4); }
+.fs-act--step:disabled { opacity: 0.4; cursor: not-allowed; }
+.fs-act--step:disabled:hover { border-color: rgb(var(--sol-signal) / 0.4); color: var(--sol-tangerine); }
+
+/* ---- images: the shelf and the plan ----------------------------------------- */
+.fi-plan {
+  display: grid;
+  gap: 14px;
+  margin: 0 0 26px;
+  padding: 18px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: var(--sol-radius);
+  background: var(--sol-surface-1);
+}
+.fi-plan__head { display: inline-flex; align-items: center; gap: 7px; margin: 0; color: var(--sol-faint); font: 600 10.5px var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; }
+.fi-plan__pick { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+.fi-plan__arrow { color: var(--sol-faint); display: inline-flex; }
+.fi-chips { display: inline-flex; align-items: center; gap: 8px; margin: 0; padding: 0; border: 0; min-inline-size: 0; }
+.fi-chips__legend { float: left; margin-right: 8px; padding: 0; color: var(--sol-faint); font: 500 10px var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; }
+.fi-chip {
+  padding: 6px 12px;
+  border: 1px solid var(--sol-hairline-strong);
+  border-radius: 4px;
+  background: var(--sol-bg-2);
+  color: var(--sol-muted);
+  font: 600 12px var(--font-mono);
+  cursor: pointer;
+  transition: color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease), transform 100ms var(--ease);
+}
+.fi-chip:hover { color: var(--sol-text); border-color: rgb(var(--sol-signal) / 0.4); }
+.fi-chip:active { transform: scale(0.96); }
+.fi-chip[aria-pressed="true"] { background: color-mix(in srgb, var(--sol-primary) 16%, transparent); border-color: rgb(var(--sol-signal) / 0.55); color: var(--sol-tangerine); }
+.fi-chip:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; }
+.fi-plan__steps { margin: 0; padding: 0 0 0 18px; color: var(--sol-muted); font: 500 12.5px/1.8 var(--font-mono); }
+.fi-plan__note { margin: 0; color: var(--sol-faint); font: 500 11.5px var(--font-mono); font-variant-numeric: tabular-nums; }
+.fi-shelf { display: flex; flex-direction: column; border-top: 1px solid var(--sol-hairline-strong); }
+.fi-row {
+  display: grid;
+  grid-template-columns: 1.6fr 0.5fr 1fr;
+  gap: 14px;
+  align-items: center;
+  padding: 14px;
+  border-bottom: 1px solid var(--sol-hairline);
+  transition: background var(--t-fast) var(--ease);
+}
+.fi-row:hover { background: color-mix(in srgb, var(--sol-primary) 5%, transparent); }
+.fi-row__name { margin: 0; font: 600 14px var(--font-mono); color: var(--sol-text); }
+.fi-row__trait { margin: 2px 0 0; color: var(--sol-faint); font-size: 11.5px; }
+.fi-row__ext { width: fit-content; padding: 3px 10px; border: 1px solid var(--sol-hairline-strong); border-radius: 4px; font: 600 11px var(--font-mono); letter-spacing: 0.06em; color: var(--sol-tangerine); }
+.fi-row__sizes { display: flex; gap: 18px; }
+.fi-metric { display: inline-flex; align-items: baseline; gap: 7px; }
+.fi-metric__label { color: var(--sol-faint); font: 500 10px var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; }
+.fi-metric__value { font: 600 13px var(--font-mono); color: var(--sol-text); font-variant-numeric: tabular-nums; }
+
+/* ---- artifacts: the packaging line ------------------------------------------ */
+.fa-form {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 26px;
+  padding: 18px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: var(--sol-radius);
+  background: var(--sol-surface-1);
+}
+.fa-form__head { margin: 0; color: var(--sol-faint); font: 600 10.5px var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; }
+.fa-form__grid { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; }
+.fa-form__field { display: grid; gap: 6px; }
+.fa-form__field span { color: var(--sol-faint); font: 500 10px var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; }
+.fa-form__field input {
+  min-height: 44px;
+  min-width: 220px;
+  padding: 0 14px;
+  border: 1px solid var(--sol-hairline-strong);
+  border-radius: 6px;
+  background: var(--sol-bg-2);
+  color: var(--sol-text);
+  font: 500 13.5px var(--font-mono);
+  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+}
+.fa-form__field input:focus { outline: none; border-color: rgb(var(--sol-signal) / 0.6); box-shadow: 0 0 0 3px rgb(var(--sol-signal) / 0.14); }
+.fa-form__hint { margin: 0; color: var(--sol-faint); font: 500 11.5px var(--font-mono); font-variant-numeric: tabular-nums; }
+.fa-line { display: flex; flex-direction: column; border-top: 1px solid var(--sol-hairline-strong); }
+.fa-row {
+  display: grid;
+  grid-template-columns: 1.6fr 0.6fr 0.6fr 0.6fr;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--sol-hairline);
+  transition: background var(--t-fast) var(--ease);
+}
+.fa-row:hover { background: color-mix(in srgb, var(--sol-primary) 5%, transparent); }
+.fa-row__name { margin: 0; font: 600 13.5px var(--font-mono); color: var(--sol-text); }
+.fa-row__identity { margin: 2px 0 0; color: var(--sol-faint); font: 500 11px var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fa-row__bytes { font: 600 12.5px var(--font-mono); color: var(--sol-muted); font-variant-numeric: tabular-nums; }
+.fa-row__checksum { font: 600 12.5px var(--font-mono); color: var(--sol-tangerine); font-variant-numeric: tabular-nums; }
+.fa-row__seal { display: inline-flex; align-items: center; gap: 6px; font: 600 11.5px var(--font-mono); color: var(--sol-primary); }
+.fa-row[data-intact="false"] .fa-row__seal { color: var(--sol-error); }
+.fa-manifestwrap { margin: 22px 0 0; }
+.fa-manifest {
+  margin: 0;
+  padding: 16px 18px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: var(--sol-radius);
+  background: var(--sol-bg-2);
+  color: var(--sol-muted);
+  font: 400 12px/1.8 var(--font-mono);
+  overflow: auto;
+}
+
+/* ---- the family row of the landing ----------------------------------------- */
+.fd-familyrow { margin: clamp(28px, 5vw, 48px) 0 0; padding-top: 20px; border-top: 1px solid var(--sol-hairline); }
+.fd-familyrow__head { margin: 0 0 10px; color: var(--sol-faint); font: 600 10.5px var(--font-mono); letter-spacing: 0.16em; text-transform: uppercase; }
+.fd-familyrow__links { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.fd-familyrow__link {
+  display: inline-flex; align-items: center; gap: 7px;
+  min-height: 30px;
+  color: var(--sol-muted);
+  font: 500 12.5px var(--font-mono);
+  text-decoration: none;
+  transition: color var(--t-fast) var(--ease);
+}
+.fd-familyrow__link:hover { color: var(--sol-text); text-decoration: none; }
+.fd-familyrow__dot { width: 7px; height: 7px; flex: none; border-radius: 50%; transition: transform var(--t-fast) var(--ease); }
+.fd-familyrow__link:hover .fd-familyrow__dot { transform: scale(1.35); }
+
+/* ---- the shared empty state -------------------------------------------------- */
+.empty { display: grid; justify-items: center; gap: 6px; margin: 34px 0; padding: 40px 24px; text-align: center; border: 1px solid var(--sol-hairline); border-radius: var(--sol-radius); background: var(--sol-surface-1); }
+.empty__icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 10px; color: var(--sol-primary); background: color-mix(in srgb, var(--sol-primary) 12%, transparent); }
+.empty__title { margin: 8px 0 0; font: 650 1.05rem var(--font-display); color: var(--sol-text); }
+.empty__line { margin: 0; max-width: 46ch; color: var(--sol-muted); font-size: 0.92rem; }
+.btn-row-tight { display: flex; flex-wrap: wrap; gap: 10px; }
+
+/* ---- platform guards --------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .fs-row, .fi-row, .fa-row, .fs-act, .fi-chip, .fd-familyrow__link, .fd-familyrow__dot, .fa-form__field input { transition: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .fi-plan, .fa-form, .empty, .fs-summary__cell, .fa-summary__cell, .fs-refusal { background: var(--sol-bg-2); }
+}
+@media (max-width: 760px) {
+  .fs-summary, .fa-summary { grid-template-columns: repeat(2, 1fr); }
+  .fs-summary__cell--wide { grid-column: span 2; }
+  .fs-herd__head, .fi-shelf__head, .fa-line__head { display: none; }
+  .fs-row, .fi-row, .fa-row { grid-template-columns: 1fr; }
+  .fa-form__grid { align-items: stretch; }
+  .fa-form__field input { min-width: 0; width: 100%; }
 }

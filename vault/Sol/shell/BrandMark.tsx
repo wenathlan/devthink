@@ -9,7 +9,9 @@
  * blurred drop shadow. The ONE signature motion is the VAULT DIAL: shortly
  * after entry the dial wheel turns 30deg and locks with a soft click-glint
  * (a light arc flashing once outside the ring); on hover it answers with
- * the same glint and the wheel follows. On hover the sheen band also sweeps
+ * the same glint, the wheel follows and the family flow runs — the ice
+ * gradient dashing INSIDE the dial strokes, the signature of the family
+ * mark. On hover the sheen band also sweeps
  * once, the contact glow rises and the face tilts gently in perspective —
  * plain CSS transitions/animations on transform/opacity/filter, the
  * @property registered custom properties easing at the house cubic-bezier
@@ -51,6 +53,19 @@ const GLYPH: ReactElement = (
       strokeLinecap="round"
     />
   </>
+);
+
+/** the flow glyph: the vault dial drawn again in the flowing gradient — the
+ * ONE signature motion of the family (the gradient runs INSIDE the stroke,
+ * an endless dash-offset loop; transform/opacity only, reduced-motion off). */
+const FLOW: ReactElement = (
+  <g className="vtMarkFlow" fill="none" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="48" cy="48" r="11" strokeWidth={4.2} stroke="url(#vtm-flow)" />
+    <g transform="rotate(0 48 48)">
+      <circle cx="48" cy="48" r="20" strokeWidth={5.5} stroke="url(#vtm-flow)" />
+      <path d="M48 48 V37 M48 48 L57.5 53.5 M48 48 L38.5 53.5" strokeWidth={4.2} stroke="url(#vtm-flow)" />
+    </g>
+  </g>
 );
 
 /** the animatable custom properties of the mark, mirrored in the stylesheet */
@@ -108,6 +123,27 @@ html.vt-mark-fx .vtMarkDial {
   -webkit-animation: vtDialGlint .6s ease .14s 1 both;
 }
 @keyframes vtDialGlint { 0% { opacity: 0; } 30% { opacity: .9; } 100% { opacity: 0; } }
+/* the flow INSIDE the stroke: the gradient dash runs the vault dial, endless
+   and quiet — the family signature, vault's ice edition */
+.vtMarkFlow {
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+html.vt-mark-fx .vtMark:hover .vtMarkFlow {
+  opacity: 1;
+  stroke-dasharray: 26 118;
+  animation: vtMarkFlowRun 2.6s linear infinite;
+  -webkit-animation: vtMarkFlowRun 2.6s linear infinite;
+}
+@keyframes vtMarkFlowRun {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -144; }
+}
+@-webkit-keyframes vtMarkFlowRun {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -144; }
+}
 .vtMarkSvg {
   position: relative; z-index: 1; display: block; width: 100%; height: 100%;
   overflow: visible; shape-rendering: geometricPrecision;
@@ -162,6 +198,7 @@ html.vt-mark-fx .vtMarkGlyph { transition: none; -webkit-transition: none; }
   .vtMark:hover .vtMarkSvg, .vtMark:hover .vtMarkGlyph { transform: none; -webkit-transform: none; }
   .vtMark:hover .vtMarkDial, .vtMark-enter .vtMarkDial { transform: none; -webkit-transform: none; }
   .vtDialGlint { opacity: 0 !important; }
+  .vtMarkFlow { opacity: 0 !important; }
 }
 `;
 
@@ -219,13 +256,9 @@ export function BrandMark({ size }: BrandMarkProps) {
     const id = window.setTimeout(() => setEntered(true), 80);
     return () => window.clearTimeout(id);
   }, []);
-  const vars = {
-    "--vt-mark-glow": `${STORY}73`,
-  } as CSSProperties;
-  if (size !== undefined) {
-    vars.width = size;
-    vars.height = size;
-  }
+  const vars = (size !== undefined
+    ? { "--vt-mark-glow": `${STORY}73`, width: size, height: size }
+    : { "--vt-mark-glow": `${STORY}73` }) as CSSProperties;
   return (
     <span className={entered ? "vtMark vtMark-enter" : "vtMark"} style={vars} aria-hidden="true">
       <span className="vtMarkGlow" />
@@ -260,6 +293,11 @@ export function BrandMark({ size }: BrandMarkProps) {
             <stop offset=".45" stopColor="#ffffff" stopOpacity=".5" />
             <stop offset=".55" stopColor="#ffffff" stopOpacity=".5" />
             <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+          </linearGradient>
+          <linearGradient id="vtm-flow" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#eaf7fb" />
+            <stop offset=".55" stopColor={STORY} />
+            <stop offset="1" stopColor={DEEP} />
           </linearGradient>
           <filter id="vtm-soft" x="-40%" y="-40%" width="180%" height="180%">
             <feGaussianBlur stdDeviation="3" />
@@ -334,6 +372,8 @@ export function BrandMark({ size }: BrandMarkProps) {
           >
             {GLYPH}
           </g>
+          {/* the gradient running inside the same strokes (the family flow) */}
+          {FLOW}
         </g>
       </svg>
     </span>

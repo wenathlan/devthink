@@ -26,7 +26,9 @@ database.exec(`
 `);
 
 const listrunners = database.prepare("SELECT id, name, kind, boundary, status FROM runners ORDER BY name");
-const runsOf = database.prepare("SELECT id, runnerId, outcome, detail, createdAt FROM runlogs WHERE runnerId = ? ORDER BY createdAt DESC");
+const runsOf = database.prepare(
+  "SELECT id, runnerId, outcome, detail, createdAt FROM runlogs WHERE runnerId = ? ORDER BY createdAt DESC",
+);
 const insertRunner = database.prepare("INSERT INTO runners (id, name, kind, boundary, status) VALUES (?, ?, ?, ?, ?)");
 const insertRun = database.prepare("INSERT INTO runlogs (id, runnerId, outcome, detail) VALUES (?, ?, ?, ?)");
 

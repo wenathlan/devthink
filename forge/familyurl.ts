@@ -15,5 +15,6 @@
  * slash so the sibling's clean-url doctrine answers the request.
  */
 export function familyurl(slug: string): string {
-  return `../${slug.replace(/^\/+|\/+$/g, "")}/`;
+  // biome-ignore lint/style/useTemplate: the verbatim family form of the recipe
+  return "../" + slug.replace(/^\/+|\/+$/g, "") + "/";
 }

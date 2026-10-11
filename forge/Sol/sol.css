@@ -43,7 +43,8 @@
   --r-md: 14px;
   --r-lg: 20px;
   --r-xl: 28px;
-  --r-pill: 999px;
+  /* the pill radius is retired (the spec bans stadium shapes in buttons,
+     badges, tabs and chips) */
 
   /* shadows, five levels */
   --sh-1: 0 1px 2px rgba(0, 0, 0, 0.4);
@@ -51,8 +52,8 @@
   --sh-3: 0 12px 32px rgba(0, 0, 0, 0.5);
   --sh-4: 0 24px 64px rgba(0, 0, 0, 0.55);
 
-  /* timing master (micro 120–250ms) */
-  --t-fast: 120ms;
+  /* timing master (micro 150ms, per the family motion law) */
+  --t-fast: 150ms;
   --t-base: 180ms;
   --t-slow: 250ms;
   --ease: cubic-bezier(0.22, 1, 0.36, 1); /* easeOutQuart */
@@ -61,9 +62,10 @@
   --glass-blur: 35px;
   --glass-sat: 140%;
 
-  /* typography — the Sol triad: Space Grotesk display, system reading, Plex mono detail */
-  --sol-sans: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --sol-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  /* typography — the Sol triad: Bricolage Grotesque display, Outfit reading,
+     JetBrains Mono detail (the family triad; Segoe UI stays as the platform fallback) */
+  --sol-sans: "Outfit", "Segoe UI Variable", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --sol-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
   /* z-index bands (documented): atmosphere 0 · content 10 · float 20 · bar 50 · modal 200 · toast 300 · tooltip 400 */
   --z-atmosphere: 0;
@@ -200,7 +202,7 @@ kbd, code {
 
 .badge {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 3px 11px; border-radius: var(--r-pill);
+  padding: 3px 11px; border-radius: 4px;
   border: 1px solid var(--sol-line-strong);
   color: var(--sol-tangerine);
   font-size: 0.7rem; font-weight: 800;
@@ -233,12 +235,12 @@ kbd, code {
 .entry .entry-note { color: var(--sol-faint); }
 .entry .entry-pipe { margin-left: auto; color: var(--sol-faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
 
-/* the pill tabs of the staging surface */
-.tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: var(--r-pill); background: var(--sol-panel); border: 1px solid var(--sol-line); flex-wrap: wrap; margin-top: 26px; }
+/* the anchor tabs of the staging surface (radius 4 — the pill is retired) */
+.tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: 6px; background: var(--sol-panel); border: 1px solid var(--sol-line); flex-wrap: wrap; margin-top: 26px; }
 .tabs a, .tabs button {
   border: 0; background: transparent; color: var(--sol-muted);
   font: inherit; font-weight: 650; font-size: 0.9rem;
-  padding: 9px 16px; min-height: 38px; border-radius: var(--r-pill); cursor: pointer;
+  padding: 9px 16px; min-height: 38px; border-radius: 4px; cursor: pointer;
   transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
 }
 .tabs a:hover, .tabs button:hover { color: var(--sol-text); background: var(--sol-panel-strong); text-decoration: none; }
@@ -249,7 +251,7 @@ kbd, code {
 .tabs a:focus-visible, .tabs button:focus-visible, .entry:focus-visible {
   outline: 2px solid var(--sol-primary);
   outline-offset: 2px;
-  border-radius: var(--r-pill);
+  border-radius: 4px;
   box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18);
 }
 
@@ -491,9 +493,10 @@ p, .hero-lede, .card-text { text-wrap: pretty; }
 .dt-nav__app:hover .dt-nav__tip,
 .dt-nav__app:focus-visible .dt-nav__tip { opacity: 1; transform: translate(-50%, 0); }
 
-/* ---- the Windows popintro bounce of the taskbar entries ---- */
+/* ---- the Windows popintro bounce of the taskbar entries (floor .7 —
+   the family popintro never enters from scale(0)) ---- */
 @keyframes dtPopIntro {
-  0% { transform: scale(0); }
+  0% { transform: scale(0.7); }
   40% { transform: scale(1.125); }
   70% { transform: scale(0.725); }
   100% { transform: scale(1); }
@@ -1121,7 +1124,7 @@ a:hover { color: var(--win-accent); }
    spring on the overshoot curve, name rising with the backOut, slide-up
    exit) and the three-step onboarding walk. Every color rides the WINDOWS
    IDENTITY PASS tokens — no orange, no dots, no pills, no pure #000/#fff
-   fills, no transition:all; the window motion is 250ms on the window curve
+   fills, no all-shorthand transitions; the window motion is 250ms on the window curve
    cubic-bezier(.85,.14,.14,.85); the chrome stays neutral graphite in both
    themes (the light theme swaps only the window body). Sections: tokens ·
    stage · window · title bar · caption buttons · chip · intro ·
@@ -1326,9 +1329,11 @@ a:hover { color: var(--win-accent); }
 /* ==========================================================================
    POLISH PASS — wave D1
    The professional pass over the application window ("the family forge").
-   The forge accent orange #fb923c carries the app — the windows blue
-   retires: accent, focus, selection, links, the tab segments and the rail
-   ladder ride the family orange in both themes. The title bar grammar is
+   The forge accent carried the family orange on the D1 pass (accent, focus,
+   selection, links, the tab segments and the rail ladder in both themes);
+   the campaign 6-b retint restates every one of those tokens on the spec
+   §12 lime-brasa in the R3 block below — the cascade retints, this pass
+   keeps its place in the geometry. The title bar grammar is
    verified against the family recipe: 48px drag surface (pointer capture,
    clamp, double-click = maximize), 44px caption targets, the close hover
    in rgb(232, 17, 35), the 250ms window curve, 8px corners and the
@@ -1450,15 +1455,8 @@ a:hover { color: var(--win-accent); }
 .win-family__link:hover { background-color: var(--win-wash); color: var(--sol-text); }
 .win-family__link:active { transform: scale(0.97); }
 .win-family__dot { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--sol-faint); }
-.win-family__dot[data-app="devthink"] { background: #ff5f00; }
-.win-family__dot[data-app="cadria"] { background: #f472b6; }
-.win-family__dot[data-app="stealthhead"] { background: #f87171; }
-.win-family__dot[data-app="debonair"] { background: #a78bfa; }
-.win-family__dot[data-app="argan"] { background: #1dcf64; }
-.win-family__dot[data-app="saddle"] { background: #d6b483; }
-.win-family__dot[data-app="foundry"] { background: #d97706; }
-.win-family__dot[data-app="vault"] { background: #eab308; }
-.win-family__dot[data-app="getry"] { background: #60a5fa; }
+/* the §12 accents ride inline from family.ts (the one table) — the css keeps
+   no drift copy of the hexes */
 .win-theme {
   display: flex;
   align-items: center;
@@ -1751,59 +1749,74 @@ body {
    raised featured row (center-pop), the 01–03 run flow beside the
    honest-state rail at 1.6fr/1fr and the footer meta-quad. Tokens are
    RESTATED (the cascade retints — every earlier pass keeps its place,
-   nothing is removed): the forge orange #fb923c signal at the 90/10 split
-   over the warm charcoal base; the lime era retires. Mark discipline: the
+   nothing is removed): the spec §12 lime-brasa #a2cb3a signal at the 90/10
+   split over the carvão base, the D1 orange and the windows accent
+   restated on the same family lime. Mark discipline: the
    hero lockup owns the mark on the landing — the title-bar mark rests
    (data-landing). The mark carries the ember flicker 3.2s
    (transform/opacity/filter only). Append-only: nothing above this block is
    edited or removed.
    ========================================================================== */
 
-/* ---- tokens: the warm dark base + the ember signal ------------------------ */
+/* ---- tokens: the charcoal base + the lime-brasa signal -------------------
+   (campaign 6-b retint: the forge signal is the spec §12 lime-brasa
+   #a2cb3a over carvão — the ember era retires; same rules, one accent) */
 :root {
-  --fg-ember: #fb923c;
+  --fg-ember: #a2cb3a;
+  /* the D1-era windows accent restated on the family lime-brasa: the D1 pass
+     below still writes the retired orange, the cascade retints it here —
+     focus, selection, links and the rail ladder ride the one signal */
+  --dt-accent: #a2cb3a;
+  --win-accent: #a2cb3a;
+  --win-accent-ink: #161d03;
   --fg-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --fg-spring: cubic-bezier(0.2, 1.2, 0.4, 1);
-  /* the warm charcoal ladder replaces the neutral graphite floor */
-  --sol-bg: #16100a;
-  --sol-bg-2: #1c140c;
-  --sol-surface-1: #191209;
-  --sol-surface-2: #1f1710;
-  --sol-surface-3: #261c12;
-  --sol-surface-4: #2d2215;
-  --sol-surface-5: #342818;
-  --sol-surface-6: #3b2e1b;
-  --sol-surface-7: #42341f;
-  --sol-surface-8: #493a23;
-  --win-mica: #16100a radial-gradient(#231407 25%, #16100a 100%) no-repeat fixed;
-  /* the ember hairlines: the lime joints retire */
-  --sol-line: rgb(251 146 60 / 0.14);
-  --sol-line-strong: rgb(251 146 60 / 0.3);
-  /* the ember family: one signal, graded */
-  --sol-ember: #f97316;
-  --sol-gold: #fed7aa;
+  /* the carvão ladder replaces the warm charcoal floor */
+  --sol-bg: #12140c;
+  --sol-bg-2: #171a0f;
+  --sol-surface-1: #191c11;
+  --sol-surface-2: #1f2215;
+  --sol-surface-3: #252818;
+  --sol-surface-4: #2c2f1d;
+  --sol-surface-5: #333621;
+  --sol-surface-6: #3a3d25;
+  --sol-surface-7: #414428;
+  --sol-surface-8: #484b2c;
+  --win-mica: #12140c radial-gradient(#1b1e0f 25%, #12140c 100%) no-repeat fixed;
+  /* the lime hairlines: the ember joints retire */
+  --sol-line: rgb(162 203 58 / 0.14);
+  --sol-line-strong: rgb(162 203 58 / 0.3);
+  /* the lime family: one signal, graded */
+  --sol-signal: 162 203 58;
+  --sol-primary: #a2cb3a;
+  --sol-primary-ink: #161d03;
+  --sol-ember: #8fb32c;
+  --sol-tangerine: #c8e370;
+  --sol-gold: #e3f3ae;
+  --app-tint: #a2cb3a;
 }
 [data-theme="light"] {
-  --win-accent: #c2410c;
+  --win-accent: #5c7a12;
   --win-accent-ink: #ffffff;
-  --sol-signal: 194 65 12;
-  --sol-primary: #c2410c;
+  --sol-signal: 76 103 18;
+  --sol-primary: #5c7a12;
   --sol-primary-ink: #ffffff;
-  --sol-tangerine: #9a3412;
-  --sol-gold: #7c2d12;
-  --sol-bg: #f8f2e9;
-  --sol-bg-2: #fbf7f0;
-  --sol-surface-1: #f1e8da;
-  --sol-surface-2: #f9f3e8;
-  --sol-surface-3: #fcf8f0;
+  --sol-ember: #55700f;
+  --sol-tangerine: #43600a;
+  --sol-gold: #33510c;
+  --sol-bg: #f5f7ec;
+  --sol-bg-2: #fafbf2;
+  --sol-surface-1: #ecefdc;
+  --sol-surface-2: #f6f8ec;
+  --sol-surface-3: #fafbf4;
   --sol-surface-4: #ffffff;
   --sol-surface-5: #ffffff;
   --sol-surface-6: #ffffff;
   --sol-surface-7: #ffffff;
   --sol-surface-8: #ffffff;
-  --win-mica: #f8f2e9 radial-gradient(#f3e9d7 75%, #f8f2e9 100%) no-repeat fixed;
-  --sol-line: rgb(154 52 18 / 0.18);
-  --sol-line-strong: rgb(154 52 18 / 0.34);
+  --win-mica: #f5f7ec radial-gradient(#eef2da 75%, #f5f7ec 100%) no-repeat fixed;
+  --sol-line: rgb(76 103 18 / 0.18);
+  --sol-line-strong: rgb(76 103 18 / 0.34);
 }
 
 /* ---- the hero stage: full-bleed inside the window, the ONE ember light ---- */
@@ -1923,7 +1936,7 @@ body {
 .pg-chip {
   padding: 7px 14px;
   border: 1px solid var(--sol-hairline-strong);
-  border-radius: var(--r-pill);
+  border-radius: 4px;
   background: var(--sol-panel);
   color: var(--sol-muted);
   font: 500 12.5px var(--sol-mono);
@@ -2154,4 +2167,312 @@ body {
 }
 @media (prefers-reduced-transparency: reduce) {
   .prompt-giga { background: var(--sol-bg-2); }
+}
+
+/* ===== campaign 6-b · the real platform (runs · queue · logs) =============
+   The second face of the forge: the platform pages of the runner floor.
+   Same grammar as the landing — hairline ledgers on the surface ladder,
+   ONE lime-brasa signal at the 90/10 split, tabular numbers everywhere,
+   dot+text states, motion 150ms [0.22,1,0.36,1], press scales .94–.97,
+   reduced-motion hard stop. The family row reads family.ts (no hexes here).
+   ========================================================================== */
+
+/* ---- shared platform grammar ---------------------------------------------- */
+.fr-page, .fq-page, .fl-page { padding-bottom: clamp(28px, 5vw, 48px); }
+.fr-footnote {
+  margin: 26px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--sol-hairline);
+  color: var(--sol-faint);
+  font: 500 11.5px var(--sol-mono);
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* the summary band: four cells over one surface plate, hairline joints */
+.fr-summary, .fq-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  margin: 26px 0 30px;
+  background: var(--sol-hairline);
+  border: 1px solid var(--sol-hairline);
+  border-radius: var(--sol-radius);
+  overflow: hidden;
+}
+.fr-summary__cell, .fq-summary__cell {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 16px 18px;
+  background: var(--sol-surface-1);
+}
+.fr-summary__label, .fq-summary__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  color: var(--sol-faint);
+  font: 600 10.5px var(--sol-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.fr-summary__value, .fq-summary__value {
+  margin: 0;
+  font: 650 clamp(1.4rem, 2.4vw, 1.9rem) / 1.05 var(--font-display);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--sol-text);
+}
+.fr-summary__ladder, .fq-summary__lanes { display: flex; align-items: baseline; gap: 14px; font-size: 0.95rem; }
+.fr-lanecount, .fq-lane { display: inline-flex; align-items: center; gap: 6px; font: 500 12px var(--sol-mono); font-variant-numeric: tabular-nums; }
+.fr-lanecount i, .fq-lane i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.fr-lanecount[data-health="green"] { color: var(--sol-success); }
+.fr-lanecount[data-health="amber"] { color: var(--sol-warning); }
+.fr-lanecount[data-health="red"] { color: var(--sol-error); }
+.fq-summary__cell--wide { grid-column: span 2; }
+.fq-lane { padding: 3px 10px; border: 1px solid var(--sol-hairline); border-radius: 4px; background: var(--sol-surface-2); }
+.fq-lane__depth { font-weight: 700; }
+.fq-lane[data-lane="express"] { color: var(--sol-tangerine); }
+.fq-lane[data-lane="batch"] { color: var(--sol-muted); }
+.fq-summary__head { font: 600 0.95rem var(--sol-mono); }
+.fr-summary__verdict { font-size: 0.95rem; }
+.fr-summary__verdict[data-healthy="true"] { color: var(--sol-success); }
+.fr-summary__verdict[data-healthy="false"] { color: var(--sol-error); }
+
+/* ---- runs: the fleet ledger ------------------------------------------------ */
+.fr-fleet { display: flex; flex-direction: column; border-top: 1px solid var(--sol-hairline-strong); }
+.fr-fleet__head {
+  display: grid;
+  grid-template-columns: 1.4fr 1.4fr 1fr 0.8fr 0.9fr;
+  gap: 14px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--sol-hairline);
+  color: var(--sol-faint);
+  font: 600 10px var(--sol-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.fr-row {
+  display: grid;
+  grid-template-columns: 1.4fr 1.4fr 1fr 0.8fr 0.9fr;
+  gap: 14px;
+  align-items: center;
+  padding: 14px;
+  border-bottom: 1px solid var(--sol-hairline);
+  transition: background var(--t-fast) var(--ease);
+}
+.fr-row:hover { background: color-mix(in srgb, var(--sol-primary) 5%, transparent); }
+.fr-row__name { margin: 0; font: 600 14px var(--sol-mono); color: var(--sol-text); }
+.fr-row__mode { margin: 2px 0 0; font: 500 11px var(--sol-mono); color: var(--sol-faint); }
+.fr-state { display: inline-flex; align-items: center; gap: 7px; font: 500 12.5px var(--sol-mono); color: var(--sol-muted); }
+.fr-state i { width: 7px; height: 7px; border-radius: 50%; background: var(--sol-faint); }
+.fr-row[data-health="green"] .fr-state i { background: var(--sol-success); }
+.fr-row[data-health="amber"] .fr-state i { background: var(--sol-warning); }
+.fr-row[data-health="red"] .fr-state i { background: var(--sol-error); }
+.fr-row__why { display: block; margin-top: 3px; color: var(--sol-faint); font-size: 11.5px; }
+.fr-metric { display: inline-flex; align-items: baseline; gap: 7px; }
+.fr-metric__label { color: var(--sol-faint); font: 500 10px var(--sol-mono); letter-spacing: 0.12em; text-transform: uppercase; }
+.fr-metric__value { font: 600 13.5px var(--sol-mono); color: var(--sol-text); font-variant-numeric: tabular-nums; }
+.fr-loadbar { position: relative; display: block; height: 4px; margin-top: 6px; border-radius: 2px; background: var(--sol-surface-4); overflow: hidden; }
+.fr-loadbar i { position: absolute; inset: 0 auto 0 0; border-radius: 2px; background: var(--sol-primary); transition: width var(--t-slow) var(--ease); }
+.fr-row[data-health="red"] .fr-loadbar i { background: var(--sol-error); }
+.fr-row[data-health="amber"] .fr-loadbar i { background: var(--sol-warning); }
+.fr-row__record { display: grid; gap: 4px; justify-items: start; }
+.fr-ladder { display: inline-flex; gap: 3px; align-items: flex-end; height: 12px; }
+.fr-ladder i { width: 5px; border-radius: 2px; background: var(--sol-surface-5); }
+.fr-ladder i:nth-child(1) { height: 5px; }
+.fr-ladder i:nth-child(2) { height: 8px; }
+.fr-ladder i:nth-child(3) { height: 12px; }
+.fr-ladder[data-rung="0"] i:nth-child(1) { background: var(--sol-success); }
+.fr-ladder[data-rung="1"] i:nth-child(-n + 2) { background: var(--sol-warning); }
+.fr-ladder[data-rung="2"] i { background: var(--sol-error); }
+.fr-healthlabel { display: block; margin-top: 4px; font: 500 11px var(--sol-mono); color: var(--sol-faint); }
+
+/* ---- queue: the serving order ---------------------------------------------- */
+.fq-form {
+  display: grid;
+  gap: 14px;
+  margin: 0 0 30px;
+  padding: 18px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: var(--sol-radius);
+  background: var(--sol-surface-1);
+}
+.fq-form__head { display: inline-flex; align-items: center; gap: 7px; margin: 0; color: var(--sol-faint); font: 600 10.5px var(--sol-mono); letter-spacing: 0.14em; text-transform: uppercase; }
+.fq-form__field { display: flex; gap: 10px; }
+.fq-form__input {
+  flex: 1;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--sol-hairline-strong);
+  border-radius: 6px;
+  background: var(--sol-bg-2);
+  color: var(--sol-text);
+  font: 500 14px var(--sol-mono);
+  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+}
+.fq-form__input:focus { outline: none; border-color: rgb(var(--sol-signal) / 0.6); box-shadow: 0 0 0 3px rgb(var(--sol-signal) / 0.14); }
+.fq-form__chips { display: flex; flex-wrap: wrap; gap: 18px; }
+.fq-chips { display: inline-flex; align-items: center; gap: 8px; margin: 0; padding: 0; border: 0; min-inline-size: 0; }
+.fq-chips__legend { float: left; margin-right: 8px; padding: 0; color: var(--sol-faint); font: 500 10px var(--sol-mono); letter-spacing: 0.12em; text-transform: uppercase; }
+.fq-chip {
+  padding: 6px 12px;
+  border: 1px solid var(--sol-hairline-strong);
+  border-radius: 4px;
+  background: var(--sol-bg-2);
+  color: var(--sol-muted);
+  font: 500 12px var(--sol-mono);
+  cursor: pointer;
+  transition: color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease), transform 100ms var(--ease);
+}
+.fq-chip:hover { color: var(--sol-text); border-color: rgb(var(--sol-signal) / 0.4); }
+.fq-chip:active { transform: scale(0.96); }
+.fq-chip[aria-pressed="true"] { background: color-mix(in srgb, var(--sol-primary) 16%, transparent); border-color: rgb(var(--sol-signal) / 0.55); color: var(--sol-tangerine); }
+.fq-chip:focus-visible { outline: 2px solid var(--sol-focus); outline-offset: 2px; }
+.fq-order { display: flex; flex-direction: column; border-top: 1px solid var(--sol-hairline-strong); }
+.fq-order__head {
+  display: grid;
+  grid-template-columns: 44px 1.6fr 0.6fr 0.5fr 84px;
+  gap: 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--sol-hairline);
+  color: var(--sol-faint);
+  font: 600 10px var(--sol-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.fq-row {
+  display: grid;
+  grid-template-columns: 44px 1.6fr 0.6fr 0.5fr 84px;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--sol-hairline);
+  transition: background var(--t-fast) var(--ease);
+}
+.fq-row:hover { background: color-mix(in srgb, var(--sol-primary) 5%, transparent); }
+.fq-row__pos { font: 650 13px var(--sol-mono); color: var(--sol-faint); font-variant-numeric: tabular-nums; }
+.fq-row__label { margin: 0; font: 600 13.5px var(--sol-sans); color: var(--sol-text); }
+.fq-row__meta { margin: 2px 0 0; font: 500 11px var(--sol-mono); color: var(--sol-faint); font-variant-numeric: tabular-nums; }
+.fq-row__priority { width: fit-content; padding: 3px 10px; border: 1px solid var(--sol-hairline-strong); border-radius: 4px; font: 600 10.5px var(--sol-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--sol-muted); }
+.fq-row[data-priority="express"] .fq-row__priority { color: var(--sol-tangerine); border-color: rgb(var(--sol-signal) / 0.5); }
+.fq-row__eta { font: 500 12px var(--sol-mono); color: var(--sol-faint); font-variant-numeric: tabular-nums; }
+.fq-row__cancel {
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  min-height: 30px; padding: 0 10px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--sol-faint);
+  font: 500 11px var(--sol-mono);
+  cursor: pointer;
+  opacity: 0;
+  transition: color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), opacity var(--t-fast) var(--ease), transform 100ms var(--ease);
+}
+.fq-row:hover .fq-row__cancel, .fq-row__cancel:focus-visible { opacity: 1; }
+.fq-row__cancel:hover { color: var(--sol-error); border-color: color-mix(in srgb, var(--sol-error) 45%, transparent); }
+.fq-row__cancel:active { transform: scale(0.96); }
+
+/* ---- logs: the seeded replay ------------------------------------------------ */
+.fl-console {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: space-between;
+  margin: 26px 0 24px;
+  padding: 16px 18px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: var(--sol-radius);
+  background: var(--sol-surface-1);
+}
+.fl-console__head { display: inline-flex; align-items: center; gap: 7px; margin: 0 0 10px; color: var(--sol-faint); font: 600 10.5px var(--sol-mono); letter-spacing: 0.14em; text-transform: uppercase; }
+.fl-seedrow { display: flex; flex-wrap: wrap; gap: 8px; }
+.fl-seed {
+  padding: 6px 12px;
+  border: 1px solid var(--sol-hairline-strong);
+  border-radius: 4px;
+  background: var(--sol-bg-2);
+  color: var(--sol-muted);
+  font: 600 12px var(--sol-mono);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease), transform 100ms var(--ease);
+}
+.fl-seed:hover { color: var(--sol-text); border-color: rgb(var(--sol-signal) / 0.4); }
+.fl-seed:active { transform: scale(0.96); }
+.fl-seed[aria-pressed="true"] { background: color-mix(in srgb, var(--sol-primary) 16%, transparent); border-color: rgb(var(--sol-signal) / 0.55); color: var(--sol-tangerine); }
+.fl-console__facts { display: flex; flex-wrap: wrap; gap: 20px; margin: 0; }
+.fl-fact dt { color: var(--sol-faint); font: 500 10px var(--sol-mono); letter-spacing: 0.12em; text-transform: uppercase; }
+.fl-fact dd { margin: 4px 0 0; font: 600 13px var(--sol-mono); color: var(--sol-text); font-variant-numeric: tabular-nums; }
+.fl-fact dd[data-outcome="success"] { color: var(--sol-success); }
+.fl-fact dd[data-outcome="failed"] { color: var(--sol-error); }
+.fl-stream { border: 1px solid var(--sol-hairline); border-radius: var(--sol-radius); background: var(--sol-bg-2); overflow: hidden; }
+.fl-stream__head {
+  display: grid;
+  grid-template-columns: 92px 52px 1fr;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--sol-hairline);
+  color: var(--sol-faint);
+  font: 600 10px var(--sol-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  background: var(--sol-surface-1);
+}
+.fl-stream__lines { margin: 0; padding: 8px 0 4px; list-style: none; max-height: 420px; overflow: auto; }
+.fl-line {
+  display: grid;
+  grid-template-columns: 92px 52px 1fr;
+  gap: 12px;
+  padding: 3px 16px;
+  font: 400 12.5px/1.7 var(--sol-mono);
+}
+.fl-line__clock { color: var(--sol-faint); font-variant-numeric: tabular-nums; }
+.fl-line__level { text-transform: uppercase; letter-spacing: 0.06em; color: var(--sol-muted); }
+.fl-line[data-level="warn"] .fl-line__level { color: var(--sol-warning); }
+.fl-line[data-level="error"] .fl-line__level { color: var(--sol-error); }
+.fl-line__text { color: var(--sol-text); }
+.fl-line[data-level="error"] .fl-line__text { color: color-mix(in srgb, var(--sol-error) 80%, var(--sol-text)); }
+.fl-stream__cursor { margin: 0; padding: 10px 16px 12px; border-top: 1px solid var(--sol-hairline); color: var(--sol-faint); font: 500 11.5px var(--sol-mono); }
+
+/* ---- the family row of the landing ----------------------------------------- */
+.fg-familyrow { margin: clamp(28px, 5vw, 48px) 0 0; padding-top: 20px; border-top: 1px solid var(--sol-hairline); }
+.fg-familyrow__head { margin: 0 0 10px; color: var(--sol-faint); font: 600 10.5px var(--sol-mono); letter-spacing: 0.16em; text-transform: uppercase; }
+.fg-familyrow__links { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.fg-familyrow__link {
+  display: inline-flex; align-items: center; gap: 7px;
+  min-height: 30px;
+  color: var(--sol-muted);
+  font: 500 12.5px var(--sol-mono);
+  text-decoration: none;
+  transition: color var(--t-fast) var(--ease);
+}
+.fg-familyrow__link:hover { color: var(--sol-text); text-decoration: none; }
+.fg-familyrow__dot { width: 7px; height: 7px; flex: none; border-radius: 50%; transition: transform var(--t-fast) var(--ease); }
+.fg-familyrow__link:hover .fg-familyrow__dot { transform: scale(1.35); }
+
+/* ---- the shared empty state (the shell owns the grammar) -------------------- */
+.empty { display: grid; justify-items: center; gap: 6px; margin: 34px 0; padding: 40px 24px; text-align: center; border: 1px solid var(--sol-hairline); border-radius: var(--sol-radius); background: var(--sol-surface-1); }
+.empty__icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 10px; color: var(--sol-primary); background: color-mix(in srgb, var(--sol-primary) 12%, transparent); }
+.empty__title { margin: 8px 0 0; font: 650 1.05rem var(--font-display); color: var(--sol-text); }
+.empty__line { margin: 0; max-width: 46ch; color: var(--sol-muted); font-size: 0.92rem; }
+.btn-row-tight { display: flex; flex-wrap: wrap; gap: 10px; }
+
+/* ---- platform guards: motion stops hard, acrylics go solid ------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .fr-row, .fq-row, .fr-loadbar i, .fq-chip, .fl-seed, .fg-familyrow__link, .fg-familyrow__dot, .fq-row__cancel { transition: none; }
+  .fr-fleet, .fq-order, .fl-stream__lines { scroll-behavior: auto; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .fl-console, .fq-form, .empty, .fr-summary__cell, .fq-summary__cell { background: var(--sol-bg-2); }
+}
+@media (max-width: 760px) {
+  .fr-summary, .fq-summary { grid-template-columns: repeat(2, 1fr); }
+  .fq-summary__cell--wide { grid-column: span 2; }
+  .fr-fleet__head { display: none; }
+  .fr-row { grid-template-columns: 1fr 1fr; }
+  .fq-order__head { display: none; }
+  .fq-row { grid-template-columns: 34px 1fr 84px; }
+  .fq-row__priority, .fq-row__eta { display: none; }
 }

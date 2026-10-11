@@ -7,20 +7,24 @@
  * which now lives here as the page mount itself.
  */
 
-// Home — the LANDING (campaign v3 · r3-forge): the home IS both the landing
-// and the platform entry (the small app doctrine). One ember light over the
-// warm charcoal stage: the hero lockup owns the drawn mark (the title-bar
-// mark rests — data-landing), the display headline and ONE phrase, then the
-// prompt-giga run field — a giant mono input with the embedded run key and
-// the REAL runtime targets (the runner modes of runner.ts) as chips. Below:
-// the capability ledger in hairline rows (target mono + status live-dot +
-// meta tabular) with the ONE raised featured row (center-pop), the 01–03
-// run flow beside the honest-state rail at 1.6fr/1fr and the footer
-// meta-quad. No run stats are invented — the staging floor reports
-// capabilities, not runs. Styling lives in Sol/sol.css (campaign v3 ·
-// r3-forge section).
+// Home — the LANDING of the forge (campaign 6-b · lime-brasa): the home IS
+// the landing AND the platform entry, and the platform is now real (the
+// runner floor answers on /runs, /queue and /logs). One brasa light over
+// the charcoal stage: the hero lockup owns the drawn mark (the title-bar
+// mark rests — data-landing), the display headline and ONE phrase, then
+// the prompt-giga run field — a giant mono input with the embedded run key
+// and the REAL runtime targets (the runner modes of runner.ts) as chips.
+// The run key hands over to the floor (/runs) — a real CTA into the real
+// platform, never a fake execution. Below: the capability ledger in
+// hairline rows with the ONE raised featured row (center-pop), the 01–03
+// run flow beside the honest-state rail at 1.6fr/1fr, the family row of
+// the spec §12 accents and the footer meta-quad flush to the window floor.
+// No run stats are invented — the floor reports capabilities, not runs.
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { type FormEvent, useState } from "react";
+import { useLocation } from "wouter";
+import { familyrow } from "../../family";
+import { familyurl } from "../../familyurl";
 import { modes } from "../../runner.ts";
 import { BrandMark } from "../shell/BrandMark";
 import { Entry } from "./entry";
@@ -34,12 +38,12 @@ const FLOW_STEPS = [
   {
     no: "01",
     title: "Mount",
-    text: "The sandbox runner surface mounts on the saddle engine and registers the runners of the floor.",
+    text: "The floor mounts a full-virtual sandbox on the saddle engine and hands the build to a runner.",
   },
   {
     no: "02",
     title: "Run",
-    text: "The build executes in the sandbox and its log records beside the runner that produced it.",
+    text: "The build executes in the sandbox and its log lines land beside the runner that produced them.",
   },
   {
     no: "03",
@@ -53,40 +57,65 @@ const CAPABILITIES = [
   {
     no: "01",
     target: "register runners",
-    text: "The sandbox runner surface registers the runners that execute builds and records the inventory of the floor.",
+    text: "The runner floor musters the fleet — name, mode, state and the health ladder of every runner.",
     status: "ready",
-    meta: "inventory",
+    meta: "on /runs",
   },
   {
     no: "02",
-    target: "record run logs",
-    text: "Every run keeps its log beside the runner that produced it, so an outcome always carries its evidence.",
+    target: "queue the work",
+    text: "Runs wait in three priority lanes — express cuts ahead, batch rides last, FIFO inside the lane.",
     status: "ready",
-    meta: "evidence",
+    meta: "on /queue",
   },
   {
     no: "03",
-    target: "report outcomes",
-    text: "Results travel over https: the runner reports success, failure and the log reference back to the family.",
+    target: "record run logs",
+    text: "Every run keeps its line stream beside the runner — replayed from one seed, line-exact.",
     status: "ready",
-    meta: "https",
+    meta: "on /logs",
   },
 ] as const;
 
-export function Home(props: HomeProps) {
+/** the family row of the landing footer: the nine siblings, spec §12 dots */
+function FamilyRow() {
+  return (
+    <nav className="fg-familyrow" aria-label="the DevThink family">
+      <p className="fg-familyrow__head">the family</p>
+      <div className="fg-familyrow__links">
+        {familyrow().map((member) => (
+          <a
+            key={member.slug}
+            className="fg-familyrow__link"
+            href={familyurl(member.slug)}
+            target="_blank"
+            rel="noreferrer"
+            title={`open ${member.slug} — a family application`}
+          >
+            <span className="fg-familyrow__dot" style={{ background: member.accent }} aria-hidden="true" />
+            {member.slug}
+          </a>
+        ))}
+      </div>
+    </nav>
+  );
+}
+
+export function Home(_props: HomeProps) {
+  const [, navigate] = useLocation();
   const [target, setTarget] = useState<string>(modes[0]);
 
-  /** the run key walks down to the floor: the staging surface presents the
-   * ledger — the sandbox engine runs the builds, this surface never fakes
-   * an execution */
+  /** the run key: the ONE CTA of the landing — it walks the drafted target
+   * down to the real floor (/runs), where the fleet and the queue answer.
+   * Nothing pretends to execute on the landing itself. */
   const run = (event: FormEvent): void => {
     event.preventDefault();
-    document.getElementById("surface")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    navigate("/runs");
   };
 
   return (
     <main className="shell fg-home">
-      {/* HERO — the landing stage: the ONE ember light, the halftone dissolve
+      {/* HERO — the landing stage: the ONE brasa light, the halftone dissolve
           and the film grain over the prompt-first run field. The lockup owns
           the mark on the landing (the title-bar mark rests — data-landing). */}
       <section className="hero-stage halftone grain" aria-labelledby="home-h">
@@ -101,8 +130,8 @@ export function Home(props: HomeProps) {
           Builds that run themselves.
         </h1>
         <p className="hero-lede reveal in">
-          The CI and build application of the DevThink OS — runners register, run logs record and outcomes report over
-          https, on the saddle sandbox engine.
+          The runner floor of the DevThink family — runners muster, work queues by priority and every run leaves its log
+          behind, on the saddle sandbox engine.
         </p>
         <form className="prompt-giga reveal in" onSubmit={run}>
           <input
@@ -112,12 +141,12 @@ export function Home(props: HomeProps) {
             aria-label="Describe the build to run"
           />
           <button className="pg-key" type="submit">
-            run
+            step onto the floor
             <ArrowRight size={16} aria-hidden="true" />
           </button>
         </form>
         <p className="pg-hint reveal in">
-          enter walks down to the floor · the targets ride the runner modes of the saddle engine
+          enter walks down to the runner floor · the targets ride the runner modes of the saddle engine
         </p>
         <fieldset className="pg-chips reveal in" aria-label="Runtime targets">
           {modes.map((mode) => (
@@ -132,7 +161,7 @@ export function Home(props: HomeProps) {
             </button>
           ))}
         </fieldset>
-        <Entry note={props.input} />
+        <Entry note="forge · the runner floor of the family" />
       </section>
 
       {/* THE RUN LEDGER — hairline capability rows, the ONE raised featured
@@ -146,20 +175,22 @@ export function Home(props: HomeProps) {
           </h2>
         </div>
         <div className="ledger reveal in">
-          <article className="ledger-row fg-featured" aria-label="the staging floor — runner surface staged">
+          <article className="ledger-row fg-featured" aria-label="the runner floor — platform live">
             <span className="ledger-no" aria-hidden="true">
               00
             </span>
             <div className="ledger-main">
-              <h3 className="ledger-title">staging floor</h3>
-              <p className="ledger-text">The runner surface is staged — the application tree lands here.</p>
+              <h3 className="ledger-title">the floor is live</h3>
+              <p className="ledger-text">
+                The platform answers on three pages: the fleets, the queue and the seeded log replay.
+              </p>
             </div>
             <div className="ledger-side">
               <span className="fg-live" data-live="true">
                 <i aria-hidden="true" />
-                staged
+                platform
               </span>
-              <span className="ledger-badge">saddle engine</span>
+              <span className="ledger-badge">runs · queue · logs</span>
             </div>
           </article>
           {CAPABILITIES.map((cap) => (
@@ -209,8 +240,8 @@ export function Home(props: HomeProps) {
           <aside className="fg-side reveal in" aria-label="the honest state of the floor">
             <p className="fg-side__head">the honest state</p>
             <p className="fg-side__text">
-              This staging web surface is the platform entry — every run of the family reports its outcome back to this
-              floor, and the application tree lands here.
+              This surface rehearses the floor from one seed — the fleets, the queue and the log replay are the real
+              engine logic, and no live build is claimed. The family reports its outcomes here.
             </p>
             <a className="fg-side__link" href="https://github.com/wenathlan/devthink" target="_blank" rel="noreferrer">
               the family on github
@@ -220,16 +251,23 @@ export function Home(props: HomeProps) {
         </div>
       </section>
 
+      {/* FAMILY ROW — the nine siblings, one §12 dot each (the same table the
+          rail foot and the tests read — zero drift) */}
+      <FamilyRow />
+
       {/* FOOTER META-QUAD — floor / engine / family / domain, flush to the
           window floor */}
       <footer className="meta-quad reveal in">
         <div className="quad-col">
           <p className="quad-head">floor</p>
-          <a className="quad-link" href="#surface">
-            the runner floor
+          <a className="quad-link" href="/runs">
+            the runner fleets
           </a>
-          <a className="quad-link" href="https://github.com/wenathlan/devthink" target="_blank" rel="noreferrer">
-            the family on github
+          <a className="quad-link" href="/queue">
+            the execution queue
+          </a>
+          <a className="quad-link" href="/logs">
+            the run logs
           </a>
         </div>
         <div className="quad-col">
@@ -238,9 +276,9 @@ export function Home(props: HomeProps) {
           <span className="quad-line">{modes.join(" · ")}</span>
         </div>
         <div className="quad-col">
-          <p className="quad-head">family</p>
-          <span className="quad-line">the DevThink family</span>
-          <span className="quad-line">forge runs its builds</span>
+          <p className="quad-head">identity</p>
+          <span className="quad-line">forge · lime-brasa #a2cb3a</span>
+          <span className="quad-line">carvão × lime — só roda</span>
         </div>
         <div className="quad-col">
           <p className="quad-head">domain</p>

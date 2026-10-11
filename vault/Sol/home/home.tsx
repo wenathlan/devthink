@@ -7,19 +7,21 @@
  * which now lives here as the page mount itself.
  */
 
-// The staging home of the vault (campaign v3 · r3-vault): a Suno-grade
-// landing with a vault-console heart — ONE gold lamplight over the deep
-// obsidian base, the drawn vault door turning its dial once every 16s
+// The staging home of the vault (campaign 6-b · gelo): a Suno-grade
+// landing with a vault-console heart — ONE ice lamplight over the cold
+// abyss base, the drawn vault door turning its dial once every 16s
 // (slow and heavy, transform only), and a prompt-giga deposit field whose
 // seal key answers from the REAL storage contract of the house
 // (storageModeFor, the sha-256/sha-1 digest disciplines, the 1,000,000-byte
 // threshold — nothing invented). Below: the vault ledger as hairline rows
-// with ONE raised featured row, honest to the staging surface — no artifact
-// rows are served yet, so the ledger presents the storage contract itself —
-// then the seal · store · attest steps and the footer meta-quad. One
-// orchestrated entrance, then stillness. The copy stays third-person
-// lowercase — the family grammar.
+// with ONE raised featured row, honest to the staging surface — the ledger
+// presents the storage contract itself, then the seal · store · attest
+// steps, the family row of the spec §12 accents and the footer meta-quad
+// flush to the window floor. One orchestrated entrance, then stillness.
+// The copy stays third-person lowercase — the family grammar.
 import { useCallback, useState } from "react";
+import { familyrow } from "../../family";
+import { familyurl } from "../../familyurl";
 import { lfsPointerFrom, storageModeFor } from "../../storage";
 import { Entry } from "./entry";
 import { Tabs } from "./tabs";
@@ -66,6 +68,30 @@ const CHANNELS = [
     featured: false,
   },
 ] as const;
+
+/** the family row of the landing footer: the nine siblings, spec §12 dots */
+function FamilyRow() {
+  return (
+    <nav className="vt-familyrow" aria-label="the DevThink family">
+      <p className="vt-familyrow__head">the family</p>
+      <div className="vt-familyrow__links">
+        {familyrow().map((member) => (
+          <a
+            key={member.slug}
+            className="vt-familyrow__link"
+            href={familyurl(member.slug)}
+            target="_blank"
+            rel="noreferrer"
+            title={`open ${member.slug} — a family application`}
+          >
+            <span className="vt-familyrow__dot" style={{ background: member.accent }} aria-hidden="true" />
+            {member.slug}
+          </a>
+        ))}
+      </div>
+    </nav>
+  );
+}
 
 /** the three jobs of the safe (the family copy, unchanged) */
 const JOBS = [
@@ -271,14 +297,14 @@ function VtDoor() {
         <circle cx="225" cy="241" r="7" />
       </g>
 
-      {/* the dial: ring, three spokes, hub and notch in the accent yellow —
+      {/* the dial: ring, three spokes, hub and notch in the accent ice —
           the group turns one slow revolution every 16s (reduced motion: still) */}
-      <g className="vt-door-dial" fill="none" stroke="#eab308" strokeLinecap="round">
+      <g className="vt-door-dial" fill="none" stroke="#a3d7e6" strokeLinecap="round">
         <circle cx="160" cy="178" r="46" strokeWidth="4.5" strokeOpacity=".95" />
         <path d="M160 178 V138 M160 178 L198.6 198 M160 178 L129.4 198" strokeWidth="4.5" />
         <circle cx="160" cy="178" r="15" strokeWidth="3" strokeOpacity=".75" />
-        <circle cx="160" cy="178" r="3.5" fill="#eab308" stroke="none" />
-        <circle cx="160" cy="132" r="3" fill="#eab308" stroke="none" />
+        <circle cx="160" cy="178" r="3.5" fill="#a3d7e6" stroke="none" />
+        <circle cx="160" cy="132" r="3" fill="#a3d7e6" stroke="none" />
       </g>
 
       {/* the corner rivets of the slab */}
@@ -304,7 +330,7 @@ export function Home(props: HomeProps) {
 
   return (
     <main className="page vt-room grain">
-      {/* the hero — one gold lamplight, the display line, the deposit field,
+      {/* the hero — one ice lamplight, the display line, the deposit field,
           the door with its 16s dial */}
       <section className="vt-hero halftone" aria-labelledby="vt-hero-title">
         <div className="vt-hero__grid">
@@ -422,6 +448,10 @@ export function Home(props: HomeProps) {
           </aside>
         </div>
       </section>
+
+      {/* FAMILY ROW — the nine siblings, one §12 dot each (the same table the
+          rail foot and the tests read — zero drift) */}
+      <FamilyRow />
 
       {/* the footer meta-quad, flush to the window floor */}
       <footer className="vt-quad" aria-label="vault footer">

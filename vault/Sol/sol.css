@@ -43,7 +43,7 @@
   --r-md: 14px;
   --r-lg: 20px;
   --r-xl: 28px;
-  --r-pill: 999px;
+  --r-chip: 8px; /* the family chip radius — the pill is retired (spec §5) */
 
   /* shadows, five levels */
   --sh-1: 0 1px 2px rgba(0, 0, 0, 0.4);
@@ -200,7 +200,7 @@ kbd, code {
 
 .badge {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 3px 11px; border-radius: var(--r-pill);
+  padding: 3px 11px; border-radius: var(--r-chip);
   border: 1px solid var(--sol-line-strong);
   color: var(--sol-tangerine);
   font-size: 0.7rem; font-weight: 800;
@@ -234,11 +234,11 @@ kbd, code {
 .entry .entry-pipe { margin-left: auto; color: var(--sol-faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
 
 /* the pill tabs of the staging surface */
-.tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: var(--r-pill); background: var(--sol-panel); border: 1px solid var(--sol-line); flex-wrap: wrap; margin-top: 26px; }
+.tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: var(--r-chip); background: var(--sol-panel); border: 1px solid var(--sol-line); flex-wrap: wrap; margin-top: 26px; }
 .tabs a, .tabs button {
   border: 0; background: transparent; color: var(--sol-muted);
   font: inherit; font-weight: 650; font-size: 0.9rem;
-  padding: 9px 16px; min-height: 38px; border-radius: var(--r-pill); cursor: pointer;
+  padding: 9px 16px; min-height: 38px; border-radius: var(--r-chip); cursor: pointer;
   transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
 }
 .tabs a:hover, .tabs button:hover { color: var(--sol-text); background: var(--sol-panel-strong); text-decoration: none; }
@@ -249,7 +249,7 @@ kbd, code {
 .tabs a:focus-visible, .tabs button:focus-visible, .entry:focus-visible {
   outline: 2px solid var(--sol-primary);
   outline-offset: 2px;
-  border-radius: var(--r-pill);
+  border-radius: var(--r-chip);
   box-shadow: 0 0 0 5px rgb(var(--sol-signal) / 0.18);
 }
 
@@ -491,9 +491,10 @@ p, .hero-lede, .card-text { text-wrap: pretty; }
 .dt-nav__app:hover .dt-nav__tip,
 .dt-nav__app:focus-visible .dt-nav__tip { opacity: 1; transform: translate(-50%, 0); }
 
-/* ---- the Windows popintro bounce of the taskbar entries ---- */
+/* ---- the Windows popintro bounce of the taskbar entries (floor .7 —
+   the family popintro never enters from scale zero) ---- */
 @keyframes dtPopIntro {
-  0% { transform: scale(0); }
+  0% { transform: scale(0.7); }
   40% { transform: scale(1.125); }
   70% { transform: scale(0.725); }
   100% { transform: scale(1); }
@@ -1121,7 +1122,7 @@ a:hover { color: var(--win-accent); }
    spring on the overshoot curve, name rising with the backOut, slide-up
    exit) and the three-step onboarding walk. Every color rides the WINDOWS
    IDENTITY PASS tokens — no orange, no dots, no pills, no pure #000/#fff
-   fills, no transition:all; the window motion is 250ms on the window curve
+   fills, no transition-all shorthand; the window motion is 250ms on the window curve
    cubic-bezier(.85,.14,.14,.85); the chrome stays neutral graphite in both
    themes (the light theme swaps only the window body). Sections: tokens ·
    stage · window · title bar · caption buttons · chip · intro ·
@@ -1807,7 +1808,7 @@ a:hover { color: var(--win-accent); }
    light theme to gold-on-warm-paper); the hero carries the display line,
    the deposit prompt-giga sealed by the REAL storage contract, the drawn
    door with its 16s dial; the ledger, steps and meta-quad finish the
-   console. Zero box-in-box, separation by air, no transition:all, every
+   console. Zero box-in-box, separation by air, no transition-all shorthand, every
    ambient inside prefers-reduced-motion: no-preference.
    Sections: tokens · light theme · canvas · mark rest · hero · deposit ·
    ledger · steps · rail · quad · door · motion · guards · narrow.
@@ -2048,7 +2049,7 @@ a:hover { color: var(--win-accent); }
 .vt-chip {
   padding: 7px 13px;
   border: 1px solid var(--sol-line);
-  border-radius: 999px;
+  border-radius: 4px;
   background: transparent;
   color: var(--sol-muted);
   font: 500 12px/1 var(--sol-mono);
@@ -2416,4 +2417,331 @@ a:hover { color: var(--win-accent); }
 @media (max-width: 560px) {
   .vt-quad__grid { grid-template-columns: 1fr; }
   .vt-display { max-width: none; }
+}
+
+/* ==========================================================================
+   CAMPAIGN 6-B · R3-VAULT RETINT + THE REAL PLATFORM
+   The safe wears the spec §12 gelo-de-cofre (#a3d7e6, ink #072330) at the
+   90/10 split over the cold abyss — the gold lamplight era retires (the
+   cascade restates every earlier pass, nothing is removed). The mark was
+   already ice: the chrome and the mark finally agree. The platform answers
+   on three real pages — /objects (the sealed inventory through the REAL
+   storage contract), /buckets (the retention shelf) and /retention (the
+   clock and the sweep plan) — over the pagehead grammar, hairline ledgers,
+   elegant empty states and tabular numerals everywhere. Append-only:
+   nothing above this block is edited or removed.
+   ========================================================================== */
+
+/* ---- tokens: the cold abyss base + the gelo-de-cofre signal ------------- */
+:root {
+  /* the gelo retint of the whole identity cascade */
+  --vt-light: rgba(163, 215, 230, 0.08);
+  --vt-light-2: rgba(163, 215, 230, 0.05);
+  --sol-bg: #0a0d10;
+  --sol-bg-2: #0e1216;
+  --sol-panel: rgb(214 236 244 / 4%);
+  --sol-panel-strong: rgb(214 236 244 / 7%);
+
+  /* ice hairlines at low alpha — separation by air, never a box */
+  --sol-line: rgb(163 215 230 / 12%);
+  --sol-line-strong: rgb(163 215 230 / 26%);
+
+  /* the cold paper text ladder */
+  --sol-text: #edf4f6;
+  --sol-muted: #a3b6bd;
+  --sol-faint: #6c7d85;
+  --sol-ink: #edf4f6;
+
+  /* the one signal: the vault gelo, 90/10 — ink #072330 on top */
+  --sol-signal: 163 215 230;
+  --sol-primary: #a3d7e6;
+  --sol-primary-ink: #072330;
+  --sol-ember: #8fc4d6;
+  --sol-tangerine: #c9e9f2;
+  --sol-gold: #eaf7fb;
+  --app-tint: #a3d7e6;
+  --dt-accent: #a3d7e6;
+  --win-accent: #a3d7e6;
+  --win-accent-ink: #072330;
+
+  /* the cold abyss surface ladder (elevation by color, never by border) */
+  --sol-surface-1: #10141a;
+  --sol-surface-2: #131820;
+  --sol-surface-3: #171e27;
+  --sol-surface-4: #1c2531;
+  --sol-surface-5: #222c3a;
+  --sol-surface-6: #293444;
+  --sol-surface-7: #313d4f;
+  --sol-surface-8: #39475b;
+
+  /* the mica wall behind the window goes cold abyss */
+  --win-mica: #0a0d10 radial-gradient(#121a22 25%, #0a0d10 100%) no-repeat fixed;
+}
+[data-theme="light"] {
+  /* the deep grade of the vault gelo: readable ink and chrome on cold paper */
+  --sol-bg: #eef4f6;
+  --sol-bg-2: #e3edf0;
+  --sol-panel: rgb(12 36 46 / 4%);
+  --sol-panel-strong: rgb(12 36 46 / 7%);
+  --sol-line: rgb(12 36 46 / 15%);
+  --sol-line-strong: rgb(12 36 46 / 28%);
+  --sol-text: #0d1a20;
+  --sol-muted: #45565e;
+  --sol-faint: #6e8189;
+  --sol-ink: #0d1a20;
+  --sol-signal: 47 107 126;
+  --sol-primary: #2f6b7e;
+  --sol-primary-ink: #ffffff;
+  --sol-ember: #28606f;
+  --sol-tangerine: #1f505c;
+  --sol-gold: #17414c;
+  --app-tint: #2f6b7e;
+  --dt-accent: #2f6b7e;
+  --win-accent: #2f6b7e;
+  --win-accent-ink: #ffffff;
+  --win-mica: #eef4f6 radial-gradient(#e2edf1 75%, #eef4f6 100%) no-repeat fixed;
+  --sol-surface-1: #e5eef1;
+  --sol-surface-2: #f2f7f9;
+  --sol-surface-3: #f8fbfc;
+  --sol-surface-4: #ffffff;
+  --sol-surface-5: #ffffff;
+  --sol-surface-6: #ffffff;
+  --sol-surface-7: #ffffff;
+  --sol-surface-8: #ffffff;
+}
+
+/* the lamplights restate on the ice (the hero and the door pools) */
+.vt-hero::before {
+  background: radial-gradient(58% 46% at 50% 0%, color-mix(in oklab, #a3d7e6 12%, transparent), transparent 72%);
+}
+.vt-doorfig::before {
+  background: radial-gradient(56% 50% at 50% 42%, color-mix(in oklab, #a3d7e6 12%, transparent), transparent 70%);
+}
+
+/* ---- the platform shell gutter: the pages ride the same measure ---------- */
+.vo-page, .vb-page, .vr-page, .vn-page { padding-bottom: 48px; }
+.vo-page .pagehead, .vb-page .pagehead, .vr-page .pagehead, .vn-page .pagehead { padding-top: 6px; }
+
+/* ---- the summary band: one row of census cells, hairline joints ---------- */
+.vo-summary, .vr-summary {
+  display: grid;
+  grid-template-columns: 0.7fr 0.9fr 1.6fr 1.4fr;
+  gap: 0;
+  margin: 26px 0 0;
+  border-block: 1px solid var(--sol-line);
+}
+.vo-summary__cell, .vr-summary__cell {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  padding: 14px 18px 14px 0;
+  border-right: 1px solid var(--sol-line);
+}
+.vo-summary__cell:last-child, .vr-summary__cell:last-child { border-right: none; padding-right: 0; }
+.vo-summary__cell--wide, .vr-summary__cell--wide { min-width: 0; }
+.vo-summary__label, .vr-summary__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--sol-faint);
+  font: 600 10px/1.2 var(--sol-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.vo-summary__value, .vr-summary__value {
+  margin: 0;
+  color: var(--sol-text);
+  font: 600 15px/1.3 var(--sol-sans);
+  font-variant-numeric: tabular-nums;
+}
+.vo-summary__channels, .vr-summary__channels { display: flex; flex-direction: column; gap: 4px; }
+.vo-summary__big { font: 500 12px/1.5 var(--sol-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vo-summary__bigsize { margin-left: 8px; color: var(--sol-primary); font-weight: 600; }
+
+/* the lane counters: dot + text, never color alone */
+.vo-lanecount, .fr-lanecount { display: inline-flex; align-items: center; gap: 7px; color: var(--sol-muted); font: 500 11.5px var(--sol-mono); font-variant-numeric: tabular-nums; }
+.vo-lanecount i { width: 6px; height: 6px; flex: none; border-radius: 50%; background: var(--vo-dot, var(--sol-primary)); }
+.vo-lanecount[data-channel="lfs"] { --vo-dot: var(--sol-primary); }
+.vo-lanecount[data-channel="blob"] { --vo-dot: var(--sol-faint); }
+
+/* ---- the deposit form: the seal desk of the /objects page ---------------- */
+.vo-form {
+  display: grid;
+  gap: 10px;
+  margin: 22px 0 0;
+  padding: 16px 18px;
+  border: 1px solid var(--sol-line);
+  border-radius: 8px;
+  background: var(--sol-panel);
+}
+.vo-form__head { display: inline-flex; align-items: center; gap: 7px; margin: 0; color: var(--sol-faint); font: 600 10px/1 var(--sol-mono); letter-spacing: 0.14em; text-transform: uppercase; }
+.vo-form__row { display: grid; grid-template-columns: 1.4fr 1.2fr 0.7fr auto; gap: 8px; }
+.vo-form__input {
+  min-width: 0;
+  padding: 9px 12px;
+  border: 1px solid var(--sol-line);
+  border-radius: 6px;
+  background: var(--sol-bg-2);
+  color: var(--sol-text);
+  font: 500 12.5px var(--sol-mono);
+  transition: border-color 150ms cubic-bezier(0.22, 1, 0.36, 1), background 150ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.vo-form__input:focus-visible { outline: none; border-color: var(--sol-primary); box-shadow: 0 0 0 3px rgb(var(--sol-signal) / 0.16); }
+.vo-form__input::placeholder { color: var(--sol-faint); }
+.vo-form__buckets { display: flex; flex-wrap: wrap; gap: 6px; padding: 0; border: none; margin: 0; }
+.vo-bucketchip {
+  padding: 5px 10px;
+  border: 1px solid var(--sol-line);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--sol-muted);
+  font: 500 11px var(--sol-mono);
+  cursor: pointer;
+  transition: background 150ms cubic-bezier(0.22, 1, 0.36, 1), color 150ms cubic-bezier(0.22, 1, 0.36, 1), border-color 150ms cubic-bezier(0.22, 1, 0.36, 1), transform 100ms ease-in-out;
+}
+.vo-bucketchip:hover { background: var(--sol-panel-strong); color: var(--sol-text); }
+.vo-bucketchip:active { transform: scale(0.97); }
+.vo-bucketchip[aria-pressed="true"] { border-color: transparent; background: var(--sol-primary); color: var(--sol-primary-ink); }
+.vo-form__readout { margin: 0; color: var(--sol-muted); font: 400 11.5px/1.6 var(--sol-mono); }
+.vo-form__readout[aria-live="polite"] { min-height: 1.6em; }
+
+/* ---- the sealed ledger: hairline rows, dot channels, tabular bytes ------- */
+.vo-ledger, .vr-ledger { margin: 24px 0 0; border-top: 1px solid var(--sol-line); }
+.vo-ledger__head, .vr-ledger__head, .fr-fleet__head {
+  display: grid;
+  grid-template-columns: 1.8fr 0.7fr 0.7fr 0.9fr 0.7fr;
+  gap: 12px;
+  padding: 9px 12px 9px 0;
+  color: var(--sol-faint);
+  font: 600 10px/1 var(--sol-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.vr-ledger__head { grid-template-columns: 1.8fr 0.8fr 0.5fr 1.4fr; }
+.vo-row, .vr-row {
+  display: grid;
+  grid-template-columns: 1.8fr 0.7fr 0.7fr 0.9fr 0.7fr;
+  gap: 12px;
+  align-items: center;
+  padding: 11px 12px 11px 0;
+  border-top: 1px solid var(--sol-line);
+  transition: background 150ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.vr-row { grid-template-columns: 1.8fr 0.8fr 0.5fr 1.4fr; }
+.vo-row:hover, .vr-row:hover { background: color-mix(in srgb, var(--sol-primary) 5%, transparent); }
+.vo-row__path { margin: 0; color: var(--sol-text); font: 600 13px/1.4 var(--sol-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vo-row__meta, .vr-row__meta { margin: 2px 0 0; color: var(--sol-faint); font: 400 10.5px var(--sol-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vo-row__size, .vr-row__age { color: var(--sol-muted); font: 600 12px var(--sol-mono); font-variant-numeric: tabular-nums; text-align: right; }
+.vo-row__digest { color: var(--sol-faint); font: 500 11px var(--sol-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vo-channel, .vr-state, .fr-state { display: inline-flex; align-items: center; gap: 7px; color: var(--sol-muted); font: 500 11.5px var(--sol-mono); }
+.vo-channel i { width: 6px; height: 6px; flex: none; border-radius: 50%; background: var(--vo-dot, var(--sol-primary)); }
+.vo-channel[data-channel="lfs"] { --vo-dot: var(--sol-primary); }
+.vo-channel[data-channel="blob"] { --vo-dot: var(--sol-faint); }
+.vr-state i { width: 6px; height: 6px; flex: none; border-radius: 50%; background: var(--vo-dot, var(--sol-primary)); }
+.vr-row[data-state="sealed"] .vr-state { --vo-dot: var(--sol-primary); }
+.vr-row[data-state="protected"] .vr-state { --vo-dot: var(--sol-gold); }
+.vr-row[data-state="due"] .vr-state { --vo-dot: var(--sol-tangerine); }
+.vr-row[data-state="due"] { background: color-mix(in srgb, var(--sol-tangerine) 4%, transparent); }
+.vr-row__why { color: var(--sol-muted); font: 400 11px/1.5 var(--sol-mono); }
+.vo-row__seal { display: inline-flex; align-items: center; gap: 6px; color: var(--sol-primary); font: 600 11px var(--sol-mono); }
+.vo-row__seal[data-intact="false"] { color: var(--sol-tangerine); }
+
+/* ---- the bucket shelf: policy cards with the lfs share bar --------------- */
+.vb-shelf { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 24px 0 0; }
+.vb-card {
+  display: grid;
+  gap: 9px;
+  justify-items: start;
+  padding: 16px 18px;
+  border: 1px solid var(--sol-line);
+  border-radius: 8px;
+  background: var(--sol-panel);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 150ms cubic-bezier(0.22, 1, 0.36, 1), background 150ms cubic-bezier(0.22, 1, 0.36, 1), transform 100ms ease-in-out;
+}
+.vb-card:hover { border-color: var(--sol-line-strong); background: var(--sol-panel-strong); }
+.vb-card:active { transform: scale(0.985); }
+.vb-card[data-active="true"] { border-color: var(--sol-primary); box-shadow: 0 0 0 3px rgb(var(--sol-signal) / 0.12); }
+.vb-card__head { display: inline-flex; align-items: center; gap: 8px; color: var(--sol-text); font: 600 13.5px var(--sol-sans); }
+.vb-card__policy { padding: 3px 8px; border-radius: 4px; background: rgb(var(--sol-signal) / 0.14); color: var(--sol-primary); font: 600 10.5px var(--sol-mono); letter-spacing: 0.06em; }
+.vb-card__policy[data-forever="true"] { background: rgb(var(--sol-signal) / 0.22); }
+.vb-card__facts { display: flex; gap: 14px; color: var(--sol-muted); font: 500 11.5px var(--sol-mono); font-variant-numeric: tabular-nums; }
+.vb-share { position: relative; width: 100%; height: 5px; border-radius: 4px; background: var(--sol-surface-3); overflow: hidden; }
+.vb-share i { position: absolute; inset: 0 auto 0 0; border-radius: 4px; background: var(--sol-primary); transition: width 300ms cubic-bezier(0.22, 1, 0.36, 1); }
+.vb-card__note { color: var(--sol-faint); font: 400 11px/1.55 var(--sol-sans); }
+
+/* the drawer: the objects one bucket keeps */
+.vb-drawer { margin: 22px 0 0; padding: 14px 18px; border: 1px solid var(--sol-line); border-radius: 8px; background: var(--sol-panel); }
+.vb-drawer__head { margin: 0 0 8px; color: var(--sol-muted); font: 600 11px var(--sol-mono); letter-spacing: 0.08em; font-variant-numeric: tabular-nums; }
+.vb-objects { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.vb-object { display: grid; grid-template-columns: 1.8fr 1fr 0.6fr 0.6fr; gap: 12px; align-items: center; padding: 9px 0; border-top: 1px solid var(--sol-line); }
+.vb-object:first-child { border-top: none; }
+.vb-object__path { color: var(--sol-text); font: 500 12.5px var(--sol-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vb-object__mime { color: var(--sol-faint); font: 400 11px var(--sol-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vb-object__size { color: var(--sol-muted); font: 600 11.5px var(--sol-mono); font-variant-numeric: tabular-nums; text-align: right; }
+
+/* ---- the retention ladder: the policies against the 365-day scale -------- */
+.vr-timeline { display: grid; gap: 10px; margin: 26px 0 0; padding: 16px 18px; border: 1px solid var(--sol-line); border-radius: 8px; background: var(--sol-panel); }
+.vr-timeline__head, .vr-timeline__fact { margin: 0; color: var(--sol-faint); font: 600 10px/1.4 var(--sol-mono); letter-spacing: 0.14em; text-transform: uppercase; }
+.vr-timeline__fact { color: var(--sol-muted); font: 400 11px/1.6 var(--sol-mono); text-transform: none; letter-spacing: 0; }
+.vr-ladder { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.vr-rung { display: grid; grid-template-columns: 130px 1fr; gap: 12px; align-items: center; }
+.vr-rung__bucket { color: var(--sol-text); font: 600 12px var(--sol-mono); }
+.vr-rung__bar { position: relative; height: 18px; border-radius: 4px; background: var(--sol-surface-3); overflow: hidden; }
+.vr-rung__bar i { position: absolute; inset: 0 auto 0 0; border-radius: 4px; background: color-mix(in srgb, var(--sol-primary) 55%, transparent); transition: width 300ms cubic-bezier(0.22, 1, 0.36, 1); }
+.vr-rung__bar[data-forever="true"] i { inset: 0; background: rgb(var(--sol-signal) / 0.2); }
+.vr-rung__label { position: absolute; inset: 0; display: inline-flex; align-items: center; padding: 0 9px; color: var(--sol-text); font: 600 10.5px var(--sol-mono); font-variant-numeric: tabular-nums; }
+.vr-rung__note { grid-column: 2; margin: -4px 0 0; color: var(--sol-faint); font: 400 10.5px/1.5 var(--sol-sans); }
+
+/* ---- the elegant empty state (spec §8.5): glyph on the ice wash, one
+   line of truth, one real action ------------------------------------------ */
+.empty { display: grid; justify-items: center; gap: 8px; margin: 32px 0 0; padding: 36px 24px; border: 1px dashed var(--sol-line-strong); border-radius: 8px; text-align: center; }
+.empty__icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 8px; background: rgb(var(--sol-signal) / 0.14); color: var(--sol-primary); }
+.empty__title { margin: 0; color: var(--sol-text); font: 600 15px/1.4 var(--sol-sans); }
+.empty__line { margin: 0; max-width: 46ch; color: var(--sol-muted); font: 400 12.5px/1.6 var(--sol-sans); text-wrap: pretty; }
+.btn-row-tight { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* the honest footnote of the platform pages */
+.vo-page .fr-footnote, .vb-page .fr-footnote, .vr-page .fr-footnote, .vn-page .fr-footnote {
+  margin: 26px 0 0;
+  color: var(--sol-faint);
+  font: 400 11px/1.7 var(--sol-mono);
+  border-top: 1px solid var(--sol-line);
+  padding-top: 12px;
+}
+
+/* ---- the family row of the landing (the spec §12 dots, one table) -------- */
+.vt-familyrow { max-width: 1180px; margin: clamp(28px, 5vw, 48px) auto 0; padding: 20px clamp(20px, 4vw, 48px) 0; border-top: 1px solid var(--sol-line); }
+.vt-familyrow__head { margin: 0 0 10px; color: var(--sol-faint); font: 600 10.5px var(--sol-mono); letter-spacing: 0.16em; text-transform: uppercase; }
+.vt-familyrow__links { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.vt-familyrow__link { display: inline-flex; align-items: center; gap: 7px; color: var(--sol-muted); font: 500 12px var(--sol-mono); text-decoration: none; transition: color 150ms cubic-bezier(0.22, 1, 0.36, 1); }
+.vt-familyrow__link:hover { color: var(--sol-text); }
+.vt-familyrow__dot { width: 7px; height: 7px; flex: none; border-radius: 50%; transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1); }
+.vt-familyrow__link:hover .vt-familyrow__dot { transform: scale(1.35); }
+
+/* ---- motion: the platform rides the house laws --------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .vo-row, .vr-row, .vb-card, .vr-rung { transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vb-share i, .vr-rung__bar i { transition: none; }
+  .vt-familyrow__dot, .vt-familyrow__link { transition: none; }
+}
+
+/* ---- narrow windows ------------------------------------------------------- */
+@media (max-width: 900px) {
+  .vo-summary, .vr-summary { grid-template-columns: 1fr 1fr; }
+  .vo-summary__cell, .vr-summary__cell { border-right: none; border-bottom: 1px solid var(--sol-line); padding-right: 0; }
+  .vo-form__row { grid-template-columns: 1fr 1fr; }
+  .vb-shelf { grid-template-columns: 1fr; }
+  .vo-row, .vr-row { grid-template-columns: 1.6fr 0.8fr 0.7fr; }
+  .vo-row__digest, .vo-ledger__head span:nth-child(4), .vr-row__why { display: none; }
+  .vr-ledger__head { grid-template-columns: 1.6fr 0.8fr 0.7fr; }
+  .vb-object { grid-template-columns: 1.6fr 0.8fr 0.6fr; }
+  .vb-object__mime { display: none; }
+  .vr-rung { grid-template-columns: 1fr; }
+  .vr-rung__note { grid-column: 1; }
 }

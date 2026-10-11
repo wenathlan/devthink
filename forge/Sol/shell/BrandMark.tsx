@@ -1,8 +1,8 @@
 /**
  * BrandMark.tsx — the drawn brand mark of the forge theme, one hand-drawn
  * SVG icon in the house finishing (the devthink/Sol/shell/app.icons.tsx
- * standard): a gradient squircle face over the orange story (#fb923c —
- * the family forge), a soft top gloss, a mid layer of blurred
+ * standard): a gradient squircle face over the lime-brasa story (#a2cb3a —
+ * the spec §12 forge signal), a soft top gloss, a mid layer of blurred
  * story orbs over a pedestal band, two blurred inner contours, a blurred
  * contact ellipse at the base, a discrete film grain, and the glyph itself
  * — the mallet head over its handle — in thick ivory strokes with a
@@ -21,15 +21,15 @@
 import { type CSSProperties, type ReactElement, useEffect, useState } from "react";
 
 /** the warm ivory of the glyph stroke */
-const IVORY = "#fbf5ea";
+const IVORY = "#f6fbec";
 
 /** the backing translucency of outlined glyph shapes */
 const BACKING = "rgba(255,255,255,.14)";
 
-/** the story palette of the mark (the family forge orange) */
-const STORY = "#fb923c";
-const DEEP = "#7c2d12";
-const SOFT = "#fed7aa";
+/** the story palette of the mark (the forge lime-brasa, spec §12) */
+const STORY = "#a2cb3a";
+const DEEP = "#4a5c12";
+const SOFT = "#dbeb9f";
 
 /** the asymmetric squircle of the mark face: tighter shoulders, heavier base */
 const SQUIRCLE = "M22 0 L74 0 Q96 0 96 22 L96 66 Q96 96 66 96 L30 96 Q0 96 0 66 L0 22 Q0 0 22 0 Z";
@@ -47,11 +47,23 @@ const GLYPH: ReactElement = (
 /** the spark glint of the strike: short warm rays radiating from the impact
  * point beside the mallet face (drawn once, flashed by the stylesheet) */
 const SPARK: ReactElement = (
-  <g className="fgMarkSpark" fill="none" stroke="#fff7ed" strokeWidth={2.2} strokeLinecap="round">
+  <g className="fgMarkSpark" fill="none" stroke="#f4fadf" strokeWidth={2.2} strokeLinecap="round">
     <path d="M69 33.5 L69 37" />
     <path d="M72.5 41 L76 41" />
     <path d="M71.8 44.8 L74.3 47.3" />
     <path d="M71.8 37.2 L74.3 34.7" />
+  </g>
+);
+
+/** the flow glyph: the mallet drawn again in the flowing gradient — the ONE
+ * signature motion of the family mark (the gradient runs INSIDE the stroke,
+ * an endless dash-offset loop; transform/opacity only, reduced-motion off). */
+const FLOW: ReactElement = (
+  <g className="fgMarkFlow" fill="none" strokeLinecap="round" strokeLinejoin="round">
+    <g transform="rotate(-24 50 37)">
+      <rect x="35" y="29.5" width="30" height="15" rx="5.5" strokeWidth={5} stroke="url(#fgm-flow)" />
+    </g>
+    <path d="M53 44 L43.5 64" strokeWidth={5} stroke="url(#fgm-flow)" />
   </g>
 );
 
@@ -176,6 +188,28 @@ html.fg-mark-fx .fgMark:hover .fgMarkStrike {
   transform-origin: 69px 41px; -webkit-transform-origin: 69px 41px;
   opacity: 0; pointer-events: none; will-change: transform, opacity;
 }
+/* the flow INSIDE the stroke: the gradient dash runs the mallet outline,
+   endless and quiet — the family signature, forge's lime-brasa edition */
+.fgMarkFlow {
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+html.fg-mark-fx .fgMark:hover .fgMarkFlow,
+html.fg-mark-fx .hero-mark .fgMark .fgMarkFlow {
+  opacity: 1;
+  stroke-dasharray: 30 132;
+  animation: fgMarkFlowRun 2.8s linear infinite;
+  -webkit-animation: fgMarkFlowRun 2.8s linear infinite;
+}
+@keyframes fgMarkFlowRun {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -162; }
+}
+@-webkit-keyframes fgMarkFlowRun {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -162; }
+}
 html.fg-mark-fx .fgMark[data-strike="entry"] .fgMarkSpark {
   animation: fgSparkGlint 560ms cubic-bezier(.3,.5,.25,1) 800ms both;
   -webkit-animation: fgSparkGlint 560ms cubic-bezier(.3,.5,.25,1) 800ms both;
@@ -195,13 +229,14 @@ html.fg-mark-fx .fgMark:hover .fgMarkSpark {
   .fgMark:hover .fgMarkStrike, .fgMark:hover .fgMarkSpark { animation: none; -webkit-animation: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .fgMark, .fgMarkSvg, .fgMarkGlyph, .fgMarkSheen, .fgMarkGlow, .fgMarkMid, .fgMarkStrike, .fgMarkSpark {
+  .fgMark, .fgMarkSvg, .fgMarkGlyph, .fgMarkSheen, .fgMarkGlow, .fgMarkMid, .fgMarkStrike, .fgMarkSpark, .fgMarkFlow {
     animation: none !important; -webkit-animation: none !important;
     transition: none !important; -webkit-transition: none !important;
   }
   .fgMark:hover .fgMarkSvg, .fgMark:hover .fgMarkGlyph { transform: none; -webkit-transform: none; }
   .fgMarkStrike { transform: none !important; -webkit-transform: none !important; }
   .fgMarkSpark { opacity: 0 !important; }
+  .fgMarkFlow { opacity: 0 !important; }
 }
 `;
 
@@ -321,6 +356,11 @@ export function BrandMark({ size }: BrandMarkProps) {
             <feColorMatrix in="n" type="saturate" values="0" />
             <feComposite operator="in" in2="SourceGraphic" />
           </filter>
+          <linearGradient id="fgm-flow" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#d9ea9f" />
+            <stop offset=".55" stopColor={STORY} />
+            <stop offset="1" stopColor={DEEP} />
+          </linearGradient>
           <clipPath id="fgm-clip">
             <path d={SQUIRCLE} />
           </clipPath>
@@ -381,6 +421,8 @@ export function BrandMark({ size }: BrandMarkProps) {
           >
             <g className="fgMarkStrike">{GLYPH}</g>
           </g>
+          {/* the gradient running inside the same strokes (the family flow) */}
+          <g className="fgMarkStrike">{FLOW}</g>
         </g>
         {/* the spark glint at the impact point, flashed with the tap */}
         {SPARK}
