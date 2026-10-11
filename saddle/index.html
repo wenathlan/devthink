@@ -2,18 +2,23 @@
 <!-- web entry of the Sol theme (the only html of the theme) -->
 <html lang="en" class="dark">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <meta name="theme-color" content="#f1eee7" />
-    <title>Saddle — Storage turned into memory</title>
-    <meta name="description" content="Saddle turns distributed storage into publishable computational memory." />
-    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
-    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>saddle — the sandbox engine of the family</title>
+    <meta name="description" content="Saddle turns distributed storage into publishable computational memory: one line declares the sandbox, the engine boots it." />
+    <meta name="theme-color" content="#0a0a0b" />
+    <link rel="icon" type="image/svg+xml" href="./icon.svg" />
+    <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-    <script type="module" crossorigin src="/index-BBeSWuWO.js"></script>
-    <link rel="stylesheet" crossorigin href="/index-Bk8Gc6K6.css">
+    <!-- the trylle foundation faces: Inter rides the reading and the UI body,
+         Geist Mono rides the micro-labels and the terminal surfaces
+         (display=swap, never FOUT-blocked) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400..800&family=Geist+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" src="./App.tsx"></script>
   </head>
   <body>
     <div id="root"></div>

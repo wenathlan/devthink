@@ -9,9 +9,13 @@
  * (Moon, Aqua), this file follows the new name and App.tsx keeps importing
  * the anchor by the folder path. Since the family window conversion the
  * theme is an APPLICATION: the entry flow opens the route table — /intro
- * (the splash) and /onboarding (the first-run frames) — and every other
- * route renders as the content of the ONE application window (the page
- * anchors carry no chrome of their own; the window rail is the only nav).
+ * (the akash-floor splash) and /onboarding (the first-run frames) — and
+ * every other route renders as the content of the ONE application window
+ * (the page anchors carry no chrome of their own; the window rail is the
+ * only nav). The flow contract rides the home anchor's entry gate
+ * (Sol/home/entrygate.tsx): "/" consults the seen flags (onboardingstate.ts)
+ * before anything shows, the intro hands straight to /onboarding and the
+ * onboarding lands home.
  */
 import { Route, Switch } from 'wouter';
 import AgentBrowserAnchor from './agentbrowser/agentbrowser';

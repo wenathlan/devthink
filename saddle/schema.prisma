@@ -150,3 +150,17 @@ model SpecProcessor {
 
   @@map("specprocessors")
 }
+
+/// the entry-flow state of one visitor (intro → onboarding → the
+/// platform): the seen flags of the accessors in onboardingstate.ts,
+/// written by the platform gateway over /api/v1/onboarding through the
+/// seen-wins upsert of db.ts. the flags never regress.
+model OnboardingState {
+  id             Int      @id @default(autoincrement())
+  visitor        String   @unique @map("visitor")
+  introseen      Boolean  @default(false) @map("introseen")
+  onboardingseen Boolean  @default(false) @map("onboardingseen")
+  updatedAt      DateTime @updatedAt @map("updatedAt")
+
+  @@map("onboarding_states")
+}

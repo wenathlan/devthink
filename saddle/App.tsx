@@ -35,7 +35,9 @@ function routerBase(): string {
 function App() {
 	return (
 		<ErrorBoundary>
-			<ThemeProvider defaultTheme="light">
+			{/* the trylle canvas boots dark (the reform wave foundation); the
+			 * window theme flip rides in memory only, never storage */}
+			<ThemeProvider defaultTheme="dark">
 				<TooltipProvider>
 					<Toaster />
 					<WouterRouter base={routerBase()}>
