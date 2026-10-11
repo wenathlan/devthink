@@ -1,4 +1,5 @@
-# Logs
+# Logs (the /logs/ scoping keeps the Sol page folders of the family free —
+# the blanket name used to swallow any page folder named logs)
 /logs/
 *.log
 npm-debug.log*
