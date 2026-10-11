@@ -1,6 +1,7 @@
 /** Style: forge sol — the vite config lives at the app root while the theme stays in Sol/: static build emitting the hashed bundles directly into the app root folder (publish = "."), with a repository-scoped base path so the theme answers any deploy root (pages subpath, vercel, netlify, workers). */
-import react from "@vitejs/plugin-react";
+
 import path from "node:path";
+import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 function pagesBasePath(value: string | undefined): string {

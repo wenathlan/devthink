@@ -13,9 +13,11 @@
  * chip, maximize toggles the full-bleed state, close relaunches the
  * application (the seen flag of the intro is lifted and the flow returns
  * to /intro). The left rail carries the pages of the application with the
- * accent ladder on the active entry, and the rail foot gains the FAMILY
- * section — the sibling applications and the DevThink OS, resolved by
- * familyurl — above the theme flip. No taskbar, no start menu, no pins,
+ * accent ladder on the active entry (the four real surfaces: home, objects,
+ * buckets, retention), and the rail foot gains the FAMILY section — the
+ * sibling applications and the DevThink OS, resolved by familyurl, one
+ * spec §12 accent dot each from family.ts — above the theme flip. No
+ * taskbar, no start menu, no pins,
  * no tray, no desktop: the content zone owns the page surface. The window
  * component is a copy-per-deploy (the consolidation belongs to the future
  * @wenathlan/* package). Campaign v3 · r3-vault nav polish: on the landing
@@ -25,7 +27,7 @@
  * byte-identical.
  */
 
-import { Copy, LayoutDashboard, Minus, Moon, Square, Sun, X } from "lucide-react";
+import { Archive, Copy, FolderLock, Hourglass, LayoutDashboard, Minus, Moon, Square, Sun, X } from "lucide-react";
 import {
   type CSSProperties,
   type MouseEvent as ReactMouseEvent,
@@ -35,6 +37,7 @@ import {
   useState,
 } from "react";
 import { Link, useLocation } from "wouter";
+import { FAMILY_SLUGS, familyAccentOf } from "../../family";
 import { familyurl } from "../../familyurl";
 import { resetIntro } from "../intro/intro";
 import { BrandMark } from "./BrandMark";
@@ -77,8 +80,28 @@ function toggleTheme(): ThemeName {
 }
 
 /** the siblings of the family (the DevThink OS first, then the apps) —
- * every link opens in its own tab and every sibling links back */
-const FAMILY = ["devthink", "cadria", "stealthhead", "debonair", "argan", "saddle", "forge", "foundry", "getry"] as const;
+ * every link opens in its own tab and every sibling links back. The dots
+ * ride the spec §12 accents from family.ts — the one table the landing
+ * footer and the tests read too (zero drift). */
+const FAMILY = FAMILY_SLUGS;
+
+/** one entry of the window rail: a page surface of the app with its glyph. */
+export type RailApp = {
+  href: string;
+  label: string;
+  detail: string;
+  icon: typeof LayoutDashboard;
+};
+
+/** the pages the application window hosts, one rail entry each — the real
+ * surface set of the vault: the landing first, then the three platform
+ * pages of the safe. exported for the flow components beside this folder. */
+export const RAIL_APPS: readonly RailApp[] = [
+  { href: "/", label: "home", detail: "the staging surface of the vault", icon: LayoutDashboard },
+  { href: "/objects", label: "objects", detail: "the sealed inventory and its census", icon: Archive },
+  { href: "/buckets", label: "buckets", detail: "the retention shelf and its drawers", icon: FolderLock },
+  { href: "/retention", label: "retention", detail: "the clock of the safe and the sweep plan", icon: Hourglass },
+];
 
 /** the drag session of the title bar: pointer id, origin and base offset */
 type DragTrack = {
@@ -258,34 +281,49 @@ export function Shell({ children }: { children: ReactNode }) {
             <p className="win-rail__head" aria-hidden="true">
               pages
             </p>
-            <Link
-              href="/"
-              className="win-rail__link"
-              title="the staging surface of the vault"
-              aria-label="home"
-              aria-current={location === "/" ? "page" : undefined}
-            >
-              <LayoutDashboard size={16} strokeWidth={1.7} aria-hidden="true" />
-              <span className="win-rail__label">home</span>
-            </Link>
+            {RAIL_APPS.map((app) => {
+              const Icon = app.icon;
+              const isActive = app.href === "/" ? location === "/" : location === app.href || location.startsWith(`${app.href}/`);
+              return (
+                <Link
+                  key={app.href}
+                  href={app.href}
+                  className="win-rail__link"
+                  title={app.detail}
+                  aria-label={app.label}
+                  aria-current={isActive ? "page" : undefined}
+                >
+                  <Icon size={16} strokeWidth={1.7} aria-hidden="true" />
+                  <span className="win-rail__label">{app.label}</span>
+                </Link>
+              );
+            })}
             <div className="win-rail__foot">
               <p className="win-fam__head" aria-hidden="true">
                 family
               </p>
               <div className="win-fam">
-                {FAMILY.map((slug) => (
-                  <a
-                    key={slug}
-                    className="win-fam__link"
-                    href={familyurl(slug)}
-                    target="_blank"
-                    rel="noreferrer"
-                    title={`open ${slug} — the family answers both ways`}
-                  >
-                    <span className="win-fam__dot" aria-hidden="true" />
-                    <span className="win-fam__name">{slug}</span>
-                  </a>
-                ))}
+                {FAMILY.map((slug) => {
+                  const member = familyAccentOf(slug);
+                  return (
+                    <a
+                      key={slug}
+                      className="win-fam__link"
+                      href={familyurl(slug)}
+                      target="_blank"
+                      rel="noreferrer"
+                      title={`open ${slug} — the family answers both ways`}
+                    >
+                      <span
+                        className="win-fam__dot"
+                        data-app={slug}
+                        style={member ? { background: member.accent } : undefined}
+                        aria-hidden="true"
+                      />
+                      <span className="win-fam__name">{slug}</span>
+                    </a>
+                  );
+                })}
               </div>
               <ThemeToggle />
             </div>

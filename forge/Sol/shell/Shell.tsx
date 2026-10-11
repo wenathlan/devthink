@@ -22,7 +22,7 @@
  * owns it.
  */
 
-import { Copy, LayoutDashboard, Minus, Moon, Square, Sun, X } from "lucide-react";
+import { Activity, Copy, LayoutDashboard, ListOrdered, Minus, Moon, Square, Sun, Terminal, X } from "lucide-react";
 import {
   type CSSProperties,
   type MouseEvent as ReactMouseEvent,
@@ -32,6 +32,7 @@ import {
   useState,
 } from "react";
 import { Link, useLocation } from "wouter";
+import { FAMILY_SLUGS, familyAccentOf } from "../../family";
 import { familyurl } from "../../familyurl";
 import { currentTheme, type Theme, toggleTheme } from "../../theme";
 import { resetIntro } from "../intro/intro";
@@ -46,15 +47,15 @@ export type RailApp = {
 };
 
 /** the pages the application window hosts, one rail entry each — the real
- * surface set of the forge, the apex home first. exported for the flow
- * components beside this folder. */
+ * surface set of the forge: the landing first, then the three platform
+ * pages of the runner floor. exported for the flow components beside this
+ * folder. */
 export const RAIL_APPS: readonly RailApp[] = [
-  { href: "/", label: "home", detail: "the runner floor of the family", icon: LayoutDashboard },
+  { href: "/", label: "home", detail: "the landing of the forge", icon: LayoutDashboard },
+  { href: "/runs", label: "runs", detail: "the runner fleets and their health", icon: Activity },
+  { href: "/queue", label: "queue", detail: "the execution queue and its priorities", icon: ListOrdered },
+  { href: "/logs", label: "logs", detail: "the seeded replay of a run log", icon: Terminal },
 ];
-
-/** the sibling applications of the family, the OS first — the rail foot
- * links every one of them back (the family redirects both ways). */
-const FAMILY = ["devthink", "cadria", "stealthhead", "debonair", "argan", "saddle", "foundry", "vault", "getry"] as const;
 
 /** the hand-over route of the close caption: closing the window restarts
  * the application at the intro (the relaunch metaphor). */
@@ -201,7 +202,7 @@ export function Shell({ children }: { children: ReactNode }) {
           <span className="win-title">
             <BrandMark size={18} />
             <strong>forge</strong>
-            <span className="win-title__role">the family forge</span>
+            <span className="win-title__role">the runner floor of the family</span>
           </span>
           <div className="win-controls">
             <button
@@ -260,19 +261,27 @@ export function Shell({ children }: { children: ReactNode }) {
                 family
               </p>
               <div className="win-family">
-                {FAMILY.map((slug) => (
-                  <a
-                    key={slug}
-                    className="win-family__link"
-                    href={familyurl(slug)}
-                    target="_blank"
-                    rel="noreferrer"
-                    title={`open ${slug} — a family application`}
-                  >
-                    <span className="win-family__dot" data-app={slug} aria-hidden="true" />
-                    <span className="win-family__name">{slug}</span>
-                  </a>
-                ))}
+                {FAMILY_SLUGS.map((slug) => {
+                  const member = familyAccentOf(slug);
+                  return (
+                    <a
+                      key={slug}
+                      className="win-family__link"
+                      href={familyurl(slug)}
+                      target="_blank"
+                      rel="noreferrer"
+                      title={`open ${slug} — a family application`}
+                    >
+                      <span
+                        className="win-family__dot"
+                        data-app={slug}
+                        style={member ? { background: member.accent } : undefined}
+                        aria-hidden="true"
+                      />
+                      <span className="win-family__name">{slug}</span>
+                    </a>
+                  );
+                })}
               </div>
               <ThemeToggle />
             </div>

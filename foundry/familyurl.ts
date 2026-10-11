@@ -17,5 +17,6 @@
  * deploy unit, always carrying the trailing slash.
  */
 export function familyurl(slug: string): string {
-  return `../${slug.replace(/^\/+|\/+$/g, "")}/`;
+  // biome-ignore lint/style/useTemplate: the verbatim family form of the recipe
+  return "../" + slug.replace(/^\/+|\/+$/g, "") + "/";
 }

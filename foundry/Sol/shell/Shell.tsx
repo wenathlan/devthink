@@ -24,7 +24,7 @@
  * package).
  */
 
-import { LayoutDashboard, Minus, Square, X } from "lucide-react";
+import { Boxes, Layers, LayoutDashboard, Minus, PackageCheck, Square, X } from "lucide-react";
 import {
   type CSSProperties,
   type MouseEvent as ReactMouseEvent,
@@ -33,7 +33,8 @@ import {
   useRef,
   useState,
 } from "react";
-import { useLocation } from "wouter";
+import { Link, useLocation } from "wouter";
+import { familyAccentOf, familyrow } from "../../family";
 import { familyurl } from "../../familyurl";
 import { resetIntro } from "../intro/intro";
 import { BrandMark } from "./BrandMark";
@@ -46,29 +47,21 @@ export type RailApp = {
   icon: typeof LayoutDashboard;
 };
 
-/** the pages the application window hosts, one rail entry each. exported
- * for the onboarding copy beside this folder. */
+/** the pages the application window hosts, one rail entry each — the real
+ * surface set of the foundry: the landing first, then the three platform
+ * pages of the machine room. exported for the onboarding copy beside this
+ * folder. */
 export const START_APPS: readonly RailApp[] = [
-  { href: "/", label: "home", detail: "the pipeline surface of the family", icon: LayoutDashboard },
+  { href: "/", label: "home", detail: "the landing of the foundry", icon: LayoutDashboard },
+  { href: "/sandboxes", label: "sandboxes", detail: "the herd on the cold → warm → hot ladder", icon: Boxes },
+  { href: "/images", label: "images", detail: "the herd shelf and the conversion plans", icon: Layers },
+  { href: "/artifacts", label: "artifacts", detail: "the packaging line with sealed checksums", icon: PackageCheck },
 ];
 
-/** one sibling of the family: the deploy unit segment and its identity
- * accent (the dot color of the rail foot). */
-export type FamilyApp = { slug: string; accent: string };
-
-/** the family deploy units beside the foundry, in rail order — the DevThink
- * OS first, then the sibling applications. */
-export const FAMILY: readonly FamilyApp[] = [
-  { slug: "devthink", accent: "#ff5f00" },
-  { slug: "cadria", accent: "#f472b6" },
-  { slug: "stealthhead", accent: "#f87171" },
-  { slug: "debonair", accent: "#a78bfa" },
-  { slug: "argan", accent: "#1dcf64" },
-  { slug: "saddle", accent: "#d6b483" },
-  { slug: "forge", accent: "#fb923c" },
-  { slug: "vault", accent: "#eab308" },
-  { slug: "getry", accent: "#60a5fa" },
-];
+/** the rail family row: the nine siblings beside the foundry, resolved
+ * through family.ts — the one §12 table the chrome, the landing and the
+ * tests all read. */
+const FAMILY = familyrow();
 
 /** the hand-over route of the close caption: closing the window restarts
  * the application at the intro (the relaunch metaphor). */
@@ -197,7 +190,7 @@ export function Shell({ children }: { children: ReactNode }) {
           <span className="win-title">
             <BrandMark size={18} />
             <strong>foundry</strong>
-            <span className="win-title__role">runs and stores</span>
+            <span className="win-title__role">the machine room of the family</span>
           </span>
           <div className="win-controls">
             <button
@@ -234,7 +227,7 @@ export function Shell({ children }: { children: ReactNode }) {
             {START_APPS.map((app) => {
               const Icon = app.icon;
               return (
-                <a
+                <Link
                   key={app.href}
                   href={app.href}
                   className="win-raillink"
@@ -244,27 +237,30 @@ export function Shell({ children }: { children: ReactNode }) {
                 >
                   <Icon size={16} strokeWidth={1.7} aria-hidden="true" />
                   <span className="win-raillabel">{app.label}</span>
-                </a>
+                </Link>
               );
             })}
             <div className="win-railfoot">
               <p className="win-railhead" aria-hidden="true">
                 family
               </p>
-              {FAMILY.map((app) => (
-                <a
-                  key={app.slug}
-                  className="win-famlink"
-                  href={familyurl(app.slug)}
-                  target="_blank"
-                  rel="noreferrer"
-                  title={`${app.slug} — the family application beside the foundry`}
-                  style={{ "--fd-dot": app.accent } as CSSProperties}
-                >
-                  <span className="win-famdot" aria-hidden="true" />
-                  <span className="win-famname">{app.slug}</span>
-                </a>
-              ))}
+              {FAMILY.map((app) => {
+                const member = familyAccentOf(app.slug);
+                return (
+                  <a
+                    key={app.slug}
+                    className="win-famlink"
+                    href={familyurl(app.slug)}
+                    target="_blank"
+                    rel="noreferrer"
+                    title={`${app.slug} — the family application beside the foundry`}
+                    style={{ "--fd-dot": member?.accent } as CSSProperties}
+                  >
+                    <span className="win-famdot" aria-hidden="true" />
+                    <span className="win-famname">{app.slug}</span>
+                  </a>
+                );
+              })}
             </div>
           </nav>
           <div className="win-content">{children}</div>

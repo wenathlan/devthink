@@ -22,6 +22,8 @@
 // the 01–03 capability steps (run · store · clone) and the footer meta-quad
 // close the page flush to the window floor. Styled entirely by Sol/sol.css.
 import { type CSSProperties, useEffect, useRef, useState } from "react";
+import { familyrow } from "../../family";
+import { familyurl } from "../../familyurl";
 import { BrandMark } from "../shell/BrandMark";
 import { Entry } from "./entry";
 import { Tabs } from "./tabs";
@@ -68,6 +70,30 @@ const STEPS = [
 
 /** the honesty line under the shelf: the staging surface stores nothing */
 const SHELF_NOTE = "no herd is stored on this staging surface yet — the shelf lists the clone formats, not herds.";
+
+/** the family row of the landing footer: the nine siblings, spec §12 dots */
+function FamilyRow() {
+  return (
+    <nav className="fd-familyrow" aria-label="the DevThink family">
+      <p className="fd-familyrow__head">the family</p>
+      <div className="fd-familyrow__links">
+        {familyrow().map((member) => (
+          <a
+            key={member.slug}
+            className="fd-familyrow__link"
+            href={familyurl(member.slug)}
+            target="_blank"
+            rel="noreferrer"
+            title={`open ${member.slug} — a family application`}
+          >
+            <span className="fd-familyrow__dot" style={{ background: member.accent }} aria-hidden="true" />
+            {member.slug}
+          </a>
+        ))}
+      </div>
+    </nav>
+  );
+}
 
 /** the beat of the forge key: the stamp readout holds for two seconds */
 const STAMP_MS = 2000;
@@ -201,6 +227,10 @@ export function Home(props: HomeProps) {
         <Entry note={props.input} />
       </section>
 
+      {/* FAMILY ROW — the nine siblings, one §12 dot each (the same table
+          the rail foot and the tests read — zero drift) */}
+      <FamilyRow />
+
       {/* the footer meta-quad, flush to the window floor */}
       <footer className="fdx-quad">
         <div className="fdx-quads">
@@ -214,7 +244,7 @@ export function Home(props: HomeProps) {
           </div>
           <div className="fdx-cell">
             <p className="fdx-quadh">the floor</p>
-            <p className="fdx-quadt">sandboxes rise · images pour · records stay kept.</p>
+            <p className="fdx-quadt">the platform answers on /sandboxes · /images · /artifacts.</p>
           </div>
           <div className="fdx-cell">
             <p className="fdx-quadh">the family</p>

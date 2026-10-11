@@ -2,4 +2,4 @@
 app = "foundry"
 role = "complete deployable clone (sandbox + DB): runs, is the sandbox and keeps the network databases"
 theme = "Sol"
-pages = ["home", "notfound"]
+pages = ["home", "sandboxes", "images", "artifacts", "notfound"]

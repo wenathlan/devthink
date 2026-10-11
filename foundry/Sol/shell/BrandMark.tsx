@@ -1,8 +1,8 @@
 /**
  * BrandMark.tsx — the drawn brand mark of the foundry theme, one hand-drawn
  * SVG icon in the house finishing (the devthink/Sol/shell/app.icons.tsx
- * standard): a gradient squircle face over the blue story (#4d8edd — the
- * pipeline blue of the container floor), a soft top gloss, a mid layer of
+ * standard): a gradient squircle face over the têmpera story (#2fb8b5 —
+ * the tempered steel of the machine room), a soft top gloss, a mid layer of
  * blurred story orbs over a pedestal band, two blurred inner contours, a
  * blurred contact ellipse at the base, a discrete film grain, and the glyph
  * itself — the sawtooth plant with its stack — in thick ivory strokes with
@@ -13,7 +13,7 @@
  * easing at the house cubic-bezier and -webkit- prefixes on every
  * 3D/filter path. No decorative dots and no microcopy: the icon speaks for
  * itself. The signature motion is the FURNACE GLOW: on hover or on entry
- * the inner glow warms to the molten amber of the floor and the molten bar
+ * the inner glow warms to the molten têmpera of the floor and the molten bar
  * rises once through the vessel — hover/entry beats only, never a loop
  * (the heat rides the --fd-heat hook, the bar on transform/opacity).
  * prefers-reduced-motion and coarse pointers switch the surge and the
@@ -22,20 +22,20 @@
 import { type CSSProperties, type ReactElement, useEffect, useState } from "react";
 
 /** the warm ivory of the glyph stroke */
-const IVORY = "#fbf5ea";
+const IVORY = "#eefaf8";
 
 /** the backing translucency of outlined glyph shapes */
 const BACKING = "rgba(255,255,255,.14)";
 
-/** the story palette of the mark (the pipeline blue of foundry) */
-const STORY = "#4d8edd";
-const DEEP = "#2a5c9c";
-const SOFT = "#c6def7";
+/** the story palette of the mark (the têmpera steel of foundry) */
+const STORY = "#2fb8b5";
+const DEEP = "#17706d";
+const SOFT = "#bfe8e5";
 
-/** the furnace palette: the molten amber the glow warms to on hover/entry */
-const MELT = "#f59e0b";
-const MELT_DEEP = "#b45309";
-const HEAT = "rgba(217,119,6,.5)";
+/** the furnace palette: the molten têmpera the glow warms to on hover/entry */
+const MELT = "#5fd4d0";
+const MELT_DEEP = "#135f5c";
+const HEAT = "rgba(47,184,181,.5)";
 
 /** the asymmetric squircle of the mark face: tighter shoulders, heavier base */
 const SQUIRCLE = "M22 0 L74 0 Q96 0 96 22 L96 66 Q96 96 66 96 L30 96 Q0 96 0 66 L0 22 Q0 0 22 0 Z";
@@ -47,6 +47,15 @@ const GLYPH: ReactElement = (
     <rect x="33.5" y="56.5" width="6.5" height="7.5" rx="1.8" fill={IVORY} stroke="none" opacity=".85" />
     <rect x="44" y="56.5" width="6.5" height="7.5" rx="1.8" fill={IVORY} stroke="none" opacity=".85" />
   </>
+);
+
+/** the flow glyph: the sawtooth drawn again in the flowing gradient — the
+ * ONE signature motion of the family mark (the gradient runs INSIDE the
+ * stroke, an endless dash-offset loop; reduced-motion off). */
+const FLOW: ReactElement = (
+  <g className="fdMarkFlow" fill="none" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M28.5 66 V45 L39.5 53 V45 L50.5 53 V41 H56.5 V32 H63 V66 Z" strokeWidth={5} stroke="url(#fdm-flow)" />
+  </g>
 );
 
 /** the animatable custom properties of the mark, mirrored in the stylesheet */
@@ -164,18 +173,41 @@ html.fd-mark-fx .fdMarkGlyph { transition: none; -webkit-transition: none; }
   100% { opacity: 0; transform: translateX(118px); }
 }
 .fdMarkMid { transform-box: view-box; -webkit-transform-box: view-box; }
+/* the flow INSIDE the stroke: the gradient dash runs the sawtooth,
+   endless and quiet — the family signature, foundry's têmpera edition */
+.fdMarkFlow {
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+html.fd-mark-fx .fdMark:hover .fdMarkFlow,
+html.fd-mark-fx .fdx-mark .fdMark .fdMarkFlow {
+  opacity: 1;
+  stroke-dasharray: 26 118;
+  animation: fdMarkFlowRun 2.6s linear infinite;
+  -webkit-animation: fdMarkFlowRun 2.6s linear infinite;
+}
+@keyframes fdMarkFlowRun {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -144; }
+}
+@-webkit-keyframes fdMarkFlowRun {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -144; }
+}
 @media (hover: none), (pointer: coarse) {
   .fdMark:hover .fdMarkSvg { transform: none; -webkit-transform: none; }
   .fdMark:hover .fdMarkGlyph { transform: none; -webkit-transform: none; }
   .fdMark:hover .fdMarkMelt { transform: translateY(9px); -webkit-transform: translateY(9px); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .fdMark, .fdMarkSvg, .fdMarkGlyph, .fdMarkSheen, .fdMarkGlow, .fdMarkHeat, .fdMarkMelt, .fdMarkMid {
+  .fdMark, .fdMarkSvg, .fdMarkGlyph, .fdMarkSheen, .fdMarkGlow, .fdMarkHeat, .fdMarkMelt, .fdMarkMid, .fdMarkFlow {
     animation: none !important; -webkit-animation: none !important;
     transition: none !important; -webkit-transition: none !important;
   }
   .fdMark:hover .fdMarkSvg, .fdMark:hover .fdMarkGlyph { transform: none; -webkit-transform: none; }
   .fdMark:hover .fdMarkMelt { transform: translateY(9px); -webkit-transform: translateY(9px); opacity: 0; }
+  .fdMarkFlow { opacity: 0 !important; }
 }
 `;
 
@@ -279,6 +311,11 @@ export function BrandMark({ size }: BrandMarkProps) {
             <stop offset=".5" stopColor={SOFT} stopOpacity=".22" />
             <stop offset="1" stopColor={SOFT} stopOpacity=".55" />
           </linearGradient>
+          <linearGradient id="fdm-flow" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#c9f2ef" />
+            <stop offset=".55" stopColor={STORY} />
+            <stop offset="1" stopColor={DEEP} />
+          </linearGradient>
           <linearGradient id="fdm-melt" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stopColor={MELT} />
             <stop offset="1" stopColor={MELT_DEEP} />
@@ -365,6 +402,8 @@ export function BrandMark({ size }: BrandMarkProps) {
           >
             {GLYPH}
           </g>
+          {/* the gradient running inside the same strokes (the family flow) */}
+          <g className="fdMarkFlow">{FLOW}</g>
         </g>
       </svg>
     </span>
