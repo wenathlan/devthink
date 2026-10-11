@@ -32,4 +32,4 @@ onlyBuiltDependencies:
   - prisma
   - protobufjs
   - workerd
-dangerouslyAllowAllBuilds: true
+dangerouslyAllowAllBuilds: false
