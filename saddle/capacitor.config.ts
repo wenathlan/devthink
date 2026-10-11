@@ -35,8 +35,8 @@ type CapacitorConfigShape = {
 
 const config: CapacitorConfigShape = {
   /** the saddle mobile identity — the id the mobile lane stamps onto the generated shells. */
-  appId: "com.wenathlan.saddle",
-  appName: "Saddle Browser",
+  appId: "im.saddle.app",
+  appName: "Saddle",
   /** the vite build of the theme: `npm run web:build:pages` emits the hashed bundles at the app root. */
   webDir: ".",
   bundledWebRuntime: false,

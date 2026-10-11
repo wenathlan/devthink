@@ -1,5 +1,5 @@
 /**
- * the one conversion config of the stealthhead application, living at the
+ * the one conversion config of the Stealthhead application, living at the
  * app root so the capacitor cli resolves it from its working directory:
  * the mobile lane runs `npx cap add`/`npx cap sync` from the app root and
  * every path below — webDir above all — resolves relative to that cwd.
@@ -29,8 +29,8 @@ type CapacitorConfigShape = {
 
 const config: CapacitorConfigShape = {
   /** the stealthhead mobile identity — the id the mobile lane stamps onto the generated shells. */
-  appId: "pro.devthink.stealthhead",
-  appName: "stealthhead",
+  appId: "im.stealthhead.app",
+  appName: "Stealthhead",
   /** the vite build of the theme: pnpm build emits the hashed bundles at the app root. */
   webDir: ".",
   bundledWebRuntime: false,
