@@ -144,9 +144,15 @@ export function bans(): Ban[] {
   return listBans.all() as Ban[];
 }
 
+/** Derives the stored digest of a shared site secret: scrypt with a fresh random salt, stored as `salt:hex` (a plain sha256 answer fails the password-hash gate). */
+function siteDigest(secret: string): string {
+  const salt = randomBytes(16).toString("hex");
+  return `${salt}:${scryptSync(secret, salt, 64).toString("hex")}`;
+}
+
 /** Authorizes one family site: the api answers only to these hosts carrying the shared secret. */
 export function allowSite(actor: string, host: string, secret: string): void {
-  insertSite.run(host.toLowerCase(), sha256(secret));
+  insertSite.run(host.toLowerCase(), siteDigest(secret));
   insertAudit.run(actor, "site.allow", host);
 }
 
@@ -157,7 +163,11 @@ export function denySite(actor: string, host: string): void {
 
 export function siteAuthorized(host: string, secret: string): boolean {
   const row = selectSite.get(host.toLowerCase()) as { secretDigest: string } | undefined;
-  return Boolean(row && timingSafeEqual(Buffer.from(row.secretDigest), Buffer.from(sha256(secret))));
+  if (!row || !secret) return false;
+  const [salt, expected] = row.secretDigest.split(":");
+  if (!salt || !expected) return false;
+  const candidate = scryptSync(secret, salt, 64);
+  return timingSafeEqual(candidate, Buffer.from(expected, "hex"));
 }
 
 export function allowedSites(): AllowedSite[] {

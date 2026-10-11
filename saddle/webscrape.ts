@@ -1008,9 +1008,20 @@ function stripblocks(html: string, ...tags: string[]): string {
   return out + html.slice(cursor);
 }
 
+/** Reassembles the block-free text: the strip pass repeats to a fixed point so a nested `<scr<script>ipt>` reassembly can never survive one round. */
+function stripblocksfixed(html: string, ...tags: string[]): string {
+  let current = html;
+  for (let pass = 0; pass < 8; pass++) {
+    const next = stripblocks(current, ...tags);
+    if (next === current) return current;
+    current = next;
+  }
+  return current;
+}
+
 /** Converts sanitized HTML to plain text: script/style blocks drop in one linear pass, remaining tags strip once and entities decode once. */
 function plainText(html: string): string {
-  return stripblocks(html, 'script', 'style')
+  return stripblocksfixed(html, 'script', 'style')
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/p>/gi, '\n\n')
     .replace(/<\/h[1-6]>/gi, '\n')
