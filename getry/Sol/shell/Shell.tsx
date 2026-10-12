@@ -332,7 +332,7 @@ export function Shell({ children }: { children: ReactNode }) {
                   href={familyurl(member.slug)}
                   target="_blank"
                   rel="noreferrer"
-                  title={`${member.slug} — a family surface`}
+                  data-tip={`${member.slug} — a family surface`}
                 >
                   <span aria-hidden="true" className="railnav__famdot" style={{ background: member.accent }} />
                   <span className="sr-only">{`open ${member.slug} in its own tab`}</span>

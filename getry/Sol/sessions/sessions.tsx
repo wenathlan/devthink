@@ -153,7 +153,11 @@ export default function Sessions() {
                             }
                           />
                         ) : (
-                          "loading the session store…"
+                          <>
+                            <span className="skel" style={{ width: "46%" }} aria-hidden="true" />
+                            <span className="skel" style={{ width: "72%" }} aria-hidden="true" />
+                            <span className="sr-only">loading the session store…</span>
+                          </>
                         )}
                       </td>
                     </tr>
@@ -266,7 +270,11 @@ export default function Sessions() {
                         }
                       />
                     ) : (
-                      "loading the chat log…"
+                      <>
+                        <span className="skel" style={{ width: "38%" }} aria-hidden="true" />
+                        <span className="skel" style={{ width: "64%" }} aria-hidden="true" />
+                        <span className="sr-only">loading the chat log…</span>
+                      </>
                     )}
                   </td>
                 </tr>
