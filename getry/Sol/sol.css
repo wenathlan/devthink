@@ -904,6 +904,153 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   52%, 100% { transform: translate(0, 0); opacity: 1; }
 }
 
+/* ==========================================================================
+   micro-windows pass — getry (task 2-d): the last micros the window hand
+   owes every control. The honest disabled face on the controls the
+   foundation pass left uncovered, the caption-icon press parity, the restore
+   chip press, the 300ms delay on the pin tooltip (the windows hover dwell)
+   and the same acrylic tip on the family pins, plus the opacity shimmer for
+   the loading rows of the async ledgers. Appended after the foundation; the
+   guards (and the hard stop last) keep their place below.
+   ========================================================================== */
+
+/* the disabled hand: an honest control rests at half ink and never points */
+.r3-chip:disabled,
+.r3-prompt__input:disabled,
+.r3-prompt__key:disabled,
+.winapp__cap:disabled,
+.winapp__theme:disabled,
+.winchip:disabled,
+.winonboard__act:disabled,
+.winonboard__skip:disabled,
+.railnav__item[aria-disabled="true"],
+.railnav__fam[aria-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* the caption press parity: the fluent glyph answers the 100ms press law
+   like every icon pin of the window */
+.winapp__cap > svg {
+  transition: transform var(--dur-press) ease-in-out;
+}
+
+.winapp__cap:active > svg {
+  transform: scale(0.7);
+}
+
+/* the restore chip answers the press too */
+.winchip {
+  transition: border-color var(--sol-micro) var(--sol-ease-out), transform var(--dur-press) ease-in-out;
+}
+
+.winchip:active {
+  transform: scale(0.98);
+}
+
+/* the tooltip dwell: the pin tip waits the 300ms hover delay before it fades
+   in and leaves at once — the windows tooltip rhythm */
+.railnav__item:hover::before,
+.railnav__item:focus-visible::before {
+  transition-delay: 300ms;
+}
+
+/* the same acrylic tip on the family pins: right-side like the rail pins
+   (the rail never clips — no overflow on the nav column) */
+.railnav__fam[data-tip] {
+  position: relative;
+}
+
+.railnav__fam[data-tip]::before {
+  content: attr(data-tip);
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  z-index: var(--z-bar);
+  padding: 5px 9px;
+  border-radius: var(--win-radius-ctl);
+  background-color: var(--win-tip);
+  background-image: var(--noise);
+  box-shadow: var(--shadow-flyout);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(-50%) translateX(-4px);
+  pointer-events: none;
+  transition: opacity 200ms var(--ease-entry), transform 200ms var(--ease-entry);
+}
+
+.railnav__fam[data-tip]:hover::before,
+.railnav__fam[data-tip]:focus-visible::before {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+  transition-delay: 300ms;
+}
+
+/* the generic data-tip face for the surfaces outside the rail (the footer
+   family links): the same windows tip material, above the control */
+[data-tip]:not(.railnav__item):not(.railnav__fam) {
+  position: relative;
+}
+
+[data-tip]:not(.railnav__item):not(.railnav__fam)::before {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  z-index: 400;
+  padding: 5px 9px;
+  border-radius: var(--win-radius-ctl);
+  background-color: var(--win-tip);
+  background-image: var(--noise);
+  box-shadow: var(--shadow-flyout);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  pointer-events: none;
+  transition: opacity 200ms var(--ease-entry), transform 200ms var(--ease-entry);
+}
+
+[data-tip]:not(.railnav__item):not(.railnav__fam):hover::before,
+[data-tip]:not(.railnav__item):not(.railnav__fam):focus-visible::before {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  transition-delay: 300ms;
+}
+
+/* the loading rows of the async ledgers: the opacity shimmer, never dots —
+   ruled bars on the hairline, the honest sr line carries the words */
+.skel {
+  display: block;
+  height: 11px;
+  border-radius: var(--win-radius-ctl);
+  background-color: color-mix(in srgb, var(--ink) 8%, transparent);
+  box-shadow: 0 0 0 1px var(--line);
+  animation: dtSkeleton 1.4s ease-in-out infinite;
+}
+
+.skel + .skel {
+  margin-top: 8px;
+}
+
+@keyframes dtSkeleton {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+
+  50% {
+    opacity: 0.85;
+  }
+}
+
 /* ---------- 8. guards — the hard stops, last so nothing overrides them ------ */
 /* the in-session reduce-motion switch: the mirror of the media-query kills,
    on top of the OS preference, never against it */
