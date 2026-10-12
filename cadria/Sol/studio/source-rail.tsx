@@ -139,7 +139,7 @@ export function SourceRail({ disabled, source, activeFixture, onFixture, onFile 
               key={fixture.id}
               type="button"
               className="chip"
-              title={fixture.detail}
+              data-tip={fixture.detail}
               aria-pressed={active ? "true" : "false"}
               disabled={disabled}
               onClick={() => onFixture(fixture.id)}

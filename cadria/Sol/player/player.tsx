@@ -255,9 +255,21 @@ export default function Player() {
         </div>
 
         {status === "loading" && (
-          <p className="mono-label" role="status" style={{ marginTop: 22 }}>
-            reading the source…
-          </p>
+          <div className="stage-rail" role="status" aria-busy="true" style={{ marginTop: 22 }}>
+            <div className="stage-col">
+              <div className="cdr-skel pf-frame pf-frame--skel" aria-hidden="true" />
+              <div className="cdr-skel" style={{ maxWidth: 560, height: 10 }} aria-hidden="true" />
+            </div>
+            <aside className="rail-col" aria-hidden="true">
+              <div className="rail-card" style={{ display: "grid", gap: 10 }}>
+                <span className="cdr-skel" style={{ width: "38%", height: 10 }} />
+                <span className="cdr-skel" style={{ width: "84%", height: 9 }} />
+                <span className="cdr-skel" style={{ width: "70%", height: 9 }} />
+                <span className="cdr-skel" style={{ width: "52%", height: 9 }} />
+              </div>
+            </aside>
+            <span className="sr-only">reading the source…</span>
+          </div>
         )}
         {status === "error" && (
           <div style={{ marginTop: 22 }}>
@@ -284,7 +296,7 @@ export default function Player() {
           <>
             {/* THE FRAME — the one hero object, square like the engine's canvas */}
             <div
-              className="reveal"
+              className="pf-frame reveal"
               role="img"
               aria-label={frameLabel}
               style={{
@@ -295,9 +307,6 @@ export default function Player() {
                 display: "grid",
                 placeItems: "center",
                 padding: 12,
-                border: "1px solid var(--line)",
-                borderRadius: "var(--radius-lg)",
-                background: "var(--surface-1)",
                 overflow: "hidden",
               }}
             >

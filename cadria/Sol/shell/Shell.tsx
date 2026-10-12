@@ -3,8 +3,11 @@
  * Shell.tsx — the ONE chrome of the theme, riding the family APPLICATION
  * grammar: the routed pages render inside one Windows 11 application window
  * floating over the trylle canvas — a title bar carrying the brand lockup,
- * the app name and the role line (the drag handle, double-click toggles
- * maximize), the Fluent caption buttons at the right edge (minimize
+ * the app name and the role line (the drag handle: Pointer Events with the
+ * offset batched once per animation frame, double-click toggles maximize,
+ * the release lands the aero snap — the side strips preview the half/half
+ * ghosts and the top strip the maximize ghost, both committed on release),
+ * the Fluent caption buttons at the right edge (minimize
  * collapses the window into a restore chip, maximize fills the backdrop,
  * close relaunches the app at /intro), the eight resize handles of the real
  * window chrome and the 48px icon rail that switches the pages as the window
@@ -58,6 +61,7 @@ import { Link, useLocation } from "wouter";
 import { familyrow } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
 import { currentTheme, type Theme, toggleTheme } from "../../theme.ts";
+import { winsnaprect, winsnapzone, type WinSnapZone } from "../../winsnap.ts";
 import BrandMark from "./BrandMark.tsx";
 
 export { CadriaMark } from "./CadriaMark.tsx";
@@ -145,6 +149,10 @@ type DragTrack = {
   baseY: number;
 };
 
+/** one queued pointer pose of the drag loop: the latest client point the
+ * move handler saw, flushed at most once per animation frame. */
+type DragPose = { clientX: number; clientY: number };
+
 /** keeps the dragged title bar reachable: the offset never slides the bar
  * fully off screen, so the window can always be grabbed back. */
 function clampDrag(x: number, y: number): { x: number; y: number } {
@@ -173,7 +181,7 @@ function ThemeToggle() {
     <button
       type="button"
       className="icon-anim"
-      title={`${next} theme`}
+      data-tip={`${next} theme`}
       aria-label={`switch to the ${next} theme`}
       onClick={() => setTheme(toggleTheme())}
     >
@@ -225,9 +233,15 @@ export function Shell({ children, themeButton = true }: ShellProps) {
   const [location, navigate] = useLocation();
   const [maximized, setMaximized] = useState(false);
   const [minimized, setMinimized] = useState(false);
+  const [snapped, setSnapped] = useState<WinSnapZone | null>(null);
   const [drag, setDrag] = useState({ x: 0, y: 0 });
   const [size, setSize] = useState<{ w: number; h: number } | null>(null);
   const [inactive, setInactive] = useState(false);
+  /** the aero ghost: the zone the drag previews and the rect it paints. */
+  const [ghost, setGhost] = useState<{ zone: WinSnapZone; rect: { left: number; top: number; width: number; height: number } } | null>(null);
+  const ghostRef = useRef<WinSnapZone | null>(null);
+  const poseRef = useRef<DragPose | null>(null);
+  const dragFrame = useRef(0);
   const trackRef = useRef<DragTrack | null>(null);
   const resizeRef = useRef<ResizeTrack | null>(null);
   const stageRef = useRef<HTMLDivElement | null>(null);
@@ -266,7 +280,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
   /** arms a resize session from one of the eight handles. */
   function onResizePointerDown(edge: ResizeEdge) {
     return (event: ReactPointerEvent<HTMLSpanElement>) => {
-      if (maximized) return;
+      if (maximized || snapped) return;
       const rect = winRef.current?.getBoundingClientRect();
       if (!rect) return;
       resizeRef.current = {
@@ -305,16 +319,52 @@ export function Shell({ children, themeButton = true }: ShellProps) {
     event.currentTarget.releasePointerCapture(event.pointerId);
   }
 
-  /** maximizes over the backdrop or restores the windowed frame (the drag offset resets). */
+  /** maximizes over the backdrop or restores the windowed frame (the drag
+   * offset resets and an aero half lets go of the window). */
   function toggleMaximize() {
     setDrag({ x: 0, y: 0 });
+    setSnapped(null);
     setMaximized((value) => !value);
   }
 
-  /** arms a drag when the pointer presses the empty bar (never the caption buttons). */
+  /** paints (or clears) the aero ghost for a pointer pose — a zone flip is
+   * the only state change, so the drag never re-renders per pixel. */
+  function showGhost(clientX: number, clientY: number) {
+    const zone = winsnapzone(clientX, clientY, window.innerWidth, window.innerHeight);
+    if (ghostRef.current === zone) return;
+    ghostRef.current = zone;
+    setGhost(zone ? { zone, rect: winsnaprect(zone, window.innerWidth, window.innerHeight) } : null);
+  }
+
+  /** lands the drag in the zone the release previews: the halves commit the
+   * snapped states, the top strip maximizes, everything else keeps the move. */
+  function commitDragSnap(clientX: number, clientY: number) {
+    const zone = winsnapzone(clientX, clientY, window.innerWidth, window.innerHeight);
+    if (!zone) return;
+    setSize(null);
+    setDrag({ x: 0, y: 0 });
+    if (zone === "max") {
+      setSnapped(null);
+      setMaximized(true);
+      return;
+    }
+    setMaximized(false);
+    setSnapped(zone);
+  }
+
+  /** flushes one queued pointer pose into the drag offset (the rAF tail). */
+  function flushDragPose(pose: DragPose | null = poseRef.current) {
+    const track = trackRef.current;
+    if (!track || !pose) return;
+    setDrag(clampDrag(track.baseX + pose.clientX - track.originX, track.baseY + pose.clientY - track.originY));
+  }
+
+  /** arms a drag when the pointer presses the empty bar (never the caption
+   * buttons); an aero half lets go of the window, the Windows restore law. */
   function onTitlePointerDown(event: ReactPointerEvent<HTMLElement>) {
     if (maximized) return;
     if ((event.target as HTMLElement).closest("button, a, input")) return;
+    if (snapped) setSnapped(null);
     trackRef.current = {
       pointerId: event.pointerId,
       originX: event.clientX,
@@ -325,18 +375,37 @@ export function Shell({ children, themeButton = true }: ShellProps) {
     event.currentTarget.setPointerCapture(event.pointerId);
   }
 
-  /** rides the pointer while a drag session is armed. */
+  /** rides the pointer while a drag session is armed: the move queues the
+   * pose and the offset applies at most once per animation frame (the raw
+   * rAF loop — no motion library), the ghost rides the same pose. */
   function onTitlePointerMove(event: ReactPointerEvent<HTMLElement>) {
     const track = trackRef.current;
     if (!track || track.pointerId !== event.pointerId) return;
-    setDrag(clampDrag(track.baseX + event.clientX - track.originX, track.baseY + event.clientY - track.originY));
+    poseRef.current = { clientX: event.clientX, clientY: event.clientY };
+    showGhost(event.clientX, event.clientY);
+    if (dragFrame.current) return;
+    dragFrame.current = window.requestAnimationFrame(() => {
+      dragFrame.current = 0;
+      flushDragPose();
+    });
   }
 
-  /** releases the drag session. */
+  /** releases the drag session: the queued pose flushes, the landing zone
+   * commits (half/half/max) and the loop tears down. */
   function onTitlePointerUp(event: ReactPointerEvent<HTMLElement>) {
     const track = trackRef.current;
     if (!track || track.pointerId !== event.pointerId) return;
     trackRef.current = null;
+    if (dragFrame.current) {
+      window.cancelAnimationFrame(dragFrame.current);
+      dragFrame.current = 0;
+    }
+    const pose = poseRef.current;
+    poseRef.current = null;
+    if (pose) flushDragPose(pose);
+    if (pose) commitDragSnap(pose.clientX, pose.clientY);
+    ghostRef.current = null;
+    setGhost(null);
     event.currentTarget.releasePointerCapture(event.pointerId);
   }
 
@@ -364,7 +433,8 @@ export function Shell({ children, themeButton = true }: ShellProps) {
         className="winapp"
         hidden={minimized}
         data-maximized={maximized ? "true" : undefined}
-        data-sized={size && !maximized ? "true" : undefined}
+        data-snapped={snapped ?? undefined}
+        data-sized={size && !maximized && !snapped ? "true" : undefined}
         data-inactive={inactive ? "true" : undefined}
         aria-label="cadria"
         style={
@@ -396,12 +466,13 @@ export function Shell({ children, themeButton = true }: ShellProps) {
           <span className="titlebar__spacer" />
           {themeButton ? <ThemeToggle /> : null}
           <div className="winapp__caption">
-            <button type="button" className="winapp__cap" aria-label="Minimize" onClick={() => setMinimized(true)}>
+            <button type="button" className="winapp__cap" data-tip="minimize" aria-label="Minimize" onClick={() => setMinimized(true)}>
               <Minus size={14} aria-hidden="true" />
             </button>
             <button
               type="button"
               className="winapp__cap"
+              data-tip={maximized ? "restore" : "maximize"}
               aria-label={maximized ? "Restore" : "Maximize"}
               onClick={toggleMaximize}
             >
@@ -410,6 +481,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
             <button
               type="button"
               className="winapp__cap winapp__cap--close"
+              data-tip="close"
               aria-label="Close"
               onClick={() => navigate(RESTART_ROUTE)}
             >
@@ -447,7 +519,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
                   target="_blank"
                   rel="noreferrer"
                   className="railnav__fam"
-                  title={`${member.slug} — a family surface`}
+                  data-tip={`${member.slug} — a family surface`}
                 >
                   <span aria-hidden="true" className="railnav__famdot" style={{ background: member.accent }} />
                   <span className="sr-only">{`open ${member.slug} in its own tab`}</span>
@@ -476,6 +548,22 @@ export function Shell({ children, themeButton = true }: ShellProps) {
           />
         ))}
       </section>
+
+      {/* the aero snap ghost: the half/half/max zone the drag previews —
+          fixed over the viewport, inert, the windows-accent wash */}
+      {ghost ? (
+        <div
+          aria-hidden="true"
+          className="snapghost"
+          data-zone={ghost.zone}
+          style={{
+            left: ghost.rect.left,
+            top: ghost.rect.top,
+            width: ghost.rect.width,
+            height: ghost.rect.height,
+          }}
+        />
+      ) : null}
 
       {minimized && (
         <button type="button" className="winchip" aria-label="Restore cadria" onClick={() => setMinimized(false)}>

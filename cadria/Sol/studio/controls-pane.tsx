@@ -117,7 +117,7 @@ export function ControlsPane({
             type="button"
             className="btn secondary"
             aria-label="reseed — fold a fresh nonce into the seed"
-            title="reseed"
+            data-tip="reseed"
             onClick={onReseed}
             style={{ flex: "none", padding: "0 12px" }}
           >
