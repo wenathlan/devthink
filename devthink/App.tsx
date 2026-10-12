@@ -73,6 +73,14 @@ function App() {
 
 const root = document.getElementById("root");
 if (!root) throw new Error("DevThink root element is missing.");
-createRoot(root).render(<App />);
+
+/* HMR re-executes this module on hot updates: reuse the live root instead of
+ * re-creating one on the same container (React throws on the second
+ * createRoot call and the workbench would blank out after every edit). */
+type RootHost = HTMLElement & { __dtroot?: ReturnType<typeof createRoot> };
+const host = root as RootHost;
+const tree = host.__dtroot ?? createRoot(root);
+host.__dtroot = tree;
+tree.render(<App />);
 
 export default App;
