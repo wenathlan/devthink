@@ -1,12 +1,13 @@
 /**
  * steps.tsx — the loose step content of the onboarding tour (beside the
- * anchor, no subfolders). Each step is one frame of the window-grammar
- * tour: the art tile, the heading and the two-sentence body. The copy is
- * honest and direct: what the OS is, the explore floor, the panel/auth
- * path and the MCP opt-in. The art rides the AppTile registry (the same
- * tiles the taskbar pins) so the tour shows the real surface it names.
+ * anchor, no subfolders). Each step is one frame of the window-grammar tour:
+ * the art card, the heading and the two-sentence body. The copy is honest
+ * and direct: what the OS is, the explore floor, the panel/auth path and the
+ * MCP opt-in. The art rides the AppTile registry (the same tiles the taskbar
+ * pins) so the tour shows the real surface it names, seated on a trylle card
+ * — stepped surface, ring, Linear shadow — that rises with the frame's beat
+ * stagger (the anchor owns the motion; this file only marks the beat).
  */
-import type { CSSProperties } from "react";
 import { DESKTOP_APPS, type DesktopApp } from "../shell/appregistry.ts";
 import { AppTile } from "../shell/apptile.tsx";
 import { SolLogoMark } from "../panel/logo.tsx";
@@ -51,6 +52,9 @@ export const ONBOARDING_STEPS: readonly onboardingstep[] = [
   },
 ] as const;
 
+/** the Linear shadow with its ring, on the art card of every frame */
+const ART_SHADOW = "0 0 0 1px rgb(0 0 0 / 24%), 0 1px 2px rgb(0 0 0 / 20%), 0 3px 12px rgb(0 0 0 / 9%)";
+
 /**
  * Resolves the registry app one step names.
  *
@@ -64,20 +68,21 @@ export function stepapp(app: string | null): DesktopApp | null {
 
 /**
  * StepArt — the art zone of one frame: the real tile of the named surface
- * (or the OS mark), re-keyed per step so the Windows popintro bounce plays
- * on every frame change.
+ * (or the OS mark), seated on a trylle card. The card carries the
+ * data-frame-beat mark the anchor's stagger reads; no motion lives here.
  *
- * @param props app the registry id, index the step index (the key).
- * @returns the popintro art tile.
+ * @param props app the registry id, index the step index.
+ * @returns the art card of the frame.
  */
 export function StepArt(props: { app: string | null; index: number }): React.JSX.Element {
   const app = stepapp(props.app);
-  const style = { "--pop-delay": `${props.index * 20}ms` } as CSSProperties;
   return (
-    <div className="dt-onboard__art" style={style}>
-      <div key={props.index} className="dt-onboard__tile animate-popintro">
-        {app ? <AppTile app={app} size={64} label={app.name} /> : <SolLogoMark size={64} accent />}
-      </div>
+    <div
+      data-frame-beat
+      className="grid h-40 w-40 place-items-center rounded-2xl bg-s2 ring-1 ring-hairline"
+      style={{ boxShadow: ART_SHADOW }}
+    >
+      {app ? <AppTile app={app} size={72} label={app.name} /> : <SolLogoMark size={72} accent />}
     </div>
   );
 }

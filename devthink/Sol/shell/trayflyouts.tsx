@@ -1,16 +1,21 @@
 /**
  * trayflyouts.tsx — the two tray flyouts of the Sol shell, in the exact
- * Windows 11 grammar: QuickSettings (360px acrylic panel under the tray with
- * a 2×2 tile grid — wifi, bluetooth, night light, theme — plus the volume and
- * brightness slider rows) and the Calendar (340px acrylic panel under the
- * clock, real Date math, sunday-first grid). Both are dialogs painted as
- * Tailwind composition on the design tokens (task 3-a) — the .acrylic-panel
- * Fluent surface (rgb(36 36 36 / 80%) + saturate(3) blur(20px) + grain, 8px
- * corners, the hairline ring and the flyout shadow) — that enter and exit on
- * the 200ms cubic-bezier(.79,.14,.15,.86) slide-and-fade driven by the
- * ShellChrome mount state (the `open` prop flips `data-hide`); under
- * `prefers-reduced-motion` the chrome mounts them already visible and drops
- * them instantly, so no transition ever plays.
+ * Windows 11 grammar: QuickSettings (the 360px r8 acrylic panel under the
+ * tray with a 2×2 tile grid — wifi, bluetooth, night light, theme — plus the
+ * volume and brightness slider rows) and the Calendar (the 360px r8 acrylic
+ * panel under the clock, real Date math, sunday-first grid, 44px day cells).
+ * Both are dialogs painted as Tailwind composition on the design tokens
+ * (task 3-a) — the .acrylic-panel Fluent surface (rgb(36 36 36 / 80%) +
+ * saturate(3) blur(20px) + grain, 8px corners, the hairline ring and the
+ * flyout shadow) — and both carry the .dt-flyout hook: the tray entrance is
+ * 250ms on cubic-bezier(.62,0,.32,1) and the exit mirrors the bottom-bar
+ * recipe for the top bar (the panel slides back UP under the taskbar,
+ * translateY(-110%), in 150ms — it sits one step under the bar z so the
+ * acrylic swallows it). The ShellChrome mount state drives both phases (the
+ * `open` prop flips `data-hide`); under `prefers-reduced-motion` the chrome
+ * mounts them already visible and drops them instantly, so no transition
+ * ever plays. Every control keeps the ≥44px touch target and the campaign
+ * focus rule: a 2px accent underline (inset box-shadow), never a halo.
  */
 
 import type { LucideIcon } from "lucide-react";
@@ -61,6 +66,15 @@ const TILES: Array<{ key: TileKey; label: string; icon: LucideIcon }> = [
   { key: "theme", label: "theme", icon: Contrast },
 ];
 
+/** the shared tray flyout motion: the .dt-flyout hook carries the 250ms
+ * cubic-bezier(.62,0,.32,1) tray curve (the stylesheet may own it; these are
+ * the exact inline values), the hide slides back under the bar in 150ms */
+const TRAY_FLYOUT_CLASS =
+  "dt-flyout acrylic-panel fixed top-[calc(var(--shell-top)+12px)] right-3 z-[calc(var(--z-bar)-1)] w-[360px] rounded-md p-4 text-ink transition-[transform,opacity] duration-[250ms] ease-[cubic-bezier(0.62,0,0.32,1)] data-[hide=true]:pointer-events-none data-[hide=true]:-translate-y-[110%] data-[hide=true]:opacity-0 data-[hide=true]:duration-150";
+
+/** the focus rule of the tray controls: the 2px accent underline, no halo */
+const TRAY_FOCUS_CLASS = "focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none";
+
 type QuickSettingsProps = {
   /** visible state of the mount pattern (false renders the exit pose) */
   open: boolean;
@@ -80,7 +94,7 @@ export function QuickSettings({ open, settings, onChange }: QuickSettingsProps) 
 
   return (
     <section
-      className="acrylic-panel fixed top-[calc(var(--shell-top)+12px)] right-3 z-(--z-menu) w-[360px] origin-top-right rounded-md p-4 text-ink transition-[opacity,transform] duration-200 ease-fluent data-[hide=true]:pointer-events-none data-[hide=true]:-translate-y-2 data-[hide=true]:opacity-0"
+      className={TRAY_FLYOUT_CLASS}
       id="dt-quick-settings"
       role="dialog"
       aria-label="Quick settings"
@@ -98,7 +112,7 @@ export function QuickSettings({ open, settings, onChange }: QuickSettingsProps) 
               data-on={on ? "true" : undefined}
               aria-pressed={on}
               onClick={() => toggleTile(tile.key)}
-              className="flex min-h-11 cursor-pointer items-center gap-2.5 rounded-xs border border-white/9 bg-white/4 px-3 text-left font-sans text-xs font-medium text-ink transition-colors duration-150 ease-entry hover:bg-white/9 focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-(--color-focus) data-[on=true]:border-white/25 data-[on=true]:bg-white/15 data-[on=true]:text-signal-strong active:scale-[0.97] active:duration-100 light:border-black/10 light:bg-black/3 light:hover:bg-black/8 light:data-[on=true]:bg-black/12 light:data-[on=true]:text-[#1a1a1a]"
+              className={`flex min-h-11 cursor-pointer items-center gap-2.5 rounded-xs border border-white/9 bg-white/4 px-3 text-left font-sans text-xs font-medium text-ink transition-colors duration-150 ease-entry hover:bg-white/9 data-[on=true]:border-white/25 data-[on=true]:bg-white/15 data-[on=true]:text-signal-strong active:scale-[0.97] active:duration-100 light:border-black/10 light:bg-black/3 light:hover:bg-black/8 light:data-[on=true]:bg-black/12 light:data-[on=true]:text-[#1a1a1a] ${TRAY_FOCUS_CLASS}`}
             >
               <tile.icon size={16} strokeWidth={1.5} aria-hidden="true" />
               <span>{tile.label}</span>
@@ -106,8 +120,8 @@ export function QuickSettings({ open, settings, onChange }: QuickSettingsProps) 
           );
         })}
       </div>
-      <div className="mt-3.5 grid gap-3">
-        <label className="flex items-center gap-2.5 text-ink-2">
+      <div className="mt-3.5 grid gap-1">
+        <label className="flex min-h-11 items-center gap-2.5 text-ink-2">
           <Volume2 size={14} strokeWidth={1.5} aria-hidden="true" />
           <input
             type="range"
@@ -120,7 +134,7 @@ export function QuickSettings({ open, settings, onChange }: QuickSettingsProps) 
           />
           <span className="min-w-[26px] text-right font-mono text-[11px] text-ink tabular-nums">{settings.volume}</span>
         </label>
-        <label className="flex items-center gap-2.5 text-ink-2">
+        <label className="flex min-h-11 items-center gap-2.5 text-ink-2">
           <Sun size={14} strokeWidth={1.5} aria-hidden="true" />
           <input
             type="range"
@@ -179,7 +193,7 @@ export function CalendarFlyout({ open }: CalendarFlyoutProps) {
 
   return (
     <section
-      className="acrylic-panel fixed top-[calc(var(--shell-top)+12px)] right-3 z-(--z-menu) w-[340px] origin-top-right rounded-md p-4 text-ink transition-[opacity,transform] duration-200 ease-fluent data-[hide=true]:pointer-events-none data-[hide=true]:-translate-y-2 data-[hide=true]:opacity-0"
+      className={TRAY_FLYOUT_CLASS}
       id="dt-calendar"
       role="dialog"
       aria-label="Calendar"
@@ -195,7 +209,7 @@ export function CalendarFlyout({ open }: CalendarFlyoutProps) {
             type="button"
             aria-label="Previous month"
             onClick={() => shift(-1)}
-            className="grid h-7 w-7 cursor-pointer place-items-center rounded-xs border-0 bg-transparent text-ink-2 transition-colors duration-150 hover:bg-white/9 hover:text-ink focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-(--color-focus) light:hover:bg-black/8"
+            className={`grid h-11 w-11 cursor-pointer place-items-center rounded-xs border-0 bg-transparent text-ink-2 transition-colors duration-150 hover:bg-white/9 hover:text-ink light:hover:bg-black/8 ${TRAY_FOCUS_CLASS}`}
           >
             <ChevronLeft size={15} strokeWidth={1.5} aria-hidden="true" />
           </button>
@@ -203,7 +217,7 @@ export function CalendarFlyout({ open }: CalendarFlyoutProps) {
             type="button"
             aria-label="Next month"
             onClick={() => shift(1)}
-            className="grid h-7 w-7 cursor-pointer place-items-center rounded-xs border-0 bg-transparent text-ink-2 transition-colors duration-150 hover:bg-white/9 hover:text-ink focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-(--color-focus) light:hover:bg-black/8"
+            className={`grid h-11 w-11 cursor-pointer place-items-center rounded-xs border-0 bg-transparent text-ink-2 transition-colors duration-150 hover:bg-white/9 hover:text-ink light:hover:bg-black/8 ${TRAY_FOCUS_CLASS}`}
           >
             <ChevronRight size={15} strokeWidth={1.5} aria-hidden="true" />
           </button>
@@ -228,7 +242,7 @@ export function CalendarFlyout({ open }: CalendarFlyoutProps) {
               data-today={today ? "true" : undefined}
               aria-label={new Intl.DateTimeFormat(undefined, { dateStyle: "full" }).format(new Date(year, month, day))}
               aria-current={today ? "date" : undefined}
-              className="grid h-8 w-8 cursor-pointer place-items-center justify-self-center rounded-full border-0 bg-transparent font-mono text-xs font-medium text-ink tabular-nums transition-colors duration-150 hover:bg-white/9 focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-(--color-focus) data-[today=true]:bg-(--color-signal) data-[today=true]:text-(--color-signal-ink) light:hover:bg-black/8"
+              className={`grid h-11 w-11 cursor-pointer place-items-center justify-self-center rounded-xs border-0 bg-transparent font-mono text-xs font-medium text-ink tabular-nums transition-colors duration-150 hover:bg-white/9 data-[today=true]:bg-(--color-signal) data-[today=true]:text-(--color-signal-ink) light:hover:bg-black/8 ${TRAY_FOCUS_CLASS}`}
             >
               {day}
             </button>

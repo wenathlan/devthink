@@ -1,11 +1,11 @@
 /**
- * waves.tsx — the section rhythm divider of the explore hub (campaign v3,
- * wave R1-d). The drifting wave SVG of the old landing retired: the hub
+ * waves.tsx — the section rhythm divider of the explore hub. The hub
  * separates its zones the editorial way — a thin mono caption, a hairline
  * that stretches to the page edge and one quiet meta readout, nothing
- * decorative between the stage and the rails. The export name stays
+ * decorative between the stage and the sections. The export name stays
  * HeroWaves (the anchor and the re-exports keep their surface); the
- * optional caption/meta props only label the divider.
+ * optional caption/meta props only label the divider. The divider is fully
+ * self-contained (theme utilities only — no stylesheet rules to restyle).
  */
 
 export type HeroWavesProps = {
@@ -17,10 +17,10 @@ export type HeroWavesProps = {
 
 export function HeroWaves({ caption = "the stage", meta }: HeroWavesProps = {}) {
   return (
-    <div className="ldk-divider">
-      <span className="ldk-divider__cap">{caption}</span>
-      <span className="ldk-divider__rule" aria-hidden="true" />
-      {meta !== undefined && <span className="ldk-divider__meta">{meta}</span>}
+    <div className="flex items-center gap-4 py-10 text-ink-3">
+      <span className="font-mono text-[10px] tracking-[.08em]">{caption}</span>
+      <span className="h-px flex-1 bg-hairline" aria-hidden="true" />
+      {meta !== undefined && <span className="font-mono text-[10px]">{meta}</span>}
     </div>
   );
 }

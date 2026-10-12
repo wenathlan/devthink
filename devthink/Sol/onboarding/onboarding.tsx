@@ -4,12 +4,21 @@
  * it imports the loose components beside it, mounts the page and re-exports
  * the public component surface. Only the theme anchor (Sol/Sol.tsx) consumes
  * this file. The onboarding is the second page of the owner flow (intro →
- * onboarding → explore): a frame-a-frame tour dressed in the window grammar
- * — a Fluent window with the real title bar and the red close glyph — whose
- * finish AND skip both raise the onboarding flag through onboardingstate.ts
- * (the only writer) and hand the surface to /explore.
+ * onboarding → explore): a frame-a-frame tour — 4 frames — dressed in the
+ * window grammar and dressed in the trylle card system: the tour window is a
+ * stepped surface (one ladder step above the canvas), radius 1rem, the
+ * Linear shadow with its ring, and every control is at least 44px tall. The
+ * real title bar carries the red close glyph (close = skip = seen). Every
+ * exit raises the onboarding flag through onboardingstate.ts (the only
+ * writer) and hands the surface to /explore.
+ *
+ * Motion: the window rises from the modal floor (.96 — never zero) on the
+ * doctrine micro curve; every frame re-keys its beats (art, eyebrow, title,
+ * body) into a 60ms stagger of 450ms rises; the dismiss is a 400ms exit.
+ * The choreography rides the Web Animations API (no stylesheet keyframes)
+ * and every effect answers the reduced-motion query by skipping itself.
  */
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { writeonboardingstage } from "../../onboardingstate";
 import { SolLogoMark } from "../panel/logo.tsx";
@@ -20,17 +29,37 @@ export * from "./steps.tsx";
 /** The finish target of the flow: explore is the free SaaS surface. */
 export const ONBOARDING_HANDOVER = "/explore";
 
+/** the doctrine micro curve of every quiet entrance */
+const MICRO = "cubic-bezier(0.22, 1, 0.36, 1)";
+/** the exit curve of the dismiss */
+const EXIT = "cubic-bezier(0.76, 0, 0.24, 1)";
+/** the Linear shadow with its ring, on the tour window (ring first, then the
+ * doubling soft layers — the trylle/Linear DNA) */
+const WINDOW_SHADOW =
+  "0 0 0 1px rgb(0 0 0 / 32%), 0 1px 2px rgb(0 0 0 / 22%), 0 3px 12px rgb(0 0 0 / 9%), 0 24px 48px -12px rgb(0 0 0 / 30%)";
+/** the trylle primary tone stack of the "enter devthink" CTA (the exact
+ * rest stack of the quality ruler) */
+const PRIMARY_STACK =
+  "inset 0 1.2px 0 0 #ffffff73, inset 0 8px 14px -6px #ffffff38, inset 0 0 0 1px #ffffff2e, 0 0 0 1px oklch(14% 0 0), 0 1px 2px #00000038, 0 3px 5px -1px #00000047";
+
+/** true when the visitor asked the system to reduce motion */
+function motionReduced(): boolean {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
 /**
  * Onboarding — the frame-a-frame tour. The window chrome carries the real
  * close glyph (close = skip = seen); the footer carries back/next/finish and
- * the quiet skip; the keyboard walks the frames (→/←/Enter, Esc skips).
- * Every exit raises the onboarding stage once through onboardingstate.ts,
- * then navigates to /explore.
+ * the quiet skip, every control at least 44px tall; the keyboard walks the
+ * frames (→/←/Enter, Esc skips). Every exit raises the onboarding stage once
+ * through onboardingstate.ts, then navigates to /explore.
  */
 export default function Onboarding() {
   const [, navigate] = useLocation();
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
+  const windowRef = useRef<HTMLElement | null>(null);
+  const stageRef = useRef<HTMLDivElement | null>(null);
   const total = ONBOARDING_STEPS.length;
   const last = index === total - 1;
 
@@ -58,61 +87,136 @@ export default function Onboarding() {
     return () => window.removeEventListener("keydown", onkey);
   }, [finish, next, back]);
 
+  // the window entrance: the modal floor pose (.96 — never zero) rising to
+  // rest on the doctrine micro curve, one pass
+  useEffect(() => {
+    if (motionReduced()) return;
+    const entrance = windowRef.current?.animate(
+      [
+        { opacity: 0, transform: "scale(0.96)" },
+        { opacity: 1, transform: "scale(1)" },
+      ],
+      { duration: 500, easing: MICRO, fill: "backwards" },
+    );
+    return () => entrance?.cancel();
+  }, []);
+
+  // the frame entrance: the beats of one frame rise in a 60ms stagger —
+  // the stage re-keys per index, so the stagger replays on every frame
+  // biome-ignore lint/correctness/useExhaustiveDependencies: index is the re-key signal — the effect must replay the stagger on every frame change even though the stage is read through the ref
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage || motionReduced()) return;
+    const beats = Array.from(stage.querySelectorAll<HTMLElement>("[data-frame-beat]")).map((el, position) =>
+      el.animate(
+        [
+          { opacity: 0, transform: "translateY(12px)" },
+          { opacity: 1, transform: "translateY(0)" },
+        ],
+        { duration: 450, delay: position * 60, easing: MICRO, fill: "backwards" },
+      ),
+    );
+    return () => {
+      for (const beat of beats) beat.cancel();
+    };
+  }, [index]);
+
+  // the dismiss: the window lifts on the exit curve while the flag writes
+  useEffect(() => {
+    if (!leaving || motionReduced()) return;
+    windowRef.current?.animate(
+      [
+        { opacity: 1, transform: "translateY(0)" },
+        { opacity: 0, transform: "translateY(-24px)" },
+      ],
+      { duration: 400, easing: EXIT, fill: "forwards" },
+    );
+  }, [leaving]);
+
   const step = ONBOARDING_STEPS[index] as (typeof ONBOARDING_STEPS)[number];
 
   return (
-    <div className={`dt-onboard${leaving ? " is-leaving" : ""}`}>
+    <div className="grid min-h-dvh place-items-center bg-canvas p-4 sm:p-6">
       <section
-        className="dt-onboard__window acrylic-panel animate-start-in"
+        ref={windowRef}
+        className="relative flex w-full max-w-[560px] flex-col overflow-hidden rounded-2xl bg-s1 ring-1 ring-hairline-strong"
+        style={{ boxShadow: WINDOW_SHADOW }}
         role="dialog"
         aria-modal="true"
         aria-label="devthink onboarding"
       >
-        <header className="dt-onboard__bar">
-          <span className="dt-onboard__lockup">
-            <SolLogoMark size={16} />
-            <strong>devthink</strong>
-            <small>onboarding</small>
+        {/* the window grammar: the real 28px title bar with the red close glyph */}
+        <header className="flex h-8 flex-none items-center gap-2 bg-deep px-3">
+          <span className="flex items-center gap-2 text-xs font-medium text-ink-2">
+            <SolLogoMark size={14} />
+            devthink
           </span>
-          <button type="button" className="dt-onboard__close" aria-label="close onboarding" onClick={finish}>
+          <span className="font-mono text-[10px] tracking-[.08em] text-ink-3">onboarding</span>
+          <button
+            type="button"
+            aria-label="close onboarding"
+            onClick={finish}
+            className="ml-auto grid h-8 w-11 flex-none place-items-center text-ink-2 transition-colors duration-[60ms] hover:bg-[rgb(255_0_0_/_0.8)] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
+          >
             <svg viewBox="0 0 10 10" width="10" height="10" aria-hidden="true">
               <path d="M0 0 L10 10 M10 0 L0 10" stroke="currentColor" strokeWidth="1" fill="none" />
             </svg>
           </button>
         </header>
 
-        <div className="dt-onboard__stage" key={index}>
+        {/* the frame stage: re-keyed per step so the stagger replays */}
+        <div ref={stageRef} key={index} className="flex flex-col items-center gap-4 px-8 pb-3 pt-10 text-center">
           <StepArt app={step.app} index={index} />
-          <p className="dt-onboard__eyebrow">{step.eyebrow}</p>
-          <h1 className="dt-onboard__title">{step.title}</h1>
-          <p className="dt-onboard__body">{step.body}</p>
+          <p data-frame-beat className="font-mono text-[10px] tracking-[.08em] text-ink-3">
+            {step.eyebrow}
+          </p>
+          <h1 data-frame-beat className="font-display text-xl font-semibold tracking-[-0.02em] text-ink">
+            {step.title}
+          </h1>
+          <p data-frame-beat className="max-w-[44ch] text-sm leading-[1.55] text-ink-2">
+            {step.body}
+          </p>
         </div>
 
-        <footer className="dt-onboard__foot">
-          <div className="dt-onboard__progress">
-            {ONBOARDING_STEPS.map((entry, position) => (
-              <button
-                type="button"
-                key={entry.eyebrow}
-                aria-current={position === index ? "step" : undefined}
-                aria-label={`step ${position + 1} of ${total}: ${entry.eyebrow}`}
-                className={`dt-onboard__tick${position === index ? " is-active" : ""}${
-                  position < index ? " is-done" : ""
-                }`}
-                onClick={() => setIndex(position)}
-              />
-            ))}
+        <footer className="mt-3 flex flex-none flex-wrap items-center justify-between gap-3 border-t border-hairline px-5 py-3">
+          <div className="flex items-center gap-3">
+            <span className="flex items-center gap-1.5" aria-hidden="true">
+              {ONBOARDING_STEPS.map((entry, position) => (
+                <span
+                  key={entry.eyebrow}
+                  className={`h-1.5 rounded-full transition-[width,background-color] duration-150 ease-micro ${
+                    position === index ? "w-4 bg-win" : position < index ? "w-1.5 bg-ink-3" : "w-1.5 bg-hairline-strong"
+                  }`}
+                />
+              ))}
+            </span>
+            <span className="font-mono text-[10px] text-ink-3">
+              step {index + 1} of {total}
+            </span>
           </div>
-          <div className="dt-onboard__actions">
-            <button type="button" className="dt-onboard__skip" onClick={finish}>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={finish}
+              className="min-h-11 rounded-md px-3 text-sm text-ink-3 transition-colors duration-150 ease-micro hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
+            >
               skip
             </button>
             {index > 0 ? (
-              <button type="button" className="dt-onboard__back" onClick={back}>
+              <button
+                type="button"
+                onClick={back}
+                className="min-h-11 rounded-md bg-s2 px-4 text-sm font-medium text-ink ring-1 ring-hairline transition-[background-color] duration-150 ease-micro hover:bg-s3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
+              >
                 back
               </button>
             ) : null}
-            <button type="button" className="dt-onboard__next" onClick={next}>
+            <button
+              type="button"
+              onClick={next}
+              className="inline-flex min-h-11 items-center gap-2 rounded-md bg-win px-5 text-sm font-semibold text-win-ink transition-[filter] duration-150 ease-micro hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
+              style={{ boxShadow: PRIMARY_STACK }}
+            >
               {last ? "enter devthink" : "next"}
             </button>
           </div>

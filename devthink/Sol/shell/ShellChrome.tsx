@@ -1,28 +1,40 @@
 /**
  * ShellChrome.tsx — the ONE chrome of the Sol shell, shared by every page of
  * the theme (the desktop workspace and the control pages alike): a 48px top
- * bar in the exact Windows 11 taskbar grammar — an authentic dark acrylic
- * surface (rgba(32,32,32,.75) + saturate(3) blur(20px)) over a dark bottom
- * hairline. The official DevThink mark sits on the left edge and IS the Start
- * trigger (no labeled start button, no brand text); the pinned apps follow as
- * 38×38 rounded-square ICONS with NO text labels — the name surfaces in the
- * hover tooltip below the icon (Windows peek semantics), the ::after ladder
- * marks open (6px #858585) and active (12px solar accent) states, entries pop
- * in with the Windows popintro bounce, hover lights the icon background
- * (.2s ease), press compresses to scale(.7) and right-click opens the jump
- * list (Sol/shell/jumpmenu.tsx; pin order persists in localStorage). The tray
- * cluster opens QuickSettings and the clock opens the Calendar (Sol/shell/
- * trayflyouts.tsx). Clicking the mark opens the Start menu: a 640px centered
- * acrylic panel with 8px corners carrying the search box and the pinned apps
- * grid of the desktop app catalog (Sol/shell/appregistry.ts). Every flyout —
- * start, quick settings, calendar, jump list — shares ONE mount state (at
- * most one is in the DOM), enters/exits on the Windows
- * cubic-bezier(.79,.14,.15,.86) slide-and-fade (a mount state keeps the open
- * panel in the DOM through the exit transition), closes on Escape and on any
- * press outside a flyout or trigger, and skips its transitions entirely under
- * `prefers-reduced-motion`. The night light and brightness controls of the
- * tray drive two fixed, pointer-events-none, removable screen overlays and
- * their `--tray-night` / `--tray-dim` tokens — session-only and reversible.
+ * bar in the exact Windows 11 taskbar grammar over the .acrylic-bar surface
+ * (rgba(32,32,32,.75) + saturate(3) blur(20px) + grain) and a dark bottom
+ * hairline. The official DevThink mark opens the centered cluster and IS the
+ * Start trigger (no labeled start button, no brand text); the pinned apps
+ * follow as 38×38 r4 icon FACES inside 44px hit cells — the face is the
+ * Windows button, the cell is the touch target (the ≥44px rule): hover wash
+ * rgba(255,255,255,.1) in 200ms, press scale(.7) in 100ms, the 800ms popintro
+ * spawn bounce, and NO visible names — the name surfaces in the .dt-nav__tip
+ * acrylic tooltip under the icon (fade + slide 200ms, Windows peek
+ * semantics). The open/active ladder rides the cell itself: an inline ::after
+ * (3px, 0 closed) reads data-open="true" (6px neutral) and data-active="true"
+ * (12px accent) off the cell — the component owns it because the stylesheet
+ * moved every chrome paint into the components (task 3-a). Right-click opens
+ * the jump list (Sol/shell/
+ * jumpmenu.tsx); the pin order persists in localStorage "dt.taskbar.pins.v1".
+ * Every pin carries data-dock-target, so a minimizing family window flies
+ * into it (the WindowFrame measures the cell and the stylesheet plays the
+ * 250ms Fluent window curve). The tray cluster opens QuickSettings and the
+ * clock opens the Calendar (Sol/shell/trayflyouts.tsx — the .dt-flyout 360px
+ * r8 panels entering on the 250ms cubic-bezier(.62,0,.32,1) tray curve); the
+ * clock reads two 11px tabular-nums lines. Clicking the mark opens the Start
+ * menu: a 640px centered acrylic panel with 8px corners carrying the search
+ * box and the pinned grid of the desktop app catalog (Sol/shell/
+ * appregistry.ts) — the entrance rises translateY(100px)→0 in 200ms on
+ * cubic-bezier(.79,.14,.15,.86) and the exit is REAL: the mount state keeps
+ * the open panel in the DOM through a 220ms timer before it unmounts. Every
+ * flyout — start, quick settings, calendar, jump list — shares ONE mount
+ * state (at most one is in the DOM), closes on Escape and on any press
+ * outside a flyout or trigger, and skips its transitions entirely under
+ * `prefers-reduced-motion`. Keyboard focus answers the campaign rule: a 2px
+ * accent underline (inset box-shadow), never a halo. The night light and
+ * brightness controls of the tray drive two fixed, pointer-events-none,
+ * removable screen overlays and their --tray-night / --tray-dim tokens —
+ * session-only and reversible.
  */
 
 import { Lock, Search, Wifi, X } from "lucide-react";
@@ -45,6 +57,26 @@ import {
  * only — every other app of the catalog lives in the Start menu grid
  * ("panel" is the creation panel, the OS desktop itself, at /panel) */
 const TASKBAR_PIN_IDS = ["panel", "chat", "console", "gateway", "docs", "explore"];
+
+/** the 44px hit cell of one taskbar button: the cell is the touch target and
+ * the ::after open/active ladder anchor (the component owns the ladder — the
+ * 3px bar reads data-open/data-active off the cell, 6px open, 12px accent);
+ * the 38×38 r4 Windows face rides inside as the visual button */
+const BAR_CELL_CLASS =
+  "group relative flex h-11 w-11 flex-none cursor-pointer items-center justify-center rounded-xs border-0 bg-transparent p-0 focus-visible:outline-none after:absolute after:bottom-0 after:content-[''] after:block after:h-[3px] after:w-0 after:rounded-xs after:bg-[#858585] after:transition-[width,background-color] after:duration-200 data-[open=true]:after:w-1.5 data-[active=true]:after:w-3 data-[active=true]:after:bg-(--color-win)";
+
+/** the 38×38 r4 Windows face: hover wash rgba(255,255,255,.1) in 200ms, the
+ * popintro spawn bounce, press scale(.7) in 100ms and the 2px accent focus
+ * underline (the campaign focus rule — an inset box-shadow, never a halo);
+ * the app tile rides as the proven 26px r5 face fill (no second shadow — the
+ * face owns the shadow grammar of the bar) */
+const BAR_FACE_CLASS =
+  "dt-nav__app-face grid h-[38px] w-[38px] place-items-center rounded-xs transition-[background-color,transform] duration-200 animate-popintro group-hcf:bg-white/10 light:group-hcf:bg-black/8 group-active:scale-[0.7] group-active:duration-100 group-focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] [&_.dt-tile]:h-[26px] [&_.dt-tile]:w-[26px] [&_.dt-tile]:rounded-sm [&_.dt-tile]:shadow-none";
+
+/** the app-name peek: acrylic under the cell, cleared of the bar (Windows
+ * tooltip semantics, name only — the aria-label already carries the name) */
+const BAR_TIP_CLASS =
+  "dt-nav__tip acrylic-tip pointer-events-none absolute top-[calc(100%+6px)] left-1/2 z-[1] -translate-x-1/2 translate-y-[-4px] rounded-xs px-[9px] py-[5px] font-sans text-xs font-medium whitespace-nowrap text-[#fafafa] opacity-0 transition-[opacity,transform] duration-200 group-hcf:translate-y-0 group-hcf:opacity-100 light:border-black/12 light:text-[#1a1a1a]";
 
 /** the one shell flyout surface: at most one of these is open (and mounted) */
 type PanelState =
@@ -171,9 +203,9 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
     setMountedPanel(next);
   }
 
-  /** closes the open flyout: the slide-and-fade exit plays and the panel
-   * unmounts once the 200ms Windows transition settles (instantly under
-   * reduced motion) */
+  /** closes the open flyout: the exit transition plays and the panel
+   * unmounts once the 220ms Windows transition settles (instantly under
+   * reduced motion) — the exit is real, never a conditional unmount */
   const closePanel = useCallback(() => {
     setOpenPanel(null);
     if (exitTimer.current !== null) window.clearTimeout(exitTimer.current);
@@ -326,7 +358,7 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
   return (
     <>
       {/* the ONE chrome: a 48px top taskbar — the authentic dark acrylic
-          (.acrylic-bar: rgba(32,32,32,.85) + saturate(3) blur(20px) + grain,
+          (.acrylic-bar: rgba(32,32,32,.75) + saturate(3) blur(20px) + grain,
           light theme rides the class) over a dark bottom hairline; the
           centered cluster, the omnibox and the tray split the row */}
       <header className="dt-nav acrylic-bar sticky top-0 z-50 flex h-12 min-w-0 items-center border-b border-black/55 px-2">
@@ -336,23 +368,29 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
           className="dt-nav__cluster absolute top-0 left-1/2 flex h-12 -translate-x-1/2 items-center max-[760px]:static max-[760px]:h-auto max-[760px]:translate-x-0"
           data-flyout-keep="true"
         >
-          {/* the mark is the Start trigger: no labeled start button, no brand text */}
+          {/* the mark is the Start trigger: no labeled start button, no brand
+              text — the same 44px cell + 38×38 r4 face grammar as the pins */}
           <button
             ref={startRef}
             type="button"
-            className="dt-nav__start relative mx-[3px] grid h-[38px] w-[38px] flex-none origin-center place-items-center rounded-xs text-[#eef1f7] transition-[background-color,transform] duration-200 animate-popintro aria-expanded:bg-white/10 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) active:scale-[0.7] active:duration-100 light:text-[#1a1a1a]"
+            className={`dt-nav__start ${BAR_CELL_CLASS}`}
             aria-label="DevThink start menu"
             aria-haspopup="dialog"
             aria-expanded={openPanel?.kind === "start"}
             aria-controls={mountedPanel?.kind === "start" ? "dt-start-menu" : undefined}
             data-flyout-keep="true"
+            data-open={openPanel?.kind === "start" ? "true" : undefined}
             onClick={() => togglePanel({ kind: "start" })}
           >
-            <SolLogoMark size={20} />
+            <span className={`${BAR_FACE_CLASS} text-[#eef1f7] light:text-[#1a1a1a]`}>
+              <SolLogoMark size={20} />
+            </span>
           </button>
           {/* the pinned apps: icons only — the name shows in the hover tooltip,
-              the ::after pill carries the open/active state, right-click opens
-              the jump list at the cursor */}
+              the inline ::after ladder reads data-open/data-active off the
+              cell, right-click opens the jump list at the cursor,
+              data-dock-target is the minimize flight target of the desktop
+              windows */}
           <nav className="dt-nav__pins flex min-w-0 items-center" aria-label="Pinned apps" data-flyout-keep="true">
             {taskbarPins.map((app) => {
               const active = isActive(pinHref(app));
@@ -360,9 +398,11 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
                 <button
                   key={app.id}
                   type="button"
-                  className="dt-nav__app group relative mx-[3px] grid h-[38px] w-[38px] flex-none origin-center place-items-center rounded-xs transition-[background-color,transform] duration-200 animate-popintro after:absolute after:bottom-0 after:content-[''] after:block after:h-[3px] after:w-0 after:rounded-xs after:bg-[#858585] after:transition-[width,background-color] after:duration-200 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) active:scale-[0.7] active:duration-100 data-[open=true]:after:w-1.5 data-[active=true]:after:w-3 data-[active=true]:after:bg-(--color-sun) [&_.dt-tile]:h-[26px] [&_.dt-tile]:w-[26px] [&_.dt-tile]:rounded-sm [&_.dt-tile]:shadow-none"
+                  className={`dt-nav__app ${BAR_CELL_CLASS}`}
                   aria-label={app.name}
                   aria-haspopup="menu"
+                  data-flyout-keep="true"
+                  data-dock-target={app.id}
                   data-open={app.id === "panel" || active ? "true" : undefined}
                   data-active={active ? "true" : undefined}
                   onClick={() => openApp(app)}
@@ -371,13 +411,10 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
                     togglePanel({ kind: "jump", app, x: event.clientX, y: event.clientY });
                   }}
                 >
-                  <AppTile app={app} size={16} />
-                  {/* the app-name peek: acrylic below the icon, flipped under
-                      the bar (Windows tooltip semantics, name-only) */}
-                  <span
-                    className="dt-nav__tip acrylic-tip pointer-events-none absolute top-[calc(100%+6px)] left-1/2 z-[1] -translate-x-1/2 translate-y-[-4px] rounded-xs px-[9px] py-[5px] font-sans text-xs font-medium whitespace-nowrap text-[#fafafa] opacity-0 transition-[opacity,transform] duration-200 group-hcf:translate-y-0 group-hcf:opacity-100 light:border-black/12 light:text-[#1a1a1a]"
-                    aria-hidden="true"
-                  >
+                  <span className={BAR_FACE_CLASS}>
+                    <AppTile app={app} size={16} />
+                  </span>
+                  <span className={BAR_TIP_CLASS} aria-hidden="true">
                     {app.name}
                   </span>
                 </button>
@@ -396,8 +433,11 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
         </div>
         {/* the tray cluster: the gateway pill and the clock are the quick
             settings and calendar triggers (native buttons, so the a11y
-            grammar is real); the clock reads in two lines, tabular-nums */}
-        <div className="dt-nav__tray flex flex-none items-center font-sans text-[11px] text-ink-2 max-[1080px]:ml-auto" data-flyout-keep="true">
+            grammar is real); the clock reads in two 11px tabular-nums lines */}
+        <div
+          className="dt-nav__tray flex flex-none items-center font-sans text-[11px] text-ink-2 max-[1080px]:ml-auto"
+          data-flyout-keep="true"
+        >
           <button
             type="button"
             aria-label="Quick settings"
@@ -405,12 +445,12 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
             aria-expanded={openPanel?.kind === "quick"}
             aria-controls={mountedPanel?.kind === "quick" ? "dt-quick-settings" : undefined}
             data-flyout-keep="true"
-            className="flex cursor-pointer items-center border-0 bg-transparent p-0 font-[inherit] text-[inherit] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus)"
+            className="flex h-11 cursor-pointer items-center rounded-xs border-0 bg-transparent p-0 font-[inherit] text-[inherit] transition-[box-shadow] duration-200 focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none"
             onClick={() => togglePanel({ kind: "quick" })}
           >
             {paired !== undefined && (
               <span
-                className={`inline-flex mx-0.5 h-[38px] items-center gap-1.5 rounded-xs px-2 text-[11px] lowercase transition-colors duration-200 hover:bg-white/6 light:hover:bg-black/6 ${
+                className={`inline-flex mx-0.5 h-11 items-center gap-1.5 rounded-xs px-2 text-[11px] lowercase transition-colors duration-200 hover:bg-white/6 light:hover:bg-black/6 ${
                   paired ? "text-[#f3f5fa] light:text-[#1a1a1a]" : "text-ink-3"
                 }`}
               >
@@ -421,7 +461,7 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
           </button>
           <button
             type="button"
-            className="dt-nav__clock mx-0.5 flex h-[38px] cursor-pointer flex-col items-center justify-center rounded-xs border-0 bg-transparent px-2 text-center text-[11px] leading-[1.35] font-[inherit] text-[inherit] tabular-nums transition-colors duration-200 hover:bg-white/6 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) light:hover:bg-black/6"
+            className="dt-nav__clock mx-0.5 flex h-11 cursor-pointer flex-col items-center justify-center rounded-xs border-0 bg-transparent px-2 text-center text-[11px] leading-[1.35] font-[inherit] text-[inherit] tabular-nums transition-[box-shadow] duration-200 focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none hover:bg-white/6 light:hover:bg-black/6"
             aria-label="Calendar"
             aria-haspopup="dialog"
             aria-expanded={openPanel?.kind === "calendar"}
@@ -443,11 +483,12 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
             aria-label="Close the start menu"
             onClick={closePanel}
           />
-          {/* the start menu: 640px centered acrylic panel, 8px corners, the
-              dtStartIn 200ms slide-up entry and the Windows slide-cum-fade
-              exit through data-hide (the mount state keeps it in the DOM) */}
+          {/* the start menu: 640px centered acrylic panel, 8px corners — the
+              200ms translateY(100px)→0 entrance on the Windows start curve
+              (cubic-bezier(.79,.14,.15,.86)) and the same slide-cum-fade exit
+              through data-hide (the mount state keeps it in the DOM) */}
           <section
-            className="dt-start acrylic-panel fixed top-[calc(var(--shell-top)+12px)] left-1/2 z-[60] -ml-[320px] flex h-[min(calc(100dvh-var(--shell-top)-24px),720px)] w-[640px] flex-col overflow-y-auto overscroll-contain rounded-md text-ink animate-start-in transition-[transform,opacity,visibility] duration-200 ease-fluent max-[700px]:left-2 max-[700px]:ml-0 max-[700px]:w-[calc(100vw-16px)] data-[hide=true]:pointer-events-none data-[hide=true]:invisible data-[hide=true]:translate-y-[100px] data-[hide=true]:opacity-0 data-[hide=true]:delay-200 light:bg-[rgb(242_242_242_/_90%)]"
+            className="dt-start acrylic-panel fixed top-[calc(var(--shell-top)+12px)] left-1/2 z-[60] -ml-[320px] flex h-[min(calc(100dvh-var(--shell-top)-24px),720px)] w-[640px] flex-col overflow-y-auto overscroll-contain rounded-md text-ink transition-[transform,opacity] duration-200 ease-fluent max-[700px]:left-2 max-[700px]:ml-0 max-[700px]:w-[calc(100vw-16px)] data-[hide=true]:pointer-events-none data-[hide=true]:translate-y-[100px] data-[hide=true]:opacity-0 light:bg-[rgb(242_242_242_/_90%)]"
             id="dt-start-menu"
             role="dialog"
             aria-modal="true"
@@ -455,8 +496,8 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
             data-hide={openPanel?.kind === "start" ? undefined : "true"}
           >
             {/* the search well: flat white 5%, hairline bottom, the 2px
-                system-accent underline on focus (the win11 input recipe) */}
-            <div className="dt-start__search mx-8 mt-6 flex h-10 flex-none items-center gap-[9px] rounded-xs border border-white/6 border-b-(--color-hairline) bg-white/5 px-3 text-ink-2 transition-colors duration-200 focus-within:border-white/20 focus-within:shadow-[inset_0_-2px_0_var(--color-win)] light:border-black/12 light:bg-white/78 light:text-[#3c3c3c]">
+                accent underline on focus (the win11 input recipe) */}
+            <div className="dt-start__search mx-8 mt-6 flex h-11 flex-none items-center gap-[9px] rounded-xs border border-white/6 border-b-(--color-hairline) bg-white/5 px-3 text-ink-2 transition-colors duration-200 focus-within:border-white/20 focus-within:shadow-[inset_0_-2px_0_var(--color-win)] light:border-black/12 light:bg-white/78 light:text-[#3c3c3c]">
               <Search size={15} aria-hidden="true" />
               <input
                 ref={searchRef}
@@ -464,14 +505,14 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search the desktop apps"
                 aria-label="Search the desktop apps"
-                className="min-w-0 flex-1 rounded-xs border-0 bg-transparent text-xs font-normal text-ink outline-none placeholder:text-ink-3 focus-visible:outline-none focus-visible:outline-offset-[-2px] light:text-[#1a1a1a]"
+                className="min-w-0 flex-1 rounded-xs border-0 bg-transparent text-xs font-normal text-ink outline-none placeholder:text-ink-3 focus-visible:outline-none light:text-[#1a1a1a]"
               />
               {query && (
                 <button
                   type="button"
                   onClick={() => setQuery("")}
                   aria-label="Clear the search"
-                  className="grid h-[26px] w-[26px] flex-none cursor-pointer place-items-center rounded-xs border-0 bg-transparent text-ink-2 transition-colors duration-200 hover:bg-white/10 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus)"
+                  className="-mr-3 grid h-11 w-11 flex-none cursor-pointer place-items-center rounded-xs border-0 bg-transparent text-ink-2 transition-colors duration-200 hover:bg-white/10 hover:text-ink focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none"
                 >
                   <X size={14} aria-hidden="true" />
                 </button>
@@ -487,7 +528,7 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
                 <button
                   key={app.id}
                   type="button"
-                  className="dt-start__app flex h-[84px] w-24 cursor-pointer flex-col items-center justify-center rounded-xs border-0 bg-transparent pt-2 text-ink transition-colors duration-100 ease-in-out hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) light:hover:bg-black/8 [&_.dt-tile]:h-8 [&_.dt-tile]:w-8 [&_.dt-tile]:rounded-sm [&_.dt-tile]:shadow-none"
+                  className="dt-start__app flex h-[84px] w-24 cursor-pointer flex-col items-center justify-center rounded-xs border-0 bg-transparent pt-2 text-ink transition-colors duration-100 ease-in-out hover:bg-white/10 focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none light:hover:bg-black/8 [&_.dt-tile]:h-8 [&_.dt-tile]:w-8 [&_.dt-tile]:rounded-sm [&_.dt-tile]:shadow-none"
                   title={app.detail}
                   onClick={() => openApp(app)}
                 >
@@ -507,7 +548,10 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
                 mono wordmark instead of a second mark (logo discipline: the
                 taskbar owns the mark) */}
             <footer className="dt-start__foot mt-auto flex h-16 flex-none items-center gap-[9px] border-t border-white/7 bg-black/15 px-12 text-[11px] font-medium text-ink-2 light:border-t-black/10 light:bg-black/3">
-              <span className="dt-start__wordmark font-mono text-[10px] font-semibold tracking-[0.08em] text-ink" aria-hidden="true">
+              <span
+                className="dt-start__wordmark font-mono text-[10px] font-semibold tracking-[0.08em] text-ink"
+                aria-hidden="true"
+              >
                 devthink
               </span>
               <span>· local OS</span>

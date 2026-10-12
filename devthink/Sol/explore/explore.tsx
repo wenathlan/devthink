@@ -7,26 +7,26 @@
  */
 
 import { ArrowRight, RotateCcw } from "lucide-react";
-/** Style: DevThink orbital launcher — the navigation hub of the entry flow
- * (campaign v3, wave R1-d: the owner doctrine — the hub is a stage, not a
- * settings page). ONE hero zone: the prompt-giga command field (the giant
- * input with the open action embedded inside it, quick-filter chips riding
- * below) over the Modulify atmosphere (one warm radial light, two halftone
- * edge dissolves, one film-grain veil), then the app constellation — the
- * devthink native surfaces as the wide feature rail of hairline rows and
- * the nine external family apps as the identity grid with ONE tile raised
- * (the center-pop). The curated rails (recent, pinned, all apps) answer as
- * horizontal snap rails, the core modules close the page as an editorial
- * ledger. Data comes only from the existing sources: the app registry
- * (Sol/shell/appregistry.ts) and the catalog clients this page already
- * read. The window chrome on the top edge (windowchrome.tsx) is
- * presentational: minimize collapses the landing into a restore chip,
+/** Style: DevThink landing SaaS — the trylle ruler over the Windows canvas.
+ * ONE hero zone on the graphite mica: the trylle hero (display face, H1 at
+ * clamp(2.25rem, 5vw, 3.75rem), weight 600, tracking -0.02em, never italic)
+ * over the campaign atmosphere (one warm radial light, two halftone edge
+ * dissolves, one film-grain veil), then the prompt-giga command field and
+ * the app constellation (launchdeck.tsx), the curated grade of trylle cards
+ * (exploresections.tsx), the catalog strip and the editorial ledger. Every
+ * card rides the trylle grammar: rounded-2xl, ring-1, the Linear shadow
+ * with its ring, p-8. The "enter devthink" CTA carries the exact trylle
+ * primary tone stack. The window chrome on the top edge (windowchrome.tsx)
+ * is presentational: minimize collapses the landing into a restore chip,
  * maximize toggles the full-bleed frame, close returns to the intro (the
  * explicit close clears the session flag so the opening plays again — the
  * only replay path beyond a cold load). Logo discipline: the ONE navbar
  * above (ShellChrome) owns the brand mark — the hub rides the mono wordmark
- * and the drawing sigil beside the eyebrow, never a second logo. */
-import { useEffect, useState } from "react";
+ * and the drawing sigil beside the eyebrow, never a second logo. Entrances:
+ * the hero beats rise once in a 60ms stagger (Web Animations API, skipped
+ * under prefers-reduced-motion); micro interactions are 150ms on the
+ * doctrine micro curve. */
+import { useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import {
   type CoreModule,
@@ -40,7 +40,7 @@ import { peekonboardingstate } from "../../onboardingstate";
 import { SolLogoMark } from "../panel/logo.tsx";
 import { ShellChrome } from "../shell/ShellChrome.tsx";
 import { ExploreSections } from "./exploresections.tsx";
-import { LaunchDeck, OsSigil } from "./launchdeck.tsx";
+import { LaunchDeck, OsSigil, TRYLLE_PRIMARY_STACK } from "./launchdeck.tsx";
 import { HeroWaves } from "./waves.tsx";
 import { WindowEdgeChrome } from "./windowchrome.tsx";
 
@@ -52,27 +52,16 @@ export * from "./windowchrome.tsx";
 type LandingState = "open" | "minimized";
 type FrameState = "windowed" | "maximized";
 
-/** the slim .pagehead row of the landing: the eyebrow left, the actions of
- * the retired landing bar right (the anchor jumps and the enter CTA). The
- * ONE navbar above (ShellChrome) carries the brand mark, so the landing
- * mounts no second header of its own. */
-const pageheadStyle = {
-  display: "flex",
-  flexWrap: "wrap",
-  alignItems: "center",
-  justifyContent: "space-between",
-  gap: 16,
-  padding: "18px 0 0",
+/** the doctrine micro curve of every quiet entrance */
+const MICRO = "cubic-bezier(0.22, 1, 0.36, 1)";
+/** the soft layers under the hairline ring of the strip cards (Linear DNA) */
+const STRIP_SHADOW = "0 1px 2px rgb(0 0 0 / 26%), 0 3px 12px rgb(0 0 0 / 12%)";
+/** the dark mica floor of the doctrine: #202020 with the fixed indigo core */
+const MICA_STYLE = {
+  backgroundColor: "#202020",
+  backgroundImage: "radial-gradient(#1a1f35 25%, #202020 100%)",
+  backgroundAttachment: "fixed",
 } as const;
-/** the eyebrow grammar of the doctrine: mono, lowercase, quiet tracking */
-const eyebrowStyle = {
-  margin: 0,
-  color: "var(--dt-muted)",
-  font: "500 10px var(--dt-mono)",
-  letterSpacing: ".08em",
-  textTransform: "none",
-} as const;
-const actionsStyle = { display: "flex", flexWrap: "wrap", alignItems: "center", gap: 18 } as const;
 
 /* ---- the hero atmosphere: the named light source, the halftone edge
         dissolves and the film grain — layered over the graphite mica, all
@@ -111,56 +100,28 @@ const halftoneLowStyle = {
   maskImage: "radial-gradient(470px 320px at 0% 100%, #000 0%, transparent 72%)",
   WebkitMaskImage: "radial-gradient(470px 320px at 0% 100%, #000 0%, transparent 72%)",
 } as const;
+/** the film grain: feTurbulence fractal noise, 2 octaves, 140px tile,
+ * soft-light — the doctrine veil, additive over the mica */
 const heroGrainStyle = {
   position: "absolute",
   inset: 0,
   zIndex: 0,
   pointerEvents: "none",
+  mixBlendMode: "soft-light",
   backgroundImage:
-    "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E\")",
+    "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.07'/%3E%3C/svg%3E\")",
 } as const;
 
-/* ---- the hero zone: the lead statement, then the stage answers below —
-        the command field, the chips, the constellation; one warm light over
-        the whole zone, editorial air between the beats ---- */
-const heroStyle = {
-  position: "relative",
-  paddingTop: "clamp(56px, 9vh, 118px)",
-  paddingBottom: "clamp(40px, 6vh, 72px)",
-  textAlign: "left",
-} as const;
-const leadStyle = {
-  position: "relative",
-  zIndex: 1,
-  maxWidth: 780,
-  marginBottom: "clamp(30px, 4.5vh, 48px)",
-} as const;
-/** the headline rides the display face token; the system sans answers
- * until the token ships */
-const heroTitleStyle = {
-  margin: "0 0 16px",
-  font: "700 clamp(36px, 6.4vw, 74px)/1.04 var(--font-display, var(--dt-sans))",
-  letterSpacing: "-.035em",
-  textWrap: "balance",
-} as const;
-const heroEyebrowStyle = { fontSize: 10, letterSpacing: ".08em", textTransform: "none" } as const;
-const heroSubStyle = { maxWidth: 560, fontSize: 14 } as const;
-
-/** the editorial ledger rows of the core modules (index / name / role) */
-const ledgerIndexStyle = {
-  color: "var(--dt-faint)",
-  font: "500 9px var(--dt-mono)",
-  fontVariantNumeric: "tabular-nums",
-} as const;
-const ledgerNameStyle = {
-  color: "var(--dt-text)",
-  font: "600 14px/1.3 var(--font-display, var(--dt-sans))",
-  letterSpacing: "-.01em",
-} as const;
-const ledgerRoleStyle = { color: "var(--dt-muted)", fontSize: 12, lineHeight: 1.65 } as const;
+/** the anchor rows of the page head (the jump links of the landing) */
+const ANCHORS: ReadonlyArray<{ href: string; label: string }> = [
+  { href: "#constellation", label: "constellation" },
+  { href: "#family", label: "family" },
+  { href: "#rails", label: "sections" },
+  { href: "#does", label: "modules" },
+];
 
 /** The DevThink free exploration landing, served at /explore (the web intro
- * hands its zoom expansion over to this page) — the orbital launcher hub. */
+ * hands its zoom expansion over to this page) — the landing SaaS. */
 export default function Explore() {
   const [, navigate] = useLocation();
   const [modules, setModules] = useState<CoreModule[]>([]);
@@ -168,11 +129,32 @@ export default function Explore() {
   const [tracks, setTracks] = useState<StudioTrack[]>([]);
   const [landing, setLanding] = useState<LandingState>("open");
   const [frame, setFrame] = useState<FrameState>("windowed");
+  const pageRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     void coreModuleTable().then(setModules);
     void studioAssets().then(setAssets);
     void studioTracks().then(setTracks);
+  }, []);
+
+  // the hero entrance: every data-akash-beat of the page rises once in a
+  // 60ms stagger (capped so the tail never crawls); reduced motion skips
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const stage = pageRef.current;
+    if (!stage) return;
+    const beats = Array.from(stage.querySelectorAll<HTMLElement>("[data-akash-beat]")).map((el, index) =>
+      el.animate(
+        [
+          { opacity: 0, transform: "translateY(14px)" },
+          { opacity: 1, transform: "translateY(0)" },
+        ],
+        { duration: 600, delay: Math.min(index, 7) * 60, easing: MICRO, fill: "backwards" },
+      ),
+    );
+    return () => {
+      for (const beat of beats) beat.cancel();
+    };
   }, []);
 
   /** the explicit close: walks back into the entry flow — the flow head of a
@@ -189,7 +171,12 @@ export default function Explore() {
 
   if (landing === "minimized") {
     return (
-      <button type="button" className="dt-restorechip" onClick={() => setLanding("open")}>
+      <button
+        type="button"
+        onClick={() => setLanding("open")}
+        className="fixed bottom-5 left-1/2 z-[80] flex min-h-11 -translate-x-1/2 items-center gap-2 rounded-lg bg-s1 px-4 text-sm font-medium text-ink ring-1 ring-hairline-strong transition-[background-color] duration-150 ease-micro hover:bg-s2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
+        style={{ boxShadow: STRIP_SHADOW }}
+      >
         <SolLogoMark size={16} />
         <span>explore — devthink</span>
         <RotateCcw size={13} aria-hidden="true" />
@@ -198,102 +185,166 @@ export default function Explore() {
   }
 
   return (
-    <div className="dt-landing" data-max={frame === "maximized" ? "true" : undefined}>
-      <WindowEdgeChrome
-        maximized={frame === "maximized"}
-        onMinimize={() => setLanding("minimized")}
-        onMaximize={() => setFrame(frame === "maximized" ? "windowed" : "maximized")}
-        onClose={closeLanding}
-      />
+    <div className="min-h-dvh" style={MICA_STYLE}>
+      <div className={frame === "maximized" ? "" : "p-3"}>
+        <div
+          className={`min-h-dvh ${frame === "maximized" ? "" : "mx-auto max-w-[1400px] overflow-hidden rounded-lg ring-1 ring-hairline-strong"}`}
+          style={frame === "maximized" ? undefined : { boxShadow: "var(--shadow-window)" }}
+        >
+          <WindowEdgeChrome
+            maximized={frame === "maximized"}
+            onMinimize={() => setLanding("minimized")}
+            onMaximize={() => setFrame(frame === "maximized" ? "windowed" : "maximized")}
+            onClose={closeLanding}
+          />
 
-      {/* the ONE chrome of the theme as the landing's header row: brand mark,
+          {/* the ONE chrome of the theme as the landing's header row: brand mark,
           pins, omnibox and tray — no second navbar rides the frame */}
-      <ShellChrome />
+          <ShellChrome />
 
-      <main className="dt-landing__page">
-        <header className="pagehead" style={pageheadStyle}>
-          <p className="pagehead__eyebrow" style={eyebrowStyle}>
-            devthink · explore
-          </p>
-          <div className="pagehead__actions" style={actionsStyle}>
-            <nav className="dt-landing__nav" aria-label="Site navigation">
-              <a href="#constellation">constellation</a>
-              <a href="#family">family</a>
-              <a href="#rails">rails</a>
-              <a href="#does">what it does</a>
-            </nav>
-            <button type="button" className="dt-landing__cta" onClick={enterOs}>
-              enter devthink
-              <ArrowRight size={15} aria-hidden="true" />
-            </button>
-          </div>
-        </header>
+          <main
+            ref={pageRef}
+            className={`mx-auto w-full px-6 pb-24 ${frame === "maximized" ? "max-w-none" : "max-w-5xl"}`}
+          >
+            <header className="flex flex-wrap items-center justify-between gap-4 pt-6">
+              <p className="font-mono text-[10px] tracking-[.08em] text-ink-3">devthink · explore</p>
+              <div className="flex flex-wrap items-center gap-5">
+                <nav className="flex items-center gap-5 text-sm text-ink-2" aria-label="Site navigation">
+                  {ANCHORS.map((anchor) => (
+                    <a
+                      key={anchor.href}
+                      href={anchor.href}
+                      className="transition-colors duration-150 ease-micro hover:text-ink motion-reduce:transition-none"
+                    >
+                      {anchor.label}
+                    </a>
+                  ))}
+                </nav>
+                <button
+                  type="button"
+                  onClick={enterOs}
+                  className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-win px-5 text-sm font-semibold text-win-ink transition-[filter,transform] duration-150 ease-micro hover:brightness-95 active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
+                  style={{ boxShadow: TRYLLE_PRIMARY_STACK }}
+                >
+                  enter devthink
+                  <ArrowRight size={15} aria-hidden="true" />
+                </button>
+              </div>
+            </header>
 
-        <section className="dt-landing__hero ldk-hero" aria-label="DevThink — the launcher of the os" style={heroStyle}>
-          {/* the atmosphere: one warm light source, two halftone edge
+            <section
+              className="relative pb-6 pt-[clamp(56px,9vh,118px)]"
+              aria-label="DevThink — the launcher of the os"
+            >
+              {/* the atmosphere: one warm light source, two halftone edge
               dissolves and the film grain — layered, pointer-transparent */}
-          <div className="atmos dt-hero__light" style={heroLightStyle} aria-hidden="true" />
-          <div className="halftone dt-hero__halftone" style={halftoneTopStyle} aria-hidden="true" />
-          <div className="halftone dt-hero__halftone" style={halftoneLowStyle} aria-hidden="true" />
-          <div className="grain dt-hero__grain" style={heroGrainStyle} aria-hidden="true" />
+              <div style={heroLightStyle} aria-hidden="true" />
+              <div style={halftoneTopStyle} aria-hidden="true" />
+              <div style={halftoneLowStyle} aria-hidden="true" />
+              <div style={heroGrainStyle} aria-hidden="true" />
 
-          <div style={leadStyle}>
-            <p className="dt-landing__eyebrow" style={heroEyebrowStyle}>
-              <OsSigil size={18} /> <span>devthink · explore — the launcher</span>
-            </p>
-            <h1 style={heroTitleStyle}>
-              every surface of the os, <em>one command away</em>
-            </h1>
-            <p className="dt-landing__sub" style={heroSubStyle}>
-              the stage reads the whole registry: type, filter, open. the native surfaces and the nine family apps share
-              one field.
-            </p>
-          </div>
+              <div className="relative z-[1] max-w-[780px]">
+                <p
+                  data-akash-beat
+                  className="flex items-center gap-2 font-mono text-[10px] tracking-[.08em] text-ink-3"
+                >
+                  <OsSigil size={18} /> <span>devthink · explore — the launcher</span>
+                </p>
+                {/* the trylle hero: display face, weight 600, tracking -0.02em,
+                the clamp of the ruler — never italic */}
+                <h1
+                  data-akash-beat
+                  className="mt-4 font-display text-[clamp(2.25rem,5vw,3.75rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-ink"
+                  style={{ textWrap: "balance", fontFamily: "var(--font-display)" }}
+                >
+                  every surface of the os, one command away
+                </h1>
+                <p data-akash-beat className="mt-4 max-w-[560px] text-sm leading-[1.55] text-ink-2">
+                  the stage reads the whole registry: type, filter, open. the native surfaces and the nine family apps
+                  share one field.
+                </p>
+              </div>
 
-          <LaunchDeck />
-        </section>
+              <div data-akash-beat className="relative z-[1] mt-10">
+                <LaunchDeck />
+              </div>
+            </section>
 
-        <HeroWaves caption="02 · the rails" meta="recent · pinned · all apps" />
+            <HeroWaves caption="02 · the sections" meta="recent · pinned · all apps" />
 
-        <ExploreSections assets={assets} tracks={tracks} />
+            <ExploreSections assets={assets} tracks={tracks} />
 
-        <HeroWaves caption="03 · the modules" meta="the core catalog" />
+            <HeroWaves caption="03 · the modules" meta="the core catalog" />
 
-        <section className="dt-landing__section ldk-ledgerzone" id="does" aria-labelledby="dt-sec-does">
-          <header className="dt-landing__sechead">
-            <p className="ldk-railzone__cap">the core modules</p>
-            <h2 id="dt-sec-does">what the platform does</h2>
-            <p>the modules of the core catalog — the same rows the panel serves after you enter.</p>
-          </header>
-          <ul className="ldk-ledger">
-            {modules.map((module, index) => (
-              <li key={module.name}>
-                <span aria-hidden="true" style={ledgerIndexStyle}>
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <strong style={ledgerNameStyle}>{module.name}</strong>
-                <span style={ledgerRoleStyle}>{module.role}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      </main>
+            {/* the catalog strip: the core modules as a horizontal strip of
+            trylle cards — the same rows the panel serves after you enter */}
+            <section className="scroll-mt-24 pb-14" id="does" aria-labelledby="dt-sec-does">
+              <header className="mb-8 max-w-[56ch]">
+                <p className="font-mono text-[10px] tracking-[.08em] text-ink-3">the catalog strip</p>
+                <h2 id="dt-sec-does" className="mt-2 font-display text-2xl font-semibold tracking-[-0.02em] text-ink">
+                  what the platform does
+                </h2>
+                <p className="mt-2 text-sm leading-[1.55] text-ink-2">
+                  the modules of the core catalog — the same rows the panel serves after you enter.
+                </p>
+              </header>
+              <ul className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3">
+                {modules.map((module, index) => (
+                  <li
+                    key={module.name}
+                    className="flex w-[248px] flex-none snap-start flex-col rounded-2xl bg-s0 p-5 ring-1 ring-hairline-strong"
+                    style={{ boxShadow: STRIP_SHADOW }}
+                  >
+                    <span className="font-mono text-[10px] text-ink-3" style={{ fontVariantNumeric: "tabular-nums" }}>
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <strong className="mt-3 block font-display text-sm font-semibold tracking-[-0.01em] text-ink">
+                      {module.name}
+                    </strong>
+                    <span className="mt-1 block text-xs leading-[1.55] text-ink-2">{module.role}</span>
+                  </li>
+                ))}
+                {modules.length === 0 && (
+                  <li className="py-6 font-mono text-xs text-ink-3">the catalog has not answered yet.</li>
+                )}
+              </ul>
+            </section>
+          </main>
 
-      <footer className="dt-landing__footer">
-        <span className="dt-landing__brandmark" aria-hidden="true">
-          <SolLogoMark size={18} accent />
-          DevThink
-        </span>
-        <nav aria-label="Institutional">
-          <a href="/about">about</a>
-          <a href="/terms">terms</a>
-          <a href="/policy">privacy</a>
-        </nav>
-        <small>
-          exploration is free and reads the public catalog · the local identity of the os is yours: no remote
-          authentication, no telemetry
-        </small>
-      </footer>
+          <footer className="border-t border-hairline px-6 py-10">
+            <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4">
+              <span className="flex items-center gap-2 text-sm font-medium text-ink" aria-hidden="true">
+                <SolLogoMark size={18} accent />
+                DevThink
+              </span>
+              <nav aria-label="Institutional" className="flex items-center gap-5 text-sm text-ink-2">
+                <a
+                  href="/about"
+                  className="transition-colors duration-150 ease-micro hover:text-ink motion-reduce:transition-none"
+                >
+                  about
+                </a>
+                <a
+                  href="/terms"
+                  className="transition-colors duration-150 ease-micro hover:text-ink motion-reduce:transition-none"
+                >
+                  terms
+                </a>
+                <a
+                  href="/policy"
+                  className="transition-colors duration-150 ease-micro hover:text-ink motion-reduce:transition-none"
+                >
+                  privacy
+                </a>
+              </nav>
+              <small className="text-xs leading-[1.55] text-ink-3">
+                exploration is free and reads the public catalog · the local identity of the os is yours: no remote
+                authentication, no telemetry
+              </small>
+            </div>
+          </footer>
+        </div>
+      </div>
     </div>
   );
 }

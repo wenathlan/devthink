@@ -1,13 +1,13 @@
 /**
- * launchdeck.tsx — the orbital launcher kit of the explore hub (campaign v3,
- * wave R1-d). The hub is a stage, not a settings page: ONE prompt-giga
- * command field (the giant input with the open action embedded inside it,
- * quick-filter chips riding below) and the app constellation — the devthink
- * native surfaces as the wide feature rail (hairline rows, never boxes) and
- * the nine external family apps as the identity grid with ONE tile raised
- * (the center-pop). Data comes exclusively from the shared registry
- * (Sol/shell/appregistry.ts) — the same rows the desktop grid, the Start
- * menu and the launcher page read; nothing is hardcoded here.
+ * launchdeck.tsx — the orbital launcher kit of the explore hub. The hub is a
+ * stage, not a settings page: ONE prompt-giga command field (the giant input
+ * with the open action embedded inside it, quick-filter chips riding below)
+ * and the app constellation — the devthink native surfaces as the wide
+ * feature rail of hairline rows and the nine external family apps as the
+ * identity grid of trylle cards with ONE tile raised (the center-pop). Data
+ * comes exclusively from the shared registry (Sol/shell/appregistry.ts) —
+ * the same rows the desktop grid, the Start menu and the launcher page read;
+ * nothing is hardcoded here.
  *
  * Navigation contract (preserved from the shell):
  * - internal kinds navigate with the wouter router (`Link`, the `os` kind
@@ -32,6 +32,23 @@ import { familyurl } from "../../deploybase.ts";
 import { DESKTOP_APPS, type DesktopApp, isFamilyApp, seedOsView } from "../shell/appregistry.ts";
 import { AppTile } from "../shell/apptile.tsx";
 import { HeroWaves } from "./waves.tsx";
+
+/** the trylle primary tone stack of every enter action (the exact rest
+ * stack of the quality ruler: inset gloss, inset glow, inset ring, outer
+ * ring, two doubling drops) */
+export const TRYLLE_PRIMARY_STACK =
+  "inset 0 1.2px 0 0 #ffffff73, inset 0 8px 14px -6px #ffffff38, inset 0 0 0 1px #ffffff2e, 0 0 0 1px oklch(14% 0 0), 0 1px 2px #00000038, 0 3px 5px -1px #00000047";
+
+/** the trylle card shadow: the hairline ring stays a utility, the shadow
+ * carries the doubling soft layers (Linear DNA, ≤26% black) */
+export const TRYLLE_CARD_SHADOW = "0 1px 2px rgb(0 0 0 / 26%), 0 3px 12px rgb(0 0 0 / 12%)";
+
+/** the raised variant of the card shadow (the featured tile, the center-pop) */
+export const TRYLLE_CARD_SHADOW_RAISED = "0 2px 3px rgb(0 0 0 / 26%), 0 6px 20px -4px rgb(0 0 0 / 22%)";
+
+/** the input-edge shadow of the command field (trylle input DNA: top inner
+ * light, ring, one drop) */
+const FIELD_SHADOW = "0 1px 2px rgb(0 0 0 / 26%), 0 3px 12px rgb(0 0 0 / 12%), inset 0 1px 0 0 rgb(255 255 255 / 4%)";
 
 /** the identity signal of each family app (one color per tile, the tile
  * chrome itself stays neutral graphite — the campaign doctrine) */
@@ -241,14 +258,14 @@ export function OsSigil({ size = 20 }: { size?: number }) {
       <path
         className="ldk-osmark__a"
         d="M7.5 20.5C12 18.5 16.5 13.5 20.5 7.5"
-        stroke="var(--dt-orange)"
+        stroke="var(--color-win)"
         strokeWidth="2"
         strokeLinecap="round"
       />
       <path
         className="ldk-osmark__b"
         d="M7.5 7.5C11.5 12 16 17 20.5 20.5"
-        stroke="var(--dt-orange)"
+        stroke="var(--color-win)"
         strokeWidth="2"
         strokeLinecap="round"
       />
@@ -281,9 +298,13 @@ function DeckMark({ app, phase }: { app: DesktopApp; phase: number }) {
   return <AppTile app={app} size={26} />;
 }
 
-/** the compact deck cell of the curated rails: mark, name, one mono role
- * line — internal kinds navigate with the router, external kinds anchor to
- * the family deploy base, the os kind seeds the /os view first */
+/**
+ * DeckCell — the trylle card of the curated grids: mark, name, one mono
+ * role line on a stepped surface (rounded-2xl, hairline ring, Linear
+ * shadow, p-8). Internal kinds navigate with the router, external kinds
+ * anchor to the family deploy base, the os kind seeds the /os view first;
+ * the featured card rides the raised elevation.
+ */
 export function DeckCell({
   app,
   featured = false,
@@ -295,18 +316,21 @@ export function DeckCell({
 }) {
   const body = (
     <>
-      <span className="ldk-dcell__mark" aria-hidden="true">
+      <span className="grid h-10 w-10 flex-none place-items-center" aria-hidden="true">
         <DeckMark app={app} phase={phase} />
       </span>
-      <span className="ldk-dcell__name">{app.name}</span>
-      <span className="ldk-dcell__role">{app.detail}</span>
+      <span className="mt-auto text-sm font-semibold tracking-[-0.01em] text-ink">{app.name}</span>
+      <span className="font-mono text-[11px] leading-[1.5] text-ink-3">{app.detail}</span>
     </>
   );
-  const className = featured ? "ldk-dcell is-featured" : "ldk-dcell";
+  const className = `group relative flex h-full flex-col gap-3 overflow-hidden rounded-2xl p-8 ring-1 ring-hairline-strong transition-[background-color] duration-150 ease-micro hover:bg-s1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none ${
+    featured ? "bg-s1" : "bg-s0"
+  }`;
+  const shadow = featured ? TRYLLE_CARD_SHADOW_RAISED : TRYLLE_CARD_SHADOW;
   const label = `${app.name} — ${app.detail}`;
   if (app.target.kind === "external") {
     return (
-      <a className={className} href={familyurl(app.target.slug)} aria-label={label}>
+      <a className={className} style={{ boxShadow: shadow }} href={familyurl(app.target.slug)} aria-label={label}>
         {body}
       </a>
     );
@@ -314,6 +338,7 @@ export function DeckCell({
   return (
     <Link
       className={className}
+      style={{ boxShadow: shadow }}
       href={appRoute(app)}
       aria-label={label}
       onClick={() => {
@@ -334,68 +359,87 @@ const SCOPES: ReadonlyArray<{ id: DeckScope; label: string }> = [
   { id: "pinned", label: "pinned" },
 ];
 
-/** the entrance slot variable of a staggered child (70ms steps, capped) */
-function lotVars(index: number): CSSProperties {
-  return { "--ldk-i": Math.min(index, 9) } as CSSProperties;
+/** the section header of one constellation zone (mono cap, display title) */
+function RailHead(props: { cap: string; title: string; meta: string }) {
+  return (
+    <header className="mb-5">
+      <p className="font-mono text-[10px] tracking-[.08em] text-ink-3">{props.cap}</p>
+      <h2 className="mt-1.5 font-display text-lg font-semibold tracking-[-0.02em] text-ink">{props.title}</h2>
+      <p className="mt-1 font-mono text-[11px] text-ink-3">{props.meta}</p>
+    </header>
+  );
 }
 
 /** one native row of the feature rail: the OS's own surface as a hairline
  * row — mark, name, mono role line, the arrow nudging on hover */
-function NativeRow({ app, index, featured }: { app: DesktopApp; index: number; featured: boolean }) {
+function NativeRow({ app, featured }: { app: DesktopApp; featured: boolean }) {
   const label = `${app.name} — ${app.detail}`;
-  const className = featured ? "ldk-nrow is-featured" : "ldk-nrow";
   const body = (
     <>
-      <span className="ldk-nrow__mark" aria-hidden="true">
-        <AppTile app={app} size={featured ? 34 : 26} />
+      <span className="grid h-10 w-10 flex-none place-items-center" aria-hidden="true">
+        <AppTile app={app} size={featured ? 30 : 24} />
       </span>
-      <span className="ldk-nrow__body">
-        <span className="ldk-nrow__name">{app.name}</span>
-        <span className="ldk-nrow__role">{app.detail}</span>
+      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+        <span className="truncate text-sm font-semibold tracking-[-0.01em] text-ink">{app.name}</span>
+        <span className="truncate font-mono text-[11px] text-ink-3">{app.detail}</span>
       </span>
-      <ArrowUpRight className="ldk-nrow__arrow" size={15} aria-hidden="true" />
+      <ArrowUpRight
+        className="flex-none text-ink-3 transition-transform duration-150 ease-micro group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none"
+        size={15}
+        aria-hidden="true"
+      />
     </>
   );
+  const linkClass =
+    "group flex items-center gap-4 rounded-lg px-3 py-2.5 transition-colors duration-150 ease-micro hover:bg-s0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none";
+  if (app.target.kind === "external") {
+    return (
+      <a className={linkClass} href={familyurl(app.target.slug)} aria-label={label}>
+        {body}
+      </a>
+    );
+  }
   return (
-    <div className={className} style={lotVars(index)}>
-      {app.target.kind === "external" ? (
-        <a href={familyurl(app.target.slug)} aria-label={label}>
-          {body}
-        </a>
-      ) : (
-        <Link
-          href={appRoute(app)}
-          aria-label={label}
-          onClick={() => {
-            if (app.target.kind === "os") seedOsView(app.target.app);
-          }}
-        >
-          {body}
-        </Link>
-      )}
-    </div>
+    <Link
+      className={linkClass}
+      href={appRoute(app)}
+      aria-label={label}
+      onClick={() => {
+        if (app.target.kind === "os") seedOsView(app.target.app);
+      }}
+    >
+      {body}
+    </Link>
   );
 }
 
 /** one family tile of the constellation: neutral chrome, the identity light
- * source behind, the animated mark, the name and the mono role line */
+ * source behind, the animated mark, the name and the mono role line — a
+ * trylle card with ONE tile raised (the center-pop) */
 function FamilyTile({ app, index, raised }: { app: DesktopApp; index: number; raised: boolean }) {
   if (app.target.kind !== "external") return null;
   const tint = FAMILY_TINT[app.id] ?? FALLBACK_TINT;
   return (
-    <div className="ldk-fcell" style={lotVars(index)}>
-      <a
-        className={raised ? "ldk-ftile is-raised" : "ldk-ftile"}
-        href={familyurl(app.target.slug)}
-        aria-label={`${app.name} — ${app.detail} (opens the family site)`}
-        style={{ "--ldk-tint": tint } as CSSProperties}
-      >
-        <FamilyMark id={app.id} tint={tint} size={34} phase={index} />
-        <span className="ldk-ftile__name">{app.name}</span>
-        <span className="ldk-ftile__role">{app.detail}</span>
-        <ArrowUpRight className="ldk-ftile__arrow" size={14} aria-hidden="true" />
-      </a>
-    </div>
+    <a
+      className={`group relative flex h-full flex-col gap-2 overflow-hidden rounded-2xl p-8 ring-1 ring-hairline-strong transition-[background-color,box-shadow] duration-150 ease-micro hover:bg-s1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none ${
+        raised ? "bg-s1" : "bg-s0"
+      }`}
+      style={{
+        boxShadow: raised ? TRYLLE_CARD_SHADOW_RAISED : TRYLLE_CARD_SHADOW,
+        backgroundImage: `radial-gradient(150px 110px at 22% 14%, ${tint}24, transparent 70%)`,
+      }}
+      href={familyurl(app.target.slug)}
+      aria-label={`${app.name} — ${app.detail} (opens the family site)`}
+    >
+      <FamilyMark id={app.id} tint={tint} size={34} phase={index} />
+      <span className="mt-auto pt-4 text-sm font-semibold tracking-[-0.01em] text-ink">{app.name}</span>
+      <span className="font-mono text-[11px] leading-[1.5] text-ink-3">{app.detail}</span>
+      <ArrowUpRight
+        className="absolute right-6 top-6 text-ink-3 opacity-0 transition-opacity duration-150 ease-micro group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none"
+        size={14}
+        aria-hidden="true"
+      />
+    </a>
   );
 }
 
@@ -417,11 +461,7 @@ export function LaunchDeck() {
       DESKTOP_APPS.filter((app) => {
         const inScope =
           scope === "all" ||
-          (scope === "pinned"
-            ? app.pinned
-            : scope === "native"
-              ? !isFamilyApp(app)
-              : isFamilyApp(app));
+          (scope === "pinned" ? app.pinned : scope === "native" ? !isFamilyApp(app) : isFamilyApp(app));
         if (!inScope) return false;
         if (!needle) return true;
         return app.name.toLowerCase().includes(needle) || app.detail.toLowerCase().includes(needle);
@@ -453,12 +493,17 @@ export function LaunchDeck() {
   return (
     <>
       <search>
-        <form className="ldk-field" onSubmit={openFirst}>
-          <span className="ldk-field__prompt" aria-hidden="true">
+        <form
+          data-akash-beat
+          className="flex items-center gap-3 rounded-2xl bg-s0 px-4 py-2 ring-1 ring-hairline-strong"
+          style={{ boxShadow: FIELD_SHADOW }}
+          onSubmit={openFirst}
+        >
+          <span className="font-mono text-sm text-ink-3" aria-hidden="true">
             &gt;
           </span>
           <input
-            className="ldk-field__input"
+            className="h-11 min-w-0 flex-1 bg-transparent text-[15px] text-ink outline-none placeholder:text-ink-3"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="type to open — every surface answers"
@@ -467,51 +512,53 @@ export function LaunchDeck() {
             spellCheck={false}
           />
           {needle !== "" && (
-            <span className="ldk-field__count" role="status">
+            <span className="hidden font-mono text-[11px] text-ink-3 sm:block" role="status">
               {matches.length} {matches.length === 1 ? "answer" : "answers"}
             </span>
           )}
-          <button type="submit" className="ldk-field__go">
+          <button
+            type="submit"
+            className="inline-flex h-11 flex-none items-center gap-1.5 rounded-lg bg-win px-4 text-sm font-semibold text-win-ink transition-[filter,transform] duration-150 ease-micro hover:brightness-95 active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
+            style={{ boxShadow: TRYLLE_PRIMARY_STACK }}
+          >
             open
             <ArrowUpRight size={14} aria-hidden="true" />
           </button>
         </form>
       </search>
 
-      <fieldset className="ldk-chips" aria-label="Quick filters of the launcher">
+      <fieldset data-akash-beat className="flex flex-wrap items-center gap-2 pt-4" aria-label="Quick filters of the launcher">
         {SCOPES.map((entry) => (
           <button
             key={entry.id}
             type="button"
-            className="ldk-chip"
+            className="min-h-11 rounded-md bg-s0 px-4 text-sm font-medium text-ink-2 ring-1 ring-hairline transition-[background-color,color] duration-150 ease-micro hover:bg-s1 hover:text-ink aria-pressed:bg-s2 aria-pressed:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
             aria-pressed={scope === entry.id}
             onClick={() => setScope(entry.id)}
           >
             {entry.label}
           </button>
         ))}
-        <span className="ldk-chips__meta">
+        <span className="ml-1 font-mono text-[11px] text-ink-3">
           {nativeTotal} native · {familyTotal} family · none of it invented
         </span>
       </fieldset>
 
       <HeroWaves caption="01 · the constellation" meta={`${nativeTotal} native · ${familyTotal} family`} />
 
-      <div className="ldk-stage" id="constellation">
-        <div className="ldk-stage__native">
-          <header className="ldk-railhead">
-            <p className="ldk-railhead__cap">devthink · native</p>
-            <h2 className="ldk-railhead__title">the os, its own surfaces</h2>
-            <p className="ldk-railhead__meta">
-              {native.length === nativeTotal ? "the full rail" : `${native.length} of ${nativeTotal} answer`}
-            </p>
-          </header>
-          <div className="ldk-nrows">
+      <div className="grid gap-12 lg:grid-cols-[1.05fr_1fr]" id="constellation">
+        <div>
+          <RailHead
+            cap="devthink · native"
+            title="the os, its own surfaces"
+            meta={native.length === nativeTotal ? "the full rail" : `${native.length} of ${nativeTotal} answer`}
+          />
+          <div className="flex flex-col divide-y divide-hairline">
             {native.map((app, index) => (
-              <NativeRow key={app.id} app={app} index={index} featured={index === 0} />
+              <NativeRow key={app.id} app={app} featured={index === 0} />
             ))}
             {native.length === 0 && (
-              <p className="ldk-empty">
+              <p className="py-6 font-mono text-xs text-ink-3">
                 {needle !== ""
                   ? `no native surface answers “${query}”.`
                   : "the native rail rests — the family owns the stage."}
@@ -520,21 +567,15 @@ export function LaunchDeck() {
           </div>
         </div>
 
-        <div className="ldk-stage__family" id="family">
-          <header className="ldk-railhead">
-            <p className="ldk-railhead__cap">the family · nine</p>
-            <h2 className="ldk-railhead__title">one signal color each</h2>
-            <p className="ldk-railhead__meta">each tile opens its own site</p>
-          </header>
-          <div className="ldk-fgrid">
+        <div id="family">
+          <RailHead cap="the family · nine" title="one signal color each" meta="each tile opens its own site" />
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {family.map((app, index) => (
               <FamilyTile key={app.id} app={app} index={index} raised={app.id === raisedId} />
             ))}
             {family.length === 0 && (
-              <p className="ldk-empty">
-                {needle !== ""
-                  ? `no family app answers “${query}”.`
-                  : "the family grid rests — the native rail owns the stage."}
+              <p className="py-6 font-mono text-xs text-ink-3">
+                {needle !== "" ? `no family app answers “${query}”.` : "the family grid rests — the native rail owns the stage."}
               </p>
             )}
           </div>

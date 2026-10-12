@@ -12,6 +12,7 @@
       "**/*.js",
       "**/*.mjs",
       "**/*.cjs",
+      "**/*.css",
       "**/*.json",
       "!**/dist",
       "!**/distpackage",
@@ -85,6 +86,11 @@
       "semicolons": "always",
       "trailingCommas": "all",
       "arrowParentheses": "always"
+    }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
     }
   },
   "overrides": [
