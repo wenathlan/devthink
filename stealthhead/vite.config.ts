@@ -1,6 +1,7 @@
-/** Style: stealthhead Sol — static SPA built straight at the repository root: hashed bundles land beside the source files, with a repository-scoped base path and preview-safe host handling. */
+/** Style: stealthhead Sol — static SPA built straight at the repository root: hashed bundles land beside the source files, with a repository-scoped base path and preview-safe host handling. The tailwind plugin compiles the @import "tailwindcss" foundation of Sol/sol.css (the 8-g pass): the @theme tokens become utilities and preflight loads once. */
 
 import path from "node:path";
+import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
@@ -12,7 +13,7 @@ function themeBasePath(value: string | undefined): string {
 
 export default defineConfig({
   base: themeBasePath(process.env.VITE_BASE_PATH),
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "Sol"),

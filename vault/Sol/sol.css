@@ -1,98 +1,325 @@
-/* ==========================================================================
-   vault theme sol — the single stylesheet of the theme
-   the trylle foundation wearing the windows hands (the reform wave): the
-   trylle.com canvas, surfaces, hairlines, type and shadow ladder as the
-   base, the windows 11/10 interactions and micro-animations on top — the
-   press .7 on pins, the dtPopIntro pin entrance, the fluent window curves,
-   the caption buttons and the eight resize handles, the win11 scrollbar,
-   the focus underlines. sections: tokens · base · primitives · window
-   chrome · pages · flow · motion · guards.
-   doctrine: trylle canvas #0a0a0b over the 8-surface ladder #171717→#484848
-   · hairlines ink 5%/10% · gelo-de-cofre #a3d7e6 as the app identity ONLY
-   (brand mark, content cta, active indicator) — focus and the bar cta
-   answer the windows accent #4cc2ff · body 13px weight 450 · radii
-   .625rem (window 8, controls 4 — the 11+10 blend) · micro 150ms
-   cubic-bezier(0.22,1,0.36,1) · windows 250ms cubic-bezier(0.85,0.14,0.14,0.85)
-   · trylle shadow ladder (ring + doubling layers) with the flat fluent
-   float for windows · no pills · no universal transitions · no
-   scale-from-zero except the windows pin law · scrollbar invisible until
-   hover · reduced-motion hard stop last.
+@import "tailwindcss";
+
+/* vault theme sol — the single stylesheet of the theme (the 8-h
+   FAMILY-FOUNDATION-2 pass). The foundation is the devthink doctrine
+   foundation carried with the exact campaign values, wearing the vault ice
+   gelo #7dd8ff as the app signal (brand mark, content cta and the content
+   voice ONLY — focus and the chrome answer the windows accent #4cc2ff).
+   Tailwind-first: the @theme block below is the one source of truth and
+   Tailwind 4 generates the utilities the pages can compose (bg-s0..s7,
+   text-ink/muted/faint, border-hairline, shadow-window/flyout,
+   ease-window/micro, animate-window-in/popintro); the hand-written css
+   carries what utilities cannot express: the mica/acrylic recipes
+   (backdrop-filter always paired with -webkit-), the feTurbulence grain
+   (.86, 2 octaves, soft-light, 140px tile), the win11 scrollbar and the
+   hard-stop guards. The doctrine holds the exact campaign values:
+   - mica #202020 radial-gradient(#1a1f35 25%, #202020 100%) fixed; the light
+     flip rides [data-theme="light"] on the same ladder;
+   - the 8-step surface ladder #242424 → #494949 (depth by surface step,
+     hairlines 1px inside one step, ink ≤10%);
+   - the WINDOWS accent #4cc2ff (light #0067c0), close red rgb(232 17 35);
+   - the fluent shadows: focused window 0 32px 64px rgb(0 0 0/24%),
+     0 0 8px rgb(0 0 0/20%); flyout 0 4px 8px rgb(0 0 0/14%),
+     0 0 2px rgb(0 0 0/12%);
+   - motion: windows 250ms cubic-bezier(0.85,0.14,0.14,0.85), micro 150ms
+     cubic-bezier(0.22,1,0.36,1), popintro 800ms, press scale(.7) 100ms —
+     scale floors never 0;
+   - Inter Variable + Geist Mono Variable, body 13px/450, H1
+     clamp(2.25rem,5vw,3.75rem) tracking -0.02em, radius base .625rem;
+   - selection rgb(76 194 255/38%); no universal transitions · no pure
+     #000/#fff ink · no pill radii · no neon halos · no scale-from-zero
+     except the windows pin law.
+   sections: 1 tokens (@theme + runtime aliases) · 2 base · 3 primitives ·
+   window chrome · pages · flow · motion · guards (last).
    ========================================================================== */
 
-/* ---------- 1. tokens ---------- */
-:root {
-  /* the trylle canvas + the 8 surface rungs (elevation by color, never by
-     border): #171717 → #484848, the real ladder of the ruler site */
-  --sol-canvas: #0a0a0b;
-  --sol-canvas-deep: #060607;
-  --deep: #060607;
-  --bg: #0a0a0b;
-  --surface-1: #171717; --surface-2: #1e1e1e; --surface-3: #252525; --surface-4: #2c2c2c;
-  --surface-5: #333333; --surface-6: #3a3a3a; --surface-7: #414141; --surface-8: #484848; /* the hover pole */
-  /* ink — primary / secondary / muted */
-  --sol-ink: #fafafa;
-  --ink: #fafafa; --ink-2: #a1a1aa; --ink-3: #71717a;
-  /* hairlines mixed from the foreground (they re-mix per theme) */
-  --line: color-mix(in oklab, var(--ink) 5%, transparent);
-  --line-strong: color-mix(in oklab, var(--ink) 10%, transparent);
-  /* the gelo-de-cofre ramp — the ice light of the safe; the app identity,
-     90/10 (brand mark, content cta, active indicator only) */
-  --gelo-signal: #a3d7e6; /* the signal */
-  --gelo-tint: #c9e9f2; /* the light tint */
-  --gelo-soft: #eaf7fb; /* the soft pole */
-  --gelo-deep: #5b93a6; /* the deep pole */
-  /* the accents: the app identity rides the gelo (brand mark, content cta,
-     active indicator); the WINDOWS accent governs focus and the bar cta */
-  --sol-primary: #a3d7e6;
-  --sol-primary-ink: #072330;
-  --accent: var(--gelo-signal); --accent-ink: var(--sol-primary-ink);
-  --win-accent: #4cc2ff; --win-accent-ink: #060607;
-  --focus: var(--win-accent);
-  --sol-signal: 163 215 230;
-  --sol-success: #86efac; --sol-error: #ff8f9a; --sol-warning: #ffd166; --sol-info: #c9e9f2;
-  /* the ice ramps the platform states quote (protected / due lanes) */
-  --sol-ember: #8fc4d6; --sol-tangerine: #c9e9f2; --sol-gold: #eaf7fb;
-  /* washes + the scrollbar thumb (themed, never the native blue) */
-  --wash: rgb(255 255 255 / 10%); --wash-soft: rgb(255 255 255 / 5%); --scroll: rgb(255 255 255 / 42%);
-  /* radii — the trylle base .625rem (±2/4px; 2xl 16, 3xl 24) beside the
-     windows blend: the window wears 8 (the 11), the controls wear 4 (the 10) */
-  --sol-radius: 0.625rem;
-  --radius-sm: calc(var(--sol-radius) - 2px);
-  --radius-md: var(--sol-radius);
-  --radius-lg: calc(var(--sol-radius) + 2px);
-  --radius-xl: calc(var(--sol-radius) + 4px);
+/* the light-theme variant: the theme flips on the html[data-theme] class,
+   not on the OS preference — components use light: utilities */
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+/* hover-or-focus-visible: the compound state the chrome answers everywhere */
+@custom-variant hcf (&:is(:hover, :focus-visible));
+
+/* ==========================================================================
+   1. TOKEN FOUNDATION — the one source of truth (Tailwind @theme)
+   ========================================================================== */
+@theme {
+  /* ---- type: the trylle ruler — Inter Variable carries the whole voice,
+     Geist Mono Variable the detail (the Segoe fallback keeps the Windows
+     sensation off-network) ---- */
+  --font-display: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", "Inter", "Segoe UI Variable Text", "Segoe UI", "Selawik",
+    ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, SFMono-Regular,
+    Menlo, monospace;
+
+  /* ---- floors: the canvas the ladder stands on ---- */
+  --color-canvas: #202020;
+  --color-deep: #191919;
+
+  /* ---- the surface ladder: the exact Windows 11 8-step ladder ---- */
+  --color-s0: #242424;
+  --color-s1: #2b2b2b;
+  --color-s2: #2c2c2c;
+  --color-s3: #323232;
+  --color-s4: #373737;
+  --color-s5: #3d3d3d;
+  --color-s6: #434343;
+  --color-s7: #494949;
+
+  /* ---- the ink ladder: one text color per role, never raw black ---- */
+  --color-ink: #fafafa;
+  --color-ink-2: #c3c3c3;
+  --color-ink-3: #999999;
+
+  /* ---- hairlines: ink mixed to transparency (runtime-mixed so the light
+     theme flips them) — separation by respiro, never stacked borders ---- */
+  --color-hairline: color-mix(in oklab, #fefefe 5%, transparent);
+  --color-hairline-strong: color-mix(in oklab, #fefefe 10%, transparent);
+
+  /* ---- the signal: the vault ice (gelo #7dd8ff) — the app identity,
+     brand mark / content cta / content voice only; the chrome never wears it ---- */
+  --color-signal: #7dd8ff;
+  --color-signal-strong: #b3e7ff;
+  --color-signal-deep: #3f97bd;
+  --color-signal-ink: #072330;
+
+  /* ---- accents: the WINDOWS system accent governs focus/chrome (the win10
+     blend carries the light theme #0067c0); the fluent close red ---- */
+  --color-win: #4cc2ff;
+  --color-win-ink: #0a0a0a;
+  --color-close: #e81123;
+  --color-close-deep: #8b0a14;
+
+  /* ---- status: semantic accents for dots and labels, never big fills ---- */
+  --color-ok: #7fd1a8;
+  --color-warn: #e2c26a;
+  --color-err: #f08a7a;
+  --color-info: #b9c2d0;
+
+  /* ---- focus: the chrome focus ink — the family law answers the windows accent ---- */
+  --color-focus: #4cc2ff;
+
+  /* ---- radius law: 4/6/8/10(base .625rem)/12/16/24 — inner ≤ outer ---- */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
   --radius-2xl: 16px;
   --radius-3xl: 24px;
-  --win-radius: 8px;
-  --win-radius-ctl: 4px;
+
+  /* ---- the Fluent shadow ladder ---- */
+  --shadow-window: 0 32px 64px rgb(0 0 0 / 24%), 0 0 8px rgb(0 0 0 / 20%);
+  --shadow-flyout: 0 4px 8px rgb(0 0 0 / 14%), 0 0 2px rgb(0 0 0 / 12%);
+  --shadow-lt: 0 1px 1px rgb(0 0 0 / 25%);
+
+  /* ---- motion curves: window 250ms, micro 150ms, entry decelerate, exit
+     accelerate, the fluent menu curve, the family backOut spring and the
+     intro leave curve ---- */
+  --ease-window: cubic-bezier(0.85, 0.14, 0.14, 0.85);
+  --ease-micro: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-entry: cubic-bezier(0.1, 0.9, 0.2, 1);
+  --ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
+  --ease-fluent: cubic-bezier(0.79, 0.14, 0.15, 0.86);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-leave: cubic-bezier(0.76, 0, 0.24, 1);
+
+  /* ---- the scale floors: nothing ever grows from zero — the window opens
+        from the Windows .95 pose ---- */
+  --floor-modal: 0.95;
+  --floor-menu: 0.97;
+  --floor-tooltip: 0.98;
+
+  /* ---- animation tokens: the named entrances the pages compose ---- */
+  --animate-window-in: windowIn 250ms var(--ease-window) backwards;
+  --animate-popintro: dtPopIntro 800ms ease-in-out backwards;
+  --animate-window-out: windowOut 250ms var(--ease-window) forwards;
+  --animate-menu-in: dskMenuIn 150ms var(--ease-micro) backwards;
+  --animate-flyout-in: snapFlyoutIn 250ms var(--ease-fluent) backwards;
+
+  /* ---- the acrylic blur bed (chrome-only glass; work surfaces stay solid) ---- */
+  --blur-chrome: 20px;
+}
+
+/* the physics keyframes behind the animate tokens (top-level so the
+   hand-written rules below can reference them too) */
+@keyframes windowIn {
+  from { opacity: 0; transform: scale(var(--floor-modal, 0.95)); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes windowOut {
+  to { opacity: 0; transform: scale(var(--floor-modal, 0.95)); }
+}
+@keyframes dtPopIntro {
+  0% { opacity: 0; transform: scale(0); }
+  40% { opacity: 1; transform: scale(1.125); }
+  70% { transform: scale(0.725); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes dskMenuIn {
+  from { opacity: 0; transform: scale(var(--floor-menu, 0.97)); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes snapFlyoutIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- runtime tokens (not utilities): the materials, the motion durations
+     and the z bands the hand-written css composes ---- */
+:root {
+  --dur-1: 150ms;
+  --dur-2: 250ms;
+  --dur-3: 300ms;
+  --dur-enter: 640ms;
+  --dur-press: 100ms;
+  --sol-micro: 150ms;
+  --t-fast: var(--sol-micro);
+
+  --focus-ring: 2px solid var(--color-focus);
+
+  /* window-level material: the mica wall, the acrylic beds and the
+     feTurbulence grain (.86, 2 octaves, 6%, soft-light, 140px — zero files) */
+  --mica: #202020 radial-gradient(#1a1f35 25%, #202020 100%) no-repeat fixed;
+  --mica-local: #202020 radial-gradient(#1a1f35 25%, #202020 100%) no-repeat;
+  --acrylic: rgb(32 34 38 / 78%);
+  --acrylic-strong: rgb(43 45 50 / 88%);
+  --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23w)' opacity='0.06'/%3E%3C/svg%3E");
+  --scrollbar-thumb: rgb(255 255 255 / 45%);
+
+  /* z bands: atmosphere 0 · content 10 · float 20 · bar 50 · menu 60 ·
+     overlay 100 · modal 200 · toast 300 · tooltip 400 */
+  --z-atmosphere: 0;
+  --z-content: 10;
+  --z-float: 20;
+  --z-bar: 50;
+  --z-modal: 200;
+  --z-toast: 300;
+
+  color: var(--color-ink);
+  background: var(--color-canvas);
+  font-family: var(--font-sans);
+  color-scheme: dark;
+  font-size: 16px;
+}
+
+/* ---- short names + the legacy aliases: every name the hand-written css and
+     the inline styles resolve, mapped onto the @theme source (the light flip
+     follows automatically) ---- */
+:root {
+  --canvas: var(--color-canvas);
+  --canvas-deep: var(--color-deep);
+  --s0: var(--color-s0);
+  --s1: var(--color-s1);
+  --s2: var(--color-s2);
+  --s3: var(--color-s3);
+  --s4: var(--color-s4);
+  --s5: var(--color-s5);
+  --s6: var(--color-s6);
+  --s7: var(--color-s7);
+  --ink: var(--color-ink);
+  --ink-2: var(--color-ink-2);
+  --ink-3: var(--color-ink-3);
+  --hairline: var(--color-hairline);
+  --hairline-strong: var(--color-hairline-strong);
+  --focus: var(--color-focus);
+  --ok: var(--color-ok);
+  --warn: var(--color-warn);
+  --err: var(--color-err);
+  --info: var(--color-info);
+  --win-hover: rgb(255 255 255 / 10%);
+  --win-active: rgb(255 255 255 / 12%);
+  --wash: var(--win-hover);
+  --wash-soft: rgb(255 255 255 / 5%);
+  --scroll: var(--scrollbar-thumb);
+
+  /* surfaces: the ladder aliases the pages quote */
+  --bg: var(--color-canvas);
+  --deep: var(--color-deep);
+  --surface-1: var(--color-s0);
+  --surface-2: var(--color-s1);
+  --surface-3: var(--color-s2);
+  --surface-4: var(--color-s3);
+  --surface-5: var(--color-s4);
+  --surface-6: var(--color-s5);
+  --surface-7: var(--color-s6);
+  --surface-8: var(--color-s7);
+  --sol-canvas: var(--color-canvas);
+  --sol-canvas-deep: var(--color-deep);
+  --sol-ink: var(--color-ink);
+  --sol-bg: var(--color-canvas);
+  --sol-bg-2: var(--color-s1);
+  --sol-text: var(--color-ink);
+  --sol-muted: var(--color-ink-2);
+  --sol-faint: var(--color-ink-3);
+  --sol-surface-1: var(--color-s0);
+  --sol-surface-2: var(--color-s1);
+  --sol-surface-3: var(--color-s2);
+  --sol-surface-4: var(--color-s3);
+  --sol-surface-5: var(--color-s4);
+  --sol-surface-6: var(--color-s5);
+  --sol-surface-7: var(--color-s6);
+  --sol-surface-8: var(--color-s7);
+  --line: var(--color-hairline);
+  --line-strong: var(--color-hairline-strong);
+  --sol-line: var(--color-hairline);
+  --sol-line-strong: var(--color-hairline-strong);
+  --sol-hairline: var(--color-hairline);
+  --sol-hairline-strong: var(--color-hairline-strong);
+
+  /* the gelo aliases: the app identity rides the signal slot */
+  --gelo-signal: var(--color-signal);
+  --gelo-tint: var(--color-signal-strong);
+  --gelo-soft: #e3f6ff;
+  --gelo-deep: var(--color-signal-deep);
+  --sol-primary: var(--color-signal);
+  --sol-primary-ink: var(--color-signal-ink);
+  --accent: var(--color-signal);
+  --accent-ink: var(--color-signal-ink);
+  --sol-accent: var(--color-signal);
+  --sol-accent-ink: var(--color-signal-ink);
+  --sol-signal: 125 216 255;
+  --sol-ember: #6cc4e4;
+  --sol-tangerine: var(--color-signal-strong);
+  --sol-gold: #e3f6ff;
+  --sol-success: var(--color-ok);
+  --sol-error: var(--color-err);
+  --sol-warning: var(--color-warn);
+  --sol-info: var(--color-info);
+  --sol-focus: var(--color-focus);
+  --win-accent: var(--color-win);
+  --win-accent-ink: var(--color-win-ink);
+  --win-accent-soft: color-mix(in srgb, var(--color-win) 16%, transparent);
+  --sol-panel: var(--wash-soft);
+  --sol-panel-strong: var(--wash);
+
+  /* radii: the law ladder plus the windows blend (window 8, controls 4) */
+  --sol-radius: 0.625rem;
+  --win-radius: var(--radius-md);
+  --win-radius-ctl: var(--radius-xs);
+  --win-titlebar-h: 48px;
+
   /* the 4px spacing ladder */
   --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
   --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px;
-  /* motion — micro 150ms · windows/panels 250ms · spring 300ms · enter 640ms · press 100ms */
-  --dur-1: 150ms; --dur-2: 250ms; --dur-3: 300ms; --dur-enter: 640ms; --dur-press: 100ms;
-  --sol-micro: 150ms;
-  --t-fast: var(--sol-micro);
-  --sol-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-out: var(--sol-ease-out);
-  --ease: var(--sol-ease-out);
-  --ease-window: cubic-bezier(0.85, 0.14, 0.14, 0.85);
-  --ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
-  --ease-leave: cubic-bezier(0.76, 0, 0.24, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --win-ease-entry: cubic-bezier(0.1, 0.9, 0.2, 1);
+
+  /* easings: the aliases track the @theme curves (micro, windows, fluent) */
+  --sol-ease-out: var(--ease-micro);
+  --ease-out: var(--ease-micro);
+  --ease: var(--ease-micro);
+  --win-ease-entry: var(--ease-entry);
   --win-ease-exit: var(--ease-exit);
   --win-ease-window: var(--ease-window);
-  /* type — the trylle triad: Inter Variable rides every surface, Geist Mono
-     rides micro-labels and every number (tabular-nums) */
-  --sol-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --sol-mono: "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, "SF Mono", Menlo, monospace;
-  --font-sans: var(--sol-sans);
-  --font-mono: var(--sol-mono);
+
+  /* type: the display ruler + the mono labels */
+  --sol-sans: var(--font-sans);
+  --sol-mono: var(--font-mono);
   --sol-track-display: -0.02em;
   --sol-track-label: 0.14em;
   --sol-text-h1: clamp(2.25rem, 5vw, 3.75rem);
   --sol-text-h2: clamp(1.65rem, 3vw, 2rem);
   --sol-text-h3: clamp(1.3rem, 2vw, 1.5rem);
+
   /* the trylle shadow ladder: the 1px ring + the doubling drop layers,
      levels 3+ carry the inset highlight; the drop alphas follow trylle */
   --sol-drop: rgb(0 0 0 / 18%);
@@ -105,105 +332,145 @@
   --shadow-8: inset 0 1px 0 var(--sol-hi), 0 0 0 1px rgb(0 0 0 / 22%), 0 1px 1px -0.5px var(--sol-drop),
     0 3px 3px -1.5px var(--sol-drop), 0 6px 6px -3px var(--sol-drop), 0 12px 12px -6px var(--sol-drop),
     0 24px 24px -12px var(--sol-drop), 0 48px 48px -24px var(--sol-drop), 0 96px 96px -48px var(--sol-drop);
-  /* the two fluent elevations (window + flyout) — floats stay flat windows */
-  --shadow-window: 0 32px 64px rgb(0 0 0 / 24%), 0 0 8px rgb(0 0 0 / 20%);
-  --shadow-flyout: 0 4px 8px rgb(0 0 0 / 14%), 0 0 2px rgb(0 0 0 / 12%);
+  --sol-shadow-1: var(--shadow-1);
+  --sol-shadow-2: var(--shadow-2);
+  --sol-shadow-3: var(--shadow-3);
+  --sol-shadow-window: var(--shadow-window);
+  --sol-shadow-flyout: var(--shadow-flyout);
+  --win-shadow-window: var(--shadow-window);
+  --win-shadow-flyout: var(--shadow-flyout);
+
   /* the trylle tone stack of the buttons (the real site recipe): the inset
      highlight + the inset bloom + the 1px ring + the two drop levels */
   --sol-btn-inset: inset 0 1.2px 0 0 rgb(255 255 255 / 45%), inset 0 8px 14px -6px rgb(255 255 255 / 22%);
   --sol-btn-inset-hover: inset 0 1.2px 0 0 rgb(255 255 255 / 55%), inset 0 8px 14px -6px rgb(255 255 255 / 30%);
-  /* chrome material: the canvas, the feTurbulence grain, the acrylic floors */
-  --mica: #0a0a0b;
-  --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
-  --bar: rgb(23 23 23 / 78%); --panel: rgb(30 30 30 / 85%);
-  /* the tooltip acrylic of the windows pins */
+
+  /* chrome material: the taskbar/panel/tooltip acrylics at the windows law */
+  --bar: rgb(32 32 32 / 75%);
+  --panel: rgb(36 36 36 / 80%);
   --win-tip: rgb(43 43 43 / 88%);
-  /* z bands: atmosphere 0 · content 10 · float 20 · bar 50 · modal 200 · toast 300 */
-  --z-atmosphere: 0; --z-content: 10; --z-float: 20; --z-bar: 50; --z-modal: 200; --z-toast: 300;
-  /* the family aliases the pages and the platform quote — every one
-     resolves to a canonical token above */
-  --sol-bg: var(--bg); --sol-bg-2: var(--surface-2); --sol-text: var(--ink); --sol-muted: var(--ink-2); --sol-faint: var(--ink-3);
-  --sol-panel: var(--wash-soft); --sol-panel-strong: var(--wash);
-  --sol-line: var(--line); --sol-line-strong: var(--line-strong); --sol-hairline: var(--line); --sol-hairline-strong: var(--line-strong);
-  --sol-focus: var(--focus);
-  --sol-accent: var(--accent); --sol-accent-ink: var(--accent-ink);
-  --sol-surface-1: var(--surface-1); --sol-surface-2: var(--surface-2); --sol-surface-3: var(--surface-3); --sol-surface-4: var(--surface-4);
-  --sol-surface-5: var(--surface-5); --sol-surface-6: var(--surface-6); --sol-surface-7: var(--surface-7); --sol-surface-8: var(--surface-8);
-  --sol-shadow-window: var(--shadow-window); --sol-shadow-flyout: var(--shadow-flyout);
-  --sol-shadow-1: var(--shadow-1); --sol-shadow-2: var(--shadow-2); --sol-shadow-3: var(--shadow-3);
-  --win-noise: var(--noise); --win-mica: var(--mica);
-  --win-bar: var(--bar); --win-panel: var(--panel); --win-wash: var(--wash); --win-page-wash: var(--wash-soft); --win-scroll: var(--scroll);
-  --win-shadow-window: var(--shadow-window); --win-shadow-flyout: var(--shadow-flyout);
-  --win-accent-soft: color-mix(in srgb, var(--win-accent) 16%, transparent);
-  --win-titlebar-h: 48px;
-  font-size: 16px;
-  color-scheme: dark;
+  --win-noise: var(--noise);
+  --win-mica: var(--mica);
+  --win-mica-local: var(--mica-local);
+  --win-bar: var(--bar);
+  --win-panel: var(--panel);
+  --win-wash: var(--win-hover);
+  --win-page-wash: var(--wash-soft);
+  --win-scroll: var(--scrollbar-thumb);
+  --r-pill: 100px;
 }
 
-/* the light theme: the SAME trylle ladder inverted (the site's own light
-   rungs), the gelo steps down to the deep pole, the windows accent follows
+/* the light theme: one flip on the same ladder — the devthink daylight
+   values, the gelo steps down to the deep pole, the windows accent follows
    the windows light law (#0067c0) */
 [data-theme="light"] {
-  --deep: #e4e4e7;
-  --bg: #f4f4f5;
-  --surface-1: #f4f4f5; --surface-2: #fafafa; --surface-3: #fcfcfc; --surface-4: rgb(255 255 255);
-  --surface-5: #ececee; --surface-6: #e4e4e7; --surface-7: #dcdce0; --surface-8: #d4d4d8;
-  --ink: #131316; --ink-2: #52525b; --ink-3: #71717a;
-  --sol-primary: #2f6b7e;
-  --sol-primary-ink: #f7fcfd;
-  --accent: var(--sol-primary); --accent-ink: var(--sol-primary-ink);
-  --win-accent: #0067c0; --win-accent-ink: #f4faff;
+  --color-canvas: #f3f3f3;
+  --color-deep: #ebebeb;
+  --color-s0: #f6f6f6;
+  --color-s1: #fafafa;
+  --color-s2: #fcfcfc;
+  --color-s3: #fefefe;
+  --color-s4: #fefefe;
+  --color-s5: #f1f1f2;
+  --color-s6: #e5e5e7;
+  --color-s7: #d6d6d9;
+  --color-ink: #1a1a1a;
+  --color-ink-2: #3c3c3c;
+  --color-ink-3: #555555;
+  --color-hairline: color-mix(in oklab, #1a1a1a 8%, transparent);
+  --color-hairline-strong: color-mix(in oklab, #1a1a1a 16%, transparent);
+  --color-win: #0067c0;
+  --color-win-ink: #f4faff;
+  --color-focus: #0067c0;
+  --color-ok: #1e7f4f;
+  --color-warn: #9a6b00;
+  --color-err: #c23b2c;
+  --color-info: #565e6e;
+  --color-signal: #2f6b7e;
+  --color-signal-strong: #8fc9dd;
+  --color-signal-deep: #275968;
+  --color-signal-ink: #f7fcfd;
+  --shadow-window: 0 32px 64px rgb(0 0 0 / 14%), 0 0 8px rgb(0 0 0 / 8%);
+  --shadow-flyout: 0 4px 8px rgb(0 0 0 / 10%), 0 0 2px rgb(0 0 0 / 8%);
+  --shadow-lt: 0 1px 1px rgb(0 0 0 / 12%);
+  --mica: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat fixed;
+  --mica-local: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat;
+  --acrylic: rgb(243 243 244 / 82%);
+  --acrylic-strong: rgb(248 248 249 / 92%);
+  --scrollbar-thumb: rgb(0 0 0 / 35%);
+  --win-hover: rgb(0 0 0 / 6%);
+  --win-active: rgb(0 0 0 / 8%);
+  --win-accent: #0067c0;
+  --win-accent-ink: #f4faff;
   --sol-signal: 47 107 126;
-  --sol-ember: #28606f; --sol-tangerine: #1f505c; --sol-gold: #17414c;
-  --sol-success: #15803d; --sol-error: #be123c; --sol-warning: #a16207; --sol-info: #0e7490;
-  --wash: rgb(0 0 0 / 8%); --wash-soft: rgb(0 0 0 / 4%); --scroll: rgb(0 0 0 / 35%);
+  --sol-ember: #28606f;
+  --sol-tangerine: #1f505c;
+  --sol-gold: #17414c;
   --sol-drop: rgb(0 0 0 / 10%);
   --sol-hi: rgb(255 255 255 / 60%);
-  --shadow-1: 0 0 0 1px var(--line), 0 1px 1px -0.5px var(--sol-drop);
-  --shadow-2: 0 0 0 1px var(--line), 0 1px 1px -0.5px var(--sol-drop), 0 3px 3px -1.5px var(--sol-drop),
-    0 6px 6px -3px var(--sol-drop);
-  --shadow-3: inset 0 1px 0 var(--sol-hi), 0 0 0 1px var(--line), 0 1px 1px -0.5px var(--sol-drop),
-    0 3px 3px -1.5px var(--sol-drop), 0 6px 6px -3px var(--sol-drop), 0 12px 12px -6px var(--sol-drop);
-  --shadow-window: 0 24px 48px rgb(0 0 0 / 14%), 0 0 6px rgb(0 0 0 / 8%);
-  --shadow-flyout: 0 4px 8px rgb(0 0 0 / 10%), 0 0 2px rgb(0 0 0 / 6%);
-  --mica: #f4f4f5;
-  --panel: rgb(252 252 252 / 88%);
+  --panel: rgb(242 242 242 / 90%);
   /* the chrome acrylics stay the dark graphite in both themes — the windows
      taskbar law (the light theme never lights the bar) */
-  color-scheme: light;
 }
 
-/* ---------- 2. base ---------- */
-*, *::before, *::after { box-sizing: border-box; }
+/* ---------- 2. base — the devthink base law (the preflight compensation
+   rides here: Tailwind's reset zeroes the UA heading scale) ---------- */
+* { box-sizing: border-box; }
+
+html, body, #root { min-width: 320px; min-height: 100%; margin: 0; }
+
 html { overscroll-behavior: none; scroll-behavior: smooth; }
+
 body {
-  margin: 0; min-height: 100dvh; -webkit-font-smoothing: antialiased;
-  color: var(--ink); font-family: var(--font-sans); font-size: 13px; font-weight: 450; line-height: 1.6;
-  background:
-    radial-gradient(1100px 620px at 74% -12%, color-mix(in srgb, var(--accent) 5%, transparent), transparent 62%),
-    var(--mica);
+  margin: 0; -webkit-font-smoothing: antialiased;
+  color: var(--color-ink); font-family: var(--font-sans); font-size: 13px; font-weight: 450; line-height: 1.6;
+  background: var(--mica);
 }
 main { display: block; }
 a { color: inherit; text-decoration: none; }
-a:hover { color: var(--win-accent); }
-h1, h2, h3 { margin: 0 0 0.5em; font-family: var(--font-sans); font-weight: 650; line-height: 1.1; letter-spacing: var(--sol-track-display); text-wrap: balance; }
-p { margin: 0 0 1em; color: var(--ink-2); text-wrap: pretty; }
-strong { color: var(--ink); font-weight: 650; }
+a:hover { color: var(--color-win); }
+h1, h2, h3 { margin: 0 0 0.5em; font-family: var(--font-display); font-weight: 650; line-height: 1.1; letter-spacing: var(--sol-track-display); text-wrap: balance; }
+h1 { font-size: 2em; }
+h2 { font-size: 1.5em; }
+h3 { font-size: 1.17em; }
+p { margin: 0 0 1em; color: var(--color-ink-2); text-wrap: pretty; }
+strong { color: var(--color-ink); font-weight: 650; }
 img, svg, video { display: block; max-width: 100%; }
 button, input, select, textarea { font: inherit; color: inherit; }
-button { cursor: pointer; }
-kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--surface-3); border: 1px solid var(--line); border-radius: var(--win-radius-ctl); padding: 1px 6px; font-variant-numeric: tabular-nums; }
+
+button { border: 0; }
+
+button:not(:disabled), a[href] { cursor: pointer; }
+
+kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--color-s2); border: 1px solid var(--color-hairline); border-radius: var(--radius-xs); padding: 1px 6px; font-variant-numeric: tabular-nums; }
 [hidden] { display: none !important; }
-::selection { background: color-mix(in srgb, var(--win-accent) 32%, transparent); color: var(--ink); }
-:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+
+::selection { background: color-mix(in srgb, var(--color-win) 38%, transparent); color: var(--color-ink); }
+
 /* the win11 scrollbar: invisible until the surface is hovered — the 4px thumb
-   breathes to 6px under the pointer; themed from the ink, never inherited */
+   breathes to 6px under the pointer; themed, never the native blue */
 * { scrollbar-width: thin; scrollbar-color: transparent transparent; }
-*::-webkit-scrollbar { width: 10px; height: 10px; }
-*::-webkit-scrollbar-thumb { background-color: transparent; border: 3px solid transparent; border-radius: 8px; background-clip: padding-box; }
-*:hover { scrollbar-color: var(--scroll) transparent; }
-*:hover::-webkit-scrollbar-thumb { background-color: var(--scroll); }
-*::-webkit-scrollbar-thumb:hover { border-width: 2px; }
+
+*:hover, *:focus-within { scrollbar-color: var(--scrollbar-thumb) transparent; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; background: transparent; }
+
+::-webkit-scrollbar-thumb {
+  visibility: hidden;
+  background: var(--scrollbar-thumb);
+  background-clip: padding-box;
+  border: 3px solid transparent;
+  border-radius: var(--r-pill, 100px);
+}
+
+*:hover::-webkit-scrollbar-thumb, *:focus-within::-webkit-scrollbar-thumb { visibility: visible; }
+
+::-webkit-scrollbar-thumb:hover { border-width: 2px; }
+
+::-webkit-scrollbar-track, ::-webkit-scrollbar-corner { background: transparent; }
 
 /* ---------- 3. primitives ---------- */
 /* the stage containers: the landing column and the platform gutter */
@@ -436,7 +703,7 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 /* the rail: the pages of the application as the windows pins — 216px on
    the page wash, the hover wash on 0.2s ease, the press at scale .7 on
    100ms ease-in-out, the mount pops the pins in (dtPopIntro) and the 3px
-   ladder marks the active entry in the identity gelo */
+   ladder marks the active entry on the windows accent — chrome, not signal */
 .win-rail {
   display: flex;
   flex-direction: column;
@@ -474,7 +741,8 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .win-rail__link:focus-visible { outline: 2px solid var(--win-accent); outline-offset: -2px; }
 .win-rail__link[aria-current="page"] { background-color: var(--wash); color: var(--ink); }
 /* the ladder indicator: the 3px bar rides transform only — scaleX 0 closed →
-   0.5 hover (#858585) → 1 active in the identity gelo, 0.2s ease-in-out */
+   0.5 hover (#858585) → 1 active on the windows accent (the ladder is
+   chrome, the signal never wears it), 0.2s ease-in-out */
 .win-rail__link::after {
   content: "";
   position: absolute;
@@ -490,7 +758,7 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
 .win-rail__link:hover::after, .win-rail__link:focus-visible::after { opacity: 1; transform: scaleX(0.5); }
-.win-rail__link[aria-current="page"]::after { opacity: 1; transform: scaleX(1); background: var(--accent); }
+.win-rail__link[aria-current="page"]::after { opacity: 1; transform: scaleX(1); background: var(--color-win); }
 .win-rail__label {
   overflow: hidden;
   font: 500 13px/1 var(--font-sans);
@@ -1113,7 +1381,7 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   font: 600 15px/1.3 var(--font-sans);
   font-variant-numeric: tabular-nums;
 }
-.vo-summary__channels, .vr-summary__channels { display: flex; flex-direction: column; gap: 4px; }
+.vo-summary__channels { display: flex; flex-direction: column; gap: 4px; }
 .vo-summary__big { font: 500 12px/1.5 var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .vo-summary__bigsize { margin-left: 8px; color: var(--accent); font-weight: 600; }
 
@@ -1380,9 +1648,7 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 @keyframes vtRise { from { opacity: 0; transform: translateY(14px); } }
 @keyframes vtPop { 0% { opacity: 0.4; transform: scale(0.965); } 60% { transform: scale(1.008); } 100% { opacity: 1; transform: scale(1); } }
 @keyframes vtDialTurn { to { transform: rotate(1turn); } }
-/* dtPopIntro — the pin entrance of the windows recipe: 0 → 1.125 (40%) →
-   0.725 (70%) → 1 (the bounce) */
-@keyframes dtPopIntro { 0% { opacity: 0; transform: scale(0); } 40% { opacity: 1; transform: scale(1.125); } 70% { transform: scale(0.725); } 100% { opacity: 1; transform: scale(1); } }
+/* dtPopIntro now rides the foundation keyframe (the @theme physics block) */
 
 /* the orchestrated entrance of the landing: copy 70ms steps, door and entry
    ride the wave, the dial turns one slow revolution every 16s (transform

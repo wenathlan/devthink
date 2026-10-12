@@ -3,15 +3,16 @@
 //   pnpm test
 // The file reads the shipped sources (stylesheet, entry face, brand mark,
 // theme anchor, page anchors, prisma schema, db layer) and pins the reform:
-// the trylle foundation (canvas #0a0a0b over the 8-surface ladder, Inter
-// Variable + Geist Mono, the 13px/450 body, the trylle shadow ladder), the
-// windows hands (press .7 pins, dtPopIntro, the fluent window curve, the red
-// close, the inactive grayscale law, the eight resize handles, the win11
-// scrollbar), the two-accent contract (the getry violet identity beside the
-// windows accent), the entry-flow law (intro → onboarding → the platform
-// over the catalogued seen state) and the banned list (no pill, no
-// all-properties transition, no scale(0) outside the pin law, no banned hue,
-// no build ghost). The stylesheet is read as text — no browser, no DOM.
+// the devthink foundation (mica #202020 over the 8-step ladder #242424→
+// #494949, Inter Variable + Geist Mono, the 13px/450 body, the trylle shadow
+// ladder), the windows hands (press .7 pins, dtPopIntro, the fluent window
+// curve, the red close, the inactive grayscale law, the eight resize
+// handles, the win11 scrollbar), the two-accent contract (the getry violet
+// identity beside the windows accent), the entry-flow law (intro →
+// onboarding → the platform over the catalogued seen state) and the banned
+// list (no pill, no all-properties transition, no scale(0) outside the pin
+// law, no banned hue, no build ghost). The stylesheet is read as text — no
+// browser, no DOM.
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
@@ -48,12 +49,16 @@ function withoutPinLaw(source: string): string {
   return rules(source).replace(/@keyframes dtPopIntro \{(?:[^{}]|\{[^}]*\})*\}/g, "");
 }
 
-describe("design contract — the trylle foundation", () => {
-  it("keeps the trylle canvas and the surface ladder", () => {
-    expect(CSS).toContain("--sol-canvas: #0a0a0b");
-    expect(CSS).toContain("--sol-canvas-deep: #060607");
-    expect(CSS).toContain("--surface-1: #171717");
-    expect(CSS).toContain("--surface-8: #484848");
+describe("design contract — the devthink foundation", () => {
+  it("keeps the mica canvas and the surface ladder", () => {
+    expect(CSS).toContain("--sol-canvas: var(--color-canvas)");
+    expect(CSS).toContain("--color-canvas: #202020");
+    expect(CSS).toContain("--sol-canvas-deep: var(--color-deep)");
+    expect(CSS).toContain("--surface-1: var(--color-s0)");
+    expect(CSS).toContain("--color-s0: #242424");
+    expect(CSS).toContain("--surface-8: var(--color-s7)");
+    expect(CSS).toContain("--color-s7: #494949");
+    expect(CSS).toContain("--mica: #202020 radial-gradient(#1a1f35 25%, #202020 100%) no-repeat fixed");
   });
 
   it("keeps the trylle type stacks (Inter Variable · Geist Mono) and the 13px/450 body", () => {
@@ -67,7 +72,7 @@ describe("design contract — the trylle foundation", () => {
     expect(ENTRY).toMatch(/Geist\+Mono/);
   });
 
-  it("keeps the trylle shadow ladder and the fluent window float", () => {
+  it("keeps the devthink shadow ladder and the fluent window float", () => {
     expect(CSS).toContain("0 96px 96px -48px");
     expect(CSS).toContain("--shadow-window: 0 32px 64px rgb(0 0 0 / 24%), 0 0 8px rgb(0 0 0 / 20%)");
     expect(CSS).toContain("--ease-window: cubic-bezier(0.85, 0.14, 0.14, 0.85)");
@@ -81,10 +86,11 @@ describe("design contract — the trylle foundation", () => {
   });
 
   it("keeps the two-accent contract (the getry violet identity beside the windows accent)", () => {
-    expect(CSS).toContain("--violet-500: #9a7ce0");
+    expect(CSS).toContain("--violet-500: #8b5cf6");
     expect(CSS).toContain("--accent: var(--violet-500)");
-    expect(CSS).toContain("--win-accent: #4cc2ff");
-    expect(CSS).toContain("--focus: var(--win-accent)");
+    expect(CSS).toContain("--win-accent: var(--color-win)");
+    expect(CSS).toContain("--color-win: #4cc2ff");
+    expect(CSS).toContain("--focus: var(--color-win)");
     expect(MARK).toContain("#8b5cf6");
   });
 

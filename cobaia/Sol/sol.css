@@ -1,82 +1,227 @@
+@import "tailwindcss";
+
 /* ==========================================================================
-   COBAIA THEME SOL — the single stylesheet of the site (the reform wave)
-   The trylle foundation (canvas #0a0a0b, the 8-surface ladder #171717→
-   #484848, hairlines at ink 5%/10%, the ring+doubling shadows, Inter
-   Variable 13px/450, the .625rem radius, 150ms micro on the trylle out
-   curve) wearing the WINDOWS hands: the press bounce (scale .7, 100ms),
-   the dtPopIntro mount pop on the nav pins, the 3px ladder indicator, the
-   focus underline on the Windows accent, the Fluent window curve on the
-   flow cards, the caption close, the Win11 scrollbar. The amber sun
-   #f59e0b stays the identity of the site — brand mark, content CTAs and
-   active indicators only; focus and chrome answer #4cc2ff. cobaia mounts
-   the entry flow of the family: the intro splash, the onboarding window
-   walk, then the content under the shell. Sections: tokens, base, chrome,
-   page, components, flow (intro + onboarding), brand mark, responsive,
-   keyframes, guards (reduced-motion hard-stop last). One stylesheet:
-   every existing class keeps its name, everything else is value.
+   COBAIA THEME SOL — the single stylesheet of the site (the 8-i foundation
+   pass) rebuilt on the DEVTHINK FOUNDATION: the 8-d rewrite is the family
+   source of truth and this file carries the SAME exact values, wearing the
+   WINDOWS hands on top: the press bounce (scale .7, 100ms), the dtPopIntro
+   mount pop on the nav pins, the 3px ladder indicator, the focus underline
+   on the Windows accent, the Fluent window curve on the flow cards, the
+   caption close, the Win11 scrollbar. Sections: foundation · tokens · light
+   face · base · chrome · page · components · flow (intro + onboarding) ·
+   brand mark · responsive · keyframes · guards (reduced-motion hard-stop
+   last).
+   doctrine: mica #202020 radial-gradient(#1a1f35 25%, #202020 100%) fixed ·
+   the 8-step surface ladder #242424→#494949 · hairlines ink 5%/10% · the
+   family lime #c8f542 as the app identity ONLY (brand mark) — focus and
+   chrome answer the windows accent #4cc2ff (light #0067c0) · close
+   rgb(232 17 35) · body 13px weight 450 · Inter Variable everywhere, Geist
+   Mono on labels and numbers · H1 clamp(2.25rem,5vw,3.75rem) tracking
+   -0.02em · radii .625rem law (window 8, controls 4) · micro 150ms
+   cubic-bezier(0.22,1,0.36,1) · windows 250ms cubic-bezier(0.85,0.14,0.14,
+   0.85) · popintro 800ms · press scale(.7) 100ms · linear shadows (ring +
+   doubling layers) with the flat fluent float for windows · grain
+   feTurbulence .86 / 2 octaves / 6% / soft-light / 140px · no pills · no
+   all-properties transitions · no glow · no scale-from-zero except the
+   windows pin law · scrollbar invisible until hover · selection
+   rgb(76 194 255/38%) · reduced-motion hard stop last. The @theme block
+   mirrors the canonical :root tokens for the Tailwind utility layer.
    ========================================================================== */
 
-/* ---------- 1. TOKENS — the trylle foundation with the windows hands ---------- */
+/* the light-theme variant: the theme flips on the html[data-theme] class,
+   not on the OS preference — components use light: utilities */
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+/* hover-or-focus-visible: the compound state the chrome answers everywhere */
+@custom-variant hcf (&:is(:hover, :focus-visible));
+
+/* ==========================================================================
+   0. TOKEN FOUNDATION — the one source of truth (the devthink @theme)
+   ========================================================================== */
+@theme {
+  /* ---- type: the trylle ruler ---- */
+  --font-display: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", "Inter", "Segoe UI Variable Text", "Segoe UI", "Selawik",
+    ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, SFMono-Regular,
+    Menlo, monospace;
+
+  /* ---- floors and the 8-step surface ladder ---- */
+  --color-canvas: #202020;
+  --color-deep: #191919;
+  --color-s0: #242424;
+  --color-s1: #2b2b2b;
+  --color-s2: #2c2c2c;
+  --color-s3: #323232;
+  --color-s4: #373737;
+  --color-s5: #3d3d3d;
+  --color-s6: #434343;
+  --color-s7: #494949;
+
+  /* ---- the ink ladder and the hairlines ---- */
+  --color-ink: #fafafa;
+  --color-ink-2: #c3c3c3;
+  --color-ink-3: #999999;
+  --color-hairline: color-mix(in oklab, #fefefe 5%, transparent);
+  --color-hairline-strong: color-mix(in oklab, #fefefe 10%, transparent);
+
+  /* ---- the cobaia signal: the family lime rides the brand mark only —
+     never focus, never the chrome ---- */
+  --color-signal: #c8f542;
+  --color-signal-ink: #141803;
+
+  /* ---- the WINDOWS accents (focus + chrome; the close red) ---- */
+  --color-win: #4cc2ff;
+  --color-win-ink: #0a0a0a;
+  --color-close: #e81123;
+  --color-close-deep: #8b0a14;
+
+  /* ---- status: semantic accents for dots and labels ---- */
+  --color-ok: #7fd1a8;
+  --color-warn: #e2c26a;
+  --color-err: #f08a7a;
+  --color-info: #b9c2d0;
+
+  /* ---- focus rides the WINDOWS accent (the family law) ---- */
+  --color-focus: var(--color-win);
+
+  /* ---- radius law: 4/6/8/10(base)/12/16/24 — inner ≤ outer ---- */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
+
+  /* ---- the Fluent shadow ladder ---- */
+  --shadow-window: 0 32px 64px rgb(0 0 0 / 24%), 0 0 8px rgb(0 0 0 / 20%);
+  --shadow-flyout: 0 4px 8px rgb(0 0 0 / 14%), 0 0 2px rgb(0 0 0 / 12%);
+  --shadow-lt: 0 1px 1px rgb(0 0 0 / 25%);
+
+  /* ---- motion curves ---- */
+  --ease-window: cubic-bezier(0.85, 0.14, 0.14, 0.85);
+  --ease-micro: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-entry: cubic-bezier(0.1, 0.9, 0.2, 1);
+  --ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
+  --ease-fluent: cubic-bezier(0.79, 0.14, 0.15, 0.86);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ---- the scale floors: nothing ever grows from zero ---- */
+  --floor-modal: 0.95;
+  --floor-menu: 0.97;
+  --floor-tooltip: 0.98;
+
+  /* ---- animation tokens mapped to the keyframes this file owns ---- */
+  --animate-window-in: winOpen 250ms var(--ease-window) backwards;
+  --animate-popintro: dtPopIntro 800ms ease-in-out backwards;
+
+  /* ---- the acrylic blur bed ---- */
+  --blur-chrome: 20px;
+}
+
+/* ---------- 1. TOKENS — the devthink foundation with the windows hands ------ */
 :root {
-  /* the trylle canvas and the 8 surface rungs (elevation by color, never
-     by border): the real ladder of the ruler site */
-  --sol-canvas: #0a0a0b;
-  --sol-canvas-deep: #060607;
-  --sol-surface-1: #171717;
-  --sol-surface-2: #1e1e1e;
-  --sol-surface-3: #252525;
-  --sol-surface-4: #2c2c2c;
-  --sol-surface-5: #333333;
-  --sol-surface-6: #3a3a3a;
-  --sol-surface-7: #414141;
-  --sol-surface-8: #484848; /* the hover pole */
+  /* the doctrine tokens as plain literals — the zero-build static face
+     renders these without the tailwind plugin; the @theme above mirrors
+     them for the utility layer */
+  --color-canvas: #202020;
+  --color-deep: #191919;
+  --color-s0: #242424;
+  --color-s1: #2b2b2b;
+  --color-s2: #2c2c2c;
+  --color-s3: #323232;
+  --color-s4: #373737;
+  --color-s5: #3d3d3d;
+  --color-s6: #434343;
+  --color-s7: #494949;
+  --color-ink: #fafafa;
+  --color-ink-2: #c3c3c3;
+  --color-ink-3: #999999;
+  --color-hairline: color-mix(in oklab, #fefefe 5%, transparent);
+  --color-hairline-strong: color-mix(in oklab, #fefefe 10%, transparent);
+  --color-signal: #c8f542;
+  --color-signal-ink: #141803;
+  --color-win: #4cc2ff;
+  --color-win-ink: #0a0a0a;
+  --color-close: #e81123;
+  --color-close-deep: #8b0a14;
+  --color-ok: #7fd1a8;
+  --color-warn: #e2c26a;
+  --color-err: #f08a7a;
+  --color-info: #b9c2d0;
+  --color-focus: var(--color-win);
 
-  /* ink — primary / muted / faint, AA on the canvas */
-  --sol-ink: #fafafa;
-  --sol-muted: #a1a1aa;
-  --sol-faint: #71717a;
+  /* the canvas + the 8 surface rungs (elevation by color, never by border) */
+  --sol-canvas: var(--color-canvas);
+  --sol-canvas-deep: var(--color-deep);
+  --sol-surface-1: var(--color-s0);
+  --sol-surface-2: var(--color-s1);
+  --sol-surface-3: var(--color-s2);
+  --sol-surface-4: var(--color-s3);
+  --sol-surface-5: var(--color-s4);
+  --sol-surface-6: var(--color-s5);
+  --sol-surface-7: var(--color-s6);
+  --sol-surface-8: var(--color-s7); /* the hover pole */
 
-  /* hairlines mixed from the ink (5% / 10%) */
-  --sol-hairline: color-mix(in oklab, var(--sol-ink) 5%, transparent);
-  --sol-hairline-strong: color-mix(in oklab, var(--sol-ink) 10%, transparent);
+  /* ink — primary / muted / faint */
+  --sol-ink: var(--color-ink);
+  --sol-muted: var(--color-ink-2);
+  --sol-faint: var(--color-ink-3);
 
-  /* the linear shadows: the 1px ring plus doubling layers; level 3+ adds
-     the inset top light — and the two Fluent shadows for real windows */
-  --sol-shadow-1: 0 0 0 1px rgb(0 0 0 / 38%), 0 1px 1px -0.5px rgb(0 0 0 / 40%);
-  --sol-shadow-2: var(--sol-shadow-1), 0 3px 3px -1.5px rgb(0 0 0 / 38%);
-  --sol-shadow-3: var(--sol-shadow-2), inset 0 1px 0 rgb(255 255 255 / 4%), 0 6px 6px -3px rgb(0 0 0 / 36%);
-  --sol-shadow-4: var(--sol-shadow-3), 0 12px 12px -6px rgb(0 0 0 / 36%);
-  --sol-shadow-5: var(--sol-shadow-4), 0 24px 24px -12px rgb(0 0 0 / 42%);
-  --sol-shadow-6: var(--sol-shadow-5), 0 48px 48px -24px rgb(0 0 0 / 46%);
-  --sol-shadow-7: var(--sol-shadow-6), 0 96px 96px -48px rgb(0 0 0 / 50%);
+  /* hairlines (5% / 10% ink, re-mixed on the light face) */
+  --sol-hairline: var(--color-hairline);
+  --sol-hairline-strong: var(--color-hairline-strong);
+
+  /* the linear shadows: the 1px ring first, then the doubling layers; the
+     flat fluent shadows stay the window/flyout voice */
+  --sol-shadow-1: 0 0 0 1px var(--sol-hairline), 0 1px 1px -0.5px rgb(0 0 0 / 30%);
+  --sol-shadow-2: 0 0 0 1px var(--sol-hairline), 0 1px 1px -0.5px rgb(0 0 0 / 28%),
+    0 2px 4px -1px rgb(0 0 0 / 26%);
+  --sol-shadow-3: 0 0 0 1px var(--sol-hairline), 0 1px 1px -0.5px rgb(0 0 0 / 26%),
+    0 2px 4px -1px rgb(0 0 0 / 24%), 0 4px 8px -2px rgb(0 0 0 / 20%),
+    inset 0 1px 0 rgb(255 255 255 / 5%);
+  --sol-shadow-4: var(--sol-shadow-3), 0 8px 16px -4px rgb(0 0 0 / 18%);
+  --sol-shadow-5: var(--sol-shadow-4), 0 16px 32px -8px rgb(0 0 0 / 16%);
+  --sol-shadow-6: var(--sol-shadow-5), 0 32px 64px -16px rgb(0 0 0 / 14%);
+  --sol-shadow-7: var(--sol-shadow-6);
   --win-shadow-window: 0 32px 64px rgb(0 0 0 / 24%), 0 0 8px rgb(0 0 0 / 20%);
   --win-shadow-flyout: 0 4px 8px rgb(0 0 0 / 14%), 0 0 2px rgb(0 0 0 / 12%);
 
   /* typography — the trylle triad: Inter Variable rides every surface,
      Geist Mono Variable rides micro-labels and every number */
-  --sol-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --sol-mono: "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, "SF Mono", Menlo, monospace;
+  --sol-sans: "Inter Variable", "Inter", "Segoe UI Variable Text", "Segoe UI", "Selawik",
+    ui-sans-serif, system-ui, sans-serif;
+  --sol-mono: "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, SFMono-Regular,
+    Menlo, monospace;
   --sol-track-display: -0.02em;
   --sol-track-label: 0.14em;
   --sol-text-h1: clamp(2.25rem, 5vw, 3.75rem);
   --sol-text-h2: clamp(1.65rem, 3vw, 2rem);
   --sol-text-h3: clamp(1.3rem, 2vw, 1.5rem);
 
-  /* radius — the trylle base .625rem (±2/4px; 2xl 16, 3xl 24) beside the
+  /* radius — the doctrine law (base .625rem = --radius-lg) beside the
      windows blend: the window wears 8 (the 11), the controls wear 4 (the 10) */
-  --sol-radius: 0.625rem;
-  --sol-radius-sm: calc(var(--sol-radius) - 2px);
-  --sol-radius-lg: calc(var(--sol-radius) + 2px);
-  --sol-radius-xl: calc(var(--sol-radius) + 4px);
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
+  --sol-radius: var(--radius-lg);
+  --sol-radius-sm: var(--radius-md);
+  --sol-radius-lg: var(--radius-xl);
+  --sol-radius-xl: var(--radius-2xl);
   --sol-radius-2xl: 16px;
   --sol-radius-3xl: 24px;
-  --win-radius: 8px;
-  --win-radius-ctl: 4px;
+  --win-radius: var(--radius-md);
+  --win-radius-ctl: var(--radius-xs);
 
   /* motion — micro 150ms · windows/panels 250ms · press 100ms; the fluent
-     curves beside the trylle out curve and the akash spring/leave pair */
+     curves beside the doctrine out curve and the akash spring/leave pair */
   --sol-micro: 150ms;
-  --sol-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-micro: cubic-bezier(0.22, 1, 0.36, 1);
+  --sol-ease-out: var(--ease-micro);
   --win-ease-window: cubic-bezier(0.85, 0.14, 0.14, 0.85);
   --win-ease-entry: cubic-bezier(0.1, 0.9, 0.2, 1);
   --win-ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
@@ -84,27 +229,32 @@
   --win-ease-leave: cubic-bezier(0.76, 0, 0.24, 1);
   --win-dur-window: 250ms;
 
-  /* the amber sun — the ONE identity accent of the site (brand mark,
-     content CTAs, active indicators); the WINDOWS accent governs focus
-     and chrome */
-  --sol-accent: #f59e0b;
-  --sol-accent-deep: #b45309;
-  --sol-accent-ink: #1c1002;
-  --win-accent: #4cc2ff;
-  --win-accent-ink: #060607;
-  --sol-focus: var(--win-accent);
+  /* the family lime — the ONE identity accent of the site (the brand mark
+     only: cobaia wears the family signal #c8f542); the WINDOWS accent
+     governs focus and chrome */
+  --sol-accent: #c8f542;
+  --sol-accent-deep: #94be23;
+  --sol-accent-ink: #141803;
+  --win-accent: var(--color-win);
+  --win-accent-ink: var(--color-win-ink);
+  --sol-focus: var(--color-win);
 
   /* washes, the bar acrylic and the scrollbar thumb (never the native blue) */
   --wash: rgb(255 255 255 / 10%);
   --wash-soft: rgb(255 255 255 / 5%);
   --bar-acrylic: rgb(32 32 32 / 75%);
   --bar-hairline: rgb(0 0 0 / 55%);
-  --scroll: rgb(255 255 255 / 26%);
-  --scroll-hover: rgb(255 255 255 / 40%);
+  --scroll: rgb(255 255 255 / 45%);
+  --scroll-hover: rgb(255 255 255 / 55%);
 
   /* the windows grain: one data-uri turbulence, tile 140×140, drawn at
-     5% over the acrylic surfaces — zero image files */
-  --win-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+     6% over the acrylic surfaces (soft-light) — zero image files; beside
+     it the mica wall and the acrylic floors */
+  --win-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+  --mica: #202020 radial-gradient(#1a1f35 25%, #202020 100%) no-repeat fixed;
+  --mica-local: #202020 radial-gradient(#1a1f35 25%, #202020 100%) no-repeat;
+  --acrylic: rgb(32 34 38 / 78%);
+  --acrylic-strong: rgb(43 45 50 / 88%);
 
   /* the content measure and the z bands (documented) */
   --cb-maxw: 1060px;
@@ -117,6 +267,48 @@
   font-size: 16px;
 }
 
+/* the light face: the devthink daylight ladder — the tokens are ready for
+   the toggle even though cobaia ships dark-first today */
+[data-theme="light"] {
+  --color-canvas: #f3f3f3;
+  --color-deep: #ebebeb;
+  --color-s0: #f6f6f6;
+  --color-s1: #fafafa;
+  --color-s2: #fcfcfc;
+  --color-s3: #fefefe;
+  --color-s4: #fefefe;
+  --color-s5: #f1f1f2;
+  --color-s6: #e5e5e7;
+  --color-s7: #d6d6d9;
+  --color-ink: #1a1a1a;
+  --color-ink-2: #3c3c3c;
+  --color-ink-3: #555555;
+  --color-hairline: color-mix(in oklab, #1a1a1a 8%, transparent);
+  --color-hairline-strong: color-mix(in oklab, #1a1a1a 16%, transparent);
+  --color-signal: #557f12;
+  --color-signal-ink: #f7fdef;
+  --color-win: #0067c0;
+  --color-win-ink: #fefefe;
+  --color-ok: #1e7f4f;
+  --color-warn: #9a6b00;
+  --color-err: #c23b2c;
+  --color-info: #565e6e;
+  --sol-accent: var(--color-signal);
+  --sol-accent-deep: #3f5e0b;
+  --sol-accent-ink: var(--color-signal-ink);
+  --wash: rgb(0 0 0 / 8%);
+  --wash-soft: rgb(0 0 0 / 4%);
+  --bar-acrylic: rgb(243 243 243 / 85%);
+  --bar-hairline: rgb(0 0 0 / 10%);
+  --scroll: rgb(0 0 0 / 35%);
+  --scroll-hover: rgb(0 0 0 / 45%);
+  --mica: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat fixed;
+  --mica-local: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat;
+  --acrylic: rgb(243 243 244 / 82%);
+  --acrylic-strong: rgb(248 248 249 / 92%);
+  color-scheme: light;
+}
+
 /* ---------- 2. BASE — the trylle body on the windows controls ---------- */
 * {
   box-sizing: border-box;
@@ -127,7 +319,7 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--sol-canvas);
+  background: var(--mica);
   color: var(--sol-ink);
   font-family: var(--sol-sans);
   font-size: 13px;
@@ -171,7 +363,7 @@ strong {
   color: var(--sol-ink);
 }
 ::selection {
-  background: color-mix(in oklab, var(--win-accent) 32%, transparent);
+  background: color-mix(in srgb, var(--win-accent) 38%, transparent);
   color: var(--sol-ink);
 }
 :focus-visible {
@@ -199,7 +391,8 @@ code {
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
 }
-*:hover {
+*:hover,
+*:focus-within {
   scrollbar-color: var(--scroll) transparent;
 }
 ::-webkit-scrollbar {
@@ -215,10 +408,11 @@ code {
   background: transparent;
   background-clip: padding-box;
 }
-*:hover::-webkit-scrollbar-thumb {
+*:hover::-webkit-scrollbar-thumb,
+*:focus-within::-webkit-scrollbar-thumb {
   background-color: var(--scroll);
 }
-*:hover::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
   background-color: var(--scroll-hover);
   border-width: 2px;
 }
@@ -264,6 +458,7 @@ code {
   border-bottom: 1px solid var(--bar-hairline);
   background-color: var(--bar-acrylic);
   background-image: var(--win-noise);
+  background-blend-mode: soft-light;
   -webkit-backdrop-filter: saturate(3) blur(20px);
   backdrop-filter: saturate(3) blur(20px);
 }
@@ -517,8 +712,8 @@ code {
     inset 0 1.2px 0 0 rgb(255 255 255 / 45%),
     inset 0 8px 14px -6px rgb(255 255 255 / 22%),
     0 0 0 1px var(--sol-accent-deep),
-    0 1px 2px rgb(120 53 15 / 18%),
-    0 3px 5px -1px rgb(120 53 15 / 24%);
+    0 1px 2px rgb(63 80 14 / 18%),
+    0 3px 5px -1px rgb(63 80 14 / 24%);
   transition:
     background-color var(--sol-micro) var(--sol-ease-out),
     box-shadow var(--sol-micro) var(--sol-ease-out),
@@ -531,8 +726,8 @@ code {
     inset 0 1.2px 0 0 rgb(255 255 255 / 55%),
     inset 0 8px 14px -6px rgb(255 255 255 / 30%),
     0 0 0 1px var(--sol-accent-deep),
-    0 2px 3px rgb(120 53 15 / 22%),
-    0 4px 7px -1px rgb(120 53 15 / 28%);
+    0 2px 3px rgb(63 80 14 / 22%),
+    0 4px 7px -1px rgb(63 80 14 / 28%);
   text-decoration: none;
 }
 .cb-btn:active {
@@ -540,7 +735,7 @@ code {
   box-shadow:
     inset 0 1.2px 0 0 rgb(255 255 255 / 30%),
     0 0 0 1px var(--sol-accent-deep),
-    0 1px 2px rgb(120 53 15 / 16%);
+    0 1px 2px rgb(63 80 14 / 16%);
 }
 .cb-btn:disabled,
 .cb-btn[aria-disabled="true"] {
@@ -804,17 +999,6 @@ code {
   font-size: 0.9rem;
   color: var(--sol-muted);
 }
-.cb-posttags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
-}
-.cb-tag {
-  color: var(--sol-faint);
-  font: 500 10.5px/1.4 var(--sol-mono);
-  letter-spacing: 0.08em;
-}
 .cb-article {
   margin-top: clamp(30px, 5vw, 48px);
   padding-top: clamp(18px, 3vw, 28px);
@@ -889,7 +1073,7 @@ code {
   position: absolute;
   inset: 0;
   background-image: var(--win-noise);
-  opacity: 0.05;
+  mix-blend-mode: soft-light;
   pointer-events: none;
 }
 .intro__stage {
@@ -952,7 +1136,7 @@ code {
   position: absolute;
   inset: 0;
   background-image: var(--win-noise);
-  opacity: 0.05;
+  mix-blend-mode: soft-light;
   pointer-events: none;
 }
 .ob__card {
@@ -962,6 +1146,7 @@ code {
   border-radius: var(--win-radius);
   background-color: rgb(36 36 36 / 85%);
   background-image: var(--win-noise);
+  background-blend-mode: soft-light;
   box-shadow: var(--win-shadow-window);
   overflow: hidden;
   -webkit-backdrop-filter: saturate(3) blur(20px);
@@ -1107,8 +1292,8 @@ code {
     inset 0 1.2px 0 0 rgb(255 255 255 / 45%),
     inset 0 8px 14px -6px rgb(255 255 255 / 22%),
     0 0 0 1px var(--sol-accent-deep),
-    0 1px 2px rgb(120 53 15 / 18%),
-    0 3px 5px -1px rgb(120 53 15 / 24%);
+    0 1px 2px rgb(63 80 14 / 18%),
+    0 3px 5px -1px rgb(63 80 14 / 24%);
 }
 .ob__btn--accent:hover {
   background: color-mix(in oklab, var(--sol-accent) 90%, #ffffff);
