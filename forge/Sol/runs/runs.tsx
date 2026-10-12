@@ -22,7 +22,9 @@ import {
   type Runner,
   seedFleet,
 } from "../../fleet.ts";
+import { type planstate, planrehearsal, RUNPLAN } from "../../graphplan.ts";
 import { EmptyState } from "../shell/EmptyState";
+import GraphPanel from "./graphpanel";
 
 /** the seed of the rehearsal floor (shown on the page, pinned by the tests) */
 export const FLOOR_SEED = 20260214;
@@ -97,6 +99,13 @@ export default function Runs() {
   const fleet = useMemo(() => seedFleet(seed, FLEET_SIZE), [seed]);
   const floor = useMemo(() => fleetTick(fleet, seed, tick), [fleet, seed, tick]);
   const summary = useMemo(() => fleetSummary(floor), [floor]);
+  // the run plan rehearses on the same seed and tick as the fleet: one
+  // advance walks the floor AND the stage graph together (one ride, two
+  // views of the same rehearsal)
+  const planstates = useMemo<Record<string, planstate>>(
+    () => planrehearsal(RUNPLAN, seed, tick),
+    [seed, tick],
+  );
 
   return (
     <main className="shell fr-page">
@@ -105,7 +114,8 @@ export default function Runs() {
         <h1 className="pagehead__title">Runner fleets</h1>
         <p className="pagehead__lede">
           A seeded rehearsal of the runner floor — seed {seed}, {FLEET_SIZE} runners on the saddle engine boundary. The
-          tick advances the floor by its own rules; nothing here claims a live build.
+          tick advances the floor by its own rules; nothing here claims a live build. The run plan draws its own stage
+          graph from the same seed and tick.
         </p>
         <div className="pagehead__actions">
           <button type="button" className="btn" onClick={() => setTick((value) => value + 1)}>
@@ -161,6 +171,8 @@ export default function Runs() {
           </p>
         </div>
       </section>
+
+      <GraphPanel plan={RUNPLAN} states={planstates} />
 
       {floor.length === 0 ? (
         <EmptyState
