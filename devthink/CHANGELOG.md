@@ -1,5 +1,29 @@
 # DevThink release notes
 
+## 2.0.97 — the windows hands complete every interaction and the stages walk the graphs
+
+### Added
+
+| Area | Change |
+| --- | --- |
+| The windows interaction surface | The devthink desktop completes the macro layer the owner ordered: the pointer-captured window drag with the maximize ghost, the alt-tab switcher in acrylic with the keyboard grammar (alttab.ts + alttabswitcher.tsx), the recent-apps ladder behind the start recommendations, the win11 context menu with icon-and-shortcut rows and the quick-settings cellular tile. |
+| The graph engine | The devthink root gains graphnodes, graphrunner and graphviewstate (the pure topological stage machine with per-node state, retries and stable waves), the console draws the boot stages as the trylle card graph and the forge/foundry roots carry their own plans so the runs and the artifact pipeline walk their nodes by stages. |
+| The suno canvas of debonair | The debonair surface re-dresses on the captured suno tokens: the prompt-first hero, the song cards with the hover play, the stage stepper over the studio flow and the fixed acrylic player bar. |
+| The micro windows pass | Argan, vault, getry, cadria, stealthhead, saddle, forge, foundry and cobaia close every control on the fluent hand: the 300ms acrylic tooltips, the disabled opacity, the opacity shimmer skeletons, the win11 scrollbars and the stagger entries — the identity color stays on the mark and the windows accent keeps the focus. |
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The cadria studio | The title bar drag rides the rAF batch with the snap ghost overlay (halves and maximize), the timeline scrubs per frame with the accent playhead and the gallery staggers the trylle elevation ladder. |
+| The route surface | The devthink routes play the real windows entry and exit curves and the workspace routes survive the surface swap. |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The window listeners | The windowframe pointer listeners ride the event contract casts and the workbench reuses its live root across hot updates, so the dev server and the preview never blank on reload. |
+
 ## 2.0.96 — the family wears the real windows face and the onboarding rides the db
 
 ### Added
