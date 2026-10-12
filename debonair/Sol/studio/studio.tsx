@@ -7,24 +7,28 @@
  * which now lives here as the page mount itself.
  */
 
-// # Studio — the DAW (campaign 5-b): the FL Studio-grade console wired to the
-// katexis engine for real. The transport keys drive the WebAudio clock of
-// audioengine.ts (play / stop / loop over the take's scheduled events), the
-// playlist draws the plan's timelinemodel clips with a live playhead you can
-// seek, the channel rack renders the rhythmgrammar grid velocities and lights
-// the running step, and the mixer strips ride mixergraph (fader, mute, solo,
-// effective gain) onto the live buses with analyser-fed VU meters. Every
-// number is the engine's: bpm, key, chords, pattern family, LUFS target.
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+// # Studio — the DAW (campaign 5-b), re-dressed on the suno canvas (2-b):
+// the page rides STAGES now — the stepper on top (prompt → lyrics → style →
+// generate → takes → mix, the owner's order) scrolls the page to its section
+// while the FL-grade console underneath stays exactly the engine it was: the
+// transport keys drive the WebAudio clock of audioengine.ts, the playlist
+// draws the timelinemodel clips, the channel rack renders the rhythmgrammar
+// grid and the mixer strips ride mixergraph onto the live buses. Every number
+// is the engine's: bpm, key, chords, pattern family, LUFS target.
+import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "wouter";
 import { type ArrangerRole, beatSecondsOf, planTake, RACK_LANES, type TakePlan, validatePlan } from "../../arranger.ts";
 import { clipStyle, formatClock, formatGain, playheadPercent } from "../../dawview.ts";
 import { effectiveGainDb, graphFromStrips, type MixerGraph, patchChannel } from "../../mixergraph.ts";
+import { busHush } from "../../playerbus.ts";
+import { reduceMotionApplied } from "../../motionpref.ts";
+import { type StageId } from "../../stages.ts";
 import { positionAt, scheduleTake } from "../../takeevents.ts";
 import { findTakeRecord, loadTakeRecords, sessionStorageOrMemory, TAKE_SELECT_KEY } from "../../takestore.ts";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
 import { TakeEngine } from "./audioengine.ts";
 import { Fader } from "./Fader.tsx";
+import { StageStepper } from "./StageStepper.tsx";
 import { VuMeter } from "./VuMeter.tsx";
 
 const FOOTER_LINKS: readonly NavLink[] = [
@@ -54,6 +58,7 @@ export default function Studio() {
   const [playing, setPlaying] = useState(false);
   const [loop, setLoop] = useState(true);
   const [position, setPosition] = useState(0);
+  const [activeStage, setActiveStage] = useState<StageId>("prompt");
   const [levels, setLevels] = useState<Record<ArrangerRole, number>>({
     drums: Number.NEGATIVE_INFINITY,
     bass: Number.NEGATIVE_INFINITY,
@@ -61,13 +66,16 @@ export default function Studio() {
     lead: Number.NEGATIVE_INFINITY,
   });
   const [notice, setNotice] = useState<string>("");
+  const stageRefs = useRef(new Map<StageId, HTMLElement | null>());
 
   const plan = useMemo(() => plans.find((take) => take.id === selectedId) ?? plans[0] ?? null, [plans, selectedId]);
   const schedule = useMemo(() => (plan ? scheduleTake(plan) : null), [plan]);
   const problems = useMemo(() => (plan ? validatePlan(plan) : []), [plan]);
 
-  // the engine lives once per mount and is disposed with the page
+  // the engine lives once per mount and is disposed with the page; the
+  // shared bar transport hushes first — one audible transport at a time
   useEffect(() => {
+    busHush();
     engineRef.current = new TakeEngine();
     return () => {
       engineRef.current?.dispose();
@@ -197,6 +205,21 @@ export default function Studio() {
 
   const rackPosition = plan ? positionAt(plan, position) : { bar: 0, step: -1 };
 
+  /** hands a stage key to the page: the bar remembers and the section
+   * scrolls into view (the reduce law picks the instant jump) */
+  const selectStage = useCallback((id: StageId): void => {
+    setActiveStage(id);
+    const section = stageRefs.current.get(id);
+    if (!section) return;
+    const instant = reduceMotionApplied() || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    section.scrollIntoView({ behavior: instant ? "auto" : "smooth", block: "start" });
+  }, []);
+
+  /** registers one stage section on its ref map slot. */
+  const stageRef = (id: StageId) => (element: HTMLElement | null): void => {
+    stageRefs.current.set(id, element);
+  };
+
   return (
     <Shell
       name="debonair"
@@ -218,9 +241,98 @@ export default function Studio() {
         </p>
       ) : null}
 
-      {/* TRANSPORT — real keys over the WebAudio clock */}
+      {/* STAGE BAR — the page rides in stages: prompt → lyrics → style →
+          generate → takes → mix (the owner's order); a key scrolls the
+          section into view and wears the windows indicator law */}
+      <StageStepper active={activeStage} onSelect={selectStage} />
+
+      {/* STAGE PROMPT — the line the take answers to (the engine's own record) */}
       {plan ? (
-        <section className="transport rack-panel reveal" aria-label="Transport bar">
+        <section className="stage-section rack-panel reveal" data-stage="prompt" ref={stageRef("prompt")} aria-label="Stage prompt">
+          <p className="stage-eyebrow">stage · prompt</p>
+          <blockquote className="stage-quote">
+            {plan.prompt}
+            <footer>
+              seed <code>{plan.seed}</code> · take <code>{plan.id.slice(0, 6)}</code>
+            </footer>
+          </blockquote>
+          <p className="stage-hint">
+            New material?{" "}
+            <Link href="/generate">
+              Compose a fresh prompt
+            </Link>{" "}
+            and come back — same prompt and seed always rebuild this exact take.
+          </p>
+        </section>
+      ) : null}
+
+      {/* STAGE LYRICS — the chord sheet the harmony engine wrote, one row a bar */}
+      {plan ? (
+        <section className="stage-section reveal" data-stage="lyrics" ref={stageRef("lyrics")} aria-label="Stage lyrics">
+          <p className="stage-eyebrow">stage · lyrics</p>
+          <p className="stage-hint">
+            The lead sheet of the take — <strong className="ink-strong">{plan.keyLabel}</strong>, one chord a bar over{" "}
+            {plan.bars} bars.
+          </p>
+          <ol className="lyric-sheet">
+            {plan.chords.map((event) => (
+              <li key={`chord-${event.bar}`} className="lyric-row">
+                <span className="lyric-bar">{event.bar + 1}</span>
+                <span className="lyric-symbol">{event.symbol}</span>
+                <span className="lyric-tension" style={{ "--t": event.tension.toFixed(2) } as CSSProperties} aria-hidden="true" />
+              </li>
+            ))}
+          </ol>
+        </section>
+      ) : null}
+
+      {/* STAGE STYLE — the genre, the pattern and the loudness law of the take */}
+      {plan ? (
+        <section className="stage-section reveal" data-stage="style" ref={stageRef("style")} aria-label="Stage style">
+          <p className="stage-eyebrow">stage · style</p>
+          <dl className="spec-ledger stage-spec">
+            <div className="spec-row">
+              <dt>genre</dt>
+              <dd>{plan.genreLabel}</dd>
+            </div>
+            <div className="spec-row">
+              <dt>tempo</dt>
+              <dd>
+                {plan.bpm} bpm · swing {Math.round((plan.swing - 0.5) * 200)}%
+              </dd>
+            </div>
+            <div className="spec-row">
+              <dt>key</dt>
+              <dd>{plan.keyLabel}</dd>
+            </div>
+            <div className="spec-row">
+              <dt>drums</dt>
+              <dd>{plan.pattern}</dd>
+            </div>
+            <div className="spec-row">
+              <dt>loudness law</dt>
+              <dd>
+                {plan.lufsTarget} LUFS · {plan.mastering.truePeakDbtp} dBTP
+              </dd>
+            </div>
+            <div className="spec-row">
+              <dt>render</dt>
+              <dd>
+                {plan.mastering.sampleRateHz / 1000} kHz WAV
+              </dd>
+            </div>
+          </dl>
+          {problems.length > 0 ? <p className="badge warning">{`Plan problems: ${problems.join("; ")}`}</p> : null}
+        </section>
+      ) : null}
+
+      {/* STAGE GENERATE — the rendered arrangement: transport, playlist, rack */}
+      {plan ? (
+        <section className="stage-section reveal" data-stage="generate" ref={stageRef("generate")} aria-label="Stage generate">
+          <p className="stage-eyebrow">stage · generate</p>
+
+          {/* TRANSPORT — real keys over the WebAudio clock */}
+          <section className="transport rack-panel" aria-label="Transport bar">
           <div className="group">
             <button className="tkey" type="button" aria-label="Play" aria-pressed={playing} onClick={togglePlay}>
               <svg
@@ -307,30 +419,11 @@ export default function Studio() {
               <span className="val">{plan.lufsTarget} LUFS</span>
             </div>
           </div>
-          <label className="field takepick">
-            <span className="field-label">Take</span>
-            <select
-              className="input"
-              value={plan.id}
-              onChange={(event) => {
-                stop();
-                setSelectedId(event.target.value);
-              }}
-            >
-              {plans.map((take) => (
-                <option key={take.id} value={take.id}>
-                  {take.name} · {take.genreLabel}
-                </option>
-              ))}
-            </select>
-          </label>
         </section>
-      ) : null}
 
-      {/* the asymmetric stage: playlist rides wide, the mixer stacks as a rail */}
-      {plan && graph ? (
-        <div className="stage-asym">
-          <section className="daw rack-panel reveal" aria-label="Arrangement playlist">
+          {/* the playlist rides the full stage now (the mixer moved to the mix stage) */}
+          {graph ? (
+            <section className="daw rack-panel" aria-label="Arrangement playlist">
             <div className="tl-scroll">
               <div className="tl-inner">
                 <div className="tl-ruler">
@@ -393,9 +486,108 @@ export default function Studio() {
               </div>
             </div>
           </section>
+          ) : null}
 
-          {/* MIXER — real strips: fader, VU, mute/solo, effective gain */}
-          <section className="mixer reveal" aria-label="Mixer">
+          {/* CHANNEL RACK — the real grid: velocities, fills, the running step */}
+          <section className="rack rack-panel" aria-label="Channel rack">
+            <header className="rack-head">
+              <h2 className="rack-title">channel rack</h2>
+              <span className="rack-meta">
+                {plan.pattern} · swing {Math.round((plan.swing - 0.5) * 200)}% · {plan.bpm} bpm · beat{" "}
+                {beatSecondsOf(plan).toFixed(3)} s
+              </span>
+            </header>
+            <div>
+              {RACK_LANES.map((lane) => (
+                <div key={lane} className="rack-row">
+                  <span className="rack-name">{lane}</span>
+                  <div className="rack-cells" aria-hidden="true">
+                    {STEP_NOS.map((no) => {
+                      const step = no - 1;
+                      const velocity = plan.grid.lanes[lane][step];
+                      const current = playing && rackPosition.step === step;
+                      return (
+                        <span
+                          key={`step-${no}`}
+                          className={velocity > 0 ? "step on" : "step"}
+                          data-beat={step % 4 === 0 ? "true" : undefined}
+                          data-current={current ? "true" : undefined}
+                          style={velocity > 0 ? { opacity: (0.42 + velocity * 0.58).toFixed(2) } : undefined}
+                          title={velocity > 0 ? `vel ${(velocity * 100).toFixed(0)}%` : undefined}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* the plan ledger — the engine's own numbers, no invented specs */}
+          {schedule ? (
+            <section className="rack-panel scope-note" aria-label="Take ledger">
+              <h2 className="card-h">Take ledger</h2>
+              <p className="flush">
+                <strong className="ink-strong">{plan.name}</strong> — {plan.genreLabel} · {plan.keyLabel} · {plan.bpm} bpm ·{" "}
+                {plan.bars} bars · {formatClock(plan.durationSeconds)} · {schedule.events.length} scheduled events (
+                {schedule.perRole.drums} drums, {schedule.perRole.bass} bass, {schedule.perRole.keys} keys,{" "}
+                {schedule.perRole.lead} lead) · seed <code>{plan.seed}</code> · target {plan.lufsTarget} LUFS /{" "}
+                {plan.mastering.truePeakDbtp} dBTP true peak. Chords:{" "}
+                {plan.chords
+                  .slice(0, 8)
+                  .map((chord) => chord.symbol)
+                  .join(" · ")}
+                {plan.bars > 8 ? " …" : ""}.{" "}
+                {problems.length === 0 ? "Plan validated." : `Plan problems: ${problems.join("; ")}`}
+              </p>
+              <p className="flush p-sm">
+                Same prompt and seed always rebuild this exact take. Edit the desk live — the faders, mutes and solos ride{" "}
+                <code>mixergraph</code> onto the audio buses while it plays. Loop is{" "}
+                {loop ? "on — the take wraps at the top" : "off — the transport stops at the end"}. Master fader{" "}
+                {formatGain(graph?.channels.find((channel) => channel.id === graph.masterid)?.gaindb ?? -2)} dB.
+              </p>
+              <p className="flush p-sm">
+                New material? <Link href="/generate">Compose a take</Link> or browse the shelf in the{" "}
+                <Link href="/library">library</Link>.
+              </p>
+            </section>
+          ) : null}
+        </section>
+      ) : null}
+
+      {/* STAGE TAKES — the shelf this session rendered (the picker the desk reads) */}
+      {plan ? (
+        <section className="stage-section rack-panel reveal" data-stage="takes" ref={stageRef("takes")} aria-label="Stage takes">
+          <p className="stage-eyebrow">stage · takes</p>
+          <p className="stage-hint">
+            {plans.length} take{plans.length === 1 ? "" : "s"} on the shelf — the desk, the bar and the library all read
+            the same render.
+          </p>
+          <label className="field takepick">
+            <span className="field-label">Take</span>
+            <select
+              className="input"
+              value={plan.id}
+              onChange={(event) => {
+                stop();
+                setSelectedId(event.target.value);
+              }}
+            >
+              {plans.map((take) => (
+                <option key={take.id} value={take.id}>
+                  {take.name} · {take.genreLabel}
+                </option>
+              ))}
+            </select>
+          </label>
+        </section>
+      ) : null}
+
+      {/* STAGE MIX — the desk: faders, mute/solo keys, live meters, the master bus */}
+      {plan && graph ? (
+        <section className="stage-section reveal" data-stage="mix" ref={stageRef("mix")} aria-label="Stage mix">
+          <p className="stage-eyebrow">stage · mix</p>
+          <section className="mixer" aria-label="Mixer">
             {graph.channels
               .filter((channel) => channel.id !== graph.masterid)
               .map((channel) => {
@@ -449,73 +641,6 @@ export default function Studio() {
               );
             })()}
           </section>
-        </div>
-      ) : null}
-
-      {/* CHANNEL RACK — the real grid: velocities, fills, the running step */}
-      {plan ? (
-        <section className="rack rack-panel reveal" aria-label="Channel rack">
-          <header className="rack-head">
-            <h2 className="rack-title">channel rack</h2>
-            <span className="rack-meta">
-              {plan.pattern} · swing {Math.round((plan.swing - 0.5) * 200)}% · {plan.bpm} bpm · beat{" "}
-              {beatSecondsOf(plan).toFixed(3)} s
-            </span>
-          </header>
-          <div>
-            {RACK_LANES.map((lane) => (
-              <div key={lane} className="rack-row">
-                <span className="rack-name">{lane}</span>
-                <div className="rack-cells" aria-hidden="true">
-                  {STEP_NOS.map((no) => {
-                    const step = no - 1;
-                    const velocity = plan.grid.lanes[lane][step];
-                    const current = playing && rackPosition.step === step;
-                    return (
-                      <span
-                        key={`step-${no}`}
-                        className={velocity > 0 ? "step on" : "step"}
-                        data-beat={step % 4 === 0 ? "true" : undefined}
-                        data-current={current ? "true" : undefined}
-                        style={velocity > 0 ? { opacity: (0.42 + velocity * 0.58).toFixed(2) } : undefined}
-                        title={velocity > 0 ? `vel ${(velocity * 100).toFixed(0)}%` : undefined}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      ) : null}
-
-      {/* the plan ledger — the engine's own numbers, no invented specs */}
-      {plan && schedule ? (
-        <section className="rack-panel scope-note reveal" aria-label="Take ledger">
-          <h2 className="card-h">Take ledger</h2>
-          <p className="flush">
-            <strong className="ink-strong">{plan.name}</strong> — {plan.genreLabel} · {plan.keyLabel} · {plan.bpm} bpm ·{" "}
-            {plan.bars} bars · {formatClock(plan.durationSeconds)} · {schedule.events.length} scheduled events (
-            {schedule.perRole.drums} drums, {schedule.perRole.bass} bass, {schedule.perRole.keys} keys,{" "}
-            {schedule.perRole.lead} lead) · seed <code>{plan.seed}</code> · target {plan.lufsTarget} LUFS /{" "}
-            {plan.mastering.truePeakDbtp} dBTP true peak. Chords:{" "}
-            {plan.chords
-              .slice(0, 8)
-              .map((chord) => chord.symbol)
-              .join(" · ")}
-            {plan.bars > 8 ? " …" : ""}.{" "}
-            {problems.length === 0 ? "Plan validated." : `Plan problems: ${problems.join("; ")}`}
-          </p>
-          <p className="flush p-sm">
-            Same prompt and seed always rebuild this exact take. Edit the desk live — the faders, mutes and solos ride{" "}
-            <code>mixergraph</code> onto the audio buses while it plays. Loop is{" "}
-            {loop ? "on — the take wraps at the top" : "off — the transport stops at the end"}. Master fader{" "}
-            {formatGain(graph?.channels.find((channel) => channel.id === graph.masterid)?.gaindb ?? -2)} dB.
-          </p>
-          <p className="flush p-sm">
-            New material? <Link href="/generate">Compose a take</Link> or browse the shelf in the{" "}
-            <Link href="/library">library</Link>.
-          </p>
         </section>
       ) : null}
     </Shell>

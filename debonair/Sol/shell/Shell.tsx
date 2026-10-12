@@ -35,6 +35,7 @@ import { Link, useLocation } from "wouter";
 import { familyrow } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
 import { currentTheme, type Theme, toggleTheme } from "../../theme.ts";
+import { Playerbar } from "./Playerbar.tsx";
 
 /** one entry of the shell navigation (the legacy page prop shape, kept for
  * the anchors that type against the shell beside this folder) */
@@ -567,6 +568,10 @@ export function Shell({ children, themeButton = true }: ShellProps) {
             <main className="shell">{children}</main>
           </div>
         </div>
+
+        {/* the suno bar: the one bottom chrome of the application window —
+            cover, title, the shared transport's lane and the play keys */}
+        <Playerbar />
 
         {/* the eight resize handles of the window chrome (n/s/e/w + the corners) */}
         {RESIZE_EDGES.map((edge) => (

@@ -1137,6 +1137,479 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   .winonboard__foot { flex-wrap: wrap; }
 }
 
+/* ==========================================================================
+   5.7 THE SUNO PASS — the canvas sings (task 2-b): the real suno.com tokens
+   (the dumbo neutrals, the enter/exit curves, the card geometry, the aura
+   flash, the shimmer sweep) riding the trylle foundation with the windows
+   hands. The identity stays brass (#bd7a1a, content only); focus and the
+   bar CTA answer the windows accent. Motion = transform/opacity, the
+   hard stops below stay the last word.
+   ========================================================================== */
+:root {
+  /* the suno neutrals (the dumbo ladder, captured from the site css) */
+  --suno-base: #101012;
+  --suno-panel: #1c1c1f;
+  --suno-raise: #252529;
+  --suno-ink: #f7f4ef;
+  --suno-ink-2: #c2c2c1;
+  --suno-ink-3: #7d7c83;
+  --suno-edge: rgb(255 255 255 / 10%);
+  --suno-edge-strong: rgb(255 255 255 / 15%);
+  --suno-shine: rgb(255 255 255 / 6%);
+
+  /* the suno motion (the site's own enter/exit curves) */
+  --suno-enter: 0.2s;
+  --suno-ease-enter: cubic-bezier(0, 0, 0.2, 1);
+  --suno-exit: 0.1s;
+  --suno-ease-exit: cubic-bezier(0.4, 0, 1, 1);
+
+  /* the suno geometry: card 12.5rem, the play key 3rem, the aura blur 4rem */
+  --suno-card-w: 12.5rem;
+  --suno-play: 3rem;
+  --suno-aura-blur: 4rem;
+
+  /* the suno aura: the warm/cool pair the prompt box breathes (captured) */
+  --suno-aura-warm: rgb(255 176 3 / 5%);
+  --suno-aura-cool: rgb(254 60 125 / 5%);
+
+  /* the trylle card surfaces the pass pins (the ladder foot → the raise) */
+  --suno-card-a: #171717;
+  --suno-card-b: #1e1e1e;
+  --suno-card-hover: #252525;
+
+  /* the debonair brass deep tone (the brand mark's own story) */
+  --dbn-brass: #bd7a1a;
+
+  /* the suno field: the dark well the prompt sits on */
+  --suno-field: rgb(16 16 18 / 55%);
+}
+[data-theme="light"] {
+  --suno-card-a: #fcfcfc;
+  --suno-card-b: #f4f4f5;
+  --suno-card-hover: #fafafa;
+  --suno-field: rgb(255 255 255 / 72%);
+  --suno-aura-warm: rgb(189 122 26 / 8%);
+  --suno-aura-cool: rgb(0 103 192 / 6%);
+}
+
+/* ---- the hero: the prompt-first field wears the suno recipe ---- */
+/* the dark well, the trylle radius, the aura breathing around it; the focus
+   keeps the windows underline (the foundation rule above wins on focus) */
+.prompt-giga {
+  border: 1px solid var(--suno-edge);
+  border-radius: var(--sol-radius);
+  background: var(--suno-field);
+  backdrop-filter: blur(19px) saturate(1.4);
+  -webkit-backdrop-filter: blur(19px) saturate(1.4);
+  box-shadow: 0 12px 24px -12px rgb(0 0 0 / 40%);
+}
+.prompt-giga::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: -5px 0 var(--suno-aura-blur) var(--suno-aura-warm), 5px 0 var(--suno-aura-blur) var(--suno-aura-cool);
+  opacity: 0.5;
+}
+.pg-input { caret-color: var(--brass-300); }
+.pg-key { border-radius: var(--sol-radius); }
+.pg-chip {
+  min-height: 44px;
+  padding: 0 16px;
+  border-color: var(--suno-edge);
+  border-radius: var(--sol-radius);
+  background: var(--wash-soft);
+}
+.pg-chip:hover { background: var(--win-hover); border-color: var(--suno-edge-strong); }
+.pg-chip[aria-pressed="true"] { border-color: color-mix(in srgb, var(--brass-500) 55%, transparent); }
+@media (prefers-reduced-motion: no-preference) {
+  .prompt-giga::before { animation: sunoFlash 3s ease-in-out infinite; }
+}
+@keyframes sunoFlash {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+
+/* ---- the song grid: the suno card grammar over the trylle surfaces ---- */
+.song-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--suno-card-w), 1fr));
+  gap: 14px;
+  margin-top: 6px;
+}
+.song-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 10px;
+  border-radius: var(--sol-radius);
+  background: linear-gradient(180deg, var(--suno-card-a), var(--suno-card-b));
+  box-shadow: 0 0 0 1px var(--suno-edge), 0 1px 1px -0.5px var(--sol-drop), 0 6px 12px -6px rgb(0 0 0 / 45%);
+  transition: box-shadow var(--sol-micro) var(--sol-ease-out), transform var(--suno-exit) var(--suno-ease-exit);
+}
+.song-card:hover {
+  background: linear-gradient(180deg, var(--suno-card-b), var(--suno-card-hover));
+  box-shadow: 0 0 0 1px var(--suno-edge-strong), 0 1px 1px -0.5px var(--sol-drop), 0 10px 20px -8px rgb(0 0 0 / 55%),
+    0 24px 48px -24px rgb(0 0 0 / 45%);
+}
+.song-card[data-live="true"] {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--brass-300) 60%, transparent), 0 1px 1px -0.5px var(--sol-drop),
+    0 10px 20px -8px rgb(0 0 0 / 55%);
+}
+.song-card__frame {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px var(--suno-edge);
+}
+.song-card__frame svg { display: block; width: 100%; height: 100%; }
+.song-name {
+  margin: 2px 2px 0;
+  font-size: 0.98rem;
+  font-weight: 650;
+  letter-spacing: var(--sol-track-display);
+  color: var(--ink);
+}
+.song-meta {
+  margin: 0 2px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+/* the play key: the 3rem acrylic circle the hover reveals (the suno reveal,
+   the windows press) — a true circle, the 50% radius stays lawful */
+.song-play {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: grid;
+  place-items: center;
+  width: var(--suno-play);
+  height: var(--suno-play);
+  border: 1px solid var(--suno-edge-strong);
+  border-radius: 50%;
+  background-color: rgb(32 32 32 / 75%);
+  background-image: var(--noise);
+  background-blend-mode: soft-light;
+  color: var(--ink);
+  backdrop-filter: saturate(3) blur(20px);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  opacity: 0;
+  transform: translateY(6px) scale(0.9);
+  transition: opacity var(--suno-enter) var(--suno-ease-enter), transform var(--suno-enter) var(--suno-ease-enter),
+    background-color var(--sol-micro) var(--sol-ease-out);
+}
+.song-card:hover .song-play,
+.song-card:focus-within .song-play {
+  opacity: 1;
+  transform: none;
+}
+.song-play:hover { background-color: rgb(32 32 32 / 90%); }
+.song-play:active { transform: scale(0.7); transition-duration: var(--dur-press); }
+.song-play:focus-visible { outline: 2px solid var(--win-accent); outline-offset: 2px; opacity: 1; transform: none; }
+/* the skeleton: the shimmer sweep rides translate only */
+.song-skeleton {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: var(--suno-card-b);
+}
+.song-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, var(--suno-shine), transparent);
+}
+.song-skeleton--text { height: 14px; margin: 0 2px; border-radius: var(--radius-xs); }
+.song-skeleton--short { width: 62%; }
+@media (prefers-reduced-motion: no-preference) {
+  .song-card {
+    animation: sunoRise 0.4s var(--suno-ease-enter) backwards;
+    animation-delay: calc(var(--i, 0) * 60ms);
+  }
+  .song-skeleton::after { animation: sunoShimmer 1.6s var(--suno-ease-enter) infinite; }
+}
+@keyframes sunoRise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes sunoShimmer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+/* ---- the studio stages: the bar on top, the sections answering ---- */
+.stagebar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 4px 0 24px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: var(--sol-radius);
+  background: var(--surface-1);
+  box-shadow: var(--shadow-1);
+}
+.stage-step {
+  position: relative;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: var(--win-radius-ctl);
+  background: transparent;
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  transition: background-color 0.2s ease, color var(--sol-micro) var(--sol-ease-out), transform var(--dur-press) ease-in-out;
+}
+.stage-step:hover { background: var(--win-hover); color: var(--ink); }
+.stage-step:active { transform: scale(0.7); }
+.stage-step:focus-visible { outline: 2px solid var(--win-accent); outline-offset: -2px; }
+/* the windows indicator law: the 3px bar — 0 closed → 6px open (#858585) →
+   12px on the active stage, on the windows accent */
+.stage-step::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  width: 12px;
+  height: 3px;
+  border-radius: 4px;
+  background: #858585;
+  opacity: 0;
+  transform: translateX(-50%) scaleX(0);
+  transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+.stage-step:hover::after,
+.stage-step:focus-visible::after { opacity: 1; transform: translateX(-50%) scaleX(0.5); }
+.stage-step[data-active="true"]::after { opacity: 1; transform: translateX(-50%) scaleX(1); background: var(--win-accent); }
+.stage-section { display: flex; flex-direction: column; gap: 14px; min-width: 0; margin: 0 0 28px; scroll-margin-top: 16px; }
+.stage-section > .transport { margin-bottom: 18px; }
+.stage-eyebrow {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: var(--sol-track-label);
+  text-transform: lowercase;
+  color: var(--ink-3);
+}
+.stage-quote {
+  margin: 0;
+  padding: 14px 18px;
+  border-left: 2px solid var(--brass-500);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  font-size: 1.05rem;
+  color: var(--ink);
+}
+.stage-quote footer { margin-top: 6px; font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-3); }
+.stage-hint { margin: 0; font-size: 0.9rem; color: var(--ink-2); }
+.stage-spec .spec-row dd { color: var(--brass-300); }
+/* the chord sheet: one bar a cell, the tension meter a static scaleX */
+.lyric-sheet {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lyric-row {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) 44px;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--win-radius-ctl);
+  background: var(--surface-1);
+  transition: background-color var(--sol-micro) var(--sol-ease-out), border-color var(--sol-micro) var(--sol-ease-out);
+}
+.lyric-row:hover { background: var(--surface-2); border-color: var(--line-strong); }
+.lyric-bar { font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.lyric-symbol { font-family: var(--font-mono); font-size: 14px; font-weight: 650; color: var(--brass-300); }
+.lyric-tension {
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--brass-500), var(--brass-300));
+  opacity: 0.8;
+  transform: scaleX(var(--t, 0));
+  transform-origin: 0 50%;
+}
+
+/* ---- the player bar: the suno bar on the windows acrylic ---- */
+.playerbar {
+  position: relative;
+  z-index: var(--z-bar);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 64px;
+  margin: 0;
+  padding: 10px 14px;
+  border-top: 1px solid var(--line);
+  background-color: var(--bar);
+  background-image: var(--noise);
+  background-blend-mode: soft-light;
+  backdrop-filter: saturate(3) blur(20px);
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  box-shadow: 0 -8px 24px -16px rgb(0 0 0 / 45%);
+}
+.pbar-identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  max-width: 260px;
+  padding: 4px;
+  border-radius: var(--win-radius-ctl);
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+.pbar-identity:hover { background: var(--win-hover); text-decoration: none; }
+.pbar-cover {
+  display: block;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: var(--win-radius-ctl);
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px var(--suno-edge);
+}
+.pbar-cover svg { display: block; width: 100%; height: 100%; }
+.pbar-main { display: flex; flex-direction: column; min-width: 0; }
+.pbar-title {
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pbar-artist {
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pbar-transport { flex: 1; min-width: 120px; }
+.pbar-lane { display: flex; align-items: center; gap: 10px; }
+.pbar-seek {
+  flex: 1;
+  min-height: 44px;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.pbar-seek::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--win-accent) var(--p, 0%), var(--surface-6) var(--p, 0%));
+}
+.pbar-seek::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-top: -5px;
+  border-radius: 50%;
+  background: var(--ink);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 30%);
+}
+.pbar-seek::-moz-range-track { height: 4px; border-radius: 2px; background: var(--surface-6); }
+.pbar-seek::-moz-range-progress { height: 4px; border-radius: 2px; background: var(--win-accent); }
+.pbar-seek::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ink);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 30%);
+}
+.pbar-seek:focus-visible { outline: 2px solid var(--win-accent); outline-offset: 2px; }
+.pbar-clock {
+  flex: none;
+  min-width: 44px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.pbar-keys { display: flex; gap: 6px; }
+.pkey {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--win-radius-ctl);
+  background: var(--surface-2);
+  color: var(--ink);
+  transition: background-color 0.2s ease, color var(--sol-micro) var(--sol-ease-out), border-color var(--sol-micro) var(--sol-ease-out),
+    transform var(--dur-press) ease-in-out;
+}
+.pkey:hover { background: var(--surface-4); border-color: var(--ink-3); }
+.pkey:active { transform: scale(0.7); }
+.pkey:focus-visible { outline: 2px solid var(--win-accent); outline-offset: 2px; }
+/* the one bar surface the windows accent fills: the running CTA */
+.pkey--cta {
+  border-color: transparent;
+  background: var(--win-accent);
+  color: var(--win-accent-ink);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 22%), 0 2px 4px -1px color-mix(in srgb, var(--win-accent) 40%, transparent);
+}
+.pkey--cta:hover { background: color-mix(in oklab, var(--win-accent) 88%, var(--win-accent-ink)); border-color: transparent; }
+@media (max-width: 720px) {
+  .pbar-artist { display: none; }
+  .pbar-identity { max-width: 180px; }
+}
+
+/* ---- the micros pass: the windows press law on every key ---- */
+.btn:active,
+.pg-key:active,
+.pg-chip:active,
+.cell:active,
+.tkey:active,
+.strip-key:active,
+.winonboard__act:active { transform: scale(0.7); }
+/* the tooltip answers in 300ms (the show only — the hide stays instant) */
+.railnav__item:hover::before { transition-delay: 300ms; }
+
+/* ---- the floors: the new acrylic surfaces land solid, the blur dies ---- */
+@media (prefers-reduced-transparency: reduce) {
+  .playerbar,
+  .prompt-giga,
+  .song-play {
+    background-color: var(--surface-2);
+    background-image: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
 /* ---------- 6. motion — the entrances, the loops, the keyframes ---------- */
 @keyframes riseIn { from { opacity: 0; transform: translateY(14px); } }
 @keyframes solSpin { to { transform: rotate(1turn); } }
