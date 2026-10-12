@@ -2,7 +2,8 @@
  * adsslot.tsx — the honest ad container of the content pages. The component
  * renders a RESERVED box only: a fixed aspect-ratio container on a hairline
  * well, a visible mono label reading "advertisement", and an honest empty
- * note while no slot id is configured. The container never shifts the page
+ * state — a hairline box breathing on the opacity-only skeleton shimmer —
+ * while no slot id is configured. The container never shifts the page
  * and never sits beside a call to action.
  *
  * THE SCRIPT RULE: no ad network script lives in this repository. The
@@ -35,7 +36,7 @@ export function AdSlot({ page }: AdSlotProps) {
           // approval, injected by the deploy environment — never committed
           <span className="cb-adsnote">reserved · {slot.format}</span>
         ) : (
-          <span className="cb-adsnote">{ADS_EMPTY}</span>
+          <span className="cb-empty cb-skel">{ADS_EMPTY}</span>
         )}
       </div>
     </aside>

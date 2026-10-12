@@ -8,8 +8,10 @@
  * The update blog of the cobaia content site: the sorted index (the pure
  * posts module at the app root owns the posts and the ordering) and the full
  * bodies rendered below as real articles — the in-article surface of the
- * site. The tree rule keeps this one page (no post subfolders), so every
- * post anchors in place and the index links jump to the article.
+ * site. Every post title wears the trylle display type (the clamp, the
+ * -0.02em track) so the articles open like the site hero does. The tree
+ * rule keeps this one page (no post subfolders), so every post anchors in
+ * place and the index links jump to the article.
  */
 import type { CSSProperties } from "react";
 import { postindex, postwords, type blogpost } from "../../posts";
@@ -58,7 +60,7 @@ export function Blog() {
       <section className="cb-section" aria-label="the posts in full">
         {posts.map((post) => (
           <article key={post.slug} id={post.slug} className="cb-article" aria-label={post.title}>
-            <h2 className="cb-secttitle">{post.title}</h2>
+            <h2 className="cb-posttitle">{post.title}</h2>
             <PostMeta post={post} />
             <div className="cb-articlebody">
               {post.body.map((paragraph) => (

@@ -20,8 +20,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/// the first-run state of one visitor (the flow contract: intro, then onboarding,
-/// never replayed) — the platform gateway serves it over /api/v1/onboarding
+/// the first-run state of one visitor (the platform contract the gateway
+/// serves over /api/v1/onboarding)
 model OnboardingState {
   id             Int      @id @default(autoincrement())
   visitor        String   @unique
