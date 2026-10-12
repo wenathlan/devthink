@@ -9,7 +9,12 @@
 
 /** Style: DevThink ONE intro — the owner doctrine: ONE interface serves every
  * build target; what changes per target is the TYPE OF INTRO and the
- * hand-over sequence. The build declares its target through
+ * hand-over sequence. Every variant stages the same PISO AKASH (the motion
+ * kit beside this anchor, akash.ts): the mark lands on the ONE spring
+ * (stiffness 300, damping 15), the wordmark rises on backOut, the stage
+ * leaves on the 0.8s slide-up — the web and android targets add the tile
+ * zoom of their expansion on the sheet curve — and no target ever shows
+ * loading dots. The build declares its target through
  * VITE_DT_TARGET (resolved by the root module introtarget.ts): every target
  * plays its one variant. The seen state of the flow is the CATALOGUED
  * visitor state (root module onboardingstate.ts — the only writer): when

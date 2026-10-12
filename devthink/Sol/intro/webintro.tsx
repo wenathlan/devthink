@@ -1,37 +1,51 @@
 /**
- * webintro.tsx — the intro of the web target: ONE orchestrated cinematic,
- * 800ms end to end (the motion budget of the spec), beat by beat —
+ * webintro.tsx — the intro of the web target: the piso Akash, one
+ * deterministic pass, beat by beat —
  *
- *   0ms    the warm light rises over the graphite mica (one ember breath)
- *   80ms   the mark lands with the ONE spring (scale .64 → 1, mild overshoot)
- *   220ms  the wordmark rides in on the display face (rise + decel)
- *   360ms  the role line settles under it (mono, lowercase)
- *   620ms  the stage fades on the sheet curve and the surface hands over
+ *    0ms   the mark tile lands on the ONE spring (stiffness 300, damping 15)
+ *   60ms   the wordmark rises on backOut
+ *  120ms   the role line settles under it (the doctrine micro)
+ * 1250ms   the exit: the tile zooms over the stage on the sheet curve
+ *          (cubic-bezier(0.32, 0.72, 0, 1)) while the stage rides the 0.8s
+ *          slide-up (cubic-bezier(0.76, 0, 0.24, 1))
+ * 2140ms   the surface hands over to the entry flow at /onboarding
  *
- * to the landing SaaS at /explore (the free catalog page — the "enter
- * devthink" CTA there opens the authentication page-app, which continues to
- * the OS desktop). Every beat animates
- * transform/opacity exactly once (no loops, no shimmer, no scattered fades)
- * through the Web Animations API, so the choreography never depends on
- * stylesheet keyframes. One click or any key skips straight to the hand-over;
- * reduced motion hands over instantly. The mark appears once, center stage —
- * the chrome carries it everywhere else.
+ * to the onboarding tour (whose finish opens the landing SaaS at /explore —
+ * the "enter devthink" CTA there continues to the OS desktop). Every beat
+ * animates transform/opacity exactly once — no loops, no shimmer, no loading
+ * dots, no scattered fades — through the Web Animations API, so the
+ * choreography never depends on stylesheet keyframes. One click or any key
+ * skips straight to the hand-over; reduced motion hands over instantly. The
+ * mark appears once, center stage — the chrome carries it everywhere else.
  */
 import { useCallback, useEffect, useRef } from "react";
+import {
+  AKASH_BACKOUT,
+  AKASH_EXIT,
+  AKASH_MICRO,
+  AKASH_SHEET,
+  AKASH_MARK_FLOOR,
+  akashBeat,
+  akashSpringTrack,
+  prefersReducedMotion,
+} from "./akash.ts";
 import { SolLogoMark } from "../panel/logo.tsx";
 
-/** the beat plan of the cinematic (ms): light → mark → word → role → fade →
- * hand-over — 800ms end to end, the motion budget of the spec */
-const BEATS = { light: 0, mark: 80, word: 220, role: 360, leave: 620, done: 800 } as const;
-/** the hand-over fade: sheet curve, opacity only, one pass */
-const LEAVE_MS = 180;
-const LEAVE_EASING = "cubic-bezier(0.32, 0.72, 0, 1)";
-/** the one spring of the mark landing (mild overshoot — never a bounce) */
-const SPRING = "cubic-bezier(0.22, 1.24, 0.36, 1)";
-/** the Fluent decel curve of the rising beats */
-const DECEL = "cubic-bezier(0.1, 0.9, 0.2, 1)";
+/** the beat plan of the floor (ms): mark spring → word → role → exit → done */
+const BEATS = { mark: 0, word: 60, role: 120, leave: 1250, done: 2140 } as const;
+/** the spring window of the mark landing (the decay settles inside it) */
+const MARK_MS = 900;
+/** the 0.8s exit window shared by the tile zoom and the stage slide-up */
+const EXIT_MS = 800;
 
-/** the warm light source of the stage: one ember radial over the graphite mica */
+/** the dark mica floor of the doctrine: #202020 with the fixed indigo core */
+const MICA_STYLE = {
+  backgroundColor: "#202020",
+  backgroundImage: "radial-gradient(#1a1f35 25%, #202020 100%)",
+  backgroundAttachment: "fixed",
+} as const;
+
+/** the warm light source of the floor: one ember radial over the graphite mica */
 const GLOW_STYLE = {
   position: "absolute",
   inset: "-18%",
@@ -41,25 +55,15 @@ const GLOW_STYLE = {
     "radial-gradient(1100px 640px at 50% 34%, rgb(255 95 0 / 15%), transparent 62%), radial-gradient(720px 480px at 50% 46%, rgb(255 176 58 / 9%), transparent 58%)",
 } as const;
 
-/** the role line under the wordmark: mono, lowercase, quiet */
-const ROLE_STYLE = {
-  margin: "6px 0 0",
-  color: "var(--dt-faint)",
-  font: "500 10px var(--dt-mono)",
-  letterSpacing: ".08em",
-} as const;
-
 type WebIntroProps = {
-  /** the hand-over: fired once, after the stage fade completes */
+  /** the hand-over: fired once, after the exit window completes */
   onDone: () => void;
 };
 
 export function WebIntro({ onDone }: WebIntroProps) {
   const rootRef = useRef<HTMLDivElement | null>(null);
-  const glowRef = useRef<HTMLDivElement | null>(null);
-  const markRef = useRef<HTMLDivElement | null>(null);
-  const wordRef = useRef<HTMLElement | null>(null);
-  const roleRef = useRef<HTMLSpanElement | null>(null);
+  const tileRef = useRef<HTMLDivElement | null>(null);
+  const stageRef = useRef<HTMLDivElement | null>(null);
   const doneRef = useRef(onDone);
   doneRef.current = onDone;
   const finished = useRef(false);
@@ -72,56 +76,61 @@ export function WebIntro({ onDone }: WebIntroProps) {
   }, []);
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (prefersReducedMotion()) {
       handOver();
       return;
     }
-    /** one beat: a single transform/opacity animation, backwards fill */
-    const beat = (el: Element | null, frames: Keyframe[], options: KeyframeAnimationOptions): Animation | null => {
-      if (!el) return null;
-      return el.animate(frames, { fill: "backwards", ...options });
-    };
     const anims = [
-      beat(
-        glowRef.current,
+      // the mark tile: the ONE spring (real stiffness 300, damping 15)
+      akashBeat(tileRef.current, akashSpringTrack(AKASH_MARK_FLOOR, 1, MARK_MS), {
+        duration: MARK_MS,
+        delay: BEATS.mark,
+        easing: "linear",
+      }),
+      akashBeat(tileRef.current, [{ opacity: 0 }, { opacity: 1 }], {
+        duration: 240,
+        delay: BEATS.mark,
+        easing: AKASH_MICRO,
+      }),
+      // the wordmark rises on backOut, the role settles on the micro curve
+      akashBeat(
+        stageRef.current?.querySelector<HTMLElement>(".dt-akash__word") ?? null,
         [
-          { opacity: 0, transform: "scale(1.05)" },
-          { opacity: 1, transform: "scale(1)" },
-        ],
-        { duration: 320, delay: BEATS.light, easing: DECEL },
-      ),
-      beat(
-        markRef.current,
-        [
-          { opacity: 0, transform: "scale(.64)" },
-          { opacity: 1, transform: "scale(1)" },
-        ],
-        { duration: 360, delay: BEATS.mark, easing: SPRING },
-      ),
-      beat(
-        wordRef.current,
-        [
-          { opacity: 0, transform: "translateY(16px)" },
+          { opacity: 0, transform: "translateY(20px)" },
           { opacity: 1, transform: "translateY(0)" },
         ],
-        { duration: 320, delay: BEATS.word, easing: DECEL },
+        { duration: 600, delay: BEATS.word, easing: AKASH_BACKOUT },
       ),
-      beat(
-        roleRef.current,
+      akashBeat(
+        stageRef.current?.querySelector<HTMLElement>(".dt-akash__role") ?? null,
         [
-          { opacity: 0, transform: "translateY(8px)" },
+          { opacity: 0, transform: "translateY(10px)" },
           { opacity: 1, transform: "translateY(0)" },
         ],
-        { duration: 260, delay: BEATS.role, easing: DECEL },
+        { duration: 500, delay: BEATS.role, easing: AKASH_MICRO },
       ),
     ].filter((anim): anim is Animation => anim !== null);
     const timers = [
       window.setTimeout(() => {
-        rootRef.current?.animate([{ opacity: 1 }, { opacity: 0 }], {
-          duration: LEAVE_MS,
-          easing: LEAVE_EASING,
-          fill: "forwards",
-        });
+        // the exit: the tile zooms over the stage on the sheet curve while
+        // the stage rides the 0.8s slide-up — the expansion of the web intro
+        akashBeat(
+          tileRef.current,
+          [
+            { transform: "scale(1)", opacity: 1, offset: 0 },
+            { transform: "scale(5)", opacity: 1, offset: 0.5 },
+            { transform: "scale(22)", opacity: 0, offset: 1 },
+          ],
+          { duration: EXIT_MS, easing: AKASH_SHEET, fill: "forwards" },
+        );
+        akashBeat(
+          stageRef.current,
+          [
+            { transform: "translateY(0)", opacity: 1 },
+            { transform: "translateY(-48px)", opacity: 0 },
+          ],
+          { duration: EXIT_MS, easing: AKASH_EXIT, fill: "forwards" },
+        );
       }, BEATS.leave),
       window.setTimeout(() => handOver(), BEATS.done),
     ];
@@ -142,22 +151,27 @@ export function WebIntro({ onDone }: WebIntroProps) {
 
   return (
     /* biome-ignore lint/a11y/useKeyWithClickEvents: the keyboard skip path is the window keydown listener above, so any key skips without focus */
-    <div ref={rootRef} className="dt-webintro" role="status" aria-label="DevThink is opening" onClick={handOver}>
-      <div ref={glowRef} className="dt-webintro__glow" style={GLOW_STYLE} aria-hidden="true" />
-      <div className="dt-webintro__stage" style={{ position: "relative", zIndex: 1 }} aria-hidden="true">
-        <div ref={markRef} className="dt-webintro__mark">
-          <SolLogoMark size={84} accent />
-        </div>
-        <strong
-          ref={wordRef}
-          className="dt-webintro__word"
-          style={{ fontFamily: "var(--font-display, var(--dt-sans))" }}
+    <div ref={rootRef} className="dt-akash fixed inset-0 z-[90] grid cursor-pointer place-items-center overflow-hidden bg-canvas" style={MICA_STYLE} role="status" aria-label="DevThink is opening" onClick={handOver}>
+      <div className="dt-akash__glow" style={GLOW_STYLE} aria-hidden="true" />
+      <div ref={stageRef} className="relative z-[1] grid justify-items-center gap-5" aria-hidden="true">
+        <div
+          ref={tileRef}
+          className="dt-akash__tile grid h-24 w-24 place-items-center rounded-2xl bg-s0 text-ink ring-1 ring-hairline-strong"
+          style={{ boxShadow: "0 1px 2px rgb(0 0 0 / 30%), 0 8px 24px -8px rgb(0 0 0 / 35%)" }}
         >
-          DevThink
-        </strong>
-        <span ref={roleRef} className="dt-webintro__role" style={ROLE_STYLE}>
-          the local os
-        </span>
+          <SolLogoMark size={52} accent />
+        </div>
+        <div className="grid justify-items-center gap-1.5">
+          <strong
+            className="dt-akash__word font-display text-[30px] font-semibold leading-[1.1] tracking-[-0.02em] text-ink"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            DevThink
+          </strong>
+          <span className="dt-akash__role font-mono text-[10px] font-medium tracking-[.08em] text-ink-3">
+            the local os
+          </span>
+        </div>
       </div>
     </div>
   );

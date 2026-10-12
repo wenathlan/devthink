@@ -5,13 +5,16 @@
  * desktop app (the chrome stays neutral graphite; the icons carry the color).
  * Apps with an entry in the premium drawn set (Sol/shell/appicons.tsx),
  * reached by the registry `iconset` key, render their animated icon filling
- * the whole tile — the tile keeps its box and its tinted ambient glow while
- * the icon brings its own painted depth. Every other app falls back to its
- * lucide glyph at a crisp 1.7 stroke or the official DevThink logo mark, and
- * an `iconset` key without an asset in the set resolves to the same graceful
+ * the whole tile — the tile keeps its box and its material while the icon
+ * brings its own painted depth. Every other app falls back to its lucide
+ * glyph at a crisp 1.7 stroke or the official DevThink logo mark, and an
+ * `iconset` key without an asset in the set resolves to the same graceful
  * fallback — never a blank tile. The tile tint starts from the registry color
  * and is refined by the story color the icon catalog row declares (the
- * reviewed seeds answer offline).
+ * reviewed seeds answer offline). The material is the trylle recipe on the
+ * tile: an inset top light and a grounded bottom shade over the identity
+ * gradient, the 1px ring FIRST and then the doubling soft drop — and never
+ * a tinted glow (the campaign bans it).
  *
  * The live contract (task C1-06, extended by campaign v3 · R1-b): while the
  * pointer is over the tile the component raises `data-live="true"` on the
@@ -119,15 +122,16 @@ export function AppTile({ app, size = 22, label }: AppTileProps) {
   const liveFlag = live ? "true" : undefined;
   /* the tile material, composed on the token system (task 3-a): the fluent
      squircle tinted by the app identity color — a subtle per-app gradient
-     (lighter tinted top over a deeper graphite base), an inset top highlight,
-     a tinted dark hairline and layered diffuse shadows with one soft glow
-     from the identity color. Size/rounding per context ride the component:
-     the box reads --dt-tile-size (the 40px default) and the parents win where
-     they compose a [&_.dt-tile] override. The premium variant (data-tile=set)
-     surrenders the background and hairline — the drawn icon paints its own
-     gradient face — while keeping the box and the glow. */
+     (lighter tinted top over a deeper graphite base), an inset top light,
+     a grounded bottom shade, the 1px ring first and one soft neutral drop
+     (the trylle ladder; never a tinted glow). Size/rounding per context ride
+     the component: the box reads --dt-tile-size (the 40px default) at the
+     10px base radius of the law, and the parents win where they compose a
+     [&_.dt-tile] override. The premium variant (data-tile=set) surrenders
+     the background and hairline — the drawn icon paints its own gradient
+     face — while keeping the box and the shadow material. */
   const tileClass =
-    "dt-tile grid size-[var(--dt-tile-size,40px)] flex-none place-items-center overflow-visible rounded-[11px] text-[var(--app-tint,#dfe5ee)] bg-[linear-gradient(180deg,color-mix(in_srgb,var(--app-tint,#dfe5ee)_22%,rgb(47_52_65/88%)),color-mix(in_srgb,var(--app-tint,#dfe5ee)_9%,rgb(27_30_38/94%)))] border border-[color:color-mix(in_srgb,var(--app-tint,#dfe5ee)_26%,rgb(255_255_255/5%))] shadow-[inset_0_1px_0_rgb(255_255_255/13%),inset_0_-1px_0_rgb(0_0_0/24%),0_1px_2px_rgb(0_0_0/34%),0_5px_14px_-4px_rgb(0_0_0/32%),0_3px_12px_-4px_color-mix(in_srgb,var(--app-tint,#dfe5ee)_28%,transparent)] transition-[box-shadow,transform] duration-150 ease-micro data-[tile=set]:bg-none data-[tile=set]:border-0 data-[tile=set]:shadow-[inset_0_1px_0_rgb(255_255_255/13%),inset_0_-1px_0_rgb(0_0_0/24%),0_1px_2px_rgb(0_0_0/34%),0_5px_14px_-4px_rgb(0_0_0/32%),0_3px_12px_-4px_color-mix(in_srgb,var(--app-tint,#dfe5ee)_28%,transparent)]";
+    "dt-tile grid size-[var(--dt-tile-size,40px)] flex-none place-items-center overflow-visible rounded-lg text-[var(--app-tint,#dfe5ee)] bg-[linear-gradient(180deg,color-mix(in_srgb,var(--app-tint,#dfe5ee)_22%,rgb(47_52_65/88%)),color-mix(in_srgb,var(--app-tint,#dfe5ee)_9%,rgb(27_30_38/94%)))] border border-[color:color-mix(in_srgb,var(--app-tint,#dfe5ee)_26%,rgb(255_255_255/5%))] shadow-[inset_0_1px_0_rgb(255_255_255/13%),inset_0_-1px_0_rgb(0_0_0/24%),0_0_0_1px_rgb(0_0_0/12%),0_1px_2px_rgb(0_0_0/30%)] transition-[box-shadow,transform] duration-150 ease-micro data-[tile=set]:bg-none data-[tile=set]:border-0 data-[tile=set]:shadow-[inset_0_1px_0_rgb(255_255_255/13%),inset_0_-1px_0_rgb(0_0_0/24%),0_0_0_1px_rgb(0_0_0/12%),0_1px_2px_rgb(0_0_0/30%)]";
   if (Premium) {
     return (
       <span

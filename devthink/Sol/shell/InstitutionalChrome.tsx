@@ -76,13 +76,13 @@ export function stagedEntrance(reduced: boolean, delay: number): CSSProperties |
   return { animation: "riseIn .55s var(--dt-ease) backwards", animationDelay: `${delay}ms` };
 }
 
-/** the named light source of the sol stage: the solar accent enters high on
- * the right, a neutral silver wash anchors the low left (never a second
- * hue — the Sol signature keeps one accent per page) — --sol-canvas stays
- * the base so the theme tokens keep owning it. */
+/** the named light source of the sol stage: the system accent enters high on
+ * the right, a neutral silver wash anchors the low left (never a second hue —
+ * one accent per page, and the retired amber slot resolves to the system
+ * accent) — --sol-canvas stays the base so the theme tokens keep owning it. */
 export const pagestageStyle: CSSProperties = {
   background:
-    "radial-gradient(1200px 700px at 76% -12%, rgb(245 158 11 / 8%), transparent 62%), radial-gradient(900px 620px at 6% 108%, rgb(201 205 214 / 5%), transparent 58%), var(--sol-canvas)",
+    "radial-gradient(1200px 700px at 76% -12%, color-mix(in srgb, var(--color-win) 8%, transparent), transparent 62%), radial-gradient(900px 620px at 6% 108%, rgb(201 205 214 / 5%), transparent 58%), var(--sol-canvas)",
 };
 
 /** the institutional pages every public surface links to */

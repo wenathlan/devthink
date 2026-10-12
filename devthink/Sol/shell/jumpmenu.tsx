@@ -2,17 +2,20 @@
  * jumpmenu.tsx — the taskbar jump list (the right-click menu of a taskbar
  * pin), painted as Tailwind composition on the design tokens (task 3-a): the
  * .acrylic-menu Fluent surface (rgb(43 43 43 / 85%) + saturate(3) blur(20px)
- * + grain, 8px corners, the flyout shadow) at 240px, 32px rows on the 9%
- * wash with their 16px stroke-1.5 glyphs in a left rail, the mono shortcut
- * rhythm and the 150ms scale .97→1 menu entrance of the ShellChrome mount
- * state. The entries derive from the app target — "Open" first, then the
- * kind-specific quick entry (window → "Open window", destination/route →
- * "Open <name>", os → "Open in OS", external → "Open <app> site" via the
- * familyurl deploy base) — followed by a hairline separator and the
- * pin/unpin action. The pin order persists in localStorage
- * "dt.taskbar.pins.v1" as an id list; a missing, malformed or empty list
- * falls back to the defaults. role="menu" with arrow-key (and Home/End)
- * navigation; Escape and outside clicks are handled by the chrome.
+ * + grain, 8px corners, the flyout shadow) at 240px, 32px rows on the win11
+ * menu wash with their 16px stroke-1.5 glyphs in a left rail, the mono
+ * shortcut rhythm and the 150ms scale .97→1 menu entrance of the ShellChrome
+ * mount state (the doctrine micro curve, transition-owned — one motion
+ * owner, no double entrance). The entries derive from the app target —
+ * "Open" first, then the kind-specific quick entry (window → "Open window",
+ * destination/route → "Open <name>", os → "Open in OS", external →
+ * "Open <app> site" via the familyurl deploy base) — followed by a hairline
+ * separator and the pin/unpin action. Keyboard focus answers the campaign
+ * rule: a 2px accent underline (inset box-shadow), never a halo. The pin
+ * order persists in localStorage "dt.taskbar.pins.v1" as an id list; a
+ * missing, malformed or empty list falls back to the defaults. role="menu"
+ * with arrow-key (and Home/End) navigation; Escape and outside clicks are
+ * handled by the chrome.
  */
 
 import { AppWindow, Compass, Globe, LayoutGrid, type LucideIcon, Pin, PinOff, Play } from "lucide-react";
@@ -76,7 +79,7 @@ function jumpEntries(app: DesktopApp): JumpEntry[] {
 }
 
 const ITEM_CLASS =
-  "flex w-full min-h-8 cursor-pointer items-center gap-2.5 rounded-xs border-0 bg-transparent px-2.5 py-1 text-left font-sans text-xs font-medium text-ink transition-colors duration-100 hover:bg-white/9 focus-visible:outline-1 focus-visible:-outline-offset-1 focus-visible:outline-white/40 light:hover:bg-black/8";
+  "flex w-full min-h-8 cursor-pointer items-center gap-2.5 rounded-xs border-0 bg-transparent px-2.5 py-1 text-left font-sans text-xs font-medium text-ink transition-colors duration-100 ease-in-out hover:bg-white/9 focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none light:hover:bg-black/8";
 
 const ICON_CLASS = "flex-none text-ink-2";
 
@@ -150,7 +153,7 @@ export function JumpList({ app, open, x, y, pinned, onOpen, onTogglePin, onClose
   return (
     <div
       ref={listRef}
-      className="acrylic-menu fixed z-(--z-menu) w-60 min-w-[200px] origin-top-left rounded-md p-1.5 animate-menu-in transition-[opacity,transform] duration-150 ease-fluent data-[hide=true]:pointer-events-none data-[hide=true]:scale-[0.97] data-[hide=true]:opacity-0"
+      className="acrylic-menu fixed z-(--z-menu) w-60 min-w-[200px] origin-top-left rounded-md p-1.5 transition-[transform,opacity] duration-150 ease-micro data-[hide=true]:pointer-events-none data-[hide=true]:scale-[0.97] data-[hide=true]:opacity-0"
       role="menu"
       aria-label={`${app.name} options`}
       data-hide={open ? undefined : "true"}

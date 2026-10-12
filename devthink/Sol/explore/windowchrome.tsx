@@ -3,9 +3,12 @@
  * window hover of the top edge: when the pointer touches the top border of
  * the viewport a thin Fluent bar slides in with the minimize/maximize/close
  * glyphs and fades away after ~1.2s without pointer movement (any movement
- * while it is visible keeps it alive). Presentational only — the actions are
- * the callbacks of the page (minimize collapses the landing into a restore
- * chip, maximize toggles the full-bleed frame, close returns to the intro).
+ * while it is visible keeps it alive). The bar is the Windows caption
+ * grammar at the viewport edge: acrylic canvas fill, hairline bottom, 60ms
+ * caption hovers, the close glyph riding the red. Presentational only — the
+ * actions are the callbacks of the page (minimize collapses the landing
+ * into a restore chip, maximize toggles the full-bleed frame, close returns
+ * to the intro). Fully self-contained: theme utilities, no stylesheet rules.
  */
 
 import { Copy, Minus, Square, X } from "lucide-react";
@@ -45,14 +48,22 @@ export function WindowEdgeChrome({ maximized, onMinimize, onMaximize, onClose }:
     };
   }, []);
 
+  const captionClass =
+    "grid h-9 w-11 place-items-center text-ink-2 transition-colors duration-[60ms] hover:bg-[rgb(136_136_136_/_0.2)] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none";
+
   return (
-    <div className={visible ? "dt-edgechrome is-visible" : "dt-edgechrome"} aria-hidden={!visible}>
-      <span className="dt-edgechrome__brand" aria-hidden="true">
+    <div
+      className={`fixed inset-x-0 top-0 z-[80] flex h-9 items-center gap-3 border-b border-hairline bg-canvas/80 px-3 backdrop-blur-xl backdrop-saturate-150 transition-[transform,opacity] duration-200 ease-fluent motion-reduce:transition-none ${
+        visible ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-full opacity-0"
+      }`}
+      aria-hidden={!visible}
+    >
+      <span className="text-ink-2" aria-hidden="true">
         <SolLogoMark size={13} />
       </span>
-      <span className="dt-edgechrome__title">explore — devthink</span>
-      <span className="dt-edgechrome__glyphs">
-        <button type="button" tabIndex={visible ? 0 : -1} aria-label="Minimize the landing" onClick={onMinimize}>
+      <span className="font-mono text-[11px] text-ink-2">explore — devthink</span>
+      <span className="ml-auto flex items-center">
+        <button type="button" tabIndex={visible ? 0 : -1} aria-label="Minimize the landing" onClick={onMinimize} className={captionClass}>
           <Minus size={13} aria-hidden="true" />
         </button>
         <button
@@ -60,10 +71,17 @@ export function WindowEdgeChrome({ maximized, onMinimize, onMaximize, onClose }:
           tabIndex={visible ? 0 : -1}
           aria-label={maximized ? "Restore the landing" : "Maximize the landing"}
           onClick={onMaximize}
+          className={captionClass}
         >
           {maximized ? <Copy size={11} aria-hidden="true" /> : <Square size={11} aria-hidden="true" />}
         </button>
-        <button type="button" tabIndex={visible ? 0 : -1} aria-label="Close and return to the intro" onClick={onClose}>
+        <button
+          type="button"
+          tabIndex={visible ? 0 : -1}
+          aria-label="Close and return to the intro"
+          onClick={onClose}
+          className={`${captionClass} rounded-none hover:bg-[rgb(255_0_0_/_0.8)] hover:text-white`}
+        >
           <X size={14} aria-hidden="true" />
         </button>
       </span>
