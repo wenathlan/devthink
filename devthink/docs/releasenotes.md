@@ -1,29 +1,28 @@
-# Devthink 2.0.96
+# Devthink 2.0.97
 
-— the family wears the real windows face and the onboarding rides the db
+— the windows hands complete every interaction and the stages walk the graphs
 
 ### Added
 
 | Area | Change |
 | --- | --- |
-| The onboarding page of the os | The devthink sol gains the onboarding page the flow law demanded: the frame-a-frame tour in window grammar registers its anchor and route, the intro hands over to it and only a finished visitor reaches the explore surface. |
-| The onboarding state catalog | Every application of the family gains the onboardingstate module (the one writer of the introseen and onboardingseen flags), the OnboardingState model in the prisma schema and the prepared-statement accessors in the db layer, so the seen state rides the database catalogue instead of a private browser flag. |
-| The entry gate | The home anchor of every theme consults the entry gate before painting: an unseen intro replaces onto /intro, an unseen onboarding onto /onboarding and the orphan-route bug that let a first visit bypass the opening flow is dead. The devthink server answers the GET and POST of /api/v1/onboarding. |
-| The devthink onboarding state test | The suite pins the https-only host validation, the doctrine keys and the base resolver of the state accessor. |
+| The windows interaction surface | The devthink desktop completes the macro layer the owner ordered: the pointer-captured window drag with the maximize ghost, the alt-tab switcher in acrylic with the keyboard grammar (alttab.ts + alttabswitcher.tsx), the recent-apps ladder behind the start recommendations, the win11 context menu with icon-and-shortcut rows and the quick-settings cellular tile. |
+| The graph engine | The devthink root gains graphnodes, graphrunner and graphviewstate (the pure topological stage machine with per-node state, retries and stable waves), the console draws the boot stages as the trylle card graph and the forge/foundry roots carry their own plans so the runs and the artifact pipeline walk their nodes by stages. |
+| The suno canvas of debonair | The debonair surface re-dresses on the captured suno tokens: the prompt-first hero, the song cards with the hover play, the stage stepper over the studio flow and the fixed acrylic player bar. |
+| The micro windows pass | Argan, vault, getry, cadria, stealthhead, saddle, forge, foundry and cobaia close every control on the fluent hand: the 300ms acrylic tooltips, the disabled opacity, the opacity shimmer skeletons, the win11 scrollbars and the stagger entries — the identity color stays on the mark and the windows accent keeps the focus. |
 
 ### Changed
 
 | Area | Change |
 | --- | --- |
-| The windows identity | The sol stylesheets of the whole family were rewritten integrally on the windows foundation — the mica desktop, the acrylic 48px bar, the 38×38 pins with the popintro bounce and the press scale, the ladder state indicator, the fluent window curve with the red close, the win11 scrollbars and the win10 blend on the inner controls — and the trylle ruler rides over the surfaces: the canvas ladder, the hairlines, the ring shadows, the 13px body on the inter and geist mono stacks, the .625rem radii and the real button tone stack. |
-| The navigation shells | Every theme shell answers the windows hands — the resize handles, the inactive law, the caption buttons — while the amber general accent retires: each app keeps its own identity color on the mark and the content, and the focus and the bar cta wear the windows accent. |
+| The cadria studio | The title bar drag rides the rAF batch with the snap ghost overlay (halves and maximize), the timeline scrubs per frame with the accent playhead and the gallery staggers the trylle elevation ladder. |
+| The route surface | The devthink routes play the real windows entry and exit curves and the workspace routes survive the surface swap. |
 
 ### Fixed
 
 | Area | Change |
 | --- | --- |
-| The cobaia install contract | The cobaia pnpm workspace carries the allowBuilds map and the family override pins, so the frozen install builds the db engines and the osv scan answers clean. |
-| The flat structure contract | The entry gates of debonair and getry answer their own name, the duplicate-content scan passes and the dependency updates of the ladder ride the sync. |
+| The window listeners | The windowframe pointer listeners ride the event contract casts and the workbench reuses its live root across hot updates, so the dev server and the preview never blank on reload. |
 
 ## Distribution channels
 
@@ -31,22 +30,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.96.tgz`
+- `wenathlan-devthink-2.0.97.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.96.nupkg`
+- `devthink.2.0.97.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.96.pom`
-- `devthink-2.0.96.jar`
-- `devthink2.0.96.zip`
-- `devthink-declarations-2.0.96.zip`
+- `devthink-2.0.97.pom`
+- `devthink-2.0.97.jar`
+- `devthink2.0.97.zip`
+- `devthink-declarations-2.0.97.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -60,77 +59,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.96.gem`
+- `devthink-2.0.97.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.96.vsix`
+- `devthink-vscode-2.0.97.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.96.xpi`
+- `devthink-firefox-2.0.97.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.96.zip`
+- `devthink-safari-2.0.97.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.96.zip`
-- `devthink-2.0.96-source.tar.xz`
-- `devthink-nativehost-2.0.96.template.json`
+- `devthink2.0.97.zip`
+- `devthink-2.0.97-source.tar.xz`
+- `devthink-nativehost-2.0.97.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.96.zip`
+- `devthink-site-2.0.97.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.96.zip`
+- `devthink-declarations-2.0.97.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.96.json`
-- `devthink-attestations-2.0.96.json`
-- `devthink-artifactmanifest-2.0.96.json`
+- `devthink-sbom-2.0.97.json`
+- `devthink-attestations-2.0.97.json`
+- `devthink-artifactmanifest-2.0.97.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.96.tgz`
-- `devthink.2.0.96.nupkg`
-- `devthink-2.0.96.pom`
-- `devthink-2.0.96.jar`
-- `devthink-2.0.96.gem`
+- `wenathlan-devthink-2.0.97.tgz`
+- `devthink.2.0.97.nupkg`
+- `devthink-2.0.97.pom`
+- `devthink-2.0.97.jar`
+- `devthink-2.0.97.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.96.vsix`
-- `devthink-firefox-2.0.96.xpi`
-- `devthink-safari-2.0.96.zip`
-- `devthink2.0.96.zip`
-- `devthink-2.0.96-source.tar.xz`
-- `devthink-nativehost-2.0.96.template.json`
-- `devthink-site-2.0.96.zip`
-- `devthink-declarations-2.0.96.zip`
-- `devthink-sbom-2.0.96.json`
-- `devthink-attestations-2.0.96.json`
-- `devthink-artifactmanifest-2.0.96.json`
+- `devthink-vscode-2.0.97.vsix`
+- `devthink-firefox-2.0.97.xpi`
+- `devthink-safari-2.0.97.zip`
+- `devthink2.0.97.zip`
+- `devthink-2.0.97-source.tar.xz`
+- `devthink-nativehost-2.0.97.template.json`
+- `devthink-site-2.0.97.zip`
+- `devthink-declarations-2.0.97.zip`
+- `devthink-sbom-2.0.97.json`
+- `devthink-attestations-2.0.97.json`
+- `devthink-artifactmanifest-2.0.97.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 
