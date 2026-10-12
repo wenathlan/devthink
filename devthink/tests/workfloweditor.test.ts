@@ -2,15 +2,14 @@ import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 import {
   actionrisk,
-  dryrunprojection,
   editorsavegate,
   exportcontentreview,
   runreviewgranted,
   validatesiteoverride,
   watchdogconfigvalid,
 } from "../policy.js";
-import { editorstate, runhistoryquery, runhistoryreport, workflowfileversion } from "../protocol.js";
-import type { editorlayout, editormodel, steptemplate, toolstep, variablescope, workflowrecord } from "../types.js";
+import { editorstate, workflowfileversion } from "../protocol.js";
+import type { editorlayout, editormodel, steptemplate, toolstep, workflowrecord } from "../types.js";
 import {
   addedge,
   addnode,
@@ -20,7 +19,6 @@ import {
   composeworkflow,
   diffversions,
   editstep,
-  expandblocks,
   expandtemplate,
   exportworkflow,
   groupselect,
@@ -42,7 +40,6 @@ import {
   snapnode,
   steptemplateof,
   undoedit,
-  watchdogpass,
   workflowblockof,
   workflowstepof,
   zoomcanvas,
@@ -362,6 +359,15 @@ describe("editor mini map and zoom", () => {
 describe("editor version diffs", () => {
   it("highlights added, removed and changed steps between two versions", () => {
     const base = composedworkflow();
+    const inner = workflowblockof({
+      name: "inner",
+      label: "Inner block",
+      steps: [
+        { id: "i1", kind: "readtext", label: "Read the heading", target: "h1" },
+        { id: "i2", kind: "wait", label: "Inner wait", value: "5" },
+      ],
+    });
+    if (!inner) throw new Error("The inner block did not normalize.");
     const edited = composeworkflow({
       id: "wf1",
       name: "roundtrip",
@@ -372,16 +378,7 @@ describe("editor version diffs", () => {
         { block: "inner", label: "Call inner" },
         { id: "s3", kind: "wait", label: "Fresh wait", value: "20" },
       ],
-      blocks: [
-        workflowblockof({
-          name: "inner",
-          label: "Inner block",
-          steps: [
-            { id: "i1", kind: "readtext", label: "Read the heading", target: "h1" },
-            { id: "i2", kind: "wait", label: "Inner wait", value: "5" },
-          ],
-        })!,
-      ],
+      blocks: [inner],
       now,
       kindallowed,
       riskof,

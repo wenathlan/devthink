@@ -1,5 +1,5 @@
 {
-  "release": "2.0.94",
+  "release": "2.0.97",
   "checklist": "docs/agentcert.md",
   "clockmode": "fake",
   "faketabkinds": [

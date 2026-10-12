@@ -324,7 +324,7 @@ export function onboardingsteps(): onboardingstep[] {
 }
 
 /** Starts the onboarding once on first install or on an explicit replay: a fresh walkthrough begins while an already done state resets. */
-export function onboardingstart(previous: onboardingstate | undefined, now: number): onboardingstate {
+export function onboardingstart(_previous: onboardingstate | undefined, now: number): onboardingstate {
   return { stepscompleted: [], done: false, startedat: now };
 }
 
@@ -630,7 +630,9 @@ export function focusorderof(controls: readonly string[] = reviewdialogorder): {
   }
   if (controls.length === 0) throw new Error("The review dialog focus order needs its controls.");
   const order = controls.map((control, index) => ({ control, tabindex: index + 1 }));
-  return { order, focusfirst: controls[0]! };
+  const focusfirst = controls[0];
+  if (!focusfirst) throw new Error("The review dialog focus order needs its controls.");
+  return { order, focusfirst };
 }
 
 /* ── Merged from statusviews.ts ── */
@@ -971,7 +973,7 @@ export function guidedtipdismiss(tips: guidedtip[], dismissed: string[], tipid: 
 }
 
 /** Recalls every dismissed guidedtip: the recall clears the dismissed list so the tips show again. */
-export function guidedtiprecall(dismissed: string[]): string[] {
+export function guidedtiprecall(_dismissed: string[]): string[] {
   return [];
 }
 
