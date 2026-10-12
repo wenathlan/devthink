@@ -10,24 +10,28 @@
 import { ArrowRight } from "lucide-react";
 // # Home — the LANDING (campaign 5-b): the Suno-style prompt-first hero over
 // the noir stage with the brass light — one giant mono field with the single
-// create key and the engine's own genre matrix as chips — then the featured
-// cover rail, the 01–03 create flow, the engine ledger with the spec proof
-// and the footer meta-quad carrying the family row (the familyurl contract
-// over the family.ts table — the same table the rail foot and the tests read).
+// create key and the engine's own genre matrix as chips — then the song grid
+// (cover, title, genre line, duration, the play key on hover, the shimmer
+// skeleton while the catalog answers, the 60ms stagger on entry), the 01–03
+// create flow, the engine ledger with the spec proof and the footer
+// meta-quad carrying the family row (the familyurl contract over the
+// family.ts table — the same table the rail foot and the tests read).
 // The hero lockup owns the mark on the landing; the typed draft hands over
 // to the composer through the session draft (debonair.draft).
-import { type CSSProperties, type FormEvent, useEffect, useState } from "react";
+import { type CSSProperties, type FormEvent, useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
+import { planTake, type TakePlan } from "../../arranger.ts";
 import { listHeroBadges, listLibraryTracks, listStageCards } from "../../catalog.ts";
 import { familyrow } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
 import { GENRES } from "../../genrematrix.ts";
 import type { FeatureCard, LibraryTrackRow, SignalBadge } from "../../katexis.ts";
 import { MASTERING, PROMPT_MAX_LENGTH } from "../../katexis.ts";
+import { busFeature, busPlay, busSubscribe } from "../../playerbus.ts";
 import { PROMPT_DRAFT_KEY, type PromptDraft } from "../generate/generate.tsx";
 import { DebonairMark, type NavLink, Shell } from "../shell/Shell.tsx";
-import { CoverArt } from "./coverart.tsx";
 import EntryGate from "./entrygate.tsx";
+import { SongCard, SongCardSkeleton } from "./songcard.tsx";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Studio", href: "/studio" },
@@ -63,6 +67,8 @@ function HomeSurface() {
   const [cards, setCards] = useState<readonly FeatureCard[]>([]);
   const [badges, setBadges] = useState<readonly SignalBadge[]>([]);
   const [tracks, setTracks] = useState<readonly LibraryTrackRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [liveId, setLiveId] = useState("");
   const [mood, setMood] = useState("techno");
   const [draft, setDraft] = useState("");
 
@@ -75,12 +81,30 @@ function HomeSurface() {
       if (live) setBadges(rows);
     });
     listLibraryTracks().then((rows) => {
-      if (live) setTracks(rows);
+      if (live) {
+        setTracks(rows);
+        setLoading(false);
+      }
     });
     return () => {
       live = false;
     };
   }, []);
+
+  // the player bus shares one transport with the shell bar: the landing
+  // marks the take the bar is playing so the card key can wear the live ring
+  useEffect(() => busSubscribe((view) => setLiveId(view.playing ? (view.takes[view.index]?.id ?? "") : "")), []);
+
+  /** the engine take a row renders on demand: the row name IS the prompt and
+   * the seed, so the same card always plays the same real take */
+  const rowTakes = useMemo(() => {
+    const map = new Map<string, TakePlan>();
+    for (const track of tracks) {
+      const genre = GENRES.find((entry) => entry.label.toLowerCase() === track.genre.toLowerCase());
+      map.set(track.name, planTake({ prompt: `${track.genre} ${track.name}`, seed: track.name, genreId: genre?.id }));
+    }
+    return map;
+  }, [tracks]);
 
   /** hands the hero draft to the composer: the payload rides the session
    * storage (tab memory, nothing touches the machine) and the generate page
@@ -97,6 +121,13 @@ function HomeSurface() {
       }
     }
     navigate("/generate");
+  };
+
+  /** hands a card row to the shared transport: the take lands on the bus and
+   * the bar (and this card) wear the live state */
+  const playRow = (take: TakePlan): void => {
+    busFeature(take);
+    busPlay(0);
   };
 
   return (
@@ -167,7 +198,9 @@ function HomeSurface() {
         </div>
       </section>
 
-      {/* FEATURED RAIL — cover-led, snap scrolling, ONE raised card */}
+      {/* SONG GRID — the suno grammar: cover, title, the genre line, the
+          duration and the play key on hover; the skeleton shimmer stands in
+          while the catalog answers and the row enters on the 60ms stagger */}
       <section className="shell section" aria-labelledby="rail-h">
         <div className="section-head">
           <p className="eyebrow reveal">from the library</p>
@@ -175,23 +208,30 @@ function HomeSurface() {
             Fresh from the render queue
           </h2>
         </div>
-        <div className="cover-rail">
-          {tracks.map((track, index) => (
-            <article key={track.name} className={`cover-card reveal${index === 3 ? " is-featured" : ""}`}>
-              <span className="cover-frame" aria-hidden="true">
-                <CoverArt name={track.name} />
-              </span>
-              <h3 className="cover-name">{track.name}</h3>
-              <p className="cover-meta">{`${track.genre} · ${track.duration}`}</p>
-            </article>
-          ))}
+        <div className="song-grid" role="list">
+          {loading
+            ? [0, 1, 2, 3, 4, 5].map((slot) => <SongCardSkeleton key={`sk-${slot}`} slot={slot} />)
+            : tracks.map((track, index) => {
+                const take = rowTakes.get(track.name);
+                if (!take) return null;
+                return (
+                  <SongCard
+                    key={track.name}
+                    track={track}
+                    take={take}
+                    slot={index}
+                    live={liveId === take.id}
+                    onPlay={playRow}
+                  />
+                );
+              })}
         </div>
         <p className="rail-foot reveal">
-          The engine's real takes play in the studio —{" "}
+          The engine's real takes play right here — press a cover, the bar below carries it — or{" "}
           <Link className="rail-link" href="/studio">
             open the console
           </Link>{" "}
-          and press play.
+          and ride the desk.
         </p>
       </section>
 
