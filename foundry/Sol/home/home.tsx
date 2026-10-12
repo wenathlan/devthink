@@ -89,7 +89,8 @@ function FamilyRow() {
             href={familyurl(member.slug)}
             target="_blank"
             rel="noreferrer"
-            title={`open ${member.slug} — a family application`}
+            data-tip={`open ${member.slug} — a family application`}
+            aria-label={`open ${member.slug} — a family application`}
           >
             <span className="fd-familyrow__dot" style={{ background: member.accent }} aria-hidden="true" />
             {member.slug}
