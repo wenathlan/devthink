@@ -31,8 +31,12 @@ import { TerminalSquare } from "lucide-react";
 import { type CSSProperties, useEffect, useRef, useState } from "react";
 import { ShellChrome } from "@/shell/ShellChrome";
 import { gatewayReady } from "../../gateway.js";
+import { type runstageview, createrunner } from "../../graphrunner.js";
+import { makeviewstate } from "../../graphviewstate.js";
 import { bootdelay, bootlines, consoleprompt, consoleversion } from "./boot.ts";
+import { BOOT_STAGE_GAP, bootgraph, bootrunnerhandler } from "./bootgraph.ts";
 import { catalogcommands, completions, exitclasses, globalflags, responseof } from "./commandcatalog.ts";
+import { GraphView } from "./graphview.tsx";
 import type { TerminalRow, TerminalState } from "./terminal.tsx";
 import Terminal from "./terminal.tsx";
 
@@ -91,6 +95,7 @@ button.console-reference__run:focus-visible { outline: 2px solid color-mix(in sr
 .console-note span:first-child { display: inline-flex; align-items: center; gap: 8px; color: var(--dtv3-ink-2); }
 .console-note span:first-child.is-paired { color: var(--dtv3-sig); }
 .console-note__lamp { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.console-boot { display: grid; gap: 14px; }
 @media (max-width: 900px) {
   .console-grid { grid-template-columns: 1fr; }
   .console-reference { padding-left: 0; padding-top: 20px; border-left: 0; border-top: 1px solid var(--dtv3-hairline); }
@@ -143,12 +148,21 @@ const titleStyle = {
 } as const;
 const ledeStyle = { margin: 0, maxWidth: "52ch", color: "var(--dt-muted)", fontSize: 14, lineHeight: 1.75 } as const;
 
-/** the console page: the terminal pane beside the command reference panel of the registry. */
+/** the boot stages graph of the page: the catalog built once at module load,
+ * the layered positions answered once by the pure view state — the runner
+ * only feeds the states the drawing reads. The page itself is the terminal
+ * pane beside the command reference panel of the registry. */
+const bootstagesgraph = bootgraph();
+const bootstagespositions = makeviewstate(bootstagesgraph, { columnwidth: 240, rowheight: 76 }).positions;
+
 export default function Console() {
   const rowseq = useRef(0);
   const bootedref = useRef(false);
   const [rows, setRows] = useState<TerminalRow[]>([]);
   const [termstate, setTermstate] = useState<TerminalState>("halted");
+  const [runview, setRunview] = useState<runstageview | null>(null);
+  const [graphselect, setGraphselect] = useState<string | null>(null);
+  const graphrunref = useRef(false);
   const paired = gatewayReady();
   const running = termstate === "running";
 
@@ -176,6 +190,28 @@ export default function Console() {
     };
     boot().catch(() => {
       if (!cancelled) setTermstate("running");
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  /** rides the boot stages graph once on mount: the runner walks the waves
+   * (one wave per stage, the three surfaces arming together) and every view
+   * snapshot lands on the drawing; the page never rides on the walk failing. */
+  useEffect(() => {
+    if (graphrunref.current) return;
+    graphrunref.current = true;
+    let cancelled = false;
+    const ride = createrunner(bootstagesgraph, {
+      handler: bootrunnerhandler,
+      stagegap: BOOT_STAGE_GAP,
+      onview: (view) => {
+        if (!cancelled) setRunview(view);
+      },
+    });
+    ride.run().catch(() => {
+      /* the boot ride stays decorative: the terminal carries the session state */
     });
     return () => {
       cancelled = true;
@@ -236,10 +272,38 @@ export default function Console() {
               </span>
               <span>tab completes · ↑↓ history · enter runs</span>
             </p>
+            <div className="console-boot">
+              <p className="r2a-kicker">
+                02 · boot stages
+                <b>
+                  {runview
+                    ? `${runview.status} · stage ${Math.min(runview.stageindex + 1, Math.max(runview.stages.length, 1))}/${Math.max(runview.stages.length, 1)}`
+                    : "arming"}
+                </b>
+              </p>
+              <GraphView
+                graph={bootstagesgraph}
+                positions={bootstagespositions}
+                nodestates={runview?.nodestates}
+                stages={runview?.stages}
+                stageindex={runview?.stageindex ?? 0}
+                progress={runview?.progress ?? 0}
+                selected={graphselect}
+                onselect={setGraphselect}
+                label="the boot stages of the cli riding the graph runner, one wave per stage"
+              />
+              <p className="console-note">
+                <span>
+                  the boot rides the graph runner — banner, config and the engine arm stage by stage, the gateway, mcp
+                  and palette surfaces arm together, and ready closes the walk
+                </span>
+                <span>{`${Math.round(runview?.progress ?? 0)}% of the walk done`}</span>
+              </p>
+            </div>
           </div>
           <aside className="console-reference enter" style={step(2)} aria-labelledby="consolereferencetitle">
             <p className="r2a-kicker">
-              02 · command reference
+              03 · command reference
               <b>{`${catalogcommands.length} commands`}</b>
             </p>
             <h2 className="console-reference__title" id="consolereferencetitle">
