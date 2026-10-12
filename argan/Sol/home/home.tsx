@@ -441,7 +441,8 @@ function HomeLanding() {
               href={familyurl(member.slug)}
               target="_blank"
               rel="noreferrer"
-              title={`open ${member.slug} in its own deploy`}
+              data-tip={`open ${member.slug} in its own deploy`}
+              aria-label={member.slug}
             >
               <span className="r3a-foot__famdot" aria-hidden="true" style={{ backgroundColor: member.accent }} />
               {member.slug}

@@ -3045,6 +3045,134 @@ a.r3a-row:hover {
   }
 }
 
+/* ==========================================================================
+   micro-windows pass — argan (task 2-d): the last micros the window hand
+   owes every control. The honest disabled face (half ink, no pointer), the
+   acrylic tooltip with the 300ms delay (the monorepo data-tip pattern, the
+   ::before face so the raillink keeps its indicator ::after), the opacity
+   shimmer instead of dots for the loading face of the ledgers, the press
+   parity on the chip and the restore chip. Appended after the foundation
+   passes; the reduced-motion hard stop below stays the last word.
+   ========================================================================== */
+
+/* the disabled hand: an honest control rests at half ink and never points */
+.btn:disabled,
+.btn[aria-disabled="true"],
+.r3a-chip:disabled,
+.r3a-chip[aria-disabled="true"],
+.r3a-dig__key:disabled,
+.r3a-dig__input:disabled,
+.input:disabled,
+.winapp__cap:disabled,
+.winapp__theme:disabled,
+.winchip:disabled,
+.winonboard__act:disabled,
+.winonboard__skip:disabled,
+.toggle input:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.toggle input:disabled + .track {
+  opacity: 0.5;
+}
+
+/* the acrylic tooltip of the family (the data-tip attribute, ::before so the
+   raillink indicator keeps its ::after): the windows tip material —
+   rgb(43 43 43 / 88%) + grain, 4px face, the flyout shadow — fading and
+   sliding in on the entry curve after the 300ms hover delay, leaving at once */
+[data-tip] {
+  position: relative;
+}
+
+[data-tip]::before {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  z-index: var(--z-tooltip);
+  padding: 5px 9px;
+  border-radius: var(--radius-xs);
+  background-color: rgb(43 43 43 / 88%);
+  background-image: var(--noise);
+  background-blend-mode: soft-light;
+  box-shadow: var(--shadow-flyout);
+  color: var(--color-ink);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  pointer-events: none;
+  transition: opacity 200ms var(--ease-entry), transform 200ms var(--ease-entry);
+}
+
+[data-tip]:hover::before,
+[data-tip]:focus-visible::before {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  transition-delay: 300ms;
+}
+
+[data-theme="light"] [data-tip]::before {
+  background-color: rgb(249 249 249 / 92%);
+  color: #1a1a1a;
+}
+
+/* the loading face of the ledgers: the opacity shimmer, never dots */
+.skeleton {
+  display: block;
+  height: 12px;
+  border-radius: var(--radius-xs);
+  background-color: color-mix(in oklab, var(--color-ink) 8%, transparent);
+  box-shadow: 0 0 0 1px var(--color-hairline);
+  animation: dtSkeleton 1.4s ease-in-out infinite;
+}
+
+@keyframes dtSkeleton {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+
+  50% {
+    opacity: 0.85;
+  }
+}
+
+.emptystate--pending {
+  align-items: center;
+}
+
+/* the press parity: the record-type chip and the restore chip answer the
+   100ms exit curve like every control of the window */
+.r3a-chip {
+  transition: background-color var(--sol-micro) var(--sol-ease-out), color var(--sol-micro) var(--sol-ease-out),
+    box-shadow var(--sol-micro) var(--sol-ease-out), transform 100ms var(--win-ease-exit);
+}
+
+.r3a-chip:active {
+  transform: scale(0.96);
+}
+
+.winchip {
+  transition: background-color var(--sol-micro) var(--sol-ease-out), transform 100ms var(--win-ease-exit);
+}
+
+.winchip:active {
+  transform: scale(0.98);
+}
+
+/* the micro reduced-motion guard: the tooltip enters at once when the
+   visitor asked for stillness (the file hard stop below stays last) */
+@media (prefers-reduced-motion: reduce) {
+  [data-tip]:hover::before,
+  [data-tip]:focus-visible::before {
+    transition-delay: 0ms;
+  }
+}
+
 /* the hard stop: the last word of the file — every animation and transition
    collapses to 0.01ms and the reveal rests visible */
 @media (prefers-reduced-motion: reduce) {
