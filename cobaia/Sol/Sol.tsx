@@ -9,24 +9,20 @@
  * this file follows the new name and App.tsx keeps importing the anchor by
  * the folder path.
  *
- * The cobaia mounts the SITE flow (the reform wave): the entry flow opens
- * the route table — /intro (the Akash splash), /onboarding (the first-run
- * window frames) — and both pages render standalone, outside the site
- * chrome. Every content route renders as the page body of the ONE shared
- * shell (the header and the footer); the home anchor consults the entry
- * gate (beside it in the home folder) on the bare root route, the other
- * public pages stay freely reachable, and the catch-all lands on the 404
- * anchor.
+ * The cobaia is a CONTENT site (the monetization surface of the family):
+ * no intro, no onboarding, no window chrome — every route is a page of the
+ * site. Every content route renders as the page body of the ONE shared
+ * shell (the header and the footer); every page is freely reachable — the
+ * home renders directly on the bare root, and the catch-all lands on the
+ * 404 anchor.
  */
 import type { ReactNode } from "react";
 import { Route, Switch } from "wouter";
 import AppsAnchor from "./apps/apps";
 import BlogAnchor from "./blog/blog";
 import HomeAnchor from "./home/home";
-import IntroAnchor from "./intro/intro";
 import LegalAnchor from "./legal/legal";
 import NotFoundAnchor from "./notfound/notfound";
-import OnboardingAnchor from "./onboarding/onboarding";
 import PricingAnchor from "./pricing/pricing";
 import { Shell } from "./shell/shell";
 import SupportAnchor from "./support/support";
@@ -46,14 +42,12 @@ function Unrouted() {
   );
 }
 
-/** Mounts the theme surface through the page anchors: the entry flow
- * (/intro, /onboarding) ahead of the content routes — the home behind the
- * entry gate, the four public pages, and the catch-all last. */
+/** Mounts the theme surface through the page anchors: the content pages of
+ * the site — the home on the bare root, the five public sections, and the
+ * catch-all last. No entry flow: the site is content end to end. */
 export default function Sol() {
   return (
     <Switch>
-      <Route path="/intro" component={IntroAnchor} />
-      <Route path="/onboarding" component={OnboardingAnchor} />
       <Route path="/">
         <Content>
           <HomeAnchor />

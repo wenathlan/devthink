@@ -1,14 +1,15 @@
 /**
  * brand.tsx — the drawn brand mark of the cobaia theme, one hand-drawn SVG
- * icon in the house finishing: a gradient squircle face over the amber story
- * (#f59e0b — the family sun, the one accent of this site), a soft top gloss,
- * a discrete film grain and the glyph itself — a beaker, the mark of the
- * experiment the site runs — in thick ivory strokes with a translucent
- * backing. On hover the face tilts gently in perspective (plain CSS on
- * transform only, riding the house cubic-bezier; the stylesheet owns the
- * motion and the prefers-reduced-motion guard). No decorative dots and no
- * loops: the mark speaks for itself. The name "cobaia" is provisional — the
- * mark is deliberately abstract so it survives a rename.
+ * icon in the house finishing: a gradient squircle face over the DARK AMBER
+ * story (#d97706 → #92400e — the identity of the site, carried by the mark
+ * ALONE: focus, CTA and every interactive voice answer the Windows accent),
+ * a soft top gloss, a discrete film grain and the glyph itself — a beaker,
+ * the mark of the experiment the site runs — in thick ivory strokes with a
+ * translucent backing. On hover the face tilts gently in perspective (plain
+ * CSS on transform only, riding the house cubic-bezier; the stylesheet owns
+ * the motion and the prefers-reduced-motion guard). No decorative dots and
+ * no loops: the mark speaks for itself. The name "cobaia" is provisional —
+ * the mark is deliberately abstract so it survives a rename.
  */
 import type { CSSProperties } from "react";
 
@@ -18,9 +19,10 @@ const IVORY = "#fbf5ea";
 /** the backing translucency of the outlined glyph shapes */
 const BACKING = "rgba(255,255,255,.16)";
 
-/** the amber story of the mark: the family sun and its deep rust floor */
-const SUN = "#f59e0b";
-const RUST = "#b45309";
+/** the dark amber story of the mark: the cobaia identity and its deeper
+ * amber floor — the one place the identity color is allowed to live */
+const SUN = "#d97706";
+const RUST = "#92400e";
 
 /** the asymmetric squircle of the mark face: tighter shoulders, heavier base */
 const SQUIRCLE = "M22 0 L74 0 Q96 0 96 22 L96 66 Q96 96 66 96 L30 96 Q0 96 0 66 L0 22 Q0 0 22 0 Z";

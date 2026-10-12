@@ -6,9 +6,9 @@
  * bar rides the trylle canvas with the Windows hands: the section links are
  * the pins — the acrylic bar, the hover wash, the press bounce
  * (scale 0.7, 100ms), the dtPopIntro mount pop and the 3px ladder indicator
- * that grows under the active section; the focus underline answers the
- * Windows accent while the active pin keeps the amber of the site. The
- * chrome is solid canvas with one hairline (no glass panels on a content
+ * that grows under the active section; the focus underline and the active
+ * pin answer the Windows accent — the identity amber lives only in the
+ * brand mark. The chrome is solid canvas with one hairline (no glass panels on a content
  * site beyond the bar itself — the cobaia is a page, not an app). The
  * active section link reads the location so the visitor always knows where
  * they stand. Styled entirely by Sol/sol.css; a copy-per-deploy of the

@@ -5,8 +5,8 @@
  * concatenation. The schema mirrors schema.prisma (the documentation of
  * record) and the boot DDL is the idempotent seed-on-first-run: the tables
  * exist after the first open, always. The platform gateway serves the same
- * tables to the Sol pages over HTTPS (GET/POST /api/v1/onboarding — the
- * browser accessor is onboardingstate.ts); no server route lives here.
+ * tables over HTTPS (GET/POST /api/v1/onboarding); no server route lives
+ * here.
  */
 import { mkdirSync } from "node:fs";
 import path from "node:path";
