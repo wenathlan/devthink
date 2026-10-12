@@ -196,3 +196,6 @@ upload/
 
 temp/
 sites/
+
+# the scaffold skills folder never enters the repository (user rule)
+skills/
