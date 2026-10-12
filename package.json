@@ -25,5 +25,9 @@
     "typescript": "^5.8.0",
     "vscode": "^1.118.0",
     "yarn": "^4.17.1"
+  },
+  "scripts": {
+    "dev": "cd devthink && bunx vite --port 3000 --host 0.0.0.0",
+    "start": "bun run dev"
   }
 }
