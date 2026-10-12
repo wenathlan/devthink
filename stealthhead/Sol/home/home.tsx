@@ -164,7 +164,7 @@ function HomeLanding() {
       <section className="shsection" aria-label="featured match">
         {boardwait ? <p className="shstage__wait mono">reading the board from the site db…</p> : null}
         {featured && counts ? (
-          <Link href="/match" className="shfeat reveal" title={`open the board of ${featured.title}`}>
+          <Link href="/match" className="shfeat reveal" data-tip={`open the board of ${featured.title}`}>
             <div className="shfeat__head">
               <span className="shfeat__eyebrow">featured match</span>
               <span className={`badge ${liveBoard ? "error" : featured.state === "open" ? "success" : ""}`}>
@@ -266,7 +266,8 @@ function HomeLanding() {
               href={familyurl(member.slug)}
               target="_blank"
               rel="noreferrer"
-              title={`open ${member.slug} in its own deploy`}
+              data-tip={`open ${member.slug} in its own deploy`}
+              aria-label={`open ${member.slug} in a new tab`}
             >
               <span
                 className="shquad__famdot"

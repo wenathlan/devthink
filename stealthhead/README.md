@@ -19,7 +19,7 @@ pnpm dev
 
 - `family.ts` — the one table of the spec §12 accents (argan jade, cadria rosa, debonair latão, forge lime-brasa, foundry têmpera, getry violeta, saddle ember, vault gelo) and the sibling slugs in rail order; the chrome rail foot and the landing footer both render it, and `tests/family.test.ts` pins it (8 cases).
 - `familyurl.ts` — the relative sibling-link contract (`"../" + slug + "/"`, verbatim body); `familyurl(slug)` survives any mount point without trusting a build constant.
-- `tests/design.test.ts` — 12 design-contract cases: the ember `#e8563f` as the one signal (mark story `#f4694f`), zero banned hue (`#3B82F6` / `#2563EB` / `#F97316`), zero pill (no `999px`, no `--r-pill`), zero `transition: all`, zero `scale(0)` entries, the font triad (Bricolage Grotesque / Outfit / JetBrains Mono), the source-face entry, the reduced-motion hard stop, tabular numerals, the landing logo discipline (`data-landing`), the sticky-footer law and the honest page set of `devthink.toml`.
+- `tests/design.test.ts` — 12 design-contract cases: the coral `#f4694f` as the one signal (stylesheet alias and mark story alike), the windows accent `#4cc2ff` on focus and the chrome, zero banned hue (`#3B82F6` / `#2563EB` / `#F97316`), zero pill (no `999px`, no `--r-pill`), zero `transition: all`, zero `scale(0)` entries, the trylle font pair (Inter Variable reading, Geist Mono detail), the source-face entry, the reduced-motion hard stop, tabular numerals, the landing logo discipline (`data-landing`), the sticky-footer law and the honest page set of `devthink.toml`.
 
 ## Entry face and `restore:entry`
 
