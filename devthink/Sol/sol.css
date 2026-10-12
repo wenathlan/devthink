@@ -3882,3 +3882,78 @@ span[data-tile] { width: var(--dt-tile-size, 40px); height: var(--dt-tile-size, 
 
 .devthink-app--terminal { background: var(--atmos-veil), var(--win-mica); }
 
+/* ==========================================================================
+   5. THE 2-a WINDOWS INTERACTION PASS — the macro and micro interaction
+   layer of the OS: the route stage (page entry on the Fluent entry curve,
+   a real exit on the exit curve), the alt-tab task switcher, the start
+   tile stagger and the win11 context-menu entrance grammar. Motion stays
+   on transform/opacity (the standalone `scale` composes with the `translate`
+   property the components center with); the reduced-motion hard stop above
+   out-ranks every rule here.
+   ========================================================================== */
+
+/* ---- the route stage: the theme anchor wraps the route tree; the entering
+   page rises on --ease-entry (cubic-bezier(0.1,0.9,0.2,1)) in 250ms and the
+   parked previous page fades out on --ease-exit in 100ms (Routesurface) ---- */
+.route-stage { position: relative; }
+
+.route-enter { position: relative; z-index: 1; animation: routeIn 250ms var(--ease-entry) backwards; }
+
+.route-leave {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  animation: routeOut 100ms var(--ease-exit) forwards;
+}
+
+@keyframes routeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes routeOut {
+  to { opacity: 0; transform: scale(0.985); }
+}
+
+/* ---- the alt-tab task switcher: the acrylic panel pops on the micro curve
+   (scale composes with the -50%/-50% translate property that centers it)
+   over a quiet dim scrim ---- */
+.alt-scrim { background: rgb(0 0 0 / 22%); animation: altScrimIn 150ms var(--ease-micro) backwards; }
+
+.alt-switch { animation: altSwitchIn 150ms var(--ease-micro) backwards; }
+
+@keyframes altScrimIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes altSwitchIn {
+  from { opacity: 0; scale: var(--floor-menu, 0.97); }
+  to { opacity: 1; scale: 1; }
+}
+
+/* ---- the start tiles: the staggered pop — 60ms per tile, capped at the
+   12th so a full grid never lags; the recommended rail shares the grammar ---- */
+.dt-start__grid > .dt-start__app {
+  animation: dtTileIn 300ms var(--ease-micro) backwards;
+  animation-delay: calc(min(var(--stagger-i, 0), 12) * 60ms);
+}
+
+@keyframes dtTileIn {
+  from { opacity: 0; scale: 0.9; }
+  to { opacity: 1; scale: 1; }
+}
+
+/* ---- the win11 context menu entrance: 150ms on the entry curve with the
+   slide + fade (the later definition of the shared keyframe wins, and the
+   direct rule re-rides the token curve to --ease-entry) ---- */
+.dsk-menu { animation: dskMenuIn 150ms var(--ease-entry) backwards; }
+
+@keyframes dskMenuIn {
+  from { opacity: 0; transform: translateY(-4px) scale(var(--floor-menu, 0.97)); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+

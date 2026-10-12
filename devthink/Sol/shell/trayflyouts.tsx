@@ -19,7 +19,7 @@
  */
 
 import type { LucideIcon } from "lucide-react";
-import { Bluetooth, ChevronLeft, ChevronRight, Contrast, MoonStar, Sun, Volume2, Wifi } from "lucide-react";
+import { Bluetooth, ChevronLeft, ChevronRight, Contrast, MoonStar, Signal, Sun, Volume2, Wifi } from "lucide-react";
 import { useEffect, useState } from "react";
 
 /** tracks the os reduced-motion preference */
@@ -44,6 +44,8 @@ export type TraySettings = {
   bluetooth: boolean;
   night: boolean;
   theme: boolean;
+  /** the simulated cellular data of the OS tray (win11 quick settings) */
+  data: boolean;
   volume: number;
   brightness: number;
 };
@@ -53,15 +55,17 @@ export const DEFAULT_TRAY_SETTINGS: TraySettings = {
   bluetooth: false,
   night: false,
   theme: true,
+  data: true,
   volume: 70,
   brightness: 100,
 };
 
-type TileKey = "wifi" | "bluetooth" | "night" | "theme";
+type TileKey = "wifi" | "bluetooth" | "night" | "theme" | "data";
 
 const TILES: Array<{ key: TileKey; label: string; icon: LucideIcon }> = [
   { key: "wifi", label: "wifi", icon: Wifi },
   { key: "bluetooth", label: "bluetooth", icon: Bluetooth },
+  { key: "data", label: "cellular data", icon: Signal },
   { key: "night", label: "night light", icon: MoonStar },
   { key: "theme", label: "theme", icon: Contrast },
 ];
