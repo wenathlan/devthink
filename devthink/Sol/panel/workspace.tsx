@@ -21,10 +21,13 @@
 
 import { Command, Play } from "lucide-react";
 import { type FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { alttabkeydown } from "../../alttab.ts";
 import { familyurl } from "../../deploybase.ts";
+import { pushrecentapp } from "../../recentapps.ts";
 import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspace.ts";
 import { DESKTOP_APPS, type DesktopApp, seedOsView } from "../shell/appregistry.ts";
 import { AppTile } from "../shell/apptile.tsx";
+import { AltTabSwitcher, type AltTabCard } from "../shell/alttabswitcher.tsx";
 import { ShellChrome } from "../shell/ShellChrome.tsx";
 import { DesktopSurface } from "./desktop.tsx";
 import { ShaderWall } from "./shaderwall.tsx";
@@ -141,6 +144,10 @@ export function ShellWorkspace({
 
   /** the desktop starts with the icon grid only — windows open on demand */
   const [windows, setWindows] = useState<WindowSnapshot[]>([]);
+  /** the alt-tab gesture: the acrylic task switcher rides above the shell
+   * while the chord is held (the first alt+tab mounts it on the window
+   * behind the topmost one) */
+  const [switching, setSwitching] = useState(false);
 
   /** single mutation entry: normalizes the z order from the array order */
   const applyWindows = useCallback((next: (current: WindowSnapshot[]) => WindowSnapshot[]) => {
@@ -219,9 +226,53 @@ export function ShellWorkspace({
     return undefined;
   }, [windows]);
 
+  /** the alt-tab opener: the first alt+tab of the gesture mounts the task
+   * switcher (a single open window is focused straight away, like Windows) */
+  useEffect(() => {
+    if (switching) return undefined;
+    const onKey = (event: KeyboardEvent) => {
+      if (!alttabkeydown(event) || !event.altKey || event.key !== "Tab") return;
+      event.preventDefault();
+      if (windows.length === 0) return;
+      if (windows.length === 1) {
+        focusWindow(windows[0].id);
+        return;
+      }
+      setSwitching(true);
+    };
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  }, [focusWindow, switching, windows]);
+
+  /** the switcher commit: a minimized window restores (the taskbar
+   * semantics), a live one just takes the focus */
+  const commitSwitch = useCallback(
+    (id: string) => {
+      setSwitching(false);
+      const target = windows.find((win) => win.id === id);
+      if (target?.state === "minimized") toggleWindow(id, target.title);
+      else focusWindow(id);
+    },
+    [focusWindow, toggleWindow, windows],
+  );
+
+  /** the switcher cards: every open window with its catalog face */
+  const switcherCards = useMemo<AltTabCard[]>(
+    () =>
+      windows.map((win) => ({
+        id: win.id,
+        title: win.title,
+        minimized: win.state === "minimized",
+        app: appById(win.id),
+      })),
+    [windows],
+  );
+
   /** opens one app of the shared catalog from the desktop, the Start menu or the dock */
   const openApp = useCallback(
     (app: DesktopApp) => {
+      // the open promotes the app to the Start menu recommended rail
+      pushrecentapp(app.id);
       if (app.target.kind === "window") {
         toggleWindow(app.target.id, app.target.id === "chat" ? "session" : "session history");
         return;
@@ -452,6 +503,10 @@ export function ShellWorkspace({
           <small>commands</small>
         </button>
       </nav>
+      {/* the acrylic alt-tab task switcher while the chord is held */}
+      {switching && (
+        <AltTabSwitcher cards={switcherCards} onCommit={commitSwitch} onClose={() => setSwitching(false)} />
+      )}
     </main>
   );
 }

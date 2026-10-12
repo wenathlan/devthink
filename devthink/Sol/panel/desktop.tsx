@@ -31,6 +31,21 @@ import {
   useState,
 } from "react";
 import { useLocation } from "wouter";
+import {
+  AppWindow,
+  ArrowDownAZ,
+  ArrowDownUp,
+  Eye,
+  Info,
+  LayoutGrid,
+  Monitor,
+  RotateCcw,
+  RotateCw,
+  Shapes,
+  Square,
+  SquareArrowOutUpRight,
+  SquareBig,
+} from "lucide-react";
 import { familyurl } from "../../deploybase.ts";
 import { type DesktopApp, seedOsView } from "../shell/appregistry.ts";
 import { AppTile } from "../shell/apptile.tsx";
@@ -522,11 +537,13 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
       kind: "submenu",
       id: "view",
       label: "View",
+      icon: Eye,
       items: [
         {
           kind: "item",
           id: "view-medium",
           label: "medium icons",
+          icon: Square,
           shortcut: iconSize === "medium" ? "●" : undefined,
           onSelect: () => setIconSize("medium"),
         },
@@ -534,44 +551,67 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
           kind: "item",
           id: "view-large",
           label: "large icons",
+          icon: SquareBig,
           shortcut: iconSize === "large" ? "●" : undefined,
           onSelect: () => setIconSize("large"),
         },
         { kind: "sep", id: "view-sep" },
-        { kind: "item", id: "view-reset", label: "reset layout", onSelect: resetLayout },
+        { kind: "item", id: "view-reset", label: "reset layout", icon: RotateCcw, onSelect: resetLayout },
       ],
     },
     {
       kind: "submenu",
       id: "sort",
       label: "Sort by",
+      icon: ArrowDownUp,
       items: [
-        { kind: "item", id: "sort-name", label: "name", onSelect: () => applySort("name") },
-        { kind: "item", id: "sort-kind", label: "kind", onSelect: () => applySort("kind") },
-        { kind: "item", id: "sort-original", label: "original spots", onSelect: () => applySort("original") },
+        { kind: "item", id: "sort-name", label: "name", icon: ArrowDownAZ, onSelect: () => applySort("name") },
+        { kind: "item", id: "sort-kind", label: "kind", icon: Shapes, onSelect: () => applySort("kind") },
+        {
+          kind: "item",
+          id: "sort-original",
+          label: "original spots",
+          icon: LayoutGrid,
+          onSelect: () => applySort("original"),
+        },
       ],
     },
     { kind: "sep", id: "desktop-sep" },
-    { kind: "item", id: "refresh", label: "Refresh", onSelect: refreshLayout },
-    { kind: "item", id: "display-settings", label: "Display settings", onSelect: openDisplaySettings },
+    { kind: "item", id: "refresh", label: "Refresh", icon: RotateCw, shortcut: "F5", onSelect: refreshLayout },
+    {
+      kind: "item",
+      id: "display-settings",
+      label: "Display settings",
+      icon: Monitor,
+      onSelect: openDisplaySettings,
+    },
   ];
 
   const cellMenuEntries = (app: DesktopApp): MenuEntry[] => {
-    const entries: MenuEntry[] = [{ kind: "item", id: "open", label: "Open", onSelect: () => onOpen(app) }];
+    const entries: MenuEntry[] = [
+      { kind: "item", id: "open", label: "Open", icon: SquareArrowOutUpRight, onSelect: () => onOpen(app) },
+    ];
     if (app.target.kind === "os") {
-      entries.push({ kind: "item", id: "open-os", label: "Open in OS", onSelect: () => openInOs(app) });
+      entries.push({
+        kind: "item",
+        id: "open-os",
+        label: "Open in OS",
+        icon: LayoutGrid,
+        onSelect: () => openInOs(app),
+      });
     }
     if (supportsNewWindow(app)) {
       entries.push({
         kind: "item",
         id: "open-window",
         label: "Open in new window",
+        icon: AppWindow,
         onSelect: () => openInNewWindow(app),
       });
     }
     entries.push({ kind: "sep", id: "cell-sep" });
     entries.push({ kind: "label", id: "props-name", label: app.name });
-    entries.push({ kind: "item", id: "props-detail", label: app.detail, disabled: true });
+    entries.push({ kind: "item", id: "props-detail", label: app.detail, icon: Info, disabled: true });
     return entries;
   };
 

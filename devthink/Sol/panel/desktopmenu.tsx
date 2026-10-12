@@ -21,14 +21,24 @@ import {
   useRef,
   useState,
 } from "react";
+import type { LucideIcon } from "lucide-react";
 import { clampNumber } from "./desktopstate.ts";
 
 /** one entry of a context menu */
 export type MenuEntry =
-  | { kind: "item"; id: string; label: string; shortcut?: string; disabled?: boolean; onSelect?: () => void }
+  | {
+      kind: "item";
+      id: string;
+      label: string;
+      /** the 14px glyph in the left icon rail (the win11 menu grammar) */
+      icon?: LucideIcon;
+      shortcut?: string;
+      disabled?: boolean;
+      onSelect?: () => void;
+    }
   | { kind: "sep"; id: string }
   | { kind: "label"; id: string; label: string }
-  | { kind: "submenu"; id: string; label: string; items: MenuEntry[] };
+  | { kind: "submenu"; id: string; label: string; icon?: LucideIcon; items: MenuEntry[] };
 
 type DesktopMenuProps = {
   /** viewport x of the open gesture (the pointer position) */
@@ -219,6 +229,7 @@ function MenuPanel({ x, y, entries, label, depth, onCollapse, onCommit }: PanelP
           }
           const isSubmenu = entry.kind === "submenu";
           const isOpen = isSubmenu && submenu?.id === entry.id;
+          const Icon = entry.kind === "item" || entry.kind === "submenu" ? entry.icon : undefined;
           return (
             <button
               key={entry.id}
@@ -244,6 +255,11 @@ function MenuPanel({ x, y, entries, label, depth, onCollapse, onCommit }: PanelP
               }}
               onClick={() => activate(index)}
             >
+              {Icon ? (
+                <Icon size={14} strokeWidth={1.6} className="flex-none text-ink-2" aria-hidden="true" />
+              ) : (
+                <span className="flex-none w-[14px]" aria-hidden="true" />
+              )}
               <span className="min-w-0 flex-1 overflow-hidden text-left text-ellipsis whitespace-nowrap">
                 {entry.label}
               </span>

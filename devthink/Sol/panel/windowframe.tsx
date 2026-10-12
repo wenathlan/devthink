@@ -42,6 +42,7 @@
 import { Copy, Minus, PanelLeft, PanelRight, Square, X } from "lucide-react";
 import {
   type MouseEvent as ReactMouseEvent,
+  type PointerEvent as ReactPointerEvent,
   type ReactNode,
   useCallback,
   useEffect,
@@ -71,7 +72,9 @@ export type WindowSnapshot = {
 };
 
 /** aero snap zones: halves map onto the snapped states, corners and the
- * stacked column zones land on free floating bounds */
+ * stacked column zones land on free floating bounds; the drag preview adds
+ * the "max" zone (the top strip = maximize) as a translucent overlay
+ * before the commit */
 export type SnapZone = "left" | "right" | "tl" | "tr" | "bl" | "br" | "free";
 
 type SnapCell = { zone: SnapZone; col: number; row: number; cols: number; rows: number };
@@ -237,10 +240,13 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
   const flyoutRef = useRef<HTMLDivElement | null>(null);
   const dwellRef = useRef<number | null>(null);
   const graceRef = useRef<number | null>(null);
-  /** the aero edge ghost: which half is previewed and its fixed rect */
-  const [ghost, setGhost] = useState<"left" | "right" | null>(null);
-  const ghostRef = useRef<"left" | "right" | null>(null);
+  /** the aero edge ghost: which zone is previewed and its fixed rect */
+  const [ghost, setGhost] = useState<"left" | "right" | "max" | null>(null);
+  const ghostRef = useRef<"left" | "right" | "max" | null>(null);
   const ghostRectRef = useRef<{ left: number; top: number; width: number; height: number } | null>(null);
+  /** the first press on an inactive window focuses it without click-through
+   * (the Windows rule: the click activates the window, never the control) */
+  const [swallowed, setSwallowed] = useState(false);
 
   /** restore physics: the window re-appears collapsed on its taskbar pin
    * (the `data-flying="glide"` pose reads the measured `--fly-x`/`--fly-y`)
@@ -340,31 +346,39 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
     [],
   );
 
-  /** the aero edge ghost: flips the previewed half and measures its fixed
-   * rect once per flip (never per mousemove) */
-  function showGhost(zone: "left" | "right" | null) {
+  /** the aero edge ghost: flips the previewed zone (an aero half or the
+   * full maximize area) and measures its fixed rect once per flip (never
+   * per pointer move) */
+  function showGhost(zone: "left" | "right" | "max" | null) {
     if (ghostRef.current === zone) return;
     ghostRef.current = zone;
     if (zone && frameRef.current) {
       const area = desktopAreaOf(frameRef.current);
-      const half = Math.round(area.width / 2);
-      ghostRectRef.current = {
-        left: zone === "left" ? area.left : area.left + area.width - half,
-        top: area.top,
-        width: half,
-        height: area.height,
-      };
+      if (zone === "max") {
+        ghostRectRef.current = { left: area.left, top: area.top, width: area.width, height: area.height };
+      } else {
+        const half = Math.round(area.width / 2);
+        ghostRectRef.current = {
+          left: zone === "left" ? area.left : area.left + area.width - half,
+          top: area.top,
+          width: half,
+          height: area.height,
+        };
+      }
     } else {
       ghostRectRef.current = null;
     }
     setGhost(zone);
   }
 
-  /** starts a title-bar drag: restores maximized/snapped windows under the
-   * cursor at their pre-snap floating bounds, maximizes on a top-edge
-   * release, previews and applies the aero half snap near the side edges;
-   * the null-transition flag stays on until the pointer is released */
-  function beginDrag(event: ReactMouseEvent) {
+  /** starts a title-bar drag on the pointer capture: the pointer is
+   * captured by the frame and the move applies at most once per animation
+   * frame (the raw rAF loop — no motion library); maximized/snapped windows
+   * restore under the cursor at their pre-snap floating bounds, the top
+   * strip previews the full maximize ghost, the side strips preview the
+   * aero half ghosts and the release commits (the null-transition flag
+   * stays on until the pointer is up) */
+  function beginDrag(event: ReactPointerEvent) {
     if (event.button !== 0) return;
     if ((event.target as HTMLElement).closest("button, input")) return;
     onFocus(win.id);
@@ -382,14 +396,23 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
     const floatRestore = floating ? null : (win.float ?? null);
     let consumed = false;
     el.setAttribute("data-moving", "true");
+    try {
+      el.setPointerCapture(event.pointerId);
+    } catch {
+      /* the capture is best effort — the frame listeners below still hold */
+    }
 
-    const zoneAt = (move: MouseEvent): "left" | "right" | null =>
-      move.clientX <= SNAP_EDGE ? "left" : move.clientX >= window.innerWidth - SNAP_EDGE ? "right" : null;
+    const zoneAt = (move: PointerEvent): "left" | "right" | "max" | null => {
+      if (move.clientY <= MAXIMIZE_EDGE) return "max";
+      if (move.clientX <= SNAP_EDGE) return "left";
+      if (move.clientX >= window.innerWidth - SNAP_EDGE) return "right";
+      return null;
+    };
 
-    const onMove = (move: MouseEvent) => {
+    const applyMove = (move: PointerEvent) => {
       if (floating) {
         if (move.clientY <= MAXIMIZE_EDGE) {
-          showGhost(null);
+          showGhost("max");
           return;
         }
         const dims = win.float || {
@@ -422,13 +445,51 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
       onUpdate(win.id, patch);
       showGhost(zoneAt(move));
     };
-    const onUp = (up: MouseEvent) => {
-      document.removeEventListener("mousemove", onMove);
-      document.removeEventListener("mouseup", onUp);
+
+    /** the latest pointer pose, flushed once per animation frame */
+    let pending: PointerEvent | null = null;
+    let frame = 0;
+
+    const onMove = (move: PointerEvent) => {
+      pending = move;
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        const latest = pending;
+        pending = null;
+        if (latest) applyMove(latest);
+      });
+    };
+
+    const detach = (pointerId: number) => {
+      if (frame) {
+        window.cancelAnimationFrame(frame);
+        frame = 0;
+      }
+      el.removeEventListener("pointermove", onMove);
+      el.removeEventListener("pointerup", onUp);
+      el.removeEventListener("pointercancel", onCancel);
+      try {
+        if (el.hasPointerCapture(pointerId)) el.releasePointerCapture(pointerId);
+      } catch {
+        /* the capture may already be gone — the listeners are detached anyway */
+      }
       el.removeAttribute("data-moving");
+    };
+
+    const flush = () => {
+      if (!pending) return;
+      const latest = pending;
+      pending = null;
+      applyMove(latest);
+    };
+
+    const onUp = (up: PointerEvent) => {
+      detach(up.pointerId);
+      flush();
       showGhost(null);
       const zone = zoneAt(up);
-      if (zone && up.clientY > MAXIMIZE_EDGE) {
+      if (zone && zone !== "max" && up.clientY > MAXIMIZE_EDGE) {
         const state = zone === "left" ? "snapped-left" : "snapped-right";
         if (floating) {
           onUpdate(win.id, { state });
@@ -440,14 +501,22 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
       }
       if (!floating && up.clientY <= MAXIMIZE_EDGE) onUpdate(win.id, { state: "maximized", float: { ...origin } });
     };
-    document.addEventListener("mousemove", onMove);
-    document.addEventListener("mouseup", onUp);
+
+    const onCancel = (cancel: PointerEvent) => {
+      detach(cancel.pointerId);
+      showGhost(null);
+    };
+
+    el.addEventListener("pointermove", onMove);
+    el.addEventListener("pointerup", onUp);
+    el.addEventListener("pointercancel", onCancel);
   }
 
-  /** os.js-grade resize: eight directions off the frame edges, minimum
-   * 320×300, edges move under the cursor, null transition while moving; a
+  /** os.js-grade resize on the pointer capture: eight directions off the
+   * frame edges, minimum 320×300, edges move under the cursor at most once
+   * per animation frame (the raw rAF loop), null transition while moving; a
    * manual resize defines new floating bounds and retires the snap memory */
-  function beginResize(event: ReactMouseEvent, direction: string) {
+  function beginResize(event: ReactPointerEvent, direction: string) {
     if (event.button !== 0) return;
     event.stopPropagation();
     event.preventDefault();
@@ -455,7 +524,13 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
     onFocus(win.id);
     closeFlyout();
     const el = frameRef.current;
+    const handle = event.currentTarget;
     el?.setAttribute("data-moving", "true");
+    try {
+      handle.setPointerCapture(event.pointerId);
+    } catch {
+      /* the capture is best effort — the handle listeners below still hold */
+    }
     const startX = event.clientX;
     const startY = event.clientY;
     const origin = { x: win.x, y: win.y, width: win.width, height: win.height };
@@ -464,7 +539,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
     const south = direction.includes("s");
     const north = direction.includes("n");
 
-    const onMove = (move: MouseEvent) => {
+    const applyMove = (move: PointerEvent) => {
       const patch: Partial<Omit<WindowSnapshot, "id">> = {};
       if (east) patch.width = Math.max(WINDOW_MIN_WIDTH, origin.width + (move.clientX - startX));
       if (west) {
@@ -481,13 +556,52 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
       if (win.float) patch.float = undefined;
       onUpdate(win.id, patch);
     };
-    const onUp = () => {
-      document.removeEventListener("mousemove", onMove);
-      document.removeEventListener("mouseup", onUp);
+
+    let pending: PointerEvent | null = null;
+    let frame = 0;
+
+    const onMove = (move: PointerEvent) => {
+      pending = move;
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        const latest = pending;
+        pending = null;
+        if (latest) applyMove(latest);
+      });
+    };
+
+    const detach = (pointerId: number) => {
+      if (frame) {
+        window.cancelAnimationFrame(frame);
+        frame = 0;
+      }
+      handle.removeEventListener("pointermove", onMove);
+      handle.removeEventListener("pointerup", onUp);
+      handle.removeEventListener("pointercancel", onCancel);
+      try {
+        if (handle.hasPointerCapture(pointerId)) handle.releasePointerCapture(pointerId);
+      } catch {
+        /* the capture may already be gone — the listeners are detached anyway */
+      }
       el?.removeAttribute("data-moving");
     };
-    document.addEventListener("mousemove", onMove);
-    document.addEventListener("mouseup", onUp);
+
+    const onUp = (up: PointerEvent) => {
+      detach(up.pointerId);
+      if (!pending) return;
+      const latest = pending;
+      pending = null;
+      applyMove(latest);
+    };
+
+    const onCancel = (cancel: PointerEvent) => {
+      detach(cancel.pointerId);
+    };
+
+    handle.addEventListener("pointermove", onMove);
+    handle.addEventListener("pointerup", onUp);
+    handle.addEventListener("pointercancel", onCancel);
   }
 
   /** minimize physics: the two-phase daedalOS flight, painted by the
@@ -612,14 +726,26 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
       style={style}
       aria-label={win.title}
       aria-hidden={minimized || undefined}
-      onMouseDown={() => onFocus(win.id)}
+      onPointerDownCapture={() => {
+        // the Windows activation rule: the first press on an inactive
+        // window only focuses it — the click never reaches the control
+        if (!active) setSwallowed(true);
+        else setSwallowed(false);
+        onFocus(win.id);
+      }}
+      onClickCapture={(event) => {
+        if (!swallowed) return;
+        event.preventDefault();
+        event.stopPropagation();
+        setSwallowed(false);
+      }}
     >
       {/* biome-ignore lint/a11y/noStaticElementInteractions: the title bar is the drag surface; the window controls inside it are real buttons */}
       <div
         className={`shell-window__bar flex min-h-11 flex-none touch-none items-stretch border-b border-white/7 pl-3.5 select-none backdrop-blur-[20px] backdrop-saturate-[140%] transition-[filter] duration-[250ms] ease-window light:border-black/10 light:bg-black/3 [@media(prefers-reduced-transparency:reduce)]:backdrop-blur-none [@media(prefers-reduced-transparency:reduce)]:backdrop-saturate-100 ${
           active ? "" : "grayscale-80"
         }`}
-        onMouseDown={beginDrag}
+        onPointerDown={beginDrag}
         onDoubleClick={onBarDoubleClick}
       >
         {/* the ONE lockup of the window zone (logo discipline): the official
@@ -651,7 +777,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
             <button
               type="button"
               aria-label="Snap left"
-              className="grid h-8 w-[38px] cursor-pointer place-items-center self-center rounded-xs border-0 bg-transparent text-ink-3 transition-colors duration-100 hover:bg-white/8 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus)"
+              className="grid h-8 w-[38px] cursor-pointer place-items-center self-center rounded-xs border-0 bg-transparent text-ink-3 transition-[background-color,transform] duration-200 hover:bg-white/10 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) active:scale-[0.7] active:duration-100"
               onClick={() => snapHalf("snapped-left")}
             >
               <PanelLeft size={13} aria-hidden="true" />
@@ -659,7 +785,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
             <button
               type="button"
               aria-label="Snap right"
-              className="grid h-8 w-[38px] cursor-pointer place-items-center self-center rounded-xs border-0 bg-transparent text-ink-3 transition-colors duration-100 hover:bg-white/8 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus)"
+              className="grid h-8 w-[38px] cursor-pointer place-items-center self-center rounded-xs border-0 bg-transparent text-ink-3 transition-[background-color,transform] duration-200 hover:bg-white/10 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) active:scale-[0.7] active:duration-100"
               onClick={() => snapHalf("snapped-right")}
             >
               <PanelRight size={13} aria-hidden="true" />
@@ -718,7 +844,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
               key={direction}
               className={`shell-window__rz absolute z-[3] touch-none ${RZ_CLASS[direction]}`}
               data-direction={direction}
-              onMouseDown={(event) => beginResize(event, direction)}
+              onPointerDown={(event) => beginResize(event, direction)}
               aria-hidden="true"
             />
           ))

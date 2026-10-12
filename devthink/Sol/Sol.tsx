@@ -36,6 +36,7 @@ import ProvidersAnchor from "./providers/providers.tsx";
 import RoutesAnchor from "./routes/routes.tsx";
 import SettingsAnchor from "./settings/settings.tsx";
 import { initautotranslate } from "./shell/translatedom.ts";
+import { RouteSurface } from "./shell/routesurface.tsx";
 import TermsAnchor from "./terms/terms.tsx";
 import UsageAnchor from "./usage/usage.tsx";
 import VideoStudioAnchor from "./videostudio/videostudio.tsx";
@@ -87,38 +88,42 @@ export default function Sol() {
   return (
     <>
       <DeepRouteReplay />
-      <Switch>
-        <Route path="/" component={IntroAnchor} />
-        <Route path="/onboarding" component={OnboardingAnchor} />
-        <Route path="/panel" component={PanelAnchor} />
-        <Route path="/auth" component={AuthAnchor} />
-        <Route path="/os" component={OsAnchor} />
-        <Route path="/chat" component={ChatAnchor} />
-        <Route path="/launcher" component={LauncherAnchor} />
-        <Route path="/videostudio" component={VideoStudioAnchor} />
-        <Route path="/musicstudio" component={MusicStudioAnchor} />
-        <Route path="/image" component={ImageAnchor} />
-        <Route path="/calculator" component={CalculatorAnchor} />
-        <Route path="/games" component={GamesAnchor} />
-        <Route path="/console" component={ConsoleAnchor} />
-        <Route path="/gateway" component={GatewayAnchor} />
-        <Route path="/gateway/v/:versionId" component={GatewayAnchor} />
-        <Route path="/providers" component={ProvidersAnchor} />
-        <Route path="/projects" component={ProjectsAnchor} />
-        <Route path="/routes" component={RoutesAnchor} />
-        <Route path="/usage" component={UsageAnchor} />
-        <Route path="/docs" component={DocsAnchor} />
-        <Route path="/explore" component={ExploreAnchor} />
-        <Route path="/history" component={HistoryAnchor} />
-        <Route path="/admin" component={AdminAnchor} />
-        <Route path="/settings" component={SettingsAnchor} />
-        <Route path="/about" component={AboutAnchor} />
-        <Route path="/terms" component={TermsAnchor} />
-        <Route path="/policy" component={PolicyAnchor} />
-        <Route path="/w/:workspaceId/s/:sessionId/t/:tabId/:sectionId" component={PanelAnchor} />
-        <Route path="/404" component={NotFoundAnchor} />
-        <Route component={NotFoundAnchor} />
-      </Switch>
+      {/* the route stage: every page change plays the Windows grammar — the
+          250ms entry rise and the real 100ms exit of the previous page */}
+      <RouteSurface>
+        <Switch>
+          <Route path="/" component={IntroAnchor} />
+          <Route path="/onboarding" component={OnboardingAnchor} />
+          <Route path="/panel" component={PanelAnchor} />
+          <Route path="/auth" component={AuthAnchor} />
+          <Route path="/os" component={OsAnchor} />
+          <Route path="/chat" component={ChatAnchor} />
+          <Route path="/launcher" component={LauncherAnchor} />
+          <Route path="/videostudio" component={VideoStudioAnchor} />
+          <Route path="/musicstudio" component={MusicStudioAnchor} />
+          <Route path="/image" component={ImageAnchor} />
+          <Route path="/calculator" component={CalculatorAnchor} />
+          <Route path="/games" component={GamesAnchor} />
+          <Route path="/console" component={ConsoleAnchor} />
+          <Route path="/gateway" component={GatewayAnchor} />
+          <Route path="/gateway/v/:versionId" component={GatewayAnchor} />
+          <Route path="/providers" component={ProvidersAnchor} />
+          <Route path="/projects" component={ProjectsAnchor} />
+          <Route path="/routes" component={RoutesAnchor} />
+          <Route path="/usage" component={UsageAnchor} />
+          <Route path="/docs" component={DocsAnchor} />
+          <Route path="/explore" component={ExploreAnchor} />
+          <Route path="/history" component={HistoryAnchor} />
+          <Route path="/admin" component={AdminAnchor} />
+          <Route path="/settings" component={SettingsAnchor} />
+          <Route path="/about" component={AboutAnchor} />
+          <Route path="/terms" component={TermsAnchor} />
+          <Route path="/policy" component={PolicyAnchor} />
+          <Route path="/w/:workspaceId/s/:sessionId/t/:tabId/:sectionId" component={PanelAnchor} />
+          <Route path="/404" component={NotFoundAnchor} />
+          <Route component={NotFoundAnchor} />
+        </Switch>
+      </RouteSurface>
     </>
   );
 }

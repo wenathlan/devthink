@@ -38,9 +38,10 @@
  */
 
 import { Lock, Search, Wifi, X } from "lucide-react";
-import { type RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { type CSSProperties, type RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { familyurl } from "../../deploybase.ts";
+import { loadrecentapps, pushrecentapp } from "../../recentapps.ts";
 import { SolLogoMark } from "../panel/logo.tsx";
 import { DESKTOP_APPS, type DesktopApp, searchDesktopApps, seedOsView } from "./appregistry.ts";
 import { AppTile } from "./apptile.tsx";
@@ -74,9 +75,12 @@ const BAR_FACE_CLASS =
   "dt-nav__app-face grid h-[38px] w-[38px] place-items-center rounded-xs transition-[background-color,transform] duration-200 animate-popintro group-hcf:bg-white/10 light:group-hcf:bg-black/8 group-active:scale-[0.7] group-active:duration-100 group-focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] [&_.dt-tile]:h-[26px] [&_.dt-tile]:w-[26px] [&_.dt-tile]:rounded-sm [&_.dt-tile]:shadow-none";
 
 /** the app-name peek: acrylic under the cell, cleared of the bar (Windows
- * tooltip semantics, name only — the aria-label already carries the name) */
+ * tooltip semantics, name only — the aria-label already carries the name);
+ * the 300ms hover delay is the Windows tooltip pause, the reveal itself is
+ * the 200ms fade + slide (the delay rides only the hovered state, so the
+ * leave hides instantly) */
 const BAR_TIP_CLASS =
-  "dt-nav__tip acrylic-tip pointer-events-none absolute top-[calc(100%+6px)] left-1/2 z-[1] -translate-x-1/2 translate-y-[-4px] rounded-xs px-[9px] py-[5px] font-sans text-xs font-medium whitespace-nowrap text-[#fafafa] opacity-0 transition-[opacity,transform] duration-200 group-hcf:translate-y-0 group-hcf:opacity-100 light:border-black/12 light:text-[#1a1a1a]";
+  "dt-nav__tip acrylic-tip pointer-events-none absolute top-[calc(100%+6px)] left-1/2 z-[1] -translate-x-1/2 translate-y-[-4px] rounded-xs px-[9px] py-[5px] font-sans text-xs font-medium whitespace-nowrap text-[#fafafa] opacity-0 transition-[opacity,transform] duration-200 group-hcf:translate-y-0 group-hcf:opacity-100 group-hcf:delay-300 light:border-black/12 light:text-[#1a1a1a]";
 
 /** the one shell flyout surface: at most one of these is open (and mounted) */
 type PanelState =
@@ -170,6 +174,8 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
   const [openPanel, setOpenPanel] = useState<PanelState | null>(null);
   const [query, setQuery] = useState("");
   const [pins, setPins] = useState<string[]>(() => loadTaskbarPins(TASKBAR_PIN_IDS));
+  /** the recently opened apps behind the Start menu recommended rail */
+  const [recents, setRecents] = useState<string[]>(() => loadrecentapps());
   const [tray, setTray] = useState<TraySettings>(DEFAULT_TRAY_SETTINGS);
   const searchRef = useRef<HTMLInputElement | null>(null);
   const exitTimer = useRef<number | null>(null);
@@ -297,6 +303,15 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
 
   const results = searchDesktopApps(query);
 
+  /** the recommended rail: the recent ids mapped onto the catalog, capped
+   * at six and only shown while the search box is empty */
+  const recommended = query
+    ? []
+    : recents
+        .map((id) => DESKTOP_APPS.find((app) => app.id === id))
+        .filter((app): app is DesktopApp => Boolean(app))
+        .slice(0, 6);
+
   /** the taskbar pins in the persisted order (unknown ids drop out) */
   const taskbarPins = pins
     .map((id) => DESKTOP_APPS.find((app) => app.id === id))
@@ -321,6 +336,8 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
   function openApp(app: DesktopApp) {
     closePanel();
     setQuery("");
+    // the open promotes the app to the head of the Start menu recommended rail
+    setRecents(pushrecentapp(app.id));
     if (onOpenApp) {
       onOpenApp(app);
       return;
@@ -522,13 +539,16 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
               {query ? "results" : "pinned"}
             </p>
             {/* the pinned tiles: the exact win11 pnApp cell — 96×84px, 4px
-                corners, the hover wash in 100ms ease-in-out, 12px label */}
+                corners, the hover wash in 100ms ease-in-out, 12px label; the
+                entrance staggers 60ms per tile (the start pop, capped so the
+                tail never lags) */}
             <div className="dt-start__grid grid grid-cols-[repeat(auto-fill,96px)] px-8 pb-6">
-              {results.map((app) => (
+              {results.map((app, index) => (
                 <button
                   key={app.id}
                   type="button"
                   className="dt-start__app flex h-[84px] w-24 cursor-pointer flex-col items-center justify-center rounded-xs border-0 bg-transparent pt-2 text-ink transition-colors duration-100 ease-in-out hover:bg-white/10 focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none light:hover:bg-black/8 [&_.dt-tile]:h-8 [&_.dt-tile]:w-8 [&_.dt-tile]:rounded-sm [&_.dt-tile]:shadow-none"
+                  style={{ "--stagger-i": index } as CSSProperties}
                   title={app.detail}
                   onClick={() => openApp(app)}
                 >
@@ -544,6 +564,28 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
                 </p>
               )}
             </div>
+            {recommended.length > 0 && (
+              <>
+                <p className="dt-start__label mx-8 mb-2.5 text-sm font-medium text-ink">recommended</p>
+                <div className="dt-start__grid grid grid-cols-[repeat(auto-fill,96px)] px-8 pb-6">
+                  {recommended.map((app, index) => (
+                    <button
+                      key={app.id}
+                      type="button"
+                      className="dt-start__app flex h-[84px] w-24 cursor-pointer flex-col items-center justify-center rounded-xs border-0 bg-transparent pt-2 text-ink transition-colors duration-100 ease-in-out hover:bg-white/10 focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none light:hover:bg-black/8 [&_.dt-tile]:h-8 [&_.dt-tile]:w-8 [&_.dt-tile]:rounded-sm [&_.dt-tile]:shadow-none"
+                      style={{ "--stagger-i": index } as CSSProperties}
+                      title={app.detail}
+                      onClick={() => openApp(app)}
+                    >
+                      <AppTile app={app} size={20} />
+                      <strong className="mt-1.5 max-w-[88px] overflow-hidden font-sans text-xs font-normal text-ellipsis whitespace-nowrap">
+                        {app.name}
+                      </strong>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
             {/* the menu footer: the win11 menuBar — 64px, hairline top, the
                 mono wordmark instead of a second mark (logo discipline: the
                 taskbar owns the mark) */}
