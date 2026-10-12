@@ -38,7 +38,15 @@ import {
   ZoomIn,
   ZoomOut,
 } from "lucide-react";
-import { type PointerEvent as ReactPointerEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  type ChangeEvent as ReactChangeEvent,
+  type PointerEvent as ReactPointerEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   type EditItem,
   type EditTrack,
@@ -112,6 +120,10 @@ type Drag = {
   origin: EditTrack;
 };
 
+/** the pending scrub sample of the rAF batch: the latest range value the
+ * input event saw, applied at most once per animation frame. */
+type ScrubSample = { value: number };
+
 export default function Edit() {
   const [tracks, setTracks] = useState<readonly EditTrack[]>(freshTracks);
   const [selected, setSelected] = useState<{ trackIndex: number; itemId: number } | null>(null);
@@ -127,6 +139,10 @@ export default function Edit() {
   const frame = frameduration(rate);
   const pps = ZOOM_LEVELS[zoomIndex] ?? 64;
   const drag = useRef<Drag | null>(null);
+  /** the rAF batch of the scrub: the latest sample rides the frame, the
+   * playhead state (and the magnet) applies once per paint, never per event. */
+  const scrub = useRef<ScrubSample | null>(null);
+  const scrubFrame = useRef(0);
 
   const v1 = tracks[0];
   const a1 = tracks[1];
@@ -183,6 +199,36 @@ export default function Edit() {
     },
     [frame],
   );
+
+  /** flushes the queued scrub sample into the playhead (the rAF tail). */
+  const flushScrub = useCallback(() => {
+    const sample = scrub.current;
+    if (!sample) return;
+    scrub.current = null;
+    const threshold = Math.round((SNAP_PX / pps) * TICKS_PER_SECOND);
+    setPlayhead(snap ? (snapedit(merged, sample.value, threshold) ?? sample.value) : sample.value);
+  }, [merged, pps, snap]);
+
+  /** the scrub input: the range's value queues and applies at most once per
+   * animation frame — the scrub rides the display, never the event storm. */
+  const onScrubInput = useCallback(
+    (event: ReactChangeEvent<HTMLInputElement>) => {
+      scrub.current = { value: Number(event.target.value) };
+      if (scrubFrame.current) return;
+      scrubFrame.current = window.requestAnimationFrame(() => {
+        scrubFrame.current = 0;
+        flushScrub();
+      });
+    },
+    [flushScrub],
+  );
+
+  // the scrub loop never outlives the page
+  useEffect(() => {
+    return () => {
+      if (scrubFrame.current) window.cancelAnimationFrame(scrubFrame.current);
+    };
+  }, []);
 
   const walkPoint = useCallback(
     (direction: 1 | -1) => {
@@ -435,7 +481,7 @@ export default function Edit() {
             className="tkey"
             aria-pressed={playing}
             aria-label={playing ? "pause" : "play"}
-            title={playing ? "pause (space)" : "play (space)"}
+            data-tip={playing ? "pause (space)" : "play (space)"}
             onClick={() => setPlaying((current) => !current)}
           >
             {playing ? <Pause size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}
@@ -444,7 +490,7 @@ export default function Edit() {
             type="button"
             className="tkey"
             aria-label="to start"
-            title="to the sequence start (home)"
+            data-tip="to the sequence start (home)"
             onClick={() => {
               setPlaying(false);
               setPlayhead(0);
@@ -456,7 +502,7 @@ export default function Edit() {
             type="button"
             className="tkey"
             aria-label="previous edit point"
-            title="previous edit point (shift+←)"
+            data-tip="previous edit point (shift+←)"
             onClick={() => walkPoint(-1)}
           >
             <ArrowLeftToLine size={15} aria-hidden="true" />
@@ -465,7 +511,7 @@ export default function Edit() {
             type="button"
             className="tkey"
             aria-label="next edit point"
-            title="next edit point (shift+→)"
+            data-tip="next edit point (shift+→)"
             onClick={() => walkPoint(1)}
           >
             <ArrowRightToLine size={15} aria-hidden="true" />
@@ -484,7 +530,7 @@ export default function Edit() {
             type="button"
             className="tkey"
             aria-label="split at the playhead"
-            title="split at the playhead (s)"
+            data-tip="split at the playhead (s)"
             onClick={splitAtPlayhead}
           >
             <Scissors size={15} aria-hidden="true" />
@@ -493,7 +539,7 @@ export default function Edit() {
             type="button"
             className="tkey"
             aria-label="lift the selection"
-            title="lift the selection — the gap stays (delete)"
+            data-tip="lift the selection — the gap stays (delete)"
             onClick={() => rangeOp("lift")}
           >
             <Eraser size={15} aria-hidden="true" />
@@ -502,7 +548,7 @@ export default function Edit() {
             type="button"
             className="tkey"
             aria-label="extract the selection"
-            title="extract the selection — the gap closes (ripple)"
+            data-tip="extract the selection — the gap closes (ripple)"
             onClick={() => rangeOp("extract")}
           >
             <span className="mono-label" style={{ fontSize: 10 }}>
@@ -513,7 +559,7 @@ export default function Edit() {
             type="button"
             className="tkey"
             aria-label="duplicate the selection"
-            title="duplicate the selection after itself"
+            data-tip="duplicate the selection after itself"
             onClick={duplicateSelected}
           >
             <Copy size={14} aria-hidden="true" />
@@ -528,7 +574,7 @@ export default function Edit() {
             className="tkey"
             aria-pressed={mode === "insert"}
             aria-label="place mode: insert pushes the rest right"
-            title="place mode: insert pushes the rest right"
+            data-tip="place mode: insert pushes the rest right"
             onClick={() => setMode("insert")}
           >
             <span className="mono-label" style={{ fontSize: 10 }}>
@@ -540,7 +586,7 @@ export default function Edit() {
             className="tkey"
             aria-pressed={mode === "overwrite"}
             aria-label="place mode: overwrite covers the span"
-            title="place mode: overwrite covers the span"
+            data-tip="place mode: overwrite covers the span"
             onClick={() => setMode("overwrite")}
           >
             <span className="mono-label" style={{ fontSize: 10 }}>
@@ -557,7 +603,7 @@ export default function Edit() {
             className="tkey"
             aria-pressed={lane === 0}
             aria-label="target lane v1 — the picture lane"
-            title="target lane v1 — the picture lane"
+            data-tip="target lane v1 — the picture lane"
             onClick={() => setLane(0)}
           >
             <span className="mono-label" style={{ fontSize: 10 }}>
@@ -569,7 +615,7 @@ export default function Edit() {
             className="tkey"
             aria-pressed={lane === 1}
             aria-label="target lane a1 — the sound lane"
-            title="target lane a1 — the sound lane (the same algebra, the same refusals)"
+            data-tip="target lane a1 — the sound lane (the same algebra, the same refusals)"
             onClick={() => setLane(1)}
           >
             <span className="mono-label" style={{ fontSize: 10 }}>
@@ -583,7 +629,7 @@ export default function Edit() {
             className="tkey"
             aria-pressed={snap}
             aria-label="snap the playhead to edit points"
-            title="snap the playhead to the edit points"
+            data-tip="snap the playhead to the edit points"
             onClick={() => setSnap((current) => !current)}
           >
             <Magnet size={15} aria-hidden="true" />
@@ -592,7 +638,7 @@ export default function Edit() {
             type="button"
             className="tkey"
             aria-label="zoom out"
-            title="zoom out"
+            data-tip="zoom out"
             onClick={() => setZoomIndex((i) => Math.max(0, i - 1))}
           >
             <ZoomOut size={15} aria-hidden="true" />
@@ -601,7 +647,7 @@ export default function Edit() {
             type="button"
             className="tkey"
             aria-label="zoom in"
-            title="zoom in"
+            data-tip="zoom in"
             onClick={() => setZoomIndex((i) => Math.min(ZOOM_LEVELS.length - 1, i + 1))}
           >
             <ZoomIn size={15} aria-hidden="true" />
@@ -658,11 +704,7 @@ export default function Edit() {
                 step={frame}
                 value={playhead}
                 aria-label="the playhead — drag to scrub"
-                onChange={(event) => {
-                  const raw = Number(event.target.value);
-                  const threshold = Math.round((SNAP_PX / pps) * TICKS_PER_SECOND);
-                  setPlayhead(snap ? (snapedit(merged, raw, threshold) ?? raw) : raw);
-                }}
+                onChange={onScrubInput}
               />
             </div>
 
@@ -679,7 +721,7 @@ export default function Edit() {
                         ? `unlock lane ${trackIndex === 0 ? "v1" : "a1"}`
                         : `lock lane ${trackIndex === 0 ? "v1" : "a1"}`
                     }
-                    title={track.locked ? "unlock the lane" : "lock the lane — every edit refuses"}
+                    data-tip={track.locked ? "unlock the lane" : "lock the lane — every edit refuses"}
                     onClick={() => {
                       setTrackAt(trackIndex, { ...track, locked: !track.locked });
                       setNote(
@@ -751,7 +793,7 @@ export default function Edit() {
               </div>
             ))}
 
-            <div aria-hidden="true" className="tl-playhead" style={{ left: playheadPx }} />
+            <div aria-hidden="true" className="tl-playhead" data-running={playing ? "true" : undefined} style={{ left: playheadPx }} />
           </div>
         </div>
 
@@ -791,7 +833,8 @@ export default function Edit() {
               key={slate.id}
               type="button"
               className="chip"
-              title={`${slate.detail} — ${mode} on ${lane === 0 ? "v1" : "a1"} at the playhead`}
+              data-tip={`${slate.detail} — ${mode} on ${lane === 0 ? "v1" : "a1"} at the playhead`}
+              aria-label={`place ${slate.name} — ${slate.detail} — ${mode} on ${lane === 0 ? "v1" : "a1"} at the playhead`}
               onClick={() => placeSlate(slate.name, index, slate.duration)}
             >
               {slate.name} · {(slate.duration / TICKS_PER_SECOND).toFixed(0)}s

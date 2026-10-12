@@ -852,6 +852,112 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .reveal.in:nth-child(4) { animation-delay: 210ms; }
 .reveal.in:nth-child(5) { animation-delay: 280ms; }
 
+/* ---------- 6.a the 3-a windows studio pass — the aero snap, the running
+   timeline, the fluent gallery grid, the acrylic data-tips ----------
+   (task 3-a; appended before the guards — section 7 stays last) */
+
+/* the aero snap ghost: the half/half/max zone a title-bar drag previews —
+   the windows-accent wash on a fixed inert overlay, the micro entrance
+   (transform + opacity only; the hard stop zeroes it) */
+.snapghost {
+  position: fixed; z-index: var(--z-float); pointer-events: none;
+  border: 1px solid color-mix(in srgb, var(--win-accent) 65%, transparent);
+  border-radius: var(--win-radius);
+  background: color-mix(in srgb, var(--win-accent) 18%, transparent);
+  animation: snapghostIn var(--sol-micro) var(--sol-ease-out) backwards;
+}
+@keyframes snapghostIn { from { opacity: 0; transform: scale(0.985); } }
+
+/* the aero halves: the snapped window flushes to its viewport edge (fixed,
+   radius 0, no drag offset) — dragging or maximizing lets go, the Windows
+   restore law; the resize handles stand down like the maximized state */
+.winapp[data-snapped] { position: fixed; flex: none; width: 50vw; height: 100dvh; max-width: none; border-radius: 0; transform: none; }
+.winapp[data-snapped="left"] { top: 0; left: 0; }
+.winapp[data-snapped="right"] { top: 0; right: 0; }
+.winapp[data-snapped] .winapp__rz { display: none; }
+
+/* the running timeline: the playhead wears the windows accent while the
+   transport runs (the identity rose stays on the content, the focus law) */
+.tl-playhead[data-running="true"] { background: var(--win-accent); }
+.tl-playhead[data-running="true"]::before { border-top-color: var(--win-accent); }
+
+/* the clip hover wash: the body lifts one wash step under the pointer (the
+   windows hand); the selection keeps its hairline accent ring */
+.tl-clip:hover { background-color: color-mix(in srgb, var(--wash) 55%, var(--surface-5)); }
+
+/* the gallery wall — the fluent grid: the cards carry the trylle elevation
+   ladder (the 1px ring + the doubled drops), the hover lifts one rung, the
+   press rides the windows icon law (scale .7 on 100ms, handed back when the
+   press lands on a real control inside the card), the entrance staggers
+   60ms per card */
+.gal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
+.gal-card { border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface-1); box-shadow: var(--shadow-1); overflow: hidden; transition: box-shadow var(--sol-micro) var(--sol-ease-out), transform var(--sol-micro) var(--sol-ease-out), border-color var(--sol-micro) var(--sol-ease-out); }
+.gal-card:hover { border-color: var(--line-strong); transform: translateY(-2px); box-shadow: var(--shadow-2), 0 8px 16px -6px rgb(0 0 0 / 22%), 0 16px 32px -12px rgb(0 0 0 / 18%); }
+.gal-card:active { transform: scale(0.7); transition: transform var(--dur-press) ease-in-out; }
+.gal-card:has(a:active), .gal-card:has(button:active) { transform: none; }
+.gal-thumb { aspect-ratio: 1 / 1; display: grid; place-items: center; padding: 10px; background: var(--surface-2); border-bottom: 1px solid var(--line); }
+.gal-card__body { padding: 12px 14px 14px; }
+.gal-card--skel { pointer-events: none; }
+@keyframes galCardIn { from { opacity: 0; transform: translateY(8px); } }
+@media (prefers-reduced-motion: no-preference) {
+  .gal-grid > .gal-card { animation: galCardIn 420ms var(--sol-ease-out) backwards; }
+  .gal-grid > .gal-card:nth-child(2) { animation-delay: 60ms; }
+  .gal-grid > .gal-card:nth-child(3) { animation-delay: 120ms; }
+  .gal-grid > .gal-card:nth-child(4) { animation-delay: 180ms; }
+  .gal-grid > .gal-card:nth-child(5) { animation-delay: 240ms; }
+  .gal-grid > .gal-card:nth-child(6) { animation-delay: 300ms; }
+  .gal-grid > .gal-card:nth-child(7) { animation-delay: 360ms; }
+  .gal-grid > .gal-card:nth-child(8) { animation-delay: 420ms; }
+  .gal-grid > .gal-card:nth-child(9) { animation-delay: 480ms; }
+  .gal-grid > .gal-card:nth-child(10) { animation-delay: 540ms; }
+  .gal-grid > .gal-card:nth-child(11) { animation-delay: 600ms; }
+  .gal-grid > .gal-card:nth-child(12) { animation-delay: 660ms; }
+}
+
+/* the player frame: the hero object carries the same elevation ladder on
+   hover (a viewer, not a launcher — no press) */
+.pf-frame { border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface-1); box-shadow: var(--shadow-1); transition: box-shadow var(--sol-micro) var(--sol-ease-out), transform var(--sol-micro) var(--sol-ease-out), border-color var(--sol-micro) var(--sol-ease-out); }
+.pf-frame:hover { border-color: var(--line-strong); transform: translateY(-1px); box-shadow: var(--shadow-2), 0 8px 16px -6px rgb(0 0 0 / 22%), 0 16px 32px -12px rgb(0 0 0 / 18%); }
+.pf-frame--skel { aspect-ratio: 1 / 1; padding: 0; }
+.rail-card { transition: box-shadow var(--sol-micro) var(--sol-ease-out); }
+.rail-card:hover { box-shadow: var(--shadow-2); }
+
+/* the skeleton shimmer: opacity only (the windows loading hand — hairline
+   wells breathing, never dots, never a gradient sweep) */
+.cdr-skel { display: block; min-height: 10px; border-radius: var(--win-radius-ctl); background: var(--surface-3); box-shadow: inset 0 0 0 1px var(--line); animation: cdrSkel 1.4s ease-in-out infinite; }
+@keyframes cdrSkel { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
+.gal-card--skel:nth-child(3n + 2) .cdr-skel { animation-delay: 160ms; }
+.gal-card--skel:nth-child(3n) .cdr-skel { animation-delay: 320ms; }
+
+/* the generic acrylic data-tip (the argan/vault/getry recipe): the host
+   establishes the positioning context, the tip paints above the control —
+   below inside the chrome rows that sit at a container's top edge — with
+   the 300ms windows dwell on hover, immediate on keyboard focus, immediate
+   out. the rail pins keep their ::before tip (the ladder owns the ::after) */
+[data-tip] { position: relative; }
+[data-tip]:not(.railnav__item)::after {
+  content: attr(data-tip); position: absolute; bottom: calc(100% + 6px); left: 50%; z-index: var(--z-tooltip);
+  padding: 5px 9px; border-radius: var(--win-radius-ctl);
+  background-color: var(--win-tip); background-image: var(--noise); background-blend-mode: soft-light;
+  box-shadow: var(--shadow-flyout); color: var(--ink); font-size: 12px; font-weight: 500; line-height: 1.3; white-space: nowrap;
+  opacity: 0; transform: translate(-50%, 4px); pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+[data-tip]:not(.railnav__item):hover::after { opacity: 1; transform: translate(-50%, 0); transition-delay: 300ms; }
+[data-tip]:not(.railnav__item):focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
+.tl-toolbar [data-tip]::after, .tl-thead [data-tip]::after, .winapp__title [data-tip]::after { bottom: auto; top: calc(100% + 6px); transform: translate(-50%, -4px); }
+.winapp__caption [data-tip]::after { left: auto; right: 0; transform: translate(0, -4px); }
+.winapp__caption [data-tip]:hover::after, .winapp__caption [data-tip]:focus-visible::after { transform: translate(0, 0); }
+.railnav__item:hover::before { transition-delay: 300ms; }
+
+/* the motion guards of the pass (the section 7 hard stops stay last): no
+   stagger hold, no dwell, no shimmer wait under reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .gal-grid > .gal-card { animation: none; }
+  .gal-card--skel .cdr-skel { animation-delay: 0ms; }
+  .railnav__item::before, [data-tip]::after { transition-delay: 0ms; }
+}
+
 /* ---------- 7. guards — the hard stops, last so nothing overrides them ------ */
 @media (prefers-reduced-transparency: reduce) {
   .winapp__title, .winonboard__head, .winchip, .winonboard__card, .toast, .intro-nav {

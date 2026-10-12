@@ -187,7 +187,7 @@ export function DemoStrip({ cue }: { cue: DemoCue | null }) {
               key={fixture.id}
               type="button"
               className="chip"
-              title={fixture.detail}
+              data-tip={fixture.detail}
               aria-pressed={active === fixture.id ? "true" : "false"}
               disabled={status === "reading"}
               onClick={() => run(fixture.id)}

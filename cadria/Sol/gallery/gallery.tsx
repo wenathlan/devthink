@@ -59,22 +59,8 @@ function PlaceholderGlyph() {
   );
 }
 
-/** the flat hairline card styles (tokens only, radius 4-8, no shadow). */
-const CARD_STYLE = {
-  border: "1px solid var(--line)",
-  borderRadius: "var(--radius-lg)",
-  overflow: "hidden",
-  background: "var(--surface-1)",
-} as const;
-
-const THUMB_STYLE = {
-  aspectRatio: "1 / 1",
-  display: "grid",
-  placeItems: "center",
-  padding: 10,
-  background: "var(--surface-2)",
-  borderBottom: "1px solid var(--line)",
-} as const;
+/** the wall skeleton: six honest shimmer cards while the gateway answers. */
+const SKELETON_CARDS: readonly number[] = [1, 2, 3, 4, 5, 6];
 
 /** one thumbnail: the gateway's rendered frame, or the placeholder glyph until/if it lands. */
 function RenderThumb({ id }: { id: string }) {
@@ -97,7 +83,7 @@ function RenderThumb({ id }: { id: string }) {
 
   return (
     <div
-      style={THUMB_STYLE}
+      className="gal-thumb"
       role="img"
       aria-label={svg ? `rendered frame ${id}` : `frame ${id} not fetched — placeholder glyph`}
     >
@@ -212,9 +198,19 @@ export default function Gallery() {
           the wall
         </h2>
         {state === "loading" && (
-          <p className="mono-label" role="status" style={{ padding: "16px 4px" }}>
-            reading the gateway…
-          </p>
+          <div className="gal-grid" role="status" aria-busy="true" style={{ marginTop: 8 }}>
+            {SKELETON_CARDS.map((card) => (
+              <div key={card} className="gal-card gal-card--skel" aria-hidden="true">
+                <div className="cdr-skel gal-thumb" />
+                <div className="gal-card__body">
+                  <span className="cdr-skel" style={{ width: "58%", height: 12 }} />
+                  <span className="cdr-skel" style={{ width: "86%", height: 9 }} />
+                  <span className="cdr-skel" style={{ width: "42%", height: 9 }} />
+                </div>
+              </div>
+            ))}
+            <span className="sr-only">reading the gateway…</span>
+          </div>
         )}
         {state === "offline" && (
           <EmptyState
@@ -263,19 +259,11 @@ export default function Gallery() {
           />
         )}
         {visible.length > 0 && (
-          <div
-            className="reveal"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))",
-              gap: 16,
-              marginTop: 8,
-            }}
-          >
+          <div className="gal-grid reveal" style={{ marginTop: 8 }}>
             {visible.map((project) => (
-              <article key={project.id} style={CARD_STYLE} aria-label={`${project.style} render ${project.id}`}>
+              <article key={project.id} className="gal-card" aria-label={`${project.style} render ${project.id}`}>
                 <RenderThumb id={project.id} />
-                <div style={{ padding: "12px 14px 14px" }}>
+                <div className="gal-card__body">
                   <h3 style={{ margin: 0, fontSize: "0.98rem" }}>{project.style}</h3>
                   <p className="mono-label" style={{ margin: "4px 0 0", overflowWrap: "anywhere" }}>
                     {project.id}

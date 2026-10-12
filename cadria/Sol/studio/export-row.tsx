@@ -121,7 +121,7 @@ export function ExportRow({ svg, project, report, styleName, seed, session, onRe
           type="button"
           className="btn secondary"
           disabled={!ready || !pngReady}
-          title={
+          data-tip={
             pngReady
               ? `png ${project?.canvas.width ?? 0}×${project?.canvas.height ?? 0}`
               : "png export needs OffscreenCanvas support"

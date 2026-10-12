@@ -54,7 +54,7 @@ export function IntroFooter() {
               rel="noreferrer"
               className="intro-foot__link"
               style={linkStyle}
-              title={`${member.slug} — the ${member.slug} surface of the family`}
+              data-tip={`${member.slug} — the ${member.slug} surface of the family`}
             >
               <span aria-hidden="true" style={dotStyle(member.accent)} />
               {member.slug}
