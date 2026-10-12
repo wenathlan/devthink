@@ -3267,6 +3267,394 @@ kbd {
   }
 }
 
+/* ---------- 13. THE GRAPH PASS — the run plan stage graph + the micro windows hand (task 3-b) ---------- */
+
+/* ---- the run plan stage graph (the loose graphpanel of the runs page) ---- */
+
+/* the panel plate: one surface step over the hairline ring, like the ledgers */
+.frg-panel {
+  margin: 0 0 30px;
+  padding: 18px;
+  border-radius: var(--sol-radius);
+  background-color: var(--sol-surface-1);
+  box-shadow: 0 0 0 1px var(--sol-hairline);
+}
+
+.frg-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.frg-eyebrow {
+  margin: 0;
+  color: var(--sol-faint);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: var(--sol-track-label);
+  text-transform: uppercase;
+}
+
+.frg-progress {
+  margin: 0;
+  color: var(--sol-ink);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* the state tally: dot + count + word, never color alone */
+.frg-tally {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.frg-tally__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: var(--sol-radius-ctl);
+  background-color: var(--sol-surface-3);
+  box-shadow: 0 0 0 1px var(--sol-hairline);
+  color: var(--sol-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.frg-tally__chip i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: currentcolor;
+}
+
+.frg-tally__chip[data-state="running"] {
+  color: var(--win-accent);
+}
+
+.frg-tally__chip[data-state="done"] {
+  color: var(--sol-success);
+}
+
+.frg-tally__chip[data-state="failed"] {
+  color: var(--color-close);
+}
+
+.frg-tally__chip[data-state="pending"],
+.frg-tally__chip[data-state="skipped"] {
+  color: var(--sol-faint);
+}
+
+/* the graph lane: the win11 scrollbar owns the overflow on the narrow folds */
+.frg-scroll {
+  margin-top: 16px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.frg-graph {
+  display: block;
+  width: 100%;
+  min-width: 1080px;
+  height: auto;
+}
+
+.frg-graph text,
+.frg-graph circle {
+  pointer-events: none;
+}
+
+/* the wires: bezier hairlines at ink 10% — the live hand-off (done feeds
+   running) wears the windows accent through opacity only */
+.frg-edge {
+  fill: none;
+  stroke: var(--sol-hairline-strong);
+  stroke-width: 1;
+}
+
+.frg-edge[data-live="true"] {
+  stroke: var(--win-accent);
+  stroke-opacity: 0.55;
+}
+
+/* the trylle card: the #171717→#252525 surface, the 1px ring, the .625rem
+   radius (the rx rides the markup) */
+.frg-node__card {
+  stroke: var(--sol-hairline-strong);
+  stroke-width: 1;
+}
+
+.frg-node[data-state="running"] .frg-node__card {
+  stroke: var(--win-accent);
+}
+
+.frg-node[data-state="failed"] .frg-node__card {
+  stroke: var(--color-close);
+}
+
+/* the hover wash: ink at 4% through opacity only (never a fill flip) */
+.frg-node__wash {
+  fill: var(--sol-ink);
+  opacity: 0;
+  transition: opacity var(--sol-micro) var(--sol-ease-out);
+}
+
+.frg-node:hover .frg-node__wash {
+  opacity: 0.04;
+}
+
+.frg-node__kind {
+  fill: var(--sol-faint);
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: var(--sol-track-label);
+  text-transform: uppercase;
+}
+
+.frg-node__label {
+  fill: var(--sol-ink);
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.frg-node__dot {
+  fill: var(--sol-faint);
+}
+
+.frg-node[data-state="running"] .frg-node__dot {
+  fill: var(--win-accent);
+  animation: frgPulse 1.6s var(--sol-ease-out) infinite;
+}
+
+.frg-node[data-state="done"] .frg-node__dot {
+  fill: var(--sol-success);
+}
+
+.frg-node[data-state="failed"] .frg-node__dot {
+  fill: var(--color-close);
+}
+
+.frg-node[data-state="skipped"] .frg-node__dot {
+  opacity: 0.6;
+}
+
+.frg-node__state {
+  fill: var(--sol-faint);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+
+.frg-node[data-state="running"] .frg-node__state {
+  fill: var(--win-accent);
+}
+
+.frg-node[data-state="done"] .frg-node__state {
+  fill: var(--sol-muted);
+}
+
+.frg-node[data-state="failed"] .frg-node__state {
+  fill: var(--color-close);
+}
+
+/* the trylle card surfaces: the gradient stops ride the theme flip */
+.frg-stop-a {
+  stop-color: #171717;
+}
+
+.frg-stop-b {
+  stop-color: #252525;
+}
+
+[data-theme="light"] .frg-stop-a {
+  stop-color: #f4f4f5;
+}
+
+[data-theme="light"] .frg-stop-b {
+  stop-color: #fcfcfc;
+}
+
+/* the stage legend: one chip per step, the note on the acrylic tooltip */
+.frg-stages {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.frg-stage {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: var(--sol-radius-ctl);
+  background-color: var(--sol-surface-2);
+  box-shadow: 0 0 0 1px var(--sol-hairline);
+}
+
+.frg-stage i {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--sol-faint);
+}
+
+.frg-stage[data-state="running"] i {
+  background-color: var(--win-accent);
+}
+
+.frg-stage[data-state="done"] i {
+  background-color: var(--sol-success);
+}
+
+.frg-stage[data-state="failed"] i {
+  background-color: var(--color-close);
+}
+
+.frg-stage__index {
+  color: var(--sol-faint);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.frg-stage__label {
+  color: var(--sol-muted);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.frg-stage__state {
+  margin-left: auto;
+  color: var(--sol-faint);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.frg-stage[data-state="running"] .frg-stage__state {
+  color: var(--win-accent);
+}
+
+.frg-stage[data-state="failed"] .frg-stage__state {
+  color: var(--color-close);
+}
+
+@keyframes frgPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* ---- the micro windows hand (task 3-b) ---- */
+
+/* the content tooltip: the acrylic plate above any data-tip control — the
+   windows 300ms dwell on the show, the exit immediate. The chrome owners
+   (the rail pin, the family link, the theme pin) keep their own recipes. */
+[data-tip]:not(.win-raillink):not(.win-family__link):not(.win-theme) {
+  position: relative;
+}
+
+[data-tip]:not(.win-raillink):not(.win-family__link):not(.win-theme)::before {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  z-index: 40;
+  width: max-content;
+  max-width: 280px;
+  padding: 5px 9px;
+  border-radius: var(--sol-radius-ctl);
+  background-color: var(--win-tip);
+  background-image: var(--win-noise);
+  box-shadow: var(--win-shadow-flyout);
+  color: var(--sol-ink);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: left;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition: opacity 0.2s var(--sol-ease-out), transform 0.2s var(--sol-ease-out);
+  pointer-events: none;
+}
+
+[data-tip]:not(.win-raillink):not(.win-family__link):not(.win-theme):hover::before,
+[data-tip]:not(.win-raillink):not(.win-family__link):not(.win-theme):focus-visible::before {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  transition-delay: 300ms;
+}
+
+/* the dwell on the chrome tooltips: the pins wait the windows 300ms too */
+.win-raillink:hover::before,
+.win-raillink:focus-visible::before,
+.win-family__link:hover::before,
+.win-family__link:focus-visible::before,
+.win-theme:hover::before,
+.win-theme:focus-visible::before {
+  transition-delay: 300ms;
+}
+
+/* the skeleton shimmer: the waiting surface breathes by opacity only —
+   ready for the first async surface of the platform pages (the seeded
+   rehearsals stay honest about empty versus loading) */
+@keyframes frgSkel {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.frg-skel {
+  border-radius: var(--radius-sm);
+  background-color: var(--sol-surface-2);
+  box-shadow: 0 0 0 1px var(--sol-hairline);
+  animation: frgSkel 1.4s ease-in-out infinite;
+}
+
+.frg-skel--text {
+  height: 10px;
+}
+
+.frg-skel--card {
+  height: 56px;
+}
+
+/* the graph pass stands down before the hard stop */
+@media (prefers-reduced-motion: reduce) {
+  .frg-node[data-state="running"] .frg-node__dot,
+  .frg-skel {
+    animation: none !important;
+  }
+}
+
 /* the hard stop: the last word of the file — every animation and transition
    collapses to 0.01ms and nothing moves */
 @media (prefers-reduced-motion: reduce) {
