@@ -16,15 +16,30 @@ type EmptyStateProps = {
   note: string;
   /** the one real action (an anchor or a button) */
   action?: ReactNode;
+  /** the data is still on its way: the shimmer face rides instead of the
+   * verdict (the micro-windows pass — a skeleton, never dots) */
+  pending?: boolean;
 };
 
 /**
  * The empty state frame of the argan pages.
  *
- * @param props the glyph, the honest line and the optional action.
+ * @param props the glyph, the honest line, the optional action and the
+ * optional pending flag (the shimmer face while the catalog answers).
  * @returns the empty state element.
  */
-export function EmptyState({ icon: Icon, note, action }: EmptyStateProps) {
+export function EmptyState({ icon: Icon, note, action, pending }: EmptyStateProps) {
+  // the loading face: three ruled shimmer bars, the verdict waits for the rows
+  if (pending) {
+    return (
+      <div className="emptystate emptystate--pending" role="status" aria-busy="true">
+        <span className="skeleton" style={{ width: "44%" }} aria-hidden="true" />
+        <span className="skeleton" style={{ width: "68%" }} aria-hidden="true" />
+        <span className="skeleton" style={{ width: "30%" }} aria-hidden="true" />
+        <span className="r3a-sr">loading — the rows are still on their way</span>
+      </div>
+    );
+  }
   return (
     <div className="emptystate">
       <span className="emptystate__glyph" aria-hidden="true">

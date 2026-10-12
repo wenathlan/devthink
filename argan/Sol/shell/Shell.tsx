@@ -304,7 +304,8 @@ function FamilyRow() {
           href={familyurl(member.slug)}
           target="_blank"
           rel="noreferrer"
-          title={`open ${member.slug} in its own deploy`}
+          data-tip={`open ${member.slug} in its own deploy`}
+          aria-label={member.slug}
         >
           <span
             className="winapp__familydot"
@@ -480,7 +481,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
                   key={app.href}
                   href={app.href}
                   className="winapp__raillink"
-                  title={app.detail}
+                  data-tip={app.detail}
                   aria-label={app.label}
                   aria-current={isActive(app.href) ? "page" : undefined}
                 >

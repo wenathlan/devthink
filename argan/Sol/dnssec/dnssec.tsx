@@ -30,21 +30,43 @@ export default function Dnssec() {
   const [algorithms, setAlgorithms] = useState<readonly SignalBadge[]>([]);
   const [signLogs, setSignLogs] = useState<readonly ConfigBlock[]>([]);
   const [rollover, setRollover] = useState<readonly RolloverStep[]>([]);
+  // the micro-windows loading face: one count per table in flight
+  const [pending, setPending] = useState(4);
 
   useEffect(() => {
     let live = true;
-    listDnssecKeyCards().then((rows) => {
-      if (live) setKeyCards(rows);
-    });
-    listDnssecAlgorithms().then((rows) => {
-      if (live) setAlgorithms(rows);
-    });
-    listConfigBlocks().then((rows) => {
-      if (live) setSignLogs(rows);
-    });
-    listRolloverSteps().then((rows) => {
-      if (live) setRollover(rows);
-    });
+    listDnssecKeyCards()
+      .then((rows) => {
+        if (live) setKeyCards(rows);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (live) setPending((count) => count - 1);
+      });
+    listDnssecAlgorithms()
+      .then((rows) => {
+        if (live) setAlgorithms(rows);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (live) setPending((count) => count - 1);
+      });
+    listConfigBlocks()
+      .then((rows) => {
+        if (live) setSignLogs(rows);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (live) setPending((count) => count - 1);
+      });
+    listRolloverSteps()
+      .then((rows) => {
+        if (live) setRollover(rows);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (live) setPending((count) => count - 1);
+      });
     return () => {
       live = false;
     };
@@ -78,6 +100,7 @@ export default function Dnssec() {
             {keyCards.length === 0 ? (
               <EmptyState
                 icon={Shield}
+                pending={pending > 0}
                 note="the key ledger answered no rows — the signing pipeline has not published keys to this snapshot yet"
               />
             ) : (

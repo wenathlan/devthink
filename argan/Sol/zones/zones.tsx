@@ -33,18 +33,36 @@ export default function Zones() {
   const [zones, setZones] = useState<readonly ZoneSnapshot[]>([]);
   const [steps, setSteps] = useState<readonly PublicationStep[]>([]);
   const [recordSets, setRecordSets] = useState<readonly RecordSetRow[]>([]);
+  // the micro-windows loading face: one count per table in flight — the
+  // ledgers ride the shimmer until every answer landed
+  const [pending, setPending] = useState(3);
 
   useEffect(() => {
     let live = true;
-    listZones().then((rows) => {
-      if (live) setZones(rows);
-    });
-    listPublicationSteps().then((rows) => {
-      if (live) setSteps(rows);
-    });
-    listApexRecordSets().then((rows) => {
-      if (live) setRecordSets(rows);
-    });
+    listZones()
+      .then((rows) => {
+        if (live) setZones(rows);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (live) setPending((count) => count - 1);
+      });
+    listPublicationSteps()
+      .then((rows) => {
+        if (live) setSteps(rows);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (live) setPending((count) => count - 1);
+      });
+    listApexRecordSets()
+      .then((rows) => {
+        if (live) setRecordSets(rows);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (live) setPending((count) => count - 1);
+      });
     return () => {
       live = false;
     };
@@ -89,6 +107,7 @@ export default function Zones() {
             {zones.length === 0 ? (
               <EmptyState
                 icon={Waypoints}
+                pending={pending > 0}
                 note="the zone table answered no rows — the catalog is still loading or the staging cluster is offline"
               />
             ) : (
@@ -169,6 +188,7 @@ export default function Zones() {
           {records.length === 0 ? (
             <EmptyState
               icon={Waypoints}
+              pending={pending > 0}
               note="the apex record set arrived empty — the snapshot has no records to rule yet"
             />
           ) : (

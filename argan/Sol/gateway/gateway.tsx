@@ -29,18 +29,35 @@ export default function Gateway() {
   const [transports, setTransports] = useState<readonly DnsTransport[]>([]);
   const [dohFirst, setDohFirst] = useState<readonly FeatureCard[]>([]);
   const [blocks, setBlocks] = useState<readonly ConfigBlock[]>([]);
+  // the micro-windows loading face: one count per table in flight
+  const [pending, setPending] = useState(3);
 
   useEffect(() => {
     let live = true;
-    listTransports().then((rows) => {
-      if (live) setTransports(rows);
-    });
-    listDohFirstCards().then((rows) => {
-      if (live) setDohFirst(rows);
-    });
-    listConfigBlocks().then((rows) => {
-      if (live) setBlocks(rows);
-    });
+    listTransports()
+      .then((rows) => {
+        if (live) setTransports(rows);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (live) setPending((count) => count - 1);
+      });
+    listDohFirstCards()
+      .then((rows) => {
+        if (live) setDohFirst(rows);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (live) setPending((count) => count - 1);
+      });
+    listConfigBlocks()
+      .then((rows) => {
+        if (live) setBlocks(rows);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (live) setPending((count) => count - 1);
+      });
     return () => {
       live = false;
     };
@@ -79,6 +96,7 @@ export default function Gateway() {
             {transports.length === 0 ? (
               <EmptyState
                 icon={Waypoints}
+                pending={pending > 0}
                 note="the transport table answered no rows — the gateway core has not published its listeners yet"
               />
             ) : (
