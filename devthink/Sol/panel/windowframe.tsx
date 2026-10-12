@@ -576,9 +576,9 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
         window.cancelAnimationFrame(frame);
         frame = 0;
       }
-      handle.removeEventListener("pointermove", onMove);
-      handle.removeEventListener("pointerup", onUp);
-      handle.removeEventListener("pointercancel", onCancel);
+      handle.removeEventListener("pointermove", onMove as EventListener);
+      handle.removeEventListener("pointerup", onUp as EventListener);
+      handle.removeEventListener("pointercancel", onCancel as EventListener);
       try {
         if (handle.hasPointerCapture(pointerId)) handle.releasePointerCapture(pointerId);
       } catch {

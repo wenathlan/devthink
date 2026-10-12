@@ -44,7 +44,7 @@ import {
   Shapes,
   Square,
   SquareArrowOutUpRight,
-  SquareBig,
+  Maximize2,
 } from "lucide-react";
 import { familyurl } from "../../deploybase.ts";
 import { type DesktopApp, seedOsView } from "../shell/appregistry.ts";
@@ -551,7 +551,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
           kind: "item",
           id: "view-large",
           label: "large icons",
-          icon: SquareBig,
+          icon: Maximize2,
           shortcut: iconSize === "large" ? "●" : undefined,
           onSelect: () => setIconSize("large"),
         },
