@@ -395,7 +395,7 @@ export function Shell({ children }: { children: ReactNode }) {
                   key={app.href}
                   href={app.href}
                   className="win-raillink"
-                  title={app.detail}
+                  data-tip={app.detail}
                   aria-label={app.label}
                   aria-current={isActive(app.href) ? "page" : undefined}
                 >
@@ -417,7 +417,8 @@ export function Shell({ children }: { children: ReactNode }) {
                     href={familyurl(app.slug)}
                     target="_blank"
                     rel="noreferrer"
-                    title={`${app.slug} — the family application beside the foundry`}
+                    data-tip={`${app.slug} — the family application beside the foundry`}
+                    aria-label={`open ${app.slug} — the family application beside the foundry`}
                     style={{ "--fd-dot": member?.accent } as CSSProperties}
                   >
                     <span className="win-famdot" aria-hidden="true" />

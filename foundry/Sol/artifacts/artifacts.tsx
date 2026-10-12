@@ -10,7 +10,7 @@
  * engine (artifact.ts) — the same bytes in node and in the browser.
  */
 
-import { PackageCheck, RefreshCw, ShieldCheck } from "lucide-react";
+import { PackageCheck, Play, RefreshCw, ShieldCheck } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
   type Artifact,
@@ -21,7 +21,9 @@ import {
   seedArtifacts,
   verifyArtifact,
 } from "../../artifact.ts";
+import { PIPELINE, type planstate, planrehearsal } from "../../graphplan.ts";
 import { EmptyState } from "../shell/EmptyState";
+import GraphPanel from "./graphpanel";
 
 /** the seed of the packaging rehearsal (shown on the page, pinned by the tests) */
 export const LINE_SEED = 804613;
@@ -36,7 +38,11 @@ function ArtifactRow({ artifact }: { artifact: Artifact }) {
         <p className="fa-row__identity">{artifact.identity}</p>
       </div>
       <span className="fa-row__bytes">{artifact.bytes.toLocaleString("en-US")} b</span>
-      <span className="fa-row__checksum" title={`fnv-1a over: ${artifact.identity}`}>
+      <span
+        className="fa-row__checksum"
+        data-tip={`fnv-1a over: ${artifact.identity}`}
+        aria-label={`checksum ${artifact.checksum}, fnv-1a over ${artifact.identity}`}
+      >
         {artifact.checksum}
       </span>
       <span className="fa-row__seal">
@@ -50,12 +56,20 @@ function ArtifactRow({ artifact }: { artifact: Artifact }) {
 /** The artifacts page: the packaging line. */
 export default function Artifacts() {
   const [seed, setSeed] = useState(LINE_SEED);
+  const [tick, setTick] = useState(0);
   const [name, setName] = useState("");
   const [payload, setPayload] = useState("");
   const [drafts, setDrafts] = useState<Artifact[]>([]);
   const engine = useMemo(() => seedArtifacts(seed), [seed]);
   const shelf = useMemo(() => [...engine, ...drafts], [engine, drafts]);
   const shelfManifest = useMemo(() => manifest(shelf), [shelf]);
+  // the pipeline plan rehearses on the same seed and tick as the line: one
+  // advance walks the shelf AND the stage graph together (one run, two
+  // views of the same rehearsal)
+  const planstates = useMemo<Record<string, planstate>>(
+    () => planrehearsal(PIPELINE, seed, tick),
+    [seed, tick],
+  );
   const draftName = name.trim() || "unnamed-artifact";
   const draftPreview = `${draftName}.tzst · ${4096 + payload.length} b`;
 
@@ -80,7 +94,18 @@ export default function Artifacts() {
           payload), sealed once and re-verified on sight. A seeded rehearsal (seed {seed}) fills the line.
         </p>
         <div className="pagehead__actions">
-          <button type="button" className="btn" onClick={() => setSeed((value) => value + 1)}>
+          <button type="button" className="btn" onClick={() => setTick((value) => value + 1)}>
+            <Play size={14} aria-hidden="true" />
+            walk the pipeline
+          </button>
+          <button
+            type="button"
+            className="btn secondary"
+            onClick={() => {
+              setSeed((value) => value + 1);
+              setTick(0);
+            }}
+          >
             <RefreshCw size={14} aria-hidden="true" />
             rerun the line
           </button>
@@ -108,6 +133,8 @@ export default function Artifacts() {
           <p className="fa-summary__value fa-summary__mono">name · ext · bytes · payload</p>
         </div>
       </section>
+
+      <GraphPanel plan={PIPELINE} states={planstates} />
 
       <form className="fa-form" onSubmit={sealDraft} aria-label="seal a draft artifact">
         <p className="fa-form__head">seal a draft</p>

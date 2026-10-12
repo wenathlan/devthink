@@ -2676,6 +2676,419 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
     scroll-behavior: auto;
   }
 }
+/* ---------- 11. the graph pass — the pipeline stage graph + the micro windows hand (task 3-b) ---------- */
+
+/* ---- the pipeline plan stage graph (the loose graphpanel of the artifacts page) ---- */
+
+/* the panel plate: one surface plate over the hairline ring, like the ledgers */
+.fag-panel {
+  margin: 26px 0 0;
+  padding: 18px;
+  border-radius: var(--sol-radius);
+  background: var(--sol-surface-1);
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+.fag-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.fag-eyebrow {
+  margin: 0;
+  color: var(--ink-3);
+  font: 600 10.5px/1.2 var(--font-mono);
+  letter-spacing: var(--sol-track-label);
+  text-transform: lowercase;
+}
+
+.fag-progress {
+  margin: 0;
+  color: var(--ink);
+  font: 600 13px var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* the state tally: dot + count + word, never color alone */
+.fag-tally {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fag-tally__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: var(--win-radius-ctl);
+  background: var(--sol-surface-3);
+  box-shadow: 0 0 0 1px var(--line);
+  color: var(--sol-muted);
+  font: 500 12px var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.fag-tally__chip i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentcolor;
+}
+
+.fag-tally__chip[data-state="running"] {
+  color: var(--win-accent);
+}
+
+.fag-tally__chip[data-state="done"] {
+  color: var(--sol-success);
+}
+
+.fag-tally__chip[data-state="failed"] {
+  color: var(--color-close);
+}
+
+.fag-tally__chip[data-state="pending"],
+.fag-tally__chip[data-state="skipped"] {
+  color: var(--ink-3);
+}
+
+/* the graph lane: the win11 scrollbar owns the overflow on the narrow folds */
+.fag-scroll {
+  margin-top: 16px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.fag-graph {
+  display: block;
+  width: 100%;
+  min-width: 900px;
+  height: auto;
+}
+
+.fag-graph text,
+.fag-graph circle {
+  pointer-events: none;
+}
+
+/* the wires: bezier hairlines at ink 10% — the live hand-off (done feeds
+   running) wears the windows accent through opacity only */
+.fag-edge {
+  fill: none;
+  stroke: var(--line-strong);
+  stroke-width: 1;
+}
+
+.fag-edge[data-live="true"] {
+  stroke: var(--win-accent);
+  stroke-opacity: 0.55;
+}
+
+/* the trylle card: the #171717→#252525 surface, the 1px ring, the .625rem
+   radius (the rx rides the markup) */
+.fag-node__card {
+  stroke: var(--line-strong);
+  stroke-width: 1;
+}
+
+.fag-node[data-state="running"] .fag-node__card {
+  stroke: var(--win-accent);
+}
+
+.fag-node[data-state="failed"] .fag-node__card {
+  stroke: var(--color-close);
+}
+
+/* the hover wash: ink at 4% through opacity only (never a fill flip) */
+.fag-node__wash {
+  fill: var(--sol-ink);
+  opacity: 0;
+  transition: opacity var(--sol-micro) var(--sol-ease-out);
+}
+
+.fag-node:hover .fag-node__wash {
+  opacity: 0.04;
+}
+
+.fag-node__kind {
+  fill: var(--ink-3);
+  font: 600 8.5px var(--font-mono);
+  letter-spacing: var(--sol-track-label);
+  text-transform: uppercase;
+}
+
+.fag-node__label {
+  fill: var(--sol-ink);
+  font: 500 12.5px var(--font-sans);
+}
+
+.fag-node__dot {
+  fill: var(--ink-3);
+}
+
+.fag-node[data-state="running"] .fag-node__dot {
+  fill: var(--win-accent);
+  animation: fagPulse 1.6s var(--sol-ease-out) infinite;
+}
+
+.fag-node[data-state="done"] .fag-node__dot {
+  fill: var(--sol-success);
+}
+
+.fag-node[data-state="failed"] .fag-node__dot {
+  fill: var(--color-close);
+}
+
+.fag-node[data-state="skipped"] .fag-node__dot {
+  opacity: 0.6;
+}
+
+.fag-node__state {
+  fill: var(--ink-3);
+  font: 500 9.5px var(--font-mono);
+  letter-spacing: 0.06em;
+}
+
+.fag-node[data-state="running"] .fag-node__state {
+  fill: var(--win-accent);
+}
+
+.fag-node[data-state="done"] .fag-node__state {
+  fill: var(--sol-muted);
+}
+
+.fag-node[data-state="failed"] .fag-node__state {
+  fill: var(--color-close);
+}
+
+/* the trylle card surfaces: the gradient stops ride the theme flip */
+.fag-stop-a {
+  stop-color: #171717;
+}
+
+.fag-stop-b {
+  stop-color: #252525;
+}
+
+[data-theme="light"] .fag-stop-a {
+  stop-color: #f4f4f5;
+}
+
+[data-theme="light"] .fag-stop-b {
+  stop-color: #fcfcfc;
+}
+
+/* the stage legend: one chip per step, the note on the acrylic tooltip */
+.fag-stages {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fag-stage {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: var(--win-radius-ctl);
+  background: var(--sol-surface-2);
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+.fag-stage i {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ink-3);
+}
+
+.fag-stage[data-state="running"] i {
+  background: var(--win-accent);
+}
+
+.fag-stage[data-state="done"] i {
+  background: var(--sol-success);
+}
+
+.fag-stage[data-state="failed"] i {
+  background: var(--color-close);
+}
+
+.fag-stage__index {
+  color: var(--ink-3);
+  font: 600 10px var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.fag-stage__label {
+  color: var(--sol-muted);
+  font: 500 12.5px var(--font-sans);
+}
+
+.fag-stage__state {
+  margin-left: auto;
+  color: var(--ink-3);
+  font: 500 10px var(--font-mono);
+}
+
+.fag-stage[data-state="running"] .fag-stage__state {
+  color: var(--win-accent);
+}
+
+.fag-stage[data-state="failed"] .fag-stage__state {
+  color: var(--color-close);
+}
+
+@keyframes fagPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* ---- the micro windows hand (task 3-b) ---- */
+
+/* the rail tooltip: the acrylic name-plate riding right of the rail pin and
+   the family link — the windows 300ms dwell on the show, the exit immediate */
+.win-raillink,
+.win-famlink {
+  position: relative;
+}
+
+.win-raillink::before,
+.win-famlink::before {
+  content: attr(data-tip);
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 10px);
+  z-index: 40;
+  width: max-content;
+  max-width: 260px;
+  padding: 5px 9px;
+  border-radius: var(--win-radius-ctl);
+  background-color: var(--win-tip);
+  background-image: var(--win-noise);
+  box-shadow: var(--win-shadow-flyout);
+  color: var(--sol-ink);
+  font: 500 12px/1.3 var(--font-sans);
+  text-align: left;
+  opacity: 0;
+  transform: translate(-4px, -50%);
+  transition: opacity 0.2s var(--sol-ease-out), transform 0.2s var(--sol-ease-out);
+  pointer-events: none;
+}
+
+.win-raillink:hover::before,
+.win-raillink:focus-visible::before,
+.win-famlink:hover::before,
+.win-famlink:focus-visible::before {
+  opacity: 1;
+  transform: translate(0, -50%);
+  transition-delay: 300ms;
+}
+
+/* the content tooltip: the acrylic plate above any data-tip control (the
+   checksums, the family links of the landing), the same 300ms dwell */
+[data-tip] {
+  position: relative;
+}
+
+[data-tip]::before {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  z-index: 40;
+  width: max-content;
+  max-width: 280px;
+  padding: 5px 9px;
+  border-radius: var(--win-radius-ctl);
+  background-color: var(--win-tip);
+  background-image: var(--win-noise);
+  box-shadow: var(--win-shadow-flyout);
+  color: var(--sol-ink);
+  font: 500 12px/1.3 var(--font-sans);
+  text-align: left;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition: opacity 0.2s var(--sol-ease-out), transform 0.2s var(--sol-ease-out);
+  pointer-events: none;
+}
+
+[data-tip]:hover::before,
+[data-tip]:focus-visible::before {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  transition-delay: 300ms;
+}
+
+/* the rail and the family pins answer the rail recipe, not the generic one */
+.win-raillink[data-tip]::before,
+.win-famlink[data-tip]::before {
+  bottom: auto;
+  top: 50%;
+  left: calc(100% + 10px);
+  max-width: 260px;
+  transform: translate(-4px, -50%);
+}
+
+.win-raillink[data-tip]:hover::before,
+.win-raillink[data-tip]:focus-visible::before,
+.win-famlink[data-tip]:hover::before,
+.win-famlink[data-tip]:focus-visible::before {
+  transform: translate(0, -50%);
+}
+
+/* the skeleton shimmer: the waiting surface breathes by opacity only —
+   ready for the first async surface of the platform pages (the seeded
+   rehearsals stay honest about empty versus loading) */
+@keyframes fagSkel {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.fag-skel {
+  border-radius: var(--radius-sm);
+  background: var(--sol-surface-2);
+  box-shadow: 0 0 0 1px var(--line);
+  animation: fagSkel 1.4s ease-in-out infinite;
+}
+
+.fag-skel--text {
+  height: 10px;
+}
+
+.fag-skel--card {
+  height: 56px;
+}
+
+/* the graph pass stands down before the hard stop */
+@media (prefers-reduced-motion: reduce) {
+  .fag-node[data-state="running"] .fag-node__dot,
+  .fag-skel {
+    animation: none !important;
+  }
+}
+
 /* the hard stop of the whole document — LAST, nothing overrides it */
 @media (prefers-reduced-motion: reduce) {
   *,
