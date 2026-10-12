@@ -599,9 +599,9 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
       detach(cancel.pointerId);
     };
 
-    handle.addEventListener("pointermove", onMove);
-    handle.addEventListener("pointerup", onUp);
-    handle.addEventListener("pointercancel", onCancel);
+    handle.addEventListener("pointermove", onMove as EventListener);
+    handle.addEventListener("pointerup", onUp as EventListener);
+    handle.addEventListener("pointercancel", onCancel as EventListener);
   }
 
   /** minimize physics: the two-phase daedalOS flight, painted by the
