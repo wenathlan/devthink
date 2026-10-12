@@ -1,6 +1,7 @@
-/** Style: foundry sol — the vite config lives at the app root while the theme stays in Sol/: static build emitting the hashed bundles directly into the app root folder (publish = "."), with a repository-scoped base path so the theme answers any deploy root (pages subpath, vercel, netlify, workers). */
+/** Style: foundry sol — the vite config lives at the app root while the theme stays in Sol/: static build emitting the hashed bundles directly into the app root folder (publish = "."), with a repository-scoped base path so the theme answers any deploy root (pages subpath, vercel, netlify, workers). The Tailwind 4 vite plugin compiles the theme stylesheet's `@import "tailwindcss"` head (the @theme source of truth + the light/hcf custom variants). */
 
 import path from "node:path";
+import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
@@ -12,7 +13,7 @@ function pagesBasePath(value: string | undefined): string {
 
 export default defineConfig({
   base: pagesBasePath(process.env.VITE_BASE_PATH),
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "Sol"),
