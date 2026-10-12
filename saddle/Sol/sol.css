@@ -4485,6 +4485,315 @@ button.primary[aria-busy="true"]::after {
         }
 }
 
+/* ==========================================================================
+   modality stairs pass — saddle (task 3-c): the playground modality panel
+   walks the windows steps. One card per modality; each card carries the six
+   boundary stages as a ladder with the windows stepper indicator (the 3px
+   ::after bar: 0 closed → 6px #858585 done → 12px accent active). The pass
+   also wires the family micros the panel owes: the acrylic data-tip tooltip
+   (the ::before face — the raillink keeps its ::after indicator), the honest
+   disabled hand, the opacity skeleton shimmer, the 60ms stagger on the card
+   entries and the 2px windows focus underline on the text links. Appended
+   after the foundation passes; the guards below (and the reduced-motion hard
+   stop last) stay the final word.
+   ========================================================================== */
+
+/* the disabled hand: an honest control rests at half ink and never points */
+.button:disabled,
+.button[aria-disabled='true'],
+.r3-chip:disabled,
+.r3-prompt-key:disabled,
+.spec-select:disabled,
+.spec-range:disabled,
+.winapp__cap:disabled,
+.winapp__theme:disabled,
+.winchip:disabled {
+        opacity: 0.5;
+        pointer-events: none;
+}
+
+/* the acrylic tooltip of the family (the data-tip attribute, the ::before
+   face so the raillink indicator keeps its ::after): the windows tip
+   material — the --win-tip acrylic + grain, the 4px face, the flyout
+   shadow — fading and sliding in on the entry curve after the 300ms hover
+   dwell, leaving at once */
+[data-tip] {
+        position: relative;
+}
+
+[data-tip]::before {
+        content: attr(data-tip);
+        position: absolute;
+        bottom: calc(100% + 8px);
+        left: 50%;
+        z-index: var(--z-tooltip);
+        padding: 5px 9px;
+        border-radius: var(--win-radius-ctl);
+        background-color: var(--win-tip);
+        background-image: var(--noise);
+        background-blend-mode: soft-light;
+        box-shadow: var(--shadow-flyout);
+        color: var(--ink);
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 1.3;
+        white-space: nowrap;
+        opacity: 0;
+        transform: translate(-50%, 4px);
+        pointer-events: none;
+        transition:
+                opacity 200ms var(--win-ease-entry),
+                transform 200ms var(--win-ease-entry);
+}
+
+[data-tip]:hover::before,
+[data-tip]:focus-visible::before {
+        opacity: 1;
+        transform: translate(-50%, 0);
+        transition-delay: 300ms;
+}
+
+html:not(.dark) [data-tip]::before {
+        background-color: rgb(249 249 249 / 92%);
+        color: #1a1a1a;
+}
+
+/* the modality stairs: one card per modality, the entries follow the 60ms
+   micro beat (transform/opacity only) */
+.r3-modality {
+        display: grid;
+        gap: 14px;
+}
+
+@media (min-width: 760px) {
+        .r3-modality {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+}
+
+.r3-modality-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 14px 16px 16px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+        background: var(--surface-2);
+        box-shadow: var(--shadow-1);
+        animation: dtStepIn 250ms var(--win-ease-entry) backwards;
+        animation-delay: calc(var(--stagger-i, 0) * 60ms);
+        transition:
+                border-color 200ms var(--sol-ease-out),
+                box-shadow 200ms var(--sol-ease-out);
+}
+
+.r3-modality-card.is-on {
+        border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+        box-shadow:
+                inset 0 0 0 1px color-mix(in srgb, var(--accent) 24%, transparent),
+                var(--shadow-3);
+}
+
+/* the card key: the pressable head of the card — the 10% wash on hover at
+   the 200ms micro, the press dip at 100ms, the windows focus ring */
+.r3-modality-key {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 44px;
+        margin: -4px -6px 0;
+        padding: 4px 6px;
+        border: 0;
+        border-radius: var(--win-radius-ctl);
+        background: none;
+        color: inherit;
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+        transition:
+                background-color 200ms var(--sol-ease-out),
+                transform 100ms var(--ease-exit);
+}
+
+.r3-modality-key:hover {
+        background-color: var(--wash);
+}
+
+.r3-modality-key:active {
+        transform: scale(0.98);
+}
+
+.r3-modality-key[aria-pressed='true'] .r3-modality-name {
+        color: var(--accent);
+}
+
+.r3-modality-index {
+        color: var(--ink-3);
+        font-family: var(--font-mono);
+        font-size: 11px;
+        font-variant-numeric: tabular-nums;
+}
+
+.r3-modality-name {
+        color: var(--ink);
+        font-weight: 600;
+        font-size: 0.98rem;
+}
+
+.r3-modality-code {
+        margin-left: auto;
+        color: var(--ink-3);
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.08em;
+}
+
+.r3-modality-verdict {
+        margin: 0;
+        color: var(--ink-2);
+        font-size: 0.84rem;
+        line-height: 1.6;
+        text-wrap: pretty;
+}
+
+.r3-modality-note {
+        margin: 14px 0 0;
+        color: var(--ink-2);
+        font-family: var(--font-mono);
+        font-size: 11px;
+        line-height: 1.6;
+}
+
+/* the stage walk: the six boundaries as the windows steps — the ::after
+   indicator is the 3px bar on the left edge: 0 closed → 6px #858585 done →
+   12px accent active (0.2s ease-in-out, width + color only) */
+.r3-walk {
+        display: flex;
+        flex-direction: column;
+        margin: 2px 0 0;
+        padding: 0;
+        border-top: 1px solid var(--line);
+        list-style: none;
+}
+
+.r3-walkstage {
+        position: relative;
+        display: grid;
+        grid-template-columns: 22px minmax(0, 1fr) auto;
+        gap: 10px;
+        align-items: center;
+        min-height: 34px;
+        padding: 4px 4px 4px 26px;
+        border-bottom: 1px solid var(--line);
+        color: var(--ink-3);
+        font-family: var(--font-mono);
+        font-size: 11px;
+        font-variant-numeric: tabular-nums;
+}
+
+.r3-walkstage::after {
+        content: '';
+        position: absolute;
+        left: 4px;
+        top: 50%;
+        width: 0;
+        height: 3px;
+        border-radius: 4px;
+        background: #858585;
+        transform: translateY(-50%);
+        transition:
+                width 0.2s ease-in-out,
+                background-color 0.2s ease-in-out;
+}
+
+.r3-walkstage[data-state='done']::after,
+.r3-walkstage[data-state='armed']::after {
+        width: 6px;
+}
+
+.r3-walkstage[data-state='denied']::after {
+        width: 12px;
+}
+
+.r3-walkstage[data-state='active']::after {
+        width: 12px;
+        background: var(--accent);
+}
+
+.r3-walkstage-name {
+        color: var(--ink-2);
+}
+
+.r3-walkstage[data-state='active'] .r3-walkstage-name {
+        color: var(--ink);
+}
+
+.r3-walkstage-state {
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 10px;
+}
+
+.r3-walkstage[data-state='active'] .r3-walkstage-state {
+        color: var(--accent);
+}
+
+@keyframes dtStepIn {
+        from {
+                opacity: 0;
+                transform: translateY(10px);
+        }
+        to {
+                opacity: 1;
+                transform: translateY(0);
+        }
+}
+
+/* the boundary cards of the panel enter on the same 60ms stagger */
+.playground-boundary {
+        animation: dtStepIn 250ms var(--win-ease-entry) backwards;
+        animation-delay: calc(var(--stagger-i, 0) * 60ms);
+}
+
+/* the loading face: the opacity shimmer (transform/opacity only) — the
+   gradient slide retires */
+.dash-skeleton {
+        background: var(--surface-3);
+        background-size: 100% 100%;
+        box-shadow: 0 0 0 1px var(--line);
+        animation: dtSkeleton 1.4s ease-in-out infinite;
+}
+
+@keyframes dtSkeleton {
+        0%,
+        100% {
+                opacity: 0.45;
+        }
+        50% {
+                opacity: 0.85;
+        }
+}
+
+/* the focus underline: the text links speak the 2px windows accent when the
+   keyboard lands (focus is never the tan — the family law) */
+.small-arrow-link:focus-visible,
+.r3-step-link:focus-visible {
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+        text-decoration-color: var(--win-accent);
+        text-underline-offset: 4px;
+}
+
+/* the micro reduced-motion guard: the tooltip enters at once when the
+   visitor asked for stillness (the hard stop below stays last) */
+@media (prefers-reduced-motion: reduce) {
+        [data-tip]:hover::before,
+        [data-tip]:focus-visible::before {
+                transition-delay: 0ms;
+        }
+}
+
 /* ---------- 7. guards — the hard stops, last so nothing overrides them --- */
 @media (prefers-reduced-transparency: reduce) {
         /* the solid floors: every acrylic surface lands on a rung, the blur dies */
