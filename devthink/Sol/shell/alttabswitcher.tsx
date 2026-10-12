@@ -126,6 +126,7 @@ export function AltTabSwitcher({ cards, onCommit, onClose }: AltTabSwitcherProps
           role="listbox"
           aria-label="Open windows"
           aria-activedescendant={activeId ? `alt-card-${activeId}` : undefined}
+          tabIndex={0}
         >
           {order.map((id) => {
             const card = byId.get(id);

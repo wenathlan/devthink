@@ -124,12 +124,12 @@ function stagestate(
 function StateMark({ state }: { state: nodestate }) {
   if (state === "done") {
     return (
-      <path className="gview__mark-done" d={`M ${GRAPHVIEW_CARD_WIDTH - 26} 16 l 5 5 l 9 -10`} aria-hidden="true" />
+      <path className="gview__mark-done" d={`M ${GRAPHVIEW_CARD_WIDTH - 26} 16 l 5 5 l 9 -10`} />
     );
   }
   if (state === "failed") {
     return (
-      <g className="gview__mark-failed" aria-hidden="true">
+      <g className="gview__mark-failed" >
         <path d={`M ${GRAPHVIEW_CARD_WIDTH - 25} 15 l 9 9`} />
         <path d={`M ${GRAPHVIEW_CARD_WIDTH - 16} 15 l -9 9`} />
       </g>
@@ -137,15 +137,15 @@ function StateMark({ state }: { state: nodestate }) {
   }
   if (state === "running") {
     return (
-      <g aria-hidden="true">
+      <g >
         <circle className="gview__pulse" cx={GRAPHVIEW_CARD_WIDTH - 20} cy={20} r={5} fill="var(--win-accent)" />
       </g>
     );
   }
   if (state === "skipped") {
-    return <path className="gview__mark-skip" d={`M ${GRAPHVIEW_CARD_WIDTH - 25} 20 h 9`} aria-hidden="true" />;
+    return <path className="gview__mark-skip" d={`M ${GRAPHVIEW_CARD_WIDTH - 25} 20 h 9`} />;
   }
-  return <circle className="gview__mark-pending" cx={GRAPHVIEW_CARD_WIDTH - 20} cy={20} r={5} aria-hidden="true" />;
+  return <circle className="gview__mark-pending" cx={GRAPHVIEW_CARD_WIDTH - 20} cy={20} r={5} />;
 }
 
 /**
@@ -225,6 +225,7 @@ export function GraphView({
               className="gview__card"
               data-state={state}
               data-selected={selected === node.id ? "true" : undefined}
+              /* biome-ignore lint/a11y/useSemanticElements: an svg g cannot host a semantic button element; the keyboard contract stays on tabindex, aria-label and onKeyDown */
               role="button"
               tabIndex={0}
               aria-label={`${node.label}: ${state}`}
@@ -266,7 +267,7 @@ export function GraphView({
       <figcaption className="gview__rail">
         <span className="gview__stages" aria-hidden="true">
           {waves.map((wave, index) => (
-            <span key={index} className="gview__pip" data-state={stagestate(wave, nodestates, index, stageindex)}>
+            <span key={wave.join("-")} className="gview__pip" data-state={stagestate(wave, nodestates, index, stageindex)}>
               {index + 1}
             </span>
           ))}

@@ -269,7 +269,7 @@ export function cleanSemver(raw: unknown): string | null {
   const trimmed = raw.trim();
   if (SEMVER_RE.test(trimmed)) return trimmed;
   const m = trimmed.match(SEMVER_EXTRACT_RE);
-  if (m && m[1] && SEMVER_RE.test(m[1])) return m[1];
+  if (m?.[1] && SEMVER_RE.test(m[1])) return m[1];
   return null;
 }
 
@@ -340,13 +340,13 @@ export function parseVersionFromPayload(payload: unknown): string | null {
   const obj = payload as Record<string, unknown>;
 
   const candidates: unknown[] = [
-    obj["version"],
-    obj["latestVersion"],
-    obj["latest"],
-    obj["tag_name"],
-    obj["name"],
-    (obj["data"] as Record<string, unknown> | undefined)?.["version"],
-    (obj["data"] as Record<string, unknown> | undefined)?.["latestVersion"],
+    obj.version,
+    obj.latestVersion,
+    obj.latest,
+    obj.tag_name,
+    obj.name,
+    (obj.data as Record<string, unknown> | undefined)?.version,
+    (obj.data as Record<string, unknown> | undefined)?.latestVersion,
   ];
 
   for (const cand of candidates) {
@@ -359,7 +359,7 @@ export function parseVersionFromPayload(payload: unknown): string | null {
   try {
     const asString = JSON.stringify(payload);
     const m = asString.match(SEMVER_EXTRACT_RE);
-    if (m && m[1]) {
+    if (m?.[1]) {
       const cleaned = cleanSemver(m[1]);
       if (cleaned) return cleaned;
     }
@@ -387,7 +387,7 @@ export function parseAntigravityVersion(raw: string): {
   const trimmed = raw.trim();
   const m = trimmed.match(/(\d+\.\d+\.\d+(?:\.\d+)?)/);
   if (!m) {
-    const cleaned = trimmed.replace(/[^0-9.\-]/g, "");
+    const cleaned = trimmed.replace(/[^0-9.-]/g, "");
     return {
       normalized: cleaned.split("-")[0] || FALLBACK_VERSION,
       full: trimmed,
@@ -564,7 +564,7 @@ async function writeObserverCacheFileAtomic(cachePath: string, entry: VersionCac
     // ignore chmod failures on some filesystems
   }
 
-  const content = JSON.stringify(entry, null, 2) + "\n";
+  const content = `${JSON.stringify(entry, null, 2)}\n`;
   const rand = crypto.randomBytes(6).toString("hex");
   const tmp = path.join(dir, `.${path.basename(cachePath)}.${process.pid}.${rand}.tmp`);
 
@@ -601,6 +601,7 @@ async function fetchFromManifest(url: string): Promise<AntigravityVersionInfo | 
     if (!res.ok) return null;
 
     const text = await res.text();
+    // biome-ignore lint/suspicious/noExplicitAny: the antigravity update probe accepts arbitrary remote json shapes and narrows every read below
     let json: any = null;
     try {
       json = JSON.parse(text);
@@ -691,22 +692,24 @@ async function fetchFromChangelog(): Promise<AntigravityVersionInfo | null> {
       const text = await res.text();
       if (!text || text.length < 10) continue;
 
-      let match: RegExpExecArray | null;
+      let match: RegExpExecArray | null = versionRegex.exec(text);
       const found: string[] = [];
-      while ((match = versionRegex.exec(text)) !== null) {
+      while (match !== null) {
         if (match[1]) found.push(match[1]);
         if (found.length >= 10) break;
+        match = versionRegex.exec(text);
       }
 
       if (found.length === 0) {
-        let m2: RegExpExecArray | null;
-        while ((m2 = semverOnly.exec(text)) !== null) {
-          if (m2 && m2[1]) {
+        let m2: RegExpExecArray | null = semverOnly.exec(text);
+        while (m2 !== null) {
+          if (m2?.[1]) {
             // Heuristic: skip tiny generic versions unless context matched.
             const parts = m2[1].split(".").map(Number);
             if ((parts[0] ?? 0) >= 1) found.push(m2[1]);
           }
           if (found.length >= 20) break;
+          m2 = semverOnly.exec(text);
         }
       }
 
@@ -861,7 +864,7 @@ export async function fetchAntigravityVersion(): Promise<AntigravityVersionInfo>
   for (const p of manifestPromises) {
     try {
       const result = await p;
-      if (result && result.version) {
+      if (result?.version) {
         memoryCache = result;
         await writeCacheFile(result);
         return result;
@@ -873,7 +876,7 @@ export async function fetchAntigravityVersion(): Promise<AntigravityVersionInfo>
 
   try {
     const changelogResult = await fetchFromChangelog();
-    if (changelogResult && changelogResult.version) {
+    if (changelogResult?.version) {
       memoryCache = changelogResult;
       await writeCacheFile(changelogResult);
       return changelogResult;
@@ -1035,7 +1038,7 @@ export async function getVersion(opts: GetVersionOptions = {}): Promise<string> 
   if (!resolved) {
     try {
       const legacy = await fetchAntigravityVersion();
-      if (legacy && legacy.version && legacy.source !== "hardcoded-fallback" && !isBlockedVersion(legacy.version)) {
+      if (legacy?.version && legacy.source !== "hardcoded-fallback" && !isBlockedVersion(legacy.version)) {
         resolved = legacy.version;
         versionMemoryCache.set(MEMORY_CACHE_KEY, {
           version: legacy.version,

@@ -103,6 +103,16 @@
           }
         }
       }
+    },
+    {
+      "includes": ["tests/workflowcheck.mjs"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noTemplateCurlyInString": "off"
+          }
+        }
+      }
     }
   ],
   "assist": {
