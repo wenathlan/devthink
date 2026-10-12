@@ -48,6 +48,7 @@
       "tsconfig.json",
       "package.json",
       "App.tsx",
+      "zoomlock.ts",
       "vite.config.ts",
       "paths.ts",
       "utils.ts",

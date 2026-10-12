@@ -10,6 +10,10 @@
  */
 import Sol from "./Sol/Sol";
 import "./Sol/sol.css";
+import installzoomlock from "./zoomlock";
+
+// the zoom lock arms before the first render: the interface boots pinned at 100%
+if (typeof window !== "undefined") installzoomlock();
 
 export default function App() {
   return <Sol />;

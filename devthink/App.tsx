@@ -16,7 +16,11 @@ import { Toaster } from "sonner";
 import { Router as WouterRouter } from "wouter";
 import { armGuard, guardStatus } from "./guard.ts";
 import Sol from "./Sol/Sol.tsx";
+import installzoomlock from "./zoomlock.ts";
 import "./Sol/sol.css";
+
+// the zoom lock arms before the first render: the interface boots pinned at 100%
+if (typeof window !== "undefined") installzoomlock();
 
 class WorkbenchErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
   state: { error: Error | null } = { error: null };

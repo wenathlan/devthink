@@ -18,7 +18,11 @@ import { initReveal } from "./reveal.ts";
 import Sol from "./Sol/Sol.tsx";
 import { ToastProvider } from "./Sol/toast/Toast.tsx";
 import { initTheme } from "./theme.ts";
+import installzoomlock from "./zoomlock.ts";
 import "./Sol/sol.css";
+
+// the zoom lock arms before the first render: the interface boots pinned at 100%
+if (typeof window !== "undefined") installzoomlock();
 
 initTheme();
 
