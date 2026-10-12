@@ -114,7 +114,7 @@ export default function Weapons() {
             type="button"
             role="tab"
             aria-selected={selected === "all"}
-            title="every kind of the armory"
+            data-tip="every kind of the armory"
             onClick={() => setSelected("all")}
           >
             all
@@ -125,7 +125,7 @@ export default function Weapons() {
               type="button"
               role="tab"
               aria-selected={selected === kind}
-              title={`filter the armory by ${kind}`}
+              data-tip={`filter the armory by ${kind}`}
               onClick={() => setSelected(kind)}
             >
               {kind}

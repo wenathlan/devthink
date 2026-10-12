@@ -84,7 +84,7 @@ export default function World() {
             type="button"
             role="tab"
             aria-selected={selected === "all"}
-            title="every kind of the catalog"
+            data-tip="every kind of the catalog"
             onClick={() => setSelected("all")}
           >
             all
@@ -95,7 +95,7 @@ export default function World() {
               type="button"
               role="tab"
               aria-selected={selected === kind}
-              title={`filter the catalog by ${kind}`}
+              data-tip={`filter the catalog by ${kind}`}
               onClick={() => setSelected(kind)}
             >
               {kind}
@@ -128,7 +128,7 @@ export default function World() {
               </div>
               <h3 className="worldplate__name">{asset.name}</h3>
               <code className="assetpath">{asset.path}</code>
-              <code className="assethash" title={asset.sha256}>
+              <code className="assethash" data-tip={asset.sha256}>
                 sha-256 {asset.sha256}
               </code>
               <p className="worldplate__verify">

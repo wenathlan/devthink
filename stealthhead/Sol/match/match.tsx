@@ -65,7 +65,7 @@ function LobbyCard({ lobby }: { lobby: MatchLobby }) {
           <h3>{lobby.title}</h3>
           <span
             className={`badge ${lobby.state === "live" ? "error" : lobby.state === "open" ? "success" : ""}`}
-            title={
+            data-tip={
               lobby.state === "live"
                 ? "the match is running now"
                 : lobby.state === "open"
@@ -220,7 +220,7 @@ export default function Match() {
           <button
             type="button"
             className="btn secondary small"
-            title="refetch the lobby rows from the site db over https"
+            data-tip="refetch the lobby rows from the site db over https"
             onClick={reload}
           >
             <RefreshCw size={14} aria-hidden="true" />

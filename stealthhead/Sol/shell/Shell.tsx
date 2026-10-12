@@ -312,7 +312,7 @@ export function Shell({ children }: { children: ReactNode }) {
                   key={app.href}
                   href={app.href}
                   className="winapp__raillink"
-                  title={app.detail}
+                  data-tip={app.detail}
                   aria-label={app.label}
                   aria-current={isActive(app.href) ? "page" : undefined}
                 >
@@ -333,7 +333,7 @@ export function Shell({ children }: { children: ReactNode }) {
                     href={familyurl(member.slug)}
                     target="_blank"
                     rel="noreferrer"
-                    title={`${member.slug} — opens in a new tab`}
+                    data-tip={`${member.slug} — opens in a new tab`}
                     aria-label={`open ${member.slug} in a new tab`}
                     style={{ "--fam-dot": member.accent } as CSSProperties}
                   >
