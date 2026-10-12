@@ -85,7 +85,8 @@ function FamilyRow() {
             href={familyurl(member.slug)}
             target="_blank"
             rel="noreferrer"
-            title={`open ${member.slug} — a family application`}
+            data-tip={`open ${member.slug} — a family application`}
+            aria-label={member.slug}
           >
             <span className="vt-familyrow__dot" style={{ background: member.accent }} aria-hidden="true" />
             {member.slug}

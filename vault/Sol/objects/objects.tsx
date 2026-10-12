@@ -35,7 +35,11 @@ function ObjectRow({ object }: { object: VaultObject }) {
         {object.lfs ? "lfs" : "blob"}
       </span>
       <span className="vo-row__size">{formatBytes(object.size)}</span>
-      <span className="vo-row__digest" title={object.digest}>
+      <span
+        className="vo-row__digest"
+        data-tip={object.digest}
+        aria-label={`digest ${object.digest}`}
+      >
         {digestShort(object.digest)}
       </span>
       <span className="vo-row__seal" data-intact={intact ? "true" : "false"}>

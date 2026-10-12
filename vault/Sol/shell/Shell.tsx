@@ -388,7 +388,7 @@ export function Shell({ children }: { children: ReactNode }) {
                   key={app.href}
                   href={app.href}
                   className="win-rail__link"
-                  title={app.detail}
+                  data-tip={app.detail}
                   aria-label={app.label}
                   aria-current={isActive ? "page" : undefined}
                 >
@@ -411,7 +411,8 @@ export function Shell({ children }: { children: ReactNode }) {
                       href={familyurl(slug)}
                       target="_blank"
                       rel="noreferrer"
-                      title={`open ${slug} — the family answers both ways`}
+                      data-tip={`open ${slug} — the family answers both ways`}
+                      aria-label={slug}
                     >
                       <span
                         className="win-fam__dot"

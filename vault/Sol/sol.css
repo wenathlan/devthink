@@ -1758,6 +1758,97 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   .reveal { opacity: 1; transform: none; }
   html { scroll-behavior: auto; }
 }
+/* ==========================================================================
+   micro-windows pass — vault (task 2-d): the last micros the window hand
+   owes every control. The honest disabled face on the controls the
+   foundation pass left uncovered, the caption-icon press parity, the restore
+   chip press and focus, the acrylic tooltip with the 300ms delay (the
+   monorepo data-tip pattern — the ::before face keeps the rail ladder free
+   on ::after). Appended after the foundation; the hard stop below stays last.
+   ========================================================================== */
+
+/* the disabled hand: an honest control rests at half ink and never points */
+.vt-deposit__input:disabled,
+.vo-form__input:disabled,
+.vt-deposit__key:disabled,
+.vt-chip:disabled,
+.vo-bucketchip:disabled,
+.vb-card:disabled,
+.win-control:disabled,
+.win-theme:disabled,
+.win-chip:disabled,
+.win-fam__link[aria-disabled="true"],
+.win-rail__link[aria-disabled="true"],
+.ob__skip:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* the caption press parity: the fluent glyph answers the 100ms press law
+   like every icon pin of the window */
+.win-control > svg {
+  transition: transform var(--dur-press) ease-in-out;
+}
+
+.win-control:active > svg {
+  transform: scale(0.7);
+}
+
+/* the restore chip answers the press too (and keeps a visible focus ring) */
+.win-chip {
+  transition: border-color var(--sol-micro) var(--sol-ease-out), transform var(--dur-press) ease-in-out;
+}
+
+.win-chip:active {
+  transform: scale(0.97);
+}
+
+.win-chip:focus-visible {
+  outline: 2px solid var(--win-accent);
+  outline-offset: 2px;
+}
+
+/* the acrylic tooltip of the family (the data-tip attribute, ::before so the
+   rail ladder keeps its ::after): the windows tip material —
+   rgb(43 43 43 / 88%) + grain, 4px face, the flyout shadow — fading and
+   sliding in on the entry curve after the 300ms hover delay, leaving at once */
+[data-tip] {
+  position: relative;
+}
+
+[data-tip]::before {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  z-index: 400;
+  padding: 5px 9px;
+  border-radius: var(--radius-xs);
+  background-color: rgb(43 43 43 / 88%);
+  background-image: var(--noise);
+  background-blend-mode: soft-light;
+  box-shadow: var(--shadow-flyout);
+  color: var(--ink);
+  font: 500 12px/1.3 var(--font-sans);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  pointer-events: none;
+  transition: opacity 200ms var(--win-ease-entry), transform 200ms var(--win-ease-entry);
+}
+
+[data-tip]:hover::before,
+[data-tip]:focus-visible::before {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  transition-delay: 300ms;
+}
+
+[data-theme="light"] [data-tip]::before {
+  background-color: rgb(249 249 249 / 92%);
+  color: #1a1a1a;
+}
+
 /* the hard stop of the whole document — LAST, nothing overrides it */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
