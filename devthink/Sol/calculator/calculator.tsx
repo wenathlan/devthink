@@ -9,7 +9,7 @@
 
 /** Style: DevThink Terminal Atelier — the native calculator of the super
  * platform, staged as one instrument bench (campaign v3 · r2-a): ONE named
- * light (the bench lamp, a shader-fallback bloom over the instrument stage)
+ * light (the bench lamp, a radial-light bloom over the instrument stage)
  * and the signal accent #ff5f00 at the 90/10 split. The calculator (display
  * + keypad) dominates the 1.6fr column as a machined instrument — big
  * tabular-nums display, inset-highlight keys with the .96 press — while the
@@ -40,7 +40,7 @@ import { CalculatorKeypad, type CalculatorMemoryKey } from "./calculatorkeypad.t
 /* --------------------------------------------------------------------------
  * the calculator page-app stylesheet — the r2-a instrument pass of this
  * folder: the machined bench. ONE light (the .r2a-calc bench lamp riding
- * the engine .shader-fallback), the 20px instrument frame over the 14px
+ * the engine .radial-light), the 20px instrument frame over the 14px
  * display glass, the inset-highlight keys at the 120ms .96 press, signal
  * #ff5f00 reserved for the equals key, the memory strip and the focus
  * rings; the history closes as a hairline ledger. Scoped to the classes
@@ -48,7 +48,7 @@ import { CalculatorKeypad, type CalculatorMemoryKey } from "./calculatorkeypad.t
  * arithmetic are untouched.
  * ------------------------------------------------------------------------ */
 const CALC_CSS = `
-.halftone::after, .grain::before { pointer-events: none; }
+.grain::before { pointer-events: none; }
 .r2a-calc-light { background: radial-gradient(56% 50% at 20% 4%, color-mix(in srgb, var(--dtv3-signal) 15%, transparent) 0%, transparent 66%); }
 .calculator-layout { grid-template-columns: minmax(0, 1.6fr) minmax(250px, 1fr); gap: clamp(28px, 4vw, 56px); align-items: start; }
 @media (max-width: 760px) {
@@ -259,7 +259,7 @@ export default function Calculator() {
         <div className="calculator-layout shader-stage enter" style={step(2)}>
           {/* the ONE named light of the page: the bench lamp, breathing once
               per cycle; the grain veil keeps the film over the instrument */}
-          <div className="shader-fallback r2a-calc-light breathe" aria-hidden="true" />
+          <div className="radial-light r2a-calc-light breathe" aria-hidden="true" />
           <div className="grain-overlay" aria-hidden="true" />
           <div className="calculator-panel">
             <CalculatorDisplay expression={expression} answer={answer} error={error} memory={memory} />

@@ -11,7 +11,7 @@
  * the taskbar. The caption buttons are the 46×30 Fluent hover zones; close
  * hovers the classic red via the --color-close/--color-close-deep tokens
  * with the white glyph. The chrome paint (frame wash, titlebar, captions,
- * resize strips, snap flyout) lives in Sol/sol.css.shelldelta as named
+ * resize strips, snap flyout) lives in Sol/sol.css as named
  * classes — the elements carry the semantic class only. The session tab
  * strip (tabs.tsx) rides beside the lockup, Edge-style, and never carries
  * a second mark.
@@ -45,7 +45,6 @@
  * layout only.
  */
 import { Copy, Minus, PanelLeft, PanelRight, Square, X } from "lucide-react";
-import "../shelldelta.css";
 import {
   type MouseEvent as ReactMouseEvent,
   type ReactNode,

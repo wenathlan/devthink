@@ -1,8 +1,8 @@
 /**
  * imagebanner.tsx — the engine banner of the native image studio, restaged
  * for R2-b as the hero OBJECT of the page: the catalog row of the owning app
- * sits on the engine shader stage (ONE .shader-fallback bloom, the
- * .halftone-edge dissolve, the grain film), carries the ONE ambient .breathe
+ * sits on the engine shader stage (ONE .radial-light bloom, the
+ * .dissolve, the grain film), carries the ONE ambient .breathe
  * and the transform-only equalizer motif (five bars, 1.2s alternate — the
  * studio pulse, guarded), and reads the engine name large with the owner
  * badge on the pill ladder. The banner stays empty until the database pairs
@@ -19,7 +19,7 @@ import type { NativeApp } from "../../catalog";
 
 const BANNER_CSS = `
 .atmos::before, .atmos::after, .grain::before, .grain::after,
-.halftone::before, .halftone::after { pointer-events: none; }
+{ pointer-events: none; }
 .im-hero { position: relative; display: grid; gap: 10px; padding: clamp(22px, 3vw, 30px); border: 1px solid var(--dtv3-hairline); border-radius: var(--dtv3-r-3); background: rgb(255 255 255 / 2%); }
 .im-hero__head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .im-hero__head h2 { display: flex; align-items: center; gap: 10px; margin: 0; color: var(--dtv3-ink-1); font: 700 clamp(20px, 2.4vw, 26px)/1.2 var(--dt-sans); letter-spacing: -.02em; }
@@ -59,8 +59,8 @@ export function ImageBanner({ app }: { app: NativeApp | undefined }) {
   ensureBannerCss();
   if (!app)
     return (
-      <section className="im-hero shader-stage halftone-edge breathe">
-        <div className="shader-fallback" aria-hidden="true" />
+      <section className="im-hero shader-stage breathe">
+        <div className="radial-light" aria-hidden="true" />
         <div className="grain-overlay" aria-hidden="true" />
         <div className="im-hero__head">
           <EqPulse />
@@ -75,8 +75,8 @@ export function ImageBanner({ app }: { app: NativeApp | undefined }) {
       </section>
     );
   return (
-    <section className="im-hero shader-stage halftone-edge breathe">
-      <div className="shader-fallback" aria-hidden="true" />
+    <section className="im-hero shader-stage breathe">
+      <div className="radial-light" aria-hidden="true" />
       <div className="grain-overlay" aria-hidden="true" />
       <div className="im-hero__head">
         <EqPulse />

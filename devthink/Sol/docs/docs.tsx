@@ -31,7 +31,7 @@ const endpoints = ["GET /health", "GET /models", "POST /chat"];
  * import time.
  * ------------------------------------------------------------------------ */
 const DOCS_CSS = `
-.halftone::after, .grain::before { pointer-events: none; }
+.grain::before { pointer-events: none; }
 .r2a-docs-light { background: radial-gradient(50% 46% at 12% 0%, color-mix(in srgb, var(--dtv3-signal) 12%, transparent) 0%, transparent 66%); }
 .docs-section__head { display: flex; align-items: baseline; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--dtv3-hairline); }
 .docs-section__index { color: var(--dtv3-ink-3); font: 500 11px var(--font-mono, var(--dt-mono)); letter-spacing: .08em; font-variant-numeric: tabular-nums; }
@@ -113,7 +113,7 @@ export default function Docs() {
       <ShellChrome />
       <div className="page-container grain shader-stage" style={containerStyle}>
         {/* the ONE named light of the page: the reading lamp over the opening */}
-        <div className="shader-fallback r2a-docs-light breathe" aria-hidden="true" />
+        <div className="radial-light r2a-docs-light breathe" aria-hidden="true" />
         <header className="pagehead enter" style={{ ...pageheadStyle, ...step(0) }}>
           <p className="pagehead__eyebrow r2a-eyebrow">devthink · docs</p>
           <h1 className="pagehead__title r2a-display" style={titleStyle}>

@@ -73,7 +73,7 @@ export default function Projects() {
                   <time className="r2c-row__time">{new Date(workspace.updatedAt).toLocaleString()}</time>
                   {index === 0 ? (
                     <span className="r2c-state">
-                      <span className="r2c-dot live-dot" aria-hidden="true" />
+                      <span className="r2c-dot" aria-hidden="true" />
                       latest
                     </span>
                   ) : null}

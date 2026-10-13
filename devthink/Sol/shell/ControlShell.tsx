@@ -7,7 +7,7 @@
  * no second topbar and no hand-rolled hero markup. The props API stays
  * eyebrow / title / summary / children (plus an optional actions row) so
  * every consuming page keeps compiling untouched. The stage mounts the one
- * solar light source and the C1 atmosphere hooks (atmos / grain / halftone);
+ * solar light source and the C1 atmosphere hooks (atmos / grain);
  * the body rises once, staggered behind the hero, then holds still. */
 
 import { TerminalSquare } from "lucide-react";
@@ -52,7 +52,7 @@ export const controlStripStyle: CSSProperties = {
 export function ControlShell({ eyebrow, title, summary, actions, children }: ControlShellProps) {
   const reduced = useReducedMotion();
   return (
-    <main className="control-page atmos grain halftone" style={pagestageStyle}>
+    <main className="control-page atmos grain" style={pagestageStyle}>
       <ShellChrome />
       <div className="page-container" style={pagecontainerStyle}>
         <header className="pagehead" style={pageheadStyle}>

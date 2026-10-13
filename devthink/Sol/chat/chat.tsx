@@ -59,12 +59,10 @@ import { useIsMobile } from "./useismobile.ts";
 import { Welcome } from "./welcome.tsx";
 
 /** The chat slice of the wave atmosphere contract: the C1-01 atmosphere
- * layers (.atmos light source, .grain film, .halftone dot edge) are painted
- * by the theme stylesheet — this guard only guarantees they never sit on
+ * layers (.atmos light source, .grain film) are painted by the theme stylesheet — this guard only guarantees they never sit on
  * the pointer path, whatever pseudo-element each one lands on. */
 const CHAT_CSS = `
-.atmos::before, .atmos::after, .grain::before, .grain::after,
-.halftone::before, .halftone::after { pointer-events: none; }
+.atmos::before, .atmos::after, .grain::before, .grain::after { pointer-events: none; }
 `;
 
 let chatCssReady = false;

@@ -644,7 +644,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
       onContextMenu={onDesktopContextMenu}
     >
       {/* the atmosphere bed: the radial light recipe stays the stylesheet's
-          (the C1/C2 grain + halftone textures read this hook) */}
+          (the C1/C2 grain + textured textures read this hook) */}
       <div className="dt-desktop__light" aria-hidden="true" />
       {/* the one mark of the desktop zone: the hero lockup (mark + wordmark + tagline) is the single sanctioned brand expression */}
       <div className="dt-desktop__hero absolute top-[45%] left-1/2 grid -translate-x-1/2 -translate-y-1/2 animate-hero pointer-events-none justify-items-center gap-2.5 text-[#eef1f7] transition-[opacity] duration-[480ms] ease-window light:text-[#1a1a1a] max-[760px]:top-[34%]">

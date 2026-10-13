@@ -8,8 +8,8 @@
  * defined target (the 250ms view transition). The toolbar carries the
  * same contract as AppHeader (one identity block at the ToolbarIdent
  * scale, one mono scope crumb, one actions row, the once-per-load 400ms
- * entrance). The hero carries ONE light source (the .shader-fallback
- * signal bloom) + the halftone edge + the grain veil — no box grid; the
+ * entrance). The hero carries ONE light source (the .radial-light
+ * signal light) + the film grain veil — no box grid; the
  * launch grid is asymmetric (1.6fr featured platform column + 1fr rails)
  * and every card obeys the card discipline (one title, one phrase, no
  * paragraphs).
@@ -21,7 +21,7 @@
  * and the surface tokens.
  */
 
-import { Activity, ArrowRight, Command, Eraser, Menu, Moon, Search, Sun } from "lucide-react";
+import { Activity, ArrowRight, Circle, Command, Eraser, Menu, Moon, Search, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CARD_ROLE_STYLE, ToolbarIdent, useHeaderEntrance } from "./appheader.tsx";
 import { APPS } from "./apps.ts";
@@ -120,12 +120,12 @@ export function GatewayHome({ os }: { os: OSHandle }) {
       </div>
 
       <main className="shell">
-        {/* HERO — one light source + halftone edge, no box grid */}
+        {/* HERO — one light source, no box grid */}
         <section
-          className="shader-stage halftone-edge"
+          className="shader-stage"
           style={{ paddingTop: "clamp(40px, 8vw, 96px)", paddingBottom: "clamp(24px, 5vw, 56px)" }}
         >
-          <div className="shader-fallback" aria-hidden="true" />
+          <div className="radial-light" aria-hidden="true" />
           <div className="grain-overlay" aria-hidden="true" />
           <p className="eyebrow enter" style={stagger(0)}>
             the family operating surface
@@ -145,7 +145,7 @@ export function GatewayHome({ os }: { os: OSHandle }) {
           </div>
           <div className="enter row gw-row-meta" style={stagger(4)}>
             <span className="badge">
-              <span className="dot live-dot" aria-hidden="true" /> gateway online
+              <Circle size={8} strokeWidth={2.5} aria-hidden="true" /> gateway online
             </span>
             <span className="badge success">{APPS.length} surfaces</span>
             <span className="badge info">glm-5.3 — /v1/chat/completions</span>

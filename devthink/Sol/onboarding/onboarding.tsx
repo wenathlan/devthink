@@ -23,7 +23,6 @@ import { useLocation } from "wouter";
 import { writeonboardingstage } from "../../onboardingstate";
 import { SolLogoMark } from "../panel/logo.tsx";
 import { ONBOARDING_STEPS, StepArt } from "./steps.tsx";
-import "../sol.viewsdelta.css";
 
 export * from "./steps.tsx";
 

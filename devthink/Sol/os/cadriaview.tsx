@@ -5,7 +5,7 @@
  * gallery (grid with type filters). Copy absorbed from the static cadria
  * site.
  *
- * C2-02 pass: one dominant object per page (rose light source, halftone
+ * C2-02 pass: one dominant object per page (rose light source, film
  * edge, film grain) over a support rail, editorial ledgers instead of
  * repeated identical cards, the cadria identity accent (apps.ts metadata)
  * on key numbers and active states, one staggered entrance per view

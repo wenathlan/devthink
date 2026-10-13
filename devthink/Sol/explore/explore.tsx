@@ -10,7 +10,7 @@ import { ArrowRight, RotateCcw } from "lucide-react";
 /** Style: DevThink landing SaaS — the trylle ruler over the Windows canvas.
  * ONE hero zone on the graphite mica: the trylle hero (display face, H1 at
  * clamp(2.25rem, 5vw, 3.75rem), weight 600, tracking -0.02em, never italic)
- * over the campaign atmosphere (one warm radial light, two halftone edge
+ * over the campaign atmosphere (one warm radial light, the film grain
  * dissolves, one film-grain veil), then the prompt-giga command field and
  * the app constellation (launchdeck.tsx), the curated grade of trylle cards
  * (exploresections.tsx), the catalog strip and the editorial ledger. Every
@@ -63,8 +63,7 @@ const MICA_STYLE = {
   backgroundAttachment: "fixed",
 } as const;
 
-/* ---- the hero atmosphere: the named light source, the halftone edge
-        dissolves and the film grain — layered over the graphite mica, all
+/* ---- the hero atmosphere: the named light source and the film grain — layered over the graphite mica, all
         presentational, pointer-transparent, riding the campaign recipes ---- */
 const heroLightStyle = {
   position: "absolute",
@@ -73,32 +72,6 @@ const heroLightStyle = {
   pointerEvents: "none",
   background:
     "radial-gradient(1200px 700px at 72% -12%, rgb(255 95 0 / 15%), transparent 62%), radial-gradient(900px 620px at 6% 110%, rgb(255 159 46 / 9%), transparent 58%)",
-} as const;
-const halftoneEdgeStyle = {
-  position: "absolute",
-  zIndex: 0,
-  pointerEvents: "none",
-  backgroundImage: "radial-gradient(rgb(255 95 0 / 16%) 1px, transparent 1.4px)",
-  backgroundSize: "11px 11px",
-} as const;
-const halftoneTopStyle = {
-  ...halftoneEdgeStyle,
-  top: 0,
-  right: 0,
-  width: "min(48vw, 620px)",
-  height: 380,
-  maskImage: "radial-gradient(620px 380px at 100% 0%, #000 0%, transparent 72%)",
-  WebkitMaskImage: "radial-gradient(620px 380px at 100% 0%, #000 0%, transparent 72%)",
-} as const;
-const halftoneLowStyle = {
-  ...halftoneEdgeStyle,
-  bottom: 0,
-  left: 0,
-  width: "min(38vw, 470px)",
-  height: 320,
-  backgroundImage: "radial-gradient(rgb(255 143 36 / 12%) 1px, transparent 1.4px)",
-  maskImage: "radial-gradient(470px 320px at 0% 100%, #000 0%, transparent 72%)",
-  WebkitMaskImage: "radial-gradient(470px 320px at 0% 100%, #000 0%, transparent 72%)",
 } as const;
 /** the film grain: feTurbulence fractal noise, 2 octaves, 140px tile,
  * soft-light — the doctrine veil, additive over the mica */
@@ -236,11 +209,9 @@ export default function Explore() {
               className="relative pb-6 pt-[clamp(56px,9vh,118px)]"
               aria-label="DevThink — the launcher of the os"
             >
-              {/* the atmosphere: one warm light source, two halftone edge
+              {/* the atmosphere: one warm light source
               dissolves and the film grain — layered, pointer-transparent */}
               <div style={heroLightStyle} aria-hidden="true" />
-              <div style={halftoneTopStyle} aria-hidden="true" />
-              <div style={halftoneLowStyle} aria-hidden="true" />
               <div style={heroGrainStyle} aria-hidden="true" />
 
               <div className="relative z-[1] max-w-[780px]">

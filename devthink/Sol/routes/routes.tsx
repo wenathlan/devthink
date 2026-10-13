@@ -73,7 +73,7 @@ export default function Routes() {
                   {beacon ? (
                     <span className="r2c-state">
                       <span
-                        className={`r2c-dot${healthy ? " live-dot" : ""}`}
+                        className={`r2c-dot`}
                         data-on={healthy ? "true" : "false"}
                         aria-hidden="true"
                       />
@@ -90,7 +90,7 @@ export default function Routes() {
             <span className="r2c-figlabel">gateway health</span>
             <span className="r2c-state">
               <span
-                className={`r2c-dot${healthy ? " live-dot" : ""}`}
+                className={`r2c-dot`}
                 data-on={healthy ? "true" : "false"}
                 aria-hidden="true"
               />

@@ -16,7 +16,7 @@
  * quiet hover wash, versions and stamps ride tabular numerals, and the one
  * accent per state lands on the latest rung (solar orange dot + badge; every
  * other rung stays neutral). The .pagehead hero keeps the contract and
- * carries the .halftone edge, the ladder carries the .grain film, the page
+ * carries the .textured edge, the ladder carries the .grain film, the page
  * carries the one .atmos light source (C1-01 paints all three). The rows
  * reveal in one staggered entrance and hold still; the loading/empty ladder
  * states keep the shared .control-empty card (no emoji). No route, data or
@@ -25,7 +25,7 @@
  * R2-b data ledger: the body flips to the asymmetric 1.6fr/1fr read — the
  * rung ladder dominant on the left, the margin rail sticky on the right —
  * and the hero joins the staged editorial grammar (engine .shader-stage +
- * one .shader-fallback bloom + .halftone-edge + grain, mono eyebrow →
+ * one .radial-light bloom + .textured-edge + grain, mono eyebrow →
  * Bricolage display line → one phrase, one .enter entrance). Rows are
  * hairline ledgers with the signal 10% hover tint, the version numerals
  * ride mono 700 tabular and the stamps read mono lowercase. The rail gains
@@ -49,7 +49,7 @@ const step = (i: number) => ({ "--i": i }) as CSSProperties;
  * narrow viewports. */
 const HISTORY_CSS = `
 .atmos::before, .atmos::after, .grain::before, .grain::after,
-.halftone::before, .halftone::after { pointer-events: none; }
+.textured::before, .textured::after { pointer-events: none; }
 .control-page.atmos { position: relative; }
 .hs-body { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(240px, 1fr); gap: 34px; align-items: start; }
 .hs-ladder { display: grid; min-width: 0; }
@@ -114,8 +114,8 @@ export default function History() {
     <main className="control-page atmos">
       <ShellChrome />
       <div className="page-container">
-        <header className="pagehead r2b-head shader-stage halftone-edge enter" style={step(0)}>
-          <div className="shader-fallback" aria-hidden="true" />
+        <header className="pagehead r2b-head shader-stage textured-edge enter" style={step(0)}>
+          <div className="radial-light" aria-hidden="true" />
           <div className="grain-overlay" aria-hidden="true" />
           <p className="pagehead__eyebrow r2a-eyebrow">devthink — history</p>
           <h1 className="pagehead__title r2a-display">The release ladder</h1>

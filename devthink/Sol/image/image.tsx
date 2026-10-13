@@ -20,13 +20,13 @@
  * head toolbar that carries the real catalog count, and the automation note
  * is demoted to a narrow support rail. The render actions stay on the 28px
  * .apps-action ladder with tooltips and aria-labels; the .pagehead hero
- * keeps the contract and carries the .halftone edge, the list carries the
+ * keeps the contract and carries the grain film, the list carries the
  * .grain film, the page carries the one .atmos light source (C1-01 paints
  * all three). Rows reveal in one staggered entrance and hold still. The
  * engine behavior — the catalog fetch and the gateway queue — is untouched.
  *
  * R2-b creative studio: the matiz banner becomes the hero object — the
- * engine .shader-stage with ONE .shader-fallback bloom, the .halftone-edge
+ * engine .shader-stage with ONE .radial-light source, the
  * dissolve, the grain film, the one ambient .breathe and the transform-only
  * equalizer motif (1.2s, the studio pulse). The head joins the staged
  * editorial grammar (mono eyebrow → Bricolage display line → one phrase,
@@ -65,7 +65,7 @@ function megapixelsOf(size: string | undefined): number | null {
  * support rail folds under the ledger when it would starve. */
 const IMAGE_CSS = `
 .atmos::before, .atmos::after, .grain::before, .grain::after,
-.halftone::before, .halftone::after { pointer-events: none; }
+{ pointer-events: none; }
 .control-page.atmos { position: relative; }
 .im-body { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(250px, 1fr); gap: 32px; align-items: start; margin-top: 30px; }
 .im-list { display: grid; min-width: 0; }
@@ -138,8 +138,8 @@ export default function ImageStudio() {
     <main className="control-page atmos">
       <ShellChrome />
       <div className="page-container">
-        <header className="pagehead r2b-head shader-stage halftone-edge enter" style={step(0)}>
-          <div className="shader-fallback" aria-hidden="true" />
+        <header className="pagehead r2b-head shader-stage enter" style={step(0)}>
+          <div className="radial-light" aria-hidden="true" />
           <div className="grain-overlay" aria-hidden="true" />
           <p className="pagehead__eyebrow r2a-eyebrow">devthink — image</p>
           <h1 className="pagehead__title r2a-display">The image studio</h1>
