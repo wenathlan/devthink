@@ -205,6 +205,101 @@
     "url": "https://github.com/wenathlan/devthink/issues"
   },
   "description": "DevThink is the merged AI development workbench: the provider-owned gateway engine, the DevThink browser extension (the agent surface), the Antigravity engine and the workbench CLI — one product, one binary, one metadata.",
+  "devthink": {
+    "maestro": "node.js is the orchestrator: every engine below answers to the maestro (devthink.ts) — family engines ride the published library packages, never a sibling-folder path; native engines ride the flat .ts files at the app root.",
+    "engines": [
+      {
+        "name": "versawaze",
+        "source": "library",
+        "library": "@wenathlan/versawaze",
+        "role": "the video and 3d engine of cadria, imported for player, studio and render surfaces."
+      },
+      {
+        "name": "kathesis",
+        "source": "library",
+        "library": "@wenathlan/kathesis",
+        "role": "the audio engine of debonair, imported for sound, synthesis and music surfaces."
+      },
+      {
+        "name": "saddle",
+        "source": "library",
+        "library": "@wenathlan/saddle",
+        "role": "virtualization and sandboxes, imported to run isolated environments behind the os."
+      },
+      {
+        "name": "getry",
+        "source": "library",
+        "library": "@wenathlan/getry",
+        "role": "the gateway inference routes, imported to serve the meta-model over the real models."
+      },
+      {
+        "name": "argan",
+        "source": "library",
+        "library": "@wenathlan/argan",
+        "role": "the dns engine, imported for names, zones and records on the os surfaces."
+      },
+      {
+        "name": "vault",
+        "source": "library",
+        "library": "@wenathlan/vault",
+        "role": "the storage engine, imported for projects, accounts and safe keeping."
+      },
+      {
+        "name": "cobaia",
+        "source": "library",
+        "library": "@wenathlan/cobaia",
+        "role": "the monetization engine, imported for plans, quotas and billing surfaces."
+      },
+      {
+        "name": "engine",
+        "source": "root",
+        "module": "engine.ts",
+        "role": "the universal gateway: one gatewayconfig produces the seven route handlers."
+      },
+      {
+        "name": "graphrunner",
+        "source": "root",
+        "module": "graphrunner.ts",
+        "role": "the hierarchical graphs and nodes runner, stages walked in deterministic waves."
+      },
+      {
+        "name": "streamparse",
+        "source": "root",
+        "module": "streaming.ts",
+        "role": "the streaming parser: provider events decoded into one typed chunk flow."
+      },
+      {
+        "name": "retrybackoff",
+        "source": "root",
+        "module": "retrybackoff.ts",
+        "role": "the retry discipline: exponential backoff with jitter and the Retry-After fast path."
+      },
+      {
+        "name": "conversationcompact",
+        "source": "root",
+        "module": "conversationcompact.ts",
+        "role": "the conversation compaction that keeps long contexts inside the token budget."
+      },
+      {
+        "name": "mcpregistry",
+        "source": "root",
+        "module": "mcpregistry.ts",
+        "role": "the mcp server registry: configurations, states and health of the connected servers."
+      },
+      {
+        "name": "calculator",
+        "source": "root",
+        "module": "calculator.ts",
+        "role": "the pure calculator logic behind the calculator page."
+      },
+      {
+        "name": "maestro",
+        "source": "root",
+        "module": "devthink.ts",
+        "role": "the root orchestrator: the node maestro that commands every engine of this manifest."
+      }
+    ]
+  },
   "engines": {
     "bun": ">=1.4.3 <2",
     "node": ">=26.11.1 <27",
