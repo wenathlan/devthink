@@ -16,12 +16,12 @@ import {
   filterTracks,
   formatDb,
   genreByLabel,
+  type LibraryTrackRow,
   MASTERING,
   PROMPT_MAX_LENGTH,
   statusTone,
   toneClass,
   trackNameFromPrompt,
-  type LibraryTrackRow,
 } from "../katexis.ts";
 
 describe("katexis tones", () => {
@@ -74,7 +74,10 @@ describe("katexis helpers", () => {
     assert.equal(trackNameFromPrompt("solo"), "Solo");
   });
   it("finds a genre by its exact label", () => {
-    const genres = [{ id: "techno", label: "Techno" }, { id: "jazz", label: "Jazz" }];
+    const genres = [
+      { id: "techno", label: "Techno" },
+      { id: "jazz", label: "Jazz" },
+    ];
     assert.deepEqual(genreByLabel(genres, "Jazz"), { id: "jazz", label: "Jazz" });
     assert.equal(genreByLabel(genres, "jazz"), undefined);
     assert.equal(genreByLabel(genres, "Ambient"), undefined);

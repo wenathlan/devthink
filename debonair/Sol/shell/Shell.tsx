@@ -319,7 +319,11 @@ function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>(sessionTheme);
   return (
     <button type="button" className="icon-anim" aria-label="toggle theme" onClick={() => setTheme(toggleTheme())}>
-      {theme === "dark" ? <Sun size={16} strokeWidth={1.7} aria-hidden="true" /> : <Moon size={16} strokeWidth={1.7} aria-hidden="true" />}
+      {theme === "dark" ? (
+        <Sun size={16} strokeWidth={1.7} aria-hidden="true" />
+      ) : (
+        <Moon size={16} strokeWidth={1.7} aria-hidden="true" />
+      )}
     </button>
   );
 }

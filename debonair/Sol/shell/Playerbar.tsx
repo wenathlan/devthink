@@ -15,7 +15,7 @@ import { type CSSProperties, useEffect, useState } from "react";
 import { Link } from "wouter";
 import type { TakePlan } from "../../arranger.ts";
 import { formatClock } from "../../dawview.ts";
-import { type PlayerSnapshot, busPause, busPlay, busSeek, busSelect, busSubscribe } from "../../playerbus.ts";
+import { busPause, busPlay, busSeek, busSelect, busSubscribe, type PlayerSnapshot } from "../../playerbus.ts";
 import { CoverArt } from "../home/coverart.tsx";
 
 /**
@@ -79,13 +79,7 @@ export function Playerbar() {
         >
           {view.playing ? <Pause size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}
         </button>
-        <button
-          type="button"
-          className="pkey"
-          aria-label="Next take"
-          title="Next take"
-          onClick={() => busSelect()}
-        >
+        <button type="button" className="pkey" aria-label="Next take" title="Next take" onClick={() => busSelect()}>
           <SkipForward size={16} aria-hidden="true" />
         </button>
       </div>
