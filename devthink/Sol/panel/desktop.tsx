@@ -20,6 +20,21 @@
  */
 
 import {
+  AppWindow,
+  ArrowDownAZ,
+  ArrowDownUp,
+  Eye,
+  Info,
+  LayoutGrid,
+  Maximize2,
+  Monitor,
+  RotateCcw,
+  RotateCw,
+  Shapes,
+  Square,
+  SquareArrowOutUpRight,
+} from "lucide-react";
+import {
   type CSSProperties,
   type KeyboardEvent as ReactKeyboardEvent,
   type MouseEvent as ReactMouseEvent,
@@ -31,21 +46,6 @@ import {
   useState,
 } from "react";
 import { useLocation } from "wouter";
-import {
-  AppWindow,
-  ArrowDownAZ,
-  ArrowDownUp,
-  Eye,
-  Info,
-  LayoutGrid,
-  Monitor,
-  RotateCcw,
-  RotateCw,
-  Shapes,
-  Square,
-  SquareArrowOutUpRight,
-  Maximize2,
-} from "lucide-react";
 import { familyurl } from "../../deploybase.ts";
 import { type DesktopApp, seedOsView } from "../shell/appregistry.ts";
 import { AppTile } from "../shell/apptile.tsx";
@@ -189,7 +189,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
   const [overrides, setOverrides] = useState<IconSpotMap>(() => loadIconSpots());
   /** the selected app ids (single click, ctrl+click, marquee commit) */
   const [selection, setSelection] = useState<ReadonlySet<string>>(() => new Set<string>());
-  /** the icon scale of the field — the "View ▸" menu of the desktop menu */
+  /** the icon scale of the field — the View submenu of the desktop menu */
   const [iconSize, setIconSize] = useState<IconSize>("medium");
   /** the open context menu, if any */
   const [menu, setMenu] = useState<MenuState | null>(null);
@@ -544,7 +544,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
           id: "view-medium",
           label: "medium icons",
           icon: Square,
-          shortcut: iconSize === "medium" ? "●" : undefined,
+          shortcut: iconSize === "medium" ? "radio" : undefined,
           onSelect: () => setIconSize("medium"),
         },
         {
@@ -552,7 +552,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
           id: "view-large",
           label: "large icons",
           icon: Maximize2,
-          shortcut: iconSize === "large" ? "●" : undefined,
+          shortcut: iconSize === "large" ? "radio" : undefined,
           onSelect: () => setIconSize("large"),
         },
         { kind: "sep", id: "view-sep" },
@@ -657,7 +657,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
           DevThink
         </strong>
         <span className="dt-desktop__tagline font-mono text-[10px] font-medium tracking-[.08em] indent-[.08em] lowercase text-[rgb(235_240_248/58%)] light:text-[rgb(0_0_0/60%)]">
-          local OS · chat first
+          local OS — chat first
         </span>
       </div>
       <div

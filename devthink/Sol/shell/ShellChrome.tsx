@@ -596,7 +596,7 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
               >
                 devthink
               </span>
-              <span>· local OS</span>
+              <span>local OS</span>
             </footer>
           </section>
         </>
@@ -635,7 +635,14 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
         <div
           className="tray-dim-overlay"
           aria-hidden="true"
-          style={{ position: "fixed", inset: 0, zIndex: 55, background: "#000", opacity: dim, pointerEvents: "none" }}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 55,
+            background: "rgb(0 0 0)",
+            opacity: dim,
+            pointerEvents: "none",
+          }}
         />
       )}
     </>

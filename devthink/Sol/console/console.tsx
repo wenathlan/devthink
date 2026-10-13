@@ -31,7 +31,7 @@ import { TerminalSquare } from "lucide-react";
 import { type CSSProperties, useEffect, useRef, useState } from "react";
 import { ShellChrome } from "@/shell/ShellChrome";
 import { gatewayReady } from "../../gateway.js";
-import { type runstageview, createrunner } from "../../graphrunner.js";
+import { createrunner, type runstageview } from "../../graphrunner.js";
 import { makeviewstate } from "../../graphviewstate.js";
 import { bootdelay, bootlines, consoleprompt, consoleversion } from "./boot.ts";
 import { BOOT_STAGE_GAP, bootgraph, bootrunnerhandler } from "./bootgraph.ts";
@@ -244,7 +244,7 @@ export default function Console() {
       <ShellChrome />
       <div className="page-container grain" style={containerStyle}>
         <header className="pagehead enter" style={{ ...pageheadStyle, ...step(0) }}>
-          <p className="pagehead__eyebrow r2a-eyebrow">devthink · console</p>
+          <p className="pagehead__eyebrow r2a-eyebrow">devthink — console</p>
           <h1 className="pagehead__title r2a-display" style={titleStyle}>
             the cli, drawn live
           </h1>
@@ -261,23 +261,23 @@ export default function Console() {
             <div className="shader-fallback r2a-console-light breathe" aria-hidden="true" />
             <div className="grain-overlay" aria-hidden="true" />
             <p className="r2a-kicker">
-              01 · the terminal
+              01 — the terminal
               <b>{running ? "session live" : "booting"}</b>
             </p>
             <Terminal rows={rows} prompt={consoleprompt} state={termstate} enabled={running} oncommand={runcommand} />
             <p className="console-note">
               <span aria-live="polite" className={paired ? "is-paired" : undefined}>
                 <i className="console-note__lamp live-dot" aria-hidden="true" />
-                {paired ? "gateway: paired loopback detected" : "cli design reference · static catalog"}
+                {paired ? "gateway: paired loopback detected" : "cli design reference — static catalog"}
               </span>
-              <span>tab completes · ↑↓ history · enter runs</span>
+              <span>tab completes — up/down history — enter runs</span>
             </p>
             <div className="console-boot">
               <p className="r2a-kicker">
-                02 · boot stages
+                02 — boot stages
                 <b>
                   {runview
-                    ? `${runview.status} · stage ${Math.min(runview.stageindex + 1, Math.max(runview.stages.length, 1))}/${Math.max(runview.stages.length, 1)}`
+                    ? `${runview.status} — stage ${Math.min(runview.stageindex + 1, Math.max(runview.stages.length, 1))}/${Math.max(runview.stages.length, 1)}`
                     : "arming"}
                 </b>
               </p>
@@ -303,7 +303,7 @@ export default function Console() {
           </div>
           <aside className="console-reference enter" style={step(2)} aria-labelledby="consolereferencetitle">
             <p className="r2a-kicker">
-              03 · command reference
+              03 — command reference
               <b>{`${catalogcommands.length} commands`}</b>
             </p>
             <h2 className="console-reference__title" id="consolereferencetitle">

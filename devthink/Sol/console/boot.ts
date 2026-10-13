@@ -32,8 +32,8 @@ export function bootlines(): string[] {
   return [
     `devthink ${packageversion} — the consent-first browser agent bridge on the terminal.`,
     "usage: devthink <command> [options]",
-    "config   .devthink/config.json · verbosity normal · format human",
-    "engine   plan review · consent gates · sealed log chain ready",
+    "config   .devthink/config.json, verbosity normal, format human",
+    "engine   plan review, consent gates, sealed log chain ready",
     "gateway  loopback provider gateway answers the paired workbench",
     "mcp      stdio + http listener armed on 127.0.0.1:7436 (devthink serve)",
     "palette  the shared command registry rides the cli and the surfaces",

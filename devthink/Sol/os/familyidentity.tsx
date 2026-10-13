@@ -230,7 +230,7 @@ export function FamilyHero({
         </span>
         <div className="fam-hero__ident">
           <p className="fam-hero__eyebrow">
-            {app.domain} · {app.tag}
+            {app.domain} — {app.tag}
           </p>
           <h1 className="fam-hero__name">{app.name}</h1>
           <p className="fam-hero__tagline">{tagline}</p>

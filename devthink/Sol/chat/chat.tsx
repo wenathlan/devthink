@@ -320,7 +320,7 @@ export default function Chat() {
             <div className="dtc-tb-title">
               <h1>{active ? active.title : "New chat"}</h1>
               <small>
-                sol · model {GATEWAY_MODEL} · {gateway.base ? "gateway registered" : "no gateway registered"}
+                sol — model {GATEWAY_MODEL} — {gateway.base ? "gateway registered" : "no gateway registered"}
               </small>
             </div>
             <div className="dtc-tb-actions">

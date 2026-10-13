@@ -182,7 +182,7 @@ export function StealthheadApp({ os }: { os: OSHandle }) {
           <div>
             <FamilyHero
               app={meta}
-              tagline="The FPS platform of the family — Lockout 5v5 under a 12 ms ping floor, ladders from Bronze to Solar, an arsenal balanced in the open."
+              tagline="lockout 5v5 under a 12 ms floor — ladders from bronze to solar."
               stats={
                 [
                   { label: "weapons at launch", value: String(WEAPONS.length), accent: true },
@@ -218,7 +218,7 @@ function MatchPage() {
         eyebrow="matchmaking"
         title="Match"
         heading="h2"
-        description="One queue, one lobby, ten players. The matchmaker fills both squads by MMR band and enforces the 12 ms ping floor — then hands the lobby to versawase for spawn and world setup."
+        description="one queue, one lobby, ten players — mmr fills squads; versawase spawns worlds."
         reveal
       />
 
@@ -242,8 +242,8 @@ function MatchPage() {
             </span>
           </div>
           <p className="small" style={{ margin: "8px 0 14px" }}>
-            Mode <strong className="strong">Lockout 5v5</strong> · map{" "}
-            <strong className="strong">Sector Solar-5</strong> · ping floor{" "}
+            Mode <strong className="strong">Lockout 5v5</strong>, map <strong className="strong">Sector Solar-5</strong>
+            , ping floor{" "}
             <strong className="strong mono" style={{ color: "var(--app-accent)" }}>
               12 ms
             </strong>
@@ -346,10 +346,10 @@ function RankingPage() {
   return (
     <>
       <PageSection
-        eyebrow="ranking · solar season 4"
+        eyebrow="ranking — solar season 4"
         title="Ranking"
         heading="h2"
-        description="MMR ladders from Bronze to Solar. The ladder resets each season; placement takes ten matches. Only the top 500 live in Solar."
+        description="ladders from bronze to solar — reset each season, placement in ten matches."
         reveal
       />
 
@@ -476,7 +476,7 @@ function ArsenalPage() {
         eyebrow="loadouts"
         title="Arsenal"
         heading="h2"
-        description="Six weapons at launch, every stat in the open. The balancer runs Monte Carlo TTK simulations (1,000 rounds per weapon) and keeps time-to-kill inside a ±15% band across classes. Bars are normalized 0–100."
+        description="six weapons, stats in the open — ttk sims keep classes inside ±15%."
         reveal
       />
 

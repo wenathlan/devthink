@@ -1,27 +1,43 @@
 /**
- * statusdot.tsx — the engine badge with the pulsing dot (semantic
- * states). The surface contract: 4px corners on the chip, hairline edge
- * over currentColor, the dot a flat 6px disc (the glow leaves) and the
- * `data-tone` hook so the wave-2 CSS can grade every state from one
- * ladder. When `pulse` is on (the active state) the dot also carries the
- * `live-dot` class — the 3s engine ping of the R1-c motion kit, guarded
- * for reduced motion in css. Non-interactive — the focus ring pass
- * targets the focusable surfaces around it.
+ * statusdot.tsx — the engine badge: a lucide status glyph colored by the
+ * status tokens plus the label (i10 — never a dot character, never a bare
+ * colored disc). The surface contract: 4px corners on the chip, hairline
+ * edge over currentColor, the glyph inheriting the .badge tone color so
+ * the wave-2 CSS keeps grading every state from one ladder. The former
+ * `pulse` prop (the 3s live-dot ping) is retired with the infinite loops
+ * (x12): the badge is a static state mark. Non-interactive — the focus
+ * ring pass targets the focusable surfaces around it.
  */
+import { Check, Circle, CircleX, Info, TriangleAlert } from "lucide-react";
+
+type StatusTone = "default" | "success" | "error" | "warning" | "info";
+
+/** the lucide glyph per status tone (i10): colored through currentColor by
+ * the .badge tone classes (--ok/--warn/--err/--info), never a dot */
+const TONE_GLYPH: Record<StatusTone, typeof Circle> = {
+  default: Circle,
+  success: Check,
+  error: CircleX,
+  warning: TriangleAlert,
+  info: Info,
+};
+
 export function StatusDot({
   label,
   tone = "success",
-  pulse = true,
 }: {
   label: string;
-  tone?: "default" | "success" | "error" | "warning" | "info";
+  tone?: StatusTone;
+  /** retired with the live-dot ping (x12): accepted for call-site
+   * compatibility, never rendered */
   pulse?: boolean;
 }) {
+  const Glyph = TONE_GLYPH[tone];
   const cls =
     tone === "success" || tone === "error" || tone === "warning" || tone === "info" ? `badge ${tone}` : "badge";
   return (
     <span className={cls} role="status" data-tone={tone}>
-      <span className={pulse ? "dot live-dot" : undefined} aria-hidden="true" />
+      <Glyph size={11} strokeWidth={1.75} aria-hidden="true" />
       {label}
     </span>
   );

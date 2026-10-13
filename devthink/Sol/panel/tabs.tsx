@@ -24,7 +24,7 @@ export function WorkspaceTabs({ tabs, activeTab, onSelect, onClose, onNew }: Wor
               aria-selected={isActive}
               data-active={isActive ? "true" : undefined}
               data-provider={tab.provider}
-              title={`${tab.label} · ${tab.provider}`}
+              title={`${tab.label} — ${tab.provider}`}
               tabIndex={0}
               onClick={() => onSelect(tab.id)}
               onKeyDown={(event) => {

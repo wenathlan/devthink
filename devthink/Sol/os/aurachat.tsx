@@ -231,7 +231,7 @@ export function AuraChat({
               {persona.intro}
             </p>
             <p className="tiny faint" style={{ marginBottom: 16 }}>
-              POST /v1/chat/completions · model <code>devthink</code> · local persistence
+              POST /v1/chat/completions, model <code>devthink</code>, local persistence
             </p>
             <ul className="chips" aria-label="Prompt suggestions">
               {suggestions.map((s) => (
@@ -258,7 +258,7 @@ export function AuraChat({
                   </details>
                 ) : null}
                 <div className="bubble-meta">
-                  {fmtTime(m.at)} · {m.role === "assistant" ? persona.name.toUpperCase() : "YOU"}
+                  {fmtTime(m.at)} — {m.role === "assistant" ? persona.name.toUpperCase() : "YOU"}
                 </div>
               </div>
             </div>
@@ -286,7 +286,7 @@ export function AuraChat({
               borderColor: "color-mix(in srgb, var(--sol-error) 50%, transparent)",
             }}
           >
-            <span className="badge error">error · {error}</span>
+            <span className="badge error">error — {error}</span>
             <button
               type="button"
               className="btn small secondary"
@@ -358,9 +358,7 @@ export function AuraChat({
       </form>
       <div className="chat-foot">
         <span className="mono">glm-5.3</span>
-        <span>·</span>
-        <span>Enter sends · Shift+Enter adds a line break</span>
-        <span>·</span>
+        <span>Enter sends, shift+enter adds a line break</span>
         <span>local history ({messages.length})</span>
       </div>
     </section>

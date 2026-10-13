@@ -62,7 +62,7 @@ type AccountRow = {
 };
 
 const ACCOUNTS: AccountRow[] = [
-  { id: "acc-owner", label: "iakadion", role: "owner", channels: "cli · gateway", lastSeen: "now" },
+  { id: "acc-owner", label: "iakadion", role: "owner", channels: "cli + gateway", lastSeen: "now" },
   { id: "acc-runner", label: "forge-runner", role: "service", channels: "https report", lastSeen: "12 s ago" },
   { id: "acc-foundry", label: "foundry-pipeline", role: "service", channels: "https records", lastSeen: "1 min ago" },
   { id: "acc-getry", label: "getry-lanes", role: "service", channels: "gateway keys", lastSeen: "8 s ago" },
@@ -112,7 +112,7 @@ export function VaultApp({ os }: { os: OSHandle }) {
     { label: "site buckets", value: String(PROJECTS.length) },
     { label: "sealed in the reserve", value: `${totals.mb} MB`, accent: true },
     { label: "tables served", value: String(totals.tables) },
-    { label: "channels — blob · lfs", value: "2" },
+    { label: "channels — blob + lfs", value: "2" },
   ];
 
   return (
@@ -134,7 +134,7 @@ export function VaultApp({ os }: { os: OSHandle }) {
           <div>
             <FamilyHero
               app={meta}
-              tagline="The sealed reserve of the family — every site database, every account and every object behind one door."
+              tagline="the sealed reserve — every site database, account and object behind one door."
               stats={stats}
               glyphMotion="dial"
               status="reserve sealed"
@@ -167,7 +167,7 @@ function ProjectsPage({ totals }: { totals: ReturnType<typeof reserveTotals> }) 
         eyebrow="the family reserve"
         title="Projects"
         heading="h2"
-        description="One bucket per family site lives here: the table count, the sealed size and the channel the storage contract picked — vault keeps every site state of the house and receives every backup."
+        description="one bucket per site, one channel per object — the reserve takes every backup."
         reveal
       />
 
@@ -232,7 +232,7 @@ function ProjectsPage({ totals }: { totals: ReturnType<typeof reserveTotals> }) 
             <div className="row between" style={{ marginBottom: 6 }}>
               <span className="fam-stat__label">blob channel</span>
               <span className="fam-num mono" style={{ fontSize: ".8rem" }}>
-                {totals.blobMb} MB · {totals.blobPct}
+                {totals.blobMb} MB — {totals.blobPct}
               </span>
             </div>
             <div className="fam-meter" role="img" aria-label={`blob channel ${totals.blobPct} of the reserve`}>
@@ -243,7 +243,7 @@ function ProjectsPage({ totals }: { totals: ReturnType<typeof reserveTotals> }) 
             <div className="row between" style={{ marginBottom: 6 }}>
               <span className="fam-stat__label">lfs channel — sealed masters</span>
               <span className="fam-num mono" style={{ fontSize: ".8rem", color: "var(--app-accent)" }}>
-                {totals.lfsMb} MB · {totals.lfsPct}
+                {totals.lfsMb} MB — {totals.lfsPct}
               </span>
             </div>
             <div className="fam-meter" role="img" aria-label={`lfs channel ${totals.lfsPct} of the reserve`}>
@@ -287,7 +287,7 @@ function AccountsPage() {
         eyebrow="the auth surface"
         title="Accounts"
         heading="h2"
-        description="The identity ledger of the family reserve: the owner, the service accounts the other apps answer through, and the channels each one speaks — honest local identity, no remote authentication."
+        description="the identity ledger: owner + service accounts — local only, no remote auth."
         reveal
       />
 
@@ -348,9 +348,12 @@ function AccountsPage() {
         <h2 id="accr-h" className="fam-card__title" style={{ marginBottom: 8 }}>
           Who answers through the reserve
         </h2>
+        <p style={{ margin: "0 0 6px", color: "var(--sol-muted)" }}>
+          the service accounts are the family talking to itself: forge reports outcomes, foundry writes records, getry
+          rotates keys.
+        </p>
         <p style={{ margin: 0, color: "var(--sol-muted)" }}>
-          The service accounts are the family talking to itself: forge reports outcomes, foundry writes records, getry
-          rotates keys. The owner identity stays local — the reserve never phones home.
+          the owner identity stays local — the reserve never phones home.
         </p>
       </section>
     </>
@@ -394,7 +397,7 @@ function StoragePage() {
     }
     const mode = storageModeFor(bytes);
     setProbe({ bytes, mime: mime.trim(), mode });
-    toast.success(`storageModeFor → ${mode}`);
+    toast.success(`storageModeFor seals ${mode}`);
   }
 
   return (
@@ -403,7 +406,7 @@ function StoragePage() {
         eyebrow="the seal contract"
         title="Storage"
         heading="h2"
-        description="Objects ride two channels: the blob families first, the lfs masters after the 1,000,000-byte threshold. The probe below answers from the real contract — no artifact rows are served by the surface yet."
+        description="blob under the threshold, lfs above — the probe answers from the real contract."
         reveal
       />
 
@@ -443,8 +446,7 @@ function StoragePage() {
             Probe a deposit
           </h2>
           <p className="small" style={{ margin: "0 0 12px" }}>
-            Give a size and a mime type — the readout runs storageModeFor against the 1,000,000-byte threshold and
-            answers the channel, nothing else.
+            give a size and a mime — the readout runs storageModeFor and answers the channel, nothing else.
           </p>
           <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
             <input
@@ -492,14 +494,17 @@ function StoragePage() {
                 setMime("video/mp4");
               }}
             >
-              Sample: 2.4 MB · video/mp4
+              Sample: 2.4 MB — video/mp4
             </button>
           </div>
 
           {probe ? (
             <div style={{ marginTop: 16, borderTop: "1px solid var(--fam-hair)", paddingTop: 14 }}>
+              <p className="mono small fam-num" style={{ margin: "0 0 4px", color: "var(--app-accent)" }}>
+                {probe.bytes.toLocaleString("en-US")} bytes — {probe.mime}
+              </p>
               <p className="mono small fam-num" style={{ margin: 0, color: "var(--app-accent)" }}>
-                {probe.bytes.toLocaleString("en-US")} bytes · {probe.mime} → {probe.mode}
+                seals {probe.mode}
                 {probe.mode === "lfs"
                   ? ` — over the ${LFS_THRESHOLD.toLocaleString("en-US")}-byte threshold`
                   : ` — at or under the ${LFS_THRESHOLD.toLocaleString("en-US")}-byte threshold`}
@@ -526,7 +531,7 @@ size ${probe.bytes}`}</code>
           app={appMeta("vault") as NonNullable<ReturnType<typeof appMeta>>}
           motion="dial"
           title="The artifact ledger is sealed and empty"
-          line="No artifact rows are served by the surface yet — objects mount when the vault clone starts taking deposits. The contract above is already the real one."
+          line="no rows served yet — objects mount when the vault clone starts taking deposits."
           actionLabel="Probe a deposit instead"
           onAction={() => toast("The seal readout above answers from the real storage contract")}
         />

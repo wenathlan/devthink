@@ -136,19 +136,19 @@ export function GatewayHome({ os }: { os: OSHandle }) {
           <p className="enter max-560" style={{ ...stagger(2), fontSize: "1.12rem", marginTop: 18 }}>
             Nine surfaces, one shell — an Aura chat per app and an always-clean URL bar.
           </p>
-          <div className="enter row mt-26" style={stagger(3)}>
+          <div className="enter row gw-row-cta" style={stagger(3)}>
             <button type="button" className="cmd-hint press" onClick={os.openCmd} aria-label="Open the command bar">
               <Search size={18} strokeWidth={1.8} aria-hidden="true" />
               <span>Search apps, tabs, actions…</span>
               <kbd>⌘K</kbd>
             </button>
           </div>
-          <div className="enter row mt-34" style={stagger(4)}>
+          <div className="enter row gw-row-meta" style={stagger(4)}>
             <span className="badge">
               <span className="dot live-dot" aria-hidden="true" /> gateway online
             </span>
             <span className="badge success">{APPS.length} surfaces</span>
-            <span className="badge info">glm-5.3 · /v1/chat/completions</span>
+            <span className="badge info">glm-5.3 — /v1/chat/completions</span>
             <span className="badge warning">clean-url active</span>
           </div>
         </section>
@@ -222,7 +222,7 @@ export function GatewayHome({ os }: { os: OSHandle }) {
                 <Activity size={18} strokeWidth={1.8} aria-hidden="true" style={{ color: "var(--sol-primary)" }} />
               </div>
               <p className="dtv3-metric" style={{ margin: "10px 0 12px" }}>
-                POST /v1/chat/completions → glm-5.3
+                POST /v1/chat/completions — glm-5.3
               </p>
               <StatusDot label="200 OK" />
             </div>

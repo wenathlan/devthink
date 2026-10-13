@@ -43,7 +43,7 @@ export function AboutHero() {
         className="about-hero__statement enter"
         style={{ display: "grid", gap: 16, alignContent: "start", ...step(0) }}
       >
-        <p className="pagehead__eyebrow r2a-eyebrow">devthink · about</p>
+        <p className="pagehead__eyebrow r2a-eyebrow">devthink — about</p>
         <h1 className="pagehead__title r2a-display r2a-display--xl" style={titleStyle}>
           one system, every surface
         </h1>

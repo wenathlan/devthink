@@ -141,7 +141,7 @@ export default function ImageStudio() {
         <header className="pagehead r2b-head shader-stage halftone-edge enter" style={step(0)}>
           <div className="shader-fallback" aria-hidden="true" />
           <div className="grain-overlay" aria-hidden="true" />
-          <p className="pagehead__eyebrow r2a-eyebrow">devthink · image</p>
+          <p className="pagehead__eyebrow r2a-eyebrow">devthink — image</p>
           <h1 className="pagehead__title r2a-display">The image studio</h1>
           <p className="pagehead__lede r2a-lede">
             Stills from the catalog — renders queue over the gateway to the matiz engine.

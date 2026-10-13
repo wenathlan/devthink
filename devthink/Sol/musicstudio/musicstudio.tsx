@@ -68,7 +68,7 @@ const MUSIC_CSS = `
 .ms-hero__head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .ms-hero__head h2 { display: flex; align-items: center; gap: 10px; margin: 0; color: var(--dtv3-ink-1); font: 700 clamp(20px, 2.4vw, 26px)/1.2 var(--dt-sans); letter-spacing: -.02em; }
 .ms-hero__head h2 svg { color: var(--dtv3-sig); flex-shrink: 0; }
-.ms-badge { padding: 3px 10px; color: var(--dtv3-sig); background: color-mix(in srgb, var(--dtv3-sig) 10%, transparent); border: 1px solid color-mix(in srgb, var(--dtv3-sig) 30%, transparent); border-radius: 999px; font: 600 9px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
+.ms-badge { padding: 3px 10px; color: var(--dtv3-sig); background: color-mix(in srgb, var(--dtv3-sig) 10%, transparent); border: 1px solid color-mix(in srgb, var(--dtv3-sig) 30%, transparent); border-radius: 4px; font: 600 9px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
 .ms-hero__lede { margin: 0; max-width: 62ch; color: var(--dtv3-ink-2); font: 400 13px/1.7 var(--dt-sans); }
 .ms-hero__note { margin: 0; color: var(--dtv3-ink-3); font: 500 10px var(--dt-mono); letter-spacing: .06em; }
 .ms-body { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(250px, 1fr); gap: 32px; align-items: start; margin-top: 30px; }
@@ -203,7 +203,7 @@ export default function MusicStudio() {
         <header className="pagehead r2b-head shader-stage halftone-edge enter" style={step(0)}>
           <div className="shader-fallback" aria-hidden="true" />
           <div className="grain-overlay" aria-hidden="true" />
-          <p className="pagehead__eyebrow r2a-eyebrow">devthink · music</p>
+          <p className="pagehead__eyebrow r2a-eyebrow">devthink — music</p>
           <h1 className="pagehead__title r2a-display">The music studio</h1>
           <p className="pagehead__lede r2a-lede">
             Tracks from the catalog — renders queue over the gateway to the katexis engine.

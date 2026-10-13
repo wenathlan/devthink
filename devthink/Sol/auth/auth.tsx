@@ -11,13 +11,13 @@
  * before the OS desktop (/panel) takes the surface. A pinned dark stage
  * (#202020, the doctrine mica lift rendered as a neutral white-4% radial so
  * no accent hue leaks into the canvas) carries exactly three atmosphere
- * layers plus one light: three backdrop scenes crossfading behind the card
- * (pure CSS gradients in the Sol palette — graphite, amber, rust — each
- * owning 6s of an 18s cycle, drifting scale 1.1→1, crossfading on opacity
- * only, ≤8% luminance swing), the 64px grid at white 2% under a radial
- * mask, the feTurbulence film grain at a net 0.05, and the ONE warm light —
- * a single amber bloom (#F59E0B capped at 10% alpha, masked) high over the
- * card. No WebGL, no orbs, no decorative dots.
+ * layers: three backdrop scenes crossfading behind the card (pure CSS
+ * gradients in the Sol palette — graphite, amber, rust — each owning 6s of
+ * an 18s cycle, drifting scale 1.1→1, crossfading on opacity only, ≤8%
+ * luminance swing), the 64px grid at white 2% under a radial mask and the
+ * feTurbulence film grain at a net 0.05. No WebGL, no orbs, no decorative
+ * dots, no glow — the amber bloom layer left with the wave-1-b
+ * eradication (e4: glow dies; the scenes carry the whole atmosphere).
  *
  * On mount the entry intro plays once: the mark rises on the true Akash
  * spring (framer-motion, stiffness 300 / damping 15 — the pass's only
@@ -94,9 +94,6 @@ const AUTH_CSS = `
 
 /* the 64px grid at white 2% under a radial mask */
 .authx-grid { position: absolute; inset: 0; background-image: linear-gradient(rgb(255 255 255 / 2%) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 2%) 1px, transparent 1px); background-size: 64px 64px; -webkit-mask-image: radial-gradient(72% 64% at 50% 42%, #000 0%, transparent 100%); mask-image: radial-gradient(72% 64% at 50% 42%, #000 0%, transparent 100%); }
-
-/* the ONE warm light: a single amber bloom high over the card, 10% alpha max */
-.authx-bloom { position: absolute; inset: 0; background: radial-gradient(46% 40% at 50% 14%, rgb(245 158 11 / 10%) 0%, rgb(245 158 11 / 3%) 42%, transparent 70%); -webkit-mask-image: radial-gradient(64% 56% at 50% 16%, #000 0%, transparent 100%); mask-image: radial-gradient(64% 56% at 50% 16%, #000 0%, transparent 100%); }
 
 /* film grain: feTurbulence tile 140, net opacity .05, zero image files */
 .authx-grain { position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='dtauthg'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23dtauthg)' opacity='0.05'/%3E%3C/svg%3E"); background-size: 140px 140px; }
@@ -182,7 +179,7 @@ const AUTH_CSS = `
 [data-motion="reduced"] .authx-card { animation: none; transition: none; }
 [data-motion="reduced"] .authx-card input, [data-motion="reduced"] .authx-submit, [data-motion="reduced"] .authx-quiet, [data-motion="reduced"] .authx-back { transition: none; }
 @media (prefers-reduced-transparency: reduce) {
-  .authx-scene, .authx-grid, .authx-bloom, .authx-grain { display: none; }
+  .authx-scene, .authx-grid, .authx-grain { display: none; }
   .authx-stage { background-image: none; }
 }
 `;
@@ -349,14 +346,13 @@ export default function Auth() {
   return (
     <main className="authx">
       {/* the pinned dark canvas: mica lift, three crossfading scenes, the
-          64px grid, the ONE amber bloom and the film grain (all decorative,
-          all pointer-transparent) */}
+          64px grid and the film grain (all decorative, all
+          pointer-transparent; the glow layer is gone per e4) */}
       <div className="authx-stage" aria-hidden="true">
         <div className="authx-scene authx-scene--a" />
         <div className="authx-scene authx-scene--b" />
         <div className="authx-scene authx-scene--c" />
         <div className="authx-grid" />
-        <div className="authx-bloom" />
         <div className="authx-grain" />
       </div>
 

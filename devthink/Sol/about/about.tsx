@@ -92,9 +92,9 @@ const ABOUT_CSS = `
 .inst-timeline li { border-left: 2px solid var(--dtv3-hairline); }
 .inst-timeline li::before { background: var(--dt-base); border-color: var(--dtv3-sig); }
 .inst-timeline__version { color: var(--dtv3-sig); }
-.inst-timeline__latest { color: var(--dtv3-sig); background: color-mix(in srgb, var(--dtv3-sig) 14%, transparent); border-radius: 999px; }
+.inst-timeline__latest { color: var(--dtv3-sig); background: color-mix(in srgb, var(--dtv3-sig) 14%, transparent); border-radius: 8px; }
 .inst-timeline strong { color: var(--dtv3-ink-1); }
-[data-theme="light"] .inst-timeline li::before { background: var(--sol-canvas, #fff); }
+[data-theme="light"] .inst-timeline li::before { background: var(--sol-canvas); }
 @media (max-width: 860px) {
   .about-hero, .about-spread, .about-ladder { grid-template-columns: 1fr; }
   .about-hero { gap: 20px; }

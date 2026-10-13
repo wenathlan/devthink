@@ -175,7 +175,7 @@ export function Turn({ turn, fresh = false }: { turn: ChatTurn; fresh?: boolean 
           {assistant ? <Markdown source={turn.content} /> : <p className="dtc-md dtc-md--plain">{turn.content}</p>}
         </div>
         <p className="dtc-meta">
-          {fmtTime(turn.at)} · {assistant ? (turn.model ?? "devthink").toUpperCase() : "YOU"}
+          {fmtTime(turn.at)} — {assistant ? (turn.model ?? "devthink").toUpperCase() : "YOU"}
         </p>
       </div>
     </article>
@@ -199,7 +199,7 @@ export function ThinkingRow() {
 export function ErrorRow({ message, onRetry }: { message: string; onRetry: () => void }) {
   return (
     <div className="dtc-error" role="alert">
-      <p>error · {message}</p>
+      <p>error — {message}</p>
       <button type="button" className="dtc-error__retry" onClick={onRetry}>
         <RefreshCw size={15} strokeWidth={1.8} aria-hidden="true" /> Retry
       </button>

@@ -48,7 +48,7 @@ export function GatewayCard() {
           03
         </span>
         <div style={{ minWidth: 0 }}>
-          <p className="r2c-sec__eyebrow">chat gateway · opt-in</p>
+          <p className="r2c-sec__eyebrow">chat gateway — opt-in</p>
           <h2 className="r2c-sec__title">Chat gateway.</h2>
         </div>
         <p className="dtc-gw__pill" data-state={gateway.status} role="status" style={{ margin: "0 0 0 auto" }}>

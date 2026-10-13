@@ -23,6 +23,7 @@ import { useLocation } from "wouter";
 import { writeonboardingstage } from "../../onboardingstate";
 import { SolLogoMark } from "../panel/logo.tsx";
 import { ONBOARDING_STEPS, StepArt } from "./steps.tsx";
+import "../sol.viewsdelta.css";
 
 export * from "./steps.tsx";
 
@@ -136,28 +137,23 @@ export default function Onboarding() {
   const step = ONBOARDING_STEPS[index] as (typeof ONBOARDING_STEPS)[number];
 
   return (
-    <div className="grid min-h-dvh place-items-center bg-canvas p-4 sm:p-6">
+    <div className="ob-root">
       <section
         ref={windowRef}
-        className="relative flex w-full max-w-[560px] flex-col overflow-hidden rounded-2xl bg-s1 ring-1 ring-hairline-strong"
+        className="ob-window"
         style={{ boxShadow: WINDOW_SHADOW }}
         role="dialog"
         aria-modal="true"
         aria-label="devthink onboarding"
       >
         {/* the window grammar: the real 28px title bar with the red close glyph */}
-        <header className="flex h-8 flex-none items-center gap-2 bg-deep px-3">
-          <span className="flex items-center gap-2 text-xs font-medium text-ink-2">
+        <header className="ob-titlebar">
+          <span className="ob-brand">
             <SolLogoMark size={14} />
             devthink
           </span>
-          <span className="font-mono text-[10px] tracking-[.08em] text-ink-3">onboarding</span>
-          <button
-            type="button"
-            aria-label="close onboarding"
-            onClick={finish}
-            className="ml-auto grid h-8 w-11 flex-none place-items-center text-ink-2 transition-colors duration-[60ms] hover:bg-[rgb(255_0_0_/_0.8)] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
-          >
+          <span className="ob-caption">onboarding</span>
+          <button type="button" aria-label="close onboarding" onClick={finish} className="ob-close">
             <svg viewBox="0 0 10 10" width="10" height="10" aria-hidden="true">
               <path d="M0 0 L10 10 M10 0 L0 10" stroke="currentColor" strokeWidth="1" fill="none" />
             </svg>
@@ -165,56 +161,46 @@ export default function Onboarding() {
         </header>
 
         {/* the frame stage: re-keyed per step so the stagger replays */}
-        <div ref={stageRef} key={index} className="flex flex-col items-center gap-4 px-8 pb-3 pt-10 text-center">
+        <div ref={stageRef} key={index} className="ob-stage">
           <StepArt app={step.app} index={index} />
-          <p data-frame-beat className="font-mono text-[10px] tracking-[.08em] text-ink-3">
+          <p data-frame-beat className="ob-eyebrow">
             {step.eyebrow}
           </p>
-          <h1 data-frame-beat className="font-display text-xl font-semibold tracking-[-0.02em] text-ink">
+          <h1 data-frame-beat className="ob-title">
             {step.title}
           </h1>
-          <p data-frame-beat className="max-w-[44ch] text-sm leading-[1.55] text-ink-2">
+          <p data-frame-beat className="ob-body">
             {step.body}
           </p>
         </div>
 
-        <footer className="mt-3 flex flex-none flex-wrap items-center justify-between gap-3 border-t border-hairline px-5 py-3">
-          <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1.5" aria-hidden="true">
+        <footer className="ob-footer">
+          <div className="ob-progress">
+            <span className="ob-dots" aria-hidden="true">
               {ONBOARDING_STEPS.map((entry, position) => (
                 <span
                   key={entry.eyebrow}
-                  className={`h-1.5 rounded-full transition-[width,background-color] duration-150 ease-micro ${
-                    position === index ? "w-4 bg-win" : position < index ? "w-1.5 bg-ink-3" : "w-1.5 bg-hairline-strong"
-                  }`}
+                  className={`ob-dot${position === index ? " ob-dot--active" : position < index ? " ob-dot--done" : ""}`}
                 />
               ))}
             </span>
-            <span className="font-mono text-[10px] text-ink-3">
+            <span className="ob-count">
               step {index + 1} of {total}
             </span>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={finish}
-              className="min-h-11 rounded-md px-3 text-sm text-ink-3 transition-colors duration-150 ease-micro hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
-            >
+          <div className="ob-actions">
+            <button type="button" onClick={finish} className="ob-btn ob-btn--ghost">
               skip
             </button>
             {index > 0 ? (
-              <button
-                type="button"
-                onClick={back}
-                className="min-h-11 rounded-md bg-s2 px-4 text-sm font-medium text-ink ring-1 ring-hairline transition-[background-color] duration-150 ease-micro hover:bg-s3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
-              >
+              <button type="button" onClick={back} className="ob-btn ob-btn--flat">
                 back
               </button>
             ) : null}
             <button
               type="button"
               onClick={next}
-              className="inline-flex min-h-11 items-center gap-2 rounded-md bg-win px-5 text-sm font-semibold text-win-ink transition-[filter] duration-150 ease-micro hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
+              className="ob-btn ob-btn--primary"
               style={{ boxShadow: PRIMARY_STACK }}
             >
               {last ? "enter devthink" : "next"}

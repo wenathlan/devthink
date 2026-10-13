@@ -17,10 +17,13 @@
 
 import * as Dialog from "@radix-ui/react-dialog";
 import {
+  ArrowDown,
   ArrowLeft,
+  ArrowUp,
   BookOpen,
   Clock,
   Compass,
+  CornerDownLeft,
   Eraser,
   FolderKanban,
   type LucideIcon,
@@ -344,11 +347,19 @@ export function CommandMenu({
             {/* the footer hint row: the keyboard contract, one micro-label row */}
             <footer className="cmd-foot" style={FOOT_STYLE} aria-hidden="true">
               <span>
-                <kbd style={KBD_STYLE}>↑</kbd>
-                <kbd style={KBD_STYLE}>↓</kbd> navigate
+                <kbd style={KBD_STYLE}>
+                  <ArrowUp size={10} strokeWidth={2} aria-hidden="true" />
+                </kbd>
+                <kbd style={KBD_STYLE}>
+                  <ArrowDown size={10} strokeWidth={2} aria-hidden="true" />
+                </kbd>{" "}
+                navigate
               </span>
               <span>
-                <kbd style={KBD_STYLE}>↵</kbd> open
+                <kbd style={KBD_STYLE}>
+                  <CornerDownLeft size={10} strokeWidth={2} aria-hidden="true" />
+                </kbd>{" "}
+                open
               </span>
               <span>
                 <kbd style={KBD_STYLE}>esc</kbd> close
