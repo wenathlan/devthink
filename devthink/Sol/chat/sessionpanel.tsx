@@ -52,7 +52,7 @@ export function SessionPanel({
     tools.length > 0
       ? CHAT_TOOLS.filter((t) => tools.includes(t.id))
           .map((t) => t.label)
-          .join(" · ")
+          .join(", ")
       : "none";
   const testing = gateway.status === "connecting";
   /* local draft so the field only commits validated values on submit; it
@@ -90,7 +90,7 @@ export function SessionPanel({
         <div className="dtc-modelcard">
           <strong>{model}</strong>
           <small>
-            {gateway.base ? "registered gateway · openai contract" : "gateway not registered · openai contract"}
+            {gateway.base ? "registered gateway — openai contract" : "gateway not registered — openai contract"}
           </small>
         </div>
         <dl className="dtc-readouts">
@@ -248,7 +248,7 @@ export function SessionPanel({
         </nav>
       </section>
 
-      <p className="dtc-session__foot">POST /v1/chat/completions · history stays in this browser</p>
+      <p className="dtc-session__foot">POST /v1/chat/completions — history stays in this browser</p>
     </aside>
   );
 }

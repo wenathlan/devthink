@@ -24,7 +24,7 @@ const BANNER_CSS = `
 .im-hero__head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .im-hero__head h2 { display: flex; align-items: center; gap: 10px; margin: 0; color: var(--dtv3-ink-1); font: 700 clamp(20px, 2.4vw, 26px)/1.2 var(--dt-sans); letter-spacing: -.02em; }
 .im-hero__head h2 svg { color: var(--dtv3-sig); flex-shrink: 0; }
-.im-badge { padding: 3px 10px; color: var(--dtv3-sig); background: color-mix(in srgb, var(--dtv3-sig) 10%, transparent); border: 1px solid color-mix(in srgb, var(--dtv3-sig) 30%, transparent); border-radius: 999px; font: 600 9px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
+.im-badge { padding: 3px 10px; color: var(--dtv3-sig); background: color-mix(in srgb, var(--dtv3-sig) 10%, transparent); border: 1px solid color-mix(in srgb, var(--dtv3-sig) 30%, transparent); border-radius: 4px; font: 600 9px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
 .im-hero__lede { margin: 0; max-width: 62ch; color: var(--dtv3-ink-2); font: 400 13px/1.7 var(--dt-sans); }
 .im-hero__note { margin: 0; color: var(--dtv3-ink-3); font: 500 10px var(--dt-mono); letter-spacing: .06em; }
 `;

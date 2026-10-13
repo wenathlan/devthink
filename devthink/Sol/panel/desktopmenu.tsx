@@ -1,18 +1,21 @@
 /**
  * desktopmenu.tsx — the Windows context menus of the desktop surface
- * (Sol/panel/desktop.tsx): the desktop menu (View ▸, Sort by ▸, Refresh,
+ * (Sol/panel/desktop.tsx): the desktop menu (View, Sort by, Refresh,
  * Display settings) and the per-cell menu (Open, Open in new window,
  * properties-lite), painted as Tailwind composition on the design tokens
  * (task 3-a): the .acrylic-menu Fluent surface (rgb(43 43 43 / 85%) +
  * saturate(3) blur(20px) + grain, 8px corners, the flyout shadow) with 32px
  * rows on the 9% wash, hairline separators, mono shortcuts at the right and
- * the 150ms scale .97→1 menu entrance. One entry model drives both: flat
+ * the 150ms scale .97 to 1 menu entrance. One entry model drives both: flat
  * items, read-only label rows, separators and one-level-deep submenus that
  * open as sibling panels to the right of their anchor. Menus close on
  * Escape, outside pointerdown and after any action; the arrow keys walk the
- * items, Enter activates and the submenu collapses with Escape or ←.
+ * items, Enter activates and the submenu collapses with Escape or the left
+ * arrow.
  */
 
+import type { LucideIcon } from "lucide-react";
+import { ChevronRight, Circle } from "lucide-react";
 import {
   type KeyboardEvent as ReactKeyboardEvent,
   useCallback,
@@ -21,7 +24,7 @@ import {
   useRef,
   useState,
 } from "react";
-import type { LucideIcon } from "lucide-react";
+import "../shelldelta.css";
 import { clampNumber } from "./desktopstate.ts";
 
 /** one entry of a context menu */
@@ -60,7 +63,7 @@ type PanelProps = {
   y: number;
   entries: MenuEntry[];
   label: string;
-  /** nesting depth (the root panel is 0; ← collapses only above the root) */
+  /** nesting depth (the root panel is 0; the left arrow collapses only above the root) */
   depth: number;
   /** collapses this panel (a submenu closes; the root menu closes whole) */
   onCollapse: () => void;
@@ -160,7 +163,7 @@ function MenuPanel({ x, y, entries, label, depth, onCollapse, onCommit }: PanelP
         setSubmenu(null);
         panelRef.current?.focus();
       } else if (depth > 0) {
-        // a submenu panel collapses back into its parent on ←
+        // a submenu panel collapses back into its parent on the left arrow
         event.preventDefault();
         onCollapse();
       }
@@ -263,14 +266,18 @@ function MenuPanel({ x, y, entries, label, depth, onCollapse, onCommit }: PanelP
               <span className="min-w-0 flex-1 overflow-hidden text-left text-ellipsis whitespace-nowrap">
                 {entry.label}
               </span>
-              {entry.kind === "item" && entry.shortcut && (
+              {entry.kind === "item" && entry.shortcut === "radio" ? (
+                <span className="dsk-menu__radio" aria-hidden="true">
+                  <Circle size={9} strokeWidth={2.5} fill="currentColor" />
+                </span>
+              ) : entry.kind === "item" && entry.shortcut ? (
                 <span className="ml-auto flex-none font-mono text-[11px] leading-none text-ink-2 tabular-nums">
                   {entry.shortcut}
                 </span>
-              )}
+              ) : null}
               {isSubmenu && (
-                <span className="ml-auto flex-none text-[10px] leading-none text-ink-3" aria-hidden="true">
-                  ▸
+                <span className="dsk-menu__caret" aria-hidden="true" data-open={isOpen ? "true" : undefined}>
+                  <ChevronRight size={12} strokeWidth={1.75} />
                 </span>
               )}
             </button>

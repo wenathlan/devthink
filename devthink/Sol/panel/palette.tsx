@@ -153,10 +153,14 @@ export function CommandPalette({ open, onClose, onAction }: CommandPaletteProps)
                   {detail}
                 </small>
               </span>
-              <kbd className="rounded-xs border border-(--color-hairline) bg-white/4 px-[5px] py-[2px] font-mono text-[8px] tabular-nums text-ink-3">{key}</kbd>
+              <kbd className="rounded-xs border border-(--color-hairline) bg-white/4 px-[5px] py-[2px] font-mono text-[8px] tabular-nums text-ink-3">
+                {key}
+              </kbd>
             </button>
           ))}
-          {!matches.length && <p className="m-0 px-2.5 pt-1.5 pb-2.5 font-mono text-[10px] text-ink-3">no command matches that search</p>}
+          {!matches.length && (
+            <p className="m-0 px-2.5 pt-1.5 pb-2.5 font-mono text-[10px] text-ink-3">no command matches that search</p>
+          )}
         </div>
       </section>
     </>

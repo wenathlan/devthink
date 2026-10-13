@@ -6,7 +6,7 @@
  * middle — and the shared app catalog spread around it as desktop icons)
  * and the session surfaces (tabs, categories, canvas, command rail, footer)
  * open as floating WindowFrames on demand — the chat window by clicking its
- * icon, history by clicking History. Windows are Windows-grade: the 44px
+ * icon, history by clicking History. Windows are Windows-grade: the 30px
  * acrylic titlebar carries the single DevThink lockup (windowframe.tsx), the
  * snap layouts flyout and the aero edge gesture live on the WindowFrame, and
  * a minimized window keeps its dock entry lit with the data-minimized
@@ -19,15 +19,26 @@
  * session feature of the previous workbench is preserved one-to-one.
  */
 
-import { Command, Play } from "lucide-react";
+import {
+  Braces,
+  Bug,
+  Clock,
+  Command,
+  Layers,
+  NotebookText,
+  Play,
+  Recycle,
+  Sparkles,
+  SquareCheckBig,
+} from "lucide-react";
 import { type FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { alttabkeydown } from "../../alttab.ts";
 import { familyurl } from "../../deploybase.ts";
 import { pushrecentapp } from "../../recentapps.ts";
 import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspace.ts";
+import { type AltTabCard, AltTabSwitcher } from "../shell/alttabswitcher.tsx";
 import { DESKTOP_APPS, type DesktopApp, seedOsView } from "../shell/appregistry.ts";
 import { AppTile } from "../shell/apptile.tsx";
-import { AltTabSwitcher, type AltTabCard } from "../shell/alttabswitcher.tsx";
 import { ShellChrome } from "../shell/ShellChrome.tsx";
 import { DesktopSurface } from "./desktop.tsx";
 import { ShaderWall } from "./shaderwall.tsx";
@@ -35,14 +46,16 @@ import { WorkspaceTabs } from "./tabs.tsx";
 import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types.ts";
 import { WINDOW_MIN_HEIGHT, WindowFrame, type WindowSnapshot } from "./windowframe.tsx";
 
+/** the work categories with their lucide glyphs (i1: icons are components,
+ * never unicode text) */
 const categories = [
-  ["features", "ϟ"],
-  ["bugs", "⊗"],
-  ["refactor", "◌"],
-  ["snippets", "◫"],
-  ["tasks", "☑"],
-  ["notes", "□"],
-  ["all", "◉"],
+  ["features", Sparkles],
+  ["bugs", Bug],
+  ["refactor", Recycle],
+  ["snippets", Braces],
+  ["tasks", SquareCheckBig],
+  ["notes", NotebookText],
+  ["all", Layers],
 ] as const;
 
 type TerminalCategory = (typeof categories)[number][0];
@@ -130,17 +143,12 @@ export function ShellWorkspace({
   const destination = destinationFrom(sectionId);
   const active = categories.some(([id]) => id === sectionId) ? (sectionId as TerminalCategory) : "all";
   const entries = messages.filter((message) => message.role !== "system");
-  const activeGlyph = categories.find(([id]) => id === active)?.[1] || "◉";
   const contextTitle =
-    destination === "history"
-      ? "session history"
-      : destination === "settings"
-        ? "local settings"
-        : `${activeGlyph} ${active}`;
+    destination === "history" ? "session history" : destination === "settings" ? "local settings" : active;
   const contextMeta =
     destination === "history"
-      ? `${tabs.length} open ${tabs.length === 1 ? "tab" : "tabs"} · ${entries.length} local entries`
-      : `${entries.length} ${entries.length === 1 ? "entry" : "entries"} · ${routeLabel}`;
+      ? `${tabs.length} open ${tabs.length === 1 ? "tab" : "tabs"} — ${entries.length} local entries`
+      : `${entries.length} ${entries.length === 1 ? "entry" : "entries"} — ${routeLabel}`;
 
   /** the desktop starts with the icon grid only — windows open on demand */
   const [windows, setWindows] = useState<WindowSnapshot[]>([]);
@@ -358,7 +366,7 @@ export function ShellWorkspace({
             {win.id === "chat" ? (
               <>
                 <nav className="workspace-taskstrip" aria-label="Work categories">
-                  {categories.map(([id, glyph]) => (
+                  {categories.map(([id, CategoryIcon]) => (
                     <button
                       key={id}
                       type="button"
@@ -367,7 +375,7 @@ export function ShellWorkspace({
                       className={active === id && destination === "chat" ? "is-active" : ""}
                       onClick={() => onCategory(id)}
                     >
-                      <span>{glyph}</span>
+                      <CategoryIcon size={14} strokeWidth={1.75} aria-hidden="true" />
                       {id}
                     </button>
                   ))}
@@ -398,7 +406,7 @@ export function ShellWorkspace({
                           onClick={() => onSelectTab(tab.id)}
                           className={tab.id === activeTabId ? "is-active" : ""}
                         >
-                          <span>◷</span>
+                          <Clock size={13} strokeWidth={1.75} aria-hidden="true" />
                           <strong>{tab.label}</strong>
                           <small>{tab.provider}</small>
                         </button>
@@ -440,7 +448,7 @@ export function ShellWorkspace({
                   >
                     <Command size={15} aria-hidden="true" />
                   </button>
-                  <span className="terminal-command-rail__prompt">›_</span>
+                  <span className="terminal-command-rail__prompt">&gt;_</span>
                   <input
                     value={draft}
                     onChange={(event) => onDraftChange(event.target.value)}
@@ -455,7 +463,7 @@ export function ShellWorkspace({
                 </form>
                 <footer className="terminal-footer">
                   <span>provider credentials stay in the local cli</span>
-                  <span>tabs · history · ⌘K commands · enter run</span>
+                  <span>tabs — history — ctrl+K commands — enter run</span>
                 </footer>
               </>
             ) : (
@@ -468,7 +476,7 @@ export function ShellWorkspace({
                     onClick={() => onSelectTab(tab.id)}
                     className={tab.id === activeTabId ? "is-active" : ""}
                   >
-                    <span>◷</span>
+                    <Clock size={13} strokeWidth={1.75} aria-hidden="true" />
                     <strong>{tab.label}</strong>
                     <small>{tab.provider}</small>
                   </button>

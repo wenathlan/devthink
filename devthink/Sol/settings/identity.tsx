@@ -8,14 +8,13 @@
  * sees and edits it. It is a settings page, never a login screen.
  */
 
-/** Style: DevThink Settings — the clean local-account section. Tailwind
- * utilities over the theme tokens: one hairline section riding the deck
- * skeleton (.r2c-sec), 44px well input with the 2px focus underline in the
- * theme focus tone, tabular-nums ids, micro 150ms transitions, zero accent
+/** Style: DevThink Settings — the clean local-account section. Named classes
+ * from Sol/sol.viewsdelta.css (.set-*) over the theme tokens: one hairline
+ * section riding the deck skeleton (.r2c-sec), 44px well input with the 2px
+ * focus underline in the theme focus tone, tabular-nums ids, zero accent
  * hue (the canvas neutrals carry the section), zero pill, zero box-in-box.
- * Every surface rides the ink tokens (--dt-text/muted/faint) through
- * color-mix alphas instead of fixed white/xx washes, so the section stays
- * legible when the deck inherits the light theme (the /os anchor raises
+ * Every surface rides the canonical ink tokens (--color-ink*) so the section
+ * stays legible when the deck inherits the light theme (the /os anchor raises
  * data-theme on the document root) — the light twin is a real twin. */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -26,19 +25,17 @@ import { type BrowserIdentity, browserIdentity, readBrowserPreferences, saveBrow
 const NAME_KEY = "displayName";
 
 /** the mono label voice of the section (the deck's lowercase mono eyebrow) */
-const monoLabel = { font: "500 10px/1 var(--dt-mono, monospace)", letterSpacing: ".08em" } as const;
-const displayFace = { fontFamily: "var(--font-display, var(--dt-sans, sans-serif))" } as const;
+const monoLabel = { font: "500 10px/1 var(--font-mono, monospace)", letterSpacing: ".08em" } as const;
+const displayFace = { fontFamily: "var(--font-display, sans-serif)" } as const;
 
 /** one mono label/value line of the account ledger. */
 function IdRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-baseline justify-between gap-4 py-2.5">
-      <span className="shrink-0 text-[var(--dt-muted)]" style={monoLabel}>
+    <div className="set-idrow">
+      <span className="set-idrow__k" style={monoLabel}>
         {label}
       </span>
-      <span className="min-w-0 truncate text-right text-[11.5px] leading-relaxed text-[var(--dt-text)] tabular-nums">
-        {value}
-      </span>
+      <span className="set-idrow__v">{value}</span>
     </div>
   );
 }
@@ -95,23 +92,23 @@ export function LocalAccount() {
           02
         </span>
         <div style={{ minWidth: 0 }}>
-          <p className="r2c-sec__eyebrow">local account · this browser</p>
+          <p className="r2c-sec__eyebrow">local account — this browser</p>
           <h2 className="r2c-sec__title">Local account.</h2>
         </div>
       </header>
-      <p className="max-w-[54ch] text-[12.5px] leading-relaxed text-[var(--dt-muted)]">
-        One local identity keeps sessions, tabs and preferences together in this browser. Nothing leaves the machine —
-        no account, no server, no credential.
+      <p className="set-copy">
+        One local identity keeps sessions, tabs and preferences in this browser. Nothing leaves the machine — no
+        account, no server.
       </p>
       <form
-        className="mt-1 flex flex-wrap items-end gap-3"
+        className="set-form"
         onSubmit={(event) => {
           event.preventDefault();
           void save();
         }}
       >
-        <label className="grid gap-2">
-          <span className="text-[var(--dt-muted)]" style={monoLabel}>
+        <label className="set-field">
+          <span className="set-field__label" style={monoLabel}>
             display name
           </span>
           <input
@@ -122,32 +119,32 @@ export function LocalAccount() {
             autoComplete="nickname"
             spellCheck={false}
             aria-label="Display name"
-            className="h-11 w-[min(320px,100%)] rounded-md border-0 border-b border-[color-mix(in_srgb,var(--dt-text)_15%,transparent)] bg-[color-mix(in_srgb,var(--dt-text)_4%,transparent)] px-3.5 text-[12px] text-[var(--dt-text)] outline-none transition-[background-color,border-color,box-shadow] duration-150 placeholder:text-[var(--dt-faint)] hover:bg-[color-mix(in_srgb,var(--dt-text)_6%,transparent)] focus:bg-[color-mix(in_srgb,var(--dt-text)_7%,transparent)] focus:border-[color-mix(in_srgb,var(--dt-text)_25%,transparent)] focus:shadow-[inset_0_-2px_0_var(--focus,#dfe5ee)]"
+            className="set-input"
           />
         </label>
         <button
           type="submit"
           disabled={busy || !dirty}
           aria-busy={busy || undefined}
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[color-mix(in_srgb,var(--dt-text)_10%,transparent)] bg-[color-mix(in_srgb,var(--dt-text)_6%,transparent)] px-4 text-[11.5px] font-medium text-[var(--dt-text)] transition-colors duration-150 hover:bg-[color-mix(in_srgb,var(--dt-text)_10%,transparent)] active:scale-[0.98] disabled:opacity-40 disabled:hover:bg-[color-mix(in_srgb,var(--dt-text)_6%,transparent)]"
+          className="set-btn"
           style={displayFace}
         >
           {busy ? "saving…" : "save name"}
         </button>
         {savedName ? (
-          <span className="pb-3 text-[10.5px] text-[var(--dt-faint)]" style={monoLabel}>
+          <span className="set-current" style={monoLabel}>
             current: {savedName}
           </span>
         ) : null}
       </form>
-      <div className="mt-4 divide-y divide-[color-mix(in_srgb,var(--dt-text)_6%,transparent)] border-t border-[color-mix(in_srgb,var(--dt-text)_7%,transparent)]">
+      <div className="set-ledger">
         <IdRow label="user id" value={identity?.userId ?? "initializing"} />
         <IdRow label="device id" value={identity?.deviceId ?? "initializing"} />
         <IdRow
           label="created"
           value={identity?.createdAt ? new Date(identity.createdAt).toLocaleDateString() : "initializing"}
         />
-        <IdRow label="storage" value="this browser only · no telemetry" />
+        <IdRow label="storage" value="this browser only — no telemetry" />
       </div>
     </section>
   );

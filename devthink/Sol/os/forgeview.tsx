@@ -204,7 +204,7 @@ export function ForgeApp({ os }: { os: OSHandle }) {
           <div>
             <FamilyHero
               app={meta}
-              tagline="The execution floor of the family — runners registered, binaries lit, outcomes reported while the forge stays stateless."
+              tagline="the execution floor — runners registered, binaries lit, outcomes reported, stateless."
               stats={stats}
               glyphMotion="strike"
               status="forge floor live"
@@ -239,7 +239,7 @@ function RunnersPage({ totals }: { totals: ReturnType<typeof fleetTotals> }) {
         eyebrow="runner inventory"
         title="Runners"
         heading="h2"
-        description="Every binary the family executes rides a registered runner: engine version and architecture pinned at registration, health carried by the heartbeat, outcomes reported over https."
+        description="every binary rides a registered runner — engine, arch and heartbeat pinned."
         reveal
       />
 
@@ -382,7 +382,7 @@ type FeedLine = {
 const FEED: FeedLine[] = [...RUNS].reverse().map((r) => ({
   t: r.logged,
   tag: r.outcome,
-  text: `${r.id} · ${r.runner} · ${r.binary} · ${r.duration}`,
+  text: `${r.id} — ${r.runner} — ${r.binary} — ${r.duration}`,
 }));
 
 function RunsPage({ totals }: { totals: ReturnType<typeof fleetTotals> }) {
@@ -428,7 +428,7 @@ function RunsPage({ totals }: { totals: ReturnType<typeof fleetTotals> }) {
         eyebrow="execution ledger"
         title="Runs"
         heading="h2"
-        description="The report feed writes every outcome the surface reports: which runner answered, which binary ran, the outcome and the duration — nothing more, because forge stores nothing else. The feed below replays the recorded ledger."
+        description="the feed below replays the recorded ledger — forge keeps nothing else."
         reveal
       />
 
@@ -503,7 +503,7 @@ function RunsPage({ totals }: { totals: ReturnType<typeof fleetTotals> }) {
                   {b.label}
                 </span>
                 <span className="fam-num mono" style={{ fontSize: ".8rem" }}>
-                  {b.n} · {outcomePct(b.n)}
+                  {b.n} — {outcomePct(b.n)}
                 </span>
               </div>
               <div className="fam-meter" role="img" aria-label={`${b.label} ${b.n} of ${totals.runs} runs`}>
@@ -529,7 +529,7 @@ function EnginePage() {
         eyebrow="the saddle boundary"
         title="Engine"
         heading="h2"
-        description="Forge is the execution-only deployable clone: it runs any binary the family hands it on the saddle engine and keeps none of the state — the caller owns the artifacts, the log rides the https report."
+        description="the execution-only clone: any binary runs on saddle, no state kept."
         reveal
       />
 

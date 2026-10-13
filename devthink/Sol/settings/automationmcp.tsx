@@ -105,7 +105,7 @@ export function AutomationMcp() {
           05
         </span>
         <div style={{ minWidth: 0 }}>
-          <p className="r2c-sec__eyebrow">automation &amp; mcp · opt-in</p>
+          <p className="r2c-sec__eyebrow">automation &amp; mcp — opt-in</p>
           <h2 className="r2c-sec__title">Automation registry.</h2>
         </div>
       </header>

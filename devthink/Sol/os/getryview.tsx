@@ -37,14 +37,14 @@ const LANES: LaneRow[] = [
     v: "v1",
     provider: "zai",
     badge: "live",
-    models: "glm-5.3 · glm-5.3-flash · glm-5.3-fast · glm-5.3-air · glm-5.2 · devthink",
-    note: "passthrough retransmit via the web dev sdk — no token chat id required, individual model calling plus the devthink meta over glm-5.3",
+    models: "glm-5.3, glm-5.3-flash, glm-5.3-fast, glm-5.3-air, glm-5.2, devthink",
+    note: "passthrough retransmit via the web dev sdk — no token chat id, per-model calls, devthink meta over glm-5.3",
   },
   {
     v: "v2",
     provider: "babel town",
     badge: "paused",
-    models: "babel-glm-5.2 · devthink",
+    models: "babel-glm-5.2, devthink",
     note: "service paused — returns 503 and falls back to v1 zai; glm-5.2 only",
   },
   {
@@ -52,7 +52,7 @@ const LANES: LaneRow[] = [
     provider: "nvidia nim",
     badge: "live",
     models:
-      "17 chat models — kimi-k3 · deepseek-v4 · nemotron-3 · muse-glimmer · laguna · gpt-oss · gemma-4 · mistral · llama-3.2",
+      "17 chat models — kimi-k3, deepseek-v4, nemotron-3, muse-glimmer, laguna, gpt-oss, gemma-4, mistral, llama-3.2",
     note: "22 keys round robin — the devthink meta model rotates every 6 messages",
   },
   {
@@ -139,7 +139,7 @@ export function GetryApp({ os }: { os: OSHandle }) {
           <div>
             <FamilyHero
               app={meta}
-              tagline="The routing exchange of the family — five provider lanes behind one OpenAI-compatible map, key rotation and the thinking ladder riding every turn."
+              tagline="five provider lanes, one route map — keys rotate, thinking rides every turn."
               stats={stats}
               glyphMotion="route"
               status="route map live"
@@ -166,7 +166,7 @@ function VersionsPage({ live }: { live: number }) {
         eyebrow="the five lanes"
         title="Versions"
         heading="h2"
-        description="Five provider gateways under one route map: each lane answers the same seven route kinds, carries its own key pool and falls back down the chain when it pauses."
+        description="five gateways, one map — seven route kinds per lane, fallback on pause."
         reveal
       />
 
@@ -319,7 +319,7 @@ function RoutesPage() {
         eyebrow="the route map"
         title="Routes"
         heading="h2"
-        description="Seven OpenAI-compatible route kinds per lane — 35 routes in total — all normalized onto the same streaming parser so the family callers never learn a second shape."
+        description="seven route kinds per lane, 35 routes — one parser, one shape."
         reveal
       />
 
@@ -336,7 +336,7 @@ function RoutesPage() {
         >
           <div className="fam-card__head">
             <h2 id="routes-h" className="fam-card__title">
-              Route kinds <span className="fam-card__count">× 5 lanes · 35 routes</span>
+              Route kinds <span className="fam-card__count">5 lanes, 35 routes</span>
             </h2>
             <span className="badge success" role="status">
               <span className="dot" aria-hidden="true" />
@@ -397,7 +397,7 @@ function SessionsPage() {
         eyebrow="the session store"
         title="Sessions"
         heading="h2"
-        description="Contexts live per session with the lane binding recorded beside them: which gateway answered, which key pool rotated and which thinking level the turn rode."
+        description="contexts live per session — lane, keys and thinking level beside the turn."
         reveal
       />
 
@@ -436,7 +436,7 @@ function SessionsPage() {
               thinking system
             </p>
             <span className="mono small fam-num" style={{ color: "var(--fam-faint)" }}>
-              0 → 68 k tokens
+              0–68 k tokens
             </span>
           </div>
           <h2 id="think-h" className="fam-card__title" style={{ margin: "8px 0 12px", fontSize: "1.2rem" }}>

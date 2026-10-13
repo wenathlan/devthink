@@ -123,13 +123,11 @@ function stagestate(
 /** The state marker of a card: the discreet check, the close red, the hollow ring, the live dot. */
 function StateMark({ state }: { state: nodestate }) {
   if (state === "done") {
-    return (
-      <path className="gview__mark-done" d={`M ${GRAPHVIEW_CARD_WIDTH - 26} 16 l 5 5 l 9 -10`} />
-    );
+    return <path className="gview__mark-done" d={`M ${GRAPHVIEW_CARD_WIDTH - 26} 16 l 5 5 l 9 -10`} />;
   }
   if (state === "failed") {
     return (
-      <g className="gview__mark-failed" >
+      <g className="gview__mark-failed">
         <path d={`M ${GRAPHVIEW_CARD_WIDTH - 25} 15 l 9 9`} />
         <path d={`M ${GRAPHVIEW_CARD_WIDTH - 16} 15 l -9 9`} />
       </g>
@@ -137,7 +135,7 @@ function StateMark({ state }: { state: nodestate }) {
   }
   if (state === "running") {
     return (
-      <g >
+      <g>
         <circle className="gview__pulse" cx={GRAPHVIEW_CARD_WIDTH - 20} cy={20} r={5} fill="var(--win-accent)" />
       </g>
     );
@@ -167,7 +165,11 @@ export function GraphView({
   const gradientid = `gview-${useId().replace(/[^a-zA-Z0-9-]/g, "")}`;
   const waves = stages ?? [];
   const drawn = graph.nodes.filter((node) => node.id in positions);
-  const bounds = viewbounds(positions, { cardwidth: GRAPHVIEW_CARD_WIDTH, cardheight: GRAPHVIEW_CARD_HEIGHT, padding: 20 });
+  const bounds = viewbounds(positions, {
+    cardwidth: GRAPHVIEW_CARD_WIDTH,
+    cardheight: GRAPHVIEW_CARD_HEIGHT,
+    padding: 20,
+  });
   const maplabel =
     label ?? `node graph: ${drawn.length} nodes on ${waves.length || 1} stages, ${Math.round(progress)} percent done`;
   const picknode = (id: string) => () => onselect?.(id);
@@ -267,7 +269,11 @@ export function GraphView({
       <figcaption className="gview__rail">
         <span className="gview__stages" aria-hidden="true">
           {waves.map((wave, index) => (
-            <span key={wave.join("-")} className="gview__pip" data-state={stagestate(wave, nodestates, index, stageindex)}>
+            <span
+              key={wave.join("-")}
+              className="gview__pip"
+              data-state={stagestate(wave, nodestates, index, stageindex)}
+            >
               {index + 1}
             </span>
           ))}
@@ -276,7 +282,8 @@ export function GraphView({
           <i style={{ transform: `scaleX(${Math.min(100, Math.max(0, progress)) / 100})` }} />
         </span>
         <span className="gview__stagenote">
-          stage {Math.min(stageindex + 1, Math.max(waves.length, 1))}/{Math.max(waves.length, 1)} · {Math.round(progress)}%
+          stage {Math.min(stageindex + 1, Math.max(waves.length, 1))}/{Math.max(waves.length, 1)} —{" "}
+          {Math.round(progress)}%
         </span>
       </figcaption>
     </figure>

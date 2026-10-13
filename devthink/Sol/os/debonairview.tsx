@@ -144,7 +144,7 @@ export function DebonairApp({ os }: { os: OSHandle }) {
           <div>
             <FamilyHero
               app={meta}
-              tagline="The audio DAW of the family — prompt to arrangement, multitrack editing and broadcast-ready mastering on the katexis engine."
+              tagline="the audio daw — prompt to arrangement, multitrack editing, broadcast-ready mastering."
               stats={[
                 { label: "genres with their own bpm/scales", value: "15", accent: true },
                 { label: "track groups on the timeline", value: "4" },
@@ -188,10 +188,10 @@ function StudioPage() {
   return (
     <>
       <PageSection
-        eyebrow="studio · katexis engine"
+        eyebrow="studio — katexis engine"
         title="Studio"
         heading="h2"
-        description="A visual slice of the DAW: four track groups on the timeline, a mixer with per-channel faders and the transport. Every pixel obeys the sol theme — the audio itself ships with the katexis engine, not with this mock."
+        description="a visual slice — four groups, a mixer, a transport; audio rides katexis."
         reveal
       />
 
@@ -280,7 +280,7 @@ function StudioPage() {
             <div className="tl-canvas">
               <TimelineRow
                 label="Drums"
-                sub="trap groove · swing 12%"
+                sub="trap groove, swing 12%"
                 clips={[
                   ["Intro", 0, 12, "c1"],
                   ["Verse groove", 12, 33, "c1"],
@@ -291,7 +291,7 @@ function StudioPage() {
               />
               <TimelineRow
                 label="Bass"
-                sub="808 sub · key C"
+                sub="808 sub, key C"
                 clips={[
                   ["Sub 808", 8, 30, "c2"],
                   ["Walk", 38, 14, "c2"],
@@ -300,7 +300,7 @@ function StudioPage() {
               />
               <TimelineRow
                 label="Keys"
-                sub="dark pad · C min"
+                sub="dark pad, C min"
                 clips={[
                   ["Pad C min", 0, 30, "c3"],
                   ["Stabs", 30, 22, "c3"],
@@ -309,7 +309,7 @@ function StudioPage() {
               />
               <TimelineRow
                 label="Lead"
-                sub="motif · call/response"
+                sub="motif, call/response"
                 clips={[
                   ["Motif A", 18, 27, "c4"],
                   ["Call & response", 52, 32, "c4"],
@@ -360,8 +360,8 @@ function StudioPage() {
       <section className="glass card" style={{ marginTop: 18, maxWidth: 640 }}>
         <h2 style={{ fontSize: "1.05rem" }}>Demo scope</h2>
         <p style={{ margin: 0 }}>
-          Timeline, mixer and transport render in the OS — no AudioContext is created. Generation, playback and export
-          arrive with the <code>katexis</code> engine integration (F-DBN-006, F-DBN-014).
+          timeline, mixer and transport render here — no AudioContext. generation, playback and export arrive with
+          katexis (F-DBN-006, F-DBN-014).
         </p>
       </section>
     </>
@@ -422,7 +422,7 @@ function GeneratePage({ onQueued }: { onQueued: (r: Render) => void }) {
     onQueued(job);
     pushOSEvent({
       title: "Render queued — debonair",
-      note: `${job.name} · ${job.genre} · seed ${job.seed}`,
+      note: `${job.name} (${job.genre}) — seed ${job.seed}`,
       kind: "action",
     });
     toast.success(`Render queued — seed ${seed}`);
@@ -441,16 +441,10 @@ function GeneratePage({ onQueued }: { onQueued: (r: Render) => void }) {
   return (
     <>
       <PageSection
-        eyebrow="generate · text-to-music"
+        eyebrow="generate — text-to-music"
         title="Generate"
         heading="h2"
-        description={
-          <>
-            Text-to-music, the debonair way: parse the prompt, map the mood, choose key and BPM, plan the structure
-            (F-DBN-023..025). This page runs the flow with a <strong className="strong">simulated render</strong> — the
-            queue is persisted in your device, no audio leaves the browser.
-          </>
-        }
+        description="text-to-music, simulated render — the queue persists on this device, no audio leaves."
         reveal
       />
 
@@ -510,7 +504,7 @@ function GeneratePage({ onQueued }: { onQueued: (r: Render) => void }) {
                 app={appMeta("debonair") as NonNullable<ReturnType<typeof appMeta>>}
                 motion="breathe"
                 title="Nothing queued yet"
-                line="Renders land here with seed, duration and status — queued, rendering, ready. The queue lives on your device."
+                line="renders land here with seed, duration and status — queued, rendering, ready."
                 actionLabel="Start with the prompt desk"
                 onAction={() => document.getElementById("gen-prompt")?.focus()}
               />
@@ -543,7 +537,7 @@ function GeneratePage({ onQueued }: { onQueued: (r: Render) => void }) {
                       <span className="mono" style={{ color: "var(--app-accent)" }}>
                         seed {j.seed}
                       </span>{" "}
-                      · {j.duration} · 48 kHz WAV
+                      — {j.duration} — 48 kHz WAV
                     </p>
                   ) : null}
                 </article>
@@ -556,8 +550,8 @@ function GeneratePage({ onQueued }: { onQueued: (r: Render) => void }) {
       <section className="fam-card fam-card--s2" style={{ marginTop: 18, maxWidth: 640, padding: 22 }}>
         <h2 style={{ fontSize: "1.05rem", marginTop: 0 }}>Demo scope</h2>
         <p style={{ margin: 0 }}>
-          The queue is client-side: jobs persist on the device and the status transitions are timers. The real pipeline
-          — plan inspection, quality checks, LUFS mastering and WAV export — ships with the <code>katexis</code> engine.
+          jobs persist on the device, transitions are timers — the real pipeline (inspection, checks, lufs mastering,
+          export) ships with katexis.
         </p>
       </section>
     </>
@@ -593,10 +587,10 @@ function LibraryPage({ renders }: { renders: Render[] }) {
   return (
     <>
       <PageSection
-        eyebrow="library · your renders"
+        eyebrow="library — your renders"
         title="Library"
         heading="h2"
-        description="Every take lands here with its genre, duration and render status — renders queued in Generate enter at the top, persisted on the device."
+        description="every take lands here with genre, duration and status — renders from generate enter at the top."
         reveal
       />
 
@@ -650,7 +644,7 @@ function LibraryPage({ renders }: { renders: Render[] }) {
             app={appMeta("debonair") as NonNullable<ReturnType<typeof appMeta>>}
             motion="breathe"
             title={`No takes matching “${query}”`}
-            line="The library answers with genre, duration and status — clear the search to see the seeded takes plus everything you queued."
+            line="clear the search to see the seeded takes plus everything you queued."
             actionLabel="Clear the search"
             onAction={() => setQuery("")}
           />
@@ -660,8 +654,8 @@ function LibraryPage({ renders }: { renders: Render[] }) {
       <section className="fam-card fam-card--s2" style={{ marginTop: 18, maxWidth: 640, padding: 22 }}>
         <h2 style={{ fontSize: "1.05rem", marginTop: 0 }}>Formats</h2>
         <p style={{ margin: 0 }}>
-          Ready tracks keep their master at 48 kHz WAV with −1 dBTP true peak. MIDI and stems export per take once the{" "}
-          <code>katexis</code> engine is wired to this app (F-DBN-013, F-DBN-040).
+          masters stay 48 khz wav at −1 dbtp. midi and stems export per take once katexis wires in (F-DBN-013,
+          F-DBN-040).
         </p>
       </section>
     </>

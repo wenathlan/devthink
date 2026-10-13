@@ -102,7 +102,7 @@ export const APPS: AppMeta[] = [
     slug: "cadria",
     role: "the video and image home of the family",
     accent: "#f472b6",
-    tag: "video · 3d",
+    tag: "video, 3d",
     target: "os",
     desc: "Player, editor and studio for video, image and 3D on the versawase engine. Like After Effects × Photoshop × Figma × Blender — framed by a single shell.",
     icon: Clapperboard,
@@ -153,7 +153,7 @@ export const APPS: AppMeta[] = [
     slug: "forge",
     role: "the sandbox runner surface of the os",
     accent: "#a2cb3a",
-    tag: "ci · runners",
+    tag: "ci, runners",
     target: "os",
     desc: "The family forge: a sandbox runner surface that registers runners on the saddle engine boundary, records run logs and reports outcomes over https.",
     icon: Hammer,
@@ -170,7 +170,7 @@ export const APPS: AppMeta[] = [
     slug: "foundry",
     role: "the pipeline interface of the os",
     accent: "#2fb8b5",
-    tag: "sandboxes · images",
+    tag: "sandboxes, images",
     target: "os",
     desc: "The family foundry: the e2b and docker clone interface whose engine lives in saddle, while foundry owns the surface records — sandboxes and images.",
     icon: Factory,
@@ -187,7 +187,7 @@ export const APPS: AppMeta[] = [
     slug: "vault",
     role: "the storage library of the os",
     accent: "#a3d7e6",
-    tag: "db · storage",
+    tag: "db, storage",
     target: "os",
     desc: "The family vault: the self-hosted supabase clone holding every site database — projects, accounts and storage objects served over https, with the blob/lfs seal contract.",
     icon: Vault,
@@ -204,7 +204,7 @@ export const APPS: AppMeta[] = [
     slug: "getry",
     role: "the ai gateway of the os",
     accent: "#8b5cf6",
-    tag: "ai · routes",
+    tag: "ai, routes",
     target: "os",
     desc: "The family registry: five provider gateways (v1 zai, v2 babel, v3 nvidia, v4 opencode+kilo, v5 openrouter) serving 35 OpenAI-compatible routes with the 7-level thinking system and key rotation.",
     icon: KeyRound,
@@ -256,7 +256,7 @@ const BASE_STYLE =
 export const PERSONAS: Record<AppId, Persona> = {
   devthink: {
     name: "Aura",
-    role: "gateway · devthink.pro",
+    role: "gateway — devthink.pro",
     system:
       "You are Aura, the embedded intelligence of the DevThink OS (the provider-neutral platform at devthink.pro). " +
       "Domain: a CLI with 20 modes, a loopback local gateway (health/models/chat), the saddle sandbox engine, " +
@@ -273,7 +273,7 @@ export const PERSONAS: Record<AppId, Persona> = {
     ],
   },
   argan: {
-    name: "Aura · argan",
+    name: "Aura — argan",
     role: "dns & gateway",
     system:
       "You are the argan Aura, the DNS and gateway library of the DevThink OS. Domain: master/slave zones with " +
@@ -290,8 +290,8 @@ export const PERSONAS: Record<AppId, Persona> = {
     ],
   },
   debonair: {
-    name: "Aura · debonair",
-    role: "audio daw · katexis",
+    name: "Aura — debonair",
+    role: "audio daw — katexis",
     system:
       "You are the debonair Aura, the audio DAW of the DevThink OS running on the katexis engine. Domain: prompt-to-" +
       "arrangement generation (harmony, melody, rhythm, mix), 15 genres with their own BPM/scales, a step sequencer and piano roll " +
@@ -308,8 +308,8 @@ export const PERSONAS: Record<AppId, Persona> = {
     ],
   },
   cadria: {
-    name: "Aura · cadria",
-    role: "video · image · 3d",
+    name: "Aura — cadria",
+    role: "video, image, 3d",
     system:
       "You are the cadria Aura, the video, image and 3D studio of the DevThink OS on the versawase engine. Domain: the iukka " +
       "universal player (24 extensions: MP4, HLS, DASH, FLV, WEBM, MP3, PDF/DOCX/XLSX via hls.js/dash.js/flv.js/" +
@@ -325,8 +325,8 @@ export const PERSONAS: Record<AppId, Persona> = {
     ],
   },
   stealthhead: {
-    name: "Aura · stealthhead",
-    role: "fps · solar season",
+    name: "Aura — stealthhead",
+    role: "fps, solar season",
     system:
       "You are the stealthhead Aura, the FPS platform of the DevThink OS (game logic imported from versawase). Domain: " +
       "5v5 matchmaking by MMR band with a 12ms ping floor, Lockout mode (first to 6 rounds, 90s per round, 1 life, " +
@@ -342,8 +342,8 @@ export const PERSONAS: Record<AppId, Persona> = {
     ],
   },
   forge: {
-    name: "Aura · forge",
-    role: "runners · saddle boundary",
+    name: "Aura — forge",
+    role: "runners, saddle boundary",
     system:
       "You are the forge Aura, the sandbox runner surface of the DevThink family. Domain: runner registration and " +
       "health over https, run logs recorded per execution, outcome reports back to the caller, and the saddle engine " +
@@ -359,8 +359,8 @@ export const PERSONAS: Record<AppId, Persona> = {
     ],
   },
   foundry: {
-    name: "Aura · foundry",
-    role: "sandboxes · images",
+    name: "Aura — foundry",
+    role: "sandboxes, images",
     system:
       "You are the foundry Aura, the e2b and docker clone interface of the DevThink family. Domain: sandbox lifecycle " +
       "records (create, run, pause, destroy), image ledgers with layer manifests, and the pipeline view over both — " +
@@ -376,8 +376,8 @@ export const PERSONAS: Record<AppId, Persona> = {
     ],
   },
   vault: {
-    name: "Aura · vault",
-    role: "storage · seal contract",
+    name: "Aura — vault",
+    role: "storage, seal contract",
     system:
       "You are the vault Aura, the storage library of the DevThink family (the self-hosted supabase clone). Domain: " +
       "every site database of the family lives here — projects, accounts and storage objects served over https — " +
@@ -394,8 +394,8 @@ export const PERSONAS: Record<AppId, Persona> = {
     ],
   },
   getry: {
-    name: "Aura · getry",
-    role: "ai gateway · five lanes",
+    name: "Aura — getry",
+    role: "ai gateway, five lanes",
     system:
       "You are the getry Aura, the AI gateway of the DevThink family. Domain: five provider gateways (v1 zai " +
       "passthrough, v2 babel paused fallback, v3 nvidia nim round-robin, v4 opencode zen+kilo free discovery, " +

@@ -98,10 +98,10 @@ _dmarc                IN TXT   "v=DMARC1; p=quarantine; rua=mailto:dmarc@devthin
 @                     IN CAA   0 issue "letsencrypt.org"`;
 
 const TRANSPORTS: Array<[string, string, string, string, "success" | "info" | "default" | "warning"]> = [
-  ["Classic DNS (UDP + TCP)", "53", "RFC 1035 · 7766", "fastest, cleartext", "default"],
-  ["DoT", "853", "RFC 7858 · 8310", "live", "success"],
+  ["Classic DNS (UDP + TCP)", "53", "RFC 1035 / 7766", "fastest, cleartext", "default"],
+  ["DoT", "853", "RFC 7858 / 8310", "live", "success"],
   ["DoH", "443", "RFC 8484", "preferred", "success"],
-  ["DoH JSON", "443", "/resolve?name=&type=", "panel · debug", "info"],
+  ["DoH JSON", "443", "/resolve?name=&type=", "panel, debug", "info"],
   ["DoQ", "853/UDP", "RFC 9250", "planned", "warning"],
   ["DoH3", "443/UDP", "RFC 9114", "planned", "warning"],
   ["DNSCrypt", "443", "X25519 + XChaCha20", "opt-in", "info"],
@@ -166,7 +166,7 @@ export function ArganApp({ os }: { os: OSHandle }) {
           <div>
             <FamilyHero
               app={meta}
-              tagline="The name layer of the family — authoritative zones, a real DNSSEC pipeline and a gateway that answers every transport."
+              tagline="the name layer — authoritative zones, a real dnssec pipeline, every transport answered."
               stats={stats}
               glyphMotion="dig"
               status="resolver mounted"
@@ -190,10 +190,10 @@ function ZonesPage() {
   return (
     <>
       <PageSection
-        eyebrow="zones · devthink.pro apex"
+        eyebrow="zones — devthink.pro apex"
         title="Zones"
         heading="h2"
-        description="Every name the OS serves lives in a zone argan is authoritative for: masters written by the pipeline, secondaries pulled by authenticated transfer, serials bumped on every republication."
+        description="masters written by the pipeline, secondaries by transfer, serials on republication."
         reveal
       />
 
@@ -267,15 +267,16 @@ function ZonesPage() {
       <section className="section tight" aria-labelledby="pub-h">
         <div className="section-head">
           <p className="eyebrow reveal" style={{ color: "var(--app-accent)" }}>
-            pending publication · the hung model
+            pending publication — the hung model
           </p>
           <h2 id="pub-h" className="reveal">
             A typed label becomes a live URL
           </h2>
           <p className="reveal">
-            In the panel, a label stays <em>pending</em> until the whole flow below completes. Subdomains hang from the
-            bought apex with a wildcard record pointing to the same edge — the visitor resolves it with stock DNS, the
-            vhost is picked by <code>Host</code> header.
+            a label stays <em>pending</em> until the flow below completes.
+          </p>
+          <p className="reveal">
+            subdomains hang from the apex wildcard — stock dns resolves, <code>Host</code> picks the vhost.
           </p>
         </div>
         {/* the publication ledger: one numbered column, not five identical cards */}
@@ -313,22 +314,22 @@ function ZonesPage() {
 
 const ROLLOVER_MOVES: Array<[string, string, string]> = [
   [
-    "1 · Pre-publish",
+    "1. Pre-publish",
     "T−30d",
     "The successor key is generated and published next to the incumbent. Both validate; nothing changes for resolvers yet.",
   ],
   [
-    "2 · Switch",
+    "2. Switch",
     "T0",
     "Signatures move to the successor. Signatures made by the incumbent keep validating until their TTL expires.",
   ],
   [
-    "3 · Retire",
+    "3. Retire",
     "T+TTL",
     "The incumbent stops signing. On KSK rollover the parent DS is swapped automatically via CDS/CDNSKEY.",
   ],
   [
-    "4 · Remove",
+    "4. Remove",
     "T+2 TTL",
     "The incumbent leaves the DNSKEY RRset and the database; the audit log records the retirement.",
   ],
@@ -338,10 +339,10 @@ function DnssecPage() {
   return (
     <>
       <PageSection
-        eyebrow="dnssec · pipeline-only"
+        eyebrow="dnssec — pipeline-only"
         title="DNSSEC"
         heading="h2"
-        description="Every published zone is signed on day one — real signatures, real validation, no opt-in. Signing is a pipeline stage: build, test and hash happen in CI, and the signed zone is what gets served."
+        description="every zone signs on day one, no opt-in — signing rides the pipeline."
         reveal
       />
 
@@ -400,31 +401,31 @@ function DnssecPage() {
         </div>
         <div className="fam-card fam-card--s2" style={{ padding: 22 }}>
           <div className="row" style={{ marginBottom: 14 }}>
-            <span className="badge success">ED25519 · alg 15</span>
-            <span className="badge info">ECDSA P-256 · alg 13</span>
-            <span className="badge">RSA/SHA-256 · alg 8</span>
-            <span className="badge warning">NSEC3 · SHA-256 digest</span>
+            <span className="badge success">ED25519 alg 15</span>
+            <span className="badge info">ECDSA P-256 alg 13</span>
+            <span className="badge">RSA/SHA-256 alg 8</span>
+            <span className="badge warning">NSEC3 SHA-256 digest</span>
           </div>
-          <p style={{ margin: 0 }}>
-            ED25519 is the default for every new zone: small signatures, fast verification, 256 bits. ECDSA P-256 covers
-            validators that predate algorithm 15; RSA/SHA-256 survives only where a legacy parent demands it. Denial of
-            existence uses NSEC3 with a fresh random salt on each republication, and the DS handed to the parent uses
-            the SHA-256 digest (algorithm 2).
-          </p>
+          <ul className="rules" style={{ margin: 0 }}>
+            <li>ed25519 is the default for every new zone: small signatures, fast verification, 256 bits.</li>
+            <li>ecdsa p-256 covers validators older than algorithm 15.</li>
+            <li>rsa/sha-256 survives only where a legacy parent demands it.</li>
+            <li>denial rides nsec3 with a fresh salt per republication; the parent ds uses the sha-256 digest.</li>
+          </ul>
         </div>
       </section>
 
       <section className="section tight" aria-labelledby="pipe-h">
         <div className="section-head">
           <p className="eyebrow reveal" style={{ color: "var(--app-accent)" }}>
-            rule ND-6002 · pipeline-only
+            rule ND-6002 — pipeline-only
           </p>
           <h2 id="pipe-h" className="reveal">
             Never hand-edit a production zone
           </h2>
           <p className="reveal">
-            The zone file is versioned, signed and published by the pipeline with a fresh serial — the previous version
-            stays available for instant rollback. Nobody types changes into a live zone.
+            the pipeline versions, signs and publishes with a fresh serial — the previous version stays for instant
+            rollback. nobody types changes into a live zone.
           </p>
         </div>
         <pre>
@@ -502,10 +503,10 @@ function GatewayPage() {
   return (
     <>
       <PageSection
-        eyebrow="gateway · transports"
+        eyebrow="gateway — transports"
         title="Gateway"
         heading="h2"
-        description="One endpoint, every DNS transport. The gateway answers the same wire protocol over UDP, TCP, TLS, HTTPS and QUIC — and it is not a resolver replacement: it serves the zones argan is authoritative for and forwards the rest."
+        description="one endpoint, every transport — zones served, the rest forwarded."
         reveal
       />
 
@@ -520,8 +521,7 @@ function GatewayPage() {
             Transports
           </h2>
           <p className="small" style={{ marginBottom: 12 }}>
-            Transport choice is a trade, not a dogma: classic is the fastest and the most visible; DoT hides the query
-            but fights the port; DoH blends into web traffic; DoQ adds privacy with zero-RTT where UDP passes.
+            classic is fastest; dot fights the port; doh blends into web traffic; doq adds zero-rtt privacy.
           </p>
           <div className="table-scroll">
             <table className="table">
@@ -555,15 +555,16 @@ function GatewayPage() {
           aria-labelledby="doh-h"
         >
           <p className="eyebrow" style={{ color: "var(--app-accent)", marginBottom: 8 }}>
-            rule ND-6005 · DoH-first
+            rule ND-6005 — DoH-first
           </p>
           <h2 id="doh-h" style={{ fontSize: "1.05rem", marginTop: 0 }}>
             Port 53 blocked? DoH first.
           </h2>
+          <p className="small" style={{ marginBottom: 8 }}>
+            port 53 blocked or unprivileged? everything rides doh on plain https — indistinguishable from web traffic.
+          </p>
           <p className="small" style={{ marginBottom: 4 }}>
-            Where port 53 is blocked or we hold no privilege, everything runs over DoH on plain HTTPS —
-            indistinguishable from web traffic, crossing home, corporate and mobile firewalls. Valid public HTTPS comes
-            from the edge with a tunnel; self-signed certificates stay in dev and on the LAN.
+            valid public https comes from the edge with a tunnel; self-signed stays in dev and on the lan.
           </p>
           <div>
             {DOH_FIRST.map(([title, desc], i) => (

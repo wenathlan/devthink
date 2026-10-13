@@ -80,14 +80,14 @@ const SEED_PROJECTS: Project[] = [
   {
     id: "s1",
     name: "Gateway v2.0.40",
-    desc: "Provider normalization + SSE on loopback; devthink model → glm-5.3.",
+    desc: "Provider normalization + SSE on loopback; devthink model pinned to glm-5.3.",
     status: "active",
     tag: "gateway",
     at: 0,
   },
   {
     id: "s2",
-    name: "CLI · 20 modes",
+    name: "CLI — 20 modes",
     desc: "Streaming chat, provider/model discovery, local sessions and memory.",
     status: "active",
     tag: "cli",
@@ -154,17 +154,23 @@ const DOC_TOPICS: DocTopic[] = [
   {
     id: "overview",
     title: "Overview",
-    kicker: "platform · provider-neutral",
+    kicker: "provider-neutral platform",
     blocks: [
       {
         p: [
-          "DevThink is a provider-neutral AI workbench: a terminal CLI, an embedded local gateway and a static web workbench — all inside a single product boundary. The public code lives in the wenathlan/devthink repository.",
+          "devthink is a provider-neutral workbench.",
+          "one boundary: a terminal cli, a local gateway and a static web workbench.",
+          "the public code lives in the wenathlan/devthink repository.",
         ],
       },
       {
         h: "Security boundary",
-        p: [
-          "DevThink uses official provider APIs and explicitly user-supplied credentials. It does not capture browser cookies, does not solve CAPTCHAs, does not automate browser authentication and does not bypass anti-bot controls.",
+        list: [
+          "official provider apis + user-supplied credentials only.",
+          "no cookie capture.",
+          "no captcha solving.",
+          "no browser-auth automation.",
+          "no anti-bot bypass.",
         ],
       },
       {
@@ -182,24 +188,33 @@ const DOC_TOPICS: DocTopic[] = [
   {
     id: "cli",
     title: "CLI",
-    kicker: "terminal · 20 modes",
+    kicker: "terminal — 20 modes",
     blocks: [
       {
-        p: [
-          "The CLI is the front door: streaming chat, provider and model discovery, 20 named operational modes, locally persisted sessions and memory, and credential-free pairing for the workbench.",
+        p: ["the cli is the front door:"],
+        list: [
+          "streaming chat.",
+          "provider + model discovery.",
+          "20 named operational modes.",
+          "local sessions + memory.",
+          "credential-free workbench pairing.",
         ],
         code: `devthink init\ndevthink chat --provider zai --model glm-5 --prompt "..."\ndevthink providers\ndevthink models --provider <id>\ndevthink modes\ndevthink auth login <provider> --token <credential>\ndevthink sessions list\ndevthink serve\ndevthink interactive`,
       },
       {
         h: "Local state",
         p: [
-          "Atomic JSON records + a SQLite mirror under ~/.config/devthink/. Secret-free preferences in devthink.json; official credentials in auth.json (mode 0600). Keys never reach logs or exports.",
+          "atomic json records + a sqlite mirror under ~/.config/devthink/.",
+          "secret-free preferences live in devthink.json; official credentials in auth.json (mode 0600).",
+          "keys never reach logs or exports.",
         ],
       },
       {
         h: "Provider selection",
         p: [
-          "Explicit selection: --provider or the configured provider — no silent rotation between accounts. Fallback only through a user-written ordered list. A provider can be health-checked without sending a prompt.",
+          "explicit selection: --provider or the configured provider — no silent rotation between accounts.",
+          "fallback only through a user-written ordered list.",
+          "a provider can be health-checked without sending a prompt.",
         ],
       },
     ],
@@ -207,24 +222,34 @@ const DOC_TOPICS: DocTopic[] = [
   {
     id: "gateway",
     title: "Gateway",
-    kicker: "loopback · http + sse",
+    kicker: "loopback — http + sse",
     blocks: [
       {
         p: [
-          "The local gateway listens on the loopback interface only (127.0.0.1). Without a configured port it picks a random candidate inside the documented range. It exposes /health, /models and /chat — no filesystem is exposed by default.",
+          "the local gateway listens on the loopback interface only (127.0.0.1).",
+          "without a configured port it picks a random candidate inside the documented range.",
+          "it exposes /health, /models and /chat — no filesystem by default.",
         ],
       },
       {
         h: "Inside the DevThink OS",
         p: [
-          "The OS talks to the gateway through POST /v1/chat/completions (OpenAI contract) with the devthink model — that is what feeds the Aura in each app of this family. Responses may carry reasoning_content, displayed as Internal Cognition.",
+          "the os talks to the gateway through POST /v1/chat/completions (openai contract) with the devthink model.",
+          "that call feeds the aura in each app of this family.",
+          "responses may carry reasoning_content, displayed as internal cognition.",
         ],
         code: `POST /v1/chat/completions\n{ "model": "devthink", "messages": [...] }`,
       },
       {
         h: "Provider endpoints",
         p: [
-          "There is no separate proxy module: a provider-specific endpoint goes into providers.<id>.baseUrl in the user's devthink.json. Supported families: OpenAI-compatible (Z.AI, Qwen, DeepSeek, Groq…), Anthropic Messages and Google Gemini — all with streaming.",
+          "no separate proxy module: a provider-specific endpoint goes into providers.<id>.baseUrl in devthink.json.",
+        ],
+        list: [
+          "openai-compatible (z.ai, qwen, deepseek, groq…).",
+          "anthropic messages.",
+          "google gemini.",
+          "all with streaming.",
         ],
       },
     ],
@@ -232,11 +257,13 @@ const DOC_TOPICS: DocTopic[] = [
   {
     id: "sandbox",
     title: "Sandbox engine",
-    kicker: "isolation · consent-first",
+    kicker: "isolation — consent-first",
     blocks: [
       {
         p: [
-          "The sandbox engine runs OS actions inside a controlled perimeter: every sensitive action passes approval gates before touching the host, and the result is auditable.",
+          "the sandbox engine runs os actions inside a controlled perimeter.",
+          "every sensitive action passes approval gates before touching the host.",
+          "the result is auditable.",
         ],
       },
       {
@@ -250,7 +277,9 @@ const DOC_TOPICS: DocTopic[] = [
       {
         h: "Persistence",
         p: [
-          "Workspaces, sessions, tabs and messages live in the local SQLite; memory resolves in the order session → project → global. External memory is never contacted automatically.",
+          "workspaces, sessions, tabs and messages live in the local sqlite.",
+          "memory resolves in order: session, then project, then global.",
+          "external memory is never contacted automatically.",
         ],
       },
     ],
@@ -258,7 +287,7 @@ const DOC_TOPICS: DocTopic[] = [
   {
     id: "products",
     title: "Product family",
-    kicker: "4 apps · one gateway",
+    kicker: "4 apps — one gateway",
     blocks: [
       {
         p: [
@@ -283,7 +312,7 @@ const DOC_TOPICS: DocTopic[] = [
   {
     id: "install",
     title: "Install",
-    kicker: "npm · bun · binaries",
+    kicker: "npm, bun, binaries",
     blocks: [
       {
         p: [
@@ -297,8 +326,13 @@ const DOC_TOPICS: DocTopic[] = [
       },
       {
         h: "Typed documentation",
-        p: [
-          "The docs/ directory carries category.ts.md collections — auth, providers, gateway, storage and web — as TypeScript contracts with JSDoc: bounded retry, error redaction, exact origin matching and base path normalization.",
+        p: ["the docs/ directory carries category.ts.md collections: auth, providers, gateway, storage and web."],
+        list: [
+          "typescript contracts with jsdoc.",
+          "bounded retry.",
+          "error redaction.",
+          "exact origin matching.",
+          "base path normalization.",
         ],
       },
     ],
@@ -346,7 +380,7 @@ export function DevThinkApp({ os }: { os: OSHandle }) {
       <main className="shell">
         <FamilyHero
           app={meta}
-          tagline="The provider-neutral platform of the OS — CLI, loopback gateway, sandbox engine and the product family under one boundary."
+          tagline="the provider-neutral platform: cli, loopback gateway, sandbox engine, family — one boundary."
           stats={stats}
           glyphMotion="sun"
           status="platform mounted"
@@ -354,10 +388,10 @@ export function DevThinkApp({ os }: { os: OSHandle }) {
         {page === "aura" ? (
           <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
             <PageSection
-              eyebrow="chat · devthink.pro gateway"
+              eyebrow="chat — devthink.pro gateway"
               title="Chat"
               heading="h2"
-              description="The gateway's intelligence, dedicated: ask about the platform, the engines or any app in the family."
+              description="the gateway intelligence: ask about the platform, the engines, the family."
               reveal
             />
             <div
@@ -431,10 +465,10 @@ function ProjectsPage({
   return (
     <div style={accentVars(accent)}>
       <PageSection
-        eyebrow="devthink.pro · platform"
+        eyebrow="devthink.pro — platform"
         title="Projects"
         heading="h2"
-        description="The provider-neutral workbench in one place: device-persisted local projects with status, tag and search. Creating here pushes an event into the OS History."
+        description="local projects: status, tag, search. creating pushes an os history event."
         reveal
       />
 
@@ -588,9 +622,9 @@ function ProjectsPage({
         onOpenChange={setOpen}
         onCreate={(p) => {
           onCreate(p);
-          pushOSEvent({ title: "Project created — devthink", note: `${p.name} · ${p.tag}`, kind: "action" });
+          pushOSEvent({ title: "Project created — devthink", note: `${p.name} — ${p.tag}`, kind: "action" });
           toast.success(`Project “${p.name}” created`, {
-            description: `status ${STATUS_LABEL[p.status]} · tag ${p.tag}`,
+            description: `status ${STATUS_LABEL[p.status]} — tag ${p.tag}`,
           });
         }}
       />
@@ -673,7 +707,7 @@ function NewProjectModal({
               className="input"
               value={tag}
               maxLength={20}
-              placeholder="gateway · cli · web"
+              placeholder="gateway, cli, web"
               onChange={(e) => setTag(e.target.value)}
             />
           </div>
@@ -712,7 +746,7 @@ const SEED_EVENTS = [
   {
     id: "se1",
     title: "gateway v2.0.40",
-    note: "devthink model → glm-5.3; SSE stabilized on loopback.",
+    note: "devthink model pinned to glm-5.3; sse stabilized on loopback.",
     kind: "release" as const,
     at: 1755200000000,
   },
@@ -764,10 +798,10 @@ function HistoryPage({ accent }: { accent: string }) {
   return (
     <div style={accentVars(accent)}>
       <PageSection
-        eyebrow="devthink.pro · OS feed"
+        eyebrow="devthink.pro — OS feed"
         title="History"
         heading="h2"
-        description="Timeline of everything that happens in the OS — renders, projects created, Aura chats and gateway releases. Sibling app actions arrive here in real time."
+        description="os timeline: renders, projects, aura chats, gateway releases — sibling actions arrive live."
         reveal
       />
 
@@ -849,10 +883,10 @@ function DocsPage({ accent }: { accent: string }) {
   return (
     <div style={accentVars(accent)}>
       <PageSection
-        eyebrow="devthink.pro · docs"
+        eyebrow="devthink.pro — docs"
         title="Docs"
         heading="h2"
-        description="The DevThink essentials in six short topics — absorbed from the public repository's README and ARCHITECTURE."
+        description="the essentials in six topics — from the public readme and architecture."
         reveal
       />
 
@@ -951,7 +985,7 @@ function DocsPage({ accent }: { accent: string }) {
 /* ------------------------------- EXPLORE ------------------------------- */
 
 const SKILLS = [
-  "CLI · 20 modes",
+  "cli — 20 modes",
   "SSE streaming",
   "loopback gateway",
   "provider-neutral",
@@ -959,9 +993,9 @@ const SKILLS = [
   "consent-first extension",
   "audited pagebridge",
   "protocolv2 frozen",
-  "katexis · audio",
-  "versawase · video/3d",
-  "argan · DNSSEC",
+  "katexis — audio",
+  "versawase — video/3d",
+  "argan — DNSSEC",
   "one-time pairing",
 ];
 
@@ -970,10 +1004,10 @@ function ExplorePage({ os, accent }: { os: OSHandle; accent: string }) {
   return (
     <div style={accentVars(accent)}>
       <PageSection
-        eyebrow="devthink.pro · explore"
+        eyebrow="devthink.pro — explore"
         title="Explore"
         heading="h2"
-        description="The eight surfaces of the devthink.pro family — each with its own domain, engine and pages inside the same OS. Enter any of them without leaving the gateway."
+        description="the family surfaces — domain, engine and pages per app, one gateway away."
         reveal
       />
 
@@ -1006,7 +1040,7 @@ function ExplorePage({ os, accent }: { os: OSHandle; accent: string }) {
               </span>
               <p>{a.desc}</p>
               <span className="go" style={{ color: a.accent }}>
-                open {a.pages.map((p) => p.label.toLowerCase()).join(" · ")}{" "}
+                open {a.pages.map((p) => p.label.toLowerCase()).join(", ")}{" "}
                 <ChevronRight size={15} strokeWidth={1.8} aria-hidden="true" />
               </span>
             </button>
@@ -1060,10 +1094,10 @@ function SettingsPage({ os, accent }: { os: OSHandle; accent: string }) {
   return (
     <div style={accentVars(accent)}>
       <PageSection
-        eyebrow="devthink.pro · settings"
+        eyebrow="devthink.pro — settings"
         title="Settings"
         heading="h2"
-        description="Device-persisted OS preferences: theme, motion, Aura cognition, profile and integrations — plus the clean-url module demo."
+        description="device-persisted os preferences: theme, motion, cognition, profile, integrations — and the clean-url demo."
         reveal
       />
 
@@ -1079,7 +1113,7 @@ function SettingsPage({ os, accent }: { os: OSHandle; accent: string }) {
           <div className="setting-row">
             <div>
               <p className="s-title">Solar theme</p>
-              <p className="s-desc">#0B0806 · #F59E0B · #FFFBEB — 35px liquid glass.</p>
+              <p className="s-desc">#0b0806, #f59e0b, #fffbeb — 35px liquid glass.</p>
             </div>
             <Toggle checked={settings.theme === "dark"} onChange={toggleTheme} label="Toggle the solar/light theme" />
           </div>
@@ -1152,27 +1186,27 @@ function SettingsPage({ os, accent }: { os: OSHandle; accent: string }) {
           <div className="setting-row">
             <div>
               <p className="s-title">Local gateway</p>
-              <p className="s-desc">POST /v1/chat/completions · devthink model → glm-5.3.</p>
+              <p className="s-desc">POST /v1/chat/completions — devthink model pinned to glm-5.3.</p>
             </div>
             <StatusDot label="online" tone="success" />
           </div>
           <div className="setting-row">
             <div>
               <p className="s-title">SSE streaming</p>
-              <p className="s-desc">Normalized OpenAI-compatible · Anthropic · Gemini deltas.</p>
+              <p className="s-desc">normalized openai-compatible, anthropic and gemini deltas.</p>
             </div>
             <Toggle checked={stream} onChange={setStream} label="Toggle SSE streaming" />
           </div>
           <div className="setting-row">
             <div>
-              <p className="s-title">MCP · approval gates</p>
+              <p className="s-title">MCP approval gates</p>
               <p className="s-desc">Tools with consent metadata — nothing runs without approval.</p>
             </div>
             <StatusDot label="gated" tone="warning" />
           </div>
           <div className="setting-row">
             <div>
-              <p className="s-title">Extension · pagebridge</p>
+              <p className="s-title">Extension — pagebridge</p>
               <p className="s-desc">Consent-first: the bridge is injected only under an explicit flag + audit.</p>
             </div>
             <StatusDot label="opt-in" tone="info" />

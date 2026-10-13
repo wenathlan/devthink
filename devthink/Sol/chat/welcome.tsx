@@ -52,26 +52,25 @@ const CAPABILITIES: Capability[] = [
   {
     id: "engineering",
     icon: Braces,
-    label: "01 · engineering",
+    label: "01 — engineering",
     copy: "Trace a failure, review an approach or pressure-test an architecture until the weak joint shows.",
-    prompt:
-      "Pressure-test this architecture: a local gateway that normalizes OpenAI, Anthropic and Google APIs behind one endpoint. Where does it break first, and what would you harden?",
+    prompt: "pressure-test a provider-neutral gateway: where does the architecture break first, and what hardens it?",
   },
   {
     id: "reasoning",
     icon: BrainCircuit,
-    label: "02 · reasoning",
+    label: "02 — reasoning",
     copy: "Hand over a hard question and follow the internal cognition work it through, step by step.",
     prompt:
-      "Reason step by step: should a provider-neutral workbench cache provider responses locally? Weigh latency, cost and staleness, then commit to a recommendation.",
+      "reason step by step: should a provider-neutral workbench cache provider responses locally? weigh latency, cost, staleness.",
   },
   {
     id: "decisions",
     icon: Telescope,
-    label: "03 · decisions",
+    label: "03 — decisions",
     copy: "Weigh trade-offs across real options and leave with a call, not a data dump.",
     prompt:
-      "Compare self-hosting an inference gateway against calling provider APIs directly. Give me a decision with the three facts that drive it.",
+      "self-hosting an inference gateway versus provider apis: commit to one call and name the three facts that drive it.",
   },
 ];
 
@@ -87,7 +86,7 @@ export function Welcome({ onPick, gatewayRegistered }: { onPick: (text: string) 
         </span>
       </h1>
       <p className="dtc-hero__sub">
-        sol · model devthink ·{" "}
+        sol: model devthink —{" "}
         {gatewayRegistered ? "answers via your registered gateway" : "no gateway registered — register one to start"}
       </p>
 

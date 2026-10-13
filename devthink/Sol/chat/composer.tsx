@@ -70,8 +70,8 @@ export function Composer({
   return (
     <div className="dtc-composer">
       <div className="dtc-microrow">
-        <span>enter sends · shift+enter breaks</span>
-        <span className="dtc-model">model · {GATEWAY_MODEL}</span>
+        <span>enter sends, shift+enter breaks</span>
+        <span className="dtc-model">model — {GATEWAY_MODEL}</span>
       </div>
 
       <div className="dtc-inner">

@@ -56,7 +56,7 @@ const providers: DevThinkProvider[] = [
     id: "anthropic",
     label: "Anthropic",
     model: "Claude Sonnet",
-    protocol: "messages · SSE",
+    protocol: "messages, SSE",
     state: "connected",
     tint: "#e46f36",
   },
@@ -752,7 +752,7 @@ export default function Panel() {
     >
       <ShellWorkspace
         sectionId={route.sectionId}
-        routeLabel={`w/${route.workspaceId.slice(0, 8)} · s/${route.sessionId.slice(0, 8)}`}
+        routeLabel={`w/${route.workspaceId.slice(0, 8)} — s/${route.sessionId.slice(0, 8)}`}
         userId={pairedIdentity?.userId}
         provider={provider}
         messages={messages.filter((message) => !message.tabId || message.tabId === route.tabId)}

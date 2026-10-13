@@ -69,13 +69,12 @@ function PlayerPage() {
   return (
     <>
       <PageSection
-        eyebrow="cadria.devthink.pro · iukka player"
+        eyebrow="cadria.devthink.pro — iukka player"
         title="Player"
         heading="h2"
         description={
           <>
-            The universal <strong className="strong">iukka</strong> player: 24 media extensions — video (MP4, HLS, DASH,
-            FLV, WEBM), audio and documents — via hls.js, dash.js, flv.js, video.js and howler inside the manifest.
+            the universal <strong className="strong">iukka</strong> player: 24 extensions — video, audio and documents.
           </>
         }
         reveal
@@ -93,7 +92,7 @@ function PlayerPage() {
             <span className="pf-tc">
               {fmtClock(t)} / {fmtClock(DURATION)}
             </span>
-            <span className="badge">{playing ? "hls · playing" : "hls · paused"}</span>
+            <span className="badge">{playing ? "hls — playing" : "hls — paused"}</span>
           </div>
           <button
             type="button"
@@ -213,7 +212,7 @@ function PlayerPage() {
             The play button above is visual — real versawase engine integration arrives with the player F-CAD.
           </p>
         </div>
-        <span className="badge success">demo scope · player mock</span>
+        <span className="badge success">demo scope — player mock</span>
       </section>
     </>
   );
@@ -269,7 +268,11 @@ function StudioPage() {
     toast.info(`Export ${kind.toUpperCase()} queued`, {
       description: "Simulated pipeline — the real render ships with the versawase engine.",
     });
-    pushOSEvent({ title: "Export queued — cadria", note: `timeline → ${kind.toUpperCase()} (studio)`, kind: "action" });
+    pushOSEvent({
+      title: "Export queued — cadria",
+      note: `timeline ${kind.toUpperCase()} export (studio)`,
+      kind: "action",
+    });
     window.setTimeout(() => {
       setExporting(null);
       toast.success(`Export ${kind.toUpperCase()} ready`, {
@@ -281,10 +284,10 @@ function StudioPage() {
   return (
     <>
       <PageSection
-        eyebrow="cadria.devthink.pro · create editor"
+        eyebrow="cadria.devthink.pro — create editor"
         title="Studio"
         heading="h2"
-        description="The canvas-first layer editor: video, image and 3D on the same timeline, always non-destructive — plus the anchor rack (3dstudio, audio, canvaseditor, code_ide, themes, icons16)."
+        description="the canvas-first editor: video, image and 3d on one timeline, always non-destructive."
         reveal
       />
 
@@ -511,12 +514,12 @@ type GalleryItem = {
 };
 
 const GALLERY: GalleryItem[] = [
-  { id: "g1", title: "Orbital — teaser", kind: "video", meta: "MP4 · 1080p · 02:41", ph: "ph-3" },
-  { id: "g2", title: "Solar mesh study", kind: "3d", meta: "GLB · 84k tris", ph: "ph-4" },
-  { id: "g3", title: "Ember grade LUT", kind: "image", meta: "PNG · 4k still", ph: "ph-1" },
-  { id: "g4", title: "Versawase breakdown", kind: "doc", meta: "PDF · 12 pages", ph: "ph-2" },
-  { id: "g5", title: "Frame by frame — spot", kind: "video", meta: "WEBM · 720p · 00:58", ph: "ph-5" },
-  { id: "g6", title: "Anchor icons sheet", kind: "image", meta: "SVG · 16 set", ph: "ph-6" },
+  { id: "g1", title: "Orbital — teaser", kind: "video", meta: "MP4, 1080p, 02:41", ph: "ph-3" },
+  { id: "g2", title: "Solar mesh study", kind: "3d", meta: "GLB, 84k tris", ph: "ph-4" },
+  { id: "g3", title: "Ember grade LUT", kind: "image", meta: "PNG, 4k still", ph: "ph-1" },
+  { id: "g4", title: "Versawase breakdown", kind: "doc", meta: "PDF, 12 pages", ph: "ph-2" },
+  { id: "g5", title: "Frame by frame — spot", kind: "video", meta: "WEBM, 720p, 00:58", ph: "ph-5" },
+  { id: "g6", title: "Anchor icons sheet", kind: "image", meta: "SVG, 16 set", ph: "ph-6" },
 ];
 
 const GALLERY_TONE: Record<GalleryItem["kind"], "success" | "warning" | "info" | "default"> = {
@@ -557,7 +560,7 @@ function GalleryPage() {
   return (
     <>
       <PageSection
-        eyebrow="cadria.devthink.pro · gallery"
+        eyebrow="cadria.devthink.pro — gallery"
         title="Gallery"
         heading="h2"
         description="Studio outputs: exported timelines, stills, meshes and documents. Favorites persist on your device."
@@ -698,7 +701,7 @@ function GalleryPage() {
             app={appMeta("cadria") as NonNullable<ReturnType<typeof appMeta>>}
             motion="reel"
             title={`Nothing matching “${query}” under this filter`}
-            line="The gallery answers from the studio outputs — loosen the type filter or clear the search to see the six seeded items again."
+            line="the gallery answers from the studio outputs — loosen the filter or clear the search."
             actionLabel="Clear the filters"
             onAction={() => {
               setQuery("");
@@ -711,8 +714,7 @@ function GalleryPage() {
       <section className="fam-card fam-card--s2" style={{ marginTop: 20, maxWidth: 640, padding: 22 }}>
         <h2 style={{ fontSize: "1.05rem", marginTop: 0 }}>Demo scope</h2>
         <p style={{ margin: 0 }}>
-          Showcase items are static; the favorites are yours (persisted via <code>useStoredState</code>). Real exports
-          arrive with the <code>versawase</code> engine pipeline (F-CAD-016..025).
+          showcase items are static; favorites persist on this device. real exports arrive with the versawase pipeline.
         </p>
       </section>
     </>
@@ -746,7 +748,7 @@ export function CadriaApp({ os }: { os: OSHandle }) {
           <div>
             <FamilyHero
               app={meta}
-              tagline="Player, editor and studio on the versawase engine — video, image and 3D in one creative shell."
+              tagline="player, editor and studio — video, image and 3d in one shell."
               stats={
                 [
                   { label: "media extensions", value: "24", accent: true },

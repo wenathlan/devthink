@@ -71,15 +71,17 @@ function kv(key: string, value: string) {
   );
 }
 
-/** the sectioned rail: the categories of the deck (mono lowercase, sticky). */
+/** the sectioned rail: the categories of the deck (mono lowercase, sticky).
+ * the toc slot carries the real section index (tabular numerals), never a
+ * decorative separator glyph. */
 function deckRail(categories: ReadonlyArray<readonly [string, string]>) {
   return (
     <nav className="r2c-deck__rail" aria-label="Settings sections">
       <span className="r2c-deck__cap">settings</span>
-      {categories.map(([href, label]) => (
+      {categories.map(([href, label], index) => (
         <a key={href} className="r2c-deck__cat" href={href}>
           <span className="r2c-toc__num" aria-hidden="true">
-            ·
+            {String(index + 1).padStart(2, "0")}
           </span>
           {label}
         </a>
@@ -219,7 +221,7 @@ export default function Settings() {
       <ControlShell
         eyebrow="browser-local settings"
         title="This browser owns a local DevThink cache."
-        summary="The browser keeps non-sensitive workspace records, tabs, messages and preferences in IndexedDB. Pairing is optional and gives the same person access to their CLI-owned local database."
+        summary="The browser keeps non-sensitive records, tabs, messages and preferences in IndexedDB. Pairing is optional."
       >
         <div className="r2c-deck">
           {deckRail([
@@ -239,7 +241,7 @@ export default function Settings() {
               {kv("device", localIdentity?.deviceId || "initializing")}
               {kv(
                 "records",
-                `${local?.workspaces || 0} workspaces · ${local?.sessions || 0} sessions · ${local?.messages || 0} messages`,
+                `${local?.workspaces || 0} workspaces, ${local?.sessions || 0} sessions, ${local?.messages || 0} messages`,
               )}
             </section>
             <LocalAccount />
@@ -277,7 +279,7 @@ export default function Settings() {
     <ControlShell
       eyebrow="shared settings"
       title="One person, two local stores."
-      summary="These controls match `devthink config settings`, `devthink identity --id` and the Ink Settings view. The paired browser uses the CLI database while retaining a non-sensitive IndexedDB cache."
+      summary="These controls match the CLI settings and identity commands. The paired browser uses the CLI database with a local cache."
     >
       <div className="control-toolbar" style={controlStripStyle}>
         <span>{baseUrl || "paired local gateway"}</span>
@@ -333,11 +335,11 @@ export default function Settings() {
               {sectionHead("04", "sync state", "Sync state.")}
               {kv("state", "paired-gateway")}
               {kv("cli", snapshot.database.persistence)}
-              {kv("browser", `${local?.database || "devthink.db"} · ${local?.messages || 0} cached messages`)}
+              {kv("browser", `${local?.database || "devthink.db"} — ${local?.messages || 0} cached messages`)}
               {kv("remote adapter", "not configured")}
               {kv(
                 "provider",
-                `${snapshot.provider.activeProvider || "not configured"} · ${snapshot.provider.activeModel || "model not configured"}`,
+                `${snapshot.provider.activeProvider || "not configured"} — ${snapshot.provider.activeModel || "model not configured"}`,
               )}
             </section>
             <AutomationMcp />

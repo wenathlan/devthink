@@ -107,7 +107,7 @@ export function FoundryApp({ os }: { os: OSHandle }) {
           <div>
             <FamilyHero
               app={meta}
-              tagline="The build hall of the family — sandboxes booted from the image ledger, workloads run on the saddle boundary, artifacts packaged and retired with their records."
+              tagline="the build hall — sandboxes from the ledger, workloads on saddle, artifacts packaged."
               stats={stats}
               glyphMotion="temper"
               status="build hall live"
@@ -149,7 +149,7 @@ function SandboxesPage({ totals }: { totals: ReturnType<typeof foundryTotals> })
         eyebrow="lifecycle records"
         title="Sandboxes"
         heading="h2"
-        description="One record per sandbox: the image it booted from, the state machine it answers (running, paused, exited), the region it lives in — the engine stays in saddle, the record stays here."
+        description="one record per sandbox — image, state, region; the engine stays in saddle."
         reveal
       />
 
@@ -276,7 +276,7 @@ function ImagesPage({ totals }: { totals: ReturnType<typeof foundryTotals> }) {
         eyebrow="layer ledgers"
         title="Images"
         heading="h2"
-        description="The image ledger resolves every base the family boots: the layer manifest, the sealed size and the freshness stamp — the same rows the sandbox creation flow reads."
+        description="every base the family boots — layer manifest, sealed size, freshness stamp."
         reveal
       />
 
@@ -335,12 +335,11 @@ function ImagesPage({ totals }: { totals: ReturnType<typeof foundryTotals> }) {
           </h2>
           <span className="badge" role="status">
             <span className="dot" aria-hidden="true" />
-            {totals.images} images · {totals.layers} layers
+            {totals.images} images — {totals.layers} layers
           </span>
         </div>
         <p className="small" style={{ margin: "10px 0 12px" }}>
-          Every image resolves into the packaging lanes the family clone ships in — builds and conversions leave the
-          foundry as packaged artifacts, the record stays here.
+          builds and conversions leave the foundry as packaged artifacts — the record stays here.
         </p>
         <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
           {ARTIFACT_FORMATS.map((f) => (
@@ -366,7 +365,7 @@ function PipelinesPage() {
         eyebrow="the view over both"
         title="Pipelines"
         heading="h2"
-        description="A pipeline is the resolved path from an image ledger row to a retired sandbox record — the four stages every workload in the family walks, in order, with the records to prove it."
+        description="the path from image row to retired sandbox — four stages, in order."
         reveal
       />
 

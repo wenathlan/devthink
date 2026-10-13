@@ -61,7 +61,7 @@ const HISTORY_CSS = `
 .hs-run { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 14px; align-items: baseline; padding: 14px 12px 14px 2px; border-bottom: 1px solid var(--dtv3-hairline); border-radius: 10px; transition: background 160ms var(--dtv3-ease); animation: hsRise 240ms var(--dtv3-ease) backwards; animation-delay: calc(var(--i, 0) * 60ms); }
 .hs-run:hover { background: color-mix(in srgb, var(--dtv3-sig) 10%, transparent); }
 .hs-run h3 { display: flex; align-items: center; gap: 10px; margin: 0; color: var(--dtv3-ink-1); font: 700 14px var(--dt-mono); font-variant-numeric: tabular-nums; }
-.hs-badge { padding: 2px 9px; color: var(--dtv3-sig); background: color-mix(in srgb, var(--dtv3-sig) 10%, transparent); border: 1px solid color-mix(in srgb, var(--dtv3-sig) 30%, transparent); border-radius: 999px; font: 600 9px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
+.hs-badge { padding: 2px 9px; color: var(--dtv3-sig); background: color-mix(in srgb, var(--dtv3-sig) 10%, transparent); border: 1px solid color-mix(in srgb, var(--dtv3-sig) 30%, transparent); border-radius: 4px; font: 600 9px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
 .hs-stamp { justify-self: end; color: var(--dtv3-ink-3); font: 500 10px var(--dt-mono); letter-spacing: .08em; text-transform: lowercase; }
 .hs-run > p { grid-column: 1 / -1; margin: 0; color: var(--dtv3-ink-2); font: 400 12px/1.7 var(--dt-sans); }
 .hs-rail { position: sticky; top: 88px; display: grid; gap: 18px; align-content: start; min-width: 0; }
@@ -117,12 +117,12 @@ export default function History() {
         <header className="pagehead r2b-head shader-stage halftone-edge enter" style={step(0)}>
           <div className="shader-fallback" aria-hidden="true" />
           <div className="grain-overlay" aria-hidden="true" />
-          <p className="pagehead__eyebrow r2a-eyebrow">devthink · history</p>
+          <p className="pagehead__eyebrow r2a-eyebrow">devthink — history</p>
           <h1 className="pagehead__title r2a-display">The release ladder</h1>
           <p className="pagehead__lede r2a-lede">Every release stamps a rung.</p>
           {rungs.length ? (
             <p className="r2b-meta">
-              {rungs.length} rungs · latest {latest}
+              {rungs.length} rungs — latest {latest}
             </p>
           ) : null}
         </header>
@@ -167,7 +167,7 @@ export default function History() {
 
           <aside className="hs-rail">
             <p className="hs-intro">
-              Every release stamps the rung. The full 101-version chain of the extension family (1.1.1 → 2.0.2) and the
+              Every release stamps the rung. The full 101-version chain of the extension family (1.1.1 to 2.0.2) and the
               platform ladder live in the repo <code>CHANGELOG.md</code>.
             </p>
             {rungs.length ? (
@@ -184,7 +184,7 @@ export default function History() {
                   <div className="hs-fact">
                     <dt>chain</dt>
                     <dd>
-                      {oldest} → {latest}
+                      {oldest} to {latest}
                     </dd>
                   </div>
                 </dl>

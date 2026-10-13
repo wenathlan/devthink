@@ -37,7 +37,7 @@ type Execute = (
 type Entry = { role: "user" | "devthink" | "error"; title: string; body: string };
 
 function clip(value: string, width: number): string {
-  return value.length > width ? `${value.slice(0, Math.max(0, width - 1))}…` : value;
+  return value.length > width ? `${value.slice(0, Math.max(0, width - 3))}...` : value;
 }
 
 function TerminalEntry({
@@ -62,7 +62,7 @@ function TerminalEntry({
       justifyContent="space-between"
     >
       <Box justifyContent="space-between">
-        <Text color="#807970">✦ DEVTHINK</Text>
+        <Text color="#807970">DEVTHINK</Text>
         <Text color="#8ab4f8">{userId}</Text>
       </Box>
       <Box flexDirection="column" alignItems="center">
@@ -83,17 +83,19 @@ function TerminalEntry({
           <Text color="#746f66">begin with one intention</Text>
         </Box>
         <Box marginTop={2}>
-          <Text color="#282724">┌{"─".repeat(Math.max(16, width - 2))}┐</Text>
+          <Text color="#282724">+{"-".repeat(Math.max(16, width - 2))}+</Text>
         </Box>
         <Text color="#e8e1d7">
-          │ <Text color="#ff5f00">›_ </Text>
-          <Text color={draft ? "#e8e1d7" : "#746f66"}>{clip(draft || "Ask anything…", Math.max(12, width - 22))}</Text>
+          | <Text color="#ff5f00">{"> "}</Text>
+          <Text color={draft ? "#e8e1d7" : "#746f66"}>
+            {clip(draft || "Ask anything...", Math.max(12, width - 22))}
+          </Text>
           <Text color="#8ab4f8"> {provider}</Text>
-          <Text color="#ff5f00"> [open]</Text> │
+          <Text color="#ff5f00"> [open]</Text> |
         </Text>
-        <Text color="#282724">└{"─".repeat(Math.max(16, width - 2))}┘</Text>
+        <Text color="#282724">+{"-".repeat(Math.max(16, width - 2))}+</Text>
       </Box>
-      <Text color="#746f66">enter opens a local workspace · esc exits</Text>
+      <Text color="#746f66">enter opens a local workspace, esc exits</Text>
     </Box>
   );
 }
@@ -148,7 +150,7 @@ function viewRows(view: WorkspaceDestination, runtime: Runtime, session: Session
       `userId ${identity.userId}`,
       `deviceId ${identity.deviceId}`,
       `browser sessions ${pairing.activeSessions}`,
-      `database cli-owned-sqlite · ${new Set(sessions.map((session) => session.workspaceId)).size} workspaces · ${sessions.length} sessions`,
+      `database cli-owned-sqlite; ${new Set(sessions.map((session) => session.workspaceId)).size} workspaces; ${sessions.length} sessions`,
       `provider ${runtime.config.activeProvider || runtime.config.provider || "not configured"}`,
       `theme ${preferences.theme || "dark"}`,
       `railMode ${preferences.railMode || "auto"}`,
@@ -181,12 +183,14 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
   const model = runtime.config.activeModel || runtime.config.model || "not configured";
   const compact = columns < 100;
   const terminalWidth = Math.max(38, columns - (compact ? 2 : 6));
+  /** the destination rail as plain ASCII tabs — the shared glyph model of
+   * workspace.ts is a web-side vocabulary; the terminal renders labels only */
   const tabLine = compact
-    ? workspaceDestinations.map((destination) => destination.glyph).join(" ")
+    ? workspaceDestinations.map((destination) => destination.label).join(" ")
     : workspaceDestinations
         .map(
           (destination) =>
-            `${destination.id === view ? "[" : ""}${destination.glyph} ${destination.label}${destination.id === view ? "]" : ""}`,
+            `${destination.id === view ? "[" : ""}${destination.label}${destination.id === view ? "]" : ""}`,
         )
         .join("  ");
   // biome-ignore lint/correctness/useExhaustiveDependencies: preferenceRevision is the revision counter that must recompute the rows when the preferences change even though the closure reads none of its fields
@@ -196,7 +200,7 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
     setView(next);
     setEntries((current) => [
       ...current,
-      { role: "devthink", title: workspaceDestination(next).label, body: rows.join(" · ") },
+      { role: "devthink", title: workspaceDestination(next).label, body: rows.join(" | ") },
     ]);
   }
 
@@ -284,7 +288,7 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
     setEntries((current) => [
       ...current,
       { role: "user", title: active, body: prompt },
-      { role: "devthink", title: "connecting", body: "waiting for local gateway events…" },
+      { role: "devthink", title: "connecting", body: "waiting for local gateway events..." },
     ]);
     setDraft("");
     setPending(true);
@@ -298,7 +302,7 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
               ? {
                   ...entry,
                   title: event.type === "start" ? "streaming" : "devthink",
-                  body: partial || "connecting to local provider…",
+                  body: partial || "connecting to local provider...",
                 }
               : entry,
           ),
@@ -368,16 +372,16 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
     <Box flexDirection="column" width="100%" height="100%" minHeight={20} paddingX={compact ? 1 : 3} paddingY={1}>
       <Box justifyContent="space-between">
         <Text color="#a19a91">
-          ✦ DEVTHINK <Text color="#746f66">/ {workspaceDestination(view).label}</Text>
+          DEVTHINK <Text color="#746f66">/ {workspaceDestination(view).label}</Text>
         </Text>
-        <Text color="#8ab4f8">◉ {identity.userId}</Text>
+        <Text color="#8ab4f8">{identity.userId}</Text>
       </Box>
-      <Text color="#282724">{"─".repeat(terminalWidth)}</Text>
+      <Text color="#282724">{"-".repeat(terminalWidth)}</Text>
       <Text color="#746f66">{clip(tabLine, terminalWidth)}</Text>
       <Box marginTop={1}>
         <Text color="#e8e1d7">
-          {workspaceDestination(view).glyph} {workspaceDestination(view).label.toUpperCase()}{" "}
-          <Text color="#746f66">· {clip(model, 22)}</Text>
+          {workspaceDestination(view).label.toUpperCase()}
+          <Text color="#746f66">: {clip(model, 22)}</Text>
         </Text>
       </Box>
       <Box
@@ -390,7 +394,7 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
           rows.map((row, index) => (
             /* biome-ignore lint/suspicious/noArrayIndexKey: the view rows are an append-only terminal stream where index keys keep the render stable */
             <Text key={`${view}-${index}`} color={index === 0 ? "#e8e1d7" : "#746f66"}>
-              ▎ {clip(row, terminalWidth - 4)}
+              {"> "} {clip(row, terminalWidth - 4)}
             </Text>
           ))
         ) : entries.length ? (
@@ -399,7 +403,7 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
             <Box key={`${entry.title}-${index}`} flexDirection="column" marginBottom={1} paddingLeft={1}>
               <Box>
                 <Text color={entry.role === "user" ? "#ff5f00" : entry.role === "error" ? "#ff6b6b" : "#8ab4f8"}>
-                  ▎ {entry.title.toUpperCase()}
+                  {"> "} {entry.title.toUpperCase()}
                 </Text>
               </Box>
               <Box>
@@ -419,23 +423,23 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
           </Box>
         )}
       </Box>
-      <Text color="#282724">┌{"─".repeat(Math.max(16, terminalWidth - 2))}┐</Text>
+      <Text color="#282724">+{"-".repeat(Math.max(16, terminalWidth - 2))}+</Text>
       <Text color="#e8e1d7">
-        │ <Text color="#ff5f00">›_ </Text>
+        | <Text color="#ff5f00">{"> "}</Text>
         <Text color={draft ? "#e8e1d7" : "#746f66"}>
           {clip(
             draft ||
               (view === "chat"
-                ? `Ask DevThink about ${active === "all" ? "the work…" : `${active}…`}`
-                : `Type /view chat to return…`),
+                ? `Ask DevThink about ${active === "all" ? "the work..." : `${active}...`}`
+                : `Type /view chat to return...`),
             Math.max(12, terminalWidth - 20),
           )}
         </Text>
         <Text color="#8ab4f8"> {provider}</Text>
-        <Text color="#ff5f00"> [run]</Text> │
+        <Text color="#ff5f00"> [run]</Text> |
       </Text>
-      <Text color="#282724">└{"─".repeat(Math.max(16, terminalWidth - 2))}┘</Text>
-      <Text color="#746f66">↑↓ destinations · ←→ categories · /help commands · v{version} · esc exit</Text>
+      <Text color="#282724">+{"-".repeat(Math.max(16, terminalWidth - 2))}+</Text>
+      <Text color="#746f66">up/down destinations, left/right categories, /help commands, v{version}, esc exits</Text>
     </Box>
   );
 }
@@ -447,11 +451,11 @@ export async function startTerminalWorkspace(runtime: Runtime, version: string, 
   await app.waitUntilExit();
 }
 
-/* ── The plain ANSI renderer family (the ui.ts merge): pure string renderers of
-   the DevThink Orbital Signal Room — canonical ANSI art, orange intent and
-   orb-blue connection states. The CLI imports these for the non-Ink fallback
-   path and every plain-text surface; they are pure functions returning
-   strings, so they coexist with the Ink components above. ── */
+/* -- The plain ANSI renderer family (the ui.ts merge): pure string renderers
+   of the DevThink Orbital Signal Room -- canonical ASCII art, orange intent
+   and orb-blue connection states. The CLI imports these for the non-Ink
+   fallback path and every plain-text surface; they are pure functions
+   returning strings, so they coexist with the Ink components above. -- */
 
 /** The ANSI palette: background, panel, text and muted chrome with orange intent, orb-blue connections and signal accents. */
 export const colors = {
@@ -469,9 +473,6 @@ export const colors = {
   reset: "\u001b[0m",
   bold: "\u001b[1m",
 };
-
-/** The spinner frames of the streaming indicator. */
-const frames = ["◐", "◓", "◑", "◒"];
 
 /** Canonical DevThink ANSI mark transcribed from docs/logo.md. */
 const canonicalMark = `
@@ -557,52 +558,41 @@ export function banner(version: string): string {
     .map((line) => color(colors.orange, line))
     .join("\n");
   const title = color(colors.orange + colors.bold, "DEVTHINK");
-  const signal = color(colors.blue, "◆ local workspace");
+  const signal = color(colors.blue, "[ok] local workspace");
+  const edge = "-".repeat(30);
   return [
-    color(colors.muted, "╭────────────────────────────── signal workspace ──────────────────────────────╮"),
+    color(colors.muted, `+${edge} signal workspace ${edge}+`),
     mark,
     `  ${title} ${color(colors.muted, `v${version}`)}  ${signal}`,
-    `  ${color(colors.muted, "route the work · keep provider credentials local · ctrl+p commands")}`,
-    color(colors.muted, "╰────────────────────────────────────────────────────────────────────────────────╯"),
+    `  ${color(colors.muted, "route the work, keep provider credentials local, ctrl+p commands")}`,
+    color(colors.muted, `+${"-".repeat(78)}+`),
   ].join("\n");
 }
 
 /** Renders a titled content box with the workspace panel chrome. */
 export function box(title: string, content: string, width = 76): string {
   const innerWidth = Math.max(20, width - 4);
-  const top = `╭─ ${color(colors.orange, title)} ${color(colors.muted, "─".repeat(Math.max(0, innerWidth - title.length - 3)))}╮`;
-  const body = content.split("\n").map((line) => `│ ${color(colors.blue, "▎")} ${pad(line, innerWidth - 2)} │`);
-  return [top, ...body, `╰${"─".repeat(width - 2)}╯`].join("\n");
+  const top = `+- ${color(colors.orange, title)} ${color(colors.muted, "-".repeat(Math.max(0, innerWidth - title.length - 3)))}+`;
+  const body = content.split("\n").map((line) => `| ${color(colors.blue, ">")} ${pad(line, innerWidth - 2)} |`);
+  return [top, ...body, `+${"-".repeat(width - 2)}+`].join("\n");
 }
 
 /** Renders the one-line provider/model/mode status bar. */
 export function statusBar(provider: string, model: string, mode: string): string {
   const providerLabel = provider || "not configured";
   const modelLabel = model || "not configured";
-  return [
-    color(colors.orange, "◆"),
-    color(colors.text, providerLabel),
-    color(colors.muted, "/"),
-    color(colors.blue, modelLabel),
-    color(colors.muted, "·"),
-    color(colors.cyan, mode),
-  ].join(" ");
-}
-
-/** Renders one streaming spinner frame with its message. */
-export function spinnerFrame(index: number, message: string): string {
-  return `${color(colors.blue, frames[index % frames.length])} ${color(colors.muted, "stream")} ${message}`;
+  return `${color(colors.text, providerLabel)} ${color(colors.muted, "/")} ${color(colors.blue, modelLabel)}${color(colors.muted, ",")} ${color(colors.cyan, mode)}`;
 }
 
 /** Renders one chat event as plain ANSI text. */
 export function formatEvent(event: ChatEvent): string {
   if (event.type === "text") return event.text;
-  if (event.type === "reasoning") return `${color(colors.blue, "·")} ${color(colors.muted, event.text)}`;
+  if (event.type === "reasoning") return color(colors.muted, event.text);
   if (event.type === "error") return color(colors.red, event.message);
   if (event.type === "finish") return "";
   if (event.type === "start")
-    return `${color(colors.blue, "◆")} ${color(colors.text, "connected")} ${color(colors.muted, `${event.provider} / ${event.model}`)}`;
-  return `${color(colors.orange, "→")} ${color(colors.blue, event.name)} ${color(colors.muted, JSON.stringify(event.input))}`;
+    return `${color(colors.text, "connected")} ${color(colors.muted, `${event.provider} / ${event.model}`)}`;
+  return `${color(colors.orange, "tool")} ${color(colors.blue, event.name)} ${color(colors.muted, JSON.stringify(event.input))}`;
 }
 
 /** Filters a suggestion list down to the values matching the input, capped at a limit. */
