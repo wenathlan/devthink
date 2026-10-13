@@ -4,8 +4,8 @@
  * (.pagehead), broken asymmetric: the display statement dominates the left
  * column at 1.6fr, the lede and the single action sit as a bottom-aligned
  * support rail on the right. Campaign v3 r2-a: the band stages its own ONE
- * named light (the morning window, a shader-fallback bloom high on the
- * right) with the engine halftone-edge dissolving the dots into the page,
+ * named light (the morning window, a radial-light bloom high on the
+ * right) with the engine dissolving the dots into the page,
  * and the entrance rides the engine .enter kit at 70ms steps.
  */
 import type { CSSProperties } from "react";
@@ -35,10 +35,10 @@ const ledeStyle = { margin: 0, maxWidth: "44ch", color: "var(--dt-muted)", fontS
 
 export function AboutHero() {
   return (
-    <header className="pagehead about-hero shader-stage halftone-edge" style={heroStyle}>
+    <header className="pagehead about-hero shader-stage" style={heroStyle}>
       {/* the ONE named light of the page: the morning window, high on the
           right; it breathes once per cycle (guarded by the engine kit) */}
-      <div className="shader-fallback r2a-about-light breathe" aria-hidden="true" />
+      <div className="radial-light r2a-about-light breathe" aria-hidden="true" />
       <div
         className="about-hero__statement enter"
         style={{ display: "grid", gap: 16, alignContent: "start", ...step(0) }}

@@ -20,13 +20,13 @@
  * head toolbar that carries the real catalog count, and the automation note is
  * demoted to a narrow support rail. The queue actions stay on the 28px
  * .apps-action ladder with tooltips and aria-labels; the .pagehead hero keeps
- * the contract and carries the .halftone edge, the list carries the .grain
+ * the contract and carries the grain film, the list carries the .grain
  * film, the page carries the one .atmos light source (C1-01 paints all three).
  * Rows reveal in one staggered entrance and hold still. The engine behavior —
  * the catalog fetch and the gateway queue — is untouched.
  *
  * R2-b creative studio: the katexis banner becomes the hero object — the
- * engine .shader-stage with ONE .shader-fallback bloom, the .halftone-edge
+ * engine .shader-stage with ONE .radial-light source, the
  * dissolve, the grain film, the one ambient .breathe and the transform-only
  * equalizer motif (1.2s, the studio pulse). The head joins the staged
  * editorial grammar (mono eyebrow → Bricolage display line → one phrase,
@@ -62,7 +62,7 @@ function secondsOf(minutes: string): number | null {
  * the support rail folds under the ledger when it would starve. */
 const MUSIC_CSS = `
 .atmos::before, .atmos::after, .grain::before, .grain::after,
-.halftone::before, .halftone::after { pointer-events: none; }
+{ pointer-events: none; }
 .control-page.atmos { position: relative; }
 .ms-hero { position: relative; display: grid; gap: 10px; padding: clamp(22px, 3vw, 30px); border: 1px solid var(--dtv3-hairline); border-radius: var(--dtv3-r-3); background: rgb(255 255 255 / 2%); }
 .ms-hero__head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
@@ -125,14 +125,14 @@ function EqPulse() {
 }
 
 /** The engine banner of the katexis row: the hero object of the page — the
- * engine shader stage with the one bloom, the halftone dissolve, the grain,
+ * engine shader stage with the one light source, the grain,
  * the ONE ambient .breathe and the eq pulse. The banner stays empty until
  * the database pairs — never a placeholder engine row. */
 function EngineBanner({ app }: { app: NativeApp | undefined }) {
   if (!app)
     return (
-      <section className="ms-hero shader-stage halftone-edge breathe">
-        <div className="shader-fallback" aria-hidden="true" />
+      <section className="ms-hero shader-stage breathe">
+        <div className="radial-light" aria-hidden="true" />
         <div className="grain-overlay" aria-hidden="true" />
         <div className="ms-hero__head">
           <EqPulse />
@@ -147,8 +147,8 @@ function EngineBanner({ app }: { app: NativeApp | undefined }) {
       </section>
     );
   return (
-    <section className="ms-hero shader-stage halftone-edge breathe">
-      <div className="shader-fallback" aria-hidden="true" />
+    <section className="ms-hero shader-stage breathe">
+      <div className="radial-light" aria-hidden="true" />
       <div className="grain-overlay" aria-hidden="true" />
       <div className="ms-hero__head">
         <EqPulse />
@@ -200,8 +200,8 @@ export default function MusicStudio() {
     <main className="control-page atmos">
       <ShellChrome />
       <div className="page-container">
-        <header className="pagehead r2b-head shader-stage halftone-edge enter" style={step(0)}>
-          <div className="shader-fallback" aria-hidden="true" />
+        <header className="pagehead r2b-head shader-stage enter" style={step(0)}>
+          <div className="radial-light" aria-hidden="true" />
           <div className="grain-overlay" aria-hidden="true" />
           <p className="pagehead__eyebrow r2a-eyebrow">devthink — music</p>
           <h1 className="pagehead__title r2a-display">The music studio</h1>

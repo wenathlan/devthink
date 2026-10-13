@@ -4,7 +4,7 @@
  * colored disc). The surface contract: 4px corners on the chip, hairline
  * edge over currentColor, the glyph inheriting the .badge tone color so
  * the wave-2 CSS keeps grading every state from one ladder. The former
- * `pulse` prop (the 3s live-dot ping) is retired with the infinite loops
+ * `pulse` prop is retired with the infinite loops
  * (x12): the badge is a static state mark. Non-interactive — the focus
  * ring pass targets the focusable surfaces around it.
  */
@@ -28,7 +28,7 @@ export function StatusDot({
 }: {
   label: string;
   tone?: StatusTone;
-  /** retired with the live-dot ping (x12): accepted for call-site
+  /** retired with the ping loops (x12): accepted for call-site
    * compatibility, never rendered */
   pulse?: boolean;
 }) {

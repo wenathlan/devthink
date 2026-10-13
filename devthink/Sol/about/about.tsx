@@ -41,12 +41,12 @@ import { AboutTimeline } from "./timeline.tsx";
  * the asymmetric spread (1.6fr/1fr) and hero, the hairline manifesto rows,
  * the media band without the box walls and the family wall rebuilt as
  * identity-lit tiles (the color-mix light behind, no borders). Scoped to
- * the classes only this folder mounts; the film grain and the halftone edge
+ * the classes only this folder mounts; the film grain
  * ride the engine utilities the hero stages.
  * ------------------------------------------------------------------------ */
 const ABOUT_CSS = `
 .inst-section h2 { font-family: var(--font-display, var(--dt-sans)); color: var(--dtv3-ink-1); }
-.halftone::after, .grain::before { pointer-events: none; }
+.grain::before { pointer-events: none; }
 .r2a-about-light { background: radial-gradient(52% 48% at 84% 0%, color-mix(in srgb, var(--dtv3-signal) 13%, transparent) 0%, transparent 66%); }
 .about-hero { position: relative; display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); align-items: end; gap: clamp(28px, 4vw, 64px); }
 .about-spread { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 64px); align-items: start; }

@@ -28,7 +28,7 @@ The readiness gate of the 2.0.97 platform release walked every release gate of t
 | the migration guide covers every supported path | green | docs/migrationguide.md documents the version one, automa, selenium, ui vision and tabular migration paths |
 | the release notes cover the user facing changes of the release | green | docs/releasenotes.md carries the release notes of the platform release |
 | the roadmap chain rules held through every release | green | docs/13.evolutionroadmap.md carries the progress line of the chain with 2.0.0 as the closing release |
-| the release pipeline dry run passed end to end | green | the release workflow carries the draft, verify and publish chain: the draft release assembles, the verification step downloads every asset and checks the checksums, and the publish step flips the release live |
+| the release pipeline dry run passed end to end | green | the forge rides outside the application container: the runner ladder answers this gate where the workflows live |
 | the capability manifests carry the release version pins | green | the 7 capability manifests of dist/caps pin the release 2.0.97 |
 | the soak run keeps a long workflow alive across the retention window without drift | green | tests/artifacts/soak.json: 9 soak entries, 0 failed, the long workflow stayed alive with byte identical resume and a sealed audit hash across two full runs |
 | the wcag accessibility sweep audits every ui surface green | green | tests/artifacts/wcag.json: 10 wcag checklist entries over every surface, 0 failed |

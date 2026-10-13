@@ -5,7 +5,7 @@
  * Corefile). Content absorbed from the static argan site.
  *
  * C2-02 pass: each page breaks the box grid — one dominant object (jade
- * light source, halftone edge, film grain) over a support rail, editorial
+ * light source, film grain) over a support rail, editorial
  * ledgers instead of repeated identical cards, the argan identity accent
  * (apps.ts metadata) on key numbers and active states, and the one
  * staggered entrance per view switch (the reveal.ts hook, reduced-motion

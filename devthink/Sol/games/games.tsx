@@ -21,14 +21,14 @@
  * runner-boundary note and the shared automation note are demoted to a narrow
  * support rail beside the list, so the body reads main column + margin column
  * instead of three equal stacked panels. The .pagehead hero keeps the contract
- * and carries the .halftone edge; the list carries the .grain film; the page
+ * and the list carries the .grain film; the page
  * carries the one .atmos light source (C1-01 paints all three). Rows reveal in
  * one staggered entrance and hold still; the ladder keeps queuebinarylaunch
  * behavior, routes and exports untouched.
  *
  * R2-b stage energy: the hero becomes the ONE staged panel — the engine
- * .shader-stage with a single .shader-fallback ember bloom, the
- * .halftone-edge dissolve, the film grain and the r2-a display grammar
+ * .shader-stage with a single .radial-light ember bloom, the
+ * .dissolve, the film grain and the r2-a display grammar
  * (mono eyebrow → Bricolage display line → one phrase → real-count meta),
  * entering once through the engine .enter kit. The rows are wide hairline
  * ledgers — monogram cover left (initials cut from the real title), body
@@ -67,7 +67,7 @@ function monogram(title: string): string {
  * when it would starve. */
 const GAMES_CSS = `
 .atmos::before, .atmos::after, .grain::before, .grain::after,
-.halftone::before, .halftone::after { pointer-events: none; }
+{ pointer-events: none; }
 .control-page.atmos { position: relative; }
 .gm-body { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(240px, 1fr); gap: 32px; align-items: start; }
 .gm-stage { display: grid; min-width: 0; }
@@ -146,8 +146,8 @@ export default function Games() {
     <main className="control-page atmos">
       <ShellChrome />
       <div className="page-container">
-        <header className="pagehead r2b-head r2b-stage shader-stage halftone-edge enter" style={step(0)}>
-          <div className="shader-fallback" aria-hidden="true" />
+        <header className="pagehead r2b-head r2b-stage shader-stage enter" style={step(0)}>
+          <div className="radial-light" aria-hidden="true" />
           <div className="grain-overlay" aria-hidden="true" />
           <p className="pagehead__eyebrow r2a-eyebrow">devthink · games</p>
           <h1 className="pagehead__title r2a-display">The runner stage</h1>

@@ -6,7 +6,7 @@
  * integrations, clean-url demo), chat (the dedicated Aura chat). Content
  * absorbed from the repository README and ARCHITECTURE.
  *
- * C2-02 pass: one dominant object per page (ember light source, halftone
+ * C2-02 pass: one dominant object per page (ember light source, film
  * edge, film grain) over a support rail, editorial ledgers instead of
  * repeated identical cards, each sibling surface tinted with its own
  * apps.ts accent, and the one staggered entrance per view switch
@@ -506,7 +506,7 @@ function ProjectsPage({
       {featured ? (
         <article
           key={featured.id}
-          className="glass glass-hover card proj atmos reveal halftone grain"
+          className="glass glass-hover card proj atmos reveal grain"
           style={{ ...DOMINANT_SURFACE, marginTop: 4 }}
         >
           <div style={{ display: "flex", flexWrap: "wrap" }}>

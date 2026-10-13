@@ -4,7 +4,7 @@
  * (global ladder + divisions), arsenal (6 weapons with stat bars + class
  * filter). Content absorbed from the static stealthhead site.
  *
- * C2-02 pass: one dominant object per page (ember light source, halftone
+ * C2-02 pass: one dominant object per page (ember light source, film
  * edge, film grain) over a support rail, editorial ledgers instead of
  * repeated identical cards, the stealthhead identity accent (apps.ts
  * metadata) on lobby ids, MMR and the stat bars, and the one staggered

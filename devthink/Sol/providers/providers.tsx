@@ -154,7 +154,7 @@ export default function Providers() {
                   </button>
                   <span className="r2c-state">
                     <span
-                      className={`r2c-dot${isActive ? " live-dot" : ""}`}
+                      className={`r2c-dot`}
                       data-on={isActive ? "true" : "false"}
                       aria-hidden="true"
                     />

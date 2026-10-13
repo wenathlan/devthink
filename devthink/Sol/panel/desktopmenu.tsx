@@ -24,7 +24,6 @@ import {
   useRef,
   useState,
 } from "react";
-import "../shelldelta.css";
 import { clampNumber } from "./desktopstate.ts";
 
 /** one entry of a context menu */

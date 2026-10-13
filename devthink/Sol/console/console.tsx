@@ -22,7 +22,7 @@
  * under ONE named light (the phosphor lamp over the pane); the output rides
  * 13px mono with hairline-separated rows, a ≤4% scanline veil and the
  * 2.4s block-caret blink; the command reference closes as a hairline ledger
- * rail; the paired gateway answers with the engine live-dot ping. the
+ * rail; the paired gateway answers with the engine status lamp. the
  * terminal runs the static catalog (one source: commandcatalog.ts, lifted
  * from the views.ts registry the cli registers), never a live process:
  * provider credentials and the engine stay behind the paired local cli.
@@ -45,14 +45,14 @@ export * from "./terminal.tsx";
 /* --------------------------------------------------------------------------
  * the console page-app stylesheet — the r2-a terminal pass of this folder:
  * terminal craft. ONE light (the phosphor lamp riding the engine
- * .shader-fallback), the pane as the machined dark glass with the ≤4%
+ * .radial-light), the pane as the machined dark glass with the ≤4%
  * scanline veil, 13px mono output with hairline-separated rows and the
  * 2.4s signal block-caret; the reference closes as a hairline ledger with
  * the signal hover. Scoped to the classes only this page mounts; it lands
  * once at import time. The catalog, boot and command flow are untouched.
  * ------------------------------------------------------------------------ */
 const CONSOLE_CSS = `
-.halftone::after, .grain::before { pointer-events: none; }
+.textured::after, .grain::before { pointer-events: none; }
 .r2a-console-light { background: radial-gradient(54% 50% at 82% 0%, color-mix(in srgb, var(--dtv3-signal) 14%, transparent) 0%, transparent 66%); }
 .console-grid { grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr); gap: clamp(28px, 4vw, 56px); align-items: start; }
 .console-main { gap: 16px; }
@@ -258,7 +258,7 @@ export default function Console() {
           <div className="console-main shader-stage enter" style={step(1)}>
             {/* the ONE named light of the page: the phosphor lamp over the
                 pane; the grain veil keeps the film on the glass */}
-            <div className="shader-fallback r2a-console-light breathe" aria-hidden="true" />
+            <div className="radial-light r2a-console-light breathe" aria-hidden="true" />
             <div className="grain-overlay" aria-hidden="true" />
             <p className="r2a-kicker">
               01 — the terminal
@@ -267,7 +267,7 @@ export default function Console() {
             <Terminal rows={rows} prompt={consoleprompt} state={termstate} enabled={running} oncommand={runcommand} />
             <p className="console-note">
               <span aria-live="polite" className={paired ? "is-paired" : undefined}>
-                <i className="console-note__lamp live-dot" aria-hidden="true" />
+                <i className="console-note__lamp" aria-hidden="true" />
                 {paired ? "gateway: paired loopback detected" : "cli design reference — static catalog"}
               </span>
               <span>tab completes — up/down history — enter runs</span>

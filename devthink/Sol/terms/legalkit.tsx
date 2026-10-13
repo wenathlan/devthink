@@ -53,7 +53,7 @@ type LegalDocumentProps = {
 export function LegalDocument({ eyebrow, title, lede, sections }: LegalDocumentProps) {
   const reduced = useReducedMotion();
   return (
-    <div className="page-container atmos grain halftone" style={pagecontainerStyle}>
+    <div className="page-container atmos grain textured" style={pagecontainerStyle}>
       <header className="pagehead" style={{ ...pageheadStyle, padding: "48px 0 30px" }}>
         <p className="pagehead__eyebrow" style={{ ...heroEyebrowStyle, ...stagedEntrance(reduced, 0) }}>
           {eyebrow}

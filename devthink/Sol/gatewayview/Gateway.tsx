@@ -22,15 +22,15 @@
  * routes and policy are hairline-ruled rows with quiet hover washes instead
  * of boxed tile grids; the live/paused badge keeps the one accent per state
  * (green live, amber paused) and the default thinking budget carries the
- * single solar accent; the .pagehead heroes carry the .halftone edge, the
+ * single solar accent; the .pagehead heroes carry the film grain, the
  * versions table carries the .grain film, the console carries the one .atmos
  * light source (C1-01 paints all three); rows reveal in one staggered
  * entrance and hold still; the hero back action rides the 28–36px control
  * ladder.
  *
  * R2-b data ledger: the console joins the staged editorial grammar — the
- * hero stages the engine .shader-stage with ONE .shader-fallback bloom, the
- * .halftone-edge dissolve and the grain film, the Bricolage display line
+ * hero stages the engine .shader-stage with ONE .radial-light bloom, the
+ * .dissolve and the grain film, the Bricolage display line
  * entering once through the engine .enter kit. The overview body reads
  * asymmetric 1.6fr/1fr: the versions ledger dominant (hairline rows with
  * the signal 10% hover tint and the machined model-count meters on the
@@ -62,7 +62,7 @@ const maxmodels = Math.max(...Object.values(config.versions).map((version) => ve
  * and engine layers off the pointer path. */
 const GATEWAY_CSS = `
 .atmos::before, .atmos::after, .grain::before, .grain::after,
-.halftone::before, .halftone::after { pointer-events: none; }
+{ pointer-events: none; }
 .control-page.atmos { position: relative; }
 .page-container .gateway-panel + .gateway-panel { margin-top: 30px; }
 .page-container .gateway-explorer { margin-top: 30px; }
@@ -290,8 +290,8 @@ export default function Gateway() {
   if (detail) {
     return (
       <ConsoleFrame>
-        <header className="pagehead r2b-head shader-stage halftone-edge enter" style={step(0)}>
-          <div className="shader-fallback" aria-hidden="true" />
+        <header className="pagehead r2b-head shader-stage enter" style={step(0)}>
+          <div className="radial-light" aria-hidden="true" />
           <div className="grain-overlay" aria-hidden="true" />
           <p className="pagehead__eyebrow r2a-eyebrow">devthink · gateway</p>
           <h1 className="pagehead__title r2a-display">
@@ -409,8 +409,8 @@ export default function Gateway() {
 
   return (
     <ConsoleFrame>
-      <header className="pagehead r2b-head shader-stage halftone-edge enter" style={step(0)}>
-        <div className="shader-fallback" aria-hidden="true" />
+      <header className="pagehead r2b-head shader-stage enter" style={step(0)}>
+        <div className="radial-light" aria-hidden="true" />
         <div className="grain-overlay" aria-hidden="true" />
         <p className="pagehead__eyebrow r2a-eyebrow">devthink · gateway</p>
         <h1 className="pagehead__title r2a-display">One local door</h1>

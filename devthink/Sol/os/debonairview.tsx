@@ -5,7 +5,7 @@
  * transitions), library (takes table with search). Content absorbed from
  * the static debonair site.
  *
- * C2-02 pass: one dominant object per page (brass light source, halftone
+ * C2-02 pass: one dominant object per page (brass light source, film
  * edge, film grain) over a support rail, editorial ledgers instead of
  * repeated identical cards, the debonair identity accent (apps.ts
  * metadata) on the transport readouts, seeds and active strips, and the
