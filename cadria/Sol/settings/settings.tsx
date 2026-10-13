@@ -21,7 +21,7 @@ import { gatewayHealth, gatewayUrl, setGatewayUrl } from "../shell/gatewayclient
 import { useToast } from "../toast/Toast.tsx";
 
 /** synced by hand with cadria/package.json "version" — package.json is forbidden to import at runtime. */
-const VERSION = "2.0.94";
+const VERSION = "2.0.97";
 
 /** the lifecycle of the gateway health readout. */
 type Health = "unknown" | "checking" | "online" | "offline";
