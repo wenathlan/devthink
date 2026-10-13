@@ -230,6 +230,22 @@ describe("gateway routes", () => {
     assert.ok(typeof row.bpm === "number" && typeof row.key === "string" && row.key.includes(" "));
   });
 
+  it("deletes a stored project and answers ok with the id", async () => {
+    const response = await app.request(`/api/projects/${projectId}`, { method: "DELETE" });
+    assert.equal(response.status, 200);
+    assert.deepEqual(await response.json(), { ok: true, id: projectId });
+    const after = await app.request(`/api/render/${projectId}`);
+    assert.equal(after.status, 404);
+  });
+
+  it("answers 404 gateway-unknown-project when deleting a missing generation", async () => {
+    const response = await app.request("/api/projects/gen-missing0000-00000000", { method: "DELETE" });
+    assert.equal(response.status, 404);
+    const payload = (await response.json()) as { ok: boolean; code: string };
+    assert.equal(payload.ok, false);
+    assert.equal(payload.code, "gateway-unknown-project");
+  });
+
   it("lists analyses as metadata without reportJson", async () => {
     const response = await app.request("/api/analyses");
     assert.equal(response.status, 200);

@@ -7,7 +7,9 @@
 // compositionBlocks + rhythmScatter + synthTexture + synthMotion → buildImageProject →
 // 201 { projectId, project, digest } · GET /api/render/:id — byte-deterministic
 // image/svg+xml · GET /api/projects?limit= + /api/analyses?limit= — metadata lists,
-// limit clamped 1-200 (default 50). Every 4xx/5xx answers { ok: false, error, code }:
+// limit clamped 1-200 (default 50) · DELETE /api/projects/:id — removes one stored
+// generation, 200 { ok: true } or 404 gateway-unknown-project. Every 4xx/5xx answers
+// { ok: false, error, code }:
 // gateway-payload-too-large (413, > MAX_BODY_BYTES) · gateway-bad-json ·
 // gateway-missing-samples / gateway-bad-sample-rate / gateway-no-source /
 // gateway-missing-descriptor (400) · gateway-unknown-analysis / gateway-unknown-project
@@ -370,6 +372,14 @@ export function createGateway(store: GenerationStore): Hono {
       createdAt: record.createdAt,
     }));
     return c.json({ projects, count: projects.length });
+  });
+
+  app.delete("/api/projects/:id", (c) => {
+    const id = c.req.param("id");
+    if (!id) throw new GatewayError(400, "gateway-missing-id", "gateway: delete needs a project id");
+    if (!store.deleteGeneration(id))
+      throw new GatewayError(404, "gateway-unknown-project", `gateway: no generation ${id}`);
+    return c.json({ ok: true, id });
   });
 
   app.get("/api/analyses", (c) => {
