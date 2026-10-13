@@ -20,9 +20,9 @@ import { Link } from "wouter";
 import { type ArrangerRole, beatSecondsOf, planTake, RACK_LANES, type TakePlan, validatePlan } from "../../arranger.ts";
 import { clipStyle, formatClock, formatGain, playheadPercent } from "../../dawview.ts";
 import { effectiveGainDb, graphFromStrips, type MixerGraph, patchChannel } from "../../mixergraph.ts";
-import { busHush } from "../../playerbus.ts";
 import { reduceMotionApplied } from "../../motionpref.ts";
-import { type StageId } from "../../stages.ts";
+import { busHush } from "../../playerbus.ts";
+import type { StageId } from "../../stages.ts";
 import { positionAt, scheduleTake } from "../../takeevents.ts";
 import { findTakeRecord, loadTakeRecords, sessionStorageOrMemory, TAKE_SELECT_KEY } from "../../takestore.ts";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
@@ -216,9 +216,11 @@ export default function Studio() {
   }, []);
 
   /** registers one stage section on its ref map slot. */
-  const stageRef = (id: StageId) => (element: HTMLElement | null): void => {
-    stageRefs.current.set(id, element);
-  };
+  const stageRef =
+    (id: StageId) =>
+    (element: HTMLElement | null): void => {
+      stageRefs.current.set(id, element);
+    };
 
   return (
     <Shell
@@ -248,7 +250,12 @@ export default function Studio() {
 
       {/* STAGE PROMPT — the line the take answers to (the engine's own record) */}
       {plan ? (
-        <section className="stage-section rack-panel reveal" data-stage="prompt" ref={stageRef("prompt")} aria-label="Stage prompt">
+        <section
+          className="stage-section rack-panel reveal"
+          data-stage="prompt"
+          ref={stageRef("prompt")}
+          aria-label="Stage prompt"
+        >
           <p className="stage-eyebrow">stage · prompt</p>
           <blockquote className="stage-quote">
             {plan.prompt}
@@ -257,18 +264,20 @@ export default function Studio() {
             </footer>
           </blockquote>
           <p className="stage-hint">
-            New material?{" "}
-            <Link href="/generate">
-              Compose a fresh prompt
-            </Link>{" "}
-            and come back — same prompt and seed always rebuild this exact take.
+            New material? <Link href="/generate">Compose a fresh prompt</Link> and come back — same prompt and seed
+            always rebuild this exact take.
           </p>
         </section>
       ) : null}
 
       {/* STAGE LYRICS — the chord sheet the harmony engine wrote, one row a bar */}
       {plan ? (
-        <section className="stage-section reveal" data-stage="lyrics" ref={stageRef("lyrics")} aria-label="Stage lyrics">
+        <section
+          className="stage-section reveal"
+          data-stage="lyrics"
+          ref={stageRef("lyrics")}
+          aria-label="Stage lyrics"
+        >
           <p className="stage-eyebrow">stage · lyrics</p>
           <p className="stage-hint">
             The lead sheet of the take — <strong className="ink-strong">{plan.keyLabel}</strong>, one chord a bar over{" "}
@@ -279,7 +288,11 @@ export default function Studio() {
               <li key={`chord-${event.bar}`} className="lyric-row">
                 <span className="lyric-bar">{event.bar + 1}</span>
                 <span className="lyric-symbol">{event.symbol}</span>
-                <span className="lyric-tension" style={{ "--t": event.tension.toFixed(2) } as CSSProperties} aria-hidden="true" />
+                <span
+                  className="lyric-tension"
+                  style={{ "--t": event.tension.toFixed(2) } as CSSProperties}
+                  aria-hidden="true"
+                />
               </li>
             ))}
           </ol>
@@ -317,9 +330,7 @@ export default function Studio() {
             </div>
             <div className="spec-row">
               <dt>render</dt>
-              <dd>
-                {plan.mastering.sampleRateHz / 1000} kHz WAV
-              </dd>
+              <dd>{plan.mastering.sampleRateHz / 1000} kHz WAV</dd>
             </div>
           </dl>
           {problems.length > 0 ? <p className="badge warning">{`Plan problems: ${problems.join("; ")}`}</p> : null}
@@ -328,164 +339,169 @@ export default function Studio() {
 
       {/* STAGE GENERATE — the rendered arrangement: transport, playlist, rack */}
       {plan ? (
-        <section className="stage-section reveal" data-stage="generate" ref={stageRef("generate")} aria-label="Stage generate">
+        <section
+          className="stage-section reveal"
+          data-stage="generate"
+          ref={stageRef("generate")}
+          aria-label="Stage generate"
+        >
           <p className="stage-eyebrow">stage · generate</p>
 
           {/* TRANSPORT — real keys over the WebAudio clock */}
           <section className="transport rack-panel" aria-label="Transport bar">
-          <div className="group">
-            <button className="tkey" type="button" aria-label="Play" aria-pressed={playing} onClick={togglePlay}>
-              <svg
-                className="svg"
-                viewBox="0 0 24 24"
-                width="16"
-                height="16"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
+            <div className="group">
+              <button className="tkey" type="button" aria-label="Play" aria-pressed={playing} onClick={togglePlay}>
+                <svg
+                  className="svg"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <polygon points="6 3 20 12 6 21 6 3" />
+                </svg>
+                {playing ? "Pause" : "Play"}
+              </button>
+              <button className="tkey" type="button" aria-label="Stop" onClick={stop}>
+                <svg
+                  className="svg"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="5" y="5" width="14" height="14" rx="2" />
+                </svg>
+                Stop
+              </button>
+              <button
+                className="tkey tkey--loop"
+                type="button"
+                aria-label="Loop the take"
+                aria-pressed={loop}
+                onClick={toggleLoop}
               >
-                <polygon points="6 3 20 12 6 21 6 3" />
-              </svg>
-              {playing ? "Pause" : "Play"}
-            </button>
-            <button className="tkey" type="button" aria-label="Stop" onClick={stop}>
-              <svg
-                className="svg"
-                viewBox="0 0 24 24"
-                width="16"
-                height="16"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <rect x="5" y="5" width="14" height="14" rx="2" />
-              </svg>
-              Stop
-            </button>
-            <button
-              className="tkey tkey--loop"
-              type="button"
-              aria-label="Loop the take"
-              aria-pressed={loop}
-              onClick={toggleLoop}
-            >
-              <svg
-                className="svg"
-                viewBox="0 0 24 24"
-                width="16"
-                height="16"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M17 2l4 4-4 4" />
-                <path d="M3 11v-1a4 4 0 0 1 4-4h14" />
-                <path d="M7 22l-4-4 4-4" />
-                <path d="M21 13v1a4 4 0 0 1-4 4H3" />
-              </svg>
-              Loop
-            </button>
-          </div>
-          <div className="readouts">
-            <div className="readout">
-              <span className="lbl">Position</span>
-              <span className="val">{formatClock(position)}</span>
+                <svg
+                  className="svg"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M17 2l4 4-4 4" />
+                  <path d="M3 11v-1a4 4 0 0 1 4-4h14" />
+                  <path d="M7 22l-4-4 4-4" />
+                  <path d="M21 13v1a4 4 0 0 1-4 4H3" />
+                </svg>
+                Loop
+              </button>
             </div>
-            <div className="readout">
-              <span className="lbl">Bar</span>
-              <span className="val">
-                {rackPosition.bar + 1}.{rackPosition.step + 1}
-              </span>
+            <div className="readouts">
+              <div className="readout">
+                <span className="lbl">Position</span>
+                <span className="val">{formatClock(position)}</span>
+              </div>
+              <div className="readout">
+                <span className="lbl">Bar</span>
+                <span className="val">
+                  {rackPosition.bar + 1}.{rackPosition.step + 1}
+                </span>
+              </div>
+              <div className="readout">
+                <span className="lbl">BPM</span>
+                <span className="val">{plan.bpm}</span>
+              </div>
+              <div className="readout">
+                <span className="lbl">Key</span>
+                <span className="val">{plan.keyLabel}</span>
+              </div>
+              <div className="readout">
+                <span className="lbl">Target</span>
+                <span className="val">{plan.lufsTarget} LUFS</span>
+              </div>
             </div>
-            <div className="readout">
-              <span className="lbl">BPM</span>
-              <span className="val">{plan.bpm}</span>
-            </div>
-            <div className="readout">
-              <span className="lbl">Key</span>
-              <span className="val">{plan.keyLabel}</span>
-            </div>
-            <div className="readout">
-              <span className="lbl">Target</span>
-              <span className="val">{plan.lufsTarget} LUFS</span>
-            </div>
-          </div>
-        </section>
+          </section>
 
           {/* the playlist rides the full stage now (the mixer moved to the mix stage) */}
           {graph ? (
             <section className="daw rack-panel" aria-label="Arrangement playlist">
-            <div className="tl-scroll">
-              <div className="tl-inner">
-                <div className="tl-ruler">
-                  <span aria-hidden="true" />
-                  <div className="lane">
-                    {/* the scrub: a native range over the ruler — the click and
+              <div className="tl-scroll">
+                <div className="tl-inner">
+                  <div className="tl-ruler">
+                    <span aria-hidden="true" />
+                    <div className="lane">
+                      {/* the scrub: a native range over the ruler — the click and
                         the keyboard (arrows, page, home/end) both seek the
                         WebAudio clock; focus paints the lane underline */}
-                    <input
-                      className="tl-scrub"
-                      type="range"
-                      min={0}
-                      max={plan.durationSeconds}
-                      step={0.1}
-                      value={Math.min(position, plan.durationSeconds)}
-                      onChange={(event) => seek(Number(event.currentTarget.value))}
-                      aria-label="Seek the take"
-                    />
-                    {RULER_BARS.map((no) => (
-                      <span key={`ruler-${no}`} aria-hidden="true">
-                        {no}
-                      </span>
+                      <input
+                        className="tl-scrub"
+                        type="range"
+                        min={0}
+                        max={plan.durationSeconds}
+                        step={0.1}
+                        value={Math.min(position, plan.durationSeconds)}
+                        onChange={(event) => seek(Number(event.currentTarget.value))}
+                        aria-label="Seek the take"
+                      />
+                      {RULER_BARS.map((no) => (
+                        <span key={`ruler-${no}`} aria-hidden="true">
+                          {no}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="tl-canvas">
+                    {DESK_ROLES.map((role) => (
+                      <div key={role} className="tl-row">
+                        <div className="tl-label">
+                          <b>{role}</b>
+                          <small>{plan.strips.find((strip) => strip.name === role)?.faderDb.toFixed(1)} dB</small>
+                        </div>
+                        <div className="tl-lane">
+                          {plan.clips
+                            .filter((clip) => clip.track === role)
+                            .map((clip) => {
+                              const geo = clipStyle(clip.start, clip.duration, plan.durationSeconds);
+                              const chord =
+                                plan.chords[Math.min(plan.bars - 1, Math.floor(clip.start / plan.barSeconds))];
+                              return (
+                                <span
+                                  key={clip.id}
+                                  className="clip c1"
+                                  style={{ left: `${geo.left}%`, width: `${geo.width}%` }}
+                                  title={`${clip.label}${chord ? ` · ${chord.symbol}` : ""}`}
+                                >
+                                  {clip.label}
+                                </span>
+                              );
+                            })}
+                        </div>
+                      </div>
                     ))}
+                    <div
+                      className="playhead"
+                      style={{ left: `${playheadPercent(position, plan.durationSeconds)}%` }}
+                      aria-hidden="true"
+                    />
                   </div>
                 </div>
-                <div className="tl-canvas">
-                  {DESK_ROLES.map((role) => (
-                    <div key={role} className="tl-row">
-                      <div className="tl-label">
-                        <b>{role}</b>
-                        <small>{plan.strips.find((strip) => strip.name === role)?.faderDb.toFixed(1)} dB</small>
-                      </div>
-                      <div className="tl-lane">
-                        {plan.clips
-                          .filter((clip) => clip.track === role)
-                          .map((clip) => {
-                            const geo = clipStyle(clip.start, clip.duration, plan.durationSeconds);
-                            const chord =
-                              plan.chords[Math.min(plan.bars - 1, Math.floor(clip.start / plan.barSeconds))];
-                            return (
-                              <span
-                                key={clip.id}
-                                className="clip c1"
-                                style={{ left: `${geo.left}%`, width: `${geo.width}%` }}
-                                title={`${clip.label}${chord ? ` · ${chord.symbol}` : ""}`}
-                              >
-                                {clip.label}
-                              </span>
-                            );
-                          })}
-                      </div>
-                    </div>
-                  ))}
-                  <div
-                    className="playhead"
-                    style={{ left: `${playheadPercent(position, plan.durationSeconds)}%` }}
-                    aria-hidden="true"
-                  />
-                </div>
               </div>
-            </div>
-          </section>
+            </section>
           ) : null}
 
           {/* CHANNEL RACK — the real grid: velocities, fills, the running step */}
@@ -528,9 +544,9 @@ export default function Studio() {
             <section className="rack-panel scope-note" aria-label="Take ledger">
               <h2 className="card-h">Take ledger</h2>
               <p className="flush">
-                <strong className="ink-strong">{plan.name}</strong> — {plan.genreLabel} · {plan.keyLabel} · {plan.bpm} bpm ·{" "}
-                {plan.bars} bars · {formatClock(plan.durationSeconds)} · {schedule.events.length} scheduled events (
-                {schedule.perRole.drums} drums, {schedule.perRole.bass} bass, {schedule.perRole.keys} keys,{" "}
+                <strong className="ink-strong">{plan.name}</strong> — {plan.genreLabel} · {plan.keyLabel} · {plan.bpm}{" "}
+                bpm · {plan.bars} bars · {formatClock(plan.durationSeconds)} · {schedule.events.length} scheduled events
+                ({schedule.perRole.drums} drums, {schedule.perRole.bass} bass, {schedule.perRole.keys} keys,{" "}
                 {schedule.perRole.lead} lead) · seed <code>{plan.seed}</code> · target {plan.lufsTarget} LUFS /{" "}
                 {plan.mastering.truePeakDbtp} dBTP true peak. Chords:{" "}
                 {plan.chords
@@ -541,8 +557,8 @@ export default function Studio() {
                 {problems.length === 0 ? "Plan validated." : `Plan problems: ${problems.join("; ")}`}
               </p>
               <p className="flush p-sm">
-                Same prompt and seed always rebuild this exact take. Edit the desk live — the faders, mutes and solos ride{" "}
-                <code>mixergraph</code> onto the audio buses while it plays. Loop is{" "}
+                Same prompt and seed always rebuild this exact take. Edit the desk live — the faders, mutes and solos
+                ride <code>mixergraph</code> onto the audio buses while it plays. Loop is{" "}
                 {loop ? "on — the take wraps at the top" : "off — the transport stops at the end"}. Master fader{" "}
                 {formatGain(graph?.channels.find((channel) => channel.id === graph.masterid)?.gaindb ?? -2)} dB.
               </p>
@@ -557,7 +573,12 @@ export default function Studio() {
 
       {/* STAGE TAKES — the shelf this session rendered (the picker the desk reads) */}
       {plan ? (
-        <section className="stage-section rack-panel reveal" data-stage="takes" ref={stageRef("takes")} aria-label="Stage takes">
+        <section
+          className="stage-section rack-panel reveal"
+          data-stage="takes"
+          ref={stageRef("takes")}
+          aria-label="Stage takes"
+        >
           <p className="stage-eyebrow">stage · takes</p>
           <p className="stage-hint">
             {plans.length} take{plans.length === 1 ? "" : "s"} on the shelf — the desk, the bar and the library all read
