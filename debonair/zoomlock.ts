@@ -36,14 +36,7 @@ const DRIFT = 0.01;
 const ZOOM_KEYS = new Set(["=", "+", "-", "_", "0"]);
 
 /** The code names of the zoom shortcuts, so non-US layouts block too. */
-const ZOOM_CODES = new Set([
-  "Equal",
-  "Minus",
-  "Digit0",
-  "Numpad0",
-  "NumpadAdd",
-  "NumpadSubtract",
-]);
+const ZOOM_CODES = new Set(["Equal", "Minus", "Digit0", "Numpad0", "NumpadAdd", "NumpadSubtract"]);
 
 /** Reads the live device pixel ratio, answering 1 where the platform stays silent. */
 function pixelRatio(): number {
@@ -52,11 +45,7 @@ function pixelRatio(): number {
 
 /** Answers whether the engine implements CSS `zoom` on a style declaration. */
 function supportsZoom(): boolean {
-  return (
-    typeof CSS !== "undefined" &&
-    typeof CSS.supports === "function" &&
-    CSS.supports("zoom", "1")
-  );
+  return typeof CSS !== "undefined" && typeof CSS.supports === "function" && CSS.supports("zoom", "1");
 }
 
 /** Rounds a correction factor to four decimals so the style strings stay clean. */
@@ -104,7 +93,9 @@ function rearmresolution(): void {
   if (resolution) {
     if (typeof resolution.removeEventListener === "function") {
       resolution.removeEventListener("change", ondrift);
-    } else if (typeof (resolution as unknown as { removeListener?: (cb: () => void) => void }).removeListener === "function") {
+    } else if (
+      typeof (resolution as unknown as { removeListener?: (cb: () => void) => void }).removeListener === "function"
+    ) {
       (resolution as unknown as { removeListener: (cb: () => void) => void }).removeListener(ondrift);
     }
   }
