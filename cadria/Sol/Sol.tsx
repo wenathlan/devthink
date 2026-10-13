@@ -26,8 +26,19 @@ import NotFoundAnchor from "./notfound/notfound.tsx";
 import OnboardingAnchor from "./onboarding/onboarding.tsx";
 import PlayerAnchor from "./player/player.tsx";
 import SettingsAnchor from "./settings/settings.tsx";
+import EntryGate from "./shell/EntryGate.tsx";
 import Shell from "./shell/Shell.tsx";
 import StudioAnchor from "./studio/studio.tsx";
+
+/** the home seat behind the entry gate: the reform law rides here — intro
+ * first, onboarding second, the home only when both are seen. */
+function HomeGate() {
+  return (
+    <EntryGate>
+      <HomeAnchor />
+    </EntryGate>
+  );
+}
 
 /** the platform route tree: every application page inside the ONE chrome —
  * the entry flow first (onboarding), the apex home, then the seats, the
@@ -37,7 +48,7 @@ function Platform() {
     <Shell>
       <Switch>
         <Route path="/onboarding" component={OnboardingAnchor} />
-        <Route path="/" component={HomeAnchor} />
+        <Route path="/" component={HomeGate} />
         <Route path="/player" component={PlayerAnchor} />
         <Route path="/studio" component={StudioAnchor} />
         <Route path="/edit" component={EditAnchor} />

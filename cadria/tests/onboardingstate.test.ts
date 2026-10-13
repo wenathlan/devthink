@@ -4,7 +4,7 @@
 //   vitest: pnpm vitest run tests/onboardingstate.test.ts
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { hostallowed, mergeStage } from "../onboardingstate.ts";
+import { entrytarget, hostallowed, mergeStage } from "../onboardingstate.ts";
 
 describe("onboarding state", () => {
   it("accepts public https bases", () => {
@@ -58,5 +58,16 @@ describe("onboarding state", () => {
     const state = { introseen: false, onboardingseen: false };
     mergeStage(state, "intro");
     assert.deepEqual(state, { introseen: false, onboardingseen: false });
+  });
+
+  it("hands the entry gate over in the reform order: intro, onboarding, home", () => {
+    const unseen = { introseen: false, onboardingseen: false };
+    const halfseen = mergeStage(unseen, "intro");
+    const fullseen = mergeStage(halfseen, "onboarding");
+    assert.equal(entrytarget(unseen), "/intro");
+    assert.equal(entrytarget(halfseen), "/onboarding");
+    assert.equal(entrytarget(fullseen), "/");
+    // the seen-wins merge can never send a visitor back through the flow
+    assert.equal(entrytarget(mergeStage(fullseen, "intro")), "/");
   });
 });

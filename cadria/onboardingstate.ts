@@ -108,6 +108,22 @@ export function mergeStage(state: VisitorOnboarding, stage: OnboardingStage): Vi
   return stage === "intro" ? { ...state, introseen: true } : { ...state, onboardingseen: true };
 }
 
+/**
+ * Answers the route the entry gate hands over to for the visitor flags —
+ * the reform law of the navigation: the intro comes first, the onboarding
+ * comes second, the home only mounts when both are seen. Pure: the gate
+ * component and the tests share this decision, the flags are never read
+ * anywhere else.
+ *
+ * @param flags the visitor onboarding flags.
+ * @returns the route the visitor belongs at right now.
+ */
+export function entrytarget(flags: VisitorOnboarding): string {
+  if (!flags.introseen) return "/intro";
+  if (!flags.onboardingseen) return "/onboarding";
+  return "/";
+}
+
 /** Reads the localStorage cache; any corruption answers null (the cache is best effort). */
 function readCache(): VisitorOnboarding | null {
   if (typeof window === "undefined") return null;
