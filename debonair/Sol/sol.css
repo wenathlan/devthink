@@ -1690,3 +1690,69 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   animation-iteration-count: 1 !important;
   transition-duration: 0.01ms !important;
 }
+
+/* ==========================================================================
+   v2.28 studio editing — the timeline editor, the piano roll, the export
+   desk and the live scope. Same token law as the rest of the file: the
+   surfaces ladder, the hairlines, the mono readouts, the accent only where
+   the content carries it (clips, steps, selections), the global focus ring.
+   The roll cells run 26px: the desk is a pointer surface and the keyboard
+   (arrows, buttons) carries the accessible path — the trade-off is named.
+   ========================================================================== */
+
+/* -- arrangement editor (the timeline grows hands) ------------------------- */
+.tled { display: grid; gap: 10px; }
+.tled-keys { display: flex; gap: 8px; margin-left: auto; }
+.tled-key { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 12px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface-2); color: var(--ink-2); font-size: 12px; font-weight: 500; cursor: pointer; transition: background var(--sol-micro) var(--sol-ease-out), border-color var(--sol-micro) var(--sol-ease-out); }
+.tled-key:hover { background: var(--surface-3); border-color: var(--line-strong); }
+.tled-icon { flex: none; }
+.tled-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface-1); }
+.tled-inner { position: relative; --tled-label: 96px; }
+.tled-rulerrow { display: flex; }
+.tled-spacer { width: var(--tled-label); flex: none; }
+.tled-ruler { position: relative; height: 42px; }
+.tled-tick { position: absolute; top: 5px; font-family: var(--font-mono); font-size: 10px; color: var(--ink-3); transform: translateX(3px); }
+.tled-scrub { position: absolute; left: 0; right: 0; bottom: 4px; width: 100%; accent-color: var(--accent); }
+.tled-track { display: flex; border-top: 1px solid var(--line); }
+.tled-trackhead { width: var(--tled-label); flex: none; padding: 8px 10px; }
+.tled-trackhead b { display: block; font-size: 12px; font-weight: 600; }
+.tled-trackhead small { font-family: var(--font-mono); font-size: 10px; color: var(--ink-3); }
+.tled-lane { position: relative; height: 46px; border-left: 1px solid var(--line); }
+.tled-clip { position: absolute; top: 6px; bottom: 6px; display: flex; overflow: hidden; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--surface-3); }
+.tled-clip[data-selected="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 60%, transparent); }
+.tled-clipbody { flex: 1; min-width: 0; padding: 2px 6px; border: 0; background: transparent; color: var(--ink-2); font-family: var(--font-mono); font-size: 10px; text-align: left; cursor: grab; touch-action: none; }
+.tled-clipbody:active { cursor: grabbing; }
+.tled-handle { position: absolute; top: 0; bottom: 0; width: 7px; cursor: ew-resize; touch-action: none; }
+.tled-handle[data-edge="start"] { left: 0; }
+.tled-handle[data-edge="end"] { right: 0; }
+.tled-playhead { position: absolute; top: 42px; bottom: 0; width: 1px; background: var(--accent); pointer-events: none; }
+
+/* -- piano roll (one bar, real buttons) ------------------------------------ */
+.roll { display: grid; gap: 10px; }
+.roll-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.roll-tabs { display: flex; gap: 6px; margin-left: auto; }
+.roll-tab { min-height: 28px; padding: 0 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-1); color: var(--ink-3); font-family: var(--font-mono); font-size: 11px; cursor: pointer; transition: background var(--sol-micro) var(--sol-ease-out), color var(--sol-micro) var(--sol-ease-out); }
+.roll-tab:hover { background: var(--surface-2); color: var(--ink-2); }
+.roll-tab.is-on { border-color: transparent; background: var(--surface-4); color: var(--ink); }
+.roll-nav { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.roll-bar { width: 64px; min-height: 32px; font-family: var(--font-mono); }
+.roll-pick { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.roll-pick code { font-size: 10px; color: var(--ink-3); }
+.roll-grid { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface-1); padding: 8px; }
+.roll-row { display: flex; align-items: stretch; gap: 6px; }
+.roll-row + .roll-row { margin-top: 4px; }
+.roll-key { width: 52px; flex: none; display: flex; align-items: center; font-family: var(--font-mono); font-size: 9px; color: var(--ink-3); }
+.roll-cells { display: flex; gap: 3px; }
+.roll-cell { width: 26px; height: 26px; flex: none; padding: 0; border: 1px solid var(--line); border-radius: 3px; background: var(--surface-2); cursor: pointer; transition: background var(--sol-micro) var(--sol-ease-out), border-color var(--sol-micro) var(--sol-ease-out); }
+.roll-cell:hover { background: var(--surface-3); }
+.roll-cell[data-beat="true"] { border-left: 2px solid var(--line-strong); }
+.roll-cell[data-held="true"] { border-color: transparent; background: color-mix(in srgb, var(--accent) 30%, var(--surface-2)); }
+.roll-cell[data-on="true"] { border-color: transparent; background: color-mix(in srgb, var(--accent) 78%, var(--surface-4)); }
+.roll-cell[data-current="true"] { box-shadow: 0 0 0 1px var(--accent), 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent); }
+.roll-foot { font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); }
+
+/* -- export desk and the live scope ---------------------------------------- */
+.exp { display: grid; gap: 8px; }
+.exp-keys { display: flex; gap: 8px; flex-wrap: wrap; }
+.scope-panel { padding: 10px 12px; }
+.scope { display: block; width: 100%; height: 88px; border-radius: var(--radius-sm); }
