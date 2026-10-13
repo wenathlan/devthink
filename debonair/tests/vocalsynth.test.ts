@@ -24,7 +24,6 @@ describe("vocalsynth — the vowel table", () => {
 });
 
 describe("vocalsynth — renderVoice", () => {
-  const options = { sampleRate: 44100, random: seeded(2026) };
   const syllables = [
     { vowel: "a" as const, midi: 64, start: 0, duration: 0.4, velocity: 0.9, consonant: true },
     { vowel: "o" as const, midi: 67, start: 0.45, duration: 0.4, velocity: 0.8 },
@@ -60,7 +59,10 @@ describe("vocalsynth — renderVoice", () => {
 
   it("changes the timbre with the vowel", () => {
     const energy = (vowel: "a" | "i") => {
-      const voice = renderVoice([{ vowel, midi: 64, start: 0, duration: 0.3, velocity: 1 }], { sampleRate: 44100, random: seeded(9) });
+      const voice = renderVoice([{ vowel, midi: 64, start: 0, duration: 0.3, velocity: 1 }], {
+        sampleRate: 44100,
+        random: seeded(9),
+      });
       let sum = 0;
       for (const v of voice.samples) sum += v * v;
       return Math.round(sum * 1e4);

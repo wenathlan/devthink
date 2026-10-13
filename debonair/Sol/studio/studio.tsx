@@ -17,18 +17,31 @@
 // is the engine's: bpm, key, chords, pattern family, LUFS target.
 import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "wouter";
+import { rebaseSchedule } from "../../arrangement.ts";
 import { type ArrangerRole, beatSecondsOf, planTake, RACK_LANES, type TakePlan, validatePlan } from "../../arranger.ts";
-import { clipStyle, formatClock, formatGain, playheadPercent } from "../../dawview.ts";
+import { formatClock, formatGain } from "../../dawview.ts";
 import { effectiveGainDb, graphFromStrips, type MixerGraph, patchChannel } from "../../mixergraph.ts";
 import { reduceMotionApplied } from "../../motionpref.ts";
+import { type EditableNote, notesToSchedule, scheduleToNotes } from "../../pianoroll.ts";
 import { busHush } from "../../playerbus.ts";
 import type { StageId } from "../../stages.ts";
-import { positionAt, scheduleTake } from "../../takeevents.ts";
-import { findTakeRecord, loadTakeRecords, sessionStorageOrMemory, TAKE_SELECT_KEY } from "../../takestore.ts";
+import { positionAt } from "../../takeevents.ts";
+import {
+  findTakeRecord,
+  loadTakeRecords,
+  saveTakePlan,
+  sessionStorageOrMemory,
+  TAKE_SELECT_KEY,
+} from "../../takestore.ts";
+import type { TimelineClip } from "../../timelinemodel.ts";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
 import { TakeEngine } from "./audioengine.ts";
+import { downloadFile, EXPORT_LABELS, type ExportKind, exportTake } from "./exporter.ts";
 import { Fader } from "./Fader.tsx";
+import { PianoRoll } from "./pianoroll.tsx";
 import { StageStepper } from "./StageStepper.tsx";
+import { Spectrum } from "./spectrum.tsx";
+import { Timeline } from "./timeline.tsx";
 import { VuMeter } from "./VuMeter.tsx";
 
 const FOOTER_LINKS: readonly NavLink[] = [
@@ -41,17 +54,13 @@ const FOOTER_LINKS: readonly NavLink[] = [
 const DEMO_PROMPT = "midnight studio take, warm sub bass, dusty keys, brass light";
 const DEMO_SEED = "debonair-demo";
 
-/** the mixer roles in desk order (master last, drawn separately) */
-const DESK_ROLES: readonly ArrangerRole[] = ["drums", "bass", "keys", "lead"];
-
-/** the ruler numbers the playlist draws (one per bar of the arrangement) */
-const RULER_BARS: readonly number[] = Array.from({ length: 16 }, (_, bar) => bar + 1);
-
 /** the step numbers the channel rack draws (1-based, like the desk) */
 const STEP_NOS: readonly number[] = Array.from({ length: 16 }, (_, step) => step + 1);
 
 export default function Studio() {
   const engineRef = useRef<TakeEngine | null>(null);
+  /** the take id the transport last loaded (the edit reloads keep the ride). */
+  const loadedIdRef = useRef<string | null>(null);
   const [plans, setPlans] = useState<readonly TakePlan[]>([]);
   const [selectedId, setSelectedId] = useState<string>("");
   const [graph, setGraph] = useState<MixerGraph | null>(null);
@@ -66,10 +75,35 @@ export default function Studio() {
     lead: Number.NEGATIVE_INFINITY,
   });
   const [notice, setNotice] = useState<string>("");
+  const [arrangement, setArrangement] = useState<readonly TimelineClip[] | null>(null);
+  const [edits, setEdits] = useState<readonly EditableNote[] | null>(null);
+  const [selectedClipId, setSelectedClipId] = useState("");
+  const [busyExport, setBusyExport] = useState<ExportKind | "">("");
   const stageRefs = useRef(new Map<StageId, HTMLElement | null>());
 
   const plan = useMemo(() => plans.find((take) => take.id === selectedId) ?? plans[0] ?? null, [plans, selectedId]);
-  const schedule = useMemo(() => (plan ? scheduleTake(plan) : null), [plan]);
+  /** the desk's arrangement: null rides the plan's own seeded clips. */
+  const effectivePlan = useMemo(
+    () => (plan && arrangement ? { ...plan, clips: [...arrangement] } : plan),
+    [plan, arrangement],
+  );
+  /** the schedule the desk plays: the roll owns it when edited, the
+      arrangement re-slice answers otherwise (the identity feeds through). */
+  const schedule = useMemo(() => {
+    if (!plan || !effectivePlan) return null;
+    if (edits) {
+      try {
+        return notesToSchedule(edits, plan);
+      } catch {
+        /* a refused roll rebuild answers the re-slice — the desk never lies */
+      }
+    }
+    try {
+      return rebaseSchedule(plan, effectivePlan.clips);
+    } catch {
+      return null;
+    }
+  }, [plan, effectivePlan, edits]);
   const problems = useMemo(() => (plan ? validatePlan(plan) : []), [plan]);
 
   // the engine lives once per mount and is disposed with the page; the
@@ -95,12 +129,10 @@ export default function Studio() {
     setSelectedId(hand?.plan.id ?? hands[0].id);
   }, []);
 
-  // a take change loads the transport and the desk: the desk opens first —
-  // it is the plan's own state, never gated on the audio context (the
-  // autoplay policy holds `resume()` until the visitor interacts) — and the
-  // engine faders ride the new plan's own strips right after
+  // a take change opens the desk fresh; a desk edit keeps the transport
+  // alive and re-rides the faders — the desk plays exactly what it shows
   useEffect(() => {
-    if (!plan) return;
+    if (!plan || !schedule || !effectivePlan) return;
     try {
       setGraph(graphFromStrips(plan.strips));
     } catch {
@@ -108,17 +140,29 @@ export default function Studio() {
     }
     const engine = engineRef.current;
     if (!engine) return;
+    const isNew = loadedIdRef.current !== plan.id;
+    const wasPlaying = engine.isPlaying;
+    const at = engine.position();
     let live = true;
     engine
-      .load(plan)
+      .load(effectivePlan, schedule)
       .then(() => {
         if (!live) return;
         for (const strip of plan.strips) {
           if (strip.master) engine.setMasterGain(strip.faderDb);
           else engine.setRoleGain(strip.name as ArrangerRole, strip.faderDb);
         }
-        setPosition(0);
-        setPlaying(false);
+        if (isNew) {
+          loadedIdRef.current = plan.id;
+          setPosition(0);
+          setPlaying(false);
+          setArrangement(null);
+          setEdits(null);
+          setSelectedClipId("");
+        } else if (wasPlaying) {
+          engine.play(at);
+          setPlaying(true);
+        }
       })
       .catch((error: unknown) => {
         if (live) setNotice(error instanceof Error ? error.message : "the transport refused this take");
@@ -126,7 +170,7 @@ export default function Studio() {
     return () => {
       live = false;
     };
-  }, [plan]);
+  }, [plan, effectivePlan, schedule]);
 
   // the playhead + the VU taps ride the clock while the transport runs
   useEffect(() => {
@@ -201,6 +245,53 @@ export default function Studio() {
       else engineRef.current?.setRoleGain(role as ArrangerRole, db);
     },
     [patchDesk],
+  );
+
+  /** the arrangement edit hand-off: the clips land, the transport re-rides
+      and the shelf carries the edited arrangement (same id, newest state). */
+  const handleArrangementEdit = useCallback(
+    (clips: readonly TimelineClip[]) => {
+      if (!plan) return;
+      setArrangement(clips);
+      setSelectedClipId((current) => (clips.some((clip) => clip.id === current) ? current : ""));
+      try {
+        const nextPlan = { ...plan, clips: [...clips] };
+        saveTakePlan(nextPlan);
+        setPlans((current) => current.map((take) => (take.id === nextPlan.id ? nextPlan : take)));
+      } catch {
+        setNotice("the shelf refused this arrangement — the desk keeps it for the session");
+      }
+    },
+    [plan],
+  );
+
+  /** the roll edit hand-off: the notes own the schedule from here. */
+  const handleRollEdit = useCallback((notes: readonly EditableNote[]) => setEdits(notes), []);
+
+  /** the desk reset: the seeded arrangement and the seeded schedule return. */
+  const resetDesk = useCallback(() => {
+    setArrangement(null);
+    setEdits(null);
+    setSelectedClipId("");
+    setNotice("the desk reset — the seeded take answers again");
+  }, []);
+
+  /** one export action: a real render, real bytes, an honest notice. */
+  const runExport = useCallback(
+    async (kind: ExportKind) => {
+      if (!plan || !schedule) return;
+      setBusyExport(kind);
+      try {
+        const files = await exportTake(kind, plan, schedule);
+        for (const file of files) downloadFile(file);
+        setNotice(`exported ${files.map((file) => file.name).join(", ")}`);
+      } catch (error) {
+        setNotice(error instanceof Error ? error.message : "the export refused this take");
+      } finally {
+        setBusyExport("");
+      }
+    },
+    [plan, schedule],
   );
 
   const rackPosition = plan ? positionAt(plan, position) : { bar: 0, step: -1 };
@@ -437,72 +528,24 @@ export default function Studio() {
             </div>
           </section>
 
-          {/* the playlist rides the full stage now (the mixer moved to the mix stage) */}
-          {graph ? (
-            <section className="daw rack-panel" aria-label="Arrangement playlist">
-              <div className="tl-scroll">
-                <div className="tl-inner">
-                  <div className="tl-ruler">
-                    <span aria-hidden="true" />
-                    <div className="lane">
-                      {/* the scrub: a native range over the ruler — the click and
-                        the keyboard (arrows, page, home/end) both seek the
-                        WebAudio clock; focus paints the lane underline */}
-                      <input
-                        className="tl-scrub"
-                        type="range"
-                        min={0}
-                        max={plan.durationSeconds}
-                        step={0.1}
-                        value={Math.min(position, plan.durationSeconds)}
-                        onChange={(event) => seek(Number(event.currentTarget.value))}
-                        aria-label="Seek the take"
-                      />
-                      {RULER_BARS.map((no) => (
-                        <span key={`ruler-${no}`} aria-hidden="true">
-                          {no}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="tl-canvas">
-                    {DESK_ROLES.map((role) => (
-                      <div key={role} className="tl-row">
-                        <div className="tl-label">
-                          <b>{role}</b>
-                          <small>{plan.strips.find((strip) => strip.name === role)?.faderDb.toFixed(1)} dB</small>
-                        </div>
-                        <div className="tl-lane">
-                          {plan.clips
-                            .filter((clip) => clip.track === role)
-                            .map((clip) => {
-                              const geo = clipStyle(clip.start, clip.duration, plan.durationSeconds);
-                              const chord =
-                                plan.chords[Math.min(plan.bars - 1, Math.floor(clip.start / plan.barSeconds))];
-                              return (
-                                <span
-                                  key={clip.id}
-                                  className="clip c1"
-                                  style={{ left: `${geo.left}%`, width: `${geo.width}%` }}
-                                  title={`${clip.label}${chord ? ` · ${chord.symbol}` : ""}`}
-                                >
-                                  {clip.label}
-                                </span>
-                              );
-                            })}
-                        </div>
-                      </div>
-                    ))}
-                    <div
-                      className="playhead"
-                      style={{ left: `${playheadPercent(position, plan.durationSeconds)}%` }}
-                      aria-hidden="true"
-                    />
-                  </div>
-                </div>
-              </div>
-            </section>
-          ) : null}
+          {/* ARRANGEMENT EDITOR — the timeline grows hands: drag moves, the
+              edges trim, split cuts at the playhead, and the re-slice answers
+              with the schedule the transport plays (arrangement.ts) */}
+          <Timeline
+            plan={plan}
+            clips={effectivePlan.clips}
+            playhead={position}
+            selectedId={selectedClipId}
+            onSelect={setSelectedClipId}
+            onEdit={handleArrangementEdit}
+            onSeek={seek}
+            onNotice={setNotice}
+          />
+
+          {/* SPECTRUM — the master bus, live: the scope is feedback, never decor */}
+          <section className="rack-panel scope-panel" aria-label="Master scope">
+            <Spectrum engine={engineRef.current} live={playing} />
+          </section>
 
           {/* CHANNEL RACK — the real grid: velocities, fills, the running step */}
           <section className="rack rack-panel" aria-label="Channel rack">
@@ -537,6 +580,49 @@ export default function Studio() {
                 </div>
               ))}
             </div>
+          </section>
+
+          {/* PIANO ROLL — the notes the desk edits: one bar, real buttons,
+              every hand riding the pianoroll engine (nothing the schedule
+              does not play) */}
+          {schedule ? (
+            <PianoRoll
+              plan={plan}
+              schedule={schedule}
+              notes={edits ?? scheduleToNotes(schedule, plan)}
+              onChange={handleRollEdit}
+              onNotice={setNotice}
+            />
+          ) : null}
+
+          {/* EXPORT BAR — real bounces: the wavs, the midi and the stems */}
+          <section className="rack-panel exp" aria-label="Export desk">
+            <h2 className="card-h">export</h2>
+            <p className="flush p-sm">
+              The bounce rides the same graph the desk plays — the plan's faders, the glue and this take's seeded noise.
+            </p>
+            <div className="exp-keys">
+              {(Object.keys(EXPORT_LABELS) as ExportKind[]).map((kind) => (
+                <button
+                  key={kind}
+                  className="tkey"
+                  type="button"
+                  aria-label={`Export ${EXPORT_LABELS[kind]}`}
+                  disabled={busyExport !== ""}
+                  onClick={() => void runExport(kind)}
+                >
+                  {busyExport === kind ? "rendering…" : EXPORT_LABELS[kind]}
+                </button>
+              ))}
+              <button className="tkey" type="button" aria-label="Reset the desk to the seeded take" onClick={resetDesk}>
+                reset desk
+              </button>
+            </div>
+            {edits ? (
+              <p className="flush p-sm">
+                the roll owns the schedule this desk session — reset the desk to hear the seeded take again.
+              </p>
+            ) : null}
           </section>
 
           {/* the plan ledger — the engine's own numbers, no invented specs */}

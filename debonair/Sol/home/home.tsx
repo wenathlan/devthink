@@ -208,7 +208,7 @@ function HomeSurface() {
             Fresh from the render queue
           </h2>
         </div>
-        <div className="song-grid" role="list">
+        <div className="song-grid">
           {loading
             ? [0, 1, 2, 3, 4, 5].map((slot) => <SongCardSkeleton key={`sk-${slot}`} slot={slot} />)
             : tracks.map((track, index) => {
