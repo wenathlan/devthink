@@ -22,7 +22,7 @@ RUN pnpm build
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine
 
-ARG CADRIA_VERSION=2.0.82
+ARG CADRIA_VERSION=2.0.97
 
 LABEL org.opencontainers.image.title="cadria" \
       org.opencontainers.image.description="cadria — the video and image player, editor and studio; the versawase engine home." \
