@@ -241,16 +241,19 @@ export function blendimage(
   return { width: backdrop.width, height: backdrop.height, data: out };
 }
 
-/** folds a stack of rgba layers over the backdrop (the mini compositor); null on any mismatch. */
+/** folds a stack of rgba layers over the backdrop (the mini compositor); null on any mismatch.
+ * Each layer may override the stack-wide mode with its own `mode` — the per-layer
+ * choice is what the timeline and the studio panels ride when one layer carries
+ * its own blend identity. */
 export function blendlayerstack(
   mode: BlendModeName,
   backdrop: { width: number; height: number; data: Uint8ClampedArray },
-  layers: readonly { width: number; height: number; data: Uint8ClampedArray; opacity?: number }[],
+  layers: readonly { width: number; height: number; data: Uint8ClampedArray; opacity?: number; mode?: BlendModeName }[],
 ): { width: number; height: number; data: Uint8ClampedArray } | null {
   let acc: { width: number; height: number; data: Uint8ClampedArray } | null = backdrop;
   for (const layer of layers) {
     if (!acc) return null;
-    acc = blendimage(mode, acc, layer, { opacity: layer.opacity });
+    acc = blendimage(layer.mode ?? mode, acc, layer, { opacity: layer.opacity });
   }
   return acc;
 }
