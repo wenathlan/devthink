@@ -1,0 +1,1008 @@
+# the operation plan — 950 steps to the 3.0
+
+The plan of the devthink os operation: 950 steps in 12 phases, one step per
+commit, each step an imperative verb, an object and a criterion. The house
+ladder (2.0.97 to 3.0) carries the versioning; this doc carries the work.
+The law holds on every step: the foundation first, the shell over it, the
+flow over the shell, the pages over the flow, the engines beside the maestro,
+the eradication inside every wave, the gates before every close.
+
+- phase 1 — the foundation: the inventory and the css ground truth: 60
+- phase 2 — the shell: taskbar, windows, alt-tab, menus and the desktop: 70
+- phase 3 — the flow: entrygate, intro, onboarding and home: 40
+- phase 4 — the 35 native pages, eight steps each: 280
+- phase 5 — the 15 engines of the manifest, six steps each: 90
+- phase 6 — the eradication e1-e20, one pattern per app: 220
+- phase 7 — the ten gates of the ladder, wire and run green: 20
+- phase 8 — the release: bump, zips, assets and the brave extension: 30
+- phase 9 — the two presentations: web document and installed stage: 30
+- phase 10 — the docs: the ladder, the doctrines and the guides: 30
+- phase 11 — the node maestro and the python lane: 30
+- phase 12 — the final qa and the closing: 50
+
+
+## phase 1 — the foundation: the inventory and the css ground truth
+
+- [ ] 001. inventory the 35 native pages of the sol tree with owner, subanchor and current state.
+- [ ] 002. inventory the 15 engines of the devthink manifest with source, library or root module, and role.
+- [ ] 003. inventory the sol.css of every app with line count, appended generations and retired blocks.
+- [ ] 004. inventory the token namespaces (--sol-, --dt-, --dtv3-) per app until the overlap table is complete.
+- [ ] 005. inventory every icon in use per app: emoji, glyph, lucide and svg, file by file.
+- [ ] 006. inventory the orphaned css classes per app with the analyzer script and record the report.
+- [ ] 007. inventory the copy strings over 140 chars per app with file and line.
+- [ ] 008. inventory the transitions and animations per app with property, duration and iteration count.
+- [ ] 009. inventory the intros and onboardings per app with variant count and entry route.
+- [ ] 010. inventory the tests per app with suite, runtime and the last green commit.
+- [ ] 011. inventory the imports between sibling apps until every direct cross-folder path is listed.
+- [ ] 012. inventory the absorptions (devthinkos, cli-desktop, SoFlowX, akash, extension, gateway, maene, owni) with their landing surface.
+- [ ] 013. freeze the inventory as the l0 baseline doc every later layer answers to.
+- [ ] 014. rewrite the css foundation on the single --sol- namespace until the three token families collapse into one.
+- [ ] 015. define the color ladder of eight steps per hue in oklch tokens only.
+- [ ] 016. define the radius, the shadow and the blur tokens once at the foundation.
+- [ ] 017. define the motion tokens: micro 150ms, ease-out cubic-bezier(0.22,1,0.36,1), no other curve in the house.
+- [ ] 018. define the focus ring token and apply it to every interactive selector.
+- [ ] 019. define the typography scale: real type at 13px/450 body, no faux weights, no glyph text.
+- [ ] 020. define the surface tokens: canvas, hairline, muted and accent per theme.
+- [ ] 021. write the single prefers-reduced-motion hard stop and place it last in the file.
+- [ ] 022. write the single prefers-reduced-transparency hard stop right before the motion one.
+- [ ] 023. forbid transition:all in the foundation with a lint regex.
+- [ ] 024. forbid raw #000/#fff fills in the foundation with a lint regex.
+- [ ] 025. forbid 999px pills in the foundation with a lint regex.
+- [ ] 026. constrain animation to transform and opacity with a lint regex.
+- [ ] 027. set the 44px floor on every interactive token pair of the foundation.
+- [ ] 028. keep the accent discipline: identity color on brand and content, windows accent #4cc2ff on focus and chrome.
+- [ ] 029. write the scrollbar, the empty state and the hairline primitives at the foundation.
+- [ ] 030. write the skeleton shimmer primitive as the only sanctioned infinite loop.
+- [ ] 031. write the tooltip primitive with the 300ms dwell and the focus-visible fast path.
+- [ ] 032. write the mica and acrylic surface primitives for the installed presentation.
+- [ ] 033. port the foundation to all 11 apps without duplicating a single token.
+- [ ] 034. delete the retired css blocks each port orphans, keeping the append-only history in git.
+- [ ] 035. gate the foundation: tsc, biome and the eradication greps green on every touched app.
+- [ ] 036. record the foundation pass in the design doctrine as the l1 reference layer.
+- [ ] 037. index the m registry (motion) with one row per motion property and its token.
+- [ ] 038. index the g registry (geometry) with one row per layout measure: taskbar 48, pins 38x38, start 640.
+- [ ] 039. index the t registry (typography and copy) with the copy budget rule per surface.
+- [ ] 040. index the s registry (surface) with one row per surface token and its layer.
+- [ ] 041. index the i registry (icons) with one row per icon and its three animated layers.
+- [ ] 042. index the x registry (interaction) with one row per interaction contract and its state machine.
+- [ ] 043. write the decompose, redistribute, implement, register, verify procedure as the session law.
+- [ ] 044. define the page session shape: one page, one css index, one layer of the process.
+- [ ] 045. define the commit shape: one step per commit carrying the step footer.
+- [ ] 046. define the per-app attribution: devthink is the os, the family wears the trylle ruler.
+- [ ] 047. register the sanctioned exceptions (--mask-ink, the shimmer, the hard stop) with their regexes.
+- [ ] 048. version the registries behind the docs gate so drift fails the build.
+- [ ] 049. split the biome lint lanes into the error gate and the warn ledger the waves drain.
+- [ ] 050. wire the eradication greps e1-e20 into one script with per-app output.
+- [ ] 051. wire the zoomlock probe into the gate ladder.
+- [ ] 052. wire the a11y audit (44px targets, AA contrast, focus order) into the candidate gate.
+- [ ] 053. wire the flat-tree audit (no src/, no ui/, no assets/, no dist/) into the verify gate.
+- [ ] 054. wire the library-import audit: no sibling-path import between family apps, ever.
+- [ ] 055. keep the permdiff and apifreeze baselines syncing after every bump.
+- [ ] 056. keep the dependencyupdates ladder riding the lockfile sync in the same commit.
+- [ ] 057. keep the workflowcheck and npmgate validators in the verify path.
+- [ ] 058. run the complete test suite once and record the green baseline of the operation.
+- [ ] 059. publish every gate artifact to tests/artifacts as the audit trail.
+- [ ] 060. document every gate of the ladder in the releasegates doc with its exit condition.
+
+## phase 2 — the shell: taskbar, windows, alt-tab, menus and the desktop
+
+- [ ] 061. set the taskbar rail at 48px on the g registry and implement it on the shell chrome.
+- [ ] 062. set the pins at 38x38 with radius 4 on the g registry and implement the rail grid.
+- [ ] 063. implement the popintro tooltip of the pins with the 300ms dwell and the acrylic surface.
+- [ ] 064. implement the pin active and running states with the hairline indicator, no dots.
+- [ ] 065. implement the start button with the four-pane fluent glyph and the press state.
+- [ ] 066. implement the start menu at 640 wide with the fluent grid and the pinned section.
+- [ ] 067. implement the start search field with the typeahead picks and the keyboard focus.
+- [ ] 068. implement the tray flyouts (network, volume, battery) as acrylic panels of one surface.
+- [ ] 069. implement the tray clock with the calendar flyout and the localized format.
+- [ ] 070. implement the show-desktop sliver at the rail edge with the aero peek behavior.
+- [ ] 071. implement the taskbar overflow chevron for the pins past the rail budget.
+- [ ] 072. persist the taskbar pin order and the pinned set in the desktopstate store.
+- [ ] 073. implement the rail context menu: taskbar settings, show desktop, pin management.
+- [ ] 074. implement the notification toasts landing at the tray corner with the dismiss on click.
+- [ ] 075. implement the search jump into the apps registry results with the web fallback.
+- [ ] 076. gate the taskbar: geometry on the g registry, tooltips dwell, no glyph icons.
+- [ ] 077. test the taskbar interactions in vitest with the pointer and keyboard drivers.
+- [ ] 078. audit the taskbar responsively: landscape desktop, narrow fold and portrait phone.
+- [ ] 079. implement the windowframe drag on pointer events with the rAF batch, one sample per frame.
+- [ ] 080. implement the eight resize handles with the cursor map and the 44px edge targets.
+- [ ] 081. implement the aero snap: side strips as halves, top strip as maximize, top wins the corners.
+- [ ] 082. paint the snap ghost overlay with the accent wash and the micro scale entrance.
+- [ ] 083. commit the snap on pointer release and restore the float on drag, the windows law.
+- [ ] 084. implement the maximize, minimize and restore chips with the caption tooltip variant.
+- [ ] 085. implement the double-click on the title bar as the maximize toggle.
+- [ ] 086. implement the layered z-order of windows with the focus ring on the active frame.
+- [ ] 087. persist the per-window state (position, size, snapped) in the desktopstate store.
+- [ ] 088. backdrop every window with the mica primitive on the installed presentation only.
+- [ ] 089. shadow every floating window with the elevation ladder of the foundation.
+- [ ] 090. implement the window animation set: open scale, close fade, minimize fade, transform/opacity only.
+- [ ] 091. implement the keyboard snap alternative (win+arrows) on the installed target.
+- [ ] 092. gate the windows: no transition:all, motion on transform/opacity only, ghost inert.
+- [ ] 093. test the window drag, snap and resize in vitest with the fake pointer timeline.
+- [ ] 094. audit the windows for keyboard: alt+f4, alt+space, arrow moves on the focused frame.
+- [ ] 095. implement the alt-tab switcher with the rAF-driven preview and the stable order.
+- [ ] 096. implement the alt-tab keyboard loop: hold alt, tab cycles, release commits.
+- [ ] 097. implement the alt-tab acrylic panel with the window thumbnails and the live label.
+- [ ] 098. implement the jump menu per pin with the recent items and the pin actions.
+- [ ] 099. implement the desktop context menu with the flat items and the separator hairlines.
+- [ ] 100. implement the command palette with the fuzzy picks and the action catalog.
+- [ ] 101. implement the start menu keyboard navigation: arrows, enter, escape, type-ahead.
+- [ ] 102. gate the alt-tab and menus: every item 44px, every glyph replaced by lucide.
+- [ ] 103. test the alt-tab cycle and the menu navigation in vitest.
+- [ ] 104. test the tray flyouts and the toasts in vitest with the fake clock.
+- [ ] 105. audit the menus for a11y: role menu, aria-expanded, focus trap on open.
+- [ ] 106. implement the desktop wallpaper with the shaderwall primitive and the pause on reduced motion.
+- [ ] 107. implement the desktop icon grid with the selection rectangle and the double-click open.
+- [ ] 108. persist the desktop icons and the wallpaper pick in the desktopstate store.
+- [ ] 109. implement the panel boot sequence with the staged reveal and the skip on seen.
+- [ ] 110. implement the reveal primitives (stagger, fade, slide) on transform/opacity only.
+- [ ] 111. gate the desktop: wallpaper pauses, icons select, state restores after reload.
+- [ ] 112. test the desktop state restore in vitest with the seeded store.
+- [ ] 113. audit the desktop responsively: 4k down to the 360px fold without a second design.
+- [ ] 114. wire the os shell routes on the os page with the appregistry as the single source.
+- [ ] 115. keep the apps registry (sol/os/apps.ts) as the truth of the 42 ids and their sections.
+- [ ] 116. wire the family accent per app from the familyaccent map onto the os chrome.
+- [ ] 117. wire the appheader with the app title, the window controls and the breadcrumb.
+- [ ] 118. wire the modal primitive with the focus trap and the escape commit.
+- [ ] 119. wire the statusdot with the real state colors, no pulsing loop.
+- [ ] 120. wire the commandmenu over the action catalog shared with the command palette.
+- [ ] 121. wire the aurachat surface to the gateway engine behind the maestro.
+- [ ] 122. wire the pagesection and glasscard primitives across all os pages.
+- [ ] 123. wire the osevents bus for the shell-to-app messages.
+- [ ] 124. wire the usestoredstate persistence on the accounts store of the os.
+- [ ] 125. keep the ostypes as the single type source of the shell contracts.
+- [ ] 126. gate the os shell: one registry, one accent map, zero hardcoded ids in the views.
+- [ ] 127. test the os shell wiring in vitest through the registry, not the dom.
+- [ ] 128. audit the os shell for the two presentations: web document and installed stage.
+- [ ] 129. port the shell keyboard map (start, search, alt-tab, desktop) to the docs.
+- [ ] 130. record the shell pass as the l2 layer of the doctrine with its greps green.
+
+## phase 3 — the flow: entrygate, intro, onboarding and home
+
+- [ ] 131. implement the entrygate as the single door: target detection, consent and the seen state.
+- [ ] 132. persist the seen flag of the entrygate on the account store, never on a global.
+- [ ] 133. implement the entrygate skip for the returning account with the deep link honor.
+- [ ] 134. gate the entrygate: no fake loading, the real async answers state the ui reads.
+- [ ] 135. test the entrygate decisions in vitest: first visit, returning, consent denied.
+- [ ] 136. audit the entrygate for a11y: focus lands on the first actionable element.
+- [ ] 137. make the entrygate responsive with the one design across portrait and landscape.
+- [ ] 138. record the entrygate contract in the flow docs with the state machine.
+- [ ] 139. implement the intro per presentation: web document scroll on web, installer stage on installed.
+- [ ] 140. implement the intro chime behind the autoplay policy with the audio engine import only.
+- [ ] 141. implement the intro footer actions: enter, install, learn more, all 44px.
+- [ ] 142. implement the intro brand mark without glow, with the identity token only.
+- [ ] 143. gate the intro: zero placeholder copy, zero glyph decoration, real links only.
+- [ ] 144. test the intro routing in vitest: intro to onboarding on first, intro to home on seen.
+- [ ] 145. audit the intro for reduced motion: the reveal settles instantly, no loop survives.
+- [ ] 146. record the intro variants per app in the flow docs.
+- [ ] 147. implement the onboarding frames adapted per app, one step per frame.
+- [ ] 148. implement the onboarding progress with the real step count, no fake percentages.
+- [ ] 149. implement the onboarding login as skippable via the os, the house law.
+- [ ] 150. implement the onboarding consent gates wired to the policy module.
+- [ ] 151. persist the onboarding completion per account and honor it on every entry.
+- [ ] 152. gate the onboarding: every frame answers a real action, no simulated progress.
+- [ ] 153. test the onboarding ladder in vitest frame by frame.
+- [ ] 154. audit the onboarding for a11y: labels, focus order, escape, reduced motion.
+- [ ] 155. make the onboarding responsive with the frames reflowing, not redesigning.
+- [ ] 156. record the onboarding frames in the flow docs with the copy budget spent.
+- [ ] 157. implement the home as the os desktop: the shell is the home on the installed target.
+- [ ] 158. implement the home sections on the web target: the explore deck, the waves, the news.
+- [ ] 159. wire the home cards to the real catalogs, zero hardcoded tiles.
+- [ ] 160. wire the home data-tips with the 300ms dwell shared with the shell.
+- [ ] 161. gate the home: every card opens a real route, every surface passes the greps.
+- [ ] 162. test the home navigation in vitest with the router drivers.
+- [ ] 163. audit the home for a11y: landmarks, heading order, skip link.
+- [ ] 164. make the home responsive from the 360px fold to the tv span.
+- [ ] 165. record the flow pass as the l3 reference with the state machines of all four doors.
+- [ ] 166. keep the flow state machines in one doc the onboarding and intro read from.
+- [ ] 167. wire the flow telemetry-free: no ping, no beacon, the telemetryfree gate stays green.
+- [ ] 168. review the flow copy against the t registry budget and shrink the overruns.
+- [ ] 169. wire the flow guards so a reload mid-onboarding resumes at the seen frame.
+- [ ] 170. close the flow wave with the full gate ladder green on every touched app.
+
+## phase 4 — the 35 native pages, eight steps each
+
+- [ ] 171. decompose the reference of the onboarding page into the m/g/t/s/i/x registries.
+- [ ] 172. redistribute the onboarding properties section by section with an anchor and a technique.
+- [ ] 173. implement the onboarding layout on the flat tree with the foundation tokens only.
+- [ ] 174. animate the lucide icon of the onboarding with the gradient glyph and the three layers.
+- [ ] 175. test the onboarding behaviors in vitest with real interactions on the real components.
+- [ ] 176. make the onboarding responsive across portrait and landscape with one design.
+- [ ] 177. audit the onboarding for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 178. gate the onboarding against the e1-e20 greps and close the session with the checklist.
+- [ ] 179. decompose the reference of the terms page into the m/g/t/s/i/x registries.
+- [ ] 180. redistribute the terms properties section by section with an anchor and a technique.
+- [ ] 181. implement the terms layout on the flat tree with the foundation tokens only.
+- [ ] 182. animate the lucide icon of the terms with the gradient glyph and the three layers.
+- [ ] 183. test the terms behaviors in vitest with real interactions on the real components.
+- [ ] 184. make the terms responsive across portrait and landscape with one design.
+- [ ] 185. audit the terms for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 186. gate the terms against the e1-e20 greps and close the session with the checklist.
+- [ ] 187. decompose the reference of the panel page into the m/g/t/s/i/x registries.
+- [ ] 188. redistribute the panel properties section by section with an anchor and a technique.
+- [ ] 189. implement the panel layout on the flat tree with the foundation tokens only.
+- [ ] 190. animate the lucide icon of the panel with the gradient glyph and the three layers.
+- [ ] 191. test the panel behaviors in vitest with real interactions on the real components.
+- [ ] 192. make the panel responsive across portrait and landscape with one design.
+- [ ] 193. audit the panel for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 194. gate the panel against the e1-e20 greps and close the session with the checklist.
+- [ ] 195. decompose the reference of the admin page into the m/g/t/s/i/x registries.
+- [ ] 196. redistribute the admin properties section by section with an anchor and a technique.
+- [ ] 197. implement the admin layout on the flat tree with the foundation tokens only.
+- [ ] 198. animate the lucide icon of the admin with the gradient glyph and the three layers.
+- [ ] 199. test the admin behaviors in vitest with real interactions on the real components.
+- [ ] 200. make the admin responsive across portrait and landscape with one design.
+- [ ] 201. audit the admin for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 202. gate the admin against the e1-e20 greps and close the session with the checklist.
+- [ ] 203. decompose the reference of the auth page into the m/g/t/s/i/x registries.
+- [ ] 204. redistribute the auth properties section by section with an anchor and a technique.
+- [ ] 205. implement the auth layout on the flat tree with the foundation tokens only.
+- [ ] 206. animate the lucide icon of the auth with the gradient glyph and the three layers.
+- [ ] 207. test the auth behaviors in vitest with real interactions on the real components.
+- [ ] 208. make the auth responsive across portrait and landscape with one design.
+- [ ] 209. audit the auth for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 210. gate the auth against the e1-e20 greps and close the session with the checklist.
+- [ ] 211. decompose the reference of the settings page into the m/g/t/s/i/x registries.
+- [ ] 212. redistribute the settings properties section by section with an anchor and a technique.
+- [ ] 213. implement the settings layout on the flat tree with the foundation tokens only.
+- [ ] 214. animate the lucide icon of the settings with the gradient glyph and the three layers.
+- [ ] 215. test the settings behaviors in vitest with real interactions on the real components.
+- [ ] 216. make the settings responsive across portrait and landscape with one design.
+- [ ] 217. audit the settings for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 218. gate the settings against the e1-e20 greps and close the session with the checklist.
+- [ ] 219. decompose the reference of the projects page into the m/g/t/s/i/x registries.
+- [ ] 220. redistribute the projects properties section by section with an anchor and a technique.
+- [ ] 221. implement the projects layout on the flat tree with the foundation tokens only.
+- [ ] 222. animate the lucide icon of the projects with the gradient glyph and the three layers.
+- [ ] 223. test the projects behaviors in vitest with real interactions on the real components.
+- [ ] 224. make the projects responsive across portrait and landscape with one design.
+- [ ] 225. audit the projects for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 226. gate the projects against the e1-e20 greps and close the session with the checklist.
+- [ ] 227. decompose the reference of the launcher page into the m/g/t/s/i/x registries.
+- [ ] 228. redistribute the launcher properties section by section with an anchor and a technique.
+- [ ] 229. implement the launcher layout on the flat tree with the foundation tokens only.
+- [ ] 230. animate the lucide icon of the launcher with the gradient glyph and the three layers.
+- [ ] 231. test the launcher behaviors in vitest with real interactions on the real components.
+- [ ] 232. make the launcher responsive across portrait and landscape with one design.
+- [ ] 233. audit the launcher for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 234. gate the launcher against the e1-e20 greps and close the session with the checklist.
+- [ ] 235. decompose the reference of the usage page into the m/g/t/s/i/x registries.
+- [ ] 236. redistribute the usage properties section by section with an anchor and a technique.
+- [ ] 237. implement the usage layout on the flat tree with the foundation tokens only.
+- [ ] 238. animate the lucide icon of the usage with the gradient glyph and the three layers.
+- [ ] 239. test the usage behaviors in vitest with real interactions on the real components.
+- [ ] 240. make the usage responsive across portrait and landscape with one design.
+- [ ] 241. audit the usage for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 242. gate the usage against the e1-e20 greps and close the session with the checklist.
+- [ ] 243. decompose the reference of the chat page into the m/g/t/s/i/x registries.
+- [ ] 244. redistribute the chat properties section by section with an anchor and a technique.
+- [ ] 245. implement the chat layout on the flat tree with the foundation tokens only.
+- [ ] 246. animate the lucide icon of the chat with the gradient glyph and the three layers.
+- [ ] 247. test the chat behaviors in vitest with real interactions on the real components.
+- [ ] 248. make the chat responsive across portrait and landscape with one design.
+- [ ] 249. audit the chat for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 250. gate the chat against the e1-e20 greps and close the session with the checklist.
+- [ ] 251. decompose the reference of the explore page into the m/g/t/s/i/x registries.
+- [ ] 252. redistribute the explore properties section by section with an anchor and a technique.
+- [ ] 253. implement the explore layout on the flat tree with the foundation tokens only.
+- [ ] 254. animate the lucide icon of the explore with the gradient glyph and the three layers.
+- [ ] 255. test the explore behaviors in vitest with real interactions on the real components.
+- [ ] 256. make the explore responsive across portrait and landscape with one design.
+- [ ] 257. audit the explore for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 258. gate the explore against the e1-e20 greps and close the session with the checklist.
+- [ ] 259. decompose the reference of the videostudio page into the m/g/t/s/i/x registries.
+- [ ] 260. redistribute the videostudio properties section by section with an anchor and a technique.
+- [ ] 261. implement the videostudio layout on the flat tree with the foundation tokens only.
+- [ ] 262. animate the lucide icon of the videostudio with the gradient glyph and the three layers.
+- [ ] 263. test the videostudio behaviors in vitest with real interactions on the real components.
+- [ ] 264. make the videostudio responsive across portrait and landscape with one design.
+- [ ] 265. audit the videostudio for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 266. gate the videostudio against the e1-e20 greps and close the session with the checklist.
+- [ ] 267. decompose the reference of the policy page into the m/g/t/s/i/x registries.
+- [ ] 268. redistribute the policy properties section by section with an anchor and a technique.
+- [ ] 269. implement the policy layout on the flat tree with the foundation tokens only.
+- [ ] 270. animate the lucide icon of the policy with the gradient glyph and the three layers.
+- [ ] 271. test the policy behaviors in vitest with real interactions on the real components.
+- [ ] 272. make the policy responsive across portrait and landscape with one design.
+- [ ] 273. audit the policy for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 274. gate the policy against the e1-e20 greps and close the session with the checklist.
+- [ ] 275. decompose the reference of the history page into the m/g/t/s/i/x registries.
+- [ ] 276. redistribute the history properties section by section with an anchor and a technique.
+- [ ] 277. implement the history layout on the flat tree with the foundation tokens only.
+- [ ] 278. animate the lucide icon of the history with the gradient glyph and the three layers.
+- [ ] 279. test the history behaviors in vitest with real interactions on the real components.
+- [ ] 280. make the history responsive across portrait and landscape with one design.
+- [ ] 281. audit the history for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 282. gate the history against the e1-e20 greps and close the session with the checklist.
+- [ ] 283. decompose the reference of the notfound page into the m/g/t/s/i/x registries.
+- [ ] 284. redistribute the notfound properties section by section with an anchor and a technique.
+- [ ] 285. implement the notfound layout on the flat tree with the foundation tokens only.
+- [ ] 286. animate the lucide icon of the notfound with the gradient glyph and the three layers.
+- [ ] 287. test the notfound behaviors in vitest with real interactions on the real components.
+- [ ] 288. make the notfound responsive across portrait and landscape with one design.
+- [ ] 289. audit the notfound for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 290. gate the notfound against the e1-e20 greps and close the session with the checklist.
+- [ ] 291. decompose the reference of the calculator page into the m/g/t/s/i/x registries.
+- [ ] 292. redistribute the calculator properties section by section with an anchor and a technique.
+- [ ] 293. implement the calculator layout on the flat tree with the foundation tokens only.
+- [ ] 294. animate the lucide icon of the calculator with the gradient glyph and the three layers.
+- [ ] 295. test the calculator behaviors in vitest with real interactions on the real components.
+- [ ] 296. make the calculator responsive across portrait and landscape with one design.
+- [ ] 297. audit the calculator for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 298. gate the calculator against the e1-e20 greps and close the session with the checklist.
+- [ ] 299. decompose the reference of the games page into the m/g/t/s/i/x registries.
+- [ ] 300. redistribute the games properties section by section with an anchor and a technique.
+- [ ] 301. implement the games layout on the flat tree with the foundation tokens only.
+- [ ] 302. animate the lucide icon of the games with the gradient glyph and the three layers.
+- [ ] 303. test the games behaviors in vitest with real interactions on the real components.
+- [ ] 304. make the games responsive across portrait and landscape with one design.
+- [ ] 305. audit the games for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 306. gate the games against the e1-e20 greps and close the session with the checklist.
+- [ ] 307. decompose the reference of the intro page into the m/g/t/s/i/x registries.
+- [ ] 308. redistribute the intro properties section by section with an anchor and a technique.
+- [ ] 309. implement the intro layout on the flat tree with the foundation tokens only.
+- [ ] 310. animate the lucide icon of the intro with the gradient glyph and the three layers.
+- [ ] 311. test the intro behaviors in vitest with real interactions on the real components.
+- [ ] 312. make the intro responsive across portrait and landscape with one design.
+- [ ] 313. audit the intro for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 314. gate the intro against the e1-e20 greps and close the session with the checklist.
+- [ ] 315. decompose the reference of the gatewayview page into the m/g/t/s/i/x registries.
+- [ ] 316. redistribute the gatewayview properties section by section with an anchor and a technique.
+- [ ] 317. implement the gatewayview layout on the flat tree with the foundation tokens only.
+- [ ] 318. animate the lucide icon of the gatewayview with the gradient glyph and the three layers.
+- [ ] 319. test the gatewayview behaviors in vitest with real interactions on the real components.
+- [ ] 320. make the gatewayview responsive across portrait and landscape with one design.
+- [ ] 321. audit the gatewayview for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 322. gate the gatewayview against the e1-e20 greps and close the session with the checklist.
+- [ ] 323. decompose the reference of the routes page into the m/g/t/s/i/x registries.
+- [ ] 324. redistribute the routes properties section by section with an anchor and a technique.
+- [ ] 325. implement the routes layout on the flat tree with the foundation tokens only.
+- [ ] 326. animate the lucide icon of the routes with the gradient glyph and the three layers.
+- [ ] 327. test the routes behaviors in vitest with real interactions on the real components.
+- [ ] 328. make the routes responsive across portrait and landscape with one design.
+- [ ] 329. audit the routes for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 330. gate the routes against the e1-e20 greps and close the session with the checklist.
+- [ ] 331. decompose the reference of the image page into the m/g/t/s/i/x registries.
+- [ ] 332. redistribute the image properties section by section with an anchor and a technique.
+- [ ] 333. implement the image layout on the flat tree with the foundation tokens only.
+- [ ] 334. animate the lucide icon of the image with the gradient glyph and the three layers.
+- [ ] 335. test the image behaviors in vitest with real interactions on the real components.
+- [ ] 336. make the image responsive across portrait and landscape with one design.
+- [ ] 337. audit the image for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 338. gate the image against the e1-e20 greps and close the session with the checklist.
+- [ ] 339. decompose the reference of the docs page into the m/g/t/s/i/x registries.
+- [ ] 340. redistribute the docs properties section by section with an anchor and a technique.
+- [ ] 341. implement the docs layout on the flat tree with the foundation tokens only.
+- [ ] 342. animate the lucide icon of the docs with the gradient glyph and the three layers.
+- [ ] 343. test the docs behaviors in vitest with real interactions on the real components.
+- [ ] 344. make the docs responsive across portrait and landscape with one design.
+- [ ] 345. audit the docs for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 346. gate the docs against the e1-e20 greps and close the session with the checklist.
+- [ ] 347. decompose the reference of the about page into the m/g/t/s/i/x registries.
+- [ ] 348. redistribute the about properties section by section with an anchor and a technique.
+- [ ] 349. implement the about layout on the flat tree with the foundation tokens only.
+- [ ] 350. animate the lucide icon of the about with the gradient glyph and the three layers.
+- [ ] 351. test the about behaviors in vitest with real interactions on the real components.
+- [ ] 352. make the about responsive across portrait and landscape with one design.
+- [ ] 353. audit the about for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 354. gate the about against the e1-e20 greps and close the session with the checklist.
+- [ ] 355. decompose the reference of the musicstudio page into the m/g/t/s/i/x registries.
+- [ ] 356. redistribute the musicstudio properties section by section with an anchor and a technique.
+- [ ] 357. implement the musicstudio layout on the flat tree with the foundation tokens only.
+- [ ] 358. animate the lucide icon of the musicstudio with the gradient glyph and the three layers.
+- [ ] 359. test the musicstudio behaviors in vitest with real interactions on the real components.
+- [ ] 360. make the musicstudio responsive across portrait and landscape with one design.
+- [ ] 361. audit the musicstudio for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 362. gate the musicstudio against the e1-e20 greps and close the session with the checklist.
+- [ ] 363. decompose the reference of the os page into the m/g/t/s/i/x registries.
+- [ ] 364. redistribute the os properties section by section with an anchor and a technique.
+- [ ] 365. implement the os layout on the flat tree with the foundation tokens only.
+- [ ] 366. animate the lucide icon of the os with the gradient glyph and the three layers.
+- [ ] 367. test the os behaviors in vitest with real interactions on the real components.
+- [ ] 368. make the os responsive across portrait and landscape with one design.
+- [ ] 369. audit the os for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 370. gate the os against the e1-e20 greps and close the session with the checklist.
+- [ ] 371. decompose the reference of the console page into the m/g/t/s/i/x registries.
+- [ ] 372. redistribute the console properties section by section with an anchor and a technique.
+- [ ] 373. implement the console layout on the flat tree with the foundation tokens only.
+- [ ] 374. animate the lucide icon of the console with the gradient glyph and the three layers.
+- [ ] 375. test the console behaviors in vitest with real interactions on the real components.
+- [ ] 376. make the console responsive across portrait and landscape with one design.
+- [ ] 377. audit the console for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 378. gate the console against the e1-e20 greps and close the session with the checklist.
+- [ ] 379. decompose the reference of the os devthink page into the m/g/t/s/i/x registries.
+- [ ] 380. redistribute the os devthink properties section by section with an anchor and a technique.
+- [ ] 381. implement the os devthink layout on the flat tree with the foundation tokens only.
+- [ ] 382. animate the lucide icon of the os devthink with the gradient glyph and the three layers.
+- [ ] 383. test the os devthink behaviors in vitest with real interactions on the real components.
+- [ ] 384. make the os devthink responsive across portrait and landscape with one design.
+- [ ] 385. audit the os devthink for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 386. gate the os devthink against the e1-e20 greps and close the session with the checklist.
+- [ ] 387. decompose the reference of the os argan page into the m/g/t/s/i/x registries.
+- [ ] 388. redistribute the os argan properties section by section with an anchor and a technique.
+- [ ] 389. implement the os argan layout on the flat tree with the foundation tokens only.
+- [ ] 390. animate the lucide icon of the os argan with the gradient glyph and the three layers.
+- [ ] 391. test the os argan behaviors in vitest with real interactions on the real components.
+- [ ] 392. make the os argan responsive across portrait and landscape with one design.
+- [ ] 393. audit the os argan for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 394. gate the os argan against the e1-e20 greps and close the session with the checklist.
+- [ ] 395. decompose the reference of the os cadria page into the m/g/t/s/i/x registries.
+- [ ] 396. redistribute the os cadria properties section by section with an anchor and a technique.
+- [ ] 397. implement the os cadria layout on the flat tree with the foundation tokens only.
+- [ ] 398. animate the lucide icon of the os cadria with the gradient glyph and the three layers.
+- [ ] 399. test the os cadria behaviors in vitest with real interactions on the real components.
+- [ ] 400. make the os cadria responsive across portrait and landscape with one design.
+- [ ] 401. audit the os cadria for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 402. gate the os cadria against the e1-e20 greps and close the session with the checklist.
+- [ ] 403. decompose the reference of the os debonair page into the m/g/t/s/i/x registries.
+- [ ] 404. redistribute the os debonair properties section by section with an anchor and a technique.
+- [ ] 405. implement the os debonair layout on the flat tree with the foundation tokens only.
+- [ ] 406. animate the lucide icon of the os debonair with the gradient glyph and the three layers.
+- [ ] 407. test the os debonair behaviors in vitest with real interactions on the real components.
+- [ ] 408. make the os debonair responsive across portrait and landscape with one design.
+- [ ] 409. audit the os debonair for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 410. gate the os debonair against the e1-e20 greps and close the session with the checklist.
+- [ ] 411. decompose the reference of the os stealthhead page into the m/g/t/s/i/x registries.
+- [ ] 412. redistribute the os stealthhead properties section by section with an anchor and a technique.
+- [ ] 413. implement the os stealthhead layout on the flat tree with the foundation tokens only.
+- [ ] 414. animate the lucide icon of the os stealthhead with the gradient glyph and the three layers.
+- [ ] 415. test the os stealthhead behaviors in vitest with real interactions on the real components.
+- [ ] 416. make the os stealthhead responsive across portrait and landscape with one design.
+- [ ] 417. audit the os stealthhead for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 418. gate the os stealthhead against the e1-e20 greps and close the session with the checklist.
+- [ ] 419. decompose the reference of the os forge page into the m/g/t/s/i/x registries.
+- [ ] 420. redistribute the os forge properties section by section with an anchor and a technique.
+- [ ] 421. implement the os forge layout on the flat tree with the foundation tokens only.
+- [ ] 422. animate the lucide icon of the os forge with the gradient glyph and the three layers.
+- [ ] 423. test the os forge behaviors in vitest with real interactions on the real components.
+- [ ] 424. make the os forge responsive across portrait and landscape with one design.
+- [ ] 425. audit the os forge for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 426. gate the os forge against the e1-e20 greps and close the session with the checklist.
+- [ ] 427. decompose the reference of the os foundry page into the m/g/t/s/i/x registries.
+- [ ] 428. redistribute the os foundry properties section by section with an anchor and a technique.
+- [ ] 429. implement the os foundry layout on the flat tree with the foundation tokens only.
+- [ ] 430. animate the lucide icon of the os foundry with the gradient glyph and the three layers.
+- [ ] 431. test the os foundry behaviors in vitest with real interactions on the real components.
+- [ ] 432. make the os foundry responsive across portrait and landscape with one design.
+- [ ] 433. audit the os foundry for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 434. gate the os foundry against the e1-e20 greps and close the session with the checklist.
+- [ ] 435. decompose the reference of the os vault page into the m/g/t/s/i/x registries.
+- [ ] 436. redistribute the os vault properties section by section with an anchor and a technique.
+- [ ] 437. implement the os vault layout on the flat tree with the foundation tokens only.
+- [ ] 438. animate the lucide icon of the os vault with the gradient glyph and the three layers.
+- [ ] 439. test the os vault behaviors in vitest with real interactions on the real components.
+- [ ] 440. make the os vault responsive across portrait and landscape with one design.
+- [ ] 441. audit the os vault for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 442. gate the os vault against the e1-e20 greps and close the session with the checklist.
+- [ ] 443. decompose the reference of the os getry page into the m/g/t/s/i/x registries.
+- [ ] 444. redistribute the os getry properties section by section with an anchor and a technique.
+- [ ] 445. implement the os getry layout on the flat tree with the foundation tokens only.
+- [ ] 446. animate the lucide icon of the os getry with the gradient glyph and the three layers.
+- [ ] 447. test the os getry behaviors in vitest with real interactions on the real components.
+- [ ] 448. make the os getry responsive across portrait and landscape with one design.
+- [ ] 449. audit the os getry for a11y: 44px targets, AA contrast, focus order, reduced motion.
+- [ ] 450. gate the os getry against the e1-e20 greps and close the session with the checklist.
+
+## phase 5 — the 15 engines of the manifest, six steps each
+
+- [ ] 451. document the contract of the versawaze engine in the devthink manifest of the package.json.
+- [ ] 452. wire the versawaze seam into the maestro from the published library @wenathlan/versawaze.
+- [ ] 453. extract the pure core of the versawaze free of transport, dom and clock.
+- [ ] 454. test the core of the versawaze in vitest with the injected seams.
+- [ ] 455. freeze the public surface of the versawaze in the apifreeze baseline.
+- [ ] 456. gate the versawaze through the release ladder with the consumer smoke on the tarball.
+- [ ] 457. document the contract of the kathesis engine in the devthink manifest of the package.json.
+- [ ] 458. wire the kathesis seam into the maestro from the published library @wenathlan/kathesis.
+- [ ] 459. extract the pure core of the kathesis free of transport, dom and clock.
+- [ ] 460. test the core of the kathesis in vitest with the injected seams.
+- [ ] 461. freeze the public surface of the kathesis in the apifreeze baseline.
+- [ ] 462. gate the kathesis through the release ladder with the consumer smoke on the tarball.
+- [ ] 463. document the contract of the saddle engine in the devthink manifest of the package.json.
+- [ ] 464. wire the saddle seam into the maestro from the published library @wenathlan/saddle.
+- [ ] 465. extract the pure core of the saddle free of transport, dom and clock.
+- [ ] 466. test the core of the saddle in vitest with the injected seams.
+- [ ] 467. freeze the public surface of the saddle in the apifreeze baseline.
+- [ ] 468. gate the saddle through the release ladder with the consumer smoke on the tarball.
+- [ ] 469. document the contract of the getry engine in the devthink manifest of the package.json.
+- [ ] 470. wire the getry seam into the maestro from the published library @wenathlan/getry.
+- [ ] 471. extract the pure core of the getry free of transport, dom and clock.
+- [ ] 472. test the core of the getry in vitest with the injected seams.
+- [ ] 473. freeze the public surface of the getry in the apifreeze baseline.
+- [ ] 474. gate the getry through the release ladder with the consumer smoke on the tarball.
+- [ ] 475. document the contract of the argan engine in the devthink manifest of the package.json.
+- [ ] 476. wire the argan seam into the maestro from the published library @wenathlan/argan.
+- [ ] 477. extract the pure core of the argan free of transport, dom and clock.
+- [ ] 478. test the core of the argan in vitest with the injected seams.
+- [ ] 479. freeze the public surface of the argan in the apifreeze baseline.
+- [ ] 480. gate the argan through the release ladder with the consumer smoke on the tarball.
+- [ ] 481. document the contract of the vault engine in the devthink manifest of the package.json.
+- [ ] 482. wire the vault seam into the maestro from the published library @wenathlan/vault.
+- [ ] 483. extract the pure core of the vault free of transport, dom and clock.
+- [ ] 484. test the core of the vault in vitest with the injected seams.
+- [ ] 485. freeze the public surface of the vault in the apifreeze baseline.
+- [ ] 486. gate the vault through the release ladder with the consumer smoke on the tarball.
+- [ ] 487. document the contract of the cobaia engine in the devthink manifest of the package.json.
+- [ ] 488. wire the cobaia seam into the maestro from the published library @wenathlan/cobaia.
+- [ ] 489. extract the pure core of the cobaia free of transport, dom and clock.
+- [ ] 490. test the core of the cobaia in vitest with the injected seams.
+- [ ] 491. freeze the public surface of the cobaia in the apifreeze baseline.
+- [ ] 492. gate the cobaia through the release ladder with the consumer smoke on the tarball.
+- [ ] 493. document the contract of the engine engine in the devthink manifest of the package.json.
+- [ ] 494. wire the engine seam into the maestro from the flat root module engine.ts.
+- [ ] 495. extract the pure core of the engine free of transport, dom and clock.
+- [ ] 496. test the core of the engine in vitest with the injected seams.
+- [ ] 497. freeze the public surface of the engine in the apifreeze baseline.
+- [ ] 498. gate the engine through the release ladder with the consumer smoke on the tarball.
+- [ ] 499. document the contract of the graphrunner engine in the devthink manifest of the package.json.
+- [ ] 500. wire the graphrunner seam into the maestro from the flat root module graphrunner.ts.
+- [ ] 501. extract the pure core of the graphrunner free of transport, dom and clock.
+- [ ] 502. test the core of the graphrunner in vitest with the injected seams.
+- [ ] 503. freeze the public surface of the graphrunner in the apifreeze baseline.
+- [ ] 504. gate the graphrunner through the release ladder with the consumer smoke on the tarball.
+- [ ] 505. document the contract of the streamparse engine in the devthink manifest of the package.json.
+- [ ] 506. wire the streamparse seam into the maestro from the flat root module streaming.ts.
+- [ ] 507. extract the pure core of the streamparse free of transport, dom and clock.
+- [ ] 508. test the core of the streamparse in vitest with the injected seams.
+- [ ] 509. freeze the public surface of the streamparse in the apifreeze baseline.
+- [ ] 510. gate the streamparse through the release ladder with the consumer smoke on the tarball.
+- [ ] 511. document the contract of the retrybackoff engine in the devthink manifest of the package.json.
+- [ ] 512. wire the retrybackoff seam into the maestro from the flat root module retrybackoff.ts.
+- [ ] 513. extract the pure core of the retrybackoff free of transport, dom and clock.
+- [ ] 514. test the core of the retrybackoff in vitest with the injected seams.
+- [ ] 515. freeze the public surface of the retrybackoff in the apifreeze baseline.
+- [ ] 516. gate the retrybackoff through the release ladder with the consumer smoke on the tarball.
+- [ ] 517. document the contract of the conversationcompact engine in the devthink manifest of the package.json.
+- [ ] 518. wire the conversationcompact seam into the maestro from the flat root module conversationcompact.ts.
+- [ ] 519. extract the pure core of the conversationcompact free of transport, dom and clock.
+- [ ] 520. test the core of the conversationcompact in vitest with the injected seams.
+- [ ] 521. freeze the public surface of the conversationcompact in the apifreeze baseline.
+- [ ] 522. gate the conversationcompact through the release ladder with the consumer smoke on the tarball.
+- [ ] 523. document the contract of the mcpregistry engine in the devthink manifest of the package.json.
+- [ ] 524. wire the mcpregistry seam into the maestro from the flat root module mcpregistry.ts.
+- [ ] 525. extract the pure core of the mcpregistry free of transport, dom and clock.
+- [ ] 526. test the core of the mcpregistry in vitest with the injected seams.
+- [ ] 527. freeze the public surface of the mcpregistry in the apifreeze baseline.
+- [ ] 528. gate the mcpregistry through the release ladder with the consumer smoke on the tarball.
+- [ ] 529. document the contract of the calculator engine in the devthink manifest of the package.json.
+- [ ] 530. wire the calculator seam into the maestro from the flat root module calculator.ts.
+- [ ] 531. extract the pure core of the calculator free of transport, dom and clock.
+- [ ] 532. test the core of the calculator in vitest with the injected seams.
+- [ ] 533. freeze the public surface of the calculator in the apifreeze baseline.
+- [ ] 534. gate the calculator through the release ladder with the consumer smoke on the tarball.
+- [ ] 535. document the contract of the maestro engine in the devthink manifest of the package.json.
+- [ ] 536. wire the maestro seam into the maestro from the flat root module devthink.ts.
+- [ ] 537. extract the pure core of the maestro free of transport, dom and clock.
+- [ ] 538. test the core of the maestro in vitest with the injected seams.
+- [ ] 539. freeze the public surface of the maestro in the apifreeze baseline.
+- [ ] 540. gate the maestro through the release ladder with the consumer smoke on the tarball.
+
+## phase 6 — the eradication e1-e20, one pattern per app
+
+- [ ] 541. eradicate e1 (emoji unicode in ui) from argan until the emoji range grep answers zero.
+- [ ] 542. eradicate e2 (unicode glyph icons) from argan until the glyph set grep (segmenter scalar run) answers zero.
+- [ ] 543. eradicate e3 (separator glyphs and middots in copy) from argan until the middot and arrow grep answers zero.
+- [ ] 544. eradicate e4 (decorative and loading dots) from argan until the dot animation grep answers zero.
+- [ ] 545. eradicate e5 (halftone and radial dot textures) from argan until the radial-gradient dots grep answers zero.
+- [ ] 546. eradicate e6 (transition:all) from argan until the transition:all grep answers zero.
+- [ ] 547. eradicate e7 (pills of radius 999px) from argan until the 999px grep answers zero.
+- [ ] 548. eradicate e8 (raw #000/#fff fills) from argan until the raw hex fill grep answers zero.
+- [ ] 549. eradicate e9 (glow shadows) from argan until the glow grep answers zero.
+- [ ] 550. eradicate e10 (infinite loops (breathe, sheen, ping, blink)) from argan until the infinite animation grep minus the shimmer exception answers zero.
+- [ ] 551. eradicate e11 (glyph spinners) from argan until the spinner glyph grep answers zero.
+- [ ] 552. eradicate e12 (selectors redefined three or more times) from argan until the analyzer redefinition report answers zero.
+- [ ] 553. eradicate e13 (!important overrides) from argan until the !important grep answers zero.
+- [ ] 554. eradicate e14 (orphan css classes) from argan until the analyzer orphan report answers zero.
+- [ ] 555. eradicate e15 (multiple token namespaces) from argan until the token namespace grep minus the single --sol- family answers zero.
+- [ ] 556. eradicate e16 (tailwind utilities inside Sol) from argan until the tailwind utility grep on the Sol tree answers zero.
+- [ ] 557. eradicate e17 (copy strings over 140 chars) from argan until the copy budget report answers zero.
+- [ ] 558. eradicate e18 (emoji and glyph drift in ts strings) from argan until the ts literal grep on the root modules answers zero.
+- [ ] 559. eradicate e19 (reduced-motion guards not last) from argan until the file-tail position check answers zero.
+- [ ] 560. eradicate e20 (animation on properties other than transform/opacity) from argan until the animated property grep answers zero.
+- [ ] 561. eradicate e1 (emoji unicode in ui) from cadria until the emoji range grep answers zero.
+- [ ] 562. eradicate e2 (unicode glyph icons) from cadria until the glyph set grep (segmenter scalar run) answers zero.
+- [ ] 563. eradicate e3 (separator glyphs and middots in copy) from cadria until the middot and arrow grep answers zero.
+- [ ] 564. eradicate e4 (decorative and loading dots) from cadria until the dot animation grep answers zero.
+- [ ] 565. eradicate e5 (halftone and radial dot textures) from cadria until the radial-gradient dots grep answers zero.
+- [ ] 566. eradicate e6 (transition:all) from cadria until the transition:all grep answers zero.
+- [ ] 567. eradicate e7 (pills of radius 999px) from cadria until the 999px grep answers zero.
+- [ ] 568. eradicate e8 (raw #000/#fff fills) from cadria until the raw hex fill grep answers zero.
+- [ ] 569. eradicate e9 (glow shadows) from cadria until the glow grep answers zero.
+- [ ] 570. eradicate e10 (infinite loops (breathe, sheen, ping, blink)) from cadria until the infinite animation grep minus the shimmer exception answers zero.
+- [ ] 571. eradicate e11 (glyph spinners) from cadria until the spinner glyph grep answers zero.
+- [ ] 572. eradicate e12 (selectors redefined three or more times) from cadria until the analyzer redefinition report answers zero.
+- [ ] 573. eradicate e13 (!important overrides) from cadria until the !important grep answers zero.
+- [ ] 574. eradicate e14 (orphan css classes) from cadria until the analyzer orphan report answers zero.
+- [ ] 575. eradicate e15 (multiple token namespaces) from cadria until the token namespace grep minus the single --sol- family answers zero.
+- [ ] 576. eradicate e16 (tailwind utilities inside Sol) from cadria until the tailwind utility grep on the Sol tree answers zero.
+- [ ] 577. eradicate e17 (copy strings over 140 chars) from cadria until the copy budget report answers zero.
+- [ ] 578. eradicate e18 (emoji and glyph drift in ts strings) from cadria until the ts literal grep on the root modules answers zero.
+- [ ] 579. eradicate e19 (reduced-motion guards not last) from cadria until the file-tail position check answers zero.
+- [ ] 580. eradicate e20 (animation on properties other than transform/opacity) from cadria until the animated property grep answers zero.
+- [ ] 581. eradicate e1 (emoji unicode in ui) from cobaia until the emoji range grep answers zero.
+- [ ] 582. eradicate e2 (unicode glyph icons) from cobaia until the glyph set grep (segmenter scalar run) answers zero.
+- [ ] 583. eradicate e3 (separator glyphs and middots in copy) from cobaia until the middot and arrow grep answers zero.
+- [ ] 584. eradicate e4 (decorative and loading dots) from cobaia until the dot animation grep answers zero.
+- [ ] 585. eradicate e5 (halftone and radial dot textures) from cobaia until the radial-gradient dots grep answers zero.
+- [ ] 586. eradicate e6 (transition:all) from cobaia until the transition:all grep answers zero.
+- [ ] 587. eradicate e7 (pills of radius 999px) from cobaia until the 999px grep answers zero.
+- [ ] 588. eradicate e8 (raw #000/#fff fills) from cobaia until the raw hex fill grep answers zero.
+- [ ] 589. eradicate e9 (glow shadows) from cobaia until the glow grep answers zero.
+- [ ] 590. eradicate e10 (infinite loops (breathe, sheen, ping, blink)) from cobaia until the infinite animation grep minus the shimmer exception answers zero.
+- [ ] 591. eradicate e11 (glyph spinners) from cobaia until the spinner glyph grep answers zero.
+- [ ] 592. eradicate e12 (selectors redefined three or more times) from cobaia until the analyzer redefinition report answers zero.
+- [ ] 593. eradicate e13 (!important overrides) from cobaia until the !important grep answers zero.
+- [ ] 594. eradicate e14 (orphan css classes) from cobaia until the analyzer orphan report answers zero.
+- [ ] 595. eradicate e15 (multiple token namespaces) from cobaia until the token namespace grep minus the single --sol- family answers zero.
+- [ ] 596. eradicate e16 (tailwind utilities inside Sol) from cobaia until the tailwind utility grep on the Sol tree answers zero.
+- [ ] 597. eradicate e17 (copy strings over 140 chars) from cobaia until the copy budget report answers zero.
+- [ ] 598. eradicate e18 (emoji and glyph drift in ts strings) from cobaia until the ts literal grep on the root modules answers zero.
+- [ ] 599. eradicate e19 (reduced-motion guards not last) from cobaia until the file-tail position check answers zero.
+- [ ] 600. eradicate e20 (animation on properties other than transform/opacity) from cobaia until the animated property grep answers zero.
+- [ ] 601. eradicate e1 (emoji unicode in ui) from debonair until the emoji range grep answers zero.
+- [ ] 602. eradicate e2 (unicode glyph icons) from debonair until the glyph set grep (segmenter scalar run) answers zero.
+- [ ] 603. eradicate e3 (separator glyphs and middots in copy) from debonair until the middot and arrow grep answers zero.
+- [ ] 604. eradicate e4 (decorative and loading dots) from debonair until the dot animation grep answers zero.
+- [ ] 605. eradicate e5 (halftone and radial dot textures) from debonair until the radial-gradient dots grep answers zero.
+- [ ] 606. eradicate e6 (transition:all) from debonair until the transition:all grep answers zero.
+- [ ] 607. eradicate e7 (pills of radius 999px) from debonair until the 999px grep answers zero.
+- [ ] 608. eradicate e8 (raw #000/#fff fills) from debonair until the raw hex fill grep answers zero.
+- [ ] 609. eradicate e9 (glow shadows) from debonair until the glow grep answers zero.
+- [ ] 610. eradicate e10 (infinite loops (breathe, sheen, ping, blink)) from debonair until the infinite animation grep minus the shimmer exception answers zero.
+- [ ] 611. eradicate e11 (glyph spinners) from debonair until the spinner glyph grep answers zero.
+- [ ] 612. eradicate e12 (selectors redefined three or more times) from debonair until the analyzer redefinition report answers zero.
+- [ ] 613. eradicate e13 (!important overrides) from debonair until the !important grep answers zero.
+- [ ] 614. eradicate e14 (orphan css classes) from debonair until the analyzer orphan report answers zero.
+- [ ] 615. eradicate e15 (multiple token namespaces) from debonair until the token namespace grep minus the single --sol- family answers zero.
+- [ ] 616. eradicate e16 (tailwind utilities inside Sol) from debonair until the tailwind utility grep on the Sol tree answers zero.
+- [ ] 617. eradicate e17 (copy strings over 140 chars) from debonair until the copy budget report answers zero.
+- [ ] 618. eradicate e18 (emoji and glyph drift in ts strings) from debonair until the ts literal grep on the root modules answers zero.
+- [ ] 619. eradicate e19 (reduced-motion guards not last) from debonair until the file-tail position check answers zero.
+- [ ] 620. eradicate e20 (animation on properties other than transform/opacity) from debonair until the animated property grep answers zero.
+- [ ] 621. eradicate e1 (emoji unicode in ui) from devthink until the emoji range grep answers zero.
+- [ ] 622. eradicate e2 (unicode glyph icons) from devthink until the glyph set grep (segmenter scalar run) answers zero.
+- [ ] 623. eradicate e3 (separator glyphs and middots in copy) from devthink until the middot and arrow grep answers zero.
+- [ ] 624. eradicate e4 (decorative and loading dots) from devthink until the dot animation grep answers zero.
+- [ ] 625. eradicate e5 (halftone and radial dot textures) from devthink until the radial-gradient dots grep answers zero.
+- [ ] 626. eradicate e6 (transition:all) from devthink until the transition:all grep answers zero.
+- [ ] 627. eradicate e7 (pills of radius 999px) from devthink until the 999px grep answers zero.
+- [ ] 628. eradicate e8 (raw #000/#fff fills) from devthink until the raw hex fill grep answers zero.
+- [ ] 629. eradicate e9 (glow shadows) from devthink until the glow grep answers zero.
+- [ ] 630. eradicate e10 (infinite loops (breathe, sheen, ping, blink)) from devthink until the infinite animation grep minus the shimmer exception answers zero.
+- [ ] 631. eradicate e11 (glyph spinners) from devthink until the spinner glyph grep answers zero.
+- [ ] 632. eradicate e12 (selectors redefined three or more times) from devthink until the analyzer redefinition report answers zero.
+- [ ] 633. eradicate e13 (!important overrides) from devthink until the !important grep answers zero.
+- [ ] 634. eradicate e14 (orphan css classes) from devthink until the analyzer orphan report answers zero.
+- [ ] 635. eradicate e15 (multiple token namespaces) from devthink until the token namespace grep minus the single --sol- family answers zero.
+- [ ] 636. eradicate e16 (tailwind utilities inside Sol) from devthink until the tailwind utility grep on the Sol tree answers zero.
+- [ ] 637. eradicate e17 (copy strings over 140 chars) from devthink until the copy budget report answers zero.
+- [ ] 638. eradicate e18 (emoji and glyph drift in ts strings) from devthink until the ts literal grep on the root modules answers zero.
+- [ ] 639. eradicate e19 (reduced-motion guards not last) from devthink until the file-tail position check answers zero.
+- [ ] 640. eradicate e20 (animation on properties other than transform/opacity) from devthink until the animated property grep answers zero.
+- [ ] 641. eradicate e1 (emoji unicode in ui) from forge until the emoji range grep answers zero.
+- [ ] 642. eradicate e2 (unicode glyph icons) from forge until the glyph set grep (segmenter scalar run) answers zero.
+- [ ] 643. eradicate e3 (separator glyphs and middots in copy) from forge until the middot and arrow grep answers zero.
+- [ ] 644. eradicate e4 (decorative and loading dots) from forge until the dot animation grep answers zero.
+- [ ] 645. eradicate e5 (halftone and radial dot textures) from forge until the radial-gradient dots grep answers zero.
+- [ ] 646. eradicate e6 (transition:all) from forge until the transition:all grep answers zero.
+- [ ] 647. eradicate e7 (pills of radius 999px) from forge until the 999px grep answers zero.
+- [ ] 648. eradicate e8 (raw #000/#fff fills) from forge until the raw hex fill grep answers zero.
+- [ ] 649. eradicate e9 (glow shadows) from forge until the glow grep answers zero.
+- [ ] 650. eradicate e10 (infinite loops (breathe, sheen, ping, blink)) from forge until the infinite animation grep minus the shimmer exception answers zero.
+- [ ] 651. eradicate e11 (glyph spinners) from forge until the spinner glyph grep answers zero.
+- [ ] 652. eradicate e12 (selectors redefined three or more times) from forge until the analyzer redefinition report answers zero.
+- [ ] 653. eradicate e13 (!important overrides) from forge until the !important grep answers zero.
+- [ ] 654. eradicate e14 (orphan css classes) from forge until the analyzer orphan report answers zero.
+- [ ] 655. eradicate e15 (multiple token namespaces) from forge until the token namespace grep minus the single --sol- family answers zero.
+- [ ] 656. eradicate e16 (tailwind utilities inside Sol) from forge until the tailwind utility grep on the Sol tree answers zero.
+- [ ] 657. eradicate e17 (copy strings over 140 chars) from forge until the copy budget report answers zero.
+- [ ] 658. eradicate e18 (emoji and glyph drift in ts strings) from forge until the ts literal grep on the root modules answers zero.
+- [ ] 659. eradicate e19 (reduced-motion guards not last) from forge until the file-tail position check answers zero.
+- [ ] 660. eradicate e20 (animation on properties other than transform/opacity) from forge until the animated property grep answers zero.
+- [ ] 661. eradicate e1 (emoji unicode in ui) from foundry until the emoji range grep answers zero.
+- [ ] 662. eradicate e2 (unicode glyph icons) from foundry until the glyph set grep (segmenter scalar run) answers zero.
+- [ ] 663. eradicate e3 (separator glyphs and middots in copy) from foundry until the middot and arrow grep answers zero.
+- [ ] 664. eradicate e4 (decorative and loading dots) from foundry until the dot animation grep answers zero.
+- [ ] 665. eradicate e5 (halftone and radial dot textures) from foundry until the radial-gradient dots grep answers zero.
+- [ ] 666. eradicate e6 (transition:all) from foundry until the transition:all grep answers zero.
+- [ ] 667. eradicate e7 (pills of radius 999px) from foundry until the 999px grep answers zero.
+- [ ] 668. eradicate e8 (raw #000/#fff fills) from foundry until the raw hex fill grep answers zero.
+- [ ] 669. eradicate e9 (glow shadows) from foundry until the glow grep answers zero.
+- [ ] 670. eradicate e10 (infinite loops (breathe, sheen, ping, blink)) from foundry until the infinite animation grep minus the shimmer exception answers zero.
+- [ ] 671. eradicate e11 (glyph spinners) from foundry until the spinner glyph grep answers zero.
+- [ ] 672. eradicate e12 (selectors redefined three or more times) from foundry until the analyzer redefinition report answers zero.
+- [ ] 673. eradicate e13 (!important overrides) from foundry until the !important grep answers zero.
+- [ ] 674. eradicate e14 (orphan css classes) from foundry until the analyzer orphan report answers zero.
+- [ ] 675. eradicate e15 (multiple token namespaces) from foundry until the token namespace grep minus the single --sol- family answers zero.
+- [ ] 676. eradicate e16 (tailwind utilities inside Sol) from foundry until the tailwind utility grep on the Sol tree answers zero.
+- [ ] 677. eradicate e17 (copy strings over 140 chars) from foundry until the copy budget report answers zero.
+- [ ] 678. eradicate e18 (emoji and glyph drift in ts strings) from foundry until the ts literal grep on the root modules answers zero.
+- [ ] 679. eradicate e19 (reduced-motion guards not last) from foundry until the file-tail position check answers zero.
+- [ ] 680. eradicate e20 (animation on properties other than transform/opacity) from foundry until the animated property grep answers zero.
+- [ ] 681. eradicate e1 (emoji unicode in ui) from getry until the emoji range grep answers zero.
+- [ ] 682. eradicate e2 (unicode glyph icons) from getry until the glyph set grep (segmenter scalar run) answers zero.
+- [ ] 683. eradicate e3 (separator glyphs and middots in copy) from getry until the middot and arrow grep answers zero.
+- [ ] 684. eradicate e4 (decorative and loading dots) from getry until the dot animation grep answers zero.
+- [ ] 685. eradicate e5 (halftone and radial dot textures) from getry until the radial-gradient dots grep answers zero.
+- [ ] 686. eradicate e6 (transition:all) from getry until the transition:all grep answers zero.
+- [ ] 687. eradicate e7 (pills of radius 999px) from getry until the 999px grep answers zero.
+- [ ] 688. eradicate e8 (raw #000/#fff fills) from getry until the raw hex fill grep answers zero.
+- [ ] 689. eradicate e9 (glow shadows) from getry until the glow grep answers zero.
+- [ ] 690. eradicate e10 (infinite loops (breathe, sheen, ping, blink)) from getry until the infinite animation grep minus the shimmer exception answers zero.
+- [ ] 691. eradicate e11 (glyph spinners) from getry until the spinner glyph grep answers zero.
+- [ ] 692. eradicate e12 (selectors redefined three or more times) from getry until the analyzer redefinition report answers zero.
+- [ ] 693. eradicate e13 (!important overrides) from getry until the !important grep answers zero.
+- [ ] 694. eradicate e14 (orphan css classes) from getry until the analyzer orphan report answers zero.
+- [ ] 695. eradicate e15 (multiple token namespaces) from getry until the token namespace grep minus the single --sol- family answers zero.
+- [ ] 696. eradicate e16 (tailwind utilities inside Sol) from getry until the tailwind utility grep on the Sol tree answers zero.
+- [ ] 697. eradicate e17 (copy strings over 140 chars) from getry until the copy budget report answers zero.
+- [ ] 698. eradicate e18 (emoji and glyph drift in ts strings) from getry until the ts literal grep on the root modules answers zero.
+- [ ] 699. eradicate e19 (reduced-motion guards not last) from getry until the file-tail position check answers zero.
+- [ ] 700. eradicate e20 (animation on properties other than transform/opacity) from getry until the animated property grep answers zero.
+- [ ] 701. eradicate e1 (emoji unicode in ui) from saddle until the emoji range grep answers zero.
+- [ ] 702. eradicate e2 (unicode glyph icons) from saddle until the glyph set grep (segmenter scalar run) answers zero.
+- [ ] 703. eradicate e3 (separator glyphs and middots in copy) from saddle until the middot and arrow grep answers zero.
+- [ ] 704. eradicate e4 (decorative and loading dots) from saddle until the dot animation grep answers zero.
+- [ ] 705. eradicate e5 (halftone and radial dot textures) from saddle until the radial-gradient dots grep answers zero.
+- [ ] 706. eradicate e6 (transition:all) from saddle until the transition:all grep answers zero.
+- [ ] 707. eradicate e7 (pills of radius 999px) from saddle until the 999px grep answers zero.
+- [ ] 708. eradicate e8 (raw #000/#fff fills) from saddle until the raw hex fill grep answers zero.
+- [ ] 709. eradicate e9 (glow shadows) from saddle until the glow grep answers zero.
+- [ ] 710. eradicate e10 (infinite loops (breathe, sheen, ping, blink)) from saddle until the infinite animation grep minus the shimmer exception answers zero.
+- [ ] 711. eradicate e11 (glyph spinners) from saddle until the spinner glyph grep answers zero.
+- [ ] 712. eradicate e12 (selectors redefined three or more times) from saddle until the analyzer redefinition report answers zero.
+- [ ] 713. eradicate e13 (!important overrides) from saddle until the !important grep answers zero.
+- [ ] 714. eradicate e14 (orphan css classes) from saddle until the analyzer orphan report answers zero.
+- [ ] 715. eradicate e15 (multiple token namespaces) from saddle until the token namespace grep minus the single --sol- family answers zero.
+- [ ] 716. eradicate e16 (tailwind utilities inside Sol) from saddle until the tailwind utility grep on the Sol tree answers zero.
+- [ ] 717. eradicate e17 (copy strings over 140 chars) from saddle until the copy budget report answers zero.
+- [ ] 718. eradicate e18 (emoji and glyph drift in ts strings) from saddle until the ts literal grep on the root modules answers zero.
+- [ ] 719. eradicate e19 (reduced-motion guards not last) from saddle until the file-tail position check answers zero.
+- [ ] 720. eradicate e20 (animation on properties other than transform/opacity) from saddle until the animated property grep answers zero.
+- [ ] 721. eradicate e1 (emoji unicode in ui) from stealthhead until the emoji range grep answers zero.
+- [ ] 722. eradicate e2 (unicode glyph icons) from stealthhead until the glyph set grep (segmenter scalar run) answers zero.
+- [ ] 723. eradicate e3 (separator glyphs and middots in copy) from stealthhead until the middot and arrow grep answers zero.
+- [ ] 724. eradicate e4 (decorative and loading dots) from stealthhead until the dot animation grep answers zero.
+- [ ] 725. eradicate e5 (halftone and radial dot textures) from stealthhead until the radial-gradient dots grep answers zero.
+- [ ] 726. eradicate e6 (transition:all) from stealthhead until the transition:all grep answers zero.
+- [ ] 727. eradicate e7 (pills of radius 999px) from stealthhead until the 999px grep answers zero.
+- [ ] 728. eradicate e8 (raw #000/#fff fills) from stealthhead until the raw hex fill grep answers zero.
+- [ ] 729. eradicate e9 (glow shadows) from stealthhead until the glow grep answers zero.
+- [ ] 730. eradicate e10 (infinite loops (breathe, sheen, ping, blink)) from stealthhead until the infinite animation grep minus the shimmer exception answers zero.
+- [ ] 731. eradicate e11 (glyph spinners) from stealthhead until the spinner glyph grep answers zero.
+- [ ] 732. eradicate e12 (selectors redefined three or more times) from stealthhead until the analyzer redefinition report answers zero.
+- [ ] 733. eradicate e13 (!important overrides) from stealthhead until the !important grep answers zero.
+- [ ] 734. eradicate e14 (orphan css classes) from stealthhead until the analyzer orphan report answers zero.
+- [ ] 735. eradicate e15 (multiple token namespaces) from stealthhead until the token namespace grep minus the single --sol- family answers zero.
+- [ ] 736. eradicate e16 (tailwind utilities inside Sol) from stealthhead until the tailwind utility grep on the Sol tree answers zero.
+- [ ] 737. eradicate e17 (copy strings over 140 chars) from stealthhead until the copy budget report answers zero.
+- [ ] 738. eradicate e18 (emoji and glyph drift in ts strings) from stealthhead until the ts literal grep on the root modules answers zero.
+- [ ] 739. eradicate e19 (reduced-motion guards not last) from stealthhead until the file-tail position check answers zero.
+- [ ] 740. eradicate e20 (animation on properties other than transform/opacity) from stealthhead until the animated property grep answers zero.
+- [ ] 741. eradicate e1 (emoji unicode in ui) from vault until the emoji range grep answers zero.
+- [ ] 742. eradicate e2 (unicode glyph icons) from vault until the glyph set grep (segmenter scalar run) answers zero.
+- [ ] 743. eradicate e3 (separator glyphs and middots in copy) from vault until the middot and arrow grep answers zero.
+- [ ] 744. eradicate e4 (decorative and loading dots) from vault until the dot animation grep answers zero.
+- [ ] 745. eradicate e5 (halftone and radial dot textures) from vault until the radial-gradient dots grep answers zero.
+- [ ] 746. eradicate e6 (transition:all) from vault until the transition:all grep answers zero.
+- [ ] 747. eradicate e7 (pills of radius 999px) from vault until the 999px grep answers zero.
+- [ ] 748. eradicate e8 (raw #000/#fff fills) from vault until the raw hex fill grep answers zero.
+- [ ] 749. eradicate e9 (glow shadows) from vault until the glow grep answers zero.
+- [ ] 750. eradicate e10 (infinite loops (breathe, sheen, ping, blink)) from vault until the infinite animation grep minus the shimmer exception answers zero.
+- [ ] 751. eradicate e11 (glyph spinners) from vault until the spinner glyph grep answers zero.
+- [ ] 752. eradicate e12 (selectors redefined three or more times) from vault until the analyzer redefinition report answers zero.
+- [ ] 753. eradicate e13 (!important overrides) from vault until the !important grep answers zero.
+- [ ] 754. eradicate e14 (orphan css classes) from vault until the analyzer orphan report answers zero.
+- [ ] 755. eradicate e15 (multiple token namespaces) from vault until the token namespace grep minus the single --sol- family answers zero.
+- [ ] 756. eradicate e16 (tailwind utilities inside Sol) from vault until the tailwind utility grep on the Sol tree answers zero.
+- [ ] 757. eradicate e17 (copy strings over 140 chars) from vault until the copy budget report answers zero.
+- [ ] 758. eradicate e18 (emoji and glyph drift in ts strings) from vault until the ts literal grep on the root modules answers zero.
+- [ ] 759. eradicate e19 (reduced-motion guards not last) from vault until the file-tail position check answers zero.
+- [ ] 760. eradicate e20 (animation on properties other than transform/opacity) from vault until the animated property grep answers zero.
+
+## phase 7 — the ten gates of the ladder, wire and run green
+
+- [ ] 761. wire the tsc gate: bunx tsc --noEmit with zero new errors across every app.
+- [ ] 762. run the tsc gate green and record the artifact.
+- [ ] 763. wire the biome gate: biome check clean on every touched file, error level zero.
+- [ ] 764. run the biome gate green and record the artifact.
+- [ ] 765. wire the eradication gate: the e1-e20 script with per-app zero output.
+- [ ] 766. run the eradication gate green and record the artifact.
+- [ ] 767. wire the zoomlock gate: the probe asserts installzoomlock before the first render.
+- [ ] 768. run the zoomlock gate green and record the artifact.
+- [ ] 769. wire the reduced-motion gate: the hard stop parses last in every stylesheet.
+- [ ] 770. run the reduced-motion gate green and record the artifact.
+- [ ] 771. wire the a11y gate: 44px targets, AA contrast, labels, focus order on the candidate.
+- [ ] 772. run the a11y gate green and record the artifact.
+- [ ] 773. wire the flat-tree gate: no src/, no ui/, no assets/, no dist/ in the tree.
+- [ ] 774. run the flat-tree gate green and record the artifact.
+- [ ] 775. wire the behavior gate: every ui interaction answers a real effect, no simulation.
+- [ ] 776. run the behavior gate green and record the artifact.
+- [ ] 777. wire the vitest gate: the complete suite green with zero skips hidden.
+- [ ] 778. run the vitest gate green and record the artifact.
+- [ ] 779. wire the git gate: clean tree, one commit per step, no build ghosts.
+- [ ] 780. run the git gate green and record the artifact.
+
+## phase 8 — the release: bump, zips, assets and the brave extension
+
+- [ ] 781. bump the version one step of the ladder and mirror it on every manifest in lockstep.
+- [ ] 782. write the changelog entry of the bump with the real behavior changes only.
+- [ ] 783. sync the permdiff baseline after the bump, the 2.0.97 lesson kept as law.
+- [ ] 784. sync the apifreeze baseline after the bump in the same commit.
+- [ ] 785. run the dependencyupdates ladder and ride the bun.lock in the same commit.
+- [ ] 786. run the build matrix until the 18 cells answer green.
+- [ ] 787. zip every app as name.web.version.zip from the static build.
+- [ ] 788. zip every app as name.next.version.zip from the next build, no next folder in the repo.
+- [ ] 789. generate the SHA256SUMS over the full asset set.
+- [ ] 790. write the release notes from the changelog with the ladder step cited.
+- [ ] 791. attach the full set of 300+ assets to the release before publishing.
+- [ ] 792. package the brave control extension and attach it to the release assets.
+- [ ] 793. smoke the published tarball: install, import, run the consumer smoke.
+- [ ] 794. publish to npm with the skip-if-version-exists guard.
+- [ ] 795. publish to the github npm registry with the scope alignment check.
+- [ ] 796. publish the container image to GHCR with the digest recorded.
+- [ ] 797. publish the nuget package with the assembly version in lockstep.
+- [ ] 798. publish the maven artifact with the group-and-artifact coordinate.
+- [ ] 799. verify the release gates: readiness, sweep, poolaudit, matrixverify, telemetryfree, soak, wcag.
+- [ ] 800. tag the release only when the whole ladder answers green.
+- [ ] 801. verify the ci verify workflow green after the tag.
+- [ ] 802. verify the family pages workflow green after the tag.
+- [ ] 803. verify the maintenance workflow green after the tag.
+- [ ] 804. verify the security workflow green after the tag.
+- [ ] 805. confirm the release page carries the notes, the sums and the two zips per app.
+- [ ] 806. cut the preview deployment and probe the desktop shell on it.
+- [ ] 807. probe the extension build against the tagged web bundle.
+- [ ] 808. record the release in the version ladder doc with the step footer.
+- [ ] 809. rotate any credential the release pipeline touched, the security law.
+- [ ] 810. close the house only when every release gate of this phase is green.
+
+## phase 9 — the two presentations: web document and installed stage
+
+- [ ] 811. wire the presentation switch on VITE_DT_TARGET with web and installed as the two values.
+- [ ] 812. implement the web presentation: the light document with scroll, the shell as chrome.
+- [ ] 813. implement the installed presentation: the mica stage with the taskbar and the pins.
+- [ ] 814. split the shell chrome per presentation without forking the shell components.
+- [ ] 815. split the intro per presentation from the same frame source.
+- [ ] 816. split the onboarding per presentation with the shared state machine.
+- [ ] 817. keep the 35 pages identical across the two presentations, only the chrome differs.
+- [ ] 818. implement the window management on the installed target over the shell primitives.
+- [ ] 819. keep the web target windowless with the document scroll as the navigation.
+- [ ] 820. implement the news page as a native page of the os on both presentations.
+- [ ] 821. implement the devthink browser surface with the owni providers embedded.
+- [ ] 822. gate the browser surface: the policy module answers every consent.
+- [ ] 823. test the presentation switch in vitest with the env matrix.
+- [ ] 824. test the browser surface navigation in vitest with the fake host.
+- [ ] 825. audit both presentations for a11y at the shell level.
+- [ ] 826. audit both presentations against the eradication greps.
+- [ ] 827. make both presentations responsive with the one-design law.
+- [ ] 828. record the presentation contract in the docs with the env matrix.
+- [ ] 829. probe the installed presentation on the desktop preview with the browser driver.
+- [ ] 830. probe the web presentation on the static build of the release.
+- [ ] 831. keep the assets of both presentations inside the release set.
+- [ ] 832. document the installed installers (tauri, capacitor) against the stage shell.
+- [ ] 833. document the web deployment copies (vercel, netlify, cloudflare) inside the theme folder.
+- [ ] 834. keep the deploy copies as the only folder variation, the structure law.
+- [ ] 835. wire the presentation into the gateway identity headers.
+- [ ] 836. wire the presentation into the extension surface detection.
+- [ ] 837. run the cross-browser smoke on both presentations.
+- [ ] 838. run the soak on the installed presentation with the desktop driver.
+- [ ] 839. record the presentation pass as the l5 micro layer with its greps green.
+- [ ] 840. close the presentation wave with the two-probe screenshots in the artifacts.
+
+## phase 10 — the docs: the ladder, the doctrines and the guides
+
+- [ ] 841. keep the version ladder doc current with every house opened and closed.
+- [ ] 842. append the operation waves to the regras manual with origin cited.
+- [ ] 843. port the design doctrine v2 into the docs folder as the law the sessions cite.
+- [ ] 844. port the anti-vibe audit into the docs folder as the eradication ledger.
+- [ ] 845. keep the engines manifest of the package.json and the scope doc in lockstep.
+- [ ] 846. update the readme to the two-presentation reality with the install paths.
+- [ ] 847. update the architecture doc with the maestro and the engine seams.
+- [ ] 848. update the gateway guide with the seven handlers and the route matrix.
+- [ ] 849. update the provider guide with the oauth lanes and the rotation rules.
+- [ ] 850. update the extension docs with the mv3 surface and the store listings.
+- [ ] 851. update the workflow docs with the library modes and the recipes.
+- [ ] 852. update the security docs with the consent classes and the policy gates.
+- [ ] 853. update the wcag doc with the audit results of every wave.
+- [ ] 854. update the release docs with the gate ladder and the asset rules.
+- [ ] 855. update the testing doc with the suite map and the runner matrix.
+- [ ] 856. keep the doccheck gate green over the kind, tool and message catalogs.
+- [ ] 857. keep every doc link resolving through the doccheck link walk.
+- [ ] 858. keep every code block with a stated language, the doccheck rule.
+- [ ] 859. keep the flow diagrams on the shared style, the doccheck rule.
+- [ ] 860. write the per-page docs only when the page carries a contract worth recording.
+- [ ] 861. write the engine docs from the apifreeze surface, not from the code reading.
+- [ ] 862. translate nothing: the docs stay english lowercase, the house law.
+- [ ] 863. keep the changelog as the single history, no duplicate ledgers.
+- [ ] 864. archive the retired docs with the (2) suffix, the nothing-is-deleted law.
+- [ ] 865. keep the docs folder flat: one file, one responsibility, 300 lines max.
+- [ ] 866. review the docs against the copy budget and shrink the overruns.
+- [ ] 867. run the docs audit over every wave and record the report in the artifacts.
+- [ ] 868. keep the dossiers of the references out of the repo, in the refs workspace.
+- [ ] 869. cite the doctrine lines (m/g/t/s/i/x) each session realized in its summary.
+- [ ] 870. close the docs wave with the doccheck and the docsaudit green.
+
+## phase 11 — the node maestro and the python lane
+
+- [ ] 871. keep the engines manifest as the single truth of the 15 engines and their sources.
+- [ ] 872. keep the maestro (devthink.ts) as the root orchestrator with the flat module imports.
+- [ ] 873. keep the python runner (pythonscripts.ts) on the node:child_process seam only.
+- [ ] 874. spawn python3 with the sandbox cwd, the stdin ignored, the env layered.
+- [ ] 875. enforce the timeout ceiling on every python run and classify the kill as timeout.
+- [ ] 876. capture stdout and stderr as utf8 strings in one plain result.
+- [ ] 877. keep the exit code contract: zero clean, non-zero failed, null killed or unspawned.
+- [ ] 878. keep the json lane opt-in through parsejsonstdout with the readable error.
+- [ ] 879. keep the runner injectable so the tests never touch a real interpreter.
+- [ ] 880. test the python lane in vitest with the fake runner only, no network, no python.
+- [ ] 881. document the python lane contract in the docs with the result shape.
+- [ ] 882. wire the python lane into the maestro command surface as a first-class verb.
+- [ ] 883. keep the sandbox law: the account is the sandbox, the script never leaves its cwd.
+- [ ] 884. audit the python lane for command injection: no shell interpolation anywhere.
+- [ ] 885. gate the python lane with the same ladder: tsc, biome, vitest.
+- [ ] 886. extend the lane to the batch runner only when a page needs it, never speculatively.
+- [ ] 887. keep the engine seams pure so the maestro composes them without adapters.
+- [ ] 888. keep the graphrunner as the stage engine of every orchestrated flow.
+- [ ] 889. walk the graphs stage by stage with the deterministic waves, never a promise pool.
+- [ ] 890. keep the retrybackoff discipline on every outbound fetch the maestro makes.
+- [ ] 891. keep the conversationcompact on the long contexts past the token budget.
+- [ ] 892. keep the mcpregistry as the health ledger of the connected servers.
+- [ ] 893. keep the streaming parser as the only decoder of provider events.
+- [ ] 894. keep the calculator logic pure behind the calculator page.
+- [ ] 895. import the seven family engines only from the published libraries.
+- [ ] 896. audit the imports weekly: zero sibling paths between family apps.
+- [ ] 897. record the maestro passes in the operations doc with the artifacts.
+- [ ] 898. train the agents on the maestro docs before any orchestration session.
+- [ ] 899. keep the orchestration tests green in the full suite.
+- [ ] 900. close the maestro wave with the consumer smoke on the published tarball.
+
+## phase 12 — the final qa and the closing
+
+- [ ] 901. run the complete vitest suite and answer green with zero failed.
+- [ ] 902. run the build matrix and answer 18 of 18 cells green.
+- [ ] 903. run permdiff and answer zero unauthorized drift.
+- [ ] 904. run apifreeze and answer zero surface drift.
+- [ ] 905. run sweep and answer zero open findings.
+- [ ] 906. run poolaudit and answer zero coverage gaps.
+- [ ] 907. run matrixverify and answer every cell verified.
+- [ ] 908. run telemetryfree and answer zero beacons.
+- [ ] 909. run soak and answer the endurance thresholds met.
+- [ ] 910. run wcag and answer the aa report clean.
+- [ ] 911. run cspaudit and answer zero policy violations.
+- [ ] 912. run pentest and answer the security triage clean.
+- [ ] 913. run doccheck and answer every doc check green.
+- [ ] 914. run readiness and answer every migration lane complete.
+- [ ] 915. run costcert and answer the cost ceilings honored.
+- [ ] 916. run agentcert and answer the agent scenarios green.
+- [ ] 917. run the cross-browser smoke and answer the coverage matrix green.
+- [ ] 918. run browsercoverage and answer the browser set complete.
+- [ ] 919. run the chromium smoke on the real driver and answer green.
+- [ ] 920. run the gateway probe against the deployed preview and answer green.
+- [ ] 921. run the eradication script across the 11 apps and answer zero everywhere.
+- [ ] 922. run the a11y audit on the 35 pages and answer clean.
+- [ ] 923. run the zoomlock probe and answer installed before the first render.
+- [ ] 924. run the flat-tree audit and answer zero violations.
+- [ ] 925. run the library-import audit and answer zero sibling paths.
+- [ ] 926. verify the two presentations on the preview with the browser driver.
+- [ ] 927. verify the installed shell: taskbar 48, pins 38x38, start 640, alt-tab, snap.
+- [ ] 928. verify the flow: entrygate, intro, onboarding, home on the fresh account.
+- [ ] 929. verify the news page renders the live feed on both presentations.
+- [ ] 930. verify the 15 engines answer through the maestro in the consumer smoke.
+- [ ] 931. verify the python lane against a real script once on the runner, recorded as evidence.
+- [ ] 932. verify the release set: 300+ assets, the brave extension, the sums.
+- [ ] 933. verify the registries: npm, gh-npm, ghcr, nuget, maven carry the version.
+- [ ] 934. verify the sha256 sums match every asset of the release.
+- [ ] 935. verify the preview server answers the desktop shell and the web document on the tagged build.
+- [ ] 936. verify the docs: the ladder, the doctrine, the scope, the manifests in lockstep.
+- [ ] 937. verify the worklog: every task recorded with its artifacts and commit.
+- [ ] 938. verify the git history: one commit per step, no build ghosts, clean tree.
+- [ ] 939. verify the tokens rotated at the end of the operation, the security law.
+- [ ] 940. close every wave summary with the greps, the gates and the artifacts cited.
+- [ ] 941. archive the session artifacts under tests/artifacts with the run date.
+- [ ] 942. reconcile the step counter with the commit footers of the house.
+- [ ] 943. open the next house of the ladder only with this house fully green.
+- [ ] 944. report the operation to the owner with the counts, the hashes and the gaps.
+- [ ] 945. schedule the next wave from the open gaps, never from memory.
+- [ ] 946. hand the refs workspace (doctrine, audit, dossiers) to the next session.
+- [ ] 947. keep the repo clean: zero temp, zero skills, zero stray assets.
+- [ ] 948. answer the final gate ladder green from tsc to git.
+- [ ] 949. declare the house closed in the changelog with the asset count.
+- [ ] 950. start the next house at .0 with the foundation intact.
