@@ -55,10 +55,14 @@ class ThemeErrorBoundary extends Component<{ children: ReactNode }, { error: Err
 }
 
 function routerBase(): string {
+  // the base rides the BUILD declaration only. Deriving it from the runtime
+  // path made every deep link look like a deployment subfolder: loading
+  // /player handed the router base="/player", the location flattened to "/"
+  // and the home swallowed the whole platform route table. A sub-folder
+  // deployment declares its own vite base, and that declaration arrives here.
   const declaredBase = import.meta.env.BASE_URL;
   if (declaredBase !== "/" && declaredBase !== "./") return declaredBase.replace(/\/$/, "");
-  const bootPath = window.location.pathname.replace(/index\.html$/, "").replace(/\/$/, "");
-  return bootPath === "" ? "" : bootPath;
+  return "";
 }
 
 function App() {
