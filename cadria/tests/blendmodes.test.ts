@@ -11,6 +11,7 @@ import {
   alphacomposite,
   blendchannel,
   blendchannel01,
+  blendlayerstack,
   blendpixel,
   blendrgb,
   blendrgb01,
@@ -88,5 +89,32 @@ describe("blendmodes", () => {
   it("blends one pixel under per-layer alpha", () => {
     assert.deepEqual(blendpixel("multiply", [200, 200, 200], [100, 100, 100]), [78, 78, 78]);
     assert.deepEqual(blendpixel("normal", [200, 200, 200], [10, 20, 30]), [10, 20, 30]);
+  });
+
+  it("folds the layer stack and answers null on any dimension mismatch", () => {
+    const backdrop = { width: 1, height: 1, data: new Uint8ClampedArray([200, 200, 200, 255]) };
+    const gray = { width: 1, height: 1, data: new Uint8ClampedArray([100, 100, 100, 255]) };
+    const odd = { width: 2, height: 1, data: new Uint8ClampedArray([0, 0, 0, 255, 0, 0, 0, 255]) };
+    const folded = blendlayerstack("multiply", backdrop, [gray]);
+    assert.ok(folded);
+    assert.deepEqual([...folded.data.slice(0, 3)], [78, 78, 78]);
+    assert.equal(blendlayerstack("multiply", backdrop, [odd]), null);
+    assert.equal(blendlayerstack("multiply", odd, [gray]), null);
+  });
+
+  it("lets one layer override the stack-wide mode with its own blend identity", () => {
+    const backdrop = { width: 1, height: 1, data: new Uint8ClampedArray([200, 200, 200, 255]) };
+    const gray = { width: 1, height: 1, data: new Uint8ClampedArray([100, 100, 100, 255]) };
+    // stack rides normal (source passthrough); the overriding layer rides multiply.
+    const overridden = blendlayerstack("normal", backdrop, [{ ...gray, mode: "multiply" }]);
+    assert.ok(overridden);
+    assert.deepEqual([...overridden.data.slice(0, 3)], [78, 78, 78]);
+    // without the override the same stack rides the stack-wide multiply anyway.
+    const plain = blendlayerstack("multiply", backdrop, [gray]);
+    assert.deepEqual([...(plain as { data: Uint8ClampedArray }).data.slice(0, 3)], [...overridden.data.slice(0, 3)]);
+    // an explicit normal layer over the multiply stack passes the source through.
+    const passthrough = blendlayerstack("multiply", backdrop, [{ ...gray, mode: "normal" }]);
+    assert.ok(passthrough);
+    assert.deepEqual([...passthrough.data.slice(0, 3)], [100, 100, 100]);
   });
 });
