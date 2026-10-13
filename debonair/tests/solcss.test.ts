@@ -50,7 +50,10 @@ describe("sol.css — the motion law", () => {
     // the pin law itself: 0 → 1.125 (40%) → 0.725 (70%) → 1 (the bounce)
     const pin = rules(css).match(/@keyframes dtPopIntro \{(?:[^{}]|\{[^}]*\})*\}/);
     assert.ok(pin !== null, "the dtPopIntro keyframe is missing");
-    assert.ok(pin[0].includes("scale(1.125)") && pin[0].includes("scale(0.725)"), "the dtPopIntro bounce left the pin law");
+    assert.ok(
+      pin[0].includes("scale(1.125)") && pin[0].includes("scale(0.725)"),
+      "the dtPopIntro bounce left the pin law",
+    );
   });
 
   it("carries the reduced-motion hard stop as the last word", () => {
@@ -82,9 +85,11 @@ describe("sol.css — the motion law", () => {
 
 describe("sol.css — the trylle foundation", () => {
   it("keeps the trylle canvas and the surface ladder", () => {
-    assert.ok(css.includes("--sol-canvas: #0a0a0b"), "the trylle canvas left the tokens");
-    assert.ok(css.includes("--surface-1: #171717"), "the ladder foot left the tokens");
-    assert.ok(css.includes("--surface-8: #484848"), "the ladder head left the tokens");
+    // the v2 foundation: the windows-11 canvas and the exact 8-step ladder
+    assert.ok(css.includes("--color-canvas: #202020"), "the trylle canvas left the tokens");
+    assert.ok(css.includes("--color-deep: #191919"), "the deep floor left the tokens");
+    assert.ok(css.includes("--color-s0: #242424"), "the ladder foot left the tokens");
+    assert.ok(css.includes("--color-s7: #494949"), "the ladder head left the tokens");
   });
 
   it("keeps the trylle type stacks (Inter Variable · Geist Mono)", () => {
@@ -96,17 +101,19 @@ describe("sol.css — the trylle foundation", () => {
   });
 
   it("keeps the two-accent contract (the brass identity beside the windows accent)", () => {
-    assert.ok(css.includes("--accent: var(--brass-500)"), "the brass identity left the identity slot");
-    assert.ok(css.includes("--brass-500: #d9962e"), "the latão signal left the tokens");
-    assert.ok(css.includes("--sol-primary: var(--accent)"), "the content accent alias left the tokens");
-    assert.ok(css.includes("--win-accent: #4cc2ff"), "the windows accent left the chrome slot");
-    assert.ok(css.includes("--focus: var(--win-accent)"), "focus no longer answers the windows accent");
+    assert.ok(css.includes("--accent: var(--color-signal)"), "the brass identity left the identity slot");
+    assert.ok(css.includes("--color-signal: #d9962e"), "the latão signal left the tokens");
+    assert.ok(css.includes("--color-win: #4cc2ff"), "the windows accent left the chrome slot");
+    assert.ok(css.includes("--color-focus: #4cc2ff"), "focus no longer answers the windows accent");
   });
 
   it("keeps the trylle shadow ladder and the fluent window float", () => {
     assert.ok(css.includes("--shadow-8"), "the trylle shadow ladder left the tokens");
     assert.ok(css.includes("0 96px 96px -48px"), "the doubling ladder head left the tokens");
-    assert.ok(css.includes("--shadow-window: 0 32px 64px rgb(0 0 0 / 24%), 0 0 8px rgb(0 0 0 / 20%)"), "the fluent window shadow left the tokens");
+    assert.ok(
+      css.includes("--shadow-window: 0 32px 64px rgb(0 0 0 / 24%), 0 0 8px rgb(0 0 0 / 20%)"),
+      "the fluent window shadow left the tokens",
+    );
     assert.ok(css.includes("--ease-window: cubic-bezier(0.85, 0.14, 0.14, 0.85)"), "the window curve left the tokens");
   });
 
@@ -132,6 +139,10 @@ describe("sol.css — the trylle foundation", () => {
     assert.ok(css.includes("rgb(139 10 20)"), "the deep close hover left the stylesheet");
     assert.ok(css.includes(".winapp__rz[data-edge="), "the eight resize handles left the stylesheet");
     assert.match(css, /\.railnav__item:active \{ transform: scale\(0\.7\)/, "the pin press law left the rail");
-    assert.match(css, /\.winapp \{[^}]*animation: winappOpen var\(--dur-2\) var\(--ease-window\)/, "the window curve left the frame");
+    assert.match(
+      css,
+      /\.winapp \{[^}]*animation: winappOpen var\(--dur-2\) var\(--ease-window\)/,
+      "the window curve left the frame",
+    );
   });
 });

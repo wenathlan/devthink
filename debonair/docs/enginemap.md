@@ -9,6 +9,10 @@ rule of the map: one domain per file, pure functions first, tables at the top, o
 ```text
 debonair/
 ├─ katexis.ts              # engine domain types + mastering spec — badge/genre/timeline/mixer types, MASTERING (48khz, tp −1 dbtp, −14/−16/−9 lufs targets), prompt helpers (seed, name, duration); the ui contract, not a generator
+├─ spectrum.ts            # spectral kernel — radix-2 fft, hann framing, magnitude spectra, chroma folding, krumhansl-kessler key correlation (wave b2 · kathesis)
+├─ fingerprint.ts          # audio identity — constellation peaks per band, pairwise landmark hashes (f1:f2:Δt), FingerprintDB add/search by votes; the dedup/identify seat (wave b2 · kathesis)
+├─ analyze.ts              # the analysis pipeline — decode-side pure: frame features, spectral flux, fractional-lag tempo with the octave law, key from chroma, ebu loudness reuse, band ladder, structure sections → report.schema v1 (wave b2 · kathesis)
+├─ vocalsynth.ts           # the formant voice — glottal saw + three-formant bandpass bank over the documented vowel table, seeded vibrato, consonant bursts, syllable grid from lyric lines (wave b2 · kathesis)
 ├─ musictheory.ts          # theory kernel — scales, interval math, chord vocabulary over twelve roots, roman numerals, voice leading (wave b1)
 ├─ harmonyengine.ts        # progression grammar — documented sets, cadence detection, tension, seeded progression generator, reharmonisation passes (wave b1)
 ├─ rhythmgrammar.ts        # drum-pattern grammar — the 16-step grid, eight genre families as glyph tables, swing offsets, accent curves, seeded fills (wave b1)
