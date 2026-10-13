@@ -27,6 +27,19 @@ import { compositionBlocks, rhythmScatter } from "../../synthcomposition.ts";
 import { type MotionSpec, synthMotion } from "../../synthmotion.ts";
 import { synthPalette } from "../../synthpalette.ts";
 import { synthTexture } from "../../synthtexture.ts";
+import {
+  attachdecode,
+  type DecodeSession,
+  type DecodeSnapshot,
+  disposedecode,
+  opendecode,
+  pausedecode,
+  playdecode,
+  polldecode,
+  ratelabel,
+  stepdecode,
+  timecodelabel,
+} from "../../videodecode.ts";
 import { type DemoFixtureId, demoFixtures } from "../intro/fixtures.ts";
 import {
   fetchGatewayRender,
@@ -90,7 +103,8 @@ function computeDemo(fixtureId: DemoFixtureId): { report: AnalysisReport; frame:
 /** the source the viewer holds. */
 type Source =
   | { kind: "demo"; fixture: DemoFixtureId; report: AnalysisReport; frame: RenderFrame; motion: MotionSpec }
-  | { kind: "gateway"; id: string; svg: string; record: GatewayProject; ids: readonly string[] };
+  | { kind: "gateway"; id: string; svg: string; record: GatewayProject; ids: readonly string[] }
+  | { kind: "video"; name: string; session: DecodeSession };
 
 /** one beat: the base commands perturbed by the beat's keyframe (never mutating). */
 function beatCommands(frame: RenderFrame, motion: MotionSpec, beat: number): RenderFrame["commands"] {
@@ -111,6 +125,23 @@ export default function Player() {
   const [beat, setBeat] = useState(0);
   const [_reload, setReload] = useState(0);
   const computeTimer = useRef<number | null>(null);
+  const [videoSnap, setVideoSnap] = useState<DecodeSnapshot | null>(null);
+  const [videoNote, setVideoNote] = useState<string | null>(null);
+  const frameHolder = useRef<HTMLDivElement | null>(null);
+
+  /** opens a local file as a frame-accurate decode session; refusals land in the note, never a throw. */
+  const loadVideo = useCallback(async (file: File) => {
+    setVideoNote(null);
+    setVideoSnap(null);
+    const opened = await opendecode(file, { muted: false });
+    if (!opened.ok) {
+      setVideoNote(`the decoder refused “${file.name}” — ${opened.issue.detail}`);
+      return;
+    }
+    setSource({ kind: "video", name: file.name, session: opened.value });
+    setMessage(null);
+    setStatus("ready");
+  }, []);
 
   /** loads the source: the gateway render for an id, the in-session demo otherwise. */
   useEffect(() => {
@@ -181,6 +212,31 @@ export default function Player() {
     return () => window.clearInterval(timer);
   }, [source, playing]);
 
+  /** the video arm: attach the session's element into the frame holder; leaving the source releases the whole session. */
+  useEffect(() => {
+    if (source?.kind !== "video") return;
+    const holder = frameHolder.current;
+    if (holder) attachdecode(source.session, holder);
+    return () => {
+      disposedecode(source.session);
+    };
+  }, [source]);
+
+  /** the video clock: one poll per beat of the UI (100 ms) — the element stays the only truth. */
+  useEffect(() => {
+    if (source?.kind !== "video") return;
+    let live = true;
+    const tick = () => {
+      if (live) setVideoSnap(polldecode(source.session));
+    };
+    tick();
+    const timer = window.setInterval(tick, 100);
+    return () => {
+      live = false;
+      window.clearInterval(timer);
+    };
+  }, [source]);
+
   /** the frame the panel paints: the gateway svg as-is, the demo frame re-serialized per beat. */
   const activeBeat = motionHeld() ? 0 : beat;
   const demoSvg = useMemo(() => {
@@ -192,11 +248,18 @@ export default function Player() {
     ? "no frame loaded"
     : source.kind === "gateway"
       ? `stored render ${source.id} from the gateway`
-      : `deterministic artwork rendered in-session from the ${source.fixture} fixture`;
+      : source.kind === "video"
+        ? `local video ${source.name}`
+        : `deterministic artwork rendered in-session from the ${source.fixture} fixture`;
 
   /** prev/next: the gateway list for stored frames, the fixture order for the demo. */
   const step = useCallback(
     (delta: number) => {
+      if (source?.kind === "video") {
+        stepdecode(source.session, delta);
+        setVideoSnap(polldecode(source.session));
+        return;
+      }
       if (source?.kind === "gateway") {
         const at = source.ids.indexOf(source.id);
         const next = source.ids[(at + delta + source.ids.length) % source.ids.length];
@@ -213,6 +276,17 @@ export default function Player() {
   /** the rail rows, straight off the source's own readouts. */
   const readout: ReadonlyArray<readonly [string, string]> = useMemo(() => {
     if (!source) return [];
+    if (source.kind === "video") {
+      const snap = videoSnap ?? polldecode(source.session);
+      return [
+        ["engine", "versawase · videodecode"],
+        ["source", source.name],
+        ["rate", `${ratelabel(source.session)} fps`],
+        ["frames", snap.frames > 0 ? String(snap.frames) : "—"],
+        ["duration", snap.durationTicks > 0 ? timecodelabel(source.session, snap.durationTicks) : "—"],
+        ["position", timecodelabel(source.session, snap.ticks)],
+      ];
+    }
     if (source.kind === "demo") {
       const report = source.report;
       return [
@@ -234,7 +308,7 @@ export default function Player() {
       ["seed", source.record.seed],
       ["duration", `${Math.max(0, Math.round(source.record.durationMs / 1000))} s`],
     ];
-  }, [source]);
+  }, [source, videoSnap]);
 
   return (
     <div className="stage-rail">
@@ -249,6 +323,19 @@ export default function Player() {
           >
             the artwork viewer
           </h1>
+          <label className="btn btn--ghost" style={{ minHeight: 40, cursor: "pointer" }}>
+            load video
+            <input
+              type="file"
+              accept="video/*"
+              style={{ display: "none" }}
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                event.target.value = "";
+                if (file) void loadVideo(file);
+              }}
+            />
+          </label>
           <Link href="/gallery" className="mono-label" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
             <ArrowLeft size={13} aria-hidden="true" /> back to gallery
           </Link>
@@ -310,7 +397,12 @@ export default function Player() {
                 overflow: "hidden",
               }}
             >
-              {frameSvg ? (
+              {source.kind === "video" ? (
+                <div
+                  ref={frameHolder}
+                  style={{ width: "100%", height: "100%", display: "grid", placeItems: "center", lineHeight: 0 }}
+                />
+              ) : frameSvg ? (
                 <ArtFrame svg={frameSvg} />
               ) : (
                 <p className="mono-label" style={{ margin: 0 }}>
@@ -318,13 +410,22 @@ export default function Player() {
                 </p>
               )}
               <span className="mono-label" style={{ position: "absolute", top: 10, left: 14 }}>
-                {source.kind === "gateway" ? "gateway frame" : "in-session demo · deterministic"}
+                {source.kind === "gateway"
+                  ? "gateway frame"
+                  : source.kind === "video"
+                    ? "local video · tick-quantized"
+                    : "in-session demo · deterministic"}
               </span>
             </div>
 
             {/* TRANSPORT — the beat loop for the demo source, prev/next for both */}
             <fieldset className="transport reveal" aria-label="viewer transport" style={{ maxWidth: 560 }}>
-              <button type="button" className="tkey" aria-label="previous artwork" onClick={() => step(-1)}>
+              <button
+                type="button"
+                className="tkey"
+                aria-label={source.kind === "video" ? "previous frame" : "previous artwork"}
+                onClick={() => step(-1)}
+              >
                 <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
                   <path d="M18 6 L9 12 L18 18 Z" />
                   <rect x="5" y="6" width="2.4" height="12" rx="1" />
@@ -350,16 +451,50 @@ export default function Player() {
                   )}
                 </button>
               )}
-              <button type="button" className="tkey" aria-label="next artwork" onClick={() => step(1)}>
+              {source.kind === "video" && (
+                <button
+                  type="button"
+                  className="tkey"
+                  aria-pressed={videoSnap?.state === "playing"}
+                  aria-label={videoSnap?.state === "playing" ? "pause the video" : "play the video"}
+                  onClick={() => {
+                    const snap = polldecode(source.session);
+                    if (snap.state === "playing") pausedecode(source.session);
+                    else void playdecode(source.session);
+                    setVideoSnap(polldecode(source.session));
+                  }}
+                >
+                  {videoSnap?.state === "playing" ? (
+                    <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+                      <rect x="6" y="4" width="4.4" height="16" rx="1.2" />
+                      <rect x="13.6" y="4" width="4.4" height="16" rx="1.2" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+                      <polygon points="7 4 20 12 7 20 7 4" />
+                    </svg>
+                  )}
+                </button>
+              )}
+              <button
+                type="button"
+                className="tkey"
+                aria-label={source.kind === "video" ? "next frame" : "next artwork"}
+                onClick={() => step(1)}
+              >
                 <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
                   <path d="M6 6 L15 12 L6 18 Z" />
                   <rect x="16.6" y="6" width="2.4" height="12" rx="1" />
                 </svg>
               </button>
               <span className="pf-tc">
-                {source.kind === "demo"
-                  ? `${Math.round(source.motion.loopMs)} ms / beat`
-                  : `${source.ids.length} in the gateway list`}
+                {source.kind === "video"
+                  ? videoSnap
+                    ? `${timecodelabel(source.session, videoSnap.ticks)} · ${ratelabel(source.session)} fps`
+                    : "reading media…"
+                  : source.kind === "demo"
+                    ? `${Math.round(source.motion.loopMs)} ms / beat`
+                    : `${source.ids.length} in the gateway list`}
               </span>
               {source.kind === "gateway" && (
                 <span className="mono-label" style={{ marginLeft: "auto", textAlign: "right" }}>
@@ -367,6 +502,11 @@ export default function Player() {
                 </span>
               )}
             </fieldset>
+            {videoNote && (
+              <p role="status" className="mono-label" style={{ marginTop: 12, color: "var(--err)" }}>
+                {videoNote}
+              </p>
+            )}
           </>
         )}
       </section>
@@ -383,11 +523,24 @@ export default function Player() {
               <strong style={{ overflowWrap: "anywhere" }}>{value}</strong>
             </div>
           ))}
-          <div className={`rail-kv${source?.kind === "demo" && playing ? " is-live" : ""}`}>
+          <div
+            className={`rail-kv${(source?.kind === "demo" && playing) || videoSnap?.state === "playing" ? " is-live" : ""}`}
+          >
             <span>
-              {source?.kind === "demo" && playing ? <span className="live-dot" aria-hidden="true" /> : null}state
+              {(source?.kind === "demo" && playing) || videoSnap?.state === "playing" ? (
+                <span className="live-dot" aria-hidden="true" />
+              ) : null}
+              state
             </span>
-            <strong>{source?.kind === "demo" ? (playing ? "playing" : "paused") : "static frame"}</strong>
+            <strong>
+              {source?.kind === "video"
+                ? (videoSnap?.state ?? "loading")
+                : source?.kind === "demo"
+                  ? playing
+                    ? "playing"
+                    : "paused"
+                  : "static frame"}
+            </strong>
           </div>
         </div>
         {source?.kind === "demo" && (
