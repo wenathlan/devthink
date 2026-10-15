@@ -1,6 +1,7 @@
-// # tuning — the midi-to-hertz helper of the studio transport (Sol layer):
-// the single conversion every synth recipe reads. Twelve-tone equal
-// temperament, A4 = 440 Hz. Pure and side-effect free.
+// # tuning — the midi-to-hertz helper of the studio transport (root logic,
+// moved from Sol/studio/tuning.ts): the single conversion every synth recipe
+// reads. Twelve-tone equal temperament, A4 = 440 Hz. Pure and side-effect
+// free.
 
 /** The A4 reference of the studio (Hz). */
 export const CONCERT_PITCH = 440;

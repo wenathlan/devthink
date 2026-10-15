@@ -1,19 +1,20 @@
-// # exporter — the bounce desk of the studio page (Sol layer): the studio's
-// export actions ride this file, and every one of them is a REAL render —
-// the wav and the stems go through renderTakeOffline (the same VoiceBank the
-// desk plays, the same faders, the same glue), the midi goes through the
-// pure smf writer over the validated role tracks, the manifest rides the
-// stems engine's schema v1. No fake progress, no placeholder downloads: a
-// button answers with the bytes it names, or with the refusal line.
+// # takeexporter.ts — the bounce desk of the studio page (root logic, moved
+// from Sol/studio/exporter.ts): the studio's export actions ride this file,
+// and every one of them is a REAL render — the wav and the stems go through
+// renderTakeOffline (the same VoiceBank the desk plays, the same faders, the
+// same glue), the midi goes through the pure smf writer over the validated
+// role tracks, the manifest rides the stems engine's schema v1. No fake
+// progress, no placeholder downloads: a button answers with the bytes it
+// names, or with the refusal line.
 // NON-GOALS: no state, no storage, no zip archives (one download per file —
 // the browser owns the save dialog), no limiting (the mastering chain stays
 // the desk's, the loudness engine judges the bounce afterwards).
 
-import type { TakePlan } from "../../arranger.ts";
-import { buildTracksFromSchedule, validateMidi, writeMidi } from "../../midiwriter.ts";
-import { planStems, stemsManifest } from "../../stems.ts";
-import type { TakeSchedule } from "../../takeevents.ts";
-import { writeWav16, writeWav24 } from "../../wavwriter.ts";
+import type { TakePlan } from "./arranger.ts";
+import { buildTracksFromSchedule, validateMidi, writeMidi } from "./midiwriter.ts";
+import { planStems, stemsManifest } from "./stems.ts";
+import type { TakeSchedule } from "./takeevents.ts";
+import { writeWav16, writeWav24 } from "./wavwriter.ts";
 import { renderTakeOffline } from "./audioengine.ts";
 
 /** The export actions the desk offers. */
