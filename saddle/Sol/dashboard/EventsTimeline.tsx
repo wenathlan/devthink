@@ -2,7 +2,7 @@
 // dashboard.js — poll of /api/v1/events?since= every 10 s with cursor,
 // prepend and a 50-entry cap; on the static edge it becomes the honest note.
 import { useEffect, useRef, useState } from 'react';
-import { apiresult, asarray, fmtdate, pick } from './lib';
+import { apiresult, asarray, fmtdate, pick } from '../../dashboardlib';
 
 type EventsTimelineProps = {
 	/** "api" polls the bus; "local" shows the static-edge note. */

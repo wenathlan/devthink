@@ -2,7 +2,7 @@
 // db rows (flat or enveloped) for the main node admin; on the static
 // edge, the honest note pointing to the user view.
 import { useEffect, useState } from 'react';
-import { apiresult, asarray, chipclass, fmtdate, pick } from './lib';
+import { apiresult, asarray, chipclass, fmtdate, pick } from '../../dashboardlib';
 
 type GlobalSandboxesTableProps = {
 	/** "api" lists /api/v1/admin/sandboxes; "local" shows the static note. */

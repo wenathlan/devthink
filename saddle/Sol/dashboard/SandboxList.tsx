@@ -3,7 +3,7 @@
 // (browser-local engine).
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'wouter';
-import type { ApiResult, LocalSandbox } from './lib';
+import type { ApiResult, LocalSandbox } from '../../dashboardlib';
 import {
 	apiresult,
 	asarray,
@@ -13,7 +13,7 @@ import {
 	pick,
 	readlocalsandboxes,
 	writelocalsandboxes,
-} from './lib';
+} from '../../dashboardlib';
 
 type SandboxListProps = {
 	/** "api" polls the shelf endpoint; "local" renders the sessionStorage shelf. */

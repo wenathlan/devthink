@@ -10,7 +10,7 @@ import {
 	fallbackgpus,
 	readlocalsandboxes,
 	writelocalsandboxes,
-} from './lib';
+} from '../../dashboardlib';
 
 type CreateSandboxFormProps = {
 	/** "api" posts /api/v1/sandboxes; "local" drives the browser engine shelf. */
