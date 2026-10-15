@@ -32,7 +32,7 @@
 #        docker build --target binary-runtime -t devthink:single-binary .
 #
 # the stage chain (multi-stage, cache-optimized):
-#   deps      node:26.8.2-bookworm-slim carrying the pinned toolchain: the
+#   deps      node:26.12.0-bookworm-slim carrying the pinned toolchain: the
 #             bun version the packageManager field of package.json pins
 #             (installed through npm, asserted after install) plus zip and
 #             unzip for the packaging steps. the frozen bun.lock installs
@@ -53,9 +53,10 @@
 #   stages   binary-runtime): the validated builder compiles devthink.ts
 #             with `bun build --compile` aimed at the bun target
 #             resolved from TARGETARCH onto the distroless non-root base.
-#   runtime   node:26.8.1-trixie-slim (the four-arch family base — the only
-#             26.8.x slim tag whose manifest answers amd64, arm64, ppc64le
-#             and s390x, the union the publish lane ships): the lean output
+#   runtime   debian:trixie-slim (the four-arch family base whose manifest
+#             answers amd64, arm64, ppc64le and s390x, the union the publish
+#             lane ships) with the node tree fetched from the verified
+#             nodejs.org tarballs: the lean output
 #             only (dist/site,
 #             dist/cli.js, dist/http.js, package.json) beside the
 #             self hosting runner embedded as a heredoc COPY — the one
@@ -173,7 +174,7 @@ ARG NODE_IMAGE="node:26.12.0-bookworm-slim"
 # Dockerfile always anticipated in its nodesource case arm. the version
 # pins to the .nvmrc/engines floor the toolchain stages carry: the
 # toolchain only builds, the runtime serves the same line.
-ARG NODE_RUNTIME_VERSION="26.11.1"
+ARG NODE_RUNTIME_VERSION="26.12.0"
 
 # ---------------------------------------------------------------------------
 # stage 1: deps (the pinned toolchain and the frozen dependency layer)
