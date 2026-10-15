@@ -9,7 +9,7 @@
 // the studio. Zero storage writes: the shelf rides the session scope.
 
 import { planTake, type TakePlan } from "./arranger.ts";
-import { TakeEngine, TransportError } from "./Sol/studio/audioengine.ts";
+import { TakeEngine, TransportError } from "./audioengine.ts";
 import { findTakeRecord, loadTakeRecords, sessionStorageOrMemory } from "./takestore.ts";
 
 /** The demo take the bus always carries (the studio's own demo seed). */

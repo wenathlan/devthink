@@ -84,14 +84,14 @@ jobs:
         if: matrix.pm == 'pnpm'
         uses: actions/setup-node@v7.1.0
         with:
-          node-version: 26.11.1
+          node-version: 26.12.0
           cache: pnpm
           cache-dependency-path: "**/pnpm-lock.yaml"
       - name: Set up Node (npm leg)
         if: matrix.pm == 'npm'
         uses: actions/setup-node@v7.1.0
         with:
-          node-version: 26.11.1
+          node-version: 26.12.0
       - name: Set up Bun
         if: matrix.pm == 'bun'
         uses: oven-sh/setup-bun@v2.2.0
