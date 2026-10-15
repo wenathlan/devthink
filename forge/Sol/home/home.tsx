@@ -28,7 +28,7 @@ import { familyurl } from "../../familyurl";
 import { modes } from "../../runner.ts";
 import { BrandMark } from "../shell/BrandMark";
 import { Entry } from "./entry";
-import type { HomeProps } from "./types";
+import type { HomeProps } from "../../hometypes.ts";
 
 export * from "./entry";
 export * from "./tabs";
