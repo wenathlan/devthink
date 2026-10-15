@@ -17,7 +17,7 @@
 // chrome lives in Sol/Sol.tsx.
 import { useCallback, useState } from "react";
 import { applyTheme, currentTheme, type Theme } from "../../theme";
-import { gatewayHealth, gatewayUrl, setGatewayUrl } from "../shell/gatewayclient.ts";
+import { gatewayHealth, gatewayUrl, setGatewayUrl } from "../../gatewayclient.ts";
 import { useToast } from "../toast/Toast.tsx";
 
 /** synced by hand with cadria/package.json "version" — package.json is forbidden to import at runtime. */

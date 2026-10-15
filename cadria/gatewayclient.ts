@@ -1,6 +1,7 @@
 /**
  * gatewayclient.ts — the ONE gateway client of the theme (session scope),
- * shared by the studio, the gallery, the player and the settings page.
+ * shared by the studio, the gallery, the player and the settings page
+ * (moved from Sol/shell/gatewayclient.ts: pure logic rides the app root).
  * every request rides an AbortController timeout (800 ms default) and fails
  * into GatewayClientError — status 0 marks offline/abort, else the http
  * answer. the base url lives in module memory only: reload resets it, nothing

@@ -26,7 +26,7 @@ import {
   type GatewayClientError,
   type GatewayProject,
   listGatewayProjects,
-} from "../shell/gatewayclient.ts";
+} from "../../gatewayclient.ts";
 import { useToast } from "../toast/Toast.tsx";
 
 /** how many generations the wall asks for (the gateway clamps 1-200). */

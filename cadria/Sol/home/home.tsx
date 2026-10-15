@@ -22,7 +22,7 @@ import { ArrowRight, ArrowUpRight, Sparkles, Wand2, WifiOff } from "lucide-react
 import { type ReactElement, useCallback, useEffect, useState } from "react";
 import { Link } from "wouter";
 import { EmptyState } from "../shell/EmptyState.tsx";
-import { type GatewayProject, listGatewayProjects } from "../shell/gatewayclient.ts";
+import { type GatewayProject, listGatewayProjects } from "../../gatewayclient.ts";
 import EntryGate from "./entrygate.tsx";
 
 /** the abort window the recent-generations fetch rides (ms). */

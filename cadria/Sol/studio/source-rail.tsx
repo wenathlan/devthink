@@ -9,8 +9,8 @@
 
 import { Upload } from "lucide-react";
 import { useRef, useState } from "react";
-import { type DemoFixtureId, demoFixtures } from "../intro/fixtures.ts";
-import type { StudioSource } from "./source.ts";
+import { type DemoFixtureId, demoFixtures } from "../../introfixtures.ts";
+import type { StudioSource } from "../../studiosource.ts";
 
 /** the input's accept list — wav rides the native path, the rest web audio. */
 const ACCEPT = ".wav,.mp3,.ogg,.flac,.m4a,audio/*";
