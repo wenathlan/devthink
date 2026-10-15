@@ -20,7 +20,7 @@ import { Eye, EyeOff, Pause, Play, Star } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { AppHeader } from "./appheader.tsx";
-import { appMeta, PERSONAS } from "./apps.ts";
+import { appMeta, PERSONAS } from "../../osapps.ts";
 import { AuraChat } from "./aurachat.tsx";
 import {
   accentVars,
@@ -30,10 +30,10 @@ import {
   FamilyStyles,
   familyAccentOf,
 } from "./familyidentity.tsx";
-import { pushOSEvent } from "./osevents.ts";
-import type { OSHandle } from "./ostypes.ts";
+import { pushOSEvent } from "../../osevents.ts";
+import type { OSHandle } from "../../ostypes.ts";
 import { PageSection } from "./pagesection.tsx";
-import { useStoredState } from "./usestoredstate.ts";
+import { useStoredState } from "../../usestoredstate.ts";
 
 /* ------------------------------- PLAYER -------------------------------- */
 

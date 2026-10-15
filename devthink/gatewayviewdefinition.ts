@@ -5,10 +5,11 @@
  * the engine contract (the full gatewaydefinition family of types.ts at the
  * repository root) stays the property of the root library: importing it here
  * would pull the whole engine module graph into the web typecheck. this file
- * carries the projection the shipped v1–v5 catalog (config.ts beside it)
- * actually exercises, with the field names kept identical to the engine so
- * the two never drift in vocabulary: a field renamed in the engine shows up
- * here as a type error on the catalog the page renders.
+ * carries the projection the shipped v1–v5 catalog (the config.ts of the
+ * Sol/gatewayview page folder) actually exercises, with the field names kept
+ * identical to the engine so the two never drift in vocabulary: a field
+ * renamed in the engine shows up here as a type error on the catalog the
+ * page renders.
  */
 
 /* ── the catalog shapes — field names mirror the root types.ts contract ── */

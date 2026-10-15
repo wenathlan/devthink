@@ -36,8 +36,8 @@ import {
 import { type CSSProperties, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ensureCleanLocation } from "../../cleanurl";
-import { APPS, appExternalUrl } from "./apps.ts";
-import type { OSHandle } from "./ostypes.ts";
+import { APPS, appExternalUrl } from "../../osapps.ts";
+import type { OSHandle } from "../../ostypes.ts";
 
 /** the exit unmount delay: the 220ms exit transition plus one buffer frame. */
 const EXIT_MS = 230;

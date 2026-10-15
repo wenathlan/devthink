@@ -1,5 +1,5 @@
 /**
- * reveal.ts — reveal on scroll (port of the engine.js pass):
+ * osreveal.ts — reveal on scroll (port of the engine.js pass):
  * IntersectionObserver adds .in to the .reveal elements as they enter
  * the viewport (threshold 0.12). Reduced motion (os setting or system
  * preference) reveals everything immediately.

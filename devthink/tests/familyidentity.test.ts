@@ -1,8 +1,8 @@
 /**
  * familyidentity.test.ts — the identity contract of the family views
- * (campaign task 3-c). The table in Sol/os/familyaccent.ts is the single
+ * (campaign task 3-c). The table in familyaccent.ts is the single
  * source of the per-app accents (the design-spec section 12 decisions);
- * the catalog in Sol/os/apps.ts mirrors it, every view resolves its
+ * the catalog in osapps.ts mirrors it, every view resolves its
  * identity through familyAccentOf, and the offline seed of the family
  * sites answers all eight siblings. These tests pin that contract so a
  * drift (a hex that slides back to a banned blue/orange, a missing
@@ -10,8 +10,8 @@
  * fails before any view renders unlit.
  */
 import { describe, expect, it } from "vitest";
-import { APPS, appMeta } from "../Sol/os/apps";
-import { FAMILY_ACCENT, familyAccentOf } from "../Sol/os/familyaccent";
+import { APPS, appMeta } from "../osapps";
+import { FAMILY_ACCENT, familyAccentOf } from "../familyaccent";
 import { seedFamilySites } from "../seedcatalog";
 
 /** the spec-12 accent table, verbatim — the decided colors of the campaign. */

@@ -11,7 +11,7 @@
  * binary it draws.
  */
 
-import { packageversion } from "../../version.ts";
+import { packageversion } from "./version.ts";
 
 /** the console prompt of the ink terminal (TerminalUi.tsx): the marker pair the workbench shares. */
 export const consoleprompt = "›_";

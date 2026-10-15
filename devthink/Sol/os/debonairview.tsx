@@ -21,13 +21,13 @@ import { Play, Square } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { AppHeader } from "./appheader.tsx";
-import { appMeta, PERSONAS } from "./apps.ts";
+import { appMeta, PERSONAS } from "../../osapps.ts";
 import { AuraChat } from "./aurachat.tsx";
 import { accentVars, FamilyEmpty, FamilyHero, FamilyStyles, familyAccentOf } from "./familyidentity.tsx";
-import { pushOSEvent } from "./osevents.ts";
-import type { OSHandle } from "./ostypes.ts";
+import { pushOSEvent } from "../../osevents.ts";
+import type { OSHandle } from "../../ostypes.ts";
 import { PageSection } from "./pagesection.tsx";
-import { arrayOf, useStoredState } from "./usestoredstate.ts";
+import { arrayOf, useStoredState } from "../../usestoredstate.ts";
 
 export type Render = {
   id: string;

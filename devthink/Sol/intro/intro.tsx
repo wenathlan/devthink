@@ -29,12 +29,12 @@ import { useLocation } from "wouter";
 import { readonboardingstate, writeonboardingstage } from "../../onboardingstate";
 import { type IntroTarget, resolveintrotarget } from "../../introtarget";
 import { AndroidIntro } from "./androidintro.tsx";
-import { playIntroChime } from "./chime.ts";
+import { playIntroChime } from "../../chime.ts";
 import { InstallerIntro } from "./installerintro.tsx";
 import { WebIntro } from "./webintro.tsx";
 
 export * from "./androidintro.tsx";
-export * from "./chime.ts";
+export * from "../../chime.ts";
 export * from "./installerintro.tsx";
 export * from "./webintro.tsx";
 

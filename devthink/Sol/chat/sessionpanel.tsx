@@ -16,9 +16,9 @@
 import { PanelRightClose } from "lucide-react";
 import { type FormEvent, useEffect, useState } from "react";
 import { Link } from "wouter";
-import { GATEWAY_REQUIRED_COPY, type GatewayRegistration, gatewayStatusLabel } from "../os/gatewaybase.ts";
+import { GATEWAY_REQUIRED_COPY, type GatewayRegistration, gatewayStatusLabel } from "../../gatewaybase.ts";
 import { CHAT_NAV } from "./sidebar.tsx";
-import { CHAT_TOOLS, type ToolId } from "./state.ts";
+import { CHAT_TOOLS, type ToolId } from "../../chatstate.ts";
 
 /**
  * SessionPanel — the inspector of the current conversation.

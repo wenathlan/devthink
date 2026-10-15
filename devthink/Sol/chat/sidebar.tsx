@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { SolBotIcon } from "./solboticon.tsx";
-import { type ChatSession, cx } from "./state.ts";
+import { type ChatSession, cx } from "../../chatstate.ts";
 
 /** The theme pages the rail links to — existing routes, not local copies. */
 export type RailLink = { href: string; label: string; icon: LucideIcon };

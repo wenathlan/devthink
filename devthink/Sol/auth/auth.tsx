@@ -66,9 +66,9 @@ import { browserIdentity, readBrowserPreferences, saveBrowserPreference } from "
 import { SolLogoMark } from "../panel/logo.tsx";
 import { ShellChrome } from "../shell/ShellChrome.tsx";
 import { useReducedMotion } from "../shell/trayflyouts.tsx";
-import { afterAuthTarget, normalizeGateway, pairingReadiness } from "./authgate.ts";
+import { afterAuthTarget, normalizeGateway, pairingReadiness } from "../../authgate.ts";
 
-export * from "./authgate.ts";
+export * from "../../authgate.ts";
 
 /* --------------------------------------------------------------------------
  * the auth entry-pass stylesheet — scoped to the .authx-* classes only this

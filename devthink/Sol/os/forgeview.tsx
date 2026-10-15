@@ -18,7 +18,7 @@ import { Pause, Play } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { AppHeader } from "./appheader.tsx";
-import { appMeta, PERSONAS } from "./apps.ts";
+import { appMeta, PERSONAS } from "../../osapps.ts";
 import { AuraChat } from "./aurachat.tsx";
 import {
   accentVars,
@@ -28,7 +28,7 @@ import {
   familyAccentOf,
   useFamilyReducedMotion,
 } from "./familyidentity.tsx";
-import type { OSHandle } from "./ostypes.ts";
+import type { OSHandle } from "../../ostypes.ts";
 import { PageSection } from "./pagesection.tsx";
 
 type RunnerRow = {

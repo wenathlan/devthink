@@ -19,7 +19,7 @@ import {
   akashBeat,
   akashSpringTrack,
   prefersReducedMotion,
-} from "./akash.ts";
+} from "../../akash.ts";
 import { SolLogoMark } from "../panel/logo.tsx";
 
 /** the beat plan of the boot (ms): the floor, then one line per step */

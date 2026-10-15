@@ -1,5 +1,5 @@
 /**
- * apps.ts — the os catalog: the surfaces of the gateway with their pages
+ * osapps.ts — the os catalog: the surfaces of the gateway with their pages
  * and the Aura personas (a per-app system prompt served to
  * /v1/chat/completions). Naming rule (owner): every tab and section
  * carries its real identity — the platform pages keep their own names

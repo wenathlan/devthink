@@ -71,7 +71,7 @@ import {
   saveIconSpots,
   sortAppsByKind,
   sortAppsByName,
-} from "./desktopstate.ts";
+} from "../../desktopstate.ts";
 import { SolLogoMark } from "./logo.tsx";
 
 /**
