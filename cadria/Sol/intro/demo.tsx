@@ -16,7 +16,7 @@ import { renderCommands, renderSvg, renderThumbnailSignature } from "../../image
 import { compositionBlocks, rhythmScatter } from "../../synthcomposition.ts";
 import { synthPalette } from "../../synthpalette.ts";
 import { synthTexture } from "../../synthtexture.ts";
-import { type DemoFixtureId, demoFixtures } from "./fixtures.ts";
+import { type DemoFixtureId, demoFixtures } from "../../introfixtures.ts";
 
 /** the cue the intro hero's "hear to see" cta sends: which fixture to run. */
 export type DemoCue = { id: DemoFixtureId; nonce: number };

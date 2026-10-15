@@ -1,5 +1,6 @@
 /**
- * fixtures.ts — the built-in synthetic fixtures of the intro demo: three
+ * introfixtures.ts — the built-in synthetic fixtures of the intro demo
+ * (moved from Sol/intro/fixtures.ts: pure logic rides the app root): three
  * short mono slices synthesized straight into Float32Array in code (the
  * tests/audiopipeline.test.ts fixture approach — no binary files, no
  * network, no storage), deterministic to the last sample: every oscillator
@@ -8,7 +9,7 @@
  * same fixture always answers the same report and the same artwork.
  */
 
-import { rngFromSeed } from "../../imageproject.ts";
+import { rngFromSeed } from "./imageproject.ts";
 
 /** the id of a built-in demo fixture. */
 export type DemoFixtureId = "glass" | "static" | "pulse";

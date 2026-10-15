@@ -40,13 +40,13 @@ import {
   stepdecode,
   timecodelabel,
 } from "../../videodecode.ts";
-import { type DemoFixtureId, demoFixtures } from "../intro/fixtures.ts";
+import { type DemoFixtureId, demoFixtures } from "../../introfixtures.ts";
 import {
   fetchGatewayRender,
   GatewayClientError,
   type GatewayProject,
   listGatewayProjects,
-} from "../shell/gatewayclient.ts";
+} from "../../gatewayclient.ts";
 
 /** the demo canvas the in-session fallback renders at (px). */
 const DEMO_CANVAS = 640;

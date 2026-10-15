@@ -24,7 +24,7 @@ import { markOnboardingStage } from "../../onboardingstate.ts";
 import { compositionBlocks, rhythmScatter } from "../../synthcomposition.ts";
 import { synthPalette } from "../../synthpalette.ts";
 import { synthTexture } from "../../synthtexture.ts";
-import { type DemoFixtureId, demoFixtures } from "../intro/fixtures.ts";
+import { type DemoFixtureId, demoFixtures } from "../../introfixtures.ts";
 import { CadriaMark } from "../shell/Shell.tsx";
 
 /** the canvas the see frame renders at (px; the render layer clamps and centers it). */

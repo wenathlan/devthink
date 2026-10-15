@@ -17,7 +17,7 @@ import { Check, Download, Image, Save } from "lucide-react";
 import { useCallback, useState } from "react";
 import { type AnalysisReport, reportDigest } from "../../audiopipeline.ts";
 import type { ImageProject } from "../../imageproject.ts";
-import { downloadBlob, pngFromSvg, pngSupported, probeGateway, type SessionSave, saveToGateway } from "./generate.ts";
+import { downloadBlob, pngFromSvg, pngSupported, probeGateway, type SessionSave, saveToGateway } from "../../studiogenerate.ts";
 
 type ExportRowProps = {
   svg: string | null;

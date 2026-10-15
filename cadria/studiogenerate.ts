@@ -1,5 +1,6 @@
 /**
- * generate.ts — the GENERATION layer of the studio: fold the analyzed
+ * studiogenerate.ts — the GENERATION layer of the studio (moved from
+ * Sol/studio/generate.ts: pure logic rides the app root): fold the analyzed
  * descriptor, the selected style and the controls into one ImageProject v1
  * (the buildImageProject chain the gateway's /api/generate runs) and compile
  * its deterministic render frame. The style fold is the render-wave concern
@@ -23,13 +24,13 @@
  * else the caller records an in-memory session save — never browser storage).
  */
 
-import type { AudioDescriptor } from "../../audioattributes.ts";
-import type { AnalysisReport } from "../../audiopipeline.ts";
-import { buildImageProject, type ImageProject } from "../../imageproject.ts";
-import { type RenderFrame, renderCommands } from "../../imagerender.ts";
-import { applyStyleBias, type StyleSpec, styleByName } from "../../imagestyles.ts";
-import { type Block, compositionBlocks, rhythmScatter } from "../../synthcomposition.ts";
-import { type MotionSpec, synthMotion } from "../../synthmotion.ts";
+import type { AudioDescriptor } from "./audioattributes.ts";
+import type { AnalysisReport } from "./audiopipeline.ts";
+import { buildImageProject, type ImageProject } from "./imageproject.ts";
+import { type RenderFrame, renderCommands } from "./imagerender.ts";
+import { applyStyleBias, type StyleSpec, styleByName } from "./imagestyles.ts";
+import { type Block, compositionBlocks, rhythmScatter } from "./synthcomposition.ts";
+import { type MotionSpec, synthMotion } from "./synthmotion.ts";
 import {
   type OklchTriple,
   oklchToSrgbHex,
@@ -37,8 +38,8 @@ import {
   srgbHexToOklch,
   synthPalette,
   wrapHue,
-} from "../../synthpalette.ts";
-import { synthTexture } from "../../synthtexture.ts";
+} from "./synthpalette.ts";
+import { synthTexture } from "./synthtexture.ts";
 
 /** the studio controls one generation run reads. */
 export type StudioControls = { styleName: string; width: number; height: number; seed: string };

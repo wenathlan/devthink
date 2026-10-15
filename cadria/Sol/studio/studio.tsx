@@ -28,12 +28,12 @@ import { type AnalysisReport, PipelineError } from "../../audiopipeline.ts";
 import { type ImageProject, ProjectError } from "../../imageproject.ts";
 import { renderSvg, renderThumbnailSignature } from "../../imagerender.ts";
 import { imageStyles, type StyleSpec, styleForDescriptor } from "../../imagestyles.ts";
-import type { DemoFixtureId } from "../intro/fixtures.ts";
+import type { DemoFixtureId } from "../../introfixtures.ts";
 import ControlsPane from "./controls-pane.tsx";
 import ExportRow from "./export-row.tsx";
-import { generateStudioProject, reseededSeed, type SessionSave, type StudioGeneration } from "./generate.ts";
+import { generateStudioProject, reseededSeed, type SessionSave, type StudioGeneration } from "../../studiogenerate.ts";
 import Readout from "./readout.tsx";
-import { analyzeSource, fileSource, fixtureSource, type StudioSource } from "./source.ts";
+import { analyzeSource, fileSource, fixtureSource, type StudioSource } from "../../studiosource.ts";
 import SourceRail from "./source-rail.tsx";
 import StageArt from "./stage-art.tsx";
 

@@ -1,5 +1,6 @@
 /**
- * source.ts — the SOURCE layer of the generation studio: turn a picked file
+ * studiosource.ts — the SOURCE layer of the generation studio (moved from
+ * Sol/studio/source.ts: pure logic rides the app root): turn a picked file
  * or a built-in intro fixture into one normalized StudioSource, then run the
  * genuine wave-1 chain over it. The decode doctrine is the documented dual
  * path:
@@ -16,10 +17,10 @@
  * named, so the studio status line can show a traceable message.
  */
 
-import { fromAudioBufferLike, wavinfo } from "../../audiodecode.ts";
-import { type AnalysisReport, analyzePcm, analyzeWavBytes } from "../../audiopipeline.ts";
-import type { DemoFixture, DemoFixtureId } from "../intro/fixtures.ts";
-import { demoFixtures } from "../intro/fixtures.ts";
+import { fromAudioBufferLike, wavinfo } from "./audiodecode.ts";
+import { type AnalysisReport, analyzePcm, analyzeWavBytes } from "./audiopipeline.ts";
+import type { DemoFixture, DemoFixtureId } from "./introfixtures.ts";
+import { demoFixtures } from "./introfixtures.ts";
 
 /** hard cap on an uploaded file (bytes) — bounds the decodeAudioData working set. */
 const MAX_FILE_BYTES = 64 * 1024 * 1024;
