@@ -3,7 +3,7 @@
 // api); on the static edge, the browser-local registry.
 import { useEffect, useState } from 'react';
 import { available, roleof } from '../../localauth.ts';
-import { apiresult, asarray, chipclass, fmtdate, pick } from './lib';
+import { apiresult, asarray, chipclass, fmtdate, pick } from '../../dashboardlib';
 
 type UsersTableProps = {
 	/** "api" lists /api/v1/admin/users; "local" the browser account registry. */

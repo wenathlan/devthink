@@ -3,8 +3,8 @@
 // with the backup/restore keyfile covering a full storage wipe.
 import { useRef } from 'react';
 import { adminusers, exportaccounts, importaccounts } from '../../localauth.ts';
-import type { SessionUser } from './lib';
-import { fmtdate } from './lib';
+import type { SessionUser } from '../../dashboardlib';
+import { fmtdate } from '../../dashboardlib';
 
 /** the local browser session normalized at boot (defensive read). */
 export type LocalSessionView = {

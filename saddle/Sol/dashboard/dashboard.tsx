@@ -22,8 +22,8 @@ import AccountPanel from './AccountPanel';
 import AdminPanel from './AdminPanel';
 import CreateSandboxForm from './CreateSandboxForm';
 import EventsTimeline from './EventsTimeline';
-import type { ApiResult, SessionUser } from './lib';
-import { apiresult, noderole, pick } from './lib';
+import type { ApiResult, SessionUser } from '../../dashboardlib';
+import { apiresult, noderole, pick } from '../../dashboardlib';
 import SandboxList from './SandboxList';
 
 export * from './AccountPanel';

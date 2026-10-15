@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { available } from '../../localauth.ts';
 import AuditLog from './AuditLog';
 import GlobalSandboxesTable from './GlobalSandboxesTable';
-import { apiresult, fmtuptime, pick, readlocalsandboxes } from './lib';
+import { apiresult, fmtuptime, pick, readlocalsandboxes } from '../../dashboardlib';
 import MeshNodesTable from './MeshNodesTable';
 import UsersTable from './UsersTable';
 
