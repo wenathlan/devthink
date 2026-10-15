@@ -35,8 +35,8 @@ import {
 } from "../../takestore.ts";
 import type { TimelineClip } from "../../timelinemodel.ts";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
-import { TakeEngine } from "./audioengine.ts";
-import { downloadFile, EXPORT_LABELS, type ExportKind, exportTake } from "./exporter.ts";
+import { TakeEngine } from "../../audioengine.ts";
+import { downloadFile, EXPORT_LABELS, type ExportKind, exportTake } from "../../takeexporter.ts";
 import { Fader } from "./Fader.tsx";
 import { PianoRoll } from "./pianoroll.tsx";
 import { StageStepper } from "./StageStepper.tsx";

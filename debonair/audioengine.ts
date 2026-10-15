@@ -1,12 +1,13 @@
-// # audioengine — the browser transport of the studio page (Sol layer): one
-// WebAudio graph per take — the role buses wired exactly as the mixergraph
-// model resolves them (fader → analyser → master → compressor → out), the
-// synth recipes of the katexis wave-b2 contract (kick 808 pitch envelope,
-// noise snare and hats, detuned pad, vibrato lead) and a lookahead scheduler
-// that expands takeevents against the audio clock with the loop pass. 48 kHz
-// is requested on the context; the pure math the tests pin lives in
-// takeevents/dawview/mixergraph — this file only owns the REAL audio glue,
-// so play, stop, loop, faders and the VU meters drive actual sound.
+// # audioengine — the browser transport of the studio page (root logic,
+// moved from Sol/studio/audioengine.ts): one WebAudio graph per take — the
+// role buses wired exactly as the mixergraph model resolves them (fader →
+// analyser → master → compressor → out), the synth recipes of the katexis
+// wave-b2 contract (kick 808 pitch envelope, noise snare and hats, detuned
+// pad, vibrato lead) and a lookahead scheduler that expands takeevents
+// against the audio clock with the loop pass. 48 kHz is requested on the
+// context; the pure math the tests pin lives in takeevents/dawview/
+// mixergraph — this file only owns the REAL audio glue, so play, stop, loop,
+// faders and the VU meters drive actual sound.
 // The v2.28 honest extension: load(plan, schedule?) lets the studio hand the
 // edited schedule the piano roll rebuilt — the transport plays the notes the
 // desk shows, nothing synthesized behind the scenes.
@@ -16,10 +17,10 @@
 // seeded noise buffer — same prompt and seed rebuild the exact wav bytes.
 // Zero demo paths: a failed context answers a typed error the page renders.
 
-import type { ArrangerRole, TakePlan } from "../../arranger.ts";
-import { hashSeed, mulberry32 } from "../../harmonyengine.ts";
-import { dbToLinear } from "../../mixergraph.ts";
-import { type NoteEvent, scheduleTake, type TakeSchedule } from "../../takeevents.ts";
+import type { ArrangerRole, TakePlan } from "./arranger.ts";
+import { hashSeed, mulberry32 } from "./harmonyengine.ts";
+import { dbToLinear } from "./mixergraph.ts";
+import { type NoteEvent, scheduleTake, type TakeSchedule } from "./takeevents.ts";
 import { midiToHz } from "./tuning.ts";
 
 /** The typed transport failure the page renders honestly. */
