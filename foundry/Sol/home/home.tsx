@@ -32,7 +32,7 @@ import { BrandMark } from "../shell/BrandMark";
 import { Entry } from "./entry";
 import { EntryGate } from "./entrygate";
 import { Tabs } from "./tabs";
-import type { HomeProps } from "./types";
+import type { HomeProps } from "../../hometypes.ts";
 
 export * from "./entry";
 export * from "./tabs";
