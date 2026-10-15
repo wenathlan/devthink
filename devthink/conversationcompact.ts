@@ -14,7 +14,7 @@
  * node + browser, zero DOM — the summarizer is injected, never owned here.
  */
 
-import type { Validator } from "./Sol/os/usestoredstate.ts";
+import type { Validator } from "./usestoredstate.ts";
 import { estimateHistoryTokens, type TokenWeights } from "./tokenestimate.ts";
 
 /* ------------------------------ validators ---------------------------- */
