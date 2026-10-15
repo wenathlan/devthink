@@ -23,17 +23,17 @@ import { ChevronLeft, ChevronRight, Plus, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { AppHeader } from "./appheader.tsx";
-import { APPS, appMeta, PERSONAS } from "./apps.ts";
+import { APPS, appMeta, PERSONAS } from "../../osapps.ts";
 import { AuraChat } from "./aurachat.tsx";
 import type { FamilyStat } from "./familyidentity.tsx";
 import { accentVars, FamilyHero, FamilyStyles, familyAccentOf } from "./familyidentity.tsx";
 import { Modal } from "./modal.tsx";
-import { clearOSEvents, pushOSEvent, useOSEvents } from "./osevents.ts";
-import type { OSHandle } from "./ostypes.ts";
+import { clearOSEvents, pushOSEvent, useOSEvents } from "../../osevents.ts";
+import type { OSHandle } from "../../ostypes.ts";
 import { PageSection } from "./pagesection.tsx";
 import { StatusDot } from "./statusdot.tsx";
 import { UrlCleanerDemo } from "./urlcleanerdemo.tsx";
-import { arrayOf, useStoredState, type Validator } from "./usestoredstate.ts";
+import { arrayOf, useStoredState, type Validator } from "../../usestoredstate.ts";
 
 /* ------------------------------- PROJECTS ------------------------------ */
 

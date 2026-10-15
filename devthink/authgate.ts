@@ -1,5 +1,5 @@
 /**
- * authgate.ts — the pure guards of the entry flow (root-free, side-effect-
+ * authgate.ts — the pure guards of the entry flow (root logic, side-effect-
  * free, unit-tested in tests/authflow.test.ts). The authentication page-app
  * (Sol/auth/auth.tsx) rides these guards on the owner entry chain intro →
  * explore → auth → panel: afterAuthTarget resolves the post-session

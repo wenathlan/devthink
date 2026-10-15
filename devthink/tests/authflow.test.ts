@@ -7,7 +7,7 @@
  * verdict.
  */
 import { describe, expect, it } from "vitest";
-import { afterAuthTarget, handoverPath, normalizeGateway, pairingReadiness } from "../Sol/auth/authgate";
+import { afterAuthTarget, handoverPath, normalizeGateway, pairingReadiness } from "../authgate";
 
 describe("the post-auth redirect guard", () => {
   it("lands on the creation panel by default", () => {

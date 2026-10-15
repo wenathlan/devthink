@@ -20,7 +20,7 @@ import {
   akashBeat,
   akashSpringTrack,
   prefersReducedMotion,
-} from "./akash.ts";
+} from "../../akash.ts";
 import { SolLogoMark } from "../panel/logo.tsx";
 
 /** the beat plan of the open (ms): tile spring → brand → expansion → done */

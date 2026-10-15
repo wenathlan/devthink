@@ -28,7 +28,7 @@ import {
   akashBeat,
   akashSpringTrack,
   prefersReducedMotion,
-} from "./akash.ts";
+} from "../../akash.ts";
 import { SolLogoMark } from "../panel/logo.tsx";
 
 /** the beat plan of the floor (ms): mark spring → word → role → exit → done */

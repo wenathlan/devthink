@@ -1,14 +1,14 @@
 /**
- * state.ts — the conversation logic of the chat subapp: persisted sessions
+ * chatstate.ts — the conversation logic of the chat subapp: persisted sessions
  * ({ id, title, messages, at }) on the os useStoredState grammar (localStorage
  * + type-guard + cap), the tool pills as honest local modes, and a thin
  * wrapper around the os gateway client. Zero fetch logic here — everything
- * goes through gatewayChat from ../../osgateway, so the chat subapp owns no
+ * goes through gatewayChat from ./osgateway, so the chat subapp owns no
  * network code of its own.
  */
 import { useCallback, useMemo } from "react";
-import { type GatewayMessage, gatewayChat } from "../../osgateway";
-import { arrayOf, isString, useStoredState, type Validator } from "../os/usestoredstate.ts";
+import { type GatewayMessage, gatewayChat } from "./osgateway";
+import { arrayOf, isString, useStoredState, type Validator } from "./usestoredstate.ts";
 
 /* ------------------------------- types -------------------------------- */
 
@@ -72,11 +72,11 @@ export const GATEWAY_MODEL = "devthink";
 /**
  * The gateway opt-in contract — the preference key, the endpoint validator
  * and the registration machine live in the shared os kernel
- * (../os/gatewaybase.ts) so the chat panel and the settings page consume
+ * (gatewaybase.ts) so the chat panel and the settings page consume
  * ONE contract; re-exported here to keep the chat surface's single-import
  * grammar.
  */
-export { normalizeGatewayBase, PREF_GATEWAYBASE } from "../os/gatewaybase.ts";
+export { normalizeGatewayBase, PREF_GATEWAYBASE } from "./gatewaybase.ts";
 
 /**
  * deriveTitle — the session title is the first user message, single line,

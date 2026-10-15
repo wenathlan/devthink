@@ -15,7 +15,7 @@
 
 import { BrainCircuit, Image as ImageIcon, type LucideIcon, Paperclip, Search, Send, Telescope } from "lucide-react";
 import { type KeyboardEvent, type RefObject, useEffect } from "react";
-import { CHAT_TOOLS, GATEWAY_MODEL, type ToolId } from "./state.ts";
+import { CHAT_TOOLS, GATEWAY_MODEL, type ToolId } from "../../chatstate.ts";
 
 const TOOL_ICONS: Record<ToolId, LucideIcon> = {
   thinking: BrainCircuit,

@@ -40,8 +40,8 @@
 
 import type { LucideIcon } from "lucide-react";
 import { type CSSProperties, useEffect, useState } from "react";
-import type { AppMeta } from "./apps.ts";
-import { FAMILY_ACCENT, familyAccentOf, type GlyphMotion } from "./familyaccent.ts";
+import type { AppMeta } from "../../osapps.ts";
+import { FAMILY_ACCENT, familyAccentOf, type GlyphMotion } from "../../familyaccent.ts";
 
 /* ------------------------------------------------------------------ */
 /* ACCENTS — re-exported from familyaccent.ts (the pure data module;  */

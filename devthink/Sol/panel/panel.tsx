@@ -37,7 +37,7 @@ import { sseEvents } from "../../sse";
 import type { WorkspaceDestination } from "../../workspace.ts";
 import { BootScreen, shouldBoot } from "./boot.tsx";
 import { CommandPalette } from "./palette.tsx";
-import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types.ts";
+import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "../../paneltypes.ts";
 import { ShellWorkspace } from "./workspace.tsx";
 
 export * from "./boot.tsx";

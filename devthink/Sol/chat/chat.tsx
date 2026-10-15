@@ -38,7 +38,7 @@ import { PanelLeft, PanelRight, Trash2 } from "lucide-react";
  * hairlines, wash hovers, the solar accent only on action and icons. */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { GATEWAY_REQUIRED_COPY, GATEWAY_SEND_NOTICE, useGatewayRegistration } from "../os/gatewaybase.ts";
+import { GATEWAY_REQUIRED_COPY, GATEWAY_SEND_NOTICE, useGatewayRegistration } from "../../gatewaybase.ts";
 import { ShellChrome } from "../shell/ShellChrome.tsx";
 import { Composer } from "./composer.tsx";
 import { SessionPanel } from "./sessionpanel.tsx";
@@ -53,9 +53,9 @@ import {
   type ToolId,
   useChatSessions,
   userTurn,
-} from "./state.ts";
+} from "../../chatstate.ts";
 import { ErrorRow, ThinkingRow, Turn } from "./turn.tsx";
-import { useIsMobile } from "./useismobile.ts";
+import { useIsMobile } from "../../useismobile.ts";
 import { Welcome } from "./welcome.tsx";
 
 /** The chat slice of the wave atmosphere contract: the C1-01 atmosphere
@@ -81,9 +81,9 @@ export * from "./composer.tsx";
 export * from "./sessionpanel.tsx";
 export * from "./sidebar.tsx";
 export * from "./solboticon.tsx";
-export * from "./state.ts";
+export * from "../../chatstate.ts";
 export * from "./turn.tsx";
-export * from "./useismobile.ts";
+export * from "../../useismobile.ts";
 export * from "./welcome.tsx";
 
 export default function Chat() {

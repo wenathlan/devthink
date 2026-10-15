@@ -13,7 +13,7 @@
 import { BrainCircuit, ChevronDown, RefreshCw } from "lucide-react";
 import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { SolBotIcon } from "./solboticon.tsx";
-import { type ChatTurn, cx, fmtTime } from "./state.ts";
+import { type ChatTurn, cx, fmtTime } from "../../chatstate.ts";
 
 /* ----------------------------- markdown ------------------------------- */
 

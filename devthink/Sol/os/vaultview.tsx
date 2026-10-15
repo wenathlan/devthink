@@ -21,7 +21,7 @@
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { AppHeader } from "./appheader.tsx";
-import { appMeta, PERSONAS } from "./apps.ts";
+import { appMeta, PERSONAS } from "../../osapps.ts";
 import { AuraChat } from "./aurachat.tsx";
 import {
   accentVars,
@@ -31,7 +31,7 @@ import {
   FamilyStyles,
   familyAccentOf,
 } from "./familyidentity.tsx";
-import type { OSHandle } from "./ostypes.ts";
+import type { OSHandle } from "../../ostypes.ts";
 import { PageSection } from "./pagesection.tsx";
 
 /** the real threshold of the storage contract (vault/storage.ts). */

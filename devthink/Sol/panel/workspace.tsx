@@ -43,7 +43,7 @@ import { ShellChrome } from "../shell/ShellChrome.tsx";
 import { DesktopSurface } from "./desktop.tsx";
 import { ShaderWall } from "./shaderwall.tsx";
 import { WorkspaceTabs } from "./tabs.tsx";
-import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "./types.ts";
+import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "../../paneltypes.ts";
 import { WINDOW_MIN_HEIGHT, WindowFrame, type WindowSnapshot } from "./windowframe.tsx";
 
 /** the work categories with their lucide glyphs (i1: icons are components,

@@ -24,9 +24,9 @@
 import { Activity, ArrowRight, Circle, Command, Eraser, Menu, Moon, Search, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CARD_ROLE_STYLE, ToolbarIdent, useHeaderEntrance } from "./appheader.tsx";
-import { APPS } from "./apps.ts";
+import { APPS } from "../../osapps.ts";
 import { FamilyStyles, familyAccentOf } from "./familyidentity.tsx";
-import type { OSHandle } from "./ostypes.ts";
+import type { OSHandle } from "../../ostypes.ts";
 import { StatusDot } from "./statusdot.tsx";
 
 /** the entrance stagger of the launcher: the [style] custom prop of .enter. */

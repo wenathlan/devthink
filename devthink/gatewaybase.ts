@@ -14,7 +14,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { readBrowserPreferences, saveBrowserPreference } from "../../db";
+import { readBrowserPreferences, saveBrowserPreference } from "./db";
 
 /* ------------------------------ contract ------------------------------ */
 
