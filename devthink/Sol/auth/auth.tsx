@@ -80,8 +80,9 @@ export * from "../../authgate.ts";
 const AUTH_CSS = `
 .authx { position: relative; display: grid; grid-template-rows: auto 1fr; min-height: 100dvh; overflow: hidden; }
 
-/* the pinned dark canvas + the mica lift (one neutral radial, no accent hue) */
-.authx-stage { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; background-color: #202020; background-image: radial-gradient(1100px 640px at 50% -12%, rgb(255 255 255 / 4%) 0%, transparent 62%); background-attachment: fixed; }
+/* the pinned dark canvas + the win11 mica lift (the #1a1f35 bloom radial
+   over #202020, the research-measured mica recipe) + one white sheen */
+.authx-stage { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; background-color: #202020; background-image: radial-gradient(1100px 640px at 50% -12%, rgb(255 255 255 / 4%) 0%, transparent 62%), radial-gradient(#1a1f35 25%, #202020 100%); background-attachment: fixed; }
 
 /* the three backdrop scenes: pure CSS gradients, graphite/amber/rust; each
    owns 6s of the 18s cycle (fade 1s in, hold, 1s out), drifting 1.1 → 1 */
