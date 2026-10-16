@@ -117,6 +117,72 @@ function stableId(): string {
   return `l_${token}`;
 }
 
+/** The stable local route of this browser session (sessionStorage
+ * "dt.local.route"): every cold /panel entry lands on the SAME local
+ * workspace/session/tab instead of minting a fresh id trio per mount —
+ * the session survives visits, the label stays honest and the history
+ * stops piling up throwaway "Local session" records. A malformed stored
+ * value falls back to a fresh mint; storage failures never break the boot. */
+const LOCAL_ROUTE_KEY = "dt.local.route";
+
+function readLocalRoute(): RouteState {
+  try {
+    const raw = window.sessionStorage.getItem(LOCAL_ROUTE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw) as Partial<RouteState>;
+      if (
+        typeof parsed.workspaceId === "string" &&
+        parsed.workspaceId &&
+        typeof parsed.sessionId === "string" &&
+        parsed.sessionId &&
+        typeof parsed.tabId === "string" &&
+        parsed.tabId
+      )
+        return {
+          workspaceId: parsed.workspaceId,
+          sessionId: parsed.sessionId,
+          tabId: parsed.tabId,
+          sectionId: "chat",
+        };
+    }
+  } catch {
+    // storage unavailable or malformed: mint a fresh local route below
+  }
+  const fresh: RouteState = {
+    workspaceId: stableId(),
+    sessionId: stableId(),
+    tabId: stableId(),
+    sectionId: "chat",
+  };
+  try {
+    window.sessionStorage.setItem(LOCAL_ROUTE_KEY, JSON.stringify(fresh));
+  } catch {
+    // storage unavailable: the route lives for this mount only
+  }
+  return fresh;
+}
+
+/** The message title rides its own content — the first non-empty line,
+ * folded to 48 chars — never a staged literal ("Request staged" retired):
+ * the /chat page names turns this way and the desktop window follows the
+ * same law. System context keeps its label. */
+function deriveTitle(role: DevThinkMessage["role"], content: string): string {
+  if (role === "system") return "Session context";
+  const firstLine = (content.split("\n").find((line) => line.trim()) ?? "").trim();
+  if (!firstLine) return role === "user" ? "Request" : "Response";
+  return firstLine.length > 48 ? `${firstLine.slice(0, 47)}…` : firstLine;
+}
+
+/** The session label follows the /chat naming law: the first user message
+ * names the session ("New chat" until then); a gateway-provided tab label
+ * wins when the conversation has not spoken yet. */
+function sessionLabel(tabs: DevThinkTab[], messages: DevThinkMessage[], tabId: string): string {
+  const firstUser = messages.find((message) => message.role === "user" && (!message.tabId || message.tabId === tabId));
+  const named = firstUser ? deriveTitle("user", firstUser.body) : "";
+  if (named) return named;
+  return tabs.find((tab) => tab.id === tabId)?.label || "New chat";
+}
+
 function gatewayFromSearch(search: string): string | undefined {
   const configured = new URLSearchParams(search).get("gateway") || import.meta.env.VITE_DEVTHINK_GATEWAY_URL;
   return configured ? configured.replace(/\/$/, "") : undefined;
@@ -152,8 +218,7 @@ function toUiSession(session: GatewaySession): { tabs: DevThinkTab[]; messages: 
       tabId: message.tabId,
       sectionId: message.sectionId,
       role: message.role,
-      title:
-        message.role === "assistant" ? "Gateway response" : message.role === "user" ? "Request" : "Session context",
+      title: deriveTitle(message.role, message.content),
       body: message.content,
       time: formatTime(message.createdAt),
     })),
@@ -182,12 +247,7 @@ function toUiLocal(snapshot: Awaited<ReturnType<typeof loadBrowserSession>>): {
       tabId: message.tabId,
       sectionId: message.sectionId,
       role: message.role,
-      title:
-        message.role === "assistant"
-          ? "Local response"
-          : message.role === "user"
-            ? "Request staged"
-            : "Session context",
+      title: deriveTitle(message.role, message.content),
       body: message.content,
       time: formatTime(message.createdAt),
     })),
@@ -207,13 +267,18 @@ export default function Panel() {
   );
   const gatewayUrl = gatewayInput.trim().replace(/\/$/, "") || undefined;
   const query = window.location.search;
-  const fallbackRoute: RouteState = useMemo(
-    () => ({ workspaceId: stableId(), sessionId: stableId(), tabId: stableId(), sectionId: "chat" }),
-    [],
+  const fallbackRoute: RouteState = useMemo(() => readLocalRoute(), []);
+  /** "deep" is the primitive the effects key on: a params object would be a
+   * new identity every render and drag the hydration effect into an endless
+   * refetch (the chat-bar bug the shell shipped with) */
+  const deep = Boolean(params);
+  const route: RouteState = useMemo(
+    () =>
+      params
+        ? { workspaceId: params.workspaceId, sessionId: params.sessionId, tabId: params.tabId, sectionId: params.sectionId }
+        : fallbackRoute,
+    [fallbackRoute, params?.sectionId, params?.sessionId, params?.tabId, params?.workspaceId],
   );
-  const route: RouteState = params
-    ? { workspaceId: params.workspaceId, sessionId: params.sessionId, tabId: params.tabId, sectionId: params.sectionId }
-    : fallbackRoute;
   const [tabs, setTabs] = useState<DevThinkTab[]>(() => [
     {
       id: route.tabId,
@@ -251,10 +316,15 @@ export default function Panel() {
   }, [browserToken]);
   const paired = Boolean(browserToken && (!pairingExpiresAt || pairingExpiresAt > Date.now()));
 
-  function navigate(next: Partial<RouteState>) {
-    const nextRoute = { ...route, ...next };
-    setLocation(routePath(nextRoute, query));
-  }
+  /** stable per route change (the hydration effect keys on this identity —
+   * a fresh closure every render re-ran it forever) */
+  const navigate = useCallback(
+    (next: Partial<RouteState>) => {
+      const nextRoute = { ...route, ...next };
+      setLocation(routePath(nextRoute, query));
+    },
+    [query, route, setLocation],
+  );
 
   function openDestination(destination: WorkspaceDestination) {
     const directRoutes: Partial<Record<WorkspaceDestination, string>> = {
@@ -406,7 +476,7 @@ export default function Panel() {
   }, [browserHeaders, browserToken, gatewayUrl]);
 
   useEffect(() => {
-    if (params) return;
+    if (deep) return;
     // a parked deep link owns the URL: the dispatcher hands it back and the
     // replay walks to it — the local session bootstrap must not stomp it
     try {
@@ -446,9 +516,9 @@ export default function Panel() {
   }, [
     browserHeaders,
     browserToken,
+    deep,
     fallbackRoute,
     gatewayUrl,
-    params,
     provider.model,
     query,
     selectedProvider,
@@ -461,7 +531,7 @@ export default function Panel() {
   }, [route.tabId, tabs]);
 
   useEffect(() => {
-    if (!params) return;
+    if (!deep) return;
     if (!gatewayUrl || !browserToken) {
       void ensureBrowserSession(route, { provider: selectedProvider, model: provider.model })
         .then(() => loadBrowserSession(route.sessionId))
@@ -500,17 +570,17 @@ export default function Panel() {
   }, [
     browserHeaders,
     browserToken,
+    deep,
     gatewayUrl,
-    params,
+    // navigate is stable per route/query change (useCallback), so its identity
+    // moving IS the signal that the route moved — no object keys here
+    navigate,
     provider.model,
     route.sectionId,
     route.sessionId,
     route.tabId,
     route.workspaceId,
     selectedProvider,
-    route,
-    // biome-ignore lint/correctness/useExhaustiveDependencies: navigate is re-created on every render and re-running this hydration effect on its identity change only re-syncs the active tab, which is idempotent.
-    navigate,
   ]);
 
   useEffect(() => {
@@ -613,7 +683,7 @@ export default function Panel() {
         tabId: route.tabId,
         sectionId: route.sectionId,
         role: "user",
-        title: "Request staged",
+        title: deriveTitle("user", prompt),
         body: prompt,
         time: "now",
       },
@@ -624,7 +694,7 @@ export default function Panel() {
         tabId: route.tabId,
         sectionId: route.sectionId,
         role: "assistant",
-        title: "Gateway response",
+        title: deriveTitle("assistant", ""),
         body: gatewayUrl
           ? "Connecting to the local DevThink gateway…"
           : "Add a user-configured gateway URL to dispatch this request through the local DevThink CLI.",
@@ -672,24 +742,30 @@ export default function Panel() {
         const frames = sseEvents(pending.slice(0, boundary));
         pending = pending.slice(boundary + 2);
         for (const frame of frames) {
-          if (frame.type === "identity")
+          if (frame.type === "identity") {
+            const nextTabId = String(frame.data.tabId);
+            // the gateway re-ids the route mid-stream: the optimistic pair
+            // follows into the canonical tab, or the display filter would
+            // drop them the moment the URL moves
+            setMessages((current) =>
+              current.map((message) =>
+                message.id === userId || message.id === assistantId ? { ...message, tabId: nextTabId } : message,
+              ),
+            );
             navigate({
               workspaceId: String(frame.data.workspaceId),
               sessionId: String(frame.data.sessionId),
-              tabId: String(frame.data.tabId),
+              tabId: nextTabId,
               sectionId: String(frame.data.sectionId),
             });
+          }
           if (frame.type === "text")
             setMessages((current) =>
-              current.map((message) =>
-                message.id === assistantId
-                  ? {
-                      ...message,
-                      body: `${message.body === "Connecting to the local DevThink gateway…" ? "" : message.body}${String(frame.data.text || "")}`,
-                      time: "live",
-                    }
-                  : message,
-              ),
+              current.map((message) => {
+                if (message.id !== assistantId) return message;
+                const body = `${message.body === "Connecting to the local DevThink gateway…" ? "" : message.body}${String(frame.data.text || "")}`;
+                return { ...message, body, title: deriveTitle("assistant", body), time: "live" };
+              }),
             );
           if (frame.type === "persisted")
             setMessages((current) =>
@@ -744,6 +820,7 @@ export default function Panel() {
 
   // the desktop opens directly: no identity lock, no tour — the local
   // identity resolved silently through browserIdentity() on mount
+  const activeSessionLabel = sessionLabel(tabs, messages, route.tabId);
   return (
     <div
       className="devthink-app devthink-app--terminal"
@@ -752,7 +829,8 @@ export default function Panel() {
     >
       <ShellWorkspace
         sectionId={route.sectionId}
-        routeLabel={`w/${route.workspaceId.slice(0, 8)} — s/${route.sessionId.slice(0, 8)}`}
+        routeLabel={activeSessionLabel}
+        sessionTitle={activeSessionLabel}
         userId={pairedIdentity?.userId}
         provider={provider}
         messages={messages.filter((message) => !message.tabId || message.tabId === route.tabId)}

@@ -84,7 +84,10 @@ export const DESKTOP_APPS: DesktopApp[] = [
     icon: null,
     iconset: "chat",
     pinned: true,
-    target: { kind: "route", href: "/chat" },
+    // the desktop app opens IN PLACE as a floating window (the Windows law:
+    // the person enters through the apps of the desktop) — the fullscreen
+    // /chat page stays a deep-link surface only
+    target: { kind: "window", id: "chat" },
   },
   {
     id: "history",
