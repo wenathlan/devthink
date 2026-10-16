@@ -68,6 +68,35 @@ export function normalizeGateway(value: string): string {
   return value.trim().replace(/\/$/, "");
 }
 
+/**
+ * Guards a gateway URL before any pairing fetch leaves the page: the value
+ * must parse as an absolute http or https url free of embedded credentials,
+ * and it answers stripped of its query and fragment — the gateway base is
+ * all the contract ever needs. Loopback and private hosts are the product
+ * (the pairing targets the visitor's OWN local gateway by design), so the
+ * host is never a reason to refuse; the scheme is. A relative input, a
+ * whitespace carrier or another scheme (file, ftp, javascript, data) answers
+ * undefined, so a crafted link can never turn the pairing surface into an
+ * exfiltration primitive.
+ *
+ * @param value the raw gateway input (a form field or the ?gateway= param).
+ * @returns the guarded gateway base url, or undefined when the value is
+ * empty or unsafe.
+ */
+export function safegatewayurl(value: string): string | undefined {
+  const cleaned = normalizeGateway(value);
+  if (!cleaned || /\s/.test(cleaned)) return undefined;
+  let url: URL;
+  try {
+    url = new URL(cleaned);
+  } catch {
+    return undefined;
+  }
+  if (url.protocol !== "http:" && url.protocol !== "https:") return undefined;
+  if (url.username || url.password) return undefined;
+  return normalizeGateway(`${url.origin}${url.pathname}`);
+}
+
 export type PairingReadiness = {
   /** true when every field of the local pairing is filled correctly */
   ready: boolean;
@@ -77,15 +106,16 @@ export type PairingReadiness = {
 
 /**
  * Validates the fields of the local CLI pairing before the page ever calls
- * the gateway: the gateway URL must be non-empty, the pairing id non-empty
- * and the invitation code exactly 8 characters.
+ * the gateway: the gateway URL must guard through safegatewayurl (an
+ * absolute http or https base, no credentials, no query), the pairing id
+ * non-empty and the invitation code exactly 8 characters.
  *
  * @param input the raw form fields.
  * @returns the readiness verdict plus the missing field names.
  */
 export function pairingReadiness(input: { gatewayUrl: string; pairingId: string; code: string }): PairingReadiness {
   const missing: string[] = [];
-  if (!normalizeGateway(input.gatewayUrl)) missing.push("gateway");
+  if (!safegatewayurl(input.gatewayUrl)) missing.push("gateway");
   if (!input.pairingId.trim()) missing.push("pairing");
   if (input.code.trim().length !== 8) missing.push("code");
   return { ready: missing.length === 0, missing };

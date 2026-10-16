@@ -29,6 +29,9 @@
     "internal-api.z.ai",
     "api.babel.town",
     "glm.babel.town",
-    "api.kilo.ai"
+    "api.kilo.ai",
+    "translate.googleapis.com",
+    "devthink.pro",
+    "git-lfs.github.com"
   ]
 }

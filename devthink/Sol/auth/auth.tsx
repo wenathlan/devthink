@@ -62,11 +62,11 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Link, useLocation } from "wouter";
+import { afterAuthTarget, pairingReadiness, safegatewayurl } from "../../authgate.ts";
 import { browserIdentity, readBrowserPreferences, saveBrowserPreference } from "../../db";
 import { SolLogoMark } from "../panel/logo.tsx";
 import { ShellChrome } from "../shell/ShellChrome.tsx";
 import { useReducedMotion } from "../shell/trayflyouts.tsx";
-import { afterAuthTarget, normalizeGateway, pairingReadiness } from "../../authgate.ts";
 
 export * from "../../authgate.ts";
 
@@ -307,7 +307,11 @@ export default function Auth() {
         );
       setBusy(true);
       try {
-        const response = await fetch(`${normalizeGateway(gatewayUrl)}/pairings/consume`, {
+        // the guarded base: the readiness verdict above already answered
+        // safe, the guard answers the exact url every pairing call rides
+        const gateway = safegatewayurl(gatewayUrl);
+        if (!gateway) return;
+        const response = await fetch(`${gateway}/pairings/consume`, {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({ pairingId: pairingIdValue, code: pairingCode }),
@@ -315,7 +319,7 @@ export default function Auth() {
         if (!response.ok) throw new Error("Pairing was rejected.");
         const result = (await response.json()) as PairingResponse;
         // the exact session keys the creation panel reads on boot
-        window.sessionStorage.setItem("devthink.gateway", normalizeGateway(gatewayUrl));
+        window.sessionStorage.setItem("devthink.gateway", gateway);
         window.sessionStorage.setItem("devthink.pair.token", result.token);
         window.sessionStorage.setItem("devthink.pair.user", result.userId);
         window.sessionStorage.setItem("devthink.pair.expires", String(result.expiresAt));
