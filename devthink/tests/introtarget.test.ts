@@ -10,12 +10,13 @@ import { INTRO_SEEN_KEY, type IntroTarget, resolveintrotarget } from "../introta
 
 describe("the intro target resolver", () => {
   it("resolves every literal target the intro choreography knows", () => {
-    const targets: readonly IntroTarget[] = ["web", "installer", "android", "extension"];
+    const targets: readonly IntroTarget[] = ["web", "desktop", "installer", "android", "extension"];
     for (const target of targets) expect(resolveintrotarget(target)).toBe(target);
   });
 
   it("normalizes the raw environment value before matching", () => {
     expect(resolveintrotarget(" web ")).toBe("web");
+    expect(resolveintrotarget("DESKTOP")).toBe("desktop");
     expect(resolveintrotarget("INSTALLER")).toBe("installer");
     expect(resolveintrotarget("Android")).toBe("android");
     expect(resolveintrotarget("\textension\n")).toBe("extension");

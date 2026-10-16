@@ -1,70 +1,55 @@
 /**
- * intro page anchor — layer 3 of the anchor architecture.
- * The file carrying the folder's own name is the path manager of the page:
- * it imports the loose components beside it, mounts the page and re-exports
- * the public component surface. Only the theme anchor (Sol/Sol.tsx) consumes
- * this file. The intro runs at "/" on the first paint of every cold load and
- * hands the surface to the next page of the flow.
+ * intro page anchor — layer 3 of the anchor architecture. The file carrying
+ * the folder's own name is the path manager of the page: it imports the
+ * loose components beside it, mounts the page and re-exports the public
+ * component surface. Only the theme anchor (Sol/Sol.tsx) consumes this
+ * file.
+ *
+ * The owner doctrine: TWO faces, ONE interface. The web targets (web,
+ * extension, android) play the SaaS face — the approved landing this folder
+ * rebuilds from zero (saas.tsx on the saaskit sections). The owned targets
+ * (desktop, installer) play the system boot — the Windows sequence of
+ * hello, loading logo, landscape clock and lock screen (boot.tsx). The
+ * handover lands on the login face (/auth) for the web targets — the
+ * presentation is the face, the login is the same face of the OS, and the
+ * panel is the last page of the chain. The owned targets hand straight to
+ * the desktop (/panel): the boot IS their intro. A returning visitor skips
+ * the play entirely and walks the handover. The onboarding tour stays a
+ * routable sub-page, out of the main chain.
  */
-
-/** Style: DevThink ONE intro — the owner doctrine: ONE interface serves every
- * build target; what changes per target is the TYPE OF INTRO and the
- * hand-over sequence. Every variant stages the same PISO AKASH (the motion
- * kit beside this anchor, akash.ts): the mark lands on the ONE spring
- * (stiffness 300, damping 15), the wordmark rises on backOut, the stage
- * leaves on the 0.8s slide-up — and no target ever shows loading dots.
- * The build declares its target through VITE_DT_TARGET (resolved by the
- * root module introtarget.ts) — the target keeps its seam in the hand-over
- * sequence, but the ENTRANCE is one: the web intro plays for every
- * distribution (the owner doctrine: one code, many targets — web, binary,
- * extension — the same beautiful first paint). The retired per-target
- * variants stay exported beside this anchor. The seen state of the flow is
- * the CATALOGUED
- * visitor state (root module onboardingstate.ts — the only writer): when
- * the onboarding was already seen the intro never replays (straight to
- * /explore); when only the intro was seen the visitor goes straight to
- * /onboarding; otherwise the intro plays once and hands the surface to
- * /onboarding, raising the intro flag on the way out. The bell is opt-in
- * only (localStorage dt.intro.sound === "on"; default mute, autoplay-safe).
- * The gate renders nothing while the state is being read — nothing flashes. */
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { readonboardingstate, writeonboardingstage } from "../../onboardingstate";
 import { type IntroTarget, resolveintrotarget } from "../../introtarget";
-import { playIntroChime } from "../../chime.ts";
-import { WebIntro } from "./webintro.tsx";
+import { readonboardingstate, writeonboardingstage } from "../../onboardingstate";
+import Boot from "./boot.tsx";
+import Saas from "./saas.tsx";
 
-export * from "./androidintro.tsx";
-export * from "../../chime.ts";
-export * from "./installerintro.tsx";
-export * from "./webintro.tsx";
+export type { IntroTarget } from "../../introtarget.ts";
 
 /**
- * The route the intro hands over to, per build target: the entry flow of the
- * doctrine is intro → the onboarding tour (/onboarding) → the landing SaaS
- * (/explore) → the authentication page-app (/auth) → the OS desktop
- * (/panel). The web target opens the tour first; the owned targets
- * (installer, android, extension) share the same chain — the tour is part of
- * the ONE interface. The target stays a parameter so a future per-target
- * sequence keeps its seam.
+ * Resolves the handover route of the intro: the login face for the web
+ * targets, the desktop for the owned ones.
  *
  * @param target the resolved build target.
- * @returns the route of the next page in the entry flow.
+ * @returns the route of the next page in the entry chain.
  */
-export function introHandover(target: IntroTarget): string {
-  void target;
-  return "/onboarding";
+export function introhandover(target: IntroTarget): string {
+  return target === "desktop" || target === "installer" ? "/panel" : "/auth";
 }
 
-/** The gate poses of the intro page while (and after) it reads the catalogued
- * visitor state: "reading" renders nothing, "play" mounts the variant, the
- * seen poses redirect without any animation. */
-type introgate = "reading" | "play" | "onboarding" | "explore";
+/** The owned targets (desktop, installer) play the system boot; every web
+ * target plays the SaaS face. */
+function ownsboot(target: IntroTarget): boolean {
+  return target === "desktop" || target === "installer";
+}
+
+/** The gate poses of the intro page: "reading" renders nothing while the
+ * catalogued visitor state loads, "play" mounts the face of the target,
+ * "enter" walks the handover. */
+type introgate = "reading" | "play" | "enter";
 
 /** The intro page: resolves the target, consults the catalogued onboarding
- * state (the DB-backed flag through onboardingstate.ts) and either plays the
- * ONE intro (the web variant — every distribution shares it) or walks
- * straight into the flow. */
+ * state and either plays the face or walks straight into the chain. */
 export default function Intro() {
   const target = resolveintrotarget(import.meta.env.VITE_DT_TARGET as string | undefined);
   const [, navigate] = useLocation();
@@ -74,11 +59,9 @@ export default function Intro() {
     let alive = true;
     readonboardingstate().then((state) => {
       if (!alive) return;
-      // the seen ladder: onboarding seen buries the intro forever; intro seen
-      // goes straight to the tour; a fresh visitor watches it once
-      if (state.onboardingseen) setGate("explore");
-      else if (state.introseen) setGate("onboarding");
-      else setGate("play");
+      // a returning visitor never replays the face: the handover IS the
+      // ladder — login on the web targets, desktop on the owned ones
+      setGate(state.onboardingseen || state.introseen ? "enter" : "play");
     });
     return () => {
       alive = false;
@@ -86,19 +69,15 @@ export default function Intro() {
   }, []);
 
   useEffect(() => {
-    if (gate === "explore") navigate("/explore");
-    if (gate === "onboarding") navigate("/onboarding");
-  }, [gate, navigate]);
+    if (gate === "enter") navigate(introhandover(target));
+  }, [gate, navigate, target]);
 
+  /** the face finished: the intro flag rises and the chain walks on */
   const done = useCallback(() => {
-    playIntroChime();
     writeonboardingstage("intro");
-    navigate(introHandover(target));
+    navigate(introhandover(target));
   }, [navigate, target]);
 
   if (gate !== "play") return null;
-  // the ONE intro doctrine: the web intro IS the intro — the same entrance
-  // plays on the site, the binary, the extension and every distribution to
-  // come; the retired variants stay exported beside this anchor
-  return <WebIntro onDone={done} />;
+  return ownsboot(target) ? <Boot onDone={done} /> : <Saas onDone={done} />;
 }
