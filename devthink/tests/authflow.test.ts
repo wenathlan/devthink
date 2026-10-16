@@ -7,7 +7,7 @@
  * verdict.
  */
 import { describe, expect, it } from "vitest";
-import { afterAuthTarget, handoverPath, normalizeGateway, pairingReadiness } from "../authgate";
+import { afterAuthTarget, handoverPath, normalizeGateway, pairingReadiness, safegatewayurl } from "../authgate";
 
 describe("the post-auth redirect guard", () => {
   it("lands on the creation panel by default", () => {
@@ -84,5 +84,30 @@ describe("the pairing readiness verdict", () => {
     expect(
       pairingReadiness({ gatewayUrl: "http://127.0.0.1:8787", pairingId: "pair-1", code: "ABCD12345" }).missing,
     ).toEqual(["code"]);
+    expect(
+      pairingReadiness({ gatewayUrl: "javascript:alert(1)", pairingId: "pair-1", code: "ABCD1234" }).missing,
+    ).toEqual(["gateway"]);
+  });
+});
+
+describe("the gateway call guard", () => {
+  it("accepts the absolute http and https gateways the visitor owns", () => {
+    expect(safegatewayurl(" http://127.0.0.1:8787/ ")).toBe("http://127.0.0.1:8787");
+    expect(safegatewayurl("https://gateway.example.com/base/")).toBe("https://gateway.example.com/base");
+  });
+
+  it("refuses the schemes and tricks that turn the pairing into an exfiltration", () => {
+    expect(safegatewayurl("javascript:alert(1)")).toBeUndefined();
+    expect(safegatewayurl("file:///etc/passwd")).toBeUndefined();
+    expect(safegatewayurl("ftp://gateway.example.com")).toBeUndefined();
+    expect(safegatewayurl("data:text/html,hi")).toBeUndefined();
+    expect(safegatewayurl("localhost:8787")).toBeUndefined();
+    expect(safegatewayurl("//gateway.example.com")).toBeUndefined();
+    expect(safegatewayurl("http://user:pass@127.0.0.1:8787")).toBeUndefined();
+    expect(safegatewayurl("")).toBeUndefined();
+  });
+
+  it("strips the query and fragment the gateway base never needs", () => {
+    expect(safegatewayurl("http://127.0.0.1:8787/?x=1#f")).toBe("http://127.0.0.1:8787");
   });
 });

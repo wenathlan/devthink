@@ -22,6 +22,7 @@ import { type FormEvent, useCallback, useEffect, useMemo, useState } from "react
 import { toast } from "sonner";
 import { useLocation, useRoute } from "wouter";
 import { PairingPanel } from "@/settings/settings";
+import { safegatewayurl } from "../../authgate.ts";
 import {
   browserIdentity,
   cacheBrowserIdentity,
@@ -33,11 +34,11 @@ import {
   saveBrowserMessages,
   saveBrowserTab,
 } from "../../db";
+import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "../../paneltypes.ts";
 import { sseEvents } from "../../sse";
 import type { WorkspaceDestination } from "../../workspace.ts";
 import { BootScreen, shouldBoot } from "./boot.tsx";
 import { CommandPalette } from "./palette.tsx";
-import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "../../paneltypes.ts";
 import { ShellWorkspace } from "./workspace.tsx";
 
 export * from "./boot.tsx";
@@ -265,7 +266,7 @@ export default function Panel() {
   const [gatewayInput, setGatewayInput] = useState(
     () => configuredGateway || window.sessionStorage.getItem("devthink.gateway") || "",
   );
-  const gatewayUrl = gatewayInput.trim().replace(/\/$/, "") || undefined;
+  const gatewayUrl = safegatewayurl(gatewayInput);
   const query = window.location.search;
   const fallbackRoute: RouteState = useMemo(() => readLocalRoute(), []);
   /** "deep" is the primitive the effects key on: a params object would be a
@@ -275,7 +276,12 @@ export default function Panel() {
   const route: RouteState = useMemo(
     () =>
       params
-        ? { workspaceId: params.workspaceId, sessionId: params.sessionId, tabId: params.tabId, sectionId: params.sectionId }
+        ? {
+            workspaceId: params.workspaceId,
+            sessionId: params.sessionId,
+            tabId: params.tabId,
+            sectionId: params.sectionId,
+          }
         : fallbackRoute,
     [fallbackRoute, params?.sectionId, params?.sessionId, params?.tabId, params?.workspaceId],
   );
@@ -340,7 +346,9 @@ export default function Panel() {
 
   const rememberPairing = useCallback(
     (result: PairingResponse) => {
-      window.sessionStorage.setItem("devthink.gateway", gatewayInput);
+      // the storage echoes the guarded base, so every other surface (the
+      // settings gateway card, the next boot) inherits the same safety
+      window.sessionStorage.setItem("devthink.gateway", gatewayUrl ?? "");
       window.sessionStorage.setItem("devthink.pair.token", result.token);
       window.sessionStorage.setItem("devthink.pair.user", result.userId);
       window.sessionStorage.setItem("devthink.pair.expires", String(result.expiresAt));
@@ -350,7 +358,7 @@ export default function Panel() {
       setPairingCode("");
       toast("Local DevThink workspace paired. The browser session is temporary.");
     },
-    [gatewayInput],
+    [gatewayUrl],
   );
 
   async function pairLocalGateway(event: FormEvent) {
