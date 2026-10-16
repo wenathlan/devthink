@@ -593,10 +593,7 @@ button:not(:disabled), a[href] { cursor: pointer; }
   background-image: var(--noise);
   background-blend-mode: soft-light;
   -webkit-backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
   backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
 }
 
 .acrylic-panel {
@@ -606,10 +603,7 @@ button:not(:disabled), a[href] { cursor: pointer; }
     var(--noise);
   background-blend-mode: normal, soft-light;
   -webkit-backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
   backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
   box-shadow: 0 0 0 1px rgb(255 255 255 / 7%), var(--shadow-flyout);
 }
 
@@ -620,10 +614,7 @@ button:not(:disabled), a[href] { cursor: pointer; }
     var(--noise);
   background-blend-mode: normal, soft-light;
   -webkit-backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
   backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
   box-shadow: 0 8px 32px rgb(0 0 0 / 45%);
 }
 
@@ -632,10 +623,7 @@ button:not(:disabled), a[href] { cursor: pointer; }
   background-image: var(--noise);
   background-blend-mode: soft-light;
   -webkit-backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
   backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
   border: 1px solid rgb(255 255 255 / 8%);
   box-shadow: var(--shadow-flyout);
 }
@@ -688,10 +676,7 @@ button:not(:disabled), a[href] { cursor: pointer; }
   color: var(--color-ink) !important;
   box-shadow: var(--shadow-flyout) !important;
   -webkit-backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
   backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
 }
 
 [data-sonner-toast] [data-title] { color: var(--color-ink); }
@@ -1533,9 +1518,7 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
 .terminal-command-rail {
   border-radius: 14px;
   -webkit-backdrop-filter: blur(18px) saturate(130%);
-  -webkit-backdrop-filter: blur(18px) saturate(130%);
   backdrop-filter: blur(18px) saturate(130%);
-  -webkit-backdrop-filter: blur(18px) saturate(130%);
   box-shadow: var(--dt-elev-1), inset 0 1px 0 rgb(255 255 255 / 6%);
 }
 
@@ -1596,9 +1579,7 @@ fieldset .cmd-group, legend.cmd-group { display: block; padding: 10px 12px 4px; 
     .terminal-command-rail {
       background: var(--dt-panel);
       -webkit-backdrop-filter: none;
-      -webkit-backdrop-filter: none;
       backdrop-filter: none;
-      -webkit-backdrop-filter: none;
     }
 }
 /* ---- boot: the simple opening lives in the base boot section at the top
@@ -2583,10 +2564,7 @@ tint, the grain and the fluent shadows keep their exact values */
   background-blend-mode: soft-light;
   box-shadow: 0 0 0 1px rgb(255 255 255 / 7%), var(--win-shad-flyout);
   -webkit-backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
   backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
 }
 
 .terminal-command-rail {
@@ -2594,10 +2572,7 @@ tint, the grain and the fluent shadows keep their exact values */
   background-image: var(--win-noise);
   background-blend-mode: soft-light;
   -webkit-backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
   backdrop-filter: saturate(3) blur(20px);
-  -webkit-backdrop-filter: saturate(3) blur(20px);
 }
 
 [data-theme="light"] .dtc-session, [data-theme="light"] .cmd-panel,
@@ -2629,9 +2604,7 @@ tint, the grain and the fluent shadows keep their exact values */
       background-blend-mode: normal;
       background-color: var(--dt-panel);
       -webkit-backdrop-filter: none;
-      -webkit-backdrop-filter: none;
       backdrop-filter: none;
-      -webkit-backdrop-filter: none;
     }
 
     .shell-os__atmosphere { opacity: .35; }
@@ -3765,7 +3738,6 @@ span[data-tile] { width: var(--dt-tile-size, 40px); height: var(--dt-tile-size, 
   outline: 1px solid rgb(255 255 255 / 5%);
   outline-offset: 0;
   -webkit-backdrop-filter: blur(26px) saturate(130%);
-  -webkit-backdrop-filter: blur(26px) saturate(130%);
   backdrop-filter: blur(26px) saturate(130%);
   animation: var(--animate-window-in);
 }
@@ -3829,7 +3801,6 @@ span[data-tile] { width: var(--dt-tile-size, 40px); height: var(--dt-tile-size, 
   align-items: stretch;
   padding-left: 14px;
   border-bottom: 1px solid rgb(255 255 255 / 7%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
   -webkit-backdrop-filter: blur(20px) saturate(140%);
   backdrop-filter: blur(20px) saturate(140%);
   user-select: none;
