@@ -40,11 +40,13 @@ import { peekonboardingstate } from "../../onboardingstate";
 import { SolLogoMark } from "../panel/logo.tsx";
 import { ShellChrome } from "../shell/ShellChrome.tsx";
 import { ExploreSections } from "./exploresections.tsx";
+import { DownloadRail } from "./downloadrail.tsx";
 import { LaunchDeck, OsSigil, TRYLLE_PRIMARY_STACK } from "./launchdeck.tsx";
 import { HeroWaves } from "./waves.tsx";
 import { WindowEdgeChrome } from "./windowchrome.tsx";
 
 export * from "./exploresections.tsx";
+export * from "./downloadrail.tsx";
 export * from "./launchdeck.tsx";
 export * from "./waves.tsx";
 export * from "./windowchrome.tsx";
@@ -91,6 +93,7 @@ const ANCHORS: ReadonlyArray<{ href: string; label: string }> = [
   { href: "#family", label: "family" },
   { href: "#rails", label: "sections" },
   { href: "#does", label: "modules" },
+  { href: "#builds", label: "builds" },
 ];
 
 /** The DevThink free exploration landing, served at /explore (the web intro
@@ -280,6 +283,13 @@ export default function Explore() {
                 )}
               </ul>
             </section>
+
+            <HeroWaves caption="04 · the builds" meta="chromium · firefox · vs code · safari" />
+
+            {/* the distribution rail: the release channels of the immutable
+            tag — the extension, the vsix and the provenance set, walkable
+            from the landing */}
+            <DownloadRail />
           </main>
 
           <footer className="border-t border-hairline px-6 py-10">
