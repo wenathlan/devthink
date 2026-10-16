@@ -40,8 +40,7 @@
  *   - `.dtIcon[data-live="true"]` and `.dt-tile[data-live="true"]` — the live
  *     state the app tile drives from pointer hover (apptile.tsx); the sheet
  *     also accepts the direct :hover and the hover/keyboard focus of the
- *     shell wrappers (.dt-appicon, .dt-nav__app, .dt-start__app,
- *     .shell-dock button)
+ *     shell wrappers (.dt-appicon, .dt-nav__app, .dt-start__app)
  *   - `--dt-stagger` — the optional entrance index (ms) a field sets per
  *     tile; the desktop field already staggers its cells and stays THE
  *     orchestrated entrance, other fields can adopt the variable as-is
@@ -131,17 +130,17 @@ html.dt-icon-fx .dtIcon { transition: --dt-fan .55s cubic-bezier(.22,.9,.3,1.15)
 
 /* the live state of an icon: the direct hover, the data-live flag the app
    tile drives (apptile.tsx), or the hover/keyboard focus of the shell wrapper
-   around the tile (desktop + launcher cells, taskbar pin, start entry, dock) */
+   around the tile (desktop + launcher cells, taskbar pin, start entry) */
 .dtIcon:is(:hover, [data-live="true"]),
 .dt-appicon:is(:hover, :focus-within) .dtIcon,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon,
 .dt-start__app:is(:hover, :focus-within) .dtIcon,
-.shell-dock button:is(:hover, :focus-within) .dtIcon { --dt-fan: 1; }
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon { --dt-fan: 1; }
 .dtIcon:is(:hover, [data-live="true"]) .dtIconGlow,
 .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIconGlow,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIconGlow,
 .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIconGlow,
-.shell-dock button:is(:hover, :focus-within) .dtIcon .dtIconGlow { --dt-glow: .62; }
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIconGlow { --dt-glow: .62; }
 
 .dtIconGlow {
   position: absolute; left: 10%; right: 10%; bottom: -6%; height: 44%; z-index: 0;
@@ -168,7 +167,7 @@ html.dt-icon-fx .dtIcon { transition: --dt-fan .55s cubic-bezier(.22,.9,.3,1.15)
 .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIconSvg,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIconSvg,
 .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIconSvg,
-.shell-dock button:is(:hover, :focus-within) .dtIcon .dtIconSvg {
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIconSvg {
   transform: perspective(340px) rotateX(4.5deg) rotateY(-5.5deg) scale(1.02);
   -webkit-transform: perspective(340px) rotateX(4.5deg) rotateY(-5.5deg) scale(1.02);
 }
@@ -182,7 +181,7 @@ html.dt-icon-fx .dtIcon { transition: --dt-fan .55s cubic-bezier(.22,.9,.3,1.15)
 .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIconGlyph,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIconGlyph,
 .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIconGlyph,
-.shell-dock button:is(:hover, :focus-within) .dtIcon .dtIconGlyph {
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIconGlyph {
   transform: translateY(calc(var(--dt-fan) * -2.2px)) scale(calc(1 + var(--dt-fan) * .035));
   -webkit-transform: translateY(calc(var(--dt-fan) * -2.2px)) scale(calc(1 + var(--dt-fan) * .035));
 }
@@ -196,7 +195,7 @@ html.dt-icon-fx .dtIconGlyph { transition: none; -webkit-transition: none; }
 .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIconSheenBand,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIconSheenBand,
 .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIconSheenBand,
-.shell-dock button:is(:hover, :focus-within) .dtIcon .dtIconSheenBand {
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIconSheenBand {
   animation: dtIconSheen .9s cubic-bezier(.3,.5,.25,1) forwards;
   -webkit-animation: dtIconSheen .9s cubic-bezier(.3,.5,.25,1) forwards;
 }
@@ -325,110 +324,110 @@ html.dt-icon-fx .dtIconGlyph { transition: none; -webkit-transition: none; }
 .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIconStory,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIconStory,
 .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIconStory,
-.shell-dock button:is(:hover, :focus-within) .dtIcon .dtIconStory { animation: var(--dt-story, none) both; }
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIconStory { animation: var(--dt-story, none) both; }
 .dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-hand,
 .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-hand,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-hand,
 .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-hand,
-.shell-dock button:is(:hover, :focus-within) .dtIcon .dtIcon-m-hand { animation: var(--dt-hand, none) both; }
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-hand { animation: var(--dt-hand, none) both; }
 .dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-card,
 .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-card,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-card,
 .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-card,
-.shell-dock button:is(:hover, :focus-within) .dtIcon .dtIcon-m-card { animation: var(--dt-card, none) both; }
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-card { animation: var(--dt-card, none) both; }
 .dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-cursor,
 .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-cursor,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-cursor,
 .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-cursor,
-.shell-dock button:is(:hover, :focus-within) .dtIcon .dtIcon-m-cursor { animation: var(--dt-cursor, none) both; }
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-cursor { animation: var(--dt-cursor, none) both; }
 .dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-node,
 .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-node,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-node,
 .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-node,
-.shell-dock button:is(:hover, :focus-within) .dtIcon .dtIcon-m-node {
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-node {
   animation: var(--dt-node, none) both; animation-delay: calc(var(--dt-i, 0) * 110ms);
 }
 .dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-plug,
 .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-plug,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-plug,
 .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-plug,
-.shell-dock button:is(:hover, :focus-within) .dtIcon .dtIcon-m-plug { animation: var(--dt-plug, none) both; }
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-plug { animation: var(--dt-plug, none) both; }
 .dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-bar,
 .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-bar,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-bar,
 .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-bar,
-.shell-dock button:is(:hover, :focus-within) .dtIcon .dtIcon-m-bar {
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-bar {
   animation: var(--dt-bar, none) both; animation-delay: calc(var(--dt-i, 0) * 75ms);
 }
 .dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-run,
 .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-run,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-run,
 .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-run,
-.shell-dock button:is(:hover, :focus-within) .dtIcon .dtIcon-m-run {
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-run {
   animation: var(--dt-run, none) both; animation-delay: calc(var(--dt-i, 0) * 110ms);
 }
 .dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-dot,
 .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-dot,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-dot,
 .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-dot,
-.shell-dock button:is(:hover, :focus-within) .dtIcon .dtIcon-m-dot {
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-dot {
   animation: var(--dt-dot, none) both; animation-delay: calc(var(--dt-i, 0) * 110ms);
 }
 .dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-page-l,
 .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-page-l,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-page-l,
 .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-page-l,
-.shell-dock button:is(:hover, :focus-within) .dtIcon .dtIcon-m-page-l { animation: var(--dt-page-l, none) both; }
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-page-l { animation: var(--dt-page-l, none) both; }
 .dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-page-r,
 .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-page-r,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-page-r,
 .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-page-r,
-.shell-dock button:is(:hover, :focus-within) .dtIcon .dtIcon-m-page-r { animation: var(--dt-page-r, none) both; }
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-page-r { animation: var(--dt-page-r, none) both; }
 .dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-needle,
 .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-needle,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-needle,
 .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-needle,
-.shell-dock button:is(:hover, :focus-within) .dtIcon .dtIcon-m-needle { animation: var(--dt-needle, none) both; }
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-needle { animation: var(--dt-needle, none) both; }
 .dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-pane,
 .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-pane,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-pane,
 .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-pane,
-.shell-dock button:is(:hover, :focus-within) .dtIcon .dtIcon-m-pane {
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-pane {
   animation: var(--dt-pane, none) both; animation-delay: calc(var(--dt-i, 0) * 70ms);
 }
 .dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-slate,
 .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-slate,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-slate,
 .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-slate,
-.shell-dock button:is(:hover, :focus-within) .dtIcon .dtIcon-m-slate { animation: var(--dt-slate, none) both; }
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-slate { animation: var(--dt-slate, none) both; }
 .dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-tap,
 .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-tap,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-tap,
 .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-tap,
-.shell-dock button:is(:hover, :focus-within) .dtIcon .dtIcon-m-tap { animation: var(--dt-tap, none) both; }
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-tap { animation: var(--dt-tap, none) both; }
 .dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-dial,
 .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-dial,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-dial,
 .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-dial,
-.shell-dock button:is(:hover, :focus-within) .dtIcon .dtIcon-m-dial { animation: var(--dt-dial, none) both; }
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-dial { animation: var(--dt-dial, none) both; }
 .dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-plate,
 .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-plate,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-plate,
 .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-plate,
-.shell-dock button:is(:hover, :focus-within) .dtIcon .dtIcon-m-plate {
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-plate {
   animation: var(--dt-plate, none) both; animation-delay: calc(var(--dt-i, 0) * 90ms);
 }
 .dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-shine,
 .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-shine,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-shine,
 .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-shine,
-.shell-dock button:is(:hover, :focus-within) .dtIcon .dtIcon-m-shine { animation: var(--dt-shine, none) both; }
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-shine { animation: var(--dt-shine, none) both; }
 /* the furnace story also pushes the contact glow past its usual rise */
 .dtIcon[data-motion="glow"]:is(:hover, [data-live="true"]) .dtIconGlow,
 .dt-appicon:is(:hover, :focus-within) .dtIcon[data-motion="glow"] .dtIconGlow,
 .dt-nav__app:is(:hover, :focus-within) .dtIcon[data-motion="glow"] .dtIconGlow,
 .dt-start__app:is(:hover, :focus-within) .dtIcon[data-motion="glow"] .dtIconGlow,
-.shell-dock button:is(:hover, :focus-within) .dtIcon[data-motion="glow"] .dtIconGlow { --dt-glow: .85; }
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon[data-motion="glow"] .dtIconGlow { --dt-glow: .85; }
 
 /* the story keyframes */
 @keyframes dti-bounce { 0% { transform: translateY(0); } 30% { transform: translateY(-5.5px); } 55% { transform: translateY(0); } 72% { transform: translateY(-2.2px); } 100% { transform: translateY(0); } }
@@ -460,12 +459,12 @@ html.dt-icon-fx .dtIconGlyph { transition: none; -webkit-transition: none; }
   .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIconSvg,
   .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIconSvg,
   .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIconSvg,
-  .shell-dock button:is(:hover, :focus-within) .dtIcon .dtIconSvg,
+  html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIconSvg,
   .dtIcon:is(:hover, [data-live="true"]) .dtIconGlyph,
   .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIconGlyph,
   .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIconGlyph,
   .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIconGlyph,
-  .shell-dock button:is(:hover, :focus-within) .dtIcon .dtIconGlyph {
+  html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIconGlyph {
     transform: none; -webkit-transform: none;
   }
 }
@@ -479,12 +478,12 @@ html.dt-icon-fx .dtIconGlyph { transition: none; -webkit-transition: none; }
   .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIconSvg,
   .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIconSvg,
   .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIconSvg,
-  .shell-dock button:is(:hover, :focus-within) .dtIcon .dtIconSvg,
+  html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIconSvg,
   .dtIcon:is(:hover, [data-live="true"]) .dtIconGlyph,
   .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIconGlyph,
   .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIconGlyph,
   .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIconGlyph,
-  .shell-dock button:is(:hover, :focus-within) .dtIcon .dtIconGlyph {
+  html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIconGlyph {
     transform: none; -webkit-transform: none;
   }
 }
@@ -1236,7 +1235,7 @@ export const SaddleIcon = defineAppIcon("saddle", {
 
 /**
  * The premium icon set of the shell, keyed by the registry `iconset` field:
- * the desktop grid, the dock and the Start menu all reach their icons here.
+ * the desktop grid, the taskbar and the Start menu all reach their icons here.
  */
 export const APP_ICONS: Record<string, ComponentType<AppIconProps>> = {
   chat: ChatIcon,

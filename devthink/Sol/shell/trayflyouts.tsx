@@ -72,9 +72,10 @@ const TILES: Array<{ key: TileKey; label: string; icon: LucideIcon }> = [
 
 /** the shared tray flyout motion: the .dt-flyout hook carries the 250ms
  * cubic-bezier(.62,0,.32,1) tray curve (the stylesheet may own it; these are
- * the exact inline values), the hide slides back under the bar in 150ms */
+ * the exact inline values), the hide slides back under the bottom bar in
+ * 150ms */
 const TRAY_FLYOUT_CLASS =
-  "dt-flyout acrylic-panel fixed top-[calc(var(--shell-top)+12px)] right-3 z-[calc(var(--z-bar)-1)] w-[360px] rounded-md p-4 text-ink transition-[transform,opacity] duration-[250ms] ease-[cubic-bezier(0.62,0,0.32,1)] data-[hide=true]:pointer-events-none data-[hide=true]:-translate-y-[110%] data-[hide=true]:opacity-0 data-[hide=true]:duration-150";
+  "dt-flyout acrylic-panel fixed bottom-[calc(var(--shell-bottom)+12px)] right-3 z-[calc(var(--z-bar)-1)] w-[360px] rounded-md p-4 text-ink transition-[transform,opacity] duration-[250ms] ease-[cubic-bezier(0.62,0,0.32,1)] data-[hide=true]:pointer-events-none data-[hide=true]:translate-y-[110%] data-[hide=true]:opacity-0 data-[hide=true]:duration-150";
 
 /** the focus rule of the tray controls: the 2px accent underline, no halo */
 const TRAY_FOCUS_CLASS = "focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none";

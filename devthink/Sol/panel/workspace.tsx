@@ -38,7 +38,6 @@ import { pushrecentapp } from "../../recentapps.ts";
 import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspace.ts";
 import { type AltTabCard, AltTabSwitcher } from "../shell/alttabswitcher.tsx";
 import { DESKTOP_APPS, type DesktopApp, seedOsView } from "../shell/appregistry.ts";
-import { AppTile } from "../shell/apptile.tsx";
 import { ShellChrome } from "../shell/ShellChrome.tsx";
 import { DesktopSurface } from "./desktop.tsx";
 import { ShaderWall } from "./shaderwall.tsx";
@@ -87,10 +86,11 @@ type ShellWorkspaceProps = {
 
 /** the float band base — windows stack upward from here, below the bar band */
 const Z_BASE = 20;
-/** the fixed chrome bands of the desktop, in px (the 48px taskbar topbar —
- * Sol/sol.css --shell-top — plus a breathing gap, and the dock strip) */
-const SHELL_TOP = 48;
-const SHELL_BOTTOM = 84;
+/** the fixed chrome bands of the desktop, in px: no top chrome — the desktop
+ * starts at the viewport top (the win11 law: the taskbar is the bottom edge)
+ * and the 48px taskbar rides Sol/sol.css --shell-bottom */
+const SHELL_TOP = 0;
+const SHELL_BOTTOM = 48;
 
 /** resolves one registry app by id (the dock and the desktop share it) */
 function appById(id: string): DesktopApp {
@@ -306,38 +306,6 @@ export function ShellWorkspace({
     [onDestination, onNavigate, toggleWindow],
   );
 
-  const dockApps = useMemo(() => {
-    const isOpen = (id: string) => windows.some((win) => win.id === id && win.state !== "minimized");
-    /** minimized windows stay on the dock with the dimmer data-minimized
-     * indicator — a click restores them (the taskbar semantics) */
-    const isMinimized = (id: string) => windows.some((win) => win.id === id && win.state === "minimized");
-    return [
-      {
-        app: appById("chat"),
-        active: isOpen("chat"),
-        minimized: isMinimized("chat"),
-        run: () => toggleWindow("chat", sessionTitle),
-      },
-      {
-        app: appById("history"),
-        active: isOpen("history"),
-        minimized: isMinimized("history"),
-        run: () => toggleWindow("history", "session history"),
-      },
-      { app: appById("projects"), active: false, minimized: false, run: () => onDestination("projects") },
-      { app: appById("docs"), active: false, minimized: false, run: () => onNavigate("/docs") },
-      { app: appById("explore"), active: false, minimized: false, run: () => onNavigate("/explore") },
-      { app: appById("gateway"), active: false, minimized: false, run: () => onNavigate("/gateway") },
-      { app: appById("os"), active: false, minimized: false, run: () => onNavigate("/os") },
-      {
-        app: appById("settings"),
-        active: destination === "settings",
-        minimized: false,
-        run: () => onDestination("settings"),
-      },
-    ];
-  }, [destination, onDestination, onNavigate, sessionTitle, toggleWindow, windows]);
-
   return (
     <main className={`shell-os shell-os--rail-${railMode}`}>
       <div className="shell-os__atmosphere" aria-hidden="true">
@@ -346,7 +314,7 @@ export function ShellWorkspace({
         <ShaderWall />
       </div>
 
-      <ShellChrome paired={paired} userId={userId} onOpenApp={openApp} />
+      <ShellChrome paired={paired} userId={userId} onOpenApp={openApp} openApps={windows.map((win) => win.id)} />
 
       <div className="shell-desktop">
         <DesktopSurface apps={DESKTOP_APPS} onOpen={openApp} />
@@ -495,30 +463,6 @@ export function ShellWorkspace({
         ))}
       </div>
 
-      <nav className="shell-dock" aria-label="DevThink dock">
-        {dockApps.map(({ app, active: open, minimized, run }) => (
-          <button
-            key={app.id}
-            type="button"
-            aria-pressed={open}
-            onClick={run}
-            aria-label={app.name}
-            data-dock-target={app.id}
-            data-minimized={minimized ? "true" : undefined}
-          >
-            <AppTile app={app} size={20} />
-            <small>{app.name.toLowerCase()}</small>
-            <i className="shell-dock__pin" aria-hidden="true" />
-          </button>
-        ))}
-        <span className="shell-dock__sep" aria-hidden="true" />
-        <button type="button" onClick={onOpenPalette} aria-label="Open the command palette">
-          <span className="shell-dock__glyph" aria-hidden="true">
-            <Command size={16} />
-          </span>
-          <small>commands</small>
-        </button>
-      </nav>
       {/* the acrylic alt-tab task switcher while the chord is held */}
       {switching && (
         <AltTabSwitcher cards={switcherCards} onCommit={commitSwitch} onClose={() => setSwitching(false)} />
