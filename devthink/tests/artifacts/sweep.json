@@ -68,7 +68,7 @@
       "family": "scans",
       "name": "no secret material appears in the bundle",
       "status": "fixed",
-      "detail": "no literal key, token or password value appears in the 126 shipped sources or the 20 compiled bundles"
+      "detail": "no literal key, token or password value appears in the 145 shipped sources or the 0 compiled bundles"
     },
     {
       "family": "scans",
@@ -78,39 +78,15 @@
     },
     {
       "family": "runtime",
-      "name": "every settings toggle round trips through storage",
-      "status": "fixed",
-      "detail": "the heartbeat window answers 45000ms when set and the reviewed default 60000ms when absent; the task tab ceiling answers 7 when set and stays unbound when absent"
-    },
-    {
-      "family": "runtime",
-      "name": "the cancel paths stop runs within the timeout budget",
-      "status": "fixed",
-      "detail": "cancelrunrecord seals the run state cancelled and cancelrunactionof rolls back only the queued steps"
-    },
-    {
-      "family": "runtime",
-      "name": "the escape hatch works from every surface",
-      "status": "fixed",
-      "detail": "the kill switch stops all 2 agents at once and no agent stays active"
-    },
-    {
-      "family": "runtime",
-      "name": "the extension loads without console errors on a clean profile",
-      "status": "fixed",
-      "detail": "the built set carries every surface page (popup.html, sidepanel.html, dashboardpage.html, transparencypage.html, optionspage.html, offscreen.html, sandbox.html) and the verify workflow runs the chromium smoke that loads the extension on a clean profile"
-    },
-    {
-      "family": "runtime",
-      "name": "the sidepanel, popup and dashboard open without errors",
-      "status": "fixed",
-      "detail": "every built surface page references its bundled script and every interface page shares the style sheet"
+      "name": "the compiled bundles exist for the runtime checks",
+      "status": "open",
+      "detail": "the dist bundles are absent; run pnpm build before the sweep"
     }
   ],
   "summary": {
     "families": 5,
-    "total": 16,
-    "fixed": 16,
-    "open": 0
+    "total": 12,
+    "fixed": 11,
+    "open": 1
   }
 }
