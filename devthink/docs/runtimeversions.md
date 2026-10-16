@@ -32,7 +32,7 @@ The catalog records the current devthink release and the runtime baselines every
 
 | Entry | Version |
 | --- | --- |
-| devthink release | 2.0.97 |
+| devthink release | 2.0.98 |
 | node baseline | 26.12.0 |
 | npm baseline | 12.2.0 |
 | package manager baseline | 1.4.3 |

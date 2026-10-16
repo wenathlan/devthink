@@ -1,5 +1,30 @@
 # DevThink release notes
 
+## 2.0.98 — the one intro plays everywhere and the taskbar takes the bottom edge
+
+### Added
+
+| Area | Change |
+| --- | --- |
+| The distribution rail | The explore landing gains the download rail: the chromium zip, the firefox xpi, the vs code vsix and the provenance set of the immutable tag, with the version riding the build from the root manifest (the __dtversion__ vite define) so the rail never drifts from the shipped envelope. |
+| The one intro doctrine | The intro gate plays the web variant for every build target — web, binary and extension share the same entrance (the owner doctrine: one code, many distributions); the retired per-target variants stay exported beside the anchor. |
+| The auth mica | The authentication stage wears the windows mica (the #1a1f35 bloom radial over #202020) instead of the flat slab. |
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The taskbar | The shell chrome takes the bottom edge like the real windows 11: the fixed bar with the top hairline, tooltips and the jump list flipping above, the start menu and the tray flyouts rising from the bar, the floating dock retired and the taskbar pins carrying the live window ladder (openApps). |
+| The desktop geometry | The desktop area stops above the bar (the offset parent of the float band), the windows fly into their pins on it and the page shells breathe above the fixed bar. |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The chat window | The desktop chat opens in place as a floating window titled with the derived session name — the dead /chat route target and the session-fragment labels die; the optimistic messages survive the gateway identity frame and the hydration loop of the workspace routes is dead. |
+| The gateway catalog | The engine config leaves the page folder for the repository root (gatewayviewconfig.ts) and the reviewed origins catalog answers the gateway upstreams as data rows. |
+| The maintenance probe | The pnpm pin regex reads the crlf checkout and the acrylic webkit lines deduplicate — the ladder gates see the honest metadata. |
+
 ## 2.0.97 — the windows hands complete every interaction and the stages walk the graphs
 
 ### Added
