@@ -109,13 +109,15 @@ export function JumpList({ app, open, x, y, pinned, onOpen, onTogglePin, onClose
   const [pos, setPos] = useState({ x, y });
   const entries = jumpEntries(app);
 
-  // clamp the measured list into the viewport (the cursor may sit low/right)
+  // clamp the measured list into the viewport above the bottom taskbar (the
+  // cursor may sit low/right — the jump list never slides under the bar)
   useLayoutEffect(() => {
     const el = listRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
     const nextX = x + rect.width > window.innerWidth - 8 ? Math.max(8, window.innerWidth - rect.width - 8) : x;
-    const nextY = y + rect.height > window.innerHeight - 8 ? Math.max(8, window.innerHeight - rect.height - 8) : y;
+    const nextY =
+      y + rect.height > window.innerHeight - 56 ? Math.max(8, window.innerHeight - rect.height - 56) : y;
     setPos({ x: nextX, y: nextY });
   }, [x, y]);
 

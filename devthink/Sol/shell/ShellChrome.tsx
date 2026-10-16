@@ -1,15 +1,17 @@
 /**
  * ShellChrome.tsx — the ONE chrome of the Sol shell, shared by every page of
- * the theme (the desktop workspace and the control pages alike): a 48px top
- * bar in the exact Windows 11 taskbar grammar over the .acrylic-bar surface
- * (rgba(32,32,32,.75) + saturate(3) blur(20px) + grain) and a dark bottom
- * hairline. The official DevThink mark opens the centered cluster and IS the
+ * the theme (the desktop workspace and the control pages alike): a 48px bar
+ * pinned to the BOTTOM edge of the screen in the exact Windows 11 taskbar
+ * grammar (the win11 law: the taskbar is the bottom edge of the screen) over
+ * the .acrylic-bar surface (rgba(32,32,32,.75) + saturate(3) blur(20px) +
+ * grain) and a dark top hairline. The official DevThink mark opens the
+ * centered cluster and IS the
  * Start trigger (no labeled start button, no brand text); the pinned apps
  * follow as 38×38 r4 icon FACES inside 44px hit cells — the face is the
  * Windows button, the cell is the touch target (the ≥44px rule): hover wash
  * rgba(255,255,255,.1) in 200ms, press scale(.7) in 100ms, the 800ms popintro
  * spawn bounce, and NO visible names — the name surfaces in the .dt-nav__tip
- * acrylic tooltip under the icon (fade + slide 200ms, Windows peek
+ * acrylic tooltip above the icon (fade + slide 200ms, Windows peek
  * semantics). The open/active ladder rides the cell itself: an inline ::after
  * (3px, 0 closed) reads data-open="true" (6px neutral) and data-active="true"
  * (12px accent) off the cell — the component owns it because the stylesheet
@@ -22,7 +24,8 @@
  * clock opens the Calendar (Sol/shell/trayflyouts.tsx — the .dt-flyout 360px
  * r8 panels entering on the 250ms cubic-bezier(.62,0,.32,1) tray curve); the
  * clock reads two 11px tabular-nums lines. Clicking the mark opens the Start
- * menu: a 640px centered acrylic panel with 8px corners carrying the search
+ * menu: a 640px centered acrylic panel rising from the bottom taskbar with
+ * 8px corners carrying the search
  * box and the pinned grid of the desktop app catalog (Sol/shell/
  * appregistry.ts) — the entrance rises translateY(100px)→0 in 200ms on
  * cubic-bezier(.79,.14,.15,.86) and the exit is REAL: the mount state keeps
@@ -54,8 +57,8 @@ import {
   useReducedMotion,
 } from "./trayflyouts.tsx";
 
-/** the default apps pinned to the top bar: the essential surfaces as icons
- * only — every other app of the catalog lives in the Start menu grid
+/** the default apps pinned to the bottom bar: the essential surfaces as
+ * icons only — every other app of the catalog lives in the Start menu grid
  * ("panel" is the creation panel, the OS desktop itself, at /panel) */
 const TASKBAR_PIN_IDS = ["panel", "chat", "console", "gateway", "docs", "explore"];
 
@@ -74,13 +77,13 @@ const BAR_CELL_CLASS =
 const BAR_FACE_CLASS =
   "dt-nav__app-face grid h-[38px] w-[38px] place-items-center rounded-xs transition-[background-color,transform] duration-200 animate-popintro group-hcf:bg-white/10 light:group-hcf:bg-black/8 group-active:scale-[0.7] group-active:duration-100 group-focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] [&_.dt-tile]:h-[26px] [&_.dt-tile]:w-[26px] [&_.dt-tile]:rounded-sm [&_.dt-tile]:shadow-none";
 
-/** the app-name peek: acrylic under the cell, cleared of the bar (Windows
+/** the app-name peek: acrylic above the cell, cleared of the bar (Windows
  * tooltip semantics, name only — the aria-label already carries the name);
  * the 300ms hover delay is the Windows tooltip pause, the reveal itself is
  * the 200ms fade + slide (the delay rides only the hovered state, so the
  * leave hides instantly) */
 const BAR_TIP_CLASS =
-  "dt-nav__tip acrylic-tip pointer-events-none absolute top-[calc(100%+6px)] left-1/2 z-[1] -translate-x-1/2 translate-y-[-4px] rounded-xs px-[9px] py-[5px] font-sans text-xs font-medium whitespace-nowrap text-[#fafafa] opacity-0 transition-[opacity,transform] duration-200 group-hcf:translate-y-0 group-hcf:opacity-100 group-hcf:delay-300 light:border-black/12 light:text-[#1a1a1a]";
+  "dt-nav__tip acrylic-tip pointer-events-none absolute bottom-[calc(100%+6px)] left-1/2 z-[1] -translate-x-1/2 translate-y-[4px] rounded-xs px-[9px] py-[5px] font-sans text-xs font-medium whitespace-nowrap text-[#fafafa] opacity-0 transition-[opacity,transform] duration-200 group-hcf:translate-y-0 group-hcf:opacity-100 group-hcf:delay-300 light:border-black/12 light:text-[#1a1a1a]";
 
 /** the one shell flyout surface: at most one of these is open (and mounted) */
 type PanelState =
@@ -96,6 +99,9 @@ type ShellChromeProps = {
   userId?: string;
   /** desktop override: the workspace opens windows and destinations in place */
   onOpenApp?: (app: DesktopApp) => void;
+  /** the ids of the desktop windows that exist right now (open or minimized) —
+   * a window-target pin rides this to show its open ladder on the bar */
+  openApps?: string[];
 };
 
 /** formats the local machine clock for the tray: time over date, the two-line
@@ -165,7 +171,7 @@ function useStartMarkDraw(reduced: boolean): RefObject<HTMLButtonElement | null>
   return ref;
 }
 
-export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
+export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellChromeProps) {
   const [location, navigate] = useLocation();
   const reduced = useReducedMotion();
   /** the flyout kept in the DOM (through its exit transition) */
@@ -322,14 +328,6 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
       ? location === "/panel" || location.startsWith("/w/")
       : location === href || location.startsWith(`${href}/`);
 
-  /** the taskbar route of one pin (every pin targets a route surface) */
-  const pinHref = (app: DesktopApp): string =>
-    app.target.kind === "route"
-      ? app.target.href
-      : app.target.kind === "external"
-        ? familyurl(app.target.slug)
-        : "/panel";
-
   /** launches one app from the Start menu, taskbar or jump list: the desktop
    * opens it in place, the family deploy units load in full, every other page
    * navigates to the surface that owns it */
@@ -374,11 +372,11 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
 
   return (
     <>
-      {/* the ONE chrome: a 48px top taskbar — the authentic dark acrylic
+      {/* the ONE chrome: a 48px bottom taskbar — the authentic dark acrylic
           (.acrylic-bar: rgba(32,32,32,.75) + saturate(3) blur(20px) + grain,
-          light theme rides the class) over a dark bottom hairline; the
+          light theme rides the class) over a dark top hairline; the
           centered cluster, the omnibox and the tray split the row */}
-      <header className="dt-nav acrylic-bar sticky top-0 z-50 flex h-12 min-w-0 items-center border-b border-black/55 px-2">
+      <header className="dt-nav acrylic-bar fixed bottom-0 inset-x-0 z-50 flex h-12 min-w-0 items-center border-t border-black/55 px-2">
         {/* the centered taskbar cluster: the mark-trigger and the pinned apps
             ride one Windows-11 centered group (pure presentation wrapper) */}
         <div
@@ -410,7 +408,15 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
               windows */}
           <nav className="dt-nav__pins flex min-w-0 items-center" aria-label="Pinned apps" data-flyout-keep="true">
             {taskbarPins.map((app) => {
-              const active = isActive(pinHref(app));
+              // route pins ride the location, window pins ride the live
+              // desktop window state (openApps) — external pins never light
+              const active =
+                app.target.kind === "route"
+                  ? isActive(app.target.href)
+                  : app.target.kind === "os"
+                    ? location === "/os" || location.startsWith("/os/")
+                    : false;
+              const open = active || openApps.includes(app.id);
               return (
                 <button
                   key={app.id}
@@ -420,7 +426,7 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
                   aria-haspopup="menu"
                   data-flyout-keep="true"
                   data-dock-target={app.id}
-                  data-open={app.id === "panel" || active ? "true" : undefined}
+                  data-open={app.id === "panel" || open ? "true" : undefined}
                   data-active={active ? "true" : undefined}
                   onClick={() => openApp(app)}
                   onContextMenu={(event) => {
@@ -505,7 +511,7 @@ export function ShellChrome({ paired, userId, onOpenApp }: ShellChromeProps) {
               (cubic-bezier(.79,.14,.15,.86)) and the same slide-cum-fade exit
               through data-hide (the mount state keeps it in the DOM) */}
           <section
-            className="dt-start acrylic-panel fixed top-[calc(var(--shell-top)+12px)] left-1/2 z-[60] -ml-[320px] flex h-[min(calc(100dvh-var(--shell-top)-24px),720px)] w-[640px] flex-col overflow-y-auto overscroll-contain rounded-md text-ink transition-[transform,opacity] duration-200 ease-fluent max-[700px]:left-2 max-[700px]:ml-0 max-[700px]:w-[calc(100vw-16px)] data-[hide=true]:pointer-events-none data-[hide=true]:translate-y-[100px] data-[hide=true]:opacity-0 light:bg-[rgb(242_242_242_/_90%)]"
+            className="dt-start acrylic-panel fixed bottom-[calc(var(--shell-bottom)+12px)] left-1/2 z-[60] -ml-[320px] flex h-[min(calc(100dvh-var(--shell-bottom)-24px),720px)] w-[640px] flex-col overflow-y-auto overscroll-contain rounded-md text-ink transition-[transform,opacity] duration-200 ease-fluent max-[700px]:left-2 max-[700px]:ml-0 max-[700px]:w-[calc(100vw-16px)] data-[hide=true]:pointer-events-none data-[hide=true]:translate-y-[100px] data-[hide=true]:opacity-0 light:bg-[rgb(242_242_242_/_90%)]"
             id="dt-start-menu"
             role="dialog"
             aria-modal="true"

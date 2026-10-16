@@ -75,7 +75,7 @@ export * from "../../authgate.ts";
  * page mounts, injected once at import time. The stage, the atmosphere
  * layers, the paper card grammar (wells, ink submit, hairline ledger) and
  * the intro overlay live here; the shared tokens (--focus, --ease-decel,
- * --spring, --shell-top) resolve through the Sol foundation.
+ * --spring, --shell-bottom) resolve through the Sol foundation.
  * ------------------------------------------------------------------------ */
 const AUTH_CSS = `
 .authx { position: relative; display: grid; grid-template-rows: auto 1fr; min-height: 100dvh; overflow: hidden; }

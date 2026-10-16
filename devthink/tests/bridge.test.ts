@@ -904,7 +904,9 @@ describe("static site scan refuses serverless functions", () => {
       ".vercel",
     ]);
     const functionfiles = new Set(["serverless.yml", "serverless.yaml", "_worker.js", "_routes.json"]);
-    const skip = new Set(["node_modules", ".git", "dist", "web"]);
+    /* temp rides the skip: the gitignored competitor clones the design waves
+    study live there — study material, never shipped surface */
+    const skip = new Set(["node_modules", ".git", "dist", "web", "temp"]);
     const found: string[] = [];
     const walk = (dir: string): void => {
       for (const entry of readdirSync(dir)) {

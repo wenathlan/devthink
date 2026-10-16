@@ -185,9 +185,11 @@ function prefersReducedMotion(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-/** the dock entry a window flies to: its [data-dock-target] button, else the dock slab */
+/** the taskbar entry a window flies to: its [data-dock-target] pin, else the
+ * first pin of the bar (the bar is the only dock — the taskbar owns the
+ * bottom edge) */
 function dockTargetFor(id: string): Element | null {
-  return document.querySelector(`[data-dock-target="${id}"]`) || document.querySelector(".shell-dock");
+  return document.querySelector(`[data-dock-target="${id}"]`) || document.querySelector("[data-dock-target]");
 }
 
 /** writes the center-to-center delta of the flight into the inline
