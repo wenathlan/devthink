@@ -63,6 +63,8 @@ type TerminalCategory = (typeof categories)[number][0];
 type ShellWorkspaceProps = {
   sectionId: string;
   routeLabel: string;
+  /** the derived name of the active session — the chat window's titlebar */
+  sessionTitle: string;
   userId?: string | undefined;
   provider: DevThinkProvider;
   messages: DevThinkMessage[];
@@ -122,6 +124,7 @@ function defaultSnapshot(id: string, title: string, openCount: number): WindowSn
 export function ShellWorkspace({
   sectionId,
   routeLabel,
+  sessionTitle,
   userId,
   provider,
   messages,
@@ -282,7 +285,7 @@ export function ShellWorkspace({
       // the open promotes the app to the Start menu recommended rail
       pushrecentapp(app.id);
       if (app.target.kind === "window") {
-        toggleWindow(app.target.id, app.target.id === "chat" ? "session" : "session history");
+        toggleWindow(app.target.id, app.target.id === "chat" ? sessionTitle : "session history");
         return;
       }
       if (app.target.kind === "destination") {
@@ -309,7 +312,12 @@ export function ShellWorkspace({
      * indicator — a click restores them (the taskbar semantics) */
     const isMinimized = (id: string) => windows.some((win) => win.id === id && win.state === "minimized");
     return [
-      { app: appById("chat"), active: false, minimized: isMinimized("chat"), run: () => onNavigate("/chat") },
+      {
+        app: appById("chat"),
+        active: isOpen("chat"),
+        minimized: isMinimized("chat"),
+        run: () => toggleWindow("chat", sessionTitle),
+      },
       {
         app: appById("history"),
         active: isOpen("history"),
@@ -328,7 +336,7 @@ export function ShellWorkspace({
         run: () => onDestination("settings"),
       },
     ];
-  }, [destination, onDestination, onNavigate, toggleWindow, windows]);
+  }, [destination, onDestination, onNavigate, sessionTitle, toggleWindow, windows]);
 
   return (
     <main className={`shell-os shell-os--rail-${railMode}`}>
