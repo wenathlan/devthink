@@ -11,7 +11,7 @@
  */
 
 /** The build targets the intro choreography knows. */
-export type IntroTarget = "web" | "installer" | "android" | "extension";
+export type IntroTarget = "web" | "desktop" | "installer" | "android" | "extension";
 
 /** The sessionStorage flag the intro page raises once its opening played this
  * session: re-navigations to "/" skip the replay, and the panel boot reads it
@@ -19,7 +19,7 @@ export type IntroTarget = "web" | "installer" | "android" | "extension";
 export const INTRO_SEEN_KEY = "dt.intro.seen";
 
 /** The literal targets the resolver accepts (compared normalized). */
-const TARGETS: readonly IntroTarget[] = ["web", "installer", "android", "extension"];
+const TARGETS: readonly IntroTarget[] = ["web", "desktop", "installer", "android", "extension"];
 
 /**
  * Resolves the intro target of a build.
