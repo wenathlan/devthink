@@ -1,6 +1,7 @@
 /** Style: DevThink Orbital Signal Room — a build straight at the application root (the owner doctrine: no dist, no public, no assets folder — the hashed bundles emit flat beside the entry) with a repository-scoped base path and preview-safe host handling. The config lives at the app root: the vite root is the app root, the theme component folders stay under Sol/ and the alias "@" maps to Sol. */
 
 import path from "node:path";
+import { readFileSync } from "node:fs";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
@@ -11,7 +12,18 @@ function pagesBasePath(value: string | undefined): string {
   return candidate === "/" ? candidate : `/${candidate.replace(/^\/+|\/+$/g, "")}/`;
 }
 
+/** the release version the site is built from, read once from the root
+ * manifest (one product, one metadata) and baked as the __dtversion__
+ * global — the distribution rail of the landing never drifts from the
+ * shipped envelope. */
+const manifestversion = (JSON.parse(readFileSync(path.resolve(import.meta.dirname, "manifest.json"), "utf8")) as {
+  version: string;
+}).version;
+
 export default defineConfig({
+  define: {
+    __dtversion__: JSON.stringify(manifestversion),
+  },
   base: pagesBasePath(process.env.VITE_BASE_PATH),
   plugins: [react(), tailwindcss()],
   resolve: {
