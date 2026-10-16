@@ -45,7 +45,7 @@ import { ArrowLeft, KeyRound, Network, RefreshCcw, ShieldCheck, TerminalSquare }
 import type { CSSProperties } from "react";
 import { Link, useRoute } from "wouter";
 import { ShellChrome } from "@/shell/ShellChrome";
-import { config } from "./config.ts";
+import { config } from "../../gatewayviewconfig.ts";
 import type { gatewayconfig } from "../../gatewayviewdefinition.ts";
 
 /** the entrance stagger of the page: one orchestrated rise through the

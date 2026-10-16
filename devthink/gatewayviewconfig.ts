@@ -1,7 +1,11 @@
 /**
- * gatewayview config — the user customization layer of the embedded gateway
+ * gatewayviewconfig — the user customization layer of the embedded gateway
  * one file one responsibility — only version definitions live here
  * this is the hardcoded v1 v5 configuration the gateway ships with
+ *
+ * the catalog lives at the repository root beside the engine modules it
+ * configures (the family law: page folders carry only the page anchor and
+ * the visual components beside it — engine config is root module matter)
  *
  * the library engine at root is universal and dry — it reads a config file
  * every value here is what the user customizes:
@@ -24,7 +28,7 @@
  * use the cli to scaffold a fresh config (gateway init) and edit the values
  */
 
-import type { gatewaydefinition } from "../../gatewayviewdefinition.ts";
+import type { gatewaydefinition } from "./gatewayviewdefinition.ts";
 
 export const config: gatewaydefinition = {
   name: "DevThink Gateway",
