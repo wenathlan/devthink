@@ -12,11 +12,14 @@
  * hand-over sequence. Every variant stages the same PISO AKASH (the motion
  * kit beside this anchor, akash.ts): the mark lands on the ONE spring
  * (stiffness 300, damping 15), the wordmark rises on backOut, the stage
- * leaves on the 0.8s slide-up — the web and android targets add the tile
- * zoom of their expansion on the sheet curve — and no target ever shows
- * loading dots. The build declares its target through
- * VITE_DT_TARGET (resolved by the root module introtarget.ts): every target
- * plays its one variant. The seen state of the flow is the CATALOGUED
+ * leaves on the 0.8s slide-up — and no target ever shows loading dots.
+ * The build declares its target through VITE_DT_TARGET (resolved by the
+ * root module introtarget.ts) — the target keeps its seam in the hand-over
+ * sequence, but the ENTRANCE is one: the web intro plays for every
+ * distribution (the owner doctrine: one code, many targets — web, binary,
+ * extension — the same beautiful first paint). The retired per-target
+ * variants stay exported beside this anchor. The seen state of the flow is
+ * the CATALOGUED
  * visitor state (root module onboardingstate.ts — the only writer): when
  * the onboarding was already seen the intro never replays (straight to
  * /explore); when only the intro was seen the visitor goes straight to
@@ -28,9 +31,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { readonboardingstate, writeonboardingstage } from "../../onboardingstate";
 import { type IntroTarget, resolveintrotarget } from "../../introtarget";
-import { AndroidIntro } from "./androidintro.tsx";
 import { playIntroChime } from "../../chime.ts";
-import { InstallerIntro } from "./installerintro.tsx";
 import { WebIntro } from "./webintro.tsx";
 
 export * from "./androidintro.tsx";
@@ -62,7 +63,8 @@ type introgate = "reading" | "play" | "onboarding" | "explore";
 
 /** The intro page: resolves the target, consults the catalogued onboarding
  * state (the DB-backed flag through onboardingstate.ts) and either plays the
- * one variant the build target declared or walks straight into the flow. */
+ * ONE intro (the web variant — every distribution shares it) or walks
+ * straight into the flow. */
 export default function Intro() {
   const target = resolveintrotarget(import.meta.env.VITE_DT_TARGET as string | undefined);
   const [, navigate] = useLocation();
@@ -95,7 +97,8 @@ export default function Intro() {
   }, [navigate, target]);
 
   if (gate !== "play") return null;
-  if (target === "web") return <WebIntro onDone={done} />;
-  if (target === "android") return <AndroidIntro onDone={done} />;
-  return <InstallerIntro onDone={done} />;
+  // the ONE intro doctrine: the web intro IS the intro — the same entrance
+  // plays on the site, the binary, the extension and every distribution to
+  // come; the retired variants stay exported beside this anchor
+  return <WebIntro onDone={done} />;
 }
