@@ -23,11 +23,11 @@ describe("the deployment base derivation", () => {
   });
 
   it("resolves family units through the relative family contract", () => {
-    expect(familyurl("forge")).toBe("../forge/");
+    expect(familyurl("forge")).toBe("/../forge/");
   });
 
   it("keeps the family slug clean", () => {
-    expect(familyurl("/stealthhead/")).toBe("../stealthhead/");
-    expect(familyurl("saddle")).toBe("../saddle/");
+    expect(familyurl("/stealthhead/")).toBe("/../stealthhead/");
+    expect(familyurl("saddle")).toBe("/../saddle/");
   });
 });

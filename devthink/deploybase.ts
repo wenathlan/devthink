@@ -62,5 +62,6 @@ export function deploybase(): string {
  * @returns the relative url of the family application (`../<slug>/`).
  */
 export function familyurl(slug: string): string {
-  return `../${slug.replace(/^\/+|\/+$/g, "")}/`;
+  const clean = slug.replace(/^\/+|\/+$/g, "");
+  return `${deploybase()}/../${clean}/`;
 }
