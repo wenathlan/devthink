@@ -25,6 +25,10 @@
     "api.mistral.ai",
     "api.x.ai",
     "api.xiaomimimo.com",
-    "integrate.api.nvidia.com"
+    "integrate.api.nvidia.com",
+    "internal-api.z.ai",
+    "api.babel.town",
+    "glm.babel.town",
+    "api.kilo.ai"
   ]
 }
