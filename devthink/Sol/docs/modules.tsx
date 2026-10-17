@@ -7,14 +7,14 @@ import type { CoreModule } from "../../catalog";
 
 export function DocsModules({ modules }: { modules: CoreModule[] }) {
   return (
-    <section className="dtw-docs__card">
-      <h2 className="dtw-docs__cardtitle">Modules</h2>
+    <section className="dtw-card">
+      <h2 className="dtw-cardtitle">Modules</h2>
       {modules.length === 0 ? (
-        <p className="dtw-docs__copy">The catalog has not answered yet</p>
+        <p className="dtw-copy">The catalog has not answered yet</p>
       ) : (
-        <ul className="dtw-docs__rows">
+        <ul className="dtw-rows">
           {modules.map((module) => (
-            <li key={module.name} className="dtw-docs__row">
+            <li key={module.name} className="dtw-row">
               <code>{module.name}</code>
               <span>{module.role}</span>
             </li>

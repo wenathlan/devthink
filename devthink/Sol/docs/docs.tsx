@@ -39,20 +39,20 @@ export default function Docs({ embedded }: { embedded?: boolean }) {
 
   return (
     <main
-      className="dtw-docs"
+      className="dtw-app"
       style={embedded ? { height: "100%", overflow: "auto" } : undefined}
     >
       {!embedded && <ShellChrome />}
-      <div className="dtw-docs__body">
+      <div className="dtw-body">
         <DocsNav sections={sections} active={section} onSelect={setSection} />
-        <div className="dtw-docs__content">
-          <h1 className="dtw-docs__title">Docs</h1>
+        <div className="dtw-content">
+          <h1 className="dtw-title">Docs</h1>
 
           {section === "quickstart" ? (
             <DocsCard title="Quickstart">
-              <p className="dtw-docs__copy">Install the CLI, init the workspace, open the help</p>
+              <p className="dtw-copy">Install the CLI, init the workspace, open the help</p>
               <DocsCode lines={["npm install --global @wenathlan/devthink", "devthink init", "devthink --help"]} />
-              <p className="dtw-docs__copy">
+              <p className="dtw-copy">
                 Preferences ride <code>devthink.json</code>. Credentials ride <code>auth.json</code>.
               </p>
             </DocsCard>
@@ -60,17 +60,17 @@ export default function Docs({ embedded }: { embedded?: boolean }) {
 
           {section === "boundary" ? (
             <DocsCard title="Boundary">
-              <p className="dtw-docs__copy">Provider neutral CLI. Local sessions, streaming, plugins, loopback API.</p>
-              <p className="dtw-docs__copy">User provided keys only. No cookie capture, no captcha bypass.</p>
+              <p className="dtw-copy">Provider neutral CLI. Local sessions, streaming, plugins, loopback API.</p>
+              <p className="dtw-copy">User provided keys only. No cookie capture, no captcha bypass.</p>
             </DocsCard>
           ) : null}
 
           {section === "http" ? (
             <DocsCard title="HTTP">
-              <p className="dtw-docs__copy">The server binds the loopback. The port is drawn when none is set.</p>
-              <ul className="dtw-docs__rows">
+              <p className="dtw-copy">The server binds the loopback. The port is drawn when none is set.</p>
+              <ul className="dtw-rows">
                 {endpoints.map((endpoint) => (
-                  <li key={endpoint} className="dtw-docs__row">
+                  <li key={endpoint} className="dtw-row">
                     {endpoint}
                   </li>
                 ))}

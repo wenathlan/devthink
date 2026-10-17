@@ -15,12 +15,12 @@ export function DocsNav({
   onSelect: (id: DocsSection["id"]) => void;
 }) {
   return (
-    <nav className="dtw-docs__nav" aria-label="Docs sections">
+    <nav className="dtw-nav" aria-label="Docs sections">
       {sections.map((item) => (
         <button
           key={item.id}
           type="button"
-          className="dtw-docs__navrow"
+          className="dtw-navrow"
           data-active={item.id === active ? "true" : undefined}
           onClick={() => onSelect(item.id)}
           aria-current={item.id === active ? "page" : undefined}
