@@ -220,8 +220,8 @@ export default function Settings() {
     return (
       <ControlShell
         eyebrow="browser-local settings"
-        title="This browser owns a local DevThink cache."
-        summary="The browser keeps non-sensitive records, tabs, messages and preferences in IndexedDB. Pairing is optional."
+        title="Settings"
+        summary="Local records in this browser. Pairing is optional."
       >
         <div className="r2c-deck">
           {deckRail([
@@ -235,7 +235,7 @@ export default function Settings() {
           ])}
           <div className="r2c-deck__body">
             <section id="database" className="r2c-sec">
-              {sectionHead("01", "browser-local database", "Local database.")}
+              {sectionHead("01", "database", "Local database")}
               {kv("database", local?.database || "devthink.db")}
               {kv("owner", localIdentity?.userId || "initializing")}
               {kv("device", localIdentity?.deviceId || "initializing")}
@@ -246,7 +246,7 @@ export default function Settings() {
             </section>
             <LocalAccount />
             <section id="workbench" className="r2c-sec">
-              {sectionHead("03", "browser workbench flags", "Workbench flags.")}
+              {sectionHead("03", "workbench", "Workbench flags")}
               <div className="r2c-sec__grid">
                 {flagsFields(localPreferences, (key, value) => {
                   void savePreference(key, value);
@@ -255,20 +255,16 @@ export default function Settings() {
             </section>
             <GatewayCard />
             <section id="sync" className="r2c-sec">
-              {sectionHead("04", "sync state", "Sync state.")}
+              {sectionHead("04", "sync", "Sync state")}
               {kv("state", "local-only")}
               <p className="r2c-sec__copy">
-                Pair with <code>devthink pair create</code> to use the existing CLI gateway. A cross-device remote
-                adapter remains optional and is not configured in this browser.
+                Pair with <code>devthink pair create</code> to sync the CLI gateway.
               </p>
             </section>
             <AutomationMcp />
             <section id="boundary" className="r2c-sec">
-              {sectionHead("06", "credential boundary", "Credential boundary.")}
-              <p className="r2c-sec__copy">
-                Provider credentials are not stored in this cache. Configure providers through the CLI, then pair this
-                browser to use them.
-              </p>
+              {sectionHead("06", "boundary", "Credential boundary")}
+              <p className="r2c-sec__copy">Provider credentials stay with the CLI, never in this browser.</p>
             </section>
           </div>
         </div>
@@ -278,8 +274,8 @@ export default function Settings() {
   return (
     <ControlShell
       eyebrow="shared settings"
-      title="One person, two local stores."
-      summary="These controls match the CLI settings and identity commands. The paired browser uses the CLI database with a local cache."
+      title="Settings"
+      summary="The paired browser mirrors the CLI settings and identity."
     >
       <div className="control-toolbar" style={controlStripStyle}>
         <span>{baseUrl || "paired local gateway"}</span>

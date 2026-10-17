@@ -211,13 +211,10 @@ export default function About() {
 
         <section className="inst-section enter" style={step(3)}>
           <p className="r2a-kicker">
-            the manifesto
+            Principles
             <b>{`${principles.length} commitments`}</b>
           </p>
           <h2>Principles</h2>
-          <p className="inst-section__intro">
-            Three commitments the platform keeps on every surface, from the CLI flags to the browser routes.
-          </p>
           <div className="about-manifesto">
             {principles.map((principle, index) => (
               <article key={principle.id} className="about-manifesto__row">

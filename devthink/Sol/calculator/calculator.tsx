@@ -18,7 +18,6 @@
  * calculator.ts at the app root, the display, keypad and history are the
  * loose components beside this anchor, and the keyboard answers the same
  * key actions the on-screen keys answer. */
-import { TerminalSquare } from "lucide-react";
 import { type CSSProperties, useCallback, useEffect, useRef, useState } from "react";
 import { AutomationNote } from "@/shell/automationnote";
 import { ShellChrome } from "@/shell/ShellChrome";
@@ -135,13 +134,6 @@ const titleStyle = {
 const ledeStyle = { margin: 0, maxWidth: "52ch", color: "var(--dt-muted)", fontSize: 14, lineHeight: 1.75 } as const;
 /** the mode note as plain editorial copy: a hairline kicker, no box */
 const briefStyle = { display: "grid", gap: 10 } as const;
-const briefBodyStyle = {
-  margin: 0,
-  maxWidth: "68ch",
-  fontSize: 14,
-  lineHeight: 1.8,
-  color: "var(--dt-muted)",
-} as const;
 
 export default function Calculator() {
   const [expression, setExpression] = useState("");
@@ -236,23 +228,19 @@ export default function Calculator() {
       <ShellChrome />
       <div className="page-container grain" style={containerStyle}>
         <header className="pagehead enter" style={{ ...pageheadStyle, ...step(0) }}>
-          <p className="pagehead__eyebrow r2a-eyebrow">devthink · calculator</p>
+          <p className="pagehead__eyebrow r2a-eyebrow">devthink calculator</p>
           <h1 className="pagehead__title r2a-display" style={titleStyle}>
-            the instrument bench
+            Calculator
           </h1>
           <p className="pagehead__lede r2a-lede" style={ledeStyle}>
-            Precedence, parentheses, the unary minus and the memory cell — answered by the pure core at the app root.
+            Standard, scientific and programmer modes
           </p>
         </header>
 
         <section className="calculator-brief enter" style={{ ...briefStyle, ...step(1) }}>
           <p className="r2a-kicker">
-            01 · standard mode
-            <b>keyboard shares the keypad</b>
-          </p>
-          <p style={briefBodyStyle}>
-            The keypad, the keyboard and the memory strip feed one expression the pure evaluator answers, so the page
-            never carries arithmetic of its own.
+            Standard mode
+            <b>Keyboard ready</b>
           </p>
         </section>
 
@@ -270,11 +258,6 @@ export default function Calculator() {
 
         <AutomationNote />
       </div>
-
-      <footer className="control-page__footer">
-        <TerminalSquare size={14} aria-hidden="true" />
-        provider credentials stay in <code>~/.config/devthink/auth.json</code>
-      </footer>
     </main>
   );
 }
