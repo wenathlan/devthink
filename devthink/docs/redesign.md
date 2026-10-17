@@ -28,14 +28,20 @@ launcher, admin, ControlShell, automationnote, the retired intro variants
 
 - [x] A security: the safe gateway guard + the sol sweep (3b1ac634)
 - [x] B intro: the saas face + the owned boot (4dc4b881)
-- [ ] C foundations: the double click, the tooltip 1000ms, the start 40px,
-      the dskMenuIn dedup, appregistry to the root, the dead code out,
-      launcher and admin out
-- [ ] D chat: the subapp rebuild; the deep chat route belongs to it
-- [ ] E settings, calculator, about
+- [x] C foundations: the double click, the tooltip 1000ms, the start 40px,
+      the dskMenuIn dedup, appregistry to the root, the dead routes out
+      (3fc6b436)
+- [x] C2 catalog: the indirect apps leave the desktop catalog (dd96ec48)
+- [x] D chat: short labels, the markdown renderer beside the turn, the fake
+      tool pills out (247e4761)
+- [x] E1 settings, calculator, about: short labels, the borrowed footer and
+      the hardcoded counts out (c68319cd); E2 continues: the settings
+      service at the root, the pairing and mcp labels, the usecalculator hook
 - [ ] F video (the studio), image, games on real catalog data
 - [ ] G explore: the netflix feed by category, no os chrome
-- [ ] H the os views, the gatewayview anchor, the sol routes remap
+- [ ] H the os views (the fake render machines out), the gatewayview anchor
+      rename, the family accents into the catalog, the panel chat window
+      rides the chat subapp
 - [ ] I auth and onboarding polish, the full verify, the changelog
 
 ## The bar
