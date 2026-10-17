@@ -16,7 +16,6 @@ import { useEffect, useState } from "react";
 import { ShellChrome } from "@/shell/ShellChrome";
 import { type Rung, releaseLadder } from "../../catalog";
 import { HistoryLadder } from "./historyladder.tsx";
-import "./history.css";
 
 /** The history app: the Windows body when embedded (the desktop window
  * hosts it without the shell), the full surface with the taskbar on the

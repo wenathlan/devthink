@@ -19,7 +19,6 @@ import { useLocation } from "wouter";
 import { afterAuthTarget, pairingReadiness, safegatewayurl } from "../../authgate.ts";
 import { browserIdentity, readBrowserPreferences, saveBrowserPreference } from "../../db";
 import { SolLogoMark } from "../panel/logo.tsx";
-import "./login.css";
 
 export * from "../../authgate.ts";
 

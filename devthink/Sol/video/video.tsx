@@ -18,7 +18,6 @@ import { type NativeApp, nativeApps, type StudioAsset, studioAssets } from "../.
 import { queuestudiorender } from "../../runner";
 import { VideoAssets } from "./videoassets.tsx";
 import { VideoEngine } from "./videoengine.tsx";
-import "./video.css";
 
 /** Queues one render and surfaces the answer with the sonner toast the
  * workbench already uses: the reason text is the honest answer of the queue

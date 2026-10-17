@@ -28,7 +28,6 @@ import {
 import { CalculatorDisplay } from "./calculatordisplay.tsx";
 import { CalculatorHistory, type CalculatorHistoryRow } from "./calculatorhistory.tsx";
 import { CalculatorKeypad, type CalculatorMemoryKey } from "./calculatorkeypad.tsx";
-import "./calculator.css";
 
 /** how many answers the history keeps before the oldest one leaves. */
 const HISTORY_LIMIT = 8;

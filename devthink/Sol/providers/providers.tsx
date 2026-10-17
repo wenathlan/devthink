@@ -25,7 +25,6 @@ import {
 import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { ProviderCard } from "./providercard.tsx";
 import { ProvidersList } from "./providerslist.tsx";
-import "./providers.css";
 
 type Provider = { id: string; protocol: string; env: string };
 

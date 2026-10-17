@@ -18,7 +18,6 @@ import { ShellChrome } from "@/shell/ShellChrome";
 import { browserWorkspaces } from "../../db";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { ProjectRows } from "./projectrows.tsx";
-import "./projects.css";
 
 type Workspace = { id: string; title: string; updatedAt: string; sessionCount: number };
 

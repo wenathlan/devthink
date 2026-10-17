@@ -26,7 +26,6 @@ import { ConsoleReference } from "./consolereference.tsx";
 import { GraphView } from "./graphview.tsx";
 import type { TerminalRow, TerminalState } from "./terminal.tsx";
 import Terminal from "./terminal.tsx";
-import "./console.css";
 
 export * from "./terminal.tsx";
 

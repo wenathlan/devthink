@@ -10493,3 +10493,1226 @@ span[data-tile] {
   height: 0;
   display: none;
 }
+
+/* ==== the login.css skins — merged from the app folder, the folder carries tsx only ==== */
+/* login app skins — the windows lock and sign-in sequence over the clear
+ * trident wall. merges into the kit section of sol.css. */
+.dtw-login {
+  position: relative;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  min-height: 100dvh;
+  overflow: hidden;
+  background: var(--wall-fallback);
+}
+.dtw-login__stage {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+/* the landscape: the morning sky, the sun glow over the far ridge and the
+ * three near hills — the lock screen paints a place, never a flat wash */
+.dtw-login__stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(34% 24% at 76% 20%, rgb(255 246 214 / 92%) 0%, rgb(255 240 200 / 40%) 42%, transparent 68%),
+    radial-gradient(120% 44% at 52% 106%, rgb(154 172 205 / 88%) 0%, transparent 68%),
+    radial-gradient(150% 40% at 8% 110%, rgb(132 152 190 / 82%) 0%, transparent 64%),
+    radial-gradient(160% 34% at 88% 112%, rgb(120 142 184 / 78%) 0%, transparent 62%),
+    linear-gradient(180deg, #cfdcf2 0%, #e2ebf8 44%, #eef2fa 72%, #f4f6fb 100%);
+}
+.dtw-login__dock {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 24px clamp(12px, 3vw, 32px);
+}
+.dtw-login__clock {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  align-content: end;
+  justify-items: center;
+  gap: 10px;
+  padding: 0 24px 18vh;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+.dtw-login__time {
+  color: #0f172a;
+  font: 200 clamp(64px, 11vw, 118px) / 1 var(--font-display, var(--dt-sans));
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.dtw-login__date {
+  color: rgb(15 23 42 / 66%);
+  font: 500 clamp(14px, 1.8vw, 19px) var(--font-sans, var(--dt-sans));
+}
+.dtw-login__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 26px;
+  color: rgb(15 23 42 / 56%);
+  font: 500 12px var(--font-sans, var(--dt-sans));
+  animation: dtwloginhint 2.6s var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)) infinite;
+}
+.dtw-login__hint svg {
+  animation: dtwloginrise 2.6s var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)) infinite;
+}
+@keyframes dtwloginhint {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes dtwloginrise {
+  0%,
+  100% {
+    transform: translateY(4px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+.dtw-login__pane {
+  position: relative;
+  z-index: 30;
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  width: min(400px, 92vw);
+  padding: 40px 32px 30px;
+  border: 1px solid rgb(15 23 42 / 8%);
+  border-radius: 12px;
+  background: rgb(255 255 255 / 78%);
+  box-shadow: 0 24px 64px rgb(15 23 42 / 16%);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  animation: dtwloginpane 420ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+@keyframes dtwloginpane {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.dtw-login__avatar {
+  display: grid;
+  place-items: center;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4f46e5, #0ea5e9);
+  color: #fff;
+  font: 600 30px var(--font-sans, var(--dt-sans));
+  box-shadow: 0 10px 26px rgb(79 70 229 / 28%);
+}
+.dtw-login__welcome {
+  margin: 0;
+  color: #0f172a;
+  font: 600 24px / 1.2 var(--font-display, var(--dt-sans));
+  text-align: center;
+}
+.dtw-login__name {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 0;
+  border-bottom: 1px solid rgb(15 23 42 / 22%);
+  background: rgb(15 23 42 / 4%);
+  color: #0f172a;
+  font: 400 14px var(--font-sans, var(--dt-sans));
+  text-align: center;
+  outline: none;
+}
+.dtw-login__name:focus {
+  border-bottom-color: #4f46e5;
+  box-shadow: inset 0 -2px 0 #4f46e5;
+}
+.dtw-login__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 40px;
+  border: 0;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #4f46e5, #0ea5e9);
+  color: #fff;
+  font: 600 13px var(--font-sans, var(--dt-sans));
+  cursor: pointer;
+  transition: filter 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-login__submit:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+.dtw-login__submit:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.dtw-login__quiet {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: rgb(15 23 42 / 72%);
+  font: 500 12px var(--font-sans, var(--dt-sans));
+  cursor: pointer;
+}
+.dtw-login__quiet:hover:not(:disabled) {
+  background: rgb(15 23 42 / 6%);
+}
+.dtw-login__quiet:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.dtw-login__actions {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+.dtw-login__pairing {
+  display: grid;
+  width: 100%;
+  gap: 8px;
+  padding: 12px 0 0;
+  border-top: 1px solid rgb(15 23 42 / 8%);
+}
+.dtw-login__pairing input {
+  width: 100%;
+  min-height: 36px;
+  padding: 0 10px;
+  border: 1px solid rgb(15 23 42 / 14%);
+  border-radius: 6px;
+  background: #fff;
+  color: #0f172a;
+  font: 400 12.5px var(--dt-mono);
+  outline: none;
+}
+.dtw-login__pairing input:focus {
+  border-color: #4f46e5;
+}
+.dtw-login__hinttext {
+  color: rgb(15 23 42 / 56%);
+  font: 400 11px / 1.6 var(--dt-mono);
+  text-align: center;
+}
+.dtw-login__ledger {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dtw-login__ledger li {
+  color: rgb(15 23 42 / 52%);
+  font: 500 10.5px var(--dt-mono);
+  letter-spacing: 0.04em;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dtw-login__hint,
+  .dtw-login__hint svg {
+    animation: none;
+  }
+  .dtw-login__pane {
+    animation: none;
+  }
+}
+
+/* ==== the calculator.css skins — merged from the app folder, the folder carries tsx only ==== */
+/* calculator app skins — the instrument over the dtw kit. merges into the
+ * kit section of sol.css. */
+.dtw-calc__instrument {
+  gap: 14px;
+}
+.dtw-calc__display {
+  position: relative;
+  display: grid;
+  gap: 6px;
+  align-content: end;
+  min-height: 124px;
+  padding: 16px 18px;
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--dtv3-ink-1) 4%, transparent);
+}
+.dtw-calc__flag {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  color: var(--dtv3-sig);
+  font: 600 10px var(--dt-mono);
+  letter-spacing: 0.1em;
+}
+.dtw-calc__expression {
+  min-height: 16px;
+  color: var(--dtv3-ink-3);
+  font: 500 12px / 1.5 var(--dt-mono);
+}
+.dtw-calc__value {
+  color: var(--dtv3-ink-1);
+  font: 500 clamp(30px, 4vw, 44px) / 1.05 var(--dt-mono);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  word-break: break-all;
+}
+.dtw-calc__error {
+  color: #ff7d66;
+  font: 500 11px / 1.5 var(--dt-mono);
+}
+.dtw-calc__keys {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+.dtw-calc__key {
+  min-height: 44px;
+  padding: 0;
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--dtv3-ink-1) 3%, transparent);
+  color: var(--dtv3-ink-1);
+  font: 500 15px var(--dt-mono);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition:
+    background 120ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 100ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-calc__key:hover {
+  background: color-mix(in srgb, var(--dtv3-sig) 10%, transparent);
+}
+.dtw-calc__key:active {
+  transform: scale(0.96);
+}
+.dtw-calc__key--muted {
+  color: var(--dtv3-ink-2);
+  background: transparent;
+}
+.dtw-calc__key--memory {
+  min-height: 30px;
+  border: 0;
+  background: transparent;
+  color: var(--dtv3-ink-3);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+.dtw-calc__key--memory:hover {
+  color: var(--dtv3-ink-1);
+  background: color-mix(in srgb, var(--dtv3-sig) 8%, transparent);
+}
+.dtw-calc__key--equals {
+  grid-column: 1 / -1;
+  border-color: transparent;
+  background: var(--color-win);
+  color: #fff;
+  font-weight: 600;
+}
+.dtw-calc__key--equals:hover {
+  background: color-mix(in srgb, var(--color-win) 88%, #fff);
+}
+.dtw-calc__rows {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dtw-calc__row {
+  padding: 8px 2px;
+  border-bottom: 1px solid var(--dtv3-hairline);
+  color: var(--dtv3-ink-2);
+  font: 500 12px / 1.6 var(--dt-mono);
+  font-variant-numeric: tabular-nums;
+}
+.dtw-calc__row:last-child {
+  border-bottom: 0;
+}
+
+/* ==== the games.css skins — merged from the app folder, the folder carries tsx only ==== */
+/* games app skins — the runner rows over the dtw kit. merges into the kit
+ * section of sol.css. */
+.dtw-games__rows {
+  display: grid;
+}
+.dtw-games__row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  gap: 4px 14px;
+  align-items: center;
+  padding: 12px 2px;
+  border-bottom: 1px solid var(--dtv3-hairline);
+}
+.dtw-games__row:last-child {
+  border-bottom: 0;
+}
+.dtw-games__cover {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--dtv3-ink-1) 4%, transparent);
+  color: var(--dtv3-ink-2);
+  font: 700 12px / 1 var(--dt-mono);
+  letter-spacing: 0.04em;
+}
+.dtw-games__body {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.dtw-games__body h3 {
+  margin: 0;
+  color: var(--dtv3-ink-1);
+  font: 600 14px / 1.35 var(--font-sans, var(--dt-sans));
+}
+.dtw-games__blurb {
+  margin: 0;
+  color: var(--dtv3-ink-2);
+  font: 400 12.5px / 1.55 var(--font-sans, var(--dt-sans));
+}
+.dtw-games__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  color: var(--dtv3-ink-3);
+  font: 500 11px var(--dt-mono);
+  letter-spacing: 0.04em;
+}
+.dtw-games__kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.dtw-games__kind::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--dtv3-ink-3);
+}
+.dtw-games__kind[data-kind="game"]::before {
+  background: var(--color-win);
+}
+@media (max-width: 560px) {
+  .dtw-games__row {
+    grid-template-columns: 36px minmax(0, 1fr);
+  }
+  .dtw-games__cover {
+    width: 36px;
+    height: 36px;
+  }
+  .dtw-games__row .dtw-action {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
+
+/* ==== the image.css skins — merged from the app folder, the folder carries tsx only ==== */
+/* image app skins — the stills rows over the dtw kit. merges into the kit
+ * section of sol.css. */
+.dtw-image__rows {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dtw-image__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 14px;
+  align-items: center;
+  padding: 12px 2px;
+  border-bottom: 1px solid var(--dtv3-hairline);
+}
+.dtw-image__row:last-child {
+  border-bottom: 0;
+}
+.dtw-image__body {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.dtw-image__body h3 {
+  margin: 0;
+  color: var(--dtv3-ink-1);
+  font: 600 14px / 1.35 var(--font-sans, var(--dt-sans));
+}
+.dtw-image__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  color: var(--dtv3-ink-3);
+  font: 500 11px var(--dt-mono);
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==== the audio.css skins — merged from the app folder, the folder carries tsx only ==== */
+/* audio app skins — the track rows over the dtw kit. merges into the kit
+ * section of sol.css. */
+.dtw-music__rows {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dtw-music__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 14px;
+  align-items: center;
+  padding: 12px 2px;
+  border-bottom: 1px solid var(--dtv3-hairline);
+}
+.dtw-music__row:last-child {
+  border-bottom: 0;
+}
+.dtw-music__body {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.dtw-music__body h3 {
+  margin: 0;
+  color: var(--dtv3-ink-1);
+  font: 600 14px / 1.35 var(--font-sans, var(--dt-sans));
+}
+.dtw-music__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  color: var(--dtv3-ink-3);
+  font: 500 11px var(--dt-mono);
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==== the video.css skins — merged from the app folder, the folder carries tsx only ==== */
+/* video app skins — the asset rows over the dtw kit. merges into the kit
+ * section of sol.css. */
+.dtw-video__rows {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dtw-video__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 14px;
+  align-items: center;
+  padding: 12px 2px;
+  border-bottom: 1px solid var(--dtv3-hairline);
+}
+.dtw-video__row:last-child {
+  border-bottom: 0;
+}
+.dtw-video__body {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.dtw-video__body h3 {
+  margin: 0;
+  color: var(--dtv3-ink-1);
+  font: 600 14px / 1.35 var(--font-sans, var(--dt-sans));
+}
+.dtw-video__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  color: var(--dtv3-ink-3);
+  font: 500 11px var(--dt-mono);
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==== the usage.css skins — merged from the app folder, the folder carries tsx only ==== */
+/* usage app skins — the ledger figures over the dtw kit. merges into the
+ * kit section of sol.css. */
+.dtw-usage__hero {
+  align-content: start;
+}
+.dtw-usage__figlabel {
+  color: var(--dtv3-ink-3);
+  font: 500 11px var(--dt-mono);
+  letter-spacing: 0.04em;
+}
+.dtw-usage__figure {
+  color: var(--dtv3-ink-1);
+  font: 600 44px / 1.05 var(--font-sans, var(--dt-sans));
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.dtw-usage__rows {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dtw-usage__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 6px 2px;
+  border-bottom: 1px solid var(--dtv3-hairline);
+  color: var(--dtv3-ink-2);
+}
+.dtw-usage__row:last-child {
+  border-bottom: 0;
+}
+.dtw-usage__row svg {
+  color: var(--dtv3-ink-3);
+}
+.dtw-usage__label {
+  flex: 1;
+  color: var(--dtv3-ink-2);
+  font: 400 13px var(--font-sans, var(--dt-sans));
+}
+.dtw-usage__value {
+  color: var(--dtv3-ink-1);
+  font: 600 14px var(--font-sans, var(--dt-sans));
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==== the providers.css skins — merged from the app folder, the folder carries tsx only ==== */
+/* providers app skins — the index rows over the dtw kit. merges into the
+ * kit section of sol.css. */
+.dtw-providers__rows {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dtw-providers__row {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--dtv3-hairline);
+}
+.dtw-providers__row:last-child {
+  border-bottom: 0;
+}
+.dtw-providers__row[data-active="true"] {
+  background: color-mix(in srgb, var(--dtv3-sig) 8%, transparent);
+}
+.dtw-providers__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--dtv3-ink-3);
+}
+.dtw-providers__dot[data-on="true"] {
+  background: var(--color-win);
+}
+.dtw-providers__body {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.dtw-providers__body h3 {
+  margin: 0;
+  color: var(--dtv3-ink-1);
+  font: 600 13.5px / 1.35 var(--font-sans, var(--dt-sans));
+}
+.dtw-providers__body p {
+  margin: 0;
+  color: var(--dtv3-ink-3);
+  font: 400 11.5px / 1.5 var(--font-sans, var(--dt-sans));
+}
+.dtw-providers__body code {
+  color: var(--dtv3-ink-2);
+  font: 500 10.5px var(--dt-mono);
+}
+
+/* ==== the projects.css skins — merged from the app folder, the folder carries tsx only ==== */
+/* projects app skins — the workspace rows over the dtw kit. merges into the
+ * kit section of sol.css. */
+.dtw-projects__rows {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dtw-projects__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 4px 14px;
+  align-items: center;
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--dtv3-hairline);
+}
+.dtw-projects__row:last-child {
+  border-bottom: 0;
+}
+.dtw-projects__row[data-latest="true"] {
+  background: color-mix(in srgb, var(--dtv3-sig) 8%, transparent);
+}
+.dtw-projects__body {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.dtw-projects__body h3 {
+  margin: 0;
+  color: var(--dtv3-ink-1);
+  font: 600 13.5px / 1.35 var(--font-sans, var(--dt-sans));
+}
+.dtw-projects__body p {
+  margin: 0;
+  color: var(--dtv3-ink-3);
+  font: 400 11.5px / 1.5 var(--font-sans, var(--dt-sans));
+}
+.dtw-projects__body code {
+  color: var(--dtv3-ink-2);
+  font: 500 10.5px var(--dt-mono);
+}
+.dtw-projects__time {
+  color: var(--dtv3-ink-3);
+  font: 500 11px var(--dt-mono);
+  font-variant-numeric: tabular-nums;
+}
+.dtw-projects__latest {
+  padding: 2px 8px;
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: 10px;
+  color: var(--dtv3-ink-2);
+  font: 500 10px var(--dt-mono);
+}
+
+/* ==== the routes.css skins — merged from the app folder, the folder carries tsx only ==== */
+/* routes app skins — the route ledger over the dtw kit. merges into the kit
+ * section of sol.css. */
+.dtw-routes__rows {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dtw-routes__row {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  gap: 4px 14px;
+  align-items: center;
+  padding: 8px 2px;
+  border-bottom: 1px solid var(--dtv3-hairline);
+}
+.dtw-routes__row:last-child {
+  border-bottom: 0;
+}
+.dtw-routes__method {
+  padding: 2px 6px;
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: 4px;
+  color: var(--dtv3-ink-2);
+  font: 500 10px var(--dt-mono);
+  text-align: center;
+}
+.dtw-routes__method[data-mut="true"] {
+  border-color: transparent;
+  background: color-mix(in srgb, var(--color-win) 16%, transparent);
+  color: var(--dtv3-ink-1);
+}
+.dtw-routes__body {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+.dtw-routes__body h3 {
+  margin: 0;
+  color: var(--dtv3-ink-1);
+  font: 600 12.5px / 1.4 var(--dt-mono);
+}
+.dtw-routes__body p {
+  margin: 0;
+  color: var(--dtv3-ink-3);
+  font: 400 11.5px / 1.5 var(--font-sans, var(--dt-sans));
+}
+.dtw-routes__state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--dtv3-ink-3);
+  font: 500 10px var(--dt-mono);
+}
+.dtw-routes__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--dtv3-ink-3);
+}
+.dtw-routes__dot[data-on="true"] {
+  background: var(--color-win);
+}
+
+/* ==== the history.css skins — merged from the app folder, the folder carries tsx only ==== */
+/* history app skins — the rung ladder over the dtw kit. merges into the kit
+ * section of sol.css. */
+.dtw-history__rows {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dtw-history__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 14px;
+  align-items: baseline;
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--dtv3-hairline);
+}
+.dtw-history__row:last-child {
+  border-bottom: 0;
+}
+.dtw-history__row[data-latest="true"] {
+  background: color-mix(in srgb, var(--dtv3-sig) 8%, transparent);
+}
+.dtw-history__body {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.dtw-history__body h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--dtv3-ink-1);
+  font: 700 13px var(--dt-mono);
+  font-variant-numeric: tabular-nums;
+}
+.dtw-history__badge {
+  padding: 2px 8px;
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: 10px;
+  color: var(--dtv3-ink-2);
+  font: 500 10px var(--dt-mono);
+}
+.dtw-history__body p {
+  margin: 0;
+  color: var(--dtv3-ink-2);
+  font: 400 12px / 1.6 var(--font-sans, var(--dt-sans));
+}
+.dtw-history__stamp {
+  color: var(--dtv3-ink-3);
+  font: 500 10.5px var(--dt-mono);
+  font-variant-numeric: tabular-nums;
+}
+.dtw-history__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  padding-top: 10px;
+  border-top: 1px solid var(--dtv3-hairline);
+  color: var(--dtv3-ink-3);
+  font: 500 11px var(--dt-mono);
+}
+.dtw-history__facts b {
+  margin-left: 6px;
+  color: var(--dtv3-ink-1);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==== the settings.css skins — merged from the app folder, the folder carries tsx only ==== */
+/* settings app skins — the section fields, switches, tables and form
+ * controls over the dtw kit. merges into the kit section of sol.css. */
+.dtw-settings__kv {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  min-height: 32px;
+  border-bottom: 1px solid var(--dtv3-hairline);
+}
+.dtw-settings__kv:last-of-type {
+  border-bottom: 0;
+}
+.dtw-settings__kvkey {
+  flex: 0 0 130px;
+  color: var(--dtv3-ink-3);
+  font: 500 11px var(--dt-mono);
+  letter-spacing: 0.04em;
+}
+.dtw-settings__kvvalue {
+  color: var(--dtv3-ink-1);
+  font: 400 12.5px / 1.5 var(--font-sans, var(--dt-sans));
+}
+.dtw-settings__field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 40px;
+  color: var(--dtv3-ink-2);
+  font: 400 13px var(--font-sans, var(--dt-sans));
+}
+.dtw-settings__field > span:first-child {
+  flex: 0 0 130px;
+}
+.dtw-settings__switchrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.dtw-settings__switch {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.dtw-settings__switchtrack {
+  display: inline-flex;
+  align-items: center;
+  width: 40px;
+  height: 20px;
+  padding: 2px;
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--dtv3-ink-1) 6%, transparent);
+  transition: background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-settings__switchthumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--dtv3-ink-2);
+  transition: transform 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-settings__switch:checked + .dtw-settings__switchtrack {
+  background: var(--color-win);
+  border-color: transparent;
+}
+.dtw-settings__switch:checked + .dtw-settings__switchtrack .dtw-settings__switchthumb {
+  transform: translateX(20px);
+  background: #fff;
+}
+.dtw-settings__switch:focus-visible + .dtw-settings__switchtrack {
+  outline: 2px solid color-mix(in srgb, var(--dtv3-sig) 45%, transparent);
+  outline-offset: 2px;
+}
+.dtw-settings__select,
+.dtw-settings__input {
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--dtv3-ink-1);
+  font: 400 13px var(--font-sans, var(--dt-sans));
+}
+.dtw-settings__input:focus-visible,
+.dtw-settings__select:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--dtv3-sig) 45%, transparent);
+  outline-offset: 1px;
+}
+.dtw-settings__rangezone {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+.dtw-settings__range {
+  flex: 1;
+  accent-color: var(--color-win);
+}
+.dtw-settings__rangevalue {
+  min-width: 44px;
+  color: var(--dtv3-ink-3);
+  font: 500 11px var(--dt-mono);
+  font-variant-numeric: tabular-nums;
+}
+.dtw-settings__pill {
+  margin-left: auto;
+  padding: 2px 8px;
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: 10px;
+  color: var(--dtv3-ink-2);
+  font: 500 10px var(--dt-mono);
+}
+.dtw-settings__pill[data-state="connected"] {
+  border-color: transparent;
+  background: color-mix(in srgb, var(--color-win) 16%, transparent);
+  color: var(--dtv3-ink-1);
+}
+.dtw-settings__base {
+  color: var(--dtv3-ink-2);
+  font: 500 11px var(--dt-mono);
+}
+.dtw-settings__form {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+}
+.dtw-settings__error {
+  color: #ff7d66;
+  font: 500 11px / 1.6 var(--dt-mono);
+}
+.dtw-settings__confirm {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 10px 0 0 12px;
+  border: 0;
+  border-left: 2px solid var(--color-win);
+}
+.dtw-settings__confirm p {
+  margin: 0;
+  color: var(--dtv3-ink-2);
+  font: 400 12.5px / 1.6 var(--font-sans, var(--dt-sans));
+}
+.dtw-settings__actions {
+  display: flex;
+  gap: 8px;
+}
+.dtw-settings__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.dtw-settings__table th {
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--dtv3-hairline);
+  color: var(--dtv3-ink-3);
+  font: 500 10px var(--dt-mono);
+  letter-spacing: 0.06em;
+  text-align: left;
+}
+.dtw-settings__table td {
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--dtv3-hairline);
+  color: var(--dtv3-ink-2);
+  font: 400 12.5px / 1.5 var(--font-sans, var(--dt-sans));
+}
+.dtw-settings__table code {
+  color: var(--dtv3-ink-2);
+  font: 500 11px var(--dt-mono);
+}
+.dtw-settings__cellbtns {
+  display: flex;
+  gap: 6px;
+}
+.dtw-settings__addform {
+  display: grid;
+  grid-template-columns: 1fr 2fr auto;
+  gap: 8px;
+  align-items: center;
+}
+.dtw-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--dtv3-ink-1);
+  font: 500 12px var(--font-sans, var(--dt-sans));
+  cursor: pointer;
+  transition: background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--dtv3-sig) 12%, transparent);
+}
+.dtw-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.dtw-btn--primary {
+  border-color: transparent;
+  background: var(--color-win);
+  color: #fff;
+}
+.dtw-btn--primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-win) 88%, #fff);
+}
+.dtw-btn--danger {
+  border-color: transparent;
+  background: #c2352b;
+  color: #fff;
+}
+.dtw-btn--danger:hover:not(:disabled) {
+  background: color-mix(in srgb, #c2352b 88%, #fff);
+}
+.dtw-settings__addform--wide {
+  grid-template-columns: 1fr 2fr 1fr auto;
+}
+
+/* ==== the console.css skins — merged from the app folder, the folder carries tsx only ==== */
+/* console app skins — the terminal pane and the reference rows over the dtw
+ * kit. merges into the kit section of sol.css. */
+.dtw-console__note {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+  color: var(--dtv3-ink-3);
+  font: 500 11px var(--dt-mono);
+}
+.dtw-console__note > span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--dtv3-ink-2);
+}
+.dtw-console__note > span:first-child.is-paired {
+  color: var(--color-win);
+}
+.dtw-console__lamp {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.dtw-console__refs {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--dtv3-hairline);
+}
+.dtw-console__refrun {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 10px;
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 6px;
+  border: 0;
+  border-bottom: 1px solid var(--dtv3-hairline);
+  background: transparent;
+  color: var(--dtv3-ink-2);
+  font: 500 12px / 1.5 var(--dt-mono);
+  text-align: left;
+  cursor: pointer;
+  transition: background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-console__refrun strong {
+  color: var(--dtv3-ink-1);
+}
+.dtw-console__refrun:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--dtv3-sig) 8%, transparent);
+}
+.dtw-console__refrun:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.dtw-console__refdetail {
+  display: grid;
+  gap: 4px;
+  padding: 0 6px 10px 120px;
+  color: var(--dtv3-ink-3);
+  font: 400 11px / 1.6 var(--dt-mono);
+}
+.dtw-console__refdetail code {
+  color: var(--dtv3-ink-2);
+}
+.dtw-console__subhead {
+  margin: 8px 0 0;
+  color: var(--dtv3-ink-3);
+  font: 600 11px var(--dt-mono);
+  letter-spacing: 0.06em;
+}
+.dtw-console .dt-term {
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: 8px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--dtv3-ink-1) 4%, transparent);
+}
+.dtw-console .dt-term__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 40px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--dtv3-hairline);
+  background: color-mix(in srgb, var(--dtv3-ink-1) 4%, transparent);
+  color: var(--dtv3-ink-3);
+  font: 500 11px var(--dt-mono);
+  letter-spacing: 0.04em;
+}
+.dtw-console .dt-term__state {
+  color: var(--color-win);
+}
+.dtw-console .dt-term__out {
+  margin: 0;
+  padding: 12px 14px;
+  max-height: 340px;
+  overflow: auto;
+  color: var(--dtv3-ink-2);
+  font: 13px / 1.7 var(--dt-mono);
+}
+.dtw-console .dt-term__out > span {
+  display: block;
+  padding: 2px 0;
+  border-bottom: 1px solid var(--dtv3-hairline);
+}
+.dtw-console .dt-term__out > span:last-child {
+  border-bottom: 0;
+}
+.dtw-console .dt-term__out .boot {
+  color: var(--dtv3-ink-3);
+}
+.dtw-console .dt-term__out .cmdline {
+  color: var(--dtv3-ink-1);
+}
+.dtw-console .dt-term__out .ok {
+  color: var(--dtv3-ink-2);
+}
+.dtw-console .dt-term__out .err {
+  color: #ff7d66;
+}
+.dtw-console .dt-term__in {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--dtv3-hairline);
+}
+.dtw-console .dt-term__in.off {
+  opacity: 0.5;
+}
+.dtw-console .dt-term__prompt {
+  color: var(--color-win);
+  font: 600 13px var(--dt-mono);
+}
+.dtw-console .dt-term__input {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  color: var(--dtv3-ink-1);
+  font: 13px var(--dt-mono);
+  outline: none;
+  caret-color: var(--color-win);
+}

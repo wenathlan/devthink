@@ -18,7 +18,6 @@ import { ShellChrome } from "@/shell/ShellChrome";
 import { browserStoreSummary } from "../../db";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { type Usage as UsageData, UsageMeasures } from "./usagemeasures.tsx";
-import "./usage.css";
 
 /** The usage app: the Windows body when embedded (the desktop window hosts
  * it without the shell), the full surface with the taskbar on the route. */

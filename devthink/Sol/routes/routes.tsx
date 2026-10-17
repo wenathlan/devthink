@@ -16,7 +16,6 @@ import { useEffect, useState } from "react";
 import { ShellChrome } from "@/shell/ShellChrome";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { RouteRows } from "./routerows.tsx";
-import "./routes.css";
 
 const routes = [
   ["GET", "/health", "gateway availability"],

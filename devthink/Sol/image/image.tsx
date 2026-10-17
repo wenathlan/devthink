@@ -19,7 +19,6 @@ import { type NativeApp, nativeApps, type StudioAsset, studioAssets } from "../.
 import { queuestudiorender } from "../../runner";
 import { ImageEngine } from "./imageengine.tsx";
 import { ImageStills } from "./imagestills.tsx";
-import "./image.css";
 
 /** Queues one still and surfaces the answer with the sonner toast the
  * workbench already uses: the reason text is the honest answer of the queue

@@ -26,7 +26,6 @@ import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { AutomationMcp } from "./automationmcp.tsx";
 import { GatewayCard } from "./gatewaycard.tsx";
 import { LocalAccount } from "./identity.tsx";
-import "./settings.css";
 
 export * from "./automationmcp.tsx";
 export * from "./gatewaycard.tsx";

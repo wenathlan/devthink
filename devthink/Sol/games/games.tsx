@@ -18,7 +18,6 @@ import { type RunnerBinary, runnerBinaries } from "../../catalog";
 import { queuebinarylaunch } from "../../runner";
 import { GamesList } from "./gameslist.tsx";
 import { type GamesFilter, GamesNav } from "./gamesnav.tsx";
-import "./games.css";
 
 /** The games app: the Windows body when embedded (the desktop window hosts
  * it without the shell), the full surface with the taskbar on the route. */

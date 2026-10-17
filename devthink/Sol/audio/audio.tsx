@@ -18,7 +18,6 @@ import { type NativeApp, nativeApps, type StudioTrack, studioTracks } from "../.
 import { queuestudiorender } from "../../runner";
 import { MusicEngine } from "./musicengine.tsx";
 import { MusicTracks } from "./musictracks.tsx";
-import "./audio.css";
 
 /** Queues one track render and surfaces the answer with the sonner toast. The
  * queue client speaks in studio assets, so the track is carried as the music
