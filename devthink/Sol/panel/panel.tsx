@@ -109,7 +109,7 @@ type PairedIdentity = { userId: string; deviceId: string; createdAt: string };
 type IdentityResponse = { identity: PairedIdentity };
 type WorkbenchPreferences = { theme: "dark" | "light"; railMode: "always" | "auto" | "off"; interfaceZoom: string };
 
-const defaultPreferences: WorkbenchPreferences = { theme: "dark", railMode: "auto", interfaceZoom: "100" };
+const defaultPreferences: WorkbenchPreferences = { theme: "light", railMode: "auto", interfaceZoom: "100" };
 
 function stableId(): string {
   const alphabet = "0123456789abcdefghjkmnpqrstvwxyz";

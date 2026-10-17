@@ -14,8 +14,10 @@ export type IconBounds = { minX: number; maxX: number; minY: number; maxY: numbe
 
 export type IconSpotMap = Record<string, IconSpot>;
 
-/** the localStorage key of the moved desktop icons (appId → spot in %) */
-export const ICONS_STORAGE_KEY = "dt.desktop.icons.v1";
+/** the localStorage key of the moved desktop icons (appId → spot in %) —
+ * v2: the win11 ordered flow replaced the hand-tuned scatter, so every
+ * visitor starts from the grid */
+export const ICONS_STORAGE_KEY = "dt.desktop.icons.v2";
 
 /** the fine snap lattice of the field: multiples of 2% x and 3.33% y —
  * smooth to drag, orderly to rest (every icon lands on the same grid) */
