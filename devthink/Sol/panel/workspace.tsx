@@ -34,7 +34,6 @@ import {
 import { type FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { alttabkeydown } from "../../alttab.ts";
 import { DESKTOP_APPS, type DesktopApp, seedOsView } from "../../appregistry.ts";
-import { familyurl } from "../../deploybase.ts";
 import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "../../paneltypes.ts";
 import { pushrecentapp } from "../../recentapps.ts";
 import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspace.ts";
@@ -346,7 +345,9 @@ export function ShellWorkspace({
         return;
       }
       if (app.target.kind === "external") {
-        window.location.assign(familyurl(app.target.slug));
+        // the family apps are windows of the os: the click opens the power
+        // clip frame with the real app riding its subpath inside
+        toggleWindow(app.target.slug, app.name);
         return;
       }
       seedOsView(app.target.app);

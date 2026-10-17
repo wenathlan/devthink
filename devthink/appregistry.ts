@@ -204,16 +204,6 @@ export const DESKTOP_APPS: DesktopApp[] = [
     target: { kind: "route", href: "/docs" },
   },
   {
-    id: "os",
-    name: "OS",
-    detail: "The family operating surface",
-    tint: "#a8b3c4",
-    icon: Boxes,
-    iconset: "os",
-    pinned: true,
-    target: { kind: "route", href: "/os" },
-  },
-  {
     id: "settings",
     name: "Settings",
     detail: "Pairing and local preferences",

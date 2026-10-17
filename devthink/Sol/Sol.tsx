@@ -27,7 +27,6 @@ import ImageAnchor from "./image/image.tsx";
 import IntroAnchor from "./intro/intro.tsx";
 import NotFoundAnchor from "./notfound/notfound.tsx";
 import OnboardingAnchor from "./onboarding/onboarding.tsx";
-import OsAnchor from "./os/os.tsx";
 import PanelAnchor from "./panel/panel.tsx";
 import PolicyAnchor from "./policy/policy.tsx";
 import ProjectsAnchor from "./projects/projects.tsx";
@@ -93,7 +92,6 @@ export default function Sol() {
           <Route path="/onboarding" component={OnboardingAnchor} />
           <Route path="/panel" component={PanelAnchor} />
           <Route path="/auth" component={AuthAnchor} />
-          <Route path="/os" component={OsAnchor} />
           <Route path="/chat" component={ChatAnchor} />
           <Route path="/video" component={() => <VideoAnchor />} />
           <Route path="/audio" component={() => <AudioAnchor />} />
