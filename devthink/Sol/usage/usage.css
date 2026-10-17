@@ -1,0 +1,47 @@
+/* usage app skins — the ledger figures over the dtw kit. merges into the
+ * kit section of sol.css. */
+.dtw-usage__hero {
+  align-content: start;
+}
+.dtw-usage__figlabel {
+  color: var(--dtv3-ink-3);
+  font: 500 11px var(--dt-mono);
+  letter-spacing: 0.04em;
+}
+.dtw-usage__figure {
+  color: var(--dtv3-ink-1);
+  font: 600 44px / 1.05 var(--font-sans, var(--dt-sans));
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.dtw-usage__rows {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dtw-usage__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 6px 2px;
+  border-bottom: 1px solid var(--dtv3-hairline);
+  color: var(--dtv3-ink-2);
+}
+.dtw-usage__row:last-child {
+  border-bottom: 0;
+}
+.dtw-usage__row svg {
+  color: var(--dtv3-ink-3);
+}
+.dtw-usage__label {
+  flex: 1;
+  color: var(--dtv3-ink-2);
+  font: 400 13px var(--font-sans, var(--dt-sans));
+}
+.dtw-usage__value {
+  color: var(--dtv3-ink-1);
+  font: 600 14px var(--font-sans, var(--dt-sans));
+  font-variant-numeric: tabular-nums;
+}

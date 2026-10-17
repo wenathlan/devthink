@@ -88,7 +88,7 @@ export default function Terminal({ rows, prompt, state, enabled, oncommand }: Te
   return (
     <section className="dt-term" aria-labelledby="dttermtitle">
       <div className="dt-term__bar">
-        <span id="dttermtitle">devthink — the terminal entry</span>
+        <span id="dttermtitle">devthink terminal</span>
         <span className="dt-term__state" aria-live="polite">
           {state}
         </span>
