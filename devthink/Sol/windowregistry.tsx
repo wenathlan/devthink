@@ -1,15 +1,16 @@
 /**
- * windowregistry.tsx — the window catalog of the desktop (theme-anchor
- * layer). The panel layer never imports the page anchors directly (the
- * anchor law: only Sol.tsx consumes them), so this sibling of Sol.tsx is
- * the ONE lawful bridge: it maps every app that opens as a floating window
- * to its anchor component and its spawn geometry. The deep routes of
- * Sol.tsx stay untouched — a window app still answers its own route as a
- * full page (deep links, the taskbar fallback), while the desktop opens it
- * in place with the embedded contract (no taskbar, no hero inside the
- * frame).
+ * windowregistry.tsx — the component binding of the window logic (the
+ * theme-anchor layer). The pure catalog lives at the root (window.ts): what
+ * a window is, which apps open as windows and the spawn geometry. This
+ * sibling of Sol.tsx binds the catalog rows to their anchor components —
+ * the only react-aware edge — and answers the same windowapp() lookup the
+ * workspace consumes. The deep routes of Sol.tsx stay untouched: a window
+ * app still answers its own route as a full page (deep links, the taskbar
+ * fallback), while the desktop opens it in place with the embedded contract
+ * (no taskbar, no hero inside the frame).
  */
 import type { ComponentType } from "react";
+import { type WindowEntry, windowcatalog } from "../window.ts";
 import Audio from "./audio/audio.tsx";
 import Calculator from "./calculator/calculator.tsx";
 import Console from "./console/console.tsx";
@@ -17,7 +18,6 @@ import Docs from "./docs/docs.tsx";
 import Games from "./games/games.tsx";
 import Image from "./image/image.tsx";
 import Projects from "./projects/projects.tsx";
-import Routes from "./routes/routes.tsx";
 import Settings from "./settings/settings.tsx";
 import { FamilyFrame } from "./shell/familyframe.tsx";
 import Usage from "./usage/usage.tsx";
@@ -30,47 +30,42 @@ export type WindowApp = {
   spawn: { width: number; height: number };
 };
 
-/** The windowed apps of the desktop. The chat window stays bespoke inside
- * the workspace (its session body is the chat subapp); this registry grows
- * as each subapp inherits the window contract. */
-export const WINDOW_APPS: Record<string, WindowApp> = {
-  calculator: { component: Calculator, spawn: { width: 520, height: 660 } },
-  docs: { component: Docs, spawn: { width: 980, height: 680 } },
-  image: { component: Image, spawn: { width: 900, height: 640 } },
-  games: { component: Games, spawn: { width: 900, height: 640 } },
-  console: { component: Console, spawn: { width: 980, height: 680 } },
-  usage: { component: Usage, spawn: { width: 900, height: 640 } },
-  settings: { component: Settings, spawn: { width: 960, height: 680 } },
-  projects: { component: Projects, spawn: { width: 900, height: 640 } },
-  routes: { component: Routes, spawn: { width: 860, height: 640 } },
-  audio: { component: Audio, spawn: { width: 900, height: 640 } },
-  video: { component: Video, spawn: { width: 960, height: 640 } },
+/** the anchor components of the catalog, by app id */
+const ANCHORS: Record<string, ComponentType<{ embedded?: boolean }>> = {
+  calculator: Calculator,
+  docs: Docs,
+  image: Image,
+  games: Games,
+  console: Console,
+  usage: Usage,
+  settings: Settings,
+  projects: Projects,
+  audio: Audio,
+  video: Video,
 };
+
+/** binds one catalog row to its component: the anchors bind by id, the
+ * family rows bind to the power clip frame of their subpath */
+function bindentry(id: string, entry: WindowEntry): WindowApp {
+  if (entry.kind === "family") {
+    const slug = entry.slug ?? id;
+    return { component: () => <FamilyFrame slug={slug} title={slug} />, spawn: entry.spawn };
+  }
+  const anchor = ANCHORS[id];
+  if (!anchor) {
+    return { component: () => null, spawn: entry.spawn };
+  }
+  return { component: anchor, spawn: entry.spawn };
+}
+
+/** The windowed apps of the desktop: the pure root catalog with the
+ * components bound. The chat window stays bespoke inside the workspace (its
+ * session body is the chat subapp). */
+export const WINDOW_APPS: Record<string, WindowApp> = Object.fromEntries(
+  Object.entries(windowcatalog()).map(([id, entry]) => [id, bindentry(id, entry)]),
+);
 
 /** Reads one windowed app by id, or undefined when the app still navigates. */
 export function windowApp(id: string): WindowApp | undefined {
   return WINDOW_APPS[id];
-}
-
-/** the family applications: the deploy units of the one family, each riding
- * its own repository subpath inside the window (the power clip). The ids
- * match the appregistry rows, so the desktop, the start rail and the deep
- * routes open them like every other window app. */
-const FAMILY_SLUGS: readonly string[] = [
-  "saddle",
-  "argan",
-  "cadria",
-  "debonair",
-  "stealthhead",
-  "forge",
-  "foundry",
-  "vault",
-  "getry",
-  "cobaia",
-];
-for (const slug of FAMILY_SLUGS) {
-  WINDOW_APPS[slug] = {
-    component: () => <FamilyFrame slug={slug} title={slug} />,
-    spawn: { width: 980, height: 680 },
-  };
 }
