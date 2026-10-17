@@ -53,9 +53,7 @@ export function CalculatorHistory({ rows }: { rows: CalculatorHistoryRow[] }) {
           ))}
         </ol>
       ) : (
-        <p style={emptyStyle}>
-          The keypad has not answered anything yet, so the history stays empty until the first expression answers.
-        </p>
+        <p style={emptyStyle}>Nothing yet</p>
       )}
     </section>
   );

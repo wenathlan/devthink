@@ -92,14 +92,11 @@ export function LocalAccount() {
           02
         </span>
         <div style={{ minWidth: 0 }}>
-          <p className="r2c-sec__eyebrow">local account — this browser</p>
-          <h2 className="r2c-sec__title">Local account.</h2>
+          <p className="r2c-sec__eyebrow">local account</p>
+          <h2 className="r2c-sec__title">Local account</h2>
         </div>
       </header>
-      <p className="set-copy">
-        One local identity keeps sessions, tabs and preferences in this browser. Nothing leaves the machine — no
-        account, no server.
-      </p>
+      <p className="set-copy">One local identity, kept in this browser. Nothing leaves the machine.</p>
       <form
         className="set-form"
         onSubmit={(event) => {
@@ -129,11 +126,11 @@ export function LocalAccount() {
           className="set-btn"
           style={displayFace}
         >
-          {busy ? "saving…" : "save name"}
+          {busy ? "Saving" : "Save name"}
         </button>
         {savedName ? (
           <span className="set-current" style={monoLabel}>
-            current: {savedName}
+            {savedName}
           </span>
         ) : null}
       </form>
@@ -144,7 +141,7 @@ export function LocalAccount() {
           label="created"
           value={identity?.createdAt ? new Date(identity.createdAt).toLocaleDateString() : "initializing"}
         />
-        <IdRow label="storage" value="this browser only — no telemetry" />
+        <IdRow label="storage" value="this browser only" />
       </div>
     </section>
   );
