@@ -59,8 +59,9 @@ import {
 
 /** the default apps pinned to the bottom bar: the essential surfaces as
  * icons only — every other app of the catalog lives in the Start menu grid
- * ("panel" is the creation panel, the OS desktop itself, at /panel) */
-const TASKBAR_PIN_IDS = ["panel", "chat", "console", "gateway", "docs", "explore"];
+ * ("panel" is the creation panel, the OS desktop itself, at /panel; the
+ * indirect apps — intro, auth, explore — are never pins) */
+const TASKBAR_PIN_IDS = ["panel", "chat", "console", "gateway", "docs"];
 
 /** the 44px hit cell of one taskbar button: the cell is the touch target and
  * the ::after open/active ladder anchor (the component owns the ladder — the
