@@ -1,7 +1,7 @@
 /**
- * musictracks.tsx — the tracks card of the music studio: hairline rows with
+ * musictracks.tsx — the tracks card of the audio app: hairline rows with
  * the real catalog fields (title, engine, minutes) and the queue action.
- * Loose component of the music page.
+ * Loose component of the audio page.
  */
 import { MusicNote2PlayFilled } from "@fluentui/react-icons";
 import type { StudioTrack } from "../../catalog";

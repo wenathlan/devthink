@@ -1,5 +1,5 @@
 /**
- * videoengine.tsx — the engine card of the video studio: the real versawase
+ * videoengine.tsx — the engine card of the video app: the real versawase
  * engine row the catalog serves, with the honest empty state while the
  * catalog has not answered. Loose component of the video page.
  */

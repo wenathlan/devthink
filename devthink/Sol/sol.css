@@ -10184,6 +10184,32 @@ span[data-tile] {
   grid-template-rows: minmax(0, 1fr);
   height: 100dvh;
 }
+/* the trident fusion — the clear index.html surface inside the windows
+ * grammar: light canvas, white hairline cards, slate ink and the indigo
+ * sky accent riding every window body while the desktop shell stays dark. */
+.dtw-app {
+  color-scheme: light;
+  --dtv3-ink-1: #0f172a;
+  --dtv3-ink-2: #46556b;
+  --dtv3-ink-3: #8290a6;
+  --dtv3-hairline: rgb(15 23 42 / 12%);
+  --dtv3-sig: #4f46e5;
+  --color-win: #4f46e5;
+  background: #eceff7;
+  color: var(--dtv3-ink-1);
+}
+.dtw-app .dtw-card {
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 6%);
+}
+.dtw-app .dtw-action--primary,
+.dtw-app .dtw-btn--primary {
+  background: linear-gradient(135deg, #4f46e5, #0ea5e9);
+}
+.dtw-app .dtw-action--primary:hover,
+.dtw-app .dtw-btn--primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #4338ca, #0284c7);
+}
 .dtw-pane {
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr);

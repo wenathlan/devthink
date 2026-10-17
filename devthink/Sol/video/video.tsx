@@ -1,15 +1,15 @@
 /**
- * videostudio page anchor — layer 3 of the anchor architecture. The file
- * carrying the folder's own name is the path manager of the page: it imports
- * the loose components beside it, mounts the page and re-exports the public
+ * video page anchor — layer 3 of the anchor architecture. The file carrying
+ * the folder's own name is the path manager of the page: it imports the
+ * loose components beside it, mounts the page and re-exports the public
  * component surface. Only the theme anchor (Sol/Sol.tsx) and the window
  * registry (Sol/windowregistry.tsx) consume this file.
  *
  * Video — the video studio in the Windows 11 grammar: a nav pane beside the
  * content deck, the assets as hairline rows and the render queue over the
  * gateway to the versawase engine. The engine itself is never bundled: it
- * rides the catalog over https from the cadria app. The old control shells
- * are retired — this body rides the dtw kit.
+ * rides the catalog over https from the cadria app. This body rides the dtw
+ * kit in the trident fusion.
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -18,7 +18,7 @@ import { type NativeApp, nativeApps, type StudioAsset, studioAssets } from "../.
 import { queuestudiorender } from "../../runner";
 import { VideoAssets } from "./videoassets.tsx";
 import { VideoEngine } from "./videoengine.tsx";
-import "./videostudio.css";
+import "./video.css";
 
 /** Queues one render and surfaces the answer with the sonner toast the
  * workbench already uses: the reason text is the honest answer of the queue
@@ -30,10 +30,9 @@ function queueRender(asset: StudioAsset) {
   });
 }
 
-/** The video studio: the Windows body when embedded (the desktop window
- * hosts it without the shell), the full surface with the taskbar on the
- * route. */
-export default function VideoStudio({ embedded }: { embedded?: boolean }) {
+/** The video app: the Windows body when embedded (the desktop window hosts
+ * it without the shell), the full surface with the taskbar on the route. */
+export default function Video({ embedded }: { embedded?: boolean }) {
   const [apps, setApps] = useState<NativeApp[]>([]);
   const [assets, setAssets] = useState<StudioAsset[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -52,7 +51,7 @@ export default function VideoStudio({ embedded }: { embedded?: boolean }) {
     <main className="dtw-app dtw-video" style={embedded ? { height: "100%", overflow: "auto" } : undefined}>
       {!embedded && <ShellChrome />}
       <div className="dtw-pane">
-        <nav className="dtw-nav" aria-label="Video studio sections">
+        <nav className="dtw-nav" aria-label="Video sections">
           <span className="dtw-navrow" data-active="true">
             Assets
           </span>

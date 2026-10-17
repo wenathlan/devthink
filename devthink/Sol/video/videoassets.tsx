@@ -1,5 +1,5 @@
 /**
- * videoassets.tsx — the assets card of the video studio: hairline rows with
+ * videoassets.tsx — the assets card of the video app: hairline rows with
  * the real catalog fields (title, engine, duration) and the render action.
  * Loose component of the video page.
  */
