@@ -9,6 +9,10 @@ import { defineConfig } from "vite";
 function pagesBasePath(value: string | undefined): string {
   const candidate = value?.trim() || "/";
   if (candidate === "." || candidate === "./") return "./";
+  /* a filesystem path can never be a base: a drive letter or a separator
+   * poisons the emitted html (the /C:/Git bundles), so the value falls back
+   * to the site root */
+  if (/^([a-z]:[\\/]|\\\\|file:)/i.test(candidate) || candidate.includes("\\")) return "/";
   return candidate === "/" ? candidate : `/${candidate.replace(/^\/+|\/+$/g, "")}/`;
 }
 
