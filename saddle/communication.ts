@@ -139,7 +139,19 @@ export function ratelimiter(options = {}) {
 /**
  * http helpers use the web request response contract and remain framework neutral.
  */
-export function jsonresponse(data, options = {}) { return new Response(JSON.stringify(data), { status: options.status ?? 200, headers: { "content-type": "application/json; charset=utf-8", "x-content-type-options": "nosniff", "referrer-policy": "no-referrer", ...(options.headers ?? {}) } }); }
+/** redactstack — the payload boundary of the wire: an Error serializes as its name and message only, and a stack field of any nested object never rides the response. */
+function redactstack(value) {
+  if (value instanceof Error) return { name: value.name, message: value.message };
+  if (Array.isArray(value)) return value.map(redactstack);
+  if (value && typeof value === "object") {
+    const out = {};
+    for (const [key, item] of Object.entries(value)) if (key !== "stack" && key !== "stackTrace") out[key] = redactstack(item);
+    return out;
+  }
+  return value;
+}
+
+export function jsonresponse(data, options = {}) { return new Response(JSON.stringify(redactstack(data)), { status: options.status ?? 200, headers: { "content-type": "application/json; charset=utf-8", "x-content-type-options": "nosniff", "referrer-policy": "no-referrer", ...(options.headers ?? {}) } }); }
 
 export function errorresponse(code, message, options = {}) { return jsonresponse({ error: { code, message, retryafter: options.retryafter ?? 0, requestid: options.requestid ?? `request${Date.now().toString(36)}` } }, { status: options.status ?? 400, headers: options.headers }); }
 
