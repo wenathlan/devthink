@@ -327,10 +327,31 @@ export default function Panel() {
   const navigate = useCallback(
     (next: Partial<RouteState>) => {
       const nextRoute = { ...route, ...next };
+      try {
+        // the windows law of the address: the ids ride the session storage,
+        // never the bar — the router keeps its path, the visitor reads the
+        // clean desktop route
+        window.sessionStorage.setItem(LOCAL_ROUTE_KEY, JSON.stringify(nextRoute));
+      } catch {
+        // storage unavailable: the route lives for this mount only
+      }
       setLocation(routePath(nextRoute, query));
+      window.history.replaceState(null, "", "/panel");
     },
     [query, route, setLocation],
   );
+
+  // the deep boot seal: a /w/… link enters, persists its ids and the bar
+  // seals on the clean desktop path — the ids rehydrate from the storage
+  useEffect(() => {
+    if (!deep) return;
+    try {
+      window.sessionStorage.setItem(LOCAL_ROUTE_KEY, JSON.stringify(route));
+    } catch {
+      // storage unavailable: the route lives for this mount only
+    }
+    window.history.replaceState(null, "", "/panel");
+  }, [deep, route]);
 
   function openDestination(destination: WorkspaceDestination) {
     const directRoutes: Partial<Record<WorkspaceDestination, string>> = {
