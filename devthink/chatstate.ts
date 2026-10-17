@@ -119,7 +119,7 @@ export function capTurns(messages: ChatTurn[], cap = TURN_CAP): ChatTurn[] {
  * image pipeline behind them yet — the notes below say exactly that, and
  * the same note reaches the model so it never pretends otherwise.
  */
-export type ToolId = "thinking" | "search" | "research" | "files" | "image";
+export type ToolId = "thinking";
 
 export type ChatTool = {
   id: ToolId;
@@ -132,26 +132,6 @@ export const CHAT_TOOLS: ChatTool[] = [
     id: "thinking",
     label: "Thinking",
     note: "Walk through the reasoning explicitly, step by step, before the final answer.",
-  },
-  {
-    id: "search",
-    label: "Search",
-    note: "The gateway has no live retrieval; reason as if searching and flag anything that needs verification.",
-  },
-  {
-    id: "research",
-    label: "Deep research",
-    note: "Go long: multi-angle analysis with trade-offs, no external sources are contacted.",
-  },
-  {
-    id: "files",
-    label: "Files",
-    note: "Attachment upload is not wired to the gateway; ask the user to paste file contents inline.",
-  },
-  {
-    id: "image",
-    label: "Image",
-    note: "Image generation is not wired to the gateway; describe visuals in text only.",
   },
 ];
 

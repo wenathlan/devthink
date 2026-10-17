@@ -11,6 +11,10 @@
  * fade lives in chat.tsx).
  */
 import { Braces, BrainCircuit, type LucideIcon, Telescope } from "lucide-react";
+import { GATEWAY_MODEL } from "../../chatstate.ts";
+
+/** the model line of the hero sub: the gateway meta-model name */
+const GATEWAY_MODEL_LABEL = `model ${GATEWAY_MODEL}`;
 
 /** The welcome slice of the C1-04 pass: the spec grid breaks the uniform
  * card row — the lead cell spans both tracks and reads as one line, the
@@ -52,23 +56,23 @@ const CAPABILITIES: Capability[] = [
   {
     id: "engineering",
     icon: Braces,
-    label: "01 — engineering",
-    copy: "Trace a failure, review an approach or pressure-test an architecture until the weak joint shows.",
+    label: "Engineering",
+    copy: "Trace a failure until the weak joint shows",
     prompt: "pressure-test a provider-neutral gateway: where does the architecture break first, and what hardens it?",
   },
   {
     id: "reasoning",
     icon: BrainCircuit,
-    label: "02 — reasoning",
-    copy: "Hand over a hard question and follow the internal cognition work it through, step by step.",
+    label: "Reasoning",
+    copy: "Follow the cognition step by step",
     prompt:
       "reason step by step: should a provider-neutral workbench cache provider responses locally? weigh latency, cost, staleness.",
   },
   {
     id: "decisions",
     icon: Telescope,
-    label: "03 — decisions",
-    copy: "Weigh trade-offs across real options and leave with a call, not a data dump.",
+    label: "Decisions",
+    copy: "Weigh the trade offs and decide",
     prompt:
       "self-hosting an inference gateway versus provider apis: commit to one call and name the three facts that drive it.",
   },
@@ -80,14 +84,13 @@ export function Welcome({ onPick, gatewayRegistered }: { onPick: (text: string) 
   return (
     <div className="dtc-welcome">
       <h1 className="dtc-hero__greet">
-        <span className="dtc-hero__soft">Good day.</span>
+        <span className="dtc-hero__soft">Good day</span>
         <span className="dtc-hero__strong">
-          Ask something worth <span className="dtc-hero__word">thinking</span> about.
+          Ask something worth <span className="dtc-hero__word">thinking</span> about
         </span>
       </h1>
       <p className="dtc-hero__sub">
-        sol: model devthink —{" "}
-        {gatewayRegistered ? "answers via your registered gateway" : "no gateway registered — register one to start"}
+        sol {GATEWAY_MODEL_LABEL} {gatewayRegistered ? "gateway on" : "gateway off"}
       </p>
 
       <div className="dtc-cards dtc-cards--spec">
@@ -100,7 +103,7 @@ export function Welcome({ onPick, gatewayRegistered }: { onPick: (text: string) 
               type="button"
               className={lead ? "dtc-card dtc-card--lead" : "dtc-card"}
               onClick={() => onPick(cap.prompt)}
-              aria-label={`Start with ${cap.label} — ${cap.copy}`}
+              aria-label={`Start with ${cap.label}`}
             >
               <span className="dtc-card__ico" aria-hidden="true">
                 <Icon size={lead ? 22 : 20} strokeWidth={1.7} />
