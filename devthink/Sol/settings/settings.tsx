@@ -1,25 +1,20 @@
 /**
- * settings page anchor — layer 3 of the anchor architecture.
- * The file carrying the folder's own name is the path manager of the page:
- * it imports the loose components beside it, mounts the page and re-exports
- * the public component surface. Only the theme anchor (Sol/Sol.tsx) consumes
- * this file; no module outside the folder imports the folder members
- * directly (the home anchor consumes the pairing panel through this
- * surface). This anchor carries the former main component of the folder,
- * which now lives here as the page mount itself.
+ * settings page anchor — layer 3 of the anchor architecture. The file
+ * carrying the folder's own name is the path manager of the page: it imports
+ * the loose components beside it, mounts the page and re-exports the public
+ * component surface. Only the theme anchor (Sol/Sol.tsx) and the window
+ * registry (Sol/windowregistry.tsx) consume this file. The home anchor
+ * consumes the pairing panel through this surface.
+ *
+ * Settings — the settings app in the Windows 11 grammar: the section rail
+ * beside the content deck, one section at a time, the paired browser
+ * mirroring the cli settings and the browser-local records staying local.
+ * The old editorial deck (the numbered indexes, the sticky caps) is retired
+ * — this body rides the dtw kit.
  */
-
-/** Style: DevThink Terminal Atelier — campaign v3 r2-c: the settings craft
- * deck. A sectioned rail (the categories, 240px mono lowercase, sticky)
- * leads into a 1fr body of numbered sections separated by air + hairlines —
- * no nested boxes anywhere. The theme rides a real spring switch
- * (cubic-bezier(.2,1.2,.4,1) 300ms), the interface zoom a ring-glow range,
- * the automation toggles the same switch grammar, and every save affordance
- * carries the .press voice. One accent (#ff5f00 at the 90/10 discipline),
- * one light, the one orchestrated shell entrance. */
-import { MonitorCog, Unplug } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { ControlShell, controlStripStyle } from "@/shell/ControlShell";
+import { ArrowSyncRegular, PlugDisconnectedRegular, SettingsRegular } from "@fluentui/react-icons";
+import { useEffect, useState } from "react";
+import { ShellChrome } from "@/shell/ShellChrome";
 import {
   type BrowserStoreSummary,
   browserIdentity,
@@ -27,10 +22,11 @@ import {
   readBrowserPreferences,
   saveBrowserPreference,
 } from "../../db";
-import { gatewayJson, gatewayReady, gatewayUrl } from "../../gateway.js";
+import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { AutomationMcp } from "./automationmcp.tsx";
 import { GatewayCard } from "./gatewaycard.tsx";
 import { LocalAccount } from "./identity.tsx";
+import "./settings.css";
 
 export * from "./automationmcp.tsx";
 export * from "./gatewaycard.tsx";
@@ -45,51 +41,18 @@ type SettingsSnapshot = {
   database: { ownerUserId: string; local: boolean; persistence: string; workspaces: number; sessions: number };
 };
 
-/** the numbered head of a deck section: mono index + lowercase eyebrow +
- * one display title — the section grammar of the whole batch. */
-function sectionHead(index: string, eyebrow: string, title: string) {
-  return (
-    <header className="r2c-sec__head">
-      <span className="r2c-sec__index" aria-hidden="true">
-        {index}
-      </span>
-      <div style={{ minWidth: 0 }}>
-        <p className="r2c-sec__eyebrow">{eyebrow}</p>
-        <h2 className="r2c-sec__title">{title}</h2>
-      </div>
-    </header>
-  );
-}
-
-/** one mono label/value line of the sync + identity sections. */
+/** one mono label/value line of the settings sections. */
 function kv(key: string, value: string) {
   return (
-    <div className="r2c-kv" key={key}>
-      <span className="r2c-kv__k">{key}</span>
-      <span className="r2c-kv__v">{value}</span>
+    <div className="dtw-settings__kv" key={key}>
+      <span className="dtw-settings__kvkey">{key}</span>
+      <span className="dtw-settings__kvvalue">{value}</span>
     </div>
   );
 }
 
-/** the sectioned rail: the categories of the deck (mono lowercase, sticky).
- * the toc slot carries the real section index (tabular numerals), never a
- * decorative separator glyph. */
-function deckRail(categories: ReadonlyArray<readonly [string, string]>) {
-  return (
-    <nav className="r2c-deck__rail" aria-label="Settings sections">
-      <span className="r2c-deck__cap">settings</span>
-      {categories.map(([href, label], index) => (
-        <a key={href} className="r2c-deck__cat" href={href}>
-          <span className="r2c-toc__num" aria-hidden="true">
-            {String(index + 1).padStart(2, "0")}
-          </span>
-          {label}
-        </a>
-      ))}
-    </nav>
-  );
-}
-
+/** the workbench flags the deck answers: the theme switch, the rail mode and
+ * the interface zoom, saved through the same preference machine. */
 function flagsFields(
   preferences: SettingsSnapshot["preferences"],
   save: (key: keyof SettingsSnapshot["preferences"], value: string) => void,
@@ -97,40 +60,40 @@ function flagsFields(
   const dark = preferences.theme === "dark";
   return (
     <>
-      <div className="r2c-fieldlabel">
-        theme
-        <label className="r2c-switchrow">
+      <div className="dtw-settings__field">
+        <span>Theme</span>
+        <label className="dtw-settings__switchrow">
           <input
             type="checkbox"
-            className="r2c-switch"
+            className="dtw-settings__switch"
             checked={dark}
             onChange={(event) => save("theme", event.target.checked ? "dark" : "light")}
             aria-label="dark theme"
           />
-          <span className="r2c-switch__track" aria-hidden="true">
-            <span className="r2c-switch__thumb" />
+          <span className="dtw-settings__switchtrack" aria-hidden="true">
+            <span className="dtw-settings__switchthumb" />
           </span>
-          {dark ? "dark" : "light"}
+          {dark ? "Dark" : "Light"}
         </label>
       </div>
-      <label className="r2c-fieldlabel">
-        rail mode
+      <label className="dtw-settings__field">
+        <span>Rail mode</span>
         <select
-          className="r2c-select"
+          className="dtw-settings__select"
           value={preferences.railMode}
           onChange={(event) => save("railMode", event.target.value)}
         >
-          <option value="always">always</option>
-          <option value="auto">auto</option>
-          <option value="off">off</option>
+          <option value="always">Always</option>
+          <option value="auto">Auto</option>
+          <option value="off">Off</option>
         </select>
       </label>
-      <label className="r2c-fieldlabel">
-        interface zoom
-        <span className="r2c-rangezone">
+      <label className="dtw-settings__field">
+        <span>Interface zoom</span>
+        <span className="dtw-settings__rangezone">
           <input
             type="range"
-            className="r2c-range"
+            className="dtw-settings__range"
             min={80}
             max={150}
             step={10}
@@ -138,14 +101,17 @@ function flagsFields(
             onChange={(event) => save("interfaceZoom", event.target.value)}
             aria-label="interface zoom"
           />
-          <output className="r2c-range__value">{preferences.interfaceZoom}%</output>
+          <output className="dtw-settings__rangevalue">{preferences.interfaceZoom}%</output>
         </span>
       </label>
     </>
   );
 }
 
-export default function Settings() {
+/** The settings app: the Windows body when embedded (the desktop window
+ * hosts it without the shell), the full surface with the taskbar on the
+ * route. */
+export default function Settings({ embedded }: { embedded?: boolean }) {
   const [snapshot, setSnapshot] = useState<SettingsSnapshot>();
   const [local, setLocal] = useState<BrowserStoreSummary>();
   const [localIdentity, setLocalIdentity] = useState<{ userId: string; deviceId: string }>();
@@ -155,8 +121,8 @@ export default function Settings() {
     interfaceZoom: "100",
   });
   const [publicId, setPublicId] = useState("");
+  const [section, setSection] = useState("database");
   const paired = gatewayReady();
-  const baseUrl = useMemo(() => gatewayUrl(), []);
 
   function refresh() {
     void Promise.all([browserStoreSummary(paired), browserIdentity(), readBrowserPreferences()])
@@ -216,26 +182,55 @@ export default function Settings() {
     window.location.assign("./");
   }
 
-  if (!paired)
-    return (
-      <ControlShell
-        eyebrow="browser-local settings"
-        title="Settings"
-        summary="Local records in this browser. Pairing is optional."
-      >
-        <div className="r2c-deck">
-          {deckRail([
-            ["#database", "database"],
-            ["#account", "local account"],
-            ["#workbench", "workbench"],
-            ["#gateway", "gateway"],
-            ["#sync", "sync"],
-            ["#automation", "automation"],
-            ["#boundary", "boundary"],
-          ])}
-          <div className="r2c-deck__body">
-            <section id="database" className="r2c-sec">
-              {sectionHead("01", "database", "Local database")}
+  /** the section rail answers the mode: the paired browser mirrors the cli
+   * identity, the browser-local deck keeps its own sections. */
+  const sections: readonly { id: string; label: string }[] = paired
+    ? [
+        { id: "identity", label: "Identity" },
+        { id: "workbench", label: "Workbench" },
+        { id: "gateway", label: "Gateway" },
+        { id: "sync", label: "Sync" },
+        { id: "automation", label: "Automation" },
+        { id: "access", label: "Access" },
+      ]
+    : [
+        { id: "database", label: "Database" },
+        { id: "account", label: "Local account" },
+        { id: "workbench", label: "Workbench" },
+        { id: "gateway", label: "Gateway" },
+        { id: "sync", label: "Sync" },
+        { id: "automation", label: "Automation" },
+        { id: "boundary", label: "Boundary" },
+      ];
+  const active = sections.some((item) => item.id === section) ? section : (sections[0]?.id ?? "database");
+
+  return (
+    <main className="dtw-app dtw-settings" style={embedded ? { height: "100%", overflow: "auto" } : undefined}>
+      {!embedded && <ShellChrome />}
+      <div className="dtw-pane">
+        <nav className="dtw-nav" aria-label="Settings sections">
+          {sections.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              className="dtw-navrow"
+              data-active={item.id === active ? "true" : undefined}
+              onClick={() => setSection(item.id)}
+              aria-current={item.id === active ? "page" : undefined}
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
+        <div className="dtw-content">
+          <h1 className="dtw-title">Settings</h1>
+
+          {!paired && active === "database" ? (
+            <section className="dtw-card">
+              <h2 className="dtw-cardtitle">
+                <SettingsRegular fontSize={15} aria-hidden="true" />
+                Local database
+              </h2>
               {kv("database", local?.database || "devthink.db")}
               {kv("owner", localIdentity?.userId || "initializing")}
               {kv("device", localIdentity?.deviceId || "initializing")}
@@ -244,121 +239,117 @@ export default function Settings() {
                 `${local?.workspaces || 0} workspaces, ${local?.sessions || 0} sessions, ${local?.messages || 0} messages`,
               )}
             </section>
-            <LocalAccount />
-            <section id="workbench" className="r2c-sec">
-              {sectionHead("03", "workbench", "Workbench flags")}
-              <div className="r2c-sec__grid">
-                {flagsFields(localPreferences, (key, value) => {
-                  void savePreference(key, value);
-                })}
-              </div>
+          ) : null}
+
+          {!paired && active === "account" ? <LocalAccount /> : null}
+
+          {active === "workbench" ? (
+            <section className="dtw-card">
+              <h2 className="dtw-cardtitle">
+                <SettingsRegular fontSize={15} aria-hidden="true" />
+                Workbench flags
+              </h2>
+              {flagsFields(paired && snapshot ? snapshot.preferences : localPreferences, (key, value) => {
+                void savePreference(key, value);
+              })}
             </section>
-            <GatewayCard />
-            <section id="sync" className="r2c-sec">
-              {sectionHead("04", "sync", "Sync state")}
+          ) : null}
+
+          {active === "gateway" ? <GatewayCard /> : null}
+
+          {active === "sync" && !paired ? (
+            <section className="dtw-card">
+              <h2 className="dtw-cardtitle">
+                <ArrowSyncRegular fontSize={15} aria-hidden="true" />
+                Sync state
+              </h2>
               {kv("state", "local-only")}
-              <p className="r2c-sec__copy">
-                Pair with <code>devthink pair create</code> to sync the CLI gateway.
+              <p className="dtw-copy">
+                Pair with <code>devthink pair create</code> to sync the cli gateway.
               </p>
             </section>
-            <AutomationMcp />
-            <section id="boundary" className="r2c-sec">
-              {sectionHead("06", "boundary", "Credential boundary")}
-              <p className="r2c-sec__copy">Provider credentials stay with the CLI, never in this browser.</p>
-            </section>
-          </div>
-        </div>
-      </ControlShell>
-    );
+          ) : null}
 
-  return (
-    <ControlShell
-      eyebrow="shared settings"
-      title="Settings"
-      summary="The paired browser mirrors the CLI settings and identity."
-    >
-      <div className="control-toolbar" style={controlStripStyle}>
-        <span>{baseUrl || "paired local gateway"}</span>
-        <button type="button" className="r2c-btn press" onClick={refresh}>
-          <MonitorCog size={14} />
-          refresh
-        </button>
-      </div>
-      {snapshot ? (
-        <div className="r2c-deck">
-          {deckRail([
-            ["#identity", "identity"],
-            ["#workbench", "workbench"],
-            ["#gateway", "gateway"],
-            ["#sync", "sync"],
-            ["#automation", "automation"],
-            ["#access", "browser access"],
-          ])}
-          <div className="r2c-deck__body">
-            <section id="identity" className="r2c-sec">
-              {sectionHead("01", "public identity", "Public identity.")}
-              {kv("user id", snapshot.identity.userId)}
-              {kv("device", snapshot.identity.deviceId)}
-              <div className="r2c-sec__grid">
-                <label className="r2c-fieldlabel">
-                  public id
-                  <input
-                    className="r2c-input"
-                    style={{ width: "min(320px, 100%)" }}
-                    value={publicId}
-                    onChange={(event) => setPublicId(event.target.value.toLowerCase())}
-                    minLength={10}
-                    maxLength={15}
-                    pattern="[a-z][a-z0-9]{9,14}"
-                    autoComplete="username"
-                  />
-                </label>
-                <button type="button" className="r2c-btn r2c-btn--primary press" onClick={() => void saveIdentity()}>
-                  save public id
-                </button>
-              </div>
-            </section>
-            <section id="workbench" className="r2c-sec">
-              {sectionHead("02", "workbench flags", "Workbench flags.")}
-              <div className="r2c-sec__grid">
-                {flagsFields(snapshot.preferences, (key, value) => {
-                  void savePreference(key, value);
-                })}
-              </div>
-            </section>
-            <GatewayCard />
-            <section id="sync" className="r2c-sec">
-              {sectionHead("04", "sync state", "Sync state.")}
+          {active === "sync" && paired && snapshot ? (
+            <section className="dtw-card">
+              <h2 className="dtw-cardtitle">
+                <ArrowSyncRegular fontSize={15} aria-hidden="true" />
+                Sync state
+              </h2>
               {kv("state", "paired-gateway")}
               {kv("cli", snapshot.database.persistence)}
-              {kv("browser", `${local?.database || "devthink.db"} — ${local?.messages || 0} cached messages`)}
+              {kv("browser", `${local?.database || "devthink.db"} with ${local?.messages || 0} cached messages`)}
               {kv("remote adapter", "not configured")}
               {kv(
                 "provider",
-                `${snapshot.provider.activeProvider || "not configured"} — ${snapshot.provider.activeModel || "model not configured"}`,
+                `${snapshot.provider.activeProvider || "not configured"} with ${snapshot.provider.activeModel || "model not configured"}`,
               )}
             </section>
-            <AutomationMcp />
-            <section id="access" className="r2c-sec">
-              {sectionHead("06", "temporary browser access", "Browser access.")}
-              <p className="r2c-sec__copy">
-                Revoking removes paired browser sessions. CLI data, provider credentials and the local database stay on
-                this device.
-              </p>
-              <button type="button" className="r2c-btn r2c-btn--danger press" onClick={() => void revoke()}>
-                <Unplug size={14} />
-                revoke browser access
+          ) : null}
+
+          {active === "automation" ? <AutomationMcp /> : null}
+
+          {paired && active === "identity" && snapshot ? (
+            <section className="dtw-card">
+              <h2 className="dtw-cardtitle">Public identity</h2>
+              {kv("user id", snapshot.identity.userId)}
+              {kv("device", snapshot.identity.deviceId)}
+              <div className="dtw-settings__field">
+                <span>Public id</span>
+                <input
+                  className="dtw-settings__input"
+                  value={publicId}
+                  onChange={(event) => setPublicId(event.target.value.toLowerCase())}
+                  minLength={10}
+                  maxLength={15}
+                  pattern="[a-z][a-z0-9]{9,14}"
+                  autoComplete="username"
+                />
+              </div>
+              <button type="button" className="dtw-btn dtw-btn--primary" onClick={() => void saveIdentity()}>
+                Save public id
               </button>
             </section>
-          </div>
+          ) : null}
+
+          {paired && active === "identity" && !snapshot ? (
+            <section className="dtw-card">
+              <h2 className="dtw-cardtitle">Settings unavailable</h2>
+              <p className="dtw-copy">The paired gateway did not return its local settings summary.</p>
+              <button type="button" className="dtw-btn" onClick={refresh}>
+                <ArrowSyncRegular fontSize={14} aria-hidden="true" />
+                Refresh
+              </button>
+            </section>
+          ) : null}
+
+          {paired && active === "access" ? (
+            <section className="dtw-card">
+              <h2 className="dtw-cardtitle">
+                <PlugDisconnectedRegular fontSize={15} aria-hidden="true" />
+                Browser access
+              </h2>
+              <p className="dtw-copy">
+                Revoking removes paired browser sessions. Cli data, provider credentials and the local database stay on
+                this device.
+              </p>
+              <button type="button" className="dtw-btn dtw-btn--danger" onClick={() => void revoke()}>
+                Revoke browser access
+              </button>
+            </section>
+          ) : null}
+
+          {!paired && active === "boundary" ? (
+            <section className="dtw-card">
+              <h2 className="dtw-cardtitle">
+                <PlugDisconnectedRegular fontSize={15} aria-hidden="true" />
+                Credential boundary
+              </h2>
+              <p className="dtw-copy">Provider credentials stay with the cli, never in this browser.</p>
+            </section>
+          ) : null}
         </div>
-      ) : (
-        <div className="control-empty">
-          <MonitorCog size={22} />
-          <h2>Settings unavailable</h2>
-          <p>The paired gateway did not return its local settings summary.</p>
-        </div>
-      )}
-    </ControlShell>
+      </div>
+    </main>
   );
 }
