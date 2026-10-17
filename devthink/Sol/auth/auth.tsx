@@ -57,8 +57,8 @@
  * may refuse and the entry still completes.
  */
 
+import { ArrowLeftRegular, ArrowRightRegular } from "@fluentui/react-icons";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Link, useLocation } from "wouter";
@@ -368,7 +368,7 @@ export default function Auth() {
           {/* the main column: the local identity form, the honest mechanism */}
           <div className="authx-col authx-col--main">
             <Link href="/explore" className="authx-back">
-              <ArrowLeft size={12} aria-hidden="true" /> Back to explore
+              <ArrowLeftRegular fontSize={12} aria-hidden="true" /> Back to explore
             </Link>
             <h1 className="authx-title">Enter DevThink</h1>
             <p className="authx-lede">
@@ -400,8 +400,8 @@ export default function Auth() {
                 disabled={busy || !name.trim()}
                 aria-busy={busy || undefined}
               >
-                <span>{busy ? "Opening the panel…" : paired ? "Go to the panel" : "Enter the panel"}</span>
-                <ArrowRight size={14} aria-hidden="true" />
+                <span>{busy ? "Opening the panel" : paired ? "Go to the panel" : "Enter the panel"}</span>
+                <ArrowRightRegular fontSize={14} aria-hidden="true" />
               </button>
             </form>
           </div>
@@ -444,13 +444,13 @@ export default function Auth() {
                 />
               </div>
               <button type="submit" className="authx-quiet" disabled={busy} aria-busy={busy || undefined}>
-                <span>{paired ? "Renew the pairing" : "Sync up with the CLI"}</span>
-                <ArrowRight size={13} aria-hidden="true" />
+                <span>{paired ? "Renew the pairing" : "Sync up with the cli"}</span>
+                <ArrowRightRegular fontSize={13} aria-hidden="true" />
               </button>
               <small className="authx-hint">
                 {readiness.ready
-                  ? "All fields present — the invitation can also arrive as a link (?pair&code)."
-                  : `Still needed: ${readiness.missing.join(", ")}.`}
+                  ? "All fields present, the invitation can also arrive as a link"
+                  : `Still needed: ${readiness.missing.join(", ")}`}
               </small>
             </form>
             <ul className="authx-ledger">

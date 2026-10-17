@@ -1,0 +1,68 @@
+/* history app skins — the rung ladder over the dtw kit. merges into the kit
+ * section of sol.css. */
+.dtw-history__rows {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dtw-history__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 14px;
+  align-items: baseline;
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--dtv3-hairline);
+}
+.dtw-history__row:last-child {
+  border-bottom: 0;
+}
+.dtw-history__row[data-latest="true"] {
+  background: color-mix(in srgb, var(--dtv3-sig) 8%, transparent);
+}
+.dtw-history__body {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.dtw-history__body h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--dtv3-ink-1);
+  font: 700 13px var(--dt-mono);
+  font-variant-numeric: tabular-nums;
+}
+.dtw-history__badge {
+  padding: 2px 8px;
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: 10px;
+  color: var(--dtv3-ink-2);
+  font: 500 10px var(--dt-mono);
+}
+.dtw-history__body p {
+  margin: 0;
+  color: var(--dtv3-ink-2);
+  font: 400 12px / 1.6 var(--font-sans, var(--dt-sans));
+}
+.dtw-history__stamp {
+  color: var(--dtv3-ink-3);
+  font: 500 10.5px var(--dt-mono);
+  font-variant-numeric: tabular-nums;
+}
+.dtw-history__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  padding-top: 10px;
+  border-top: 1px solid var(--dtv3-hairline);
+  color: var(--dtv3-ink-3);
+  font: 500 11px var(--dt-mono);
+}
+.dtw-history__facts b {
+  margin-left: 6px;
+  color: var(--dtv3-ink-1);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
