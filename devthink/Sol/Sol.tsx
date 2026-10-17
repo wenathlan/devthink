@@ -98,9 +98,9 @@ export default function Sol() {
           <Route path="/chat" component={ChatAnchor} />
           <Route path="/videostudio" component={VideoStudioAnchor} />
           <Route path="/musicstudio" component={MusicStudioAnchor} />
-          <Route path="/image" component={ImageAnchor} />
-          <Route path="/calculator" component={CalculatorAnchor} />
-          <Route path="/games" component={GamesAnchor} />
+          <Route path="/image" component={() => <ImageAnchor />} />
+          <Route path="/calculator" component={() => <CalculatorAnchor />} />
+          <Route path="/games" component={() => <GamesAnchor />} />
           <Route path="/console" component={ConsoleAnchor} />
           <Route path="/gateway" component={GatewayAnchor} />
           <Route path="/gateway/v/:versionId" component={GatewayAnchor} />
@@ -108,7 +108,7 @@ export default function Sol() {
           <Route path="/projects" component={ProjectsAnchor} />
           <Route path="/routes" component={RoutesAnchor} />
           <Route path="/usage" component={UsageAnchor} />
-          <Route path="/docs" component={DocsAnchor} />
+          <Route path="/docs" component={() => <DocsAnchor />} />
           <Route path="/explore" component={ExploreAnchor} />
           <Route path="/history" component={HistoryAnchor} />
           <Route path="/settings" component={SettingsAnchor} />

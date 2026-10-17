@@ -33,16 +33,17 @@ import {
 } from "lucide-react";
 import { type FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { alttabkeydown } from "../../alttab.ts";
+import { DESKTOP_APPS, type DesktopApp, seedOsView } from "../../appregistry.ts";
 import { familyurl } from "../../deploybase.ts";
+import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "../../paneltypes.ts";
 import { pushrecentapp } from "../../recentapps.ts";
 import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspace.ts";
 import { type AltTabCard, AltTabSwitcher } from "../shell/alttabswitcher.tsx";
-import { DESKTOP_APPS, type DesktopApp, seedOsView } from "../../appregistry.ts";
 import { ShellChrome } from "../shell/ShellChrome.tsx";
+import { windowApp } from "../windowregistry.tsx";
 import { DesktopSurface } from "./desktop.tsx";
 import { ShaderWall } from "./shaderwall.tsx";
 import { WorkspaceTabs } from "./tabs.tsx";
-import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "../../paneltypes.ts";
 import { WINDOW_MIN_HEIGHT, WindowFrame, type WindowSnapshot } from "./windowframe.tsx";
 
 /** the work categories with their lucide glyphs (i1: icons are components,
@@ -106,19 +107,46 @@ function destinationFrom(sectionId: string): WorkspaceDestination {
 }
 
 /** default floating snapshot for a freshly opened window (the daedalOS
- * cascade offset — each new window lands 26px down-right of the last) */
+ * cascade offset — each new window lands 26px down-right of the last; the
+ * spawn geometry comes from the window registry when the app declares one) */
 function defaultSnapshot(id: string, title: string, openCount: number): WindowSnapshot {
   const cascade = (openCount % 4) * 26;
+  const spawn = windowApp(id)?.spawn;
+  const width = Math.min(spawn?.width ?? 760, Math.max(460, Math.round(window.innerWidth * 0.52)));
+  const height = Math.max(
+    WINDOW_MIN_HEIGHT,
+    Math.min(
+      spawn?.height ?? Number.POSITIVE_INFINITY,
+      Math.round(window.innerHeight - SHELL_TOP - SHELL_BOTTOM - 130),
+    ),
+  );
   return {
     id,
     title,
-    x: Math.min(Math.max(28, Math.round(window.innerWidth * 0.2) + cascade), Math.max(28, window.innerWidth - 520)),
+    x: Math.min(Math.max(28, Math.round(window.innerWidth * 0.2) + cascade), Math.max(28, window.innerWidth - width)),
     y: SHELL_TOP + 26 + cascade,
-    width: Math.min(760, Math.max(460, Math.round(window.innerWidth * 0.52))),
-    height: Math.max(WINDOW_MIN_HEIGHT, Math.round(window.innerHeight - SHELL_TOP - SHELL_BOTTOM - 130)),
+    width,
+    height,
     state: "normal",
     z: Z_BASE,
   };
+}
+
+/** The persisted window layout (the desktopstate pattern): the snapshots
+ * ride localStorage and hydrate once, ids without a catalog app drop out. */
+const WINDOWS_STORAGE_KEY = "dt.windows.v1";
+
+function loadWindows(): WindowSnapshot[] {
+  try {
+    const raw = window.localStorage.getItem(WINDOWS_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as WindowSnapshot[];
+    return parsed.filter(
+      (win) => typeof win.id === "string" && win.id !== "" && (win.id === "chat" || windowApp(win.id) !== undefined),
+    );
+  } catch {
+    return [];
+  }
 }
 
 export function ShellWorkspace({
@@ -153,8 +181,9 @@ export function ShellWorkspace({
       ? `${tabs.length} open ${tabs.length === 1 ? "tab" : "tabs"} — ${entries.length} local entries`
       : `${entries.length} ${entries.length === 1 ? "entry" : "entries"} — ${routeLabel}`;
 
-  /** the desktop starts with the icon grid only — windows open on demand */
-  const [windows, setWindows] = useState<WindowSnapshot[]>([]);
+  /** the desktop boots with the persisted layout (empty on a fresh device) —
+   * windows open on demand and the layout rides localStorage */
+  const [windows, setWindows] = useState<WindowSnapshot[]>(() => loadWindows());
   /** the alt-tab gesture: the acrylic task switcher rides above the shell
    * while the chord is held (the first alt+tab mounts it on the window
    * behind the topmost one) */
@@ -164,6 +193,16 @@ export function ShellWorkspace({
   const applyWindows = useCallback((next: (current: WindowSnapshot[]) => WindowSnapshot[]) => {
     setWindows((current) => next(current).map((win, index) => ({ ...win, z: Z_BASE + index })));
   }, []);
+
+  // the layout persists: every window change rides localStorage so the
+  // desktop boots the way the visitor left it
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(WINDOWS_STORAGE_KEY, JSON.stringify(windows));
+    } catch {
+      // storage unavailable: the layout lives for this mount only
+    }
+  }, [windows]);
 
   const focusWindow = useCallback(
     (id: string) => {
@@ -289,10 +328,21 @@ export function ShellWorkspace({
         return;
       }
       if (app.target.kind === "destination") {
+        // destination apps of the registry open in place as windows
+        if (windowApp(app.target.id)) {
+          toggleWindow(app.target.id, app.name);
+          return;
+        }
         if (isWorkspaceDestination(app.target.id)) onDestination(app.target.id);
         return;
       }
       if (app.target.kind === "route") {
+        // the windows law: the registry app opens as a floating window —
+        // the route stays for deep links and the taskbar fallback
+        if (windowApp(app.id)) {
+          toggleWindow(app.id, app.name);
+          return;
+        }
         onNavigate(app.target.href);
         return;
       }
@@ -442,7 +492,7 @@ export function ShellWorkspace({
                   <span>tabs — history — ctrl+K commands — enter run</span>
                 </footer>
               </>
-            ) : (
+            ) : win.id === "history" ? (
               <div className="terminal-history shell-history-window">
                 <p>Open session tabs remain local to this workspace.</p>
                 {tabs.map((tab) => (
@@ -458,6 +508,8 @@ export function ShellWorkspace({
                   </button>
                 ))}
               </div>
+            ) : (
+              <WindowHost id={win.id} />
             )}
           </WindowFrame>
         ))}
@@ -468,5 +520,18 @@ export function ShellWorkspace({
         <AltTabSwitcher cards={switcherCards} onCommit={commitSwitch} onClose={() => setSwitching(false)} />
       )}
     </main>
+  );
+}
+
+/** WindowHost — the sandbox body of a registry window: the app anchor with
+ * the embedded contract (no shell, no hero inside the frame). */
+function WindowHost({ id }: { id: string }) {
+  const app = windowApp(id);
+  if (!app) return null;
+  const Body = app.component;
+  return (
+    <div className="shell-window__host">
+      <Body embedded />
+    </div>
   );
 }
