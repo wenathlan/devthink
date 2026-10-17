@@ -19,6 +19,7 @@ import Image from "./image/image.tsx";
 import Projects from "./projects/projects.tsx";
 import Routes from "./routes/routes.tsx";
 import Settings from "./settings/settings.tsx";
+import { FamilyFrame } from "./shell/familyframe.tsx";
 import Usage from "./usage/usage.tsx";
 import Video from "./video/video.tsx";
 
@@ -49,4 +50,27 @@ export const WINDOW_APPS: Record<string, WindowApp> = {
 /** Reads one windowed app by id, or undefined when the app still navigates. */
 export function windowApp(id: string): WindowApp | undefined {
   return WINDOW_APPS[id];
+}
+
+/** the family applications: the deploy units of the one family, each riding
+ * its own repository subpath inside the window (the power clip). The ids
+ * match the appregistry rows, so the desktop, the start rail and the deep
+ * routes open them like every other window app. */
+const FAMILY_SLUGS: readonly string[] = [
+  "saddle",
+  "argan",
+  "cadria",
+  "debonair",
+  "stealthhead",
+  "forge",
+  "foundry",
+  "vault",
+  "getry",
+  "cobaia",
+];
+for (const slug of FAMILY_SLUGS) {
+  WINDOW_APPS[slug] = {
+    component: () => <FamilyFrame slug={slug} title={slug} />,
+    spawn: { width: 980, height: 680 },
+  };
 }
