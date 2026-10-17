@@ -335,14 +335,8 @@ jobs:
               <script>
                 (function () {
                   var repo = "${REPO_NAME}";
-                  var family = ["saddle", "argan", "cadria", "debonair", "stealthhead", "forge", "foundry", "vault", "getry", "cobaia"];
                   var parts = location.pathname.split("/").filter(Boolean);
                   if (parts[0] === repo) parts = parts.slice(1);
-                  var head = parts[0] || "";
-                  if (family.indexOf(head) !== -1) {
-                    location.replace("/" + head + "/" + location.search);
-                    return;
-                  }
                   try {
                     if (parts.length > 0 && !/\.[a-z0-9]+$/i.test(parts[parts.length - 1])) {
                       sessionStorage.setItem("dt.deep.route", "/" + parts.join("/"));

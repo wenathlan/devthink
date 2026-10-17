@@ -25,7 +25,7 @@ import {
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
-import { SolLogoMark } from "../panel/logo.tsx";
+import { SolLogoMark, SolWordmark } from "../panel/logo.tsx";
 import { SaddleTabBridge, VerticalSaddleBridge } from "./saaskit.tsx";
 import {
   SaasCadria,
@@ -192,7 +192,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                   className="group inline-flex items-center gap-1 text-slate-950 transition hover:scale-[1.015]"
                 >
                   <SolLogoMark size={28} />
-                  <span className="text-lg font-extrabold tracking-[-0.035em]">DevThink</span>
+                  <SolWordmark height={18} title="DevThink" />
                 </button>
               </div>
               <div className="flex shrink-0 flex-col items-center drop-shadow-[0_10px_20px_rgba(15,23,42,0.06)]">

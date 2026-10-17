@@ -59,9 +59,11 @@ export function deploybase(): string {
  * on the slug are tolerated and never doubled.
  *
  * @param slug the deploy unit segment (the app folder name).
- * @returns the relative url of the family application (`../<slug>/`).
+ * @returns the in-site url of the family application (`/<base>/<slug>/`) —
+ * the family themes deploy under the same repository subpath, so the url
+ * never leaves the site.
  */
 export function familyurl(slug: string): string {
   const clean = slug.replace(/^\/+|\/+$/g, "");
-  return `${deploybase()}/../${clean}/`;
+  return `${deploybase()}/${clean}/`;
 }
