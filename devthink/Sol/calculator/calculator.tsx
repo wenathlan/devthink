@@ -135,7 +135,9 @@ const ledeStyle = { margin: 0, maxWidth: "52ch", color: "var(--dt-muted)", fontS
 /** the mode note as plain editorial copy: a hairline kicker, no box */
 const briefStyle = { display: "grid", gap: 10 } as const;
 
-export default function Calculator() {
+/** The calculator page: the Windows body when embedded (the desktop window
+ * hosts it without the shell), the full surface with the taskbar on the route. */
+export default function Calculator({ embedded }: { embedded?: boolean }) {
   const [expression, setExpression] = useState("");
   const [answer, setAnswer] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -224,8 +226,8 @@ export default function Calculator() {
   }, [pressKey]);
 
   return (
-    <main className="control-page">
-      <ShellChrome />
+    <main className="control-page" style={embedded ? { height: "100%", overflow: "auto" } : undefined}>
+      {!embedded && <ShellChrome />}
       <div className="page-container grain" style={containerStyle}>
         <header className="pagehead enter" style={{ ...pageheadStyle, ...step(0) }}>
           <p className="pagehead__eyebrow r2a-eyebrow">devthink calculator</p>

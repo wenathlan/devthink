@@ -127,7 +127,9 @@ function launch(binary: RunnerBinary) {
   });
 }
 
-export default function Games() {
+/** The games page: the Windows body when embedded (the desktop window hosts
+ * it without the shell), the full surface with the taskbar on the route. */
+export default function Games({ embedded }: { embedded?: boolean }) {
   ensureGamesCss();
   const [binaries, setBinaries] = useState<RunnerBinary[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -143,8 +145,8 @@ export default function Games() {
   const applications = binaries.length - games;
 
   return (
-    <main className="control-page atmos">
-      <ShellChrome />
+    <main className="control-page atmos" style={embedded ? { height: "100%", overflow: "auto" } : undefined}>
+      {!embedded && <ShellChrome />}
       <div className="page-container">
         <header className="pagehead r2b-head r2b-stage shader-stage enter" style={step(0)}>
           <div className="radial-light" aria-hidden="true" />

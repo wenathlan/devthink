@@ -10169,3 +10169,172 @@ span[data-tile] {
     scroll-behavior: auto !important;
   }
 }
+
+/* ---- the windows app kit (dtw): the in-window body every subapp shares.
+   The Windows 11 grammar — the nav pane with the 3px accent pill, hairline
+   content cards, 36px rows, the 40px code bar — no editorial theater. The
+   docs app is the template; the other subapps adopt the kit as they rebuild
+   into the window contract. ---- */
+.dtw-docs {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  height: 100dvh;
+}
+.dtw-docs__body {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  height: 100%;
+  min-height: 0;
+}
+.dtw-docs__nav {
+  display: grid;
+  gap: 2px;
+  align-content: start;
+  padding: 12px 8px;
+  border-right: 1px solid var(--dtv3-hairline);
+  overflow-y: auto;
+}
+.dtw-docs__navrow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--dtv3-ink-2);
+  font: 400 13px var(--font-sans, var(--dt-sans));
+  cursor: pointer;
+  transition: background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-docs__navrow:hover {
+  background: color-mix(in srgb, var(--dtv3-sig) 8%, transparent);
+}
+.dtw-docs__navrow[data-active="true"] {
+  background: color-mix(in srgb, var(--dtv3-sig) 12%, transparent);
+  color: var(--dtv3-ink-1);
+}
+.dtw-docs__navrow[data-active="true"]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--color-win);
+}
+.dtw-docs__content {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+  padding: 24px 28px 40px;
+  overflow-y: auto;
+  min-height: 0;
+}
+.dtw-docs__title {
+  margin: 0;
+  color: var(--dtv3-ink-1);
+  font: 600 28px/1.2 var(--font-sans, var(--dt-sans));
+  letter-spacing: -0.02em;
+}
+.dtw-docs__card {
+  display: grid;
+  gap: 10px;
+  padding: 16px 18px;
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--dtv3-ink-1) 3%, transparent);
+}
+.dtw-docs__cardtitle {
+  margin: 0;
+  color: var(--dtv3-ink-1);
+  font: 600 14px var(--font-sans, var(--dt-sans));
+}
+.dtw-docs__copy {
+  margin: 0;
+  color: var(--dtv3-ink-2);
+  font: 400 13px/1.6 var(--font-sans, var(--dt-sans));
+}
+.dtw-docs__copy code {
+  font: 500 12px var(--dt-mono);
+  color: var(--dtv3-sig);
+}
+.dtw-docs__rows {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dtw-docs__row {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  min-height: 36px;
+  padding: 6px 2px;
+  border-bottom: 1px solid var(--dtv3-hairline);
+  color: var(--dtv3-ink-2);
+  font: 400 12.5px/1.5 var(--font-sans, var(--dt-sans));
+}
+.dtw-docs__row:last-child {
+  border-bottom: 0;
+}
+.dtw-docs__row code {
+  color: var(--dtv3-ink-1);
+  font: 600 12px var(--dt-mono);
+}
+.dtw-docs__code {
+  margin: 0;
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.dtw-docs__codebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 40px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--dtv3-hairline);
+  background: color-mix(in srgb, var(--dtv3-ink-1) 4%, transparent);
+  color: var(--dtv3-ink-3);
+  font: 500 11px var(--dt-mono);
+  letter-spacing: 0.04em;
+}
+.dtw-docs__codecopy {
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--dtv3-ink-2);
+  font: 500 11px var(--font-sans, var(--dt-sans));
+  cursor: pointer;
+  transition: background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-docs__codecopy:hover {
+  background: color-mix(in srgb, var(--dtv3-sig) 12%, transparent);
+}
+.dtw-docs__code pre {
+  margin: 0;
+  padding: 14px 16px;
+  overflow: auto;
+  color: var(--dtv3-ink-2);
+  font: 500 12px/1.7 var(--dt-mono);
+}
+@media (max-width: 760px) {
+  .dtw-docs__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .dtw-docs__nav {
+    display: flex;
+    overflow-x: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--dtv3-hairline);
+    padding: 8px;
+  }
+}
+.shell-window__body > * {
+  min-height: 0;
+}

@@ -115,7 +115,9 @@ function queueRender(asset: StudioAsset) {
   });
 }
 
-export default function ImageStudio() {
+/** The image studio: the Windows body when embedded (the desktop window
+ * hosts it without the shell), the full surface with the taskbar on the route. */
+export default function ImageStudio({ embedded }: { embedded?: boolean }) {
   ensureImageCss();
   const [apps, setApps] = useState<NativeApp[]>([]);
   const [assets, setAssets] = useState<StudioAsset[]>([]);
@@ -135,8 +137,8 @@ export default function ImageStudio() {
   const maxmp = Math.max(...assets.map((asset) => megapixelsOf(asset.size) ?? 0), 0.1);
 
   return (
-    <main className="control-page atmos">
-      <ShellChrome />
+    <main className="control-page atmos" style={embedded ? { height: "100%", overflow: "auto" } : undefined}>
+      {!embedded && <ShellChrome />}
       <div className="page-container">
         <header className="pagehead r2b-head shader-stage enter" style={step(0)}>
           <div className="radial-light" aria-hidden="true" />
