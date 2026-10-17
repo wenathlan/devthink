@@ -17,6 +17,7 @@
     "proxy-addr": "2.0.8"
   },
   "dependencies": {
+    "@fluentui/react-icons": "^2.0.344",
     "@hono/node-server": "^2.1.5",
     "@libsql/client": "^0.18.0",
     "@prisma/adapter-libsql": "^7.10.1",
