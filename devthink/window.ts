@@ -1,37 +1,35 @@
 /**
  * window.ts — the pure window logic of the os (root layer): what a window
- * is, which apps open as windows and the spawn geometry each one boots at.
- * No react, no anchors, no component binding — the theme layer
- * (Sol/windowregistry.tsx) reads this catalog and binds the anchor
- * components; every surface (desktop, start rail, deep routes) asks this
- * module and every subapp inherits the window contract from one syntax.
+ * is and which apps open as windows. No react, no anchors, no presentation
+ * info — the spawns, the labels and every per-app value live in the theme
+ * layer and the database, never here: this syntax serves any app, any
+ * subapp, any deploy unit without a code change. The theme layer
+ * (Sol/windowregistry.tsx) binds the components and the presentation; the
+ * labels ride the catalog db.
  */
 
-/** One windowed app of the catalog: the spawn geometry the frame opens at
- * and where the body comes from — an anchor of the theme (kind "anchor")
- * or a family application riding its repository subpath (kind "family"). */
+/** One windowed app of the catalog: where the body comes from — an anchor
+ * of the theme (kind "anchor") or a family application riding its
+ * repository subpath (kind "family"). No presentation values here. */
 export type WindowEntry = {
   kind: "anchor" | "family";
   /** the family deploy unit slug (kind "family" only) */
   slug?: string;
-  spawn: { width: number; height: number };
 };
 
-/** the spawn geometry of every windowed app: the anchors of the os and the
- * family deploy units — one table, one syntax, no hardcoding at the call
- * sites */
-export const WINDOW_CATALOG: Record<string, WindowEntry> = {
-  calculator: { kind: "anchor", spawn: { width: 520, height: 660 } },
-  docs: { kind: "anchor", spawn: { width: 980, height: 680 } },
-  image: { kind: "anchor", spawn: { width: 900, height: 640 } },
-  games: { kind: "anchor", spawn: { width: 900, height: 640 } },
-  console: { kind: "anchor", spawn: { width: 980, height: 680 } },
-  usage: { kind: "anchor", spawn: { width: 900, height: 640 } },
-  settings: { kind: "anchor", spawn: { width: 960, height: 680 } },
-  projects: { kind: "anchor", spawn: { width: 900, height: 640 } },
-  audio: { kind: "anchor", spawn: { width: 900, height: 640 } },
-  video: { kind: "anchor", spawn: { width: 960, height: 640 } },
-};
+/** the windowed anchors of the os (structure, not info) */
+export const WINDOW_ANCHORS: readonly string[] = [
+  "calculator",
+  "docs",
+  "image",
+  "games",
+  "console",
+  "usage",
+  "settings",
+  "projects",
+  "audio",
+  "video",
+];
 
 /** the family applications: the deploy units of the one family, each riding
  * its own repository subpath inside the window (the power clip) */
@@ -53,14 +51,18 @@ export const FAMILY_SLUGS: readonly string[] = [
 export function familyentries(): Record<string, WindowEntry> {
   const rows: Record<string, WindowEntry> = {};
   for (const slug of FAMILY_SLUGS) {
-    rows[slug] = { kind: "family", slug, spawn: { width: 980, height: 680 } };
+    rows[slug] = { kind: "family", slug };
   }
   return rows;
 }
 
 /** the full catalog: the anchors plus the family rows */
 export function windowcatalog(): Record<string, WindowEntry> {
-  return { ...WINDOW_CATALOG, ...familyentries() };
+  const rows: Record<string, WindowEntry> = {};
+  for (const id of WINDOW_ANCHORS) {
+    rows[id] = { kind: "anchor" };
+  }
+  return { ...rows, ...familyentries() };
 }
 
 /** Reads one windowed app entry by id, or undefined when the app still

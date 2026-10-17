@@ -44,18 +44,36 @@ const ANCHORS: Record<string, ComponentType<{ embedded?: boolean }>> = {
   video: Video,
 };
 
+/** the presentation values of the window frames (the theme layer owns them,
+ * the root logic never does): the default spawn and the per-app overrides —
+ * the same values the database serves once the label table lands */
+const DEFAULT_SPAWN = { width: 900, height: 640 };
+const SPAWN_OVERRIDES: Record<string, { width: number; height: number }> = {
+  calculator: { width: 520, height: 660 },
+  docs: { width: 980, height: 680 },
+  console: { width: 980, height: 680 },
+  settings: { width: 960, height: 680 },
+  video: { width: 960, height: 680 },
+};
+
+/** the spawn of one app: the override when the theme answers one, the
+ * default otherwise */
+function spawnof(id: string): { width: number; height: number } {
+  return SPAWN_OVERRIDES[id] ?? DEFAULT_SPAWN;
+}
+
 /** binds one catalog row to its component: the anchors bind by id, the
  * family rows bind to the power clip frame of their subpath */
 function bindentry(id: string, entry: WindowEntry): WindowApp {
   if (entry.kind === "family") {
     const slug = entry.slug ?? id;
-    return { component: () => <FamilyFrame slug={slug} title={slug} />, spawn: entry.spawn };
+    return { component: () => <FamilyFrame slug={slug} title={slug} />, spawn: spawnof(id) };
   }
   const anchor = ANCHORS[id];
   if (!anchor) {
-    return { component: () => null, spawn: entry.spawn };
+    return { component: () => null, spawn: spawnof(id) };
   }
-  return { component: anchor, spawn: entry.spawn };
+  return { component: anchor, spawn: spawnof(id) };
 }
 
 /** The windowed apps of the desktop: the pure root catalog with the

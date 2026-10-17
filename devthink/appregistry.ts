@@ -224,15 +224,6 @@ export const DESKTOP_APPS: DesktopApp[] = [
     target: { kind: "destination", id: "settings" },
   },
   {
-    id: "panel",
-    name: "Panel",
-    detail: "The OS desktop",
-    tint: "#dfe5ee",
-    icon: Monitor,
-    pinned: true,
-    target: { kind: "route", href: "/panel" },
-  },
-  {
     id: "argan",
     name: "Argan",
     detail: "DNS and gateway library of the OS",
