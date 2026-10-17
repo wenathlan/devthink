@@ -96,8 +96,8 @@ export default function Sol() {
           <Route path="/auth" component={AuthAnchor} />
           <Route path="/os" component={OsAnchor} />
           <Route path="/chat" component={ChatAnchor} />
-          <Route path="/videostudio" component={VideoStudioAnchor} />
-          <Route path="/musicstudio" component={MusicStudioAnchor} />
+          <Route path="/videostudio" component={() => <VideoStudioAnchor />} />
+          <Route path="/musicstudio" component={() => <MusicStudioAnchor />} />
           <Route path="/image" component={() => <ImageAnchor />} />
           <Route path="/calculator" component={() => <CalculatorAnchor />} />
           <Route path="/games" component={() => <GamesAnchor />} />

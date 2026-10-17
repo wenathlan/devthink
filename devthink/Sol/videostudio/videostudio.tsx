@@ -1,55 +1,28 @@
 /**
- * videostudio page anchor — layer 3 of the anchor architecture.
- * The file carrying the folder's own name is the path manager of the page:
- * it imports the loose components beside it, mounts the page and re-exports
- * the public component surface. Only the theme anchor (Sol/Sol.tsx) consumes
- * this file. This anchor carries the former main component of the folder,
- * which now lives here as the page mount itself.
+ * videostudio page anchor — layer 3 of the anchor architecture. The file
+ * carrying the folder's own name is the path manager of the page: it imports
+ * the loose components beside it, mounts the page and re-exports the public
+ * component surface. Only the theme anchor (Sol/Sol.tsx) and the window
+ * registry (Sol/windowregistry.tsx) consume this file.
+ *
+ * Video — the video studio in the Windows 11 grammar: a nav pane beside the
+ * content deck, the assets as hairline rows and the render queue over the
+ * gateway to the versawase engine. The engine itself is never bundled: it
+ * rides the catalog over https from the cadria app. The old control shells
+ * are retired — this body rides the dtw kit.
  */
-
-/** Style: DevThink Terminal Atelier — the video studio page of the super platform.
- * The versawase engine banner is pulled from the catalog rows, the studio assets
- * render as table rows with a render button, and every render request queues over
- * the gateway. The engine itself is never bundled: it rides the catalog over https.
- * The panels ride the shared surface grammar: p-4 padding, 8px radii and the
- * 28–36px control ladder (the render button stays the 28px apps-action). */
-import { Clapperboard, Database, Play } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { AutomationNote } from "@/shell/automationnote";
-import { ControlShell } from "@/shell/ControlShell";
+import { ShellChrome } from "@/shell/ShellChrome";
 import { type NativeApp, nativeApps, type StudioAsset, studioAssets } from "../../catalog";
 import { queuestudiorender } from "../../runner";
+import { VideoAssets } from "./videoassets.tsx";
+import { VideoEngine } from "./videoengine.tsx";
+import "./videostudio.css";
 
-/** The engine banner: the catalog row of the owning app becomes one raised note
- * with the engine, the owner and the honest line about where the engine lives. */
-function EngineBanner({ app }: { app: NativeApp | undefined }) {
-  if (!app)
-    return (
-      <section className="control-note" style={{ display: "grid", gap: 10, padding: 16, borderRadius: 8 }}>
-        <h2 style={{ margin: 0, fontSize: 15, color: "var(--dt-text)" }}>the versawase engine</h2>
-        <p style={{ margin: 0 }}>
-          The catalog has not answered the versawase engine row yet, so the banner stays empty until the database pairs.
-        </p>
-      </section>
-    );
-  return (
-    <section className="control-note" style={{ display: "grid", gap: 10, padding: 16, borderRadius: 8 }}>
-      <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-        <Clapperboard size={15} style={{ color: "var(--dt-orange)" }} />
-        <h2 style={{ margin: 0, fontSize: 15, color: "var(--dt-text)" }}>the {app.engine} engine</h2>
-        <span className="control-badge">{app.owner}</span>
-      </div>
-      <p style={{ margin: 0 }}>{app.blurb}</p>
-      <p style={{ margin: 0, color: "var(--dt-muted)" }}>
-        The {app.engine} engine rides the catalog over https, so this page never bundles the engine itself.
-      </p>
-    </section>
-  );
-}
-
-/** Queues one render and surfaces the answer with the sonner toast the workbench
- * already uses: the reason text is the honest answer of the queue client. */
+/** Queues one render and surfaces the answer with the sonner toast the
+ * workbench already uses: the reason text is the honest answer of the queue
+ * client. */
 function queueRender(asset: StudioAsset) {
   void queuestudiorender(asset, `render requested from the video studio for ${asset.title}`).then((answer) => {
     if (answer.queued) toast.success(`${asset.title} ${answer.reason}`);
@@ -57,74 +30,39 @@ function queueRender(asset: StudioAsset) {
   });
 }
 
-export default function VideoStudio() {
+/** The video studio: the Windows body when embedded (the desktop window
+ * hosts it without the shell), the full surface with the taskbar on the
+ * route. */
+export default function VideoStudio({ embedded }: { embedded?: boolean }) {
   const [apps, setApps] = useState<NativeApp[]>([]);
   const [assets, setAssets] = useState<StudioAsset[]>([]);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     void nativeApps().then(setApps);
-    void studioAssets().then((rows) => setAssets(rows.filter((asset) => asset.studio === "video")));
+    void studioAssets().then((rows) => {
+      setAssets(rows.filter((asset) => asset.studio === "video"));
+      setLoaded(true);
+    });
   }, []);
 
   const engine = apps.find((app) => app.engine === "versawase" && app.owner === "cadria");
 
   return (
-    <ControlShell
-      eyebrow="super platform · the video studio"
-      title="Video"
-      summary="The native video editor on the cadria versawase engine: the assets come from the catalog and the renders queue over the gateway."
-    >
-      <EngineBanner app={engine} />
-
-      <section className="control-note" style={{ display: "grid", gap: 10, padding: 16, borderRadius: 8 }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-          <Database size={15} style={{ color: "var(--dt-blue)" }} />
-          <h2 style={{ margin: 0, fontSize: 15, color: "var(--dt-text)" }}>studio assets</h2>
+    <main className="dtw-app dtw-video" style={embedded ? { height: "100%", overflow: "auto" } : undefined}>
+      {!embedded && <ShellChrome />}
+      <div className="dtw-pane">
+        <nav className="dtw-nav" aria-label="Video studio sections">
+          <span className="dtw-navrow" data-active="true">
+            Assets
+          </span>
+        </nav>
+        <div className="dtw-content">
+          <h1 className="dtw-title">Video</h1>
+          <VideoEngine app={engine} />
+          <VideoAssets rows={assets} loaded={loaded} onRender={queueRender} />
         </div>
-        {assets.length ? (
-          <div style={{ overflowX: "auto" }}>
-            <table className="control-table">
-              <thead>
-                <tr>
-                  <th>asset</th>
-                  <th>engine</th>
-                  <th>duration</th>
-                  <th>render</th>
-                </tr>
-              </thead>
-              <tbody>
-                {assets.map((asset) => (
-                  <tr key={asset.id}>
-                    <td>{asset.title}</td>
-                    <td>
-                      <code>{asset.engine}</code>
-                    </td>
-                    <td>{asset.duration}</td>
-                    <td>
-                      <button
-                        type="button"
-                        className="apps-action"
-                        style={{ minHeight: 28, borderRadius: 8 }}
-                        onClick={() => queueRender(asset)}
-                      >
-                        <Play size={11} />
-                        render
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p style={{ margin: 0 }}>
-            The catalog has not answered any video assets yet, so the render queue stays closed and the table stays
-            empty.
-          </p>
-        )}
-      </section>
-
-      <AutomationNote />
-    </ControlShell>
+      </div>
+    </main>
   );
 }
