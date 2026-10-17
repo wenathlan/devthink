@@ -37,7 +37,7 @@ import { familyurl } from "../../deploybase.ts";
 import { pushrecentapp } from "../../recentapps.ts";
 import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspace.ts";
 import { type AltTabCard, AltTabSwitcher } from "../shell/alttabswitcher.tsx";
-import { DESKTOP_APPS, type DesktopApp, seedOsView } from "../shell/appregistry.ts";
+import { DESKTOP_APPS, type DesktopApp, seedOsView } from "../../appregistry.ts";
 import { ShellChrome } from "../shell/ShellChrome.tsx";
 import { DesktopSurface } from "./desktop.tsx";
 import { ShaderWall } from "./shaderwall.tsx";

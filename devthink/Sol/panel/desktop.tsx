@@ -46,10 +46,8 @@ import {
   useState,
 } from "react";
 import { useLocation } from "wouter";
+import { type DesktopApp, seedOsView } from "../../appregistry.ts";
 import { familyurl } from "../../deploybase.ts";
-import { type DesktopApp, seedOsView } from "../shell/appregistry.ts";
-import { AppTile } from "../shell/apptile.tsx";
-import { DesktopMenu, type MenuEntry } from "./desktopmenu.tsx";
 import {
   BAND_BOTTOM_PX,
   BAND_TOP_PX,
@@ -72,6 +70,9 @@ import {
   sortAppsByKind,
   sortAppsByName,
 } from "../../desktopstate.ts";
+import { useIsMobile } from "../../useismobile.ts";
+import { AppTile } from "../shell/apptile.tsx";
+import { DesktopMenu, type MenuEntry } from "./desktopmenu.tsx";
 import { SolLogoMark } from "./logo.tsx";
 
 /**
@@ -184,6 +185,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
   const marqueeDragRef = useRef<MarqueeDragState | null>(null);
   const [, navigate] = useLocation();
   const reduced = useReducedMotion();
+  const mobile = useIsMobile();
 
   /** the stored user positions (moved icons), loaded once from localStorage */
   const [overrides, setOverrides] = useState<IconSpotMap>(() => loadIconSpots());
@@ -318,9 +320,9 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
     dragRef.current = null;
     event.currentTarget.removeAttribute("data-dragging");
     if (!drag.moved) {
-      // the single plain click opens the app (the drag threshold already
-      // separates a tap from a move; modifiers keep their select-only role)
-      if (drag.openable && event.button === 0) {
+      // the windows desktop opens on the double click; the mobile layout
+      // (static cells, no hover) keeps the single tap
+      if (mobile && drag.openable && event.button === 0) {
         const app = apps.find((candidate) => candidate.id === drag.appId);
         if (app) onOpen(app);
       }
@@ -690,6 +692,9 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
               onPointerMove={(event) => onCellPointerMove(app, event)}
               onPointerUp={onCellPointerUp}
               onPointerCancel={onCellPointerCancel}
+              onDoubleClick={() => {
+                if (!mobile) onOpen(app);
+              }}
               onKeyDown={(event) => onCellKeyDown(app, event)}
             >
               <AppTile app={app} size={26} />

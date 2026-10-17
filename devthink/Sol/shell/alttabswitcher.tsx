@@ -20,7 +20,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { alttabkeydown, mruorder, nextaltindex } from "../../alttab.ts";
-import type { DesktopApp } from "./appregistry.ts";
+import type { DesktopApp } from "../../appregistry.ts";
 import { AppTile } from "./apptile.tsx";
 
 /** one card of the switcher: a shell window of the workspace */

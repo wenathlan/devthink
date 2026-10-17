@@ -29,7 +29,7 @@ import { ArrowUpRight } from "lucide-react";
 import { type CSSProperties, type FormEvent, type ReactNode, useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { familyurl } from "../../deploybase.ts";
-import { DESKTOP_APPS, type DesktopApp, isFamilyApp, seedOsView } from "../shell/appregistry.ts";
+import { DESKTOP_APPS, type DesktopApp, isFamilyApp, seedOsView } from "../../appregistry.ts";
 import { AppTile } from "../shell/apptile.tsx";
 import { HeroWaves } from "./waves.tsx";
 
