@@ -1,21 +1,12 @@
 /**
- * identity.tsx — the Settings side of the local identity: the surface that
- * replaced the retired /auth entry pass (defect map §5). The identity is
- * browser-local through db.ts (IndexedDB): one record of user id + device
- * id ensured silently on every boot of the OS, plus the display name as a
- * stored preference. The OS entry never asks for it — the panel resolves
- * it silently — and this section is the single honest place where a person
- * sees and edits it. It is a settings page, never a login screen.
+ * identity.tsx — the settings side of the local identity: one record of
+ * user id + device id ensured silently on every boot of the os, plus the
+ * display name as a stored preference. The os entry never asks for it —
+ * the panel resolves it silently — and this section is the single honest
+ * place where a person sees and edits it. It is a settings page, never a
+ * login screen. Loose component of the settings page, riding the dtw kit.
  */
-
-/** Style: DevThink Settings — the clean local-account section. Named classes
- * from Sol/sol.viewsdelta.css (.set-*) over the theme tokens: one hairline
- * section riding the deck skeleton (.r2c-sec), 44px well input with the 2px
- * focus underline in the theme focus tone, tabular-nums ids, zero accent
- * hue (the canvas neutrals carry the section), zero pill, zero box-in-box.
- * Every surface rides the canonical ink tokens (--color-ink*) so the section
- * stays legible when the deck inherits the light theme (the /os anchor raises
- * data-theme on the document root) — the light twin is a real twin. */
+import { PersonRegular } from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { type BrowserIdentity, browserIdentity, readBrowserPreferences, saveBrowserPreference } from "../../db";
@@ -24,29 +15,21 @@ import { type BrowserIdentity, browserIdentity, readBrowserPreferences, saveBrow
  * the retired lock screen and entry pass stored — nothing else reads it) */
 const NAME_KEY = "displayName";
 
-/** the mono label voice of the section (the deck's lowercase mono eyebrow) */
-const monoLabel = { font: "500 10px/1 var(--font-mono, monospace)", letterSpacing: ".08em" } as const;
-const displayFace = { fontFamily: "var(--font-display, sans-serif)" } as const;
-
 /** one mono label/value line of the account ledger. */
 function IdRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="set-idrow">
-      <span className="set-idrow__k" style={monoLabel}>
-        {label}
-      </span>
-      <span className="set-idrow__v">{value}</span>
+    <div className="dtw-settings__kv">
+      <span className="dtw-settings__kvkey">{label}</span>
+      <span className="dtw-settings__kvvalue">{value}</span>
     </div>
   );
 }
 
-/**
- * LocalAccount — the local identity section of the browser-local settings
+/** LocalAccount — the local identity section of the browser-local settings
  * deck. Self-contained: reads the identity record and the stored display
  * name on mount, saves the name through the same browser preference store
  * the retired entry pass wrote, and never blocks on storage being
- * unavailable (the failure is a toast, not a gate).
- */
+ * unavailable (the failure is a toast, not a gate). */
 export function LocalAccount() {
   const [identity, setIdentity] = useState<BrowserIdentity>();
   const [savedName, setSavedName] = useState("");
@@ -86,28 +69,21 @@ export function LocalAccount() {
   const dirty = name.trim() !== savedName;
 
   return (
-    <section id="account" className="r2c-sec" aria-label="Local account">
-      <header className="r2c-sec__head">
-        <span className="r2c-sec__index" aria-hidden="true">
-          02
-        </span>
-        <div style={{ minWidth: 0 }}>
-          <p className="r2c-sec__eyebrow">local account</p>
-          <h2 className="r2c-sec__title">Local account</h2>
-        </div>
-      </header>
-      <p className="set-copy">One local identity, kept in this browser. Nothing leaves the machine.</p>
+    <section className="dtw-card" aria-label="Local account">
+      <h2 className="dtw-cardtitle">
+        <PersonRegular fontSize={15} aria-hidden="true" />
+        Local account
+      </h2>
+      <p className="dtw-copy">One local identity, kept in this browser. Nothing leaves the machine.</p>
       <form
-        className="set-form"
+        className="dtw-settings__form"
         onSubmit={(event) => {
           event.preventDefault();
           void save();
         }}
       >
-        <label className="set-field">
-          <span className="set-field__label" style={monoLabel}>
-            display name
-          </span>
+        <label className="dtw-settings__field">
+          <span>Display name</span>
           <input
             value={name}
             onChange={(event) => setName(event.target.value)}
@@ -116,25 +92,15 @@ export function LocalAccount() {
             autoComplete="nickname"
             spellCheck={false}
             aria-label="Display name"
-            className="set-input"
+            className="dtw-settings__input"
           />
         </label>
-        <button
-          type="submit"
-          disabled={busy || !dirty}
-          aria-busy={busy || undefined}
-          className="set-btn"
-          style={displayFace}
-        >
+        <button type="submit" disabled={busy || !dirty} aria-busy={busy || undefined} className="dtw-btn">
           {busy ? "Saving" : "Save name"}
         </button>
-        {savedName ? (
-          <span className="set-current" style={monoLabel}>
-            {savedName}
-          </span>
-        ) : null}
+        {savedName ? <small className="dtw-settings__base">{savedName}</small> : null}
       </form>
-      <div className="set-ledger">
+      <div>
         <IdRow label="user id" value={identity?.userId ?? "initializing"} />
         <IdRow label="device id" value={identity?.deviceId ?? "initializing"} />
         <IdRow

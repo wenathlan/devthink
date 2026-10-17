@@ -15,6 +15,7 @@ import Console from "./console/console.tsx";
 import Docs from "./docs/docs.tsx";
 import Games from "./games/games.tsx";
 import Image from "./image/image.tsx";
+import Settings from "./settings/settings.tsx";
 import Usage from "./usage/usage.tsx";
 
 /** One windowed app: the anchor component with the embedded contract and
@@ -34,6 +35,7 @@ export const WINDOW_APPS: Record<string, WindowApp> = {
   games: { component: Games, spawn: { width: 900, height: 640 } },
   console: { component: Console, spawn: { width: 980, height: 680 } },
   usage: { component: Usage, spawn: { width: 900, height: 640 } },
+  settings: { component: Settings, spawn: { width: 960, height: 680 } },
 };
 
 /** Reads one windowed app by id, or undefined when the app still navigates. */

@@ -111,7 +111,7 @@ export default function Sol() {
           <Route path="/docs" component={() => <DocsAnchor />} />
           <Route path="/explore" component={ExploreAnchor} />
           <Route path="/history" component={HistoryAnchor} />
-          <Route path="/settings" component={SettingsAnchor} />
+          <Route path="/settings" component={() => <SettingsAnchor />} />
           <Route path="/about" component={AboutAnchor} />
           <Route path="/terms" component={TermsAnchor} />
           <Route path="/policy" component={PolicyAnchor} />
