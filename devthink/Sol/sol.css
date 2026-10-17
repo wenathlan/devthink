@@ -436,13 +436,13 @@
   --ldk-ease: var(--ease-micro);
   --ldk-spring: var(--ease-spring);
 
-  /* the wall fallback: the radial silver recipe the shader canvas paints
-     over (visible whenever WebGL is unavailable) */
+  /* the wall: the clear trident recipe — the static index.html gradient the
+     desktop paints with no canvas, no webgl and nothing that can flicker */
   --wall-fallback:
-    radial-gradient(54% 46% at 50% 44%, rgb(231 233 238 / 7%) 0%, transparent 64%),
-    radial-gradient(92% 78% at 50% 46%, rgb(201 205 214 / 4%) 0%, transparent 74%),
-    radial-gradient(130% 44% at 50% 112%, rgb(139 144 155 / 4%) 0%, transparent 60%),
-    linear-gradient(180deg, #111214 0%, #0b0c0e 56%, #070809 100%);
+    radial-gradient(54% 46% at 50% 36%, rgb(255 255 255 / 58%) 0%, transparent 64%),
+    radial-gradient(70% 52% at 16% 6%, rgb(199 210 254 / 42%) 0%, transparent 60%),
+    radial-gradient(64% 48% at 86% 10%, rgb(186 230 253 / 40%) 0%, transparent 58%),
+    linear-gradient(180deg, #e9edf7 0%, #dce2ee 58%, #d2daeb 100%);
 }
 
 /* ==========================================================================
@@ -4210,10 +4210,10 @@ legend.cmd-group {
   content: "";
   position: absolute;
   inset: 0;
-  opacity: 0.85;
+  opacity: 0.6;
   background-image:
-    linear-gradient(rgb(255 255 255 / 2%) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(255 255 255 / 2%) 1px, transparent 1px);
+    linear-gradient(rgb(15 23 42 / 3%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(15 23 42 / 3%) 1px, transparent 1px);
   background-size: 44px 44px;
   mask-image: radial-gradient(110% 88% at 50% 44%, black 16%, transparent 78%);
   -webkit-mask-image: radial-gradient(110% 88% at 50% 44%, black 16%, transparent 78%);

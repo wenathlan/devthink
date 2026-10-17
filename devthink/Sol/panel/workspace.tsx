@@ -42,7 +42,6 @@ import { type AltTabCard, AltTabSwitcher } from "../shell/alttabswitcher.tsx";
 import { ShellChrome } from "../shell/ShellChrome.tsx";
 import { windowApp } from "../windowregistry.tsx";
 import { DesktopSurface } from "./desktop.tsx";
-import { ShaderWall } from "./shaderwall.tsx";
 import { WorkspaceTabs } from "./tabs.tsx";
 import { WINDOW_MIN_HEIGHT, WindowFrame, type WindowSnapshot } from "./windowframe.tsx";
 
@@ -359,9 +358,8 @@ export function ShellWorkspace({
   return (
     <main className={`shell-os shell-os--rail-${railMode}`}>
       <div className="shell-os__atmosphere" aria-hidden="true">
-        {/* the WebGL aurora wall sits over the css --wall-fallback recipe;
-            without WebGL (or under reduced motion) the static recipe shows */}
-        <ShaderWall />
+        {/* the static wall recipe owns the surface: no canvas, no webgl, no
+            flicker — the clear trident gradient paints the desktop */}
       </div>
 
       <ShellChrome paired={paired} userId={userId} onOpenApp={openApp} openApps={windows.map((win) => win.id)} />
