@@ -245,16 +245,12 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
   };
 
   /** the deterministic default layout of the catalog (never persisted):
-   * every app takes its tuned DESKTOP_SPOTS spot via the state module */
+   * the win11 ordered flow — sorted by kind then name, filling top to
+   * bottom and wrapping to the next column on the snap lattice */
   const defaults = useMemo<IconSpotMap>(() => {
-    const laid = defaultSpots(apps.length, DESKTOP_SPOTS);
-    const spots: IconSpotMap = {};
-    apps.forEach((app, index) => {
-      const spot = laid[index];
-      if (spot) spots[app.id] = spot;
-    });
-    return spots;
-  }, [apps]);
+    const sortable = apps.map((app) => ({ id: app.id, name: app.name, kind: app.target.kind }));
+    return flowLayoutSpots(sortAppsByKind(sortable), bounds);
+  }, [apps, bounds]);
 
   /** the resolved layout: defaults with the stored overrides on top */
   const spots = useMemo(() => mergedSpots(defaults, overrides, bounds), [bounds, defaults, overrides]);
