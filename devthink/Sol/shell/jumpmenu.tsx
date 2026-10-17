@@ -21,7 +21,7 @@
 import { AppWindow, Compass, Globe, LayoutGrid, type LucideIcon, Pin, PinOff, Play } from "lucide-react";
 import { type KeyboardEvent as ReactKeyboardEvent, useLayoutEffect, useRef, useState } from "react";
 import { familyurl } from "../../deploybase.ts";
-import type { DesktopApp } from "./appregistry.ts";
+import type { DesktopApp } from "../../appregistry.ts";
 
 /** The localStorage key of the taskbar pin order (an id list). */
 const TASKBAR_PINS_KEY = "dt.taskbar.pins.v1";

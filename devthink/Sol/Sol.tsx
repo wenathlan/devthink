@@ -11,8 +11,8 @@
  */
 import { useEffect } from "react";
 import { Route, Switch, useLocation } from "wouter";
+import { initautotranslate } from "../translatedom.ts";
 import AboutAnchor from "./about/about.tsx";
-import AdminAnchor from "./admin/admin.tsx";
 import AuthAnchor from "./auth/auth.tsx";
 import CalculatorAnchor from "./calculator/calculator.tsx";
 import ChatAnchor from "./chat/chat.tsx";
@@ -24,7 +24,6 @@ import GatewayAnchor from "./gatewayview/gatewayview.tsx";
 import HistoryAnchor from "./history/history.tsx";
 import ImageAnchor from "./image/image.tsx";
 import IntroAnchor from "./intro/intro.tsx";
-import LauncherAnchor from "./launcher/launcher.tsx";
 import MusicStudioAnchor from "./musicstudio/musicstudio.tsx";
 import NotFoundAnchor from "./notfound/notfound.tsx";
 import OnboardingAnchor from "./onboarding/onboarding.tsx";
@@ -35,7 +34,6 @@ import ProjectsAnchor from "./projects/projects.tsx";
 import ProvidersAnchor from "./providers/providers.tsx";
 import RoutesAnchor from "./routes/routes.tsx";
 import SettingsAnchor from "./settings/settings.tsx";
-import { initautotranslate } from "./shell/translatedom.ts";
 import { RouteSurface } from "./shell/routesurface.tsx";
 import TermsAnchor from "./terms/terms.tsx";
 import UsageAnchor from "./usage/usage.tsx";
@@ -77,13 +75,13 @@ function DeepRouteReplay() {
 }
 
 /** The route tree of the theme: one Route per page anchor, the catch-all last.
- * The owner entry flow: "/" is the intro (one variant per build target) that
- * hands the surface to the onboarding tour at /onboarding — the frame-a-frame
- * window-grammar tour whose finish (and skip) rides the DB-backed seen state
- * and opens the landing SaaS at /explore, the free catalog page whose "enter
- * devthink" CTA opens the authentication page-app at /auth, which continues
- * to the OS desktop at /panel. The deep /w/… workspace routes keep falling
- * into the panel exactly as they always fell into the desktop. */
+ * The owner entry flow: "/" is the intro — the SaaS face on the web targets,
+ * the Windows boot on the owned ones — and hands the surface to the login
+ * face at /auth, which continues to the OS desktop at /panel; the panel is
+ * the last page of the chain. The explorer (/explore) and the onboarding
+ * tour (/onboarding) are indirect subapps: routable, never panel icons. The
+ * deep /w/… workspace routes keep falling into the panel exactly as they
+ * always fell into the desktop. */
 export default function Sol() {
   return (
     <>
@@ -98,7 +96,6 @@ export default function Sol() {
           <Route path="/auth" component={AuthAnchor} />
           <Route path="/os" component={OsAnchor} />
           <Route path="/chat" component={ChatAnchor} />
-          <Route path="/launcher" component={LauncherAnchor} />
           <Route path="/videostudio" component={VideoStudioAnchor} />
           <Route path="/musicstudio" component={MusicStudioAnchor} />
           <Route path="/image" component={ImageAnchor} />
@@ -114,7 +111,6 @@ export default function Sol() {
           <Route path="/docs" component={DocsAnchor} />
           <Route path="/explore" component={ExploreAnchor} />
           <Route path="/history" component={HistoryAnchor} />
-          <Route path="/admin" component={AdminAnchor} />
           <Route path="/settings" component={SettingsAnchor} />
           <Route path="/about" component={AboutAnchor} />
           <Route path="/terms" component={TermsAnchor} />

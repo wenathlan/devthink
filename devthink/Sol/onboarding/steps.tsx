@@ -11,7 +11,7 @@
  */
 
 import { SolLogoMark } from "../panel/logo.tsx";
-import { DESKTOP_APPS, type DesktopApp } from "../shell/appregistry.ts";
+import { DESKTOP_APPS, type DesktopApp } from "../../appregistry.ts";
 import { AppTile } from "../shell/apptile.tsx";
 
 /** One frame of the tour: art + heading + body. */

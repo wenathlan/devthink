@@ -43,7 +43,7 @@ import { type ComponentType, type CSSProperties, useEffect, useState } from "rea
 import { appIconSets } from "../../catalog";
 import { SolLogoMark } from "../panel/logo.tsx";
 import { APP_ICONS, type AppIconProps } from "./appicons.tsx";
-import type { DesktopApp } from "./appregistry.ts";
+import type { DesktopApp } from "../../appregistry.ts";
 
 type AppTileProps = {
   app: DesktopApp;

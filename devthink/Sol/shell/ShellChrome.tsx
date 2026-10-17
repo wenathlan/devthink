@@ -43,10 +43,10 @@
 import { Lock, Search, Wifi, X } from "lucide-react";
 import { type CSSProperties, type RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
+import { DESKTOP_APPS, type DesktopApp, searchDesktopApps, seedOsView } from "../../appregistry.ts";
 import { familyurl } from "../../deploybase.ts";
 import { loadrecentapps, pushrecentapp } from "../../recentapps.ts";
 import { SolLogoMark } from "../panel/logo.tsx";
-import { DESKTOP_APPS, type DesktopApp, searchDesktopApps, seedOsView } from "./appregistry.ts";
 import { AppTile } from "./apptile.tsx";
 import { JumpList, loadTaskbarPins, saveTaskbarPins } from "./jumpmenu.tsx";
 import {
@@ -79,11 +79,11 @@ const BAR_FACE_CLASS =
 
 /** the app-name peek: acrylic above the cell, cleared of the bar (Windows
  * tooltip semantics, name only — the aria-label already carries the name);
- * the 300ms hover delay is the Windows tooltip pause, the reveal itself is
+ * the 1000ms hover delay is the Windows tooltip pause, the reveal itself is
  * the 200ms fade + slide (the delay rides only the hovered state, so the
  * leave hides instantly) */
 const BAR_TIP_CLASS =
-  "dt-nav__tip acrylic-tip pointer-events-none absolute bottom-[calc(100%+6px)] left-1/2 z-[1] -translate-x-1/2 translate-y-[4px] rounded-xs px-[9px] py-[5px] font-sans text-xs font-medium whitespace-nowrap text-[#fafafa] opacity-0 transition-[opacity,transform] duration-200 group-hcf:translate-y-0 group-hcf:opacity-100 group-hcf:delay-300 light:border-black/12 light:text-[#1a1a1a]";
+  "dt-nav__tip acrylic-tip pointer-events-none absolute bottom-[calc(100%+6px)] left-1/2 z-[1] -translate-x-1/2 translate-y-[4px] rounded-xs px-[9px] py-[5px] font-sans text-xs font-medium whitespace-nowrap text-[#fafafa] opacity-0 transition-[opacity,transform] duration-200 group-hcf:translate-y-0 group-hcf:opacity-100 group-hcf:delay-[1000ms] light:border-black/12 light:text-[#1a1a1a]";
 
 /** the one shell flyout surface: at most one of these is open (and mounted) */
 type PanelState =
@@ -518,16 +518,16 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
             aria-label="Start menu"
             data-hide={openPanel?.kind === "start" ? undefined : "true"}
           >
-            {/* the search well: flat white 5%, hairline bottom, the 2px
-                accent underline on focus (the win11 input recipe) */}
-            <div className="dt-start__search mx-8 mt-6 flex h-11 flex-none items-center gap-[9px] rounded-xs border border-white/6 border-b-(--color-hairline) bg-white/5 px-3 text-ink-2 transition-colors duration-200 focus-within:border-white/20 focus-within:shadow-[inset_0_-2px_0_var(--color-win)] light:border-black/12 light:bg-white/78 light:text-[#3c3c3c]">
+            {/* the search well: 40px, flat white 5%, hairline bottom, the
+                2px accent underline on focus (the win11 input recipe) */}
+            <div className="dt-start__search mx-8 mt-6 flex h-10 flex-none items-center gap-[9px] rounded-xs border border-white/6 border-b-(--color-hairline) bg-white/5 px-3 text-ink-2 transition-colors duration-200 focus-within:border-white/20 focus-within:shadow-[inset_0_-2px_0_var(--color-win)] light:border-black/12 light:bg-white/78 light:text-[#3c3c3c]">
               <Search size={15} aria-hidden="true" />
               <input
                 ref={searchRef}
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search the desktop apps"
-                aria-label="Search the desktop apps"
+                placeholder="Search apps"
+                aria-label="Search apps"
                 className="min-w-0 flex-1 rounded-xs border-0 bg-transparent text-xs font-normal text-ink outline-none placeholder:text-ink-3 focus-visible:outline-none light:text-[#1a1a1a]"
               />
               {query && (
@@ -535,7 +535,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
                   type="button"
                   onClick={() => setQuery("")}
                   aria-label="Clear the search"
-                  className="-mr-3 grid h-11 w-11 flex-none cursor-pointer place-items-center rounded-xs border-0 bg-transparent text-ink-2 transition-colors duration-200 hover:bg-white/10 hover:text-ink focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none"
+                  className="-mr-3 grid h-10 w-10 flex-none cursor-pointer place-items-center rounded-xs border-0 bg-transparent text-ink-2 transition-colors duration-200 hover:bg-white/10 hover:text-ink focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none"
                 >
                   <X size={14} aria-hidden="true" />
                 </button>
