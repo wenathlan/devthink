@@ -101,13 +101,13 @@ export default function Sol() {
           <Route path="/image" component={() => <ImageAnchor />} />
           <Route path="/calculator" component={() => <CalculatorAnchor />} />
           <Route path="/games" component={() => <GamesAnchor />} />
-          <Route path="/console" component={ConsoleAnchor} />
+          <Route path="/console" component={() => <ConsoleAnchor />} />
           <Route path="/gateway" component={GatewayAnchor} />
           <Route path="/gateway/v/:versionId" component={GatewayAnchor} />
           <Route path="/providers" component={ProvidersAnchor} />
           <Route path="/projects" component={ProjectsAnchor} />
           <Route path="/routes" component={RoutesAnchor} />
-          <Route path="/usage" component={UsageAnchor} />
+          <Route path="/usage" component={() => <UsageAnchor />} />
           <Route path="/docs" component={() => <DocsAnchor />} />
           <Route path="/explore" component={ExploreAnchor} />
           <Route path="/history" component={HistoryAnchor} />

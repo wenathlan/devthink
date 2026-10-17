@@ -1,0 +1,146 @@
+/* console app skins — the terminal pane and the reference rows over the dtw
+ * kit. merges into the kit section of sol.css. */
+.dtw-console__note {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+  color: var(--dtv3-ink-3);
+  font: 500 11px var(--dt-mono);
+}
+.dtw-console__note > span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--dtv3-ink-2);
+}
+.dtw-console__note > span:first-child.is-paired {
+  color: var(--color-win);
+}
+.dtw-console__lamp {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.dtw-console__refs {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--dtv3-hairline);
+}
+.dtw-console__refrun {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 10px;
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 6px;
+  border: 0;
+  border-bottom: 1px solid var(--dtv3-hairline);
+  background: transparent;
+  color: var(--dtv3-ink-2);
+  font: 500 12px / 1.5 var(--dt-mono);
+  text-align: left;
+  cursor: pointer;
+  transition: background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-console__refrun strong {
+  color: var(--dtv3-ink-1);
+}
+.dtw-console__refrun:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--dtv3-sig) 8%, transparent);
+}
+.dtw-console__refrun:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.dtw-console__refdetail {
+  display: grid;
+  gap: 4px;
+  padding: 0 6px 10px 120px;
+  color: var(--dtv3-ink-3);
+  font: 400 11px / 1.6 var(--dt-mono);
+}
+.dtw-console__refdetail code {
+  color: var(--dtv3-ink-2);
+}
+.dtw-console__subhead {
+  margin: 8px 0 0;
+  color: var(--dtv3-ink-3);
+  font: 600 11px var(--dt-mono);
+  letter-spacing: 0.06em;
+}
+.dtw-console .dt-term {
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: 8px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--dtv3-ink-1) 4%, transparent);
+}
+.dtw-console .dt-term__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 40px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--dtv3-hairline);
+  background: color-mix(in srgb, var(--dtv3-ink-1) 4%, transparent);
+  color: var(--dtv3-ink-3);
+  font: 500 11px var(--dt-mono);
+  letter-spacing: 0.04em;
+}
+.dtw-console .dt-term__state {
+  color: var(--color-win);
+}
+.dtw-console .dt-term__out {
+  margin: 0;
+  padding: 12px 14px;
+  max-height: 340px;
+  overflow: auto;
+  color: var(--dtv3-ink-2);
+  font: 13px / 1.7 var(--dt-mono);
+}
+.dtw-console .dt-term__out > span {
+  display: block;
+  padding: 2px 0;
+  border-bottom: 1px solid var(--dtv3-hairline);
+}
+.dtw-console .dt-term__out > span:last-child {
+  border-bottom: 0;
+}
+.dtw-console .dt-term__out .boot {
+  color: var(--dtv3-ink-3);
+}
+.dtw-console .dt-term__out .cmdline {
+  color: var(--dtv3-ink-1);
+}
+.dtw-console .dt-term__out .ok {
+  color: var(--dtv3-ink-2);
+}
+.dtw-console .dt-term__out .err {
+  color: #ff7d66;
+}
+.dtw-console .dt-term__in {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--dtv3-hairline);
+}
+.dtw-console .dt-term__in.off {
+  opacity: 0.5;
+}
+.dtw-console .dt-term__prompt {
+  color: var(--color-win);
+  font: 600 13px var(--dt-mono);
+}
+.dtw-console .dt-term__input {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  color: var(--dtv3-ink-1);
+  font: 13px var(--dt-mono);
+  outline: none;
+  caret-color: var(--color-win);
+}

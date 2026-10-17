@@ -11,9 +11,11 @@
  */
 import type { ComponentType } from "react";
 import Calculator from "./calculator/calculator.tsx";
+import Console from "./console/console.tsx";
 import Docs from "./docs/docs.tsx";
 import Games from "./games/games.tsx";
 import Image from "./image/image.tsx";
+import Usage from "./usage/usage.tsx";
 
 /** One windowed app: the anchor component with the embedded contract and
  * the spawn geometry the frame opens at. */
@@ -30,6 +32,8 @@ export const WINDOW_APPS: Record<string, WindowApp> = {
   docs: { component: Docs, spawn: { width: 980, height: 680 } },
   image: { component: Image, spawn: { width: 900, height: 640 } },
   games: { component: Games, spawn: { width: 900, height: 640 } },
+  console: { component: Console, spawn: { width: 980, height: 680 } },
+  usage: { component: Usage, spawn: { width: 900, height: 640 } },
 };
 
 /** Reads one windowed app by id, or undefined when the app still navigates. */
