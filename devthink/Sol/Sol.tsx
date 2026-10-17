@@ -32,7 +32,6 @@ import PanelAnchor from "./panel/panel.tsx";
 import PolicyAnchor from "./policy/policy.tsx";
 import ProjectsAnchor from "./projects/projects.tsx";
 import ProvidersAnchor from "./providers/providers.tsx";
-import RoutesAnchor from "./routes/routes.tsx";
 import SettingsAnchor from "./settings/settings.tsx";
 import { RouteSurface } from "./shell/routesurface.tsx";
 import TermsAnchor from "./terms/terms.tsx";
@@ -106,7 +105,6 @@ export default function Sol() {
           <Route path="/gateway/v/:versionId" component={GatewayAnchor} />
           <Route path="/providers" component={() => <ProvidersAnchor />} />
           <Route path="/projects" component={() => <ProjectsAnchor />} />
-          <Route path="/routes" component={() => <RoutesAnchor />} />
           <Route path="/usage" component={() => <UsageAnchor />} />
           <Route path="/docs" component={() => <DocsAnchor />} />
           <Route path="/explore" component={ExploreAnchor} />

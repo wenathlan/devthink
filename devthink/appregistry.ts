@@ -194,16 +194,6 @@ export const DESKTOP_APPS: DesktopApp[] = [
     target: { kind: "route", href: "/usage" },
   },
   {
-    id: "routes",
-    name: "Routes",
-    detail: "Gateway and stream health",
-    tint: "#22d3ee",
-    icon: Network,
-    iconset: "routes",
-    pinned: false,
-    target: { kind: "route", href: "/routes" },
-  },
-  {
     id: "docs",
     name: "Docs",
     detail: "The documentation library",
