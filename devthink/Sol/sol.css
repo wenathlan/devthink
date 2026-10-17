@@ -10483,3 +10483,13 @@ span[data-tile] {
 .shell-window__body > * {
   min-height: 0;
 }
+
+/* the invisible scroll: every surface keeps scrolling, no bar ever shows */
+* {
+  scrollbar-width: none;
+}
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
