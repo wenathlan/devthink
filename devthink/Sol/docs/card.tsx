@@ -8,8 +8,8 @@ import { useState } from "react";
 /** DocsCard — one content card: the title bar and the body stack. */
 export function DocsCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="dtw-docs__card">
-      <h2 className="dtw-docs__cardtitle">{title}</h2>
+    <section className="dtw-card">
+      <h2 className="dtw-cardtitle">{title}</h2>
       {children}
     </section>
   );
@@ -26,10 +26,10 @@ export function DocsCode({ lines }: { lines: readonly string[] }) {
     window.setTimeout(() => setCopied(false), 2000);
   };
   return (
-    <figure className="dtw-docs__code">
-      <figcaption className="dtw-docs__codebar">
+    <figure className="dtw-code">
+      <figcaption className="dtw-codebar">
         <span>console</span>
-        <button type="button" className="dtw-docs__codecopy" onClick={copy} aria-label="Copy commands">
+        <button type="button" className="dtw-codecopy" onClick={copy} aria-label="Copy commands">
           {copied ? "Copied" : "Copy"}
         </button>
       </figcaption>

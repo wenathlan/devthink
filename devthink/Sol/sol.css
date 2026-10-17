@@ -10175,18 +10175,22 @@ span[data-tile] {
    content cards, 36px rows, the 40px code bar — no editorial theater. The
    docs app is the template; the other subapps adopt the kit as they rebuild
    into the window contract. ---- */
-.dtw-docs {
+/* the windows kit — the shared in-window grammar every subapp body rides.
+ * root pane, the 220px nav with the 3px accent pill, hairline cards, the
+ * 40px code bar and the action button. App specific skins live beside their
+ * anchors and merge here. */
+.dtw-app {
   display: grid;
   grid-template-rows: minmax(0, 1fr);
   height: 100dvh;
 }
-.dtw-docs__body {
+.dtw-pane {
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr);
   height: 100%;
   min-height: 0;
 }
-.dtw-docs__nav {
+.dtw-nav {
   display: grid;
   gap: 2px;
   align-content: start;
@@ -10194,10 +10198,11 @@ span[data-tile] {
   border-right: 1px solid var(--dtv3-hairline);
   overflow-y: auto;
 }
-.dtw-docs__navrow {
+.dtw-navrow {
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   min-height: 36px;
   padding: 0 12px;
   border: 0;
@@ -10208,14 +10213,14 @@ span[data-tile] {
   cursor: pointer;
   transition: background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
 }
-.dtw-docs__navrow:hover {
+.dtw-navrow:hover {
   background: color-mix(in srgb, var(--dtv3-sig) 8%, transparent);
 }
-.dtw-docs__navrow[data-active="true"] {
+.dtw-navrow[data-active="true"] {
   background: color-mix(in srgb, var(--dtv3-sig) 12%, transparent);
   color: var(--dtv3-ink-1);
 }
-.dtw-docs__navrow[data-active="true"]::before {
+.dtw-navrow[data-active="true"]::before {
   content: "";
   position: absolute;
   left: 0;
@@ -10225,7 +10230,12 @@ span[data-tile] {
   border-radius: 2px;
   background: var(--color-win);
 }
-.dtw-docs__content {
+.dtw-navrow__count {
+  color: var(--dtv3-ink-3);
+  font: 500 11px var(--dt-mono);
+  font-variant-numeric: tabular-nums;
+}
+.dtw-content {
   display: grid;
   gap: 16px;
   align-content: start;
@@ -10233,13 +10243,13 @@ span[data-tile] {
   overflow-y: auto;
   min-height: 0;
 }
-.dtw-docs__title {
+.dtw-title {
   margin: 0;
   color: var(--dtv3-ink-1);
   font: 600 28px/1.2 var(--font-sans, var(--dt-sans));
   letter-spacing: -0.02em;
 }
-.dtw-docs__card {
+.dtw-card {
   display: grid;
   gap: 10px;
   padding: 16px 18px;
@@ -10247,27 +10257,27 @@ span[data-tile] {
   border-radius: 8px;
   background: color-mix(in srgb, var(--dtv3-ink-1) 3%, transparent);
 }
-.dtw-docs__cardtitle {
+.dtw-cardtitle {
   margin: 0;
   color: var(--dtv3-ink-1);
   font: 600 14px var(--font-sans, var(--dt-sans));
 }
-.dtw-docs__copy {
+.dtw-copy {
   margin: 0;
   color: var(--dtv3-ink-2);
   font: 400 13px/1.6 var(--font-sans, var(--dt-sans));
 }
-.dtw-docs__copy code {
+.dtw-copy code {
   font: 500 12px var(--dt-mono);
   color: var(--dtv3-sig);
 }
-.dtw-docs__rows {
+.dtw-rows {
   display: grid;
   margin: 0;
   padding: 0;
   list-style: none;
 }
-.dtw-docs__row {
+.dtw-row {
   display: flex;
   align-items: baseline;
   gap: 14px;
@@ -10277,20 +10287,20 @@ span[data-tile] {
   color: var(--dtv3-ink-2);
   font: 400 12.5px/1.5 var(--font-sans, var(--dt-sans));
 }
-.dtw-docs__row:last-child {
+.dtw-row:last-child {
   border-bottom: 0;
 }
-.dtw-docs__row code {
+.dtw-row code {
   color: var(--dtv3-ink-1);
   font: 600 12px var(--dt-mono);
 }
-.dtw-docs__code {
+.dtw-code {
   margin: 0;
   border: 1px solid var(--dtv3-hairline);
   border-radius: 8px;
   overflow: hidden;
 }
-.dtw-docs__codebar {
+.dtw-codebar {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -10302,7 +10312,7 @@ span[data-tile] {
   font: 500 11px var(--dt-mono);
   letter-spacing: 0.04em;
 }
-.dtw-docs__codecopy {
+.dtw-codecopy {
   min-height: 28px;
   padding: 0 10px;
   border: 1px solid var(--dtv3-hairline);
@@ -10313,21 +10323,46 @@ span[data-tile] {
   cursor: pointer;
   transition: background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
 }
-.dtw-docs__codecopy:hover {
+.dtw-codecopy:hover {
   background: color-mix(in srgb, var(--dtv3-sig) 12%, transparent);
 }
-.dtw-docs__code pre {
+.dtw-code pre {
   margin: 0;
   padding: 14px 16px;
   overflow: auto;
   color: var(--dtv3-ink-2);
   font: 500 12px/1.7 var(--dt-mono);
 }
+.dtw-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--dtv3-ink-2);
+  font: 500 12px var(--font-sans, var(--dt-sans));
+  cursor: pointer;
+  transition: background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-action:hover {
+  background: color-mix(in srgb, var(--dtv3-sig) 12%, transparent);
+}
+.dtw-action--primary {
+  border-color: transparent;
+  background: var(--color-win);
+  color: #fff;
+}
+.dtw-action--primary:hover {
+  background: color-mix(in srgb, var(--color-win) 88%, #fff);
+}
 @media (max-width: 760px) {
-  .dtw-docs__body {
+  .dtw-pane {
     grid-template-columns: minmax(0, 1fr);
   }
-  .dtw-docs__nav {
+  .dtw-nav {
     display: flex;
     overflow-x: auto;
     border-right: 0;
