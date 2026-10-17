@@ -10246,7 +10246,7 @@ span[data-tile] {
 .dtw-title {
   margin: 0;
   color: var(--dtv3-ink-1);
-  font: 600 28px/1.2 var(--font-sans, var(--dt-sans));
+  font: 600 28px / 1.2 var(--font-sans, var(--dt-sans));
   letter-spacing: -0.02em;
 }
 .dtw-card {
@@ -10265,7 +10265,7 @@ span[data-tile] {
 .dtw-copy {
   margin: 0;
   color: var(--dtv3-ink-2);
-  font: 400 13px/1.6 var(--font-sans, var(--dt-sans));
+  font: 400 13px / 1.6 var(--font-sans, var(--dt-sans));
 }
 .dtw-copy code {
   font: 500 12px var(--dt-mono);
@@ -10285,7 +10285,7 @@ span[data-tile] {
   padding: 6px 2px;
   border-bottom: 1px solid var(--dtv3-hairline);
   color: var(--dtv3-ink-2);
-  font: 400 12.5px/1.5 var(--font-sans, var(--dt-sans));
+  font: 400 12.5px / 1.5 var(--font-sans, var(--dt-sans));
 }
 .dtw-row:last-child {
   border-bottom: 0;
@@ -10331,7 +10331,7 @@ span[data-tile] {
   padding: 14px 16px;
   overflow: auto;
   color: var(--dtv3-ink-2);
-  font: 500 12px/1.7 var(--dt-mono);
+  font: 500 12px / 1.7 var(--dt-mono);
 }
 .dtw-action {
   display: inline-flex;
@@ -10357,6 +10357,90 @@ span[data-tile] {
 }
 .dtw-action--primary:hover {
   background: color-mix(in srgb, var(--color-win) 88%, #fff);
+}
+.dtw-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--dtv3-ink-1);
+  font: 500 12px var(--font-sans, var(--dt-sans));
+  cursor: pointer;
+  transition: background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--dtv3-sig) 12%, transparent);
+}
+.dtw-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.dtw-btn--primary {
+  border-color: transparent;
+  background: var(--color-win);
+  color: #fff;
+}
+.dtw-btn--primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-win) 88%, #fff);
+}
+.dtw-btn--danger {
+  border-color: transparent;
+  background: #c2352b;
+  color: #fff;
+}
+.dtw-btn--danger:hover:not(:disabled) {
+  background: color-mix(in srgb, #c2352b 88%, #fff);
+}
+.dtw-input,
+.dtw-select {
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--dtv3-ink-1);
+  font: 400 13px var(--font-sans, var(--dt-sans));
+}
+.dtw-input:focus-visible,
+.dtw-select:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--dtv3-sig) 45%, transparent);
+  outline-offset: 1px;
+}
+.dtw-note {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+  color: var(--dtv3-ink-3);
+  font: 500 11px var(--dt-mono);
+}
+.dtw-note > span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--dtv3-ink-2);
+}
+.dtw-note > span:first-child.is-paired {
+  color: var(--color-win);
+}
+.dtw-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 40px;
+  color: var(--dtv3-ink-2);
+  font: 400 13px var(--font-sans, var(--dt-sans));
+}
+.dtw-field > span:first-child {
+  flex: 0 0 130px;
+}
+.dtw-actions {
+  display: flex;
+  gap: 8px;
 }
 @media (max-width: 760px) {
   .dtw-pane {
