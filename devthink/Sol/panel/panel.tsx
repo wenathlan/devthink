@@ -35,6 +35,7 @@ import {
   saveBrowserTab,
 } from "../../db";
 import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "../../paneltypes.ts";
+import { historypath } from "../../routebase.ts";
 import { sseEvents } from "../../sse";
 import type { WorkspaceDestination } from "../../workspace.ts";
 import { BootScreen, shouldBoot } from "./boot.tsx";
@@ -336,7 +337,7 @@ export default function Panel() {
         // storage unavailable: the route lives for this mount only
       }
       setLocation(routePath(nextRoute, query));
-      window.history.replaceState(null, "", "/panel");
+      window.history.replaceState(null, "", historypath("/panel"));
     },
     [query, route, setLocation],
   );
@@ -350,7 +351,7 @@ export default function Panel() {
     } catch {
       // storage unavailable: the route lives for this mount only
     }
-    window.history.replaceState(null, "", "/panel");
+    window.history.replaceState(null, "", historypath("/panel"));
   }, [deep, route]);
 
   function openDestination(destination: WorkspaceDestination) {
