@@ -15,11 +15,10 @@
 import { ArrowRightRegular, ChevronUpRegular, WindowConsoleRegular } from "@fluentui/react-icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Link, useLocation } from "wouter";
+import { useLocation } from "wouter";
 import { afterAuthTarget, pairingReadiness, safegatewayurl } from "../../authgate.ts";
 import { browserIdentity, readBrowserPreferences, saveBrowserPreference } from "../../db";
 import { SolLogoMark } from "../panel/logo.tsx";
-import { ShellChrome } from "../shell/ShellChrome.tsx";
 import "./login.css";
 
 export * from "../../authgate.ts";
@@ -180,7 +179,6 @@ export default function Auth() {
   return (
     <main className="dtw-login">
       <div className="dtw-login__stage" aria-hidden="true" />
-      <ShellChrome />
 
       {stage === "lock" ? (
         <div
@@ -302,14 +300,6 @@ export default function Auth() {
           </section>
         </div>
       )}
-
-      <Link
-        href="/explore"
-        className="dtw-login__quiet"
-        style={{ position: "absolute", zIndex: 40, top: 16, left: 16 }}
-      >
-        Back to explore
-      </Link>
     </main>
   );
 }

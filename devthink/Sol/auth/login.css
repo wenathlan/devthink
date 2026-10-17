@@ -13,11 +13,18 @@
   inset: 0;
   pointer-events: none;
 }
+/* the landscape: the morning sky, the sun glow over the far ridge and the
+ * three near hills — the lock screen paints a place, never a flat wash */
 .dtw-login__stage::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgb(255 255 255 / 0%), rgb(255 255 255 / 22%) 78%);
+  background:
+    radial-gradient(34% 24% at 76% 20%, rgb(255 246 214 / 92%) 0%, rgb(255 240 200 / 40%) 42%, transparent 68%),
+    radial-gradient(120% 44% at 52% 106%, rgb(154 172 205 / 88%) 0%, transparent 68%),
+    radial-gradient(150% 40% at 8% 110%, rgb(132 152 190 / 82%) 0%, transparent 64%),
+    radial-gradient(160% 34% at 88% 112%, rgb(120 142 184 / 78%) 0%, transparent 62%),
+    linear-gradient(180deg, #cfdcf2 0%, #e2ebf8 44%, #eef2fa 72%, #f4f6fb 100%);
 }
 .dtw-login__dock {
   position: relative;
