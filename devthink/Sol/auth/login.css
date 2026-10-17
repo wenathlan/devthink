@@ -1,0 +1,237 @@
+/* login app skins — the windows lock and sign-in sequence over the clear
+ * trident wall. merges into the kit section of sol.css. */
+.dtw-login {
+  position: relative;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  min-height: 100dvh;
+  overflow: hidden;
+  background: var(--wall-fallback);
+}
+.dtw-login__stage {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.dtw-login__stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0%), rgb(255 255 255 / 22%) 78%);
+}
+.dtw-login__dock {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 24px clamp(12px, 3vw, 32px);
+}
+.dtw-login__clock {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  align-content: end;
+  justify-items: center;
+  gap: 10px;
+  padding: 0 24px 18vh;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+.dtw-login__time {
+  color: #0f172a;
+  font: 200 clamp(64px, 11vw, 118px) / 1 var(--font-display, var(--dt-sans));
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.dtw-login__date {
+  color: rgb(15 23 42 / 66%);
+  font: 500 clamp(14px, 1.8vw, 19px) var(--font-sans, var(--dt-sans));
+}
+.dtw-login__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 26px;
+  color: rgb(15 23 42 / 56%);
+  font: 500 12px var(--font-sans, var(--dt-sans));
+  animation: dtwloginhint 2.6s var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)) infinite;
+}
+.dtw-login__hint svg {
+  animation: dtwloginrise 2.6s var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)) infinite;
+}
+@keyframes dtwloginhint {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes dtwloginrise {
+  0%,
+  100% {
+    transform: translateY(4px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+.dtw-login__pane {
+  position: relative;
+  z-index: 30;
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  width: min(400px, 92vw);
+  padding: 40px 32px 30px;
+  border: 1px solid rgb(15 23 42 / 8%);
+  border-radius: 12px;
+  background: rgb(255 255 255 / 78%);
+  box-shadow: 0 24px 64px rgb(15 23 42 / 16%);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  animation: dtwloginpane 420ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+@keyframes dtwloginpane {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.dtw-login__avatar {
+  display: grid;
+  place-items: center;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4f46e5, #0ea5e9);
+  color: #fff;
+  font: 600 30px var(--font-sans, var(--dt-sans));
+  box-shadow: 0 10px 26px rgb(79 70 229 / 28%);
+}
+.dtw-login__welcome {
+  margin: 0;
+  color: #0f172a;
+  font: 600 24px / 1.2 var(--font-display, var(--dt-sans));
+  text-align: center;
+}
+.dtw-login__name {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 0;
+  border-bottom: 1px solid rgb(15 23 42 / 22%);
+  background: rgb(15 23 42 / 4%);
+  color: #0f172a;
+  font: 400 14px var(--font-sans, var(--dt-sans));
+  text-align: center;
+  outline: none;
+}
+.dtw-login__name:focus {
+  border-bottom-color: #4f46e5;
+  box-shadow: inset 0 -2px 0 #4f46e5;
+}
+.dtw-login__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 40px;
+  border: 0;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #4f46e5, #0ea5e9);
+  color: #fff;
+  font: 600 13px var(--font-sans, var(--dt-sans));
+  cursor: pointer;
+  transition: filter 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-login__submit:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+.dtw-login__submit:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.dtw-login__quiet {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: rgb(15 23 42 / 72%);
+  font: 500 12px var(--font-sans, var(--dt-sans));
+  cursor: pointer;
+}
+.dtw-login__quiet:hover:not(:disabled) {
+  background: rgb(15 23 42 / 6%);
+}
+.dtw-login__quiet:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.dtw-login__actions {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+.dtw-login__pairing {
+  display: grid;
+  width: 100%;
+  gap: 8px;
+  padding: 12px 0 0;
+  border-top: 1px solid rgb(15 23 42 / 8%);
+}
+.dtw-login__pairing input {
+  width: 100%;
+  min-height: 36px;
+  padding: 0 10px;
+  border: 1px solid rgb(15 23 42 / 14%);
+  border-radius: 6px;
+  background: #fff;
+  color: #0f172a;
+  font: 400 12.5px var(--dt-mono);
+  outline: none;
+}
+.dtw-login__pairing input:focus {
+  border-color: #4f46e5;
+}
+.dtw-login__hinttext {
+  color: rgb(15 23 42 / 56%);
+  font: 400 11px / 1.6 var(--dt-mono);
+  text-align: center;
+}
+.dtw-login__ledger {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dtw-login__ledger li {
+  color: rgb(15 23 42 / 52%);
+  font: 500 10.5px var(--dt-mono);
+  letter-spacing: 0.04em;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dtw-login__hint,
+  .dtw-login__hint svg {
+    animation: none;
+  }
+  .dtw-login__pane {
+    animation: none;
+  }
+}
