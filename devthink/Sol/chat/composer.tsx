@@ -13,16 +13,12 @@
  * Enter sends, Shift+Enter breaks the line.
  */
 
-import { BrainCircuit, Image as ImageIcon, type LucideIcon, Paperclip, Search, Send, Telescope } from "lucide-react";
+import { BrainCircuit, type LucideIcon, Send } from "lucide-react";
 import { type KeyboardEvent, type RefObject, useEffect } from "react";
 import { CHAT_TOOLS, GATEWAY_MODEL, type ToolId } from "../../chatstate.ts";
 
 const TOOL_ICONS: Record<ToolId, LucideIcon> = {
   thinking: BrainCircuit,
-  search: Search,
-  research: Telescope,
-  files: Paperclip,
-  image: ImageIcon,
 };
 
 export function Composer({
@@ -70,8 +66,7 @@ export function Composer({
   return (
     <div className="dtc-composer">
       <div className="dtc-microrow">
-        <span>enter sends, shift+enter breaks</span>
-        <span className="dtc-model">model — {GATEWAY_MODEL}</span>
+        <span>model {GATEWAY_MODEL}</span>
       </div>
 
       <div className="dtc-inner">
@@ -79,7 +74,7 @@ export function Composer({
           ref={inputRef}
           value={draft}
           rows={1}
-          placeholder="Ask Sol anything — hard questions welcome…"
+          placeholder="Ask Sol anything"
           aria-label="Message Sol"
           autoComplete="off"
           enterKeyHint="send"
@@ -115,7 +110,7 @@ export function Composer({
               className="dtc-pill"
               aria-pressed={on}
               onClick={() => onToggleTool(tool.id)}
-              title={`${tool.label} — ${tool.note}`}
+              title={tool.note}
             >
               <Icon size={13} strokeWidth={1.9} aria-hidden="true" />
               <span>{tool.label}</span>

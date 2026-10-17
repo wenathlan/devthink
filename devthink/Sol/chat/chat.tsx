@@ -38,11 +38,6 @@ import { PanelLeft, PanelRight, Trash2 } from "lucide-react";
  * hairlines, wash hovers, the solar accent only on action and icons. */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { GATEWAY_REQUIRED_COPY, GATEWAY_SEND_NOTICE, useGatewayRegistration } from "../../gatewaybase.ts";
-import { ShellChrome } from "../shell/ShellChrome.tsx";
-import { Composer } from "./composer.tsx";
-import { SessionPanel } from "./sessionpanel.tsx";
-import { Sidebar } from "./sidebar.tsx";
 import {
   buildSystemPrompt,
   type ChatSession,
@@ -54,8 +49,13 @@ import {
   useChatSessions,
   userTurn,
 } from "../../chatstate.ts";
-import { ErrorRow, ThinkingRow, Turn } from "./turn.tsx";
+import { GATEWAY_REQUIRED_COPY, GATEWAY_SEND_NOTICE, useGatewayRegistration } from "../../gatewaybase.ts";
 import { useIsMobile } from "../../useismobile.ts";
+import { ShellChrome } from "../shell/ShellChrome.tsx";
+import { Composer } from "./composer.tsx";
+import { SessionPanel } from "./sessionpanel.tsx";
+import { Sidebar } from "./sidebar.tsx";
+import { ErrorRow, ThinkingRow, Turn } from "./turn.tsx";
 import { Welcome } from "./welcome.tsx";
 
 /** The chat slice of the wave atmosphere contract: the C1-01 atmosphere
@@ -77,13 +77,14 @@ function ensureChatCss(): void {
   document.head.appendChild(tag);
 }
 
+export * from "../../chatstate.ts";
+export * from "../../useismobile.ts";
 export * from "./composer.tsx";
+export * from "./markdown.tsx";
 export * from "./sessionpanel.tsx";
 export * from "./sidebar.tsx";
 export * from "./solboticon.tsx";
-export * from "../../chatstate.ts";
 export * from "./turn.tsx";
-export * from "../../useismobile.ts";
 export * from "./welcome.tsx";
 
 export default function Chat() {
@@ -187,17 +188,16 @@ export default function Chat() {
 
   const deleteActive = useCallback(() => {
     if (!active) return;
-    const title = active.title;
     remove(active.id);
     setError(null);
-    toast("Conversation deleted", { description: `“${title}” was removed from this device.` });
+    toast("Conversation deleted");
   }, [active, remove]);
 
   const deleteFromRail = useCallback(
     (id: string) => {
       remove(id);
       setError(null);
-      toast("Conversation deleted", { description: "The conversation was removed from this device." });
+      toast("Conversation deleted");
     },
     [remove],
   );
@@ -318,7 +318,7 @@ export default function Chat() {
             <div className="dtc-tb-title">
               <h1>{active ? active.title : "New chat"}</h1>
               <small>
-                sol — model {GATEWAY_MODEL} — {gateway.base ? "gateway registered" : "no gateway registered"}
+                sol {GATEWAY_MODEL} {gateway.base ? "gateway on" : "gateway off"}
               </small>
             </div>
             <div className="dtc-tb-actions">

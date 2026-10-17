@@ -22,10 +22,10 @@ import { readBrowserPreferences, saveBrowserPreference } from "./db";
 export const PREF_GATEWAYBASE = "chat.gatewaybase";
 
 /** The honest disconnected line — the default copy of the opt-in surfaces. */
-export const GATEWAY_REQUIRED_COPY = "No gateway registered. The assistant answers only after you register one.";
+export const GATEWAY_REQUIRED_COPY = "No gateway registered";
 
 /** The direct one-line notice the composer shows while disconnected. */
-export const GATEWAY_SEND_NOTICE = "No gateway registered — register one in the session panel to start.";
+export const GATEWAY_SEND_NOTICE = "No gateway registered";
 
 /**
  * normalizeGatewayBase — trims the stored endpoint and strips trailing

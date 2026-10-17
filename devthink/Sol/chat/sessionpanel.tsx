@@ -16,9 +16,9 @@
 import { PanelRightClose } from "lucide-react";
 import { type FormEvent, useEffect, useState } from "react";
 import { Link } from "wouter";
+import { CHAT_TOOLS, type ToolId } from "../../chatstate.ts";
 import { GATEWAY_REQUIRED_COPY, type GatewayRegistration, gatewayStatusLabel } from "../../gatewaybase.ts";
 import { CHAT_NAV } from "./sidebar.tsx";
-import { CHAT_TOOLS, type ToolId } from "../../chatstate.ts";
 
 /**
  * SessionPanel — the inspector of the current conversation.
@@ -89,9 +89,7 @@ export function SessionPanel({
         <p className="dtc-session__label">Context</p>
         <div className="dtc-modelcard">
           <strong>{model}</strong>
-          <small>
-            {gateway.base ? "registered gateway — openai contract" : "gateway not registered — openai contract"}
-          </small>
+          <small>{gateway.base ? "gateway on" : "gateway off"}</small>
         </div>
         <dl className="dtc-readouts">
           <div className="dtc-readout">
@@ -149,10 +147,10 @@ export function SessionPanel({
                 {testing ? (
                   <>
                     <i className="dtc-gw__spinner" aria-hidden="true" />
-                    Testing…
+                    Testing
                   </>
                 ) : (
-                  "Register gateway"
+                  "Register"
                 )}
               </button>
             </form>
@@ -161,19 +159,19 @@ export function SessionPanel({
                 {gateway.formError}
               </p>
             ) : null}
-            {testing ? <p className="dtc-gw__hint">Registering and probing the endpoint…</p> : null}
+            {testing ? <p className="dtc-gw__hint">Probing the endpoint</p> : null}
           </>
         ) : null}
 
         {gateway.status === "error" ? (
           <p className="dtc-gw__error" role="alert">
-            {gateway.probeError ?? "The registered gateway did not answer."}
+            {gateway.probeError ?? "The gateway did not answer"}
           </p>
         ) : null}
 
         {(gateway.status === "connected" || gateway.status === "error") && confirmArmed ? (
           <fieldset className="dtc-gw__confirm" aria-label="Confirm disconnect">
-            <p>Disconnect this gateway? The assistant stops answering until you register one again.</p>
+            <p>Disconnect the gateway</p>
             <div className="dtc-gw__actions">
               <button
                 type="button"
@@ -219,7 +217,7 @@ export function SessionPanel({
               onClick={() => void gateway.retryProbe()}
               tabIndex={open ? 0 : -1}
             >
-              Test again
+              Test
             </button>
             <button
               type="button"
@@ -248,7 +246,7 @@ export function SessionPanel({
         </nav>
       </section>
 
-      <p className="dtc-session__foot">POST /v1/chat/completions — history stays in this browser</p>
+      <p className="dtc-session__foot">History stays in this browser</p>
     </aside>
   );
 }

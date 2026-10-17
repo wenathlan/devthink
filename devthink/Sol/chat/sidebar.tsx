@@ -19,8 +19,8 @@ import {
   Trash2,
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
-import { SolBotIcon } from "./solboticon.tsx";
 import { type ChatSession, cx } from "../../chatstate.ts";
+import { SolBotIcon } from "./solboticon.tsx";
 
 /** The theme pages the rail links to — existing routes, not local copies. */
 export type RailLink = { href: string; label: string; icon: LucideIcon };
@@ -131,9 +131,7 @@ export function Sidebar({
             ))}
           </section>
         ))}
-        {sessions.length === 0 ? (
-          <p className="dtc-rail__empty">No conversations yet — the first one starts in the composer.</p>
-        ) : null}
+        {sessions.length === 0 ? <p className="dtc-rail__empty">No conversations yet</p> : null}
       </nav>
 
       <nav className="dtc-rail__nav" aria-label="Theme pages">
