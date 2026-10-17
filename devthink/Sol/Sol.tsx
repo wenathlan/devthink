@@ -13,6 +13,7 @@ import { useEffect } from "react";
 import { Route, Switch, useLocation } from "wouter";
 import { initautotranslate } from "../translatedom.ts";
 import AboutAnchor from "./about/about.tsx";
+import AudioAnchor from "./audio/audio.tsx";
 import AuthAnchor from "./auth/auth.tsx";
 import CalculatorAnchor from "./calculator/calculator.tsx";
 import ChatAnchor from "./chat/chat.tsx";
@@ -24,7 +25,6 @@ import GatewayAnchor from "./gatewayview/gatewayview.tsx";
 import HistoryAnchor from "./history/history.tsx";
 import ImageAnchor from "./image/image.tsx";
 import IntroAnchor from "./intro/intro.tsx";
-import MusicStudioAnchor from "./musicstudio/musicstudio.tsx";
 import NotFoundAnchor from "./notfound/notfound.tsx";
 import OnboardingAnchor from "./onboarding/onboarding.tsx";
 import OsAnchor from "./os/os.tsx";
@@ -37,7 +37,7 @@ import SettingsAnchor from "./settings/settings.tsx";
 import { RouteSurface } from "./shell/routesurface.tsx";
 import TermsAnchor from "./terms/terms.tsx";
 import UsageAnchor from "./usage/usage.tsx";
-import VideoStudioAnchor from "./videostudio/videostudio.tsx";
+import VideoAnchor from "./video/video.tsx";
 
 // the gtx translation arms beside the shield: the theme language rides the visitor choice
 initautotranslate();
@@ -96,8 +96,8 @@ export default function Sol() {
           <Route path="/auth" component={AuthAnchor} />
           <Route path="/os" component={OsAnchor} />
           <Route path="/chat" component={ChatAnchor} />
-          <Route path="/videostudio" component={() => <VideoStudioAnchor />} />
-          <Route path="/musicstudio" component={() => <MusicStudioAnchor />} />
+          <Route path="/video" component={() => <VideoAnchor />} />
+          <Route path="/audio" component={() => <AudioAnchor />} />
           <Route path="/image" component={() => <ImageAnchor />} />
           <Route path="/calculator" component={() => <CalculatorAnchor />} />
           <Route path="/games" component={() => <GamesAnchor />} />

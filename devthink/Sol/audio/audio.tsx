@@ -1,16 +1,15 @@
 /**
- * musicstudio page anchor — layer 3 of the anchor architecture. The file
- * carrying the folder's own name is the path manager of the page: it imports
- * the loose components beside it, mounts the page and re-exports the public
+ * audio page anchor — layer 3 of the anchor architecture. The file carrying
+ * the folder's own name is the path manager of the page: it imports the
+ * loose components beside it, mounts the page and re-exports the public
  * component surface. Only the theme anchor (Sol/Sol.tsx) and the window
  * registry (Sol/windowregistry.tsx) consume this file.
  *
- * Music — the music studio in the Windows 11 grammar: a nav pane beside the
+ * Audio — the music studio in the Windows 11 grammar: a nav pane beside the
  * content deck, the tracks as hairline rows and the render queue over the
  * gateway to the katexis engine. The engine itself is never bundled: it
- * rides the catalog over https from the debonair app. The old editorial
- * pass (the shader stage, the film grain, the eq pulse) is retired — this
- * body rides the dtw kit.
+ * rides the catalog over https from the debonair app. This body rides the
+ * dtw kit in the trident fusion.
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -19,7 +18,7 @@ import { type NativeApp, nativeApps, type StudioTrack, studioTracks } from "../.
 import { queuestudiorender } from "../../runner";
 import { MusicEngine } from "./musicengine.tsx";
 import { MusicTracks } from "./musictracks.tsx";
-import "./musicstudio.css";
+import "./audio.css";
 
 /** Queues one track render and surfaces the answer with the sonner toast. The
  * queue client speaks in studio assets, so the track is carried as the music
@@ -32,10 +31,9 @@ function queueTrack(track: StudioTrack) {
   });
 }
 
-/** The music studio: the Windows body when embedded (the desktop window
- * hosts it without the shell), the full surface with the taskbar on the
- * route. */
-export default function MusicStudio({ embedded }: { embedded?: boolean }) {
+/** The audio app: the Windows body when embedded (the desktop window hosts
+ * it without the shell), the full surface with the taskbar on the route. */
+export default function Audio({ embedded }: { embedded?: boolean }) {
   const [apps, setApps] = useState<NativeApp[]>([]);
   const [tracks, setTracks] = useState<StudioTrack[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -51,16 +49,16 @@ export default function MusicStudio({ embedded }: { embedded?: boolean }) {
   const engine = apps.find((app) => app.engine === "katexis" && app.owner === "debonair");
 
   return (
-    <main className="dtw-app dtw-music" style={embedded ? { height: "100%", overflow: "auto" } : undefined}>
+    <main className="dtw-app dtw-audio" style={embedded ? { height: "100%", overflow: "auto" } : undefined}>
       {!embedded && <ShellChrome />}
       <div className="dtw-pane">
-        <nav className="dtw-nav" aria-label="Music studio sections">
+        <nav className="dtw-nav" aria-label="Audio sections">
           <span className="dtw-navrow" data-active="true">
             Tracks
           </span>
         </nav>
         <div className="dtw-content">
-          <h1 className="dtw-title">Music</h1>
+          <h1 className="dtw-title">Audio</h1>
           <MusicEngine app={engine} />
           <MusicTracks rows={tracks} loaded={loaded} onQueue={queueTrack} />
         </div>

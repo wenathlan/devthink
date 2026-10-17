@@ -1,7 +1,7 @@
 /**
- * musicengine.tsx — the engine card of the music studio: the real katexis
+ * musicengine.tsx — the engine card of the audio app: the real katexis
  * engine row the catalog serves, with the honest empty state while the
- * catalog has not answered. Loose component of the music page.
+ * catalog has not answered. Loose component of the audio page.
  */
 import { MusicNote2Regular } from "@fluentui/react-icons";
 import type { NativeApp } from "../../catalog";
