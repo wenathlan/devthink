@@ -105,8 +105,8 @@ export default function Sol() {
           <Route path="/gateway" component={GatewayAnchor} />
           <Route path="/gateway/v/:versionId" component={GatewayAnchor} />
           <Route path="/providers" component={() => <ProvidersAnchor />} />
-          <Route path="/projects" component={ProjectsAnchor} />
-          <Route path="/routes" component={RoutesAnchor} />
+          <Route path="/projects" component={() => <ProjectsAnchor />} />
+          <Route path="/routes" component={() => <RoutesAnchor />} />
           <Route path="/usage" component={() => <UsageAnchor />} />
           <Route path="/docs" component={() => <DocsAnchor />} />
           <Route path="/explore" component={ExploreAnchor} />
