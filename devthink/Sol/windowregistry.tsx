@@ -15,6 +15,8 @@ import Console from "./console/console.tsx";
 import Docs from "./docs/docs.tsx";
 import Games from "./games/games.tsx";
 import Image from "./image/image.tsx";
+import Projects from "./projects/projects.tsx";
+import Routes from "./routes/routes.tsx";
 import Settings from "./settings/settings.tsx";
 import Usage from "./usage/usage.tsx";
 
@@ -36,6 +38,8 @@ export const WINDOW_APPS: Record<string, WindowApp> = {
   console: { component: Console, spawn: { width: 980, height: 680 } },
   usage: { component: Usage, spawn: { width: 900, height: 640 } },
   settings: { component: Settings, spawn: { width: 960, height: 680 } },
+  projects: { component: Projects, spawn: { width: 900, height: 640 } },
+  routes: { component: Routes, spawn: { width: 860, height: 640 } },
 };
 
 /** Reads one windowed app by id, or undefined when the app still navigates. */

@@ -1,0 +1,53 @@
+/* projects app skins — the workspace rows over the dtw kit. merges into the
+ * kit section of sol.css. */
+.dtw-projects__rows {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dtw-projects__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 4px 14px;
+  align-items: center;
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--dtv3-hairline);
+}
+.dtw-projects__row:last-child {
+  border-bottom: 0;
+}
+.dtw-projects__row[data-latest="true"] {
+  background: color-mix(in srgb, var(--dtv3-sig) 8%, transparent);
+}
+.dtw-projects__body {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.dtw-projects__body h3 {
+  margin: 0;
+  color: var(--dtv3-ink-1);
+  font: 600 13.5px / 1.35 var(--font-sans, var(--dt-sans));
+}
+.dtw-projects__body p {
+  margin: 0;
+  color: var(--dtv3-ink-3);
+  font: 400 11.5px / 1.5 var(--font-sans, var(--dt-sans));
+}
+.dtw-projects__body code {
+  color: var(--dtv3-ink-2);
+  font: 500 10.5px var(--dt-mono);
+}
+.dtw-projects__time {
+  color: var(--dtv3-ink-3);
+  font: 500 11px var(--dt-mono);
+  font-variant-numeric: tabular-nums;
+}
+.dtw-projects__latest {
+  padding: 2px 8px;
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: 10px;
+  color: var(--dtv3-ink-2);
+  font: 500 10px var(--dt-mono);
+}
