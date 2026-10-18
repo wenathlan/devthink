@@ -24,10 +24,15 @@ type GatePhase = "resolving" | "through";
  * @returns the gated element.
  */
 export function EntryGate({ children }: { children: ReactNode }) {
+  /* the embedded pass is the bare stage: inside the os window the first-run
+   * flow belongs to the shell, so the frame lands straight home — the frame
+   * of a mount never changes, the hooks stay unconditional for the lint */
+  const embedded = typeof window !== "undefined" && window.self !== window.top;
   const [, navigate] = useLocation();
-  const [phase, setPhase] = useState<GatePhase>("resolving");
+  const [phase, setPhase] = useState<GatePhase>(embedded ? "through" : "resolving");
 
   useEffect(() => {
+    if (embedded) return;
     let live = true;
     readOnboardingState().then((state) => {
       if (!live) return;
@@ -38,7 +43,7 @@ export function EntryGate({ children }: { children: ReactNode }) {
     return () => {
       live = false;
     };
-  }, [navigate]);
+  }, [embedded, navigate]);
 
   return phase === "through" ? children : null;
 }

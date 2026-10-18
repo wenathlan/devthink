@@ -9461,6 +9461,11 @@ span[data-tile] {
 }
 [data-theme="light"] .shell-window {
   border-color: rgb(0 0 0 / 12%);
+  background: linear-gradient(180deg, rgb(252 252 254 / 94%), rgb(238 241 247 / 97%));
+  box-shadow:
+    0 8px 24px rgb(15 23 42 / 16%),
+    0 1px 0 rgb(255 255 255 / 70%) inset;
+  outline-color: rgb(255 255 255 / 65%);
 }
 
 /* the state poses the tailwind data-variants used to carry */
@@ -9672,6 +9677,20 @@ span[data-tile] {
   min-height: 0;
   flex: 1;
   grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+}
+
+/* the window host: the app stage owns the canvas row — the family power
+   clip fills the body flush, never collapses and never pads */
+.shell-window__host {
+  display: block;
+  grid-row: 3;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+}
+.shell-window__host > * {
+  min-height: 0;
+  height: 100%;
 }
 
 /* the os.js resize strips: 8px edges inset 14px (the rounded clipping

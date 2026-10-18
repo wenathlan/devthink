@@ -50,10 +50,15 @@ function initialVerdict(): GateVerdict {
  * @returns the gated home element.
  */
 export function EntryGate({ children }: { children: ReactNode }) {
+  /* the embedded pass is the bare stage: inside the os window the first-run
+   * flow belongs to the shell, so the frame lands straight home — the frame
+   * of a mount never changes, the hooks stay unconditional for the lint */
+  const embedded = typeof window !== "undefined" && window.self !== window.top;
   const [, navigate] = useLocation();
-  const [verdict, setVerdict] = useState<GateVerdict>(initialVerdict);
+  const [verdict, setVerdict] = useState<GateVerdict>(embedded ? "home" : initialVerdict);
 
   useEffect(() => {
+    if (embedded) return;
     let live = true;
     loadOnboardingState().then((state) => {
       if (live) setVerdict((current) => (current === "home" ? current : verdictOf(state)));
@@ -61,12 +66,13 @@ export function EntryGate({ children }: { children: ReactNode }) {
     return () => {
       live = false;
     };
-  }, []);
+  }, [embedded]);
 
   useEffect(() => {
+    if (embedded) return;
     if (verdict === "intro") navigate("/intro", { replace: true });
     else if (verdict === "onboarding") navigate("/onboarding", { replace: true });
-  }, [verdict, navigate]);
+  }, [embedded, navigate, verdict]);
 
   if (verdict !== "home") return null;
   return <>{children}</>;

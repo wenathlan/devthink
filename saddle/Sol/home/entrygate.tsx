@@ -39,13 +39,19 @@ function flowthrough(state: VisitorOnboarding): boolean {
  * @returns the gated element.
  */
 export function EntryGate({ children }: { children: ReactNode }) {
+	// the embedded pass is the bare stage: inside the os window the first-run
+	// flow belongs to the shell, so the frame lands straight home — the frame
+	// of a mount never changes, the hooks stay unconditional for the lint
+	const embedded = typeof window !== 'undefined' && window.self !== window.top;
 	const [, navigate] = useLocation();
 	const [phase, setPhase] = useState<GatePhase>(() => {
+		if (embedded) return 'through';
 		const known = readOnboardingState();
 		return known !== null && flowthrough(known) ? 'through' : 'resolving';
 	});
 
 	useEffect(() => {
+		if (embedded) return;
 		// the fast path: the cache already knows a missing stage — replace at once
 		const known = readOnboardingState();
 		if (known && !flowthrough(known)) {
@@ -63,7 +69,7 @@ export function EntryGate({ children }: { children: ReactNode }) {
 		return () => {
 			live = false;
 		};
-	}, [navigate]);
+	}, [embedded, navigate]);
 
 	return phase === 'through' ? children : null;
 }
