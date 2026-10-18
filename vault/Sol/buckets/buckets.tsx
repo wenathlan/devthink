@@ -10,10 +10,15 @@
  * tabular, every state a dot plus text. A seeded rehearsal, said out loud.
  */
 
-import { Archive, FolderLock, Play, RotateCcw } from "lucide-react";
+import {
+  ArchiveRegular,
+  ArrowRotateCounterclockwiseRegular,
+  LockClosedRegular,
+  PlayFilled,
+} from "@fluentui/react-icons";
 import { useMemo, useState } from "react";
 import { type BucketRule, type BucketShelf, retentionLabel, seedRules, shelfOf } from "../../buckets.ts";
-import { type VaultObject, formatBytes, seedVault } from "../../objects.ts";
+import { formatBytes, seedVault, type VaultObject } from "../../objects.ts";
 import { EmptyState } from "../shell/EmptyState";
 
 /** the seed of the rehearsal shelf (shown on the page, pinned by the tests) */
@@ -30,9 +35,14 @@ function BucketCard({
   onPick: (bucket: string) => void;
 }) {
   return (
-    <button type="button" className="vb-card" data-active={active ? "true" : undefined} onClick={() => onPick(entry.rule.bucket)}>
+    <button
+      type="button"
+      className="vb-card"
+      data-active={active ? "true" : undefined}
+      onClick={() => onPick(entry.rule.bucket)}
+    >
       <span className="vb-card__head">
-        <FolderLock size={14} aria-hidden="true" />
+        <LockClosedRegular fontSize={14} aria-hidden="true" />
         {entry.rule.bucket}
       </span>
       <span className="vb-card__policy" data-forever={entry.rule.days === 0 ? "true" : undefined}>
@@ -94,7 +104,7 @@ export default function Buckets() {
         </p>
         <div className="pagehead__actions">
           <button type="button" className="btn" onClick={reseed}>
-            <Play size={14} aria-hidden="true" />
+            <PlayFilled fontSize={14} aria-hidden="true" />
             reseed the shelf
           </button>
           <button
@@ -106,7 +116,7 @@ export default function Buckets() {
               setActive(undefined);
             }}
           >
-            <RotateCcw size={14} aria-hidden="true" />
+            <ArrowRotateCounterclockwiseRegular fontSize={14} aria-hidden="true" />
             restore the policies
           </button>
         </div>
@@ -114,7 +124,7 @@ export default function Buckets() {
 
       {shelf.every((entry) => entry.objects === 0) ? (
         <EmptyState
-          icon={Archive}
+          icon={ArchiveRegular}
           title="the shelf stands empty"
           line="No bucket holds a row of the rehearsal — restore the ledger on /objects to fill the shelf again."
         />
@@ -134,7 +144,7 @@ export default function Buckets() {
       {active ? (
         drawer.length === 0 ? (
           <EmptyState
-            icon={FolderLock}
+            icon={LockClosedRegular}
             title={`the ${active} bucket keeps nothing`}
             line="The policy holds, the rows do not — seal a deposit into this bucket on /objects."
           />

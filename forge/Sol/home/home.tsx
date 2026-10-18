@@ -7,7 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
-// Home — the LANDING of the forge (campaign 6-b · lime-brasa): the home IS
+// HomeRegular — the LANDING of the forge (campaign 6-b · lime-brasa): the home IS
 // the landing AND the platform entry, and the platform is now real (the
 // runner floor answers on /runs, /queue and /logs). One brasa light over
 // the charcoal stage: the hero lockup owns the drawn mark (the title-bar
@@ -20,15 +20,15 @@
 // run flow beside the honest-state rail at 1.6fr/1fr, the family row of
 // the spec §12 accents and the footer meta-quad flush to the window floor.
 // No run stats are invented — the floor reports capabilities, not runs.
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRightRegular, ArrowUpRightRegular } from "@fluentui/react-icons";
 import { type FormEvent, useState } from "react";
 import { useLocation } from "wouter";
 import { familyrow } from "../../family";
 import { familyurl } from "../../familyurl";
+import type { HomeProps } from "../../hometypes.ts";
 import { modes } from "../../runner.ts";
 import { BrandMark } from "../shell/BrandMark";
 import { Entry } from "./entry";
-import type { HomeProps } from "../../hometypes.ts";
 
 export * from "./entry";
 export * from "./tabs";
@@ -102,7 +102,7 @@ function FamilyRow() {
   );
 }
 
-export function Home(_props: HomeProps) {
+export function HomeRegular(_props: HomeProps) {
   const [, navigate] = useLocation();
   const [target, setTarget] = useState<string>(modes[0]);
 
@@ -143,7 +143,7 @@ export function Home(_props: HomeProps) {
           />
           <button className="pg-key" type="submit">
             step onto the floor
-            <ArrowRight size={16} aria-hidden="true" />
+            <ArrowRightRegular fontSize={16} aria-hidden="true" />
           </button>
         </form>
         <p className="pg-hint reveal in">
@@ -246,7 +246,7 @@ export function Home(_props: HomeProps) {
             </p>
             <a className="fg-side__link" href="https://github.com/wenathlan/devthink" target="_blank" rel="noreferrer">
               the family on github
-              <ArrowUpRight size={14} aria-hidden="true" />
+              <ArrowUpRightRegular fontSize={14} aria-hidden="true" />
             </a>
           </aside>
         </div>
@@ -291,4 +291,4 @@ export function Home(_props: HomeProps) {
   );
 }
 
-export default Home;
+export default HomeRegular;

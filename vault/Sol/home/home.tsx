@@ -24,11 +24,11 @@
 import { useCallback, useState } from "react";
 import { familyrow } from "../../family";
 import { familyurl } from "../../familyurl";
+import type { HomeProps } from "../../hometypes.ts";
 import { lfsPointerFrom, storageModeFor } from "../../storage";
 import { Entry } from "./entry";
 import EntryGate from "./entrygate";
 import { Tabs } from "./tabs";
-import type { HomeProps } from "../../hometypes.ts";
 
 export * from "./entry";
 export * from "./tabs";
@@ -449,7 +449,9 @@ export function HomeSurface(props: HomeProps) {
                 </li>
               ))}
             </ol>
-            <p className="vt-footnote">the house tree keeps every state recoverable — nothing executes inside the vault.</p>
+            <p className="vt-footnote">
+              the house tree keeps every state recoverable — nothing executes inside the vault.
+            </p>
           </aside>
         </div>
       </section>
@@ -475,12 +477,7 @@ export function HomeSurface(props: HomeProps) {
           </div>
           <div className="vt-quad__col">
             <p className="vt-quad__head">family</p>
-            <a
-              className="vt-quad__link"
-              href="https://github.com/wenathlan/devthink"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a className="vt-quad__link" href="https://github.com/wenathlan/devthink" target="_blank" rel="noreferrer">
               the devthink family
             </a>
           </div>

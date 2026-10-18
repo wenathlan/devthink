@@ -7,7 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
-import { MessagesSquare, RefreshCw } from "lucide-react";
+import { ArrowSyncRegular, ChatMultipleRegular } from "@fluentui/react-icons";
 /**
  * Sessions.tsx — the sessions page of the getry Sol theme: the session
  * registry as one editorial ledger — the session contexts as the dominant
@@ -144,7 +144,7 @@ export default function Sessions() {
                       <td colSpan={7} className="tableempty">
                         {loaded ? (
                           <EmptyState
-                            icon={MessagesSquare}
+                            icon={ChatMultipleRegular}
                             note="the session store answered no rows — the self-hosted DB is offline and this static build carries no seeds for it"
                             action={
                               <button type="button" className="btn secondary small" onClick={reload}>
@@ -195,7 +195,7 @@ export default function Sessions() {
               <p className="railmeta__head">provider keys</p>
               {keys.length === 0 ? (
                 <EmptyState
-                  icon={MessagesSquare}
+                  icon={ChatMultipleRegular}
                   note="the key pool answered no rows — the /v1/keys lane of the self-hosted DB is not answering"
                   action={
                     <button type="button" className="btn secondary small" onClick={reload}>
@@ -224,7 +224,7 @@ export default function Sessions() {
       <section className="section r3-log" aria-label="recent chat log">
         <div className="section-head reveal">
           <h2>
-            <MessagesSquare size={17} /> recent chat log
+            <ChatMultipleRegular fontSize={17} /> recent chat log
           </h2>
           <p>
             Every gateway request and response lands in the ChatMessage kind with its route, tokens and round-trip
@@ -261,7 +261,7 @@ export default function Sessions() {
                   <td colSpan={7} className="tableempty">
                     {loaded ? (
                       <EmptyState
-                        icon={MessagesSquare}
+                        icon={ChatMultipleRegular}
                         note="the chat log answered no entries — no gateway request has been logged to this store yet"
                         action={
                           <button type="button" className="btn secondary small" onClick={reload}>
@@ -290,7 +290,7 @@ export default function Sessions() {
               toast("the seeds refresh from the site DB on every load — nothing persists on your machine", "info")
             }
           >
-            <RefreshCw size={14} />
+            <ArrowSyncRegular fontSize={14} />
             how the rows arrive
           </button>
         </div>

@@ -19,7 +19,18 @@
  * consolidation belongs to the future @wenathlan/* package.
  */
 
-import { Brain, Copy, Layers, LayoutDashboard, MessagesSquare, Minus, Moon, Square, Sun, X } from "lucide-react";
+import {
+  BrainRegular,
+  ChatMultipleRegular,
+  CopyRegular,
+  DismissRegular,
+  HomeRegular,
+  LayerRegular,
+  MaximizeRegular,
+  SubtractRegular,
+  WeatherMoonRegular,
+  WeatherSunnyRegular,
+} from "@fluentui/react-icons";
 import {
   type CSSProperties,
   type MouseEvent as ReactMouseEvent,
@@ -40,7 +51,7 @@ export type StartApp = {
   href: string;
   label: string;
   detail: string;
-  icon: typeof LayoutDashboard;
+  icon: typeof HomeRegular;
 };
 
 /** the pages the application window hosts, one rail entry each (the gateway
@@ -48,10 +59,10 @@ export type StartApp = {
  * versions — the rail order of the polish pass). exported for the onboarding
  * copy beside this folder. */
 export const START_APPS: readonly StartApp[] = [
-  { href: "/", label: "home", detail: "the gateway surface of the family", icon: LayoutDashboard },
-  { href: "/sessions", label: "sessions", detail: "the session store and key rotation", icon: MessagesSquare },
-  { href: "/thinking", label: "thinking", detail: "the 7-level reasoning ladder", icon: Brain },
-  { href: "/versions", label: "versions", detail: "five provider gateways and their routes", icon: Layers },
+  { href: "/", label: "home", detail: "the gateway surface of the family", icon: HomeRegular },
+  { href: "/sessions", label: "sessions", detail: "the session store and key rotation", icon: ChatMultipleRegular },
+  { href: "/thinking", label: "thinking", detail: "the 7-level reasoning ladder", icon: BrainRegular },
+  { href: "/versions", label: "versions", detail: "five provider gateways and their routes", icon: LayerRegular },
 ];
 
 /** the hand-over route of the close caption: closing the window restarts the
@@ -107,9 +118,9 @@ function ThemeToggle() {
   return (
     <button type="button" className="winapp__theme" aria-label="toggle theme" onClick={() => setTheme(toggleTheme())}>
       {theme === "dark" ? (
-        <Sun size={15} strokeWidth={1.7} aria-hidden="true" />
+        <WeatherSunnyRegular fontSize={15} aria-hidden="true" />
       ) : (
-        <Moon size={15} strokeWidth={1.7} aria-hidden="true" />
+        <WeatherMoonRegular fontSize={15} aria-hidden="true" />
       )}
     </button>
   );
@@ -124,6 +135,16 @@ function ThemeToggle() {
  * @returns the window element.
  */
 export function Shell({ children }: { children: ReactNode }) {
+  // the embedded contract: inside the os power clip the app rides the host
+  // window chrome — the routed stage renders bare, full-bleed in the frame
+  const framed = (() => {
+    try {
+      return window.self !== window.top;
+    } catch {
+      return true;
+    }
+  })();
+
   const [location, navigate] = useLocation();
   const [maximized, setMaximized] = useState(false);
   const [minimized, setMinimized] = useState(false);
@@ -243,6 +264,9 @@ export function Shell({ children }: { children: ReactNode }) {
   const isActive = (href: string): boolean =>
     href === "/" ? location === "/" : location === href || location.startsWith(`${href}/`);
 
+  // the embedded pass renders before the chrome: one window, one frame
+  if (framed) return <main className="shell shell--embedded">{children}</main>;
+
   return (
     <div className="appframe" data-maximized={maximized ? "true" : undefined}>
       <section
@@ -280,7 +304,7 @@ export function Shell({ children }: { children: ReactNode }) {
           <div className="winapp__caption">
             <ThemeToggle />
             <button type="button" className="winapp__cap" aria-label="Minimize" onClick={() => setMinimized(true)}>
-              <Minus size={14} aria-hidden="true" />
+              <SubtractRegular fontSize={14} aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -288,7 +312,11 @@ export function Shell({ children }: { children: ReactNode }) {
               aria-label={maximized ? "Restore" : "Maximize"}
               onClick={toggleMaximize}
             >
-              {maximized ? <Copy size={12} aria-hidden="true" /> : <Square size={11} aria-hidden="true" />}
+              {maximized ? (
+                <CopyRegular fontSize={12} aria-hidden="true" />
+              ) : (
+                <MaximizeRegular fontSize={11} aria-hidden="true" />
+              )}
             </button>
             <button
               type="button"
@@ -296,7 +324,7 @@ export function Shell({ children }: { children: ReactNode }) {
               aria-label="Close"
               onClick={() => navigate(RESTART_ROUTE)}
             >
-              <X size={14} aria-hidden="true" />
+              <DismissRegular fontSize={14} aria-hidden="true" />
             </button>
           </div>
         </header>
@@ -320,7 +348,7 @@ export function Shell({ children }: { children: ReactNode }) {
                   aria-label={app.label}
                   aria-current={isActive(app.href) ? "page" : undefined}
                 >
-                  <Icon size={20} strokeWidth={1.5} aria-hidden="true" />
+                  <Icon fontSize={20} aria-hidden="true" />
                 </Link>
               );
             })}

@@ -11,7 +11,7 @@
  * page is tabular; every state is a dot plus text, never color alone.
  */
 
-import { Activity, Gauge, HeartPulse, Play } from "lucide-react";
+import { GaugeRegular, HeartPulseRegular, PlayFilled, PulseRegular } from "@fluentui/react-icons";
 import { useMemo, useState } from "react";
 import {
   fleetSummary,
@@ -22,7 +22,7 @@ import {
   type Runner,
   seedFleet,
 } from "../../fleet.ts";
-import { type planstate, planrehearsal, RUNPLAN } from "../../graphplan.ts";
+import { planrehearsal, type planstate, RUNPLAN } from "../../graphplan.ts";
 import { EmptyState } from "../shell/EmptyState";
 import GraphPanel from "./graphpanel";
 
@@ -102,10 +102,7 @@ export default function Runs() {
   // the run plan rehearses on the same seed and tick as the fleet: one
   // advance walks the floor AND the stage graph together (one ride, two
   // views of the same rehearsal)
-  const planstates = useMemo<Record<string, planstate>>(
-    () => planrehearsal(RUNPLAN, seed, tick),
-    [seed, tick],
-  );
+  const planstates = useMemo<Record<string, planstate>>(() => planrehearsal(RUNPLAN, seed, tick), [seed, tick]);
 
   return (
     <main className="shell fr-page">
@@ -119,7 +116,7 @@ export default function Runs() {
         </p>
         <div className="pagehead__actions">
           <button type="button" className="btn" onClick={() => setTick((value) => value + 1)}>
-            <Play size={14} aria-hidden="true" />
+            <PlayFilled fontSize={14} aria-hidden="true" />
             advance the floor
           </button>
           <button
@@ -138,14 +135,14 @@ export default function Runs() {
       <section className="fr-summary" aria-label="the floor summary">
         <div className="fr-summary__cell">
           <p className="fr-summary__label">
-            <Activity size={13} aria-hidden="true" />
+            <PulseRegular fontSize={13} aria-hidden="true" />
             runners
           </p>
           <p className="fr-summary__value">{summary.total}</p>
         </div>
         <div className="fr-summary__cell">
           <p className="fr-summary__label">
-            <HeartPulse size={13} aria-hidden="true" />
+            <HeartPulseRegular fontSize={13} aria-hidden="true" />
             health ladder
           </p>
           <p className="fr-summary__value fr-summary__ladder">
@@ -159,7 +156,7 @@ export default function Runs() {
         </div>
         <div className="fr-summary__cell">
           <p className="fr-summary__label">
-            <Gauge size={13} aria-hidden="true" />
+            <GaugeRegular fontSize={13} aria-hidden="true" />
             busy load
           </p>
           <p className="fr-summary__value">{Math.round(summary.busyLoad * 100)}%</p>
@@ -176,7 +173,7 @@ export default function Runs() {
 
       {floor.length === 0 ? (
         <EmptyState
-          icon={Activity}
+          icon={PulseRegular}
           title="no runners mustered"
           line="The floor stands empty — reseed the rehearsal to muster the fleet again."
           action={

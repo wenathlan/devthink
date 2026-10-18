@@ -11,9 +11,25 @@
  * text, never color alone. The ledger is a seeded rehearsal and says so.
  */
 
-import { Boxes, FileLock2, Play, RotateCcw, ShieldCheck } from "lucide-react";
+import {
+  ArrowRotateCounterclockwiseRegular,
+  BoxMultipleRegular,
+  LockClosedRegular,
+  PlayFilled,
+  ShieldCheckmarkRegular,
+} from "@fluentui/react-icons";
 import { type FormEvent, useMemo, useState } from "react";
-import { VAULT_BUCKETS, type VaultObject, channelPreview, digestShort, formatBytes, sealObject, seedVault, vaultCensus, verifyObject } from "../../objects.ts";
+import {
+  channelPreview,
+  digestShort,
+  formatBytes,
+  sealObject,
+  seedVault,
+  VAULT_BUCKETS,
+  type VaultObject,
+  vaultCensus,
+  verifyObject,
+} from "../../objects.ts";
 import { EmptyState } from "../shell/EmptyState";
 
 /** the seed of the rehearsal vault (shown on the page, pinned by the tests) */
@@ -35,15 +51,11 @@ function ObjectRow({ object }: { object: VaultObject }) {
         {object.lfs ? "lfs" : "blob"}
       </span>
       <span className="vo-row__size">{formatBytes(object.size)}</span>
-      <span
-        className="vo-row__digest"
-        data-tip={object.digest}
-        aria-label={`digest ${object.digest}`}
-      >
+      <span className="vo-row__digest" data-tip={object.digest} aria-label={`digest ${object.digest}`}>
         {digestShort(object.digest)}
       </span>
       <span className="vo-row__seal" data-intact={intact ? "true" : "false"}>
-        <ShieldCheck size={13} aria-hidden="true" />
+        <ShieldCheckmarkRegular fontSize={13} aria-hidden="true" />
         {intact ? "sealed" : "broken"}
       </span>
     </article>
@@ -102,7 +114,7 @@ export default function Objects() {
               setRefusal(undefined);
             }}
           >
-            <Play size={14} aria-hidden="true" />
+            <PlayFilled fontSize={14} aria-hidden="true" />
             reseed the rehearsal
           </button>
           <button
@@ -115,7 +127,7 @@ export default function Objects() {
               setRefusal(undefined);
             }}
           >
-            <RotateCcw size={14} aria-hidden="true" />
+            <ArrowRotateCounterclockwiseRegular fontSize={14} aria-hidden="true" />
             restore the ledger
           </button>
         </div>
@@ -124,14 +136,14 @@ export default function Objects() {
       <section className="vo-summary" aria-label="the census of the safe">
         <div className="vo-summary__cell">
           <p className="vo-summary__label">
-            <Boxes size={13} aria-hidden="true" />
+            <BoxMultipleRegular fontSize={13} aria-hidden="true" />
             rows sealed
           </p>
           <p className="vo-summary__value">{census.total}</p>
         </div>
         <div className="vo-summary__cell">
           <p className="vo-summary__label">
-            <FileLock2 size={13} aria-hidden="true" />
+            <LockClosedRegular fontSize={13} aria-hidden="true" />
             bytes under seal
           </p>
           <p className="vo-summary__value">{formatBytes(census.bytes)}</p>
@@ -160,7 +172,7 @@ export default function Objects() {
 
       <form className="vo-form" onSubmit={deposit} aria-label="seal a deposit">
         <p className="vo-form__head">
-          <FileLock2 size={13} aria-hidden="true" />
+          <LockClosedRegular fontSize={13} aria-hidden="true" />
           seal a deposit — path · mime · size
         </p>
         <div className="vo-form__row">
@@ -217,7 +229,7 @@ export default function Objects() {
 
       {visible.length === 0 ? (
         <EmptyState
-          icon={Boxes}
+          icon={BoxMultipleRegular}
           title="the shelf holds nothing here"
           line={
             bucket === "all"

@@ -3190,3 +3190,7 @@ a.r3a-row:hover {
     transform: none;
   }
 }
+
+/* the embedded contract: the power clip frame hosts the stage bare — the
+   stage fills the frame and scrolls itself, no window chrome of its own */
+.shell--embedded { max-width: none; height: 100vh; overflow-y: auto; }

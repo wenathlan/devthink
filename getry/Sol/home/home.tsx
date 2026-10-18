@@ -7,9 +7,9 @@
  * which now lives here as the page mount itself.
  */
 
-import { ArrowRight, CornerDownLeft } from "lucide-react";
+import { ArrowEnterRegular, ArrowRightRegular } from "@fluentui/react-icons";
 /**
- * Home.tsx — the LANDING page of the getry Sol theme (campaign v3 · r3):
+ * HomeRegular.tsx — the LANDING page of the getry Sol theme (campaign v3 · r3):
  * the Suno-grade gateway hero — one violet light, the prompt-giga endpoint
  * field (send a completion), the replica matrix ledger (the five provider
  * gateways as the copies the meta model spins), the 01–03 deploy steps and
@@ -87,7 +87,7 @@ const STEPS: { step: string; title: string; phrase: string }[] = [
  *
  * @returns the gated home element.
  */
-export function Home() {
+export function HomeRegular() {
   return (
     <EntryGate>
       <HomeSurface />
@@ -159,7 +159,7 @@ function HomeSurface() {
                 />
                 <button type="submit" className="r3-prompt__key">
                   send
-                  <CornerDownLeft size={13} aria-hidden="true" />
+                  <ArrowEnterRegular fontSize={13} aria-hidden="true" />
                 </button>
               </div>
               <p className="r3-prompt__status" aria-live="polite">
@@ -306,15 +306,15 @@ function HomeSurface() {
           <p className="r3-quad__meta r3-quad__links">
             <Link href="/versions">
               versions
-              <ArrowRight size={12} aria-hidden="true" />
+              <ArrowRightRegular fontSize={12} aria-hidden="true" />
             </Link>
             <Link href="/thinking">
               thinking
-              <ArrowRight size={12} aria-hidden="true" />
+              <ArrowRightRegular fontSize={12} aria-hidden="true" />
             </Link>
             <Link href="/sessions">
               sessions
-              <ArrowRight size={12} aria-hidden="true" />
+              <ArrowRightRegular fontSize={12} aria-hidden="true" />
             </Link>
           </p>
         </nav>
@@ -340,4 +340,4 @@ function HomeSurface() {
   );
 }
 
-export default Home;
+export default HomeRegular;

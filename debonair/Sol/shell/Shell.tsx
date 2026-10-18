@@ -365,16 +365,14 @@ type ShellProps = {
  */
 export function Shell({ children, themeButton = true }: ShellProps) {
   // the embedded contract: inside the os power clip the app rides the host
-  // window chrome — the shell renders the routed stage bare (no title bar,
-  // no rail, no player bar, no captions), full-bleed in the frame
-  const [framed] = useState(() => {
+  // window chrome — the routed stage renders bare, full-bleed in the frame
+  const framed = (() => {
     try {
       return window.self !== window.top;
     } catch {
       return true;
     }
-  });
-  if (framed) return <main className="shell shell--embedded">{children}</main>;
+  })();
   const [location, navigate] = useLocation();
   const [maximized, setMaximized] = useState(false);
   const [minimized, setMinimized] = useState(false);
@@ -493,6 +491,9 @@ export function Shell({ children, themeButton = true }: ShellProps) {
   // the active rail entry: the bare path owns home, every other page owns its route
   const isActive = (href: string): boolean =>
     href === "/" ? location === "/" : location === href || location.startsWith(`${href}/`);
+
+  // the embedded pass renders before the chrome: one window, one frame
+  if (framed) return <main className="shell shell--embedded">{children}</main>;
 
   return (
     <div className="appframe" data-maximized={maximized ? "true" : undefined}>

@@ -13,6 +13,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { apibase } from '../../api';
+import type { ApiResult, SessionUser } from '../../dashboardlib';
+import { apiresult, noderole, pick } from '../../dashboardlib';
 /* the explicit .ts suffix keeps the resolution unambiguous while the
  * typed ES module that replaced the window-global localauth.js of the static edge (the original
  * beside the typed module - the same convention the Login page uses. */
@@ -22,8 +24,6 @@ import AccountPanel from './AccountPanel';
 import AdminPanel from './AdminPanel';
 import CreateSandboxForm from './CreateSandboxForm';
 import EventsTimeline from './EventsTimeline';
-import type { ApiResult, SessionUser } from '../../dashboardlib';
-import { apiresult, noderole, pick } from '../../dashboardlib';
 import SandboxList from './SandboxList';
 
 export * from './AccountPanel';

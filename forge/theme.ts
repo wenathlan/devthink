@@ -15,24 +15,24 @@ function root(): HTMLElement {
 
 /** Reads the theme currently applied to the document. */
 export function currentTheme(): Theme {
-  return root().getAttribute("data-theme") === "light" ? "light" : "dark";
+  return root().getAttribute("data-theme") === "dark" ? "dark" : "light";
 }
 
 /** Applies a theme to the document. */
 export function applyTheme(theme: Theme): void {
-  if (theme === "light") root().setAttribute("data-theme", "light");
+  if (theme === "dark") root().setAttribute("data-theme", "dark");
   else root().removeAttribute("data-theme");
 }
 
 /** Ensures the document carries the dark Mica default before the first render. */
 export function initTheme(): Theme {
-  applyTheme("dark");
-  return "dark";
+  applyTheme("light");
+  return "light";
 }
 
 /** Flips the theme on the document and returns the new value (session scope only). */
 export function toggleTheme(): Theme {
-  const next: Theme = currentTheme() === "light" ? "dark" : "light";
+  const next: Theme = currentTheme() === "dark" ? "light" : "dark";
   applyTheme(next);
   return next;
 }

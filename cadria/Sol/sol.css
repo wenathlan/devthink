@@ -975,3 +975,7 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   .railnav__item:active, .icon-anim:active, .btn:active { transform: none; }
   html { scroll-behavior: auto; }
 }
+
+/* the embedded contract: the power clip frame hosts the stage bare — the
+   stage fills the frame and scrolls itself, no window chrome of its own */
+.shell--embedded { max-width: none; height: 100vh; overflow-y: auto; }

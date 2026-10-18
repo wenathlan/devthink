@@ -11,7 +11,14 @@
  * tabular and every state is a dot plus text.
  */
 
-import { Boxes, Flame, Play, RefreshCw, Snowflake, Thermometer } from "lucide-react";
+import {
+  ArrowSyncRegular,
+  BoxMultipleRegular,
+  FireRegular,
+  PlayFilled,
+  TemperatureRegular,
+  WeatherSnowflakeRegular,
+} from "@fluentui/react-icons";
 import { useMemo, useState } from "react";
 import {
   drive,
@@ -37,7 +44,7 @@ function Census({ census }: { census: HerdCensus }) {
     <section className="fs-summary" aria-label="the herd census">
       <div className="fs-summary__cell">
         <p className="fs-summary__label">
-          <Boxes size={13} aria-hidden="true" />
+          <BoxMultipleRegular fontSize={13} aria-hidden="true" />
           sandboxes
         </p>
         <p className="fs-summary__value">{census.total}</p>
@@ -93,7 +100,7 @@ function SandboxRow({
           aria-label={`warm ${sandbox.name}`}
           onClick={() => onAction(sandbox.id, "warm")}
         >
-          <Thermometer size={13} aria-hidden="true" />
+          <TemperatureRegular fontSize={13} aria-hidden="true" />
           warm
         </button>
         <button
@@ -102,7 +109,7 @@ function SandboxRow({
           aria-label={`heat ${sandbox.name}`}
           onClick={() => onAction(sandbox.id, "heat")}
         >
-          <Flame size={13} aria-hidden="true" />
+          <FireRegular fontSize={13} aria-hidden="true" />
           heat
         </button>
         <button
@@ -111,7 +118,7 @@ function SandboxRow({
           aria-label={`cool ${sandbox.name}`}
           onClick={() => onAction(sandbox.id, "cool")}
         >
-          <Snowflake size={13} aria-hidden="true" />
+          <WeatherSnowflakeRegular fontSize={13} aria-hidden="true" />
           cool
         </button>
         <button
@@ -129,7 +136,7 @@ function SandboxRow({
           onClick={() => onStep(sandbox.id)}
           disabled={sandbox.state !== "hot"}
         >
-          <Play size={13} aria-hidden="true" />
+          <PlayFilled fontSize={13} aria-hidden="true" />
           step
         </button>
       </div>
@@ -181,7 +188,7 @@ export default function Sandboxes() {
         </p>
         <div className="pagehead__actions">
           <button type="button" className="btn" onClick={reseed}>
-            <RefreshCw size={14} aria-hidden="true" />
+            <ArrowSyncRegular fontSize={14} aria-hidden="true" />
             reseed the herd
           </button>
         </div>
@@ -201,7 +208,7 @@ export default function Sandboxes() {
 
       {herd.length === 0 ? (
         <EmptyState
-          icon={Boxes}
+          icon={BoxMultipleRegular}
           title="the machine room stands empty"
           line="No sandbox is herded right now — reseed the rehearsal to fill the room again."
           action={

@@ -18,7 +18,7 @@
 // and navigate to "/", where the entry gate now lets the window take over.
 // Frames remount on step change so the 250ms Fluent entry plays each time;
 // reduced motion rides the stylesheet hard stop.
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeftRegular, ArrowRightRegular } from "@fluentui/react-icons";
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { markOnboardingSeen } from "../../onboardingstate";
@@ -79,7 +79,7 @@ export default function Onboarding() {
                   const Icon = app.icon;
                   return (
                     <li key={app.href} className="ob__fact">
-                      <Icon size={16} strokeWidth={1.7} aria-hidden="true" />
+                      <Icon fontSize={16} aria-hidden="true" />
                       <span>
                         <strong>{app.label}</strong> — {app.detail}
                       </span>
@@ -110,19 +110,19 @@ export default function Onboarding() {
             </button>
             {step > 0 && (
               <button type="button" className="ob__btn" onClick={() => setStep((value) => value - 1)}>
-                <ArrowLeft size={14} aria-hidden="true" />
+                <ArrowLeftRegular fontSize={14} aria-hidden="true" />
                 back
               </button>
             )}
             {last ? (
               <button type="button" className="ob__btn ob__btn--accent" onClick={finish}>
                 enter forge
-                <ArrowRight size={14} aria-hidden="true" />
+                <ArrowRightRegular fontSize={14} aria-hidden="true" />
               </button>
             ) : (
               <button type="button" className="ob__btn ob__btn--accent" onClick={() => setStep((value) => value + 1)}>
                 continue
-                <ArrowRight size={14} aria-hidden="true" />
+                <ArrowRightRegular fontSize={14} aria-hidden="true" />
               </button>
             )}
           </div>

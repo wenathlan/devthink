@@ -7,7 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
-import { Terminal } from "lucide-react";
+import { WindowConsoleRegular } from "@fluentui/react-icons";
 /**
  * Versions.tsx — the versions page of the getry Sol theme (campaign v3 ·
  * r3): the gateway registry as one operational split — the five replica
@@ -162,7 +162,7 @@ export default function Versions() {
       <section className="section" aria-label="quick start">
         <div className="glass card reveal">
           <h2>
-            <Terminal size={18} /> quick start
+            <WindowConsoleRegular fontSize={18} /> quick start
           </h2>
           <pre className="codeblock">{QUICKSTART}</pre>
         </div>

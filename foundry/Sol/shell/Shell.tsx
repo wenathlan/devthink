@@ -29,7 +29,18 @@
  * future @wenathlan/* package).
  */
 
-import { Boxes, Copy, Layers, LayoutDashboard, Minus, Moon, PackageCheck, Square, Sun, X } from "lucide-react";
+import {
+  BoxMultipleRegular,
+  CheckmarkCircleRegular,
+  CopyRegular,
+  DismissRegular,
+  HomeRegular,
+  LayerRegular,
+  MaximizeRegular,
+  SubtractRegular,
+  WeatherMoonRegular,
+  WeatherSunnyRegular,
+} from "@fluentui/react-icons";
 import {
   type CSSProperties,
   type MouseEvent as ReactMouseEvent,
@@ -47,8 +58,8 @@ import { BrandMark } from "./BrandMark";
 /** the theme in memory: flips the data-theme attribute, stores nothing */
 type ThemeName = "dark" | "light";
 
-/** the theme in memory for the current document lifetime (dark default) */
-let theme: ThemeName = "dark";
+/** the theme in memory for the current document lifetime (the light fusion default) */
+let theme: ThemeName = "light";
 
 /**
  * Reads the theme currently applied in this document.
@@ -86,7 +97,7 @@ export type RailApp = {
   href: string;
   label: string;
   detail: string;
-  icon: typeof LayoutDashboard;
+  icon: typeof HomeRegular;
 };
 
 /** the pages the application window hosts, one rail entry each — the real
@@ -94,10 +105,20 @@ export type RailApp = {
  * pages of the machine room. exported for the onboarding copy beside this
  * folder. */
 export const START_APPS: readonly RailApp[] = [
-  { href: "/", label: "home", detail: "the landing of the foundry", icon: LayoutDashboard },
-  { href: "/sandboxes", label: "sandboxes", detail: "the herd on the cold → warm → hot ladder", icon: Boxes },
-  { href: "/images", label: "images", detail: "the herd shelf and the conversion plans", icon: Layers },
-  { href: "/artifacts", label: "artifacts", detail: "the packaging line with sealed checksums", icon: PackageCheck },
+  { href: "/", label: "home", detail: "the landing of the foundry", icon: HomeRegular },
+  {
+    href: "/sandboxes",
+    label: "sandboxes",
+    detail: "the herd on the cold → warm → hot ladder",
+    icon: BoxMultipleRegular,
+  },
+  { href: "/images", label: "images", detail: "the herd shelf and the conversion plans", icon: LayerRegular },
+  {
+    href: "/artifacts",
+    label: "artifacts",
+    detail: "the packaging line with sealed checksums",
+    icon: CheckmarkCircleRegular,
+  },
 ];
 
 /** the rail family row: the nine siblings beside the foundry, resolved
@@ -152,7 +173,11 @@ function ThemeToggle() {
   const [current, setCurrent] = useState<ThemeName>(currentTheme());
   return (
     <button type="button" className="win-theme" aria-label="toggle theme" onClick={() => setCurrent(toggleTheme())}>
-      {current === "dark" ? <Sun size={14} aria-hidden="true" /> : <Moon size={14} aria-hidden="true" />}
+      {current === "dark" ? (
+        <WeatherSunnyRegular fontSize={14} aria-hidden="true" />
+      ) : (
+        <WeatherMoonRegular fontSize={14} aria-hidden="true" />
+      )}
       {current}
     </button>
   );
@@ -167,6 +192,16 @@ function ThemeToggle() {
  * @returns the window element.
  */
 export function Shell({ children }: { children: ReactNode }) {
+  // the embedded contract: inside the os power clip the app rides the host
+  // window chrome — the routed stage renders bare, full-bleed in the frame
+  const framed = (() => {
+    try {
+      return window.self !== window.top;
+    } catch {
+      return true;
+    }
+  })();
+
   const [location, navigate] = useLocation();
   const [maximized, setMaximized] = useState(false);
   const [minimized, setMinimized] = useState(false);
@@ -318,6 +353,9 @@ export function Shell({ children }: { children: ReactNode }) {
     );
   }
 
+  // the embedded pass renders before the chrome: one window, one frame
+  if (framed) return <main className="shell shell--embedded">{children}</main>;
+
   return (
     <div className="win-root" data-max={maximized ? "true" : undefined}>
       <section
@@ -359,7 +397,7 @@ export function Shell({ children }: { children: ReactNode }) {
               aria-label="Minimize foundry"
               onClick={() => setMinimized(true)}
             >
-              <Minus size={14} strokeWidth={1.7} aria-hidden="true" />
+              <SubtractRegular fontSize={14} aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -368,9 +406,9 @@ export function Shell({ children }: { children: ReactNode }) {
               onClick={toggleMaximize}
             >
               {maximized ? (
-                <Copy size={12} strokeWidth={1.7} aria-hidden="true" />
+                <CopyRegular fontSize={12} aria-hidden="true" />
               ) : (
-                <Square size={11} strokeWidth={1.7} aria-hidden="true" />
+                <MaximizeRegular fontSize={11} aria-hidden="true" />
               )}
             </button>
             <button
@@ -379,7 +417,7 @@ export function Shell({ children }: { children: ReactNode }) {
               aria-label="Close foundry"
               onClick={closeWindow}
             >
-              <X size={14} strokeWidth={1.7} aria-hidden="true" />
+              <DismissRegular fontSize={14} aria-hidden="true" />
             </button>
           </div>
         </header>
@@ -399,7 +437,7 @@ export function Shell({ children }: { children: ReactNode }) {
                   aria-label={app.label}
                   aria-current={isActive(app.href) ? "page" : undefined}
                 >
-                  <Icon size={16} strokeWidth={1.7} aria-hidden="true" />
+                  <Icon fontSize={16} aria-hidden="true" />
                   <span className="win-raillabel">{app.label}</span>
                 </Link>
               );

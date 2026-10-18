@@ -7,7 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
-import { BrainCircuit } from "lucide-react";
+import { BrainRegular } from "@fluentui/react-icons";
 /**
  * Thinking.tsx — the thinking page of the getry Sol theme (campaign v3 ·
  * r3): the 7-level reasoning ladder as one operational mono ladder — each
@@ -80,7 +80,7 @@ export default function Thinking() {
           <aside className="r3-rail">
             <div className="railmeta reveal">
               <p className="railmeta__head">
-                <BrainCircuit size={13} aria-hidden="true" /> how a level resolves
+                <BrainRegular fontSize={13} aria-hidden="true" /> how a level resolves
               </p>
               <p className="r3-rail__lede">
                 The gateway reads the level from the request body (or falls back to <code>{DEFAULTTHINKINGLEVEL}</code>)

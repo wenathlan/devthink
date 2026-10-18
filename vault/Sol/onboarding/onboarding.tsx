@@ -15,7 +15,7 @@
 // frames ride the 250ms window entry (winOpen) and the reduced-motion hard
 // stop of the stylesheet. The finish AND the skip mark onboardingseen
 // through the one accessor (onboardingstate.ts — seen = may skip, the flow
- // is never forced again) and the walk hands the window at "/".
+// is never forced again) and the walk hands the window at "/".
 import { useCallback, useState } from "react";
 import { useLocation } from "wouter";
 import { markOnboardingStage } from "../../onboardingstate.ts";

@@ -24,7 +24,18 @@
  * landing (data-landing), where the hero lockup owns it.
  */
 
-import { Activity, Copy, LayoutDashboard, ListOrdered, Minus, Moon, Square, Sun, Terminal, X } from "lucide-react";
+import {
+  CopyRegular,
+  DismissRegular,
+  HomeRegular,
+  ListRegular,
+  MaximizeRegular,
+  PulseRegular,
+  SubtractRegular,
+  WeatherMoonRegular,
+  WeatherSunnyRegular,
+  WindowConsoleRegular,
+} from "@fluentui/react-icons";
 import {
   type CSSProperties,
   type MouseEvent as ReactMouseEvent,
@@ -44,7 +55,7 @@ export type RailApp = {
   href: string;
   label: string;
   detail: string;
-  icon: typeof LayoutDashboard;
+  icon: typeof HomeRegular;
 };
 
 /** the pages the application window hosts, one rail pin each — the real
@@ -52,10 +63,10 @@ export type RailApp = {
  * pages of the runner floor. exported for the flow components beside this
  * folder. */
 export const RAIL_APPS: readonly RailApp[] = [
-  { href: "/", label: "home", detail: "the landing of the forge", icon: LayoutDashboard },
-  { href: "/runs", label: "runs", detail: "the runner fleets and their health", icon: Activity },
-  { href: "/queue", label: "queue", detail: "the execution queue and its priorities", icon: ListOrdered },
-  { href: "/logs", label: "logs", detail: "the seeded replay of a run log", icon: Terminal },
+  { href: "/", label: "home", detail: "the landing of the forge", icon: HomeRegular },
+  { href: "/runs", label: "runs", detail: "the runner fleets and their health", icon: PulseRegular },
+  { href: "/queue", label: "queue", detail: "the execution queue and its priorities", icon: ListRegular },
+  { href: "/logs", label: "logs", detail: "the seeded replay of a run log", icon: WindowConsoleRegular },
 ];
 
 /** the hand-over route of the close caption: closing the window restarts
@@ -126,7 +137,11 @@ function ThemeToggle() {
       aria-label="toggle theme"
       onClick={() => setTheme(toggleTheme())}
     >
-      {theme === "dark" ? <Sun size={16} aria-hidden="true" /> : <Moon size={16} aria-hidden="true" />}
+      {theme === "dark" ? (
+        <WeatherSunnyRegular fontSize={16} aria-hidden="true" />
+      ) : (
+        <WeatherMoonRegular fontSize={16} aria-hidden="true" />
+      )}
     </button>
   );
 }
@@ -134,6 +149,16 @@ function ThemeToggle() {
 /** the shared shell: the application window (title bar + pin rail + content
  * zone) over the deep canvas */
 export function Shell({ children }: { children: ReactNode }) {
+  // the embedded contract: inside the os power clip the app rides the host
+  // window chrome — the routed stage renders bare, full-bleed in the frame
+  const framed = (() => {
+    try {
+      return window.self !== window.top;
+    } catch {
+      return true;
+    }
+  })();
+
   const [location, navigate] = useLocation();
   const [maximized, setMaximized] = useState(false);
   const [minimized, setMinimized] = useState(false);
@@ -269,6 +294,9 @@ export function Shell({ children }: { children: ReactNode }) {
     );
   }
 
+  // the embedded pass renders before the chrome: one window, one frame
+  if (framed) return <main className="shell shell--embedded">{children}</main>;
+
   return (
     <div className="win-root" data-max={maximized ? "true" : undefined}>
       <section
@@ -302,7 +330,7 @@ export function Shell({ children }: { children: ReactNode }) {
               aria-label="Minimize forge"
               onClick={() => setMinimized(true)}
             >
-              <Minus size={14} strokeWidth={1.7} aria-hidden="true" />
+              <SubtractRegular fontSize={14} aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -311,9 +339,9 @@ export function Shell({ children }: { children: ReactNode }) {
               onClick={toggleMaximize}
             >
               {maximized ? (
-                <Copy size={12} strokeWidth={1.7} aria-hidden="true" />
+                <CopyRegular fontSize={12} aria-hidden="true" />
               ) : (
-                <Square size={11} strokeWidth={1.7} aria-hidden="true" />
+                <MaximizeRegular fontSize={11} aria-hidden="true" />
               )}
             </button>
             <button
@@ -322,7 +350,7 @@ export function Shell({ children }: { children: ReactNode }) {
               aria-label="Close forge"
               onClick={closeWindow}
             >
-              <X size={14} strokeWidth={1.7} aria-hidden="true" />
+              <DismissRegular fontSize={14} aria-hidden="true" />
             </button>
           </div>
         </header>
@@ -357,7 +385,7 @@ export function Shell({ children }: { children: ReactNode }) {
                   aria-label={app.label}
                   aria-current={isActive(app.href) ? "page" : undefined}
                 >
-                  <Icon size={18} strokeWidth={1.7} aria-hidden="true" />
+                  <Icon fontSize={18} aria-hidden="true" />
                 </Link>
               );
             })}

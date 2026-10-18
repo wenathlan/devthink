@@ -8,7 +8,7 @@
  * entries expire on their own timer.
  */
 
-import { CircleAlert, CircleCheck, Info, X } from "lucide-react";
+import { CheckmarkCircleRegular, DismissRegular, ErrorCircleRegular, InfoRegular } from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 
 /** the tones a toast can carry. */
@@ -59,10 +59,10 @@ export function dismiss(id: number): void {
 }
 
 /** the icon per tone, lucide family, stroke 1.8. */
-const toneicon: Record<ToastTone, typeof Info> = {
-  success: CircleCheck,
-  error: CircleAlert,
-  info: Info,
+const toneicon: Record<ToastTone, typeof InfoRegular> = {
+  success: CheckmarkCircleRegular,
+  error: ErrorCircleRegular,
+  info: InfoRegular,
 };
 
 /**
@@ -87,10 +87,10 @@ export function Toaster() {
         const Icon = toneicon[entry.tone];
         return (
           <div key={entry.id} className={`toast ${entry.tone}`}>
-            <Icon size={16} />
+            <Icon fontSize={16} />
             <span>{entry.message}</span>
             <button type="button" aria-label="dismiss" onClick={() => dismiss(entry.id)}>
-              <X size={13} />
+              <DismissRegular fontSize={13} />
             </button>
           </div>
         );

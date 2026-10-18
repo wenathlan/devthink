@@ -11,11 +11,26 @@
  * tabular; every state is a dot plus text, never color alone.
  */
 
-import { Clock, Hourglass, Play, RotateCcw, ShieldCheck, Trash2 } from "lucide-react";
+import {
+  ArrowRotateCounterclockwiseRegular,
+  ClockRegular,
+  DeleteRegular,
+  HourglassRegular,
+  PlayFilled,
+  ShieldCheckmarkRegular,
+} from "@fluentui/react-icons";
 import { useMemo, useState } from "react";
 import { type BucketRule, retentionLabel, seedRules } from "../../buckets.ts";
-import { type VaultObject, formatBytes, seedVault } from "../../objects.ts";
-import { ROLL_STEP, firstDueTick, horizonTick, retentionVerdicts, sweepPlan, tickLabel, type RetentionVerdict } from "../../retention.ts";
+import { formatBytes, seedVault, type VaultObject } from "../../objects.ts";
+import {
+  firstDueTick,
+  horizonTick,
+  type RetentionVerdict,
+  ROLL_STEP,
+  retentionVerdicts,
+  sweepPlan,
+  tickLabel,
+} from "../../retention.ts";
 import { EmptyState } from "../shell/EmptyState";
 
 /** the seed of the rehearsal clock (shown on the page, pinned by the tests) */
@@ -35,9 +50,7 @@ function VerdictRow({ verdict }: { verdict: RetentionVerdict }) {
         <i aria-hidden="true" />
         {verdict.state}
       </span>
-      <span className="vr-row__age">
-        age {verdict.ageDays}d
-      </span>
+      <span className="vr-row__age">age {verdict.ageDays}d</span>
       <span className="vr-row__why">{verdict.why}</span>
     </article>
   );
@@ -68,7 +81,7 @@ export default function Retention() {
         </p>
         <div className="pagehead__actions">
           <button type="button" className="btn" onClick={() => setNow((value) => value + ROLL_STEP)}>
-            <Play size={14} aria-hidden="true" />
+            <PlayFilled fontSize={14} aria-hidden="true" />
             roll the clock +{ROLL_STEP}d
           </button>
           <button
@@ -81,7 +94,7 @@ export default function Retention() {
               setNow(0);
             }}
           >
-            <RotateCcw size={14} aria-hidden="true" />
+            <ArrowRotateCounterclockwiseRegular fontSize={14} aria-hidden="true" />
             restore the rehearsal
           </button>
           <button
@@ -95,7 +108,7 @@ export default function Retention() {
               setNow(0);
             }}
           >
-            <Hourglass size={14} aria-hidden="true" />
+            <HourglassRegular fontSize={14} aria-hidden="true" />
             reseed seed {seed + 1}
           </button>
         </div>
@@ -104,14 +117,14 @@ export default function Retention() {
       <section className="vr-summary" aria-label="the retention summary">
         <div className="vr-summary__cell">
           <p className="vr-summary__label">
-            <Clock size={13} aria-hidden="true" />
+            <ClockRegular fontSize={13} aria-hidden="true" />
             the clock
           </p>
           <p className="vr-summary__value">{tickLabel(now)}</p>
         </div>
         <div className="vr-summary__cell">
           <p className="vr-summary__label">
-            <ShieldCheck size={13} aria-hidden="true" />
+            <ShieldCheckmarkRegular fontSize={13} aria-hidden="true" />
             inside the window
           </p>
           <p className="vr-summary__value">{sealedCount} sealed</p>
@@ -122,7 +135,7 @@ export default function Retention() {
         </div>
         <div className="vr-summary__cell vr-summary__cell--wide">
           <p className="vr-summary__label">
-            <Trash2 size={13} aria-hidden="true" />
+            <DeleteRegular fontSize={13} aria-hidden="true" />
             the sweep would collect
           </p>
           <p className="vr-summary__value">
@@ -159,7 +172,7 @@ export default function Retention() {
 
       {verdicts.length === 0 ? (
         <EmptyState
-          icon={Hourglass}
+          icon={HourglassRegular}
           title="the clock reads an empty vault"
           line="No row rides the ledger — restore the rehearsal to set the clock against real objects."
           action={

@@ -11,7 +11,7 @@ import type { ReactNode } from "react";
 
 type EmptyStateProps = {
   /** the lucide glyph component that speaks for the empty surface */
-  icon: typeof import("lucide-react").Layers;
+  icon: typeof import("@fluentui/react-icons").LayerRegular;
   /** the one line of truth: what is absent and why (no marketing) */
   note: string;
   /** the one real action (an anchor or a button) */
@@ -28,7 +28,7 @@ export function EmptyState({ icon: Icon, note, action }: EmptyStateProps) {
   return (
     <div className="emptystate">
       <span className="emptystate__glyph" aria-hidden="true">
-        <Icon size={22} strokeWidth={1.7} />
+        <Icon fontSize={22} />
       </span>
       <p className="emptystate__note">{note}</p>
       {action ? <div className="emptystate__action">{action}</div> : null}

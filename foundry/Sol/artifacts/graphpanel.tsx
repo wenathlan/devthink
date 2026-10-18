@@ -18,12 +18,12 @@
 import { useId, useMemo } from "react";
 import {
   PLAN_STATES,
-  type planstate,
   planbounds,
   plangraphof,
   planpositions,
   planprogress,
   planstages,
+  type planstate,
   plantally,
   type runplan,
 } from "../../graphplan.ts";
@@ -51,10 +51,7 @@ const STATE_TIP: Readonly<Record<planstate, string>> = {
 
 /** the bezier path of one wire: right edge of the source card to the left
  * edge of the target card, the flat fluent hand-off the pipeline rides. */
-function edgePath(
-  from: { x: number; y: number },
-  to: { x: number; y: number },
-): string {
+function edgePath(from: { x: number; y: number }, to: { x: number; y: number }): string {
   const sx = from.x + CARD.width;
   const sy = from.y + CARD.height / 2;
   const tx = to.x;
@@ -104,13 +101,7 @@ function PlanNode({
 }
 
 /** the stage graph of the pipeline plan: nodes, wires and the rehearsed states. */
-export default function GraphPanel({
-  plan,
-  states,
-}: {
-  plan: runplan;
-  states: Readonly<Record<string, planstate>>;
-}) {
+export default function GraphPanel({ plan, states }: { plan: runplan; states: Readonly<Record<string, planstate>> }) {
   const gradientRaw = useId();
   const gradientId = `fag-surface-${gradientRaw.replace(/[^a-zA-Z0-9]/g, "")}`;
 
@@ -202,9 +193,7 @@ export default function GraphPanel({
       </ul>
 
       <p className="sr-only">
-        {plan.steps
-          .map((step, index) => `${index + 1}. ${step.label} (${step.kind}): ${step.note}`)
-          .join(" ")}
+        {plan.steps.map((step, index) => `${index + 1}. ${step.label} (${step.kind}): ${step.note}`).join(" ")}
       </p>
     </section>
   );

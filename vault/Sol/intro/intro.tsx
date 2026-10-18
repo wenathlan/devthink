@@ -55,9 +55,7 @@ export default function Intro() {
   const handThrough = useCallback(() => {
     if (handed.current) return;
     handed.current = true;
-    void readOnboardingState().then((state) =>
-      navigate(state.onboardingseen ? "/" : "/onboarding", { replace: true }),
-    );
+    void readOnboardingState().then((state) => navigate(state.onboardingseen ? "/" : "/onboarding", { replace: true }));
   }, [navigate]);
 
   useEffect(() => {

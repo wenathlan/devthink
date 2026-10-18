@@ -3,7 +3,7 @@
  * The file carrying the folder's own name is the path manager of the page:
  * it mounts the page and is consumed only by the theme anchor (Sol/Sol.tsx).
  *
- * Logs — the live tail of a run, replayed deterministically: one integer
+ * DocumentBulletListRegular — the live tail of a run, replayed deterministically: one integer
  * seed unrolls the whole line stream (runstream.ts), the player walks it
  * on a timer, prefers-reduced-motion renders the full stream at once. The
  * stream says what it is: a seeded replay of a run on the saddle engine
@@ -11,7 +11,12 @@
  * tabular and pinned by the tests.
  */
 
-import { Pause, Play, RotateCcw, Terminal } from "lucide-react";
+import {
+  ArrowRotateCounterclockwiseRegular,
+  PauseRegular,
+  PlayFilled,
+  WindowConsoleRegular,
+} from "@fluentui/react-icons";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   formatLogTime,
@@ -33,7 +38,7 @@ const PLAY_MS = 120;
 const PRESET_SEEDS: readonly number[] = [421337, 90012, 5124, 77031];
 
 /** The logs page: the deterministic replay of one run. */
-export default function Logs() {
+export default function DocumentBulletListRegular() {
   const [seed, setSeed] = useState(LOG_SEED);
   const [playing, setPlaying] = useState(true);
   const [clock, setClock] = useState(0);
@@ -73,7 +78,7 @@ export default function Logs() {
     <main className="shell fl-page">
       <header className="pagehead">
         <p className="pagehead__eyebrow">logs · the run evidence</p>
-        <h1 className="pagehead__title">Logs ao vivo — a seeded replay</h1>
+        <h1 className="pagehead__title">DocumentBulletListRegular ao vivo — a seeded replay</h1>
         <p className="pagehead__lede">
           One run of the floor, replayed line by line from seed {seed} — the same seed always answers the same stream,
           in the browser and in the tests. Outcome and evidence stay beside the runner.
@@ -86,16 +91,16 @@ export default function Logs() {
             aria-pressed={playing && !done}
           >
             {done ? (
-              <RotateCcw size={14} aria-hidden="true" />
+              <ArrowRotateCounterclockwiseRegular fontSize={14} aria-hidden="true" />
             ) : playing ? (
-              <Pause size={14} aria-hidden="true" />
+              <PauseRegular fontSize={14} aria-hidden="true" />
             ) : (
-              <Play size={14} aria-hidden="true" />
+              <PlayFilled fontSize={14} aria-hidden="true" />
             )}
             {done ? "replay the run" : playing ? "pause the tail" : "resume the tail"}
           </button>
           <button type="button" className="btn secondary" onClick={replay}>
-            <RotateCcw size={14} aria-hidden="true" />
+            <ArrowRotateCounterclockwiseRegular fontSize={14} aria-hidden="true" />
             restart from zero
           </button>
         </div>
@@ -104,7 +109,7 @@ export default function Logs() {
       <section className="fl-console" aria-label="the replay controls">
         <div className="fl-console__seeds">
           <p className="fl-console__head">
-            <Terminal size={13} aria-hidden="true" />
+            <WindowConsoleRegular fontSize={13} aria-hidden="true" />
             seeds
           </p>
           <div className="fl-seedrow">
@@ -153,7 +158,7 @@ export default function Logs() {
 
       {lines.length === 0 ? (
         <EmptyState
-          icon={Terminal}
+          icon={WindowConsoleRegular}
           title="no stream for this seed"
           line="The replay engine answered nothing — pick one of the preset seeds to roll a run."
         />

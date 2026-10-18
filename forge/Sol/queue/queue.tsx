@@ -3,14 +3,20 @@
  * The file carrying the folder's own name is the path manager of the page:
  * it mounts the page and is consumed only by the theme anchor (Sol/Sol.tsx).
  *
- * Queue — the execution queue of the floor: runs enter with a priority
+ * QueueList — the execution queue of the floor: runs enter with a priority
  * (express → normal → batch), keep their arrival order inside the lane and
  * leave through the head. The page drives the REAL queue engine (queue.ts):
  * enqueue, serve next, cancel, reseed — every number tabular, the empty
  * state honest. The rehearsal queue is seeded and says so.
  */
 
-import { ListOrdered, Play, Plus, RotateCcw, X } from "lucide-react";
+import {
+  AddRegular,
+  ArrowRotateCounterclockwiseRegular,
+  DismissRegular,
+  ListRegular,
+  PlayFilled,
+} from "@fluentui/react-icons";
 import { useMemo, useState } from "react";
 import {
   cancel as cancelItem,
@@ -95,7 +101,7 @@ function QueueRow({ item, position, onCancel }: { item: QueueItem; position: num
         aria-label={`cancel ${item.label}`}
         onClick={() => onCancel(item.id)}
       >
-        <X size={14} aria-hidden="true" />
+        <DismissRegular fontSize={14} aria-hidden="true" />
         cancel
       </button>
     </article>
@@ -103,7 +109,7 @@ function QueueRow({ item, position, onCancel }: { item: QueueItem; position: num
 }
 
 /** The queue page: the serving order of the floor. */
-export default function Queue() {
+export default function QueueList() {
   const [queue, setQueue] = useState<QueueItem[]>(() => queueFromSeed(QUEUE_SEED, 7));
   const [label, setLabel] = useState("");
   const [priority, setPriority] = useState<QueuePriority>("normal");
@@ -149,11 +155,11 @@ export default function Queue() {
         </p>
         <div className="pagehead__actions">
           <button type="button" className="btn" onClick={serveNext}>
-            <Play size={14} aria-hidden="true" />
+            <PlayFilled fontSize={14} aria-hidden="true" />
             serve next
           </button>
           <button type="button" className="btn secondary" onClick={() => setQueue(queueFromSeed(QUEUE_SEED, 7))}>
-            <RotateCcw size={14} aria-hidden="true" />
+            <ArrowRotateCounterclockwiseRegular fontSize={14} aria-hidden="true" />
             reseed the rehearsal
           </button>
         </div>
@@ -162,7 +168,7 @@ export default function Queue() {
       <section className="fq-summary" aria-label="the queue summary">
         <div className="fq-summary__cell">
           <p className="fq-summary__label">
-            <ListOrdered size={13} aria-hidden="true" />
+            <ListRegular fontSize={13} aria-hidden="true" />
             depth
           </p>
           <p className="fq-summary__value">{queueDepth(queue)}</p>
@@ -187,7 +193,7 @@ export default function Queue() {
 
       <form className="fq-form" onSubmit={addRun} aria-label="enqueue a run">
         <p className="fq-form__head">
-          <Plus size={13} aria-hidden="true" />
+          <AddRegular fontSize={13} aria-hidden="true" />
           enqueue a run
         </p>
         <div className="fq-form__field">
@@ -212,7 +218,7 @@ export default function Queue() {
 
       {order.length === 0 ? (
         <EmptyState
-          icon={ListOrdered}
+          icon={ListRegular}
           title="the queue is empty"
           line="The floor has nothing waiting — enqueue a run or reseed the rehearsal queue."
           action={

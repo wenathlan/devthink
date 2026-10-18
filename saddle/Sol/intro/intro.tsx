@@ -17,10 +17,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'wouter';
 import {
-	type VisitorOnboarding,
 	loadOnboardingState,
 	markIntroSeen,
 	readOnboardingState,
+	type VisitorOnboarding,
 } from '../../onboardingstate.ts';
 import { SaddleMark } from '../shell/Shell';
 

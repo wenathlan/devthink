@@ -2,7 +2,6 @@
 // engine catalogs (sandbox.ts) with static fallback, spec posted to the
 // api or materialized in the local engine (static mode).
 import { useState } from 'react';
-import { cpudata, createSandboxState, gpudata } from '../../sandbox.ts';
 import {
 	apiresult,
 	errormessage,
@@ -11,6 +10,7 @@ import {
 	readlocalsandboxes,
 	writelocalsandboxes,
 } from '../../dashboardlib';
+import { cpudata, createSandboxState, gpudata } from '../../sandbox.ts';
 
 type CreateSandboxFormProps = {
 	/** "api" posts /api/v1/sandboxes; "local" drives the browser engine shelf. */

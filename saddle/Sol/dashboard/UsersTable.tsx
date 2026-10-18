@@ -2,8 +2,8 @@
 // search by username, account fields only (hash and salt never leave the
 // api); on the static edge, the browser-local registry.
 import { useEffect, useState } from 'react';
-import { available, roleof } from '../../localauth.ts';
 import { apiresult, asarray, chipclass, fmtdate, pick } from '../../dashboardlib';
+import { available, roleof } from '../../localauth.ts';
 
 type UsersTableProps = {
 	/** "api" lists /api/v1/admin/users; "local" the browser account registry. */

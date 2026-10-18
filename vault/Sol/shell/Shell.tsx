@@ -28,7 +28,18 @@
  * vault door owns the stage — logo discipline, CSS-enforced.
  */
 
-import { Archive, Copy, FolderLock, Hourglass, LayoutDashboard, Minus, Moon, Square, Sun, X } from "lucide-react";
+import {
+  ArchiveRegular,
+  CopyRegular,
+  DismissRegular,
+  HomeRegular,
+  HourglassRegular,
+  LockClosedRegular,
+  MaximizeRegular,
+  SubtractRegular,
+  WeatherMoonRegular,
+  WeatherSunnyRegular,
+} from "@fluentui/react-icons";
 import {
   type CSSProperties,
   type MouseEvent as ReactMouseEvent,
@@ -46,8 +57,8 @@ import { BrandMark } from "./BrandMark";
 /** the theme in memory: flips the data-theme attribute, stores nothing */
 type ThemeName = "dark" | "light";
 
-/** the theme in memory for the current document lifetime (dark default) */
-let theme: ThemeName = "dark";
+/** the theme in memory for the current document lifetime (the light fusion default) */
+let theme: ThemeName = "light";
 
 /**
  * Reads the theme currently applied in this document.
@@ -91,17 +102,22 @@ export type RailApp = {
   href: string;
   label: string;
   detail: string;
-  icon: typeof LayoutDashboard;
+  icon: typeof HomeRegular;
 };
 
 /** the pages the application window hosts, one rail entry each — the real
  * surface set of the vault: the landing first, then the three platform
  * pages of the safe. exported for the flow components beside this folder. */
 export const RAIL_APPS: readonly RailApp[] = [
-  { href: "/", label: "home", detail: "the staging surface of the vault", icon: LayoutDashboard },
-  { href: "/objects", label: "objects", detail: "the sealed inventory and its census", icon: Archive },
-  { href: "/buckets", label: "buckets", detail: "the retention shelf and its drawers", icon: FolderLock },
-  { href: "/retention", label: "retention", detail: "the clock of the safe and the sweep plan", icon: Hourglass },
+  { href: "/", label: "home", detail: "the staging surface of the vault", icon: HomeRegular },
+  { href: "/objects", label: "objects", detail: "the sealed inventory and its census", icon: ArchiveRegular },
+  { href: "/buckets", label: "buckets", detail: "the retention shelf and its drawers", icon: LockClosedRegular },
+  {
+    href: "/retention",
+    label: "retention",
+    detail: "the clock of the safe and the sweep plan",
+    icon: HourglassRegular,
+  },
 ];
 
 /** the eight resize edges of the window chrome (the Windows handles). */
@@ -151,7 +167,11 @@ function ThemeToggle() {
   const [current, setCurrent] = useState<ThemeName>(currentTheme());
   return (
     <button type="button" className="win-theme" aria-label="toggle theme" onClick={() => setCurrent(toggleTheme())}>
-      {current === "dark" ? <Sun size={14} aria-hidden="true" /> : <Moon size={14} aria-hidden="true" />}
+      {current === "dark" ? (
+        <WeatherSunnyRegular fontSize={14} aria-hidden="true" />
+      ) : (
+        <WeatherMoonRegular fontSize={14} aria-hidden="true" />
+      )}
       {current}
     </button>
   );
@@ -166,6 +186,16 @@ function ThemeToggle() {
  * @returns the window element.
  */
 export function Shell({ children }: { children: ReactNode }) {
+  // the embedded contract: inside the os power clip the app rides the host
+  // window chrome — the routed stage renders bare, full-bleed in the frame
+  const framed = (() => {
+    try {
+      return window.self !== window.top;
+    } catch {
+      return true;
+    }
+  })();
+
   const [location, navigate] = useLocation();
   const [maximized, setMaximized] = useState(false);
   const [minimized, setMinimized] = useState(false);
@@ -309,6 +339,9 @@ export function Shell({ children }: { children: ReactNode }) {
     );
   }
 
+  // the embedded pass renders before the chrome: one window, one frame
+  if (framed) return <main className="shell shell--embedded">{children}</main>;
+
   return (
     <div className="win-root" data-max={maximized ? "true" : undefined}>
       <section
@@ -350,7 +383,7 @@ export function Shell({ children }: { children: ReactNode }) {
               aria-label="Minimize vault"
               onClick={() => setMinimized(true)}
             >
-              <Minus size={14} strokeWidth={1.7} aria-hidden="true" />
+              <SubtractRegular fontSize={14} aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -359,9 +392,9 @@ export function Shell({ children }: { children: ReactNode }) {
               onClick={toggleMaximize}
             >
               {maximized ? (
-                <Copy size={12} strokeWidth={1.7} aria-hidden="true" />
+                <CopyRegular fontSize={12} aria-hidden="true" />
               ) : (
-                <Square size={11} strokeWidth={1.7} aria-hidden="true" />
+                <MaximizeRegular fontSize={11} aria-hidden="true" />
               )}
             </button>
             <button
@@ -370,7 +403,7 @@ export function Shell({ children }: { children: ReactNode }) {
               aria-label="Close vault"
               onClick={closeWindow}
             >
-              <X size={14} strokeWidth={1.7} aria-hidden="true" />
+              <DismissRegular fontSize={14} aria-hidden="true" />
             </button>
           </div>
         </header>
@@ -382,7 +415,8 @@ export function Shell({ children }: { children: ReactNode }) {
             </p>
             {RAIL_APPS.map((app) => {
               const Icon = app.icon;
-              const isActive = app.href === "/" ? location === "/" : location === app.href || location.startsWith(`${app.href}/`);
+              const isActive =
+                app.href === "/" ? location === "/" : location === app.href || location.startsWith(`${app.href}/`);
               return (
                 <Link
                   key={app.href}
@@ -392,7 +426,7 @@ export function Shell({ children }: { children: ReactNode }) {
                   aria-label={app.label}
                   aria-current={isActive ? "page" : undefined}
                 >
-                  <Icon size={16} strokeWidth={1.7} aria-hidden="true" />
+                  <Icon fontSize={16} aria-hidden="true" />
                   <span className="win-rail__label">{app.label}</span>
                 </Link>
               );

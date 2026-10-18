@@ -3,14 +3,14 @@
  * The file carrying the folder's own name is the path manager of the page:
  * it mounts the page and is consumed only by the theme anchor (Sol/Sol.tsx).
  *
- * Images — the herd shelf of the foundry: the three real clone formats
+ * ImageMultipleRegular — the herd shelf of the foundry: the three real clone formats
  * (.tzst / .tar.gz / .tar.xz) with their honest traits, the conversion
  * plan the floor keeps (unpack the tar layer, recompress, seal) and the
  * size estimates per format. The shelf is a seeded rehearsal; the plan is
  * the real conversion logic (imagestore.ts).
  */
 
-import { ArrowRight, Layers, RefreshCw } from "lucide-react";
+import { ArrowRightRegular, ArrowSyncRegular, LayerRegular } from "@fluentui/react-icons";
 import { useMemo, useState } from "react";
 import {
   type ConvertPlan,
@@ -54,7 +54,7 @@ function ImageRow({ image }: { image: HerdImage }) {
 }
 
 /** The images page: the herd shelf and the conversion plan. */
-export default function Images() {
+export default function ImageMultipleRegular() {
   const [seed, setSeed] = useState(SHELF_SEED);
   const [from, setFrom] = useState<ImageFormat>("tzst");
   const [to, setTo] = useState<ImageFormat>("tarxz");
@@ -65,14 +65,14 @@ export default function Images() {
     <main className="shell fi-page">
       <header className="pagehead">
         <p className="pagehead__eyebrow">images · the herd shelf</p>
-        <h1 className="pagehead__title">Images</h1>
+        <h1 className="pagehead__title">ImageMultipleRegular</h1>
         <p className="pagehead__lede">
           The herd travels in three formats — .tzst clones fast, .tar.gz opens anywhere, .tar.xz rides the releases. A
           seeded rehearsal (seed {seed}) fills the shelf; the conversion plan below is the real floor logic.
         </p>
         <div className="pagehead__actions">
           <button type="button" className="btn" onClick={() => setSeed((value) => value + 1)}>
-            <RefreshCw size={14} aria-hidden="true" />
+            <ArrowSyncRegular fontSize={14} aria-hidden="true" />
             reseed the shelf
           </button>
         </div>
@@ -81,7 +81,7 @@ export default function Images() {
       {/* the conversion plan: from · to, the honest steps */}
       <section className="fi-plan" aria-label="the conversion plan">
         <p className="fi-plan__head">
-          <Layers size={13} aria-hidden="true" />
+          <LayerRegular fontSize={13} aria-hidden="true" />
           the conversion plan
         </p>
         <div className="fi-plan__pick">
@@ -100,7 +100,7 @@ export default function Images() {
             ))}
           </fieldset>
           <span className="fi-plan__arrow" aria-hidden="true">
-            <ArrowRight size={16} />
+            <ArrowRightRegular fontSize={16} />
           </span>
           <fieldset className="fi-chips" aria-label="convert to format">
             <legend className="fi-chips__legend">to</legend>
@@ -130,7 +130,7 @@ export default function Images() {
 
       {images.length === 0 ? (
         <EmptyState
-          icon={Layers}
+          icon={LayerRegular}
           title="the shelf stands empty"
           line="No image is shelved right now — reseed the rehearsal to pour the herds again."
           action={

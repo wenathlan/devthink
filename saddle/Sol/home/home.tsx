@@ -49,9 +49,9 @@ import {
 	type sandboxbaseid,
 	type sandboxosid,
 } from '../../sandboxprofile.ts';
+import EntryGate from './entrygate';
 import MetricStrip from './MetricStrip';
 import RuntimeDiagram from './RuntimeDiagram';
-import EntryGate from './entrygate';
 
 export * from './MetricStrip';
 export * from './RuntimeDiagram';

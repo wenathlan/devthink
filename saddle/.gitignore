@@ -57,3 +57,11 @@ capacitor.config.json
 
 # the build folder stays hidden from the tree (toolchain output): the workflows generate the icon assets runner-side
 build/
+
+# local vite build artifacts (outDir is the app root for the pages staging)
+/index-*.js
+/index-*.css
+/manifest-*.webmanifest
+/icon-*.svg
+/registerSW.js
+/sw.js

@@ -361,6 +361,16 @@ type ShellProps = {
  * @returns the window element.
  */
 export function Shell({ children, themeButton = true }: ShellProps) {
+  // the embedded contract: inside the os power clip the app rides the host
+  // window chrome — the routed stage renders bare, full-bleed in the frame
+  const framed = (() => {
+    try {
+      return window.self !== window.top;
+    } catch {
+      return true;
+    }
+  })();
+
   const [location, navigate] = useLocation();
   const [maximized, setMaximized] = useState(false);
   const [minimized, setMinimized] = useState(false);
@@ -414,6 +424,9 @@ export function Shell({ children, themeButton = true }: ShellProps) {
 
   // the landing flag: the hero lockup owns the mark there, the title bar rests
   const landing = location === "/";
+
+  // the embedded pass renders before the chrome: one window, one frame
+  if (framed) return <main className="shell shell--embedded">{children}</main>;
 
   return (
     <div className="appframe" data-maximized={maximized ? "true" : undefined}>

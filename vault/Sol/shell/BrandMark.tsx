@@ -256,9 +256,8 @@ export function BrandMark({ size }: BrandMarkProps) {
     const id = window.setTimeout(() => setEntered(true), 80);
     return () => window.clearTimeout(id);
   }, []);
-  const vars = (size !== undefined
-    ? { "--vt-mark-glow": `${STORY}73`, width: size, height: size }
-    : { "--vt-mark-glow": `${STORY}73` }) as CSSProperties;
+  const glow = { "--vt-mark-glow": `${STORY}73` } as CSSProperties;
+  const vars: CSSProperties = size !== undefined ? { ...glow, width: size, height: size } : glow;
   return (
     <span className={entered ? "vtMark vtMark-enter" : "vtMark"} style={vars} aria-hidden="true">
       <span className="vtMarkGlow" />

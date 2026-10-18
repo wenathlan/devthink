@@ -10,7 +10,7 @@
  * engine (artifact.ts) — the same bytes in node and in the browser.
  */
 
-import { PackageCheck, Play, RefreshCw, ShieldCheck } from "lucide-react";
+import { ArrowSyncRegular, CheckmarkCircleRegular, PlayFilled, ShieldCheckmarkRegular } from "@fluentui/react-icons";
 import { useMemo, useState } from "react";
 import {
   type Artifact,
@@ -21,7 +21,7 @@ import {
   seedArtifacts,
   verifyArtifact,
 } from "../../artifact.ts";
-import { PIPELINE, type planstate, planrehearsal } from "../../graphplan.ts";
+import { PIPELINE, planrehearsal, type planstate } from "../../graphplan.ts";
 import { EmptyState } from "../shell/EmptyState";
 import GraphPanel from "./graphpanel";
 
@@ -46,7 +46,7 @@ function ArtifactRow({ artifact }: { artifact: Artifact }) {
         {artifact.checksum}
       </span>
       <span className="fa-row__seal">
-        <ShieldCheck size={13} aria-hidden="true" />
+        <ShieldCheckmarkRegular fontSize={13} aria-hidden="true" />
         {intact ? "sealed" : "mismatch"}
       </span>
     </article>
@@ -66,10 +66,7 @@ export default function Artifacts() {
   // the pipeline plan rehearses on the same seed and tick as the line: one
   // advance walks the shelf AND the stage graph together (one run, two
   // views of the same rehearsal)
-  const planstates = useMemo<Record<string, planstate>>(
-    () => planrehearsal(PIPELINE, seed, tick),
-    [seed, tick],
-  );
+  const planstates = useMemo<Record<string, planstate>>(() => planrehearsal(PIPELINE, seed, tick), [seed, tick]);
   const draftName = name.trim() || "unnamed-artifact";
   const draftPreview = `${draftName}.tzst · ${4096 + payload.length} b`;
 
@@ -95,7 +92,7 @@ export default function Artifacts() {
         </p>
         <div className="pagehead__actions">
           <button type="button" className="btn" onClick={() => setTick((value) => value + 1)}>
-            <Play size={14} aria-hidden="true" />
+            <PlayFilled fontSize={14} aria-hidden="true" />
             walk the pipeline
           </button>
           <button
@@ -106,7 +103,7 @@ export default function Artifacts() {
               setTick(0);
             }}
           >
-            <RefreshCw size={14} aria-hidden="true" />
+            <ArrowSyncRegular fontSize={14} aria-hidden="true" />
             rerun the line
           </button>
         </div>
@@ -115,7 +112,7 @@ export default function Artifacts() {
       <section className="fa-summary" aria-label="the line summary">
         <div className="fa-summary__cell">
           <p className="fa-summary__label">
-            <PackageCheck size={13} aria-hidden="true" />
+            <CheckmarkCircleRegular fontSize={13} aria-hidden="true" />
             artifacts
           </p>
           <p className="fa-summary__value">{shelf.length}</p>
@@ -173,7 +170,7 @@ export default function Artifacts() {
 
       {shelf.length === 0 ? (
         <EmptyState
-          icon={PackageCheck}
+          icon={CheckmarkCircleRegular}
           title="the packaging line is clear"
           line="No artifact is sealed right now — rerun the line or seal a draft above."
           action={

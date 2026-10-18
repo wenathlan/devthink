@@ -28,11 +28,11 @@
 import { type CSSProperties, useEffect, useRef, useState } from "react";
 import { familyrow } from "../../family";
 import { familyurl } from "../../familyurl";
+import type { HomeProps } from "../../hometypes.ts";
 import { BrandMark } from "../shell/BrandMark";
 import { Entry } from "./entry";
 import { EntryGate } from "./entrygate";
 import { Tabs } from "./tabs";
-import type { HomeProps } from "../../hometypes.ts";
 
 export * from "./entry";
 export * from "./tabs";
