@@ -20,7 +20,7 @@
  * it and is consumed only by Sol/Sol.tsx (the route /intro).
  */
 
-import { ArrowDown, ArrowUpRight } from "lucide-react";
+import { ArrowDownRegular, ArrowUpRightRegular } from "@fluentui/react-icons";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "wouter";
 import { markOnboardingStage, readOnboardingState } from "../../onboardingstate.ts";
@@ -171,11 +171,11 @@ export default function Intro() {
           <div className="reveal" style={ctaRowStyle}>
             <Link href="/onboarding" className="btn">
               open the studio
-              <ArrowUpRight size={15} aria-hidden="true" />
+              <ArrowUpRightRegular fontSize={15} aria-hidden="true" />
             </Link>
             <button type="button" className="intro-cue" onClick={hearToSee}>
               hear to see — the engine, live
-              <ArrowDown size={13} aria-hidden="true" />
+              <ArrowDownRegular fontSize={13} aria-hidden="true" />
             </button>
           </div>
           <p className="mono-label reveal" style={{ margin: "26px auto 0", maxWidth: "72ch" }}>

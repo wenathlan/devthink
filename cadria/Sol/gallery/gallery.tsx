@@ -7,7 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
-import { ImageOff, Trash2, WifiOff } from "lucide-react";
+import { DeleteRegular, ImageOffRegular, WifiOffRegular } from "@fluentui/react-icons";
 // # Gallery — the render wall (design doctrine pass): the generations read
 // straight off the local gateway, filtered by style chips built from the
 // imagestyles table (the same styles the studio generates with), every
@@ -18,8 +18,6 @@ import { ImageOff, Trash2, WifiOff } from "lucide-react";
 // the anchor renders BARE: the one Shell chrome lives in Sol/Sol.tsx.
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "wouter";
-import { imageStyles } from "../../imagestyles.ts";
-import { EmptyState } from "../shell/EmptyState.tsx";
 import {
   deleteGatewayProject,
   fetchGatewayRender,
@@ -27,6 +25,8 @@ import {
   type GatewayProject,
   listGatewayProjects,
 } from "../../gatewayclient.ts";
+import { imageStyles } from "../../imagestyles.ts";
+import { EmptyState } from "../shell/EmptyState.tsx";
 import { useToast } from "../toast/Toast.tsx";
 
 /** how many generations the wall asks for (the gateway clamps 1-200). */
@@ -214,7 +214,7 @@ export default function Gallery() {
         )}
         {state === "offline" && (
           <EmptyState
-            icon={WifiOff}
+            icon={WifiOffRegular}
             title="the gateway isn't answering"
             line="the wall reads the local generation store — until it answers, the wall stays honest and shows nothing it doesn't hold."
             action={
@@ -231,7 +231,7 @@ export default function Gallery() {
         )}
         {state === "online" && projects.length === 0 && (
           <EmptyState
-            icon={ImageOff}
+            icon={ImageOffRegular}
             title="the wall is bare"
             line="the gateway answers and holds nothing yet — the first render lands here the moment the studio finishes one."
             action={
@@ -243,7 +243,7 @@ export default function Gallery() {
         )}
         {state === "online" && projects.length > 0 && visible.length === 0 && (
           <EmptyState
-            icon={ImageOff}
+            icon={ImageOffRegular}
             title={`no renders in the ${filter} style`}
             line="the chips only filter what the gateway really holds — switch style or clear the filter to see the full wall."
             action={
@@ -286,7 +286,7 @@ export default function Gallery() {
                       disabled={deleting === project.id}
                       onClick={() => void onDelete(project)}
                     >
-                      {deleting === project.id ? <Trash2 size={14} aria-hidden="true" /> : "delete"}
+                      {deleting === project.id ? <DeleteRegular fontSize={14} aria-hidden="true" /> : "delete"}
                     </button>
                   </div>
                 </div>

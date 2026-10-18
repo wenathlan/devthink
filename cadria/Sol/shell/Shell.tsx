@@ -35,19 +35,19 @@
  */
 
 import {
-  Copy,
-  Image,
-  LayoutDashboard,
-  Minus,
-  Moon,
-  PlayCircle,
-  Scissors,
-  Settings2,
-  Square,
-  Sun,
-  Wand2,
-  X,
-} from "lucide-react";
+  CopyRegular,
+  CutRegular,
+  DismissRegular,
+  HomeRegular,
+  ImageRegular,
+  MaximizeRegular,
+  PlayCircleRegular,
+  SettingsRegular,
+  SubtractRegular,
+  WandRegular,
+  WeatherMoonRegular,
+  WeatherSunnyRegular,
+} from "@fluentui/react-icons";
 import {
   type CSSProperties,
   type MouseEvent as ReactMouseEvent,
@@ -61,7 +61,7 @@ import { Link, useLocation } from "wouter";
 import { familyrow } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
 import { currentTheme, type Theme, toggleTheme } from "../../theme.ts";
-import { winsnaprect, winsnapzone, type WinSnapZone } from "../../winsnap.ts";
+import { type WinSnapZone, winsnaprect, winsnapzone } from "../../winsnap.ts";
 import BrandMark from "./BrandMark.tsx";
 
 export { CadriaMark } from "./CadriaMark.tsx";
@@ -75,23 +75,23 @@ export type StartApp = {
   href: string;
   label: string;
   detail: string;
-  icon?: typeof LayoutDashboard;
+  icon?: typeof HomeRegular;
 };
 
 /** the pages the platform hosts, one rail entry each (the apex home first).
  * exported for the onboarding copy beside this folder. */
 export const START_APPS: readonly StartApp[] = [
-  { href: "/", label: "home", detail: "the video and image home of the family", icon: LayoutDashboard },
-  { href: "/player", label: "player", detail: "the 24-format universal player", icon: PlayCircle },
-  { href: "/studio", label: "studio", detail: "the creative workspace over the versawase engine", icon: Wand2 },
+  { href: "/", label: "home", detail: "the video and image home of the family", icon: HomeRegular },
+  { href: "/player", label: "player", detail: "the 24-format universal player", icon: PlayCircleRegular },
+  { href: "/studio", label: "studio", detail: "the creative workspace over the versawase engine", icon: WandRegular },
   {
     href: "/edit",
     label: "editor",
     detail: "the timeline: clips, trims and the playhead on exact ticks",
-    icon: Scissors,
+    icon: CutRegular,
   },
-  { href: "/gallery", label: "gallery", detail: "renders by discipline, video and image", icon: Image },
-  { href: "/settings", label: "settings", detail: "appearance and player defaults", icon: Settings2 },
+  { href: "/gallery", label: "gallery", detail: "renders by discipline, video and image", icon: ImageRegular },
+  { href: "/settings", label: "settings", detail: "appearance and player defaults", icon: SettingsRegular },
 ];
 
 /** the titlebar page titles, route → mono-label (the rail labels plus the
@@ -186,9 +186,9 @@ function ThemeToggle() {
       onClick={() => setTheme(toggleTheme())}
     >
       {theme === "dark" ? (
-        <Sun size={16} strokeWidth={1.5} aria-hidden="true" />
+        <WeatherSunnyRegular fontSize={16} aria-hidden="true" />
       ) : (
-        <Moon size={16} strokeWidth={1.5} aria-hidden="true" />
+        <WeatherMoonRegular fontSize={16} aria-hidden="true" />
       )}
     </button>
   );
@@ -238,7 +238,10 @@ export function Shell({ children, themeButton = true }: ShellProps) {
   const [size, setSize] = useState<{ w: number; h: number } | null>(null);
   const [inactive, setInactive] = useState(false);
   /** the aero ghost: the zone the drag previews and the rect it paints. */
-  const [ghost, setGhost] = useState<{ zone: WinSnapZone; rect: { left: number; top: number; width: number; height: number } } | null>(null);
+  const [ghost, setGhost] = useState<{
+    zone: WinSnapZone;
+    rect: { left: number; top: number; width: number; height: number };
+  } | null>(null);
   const ghostRef = useRef<WinSnapZone | null>(null);
   const poseRef = useRef<DragPose | null>(null);
   const dragFrame = useRef(0);
@@ -466,8 +469,14 @@ export function Shell({ children, themeButton = true }: ShellProps) {
           <span className="titlebar__spacer" />
           {themeButton ? <ThemeToggle /> : null}
           <div className="winapp__caption">
-            <button type="button" className="winapp__cap" data-tip="minimize" aria-label="Minimize" onClick={() => setMinimized(true)}>
-              <Minus size={14} aria-hidden="true" />
+            <button
+              type="button"
+              className="winapp__cap"
+              data-tip="minimize"
+              aria-label="Minimize"
+              onClick={() => setMinimized(true)}
+            >
+              <SubtractRegular fontSize={14} aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -476,7 +485,11 @@ export function Shell({ children, themeButton = true }: ShellProps) {
               aria-label={maximized ? "Restore" : "Maximize"}
               onClick={toggleMaximize}
             >
-              {maximized ? <Copy size={12} aria-hidden="true" /> : <Square size={11} aria-hidden="true" />}
+              {maximized ? (
+                <CopyRegular fontSize={12} aria-hidden="true" />
+              ) : (
+                <MaximizeRegular fontSize={11} aria-hidden="true" />
+              )}
             </button>
             <button
               type="button"
@@ -485,7 +498,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
               aria-label="Close"
               onClick={() => navigate(RESTART_ROUTE)}
             >
-              <X size={14} aria-hidden="true" />
+              <DismissRegular fontSize={14} aria-hidden="true" />
             </button>
           </div>
         </header>
@@ -497,7 +510,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
         <div className="winapp__body">
           <nav className="railnav railnav--enter" aria-label="primary" style={{ borderRight: "1px solid var(--line)" }}>
             {START_APPS.map((app) => {
-              const Icon = app.icon ?? LayoutDashboard;
+              const Icon = app.icon ?? HomeRegular;
               return (
                 <Link
                   key={app.href}
@@ -507,7 +520,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
                   aria-label={app.label}
                   aria-current={isActive(app.href) ? "page" : undefined}
                 >
-                  <Icon size={20} strokeWidth={1.5} aria-hidden="true" />
+                  <Icon fontSize={20} aria-hidden="true" />
                 </Link>
               );
             })}

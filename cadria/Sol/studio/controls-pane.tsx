@@ -6,7 +6,7 @@
  * its own aria-live progress line.
  */
 
-import { Dices, Wand2 } from "lucide-react";
+import { ArrowShuffleRegular, WandRegular } from "@fluentui/react-icons";
 import type { StyleSpec } from "../../imagestyles.ts";
 import { styleFingerprint } from "../../imagestyles.ts";
 
@@ -121,7 +121,7 @@ export function ControlsPane({
             onClick={onReseed}
             style={{ flex: "none", padding: "0 12px" }}
           >
-            <Dices size={16} strokeWidth={1.7} aria-hidden="true" />
+            <ArrowShuffleRegular fontSize={16} aria-hidden="true" />
           </button>
         </div>
       </div>
@@ -134,7 +134,7 @@ export function ControlsPane({
         onClick={onGenerate}
         style={{ width: "100%" }}
       >
-        <Wand2 size={15} strokeWidth={1.7} aria-hidden="true" />
+        <WandRegular fontSize={15} aria-hidden="true" />
         generate frame
       </button>
 

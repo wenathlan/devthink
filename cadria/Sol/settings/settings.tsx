@@ -16,8 +16,8 @@
 // on this page can destroy anything. the anchor renders BARE: the one Shell
 // chrome lives in Sol/Sol.tsx.
 import { useCallback, useState } from "react";
-import { applyTheme, currentTheme, type Theme } from "../../theme";
 import { gatewayHealth, gatewayUrl, setGatewayUrl } from "../../gatewayclient.ts";
+import { applyTheme, currentTheme, type Theme } from "../../theme";
 import { useToast } from "../toast/Toast.tsx";
 
 /** synced by hand with cadria/package.json "version" — package.json is forbidden to import at runtime. */

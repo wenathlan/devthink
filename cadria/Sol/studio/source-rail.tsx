@@ -7,7 +7,7 @@
  * the anchor owns the state.
  */
 
-import { Upload } from "lucide-react";
+import { ArrowUploadRegular } from "@fluentui/react-icons";
 import { useRef, useState } from "react";
 import { type DemoFixtureId, demoFixtures } from "../../introfixtures.ts";
 import type { StudioSource } from "../../studiosource.ts";
@@ -108,7 +108,7 @@ export function SourceRail({ disabled, source, activeFixture, onFixture, onFile 
           color: dragOver ? "var(--accent)" : undefined,
         }}
       >
-        <Upload size={18} strokeWidth={1.7} aria-hidden="true" />
+        <ArrowUploadRegular fontSize={18} aria-hidden="true" />
         <span>drop audio here — or press to browse</span>
         <span style={{ fontSize: "0.7rem", fontWeight: 500, color: "var(--ink-3)" }}>
           wav decodes natively · mp3/ogg/flac/m4a via web audio

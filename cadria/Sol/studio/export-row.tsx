@@ -13,11 +13,18 @@
  * happened and where each record lives.
  */
 
-import { Check, Download, Image, Save } from "lucide-react";
+import { ArrowDownloadRegular, CheckmarkRegular, ImageRegular, SaveRegular } from "@fluentui/react-icons";
 import { useCallback, useState } from "react";
 import { type AnalysisReport, reportDigest } from "../../audiopipeline.ts";
 import type { ImageProject } from "../../imageproject.ts";
-import { downloadBlob, pngFromSvg, pngSupported, probeGateway, type SessionSave, saveToGateway } from "../../studiogenerate.ts";
+import {
+  downloadBlob,
+  pngFromSvg,
+  pngSupported,
+  probeGateway,
+  type SessionSave,
+  saveToGateway,
+} from "../../studiogenerate.ts";
 
 type ExportRowProps = {
   svg: string | null;
@@ -114,7 +121,7 @@ export function ExportRow({ svg, project, report, styleName, seed, session, onRe
       </p>
       <div className="row row--wrap" style={{ gap: 8 }}>
         <button type="button" className="btn secondary" disabled={!ready} onClick={onSvg}>
-          <Download size={14} strokeWidth={1.7} aria-hidden="true" />
+          <ArrowDownloadRegular fontSize={14} aria-hidden="true" />
           svg
         </button>
         <button
@@ -128,11 +135,11 @@ export function ExportRow({ svg, project, report, styleName, seed, session, onRe
           }
           onClick={onPng}
         >
-          <Image size={14} strokeWidth={1.7} aria-hidden="true" />
+          <ImageRegular fontSize={14} aria-hidden="true" />
           png
         </button>
         <button type="button" className="btn secondary" disabled={!report} onClick={onCopy}>
-          {copied ? <Check size={14} strokeWidth={2} aria-hidden="true" /> : null}
+          {copied ? <CheckmarkRegular fontSize={14} aria-hidden="true" /> : null}
           copy digest
         </button>
         <button
@@ -142,7 +149,7 @@ export function ExportRow({ svg, project, report, styleName, seed, session, onRe
           aria-busy={saving ? "true" : undefined}
           onClick={onSave}
         >
-          <Save size={14} strokeWidth={1.7} aria-hidden="true" />
+          <SaveRegular fontSize={14} aria-hidden="true" />
           save to gallery
         </button>
         {lastMode === "local" && <span className="badge">local session · in-memory</span>}

@@ -8,7 +8,7 @@
  * The copy states exactly what the engine maps, nothing invented.
  */
 
-import { Activity, AudioWaveform, Fingerprint, LayoutGrid } from "lucide-react";
+import { FingerprintRegular, GridRegular, MusicNote2Regular, PulseRegular } from "@fluentui/react-icons";
 import type { ComponentType, CSSProperties } from "react";
 
 /** the identity rose of the campaign, straight from the token foundation. */
@@ -18,7 +18,7 @@ const MUTED = "color-mix(in srgb, currentColor 64%, transparent)";
 
 /** one generation lane of the engine. */
 type Capability = {
-  icon: ComponentType<{ size?: number; strokeWidth?: number; "aria-hidden"?: true }>;
+  icon: ComponentType<{ fontSize?: number | string; "aria-hidden"?: true | "true" }>;
   lane: string;
   title: string;
   text: string;
@@ -27,25 +27,25 @@ type Capability = {
 /** the four generation lanes, in engine order. */
 const CAPABILITIES: readonly Capability[] = [
   {
-    icon: AudioWaveform,
+    icon: MusicNote2Regular,
     lane: "spectrum → color",
     title: "palette from key",
     text: "tonal center and brightness set the anchor hue, the chroma depth and the accent fan of the palette.",
   },
   {
-    icon: LayoutGrid,
+    icon: GridRegular,
     lane: "structure → composition",
     title: "layout from sections",
     text: "section count and narrative shape cast the hero, cadre, field and edge blocks of the frame.",
   },
   {
-    icon: Fingerprint,
+    icon: FingerprintRegular,
     lane: "timbre → texture",
     title: "surface from timbre",
     text: "noisiness, warmth and flux drive the grain, the stroke softness and the glaze of the surface.",
   },
   {
-    icon: Activity,
+    icon: PulseRegular,
     lane: "rhythm → motion",
     title: "move from bpm",
     text: "tempo, punch and regularity pace the pulse, drift, wipe and reveal of every loop.",
@@ -108,7 +108,7 @@ export function CapabilityRow() {
               </div>
             </div>
             <span className="icon-anim" aria-hidden="true" style={iconStyle}>
-              <feature.icon size={20} strokeWidth={1.7} aria-hidden={true} />
+              <feature.icon fontSize={20} aria-hidden="true" />
             </span>
             <p className="mono-label" style={{ margin: "12px 0 0" }}>
               {feature.lane}
@@ -137,7 +137,7 @@ export function CapabilityRow() {
                   </p>
                 </div>
                 <span className="icon-anim" aria-hidden="true" style={rowIconStyle}>
-                  <Icon size={19} strokeWidth={1.7} aria-hidden={true} />
+                  <Icon fontSize={19} aria-hidden="true" />
                 </span>
               </div>
             );

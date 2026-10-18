@@ -7,7 +7,13 @@
  * which now lives here as the page mount itself.
  */
 
-import { ArrowRight, ArrowUpRight, Sparkles, Wand2, WifiOff } from "lucide-react";
+import {
+  ArrowRightRegular,
+  ArrowUpRightRegular,
+  SparkleRegular,
+  WandRegular,
+  WifiOffRegular,
+} from "@fluentui/react-icons";
 // # Home — the platform home (design doctrine pass): the entry gate rides
 // the surface (entrygate.tsx beside this anchor — the flow law intro →
 // onboarding → the platform is consulted before anything shows), then a
@@ -21,8 +27,8 @@ import { ArrowRight, ArrowUpRight, Sparkles, Wand2, WifiOff } from "lucide-react
 // the anchor renders BARE: the one Shell chrome lives in Sol/Sol.tsx.
 import { type ReactElement, useCallback, useEffect, useState } from "react";
 import { Link } from "wouter";
-import { EmptyState } from "../shell/EmptyState.tsx";
 import { type GatewayProject, listGatewayProjects } from "../../gatewayclient.ts";
+import { EmptyState } from "../shell/EmptyState.tsx";
 import EntryGate from "./entrygate.tsx";
 
 /** the abort window the recent-generations fetch rides (ms). */
@@ -117,13 +123,13 @@ function HomeSurface() {
           }}
         >
           <span className="icon-anim" aria-hidden="true">
-            <Wand2 size={18} strokeWidth={1.7} />
+            <WandRegular fontSize={18} />
           </span>
           <span style={{ textAlign: "left" }}>
             <strong style={{ display: "block" }}>open the studio</strong>
             <span className="mono-label">drop audio · analyze · render</span>
           </span>
-          <ArrowRight size={16} aria-hidden="true" style={{ marginLeft: "auto" }} />
+          <ArrowRightRegular fontSize={16} aria-hidden="true" style={{ marginLeft: "auto" }} />
         </Link>
       </section>
 
@@ -145,7 +151,7 @@ function HomeSurface() {
           )}
           {recent === "offline" && (
             <EmptyState
-              icon={WifiOff}
+              icon={WifiOffRegular}
               title="the gateway isn't answering"
               line="the recents read the local generation store — nothing shown that the engine did not render. start it, then retry."
               action={
@@ -162,7 +168,7 @@ function HomeSurface() {
           )}
           {recent === "online" && projects.length === 0 && (
             <EmptyState
-              icon={Sparkles}
+              icon={SparkleRegular}
               title="no generations yet"
               line="the gateway answers and the queue is open — the first render the studio finishes lands here, with its bpm and key."
               action={
@@ -193,7 +199,7 @@ function HomeSurface() {
                 </div>
                 <span className="mono-label" style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   {project.bpm} bpm · {project.key}
-                  <ArrowUpRight size={14} aria-hidden="true" />
+                  <ArrowUpRightRegular fontSize={14} aria-hidden="true" />
                 </span>
               </Link>
             ))}
@@ -216,7 +222,7 @@ function HomeSurface() {
                 what cadria is — the studio that listens, with the real engine running live on the page.
               </p>
             </div>
-            <ArrowUpRight size={14} aria-hidden="true" style={{ alignSelf: "center" }} />
+            <ArrowUpRightRegular fontSize={14} aria-hidden="true" style={{ alignSelf: "center" }} />
           </Link>
           <Link href="/onboarding" className="ledger-row" style={{ textDecoration: "none" }}>
             <span className="ledger-no" aria-hidden="true">
@@ -230,7 +236,7 @@ function HomeSurface() {
                 four frames — welcome, hear, see, enter — with your own audio or a built-in fixture.
               </p>
             </div>
-            <ArrowUpRight size={14} aria-hidden="true" style={{ alignSelf: "center" }} />
+            <ArrowUpRightRegular fontSize={14} aria-hidden="true" style={{ alignSelf: "center" }} />
           </Link>
         </div>
       </section>

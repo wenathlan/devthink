@@ -26,18 +26,18 @@
  */
 
 import {
-  ArrowLeftToLine,
-  ArrowRightToLine,
-  Copy,
-  Eraser,
-  Magnet,
-  Pause,
-  Play,
-  Scissors,
-  SkipBack,
-  ZoomIn,
-  ZoomOut,
-} from "lucide-react";
+  ArrowLeftRegular,
+  ArrowRightRegular,
+  CopyRegular,
+  CutRegular,
+  EraserRegular,
+  PauseRegular,
+  PinRegular,
+  PlayFilled,
+  PreviousRegular,
+  ZoomInRegular,
+  ZoomOutRegular,
+} from "@fluentui/react-icons";
 import {
   type ChangeEvent as ReactChangeEvent,
   type PointerEvent as ReactPointerEvent,
@@ -421,13 +421,13 @@ export default function Edit() {
         rangeOp("lift");
         return;
       }
-      if (event.key === "ArrowLeft") {
+      if (event.key === "ArrowLeftRegular") {
         event.preventDefault();
         if (event.shiftKey) walkPoint(-1);
         else stepFrame(-1);
         return;
       }
-      if (event.key === "ArrowRight") {
+      if (event.key === "ArrowRightRegular") {
         event.preventDefault();
         if (event.shiftKey) walkPoint(1);
         else stepFrame(1);
@@ -484,7 +484,11 @@ export default function Edit() {
             data-tip={playing ? "pause (space)" : "play (space)"}
             onClick={() => setPlaying((current) => !current)}
           >
-            {playing ? <Pause size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}
+            {playing ? (
+              <PauseRegular fontSize={16} aria-hidden="true" />
+            ) : (
+              <PlayFilled fontSize={16} aria-hidden="true" />
+            )}
           </button>
           <button
             type="button"
@@ -496,7 +500,7 @@ export default function Edit() {
               setPlayhead(0);
             }}
           >
-            <SkipBack size={15} aria-hidden="true" />
+            <PreviousRegular fontSize={15} aria-hidden="true" />
           </button>
           <button
             type="button"
@@ -505,7 +509,7 @@ export default function Edit() {
             data-tip="previous edit point (shift+←)"
             onClick={() => walkPoint(-1)}
           >
-            <ArrowLeftToLine size={15} aria-hidden="true" />
+            <ArrowLeftRegular fontSize={15} aria-hidden="true" />
           </button>
           <button
             type="button"
@@ -514,7 +518,7 @@ export default function Edit() {
             data-tip="next edit point (shift+→)"
             onClick={() => walkPoint(1)}
           >
-            <ArrowRightToLine size={15} aria-hidden="true" />
+            <ArrowRightRegular fontSize={15} aria-hidden="true" />
           </button>
           <span className="tl-kv" style={{ marginLeft: 6 }}>
             <strong className="is-signal" style={{ fontSize: 13 }}>
@@ -533,7 +537,7 @@ export default function Edit() {
             data-tip="split at the playhead (s)"
             onClick={splitAtPlayhead}
           >
-            <Scissors size={15} aria-hidden="true" />
+            <CutRegular fontSize={15} aria-hidden="true" />
           </button>
           <button
             type="button"
@@ -542,7 +546,7 @@ export default function Edit() {
             data-tip="lift the selection — the gap stays (delete)"
             onClick={() => rangeOp("lift")}
           >
-            <Eraser size={15} aria-hidden="true" />
+            <EraserRegular fontSize={15} aria-hidden="true" />
           </button>
           <button
             type="button"
@@ -562,7 +566,7 @@ export default function Edit() {
             data-tip="duplicate the selection after itself"
             onClick={duplicateSelected}
           >
-            <Copy size={14} aria-hidden="true" />
+            <CopyRegular fontSize={14} aria-hidden="true" />
           </button>
 
           <span
@@ -632,7 +636,7 @@ export default function Edit() {
             data-tip="snap the playhead to the edit points"
             onClick={() => setSnap((current) => !current)}
           >
-            <Magnet size={15} aria-hidden="true" />
+            <PinRegular fontSize={15} aria-hidden="true" />
           </button>
           <button
             type="button"
@@ -641,7 +645,7 @@ export default function Edit() {
             data-tip="zoom out"
             onClick={() => setZoomIndex((i) => Math.max(0, i - 1))}
           >
-            <ZoomOut size={15} aria-hidden="true" />
+            <ZoomOutRegular fontSize={15} aria-hidden="true" />
           </button>
           <button
             type="button"
@@ -650,7 +654,7 @@ export default function Edit() {
             data-tip="zoom in"
             onClick={() => setZoomIndex((i) => Math.min(ZOOM_LEVELS.length - 1, i + 1))}
           >
-            <ZoomIn size={15} aria-hidden="true" />
+            <ZoomInRegular fontSize={15} aria-hidden="true" />
           </button>
           <span className="tl-kv">{pps} px/s</span>
           <label className="tl-kv" htmlFor="tl-rate">
@@ -793,7 +797,12 @@ export default function Edit() {
               </div>
             ))}
 
-            <div aria-hidden="true" className="tl-playhead" data-running={playing ? "true" : undefined} style={{ left: playheadPx }} />
+            <div
+              aria-hidden="true"
+              className="tl-playhead"
+              data-running={playing ? "true" : undefined}
+              style={{ left: playheadPx }}
+            />
           </div>
         </div>
 

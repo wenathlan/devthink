@@ -7,7 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeftRegular } from "@fluentui/react-icons";
 // # Player — the artwork viewer (design doctrine pass): one ?id= off the url
 // renders the gateway's stored frame large; without an id the page falls
 // back to the in-session demo — the REAL engine chain over the built-in
@@ -22,7 +22,14 @@ import { ArrowLeft } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useSearch } from "wouter";
 import { type AnalysisReport, analyzePcm, reportDigest } from "../../audiopipeline.ts";
+import {
+  fetchGatewayRender,
+  GatewayClientError,
+  type GatewayProject,
+  listGatewayProjects,
+} from "../../gatewayclient.ts";
 import { type RenderFrame, renderCommands, renderKeyframePerturbation, renderSvg } from "../../imagerender.ts";
+import { type DemoFixtureId, demoFixtures } from "../../introfixtures.ts";
 import { compositionBlocks, rhythmScatter } from "../../synthcomposition.ts";
 import { type MotionSpec, synthMotion } from "../../synthmotion.ts";
 import { synthPalette } from "../../synthpalette.ts";
@@ -40,13 +47,6 @@ import {
   stepdecode,
   timecodelabel,
 } from "../../videodecode.ts";
-import { type DemoFixtureId, demoFixtures } from "../../introfixtures.ts";
-import {
-  fetchGatewayRender,
-  GatewayClientError,
-  type GatewayProject,
-  listGatewayProjects,
-} from "../../gatewayclient.ts";
 
 /** the demo canvas the in-session fallback renders at (px). */
 const DEMO_CANVAS = 640;
@@ -337,7 +337,7 @@ export default function Player() {
             />
           </label>
           <Link href="/gallery" className="mono-label" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-            <ArrowLeft size={13} aria-hidden="true" /> back to gallery
+            <ArrowLeftRegular fontSize={13} aria-hidden="true" /> back to gallery
           </Link>
         </div>
 

@@ -13,10 +13,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { type AnalysisReport, analyzePcm, reportDigest } from "../../audiopipeline.ts";
 import { renderCommands, renderSvg, renderThumbnailSignature } from "../../imagerender.ts";
+import { type DemoFixtureId, demoFixtures } from "../../introfixtures.ts";
 import { compositionBlocks, rhythmScatter } from "../../synthcomposition.ts";
 import { synthPalette } from "../../synthpalette.ts";
 import { synthTexture } from "../../synthtexture.ts";
-import { type DemoFixtureId, demoFixtures } from "../../introfixtures.ts";
 
 /** the cue the intro hero's "hear to see" cta sends: which fixture to run. */
 export type DemoCue = { id: DemoFixtureId; nonce: number };

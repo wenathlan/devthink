@@ -15,16 +15,22 @@
  * flow lands on the home.
  */
 
-import { ArrowLeft, ArrowRight, FolderOpen, Mic, Square } from "lucide-react";
+import {
+  ArrowLeftRegular,
+  ArrowRightRegular,
+  FolderOpenRegular,
+  MaximizeRegular,
+  MicRegular,
+} from "@fluentui/react-icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { type AnalysisReport, analyzePcm, reportDigest } from "../../audiopipeline.ts";
 import { renderCommands, renderSvg, renderThumbnailSignature } from "../../imagerender.ts";
+import { type DemoFixtureId, demoFixtures } from "../../introfixtures.ts";
 import { markOnboardingStage } from "../../onboardingstate.ts";
 import { compositionBlocks, rhythmScatter } from "../../synthcomposition.ts";
 import { synthPalette } from "../../synthpalette.ts";
 import { synthTexture } from "../../synthtexture.ts";
-import { type DemoFixtureId, demoFixtures } from "../../introfixtures.ts";
 import { CadriaMark } from "../shell/Shell.tsx";
 
 /** the canvas the see frame renders at (px; the render layer clamps and centers it). */
@@ -245,7 +251,7 @@ export default function Onboarding() {
               </p>
               <div className="row row--wrap" style={{ gap: 10 }}>
                 <label className="winonboard__act" style={{ cursor: "pointer" }}>
-                  <FolderOpen size={14} aria-hidden="true" />
+                  <FolderOpenRegular fontSize={14} aria-hidden="true" />
                   pick audio
                   <input
                     type="file"
@@ -264,7 +270,11 @@ export default function Onboarding() {
                   aria-pressed={recording}
                   onClick={() => (recording ? stopRecording() : void startRecording())}
                 >
-                  {recording ? <Square size={14} aria-hidden="true" /> : <Mic size={14} aria-hidden="true" />}
+                  {recording ? (
+                    <MaximizeRegular fontSize={14} aria-hidden="true" />
+                  ) : (
+                    <MicRegular fontSize={14} aria-hidden="true" />
+                  )}
                   {recording ? "stop recording" : "record a slice"}
                 </button>
               </div>
@@ -390,14 +400,14 @@ export default function Onboarding() {
                 className="winonboard__act"
                 onClick={() => setStep((value) => Math.max(0, value - 1))}
               >
-                <ArrowLeft size={14} aria-hidden="true" />
+                <ArrowLeftRegular fontSize={14} aria-hidden="true" />
                 back
               </button>
             )}
             {last ? (
               <button type="button" className="winonboard__act winonboard__act--primary" onClick={enterPlatform}>
                 enter cadria
-                <ArrowRight size={14} aria-hidden="true" />
+                <ArrowRightRegular fontSize={14} aria-hidden="true" />
               </button>
             ) : (
               <button
@@ -406,7 +416,7 @@ export default function Onboarding() {
                 onClick={() => setStep((value) => Math.min(STEPS.length - 1, value + 1))}
               >
                 continue
-                <ArrowRight size={14} aria-hidden="true" />
+                <ArrowRightRegular fontSize={14} aria-hidden="true" />
               </button>
             )}
           </div>
