@@ -222,6 +222,13 @@ export async function readBrowserPreferences(): Promise<Record<string, string>> 
   return Object.fromEntries(preferences.map((preference) => [preference.key, preference.value]));
 }
 
+/** Reads one locally stored credential value by its provider id, or null when the machine holds none. The value never leaves the browser: the caller receives the stored string itself, so account hashes stay device-local. */
+export async function readBrowserCredential(providerId: string): Promise<string | null> {
+  const identity = await browserIdentity();
+  const credential = await record<BrowserCredential>("credentials", `${identity.userId}:${providerId}`);
+  return credential?.localOnly ? credential.value : null;
+}
+
 /** Persists a non-secret interface preference or provider selection locally in this browser. */
 export async function saveBrowserPreference(key: string, value: string): Promise<BrowserPreference> {
   const identity = await browserIdentity();

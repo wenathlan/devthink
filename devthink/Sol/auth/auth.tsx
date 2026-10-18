@@ -5,26 +5,25 @@
  * component surface. Only the theme anchor (Sol/Sol.tsx) consumes this file.
  *
  * Sign in — the windows sequence: the lock screen first (the big clock and
- * the date, unlocking by a swipe up), then the authentication face (the
- * avatar, the display name, the submit) with the cli pairing riding the
- * bottom actions. The identity logic never moved: the local identity is
- * ensured silently, the display name is the only credential, and the sync
- * up rides the guarded pairing contract. The old paper card is retired —
- * this face rides the dtw login skins with the fluent icons.
+ * the date, unlocking by a swipe up), then the authentication face. The
+ * face runs the account contract of the root accountgate.ts: a machine
+ * without an account asks for the display name and the password creation
+ * (the salted digest lands in the credential vault of the local database —
+ * the os HD), a machine with one asks for the password alone and answers
+ * the wrong-try verdict inline. The cli pairing rides the bottom actions;
+ * the identity logic never moved.
  */
 import { ArrowRightRegular, ChevronUpRegular, WindowConsoleRegular } from "@fluentui/react-icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
+import { ACCOUNT_NAME_KEY, type AccountState, accountstate, createAccount, verifyAccount } from "../../accountgate.ts";
 import { afterAuthTarget, pairingReadiness, safegatewayurl } from "../../authgate.ts";
-import { browserIdentity, readBrowserPreferences, saveBrowserPreference } from "../../db";
+import { readBrowserPreferences } from "../../db";
 import { SolLogoMark } from "../panel/logo.tsx";
 
+export * from "../../accountgate.ts";
 export * from "../../authgate.ts";
-
-/** the display-name preference key inside the local database (the same key
- * the desktop lock screen reads) */
-const NAME_KEY = "displayName";
 
 type PairingResponse = { token: string; userId: string; expiresAt: number };
 
@@ -35,15 +34,19 @@ export default function Auth() {
   const invitation = useRef(new URLSearchParams(window.location.search));
   const [stage, setStage] = useState<"lock" | "signin">("lock");
   const [now, setNow] = useState(() => new Date());
+  const [account, setAccount] = useState<AccountState>("absent");
+  const [known, setKnown] = useState("");
   const [name, setName] = useState("");
-  const [known, setKnown] = useState<string>();
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [failure, setFailure] = useState("");
   const [busy, setBusy] = useState(false);
   const [gateway, setGateway] = useState(() => invitation.current.get("gateway") || "");
   const [pairingId, setPairingId] = useState(() => invitation.current.get("pair") || "");
   const [code, setCode] = useState(() => invitation.current.get("code")?.toUpperCase() || "");
   const [paired, setPaired] = useState(() => Boolean(window.sessionStorage.getItem("devthink.pair.token")));
   const [cliopen, setCliopen] = useState(() => Boolean(invitation.current.get("pair")));
-  const nameRef = useRef<HTMLInputElement | null>(null);
+  const passwordRef = useRef<HTMLInputElement | null>(null);
   const dragstart = useRef<{ y: number } | null>(null);
 
   /** the lock clock ticks once a minute is enough, but one tick per second
@@ -53,23 +56,21 @@ export default function Auth() {
     return () => window.clearInterval(timer);
   }, []);
 
-  // returning browsers start from their saved display name
+  // the account contract of this machine's HD: whether the password exists
+  // and the display name the face greets
   useEffect(() => {
-    void readBrowserPreferences()
-      .then((preferences) => {
-        const saved = preferences[NAME_KEY]?.trim();
-        if (saved) {
-          setKnown(saved);
-          setName((current) => current || saved);
-        }
+    void Promise.all([accountstate(), readBrowserPreferences()])
+      .then(([state, preferences]) => {
+        setAccount(state);
+        setKnown((preferences[ACCOUNT_NAME_KEY] ?? "").trim());
       })
       .catch(() => undefined);
   }, []);
 
-  // the name field takes focus as the sign-in face reveals
+  // the password field takes focus as the sign-in face reveals
   useEffect(() => {
     if (stage !== "signin") return;
-    const timer = window.setTimeout(() => nameRef.current?.focus(), 320);
+    const timer = window.setTimeout(() => passwordRef.current?.focus(), 320);
     return () => window.clearTimeout(timer);
   }, [stage]);
 
@@ -77,24 +78,40 @@ export default function Auth() {
     navigate(afterAuthTarget(window.location.search));
   }, [navigate]);
 
-  /** the local identity: ensured silently, the display name is the only
-   * credential — and it never leaves the machine */
-  const enterLocal = useCallback(
-    async (displayName: string) => {
-      setBusy(true);
-      try {
-        await browserIdentity();
-        if (displayName) await saveBrowserPreference(NAME_KEY, displayName);
-        finish();
-      } catch {
-        // storage may be unavailable; entering never blocks on the identity
-        finish();
-      } finally {
-        setBusy(false);
-      }
-    },
-    [finish],
-  );
+  /** the first entry: the account is created on this machine's HD (name +
+   * password digest) and the desktop hands over */
+  const createEntry = useCallback(async () => {
+    const display = name.trim();
+    if (!display) return setFailure("Choose the display name of this account.");
+    if (password.length < 4) return setFailure("The password needs at least 4 characters.");
+    if (password !== confirm) return setFailure("The passwords don't match. Try again.");
+    setBusy(true);
+    setFailure("");
+    try {
+      await createAccount(display, password);
+      finish();
+    } catch {
+      setFailure("The account could not be saved on this machine.");
+    } finally {
+      setBusy(false);
+    }
+  }, [confirm, finish, name, password]);
+
+  /** the returning entry: the password is verified against this machine's
+   * verifier — the wrong try answers inline, never a navigation */
+  const passwordEntry = useCallback(async () => {
+    if (!password) return setFailure("Enter the password of this account.");
+    setBusy(true);
+    setFailure("");
+    try {
+      if (await verifyAccount(password)) return finish();
+      setFailure("The password is incorrect. Try again.");
+    } catch {
+      setFailure("The sign in could not be completed on this machine.");
+    } finally {
+      setBusy(false);
+    }
+  }, [finish, password]);
 
   /** the sync up: pairs this browser with the visitor's own local CLI
    * gateway through the exact contract the panel already speaks */
@@ -118,13 +135,13 @@ export default function Auth() {
         });
         if (!response.ok) throw new Error("Pairing was rejected.");
         const result = (await response.json()) as PairingResponse;
-        // the exact session keys the creation panel reads on boot
+        // the exact keys the creation panel reads on boot
         window.sessionStorage.setItem("devthink.gateway", gateway);
         window.sessionStorage.setItem("devthink.pair.token", result.token);
         window.sessionStorage.setItem("devthink.pair.user", result.userId);
         window.sessionStorage.setItem("devthink.pair.expires", String(result.expiresAt));
         setPaired(true);
-        toast("The browser is paired with your local DevThink cli for this session.");
+        toast("DevThink is paired with your local CLI.");
         finish();
       } catch {
         toast(
@@ -174,6 +191,8 @@ export default function Auth() {
   const time = now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
   const date = now.toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" });
   const initials = (known || name).trim().charAt(0).toUpperCase();
+  const greeting = known ? `Welcome, ${known}` : "Welcome";
+  const submitEntry = account === "ready" ? passwordEntry : createEntry;
 
   return (
     <main className="dtw-login">
@@ -212,28 +231,85 @@ export default function Auth() {
                 <SolLogoMark size={44} />
               </span>
             )}
-            <h1 className="dtw-login__welcome">{known ? `Welcome, ${known}` : "Welcome"}</h1>
-            <input
-              ref={nameRef}
-              className="dtw-login__name"
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              placeholder="Your display name"
-              maxLength={40}
-              autoComplete="nickname"
-              spellCheck={false}
-              aria-label="Display name"
-            />
-            <button
-              type="button"
-              className="dtw-login__submit"
-              disabled={busy}
-              aria-busy={busy || undefined}
-              onClick={() => void enterLocal(name)}
-            >
-              <span>{paired ? "Go to the panel" : "Sign in"}</span>
-              <ArrowRightRegular fontSize={15} aria-hidden="true" />
-            </button>
+            <h1 className="dtw-login__welcome">{account === "ready" ? greeting : "Create your account"}</h1>
+
+            {account === "ready" ? (
+              <form
+                className="dtw-login__fields"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void submitEntry();
+                }}
+              >
+                <input
+                  ref={passwordRef}
+                  className="dtw-login__name"
+                  type="password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  placeholder="Password"
+                  autoComplete="current-password"
+                  aria-label="Password"
+                />
+                {failure ? (
+                  <p className="dtw-login__failure" role="alert">
+                    {failure}
+                  </p>
+                ) : null}
+                <button type="submit" className="dtw-login__submit" disabled={busy} aria-busy={busy || undefined}>
+                  <span>Sign in</span>
+                  <ArrowRightRegular fontSize={15} aria-hidden="true" />
+                </button>
+              </form>
+            ) : (
+              <form
+                className="dtw-login__fields"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void submitEntry();
+                }}
+              >
+                <input
+                  className="dtw-login__name"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  placeholder="Your display name"
+                  maxLength={40}
+                  autoComplete="nickname"
+                  spellCheck={false}
+                  aria-label="Display name"
+                />
+                <input
+                  ref={passwordRef}
+                  className="dtw-login__name"
+                  type="password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  placeholder="Create a password"
+                  autoComplete="new-password"
+                  aria-label="Create a password"
+                />
+                <input
+                  className="dtw-login__name"
+                  type="password"
+                  value={confirm}
+                  onChange={(event) => setConfirm(event.target.value)}
+                  placeholder="Confirm the password"
+                  autoComplete="new-password"
+                  aria-label="Confirm the password"
+                />
+                {failure ? (
+                  <p className="dtw-login__failure" role="alert">
+                    {failure}
+                  </p>
+                ) : null}
+                <button type="submit" className="dtw-login__submit" disabled={busy} aria-busy={busy || undefined}>
+                  <span>Create account and sign in</span>
+                  <ArrowRightRegular fontSize={15} aria-hidden="true" />
+                </button>
+              </form>
+            )}
+
             <div className="dtw-login__actions">
               <button
                 type="button"
@@ -289,7 +365,7 @@ export default function Auth() {
               ) : null}
             </div>
             <ul className="dtw-login__ledger">
-              <li>Local-first identity</li>
+              <li>Local account on this machine</li>
               <li>CLI pairing opt-in</li>
               <li>No telemetry</li>
             </ul>

@@ -286,7 +286,7 @@ export default function Panel({ familySlug }: { familySlug?: string }) {
       setPairingUserId(result.userId);
       setPairingExpiresAt(result.expiresAt);
       setPairingCode("");
-      toast("Local DevThink workspace paired. The browser session is temporary.");
+      toast("Local DevThink workspace paired.");
     },
     [gatewayUrl],
   );
