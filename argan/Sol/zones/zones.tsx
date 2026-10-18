@@ -7,7 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
-import { Waypoints } from "lucide-react";
+import { GlobeRegular } from "@fluentui/react-icons";
 // # Zones — the working console (campaign v3 · r3-argan): the zone ledger as a
 // ruled table (the apex featured, the newest serial pulsing on propagate), the
 // publication flow on the rail, and the apex record set as a ruled ledger with
@@ -106,7 +106,7 @@ export default function Zones() {
           <div className="scroll-x">
             {zones.length === 0 ? (
               <EmptyState
-                icon={Waypoints}
+                icon={GlobeRegular}
                 pending={pending > 0}
                 note="the zone table answered no rows — the catalog is still loading or the staging cluster is offline"
               />
@@ -187,7 +187,7 @@ export default function Zones() {
         <div className="r3a-ledger">
           {records.length === 0 ? (
             <EmptyState
-              icon={Waypoints}
+              icon={GlobeRegular}
               pending={pending > 0}
               note="the apex record set arrived empty — the snapshot has no records to rule yet"
             />

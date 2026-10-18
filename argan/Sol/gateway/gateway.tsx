@@ -7,7 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
-import { Waypoints } from "lucide-react";
+import { PlugConnectedRegular } from "@fluentui/react-icons";
 // # Gateway — the working console (campaign v3 · r3-argan): the transport table
 // as a ruled ledger (ports in kbd, states as dots), the DoH-first rule as a
 // numbered rail, and the staging corefile as a terminal — every row served by
@@ -95,7 +95,7 @@ export default function Gateway() {
           <div className="scroll-x">
             {transports.length === 0 ? (
               <EmptyState
-                icon={Waypoints}
+                icon={PlugConnectedRegular}
                 pending={pending > 0}
                 note="the transport table answered no rows — the gateway core has not published its listeners yet"
               />

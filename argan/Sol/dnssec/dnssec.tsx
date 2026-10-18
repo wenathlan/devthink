@@ -7,7 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
-import { Shield } from "lucide-react";
+import { ShieldRegular } from "@fluentui/react-icons";
 // # Dnssec — the working console (campaign v3 · r3-argan): the two keys as a
 // ruled ledger (KSK featured, the DS line in mono), the algorithms on the rail
 // with tone dots, the pipeline-only rule as a terminal, and the rollover ladder
@@ -99,7 +99,7 @@ export default function Dnssec() {
           <div className="r3a-ledger">
             {keyCards.length === 0 ? (
               <EmptyState
-                icon={Shield}
+                icon={ShieldRegular}
                 pending={pending > 0}
                 note="the key ledger answered no rows — the signing pipeline has not published keys to this snapshot yet"
               />

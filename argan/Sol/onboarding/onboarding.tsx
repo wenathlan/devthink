@@ -15,7 +15,7 @@
  * and no visitor storage beyond the first-run stage itself.
  */
 
-import { ArrowLeft, ArrowRight, LayoutDashboard } from "lucide-react";
+import { ArrowLeftRegular, ArrowRightRegular, HomeRegular } from "@fluentui/react-icons";
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { markOnboardingSeen } from "../../onboardingstate";
@@ -27,7 +27,7 @@ const WHAT_IT_IS =
 
 /** the honest statement of the closing frame (the hand-over). */
 const WHAT_ENTER =
-  "the window opens on the home page and every surface rides the same rail. the theme starts dark and stays in memory only — nothing is written to this machine.";
+  "the window opens on the home page and every surface rides the same rail. the theme starts light and stays in memory only — nothing is written to this machine.";
 
 /** the three frames of the first run, in order. */
 const STEPS = ["the app", "the surfaces", "enter"] as const;
@@ -72,10 +72,10 @@ export default function Onboarding() {
               <h2 className="winonboard__lead">what the window hosts</h2>
               <ul className="winonboard__facts">
                 {START_APPS.map((app) => {
-                  const Icon = app.icon ?? LayoutDashboard;
+                  const Icon = app.icon ?? HomeRegular;
                   return (
                     <li key={app.href} className="winonboard__fact">
-                      <Icon size={16} strokeWidth={1.7} aria-hidden="true" />
+                      <Icon fontSize={16} aria-hidden="true" />
                       <span>
                         <strong>{app.label}</strong> — {app.detail}
                       </span>
@@ -106,14 +106,14 @@ export default function Onboarding() {
             </button>
             {step > 0 && (
               <button type="button" className="winonboard__act" onClick={() => setStep((value) => value - 1)}>
-                <ArrowLeft size={14} aria-hidden="true" />
+                <ArrowLeftRegular fontSize={14} aria-hidden="true" />
                 back
               </button>
             )}
             {last ? (
               <button type="button" className="winonboard__act winonboard__act--primary" onClick={finish}>
                 enter argan
-                <ArrowRight size={14} aria-hidden="true" />
+                <ArrowRightRegular fontSize={14} aria-hidden="true" />
               </button>
             ) : (
               <button
@@ -122,7 +122,7 @@ export default function Onboarding() {
                 onClick={() => setStep((value) => value + 1)}
               >
                 continue
-                <ArrowRight size={14} aria-hidden="true" />
+                <ArrowRightRegular fontSize={14} aria-hidden="true" />
               </button>
             )}
           </div>

@@ -18,18 +18,19 @@
  */
 
 import {
-  Copy,
-  LayoutDashboard,
-  Minus,
-  Moon,
-  Network,
-  Settings2,
-  Shield,
-  Square,
-  Sun,
-  Waypoints,
-  X,
-} from "lucide-react";
+  CopyRegular,
+  DismissRegular,
+  GlobeRegular,
+  HomeRegular,
+  MaximizeRegular,
+  PlugConnectedRegular,
+  SettingsRegular,
+  ShieldRegular,
+  SquareMultipleRegular,
+  SubtractRegular,
+  WeatherMoonRegular,
+  WeatherSunnyRegular,
+} from "@fluentui/react-icons";
 import {
   type CSSProperties,
   type MouseEvent as ReactMouseEvent,
@@ -52,17 +53,17 @@ export type StartApp = {
   href: string;
   label: string;
   detail: string;
-  icon: typeof LayoutDashboard;
+  icon: typeof HomeRegular;
 };
 
 /** the pages the application window hosts, one rail entry each (the apex
  * home first). exported for the onboarding copy beside this folder. */
 export const START_APPS: readonly StartApp[] = [
-  { href: "/", label: "home", detail: "the dns and zones home of the family", icon: LayoutDashboard },
-  { href: "/zones", label: "zones", detail: "the zone table and the publication flow", icon: Network },
-  { href: "/dnssec", label: "dnssec", detail: "the signing pipeline and the rollover", icon: Shield },
-  { href: "/gateway", label: "gateway", detail: "the dns transports, doh-first", icon: Waypoints },
-  { href: "/settings", label: "settings", detail: "appearance and clean urls", icon: Settings2 },
+  { href: "/", label: "home", detail: "the dns and zones home of the family", icon: HomeRegular },
+  { href: "/zones", label: "zones", detail: "the zone table and the publication flow", icon: GlobeRegular },
+  { href: "/dnssec", label: "dnssec", detail: "the signing pipeline and the rollover", icon: ShieldRegular },
+  { href: "/gateway", label: "gateway", detail: "the dns transports, doh-first", icon: PlugConnectedRegular },
+  { href: "/settings", label: "settings", detail: "appearance and clean urls", icon: SettingsRegular },
 ];
 
 /** the hand-over route of the close caption: closing the window restarts the
@@ -328,7 +329,11 @@ function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>(currentTheme());
   return (
     <button type="button" className="winapp__theme" aria-label="toggle theme" onClick={() => setTheme(toggleTheme())}>
-      {theme === "dark" ? <Sun size={14} aria-hidden="true" /> : <Moon size={14} aria-hidden="true" />}
+      {theme === "dark" ? (
+        <WeatherSunnyRegular fontSize={14} aria-hidden="true" />
+      ) : (
+        <WeatherMoonRegular fontSize={14} aria-hidden="true" />
+      )}
       {theme}
     </button>
   );
@@ -437,7 +442,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
           </div>
           <div className="winapp__caption">
             <button type="button" className="winapp__cap" aria-label="Minimize" onClick={() => setMinimized(true)}>
-              <Minus size={14} aria-hidden="true" />
+              <SubtractRegular fontSize={14} aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -445,7 +450,11 @@ export function Shell({ children, themeButton = true }: ShellProps) {
               aria-label={maximized ? "Restore" : "Maximize"}
               onClick={toggleMaximize}
             >
-              {maximized ? <Copy size={12} aria-hidden="true" /> : <Square size={11} aria-hidden="true" />}
+              {maximized ? (
+                <SquareMultipleRegular fontSize={12} aria-hidden="true" />
+              ) : (
+                <MaximizeRegular fontSize={11} aria-hidden="true" />
+              )}
             </button>
             <button
               type="button"
@@ -453,7 +462,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
               aria-label="Close"
               onClick={() => navigate(RESTART_ROUTE)}
             >
-              <X size={14} aria-hidden="true" />
+              <DismissRegular fontSize={14} aria-hidden="true" />
             </button>
           </div>
         </header>
@@ -485,7 +494,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
                   aria-label={app.label}
                   aria-current={isActive(app.href) ? "page" : undefined}
                 >
-                  <Icon size={16} strokeWidth={1.7} aria-hidden="true" />
+                  <Icon fontSize={16} aria-hidden="true" />
                   <span className="winapp__raillabel">{app.label}</span>
                 </Link>
               );
