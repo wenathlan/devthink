@@ -194,6 +194,12 @@ export async function browserIdentity(): Promise<BrowserIdentity> {
   return identity;
 }
 
+/** Mounts one owner partition as the active drive of this browser (the os hard-drive model: opening a drive points the meta identity at its owner, and the records of that owner come with it). */
+export async function activateOwnerDrive(identity: BrowserIdentity): Promise<void> {
+  if (!ownerExpression.test(identity.userId)) throw new Error("Drive owner rejected.");
+  await put("meta", { key: "identity", value: identity } satisfies MetaEntry);
+}
+
 /** Caches the public identity supplied by a paired local gateway without importing any authentication material. */
 export async function cacheBrowserIdentity(identity: BrowserIdentity): Promise<BrowserIdentity> {
   if (!ownerExpression.test(identity.userId)) return browserIdentity();

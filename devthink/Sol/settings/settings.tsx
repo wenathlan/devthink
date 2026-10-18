@@ -25,6 +25,7 @@ import {
 import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { AutomationMcp } from "./automationmcp.tsx";
 import { GatewayCard } from "./gatewaycard.tsx";
+import { HardDrives } from "./harddrives.tsx";
 import { LocalAccount } from "./identity.tsx";
 
 export * from "./automationmcp.tsx";
@@ -194,6 +195,7 @@ export default function Settings({ embedded }: { embedded?: boolean }) {
       ]
     : [
         { id: "database", label: "Database" },
+        { id: "drives", label: "Drives" },
         { id: "account", label: "Local account" },
         { id: "workbench", label: "Workbench" },
         { id: "gateway", label: "Gateway" },
@@ -241,6 +243,8 @@ export default function Settings({ embedded }: { embedded?: boolean }) {
           ) : null}
 
           {!paired && active === "account" ? <LocalAccount /> : null}
+
+          {!paired && active === "drives" ? <HardDrives /> : null}
 
           {active === "workbench" ? (
             <section className="dtw-card">
