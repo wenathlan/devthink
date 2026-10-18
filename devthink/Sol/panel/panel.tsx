@@ -191,6 +191,9 @@ export default function Panel({ familySlug }: { familySlug?: string }) {
   );
   const gatewayUrl = safegatewayurl(gatewayInput);
   const query = window.location.search;
+  /** the pathname this mount booted under: the async bootstrap continuations
+   * only own the bar while the visitor still sits on it */
+  const bootPathname = useMemo(() => window.location.pathname, []);
   const fallbackRoute: RouteState = useMemo(() => readLocalRoute(), []);
   /** "deep" is the primitive the effects key on: a params object would be a
    * new identity every render and drag the hydration effect into an endless
@@ -434,8 +437,16 @@ export default function Panel({ familySlug }: { familySlug?: string }) {
     if (!gatewayUrl || !browserToken) {
       void ensureBrowserSession(fallbackRoute)
         .then((snapshot) => setTabs(snapshot.tabs.map(toShellTab)))
-        .then(() => setLocation(routePath(fallbackRoute, query)))
-        .catch(() => setLocation(routePath(fallbackRoute, query)));
+        .then(() => {
+          // the bootstrap is async: if the visitor already navigated (an app
+          // click, a family arrival) the boot route no longer owns the bar
+          if (window.location.pathname !== bootPathname) return;
+          setLocation(routePath(fallbackRoute, query));
+        })
+        .catch(() => {
+          if (window.location.pathname !== bootPathname) return;
+          setLocation(routePath(fallbackRoute, query));
+        });
       return;
     }
     void fetch(`${gatewayUrl}/sessions`, {
@@ -448,7 +459,8 @@ export default function Panel({ familySlug }: { familySlug?: string }) {
           ? (response.json() as Promise<GatewaySession>)
           : Promise.reject(new Error("Gateway session creation failed.")),
       )
-      .then((session) =>
+      .then((session) => {
+        if (window.location.pathname !== bootPathname) return;
         setLocation(
           routePath(
             {
@@ -459,9 +471,10 @@ export default function Panel({ familySlug }: { familySlug?: string }) {
             },
             query,
           ),
-        ),
-      )
+        );
+      })
       .catch(() => {
+        if (window.location.pathname !== bootPathname) return;
         setLocation(routePath(fallbackRoute, query));
         toast("Local route opened. Add a gateway URL to persist it through DevThink CLI.");
       });

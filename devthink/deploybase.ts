@@ -43,11 +43,24 @@ let bootbase: string | null = null;
 
 /** reads the mount base of the live document (empty string in node).
  *
- * @returns the base the application booted under.
+ * The build-time base wins when the deploy provides one (the pages build
+ * sets VITE_BASE_PATH — it is the true mount point and the boot pathname
+ * can never contradict it, because the spa routes it owns — /panel, /chat,
+ * a family arrival — are segments of the app, not of the host). The boot
+ * pathname answers only when no build base exists (self-hosted roots).
+ *
+ * @returns the base the application booted under (no trailing slash).
  */
 export function deploybase(): string {
   if (typeof window === "undefined") return "";
-  if (bootbase === null) bootbase = derivebase(window.location.pathname);
+  if (bootbase === null) {
+    const buildbase = import.meta.env.BASE_URL;
+    if (buildbase && buildbase !== "/" && buildbase !== "./") {
+      bootbase = buildbase.replace(/\/+$/, "");
+    } else {
+      bootbase = derivebase(window.location.pathname);
+    }
+  }
   return bootbase;
 }
 
