@@ -61,6 +61,7 @@
     "@capacitor/cli": "^8.5.2",
     "@capacitor/core": "^8.5.2",
     "@capacitor/ios": "^8.5.2",
+    "@fluentui/react-icons": "^2.0.344",
     "@hookform/resolvers": "^5.9.1",
     "@libsql/client": "^0.18.0",
     "@opencode-ai/sdk": "^1.18.34",

@@ -6,7 +6,7 @@
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
   },
-  "description": "argan is the DNS and gateway library of the wenathlan family: zones, records, dnssec and handshake — the system network library whose site shares the unified database. The envelope distributes the documentation set, the zero-build site and the tests directory as one package.",
+  "description": "argan is the DNS and gateway library of the wenathlan family: zones, records, dnssec and handshake \u2014 the system network library whose site shares the unified database. The envelope distributes the documentation set, the zero-build site and the tests directory as one package.",
   "keywords": [
     "argan",
     "dns",
@@ -75,6 +75,7 @@
     "@capacitor/cli": "^8.5.2",
     "@capacitor/core": "^8.5.2",
     "@capacitor/ios": "^8.5.2",
+    "@fluentui/react-icons": "^2.0.344",
     "@hookform/resolvers": "^5.9.1",
     "@libsql/client": "^0.18.0",
     "@opencode-ai/sdk": "^1.18.34",
