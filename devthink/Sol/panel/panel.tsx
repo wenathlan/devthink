@@ -156,10 +156,6 @@ function gatewayFromSearch(search: string): string | undefined {
   return configured ? configured.replace(/\/$/, "") : undefined;
 }
 
-function routePath(route: RouteState, search: string): string {
-  return `/w/${encodeURIComponent(route.workspaceId)}/s/${encodeURIComponent(route.sessionId)}/t/${encodeURIComponent(route.tabId)}/${encodeURIComponent(route.sectionId)}${search}`;
-}
-
 /** one session tab of the HD (gateway or local record) to the shell shape */
 function toShellTab(tab: {
   id: string;
@@ -190,27 +186,23 @@ export default function Panel({ familySlug }: { familySlug?: string }) {
     () => configuredGateway || window.sessionStorage.getItem("devthink.gateway") || "",
   );
   const gatewayUrl = safegatewayurl(gatewayInput);
-  const query = window.location.search;
-  /** the pathname this mount booted under: the async bootstrap continuations
-   * only own the bar while the visitor still sits on it */
-  const bootPathname = useMemo(() => window.location.pathname, []);
-  const fallbackRoute: RouteState = useMemo(() => readLocalRoute(), []);
-  /** "deep" is the primitive the effects key on: a params object would be a
-   * new identity every render and drag the hydration effect into an endless
-   * refetch (the chat-bar bug the shell shipped with) */
+  /** "deep" is the entry shape: a /w/… link arrives once, hands its ids to
+   * the route state and the bar seals on the clean desktop path. The route
+   * is React STATE after that — the ids ride the session storage, never the
+   * router (the wouter location of the desktop stays /panel, so no history
+   * write can bounce the tree between two Route elements again). */
   const deep = Boolean(params);
-  // biome-ignore lint/correctness/useExhaustiveDependencies: the optional params fields key the memo — the params object is a new identity per render and would re-mint the route every pass
-  const route: RouteState = useMemo(
-    () =>
-      params
-        ? {
-            workspaceId: params.workspaceId,
-            sessionId: params.sessionId,
-            tabId: params.tabId,
-            sectionId: params.sectionId,
-          }
-        : fallbackRoute,
-    [fallbackRoute, params?.sectionId, params?.sessionId, params?.tabId, params?.workspaceId],
+  const fallbackRoute: RouteState = useMemo(() => readLocalRoute(), []);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the initializer runs once per mount — the deep ids are read from the first params identity
+  const [route, setRouteState] = useState<RouteState>(() =>
+    params
+      ? {
+          workspaceId: params.workspaceId,
+          sessionId: params.sessionId,
+          tabId: params.tabId,
+          sectionId: params.sectionId,
+        }
+      : fallbackRoute,
   );
   const [tabs, setTabs] = useState<DevThinkTab[]>([]);
   const [draftPaletteOpen, setPaletteOpen] = useState(false);
@@ -235,22 +227,22 @@ export default function Panel({ familySlug }: { familySlug?: string }) {
 
   /** stable per route change (the hydration effect keys on this identity —
    * a fresh closure every render re-ran it forever) */
-  const navigate = useCallback(
-    (next: Partial<RouteState>) => {
-      const nextRoute = { ...route, ...next };
+  const navigate = useCallback((next: Partial<RouteState>) => {
+    // the windows law of the address: the ids ride the session storage and
+    // the route state — never the router. The bar seals on the clean
+    // desktop path only when it still carries the deep workspace path.
+    setRouteState((current) => {
+      const nextRoute = { ...current, ...next };
       try {
-        // the windows law of the address: the ids ride the session storage,
-        // never the bar — the router keeps its path, the visitor reads the
-        // clean desktop route
         window.sessionStorage.setItem(LOCAL_ROUTE_KEY, JSON.stringify(nextRoute));
       } catch {
         // storage unavailable: the route lives for this mount only
       }
-      setLocation(routePath(nextRoute, query));
+      return nextRoute;
+    });
+    if (window.location.pathname !== historypath("/panel"))
       window.history.replaceState(null, "", historypath("/panel"));
-    },
-    [query, route, setLocation],
-  );
+  }, []);
 
   // the deep boot seal: a /w/… link enters, persists its ids, seals the bar
   // on the clean desktop path and — when the link targets the chat — parks
@@ -425,6 +417,9 @@ export default function Panel({ familySlug }: { familySlug?: string }) {
     } catch {
       // storage unavailable: behave as if no deep link was parked
     }
+    // the bootstrap never moves the router: the desktop lives at /panel and
+    // the ids ride the route state (a history write here would bounce the
+    // tree between two Route elements — the ping-pong the shell once shipped)
     if (familySlug) {
       // a family arrival route keeps its own address (DevThink barra <app>):
       // the local session still boots into the HD, but the bar never leaves
@@ -437,16 +432,7 @@ export default function Panel({ familySlug }: { familySlug?: string }) {
     if (!gatewayUrl || !browserToken) {
       void ensureBrowserSession(fallbackRoute)
         .then((snapshot) => setTabs(snapshot.tabs.map(toShellTab)))
-        .then(() => {
-          // the bootstrap is async: if the visitor already navigated (an app
-          // click, a family arrival) the boot route no longer owns the bar
-          if (window.location.pathname !== bootPathname) return;
-          setLocation(routePath(fallbackRoute, query));
-        })
-        .catch(() => {
-          if (window.location.pathname !== bootPathname) return;
-          setLocation(routePath(fallbackRoute, query));
-        });
+        .catch(() => undefined);
       return;
     }
     void fetch(`${gatewayUrl}/sessions`, {
@@ -460,25 +446,18 @@ export default function Panel({ familySlug }: { familySlug?: string }) {
           : Promise.reject(new Error("Gateway session creation failed.")),
       )
       .then((session) => {
-        if (window.location.pathname !== bootPathname) return;
-        setLocation(
-          routePath(
-            {
-              workspaceId: session.workspaceId,
-              sessionId: session.id,
-              tabId: session.activeTabId,
-              sectionId: "chat",
-            },
-            query,
-          ),
-        );
+        navigate({
+          workspaceId: session.workspaceId,
+          sessionId: session.id,
+          tabId: session.activeTabId,
+          sectionId: "chat",
+        });
+        setTabs(session.tabs.map(toShellTab));
       })
       .catch(() => {
-        if (window.location.pathname !== bootPathname) return;
-        setLocation(routePath(fallbackRoute, query));
         toast("Local route opened. Add a gateway URL to persist it through DevThink CLI.");
       });
-  }, [browserHeaders, browserToken, deep, fallbackRoute, familySlug, gatewayUrl, query, setLocation]);
+  }, [browserHeaders, browserToken, deep, fallbackRoute, familySlug, gatewayUrl, navigate]);
 
   // the deep hydration: the link session lands in the HD and the shell tabs
   // ride the snapshot — the conversation itself belongs to the chat window,
