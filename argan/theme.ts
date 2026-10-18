@@ -15,7 +15,7 @@ export function currentTheme(): Theme {
 
 /** Applies a theme to the document. */
 export function applyTheme(theme: Theme): void {
-  if (theme === "dark") root().setAttribute("data-theme", "dark");
+  if (theme === "light") root().setAttribute("data-theme", "light");
   else root().removeAttribute("data-theme");
 }
 
