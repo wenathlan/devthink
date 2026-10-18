@@ -7,11 +7,11 @@
  * trimClip, the split key cuts at the playhead through splitClip. Every
  * landing is validated with validatePlacement before it commits; a refused
  * edit keeps the arrangement and names the refusal. The keyboard edits too:
- * arrows walk the selected clip one snap step, Delete and D delete and
+ * arrows walk the selected clip one snap step, DeleteRegular and D delete and
  * duplicate. Zero audio math here — the page owns the plan and the engine.
  */
 
-import { Copy, Scissors, Trash2 } from "lucide-react";
+import { CopyRegular, CutRegular, DeleteRegular } from "@fluentui/react-icons";
 import { type KeyboardEvent, type PointerEvent, useCallback, useMemo, useRef, useState } from "react";
 import { beatSecondsOf, ROLE_NAMES, type TakePlan } from "../../arranger.ts";
 import { formatClock } from "../../dawview.ts";
@@ -210,7 +210,7 @@ export function Timeline({ plan, clips, playhead, selectedId, onSelect, onEdit, 
     (event: KeyboardEvent<HTMLElement>) => {
       const tag = (event.target as HTMLElement | null)?.tagName;
       if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
-      if (event.key === "Delete" || event.key === "Backspace") {
+      if (event.key === "DeleteRegular" || event.key === "Backspace") {
         event.preventDefault();
         remove();
         return;
@@ -220,9 +220,9 @@ export function Timeline({ plan, clips, playhead, selectedId, onSelect, onEdit, 
         duplicate();
         return;
       }
-      if ((event.key === "ArrowLeft" || event.key === "ArrowRight") && selected) {
+      if ((event.key === "ArrowLeftRegular" || event.key === "ArrowRightRegular") && selected) {
         event.preventDefault();
-        const dir = event.key === "ArrowLeft" ? -1 : 1;
+        const dir = event.key === "ArrowLeftRegular" ? -1 : 1;
         try {
           const moved = moveClip(selected, dir * grid.stepseconds, others(selected.id), { grid });
           place(clips.map((clip) => (clip.id === selected.id ? moved : clip)));
@@ -252,16 +252,16 @@ export function Timeline({ plan, clips, playhead, selectedId, onSelect, onEdit, 
             aria-label="Split the selected clip at the playhead"
             onClick={split}
           >
-            <Scissors className="tled-icon" size={14} strokeWidth={1.8} aria-hidden="true" />
+            <CutRegular className="tled-icon" fontSize={14} aria-hidden="true" />
             Split
           </button>
           <button className="tled-key" type="button" aria-label="Duplicate the selected clip" onClick={duplicate}>
-            <Copy className="tled-icon" size={14} strokeWidth={1.8} aria-hidden="true" />
+            <CopyRegular className="tled-icon" fontSize={14} aria-hidden="true" />
             Duplicate
           </button>
-          <button className="tled-key" type="button" aria-label="Delete the selected clip" onClick={remove}>
-            <Trash2 className="tled-icon" size={14} strokeWidth={1.8} aria-hidden="true" />
-            Delete
+          <button className="tled-key" type="button" aria-label="DeleteRegular the selected clip" onClick={remove}>
+            <DeleteRegular className="tled-icon" fontSize={14} aria-hidden="true" />
+            DeleteRegular
           </button>
         </div>
       </header>

@@ -1,5 +1,5 @@
 // the debonair unit of the family.
-// # theme — sol dark is the default and the light variant applies to the document only.
+// # theme — the light fusion is the default (the devthink standard) and the dark variant applies to the document only.
 // The interface never touches the visitor machine: no cookies, no storage — the choice
 // holds for the session and the next load starts from the sol dark default again.
 export type Theme = "dark" | "light";
@@ -10,24 +10,24 @@ function root(): HTMLElement {
 
 /** Reads the theme currently applied to the document. */
 export function currentTheme(): Theme {
-  return root().getAttribute("data-theme") === "light" ? "light" : "dark";
+  return root().getAttribute("data-theme") === "dark" ? "dark" : "light";
 }
 
 /** Applies a theme to the document. */
 export function applyTheme(theme: Theme): void {
-  if (theme === "light") root().setAttribute("data-theme", "light");
+  if (theme === "dark") root().setAttribute("data-theme", "dark");
   else root().removeAttribute("data-theme");
 }
 
 /** Ensures the document carries the sol dark default before the first render. */
 export function initTheme(): Theme {
-  applyTheme("dark");
-  return "dark";
+  applyTheme("light");
+  return "light";
 }
 
 /** Flips the theme on the document and returns the new value (session scope only). */
 export function toggleTheme(): Theme {
-  const next: Theme = currentTheme() === "light" ? "dark" : "light";
+  const next: Theme = currentTheme() === "dark" ? "light" : "dark";
   applyTheme(next);
   return next;
 }

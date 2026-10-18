@@ -9,7 +9,7 @@
  * engine owns the algebra, the component owns only the window and the hands.
  */
 
-import { Eraser, Magnet, Minus, Plus, Trash2 } from "lucide-react";
+import { AddRegular, DeleteRegular, EraserRegular, PinRegular, SubtractRegular } from "@fluentui/react-icons";
 import { type KeyboardEvent, useCallback, useMemo, useState } from "react";
 import { type ArrangerRole, RACK_LANES, type TakePlan } from "../../arranger.ts";
 import {
@@ -175,10 +175,10 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
       const tag = (event.target as HTMLElement | null)?.tagName;
       if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
       if (!selected) return;
-      if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+      if (event.key === "ArrowLeftRegular" || event.key === "ArrowRightRegular") {
         event.preventDefault();
         try {
-          apply(moveNote(notes, selected.id, event.key === "ArrowLeft" ? -1 : 1, window, plan));
+          apply(moveNote(notes, selected.id, event.key === "ArrowLeftRegular" ? -1 : 1, window, plan));
         } catch (error) {
           onNotice(error instanceof Error ? error.message : "the roll refused this move");
         }
@@ -247,7 +247,7 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
           onClick={() => setBar((current) => Math.max(0, current - 1))}
           disabled={bar === 0}
         >
-          <Minus className="svg" size={14} strokeWidth={1.8} aria-hidden="true" />
+          <SubtractRegular className="svg" fontSize={14} aria-hidden="true" />
           Bar
         </button>
         <input
@@ -269,7 +269,7 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
           onClick={() => setBar((current) => Math.min(plan.bars - 1, current + 1))}
           disabled={bar >= plan.bars - 1}
         >
-          <Plus className="svg" size={14} strokeWidth={1.8} aria-hidden="true" />
+          <AddRegular className="svg" fontSize={14} aria-hidden="true" />
           Bar
         </button>
         <button
@@ -279,7 +279,7 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
           aria-pressed={erase}
           onClick={() => setErase((current) => !current)}
         >
-          <Eraser className="svg" size={14} strokeWidth={1.8} aria-hidden="true" />
+          <EraserRegular className="svg" fontSize={14} aria-hidden="true" />
           Erase
         </button>
         {selected ? (
@@ -297,7 +297,7 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
                 }
               }}
             >
-              <Minus className="svg" size={12} strokeWidth={1.8} aria-hidden="true" />
+              <SubtractRegular className="svg" fontSize={12} aria-hidden="true" />
             </button>
             <button
               className="tkey"
@@ -311,14 +311,14 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
                 }
               }}
             >
-              <Plus className="svg" size={12} strokeWidth={1.8} aria-hidden="true" />
+              <AddRegular className="svg" fontSize={12} aria-hidden="true" />
             </button>
             <button className="tkey" type="button" aria-label="Row up" onClick={() => transpose(1)}>
-              <Plus className="svg" size={12} strokeWidth={1.8} aria-hidden="true" />
+              <AddRegular className="svg" fontSize={12} aria-hidden="true" />
               Row
             </button>
             <button className="tkey" type="button" aria-label="Row down" onClick={() => transpose(-1)}>
-              <Minus className="svg" size={12} strokeWidth={1.8} aria-hidden="true" />
+              <SubtractRegular className="svg" fontSize={12} aria-hidden="true" />
               Row
             </button>
             <button
@@ -333,7 +333,7 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
                 }
               }}
             >
-              <Minus className="svg" size={12} strokeWidth={1.8} aria-hidden="true" />
+              <SubtractRegular className="svg" fontSize={12} aria-hidden="true" />
               Len
             </button>
             <button
@@ -348,7 +348,7 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
                 }
               }}
             >
-              <Plus className="svg" size={12} strokeWidth={1.8} aria-hidden="true" />
+              <AddRegular className="svg" fontSize={12} aria-hidden="true" />
               Len
             </button>
             <button className="tkey" type="button" aria-label="Cycle the velocity" onClick={velocityCycle}>
@@ -360,19 +360,19 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
               aria-label="Quantize the note to the grid"
               onClick={() => apply(quantizeNote(notes, selected.id, 1))}
             >
-              <Magnet className="svg" size={12} strokeWidth={1.8} aria-hidden="true" />
+              <PinRegular className="svg" fontSize={12} aria-hidden="true" />
               Quant
             </button>
             <button
               className="tkey"
               type="button"
-              aria-label="Delete the note"
+              aria-label="DeleteRegular the note"
               onClick={() => {
                 apply(removeNote(notes, selected.id));
                 setSelectedId("");
               }}
             >
-              <Trash2 className="svg" size={12} strokeWidth={1.8} aria-hidden="true" />
+              <DeleteRegular className="svg" fontSize={12} aria-hidden="true" />
             </button>
           </span>
         ) : null}

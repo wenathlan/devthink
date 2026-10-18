@@ -8,7 +8,7 @@
  * Sol/sol.css and stay transform/opacity only.
  */
 
-import { Play } from "lucide-react";
+import { PlayFilled } from "@fluentui/react-icons";
 import type { CSSProperties } from "react";
 import type { TakePlan } from "../../arranger.ts";
 import type { LibraryTrackRow } from "../../katexis.ts";
@@ -42,11 +42,11 @@ export function SongCard({ track, take, slot, live, onPlay }: SongCardProps) {
         <button
           type="button"
           className="song-play"
-          aria-label={`Play ${track.name}`}
-          title={`Play ${track.name} — ${track.genre} · ${track.duration}`}
+          aria-label={`PlayFilled ${track.name}`}
+          title={`PlayFilled ${track.name} — ${track.genre} · ${track.duration}`}
           onClick={() => onPlay(take)}
         >
-          <Play size={18} aria-hidden="true" />
+          <PlayFilled fontSize={18} aria-hidden="true" />
         </button>
       </div>
       <h3 className="song-name">{track.name}</h3>

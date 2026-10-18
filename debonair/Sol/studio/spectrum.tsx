@@ -8,8 +8,8 @@
  */
 
 import { useEffect, useRef } from "react";
-import { reduceMotionApplied } from "../../motionpref.ts";
 import type { TakeEngine } from "../../audioengine.ts";
+import { reduceMotionApplied } from "../../motionpref.ts";
 
 /** the fft bins the scope draws (half of the 512 tap, log-ladder feel kept simple) */
 const BINS = 96;

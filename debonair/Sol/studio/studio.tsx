@@ -19,6 +19,7 @@ import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState }
 import { Link } from "wouter";
 import { rebaseSchedule } from "../../arrangement.ts";
 import { type ArrangerRole, beatSecondsOf, planTake, RACK_LANES, type TakePlan, validatePlan } from "../../arranger.ts";
+import { TakeEngine } from "../../audioengine.ts";
 import { formatClock, formatGain } from "../../dawview.ts";
 import { effectiveGainDb, graphFromStrips, type MixerGraph, patchChannel } from "../../mixergraph.ts";
 import { reduceMotionApplied } from "../../motionpref.ts";
@@ -26,6 +27,7 @@ import { type EditableNote, notesToSchedule, scheduleToNotes } from "../../piano
 import { busHush } from "../../playerbus.ts";
 import type { StageId } from "../../stages.ts";
 import { positionAt } from "../../takeevents.ts";
+import { downloadFile, EXPORT_LABELS, type ExportKind, exportTake } from "../../takeexporter.ts";
 import {
   findTakeRecord,
   loadTakeRecords,
@@ -35,8 +37,6 @@ import {
 } from "../../takestore.ts";
 import type { TimelineClip } from "../../timelinemodel.ts";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
-import { TakeEngine } from "../../audioengine.ts";
-import { downloadFile, EXPORT_LABELS, type ExportKind, exportTake } from "../../takeexporter.ts";
 import { Fader } from "./Fader.tsx";
 import { PianoRoll } from "./pianoroll.tsx";
 import { StageStepper } from "./StageStepper.tsx";

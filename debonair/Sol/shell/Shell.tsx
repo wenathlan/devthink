@@ -21,7 +21,19 @@
  * consolidation belongs to the future @wenathlan/* package.
  */
 
-import { Copy, LayoutDashboard, Library, Minus, Moon, Settings2, Sparkles, Square, Sun, Wand2, X } from "lucide-react";
+import {
+  CopyRegular,
+  DismissRegular,
+  HomeRegular,
+  LibraryRegular,
+  MaximizeRegular,
+  SettingsRegular,
+  SparkleRegular,
+  SubtractRegular,
+  WandRegular,
+  WeatherMoonRegular,
+  WeatherSunnyRegular,
+} from "@fluentui/react-icons";
 import {
   type CSSProperties,
   type MouseEvent as ReactMouseEvent,
@@ -46,17 +58,17 @@ export type StartApp = {
   href: string;
   label: string;
   detail: string;
-  icon: typeof LayoutDashboard;
+  icon: typeof HomeRegular;
 };
 
 /** the pages the application window hosts, one rail entry each (the apex
  * home first). exported for the onboarding copy beside this folder. */
 export const START_APPS: readonly StartApp[] = [
-  { href: "/", label: "home", detail: "the audio home of the family", icon: LayoutDashboard },
-  { href: "/generate", label: "generate", detail: "the text-to-music composer", icon: Sparkles },
-  { href: "/library", label: "library", detail: "the session takes and samples", icon: Library },
-  { href: "/studio", label: "studio", detail: "the timeline, rack, mixer and transport", icon: Wand2 },
-  { href: "/settings", label: "settings", detail: "appearance and region", icon: Settings2 },
+  { href: "/", label: "home", detail: "the audio home of the family", icon: HomeRegular },
+  { href: "/generate", label: "generate", detail: "the text-to-music composer", icon: SparkleRegular },
+  { href: "/library", label: "library", detail: "the session takes and samples", icon: LibraryRegular },
+  { href: "/studio", label: "studio", detail: "the timeline, rack, mixer and transport", icon: WandRegular },
+  { href: "/settings", label: "settings", detail: "appearance and region", icon: SettingsRegular },
 ];
 
 // the family row the rail foot draws: the family table (family.ts) holds the
@@ -320,9 +332,9 @@ function ThemeToggle() {
   return (
     <button type="button" className="icon-anim" aria-label="toggle theme" onClick={() => setTheme(toggleTheme())}>
       {theme === "dark" ? (
-        <Sun size={16} strokeWidth={1.7} aria-hidden="true" />
+        <WeatherSunnyRegular fontSize={16} aria-hidden="true" />
       ) : (
-        <Moon size={16} strokeWidth={1.7} aria-hidden="true" />
+        <WeatherMoonRegular fontSize={16} aria-hidden="true" />
       )}
     </button>
   );
@@ -352,6 +364,17 @@ type ShellProps = {
  * @returns the window element.
  */
 export function Shell({ children, themeButton = true }: ShellProps) {
+  // the embedded contract: inside the os power clip the app rides the host
+  // window chrome — the shell renders the routed stage bare (no title bar,
+  // no rail, no player bar, no captions), full-bleed in the frame
+  const [framed] = useState(() => {
+    try {
+      return window.self !== window.top;
+    } catch {
+      return true;
+    }
+  });
+  if (framed) return <main className="shell shell--embedded">{children}</main>;
   const [location, navigate] = useLocation();
   const [maximized, setMaximized] = useState(false);
   const [minimized, setMinimized] = useState(false);
@@ -508,7 +531,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
           <div className="winapp__caption">
             {themeButton ? <ThemeToggle /> : null}
             <button type="button" className="winapp__cap" aria-label="Minimize" onClick={() => setMinimized(true)}>
-              <Minus size={14} aria-hidden="true" />
+              <SubtractRegular fontSize={14} aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -516,7 +539,11 @@ export function Shell({ children, themeButton = true }: ShellProps) {
               aria-label={maximized ? "Restore" : "Maximize"}
               onClick={toggleMaximize}
             >
-              {maximized ? <Copy size={12} aria-hidden="true" /> : <Square size={11} aria-hidden="true" />}
+              {maximized ? (
+                <CopyRegular fontSize={12} aria-hidden="true" />
+              ) : (
+                <MaximizeRegular fontSize={11} aria-hidden="true" />
+              )}
             </button>
             <button
               type="button"
@@ -524,7 +551,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
               aria-label="Close"
               onClick={() => navigate(RESTART_ROUTE)}
             >
-              <X size={14} aria-hidden="true" />
+              <DismissRegular fontSize={14} aria-hidden="true" />
             </button>
           </div>
         </header>
@@ -548,7 +575,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
                   aria-label={app.label}
                   aria-current={isActive(app.href) ? "page" : undefined}
                 >
-                  <Icon size={20} strokeWidth={1.5} aria-hidden="true" />
+                  <Icon fontSize={20} aria-hidden="true" />
                 </Link>
               );
             })}

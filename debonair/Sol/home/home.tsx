@@ -7,7 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
-import { ArrowRight } from "lucide-react";
+import { ArrowRightRegular } from "@fluentui/react-icons";
 // # Home — the LANDING (campaign 5-b): the Suno-style prompt-first hero over
 // the noir stage with the brass light — one giant mono field with the single
 // create key and the engine's own genre matrix as chips — then the song grid
@@ -36,7 +36,7 @@ import { SongCard, SongCardSkeleton } from "./songcard.tsx";
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Studio", href: "/studio" },
   { label: "Generate", href: "/generate" },
-  { label: "Library", href: "/library" },
+  { label: "LibraryRegular", href: "/library" },
   { label: "Settings", href: "/settings" },
 ];
 
@@ -170,7 +170,7 @@ function HomeSurface() {
           />
           <button className="pg-key" type="submit">
             Create
-            <ArrowRight size={16} aria-hidden="true" />
+            <ArrowRightRegular fontSize={16} aria-hidden="true" />
           </button>
         </form>
         <p className="pg-hint reveal">enter opens the composer with your draft · {PROMPT_MAX_LENGTH} characters max</p>

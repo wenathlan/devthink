@@ -469,6 +469,9 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .stack { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
 .grid { display: grid; gap: 18px; }
 .shell { width: 100%; max-width: 1160px; margin: 0 auto; padding: clamp(20px, 4vw, 56px) clamp(16px, 4vw, 40px); }
+/* the embedded contract: the power clip frame hosts the stage bare — the stage fills
+   the frame and scrolls itself, no window chrome of its own */
+.shell--embedded { max-width: none; height: 100vh; overflow-y: auto; }
 .section { padding: clamp(28px, 6vw, 72px) 0; }
 .section-head { max-width: 640px; margin-bottom: 30px; }
 

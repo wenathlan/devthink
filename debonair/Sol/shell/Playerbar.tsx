@@ -10,7 +10,7 @@
  * clock and the lane ride the same rAF snapshots the studio reads.
  */
 
-import { Pause, Play, SkipForward } from "lucide-react";
+import { NextRegular, PauseRegular, PlayFilled } from "@fluentui/react-icons";
 import { type CSSProperties, useEffect, useState } from "react";
 import { Link } from "wouter";
 import type { TakePlan } from "../../arranger.ts";
@@ -66,9 +66,9 @@ export function Playerbar() {
         <button
           type="button"
           className={`pkey${view.playing ? " pkey--cta" : ""}`}
-          aria-label={view.playing ? "Pause" : "Play"}
+          aria-label={view.playing ? "PauseRegular" : "PlayFilled"}
           aria-pressed={view.playing}
-          title={view.notice || (view.playing ? "Pause the take" : "Play the take")}
+          title={view.notice || (view.playing ? "PauseRegular the take" : "PlayFilled the take")}
           onClick={() => {
             if (view.playing) busPause();
             else {
@@ -77,10 +77,14 @@ export function Playerbar() {
             }
           }}
         >
-          {view.playing ? <Pause size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}
+          {view.playing ? (
+            <PauseRegular fontSize={16} aria-hidden="true" />
+          ) : (
+            <PlayFilled fontSize={16} aria-hidden="true" />
+          )}
         </button>
         <button type="button" className="pkey" aria-label="Next take" title="Next take" onClick={() => busSelect()}>
-          <SkipForward size={16} aria-hidden="true" />
+          <NextRegular fontSize={16} aria-hidden="true" />
         </button>
       </div>
     </aside>
