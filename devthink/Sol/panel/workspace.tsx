@@ -27,7 +27,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation } from "wouter";
 import { alttabkeydown } from "../../alttab.ts";
 import { DESKTOP_APPS, type DesktopApp } from "../../appregistry.ts";
-import { readChatHandoff } from "../../chatstate.ts";
 import { pushrecentapp } from "../../recentapps.ts";
 import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspace.ts";
 import { type AltTabCard, AltTabSwitcher } from "../shell/alttabswitcher.tsx";
@@ -39,6 +38,8 @@ import { WINDOW_MIN_HEIGHT, WindowFrame, type WindowSnapshot } from "./windowfra
 type ShellWorkspaceProps = {
   /** the family slug of a /<slug> arrival route — the window opens on mount */
   familySlug?: string;
+  /** the session id of a deep /w/…/chat arrival — the chat window opens */
+  chatHandoff?: string;
   /** the route section: "history" opens the session history window */
   sectionId: string;
   userId?: string | undefined;
@@ -112,6 +113,7 @@ function loadWindows(): WindowSnapshot[] {
 
 export function ShellWorkspace({
   familySlug,
+  chatHandoff,
   sectionId,
   userId,
   tabs,
@@ -193,16 +195,15 @@ export function ShellWorkspace({
     [applyWindows],
   );
 
-  /** the arrival handoffs, once per mount: a /<slug> family route opens its
-   * app window, a parked deep-link chat session opens the chat window (the
-   * chat body inside consumes the slot and hydrates the conversation). The
-   * arrival pass is a mount-only contract — later handoffs ride a fresh
-   * mount through the router. */
-  // biome-ignore lint/correctness/useExhaustiveDependencies: the handoff is a one-shot mount effect
+  /** the arrival handoffs: a /<slug> family route opens its app window, a
+   * deep /w/…/chat link opens the chat window (the chat body inside consumes
+   * the parked session slot and hydrates the conversation). The props key
+   * the pass — both ride the arrival route, so the effect answers each
+   * arrival exactly once. */
   useEffect(() => {
     if (familySlug && windowApp(familySlug)) toggleWindow(familySlug, appById(familySlug).name);
-    else if (readChatHandoff()) toggleWindow("chat", appById("chat").name);
-  }, []);
+    else if (chatHandoff) toggleWindow("chat", appById("chat").name);
+  }, [chatHandoff, familySlug, toggleWindow]);
 
   /** destination windows: history opens its own floating window */
   useEffect(() => {

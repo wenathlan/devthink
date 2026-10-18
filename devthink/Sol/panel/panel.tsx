@@ -422,6 +422,15 @@ export default function Panel({ familySlug }: { familySlug?: string }) {
     } catch {
       // storage unavailable: behave as if no deep link was parked
     }
+    if (familySlug) {
+      // a family arrival route keeps its own address (DevThink barra <app>):
+      // the local session still boots into the HD, but the bar never leaves
+      // the app's subpath
+      void ensureBrowserSession(fallbackRoute)
+        .then((snapshot) => setTabs(snapshot.tabs.map(toShellTab)))
+        .catch(() => undefined);
+      return;
+    }
     if (!gatewayUrl || !browserToken) {
       void ensureBrowserSession(fallbackRoute)
         .then((snapshot) => setTabs(snapshot.tabs.map(toShellTab)))
@@ -456,7 +465,7 @@ export default function Panel({ familySlug }: { familySlug?: string }) {
         setLocation(routePath(fallbackRoute, query));
         toast("Local route opened. Add a gateway URL to persist it through DevThink CLI.");
       });
-  }, [browserHeaders, browserToken, deep, fallbackRoute, gatewayUrl, query, setLocation]);
+  }, [browserHeaders, browserToken, deep, fallbackRoute, familySlug, gatewayUrl, query, setLocation]);
 
   // the deep hydration: the link session lands in the HD and the shell tabs
   // ride the snapshot — the conversation itself belongs to the chat window,
@@ -524,6 +533,7 @@ export default function Panel({ familySlug }: { familySlug?: string }) {
     >
       <ShellWorkspace
         familySlug={familySlug}
+        chatHandoff={deep && route.sectionId === "chat" ? route.sessionId : undefined}
         sectionId={route.sectionId}
         userId={pairedIdentity?.userId}
         tabs={tabs}

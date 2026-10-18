@@ -27,7 +27,7 @@ export type RailLink = { href: string; label: string; icon: LucideIcon };
 
 export const CHAT_NAV: RailLink[] = [
   { href: "/", label: "Home", icon: Home },
-  { href: "/os", label: "OS", icon: Terminal },
+  { href: "/panel", label: "OS", icon: Terminal },
   { href: "/projects", label: "Projects", icon: FolderKanban },
   { href: "/docs", label: "Docs", icon: BookOpen },
   { href: "/explore", label: "Explore", icon: Compass },
