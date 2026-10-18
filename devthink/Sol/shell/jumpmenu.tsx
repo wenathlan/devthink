@@ -18,10 +18,10 @@
  * handled by the chrome.
  */
 
-import { AppWindow, Compass, Globe, LayoutGrid, type LucideIcon, Pin, PinOff, Play } from "lucide-react";
+import { AppWindow, Compass, Globe, type LucideIcon, Pin, PinOff, Play } from "lucide-react";
 import { type KeyboardEvent as ReactKeyboardEvent, useLayoutEffect, useRef, useState } from "react";
-import { familyurl } from "../../deploybase.ts";
 import type { DesktopApp } from "../../appregistry.ts";
+import { familyurl } from "../../deploybase.ts";
 
 /** The localStorage key of the taskbar pin order (an id list). */
 const TASKBAR_PINS_KEY = "dt.taskbar.pins.v1";
@@ -61,7 +61,12 @@ export function saveTaskbarPins(ids: string[]): void {
 }
 
 /** one quick entry of the jump list */
-type JumpEntry = { id: string; label: string; icon: LucideIcon; action: "open" | "site" };
+type JumpEntry = {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+  action: "open" | "site";
+};
 
 /** the kind-specific quick entries derived from the app target */
 function jumpEntries(app: DesktopApp): JumpEntry[] {
@@ -70,11 +75,29 @@ function jumpEntries(app: DesktopApp): JumpEntry[] {
       return [{ id: "window", label: "Open window", icon: AppWindow, action: "open" }];
     case "destination":
     case "route":
-      return [{ id: "surface", label: `Open ${app.name}`, icon: Compass, action: "open" }];
-    case "os":
-      return [{ id: "os", label: "Open in OS", icon: LayoutGrid, action: "open" }];
+      return [
+        {
+          id: "surface",
+          label: `Open ${app.name}`,
+          icon: Compass,
+          action: "open",
+        },
+      ];
     case "external":
-      return [{ id: "site", label: `Open ${app.name} site`, icon: Globe, action: "site" }];
+      return [
+        {
+          id: "surface",
+          label: `Open ${app.name}`,
+          icon: Compass,
+          action: "open",
+        },
+        {
+          id: "site",
+          label: `Open ${app.name} site`,
+          icon: Globe,
+          action: "site",
+        },
+      ];
   }
 }
 
@@ -116,8 +139,7 @@ export function JumpList({ app, open, x, y, pinned, onOpen, onTogglePin, onClose
     if (!el) return;
     const rect = el.getBoundingClientRect();
     const nextX = x + rect.width > window.innerWidth - 8 ? Math.max(8, window.innerWidth - rect.width - 8) : x;
-    const nextY =
-      y + rect.height > window.innerHeight - 56 ? Math.max(8, window.innerHeight - rect.height - 56) : y;
+    const nextY = y + rect.height > window.innerHeight - 56 ? Math.max(8, window.innerHeight - rect.height - 56) : y;
     setPos({ x: nextX, y: nextY });
   }, [x, y]);
 
@@ -145,7 +167,10 @@ export function JumpList({ app, open, x, y, pinned, onOpen, onTogglePin, onClose
 
   const runEntry = (entry: JumpEntry) => {
     if (entry.action === "site" && app.target.kind === "external") {
-      window.location.assign(familyurl(app.target.slug));
+      // the real family site opens as its own browser tab: the os surface
+      // stays where it is (the windows law — a jump entry never leaves the
+      // shell behind)
+      window.open(familyurl(app.target.slug), "_blank", "noopener,noreferrer");
       onClose();
       return;
     }

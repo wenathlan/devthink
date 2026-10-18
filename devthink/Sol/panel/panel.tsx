@@ -6,10 +6,11 @@
  * this file; no module outside the folder imports the folder members
  * directly. This anchor carries the former main component of the folder
  * (the desktop workspace of the OS), which now lives here as the page mount
- * itself. The creation panel answers at /panel (and at every deep /w/…
- * workspace route) — the intro hands the surface straight over to this
- * desktop and the retired /auth entry pass lands here through its compat
- * handover (Sol/auth), never through a login screen.
+ * itself. The desktop answers at /panel and at every family route
+ * (/<slug> — DevThink barra <app>, the window opens on arrival) and at
+ * every deep /w/… workspace route: a deep link ending in /chat parks its
+ * session id in the chatstate handoff slot and the chat window consumes it;
+ * the intro hands the surface straight over to this desktop.
  */
 
 /** Style: DevThink Shell OS — React renders the boot once per session and
@@ -23,20 +24,16 @@ import { toast } from "sonner";
 import { useLocation, useRoute } from "wouter";
 import { PairingPanel } from "@/settings/settings";
 import { safegatewayurl } from "../../authgate.ts";
+import { writeChatHandoff } from "../../chatstate.ts";
 import {
   browserIdentity,
   cacheBrowserIdentity,
   cacheGatewaySession,
   ensureBrowserSession,
-  loadBrowserSession,
   readBrowserPreferences,
-  removeBrowserTab,
-  saveBrowserMessages,
-  saveBrowserTab,
 } from "../../db";
-import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "../../paneltypes.ts";
+import type { DevThinkTab } from "../../paneltypes.ts";
 import { historypath } from "../../routebase.ts";
-import { sseEvents } from "../../sse";
 import type { WorkspaceDestination } from "../../workspace.ts";
 import { BootScreen, shouldBoot } from "./boot.tsx";
 import { CommandPalette } from "./palette.tsx";
@@ -53,31 +50,13 @@ export * from "./workspace.tsx";
 /** The old persisted shell stage ("identity" / "entry" / "shell") is no
  * longer a gate: every value lands on the desktop. The key is retired from
  * the chain — no screen ever blocks the entry. */
-const providers: DevThinkProvider[] = [
-  {
-    id: "anthropic",
-    label: "Anthropic",
-    model: "Claude Sonnet",
-    protocol: "messages, SSE",
-    state: "connected",
-    tint: "#e46f36",
-  },
-  { id: "google", label: "Google", model: "Gemini Pro", protocol: "generateContent", state: "ready", tint: "#64c8bb" },
-  { id: "zai", label: "Z.AI", model: "GLM 5", protocol: "openai-compatible", state: "ready", tint: "#f2bb62" },
-  { id: "qwen", label: "Qwen", model: "Qwen Coder", protocol: "phase SSE", state: "offline", tint: "#bb9cf4" },
-  {
-    id: "mimo",
-    label: "Xiaomi MiMo",
-    model: "MiMo V2.5 Pro",
-    protocol: "openai-compatible",
-    state: "ready",
-    tint: "#f28861",
-  },
-];
 
-const initialMessages: DevThinkMessage[] = [];
-
-type RouteState = { workspaceId: string; sessionId: string; tabId: string; sectionId: string };
+type RouteState = {
+  workspaceId: string;
+  sessionId: string;
+  tabId: string;
+  sectionId: string;
+};
 type GatewaySession = {
   id: string;
   workspaceId: string;
@@ -107,9 +86,17 @@ type GatewaySession = {
 type PairingResponse = { token: string; userId: string; expiresAt: number };
 type PairedIdentity = { userId: string; deviceId: string; createdAt: string };
 type IdentityResponse = { identity: PairedIdentity };
-type WorkbenchPreferences = { theme: "dark" | "light"; railMode: "always" | "auto" | "off"; interfaceZoom: string };
+type WorkbenchPreferences = {
+  theme: "dark" | "light";
+  railMode: "always" | "auto" | "off";
+  interfaceZoom: string;
+};
 
-const defaultPreferences: WorkbenchPreferences = { theme: "light", railMode: "auto", interfaceZoom: "100" };
+const defaultPreferences: WorkbenchPreferences = {
+  theme: "light",
+  railMode: "auto",
+  interfaceZoom: "100",
+};
 
 function stableId(): string {
   const alphabet = "0123456789abcdefghjkmnpqrstvwxyz";
@@ -164,27 +151,6 @@ function readLocalRoute(): RouteState {
   return fresh;
 }
 
-/** The message title rides its own content — the first non-empty line,
- * folded to 48 chars — never a staged literal ("Request staged" retired):
- * the /chat page names turns this way and the desktop window follows the
- * same law. System context keeps its label. */
-function deriveTitle(role: DevThinkMessage["role"], content: string): string {
-  if (role === "system") return "Session context";
-  const firstLine = (content.split("\n").find((line) => line.trim()) ?? "").trim();
-  if (!firstLine) return role === "user" ? "Request" : "Response";
-  return firstLine.length > 48 ? `${firstLine.slice(0, 47)}…` : firstLine;
-}
-
-/** The session label follows the /chat naming law: the first user message
- * names the session ("New chat" until then); a gateway-provided tab label
- * wins when the conversation has not spoken yet. */
-function sessionLabel(tabs: DevThinkTab[], messages: DevThinkMessage[], tabId: string): string {
-  const firstUser = messages.find((message) => message.role === "user" && (!message.tabId || message.tabId === tabId));
-  const named = firstUser ? deriveTitle("user", firstUser.body) : "";
-  if (named) return named;
-  return tabs.find((tab) => tab.id === tabId)?.label || "New chat";
-}
-
 function gatewayFromSearch(search: string): string | undefined {
   const configured = new URLSearchParams(search).get("gateway") || import.meta.env.VITE_DEVTHINK_GATEWAY_URL;
   return configured ? configured.replace(/\/$/, "") : undefined;
@@ -194,72 +160,28 @@ function routePath(route: RouteState, search: string): string {
   return `/w/${encodeURIComponent(route.workspaceId)}/s/${encodeURIComponent(route.sessionId)}/t/${encodeURIComponent(route.tabId)}/${encodeURIComponent(route.sectionId)}${search}`;
 }
 
-function formatTime(value: string): string {
-  const timestamp = new Date(value).getTime();
-  if (!Number.isFinite(timestamp)) return "local";
-  const seconds = Math.max(0, Math.floor((Date.now() - timestamp) / 1000));
-  return seconds < 60 ? "now" : `${Math.floor(seconds / 60)}m`;
-}
-
-function toUiSession(session: GatewaySession): { tabs: DevThinkTab[]; messages: DevThinkMessage[] } {
+/** one session tab of the HD (gateway or local record) to the shell shape */
+function toShellTab(tab: {
+  id: string;
+  sessionId: string;
+  workspaceId: string;
+  label: string;
+  provider?: string;
+  sectionId: string;
+  createdAt?: string;
+}): DevThinkTab {
   return {
-    tabs: session.tabs.map((tab) => ({
-      id: tab.id,
-      sessionId: tab.sessionId,
-      workspaceId: tab.workspaceId,
-      label: tab.label,
-      provider: tab.provider || "zai",
-      sectionId: tab.sectionId,
-      createdAt: tab.createdAt,
-      updatedAt: tab.updatedAt,
-    })),
-    messages: session.messages.map((message) => ({
-      id: message.id,
-      workspaceId: message.workspaceId,
-      sessionId: message.sessionId,
-      tabId: message.tabId,
-      sectionId: message.sectionId,
-      role: message.role,
-      title: deriveTitle(message.role, message.content),
-      body: message.content,
-      time: formatTime(message.createdAt),
-    })),
+    id: tab.id,
+    sessionId: tab.sessionId,
+    workspaceId: tab.workspaceId,
+    label: tab.label,
+    provider: tab.provider || "local",
+    sectionId: tab.sectionId,
+    createdAt: tab.createdAt,
   };
 }
 
-function toUiLocal(snapshot: Awaited<ReturnType<typeof loadBrowserSession>>): {
-  tabs: DevThinkTab[];
-  messages: DevThinkMessage[];
-} {
-  return {
-    tabs: snapshot.tabs.map((tab) => ({
-      id: tab.id,
-      sessionId: tab.sessionId,
-      workspaceId: tab.workspaceId,
-      label: tab.label,
-      provider: tab.provider || "zai",
-      sectionId: tab.sectionId,
-      createdAt: tab.createdAt,
-      updatedAt: tab.updatedAt,
-    })),
-    messages: snapshot.messages.map((message) => ({
-      id: message.id,
-      workspaceId: message.workspaceId,
-      sessionId: message.sessionId,
-      tabId: message.tabId,
-      sectionId: message.sectionId,
-      role: message.role,
-      title: deriveTitle(message.role, message.content),
-      body: message.content,
-      time: formatTime(message.createdAt),
-    })),
-  };
-}
-
-/** sseEvents now lives in the canonical root parser (sse.ts) —
- * the same frame shape, backed by the resilient incremental core. */
-
-export default function Panel() {
+export default function Panel({ familySlug }: { familySlug?: string }) {
   const [_location, setLocation] = useLocation();
   const [, params] = useRoute("/w/:workspaceId/s/:sessionId/t/:tabId/:sectionId");
   const configuredGateway = gatewayFromSearch(window.location.search);
@@ -274,6 +196,7 @@ export default function Panel() {
    * new identity every render and drag the hydration effect into an endless
    * refetch (the chat-bar bug the shell shipped with) */
   const deep = Boolean(params);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the optional params fields key the memo — the params object is a new identity per render and would re-mint the route every pass
   const route: RouteState = useMemo(
     () =>
       params
@@ -286,20 +209,8 @@ export default function Panel() {
         : fallbackRoute,
     [fallbackRoute, params?.sectionId, params?.sessionId, params?.tabId, params?.workspaceId],
   );
-  const [tabs, setTabs] = useState<DevThinkTab[]>(() => [
-    {
-      id: route.tabId,
-      workspaceId: route.workspaceId,
-      sessionId: route.sessionId,
-      label: "local session",
-      provider: "anthropic",
-      sectionId: route.sectionId,
-    },
-  ]);
-  const [selectedProvider, setSelectedProvider] = useState("anthropic");
-  const [messages, setMessages] = useState(initialMessages);
-  const [draft, setDraft] = useState("");
-  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [tabs, setTabs] = useState<DevThinkTab[]>([]);
+  const [draftPaletteOpen, setPaletteOpen] = useState(false);
   const [browserToken, setBrowserToken] = useState(() => window.sessionStorage.getItem("devthink.pair.token") || "");
   const [pairingId, setPairingId] = useState(() => invitation.get("pair") || "");
   const [pairingCode, setPairingCode] = useState(() => invitation.get("code")?.toUpperCase() || "");
@@ -312,10 +223,6 @@ export default function Panel() {
   const [pairedIdentity, setPairedIdentity] = useState<PairedIdentity>();
   const [booting, setBooting] = useState(() => shouldBoot());
   const [preferences, setPreferences] = useState<WorkbenchPreferences>(defaultPreferences);
-  const provider = useMemo(
-    () => providers.find((item) => item.id === selectedProvider) ?? providers[0],
-    [selectedProvider],
-  );
   const browserHeaders = useMemo(() => {
     const headers: Record<string, string> = {};
     if (browserToken) headers.authorization = `Bearer ${browserToken}`;
@@ -342,8 +249,9 @@ export default function Panel() {
     [query, route, setLocation],
   );
 
-  // the deep boot seal: a /w/… link enters, persists its ids and the bar
-  // seals on the clean desktop path — the ids rehydrate from the storage
+  // the deep boot seal: a /w/… link enters, persists its ids, seals the bar
+  // on the clean desktop path and — when the link targets the chat — parks
+  // the session id for the chat window handoff
   useEffect(() => {
     if (!deep) return;
     try {
@@ -351,6 +259,7 @@ export default function Panel() {
     } catch {
       // storage unavailable: the route lives for this mount only
     }
+    if (route.sectionId === "chat") writeChatHandoff(route.sessionId);
     window.history.replaceState(null, "", historypath("/panel"));
   }, [deep, route]);
 
@@ -358,7 +267,6 @@ export default function Panel() {
     const directRoutes: Partial<Record<WorkspaceDestination, string>> = {
       providers: "/providers",
       projects: "/projects",
-      routes: "/routes",
       usage: "/usage",
       settings: "/settings",
     };
@@ -470,8 +378,6 @@ export default function Panel() {
       .then(([identity, stored]) => {
         setPairingUserId((current) => current || identity.userId);
         setPreferences((current) => ({ ...current, ...stored }));
-        if (stored.activeProvider && providers.some((provider) => provider.id === stored.activeProvider))
-          setSelectedProvider(stored.activeProvider);
       })
       .catch(() => undefined);
   }, []);
@@ -498,7 +404,9 @@ export default function Panel() {
     void fetch(`${gatewayUrl}/preferences`, { headers: browserHeaders })
       .then(async (response) =>
         response.ok
-          ? (response.json() as Promise<{ preferences?: Partial<WorkbenchPreferences> }>)
+          ? (response.json() as Promise<{
+              preferences?: Partial<WorkbenchPreferences>;
+            }>)
           : Promise.reject(new Error("Preferences unavailable.")),
       )
       .then((result) => setPreferences((current) => ({ ...current, ...result.preferences })))
@@ -514,17 +422,17 @@ export default function Panel() {
     } catch {
       // storage unavailable: behave as if no deep link was parked
     }
-    if (!gatewayUrl) {
-      void ensureBrowserSession(fallbackRoute, { provider: selectedProvider, model: provider.model })
+    if (!gatewayUrl || !browserToken) {
+      void ensureBrowserSession(fallbackRoute)
+        .then((snapshot) => setTabs(snapshot.tabs.map(toShellTab)))
         .then(() => setLocation(routePath(fallbackRoute, query)))
         .catch(() => setLocation(routePath(fallbackRoute, query)));
       return;
     }
-    if (!browserToken) return;
     void fetch(`${gatewayUrl}/sessions`, {
       method: "POST",
       headers: { "content-type": "application/json", ...browserHeaders },
-      body: JSON.stringify({ mode: "chat", provider: selectedProvider, model: provider.model, sectionId: "chat" }),
+      body: JSON.stringify({ mode: "chat", sectionId: "chat" }),
     })
       .then(async (response) =>
         response.ok
@@ -534,7 +442,12 @@ export default function Panel() {
       .then((session) =>
         setLocation(
           routePath(
-            { workspaceId: session.workspaceId, sessionId: session.id, tabId: session.activeTabId, sectionId: "chat" },
+            {
+              workspaceId: session.workspaceId,
+              sessionId: session.id,
+              tabId: session.activeTabId,
+              sectionId: "chat",
+            },
             query,
           ),
         ),
@@ -543,75 +456,29 @@ export default function Panel() {
         setLocation(routePath(fallbackRoute, query));
         toast("Local route opened. Add a gateway URL to persist it through DevThink CLI.");
       });
-  }, [
-    browserHeaders,
-    browserToken,
-    deep,
-    fallbackRoute,
-    gatewayUrl,
-    provider.model,
-    query,
-    selectedProvider,
-    setLocation,
-  ]);
+  }, [browserHeaders, browserToken, deep, fallbackRoute, gatewayUrl, query, setLocation]);
 
-  useEffect(() => {
-    const active = tabs.find((tab) => tab.id === route.tabId);
-    if (active?.provider) setSelectedProvider(active.provider);
-  }, [route.tabId, tabs]);
-
+  // the deep hydration: the link session lands in the HD and the shell tabs
+  // ride the snapshot — the conversation itself belongs to the chat window,
+  // which consumes the handoff slot on its own mount. The memoized route
+  // object keys the effect: a new identity only when the route really moved.
   useEffect(() => {
     if (!deep) return;
-    if (!gatewayUrl || !browserToken) {
-      void ensureBrowserSession(route, { provider: selectedProvider, model: provider.model })
-        .then(() => loadBrowserSession(route.sessionId))
-        .then((snapshot) => {
-          const hydrated = toUiLocal(snapshot);
-          if (hydrated.tabs.length) setTabs(hydrated.tabs);
-          setMessages(hydrated.messages);
-          setPreferences((current) => ({ ...current, ...snapshot.preferences }));
-        })
-        .catch(() => undefined);
-      return;
-    }
+    void ensureBrowserSession(route)
+      .then((snapshot) => setTabs(snapshot.tabs.map(toShellTab)))
+      .catch(() => undefined);
+    if (!gatewayUrl || !browserToken) return;
     void fetch(`${gatewayUrl}/sessions/${encodeURIComponent(route.sessionId)}`, { headers: browserHeaders })
       .then(async (response) =>
         response.ok ? (response.json() as Promise<GatewaySession>) : Promise.reject(new Error("Session unavailable.")),
       )
       .then((session) => {
         if (session.workspaceId !== route.workspaceId) throw new Error("Route workspace does not match session.");
-        const hydrated = toUiSession(session);
-        setTabs(hydrated.tabs);
-        setMessages(hydrated.messages.length ? hydrated.messages : initialMessages);
+        setTabs(session.tabs.map(toShellTab));
         void cacheGatewaySession(session);
-        if (!hydrated.tabs.some((tab) => tab.id === route.tabId))
-          navigate({ tabId: session.activeTabId, sectionId: "chat" });
       })
-      .catch(() => {
-        void loadBrowserSession(route.sessionId)
-          .then((snapshot) => {
-            const hydrated = toUiLocal(snapshot);
-            if (hydrated.tabs.length) setTabs(hydrated.tabs);
-            setMessages(hydrated.messages);
-          })
-          .catch(() => undefined);
-        toast("Gateway session is unavailable; the browser-local snapshot remains available.");
-      });
-  }, [
-    browserHeaders,
-    browserToken,
-    deep,
-    gatewayUrl,
-    // navigate is stable per route/query change (useCallback), so its identity
-    // moving IS the signal that the route moved — no object keys here
-    navigate,
-    provider.model,
-    route.sectionId,
-    route.sessionId,
-    route.tabId,
-    route.workspaceId,
-    selectedProvider,
-  ]);
+      .catch(() => undefined);
+  }, [browserHeaders, browserToken, deep, gatewayUrl, route]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -625,217 +492,16 @@ export default function Panel() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
-  function newTab() {
-    const localId = stableId();
-    const apply = (tab: DevThinkTab) => {
-      setTabs((current) => [...current, tab]);
-      void saveBrowserTab(
-        {
-          workspaceId: route.workspaceId,
-          sessionId: route.sessionId,
-          tabId: tab.id,
-          sectionId: tab.sectionId || "chat",
-        },
-        { label: tab.label, provider: tab.provider, sectionId: tab.sectionId },
-      );
-      navigate({ tabId: tab.id, sectionId: tab.sectionId || "chat" });
-      toast("A clean local session has been opened.");
-    };
-    if (!gatewayUrl)
-      return apply({
-        id: localId,
-        workspaceId: route.workspaceId,
-        sessionId: route.sessionId,
-        label: "new route",
-        provider: selectedProvider,
-        sectionId: "chat",
-      });
-    if (!browserToken) return toast("Pair the local CLI before creating a persisted tab.");
-    void fetch(`${gatewayUrl}/sessions/${encodeURIComponent(route.sessionId)}/tabs`, {
-      method: "POST",
-      headers: { "content-type": "application/json", ...browserHeaders },
-      body: JSON.stringify({ label: "new route", provider: selectedProvider, sectionId: "chat" }),
-    })
-      .then(async (response) =>
-        response.ok ? (response.json() as Promise<GatewaySession>) : Promise.reject(new Error("Tab creation failed.")),
-      )
-      .then((session) => {
-        const tab = session.tabs.find((item) => item.id === session.activeTabId);
-        if (!tab) throw new Error("Created tab unavailable.");
-        apply({
-          id: tab.id,
-          workspaceId: tab.workspaceId,
-          sessionId: tab.sessionId,
-          label: tab.label,
-          provider: tab.provider || selectedProvider,
-          sectionId: tab.sectionId,
-        });
-      })
-      .catch(() =>
-        apply({
-          id: localId,
-          workspaceId: route.workspaceId,
-          sessionId: route.sessionId,
-          label: "new route",
-          provider: selectedProvider,
-          sectionId: "chat",
-        }),
-      );
-  }
-
-  function closeTab(id: string) {
-    void removeBrowserTab(id);
-    setTabs((current) => {
-      const next = current.filter((tab) => tab.id !== id);
-      if (id === route.tabId && next[0]) navigate({ tabId: next[0].id, sectionId: next[0].sectionId || "chat" });
-      return next.length ? next : current;
-    });
-  }
-
   function selectTab(id: string) {
-    const tab = tabs.find((item) => item.id === id);
-    if (!tab) return;
-    navigate({ tabId: tab.id, sectionId: tab.sectionId || "chat" });
-  }
-
-  async function sendMessage(event: FormEvent) {
-    event.preventDefault();
-    const prompt = draft.trim();
-    if (!prompt) return;
-    const userId = stableId();
-    const assistantId = stableId();
-    setMessages((current) => [
-      ...current,
-      {
-        id: userId,
-        workspaceId: route.workspaceId,
-        sessionId: route.sessionId,
-        tabId: route.tabId,
-        sectionId: route.sectionId,
-        role: "user",
-        title: deriveTitle("user", prompt),
-        body: prompt,
-        time: "now",
-      },
-      {
-        id: assistantId,
-        workspaceId: route.workspaceId,
-        sessionId: route.sessionId,
-        tabId: route.tabId,
-        sectionId: route.sectionId,
-        role: "assistant",
-        title: deriveTitle("assistant", ""),
-        body: gatewayUrl
-          ? "Connecting to the local DevThink gateway…"
-          : "Add a user-configured gateway URL to dispatch this request through the local DevThink CLI.",
-        time: "pending",
-      },
-    ]);
-    setDraft("");
-    if (!gatewayUrl || !browserToken) {
-      void saveBrowserMessages(route, [
-        { id: userId, role: "user", content: prompt },
-        {
-          id: assistantId,
-          role: "assistant",
-          content: "Add a user-configured gateway URL to dispatch this request through the local DevThink CLI.",
-        },
-      ]);
-      return toast(
-        "Request is staged in this browser. Pair the DevThink gateway to persist and stream it through the CLI.",
-      );
-    }
-    try {
-      const response = await fetch(`${gatewayUrl}/chat`, {
-        method: "POST",
-        headers: { "content-type": "application/json", ...browserHeaders },
-        body: JSON.stringify({
-          workspaceId: route.workspaceId,
-          sessionId: route.sessionId,
-          tabId: route.tabId,
-          sectionId: route.sectionId,
-          provider: selectedProvider,
-          model: provider.model,
-          messages: [{ role: "user", content: prompt }],
-        }),
-      });
-      if (!response.ok || !response.body) throw new Error("Gateway request failed.");
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let pending = "";
-      while (true) {
-        const next = await reader.read();
-        if (next.done) break;
-        pending += decoder.decode(next.value, { stream: true });
-        const boundary = pending.lastIndexOf("\n\n");
-        if (boundary < 0) continue;
-        const frames = sseEvents(pending.slice(0, boundary));
-        pending = pending.slice(boundary + 2);
-        for (const frame of frames) {
-          if (frame.type === "identity") {
-            const nextTabId = String(frame.data.tabId);
-            // the gateway re-ids the route mid-stream: the optimistic pair
-            // follows into the canonical tab, or the display filter would
-            // drop them the moment the URL moves
-            setMessages((current) =>
-              current.map((message) =>
-                message.id === userId || message.id === assistantId ? { ...message, tabId: nextTabId } : message,
-              ),
-            );
-            navigate({
-              workspaceId: String(frame.data.workspaceId),
-              sessionId: String(frame.data.sessionId),
-              tabId: nextTabId,
-              sectionId: String(frame.data.sectionId),
-            });
-          }
-          if (frame.type === "text")
-            setMessages((current) =>
-              current.map((message) => {
-                if (message.id !== assistantId) return message;
-                const body = `${message.body === "Connecting to the local DevThink gateway…" ? "" : message.body}${String(frame.data.text || "")}`;
-                return { ...message, body, title: deriveTitle("assistant", body), time: "live" };
-              }),
-            );
-          if (frame.type === "persisted")
-            setMessages((current) =>
-              current.map((message) =>
-                message.id === assistantId
-                  ? { ...message, id: String(frame.data.messageId || assistantId), time: "saved" }
-                  : message,
-              ),
-            );
-        }
-      }
-      const saved = await fetch(`${gatewayUrl}/sessions/${encodeURIComponent(route.sessionId)}`, {
-        headers: browserHeaders,
-      }).then((next) =>
-        next.ok ? (next.json() as Promise<GatewaySession>) : Promise.reject(new Error("Session cache unavailable.")),
-      );
-      await cacheGatewaySession(saved);
-      toast("Response persisted by the local DevThink gateway.");
-    } catch {
-      const failure =
-        "The local gateway could not complete this request. Verify the gateway URL, provider configuration, and the explicit provider credential.";
-      setMessages((current) =>
-        current.map((message) => (message.id === assistantId ? { ...message, body: failure, time: "error" } : message)),
-      );
-      void saveBrowserMessages(route, [
-        { id: userId, role: "user", content: prompt },
-        { id: assistantId, role: "assistant", content: failure },
-      ]);
-      toast("Gateway request was not completed.");
-    }
+    navigate({ tabId: id });
   }
 
   function handlePaletteAction(action: string) {
     setPaletteOpen(false);
-    if (action === "new") return newTab();
-    if (action === "console" || action === "gateway" || action === "os" || action === "docs" || action === "explore")
+    if (action === "console" || action === "gateway" || action === "docs" || action === "explore")
       return setLocation(`/${action}`);
     if (action === "history" || action === "settings") return openDestination(action);
-    if (action === "providers" || action === "projects" || action === "routes" || action === "usage")
-      return openDestination(action);
+    if (action === "providers" || action === "projects" || action === "usage") return openDestination(action);
     toast("Command is not available in this local workspace.");
   }
 
@@ -850,7 +516,6 @@ export default function Panel() {
 
   // the desktop opens directly: no identity lock, no tour — the local
   // identity resolved silently through browserIdentity() on mount
-  const activeSessionLabel = sessionLabel(tabs, messages, route.tabId);
   return (
     <div
       className="devthink-app devthink-app--terminal"
@@ -858,25 +523,15 @@ export default function Panel() {
       style={{ zoom: Number(preferences.interfaceZoom) / 100 }}
     >
       <ShellWorkspace
+        familySlug={familySlug}
         sectionId={route.sectionId}
-        routeLabel={activeSessionLabel}
-        sessionTitle={activeSessionLabel}
         userId={pairedIdentity?.userId}
-        provider={provider}
-        messages={messages.filter((message) => !message.tabId || message.tabId === route.tabId)}
         tabs={tabs}
         activeTabId={route.tabId}
-        draft={draft}
         paired={paired}
         railMode={preferences.railMode}
-        onDraftChange={setDraft}
-        onSend={sendMessage}
-        onCategory={(sectionId) => navigate({ sectionId })}
         onDestination={openDestination}
         onSelectTab={selectTab}
-        onCloseTab={closeTab}
-        onNewTab={newTab}
-        onOpenPalette={() => setPaletteOpen(true)}
         onNavigate={setLocation}
       />
       {route.sectionId === "settings" && (
@@ -898,7 +553,7 @@ export default function Panel() {
           onRevoke={revokeLocalGateway}
         />
       )}
-      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} onAction={handlePaletteAction} />
+      <CommandPalette open={draftPaletteOpen} onClose={() => setPaletteOpen(false)} onAction={handlePaletteAction} />
     </div>
   );
 }

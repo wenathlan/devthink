@@ -46,7 +46,7 @@ import {
   useState,
 } from "react";
 import { useLocation } from "wouter";
-import { type DesktopApp, seedOsView } from "../../appregistry.ts";
+import type { DesktopApp } from "../../appregistry.ts";
 import { familyurl } from "../../deploybase.ts";
 import {
   BAND_BOTTOM_PX,
@@ -56,7 +56,6 @@ import {
   clampNumber,
   clampSpot,
   clearIconSpots,
-  defaultSpots,
   fitSpot,
   flowLayoutSpots,
   type IconBounds,
@@ -74,39 +73,6 @@ import { useIsMobile } from "../../useismobile.ts";
 import { AppTile } from "../shell/apptile.tsx";
 import { DesktopMenu, type MenuEntry } from "./desktopmenu.tsx";
 import { SolLogoMark } from "./logo.tsx";
-
-/**
- * The spread composition: one hand-tuned spot per slot, laid out as arcs
- * around the hero — the right arc opens at eye level (the first app of the
- * catalog, Chat, lands there), a looser left arc mirrors it, a pair of
- * anchors sits above the mark and loose clusters fill the lower corners.
- * All spots are percentages of the desktop area, clear of the navbar band,
- * the hero zone and the dock strip. Pure data — the same apps always land
- * on the same spots, on every machine, on every load.
- */
-const DESKTOP_SPOTS: ReadonlyArray<{ x: number; y: number }> = [
-  { x: 72, y: 42 }, // right arc, eye level — the first catalog app
-  { x: 86, y: 30 },
-  { x: 78, y: 58 },
-  { x: 91, y: 46 },
-  { x: 67, y: 22 },
-  { x: 64, y: 32 },
-  { x: 85, y: 66 },
-  { x: 63, y: 66 },
-  { x: 92, y: 60 },
-  { x: 28, y: 40 }, // left arc, mirroring the right one
-  { x: 14, y: 30 },
-  { x: 22, y: 58 },
-  { x: 9, y: 48 },
-  { x: 33, y: 22 },
-  { x: 36, y: 32 },
-  { x: 17, y: 70 },
-  { x: 6, y: 22 },
-  { x: 46, y: 14 }, // anchors above the hero
-  { x: 57, y: 16 },
-  { x: 50, y: 74 }, // the lower clusters
-  { x: 37, y: 66 },
-];
 
 /** the pointer travel (px) that turns a press into a drag */
 const DRAG_THRESHOLD = 4;
@@ -140,7 +106,13 @@ function useReducedMotion(): boolean {
 type MenuState = { kind: "desktop"; x: number; y: number } | { kind: "cell"; appId: string; x: number; y: number };
 
 /** the live rubber band, in viewport coordinates, with the cells it covers */
-type MarqueeState = { x0: number; y0: number; x1: number; y1: number; hits: ReadonlySet<string> };
+type MarqueeState = {
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
+  hits: ReadonlySet<string>;
+};
 
 /** one icon drag in flight (the pointer capture lives on the cell) */
 type DragState = {
@@ -198,7 +170,10 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
   /** the live rubber band, if any */
   const [marquee, setMarquee] = useState<MarqueeState | null>(null);
   /** the measured pixel size of the desktop area (resize-aware) */
-  const [measured, setMeasured] = useState<{ width: number; height: number } | null>(null);
+  const [measured, setMeasured] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
   /** bumped by "Refresh" to remount the field and replay the stagger intro */
   const [refreshNonce, setRefreshNonce] = useState(0);
 
@@ -248,7 +223,11 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
    * the win11 ordered flow — sorted by kind then name, filling top to
    * bottom and wrapping to the next column on the snap lattice */
   const defaults = useMemo<IconSpotMap>(() => {
-    const sortable = apps.map((app) => ({ id: app.id, name: app.name, kind: app.target.kind }));
+    const sortable = apps.map((app) => ({
+      id: app.id,
+      name: app.name,
+      kind: app.target.kind,
+    }));
     return flowLayoutSpots(sortAppsByKind(sortable), bounds);
   }, [apps, bounds]);
 
@@ -305,7 +284,13 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
     // the icon follows the pointer live (clamped); the release snaps it
     const centerLeft = event.clientX - drag.grabX - rect.left;
     const centerTop = event.clientY - drag.grabY - rect.top;
-    const spot = clampSpot({ x: (centerLeft / rect.width) * 100, y: (centerTop / rect.height) * 100 }, currentBounds());
+    const spot = clampSpot(
+      {
+        x: (centerLeft / rect.width) * 100,
+        y: (centerTop / rect.height) * 100,
+      },
+      currentBounds(),
+    );
     event.currentTarget.style.left = `${spot.x}%`;
     event.currentTarget.style.top = `${spot.y}%`;
   };
@@ -363,7 +348,12 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
       event.preventDefault();
       const rect = event.currentTarget.getBoundingClientRect();
       if (!selection.has(app.id)) selectOnly(app.id);
-      setMenu({ kind: "cell", appId: app.id, x: rect.left + rect.width / 2, y: rect.bottom });
+      setMenu({
+        kind: "cell",
+        appId: app.id,
+        x: rect.left + rect.width / 2,
+        y: rect.bottom,
+      });
       return;
     }
     const delta =
@@ -407,7 +397,13 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
       desktopRect: desktopRef.current?.getBoundingClientRect() ?? null,
       hits: new Set<string>(),
     };
-    setMarquee({ x0: event.clientX, y0: event.clientY, x1: event.clientX, y1: event.clientY, hits: new Set() });
+    setMarquee({
+      x0: event.clientX,
+      y0: event.clientY,
+      x1: event.clientX,
+      y1: event.clientY,
+      hits: new Set(),
+    });
     event.currentTarget.setPointerCapture(event.pointerId);
   };
 
@@ -439,7 +435,13 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
       if (intersects) hits.add(id);
     });
     state.hits = hits;
-    setMarquee({ x0: state.x0, y0: state.y0, x1: event.clientX, y1: event.clientY, hits });
+    setMarquee({
+      x0: state.x0,
+      y0: state.y0,
+      x1: event.clientX,
+      y1: event.clientY,
+      hits,
+    });
   };
 
   const onDesktopPointerUp = (event: ReactPointerEvent<HTMLElement>) => {
@@ -473,26 +475,11 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
   };
 
   /** "Open in new window" — only the targets that answer a browser window */
-  const supportsNewWindow = (app: DesktopApp): boolean =>
-    app.target.kind === "route" || app.target.kind === "external" || app.target.kind === "os";
+  const supportsNewWindow = (app: DesktopApp): boolean => app.target.kind === "route" || app.target.kind === "external";
 
   const openInNewWindow = (app: DesktopApp) => {
     if (app.target.kind === "route") window.open(app.target.href, "_blank", "noopener,noreferrer");
     if (app.target.kind === "external") window.open(familyurl(app.target.slug), "_blank", "noopener,noreferrer");
-    /* an internal clone still carries its family site: the app id IS the slug */
-    if (app.target.kind === "os" && app.target.app)
-      window.open(familyurl(app.target.app), "_blank", "noopener,noreferrer");
-  };
-
-  /** "Open in OS": seeds the /os view with the app and navigates there */
-  const openInOs = (app: DesktopApp) => {
-    if (app.target.kind !== "os") return;
-    seedOsView(app.target.app);
-    if (onNavigate) {
-      onNavigate("/os");
-      return;
-    }
-    navigate("/os");
   };
 
   /** clears the storage and returns every icon to its original spot */
@@ -507,7 +494,11 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
       resetLayout();
       return;
     }
-    const sortable = apps.map((app) => ({ id: app.id, name: app.name, kind: app.target.kind }));
+    const sortable = apps.map((app) => ({
+      id: app.id,
+      name: app.name,
+      kind: app.target.kind,
+    }));
     const sorted = order === "name" ? sortAppsByName(sortable) : sortAppsByKind(sortable);
     commitOverrides(flowLayoutSpots(sorted, currentBounds()));
   };
@@ -554,7 +545,13 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
           onSelect: () => setIconSize("large"),
         },
         { kind: "sep", id: "view-sep" },
-        { kind: "item", id: "view-reset", label: "reset layout", icon: RotateCcw, onSelect: resetLayout },
+        {
+          kind: "item",
+          id: "view-reset",
+          label: "reset layout",
+          icon: RotateCcw,
+          onSelect: resetLayout,
+        },
       ],
     },
     {
@@ -563,8 +560,20 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
       label: "Sort by",
       icon: ArrowDownUp,
       items: [
-        { kind: "item", id: "sort-name", label: "name", icon: ArrowDownAZ, onSelect: () => applySort("name") },
-        { kind: "item", id: "sort-kind", label: "kind", icon: Shapes, onSelect: () => applySort("kind") },
+        {
+          kind: "item",
+          id: "sort-name",
+          label: "name",
+          icon: ArrowDownAZ,
+          onSelect: () => applySort("name"),
+        },
+        {
+          kind: "item",
+          id: "sort-kind",
+          label: "kind",
+          icon: Shapes,
+          onSelect: () => applySort("kind"),
+        },
         {
           kind: "item",
           id: "sort-original",
@@ -575,7 +584,14 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
       ],
     },
     { kind: "sep", id: "desktop-sep" },
-    { kind: "item", id: "refresh", label: "Refresh", icon: RotateCw, shortcut: "F5", onSelect: refreshLayout },
+    {
+      kind: "item",
+      id: "refresh",
+      label: "Refresh",
+      icon: RotateCw,
+      shortcut: "F5",
+      onSelect: refreshLayout,
+    },
     {
       kind: "item",
       id: "display-settings",
@@ -587,17 +603,14 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
 
   const cellMenuEntries = (app: DesktopApp): MenuEntry[] => {
     const entries: MenuEntry[] = [
-      { kind: "item", id: "open", label: "Open", icon: SquareArrowOutUpRight, onSelect: () => onOpen(app) },
-    ];
-    if (app.target.kind === "os") {
-      entries.push({
+      {
         kind: "item",
-        id: "open-os",
-        label: "Open in OS",
-        icon: LayoutGrid,
-        onSelect: () => openInOs(app),
-      });
-    }
+        id: "open",
+        label: "Open",
+        icon: SquareArrowOutUpRight,
+        onSelect: () => onOpen(app),
+      },
+    ];
     if (supportsNewWindow(app)) {
       entries.push({
         kind: "item",
@@ -609,7 +622,13 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
     }
     entries.push({ kind: "sep", id: "cell-sep" });
     entries.push({ kind: "label", id: "props-name", label: app.name });
-    entries.push({ kind: "item", id: "props-detail", label: app.detail, icon: Info, disabled: true });
+    entries.push({
+      kind: "item",
+      id: "props-detail",
+      label: app.detail,
+      icon: Info,
+      disabled: true,
+    });
     return entries;
   };
 

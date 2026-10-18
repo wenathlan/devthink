@@ -12,6 +12,7 @@
 import { useEffect } from "react";
 import { Route, Switch, useLocation } from "wouter";
 import { initautotranslate } from "../translatedom.ts";
+import { FAMILY_SLUGS } from "../window.ts";
 import AboutAnchor from "./about/about.tsx";
 import AudioAnchor from "./audio/audio.tsx";
 import AuthAnchor from "./auth/auth.tsx";
@@ -90,7 +91,7 @@ export default function Sol() {
         <Switch>
           <Route path="/" component={IntroAnchor} />
           <Route path="/onboarding" component={OnboardingAnchor} />
-          <Route path="/panel" component={PanelAnchor} />
+          <Route path="/panel" component={() => <PanelAnchor />} />
           <Route path="/auth" component={AuthAnchor} />
           <Route path="/chat" component={ChatAnchor} />
           <Route path="/video" component={() => <VideoAnchor />} />
@@ -111,7 +112,13 @@ export default function Sol() {
           <Route path="/about" component={AboutAnchor} />
           <Route path="/terms" component={TermsAnchor} />
           <Route path="/policy" component={PolicyAnchor} />
-          <Route path="/w/:workspaceId/s/:sessionId/t/:tabId/:sectionId" component={PanelAnchor} />
+          {/* the family routes: DevThink barra <app> — the address carries the
+              app's own subpath and the panel opens the power clip window of
+              that app on arrival (the windows law with its own URL) */}
+          {FAMILY_SLUGS.map((slug) => (
+            <Route key={slug} path={`/${slug}`} component={() => <PanelAnchor familySlug={slug} />} />
+          ))}
+          <Route path="/w/:workspaceId/s/:sessionId/t/:tabId/:sectionId" component={() => <PanelAnchor />} />
           <Route path="/404" component={NotFoundAnchor} />
           <Route component={NotFoundAnchor} />
         </Switch>

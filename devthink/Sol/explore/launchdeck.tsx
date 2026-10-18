@@ -9,13 +9,12 @@
  * the same rows the desktop grid, the Start menu and the launcher page read;
  * nothing is hardcoded here.
  *
- * Navigation contract (preserved from the shell):
- * - internal kinds navigate with the wouter router (`Link`, the `os` kind
- *   seeds the /os view first — the launcher page grammar);
- * - the external kind NEVER routes: family tiles are real anchors resolved
- *   through familyurl() of ../../deploybase.ts, and the field's submit
- *   hands an external match to window.location.assign() — exactly how the
- *   workspace and the jump list hand off today.
+ * Navigation contract (the windows law with its own address):
+ * - internal kinds navigate with the wouter router (`Link`);
+ * - the external kind rides its own route too: a family tile links to
+ *   /<slug> — DevThink barra <app> — and the panel opens the power clip
+ *   window of that app on arrival, so the family never leaves the DevThink
+ *   interface.
  *
  * The marks: every family tile carries ONE function motion (argan ripple,
  * cadria sway, debonair eq bars, forge ember, foundry tick, getry pulse,
@@ -28,8 +27,7 @@
 import { ArrowUpRight } from "lucide-react";
 import { type CSSProperties, type FormEvent, type ReactNode, useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
-import { familyurl } from "../../deploybase.ts";
-import { DESKTOP_APPS, type DesktopApp, isFamilyApp, seedOsView } from "../../appregistry.ts";
+import { DESKTOP_APPS, type DesktopApp, isFamilyApp } from "../../appregistry.ts";
 import { AppTile } from "../shell/apptile.tsx";
 import { HeroWaves } from "./waves.tsx";
 
@@ -275,7 +273,7 @@ export function OsSigil({ size = 20 }: { size?: number }) {
 
 /** the internal route of one registry app — every kind the registry
  * declares maps to a real page of this interface (the launcher grammar);
- * the external kind never reaches here (family cells anchor to familyurl) */
+ * the external kind rides the family route (DevThink barra <app>) */
 function appRoute(app: DesktopApp): string {
   switch (app.target.kind) {
     case "route":
@@ -284,8 +282,10 @@ function appRoute(app: DesktopApp): string {
       return `/${app.target.id}`;
     case "window":
       return app.target.id === "chat" ? "/chat" : "/history";
+    case "external":
+      return `/${app.target.slug}`;
     default:
-      return "/os";
+      return "/panel";
   }
 }
 
@@ -328,23 +328,8 @@ export function DeckCell({
   }`;
   const shadow = featured ? TRYLLE_CARD_SHADOW_RAISED : TRYLLE_CARD_SHADOW;
   const label = `${app.name} — ${app.detail}`;
-  if (app.target.kind === "external") {
-    return (
-      <a className={className} style={{ boxShadow: shadow }} href={familyurl(app.target.slug)} aria-label={label}>
-        {body}
-      </a>
-    );
-  }
   return (
-    <Link
-      className={className}
-      style={{ boxShadow: shadow }}
-      href={appRoute(app)}
-      aria-label={label}
-      onClick={() => {
-        if (app.target.kind === "os") seedOsView(app.target.app);
-      }}
-    >
+    <Link className={className} style={{ boxShadow: shadow }} href={appRoute(app)} aria-label={label}>
       {body}
     </Link>
   );
@@ -392,22 +377,8 @@ function NativeRow({ app, featured }: { app: DesktopApp; featured: boolean }) {
   );
   const linkClass =
     "group flex items-center gap-4 rounded-lg px-3 py-2.5 transition-colors duration-150 ease-micro hover:bg-s0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none";
-  if (app.target.kind === "external") {
-    return (
-      <a className={linkClass} href={familyurl(app.target.slug)} aria-label={label}>
-        {body}
-      </a>
-    );
-  }
   return (
-    <Link
-      className={linkClass}
-      href={appRoute(app)}
-      aria-label={label}
-      onClick={() => {
-        if (app.target.kind === "os") seedOsView(app.target.app);
-      }}
-    >
+    <Link className={linkClass} href={appRoute(app)} aria-label={label}>
       {body}
     </Link>
   );
@@ -420,7 +391,7 @@ function FamilyTile({ app, index, raised }: { app: DesktopApp; index: number; ra
   if (app.target.kind !== "external") return null;
   const tint = FAMILY_TINT[app.id] ?? FALLBACK_TINT;
   return (
-    <a
+    <Link
       className={`group relative flex h-full flex-col gap-2 overflow-hidden rounded-2xl p-8 ring-1 ring-hairline-strong transition-[background-color,box-shadow] duration-150 ease-micro hover:bg-s1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none ${
         raised ? "bg-s1" : "bg-s0"
       }`}
@@ -428,8 +399,8 @@ function FamilyTile({ app, index, raised }: { app: DesktopApp; index: number; ra
         boxShadow: raised ? TRYLLE_CARD_SHADOW_RAISED : TRYLLE_CARD_SHADOW,
         backgroundImage: `radial-gradient(150px 110px at 22% 14%, ${tint}24, transparent 70%)`,
       }}
-      href={familyurl(app.target.slug)}
-      aria-label={`${app.name} — ${app.detail} (opens the family site)`}
+      href={appRoute(app)}
+      aria-label={`${app.name} — ${app.detail}`}
     >
       <FamilyMark id={app.id} tint={tint} size={34} phase={index} />
       <span className="mt-auto pt-4 text-sm font-semibold tracking-[-0.01em] text-ink">{app.name}</span>
@@ -439,7 +410,7 @@ function FamilyTile({ app, index, raised }: { app: DesktopApp; index: number; ra
         size={14}
         aria-hidden="true"
       />
-    </a>
+    </Link>
   );
 }
 
@@ -477,16 +448,11 @@ export function LaunchDeck() {
   const raisedId = needle === "" && scope !== "native" && family.length === familyTotal ? "forge" : null;
 
   /** the field's embedded action: the first match opens through the shell's
-   * own contract (router inside, familyurl assign outside) */
+   * own contract — the router walks the app's route, family routes included */
   function openFirst(event: FormEvent) {
     event.preventDefault();
     const app = matches[0];
     if (!app) return;
-    if (app.target.kind === "external") {
-      window.location.assign(familyurl(app.target.slug));
-      return;
-    }
-    if (app.target.kind === "os") seedOsView(app.target.app);
     navigate(appRoute(app));
   }
 
@@ -527,7 +493,11 @@ export function LaunchDeck() {
         </form>
       </search>
 
-      <fieldset data-akash-beat className="flex flex-wrap items-center gap-2 pt-4" aria-label="Quick filters of the launcher">
+      <fieldset
+        data-akash-beat
+        className="flex flex-wrap items-center gap-2 pt-4"
+        aria-label="Quick filters of the launcher"
+      >
         {SCOPES.map((entry) => (
           <button
             key={entry.id}
@@ -575,7 +545,9 @@ export function LaunchDeck() {
             ))}
             {family.length === 0 && (
               <p className="py-6 font-mono text-xs text-ink-3">
-                {needle !== "" ? `no family app answers “${query}”.` : "the family grid rests — the native rail owns the stage."}
+                {needle !== ""
+                  ? `no family app answers “${query}”.`
+                  : "the family grid rests — the native rail owns the stage."}
               </p>
             )}
           </div>

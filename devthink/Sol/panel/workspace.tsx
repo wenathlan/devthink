@@ -1,85 +1,58 @@
 /**
  * workspace.tsx — the shell: the OS desktop of the creation panel. The
- * visitor lands on the desktop composition (the dark graphite wallpaper —
- * the CSS --wall-fallback recipe with the WebGL aurora wall over it, one
- * large radial light and the official DevThink mark as the hero at the
- * middle — and the shared app catalog spread around it as desktop icons)
- * and the session surfaces (tabs, categories, canvas, command rail, footer)
- * open as floating WindowFrames on demand — the chat window by clicking its
- * icon, history by clicking History. Windows are Windows-grade: the 30px
- * acrylic titlebar carries the single DevThink lockup (windowframe.tsx), the
- * snap layouts flyout and the aero edge gesture live on the WindowFrame, and
- * a minimized window keeps its dock entry lit with the data-minimized
- * dimmer until a click glides it back out. While any window is open the
- * wallpaper hero recedes (logo discipline: one brand voice per zone). The
- * shared chrome (Sol/shell/ShellChrome.tsx) carries the thin top navbar with
- * the Start button and the clean omnibox ("/" — the clean-url doctrine: the
- * shell navigates by internal state, never by a visible route); the dock
- * keeps the session, history and the family apps one click away. Every
- * session feature of the previous workbench is preserved one-to-one.
+ * visitor lands on the desktop composition (the clear trident gradient —
+ * the CSS --wall-fallback recipe — and the shared app catalog spread
+ * around the DevThink mark as desktop icons) and every app opens as a
+ * floating WindowFrame on demand. Windows are Windows-grade: the 30px
+ * acrylic titlebar carries the single DevThink lockup (windowframe.tsx),
+ * the snap layouts flyout and the aero edge gesture live on the
+ * WindowFrame, and a minimized window keeps its dock entry lit with the
+ * data-minimized dimmer until a click glides it back out. While any window
+ * is open the wallpaper hero recedes (logo discipline: one brand voice per
+ * zone). The shared chrome (Sol/shell/ShellChrome.tsx) carries the thin
+ * taskbar with the Start button; the dock keeps the session and the family
+ * apps one click away.
+ *
+ * The window bodies come from the window registry (Sol/windowregistry.tsx
+ * over the root window.ts catalog): the chat window mounts the same
+ * conversation body as the /chat page, and the family apps mount the power
+ * clip frame of their repository subpath. Two handoffs seed windows on
+ * arrival: a /<slug> family route opens its app window, and a deep
+ * /w/…/chat link parks its session id (chatstate handoff) which opens the
+ * chat window.
  */
 
-import {
-  Braces,
-  Bug,
-  Clock,
-  Command,
-  Layers,
-  NotebookText,
-  Play,
-  Recycle,
-  Sparkles,
-  SquareCheckBig,
-} from "lucide-react";
-import { type FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { Clock } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLocation } from "wouter";
 import { alttabkeydown } from "../../alttab.ts";
-import { DESKTOP_APPS, type DesktopApp, seedOsView } from "../../appregistry.ts";
-import type { DevThinkMessage, DevThinkProvider, DevThinkTab } from "../../paneltypes.ts";
+import { DESKTOP_APPS, type DesktopApp } from "../../appregistry.ts";
+import { readChatHandoff } from "../../chatstate.ts";
 import { pushrecentapp } from "../../recentapps.ts";
 import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspace.ts";
 import { type AltTabCard, AltTabSwitcher } from "../shell/alttabswitcher.tsx";
 import { ShellChrome } from "../shell/ShellChrome.tsx";
 import { windowApp } from "../windowregistry.tsx";
 import { DesktopSurface } from "./desktop.tsx";
-import { WorkspaceTabs } from "./tabs.tsx";
 import { WINDOW_MIN_HEIGHT, WindowFrame, type WindowSnapshot } from "./windowframe.tsx";
 
-/** the work categories with their lucide glyphs (i1: icons are components,
- * never unicode text) */
-const categories = [
-  ["features", Sparkles],
-  ["bugs", Bug],
-  ["refactor", Recycle],
-  ["snippets", Braces],
-  ["tasks", SquareCheckBig],
-  ["notes", NotebookText],
-  ["all", Layers],
-] as const;
-
-type TerminalCategory = (typeof categories)[number][0];
-
 type ShellWorkspaceProps = {
+  /** the family slug of a /<slug> arrival route — the window opens on mount */
+  familySlug?: string;
+  /** the route section: "history" opens the session history window */
   sectionId: string;
-  routeLabel: string;
-  /** the derived name of the active session — the chat window's titlebar */
-  sessionTitle: string;
   userId?: string | undefined;
-  provider: DevThinkProvider;
-  messages: DevThinkMessage[];
-  tabs: DevThinkTab[];
+  tabs: {
+    id: string;
+    label: string;
+    provider?: string;
+  }[];
   activeTabId: string;
-  draft: string;
   paired: boolean;
   railMode: "always" | "auto" | "off";
-  onDraftChange: (value: string) => void;
-  onSend: (event: FormEvent) => void;
-  onCategory: (category: TerminalCategory) => void;
   onDestination: (destination: WorkspaceDestination) => void;
   onSelectTab: (id: string) => void;
-  onCloseTab: (id: string) => void;
-  onNewTab: () => void;
-  onOpenPalette: () => void;
-  /** navigates any internal route of the theme (docs, explore, /os, …) */
+  /** navigates any internal route of the theme (the family routes, docs…) */
   onNavigate: (href: string) => void;
 };
 
@@ -94,14 +67,6 @@ const SHELL_BOTTOM = 48;
 /** resolves one registry app by id (the dock and the desktop share it) */
 function appById(id: string): DesktopApp {
   return DESKTOP_APPS.find((app) => app.id === id) || DESKTOP_APPS[0];
-}
-
-function messageLabel(message: DevThinkMessage): string {
-  return message.role === "assistant" ? "devthink" : message.role;
-}
-
-function destinationFrom(sectionId: string): WorkspaceDestination {
-  return isWorkspaceDestination(sectionId) ? sectionId : "chat";
 }
 
 /** default floating snapshot for a freshly opened window (the daedalOS
@@ -139,46 +104,26 @@ function loadWindows(): WindowSnapshot[] {
     const raw = window.localStorage.getItem(WINDOWS_STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw) as WindowSnapshot[];
-    return parsed.filter(
-      (win) => typeof win.id === "string" && win.id !== "" && (win.id === "chat" || windowApp(win.id) !== undefined),
-    );
+    return parsed.filter((win) => typeof win.id === "string" && win.id !== "" && windowApp(win.id) !== undefined);
   } catch {
     return [];
   }
 }
 
 export function ShellWorkspace({
+  familySlug,
   sectionId,
-  routeLabel,
-  sessionTitle,
   userId,
-  provider,
-  messages,
   tabs,
   activeTabId,
-  draft,
   paired,
   railMode,
-  onDraftChange,
-  onSend,
-  onCategory,
   onDestination,
   onSelectTab,
-  onCloseTab,
-  onNewTab,
-  onOpenPalette,
   onNavigate,
 }: ShellWorkspaceProps) {
-  const destination = destinationFrom(sectionId);
-  const active = categories.some(([id]) => id === sectionId) ? (sectionId as TerminalCategory) : "all";
-  const entries = messages.filter((message) => message.role !== "system");
-  const contextTitle =
-    destination === "history" ? "session history" : destination === "settings" ? "local settings" : active;
-  const contextMeta =
-    destination === "history"
-      ? `${tabs.length} open ${tabs.length === 1 ? "tab" : "tabs"} — ${entries.length} local entries`
-      : `${entries.length} ${entries.length === 1 ? "entry" : "entries"} — ${routeLabel}`;
-
+  const [location] = useLocation();
+  const destination: WorkspaceDestination = isWorkspaceDestination(sectionId) ? sectionId : "chat";
   /** the desktop boots with the persisted layout (empty on a fresh device) —
    * windows open on demand and the layout rides localStorage */
   const [windows, setWindows] = useState<WindowSnapshot[]>(() => loadWindows());
@@ -247,6 +192,17 @@ export function ShellWorkspace({
     },
     [applyWindows],
   );
+
+  /** the arrival handoffs, once per mount: a /<slug> family route opens its
+   * app window, a parked deep-link chat session opens the chat window (the
+   * chat body inside consumes the slot and hydrates the conversation). The
+   * arrival pass is a mount-only contract — later handoffs ride a fresh
+   * mount through the router. */
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the handoff is a one-shot mount effect
+  useEffect(() => {
+    if (familySlug && windowApp(familySlug)) toggleWindow(familySlug, appById(familySlug).name);
+    else if (readChatHandoff()) toggleWindow("chat", appById("chat").name);
+  }, []);
 
   /** destination windows: history opens its own floating window */
   useEffect(() => {
@@ -322,7 +278,7 @@ export function ShellWorkspace({
       // the open promotes the app to the Start menu recommended rail
       pushrecentapp(app.id);
       if (app.target.kind === "window") {
-        toggleWindow(app.target.id, app.target.id === "chat" ? sessionTitle : "session history");
+        toggleWindow(app.target.id, appById(app.target.id).name);
         return;
       }
       if (app.target.kind === "destination") {
@@ -345,15 +301,19 @@ export function ShellWorkspace({
         return;
       }
       if (app.target.kind === "external") {
-        // the family apps are windows of the os: the click opens the power
-        // clip frame with the real app riding its subpath inside
-        toggleWindow(app.target.slug, app.name);
+        // the windows law with its own address: the family app redirects to
+        // its repository subpath (DevThink barra <app>) and the arrival
+        // route opens the power clip window inside the os — already on the
+        // route, the click toggles the window in place instead
+        if (location === `/${app.target.slug}`) {
+          toggleWindow(app.target.slug, app.name);
+          return;
+        }
+        onNavigate(`/${app.target.slug}`);
         return;
       }
-      seedOsView(app.target.app);
-      onNavigate("/os");
     },
-    [onDestination, onNavigate, toggleWindow],
+    [location, onDestination, onNavigate, toggleWindow],
   );
 
   return (
@@ -373,125 +333,11 @@ export function ShellWorkspace({
             key={win.id}
             win={win}
             active={win.id === topId}
-            tabs={
-              win.id === "chat" ? (
-                <WorkspaceTabs
-                  tabs={tabs}
-                  activeTab={activeTabId}
-                  onSelect={onSelectTab}
-                  onClose={onCloseTab}
-                  onNew={onNewTab}
-                />
-              ) : undefined
-            }
             onFocus={focusWindow}
             onUpdate={updateWindow}
             onClose={closeWindow}
           >
-            {win.id === "chat" ? (
-              <>
-                <nav className="workspace-taskstrip" aria-label="Work categories">
-                  {categories.map(([id, CategoryIcon]) => (
-                    <button
-                      key={id}
-                      type="button"
-                      role="tab"
-                      aria-selected={active === id && destination === "chat"}
-                      className={active === id && destination === "chat" ? "is-active" : ""}
-                      onClick={() => onCategory(id)}
-                    >
-                      <CategoryIcon size={14} strokeWidth={1.75} aria-hidden="true" />
-                      {id}
-                    </button>
-                  ))}
-                  <button
-                    type="button"
-                    className="workspace-taskstrip__command"
-                    aria-label="Open the command palette"
-                    onClick={onOpenPalette}
-                  >
-                    <Command size={14} aria-hidden="true" />
-                    <span>commands</span>
-                  </button>
-                </nav>
-
-                <div className="terminal-context">
-                  <strong>{contextTitle}</strong>
-                  <span>{contextMeta}</span>
-                </div>
-
-                <section className="terminal-canvas" aria-live="polite">
-                  {destination === "history" && (
-                    <div className="terminal-history">
-                      <p>Open session tabs remain local to this workspace.</p>
-                      {tabs.map((tab) => (
-                        <button
-                          key={tab.id}
-                          type="button"
-                          onClick={() => onSelectTab(tab.id)}
-                          className={tab.id === activeTabId ? "is-active" : ""}
-                        >
-                          <Clock size={13} strokeWidth={1.75} aria-hidden="true" />
-                          <strong>{tab.label}</strong>
-                          <small>{tab.provider}</small>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                  {destination !== "history" && entries.length ? (
-                    <div className="terminal-entry-list">
-                      {entries.map((message) => (
-                        <article
-                          className={`terminal-stream-entry terminal-stream-entry--${message.role}`}
-                          key={message.id}
-                        >
-                          <div className="terminal-stream-entry__meta">
-                            <span>{messageLabel(message)}</span>
-                            <time>{message.time}</time>
-                          </div>
-                          <h1>{message.title}</h1>
-                          <p>{message.body}</p>
-                        </article>
-                      ))}
-                    </div>
-                  ) : (
-                    destination !== "history" && (
-                      <div className="terminal-empty">
-                        <p>Nothing is active yet.</p>
-                        <span>Describe the next feature, bug or piece of work below.</span>
-                      </div>
-                    )
-                  )}
-                </section>
-
-                <form className="terminal-command-rail" onSubmit={onSend}>
-                  <button
-                    className="terminal-command-rail__palette"
-                    type="button"
-                    onClick={onOpenPalette}
-                    aria-label="Open the command palette"
-                  >
-                    <Command size={15} aria-hidden="true" />
-                  </button>
-                  <span className="terminal-command-rail__prompt">&gt;_</span>
-                  <input
-                    value={draft}
-                    onChange={(event) => onDraftChange(event.target.value)}
-                    aria-label="DevThink command"
-                    placeholder={`Ask DevThink about ${destination === "chat" && active !== "all" ? `${active}…` : "the work…"}`}
-                  />
-                  <span className="terminal-command-rail__provider">{provider.label.toLowerCase()}</span>
-                  <button className="terminal-command-rail__run" type="submit" disabled={!draft.trim()}>
-                    <Play size={13} fill="currentColor" aria-hidden="true" />
-                    run
-                  </button>
-                </form>
-                <footer className="terminal-footer">
-                  <span>provider credentials stay in the local cli</span>
-                  <span>tabs — history — ctrl+K commands — enter run</span>
-                </footer>
-              </>
-            ) : win.id === "history" ? (
+            {win.id === "history" ? (
               <div className="terminal-history shell-history-window">
                 <p>Open session tabs remain local to this workspace.</p>
                 {tabs.map((tab) => (

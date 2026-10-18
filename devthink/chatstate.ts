@@ -92,9 +92,15 @@ export function userTurn(content: string): ChatTurn {
   return { id: `t-${Date.now()}-u`, role: "user", content, at: Date.now() };
 }
 
-export function newSession(first: ChatTurn): ChatSession {
+/**
+ * newSession — one fresh conversation; the explicit id carries a deep
+ * link's session (the /w/…/chat route hands its session over, so the
+ * stored conversation and the address id agree instead of minting a
+ * second identity the link can never find again).
+ */
+export function newSession(first: ChatTurn, id?: string): ChatSession {
   return {
-    id: `s-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    id: id || `s-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
     title: deriveTitle(first.content),
     messages: [first],
     at: Date.now(),
@@ -105,6 +111,41 @@ export function newSession(first: ChatTurn): ChatSession {
 export function upsertSession(sessions: ChatSession[], next: ChatSession, cap = SESSION_CAP): ChatSession[] {
   const rest = sessions.filter((s) => s.id !== next.id);
   return [{ ...next, at: Date.now() }, ...rest].slice(0, cap);
+}
+
+/* ------------------------------- handoff ------------------------------ */
+
+/**
+ * The deep-link handoff — the panel seals a /w/…/chat cold link on the
+ * clean desktop route and parks the link's session id here; the chat
+ * window consumes the slot once (open + db hydration) and clears it.
+ * sessionStorage: the handoff lives for the arrival visit only.
+ */
+export const CHAT_HANDOFF_KEY = "dt.chat.handoff";
+
+export function writeChatHandoff(sessionId: string): void {
+  try {
+    if (sessionId) window.sessionStorage.setItem(CHAT_HANDOFF_KEY, sessionId);
+    else window.sessionStorage.removeItem(CHAT_HANDOFF_KEY);
+  } catch {
+    /* storage unavailable: the handoff rides the mount only */
+  }
+}
+
+export function readChatHandoff(): string | null {
+  try {
+    return window.sessionStorage.getItem(CHAT_HANDOFF_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function clearChatHandoff(): void {
+  try {
+    window.sessionStorage.removeItem(CHAT_HANDOFF_KEY);
+  } catch {
+    /* storage unavailable: nothing to clear */
+  }
 }
 
 export function capTurns(messages: ChatTurn[], cap = TURN_CAP): ChatTurn[] {
@@ -183,7 +224,13 @@ export function guardlinefromverdict(verdict: { ok: boolean; value?: unknown }):
 export async function runTurn(
   history: ChatTurn[],
   system: string,
-  opts?: { base?: string; signal?: AbortSignal; model?: string; timeoutMs?: number; guard?: PromptGuard },
+  opts?: {
+    base?: string;
+    signal?: AbortSignal;
+    model?: string;
+    timeoutMs?: number;
+    guard?: PromptGuard;
+  },
 ): Promise<ChatTurn> {
   const apiMessages: GatewayMessage[] = [
     { role: "system", content: system },
@@ -242,7 +289,10 @@ export function useChatSessions() {
 /** fmtTime — hh:mm in the en-GB clock, tabular for the meta lines. */
 export function fmtTime(at: number): string {
   try {
-    return new Date(at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+    return new Date(at).toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   } catch {
     return "";
   }

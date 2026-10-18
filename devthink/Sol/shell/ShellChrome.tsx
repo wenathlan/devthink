@@ -43,8 +43,7 @@
 import { Lock, Search, Wifi, X } from "lucide-react";
 import { type CSSProperties, type RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
-import { DESKTOP_APPS, type DesktopApp, searchDesktopApps, seedOsView } from "../../appregistry.ts";
-import { familyurl } from "../../deploybase.ts";
+import { DESKTOP_APPS, type DesktopApp, searchDesktopApps } from "../../appregistry.ts";
 import { loadrecentapps, pushrecentapp } from "../../recentapps.ts";
 import { SolLogoMark } from "../panel/logo.tsx";
 import { AppTile } from "./apptile.tsx";
@@ -109,8 +108,15 @@ type ShellChromeProps = {
  * Windows tray clock (tabular numerals) */
 function formatClock(date: Date): { time: string; date: string } {
   return {
-    time: new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit" }).format(date),
-    date: new Intl.DateTimeFormat(undefined, { day: "2-digit", month: "2-digit", year: "numeric" }).format(date),
+    time: new Intl.DateTimeFormat(undefined, {
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(date),
+    date: new Intl.DateTimeFormat(undefined, {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }).format(date),
   };
 }
 
@@ -271,11 +277,6 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
     };
   }, [closePanel, openPanel]);
 
-  // opening the Start menu focuses the search box
-  useEffect(() => {
-    if (openPanel?.kind === "start") searchRef.current?.focus();
-  }, [openPanel]);
-
   // the exit timer never outlives the chrome
   useEffect(
     () => () => {
@@ -330,8 +331,9 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
       : location === href || location.startsWith(`${href}/`);
 
   /** launches one app from the Start menu, taskbar or jump list: the desktop
-   * opens it in place, the family deploy units load in full, every other page
-   * navigates to the surface that owns it */
+   * opens it in place, the family deploy units ride their own route (the os
+   * opens their power clip window on arrival), every other page navigates to
+   * the surface that owns it */
   function openApp(app: DesktopApp) {
     closePanel();
     setQuery("");
@@ -346,12 +348,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
       return;
     }
     if (app.target.kind === "external") {
-      window.location.assign(familyurl(app.target.slug));
-      return;
-    }
-    if (app.target.kind === "os") {
-      seedOsView(app.target.app);
-      navigate("/os");
+      navigate(`/${app.target.slug}`);
       return;
     }
     navigate("/panel");
@@ -411,12 +408,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
             {taskbarPins.map((app) => {
               // route pins ride the location, window pins ride the live
               // desktop window state (openApps) — external pins never light
-              const active =
-                app.target.kind === "route"
-                  ? isActive(app.target.href)
-                  : app.target.kind === "os"
-                    ? location === "/os" || location.startsWith("/os/")
-                    : false;
+              const active = app.target.kind === "route" ? isActive(app.target.href) : false;
               const open = active || openApps.includes(app.id);
               return (
                 <button
@@ -432,7 +424,12 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
                   onClick={() => openApp(app)}
                   onContextMenu={(event) => {
                     event.preventDefault();
-                    togglePanel({ kind: "jump", app, x: event.clientX, y: event.clientY });
+                    togglePanel({
+                      kind: "jump",
+                      app,
+                      x: event.clientX,
+                      y: event.clientY,
+                    });
                   }}
                 >
                   <span className={BAR_FACE_CLASS}>
@@ -635,7 +632,13 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
         <div
           className="tray-night-overlay"
           aria-hidden="true"
-          style={{ position: "fixed", inset: 0, zIndex: 55, background: "rgb(255 176 46 / 6%)", pointerEvents: "none" }}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 55,
+            background: "rgb(255 176 46 / 6%)",
+            pointerEvents: "none",
+          }}
         />
       )}
       {dim > 0 && (

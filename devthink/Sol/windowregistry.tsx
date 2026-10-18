@@ -13,6 +13,7 @@ import type { ComponentType } from "react";
 import { type WindowEntry, windowcatalog } from "../window.ts";
 import Audio from "./audio/audio.tsx";
 import Calculator from "./calculator/calculator.tsx";
+import ChatBody from "./chat/chatbody.tsx";
 import Console from "./console/console.tsx";
 import Docs from "./docs/docs.tsx";
 import Games from "./games/games.tsx";
@@ -32,6 +33,7 @@ export type WindowApp = {
 
 /** the anchor components of the catalog, by app id */
 const ANCHORS: Record<string, ComponentType<{ embedded?: boolean }>> = {
+  chat: ChatBody,
   calculator: Calculator,
   docs: Docs,
   image: Image,
@@ -50,6 +52,7 @@ const ANCHORS: Record<string, ComponentType<{ embedded?: boolean }>> = {
 const DEFAULT_SPAWN = { width: 900, height: 640 };
 const SPAWN_OVERRIDES: Record<string, { width: number; height: number }> = {
   calculator: { width: 520, height: 660 },
+  chat: { width: 1040, height: 720 },
   docs: { width: 980, height: 680 },
   console: { width: 980, height: 680 },
   settings: { width: 960, height: 680 },
@@ -67,7 +70,10 @@ function spawnof(id: string): { width: number; height: number } {
 function bindentry(id: string, entry: WindowEntry): WindowApp {
   if (entry.kind === "family") {
     const slug = entry.slug ?? id;
-    return { component: () => <FamilyFrame slug={slug} title={slug} />, spawn: spawnof(id) };
+    return {
+      component: () => <FamilyFrame slug={slug} title={slug} />,
+      spawn: spawnof(id),
+    };
   }
   const anchor = ANCHORS[id];
   if (!anchor) {

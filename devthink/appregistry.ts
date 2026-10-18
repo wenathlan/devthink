@@ -21,8 +21,6 @@ import {
   FolderKanban,
   Hammer,
   Image,
-  Monitor,
-  Network,
   PlugZap,
   Settings2,
   Shield,
@@ -36,7 +34,6 @@ export type DesktopAppTarget =
   | { kind: "window"; id: "chat" | "history" }
   | { kind: "destination"; id: string }
   | { kind: "route"; href: string }
-  | { kind: "os"; app?: string }
   | { kind: "external"; slug: string };
 
 export type DesktopApp = {
@@ -55,23 +52,6 @@ export type DesktopApp = {
   pinned: boolean;
   target: DesktopAppTarget;
 };
-
-/** The localStorage key of the os view (Sol/os/usestoredstate contract). */
-const OS_VIEW_KEY = "dt-os-view-v1";
-
-/**
- * seeds the stored os view so /os opens straight on the family app.
- *
- * @param app the os app id (Argan, Cadria, Debonair, Stealthhead).
- */
-export function seedOsView(app?: string): void {
-  if (!app) return;
-  try {
-    window.localStorage.setItem(OS_VIEW_KEY, JSON.stringify({ app, page: "home" }));
-  } catch {
-    /* storage unavailable: /os opens on its last view */
-  }
-}
 
 /** The desktop apps: the platform surfaces first, then the marketing family. */
 export const DESKTOP_APPS: DesktopApp[] = [
@@ -221,7 +201,7 @@ export const DESKTOP_APPS: DesktopApp[] = [
     icon: Shield,
     iconset: "argan",
     pinned: true,
-    target: { kind: "os", app: "argan" },
+    target: { kind: "external", slug: "argan" },
   },
   {
     id: "cadria",
@@ -231,7 +211,7 @@ export const DESKTOP_APPS: DesktopApp[] = [
     icon: Clapperboard,
     iconset: "cadria",
     pinned: true,
-    target: { kind: "os", app: "cadria" },
+    target: { kind: "external", slug: "cadria" },
   },
   {
     id: "debonair",
@@ -241,7 +221,7 @@ export const DESKTOP_APPS: DesktopApp[] = [
     icon: AudioLines,
     iconset: "debonair",
     pinned: true,
-    target: { kind: "os", app: "debonair" },
+    target: { kind: "external", slug: "debonair" },
   },
   {
     id: "stealthhead",
@@ -261,7 +241,7 @@ export const DESKTOP_APPS: DesktopApp[] = [
     icon: Hammer,
     iconset: "forge",
     pinned: true,
-    target: { kind: "os", app: "forge" },
+    target: { kind: "external", slug: "forge" },
   },
   {
     id: "foundry",
@@ -271,7 +251,7 @@ export const DESKTOP_APPS: DesktopApp[] = [
     icon: Factory,
     iconset: "foundry",
     pinned: true,
-    target: { kind: "os", app: "foundry" },
+    target: { kind: "external", slug: "foundry" },
   },
   {
     id: "vault",
@@ -281,7 +261,7 @@ export const DESKTOP_APPS: DesktopApp[] = [
     icon: Vault,
     iconset: "vault",
     pinned: true,
-    target: { kind: "os", app: "vault" },
+    target: { kind: "external", slug: "vault" },
   },
   {
     id: "getry",
@@ -291,7 +271,7 @@ export const DESKTOP_APPS: DesktopApp[] = [
     icon: Boxes,
     iconset: "getry",
     pinned: true,
-    target: { kind: "os", app: "getry" },
+    target: { kind: "external", slug: "getry" },
   },
   {
     id: "saddle",
@@ -308,9 +288,9 @@ export const DESKTOP_APPS: DesktopApp[] = [
 /** The apps pinned to the Start menu grid, in catalog order. */
 export const PINNED_APPS: DesktopApp[] = DESKTOP_APPS.filter((app) => app.pinned);
 
-/** The family identity set: every app of the DevThink family, whether it
- * opens as an internal clone of the OS surface or redirects to the real
- * external site through the familyurl contract. */
+/** The family identity set: every app of the DevThink family — each opens
+ * as a window of the os riding its repository subpath inside (the power
+ * clip), and the app id IS the deploy unit slug. */
 export const FAMILY_APP_IDS: ReadonlySet<string> = new Set([
   "argan",
   "cadria",
