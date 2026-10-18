@@ -131,7 +131,11 @@ jobs:
         run: |
           set -euo pipefail
           pnpm --dir "${{ matrix.app }}" install --frozen-lockfile
-          VITE_BASE_PATH="./" pnpm --dir "${{ matrix.app }}" run build
+          # the family theme answers under its own subpath of the project
+          # pages site: the absolute base declares the mount to the vite
+          # build and to the wouter router (a relative base leaves the
+          # router baseless and every subroute falls to the 404 catch-all)
+          VITE_BASE_PATH="/${{ github.event.repository.name }}/${{ matrix.app }}/" pnpm --dir "${{ matrix.app }}" run build
           test -f "${{ matrix.app }}/index.html"
           test -n "$(ls "${{ matrix.app }}"/*.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at the application root"; exit 1; }
       - name: Install and build the theme (npm leg)
@@ -141,7 +145,9 @@ jobs:
         run: |
           set -euo pipefail
           npm --prefix saddle ci
-          VITE_BASE_PATH="./" npm --prefix saddle run web:build:pages
+          # the same subpath declaration of the pnpm leg: the base declares
+          # the mount the router serves under
+          VITE_BASE_PATH="/${{ github.event.repository.name }}/saddle/" npm --prefix saddle run web:build:pages
           test -f saddle/index.html
           test -n "$(ls saddle/*.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at the application root"; exit 1; }
       - name: Prepare the SPA fallback page
