@@ -12,6 +12,7 @@ import {
   seedCoreModules,
   seedFamilySites,
   seedMediaSlots,
+  seedOsAppLabels,
   seedPlatformApps,
   seedPolicySections,
   seedPrinciples,
@@ -61,6 +62,16 @@ export type AppIcon = {
 };
 export type AppIconSet = { app: string; story: string; depth: string; motion: string };
 
+export type OsAppLabel = {
+  id: string;
+  /** display label under the icon */
+  name: string;
+  /** one-line description for the start menu */
+  detail: string;
+  /** shows in the Start menu pinned grid */
+  pinned: boolean;
+};
+
 type CatalogKind =
   | "family.sites"
   | "family.recipes"
@@ -100,6 +111,16 @@ async function catalogRows<T>(kind: CatalogKind, seeds: T[]): Promise<T[]> {
     /* the database endpoint is optional; the seeds answer the static build */
   }
   cache.set(kind, rows);
+  return rows;
+}
+
+/** the os app label table: the registry info by app id — synchronous on
+ * purpose (the desktop grid and the start menu read it at mount; the
+ * paired endpoint refresh lands with the database wave, the seeds are
+ * the offline answer of the static build) */
+export function osAppLabels(): Record<string, OsAppLabel> {
+  const rows: Record<string, OsAppLabel> = {};
+  for (const row of seedOsAppLabels) rows[row.id] = row;
   return rows;
 }
 

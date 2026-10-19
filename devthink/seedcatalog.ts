@@ -4,6 +4,7 @@
  * so the module direction stays one way at runtime (catalog.ts imports these values, never the reverse). */
 import type {
   AboutBlock,
+  OsAppLabel,
   AppIcon,
   AppIconSet,
   CoreModule,
@@ -148,6 +149,150 @@ export const seedPlatformApps: NativeApp[] = [
     owner: "saddle",
     route: "/games",
     blurb: "The native runner that boots the competitor executables by itself through the saddle engine boundary.",
+  },
+];
+
+/** the os app labels: the reviewed seed rows of the registry info (the
+ * offline answer of the database; the paired endpoint serves the same
+ * shape over HTTPS when it lands) */
+export const seedOsAppLabels: OsAppLabel[] = [
+  {
+    id: "chat",
+    name: "Chat",
+    detail: "The assistant of the OS",
+    pinned: true,
+  },
+  {
+    id: "history",
+    name: "History",
+    detail: "Open local session tabs",
+    pinned: true,
+  },
+  {
+    id: "projects",
+    name: "Projects",
+    detail: "Local workspace records",
+    pinned: true,
+  },
+  {
+    id: "console",
+    name: "Console",
+    detail: "The canonical design of the CLI",
+    pinned: true,
+  },
+  {
+    id: "calculator",
+    name: "Calculator",
+    detail: "The native arithmetic app of the OS",
+    pinned: true,
+  },
+  {
+    id: "image",
+    name: "Image",
+    detail: "The native image studio on the cadria engine",
+    pinned: true,
+  },
+  {
+    id: "video",
+    name: "Video",
+    detail: "The native video editor on the versawase engine",
+    pinned: true,
+  },
+  {
+    id: "audio",
+    name: "Audio",
+    detail: "The native audio studio on the debonair engine",
+    pinned: true,
+  },
+  {
+    id: "games",
+    name: "Games",
+    detail: "The native games shelf of the OS",
+    pinned: true,
+  },
+  {
+    id: "gateway",
+    name: "Gateway",
+    detail: "The embedded local gateway console",
+    pinned: true,
+  },
+  {
+    id: "providers",
+    name: "Providers",
+    detail: "Provider and model choices",
+    pinned: false,
+  },
+  {
+    id: "usage",
+    name: "Usage",
+    detail: "Compact local usage records",
+    pinned: false,
+  },
+  {
+    id: "docs",
+    name: "Docs",
+    detail: "The documentation library",
+    pinned: true,
+  },
+  {
+    id: "settings",
+    name: "Settings",
+    detail: "Pairing and local preferences",
+    pinned: true,
+  },
+  {
+    id: "argan",
+    name: "Argan",
+    detail: "DNS and gateway library of the OS",
+    pinned: true,
+  },
+  {
+    id: "cadria",
+    name: "Cadria",
+    detail: "Video, image and 3D studio",
+    pinned: true,
+  },
+  {
+    id: "debonair",
+    name: "Debonair",
+    detail: "The OS audio DAW",
+    pinned: true,
+  },
+  {
+    id: "stealthhead",
+    name: "Stealthhead",
+    detail: "The OS FPS platform",
+    pinned: true,
+  },
+  {
+    id: "forge",
+    name: "Forge",
+    detail: "The sandbox runners",
+    pinned: true,
+  },
+  {
+    id: "foundry",
+    name: "Foundry",
+    detail: "Run and keep",
+    pinned: true,
+  },
+  {
+    id: "vault",
+    name: "Vault",
+    detail: "The family vault — the storage reserve",
+    pinned: true,
+  },
+  {
+    id: "getry",
+    name: "Getry",
+    detail: "The family AI gateway",
+    pinned: true,
+  },
+  {
+    id: "saddle",
+    name: "Saddle",
+    detail: "The sandbox engine",
+    pinned: true,
   },
 ];
 
