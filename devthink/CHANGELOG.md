@@ -1,5 +1,14 @@
 # DevThink release notes
 
+## 2.0.118
+
+This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (2.0.117 plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: - "@wenathlan/saddle": "2.1.6",
+- "@wenathlan/saddle": "^2.1.6",
+- "streamdown": "^2.7.0",
+- "streamdown": "^2.7.1",
+- uses: trufflesecurity/trufflehog@v3.99.2
+- uses: trufflesecurity/trufflehog@v3.99.3. The version stamps 2.0.118 land across the metadata family with the apifreeze artifact re-frozen and the permission baseline recorded, and the ladder keeps no long-lived branch behind: the automation branch of this rung squashes onto main when the verification pipeline answers green — and closes with its branch deleted when it answers red — so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way.
+
 ## 2.0.117 — the os answers the windows grammar end to end and the family assets ride the release
 
 ### Added
