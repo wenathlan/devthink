@@ -1,5 +1,34 @@
 # DevThink release notes
 
+## 2.0.117 — the os answers the windows grammar end to end and the family assets ride the release
+
+### Added
+
+| Area | Change |
+| --- | --- |
+| The sign-in sequence | The authentication face answers the real windows grammar: the clock rides high on the lock landscape, the sign-in column floats on the dimmed blurred wash with no card around it, the password row is one dark well (flat, r4, the bottom hairline with the 2px accent underline on focus) carrying the reveal eye and the arrow submit inside it, the sign-in options open the cli pairing, and the live network status with the power flyout ride the corner of both faces. |
+| The gateway window | The gateway console learns the embedded contract of the windows law: the anchor answers embedded (no ShellChrome, no viewport floor, the version detail opens through local state inside the window) and the desktop binds the row — the gateway joins the window catalog with its own spawn. |
+| The label database | The app labels leave the registry for the catalog database: the twenty-three name/detail/pin literals ride the seedOsAppLabels rows (the offline answer of the static build, the same shape the paired endpoint serves over HTTPS when it lands) and the registry answers bindings only — the glyph, the tint and the open target. |
+| The provider windows | The providers app joins the window catalog — every desktop app now opens inside a floating window of the os. |
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The identity law | The banned indigo dies across the whole stylesheet: the trident fusion kit drops the purple→blue gradient and the #4f46e5 signal for the flat windows light accent #0067c0 (the #1069ce hover step), and every sol app takes its own registry tint on the marks, the pills and the content CTAs only — calculator graphite, games coral, image violet, audio brass, video magenta, usage sage, providers lime, projects teal, history bronze, settings slate, console green, gateway bronze — each paired with dark slate ink for the contrast gate. |
+| The touch and focus law | Every interactive control of the thirty-six subapps answers the 44px target with the press scale and the visible slate focus ring; the inputs speak the spec well grammar (flat well, bottom hairline, 2px accent underline on focus) and the h1 titles bind the catalog label rows with the bare-id fallback. |
+| The chat flagship | The composer climbs to the win11 control grade (the flat 44px well, the send key on the windows accent) and the edit field takes its focus through the ref effect the a11y law demands; the cascading checkpoint branch (the original stays intact, the ladder carries forward, the newest edit prevails) answers end to end over the live gateway. |
+| The console terminal | The terminal returns to the dark log pane its contract always described — the green prompt and caret on the #1e1e1e pane inside the light window body — and the boot graph repaints for the light card it actually renders on. |
+
+### Fixed
+
+| Area | Change |
+| --- | --- |
+| The deep links | The router base stops eating deep links under root hosting: a base of / answered the boot pathname as a folder prefix, so /auth rendered the intro instead of the auth page — the absolute root keeps the base empty while relative hosting keeps the folder-prefix law. |
+| The window registry file | Sol/windowregistry.tsx dies for good — the spawn geometry rides window.ts beside the catalog (windowspawn answers the default and the per-app overrides) and the component binding folds into the workspace, the only consumer that ever read it. |
+| The workflow ladder | The four red lanes go green: the doccheck fences declare their language, the seven family envelopes drop the private flag the registry lanes refuse (EPRIVATE), the saddle tagchunks scan continues past every void element (the author meta answers again, 414 of 414), and the dependency ladder stamps the november stable pair (postcss 8.5.31, react-resizable-panels 4.14.6). |
+| The release sweep | The release assets lane waits for the nextzips lane — the family web and next archives raced the sweep before, so the release answered the devthink core set alone; the sweep now carries the one hundred archive files of the ten apps plus the family envelopes. |
+
 ## 2.0.98 — the one intro plays everywhere and the taskbar takes the bottom edge
 
 ### Added
