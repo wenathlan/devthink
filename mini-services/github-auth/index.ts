@@ -16,7 +16,11 @@ import { Database } from "bun:sqlite";
 
 const PORT = 3030;
 const CLIENT_ID = "178c6fc778ccc68e1d6a";
-const SCOPE = "repo read:org";
+// the workflow scope rides the request: the repository protection refuses
+// every workflow-file push a repo-only token attempts (GH013), and the
+// release assembly repair needs exactly that push — the owner authorizes
+// once and the stored token carries it
+const SCOPE = "repo read:org workflow";
 const CODE_ENDPOINT = "https://github.com/login/device/code";
 const TOKEN_ENDPOINT = "https://github.com/login/oauth/access_token";
 const USER_ENDPOINT = "https://api.github.com/user";
