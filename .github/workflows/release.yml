@@ -282,7 +282,7 @@ jobs:
         with:
           node-version-file: devthink/.nvmrc
       - name: Install the locked dependencies
-        run: cd devthink && bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: Build the publishing pipeline artifacts
         # the repo's own generator: every dist target (the library bundles,
         # the extension surface, the static site, the flat distpackage

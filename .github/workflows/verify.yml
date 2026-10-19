@@ -87,7 +87,7 @@ jobs:
           npm install --global "npm@${npm_version}"
           test "$(npm --version)" = "$npm_version"
       - name: Install root dependencies
-        run: cd devthink && bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: Build the root distribution before the deterministic suite
         run: cd devthink && node tests/build.mjs
       - name: Run the accessibility sweep over the built tree
@@ -339,7 +339,7 @@ jobs:
         with:
           node-version-file: devthink/.nvmrc
       - name: Install root dependencies
-        run: cd devthink && bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: Build the root distribution
         run: cd devthink && node tests/build.mjs
       - name: Run the accessibility sweep over the built tree
@@ -443,7 +443,7 @@ jobs:
         with:
           node-version-file: devthink/.nvmrc
       - name: Install root dependencies
-        run: cd devthink && bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: Build the root distribution
         run: cd devthink && node tests/build.mjs
       - name: Pack the distribution tarball into a temporary directory

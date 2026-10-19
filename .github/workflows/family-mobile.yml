@@ -99,7 +99,7 @@ jobs:
         run: sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
       - name: install the dependencies (bun leg)
         if: matrix.pm == 'bun'
-        run: cd "${{ matrix.app }}" && bun install --frozen-lockfile
+        run: cd "${{ matrix.app }}" && bun install --frozen-lockfile --ignore-scripts
       - name: install the dependencies (pnpm leg)
         if: matrix.pm == 'pnpm'
         run: pnpm --dir "${{ matrix.app }}" install --frozen-lockfile
@@ -368,7 +368,7 @@ jobs:
           version: 12.8.1
       - name: install the dependencies (bun leg)
         if: matrix.pm == 'bun'
-        run: cd "${{ matrix.app }}" && bun install --frozen-lockfile
+        run: cd "${{ matrix.app }}" && bun install --frozen-lockfile --ignore-scripts
       - name: install the dependencies (pnpm leg)
         if: matrix.pm == 'pnpm'
         run: pnpm --dir "${{ matrix.app }}" install --frozen-lockfile
