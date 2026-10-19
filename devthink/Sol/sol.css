@@ -486,6 +486,7 @@
   --win-accent: #0067c0;
   --win-accent-ink: #fefefe;
   --color-win: #0067c0;
+  --color-win-ink: #fefefe;
   /* the retired amber resolves to the light system accent (the win10 blend) */
   --color-sun: var(--color-win);
   --color-sun-ink: #fefefe;
