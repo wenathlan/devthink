@@ -208,10 +208,16 @@ jobs:
         # package.json carries no scripts at all): the step answers from
         # the application root the way the metadata sync beside it does —
         # the root leg answered "Script not found apifreeze:sync" and the
-        # Monday window died red before any rung ever proposed.
+        # Monday window died red before any rung ever proposed. The freeze
+        # reads the schemas and caps the BUILD emits (dist/schemas/*.json,
+        # dist/caps/*), so the build rides inside the step before the sync
+        # — the dispatch leg answered ENOENT on observation.schema.json
+        # and the rung died before the PR ever opened because no artifact
+        # existed between the install and the freeze.
         run: |
           set -euo pipefail
           cd devthink
+          node tests/build.mjs
           bun run apifreeze:sync
           bun run permdiff:sync
       - name: Validate with the proposed Node version
