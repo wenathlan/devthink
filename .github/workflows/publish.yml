@@ -171,7 +171,7 @@ jobs:
       # the package validator, inlined from the retired composite action
       # (dependency install plus the pack dry-run).
       - name: install dependencies
-        run: cd devthink && bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: build the distribution set
         run: cd devthink && node tests/build.mjs
       - name: package dry-run
@@ -525,7 +525,7 @@ jobs:
       # the package validator, inlined from the retired composite action
       # (dependency install plus the pack dry-run).
       - name: install dependencies
-        run: cd devthink && bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: build the distribution set
         run: cd devthink && node tests/build.mjs
       - name: package dry-run
@@ -829,7 +829,7 @@ jobs:
         with:
           bun-version: 1.4.3
       - name: install locked dependencies
-        run: cd devthink && bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: assemble the rich dist set the jar embeds
         run: cd devthink && node tests/build.mjs
       - name: setup java
@@ -1099,7 +1099,7 @@ jobs:
         with:
           bun-version: 1.4.3
       - name: install locked dependencies
-        run: cd devthink && bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: assemble the rich dist set the content package carries
         run: cd devthink && node tests/build.mjs
       - name: setup dotnet
@@ -2146,7 +2146,7 @@ jobs:
 
       - name: install dependencies
         shell: bash
-        run: cd devthink && bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile --ignore-scripts
 
       # the prisma client the compiled binary embeds: the @prisma/client
       # package re-exports the generated .prisma/client/default module, so a
@@ -2392,7 +2392,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          (cd devthink && bun install --frozen-lockfile)
+          (cd devthink && bun install --frozen-lockfile --ignore-scripts)
           (cd devthink && npm run build:web)
           test -f devthink/index.html
           test -n "$(ls devthink/*.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at the application root"; exit 1; }
@@ -2771,7 +2771,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          (cd devthink && bun install --frozen-lockfile)
+          (cd devthink && bun install --frozen-lockfile --ignore-scripts)
           (cd devthink && npm run build:web)
           test -f devthink/index.html
           test -n "$(ls devthink/*.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at the application root"; exit 1; }
@@ -3109,7 +3109,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          (cd devthink && bun install --frozen-lockfile)
+          (cd devthink && bun install --frozen-lockfile --ignore-scripts)
           (cd devthink && npm run build:web)
           test -f devthink/index.html
           test -n "$(ls devthink/*.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at the application root"; exit 1; }
@@ -3266,7 +3266,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          (cd devthink && bun install --frozen-lockfile)
+          (cd devthink && bun install --frozen-lockfile --ignore-scripts)
           (cd devthink && npm run build:web)
           test -f devthink/index.html
           test -n "$(ls devthink/*.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at the application root"; exit 1; }
@@ -3588,7 +3588,7 @@ jobs:
 
       - name: install dependencies
         shell: bash
-        run: cd devthink && bun install --frozen-lockfile
+        run: cd devthink && bun install --frozen-lockfile --ignore-scripts
 
       # the build engine: one deterministic pass assembles every artifact
       # from the merged tree (the library bundles, the extension surface
@@ -3753,7 +3753,12 @@ jobs:
           node-version-file: devthink/.nvmrc
       - name: Install root dependencies
         if: steps.selected.outputs.enabled == 'true'
-        run: cd devthink && bun install --frozen-lockfile
+        # the plan lanes never touch the native sqlite binding (the
+        # owner-run control-plane tool that imports it lives outside every
+        # built surface): the scripts stay off so the frozen install never
+        # rides the prebuild mirror or the broken bunx node-gyp fallback —
+        # the 26-way matrix drew that lottery red on six legs at once.
+        run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: Build the release set the plans derive from
         if: steps.selected.outputs.enabled == 'true'
         run: cd devthink && node tests/build.mjs

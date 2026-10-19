@@ -116,7 +116,13 @@ jobs:
         run: |
           set -euo pipefail
           cd devthink
-          bun install --frozen-lockfile
+          # the web lane never touches the native sqlite binding (the
+          # owner-run control-plane tool that imports it lives outside the
+          # browser surface): the scripts stay off so the frozen install
+          # never rides the prebuild mirror or the broken bunx node-gyp
+          # fallback — the leg had no setup-node, answered the runner's
+          # default node and died red in the gyp configure.
+          bun install --frozen-lockfile --ignore-scripts
           # a project Pages site lives under /<repo>/: the entry answers at the
           # site root and the absolute base keeps the hashed bundles resolvable
           # on every host without hardcoding the repository name

@@ -116,7 +116,13 @@ jobs:
           node-version-file: devthink/.nvmrc
       - name: Install root dependencies
         if: steps.window.outputs.active == 'true'
-        run: cd devthink && bun install --frozen-lockfile
+        # the ladder lanes never touch the native sqlite binding (the
+        # owner-run control-plane tool that imports it lives outside every
+        # built surface): the scripts stay off so the frozen install never
+        # rides the prebuild mirror or the broken bunx node-gyp fallback
+        # the flaky lanes hit — the prisma client the validation reads
+        # generates inside tests/build.mjs itself.
+        run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: Propose latest non-breaking direct npm dependency updates
         if: steps.window.outputs.active == 'true'
         run: cd devthink && bun run dependency:updates ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
@@ -188,8 +194,14 @@ jobs:
         run: cd devthink && bun run sync:metadata
       - name: Re-freeze the apifreeze artifact and record the permission baseline
         if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
+        # the freeze scripts live in the devthink envelope alone (the root
+        # package.json carries no scripts at all): the step answers from
+        # the application root the way the metadata sync beside it does —
+        # the root leg answered "Script not found apifreeze:sync" and the
+        # Monday window died red before any rung ever proposed.
         run: |
           set -euo pipefail
+          cd devthink
           bun run apifreeze:sync
           bun run permdiff:sync
       - name: Validate with the proposed Node version
@@ -199,16 +211,29 @@ jobs:
           node-version-file: devthink/.nvmrc
       - name: Install the proposed npm version and refresh the lockfile
         if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
+        # the npm probe reads the ROOT envelope engines (the repo-declared
+        # package-manager floor), while the lockfile that must answer the
+        # updated dependency set is devthink/bun.lock — the refresh
+        # installs inside the application, never at the repository root
+        # (a root leg would build no lock and the rung would ship a
+        # package.json its own frozen install refuses).
         run: |
           set -euo pipefail
           npm_version="$(node -p "require('./package.json').engines.npm.match(/>=([^ ]+)/)[1]")"
           npm install --global "npm@${npm_version}"
           test "$(npm --version)" = "$npm_version"
-          bun install
+          cd devthink
+          bun install --ignore-scripts
       - name: Validate the complete proposed update
         if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
+        # every artifact the validation walks (tests/build.mjs, the
+        # distpackage the pack reads, the dist/cli.js the manifest prints)
+        # lives inside the devthink application — the block answers from
+        # the application root while git diff --check still sees the whole
+        # repository from there.
         run: |
           set -euo pipefail
+          cd devthink
           node tests/build.mjs
           bun run check
           node tests/apifreeze.mjs
@@ -226,8 +251,8 @@ jobs:
           set -euo pipefail
           BRANCH="automation/maintenance-$(date -u +%Y%m%d-%H%M%S)"
           git switch -C "$BRANCH"
-          git config user.name "Nathlan Bros"
-          git config user.email "263045985+wenathlan@users.noreply.github.com"
+          git config user.name "iakadion"
+          git config user.email "ogenhoanimation01@gmail.com"
           # the staged set answers every file the metadata family stamps:
           # the application lockstep (release.mjs sync) and the 2.0.46
           # family envelopes beside it — a rung missing one stamped file
