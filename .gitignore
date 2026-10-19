@@ -199,3 +199,7 @@ sites/
 
 # the scaffold skills folder never enters the repository (user rule)
 skills/
+
+# The mini-services folder never enters the repository — the local service
+# doors (the github device flow) live outside the tree, untracked
+mini-services/
