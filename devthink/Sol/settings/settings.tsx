@@ -12,7 +12,7 @@
  * The old editorial deck (the numbered indexes, the sticky caps) is retired
  * — this body rides the dtw kit.
  */
-import {ArrowSyncRegular, PlugDisconnectedRegular, SettingsRegular} from "@fluentui/react-icons";
+import {ArrowSyncRegular, LocalLanguageRegular, PlugDisconnectedRegular, SettingsRegular} from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 import { ShellChrome } from "@/shell/ShellChrome";
 import { osAppLabels } from "../../catalog";
@@ -23,6 +23,8 @@ import {
   readBrowserPreferences,
   saveBrowserPreference } from "../../db";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
+import { currentlang } from "../../translategtx.ts";
+import { setlanguage } from "../../translatedom.ts";
 import { AutomationMcp } from "./automationmcp.tsx";
 import { GatewayCard } from "./gatewaycard.tsx";
 import { HardDrives } from "./harddrives.tsx";
@@ -43,6 +45,25 @@ type SettingsSnapshot = {
 
 /** the window title answers the catalog label row (bare-id fallback). */
 const SETTINGS_LABEL = osAppLabels().settings;
+
+/** the GTX language ladder: the authored surface is english and every other
+ * row rides the google gtx module (translategtx.ts) with the reveal effect —
+ * the names stay native per the windows grammar, so the picker itself rides
+ * the notranslate wall and never becomes its own translation subject. */
+const LANGUAGES: readonly { code: string; native: string }[] = [
+  { code: "en", native: "English (United States)" },
+  { code: "pt", native: "Português (Brasil)" },
+  { code: "es", native: "Español (España)" },
+  { code: "fr", native: "Français (France)" },
+  { code: "de", native: "Deutsch (Deutschland)" },
+  { code: "it", native: "Italiano (Italia)" },
+  { code: "ja", native: "日本語 (日本)" },
+  { code: "ko", native: "한국어 (대한민국)" },
+  { code: "zh-CN", native: "中文 (简体，中国)" },
+  { code: "ru", native: "Русский (Россия)" },
+  { code: "ar", native: "العربية" },
+  { code: "hi", native: "हिन्दी (भारत)" },
+];
 
 /** one mono label/value line of the settings sections. */
 function kv(key: string, value: string) {
@@ -124,6 +145,10 @@ export default function Settings({ embedded }: { embedded?: boolean }) {
     interfaceZoom: "100" });
   const [publicId, setPublicId] = useState("");
   const [section, setSection] = useState("database");
+  /** the GTX picker state: the current language reads the module of the root
+   * (never a duplicated source) and every switch rides setlanguage — the
+   * module persists, rewalks the body and arms the observer itself. */
+  const [lang, setLang] = useState(() => currentlang());
   const paired = gatewayReady();
 
   function refresh() {
@@ -188,6 +213,7 @@ export default function Settings({ embedded }: { embedded?: boolean }) {
     ? [
         { id: "identity", label: "Identity" },
         { id: "workbench", label: "Workbench" },
+        { id: "language", label: "Language" },
         { id: "gateway", label: "Gateway" },
         { id: "sync", label: "Sync" },
         { id: "automation", label: "Automation" },
@@ -198,6 +224,7 @@ export default function Settings({ embedded }: { embedded?: boolean }) {
         { id: "drives", label: "Drives" },
         { id: "account", label: "Local account" },
         { id: "workbench", label: "Workbench" },
+        { id: "language", label: "Language" },
         { id: "gateway", label: "Gateway" },
         { id: "sync", label: "Sync" },
         { id: "automation", label: "Automation" },
@@ -255,6 +282,41 @@ export default function Settings({ embedded }: { embedded?: boolean }) {
               {flagsFields(paired && snapshot ? snapshot.preferences : localPreferences, (key, value) => {
                 void savePreference(key, value);
               })}
+            </section>
+          ) : null}
+
+          {active === "language" ? (
+            <section className="dtw-card notranslate">
+              <h2 className="dtw-cardtitle">
+                <LocalLanguageRegular fontSize={15} aria-hidden="true" />
+                Language
+              </h2>
+              <div className="dtw-settings__field">
+                <span>Display language</span>
+                <select
+                  className="dtw-select"
+                  value={lang}
+                  onChange={(event) => {
+                    const next = event.target.value;
+                    setLang(next);
+                    void setlanguage(next);
+                  }}
+                  aria-label="display language"
+                >
+                  {LANGUAGES.map((entry) => (
+                    <option key={entry.code} value={entry.code}>
+                      {entry.native}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {kv("module", "google gtx — translategtx")}
+              {kv("surface", "authored english, translated live")}
+              <p className="dtw-copy">
+                Every language but English rides the GTX module: the strings batch through the
+                google translate endpoint, settle in the local cache and reveal with the scramble
+                effect. The choice persists and the whole surface rewalks without a reload.
+              </p>
             </section>
           ) : null}
 
