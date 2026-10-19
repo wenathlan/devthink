@@ -233,7 +233,7 @@ RUN set -eux; \
     npm install --global "bun@${bunversion}"; \
     test "$(bun --version)" = "${bunversion}"
 
-RUN bun install --frozen-lockfile
+RUN bun install --frozen-lockfile --ignore-scripts
 
 # ---------------------------------------------------------------------------
 # stage 2: builder (the source tree, the library build and the checks)
@@ -274,7 +274,7 @@ RUN set -eux; \
     npm install --global "bun@${bunversion}"; \
     test "$(bun --version)" = "${bunversion}"
 
-RUN bun install --frozen-lockfile
+RUN bun install --frozen-lockfile --ignore-scripts
 
 # the rest of the tree: the library sources, the web root interface
 # files (the static site design and the extension surfaces, flat at the
