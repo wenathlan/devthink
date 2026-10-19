@@ -3,6 +3,23 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <script>
+      /* the typed-URL law: the address typed straight at this app's subpath
+         lands INSIDE the os — the boot redirects to the os panel with the
+         arrive handoff before anything paints (the power clip then opens
+         the app window, the same window the desktop double click opens);
+         ?independent keeps this presentation site and the embedded boots
+         (self != top) never redirect */
+      (function () {
+        try {
+          if (window.self !== window.top) return;
+          if (/[?&]independent\b/.test(window.location.search)) return;
+          var os = new URL("../panel", window.location.href);
+          os.searchParams.set("arrive", "debonair");
+          window.location.replace(os.href);
+        } catch (e) {}
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>debonair — the audio DAW of the DevThink OS</title>
     <meta name="description" content="debonair is the audio DAW of the DevThink OS: prompt-to-arrangement generation, multitrack editing and broadcast-ready mastering on the katexis engine — like suno × FL Studio, on your own domain." />

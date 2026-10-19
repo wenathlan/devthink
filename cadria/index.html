@@ -9,6 +9,23 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <script>
+      /* the typed-URL law: the address typed straight at this app's subpath
+         lands INSIDE the os — the boot redirects to the os panel with the
+         arrive handoff before anything paints (the power clip then opens
+         the app window, the same window the desktop double click opens);
+         ?independent keeps this presentation site and the embedded boots
+         (self != top) never redirect */
+      (function () {
+        try {
+          if (window.self !== window.top) return;
+          if (/[?&]independent\b/.test(window.location.search)) return;
+          var os = new URL("../panel", window.location.href);
+          os.searchParams.set("arrive", "cadria");
+          window.location.replace(os.href);
+        } catch (e) {}
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>cadria — video, image and 3D studio of the DevThink OS</title>
     <meta name="description" content="cadria is the video, image and 3D studio of the DevThink OS: a multi-format player, a layer editor and a rack of creative anchors on the versawase engine. Like After Effects × Photoshop × Figma × Blender." />

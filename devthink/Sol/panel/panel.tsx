@@ -172,11 +172,16 @@ function toShellTab(tab: {
     createdAt: tab.createdAt };
 }
 
-export default function Panel({ familySlug }: { familySlug?: string }) {
+export default function Panel({ familySlug: familyRoute }: { familySlug?: string }) {
   const [_location, setLocation] = useLocation();
   const [, params] = useRoute("/w/:workspaceId/s/:sessionId/t/:tabId/:sectionId");
   const configuredGateway = gatewayFromSearch(window.location.search);
   const invitation = useMemo(() => new URLSearchParams(window.location.search), []);
+  /** the family arrival, from either handoff: the OS's own /<slug> route
+   * (the address the bar keeps) or the ?arrive= slug the standalone app
+   * index stamped before the OS took over (the typed-URL law: devthink barra
+   * <app> lands INSIDE the os, the same window the double click opens) */
+  const familySlug = familyRoute ?? invitation.get("arrive") ?? undefined;
   const [gatewayInput, setGatewayInput] = useState(
     () => configuredGateway || window.sessionStorage.getItem("devthink.gateway") || "",
   );
