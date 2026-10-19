@@ -11612,7 +11612,43 @@ span[data-tile] {
 
 /* ==== the projects.css skins — merged from the app folder, the folder carries tsx only ==== */
 /* projects app skins — the workspace rows over the dtw kit. merges into the
- * kit section of sol.css. */
+ * kit section of sol.css. the app scope retunes the kit accents: the teal
+ * identity (#2dd4bf, the registry tint) rides the ledger mark, the
+ * active-indicator pill and the latest-row tile (the leading record is
+ * emphasized by position and fact, its wash never touches text), while the
+ * hover washes stay neutral slate — the identity never rides the chrome.
+ * the refresh action answers the 44px touch law with a press scale and a
+ * visible slate focus ring, and the card header reads as a flex row so the
+ * action docks right. */
+.dtw-projects {
+  --dtv3-sig: var(--dtv3-ink-1);
+  --color-win: #2dd4bf;
+}
+.dtw-projects .dtw-cardtitle {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.dtw-projects .dtw-cardtitle svg {
+  color: #2dd4bf;
+}
+.dtw-projects .dtw-cardtitle .dtw-action {
+  margin-left: auto;
+}
+.dtw-projects .dtw-action {
+  min-height: 44px;
+  transition:
+    background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 100ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-projects .dtw-action:active {
+  transform: scale(0.96);
+}
+.dtw-projects .dtw-action:focus-visible {
+  outline: 2px solid var(--dtv3-ink-1);
+  outline-offset: 2px;
+}
 .dtw-projects__rows {
   display: grid;
   margin: 0;
@@ -11631,7 +11667,7 @@ span[data-tile] {
   border-bottom: 0;
 }
 .dtw-projects__row[data-latest="true"] {
-  background: color-mix(in srgb, var(--dtv3-sig) 8%, transparent);
+  background: color-mix(in srgb, #2dd4bf 10%, transparent);
 }
 .dtw-projects__body {
   display: grid;
@@ -11732,7 +11768,26 @@ span[data-tile] {
 
 /* ==== the history.css skins — merged from the app folder, the folder carries tsx only ==== */
 /* history app skins — the rung ladder over the dtw kit. merges into the kit
- * section of sol.css. */
+ * section of sol.css. the app scope retunes the kit accents: the bronze
+ * identity (#a8926d, the registry tint) rides the ladder mark, the
+ * active-indicator pill and the latest-row tile — bronze never carries text
+ * on the light body (the 3:1 gate fails the small print), so the numerals,
+ * the notes and the chain facts stay ink — while the hover washes stay
+ * neutral slate. the ladder is read-only: no CTAs, so no dead controls to
+ * answer. */
+.dtw-history {
+  --dtv3-sig: var(--dtv3-ink-1);
+  --color-win: #a8926d;
+}
+.dtw-history .dtw-cardtitle {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.dtw-history .dtw-cardtitle svg {
+  color: #a8926d;
+}
 .dtw-history__rows {
   display: grid;
   margin: 0;
@@ -11751,7 +11806,7 @@ span[data-tile] {
   border-bottom: 0;
 }
 .dtw-history__row[data-latest="true"] {
-  background: color-mix(in srgb, var(--dtv3-sig) 8%, transparent);
+  background: color-mix(in srgb, #a8926d 12%, transparent);
 }
 .dtw-history__body {
   display: grid;
@@ -11802,7 +11857,95 @@ span[data-tile] {
 
 /* ==== the settings.css skins — merged from the app folder, the folder carries tsx only ==== */
 /* settings app skins — the section fields, switches, tables and form
- * controls over the dtw kit. merges into the kit section of sol.css. */
+ * controls over the dtw kit. merges into the kit section of sol.css. the
+ * app scope retunes the kit accents: the slate identity (#94a3b8, the
+ * registry tint — a neutral by design) rides the section marks and the
+ * active-indicator bar only, while every control keeps speaking the windows
+ * grammar: the toggle ON answers the accent track with the contrast knob,
+ * the inputs and selects answer the flat 44px well with the bottom hairline
+ * and the 2px windows light accent underline on focus (the identity never
+ * rides the chrome), and the primary CTAs keep the windows accent #0067c0.
+ * the touch law reaches every interactive control: the nav rows and the
+ * buttons climb to the 44px target with a press scale and a visible slate
+ * focus ring, and the switch row carries the 44px hit area. */
+.dtw-settings {
+  --dtv3-sig: var(--dtv3-ink-1);
+}
+.dtw-settings .dtw-cardtitle {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.dtw-settings .dtw-cardtitle svg {
+  color: #94a3b8;
+}
+.dtw-settings .dtw-navrow {
+  min-height: 44px;
+  transition:
+    background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 100ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-settings .dtw-navrow:active {
+  transform: scale(0.98);
+}
+.dtw-settings .dtw-navrow:focus-visible,
+.dtw-settings .dtw-btn:focus-visible,
+.dtw-settings .dtw-action:focus-visible {
+  outline: 2px solid var(--dtv3-ink-1);
+  outline-offset: 2px;
+}
+.dtw-settings .dtw-navrow[data-active="true"]::before {
+  background: #94a3b8;
+}
+.dtw-settings .dtw-btn {
+  min-height: 44px;
+  transition:
+    background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 100ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-settings .dtw-btn:active {
+  transform: scale(0.96);
+}
+.dtw-settings .dtw-input,
+.dtw-settings .dtw-select {
+  min-height: 44px;
+  padding: 0 10px;
+  border: 0;
+  border-bottom: 1px solid var(--dtv3-hairline);
+  border-radius: 4px 4px 0 0;
+  background: color-mix(in srgb, var(--dtv3-ink-1) 4%, transparent);
+  color: var(--dtv3-ink-1);
+  font: 400 13px var(--font-sans, var(--dt-sans));
+  transition: border-color 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-settings .dtw-input:focus-visible,
+.dtw-settings .dtw-select:focus-visible {
+  outline: none;
+  border-bottom: 2px solid #0067c0;
+}
+.dtw-settings .dtc-gw__input {
+  min-height: 44px;
+  padding: 0 10px;
+  border: 0;
+  border-bottom: 1px solid var(--dtv3-hairline);
+  border-radius: 4px 4px 0 0;
+  background: color-mix(in srgb, var(--dtv3-ink-1) 4%, transparent);
+  color: var(--dtv3-ink-1);
+  font: 400 13px var(--font-sans, var(--dt-sans));
+  transition: border-color 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-settings .dtc-gw__input::placeholder {
+  color: var(--dtv3-ink-3);
+}
+.dtw-settings .dtc-gw__input:focus {
+  border-color: var(--dtv3-hairline);
+  box-shadow: none;
+}
+.dtw-settings .dtc-gw__input:focus-visible {
+  outline: none;
+  border-bottom: 2px solid #0067c0;
+}
 .dtw-settings__kv {
   display: flex;
   align-items: baseline;
@@ -11838,6 +11981,7 @@ span[data-tile] {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  min-height: 44px;
   cursor: pointer;
 }
 .dtw-settings__switch {
@@ -11873,23 +12017,25 @@ span[data-tile] {
   background: #fff;
 }
 .dtw-settings__switch:focus-visible + .dtw-settings__switchtrack {
-  outline: 2px solid color-mix(in srgb, var(--dtv3-sig) 45%, transparent);
+  outline: 2px solid var(--dtv3-ink-1);
   outline-offset: 2px;
 }
 .dtw-settings__select,
 .dtw-settings__input {
-  min-height: 32px;
+  min-height: 44px;
   padding: 0 10px;
-  border: 1px solid var(--dtv3-hairline);
-  border-radius: 4px;
-  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--dtv3-hairline);
+  border-radius: 4px 4px 0 0;
+  background: color-mix(in srgb, var(--dtv3-ink-1) 4%, transparent);
   color: var(--dtv3-ink-1);
   font: 400 13px var(--font-sans, var(--dt-sans));
+  transition: border-color 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
 }
 .dtw-settings__input:focus-visible,
 .dtw-settings__select:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--dtv3-sig) 45%, transparent);
-  outline-offset: 1px;
+  outline: none;
+  border-bottom: 2px solid #0067c0;
 }
 .dtw-settings__rangezone {
   display: inline-flex;
@@ -11899,6 +12045,7 @@ span[data-tile] {
 }
 .dtw-settings__range {
   flex: 1;
+  min-height: 44px;
   accent-color: var(--color-win);
 }
 .dtw-settings__rangevalue {
@@ -11930,7 +12077,7 @@ span[data-tile] {
   justify-items: start;
 }
 .dtw-settings__error {
-  color: #ff7d66;
+  color: #c2352b;
   font: 500 11px / 1.6 var(--dt-mono);
 }
 .dtw-settings__confirm {
@@ -11982,42 +12129,21 @@ span[data-tile] {
   gap: 8px;
   align-items: center;
 }
-.dtw-btn {
+/* the drives shelf of the hard drives card: the rows carry the disk-shaped
+ * fluent glyph (the hd icon law), read center-aligned at the 44px rhythm —
+ * only the Open buttons are interactive, so the rows stay plain ledger. */
+.dtw-settings .dtw-row {
+  align-items: center;
+  min-height: 44px;
+}
+.dtw-settings__driveicon {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  min-height: 32px;
-  padding: 0 12px;
-  border: 1px solid var(--dtv3-hairline);
-  border-radius: 4px;
-  background: transparent;
+  flex: none;
+  color: var(--dtv3-ink-3);
+}
+.dtw-settings__driveicon[data-mounted="true"] {
   color: var(--dtv3-ink-1);
-  font: 500 12px var(--font-sans, var(--dt-sans));
-  cursor: pointer;
-  transition: background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
-}
-.dtw-btn:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--dtv3-sig) 12%, transparent);
-}
-.dtw-btn:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
-.dtw-btn--primary {
-  border-color: transparent;
-  background: var(--color-win);
-  color: #fff;
-}
-.dtw-btn--primary:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--color-win) 88%, #fff);
-}
-.dtw-btn--danger {
-  border-color: transparent;
-  background: #c2352b;
-  color: #fff;
-}
-.dtw-btn--danger:hover:not(:disabled) {
-  background: color-mix(in srgb, #c2352b 88%, #fff);
 }
 .dtw-settings__addform--wide {
   grid-template-columns: 1fr 2fr 1fr auto;
@@ -12025,7 +12151,45 @@ span[data-tile] {
 
 /* ==== the console.css skins — merged from the app folder, the folder carries tsx only ==== */
 /* console app skins — the terminal pane and the reference rows over the dtw
- * kit. merges into the kit section of sol.css. */
+ * kit. merges into the kit section of sol.css. the app scope retunes the kit
+ * accents: the green identity (#4ade80, the registry tint) rides the section
+ * marks, the active-indicator bar, the paired lamp (with the inset hairline
+ * ring — green on white would otherwise vanish) and the terminal prompt of
+ * the dark log pane, while the hover washes stay neutral slate and the
+ * terminal chrome keeps the windows light accent. the dark pane answers the
+ * terminal component's own contract — a dark log pane inside the light
+ * window body, the way the windows terminal reads on a light os — with every
+ * row class AA on #1e1e1e. the touch law reaches the nav rows and the
+ * reference run rows (44px, press scale, visible slate focus ring). */
+.dtw-console {
+  --dtv3-sig: var(--dtv3-ink-1);
+}
+.dtw-console .dtw-cardtitle {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.dtw-console .dtw-cardtitle svg {
+  color: #4ade80;
+}
+.dtw-console .dtw-navrow {
+  min-height: 44px;
+  transition:
+    background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 100ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-console .dtw-navrow:active {
+  transform: scale(0.98);
+}
+.dtw-console .dtw-navrow:focus-visible,
+.dtw-console .dtw-console__refrun:focus-visible {
+  outline: 2px solid var(--dtv3-ink-1);
+  outline-offset: 2px;
+}
+.dtw-console .dtw-navrow[data-active="true"]::before {
+  background: #4ade80;
+}
 .dtw-console__note {
   display: flex;
   justify-content: space-between;
@@ -12041,7 +12205,11 @@ span[data-tile] {
   color: var(--dtv3-ink-2);
 }
 .dtw-console__note > span:first-child.is-paired {
-  color: var(--color-win);
+  color: var(--dtv3-ink-2);
+}
+.dtw-console__note > span:first-child.is-paired .dtw-console__lamp {
+  background: #4ade80;
+  box-shadow: inset 0 0 0 1px rgb(15 23 42 / 45%);
 }
 .dtw-console__lamp {
   display: inline-block;
@@ -12062,7 +12230,7 @@ span[data-tile] {
   grid-template-columns: 110px minmax(0, 1fr);
   gap: 10px;
   width: 100%;
-  min-height: 40px;
+  min-height: 44px;
   padding: 8px 6px;
   border: 0;
   border-bottom: 1px solid var(--dtv3-hairline);
@@ -12071,13 +12239,18 @@ span[data-tile] {
   font: 500 12px / 1.5 var(--dt-mono);
   text-align: left;
   cursor: pointer;
-  transition: background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+  transition:
+    background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 100ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
 }
 .dtw-console__refrun strong {
   color: var(--dtv3-ink-1);
 }
 .dtw-console__refrun:hover:not(:disabled) {
   background: color-mix(in srgb, var(--dtv3-sig) 8%, transparent);
+}
+.dtw-console__refrun:active:not(:disabled) {
+  transform: scale(0.98);
 }
 .dtw-console__refrun:disabled {
   opacity: 0.4;
@@ -12103,7 +12276,8 @@ span[data-tile] {
   border: 1px solid var(--dtv3-hairline);
   border-radius: 8px;
   overflow: hidden;
-  background: color-mix(in srgb, var(--dtv3-ink-1) 4%, transparent);
+  box-shadow: none;
+  background: #1e1e1e;
 }
 .dtw-console .dt-term__bar {
   display: flex;
@@ -12111,62 +12285,65 @@ span[data-tile] {
   justify-content: space-between;
   min-height: 40px;
   padding: 0 12px;
-  border-bottom: 1px solid var(--dtv3-hairline);
-  background: color-mix(in srgb, var(--dtv3-ink-1) 4%, transparent);
-  color: var(--dtv3-ink-3);
+  border-bottom: 1px solid rgb(255 255 255 / 8%);
+  background: rgb(255 255 255 / 3%);
+  color: #c3c3c3;
   font: 500 11px var(--dt-mono);
   letter-spacing: 0.04em;
 }
 .dtw-console .dt-term__state {
-  color: var(--color-win);
+  color: #c3c3c3;
 }
 .dtw-console .dt-term__out {
   margin: 0;
   padding: 12px 14px;
   max-height: 340px;
   overflow: auto;
-  color: var(--dtv3-ink-2);
+  scrollbar-width: none;
+  color: #c9c0b8;
   font: 13px / 1.7 var(--dt-mono);
 }
 .dtw-console .dt-term__out > span {
   display: block;
   padding: 2px 0;
-  border-bottom: 1px solid var(--dtv3-hairline);
+  border-bottom: 1px solid rgb(255 255 255 / 6%);
 }
 .dtw-console .dt-term__out > span:last-child {
   border-bottom: 0;
 }
 .dtw-console .dt-term__out .boot {
-  color: var(--dtv3-ink-3);
+  color: #999999;
 }
 .dtw-console .dt-term__out .cmdline {
-  color: var(--dtv3-ink-1);
+  color: #f4f6fa;
 }
 .dtw-console .dt-term__out .ok {
-  color: var(--dtv3-ink-2);
+  color: #c9c0b8;
 }
 .dtw-console .dt-term__out .err {
   color: #ff7d66;
 }
 .dtw-console .dt-term__in {
   display: flex;
+  align-items: center;
   gap: 8px;
+  min-height: 44px;
   padding: 10px 14px;
-  border-top: 1px solid var(--dtv3-hairline);
+  border-top: 1px solid rgb(255 255 255 / 8%);
 }
 .dtw-console .dt-term__in.off {
   opacity: 0.5;
 }
 .dtw-console .dt-term__prompt {
-  color: var(--color-win);
+  color: #4ade80;
   font: 600 13px var(--dt-mono);
 }
 .dtw-console .dt-term__input {
   flex: 1;
   border: 0;
   background: transparent;
-  color: var(--dtv3-ink-1);
+  color: #f4f6fa;
   font: 13px var(--dt-mono);
   outline: none;
-  caret-color: var(--color-win);
+  caret-color: #4ade80;
 }

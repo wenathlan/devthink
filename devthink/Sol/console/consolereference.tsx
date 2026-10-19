@@ -4,12 +4,15 @@
  * command with its usage and flags, the global flags and the exit codes
  * closing the card. Loose component of the console page.
  */
+
+import { WindowConsoleRegular } from "@fluentui/react-icons";
 import { catalogcommands, exitclasses, globalflags } from "../../commandcatalog.ts";
 
 export function ConsoleReference({ running, onrun }: { running: boolean; onrun: (id: string) => void }) {
   return (
     <section className="dtw-card">
       <h2 className="dtw-cardtitle">
+        <WindowConsoleRegular fontSize={15} aria-hidden="true" />
         Command reference
         <span className="dtw-navrow__count">{catalogcommands.length}</span>
       </h2>

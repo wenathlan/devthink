@@ -14,8 +14,11 @@
  * phosphor lamp, the scanline veil, the numbered kickers) is retired — this
  * body rides the dtw kit.
  */
+
+import {RocketRegular} from "@fluentui/react-icons";
 import { useEffect, useRef, useState } from "react";
 import { ShellChrome } from "@/shell/ShellChrome";
+import { osAppLabels } from "../../catalog";
 import { completions, responseof } from "../../commandcatalog.ts";
 import { bootdelay, bootlines, consoleprompt, consoleversion } from "../../consoleboot.ts";
 import { BOOT_STAGE_GAP, bootgraph, bootrunnerhandler } from "../../consolebootgraph.ts";
@@ -31,6 +34,9 @@ export * from "./terminal.tsx";
 
 /** the three real sections of the console deck. */
 type ConsoleSection = "terminal" | "boot" | "reference";
+
+/** the window title answers the catalog label row (bare-id fallback). */
+const CONSOLE_LABEL = osAppLabels().console;
 
 const SECTIONS: readonly { id: ConsoleSection; label: string }[] = [
   { id: "terminal", label: "Terminal" },
@@ -150,7 +156,7 @@ export default function Console({ embedded }: { embedded?: boolean }) {
           ))}
         </nav>
         <div className="dtw-content">
-          <h1 className="dtw-title">Console</h1>
+          <h1 className="dtw-title">{CONSOLE_LABEL?.name ?? "Console"}</h1>
 
           {section === "terminal" ? (
             <>
@@ -168,6 +174,7 @@ export default function Console({ embedded }: { embedded?: boolean }) {
           {section === "boot" ? (
             <section className="dtw-card">
               <h2 className="dtw-cardtitle">
+                <RocketRegular fontSize={15} aria-hidden="true" />
                 Boot stages
                 <span className="dtw-navrow__count">{Math.round(runview?.progress ?? 0)}%</span>
               </h2>

@@ -15,11 +15,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ShellChrome } from "@/shell/ShellChrome";
+import { osAppLabels } from "../../catalog";
 import { browserWorkspaces } from "../../db";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { ProjectRows } from "./projectrows.tsx";
 
 type Workspace = { id: string; title: string; updatedAt: string; sessionCount: number };
+
+/** the window title answers the catalog label row (bare-id fallback). */
+const PROJECTS_LABEL = osAppLabels().projects;
 
 /** The projects app: the Windows body when embedded (the desktop window
  * hosts it without the shell), the full surface with the taskbar on the
@@ -60,7 +64,7 @@ export default function Projects({ embedded }: { embedded?: boolean }) {
           </span>
         </nav>
         <div className="dtw-content">
-          <h1 className="dtw-title">Projects</h1>
+          <h1 className="dtw-title">{PROJECTS_LABEL?.name ?? "Projects"}</h1>
           <ProjectRows rows={ordered} loaded={loaded} paired={paired} onRefresh={refresh} />
         </div>
       </div>

@@ -4,10 +4,12 @@
  * of this machine (the owner partitions of the local store), mounts a new
  * one and reopens the old ones. Opening a drive reloads the app — the meta
  * identity of the store points at the mounted owner and every surface
- * rehydrates from it.
+ * rehydrates from it. Every drive row carries the disk-shaped fluent glyph
+ * (the hd icon law: pertinent fluent icons on the drives surface), the
+ * mounted one reading strong ink over the idle slate.
  */
 
-import {DeleteRegular, HardDriveRegular, AddRegular} from "@fluentui/react-icons";
+import {AddRegular, DeleteRegular, HardDriveRegular } from "@fluentui/react-icons";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
@@ -105,6 +107,9 @@ export function HardDrives() {
           <div className="dtw-rows">
             {list.map((drive) => (
               <div className="dtw-row" key={drive.id}>
+                <span className="dtw-settings__driveicon" data-mounted={drive.id === active?.id ? "true" : undefined}>
+                  <HardDriveRegular fontSize={16} aria-hidden="true" />
+                </span>
                 <span>
                   <strong>{drive.label}</strong>
                   <small>

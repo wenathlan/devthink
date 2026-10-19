@@ -15,6 +15,7 @@
 import {ArrowSyncRegular, PlugDisconnectedRegular, SettingsRegular} from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 import { ShellChrome } from "@/shell/ShellChrome";
+import { osAppLabels } from "../../catalog";
 import {
   type BrowserStoreSummary,
   browserIdentity,
@@ -39,6 +40,9 @@ type SettingsSnapshot = {
   provider: { activeProvider?: string; activeModel?: string };
   database: { ownerUserId: string; local: boolean; persistence: string; workspaces: number; sessions: number };
 };
+
+/** the window title answers the catalog label row (bare-id fallback). */
+const SETTINGS_LABEL = osAppLabels().settings;
 
 /** one mono label/value line of the settings sections. */
 function kv(key: string, value: string) {
@@ -220,7 +224,7 @@ export default function Settings({ embedded }: { embedded?: boolean }) {
           ))}
         </nav>
         <div className="dtw-content">
-          <h1 className="dtw-title">Settings</h1>
+          <h1 className="dtw-title">{SETTINGS_LABEL?.name ?? "Settings"}</h1>
 
           {!paired && active === "database" ? (
             <section className="dtw-card">
@@ -303,6 +307,7 @@ export default function Settings({ embedded }: { embedded?: boolean }) {
                   maxLength={15}
                   pattern="[a-z][a-z0-9]{9,14}"
                   autoComplete="username"
+                  aria-label="public id"
                 />
               </div>
               <button type="button" className="dtw-btn dtw-btn--primary" onClick={() => void saveIdentity()}>

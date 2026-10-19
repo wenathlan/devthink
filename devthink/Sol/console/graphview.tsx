@@ -4,17 +4,18 @@
  *
  * The component draws the view state the root logic answers
  * (graphviewstate.ts lays the cards on the topological layers,
- * graphrunner.ts walks the stages): every node is a trylle card — the
- * surface ramp #171717→#252525 inside a 1px ring, the .625rem radius — and
- * every edge is one bezier hairline riding ink 10%. A node the runner holds
- * running pulses the WINDOWS accent #4cc2ff on opacity alone; a done node
- * wears the discreet check; a failed one wears the close red rgb(232 17 35)
- * and a skipped one dims. The stage ledger under the map reads the progress
- * per stage (the etapas) and the aggregated percentage. The zoom stays with
- * the page — the zoomlock owns the 100% baseline, so the map carries no
- * wheel zoom and no pinch of its own; it scales with its container like any
- * other ink on the page. Motion rides transform/opacity only and dies under
- * prefers-reduced-motion.
+ * graphrunner.ts walks the stages): it renders inside the light window
+ * body of the console, so every node is a light trylle card — the white
+ * ramp #ffffff→#edf1f8 inside a 1px slate ring, the .625rem radius — and
+ * every edge is one bezier hairline riding slate 14%. A node the runner
+ * holds running pulses the windows light accent #0067c0 on opacity alone;
+ * a done node wears the discreet check; a failed one wears the close red
+ * rgb(194 53 43) and a skipped one dims. The stage ledger under the map
+ * reads the progress per stage (the etapas) and the aggregated percentage.
+ * The zoom stays with the page — the zoomlock owns the 100% baseline, so
+ * the map carries no wheel zoom and no pinch of its own; it scales with its
+ * container like any other ink on the page. Motion rides transform/opacity
+ * only and dies under prefers-reduced-motion.
  */
 import { useId } from "react";
 import type { nodegraph, nodestate } from "../../graphnodes.js";
@@ -35,31 +36,31 @@ const GRAPHVIEW_CSS = `
 .gview { display: grid; gap: 10px; min-width: 0; }
 .gview__map { display: block; width: 100%; height: auto; border-radius: var(--sol-radius); }
 .gview__card { cursor: pointer; }
-.gview__card rect.gview__surface { stroke: rgb(250 250 250 / 10%); stroke-width: 1; transition: opacity var(--sol-micro) var(--sol-ease-out); }
+.gview__card rect.gview__surface { stroke: rgb(15 23 42 / 14%); stroke-width: 1; transition: opacity var(--sol-micro) var(--sol-ease-out); }
 .gview__card:focus-visible { outline: none; }
-.gview__card:focus-visible rect.gview__surface { stroke: var(--win-accent); }
-.gview__card[data-selected="true"] rect.gview__surface { stroke: var(--win-accent); }
+.gview__card:focus-visible rect.gview__surface { stroke: #0067c0; }
+.gview__card[data-selected="true"] rect.gview__surface { stroke: #0067c0; }
 .gview__card[data-state="skipped"] rect.gview__surface, .gview__card[data-state="skipped"] .gview__label { opacity: .45; }
-.gview__card[data-state="running"] rect.gview__surface { stroke: var(--win-accent); }
+.gview__card[data-state="running"] rect.gview__surface { stroke: #0067c0; }
 .gview__pulse { animation: gviewpulse 1.6s ease-in-out infinite; }
 @keyframes gviewpulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
-.gview__label { fill: var(--color-ink); font: 500 12px/1 var(--font-display); }
-.gview__kind { fill: var(--color-ink-3); font: 600 9px/1 var(--font-mono); letter-spacing: .14em; text-transform: lowercase; }
-.gview__wire { fill: none; stroke: rgb(250 250 250 / 10%); stroke-width: 1; }
-.gview__port { fill: rgb(250 250 250 / 10%); }
-.gview__port--live { fill: var(--win-accent); }
-.gview__mark-done { fill: none; stroke: var(--color-ink-3); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-.gview__mark-failed { fill: none; stroke: rgb(232 17 35); stroke-width: 1.5; stroke-linecap: round; }
-.gview__mark-pending { fill: none; stroke: rgb(250 250 250 / 10%); stroke-width: 1.5; }
-.gview__mark-skip { fill: none; stroke: var(--color-ink-3); stroke-width: 1.5; stroke-linecap: round; }
-.gview__rail { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0; padding: 0; color: var(--color-ink-3); font: 500 10px/1.6 var(--font-mono); letter-spacing: .08em; }
+.gview__label { fill: #0f172a; font: 500 12px/1 var(--font-display); }
+.gview__kind { fill: #8290a6; font: 600 9px/1 var(--font-mono); letter-spacing: .14em; text-transform: lowercase; }
+.gview__wire { fill: none; stroke: rgb(15 23 42 / 14%); stroke-width: 1; }
+.gview__port { fill: rgb(15 23 42 / 30%); }
+.gview__port--live { fill: #0067c0; }
+.gview__mark-done { fill: none; stroke: #46556b; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.gview__mark-failed { fill: none; stroke: #c2352b; stroke-width: 1.5; stroke-linecap: round; }
+.gview__mark-pending { fill: none; stroke: rgb(15 23 42 / 30%); stroke-width: 1.5; }
+.gview__mark-skip { fill: none; stroke: #46556b; stroke-width: 1.5; stroke-linecap: round; }
+.gview__rail { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0; padding: 0; color: #46556b; font: 500 10px/1.6 var(--font-mono); letter-spacing: .08em; }
 .gview__stages { display: flex; align-items: center; gap: 6px; }
-.gview__pip { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 6px; border: 1px solid rgb(250 250 250 / 10%); border-radius: 6px; color: var(--color-ink-3); font: 600 10px/1 var(--font-mono); }
-.gview__pip[data-state="active"] { border-color: color-mix(in srgb, var(--win-accent) 55%, transparent); color: var(--win-accent); }
-.gview__pip[data-state="done"] { border-color: rgb(250 250 250 / 4%); color: var(--color-ink); }
-.gview__stagebar { position: relative; flex: 1 1 120px; height: 2px; background: rgb(250 250 250 / 8%); }
-.gview__stagebar > i { position: absolute; inset: 0; background: var(--win-accent); transform-origin: left center; }
-.gview__stagenote { color: var(--color-ink-3); }
+.gview__pip { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 6px; border: 1px solid rgb(15 23 42 / 14%); border-radius: 6px; color: #8290a6; font: 600 10px/1 var(--font-mono); }
+.gview__pip[data-state="active"] { border-color: color-mix(in srgb, #0067c0 55%, transparent); color: #0067c0; }
+.gview__pip[data-state="done"] { border-color: rgb(15 23 42 / 8%); color: #0f172a; }
+.gview__stagebar { position: relative; flex: 1 1 120px; height: 2px; background: rgb(15 23 42 / 10%); }
+.gview__stagebar > i { position: absolute; inset: 0; background: #0067c0; transform-origin: left center; }
+.gview__stagenote { color: #8290a6; }
 @media (prefers-reduced-motion: reduce) {
   .gview__pulse { animation: none; }
   .gview__card rect.gview__surface { transition: none; }
@@ -136,7 +137,7 @@ function StateMark({ state }: { state: nodestate }) {
   if (state === "running") {
     return (
       <g>
-        <circle className="gview__pulse" cx={GRAPHVIEW_CARD_WIDTH - 20} cy={20} r={5} fill="var(--win-accent)" />
+        <circle className="gview__pulse" cx={GRAPHVIEW_CARD_WIDTH - 20} cy={20} r={5} fill="#0067c0" />
       </g>
     );
   }
@@ -188,8 +189,8 @@ export function GraphView({
       >
         <defs>
           <linearGradient id={gradientid} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#171717" />
-            <stop offset="100%" stopColor="#252525" />
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="100%" stopColor="#edf1f8" />
           </linearGradient>
         </defs>
         {/* the wires first: the cards draw over the hairlines */}
@@ -249,7 +250,7 @@ export function GraphView({
                   rx={10}
                   ry={10}
                   fill="none"
-                  stroke="var(--win-accent)"
+                  stroke="#0067c0"
                   strokeWidth={1}
                 />
               )}

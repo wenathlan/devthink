@@ -14,8 +14,11 @@
  */
 import { useEffect, useState } from "react";
 import { ShellChrome } from "@/shell/ShellChrome";
-import { type Rung, releaseLadder } from "../../catalog";
+import { osAppLabels, type Rung, releaseLadder } from "../../catalog";
 import { HistoryLadder } from "./historyladder.tsx";
+
+/** the window title answers the catalog label row (bare-id fallback). */
+const HISTORY_LABEL = osAppLabels().history;
 
 /** The history app: the Windows body when embedded (the desktop window
  * hosts it without the shell), the full surface with the taskbar on the
@@ -47,7 +50,7 @@ export default function History({ embedded }: { embedded?: boolean }) {
           </span>
         </nav>
         <div className="dtw-content">
-          <h1 className="dtw-title">History</h1>
+          <h1 className="dtw-title">{HISTORY_LABEL?.name ?? "History"}</h1>
           <p className="dtw-note">
             <span>Every release stamps a rung</span>
             <span>The full chain lives in the changelog</span>
