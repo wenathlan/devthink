@@ -1,11 +1,11 @@
 /**
  * window.ts — the pure window logic of the os (root layer): what a window
- * is and which apps open as windows. No react, no anchors, no presentation
- * info — the spawns, the labels and every per-app value live in the theme
- * layer and the database, never here: this syntax serves any app, any
- * subapp, any deploy unit without a code change. The theme layer
- * (Sol/windowregistry.tsx) binds the components and the presentation; the
- * labels ride the catalog db.
+ * is, which apps open as windows and the spawn geometry each opens at. No
+ * react, no anchors, no components — the component binding rides the
+ * workspace (Sol/panel/workspace.tsx, the only consumer) and the labels
+ * ride the catalog db. The spawns are window logic, so they live here with
+ * the catalog: this syntax serves any app, any subapp, any deploy unit
+ * without a code change.
  */
 
 /** One windowed app of the catalog: where the body comes from — an anchor
@@ -64,6 +64,27 @@ export function windowcatalog(): Record<string, WindowEntry> {
     rows[id] = { kind: "anchor" };
   }
   return { ...rows, ...familyentries() };
+}
+
+/** the spawn geometry of the window frames — the same values the database
+ * serves once the label table lands; the root logic owns them because a
+ * spawn is window structure, never presentation */
+export type WindowSpawn = { width: number; height: number };
+
+const DEFAULT_SPAWN: WindowSpawn = { width: 900, height: 640 };
+const SPAWN_OVERRIDES: Record<string, WindowSpawn> = {
+  calculator: { width: 520, height: 660 },
+  chat: { width: 1040, height: 720 },
+  docs: { width: 980, height: 680 },
+  console: { width: 980, height: 680 },
+  settings: { width: 960, height: 680 },
+  video: { width: 960, height: 680 },
+};
+
+/** the spawn of one windowed app: the declared override when one answers,
+ * the default otherwise */
+export function windowspawn(id: string): WindowSpawn {
+  return SPAWN_OVERRIDES[id] ?? DEFAULT_SPAWN;
 }
 
 /** Reads one windowed app entry by id, or undefined when the app still

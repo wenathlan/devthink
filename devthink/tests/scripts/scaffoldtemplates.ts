@@ -74,7 +74,7 @@ const casa = (nome: string, papel: string, logicas: string[]) => {
           preview: "vite preview --host",
           check: "tsc --noEmit",
         },
-        dependencies: { "lucide-react": "^1.49.0", react: "^19.3.0", "react-dom": "^19.3.0", wouter: "^3.13.0" },
+        dependencies: { "@fluentui/react-icons": "^2.0.344", react: "^19.3.0", "react-dom": "^19.3.0", wouter: "^3.13.0" },
         devDependencies: {
           "@types/react": "^19.3.0",
           "@types/react-dom": "^19.3.0",

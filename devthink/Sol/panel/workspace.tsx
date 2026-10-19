@@ -13,27 +13,92 @@
  * taskbar with the Start button; the dock keeps the session and the family
  * apps one click away.
  *
- * The window bodies come from the window registry (Sol/windowregistry.tsx
- * over the root window.ts catalog): the chat window mounts the same
- * conversation body as the /chat page, and the family apps mount the power
- * clip frame of their repository subpath. Two handoffs seed windows on
- * arrival: a /<slug> family route opens its app window, and a deep
- * /w/…/chat link parks its session id (chatstate handoff) which opens the
- * chat window.
+ * The window bodies come from the root window catalog (window.ts) bound
+ * right here — the workspace is the single react-aware edge of the window
+ * logic: the chat window mounts the same conversation body as the /chat
+ * page, and the family apps mount the power clip frame of their repository
+ * subpath. Two handoffs seed windows on arrival: a /<slug> family route
+ * opens its app window, and a deep /w/…/chat link parks its session id
+ * (chatstate handoff) which opens the chat window.
  */
 
-import {ClockRegular as Clock} from "@fluentui/react-icons";
+import { ClockRegular as Clock } from "@fluentui/react-icons";
+import type { ComponentType } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation } from "wouter";
 import { alttabkeydown } from "../../alttab.ts";
 import { DESKTOP_APPS, type DesktopApp } from "../../appregistry.ts";
 import { pushrecentapp } from "../../recentapps.ts";
 import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspace.ts";
+import { type WindowEntry, windowcatalog, windowspawn } from "../../window.ts";
+import AudioAnchor from "../audio/audio.tsx";
+import CalculatorAnchor from "../calculator/calculator.tsx";
+import ChatBody from "../chat/chatbody.tsx";
+import ConsoleAnchor from "../console/console.tsx";
+import DocsAnchor from "../docs/docs.tsx";
+import GamesAnchor from "../games/games.tsx";
+import ImageAnchor from "../image/image.tsx";
+import ProjectsAnchor from "../projects/projects.tsx";
+import SettingsAnchor from "../settings/settings.tsx";
+import { FamilyFrame } from "../shell/familyframe.tsx";
+import UsageAnchor from "../usage/usage.tsx";
+import VideoAnchor from "../video/video.tsx";
 import { type AltTabCard, AltTabSwitcher } from "../shell/alttabswitcher.tsx";
 import { ShellChrome } from "../shell/ShellChrome.tsx";
-import { windowApp } from "../windowregistry.tsx";
 import { DesktopSurface } from "./desktop.tsx";
 import { WINDOW_MIN_HEIGHT, WindowFrame, type WindowSnapshot } from "./windowframe.tsx";
+
+/** One windowed app: the anchor component with the embedded contract and
+ * the spawn geometry the frame opens at. */
+export type WindowApp = {
+  component: ComponentType<{ embedded?: boolean }>;
+  spawn: { width: number; height: number };
+};
+
+/** the anchor components of the catalog, by app id — the binding edge of
+ * the root window logic (the only react-aware map of the theme) */
+const ANCHORS: Record<string, ComponentType<{ embedded?: boolean }>> = {
+  chat: ChatBody,
+  calculator: CalculatorAnchor,
+  docs: DocsAnchor,
+  image: ImageAnchor,
+  games: GamesAnchor,
+  console: ConsoleAnchor,
+  usage: UsageAnchor,
+  settings: SettingsAnchor,
+  projects: ProjectsAnchor,
+  audio: AudioAnchor,
+  video: VideoAnchor,
+};
+
+/** binds one catalog row to its component: the anchors bind by id, the
+ * family rows bind to the power clip frame of their subpath */
+function bindentry(id: string, entry: WindowEntry): WindowApp {
+  if (entry.kind === "family") {
+    const slug = entry.slug ?? id;
+    return {
+      component: () => <FamilyFrame slug={slug} title={slug} />,
+      spawn: windowspawn(id),
+    };
+  }
+  const anchor = ANCHORS[id];
+  if (!anchor) {
+    return { component: () => null, spawn: windowspawn(id) };
+  }
+  return { component: anchor, spawn: windowspawn(id) };
+}
+
+/** The windowed apps of the desktop: the pure root catalog with the
+ * components bound. The chat window stays bespoke inside the workspace (its
+ * session body is the chat subapp). */
+const WINDOW_APPS: Record<string, WindowApp> = Object.fromEntries(
+  Object.entries(windowcatalog()).map(([id, entry]) => [id, bindentry(id, entry)]),
+);
+
+/** Reads one windowed app by id, or undefined when the app still navigates. */
+export function windowApp(id: string): WindowApp | undefined {
+  return WINDOW_APPS[id];
+}
 
 type ShellWorkspaceProps = {
   /** the family slug of a /<slug> arrival route — the window opens on mount */
@@ -72,10 +137,11 @@ function appById(id: string): DesktopApp {
 
 /** default floating snapshot for a freshly opened window (the daedalOS
  * cascade offset — each new window lands 26px down-right of the last; the
- * spawn geometry comes from the window registry when the app declares one) */
+ * spawn geometry comes from the root window logic when the app declares
+ * one) */
 function defaultSnapshot(id: string, title: string, openCount: number): WindowSnapshot {
   const cascade = (openCount % 4) * 26;
-  const spawn = windowApp(id)?.spawn;
+  const spawn = windowspawn(id);
   const width = Math.min(spawn?.width ?? 760, Math.max(460, Math.round(window.innerWidth * 0.52)));
   const height = Math.max(
     WINDOW_MIN_HEIGHT,

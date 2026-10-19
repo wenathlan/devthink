@@ -6,7 +6,7 @@
  * Apps with an entry in the premium drawn set (Sol/shell/appicons.tsx),
  * reached by the registry `iconset` key, render their animated icon filling
  * the whole tile — the tile keeps its box and its material while the icon
- * brings its own painted depth. Every other app falls back to its lucide
+ * brings its own painted depth. Every other app falls back to its fluent
  * glyph at a crisp 1.7 stroke or the official DevThink logo mark, and an
  * `iconset` key without an asset in the set resolves to the same graceful
  * fallback — never a blank tile. The tile tint starts from the registry color
@@ -85,7 +85,7 @@ function useAppStory(app: DesktopApp): string {
  *
  * @param iconset the registry `iconset` key of the app.
  * @returns the drawn icon of the set, or undefined when the key carries no
- * asset — the tile then falls back to the lucide glyph, never a blank tile.
+ * asset — the tile then falls back to the fluent glyph, never a blank tile.
  */
 function premiumIcon(iconset: string | undefined): ComponentType<AppIconProps> | undefined {
   return iconset === undefined ? undefined : APP_ICONS[iconset];

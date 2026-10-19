@@ -9,7 +9,7 @@
  * imported here.
  */
 
-import { AlertTriangle, RotateCcw } from "lucide-react";
+import { ArrowClockwiseRegular, WarningRegular } from "@fluentui/react-icons";
 import { Component, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { Toaster } from "sonner";
@@ -34,11 +34,11 @@ class WorkbenchErrorBoundary extends Component<{ children: ReactNode }, { error:
     if (!error) return this.props.children;
     return (
       <main className="workbench-failure" role="alert">
-        <AlertTriangle size={34} />
+        <WarningRegular fontSize={34} aria-hidden="true" />
         <p>DevThink could not render this workspace frame.</p>
         <pre>{error.stack}</pre>
         <button type="button" onClick={() => window.location.reload()}>
-          <RotateCcw size={14} />
+          <ArrowClockwiseRegular fontSize={14} aria-hidden="true" />
           reload local workbench
         </button>
       </main>

@@ -24,7 +24,7 @@ export type DesktopApp = {
   detail: string;
   /** the identity color of the app (the premium icon asset carries the story) */
   tint: string;
-  /** lucide glyph; null renders the official DevThink logo mark */
+  /** fluent glyph; null renders the official DevThink logo mark */
   icon: LucideIcon | null;
   /** the key of the premium animated icon asset in the platform.icons catalog */
   iconset?: string;
