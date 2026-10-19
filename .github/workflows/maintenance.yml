@@ -266,7 +266,15 @@ jobs:
       - name: Land the rung on main through the archive-tagged automation branch
         if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
         env:
-          GH_TOKEN: ${{ github.token }}
+          # the automation branch carries workflow reference updates (the
+          # versioned github actions stamps the propose job writes), and a
+          # GITHUB_TOKEN can never push those — the GH013 wall refuses any
+          # github app token that creates or updates a workflow file — so
+          # the owner's PAT rides the whole landing (the push, the pull
+          # request, the watch and the squash) whenever the secret exists;
+          # the app token keeps the lane standing when it does not.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
+          OWNER_PAT: ${{ secrets.OWNER_PAT }}
           NEXT: ${{ steps.rung.outputs.next }}
         run: |
           set -euo pipefail
@@ -284,6 +292,12 @@ jobs:
           # the squash merge replaces it, so the ladder keeps its history
           # without keeping its branches.
           git tag "archive/${BRANCH}"
+          # the owner PAT answers the push the app token cannot deliver:
+          # the rung carries .github/workflows references and the GH013
+          # wall refuses every github app token on those files.
+          if [ -n "$OWNER_PAT" ]; then
+            git remote set-url origin "https://x-access-token:${OWNER_PAT}@github.com/${GITHUB_REPOSITORY}.git"
+          fi
           git push --force-with-lease origin "$BRANCH" "refs/tags/archive/${BRANCH}"
           PR_URL="$(gh pr create --base main --head "$BRANCH" --title "chore: land the automated maintenance rung v${NEXT}" --body "Automated rung of the DevThink dependency ladder. This pull request carries every non-breaking maintenance update available at run time (npm dependencies, engine recommendations, versioned GitHub Actions references), the next patch rung derived by arithmetic over package.json, the complete metadata restamp, the re-frozen apifreeze artifact and the recorded permission baseline. The verify pipeline below is the gate: when it answers green the rung squashes onto main, the automation branch is archived under its tag and deleted, and the release workflow is dispatched on the new version tag; when it answers red the pull request closes and the branch is deleted, so no rung ever stays open.")"
           echo "Pull request: ${PR_URL}"
