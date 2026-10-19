@@ -9,14 +9,14 @@ import type { CalculatorKeyAction } from "../../calculator";
 /** one kind of memory key the strip answers with. */
 export type CalculatorMemoryKey = "mc" | "mr" | "m+" | "m-";
 
-type KeypadCell = { label: string; action: CalculatorKeyAction; muted?: boolean };
+type KeypadCell = { label: string; action: CalculatorKeyAction; muted?: boolean; aria?: string };
 
 const KEYPAD_ROWS: KeypadCell[][] = [
   [
     { label: "C", action: { kind: "clear" }, muted: true },
     { label: "(", action: { kind: "lparen" }, muted: true },
     { label: ")", action: { kind: "rparen" }, muted: true },
-    { label: "\u232b", action: { kind: "backspace" }, muted: true },
+    { label: "\u232b", action: { kind: "backspace" }, muted: true, aria: "backspace" },
   ],
   [
     { label: "7", action: { kind: "digit", digit: "7" } },
@@ -44,11 +44,11 @@ const KEYPAD_ROWS: KeypadCell[][] = [
   ],
 ];
 
-const MEMORY_KEYS: { label: string; kind: CalculatorMemoryKey }[] = [
-  { label: "MC", kind: "mc" },
-  { label: "MR", kind: "mr" },
-  { label: "M+", kind: "m+" },
-  { label: "M−", kind: "m-" },
+const MEMORY_KEYS: { label: string; kind: CalculatorMemoryKey; aria: string }[] = [
+  { label: "MC", kind: "mc", aria: "memory clear" },
+  { label: "MR", kind: "mr", aria: "memory recall" },
+  { label: "M+", kind: "m+", aria: "memory add" },
+  { label: "M−", kind: "m-", aria: "memory subtract" },
 ];
 
 export function CalculatorKeypad({
@@ -64,6 +64,7 @@ export function CalculatorKeypad({
           key={key.kind}
           type="button"
           className="dtw-calc__key dtw-calc__key--memory"
+          aria-label={key.aria}
           onClick={() => onmemory(key.kind)}
         >
           {key.label}
@@ -74,13 +75,18 @@ export function CalculatorKeypad({
           key={cell.label}
           type="button"
           className={cell.muted ? "dtw-calc__key dtw-calc__key--muted" : "dtw-calc__key"}
-          aria-label={cell.action.kind === "digit" ? `digit ${cell.label}` : cell.label}
+          aria-label={cell.aria ?? (cell.action.kind === "digit" ? `digit ${cell.label}` : cell.label)}
           onClick={() => onkey(cell.action)}
         >
           {cell.label}
         </button>
       ))}
-      <button type="button" className="dtw-calc__key dtw-calc__key--equals" onClick={() => onkey({ kind: "equals" })}>
+      <button
+        type="button"
+        className="dtw-calc__key dtw-calc__key--equals"
+        aria-label="equals"
+        onClick={() => onkey({ kind: "equals" })}
+      >
         =
       </button>
     </div>

@@ -24,12 +24,17 @@ import {
   memoryClear,
   memoryRecallExpression,
   memorySubtract } from "../../calculator";
+import { osAppLabels } from "../../catalog";
 import { CalculatorDisplay } from "./calculatordisplay.tsx";
 import { CalculatorHistory, type CalculatorHistoryRow } from "./calculatorhistory.tsx";
 import { CalculatorKeypad, type CalculatorMemoryKey } from "./calculatorkeypad.tsx";
 
 /** how many answers the history keeps before the oldest one leaves. */
 const HISTORY_LIMIT = 8;
+
+/** the window title rides the catalog label row, never a hardcoded literal
+ * (the bare id keeps the heading honest if the row is missing). */
+const CALCULATOR_LABEL = osAppLabels().calculator;
 
 /** The calculator page: the Windows body when embedded (the desktop window
  * hosts it without the shell), the full surface with the taskbar on the
@@ -139,7 +144,7 @@ export default function Calculator({ embedded }: { embedded?: boolean }) {
           </span>
         </nav>
         <div className="dtw-content">
-          <h1 className="dtw-title">Calculator</h1>
+          <h1 className="dtw-title">{CALCULATOR_LABEL?.name ?? "Calculator"}</h1>
           <section className="dtw-card dtw-calc__instrument">
             <CalculatorDisplay expression={expression} answer={answer} error={error} memory={memory} />
             <CalculatorKeypad onkey={pressKey} onmemory={pressMemory} />

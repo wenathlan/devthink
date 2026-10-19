@@ -15,10 +15,14 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ShellChrome } from "@/shell/ShellChrome";
-import { type NativeApp, nativeApps, type StudioAsset, studioAssets } from "../../catalog";
+import { type NativeApp, nativeApps, osAppLabels, type StudioAsset, studioAssets } from "../../catalog";
 import { queuestudiorender } from "../../runner";
 import { ImageEngine } from "./imageengine.tsx";
 import { ImageStills } from "./imagestills.tsx";
+
+/** the window title rides the catalog label row, never a hardcoded literal
+ * (the bare id keeps the heading honest if the row is missing). */
+const IMAGE_LABEL = osAppLabels().image;
 
 /** Queues one still and surfaces the answer with the sonner toast the
  * workbench already uses: the reason text is the honest answer of the queue
@@ -58,7 +62,7 @@ export default function ImageStudio({ embedded }: { embedded?: boolean }) {
           </span>
         </nav>
         <div className="dtw-content">
-          <h1 className="dtw-title">Image</h1>
+          <h1 className="dtw-title">{IMAGE_LABEL?.name ?? "Image"}</h1>
           <ImageEngine app={engine} />
           <ImageStills rows={assets} loaded={loaded} onRender={queueRender} />
         </div>

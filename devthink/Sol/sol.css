@@ -10954,7 +10954,19 @@ span[data-tile] {
 
 /* ==== the calculator.css skins — merged from the app folder, the folder carries tsx only ==== */
 /* calculator app skins — the instrument over the dtw kit. merges into the
- * kit section of sol.css. */
+ * kit section of sol.css. the app scope retunes the kit accents for the
+ * light window body: the graphite identity (#9aa7b4, the registry tint)
+ * rides the memory flag, the hover washes and the active-indicator pill,
+ * while the equals key — the one content CTA — answers the light-mode
+ * Windows accent (#0067c0) the way the native calculator does. the indigo
+ * trident defaults never enter this window. */
+.dtw-calc {
+  --dtv3-sig: #9aa7b4;
+  --color-win: #0067c0;
+}
+.dtw-calc .dtw-navrow[data-active="true"]::before {
+  background: #9aa7b4;
+}
 .dtw-calc__instrument {
   gap: 14px;
 }
@@ -11024,7 +11036,7 @@ span[data-tile] {
   background: transparent;
 }
 .dtw-calc__key--memory {
-  min-height: 30px;
+  min-height: 44px;
   border: 0;
   background: transparent;
   color: var(--dtv3-ink-3);
@@ -11045,6 +11057,13 @@ span[data-tile] {
 .dtw-calc__key--equals:hover {
   background: color-mix(in srgb, var(--color-win) 88%, #fff);
 }
+/* the keyboard focus ring: the global ring answers the dark canvas with
+ * #dfe5ee, invisible over this light body — the keys carry their own
+ * slate stroke instead */
+.dtw-calc__key:focus-visible {
+  outline: 2px solid var(--dtv3-ink-1);
+  outline-offset: 2px;
+}
 .dtw-calc__rows {
   display: grid;
   margin: 0;
@@ -11064,7 +11083,48 @@ span[data-tile] {
 
 /* ==== the games.css skins — merged from the app folder, the folder carries tsx only ==== */
 /* games app skins — the runner rows over the dtw kit. merges into the kit
- * section of sol.css. */
+ * section of sol.css. the app scope retunes the kit accents: the coral
+ * identity (#e8563f, the registry tint) rides the active-indicator pill,
+ * the game-kind status dot and the Launch content CTA (dark slate ink for
+ * the AA pair), while the hover washes stay neutral slate — the identity
+ * never rides the chrome, and the indigo trident defaults never enter
+ * this window. every interactive row answers the 44px touch law with a
+ * press scale and a visible focus ring. */
+.dtw-games {
+  --dtv3-sig: var(--dtv3-ink-1);
+  --color-win: #e8563f;
+}
+.dtw-games .dtw-navrow {
+  min-height: 44px;
+  transition:
+    background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 100ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-games .dtw-navrow:active {
+  transform: scale(0.98);
+}
+.dtw-games .dtw-action {
+  min-height: 44px;
+  transition:
+    background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 100ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-games .dtw-action:active {
+  transform: scale(0.96);
+}
+.dtw-games .dtw-action--primary {
+  border-color: transparent;
+  background: #e8563f;
+  color: #0f172a;
+}
+.dtw-games .dtw-action--primary:hover {
+  background: color-mix(in srgb, #e8563f 88%, #fff);
+}
+.dtw-games .dtw-navrow:focus-visible,
+.dtw-games .dtw-action:focus-visible {
+  outline: 2px solid var(--dtv3-ink-1);
+  outline-offset: 2px;
+}
 .dtw-games__rows {
   display: grid;
 }
@@ -11146,7 +11206,38 @@ span[data-tile] {
 
 /* ==== the image.css skins — merged from the app folder, the folder carries tsx only ==== */
 /* image app skins — the stills rows over the dtw kit. merges into the kit
- * section of sol.css. */
+ * section of sol.css. the app scope retunes the kit accents: the violet
+ * identity (#c084fc, the registry tint) rides the active-indicator pill
+ * and the Render content CTA (dark slate ink for the AA pair), while the
+ * hover washes stay neutral slate — the identity never rides the chrome,
+ * and the indigo trident defaults never enter this window. the render
+ * action answers the 44px touch law with a press scale and a visible
+ * focus ring. */
+.dtw-image {
+  --dtv3-sig: var(--dtv3-ink-1);
+  --color-win: #c084fc;
+}
+.dtw-image .dtw-action {
+  min-height: 44px;
+  transition:
+    background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 100ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-image .dtw-action:active {
+  transform: scale(0.96);
+}
+.dtw-image .dtw-action--primary {
+  border-color: transparent;
+  background: #c084fc;
+  color: #0f172a;
+}
+.dtw-image .dtw-action--primary:hover {
+  background: color-mix(in srgb, #c084fc 88%, #fff);
+}
+.dtw-image .dtw-action:focus-visible {
+  outline: 2px solid var(--dtv3-ink-1);
+  outline-offset: 2px;
+}
 .dtw-image__rows {
   display: grid;
   margin: 0;

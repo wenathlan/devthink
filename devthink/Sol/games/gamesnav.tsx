@@ -1,8 +1,8 @@
 /**
  * gamesnav.tsx — the nav pane of the games app: the Windows 11 settings
- * rail, one 36px row per runner filter with its real count beside it and
- * the 3px accent pill marking the selection. Loose component of the games
- * page.
+ * rail, one 44px touch-honest row per runner filter with its real count
+ * beside it and the 3px accent pill marking the selection. Loose component
+ * of the games page.
  */
 import {AppGenericRegular, BoardGamesRegular, GridRegular} from "@fluentui/react-icons";
 

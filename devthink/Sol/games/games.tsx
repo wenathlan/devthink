@@ -14,10 +14,14 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ShellChrome } from "@/shell/ShellChrome";
-import { type RunnerBinary, runnerBinaries } from "../../catalog";
+import { osAppLabels, type RunnerBinary, runnerBinaries } from "../../catalog";
 import { queuebinarylaunch } from "../../runner";
 import { GamesList } from "./gameslist.tsx";
 import { type GamesFilter, GamesNav } from "./gamesnav.tsx";
+
+/** the window title rides the catalog label row, never a hardcoded literal
+ * (the bare id keeps the heading honest if the row is missing). */
+const GAMES_LABEL = osAppLabels().games;
 
 /** The games app: the Windows body when embedded (the desktop window hosts
  * it without the shell), the full surface with the taskbar on the route. */
@@ -56,7 +60,7 @@ export default function Games({ embedded }: { embedded?: boolean }) {
           onSelect={setFilter}
         />
         <div className="dtw-content">
-          <h1 className="dtw-title">Games</h1>
+          <h1 className="dtw-title">{GAMES_LABEL?.name ?? "Games"}</h1>
           <GamesList rows={rows} loaded={loaded} onLaunch={launch} />
           <section className="dtw-card">
             <h2 className="dtw-cardtitle">Runner boundary</h2>
