@@ -20,7 +20,11 @@ describe("the release candidate verification matrix artifact", () => {
     expect(source).toContain("process.exitCode = 1");
   });
 
-  it("covers every matrix cell with a passing outcome once the gate has run", async () => {
+  /* the matrix lane spawns the whole verification matrix as subprocesses
+   * (every browser family cell the gate chain joins), and a cold CI runner
+   * walks past the default five second window the lottery hit on the
+   * bun lane — the cell walk carries its own sixty second budget. */
+  it("covers every matrix cell with a passing outcome once the gate has run", { timeout: 60_000 }, async () => {
     const artifactpath = "tests/artifacts/matrixverify.json";
     const built = existsSync("dist/index.js");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
