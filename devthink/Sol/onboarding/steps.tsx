@@ -10,8 +10,8 @@
  * motion; this file only marks the beat).
  */
 
-import { SolLogoMark } from "../panel/logo.tsx";
 import { DESKTOP_APPS, type DesktopApp } from "../../appregistry.ts";
+import { SolLogoMark } from "../panel/logo.tsx";
 import { AppTile } from "../shell/apptile.tsx";
 
 /** One frame of the tour: art + heading + body. */

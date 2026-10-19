@@ -11,7 +11,7 @@
  * every quiet hover, the 2px accent focus underline. English text only —
  * the gtx translation runs at runtime.
  */
-import {ArrowUpRightRegular as ArrowUpRight, CubeRegular as Boxes, GlobeRegular as Globe, PuzzlePieceRegular as Puzzle, WindowConsoleRegular as SquareTerminal, type FluentIcon as LucideIcon} from "@fluentui/react-icons";
+import {ArrowUpRightRegular as ArrowUpRight, CubeRegular as Boxes, type FluentIcon, GlobeRegular as Globe, PuzzlePieceRegular as Puzzle, WindowConsoleRegular as SquareTerminal } from "@fluentui/react-icons";
 
 /** the baked release version (vite define — see vite.config.ts) */
 declare const __dtversion__: string;
@@ -24,7 +24,7 @@ const RELEASES = "https://github.com/wenathlan/devthink/releases";
 const STRIP_SHADOW = "0 1px 2px rgb(0 0 0 / 26%), 0 3px 12px rgb(0 0 0 / 12%)";
 
 type ChannelCard = {
-  icon: LucideIcon;
+  icon: FluentIcon;
   channel: string;
   asset: string;
   note: string;

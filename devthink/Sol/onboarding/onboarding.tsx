@@ -18,6 +18,7 @@
  * The choreography rides the Web Animations API (no stylesheet keyframes)
  * and every effect answers the reduced-motion query by skipping itself.
  */
+import { DismissRegular as X } from "@fluentui/react-icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { writeonboardingstage } from "../../onboardingstate";
@@ -50,9 +51,11 @@ function motionReduced(): boolean {
 /**
  * Onboarding — the frame-a-frame tour. The window chrome carries the real
  * close glyph (close = skip = seen); the footer carries back/next/finish and
- * the quiet skip, every control at least 44px tall; the keyboard walks the
- * frames (→/←/Enter, Esc skips). Every exit raises the onboarding stage once
- * through onboardingstate.ts, then navigates to /explore.
+ * the quiet skip, every control at least 44px tall with the press scale of
+ * the touch law; the keyboard walks the frames (→/←/Enter, Esc skips —
+ * Enter yields to a focused control so a button press never double-fires).
+ * Every exit raises the onboarding stage once through onboardingstate.ts,
+ * then navigates to /explore.
  */
 export default function Onboarding() {
   const [, navigate] = useLocation();
@@ -80,7 +83,10 @@ export default function Onboarding() {
   useEffect(() => {
     const onkey = (event: KeyboardEvent) => {
       if (event.key === "Escape") finish();
-      if (event.key === "ArrowRight" || event.key === "Enter") next();
+      // Enter on a focused button already answers its click — the walk must
+      // not double-fire, so the key yields to the control (→/← never conflict)
+      const onControl = event.target instanceof HTMLElement && event.target.closest("button") !== null;
+      if (event.key === "ArrowRight" || (event.key === "Enter" && !onControl)) next();
       if (event.key === "ArrowLeft") back();
     };
     window.addEventListener("keydown", onkey);
@@ -153,9 +159,7 @@ export default function Onboarding() {
           </span>
           <span className="ob-caption">onboarding</span>
           <button type="button" aria-label="close onboarding" onClick={finish} className="ob-close">
-            <svg viewBox="0 0 10 10" width="10" height="10" aria-hidden="true">
-              <path d="M0 0 L10 10 M10 0 L0 10" stroke="currentColor" strokeWidth="1" fill="none" />
-            </svg>
+            <X fontSize={14} aria-hidden="true" />
           </button>
         </header>
 

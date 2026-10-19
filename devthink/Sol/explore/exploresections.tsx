@@ -11,8 +11,8 @@
  * constellation, the runners answer in the panel and the launcher page).
  */
 
-import type { FamilySite, NativeApp, Recipe, RunnerBinary, StudioAsset, StudioTrack } from "../../catalog";
 import { DESKTOP_APPS, PINNED_APPS } from "../../appregistry.ts";
+import type { FamilySite, NativeApp, Recipe, RunnerBinary, StudioAsset, StudioTrack } from "../../catalog";
 import { DeckCell, TRYLLE_CARD_SHADOW, TRYLLE_CARD_SHADOW_RAISED } from "./launchdeck.tsx";
 
 /** the studio labels of the made assets, by their catalog studio field (any

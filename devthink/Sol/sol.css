@@ -9891,7 +9891,11 @@ span[data-tile] {
   color: var(--color-ink-2);
 }
 .ob-close:hover {
-  background: rgb(255 0 0 / 0.8);
+  background: var(--color-close);
+  color: rgb(255 255 255);
+}
+.ob-close:active {
+  background: var(--color-close-deep);
   color: rgb(255 255 255);
 }
 .ob-close:focus-visible {
@@ -9981,11 +9985,17 @@ span[data-tile] {
   gap: 8px;
 }
 
-/* the footer buttons: quiet skip, flat back, accent primary — all 44px */
+/* the footer buttons: quiet skip, flat back, accent primary — all 44px,
+ * each with the press scale of the touch law (the section law keeps the
+ * transition on transform only; state colors switch instantly) */
 .ob-btn {
   min-height: 44px;
   border-radius: 6px;
   font-size: 14px;
+  transition: transform 100ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.ob-btn:active {
+  transform: scale(0.97);
 }
 .ob-btn--ghost {
   padding: 0 12px;
@@ -10022,7 +10032,9 @@ span[data-tile] {
   background: var(--color-win);
   font-size: 14px;
   font-weight: 600;
-  color: var(--color-win-ink);
+  /* the theme-flipping accent ink (dark ink on the dark accent, white ink on
+   * the light accent) keeps the 4.5:1 gate in both themes */
+  color: var(--win-accent-ink, var(--color-win-ink));
   box-shadow:
     inset 0 1.2px 0 0 rgb(255 255 255 / 45%),
     inset 0 8px 14px -6px rgb(255 255 255 / 22%),
@@ -12346,4 +12358,43 @@ span[data-tile] {
   font: 13px var(--dt-mono);
   outline: none;
   caret-color: #4ade80;
+}
+
+/* ==== the docs.css skins — merged from the app folder, the folder carries tsx only ==== */
+/* docs app skins — the documentation library keeps the neutral scheme of the
+ * dtw kit: no registry tint rides this window (docs is the template every
+ * subapp adopted), the windows light accent #0067c0 keeps the
+ * active-indicator pill, and the hover washes stay neutral slate the way
+ * every redesigned sibling answers them (--dtv3-sig resolves to the ink).
+ * the touch and focus law reaches every interactive control: the section
+ * nav rows climb from 36px and the command-block copy action from 28px to
+ * the 44px target, each with a press scale and the visible slate focus
+ * ring the light window body was missing (the global ring answers the
+ * dark canvas). */
+.dtw-docs {
+  --dtv3-sig: var(--dtv3-ink-1);
+}
+.dtw-docs .dtw-navrow {
+  min-height: 44px;
+  transition:
+    background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 100ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-docs .dtw-navrow:active {
+  transform: scale(0.98);
+}
+.dtw-docs .dtw-navrow:focus-visible,
+.dtw-docs .dtw-codecopy:focus-visible {
+  outline: 2px solid var(--dtv3-ink-1);
+  outline-offset: 2px;
+}
+.dtw-docs .dtw-codecopy {
+  min-height: 44px;
+  padding: 0 12px;
+  transition:
+    background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 100ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-docs .dtw-codecopy:active {
+  transform: scale(0.96);
 }

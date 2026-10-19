@@ -48,8 +48,12 @@ export function WindowEdgeChrome({ maximized, onMinimize, onMaximize, onClose }:
     };
   }, []);
 
-  const captionClass =
-    "grid h-9 w-11 place-items-center text-ink-2 transition-colors duration-[60ms] hover:bg-[rgb(136_136_136_/_0.2)] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none";
+  /** the shared caption grammar: the 36px caption cell with the visible
+   * focus ring — the hover fill rides each button's own class so the close
+   * red never fights a competing hover utility in the compiled sheet */
+  const captionBase =
+    "grid h-9 w-11 place-items-center text-ink-2 transition-colors duration-[60ms] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none";
+  const captionIdle = `${captionBase} hover:bg-[rgb(136_136_136_/_0.2)]`;
 
   return (
     <div
@@ -63,7 +67,7 @@ export function WindowEdgeChrome({ maximized, onMinimize, onMaximize, onClose }:
       </span>
       <span className="font-mono text-[11px] text-ink-2">explore — devthink</span>
       <span className="ml-auto flex items-center">
-        <button type="button" tabIndex={visible ? 0 : -1} aria-label="Minimize the landing" onClick={onMinimize} className={captionClass}>
+        <button type="button" tabIndex={visible ? 0 : -1} aria-label="Minimize the landing" onClick={onMinimize} className={captionIdle}>
           <Minus fontSize={13} aria-hidden="true" />
         </button>
         <button
@@ -71,7 +75,7 @@ export function WindowEdgeChrome({ maximized, onMinimize, onMaximize, onClose }:
           tabIndex={visible ? 0 : -1}
           aria-label={maximized ? "Restore the landing" : "Maximize the landing"}
           onClick={onMaximize}
-          className={captionClass}
+          className={captionIdle}
         >
           {maximized ? <Copy fontSize={11} aria-hidden="true" /> : <Square fontSize={11} aria-hidden="true" />}
         </button>
@@ -80,7 +84,7 @@ export function WindowEdgeChrome({ maximized, onMinimize, onMaximize, onClose }:
           tabIndex={visible ? 0 : -1}
           aria-label="Close and return to the intro"
           onClick={onClose}
-          className={`${captionClass} rounded-none hover:bg-[rgb(255_0_0_/_0.8)] hover:text-white`}
+          className={`${captionBase} rounded-none hover:bg-(--color-close) hover:text-white active:bg-(--color-close-deep) active:text-white`}
         >
           <X fontSize={14} aria-hidden="true" />
         </button>

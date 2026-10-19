@@ -1,7 +1,8 @@
 /**
  * nav.tsx — the nav pane of the docs app: the Windows 11 settings rail, one
- * 36px row per section, the 3px accent pill marking the selection and the
- * quiet hover wash. Loose component of the docs page.
+ * 44px row per section, the 3px accent pill marking the selection and the
+ * quiet hover wash (the docs skins at the tail of sol.css carry the touch
+ * law). Loose component of the docs page.
  */
 export type DocsSection = { id: string; label: string };
 

@@ -9,16 +9,23 @@
  * the content deck, hairline cards, the copyable command block and the
  * module rows the catalog serves. The old editorial pass (the shader stage,
  * the film grain, the folio heads) is retired — this body is the template
- * every subapp follows into the window contract.
+ * every subapp follows into the window contract. The docs skin keeps the
+ * neutral scheme of the kit (the windows light accent rides only the
+ * active-indicator pill) while the touch and focus law reaches the nav rows
+ * and the copy action — see the docs skins at the tail of sol.css.
  */
 import { useEffect, useState } from "react";
-import { coreModuleTable, type CoreModule } from "../../catalog";
+import { coreModuleTable, osAppLabels, type CoreModule } from "../../catalog";
 import { ShellChrome } from "@/shell/ShellChrome";
 import { DocsNav, type DocsSection } from "./nav.tsx";
 import { DocsCard, DocsCode } from "./card.tsx";
 import { DocsModules } from "./modules.tsx";
 
 const endpoints = ["GET /health", "GET /models", "POST /chat"];
+
+/** the window title rides the catalog label row, never a hardcoded literal
+ * (the bare id keeps the heading honest if the row is missing). */
+const DOCS_LABEL = osAppLabels().docs;
 
 const sections: readonly DocsSection[] = [
   { id: "quickstart", label: "Quickstart" },
@@ -39,14 +46,14 @@ export default function Docs({ embedded }: { embedded?: boolean }) {
 
   return (
     <main
-      className="dtw-app"
+      className="dtw-app dtw-docs"
       style={embedded ? { height: "100%", overflow: "auto" } : undefined}
     >
       {!embedded && <ShellChrome />}
       <div className="dtw-body">
         <DocsNav sections={sections} active={section} onSelect={setSection} />
         <div className="dtw-content">
-          <h1 className="dtw-title">Docs</h1>
+          <h1 className="dtw-title">{DOCS_LABEL?.name ?? "Docs"}</h1>
 
           {section === "quickstart" ? (
             <DocsCard title="Quickstart">

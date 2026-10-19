@@ -16,13 +16,13 @@
  *   window of that app on arrival, so the family never leaves the DevThink
  *   interface.
  *
- * The marks: every family tile carries ONE function motion (argan ripple,
- * cadria sway, debonair eq bars, forge ember, foundry tick, getry pulse,
- * saddle bob, stealthhead sweep, vault dial) — transform/opacity loops of
- * 2.2–8.4s alternate infinite, staggered through negative delays; the
- * devthink sigil draws itself (the one stroke-dashoffset story). The
- * stylesheet owns every motion (the `ldk-m-*` part hooks in sol.css) and
- * guards it under prefers-reduced-motion / [data-motion="reduced"].
+ * The marks: every family tile draws its identity inline (argan ripple
+ * rings, cadria sway, debonair eq bars, forge ember, foundry tick, getry
+ * pulse, saddle bob, stealthhead sweep, vault dial) with the per-part phase
+ * plumbing — the `ldk-m-*` hooks and the negative delays of sol.css — kept
+ * for the motion kit; the ambient mark loops were retired by the
+ * loop-eradication pass, so the tiles rest static while the devthink sigil
+ * still draws itself (the one stroke-dashoffset story).
  */
 import {ArrowUpRightRegular as ArrowUpRight} from "@fluentui/react-icons";
 import { type CSSProperties, type FormEvent, type ReactNode, useMemo, useState } from "react";
@@ -58,7 +58,7 @@ const FAMILY_TINT: Record<string, string> = {
   forge: "#fb923c",
   foundry: "#d97706",
   vault: "#eab308",
-  getry: "#60a5fa",
+  getry: "#8b5cf6",
   saddle: "#d6b483" };
 
 /** the neutral tint a family mark falls back to when the registry grows a
@@ -457,7 +457,7 @@ export function LaunchDeck() {
       <search>
         <form
           data-akash-beat
-          className="flex items-center gap-3 rounded-2xl bg-s0 px-4 py-2 ring-1 ring-hairline-strong"
+          className="flex items-center gap-3 rounded-2xl bg-s0 px-4 py-2 ring-1 ring-hairline-strong focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-(--color-focus)"
           style={{ boxShadow: FIELD_SHADOW }}
           onSubmit={openFirst}
         >
@@ -480,7 +480,7 @@ export function LaunchDeck() {
           )}
           <button
             type="submit"
-            className="inline-flex h-11 flex-none items-center gap-1.5 rounded-lg bg-win px-4 text-sm font-semibold text-win-ink transition-[filter,transform] duration-150 ease-micro hover:brightness-95 active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
+            className="inline-flex h-11 flex-none items-center gap-1.5 rounded-lg bg-win px-4 text-sm font-semibold text-(--win-accent-ink) transition-[filter,transform] duration-150 ease-micro hover:brightness-95 active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
             style={{ boxShadow: TRYLLE_PRIMARY_STACK }}
           >
             open
@@ -498,7 +498,7 @@ export function LaunchDeck() {
           <button
             key={entry.id}
             type="button"
-            className="min-h-11 rounded-md bg-s0 px-4 text-sm font-medium text-ink-2 ring-1 ring-hairline transition-[background-color,color] duration-150 ease-micro hover:bg-s1 hover:text-ink aria-pressed:bg-s2 aria-pressed:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
+            className="min-h-11 rounded-md bg-s0 px-4 text-sm font-medium text-ink-2 ring-1 ring-hairline transition-[background-color,color,transform] duration-150 ease-micro hover:bg-s1 hover:text-ink aria-pressed:bg-s2 aria-pressed:text-ink active:scale-[.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
             aria-pressed={scope === entry.id}
             onClick={() => setScope(entry.id)}
           >

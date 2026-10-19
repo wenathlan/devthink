@@ -8,7 +8,7 @@
 
 import {ArrowRightRegular as ArrowRight, ArrowCounterclockwiseRegular as RotateCcw} from "@fluentui/react-icons";
 /** Style: DevThink landing SaaS — the trylle ruler over the Windows canvas.
- * ONE hero zone on the graphite mica: the trylle hero (display face, H1 at
+ * ONE hero zone on the theme mica: the trylle hero (display face, H1 at
  * clamp(2.25rem, 5vw, 3.75rem), weight 600, tracking -0.02em, never italic)
  * over the campaign atmosphere (one warm radial light, the film grain
  * dissolves, one film-grain veil), then the prompt-giga command field and
@@ -38,14 +38,14 @@ import {
 import { peekonboardingstate } from "../../onboardingstate";
 import { SolLogoMark } from "../panel/logo.tsx";
 import { ShellChrome } from "../shell/ShellChrome.tsx";
-import { ExploreSections } from "./exploresections.tsx";
 import { DownloadRail } from "./downloadrail.tsx";
+import { ExploreSections } from "./exploresections.tsx";
 import { LaunchDeck, OsSigil, TRYLLE_PRIMARY_STACK } from "./launchdeck.tsx";
 import { HeroWaves } from "./waves.tsx";
 import { WindowEdgeChrome } from "./windowchrome.tsx";
 
-export * from "./exploresections.tsx";
 export * from "./downloadrail.tsx";
+export * from "./exploresections.tsx";
 export * from "./launchdeck.tsx";
 export * from "./waves.tsx";
 export * from "./windowchrome.tsx";
@@ -57,13 +57,13 @@ type FrameState = "windowed" | "maximized";
 const MICRO = "cubic-bezier(0.22, 1, 0.36, 1)";
 /** the soft layers under the hairline ring of the strip cards (Linear DNA) */
 const STRIP_SHADOW = "0 1px 2px rgb(0 0 0 / 26%), 0 3px 12px rgb(0 0 0 / 12%)";
-/** the dark mica floor of the doctrine: #202020 with the fixed indigo core */
+/** the mica floor of the doctrine: the theme token (--mica answers the dark
+ * #202020 radial #1a1f35 and the light #f3f3f3 radial #eff4f9 of the spec)
+ * so the hub rides the os surface of the live theme — never a hardcode */
 const MICA_STYLE = {
-  backgroundColor: "#202020",
-  backgroundImage: "radial-gradient(#1a1f35 25%, #202020 100%)",
-  backgroundAttachment: "fixed" } as const;
+  background: "var(--mica)" } as const;
 
-/* ---- the hero atmosphere: the named light source and the film grain — layered over the graphite mica, all
+/* ---- the hero atmosphere: the named light source and the film grain — layered over the mica floor, all
         presentational, pointer-transparent, riding the campaign recipes ---- */
 const heroLightStyle = {
   position: "absolute",
@@ -146,7 +146,7 @@ export default function Explore() {
       <button
         type="button"
         onClick={() => setLanding("open")}
-        className="fixed bottom-5 left-1/2 z-[80] flex min-h-11 -translate-x-1/2 items-center gap-2 rounded-lg bg-s1 px-4 text-sm font-medium text-ink ring-1 ring-hairline-strong transition-[background-color] duration-150 ease-micro hover:bg-s2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
+        className="fixed bottom-5 left-1/2 z-[80] flex min-h-11 -translate-x-1/2 items-center gap-2 rounded-lg bg-s1 px-4 text-sm font-medium text-ink ring-1 ring-hairline-strong transition-[background-color,transform] duration-150 ease-micro hover:bg-s2 active:scale-[.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
         style={{ boxShadow: STRIP_SHADOW }}
       >
         <SolLogoMark size={16} />
@@ -186,7 +186,7 @@ export default function Explore() {
                     <a
                       key={anchor.href}
                       href={anchor.href}
-                      className="transition-colors duration-150 ease-micro hover:text-ink motion-reduce:transition-none"
+                      className="rounded-xs transition-colors duration-150 ease-micro hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
                     >
                       {anchor.label}
                     </a>
@@ -195,7 +195,7 @@ export default function Explore() {
                 <button
                   type="button"
                   onClick={enterOs}
-                  className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-win px-5 text-sm font-semibold text-win-ink transition-[filter,transform] duration-150 ease-micro hover:brightness-95 active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
+                  className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-win px-5 text-sm font-semibold text-(--win-accent-ink) transition-[filter,transform] duration-150 ease-micro hover:brightness-95 active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
                   style={{ boxShadow: TRYLLE_PRIMARY_STACK }}
                 >
                   enter devthink
@@ -297,19 +297,19 @@ export default function Explore() {
               <nav aria-label="Institutional" className="flex items-center gap-5 text-sm text-ink-2">
                 <a
                   href="/about"
-                  className="transition-colors duration-150 ease-micro hover:text-ink motion-reduce:transition-none"
+                  className="rounded-xs transition-colors duration-150 ease-micro hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
                 >
                   about
                 </a>
                 <a
                   href="/terms"
-                  className="transition-colors duration-150 ease-micro hover:text-ink motion-reduce:transition-none"
+                  className="rounded-xs transition-colors duration-150 ease-micro hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
                 >
                   terms
                 </a>
                 <a
                   href="/policy"
-                  className="transition-colors duration-150 ease-micro hover:text-ink motion-reduce:transition-none"
+                  className="rounded-xs transition-colors duration-150 ease-micro hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
                 >
                   privacy
                 </a>
