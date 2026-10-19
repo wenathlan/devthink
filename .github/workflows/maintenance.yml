@@ -134,6 +134,16 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: cd devthink && bun run workflow:updates ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
+      - name: Restamp the family container image digests
+        if: steps.window.outputs.active == 'true'
+        # the scanner gate demands hash-pinned images and the container
+        # doctrine keeps no hand-written hash: the ladder resolves every
+        # literal runtime tag against its live registry digest and restamps
+        # the family Dockerfiles, so the pins answer automation exactly the
+        # way every other version stamp of the house does — the two literal
+        # runtime stages carry the stamps and every ARG-driven baseline
+        # keeps the tag form its build resolves.
+        run: cd devthink && bun run digests:sync
       - name: Stop when no maintenance updates are available
         if: steps.window.outputs.active == 'true'
         run: |

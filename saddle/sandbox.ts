@@ -1370,7 +1370,7 @@ export function bootSequence(
     `${stamp(onlinetime + 0.0837)} rusticl: opencl ${mesastack.opencl} on llvmpipe, features fp64 (fp16 default since 25.2)`,
     `${stamp(onlinetime + 0.091)} virtualgpu: identity ${gpuspec.name} [${gpuspec.pcivendor}:${gpuspec.pcidevice}] ${gpuspec.memtype} ${gpuspec.vrammib / 1024} GB`,
     `${stamp(onlinetime + 0.0922)} nvml shim: FAKE_MODEL="${gpuspec.name}" FAKE_VRAM=${gpuspec.smireportedmib} (fake-nvidia-smi adapter ready)`,
-    `${stamp(onlinetime + 0.1045)} saddle: virtual hardware engine v2.1.6, sandbox created -> running`,
+    `${stamp(onlinetime + 0.1045)} saddle: virtual hardware engine v2.1.7, sandbox created -> running`,
     `${stamp(onlinetime + 0.1047)} saddle: persistent workspace: ${humanbytes(quota)} quota, data stays with the sandbox id`,
     `${stamp(onlinetime + 0.1046)} Freeing unused kernel image memory`,
   ];
@@ -1488,7 +1488,7 @@ function neofetch(state: SandboxState): string {
   const info = [
     `root@${state.hostname}`,
     '-----------------',
-    'OS: saddle linux (virtual hardware engine v2.1.6)',
+    'OS: saddle linux (virtual hardware engine v2.1.7)',
     'Host: firecracker microvm (125 ms boot)',
     `Kernel: ${state.kernel}`,
     `Uptime: ${uptimeText}`,
@@ -1525,7 +1525,7 @@ function envText(state: SandboxState): string {
     ...mesaenv(state.vcpus),
     FAKE_MODEL: state.gpuspec.name,
     FAKE_VRAM: String(mig !== null ? mig.slicegb * 1024 : state.gpuspec.smireportedmib),
-    SADDLE_VERSION: '2.1.6',
+    SADDLE_VERSION: '2.1.7',
     SADDLE_SANDBOX: state.id,
     SADDLE_STATE: 'running',
     SADDLE_CPU: state.model,
@@ -1687,10 +1687,27 @@ export function dispatch(
   const rest = argv.slice(1).join(' ');
   try {
     /* echo is the one command with output redirection: the text is
-     * stored verbatim ("echo a > f" then "echo b >> f" yields "ab") */
-    const redirect = /^(.*?)\s*(>>|>)\s*([^>\s]+)\s*$/.exec(raw);
+     * stored verbatim ("echo a > f" then "echo b >> f" yields "ab").
+     * The split is a linear scan off the last '>' — the lazy regex it
+     * replaces walked every boundary of a space run and the redos gate
+     * refused the polynomial detour: the operator is the last '>' doubled
+     * or single, the filename the single whitespace-free token after it
+     * and the command everything before the operator. */
+    const gt = raw.lastIndexOf('>');
+    let redirect: { command: string; operator: string; file: string } | null = null;
+    if (gt >= 0) {
+      const file = raw.slice(gt + 1).trim();
+      if (file.length > 0 && !/\s/.test(file)) {
+        const doubled = gt > 0 && raw[gt - 1] === '>';
+        redirect = {
+          command: raw.slice(0, doubled ? gt - 1 : gt).trim(),
+          operator: doubled ? '>>' : '>',
+          file,
+        };
+      }
+    }
     if (redirect !== null) {
-      const commandpart = redirect[1].trim();
+      const commandpart = redirect.command;
       const redirhead = commandpart.split(/\s+/)[0];
       if (redirhead !== 'echo') {
         return {
@@ -1699,12 +1716,12 @@ export function dispatch(
         };
       }
       const text = commandpart.slice(redirhead.length).trim();
-      const norm = normalizepath(redirect[3]);
+      const norm = normalizepath(redirect.file);
       if (!norm.ok) {
-        return { output: `bash: echo: ${redirect[3]}: ${norm.error}`, exitCode: 1 };
+        return { output: `bash: echo: ${redirect.file}: ${norm.error}`, exitCode: 1 };
       }
       try {
-        if (redirect[2] === '>>') {
+        if (redirect.operator === '>>') {
           const existing = fs.read(norm.path);
           fs.write(norm.path, `${existing === null ? '' : existing.content}${text}`);
         } else {

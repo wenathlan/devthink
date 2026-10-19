@@ -382,7 +382,7 @@ RUN set -eux; \
     bun run build.ts --target "${buntarget}" --outfile /out/devthink; \
     test -x /out/devthink
 
-FROM gcr.io/distroless/cc-debian12:nonroot AS binary-runtime
+FROM gcr.io/distroless/cc-debian12:nonroot@sha256:9dac0a79194e45a7da0158a9c6da57b217585af0786db3845d1f0ec1a0dd182f AS binary-runtime
 ARG DEVTHINK_VERSION=2.0.117
 ARG DEVTHINK_REVISION=unknown
 
@@ -446,7 +446,7 @@ RUN set -eux; \
 # the self hosting runner — the default build target, the last stage of
 # the file)
 # ---------------------------------------------------------------------------
-FROM debian:trixie-slim AS runtime
+FROM debian:trixie-slim@sha256:a29215f6a35e51e22adffa17f89e9d2ef06214e64a2bad10d765c46aea49f11f AS runtime
 ARG DEVTHINK_VERSION=2.0.117
 ARG DEVTHINK_REVISION=unknown
 # the node runtime of the five-architecture surface: the verified tarball

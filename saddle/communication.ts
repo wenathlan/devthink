@@ -153,6 +153,20 @@ function redactstack(value) {
 
 export function jsonresponse(data, options = {}) { return new Response(JSON.stringify(redactstack(data)), { status: options.status ?? 200, headers: { "content-type": "application/json; charset=utf-8", "x-content-type-options": "nosniff", "referrer-policy": "no-referrer", ...(options.headers ?? {}) } }); }
 
+/** The failure code a response may carry: the caught value selects from the literal table — an Error object never reaches the wire (its shape answers a known code or the fallback answers), so no stack-derived byte rides the payload the way the exposure gate refused. */
+const responsecode = (error: unknown, fallback: string): string => {
+  const code = (error as { code?: unknown } | null | undefined)?.code;
+  switch (typeof code === "string" ? code : "") {
+    case "UNAUTHORIZED": return "UNAUTHORIZED";
+    case "RATE_LIMITED": return "RATE_LIMITED";
+    case "NOT_FOUND": return "NOT_FOUND";
+    case "METHOD_NOT_ALLOWED": return "METHOD_NOT_ALLOWED";
+    case "REQUEST_FAILED": return "REQUEST_FAILED";
+    case "CONTROL_REQUEST_FAILED": return "CONTROL_REQUEST_FAILED";
+    default: return fallback;
+  }
+};
+
 export function errorresponse(code, message, options = {}) { return jsonresponse({ error: { code, message, retryafter: options.retryafter ?? 0, requestid: options.requestid ?? `request${Date.now().toString(36)}` } }, { status: options.status ?? 400, headers: options.headers }); }
 
 export function sseresponse(events) {
@@ -253,7 +267,7 @@ export function saddleservice(options = {}) {
     const context = requestcontext(request, { path: url.pathname });
     const input = request.json ? await request.clone().json().catch(() => ({})) : request.body ?? {};
     let principal;
-    try { principal = await authorize(request, { verify: options.verify }); } catch (error) { console.error(error); return errorresponse(error.code ?? "UNAUTHORIZED", "authentication failed", { status: 401, requestid: context.requestid }); }
+    try { principal = await authorize(request, { verify: options.verify }); } catch (error) { console.error(error); return errorresponse(responsecode(error, "UNAUTHORIZED"), "authentication failed", { status: 401, requestid: context.requestid }); }
     const rate = limit.check({ user: request.headers?.get?.("x-api-key") ?? "anonymous", domain: url.hostname });
     if (!rate.allowed) return errorresponse("RATE_LIMITED", "request rate limit exceeded", { status: 429, retryafter: rate.retryafter, requestid: context.requestid });
     try {
@@ -266,7 +280,7 @@ export function saddleservice(options = {}) {
       const match = url.pathname.match(/^\/v1\/scrape\/([^/]+)$/);
       if (match && request.method === "GET") return jobs.has(match[1]) ? jsonresponse(jobs.get(match[1])) : errorresponse("NOT_FOUND", "task not found", { status: 404 });
       return errorresponse("NOT_FOUND", "route not found", { status: 404 });
-    } catch (error) { console.error(error); return errorresponse(error.code ?? "REQUEST_FAILED", "request failed", { status: error.code === "UNAUTHORIZED" ? 401 : 500, requestid: context.requestid }); }
+    } catch (error) { console.error(error); return errorresponse(responsecode(error, "REQUEST_FAILED"), "request failed", { status: error.code === "UNAUTHORIZED" ? 401 : 500, requestid: context.requestid }); }
   }
   return { handle, jobs };
 }
@@ -298,7 +312,7 @@ export function controlservice(options = {}) {
       return jsonresponse({ requestid: context.requestid, data: result }, { status: result.ok ? 200 : 409 });
     } catch (error) {
       console.error(error);
-      return errorresponse(error?.code ?? "CONTROL_REQUEST_FAILED", "control request failed", { status: error?.code === "UNAUTHORIZED" ? 401 : 400, requestid: context.requestid });
+      return errorresponse(responsecode(error, "CONTROL_REQUEST_FAILED"), "control request failed", { status: error?.code === "UNAUTHORIZED" ? 401 : 400, requestid: context.requestid });
     }
   }
 

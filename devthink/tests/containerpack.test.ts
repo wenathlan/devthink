@@ -24,10 +24,12 @@ describe("containerpack", () => {
     expect(dockerfile).toContain("FROM --platform=$BUILDPLATFORM ${NODE_IMAGE} AS builder");
     expect(dockerfile).toContain("COPY --from=builder /work /work");
     expect(dockerfile).toContain("FROM --platform=$BUILDPLATFORM ${NODE_IMAGE} AS binary-builder");
-    /* the base images answer by their registry tags (the family doctrine:
-    no hash string is hardcoded anywhere — the digests generate at build and
-    ride the sbom and attest records the release lane publishes). */
-    expect(dockerfile).toContain("FROM gcr.io/distroless/cc-debian12:nonroot AS binary-runtime");
+    /* the base images answer by their registry digests the ladder stamps
+    (the family doctrine evolved with the scanner gate: the tag stays
+    readable for the human, the digest pins the build, and the maintenance
+    rung restamps both — the digests also ride the sbom and attest records
+    the release lane publishes). */
+    expect(dockerfile).toMatch(/^FROM gcr\.io\/distroless\/cc-debian12:nonroot@sha256:[0-9a-f]{64} AS binary-runtime$/m);
     /* the runtime base is its own arg: the four-arch family surface rides
     the multi-architecture debian trixie slim base whose manifest answers
     every arch of the five-architecture family index (amd64, arm64, ppc64le,
@@ -40,13 +42,13 @@ describe("containerpack", () => {
     const nodebaseline = (await readFile(".nvmrc", "utf8")).trim();
     expect(dockerfile).toContain(`ARG NODE_RUNTIME_VERSION="${nodebaseline}"`);
     expect(dockerfile).toMatch(new RegExp(`^ARG NODE_IMAGE="node:${nodebaseline}-bookworm-slim"$`, "m"));
-    expect(dockerfile).toContain("FROM debian:trixie-slim AS runtime");
+    expect(dockerfile).toMatch(/^FROM debian:trixie-slim@sha256:[0-9a-f]{64} AS runtime$/m);
     expect(dockerfile).toContain("COPY --from=nodefetch /out /usr/local");
     /* the runner stage closes the file: it stays the default build target
     (a plain docker build and the publish lanes build the runner image, the
     single-binary surface stays behind its own --target) */
     const fromLines = [...dockerfile.matchAll(/^FROM .*$/gm)].map((match) => match[0]);
-    expect(fromLines.at(-1)).toBe("FROM debian:trixie-slim AS runtime");
+    expect(fromLines.at(-1)).toMatch(/^FROM debian:trixie-slim@sha256:[0-9a-f]{64} AS runtime$/);
   });
 
   it("resolves the compiled binary target from TARGETARCH so the arm64 image never carries an x64 binary", async () => {
