@@ -296,13 +296,14 @@ jobs:
           # extraheader through an includeif config file (the v7 credential
           # grammar), and the extraheader OUTRANKS the credentials embedded
           # in the remote url — the pat set-url alone never reaches the
-          # wire, the push still answered the app token the GH013 wall
-          # refuses. The pat now rides the header itself on every push the
-          # rung makes (the branch, the archive tag, the version tag):
-          # a command-level -c outranks every included config.
+          # wire. The pat rides the header itself on every push the rung
+          # makes (the branch, the archive tag, the version tag): a
+          # command-level -c outranks every included config, and the remote
+          # url stays CLEAN because a credentialed url beside the header
+          # answers two authorization headers the wire refuses with 400.
           PAT_HEADER=""
           if [ -n "$OWNER_PAT" ]; then
-            git remote set-url origin "https://x-access-token:${OWNER_PAT}@github.com/${GITHUB_REPOSITORY}.git"
+            git remote set-url origin "https://github.com/${GITHUB_REPOSITORY}.git"
             PAT_HEADER="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$OWNER_PAT" | base64 -w0)"
           fi
           if [ -n "$PAT_HEADER" ]; then
