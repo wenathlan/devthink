@@ -75,7 +75,7 @@ describe("containerpack", () => {
     const dockerfile = await readFile("Dockerfile", "utf8");
     expect(dockerfile).toContain("RUN export DEVTHINK_TEST_TIMEOUT_MS=900000 DEVTHINK_TEST_BUDGET_MS=10000");
     const vitestconfig = await readFile("vitest.config.ts", "utf8");
-    expect(vitestconfig).toContain("Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 5000)");
+    expect(vitestconfig).toContain("Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 30000)");
   });
 
   it("scales the smoke boot budget for the emulated legs so the five-arch build never flakes on qemu", async () => {
