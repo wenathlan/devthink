@@ -11,7 +11,27 @@
  * structure and presentation only, info never.
  */
 import type { FluentIcon as LucideIcon } from "@fluentui/react-icons";
-import { MusicNote2Regular as AudioLines, ChartMultipleRegular as BarChart3, BookOpenRegular as BookOpen, BoxRegular as Box, CubeRegular as Boxes, CalculatorRegular as Calculator, VideoClipRegular as Clapperboard, ClockRegular as Clock, TargetRegular as Crosshair, BuildingFactoryRegular as Factory, FolderRegular as FolderKanban, ToolboxRegular as Hammer, ImageRegular as Image, PlugConnectedRegular as PlugZap, SettingsRegular as Settings2, ShieldRegular as Shield, WindowConsoleRegular as TerminalSquare, VaultRegular as Vault, FlowchartRegular as Waypoints } from "@fluentui/react-icons";
+import {
+  MusicNote2Regular as AudioLines,
+  ChartMultipleRegular as BarChart3,
+  BookOpenRegular as BookOpen,
+  BoxRegular as Box,
+  CubeRegular as Boxes,
+  CalculatorRegular as Calculator,
+  VideoClipRegular as Clapperboard,
+  ClockRegular as Clock,
+  TargetRegular as Crosshair,
+  BuildingFactoryRegular as Factory,
+  FolderRegular as FolderKanban,
+  ToolboxRegular as Hammer,
+  ImageRegular as Image,
+  PlugConnectedRegular as PlugZap,
+  SettingsRegular as Settings2,
+  ShieldRegular as Shield,
+  WindowConsoleRegular as TerminalSquare,
+  VaultRegular as Vault,
+  FlowchartRegular as Waypoints,
+} from "@fluentui/react-icons";
 import { osAppLabels } from "./catalog.ts";
 
 /** how a desktop app opens */
@@ -87,30 +107,35 @@ const APP_BINDINGS: AppBinding[] = [
     id: "calculator",
     tint: "#9aa7b4",
     icon: Calculator,
+    iconset: "calculator",
     target: { kind: "route", href: "/calculator" },
   },
   {
     id: "image",
     tint: "#c084fc",
     icon: Image,
+    iconset: "image",
     target: { kind: "route", href: "/image" },
   },
   {
     id: "video",
     tint: "#f472b6",
     icon: Clapperboard,
+    iconset: "video",
     target: { kind: "route", href: "/video" },
   },
   {
     id: "audio",
     tint: "#d9962e",
     icon: AudioLines,
+    iconset: "audio",
     target: { kind: "route", href: "/audio" },
   },
   {
     id: "games",
     tint: "#e8563f",
     icon: Crosshair,
+    iconset: "games",
     target: { kind: "route", href: "/games" },
   },
   {

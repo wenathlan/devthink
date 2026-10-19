@@ -4,7 +4,6 @@
  * so the module direction stays one way at runtime (catalog.ts imports these values, never the reverse). */
 import type {
   AboutBlock,
-  OsAppLabel,
   AppIcon,
   AppIconSet,
   CoreModule,
@@ -12,6 +11,8 @@ import type {
   LegalSection,
   MediaSlot,
   NativeApp,
+  OsAppLabel,
+  OsAppWindow,
   Principle,
   Recipe,
   Rung,
@@ -293,6 +294,47 @@ export const seedOsAppLabels: OsAppLabel[] = [
     name: "Saddle",
     detail: "The sandbox engine",
     pinned: true,
+  },
+];
+
+/** the os app windows: the reviewed seed rows of the spawn geometry (the
+ * offline answer of the database; the paired endpoint serves the same
+ * shape over HTTPS when it lands) */
+export const seedOsAppWindows: OsAppWindow[] = [
+  {
+    app: "calculator",
+    width: 520,
+    height: 660,
+  },
+  {
+    app: "chat",
+    width: 1040,
+    height: 720,
+  },
+  {
+    app: "docs",
+    width: 980,
+    height: 680,
+  },
+  {
+    app: "console",
+    width: 980,
+    height: 680,
+  },
+  {
+    app: "settings",
+    width: 960,
+    height: 680,
+  },
+  {
+    app: "video",
+    width: 960,
+    height: 680,
+  },
+  {
+    app: "gateway",
+    width: 980,
+    height: 680,
   },
 ];
 
@@ -651,6 +693,46 @@ export const seedAppIconSets: AppIconSet[] = [
       "warm stone gradient squircle with a top gloss, a blurred linen orb over a pedestal band, the gear and its teeth in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
     motion:
       "hover tilts the tile in perspective, the gear lifts, a sheen band sweeps once and the stone contact glow rises and breathes",
+  },
+  {
+    app: "calculator",
+    story: "#9aa7b4",
+    depth:
+      "graphite gradient squircle with a top gloss, a blurred mist orb over a pedestal band, the keypad grid and the equals key in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion:
+      "hover tilts the tile in perspective, the equals key presses, a sheen band sweeps once and the graphite contact glow rises and breathes",
+  },
+  {
+    app: "image",
+    story: "#c084fc",
+    depth:
+      "violet gradient squircle with a top gloss, a blurred lilac orb over a pedestal band, the picture frame with the mountain and the sun in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion:
+      "hover tilts the tile in perspective, the sun lifts, a sheen band sweeps once and the violet contact glow rises and breathes",
+  },
+  {
+    app: "video",
+    story: "#f472b6",
+    depth:
+      "magenta gradient squircle with a top gloss, a blurred blossom orb over a pedestal band, the clapperboard and its play triangle in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion:
+      "hover tilts the tile in perspective, the play triangle lifts, a sheen band sweeps once and the magenta contact glow rises and breathes",
+  },
+  {
+    app: "audio",
+    story: "#d9962e",
+    depth:
+      "brass gradient squircle with a top gloss, a blurred honey orb over a pedestal band, the sound bars over the note in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion:
+      "hover tilts the tile in perspective, the bars lift, a sheen band sweeps once and the brass contact glow rises and breathes",
+  },
+  {
+    app: "games",
+    story: "#e8563f",
+    depth:
+      "coral gradient squircle with a top gloss, a blurred shell orb over a pedestal band, the gamepad with its cross and studs in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion:
+      "hover tilts the tile in perspective, the gamepad lifts, a sheen band sweeps once and the coral contact glow rises and breathes",
   },
   {
     app: "argan",

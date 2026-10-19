@@ -13,6 +13,7 @@ import {
   seedFamilySites,
   seedMediaSlots,
   seedOsAppLabels,
+  seedOsAppWindows,
   seedPlatformApps,
   seedPolicySections,
   seedPrinciples,
@@ -72,6 +73,14 @@ export type OsAppLabel = {
   pinned: boolean;
 };
 
+export type OsAppWindow = {
+  app: string;
+  /** spawn width of the window frame in px */
+  width: number;
+  /** spawn height of the window frame in px */
+  height: number;
+};
+
 type CatalogKind =
   | "family.sites"
   | "family.recipes"
@@ -121,6 +130,16 @@ async function catalogRows<T>(kind: CatalogKind, seeds: T[]): Promise<T[]> {
 export function osAppLabels(): Record<string, OsAppLabel> {
   const rows: Record<string, OsAppLabel> = {};
   for (const row of seedOsAppLabels) rows[row.id] = row;
+  return rows;
+}
+
+/** the os app window table: the spawn geometry by app id — synchronous on
+ * purpose (the window logic reads it at spawn; the paired endpoint refresh
+ * lands with the database wave, the seeds are the offline answer of the
+ * static build) */
+export function osAppWindows(): Record<string, OsAppWindow> {
+  const rows: Record<string, OsAppWindow> = {};
+  for (const row of seedOsAppWindows) rows[row.app] = row;
   return rows;
 }
 

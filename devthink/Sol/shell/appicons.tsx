@@ -26,7 +26,9 @@
  * meter breathe, stream dash flow, docs page sway, compass seek, os pane
  * shimmer, gear turn 16s, argan signal ripple, cadria petal sway, debonair
  * equalizer 1.2s, stealthhead scope sweep ±2°, forge ember flicker, foundry
- * conveyor tick, vault dial rotation 16s, getry plate slide, saddle bob —
+ * conveyor tick, vault dial rotation 16s, getry plate slide, saddle bob,
+ * calculator key settle, image sun drift, video play pulse, audio equalizer
+ * wave, games pad roll —
  * running 1.2–16s alternate+infinite with staggered negative delays on
  * transform/opacity/filter (plus the sanctioned stroke-dashoffset flow),
  * wrapped in `@media not (prefers-reduced-motion: reduce)`. The live layer
@@ -53,7 +55,8 @@
  * gateway ripple · providers pulse · usage meter · routes draw · docs lift ·
  * explore compass · os lattice · settings turn · argan sway · cadria spin ·
  * debonair wave · stealthhead breathe · forge tap · foundry glow · vault dial ·
- * getry slide · saddle shine — each token drives both its ambient idle loop
+ * getry slide · saddle shine · calculator press · image rise · video play ·
+ * audio wave · games roll — each token drives both its ambient idle loop
  * and its hover story. prefers-reduced-motion (and the os `data-motion`
  * setting) turn every motion off into instant states; coarse pointers keep
  * the one-shot stories on tap but drop the sustained hover transforms.
@@ -216,7 +219,7 @@ html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIconSheenBand {
 .dtIconStory { transform-box: view-box; -webkit-transform-box: view-box; will-change: transform, filter; }
 .dtIcon-m-hand { transform-box: view-box; -webkit-transform-box: view-box; transform-origin: 49px 51px; }
 .dtIcon-m-card, .dtIcon-m-node, .dtIcon-m-cursor, .dtIcon-m-plug, .dtIcon-m-bar,
-.dtIcon-m-dot, .dtIcon-m-pane {
+.dtIcon-m-dot, .dtIcon-m-pane, .dtIcon-m-key, .dtIcon-m-sun, .dtIcon-m-play {
   transform-box: fill-box; -webkit-transform-box: fill-box; transform-origin: 50% 50%;
 }
 .dtIcon[data-motion="meter"] .dtIcon-m-bar,
@@ -266,6 +269,10 @@ html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIconSheenBand {
   .dtIcon[data-motion="dial"] .dtIcon-m-dial { animation: dtAmb-dial 16s linear infinite; }
   .dtIcon[data-motion="slide"] .dtIcon-m-plate { animation: dtAmb-plate 5.2s ease-in-out infinite alternate; animation-delay: calc(var(--dt-i, 0) * -600ms); }
   .dtIcon[data-motion="shine"] .dtIconStory { animation: dtAmb-saddle 3.4s ease-in-out infinite alternate; }
+  .dtIcon[data-motion="press"] .dtIcon-m-key { animation: dtAmb-press 4.4s ease-in-out infinite alternate; }
+  .dtIcon[data-motion="rise"] .dtIcon-m-sun { animation: dtAmb-rise 5.2s ease-in-out infinite alternate; }
+  .dtIcon[data-motion="play"] .dtIcon-m-play { animation: dtAmb-play 3.6s ease-in-out infinite alternate; }
+  .dtIcon[data-motion="roll"] .dtIconStory { animation: dtAmb-roll 4.6s ease-in-out infinite alternate; }
 }
 [data-motion="reduced"] .dtIcon .dtIconStory,
 [data-motion="reduced"] .dtIcon [class^="dtIcon-m-"] { animation: none !important; }
@@ -295,6 +302,10 @@ html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIconSheenBand {
 @keyframes dtAmb-dial { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes dtAmb-plate { from { transform: translateX(-1.5px); } to { transform: translateX(1.5px); } }
 @keyframes dtAmb-saddle { from { transform: translateY(0) rotate(0deg); } to { transform: translateY(-1.8px) rotate(1deg); } }
+@keyframes dtAmb-press { from { transform: translateY(0); } to { transform: translateY(1px); } }
+@keyframes dtAmb-rise { from { transform: translateY(0); } to { transform: translateY(-1.2px); } }
+@keyframes dtAmb-play { from { transform: scale(1); } to { transform: scale(1.07); } }
+@keyframes dtAmb-roll { from { transform: rotate(-1.6deg); } to { transform: rotate(1.6deg); } }
 
 /* the players each story declares (the root sets only its own) */
 .dtIcon[data-motion="bounce"] { --dt-story: dti-bounce .6s cubic-bezier(.3,1.35,.45,1); }
@@ -318,6 +329,10 @@ html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIconSheenBand {
 .dtIcon[data-motion="dial"] { --dt-dial: dti-dial .7s cubic-bezier(.32,.72,.24,1); }
 .dtIcon[data-motion="slide"] { --dt-plate: dti-plate .6s cubic-bezier(.3,1.2,.4,1); }
 .dtIcon[data-motion="shine"] { --dt-shine: dti-shine .85s cubic-bezier(.3,.6,.3,1); }
+.dtIcon[data-motion="press"] { --dt-key: dti-press .5s cubic-bezier(.3,1.2,.4,1); }
+.dtIcon[data-motion="rise"] { --dt-sun: dti-rise .7s cubic-bezier(.3,1.25,.4,1); }
+.dtIcon[data-motion="play"] { --dt-play: dti-play .55s cubic-bezier(.3,1.35,.45,1); }
+.dtIcon[data-motion="roll"] { --dt-story: dti-roll .8s ease-in-out; }
 
 /* the activation of the players while the icon is live */
 .dtIcon:is(:hover, [data-live="true"]) .dtIconStory,
@@ -422,6 +437,21 @@ html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-plate {
 .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-shine,
 .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-shine,
 html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-shine { animation: var(--dt-shine, none) both; }
+.dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-key,
+.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-key,
+.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-key,
+.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-key,
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-key { animation: var(--dt-key, none) both; }
+.dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-sun,
+.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-sun,
+.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-sun,
+.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-sun,
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-sun { animation: var(--dt-sun, none) both; }
+.dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-play,
+.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-play,
+.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-play,
+.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-play,
+html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-play { animation: var(--dt-play, none) both; }
 /* the furnace story also pushes the contact glow past its usual rise */
 .dtIcon[data-motion="glow"]:is(:hover, [data-live="true"]) .dtIconGlow,
 .dt-appicon:is(:hover, :focus-within) .dtIcon[data-motion="glow"] .dtIconGlow,
@@ -453,6 +483,10 @@ html.dt-retired-dock:is(:hover, :focus-within) .dtIcon[data-motion="glow"] .dtIc
 @keyframes dti-dial { 0% { transform: rotate(0deg); } 100% { transform: rotate(120deg); } }
 @keyframes dti-plate { 0% { transform: translateX(0); } 40% { transform: translateX(3px); } 100% { transform: translateX(0); } }
 @keyframes dti-shine { 0% { transform: translateX(-30px); opacity: 0; } 20% { opacity: .5; } 65% { opacity: .38; } 100% { transform: translateX(52px); opacity: 0; } }
+@keyframes dti-press { 0% { transform: translateY(0); } 45% { transform: translateY(2.4px); } 100% { transform: translateY(0); } }
+@keyframes dti-rise { 0% { transform: translateY(0); } 42% { transform: translateY(-3px); } 100% { transform: translateY(0); } }
+@keyframes dti-play { 0% { transform: scale(1); } 40% { transform: scale(1.16); } 100% { transform: scale(1); } }
+@keyframes dti-roll { 0% { transform: rotate(0deg); } 35% { transform: rotate(-4deg); } 70% { transform: rotate(2.5deg); } 100% { transform: rotate(0deg); } }
 
 @media (hover: none), (pointer: coarse) {
   .dtIcon:is(:hover, [data-live="true"]) .dtIconSvg,
@@ -560,7 +594,8 @@ function defineAppIcon(key: string, spec: AppIconSpec): ComponentType<AppIconPro
     const vars = {
       "--story-glow": `${spec.story}73`,
       "--story-shadow": `${spec.deep}42`,
-      "--story-shadow-soft": `${spec.deep}24` } as CSSProperties;
+      "--story-shadow-soft": `${spec.deep}24`,
+    } as CSSProperties;
     if (size !== undefined) {
       vars.width = size;
       vars.height = size;
@@ -716,7 +751,8 @@ export const ChatIcon = defineAppIcon("chat", {
         stroke="none"
       />
     </>
-  ) });
+  ),
+});
 
 /** History — the session archive: a clock with a curved rewind arrow. */
 export const HistoryIcon = defineAppIcon("history", {
@@ -733,7 +769,8 @@ export const HistoryIcon = defineAppIcon("history", {
       <path d="M28.5 35 Q28.5 24.5 39 24.5" strokeWidth={STROKE_SOFT} />
       <path d="M39 24.5 L33.6 21.2 M39 24.5 L34 28.2" strokeWidth={STROKE_SOFT} />
     </>
-  ) });
+  ),
+});
 
 /** Projects — the workspace records: a board with two uneven columns. */
 export const ProjectsIcon = defineAppIcon("projects", {
@@ -760,7 +797,8 @@ export const ProjectsIcon = defineAppIcon("projects", {
         <path d="M52.5 56 H62" strokeWidth={STROKE_SOFT} />
       </g>
     </>
-  ) });
+  ),
+});
 
 /** Console — the canonical CLI design: a prompt chevron and its cursor. */
 export const ConsoleIcon = defineAppIcon("console", {
@@ -774,7 +812,8 @@ export const ConsoleIcon = defineAppIcon("console", {
       <path d="M50 36.5 H63" />
       <rect className="dtIcon-m-cursor" x="49" y="53.5" width="15.5" height="9.5" rx="3" fill={IVORY} stroke="none" />
     </>
-  ) });
+  ),
+});
 
 /** Gateway — the local gateway console: routes meeting at a waypoint. */
 export const GatewayIcon = defineAppIcon("gateway", {
@@ -790,7 +829,8 @@ export const GatewayIcon = defineAppIcon("gateway", {
       <path d="M33.5 36 Q41.5 42.5 42.5 44.8" strokeWidth={STROKE_SOFT} />
       <path d="M53.5 51.2 Q58.5 55 60.6 57.6" strokeWidth={STROKE_SOFT} />
     </>
-  ) });
+  ),
+});
 
 /** Providers — the provider and model choices: a plug with its cord. */
 export const ProvidersIcon = defineAppIcon("providers", {
@@ -804,7 +844,8 @@ export const ProvidersIcon = defineAppIcon("providers", {
       <rect className="dtIcon-m-plug" x="39" y="38.5" width="18" height="19" rx="6.5" fill={BACKING} />
       <path d="M48 57.5 C48 66.5 55 66 60.5 66 H66.5" strokeWidth={STROKE_SOFT} />
     </>
-  ) });
+  ),
+});
 
 /** Usage — the local usage records: ascending bars over a baseline. */
 export const UsageIcon = defineAppIcon("usage", {
@@ -851,7 +892,8 @@ export const UsageIcon = defineAppIcon("usage", {
         stroke="none"
       />
     </>
-  ) });
+  ),
+});
 
 /** Routes — the stream health: two feeds merging into one stream. */
 export const RoutesIcon = defineAppIcon("routes", {
@@ -874,7 +916,8 @@ export const RoutesIcon = defineAppIcon("routes", {
       <path className="dtIcon-m-run" style={{ ...si(2), transformOrigin: "48.5px 48px" }} d="M48.5 48 H67" />
       <circle className="dtIcon-m-dot" style={si(3)} cx="48.5" cy="48" r="4.2" fill={IVORY} stroke="none" />
     </>
-  ) });
+  ),
+});
 
 /** Docs — the documentation library: an open book with a raised spine. */
 export const DocsIcon = defineAppIcon("docs", {
@@ -896,7 +939,8 @@ export const DocsIcon = defineAppIcon("docs", {
       />
       <path d="M48 35.5 V62.5" strokeWidth={STROKE_SOFT} />
     </>
-  ) });
+  ),
+});
 
 /** Explore — the exploration gallery: the wind rose inside its ring. */
 export const ExploreIcon = defineAppIcon("explore", {
@@ -913,7 +957,8 @@ export const ExploreIcon = defineAppIcon("explore", {
       </g>
       <circle cx="48" cy="48" r="2.6" fill="#8a5449" stroke="none" />
     </>
-  ) });
+  ),
+});
 
 /** OS — the family operating surface: the hex frame over a four-pane grid. */
 export const OsIcon = defineAppIcon("os", {
@@ -973,7 +1018,8 @@ export const OsIcon = defineAppIcon("os", {
         opacity=".92"
       />
     </>
-  ) });
+  ),
+});
 
 /** Settings — the local preferences: a gear with eight rounded teeth. */
 export const SettingsIcon = defineAppIcon("settings", {
@@ -987,7 +1033,133 @@ export const SettingsIcon = defineAppIcon("settings", {
       <path d="M64.5 48 H69.5 M59.7 59.7 L63.2 63.2 M48 64.5 V69.5 M36.3 59.7 L32.8 63.2 M31.5 48 H26.5 M36.3 36.3 L32.8 32.8 M48 31.5 V26.5 M59.7 36.3 L63.2 32.8" />
       <circle cx="48" cy="48" r="4.6" strokeWidth={STROKE_HAIR} />
     </>
-  ) });
+  ),
+});
+
+/** Calculator — the native arithmetic app: the keypad grid with the
+ * equals key. */
+export const CalculatorIcon = defineAppIcon("calculator", {
+  motion: "press",
+  story: "#9aa7b4",
+  deep: "#5c6875",
+  soft: "#dbe3ec",
+  glyph: (
+    <>
+      <rect x="29" y="25.5" width="38" height="45" rx="6.5" fill={BACKING} />
+      <rect x="35" y="31.5" width="22" height="8" rx="2" fill={IVORY} stroke="none" opacity=".86" />
+      <rect x="35" y="45.5" width="6.5" height="6.5" rx="2" fill={IVORY} stroke="none" opacity=".78" />
+      <rect x="44.25" y="45.5" width="6.5" height="6.5" rx="2" fill={IVORY} stroke="none" opacity=".78" />
+      <rect x="35" y="56" width="6.5" height="6.5" rx="2" fill={IVORY} stroke="none" opacity=".78" />
+      <rect x="44.25" y="56" width="6.5" height="6.5" rx="2" fill={IVORY} stroke="none" opacity=".78" />
+      <g className="dtIcon-m-key">
+        <path d="M54 50.5 H61.5" strokeWidth={STROKE_BRIGHT} />
+        <path d="M54 60 H61.5" strokeWidth={STROKE_BRIGHT} />
+      </g>
+    </>
+  ),
+});
+
+/** Image — the native image studio: the picture frame with the mountain
+ * and the sun. */
+export const ImageIcon = defineAppIcon("image", {
+  motion: "rise",
+  story: "#c084fc",
+  deep: "#7443ab",
+  soft: "#e9d9fb",
+  glyph: (
+    <>
+      <rect x="28" y="28" width="40" height="40" rx="5.5" fill={BACKING} />
+      <path d="M33 59.5 L42.5 45.5 L49.5 54.5 L55.5 47.5 L63 59.5 Z" fill={IVORY} stroke="none" opacity=".92" />
+      <circle className="dtIcon-m-sun" cx="57.5" cy="37.5" r="4.2" fill={IVORY} stroke="none" />
+    </>
+  ),
+});
+
+/** Video — the native video editor: the clapperboard with the play
+ * triangle. */
+export const VideoIcon = defineAppIcon("video", {
+  motion: "play",
+  story: "#f472b6",
+  deep: "#a83570",
+  soft: "#fbd8ea",
+  glyph: (
+    <>
+      <rect x="29" y="41.5" width="38" height="26.5" rx="5" fill={BACKING} />
+      <path d="M31.5 41.5 L35 30.5 L64.5 36 L61.5 41.5 Z" fill={BACKING} />
+      <path d="M42.5 33.4 L45.2 40.9 M53.5 35 L56 41" strokeWidth={STROKE_SOFT} />
+      <path className="dtIcon-m-play" d="M43.5 48 L56.5 54.75 L43.5 61.5 Z" fill={IVORY} stroke="none" />
+    </>
+  ),
+});
+
+/** Audio — the native audio studio: the sound bars over the note. */
+export const AudioIcon = defineAppIcon("audio", {
+  motion: "wave",
+  story: "#d9962e",
+  deep: "#8a5c14",
+  soft: "#f3dcb0",
+  glyph: (
+    <>
+      <circle cx="36" cy="55.5" r="4.6" fill={IVORY} stroke="none" />
+      <path d="M40.6 55.5 V36.5" strokeWidth={STROKE_BRIGHT} />
+      <path d="M40.6 36.5 Q47 38.5 48 44.5" strokeWidth={STROKE_SOFT} />
+      <rect
+        className="dtIcon-m-bar"
+        style={si(0)}
+        x="50.5"
+        y="47"
+        width="5.5"
+        height="11"
+        rx="2.75"
+        fill={IVORY}
+        stroke="none"
+        opacity=".78"
+      />
+      <rect
+        className="dtIcon-m-bar"
+        style={si(1)}
+        x="57.5"
+        y="41"
+        width="5.5"
+        height="17"
+        rx="2.75"
+        fill={IVORY}
+        stroke="none"
+        opacity=".88"
+      />
+      <rect
+        className="dtIcon-m-bar"
+        style={si(2)}
+        x="64.5"
+        y="36"
+        width="5.5"
+        height="22"
+        rx="2.75"
+        fill={IVORY}
+        stroke="none"
+      />
+    </>
+  ),
+});
+
+/** Games — the native games shelf: the gamepad with its cross and studs. */
+export const GamesIcon = defineAppIcon("games", {
+  motion: "roll",
+  story: "#e8563f",
+  deep: "#9c3120",
+  soft: "#f9d6ca",
+  glyph: (
+    <>
+      <path
+        d="M35 37.5 H61 C66 37.5 68.5 41 69.3 45.5 C69.6 51 69.8 57.5 66.8 60.2 C63 62.9 58.6 60.7 56.4 56.6 L54 52.5 H42 L39.6 56.6 C37.4 60.7 33 62.9 29.2 60.2 C26.2 57.5 26.4 51 26.7 45.5 C27.5 41 30 37.5 35 37.5 Z"
+        fill={BACKING}
+      />
+      <path d="M36.5 44.5 V53.5 M32 49 H41" strokeWidth={STROKE_BRIGHT} />
+      <circle cx="58.5" cy="46.5" r="2.7" fill={IVORY} stroke="none" />
+      <circle cx="63" cy="51.5" r="2.7" fill={IVORY} stroke="none" />
+    </>
+  ),
+});
 
 /** Argan — the DNS and gateway library: the double-contour shield. */
 export const ArganIcon = defineAppIcon("argan", {
@@ -1004,7 +1176,8 @@ export const ArganIcon = defineAppIcon("argan", {
         opacity=".85"
       />
     </>
-  ) });
+  ),
+});
 
 /** Cadria — the video, image and 3D studio: a clapperboard mid-slate. */
 export const CadriaIcon = defineAppIcon("cadria", {
@@ -1020,7 +1193,8 @@ export const CadriaIcon = defineAppIcon("cadria", {
         <path d="M41.5 33.2 L44.5 45.3 M53 35.3 L55.5 45.5" strokeWidth={STROKE_SOFT} />
       </g>
     </>
-  ) });
+  ),
+});
 
 /** Debonair — the OS audio DAW: a five-band equalizer in full swing. */
 export const DebonairIcon = defineAppIcon("debonair", {
@@ -1090,7 +1264,8 @@ export const DebonairIcon = defineAppIcon("debonair", {
         opacity=".78"
       />
     </>
-  ) });
+  ),
+});
 
 /** Stealthhead — the OS FPS platform: a scope with cardinal ticks. */
 export const StealthheadIcon = defineAppIcon("stealthhead", {
@@ -1104,7 +1279,8 @@ export const StealthheadIcon = defineAppIcon("stealthhead", {
       <path d="M48 26 V31.5 M48 64.5 V70 M26 48 H31.5 M64.5 48 H70" />
       <circle cx="48" cy="48" r="4.4" fill={IVORY} stroke="none" />
     </>
-  ) });
+  ),
+});
 
 /** Forge — the family forge: a mallet head over its handle. */
 export const ForgeIcon = defineAppIcon("forge", {
@@ -1121,7 +1297,8 @@ export const ForgeIcon = defineAppIcon("forge", {
       </g>
       <path d="M53 44 L43.5 64" strokeWidth={STROKE_BRIGHT} />
     </>
-  ) });
+  ),
+});
 
 /** Foundry — the family foundry: the sawtooth plant with its stack. */
 export const FoundryIcon = defineAppIcon("foundry", {
@@ -1157,7 +1334,8 @@ export const FoundryIcon = defineAppIcon("foundry", {
         opacity=".85"
       />
     </>
-  ) });
+  ),
+});
 
 /** Vault — the family vault: the three-spoke door inside its rings. */
 export const VaultIcon = defineAppIcon("vault", {
@@ -1173,7 +1351,8 @@ export const VaultIcon = defineAppIcon("vault", {
         <path d="M48 48 V37 M48 48 L57.5 53.5 M48 48 L38.5 53.5" strokeWidth={STROKE_SOFT} />
       </g>
     </>
-  ) });
+  ),
+});
 
 /** Getry — the family registry: the cataloged stack of plates. */
 export const GetryIcon = defineAppIcon("getry", {
@@ -1187,7 +1366,8 @@ export const GetryIcon = defineAppIcon("getry", {
       <path className="dtIcon-m-plate" style={si(1)} d="M32.5 46.5 L48 55.5 L63.5 46.5" />
       <path className="dtIcon-m-plate" style={si(2)} d="M32.5 55 L48 64 L63.5 55" />
     </>
-  ) });
+  ),
+});
 
 /** Saddle — the sandbox engine: the crate drawn in light isometric. */
 export const SaddleIcon = defineAppIcon("saddle", {
@@ -1209,7 +1389,8 @@ export const SaddleIcon = defineAppIcon("saddle", {
         </g>
       </g>
     </>
-  ) });
+  ),
+});
 
 /**
  * The premium icon set of the shell, keyed by the registry `iconset` field:
@@ -1228,6 +1409,11 @@ export const APP_ICONS: Record<string, ComponentType<AppIconProps>> = {
   explore: ExploreIcon,
   os: OsIcon,
   settings: SettingsIcon,
+  calculator: CalculatorIcon,
+  image: ImageIcon,
+  video: VideoIcon,
+  audio: AudioIcon,
+  games: GamesIcon,
   argan: ArganIcon,
   cadria: CadriaIcon,
   debonair: DebonairIcon,
@@ -1236,4 +1422,5 @@ export const APP_ICONS: Record<string, ComponentType<AppIconProps>> = {
   foundry: FoundryIcon,
   vault: VaultIcon,
   getry: GetryIcon,
-  saddle: SaddleIcon };
+  saddle: SaddleIcon,
+};
