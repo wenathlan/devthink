@@ -1,33 +1,11 @@
-# Devthink 2.0.117
+# Devthink 2.0.118
 
-— the os answers the windows grammar end to end and the family assets ride the release
-
-### Added
-
-| Area | Change |
-| --- | --- |
-| The sign-in sequence | The authentication face answers the real windows grammar: the clock rides high on the lock landscape, the sign-in column floats on the dimmed blurred wash with no card around it, the password row is one dark well (flat, r4, the bottom hairline with the 2px accent underline on focus) carrying the reveal eye and the arrow submit inside it, the sign-in options open the cli pairing, and the live network status with the power flyout ride the corner of both faces. |
-| The gateway window | The gateway console learns the embedded contract of the windows law: the anchor answers embedded (no ShellChrome, no viewport floor, the version detail opens through local state inside the window) and the desktop binds the row — the gateway joins the window catalog with its own spawn. |
-| The label database | The app labels leave the registry for the catalog database: the twenty-three name/detail/pin literals ride the seedOsAppLabels rows (the offline answer of the static build, the same shape the paired endpoint serves over HTTPS when it lands) and the registry answers bindings only — the glyph, the tint and the open target. |
-| The provider windows | The providers app joins the window catalog — every desktop app now opens inside a floating window of the os. |
-
-### Changed
-
-| Area | Change |
-| --- | --- |
-| The identity law | The banned indigo dies across the whole stylesheet: the trident fusion kit drops the purple→blue gradient and the #4f46e5 signal for the flat windows light accent #0067c0 (the #1069ce hover step), and every sol app takes its own registry tint on the marks, the pills and the content CTAs only — calculator graphite, games coral, image violet, audio brass, video magenta, usage sage, providers lime, projects teal, history bronze, settings slate, console green, gateway bronze — each paired with dark slate ink for the contrast gate. |
-| The touch and focus law | Every interactive control of the thirty-six subapps answers the 44px target with the press scale and the visible slate focus ring; the inputs speak the spec well grammar (flat well, bottom hairline, 2px accent underline on focus) and the h1 titles bind the catalog label rows with the bare-id fallback. |
-| The chat flagship | The composer climbs to the win11 control grade (the flat 44px well, the send key on the windows accent) and the edit field takes its focus through the ref effect the a11y law demands; the cascading checkpoint branch (the original stays intact, the ladder carries forward, the newest edit prevails) answers end to end over the live gateway. |
-| The console terminal | The terminal returns to the dark log pane its contract always described — the green prompt and caret on the #1e1e1e pane inside the light window body — and the boot graph repaints for the light card it actually renders on. |
-
-### Fixed
-
-| Area | Change |
-| --- | --- |
-| The deep links | The router base stops eating deep links under root hosting: a base of / answered the boot pathname as a folder prefix, so /auth rendered the intro instead of the auth page — the absolute root keeps the base empty while relative hosting keeps the folder-prefix law. |
-| The window registry file | Sol/windowregistry.tsx dies for good — the spawn geometry rides window.ts beside the catalog (windowspawn answers the default and the per-app overrides) and the component binding folds into the workspace, the only consumer that ever read it. |
-| The workflow ladder | The four red lanes go green: the doccheck fences declare their language, the seven family envelopes drop the private flag the registry lanes refuse (EPRIVATE), the saddle tagchunks scan continues past every void element (the author meta answers again, 414 of 414), and the dependency ladder stamps the november stable pair (postcss 8.5.31, react-resizable-panels 4.14.6). |
-| The release sweep | The release assets lane waits for the nextzips lane — the family web and next archives raced the sweep before, so the release answered the devthink core set alone; the sweep now carries the one hundred archive files of the ten apps plus the family envelopes. |
+This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (2.0.117 plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: - "@wenathlan/saddle": "2.1.6",
+- "@wenathlan/saddle": "^2.1.6",
+- "streamdown": "^2.7.0",
+- "streamdown": "^2.7.1",
+- uses: trufflesecurity/trufflehog@v3.99.2
+- uses: trufflesecurity/trufflehog@v3.99.3. The version stamps 2.0.118 land across the metadata family with the apifreeze artifact re-frozen and the permission baseline recorded, and the ladder keeps no long-lived branch behind: the automation branch of this rung squashes onto main when the verification pipeline answers green — and closes with its branch deleted when it answers red — so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way.
 
 ## Distribution channels
 
@@ -35,22 +13,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.117.tgz`
+- `wenathlan-devthink-2.0.118.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.117.nupkg`
+- `devthink.2.0.118.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.117.pom`
-- `devthink-2.0.117.jar`
-- `devthink2.0.117.zip`
-- `devthink-declarations-2.0.117.zip`
+- `devthink-2.0.118.pom`
+- `devthink-2.0.118.jar`
+- `devthink2.0.118.zip`
+- `devthink-declarations-2.0.118.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -64,77 +42,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.117.gem`
+- `devthink-2.0.118.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.117.vsix`
+- `devthink-vscode-2.0.118.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.117.xpi`
+- `devthink-firefox-2.0.118.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.117.zip`
+- `devthink-safari-2.0.118.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.117.zip`
-- `devthink-2.0.117-source.tar.xz`
-- `devthink-nativehost-2.0.117.template.json`
+- `devthink2.0.118.zip`
+- `devthink-2.0.118-source.tar.xz`
+- `devthink-nativehost-2.0.118.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.117.zip`
+- `devthink-site-2.0.118.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.117.zip`
+- `devthink-declarations-2.0.118.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.117.json`
-- `devthink-attestations-2.0.117.json`
-- `devthink-artifactmanifest-2.0.117.json`
+- `devthink-sbom-2.0.118.json`
+- `devthink-attestations-2.0.118.json`
+- `devthink-artifactmanifest-2.0.118.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.117.tgz`
-- `devthink.2.0.117.nupkg`
-- `devthink-2.0.117.pom`
-- `devthink-2.0.117.jar`
-- `devthink-2.0.117.gem`
+- `wenathlan-devthink-2.0.118.tgz`
+- `devthink.2.0.118.nupkg`
+- `devthink-2.0.118.pom`
+- `devthink-2.0.118.jar`
+- `devthink-2.0.118.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.117.vsix`
-- `devthink-firefox-2.0.117.xpi`
-- `devthink-safari-2.0.117.zip`
-- `devthink2.0.117.zip`
-- `devthink-2.0.117-source.tar.xz`
-- `devthink-nativehost-2.0.117.template.json`
-- `devthink-site-2.0.117.zip`
-- `devthink-declarations-2.0.117.zip`
-- `devthink-sbom-2.0.117.json`
-- `devthink-attestations-2.0.117.json`
-- `devthink-artifactmanifest-2.0.117.json`
+- `devthink-vscode-2.0.118.vsix`
+- `devthink-firefox-2.0.118.xpi`
+- `devthink-safari-2.0.118.zip`
+- `devthink2.0.118.zip`
+- `devthink-2.0.118-source.tar.xz`
+- `devthink-nativehost-2.0.118.template.json`
+- `devthink-site-2.0.118.zip`
+- `devthink-declarations-2.0.118.zip`
+- `devthink-sbom-2.0.118.json`
+- `devthink-attestations-2.0.118.json`
+- `devthink-artifactmanifest-2.0.118.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 
@@ -142,7 +120,7 @@ Every artifact above attaches to the release of the immutable tag beside the che
 
 ## The chain to this candidate
 
-Every release from the 1.1.31 base to this candidate, grouped by the phases the roadmap declared: 112 released versions the changelog records, 69 roadmap sections the phases draw their titles from.
+Every release from the 1.1.31 base to this candidate, grouped by the phases the roadmap declared: 113 released versions the changelog records, 69 roadmap sections the phases draw their titles from.
 
 ### The base (1.1.31)
 
