@@ -49,12 +49,18 @@ class WorkbenchErrorBoundary extends Component<{ children: ReactNode }, { error:
 /** The router base derives from the declared base path so the same build serves every host.
  * Under relative hosting ("./") the build cannot know the folder it lands in, but the
  * dispatcher always boots cold links at the application root first — so the folder
- * prefix of the boot pathname is exactly the router base. */
+ * prefix of the boot pathname is exactly the router base. Under absolute root hosting
+ * ("/") the routes live at the root itself: the boot pathname is a route, never a
+ * folder prefix, and the base stays empty (a deep /auth link must open the auth page,
+ * not the intro under a phantom base). */
 function routerBase(): string {
   const declaredBase = import.meta.env.BASE_URL;
   if (declaredBase !== "/" && declaredBase !== "./") return declaredBase.replace(/\/$/, "");
-  const bootPath = window.location.pathname.replace(/index\.html$/, "").replace(/\/$/, "");
-  return bootPath === "" ? "" : bootPath;
+  if (declaredBase === "./") {
+    const bootPath = window.location.pathname.replace(/index\.html$/, "").replace(/\/$/, "");
+    return bootPath === "" ? "" : bootPath;
+  }
+  return "";
 }
 
 function App() {

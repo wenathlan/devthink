@@ -5,22 +5,33 @@
  * component surface. Only the theme anchor (Sol/Sol.tsx) consumes this file.
  *
  * Sign in — the windows sequence: the lock screen first (the big clock and
- * the date, unlocking by a swipe up), then the authentication face. The
- * face runs the account contract of the root accountgate.ts: a machine
- * without an account asks for the display name and the password creation
- * (the salted digest lands in the credential vault of the local database —
- * the os HD), a machine with one asks for the password alone and answers
- * the wrong-try verdict inline. The cli pairing rides the bottom actions;
- * the identity logic never moved.
+ * the date high on the face, the network status and the power corner below,
+ * unlocking by a swipe up), then the authentication face over the dimmed,
+ * blurred landscape. The face runs the account contract of the root
+ * accountgate.ts: a machine without an account asks for the display name
+ * and the password creation (the salted digest lands in the credential
+ * vault of the local database — the os HD), a machine with one asks for
+ * the password alone and answers the wrong-try verdict inline. The
+ * password row speaks the windows grammar: one well with the reveal eye
+ * and the arrow submit riding inside it. The sign-in options open the cli
+ * pairing; the identity logic never moved.
  */
-import {ArrowRightRegular, ChevronUpRegular, WindowConsoleRegular} from "@fluentui/react-icons";
+import {
+  ArrowRightRegular,
+  ChevronUpRegular,
+  EyeOffRegular,
+  EyeRegular,
+  PersonRegular,
+  PowerRegular,
+  WindowConsoleRegular,
+  Wifi3Regular,
+} from "@fluentui/react-icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 import { ACCOUNT_NAME_KEY, type AccountState, accountstate, createAccount, verifyAccount } from "../../accountgate.ts";
 import { afterAuthTarget, pairingReadiness, safegatewayurl } from "../../authgate.ts";
 import { readBrowserPreferences } from "../../db";
-import { SolLogoMark } from "../panel/logo.tsx";
 
 export * from "../../accountgate.ts";
 export * from "../../authgate.ts";
@@ -41,6 +52,9 @@ export default function Auth() {
   const [confirm, setConfirm] = useState("");
   const [failure, setFailure] = useState("");
   const [busy, setBusy] = useState(false);
+  const [reveal, setReveal] = useState(false);
+  const [online, setOnline] = useState(() => (typeof navigator === "undefined" ? true : navigator.onLine));
+  const [poweropen, setPoweropen] = useState(false);
   const [gateway, setGateway] = useState(() => invitation.current.get("gateway") || "");
   const [pairingId, setPairingId] = useState(() => invitation.current.get("pair") || "");
   const [code, setCode] = useState(() => invitation.current.get("code")?.toUpperCase() || "");
@@ -54,6 +68,18 @@ export default function Auth() {
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 1000);
     return () => window.clearInterval(timer);
+  }, []);
+
+  // the network corner answers the real connection state, live
+  useEffect(() => {
+    const up = () => setOnline(true);
+    const down = () => setOnline(false);
+    window.addEventListener("online", up);
+    window.addEventListener("offline", down);
+    return () => {
+      window.removeEventListener("online", up);
+      window.removeEventListener("offline", down);
+    };
   }, []);
 
   // the account contract of this machine's HD: whether the password exists
@@ -192,9 +218,10 @@ export default function Auth() {
   const initials = (known || name).trim().charAt(0).toUpperCase();
   const greeting = known ? `Welcome, ${known}` : "Welcome";
   const submitEntry = account === "ready" ? passwordEntry : createEntry;
+  const powerlabel = "Power";
 
   return (
-    <main className="dtw-login">
+    <main className={`dtw-login${stage === "signin" ? " dtw-login--signin" : ""}`}>
       <div className="dtw-login__stage" aria-hidden="true" />
 
       {stage === "lock" ? (
@@ -221,15 +248,9 @@ export default function Auth() {
       ) : (
         <div className="dtw-login__dock">
           <section className="dtw-login__pane" aria-label="Sign in to DevThink">
-            {initials ? (
-              <span className="dtw-login__avatar" aria-hidden="true">
-                {initials}
-              </span>
-            ) : (
-              <span className="dtw-login__avatar" aria-hidden="true">
-                <SolLogoMark size={44} />
-              </span>
-            )}
+            <span className="dtw-login__avatar" aria-hidden="true">
+              {initials ? initials : <PersonRegular fontSize={44} aria-hidden="true" />}
+            </span>
             <h1 className="dtw-login__welcome">{account === "ready" ? greeting : "Create your account"}</h1>
 
             {account === "ready" ? (
@@ -240,25 +261,35 @@ export default function Auth() {
                   void submitEntry();
                 }}
               >
-                <input
-                  ref={passwordRef}
-                  className="dtw-login__name"
-                  type="password"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  placeholder="Password"
-                  autoComplete="current-password"
-                  aria-label="Password"
-                />
+                <div className="dtw-login__row">
+                  <input
+                    ref={passwordRef}
+                    className="dtw-login__name"
+                    type={reveal ? "text" : "password"}
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    placeholder="Password"
+                    autoComplete="current-password"
+                    aria-label="Password"
+                  />
+                  <button
+                    type="button"
+                    className="dtw-login__reveal"
+                    aria-label={reveal ? "Hide the password" : "Show the password"}
+                    aria-pressed={reveal}
+                    onClick={() => setReveal((open) => !open)}
+                  >
+                    {reveal ? <EyeOffRegular fontSize={16} aria-hidden="true" /> : <EyeRegular fontSize={16} aria-hidden="true" />}
+                  </button>
+                  <button type="submit" className="dtw-login__submit" disabled={busy} aria-busy={busy || undefined} aria-label="Sign in">
+                    <ArrowRightRegular fontSize={17} aria-hidden="true" />
+                  </button>
+                </div>
                 {failure ? (
                   <p className="dtw-login__failure" role="alert">
                     {failure}
                   </p>
                 ) : null}
-                <button type="submit" className="dtw-login__submit" disabled={busy} aria-busy={busy || undefined}>
-                  <span>Sign in</span>
-                  <ArrowRightRegular fontSize={15} aria-hidden="true" />
-                </button>
               </form>
             ) : (
               <form
@@ -268,41 +299,56 @@ export default function Auth() {
                   void submitEntry();
                 }}
               >
-                <input
-                  className="dtw-login__name"
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                  placeholder="Your display name"
-                  maxLength={40}
-                  autoComplete="nickname"
-                  spellCheck={false}
-                  aria-label="Display name"
-                />
-                <input
-                  ref={passwordRef}
-                  className="dtw-login__name"
-                  type="password"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  placeholder="Create a password"
-                  autoComplete="new-password"
-                  aria-label="Create a password"
-                />
-                <input
-                  className="dtw-login__name"
-                  type="password"
-                  value={confirm}
-                  onChange={(event) => setConfirm(event.target.value)}
-                  placeholder="Confirm the password"
-                  autoComplete="new-password"
-                  aria-label="Confirm the password"
-                />
+                <div className="dtw-login__row">
+                  <input
+                    className="dtw-login__name"
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
+                    placeholder="Your display name"
+                    maxLength={40}
+                    autoComplete="nickname"
+                    spellCheck={false}
+                    aria-label="Display name"
+                  />
+                </div>
+                <div className="dtw-login__row">
+                  <input
+                    ref={passwordRef}
+                    className="dtw-login__name"
+                    type={reveal ? "text" : "password"}
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    placeholder="Create a password"
+                    autoComplete="new-password"
+                    aria-label="Create a password"
+                  />
+                  <button
+                    type="button"
+                    className="dtw-login__reveal"
+                    aria-label={reveal ? "Hide the password" : "Show the password"}
+                    aria-pressed={reveal}
+                    onClick={() => setReveal((open) => !open)}
+                  >
+                    {reveal ? <EyeOffRegular fontSize={16} aria-hidden="true" /> : <EyeRegular fontSize={16} aria-hidden="true" />}
+                  </button>
+                </div>
+                <div className="dtw-login__row">
+                  <input
+                    className="dtw-login__name"
+                    type={reveal ? "text" : "password"}
+                    value={confirm}
+                    onChange={(event) => setConfirm(event.target.value)}
+                    placeholder="Confirm the password"
+                    autoComplete="new-password"
+                    aria-label="Confirm the password"
+                  />
+                </div>
                 {failure ? (
                   <p className="dtw-login__failure" role="alert">
                     {failure}
                   </p>
                 ) : null}
-                <button type="submit" className="dtw-login__submit" disabled={busy} aria-busy={busy || undefined}>
+                <button type="submit" className="dtw-login__create" disabled={busy} aria-busy={busy || undefined}>
                   <span>Create account and sign in</span>
                   <ArrowRightRegular fontSize={15} aria-hidden="true" />
                 </button>
@@ -314,10 +360,11 @@ export default function Auth() {
                 type="button"
                 className="dtw-login__quiet"
                 disabled={busy}
+                aria-expanded={cliopen}
                 onClick={() => setCliopen((open) => !open)}
               >
                 <WindowConsoleRegular fontSize={15} aria-hidden="true" />
-                Sign in with the cli
+                Sign-in options
               </button>
               {cliopen ? (
                 <form
@@ -327,34 +374,39 @@ export default function Auth() {
                     void consumePairing(gateway, pairingId, code);
                   }}
                 >
-                  <input
-                    value={gateway}
-                    onChange={(event) => setGateway(event.target.value)}
-                    placeholder="http://127.0.0.1:8787"
-                    autoComplete="off"
-                    aria-label="Gateway endpoint"
-                    spellCheck={false}
-                  />
-                  <input
-                    value={pairingId}
-                    onChange={(event) => setPairingId(event.target.value)}
-                    placeholder="pair id"
-                    autoComplete="off"
-                    aria-label="Pairing id"
-                    spellCheck={false}
-                  />
-                  <input
-                    value={code}
-                    onChange={(event) => setCode(event.target.value.toUpperCase())}
-                    placeholder="8-char code"
-                    maxLength={8}
-                    autoComplete="one-time-code"
-                    aria-label="Access code"
-                  />
-                  <button type="submit" className="dtw-login__submit" disabled={busy}>
-                    <span>{paired ? "Renew the pairing" : "Sync up with the cli"}</span>
-                    <ArrowRightRegular fontSize={14} aria-hidden="true" />
-                  </button>
+                  <div className="dtw-login__row">
+                    <input
+                      value={gateway}
+                      onChange={(event) => setGateway(event.target.value)}
+                      placeholder="http://127.0.0.1:8787"
+                      autoComplete="off"
+                      aria-label="Gateway endpoint"
+                      spellCheck={false}
+                    />
+                  </div>
+                  <div className="dtw-login__row">
+                    <input
+                      value={pairingId}
+                      onChange={(event) => setPairingId(event.target.value)}
+                      placeholder="pair id"
+                      autoComplete="off"
+                      aria-label="Pairing id"
+                      spellCheck={false}
+                    />
+                  </div>
+                  <div className="dtw-login__row">
+                    <input
+                      value={code}
+                      onChange={(event) => setCode(event.target.value.toUpperCase())}
+                      placeholder="8-char code"
+                      maxLength={8}
+                      autoComplete="one-time-code"
+                      aria-label="Access code"
+                    />
+                    <button type="submit" className="dtw-login__submit" disabled={busy} aria-label="Sync up with the cli">
+                      <ArrowRightRegular fontSize={16} aria-hidden="true" />
+                    </button>
+                  </div>
                   <small className="dtw-login__hinttext">
                     {readiness.ready
                       ? "All fields present, the invitation can also arrive as a link"
@@ -368,12 +420,44 @@ export default function Auth() {
               <li>CLI pairing opt-in</li>
               <li>No telemetry</li>
             </ul>
-            <button type="button" className="dtw-login__quiet" onClick={unlock}>
+            <button type="button" className="dtw-login__quiet" onClick={() => setStage("lock")}>
               Back to the clock
             </button>
           </section>
         </div>
       )}
+
+      {/* the windows corner: the live network status and the power flyout
+          ride the bottom right of both faces, like the lock screen of the
+          real system */}
+      <div className="dtw-login__tray" role="toolbar" aria-label="System corner">
+        <span className="dtw-login__net" role="status" data-offline={online ? "false" : "true"} title={online ? "Connected" : "Offline"}>
+          <Wifi3Regular fontSize={17} aria-hidden="true" />
+          <span className="sr-only">{online ? "Network connected" : "Network offline"}</span>
+        </span>
+        <div className="dtw-login__powerwrap">
+          <button
+            type="button"
+            className="dtw-login__power"
+            aria-label={powerlabel}
+            aria-expanded={poweropen}
+            onClick={() => setPoweropen((open) => !open)}
+          >
+            <PowerRegular fontSize={17} aria-hidden="true" />
+          </button>
+          {poweropen ? (
+            <div className="dtw-login__powermenu" role="menu" aria-label="Power options">
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => window.location.reload()}
+              >
+                Restart the session
+              </button>
+            </div>
+          ) : null}
+        </div>
+      </div>
     </main>
   );
 }
