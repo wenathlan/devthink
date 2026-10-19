@@ -472,8 +472,8 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 /* the embedded contract: the power clip frame hosts the stage bare — the stage fills
    the frame and scrolls itself, no window chrome of its own */
 .shell--embedded { max-width: none; height: 100vh; overflow-y: auto; }
-.section { padding: clamp(28px, 6vw, 72px) 0; }
-.section-head { max-width: 640px; margin-bottom: 30px; }
+.section { padding: clamp(38px, 8vw, 104px) 0; }
+.section-head { max-width: 640px; margin-bottom: 38px; }
 
 /* buttons — the trylle tone stack over the windows 4px control: the inset
    highlight and bloom ride the stack, the ring and the two drops follow the
@@ -545,7 +545,7 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 
 /* type + metadata shared by the pages */
 .page-title { margin: 0 0 0.4em; font-size: clamp(2.25rem, 5vw, 3.75rem); font-weight: 750; letter-spacing: var(--sol-track-display); }
-.h2-xl { font-size: clamp(1.65rem, 3vw, 2rem); font-weight: 700; letter-spacing: var(--sol-track-display); }
+.h2-xl { font-size: clamp(1.8rem, 3.6vw, 2.4rem); font-weight: 700; letter-spacing: var(--sol-track-display); }
 .card-h { margin: 0 0 0.5em; font-size: 1.05rem; }
 .p-sm { font-size: 0.9rem; }
 .flush { margin: 0; }
@@ -798,49 +798,81 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 /* home — the landing: the noir hero stage (the one deep floor of the page)
    under the warm brass light, the prompt-first giga field, the featured
    cover rail, the 01–03 flow and the hairline ledgers */
+/* the hero floor: the deep canvas carried one step darker at the crown so the
+   brass light lands on a real stage (the light flip rides the same recipe on
+   the cream ladder — the token pair owns both themes) */
+:root { --hero-floor: linear-gradient(180deg, #141519 0%, var(--sol-canvas-deep) 54%, var(--sol-canvas) 100%); }
+[data-theme="light"] { --hero-floor: linear-gradient(180deg, #fdfdfb 0%, var(--sol-canvas-deep) 54%, var(--sol-canvas) 100%); }
 .hero-stage {
   position: relative; display: flex; flex-direction: column; align-items: center; text-align: center;
   margin-inline: calc(clamp(16px, 4vw, 40px) * -1);
-  padding: clamp(44px, 8vw, 92px) clamp(20px, 6vw, 72px) clamp(36px, 6vw, 60px);
+  padding: clamp(60px, 9vw, 124px) clamp(20px, 6vw, 72px) clamp(52px, 7vw, 88px);
   border-bottom: 1px solid var(--line);
   background:
-    radial-gradient(640px 480px at 50% -6%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 68%),
-    var(--sol-canvas-deep);
+    radial-gradient(920px 560px at 50% -12%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 70%),
+    radial-gradient(1200px 520px at 50% 122%, color-mix(in srgb, var(--color-win) 7%, transparent), transparent 74%),
+    var(--hero-floor);
 }
-.hero-light { position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(640px 480px at 50% 0%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 70%); }
-.hero-lockup { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
-.hero-lockup .sol-mark { width: 40px; height: 40px; }
-.hero-name { font-family: var(--font-mono); font-size: 13px; font-weight: 600; letter-spacing: 0.3em; color: var(--ink-2); }
-.hero-h { margin: 0 0 18px; font-size: clamp(2.5rem, 6.4vw, 4.5rem); font-weight: 800; line-height: 1.03; letter-spacing: -0.03em; background: linear-gradient(180deg, var(--ink) 30%, var(--brass-300) 112%); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
-.hero-stage .hero-lede { max-width: 620px; font-size: 1.05rem; margin: 0 0 30px; }
-.hero-stage .badge-row { margin-top: 28px; }
+.hero-light { position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(680px 520px at 50% 2%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 72%), radial-gradient(160px 120px at 50% 6%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 82%); }
+.hero-lockup { display: flex; align-items: center; gap: 14px; margin-bottom: 36px; }
+.hero-lockup .sol-mark { width: 44px; height: 44px; }
+.hero-name { font-family: var(--font-mono); font-size: 13.5px; font-weight: 600; letter-spacing: 0.32em; color: var(--ink-2); }
+.hero-h { margin: 0 0 22px; font-size: clamp(2.75rem, 7.2vw, 5.25rem); font-weight: 750; line-height: 1.02; letter-spacing: -0.035em; background: linear-gradient(180deg, var(--ink) 44%, var(--brass-300) 118%); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
+.hero-stage .hero-lede { max-width: 660px; font-size: 1.125rem; line-height: 1.65; margin: 0 0 36px; }
+.hero-stage .badge-row { margin-top: 32px; }
 
-/* the prompt-giga field: giant mono input + the embedded brass key (the
-   ONE content cta of the hero — the identity accent speaks here) */
+/* the engine floor: the deterministic waveform strip the stage breathes on —
+   48 brass bars of a fixed amplitude walk, hairline weight, fading at the
+   stage seams (decorative only, aria-hidden at the markup side) */
+.hero-wave {
+  display: flex; align-items: center; gap: 4px;
+  width: min(860px, 86%);
+  height: 56px;
+  margin-top: clamp(30px, 5vw, 54px);
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+.hero-wave span {
+  flex: 1 1 0;
+  height: calc(56px * var(--amp, 0.3));
+  min-height: 2px;
+  border-radius: 1px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--brass-300) 52%, transparent), color-mix(in srgb, var(--accent) 14%, transparent));
+  opacity: 0.5;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-wave span { animation: heroWaveBreathe 2.8s var(--ease-entry) infinite; animation-delay: calc(var(--amp, 0.3) * -1.4s); }
+}
+@keyframes heroWaveBreathe {
+  0%, 100% { opacity: 0.34; }
+  50% { opacity: 0.62; }
+}
+
+/* the prompt-giga field: the geometry and the states live here; the suno
+   pass below owns the material (the dark well, the aura pair). The ONE
+   content cta of the hero — the identity accent speaks here */
 .prompt-giga {
-  position: relative; display: flex; align-items: stretch; width: min(680px, 100%); padding: 6px;
-  border: 1px solid var(--line-strong); border-radius: var(--radius-2xl);
-  background: color-mix(in srgb, var(--surface-2) 88%, transparent); box-shadow: var(--shadow-2);
+  position: relative; display: flex; align-items: stretch; width: min(720px, 100%); padding: 7px;
   transition: border-color var(--sol-micro) var(--sol-ease-out), box-shadow var(--sol-micro) var(--sol-ease-out);
 }
 .prompt-giga:focus-within { border-color: color-mix(in srgb, var(--accent) 55%, transparent); box-shadow: var(--shadow-3), inset 0 -2px 0 0 var(--win-accent); }
-.pg-input { flex: 1; min-width: 0; min-height: 56px; padding: 0 16px; border: 0; background: transparent; color: var(--ink); font-family: var(--font-mono); font-size: clamp(15px, 2.2vw, 17px); font-weight: 500; line-height: 1.4; }
+.pg-input { flex: 1; min-width: 0; min-height: 60px; padding: 0 18px; border: 0; background: transparent; color: var(--ink); font-family: var(--font-mono); font-size: clamp(15px, 2.4vw, 18px); font-weight: 500; line-height: 1.4; }
 .pg-input:focus { outline: none; }
 .pg-input::placeholder { color: var(--ink-3); }
 .pg-key {
-  display: inline-flex; align-items: center; gap: 8px; flex: none; margin: 4px; padding: 0 22px; min-height: 48px;
-  border: 0; border-radius: var(--radius-lg); background: var(--accent); color: var(--accent-ink);
-  font-weight: 700; font-size: 15px;
+  display: inline-flex; align-items: center; gap: 8px; flex: none; margin: 4px; padding: 0 26px; min-height: 52px;
+  border: 0; background: var(--accent); color: var(--accent-ink);
+  font-weight: 700; font-size: 15.5px;
   box-shadow: var(--sol-btn-inset), 0 0 0 1px rgb(0 0 0 / 22%), 0 1px 2px rgb(0 0 0 / 24%), 0 3px 5px -1px rgb(0 0 0 / 28%);
   transition: background-color var(--sol-micro) var(--sol-ease-out), box-shadow var(--sol-micro) var(--sol-ease-out), transform var(--dur-press) ease-in-out;
 }
-.pg-key:hover { background: color-mix(in oklab, var(--accent) 90%, var(--accent-ink)); box-shadow: var(--sol-btn-inset-hover), 0 0 0 1px rgb(0 0 0 / 30%), 0 2px 3px rgb(0 0 0 / 28%), 0 4px 7px -1px rgb(0 0 0 / 32%); }
+.pg-key:hover { background: color-mix(in oklab, var(--accent) 90%, var(--accent-ink)); box-shadow: var(--sol-btn-inset-hover), 0 0 0 1px rgb(0 0 0 / 30%), 0 2px 3px rgb(0 0 0 / 28%), 0 4px 7px -1px rgb(0 0 0 / 32%), 0 2px 12px color-mix(in srgb, var(--accent) 32%, transparent); }
 .pg-key:active { transform: scale(0.96); }
-.pg-hint { margin: 10px 0 0; font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.08em; color: var(--ink-3); font-variant-numeric: tabular-nums; }
-.pg-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 720px; margin: 22px 0 0; padding: 0; border: 0; min-inline-size: 0; }
+.pg-hint { margin: 12px 0 0; font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.08em; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.pg-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 760px; margin: 26px 0 0; padding: 0; border: 0; min-inline-size: 0; }
 .pg-chip {
-  padding: 7px 14px; border: 1px solid var(--line); border-radius: var(--win-radius-ctl);
-  background: var(--surface-2); color: var(--ink-2); font-family: var(--font-mono); font-size: 12.5px; font-weight: 500;
+  padding: 0 18px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink-2); font-family: var(--font-mono); font-size: 12.5px; font-weight: 500;
   transition: color var(--sol-micro) var(--sol-ease-out), border-color var(--sol-micro) var(--sol-ease-out), background-color var(--sol-micro) var(--sol-ease-out), transform var(--dur-press) ease-in-out;
 }
 .pg-chip:hover { color: var(--ink); border-color: var(--line-strong); }
@@ -1166,8 +1198,8 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   --suno-exit: 0.1s;
   --suno-ease-exit: cubic-bezier(0.4, 0, 1, 1);
 
-  /* the suno geometry: card 12.5rem, the play key 3rem, the aura blur 4rem */
-  --suno-card-w: 12.5rem;
+  /* the suno geometry: card 13.5rem, the play key 3rem, the aura blur 4rem */
+  --suno-card-w: 13.5rem;
   --suno-play: 3rem;
   --suno-aura-blur: 4rem;
 
@@ -1200,11 +1232,11 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
    keeps the windows underline (the foundation rule above wins on focus) */
 .prompt-giga {
   border: 1px solid var(--suno-edge);
-  border-radius: var(--sol-radius);
+  border-radius: var(--radius-2xl);
   background: var(--suno-field);
   backdrop-filter: blur(19px) saturate(1.4);
   -webkit-backdrop-filter: blur(19px) saturate(1.4);
-  box-shadow: 0 12px 24px -12px rgb(0 0 0 / 40%);
+  box-shadow: 0 12px 24px -12px rgb(0 0 0 / 40%), 0 32px 64px -32px rgb(0 0 0 / 45%);
 }
 .prompt-giga::before {
   content: "";
@@ -1217,7 +1249,7 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   opacity: 0.5;
 }
 .pg-input { caret-color: var(--brass-300); }
-.pg-key { border-radius: var(--sol-radius); }
+.pg-key { border-radius: var(--radius-xl); }
 .pg-chip {
   min-height: 44px;
   padding: 0 16px;
@@ -1239,7 +1271,7 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .song-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(var(--suno-card-w), 1fr));
-  gap: 14px;
+  gap: 18px;
   margin-top: 6px;
 }
 .song-card {
@@ -1248,14 +1280,15 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   flex-direction: column;
   gap: 10px;
   min-width: 0;
-  padding: 10px;
-  border-radius: var(--sol-radius);
+  padding: 12px 12px 14px;
+  border-radius: var(--radius-xl);
   background: linear-gradient(180deg, var(--suno-card-a), var(--suno-card-b));
   box-shadow: 0 0 0 1px var(--suno-edge), 0 1px 1px -0.5px var(--sol-drop), 0 6px 12px -6px rgb(0 0 0 / 45%);
-  transition: box-shadow var(--sol-micro) var(--sol-ease-out), transform var(--suno-exit) var(--suno-ease-exit);
+  transition: box-shadow var(--sol-micro) var(--sol-ease-out), transform var(--dur-2) var(--ease-window), background-color var(--sol-micro) var(--sol-ease-out);
 }
 .song-card:hover {
   background: linear-gradient(180deg, var(--suno-card-b), var(--suno-card-hover));
+  transform: translateY(-5px);
   box-shadow: 0 0 0 1px var(--suno-edge-strong), 0 1px 1px -0.5px var(--sol-drop), 0 10px 20px -8px rgb(0 0 0 / 55%),
     0 24px 48px -24px rgb(0 0 0 / 45%);
 }
@@ -1263,10 +1296,19 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--brass-300) 60%, transparent), 0 1px 1px -0.5px var(--sol-drop),
     0 10px 20px -8px rgb(0 0 0 / 55%);
 }
+/* the now-playing breath: the live card's brass ring pulses softly — the
+   feedback loop the player bar closes (transform-free, opacity only) */
+@media (prefers-reduced-motion: no-preference) {
+  .song-card[data-live="true"] { animation: songLiveBreath 2.4s var(--ease-entry) infinite; }
+}
+@keyframes songLiveBreath {
+  0%, 100% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--brass-300) 55%, transparent), 0 1px 1px -0.5px var(--sol-drop), 0 10px 20px -8px rgb(0 0 0 / 55%), 0 0 0 0 color-mix(in srgb, var(--brass-300) 0%, transparent); }
+  50% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--brass-300) 85%, transparent), 0 1px 1px -0.5px var(--sol-drop), 0 10px 20px -8px rgb(0 0 0 / 55%), 0 0 14px 1px color-mix(in srgb, var(--brass-300) 22%, transparent); }
+}
 .song-card__frame {
   position: relative;
   aspect-ratio: 1;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: inset 0 0 0 1px var(--suno-edge);
 }

@@ -144,23 +144,24 @@ function HomeSurface() {
           )}
         </div>
         <div className="ledger reveal">
-          {recent === "loading" && (
-            <p className="mono-label" style={{ margin: 0, padding: "16px 4px", borderBottom: "1px solid var(--line)" }}>
-              reading the gateway…
-            </p>
-          )}
+          {recent === "loading" &&
+            [0, 1, 2].map((slot) => (
+              <div key={`sk-${slot}`} className="ledger-row ledger-row--skeleton" aria-hidden="true">
+                <span className="skel skel--no" />
+                <div className="ledger-main">
+                  <span className="skel skel--title" />
+                  <span className="skel skel--text" />
+                </div>
+                <span className="skel skel--meta" />
+              </div>
+            ))}
           {recent === "offline" && (
             <EmptyState
               icon={WifiOffRegular}
               title="the gateway isn't answering"
               line="the recents read the local generation store — nothing shown that the engine did not render. start it, then retry."
               action={
-                <button
-                  type="button"
-                  className="btn btn--ghost"
-                  style={{ minHeight: 40 }}
-                  onClick={() => loadRecent(() => true)}
-                >
+                <button type="button" className="btn" style={{ minHeight: 40 }} onClick={() => loadRecent(() => true)}>
                   retry the gateway
                 </button>
               }

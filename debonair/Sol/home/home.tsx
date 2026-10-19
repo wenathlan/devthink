@@ -47,6 +47,14 @@ const FLOW_STEPS: readonly { no: string; title: string; text: string }[] = [
   { no: "03", title: "Master", text: "Genre-aware mix, true-peak limiter, WAV out." },
 ];
 
+/** the deterministic amplitudes of the hero waveform strip (the engine floor
+ * — a fixed 48-bar walk, decorative only, the same value every render) */
+const HERO_WAVE: readonly number[] = Array.from({ length: 48 }, (_, index) => {
+  const envelope = Math.sin((index / 47) * Math.PI) ** 1.5;
+  const carrier = 0.45 + 0.35 * Math.sin(index * 0.55) + 0.2 * Math.sin(index * 0.13 + 1.2);
+  return Math.min(1, Math.max(0.08, envelope * carrier + 0.06));
+});
+
 /** the spec proof of the hero ledger: the engine's own configuration — no invented numbers */
 const SPEC_ROWS: readonly { label: string; value: string }[] = [
   { label: "engine", value: "katexis" },
@@ -194,6 +202,14 @@ function HomeSurface() {
               {badge.dot ? <span className="dot" /> : null}
               {badge.label}
             </span>
+          ))}
+        </div>
+        {/* THE ENGINE FLOOR — the deterministic waveform the stage breathes on
+            (decorative only: a fixed 48-bar amplitude walk, aria-hidden — the
+            page never claims it is live data) */}
+        <div className="hero-wave" aria-hidden="true">
+          {HERO_WAVE.map((amplitude, index) => (
+            <span key={`hw-${index}`} style={{ "--amp": amplitude } as CSSProperties} />
           ))}
         </div>
       </section>

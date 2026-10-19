@@ -581,8 +581,50 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .intro-nav__link:hover { color: var(--ink); background: var(--wash); text-decoration: none; }
 .intro-nav__link:focus-visible { outline: none; box-shadow: inset 0 -2px 0 0 var(--win-accent); }
 .intro-nav__link:active { transform: scale(0.97); }
-/* the hero mark: the ONE brand focus of the page */
-.intro-hero__mark { display: inline-flex; justify-content: center; }
+/* the narrow bar: under 720px the section links rest (the wordmark, the one
+   cta and the page itself carry the navigation — no horizontal scroll ever) */
+@media (max-width: 720px) {
+  .intro-nav__link { display: none; }
+  .intro-nav { gap: 8px; }
+}
+/* the hero mark: the ONE brand focus of the page — the fluent halo/aura
+   pair the studio lamp breathes around it (a tight bright core glow plus a
+   wide low-opacity atmospheric bloom — never a neon ring), the mark itself
+   rides a hairline plate lift */
+.intro-hero__mark {
+  display: inline-flex; justify-content: center; position: relative;
+  padding: 18px; border-radius: var(--radius-3xl);
+}
+.intro-hero__mark::before {
+  content: ""; position: absolute; inset: -34px; z-index: -1; border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 22%, transparent), transparent 78%);
+  pointer-events: none;
+}
+.intro-hero__mark::after {
+  content: ""; position: absolute; inset: -64px; z-index: -2; border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 7%, transparent), transparent 74%);
+  pointer-events: none;
+}
+/* the studio lamp breathes: the halo pair fades in and out on the slow
+   entry curve — the audio-reactive idle the landing promises, still a
+   poster under reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  .intro-hero__mark::before { animation: markHalo 4.2s var(--ease-entry) infinite; }
+  .intro-hero__mark::after { animation: markAura 4.2s var(--ease-entry) infinite; animation-delay: -1.1s; }
+}
+@keyframes markHalo {
+  0%, 100% { opacity: 0.72; }
+  50% { opacity: 1; }
+}
+@keyframes markAura {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+/* the landing headline wears the rose gradient the wordmark carries */
+.intro-page main > section > h1 {
+  background: linear-gradient(180deg, var(--ink) 40%, var(--rose-300) 116%);
+  -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent;
+}
 /* the quiet text cue that scrolls to the live demo */
 .intro-cue {
   display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 8px;
@@ -707,6 +749,14 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .anchor-row:hover { background: color-mix(in srgb, var(--accent) 5%, transparent); }
 .anchor-no { font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--ink-3); font-variant-numeric: tabular-nums; }
 @media (max-width: 960px) { .anchorledger { grid-template-columns: 1fr; } }
+
+/* the demo bench grid: the readout and the art frame sit side by side on the
+   desk; under 700px the desk stacks — the art frame caps the column, the
+   readout keeps its own measure, no horizontal scroll ever */
+@media (max-width: 700px) {
+  .demo-grid { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .demo-readout, .demo-art { flex: none; max-width: none; }
+}
 .mv { position: relative; height: 118px; margin: -6px -6px 16px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface-2); overflow: hidden; }
 .mv-shell { display: block; position: relative; border-radius: var(--radius-md); }
 .mv-shell .mv { margin: 0; height: 216px; }
@@ -791,8 +841,39 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
    line of truth, one real action */
 .empty { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 44px 24px 40px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface-1); box-shadow: var(--shadow-1); text-align: center; }
 .empty__icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: var(--radius-md); color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+/* the waiting breath: the rose glyph pulses softly while the state stands —
+   the studio lamp waiting for the gateway, never a spinner (reduced-motion
+   keeps the still glyph) */
+@media (prefers-reduced-motion: no-preference) {
+  .empty__icon { animation: emptyBreath 2.6s var(--ease-entry) infinite; }
+}
+@keyframes emptyBreath {
+  0%, 100% { background-color: color-mix(in srgb, var(--accent) 8%, transparent); }
+  50% { background-color: color-mix(in srgb, var(--accent) 16%, transparent); }
+}
 .empty__title { margin: 0; font-size: 1rem; font-weight: 600; color: var(--ink); }
 .empty__line { margin: 0; max-width: 46ch; font-size: 0.9rem; color: var(--ink-2); }
+
+/* the skeleton ledger rows: the shimmer sweep rides translate only — the
+   reading state keeps the ledger's own geometry so the page never reflows
+   when the gateway answers */
+.ledger-row--skeleton { pointer-events: none; }
+.skel { position: relative; display: block; overflow: hidden; border-radius: var(--win-radius-ctl); background: var(--wash); }
+.skel::after {
+  content: ""; position: absolute; inset: 0; transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, var(--sol-hi), transparent);
+}
+.skel--no { width: 22px; height: 12px; }
+.skel--title { width: 38%; height: 14px; margin-bottom: 8px; }
+.skel--text { width: 62%; height: 10px; }
+.skel--meta { width: 120px; height: 12px; justify-self: end; }
+@media (prefers-reduced-motion: no-preference) {
+  .skel::after { animation: skelSweep 1.6s var(--ease-entry) infinite; }
+}
+@keyframes skelSweep {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
 
 /* toast — the acrylic notification: the window radius, the grain, the
    flyout shadow, tone on the border only, the fluent entry */
@@ -933,18 +1014,28 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
    establishes the positioning context, the tip paints above the control —
    below inside the chrome rows that sit at a container's top edge — with
    the 300ms windows dwell on hover, immediate on keyboard focus, immediate
-   out. the rail pins keep their ::before tip (the ladder owns the ::after) */
+   out. the rail pins keep their ::before tip (the ladder owns the ::after).
+   The tip rides display:none at rest — an invisible-but-laid-out pseudo
+   would still extend the page's scrollable region (the phantom mobile
+   overflow the footer family row carried); the dwell fade rides a keyframe
+   that starts on each appearance, so nothing is lost */
 [data-tip] { position: relative; }
 [data-tip]:not(.railnav__item)::after {
   content: attr(data-tip); position: absolute; bottom: calc(100% + 6px); left: 50%; z-index: var(--z-tooltip);
   padding: 5px 9px; border-radius: var(--win-radius-ctl);
   background-color: var(--win-tip); background-image: var(--noise); background-blend-mode: soft-light;
   box-shadow: var(--shadow-flyout); color: var(--ink); font-size: 12px; font-weight: 500; line-height: 1.3; white-space: nowrap;
-  opacity: 0; transform: translate(-50%, 4px); pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  display: none; opacity: 0; transform: translate(-50%, 4px); pointer-events: none;
 }
-[data-tip]:not(.railnav__item):hover::after { opacity: 1; transform: translate(-50%, 0); transition-delay: 300ms; }
-[data-tip]:not(.railnav__item):focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
+[data-tip]:not(.railnav__item):hover::after, [data-tip]:not(.railnav__item):focus-visible::after {
+  display: block; opacity: 1; transform: translate(-50%, 0);
+  animation: tipIn 0.2s ease both;
+}
+[data-tip]:not(.railnav__item):hover::after { animation-delay: 300ms; }
+@keyframes tipIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 .tl-toolbar [data-tip]::after, .tl-thead [data-tip]::after, .winapp__title [data-tip]::after { bottom: auto; top: calc(100% + 6px); transform: translate(-50%, -4px); }
 .winapp__caption [data-tip]::after { left: auto; right: 0; transform: translate(0, -4px); }
 .winapp__caption [data-tip]:hover::after, .winapp__caption [data-tip]:focus-visible::after { transform: translate(0, 0); }
@@ -955,7 +1046,8 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 @media (prefers-reduced-motion: reduce) {
   .gal-grid > .gal-card { animation: none; }
   .gal-card--skel .cdr-skel { animation-delay: 0ms; }
-  .railnav__item::before, [data-tip]::after { transition-delay: 0ms; }
+  .railnav__item::before { transition-delay: 0ms; }
+  [data-tip]:not(.railnav__item):hover::after, [data-tip]:not(.railnav__item):focus-visible::after { animation: none; animation-delay: 0ms; }
 }
 
 /* ---------- 7. guards — the hard stops, last so nothing overrides them ------ */

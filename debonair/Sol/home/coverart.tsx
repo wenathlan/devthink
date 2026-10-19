@@ -4,9 +4,16 @@
  * walked over the track name (the same walk the library sparkbar uses) picks
  * one of four brass plates — bars, rings, wave, grid — and the plate accent.
  * No randomness, no images, no fake data: the same name always draws the same
- * cover, on the landing rail and in the library rows alike. Presentation
+ * cover, on the landing grid and in the library rows alike. Presentation
  * only: the component renders a decorative svg (aria-hidden), the track name
  * always sits beside it as real text.
+ *
+ * The plate material (the vinyl pass): the deep floor is a two-stop charcoal
+ * gradient with the record-groove hairlines turning around the plate center,
+ * the brass glow lands from one corner, a top edge-light and a bottom
+ * vignette close the plate, and the motif itself rides a brass gradient with
+ * its mirrored ghost under the baseline — the album-cover quality the suno
+ * grid asks, still zero image files.
  */
 import { useId } from "react";
 
@@ -16,9 +23,12 @@ const PLATE_EMBER = "#c47f1a";
 const PLATE_GOLD = "#f0c976";
 const PLATE_SOFT = "#e8ad55";
 /** the charcoal floor the plates sit on (the theme surface) */
-const PLATE_FLOOR = "#14110a";
+const PLATE_FLOOR_A = "#0e0c07";
+const PLATE_FLOOR_B = "#1b160c";
 /** the hairline frame of the plate */
 const PLATE_EDGE = "rgb(217 150 46 / 0.28)";
+/** the groove hairline of the vinyl pass (ink mixed over the floor) */
+const PLATE_GROOVE = "rgb(240 201 118 / 0.07)";
 
 /**
  * Walks the name into a stable integer (the sparkbar walk).
@@ -46,7 +56,10 @@ export function CoverArt({ name }: { name: string }) {
   const accents = [PLATE_BRASS, PLATE_EMBER, PLATE_GOLD, PLATE_SOFT];
   const accent = accents[Math.floor(hash / 4) % 4];
   const variant = hash % 4;
-  const glowId = `dbn-cv${uid}`;
+  const safeId = uid.replace(/[^a-zA-Z0-9-]/g, "");
+  const glowId = `dbn-cv${safeId}`;
+  const motifId = `dbn-mt${safeId}`;
+  const floorId = `dbn-fl${safeId}`;
   // the warm light source of the plate sits on one of the four corners
   const corners: readonly [number, number][] = [
     [0.26, 0.22],
@@ -90,43 +103,88 @@ export function CoverArt({ name }: { name: string }) {
   return (
     <svg viewBox="0 0 96 96" aria-hidden="true" focusable="false" className="coverart">
       <defs>
-        <radialGradient id={glowId} cx={gx} cy={gy} r="0.72">
-          <stop offset="0" stopColor={accent} stopOpacity=".52" />
+        <radialGradient id={glowId} cx={gx} cy={gy} r="0.78">
+          <stop offset="0" stopColor={accent} stopOpacity=".55" />
+          <stop offset="0.55" stopColor={accent} stopOpacity=".18" />
           <stop offset="1" stopColor={accent} stopOpacity="0" />
         </radialGradient>
+        <linearGradient id={floorId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor={PLATE_FLOOR_B} />
+          <stop offset="1" stopColor={PLATE_FLOOR_A} />
+        </linearGradient>
+        <linearGradient id={motifId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor={PLATE_GOLD} />
+          <stop offset="1" stopColor={accent} />
+        </linearGradient>
+        <linearGradient id={`${motifId}-v`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="rgb(0 0 0 / 0)" />
+          <stop offset="0.62" stopColor="rgb(0 0 0 / 0)" />
+          <stop offset="1" stopColor="rgb(0 0 0 / 0.34)" />
+        </linearGradient>
       </defs>
-      <rect width="96" height="96" fill={PLATE_FLOOR} />
+
+      {/* the floor: the two-stop charcoal the light lands on */}
+      <rect width="96" height="96" fill={`url(#${floorId})`} />
+      {/* the brass corner light */}
       <rect width="96" height="96" fill={`url(#${glowId})`} />
+      {/* the vinyl pass: the record grooves turning around the plate center */}
+      <g fill="none" stroke={PLATE_GROOVE}>
+        <circle cx="48" cy="48" r="14" strokeWidth="0.6" />
+        <circle cx="48" cy="48" r="22" strokeWidth="0.6" />
+        <circle cx="48" cy="48" r="30" strokeWidth="0.6" />
+        <circle cx="48" cy="48" r="38" strokeWidth="0.6" />
+        <circle cx="48" cy="48" r="46" strokeWidth="0.6" />
+      </g>
 
       {variant === 0 && (
         <g>
           {bars.map((bar) => (
-            <rect
-              key={`cv-b${bar.left}`}
-              x={bar.left}
-              y={80 - bar.height}
-              width="8"
-              height={bar.height}
-              rx="4"
-              fill={accent}
-              opacity={0.5 + (bar.left - 17) / 135}
-            />
+            <g key={`cv-b${bar.left}`}>
+              <rect
+                x={bar.left}
+                y={80 - bar.height}
+                width="8"
+                height={bar.height}
+                rx="4"
+                fill={`url(#${motifId})`}
+                opacity={0.55 + (bar.left - 17) / 160}
+              />
+              {/* the mirrored ghost under the baseline — the studio floor reflection */}
+              <rect
+                x={bar.left}
+                y={81}
+                width="8"
+                height={Math.max(bar.height * 0.22, 4)}
+                rx="4"
+                fill={accent}
+                opacity="0.14"
+              />
+            </g>
           ))}
         </g>
       )}
 
       {variant === 1 && (
-        <g fill="none" stroke={accent}>
-          <circle cx="48" cy="48" r="12" strokeWidth="5" opacity=".8" />
-          <circle cx="48" cy="48" r="25" strokeWidth="2.5" opacity=".42" />
-          <circle cx="48" cy="48" r="37" strokeWidth="1.5" opacity=".24" />
+        <g fill="none" stroke={`url(#${motifId})`}>
+          <circle cx="48" cy="48" r="12" strokeWidth="5" opacity=".85" />
+          <circle cx="48" cy="48" r="25" strokeWidth="2.5" opacity=".45" />
+          <circle cx="48" cy="48" r="37" strokeWidth="1.5" opacity=".26" />
+          <circle cx="48" cy="48" r="43.5" strokeWidth="0.8" opacity=".16" />
+          <circle cx="48" cy="48" r="3" fill={accent} stroke="none" opacity=".9" />
         </g>
       )}
 
       {variant === 2 && (
         <>
-          <path d={wave} fill="none" stroke={accent} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-          <path d={wave} fill="none" stroke={accent} strokeWidth="11" strokeLinecap="round" opacity=".18" />
+          <path
+            d={wave}
+            fill="none"
+            stroke={`url(#${motifId})`}
+            strokeWidth="5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path d={wave} fill="none" stroke={accent} strokeWidth="11" strokeLinecap="round" opacity=".16" />
         </>
       )}
 
@@ -138,14 +196,18 @@ export function CoverArt({ name }: { name: string }) {
               cx={dot.cx}
               cy={dot.cy}
               r={dot.on ? 4 : 2}
-              fill={accent}
-              opacity={dot.on ? 0.85 : 0.22}
+              fill={dot.on ? accent : PLATE_GROOVE}
+              opacity={dot.on ? 0.9 : 0.5}
             />
           ))}
         </g>
       )}
 
+      {/* the vignette closes the plate to the floor */}
+      <rect width="96" height="96" fill={`url(#${motifId}-v)`} />
+      {/* the top edge-light the brass breathes on */}
       <rect x=".5" y=".5" width="95" height="95" rx="7" fill="none" stroke={PLATE_EDGE} />
+      <rect x="1.5" y="1.5" width="93" height="93" rx="6" fill="none" stroke="rgb(240 201 118 / 0.1)" />
     </svg>
   );
 }

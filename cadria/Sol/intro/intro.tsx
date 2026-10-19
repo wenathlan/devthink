@@ -92,31 +92,31 @@ export default function Intro() {
     width: "100%",
     maxWidth: 1080,
     margin: "0 auto",
-    padding: "96px 24px 64px",
+    padding: "clamp(72px, 11vw, 132px) 24px clamp(56px, 8vw, 96px)",
     boxSizing: "border-box",
     textAlign: "center",
   } as const;
   const h1Style = {
-    margin: "14px 0 18px",
-    fontSize: "clamp(2.3rem, 5.4vw, 3.5rem)",
-    lineHeight: 1.04,
-    letterSpacing: "-0.03em",
-    fontWeight: 650,
+    margin: "18px 0 22px",
+    fontSize: "clamp(2.9rem, 6.8vw, 5.2rem)",
+    lineHeight: 1.02,
+    letterSpacing: "-0.035em",
+    fontWeight: 750,
   } as const;
   const ledeStyle = {
     margin: "0 auto",
-    maxWidth: "64ch",
+    maxWidth: "68ch",
     color: MUTED,
-    fontSize: "1.05rem",
-    lineHeight: 1.62,
+    fontSize: "1.125rem",
+    lineHeight: 1.68,
   } as const;
   const ctaRowStyle = {
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "center",
     alignItems: "center",
-    gap: 12,
-    marginTop: 30,
+    gap: 14,
+    marginTop: 34,
   } as const;
   const dividerStyle = {
     width: "100%",
@@ -152,9 +152,9 @@ export default function Intro() {
         {/* HERO — the animated mark, the lowercase tagline, the single cta */}
         <section aria-labelledby="intro-h" style={heroStyle}>
           <span className="intro-hero__mark reveal" aria-hidden="true">
-            <CadriaMark size={104} hidden flow />
+            <CadriaMark size={112} hidden flow />
           </span>
-          <p className="mono-label reveal" style={{ margin: "24px 0 0" }}>
+          <p className="mono-label reveal" style={{ margin: "28px 0 0" }}>
             cadria · the studio that listens
           </p>
           <h1 id="intro-h" className="reveal" style={h1Style}>

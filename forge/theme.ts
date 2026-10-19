@@ -15,7 +15,7 @@ function root(): HTMLElement {
 
 /** Reads the theme currently applied to the document. */
 export function currentTheme(): Theme {
-  return root().getAttribute("data-theme") === "dark" ? "dark" : "light";
+  return root().getAttribute("data-theme") === "light" ? "light" : "dark";
 }
 
 /** Applies a theme to the document. */

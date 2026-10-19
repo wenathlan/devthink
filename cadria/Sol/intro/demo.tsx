@@ -110,6 +110,15 @@ export function DemoStrip({ cue }: { cue: DemoCue | null }) {
     if (cue) run(cue.id);
   }, [cue, run]);
 
+  useEffect(() => {
+    // the strip demonstrates itself: the first fixture runs once on mount —
+    // the chain is real, deterministic and sub-second, so the landing shows
+    // the engine working before any click (the reduced-motion guard inside
+    // run lands the compute at once). One guarded beat, never a loop.
+    const first = demoFixtures()[0];
+    run(first.id);
+  }, [run]);
+
   const sectionStyle = {
     width: "100%",
     maxWidth: 1080,
@@ -198,8 +207,8 @@ export function DemoStrip({ cue }: { cue: DemoCue | null }) {
           ))}
         </fieldset>
 
-        <div style={gridStyle}>
-          <div style={readoutStyle}>
+        <div className="demo-grid reveal" style={gridStyle}>
+          <div className="demo-readout" style={readoutStyle}>
             <p className="mono-label" style={{ margin: 0 }}>
               analysis
             </p>
@@ -224,6 +233,7 @@ export function DemoStrip({ cue }: { cue: DemoCue | null }) {
           </div>
 
           <div
+            className="demo-art"
             style={artStyle}
             role="img"
             aria-label={
