@@ -7,7 +7,6 @@
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
   },
-  "private": true,
   "license": "GPL-3.0-only",
   "author": "Wenathlan",
   "sideEffects": false,

@@ -7,7 +7,7 @@
 
 ## 1. The contract (OpenAI-compatible)
 
-```
+```text
 base      registered in settings (opt-in): {origin} saved as chat.gatewaybase
 probe     GET {base}/v1/models            → 200 with models list = connected
 send      POST {base}/v1/chat/completions
@@ -36,7 +36,7 @@ thinking  budgets in chars: none 0 / minimal 1400 / low 5500 / medium 17000 /
 
 ## 3. Client implementation (devthink side)
 
-```
+```text
 chatbody.tsx      the anchor (embedded contract: works as window body and full page)
 chatstate.ts      runTurn: builds the message list, calls the gateway, persists
 osgateway.ts      gatewayChat: fetch POST /v1/chat/completions, SSE reader
@@ -62,7 +62,7 @@ cognition drawer  renders reasoning_content live (the thinking pill maps to the 
 
 ## 5. Sandbox birth (the conversation carries a sandbox)
 
-```
+```text
 create    POST /api/v1/sandboxes { model, vcpus, ramgb, gpu, mig, quotamb }
           → sandbox created→running (sqlite + TTL reaper)
 exec      POST /api/v1/sandboxes/:id/exec { command } → { output, exitCode }

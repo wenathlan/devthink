@@ -6,7 +6,7 @@
 
 ## 1. The five distribution zips per app
 
-```
+```text
 <app>.web.<version>.zip              the web build (vite dist)
 <app>.next.personalizado.<v>.zip     next without src/, app/ bridge at the root
 <app>.next.zai.<v>.zip               skill gateway + prisma schema + DEPLOY.md (z.ai)
@@ -56,7 +56,7 @@ rule: never a next folder in the repository — only zips in the release assets
 
 ## 5. GTX translation (the gl module)
 
-```
+```text
 endpoint  https://translate.googleapis.com/...translate_a/single
           client=gtx, sl=auto, tl=<chosen>
 transport batches with a marker; answers return in order; cache per person with a

@@ -286,7 +286,9 @@ function* tagchunks(html: string, tag: string): Generator<{ attrs: string; body:
     const gt = html.indexOf(">", at);
     if (gt < 0) return;
     const close = lower.indexOf(`</${tag}`, gt);
-    if (close < 0) { yield { attrs: html.slice(at + open.length, gt), body: "", start: at }; return; }
+    // a void element carries no closing tag: the chunk yields and the scan
+    // continues past it — the document keeps more than one meta/link/img
+    if (close < 0) { yield { attrs: html.slice(at + open.length, gt), body: "", start: at }; cursor = gt + 1; continue; }
     const closegt = html.indexOf(">", close);
     yield { attrs: html.slice(at + open.length, gt), body: html.slice(gt + 1, close), start: at };
     cursor = closegt < 0 ? html.length : closegt + 1;

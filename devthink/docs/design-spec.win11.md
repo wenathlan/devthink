@@ -8,7 +8,7 @@
 
 ## 1. OS face — Windows grammar (the chrome)
 
-```
+```text
 taskbar        48px, acrylic rgb(32 32 32 / 75%) dark | rgb(243,243,243 / 85%) light
                backdrop-filter: saturate(3) blur(20px)  (+ -webkit- prefix, mandatory)
                hairline bottom rgb(0 0 0 / 55%); flat: zero gradient/pill/white border
@@ -55,7 +55,7 @@ guards         prefers-reduced-motion: popintro/press/transitions off, global .0
 
 ## 2. OS face — Trylle ladder (the surfaces under the chrome)
 
-```
+```text
 canvas         #0a0a0b | deep #060607 | ink #fafafa
 surfaces 1-8   #171717 #1e1e1e #252525 #2c2c2c #333333 #3a3a3a #414141 #484848
                light: #f4f4f5 #fafafa #fcfcfc #ffffff …
@@ -74,7 +74,7 @@ linear shadow  ring 0 0 0 1px + doubling layers 0 1px 1px -.5px → 0 96px 96px 
 
 ## 3. Landing face — index.html grammar (marketing surfaces)
 
-```
+```text
 page           body #DCE2EE; main #F2F5FC rounded-[30px]/sm:[34px] border-white
                shadow-[0_25px_80px_-15px_rgba(15,23,42,0.25)]
 rails          left rail fixed (6 circular w-10 buttons, active gradient indigo→sky
@@ -129,7 +129,7 @@ favicon        7 SVG frames rasterized 64px, swap each 700ms
 
 ## 5. Per-app identity accents (mark/tile/indicator only)
 
-```
+```text
 devthink  #F59E0B amber (rust ladder #78350F→#B45309→#F59E0B)
 argan     #34d8a8 jade        cadria    #e858c7 magenta     debonair #d9962e brass
 stealthhead #e8563f coral     forge     #d6f74b lime        foundry  #1e6ff2 blue-signal
