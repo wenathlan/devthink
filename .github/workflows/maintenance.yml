@@ -292,25 +292,29 @@ jobs:
           # the squash merge replaces it, so the ladder keeps its history
           # without keeping its branches.
           git tag "archive/${BRANCH}"
-          # the checkout persists the github app token as an http
-          # extraheader through an includeif config file (the v7 credential
-          # grammar), and the extraheader OUTRANKS the credentials embedded
-          # in the remote url — the pat set-url alone never reaches the
-          # wire. The pat rides the header itself on every push the rung
-          # makes (the branch, the archive tag, the version tag): a
-          # command-level -c outranks every included config, and the remote
-          # url stays CLEAN because a credentialed url beside the header
-          # answers two authorization headers the wire refuses with 400.
+          # the checkout persists the github app token through an
+          # includeif gitdir config that injects an http extraheader — and
+          # http extraheader is MULTI-VALUED: a command-level -c beside the
+          # injected one answers two authorization headers the wire refuses
+          # (remote: duplicate header, 400). The includeif keys leave the
+          # local config first, then every network call the rung makes
+          # rides the single pat header: the branch push, the archive tag,
+          # the main fetch and the version tag push.
           PAT_HEADER=""
           if [ -n "$OWNER_PAT" ]; then
-            git remote set-url origin "https://github.com/${GITHUB_REPOSITORY}.git"
+            git config --local --get-regexp '^includeif\.gitdir:' 2>/dev/null | cut -d' ' -f1 | while read -r includekey; do
+              git config --local --unset-all "$includekey" 2>/dev/null || true
+            done
             PAT_HEADER="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$OWNER_PAT" | base64 -w0)"
           fi
-          if [ -n "$PAT_HEADER" ]; then
-            git -c http.https://github.com/.extraheader="$PAT_HEADER" push --force-with-lease origin "$BRANCH" "refs/tags/archive/${BRANCH}"
-          else
-            git push --force-with-lease origin "$BRANCH" "refs/tags/archive/${BRANCH}"
-          fi
+          gitpat() {
+            if [ -n "$PAT_HEADER" ]; then
+              git -c http.https://github.com/.extraheader="$PAT_HEADER" "$@"
+            else
+              git "$@"
+            fi
+          }
+          gitpat push --force-with-lease origin "$BRANCH" "refs/tags/archive/${BRANCH}"
           PR_URL="$(gh pr create --base main --head "$BRANCH" --title "chore: land the automated maintenance rung v${NEXT}" --body "Automated rung of the DevThink dependency ladder. This pull request carries every non-breaking maintenance update available at run time (npm dependencies, engine recommendations, versioned GitHub Actions references), the next patch rung derived by arithmetic over package.json, the complete metadata restamp, the re-frozen apifreeze artifact and the recorded permission baseline. The verify pipeline below is the gate: when it answers green the rung squashes onto main, the automation branch is archived under its tag and deleted, and the release workflow is dispatched on the new version tag; when it answers red the pull request closes and the branch is deleted, so no rung ever stays open.")"
           echo "Pull request: ${PR_URL}"
           # watch the verification pipeline of the pull request to its end —
@@ -326,17 +330,12 @@ jobs:
           # the squash merge landed on main: create the version tag and
           # dispatch the release workflow on it (pushes performed with the
           # GITHUB_TOKEN never fire workflows, so the dispatch is explicit).
-          # the version tag push rides the same pat header the branch push
-          # carried — the includeif extraheader of the checkout would
-          # answer the app token otherwise.
-          git fetch origin main --quiet
+          # the fetch and the version tag push ride the same single pat
+          # header the branch push carried.
+          gitpat fetch origin main --quiet
           MAINSHA="$(git rev-parse origin/main)"
           git tag -a "v${NEXT}" -m "DevThink ${NEXT}" "$MAINSHA"
-          if [ -n "$PAT_HEADER" ]; then
-            git -c http.https://github.com/.extraheader="$PAT_HEADER" push origin "refs/tags/v${NEXT}"
-          else
-            git push origin "refs/tags/v${NEXT}"
-          fi
+          gitpat push origin "refs/tags/v${NEXT}"
           gh workflow run release.yml --ref "v${NEXT}" -f tag="v${NEXT}"
           echo "The rung v${NEXT} landed on ${MAINSHA:0:8} and the release workflow was dispatched on the tag."
   cachecleanup:
