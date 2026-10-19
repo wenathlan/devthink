@@ -20,6 +20,7 @@ import { Route, Switch } from "wouter";
 import { useReveal } from "../reveal.ts";
 import GenerateAnchor from "./generate/generate.tsx";
 import HomeAnchor from "./home/home.tsx";
+import IngestAnchor from "./ingest/ingest.tsx";
 import IntroAnchor from "./intro/intro.tsx";
 import LibraryAnchor from "./library/library.tsx";
 import NotFoundAnchor from "./notfound/notfound.tsx";
@@ -39,6 +40,7 @@ export default function Sol() {
       <Route path="/" component={HomeAnchor} />
       <Route path="/studio" component={StudioAnchor} />
       <Route path="/generate" component={GenerateAnchor} />
+      <Route path="/ingest" component={IngestAnchor} />
       <Route path="/library" component={LibraryAnchor} />
       <Route path="/settings" component={SettingsAnchor} />
       <Route path="/404" component={NotFoundAnchor} />

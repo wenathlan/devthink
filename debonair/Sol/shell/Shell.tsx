@@ -22,6 +22,7 @@
  */
 
 import {
+  ArrowUploadRegular,
   CopyRegular,
   DismissRegular,
   HomeRegular,
@@ -66,6 +67,7 @@ export type StartApp = {
 export const START_APPS: readonly StartApp[] = [
   { href: "/", label: "home", detail: "the audio home of the family", icon: HomeRegular },
   { href: "/generate", label: "generate", detail: "the text-to-music composer", icon: SparkleRegular },
+  { href: "/ingest", label: "ingest", detail: "the decomposition bench of real tracks", icon: ArrowUploadRegular },
   { href: "/library", label: "library", detail: "the session takes and samples", icon: LibraryRegular },
   { href: "/studio", label: "studio", detail: "the timeline, rack, mixer and transport", icon: WandRegular },
   { href: "/settings", label: "settings", detail: "appearance and region", icon: SettingsRegular },

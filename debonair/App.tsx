@@ -61,6 +61,7 @@ const KNOWN_ROUTES: readonly string[] = [
   "/onboarding",
   "/studio",
   "/generate",
+  "/ingest",
   "/library",
   "/settings",
   "/404",

@@ -32,10 +32,10 @@ export interface SpectrumFrame {
  * Computes the in-place radix-2 FFT of a complex signal (re, im arrays of
  * the same power-of-two length). Pure Cooley-Tukey with bit reversal.
  *
- * @param re the real part, mutated in place.
- * @param im the imaginary part, mutated in place.
+ * @param re the real part, mutated in place (number[] or Float32Array).
+ * @param im the imaginary part, mutated in place (number[] or Float32Array).
  */
-export function fftInPlace(re: number[], im: number[]): void {
+export function fftInPlace(re: number[] | Float32Array, im: number[] | Float32Array): void {
   const n = re.length;
   for (let i = 1, j = 0; i < n; i++) {
     let bit = n >> 1;
@@ -72,12 +72,15 @@ export function fftInPlace(re: number[], im: number[]): void {
 
 /**
  * Windows one frame with the shared Hann table and answers its magnitude
- * spectrum (bins 0..size/2).
+ * spectrum (bins 0..size/2). The sample rate rides the caller — no rate is
+ * baked in, the bin resolution follows whatever pcm the engine runs.
  *
  * @param samples the frame samples, length FFT_SIZE.
+ * @param samplerate the rate of the pcm the frame came from (default 44100,
+ * the cd quality the legacy callers assumed).
  * @returns the magnitude spectrum frame.
  */
-export function frameSpectrum(samples: readonly number[]): SpectrumFrame {
+export function frameSpectrum(samples: readonly number[], samplerate = 44100): SpectrumFrame {
   const re = new Array<number>(FFT_SIZE).fill(0);
   const im = new Array<number>(FFT_SIZE).fill(0);
   for (let i = 0; i < FFT_SIZE; i++) {
@@ -89,7 +92,7 @@ export function frameSpectrum(samples: readonly number[]): SpectrumFrame {
   for (let b = 0; b < bins; b++) {
     magnitudes[b] = Math.hypot(re[b], im[b]);
   }
-  return { magnitudes, binHz: 44100 / FFT_SIZE };
+  return { magnitudes, binHz: samplerate / FFT_SIZE };
 }
 
 /** The Krumhansl-Kessler key profiles the chroma projection correlates. */

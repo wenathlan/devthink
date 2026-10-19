@@ -3,7 +3,7 @@
 // octave doubles. The recipes ride this one function; the tests pin it.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { A4_MIDI, CONCERT_PITCH, midiToHz } from "../Sol/studio/tuning.ts";
+import { A4_MIDI, CONCERT_PITCH, midiToHz } from "../tuning.ts";
 
 describe("tuning — midiToHz", () => {
   it("anchors A4 at the concert pitch", () => {
