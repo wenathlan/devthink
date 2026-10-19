@@ -8005,7 +8005,7 @@ span[data-tile] {
 }
 /* ==========================================================================
    campaign v3 · r2-b pages b — batch B of the wave (chat / games /
-   gatewayview / history / image / musicstudio). Same append-only contract
+   gateway / history / image / musicstudio). Same append-only contract
    as r2-a: earlier sections keep ownership of their scopes, later rules
    here override earlier sol.css rules at equal specificity, and the
    per-page machined details ride each page's own injected stylesheet.

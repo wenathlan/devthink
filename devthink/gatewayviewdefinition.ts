@@ -6,7 +6,7 @@
  * repository root) stays the property of the root library: importing it here
  * would pull the whole engine module graph into the web typecheck. this file
  * carries the projection the shipped v1–v5 catalog (the config.ts of the
- * Sol/gatewayview page folder) actually exercises, with the field names kept
+ * Sol/gateway page folder) actually exercises, with the field names kept
  * identical to the engine so the two never drift in vocabulary: a field
  * renamed in the engine shows up here as a type error on the catalog the
  * page renders.

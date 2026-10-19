@@ -22,7 +22,7 @@ import ConsoleAnchor from "./console/console.tsx";
 import DocsAnchor from "./docs/docs.tsx";
 import ExploreAnchor from "./explore/explore.tsx";
 import GamesAnchor from "./games/games.tsx";
-import GatewayAnchor from "./gatewayview/gatewayview.tsx";
+import GatewayAnchor from "./gateway/gateway.tsx";
 import HistoryAnchor from "./history/history.tsx";
 import ImageAnchor from "./image/image.tsx";
 import IntroAnchor from "./intro/intro.tsx";
