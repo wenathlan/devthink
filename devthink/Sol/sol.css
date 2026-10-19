@@ -11281,7 +11281,40 @@ span[data-tile] {
 
 /* ==== the audio.css skins — merged from the app folder, the folder carries tsx only ==== */
 /* audio app skins — the track rows over the dtw kit. merges into the kit
- * section of sol.css. */
+ * section of sol.css. the app scope retunes the kit accents: the brass
+ * identity (#d9962e, the registry tint) rides the engine mark, the
+ * active-indicator pill and the Queue content CTA (dark slate ink for the
+ * 4.5:1 AA pair), while the hover washes stay neutral slate — the
+ * identity never rides the chrome. the queue action answers the 44px
+ * touch law with a press scale and a visible focus ring. */
+.dtw-audio {
+  --dtv3-sig: var(--dtv3-ink-1);
+  --color-win: #d9962e;
+}
+.dtw-audio .dtw-cardtitle svg {
+  color: #d9962e;
+}
+.dtw-audio .dtw-action {
+  min-height: 44px;
+  transition:
+    background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 100ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-audio .dtw-action:active {
+  transform: scale(0.96);
+}
+.dtw-audio .dtw-action--primary {
+  border-color: transparent;
+  background: #d9962e;
+  color: #0f172a;
+}
+.dtw-audio .dtw-action--primary:hover {
+  background: color-mix(in srgb, #d9962e 88%, #fff);
+}
+.dtw-audio .dtw-action:focus-visible {
+  outline: 2px solid var(--dtv3-ink-1);
+  outline-offset: 2px;
+}
 .dtw-music__rows {
   display: grid;
   margin: 0;
@@ -11322,7 +11355,40 @@ span[data-tile] {
 
 /* ==== the video.css skins — merged from the app folder, the folder carries tsx only ==== */
 /* video app skins — the asset rows over the dtw kit. merges into the kit
- * section of sol.css. */
+ * section of sol.css. the app scope retunes the kit accents: the magenta
+ * identity (#f472b6, the registry tint) rides the engine mark, the
+ * active-indicator pill and the Render content CTA (dark slate ink for
+ * the 4.5:1 AA pair), while the hover washes stay neutral slate — the
+ * identity never rides the chrome. the render action answers the 44px
+ * touch law with a press scale and a visible focus ring. */
+.dtw-video {
+  --dtv3-sig: var(--dtv3-ink-1);
+  --color-win: #f472b6;
+}
+.dtw-video .dtw-cardtitle svg {
+  color: #f472b6;
+}
+.dtw-video .dtw-action {
+  min-height: 44px;
+  transition:
+    background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 100ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-video .dtw-action:active {
+  transform: scale(0.96);
+}
+.dtw-video .dtw-action--primary {
+  border-color: transparent;
+  background: #f472b6;
+  color: #0f172a;
+}
+.dtw-video .dtw-action--primary:hover {
+  background: color-mix(in srgb, #f472b6 88%, #fff);
+}
+.dtw-video .dtw-action:focus-visible {
+  outline: 2px solid var(--dtv3-ink-1);
+  outline-offset: 2px;
+}
 .dtw-video__rows {
   display: grid;
   margin: 0;
@@ -11363,9 +11429,19 @@ span[data-tile] {
 
 /* ==== the usage.css skins — merged from the app folder, the folder carries tsx only ==== */
 /* usage app skins — the ledger figures over the dtw kit. merges into the
- * kit section of sol.css. */
+ * kit section of sol.css. the app scope retunes the kit accents: the sage
+ * identity (#8fb597, the registry tint) rides the active-indicator pill,
+ * the measure marks and the figure tile edge — the dominant figure stays
+ * ink for the 4.5:1 pair (sage never touches text) — while the hover
+ * washes stay neutral slate. the ledger is read-only: no CTAs, so no
+ * dead controls to answer. */
+.dtw-usage {
+  --dtv3-sig: var(--dtv3-ink-1);
+  --color-win: #8fb597;
+}
 .dtw-usage__hero {
   align-content: start;
+  border-left: 3px solid #8fb597;
 }
 .dtw-usage__figlabel {
   color: var(--dtv3-ink-3);
@@ -11397,7 +11473,7 @@ span[data-tile] {
   border-bottom: 0;
 }
 .dtw-usage__row svg {
-  color: var(--dtv3-ink-3);
+  color: #8fb597;
 }
 .dtw-usage__label {
   flex: 1;
@@ -11412,7 +11488,79 @@ span[data-tile] {
 
 /* ==== the providers.css skins — merged from the app folder, the folder carries tsx only ==== */
 /* providers app skins — the index rows over the dtw kit. merges into the
- * kit section of sol.css. */
+ * kit section of sol.css. the app scope retunes the kit accents: the lime
+ * identity (#a3e635, the registry tint) rides the active-indicator pill,
+ * the active state dot and the use/save content CTAs (dark slate ink for
+ * the 4.5:1 AA pair — lime never carries white), while the hover washes
+ * stay neutral slate. the touch law reaches every control: the nav rows,
+ * the actions and the buttons climb to 44px with a press scale and a
+ * visible slate focus ring. the credential controls speak the spec well
+ * grammar — a flat well with the bottom hairline and the 2px windows
+ * light accent underline on focus — because the identity never rides the
+ * chrome. */
+.dtw-providers {
+  --dtv3-sig: var(--dtv3-ink-1);
+  --color-win: #a3e635;
+}
+.dtw-providers .dtw-navrow {
+  min-height: 44px;
+  transition:
+    background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 100ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-providers .dtw-navrow:active {
+  transform: scale(0.98);
+}
+.dtw-providers .dtw-navrow:focus-visible,
+.dtw-providers .dtw-action:focus-visible,
+.dtw-providers .dtw-btn:focus-visible {
+  outline: 2px solid var(--dtv3-ink-1);
+  outline-offset: 2px;
+}
+.dtw-providers .dtw-action,
+.dtw-providers .dtw-btn {
+  min-height: 44px;
+  transition:
+    background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 100ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-providers .dtw-action:active,
+.dtw-providers .dtw-btn:active {
+  transform: scale(0.96);
+}
+.dtw-providers .dtw-action--primary {
+  border-color: transparent;
+  background: #a3e635;
+  color: #0f172a;
+}
+.dtw-providers .dtw-action--primary:hover {
+  background: color-mix(in srgb, #a3e635 88%, #fff);
+}
+.dtw-providers .dtw-btn--primary {
+  border-color: transparent;
+  background: #a3e635;
+  color: #0f172a;
+}
+.dtw-providers .dtw-btn--primary:hover:not(:disabled) {
+  background: color-mix(in srgb, #a3e635 88%, #fff);
+}
+.dtw-providers .dtw-providers__dot[data-on="true"] {
+  box-shadow: inset 0 0 0 1px rgb(15 23 42 / 45%);
+}
+.dtw-providers .dtw-input,
+.dtw-providers .dtw-select {
+  min-height: 44px;
+  border: 0;
+  border-bottom: 1px solid var(--dtv3-hairline);
+  border-radius: 4px 4px 0 0;
+  background: color-mix(in srgb, var(--dtv3-ink-1) 4%, transparent);
+  transition: border-color 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-providers .dtw-input:focus-visible,
+.dtw-providers .dtw-select:focus-visible {
+  outline: none;
+  border-bottom: 2px solid #0067c0;
+}
 .dtw-providers__rows {
   display: grid;
   margin: 0;

@@ -10,14 +10,22 @@
  * remaining measures as hairline rows. The counts come from the paired cli
  * when available, otherwise from this browser's indexeddb cache. Provider
  * billing and api keys are not read here. Only durable counts, no fake
- * data. The old editorial pass is retired — this body rides the dtw kit.
+ * data. The old editorial pass is retired — this body rides the dtw kit
+ * with the sage identity (#8fb597, the registry tint) on the
+ * active-indicator pill, the measure marks and the figure tile — the
+ * chrome washes stay neutral slate.
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ShellChrome } from "@/shell/ShellChrome";
+import { osAppLabels } from "../../catalog";
 import { browserStoreSummary } from "../../db";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { type Usage as UsageData, UsageMeasures } from "./usagemeasures.tsx";
+
+/** the window title rides the catalog label row, never a hardcoded literal
+ * (the bare id keeps the heading honest if the row is missing). */
+const USAGE_LABEL = osAppLabels().usage;
 
 /** The usage app: the Windows body when embedded (the desktop window hosts
  * it without the shell), the full surface with the taskbar on the route. */
@@ -58,7 +66,7 @@ export default function Usage({ embedded }: { embedded?: boolean }) {
           </span>
         </nav>
         <div className="dtw-content">
-          <h1 className="dtw-title">Usage</h1>
+          <h1 className="dtw-title">{USAGE_LABEL?.name ?? "Usage"}</h1>
           {usage ? (
             <UsageMeasures usage={usage} paired={paired} />
           ) : (

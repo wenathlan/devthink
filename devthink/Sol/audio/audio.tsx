@@ -9,15 +9,21 @@
  * content deck, the tracks as hairline rows and the render queue over the
  * gateway to the katexis engine. The engine itself is never bundled: it
  * rides the catalog over https from the debonair app. This body rides the
- * dtw kit in the trident fusion.
+ * dtw kit with the brass identity (#d9962e, the registry tint) on the
+ * engine mark, the active-indicator pill and the queue content CTA — the
+ * chrome washes stay neutral slate and the windows light accent.
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ShellChrome } from "@/shell/ShellChrome";
-import { type NativeApp, nativeApps, type StudioTrack, studioTracks } from "../../catalog";
+import { type NativeApp, nativeApps, osAppLabels, type StudioTrack, studioTracks } from "../../catalog";
 import { queuestudiorender } from "../../runner";
 import { MusicEngine } from "./musicengine.tsx";
 import { MusicTracks } from "./musictracks.tsx";
+
+/** the window title rides the catalog label row, never a hardcoded literal
+ * (the bare id keeps the heading honest if the row is missing). */
+const AUDIO_LABEL = osAppLabels().audio;
 
 /** Queues one track render and surfaces the answer with the sonner toast. The
  * queue client speaks in studio assets, so the track is carried as the music
@@ -57,7 +63,7 @@ export default function Audio({ embedded }: { embedded?: boolean }) {
           </span>
         </nav>
         <div className="dtw-content">
-          <h1 className="dtw-title">Audio</h1>
+          <h1 className="dtw-title">{AUDIO_LABEL?.name ?? "Audio"}</h1>
           <MusicEngine app={engine} />
           <MusicTracks rows={tracks} loaded={loaded} onQueue={queueTrack} />
         </div>

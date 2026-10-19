@@ -8,16 +8,22 @@
  * Video — the video studio in the Windows 11 grammar: a nav pane beside the
  * content deck, the assets as hairline rows and the render queue over the
  * gateway to the versawase engine. The engine itself is never bundled: it
- * rides the catalog over https from the cadria app. This body rides the dtw
- * kit in the trident fusion.
+ * rides the catalog over https from the cadria app. This body rides the
+ * dtw kit with the magenta identity (#f472b6, the registry tint) on the
+ * engine mark, the active-indicator pill and the render content CTA — the
+ * chrome washes stay neutral slate and the windows light accent.
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ShellChrome } from "@/shell/ShellChrome";
-import { type NativeApp, nativeApps, type StudioAsset, studioAssets } from "../../catalog";
+import { type NativeApp, nativeApps, osAppLabels, type StudioAsset, studioAssets } from "../../catalog";
 import { queuestudiorender } from "../../runner";
 import { VideoAssets } from "./videoassets.tsx";
 import { VideoEngine } from "./videoengine.tsx";
+
+/** the window title rides the catalog label row, never a hardcoded literal
+ * (the bare id keeps the heading honest if the row is missing). */
+const VIDEO_LABEL = osAppLabels().video;
 
 /** Queues one render and surfaces the answer with the sonner toast the
  * workbench already uses: the reason text is the honest answer of the queue
@@ -56,7 +62,7 @@ export default function Video({ embedded }: { embedded?: boolean }) {
           </span>
         </nav>
         <div className="dtw-content">
-          <h1 className="dtw-title">Video</h1>
+          <h1 className="dtw-title">{VIDEO_LABEL?.name ?? "Video"}</h1>
           <VideoEngine app={engine} />
           <VideoAssets rows={assets} loaded={loaded} onRender={queueRender} />
         </div>

@@ -10,11 +10,15 @@
  * active provider leading and the browser-local credential opt-in as its
  * own section. Credentials stay cli-owned unless the person explicitly
  * chooses a browser-local credential. The old editorial split is retired —
- * this body rides the dtw kit.
+ * this body rides the dtw kit with the lime identity (#a3e635, the
+ * registry tint) on the active-indicator pill, the active state dot and
+ * the use/save content CTAs — the chrome washes stay neutral slate, and
+ * the control wells answer the windows light accent on focus.
  */
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ShellChrome } from "@/shell/ShellChrome";
+import { osAppLabels } from "../../catalog";
 import {
   browserCredentialProviders,
   readBrowserPreferences,
@@ -24,6 +28,10 @@ import {
 import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { ProviderCard } from "./providercard.tsx";
 import { ProvidersList } from "./providerslist.tsx";
+
+/** the window title rides the catalog label row, never a hardcoded literal
+ * (the bare id keeps the heading honest if the row is missing). */
+const PROVIDERS_LABEL = osAppLabels().providers;
 
 type Provider = { id: string; protocol: string; env: string };
 
@@ -147,7 +155,7 @@ export default function Providers({ embedded }: { embedded?: boolean }) {
           </button>
         </nav>
         <div className="dtw-content">
-          <h1 className="dtw-title">Providers</h1>
+          <h1 className="dtw-title">{PROVIDERS_LABEL?.name ?? "Providers"}</h1>
           {section === "index" ? (
             <ProvidersList
               rows={ordered}

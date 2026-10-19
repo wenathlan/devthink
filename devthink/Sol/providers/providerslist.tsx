@@ -58,6 +58,9 @@ export function ProvidersList({
                   type="button"
                   className={isActive ? "dtw-action" : "dtw-action dtw-action--primary"}
                   onClick={() => onActivate(provider)}
+                  aria-label={
+                    isActive ? `${provider.id} is the active provider` : `Use ${provider.id} as the active provider`
+                  }
                 >
                   {isActive ? (
                     <>
