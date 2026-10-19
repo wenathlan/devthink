@@ -9,17 +9,25 @@
  * microcopy row (model name right, mono lowercase) sits above the well and
  * the tool chips sit below it; the chips toggle local modes only — each one
  * patches the system prompt of the next turn (see state.ts for the honest
- * notes). While no gateway is registered, an honest one-line notice rides
- * above the chips — the gateway is opt-in, nothing is fetched without a
- * registration. Enter sends, Shift+Enter breaks the line.
+ * notes) — while the sandbox action chip at the row end is not a mode: it
+ * opens the saddle engine lane (the pane carries its own execution surface).
+ * While no gateway is registered, an honest one-line notice rides above the
+ * chips — the gateway is opt-in, nothing is fetched without a registration.
+ * Enter sends, Shift+Enter breaks the line.
  */
 
-import {LightbulbRegular as BrainCircuit, type FluentIcon as LucideIcon, SendRegular as Send} from "@fluentui/react-icons";
+import {
+  LightbulbRegular as BrainCircuit,
+  CubeRegular as Cube,
+  type FluentIcon as LucideIcon,
+  SendRegular as Send,
+} from "@fluentui/react-icons";
 import { type KeyboardEvent, type RefObject, useEffect } from "react";
 import { CHAT_TOOLS, GATEWAY_MODEL, type ToolId } from "../../chatstate.ts";
 
 const TOOL_ICONS: Record<ToolId, LucideIcon> = {
-  thinking: BrainCircuit };
+  thinking: BrainCircuit,
+};
 
 export function Composer({
   draft,
@@ -29,7 +37,11 @@ export function Composer({
   tools,
   onToggleTool,
   inputRef,
-  notice }: {
+  notice,
+  sandboxOn,
+  sandboxRunning,
+  onToggleSandbox,
+}: {
   draft: string;
   onDraft: (v: string) => void;
   onSend: () => void;
@@ -39,6 +51,12 @@ export function Composer({
   inputRef: RefObject<HTMLTextAreaElement | null>;
   /** the honest disconnected line — rendered above the pills while set. */
   notice?: string | undefined;
+  /** whether the sandbox lane is open (drives the chip pressed state). */
+  sandboxOn?: boolean | undefined;
+  /** whether the saddle engine is running (lights the chip dot). */
+  sandboxRunning?: boolean | undefined;
+  /** opens/closes the sandbox lane (the action chip door). */
+  onToggleSandbox?: (() => void) | undefined;
 }) {
   // biome-ignore lint/correctness/useExhaustiveDependencies: draft is the trigger — the body reads the live textarea metrics whenever the text changes
   useEffect(() => {
@@ -98,25 +116,42 @@ export function Composer({
         </p>
       ) : null}
 
-      <fieldset className="dtc-pills" aria-label="Tool modes">
-        {CHAT_TOOLS.map((tool) => {
-          const Icon = TOOL_ICONS[tool.id];
-          const on = tools.includes(tool.id);
-          return (
+      <div className="dtc-pillrow">
+        <fieldset className="dtc-pills" aria-label="Tool modes">
+          {CHAT_TOOLS.map((tool) => {
+            const Icon = TOOL_ICONS[tool.id];
+            const on = tools.includes(tool.id);
+            return (
+              <button
+                key={tool.id}
+                type="button"
+                className="dtc-pill"
+                aria-pressed={on}
+                onClick={() => onToggleTool(tool.id)}
+                title={tool.note}
+              >
+                <Icon fontSize={13} aria-hidden="true" />
+                <span>{tool.label}</span>
+              </button>
+            );
+          })}
+        </fieldset>
+        {onToggleSandbox ? (
+          <fieldset className="dtc-pills dtc-pills--action" aria-label="Sandbox">
             <button
-              key={tool.id}
               type="button"
-              className="dtc-pill"
-              aria-pressed={on}
-              onClick={() => onToggleTool(tool.id)}
-              title={tool.note}
+              className="dtc-pill dtc-pill--sb"
+              aria-pressed={sandboxOn === true}
+              onClick={onToggleSandbox}
+              title="Open the saddle sandbox lane"
             >
-              <Icon fontSize={13} aria-hidden="true" />
-              <span>{tool.label}</span>
+              <Cube fontSize={13} aria-hidden="true" />
+              <span>Sandbox</span>
+              {sandboxRunning ? <i className="dtc-pill--sb__dot" aria-hidden="true" /> : null}
             </button>
-          );
-        })}
-      </fieldset>
+          </fieldset>
+        ) : null}
+      </div>
     </div>
   );
 }

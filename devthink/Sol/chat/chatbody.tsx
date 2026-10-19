@@ -10,7 +10,11 @@
  * conversation and the address id agree from then on.
  */
 
-import {DeleteRegular as TrashIcon, PanelLeftRegular as PanelLeft, PanelRightRegular as PanelRight} from "@fluentui/react-icons";
+import {
+  PanelLeftRegular as PanelLeft,
+  PanelRightRegular as PanelRight,
+  DeleteRegular as TrashIcon,
+} from "@fluentui/react-icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { osAppLabels } from "../../catalog.ts";
@@ -28,11 +32,13 @@ import {
   runTurnStream,
   type ToolId,
   useChatSessions,
-  userTurn } from "../../chatstate.ts";
+  userTurn,
+} from "../../chatstate.ts";
 import { loadBrowserSession } from "../../db.ts";
 import { GATEWAY_REQUIRED_COPY, GATEWAY_SEND_NOTICE, useGatewayRegistration } from "../../gatewaybase.ts";
 import { useIsMobile } from "../../useismobile.ts";
 import { Composer } from "./composer.tsx";
+import { SandboxPane } from "./sandboxpane.tsx";
 import { SessionPanel } from "./sessionpanel.tsx";
 import { Sidebar } from "./sidebar.tsx";
 import { ErrorRow, ThinkingRow, Turn } from "./turn.tsx";
@@ -85,6 +91,21 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
   const [panelOpen, setPanelOpen] = useState(false);
   const panelMountedRef = useRef(false);
   const panelExitTimer = useRef<number | null>(null);
+  /* the sandbox lane rides the same mount-state grammar as the session
+   * panel: mounted hidden, a rAF flips data-open so the Windows
+   * slide-cum-fade enter plays, the exit keeps it mounted for the 200ms
+   * transition and a reopen reuses it. On a wide viewport it docks as a
+   * right-side lane beside the thread stage; on the narrow viewport or the
+   * embedded window it swaps the conversation body instead (the pane carries
+   * its own command well, so overlaying the composer would fight the chat).
+   * The pane unmounts fully on close — the engine state dies with it: the
+   * sandbox is ephemeral session state (like busy) and never persists in
+   * chatstate. */
+  const [sandboxMounted, setSandboxMounted] = useState(false);
+  const [sandboxOpen, setSandboxOpen] = useState(false);
+  const [sandboxRunning, setSandboxRunning] = useState(false);
+  const sandboxMountedRef = useRef(false);
+  const sandboxExitTimer = useRef<number | null>(null);
   const isMobile = useIsMobile();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
@@ -132,14 +153,16 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
             id: message.id,
             role: message.role === "user" ? "user" : "assistant",
             content: message.content,
-            at: Date.parse(message.createdAt) || Date.now() }));
+            at: Date.parse(message.createdAt) || Date.now(),
+          }));
         if (!turns.length) return;
         const spoken = turns.find((turn) => turn.role === "user");
         commit({
           id: handoff,
           title: snapshot.session?.title || deriveTitle(spoken?.content ?? ""),
           messages: capTurns(turns),
-          at: Date.now() });
+          at: Date.now(),
+        });
       })
       .catch(() => undefined);
     return undefined;
@@ -157,7 +180,8 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
       if (!gateway.base) {
         setError(GATEWAY_SEND_NOTICE);
         toast.error("No gateway registered", {
-          description: GATEWAY_REQUIRED_COPY });
+          description: GATEWAY_REQUIRED_COPY,
+        });
         return;
       }
       setBusy(true);
@@ -169,14 +193,15 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
           sessionId: history.id.split("~")[0],
           thinkingLevel: tools.includes("thinking") ? "high" : "medium",
           handlers: {
-            onContent: (d) =>
-              setLive((prev) => (prev ? { ...prev, content: prev.content + d } : prev)),
-            onReasoning: (d) =>
-              setLive((prev) => (prev ? { ...prev, thought: (prev.thought ?? "") + d } : prev)) } });
+            onContent: (d) => setLive((prev) => (prev ? { ...prev, content: prev.content + d } : prev)),
+            onReasoning: (d) => setLive((prev) => (prev ? { ...prev, thought: (prev.thought ?? "") + d } : prev)),
+          },
+        });
         commit({
           ...history,
           messages: capTurns([...history.messages, reply]),
-          at: Date.now() });
+          at: Date.now(),
+        });
       } catch (err) {
         const msg = err instanceof Error ? err.message : "unknown failure";
         setError(msg);
@@ -205,7 +230,8 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
         ? {
             ...active,
             messages: capTurns([...active.messages, user]),
-            at: Date.now() }
+            at: Date.now(),
+          }
         : newSession(user, handoffRef.current ?? undefined);
       handoffRef.current = null;
       commit(session);
@@ -226,7 +252,8 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
       if (!branch) return;
       commit(branch);
       toast("Checkpoint branch opened", {
-        description: "The original keeps its round — the edit carries the ladder forward." });
+        description: "The original keeps its round — the edit carries the ladder forward.",
+      });
       void runCompletion(branch, buildSystemPrompt(tools));
     },
     [active, busy, commit, runCompletion, tools],
@@ -288,6 +315,47 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     }, 220);
   }, []);
 
+  /** openSandbox — mounts the lane first; the effect flips the visible state
+   * on the next frame so the enter transition plays; a reopen during the
+   * exit shows the still-mounted pane right away. */
+  const openSandbox = useCallback(() => {
+    if (sandboxExitTimer.current !== null) {
+      window.clearTimeout(sandboxExitTimer.current);
+      sandboxExitTimer.current = null;
+    }
+    if (sandboxMountedRef.current) {
+      setSandboxOpen(true);
+      return;
+    }
+    sandboxMountedRef.current = true;
+    setSandboxMounted(true);
+  }, []);
+
+  /** closeSandbox — the slide-and-fade exit plays, the engine lamp resets
+   * and the pane unmounts once the 200ms Windows transition settles (the
+   * engine state dies with it). */
+  const closeSandbox = useCallback(() => {
+    setSandboxOpen(false);
+    if (sandboxExitTimer.current !== null) window.clearTimeout(sandboxExitTimer.current);
+    sandboxExitTimer.current = window.setTimeout(() => {
+      sandboxMountedRef.current = false;
+      setSandboxMounted(false);
+      setSandboxRunning(false);
+    }, 220);
+  }, []);
+
+  /** toggleSandbox — the composer chip flips the lane. */
+  const toggleSandbox = useCallback(() => {
+    if (sandboxOpen) closeSandbox();
+    else openSandbox();
+  }, [closeSandbox, openSandbox, sandboxOpen]);
+
+  /** the engine lamp reporter for the composer chip (stable identity so the
+   * pane effect only re-runs on the status flip). */
+  const reportSandboxRunning = useCallback((running: boolean) => {
+    setSandboxRunning(running);
+  }, []);
+
   // mounting flips the visible state one frame later (the enter transition)
   useEffect(() => {
     if (!panelMounted) return undefined;
@@ -295,10 +363,18 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     return () => window.cancelAnimationFrame(frame);
   }, [panelMounted]);
 
-  // the exit timer never outlives the chat body
+  // mounting flips the sandbox lane the same way (the enter transition)
+  useEffect(() => {
+    if (!sandboxMounted) return undefined;
+    const frame = window.requestAnimationFrame(() => setSandboxOpen(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, [sandboxMounted]);
+
+  // the exit timers never outlive the chat body
   useEffect(
     () => () => {
       if (panelExitTimer.current !== null) window.clearTimeout(panelExitTimer.current);
+      if (sandboxExitTimer.current !== null) window.clearTimeout(sandboxExitTimer.current);
     },
     [],
   );
@@ -347,18 +423,24 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     if (el && streamPinnedRef.current) el.scrollTop = el.scrollHeight;
   }, [busy, live?.content.length, live?.thought?.length]);
 
-  // Escape closes the mobile drawer first, then the session panel
+  // Escape closes the mobile drawer first, then the session panel, then the
+  // sandbox lane
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       if (isMobile && !railCollapsed) setRailCollapsed(true);
       else if (panelOpen) closePanel();
+      else if (sandboxOpen) closeSandbox();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [closePanel, isMobile, railCollapsed, panelOpen]);
+  }, [closePanel, closeSandbox, isMobile, railCollapsed, panelOpen, sandboxOpen]);
 
   const empty = !active || active.messages.length === 0;
+  /** the sandbox pane docks as a right-side lane while the viewport is wide
+   * on the full page; the narrow viewport and the embedded window swap the
+   * conversation body instead (the pane owns its own command well). */
+  const sandboxSwap = isMobile || embedded === true;
 
   return (
     <div className="dtc-frame">
@@ -419,7 +501,9 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
         </header>
 
         <div className="dtc-stage atmos">
-          {empty ? (
+          {sandboxMounted && sandboxSwap ? (
+            <SandboxPane open={sandboxOpen} onClose={closeSandbox} swap onRunningChange={reportSandboxRunning} />
+          ) : empty ? (
             <div className="dtc-hero grain" key="hero">
               <div className="dtc-hero__wrap">
                 <Welcome onPick={(t) => void send(t)} gatewayRegistered={gateway.base !== ""} />
@@ -433,6 +517,9 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
                     onToggleTool={toggleTool}
                     inputRef={inputRef}
                     notice={gateway.base ? undefined : GATEWAY_SEND_NOTICE}
+                    sandboxOn={sandboxOpen}
+                    sandboxRunning={sandboxRunning}
+                    onToggleSandbox={toggleSandbox}
                   />
                 </div>
               </div>
@@ -465,12 +552,19 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
                   onToggleTool={toggleTool}
                   inputRef={inputRef}
                   notice={gateway.base ? undefined : GATEWAY_SEND_NOTICE}
+                  sandboxOn={sandboxOpen}
+                  sandboxRunning={sandboxRunning}
+                  onToggleSandbox={toggleSandbox}
                 />
               </div>
             </div>
           )}
         </div>
       </main>
+
+      {sandboxMounted && !sandboxSwap ? (
+        <SandboxPane open={sandboxOpen} onClose={closeSandbox} onRunningChange={reportSandboxRunning} />
+      ) : null}
 
       {panelMounted ? (
         <SessionPanel

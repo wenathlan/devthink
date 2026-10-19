@@ -12,7 +12,8 @@
     "lib": ["ES2024", "DOM", "DOM.Iterable"],
     "types": ["chrome", "node", "vite/client"],
     "paths": {
-      "@/*": ["./Sol/*", "./*"]
+      "@/*": ["./Sol/*", "./*"],
+      "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"]
     }
   },
   "include": ["*.ts", "tests/**/*.ts", "Sol/**/*.ts", "Sol/**/*.tsx"],

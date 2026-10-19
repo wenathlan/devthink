@@ -23,6 +23,7 @@ export * from "../../chatstate.ts";
 export * from "../../useismobile.ts";
 export * from "./composer.tsx";
 export * from "./markdown.tsx";
+export * from "./sandboxpane.tsx";
 export * from "./sessionpanel.tsx";
 export * from "./sidebar.tsx";
 export * from "./solboticon.tsx";

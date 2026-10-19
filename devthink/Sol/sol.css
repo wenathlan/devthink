@@ -5028,6 +5028,79 @@ legend.cmd-group {
   transform: scale(1);
 }
 
+/* the pills row wrapper: the mode pills scroll on the left, the sandbox
+ * action chip docks the row end behind a hairline separator — an action,
+ * not a mode (the pane it opens carries its own execution surface) */
+.dtc-pillrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 2px;
+  min-width: 0;
+}
+
+.dtc-pillrow .dtc-pills {
+  flex: 1;
+  margin: 0;
+  min-width: 0;
+}
+
+.dtc-pills--action {
+  flex: none;
+  margin: 0;
+  padding-left: 8px;
+  border-left: 1px solid rgb(255 255 255 / 10%);
+}
+
+/* the sandbox action chip: the pressed state answers the pane (aria-pressed
+ * rides the open state) and the running dot lights while the engine runs —
+ * the leather-ember of the saddle family marks the identity, the dot stays
+ * the running green */
+.dtc-pill--sb {
+  border-color: rgb(232 111 45 / 32%);
+}
+
+.dtc-pill--sb::before {
+  display: none;
+}
+
+.dtc-pill--sb svg {
+  color: #e86f2d;
+}
+
+.dtc-pill--sb:hover {
+  border-color: rgb(232 111 45 / 46%);
+  background: rgb(232 111 45 / 8%);
+}
+
+.dtc-pill--sb:hover svg {
+  color: #e86f2d;
+}
+
+.dtc-pill--sb:active {
+  transform: scale(0.96);
+}
+
+.dtc-pill--sb[aria-pressed="true"] {
+  color: var(--sol-text);
+  border-color: rgb(232 111 45 / 46%);
+  background: rgb(232 111 45 / 10%);
+}
+
+.dtc-pill--sb[aria-pressed="true"] svg {
+  color: #e86f2d;
+}
+
+.dtc-pill--sb__dot {
+  width: 5px;
+  height: 5px;
+  flex: none;
+  margin-left: 2px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 40%);
+}
+
 .dtc-turn {
   display: flex;
   align-items: flex-start;
@@ -5474,6 +5547,303 @@ legend.cmd-group {
   -webkit-appearance: none;
   appearance: none;
   animation: dtcFade 150ms ease;
+}
+
+/* ---- the sandbox lane (dtc-sb): the saddle engine pane the composer chip
+        opens — the session-panel mount grammar drives it (the data-open
+        slide-cum-fade; the caller mounts it hidden and unmounts it once the
+        200ms exit settles, so visibility rides the transition itself and the
+        closed pane never catches the pointer), the terminal rides the
+        console grammar: the dark #1e1e1e log pane with the boot/ok/err/
+        cmdline row colors, the green prompt marker and the 44px command well
+        with the 2px windows accent focus underline (the settings gateway
+        well of wave 3-c). The engine identity rides the saddle leather-ember
+        #e86f2d on the lamp and the family mark only — every control keeps
+        the windows accent. ---- */
+
+.dtc-sb {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  width: min(420px, 38%);
+  min-height: 0;
+  padding: 12px 12px 14px;
+  overflow: hidden;
+  border-left: 1px solid rgb(0 0 0 / 55%);
+  background: rgb(255 255 255 / 3%);
+  transform: translateX(60px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    transform 0.2s var(--ease-fluent),
+    opacity 0.2s var(--ease-fluent),
+    visibility 0.2s;
+}
+
+.dtc-sb[data-open="true"] {
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* the narrow viewport and the embedded window swap the conversation body:
+ * the pane fills the stage instead of docking as a lane */
+.dtc-sb[data-swap="true"] {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: auto;
+  border-left: 0;
+  border-top: 1px solid rgb(0 0 0 / 55%);
+  background: rgb(18 18 20 / 40%);
+}
+
+.dtc-sb__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.dtc-sb__head h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.dtc-sb__engine {
+  flex: none;
+  padding: 2px 6px;
+  border: 1px solid rgb(232 111 45 / 35%);
+  border-radius: 4px;
+  color: #e86f2d;
+  font: 600 10px var(--dt-mono);
+  letter-spacing: 0.08em;
+}
+
+.dtc-sb__lamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 0 auto;
+  padding: 3px 8px;
+  border: 1px solid rgb(255 255 255 / 7%);
+  border-radius: 4px;
+  color: var(--sol-muted);
+  background: rgb(255 255 255 / 4%);
+  font: 600 10px var(--dt-mono);
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+}
+
+.dtc-sb__dot {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* the booting lamp rides the saddle leather-ember (the family identity the
+ * engine answers); running rides the success signal of the theme */
+.dtc-sb__lamp[data-state="booting"] {
+  color: #e86f2d;
+  border-color: rgb(232 111 45 / 38%);
+  background: rgb(232 111 45 / 10%);
+}
+
+.dtc-sb__lamp[data-state="booting"] .dtc-sb__dot {
+  background: #e86f2d;
+  animation: dtcSbPulse 1s var(--ease-fluent) infinite;
+}
+
+.dtc-sb__lamp[data-state="running"] {
+  color: var(--sol-success);
+  border-color: color-mix(in srgb, var(--sol-success) 30%, rgb(255 255 255 / 7%));
+  background: color-mix(in srgb, var(--sol-success) 8%, rgb(255 255 255 / 4%));
+}
+
+.dtc-sb__lamp[data-state="running"] .dtc-sb__dot {
+  background: #4ade80;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 45%);
+}
+
+.dtc-sb__spec {
+  margin: 0 0 10px;
+  color: var(--sol-faint);
+  font: 500 10px / 1.6 var(--dt-mono);
+  letter-spacing: 0.04em;
+  overflow-wrap: anywhere;
+}
+
+/* the dark log pane of the console app inside the chat surface — the row
+ * colors hold 4.5:1 on #1e1e1e in both themes (boot #999, ok #c9c0b8,
+ * cmdline #f4f6fa, err #ff7d66) */
+.dtc-sb__out {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 120px;
+  margin: 0;
+  padding: 10px 12px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid rgb(0 0 0 / 55%);
+  border-radius: 8px 8px 0 0;
+  background: #1e1e1e;
+  color: #c9c0b8;
+  font: 12px / 1.65 var(--dt-mono);
+  scrollbar-width: thin;
+  scrollbar-color: rgb(255 255 255 / 18%) transparent;
+}
+
+.dtc-sb__out > span {
+  display: block;
+  padding: 1px 0;
+  border-bottom: 1px solid rgb(255 255 255 / 5%);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.dtc-sb__out > span:last-child {
+  border-bottom: 0;
+}
+
+.dtc-sb__out .boot {
+  color: #999999;
+}
+
+.dtc-sb__out .cmdline {
+  color: #f4f6fa;
+}
+
+.dtc-sb__out .ok {
+  color: #c9c0b8;
+}
+
+.dtc-sb__out .err {
+  color: #ff7d66;
+}
+
+/* the 44px command well: the console input grammar joined to the dark pane
+ * (top hairline, green prompt marker and caret) with the wave 3-c gateway
+ * focus underline — the 2px windows accent rides :focus-within */
+.dtc-sb__in {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid rgb(0 0 0 / 55%);
+  border-top: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 0 0 8px 8px;
+  background: #242424;
+}
+
+.dtc-sb__in.off {
+  opacity: 0.55;
+}
+
+.dtc-sb__in:focus-within {
+  box-shadow: inset 0 -2px 0 var(--win-accent);
+}
+
+.dtc-sb__prompt {
+  flex: none;
+  color: #4ade80;
+  font: 600 12px var(--dt-mono);
+}
+
+.dtc-sb__input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: #f4f6fa;
+  font: 12px var(--dt-mono);
+  outline: none;
+  caret-color: #4ade80;
+}
+
+.dtc-sb__input:disabled {
+  cursor: not-allowed;
+}
+
+/* the lifecycle actions: 44px targets, press scale, the boot CTA on the
+ * windows accent (identity never rides a control) */
+.dtc-sb__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.dtc-sb__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  flex: 1;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid rgb(255 255 255 / 7%);
+  border-radius: 4px;
+  color: var(--sol-text);
+  background: rgb(255 255 255 / 4%);
+  font: 600 0.78rem var(--dt-sans);
+  transform-origin: center;
+  transition:
+    background 150ms ease,
+    transform 100ms ease-in-out;
+}
+
+.dtc-sb__btn:hover:not(:disabled) {
+  border-color: rgb(255 255 255 / 14%);
+  background: rgb(255 255 255 / 8%);
+}
+
+.dtc-sb__btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.dtc-sb__btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.dtc-sb__btn:focus-visible {
+  outline: 2px solid #dfe5ee;
+  outline-offset: 2px;
+}
+
+.dtc-sb__out:focus-visible {
+  outline: 2px solid #dfe5ee;
+  outline-offset: -2px;
+}
+
+.dtc-sb__btn--boot {
+  color: var(--win-accent-ink);
+  border-color: transparent;
+  background: var(--win-accent);
+}
+
+.dtc-sb__btn--boot:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--win-accent) 84%, white);
+}
+
+.dtc-sb__btn--boot:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+@keyframes dtcSbPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.35;
+  }
 }
 
 @media (max-width: 1080px) {
@@ -7026,6 +7396,56 @@ tint, the grain and the fluent shadows keep their exact values */
 
 [data-theme="light"] .dtc-code {
   background: rgb(0 0 0 / 4%);
+}
+
+/* the sandbox lane on the light chat surface: the pane chrome lightens
+ * (the rail grammar), the dark terminal sub-pane keeps its fixed row
+ * colors, and the ember text climbs to the darker leather tone for the
+ * 4.5:1 gate on the small mono print (the lamp dot and the icons keep the
+ * vivid family hex — signals, not text) */
+[data-theme="light"] .dtc-sb {
+  border-left-color: rgb(0 0 0 / 12%);
+  background: rgb(0 0 0 / 2%);
+}
+
+[data-theme="light"] .dtc-sb[data-swap="true"] {
+  border-top-color: rgb(0 0 0 / 12%);
+  background: rgb(255 255 255 / 55%);
+}
+
+[data-theme="light"] .dtc-sb__engine {
+  color: #b44f14;
+  border-color: rgb(180 79 20 / 35%);
+}
+
+[data-theme="light"] .dtc-sb__lamp[data-state="booting"] {
+  color: #b44f14;
+  border-color: rgb(180 79 20 / 35%);
+  background: rgb(232 111 45 / 8%);
+}
+
+[data-theme="light"] .dtc-sb__btn {
+  border-color: rgb(0 0 0 / 10%);
+  background: rgb(0 0 0 / 3%);
+}
+
+[data-theme="light"] .dtc-sb__btn:hover:not(:disabled) {
+  border-color: rgb(0 0 0 / 16%);
+  background: rgb(0 0 0 / 6%);
+}
+
+[data-theme="light"] .dtc-sb__btn:focus-visible,
+[data-theme="light"] .dtc-sb__out:focus-visible {
+  outline-color: #0f172a;
+}
+
+[data-theme="light"] .dtc-pill--sb:hover,
+[data-theme="light"] .dtc-pill--sb[aria-pressed="true"] {
+  background: rgb(232 111 45 / 12%);
+}
+
+[data-theme="light"] .dtc-pills--action {
+  border-left-color: rgb(0 0 0 / 10%);
 }
 
 @media (prefers-reduced-transparency: reduce) {

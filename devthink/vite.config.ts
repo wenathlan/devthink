@@ -39,6 +39,16 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
+      /** the exact-subpath bridge to the sibling saddle engine: the chat
+       * sandbox lane imports the browser-pure engine through the published
+       * library specifier ("@wenathlan/saddle/sandbox"), but the installed
+       * 2.1.6 envelope lacks that export surface — this longer key (checked
+       * before the "@" prefix alias) resolves the specifier to the monorepo
+       * source the family app carries, so the engine logic is never
+       * duplicated inside devthink. the entry retires when saddle 2.1.7
+       * publishes: its package.json exports map gained exactly the missing
+       * "./sandbox": "./dist/sandbox.js" manifest piece. */
+      "@wenathlan/saddle/sandbox": path.resolve(import.meta.dirname, "../saddle/sandbox.ts"),
       "@": path.resolve(import.meta.dirname, "Sol"),
     },
   },
@@ -64,10 +74,11 @@ export default defineConfig({
   },
   /** the theme sources live in the Sol folder of this app root: the design room imports
    * the root logic modules (gateway.ts and the workspace families) across the theme
-   * boundary from the same project root, so the dev server allows this single root. */
+   * boundary from the same project root, and the saddle engine bridge above pulls the
+   * sibling family source — the dev server allows this root plus the saddle folder. */
   server: {
     fs: {
-      allow: [import.meta.dirname],
+      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../saddle")],
     },
     host: true,
     strictPort: false,
