@@ -80,10 +80,13 @@ jobs:
           cache: pnpm
           cache-dependency-path: devthink/pnpm-lock.yaml
       - name: Install the npm version declared by package metadata
+        # the probe accepts every semver constraint form (>=12.2.0 <13,
+        # ^12.1.0, 12.x) so no envelope shape breaks the lane the way the
+        # >=-only probe broke the maintenance dispatch on the caret form.
         run: |
           set -euo pipefail
           cd devthink
-          npm_version="$(node -p "require('./package.json').engines.npm.match(/>=([^ ]+)/)[1]")"
+          npm_version="$(node -p "const m=String(require('./package.json').engines.npm).match(/\d+(?:\.\d+)*/); if(!m) throw new Error('no npm floor'); m[0]")"
           npm install --global "npm@${npm_version}"
           test "$(npm --version)" = "$npm_version"
       - name: Install root dependencies
