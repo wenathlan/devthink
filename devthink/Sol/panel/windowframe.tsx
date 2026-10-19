@@ -258,6 +258,11 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
         el.dataset.flySettle = "true";
         window.setTimeout(() => {
           clearFlyProps(el);
+          // the flight ends here: the poses must leave with the props or
+          // [data-flying] keeps the window pointer-dead forever (the
+          // restored window answered no click — the caixa de texto bug)
+          delete el.dataset.flying;
+          delete el.dataset.flySettle;
           flyingRef.current = false;
         }, 270);
       });
