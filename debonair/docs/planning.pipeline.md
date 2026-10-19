@@ -9,6 +9,47 @@
 > modalities) — the visitor's browser, cpu and gpu never run the pipeline.
 > companion of docs/planning.ladder.md (the kathesis verification ladder)
 > and docs/planning.v2.28-completo.md.
+>
+> ## the code synthesis of outros.debonair (the reference verdict)
+>
+> the full code read of the reference folder closed the method question —
+> the parts that PROVED real sound, the parts the composer mines:
+> - `v2/src/lib/audio/engine.ts` — the voice recipes to reimplement root
+>   side: kick pitch env 165→52→40 hz with the noise click, snare noise
+>   bandpass 1750 + dual triangle body, hat hp 7800, clap 4 bursts 9.5ms
+>   apart, 808 bass pitch snap hz*2→hz in 45ms through a drive shaper,
+>   supersaw lead, pad lp with the 0.28hz lfo, keys tremolo, master chain
+>   tanh waveshaper k=3.2 → compressor −13/18/4.5 → analyser, feedback
+>   delay 0.27s fb 0.34, reverb noise impulse tail pow(1−i/len, 2.2), the
+>   140ms look-ahead transport and the OfflineAudioContext render mirror →
+>   wav 16-bit / mp3 lamejs — the render proof the composer rides.
+> - `v2/src/lib/audio/generator.ts` — the composition brain: 48 scales, 9
+>   style presets with exact drum lanes (trap kick [0,6,10] snare [4,12]
+>   hat 16th lanes clap [4,12] swing 0.12; drill, lofi, house...), bass
+>   locked to kick, markov 1st-order melodies with the ±3 semitone bias,
+>   DRIFT_CYCLE and ENERGY_CYCLE build/drop, seeded prng (same prompt same
+>   take), vary() diatonic drift.
+> - `v2/src/app/api/analyze + similar + trainOnProject` — the pattern
+>   miner shape: note bigrams, 16-step drum histograms (adopt steps above
+>   0.55 after trainedOn ≥ 3), embedding centroid, bpm histogram, cosine
+>   similarity over the 32-dim embedding — the exact miner PV3
+>   reimplements over our ingest documents.
+> - `v1/v1 page.tsx` — the 6-layer biquad separation, the pcm store by
+>   session:second:track and the priority playback ladder (stored pcm →
+>   hex inline → seed synth → pattern synth) with the AudioBufferSource
+>   scheduling and the 1.0s per-second grid.
+> - `mjs/analyser.mjs + ffmpeg.mjs` — the node decode lane (ffmpeg f32le
+>   → stft → per_second vectors) with the known bpm bugs (no octave fold
+>   guard) our analyze already handles.
+> - the FAKE parts the new code never repeats: the ~200 decorative
+>   *Id/*Hash fields per second (constants and xor cosmetics), the
+>   expandFromSeed checksum claim (the checksum never validates — synthesis
+>   cannot reproduce pcm), the hex semantic signatures (0xKICK_SUB_HEAVY),
+>   the empty prisma/db/mini-services scaffolds, the yamnet removal.
+> - the honest separation limit the reference states: elements sharing the
+>   spectral range AND the pan position are mathematically inseparable
+>   without a trained model — the hpss pair (harmonic/percussive) is the
+>   proven floor, the vocal/bass/drum lanes ride the band filters on top.
 
 ## wave PV0 — what already stands (verified, committed)
 
