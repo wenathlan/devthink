@@ -1,5 +1,5 @@
 /**
- * EntryGate — the entry-flow portão of the reform law: the home route never
+ * EntryGate — the entry-flow gate of the reform law: the home route never
  * renders before the visitor's seen flags answer. The gate only READS the
  * flags (onboardingstate.ts stays the ONE writer), decides through the pure
  * entrytarget contract and hands the visit over with a replace navigation so

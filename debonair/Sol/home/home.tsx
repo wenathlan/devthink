@@ -36,7 +36,7 @@ import { SongCard, SongCardSkeleton } from "./songcard.tsx";
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Studio", href: "/studio" },
   { label: "Generate", href: "/generate" },
-  { label: "LibraryRegular", href: "/library" },
+  { label: "Library", href: "/library" },
   { label: "Settings", href: "/settings" },
 ];
 

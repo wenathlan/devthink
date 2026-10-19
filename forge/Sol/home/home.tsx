@@ -176,20 +176,20 @@ export function HomeRegular(_props: HomeProps) {
           </h2>
         </div>
         <div className="ledger reveal in">
-          <article className="ledger-row fg-featured" aria-label="the runner floor — platform live">
+          <article className="ledger-row fg-featured" aria-label="the runner floor — the platform pages answer">
             <span className="ledger-no" aria-hidden="true">
               00
             </span>
             <div className="ledger-main">
-              <h3 className="ledger-title">the floor is live</h3>
+              <h3 className="ledger-title">the platform answers</h3>
               <p className="ledger-text">
-                The platform answers on three pages: the fleets, the queue and the seeded log replay.
+                The platform answers on three pages of this app: the fleets, the queue and the seeded log replay.
               </p>
             </div>
             <div className="ledger-side">
-              <span className="fg-live" data-live="true">
+              <span className="fg-live">
                 <i aria-hidden="true" />
-                platform
+                this app
               </span>
               <span className="ledger-badge">runs · queue · logs</span>
             </div>
@@ -279,7 +279,7 @@ export function HomeRegular(_props: HomeProps) {
         <div className="quad-col">
           <p className="quad-head">identity</p>
           <span className="quad-line">forge · lime-brasa #a2cb3a</span>
-          <span className="quad-line">carvão × lime — só roda</span>
+          <span className="quad-line">charcoal × lime — it just runs</span>
         </div>
         <div className="quad-col">
           <p className="quad-head">domain</p>

@@ -3191,6 +3191,23 @@ a.r3a-row:hover {
   }
 }
 
+/* the in-session reduce-motion switch (motionpref.ts writes data-motion on
+   the <html> when the settings toggle flips): the mirror of the media hard
+   stop above, on top of the OS preference, never against it */
+[data-motion="reduced"] *,
+[data-motion="reduced"] *::before,
+[data-motion="reduced"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+[data-motion="reduced"] .reveal {
+  opacity: 1;
+  transform: none;
+}
+
 /* the embedded contract: the power clip frame hosts the stage bare — the
    stage fills the frame and scrolls itself, no window chrome of its own */
 .shell--embedded { max-width: none; height: 100vh; overflow-y: auto; }

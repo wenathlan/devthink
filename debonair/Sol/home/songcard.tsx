@@ -42,8 +42,8 @@ export function SongCard({ track, take, slot, live, onPlay }: SongCardProps) {
         <button
           type="button"
           className="song-play"
-          aria-label={`PlayFilled ${track.name}`}
-          title={`PlayFilled ${track.name} — ${track.genre} · ${track.duration}`}
+          aria-label={`Play ${track.name}`}
+          title={`Play ${track.name} — ${track.genre} · ${track.duration}`}
           onClick={() => onPlay(take)}
         >
           <PlayFilled fontSize={18} aria-hidden="true" />

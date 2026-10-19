@@ -48,9 +48,9 @@ export function Pricing() {
           Pay for what you use. Or use it free.
         </h1>
         <p className="cb-lede cb-in" style={{ "--cb-d": 2 } as CSSProperties}>
-          the core surface of every application is free and stays free. the paid plans unlock pro features per app or
-          across the family. the prices below are placeholders until billing goes live — a plan activates the moment its
-          checkout link is configured, and says so honestly until then.
+          the core surface of every application is free and stays free. the paid plans add the pro features of one app
+          or of the whole family. the prices below are placeholders until billing goes live — a plan activates the moment
+          its checkout link is configured, and says so honestly until then.
         </p>
       </section>
 

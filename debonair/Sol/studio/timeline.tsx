@@ -7,7 +7,7 @@
  * trimClip, the split key cuts at the playhead through splitClip. Every
  * landing is validated with validatePlacement before it commits; a refused
  * edit keeps the arrangement and names the refusal. The keyboard edits too:
- * arrows walk the selected clip one snap step, DeleteRegular and D delete and
+ * arrows walk the selected clip one snap step, Delete and D delete and
  * duplicate. Zero audio math here — the page owns the plan and the engine.
  */
 
@@ -210,7 +210,7 @@ export function Timeline({ plan, clips, playhead, selectedId, onSelect, onEdit, 
     (event: KeyboardEvent<HTMLElement>) => {
       const tag = (event.target as HTMLElement | null)?.tagName;
       if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
-      if (event.key === "DeleteRegular" || event.key === "Backspace") {
+      if (event.key === "Delete" || event.key === "Backspace") {
         event.preventDefault();
         remove();
         return;
@@ -220,9 +220,9 @@ export function Timeline({ plan, clips, playhead, selectedId, onSelect, onEdit, 
         duplicate();
         return;
       }
-      if ((event.key === "ArrowLeftRegular" || event.key === "ArrowRightRegular") && selected) {
+      if ((event.key === "ArrowLeft" || event.key === "ArrowRight") && selected) {
         event.preventDefault();
-        const dir = event.key === "ArrowLeftRegular" ? -1 : 1;
+        const dir = event.key === "ArrowLeft" ? -1 : 1;
         try {
           const moved = moveClip(selected, dir * grid.stepseconds, others(selected.id), { grid });
           place(clips.map((clip) => (clip.id === selected.id ? moved : clip)));
@@ -259,9 +259,9 @@ export function Timeline({ plan, clips, playhead, selectedId, onSelect, onEdit, 
             <CopyRegular className="tled-icon" fontSize={14} aria-hidden="true" />
             Duplicate
           </button>
-          <button className="tled-key" type="button" aria-label="DeleteRegular the selected clip" onClick={remove}>
+          <button className="tled-key" type="button" aria-label="Delete the selected clip" onClick={remove}>
             <DeleteRegular className="tled-icon" fontSize={14} aria-hidden="true" />
-            DeleteRegular
+            Delete
           </button>
         </div>
       </header>

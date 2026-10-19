@@ -3,7 +3,7 @@
  * database layer.
  *
  * the sqlite dialect points at the DATABASE_URL environment (the same
- * location db.ts boots from); nothing is hardcodado and no sql file is
+ * location db.ts boots from); nothing is hardcoded and no sql file is
  * committed. the config imports nothing at runtime beyond drizzle-kit
  * itself so typecheck never depends on the kit being installed.
  */

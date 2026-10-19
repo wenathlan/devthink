@@ -175,10 +175,10 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
       const tag = (event.target as HTMLElement | null)?.tagName;
       if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
       if (!selected) return;
-      if (event.key === "ArrowLeftRegular" || event.key === "ArrowRightRegular") {
+      if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
         event.preventDefault();
         try {
-          apply(moveNote(notes, selected.id, event.key === "ArrowLeftRegular" ? -1 : 1, window, plan));
+          apply(moveNote(notes, selected.id, event.key === "ArrowLeft" ? -1 : 1, window, plan));
         } catch (error) {
           onNotice(error instanceof Error ? error.message : "the roll refused this move");
         }
@@ -366,7 +366,7 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
             <button
               className="tkey"
               type="button"
-              aria-label="DeleteRegular the note"
+              aria-label="Delete the note"
               onClick={() => {
                 apply(removeNote(notes, selected.id));
                 setSelectedId("");

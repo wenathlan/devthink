@@ -12,7 +12,7 @@
  * seed answer with the same rows. every statement here is a prepared
  * statement with bound parameters — sql is never assembled by string
  * concatenation. the database location comes from the DATABASE_URL
- * environment (default file:./stealthhead.db, never hardcodado). the
+ * environment (default file:./stealthhead.db, never hardcoded). the
  * static interface never imports this module: the pages receive the
  * rows over HTTPS from the self-hosted answer and fall back to the
  * in-memory seeds, and the visitor machine stores nothing.

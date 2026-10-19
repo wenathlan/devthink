@@ -421,13 +421,13 @@ export default function Edit() {
         rangeOp("lift");
         return;
       }
-      if (event.key === "ArrowLeftRegular") {
+      if (event.key === "ArrowLeft") {
         event.preventDefault();
         if (event.shiftKey) walkPoint(-1);
         else stepFrame(-1);
         return;
       }
-      if (event.key === "ArrowRightRegular") {
+      if (event.key === "ArrowRight") {
         event.preventDefault();
         if (event.shiftKey) walkPoint(1);
         else stepFrame(1);

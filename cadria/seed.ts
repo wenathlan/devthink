@@ -24,31 +24,31 @@ export const seedPlayerFormats: readonly PlayerFormat[] = [
   {
     format: "HLS",
     media: ".m3u8 — live + VOD streams",
-    engine: "hls.js",
+    engine: "native",
     tone: "info",
-    status: "shipped",
+    status: "planned",
     extensions: [".m3u8"],
   },
   {
     format: "DASH",
     media: ".mpd — adaptive manifests",
-    engine: "dash.js",
+    engine: "native",
     tone: "info",
-    status: "shipped",
+    status: "planned",
     extensions: [".mpd"],
   },
   {
     format: "FLV",
     media: ".flv — legacy broadcast pulls",
-    engine: "flv.js",
+    engine: "native",
     tone: "info",
-    status: "shipped",
+    status: "planned",
     extensions: [".flv"],
   },
   {
     format: "WEBM / OGG",
     media: ".webm · .ogg — royalty-free pipelines",
-    engine: "video.js · VHS",
+    engine: "native",
     tone: "info",
     status: "shipped",
     extensions: [".webm", ".ogg"],
@@ -56,7 +56,7 @@ export const seedPlayerFormats: readonly PlayerFormat[] = [
   {
     format: "MP3 / audio",
     media: ".mp3 · .wav · .oga — playlists",
-    engine: "howler",
+    engine: "web audio",
     tone: "warning",
     status: "shipped",
     extensions: [".mp3", ".wav", ".oga"],
@@ -64,9 +64,9 @@ export const seedPlayerFormats: readonly PlayerFormat[] = [
   {
     format: "Documents",
     media: ".pdf · .docx · .xlsx · .md — side viewer",
-    engine: "pdfjs · mammoth · marked · xlsx",
+    engine: "—",
     tone: "warning",
-    status: "shipped",
+    status: "planned",
     extensions: [".pdf", ".docx", ".xlsx", ".md"],
   },
 ];
@@ -82,7 +82,7 @@ export const seedAnchors: readonly CreativeAnchor[] = [
     id: "audio",
     title: "Audio DAW",
     detail:
-      "Multitrack timeline with fades and stems on howler playback. Score voice-over against the video timeline and bounce stems back into the edit.",
+      "Multitrack timeline with fades and stems on the browser's own audio clock. Score voice-over against the video timeline and bounce stems back into the edit.",
   },
   {
     id: "canvaseditor",
@@ -166,7 +166,7 @@ export const seedSeatCards: readonly FeatureCard[] = [
     group: "home-seats",
     title: "Multi-format player",
     detail:
-      "MP4, HLS, DASH, FLV and WEBM plus audio and documents — hls.js, dash.js, flv.js, video.js and howler ship inside the manifest.",
+      "MP4 and WEBM/OGG video plus audio, decoded by the browser's own media engine — no third-party player ships in the manifest. The remaining format families of the catalog table stay planned.",
   },
   {
     group: "home-seats",
@@ -190,8 +190,8 @@ export const seedSeatCards: readonly FeatureCard[] = [
 
 export const seedHeroBadges: readonly SignalBadge[] = [
   { group: "hero", label: "versawase engine", tone: "default", dot: true },
-  { group: "hero", label: "HLS · DASH", tone: "success" },
-  { group: "hero", label: "24 formats", tone: "info" },
+  { group: "hero", label: "MP4 · WEBM", tone: "success" },
+  { group: "hero", label: "14 formats", tone: "info" },
 ];
 
 export const seedFilterChoices: readonly OptionChoice[] = [

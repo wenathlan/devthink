@@ -51,7 +51,7 @@ export const PLANS: readonly checkoutplan[] = [
     name: "Pro",
     priceusd: 5,
     per: "month",
-    blurb: "one app, the pro features unlocked, billed per application.",
+    blurb: "one app and its pro features, billed per application.",
     features: [
       "the pro features of one chosen application",
       "priority routes on the shared gateway",

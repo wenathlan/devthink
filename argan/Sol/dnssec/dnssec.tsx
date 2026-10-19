@@ -152,6 +152,7 @@ export default function Dnssec() {
           <p className="r3a-h__note">
             Rule nd-6002 · pipeline-only — the zone file is versioned, signed and published by the pipeline with a fresh
             serial; the previous version stays available for instant rollback. Nobody types changes into a live zone.
+            The terminal below rides the staging snapshot — the output shape of one sign run, never a live capture.
           </p>
         </div>
         <pre className="r3a-term">

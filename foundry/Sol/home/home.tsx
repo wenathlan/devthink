@@ -13,7 +13,7 @@
 // The landing of the foundry application (campaign v3 · R3, restated on the
 // trylle foundation wearing the windows hands): the herd floor as a Suno-grade
 // SaaS surface with an industrial-store console heart. ONE azul furnace light
-// (the foundry identity #4d8edd at the 90/10 discipline) over the trylle deep
+// (the foundry identity #1e6ff2 at the 90/10 discipline) over the trylle deep
 // canvas, with the .halftone dissolve and the ≤5% grain riding the theme
 // utilities. The mark owns the zone once — the shell rests its title-bar mark
 // behind the data-landing flag — and carries the conveyor tick: a 2.4s
@@ -134,7 +134,7 @@ export function Home(props: HomeProps) {
   return (
     <EntryGate>
       <main className="page fd-page">
-        {/* the hero stage: the one amber furnace light of the landing */}
+        {/* the hero stage: the one azul furnace light of the landing */}
         <section className="fdx-stage halftone grain" aria-label="foundry — the foundry of clone herds">
           <span className="fdx-light" aria-hidden="true" />
           <div className="fdx-lockup fdx-in">

@@ -3,7 +3,7 @@
  * The file carrying the folder's own name is the path manager of the page:
  * it mounts the page and is consumed only by the theme anchor (Sol/Sol.tsx).
  *
- * ImageMultipleRegular — the herd shelf of the foundry: the three real clone formats
+ * The images page — the herd shelf of the foundry: the three real clone formats
  * (.tzst / .tar.gz / .tar.xz) with their honest traits, the conversion
  * plan the floor keeps (unpack the tar layer, recompress, seal) and the
  * size estimates per format. The shelf is a seeded rehearsal; the plan is
@@ -54,7 +54,7 @@ function ImageRow({ image }: { image: HerdImage }) {
 }
 
 /** The images page: the herd shelf and the conversion plan. */
-export default function ImageMultipleRegular() {
+export default function Images() {
   const [seed, setSeed] = useState(SHELF_SEED);
   const [from, setFrom] = useState<ImageFormat>("tzst");
   const [to, setTo] = useState<ImageFormat>("tarxz");
@@ -65,7 +65,7 @@ export default function ImageMultipleRegular() {
     <main className="shell fi-page">
       <header className="pagehead">
         <p className="pagehead__eyebrow">images · the herd shelf</p>
-        <h1 className="pagehead__title">ImageMultipleRegular</h1>
+        <h1 className="pagehead__title">Herd shelf</h1>
         <p className="pagehead__lede">
           The herd travels in three formats — .tzst clones fast, .tar.gz opens anywhere, .tar.xz rides the releases. A
           seeded rehearsal (seed {seed}) fills the shelf; the conversion plan below is the real floor logic.

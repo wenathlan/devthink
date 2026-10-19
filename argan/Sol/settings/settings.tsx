@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import type { OptionChoice } from "../../argan.ts";
 import { listOptionChoices } from "../../catalog.ts";
 import { applyNow } from "../../cleanurl";
+import { reduceMotionApplied, setReduceMotion } from "../../motionpref";
 import { currentTheme, toggleTheme } from "../../theme";
 import { type NavLink, Shell } from "../shell/Shell";
 import { useToast } from "../toast/Toast";
@@ -33,6 +34,7 @@ type UrlOut = { text: string; tone: "error" | "ok" };
 export default function Settings() {
   const toast = useToast();
   const [light, setLight] = useState(currentTheme() === "light");
+  const [reduced, setReduced] = useState(() => reduceMotionApplied());
   const [resolver, setResolver] = useState("argan");
   const [locale, setLocale] = useState("en");
   const [resolverChoices, setResolverChoices] = useState<readonly OptionChoice[]>([]);
@@ -55,6 +57,14 @@ export default function Settings() {
   const onLightToggle = (): void => {
     toggleTheme();
     setLight(currentTheme() === "light");
+  };
+
+  /** the real switch: the document flag the stylesheet guards answer to. */
+  const onReduceMotionToggle = (): void => {
+    const next = !reduceMotionApplied();
+    setReduceMotion(next);
+    setReduced(next);
+    toast.show(next ? "Motion reduced for this session" : "Motion restored for this session", "info");
   };
 
   const showDirty = (): void => {
@@ -113,10 +123,18 @@ export default function Settings() {
             <div className="r3a-set__row">
               <div>
                 <p className="pref-title">Reduce motion</p>
-                <p className="pref-hint">Also respects your OS setting automatically.</p>
+                <p className="pref-hint">
+                  Stills the mark, the window entry and the fresh-serial pulse for this session — on top of the OS
+                  setting, never against it.
+                </p>
               </div>
               <label className="toggle">
-                <input type="checkbox" aria-label="Toggle reduce motion" />
+                <input
+                  type="checkbox"
+                  checked={reduced}
+                  onChange={onReduceMotionToggle}
+                  aria-label="Toggle reduce motion"
+                />
                 <span className="track" />
               </label>
             </div>

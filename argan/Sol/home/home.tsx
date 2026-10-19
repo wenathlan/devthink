@@ -226,7 +226,7 @@ function HomeLanding() {
             </fieldset>
             <div className="r3a-dig__out" role="status">
               {!answer ? (
-                <p className="is-head flush">;; try the apex — every answer below resolves from the live snapshot</p>
+                <p className="is-head flush">;; try the apex — every answer below resolves from the served snapshot</p>
               ) : (
                 <>
                   <p className="is-head flush">

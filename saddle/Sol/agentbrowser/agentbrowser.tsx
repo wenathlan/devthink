@@ -8,120 +8,227 @@
  */
 
 import {
-	Activity,
-	Camera,
-	CheckCircle2,
-	MousePointer2,
-	Play,
-	RotateCcw,
-	ScrollText,
-	Terminal,
+        Activity,
+        Ban,
+        Camera,
+        CheckCircle2,
+        Keyboard,
+        MousePointer2,
+        Play,
+        RotateCcw,
+        ScrollText,
+        Terminal,
 } from 'lucide-react';
 // Signal & Ledger: agent browser as an event trail, evidence and deterministic replay.
+// The session console renders the rows the sessions catalog serves — the
+// documented example log of docs/logs/examplesession.json offline, the paired
+// database rows over HTTPS — never invented coordinates or counts.
 import { useEffect, useState } from 'react';
 import { PageShell } from '@/shell/Shell';
-import { type MediaSlot, mediaSlots } from '../../catalog';
+import {
+        type AgentSession,
+        type AgentSessionEvent,
+        agentsessions,
+        type MediaSlot,
+        mediaSlots,
+} from '../../catalog';
+
+/** the glyph of one event kind of the session trail. */
+function eventicon(type: string) {
+        if (type === 'scroll') return ScrollText;
+        if (type === 'type') return Keyboard;
+        return MousePointer2;
+}
+
+/** the value line of one event: exactly the fields the row carries. */
+function eventvalue(event: AgentSessionEvent): string {
+        if (event.type === 'scroll') return `dy ${event.dy ?? 0}`;
+        if (event.type === 'type') return `key ${event.key ?? ''}`;
+        return `x ${event.x ?? 0} / y ${event.y ?? 0}`;
+}
+
+/** the elapsed label of one event from its relative time. */
+const eventtime = (event: AgentSessionEvent): string => `+${event.t} ms`;
+
+/** one rendered event row: the glyph, the relative time, the kind and the fields. */
+function SessionEventRow({ event }: { event: AgentSessionEvent }) {
+        const Icon = eventicon(event.type);
+        return (
+                <div className="console-row">
+                        <Icon size={16} />
+                        <span className="console-time">{eventtime(event)}</span>
+                        <strong>{event.type}</strong>
+                        <span>{eventvalue(event)}</span>
+                </div>
+        );
+}
+
+/** the event trail of one session: one row per captured event. */
+function SessionTrail({ events }: { events: readonly AgentSessionEvent[] }) {
+        return (
+                <>
+                        {events.map((event) => (
+                                <SessionEventRow event={event} key={`${event.t}-${event.type}`} />
+                        ))}
+                </>
+        );
+}
+
+/** the captcha verdict badge of one session: the honest outcome of the run. */
+function CaptchaBadge({ verdict }: { verdict: AgentSession['captcha'] }) {
+        return (
+                <span className={verdict.passed ? 'console-pass' : 'console-denied'}>
+                        {verdict.passed ? <CheckCircle2 size={14} /> : <Ban size={13} />} {verdict.kind}{' '}
+                        {verdict.passed ? 'passed' : 'failed'}
+                </span>
+        );
+}
 
 export default function AgentBrowser() {
-	const [media, setMedia] = useState<MediaSlot | undefined>(undefined);
+        const [media, setMedia] = useState<MediaSlot | undefined>(undefined);
+        const [sessions, setSessions] = useState<AgentSession[] | null>(null);
 
-	useEffect(() => {
-		void mediaSlots().then((rows) =>
-			setMedia(rows.find((slot) => slot.id === 'media.agentbrowser.trace')),
-		);
-	}, []);
+        useEffect(() => {
+                void mediaSlots().then((rows) =>
+                        setMedia(rows.find((slot) => slot.id === 'media.agentbrowser.trace')),
+                );
+        }, []);
 
-	return (
-		<PageShell
-			section="02 / 06"
-			label="Agent Browser"
-			title="Movement becomes evidence."
-			intro="The browser agent captures a session as data: movement, click, scroll, key and the intent to replay everything later."
-			media={media}
-		>
-			<section className="content-section split-content">
-				<div>
-					<p className="eyebrow">CAPTURE / REPLAY</p>
-					<h2 className="section-title">The session is an artifact, not a black box.</h2>
-				</div>
-				<div className="prose-copy">
-					<p>
-						Brave capture, movement replay and session recording share the same layer. Each event is
-						stored with relative time, CSS px coordinates, target and seed. Replay reruns the
-						sequence at configurable speed.
-					</p>
-					<p>
-						For the operator, this means an auditable trail: every click can point to a screenshot,
-						token or evidence video.
-					</p>
-				</div>
-			</section>
-			<section className="content-section browser-grid">
-				<div className="session-console">
-					<div className="console-head">
-						<span>
-							<Terminal size={14} /> SESSION / sess_01J9XEXAMPLE
-						</span>
-						<span className="console-pass">
-							<CheckCircle2 size={14} /> PASSED
-						</span>
-					</div>
-					<div className="console-rows">
-						{[
-							{ icon: MousePointer2, label: 'move', value: 'x 312 / y 480', time: '00:00:12.4' },
-							{ icon: MousePointer2, label: 'click', value: '#checkbox', time: '00:03:40.1' },
-							{ icon: ScrollText, label: 'scroll', value: 'dy -120 / settle', time: '00:05:40.0' },
-							{ icon: Activity, label: 'metrics', value: '1284 events / 201s', time: '00:06:12.0' },
-						].map((event) => {
-							const Icon = event.icon;
-							return (
-								<div className="console-row" key={event.label}>
-									<Icon size={16} />
-									<span className="console-time">{event.time}</span>
-									<strong>{event.label}</strong>
-									<span>{event.value}</span>
-								</div>
-							);
-						})}
-					</div>
-					<div className="console-footer">
-						<span>seed / session-42</span>
-						<span>browser / brave</span>
-					</div>
-				</div>
-				<div className="browser-principles">
-					<div className="principle-card">
-						<Camera size={19} />
-						<div>
-							<strong>DOM + vision</strong>
-							<span>Hybrid capture is the baseline.</span>
-						</div>
-					</div>
-					<div className="principle-card">
-						<RotateCcw size={19} />
-						<div>
-							<strong>Deterministic replay</strong>
-							<span>Same events, configurable speed.</span>
-						</div>
-					</div>
-					<div className="principle-card">
-						<Play size={19} />
-						<div>
-							<strong>Evidence first</strong>
-							<span>Screenshot, token, video.</span>
-						</div>
-					</div>
-				</div>
-			</section>
-			<section className="content-section">
-				<div className="content-section-heading">
-					<p className="eyebrow">SESSION JSON / V1</p>
-					<span className="mono-label">docs/logs/&lt;session&gt;.json</span>
-				</div>
-				<pre className="code-block">
-					<code>{`{\n  "session": { "id": "sess_...", "status": "passed" },\n  "events": [ "move", "click", "scroll", "key" ],\n  "metrics": { "eventCount": 1284, "durationMs": 201000 }\n}`}</code>
-				</pre>
-			</section>
-		</PageShell>
-	);
+        useEffect(() => {
+                let live = true;
+                agentsessions()
+                        .then((rows) => {
+                                if (live) setSessions(rows);
+                        })
+                        .catch(() => {
+                                if (live) setSessions([]);
+                        });
+                return () => {
+                        live = false;
+                };
+        }, []);
+
+        const session = sessions?.[0] ?? null;
+        const lastt = session ? session.events[session.events.length - 1]?.t ?? 0 : 0;
+        const sessionlabel = session ? session.session.id : 'reading the catalog…';
+        /** the trimmed json projection of the served row (the docs/logs shape). */
+        const sessionsummary = session
+                ? JSON.stringify(
+                          {
+                                  version: session.version,
+                                  session: {
+                                          id: session.session.id,
+                                          browser: session.session.browser,
+                                  },
+                                  events: session.events.map((event) => event.type),
+                                  captcha: session.captcha,
+                          },
+                          null,
+                          2,
+                  )
+                : 'waiting for the session rows…';
+
+        return (
+                <PageShell
+                        section="02 / 06"
+                        label="Agent Browser"
+                        title="Movement becomes evidence."
+                        intro="The browser agent captures a session as data: movement, click, scroll, key and the intent to replay everything later."
+                        media={media}
+                >
+                        <section className="content-section split-content">
+                                <div>
+                                        <p className="eyebrow">CAPTURE / REPLAY</p>
+                                        <h2 className="section-title">The session is an artifact, not a black box.</h2>
+                                </div>
+                                <div className="prose-copy">
+                                        <p>
+                                                Brave capture, movement replay and session recording share the same layer. Each event is
+                                                stored with relative time, CSS px coordinates, target and seed. Replay reruns the
+                                                sequence at configurable speed.
+                                        </p>
+                                        <p>
+                                                For the operator, this means an auditable trail: every click can point to a screenshot,
+                                                token or evidence video.
+                                        </p>
+                                </div>
+                        </section>
+                        <section className="content-section browser-grid">
+                                <div className="session-console">
+                                        <div className="console-head">
+                                                <span>
+                                                        <Terminal size={14} /> SESSION / {sessionlabel}
+                                                </span>
+                                                {session ? <CaptchaBadge verdict={session.captcha} /> : null}
+                                        </div>
+                                        <div className="console-rows">
+                                                {session === null ? (
+                                                        <div className="console-row" aria-live="polite">
+                                                                <Activity size={16} />
+                                                                <span className="console-time" />
+                                                                <strong>catalog</strong>
+                                                                <span>waiting for the rows…</span>
+                                                        </div>
+                                                ) : session.events.length === 0 ? (
+                                                        <div className="console-row" aria-live="polite">
+                                                                <Activity size={16} />
+                                                                <span className="console-time" />
+                                                                <strong>catalog</strong>
+                                                                <span>no session rows served yet.</span>
+                                                        </div>
+                                                ) : (
+                                                        <>
+                                                                <SessionTrail events={session.events} />
+                                                                <div className="console-row">
+                                                                        <Activity size={16} />
+                                                                        <span className="console-time">+{lastt} ms</span>
+                                                                        <strong>metrics</strong>
+                                                                        <span>
+                                                                                {session.events.length} events /{' '}
+                                                                                {(lastt / 1000).toFixed(1)} s
+                                                                        </span>
+                                                                </div>
+                                                        </>
+                                                )}
+                                        </div>
+                                        <div className="console-footer">
+                                                <span>seed / {session ? session.session.seed : 'n/a'}</span>
+                                                <span>browser / {session ? session.session.browser : 'n/a'}</span>
+                                        </div>
+                                </div>
+                                <div className="browser-principles">
+                                        <div className="principle-card">
+                                                <Camera size={19} />
+                                                <div>
+                                                        <strong>DOM + vision</strong>
+                                                        <span>Hybrid capture is the baseline.</span>
+                                                </div>
+                                        </div>
+                                        <div className="principle-card">
+                                                <RotateCcw size={19} />
+                                                <div>
+                                                        <strong>Deterministic replay</strong>
+                                                        <span>Same events, configurable speed.</span>
+                                                </div>
+                                        </div>
+                                        <div className="principle-card">
+                                                <Play size={19} />
+                                                <div>
+                                                        <strong>Evidence first</strong>
+                                                        <span>Screenshot, token, video.</span>
+                                                </div>
+                                        </div>
+                                </div>
+                        </section>
+                        <section className="content-section">
+                                <div className="content-section-heading">
+                                        <p className="eyebrow">SESSION JSON / V{session ? session.version : 1}</p>
+                                        <span className="mono-label">docs/logs/&lt;session&gt;.json</span>
+                                </div>
+                                <pre className="code-block">
+                                        <code>{sessionsummary}</code>
+                                </pre>
+                        </section>
+                </PageShell>
+        );
 }

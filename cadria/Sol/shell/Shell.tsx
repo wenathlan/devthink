@@ -82,7 +82,7 @@ export type StartApp = {
  * exported for the onboarding copy beside this folder. */
 export const START_APPS: readonly StartApp[] = [
   { href: "/", label: "home", detail: "the video and image home of the family", icon: HomeRegular },
-  { href: "/player", label: "player", detail: "the 24-format universal player", icon: PlayCircleRegular },
+  { href: "/player", label: "player", detail: "the artwork viewer — local video and engine frames", icon: PlayCircleRegular },
   { href: "/studio", label: "studio", detail: "the creative workspace over the versawase engine", icon: WandRegular },
   {
     href: "/edit",

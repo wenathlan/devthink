@@ -100,7 +100,7 @@ export default function Zones() {
             <p className="r3a-h__aside">{zones.length} zones</p>
             <p className="r3a-h__note">
               Snapshot of the staging cluster — serials follow <code>YYYYMMDDNN</code>, date plus revision of the day.
-              The row with the newest serial pulses while propagation lands.
+              The row with the newest serial carries the pulse — the last republication of the snapshot.
             </p>
           </div>
           <div className="scroll-x">

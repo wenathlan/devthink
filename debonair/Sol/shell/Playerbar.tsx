@@ -66,9 +66,9 @@ export function Playerbar() {
         <button
           type="button"
           className={`pkey${view.playing ? " pkey--cta" : ""}`}
-          aria-label={view.playing ? "PauseRegular" : "PlayFilled"}
+          aria-label={view.playing ? "Pause" : "Play"}
           aria-pressed={view.playing}
-          title={view.notice || (view.playing ? "PauseRegular the take" : "PlayFilled the take")}
+          title={view.notice || (view.playing ? "Pause the take" : "Play the take")}
           onClick={() => {
             if (view.playing) busPause();
             else {

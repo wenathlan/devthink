@@ -3,7 +3,7 @@
  * The file carrying the folder's own name is the path manager of the page:
  * it mounts the page and is consumed only by the theme anchor (Sol/Sol.tsx).
  *
- * DocumentBulletListRegular — the live tail of a run, replayed deterministically: one integer
+ * The logs page — the tail of a run, replayed deterministically: one integer
  * seed unrolls the whole line stream (runstream.ts), the player walks it
  * on a timer, prefers-reduced-motion renders the full stream at once. The
  * stream says what it is: a seeded replay of a run on the saddle engine
@@ -38,7 +38,7 @@ const PLAY_MS = 120;
 const PRESET_SEEDS: readonly number[] = [421337, 90012, 5124, 77031];
 
 /** The logs page: the deterministic replay of one run. */
-export default function DocumentBulletListRegular() {
+export default function Logs() {
   const [seed, setSeed] = useState(LOG_SEED);
   const [playing, setPlaying] = useState(true);
   const [clock, setClock] = useState(0);
@@ -78,7 +78,7 @@ export default function DocumentBulletListRegular() {
     <main className="shell fl-page">
       <header className="pagehead">
         <p className="pagehead__eyebrow">logs · the run evidence</p>
-        <h1 className="pagehead__title">DocumentBulletListRegular ao vivo — a seeded replay</h1>
+        <h1 className="pagehead__title">Run logs — a seeded replay</h1>
         <p className="pagehead__lede">
           One run of the floor, replayed line by line from seed {seed} — the same seed always answers the same stream,
           in the browser and in the tests. Outcome and evidence stay beside the runner.
