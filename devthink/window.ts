@@ -30,6 +30,7 @@ export const WINDOW_ANCHORS: readonly string[] = [
   "projects",
   "audio",
   "video",
+  "providers",
 ];
 
 /** the family applications: the deploy units of the one family, each riding

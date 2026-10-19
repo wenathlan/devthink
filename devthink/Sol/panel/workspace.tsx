@@ -39,6 +39,7 @@ import DocsAnchor from "../docs/docs.tsx";
 import GamesAnchor from "../games/games.tsx";
 import ImageAnchor from "../image/image.tsx";
 import ProjectsAnchor from "../projects/projects.tsx";
+import ProvidersAnchor from "../providers/providers.tsx";
 import SettingsAnchor from "../settings/settings.tsx";
 import { FamilyFrame } from "../shell/familyframe.tsx";
 import UsageAnchor from "../usage/usage.tsx";
@@ -69,6 +70,7 @@ const ANCHORS: Record<string, ComponentType<{ embedded?: boolean }>> = {
   projects: ProjectsAnchor,
   audio: AudioAnchor,
   video: VideoAnchor,
+  providers: ProvidersAnchor,
 };
 
 /** binds one catalog row to its component: the anchors bind by id, the
