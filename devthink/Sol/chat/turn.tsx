@@ -11,7 +11,7 @@
  * error row with a win11 retry — the same contract as the os AuraChat.
  */
 import {ArrowClockwiseRegular as ArrowClockwise, CheckmarkRegular as Checkmark, ChevronDownRegular as ChevronDown, DismissRegular as Dismiss, EditRegular as Edit, LightbulbRegular as Lightbulb} from "@fluentui/react-icons";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { type ChatTurn, cx, fmtTime } from "../../chatstate.ts";
 import { Markdown } from "./markdown.tsx";
 import { SolBotIcon } from "./solboticon.tsx";
@@ -53,8 +53,15 @@ export function Turn({
   const assistant = turn.role === "assistant";
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(turn.content);
+  const editfieldRef = useRef<HTMLTextAreaElement | null>(null);
 
   const editable = !assistant && !busy && typeof onEdit === "function";
+
+  // the edit field takes focus as the form reveals (the ref effect answers
+  // the focus the a11y law refuses the autofocus attribute)
+  useEffect(() => {
+    if (editable && editing) editfieldRef.current?.focus();
+  }, [editable, editing]);
 
   if (editable && editing) {
     return (
@@ -77,11 +84,11 @@ export function Turn({
         >
           <textarea
             className="dtc-editfield"
+            ref={editfieldRef}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             rows={Math.min(8, Math.max(2, draft.split("\n").length + 1))}
             aria-label="Edit message"
-            autoFocus
             onKeyDown={(e) => {
               if (e.key === "Escape") {
                 e.preventDefault();
