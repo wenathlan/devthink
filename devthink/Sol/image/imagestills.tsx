@@ -3,7 +3,7 @@
  * the real catalog fields (title, engine, size) and the render action.
  * Loose component of the image page.
  */
-import { PlayFilled } from "@fluentui/react-icons";
+import {PlayFilled} from "@fluentui/react-icons";
 import type { StudioAsset } from "../../catalog";
 
 /** megapixelsOf — the still's real pixel area from its catalog size
@@ -19,8 +19,7 @@ function megapixelsOf(size: string | undefined): number | null {
 export function ImageStills({
   rows,
   loaded,
-  onRender,
-}: {
+  onRender }: {
   rows: readonly StudioAsset[];
   loaded: boolean;
   onRender: (asset: StudioAsset) => void;

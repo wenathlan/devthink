@@ -7,7 +7,7 @@
  * rehydrates from it.
  */
 
-import { DeleteRegular, HardDriveRegular, AddRegular } from "@fluentui/react-icons";
+import {DeleteRegular, HardDriveRegular, AddRegular} from "@fluentui/react-icons";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";

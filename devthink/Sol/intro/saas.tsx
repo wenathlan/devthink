@@ -9,19 +9,7 @@
  * the saas-* root and the reference class names.
  */
 
-import {
-  ArrowUpRight,
-  Bell,
-  Headphones,
-  Layers,
-  LogIn,
-  Maximize2,
-  MessageSquare,
-  Sparkles,
-  Star,
-  Tv,
-  Users,
-} from "lucide-react";
+import {ArrowUpRightRegular as ArrowUpRight, AlertRegular as Bell, HeadphonesRegular as Headphones, StackRegular as Layers, ArrowImportRegular as LogIn, MaximizeRegular as Maximize2, ChatRegular as MessageSquare, SparkleRegular as Sparkles, StarRegular as Star, TvRegular as Tv, PeopleRegular as Users} from "@fluentui/react-icons";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
@@ -34,8 +22,7 @@ import {
   SaasExplorerWall,
   SaasFlowStrip,
   SaasFooter,
-  SaasRibbon,
-} from "./saasrails.tsx";
+  SaasRibbon } from "./saasrails.tsx";
 import { SaasCreators, SaasHero, SaasStudios } from "./saassections.tsx";
 
 const SAAS_CSS = `
@@ -210,7 +197,6 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                           aria-label={tab.label}
                         >
                           <Icon
-                            strokeWidth={1.7}
                             className={`h-4 w-4 ${tab.id === "hero-os" ? "text-indigo-600" : tab.id === "workspace-subapps" ? "text-sky-600" : tab.id === "creators-doo" ? "text-purple-600" : tab.id === "spatial-bento" ? "text-pink-600" : "text-blue-600"}`}
                             aria-hidden="true"
                           />
@@ -230,7 +216,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                   className="icon-frame-3d group flex items-center rounded-full p-2.5 text-slate-800"
                   aria-label="Alerts"
                 >
-                  <Bell strokeWidth={1.7} className="h-4 w-4" aria-hidden="true" />
+                  <Bell className="h-4 w-4" aria-hidden="true" />
                   <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-all group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
                     Alerts
                   </span>
@@ -241,7 +227,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                   className="icon-frame-3d group hidden items-center rounded-full p-2.5 text-slate-800 sm:flex"
                   aria-label="Sign in"
                 >
-                  <LogIn strokeWidth={1.7} className="h-4 w-4" aria-hidden="true" />
+                  <LogIn className="h-4 w-4" aria-hidden="true" />
                   <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-all group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
                     Sign in
                   </span>

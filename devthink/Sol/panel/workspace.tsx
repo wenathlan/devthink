@@ -22,7 +22,7 @@
  * chat window.
  */
 
-import { Clock } from "lucide-react";
+import {ClockRegular as Clock} from "@fluentui/react-icons";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation } from "wouter";
 import { alttabkeydown } from "../../alttab.ts";
@@ -92,8 +92,7 @@ function defaultSnapshot(id: string, title: string, openCount: number): WindowSn
     width,
     height,
     state: "normal",
-    z: Z_BASE,
-  };
+    z: Z_BASE };
 }
 
 /** The persisted window layout (the desktopstate pattern): the snapshots
@@ -122,8 +121,7 @@ export function ShellWorkspace({
   railMode,
   onDestination,
   onSelectTab,
-  onNavigate,
-}: ShellWorkspaceProps) {
+  onNavigate }: ShellWorkspaceProps) {
   const [location] = useLocation();
   const destination: WorkspaceDestination = isWorkspaceDestination(sectionId) ? sectionId : "chat";
   /** the desktop boots with the persisted layout (empty on a fresh device) —
@@ -268,8 +266,7 @@ export function ShellWorkspace({
         id: win.id,
         title: win.title,
         minimized: win.state === "minimized",
-        app: appById(win.id),
-      })),
+        app: appById(win.id) })),
     [windows],
   );
 
@@ -348,7 +345,7 @@ export function ShellWorkspace({
                     onClick={() => onSelectTab(tab.id)}
                     className={tab.id === activeTabId ? "is-active" : ""}
                   >
-                    <Clock size={13} strokeWidth={1.75} aria-hidden="true" />
+                    <Clock fontSize={13} aria-hidden="true" />
                     <strong>{tab.label}</strong>
                     <small>{tab.provider}</small>
                   </button>

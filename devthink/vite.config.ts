@@ -72,5 +72,19 @@ export default defineConfig({
     host: true,
     strictPort: false,
     allowedHosts: true,
+    /** the gateway proxy: the embedded hono gateway serves the
+     * OpenAI-compatible contract (POST /v1/chat/completions, GET /v1/models)
+     * plus the /api surface on its own port, and the dev web speaks strictly
+     * same-origin — the chat client never points at another origin in dev */
+    proxy: {
+      "/v1": {
+        target: `http://127.0.0.1:${process.env.GATEWAY_PORT || 3001}`,
+        changeOrigin: false,
+      },
+      "/api": {
+        target: `http://127.0.0.1:${process.env.GATEWAY_PORT || 3001}`,
+        changeOrigin: false,
+      },
+    },
   },
 });

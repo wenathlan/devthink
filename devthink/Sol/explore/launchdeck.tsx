@@ -24,7 +24,7 @@
  * stylesheet owns every motion (the `ldk-m-*` part hooks in sol.css) and
  * guards it under prefers-reduced-motion / [data-motion="reduced"].
  */
-import { ArrowUpRight } from "lucide-react";
+import {ArrowUpRightRegular as ArrowUpRight} from "@fluentui/react-icons";
 import { type CSSProperties, type FormEvent, type ReactNode, useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { DESKTOP_APPS, type DesktopApp, isFamilyApp } from "../../appregistry.ts";
@@ -59,8 +59,7 @@ const FAMILY_TINT: Record<string, string> = {
   foundry: "#d97706",
   vault: "#eab308",
   getry: "#60a5fa",
-  saddle: "#d6b483",
-};
+  saddle: "#d6b483" };
 
 /** the neutral tint a family mark falls back to when the registry grows a
  * row the identity map does not know yet (never a blank tile) */
@@ -205,8 +204,7 @@ const MARKS: Record<string, (tint: string) => ReactNode> = {
       <path d="M16 6.2 23.4 10.4v8.9L16 23.5l-7.4-4.2v-8.9z" stroke={tint} strokeWidth="1.4" strokeLinejoin="round" />
       <path d="M8.6 10.4 16 14.6l7.4-4.2M16 14.6v8.9" stroke={tint} strokeWidth="1.2" opacity=".55" />
     </g>
-  ),
-};
+  ) };
 
 type FamilyMarkProps = {
   /** the registry id of the family app (the mark key) */
@@ -308,8 +306,7 @@ function DeckMark({ app, phase }: { app: DesktopApp; phase: number }) {
 export function DeckCell({
   app,
   featured = false,
-  phase = 0,
-}: {
+  phase = 0 }: {
   app: DesktopApp;
   featured?: boolean;
   phase?: number;
@@ -370,7 +367,7 @@ function NativeRow({ app, featured }: { app: DesktopApp; featured: boolean }) {
       </span>
       <ArrowUpRight
         className="flex-none text-ink-3 transition-transform duration-150 ease-micro group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none"
-        size={15}
+        fontSize={15}
         aria-hidden="true"
       />
     </>
@@ -397,8 +394,7 @@ function FamilyTile({ app, index, raised }: { app: DesktopApp; index: number; ra
       }`}
       style={{
         boxShadow: raised ? TRYLLE_CARD_SHADOW_RAISED : TRYLLE_CARD_SHADOW,
-        backgroundImage: `radial-gradient(150px 110px at 22% 14%, ${tint}24, transparent 70%)`,
-      }}
+        backgroundImage: `radial-gradient(150px 110px at 22% 14%, ${tint}24, transparent 70%)` }}
       href={appRoute(app)}
       aria-label={`${app.name} — ${app.detail}`}
     >
@@ -407,7 +403,7 @@ function FamilyTile({ app, index, raised }: { app: DesktopApp; index: number; ra
       <span className="font-mono text-[11px] leading-[1.5] text-ink-3">{app.detail}</span>
       <ArrowUpRight
         className="absolute right-6 top-6 text-ink-3 opacity-0 transition-opacity duration-150 ease-micro group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none"
-        size={14}
+        fontSize={14}
         aria-hidden="true"
       />
     </Link>
@@ -488,7 +484,7 @@ export function LaunchDeck() {
             style={{ boxShadow: TRYLLE_PRIMARY_STACK }}
           >
             open
-            <ArrowUpRight size={14} aria-hidden="true" />
+            <ArrowUpRight fontSize={14} aria-hidden="true" />
           </button>
         </form>
       </search>

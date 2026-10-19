@@ -29,8 +29,7 @@ import {
   type MediaSlot,
   mediaSlots,
   type Principle,
-  principleTable,
-} from "../../catalog";
+  principleTable } from "../../catalog";
 import { InstitutionalChrome, InstitutionalFooter } from "../shell/InstitutionalChrome.tsx";
 import { AboutFamily } from "./family.tsx";
 import { AboutHero } from "./hero.tsx";
@@ -134,8 +133,7 @@ const containerStyle = {
   padding: "24px clamp(24px, 4vw, 32px) 96px",
   display: "grid",
   alignContent: "start",
-  gap: 40,
-} as const;
+  gap: 40 } as const;
 
 const bodyStyle = { margin: 0, maxWidth: "68ch", fontSize: 14, lineHeight: 1.8 } as const;
 const blockTitleStyle = { margin: 0, letterSpacing: "-.02em" } as const;

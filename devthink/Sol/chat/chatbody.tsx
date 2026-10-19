@@ -10,7 +10,7 @@
  * conversation and the address id agree from then on.
  */
 
-import { PanelLeft, PanelRight, Trash2 } from "lucide-react";
+import {DeleteRegular as TrashIcon, PanelLeftRegular as PanelLeft, PanelRightRegular as PanelRight} from "@fluentui/react-icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -19,15 +19,15 @@ import {
   type ChatTurn,
   capTurns,
   clearChatHandoff,
+  cloneSessionForEdit,
   deriveTitle,
   GATEWAY_MODEL,
   newSession,
   readChatHandoff,
-  runTurn,
+  runTurnStream,
   type ToolId,
   useChatSessions,
-  userTurn,
-} from "../../chatstate.ts";
+  userTurn } from "../../chatstate.ts";
 import { loadBrowserSession } from "../../db.ts";
 import { GATEWAY_REQUIRED_COPY, GATEWAY_SEND_NOTICE, useGatewayRegistration } from "../../gatewaybase.ts";
 import { useIsMobile } from "../../useismobile.ts";
@@ -86,6 +86,9 @@ export default function ChatBody() {
   const sessionRef = useRef<string>("");
   const lastTurnRef = useRef<string>("");
   const [freshId, setFreshId] = useState<string | null>(null);
+  /** the live streaming turn — grows with every delta, replaced by the
+   * committed turn when the stream closes. */
+  const [live, setLive] = useState<ChatTurn | null>(null);
   /** the explicit gateway opt-in (os/gatewaybase.ts): disconnected by
    * default, registered only through the session panel or settings — the
    * saved preference is the persisted opt-in and every registration runs a
@@ -118,16 +121,14 @@ export default function ChatBody() {
             id: message.id,
             role: message.role === "user" ? "user" : "assistant",
             content: message.content,
-            at: Date.parse(message.createdAt) || Date.now(),
-          }));
+            at: Date.parse(message.createdAt) || Date.now() }));
         if (!turns.length) return;
         const spoken = turns.find((turn) => turn.role === "user");
         commit({
           id: handoff,
           title: snapshot.session?.title || deriveTitle(spoken?.content ?? ""),
           messages: capTurns(turns),
-          at: Date.now(),
-        });
+          at: Date.now() });
       })
       .catch(() => undefined);
     return undefined;
@@ -136,37 +137,46 @@ export default function ChatBody() {
   /** runCompletion — the gateway round for a history that already ends with
    * the user turn. Without a registered gateway nothing is fetched: the
    * honest notice takes the existing inline error/retry path and busy never
-   * engages, so retry answers the moment a gateway is registered. */
+   * engages, so retry answers the moment a gateway is registered. The round
+   * streams: reasoning deltas land in the cognition drawer, content deltas
+   * grow the live turn on the floor, and the committed turn replaces the
+   * live one when the stream closes (one [DONE]). */
   const runCompletion = useCallback(
     async (history: ChatSession, system: string) => {
       if (!gateway.base) {
         setError(GATEWAY_SEND_NOTICE);
         toast.error("No gateway registered", {
-          description: GATEWAY_REQUIRED_COPY,
-        });
+          description: GATEWAY_REQUIRED_COPY });
         return;
       }
       setBusy(true);
       setError(null);
+      setLive({ id: "t-live", role: "assistant", content: "", at: Date.now() });
       try {
-        const reply = await runTurn(history.messages, system, {
+        const reply = await runTurnStream(history.messages, system, {
           base: gateway.base,
-        });
+          sessionId: history.id.split("~")[0],
+          thinkingLevel: tools.includes("thinking") ? "high" : "medium",
+          handlers: {
+            onContent: (d) =>
+              setLive((prev) => (prev ? { ...prev, content: prev.content + d } : prev)),
+            onReasoning: (d) =>
+              setLive((prev) => (prev ? { ...prev, thought: (prev.thought ?? "") + d } : prev)) } });
         commit({
           ...history,
           messages: capTurns([...history.messages, reply]),
-          at: Date.now(),
-        });
+          at: Date.now() });
       } catch (err) {
         const msg = err instanceof Error ? err.message : "unknown failure";
         setError(msg);
         toast.error("Sol did not respond", { description: msg });
       } finally {
         setBusy(false);
+        setLive(null);
         window.requestAnimationFrame(() => inputRef.current?.focus());
       }
     },
-    [commit, gateway.base],
+    [commit, gateway.base, tools],
   );
 
   /** send — commits the user turn (the empty→thread migration happens here,
@@ -184,12 +194,29 @@ export default function ChatBody() {
         ? {
             ...active,
             messages: capTurns([...active.messages, user]),
-            at: Date.now(),
-          }
+            at: Date.now() }
         : newSession(user, handoffRef.current ?? undefined);
       handoffRef.current = null;
       commit(session);
       await runCompletion(session, buildSystemPrompt(tools));
+    },
+    [active, busy, commit, runCompletion, tools],
+  );
+
+  /** editTurn — the cascading checkpoint law: the edit opens the variant
+   * flow (cloneSessionForEdit snapshots the conversation, the original stays
+   * intact, the branch carries the edit plus the whole ladder) and the round
+   * answers from the edited turn. The newest edit prevails — the branch is
+   * the conversation that commits next. */
+  const editTurn = useCallback(
+    (turnId: string, newText: string) => {
+      if (!active || busy) return;
+      const branch = cloneSessionForEdit(active, turnId, newText);
+      if (!branch) return;
+      commit(branch);
+      toast("Checkpoint branch opened", {
+        description: "The original keeps its round — the edit carries the ladder forward." });
+      void runCompletion(branch, buildSystemPrompt(tools));
     },
     [active, busy, commit, runCompletion, tools],
   );
@@ -327,7 +354,7 @@ export default function ChatBody() {
             aria-label={railCollapsed ? "Open sidebar" : "Close sidebar"}
             title={railCollapsed ? "Open sidebar" : "Close sidebar"}
           >
-            <PanelLeft size={18} strokeWidth={1.8} aria-hidden="true" />
+            <PanelLeft fontSize={18} aria-hidden="true" />
           </button>
           <div className="dtc-tb-title">
             <h1>{active ? active.title : "New chat"}</h1>
@@ -344,7 +371,7 @@ export default function ChatBody() {
                 aria-label="Delete conversation"
                 title="Delete conversation"
               >
-                <Trash2 size={17} strokeWidth={1.8} aria-hidden="true" />
+                <TrashIcon fontSize={17} aria-hidden="true" />
               </button>
             ) : null}
             <button
@@ -355,7 +382,7 @@ export default function ChatBody() {
               aria-label={panelOpen ? "Close session panel" : "Open session panel"}
               title="Session panel"
             >
-              <PanelRight size={18} strokeWidth={1.8} aria-hidden="true" />
+              <PanelRight fontSize={18} aria-hidden="true" />
             </button>
           </div>
         </header>
@@ -384,9 +411,16 @@ export default function ChatBody() {
               <div className="dtc-scroll" ref={scrollRef}>
                 <div className="dtc-scroll__inner">
                   {active.messages.map((m) => (
-                    <Turn key={m.id} turn={m} fresh={m.id === freshId} />
+                    <Turn
+                      key={m.id}
+                      turn={m}
+                      fresh={m.id === freshId}
+                      busy={busy}
+                      onEdit={m.role === "user" ? (text) => editTurn(m.id, text) : undefined}
+                    />
                   ))}
-                  {busy ? <ThinkingRow /> : null}
+                  {busy && live && (live.content || live.thought) ? <Turn turn={live} /> : null}
+                  {busy && !(live && (live.content || live.thought)) ? <ThinkingRow /> : null}
                   {error && !busy ? <ErrorRow message={error} onRetry={retry} /> : null}
                 </div>
               </div>

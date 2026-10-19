@@ -20,7 +20,7 @@
  * asymmetric 1.6fr/1fr and rows rise 240ms at 60ms steps, reduced-motion
  * guarded. No route, data or export changes.
  */
-import { ArrowLeft, KeyRound, Network, RefreshCcw, ShieldCheck, TerminalSquare } from "lucide-react";
+import {ArrowLeftRegular as ArrowLeft, KeyRegular as KeyRound, CommunicationRegular as Network, ArrowCounterclockwiseRegular as RefreshCcw, ShieldRegular as ShieldCheck, WindowConsoleRegular as TerminalSquare} from "@fluentui/react-icons";
 import type { CSSProperties } from "react";
 import { Link, useRoute } from "wouter";
 import { ShellChrome } from "@/shell/ShellChrome";
@@ -118,7 +118,7 @@ function ConsoleFrame({ children }: { children: React.ReactNode }) {
       <div className="page-container">
         {children}
         <footer className="control-page__footer">
-          <TerminalSquare size={14} aria-hidden="true" />
+          <TerminalSquare fontSize={14} aria-hidden="true" />
           Credentials stay with the CLI
         </footer>
       </div>
@@ -149,8 +149,7 @@ const thinkingcopy: Record<string, string> = {
   medium: "balanced",
   high: "deep reasoning default",
   xhigh: "extra deep",
-  max: "maximum",
-};
+  max: "maximum" };
 
 /** the live/paused badge of one version derived from its paused kill-switch. */
 function versionstatus(version: gatewayconfig): { badge: string; color: string } {
@@ -166,8 +165,7 @@ function statusbadge(version: gatewayconfig) {
       style={{
         color: status.color,
         borderColor: `${status.color}44`,
-        background: `${status.color}22`,
-      }}
+        background: `${status.color}22` }}
     >
       {status.badge}
     </span>
@@ -188,8 +186,7 @@ function versionmodelsline(version: gatewayconfig): string {
 const thinkinglevels = Object.entries(config.versions.v1?.thinking?.budgets ?? {}).map(([level, budget]) => ({
   level,
   budget: String(budget),
-  desc: thinkingcopy[level] ?? "",
-}));
+  desc: thinkingcopy[level] ?? "" }));
 
 /** the compact definition summary the explorer renders: what the engine would load, one line per version. */
 const definitionsummary = {
@@ -206,11 +203,9 @@ const definitionsummary = {
         defaultmodel: version.defaultmodel,
         rotation: version.rotation?.mode ?? "fixed",
         metamodel: version.metamodel.id,
-        paused: version.paused === true,
-      },
+        paused: version.paused === true },
     ]),
-  ),
-};
+  ) };
 
 /** the library usage block the page renders beside the catalog. */
 const usageblock = [
@@ -284,7 +279,7 @@ export default function GatewayView() {
           {/* the retired .gateway-toolbar row rides the hero actions slot */}
           <div className="pagehead__actions">
             <Link href="/gateway" className="gateway-back">
-              <ArrowLeft size={14} aria-hidden="true" />
+              <ArrowLeft fontSize={14} aria-hidden="true" />
               gateway overview
             </Link>
             {version ? statusbadge(version) : null}
@@ -295,7 +290,7 @@ export default function GatewayView() {
             <div className="gv-main">
               <section className="gateway-panel" aria-labelledby="gatewaymodelstitle">
                 <h2 id="gatewaymodelstitle">
-                  <KeyRound size={16} />
+                  <KeyRound fontSize={16} />
                   models {version.models.length} configured
                 </h2>
                 <pre className="gateway-pre">
@@ -309,7 +304,7 @@ export default function GatewayView() {
               </section>
               <section className="gateway-panel" aria-labelledby="gatewaypolicytitle">
                 <h2 id="gatewaypolicytitle">
-                  <RefreshCcw size={16} />
+                  <RefreshCcw fontSize={16} />
                   policy auth, rotation and retry
                 </h2>
                 <div className="gv-policy">
@@ -356,7 +351,7 @@ export default function GatewayView() {
             <div className="gv-rail">
               <section className="gateway-panel" aria-labelledby="gatewayroutestitle">
                 <h2 id="gatewayroutestitle">
-                  <Network size={16} />
+                  <Network fontSize={16} />
                   routes 7 per version
                 </h2>
                 <div className="gv-routes">
@@ -399,7 +394,7 @@ export default function GatewayView() {
         <div className="gv-main">
           <section className="gateway-panel" aria-labelledby="gatewayversionstitle">
             <h2 id="gatewayversionstitle">
-              <Network size={16} />
+              <Network fontSize={16} />
               versions {Object.keys(config.versions).length} configured
             </h2>
             <div className="gv-versions">
@@ -437,7 +432,7 @@ export default function GatewayView() {
         <div className="gv-rail">
           <section className="gateway-panel" aria-labelledby="gatewaythinkingtitle">
             <h2 id="gatewaythinkingtitle">
-              <RefreshCcw size={16} />
+              <RefreshCcw fontSize={16} />
               thinking levels the 2-calls pattern
             </h2>
             <div className="gv-thinking">
@@ -452,7 +447,7 @@ export default function GatewayView() {
           </section>
           <section className="gateway-panel" aria-labelledby="gatewayauthtitle">
             <h2 id="gatewayauthtitle">
-              <ShieldCheck size={16} />
+              <ShieldCheck fontSize={16} />
               auth methods 12 supported
             </h2>
             <div className="gv-auth">
@@ -466,7 +461,7 @@ export default function GatewayView() {
           </section>
           <section className="gateway-panel" aria-labelledby="gatewayusagetitle">
             <h2 id="gatewayusagetitle">
-              <KeyRound size={16} />
+              <KeyRound fontSize={16} />
               library usage
             </h2>
             <pre className="gateway-pre">{usageblock}</pre>
@@ -475,7 +470,7 @@ export default function GatewayView() {
       </div>
       <section className="gateway-panel" aria-labelledby="gatewaystructuretitle">
         <h2 id="gatewaystructuretitle">
-          <Network size={16} />
+          <Network fontSize={16} />
           structure the library at root, the design in web
         </h2>
         <pre className="gateway-pre">{structureblock}</pre>

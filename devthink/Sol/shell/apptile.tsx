@@ -117,8 +117,7 @@ export function AppTile({ app, size = 22, label }: AppTileProps) {
       if (hoverCapable()) setLive(true);
     },
     onPointerLeave: () => setLive(false),
-    onPointerCancel: () => setLive(false),
-  };
+    onPointerCancel: () => setLive(false) };
   const liveFlag = live ? "true" : undefined;
   /* the tile material, composed on the token system (task 3-a): the fluent
      squircle tinted by the app identity color — a subtle per-app gradient
@@ -158,7 +157,7 @@ export function AppTile({ app, size = 22, label }: AppTileProps) {
       {...liveHandlers}
       {...a11y}
     >
-      {Icon ? <Icon size={size} strokeWidth={1.7} /> : <SolLogoMark size={size} />}
+      {Icon ? <Icon fontSize={size} /> : <SolLogoMark size={size} />}
     </span>
   );
 }

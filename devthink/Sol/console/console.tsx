@@ -100,8 +100,7 @@ export default function Console({ embedded }: { embedded?: boolean }) {
       stagegap: BOOT_STAGE_GAP,
       onview: (view) => {
         if (!cancelled) setRunview(view);
-      },
-    });
+      } });
     ride.run().catch(() => {
       /* the boot ride stays decorative: the terminal carries the session state */
     });

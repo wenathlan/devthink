@@ -1004,18 +1004,22 @@ async function createserver(): Promise<Hono> {
   // register routes for every configured version
   for (const [versionid, versionconfig] of Object.entries(definition.versions)) {
     const handlers = createversion(versionconfig);
-    const prefix = `/api/${versionid}`;
+    // the chat speaks the OpenAI-compatible contract at the origin root —
+    // /v1/* rides the exact handlers the legacy /api/{version} prefix always
+    // carried, so the registered gateway base of the chat (same origin or a
+    // deployed copy of the family) answers one contract everywhere
+    for (const prefix of [`/api/${versionid}`, `/${versionid}`]) {
+      // info routes — get returns the version descriptor
+      for (const resource of resources) {
+        app.get(`${prefix}/${resource}`, (c) => handlers.handleinfo(c.req.raw));
+      }
 
-    // info routes — get returns the version descriptor
-    for (const resource of resources) {
-      app.get(`${prefix}/${resource}`, (c) => handlers.handleinfo(c.req.raw));
-    }
-
-    // action routes — post dispatches to the resource handler
-    for (const resource of resources) {
-      const handler = handlermap(handlers, resource);
-      if (handler) {
-        app.post(`${prefix}/${resource}`, (c) => handler(c.req.raw));
+      // action routes — post dispatches to the resource handler
+      for (const resource of resources) {
+        const handler = handlermap(handlers, resource);
+        if (handler) {
+          app.post(`${prefix}/${resource}`, (c) => handler(c.req.raw));
+        }
       }
     }
   }

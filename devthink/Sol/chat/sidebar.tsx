@@ -6,18 +6,7 @@
  * Collapses to an 80px icon rail on desktop and becomes a drawer with a
  * scrim on small screens (the scrim is the caller's, via useIsMobile).
  */
-import {
-  BookOpen,
-  Compass,
-  FolderKanban,
-  Home,
-  type LucideIcon,
-  PanelLeft,
-  Plus,
-  Settings,
-  Terminal,
-  Trash2,
-} from "lucide-react";
+import {BookOpenRegular as BookOpen, NavigationRegular as Compass, FolderRegular as FolderKanban, HomeRegular as Home, type FluentIcon as LucideIcon, PanelLeftRegular as PanelLeft, AddRegular as Plus, SettingsRegular as Settings, TabDesktopRegular as Terminal, DeleteRegular as Trash2} from "@fluentui/react-icons";
 import { Link, useLocation } from "wouter";
 import { type ChatSession, cx } from "../../chatstate.ts";
 import { SolBotIcon } from "./solboticon.tsx";
@@ -66,8 +55,7 @@ export function Sidebar({
   activeId,
   onOpen,
   onNew,
-  onDelete,
-}: {
+  onDelete }: {
   collapsed: boolean;
   onToggleCollapsed: () => void;
   sessions: ChatSession[];
@@ -94,12 +82,12 @@ export function Sidebar({
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
-          <PanelLeft size={17} strokeWidth={1.8} aria-hidden="true" />
+          <PanelLeft fontSize={17} aria-hidden="true" />
         </button>
       </div>
 
       <button type="button" className="dtc-rail__new" onClick={onNew}>
-        <Plus size={17} strokeWidth={2} aria-hidden="true" />
+        <Plus fontSize={17} aria-hidden="true" />
         <span className="dtc-rail__hide">New chat</span>
       </button>
 
@@ -125,7 +113,7 @@ export function Sidebar({
                   aria-label={`Delete conversation ${s.title}`}
                   title="Delete conversation"
                 >
-                  <Trash2 size={14} strokeWidth={1.8} aria-hidden="true" />
+                  <Trash2 fontSize={14} aria-hidden="true" />
                 </button>
               </div>
             ))}
@@ -146,7 +134,7 @@ export function Sidebar({
               aria-current={current ? "page" : undefined}
               title={item.label}
             >
-              <Icon size={17} strokeWidth={1.8} aria-hidden="true" />
+              <Icon fontSize={17} aria-hidden="true" />
               <span className="dtc-rail__hide">{item.label}</span>
             </Link>
           );

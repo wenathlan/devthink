@@ -3,7 +3,7 @@
  * cover, the real catalog fields and the launch action. Loose component of
  * the games page.
  */
-import { PlayFilled } from "@fluentui/react-icons";
+import {PlayFilled} from "@fluentui/react-icons";
 import type { RunnerBinary } from "../../catalog";
 
 /** The two leading initials of a real title, cut for the cover glyph. */
@@ -20,8 +20,7 @@ function monogram(title: string): string {
 export function GamesList({
   rows,
   loaded,
-  onLaunch,
-}: {
+  onLaunch }: {
   rows: readonly RunnerBinary[];
   loaded: boolean;
   onLaunch: (binary: RunnerBinary) => void;

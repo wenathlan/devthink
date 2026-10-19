@@ -3,7 +3,7 @@
  * as the one dominant figure and the remaining durable counts as hairline
  * rows with their real values. Loose component of the usage page.
  */
-import { DatabaseRegular, PulseRegular, TabRegular } from "@fluentui/react-icons";
+import {DatabaseRegular, PulseRegular, TabRegular} from "@fluentui/react-icons";
 
 /** one durable measure the ledger answers with. */
 export type Usage = {

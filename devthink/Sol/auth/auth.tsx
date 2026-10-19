@@ -13,7 +13,7 @@
  * the wrong-try verdict inline. The cli pairing rides the bottom actions;
  * the identity logic never moved.
  */
-import { ArrowRightRegular, ChevronUpRegular, WindowConsoleRegular } from "@fluentui/react-icons";
+import {ArrowRightRegular, ChevronUpRegular, WindowConsoleRegular} from "@fluentui/react-icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
@@ -131,8 +131,7 @@ export default function Auth() {
         const response = await fetch(`${gateway}/pairings/consume`, {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({ pairingId: pairingIdValue, code: pairingCode }),
-        });
+          body: JSON.stringify({ pairingId: pairingIdValue, code: pairingCode }) });
         if (!response.ok) throw new Error("Pairing was rejected.");
         const result = (await response.json()) as PairingResponse;
         // the exact keys the creation panel reads on boot

@@ -13,13 +13,12 @@
  * Enter sends, Shift+Enter breaks the line.
  */
 
-import { BrainCircuit, type LucideIcon, Send } from "lucide-react";
+import {LightbulbRegular as BrainCircuit, type FluentIcon as LucideIcon, SendRegular as Send} from "@fluentui/react-icons";
 import { type KeyboardEvent, type RefObject, useEffect } from "react";
 import { CHAT_TOOLS, GATEWAY_MODEL, type ToolId } from "../../chatstate.ts";
 
 const TOOL_ICONS: Record<ToolId, LucideIcon> = {
-  thinking: BrainCircuit,
-};
+  thinking: BrainCircuit };
 
 export function Composer({
   draft,
@@ -29,8 +28,7 @@ export function Composer({
   tools,
   onToggleTool,
   inputRef,
-  notice,
-}: {
+  notice }: {
   draft: string;
   onDraft: (v: string) => void;
   onSend: () => void;
@@ -89,7 +87,7 @@ export function Composer({
           aria-label="Send message"
           title="Send message"
         >
-          <Send size={18} strokeWidth={1.9} aria-hidden="true" />
+          <Send fontSize={18} aria-hidden="true" />
         </button>
       </div>
 
@@ -112,7 +110,7 @@ export function Composer({
               onClick={() => onToggleTool(tool.id)}
               title={tool.note}
             >
-              <Icon size={13} strokeWidth={1.9} aria-hidden="true" />
+              <Icon fontSize={13} aria-hidden="true" />
               <span>{tool.label}</span>
             </button>
           );

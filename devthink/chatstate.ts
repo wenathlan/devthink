@@ -7,7 +7,7 @@
  * network code of its own.
  */
 import { useCallback, useMemo } from "react";
-import { type GatewayMessage, gatewayChat } from "./osgateway";
+import { type GatewayMessage, gatewayChat, gatewayChatStream, type StreamHandlers, type ThinkingLevel } from "./osgateway";
 import { arrayOf, isString, useStoredState, type Validator } from "./usestoredstate.ts";
 
 /* ------------------------------- types -------------------------------- */
@@ -25,12 +25,26 @@ export type ChatTurn = {
   at: number;
 };
 
+/** One checkpoint of the cascading edit law — every edit appends here, the
+ * branch carries the whole ladder and the newest edit prevails at merge. */
+export type ChatCheckpoint = {
+  at: number;
+  /** the turn the edit landed on. */
+  turnId: string;
+  /** the edit ordinal — 1 for the first edit of the lineage. */
+  edit: number;
+};
+
 export type ChatSession = {
   id: string;
   title: string;
   messages: ChatTurn[];
   /** last activity timestamp — drives the Today / Previous 7 days groups. */
   at: number;
+  /** the cascading checkpoint ladder (the edit law of the house). */
+  checkpoints?: ChatCheckpoint[];
+  /** the session this branch was born from — the original stays intact. */
+  editOf?: string;
 };
 
 export const isChatTurn: Validator<ChatTurn> = (v): v is ChatTurn => {
@@ -46,6 +60,12 @@ export const isChatTurn: Validator<ChatTurn> = (v): v is ChatTurn => {
   );
 };
 
+export const isChatCheckpoint: Validator<ChatCheckpoint> = (v): v is ChatCheckpoint => {
+  if (typeof v !== "object" || v === null) return false;
+  const t = v as Record<string, unknown>;
+  return typeof t.at === "number" && typeof t.turnId === "string" && typeof t.edit === "number";
+};
+
 export const isChatSession: Validator<ChatSession> = (v): v is ChatSession => {
   if (typeof v !== "object" || v === null) return false;
   const s = v as Record<string, unknown>;
@@ -54,6 +74,8 @@ export const isChatSession: Validator<ChatSession> = (v): v is ChatSession => {
     typeof s.title === "string" &&
     Array.isArray(s.messages) &&
     s.messages.every(isChatTurn) &&
+    (s.checkpoints === undefined || (Array.isArray(s.checkpoints) && s.checkpoints.every(isChatCheckpoint))) &&
+    (s.editOf === undefined || typeof s.editOf === "string") &&
     typeof s.at === "number"
   );
 };
@@ -250,6 +272,92 @@ export async function runTurn(
     model: reply.model ?? GATEWAY_MODEL,
     at: Date.now(),
   };
+}
+
+/**
+ * runTurnStream — the streaming round of the same contract: reasoning deltas
+ * land before content, every delta rides the handlers as it arrives, and the
+ * session id + thinking level ride the gateway headers (the rotation context
+ * and the budget live server-side). Returns the ready assistant turn with
+ * the folded content — identical shape to runTurn, one caller grammar.
+ */
+export async function runTurnStream(
+  history: ChatTurn[],
+  system: string,
+  opts?: {
+    base?: string;
+    signal?: AbortSignal;
+    model?: string;
+    sessionId?: string;
+    thinkingLevel?: ThinkingLevel;
+    timeoutMs?: number;
+    handlers?: StreamHandlers;
+  },
+): Promise<ChatTurn> {
+  const apiMessages: GatewayMessage[] = [
+    { role: "system", content: system },
+    ...history.slice(-HISTORY_CAP).map((m) => ({ role: m.role, content: m.content })),
+  ];
+  const reply = await gatewayChatStream(apiMessages, {
+    base: opts?.base,
+    model: opts?.model,
+    sessionId: opts?.sessionId,
+    thinkingLevel: opts?.thinkingLevel,
+    timeoutMs: opts?.timeoutMs,
+    signal: opts?.signal,
+    handlers: opts?.handlers,
+  });
+  return {
+    id: `t-${Date.now()}-a`,
+    role: "assistant",
+    content: reply.content,
+    thought: reply.reasoning,
+    model: reply.model ?? GATEWAY_MODEL,
+    at: Date.now(),
+  };
+}
+
+/* ------------------------ cascading edit checkpoints -------------------- */
+
+/**
+ * cloneSessionForEdit — the cascading checkpoint law of the house (R00170):
+ * editing a message opens a variant flow that inherits the last context
+ * WITHOUT interrupting the running one. The original session stays intact
+ * (its round keeps running to its checkpoint); the branch carries the edit,
+ * the whole checkpoint ladder, and re-answers from the edited turn — the
+ * newest edit prevails because the branch is the conversation that commits
+ * next. Pure logic, zero services.
+ */
+export function cloneSessionForEdit(
+  session: ChatSession,
+  turnId: string,
+  newText: string,
+): ChatSession | null {
+  const index = session.messages.findIndex((m) => m.id === turnId && m.role === "user");
+  if (index === -1) return null;
+  const edited: ChatTurn = {
+    ...session.messages[index],
+    content: newText,
+    id: `t-${Date.now()}-e`,
+    at: Date.now(),
+  };
+  const ladder: ChatCheckpoint[] = [
+    ...(session.checkpoints ?? []),
+    { at: Date.now(), turnId, edit: (session.checkpoints?.length ?? 0) + 1 },
+  ];
+  return {
+    id: `${session.id.split("~")[0]}~e${ladder.length}-${Math.random().toString(36).slice(2, 6)}`,
+    title: session.title,
+    messages: [...session.messages.slice(0, index), edited],
+    at: Date.now(),
+    checkpoints: ladder,
+    editOf: session.id,
+  };
+}
+
+/** checkpointCount — the honest ladder size for the surfaces. */
+export function checkpointCount(session: ChatSession): number {
+  return session.checkpoints?.length ?? 0;
 }
 
 /* --------------------------------- hook ------------------------------- */

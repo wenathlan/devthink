@@ -10,8 +10,7 @@ export function CalculatorDisplay({
   expression,
   answer,
   error,
-  memory,
-}: {
+  memory }: {
   expression: string;
   answer: string | null;
   error: string | null;

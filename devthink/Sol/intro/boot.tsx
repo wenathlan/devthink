@@ -8,7 +8,7 @@
  * the web intro, not the boot. The stylesheet injects once at import time.
  */
 
-import { ArrowRight } from "lucide-react";
+import {ArrowRightRegular as ArrowRight} from "@fluentui/react-icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { prefersReducedMotion } from "../../akash.ts";
@@ -215,7 +215,7 @@ export default function Boot({ onDone }: { onDone: () => void }) {
             />
             <button type="submit" className="boot-sign__go" disabled={busy} aria-busy={busy || undefined}>
               <span>Sign in</span>
-              <ArrowRight size={14} aria-hidden="true" />
+              <ArrowRight fontSize={14} aria-hidden="true" />
             </button>
             <span className="boot-sign__micro">Local identity</span>
           </form>

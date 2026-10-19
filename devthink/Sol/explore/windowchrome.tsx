@@ -11,7 +11,7 @@
  * to the intro). Fully self-contained: theme utilities, no stylesheet rules.
  */
 
-import { Copy, Minus, Square, X } from "lucide-react";
+import {CopyRegular as Copy, SubtractRegular as Minus, StopRegular as Square, DismissRegular as X} from "@fluentui/react-icons";
 import { useEffect, useRef, useState } from "react";
 import { SolLogoMark } from "../panel/logo.tsx";
 
@@ -64,7 +64,7 @@ export function WindowEdgeChrome({ maximized, onMinimize, onMaximize, onClose }:
       <span className="font-mono text-[11px] text-ink-2">explore — devthink</span>
       <span className="ml-auto flex items-center">
         <button type="button" tabIndex={visible ? 0 : -1} aria-label="Minimize the landing" onClick={onMinimize} className={captionClass}>
-          <Minus size={13} aria-hidden="true" />
+          <Minus fontSize={13} aria-hidden="true" />
         </button>
         <button
           type="button"
@@ -73,7 +73,7 @@ export function WindowEdgeChrome({ maximized, onMinimize, onMaximize, onClose }:
           onClick={onMaximize}
           className={captionClass}
         >
-          {maximized ? <Copy size={11} aria-hidden="true" /> : <Square size={11} aria-hidden="true" />}
+          {maximized ? <Copy fontSize={11} aria-hidden="true" /> : <Square fontSize={11} aria-hidden="true" />}
         </button>
         <button
           type="button"
@@ -82,7 +82,7 @@ export function WindowEdgeChrome({ maximized, onMinimize, onMaximize, onClose }:
           onClick={onClose}
           className={`${captionClass} rounded-none hover:bg-[rgb(255_0_0_/_0.8)] hover:text-white`}
         >
-          <X size={14} aria-hidden="true" />
+          <X fontSize={14} aria-hidden="true" />
         </button>
       </span>
     </div>

@@ -6,7 +6,7 @@
  * the chain and the panel stays last.
  */
 
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Heart, MessageSquare, Play, Plus, Send } from "lucide-react";
+import {ArrowDownRegular as ArrowDown, ArrowLeftRegular as ArrowLeft, ArrowRightRegular as ArrowRight, ArrowUpRightRegular as ArrowUpRight, HeartRegular as Heart, ChatRegular as MessageSquare, PlayRegular as Play, AddRegular as Plus, SendRegular as Send} from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { saasfilms, saasreels, saastracks } from "../../saascontent.ts";

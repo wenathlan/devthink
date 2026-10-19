@@ -53,8 +53,7 @@ const MEMORY_KEYS: { label: string; kind: CalculatorMemoryKey }[] = [
 
 export function CalculatorKeypad({
   onkey,
-  onmemory,
-}: {
+  onmemory }: {
   onkey: (action: CalculatorKeyAction) => void;
   onmemory: (key: CalculatorMemoryKey) => void;
 }) {

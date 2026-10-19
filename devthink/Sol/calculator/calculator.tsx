@@ -23,8 +23,7 @@ import {
   memoryAdd,
   memoryClear,
   memoryRecallExpression,
-  memorySubtract,
-} from "../../calculator";
+  memorySubtract } from "../../calculator";
 import { CalculatorDisplay } from "./calculatordisplay.tsx";
 import { CalculatorHistory, type CalculatorHistoryRow } from "./calculatorhistory.tsx";
 import { CalculatorKeypad, type CalculatorMemoryKey } from "./calculatorkeypad.tsx";
@@ -56,8 +55,7 @@ export default function Calculator({ embedded }: { embedded?: boolean }) {
       historyserial.current += 1;
       const row: CalculatorHistoryRow = {
         id: `calc.history.${historyserial.current.toString(36)}`,
-        line: `${expression} = ${text}`,
-      };
+        line: `${expression} = ${text}` };
       setHistory((rows) => [row, ...rows].slice(0, HISTORY_LIMIT));
     } catch (cause) {
       setAnswer(null);

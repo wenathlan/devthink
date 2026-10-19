@@ -12,7 +12,7 @@
  * The old editorial deck (the numbered indexes, the sticky caps) is retired
  * — this body rides the dtw kit.
  */
-import { ArrowSyncRegular, PlugDisconnectedRegular, SettingsRegular } from "@fluentui/react-icons";
+import {ArrowSyncRegular, PlugDisconnectedRegular, SettingsRegular} from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 import { ShellChrome } from "@/shell/ShellChrome";
 import {
@@ -20,8 +20,7 @@ import {
   browserIdentity,
   browserStoreSummary,
   readBrowserPreferences,
-  saveBrowserPreference,
-} from "../../db";
+  saveBrowserPreference } from "../../db";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { AutomationMcp } from "./automationmcp.tsx";
 import { GatewayCard } from "./gatewaycard.tsx";
@@ -118,8 +117,7 @@ export default function Settings({ embedded }: { embedded?: boolean }) {
   const [localPreferences, setLocalPreferences] = useState<SettingsSnapshot["preferences"]>({
     theme: "dark",
     railMode: "auto",
-    interfaceZoom: "100",
-  });
+    interfaceZoom: "100" });
   const [publicId, setPublicId] = useState("");
   const [section, setSection] = useState("database");
   const paired = gatewayReady();
@@ -146,15 +144,13 @@ export default function Settings({ embedded }: { embedded?: boolean }) {
   async function saveIdentity() {
     const response = await gatewayJson<{ identity: SettingsSnapshot["identity"] }>("/identity", {
       method: "PUT",
-      body: JSON.stringify({ userId: publicId }),
-    });
+      body: JSON.stringify({ userId: publicId }) });
     setSnapshot((current) =>
       current
         ? {
             ...current,
             identity: response.identity,
-            database: { ...current.database, ownerUserId: response.identity.userId },
-          }
+            database: { ...current.database, ownerUserId: response.identity.userId } }
         : current,
     );
   }

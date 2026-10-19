@@ -3,7 +3,7 @@
  * rows with the active provider leading, the activation action and the
  * state dot. Loose component of the providers page.
  */
-import { ArrowSyncRegular, CheckmarkRegular } from "@fluentui/react-icons";
+import {ArrowSyncRegular, CheckmarkRegular} from "@fluentui/react-icons";
 
 type Provider = { id: string; protocol: string; env: string };
 
@@ -13,8 +13,7 @@ export function ProvidersList({
   paired,
   loading,
   onActivate,
-  onRefresh,
-}: {
+  onRefresh }: {
   rows: readonly Provider[];
   active: string;
   paired: boolean;

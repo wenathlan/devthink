@@ -11,7 +11,7 @@
  * every quiet hover, the 2px accent focus underline. English text only —
  * the gtx translation runs at runtime.
  */
-import { ArrowUpRight, Boxes, Globe, Puzzle, SquareTerminal, type LucideIcon } from "lucide-react";
+import {ArrowUpRightRegular as ArrowUpRight, CubeRegular as Boxes, GlobeRegular as Globe, PuzzlePieceRegular as Puzzle, WindowConsoleRegular as SquareTerminal, type FluentIcon as LucideIcon} from "@fluentui/react-icons";
 
 /** the baked release version (vite define — see vite.config.ts) */
 declare const __dtversion__: string;
@@ -37,26 +37,22 @@ const CHANNELS: ReadonlyArray<ChannelCard> = [
     icon: Puzzle,
     channel: "chromium · brave · edge",
     asset: `devthink${__dtversion__}.zip`,
-    note: "the chromium build of the extension. unzip it, open chrome://extensions, turn developer mode on and load the folder unpacked.",
-  },
+    note: "the chromium build of the extension. unzip it, open chrome://extensions, turn developer mode on and load the folder unpacked." },
   {
     icon: Globe,
     channel: "firefox",
     asset: `devthink-firefox-${__dtversion__}.xpi`,
-    note: "the firefox build, ready for your signing path — while unsigned, load it temporarily from about:debugging.",
-  },
+    note: "the firefox build, ready for your signing path — while unsigned, load it temporarily from about:debugging." },
   {
     icon: SquareTerminal,
     channel: "vs code",
     asset: `devthink-vscode-${__dtversion__}.vsix`,
-    note: "the workbench vsix — install it from the release through extensions: install from vsix.",
-  },
+    note: "the workbench vsix — install it from the release through extensions: install from vsix." },
   {
     icon: Boxes,
     channel: "every channel",
     asset: "SHA256SUMS.txt",
-    note: "the immutable tag also carries the safari wrapper, the native host template, the source snapshot, the sbom and the attestations.",
-  },
+    note: "the immutable tag also carries the safari wrapper, the native host template, the source snapshot, the sbom and the attestations." },
 ];
 
 /** The distribution rail: the release channels as trylle cards over the
@@ -86,11 +82,11 @@ export function DownloadRail() {
             >
               <span className="flex items-center justify-between">
                 <span className="flex items-center gap-2 text-sm font-semibold text-ink">
-                  <Icon size={15} aria-hidden="true" />
+                  <Icon fontSize={15} aria-hidden="true" />
                   {channel}
                 </span>
                 <ArrowUpRight
-                  size={14}
+                  fontSize={14}
                   aria-hidden="true"
                   className="text-ink-3 transition-colors duration-150 ease-micro group-hover:text-ink motion-reduce:transition-none"
                 />

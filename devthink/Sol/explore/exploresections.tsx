@@ -21,8 +21,7 @@ const studiolabel: Record<string, string> = {
   video: "video · cadria",
   image: "image · cadria",
   music: "music · debonair",
-  model3d: "3d · cadria",
-};
+  model3d: "3d · cadria" };
 
 function assetLabel(asset: StudioAsset): string {
   return studiolabel[asset.studio] ?? asset.studio;
@@ -34,8 +33,7 @@ const studiotint: Record<string, string> = {
   video: "#f472b6",
   image: "#f472b6",
   model3d: "#f472b6",
-  music: "#d9962e",
-};
+  music: "#d9962e" };
 
 type ExploreSectionsProps = {
   sites?: FamilySite[];
@@ -63,8 +61,7 @@ function SectionHead(props: { cap: string; title: string; sub: string; id?: stri
  * on the display face, one mono meta line — the first card rides raised */
 function RecentCard({
   item,
-  index,
-}: {
+  index }: {
   item: { tag: string; title: string; meta: string; tint: string };
   index: number;
 }) {
@@ -76,8 +73,7 @@ function RecentCard({
       }`}
       style={{
         boxShadow: featured ? TRYLLE_CARD_SHADOW_RAISED : TRYLLE_CARD_SHADOW,
-        backgroundImage: `radial-gradient(150px 110px at 20% 12%, ${item.tint}24, transparent 70%)`,
-      }}
+        backgroundImage: `radial-gradient(150px 110px at 20% 12%, ${item.tint}24, transparent 70%)` }}
     >
       <span className="font-mono text-[10px] tracking-[.08em] text-ink-3">{item.tag}</span>
       <strong className="mt-auto pt-4 font-display text-[15px] font-semibold tracking-[-0.01em] text-ink">
@@ -94,14 +90,12 @@ export function ExploreSections({ assets, tracks }: ExploreSectionsProps) {
       tag: assetLabel(asset),
       title: asset.title,
       meta: `${asset.engine} · ${asset.duration ?? asset.size}`,
-      tint: studiotint[asset.studio] ?? "#9aa3b5",
-    })),
+      tint: studiotint[asset.studio] ?? "#9aa3b5" })),
     ...tracks.map((track) => ({
       tag: "music · katexis",
       title: track.title,
       meta: `${track.minutes} min · ${track.blurb}`,
-      tint: studiotint.music,
-    })),
+      tint: studiotint.music })),
   ];
 
   return (

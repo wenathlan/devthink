@@ -34,8 +34,7 @@ export default function Usage({ embedded }: { embedded?: boolean }) {
           tabs: summary.tabs,
           messages: summary.messages,
           providers: 0,
-          paired,
-        }),
+          paired }),
       );
     if (!paired) {
       void localUsage();

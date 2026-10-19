@@ -10,7 +10,7 @@
  * prompt and migrates the page from the hero layout into the thread (the
  * fade lives in chat.tsx).
  */
-import { Braces, BrainCircuit, type LucideIcon, Telescope } from "lucide-react";
+import {CodeRegular as Braces, LightbulbRegular as BrainCircuit, type FluentIcon as LucideIcon, MicroscopeRegular as Telescope} from "@fluentui/react-icons";
 import { GATEWAY_MODEL } from "../../chatstate.ts";
 
 /** the model line of the hero sub: the gateway meta-model name */
@@ -58,24 +58,21 @@ const CAPABILITIES: Capability[] = [
     icon: Braces,
     label: "Engineering",
     copy: "Trace a failure until the weak joint shows",
-    prompt: "pressure-test a provider-neutral gateway: where does the architecture break first, and what hardens it?",
-  },
+    prompt: "pressure-test a provider-neutral gateway: where does the architecture break first, and what hardens it?" },
   {
     id: "reasoning",
     icon: BrainCircuit,
     label: "Reasoning",
     copy: "Follow the cognition step by step",
     prompt:
-      "reason step by step: should a provider-neutral workbench cache provider responses locally? weigh latency, cost, staleness.",
-  },
+      "reason step by step: should a provider-neutral workbench cache provider responses locally? weigh latency, cost, staleness." },
   {
     id: "decisions",
     icon: Telescope,
     label: "Decisions",
     copy: "Weigh the trade offs and decide",
     prompt:
-      "self-hosting an inference gateway versus provider apis: commit to one call and name the three facts that drive it.",
-  },
+      "self-hosting an inference gateway versus provider apis: commit to one call and name the three facts that drive it." },
 ];
 
 /** Welcome — the hero of the empty chat: greeting + the asymmetric capability trio. */
@@ -106,7 +103,7 @@ export function Welcome({ onPick, gatewayRegistered }: { onPick: (text: string) 
               aria-label={`Start with ${cap.label}`}
             >
               <span className="dtc-card__ico" aria-hidden="true">
-                <Icon size={lead ? 22 : 20} strokeWidth={1.7} />
+                <Icon fontSize={lead ? 22 : 20} />
               </span>
               <p className="dtc-card__txt">{cap.copy}</p>
               <span className="dtc-card__tag">{cap.label}</span>

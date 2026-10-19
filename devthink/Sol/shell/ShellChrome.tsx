@@ -40,7 +40,7 @@
  * session-only and reversible.
  */
 
-import { Lock, Search, Wifi, X } from "lucide-react";
+import {LockClosedRegular as Lock, SearchRegular as Search, Wifi1Regular as Wifi, DismissRegular as X} from "@fluentui/react-icons";
 import { type CSSProperties, type RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DESKTOP_APPS, type DesktopApp, searchDesktopApps } from "../../appregistry.ts";
@@ -53,8 +53,7 @@ import {
   DEFAULT_TRAY_SETTINGS,
   QuickSettings,
   type TraySettings,
-  useReducedMotion,
-} from "./trayflyouts.tsx";
+  useReducedMotion } from "./trayflyouts.tsx";
 
 /** the default apps pinned to the bottom bar: the essential surfaces as
  * icons only — every other app of the catalog lives in the Start menu grid
@@ -110,14 +109,11 @@ function formatClock(date: Date): { time: string; date: string } {
   return {
     time: new Intl.DateTimeFormat(undefined, {
       hour: "2-digit",
-      minute: "2-digit",
-    }).format(date),
+      minute: "2-digit" }).format(date),
     date: new Intl.DateTimeFormat(undefined, {
       day: "2-digit",
       month: "2-digit",
-      year: "numeric",
-    }).format(date),
-  };
+      year: "numeric" }).format(date) };
 }
 
 /** the tray clock, refreshed twice a minute */
@@ -428,8 +424,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
                       kind: "jump",
                       app,
                       x: event.clientX,
-                      y: event.clientY,
-                    });
+                      y: event.clientY });
                   }}
                 >
                   <span className={BAR_FACE_CLASS}>
@@ -449,7 +444,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
           className="dt-nav__omnibox mr-2 ml-auto inline-flex h-[30px] w-[140px] flex-none items-center justify-center gap-[7px] self-center rounded-xs border border-white/7 bg-white/5 font-mono text-[10px] tracking-[.08em] text-ink-3 transition-colors duration-200 hover:bg-white/8 max-[1080px]:hidden"
           aria-hidden="true"
         >
-          <Lock size={11} />
+          <Lock fontSize={11} />
           <span>/</span>
         </div>
         {/* the tray cluster: the gateway pill and the clock are the quick
@@ -475,7 +470,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
                   paired ? "text-[#f3f5fa] light:text-[#1a1a1a]" : "text-ink-3"
                 }`}
               >
-                <Wifi size={13} aria-hidden="true" />
+                <Wifi fontSize={13} aria-hidden="true" />
                 {paired ? userId || "paired" : "local only"}
               </span>
             )}
@@ -519,7 +514,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
             {/* the search well: 40px, flat white 5%, hairline bottom, the
                 2px accent underline on focus (the win11 input recipe) */}
             <div className="dt-start__search mx-8 mt-6 flex h-10 flex-none items-center gap-[9px] rounded-xs border border-white/6 border-b-(--color-hairline) bg-white/5 px-3 text-ink-2 transition-colors duration-200 focus-within:border-white/20 focus-within:shadow-[inset_0_-2px_0_var(--color-win)] light:border-black/12 light:bg-white/78 light:text-[#3c3c3c]">
-              <Search size={15} aria-hidden="true" />
+              <Search fontSize={15} aria-hidden="true" />
               <input
                 ref={searchRef}
                 value={query}
@@ -535,7 +530,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
                   aria-label="Clear the search"
                   className="-mr-3 grid h-10 w-10 flex-none cursor-pointer place-items-center rounded-xs border-0 bg-transparent text-ink-2 transition-colors duration-200 hover:bg-white/10 hover:text-ink focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none"
                 >
-                  <X size={14} aria-hidden="true" />
+                  <X fontSize={14} aria-hidden="true" />
                 </button>
               )}
             </div>
@@ -637,8 +632,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
             inset: 0,
             zIndex: 55,
             background: "rgb(255 176 46 / 6%)",
-            pointerEvents: "none",
-          }}
+            pointerEvents: "none" }}
         />
       )}
       {dim > 0 && (
@@ -651,8 +645,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
             zIndex: 55,
             background: "rgb(0 0 0)",
             opacity: dim,
-            pointerEvents: "none",
-          }}
+            pointerEvents: "none" }}
         />
       )}
     </>

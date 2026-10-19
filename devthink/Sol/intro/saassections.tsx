@@ -6,7 +6,7 @@
  * line, no hyphens, no dots, no marketing prose.
  */
 
-import { Activity, ArrowUpRight, AtSign, Check, Globe, Play, Plus, Share2, Star } from "lucide-react";
+import {HeartPulseRegular as Activity, ArrowUpRightRegular as ArrowUpRight, MentionRegular as AtSign, CheckmarkRegular as Check, GlobeRegular as Globe, PlayRegular as Play, AddRegular as Plus, ShareRegular as Share2, StarRegular as Star} from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { saascreators, saasstudios } from "../../saascontent.ts";
@@ -167,8 +167,7 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
               className="pointer-events-none absolute top-10 right-6 h-16 w-16 rounded-full opacity-90"
               style={{
                 background: "radial-gradient(circle at 30% 30%, #FFFFFF, #C084FC 55%, #4F46E5)",
-                boxShadow: "inset 0 3px 6px rgba(255,255,255,0.85), 0 10px 20px rgba(0,0,0,0.45)",
-              }}
+                boxShadow: "inset 0 3px 6px rgba(255,255,255,0.85), 0 10px 20px rgba(0,0,0,0.45)" }}
             />
             <div className="relative z-10 flex items-center gap-3 pr-12">
               <Studiomark app="doo" className="h-10 w-10" />
@@ -207,8 +206,7 @@ export function SaasCreators({ onenter }: SectionProps) {
       surface: "surface-card p-6",
       titletone: "text-slate-950",
       bodytone: "text-slate-500",
-      tagtone: "text-pink-600",
-    },
+      tagtone: "text-pink-600" },
     {
       app: "getry",
       title: "AI teams",
@@ -218,8 +216,7 @@ export function SaasCreators({ onenter }: SectionProps) {
       surface: "indigo-tactile-surface p-6 text-white",
       titletone: "text-white",
       bodytone: "text-indigo-100",
-      tagtone: "text-white",
-    },
+      tagtone: "text-white" },
     {
       app: "saddle",
       title: "Saddle cloud",
@@ -229,8 +226,7 @@ export function SaasCreators({ onenter }: SectionProps) {
       surface: "surface-card p-6",
       titletone: "text-slate-950",
       bodytone: "text-slate-500",
-      tagtone: "text-sky-600",
-    },
+      tagtone: "text-sky-600" },
   ];
   const swings = ["swing-card-1", "swing-card-2", "swing-card-3"];
   return (
@@ -383,8 +379,7 @@ export function SaasStudios({ onenter }: SectionProps) {
       <div
         className="pointer-events-none absolute top-1/3 left-1/2 h-[320px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-20 transition-all duration-500"
         style={{
-          background: `radial-gradient(closest-side, ${["#8B5CF6", "#FB7185", "#38BDF8", "#10B981", "#3B82F6"][active]}, transparent)`,
-        }}
+          background: `radial-gradient(closest-side, ${["#8B5CF6", "#FB7185", "#38BDF8", "#10B981", "#3B82F6"][active]}, transparent)` }}
       />
       <div className="relative z-20 mb-8 w-full inset-x-0 top-0">
         <div className="h-2 w-full bg-white" />
@@ -419,8 +414,7 @@ export function SaasStudios({ onenter }: SectionProps) {
                   onClick={onenter}
                   style={{
                     zIndex: 30 - Math.abs(offset) * 5,
-                    transform: `translateY(${Math.abs(offset) * 18}px) rotate(${offset * 5.5}deg) scale(${center ? 1.08 : 1 - Math.abs(offset) * 0.05})`,
-                  }}
+                    transform: `translateY(${Math.abs(offset) * 18}px) rotate(${offset * 5.5}deg) scale(${center ? 1.08 : 1 - Math.abs(offset) * 0.05})` }}
                   className={`fan-clay group relative flex h-[270px] cursor-pointer flex-col justify-between overflow-hidden rounded-[20px] border bg-gradient-to-b p-5 text-left transition-all duration-500 ease-out sm:-mx-4 sm:h-[300px] ${card.gradient} ${center ? "border-white/60" : "border-white/30 opacity-85 hover:opacity-100"}`}
                 >
                   <div className="fan-sheen pointer-events-none absolute inset-0" />

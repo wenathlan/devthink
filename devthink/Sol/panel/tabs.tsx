@@ -1,5 +1,5 @@
 /** Style: DevThink Terminal Atelier — browser-tab chrome is a core navigation gesture, not decorative header clutter. The active tab carries data-active="true" beside .workspace-tab--active so the R1-a CSS grades hover/active on one attribute grammar; data-provider exposes the session provider for accent hooks. No tab ever carries a brand mark — the titlebar lockup is the zone's single one (logo discipline). */
-import { Plus, X } from "lucide-react";
+import {AddRegular as Plus, DismissRegular as X} from "@fluentui/react-icons";
 import type { DevThinkTab } from "../../paneltypes.ts";
 
 type WorkspaceTabsProps = {
@@ -47,7 +47,7 @@ export function WorkspaceTabs({ tabs, activeTab, onSelect, onClose, onNew }: Wor
                     onClose(tab.id);
                   }}
                 >
-                  <X size={13} strokeWidth={1.7} />
+                  <X fontSize={13} />
                 </button>
               )}
             </div>
@@ -55,7 +55,7 @@ export function WorkspaceTabs({ tabs, activeTab, onSelect, onClose, onNew }: Wor
         })}
       </div>
       <button type="button" className="workspace-tabs__new" onClick={onNew} aria-label="Open a new session">
-        <Plus size={16} strokeWidth={1.8} />
+        <Plus fontSize={16} />
       </button>
     </div>
   );

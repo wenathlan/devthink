@@ -7,7 +7,7 @@
  * item, Enter runs it, Escape closes. The paint is Tailwind composition on
  * the design tokens (task 3-a): the acrylic mica panel, the hairline
  * dividers, the sun-tinted selection tick of the active row. */
-import { Command, Search, X } from "lucide-react";
+import {KeyboardRegular as Command, SearchRegular as Search, DismissRegular as X} from "@fluentui/react-icons";
 import { type KeyboardEvent as ReactKeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 
 type CommandPaletteProps = { open: boolean; onClose: () => void; onAction: (action: string) => void };
@@ -103,7 +103,7 @@ export function CommandPalette({ open, onClose, onAction }: CommandPaletteProps)
         aria-label="Command palette"
       >
         <div className="command-palette__input flex items-center gap-2.5 border-b border-(--color-hairline) px-3 py-[13px] text-ink-2 transition-shadow duration-150 focus-within:shadow-[inset_0_-1px_0_rgb(231_233_238/45%)] light:focus-within:shadow-[inset_0_-1px_0_rgb(0_0_0/35%)]">
-          <Search size={18} />
+          <Search fontSize={18} />
           <input
             ref={inputRef}
             value={query}
@@ -128,11 +128,11 @@ export function CommandPalette({ open, onClose, onAction }: CommandPaletteProps)
             aria-label="Close the command palette"
             className="grid h-[34px] w-[34px] cursor-pointer place-items-center rounded-md border-0 bg-transparent text-ink-2 transition-colors duration-150 hover:bg-white/6 hover:text-ink active:scale-[0.94]"
           >
-            <X size={16} />
+            <X fontSize={16} />
           </button>
         </div>
         <div className="command-palette__label flex items-center gap-1.5 px-[13px] py-2.5 font-mono text-[8px] tracking-[.08em] text-ink-3 uppercase">
-          <Command size={13} /> workspace commands
+          <Command fontSize={13} /> workspace commands
         </div>
         <div className="command-palette__list grid px-[7px] pb-[7px]" id="command-palette-list" role="listbox">
           {matches.map(([id, title, detail, key], index) => (

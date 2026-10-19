@@ -560,8 +560,7 @@ function defineAppIcon(key: string, spec: AppIconSpec): ComponentType<AppIconPro
     const vars = {
       "--story-glow": `${spec.story}73`,
       "--story-shadow": `${spec.deep}42`,
-      "--story-shadow-soft": `${spec.deep}24`,
-    } as CSSProperties;
+      "--story-shadow-soft": `${spec.deep}24` } as CSSProperties;
     if (size !== undefined) {
       vars.width = size;
       vars.height = size;
@@ -717,8 +716,7 @@ export const ChatIcon = defineAppIcon("chat", {
         stroke="none"
       />
     </>
-  ),
-});
+  ) });
 
 /** History — the session archive: a clock with a curved rewind arrow. */
 export const HistoryIcon = defineAppIcon("history", {
@@ -735,8 +733,7 @@ export const HistoryIcon = defineAppIcon("history", {
       <path d="M28.5 35 Q28.5 24.5 39 24.5" strokeWidth={STROKE_SOFT} />
       <path d="M39 24.5 L33.6 21.2 M39 24.5 L34 28.2" strokeWidth={STROKE_SOFT} />
     </>
-  ),
-});
+  ) });
 
 /** Projects — the workspace records: a board with two uneven columns. */
 export const ProjectsIcon = defineAppIcon("projects", {
@@ -763,8 +760,7 @@ export const ProjectsIcon = defineAppIcon("projects", {
         <path d="M52.5 56 H62" strokeWidth={STROKE_SOFT} />
       </g>
     </>
-  ),
-});
+  ) });
 
 /** Console — the canonical CLI design: a prompt chevron and its cursor. */
 export const ConsoleIcon = defineAppIcon("console", {
@@ -778,8 +774,7 @@ export const ConsoleIcon = defineAppIcon("console", {
       <path d="M50 36.5 H63" />
       <rect className="dtIcon-m-cursor" x="49" y="53.5" width="15.5" height="9.5" rx="3" fill={IVORY} stroke="none" />
     </>
-  ),
-});
+  ) });
 
 /** Gateway — the local gateway console: routes meeting at a waypoint. */
 export const GatewayIcon = defineAppIcon("gateway", {
@@ -795,8 +790,7 @@ export const GatewayIcon = defineAppIcon("gateway", {
       <path d="M33.5 36 Q41.5 42.5 42.5 44.8" strokeWidth={STROKE_SOFT} />
       <path d="M53.5 51.2 Q58.5 55 60.6 57.6" strokeWidth={STROKE_SOFT} />
     </>
-  ),
-});
+  ) });
 
 /** Providers — the provider and model choices: a plug with its cord. */
 export const ProvidersIcon = defineAppIcon("providers", {
@@ -810,8 +804,7 @@ export const ProvidersIcon = defineAppIcon("providers", {
       <rect className="dtIcon-m-plug" x="39" y="38.5" width="18" height="19" rx="6.5" fill={BACKING} />
       <path d="M48 57.5 C48 66.5 55 66 60.5 66 H66.5" strokeWidth={STROKE_SOFT} />
     </>
-  ),
-});
+  ) });
 
 /** Usage — the local usage records: ascending bars over a baseline. */
 export const UsageIcon = defineAppIcon("usage", {
@@ -858,8 +851,7 @@ export const UsageIcon = defineAppIcon("usage", {
         stroke="none"
       />
     </>
-  ),
-});
+  ) });
 
 /** Routes — the stream health: two feeds merging into one stream. */
 export const RoutesIcon = defineAppIcon("routes", {
@@ -882,8 +874,7 @@ export const RoutesIcon = defineAppIcon("routes", {
       <path className="dtIcon-m-run" style={{ ...si(2), transformOrigin: "48.5px 48px" }} d="M48.5 48 H67" />
       <circle className="dtIcon-m-dot" style={si(3)} cx="48.5" cy="48" r="4.2" fill={IVORY} stroke="none" />
     </>
-  ),
-});
+  ) });
 
 /** Docs — the documentation library: an open book with a raised spine. */
 export const DocsIcon = defineAppIcon("docs", {
@@ -905,8 +896,7 @@ export const DocsIcon = defineAppIcon("docs", {
       />
       <path d="M48 35.5 V62.5" strokeWidth={STROKE_SOFT} />
     </>
-  ),
-});
+  ) });
 
 /** Explore — the exploration gallery: the wind rose inside its ring. */
 export const ExploreIcon = defineAppIcon("explore", {
@@ -923,8 +913,7 @@ export const ExploreIcon = defineAppIcon("explore", {
       </g>
       <circle cx="48" cy="48" r="2.6" fill="#8a5449" stroke="none" />
     </>
-  ),
-});
+  ) });
 
 /** OS — the family operating surface: the hex frame over a four-pane grid. */
 export const OsIcon = defineAppIcon("os", {
@@ -984,8 +973,7 @@ export const OsIcon = defineAppIcon("os", {
         opacity=".92"
       />
     </>
-  ),
-});
+  ) });
 
 /** Settings — the local preferences: a gear with eight rounded teeth. */
 export const SettingsIcon = defineAppIcon("settings", {
@@ -999,8 +987,7 @@ export const SettingsIcon = defineAppIcon("settings", {
       <path d="M64.5 48 H69.5 M59.7 59.7 L63.2 63.2 M48 64.5 V69.5 M36.3 59.7 L32.8 63.2 M31.5 48 H26.5 M36.3 36.3 L32.8 32.8 M48 31.5 V26.5 M59.7 36.3 L63.2 32.8" />
       <circle cx="48" cy="48" r="4.6" strokeWidth={STROKE_HAIR} />
     </>
-  ),
-});
+  ) });
 
 /** Argan — the DNS and gateway library: the double-contour shield. */
 export const ArganIcon = defineAppIcon("argan", {
@@ -1017,8 +1004,7 @@ export const ArganIcon = defineAppIcon("argan", {
         opacity=".85"
       />
     </>
-  ),
-});
+  ) });
 
 /** Cadria — the video, image and 3D studio: a clapperboard mid-slate. */
 export const CadriaIcon = defineAppIcon("cadria", {
@@ -1034,8 +1020,7 @@ export const CadriaIcon = defineAppIcon("cadria", {
         <path d="M41.5 33.2 L44.5 45.3 M53 35.3 L55.5 45.5" strokeWidth={STROKE_SOFT} />
       </g>
     </>
-  ),
-});
+  ) });
 
 /** Debonair — the OS audio DAW: a five-band equalizer in full swing. */
 export const DebonairIcon = defineAppIcon("debonair", {
@@ -1105,8 +1090,7 @@ export const DebonairIcon = defineAppIcon("debonair", {
         opacity=".78"
       />
     </>
-  ),
-});
+  ) });
 
 /** Stealthhead — the OS FPS platform: a scope with cardinal ticks. */
 export const StealthheadIcon = defineAppIcon("stealthhead", {
@@ -1120,8 +1104,7 @@ export const StealthheadIcon = defineAppIcon("stealthhead", {
       <path d="M48 26 V31.5 M48 64.5 V70 M26 48 H31.5 M64.5 48 H70" />
       <circle cx="48" cy="48" r="4.4" fill={IVORY} stroke="none" />
     </>
-  ),
-});
+  ) });
 
 /** Forge — the family forge: a mallet head over its handle. */
 export const ForgeIcon = defineAppIcon("forge", {
@@ -1138,8 +1121,7 @@ export const ForgeIcon = defineAppIcon("forge", {
       </g>
       <path d="M53 44 L43.5 64" strokeWidth={STROKE_BRIGHT} />
     </>
-  ),
-});
+  ) });
 
 /** Foundry — the family foundry: the sawtooth plant with its stack. */
 export const FoundryIcon = defineAppIcon("foundry", {
@@ -1175,8 +1157,7 @@ export const FoundryIcon = defineAppIcon("foundry", {
         opacity=".85"
       />
     </>
-  ),
-});
+  ) });
 
 /** Vault — the family vault: the three-spoke door inside its rings. */
 export const VaultIcon = defineAppIcon("vault", {
@@ -1192,8 +1173,7 @@ export const VaultIcon = defineAppIcon("vault", {
         <path d="M48 48 V37 M48 48 L57.5 53.5 M48 48 L38.5 53.5" strokeWidth={STROKE_SOFT} />
       </g>
     </>
-  ),
-});
+  ) });
 
 /** Getry — the family registry: the cataloged stack of plates. */
 export const GetryIcon = defineAppIcon("getry", {
@@ -1207,8 +1187,7 @@ export const GetryIcon = defineAppIcon("getry", {
       <path className="dtIcon-m-plate" style={si(1)} d="M32.5 46.5 L48 55.5 L63.5 46.5" />
       <path className="dtIcon-m-plate" style={si(2)} d="M32.5 55 L48 64 L63.5 55" />
     </>
-  ),
-});
+  ) });
 
 /** Saddle — the sandbox engine: the crate drawn in light isometric. */
 export const SaddleIcon = defineAppIcon("saddle", {
@@ -1230,8 +1209,7 @@ export const SaddleIcon = defineAppIcon("saddle", {
         </g>
       </g>
     </>
-  ),
-});
+  ) });
 
 /**
  * The premium icon set of the shell, keyed by the registry `iconset` field:
@@ -1258,5 +1236,4 @@ export const APP_ICONS: Record<string, ComponentType<AppIconProps>> = {
   foundry: FoundryIcon,
   vault: VaultIcon,
   getry: GetryIcon,
-  saddle: SaddleIcon,
-};
+  saddle: SaddleIcon };

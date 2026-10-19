@@ -3,7 +3,7 @@
  * with the real compact id, the session count and the update time, the most
  * recent one leading. Loose component of the projects page.
  */
-import { AppsRegular, ArrowSyncRegular } from "@fluentui/react-icons";
+import {AppsRegular, ArrowSyncRegular} from "@fluentui/react-icons";
 
 type Workspace = { id: string; title: string; updatedAt: string; sessionCount: number };
 
@@ -11,8 +11,7 @@ export function ProjectRows({
   rows,
   loaded,
   paired,
-  onRefresh,
-}: {
+  onRefresh }: {
   rows: readonly Workspace[];
   loaded: boolean;
   paired: boolean;

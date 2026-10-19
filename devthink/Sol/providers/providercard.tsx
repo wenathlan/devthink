@@ -4,7 +4,7 @@
  * IndexedDB, never displayed after saving, never sent to the cli, excluded
  * from every sync adapter. Loose component of the providers page.
  */
-import { DeleteRegular, KeyRegular } from "@fluentui/react-icons";
+import {DeleteRegular, KeyRegular} from "@fluentui/react-icons";
 
 type Provider = { id: string; protocol: string; env: string };
 
@@ -16,8 +16,7 @@ export function ProviderCard({
   onCredentialDraft,
   browserCredentials,
   onSave,
-  onClear,
-}: {
+  onClear }: {
   providers: readonly Provider[];
   credentialProvider: string;
   onCredentialProvider: (id: string) => void;

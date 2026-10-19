@@ -6,7 +6,7 @@
  * this file.
  */
 
-import { ArrowRight, RotateCcw } from "lucide-react";
+import {ArrowRightRegular as ArrowRight, ArrowCounterclockwiseRegular as RotateCcw} from "@fluentui/react-icons";
 /** Style: DevThink landing SaaS — the trylle ruler over the Windows canvas.
  * ONE hero zone on the graphite mica: the trylle hero (display face, H1 at
  * clamp(2.25rem, 5vw, 3.75rem), weight 600, tracking -0.02em, never italic)
@@ -34,8 +34,7 @@ import {
   type StudioAsset,
   type StudioTrack,
   studioAssets,
-  studioTracks,
-} from "../../catalog";
+  studioTracks } from "../../catalog";
 import { peekonboardingstate } from "../../onboardingstate";
 import { SolLogoMark } from "../panel/logo.tsx";
 import { ShellChrome } from "../shell/ShellChrome.tsx";
@@ -62,8 +61,7 @@ const STRIP_SHADOW = "0 1px 2px rgb(0 0 0 / 26%), 0 3px 12px rgb(0 0 0 / 12%)";
 const MICA_STYLE = {
   backgroundColor: "#202020",
   backgroundImage: "radial-gradient(#1a1f35 25%, #202020 100%)",
-  backgroundAttachment: "fixed",
-} as const;
+  backgroundAttachment: "fixed" } as const;
 
 /* ---- the hero atmosphere: the named light source and the film grain — layered over the graphite mica, all
         presentational, pointer-transparent, riding the campaign recipes ---- */
@@ -73,8 +71,7 @@ const heroLightStyle = {
   zIndex: 0,
   pointerEvents: "none",
   background:
-    "radial-gradient(1200px 700px at 72% -12%, rgb(255 95 0 / 15%), transparent 62%), radial-gradient(900px 620px at 6% 110%, rgb(255 159 46 / 9%), transparent 58%)",
-} as const;
+    "radial-gradient(1200px 700px at 72% -12%, rgb(255 95 0 / 15%), transparent 62%), radial-gradient(900px 620px at 6% 110%, rgb(255 159 46 / 9%), transparent 58%)" } as const;
 /** the film grain: feTurbulence fractal noise, 2 octaves, 140px tile,
  * soft-light — the doctrine veil, additive over the mica */
 const heroGrainStyle = {
@@ -84,8 +81,7 @@ const heroGrainStyle = {
   pointerEvents: "none",
   mixBlendMode: "soft-light",
   backgroundImage:
-    "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.07'/%3E%3C/svg%3E\")",
-} as const;
+    "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.07'/%3E%3C/svg%3E\")" } as const;
 
 /** the anchor rows of the page head (the jump links of the landing) */
 const ANCHORS: ReadonlyArray<{ href: string; label: string }> = [
@@ -155,7 +151,7 @@ export default function Explore() {
       >
         <SolLogoMark size={16} />
         <span>explore — devthink</span>
-        <RotateCcw size={13} aria-hidden="true" />
+        <RotateCcw fontSize={13} aria-hidden="true" />
       </button>
     );
   }
@@ -203,7 +199,7 @@ export default function Explore() {
                   style={{ boxShadow: TRYLLE_PRIMARY_STACK }}
                 >
                   enter devthink
-                  <ArrowRight size={15} aria-hidden="true" />
+                  <ArrowRight fontSize={15} aria-hidden="true" />
                 </button>
               </div>
             </header>

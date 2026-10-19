@@ -20,8 +20,7 @@ import {
   readBrowserPreferences,
   removeBrowserCredential,
   saveBrowserCredential,
-  saveBrowserPreference,
-} from "../../db";
+  saveBrowserPreference } from "../../db";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { ProviderCard } from "./providercard.tsx";
 import { ProvidersList } from "./providerslist.tsx";
@@ -88,8 +87,7 @@ export default function Providers({ embedded }: { embedded?: boolean }) {
       await gatewayJson("/providers/active", {
         method: "PATCH",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ provider: provider.id }),
-      });
+        body: JSON.stringify({ provider: provider.id }) });
       await saveBrowserPreference("activeProvider", provider.id);
       setActive(provider.id);
       toast(`${provider.id} is now active in the local cli.`);

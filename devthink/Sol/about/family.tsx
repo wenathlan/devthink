@@ -9,7 +9,7 @@
  * rides the engine .enter kit at 70ms steps.
  */
 
-import { SquareArrowOutUpRight } from "lucide-react";
+import {OpenRegular as SquareArrowOutUpRight} from "@fluentui/react-icons";
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import { type FamilySite, familySites } from "../../catalog";
@@ -84,7 +84,7 @@ export function AboutFamily() {
             <p>{site.blurb}</p>
             <span className="family-card__cta">
               open site
-              <SquareArrowOutUpRight size={12} />
+              <SquareArrowOutUpRight fontSize={12} />
             </span>
           </a>
         ))}

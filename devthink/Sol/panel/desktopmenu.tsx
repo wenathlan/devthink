@@ -14,16 +14,15 @@
  * arrow.
  */
 
-import type { LucideIcon } from "lucide-react";
-import { ChevronRight, Circle } from "lucide-react";
+import type {FluentIcon as LucideIcon} from "@fluentui/react-icons";
+import { ChevronRightRegular as ChevronRight, RecordRegular as Circle } from "@fluentui/react-icons";
 import {
   type KeyboardEvent as ReactKeyboardEvent,
   useCallback,
   useEffect,
   useLayoutEffect,
   useRef,
-  useState,
-} from "react";
+  useState } from "react";
 import { clampNumber } from "../../desktopstate.ts";
 
 /** one entry of a context menu */
@@ -136,8 +135,7 @@ function MenuPanel({ x, y, entries, label, depth, onCollapse, onCommit }: PanelP
       setSubmenu({
         id,
         x: (rect ? rect.right : x) - SUBMENU_OVERLAP,
-        y: (rect ? rect.top : y) - SUBMENU_OVERLAP,
-      });
+        y: (rect ? rect.top : y) - SUBMENU_OVERLAP });
     },
     [entries, x, y],
   );
@@ -258,7 +256,7 @@ function MenuPanel({ x, y, entries, label, depth, onCollapse, onCommit }: PanelP
               onClick={() => activate(index)}
             >
               {Icon ? (
-                <Icon size={14} strokeWidth={1.6} className="flex-none text-ink-2" aria-hidden="true" />
+                <Icon fontSize={14} className="flex-none text-ink-2" aria-hidden="true" />
               ) : (
                 <span className="flex-none w-[14px]" aria-hidden="true" />
               )}
@@ -267,7 +265,7 @@ function MenuPanel({ x, y, entries, label, depth, onCollapse, onCommit }: PanelP
               </span>
               {entry.kind === "item" && entry.shortcut === "radio" ? (
                 <span className="dsk-menu__radio" aria-hidden="true">
-                  <Circle size={9} strokeWidth={2.5} fill="currentColor" />
+                  <Circle fontSize={9} fill="currentColor" />
                 </span>
               ) : entry.kind === "item" && entry.shortcut ? (
                 <span className="ml-auto flex-none font-mono text-[11px] leading-none text-ink-2 tabular-nums">
@@ -276,7 +274,7 @@ function MenuPanel({ x, y, entries, label, depth, onCollapse, onCommit }: PanelP
               ) : null}
               {isSubmenu && (
                 <span className="dsk-menu__caret" aria-hidden="true" data-open={isOpen ? "true" : undefined}>
-                  <ChevronRight size={12} strokeWidth={1.75} />
+                  <ChevronRight fontSize={12} />
                 </span>
               )}
             </button>

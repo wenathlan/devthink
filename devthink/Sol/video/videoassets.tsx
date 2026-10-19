@@ -3,14 +3,13 @@
  * the real catalog fields (title, engine, duration) and the render action.
  * Loose component of the video page.
  */
-import { MoviesAndTvFilled } from "@fluentui/react-icons";
+import {MoviesAndTvFilled} from "@fluentui/react-icons";
 import type { StudioAsset } from "../../catalog";
 
 export function VideoAssets({
   rows,
   loaded,
-  onRender,
-}: {
+  onRender }: {
   rows: readonly StudioAsset[];
   loaded: boolean;
   onRender: (asset: StudioAsset) => void;

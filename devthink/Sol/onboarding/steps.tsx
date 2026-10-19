@@ -32,26 +32,22 @@ export const ONBOARDING_STEPS: readonly onboardingstep[] = [
     eyebrow: "the os",
     title: "One OS, many apps",
     body: "devthink is the family os — sibling apps open as windows inside it, pinned to the taskbar.",
-    app: null,
-  },
+    app: null },
   {
     eyebrow: "explore",
     title: "Explore is the free floor",
     body: "the catalog at /explore — every family app answers without an account.",
-    app: "explore",
-  },
+    app: "explore" },
   {
     eyebrow: "auth, then panel",
     title: "Auth opens the panel",
     body: "one identity signs everything — /auth hands the session to /panel: chat, projects, studios.",
-    app: "panel",
-  },
+    app: "panel" },
   {
     eyebrow: "mcp",
     title: "MCP is opt-in",
     body: "register an mcp endpoint only when you want one — nothing connects without its probe.",
-    app: "settings",
-  },
+    app: "settings" },
 ] as const;
 
 /** the Linear shadow with its ring, on the art card of every frame */

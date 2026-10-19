@@ -10,7 +10,7 @@
  * solar light source and the C1 atmosphere hooks (atmos / grain);
  * the body rises once, staggered behind the hero, then holds still. */
 
-import { TerminalSquare } from "lucide-react";
+import {WindowConsoleRegular as TerminalSquare} from "@fluentui/react-icons";
 import type { CSSProperties, ReactNode } from "react";
 import {
   pagecontainerStyle,
@@ -20,8 +20,7 @@ import {
   pageheadStyle,
   pageheadTitleStyle,
   pagestageStyle,
-  stagedEntrance,
-} from "./InstitutionalChrome.tsx";
+  stagedEntrance } from "./InstitutionalChrome.tsx";
 import { ShellChrome } from "./ShellChrome.tsx";
 import { useReducedMotion } from "./trayflyouts.tsx";
 
@@ -46,8 +45,7 @@ export const controlStripStyle: CSSProperties = {
   border: 0,
   borderBottom: "1px solid var(--dt-edge)",
   borderRadius: 0,
-  padding: "0 0 12px",
-};
+  padding: "0 0 12px" };
 
 export function ControlShell({ eyebrow, title, summary, actions, children }: ControlShellProps) {
   const reduced = useReducedMotion();
@@ -76,7 +74,7 @@ export function ControlShell({ eyebrow, title, summary, actions, children }: Con
         </section>
       </div>
       <footer className="control-page__footer">
-        <TerminalSquare size={14} strokeWidth={1.5} />
+        <TerminalSquare fontSize={14} />
         provider credentials stay in <code>~/.config/devthink/auth.json</code>
       </footer>
     </main>

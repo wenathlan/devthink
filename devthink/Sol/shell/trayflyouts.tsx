@@ -18,8 +18,8 @@
  * focus rule: a 2px accent underline (inset box-shadow), never a halo.
  */
 
-import type { LucideIcon } from "lucide-react";
-import { Bluetooth, ChevronLeft, ChevronRight, Contrast, MoonStar, Signal, Sun, Volume2, Wifi } from "lucide-react";
+import type {FluentIcon as LucideIcon} from "@fluentui/react-icons";
+import { BluetoothRegular as Bluetooth, ChevronLeftRegular as ChevronLeft, ChevronRightRegular as ChevronRight, ColorRegular as Contrast, DarkThemeRegular as MoonStar, Cellular5GRegular as Signal, WeatherSunnyRegular as Sun, Speaker1Regular as Volume2, Wifi1Regular as Wifi } from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 
 /** tracks the os reduced-motion preference */
@@ -57,8 +57,7 @@ export const DEFAULT_TRAY_SETTINGS: TraySettings = {
   theme: true,
   data: true,
   volume: 70,
-  brightness: 100,
-};
+  brightness: 100 };
 
 type TileKey = "wifi" | "bluetooth" | "night" | "theme" | "data";
 
@@ -119,7 +118,7 @@ export function QuickSettings({ open, settings, onChange }: QuickSettingsProps) 
               onClick={() => toggleTile(tile.key)}
               className={`flex min-h-11 cursor-pointer items-center gap-2.5 rounded-xs border border-white/9 bg-white/4 px-3 text-left font-sans text-xs font-medium text-ink transition-colors duration-150 ease-entry hover:bg-white/9 data-[on=true]:border-white/25 data-[on=true]:bg-white/15 data-[on=true]:text-signal-strong active:scale-[0.97] active:duration-100 light:border-black/10 light:bg-black/3 light:hover:bg-black/8 light:data-[on=true]:bg-black/12 light:data-[on=true]:text-[#1a1a1a] ${TRAY_FOCUS_CLASS}`}
             >
-              <tile.icon size={16} strokeWidth={1.5} aria-hidden="true" />
+              <tile.icon fontSize={16} aria-hidden="true" />
               <span>{tile.label}</span>
             </button>
           );
@@ -127,7 +126,7 @@ export function QuickSettings({ open, settings, onChange }: QuickSettingsProps) 
       </div>
       <div className="mt-3.5 grid gap-1">
         <label className="flex min-h-11 items-center gap-2.5 text-ink-2">
-          <Volume2 size={14} strokeWidth={1.5} aria-hidden="true" />
+          <Volume2 fontSize={14} aria-hidden="true" />
           <input
             type="range"
             min={0}
@@ -140,7 +139,7 @@ export function QuickSettings({ open, settings, onChange }: QuickSettingsProps) 
           <span className="min-w-[26px] text-right font-mono text-[11px] text-ink tabular-nums">{settings.volume}</span>
         </label>
         <label className="flex min-h-11 items-center gap-2.5 text-ink-2">
-          <Sun size={14} strokeWidth={1.5} aria-hidden="true" />
+          <Sun fontSize={14} aria-hidden="true" />
           <input
             type="range"
             min={0}
@@ -216,7 +215,7 @@ export function CalendarFlyout({ open }: CalendarFlyoutProps) {
             onClick={() => shift(-1)}
             className={`grid h-11 w-11 cursor-pointer place-items-center rounded-xs border-0 bg-transparent text-ink-2 transition-colors duration-150 hover:bg-white/9 hover:text-ink light:hover:bg-black/8 ${TRAY_FOCUS_CLASS}`}
           >
-            <ChevronLeft size={15} strokeWidth={1.5} aria-hidden="true" />
+            <ChevronLeft fontSize={15} aria-hidden="true" />
           </button>
           <button
             type="button"
@@ -224,7 +223,7 @@ export function CalendarFlyout({ open }: CalendarFlyoutProps) {
             onClick={() => shift(1)}
             className={`grid h-11 w-11 cursor-pointer place-items-center rounded-xs border-0 bg-transparent text-ink-2 transition-colors duration-150 hover:bg-white/9 hover:text-ink light:hover:bg-black/8 ${TRAY_FOCUS_CLASS}`}
           >
-            <ChevronRight size={15} strokeWidth={1.5} aria-hidden="true" />
+            <ChevronRight fontSize={15} aria-hidden="true" />
           </button>
         </span>
       </div>

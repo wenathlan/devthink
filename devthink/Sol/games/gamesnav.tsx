@@ -4,7 +4,7 @@
  * the 3px accent pill marking the selection. Loose component of the games
  * page.
  */
-import { AppGenericRegular, BoardGamesRegular, GridRegular } from "@fluentui/react-icons";
+import {AppGenericRegular, BoardGamesRegular, GridRegular} from "@fluentui/react-icons";
 
 export type GamesFilter = "all" | "game" | "application";
 
@@ -13,8 +13,7 @@ export function GamesNav({
   games,
   applications,
   active,
-  onSelect,
-}: {
+  onSelect }: {
   all: number;
   games: number;
   applications: number;

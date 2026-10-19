@@ -44,7 +44,7 @@
  * zones) lives in the shelldelta stylesheet — the inline styles here are
  * layout only.
  */
-import { Copy, Minus, PanelLeft, PanelRight, Square, X } from "lucide-react";
+import {CopyRegular as Copy, SubtractRegular as Minus, PanelLeftRegular as PanelLeft, PanelRightRegular as PanelRight, StopRegular as Square, DismissRegular as X} from "@fluentui/react-icons";
 import {
   type MouseEvent as ReactMouseEvent,
   type ReactNode,
@@ -53,8 +53,7 @@ import {
   useEffect,
   useLayoutEffect,
   useRef,
-  useState,
-} from "react";
+  useState } from "react";
 import { createPortal } from "react-dom";
 import { SolLogoMark } from "./logo.tsx";
 
@@ -97,8 +96,7 @@ const snap = (zone: SnapZone, col: number, row: number, cols = 1, rows = 1): Sna
   col,
   row,
   cols,
-  rows,
-});
+  rows });
 
 /** the six win11 layout templates of the flyout, top-left to bottom-right */
 const SNAP_TEMPLATES: SnapTemplate[] = [
@@ -108,36 +106,31 @@ const SNAP_TEMPLATES: SnapTemplate[] = [
     label: "three zones left, full right",
     cols: 2,
     rows: 3,
-    cells: [snap("free", 1, 1), snap("free", 1, 2), snap("free", 1, 3), snap("right", 2, 1, 1, 3)],
-  },
+    cells: [snap("free", 1, 1), snap("free", 1, 2), snap("free", 1, 3), snap("right", 2, 1, 1, 3)] },
   {
     id: "thirds-right",
     label: "full left, three zones right",
     cols: 2,
     rows: 3,
-    cells: [snap("left", 1, 1, 1, 3), snap("free", 2, 1), snap("free", 2, 2), snap("free", 2, 3)],
-  },
+    cells: [snap("left", 1, 1, 1, 3), snap("free", 2, 1), snap("free", 2, 2), snap("free", 2, 3)] },
   {
     id: "quarters",
     label: "quarters",
     cols: 2,
     rows: 2,
-    cells: [snap("tl", 1, 1), snap("tr", 2, 1), snap("bl", 1, 2), snap("br", 2, 2)],
-  },
+    cells: [snap("tl", 1, 1), snap("tr", 2, 1), snap("bl", 1, 2), snap("br", 2, 2)] },
   {
     id: "focus-left",
     label: "two zones left, full right",
     cols: 2,
     rows: 2,
-    cells: [snap("free", 1, 1), snap("free", 1, 2), snap("right", 2, 1, 1, 2)],
-  },
+    cells: [snap("free", 1, 1), snap("free", 1, 2), snap("right", 2, 1, 1, 2)] },
   {
     id: "focus-right",
     label: "full left, two zones right",
     cols: 2,
     rows: 2,
-    cells: [snap("left", 1, 1, 1, 2), snap("free", 2, 1), snap("free", 2, 2)],
-  },
+    cells: [snap("left", 1, 1, 1, 2), snap("free", 2, 1), snap("free", 2, 2)] },
 ];
 
 /** the zone half of every cell aria-label (lowercase mono grammar) */
@@ -148,8 +141,7 @@ const ZONE_WORDS: Record<SnapZone, string> = {
   tr: "top right quarter",
   bl: "bottom left quarter",
   br: "bottom right quarter",
-  free: "column zone",
-};
+  free: "column zone" };
 
 export const WINDOW_MIN_WIDTH = 320;
 export const WINDOW_MIN_HEIGHT = 300;
@@ -356,8 +348,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
           left: zone === "left" ? area.left : area.left + area.width - half,
           top: area.top,
           width: half,
-          height: area.height,
-        };
+          height: area.height };
       }
     } else {
       ghostRectRef.current = null;
@@ -411,15 +402,13 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
         }
         const dims = win.float || {
           width: Math.max(WINDOW_MIN_WIDTH, Math.round(window.innerWidth * 0.62)),
-          height: Math.max(WINDOW_MIN_HEIGHT, Math.round(window.innerHeight * 0.62)),
-        };
+          height: Math.max(WINDOW_MIN_HEIGHT, Math.round(window.innerHeight * 0.62)) };
         onUpdate(win.id, {
           state: "normal",
           width: dims.width,
           height: dims.height,
           x: Math.round(move.clientX - dims.width * grabRatio),
-          y: Math.max(0, Math.round(move.clientY - grabOffsetY)),
-        });
+          y: Math.max(0, Math.round(move.clientY - grabOffsetY)) });
         showGhost(zoneAt(move));
         return;
       }
@@ -428,8 +417,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
           Math.max(origin.x + move.clientX - startX, DRAG_VISIBLE - origin.width),
           window.innerWidth - DRAG_VISIBLE,
         ),
-        y: Math.min(Math.max(origin.y + move.clientY - startY, 0), window.innerHeight - DRAG_VISIBLE),
-      };
+        y: Math.min(Math.max(origin.y + move.clientY - startY, 0), window.innerHeight - DRAG_VISIBLE) };
       if (floatRestore && !consumed) {
         consumed = true;
         patch.width = floatRestore.width;
@@ -751,7 +739,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
               className="shell-window__snapbtn"
               onClick={() => snapHalf("snapped-left")}
             >
-              <PanelLeft size={13} aria-hidden="true" />
+              <PanelLeft fontSize={13} aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -759,11 +747,11 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
               className="shell-window__snapbtn"
               onClick={() => snapHalf("snapped-right")}
             >
-              <PanelRight size={13} aria-hidden="true" />
+              <PanelRight fontSize={13} aria-hidden="true" />
             </button>
           </div>
           <button type="button" aria-label="Minimize" className="shell-window__caption" onClick={requestMinimize}>
-            <Minus size={14} aria-hidden="true" />
+            <Minus fontSize={14} aria-hidden="true" />
           </button>
           <button
             ref={maxBtnRef}
@@ -786,13 +774,13 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
             }}
           >
             {win.state === "maximized" ? (
-              <Copy size={12} aria-hidden="true" />
+              <Copy fontSize={12} aria-hidden="true" />
             ) : (
-              <Square size={12} aria-hidden="true" />
+              <Square fontSize={12} aria-hidden="true" />
             )}
           </button>
           <button type="button" className="shell-window__close" aria-label="Close window" onClick={requestClose}>
-            <X size={15} aria-hidden="true" />
+            <X fontSize={15} aria-hidden="true" />
           </button>
         </div>
       </div>
@@ -824,8 +812,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
                 left: flyoutAt.left,
                 top: flyoutAt.top,
                 zIndex: "var(--z-float)",
-                gridTemplateColumns: "repeat(3, 76px)",
-              }}
+                gridTemplateColumns: "repeat(3, 76px)" }}
               onMouseEnter={enterFlyout}
               onMouseLeave={leaveCaption}
               onBlur={(event) => {
@@ -848,8 +835,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
                     gap: "2px",
                     width: "76px",
                     height: "54px",
-                    padding: "3px",
-                  }}
+                    padding: "3px" }}
                   onMouseEnter={(event) => {
                     event.currentTarget.dataset.active = "true";
                   }}
@@ -865,8 +851,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
                       aria-label={`snap ${ZONE_WORDS[cell.zone]}`}
                       style={{
                         gridColumn: `${cell.col} / span ${cell.cols}`,
-                        gridRow: `${cell.row} / span ${cell.rows}`,
-                      }}
+                        gridRow: `${cell.row} / span ${cell.rows}` }}
                       onMouseEnter={(event) => {
                         event.currentTarget.dataset.active = "true";
                       }}
@@ -897,8 +882,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
                 width: `${ghostRect.width}px`,
                 height: `${ghostRect.height}px`,
                 zIndex: "var(--z-float)",
-                pointerEvents: "none",
-              }}
+                pointerEvents: "none" }}
             />,
             document.body,
           )

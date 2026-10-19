@@ -43,8 +43,7 @@ const ANCHORS: Record<string, ComponentType<{ embedded?: boolean }>> = {
   settings: Settings,
   projects: Projects,
   audio: Audio,
-  video: Video,
-};
+  video: Video };
 
 /** the presentation values of the window frames (the theme layer owns them,
  * the root logic never does): the default spawn and the per-app overrides —
@@ -56,8 +55,7 @@ const SPAWN_OVERRIDES: Record<string, { width: number; height: number }> = {
   docs: { width: 980, height: 680 },
   console: { width: 980, height: 680 },
   settings: { width: 960, height: 680 },
-  video: { width: 960, height: 680 },
-};
+  video: { width: 960, height: 680 } };
 
 /** the spawn of one app: the override when the theme answers one, the
  * default otherwise */
@@ -72,8 +70,7 @@ function bindentry(id: string, entry: WindowEntry): WindowApp {
     const slug = entry.slug ?? id;
     return {
       component: () => <FamilyFrame slug={slug} title={slug} />,
-      spawn: spawnof(id),
-    };
+      spawn: spawnof(id) };
   }
   const anchor = ANCHORS[id];
   if (!anchor) {

@@ -13,7 +13,7 @@
  * transition runs both ways.
  */
 
-import { PanelRightClose } from "lucide-react";
+import {PanelRightContractRegular as PanelRightClose} from "@fluentui/react-icons";
 import { type FormEvent, useEffect, useState } from "react";
 import { Link } from "wouter";
 import { CHAT_TOOLS, type ToolId } from "../../chatstate.ts";
@@ -38,8 +38,7 @@ export function SessionPanel({
   turnCount,
   sessionCount,
   tools,
-  gateway,
-}: {
+  gateway }: {
   open: boolean;
   onClose: () => void;
   model: string;
@@ -81,7 +80,7 @@ export function SessionPanel({
           title="Close panel"
           tabIndex={open ? 0 : -1}
         >
-          <PanelRightClose size={18} strokeWidth={1.8} aria-hidden="true" />
+          <PanelRightClose fontSize={18} aria-hidden="true" />
         </button>
       </div>
 
@@ -238,7 +237,7 @@ export function SessionPanel({
             const Icon = item.icon;
             return (
               <Link key={item.href} href={item.href} className="dtc-session__link" tabIndex={open ? 0 : -1}>
-                <Icon size={15} strokeWidth={1.8} aria-hidden="true" />
+                <Icon fontSize={15} aria-hidden="true" />
                 <span>{item.label}</span>
               </Link>
             );

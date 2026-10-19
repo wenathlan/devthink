@@ -18,7 +18,7 @@
  * handled by the chrome.
  */
 
-import { AppWindow, Compass, Globe, type LucideIcon, Pin, PinOff, Play } from "lucide-react";
+import {WindowAppsRegular as AppWindow, NavigationRegular as Compass, GlobeRegular as Globe, type FluentIcon as LucideIcon, PinRegular as Pin, PinOffRegular as PinOff, PlayRegular as Play} from "@fluentui/react-icons";
 import { type KeyboardEvent as ReactKeyboardEvent, useLayoutEffect, useRef, useState } from "react";
 import type { DesktopApp } from "../../appregistry.ts";
 import { familyurl } from "../../deploybase.ts";
@@ -80,8 +80,7 @@ function jumpEntries(app: DesktopApp): JumpEntry[] {
           id: "surface",
           label: `Open ${app.name}`,
           icon: Compass,
-          action: "open",
-        },
+          action: "open" },
       ];
     case "external":
       return [
@@ -89,14 +88,12 @@ function jumpEntries(app: DesktopApp): JumpEntry[] {
           id: "surface",
           label: `Open ${app.name}`,
           icon: Compass,
-          action: "open",
-        },
+          action: "open" },
         {
           id: "site",
           label: `Open ${app.name} site`,
           icon: Globe,
-          action: "site",
-        },
+          action: "site" },
       ];
   }
 }
@@ -189,19 +186,18 @@ export function JumpList({ app, open, x, y, pinned, onOpen, onTogglePin, onClose
       style={{
         position: "fixed",
         left: pos.x,
-        top: pos.y,
-      }}
+        top: pos.y }}
     >
       <button type="button" role="menuitem" className={ITEM_CLASS} onClick={onOpen}>
         <span className={ICON_CLASS} aria-hidden="true">
-          <Play size={16} strokeWidth={1.5} />
+          <Play fontSize={16} />
         </span>
         Open
       </button>
       {entries.map((entry) => (
         <button key={entry.id} type="button" role="menuitem" className={ITEM_CLASS} onClick={() => runEntry(entry)}>
           <span className={ICON_CLASS} aria-hidden="true">
-            <entry.icon size={16} strokeWidth={1.5} />
+            <entry.icon fontSize={16} />
           </span>
           {entry.label}
         </button>
@@ -217,7 +213,7 @@ export function JumpList({ app, open, x, y, pinned, onOpen, onTogglePin, onClose
         }}
       >
         <span className={ICON_CLASS} aria-hidden="true">
-          {pinned ? <PinOff size={16} strokeWidth={1.5} /> : <Pin size={16} strokeWidth={1.5} />}
+          {pinned ? <PinOff fontSize={16} /> : <Pin fontSize={16} />}
         </span>
         {pinned ? "Unpin from taskbar" : "Pin to taskbar"}
       </button>

@@ -12,7 +12,7 @@
  * component — the wave-2 stylesheet owns the shared classes, this block only
  * fixes what this footnote's grammar needs, on data attributes.
  */
-import { PlugZap } from "lucide-react";
+import {PlugConnectedRegular as PlugZap} from "@fluentui/react-icons";
 import { Link } from "wouter";
 
 /** the note's slice of the theme grammar: eyebrow, body, link affordance */
@@ -44,7 +44,7 @@ export function AutomationNote() {
   ensureNoteCss();
   return (
     <p className="control-note automation-note">
-      <PlugZap size={15} aria-hidden="true" style={{ color: "var(--dt-orange)", flexShrink: 0 }} />
+      <PlugZap fontSize={15} aria-hidden="true" style={{ color: "var(--dt-orange)", flexShrink: 0 }} />
       <span data-note-text="">
         <span data-note-eyebrow="">automation &amp; mcp ready</span>
         <span data-note-body="">

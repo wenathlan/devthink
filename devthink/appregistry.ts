@@ -6,28 +6,8 @@
  * platform plus the marketing family apps, each with its own identity color
  * carried by the icon tile (the chrome itself stays neutral graphite).
  */
-import type { LucideIcon } from "lucide-react";
-import {
-  AudioLines,
-  BarChart3,
-  BookOpen,
-  Box,
-  Boxes,
-  Calculator,
-  Clapperboard,
-  Clock,
-  Crosshair,
-  Factory,
-  FolderKanban,
-  Hammer,
-  Image,
-  PlugZap,
-  Settings2,
-  Shield,
-  TerminalSquare,
-  Vault,
-  Waypoints,
-} from "lucide-react";
+import type { FluentIcon as LucideIcon } from "@fluentui/react-icons";
+import { MusicNote2Regular as AudioLines, ChartMultipleRegular as BarChart3, BookOpenRegular as BookOpen, BoxRegular as Box, CubeRegular as Boxes, CalculatorRegular as Calculator, VideoClipRegular as Clapperboard, ClockRegular as Clock, TargetRegular as Crosshair, BuildingFactoryRegular as Factory, FolderRegular as FolderKanban, ToolboxRegular as Hammer, ImageRegular as Image, PlugConnectedRegular as PlugZap, SettingsRegular as Settings2, ShieldRegular as Shield, WindowConsoleRegular as TerminalSquare, VaultRegular as Vault, FlowchartRegular as Waypoints } from "@fluentui/react-icons";
 
 /** how a desktop app opens */
 export type DesktopAppTarget =

@@ -15,7 +15,7 @@
  * editorial copy column: the mono eyebrow, ONE mono line and ONE action
  * button (back home, the .press voice). The copy rises once, staggered;
  * everything holds still for the reduced-motion visitor. */
-import { Home } from "lucide-react";
+import {HomeRegular as Home} from "@fluentui/react-icons";
 import type { CSSProperties } from "react";
 import { Link } from "wouter";
 import { pagecontainerStyle, stagedEntrance } from "../shell/InstitutionalChrome.tsx";
@@ -27,16 +27,14 @@ import { useReducedMotion } from "../shell/trayflyouts.tsx";
  * container owns the measure, so the stage carries no padding of its own */
 const notfoundStageStyle: CSSProperties = {
   padding: 0,
-  background: "radial-gradient(1200px 720px at 78% -14%, rgb(255 95 0 / 9%), transparent 62%), var(--sol-canvas)",
-};
+  background: "radial-gradient(1200px 720px at 78% -14%, rgb(255 95 0 / 9%), transparent 62%), var(--sol-canvas)" };
 
 /* the head + line grammar of the batch: mono signal eyebrow, one mono line */
 const ghostEyebrowStyle: CSSProperties = {
   margin: 0,
   color: "var(--dtv3-sig)",
   font: "600 10px var(--dt-mono)",
-  letterSpacing: ".08em",
-};
+  letterSpacing: ".08em" };
 
 export default function NotFound() {
   const reduced = useReducedMotion();
@@ -62,7 +60,7 @@ export default function NotFound() {
                 style={stagedEntrance(reduced, 140)}
                 aria-label="Back home"
               >
-                <Home size={14} aria-hidden="true" />
+                <Home fontSize={14} aria-hidden="true" />
                 back home
               </Link>
             </div>
