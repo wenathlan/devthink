@@ -1,7 +1,8 @@
 /**
  * gatewayview page anchor — layer 3 of the anchor architecture. The file
  * carrying the folder's own name is the path manager of the page; only the
- * theme anchor (Sol/Sol.tsx) consumes this file.
+ * theme anchor (Sol/Sol.tsx) and the window binding (Sol/panel/workspace.tsx)
+ * consume this file.
  *
  * gatewayview — the embedded gateway console of the devthink workbench: the
  * shipped v1–v5 catalog, the auth methods, the 2-calls thinking budgets, the
@@ -10,22 +11,36 @@
  * root (gatewayviewconfig.ts — the user customization layer the engine
  * reads); no view keeps a second copy of the definitions.
  *
- * D-07 navbar/hero standard: both the overview and the detail view mount the
- * ONE ShellChrome navbar directly and open with the .pagehead hero contract
- * inside .page-container. C1-04 anti-vibe-code pass: the catalog reads
+ * Embedded contract (the windows law): the desktop window mounts this anchor
+ * with embedded — no ShellChrome, no viewport-height page floor, the window
+ * frame owns the chrome and the version detail opens inside the window
+ * through local state (deep links keep their full page, the window never
+ * navigates the desktop away). Standalone keeps today's page behavior: ONE
+ * ShellChrome navbar + the .pagehead hero contract inside .page-container.
+ *
+ * Wave 3-d identity: the gateway bronze #b9963b rides the marks only (the
+ * panel header glyphs, the models meter dot, the default-budget indicator
+ * edge) while the hover washes stay neutral slate (--dtv3-sig scoped to ink)
+ * and the live/paused badge answers the theme status tokens — status never
+ * carries the identity tint. C1-04 anti-vibe-code pass: the catalog reads
  * specimen-grade — hairline-ruled rows with quiet hover washes instead of
- * boxed tile grids; the live/paused badge keeps the one accent per state and
- * the default thinking budget carries the single solar accent. R2-b data
- * ledger: the hero stages the engine .shader-stage, the overview body reads
- * asymmetric 1.6fr/1fr and rows rise 240ms at 60ms steps, reduced-motion
- * guarded. No route, data or export changes.
+ * boxed tile grids. R2-b data ledger: the hero stages the engine
+ * .shader-stage, the overview body reads asymmetric 1.6fr/1fr and rows rise
+ * 240ms at 60ms steps, reduced-motion guarded. No route, data or export
+ * changes.
  */
 import {ArrowLeftRegular as ArrowLeft, KeyRegular as KeyRound, CommunicationRegular as Network, ArrowCounterclockwiseRegular as RefreshCcw, ShieldRegular as ShieldCheck, WindowConsoleRegular as TerminalSquare} from "@fluentui/react-icons";
 import type { CSSProperties } from "react";
+import { useState } from "react";
 import { Link, useRoute } from "wouter";
+import { osAppLabels } from "../../catalog.ts";
 import { ShellChrome } from "@/shell/ShellChrome";
 import { config } from "../../gatewayviewconfig.ts";
 import type { gatewayconfig } from "../../gatewayviewdefinition.ts";
+
+/** the window title rides the catalog label row, never a hardcoded literal
+ * (the bare id keeps the heading honest if the row is missing). */
+const GATEWAY_LABEL = osAppLabels().gateway;
 
 /** the entrance stagger of the page: one orchestrated rise through the
  * engine .enter kit, the delay reading the --i custom prop (70ms steps). */
@@ -40,8 +55,7 @@ const maxmodels = Math.max(...Object.values(config.versions).map((version) => ve
  * detail-view mirror live with the page. The atmosphere guard keeps the C1
  * and engine layers off the pointer path. */
 const GATEWAY_CSS = `
-.atmos::before, .atmos::after, .grain::before, .grain::after,
-{ pointer-events: none; }
+.atmos::before, .atmos::after, .grain::before, .grain::after { pointer-events: none; }
 .control-page.atmos { position: relative; }
 .page-container .gateway-panel + .gateway-panel { margin-top: 30px; }
 .page-container .gateway-explorer { margin-top: 30px; }
@@ -96,6 +110,52 @@ const GATEWAY_CSS = `
 @keyframes gvRise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 @media (max-width: 980px) { .gv-body { grid-template-columns: minmax(0, 1fr); } .gv-rail { position: static; } }
 @media (prefers-reduced-motion: reduce) { .gv-version { animation: none; } .gv-version:hover, .gv-auth article:hover, .gv-thinking article:hover, .gv-routes article:hover, .gv-policy article:hover { transition: none; } }
+
+/* ---- wave 3-d — the embedded window contract, the bronze identity and the
+        light-body retune. .gv-root rides both surfaces (page and window),
+        .gv-embedded only rides the window body; both win by cascade order
+        inside this one stylesheet. ---- */
+
+/* the identity scope: the signal resolves to neutral ink so every hover wash
+   and code accent stays slate, the bronze lands on the marks only */
+.gv-root { --dtv3-sig: var(--dtv3-ink-1); }
+.gv-root .gateway-panel > h2 svg { color: #b9963b; }
+.gv-root .r2b-meter > i { background: #b9963b; box-shadow: 0 0 0 3px color-mix(in srgb, #b9963b 18%, transparent); }
+.gv-root .gv-thinking article[data-default="true"] { background: color-mix(in srgb, #b9963b 8%, transparent); box-shadow: inset 2px 0 0 #b9963b; }
+.gv-root .gv-thinking article[data-default="true"] .gv-thinking__budget { color: var(--dtv3-ink-1); }
+
+/* the status badge answers the theme tokens — live/paused is status, never
+   the identity tint */
+.gv-root .gateway-badge[data-state="live"] { color: var(--color-ok); border-color: color-mix(in srgb, var(--color-ok) 45%, transparent); background: color-mix(in srgb, var(--color-ok) 10%, transparent); }
+.gv-root .gateway-badge[data-state="paused"] { color: var(--color-warn); border-color: color-mix(in srgb, var(--color-warn) 45%, transparent); background: color-mix(in srgb, var(--color-warn) 10%, transparent); }
+
+/* the touch and focus law: 44px targets, visible slate rings, press scale */
+.gv-root .gateway-back { min-height: 44px; }
+.gv-root .gateway-back:focus-visible,
+.gv-root .gateway-explorer summary:focus-visible,
+.gv-root .gv-version:focus-visible { outline: 2px solid var(--dtv3-ink-1); outline-offset: 2px; }
+.gv-root .gv-version { text-align: left; }
+.gv-root .gv-version:active { transform: scale(0.98); }
+
+/* the code ledger reads as the Windows Terminal pane inside the light body:
+   #1e1e1e with the console ok ink (the family dark-pane contract) */
+.gv-root .gateway-pre { color: #c9c0b8; background: #1e1e1e; border-color: color-mix(in srgb, #1e1e1e 55%, var(--dtv3-hairline)); font: 500 11px / 1.7 var(--dt-mono); }
+.gv-root .gateway-explorer { background: color-mix(in srgb, var(--dtv3-ink-1) 3%, transparent); }
+[data-theme="light"] .gv-root .gateway-back { color: var(--dtv3-ink-2); background: rgb(15 23 42 / 4%); border-color: var(--dtv3-hairline); }
+[data-theme="light"] .gv-root .gateway-back:hover { color: var(--dtv3-ink-1); background: rgb(15 23 42 / 8%); }
+
+/* the embedded window body: the frame owns the chrome, this body fills the
+   canvas, scrolls on its own and compacts the pagehead hero */
+.control-page.gv-embedded { min-height: 0; height: 100%; overflow-y: auto; }
+.gv-embedded .page-container { padding: 18px 22px 28px; }
+.gv-embedded .pagehead { margin-bottom: 18px; }
+.gv-embedded .pagehead.r2b-head { gap: 8px; }
+.gv-embedded .r2a-display { font-size: clamp(24px, 3vw, 34px); }
+.gv-embedded .r2a-lede { font-size: 13px; }
+.gv-embedded .gv-body { gap: 22px; }
+.gv-embedded .gateway-panel + .gateway-panel { margin-top: 22px; }
+.gv-embedded .gateway-explorer { margin-top: 22px; }
+@media (prefers-reduced-motion: reduce) { .gv-root .gv-version:active { transform: none; } }
 `;
 
 let gatewayCssReady = false;
@@ -110,10 +170,20 @@ function ensureGatewayCss(): void {
   document.head.appendChild(tag);
 }
 
-/** the page floor shared by both views: ONE navbar + .page-container body + footer. */
-function ConsoleFrame({ children }: { children: React.ReactNode }) {
+/** the page floor shared by both views. Standalone: ONE navbar +
+ * .page-container body + footer. Embedded (the windows law): the window
+ * frame owns the chrome — no navbar, no viewport-height floor, no footer; the
+ * body fills the window canvas and scrolls on its own. */
+function ConsoleFrame({ embedded, children }: { embedded?: boolean; children: React.ReactNode }) {
+  if (embedded) {
+    return (
+      <main className="control-page atmos gv-root gv-embedded">
+        <div className="page-container">{children}</div>
+      </main>
+    );
+  }
   return (
-    <main className="control-page atmos">
+    <main className="control-page atmos gv-root">
       <ShellChrome />
       <div className="page-container">
         {children}
@@ -151,23 +221,13 @@ const thinkingcopy: Record<string, string> = {
   xhigh: "extra deep",
   max: "maximum" };
 
-/** the live/paused badge of one version derived from its paused kill-switch. */
-function versionstatus(version: gatewayconfig): { badge: string; color: string } {
-  return version.paused ? { badge: "paused", color: "#f59e0b" } : { badge: "live", color: "#10b981" };
-}
-
-/** the status badge element of one version: the color derives from the kill-switch. */
+/** the live/paused badge of one version: the state rides the data-state
+ * attribute and the theme tokens paint it (status never carries the identity
+ * tint — the ok/warn pair answers both themes). */
 function statusbadge(version: gatewayconfig) {
-  const status = versionstatus(version);
   return (
-    <span
-      className="gateway-badge"
-      style={{
-        color: status.color,
-        borderColor: `${status.color}44`,
-        background: `${status.color}22` }}
-    >
-      {status.badge}
+    <span className="gateway-badge" data-state={version.paused ? "paused" : "live"}>
+      {version.paused ? "paused" : "live"}
     </span>
   );
 }
@@ -255,15 +315,83 @@ const structureblock = `devthink/
   tests/                    # vitest tests flat *.test.ts
   package.json              # @wenathlan/devthink public`;
 
-/** the gateway console page: the overview or the detail view of one version. */
-export default function GatewayView() {
+/** one version row of the ledger: a route link on the page, an in-place
+ * button inside the embedded window (the windows law — the detail opens in
+ * the same frame, the window never navigates the desktop away). */
+function VersionRow({
+  version,
+  index,
+  embedded,
+  onOpen }: {
+  version: gatewayconfig;
+  index: number;
+  embedded: boolean;
+  onOpen: (id: string) => void;
+}) {
+  const content = (
+    <>
+      <span className="gv-version__main">
+        <span className="gv-version__id">{version.id}</span>
+        <span className="gv-version__provider">{version.providername}</span>
+        <span className="gv-version__pattern">{versionpattern(version)}</span>
+      </span>
+      <span className="gv-version__side">
+        {statusbadge(version)}
+        <span className="gv-version__models">{versionmodelsline(version)}</span>
+        <span className="gv-spark">
+          <span
+            className="r2b-meter"
+            aria-hidden="true"
+            style={{ "--r2b-meter-pos": `${(version.models.length / maxmodels) * 100}%` } as CSSProperties}
+          >
+            <i />
+          </span>
+        </span>
+      </span>
+    </>
+  );
+  if (embedded) {
+    return (
+      <button
+        key={version.id}
+        type="button"
+        className="gv-version"
+        aria-label={`open the ${version.id} detail`}
+        style={step(index)}
+        onClick={() => onOpen(version.id)}
+      >
+        {content}
+      </button>
+    );
+  }
+  return (
+    <Link
+      key={version.id}
+      href={`/gateway/v/${version.id}`}
+      className="gv-version"
+      aria-label={`open the ${version.id} detail`}
+      style={step(index)}
+    >
+      {content}
+    </Link>
+  );
+}
+
+/** the gateway console: the overview or the detail view of one version —
+ * the full page on the route, the window body when the desktop mounts it
+ * with the embedded contract. */
+export default function GatewayView({ embedded }: { embedded?: boolean }) {
   ensureGatewayCss();
   const [detail, params] = useRoute("/gateway/v/:versionId");
-  const version = detail ? config.versions[params?.versionId ?? ""] : undefined;
+  /** the in-window detail: the embedded surface keeps its own open version
+   * (deep links keep their full page — the window never navigates away) */
+  const [windowDetail, setWindowDetail] = useState<string | null>(null);
+  const detailId = embedded ? windowDetail : detail ? (params?.versionId ?? "") : "";
+  const version = detailId ? config.versions[detailId] : undefined;
 
-  if (detail) {
+  if (detailId) {
     return (
-      <ConsoleFrame>
+      <ConsoleFrame embedded={embedded}>
         <header className="pagehead r2b-head shader-stage enter" style={step(0)}>
           <div className="radial-light" aria-hidden="true" />
           <div className="grain-overlay" aria-hidden="true" />
@@ -276,12 +404,20 @@ export default function GatewayView() {
               ? `${versionpattern(version)} ${version.note ?? ""}`
               : "The requested version stays outside the shipped catalog; open the gateway overview for the configured versions."}
           </p>
-          {/* the retired .gateway-toolbar row rides the hero actions slot */}
+          {/* the retired .gateway-toolbar row rides the hero actions slot —
+              inside the window the back action resets the in-window detail */}
           <div className="pagehead__actions">
-            <Link href="/gateway" className="gateway-back">
-              <ArrowLeft fontSize={14} aria-hidden="true" />
-              gateway overview
-            </Link>
+            {embedded ? (
+              <button type="button" className="gateway-back" onClick={() => setWindowDetail(null)}>
+                <ArrowLeft fontSize={14} aria-hidden="true" />
+                gateway overview
+              </button>
+            ) : (
+              <Link href="/gateway" className="gateway-back">
+                <ArrowLeft fontSize={14} aria-hidden="true" />
+                gateway overview
+              </Link>
+            )}
             {version ? statusbadge(version) : null}
           </div>
         </header>
@@ -370,7 +506,7 @@ export default function GatewayView() {
           </div>
         ) : (
           <div className="control-empty">
-            <h2>version {params?.versionId} not found</h2>
+            <h2>version {detailId} not found</h2>
             <p>
               The shipped catalog carries {Object.keys(config.versions).length} versions; the requested id stays outside
               it.
@@ -382,12 +518,12 @@ export default function GatewayView() {
   }
 
   return (
-    <ConsoleFrame>
+    <ConsoleFrame embedded={embedded}>
       <header className="pagehead r2b-head shader-stage enter" style={step(0)}>
         <div className="radial-light" aria-hidden="true" />
         <div className="grain-overlay" aria-hidden="true" />
         <p className="pagehead__eyebrow r2a-eyebrow">devthink gateway</p>
-        <h1 className="pagehead__title r2a-display">Gateway</h1>
+        <h1 className="pagehead__title r2a-display">{GATEWAY_LABEL?.name ?? "Gateway"}</h1>
         <p className="pagehead__lede r2a-lede">Every provider behind one local door</p>
       </header>
       <div className="gv-body">
@@ -399,32 +535,13 @@ export default function GatewayView() {
             </h2>
             <div className="gv-versions">
               {Object.values(config.versions).map((version, index) => (
-                <Link
+                <VersionRow
                   key={version.id}
-                  href={`/gateway/v/${version.id}`}
-                  className="gv-version"
-                  aria-label={`open the ${version.id} detail`}
-                  style={step(index)}
-                >
-                  <span className="gv-version__main">
-                    <span className="gv-version__id">{version.id}</span>
-                    <span className="gv-version__provider">{version.providername}</span>
-                    <span className="gv-version__pattern">{versionpattern(version)}</span>
-                  </span>
-                  <span className="gv-version__side">
-                    {statusbadge(version)}
-                    <span className="gv-version__models">{versionmodelsline(version)}</span>
-                    <span className="gv-spark">
-                      <span
-                        className="r2b-meter"
-                        aria-hidden="true"
-                        style={{ "--r2b-meter-pos": `${(version.models.length / maxmodels) * 100}%` } as CSSProperties}
-                      >
-                        <i />
-                      </span>
-                    </span>
-                  </span>
-                </Link>
+                  version={version}
+                  index={index}
+                  embedded={embedded ?? false}
+                  onOpen={setWindowDetail}
+                />
               ))}
             </div>
           </section>

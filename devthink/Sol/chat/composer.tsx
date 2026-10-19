@@ -1,16 +1,17 @@
 /**
- * composer.tsx — the send-pill composer (r2-b conversation craft): the input
- * IS the pill — a fully-rounded hairline shell with a white 4% fill holding
- * the autosize textarea (40 → 140px floor per the D-07 chat polish) and the
- * signal key embedded at its end (a 40px round button, the only accent
- * surface — hover wash lighter, press scale .96; the focus ring rides the
- * pill through :focus-within in the theme layer). The technical microcopy
- * row (model name right, mono lowercase) sits above the pill and the tool
- * chips sit below it; the chips toggle local modes only — each one patches
- * the system prompt of the next turn (see state.ts for the honest notes).
- * While no gateway is registered, an honest one-line notice rides above the
- * chips — the gateway is opt-in, nothing is fetched without a registration.
- * Enter sends, Shift+Enter breaks the line.
+ * composer.tsx — the send-pill composer (r2-b conversation craft, wave 3-d
+ * Win11 grade): the input IS the control — a flat well (r4 top corners, hairline
+ * edge, bottom hairline) carrying the autosize textarea (44 → 140px floor per
+ * the D-07 chat polish) and the signal key embedded at its end (a 44px round
+ * button on the windows accent #0067c0 with its accent ink — hover wash
+ * lighter, press scale .96; the focus state rides the well through
+ * :focus-within as the 2px accent underline in the theme layer). The technical
+ * microcopy row (model name right, mono lowercase) sits above the well and
+ * the tool chips sit below it; the chips toggle local modes only — each one
+ * patches the system prompt of the next turn (see state.ts for the honest
+ * notes). While no gateway is registered, an honest one-line notice rides
+ * above the chips — the gateway is opt-in, nothing is fetched without a
+ * registration. Enter sends, Shift+Enter breaks the line.
  */
 
 import {LightbulbRegular as BrainCircuit, type FluentIcon as LucideIcon, SendRegular as Send} from "@fluentui/react-icons";
@@ -44,9 +45,9 @@ export function Composer({
     const el = inputRef.current;
     if (!el) return;
     el.style.height = "auto";
-    // the D-07 composer contract: the input never sits under 40px tall (the
-    // 8px shell keeps its radius, the theme layer carries the focus ring)
-    el.style.height = `${Math.min(140, Math.max(40, el.scrollHeight))}px`;
+    // the D-07 composer contract: the input never sits under 44px tall (the
+    // touch law floor; the theme layer carries the well + the focus underline)
+    el.style.height = `${Math.min(140, Math.max(44, el.scrollHeight))}px`;
   }, [draft, inputRef]);
 
   const submit = () => {

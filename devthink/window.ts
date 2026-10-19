@@ -31,6 +31,7 @@ export const WINDOW_ANCHORS: readonly string[] = [
   "audio",
   "video",
   "providers",
+  "gateway",
 ];
 
 /** the family applications: the deploy units of the one family, each riding
@@ -80,6 +81,7 @@ const SPAWN_OVERRIDES: Record<string, WindowSpawn> = {
   console: { width: 980, height: 680 },
   settings: { width: 960, height: 680 },
   video: { width: 960, height: 680 },
+  gateway: { width: 980, height: 680 },
 };
 
 /** the spawn of one windowed app: the declared override when one answers,

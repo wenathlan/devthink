@@ -21,7 +21,22 @@ function parseBlocks(source: string): Block[] {
     blocks.push({ kind: "code", lang: (m[1] ?? "").trim(), code: (m[2] ?? "").replace(/\n$/, "") });
     last = start + m[0].length;
   }
-  if (last < source.length) blocks.push({ kind: "text", text: source.slice(last) });
+  if (last < source.length) {
+    const tail = source.slice(last);
+    // a fence left open mid-stream renders as a code block in progress, so
+    // tokens land in the code pane instead of flashing raw backticks
+    const open = tail.indexOf("```");
+    if (open !== -1) {
+      if (open > 0) blocks.push({ kind: "text", text: tail.slice(0, open) });
+      const rest = tail.slice(open + 3);
+      const lineEnd = rest.indexOf("\n");
+      const lang = lineEnd === -1 ? rest : rest.slice(0, lineEnd);
+      const code = lineEnd === -1 ? "" : rest.slice(lineEnd + 1).replace(/\n$/, "");
+      blocks.push({ kind: "code", lang: lang.trim(), code });
+    } else {
+      blocks.push({ kind: "text", text: tail });
+    }
+  }
   return blocks;
 }
 

@@ -36,6 +36,7 @@ import CalculatorAnchor from "../calculator/calculator.tsx";
 import ChatBody from "../chat/chatbody.tsx";
 import ConsoleAnchor from "../console/console.tsx";
 import DocsAnchor from "../docs/docs.tsx";
+import GatewayView from "../gateway/gateway.tsx";
 import GamesAnchor from "../games/games.tsx";
 import ImageAnchor from "../image/image.tsx";
 import ProjectsAnchor from "../projects/projects.tsx";
@@ -71,6 +72,7 @@ const ANCHORS: Record<string, ComponentType<{ embedded?: boolean }>> = {
   audio: AudioAnchor,
   video: VideoAnchor,
   providers: ProvidersAnchor,
+  gateway: GatewayView,
 };
 
 /** binds one catalog row to its component: the anchors bind by id, the

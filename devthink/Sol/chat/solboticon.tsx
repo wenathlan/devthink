@@ -26,8 +26,9 @@ export function SolBotIcon({ size = 24, className }: { size?: number; className?
       />
       {/* disc rim */}
       <circle cx="12" cy="12" r="6.4" stroke="currentColor" strokeWidth="1.7" />
-      {/* amber core */}
-      <circle cx="12" cy="12" r="3.1" fill="var(--sol-primary)" />
+      {/* amber core — the Sol identity mark (the chat skin owns the
+          --dtc-sol token; the neutral primary keeps the fallback honest) */}
+      <circle cx="12" cy="12" r="3.1" fill="var(--dtc-sol, var(--sol-primary))" />
     </svg>
   );
 }

@@ -13,6 +13,7 @@
 import {DeleteRegular as TrashIcon, PanelLeftRegular as PanelLeft, PanelRightRegular as PanelRight} from "@fluentui/react-icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { osAppLabels } from "../../catalog.ts";
 import {
   buildSystemPrompt,
   type ChatSession,
@@ -56,7 +57,12 @@ function ensureChatCss(): void {
   document.head.appendChild(tag);
 }
 
-export default function ChatBody() {
+/** the app title of the empty conversation rides the catalog label row, never
+ * a hardcoded literal (the bare id keeps the heading honest if the row is
+ * missing). */
+const CHAT_LABEL = osAppLabels().chat;
+
+export default function ChatBody({ embedded }: { embedded?: boolean }) {
   ensureChatCss();
   const { sessions, active, open, startFresh, commit, remove } = useChatSessions();
   const [tools, setTools] = useState<ToolId[]>([]);
@@ -69,8 +75,13 @@ export default function ChatBody() {
   /* the session panel runs on the ShellChrome menu mount-state: the panel
    * mounts hidden, a rAF flips data-open on the next frame so the Windows
    * slide-cum-fade enter plays, and the exit keeps it mounted for the 200ms
-   * transition before unmounting (a reopen during the exit reuses it) */
-  const [panelMounted, setPanelMounted] = useState(() => typeof window !== "undefined" && window.innerWidth > 1100);
+   * transition before unmounting (a reopen during the exit reuses it). The
+   * page keeps the inspector default (open on wide viewports); the embedded
+   * window starts closed — the window is narrow and the panel would cover
+   * the composer, so it opens on demand only. */
+  const [panelMounted, setPanelMounted] = useState(
+    () => !embedded && typeof window !== "undefined" && window.innerWidth > 1100,
+  );
   const [panelOpen, setPanelOpen] = useState(false);
   const panelMountedRef = useRef(false);
   const panelExitTimer = useRef<number | null>(null);
@@ -309,12 +320,32 @@ export default function ChatBody() {
     }
   }, [active]);
 
-  // autoscroll: every committed turn and the status flip pull the thread to the bottom
+  // the stream follower: while tokens land, the thread tracks the growth only
+  // when the visitor rides the bottom (the classic chat pin — reading history
+  // mid-answer never yanks the floor away). A new turn or a status flip always
+  // pulls to the bottom.
+  const streamPinnedRef = useRef(true);
+
+  const onScrollTrack = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    streamPinnedRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < 120;
+  }, []);
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: the dep list is the trigger set — autoscroll re-runs on each committed turn and on the status/error flips even though the body only reads the scroll container
   useEffect(() => {
     const el = scrollRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [active?.messages.length, busy, error]);
+    streamPinnedRef.current = true;
+  }, [active?.id, active?.messages.length, busy, error]);
+
+  // the live deltas: scroll only while pinned to the bottom
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the live lengths are the trigger — the follower reads the scroll container only
+  useEffect(() => {
+    if (!busy) return;
+    const el = scrollRef.current;
+    if (el && streamPinnedRef.current) el.scrollTop = el.scrollHeight;
+  }, [busy, live?.content.length, live?.thought?.length]);
 
   // Escape closes the mobile drawer first, then the session panel
   useEffect(() => {
@@ -357,7 +388,7 @@ export default function ChatBody() {
             <PanelLeft fontSize={18} aria-hidden="true" />
           </button>
           <div className="dtc-tb-title">
-            <h1>{active ? active.title : "New chat"}</h1>
+            <h1>{active ? active.title : (CHAT_LABEL?.name ?? "Chat")}</h1>
             <small>
               sol {GATEWAY_MODEL} {gateway.base ? "gateway on" : "gateway off"}
             </small>
@@ -407,8 +438,8 @@ export default function ChatBody() {
               </div>
             </div>
           ) : (
-            <div className="dtc-thread" key="thread">
-              <div className="dtc-scroll" ref={scrollRef}>
+            <div className="dtc-thread" key={active?.id ?? "thread"}>
+              <div className="dtc-scroll" ref={scrollRef} onScroll={onScrollTrack}>
                 <div className="dtc-scroll__inner">
                   {active.messages.map((m) => (
                     <Turn

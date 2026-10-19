@@ -100,8 +100,8 @@ export default function Sol() {
           <Route path="/calculator" component={() => <CalculatorAnchor />} />
           <Route path="/games" component={() => <GamesAnchor />} />
           <Route path="/console" component={() => <ConsoleAnchor />} />
-          <Route path="/gateway" component={GatewayAnchor} />
-          <Route path="/gateway/v/:versionId" component={GatewayAnchor} />
+          <Route path="/gateway" component={() => <GatewayAnchor />} />
+          <Route path="/gateway/v/:versionId" component={() => <GatewayAnchor />} />
           <Route path="/providers" component={() => <ProvidersAnchor />} />
           <Route path="/projects" component={() => <ProjectsAnchor />} />
           <Route path="/usage" component={() => <UsageAnchor />} />
