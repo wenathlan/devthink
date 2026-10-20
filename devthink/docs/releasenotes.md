@@ -1,12 +1,7 @@
-# Devthink 2.0.127
+# Devthink 2.0.128
 
-**The release lane answers the owner verdict** — the regression every bump since 2.0.118 carried: the version stamp walked the package manifest, the web manifest and the version module, but the release metadata synchronization (`node tests/release.mjs sync`) never ran after the bump, so the whole lockstep family drifted — the generated release notes (`docs/releasenotes.md`), the permission baseline (`tests/permdiff.json`), the maven revision, the nuget version, the gemspec, the java and csharp carriers, the deno imports and the docker build args all kept answering 2.0.118, the gate ladder refused every candidate since v2.0.119 and the releases shipped the source archive alone. The same wave runs the restamp the release pass demands: the sync walks the whole metadata family to the current version and the release notes render the per channel artifact sections again. **The fourteen open security findings close the same day**: the cadria and debonair locks carry the esbuild override (every nested copy collapses to 0.28.2 and the dev server advisories die) and the uuid override (the xcode transitive walks to 11.1.1 and the buffer bounds advisory dies); the trufflehog step of the security workflow pins its commit sha; the npm install of the maintenance ladder pins the literal the engines floor demands; the six read-only checkouts of the release lane stop persisting credentials (the dispatch tag checkout never holds the repo token again); the automation module answers a caught value with its message only (a stack byte never rides the wire payload); the plain text converter of the scrape engine kills an unterminated script opener as the whole sequence; and the storage platform placeholder of the drives panel joins the sibling no-path grammar so the origin sweep stays honest.
-
-| Area | Change |
-| --- | --- |
-| The release lane | The lockstep restamp — `release.mjs sync` and `permdiff.mjs sync` walk the whole metadata family to the current version; the gate ladder answers go again. |
-| The security fourteen | The esbuild and uuid overrides of cadria and debonair, the trufflehog sha pin, the npm literal pin, the six credential-free checkouts, the automation message boundary, the scrape sanitizer guard and the drives panel placeholder. |
-| The release notes | `docs/releasenotes.md` renders the current version with the per channel artifact sections — the deterministic contract the notes test asserts. |
+This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (2.0.127 plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: - node-version: 26.10.0
+- node-version: 26.12.0. The version stamps 2.0.128 land across the metadata family with the apifreeze artifact re-frozen and the permission baseline recorded, and the ladder keeps no long-lived branch behind: the automation branch of this rung squashes onto main when the verification pipeline answers green — and closes with its branch deleted when it answers red — so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way.
 
 ## Distribution channels
 
@@ -14,22 +9,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.127.tgz`
+- `wenathlan-devthink-2.0.128.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.127.nupkg`
+- `devthink.2.0.128.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.127.pom`
-- `devthink-2.0.127.jar`
-- `devthink2.0.127.zip`
-- `devthink-declarations-2.0.127.zip`
+- `devthink-2.0.128.pom`
+- `devthink-2.0.128.jar`
+- `devthink2.0.128.zip`
+- `devthink-declarations-2.0.128.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -43,77 +38,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.127.gem`
+- `devthink-2.0.128.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.127.vsix`
+- `devthink-vscode-2.0.128.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.127.xpi`
+- `devthink-firefox-2.0.128.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.127.zip`
+- `devthink-safari-2.0.128.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.127.zip`
-- `devthink-2.0.127-source.tar.xz`
-- `devthink-nativehost-2.0.127.template.json`
+- `devthink2.0.128.zip`
+- `devthink-2.0.128-source.tar.xz`
+- `devthink-nativehost-2.0.128.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.127.zip`
+- `devthink-site-2.0.128.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.127.zip`
+- `devthink-declarations-2.0.128.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.127.json`
-- `devthink-attestations-2.0.127.json`
-- `devthink-artifactmanifest-2.0.127.json`
+- `devthink-sbom-2.0.128.json`
+- `devthink-attestations-2.0.128.json`
+- `devthink-artifactmanifest-2.0.128.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.127.tgz`
-- `devthink.2.0.127.nupkg`
-- `devthink-2.0.127.pom`
-- `devthink-2.0.127.jar`
-- `devthink-2.0.127.gem`
+- `wenathlan-devthink-2.0.128.tgz`
+- `devthink.2.0.128.nupkg`
+- `devthink-2.0.128.pom`
+- `devthink-2.0.128.jar`
+- `devthink-2.0.128.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.127.vsix`
-- `devthink-firefox-2.0.127.xpi`
-- `devthink-safari-2.0.127.zip`
-- `devthink2.0.127.zip`
-- `devthink-2.0.127-source.tar.xz`
-- `devthink-nativehost-2.0.127.template.json`
-- `devthink-site-2.0.127.zip`
-- `devthink-declarations-2.0.127.zip`
-- `devthink-sbom-2.0.127.json`
-- `devthink-attestations-2.0.127.json`
-- `devthink-artifactmanifest-2.0.127.json`
+- `devthink-vscode-2.0.128.vsix`
+- `devthink-firefox-2.0.128.xpi`
+- `devthink-safari-2.0.128.zip`
+- `devthink2.0.128.zip`
+- `devthink-2.0.128-source.tar.xz`
+- `devthink-nativehost-2.0.128.template.json`
+- `devthink-site-2.0.128.zip`
+- `devthink-declarations-2.0.128.zip`
+- `devthink-sbom-2.0.128.json`
+- `devthink-attestations-2.0.128.json`
+- `devthink-artifactmanifest-2.0.128.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 
@@ -121,7 +116,7 @@ Every artifact above attaches to the release of the immutable tag beside the che
 
 ## The chain to this candidate
 
-Every release from the 1.1.31 base to this candidate, grouped by the phases the roadmap declared: 122 released versions the changelog records, 69 roadmap sections the phases draw their titles from.
+Every release from the 1.1.31 base to this candidate, grouped by the phases the roadmap declared: 123 released versions the changelog records, 69 roadmap sections the phases draw their titles from.
 
 ### The base (1.1.31)
 

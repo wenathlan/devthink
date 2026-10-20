@@ -70,7 +70,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v7.1.0
         with:
-          node-version: 26.10.0
+          node-version: 26.12.0
       - name: Set up Bun
         if: ${{ inputs.app == 'devthink' }}
         uses: oven-sh/setup-bun@v2.2.0
