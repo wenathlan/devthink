@@ -67,26 +67,36 @@ export function deploybase(): string {
 /**
  * Resolves the url of a family deploy unit that shares this origin.
  *
- * The verbatim family form (the same recipe every member app carries):
- * `"../" + slug with trimmed slashes + "/"`. Leading and trailing slashes
- * on the slug are tolerated and never doubled. The form is RELATIVE by
- * contract — one hop out of the app's own mount segment, then the sibling
- * slug — and the browser resolves it against the segment the page
- * actually booted from: a devthink page at /panel resolves "../saddle/"
- * to "/saddle/", a family arrival at /saddle resolves it to "/saddle/"
- * too (the parent of the mount is the site root), and a project-pages
- * mount at /devthink/ lands on the sibling the same way. The absolute
- * form the module once answered ("deploybase() + /<slug>/") died on the
- * family arrival routes exactly there: a boot at /saddle froze the base
- * at "/saddle" and the power clip iframe asked for "/saddle/saddle/" —
- * a url that answers nothing. The relative contract never meets that
- * wall: it names the sibling by position, never by the boot's own
- * segment.
+ * The os sits at the family root of whatever site carries it and the family
+ * applications ride one segment under that root: the project pages site
+ * mounts the os at "/<repository>/" with every member app under
+ * "/<repository>/<slug>/", while the dev server and the self hosted domain
+ * roots flatten the same tree — the os at "/" and every member app at
+ * "/<slug>/". The sibling therefore answers from the family root the
+ * running build declares, never from the live route: the build base of the
+ * os IS the family root (the pages lane nests the members under the same
+ * repository segment the os mounts at), and a baseless build lives at the
+ * site root where the members sit one segment deep. The answer is absolute
+ * ("/<root>/<slug>/") so the document it rides in — the power clip iframe,
+ * a new browser window, a jump entry — lands on the sibling from any route
+ * of the os: a page at /panel, a family arrival at /saddle and a fresh
+ * deep linked boot on that arrival all ask for the same url, because the
+ * resolution never reads the boot pathname (the wall the relative form met
+ * on the pages lane: "../<slug>/" rides one level up from the live route,
+ * and on the nested pages tree that level is the repository segment's
+ * parent — the site root — where no sibling lives, so the power clip asked
+ * for "/saddle/" and answered the host's 404). The member apps themselves
+ * keep their own verbatim relative recipe ("../<slug>/") — from their
+ * nested mounts one level up IS the family root — and this module serves
+ * only the os side of the contract. Leading and trailing slashes on the
+ * slug are tolerated and never doubled.
  *
  * @param slug the deploy unit segment (the app folder name).
- * @returns the in-site url of the family application ("../<slug>/").
+ * @returns the in-site url of the family application ("/<root>/<slug>/").
  */
 export function familyurl(slug: string): string {
   const clean = slug.replace(/^\/+|\/+$/g, "");
-  return `../${clean}/`;
+  const buildbase = import.meta.env.BASE_URL;
+  const root = buildbase && buildbase !== "/" && buildbase !== "./" ? buildbase.replace(/\/+$/, "") : "";
+  return `${root}/${clean}/`;
 }
