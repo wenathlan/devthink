@@ -350,17 +350,29 @@ jobs:
               exit 0
             fi
           fi
-          # the squash merge landed on main: create the version tag and
-          # dispatch the release workflow on it (pushes performed with the
-          # GITHUB_TOKEN never fire workflows, so the dispatch is explicit).
-          # the fetch and the version tag push ride the same single pat
-          # header the branch push carried.
+          # the squash merge landed on main. the pat path lets the auto-tag
+          # lane of the main push cut the version tag itself: a pat merge
+          # fires the main-push release run, the auto-tag job stamps the
+          # fresh version over the latest tag, and the whole release chain
+          # (the assemble set, the iso, the wasm, the family tarballs, the
+          # attestation, the github release) answers from that one run -
+          # the explicit tag push this lane once carried raced the auto-tag
+          # cut (the tag landed before the main-push run resolved, the
+          # auto-tag answered no bump and the tag-push run inherited the
+          # skip through its needs graph, so the release shipped empty).
+          # the app-token fallback keeps the explicit form: a GITHUB_TOKEN
+          # merge never fires workflows, so the tag and the dispatch carry
+          # the release the only way the app token can.
           gitpat fetch origin main --quiet
           MAINSHA="$(git rev-parse origin/main)"
-          git tag -a "v${NEXT}" -m "DevThink ${NEXT}" "$MAINSHA"
-          gitpat push origin "refs/tags/v${NEXT}"
-          gh workflow run release.yml --ref "v${NEXT}" -f tag="v${NEXT}"
-          echo "The rung v${NEXT} landed on ${MAINSHA:0:8} and the release workflow was dispatched on the tag."
+          if [ -z "$OWNER_PAT" ]; then
+            git tag -a "v${NEXT}" -m "DevThink ${NEXT}" "$MAINSHA"
+            gitpat push origin "refs/tags/v${NEXT}"
+            gh workflow run release.yml --ref "v${NEXT}" -f tag="v${NEXT}"
+            echo "The rung v${NEXT} landed on ${MAINSHA:0:8} and the release workflow was dispatched on the tag."
+          else
+            echo "The rung v${NEXT} landed on ${MAINSHA:0:8}; the auto-tag lane of the main push cuts the tag and the release chain answers whole."
+          fi
   cachecleanup:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-24.04
