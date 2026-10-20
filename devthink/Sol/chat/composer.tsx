@@ -21,6 +21,7 @@ import {
   CubeRegular as Cube,
   type FluentIcon as LucideIcon,
   SendRegular as Send,
+  StopRegular as Stop,
 } from "@fluentui/react-icons";
 import { type KeyboardEvent, type RefObject, useEffect } from "react";
 import { CHAT_TOOLS, GATEWAY_MODEL, type ToolId } from "../../chatstate.ts";
@@ -33,6 +34,7 @@ export function Composer({
   draft,
   onDraft,
   onSend,
+  onStop,
   busy,
   tools,
   onToggleTool,
@@ -45,6 +47,9 @@ export function Composer({
   draft: string;
   onDraft: (v: string) => void;
   onSend: () => void;
+  /** aborts the running round — the Send key swaps to the Stop glyph
+   * while busy (the competitor grammar; the partial commits on the floor). */
+  onStop?: (() => void) | undefined;
   busy: boolean;
   tools: ToolId[];
   onToggleTool: (id: ToolId) => void;
@@ -98,16 +103,28 @@ export function Composer({
           onChange={(e) => onDraft(e.target.value)}
           onKeyDown={onKeyDown}
         />
-        <button
-          type="button"
-          className="dtc-send"
-          onClick={submit}
-          disabled={busy || !draft.trim()}
-          aria-label="Send message"
-          title="Send message"
-        >
-          <Send fontSize={18} aria-hidden="true" />
-        </button>
+        {busy && onStop ? (
+          <button
+            type="button"
+            className="dtc-send dtc-send--stop"
+            onClick={onStop}
+            aria-label="Stop generating"
+            title="Stop generating"
+          >
+            <Stop fontSize={16} aria-hidden="true" />
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="dtc-send"
+            onClick={submit}
+            disabled={busy || !draft.trim()}
+            aria-label="Send message"
+            title="Send message"
+          >
+            <Send fontSize={18} aria-hidden="true" />
+          </button>
+        )}
       </div>
 
       {notice ? (

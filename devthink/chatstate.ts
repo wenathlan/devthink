@@ -7,8 +7,18 @@
  * network code of its own.
  */
 import { useCallback, useMemo } from "react";
-import { type GatewayMessage, gatewayChat, gatewayChatStream, type StreamHandlers, type ThinkingLevel } from "./osgateway";
+import {
+  ChatStoppedError,
+  type GatewayMessage,
+  gatewayChat,
+  gatewayChatStream,
+  isChatStop,
+  type StreamHandlers,
+  type ThinkingLevel,
+} from "./osgateway";
 import { arrayOf, isString, useStoredState, type Validator } from "./usestoredstate.ts";
+
+export { ChatStoppedError, isChatStop };
 
 /* ------------------------------- types -------------------------------- */
 
@@ -22,6 +32,9 @@ export type ChatTurn = {
   thought?: string | undefined;
   /** model reported by the gateway (assistant turns only). */
   model?: string | undefined;
+  /** true when the visitor stopped the generation — the partial answer
+   * stayed on the floor and the meta line says so honestly. */
+  stopped?: boolean | undefined;
   at: number;
 };
 
@@ -56,6 +69,7 @@ export const isChatTurn: Validator<ChatTurn> = (v): v is ChatTurn => {
     typeof t.content === "string" &&
     (t.thought === undefined || typeof t.thought === "string") &&
     (t.model === undefined || typeof t.model === "string") &&
+    (t.stopped === undefined || typeof t.stopped === "boolean") &&
     typeof t.at === "number"
   );
 };
@@ -328,11 +342,7 @@ export async function runTurnStream(
  * newest edit prevails because the branch is the conversation that commits
  * next. Pure logic, zero services.
  */
-export function cloneSessionForEdit(
-  session: ChatSession,
-  turnId: string,
-  newText: string,
-): ChatSession | null {
+export function cloneSessionForEdit(session: ChatSession, turnId: string, newText: string): ChatSession | null {
   const index = session.messages.findIndex((m) => m.id === turnId && m.role === "user");
   if (index === -1) return null;
   const edited: ChatTurn = {

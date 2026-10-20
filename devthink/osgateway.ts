@@ -14,6 +14,24 @@
 
 import { parseRetryAfterMs, RetryableError, retryWithBackoff } from "./retrybackoff.ts";
 
+/**
+ * ChatStoppedError — the honest stop marker of the chat contract: the
+ * caller's own abort signal fired (the Stop pill), which is not a failure.
+ * The chat body catches it to keep the partial answer on the floor; a
+ * timeout keeps the plain timeout error below.
+ */
+export class ChatStoppedError extends Error {
+  constructor() {
+    super("generation stopped by the visitor");
+    this.name = "ChatStoppedError";
+  }
+}
+
+/** isChatStop — true when the error is the visitor's own stop. */
+export function isChatStop(err: unknown): err is ChatStoppedError {
+  return err instanceof ChatStoppedError;
+}
+
 export type GatewayRole = "system" | "user" | "assistant";
 export type GatewayMessage = { role: GatewayRole; content: string };
 
@@ -45,7 +63,7 @@ type ApiResponse = {
  */
 export async function gatewayChat(
   messages: GatewayMessage[],
-  opts?: { base?: string; model?: string; timeoutMs?: number; signal?: AbortSignal; retries?: number }
+  opts?: { base?: string; model?: string; timeoutMs?: number; signal?: AbortSignal; retries?: number },
 ): Promise<GatewayReply> {
   const timeoutMs = opts?.timeoutMs ?? 60_000;
   const ctrl = new AbortController();
@@ -94,6 +112,7 @@ export async function gatewayChat(
     );
   } catch (err) {
     if (err instanceof DOMException && err.name === "AbortError") {
+      if (opts?.signal?.aborted) throw new ChatStoppedError();
       throw new Error("the gateway timed out before answering (60s)");
     }
     throw err instanceof Error ? err : new Error(String(err));
@@ -225,6 +244,7 @@ export async function gatewayChatStream(
     return { content, reasoning: reasoning || undefined, model };
   } catch (err) {
     if (err instanceof DOMException && err.name === "AbortError") {
+      if (opts?.signal?.aborted) throw new ChatStoppedError();
       throw new Error("the gateway timed out before answering (120s)");
     }
     throw err instanceof Error ? err : new Error(String(err));

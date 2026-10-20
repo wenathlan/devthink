@@ -10,7 +10,14 @@
  * the functional generation status row (a 3px live bar) and the inline
  * error row with a win11 retry — the same contract as the os AuraChat.
  */
-import {ArrowClockwiseRegular as ArrowClockwise, CheckmarkRegular as Checkmark, ChevronDownRegular as ChevronDown, DismissRegular as Dismiss, EditRegular as Edit, LightbulbRegular as Lightbulb} from "@fluentui/react-icons";
+import {
+  ArrowClockwiseRegular as ArrowClockwise,
+  CheckmarkRegular as Checkmark,
+  ChevronDownRegular as ChevronDown,
+  DismissRegular as Dismiss,
+  EditRegular as Edit,
+  LightbulbRegular as Lightbulb,
+} from "@fluentui/react-icons";
 import { useEffect, useRef, useState } from "react";
 import { type ChatTurn, cx, fmtTime } from "../../chatstate.ts";
 import { Markdown } from "./markdown.tsx";
@@ -38,17 +45,23 @@ function Cognition({ text }: { text: string }) {
  * history — the class is inert under reduced motion. `onEdit` arms the user
  * turn with the checkpoint affordance: the pencil appears on hover/focus,
  * the field swaps the bubble while editing, and the save hands the new text
- * to the caller (the branch round answers from the edit).
+ * to the caller (the branch round answers from the edit). `onRegenerate`
+ * arms the last assistant turn with the competitor grammar: the round
+ * arrow re-answers the same user turn (the old answer leaves the floor),
+ * and a stopped partial carries its honest · stopped mark in the meta line.
  */
 export function Turn({
   turn,
   fresh = false,
   busy = false,
-  onEdit }: {
+  onEdit,
+  onRegenerate,
+}: {
   turn: ChatTurn;
   fresh?: boolean;
   busy?: boolean;
   onEdit?: (text: string) => void;
+  onRegenerate?: () => void;
 }) {
   const assistant = turn.role === "assistant";
   const [editing, setEditing] = useState(false);
@@ -56,6 +69,7 @@ export function Turn({
   const editfieldRef = useRef<HTMLTextAreaElement | null>(null);
 
   const editable = !assistant && !busy && typeof onEdit === "function";
+  const regenerable = assistant && !busy && typeof onRegenerate === "function";
 
   // the edit field takes focus as the form reveals (the ref effect answers
   // the focus the a11y law refuses the autofocus attribute)
@@ -138,10 +152,22 @@ export function Turn({
         </div>
         <p className="dtc-meta">
           {fmtTime(turn.at)} {assistant ? (turn.model ?? "devthink").toUpperCase() : "YOU"}
+          {turn.stopped ? <i className="dtc-meta__stop">· stopped</i> : null}
+          {regenerable ? (
+            <button
+              type="button"
+              className="dtc-turn__act"
+              aria-label="Regenerate response"
+              title="Regenerate response"
+              onClick={() => onRegenerate?.()}
+            >
+              <ArrowClockwise fontSize={13} aria-hidden="true" />
+            </button>
+          ) : null}
           {editable ? (
             <button
               type="button"
-              className="dtc-turn__edit"
+              className="dtc-turn__act"
               aria-label="Edit message"
               title="Edit message"
               onClick={() => {

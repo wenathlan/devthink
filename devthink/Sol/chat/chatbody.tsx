@@ -27,6 +27,7 @@ import {
   cloneSessionForEdit,
   deriveTitle,
   GATEWAY_MODEL,
+  isChatStop,
   newSession,
   readChatHandoff,
   runTurnStream,
@@ -75,6 +76,13 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  /* the stop lane (rung 119): the controller of the running round — the
+   * Stop pill aborts it, the gateway answers the honest ChatStoppedError
+   * and the partial answer commits to the floor instead of an error row.
+   * The live turn mirrors into a ref because the catch reads it after the
+   * state closure went stale (the async round outlives the render). */
+  const abortRef = useRef<AbortController | null>(null);
+  const liveRef = useRef<ChatTurn | null>(null);
   const [railCollapsed, setRailCollapsed] = useState(
     () => typeof window !== "undefined" && window.matchMedia("(max-width: 860px)").matches,
   );
@@ -174,7 +182,9 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
    * engages, so retry answers the moment a gateway is registered. The round
    * streams: reasoning deltas land in the cognition drawer, content deltas
    * grow the live turn on the floor, and the committed turn replaces the
-   * live one when the stream closes (one [DONE]). */
+   * live one when the stream closes (one [DONE]). The Stop pill aborts the
+   * controller and the partial answer commits with its stopped flag — the
+   * visitor's stop is never an error. */
   const runCompletion = useCallback(
     async (history: ChatSession, system: string) => {
       if (!gateway.base) {
@@ -186,15 +196,30 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
       }
       setBusy(true);
       setError(null);
-      setLive({ id: "t-live", role: "assistant", content: "", at: Date.now() });
+      const ctrl = new AbortController();
+      abortRef.current = ctrl;
+      const seedLive: ChatTurn = { id: "t-live", role: "assistant", content: "", at: Date.now() };
+      liveRef.current = seedLive;
+      setLive(seedLive);
       try {
         const reply = await runTurnStream(history.messages, system, {
           base: gateway.base,
           sessionId: history.id.split("~")[0],
           thinkingLevel: tools.includes("thinking") ? "high" : "medium",
+          signal: ctrl.signal,
           handlers: {
-            onContent: (d) => setLive((prev) => (prev ? { ...prev, content: prev.content + d } : prev)),
-            onReasoning: (d) => setLive((prev) => (prev ? { ...prev, thought: (prev.thought ?? "") + d } : prev)),
+            onContent: (d) => {
+              liveRef.current = liveRef.current
+                ? { ...liveRef.current, content: liveRef.current.content + d }
+                : liveRef.current;
+              setLive((prev) => (prev ? { ...prev, content: prev.content + d } : prev));
+            },
+            onReasoning: (d) => {
+              liveRef.current = liveRef.current
+                ? { ...liveRef.current, thought: (liveRef.current.thought ?? "") + d }
+                : liveRef.current;
+              setLive((prev) => (prev ? { ...prev, thought: (prev.thought ?? "") + d } : prev));
+            },
           },
         });
         commit({
@@ -203,10 +228,39 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
           at: Date.now(),
         });
       } catch (err) {
-        const msg = err instanceof Error ? err.message : "unknown failure";
-        setError(msg);
-        toast.error("Sol did not respond", { description: msg });
+        if (isChatStop(err)) {
+          /* the visitor stopped the round: whatever streamed stays on the
+           * floor as an honest partial (stopped flag on), and a round with
+           * nothing streamed keeps the user turn for the retry path. */
+          const partial = liveRef.current;
+          if (partial && (partial.content.trim() || partial.thought?.trim())) {
+            commit({
+              ...history,
+              messages: capTurns([
+                ...history.messages,
+                {
+                  ...partial,
+                  id: `t-${Date.now()}-a`,
+                  model: partial.model ?? GATEWAY_MODEL,
+                  stopped: true,
+                },
+              ]),
+              at: Date.now(),
+            });
+            toast("Generation stopped", {
+              description: "The partial answer stayed on the floor — regenerate answers it again.",
+            });
+          } else {
+            toast("Generation stopped");
+          }
+        } else {
+          const msg = err instanceof Error ? err.message : "unknown failure";
+          setError(msg);
+          toast.error("Sol did not respond", { description: msg });
+        }
       } finally {
+        abortRef.current = null;
+        liveRef.current = null;
         setBusy(false);
         setLive(null);
         window.requestAnimationFrame(() => inputRef.current?.focus());
@@ -214,6 +268,33 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     },
     [commit, gateway.base, tools],
   );
+
+  /** stop — the Stop pill of the composer: aborts the running round. The
+   * catch lane above commits the partial and clears busy; pressing stop
+   * without a running round is a no-op. */
+  const stop = useCallback(() => {
+    abortRef.current?.abort();
+  }, []);
+
+  /** regenerate — the competitor grammar on the last assistant turn: the
+   * old answer leaves the floor (the session commits without it) and the
+   * same user turn rounds again. A stopped partial regenerates the same
+   * way — the stop never locks the conversation. */
+  const regenerate = useCallback(() => {
+    if (busy || !active || active.messages.length === 0) return;
+    const last = active.messages[active.messages.length - 1];
+    if (last.role === "assistant") {
+      const stripped: ChatSession = {
+        ...active,
+        messages: active.messages.slice(0, -1),
+        at: Date.now(),
+      };
+      commit(stripped);
+      void runCompletion(stripped, buildSystemPrompt(tools));
+      return;
+    }
+    void runCompletion(active, buildSystemPrompt(tools));
+  }, [active, busy, commit, runCompletion, tools]);
 
   /** send — commits the user turn (the empty→thread migration happens here,
    * adopting the deep-link id when the conversation is born from a link),
@@ -507,21 +588,22 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
             <div className="dtc-hero grain" key="hero">
               <div className="dtc-hero__wrap">
                 <Welcome onPick={(t) => void send(t)} gatewayRegistered={gateway.base !== ""} />
-                <div className="dtc-dock">
-                  <Composer
-                    draft={draft}
-                    onDraft={setDraft}
-                    onSend={() => void send(draft)}
-                    busy={busy}
-                    tools={tools}
-                    onToggleTool={toggleTool}
-                    inputRef={inputRef}
-                    notice={gateway.base ? undefined : GATEWAY_SEND_NOTICE}
-                    sandboxOn={sandboxOpen}
-                    sandboxRunning={sandboxRunning}
-                    onToggleSandbox={toggleSandbox}
-                  />
-                </div>
+              </div>
+              <div className="dtc-dock">
+                <Composer
+                  draft={draft}
+                  onDraft={setDraft}
+                  onSend={() => void send(draft)}
+                  onStop={stop}
+                  busy={busy}
+                  tools={tools}
+                  onToggleTool={toggleTool}
+                  inputRef={inputRef}
+                  notice={gateway.base ? undefined : GATEWAY_SEND_NOTICE}
+                  sandboxOn={sandboxOpen}
+                  sandboxRunning={sandboxRunning}
+                  onToggleSandbox={toggleSandbox}
+                />
               </div>
             </div>
           ) : (
@@ -535,6 +617,11 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
                       fresh={m.id === freshId}
                       busy={busy}
                       onEdit={m.role === "user" ? (text) => editTurn(m.id, text) : undefined}
+                      onRegenerate={
+                        m.role === "assistant" && m.id === active.messages[active.messages.length - 1]?.id && !busy
+                          ? regenerate
+                          : undefined
+                      }
                     />
                   ))}
                   {busy && live && (live.content || live.thought) ? <Turn turn={live} /> : null}
@@ -547,6 +634,7 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
                   draft={draft}
                   onDraft={setDraft}
                   onSend={() => void send(draft)}
+                  onStop={stop}
                   busy={busy}
                   tools={tools}
                   onToggleTool={toggleTool}

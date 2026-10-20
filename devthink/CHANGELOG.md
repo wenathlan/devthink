@@ -1,5 +1,20 @@
 # DevThink release notes
 
+## 2.0.119
+
+This release opens the 118-to-3.0 campaign (the wave ledger of docs/25.waveplan.md) with the first competitor-grammar rung of the chat flagship: **stop and regenerate**. The round controller now rides the whole streaming path — the composer's signal key swaps to a Stop key while the round runs, the abort lands as the honest ChatStoppedError (never a timeout lie, never an error row), and whatever streamed stays on the floor as a partial answer carrying its `stopped` flag and its italic `· stopped` mark in the meta line. The last assistant turn gains the regenerate affordance (the round arrow on the hover, the same grammar the edit pencil rides): the old answer leaves the floor, the same user turn rounds again, and a stopped partial regenerates the same way — the stop never locks the conversation.
+
+The rung also repairs three layout laws the stop work surfaced on the /chat page: the **app-surface law** (the page is an app surface, not a document — it fills exactly the band above the fixed taskbar and never scrolls the body; the old min-height let the rail's intrinsic content grow the frame past the viewport and land the send key under the taskbar), the **pinned-dock law** (the hero never scrolls itself — the welcome wrap owns the scroll, the composer dock rides the hero floor always visible, with the safe margin-auto centering that never clips the scroll origin) and the **stage-stretch guard** (the hero carries the `.grain` film class whose `position: relative` utility defeated the absolute inset-0 stretch of the stage children — a two-class compound selector keeps the stretch law order-proof). The session panel answers with the **inspector-breathe law**: an open panel on a wide viewport breathes the main right by the panel's band so the pinned dock never sits under the inspector.
+
+The R00170 edit affordance finally wears its intended win11 well grammar (the flat 8px field with the 2px accent underline on focus, the primary save and the quiet cancel) and the meta action keys — the edit pencil and the new regenerate arrow — share one quiet 22px key grammar that rises on hover and focus inside the touch law.
+
+| Area | Change |
+| --- | --- |
+| The chat flagship | Stop and regenerate: the AbortController rides runTurnStream, the ChatStoppedError separates the visitor's stop from the timeout, the partial commits with its stopped flag, and the last assistant turn regenerates through the stripped-history round. |
+| The composer | The signal key swaps to a graphite Stop key while busy (the accent stays the send's — an interrupt never reads as a confirm). |
+| The /chat page laws | The app-surface height, the pinned hero dock, the stage-stretch guard against the grain utility, and the inspector-breathe padding of an open session panel. |
+| The edit affordance | The checkpoint edit field ships its win11 well grammar (six stylesheet classes the component referenced that never existed before this rung) and the meta action keys share the quiet hover grammar. |
+
 ## 2.0.118
 
 This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (2.0.117 plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: - "@wenathlan/saddle": "2.1.6",

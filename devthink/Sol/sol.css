@@ -4255,7 +4255,13 @@ legend.cmd-group {
    ========================================================================== */
 
 .chat-root {
-  min-height: calc(100dvh - var(--shell-bottom));
+  /* the app-surface law (rung 119 bug fix): the /chat page is an app
+   * surface, not a document — it fills exactly the band above the fixed
+   * taskbar and never scrolls the body (the hero and the thread scroll
+   * internally, the rail owns its own overflow). The old min-height let
+   * the rail's intrinsic content grow the whole frame past the viewport,
+   * landing the composer's send key under the taskbar. */
+  height: calc(100dvh - var(--shell-bottom));
   display: flex;
   flex-direction: column;
   color: var(--sol-text);
@@ -4299,6 +4305,12 @@ legend.cmd-group {
   flex: none;
   width: 264px;
   padding: 12px 8px 8px;
+  /* the containment law (rung 119): the rail owns its own scroll — its
+   * nav content never grows the app frame (the frame fills the surface,
+   * the rail clips at the surface edge). */
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   background: rgb(255 255 255 / 3%);
   border-right: 1px solid rgb(0 0 0 / 55%);
 }
@@ -4694,8 +4706,20 @@ legend.cmd-group {
 }
 
 .dtc-hero {
-  overflow-y: auto;
+  /* the pinned-dock law (rung 119): the hero never scrolls itself — the
+   * welcome wrap owns the scroll and the composer dock rides the hero
+   * floor, always visible (the competitor grammar: the input is never
+   * scrolled away on a short viewport). */
+  overflow: hidden;
   padding: 24px 20px 36px;
+}
+
+/* the stage-stretch guard: the hero carries the .grain film class and the
+ * grain utility declares position: relative later in this file — the
+ * compound selector (two classes, order-proof) keeps the absolute inset-0
+ * stretch law of the stage children alive under that utility. */
+.dtc-hero.grain {
+  position: absolute;
 }
 
 .dtc-hero__wrap {
@@ -4703,6 +4727,18 @@ legend.cmd-group {
   margin: auto;
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* the safe vertical centering of the welcome: margin auto on the child
+ * centers it when it fits and collapses to zero when it overflows, so the
+ * scroll origin stays at the top (the justify-content center clip bug
+ * never happens). */
+.dtc-hero__wrap > :first-child {
+  margin: auto 0;
 }
 
 .dtc-scroll {
@@ -4849,7 +4885,7 @@ legend.cmd-group {
 }
 
 .dtc-hero .dtc-dock {
-  padding: 24px 0 0;
+  padding: 12px 0 0;
 }
 
 .dtc-composer {
@@ -5323,6 +5359,160 @@ legend.cmd-group {
   font-variant-numeric: tabular-nums;
 }
 
+/* the stopped mark of a partial answer (rung 119) — the honest italic chip
+ * in the meta line; never uppercase, it reads as a state, not a label. */
+.dtc-meta__stop {
+  margin-left: 2px;
+  padding: 0;
+  font-style: italic;
+  font-weight: 500;
+  color: color-mix(in srgb, var(--sol-muted) 88%, var(--sol-primary));
+}
+
+/* the meta action keys (rung 119): the pencil of the edit affordance and
+ * the round arrow of the regenerate grammar share one key — a 22px quiet
+ * square that rises to the ink on hover/focus, always inside the 44px hit
+ * law through the meta row's own padding. */
+.dtc-turn__act {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin-left: 4px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  color: var(--sol-muted);
+  background: transparent;
+  opacity: 0;
+  transform: translateY(1px);
+  cursor: pointer;
+  transition:
+    opacity 120ms ease,
+    background 120ms ease,
+    color 120ms ease,
+    transform 120ms ease;
+}
+
+.dtc-turn:hover .dtc-turn__act,
+.dtc-turn:focus-within .dtc-turn__act,
+.dtc-turn__act:focus-visible {
+  opacity: 1;
+}
+
+.dtc-turn__act:hover {
+  background: color-mix(in srgb, var(--sol-ink) 8%, transparent);
+  color: var(--sol-ink);
+}
+
+.dtc-turn__act:active {
+  transform: translateY(1px) scale(0.92);
+}
+
+.dtc-turn__act:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--sol-primary);
+  outline-offset: 1px;
+}
+
+/* the edit form (the R00170 checkpoint affordance, styled to the win11 well
+ * grammar the component always described): the field is the flat 8px well
+ * with the hairline edge and the 2px accent underline on focus, the action
+ * row carries the primary save + the quiet cancel + the honest note. */
+.dtc-editform {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.dtc-editfield {
+  width: 100%;
+  min-height: 72px;
+  padding: 10px 14px;
+  border: 1px solid var(--sol-line);
+  border-bottom-width: 2px;
+  border-bottom-color: var(--sol-line);
+  border-radius: 8px;
+  background: var(--sol-bg-2);
+  color: var(--sol-ink);
+  font: 400 0.92rem / 1.5 var(--dt-sans);
+  resize: vertical;
+  transition:
+    border-color 120ms ease,
+    background 120ms ease;
+}
+
+.dtc-editfield:focus {
+  outline: none;
+  border-bottom-color: var(--sol-primary);
+  background: var(--sol-bg);
+}
+
+.dtc-editrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dtc-editbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid var(--sol-line);
+  border-radius: 4px;
+  background: var(--sol-bg-2);
+  color: var(--sol-ink);
+  font: 500 0.8rem var(--dt-sans);
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    border-color 120ms ease,
+    transform 100ms ease;
+}
+
+.dtc-editbtn:hover {
+  background: color-mix(in srgb, var(--sol-ink) 7%, transparent);
+}
+
+.dtc-editbtn:active {
+  transform: scale(0.97);
+}
+
+.dtc-editbtn.is-primary {
+  border-color: transparent;
+  background: var(--sol-primary);
+  color: var(--sol-primary-ink);
+}
+
+.dtc-editbtn.is-primary:hover {
+  background: color-mix(in srgb, var(--sol-primary) 86%, white);
+}
+
+.dtc-editnote {
+  margin-left: auto;
+  color: var(--sol-muted);
+  font: 400 0.72rem var(--dt-sans);
+  letter-spacing: 0.02em;
+}
+
+/* the stop key of the composer (rung 119): the same 44px signal key the
+ * send glyph rides, swapped to the stop grammar — the graphite well with
+ * the ink glyph (the accent stays the send's), so the affordance reads as
+ * an interrupt, never a confirm. */
+.dtc-send--stop {
+  background: var(--sol-ink);
+  color: var(--sol-bg);
+}
+
+.dtc-send--stop:hover {
+  background: color-mix(in srgb, var(--sol-ink) 86%, white);
+}
+
 .dtc-thinking {
   display: flex;
   align-items: center;
@@ -5410,6 +5600,18 @@ legend.cmd-group {
   transition:
     transform 0.2s var(--ease-fluent),
     opacity 0.2s var(--ease-fluent);
+}
+
+/* the inspector-breathe law (rung 119): an open session panel on a wide
+ * viewport is a docked lane in spirit — the main breathes right by the
+ * panel's band (320px lane + the 12px inset + breathing) so the pinned
+ * dock (the composer and its send key) never sits under the panel. The
+ * narrow viewport keeps the covering flyout (the panel is modal there). */
+@media (min-width: 1101px) {
+  .dtc-frame:has(.dtc-session[data-open="true"]) .dtc-main {
+    padding-right: 344px;
+    transition: padding-right 0.2s var(--ease-fluent);
+  }
 }
 
 .dtc-session__head {

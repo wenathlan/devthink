@@ -6,7 +6,18 @@
  * Collapses to an 80px icon rail on desktop and becomes a drawer with a
  * scrim on small screens (the scrim is the caller's, via useIsMobile).
  */
-import {BookOpenRegular as BookOpen, NavigationRegular as Compass, FolderRegular as FolderKanban, HomeRegular as Home, type FluentIcon as LucideIcon, PanelLeftRegular as PanelLeft, AddRegular as Plus, SettingsRegular as Settings, TabDesktopRegular as Terminal, DeleteRegular as Trash2} from "@fluentui/react-icons";
+import {
+  BookOpenRegular as BookOpen,
+  NavigationRegular as Compass,
+  FolderRegular as FolderKanban,
+  HomeRegular as Home,
+  type FluentIcon as LucideIcon,
+  PanelLeftRegular as PanelLeft,
+  AddRegular as Plus,
+  SettingsRegular as Settings,
+  TabDesktopRegular as Terminal,
+  DeleteRegular as Trash2,
+} from "@fluentui/react-icons";
 import { Link, useLocation } from "wouter";
 import { type ChatSession, cx } from "../../chatstate.ts";
 import { SolBotIcon } from "./solboticon.tsx";
@@ -55,7 +66,8 @@ export function Sidebar({
   activeId,
   onOpen,
   onNew,
-  onDelete }: {
+  onDelete,
+}: {
   collapsed: boolean;
   onToggleCollapsed: () => void;
   sessions: ChatSession[];

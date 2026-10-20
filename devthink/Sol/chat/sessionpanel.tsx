@@ -13,7 +13,7 @@
  * transition runs both ways.
  */
 
-import {PanelRightContractRegular as PanelRightClose} from "@fluentui/react-icons";
+import { PanelRightContractRegular as PanelRightClose } from "@fluentui/react-icons";
 import { type FormEvent, useEffect, useState } from "react";
 import { Link } from "wouter";
 import { CHAT_TOOLS, type ToolId } from "../../chatstate.ts";
@@ -38,7 +38,8 @@ export function SessionPanel({
   turnCount,
   sessionCount,
   tools,
-  gateway }: {
+  gateway,
+}: {
   open: boolean;
   onClose: () => void;
   model: string;
