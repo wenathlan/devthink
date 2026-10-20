@@ -754,6 +754,31 @@ export const ChatIcon = defineAppIcon("chat", {
   ),
 });
 
+/** My Files — the file explorer of the OS: the windows folder with its
+ * tab and the rising arrow (the open-folder gesture of the explorer). */
+export const FilesIcon = defineAppIcon("files", {
+  motion: "rise",
+  story: "#eab308",
+  deep: "#9a6a06",
+  soft: "#fde9b0",
+  glyph: (
+    <>
+      {/* the back plane of the folder with its folded tab */}
+      <path
+        d="M27 34 Q27 31.5 29.5 31.5 H37.5 L41 35.5 H66.5 Q69 35.5 69 38 V60 Q69 62.5 66.5 62.5 H29.5 Q27 62.5 27 60 Z"
+        fill={BACKING}
+      />
+      {/* the front plane, riding lower with its own tab lifted open */}
+      <path d="M27 46 H41.5 L45.5 50 H69 V60 Q69 62.5 66.5 62.5 H29.5 Q27 62.5 27 60 Z" fill="rgba(255,255,255,.14)" />
+      <g className="dtIcon-m-sun">
+        {/* the arrow rising from the open mouth of the folder */}
+        <path d="M48 41 V53.5" strokeWidth={STROKE_SOFT} />
+        <path d="M44.2 44.6 L48 40.8 L51.8 44.6" strokeWidth={STROKE_SOFT} />
+      </g>
+    </>
+  ),
+});
+
 /** History — the session archive: a clock with a curved rewind arrow. */
 export const HistoryIcon = defineAppIcon("history", {
   motion: "sweep",
@@ -1398,6 +1423,7 @@ export const SaddleIcon = defineAppIcon("saddle", {
  */
 export const APP_ICONS: Record<string, ComponentType<AppIconProps>> = {
   chat: ChatIcon,
+  files: FilesIcon,
   history: HistoryIcon,
   projects: ProjectsIcon,
   console: ConsoleIcon,

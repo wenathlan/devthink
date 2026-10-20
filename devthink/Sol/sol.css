@@ -13460,3 +13460,795 @@ span[data-tile] {
 .dtw-docs .dtw-codecopy:active {
   transform: scale(0.96);
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   My Files — the Windows 11 File Explorer of the os (dtfx family)
+   The reference shot of "Este Computador" drawn in the light window body
+   grammar: the mica toolbar with the navigation cluster, breadcrumb and
+   search; the command bar; the nav pane with quick access, This PC and
+   the storage platforms; the content area answering "Pastas (7)" and
+   "Dispositivos e unidades (N)"; the status bar. Light canvas, hairline
+   chrome, the windows accent on every selection and capacity fill — the
+   same token family the dtw bodies carry.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* the app surface: full height, light scheme, the dtw token family */
+.dtfx-app {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  height: 100dvh;
+  color-scheme: light;
+  --dtfx-ink-1: #0f172a;
+  --dtfx-ink-2: #46556b;
+  --dtfx-ink-3: #8290a6;
+  --dtfx-hairline: rgb(15 23 42 / 12%);
+  --dtfx-hairline-soft: rgb(15 23 42 / 7%);
+  --dtfx-sig: #0067c0;
+  --dtfx-sig-wash: rgb(0 103 192 / 10%);
+  --dtfx-sig-wash-strong: rgb(0 103 192 / 16%);
+  --dtfx-canvas: #eceff7;
+  --dtfx-panel: #f7f9fc;
+  --dtfx-card: #ffffff;
+  --dtfx-hover: rgb(15 23 42 / 5%);
+  --dtfx-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  background: var(--dtfx-canvas);
+  color: var(--dtfx-ink-1);
+}
+
+/* the explorer frame: the four bands — toolbar, command bar, body,
+   status bar — the body owning the rest of the height with minmax(0,1fr)
+   so the inner scrolls live inside their own band (the scrolling law) */
+.dtfx-explorer {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  height: 100%;
+  min-height: 0;
+}
+
+/* ── the toolbar: the navigation cluster, the breadcrumb, the search ── */
+.dtfx-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--dtfx-hairline-soft);
+}
+
+.dtfx-toolbar__nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* the round quiet navigation buttons of the Windows toolbar */
+.dtfx-navbtn {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--dtfx-ink-2);
+  cursor: pointer;
+  transition: background 130ms var(--dtfx-ease), color 130ms var(--dtfx-ease);
+}
+.dtfx-navbtn:hover:not(:disabled) {
+  background: var(--dtfx-hover);
+  color: var(--dtfx-ink-1);
+}
+.dtfx-navbtn:active:not(:disabled) {
+  transform: scale(0.94);
+}
+.dtfx-navbtn:disabled {
+  color: rgb(15 23 42 / 22%);
+  cursor: default;
+}
+.dtfx-navbtn:focus-visible {
+  outline: 2px solid var(--dtfx-sig);
+  outline-offset: 1px;
+}
+
+/* the breadcrumb address bar: the pill the trail rides in */
+.dtfx-address {
+  flex: 1;
+  min-width: 0;
+}
+.dtfx-address__trail {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  height: 32px;
+  border: 1px solid var(--dtfx-hairline);
+  border-radius: 6px;
+  background: var(--dtfx-card);
+  overflow: hidden;
+}
+.dtfx-address__crumb {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+.dtfx-address__sep {
+  color: var(--dtfx-ink-3);
+  flex-shrink: 0;
+}
+.dtfx-address__step,
+.dtfx-address__leaf {
+  display: inline-flex;
+  align-items: center;
+  max-width: 22ch;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--dtfx-ink-2);
+  font: 400 12.5px var(--font-sans, var(--dt-sans));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: background 130ms var(--dtfx-ease);
+}
+.dtfx-address__step:hover {
+  background: var(--dtfx-hover);
+  color: var(--dtfx-ink-1);
+}
+.dtfx-address__leaf {
+  color: var(--dtfx-ink-1);
+  font-weight: 500;
+  cursor: default;
+}
+.dtfx-address__step:focus-visible,
+.dtfx-address__leaf:focus-visible {
+  outline: 2px solid var(--dtfx-sig);
+  outline-offset: -2px;
+}
+
+/* the search field of the toolbar */
+.dtfx-toolbar__search {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: clamp(140px, 22%, 240px);
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--dtfx-hairline);
+  border-radius: 6px;
+  background: var(--dtfx-card);
+  color: var(--dtfx-ink-3);
+  transition: border-color 130ms var(--dtfx-ease);
+}
+.dtfx-toolbar__search:focus-within {
+  border-color: var(--dtfx-sig);
+  outline: 1px solid var(--dtfx-sig);
+}
+.dtfx-search__input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--dtfx-ink-1);
+  font: 400 12.5px var(--font-sans, var(--dt-sans));
+  outline: none;
+}
+.dtfx-search__input::placeholder {
+  color: var(--dtfx-ink-3);
+}
+.dtfx-search__input::-webkit-search-cancel-button {
+  cursor: pointer;
+}
+
+/* ── the command bar: the row of the quiet windows commands ── */
+.dtfx-commandbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 5px 12px;
+  border-bottom: 1px solid var(--dtfx-hairline-soft);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.dtfx-commandbar::-webkit-scrollbar {
+  display: none;
+}
+.dtfx-cmdbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--dtfx-ink-2);
+  font: 400 12.5px var(--font-sans, var(--dt-sans));
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 130ms var(--dtfx-ease), color 130ms var(--dtfx-ease);
+}
+.dtfx-cmdbtn:hover:not(:disabled) {
+  background: var(--dtfx-hover);
+  color: var(--dtfx-ink-1);
+}
+.dtfx-cmdbtn:active:not(:disabled) {
+  transform: translateY(0.5px);
+}
+.dtfx-cmdbtn:disabled {
+  color: rgb(15 23 42 / 25%);
+  cursor: default;
+}
+.dtfx-cmdbtn:focus-visible {
+  outline: 2px solid var(--dtfx-sig);
+  outline-offset: 1px;
+}
+.dtfx-cmdbtn--primary {
+  color: var(--dtfx-sig);
+  font-weight: 500;
+}
+.dtfx-cmdbtn--primary:hover:not(:disabled) {
+  background: var(--dtfx-sig-wash);
+  color: var(--dtfx-sig);
+}
+.dtfx-cmdbtn__chevron {
+  opacity: 0.6;
+}
+.dtfx-commandbar__divider {
+  width: 1px;
+  height: 18px;
+  margin: 0 6px;
+  background: var(--dtfx-hairline);
+  flex-shrink: 0;
+}
+
+/* ── the body: the nav pane beside the content area ── */
+.dtfx-body {
+  display: grid;
+  grid-template-columns: 216px minmax(0, 1fr);
+  min-height: 0;
+  height: 100%;
+}
+@media (max-width: 720px) {
+  .dtfx-body {
+    grid-template-columns: 56px minmax(0, 1fr);
+  }
+}
+
+/* the nav pane: quick access, This PC, the storage platforms */
+.dtfx-nav {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  padding: 10px 8px 16px;
+  border-right: 1px solid var(--dtfx-hairline-soft);
+  background: var(--dtfx-panel);
+  overflow-y: auto;
+  min-height: 0;
+  scrollbar-width: thin;
+}
+@media (max-width: 720px) {
+  .dtfx-nav {
+    padding: 10px 6px 16px;
+  }
+}
+.dtfx-nav__heading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 2px;
+  padding: 0 10px;
+  color: var(--dtfx-ink-3);
+  font: 600 10.5px var(--font-sans, var(--dt-sans));
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+@media (max-width: 720px) {
+  .dtfx-nav__heading {
+    font-size: 9px;
+    padding: 0 4px;
+    justify-content: center;
+  }
+}
+.dtfx-nav__list {
+  display: grid;
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dtfx-nav__item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--dtfx-ink-2);
+  font: 400 12.5px var(--font-sans, var(--dt-sans));
+  text-align: left;
+  cursor: pointer;
+  transition: background 130ms var(--dtfx-ease);
+}
+@media (max-width: 720px) {
+  .dtfx-nav__item {
+    justify-content: center;
+    padding: 0;
+  }
+}
+.dtfx-nav__item:hover {
+  background: var(--dtfx-hover);
+  color: var(--dtfx-ink-1);
+}
+.dtfx-nav__item--active {
+  background: var(--dtfx-sig-wash);
+  color: var(--dtfx-ink-1);
+  font-weight: 500;
+}
+.dtfx-nav__item--active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 7px;
+  bottom: 7px;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--dtfx-sig);
+}
+@media (max-width: 720px) {
+  .dtfx-nav__item--active::before {
+    left: 2px;
+  }
+}
+.dtfx-nav__item:focus-visible {
+  outline: 2px solid var(--dtfx-sig);
+  outline-offset: -2px;
+}
+.dtfx-nav__mark {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+.dtfx-nav__mark .dtfx-tile {
+  width: 20px;
+  height: 20px;
+}
+.dtfx-nav__mark--platform {
+  color: var(--dtfx-ink-3);
+}
+.dtfx-nav__drivemark {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+.dtfx-nav__drivemark .dtfx-tile {
+  width: 20px;
+  height: 20px;
+}
+.dtfx-nav__label {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dtfx-nav__label--strong {
+  font-weight: 500;
+}
+@media (max-width: 720px) {
+  .dtfx-nav__label {
+    display: none;
+  }
+}
+.dtfx-nav__item--muted {
+  color: var(--dtfx-ink-3);
+}
+
+/* ── the content area and its scroll region ── */
+.dtfx-content {
+  display: grid;
+  min-height: 0;
+  height: 100%;
+  background: var(--dtfx-card);
+}
+.dtfx-scroll {
+  display: grid;
+  align-content: start;
+  gap: 22px;
+  padding: 18px 22px 28px;
+  overflow-y: auto;
+  min-height: 0;
+  scrollbar-width: thin;
+}
+
+/* the section headings of the content ("Pastas (7)", the devices wall) */
+.dtfx-section {
+  display: grid;
+  gap: 12px;
+}
+.dtfx-section__heading {
+  margin: 0;
+  color: var(--dtfx-ink-1);
+  font: 600 13.5px var(--font-sans, var(--dt-sans));
+  letter-spacing: -0.01em;
+}
+
+/* ── the folder grid: the Windows tiles view ── */
+.dtfx-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dtfx-grid--records {
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+}
+
+/* the tile: the folder face with the label under it — hover lifts with
+   the soft wash, the selection paints the accent underline */
+.dtfx-tile {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 12px 8px 9px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  cursor: pointer;
+  text-align: center;
+  transition: background 130ms var(--dtfx-ease);
+  animation: dtfxStagger 320ms var(--dtfx-ease) backwards;
+  animation-delay: calc(var(--dtfx-i, 0) * 40ms);
+}
+.dtfx-tile:hover {
+  background: var(--dtfx-hover);
+}
+.dtfx-tile:active {
+  transform: scale(0.97);
+}
+.dtfx-tile:focus-visible {
+  outline: 2px solid var(--dtfx-sig);
+  outline-offset: -2px;
+}
+.dtfx-tile--selected {
+  background: var(--dtfx-sig-wash);
+  box-shadow: inset 0 -2px 0 var(--dtfx-sig);
+  border-radius: 7px 7px 4px 4px;
+}
+.dtfx-tile__mark {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+}
+.dtfx-tile__label {
+  max-width: 100%;
+  color: var(--dtfx-ink-1);
+  font: 500 12px var(--font-sans, var(--dt-sans));
+  line-height: 1.3;
+  word-break: break-word;
+}
+.dtfx-tile__meta {
+  color: var(--dtfx-ink-3);
+  font: 400 10.5px var(--font-sans, var(--dt-sans));
+}
+.dtfx-glyph {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 9px;
+  background: var(--dtfx-sig-wash);
+  color: var(--dtfx-sig);
+}
+
+/* the empty folder: the honest answer, centered and quiet */
+.dtfx-empty {
+  margin: 0;
+  padding: 42px 12px;
+  border: 1px dashed var(--dtfx-hairline);
+  border-radius: 8px;
+  color: var(--dtfx-ink-3);
+  font: 400 12.5px var(--font-sans, var(--dt-sans));
+  text-align: center;
+}
+
+/* ── the devices and drives wall: the drive cards ── */
+.dtfx-drives {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* the drive card: the disk icon beside the capacity bar — the exact
+   grammar of the reference "nathalan (C:)" tile */
+.dtfx-drive {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--dtfx-hairline);
+  border-radius: 8px;
+  background: var(--dtfx-panel);
+  transition: border-color 130ms var(--dtfx-ease), box-shadow 130ms var(--dtfx-ease);
+  animation: dtfxStagger 320ms var(--dtfx-ease) backwards;
+  animation-delay: calc(var(--dtfx-i, 0) * 40ms);
+}
+.dtfx-drive:hover {
+  border-color: rgb(0 103 192 / 35%);
+  box-shadow: 0 1px 3px rgb(15 23 42 / 7%);
+}
+.dtfx-drive--selected {
+  border-color: var(--dtfx-sig);
+  background: var(--dtfx-sig-wash);
+}
+.dtfx-drive__hit {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+}
+.dtfx-drive__hit:focus-visible {
+  outline: none;
+}
+.dtfx-drive:focus-within {
+  outline: 2px solid var(--dtfx-sig);
+  outline-offset: 1px;
+}
+.dtfx-drive__mark {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.dtfx-drive__body {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  flex: 1;
+}
+.dtfx-drive__label {
+  color: var(--dtfx-ink-1);
+  font: 600 13px var(--font-sans, var(--dt-sans));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* the capacity bar: the windows blue fill over the quiet track (the bar
+   animates its width on mount — the honest share walking in) */
+.dtfx-drive__bar {
+  display: block;
+  height: 7px;
+  border-radius: 4px;
+  background: rgb(15 23 42 / 10%);
+  overflow: hidden;
+}
+.dtfx-drive__fill {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #3aa0f5, #2f8fe0);
+  transition: width 700ms var(--dtfx-ease);
+}
+.dtfx-drive__line {
+  color: var(--dtfx-ink-2);
+  font: 400 11.5px var(--font-sans, var(--dt-sans));
+  font-variant-numeric: tabular-nums;
+}
+.dtfx-drive__records {
+  color: var(--dtfx-ink-3);
+  font: 400 10.5px var(--font-sans, var(--dt-sans));
+}
+.dtfx-drive__records--muted {
+  font-style: italic;
+}
+/* the open/browse action of an unmounted drive */
+.dtfx-drive__open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 0 14px;
+  border: 1px solid var(--dtfx-hairline);
+  border-radius: 5px;
+  background: var(--dtfx-card);
+  color: var(--dtfx-ink-2);
+  font: 500 12px var(--font-sans, var(--dt-sans));
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 130ms var(--dtfx-ease), border-color 130ms var(--dtfx-ease);
+}
+.dtfx-drive__open:hover:not(:disabled) {
+  background: var(--dtfx-hover);
+  border-color: rgb(0 103 192 / 35%);
+  color: var(--dtfx-ink-1);
+}
+.dtfx-drive__open--live {
+  border-color: rgb(0 103 192 / 35%);
+  color: var(--dtfx-sig);
+}
+.dtfx-drive__open:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.dtfx-drive__open:focus-visible {
+  outline: 2px solid var(--dtfx-sig);
+  outline-offset: 1px;
+}
+
+/* ── the details view: the Windows list mode ── */
+.dtfx-details {
+  width: 100%;
+  border-collapse: collapse;
+  font: 400 12.5px var(--font-sans, var(--dt-sans));
+}
+.dtfx-details__head {
+  position: sticky;
+  top: -18px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--dtfx-hairline);
+  background: var(--dtfx-card);
+  color: var(--dtfx-ink-3);
+  font: 600 11px var(--font-sans, var(--dt-sans));
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: left;
+  z-index: 1;
+}
+.dtfx-details__head--type,
+.dtfx-details__head--meta {
+  width: 32%;
+}
+.dtfx-details__row {
+  cursor: pointer;
+  animation: dtfxStagger 260ms var(--dtfx-ease) backwards;
+  animation-delay: calc(var(--dtfx-i, 0) * 24ms);
+}
+.dtfx-details__row td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--dtfx-hairline-soft);
+  color: var(--dtfx-ink-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dtfx-details__row:hover td {
+  background: var(--dtfx-hover);
+}
+.dtfx-details__row--selected td {
+  background: var(--dtfx-sig-wash);
+  color: var(--dtfx-ink-1);
+}
+.dtfx-details__row--selected td:first-child {
+  box-shadow: inset 3px 0 0 var(--dtfx-sig);
+}
+.dtfx-details__row:focus-visible {
+  outline: 2px solid var(--dtfx-sig);
+  outline-offset: -2px;
+}
+.dtfx-details__name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.dtfx-details__mark {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+}
+.dtfx-details__mark .dtfx-tile {
+  width: 24px;
+  height: 24px;
+}
+.dtfx-details__mark .dt-app {
+  --dt-tile-size: 24px;
+}
+.dtfx-details__label {
+  color: var(--dtfx-ink-1);
+  font-weight: 500;
+}
+.dtfx-details__meta {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── the status bar: the count and the view toggles ── */
+.dtfx-statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 5px 14px;
+  border-top: 1px solid var(--dtfx-hairline-soft);
+  background: var(--dtfx-panel);
+}
+.dtfx-statusbar__count {
+  margin: 0;
+  color: var(--dtfx-ink-3);
+  font: 400 11.5px var(--font-sans, var(--dt-sans));
+  font-variant-numeric: tabular-nums;
+}
+.dtfx-statusbar__views {
+  display: flex;
+  gap: 2px;
+}
+.dtfx-viewbtn {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--dtfx-ink-3);
+  cursor: pointer;
+  transition: background 130ms var(--dtfx-ease), color 130ms var(--dtfx-ease);
+}
+.dtfx-viewbtn:hover {
+  background: var(--dtfx-hover);
+  color: var(--dtfx-ink-1);
+}
+.dtfx-viewbtn--active {
+  background: var(--dtfx-sig-wash);
+  color: var(--dtfx-sig);
+}
+.dtfx-viewbtn:focus-visible {
+  outline: 2px solid var(--dtfx-sig);
+  outline-offset: 1px;
+}
+
+/* the stagger keyframe of the items (the Windows gentle rise — skipped
+   under prefers-reduced-motion) */
+@keyframes dtfxStagger {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dtfx-tile,
+  .dtfx-drive,
+  .dtfx-details__row {
+    animation: none;
+  }
+  .dtfx-drive__fill {
+    transition: none;
+  }
+}
+
+/* the embedded window law: the explorer fills the window frame and the
+   app height drops to the host box (the scrolling law — the inner bands
+   own their scroll, the window never scrolls as a whole) */
+.dtfx-explorer[data-embedded="true"] {
+  height: 100%;
+}
+.dtfx-app .dt-app {
+  --dt-tile-size: 40px;
+}

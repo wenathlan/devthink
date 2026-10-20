@@ -23,6 +23,7 @@ import {
   TargetRegular as Crosshair,
   BuildingFactoryRegular as Factory,
   FolderRegular as FolderKanban,
+  FolderArrowUpRegular,
   ToolboxRegular as Hammer,
   ImageRegular as Image,
   PlugConnectedRegular as PlugZap,
@@ -81,6 +82,16 @@ const APP_BINDINGS: AppBinding[] = [
     // the person enters through the apps of the desktop) — the fullscreen
     // /chat page stays a deep-link surface only
     target: { kind: "window", id: "chat" },
+  },
+  {
+    id: "files",
+    tint: "#eab308",
+    icon: FolderArrowUpRegular,
+    iconset: "files",
+    // My Files opens as a floating window of the desktop — the Windows
+    // explorer law: the file manager is an app of the taskbar, never a
+    // full-page surface
+    target: { kind: "route", href: "/files" },
   },
   {
     id: "history",

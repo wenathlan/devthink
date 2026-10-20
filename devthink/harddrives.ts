@@ -53,17 +53,24 @@ function savedrives(list: HardDrive[]): void {
 
 /** the drives of this machine plus the one currently mounted (the active
  * drive registers itself lazily, so a machine that never opened the panel
- * still answers one drive) */
+ * still answers one drive). The lazy registration answers the CALLER too:
+ * the first visit returns the freshly registered drive in its list (the
+ * stale-list bug — the first read answered zero drives and the panels
+ * stayed empty until a reload — is dead: the saved array is the returned
+ * array). */
 export async function drives(): Promise<{ active: HardDrive; list: HardDrive[] }> {
   const identity = await browserIdentity();
-  const list = readdrives();
+  let list = readdrives();
   const active: HardDrive = list.find((item) => item.id === identity.userId) ?? {
     id: identity.userId,
     label: "HD 1",
     deviceId: identity.deviceId,
     createdAt: identity.createdAt,
   };
-  if (!list.some((item) => item.id === active.id)) savedrives([active, ...list]);
+  if (!list.some((item) => item.id === active.id)) {
+    list = [active, ...list];
+    savedrives(list);
+  }
   return { active, list };
 }
 

@@ -21,6 +21,7 @@ export type WindowEntry = {
 /** the windowed anchors of the os (structure, not info) */
 export const WINDOW_ANCHORS: readonly string[] = [
   "chat",
+  "files",
   "calculator",
   "docs",
   "image",

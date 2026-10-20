@@ -21,6 +21,7 @@ import ChatAnchor from "./chat/chat.tsx";
 import ConsoleAnchor from "./console/console.tsx";
 import DocsAnchor from "./docs/docs.tsx";
 import ExploreAnchor from "./explore/explore.tsx";
+import FilesAnchor from "./files/files.tsx";
 import GamesAnchor from "./games/games.tsx";
 import GatewayAnchor from "./gateway/gateway.tsx";
 import HistoryAnchor from "./history/history.tsx";
@@ -94,6 +95,7 @@ export default function Sol() {
           <Route path="/panel" component={() => <PanelAnchor />} />
           <Route path="/auth" component={AuthAnchor} />
           <Route path="/chat" component={ChatAnchor} />
+          <Route path="/files" component={() => <FilesAnchor />} />
           <Route path="/video" component={() => <VideoAnchor />} />
           <Route path="/audio" component={() => <AudioAnchor />} />
           <Route path="/image" component={() => <ImageAnchor />} />

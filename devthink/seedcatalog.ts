@@ -164,6 +164,12 @@ export const seedOsAppLabels: OsAppLabel[] = [
     pinned: true,
   },
   {
+    id: "files",
+    name: "My Files",
+    detail: "The file explorer of the OS",
+    pinned: true,
+  },
+  {
     id: "history",
     name: "History",
     detail: "Open local session tabs",
@@ -310,6 +316,11 @@ export const seedOsAppWindows: OsAppWindow[] = [
     app: "chat",
     width: 1040,
     height: 720,
+  },
+  {
+    app: "files",
+    width: 1020,
+    height: 680,
   },
   {
     app: "docs",
@@ -605,6 +616,14 @@ export const seedAppIconSets: AppIconSet[] = [
       "solar gradient squircle with a top gloss, a blurred peach orb over a pedestal band, the speech bubble and brand star in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
     motion:
       "hover tilts the tile in perspective, the star lifts, a sheen band sweeps once and the solar contact glow rises and breathes",
+  },
+  {
+    app: "files",
+    story: "#eab308",
+    depth:
+      "manila gradient squircle with a top gloss, a blurred gold orb over a pedestal band, the windows folder with its tab and the rising arrow in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
+    motion:
+      "hover tilts the tile in perspective, the folder lifts with its tab opening, a sheen band sweeps once and the manila contact glow rises and breathes",
   },
   {
     app: "history",
