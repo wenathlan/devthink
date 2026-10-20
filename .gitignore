@@ -203,3 +203,15 @@ skills/
 # The mini-services folder never enters the repository — the local service
 # doors (the github device flow) live outside the tree, untracked
 mini-services/
+
+# The synchronized database folder never enters the repository — the db/
+# folder carries the live sqlite partitions the platform syncs between
+# environments (custom.db with its -shm and -wal sidecars): committing it
+# corrupts the runtime state and breaks the workflow gates, so the whole
+# folder stays untracked the way devthink.sqlite does
+db/
+db/*.db
+db/*.db-shm
+db/*.db-wal
+*.db-shm
+*.db-wal
