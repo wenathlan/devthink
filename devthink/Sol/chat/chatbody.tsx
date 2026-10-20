@@ -15,7 +15,7 @@ import {
   PanelRightRegular as PanelRight,
   DeleteRegular as TrashIcon,
 } from "@fluentui/react-icons";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { osAppLabels } from "../../catalog.ts";
 import {
@@ -42,7 +42,7 @@ import { Composer } from "./composer.tsx";
 import { SandboxPane } from "./sandboxpane.tsx";
 import { SessionPanel } from "./sessionpanel.tsx";
 import { Sidebar } from "./sidebar.tsx";
-import { ErrorRow, ThinkingRow, Turn } from "./turn.tsx";
+import { DaySeparator, ErrorRow, dayKey, ThinkingRow, Turn } from "./turn.tsx";
 import { Welcome } from "./welcome.tsx";
 
 /** The chat slice of the wave atmosphere contract: the C1-01 atmosphere
@@ -83,6 +83,10 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
    * state closure went stale (the async round outlives the render). */
   const abortRef = useRef<AbortController | null>(null);
   const liveRef = useRef<ChatTurn | null>(null);
+  /* the streaming clock (rung 121): the round start + the half-second tick
+   * that drives the elapsed label of the generation status row. */
+  const roundStartRef = useRef<number>(0);
+  const [elapsedMs, setElapsedMs] = useState(0);
   const [railCollapsed, setRailCollapsed] = useState(
     () => typeof window !== "undefined" && window.matchMedia("(max-width: 860px)").matches,
   );
@@ -198,6 +202,8 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
       setError(null);
       const ctrl = new AbortController();
       abortRef.current = ctrl;
+      roundStartRef.current = Date.now();
+      setElapsedMs(0);
       const seedLive: ChatTurn = { id: "t-live", role: "assistant", content: "", at: Date.now() };
       liveRef.current = seedLive;
       setLive(seedLive);
@@ -478,6 +484,17 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     [],
   );
 
+  // the streaming clock (rung 121): while the round runs, the half-second
+  // tick keeps the elapsed label honest; the clear on stop/finish is
+  // implicit (busy flips false, the effect tears the interval down).
+  useEffect(() => {
+    if (!busy) return;
+    const tick = () => setElapsedMs(Date.now() - roundStartRef.current);
+    tick();
+    const timer = window.setInterval(tick, 500);
+    return () => window.clearInterval(timer);
+  }, [busy]);
+
   // the fresh-turn watcher: marks the appended turn (240ms rise, last only)
   useEffect(() => {
     const sid = active?.id ?? "";
@@ -628,23 +645,31 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
             <div className="dtc-thread" key={active?.id ?? "thread"}>
               <div className="dtc-scroll" ref={scrollRef} onScroll={onScrollTrack}>
                 <div className="dtc-scroll__inner">
-                  {active.messages.map((m) => (
-                    <Turn
-                      key={m.id}
-                      turn={m}
-                      fresh={m.id === freshId}
-                      busy={busy}
-                      onEdit={m.role === "user" ? (text) => editTurn(m.id, text) : undefined}
-                      onRegenerate={
-                        m.role === "assistant" && m.id === active.messages[active.messages.length - 1]?.id && !busy
-                          ? regenerate
-                          : undefined
-                      }
-                      onDelete={!busy ? () => deleteTurn(m.id) : undefined}
-                    />
-                  ))}
+                  {active.messages.map((m, i) => {
+                    const prev = i > 0 ? active.messages[i - 1] : null;
+                    const newDay = !prev || dayKey(prev.at) !== dayKey(m.at);
+                    return (
+                      <Fragment key={m.id}>
+                        {newDay ? <DaySeparator at={m.at} /> : null}
+                        <Turn
+                          turn={m}
+                          fresh={m.id === freshId}
+                          busy={busy}
+                          onEdit={m.role === "user" ? (text) => editTurn(m.id, text) : undefined}
+                          onRegenerate={
+                            m.role === "assistant" && m.id === active.messages[active.messages.length - 1]?.id && !busy
+                              ? regenerate
+                              : undefined
+                          }
+                          onDelete={!busy ? () => deleteTurn(m.id) : undefined}
+                        />
+                      </Fragment>
+                    );
+                  })}
+                  {busy ? (
+                    <ThinkingRow streaming={Boolean(live && (live.content || live.thought))} elapsedMs={elapsedMs} />
+                  ) : null}
                   {busy && live && (live.content || live.thought) ? <Turn turn={live} /> : null}
-                  {busy && !(live && (live.content || live.thought)) ? <ThinkingRow /> : null}
                   {error && !busy ? <ErrorRow message={error} onRetry={retry} /> : null}
                 </div>
               </div>

@@ -270,13 +270,59 @@ export function Turn({
   );
 }
 
+/** dayKey — the calendar day of a turn (local time), the grouping key of
+ * the date separators. */
+export function dayKey(at: number): string {
+  const d = new Date(at);
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+}
+
+/** dayLabel — the separator label of a day: Today, Yesterday, or the
+ * locale weekday with month and day (the year joins when it is not the
+ * current one — honest dating, never a hardcode). */
+export function dayLabel(at: number): string {
+  const d = new Date(at);
+  const now = new Date();
+  const startOf = (x: Date) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
+  const diffDays = Math.round((startOf(now) - startOf(d)) / 86_400_000);
+  if (diffDays === 0) return "Today";
+  if (diffDays === 1) return "Yesterday";
+  const sameYear = d.getFullYear() === now.getFullYear();
+  try {
+    return d.toLocaleDateString(undefined, {
+      weekday: "long",
+      month: "short",
+      day: "numeric",
+      ...(sameYear ? {} : { year: "numeric" }),
+    });
+  } catch {
+    return d.toDateString();
+  }
+}
+
+/** DaySeparator — the timeline divider between turns of different days:
+ * the hairline with the locale label chip (mono lowercase, the meta
+ * grammar). Exported for the thread floor and any future surface. */
+export function DaySeparator({ at }: { at: number }) {
+  return (
+    <div className="dtc-daysep" role="separator" aria-label={dayLabel(at)}>
+      <span className="dtc-daysep__label">{dayLabel(at)}</span>
+    </div>
+  );
+}
+
 /** ThinkingRow — the functional generation status: a 3px live bar + label,
- * one discreet opacity loop, no orb. */
-export function ThinkingRow() {
+ * one discreet opacity loop, no orb. The elapsed clock rides the whole
+ * streaming phase (rung 121): the label reads Thinking before the first
+ * token and Responding while the deltas land, with the honest · Ns count
+ * ticking every half second from the round start. */
+export function ThinkingRow({ streaming = false, elapsedMs = 0 }: { streaming?: boolean; elapsedMs?: number }) {
+  const seconds = Math.floor(elapsedMs / 1000);
   return (
     <div className="dtc-thinking" role="status" aria-live="polite">
       <i className="dtc-thinking__bar" aria-hidden="true" />
-      <span>Thinking</span>
+      <span>{streaming ? "Responding" : "Thinking"}</span>
+      {seconds > 0 ? <i className="dtc-thinking__elapsed">· {seconds}s</i> : null}
     </div>
   );
 }

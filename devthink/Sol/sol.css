@@ -5567,6 +5567,47 @@ legend.cmd-group {
   font-size: 0.85rem;
 }
 
+/* the elapsed chip of the generation status (rung 121): the honest · Ns
+ * count in the meta grammar — tabular, quiet, never uppercase. */
+.dtc-thinking__elapsed {
+  font: 500 10px var(--dt-mono);
+  letter-spacing: 0.08em;
+  font-style: italic;
+  font-variant-numeric: tabular-nums;
+  color: color-mix(in srgb, var(--sol-muted) 85%, var(--sol-primary));
+}
+
+/* the day separator (rung 121): the timeline divider between turns of
+ * different days — the hairline with the locale label chip riding it
+ * (mono lowercase, the meta grammar), breathing above the day's first
+ * turn. */
+.dtc-daysep {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0 6px;
+}
+
+.dtc-daysep::before,
+.dtc-daysep::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: color-mix(in srgb, var(--sol-muted) 22%, transparent);
+}
+
+.dtc-daysep__label {
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--sol-muted) 25%, transparent);
+  background: color-mix(in srgb, var(--sol-bg-2) 70%, transparent);
+  color: var(--sol-muted);
+  font: 500 10px var(--dt-mono);
+  letter-spacing: 0.1em;
+  text-transform: lowercase;
+  white-space: nowrap;
+}
+
 .dtc-error {
   display: flex;
   align-items: center;

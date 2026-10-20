@@ -1,5 +1,14 @@
 # DevThink release notes
 
+## 2.0.121
+
+The thread reads like the flagship timelines: **date separators and the streaming clock** land on the chat floor (the third competitor-grammar rung). A turn that opens a new calendar day arrives under the timeline divider — the hairline carrying the locale label chip (mono lowercase, the meta grammar): Today, Yesterday, or the locale weekday with month and day (the year joins when the day is not of the current one — honest dating, never a hardcode). The generation status row answers with the **elapsed clock**: the label reads Thinking before the first token, flips to Responding while the deltas land, and the honest `· Ns` count ticks every half second from the round start — the visitor always knows how long the round has been running, and the row retires when the round commits.
+
+| Area | Change |
+| --- | --- |
+| The chat flagship | Day separators between turns of different days (the locale label chip on the hairline) and the elapsed clock on the generation status row (Thinking → Responding · Ns, the half-second tick). |
+| The thread floor | The status row now rides the whole streaming phase above the live turn (the pre-token Thinking and the in-flight Responding are one continuous status, never two surfaces). |
+
 ## 2.0.120
 
 The message action row lands on every turn of the chat flagship (the second competitor-grammar rung of the campaign): **copy, delete, regenerate and edit ride one quiet key group** in the meta line that reveals on hover and focus. The copy key answers with the icon morph — the glyph swaps to the checkmark in the windows accent with a soft accent wash for 1.4s and the sr-only status line speaks the result (the clipboard answer IS the feedback; no toast ever doubles the surface, and a failed copy keeps the glyph armed with the quiet red hint while the retry stays available). The delete key carries the destructive red hover and removes the row through the honest session commit (the toast answers once; a session left empty falls back to the hero). The meta time now wears the **full locale date-time on hover** (the dotted underline whispers the hint), and the checkpoint edit law finally shows its face: a turn born from an edit branch carries the `edited` flag and its honest `· edited` mark — the same italic grammar the stopped partial wears (both marks share the `.dtc-meta__mark` chip).
