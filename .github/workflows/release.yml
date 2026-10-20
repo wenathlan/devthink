@@ -146,7 +146,14 @@ jobs:
       - name: Tag the bumped version and create the release
         if: steps.versions.outputs.changed == 'true'
         env:
-          GH_TOKEN: ${{ github.token }}
+          # the family artifact lanes ride the release published event, and a
+          # release the repository token creates never fires it (the github
+          # token event suppression), so the create rides the owner pat
+          # whenever the secret exists — the same fallback the maintenance
+          # ladder rides — and the app token keeps the lane standing when it
+          # does not (the release still publishes, only the family lanes of
+          # that release stay quiet until the next pat published one).
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           VERSION: ${{ steps.versions.outputs.version }}
         run: |
           set -euo pipefail
@@ -738,7 +745,12 @@ jobs:
           (cd verified && sha256sum --check SHA256SUMS.txt)
       - name: Publish the verified release
         env:
-          GH_TOKEN: ${{ github.token }}
+          # the flip owns the published event the family artifact lanes
+          # answer: the repository token never fires it (the github token
+          # event suppression), so the flip rides the owner pat whenever
+          # the secret exists and the app token keeps the lane standing
+          # when it does not.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail

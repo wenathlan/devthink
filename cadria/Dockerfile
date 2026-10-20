@@ -1,4 +1,4 @@
-# cadria 2.0.131 — THE SITE CONTAINER FILE
+# cadria 2.0.132 — THE SITE CONTAINER FILE
 #
 # The family container doctrine in the sol shape: one versioned static
 # container per site. The sol theme builds inside the container — stage one
@@ -10,7 +10,7 @@
 
 FROM node:26-alpine@sha256:6f08a523443ddedf52941874c203475b0ad503e859ad70cb26ab8be9a517dbd5 AS solbuild
 
-ARG CADRIA_VERSION=2.0.131
+ARG CADRIA_VERSION=2.0.132
 
 WORKDIR /src
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./

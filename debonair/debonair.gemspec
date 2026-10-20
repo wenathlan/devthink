@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name = "debonair"
-  spec.version = ENV.fetch("DEBONAIR_VERSION", "2.0.131")
+  spec.version = ENV.fetch("DEBONAIR_VERSION", "2.0.132")
   spec.authors = ["wenathlan"]
   spec.email = ["support@users.noreply.github.com"]
   spec.summary = "The debonair documentation, site and tests envelope (the katexis engine home)."
