@@ -340,6 +340,31 @@ const edits = [
   ],
   ["../saddle/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
   ["../saddle/manifest.json", (content) => JSON.stringify({ ...JSON.parse(content), version }, null, 2) + "\n"],
+  /* The 2.0.131 healing wave: the saddle api health literal, the web
+     readme pin and the package lock root join the lockstep surface — the
+     deterministic suite asserts the health endpoint answers the envelope
+     version (rule 95) and the readme pins it, and the carriers rode three
+     rungs behind because the family lanes of the 128 through 130 tags
+     died at install before any gate ever read them; the lock root carries
+     the version the frozen install validates against, so it walks beside
+     the manifest the way the vite walk walked it. */
+  [
+    "../saddle/webserver.ts",
+    (content) => content.replace(/const version = '[0-9A-Za-z.-]+';/, `const version = '${version}';`),
+  ],
+  [
+    "../saddle/README.md",
+    (content) => content.replace(/the [0-9][0-9A-Za-z.-]+ grand-merge envelope/, `the ${version} grand-merge envelope`),
+  ],
+  [
+    "../saddle/package-lock.json",
+    (content) => {
+      const lock = JSON.parse(content);
+      lock.version = version;
+      if (lock.packages && lock.packages[""]) lock.packages[""].version = version;
+      return `${JSON.stringify(lock, null, 2)}\n`;
+    },
+  ],
   ["../argan/argan.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
   [
     "../cadria/cadria.csproj",

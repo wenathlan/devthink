@@ -2,6 +2,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { familylanes } from "./familylanes.mjs";
+import { releasepat } from "./releasepat.mjs";
 
 const repoRoot = resolve(process.cwd(), "..");
 const mode = process.argv[2] ?? "check";
@@ -217,6 +218,15 @@ for (const [path, rendered] of edits) {
    passes above alone. */
 const lanes = mode === "sync" ? await familylanes(mode) : { drift: false, desktop: "unchecked", mobile: "unchecked" };
 if (lanes.drift) drift = true;
+/* the release publish doctrine walks the same one-shot door: the owner pat
+   rides the release create and the publish flip (the family artifact lanes
+   answer the published event a repository token never fires), the sync
+   renders the forms over the old ones, and the standing checks never
+   redden waiting for the rung that lands them — the walk answers sync only,
+   the familylanes pattern, and once both markers answer the pat form the
+   walk reports no drift ever again. */
+const patwalk = mode === "sync" ? await releasepat(mode) : { drift: false, create: "unchecked", flip: "unchecked" };
+if (patwalk.drift) drift = true;
 if (drift && mode === "check")
   throw new Error("Maintenance metadata is outdated. Run pnpm sync:maintenance in a review branch.");
 console.log(
@@ -235,6 +245,7 @@ console.log(
         pnpm: latestpnpmmajor !== declaredpnpm && !allowmajors,
       },
       familylanes: { desktop: lanes.desktop, mobile: lanes.mobile },
+      releasepat: { create: patwalk.create, flip: patwalk.flip },
       drift,
     },
     null,
