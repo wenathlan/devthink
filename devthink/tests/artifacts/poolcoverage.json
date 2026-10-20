@@ -1,6 +1,6 @@
 {
-  "release": "2.0.127",
-  "corpus": 4360,
+  "release": "2.0.130",
+  "corpus": 4378,
   "pool": {
     "total": 626,
     "implemented": 623,
@@ -108,7 +108,7 @@
     {
       "name": "every pool item carries its disposition",
       "ok": true,
-      "detail": "every item matched the shipped symbol corpus of 4360 symbols: 623 implemented, 3 planned"
+      "detail": "every item matched the shipped symbol corpus of 4378 symbols: 623 implemented, 3 planned"
     },
     {
       "name": "the implemented count holds the recorded floor",
