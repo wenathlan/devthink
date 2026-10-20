@@ -40,6 +40,15 @@ jobs:
     name: android ${{ matrix.app }}
     runs-on: ubuntu-24.04
     timeout-minutes: 45
+    # the os rides its own publish lane on releases: the family lane walks
+    # the member applications only (a manual dispatch keeps the full matrix
+    # the lane always served, devthink included)
+    if: github.event_name != 'release' || matrix.app != 'devthink'
+    permissions:
+      # the release attachment and the artifact attestation the lane owns
+      contents: write
+      attestations: write
+      id-token: write
     strategy:
       fail-fast: false
       matrix:
@@ -292,8 +301,8 @@ jobs:
           test -n "$apksigner_path"
           "$apksigner_path" verify --verbose "build/mobile/android/${apk}"
           jarsigner -verify -verbose -certs "build/mobile/android/${aab}" >/dev/null
-          sha256sum "build/mobile/android/${apk}" "build/mobile/android/${aab}" | sed 's#build/mobile/android/##' > "build/mobile/android/sha256.android.${version}"
-          printf '{\n  "version": "%s",\n  "platform": "android",\n  "signing": "%s",\n  "optimization": "r8-and-resource-shrinking",\n  "appId": "%s",\n  "files": ["%s", "%s"]\n}\n' "$version" "${FAMILY_SIGNING:-unknown}" "$(node -p "JSON.parse(require('node:fs').readFileSync('./capacitor.config.json','utf8')).appId")" "$apk" "$aab" > "build/mobile/android/manifest.android.${version}.json"
+          sha256sum "build/mobile/android/${apk}" "build/mobile/android/${aab}" | sed 's#build/mobile/android/##' > "build/mobile/android/${{ matrix.app }}.sha256.android.${version}"
+          printf '{\n  "version": "%s",\n  "platform": "android",\n  "signing": "%s",\n  "optimization": "r8-and-resource-shrinking",\n  "appId": "%s",\n  "files": ["%s", "%s"]\n}\n' "$version" "${FAMILY_SIGNING:-unknown}" "$(node -p "JSON.parse(require('node:fs').readFileSync('./capacitor.config.json','utf8')).appId")" "$apk" "$aab" > "build/mobile/android/${{ matrix.app }}.manifest.android.${version}.json"
       - name: validate public asset names
         shell: bash
         run: |
@@ -311,10 +320,25 @@ jobs:
           path: ${{ matrix.app }}/build/mobile/android
           if-no-files-found: error
       - name: attach android assets to the release
+        # the doctrine the owner pinned: every member application ships its
+        # mobile lanes on the release the os ships (the capacitor apk and
+        # aab, the checksums and the manifest - the same rights), and the
+        # lane attaches its own assets the moment it builds them (--clobber
+        # keeps a re-run idempotent over its own names, which carry the
+        # application prefix and never collide with another lane's grammar)
         if: github.event_name == 'release'
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release upload "${{ github.event.release.tag_name }}" "${{ matrix.app }}/build/mobile/android/*" --clobber
+      - name: attest the android assets
+        # the signed by GitHub provenance the release machinery carries
+        # family wide: every artifact this lane ships answers the workflow
+        # identity the same way the os release assets answer it
+        if: github.event_name == 'release'
+        uses: actions/attest@v4.2.2
+        with:
+          subject-path: ${{ matrix.app }}/build/mobile/android/*
+          show-snippet: false
 
   ios:
     name: ios ipa ${{ matrix.app }}
@@ -327,6 +351,11 @@ jobs:
     if: ${{ (github.event_name == 'workflow_dispatch' && inputs.build_ios == true) || vars.FAMILY_IOS_ENABLED == 'true' }}
     runs-on: macos-15
     timeout-minutes: 45
+    permissions:
+      # the release attachment and the artifact attestation the lane owns
+      contents: write
+      attestations: write
+      id-token: write
     strategy:
       fail-fast: false
       matrix:
@@ -460,8 +489,8 @@ jobs:
           app="$(find "$RUNNER_TEMP/app.xcarchive/Products/Applications" -type d -name '*.app' -print -quit)"
           test -n "$app"
           ditto -c -k --sequesterRsrc --keepParent "$app" "build/mobile/ipa/${{ matrix.app }}.ios.${version}.app.zip"
-          shasum -a 256 "build/mobile/ipa/${{ matrix.app }}.ios.${version}.ipa" "build/mobile/ipa/${{ matrix.app }}.ios.${version}.app.zip" | sed 's#build/mobile/ipa/##' > "build/mobile/ipa/sha256.iosipa.${version}"
-          printf '{\n  "version": "%s",\n  "platform": "ios",\n  "signing": "caller-configured",\n  "appId": "%s",\n  "files": ["%s.ios.%s.ipa", "%s.ios.%s.app.zip"]\n}\n' "$version" "$(node -p "JSON.parse(require('node:fs').readFileSync('./capacitor.config.json','utf8')).appId")" "${{ matrix.app }}" "$version" "${{ matrix.app }}" "$version" > "build/mobile/ipa/manifest.iosipa.${version}.json"
+          shasum -a 256 "build/mobile/ipa/${{ matrix.app }}.ios.${version}.ipa" "build/mobile/ipa/${{ matrix.app }}.ios.${version}.app.zip" | sed 's#build/mobile/ipa/##' > "build/mobile/ipa/${{ matrix.app }}.sha256.iosipa.${version}"
+          printf '{\n  "version": "%s",\n  "platform": "ios",\n  "signing": "caller-configured",\n  "appId": "%s",\n  "files": ["%s.ios.%s.ipa", "%s.ios.%s.app.zip"]\n}\n' "$version" "$(node -p "JSON.parse(require('node:fs').readFileSync('./capacitor.config.json','utf8')).appId")" "${{ matrix.app }}" "$version" "${{ matrix.app }}" "$version" > "build/mobile/ipa/${{ matrix.app }}.manifest.iosipa.${version}.json"
       - uses: actions/upload-artifact@v7.0.2
         with:
           name: ${{ matrix.app }}.iosipa.${{ steps.appversion.outputs.version }}
@@ -472,3 +501,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release upload "${{ github.event.release.tag_name }}" "${{ matrix.app }}/build/mobile/ipa/*" --clobber
+      - name: attest the ios assets
+        # the signed by GitHub provenance beside the ipa lane the same way
+        # the android lane carries it
+        if: github.event_name == 'release'
+        uses: actions/attest@v4.2.2
+        with:
+          subject-path: ${{ matrix.app }}/build/mobile/ipa/*
+          show-snippet: false

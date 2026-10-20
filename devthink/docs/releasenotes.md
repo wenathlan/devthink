@@ -1,7 +1,45 @@
-# Devthink 2.0.128
+# Devthink 2.0.129
 
-This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (2.0.127 plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: - node-version: 26.10.0
-- node-version: 26.12.0. The version stamps 2.0.128 land across the metadata family with the apifreeze artifact re-frozen and the permission baseline recorded, and the ladder keeps no long-lived branch behind: the automation branch of this rung squashes onto main when the verification pipeline answers green — and closes with its branch deleted when it answers red — so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way.
+This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (2.0.128 plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: - # The universal desktop artifact lane of the family: every application of
+- # The universal desktop artifact lane of the family: every member
+- # aab, the checksums and the manifest - the same rights), and the
+- # aims its frontendDist at that staging; and the rust envelope stays
+- # and only the iso stays os exclusive. The identity (productName,
+- # another lane's grammar)
+- # answers straight at the application root; the runner stages the
+- # answers the whole member family at once (the nine sibling applications —
+- # application of the family builds the tauri desktop shell from the same
+- # application prefix and never collide with another lane's grammar)
+- # applications (the os rides the publish lane and never duplicates
+- # argan through vault — because the devthink application rides its own
+- # assets the publish lane already ships), which is the doctrine the owner
+- # attests them (the signed by GitHub provenance the release machinery
+- # builds them (--clobber keeps a re-run idempotent over its own
+- # carries family wide).
+- # chosen application across every desktop target; a published release
+- # committed). Every job attaches its own assets to the release and
+- # delivered surface under build/web and the scaffold aims its
+- # desktop lanes on the release the os ships (the capacitor, the
+- # every release (the devthink application also rides the publish lane on
+- # family wide: every artifact this lane ships answers the workflow
+- # frontendDist at that staging; and the rust envelope stays runner-side
+- # hardcoded; the vite build answers straight at the application root; the
+- # identifier, version) is read from the tauri.conf.json and the
+- # identity the same way the os release assets answer it
+- # installers, the checksums - the same rights, only the iso stays
+- # itself here), a manual dispatch walks the one chosen application
+- # keeps a re-run idempotent over its own names, which carry the
+- # lane attaches its own assets the moment it builds them (--clobber
+- # matrix carries the seven platform entries the saddle recipe validated and
+- # mobile lanes on the release the os ships (the capacitor apk and
+- # names, which carry the application prefix and never collide with
+- # never committed).
+- # one application across every desktop target without a 63-job explosion on
+- # os exclusive), and the lane attaches its own assets the moment it
+- # package.json each application tracks, never hardcoded; the vite build
+- # pinned: every application holds the same desktop rights the os holds,
+- # platform entries the saddle recipe validated. A manual run answers one
+- # publish lane on releases and the family lane never duplicates the os. The version stamps 2.0.129 land across the metadata family with the apifreeze artifact re-frozen and the permission baseline recorded, and the ladder keeps no long-lived branch behind: the automation branch of this rung squashes onto main when the verification pipeline answers green — and closes with its branch deleted when it answers red — so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way.
 
 ## Distribution channels
 
@@ -9,22 +47,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.128.tgz`
+- `wenathlan-devthink-2.0.129.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.128.nupkg`
+- `devthink.2.0.129.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.128.pom`
-- `devthink-2.0.128.jar`
-- `devthink2.0.128.zip`
-- `devthink-declarations-2.0.128.zip`
+- `devthink-2.0.129.pom`
+- `devthink-2.0.129.jar`
+- `devthink2.0.129.zip`
+- `devthink-declarations-2.0.129.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -38,77 +76,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.128.gem`
+- `devthink-2.0.129.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.128.vsix`
+- `devthink-vscode-2.0.129.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.128.xpi`
+- `devthink-firefox-2.0.129.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.128.zip`
+- `devthink-safari-2.0.129.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.128.zip`
-- `devthink-2.0.128-source.tar.xz`
-- `devthink-nativehost-2.0.128.template.json`
+- `devthink2.0.129.zip`
+- `devthink-2.0.129-source.tar.xz`
+- `devthink-nativehost-2.0.129.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.128.zip`
+- `devthink-site-2.0.129.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.128.zip`
+- `devthink-declarations-2.0.129.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.128.json`
-- `devthink-attestations-2.0.128.json`
-- `devthink-artifactmanifest-2.0.128.json`
+- `devthink-sbom-2.0.129.json`
+- `devthink-attestations-2.0.129.json`
+- `devthink-artifactmanifest-2.0.129.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.128.tgz`
-- `devthink.2.0.128.nupkg`
-- `devthink-2.0.128.pom`
-- `devthink-2.0.128.jar`
-- `devthink-2.0.128.gem`
+- `wenathlan-devthink-2.0.129.tgz`
+- `devthink.2.0.129.nupkg`
+- `devthink-2.0.129.pom`
+- `devthink-2.0.129.jar`
+- `devthink-2.0.129.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.128.vsix`
-- `devthink-firefox-2.0.128.xpi`
-- `devthink-safari-2.0.128.zip`
-- `devthink2.0.128.zip`
-- `devthink-2.0.128-source.tar.xz`
-- `devthink-nativehost-2.0.128.template.json`
-- `devthink-site-2.0.128.zip`
-- `devthink-declarations-2.0.128.zip`
-- `devthink-sbom-2.0.128.json`
-- `devthink-attestations-2.0.128.json`
-- `devthink-artifactmanifest-2.0.128.json`
+- `devthink-vscode-2.0.129.vsix`
+- `devthink-firefox-2.0.129.xpi`
+- `devthink-safari-2.0.129.zip`
+- `devthink2.0.129.zip`
+- `devthink-2.0.129-source.tar.xz`
+- `devthink-nativehost-2.0.129.template.json`
+- `devthink-site-2.0.129.zip`
+- `devthink-declarations-2.0.129.zip`
+- `devthink-sbom-2.0.129.json`
+- `devthink-attestations-2.0.129.json`
+- `devthink-artifactmanifest-2.0.129.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 
@@ -116,7 +154,7 @@ Every artifact above attaches to the release of the immutable tag beside the che
 
 ## The chain to this candidate
 
-Every release from the 1.1.31 base to this candidate, grouped by the phases the roadmap declared: 123 released versions the changelog records, 69 roadmap sections the phases draw their titles from.
+Every release from the 1.1.31 base to this candidate, grouped by the phases the roadmap declared: 124 released versions the changelog records, 69 roadmap sections the phases draw their titles from.
 
 ### The base (1.1.31)
 
