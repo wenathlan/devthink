@@ -23,6 +23,7 @@
     "@grpc/grpc-js": "1.14.5",
     "deepmerge-ts": "^8.0.0",
     "esbuild": "^0.28.2",
+    "follow-redirects": "^1.16.1",
     "mysql2": "^3.23.1",
     "postcss-selector-parser": "7.1.6",
     "source-map-js": "1.2.2",
