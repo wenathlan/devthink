@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import { readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { releaseartifactmatrix } from "../distribution.js";
 
 /* The transport-neutral graph of the grand merge: the flat domain files
@@ -18,7 +18,7 @@ const transportneutral = ["dist/foundation.js", "dist/intelligence.js", "dist/au
 
 describe("the package surface", () => {
 it("imports every declared package export target in Node", async () => {
-  const root = dirname(new URL(import.meta.url).pathname);
+  const root = dirname(fileURLToPath(new URL(import.meta.url)));
   const packagejson = JSON.parse(await readFile(resolve(root, "../package.json"), "utf8"));
   for (const target of Object.values(packagejson.exports)) {
     assert.equal(typeof target, "string");
@@ -34,7 +34,7 @@ it("imports every declared package export target in Node", async () => {
 });
 
 it("declares runtime metadata and an optional browser provider peer", async () => {
-  const root = dirname(new URL(import.meta.url).pathname);
+  const root = dirname(fileURLToPath(new URL(import.meta.url)));
   const packagejson = JSON.parse(await readFile(resolve(root, "../package.json"), "utf8"));
   assert.equal(packagejson.private, false);
   assert.equal(packagejson.engines.node, ">=26.12.0 <27");
@@ -45,7 +45,7 @@ it("declares runtime metadata and an optional browser provider peer", async () =
 });
 
 it("keeps transport-neutral export graphs free of Node-only imports", async () => {
-  const root = dirname(new URL(import.meta.url).pathname);
+  const root = dirname(fileURLToPath(new URL(import.meta.url)));
   const seen = new Set();
   const pending = transportneutral.map((entry) => resolve(root, "..", entry));
   while (pending.length) {

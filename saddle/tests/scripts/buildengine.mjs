@@ -3,10 +3,32 @@
  */
 import { rm, mkdir, writeFile } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
+import { existsSync } from "node:fs";
+import { createRequire } from "node:module";
 
 await rm("dist", { recursive: true, force: true });
-const compiler = process.platform === "win32" ? "tsc.cmd" : "tsc";
-execFileSync(compiler, ["--project", "tsconfig.json"], { stdio: "inherit" });
+/* the compiler rides node directly: windows refuses spawning a bare
+ * tsc.cmd shell (spawnSync EINVAL on the .cmd shim) and the house law keeps
+ * the toolchain in the global node modules, so the tsc entry is resolved
+ * through require paths instead of a shell command */
+function compilerentry() {
+  const require = createRequire(import.meta.url);
+  for (const base of ["typescript/bin/tsc", "../typescript/bin/tsc", "../../../typescript/bin/tsc"]) {
+    try {
+      const entry = require.resolve(base);
+      if (existsSync(entry)) return entry;
+    } catch {
+      /* not here: walk the next candidate */
+    }
+  }
+  return "tsc";
+}
+const entry = compilerentry();
+const args = entry.endsWith(".js") ? [entry, "--project", "tsconfig.json"] : ["--project", "tsconfig.json"];
+execFileSync(entry.endsWith(".js") ? process.execPath : entry, args, {
+  stdio: "inherit",
+  env: { ...process.env, NODE_PATH: [process.env.NODE_PATH, "C:/Users/nathalan/node_modules"].filter(Boolean).join(";") },
+});
 
 // the target manifest CLI: the grand merge folded packager/targetcli.ts
 // into distribution.ts (Section 7) whose CLI main only activates when
