@@ -1,6 +1,7 @@
 /** Proposes current stable runtimes from official registries without silently crossing a major compatibility boundary. */
 import { readFile, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
+import { familylanes } from "./familylanes.mjs";
 
 const repoRoot = resolve(process.cwd(), "..");
 const mode = process.argv[2] ?? "check";
@@ -201,6 +202,21 @@ for (const [path, rendered] of edits) {
     if (mode === "sync") await writeFile(path, rendered);
   }
 }
+/* The 2.0.128 family lane migration rides the same vehicle (the 300+ assets
+   doctrine): the lane walk runs AFTER the pin renders above so the canonical
+   body the migration writes never meets a stale render re-writing over it,
+   and only the sync mode walks it — the check gate answers the pins and the
+   engines floors it owns (the one-shot structural migration carries its own
+   standalone check beside this module), so a push that ships the vehicle
+   never reddens the gate waiting for the rung that lands the lanes. The
+   workflow files it touches answer the maintenance sync the same way — the
+   GH013 wall refuses any workflow file through the repository token, so the
+   ladder's owner PAT landing is the only door the release doctrine walks
+   through. The migration is one-shot: once the lane markers answer, this
+   walk reports no drift ever again and the mutable pins answer to the render
+   passes above alone. */
+const lanes = mode === "sync" ? await familylanes(mode) : { drift: false, desktop: "unchecked", mobile: "unchecked" };
+if (lanes.drift) drift = true;
 if (drift && mode === "check")
   throw new Error("Maintenance metadata is outdated. Run pnpm sync:maintenance in a review branch.");
 console.log(
@@ -218,6 +234,7 @@ console.log(
         bun: latestbunmajor !== declaredbun && !allowmajors,
         pnpm: latestpnpmmajor !== declaredpnpm && !allowmajors,
       },
+      familylanes: { desktop: lanes.desktop, mobile: lanes.mobile },
       drift,
     },
     null,
