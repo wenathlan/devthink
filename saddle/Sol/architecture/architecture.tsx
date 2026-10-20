@@ -7,7 +7,14 @@
  * which now lives here as the page mount itself.
  */
 
-import { ArrowUpRight, Cpu, Database, GitBranch, Globe2, ShieldCheck } from 'lucide-react';
+import {
+	ArrowUpRightRegular as ArrowUpRight,
+	BrainCircuitRegular as Cpu,
+	DatabaseRegular as Database,
+	BranchForkRegular as GitBranch,
+	GlobeRegular as Globe2,
+	ShieldTaskRegular as ShieldCheck,
+} from '@fluentui/react-icons';
 // Signal & Ledger: the architecture as a diagram-as-ledger — layered hairline
 // rows (the runtime forms of sandboxprofile: runtime/packages, full/docker,
 // published/registries) with mono annotations and connector dashes, then the
@@ -123,13 +130,13 @@ export default function Architecture() {
 						return (
 							<div className="layer-row" key={layer.name}>
 								<span className="layer-index">0{index + 1}</span>
-								<Icon size={20} strokeWidth={1.5} aria-hidden="true" />
+								<Icon fontSize={20} strokeWidth={1.5} aria-hidden="true" />
 								<div className="layer-name">
 									<strong>{layer.name}</strong>
 									<span>{layer.sub}</span>
 								</div>
 								<p>{layer.body}</p>
-								<ArrowUpRight size={16} aria-hidden="true" />
+								<ArrowUpRight fontSize={16} aria-hidden="true" />
 							</div>
 						);
 					})}
@@ -153,7 +160,7 @@ export default function Architecture() {
 				</div>
 			</section>
 			<section className="content-section architecture-note">
-				<ShieldCheck size={21} aria-hidden="true" />
+				<ShieldCheck fontSize={21} aria-hidden="true" />
 				<div>
 					<p className="eyebrow">PHYSICAL LIMIT / DO NOT HIDE</p>
 					<p>

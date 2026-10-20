@@ -11,7 +11,14 @@
 // hairline state ledger (process carries the live pulse) beside the operating
 // rail, then the free runner farm as a ruled mono table with its priority
 // states, then the operating rule band.
-import { ArrowRight, Box, Cpu, Database, HardDrive, MemoryStick } from 'lucide-react';
+import {
+	ArrowRightRegular as ArrowRight,
+	BoxRegular as Box,
+	BrainCircuitRegular as Cpu,
+	DatabaseRegular as Database,
+	HardDriveRegular as HardDrive,
+	RamRegular as MemoryStick,
+} from '@fluentui/react-icons';
 import { PageShell } from '@/shell/Shell';
 
 const providers = [
@@ -71,12 +78,12 @@ export default function Compute() {
 									key={item.title}
 								>
 									<span className="r3-bridge-index">0{index + 1}</span>
-									<Icon size={18} strokeWidth={1.6} aria-hidden="true" />
+									<Icon fontSize={18} strokeWidth={1.6} aria-hidden="true" />
 									<span className="r3-bridge-name">{item.title}</span>
 									<span className="r3-bridge-body">{item.body}</span>
 									<span className="r3-bridge-state">{item.state}</span>
 									{index < bridge.length - 1 && (
-										<ArrowRight className="r3-bridge-arrow" size={14} aria-hidden="true" />
+										<ArrowRight className="r3-bridge-arrow" fontSize={14} aria-hidden="true" />
 									)}
 								</li>
 							);
@@ -120,7 +127,7 @@ export default function Compute() {
 				</div>
 			</section>
 			<section className="content-section note-band">
-				<Box size={21} aria-hidden="true" />
+				<Box fontSize={21} aria-hidden="true" />
 				<div>
 					<p className="eyebrow">RETIRES / BY CONSTRUCTION</p>
 					<p>

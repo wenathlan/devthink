@@ -7,7 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
-import { Boxes, ShieldCheck } from "lucide-react";
+import { BoxMultipleRegular as Boxes, ShieldTaskRegular as ShieldCheck } from "@fluentui/react-icons";
 // World.tsx — the MAP PLATES (campaign v3 · r3-stealthhead): the GLB catalog as
 // a seamed plate field — hairline joints between the plates, zone meta in
 // mono (kind, size, path, sha-256), never a floating card grid. Rows come
@@ -115,12 +115,12 @@ export default function World() {
             <article key={asset.path} className="worldplate reveal">
               <div className="worldplate__top">
                 <span className="badge">
-                  <Boxes size={11} aria-hidden="true" />
+                  <Boxes fontSize={11} aria-hidden="true" />
                   {asset.kind}
                 </span>
                 {asset.precompiled ? (
                   <span className="badge success">
-                    <ShieldCheck size={11} aria-hidden="true" />
+                    <ShieldCheck fontSize={11} aria-hidden="true" />
                     pre-compiled
                   </span>
                 ) : null}

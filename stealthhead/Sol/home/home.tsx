@@ -10,7 +10,15 @@
  * renders only behind a finished flow.
  */
 
-import { ArrowRight, Boxes, Crosshair, PlugZap, Swords, Trophy, Volume2 } from "lucide-react";
+import {
+  ArrowRightRegular as ArrowRight,
+  BoxMultipleRegular as Boxes,
+  TargetRegular as Crosshair,
+  PlugConnectedRegular as PlugZap,
+  FlashRegular as Swords,
+  TrophyRegular as Trophy,
+  Speaker2Regular as Volume2,
+} from "@fluentui/react-icons";
 // Home.tsx — the LANDING (campaign v3 · r3-stealthhead): the cinematic stage of
 // the FPS platform — ONE red rim light over the tactical dark, the drawn
 // scope reticle sweeping ±2° as the hero object, the tactical-caps display
@@ -125,7 +133,7 @@ function HomeLanding() {
             <div className="shstage__actions reveal">
               <Link href="/match" className="btn press">
                 enter a match
-                <ArrowRight size={16} />
+                <ArrowRight fontSize={16} />
               </Link>
               {/* the ONE CTA law: the hero closes with the single machined key;
                   the honest data note rides beside it as a quiet mono cue —
@@ -142,11 +150,11 @@ function HomeLanding() {
             </div>
             <div className="shstage__chips reveal">
               <span className="badge">
-                <PlugZap size={11} />
+                <PlugZap fontSize={11} />
                 versawase — imported from cadria
               </span>
               <span className="badge">
-                <Volume2 size={11} />
+                <Volume2 fontSize={11} />
                 audio — imported from debonair
               </span>
               <span className="badge info">no engine file of its own</span>
@@ -188,7 +196,7 @@ function HomeLanding() {
             </div>
             <span className="shfeat__cta">
               open the board
-              <ArrowRight size={14} />
+              <ArrowRight fontSize={14} />
             </span>
           </Link>
         ) : null}
@@ -213,7 +221,7 @@ function HomeLanding() {
               >
                 <span className="shledger__no">{String(index + 1).padStart(2, "0")}</span>
                 <span className="shledger__icon" aria-hidden="true">
-                  <Icon size={17} strokeWidth={1.7} />
+                  <Icon fontSize={17} strokeWidth={1.7} />
                 </span>
                 <span className="shledger__body">
                   <span className="shledger__name">{domain.label}</span>
@@ -221,7 +229,7 @@ function HomeLanding() {
                 </span>
                 <span className="shledger__meta mono">{domain.meta}</span>
                 <span className="shledger__arrow" aria-hidden="true">
-                  <ArrowRight size={15} />
+                  <ArrowRight fontSize={15} />
                 </span>
               </Link>
             );

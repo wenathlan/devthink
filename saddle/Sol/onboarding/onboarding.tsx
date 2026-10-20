@@ -15,7 +15,11 @@
  * write and no visitor storage beyond the shared onboarding state.
  */
 
-import { ArrowLeft, ArrowRight, LayoutDashboard } from 'lucide-react';
+import {
+        ArrowLeftRegular as ArrowLeft,
+        ArrowRightRegular as ArrowRight,
+        TableRegular as LayoutDashboard,
+} from '@fluentui/react-icons';
 import { useCallback, useState } from 'react';
 import { useLocation } from 'wouter';
 import { markOnboardingSeen } from '../../onboardingstate.ts';
@@ -78,7 +82,7 @@ export default function Onboarding() {
                                                                         const Icon = app.icon ?? LayoutDashboard;
                                                                         return (
                                                                                 <li key={app.href} className="winonboard__fact">
-                                                                                        <Icon size={16} strokeWidth={1.7} aria-hidden="true" />
+                                                                                        <Icon fontSize={16} strokeWidth={1.7} aria-hidden="true" />
                                                                                         <span>
                                                                                                 <strong>{app.label}</strong> — {app.detail}
                                                                                         </span>
@@ -114,7 +118,7 @@ export default function Onboarding() {
                                                                 className="winonboard__act"
                                                                 onClick={() => setStep((value) => value - 1)}
                                                         >
-                                                                <ArrowLeft size={14} aria-hidden="true" />
+                                                                <ArrowLeft fontSize={14} aria-hidden="true" />
                                                                 back
                                                         </button>
                                                 )}
@@ -125,7 +129,7 @@ export default function Onboarding() {
                                                                 onClick={enterHome}
                                                         >
                                                                 enter saddle
-                                                                <ArrowRight size={14} aria-hidden="true" />
+                                                                <ArrowRight fontSize={14} aria-hidden="true" />
                                                         </button>
                                                 ) : (
                                                         <button
@@ -134,7 +138,7 @@ export default function Onboarding() {
                                                                 onClick={() => setStep((value) => value + 1)}
                                                         >
                                                                 continue
-                                                                <ArrowRight size={14} aria-hidden="true" />
+                                                                <ArrowRight fontSize={14} aria-hidden="true" />
                                                         </button>
                                                 )}
                                         </div>

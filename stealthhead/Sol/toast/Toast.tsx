@@ -11,7 +11,12 @@
  * of the WINDOW APP PASS.
  */
 
-import { CircleAlert, CircleCheck, Info, X } from "lucide-react";
+import {
+  ErrorCircleRegular as CircleAlert,
+  CheckmarkCircleRegular as CircleCheck,
+  InfoRegular as Info,
+  DismissRegular as X,
+} from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 
 /** the tones a toast can carry. */
@@ -90,7 +95,7 @@ export function Toaster() {
         const Icon = toneicon[entry.tone];
         return (
           <div key={entry.id} className={`toast ${entry.tone}`}>
-            <Icon size={16} aria-hidden="true" />
+            <Icon fontSize={16} aria-hidden="true" />
             <span>{entry.message}</span>
             <button
               type="button"
@@ -98,7 +103,7 @@ export function Toaster() {
               data-tip="dismiss"
               onClick={() => dismiss(entry.id)}
             >
-              <X size={13} aria-hidden="true" />
+              <X fontSize={13} aria-hidden="true" />
             </button>
           </div>
         );

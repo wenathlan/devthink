@@ -13,7 +13,7 @@
 // the live lobby carries the pinging live dot and the round ledger rides a
 // hairline progress meter. All rows still come from the root match logic.
 
-import { Crosshair, RefreshCw } from "lucide-react";
+import { TargetRegular as Crosshair, ArrowClockwiseRegular as RefreshCw } from "@fluentui/react-icons";
 /**
  * Match.tsx — the match page of the stealthhead Sol theme: the lobby board
  * with the round table of every match and the live seat leaderboard. all
@@ -61,7 +61,7 @@ function LobbyCard({ lobby }: { lobby: MatchLobby }) {
     <article className="glass glass-hover matchboard reveal">
       <div className="matchboard__feed">
         <div className="lobbyhead">
-          <Crosshair size={16} aria-hidden="true" />
+          <Crosshair fontSize={16} aria-hidden="true" />
           <h3>{lobby.title}</h3>
           <span
             className={`badge ${lobby.state === "live" ? "error" : lobby.state === "open" ? "success" : ""}`}
@@ -223,7 +223,7 @@ export default function Match() {
             data-tip="refetch the lobby rows from the site db over https"
             onClick={reload}
           >
-            <RefreshCw size={14} aria-hidden="true" />
+            <RefreshCw fontSize={14} aria-hidden="true" />
             refresh the board
           </button>
         </div>

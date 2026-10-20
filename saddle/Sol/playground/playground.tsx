@@ -10,15 +10,15 @@
 import { internalapi } from '@saddle/isolation';
 // Signal & Ledger: playground as the ledger of internal plans, never a console that executes bytes.
 import {
-	Activity,
-	Ban,
-	Blocks,
-	Braces,
-	Database,
-	FileWarning,
-	Network,
-	ShieldCheck,
-} from 'lucide-react';
+	PulseRegular as Activity,
+	ProhibitedRegular as Ban,
+	CubeRegular as Blocks,
+	BracesRegular as Braces,
+	DatabaseRegular as Database,
+	DocumentErrorRegular as FileWarning,
+	CommunicationRegular as Network,
+	ShieldTaskRegular as ShieldCheck,
+} from '@fluentui/react-icons';
 import { type CSSProperties, useMemo, useState } from 'react';
 import { PageShell } from '@/shell/Shell';
 
@@ -153,7 +153,7 @@ export default function Playground() {
 							style={{ '--stagger-i': cardindex } as CSSProperties}
 						>
 							<span>{index}</span>
-							<Icon size={18} />
+							<Icon fontSize={18} />
 							<strong>{name}</strong>
 							<small>{detail}</small>
 						</article>
@@ -203,15 +203,15 @@ export default function Playground() {
 				<div className="playground-console">
 					<div className="console-head">
 						<span>
-							<Activity size={14} /> INTERNAL API PROJECTION
+							<Activity fontSize={14} /> INTERNAL API PROJECTION
 						</span>
 						<span
 							className={handoff.state === 'execution-disabled' ? 'console-denied' : 'console-pass'}
 						>
 							{handoff.state === 'execution-disabled' ? (
-								<Ban size={13} />
+								<Ban fontSize={13} />
 							) : (
-								<ShieldCheck size={13} />
+								<ShieldCheck fontSize={13} />
 							)}{' '}
 							{handoff.code}
 						</span>
@@ -260,7 +260,7 @@ export default function Playground() {
 			</section>
 
 			<section className="content-section note-band">
-				<Network size={21} />
+				<Network fontSize={21} />
 				<div>
 					<p className="eyebrow">RESOURCE POSTURE</p>
 					<p>

@@ -3,7 +3,13 @@
 // home folder that renders it. The topline states the chain it draws — no
 // boot timer, no live indicator: the diagram is the model, never a claim
 // that a runner is running.
-import { ArrowRight, Database, GitBranch, Globe2, Server } from 'lucide-react';
+import {
+        ArrowRightRegular as ArrowRight,
+        DatabaseRegular as Database,
+        BranchForkRegular as GitBranch,
+        GlobeRegular as Globe2,
+        ServerRegular as Server,
+} from '@fluentui/react-icons';
 
 const nodes = [
         { icon: GitBranch, label: 'repo', detail: 'persistent state', tone: 'ink' },
@@ -25,13 +31,13 @@ export default function RuntimeDiagram() {
                                         return (
                                                 <div className="diagram-node-wrap" key={node.label}>
                                                         <div className={`diagram-node tone-${node.tone}`}>
-                                                                <Icon size={19} strokeWidth={1.7} />
+                                                                <Icon fontSize={19} strokeWidth={1.7} />
                                                                 <div>
                                                                         <strong>{node.label}</strong>
                                                                         <small>{node.detail}</small>
                                                                 </div>
                                                         </div>
-                                                        {index < nodes.length - 1 && <ArrowRight className="diagram-arrow" size={18} />}
+                                                        {index < nodes.length - 1 && <ArrowRight className="diagram-arrow" fontSize={18} />}
                                                 </div>
                                         );
                                 })}

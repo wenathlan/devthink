@@ -8,7 +8,16 @@
  */
 
 // Signal & Ledger: integrations as surfaces of the same engine, not disconnected products.
-import { Apple, Bot, Box, Container, GitBranch, Globe, Smartphone, Terminal } from 'lucide-react';
+import {
+	FoodAppleRegular as Apple,
+	BotRegular as Bot,
+	BoxRegular as Box,
+	BoxRegular as Container,
+	BranchForkRegular as GitBranch,
+	GlobeRegular as Globe,
+	PhoneRegular as Smartphone,
+	WindowConsoleRegular as Terminal,
+} from '@fluentui/react-icons';
 import { PageShell } from '@/shell/Shell';
 
 const integrationGroups = [
@@ -73,7 +82,7 @@ export default function Integrations() {
 								const Icon = item.icon;
 								return (
 									<div className="integration-card" key={item.name}>
-										<Icon size={20} strokeWidth={1.5} />
+										<Icon fontSize={20} strokeWidth={1.5} />
 										<strong>{item.name}</strong>
 										<span>{item.body}</span>
 									</div>

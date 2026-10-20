@@ -27,14 +27,14 @@
  */
 
 import {
-        ArrowDownRight,
-        ArrowUpRight,
-        Cable,
-        Command,
-        Layers3,
-        MoveRight,
-        Package,
-} from 'lucide-react';
+        ArrowDownRightRegular as ArrowDownRight,
+        ArrowUpRightRegular as ArrowUpRight,
+        PlugConnectedRegular as Cable,
+        KeyboardRegular as Command,
+        LayerRegular as Layers3,
+        ArrowRightRegular as MoveRight,
+        BoxRegular as Package,
+} from '@fluentui/react-icons';
 // Signal & Ledger: home as the landing — declare the sandbox, read the matrix, boot the console.
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'wouter';
@@ -262,7 +262,7 @@ function HomeSurface() {
                                                                         onChange={(event) => setDraft(event.target.value)}
                                                                 />
                                                                 <button className="r3-prompt-key" type="submit">
-                                                                        boot <ArrowDownRight size={15} aria-hidden="true" />
+                                                                        boot <ArrowDownRight fontSize={15} aria-hidden="true" />
                                                                 </button>
                                                         </form>
                                                         <fieldset className="r3-chips">
@@ -352,7 +352,7 @@ function HomeSurface() {
                                                         </p>
                                                         <div className="evidence-card">
                                                                 <div className="evidence-card-head">
-                                                                        <Command size={16} />
+                                                                        <Command fontSize={16} />
                                                                         <span>INODE / DENTRY / FILE_OPS</span>
                                                                         <span className="card-index">[01]</span>
                                                                 </div>
@@ -380,7 +380,7 @@ function HomeSurface() {
                                                                         <h2 className="section-title">A repo can behave like a CPU.</h2>
                                                                 </div>
                                                                 <Link href="/architecture" className="small-arrow-link">
-                                                                        Open architecture <MoveRight size={15} />
+                                                                        Open architecture <MoveRight fontSize={15} />
                                                                 </Link>
                                                         </div>
                                                         <div className="runtime-layout">
@@ -425,12 +425,12 @@ function HomeSurface() {
                                                                 return (
                                                                         <Link className="surface-row" href={surface.href} key={surface.title}>
                                                                                 <span className="surface-number">{surface.index}</span>
-                                                                                <Icon size={21} strokeWidth={1.5} aria-hidden="true" />
+                                                                                <Icon fontSize={21} strokeWidth={1.5} aria-hidden="true" />
                                                                                 <div className="surface-copy">
                                                                                         <h3>{surface.title}</h3>
                                                                                         <p>{surface.body}</p>
                                                                                 </div>
-                                                                                <ArrowUpRight className="surface-arrow" size={18} aria-hidden="true" />
+                                                                                <ArrowUpRight className="surface-arrow" fontSize={18} aria-hidden="true" />
                                                                         </Link>
                                                                 );
                                                         })}
@@ -446,7 +446,7 @@ function HomeSurface() {
                                                         <p className="r3-step-body">{step.body}</p>
                                                         {step.href && (
                                                                 <Link className="r3-step-link" href={step.href}>
-                                                                        open the {step.title} <ArrowUpRight size={14} aria-hidden="true" />
+                                                                        open the {step.title} <ArrowUpRight fontSize={14} aria-hidden="true" />
                                                                 </Link>
                                                         )}
                                                 </div>

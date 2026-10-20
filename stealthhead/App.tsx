@@ -9,7 +9,7 @@
  * in-memory seed fallback); the visitor machine only loads the interface.
  */
 
-import { AlertTriangle, RotateCcw } from "lucide-react";
+import { WarningRegular as AlertTriangle, ArrowCounterclockwiseRegular as RotateCcw } from "@fluentui/react-icons";
 import { Component, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { Router as WouterRouter } from "wouter";
@@ -35,11 +35,11 @@ class ThemeErrorBoundary extends Component<{ children: ReactNode }, { error: Err
     if (!error) return this.props.children;
     return (
       <main className="failure" role="alert">
-        <AlertTriangle size={34} />
+        <AlertTriangle fontSize={34} />
         <p>stealthhead could not render this frame.</p>
         <pre>{error.stack}</pre>
         <button type="button" onClick={() => window.location.reload()}>
-          <RotateCcw size={14} />
+          <RotateCcw fontSize={14} />
           reload the interface
         </button>
       </main>

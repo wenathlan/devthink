@@ -7,7 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
-import { Crosshair } from "lucide-react";
+import { TargetRegular as Crosshair } from "@fluentui/react-icons";
 // Weapons.tsx — the ARMORY LEDGER (campaign v3 · r3-stealthhead): one specimen
 // per row — index, display-face name, the damage/rate/recoil stat meters
 // (tabular values over hairline bars) and the mono aux column (dps, ttk,
@@ -155,7 +155,7 @@ export default function Weapons() {
                   <p className="armorykind">
                     <span className="badge">{weapon.kind}</span>
                     <span className={`badge ${stable ? "success" : "warning"}`}>
-                      <Crosshair size={10} aria-hidden="true" />
+                      <Crosshair fontSize={10} aria-hidden="true" />
                       {stable ? "stable" : "wild"}
                     </span>
                   </p>

@@ -7,7 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
-import { Trophy } from "lucide-react";
+import { TrophyRegular as Trophy } from "@fluentui/react-icons";
 // Ranking.tsx — the LADDER LEDGER (campaign v3 · r3-stealthhead): the podium
 // keeps its three tiles (the leader raised, display-face rank numerals) and
 // the ladder breaks into the asymmetric 1.6fr/1fr scoreboard — the dominant
@@ -117,7 +117,7 @@ export default function Ranking() {
                     <tr key={entry.id}>
                       <td>#{entry.position}</td>
                       <td>
-                        {entry.position === 1 ? <Trophy size={13} aria-label="season leader" /> : null} {entry.player}
+                        {entry.position === 1 ? <Trophy fontSize={13} aria-label="season leader" /> : null} {entry.player}
                       </td>
                       <td>{entry.squad}</td>
                       <td>{entry.region}</td>

@@ -19,7 +19,19 @@
  * minimum: consolidation belongs to the future @wenathlan/* package.
  */
 
-import { Copy, Crosshair, Globe, LayoutDashboard, Minus, Moon, Square, Sun, Swords, Trophy, X } from "lucide-react";
+import {
+  CopyRegular as Copy,
+  TargetRegular as Crosshair,
+  GlobeRegular as Globe,
+  TableRegular as LayoutDashboard,
+  SubtractRegular as Minus,
+  WeatherMoonRegular as Moon,
+  SquareRegular as Square,
+  WeatherSunnyRegular as Sun,
+  FlashRegular as Swords,
+  TrophyRegular as Trophy,
+  DismissRegular as X,
+} from "@fluentui/react-icons";
 import {
   type CSSProperties,
   type MouseEvent as ReactMouseEvent,
@@ -109,7 +121,7 @@ function ThemeToggle() {
   const [theme, setTheme] = useState<ThemeName>(currentTheme());
   return (
     <button type="button" className="winapp__theme" aria-label="toggle theme" onClick={() => setTheme(toggleTheme())}>
-      {theme === "dark" ? <Sun size={14} aria-hidden="true" /> : <Moon size={14} aria-hidden="true" />}
+      {theme === "dark" ? <Sun fontSize={14} aria-hidden="true" /> : <Moon fontSize={14} aria-hidden="true" />}
       {theme}
     </button>
   );
@@ -292,7 +304,7 @@ export function Shell({ children }: { children: ReactNode }) {
           </div>
           <div className="winapp__caption">
             <button type="button" className="winapp__cap" aria-label="Minimize" onClick={() => setMinimized(true)}>
-              <Minus size={14} aria-hidden="true" />
+              <Minus fontSize={14} aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -300,7 +312,7 @@ export function Shell({ children }: { children: ReactNode }) {
               aria-label={maximized ? "Restore" : "Maximize"}
               onClick={toggleMaximize}
             >
-              {maximized ? <Copy size={12} aria-hidden="true" /> : <Square size={11} aria-hidden="true" />}
+              {maximized ? <Copy fontSize={12} aria-hidden="true" /> : <Square fontSize={11} aria-hidden="true" />}
             </button>
             <button
               type="button"
@@ -308,7 +320,7 @@ export function Shell({ children }: { children: ReactNode }) {
               aria-label="Close"
               onClick={() => navigate(RESTART_ROUTE)}
             >
-              <X size={14} aria-hidden="true" />
+              <X fontSize={14} aria-hidden="true" />
             </button>
           </div>
         </header>
@@ -329,7 +341,7 @@ export function Shell({ children }: { children: ReactNode }) {
                   aria-label={app.label}
                   aria-current={isActive(app.href) ? "page" : undefined}
                 >
-                  <Icon size={16} strokeWidth={1.7} aria-hidden="true" />
+                  <Icon fontSize={16} strokeWidth={1.7} aria-hidden="true" />
                   <span className="winapp__raillabel">{app.label}</span>
                 </Link>
               );

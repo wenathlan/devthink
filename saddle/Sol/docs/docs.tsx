@@ -9,14 +9,14 @@
 
 // Signal & Ledger: documentation as an operations index, with short paths and preserved context.
 import {
-	ArrowUpRight,
-	BookOpen,
-	Braces,
-	FileCode2,
-	Flag,
-	GitCommitHorizontal,
-	PlayCircle,
-} from 'lucide-react';
+	ArrowUpRightRegular as ArrowUpRight,
+	BookOpenRegular as BookOpen,
+	BracesRegular as Braces,
+	CodeRegular as FileCode2,
+	FlagRegular as Flag,
+	RecordRegular as GitCommitHorizontal,
+	PlayCircleRegular as PlayCircle,
+} from '@fluentui/react-icons';
 import { PageShell } from '@/shell/Shell';
 
 const docs = [
@@ -96,19 +96,19 @@ export default function Docs() {
 							onClick={(event) => event.preventDefault()}
 						>
 							<span className="doc-index">{doc.index}</span>
-							<Icon size={20} strokeWidth={1.5} />
+							<Icon fontSize={20} strokeWidth={1.5} />
 							<div className="doc-copy">
 								<span>{doc.meta}</span>
 								<strong>{doc.title}</strong>
 								<p>{doc.body}</p>
 							</div>
-							<ArrowUpRight size={17} />
+							<ArrowUpRight fontSize={17} />
 						</button>
 					);
 				})}
 			</section>
 			<section className="content-section docs-cta">
-				<PlayCircle size={22} />
+				<PlayCircle fontSize={22} />
 				<div>
 					<p className="eyebrow">NEXT / BUILD GATE</p>
 					<h3>Planning first. Platform next.</h3>
@@ -120,7 +120,7 @@ export default function Docs() {
 					rel="noreferrer"
 					className="button button-dark"
 				>
-					Open repository <ArrowUpRight size={15} />
+					Open repository <ArrowUpRight fontSize={15} />
 				</a>
 			</section>
 		</PageShell>

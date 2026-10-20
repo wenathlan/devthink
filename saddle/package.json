@@ -245,6 +245,7 @@
     "@capacitor/cli": "^8.5.1",
     "@capacitor/core": "^8.5.1",
     "@capacitor/ios": "^8.5.1",
+    "@fluentui/react-icons": "^2.0.344",
     "@hookform/resolvers": "^5.9.1",
     "@libsql/client": "^0.18.0",
     "@prisma/client": "^7.10.0",

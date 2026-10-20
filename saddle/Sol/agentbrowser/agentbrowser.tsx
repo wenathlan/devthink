@@ -8,17 +8,17 @@
  */
 
 import {
-        Activity,
-        Ban,
-        Camera,
-        CheckCircle2,
-        Keyboard,
-        MousePointer2,
-        Play,
-        RotateCcw,
-        ScrollText,
-        Terminal,
-} from 'lucide-react';
+        PulseRegular as Activity,
+        ProhibitedRegular as Ban,
+        CameraRegular as Camera,
+        CheckmarkCircleRegular as CheckCircle2,
+        KeyboardRegular as Keyboard,
+        CursorRegular as MousePointer2,
+        PlayRegular as Play,
+        ArrowCounterclockwiseRegular as RotateCcw,
+        DocumentTextRegular as ScrollText,
+        WindowConsoleRegular as Terminal,
+} from '@fluentui/react-icons';
 // Signal & Ledger: agent browser as an event trail, evidence and deterministic replay.
 // The session console renders the rows the sessions catalog serves — the
 // documented example log of docs/logs/examplesession.json offline, the paired
@@ -55,7 +55,7 @@ function SessionEventRow({ event }: { event: AgentSessionEvent }) {
         const Icon = eventicon(event.type);
         return (
                 <div className="console-row">
-                        <Icon size={16} />
+                        <Icon fontSize={16} />
                         <span className="console-time">{eventtime(event)}</span>
                         <strong>{event.type}</strong>
                         <span>{eventvalue(event)}</span>
@@ -78,7 +78,7 @@ function SessionTrail({ events }: { events: readonly AgentSessionEvent[] }) {
 function CaptchaBadge({ verdict }: { verdict: AgentSession['captcha'] }) {
         return (
                 <span className={verdict.passed ? 'console-pass' : 'console-denied'}>
-                        {verdict.passed ? <CheckCircle2 size={14} /> : <Ban size={13} />} {verdict.kind}{' '}
+                        {verdict.passed ? <CheckCircle2 fontSize={14} /> : <Ban fontSize={13} />} {verdict.kind}{' '}
                         {verdict.passed ? 'passed' : 'failed'}
                 </span>
         );
@@ -157,21 +157,21 @@ export default function AgentBrowser() {
                                 <div className="session-console">
                                         <div className="console-head">
                                                 <span>
-                                                        <Terminal size={14} /> SESSION / {sessionlabel}
+                                                        <Terminal fontSize={14} /> SESSION / {sessionlabel}
                                                 </span>
                                                 {session ? <CaptchaBadge verdict={session.captcha} /> : null}
                                         </div>
                                         <div className="console-rows">
                                                 {session === null ? (
                                                         <div className="console-row" aria-live="polite">
-                                                                <Activity size={16} />
+                                                                <Activity fontSize={16} />
                                                                 <span className="console-time" />
                                                                 <strong>catalog</strong>
                                                                 <span>waiting for the rows…</span>
                                                         </div>
                                                 ) : session.events.length === 0 ? (
                                                         <div className="console-row" aria-live="polite">
-                                                                <Activity size={16} />
+                                                                <Activity fontSize={16} />
                                                                 <span className="console-time" />
                                                                 <strong>catalog</strong>
                                                                 <span>no session rows served yet.</span>
@@ -180,7 +180,7 @@ export default function AgentBrowser() {
                                                         <>
                                                                 <SessionTrail events={session.events} />
                                                                 <div className="console-row">
-                                                                        <Activity size={16} />
+                                                                        <Activity fontSize={16} />
                                                                         <span className="console-time">+{lastt} ms</span>
                                                                         <strong>metrics</strong>
                                                                         <span>
@@ -198,21 +198,21 @@ export default function AgentBrowser() {
                                 </div>
                                 <div className="browser-principles">
                                         <div className="principle-card">
-                                                <Camera size={19} />
+                                                <Camera fontSize={19} />
                                                 <div>
                                                         <strong>DOM + vision</strong>
                                                         <span>Hybrid capture is the baseline.</span>
                                                 </div>
                                         </div>
                                         <div className="principle-card">
-                                                <RotateCcw size={19} />
+                                                <RotateCcw fontSize={19} />
                                                 <div>
                                                         <strong>Deterministic replay</strong>
                                                         <span>Same events, configurable speed.</span>
                                                 </div>
                                         </div>
                                         <div className="principle-card">
-                                                <Play size={19} />
+                                                <Play fontSize={19} />
                                                 <div>
                                                         <strong>Evidence first</strong>
                                                         <span>Screenshot, token, video.</span>

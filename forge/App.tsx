@@ -10,7 +10,7 @@
  * and component lives behind the anchor chain (App → Sol → the page anchors
  * → the loose components); nothing is imported directly.
  */
-import { AlertTriangle, RotateCcw } from "lucide-react";
+import { ArrowCounterclockwiseRegular as RotateCcw, WarningRegular as AlertTriangle } from "@fluentui/react-icons";
 import { Component, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { Router as WouterRouter } from "wouter";
@@ -37,11 +37,11 @@ class ThemeErrorBoundary extends Component<{ children: ReactNode }, { error: Err
         role="alert"
         style={{ padding: "48px 24px", maxWidth: 720, margin: "0 auto" }}
       >
-        <AlertTriangle size={34} />
+        <AlertTriangle fontSize={34} />
         <p>forge could not render this page frame.</p>
         <pre>{error.stack}</pre>
         <button type="button" onClick={() => window.location.reload()}>
-          <RotateCcw size={14} />
+          <RotateCcw fontSize={14} />
           reload the page
         </button>
       </main>

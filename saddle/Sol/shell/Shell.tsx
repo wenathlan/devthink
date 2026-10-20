@@ -22,26 +22,26 @@ import { Slot } from '@radix-ui/react-slot';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { cva, type VariantProps } from 'class-variance-authority';
 import {
-        AlertTriangle,
-        AppWindow,
-        BookOpen,
-        Boxes,
-        Copy,
-        Cpu,
-        FlaskConical,
-        Gauge,
-        LayoutDashboard,
-        LogIn,
-        Minus,
-        Moon,
-        PlugZap,
-        RotateCcw,
-        Square,
-        Sun,
-        TerminalSquare,
-        UserPlus,
-        X,
-} from 'lucide-react';
+        WarningRegular as AlertTriangle,
+        WindowAppsRegular as AppWindow,
+        BookOpenRegular as BookOpen,
+        BoxMultipleRegular as Boxes,
+        CopyRegular as Copy,
+        BrainCircuitRegular as Cpu,
+        BeakerRegular as FlaskConical,
+        GaugeRegular as Gauge,
+        TableRegular as LayoutDashboard,
+        ArrowEnterLeftRegular as LogIn,
+        SubtractRegular as Minus,
+        WeatherMoonRegular as Moon,
+        PlugConnectedRegular as PlugZap,
+        ArrowCounterclockwiseRegular as RotateCcw,
+        SquareRegular as Square,
+        WeatherSunnyRegular as Sun,
+        WindowConsoleRegular as TerminalSquare,
+        PersonAddRegular as UserPlus,
+        DismissRegular as X,
+} from '@fluentui/react-icons';
 import { useTheme as useNextTheme } from 'next-themes';
 import type * as React from 'react';
 import {
@@ -154,7 +154,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                         return (
                                 <div className="flex items-center justify-center min-h-screen p-8 bg-background">
                                         <div className="flex flex-col items-center w-full max-w-2xl p-8">
-                                                <AlertTriangle size={48} className="text-destructive mb-6 flex-shrink-0" />
+                                                <AlertTriangle fontSize={48} className="text-destructive mb-6 flex-shrink-0" />
 
                                                 <h2 className="text-xl mb-4">An unexpected error occurred.</h2>
 
@@ -173,7 +173,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                                                                 'hover:opacity-90 cursor-pointer',
                                                         )}
                                                 >
-                                                        <RotateCcw size={16} />
+                                                        <RotateCcw fontSize={16} />
                                                         Reload Page
                                                 </button>
                                         </div>
@@ -635,9 +635,9 @@ function ThemeToggle() {
         return (
                 <button type="button" className="winapp__theme" aria-label="toggle theme" onClick={toggle}>
                         {theme === 'dark' ? (
-                                <Sun size={14} aria-hidden="true" />
+                                <Sun fontSize={14} aria-hidden="true" />
                         ) : (
-                                <Moon size={14} aria-hidden="true" />
+                                <Moon fontSize={14} aria-hidden="true" />
                         )}
                         {theme}
                 </button>
@@ -848,7 +848,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
                                                         aria-label="Minimize"
                                                         onClick={() => setMinimized(true)}
                                                 >
-                                                        <Minus size={14} aria-hidden="true" />
+                                                        <Minus fontSize={14} aria-hidden="true" />
                                                 </button>
                                                 <button
                                                         type="button"
@@ -857,9 +857,9 @@ export function Shell({ children, themeButton = true }: ShellProps) {
                                                         onClick={toggleMaximize}
                                                 >
                                                         {maximized ? (
-                                                                <Copy size={12} aria-hidden="true" />
+                                                                <Copy fontSize={12} aria-hidden="true" />
                                                         ) : (
-                                                                <Square size={11} aria-hidden="true" />
+                                                                <Square fontSize={11} aria-hidden="true" />
                                                         )}
                                                 </button>
                                                 <button
@@ -868,7 +868,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
                                                         aria-label="Close"
                                                         onClick={() => navigate(RESTART_ROUTE)}
                                                 >
-                                                        <X size={14} aria-hidden="true" />
+                                                        <X fontSize={14} aria-hidden="true" />
                                                 </button>
                                         </div>
                                 </header>
@@ -891,7 +891,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
                                                                                         aria-label={app.label}
                                                                                         aria-current={isActive(app.href) ? 'page' : undefined}
                                                                                 >
-                                                                                        <Icon size={16} strokeWidth={1.7} aria-hidden="true" />
+                                                                                        <Icon fontSize={16} strokeWidth={1.7} aria-hidden="true" />
                                                                                         <span className="winapp__raillabel">{app.label}</span>
                                                                                 </Link>
                                                                         );
