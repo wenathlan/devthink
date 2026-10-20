@@ -5302,6 +5302,106 @@ legend.cmd-group {
   opacity: 0.75;
 }
 
+/* the safe link (rung 123): the accent underline that respects the quiet
+ * floor — the hover deepens to the full accent and the focus ring answers
+ * the keyboard. */
+.dtc-md__link {
+  color: color-mix(in srgb, var(--sol-primary) 82%, var(--sol-text));
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--sol-primary) 45%, transparent);
+  text-underline-offset: 2px;
+  transition: color 120ms ease, text-decoration-color 120ms ease;
+  overflow-wrap: anywhere;
+}
+
+.dtc-md__link:hover {
+  color: var(--sol-primary);
+  text-decoration-color: var(--sol-primary);
+}
+
+.dtc-md__link:focus-visible {
+  outline: 2px solid var(--sol-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* the table (rung 123): the editorial ledger — the hairline grid, the
+ * header row on the softened panel, the mono numerals, and the horizontal
+ * scroll the wide tables deserve (the wrap is the scroll region). */
+.dtc-md__tablewrap {
+  margin: 10px 0;
+  overflow-x: auto;
+  border: 1px solid rgb(0 0 0 / 45%);
+  border-radius: 8px;
+}
+
+.dtc-md__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.dtc-md__table th,
+.dtc-md__table td {
+  padding: 7px 12px;
+  border-bottom: 1px solid rgb(0 0 0 / 35%);
+  border-right: 1px solid rgb(0 0 0 / 22%);
+  overflow-wrap: anywhere;
+}
+
+.dtc-md__table th:last-child,
+.dtc-md__table td:last-child {
+  border-right: 0;
+}
+
+.dtc-md__table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.dtc-md__table th {
+  background: rgb(255 255 255 / 4%);
+  color: var(--sol-text);
+  font-weight: 600;
+  font-family: var(--dt-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.04em;
+}
+
+.dtc-md__table td {
+  font-variant-numeric: tabular-nums;
+}
+
+.dtc-md__table tbody tr:hover td {
+  background: rgb(255 255 255 / 3%);
+}
+
+/* the syntax palette of the code panes (rung 123): the quiet flagship
+ * tones — comments in the faded olive-grey, strings in the warm amber,
+ * numbers in the coral, keywords in the signal blue of the house accent
+ * family (never indigo), calls in the soft cyan-green. Every tone sits
+ * on the dark pane with contrast above the floor. */
+.dtc-hl--comment {
+  color: rgb(122 134 112 / 100%);
+  font-style: italic;
+}
+
+.dtc-hl--string {
+  color: rgb(214 178 118 / 100%);
+}
+
+.dtc-hl--number {
+  color: rgb(219 138 122 / 100%);
+}
+
+.dtc-hl--keyword {
+  color: rgb(118 170 222 / 100%);
+}
+
+.dtc-hl--fn {
+  color: rgb(138 190 178 / 100%);
+}
+
 .dtc-md strong {
   color: var(--sol-text);
   font-weight: 700;

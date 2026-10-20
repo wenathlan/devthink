@@ -1,5 +1,14 @@
 # DevThink release notes
 
+## 2.0.123
+
+The markdown v2 closes with **links, tables and the in-house syntax highlighter** (the fifth competitor-grammar rung). The inline grammar grows the citation lane: markdown links and bare http(s) urls render as safe anchors — the href lane is enforced at the regex (only http and https, never a scheme the floor would execute), every anchor opens with `noopener noreferrer nofollow`, the trailing punctuation of a sentence-ending url stays on the floor as text (the period never rides the href), and the link wears the accent underline that deepens on hover with the keyboard focus ring. **Tables** answer the ledger grammar: the hairline grid with the header row on the softened mono panel, the alignment honors the divider cells (`:---` left, `:---:` center, `---:` right), the numerals ride tabular figures, and a wide table scrolls horizontally inside its own region. The code panes gain the **in-house highlighter**: one ordered master scan per language family (js/ts, python, shell, sql, json — the aliases fold in, the unknown families fall to the generic scan), with the comments in the faded olive, the strings in the warm amber, the numbers in the coral, the keywords in the signal blue of the house accent family and the call-shaped identifiers in the soft cyan-green. It is honest about being a light grammar — no tree, no states — and a token the scan misses is plain text, never an error.
+
+| Area | Change |
+| --- | --- |
+| The chat flagship | Safe links (markdown + autolink with the trailing-punctuation law), aligned tables with the horizontal scroll region, and the five-family in-house syntax highlighter on the code panes. |
+| The code panes | The highlight token palette — comments, strings, numbers, keywords and calls — in the quiet flagship tones on the dark pane. |
+
 ## 2.0.122
 
 The markdown v2 opens with the **block grammar** (the fourth competitor-grammar rung): the chat floor stops gluing multi-paragraph answers into one paragraph and stops flashing raw markers — the renderer now walks the line grammar over every fence-free segment. **Headings** render on the thread's own ladder (`#` caps at the h3 — the page h1 lives in the topbar, so the floor never grows a second h1), **ordered and nested unordered lists** group their runs with the nesting indents (a marker-type change starts a new list — a dash run never swallows a numbered run), **blockquotes** speak with the accent bar and the softened voice, and **horizontal rules** breathe as the quiet editorial hairline. Paragraphs split on blank lines (the old renderer joined everything into a single p), the fenced-code lane keeps its streaming-honest open-fence handling (tokens land in the code pane mid-stream), and the copy affordance of the code blocks rides unchanged.

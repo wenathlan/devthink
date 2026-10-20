@@ -1,16 +1,17 @@
 /**
  * markdown.tsx — the in-house renderer of the chat: the block grammar
  * (paragraphs, headings, ordered and nested unordered lists, blockquotes,
- * horizontal rules, fenced code blocks with a language header and a
- * clipboard copy) over the inline grammar (bold, italic, inline code).
+ * horizontal rules, tables, fenced code blocks with a language header, a
+ * clipboard copy and the in-house syntax highlighter) over the inline
+ * grammar (bold, italic, inline code, safe links with citations).
  * Loose component of the chat page; turn.tsx composes it. The parser is
  * line-based and streaming-honest: a fence left open mid-stream renders as
  * a code block in progress, and no block ever flashes raw markers on the
- * floor (rung 122 — the block grammar wave).
+ * floor (rungs 122-123 — the markdown v2 waves).
  */
 import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 
-type Token = { kind: "text" | "bold" | "italic" | "code"; text: string };
+type Token = { kind: "text" | "bold" | "italic" | "code"; text: string } | { kind: "link"; text: string; href: string };
 
 type Block =
   | { kind: "text"; text: string }
@@ -18,17 +19,41 @@ type Block =
   | { kind: "heading"; level: number; text: string }
   | { kind: "hr" }
   | { kind: "quote"; text: string }
-  | { kind: "list"; ordered: boolean; items: Array<{ depth: number; text: string }> };
+  | { kind: "list"; ordered: boolean; items: Array<{ depth: number; text: string }> }
+  | { kind: "table"; align: Array<"left" | "center" | "right">; head: string[]; rows: string[][] };
 
 const FENCE = /```([^\n`]*)\n?([\s\S]*?)```/g;
-// bold first, then single asterisks; underscore italics need word boundaries
-const INLINE = /(`[^`\n]+`)|(\*\*[^*\n]+\*\*)|(\*[^*\n]+\*)|(?<![\w])(_[^_\n]+_)(?![\w])/g;
+// markdown links and bare http(s) urls first (the citation grammar), then
+// code, bold, single asterisks; underscore italics need word boundaries
+const INLINE =
+  /(\[[^\]\n]+\]\((https?:\/\/[^\s)]+)(?:\s+"[^"]*")?\))|((?:https?:\/\/)[^\s<>)]+)|(`[^`\n]+`)|(\*\*[^*\n]+\*\*)|(\*[^*\n]+\*)|(?<![\w])(_[^_\n]+_)(?![\w])/g;
 
 const HEADING = /^(#{1,6})\s+(.+?)\s*#*\s*$/;
 const HR = /^\s{0,3}(?:(?:-\s*){3,}|(?:\*\s*){3,}|(?:_\s*){3,})$/;
 const QUOTE = /^\s{0,3}>\s?(.*)$/;
 const LIST = /^(\s*)([-*+]|\d{1,9}[.)])\s+(.*)$/;
 const BLANK = /^\s*$/;
+const TABLE_DIVIDER = /^\s*\|?(\s*:?-{3,}:?\s*\|)+\s*:?-{3,}:?\s*\|?\s*$/;
+
+/** splitRow — the cells of one table line (the leading and trailing pipes
+ * are optional, the escapes stay literal — the chat floor never needs the
+ * full pipe-escape grammar). */
+function splitRow(line: string): string[] {
+  let body = line.trim();
+  if (body.startsWith("|")) body = body.slice(1);
+  if (body.endsWith("|") && !body.endsWith("\\|")) body = body.slice(0, -1);
+  return body.split("|").map((cell) => cell.trim());
+}
+
+/** alignOf — the column alignment of one divider cell (:--- left, :---:
+ * center, ---: right; the bare dash defaults left). */
+function alignOf(cell: string): "left" | "center" | "right" {
+  const left = cell.startsWith(":");
+  const right = cell.endsWith(":");
+  if (left && right) return "center";
+  if (right) return "right";
+  return "left";
+}
 
 /** parseBlocks — the fence split first (the streaming-honest open-fence
  * lane stays), then the line grammar over every non-code segment:
@@ -97,10 +122,28 @@ function parseProse(segment: string): Block[] {
     flushList();
   };
 
-  for (const raw of lines) {
-    const line = raw.replace(/\s+$/, "");
+  for (let li = 0; li < lines.length; li++) {
+    const line = lines[li].replace(/\s+$/, "");
     if (BLANK.test(line)) {
       flushAll();
+      continue;
+    }
+    /* the table lane: a pipe-carrying line whose follower is the divider
+     * row opens a table — the header rides the opening line, the divider
+     * fixes the alignment, and every following pipe-line is a row (the
+     * table ends at the first pipe-less line). */
+    if (line.includes("|") && li + 1 < lines.length && TABLE_DIVIDER.test(lines[li + 1])) {
+      flushAll();
+      const align = splitRow(lines[li + 1]).map(alignOf);
+      const head = splitRow(line);
+      let ri = li + 2;
+      const rows: string[][] = [];
+      while (ri < lines.length && lines[ri].includes("|") && !BLANK.test(lines[ri])) {
+        rows.push(splitRow(lines[ri]));
+        ri++;
+      }
+      blocks.push({ kind: "table", align, head, rows });
+      li = ri - 1;
       continue;
     }
     const heading = line.match(HEADING);
@@ -153,7 +196,22 @@ function parseInline(text: string): Token[] {
     const start = m.index ?? 0;
     if (start > last) tokens.push({ kind: "text", text: text.slice(last, start) });
     const raw = m[0];
-    if (raw.startsWith("`")) tokens.push({ kind: "code", text: raw.slice(1, -1) });
+    if (raw.startsWith("[")) {
+      /* the markdown link: the label and the href, both sanitized to the
+       * http(s) lane the regex already enforces (never javascript:, never
+       * a scheme the floor would execute). */
+      const label = raw.slice(1, raw.indexOf("]"));
+      const href = m[2] ?? label;
+      tokens.push({ kind: "link", text: label, href });
+    } else if (raw.startsWith("http")) {
+      /* the bare url autolink — the citation grammar of the sources. The
+       * trailing punctuation never rides the href (the sentence's period
+       * stays on the floor as text, not inside the link). */
+      const bare = raw.replace(/[.,;:!?)\]]+$/, "");
+      tokens.push({ kind: "link", text: bare, href: bare });
+      const tailLen = raw.length - bare.length;
+      if (tailLen > 0) tokens.push({ kind: "text", text: raw.slice(bare.length) });
+    } else if (raw.startsWith("`")) tokens.push({ kind: "code", text: raw.slice(1, -1) });
     else if (raw.startsWith("**") || raw.startsWith("__")) tokens.push({ kind: "bold", text: raw.slice(2, -2) });
     else tokens.push({ kind: "italic", text: raw.slice(1, -1) });
     last = start + raw.length;
@@ -170,6 +228,14 @@ function renderInline(text: string): ReactNode[] {
     if (t.kind === "italic") return <em key={i}>{t.text}</em>;
     // biome-ignore lint/suspicious/noArrayIndexKey: static parse, same rationale
     if (t.kind === "code") return <code key={i}>{t.text}</code>;
+    if (t.kind === "link") {
+      return (
+        // biome-ignore lint/suspicious/noArrayIndexKey: static parse, same rationale
+        <a key={i} className="dtc-md__link" href={t.href} target="_blank" rel="noopener noreferrer nofollow">
+          {t.text}
+        </a>
+      );
+    }
     // biome-ignore lint/suspicious/noArrayIndexKey: static parse, same rationale
     return <span key={i}>{t.text}</span>;
   });
@@ -198,9 +264,102 @@ export async function copyText(text: string): Promise<"copied" | "failed"> {
   }
 }
 
+/* --------------------- the in-house highlighter ------------------------ */
+/*
+ * The syntax highlighter of the code panes (rung 123): one ordered master
+ * scan per language family — comments, strings, numbers, keywords, calls —
+ * with the gaps falling back to the plain pane ink. It is honest about
+ * being a light grammar: no tree, no states, just the tokens the chat
+ * floor needs to read code the way the flagship panes do. Every language
+ * family answers the same contract, the unknown ones fall to the generic
+ * scan (strings, numbers, comments), and nothing ever breaks the render:
+ * a token the scan misses is plain text, never an error.
+ */
+
+type CodeToken = { kind: string; text: string };
+
+const KW_JS =
+  /\b(?:const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|class|extends|implements|interface|type|enum|import|export|from|as|default|async|await|try|catch|finally|throw|new|typeof|instanceof|in|of|delete|void|yield|super|this|null|undefined|true|false|public|private|protected|readonly|static|abstract|declare|namespace|satisfies)\b/;
+const KW_PY =
+  /\b(?:def|class|return|if|elif|else|for|while|import|from|as|try|except|finally|raise|with|lambda|pass|break|continue|yield|global|nonlocal|assert|del|in|is|not|and|or|None|True|False|async|await|match|case)\b/;
+const KW_SH =
+  /\b(?:if|then|else|elif|fi|for|do|done|while|until|case|esac|function|echo|export|cd|return|local|set|unset|shift|sudo|apt|npm|bun|bunx|npx|git|curl|wget|mkdir|rm|cp|mv|cat|grep|sed|awk|chmod|source)\b/;
+const KW_SQL =
+  /\b(?:select|from|where|insert|into|values|update|set|delete|create|table|drop|alter|add|join|left|right|inner|outer|full|cross|on|group|by|order|limit|offset|as|and|or|not|null|is|in|between|like|distinct|having|primary|key|foreign|references|unique|index|default|check|exists|union|all|case|when|then|end)\b/;
+const KW_JSON = /\b(?:true|false|null)\b/;
+
+/** familyOf — the language family of a fence label (the aliases fold into
+ * the five grammars the house ships; everything else is generic). */
+function familyOf(lang: string): "js" | "py" | "sh" | "sql" | "json" | "generic" {
+  const l = lang.toLowerCase();
+  if (/^(js|jsx|ts|tsx|javascript|typescript|mjs|cjs|node)$/.test(l)) return "js";
+  if (/^(py|python|python3)$/.test(l)) return "py";
+  if (/^(sh|bash|shell|zsh|console|terminal)$/.test(l)) return "sh";
+  if (/^(sql|postgres|postgresql|sqlite|mysql)$/.test(l)) return "sql";
+  if (/^(json|jsonc|webmanifest)$/.test(l)) return "json";
+  return "generic";
+}
+
+/** highlight — the ordered scan of one code pane: line comments and
+ * triple-quoted blocks first (the longest match wins by alternation
+ * order), then strings, numbers, the family keywords, and the call-shaped
+ * identifiers; the gaps are plain text. The capture groups are computed
+ * with the family (the keyword group only exists when the family ships
+ * one), so the kind of every match reads its own group, never a
+ * misnumbered neighbor. */
+function highlight(code: string, lang: string): CodeToken[] {
+  const family = familyOf(lang);
+  const kw =
+    family === "js"
+      ? KW_JS
+      : family === "py"
+        ? KW_PY
+        : family === "sh"
+          ? KW_SH
+          : family === "sql"
+            ? KW_SQL
+            : family === "json"
+              ? KW_JSON
+              : null;
+  const lineComment =
+    family === "py" || family === "sh" || family === "sql"
+      ? "#[^\\n]*"
+      : family === "generic"
+        ? "(?:#|//)[^\\n]*"
+        : "//[^\\n]*";
+  const blockComment = family === "py" ? "'''[\\s\\S]*?'''|\"\"\"[\\s\\S]*?\"\"\"" : "/\\*[\\s\\S]*?\\*/";
+  const master = new RegExp(
+    `${blockComment}|${lineComment}|("(?:[^"\\\\\\n]|\\\\.)*"|'(?:[^'\\\\\\n]|\\\\.)*'|\`(?:[^\`\\\\]|\\\\.)*\`)|(\\b\\d[\\d_]*(?:\\.\\d+)?(?:e[+-]?\\d+)?\\b)${kw ? `|(${kw.source})` : ""}|([A-Za-z_$][\\w$]*)(?=\\s*\\()`,
+    "g",
+  );
+  /* the group ladder: 1 strings, 2 numbers, 3 keywords (only when the
+   * family ships a grammar), then the call-shaped identifier last. */
+  const kwGroup = kw ? 3 : 0;
+  const fnGroup = kw ? 4 : 3;
+  const tokens: CodeToken[] = [];
+  let last = 0;
+  for (const m of code.matchAll(master)) {
+    const start = m.index ?? 0;
+    if (start > last) tokens.push({ kind: "text", text: code.slice(last, start) });
+    const raw = m[0];
+    let kind = "text";
+    if (raw.startsWith("/*") || raw.startsWith("'''") || raw.startsWith('"""')) kind = "comment";
+    else if ((raw.startsWith("//") || raw.startsWith("#")) && !raw.startsWith("#!")) kind = "comment";
+    else if (raw.startsWith('"') || raw.startsWith("'") || raw.startsWith("`")) kind = "string";
+    else if (/^\d/.test(raw)) kind = "number";
+    else if (kwGroup > 0 && m[kwGroup]) kind = "keyword";
+    else if (m[fnGroup]) kind = "fn";
+    tokens.push({ kind, text: raw });
+    last = start + raw.length;
+  }
+  if (last < code.length) tokens.push({ kind: "text", text: code.slice(last) });
+  return tokens;
+}
+
 function CodeBlock({ lang, code }: { lang: string; code: string }) {
   const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
   const timer = useRef<number | null>(null);
+  const tokens = useMemo(() => (code ? highlight(code, lang) : []), [code, lang]);
   useEffect(
     () => () => {
       if (timer.current !== null) window.clearTimeout(timer.current);
@@ -225,7 +384,16 @@ function CodeBlock({ lang, code }: { lang: string; code: string }) {
         </button>
       </figcaption>
       <pre>
-        <code>{code}</code>
+        <code>
+          {tokens.length
+            ? tokens.map((t, i) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: the tokens are a static parse of one source string — they never reorder, only remount together
+                <span key={i} className={t.kind === "text" ? undefined : `dtc-hl--${t.kind}`}>
+                  {t.text}
+                </span>
+              ))
+            : code}
+        </code>
       </pre>
     </figure>
   );
@@ -285,6 +453,38 @@ export function Markdown({ source }: { source: string }) {
                 </li>
               ))}
             </Tag>
+          );
+        }
+        if (b.kind === "table") {
+          return (
+            // biome-ignore lint/suspicious/noArrayIndexKey: the blocks are a static parse of one source string — they never reorder, only remount together
+            <div key={`${i}-t`} className="dtc-md__tablewrap">
+              <table className="dtc-md__table">
+                <thead>
+                  <tr>
+                    {b.head.map((cell, j) => (
+                      // biome-ignore lint/suspicious/noArrayIndexKey: static parse, same rationale
+                      <th key={j} style={{ textAlign: b.align[j] ?? "left" }}>
+                        {renderInline(cell)}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {b.rows.map((row, j) => (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: static parse, same rationale
+                    <tr key={j}>
+                      {b.head.map((_, k) => (
+                        // biome-ignore lint/suspicious/noArrayIndexKey: static parse, same rationale
+                        <td key={k} style={{ textAlign: b.align[k] ?? "left" }}>
+                          {renderInline(row[k] ?? "")}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           );
         }
         // biome-ignore lint/suspicious/noArrayIndexKey: the blocks are a static parse of one source string — they never reorder, only remount together
