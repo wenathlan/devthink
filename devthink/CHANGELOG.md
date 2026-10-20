@@ -1,5 +1,14 @@
 # DevThink release notes
 
+## 2.0.122
+
+The markdown v2 opens with the **block grammar** (the fourth competitor-grammar rung): the chat floor stops gluing multi-paragraph answers into one paragraph and stops flashing raw markers — the renderer now walks the line grammar over every fence-free segment. **Headings** render on the thread's own ladder (`#` caps at the h3 — the page h1 lives in the topbar, so the floor never grows a second h1), **ordered and nested unordered lists** group their runs with the nesting indents (a marker-type change starts a new list — a dash run never swallows a numbered run), **blockquotes** speak with the accent bar and the softened voice, and **horizontal rules** breathe as the quiet editorial hairline. Paragraphs split on blank lines (the old renderer joined everything into a single p), the fenced-code lane keeps its streaming-honest open-fence handling (tokens land in the code pane mid-stream), and the copy affordance of the code blocks rides unchanged.
+
+| Area | Change |
+| --- | --- |
+| The chat flagship | The markdown block grammar: the heading ladder (h3-capped), ordered and nested lists, blockquotes, rules, blank-line paragraphs — no raw asterisks on the floor, ever. |
+| The thread design | The editorial steps for the headings, the accent-bar quote, the mono markers on the lists, the depth rails (the nesting caps at three for readability). |
+
 ## 2.0.121
 
 The thread reads like the flagship timelines: **date separators and the streaming clock** land on the chat floor (the third competitor-grammar rung). A turn that opens a new calendar day arrives under the timeline divider — the hairline carrying the locale label chip (mono lowercase, the meta grammar): Today, Yesterday, or the locale weekday with month and day (the year joins when the day is not of the current one — honest dating, never a hardcode). The generation status row answers with the **elapsed clock**: the label reads Thinking before the first token, flips to Responding while the deltas land, and the honest `· Ns` count ticks every half second from the round start — the visitor always knows how long the round has been running, and the row retires when the round commits.

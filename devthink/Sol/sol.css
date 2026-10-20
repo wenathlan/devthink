@@ -5210,6 +5210,98 @@ legend.cmd-group {
   white-space: pre-wrap;
 }
 
+/* ---- the block grammar of the markdown v2 (rung 122) ------------------ */
+
+/* the heading ladder: # caps at the thread's h3 (the page h1 lives in the
+ * topbar — never a second h1 on the floor), the sizes fall in the
+ * editorial steps, all sans bold with the tighter leading. */
+.dtc-md__h {
+  margin: 14px 0 6px;
+  color: var(--sol-text);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.dtc-md__h--1 {
+  font-size: 1.18rem;
+}
+
+.dtc-md__h--2 {
+  font-size: 1.06rem;
+}
+
+.dtc-md__h--3 {
+  font-size: 0.98rem;
+}
+
+.dtc-md__h--4 {
+  font-size: 0.92rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* the rule: the quiet hairline, breathing like an editorial break. */
+.dtc-md__hr {
+  margin: 14px 0;
+  border: 0;
+  height: 1px;
+  background: color-mix(in srgb, var(--sol-muted) 25%, transparent);
+}
+
+/* the quote: the accent bar with the softened ink, the classic editorial
+ * pull — never italic-bold theater, just the bar and the dimmed voice. */
+.dtc-md__quote {
+  margin: 8px 0;
+  padding: 4px 14px;
+  border-left: 2px solid color-mix(in srgb, var(--sol-primary) 55%, transparent);
+  color: color-mix(in srgb, var(--sol-text) 78%, var(--sol-muted));
+  white-space: pre-wrap;
+}
+
+/* the lists: tight rows, the markers in the mono voice, the nesting indents
+ * two rails per depth (the cap at three keeps the floor readable). */
+.dtc-md__list {
+  margin: 8px 0;
+  padding-left: 22px;
+}
+
+.dtc-md__list--ol {
+  padding-left: 26px;
+}
+
+.dtc-md__list li {
+  margin: 3px 0;
+  padding-left: 2px;
+}
+
+.dtc-md__list--ol li::marker {
+  font-family: var(--dt-mono);
+  font-size: 0.84em;
+  color: var(--sol-muted);
+}
+
+.dtc-md__list:not(.dtc-md__list--ol) li::marker {
+  color: color-mix(in srgb, var(--sol-primary) 70%, var(--sol-muted));
+}
+
+.dtc-md__li--d1 {
+  margin-left: 20px;
+}
+
+.dtc-md__li--d2 {
+  margin-left: 40px;
+}
+
+.dtc-md__li--d3 {
+  margin-left: 60px;
+}
+
+.dtc-md__li--d1::marker,
+.dtc-md__li--d2::marker,
+.dtc-md__li--d3::marker {
+  opacity: 0.75;
+}
+
 .dtc-md strong {
   color: var(--sol-text);
   font-weight: 700;
