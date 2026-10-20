@@ -351,6 +351,7 @@
     "lint:fix": "biome lint --write .",
     "lint:warn": "biome lint --max-diagnostics=3000 .",
     "notes:release": "node tests/release.mjs notes",
+    "land:signed": "bun tests/scripts/signedlanding.ts",
     "pack:check": "npm pack --dry-run",
     "package": "pnpm build && npm pack ./distpackage --dry-run",
     "permdiff:sync": "node tests/permdiff.mjs sync",
