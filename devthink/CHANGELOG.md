@@ -1,5 +1,14 @@
 # DevThink release notes
 
+## 2.0.120
+
+The message action row lands on every turn of the chat flagship (the second competitor-grammar rung of the campaign): **copy, delete, regenerate and edit ride one quiet key group** in the meta line that reveals on hover and focus. The copy key answers with the icon morph — the glyph swaps to the checkmark in the windows accent with a soft accent wash for 1.4s and the sr-only status line speaks the result (the clipboard answer IS the feedback; no toast ever doubles the surface, and a failed copy keeps the glyph armed with the quiet red hint while the retry stays available). The delete key carries the destructive red hover and removes the row through the honest session commit (the toast answers once; a session left empty falls back to the hero). The meta time now wears the **full locale date-time on hover** (the dotted underline whispers the hint), and the checkpoint edit law finally shows its face: a turn born from an edit branch carries the `edited` flag and its honest `· edited` mark — the same italic grammar the stopped partial wears (both marks share the `.dtc-meta__mark` chip).
+
+| Area | Change |
+| --- | --- |
+| The chat flagship | The action row: copy-with-morph, delete-own-turn, regenerate and edit in one hover-revealed key group; the full hover timestamp; the edited badge on checkpoint-branch turns. |
+| The chat state | `ChatTurn.edited` joins the contract (type + validator + the cloneSessionForEdit stamp) — the branch turns finally carry their provenance. |
+
 ## 2.0.119
 
 This release opens the 118-to-3.0 campaign (the wave ledger of docs/25.waveplan.md) with the first competitor-grammar rung of the chat flagship: **stop and regenerate**. The round controller now rides the whole streaming path — the composer's signal key swaps to a Stop key while the round runs, the abort lands as the honest ChatStoppedError (never a timeout lie, never an error row), and whatever streamed stays on the floor as a partial answer carrying its `stopped` flag and its italic `· stopped` mark in the meta line. The last assistant turn gains the regenerate affordance (the round arrow on the hover, the same grammar the edit pencil rides): the old answer leaves the floor, the same user turn rounds again, and a stopped partial regenerates the same way — the stop never locks the conversation.

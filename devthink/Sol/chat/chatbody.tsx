@@ -353,6 +353,24 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     if (lastPrompt.current) void send(lastPrompt.current);
   }, [active, busy, runCompletion, send, tools]);
 
+  /** deleteTurn — the row delete of the action row (rung 120): the message
+   * leaves the conversation (the session commits without it), the toast
+   * answers once, and a session left empty falls back to the hero. */
+  const deleteTurn = useCallback(
+    (turnId: string) => {
+      if (!active || busy) return;
+      if (!active.messages.some((m) => m.id === turnId)) return;
+      commit({
+        ...active,
+        messages: active.messages.filter((m) => m.id !== turnId),
+        at: Date.now(),
+      });
+      toast("Message deleted");
+    },
+    [active, busy, commit],
+  );
+
+  /** deleteActive — the topbar delete of the whole conversation. */
   const deleteActive = useCallback(() => {
     if (!active) return;
     remove(active.id);
@@ -622,6 +640,7 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
                           ? regenerate
                           : undefined
                       }
+                      onDelete={!busy ? () => deleteTurn(m.id) : undefined}
                     />
                   ))}
                   {busy && live && (live.content || live.thought) ? <Turn turn={live} /> : null}

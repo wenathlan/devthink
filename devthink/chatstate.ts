@@ -35,6 +35,10 @@ export type ChatTurn = {
   /** true when the visitor stopped the generation — the partial answer
    * stayed on the floor and the meta line says so honestly. */
   stopped?: boolean | undefined;
+  /** true when this user turn was born from the checkpoint edit law (the
+   * branch carried the edit forward) — the meta line carries the honest
+   * · edited mark. */
+  edited?: boolean | undefined;
   at: number;
 };
 
@@ -70,6 +74,7 @@ export const isChatTurn: Validator<ChatTurn> = (v): v is ChatTurn => {
     (t.thought === undefined || typeof t.thought === "string") &&
     (t.model === undefined || typeof t.model === "string") &&
     (t.stopped === undefined || typeof t.stopped === "boolean") &&
+    (t.edited === undefined || typeof t.edited === "boolean") &&
     typeof t.at === "number"
   );
 };
@@ -350,6 +355,7 @@ export function cloneSessionForEdit(session: ChatSession, turnId: string, newTex
     content: newText,
     id: `t-${Date.now()}-e`,
     at: Date.now(),
+    edited: true,
   };
   const ladder: ChatCheckpoint[] = [
     ...(session.checkpoints ?? []),

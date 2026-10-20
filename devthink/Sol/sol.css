@@ -5359,14 +5359,39 @@ legend.cmd-group {
   font-variant-numeric: tabular-nums;
 }
 
-/* the stopped mark of a partial answer (rung 119) — the honest italic chip
- * in the meta line; never uppercase, it reads as a state, not a label. */
-.dtc-meta__stop {
+/* the state marks of a turn's meta line (rung 119/120) — the honest
+ * italic chips (stopped partial, checkpoint edit); never uppercase, they
+ * read as states, not labels. */
+.dtc-meta__mark {
   margin-left: 2px;
   padding: 0;
   font-style: italic;
   font-weight: 500;
   color: color-mix(in srgb, var(--sol-muted) 88%, var(--sol-primary));
+}
+
+/* the hover timestamp (rung 120): the time carries the full locale
+ * date-time in its title — the dotted underline whispers the hover hint. */
+.dtc-meta__time {
+  cursor: help;
+  text-decoration: underline dotted transparent;
+  text-underline-offset: 3px;
+  transition: text-decoration-color 120ms ease;
+}
+
+.dtc-meta__time:hover {
+  text-decoration-color: color-mix(in srgb, var(--sol-muted) 55%, transparent);
+}
+
+/* the action row of the meta line (rung 120): copy, delete, regenerate,
+ * edit ride one quiet key group that reveals on hover/focus — the same
+ * grammar the single edit pencil wore, extended to the row. */
+.dtc-turn__acts {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 6px;
+  vertical-align: -5px;
 }
 
 /* the meta action keys (rung 119): the pencil of the edit affordance and
@@ -5414,6 +5439,26 @@ legend.cmd-group {
   opacity: 1;
   outline: 2px solid var(--sol-primary);
   outline-offset: 1px;
+}
+
+/* the copy morph (rung 120): the checkmark lands in the accent and the
+ * key holds a soft accent wash for the 1.4s the morph lives. */
+.dtc-turn__act.is-copied {
+  opacity: 1;
+  color: var(--sol-primary);
+  background: color-mix(in srgb, var(--sol-primary) 10%, transparent);
+}
+
+/* the failed copy keeps the quiet red hint while the retry stays armed. */
+.dtc-turn__act.is-failed {
+  color: var(--sol-error, #e46a6a);
+}
+
+/* the delete key: the quiet red hover — destructive intent, no confirm
+ * dialog (the toast answers once the row is gone). */
+.dtc-turn__act--del:hover {
+  background: color-mix(in srgb, var(--sol-error, #e46a6a) 12%, transparent);
+  color: var(--sol-error, #e46a6a);
 }
 
 /* the edit form (the R00170 checkpoint affordance, styled to the win11 well

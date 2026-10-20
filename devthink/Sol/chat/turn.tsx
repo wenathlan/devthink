@@ -14,14 +14,33 @@ import {
   ArrowClockwiseRegular as ArrowClockwise,
   CheckmarkRegular as Checkmark,
   ChevronDownRegular as ChevronDown,
+  CopyRegular as Copy,
+  DeleteRegular as Delete,
   DismissRegular as Dismiss,
   EditRegular as Edit,
   LightbulbRegular as Lightbulb,
 } from "@fluentui/react-icons";
 import { useEffect, useRef, useState } from "react";
 import { type ChatTurn, cx, fmtTime } from "../../chatstate.ts";
-import { Markdown } from "./markdown.tsx";
+import { copyText, Markdown } from "./markdown.tsx";
 import { SolBotIcon } from "./solboticon.tsx";
+
+/** fmtFull — the hover timestamp of the meta line: the full locale
+ * date-time (title attribute), honest on every turn. */
+function fmtFull(at: number): string {
+  try {
+    return new Date(at).toLocaleString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+  } catch {
+    return "";
+  }
+}
 
 /** Cognition — the reasoning drawer of the assistant turn. */
 function Cognition({ text }: { text: string }) {
@@ -49,6 +68,11 @@ function Cognition({ text }: { text: string }) {
  * arms the last assistant turn with the competitor grammar: the round
  * arrow re-answers the same user turn (the old answer leaves the floor),
  * and a stopped partial carries its honest · stopped mark in the meta line.
+ * `onDelete` arms every turn with the row delete: the message leaves the
+ * conversation (the caller commits the session without it). The copy key
+ * rides every turn — the icon morphs to the checkmark on success (the
+ * clipboard answer is the feedback, no toast noise), and the meta time
+ * carries the full locale date-time on hover.
  */
 export function Turn({
   turn,
@@ -56,20 +80,43 @@ export function Turn({
   busy = false,
   onEdit,
   onRegenerate,
+  onDelete,
 }: {
   turn: ChatTurn;
   fresh?: boolean;
   busy?: boolean;
   onEdit?: (text: string) => void;
   onRegenerate?: () => void;
+  onDelete?: () => void;
 }) {
   const assistant = turn.role === "assistant";
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(turn.content);
   const editfieldRef = useRef<HTMLTextAreaElement | null>(null);
+  /* the copy lane (rung 120): the icon morphs to the checkmark for 1.4s
+   * on success — the clipboard answer is the feedback itself, so no toast
+   * ever doubles the surface. A failure keeps the copy glyph (the retry
+   * stays available) and the sr-only status line says what happened. */
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
+  const copyTimer = useRef<number | null>(null);
+  useEffect(
+    () => () => {
+      if (copyTimer.current !== null) window.clearTimeout(copyTimer.current);
+    },
+    [],
+  );
+
+  const onCopy = () => {
+    void copyText(turn.content).then((result) => {
+      setCopyState(result);
+      if (copyTimer.current !== null) window.clearTimeout(copyTimer.current);
+      copyTimer.current = window.setTimeout(() => setCopyState("idle"), result === "copied" ? 1400 : 2400);
+    });
+  };
 
   const editable = !assistant && !busy && typeof onEdit === "function";
   const regenerable = assistant && !busy && typeof onRegenerate === "function";
+  const deletable = !busy && typeof onDelete === "function";
 
   // the edit field takes focus as the form reveals (the ref effect answers
   // the focus the a11y law refuses the autofocus attribute)
@@ -151,33 +198,72 @@ export function Turn({
           {assistant ? <Markdown source={turn.content} /> : <p className="dtc-md dtc-md--plain">{turn.content}</p>}
         </div>
         <p className="dtc-meta">
-          {fmtTime(turn.at)} {assistant ? (turn.model ?? "devthink").toUpperCase() : "YOU"}
-          {turn.stopped ? <i className="dtc-meta__stop">· stopped</i> : null}
-          {regenerable ? (
+          <span className="dtc-meta__time" title={fmtFull(turn.at)}>
+            {fmtTime(turn.at)}
+          </span>{" "}
+          {assistant ? (turn.model ?? "devthink").toUpperCase() : "YOU"}
+          {turn.stopped ? <i className="dtc-meta__mark">· stopped</i> : null}
+          {turn.edited ? <i className="dtc-meta__mark">· edited</i> : null}
+          <span className="sr-only" role="status" aria-live="polite">
+            {copyState === "copied" ? "copied to clipboard" : copyState === "failed" ? "copy failed" : ""}
+          </span>
+          <span className="dtc-turn__acts">
             <button
               type="button"
-              className="dtc-turn__act"
-              aria-label="Regenerate response"
-              title="Regenerate response"
-              onClick={() => onRegenerate?.()}
+              className={cx(
+                "dtc-turn__act",
+                copyState === "copied" && "is-copied",
+                copyState === "failed" && "is-failed",
+              )}
+              aria-label={
+                copyState === "copied" ? "Copied" : copyState === "failed" ? "Copy failed — retry" : "Copy message"
+              }
+              title={copyState === "failed" ? "Copy failed — retry" : "Copy message"}
+              onClick={onCopy}
             >
-              <ArrowClockwise fontSize={13} aria-hidden="true" />
+              {copyState === "copied" ? (
+                <Checkmark fontSize={13} aria-hidden="true" />
+              ) : (
+                <Copy fontSize={13} aria-hidden="true" />
+              )}
             </button>
-          ) : null}
-          {editable ? (
-            <button
-              type="button"
-              className="dtc-turn__act"
-              aria-label="Edit message"
-              title="Edit message"
-              onClick={() => {
-                setDraft(turn.content);
-                setEditing(true);
-              }}
-            >
-              <Edit fontSize={13} aria-hidden="true" />
-            </button>
-          ) : null}
+            {deletable ? (
+              <button
+                type="button"
+                className="dtc-turn__act dtc-turn__act--del"
+                aria-label="Delete message"
+                title="Delete message"
+                onClick={() => onDelete?.()}
+              >
+                <Delete fontSize={13} aria-hidden="true" />
+              </button>
+            ) : null}
+            {regenerable ? (
+              <button
+                type="button"
+                className="dtc-turn__act"
+                aria-label="Regenerate response"
+                title="Regenerate response"
+                onClick={() => onRegenerate?.()}
+              >
+                <ArrowClockwise fontSize={13} aria-hidden="true" />
+              </button>
+            ) : null}
+            {editable ? (
+              <button
+                type="button"
+                className="dtc-turn__act"
+                aria-label="Edit message"
+                title="Edit message"
+                onClick={() => {
+                  setDraft(turn.content);
+                  setEditing(true);
+                }}
+              >
+                <Edit fontSize={13} aria-hidden="true" />
+              </button>
+            ) : null}
+          </span>
         </p>
       </div>
     </article>
