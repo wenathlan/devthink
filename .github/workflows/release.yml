@@ -188,6 +188,7 @@ jobs:
       - name: Checkout the DevThink release source
         uses: actions/checkout@v7.0.1
         with:
+          persist-credentials: false
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
           fetch-depth: 0
       - name: Resolve the release source under the version tag lockstep
@@ -270,6 +271,7 @@ jobs:
       - name: Checkout the DevThink release source
         uses: actions/checkout@v7.0.1
         with:
+          persist-credentials: false
           ref: ${{ needs.metadata.outputs.ref }}
           fetch-depth: 0
       - name: Set up Bun
@@ -375,6 +377,7 @@ jobs:
       - name: Checkout the DevThink release source
         uses: actions/checkout@v7.0.1
         with:
+          persist-credentials: false
           ref: ${{ needs.assemble.outputs.ref }}
           fetch-depth: 0
       - name: Convert the sites and emit the web and next zips
@@ -660,6 +663,7 @@ jobs:
         # the node-version-file the setup reads needs its sparse checkout.
         uses: actions/checkout@v7.0.1
         with:
+          persist-credentials: false
           ref: ${{ needs.assemble.outputs.ref }}
           sparse-checkout: |
             devthink/.nvmrc
@@ -839,6 +843,7 @@ jobs:
       - name: Checkout the release source for the engine cores
         uses: actions/checkout@v7.0.1
         with:
+          persist-credentials: false
           ref: ${{ needs.assemble.outputs.ref }}
           sparse-checkout: |
             cadria/versawase.ts
@@ -909,6 +914,7 @@ jobs:
       - name: Checkout the release source for the family envelopes
         uses: actions/checkout@v7.0.1
         with:
+          persist-credentials: false
           ref: ${{ needs.assemble.outputs.ref }}
           fetch-depth: 1
       - name: Pack every family envelope beside the application tarball

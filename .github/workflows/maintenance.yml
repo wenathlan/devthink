@@ -242,8 +242,9 @@ jobs:
           set -euo pipefail
           cd devthink
           npm_version="$(node -p "const m=String(require('./package.json').engines.npm).match(/\d+(?:\.\d+)*/); if(!m) throw new Error('no npm floor'); m[0]")"
-          npm install --global "npm@${npm_version}"
-          test "$(npm --version)" = "$npm_version"
+          test "$npm_version" = "12.2.0"
+          npm install --global npm@12.2.0
+          test "$(npm --version)" = "12.2.0"
           bun install --ignore-scripts
       - name: Validate the complete proposed update
         if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
