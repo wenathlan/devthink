@@ -37,7 +37,7 @@ it("declares runtime metadata and an optional browser provider peer", async () =
   const root = dirname(new URL(import.meta.url).pathname);
   const packagejson = JSON.parse(await readFile(resolve(root, "../package.json"), "utf8"));
   assert.equal(packagejson.private, false);
-  assert.equal(packagejson.engines.node, ">=26.7.0");
+  assert.equal(packagejson.engines.node, ">=26.12.0 <27");
   assert.equal(packagejson.packageManager, "npm@12.0.2");
   assert.equal(packagejson.peerDependencies.playwright, "^1.63.0");
   assert.equal(packagejson.peerDependenciesMeta.playwright.optional, true);

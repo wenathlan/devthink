@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/cobaia",
-  "version": "2.0.94",
+  "version": "2.0.127",
   "description": "cobaia is the monetization surface of the wenathlan family: the content site that carries the plans, the support rails and the honest advertisement slots while the family apps stay clean; the name is provisional until the owner picks the official one",
   "type": "module",
   "repository": {
@@ -51,7 +51,7 @@
     "ecmascript": "^5.0.0",
     "firefox": ">=0.8.0",
     "iojs": "^1.0.0",
-    "node": "^26.8.2",
+    "node": ">=26.12.0 <27",
     "npm": "^12.1.0",
     "pnpm": "^12.6.0",
     "teleport": ">=0.2.0",

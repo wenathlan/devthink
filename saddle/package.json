@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/saddle",
-  "version": "2.1.7",
+  "version": "2.0.127",
   "description": "binary computing engine that turns distributed storage into a publishable working set carrying the merged virtual-hardware engine (the saddle + e2ugh grand merge)",
   "type": "module",
   "private": false,
@@ -63,7 +63,7 @@
     "ecmascript": "^5.0.0",
     "firefox": ">=0.8.0",
     "iojs": "^1.0.0",
-    "node": ">=26.7.0",
+    "node": ">=26.12.0 <27",
     "npm": "^12.1.0",
     "pnpm": "^12.6.0",
     "teleport": ">=0.2.0",
@@ -229,14 +229,14 @@
     "vm:create": "node --import tsx ./cli.ts vm",
     "vm:validate": "node --import tsx ./cli.ts vmlint",
     "gpu:list": "node --import tsx ./cli.ts gpus",
-    "docker:build": "docker build -f Dockerfile -t saddle:2.1.7 .",
-    "docker:run": "docker run --rm --memory-swap=-1 --shm-size=2g saddle:2.1.7",
-    "docker:health": "docker run --rm saddle:2.1.7 qemu-system-x86_64 --version && curl -fsS http://localhost:8080/health || true",
+    "docker:build": "docker build -f Dockerfile -t saddle:2.0.127 .",
+    "docker:run": "docker run --rm --memory-swap=-1 --shm-size=2g saddle:2.0.127",
+    "docker:health": "docker run --rm saddle:2.0.127 qemu-system-x86_64 --version && curl -fsS http://localhost:8080/health || true",
     "firecracker:boot": "firecracker --api-sock /tmp/fc-saddle.sock --config-file vmconfig.json 2>/dev/null || echo 'firecracker 1.16.1 warm-pool boot 125ms target'",
     "py:bridge": "python3 qemubridge.py",
     "py:test": "python3 -m pytest -q || python3 qemubridge.py",
     "clean": "rm -rf dist coverage .biome __pycache__",
-    "prepare": "echo 'saddle grand-merge toolchain 2026-08-23: Node 26.7.0 Current / 24.19.0 LTS, npm 12.0.2, TS 7.0.2, Python 3.14.7, Docker 29.7.2, QEMU 11.1.0, Mesa 26.2.1, LLVM 22.1.8, Firecracker 1.16.1'",
+    "prepare": "echo 'saddle grand-merge toolchain 2026-08-23: Node 26.12.0 Current / 24.19.0 LTS, npm 12.0.2, TS 7.0.2, Python 3.14.7, Docker 29.7.2, QEMU 11.1.0, Mesa 26.2.1, LLVM 22.1.8, Firecracker 1.16.1'",
     "start:engine": "node --import tsx ./cli.ts plan"
   },
   "devDependencies": {
@@ -347,9 +347,9 @@
   "saddle": {
     "date": "2026-08-23",
     "toolchain": {
-      "node": "26.7.0",
+      "node": "26.12.0",
       "nodeLts": "24.19.0",
-      "nodeCurrent": "26.7.0",
+      "nodeCurrent": "26.12.0",
       "npm": "12.0.2",
       "typescript": "7.0.2",
       "python": "3.14.7",

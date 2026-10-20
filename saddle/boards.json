@@ -7,7 +7,7 @@
     "date": "2026-08-22",
     "dateFirstDoctrine": "The observer validates all specifications against the latest stable releases available on 2026-08-22.",
     "toolchain": {
-      "node": "26.7.0 Current",
+      "node": "26.12.0 Current",
       "nodeAlt": "24.19.0 LTS",
       "typescript": "7.0.2",
       "python": "3.14.7",
@@ -88,7 +88,7 @@
       }
     },
     "name": "boards.json",
-    "version": "2.1.7",
+    "version": "2.0.127",
     "title": "saddle - Virtual Motherboard Database (retail boards + platform reference sockets)",
     "sources": [
       "pool:boards.json [S6, 20 retail boards]",

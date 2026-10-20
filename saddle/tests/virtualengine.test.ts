@@ -44,7 +44,7 @@ describe('the virtualengine contract', () => {
       assert.ok(key in engineversions, `engineversions must carry ${key}`);
       assert.ok(typeof engineversions[key] === 'string' && engineversions[key].length > 0);
     }
-    assert.equal(engineversions.nodecurrent, '26.7.0');
+    assert.equal(engineversions.nodecurrent, '26.12.0');
     assert.equal(engineversions.docker, '29.7.2');
     assert.equal(engineversions.qemu, '11.1.0');
     assert.equal(engineversions.typescript, '7.0.2');

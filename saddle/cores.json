@@ -1,7 +1,7 @@
 {
   "metadata": {
     "id": "cores.json",
-    "version": "2.1.7",
+    "version": "2.0.127",
     "date": "2026-08-22",
     "datestamp": "2026-08-22T00:00:00Z",
     "observer": "third person observer notes the hybrid core inventory reflects production silicon as of 2026-08-22",
@@ -36,7 +36,7 @@
       ]
     },
     "stack": {
-      "node": "26.7.0 Current",
+      "node": "26.12.0 Current",
       "nodeAlt": "24.19.0 LTS",
       "typescript": "7.0.2",
       "python": "3.14.7",

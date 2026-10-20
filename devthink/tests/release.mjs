@@ -255,10 +255,7 @@ const edits = [
     "deno.json",
     (content) => content.replace(/npm:@wenathlan\/devthink@[0-9A-Za-z.-]+/, `npm:@wenathlan/devthink@${version}`),
   ],
-  [
-    "tauri.conf.json",
-    (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`),
-  ],
+  ["tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
   ["design.html", (content) => content.replace(/DEVTHINK\s+[0-9][0-9A-Za-z.-]*/, `DEVTHINK ${version}`)],
   ["pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
   ["devthink.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
@@ -270,10 +267,7 @@ const edits = [
         `ENV.fetch("DEVTHINK_VERSION", "${version}")`,
       ),
   ],
-  [
-    "devthink.java",
-    (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`),
-  ],
+  ["devthink.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
   /* The 2.0.46 five-package wave, extended by the 2.0.48 family wave: the
      family envelopes (argan, cadria, debonair, stealthhead, forge, foundry,
      vault) carry the same version the metadata lockstep
@@ -284,57 +278,152 @@ const edits = [
   ["../argan/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
   ["../cadria/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
   ["../debonair/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-  ["../stealthhead/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+  [
+    "../stealthhead/package.json",
+    (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`),
+  ],
   ["../forge/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
   ["../foundry/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
   ["../vault/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+  /* The 2.0.128 tauri manifest wave: the desktop manifests of the family
+     envelopes join the lockstep surface — the tauri.conf.json files carried
+     versions of their own (2.0.62, 2.0.97) that no walk ever touched, so
+     the desktop packaging answered a version the release never shipped. */
+  ["../argan/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+  ["../cadria/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+  [
+    "../debonair/tauri.conf.json",
+    (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`),
+  ],
+  [
+    "../stealthhead/tauri.conf.json",
+    (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`),
+  ],
+  ["../forge/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+  [
+    "../foundry/tauri.conf.json",
+    (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`),
+  ],
+  ["../vault/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+  /* The 2.0.127 root lockstep wave: the monorepo root envelope and the
+     three envelopes the family walk never carried (getry, saddle, cobaia)
+     join the lockstep surface — every application of the repository
+     answers the one version the release chain stamps, because one release
+     notes and one tag serve the whole family. The root package.json is
+     the version the release workflow resolves the auto tag against; a
+     root left behind the family froze the tag lane at the version the
+     root still carried while the family metadata answered another. The
+     saddle envelope walks its full carrier set (the csproj, the maven
+     revision, the gemspec, the tauri manifest, the browser bridge
+     manifest and the docker image tags of the package scripts) so the
+     engine never answers a version of its own. */
+  ["../package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+  ["../getry/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+  ["../getry/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+  ["../cobaia/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+  [
+    "../saddle/package.json",
+    (content) =>
+      content
+        .replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)
+        .replace(/saddle:[0-9][0-9A-Za-z.-]*/g, `saddle:${version}`),
+  ],
+  [
+    "../saddle/saddle.csproj",
+    (content) => content.replace(/<Version([^>]*)>[0-9][0-9A-Za-z.-]*<\/Version>/, `<Version$1>${version}</Version>`),
+  ],
+  ["../saddle/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
+  [
+    "../saddle/saddle.gemspec",
+    (content) =>
+      content.replace(/ENV\.fetch\("SADDLE_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("SADDLE_VERSION", "${version}")`),
+  ],
+  ["../saddle/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+  ["../saddle/manifest.json", (content) => JSON.stringify({ ...JSON.parse(content), version }, null, 2) + "\n"],
   ["../argan/argan.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
-  ["../cadria/cadria.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
-  ["../debonair/debonair.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
-  ["../stealthhead/stealthhead.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
+  [
+    "../cadria/cadria.csproj",
+    (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`),
+  ],
+  [
+    "../debonair/debonair.csproj",
+    (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`),
+  ],
+  [
+    "../stealthhead/stealthhead.csproj",
+    (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`),
+  ],
   [
     "../argan/argan.gemspec",
-    (content) => content.replace(/ENV\.fetch\("ARGAN_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("ARGAN_VERSION", "${version}")`),
+    (content) =>
+      content.replace(/ENV\.fetch\("ARGAN_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("ARGAN_VERSION", "${version}")`),
   ],
   [
     "../cadria/cadria.gemspec",
-    (content) => content.replace(/ENV\.fetch\("CADRIA_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("CADRIA_VERSION", "${version}")`),
+    (content) =>
+      content.replace(/ENV\.fetch\("CADRIA_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("CADRIA_VERSION", "${version}")`),
   ],
   [
     "../debonair/debonair.gemspec",
-    (content) => content.replace(/ENV\.fetch\("DEBONAIR_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("DEBONAIR_VERSION", "${version}")`),
+    (content) =>
+      content.replace(
+        /ENV\.fetch\("DEBONAIR_VERSION", "[0-9A-Za-z.-]+"\)/,
+        `ENV.fetch("DEBONAIR_VERSION", "${version}")`,
+      ),
   ],
   [
     "../stealthhead/stealthhead.gemspec",
-    (content) => content.replace(/ENV\.fetch\("STEALTHHEAD_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("STEALTHHEAD_VERSION", "${version}")`),
+    (content) =>
+      content.replace(
+        /ENV\.fetch\("STEALTHHEAD_VERSION", "[0-9A-Za-z.-]+"\)/,
+        `ENV.fetch("STEALTHHEAD_VERSION", "${version}")`,
+      ),
   ],
   ["../argan/argan.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
   ["../cadria/cadria.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
   ["../debonair/debonair.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
-  ["../stealthhead/stealthhead.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
+  [
+    "../stealthhead/stealthhead.java",
+    (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`),
+  ],
   ["../argan/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
   ["../cadria/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
-  ["../debonair/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
-  ["../stealthhead/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
+  [
+    "../debonair/pom.xml",
+    (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`),
+  ],
+  [
+    "../stealthhead/pom.xml",
+    (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`),
+  ],
   [
     "../argan/Dockerfile",
     (content) =>
       content
-        .replace(/# argan [0-9][0-9A-Za-z.-]* — THE SITE CONTAINER FILE/, `# argan ${version} — THE SITE CONTAINER FILE`)
+        .replace(
+          /# argan [0-9][0-9A-Za-z.-]* — THE SITE CONTAINER FILE/,
+          `# argan ${version} — THE SITE CONTAINER FILE`,
+        )
         .replace(/ARG ARGAN_VERSION=[0-9][0-9A-Za-z.-]*/, `ARG ARGAN_VERSION=${version}`),
   ],
   [
     "../cadria/Dockerfile",
     (content) =>
       content
-        .replace(/# cadria [0-9][0-9A-Za-z.-]* — THE SITE CONTAINER FILE/, `# cadria ${version} — THE SITE CONTAINER FILE`)
+        .replace(
+          /# cadria [0-9][0-9A-Za-z.-]* — THE SITE CONTAINER FILE/,
+          `# cadria ${version} — THE SITE CONTAINER FILE`,
+        )
         .replace(/ARG CADRIA_VERSION=[0-9][0-9A-Za-z.-]*/, `ARG CADRIA_VERSION=${version}`),
   ],
   [
     "../debonair/Dockerfile",
     (content) =>
       content
-        .replace(/# debonair [0-9][0-9A-Za-z.-]* — THE SITE CONTAINER FILE/, `# debonair ${version} — THE SITE CONTAINER FILE`)
+        .replace(
+          /# debonair [0-9][0-9A-Za-z.-]* — THE SITE CONTAINER FILE/,
+          `# debonair ${version} — THE SITE CONTAINER FILE`,
+        )
         .replace(/ARG DEBONAIR_VERSION=[0-9][0-9A-Za-z.-]*/, `ARG DEBONAIR_VERSION=${version}`),
   ],
   ["devthinkcli.cs", (content) => content.replace(/Version = "[0-9A-Za-z.-]+"/, `Version = "${version}"`)],
@@ -342,8 +431,14 @@ const edits = [
     "Dockerfile",
     (content) =>
       content
-        .replace(/# devthink [0-9][0-9A-Za-z.-]* — THE ONE CONTAINER FILE/, `# devthink ${version} — THE ONE CONTAINER FILE`)
-        .replace(/DEVTHINK_VERSION   baked into the OCI version label, default [0-9][0-9A-Za-z.-]*/, `DEVTHINK_VERSION   baked into the OCI version label, default ${version}`)
+        .replace(
+          /# devthink [0-9][0-9A-Za-z.-]* — THE ONE CONTAINER FILE/,
+          `# devthink ${version} — THE ONE CONTAINER FILE`,
+        )
+        .replace(
+          /DEVTHINK_VERSION   baked into the OCI version label, default [0-9][0-9A-Za-z.-]*/,
+          `DEVTHINK_VERSION   baked into the OCI version label, default ${version}`,
+        )
         .replace(/ghcr\.io\/wenathlan\/devthink:[0-9][0-9A-Za-z.-]*/g, `ghcr.io/wenathlan/devthink:${version}`)
         .replace(/ARG DEVTHINK_VERSION=[0-9][0-9A-Za-z.-]*/g, `ARG DEVTHINK_VERSION=${version}`),
   ],
@@ -407,4 +502,25 @@ for (const [path, transform] of edits) {
 }
 if (mode === "check" && drift) throw new Error("Release metadata drift detected. Run pnpm sync:metadata.");
 if (mode === "notes") await writeFile("docs/releasenotes.md", `${notesof(version, section, chain)}\n`);
+/* The 2.0.128 staging pass: a sync leaves the whole tree staged. The ladder's
+   landing commit once carried a hand-written staged set that named every
+   metadata file the rung stamps — a carrier the set forgot answered drift red
+   in the verify pipeline below and the rung died with its pull request closed.
+   The sync now stages what the repository carries after the walk (git add -A
+   over the repository root — the sync's own surface, the maintenance walk
+   that ran before it and every generated file beside them), so the landing
+   commit can never miss a stamped file again: the index IS the manifest. The
+   staging answers only the sync mode (check and notes never touch the index),
+   only when a git repository answers around the run, and it swallows its own
+   failure — a repository without git (a plain artifact directory) still
+   completes the sync. */
+if (mode === "sync") {
+  try {
+    const { spawnSync } = await import("node:child_process");
+    const staged = spawnSync("git", ["add", "-A"], { cwd: "..", encoding: "utf8" });
+    if (staged.status !== 0 && staged.stderr) process.stderr.write(staged.stderr);
+  } catch {
+    // no git around the run: the walk completed, the staging is optional
+  }
+}
 console.log(JSON.stringify({ version, changelog: `CHANGELOG.md#${version}`, drift, mode }, null, 2));

@@ -1218,7 +1218,7 @@
       "kernelLts": "6.18.45",
       "libvirtVersion": "12.5.0",
       "nodeLts": "24.19.0",
-      "nodeCurrent": "26.7.0",
+      "nodeCurrent": "26.12.0",
       "typescript": "7.0.2",
       "runnerVersion": "2.336.0",
       "checkoutAction": "v6",
@@ -1613,7 +1613,7 @@
     },
     "toolchain": {
       "nodeLts": "24.19.0",
-      "nodeCurrent": "26.7.0",
+      "nodeCurrent": "26.12.0",
       "typescript": "7.0.2",
       "checkout": "v6",
       "setupNode": "v6",

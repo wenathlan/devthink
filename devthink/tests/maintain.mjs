@@ -41,9 +41,7 @@ const imageavailable = await (async () => {
   for (const candidate of stablecandidates) {
     const version = candidate.version.slice(1);
     try {
-      const response = await fetch(
-        `https://hub.docker.com/v2/repositories/library/node/tags/${version}-bookworm-slim`,
-      );
+      const response = await fetch(`https://hub.docker.com/v2/repositories/library/node/tags/${version}-bookworm-slim`);
       if (response.ok) return candidate;
     } catch {
       /* the hub probe falls through to the next stable candidate */
@@ -93,7 +91,13 @@ const nodepin = next.engines.node.match(/^>=(\d+\.\d+\.\d+)/)[1];
 const pnmpattern = /(pnpm\/action-setup@.*\s*?\r?\n(?:.*\r?\n){0,3}?.*version: )\d+\.\d+\.\d+/;
 const bunpattern = /bun-version: \d+\.\d+\.\d+/g;
 const workflowpins = [
-  [join(repoRoot, ".github/workflows/verify.yml"), [[pnmpattern, `$1${pnpmnext}`], [bunpattern, `bun-version: ${bunnext}`]]],
+  [
+    join(repoRoot, ".github/workflows/verify.yml"),
+    [
+      [pnmpattern, `$1${pnpmnext}`],
+      [bunpattern, `bun-version: ${bunnext}`],
+    ],
+  ],
   [
     join(repoRoot, ".github/workflows/ci.yml"),
     [
@@ -103,13 +107,34 @@ const workflowpins = [
     ],
   ],
   [
-    join(repoRoot, ".github/workflows/pages.yml"), [[pnmpattern, `$1${pnpmnext}`], [/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`]],
+    join(repoRoot, ".github/workflows/pages.yml"),
+    [
+      [pnmpattern, `$1${pnpmnext}`],
+      [/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`],
+    ],
   ],
   [
-    join(repoRoot, ".github/workflows/security.yml"), [[pnmpattern, `$1${pnpmnext}`], [/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`]],
+    join(repoRoot, ".github/workflows/security.yml"),
+    [
+      [pnmpattern, `$1${pnpmnext}`],
+      [/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`],
+    ],
   ],
   [join(repoRoot, ".github/workflows/maintenance.yml"), [[bunpattern, `bun-version: ${bunnext}`]]],
   [join(repoRoot, ".github/workflows/release.yml"), [[bunpattern, `bun-version: ${bunnext}`]]],
+  /* the 2.0.128 node standardization wave: the family lanes join the pin
+     surface — the desktop and mobile lanes of the family carry the same
+     node pin every other lane answers (the bun and pnpm pins of those
+     lanes stay deliberate: each leg installs against the lockfile its
+     package manager generated, so the ladder walks the node pin alone) */
+  [
+    join(repoRoot, ".github/workflows/family-desktop.yml"),
+    [[/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`]],
+  ],
+  [
+    join(repoRoot, ".github/workflows/family-mobile.yml"),
+    [[/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`]],
+  ],
   /* the 2.0.16 grouping pass: every post-release lane (the registry publishes, the platform artifacts and the sums umbrella) rides the merged publish.yml - the pins sync the one file */
   [
     join(repoRoot, ".github/workflows/publish.yml"),
@@ -123,15 +148,42 @@ const workflowpins = [
 const edits = [
   ["package.json", `${JSON.stringify(next, null, 2)}\n`],
   [".nvmrc", `${nodepin}\n`],
+  /* the 2.0.128 node standardization wave: the family envelopes and the
+     monorepo root answer the one node declaration the ladder pins — the
+     engines floors walk with the os engines (the bounded form, one version
+     family wide) and the member .nvmrc files carry the same pin the os
+     .nvmrc carries, so no application of the repository ever answers a
+     node the os retired. The engines walk replaces the first node key of
+     each envelope (the engines block sits before every other node
+     occurrence in every manifest of the family). */
+  ...(await Promise.all(
+    ["argan", "cadria", "debonair", "stealthhead", "forge", "foundry", "vault", "getry", "saddle", "cobaia"].map(
+      async (app) => {
+        const file = join(repoRoot, app, "package.json");
+        return [file, (await readFile(file, "utf8")).replace(/"node": "[^"]+"/, `"node": "${next.engines.node}"`)];
+      },
+    ),
+  )),
+  ...["argan", "cadria", "debonair", "stealthhead", "forge", "foundry", "vault", "getry", "saddle"].map((app) => [
+    join(repoRoot, app, ".nvmrc"),
+    `${nodepin}\n`,
+  ]),
+  [
+    join(repoRoot, "package.json"),
+    (await readFile(join(repoRoot, "package.json"), "utf8")).replace(
+      /"node": "[^"]+"/,
+      `"node": "${next.engines.node}"`,
+    ),
+  ],
   [
     "Dockerfile",
     (await readFile("Dockerfile", "utf8"))
-      .replace(
-        /FROM node:\d+(?:\.\d+){0,2}-bookworm-slim/,
-        `FROM node:${nodepin}-bookworm-slim`,
-      )
+      .replace(/FROM node:\d+(?:\.\d+){0,2}-bookworm-slim/, `FROM node:${nodepin}-bookworm-slim`)
       /* the merged Dockerfile pins the baseline through the NODE_IMAGE arg the stages share */
-      .replace(/ARG NODE_IMAGE="node:\d+(?:\.\d+){0,2}-bookworm-slim"/, `ARG NODE_IMAGE="node:${nodepin}-bookworm-slim"`),
+      .replace(
+        /ARG NODE_IMAGE="node:\d+(?:\.\d+){0,2}-bookworm-slim"/,
+        `ARG NODE_IMAGE="node:${nodepin}-bookworm-slim"`,
+      ),
   ],
   ...(await Promise.all(
     workflowpins.map(async ([file, replaces]) => {

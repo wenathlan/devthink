@@ -444,9 +444,9 @@ it("scrapes with robots and cache through injected transport", async () => {
 it("builds open distribution plans", () => {
   const manifest = distributionmanifest({ name: "saddle", version: "0.2.0", entry: "cli/main.js" });
   const binary = binaryplan(manifest, { tool: "node" });
-  const container = containerplan(manifest, { base: "node:26.7.0-alpine" });
+  const container = containerplan(manifest, { base: "node:26.12.0-alpine" });
   assert.equal(binary.entry, "cli/main.js");
-  assert.equal(container.dockerfile.includes("from node:26.7.0-alpine"), true);
+  assert.equal(container.dockerfile.includes("from node:26.12.0-alpine"), true);
   assert.equal(container.dockerfile.includes("expose"), false);
 });
 
@@ -540,7 +540,7 @@ it("renders multiforge workflow manifests", () => {
   const registry = workflowregistry();
   registry.register(manifest);
   assert.equal(registry.render("process", "github").includes("workflow_dispatch"), true);
-  assert.equal(gitlabworkflow(manifest).includes("image: node:26.7.0"), true);
+  assert.equal(gitlabworkflow(manifest).includes("image: node:26.12.0"), true);
   assert.equal(woodpeckerworkflow(manifest).includes("npm test"), true);
 });
 

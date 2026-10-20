@@ -91,7 +91,7 @@ const runtimecatalog = {
 
 /** toolchain stack reported by dumpstate and the version probe. */
 const stackcatalog = {
-  nodecurrent: '26.7.0',
+  nodecurrent: '26.12.0',
   nodelts: '24.19.0',
   typescript: '7.0.2',
   qemu: runtimecatalog.qemu,
@@ -4389,7 +4389,7 @@ class orchestrator {
   /**
    * default contents of the flat config files written by start(); the
    * version strings carry the v2 anchors (qemu 11.1.0, docker 29.7.2,
-   * node 26.7.0), replacing the stale Meta banners.
+   * node 26.12.0), replacing the stale Meta banners.
    */
   #defaultconfigcontents(): Record<configfilename, string> {
     return {
