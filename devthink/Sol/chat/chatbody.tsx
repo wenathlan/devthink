@@ -15,12 +15,13 @@ import {
   PanelRightRegular as PanelRight,
   DeleteRegular as TrashIcon,
 } from "@fluentui/react-icons";
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { osAppLabels } from "../../catalog.ts";
 import {
   buildSystemPrompt,
   type ChatSession,
+  type ChatThinking,
   type ChatTurn,
   capTurns,
   clearChatHandoff,
@@ -36,8 +37,10 @@ import {
   type ToolId,
   useChatModel,
   useChatSessions,
+  useChatThinking,
   userTurn,
 } from "../../chatstate.ts";
+import { estimateHistoryTokens, formatCompactTokenCount } from "../../tokenestimate.ts";
 import { loadBrowserSession } from "../../db.ts";
 import { GATEWAY_REQUIRED_COPY, GATEWAY_SEND_NOTICE, useGatewayRegistration } from "../../gatewaybase.ts";
 import { useIsMobile } from "../../useismobile.ts";
@@ -85,6 +88,12 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
    * gateway registers — a probe failure keeps the meta-model row alone. */
   const [model, setModel] = useChatModel();
   const [models, setModels] = useState<GatewayModel[]>([]);
+  /* the cognition lane (rung 125): the persisted effort rides every round
+   * as the x-thinking-level header (off maps to none — the honest straight
+   * answer), and the token meter below estimates the next round's payload
+   * with the house estimator (a chars-per-token approximation — the meter
+   * always says estimate, never pretends to count). */
+  const [thinking, setThinking] = useChatThinking();
   /* the stop lane (rung 119): the controller of the running round — the
    * Stop pill aborts it, the gateway answers the honest ChatStoppedError
    * and the partial answer commits to the floor instead of an error row.
@@ -221,7 +230,7 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
           base: gateway.base,
           model: model === GATEWAY_MODEL ? undefined : model,
           sessionId: history.id.split("~")[0],
-          thinkingLevel: tools.includes("thinking") ? "high" : "medium",
+          thinkingLevel: thinking === "off" ? "none" : thinking,
           signal: ctrl.signal,
           handlers: {
             onContent: (d) => {
@@ -282,7 +291,7 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
         window.requestAnimationFrame(() => inputRef.current?.focus());
       }
     },
-    [commit, gateway.base, model, tools],
+    [commit, gateway.base, model, thinking, tools],
   );
 
   /** stop — the Stop pill of the composer: aborts the running round. The
@@ -581,6 +590,21 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [closePanel, closeSandbox, isMobile, railCollapsed, panelOpen, sandboxOpen]);
 
+  /* the token meter (rung 125): the estimated budget of the NEXT round —
+   * the system prompt plus the capped history window plus the draft in the
+   * well. It is the house approximation (chars-per-token by script), it
+   * always reads as an estimate, and the declared context window of the
+   * selected model turns it into an honest percent. */
+  const meterTokens = useMemo(() => {
+    const window = (active?.messages ?? []).slice(-12).map((m) => ({ role: m.role, content: m.content }));
+    if (draft.trim()) window.push({ role: "user", content: draft });
+    return estimateHistoryTokens(window);
+  }, [active?.messages, draft]);
+  const meterContext = useMemo(() => {
+    const row = models.find((m) => m.id === model);
+    return row?.context;
+  }, [model, models]);
+
   const empty = !active || active.messages.length === 0;
   /** the sandbox pane docks as a right-side lane while the viewport is wide
    * on the full page; the narrow viewport and the embedded window swap the
@@ -667,6 +691,13 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
                   sandboxOn={sandboxOpen}
                   sandboxRunning={sandboxRunning}
                   onToggleSandbox={toggleSandbox}
+                  model={model}
+                  models={models}
+                  onModel={setModel}
+                  thinking={thinking}
+                  onThinking={setThinking}
+                  tokenEstimate={meterTokens}
+                  tokenContext={meterContext}
                 />
               </div>
             </div>
@@ -719,6 +750,10 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
                   model={model}
                   models={models}
                   onModel={setModel}
+                  thinking={thinking}
+                  onThinking={setThinking}
+                  tokenEstimate={meterTokens}
+                  tokenContext={meterContext}
                 />
               </div>
             </div>

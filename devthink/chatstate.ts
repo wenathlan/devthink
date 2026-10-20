@@ -124,6 +124,30 @@ export function useChatModel() {
   return useStoredState<string>(MODEL_KEY, GATEWAY_MODEL, isString);
 }
 
+/* --------------------------- thinking effort --------------------------- */
+
+/** the cognition effort of the round (rung 125): off answers straight,
+ * medium reasons quietly, high walks the whole staircase — the honest
+ * effort control the competitors ship, persisted per visitor. */
+export type ChatThinking = "off" | "medium" | "high";
+
+export const CHAT_THINKING_LEVELS: Array<{ id: ChatThinking; label: string; note: string }> = [
+  { id: "off", label: "Off", note: "Answer straight — no reasoning drawer." },
+  { id: "medium", label: "Medium", note: "Reason quietly, answer fast." },
+  { id: "high", label: "High", note: "Walk the whole reasoning staircase." },
+];
+
+export const isChatThinking: Validator<ChatThinking> = (v): v is ChatThinking =>
+  v === "off" || v === "medium" || v === "high";
+
+export const THINKING_KEY = "dt-chat-thinking-v1";
+
+/** useChatThinking — the persisted effort selection. The default is
+ * medium (the round the unconfigured chat always ran). */
+export function useChatThinking() {
+  return useStoredState<ChatThinking>(THINKING_KEY, "medium", isChatThinking);
+}
+
 /**
  * The gateway opt-in contract — the preference key, the endpoint validator
  * and the registration machine live in the shared os kernel
@@ -224,11 +248,11 @@ export type ChatTool = {
 };
 
 export const CHAT_TOOLS: ChatTool[] = [
-  {
-    id: "thinking",
-    label: "Thinking",
-    note: "Walk through the reasoning explicitly, step by step, before the final answer.",
-  },
+  /* the thinking tool retired at rung 125: cognition effort moved to the
+   * microrow picker (the persisted ChatThinking rides the x-thinking-level
+   * header of every round — the honest effort control, not a prompt patch).
+   * The array stays the extension point the future tools (search, files)
+   * will join. */
 ];
 
 /** buildSystemPrompt — the Sol persona plus one line per active tool flag. */

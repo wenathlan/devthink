@@ -1,5 +1,14 @@
 # DevThink release notes
 
+## 2.0.125
+
+The **thinking picker and the honest token meter** land in the composer's microrow (the seventh competitor-grammar rung): the effort control the competitors ship — `think off / medium / high` — rides the row's right side as the same flyout grammar the model chip wears (one flyout at a time, Escape closes first, the outside pointerdown dismisses, the pressed row carries the checkmark), and the choice **persists** across sessions before riding every round as the `x-thinking-level` header (off maps to `none` — the honest straight answer). The thinking tool pill retires from the pill row with its retirement note in the catalog array (cognition is a header lane now, not a prompt patch; the array stays the extension point the future tools join). Beside the chip, the **token meter** answers with the house estimator: `≈ 687 tok` in the quiet mono ink — the capped history window plus the draft in the well, estimated with the per-script chars-per-token approximation, and when the selected model declares its context window the meter grows the honest percent (`≈ 2.3k tok · 1%`). The meter always says estimate: the `≈` mark rides it and the tooltip names the approximation — it never pretends to count.
+
+| Area | Change |
+| --- | --- |
+| The chat flagship | The effort picker (off/medium/high, persisted, header-ridden) and the token meter (the house estimate + the declared-window percent) in the microrow; the thinking pill retires. |
+| The chat state | `ChatThinking` + `useChatThinking` join the contract; the CHAT_TOOLS array carries the retirement note and stays the future-tools extension point. |
+
 ## 2.0.124
 
 The **model picker** reaches the composer (the sixth competitor-grammar rung): the microrow's quiet `model devthink` chip becomes the catalog door — the chevron rotates, the win11 acrylic flyout rises above the well carrying one row per gateway model with its **declared context window** (`{n}k ctx`, shown honestly — never invented), the pressed row wearing the checkmark in the windows accent. The catalog probes `/v1/models` once per registration (the probe never chats; an outage keeps the meta-model row alone, a disconnect empties the picker), the chosen id **persists** across sessions on the stored-state grammar, and the selection rides every round as the model lane of the request body — the meta-model stays the default so an unconfigured chat never names a model the gateway doesn't know. The topbar identity line follows the selection (`sol glm-5 gateway on`), and the flyout answers the full key grammar: Escape closes it first (the chat Escape stack sits above), the outside pointerdown dismisses it, and the focus returns to the chip.

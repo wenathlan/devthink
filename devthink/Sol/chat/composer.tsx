@@ -25,8 +25,16 @@ import {
   SendRegular as Send,
   StopRegular as Stop,
 } from "@fluentui/react-icons";
-import { type KeyboardEvent, type RefObject, useEffect, useRef, useState } from "react";
-import { CHAT_TOOLS, type GatewayModel, GATEWAY_MODEL, type ToolId } from "../../chatstate.ts";
+import { type KeyboardEvent, type RefObject, useEffect, useMemo, useRef, useState } from "react";
+import {
+  CHAT_THINKING_LEVELS,
+  type ChatThinking,
+  CHAT_TOOLS,
+  type GatewayModel,
+  GATEWAY_MODEL,
+  type ToolId,
+} from "../../chatstate.ts";
+import { formatCompactTokenCount } from "../../tokenestimate.ts";
 
 const TOOL_ICONS: Record<ToolId, LucideIcon> = {
   thinking: BrainCircuit,
@@ -48,6 +56,10 @@ export function Composer({
   model,
   models,
   onModel,
+  thinking,
+  onThinking,
+  tokenEstimate,
+  tokenContext,
 }: {
   draft: string;
   onDraft: (v: string) => void;
@@ -73,6 +85,15 @@ export function Composer({
   models?: GatewayModel[] | undefined;
   /** picks the model for the next round (persisted by the caller). */
   onModel?: ((id: string) => void) | undefined;
+  /** the cognition effort of the round (the picker's pressed row). */
+  thinking?: ChatThinking | undefined;
+  /** picks the effort for the next round (persisted by the caller). */
+  onThinking?: ((level: ChatThinking) => void) | undefined;
+  /** the estimated token budget of the next round (the house estimator —
+   * always an estimate, the meter never pretends to count). */
+  tokenEstimate?: number | undefined;
+  /** the declared context window of the selected model, when known. */
+  tokenContext?: number | undefined;
 }) {
   // biome-ignore lint/correctness/useExhaustiveDependencies: draft is the trigger — the body reads the live textarea metrics whenever the text changes
   useEffect(() => {
@@ -90,21 +111,45 @@ export function Composer({
    * outside pointerdown closes it; Escape closes it first (the chat
    * Escape stack sits above it in the body). */
   const [modelOpen, setModelOpen] = useState(false);
+  const [thinkOpen, setThinkOpen] = useState(false);
   const modelBtnRef = useRef<HTMLButtonElement | null>(null);
   const modelMenuRef = useRef<HTMLDivElement | null>(null);
+  const thinkBtnRef = useRef<HTMLButtonElement | null>(null);
+  const thinkMenuRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    if (!modelOpen) return;
+    if (!modelOpen && !thinkOpen) return;
     const onDocPointer = (e: PointerEvent) => {
       const t = e.target as Node | null;
-      if (modelMenuRef.current?.contains(t) || modelBtnRef.current?.contains(t)) return;
-      setModelOpen(false);
+      if (modelOpen && !modelMenuRef.current?.contains(t) && !modelBtnRef.current?.contains(t)) setModelOpen(false);
+      if (thinkOpen && !thinkMenuRef.current?.contains(t) && !thinkBtnRef.current?.contains(t)) setThinkOpen(false);
     };
     document.addEventListener("pointerdown", onDocPointer);
     return () => document.removeEventListener("pointerdown", onDocPointer);
-  }, [modelOpen]);
+  }, [modelOpen, thinkOpen]);
+  /* one flyout at a time — opening one closes the other. */
+  const openModel = () => {
+    setThinkOpen(false);
+    setModelOpen((v) => !v);
+  };
+  const openThink = () => {
+    setModelOpen(false);
+    setThinkOpen((v) => !v);
+  };
 
   const catalog: GatewayModel[] = models && models.length > 0 ? models : [{ id: GATEWAY_MODEL }];
   const activeModel = model ?? GATEWAY_MODEL;
+  const activeThinking: ChatThinking = thinking ?? "medium";
+
+  /* the token meter (rung 125): the estimate reads with the ~ mark and
+   * the declared window turns it into an honest percent. */
+  const meterText = useMemo(() => {
+    const est = formatCompactTokenCount(tokenEstimate ?? 0);
+    if (tokenContext && tokenContext > 0) {
+      const pct = Math.min(100, Math.round(((tokenEstimate ?? 0) / tokenContext) * 100));
+      return `≈ ${est} tok · ${pct}%`;
+    }
+    return `≈ ${est} tok`;
+  }, [tokenContext, tokenEstimate]);
 
   const submit = () => {
     if (!draft.trim() || busy) return;
@@ -173,6 +218,68 @@ export function Composer({
               );
             })}
           </div>
+        ) : null}
+        {onThinking ? (
+          <span className="dtc-microrow__right">
+            <button
+              ref={thinkBtnRef}
+              type="button"
+              className="dtc-modelbtn"
+              aria-haspopup="listbox"
+              aria-expanded={thinkOpen}
+              onClick={openThink}
+              title="Reasoning effort"
+            >
+              <span>think {activeThinking}</span>
+              <ChevronDown fontSize={11} aria-hidden="true" className="dtc-modelbtn__chev" />
+            </button>
+            {thinkOpen ? (
+              <div
+                ref={thinkMenuRef}
+                className="dtc-modelmenu dtc-modelmenu--right"
+                role="listbox"
+                aria-label="Reasoning effort"
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") {
+                    e.stopPropagation();
+                    setThinkOpen(false);
+                    thinkBtnRef.current?.focus();
+                  }
+                }}
+              >
+                {CHAT_THINKING_LEVELS.map((lvl) => {
+                  const on = lvl.id === activeThinking;
+                  return (
+                    <button
+                      key={lvl.id}
+                      type="button"
+                      role="option"
+                      aria-selected={on}
+                      className="dtc-modelmenu__row"
+                      title={lvl.note}
+                      onClick={() => {
+                        onThinking(lvl.id);
+                        setThinkOpen(false);
+                        thinkBtnRef.current?.focus();
+                      }}
+                    >
+                      <span className="dtc-modelmenu__id">{lvl.label}</span>
+                      <span className="dtc-modelmenu__ctx">{lvl.note}</span>
+                      {on ? <Checkmark fontSize={13} aria-hidden="true" className="dtc-modelmenu__check" /> : null}
+                    </button>
+                  );
+                })}
+              </div>
+            ) : null}
+            {typeof tokenEstimate === "number" ? (
+              <span
+                className="dtc-meter"
+                title="Estimated with the house chars-per-token approximation — never an exact count"
+              >
+                {meterText}
+              </span>
+            ) : null}
+          </span>
         ) : null}
       </div>
 

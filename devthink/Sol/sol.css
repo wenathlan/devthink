@@ -5040,6 +5040,44 @@ legend.cmd-group {
   color: var(--sol-primary);
 }
 
+/* the right-anchored variant (the thinking picker rides the row's right
+ * side): the flyout opens against the right edge and the note column
+ * widens the panel honestly. */
+.dtc-modelmenu--right {
+  left: auto;
+  right: -6px;
+  min-width: 300px;
+}
+
+.dtc-modelmenu--right .dtc-modelmenu__ctx {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+  letter-spacing: 0.03em;
+}
+
+/* the microrow's right cluster (rung 125): the thinking chip and the token
+ * meter sit together at the row's end, never wrapping. */
+.dtc-microrow__right {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+/* the token meter (rung 125): the quiet estimate — mono, the ≈ mark
+ * always riding it, the tooltip saying exactly what it is. */
+.dtc-meter {
+  flex: none;
+  color: var(--sol-faint);
+  font-variant-numeric: tabular-nums;
+  cursor: help;
+}
+
 .dtc-inner {
   display: flex;
   align-items: flex-end;
