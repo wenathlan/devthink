@@ -1019,7 +1019,7 @@ function stripblocksfixed(html: string, ...tags: string[]): string {
   return current;
 }
 
-/** Converts sanitized HTML to plain text: script/style blocks drop to a fixed point, entities decode BEFORE the tag strips (a decoded &lt;script&gt; must meet the strip pass, never survive it), remaining tags strip once and the bracket characters themselves ESCAPE last (the entity encode the sanitization rule credits, the same grammar escapeXml carries — a partial sequence removal whose reassembly could survive never rides the chain). */
+/** Converts sanitized HTML to plain text: script/style blocks drop to a fixed point, entities decode BEFORE the tag strips (a decoded &lt;script&gt; must meet the strip pass, never survive it), and the tag strip consumes EVERY bracket-opened run — a complete tag through its closing bracket, an unterminated fragment through the end of its run — so no tag opener survives the strip in any form, and the final bracket sweep clears every stray closer. */
 function plainText(html: string): string {
   return stripblocksfixed(html, 'script', 'style')
     .replace(/&nbsp;/g, ' ')
@@ -1031,9 +1031,8 @@ function plainText(html: string): string {
     .replace(/<\/tr>/gi, '\n')
     .replace(/<\/td>/gi, ' | ')
     .replace(/<\/th>/gi, ' | ')
-    .replace(/<[^<>]+>/g, '')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
+    .replace(/<[^<>]*>?/g, '')
+    .replace(/[<>]/g, '')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
 }
