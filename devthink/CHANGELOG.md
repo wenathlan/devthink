@@ -1,5 +1,9 @@
 # DevThink release notes
 
+## 2.0.131
+
+This release is the healing rung of the ladder the owner ordered after the archaeology: every landing of the family carries the github signature again through the signed landing vehicle (the squash merge of the dated pull request creates the commit server side, the verified badge the 2.0.118 era answered, and a direct push never lands again), the gate artifacts walk in lockstep with the version the release stamps (the 128 through 130 rungs shipped the recorded battery three rungs behind and this rung restamps every artifact), and the release cuts the first tag from the clean saddle manifest: the vite override conflict that killed the family artifact lanes on every tag since 2.0.128 answered by the direct dependency walk, so the android and desktop lanes of every member application fire green on this published release with the signed by GitHub attestation beside every attachment and the three hundred asset doctrine ships for the first time.
+
 ## 2.0.130
 
 This release is the doctrine wave the owner ordered: the family artifact lanes ship on every published release (every member application answers android and desktop lanes with the signed by GitHub attestation beside every attachment — the same rights the os always held, only the iso stays os exclusive), the version lockstep answers one version family wide through the root the release chain resolves, and the node declaration standardizes on the one pin the maintenance ladder walks. The lanes fire as this release publishes.
