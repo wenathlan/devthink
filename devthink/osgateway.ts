@@ -48,6 +48,49 @@ type ApiResponse = {
   error?: { message?: string };
 };
 
+/** one row of the gateway's model catalog (the context window when the
+ * gateway declares it — the picker shows it honestly, never invented). */
+export type GatewayModel = {
+  id: string;
+  context?: number | undefined;
+};
+
+/**
+ * gatewayModels — the model catalog of a gateway: GET /v1/models, the ids
+ * and the declared context windows. A gateway without the route, an outage
+ * or a malformed body answers an empty list (never a throw) — the picker
+ * falls back to the meta-model and nothing pretends otherwise.
+ */
+export async function gatewayModels(base: string, timeoutMs = 6000): Promise<GatewayModel[]> {
+  const clean = base.trim().replace(/\/+$/, "");
+  if (!clean) return [];
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+    try {
+      const res = await fetch(`${clean}/v1/models`, { signal: ctrl.signal });
+      if (!res.ok) return [];
+      const json = (await res.json()) as {
+        data?: Array<{ id?: unknown; context_length?: unknown }>;
+      };
+      const rows = Array.isArray(json.data) ? json.data : [];
+      const models: GatewayModel[] = [];
+      for (const row of rows) {
+        if (typeof row?.id !== "string" || !row.id) continue;
+        models.push({
+          id: row.id,
+          context: typeof row.context_length === "number" ? row.context_length : undefined,
+        });
+      }
+      return models;
+    } finally {
+      clearTimeout(timer);
+    }
+  } catch {
+    return [];
+  }
+}
+
 /**
  * gatewayChat — one chat round on the local gateway. Default timeout of
  * 60s via AbortController; errors propagate to the chat (toast + retry)

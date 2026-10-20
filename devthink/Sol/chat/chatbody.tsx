@@ -26,12 +26,15 @@ import {
   clearChatHandoff,
   cloneSessionForEdit,
   deriveTitle,
+  type GatewayModel,
+  gatewayModels,
   GATEWAY_MODEL,
   isChatStop,
   newSession,
   readChatHandoff,
   runTurnStream,
   type ToolId,
+  useChatModel,
   useChatSessions,
   userTurn,
 } from "../../chatstate.ts";
@@ -76,6 +79,12 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  /* the model lane (rung 124): the persisted selection rides every round
+   * (the meta-model stays the default so an unconfigured chat never names
+   * an unknown model), and the catalog probe fills the picker when a
+   * gateway registers — a probe failure keeps the meta-model row alone. */
+  const [model, setModel] = useChatModel();
+  const [models, setModels] = useState<GatewayModel[]>([]);
   /* the stop lane (rung 119): the controller of the running round — the
    * Stop pill aborts it, the gateway answers the honest ChatStoppedError
    * and the partial answer commits to the floor instead of an error row.
@@ -210,6 +219,7 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
       try {
         const reply = await runTurnStream(history.messages, system, {
           base: gateway.base,
+          model: model === GATEWAY_MODEL ? undefined : model,
           sessionId: history.id.split("~")[0],
           thinkingLevel: tools.includes("thinking") ? "high" : "medium",
           signal: ctrl.signal,
@@ -272,7 +282,7 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
         window.requestAnimationFrame(() => inputRef.current?.focus());
       }
     },
-    [commit, gateway.base, tools],
+    [commit, gateway.base, model, tools],
   );
 
   /** stop — the Stop pill of the composer: aborts the running round. The
@@ -484,6 +494,25 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     [],
   );
 
+  // the model catalog probe (rung 124): a registered gateway answers its
+  // /v1/models catalog once per registration — the probe never chats, an
+  // outage keeps the meta-model row, and a disconnect empties the picker.
+  useEffect(() => {
+    let alive = true;
+    if (!gateway.base) {
+      setModels([]);
+      return () => {
+        alive = false;
+      };
+    }
+    void gatewayModels(gateway.base).then((rows) => {
+      if (alive) setModels(rows);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [gateway.base]);
+
   // the streaming clock (rung 121): while the round runs, the half-second
   // tick keeps the elapsed label honest; the clear on stop/finish is
   // implicit (busy flips false, the effect tears the interval down).
@@ -588,7 +617,7 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
           <div className="dtc-tb-title">
             <h1>{active ? active.title : (CHAT_LABEL?.name ?? "Chat")}</h1>
             <small>
-              sol {GATEWAY_MODEL} {gateway.base ? "gateway on" : "gateway off"}
+              sol {model} {gateway.base ? "gateway on" : "gateway off"}
             </small>
           </div>
           <div className="dtc-tb-actions">
@@ -687,6 +716,9 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
                   sandboxOn={sandboxOpen}
                   sandboxRunning={sandboxRunning}
                   onToggleSandbox={toggleSandbox}
+                  model={model}
+                  models={models}
+                  onModel={setModel}
                 />
               </div>
             </div>

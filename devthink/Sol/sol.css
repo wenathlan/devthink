@@ -4902,6 +4902,7 @@ legend.cmd-group {
 }
 
 .dtc-microrow {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -4915,6 +4916,128 @@ legend.cmd-group {
 
 .dtc-microrow .dtc-model {
   color: var(--sol-muted);
+}
+
+/* the model picker (rung 124): the microrow's model chip — quiet mono text
+ * that lifts to the ink on hover, carrying the chevron that rotates with
+ * the open state. */
+.dtc-modelbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  margin: -2px 0 -2px -6px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--sol-faint);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+  transition:
+    color 120ms ease,
+    background 120ms ease;
+}
+
+.dtc-modelbtn:hover {
+  color: var(--sol-muted);
+  background: rgb(255 255 255 / 5%);
+}
+
+.dtc-modelbtn:focus-visible {
+  outline: 2px solid var(--sol-primary);
+  outline-offset: 1px;
+}
+
+.dtc-modelbtn__chev {
+  transition: transform 160ms var(--ease-fluent);
+}
+
+.dtc-modelbtn[aria-expanded="true"] .dtc-modelbtn__chev {
+  transform: rotate(180deg);
+}
+
+/* the model flyout: the win11 menu grammar — the acrylic panel above the
+ * chip, the rows at 34px with the mono id, the honest context window, and
+ * the checkmark on the pressed row. */
+.dtc-modelmenu {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: -6px;
+  z-index: calc(var(--z-float, 30) + 2);
+  display: flex;
+  flex-direction: column;
+  min-width: 220px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 4px;
+  border: 1px solid rgb(0 0 0 / 55%);
+  border-radius: 8px;
+  background: rgb(32 32 34 / 96%);
+  box-shadow:
+    0 8px 28px rgb(0 0 0 / 38%),
+    0 0 0 1px rgb(255 255 255 / 4%) inset;
+  animation: dtcModelIn 160ms var(--ease-fluent) backwards;
+}
+
+@keyframes dtcModelIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+[data-motion="reduced"] .dtc-modelmenu {
+  animation: none;
+}
+
+.dtc-modelmenu__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--sol-muted);
+  font: 500 11px var(--dt-mono);
+  letter-spacing: 0.05em;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 100ms ease,
+    color 100ms ease;
+}
+
+.dtc-modelmenu__row:hover {
+  background: rgb(255 255 255 / 6%);
+  color: var(--sol-text);
+}
+
+.dtc-modelmenu__row:focus-visible {
+  outline: 2px solid var(--sol-primary);
+  outline-offset: -2px;
+}
+
+.dtc-modelmenu__id {
+  flex: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dtc-modelmenu__ctx {
+  flex: none;
+  margin-left: auto;
+  color: var(--sol-faint);
+  font-size: 10px;
+}
+
+.dtc-modelmenu__check {
+  flex: none;
+  color: var(--sol-primary);
 }
 
 .dtc-inner {

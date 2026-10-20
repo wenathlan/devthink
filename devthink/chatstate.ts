@@ -10,6 +10,7 @@ import { useCallback, useMemo } from "react";
 import {
   ChatStoppedError,
   type GatewayMessage,
+  type GatewayModel,
   gatewayChat,
   gatewayChatStream,
   isChatStop,
@@ -19,6 +20,7 @@ import {
 import { arrayOf, isString, useStoredState, type Validator } from "./usestoredstate.ts";
 
 export { ChatStoppedError, isChatStop };
+export { type GatewayModel, gatewayModels } from "./osgateway";
 
 /* ------------------------------- types -------------------------------- */
 
@@ -109,6 +111,18 @@ export const SESSION_CAP = 60;
 export const TURN_CAP = 40;
 export const HISTORY_CAP = 12;
 export const GATEWAY_MODEL = "devthink";
+
+/** the persisted model preference of the chat (rung 124): the picker's
+ * chosen id rides every round as the model lane of the request body; the
+ * meta-model stays the default so an unconfigured chat never names a
+ * model the gateway doesn't know. */
+export const MODEL_KEY = "dt-chat-model-v1";
+
+/** useChatModel — the persisted model selection (localStorage + type
+ * guard, the os stored-state grammar). */
+export function useChatModel() {
+  return useStoredState<string>(MODEL_KEY, GATEWAY_MODEL, isString);
+}
 
 /**
  * The gateway opt-in contract — the preference key, the endpoint validator

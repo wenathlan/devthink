@@ -17,14 +17,16 @@
  */
 
 import {
+  CheckmarkRegular as Checkmark,
+  ChevronDownRegular as ChevronDown,
   LightbulbRegular as BrainCircuit,
   CubeRegular as Cube,
   type FluentIcon as LucideIcon,
   SendRegular as Send,
   StopRegular as Stop,
 } from "@fluentui/react-icons";
-import { type KeyboardEvent, type RefObject, useEffect } from "react";
-import { CHAT_TOOLS, GATEWAY_MODEL, type ToolId } from "../../chatstate.ts";
+import { type KeyboardEvent, type RefObject, useEffect, useRef, useState } from "react";
+import { CHAT_TOOLS, type GatewayModel, GATEWAY_MODEL, type ToolId } from "../../chatstate.ts";
 
 const TOOL_ICONS: Record<ToolId, LucideIcon> = {
   thinking: BrainCircuit,
@@ -43,6 +45,9 @@ export function Composer({
   sandboxOn,
   sandboxRunning,
   onToggleSandbox,
+  model,
+  models,
+  onModel,
 }: {
   draft: string;
   onDraft: (v: string) => void;
@@ -62,6 +67,12 @@ export function Composer({
   sandboxRunning?: boolean | undefined;
   /** opens/closes the sandbox lane (the action chip door). */
   onToggleSandbox?: (() => void) | undefined;
+  /** the active model id of the round (the picker's pressed row). */
+  model?: string | undefined;
+  /** the gateway's model catalog (empty keeps the meta-model row alone). */
+  models?: GatewayModel[] | undefined;
+  /** picks the model for the next round (persisted by the caller). */
+  onModel?: ((id: string) => void) | undefined;
 }) {
   // biome-ignore lint/correctness/useExhaustiveDependencies: draft is the trigger — the body reads the live textarea metrics whenever the text changes
   useEffect(() => {
@@ -72,6 +83,28 @@ export function Composer({
     // touch law floor; the theme layer carries the well + the focus underline)
     el.style.height = `${Math.min(140, Math.max(44, el.scrollHeight))}px`;
   }, [draft, inputRef]);
+
+  /* the model picker (rung 124): the microrow's model chip opens the
+   * catalog flyout above the well — one row per gateway model with its
+   * declared context window, the pressed row carrying the checkmark. The
+   * outside pointerdown closes it; Escape closes it first (the chat
+   * Escape stack sits above it in the body). */
+  const [modelOpen, setModelOpen] = useState(false);
+  const modelBtnRef = useRef<HTMLButtonElement | null>(null);
+  const modelMenuRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!modelOpen) return;
+    const onDocPointer = (e: PointerEvent) => {
+      const t = e.target as Node | null;
+      if (modelMenuRef.current?.contains(t) || modelBtnRef.current?.contains(t)) return;
+      setModelOpen(false);
+    };
+    document.addEventListener("pointerdown", onDocPointer);
+    return () => document.removeEventListener("pointerdown", onDocPointer);
+  }, [modelOpen]);
+
+  const catalog: GatewayModel[] = models && models.length > 0 ? models : [{ id: GATEWAY_MODEL }];
+  const activeModel = model ?? GATEWAY_MODEL;
 
   const submit = () => {
     if (!draft.trim() || busy) return;
@@ -88,7 +121,59 @@ export function Composer({
   return (
     <div className="dtc-composer">
       <div className="dtc-microrow">
-        <span>model {GATEWAY_MODEL}</span>
+        {onModel ? (
+          <button
+            ref={modelBtnRef}
+            type="button"
+            className="dtc-modelbtn"
+            aria-haspopup="listbox"
+            aria-expanded={modelOpen}
+            onClick={() => setModelOpen((v) => !v)}
+            title="Pick the model"
+          >
+            <span>model {activeModel}</span>
+            <ChevronDown fontSize={11} aria-hidden="true" className="dtc-modelbtn__chev" />
+          </button>
+        ) : (
+          <span>model {activeModel}</span>
+        )}
+        {modelOpen && onModel ? (
+          <div
+            ref={modelMenuRef}
+            className="dtc-modelmenu"
+            role="listbox"
+            aria-label="Models"
+            onKeyDown={(e) => {
+              if (e.key === "Escape") {
+                e.stopPropagation();
+                setModelOpen(false);
+                modelBtnRef.current?.focus();
+              }
+            }}
+          >
+            {catalog.map((m) => {
+              const on = m.id === activeModel;
+              return (
+                <button
+                  key={m.id}
+                  type="button"
+                  role="option"
+                  aria-selected={on}
+                  className="dtc-modelmenu__row"
+                  onClick={() => {
+                    onModel(m.id);
+                    setModelOpen(false);
+                    modelBtnRef.current?.focus();
+                  }}
+                >
+                  <span className="dtc-modelmenu__id">{m.id}</span>
+                  {m.context ? <span className="dtc-modelmenu__ctx">{Math.round(m.context / 1000)}k ctx</span> : null}
+                  {on ? <Checkmark fontSize={13} aria-hidden="true" className="dtc-modelmenu__check" /> : null}
+                </button>
+              );
+            })}
+          </div>
+        ) : null}
       </div>
 
       <div className="dtc-inner">

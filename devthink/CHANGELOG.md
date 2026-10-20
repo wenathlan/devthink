@@ -1,5 +1,14 @@
 # DevThink release notes
 
+## 2.0.124
+
+The **model picker** reaches the composer (the sixth competitor-grammar rung): the microrow's quiet `model devthink` chip becomes the catalog door — the chevron rotates, the win11 acrylic flyout rises above the well carrying one row per gateway model with its **declared context window** (`{n}k ctx`, shown honestly — never invented), the pressed row wearing the checkmark in the windows accent. The catalog probes `/v1/models` once per registration (the probe never chats; an outage keeps the meta-model row alone, a disconnect empties the picker), the chosen id **persists** across sessions on the stored-state grammar, and the selection rides every round as the model lane of the request body — the meta-model stays the default so an unconfigured chat never names a model the gateway doesn't know. The topbar identity line follows the selection (`sol glm-5 gateway on`), and the flyout answers the full key grammar: Escape closes it first (the chat Escape stack sits above), the outside pointerdown dismisses it, and the focus returns to the chip.
+
+| Area | Change |
+| --- | --- |
+| The chat flagship | The model picker: the /v1/models catalog flyout with declared context windows, the persisted selection riding every round, and the topbar identity following it. |
+| The gateway client | `gatewayModels` — the catalog probe that never throws (an outage answers an empty list, the picker falls back to the meta-model). |
+
 ## 2.0.123
 
 The markdown v2 closes with **links, tables and the in-house syntax highlighter** (the fifth competitor-grammar rung). The inline grammar grows the citation lane: markdown links and bare http(s) urls render as safe anchors — the href lane is enforced at the regex (only http and https, never a scheme the floor would execute), every anchor opens with `noopener noreferrer nofollow`, the trailing punctuation of a sentence-ending url stays on the floor as text (the period never rides the href), and the link wears the accent underline that deepens on hover with the keyboard focus ring. **Tables** answer the ledger grammar: the hairline grid with the header row on the softened mono panel, the alignment honors the divider cells (`:---` left, `:---:` center, `---:` right), the numerals ride tabular figures, and a wide table scrolls horizontally inside its own region. The code panes gain the **in-house highlighter**: one ordered master scan per language family (js/ts, python, shell, sql, json — the aliases fold in, the unknown families fall to the generic scan), with the comments in the faded olive, the strings in the warm amber, the numbers in the coral, the keywords in the signal blue of the house accent family and the call-shaped identifiers in the soft cyan-green. It is honest about being a light grammar — no tree, no states — and a token the scan misses is plain text, never an error.
