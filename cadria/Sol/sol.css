@@ -439,7 +439,8 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 /* ---------- 4. window chrome — the app window over the trylle canvas ---------- */
 .appframe {
   position: relative; isolation: isolate; display: flex; flex-direction: column; align-items: stretch; justify-content: center;
-  min-height: 100dvh; padding: clamp(12px, 3vh, 40px) clamp(12px, 2.5vw, 48px);
+  min-height: 100dvh;
+  max-height: 100dvh; padding: clamp(12px, 3vh, 40px) clamp(12px, 2.5vw, 48px);
 }
 .appframe::before { content: ""; position: fixed; inset: 0; z-index: 0; background-image: var(--noise); mix-blend-mode: soft-light; pointer-events: none; }
 .appframe[data-maximized="true"] { padding: 0; }
@@ -493,7 +494,7 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .winapp__rz[data-edge="sw"] { bottom: 0; left: 0; width: 13px; height: 13px; cursor: nesw-resize; }
 .winapp[data-maximized="true"] .winapp__rz { display: none; }
 .winapp__body { display: flex; flex: 1; min-height: 0; }
-.winapp__stage { flex: 1; min-width: 0; overflow-y: auto; overscroll-behavior: contain; }
+.winapp__stage { flex: 1; min-height: 0; min-width: 0; overflow-y: auto; overscroll-behavior: contain; }
 
 /* railnav — the 48px vertical icon rail riding the windows pin law: 38×38
    r4 pins, the hover wash on 0.2s ease, the press at scale .7 on 100ms, the

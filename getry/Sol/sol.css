@@ -414,7 +414,8 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 /* ---------- 4. window chrome — the app window over the trylle canvas ---------- */
 .appframe {
   position: relative; isolation: isolate; display: flex; flex-direction: column; align-items: stretch; justify-content: center;
-  min-height: 100dvh; padding: clamp(12px, 3vh, 40px) clamp(12px, 2.5vw, 48px);
+  min-height: 100dvh;
+  max-height: 100dvh; padding: clamp(12px, 3vh, 40px) clamp(12px, 2.5vw, 48px);
 }
 .appframe::before { content: ""; position: fixed; inset: 0; z-index: 0; background-image: var(--noise); pointer-events: none; }
 .appframe[data-maximized="true"] { padding: 0; }
@@ -530,7 +531,7 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 
 /* the stage: the routed page, scrolling inside the window — one faint
    violet light upper right (the ONE light of the content) */
-.winapp__stage { flex: 1; min-width: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; background: radial-gradient(1100px 640px at 78% -10%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 60%); }
+.winapp__stage { flex: 1; min-height: 0; min-width: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; background: radial-gradient(1100px 640px at 78% -10%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 60%); }
 .winapp__stage > main.shell { display: flex; flex-direction: column; flex: 1 0 auto; width: 100%; }
 /* the app-density rhythm of the window content */
 .winapp__stage .shell { padding: 24px clamp(16px, 3vw, 32px) 32px; }

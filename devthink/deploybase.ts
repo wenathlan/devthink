@@ -69,14 +69,24 @@ export function deploybase(): string {
  *
  * The verbatim family form (the same recipe every member app carries):
  * `"../" + slug with trimmed slashes + "/"`. Leading and trailing slashes
- * on the slug are tolerated and never doubled.
+ * on the slug are tolerated and never doubled. The form is RELATIVE by
+ * contract — one hop out of the app's own mount segment, then the sibling
+ * slug — and the browser resolves it against the segment the page
+ * actually booted from: a devthink page at /panel resolves "../saddle/"
+ * to "/saddle/", a family arrival at /saddle resolves it to "/saddle/"
+ * too (the parent of the mount is the site root), and a project-pages
+ * mount at /devthink/ lands on the sibling the same way. The absolute
+ * form the module once answered ("deploybase() + /<slug>/") died on the
+ * family arrival routes exactly there: a boot at /saddle froze the base
+ * at "/saddle" and the power clip iframe asked for "/saddle/saddle/" —
+ * a url that answers nothing. The relative contract never meets that
+ * wall: it names the sibling by position, never by the boot's own
+ * segment.
  *
  * @param slug the deploy unit segment (the app folder name).
- * @returns the in-site url of the family application (`/<base>/<slug>/`) —
- * the family themes deploy under the same repository subpath, so the url
- * never leaves the site.
+ * @returns the in-site url of the family application ("../<slug>/").
  */
 export function familyurl(slug: string): string {
   const clean = slug.replace(/^\/+|\/+$/g, "");
-  return `${deploybase()}/${clean}/`;
+  return `../${clean}/`;
 }

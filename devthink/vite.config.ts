@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
 
 function pagesBasePath(value: string | undefined): string {
   const candidate = value?.trim() || "/";
@@ -26,6 +26,80 @@ const manifestversion = (
   }
 ).version;
 
+/** the deploy slugs of the sibling family apps (the folders beside this
+ * one in the shared repository — the same list window.ts carries) */
+const FAMILY_SLUGS = [
+  "argan",
+  "cadria",
+  "debonair",
+  "stealthhead",
+  "forge",
+  "foundry",
+  "vault",
+  "getry",
+  "saddle",
+] as const;
+
+/** resolves one sibling app folder on this machine */
+function siblingroot(slug: string): string {
+  return path.resolve(import.meta.dirname, "..", slug);
+}
+
+/** the family dev bridge: the sibling family apps deploy under the same
+ * site in production (each at its repository subpath), and the dev server
+ * answers the same surface so the power clip windows and the family
+ * routes carry the REAL apps in dev — one server, every sibling root
+ * mounted at its deploy slug. The html entries rewrite their relative
+ * asset references to the slug path and ride the vite html transform
+ * (the react refresh and the dev client inject beside them); every other
+ * request walks the vite /@fs lane so the module transform, the hmr and
+ * the import analysis serve the sibling sources with their own relative
+ * resolution — the alias-free import grammar every sibling carries (the
+ * one saddle @/ face walked to relative imports for exactly this law). */
+function familydevbridge(): Plugin {
+  return {
+    name: "devthink-family-dev-bridge",
+    apply: "serve",
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        void (async () => {
+          const raw = ((req.url ?? "/").split("?")[0] ?? "/") as string;
+          const match = /^\/([a-z][a-z0-9]*)\/(.*)$/.exec(raw) ?? /^\/([a-z][a-z0-9]*)$/.exec(raw);
+          const slug = match?.[1];
+          if (!slug || !(FAMILY_SLUGS as readonly string[]).includes(slug)) return next();
+          const rest = match[2] ?? "";
+          // the folder slug itself serves the app's html entry
+          if (rest === "" || rest.endsWith(".html")) {
+            const entry = path.join(siblingroot(slug), rest === "" ? "index.html" : rest);
+            try {
+              const html = readFileSync(entry, "utf8");
+              // the relative asset references walk the /@fs lane of the
+              // sibling root — the exact urls vite's html transform keeps
+              // untouched (the module scripts, the stylesheets, the icons
+              // and the manifests all serve through the fs allow list)
+              const rewritten = html.replace(
+                /(src|href)="\.\/([^"]+)"/g,
+                (_whole: string, attr: string, ref: string) =>
+                  `${attr}="/@fs${siblingroot(slug)}/${ref}"`,
+              );
+              const transformed = await server.transformIndexHtml(`/${slug}/`, rewritten);
+              res.statusCode = 200;
+              res.setHeader("content-type", "text/html");
+              res.end(transformed);
+              return;
+            } catch {
+              return next();
+            }
+          }
+          // modules and assets: the vite /@fs lane serves the sibling source
+          req.url = `/@fs${siblingroot(slug)}/${rest}`;
+          next();
+        })();
+      });
+    },
+  };
+}
+
 export default defineConfig({
   define: {
     __dtversion__: JSON.stringify(manifestversion),
@@ -36,7 +110,7 @@ export default defineConfig({
     "import.meta.env.VITE_DT_TARGET": JSON.stringify(process.env.VITE_DT_TARGET?.trim() || "web"),
   },
   base: pagesBasePath(process.env.VITE_BASE_PATH),
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), familydevbridge()],
   resolve: {
     alias: {
       /** the exact-subpath bridge to the sibling saddle engine: the chat
@@ -49,8 +123,25 @@ export default defineConfig({
        * publishes: its package.json exports map gained exactly the missing
        * "./sandbox": "./dist/sandbox.js" manifest piece. */
       "@wenathlan/saddle/sandbox": path.resolve(import.meta.dirname, "../saddle/sandbox.ts"),
+      /** the sibling engine's own self-alias, armed for the family dev
+       * bridge: the saddle pages import their isolation lane through the
+       * "@saddle/isolation" specifier their own config declares, and the
+       * bridge serves those pages through THIS server — the specifier
+       * resolves to the same sibling source file here (only saddle's own
+       * files ever speak this specifier, so the alias never leaks into the
+       * devthink tree) */
+      "@saddle/isolation": path.resolve(import.meta.dirname, "../saddle/isolation.ts"),
       "@": path.resolve(import.meta.dirname, "Sol"),
     },
+    /** the family dev bridge dedupe wall: the sibling apps carry their own
+     * node_modules folders (or symlinks to this one), and a react resolved
+     * from a sibling folder would mount a SECOND react instance beside the
+     * devthink tree — the hooks die with "cannot read properties of null"
+     * exactly the way two react copies always die. The dedupe forces every
+     * react/react-dom import of every /@fs-served sibling to the one
+     * instance this server root holds, so the power clip windows ride the
+     * same fiber tree the desktop rides */
+    dedupe: ["react", "react-dom", "react-dom/client"],
   },
   root: import.meta.dirname,
   build: {
@@ -78,7 +169,7 @@ export default defineConfig({
    * sibling family source — the dev server allows this root plus the saddle folder. */
   server: {
     fs: {
-      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../saddle")],
+      allow: [import.meta.dirname, ...FAMILY_SLUGS.map((slug) => siblingroot(slug))],
     },
     host: true,
     strictPort: false,

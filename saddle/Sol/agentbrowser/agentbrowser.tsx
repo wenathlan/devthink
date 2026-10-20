@@ -24,7 +24,7 @@ import {
 // documented example log of docs/logs/examplesession.json offline, the paired
 // database rows over HTTPS — never invented coordinates or counts.
 import { useEffect, useState } from 'react';
-import { PageShell } from '@/shell/Shell';
+import { PageShell } from '../shell/Shell';
 import {
         type AgentSession,
         type AgentSessionEvent,

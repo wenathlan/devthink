@@ -21,7 +21,7 @@ import {
 // four layers, the provider chain and the physical limit band. No floating
 // boxes: every layer is a ruled row on the same spine.
 import { useEffect, useState } from 'react';
-import { PageShell } from '@/shell/Shell';
+import { PageShell } from '../shell/Shell';
 import { type MediaSlot, mediaSlots } from '../../catalog';
 import { SANDBOXFORMS, type sandboxformid } from '../../sandboxprofile.ts';
 

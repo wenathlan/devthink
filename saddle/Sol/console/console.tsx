@@ -15,7 +15,7 @@
 // otherwise the same dispatcher runs locally in the browser.
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'wouter';
-import { PageShell } from '@/shell/Shell';
+import { PageShell } from '../shell/Shell';
 import type { ExecResult, SandboxCreated, SandboxSpecPayload } from '../../api';
 import { apibase, apifetch, fetchhealth } from '../../api';
 import type { SandboxState } from '../../sandbox.ts';

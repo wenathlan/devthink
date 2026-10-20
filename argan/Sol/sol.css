@@ -478,6 +478,7 @@ pre {
   align-items: stretch;
   justify-content: center;
   min-height: 100dvh;
+  max-height: 100dvh;
   padding: clamp(12px, 3vh, 40px) clamp(12px, 2.5vw, 48px);
   background: var(--mica);
 }
@@ -1398,6 +1399,7 @@ pre {
 
 /* the stage: the routed page, scrolling inside the window */
 .winapp__stage {
+  min-height: 0;
   flex: 1;
   min-width: 0;
   overflow-y: auto;

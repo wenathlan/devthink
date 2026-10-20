@@ -18,7 +18,7 @@ import {
 	PhoneRegular as Smartphone,
 	WindowConsoleRegular as Terminal,
 } from '@fluentui/react-icons';
-import { PageShell } from '@/shell/Shell';
+import { PageShell } from '../shell/Shell';
 
 const integrationGroups = [
 	{
