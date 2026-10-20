@@ -1,5 +1,48 @@
 # DevThink release notes
 
+## 2.0.129
+
+This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (2.0.128 plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: - # (the assemble set, the iso, the wasm, the family tarballs, the
+- # GITHUB_TOKEN never fire workflows, so the dispatch is explicit).
+- # The universal desktop artifact lane of the family: every application of
+- # The universal desktop artifact lane of the family: every member
+- # aab, the checksums and the manifest - the same rights), and the
+- # aims its frontendDist at that staging; and the rust envelope stays
+- # and never duplicates itself here), every other firing walks the
+- # and only the iso stays os exclusive. The identity (productName,
+- # another lane's grammar)
+- # answers straight at the application root; the runner stages the
+- # answers the whole member family at once (the nine sibling applications —
+- # application of the family builds the tauri desktop shell from the same
+- # application prefix and never collide with another lane's grammar)
+- # applications (the os rides the publish lane and never duplicates
+- # argan through vault — because the devthink application rides its own
+- # assets the publish lane already ships), which is the doctrine the owner
+- # attestation, the github release) answers from that one run -
+- # attests them (the signed by GitHub provenance the release machinery
+- # auto-tag answered no bump and the tag-push run inherited the
+- # builds them (--clobber keeps a re-run idempotent over its own
+- # carries family wide).
+- # chosen application across every desktop target; a published release
+- # committed). Every job attaches its own assets to the release and
+- # cut (the tag landed before the main-push run resolved, the
+- # delivered surface under build/web and the scaffold aims its
+- # desktop lanes on the release the os ships (the capacitor, the
+- # dispatch the release workflow on it (pushes performed with the
+- # every release (the devthink application also rides the publish lane on
+- # family wide: every artifact this lane ships answers the workflow
+- # fires the main-push release run, the auto-tag job stamps the
+- # fresh version over the latest tag, and the whole release chain
+- # frontendDist at that staging; and the rust envelope stays runner-side
+- # full matrix the lane always served, devthink included
+- # hardcoded; the vite build answers straight at the application root; the
+- # header the branch push carried.
+- # identifier, version) is read from the tauri.conf.json and the
+- # identity the same way the os release assets answer it
+- # installers, the checksums - the same rights, only the iso stays
+- # itself here), a manual dispatch walks the one chosen application
+- # keeps a re-run idempotent over its own names, which carry the. The version stamps 2.0.129 land across the metadata family with the apifreeze artifact re-frozen and the permission baseline recorded, and the ladder keeps no long-lived branch behind: the automation branch of this rung squashes onto main when the verification pipeline answers green — and closes with its branch deleted when it answers red — so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way.
+
 ## 2.0.128
 
 This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (2.0.127 plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: - node-version: 26.10.0

@@ -1,20 +1,29 @@
 name: Family Desktop
 
-# The universal desktop artifact lane of the family: every application of
-# the family builds the tauri desktop shell from the same workflow — the
-# matrix carries the seven platform entries the saddle recipe validated and
-# the application comes from the dispatch input, so one manual run answers
-# one application across every desktop target without a 63-job explosion on
-# every release (the devthink application also rides the publish lane on
-# releases). The identity (productName, identifier, version) is read from
-# the tauri.conf.json and the package.json each application tracks, never
-# hardcoded; the vite build answers straight at the application root; the
-# runner stages the delivered surface under build/web and the scaffold
-# aims its frontendDist at that staging; and the rust envelope stays
-# runner-side toolchain output (materialized under build/native/desktop,
-# never committed).
+# The universal desktop artifact lane of the family: every member
+# application of the family builds the tauri desktop shell from the same
+# workflow — the matrix crosses the application axis with the seven
+# platform entries the saddle recipe validated. A manual run answers one
+# chosen application across every desktop target; a published release
+# answers the whole member family at once (the nine sibling applications —
+# argan through vault — because the devthink application rides its own
+# publish lane on releases and the family lane never duplicates the os
+# assets the publish lane already ships), which is the doctrine the owner
+# pinned: every application holds the same desktop rights the os holds,
+# and only the iso stays os exclusive. The identity (productName,
+# identifier, version) is read from the tauri.conf.json and the
+# package.json each application tracks, never hardcoded; the vite build
+# answers straight at the application root; the runner stages the
+# delivered surface under build/web and the scaffold aims its
+# frontendDist at that staging; and the rust envelope stays runner-side
+# toolchain output (materialized under build/native/desktop, never
+# committed). Every job attaches its own assets to the release and
+# attests them (the signed by GitHub provenance the release machinery
+# carries family wide).
 
 on:
+  release:
+    types: [published]
   workflow_dispatch:
     inputs:
       app:
@@ -37,17 +46,27 @@ permissions:
   contents: read
 
 concurrency:
-  group: family-desktop-${{ inputs.app }}
-  cancel-in-progress: true
+  group: family-desktop-${{ github.event_name }}
+  cancel-in-progress: false
 
 jobs:
   desktop:
-    name: desktop ${{ inputs.app }} ${{ matrix.platform }}
+    name: desktop ${{ matrix.app }} ${{ matrix.platform }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
+    permissions:
+      # the release attachment and the artifact attestation the lane owns
+      contents: write
+      attestations: write
+      id-token: write
     strategy:
       fail-fast: false
       matrix:
+        # the application axis: a published release walks the nine member
+        # applications (the os rides the publish lane and never duplicates
+        # itself here), a manual dispatch walks the one chosen application
+        app: ${{ github.event_name == 'release' && fromJSON('["argan","cadria","debonair","forge","foundry","getry","saddle","stealthhead","vault"]') || fromJSON(format('["{0}"]', inputs.app)) }}
+        platform: [linux-x64, linux-arm64, windows-x86, windows-x64, windows-arm64, macos-x64, macos-arm64]
         include:
           - { platform: linux-x64, os: ubuntu-24.04, target: x86_64-unknown-linux-gnu, bundles: "deb,rpm,appimage", architecture: x64 }
           - { platform: linux-arm64, os: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu, bundles: "deb,rpm,appimage", architecture: arm64 }
@@ -57,7 +76,7 @@ jobs:
           - { platform: macos-x64, os: macos-15-intel, target: x86_64-apple-darwin, bundles: "app,dmg", architecture: x64 }
           - { platform: macos-arm64, os: macos-14, target: aarch64-apple-darwin, bundles: "app,dmg", architecture: arm64 }
     env:
-      APP: ${{ inputs.app }}
+      APP: ${{ matrix.app }}
     steps:
       - uses: actions/checkout@v7.0.1
       - name: resolve the application version
@@ -65,19 +84,19 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          version="$(node -p "require('./${{ inputs.app }}/package.json').version")"
+          version="$(node -p "require('./${{ matrix.app }}/package.json').version")"
           echo "version=$version" >> "$GITHUB_OUTPUT"
       - name: Set up Node
         uses: actions/setup-node@v7.1.0
         with:
           node-version: 26.12.0
       - name: Set up Bun
-        if: ${{ inputs.app == 'devthink' }}
+        if: ${{ matrix.app == 'devthink' }}
         uses: oven-sh/setup-bun@v2.2.0
         with:
           bun-version: 1.4.2
       - name: Set up pnpm
-        if: ${{ inputs.app != 'devthink' && inputs.app != 'saddle' }}
+        if: ${{ matrix.app != 'devthink' && matrix.app != 'saddle' }}
         uses: pnpm/action-setup@v6.1.0
         with:
           version: 12.8.1
@@ -92,7 +111,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          case "${{ inputs.app }}" in
+          case "${{ matrix.app }}" in
             devthink) cd "$APP" && bun install --frozen-lockfile ;;
             saddle) npm --prefix "$APP" ci ;;
             *) pnpm --dir "$APP" install --frozen-lockfile ;;
@@ -106,7 +125,7 @@ jobs:
         run: |
           set -euo pipefail
           cd "$APP"
-          case "${{ inputs.app }}" in
+          case "${{ matrix.app }}" in
             devthink) npm run build:web ;;
             saddle) npm run web:build:pages ;;
             *) pnpm run build ;;
@@ -291,12 +310,12 @@ jobs:
               *.deb|*.rpm|*.AppImage|*.exe|*.msi|*.dmg)
                 ext="${bundle##*.}"
                 [ "$ext" = "AppImage" ] && ext="appimage"
-                asset="${{ inputs.app }}.desktop.${version}.${{ matrix.platform }}.${ext}"
+                asset="${{ matrix.app }}.desktop.${version}.${{ matrix.platform }}.${ext}"
                 cp "$bundle" "build/release-assets/desktop/${asset}"
                 collected=$((collected + 1))
                 ;;
               *.app)
-                asset="${{ inputs.app }}.desktop.${version}.${{ matrix.platform }}.app.zip"
+                asset="${{ matrix.app }}.desktop.${version}.${{ matrix.platform }}.app.zip"
                 ditto -c -k --sequesterRsrc --keepParent "$bundle" "build/release-assets/desktop/${asset}"
                 collected=$((collected + 1))
                 ;;
@@ -304,13 +323,34 @@ jobs:
           done < <(find "build/native/desktop/target/${{ matrix.target }}/release/bundle" -print0 2>/dev/null)
           test "$collected" -gt 0
           if command -v sha256sum >/dev/null 2>&1; then
-            sha256sum build/release-assets/desktop/* | sed 's#build/release-assets/desktop/##' > "build/release-assets/desktop/sha256.desktop.${{ matrix.platform }}.${version}"
+            sha256sum build/release-assets/desktop/* | sed 's#build/release-assets/desktop/##' > "build/release-assets/desktop/${{ matrix.app }}.sha256.desktop.${{ matrix.platform }}.${version}"
           else
-            shasum -a 256 build/release-assets/desktop/* | sed 's#build/release-assets/desktop/##' > "build/release-assets/desktop/sha256.desktop.${{ matrix.platform }}.${version}"
+            shasum -a 256 build/release-assets/desktop/* | sed 's#build/release-assets/desktop/##' > "build/release-assets/desktop/${{ matrix.app }}.sha256.desktop.${{ matrix.platform }}.${version}"
           fi
-          printf '{\n  "version": "%s",\n  "application": "%s",\n  "platform": "desktop-tauri",\n  "target": "%s",\n  "bundles": "%s",\n  "signing": "%s",\n  "notarization": "%s"\n}\n' "$version" "${{ inputs.app }}" "${{ matrix.target }}" "${{ matrix.bundles }}" "${FAMILY_SIGNING:-unsigned}" "${FAMILY_NOTARIZATION:-none}" > "build/release-assets/desktop/manifest.desktop.${{ matrix.platform }}.${version}.json"
+          printf '{\n  "version": "%s",\n  "application": "%s",\n  "platform": "desktop-tauri",\n  "target": "%s",\n  "bundles": "%s",\n  "signing": "%s",\n  "notarization": "%s"\n}\n' "$version" "${{ matrix.app }}" "${{ matrix.target }}" "${{ matrix.bundles }}" "${FAMILY_SIGNING:-unsigned}" "${FAMILY_NOTARIZATION:-none}" > "build/release-assets/desktop/${{ matrix.app }}.manifest.desktop.${{ matrix.platform }}.${version}.json"
       - uses: actions/upload-artifact@v7.0.2
         with:
-          name: ${{ inputs.app }}.desktop.${{ matrix.platform }}.${{ steps.appversion.outputs.version }}
-          path: ${{ inputs.app }}/build/release-assets/desktop
+          name: ${{ matrix.app }}.desktop.${{ matrix.platform }}.${{ steps.appversion.outputs.version }}
+          path: ${{ matrix.app }}/build/release-assets/desktop
           if-no-files-found: error
+      - name: attach desktop assets to the release
+        # the doctrine the owner pinned: every member application ships its
+        # desktop lanes on the release the os ships (the capacitor, the
+        # installers, the checksums - the same rights, only the iso stays
+        # os exclusive), and the lane attaches its own assets the moment it
+        # builds them (--clobber keeps a re-run idempotent over its own
+        # names, which carry the application prefix and never collide with
+        # another lane's grammar)
+        if: github.event_name == 'release'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.event.release.tag_name }}" "${{ matrix.app }}/build/release-assets/desktop/*" --clobber
+      - name: attest the desktop assets
+        # the signed by GitHub provenance the release machinery carries
+        # family wide: every artifact this lane ships answers the workflow
+        # identity the same way the os release assets answer it
+        if: github.event_name == 'release'
+        uses: actions/attest@v4.2.2
+        with:
+          subject-path: ${{ matrix.app }}/build/release-assets/desktop/*
+          show-snippet: false
