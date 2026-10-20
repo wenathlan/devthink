@@ -1,5 +1,9 @@
 # DevThink release notes
 
+## 2.0.130
+
+This release is the doctrine wave the owner ordered: the family artifact lanes ship on every published release (every member application answers android and desktop lanes with the signed by GitHub attestation beside every attachment — the same rights the os always held, only the iso stays os exclusive), the version lockstep answers one version family wide through the root the release chain resolves, and the node declaration standardizes on the one pin the maintenance ladder walks. The lanes fire as this release publishes.
+
 ## 2.0.129
 
 This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (2.0.128 plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: - # (the assemble set, the iso, the wasm, the family tarballs, the
