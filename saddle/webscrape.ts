@@ -1032,6 +1032,8 @@ function plainText(html: string): string {
     .replace(/<\/td>/gi, ' | ')
     .replace(/<\/th>/gi, ' | ')
     .replace(/<[^<>]+>/g, '')
+    /* an unterminated tag-open fragment (a script opener with no closing bracket) dies as the whole sequence — the complete-character guard the partial strips refused */
+    .replace(/<script/gi, '')
     .replace(/[<>]/g, '')
     .replace(/\n{3,}/g, '\n\n')
     .trim();

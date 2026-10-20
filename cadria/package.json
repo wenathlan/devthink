@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/cadria",
-  "version": "2.0.125",
+  "version": "2.0.127",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
@@ -68,6 +68,10 @@
     "ink": "^7.1.1",
     "react-devtools-core": "^8.0.0",
     "z-ai-web-dev-sdk": "^0.0.18"
+  },
+  "overrides": {
+    "esbuild": "^0.28.2",
+    "uuid": "^11.1.1"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.15",

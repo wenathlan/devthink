@@ -269,7 +269,7 @@ export async function n8nexecute(node, input, handler) {
   if (typeof handler !== "function") throw new TypeError("n8n handler is required");
   const action = String(input?.action ?? input?.command ?? "status");
   if (!node?.actions?.includes(action)) throw new TypeError(`unsupported n8n action: ${action}`);
-  try { return await handler({ node, input: { ...(input ?? {}), action } }); } catch (error) { const failure = new Error(`n8n action failed: ${error?.message ?? error}`, { cause: error }); failure.code = String(error?.code ?? "N8N_ACTION_FAILED"); throw failure; }
+  try { return await handler({ node, input: { ...(input ?? {}), action } }); } catch (error) { const failure = new Error(`n8n action failed: ${errormessage(error)}`, { cause: error }); failure.code = String(error?.code ?? "N8N_ACTION_FAILED"); throw failure; }
 }
 
 function normalize(values) { const list = Array.isArray(values) ? values : [values]; if (!list.length || list.some((value) => typeof value !== "string" || !value)) throw new TypeError("n8n declarations are invalid"); return [...new Set(list)]; }
@@ -354,7 +354,7 @@ export function surfaceadapter(options = {}) {
     try {
       return { target, operation: name, supported: true, result: await handler(input, context) };
     } catch (error) {
-      return { target, operation: name, supported: true, ok: false, code: String(error?.code ?? "SURFACE_OPERATION_FAILED"), message: String(error?.message ?? error) };
+      return { target, operation: name, supported: true, ok: false, code: String(error?.code ?? "SURFACE_OPERATION_FAILED"), message: errormessage(error) };
     }
   }
 
@@ -403,16 +403,23 @@ export function controlsurface(options = {}) {
       const result = await handler(request.input ?? {}, context);
       return respond({ ok: true, result, context, audit });
     } catch (error) {
-      return respond({ ok: false, code: String(error?.code ?? "CONTROL_FAILED"), message: String(error?.message ?? error), context, audit });
+      return respond({ ok: false, code: String(error?.code ?? "CONTROL_FAILED"), message: errormessage(error), context, audit });
     }
   }
 
   return { version: 1, resources: [...controlresources], operations: [...controloperations], execute, describe: () => ({ version: 1, resources: [...controlresources], configured: Object.keys(adapters).filter((resource) => controlresources.includes(resource)) }) };
 }
 
+/** The message a caught value carries for the wire: an Error answers its message only (a stack byte never rides the payload), a string answers itself, anything else answers the fallback. */
+const errormessage = (error: unknown, fallback = "operation failed"): string => {
+  if (error instanceof Error) return error.message;
+  if (typeof error === "string" && error.length > 0) return error;
+  return fallback;
+};
+
 async function respond({ ok, result, code, message, context, audit }) {
   const response = { version: 1, ok, ...context, ...(ok ? { result } : { code, message }) };
-  if (audit) try { await audit(response); } catch (error) { response.auditerror = String(error?.message ?? error); }
+  if (audit) try { await audit(response); } catch (error) { response.auditerror = errormessage(error); }
   return response;
 }
 
@@ -460,7 +467,7 @@ export function threatmodel(options = {}) {
 
 async function execute(handler, input, name) {
   if (typeof handler !== "function") { const error = new Error(`${name} handler is not configured`); error.code = "UNSUPPORTED_OPERATION"; throw error; }
-  try { return await handler(input); } catch (error) { const failure = new Error(`${name} failed: ${error?.message ?? error}`, { cause: error }); failure.code = String(error?.code ?? "OPERATION_FAILED"); throw failure; }
+  try { return await handler(input); } catch (error) { const failure = new Error(`${name} failed: ${errormessage(error)}`, { cause: error }); failure.code = String(error?.code ?? "OPERATION_FAILED"); throw failure; }
 }
 
 /* ════════════════════════════════════════════════════════════════════ */

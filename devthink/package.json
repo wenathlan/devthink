@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/devthink",
-  "version": "2.0.126",
+  "version": "2.0.127",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
@@ -205,9 +205,9 @@
   "bugs": {
     "url": "https://github.com/wenathlan/devthink/issues"
   },
-  "description": "DevThink is the merged AI development workbench: the provider-owned gateway engine, the DevThink browser extension (the agent surface), the Antigravity engine and the workbench CLI — one product, one binary, one metadata.",
+  "description": "DevThink is the merged AI development workbench: the provider-owned gateway engine, the DevThink browser extension (the agent surface), the Antigravity engine and the workbench CLI \u2014 one product, one binary, one metadata.",
   "devthink": {
-    "maestro": "node.js is the orchestrator: every engine below answers to the maestro (devthink.ts) — family engines ride the published library packages, never a sibling-folder path; native engines ride the flat .ts files at the app root.",
+    "maestro": "node.js is the orchestrator: every engine below answers to the maestro (devthink.ts) \u2014 family engines ride the published library packages, never a sibling-folder path; native engines ride the flat .ts files at the app root.",
     "engines": [
       {
         "name": "versawaze",

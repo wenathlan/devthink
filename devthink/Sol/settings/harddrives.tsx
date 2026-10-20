@@ -503,7 +503,7 @@ export function HardDrives() {
                           value={pairendpoint}
                           onChange={(event) => setPairendpoint(event.target.value)}
                           placeholder={
-                            platform.id === "s3" ? "https://s3.example.com/bucket" : "https://files.example.com"
+                            platform.id === "s3" ? "https://s3.example.com" : "https://files.example.com"
                           }
                           aria-label="Endpoint url"
                         />
