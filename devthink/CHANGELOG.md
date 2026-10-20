@@ -1,5 +1,24 @@
 # DevThink release notes
 
+## 2.0.132
+
+This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (2.0.131 plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: - "react-resizable-panels": "^4.14.7",
+- "react-resizable-panels": "^4.14.8",
+- # answer: the repository token never fires it (the github token
+- # does not (the release still publishes, only the family lanes of
+- # event suppression), so the flip rides the owner pat whenever
+- # ladder rides — and the app token keeps the lane standing when it
+- # release the repository token creates never fires it (the github
+- # that release stay quiet until the next pat published one).
+- # the family artifact lanes ride the release published event, and a
+- # the flip owns the published event the family artifact lanes
+- # the secret exists and the app token keeps the lane standing
+- # token event suppression), so the create rides the owner pat
+- # when it does not.
+- # whenever the secret exists — the same fallback the maintenance
+- GH_TOKEN: ${{ github.token }}
+- GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}. The version stamps 2.0.132 land across the metadata family with the apifreeze artifact re-frozen and the permission baseline recorded, and the ladder keeps no long-lived branch behind: the automation branch of this rung squashes onto main when the verification pipeline answers green — and closes with its branch deleted when it answers red — so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way.
+
 ## 2.0.131
 
 This release is the healing rung of the ladder the owner ordered after the archaeology: every landing of the family carries the github signature again through the signed landing vehicle (the squash merge of the dated pull request creates the commit server side, the verified badge the 2.0.118 era answered, and a direct push never lands again), the gate artifacts walk in lockstep with the version the release stamps (the 128 through 130 rungs shipped the recorded battery three rungs behind and this rung restamps every artifact), and the release cuts the first tag from the clean saddle manifest: the vite override conflict that killed the family artifact lanes on every tag since 2.0.128 answered by the direct dependency walk, so the android and desktop lanes of every member application fire green on this published release with the signed by GitHub attestation beside every attachment and the three hundred asset doctrine ships for the first time.
