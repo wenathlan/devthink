@@ -410,10 +410,9 @@ export function controlsurface(options = {}) {
   return { version: 1, resources: [...controlresources], operations: [...controloperations], execute, describe: () => ({ version: 1, resources: [...controlresources], configured: Object.keys(adapters).filter((resource) => controlresources.includes(resource)) }) };
 }
 
-/** The message a caught value carries for the wire: an Error answers its message only (a stack byte never rides the payload), a string answers itself, anything else answers the fallback. */
+/** The message a caught value carries for the wire: an Error answers its message only (a property read the exposure model clears), and every other shape answers the fallback — the caught value as a whole never rides the payload, not even a thrown string (the object taint the exposure flow pinned walked exactly that lane). */
 const errormessage = (error: unknown, fallback = "operation failed"): string => {
   if (error instanceof Error) return error.message;
-  if (typeof error === "string" && error.length > 0) return error;
   return fallback;
 };
 
