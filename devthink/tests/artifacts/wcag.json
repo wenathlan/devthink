@@ -1,5 +1,5 @@
 {
-  "release": "2.0.130",
+  "release": "2.0.131",
   "checklist": "docs/wcag.md",
   "surfaces": [
     "site",
