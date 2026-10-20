@@ -30,6 +30,7 @@ import IntroAnchor from "./intro/intro.tsx";
 import NotFoundAnchor from "./notfound/notfound.tsx";
 import OnboardingAnchor from "./onboarding/onboarding.tsx";
 import PanelAnchor from "./panel/panel.tsx";
+import PlansAnchor from "./plans/plans.tsx";
 import PolicyAnchor from "./policy/policy.tsx";
 import ProjectsAnchor from "./projects/projects.tsx";
 import ProvidersAnchor from "./providers/providers.tsx";
@@ -112,6 +113,7 @@ export default function Sol() {
           <Route path="/history" component={() => <HistoryAnchor />} />
           <Route path="/settings" component={() => <SettingsAnchor />} />
           <Route path="/about" component={AboutAnchor} />
+          <Route path="/plans" component={PlansAnchor} />
           <Route path="/terms" component={TermsAnchor} />
           <Route path="/policy" component={PolicyAnchor} />
           {/* the family routes: DevThink barra <app> — the address carries the

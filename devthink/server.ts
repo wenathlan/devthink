@@ -5,11 +5,10 @@
  * server surface re-exports — interned in this one file, one surface without duplicate variations.
  */
 
-import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import { randomInt } from "node:crypto";
+import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import { isAllowedOrigin } from "./compatibility.js";
-import { listModels, listProviders, streamChat, type ChatMessage } from "./providers.js";
-import { ensurePaths, resolvePaths, saveConfig, type DevThinkConfig, type DevThinkPaths } from "./config.js";
+import { type DevThinkConfig, type DevThinkPaths, ensurePaths, resolvePaths, saveConfig } from "./config.js";
 import {
   consumePairing,
   getIdentity,
@@ -18,6 +17,8 @@ import {
   setIdentityUserId,
   verifyBrowserSession,
 } from "./identity.js";
+import { type ChatMessage, listModels, listProviders, streamChat } from "./providers.js";
+import { readPreferences, savePreference } from "./storage.js";
 import {
   appendMessage,
   createSession,
@@ -25,10 +26,9 @@ import {
   listSessions,
   loadSession,
   loadWorkspace,
-  updateTab,
   type SessionSection,
+  updateTab,
 } from "./workbenchsession.js";
-import { readPreferences, savePreference } from "./storage.js";
 
 export type ServerOptions = {
   port?: number | undefined;
@@ -905,7 +905,8 @@ import { serveStatic } from "@hono/node-server/serve-static";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { loadconfig, validateconfig } from "./config.js";
-import { getonboardingstate, setonboardingstage } from "./database.ts";
+import { copyseed } from "./copy.ts";
+import { getonboardingstate, getplan, listcopyrows, setonboardingstage, setplan, upsertcopyrows } from "./database.ts";
 import { createversion } from "./engine.ts";
 
 /** route resources per version — the canonical 7 */
@@ -989,9 +990,7 @@ async function createserver(): Promise<Hono> {
     return c.json(state ?? { introseen: false, onboardingseen: false });
   });
   app.post("/api/v1/onboarding", async (c) => {
-    const body = (await c.req.json().catch(() => null)) as
-      | { visitor?: unknown; stage?: unknown }
-      | null;
+    const body = (await c.req.json().catch(() => null)) as { visitor?: unknown; stage?: unknown } | null;
     const visitor = typeof body?.visitor === "string" ? body.visitor : "";
     const stage = body?.stage;
     if (!/^[a-z0-9]{6,64}$/i.test(visitor)) return c.json({ error: "invalid visitor" }, 400);
@@ -999,6 +998,62 @@ async function createserver(): Promise<Hono> {
     const state = await setonboardingstage(visitor, stage);
     if (!state) return c.json({ error: "onboarding state unavailable" }, 503);
     return c.json(state);
+  });
+
+  // copy endpoint — the stubs law: the components load every user-visible
+  // string by id from this table; the build seed ingests the rows at boot
+  // (the tables first, then the ingestion), a failure degrades to the
+  // seed the bundle already carries
+  const seedcopyrows = Object.entries(copyseed()).map(([key, text]) => ({ key, text }));
+  await upsertcopyrows(seedcopyrows);
+  app.get("/api/v1/copy", async (c) => {
+    const rows = await listcopyrows();
+    return c.json({ rows });
+  });
+
+  // plan endpoint — the visual gate: the tier the visitor selected and the
+  // enterprise custom megabytes stamp the badge the identity wears; the
+  // engines carry no limits, this row only draws what the plan answers
+  app.get("/api/v1/plan", async (c) => {
+    const visitor = String(c.req.query("visitor") || "");
+    if (!/^[a-z0-9]{6,64}$/i.test(visitor)) return c.json({ error: "invalid visitor" }, 400);
+    const row = await getplan(visitor);
+    return c.json({
+      plan: row
+        ? {
+            tier: row.tier,
+            storagemb: row.storagemb === null ? undefined : Number(row.storagemb),
+            rammib: row.rammib === null ? undefined : Number(row.rammib),
+            since: row.since.toISOString(),
+          }
+        : null,
+    });
+  });
+  app.post("/api/v1/plan", async (c) => {
+    const body = (await c.req.json().catch(() => null)) as {
+      visitor?: unknown;
+      plan?: { tier?: unknown; storagemb?: unknown; rammib?: unknown };
+    } | null;
+    const visitor = typeof body?.visitor === "string" ? body.visitor : "";
+    const tier = body?.plan?.tier;
+    if (!/^[a-z0-9]{6,64}$/i.test(visitor)) return c.json({ error: "invalid visitor" }, 400);
+    if (tier !== "free" && tier !== "pro" && tier !== "enterprise") return c.json({ error: "invalid tier" }, 400);
+    const storagemb =
+      typeof body?.plan?.storagemb === "number" && body.plan.storagemb > 0
+        ? Math.floor(body.plan.storagemb)
+        : undefined;
+    const rammib =
+      typeof body?.plan?.rammib === "number" && body.plan.rammib > 0 ? Math.floor(body.plan.rammib) : undefined;
+    const row = await setplan(visitor, tier, tier === "enterprise" ? { storagemb, rammib } : undefined);
+    if (!row) return c.json({ error: "plan unavailable" }, 503);
+    return c.json({
+      plan: {
+        tier: row.tier,
+        storagemb: row.storagemb === null ? undefined : Number(row.storagemb),
+        rammib: row.rammib === null ? undefined : Number(row.rammib),
+        since: row.since.toISOString(),
+      },
+    });
   });
 
   // register routes for every configured version
@@ -2334,27 +2389,16 @@ if (serverDirectEntry || serverBunEntry) void consolemain();
  * @version 6.0.0
  */
 
+import * as crypto from "node:crypto";
 import * as fs from "node:fs";
 import * as fsp from "node:fs/promises";
-import * as path from "node:path";
 import * as os from "node:os";
-import * as crypto from "node:crypto";
-import * as readline from "node:readline/promises";
+import * as path from "node:path";
 import { stdin as input, stdout as output } from "node:process";
-
-// ---------------------------------------------------------------------------
-// Local module imports (ESM .js extension for Node resolver, source is .ts).
-// Import from deduplicated base modules ONLY - never from "(N)" copies.
-// ---------------------------------------------------------------------------
-import * as oauthMod from "./oauth.js";
+import * as readline from "node:readline/promises";
 import * as accountsMod from "./accounts.js";
 import * as configMod from "./config.js";
 import * as constantsMod from "./constants.js";
-import * as quotaMod from "./quota.js";
-import * as versionMod from "./versionregistry.js";
-import * as authMod from "./oauth.js";
-import * as modelsMod from "./models.js";
-import * as systemMod from "./core.js";
 // v2.1.16 single-owner fix: raw values come from constants.js, identity
 // snapshots from fingerprint.js and model identification from models.js via
 // static named imports (the namespace interop wrappers below stay for the
@@ -2374,16 +2418,26 @@ import {
   OAUTH_TOKEN_URL,
   PROJECT_FALLBACK,
 } from "./constants.js";
+import * as systemMod from "./core.js";
 import { X_GOOG_API_CLIENT_GEMINI_CLI } from "./fingerprint.js";
+import type { ModelCatalogEntry } from "./models.js";
+import * as modelsMod from "./models.js";
 import {
+  ENDPOINT_ORDER,
+  MODEL_BY_ID,
+  MODELS_2026_CATALOG,
   DEFAULT_MODEL as MODELS_DEFAULT_MODEL,
   DEFAULT_MODEL_ID as MODELS_DEFAULT_MODEL_ID,
-  ENDPOINT_ORDER,
-  MODELS_2026_CATALOG,
-  MODEL_BY_ID,
   SEARCH_MODEL_PREVIEW,
 } from "./models.js";
-import type { ModelCatalogEntry } from "./models.js";
+// ---------------------------------------------------------------------------
+// Local module imports (ESM .js extension for Node resolver, source is .ts).
+// Import from deduplicated base modules ONLY - never from "(N)" copies.
+// ---------------------------------------------------------------------------
+import * as oauthMod from "./oauth.js";
+import * as authMod from "./oauth.js";
+import * as quotaMod from "./quota.js";
+import * as versionMod from "./versionregistry.js";
 
 // Resolve interop (CJS/ESM dual): pick default if exists or namespace
 const oauth: any = (oauthMod as any).default ?? oauthMod;
@@ -3624,7 +3678,7 @@ function formatQuotaBar(remaining: number, limit: number): string {
 async function cmdQuota(args: string[]): Promise<void> {
   const jsonFlag = args.includes("--json");
   const allFlag = args.includes("--all");
-  let emailArg: string | undefined = undefined;
+  let emailArg: string | undefined;
   // positional email unless flag
   for (const a of args) {
     if (!a.startsWith("-") && a.includes("@")) {
@@ -5297,48 +5351,47 @@ if (invokedAsMain) {
   });
 }
 
+export type { ModelCatalogEntry, OpenCodeJsonLocation };
 // ---------------------------------------------------------------------------
 // Public API (~30 exports incl runCLI + default { runCLI, interactiveMenu })
 // ---------------------------------------------------------------------------
 export {
-  providerconsolemain as runCLI,
-  cmdLogin,
-  cmdAccounts,
-  cmdQuota,
-  cmdConfig,
-  cmdModels,
-  cmdStatus,
-  cmdDoctor,
-  cmdVersion,
-  cmdManage,
-  logoutFlow,
-  enableAccountFlow,
-  disableAccountFlow,
-  configureModelsFlow,
-  interactiveMenu,
-  printHelp,
-  resolveBaseDir,
-  resolveAccountsPath,
-  resolveConfigPath,
-  resolveAntigravityJsonPath,
-  resolveOpenCodeJsonCandidates,
-  locateOpenCodeJson,
-  atomicWriteFileSecure,
-  atomicWriteFileAtomic,
-  getAccountManager,
-  fetchQuotaForAccount,
-  buildOpenCodeModelDefinitions,
-  MODELS_2026_CATALOG,
-  confirm,
-  redactEmail,
-  fmtDuration,
-  printHeader,
-  CLI_VERSION,
   ANSI,
+  atomicWriteFileAtomic,
+  atomicWriteFileSecure,
+  buildOpenCodeModelDefinitions,
   C,
+  CLI_VERSION,
+  cmdAccounts,
+  cmdConfig,
+  cmdDoctor,
+  cmdLogin,
+  cmdManage,
+  cmdModels,
+  cmdQuota,
+  cmdStatus,
+  cmdVersion,
+  configureModelsFlow,
+  confirm,
+  disableAccountFlow,
+  enableAccountFlow,
+  fetchQuotaForAccount,
+  fmtDuration,
+  getAccountManager,
+  interactiveMenu,
+  locateOpenCodeJson,
+  logoutFlow,
+  MODELS_2026_CATALOG,
+  printHeader,
+  printHelp,
+  providerconsolemain as runCLI,
+  redactEmail,
+  resolveAccountsPath,
+  resolveAntigravityJsonPath,
+  resolveBaseDir,
+  resolveConfigPath,
+  resolveOpenCodeJsonCandidates,
 };
-
-export type { ModelCatalogEntry, OpenCodeJsonLocation };
 
 export const providercli = {
   runCLI: providerconsolemain,
@@ -5366,18 +5419,18 @@ export const providercli = {
  * so every historical import path keeps resolving.
  */
 
+export * as Accounts from "./accounts.js";
 export * as Constants from "./constants.js";
+export * as Core from "./core.js";
 export * as Fingerprint from "./fingerprint.js";
 // the provider oauth family answers the OAuth namespace (the grand merge
 // consolidation interned the family in oauth.ts — node surface).
 export * as OAuth from "./oauth.js";
-export * as Accounts from "./accounts.js";
 // the provider oauth family answers the AntigravityCli compat namespace.
 export * as AntigravityCli from "./oauth.js";
-
 // merged group additions: auth/core/system/models namespaces
 export * as Auth from "./oauth.js";
-export * as Core from "./core.js";
+
 /** System — the v2.1.14 system utilities surface: config.ts absorbed the
  * system module (cfgDir, the version fallback chain, atomic writes, the
  * legacy validator aliases and the raw JSON IO helpers) while the debug
@@ -5390,12 +5443,12 @@ import {
   fetchVersionChain,
   loadConfigRaw,
   saveConfigRaw,
+  VERSION_FALLBACK,
   validateEmail,
   validateModelId,
   validateModelIdCharset,
   validateProjectId,
   validateSemver,
-  VERSION_FALLBACK,
 } from "./config.js";
 import { debugLogger, logsDir, redactSecrets } from "./core.js";
 export const System = {
@@ -5414,37 +5467,35 @@ export const System = {
   logsDir,
   redactSecrets,
 };
-export * as Models from "./models.js";
-export * as Models2026 from "./models.js";
-
-export * as Project from "./project.js";
-export * as Quota from "./quota.js";
+export * as PluginModule from "./antigravity.js";
+// default plugin export for opencode compatibility (the antigravity plugin family)
+export { default as opencodePluginModule, getPlugin, plugin } from "./antigravity.js";
 export * as Config from "./config.js";
 export * as Debug from "./core.js";
-export * as Version from "./versionregistry.js";
+export * as Models from "./models.js";
+export * as Models2026 from "./models.js";
+export * as Project from "./project.js";
+export * as Quota from "./quota.js";
+export * as Recovery from "./recovery.js";
 // v2.1.14: request-helpers.ts was consolidated into request.ts; namespace kept for compat.
 export * as RequestHelpers from "./request.js";
 export * as Request from "./request.js";
-export * as Streaming from "./streaming.js";
-export * as Recovery from "./recovery.js";
 export * as Search from "./search.js";
 export * as CLI from "./server.js";
-export * as PluginModule from "./antigravity.js";
-
-// default plugin export for opencode compatibility (the antigravity plugin family)
-export { default as opencodePluginModule, getPlugin, plugin } from "./antigravity.js";
+export * as Streaming from "./streaming.js";
+export * as Version from "./versionregistry.js";
 
 // v2.1.16 single-owner doctrine: VERSION derives from constants.js
 // PLUGIN_VERSION (raw value owner) and the two bypass aggregates assemble
 // every value from its owner module instead of locally-reassembled literals.
 import { GEMINI_CLI_OAUTH_CLIENT_ID, GEMINI_CLI_OAUTH_CLIENT_SECRET, PLUGIN_VERSION } from "./constants.js";
 import {
+  CLIENT_ID as ANTIGRAVITY_CLI_CLIENT_ID,
+  CLIENT_SECRET as ANTIGRAVITY_CLI_CLIENT_SECRET,
   ANTIGRAVITY_CLI_GRPC_VERSION,
   ANTIGRAVITY_CLI_OAUTH_SCOPES,
   ANTIGRAVITY_CLI_REDIRECT_OFFICIAL,
   ANTIGRAVITY_CLI_VERSION_LATEST,
-  CLIENT_ID as ANTIGRAVITY_CLI_CLIENT_ID,
-  CLIENT_SECRET as ANTIGRAVITY_CLI_CLIENT_SECRET,
 } from "./oauth.js";
 /* the identity snapshot import rides the account console cli section above — one declaration per binding */
 
@@ -5526,7 +5577,7 @@ export const ANTIGRAVITY_CLI_BYPASS = {
  * library consumers keep importing from the package root (plugin.ts).
  */
 
-import { opencodeServer, buildOpencodeAuthHook } from "./antigravity.js";
+import { buildOpencodeAuthHook, opencodeServer } from "./antigravity.js";
 
 /**
  * The main provider plugin instance: chat.headers identification spoof,

@@ -169,10 +169,7 @@ export async function getonboardingstate(visitor: string): Promise<onboardingfla
  * @param stage the stage the visitor just saw.
  * @returns the resulting seen flags, or null when the write failed.
  */
-export async function setonboardingstage(
-  visitor: string,
-  stage: onboardingstagename,
-): Promise<onboardingflags | null> {
+export async function setonboardingstage(visitor: string, stage: onboardingstagename): Promise<onboardingflags | null> {
   const onboardingseen = stage === "onboarding";
   const raise = onboardingseen ? { introseen: true, onboardingseen: true } : { introseen: true };
   try {
@@ -183,6 +180,110 @@ export async function setonboardingstage(
       select: { introseen: true, onboardingseen: true },
     });
     return { introseen: row.introseen, onboardingseen: row.onboardingseen };
+  } catch {
+    return null;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* copy — the copy table the components load by id (the stubs law)     */
+/* ------------------------------------------------------------------ */
+
+/** One copy row as the api answers it. */
+export type copyrow = { key: string; text: string };
+
+/**
+ * listcopyrows — every copy row of the app (the stubs load by id over
+ * /api/v1/copy). Never throws: a database failure answers the empty list
+ * and the build seed keeps the interface answering.
+ */
+export async function listcopyrows(): Promise<copyrow[]> {
+  try {
+    const rows = await db.copyRow.findMany({ select: { key: true, text: true } });
+    return rows;
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * upsertcopyrows — the ingestion: the build seed fills the table (the
+ * tables first, then the ingestion), equal keys update in place.
+ *
+ * @param rows the seed rows to write.
+ * @returns the count of rows written, or null when the write failed.
+ */
+export async function upsertcopyrows(rows: readonly copyrow[]): Promise<number | null> {
+  try {
+    let written = 0;
+    for (const row of rows) {
+      await db.copyRow.upsert({
+        where: { key: row.key },
+        create: { key: row.key, text: row.text },
+        update: { text: row.text },
+      });
+      written += 1;
+    }
+    return written;
+  } catch {
+    return null;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* plan — the visual gate row (the badge the identity wears)           */
+/* ------------------------------------------------------------------ */
+
+/** One plan row as the api answers it (the engines carry no limits — the
+ * row only stamps the badge and the enterprise custom megabytes; the
+ * 64-bit pointers ride bigint in the row, the api narrows to number). */
+export type planrow = { tier: string; storagemb: bigint | null; rammib: bigint | null; since: Date };
+
+/**
+ * getplan — the plan one visitor carries.
+ *
+ * @param visitor the anonymous visitor token the row keys on.
+ * @returns the plan row, or null when the visitor never stamped one.
+ */
+export async function getplan(visitor: string): Promise<planrow | null> {
+  try {
+    const row = await db.planState.findUnique({
+      where: { visitor },
+      select: { tier: true, storagemb: true, rammib: true, since: true },
+    });
+    return row ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * setplan — stamp the plan the visitor selected (upsert, the enterprise
+ * custom megabytes riding only when defined).
+ *
+ * @param visitor the anonymous visitor token.
+ * @param tier the selected tier (free, pro, enterprise).
+ * @param custom the enterprise custom values.
+ * @returns the resulting row, or null when the write failed.
+ */
+export async function setplan(
+  visitor: string,
+  tier: string,
+  custom?: { storagemb?: number; rammib?: number },
+): Promise<planrow | null> {
+  const data = {
+    tier,
+    storagemb: custom?.storagemb ?? null,
+    rammib: custom?.rammib ?? null,
+  };
+  try {
+    const row = await db.planState.upsert({
+      where: { visitor },
+      create: { visitor, ...data },
+      update: data,
+      select: { tier: true, storagemb: true, rammib: true, since: true },
+    });
+    return row;
   } catch {
     return null;
   }

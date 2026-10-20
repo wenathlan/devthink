@@ -196,3 +196,29 @@ model OnboardingState {
 
   @@index([onboardingseen])
 }
+
+/// the copy table: every user-visible string the components render, one
+/// row per dotted key — the components are stubs loading by id through
+/// /api/v1/copy, the build seed ingests here and the db is the living
+/// config of the copy (the build never ships the table itself)
+model CopyRow {
+  key       String   @id
+  text      String
+  updatedAt DateTime @updatedAt
+}
+
+/// the visual gate of the os: the plan the visitor selected (the engines
+/// carry no limits — this row only stamps the badge the identity wears
+/// and the enterprise custom megabytes the person defined)
+model PlanState {
+  id        Int      @id @default(autoincrement())
+  visitor   String   @unique
+  tier      String   @default("free")
+  storagemb BigInt?
+  rammib    BigInt?
+  since     DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tier])
+}
+
