@@ -4464,41 +4464,29 @@ legend.cmd-group {
 }
 
 .dtc-item {
+  /* the conversation row (the zcode task grammar): the rounded-lg row,
+   * no leading bars — the selected wash alone marks the active thread. */
   position: relative;
   display: flex;
   align-items: center;
-  border-radius: 4px;
+  border-radius: var(--chat-r-lg);
 }
 
 .dtc-item:hover {
-  background: rgb(255 255 255 / 8%);
-}
-
-.dtc-item::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  display: block;
-  width: 3px;
-  height: 16px;
-  border-radius: 2px;
-  background: var(--sol-sun);
-  transform: translateY(-50%) scaleY(0);
-  transition: transform 150ms ease;
+  background: rgb(255 255 255 / 5%);
 }
 
 .dtc-item__open {
   flex: 1;
   min-width: 0;
-  min-height: 42px;
-  padding: 0 10px 0 12px;
+  min-height: 34px;
+  padding: 0 8px 0 10px;
   border: 0;
   background: transparent;
   color: var(--sol-muted);
   font: inherit;
-  font-size: 0.84rem;
-  font-weight: 500;
+  font-size: var(--chat-t-base);
+  font-weight: 450;
   text-align: left;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -4546,11 +4534,7 @@ legend.cmd-group {
 }
 
 .dtc-item.is-active {
-  background: rgb(255 255 255 / 12%);
-}
-
-.dtc-item.is-active::before {
-  transform: translateY(-50%) scaleY(1);
+  background: rgb(255 255 255 / 10%);
 }
 
 .dtc-item.is-active .dtc-item__open {
@@ -4568,40 +4552,28 @@ legend.cmd-group {
   display: grid;
   gap: 1px;
   padding-top: 10px;
-  border-top: 1px solid rgb(0 0 0 / 55%);
+  border-top: 1px solid rgb(255 255 255 / 6%);
 }
 
 .dtc-nav {
+  /* the rail nav row (the zcode entry grammar): the rounded-lg row at
+   * the 32px control height — the wash marks the active page, no bars. */
   position: relative;
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  min-height: 40px;
+  min-height: 32px;
   padding: 0 10px;
-  border-radius: 4px;
+  border-radius: var(--chat-r-lg);
   color: var(--sol-muted);
-  font-size: 0.84rem;
-  font-weight: 500;
+  font-size: var(--chat-t-base);
+  font-weight: 450;
   text-decoration: none;
-}
-
-.dtc-nav::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  display: block;
-  width: 3px;
-  height: 16px;
-  border-radius: 2px;
-  background: var(--sol-sun);
-  transform: translateY(-50%) scaleY(0);
-  transition: transform 150ms ease;
 }
 
 .dtc-nav:hover {
   color: var(--sol-text);
-  background: rgb(255 255 255 / 8%);
+  background: rgb(255 255 255 / 5%);
 }
 
 .dtc-nav svg {
@@ -4615,11 +4587,7 @@ legend.cmd-group {
 
 .dtc-nav[aria-current="page"] {
   color: var(--sol-text);
-  background: rgb(255 255 255 / 12%);
-}
-
-.dtc-nav[aria-current="page"]::before {
-  transform: translateY(-50%) scaleY(1);
+  background: rgb(255 255 255 / 10%);
 }
 
 .dtc-nav[aria-current="page"] svg {
@@ -4802,116 +4770,92 @@ legend.cmd-group {
   text-align: center;
 }
 
-.dtc-hero__greet {
-  margin: 0 0 10px;
+.dtc-welcome__greet {
+  /* the reference draft greeting (the zcode hero): the time-of-day voice
+   * at the reading weight — font-medium, the display step, never the
+   * marketing clamp the old surface carried; the balance wraps the
+   * long locales honestly. */
+  margin: 0 0 6px;
   max-width: 40rem;
-  font-size: clamp(1.7rem, 4.2vw, 2.6rem);
-  font-weight: 700;
-  letter-spacing: -0.04em;
-  line-height: 1.08;
+  color: var(--sol-text);
+  font-size: 1.375rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
   text-wrap: balance;
   animation: dtcFade 320ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 
-.dtc-hero__soft {
-  display: block;
-  margin-bottom: 2px;
-  color: var(--sol-faint);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-}
-
-.dtc-hero__strong {
-  color: var(--sol-text);
-}
-
-.dtc-hero__word {
-  color: var(--signal);
-  font-style: normal;
-}
-
-.dtc-hero__sub {
-  margin: 0 0 28px;
+.dtc-welcome__sub {
+  margin: 0 0 24px;
   color: var(--sol-muted);
-  font: 500 10px var(--dt-mono);
+  font: 500 var(--chat-t-sm) var(--dt-mono);
   letter-spacing: 0.08em;
   text-transform: lowercase;
   animation: dtcFade 320ms cubic-bezier(0.22, 1, 0.36, 1) 60ms backwards;
 }
 
-.dtc-cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  width: 100%;
-}
-
-.dtc-card {
-  position: relative;
+/* the suggestion chips (the zcode draft shape): one horizontal row of
+ * compact outline chips — icon + label at the control height, the lg
+ * radius under no rounded parent, the border walk on hover and the
+ * waterfall entrance the reference pins (260ms, 65ms steps). the chip
+ * row replaces the card grid the old surface carried. */
+.dtc-suggest {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 16px;
-  border: 1px solid var(--chat-input-border);
-  border-radius: var(--chat-r-lg);
-  color: inherit;
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-  background: var(--chat-input-bg);
-  box-shadow: 0 1px 2px rgb(0 0 0 / 25%);
-  transition: transform 150ms ease;
-  animation: dtcRise 280ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
-}
-
-.dtc-cards .dtc-card:nth-child(1) {
-  animation-delay: 0ms;
-}
-
-.dtc-cards .dtc-card:nth-child(2) {
-  animation-delay: 60ms;
-}
-
-.dtc-cards .dtc-card:nth-child(3) {
-  animation-delay: 120ms;
-}
-
-.dtc-card:hover {
-  background: rgb(255 255 255 / 8%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgb(0 0 0 / 30%);
-}
-
-.dtc-card:active {
-  transform: translateY(0) scale(0.98);
-}
-
-.dtc-card__ico {
-  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+.dtc-suggest__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   height: 32px;
-  border-radius: 4px;
-  background: rgb(255 255 255 / 6%);
-  color: var(--ink-2);
-}
-
-.dtc-card__txt {
-  margin: 0;
-  flex: 1;
+  padding: 0 12px;
+  border: 1px solid var(--chat-input-border);
+  border-radius: var(--chat-r-lg);
   color: var(--sol-muted);
-  font-size: 0.78rem;
-  line-height: 1.55;
-  text-wrap: pretty;
+  background: transparent;
+  font: inherit;
+  font-size: var(--chat-t-base);
+  font-weight: 450;
+  white-space: nowrap;
+  cursor: pointer;
+  transform-origin: center;
+  transition:
+    border-color 150ms ease,
+    color 150ms ease,
+    background 150ms ease,
+    transform 100ms ease;
+  animation: dtcRise 260ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 
-.dtc-card__tag {
+.dtc-suggest__chip svg {
   color: var(--sol-faint);
-  font: 600 10px var(--dt-mono);
-  letter-spacing: 0.08em;
-  text-transform: lowercase;
+  transition: color 150ms ease;
+}
+
+.dtc-suggest__chip:hover {
+  border-color: var(--chat-input-border-hover);
+  color: var(--sol-text);
+  background: var(--chat-input-bg);
+}
+
+.dtc-suggest__chip:hover svg {
+  color: var(--sol-text);
+}
+
+.dtc-suggest__chip:active {
+  transform: scale(0.97);
+}
+
+.dtc-suggest__chip:focus-visible {
+  outline: 2px solid var(--sol-primary);
+  outline-offset: 1px;
 }
 
 .dtc-dock {
@@ -4927,85 +4871,99 @@ legend.cmd-group {
 }
 
 .dtc-composer {
-  /* the composer hero (the zcode doctrine): the one content surface that
-   * earns the 2xl radius — the sanctioned exception the reference standard
-   * pins. the shell is a bordered input well reading the chat input
-   * tokens, the hover walks the border one step, the focus ring rides the
-   * windows accent at 70 percent, and the surface never lifts (the flat
-   * law: washes, never elevation theater). */
+  /* the composer region (the zcode stacked grammar): the region is the
+   * column — the honest notice strip rides above, the well carries the
+   * textarea and the control bar UNDER it inside one shell. the region
+   * itself owns no paint; the well is the sanctioned 2xl surface. */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dtc-well {
+  /* the hero well (the zcode input shell): the one content surface that
+   * earns the 2xl radius — the bordered input reading the chat input
+   * tokens, the hover walks the border one step, the focus ring rides
+   * the windows accent at 70 percent, and the surface never lifts (the
+   * flat law: the t3code whisper shadow, never elevation theater). */
   padding: 12px;
   border: 1px solid var(--chat-input-border);
   border-radius: var(--chat-r-2xl);
   background: var(--chat-input-bg);
-  box-shadow: 0 8px 24px rgb(0 0 0 / 22%);
+  box-shadow: 0 12px 28px -18px rgb(0 0 0 / 40%);
   transition:
     border-color 150ms ease,
     background-color 150ms ease;
 }
 
-.dtc-composer:hover {
+.dtc-well:hover {
   border-color: var(--chat-input-border-hover);
 }
 
-.dtc-composer:focus-within {
+.dtc-well:focus-within {
   border-color: var(--chat-input-border-focus);
   background: var(--chat-input-bg-focus);
 }
 
-.dtc-microrow {
+/* the well controls (the zcode toolbar grammar): the compact labeled
+ * controls of the bar's tail cluster — icon + label + chevron at the
+ * control height, the lg radius (the 2xl parent steps the controls to
+ * lg), the quiet ghost that lifts on hover. the flyout anchors above
+ * the control and opens over the input (side top, the reference law). */
+.dtc-wctrl {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 2px 6px 6px;
-  color: var(--sol-faint);
-  font: 500 10px var(--dt-mono);
-  letter-spacing: 0.08em;
-  text-transform: lowercase;
+  display: inline-flex;
+  flex: none;
 }
 
-.dtc-microrow .dtc-model {
-  color: var(--sol-muted);
-}
-
-/* the model picker (rung 124): the microrow's model chip — quiet mono text
- * that lifts to the ink on hover, carrying the chevron that rotates with
- * the open state. */
-.dtc-modelbtn {
+.dtc-wctrl__btn {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 2px 6px;
-  margin: -2px 0 -2px -6px;
+  gap: 5px;
+  height: 28px;
+  padding: 0 8px;
   border: 0;
-  border-radius: 4px;
+  border-radius: var(--chat-r-lg);
+  color: var(--sol-muted);
   background: transparent;
-  color: var(--sol-faint);
   font: inherit;
-  letter-spacing: inherit;
-  text-transform: inherit;
+  font-size: var(--chat-t-caption);
+  font-weight: 500;
+  white-space: nowrap;
   cursor: pointer;
   transition:
     color 120ms ease,
     background 120ms ease;
 }
 
-.dtc-modelbtn:hover {
-  color: var(--sol-muted);
-  background: rgb(255 255 255 / 5%);
+.dtc-wctrl__btn:hover {
+  color: var(--sol-text);
+  background: color-mix(in srgb, var(--sol-text) 7%, transparent);
 }
 
-.dtc-modelbtn:focus-visible {
+.dtc-wctrl__btn:focus-visible {
   outline: 2px solid var(--sol-primary);
   outline-offset: 1px;
 }
 
-.dtc-modelbtn__chev {
+.dtc-wctrl__btn[aria-expanded="true"] {
+  color: var(--sol-text);
+  background: color-mix(in srgb, var(--sol-text) 7%, transparent);
+}
+
+.dtc-wctrl__label {
+  overflow: hidden;
+  max-width: 22ch;
+  text-overflow: ellipsis;
+}
+
+.dtc-wctrl__chev {
+  flex: none;
+  color: var(--sol-faint);
   transition: transform 160ms var(--ease-fluent);
 }
 
-.dtc-modelbtn[aria-expanded="true"] .dtc-modelbtn__chev {
+.dtc-wctrl__btn[aria-expanded="true"] .dtc-wctrl__chev {
   transform: rotate(180deg);
 }
 
@@ -5122,38 +5080,24 @@ legend.cmd-group {
   letter-spacing: 0.03em;
 }
 
-/* the microrow's right cluster (rung 125): the thinking chip and the token
- * meter sit together at the row's end, never wrapping. */
-.dtc-microrow__right {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-left: auto;
-}
-
 /* the token meter (rung 125): the quiet estimate — mono, the ≈ mark
- * always riding it, the tooltip saying exactly what it is. */
+ * always riding it, the tooltip saying exactly what it is. rides the
+ * tail cluster between the effort control and the signal key. */
 .dtc-meter {
   flex: none;
   color: var(--sol-faint);
+  font: 500 var(--chat-t-xs) var(--dt-mono);
+  letter-spacing: 0.05em;
   font-variant-numeric: tabular-nums;
   cursor: help;
 }
 
-.dtc-inner {
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  padding: 2px 4px 2px 8px;
-}
-
-.dtc-inner textarea {
-  flex: 1;
-  min-width: 0;
-  min-height: 36px;
+.dtc-well__input {
+  display: block;
+  width: 100%;
+  min-height: 44px;
   max-height: 140px;
-  padding: 8px 0;
+  padding: 0 2px;
   border: 0;
   background: transparent;
   color: var(--sol-text);
@@ -5164,20 +5108,20 @@ legend.cmd-group {
   outline: none;
 }
 
-.dtc-inner textarea::placeholder {
+.dtc-well__input::placeholder {
   color: var(--sol-faint);
 }
 
 .dtc-send {
-  /* the signal key: the one accent control of the surface — the windows
-   * accent (#4cc2ff dark, #0067c0 light) with its ink, the full circle
-   * (the sanctioned pill class: deliberate circles only), the press walk
-   * the fluent exit curve. */
+  /* the signal key (the reference grammar): the 32px circle on the
+   * windows accent (#4cc2ff dark, #0067c0 light) with its ink and the
+   * up-arrow glyph — the one accent control of the surface, closing the
+   * tail cluster; the press walks the fluent exit curve. */
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 32px;
+  height: 32px;
   flex: none;
   border: 0;
   border-radius: 999px;
@@ -5186,11 +5130,12 @@ legend.cmd-group {
   transform-origin: center;
   transition:
     transform 100ms var(--ease-fluent),
-    opacity 150ms ease;
+    opacity 150ms ease,
+    background 150ms ease;
 }
 
 .dtc-send:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--sol-primary) 84%, white);
+  background: color-mix(in srgb, var(--win-accent) 88%, white);
 }
 
 .dtc-send:active:not(:disabled) {
@@ -5202,11 +5147,40 @@ legend.cmd-group {
   cursor: not-allowed;
 }
 
-.dtc-pills {
+/* the control bar under the input (the zcode stacked grammar): one bar
+ * inside the well — the tool chips ride left (scrolling when narrow),
+ * the model/effort/meter cluster and the signal key ride right. */
+.dtc-wellbar {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 10px 0 0;
+  min-width: 0;
+}
+
+.dtc-wellbar__lead {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.dtc-wellbar__tail {
+  display: inline-flex;
+  align-items: center;
   gap: 6px;
-  margin: 6px 0 2px;
+  flex: none;
+}
+
+/* the tool chips (the zcode toolbar controls): the compact toggles of
+ * the bar's lead cluster — the control height, the lg radius, the
+ * pressed state the accent wash, the quiet ghost at rest. */
+.dtc-chips {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
   padding: 0;
   border: 0;
   min-inline-size: 0;
@@ -5214,169 +5188,84 @@ legend.cmd-group {
   scrollbar-width: none;
 }
 
-.dtc-pills::-webkit-scrollbar {
+.dtc-chips::-webkit-scrollbar {
   display: none;
 }
 
-.dtc-pill {
+.dtc-chip {
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   flex: none;
   height: 28px;
   padding: 0 9px;
-  border: 1px solid rgb(255 255 255 / 7%);
-  border-radius: 4px;
+  border: 0;
+  border-radius: var(--chat-r-lg);
   color: var(--sol-muted);
-  background: rgb(255 255 255 / 4%);
+  background: transparent;
   font: inherit;
-  font-size: 0.74rem;
+  font-size: var(--chat-t-caption);
   font-weight: 500;
   white-space: nowrap;
+  cursor: pointer;
   transform-origin: center;
-  transition: transform 100ms ease-in-out;
-}
-
-.dtc-pill::after {
-  content: "";
-  position: absolute;
-  inset: -6px -4px;
-}
-
-.dtc-pill::before {
-  content: "";
-  display: block;
-  width: 3px;
-  height: 3px;
-  flex: none;
-  border-radius: 50%;
-  background: var(--signal-2);
-  opacity: 0;
-  transform: scale(0.5);
   transition:
-    opacity 150ms ease,
-    transform 150ms ease;
+    transform 100ms ease-in-out,
+    color 120ms ease,
+    background 120ms ease;
 }
 
-.dtc-pill svg {
+.dtc-chip svg {
   color: var(--sol-faint);
+  transition: color 120ms ease;
 }
 
-.dtc-pill:hover {
+.dtc-chip:hover {
   color: var(--sol-text);
-  border-color: rgb(255 255 255 / 14%);
-  background: rgb(255 255 255 / 8%);
+  background: color-mix(in srgb, var(--sol-text) 7%, transparent);
 }
 
-.dtc-pill:hover svg {
+.dtc-chip:hover svg {
   color: var(--sol-text);
 }
 
-.dtc-pill:active {
+.dtc-chip:active {
   transform: scale(0.96);
 }
 
-.dtc-pill[aria-pressed="true"] {
+.dtc-chip:focus-visible {
+  outline: 2px solid var(--sol-primary);
+  outline-offset: 1px;
+}
+
+.dtc-chip[aria-pressed="true"] {
   color: var(--sol-text);
-  border-color: rgb(255 255 255 / 14%);
-  background: rgb(255 255 255 / 12%);
+  background: color-mix(in srgb, var(--sol-primary) 12%, transparent);
 }
 
-.dtc-pill[aria-pressed="true"] svg {
-  color: var(--signal);
+.dtc-chip[aria-pressed="true"] svg {
+  color: var(--sol-primary);
 }
 
-.dtc-pill[aria-pressed="true"]::before {
-  opacity: 1;
-  transform: scale(1);
-}
-
-/* the pills row wrapper: the mode pills scroll on the left, the sandbox
- * action chip docks the row end behind a hairline separator — an action,
- * not a mode (the pane it opens carries its own execution surface) */
-.dtc-pillrow {
-  /* the control bar under the input (the zcode composer grammar): the
-   * tool chips ride left, the model/effort/meter cluster rides right —
-   * one bar, space-between, no divider (the shell owns the edges). */
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin: 8px 0 0;
-  min-width: 0;
-}
-
-.dtc-pillrow .dtc-pills {
-  flex: 1;
-  margin: 0;
-  min-width: 0;
-}
-
-/* the microrow bar variant: the model cluster inside the control bar —
- * position relative keeps the flyouts anchored to the bar, the cluster
- * never wraps, the mono voice rides the caption step. */
-.dtc-microrow--bar {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  flex: none;
-  padding: 0 2px;
-  color: var(--sol-faint);
-  font: 500 var(--chat-t-caption) var(--dt-mono);
-  letter-spacing: 0.06em;
-  text-transform: lowercase;
-  white-space: nowrap;
-}
-
-.dtc-pills--action {
-  flex: none;
-  margin: 0;
-  padding-left: 8px;
-  border-left: 1px solid rgb(255 255 255 / 10%);
-}
-
-/* the sandbox action chip: the pressed state answers the pane (aria-pressed
- * rides the open state) and the running dot lights while the engine runs —
- * the leather-ember of the saddle family marks the identity, the dot stays
- * the running green */
-.dtc-pill--sb {
-  border-color: rgb(232 111 45 / 32%);
-}
-
-.dtc-pill--sb::before {
-  display: none;
-}
-
-.dtc-pill--sb svg {
+/* the sandbox action chip (the lead cluster's door): the pressed state
+ * answers the pane (aria-pressed rides the open state) and the running
+ * dot lights while the engine runs — the leather-ember of the saddle
+ * family marks the identity, the dot stays the running green */
+.dtc-chip--sb svg {
   color: #e86f2d;
 }
 
-.dtc-pill--sb:hover {
-  border-color: rgb(232 111 45 / 46%);
-  background: rgb(232 111 45 / 8%);
-}
-
-.dtc-pill--sb:hover svg {
-  color: #e86f2d;
-}
-
-.dtc-pill--sb:active {
-  transform: scale(0.96);
-}
-
-.dtc-pill--sb[aria-pressed="true"] {
-  color: var(--sol-text);
-  border-color: rgb(232 111 45 / 46%);
+.dtc-chip--sb:hover {
   background: rgb(232 111 45 / 10%);
 }
 
-.dtc-pill--sb[aria-pressed="true"] svg {
-  color: #e86f2d;
+.dtc-chip--sb[aria-pressed="true"] {
+  color: var(--sol-text);
+  background: rgb(232 111 45 / 12%);
 }
 
-.dtc-pill--sb__dot {
+.dtc-chip--sb__dot {
   width: 5px;
   height: 5px;
   flex: none;
@@ -5387,63 +5276,52 @@ legend.cmd-group {
 }
 
 .dtc-turn {
+  /* the timeline row (the reference grammar): no avatars — the turn is a
+   * full-width column inside the bounded reading column; the user message
+   * right-aligns within it, the assistant speaks flat on the floor. */
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
+  flex-direction: column;
+  gap: 4px;
   width: 100%;
   max-width: 48rem;
   margin: 0 auto;
-}
-
-.dtc-turn.user {
-  flex-direction: row-reverse;
-}
-
-.dtc-avatar {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  flex: none;
-  border-radius: 8px;
-  color: var(--ink-2);
-  background: rgb(255 255 255 / 6%);
-}
-
-.dtc-avatar__glyph {
-  color: var(--sol-muted);
-  font: 600 9px var(--dt-mono);
-  letter-spacing: 0.08em;
+  padding: 10px 0;
 }
 
 .dtc-turn__stack {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   min-width: 0;
-  max-width: calc(100% - 48px);
+  max-width: 100%;
 }
 
 .dtc-turn.user .dtc-turn__stack {
   align-items: flex-end;
+  max-width: min(100%, 42rem);
 }
 
 .dtc-bubble {
-  padding: 2px 0;
   font-size: var(--chat-t-base);
   line-height: 1.6;
   overflow-wrap: anywhere;
 }
 
-.dtc-turn.user .dtc-bubble {
-  /* the trajectory user surface (the zcode semantics): the accent surface
-   * wash — the user hue at 12 percent under the hairline, xl radius (the
-   * first visible rounded container of the thread region), the flat law
-   * (no elevation on content, the hairline alone draws the edge). */
+.dtc-bubble--assistant {
+  /* the synara law: the zero-contrast canvas IS the assistant surface —
+   * flat, no fill, no edge. */
+  padding: 0 2px;
+}
+
+.dtc-bubble--user {
+  /* the trajectory user surface (the zcode semantics): the accent wash —
+   * the user hue at 12 percent under the hairline, xl radius with the sm
+   * tail corner on the top-right (the reference bubble grammar). */
+  max-width: 100%;
   padding: 10px 14px;
   border: 1px solid color-mix(in srgb, var(--sol-traj-user) 24%, transparent);
   border-radius: var(--chat-r-xl);
+  border-top-right-radius: var(--chat-r-sm);
   background: color-mix(in srgb, var(--sol-traj-user) 12%, transparent);
 }
 
@@ -6025,15 +5903,17 @@ legend.cmd-group {
   color: color-mix(in srgb, var(--sol-muted) 85%, var(--sol-primary));
 }
 
-/* the day separator (rung 121): the timeline divider between turns of
- * different days — the hairline with the locale label chip riding it
- * (mono lowercase, the meta grammar), breathing above the day's first
- * turn. */
+/* the day separator (the t3code divider grammar): the timeline divider
+ * between turns of different days — twin hairline rules carrying the
+ * tiny centered label between them (mono lowercase, the meta voice),
+ * never a heavy pill band. */
 .dtc-daysep {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin: 18px 0 6px;
+  gap: 8px;
+  width: 100%;
+  max-width: 48rem;
+  margin: 22px auto 8px;
 }
 
 .dtc-daysep::before,
@@ -6041,16 +5921,12 @@ legend.cmd-group {
   content: "";
   flex: 1;
   height: 1px;
-  background: color-mix(in srgb, var(--sol-muted) 22%, transparent);
+  background: color-mix(in srgb, var(--sol-muted) 18%, transparent);
 }
 
 .dtc-daysep__label {
-  padding: 2px 10px;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--sol-muted) 25%, transparent);
-  background: color-mix(in srgb, var(--sol-bg-2) 70%, transparent);
-  color: var(--sol-muted);
-  font: 500 10px var(--dt-mono);
+  color: var(--sol-faint);
+  font: 500 var(--chat-t-xs) var(--dt-mono);
   letter-spacing: 0.1em;
   text-transform: lowercase;
   white-space: nowrap;
@@ -6586,10 +6462,8 @@ legend.cmd-group {
 }
 
 @media (max-width: 1080px) {
-  .dtc-cards {
-    grid-template-columns: 1fr;
+  .dtc-suggest {
     max-width: 30rem;
-    margin: 0 auto;
   }
 }
 
@@ -6627,11 +6501,11 @@ legend.cmd-group {
   }
 
   .dtc-turn__stack {
-    max-width: calc(100% - 46px);
+    max-width: 100%;
   }
 
-  .dtc-microrow span:first-child {
-    display: none;
+  .dtc-turn.user .dtc-turn__stack {
+    max-width: 100%;
   }
 
   .dtc-session {
@@ -6670,8 +6544,7 @@ legend.cmd-group {
     -webkit-backdrop-filter: none;
   }
 
-  .dtc-composer,
-  .dtc-card,
+  .dtc-well,
   .dtc-cog {
     background: rgb(255 255 255 / 6%);
   }
@@ -7149,10 +7022,17 @@ legend.cmd-group {
 }
 
 .dtc-composer__notice {
+  /* the honest disconnected line (the zcode banner grammar): the slim
+   * bordered strip above the well — the lg radius, the quiet warning
+   * wash, never a floating alarm. */
   display: flex;
   align-items: center;
   gap: 7px;
-  margin: 8px 4px 0;
+  margin: 0;
+  padding: 7px 12px;
+  border: 1px solid color-mix(in srgb, var(--sol-warning) 30%, transparent);
+  border-radius: var(--chat-r-lg);
+  background: color-mix(in srgb, var(--sol-warning) 6%, transparent);
   color: var(--sol-warning);
   font: 500 var(--chat-t-sm) / 1.5 var(--dt-mono);
   letter-spacing: 0.04em;
@@ -8015,9 +7895,9 @@ tint, the grain and the fluent shadows keep their exact values */
 
 .dtc-hero,
 .dtc-thread,
-.dtc-hero__greet,
-.dtc-hero__sub,
-.dtc-cards .dtc-card {
+.dtc-welcome__greet,
+.dtc-welcome__sub,
+.dtc-suggest .dtc-suggest__chip {
   animation-duration: 250ms;
   animation-timing-function: var(--win-ease-decel);
 }
@@ -8045,7 +7925,7 @@ tint, the grain and the fluent shadows keep their exact values */
         thumb a 4px sliver in the 10px lane (3px transparent frame) that
         thickens to 6px under the pointer (win11Scroll recipe) ---- */
 
-.chat-root .dtc-pills::-webkit-scrollbar,
+.chat-root .dtc-chips::-webkit-scrollbar,
 .workspace-tabs__scroller::-webkit-scrollbar,
 .workspace-taskstrip::-webkit-scrollbar {
   display: none;
@@ -8125,7 +8005,7 @@ tint, the grain and the fluent shadows keep their exact values */
   background: rgb(0 0 0 / 9%);
 }
 
-[data-theme="light"] .dtc-composer {
+[data-theme="light"] .dtc-well {
   background: rgb(255 255 255 / 78%);
 }
 
@@ -8156,11 +8036,6 @@ tint, the grain and the fluent shadows keep their exact values */
   box-shadow:
     0 8px 28px rgb(0 0 0 / 14%),
     0 0 0 1px rgb(13 13 13 / 4%) inset;
-}
-
-[data-theme="light"] .dtc-avatar {
-  border-color: rgb(13 13 13 / 10%);
-  background: rgb(13 13 13 / 4%);
 }
 
 [data-theme="light"] .dtc-turn.user .dtc-bubble {
@@ -8213,13 +8088,9 @@ tint, the grain and the fluent shadows keep their exact values */
   outline-color: #0f172a;
 }
 
-[data-theme="light"] .dtc-pill--sb:hover,
-[data-theme="light"] .dtc-pill--sb[aria-pressed="true"] {
+[data-theme="light"] .dtc-chip--sb:hover,
+[data-theme="light"] .dtc-chip--sb[aria-pressed="true"] {
   background: rgb(232 111 45 / 12%);
-}
-
-[data-theme="light"] .dtc-pills--action {
-  border-left-color: rgb(0 0 0 / 10%);
 }
 
 @media (prefers-reduced-transparency: reduce) {
@@ -9307,108 +9178,44 @@ span[data-tile] {
 
 /* the chat redesign wave (the design.chat.references standard): this
    generation's winning definitions answer the zcode/synara/t3code
-   doctrine — the composer is the one 2xl shell (the pill dies here, the
-   prohibition list owns it), the turns ride the trajectory ramp, the
-   active indicators ride the windows accent, and every radius answers
-   the nesting ladder. */
-.dtc-composer {
-  padding: 12px;
-  border: 1px solid var(--chat-input-border);
-  border-radius: var(--chat-r-2xl);
-  background: var(--chat-input-bg);
-  box-shadow: 0 8px 24px rgb(0 0 0 / 22%);
-  transition:
-    border-color 150ms ease,
-    background-color 150ms ease;
-}
-
-.dtc-composer:hover {
-  border-color: var(--chat-input-border-hover);
-}
-
-.dtc-composer:focus-within {
-  border-color: var(--chat-input-border-focus);
-  background: var(--chat-input-bg-focus);
-}
-
-.dtc-microrow {
-  /* the bar variant owns the geometry now — the standalone microrow row
-   * retired with the composer restructure (the model cluster rides the
-   * control bar under the input, the zcode grammar). */
-  padding: 0;
-}
-
-.dtc-inner {
-  gap: 8px;
-  padding: 4px 4px 4px 8px;
-}
-
-.dtc-inner textarea {
-  min-height: 44px;
-  padding: 9px 0;
-  font-size: var(--chat-t-base);
+   doctrine — the well is the one 2xl shell carrying the control bar
+   under the input (the zcode stacked grammar), the turns ride the
+   trajectory ramp with no avatars, the suggestion chips replace the
+   card grid, and every radius answers the nesting ladder. the retired
+   selectors (microrow, inner, avatar, card, pill) die with their
+   markup — no zombie rules ride the cascade. */
+.dtc-well {
+  box-shadow: 0 12px 28px -18px rgb(0 0 0 / 40%);
 }
 
 .dtc-send {
-  width: 44px;
-  height: 44px;
+  width: 32px;
+  height: 32px;
   border-radius: 999px;
   background: var(--win-accent);
   color: var(--win-accent-ink);
 }
 
 .dtc-send:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--win-accent) 86%, white);
+  background: color-mix(in srgb, var(--win-accent) 88%, white);
 }
 
-.dtc-turn.user .dtc-bubble {
+.dtc-turn.user .dtc-bubble--user {
   padding: 10px 14px;
   border: 1px solid color-mix(in srgb, var(--sol-traj-user) 24%, transparent);
   border-radius: var(--chat-r-xl);
+  border-top-right-radius: var(--chat-r-sm);
   background: color-mix(in srgb, var(--sol-traj-user) 12%, transparent);
 }
 
-.dtc-turn.assistant .dtc-bubble {
-  padding: 2px 0;
+.dtc-turn.assistant .dtc-bubble--assistant {
+  padding: 0 2px;
   border: 0;
   background: none;
 }
 
-.dtc-avatar {
-  border: 1px solid rgb(255 255 255 / 10%);
-  border-radius: var(--chat-r-lg);
-  background: rgb(255 255 255 / 4%);
-}
-
-.dtc-turn.user .dtc-avatar {
-  color: var(--sol-traj-user);
-  border-color: color-mix(in srgb, var(--sol-traj-user) 30%, transparent);
-  background: color-mix(in srgb, var(--sol-traj-user) 10%, transparent);
-}
-
-.dtc-turn.assistant .dtc-avatar {
-  color: var(--sol-traj-assistant);
-}
-
-.dtc-hero__word {
+.dtc-chip[aria-pressed="true"] svg {
   color: var(--dtv3-sig);
-}
-
-.dtc-card {
-  border-radius: var(--chat-r-lg);
-}
-
-.dtc-card__ico {
-  color: var(--dtv3-sig);
-}
-
-.dtc-pill[aria-pressed="true"] svg {
-  color: var(--dtv3-sig);
-}
-
-.dtc-item.is-active::before,
-.dtc-nav[aria-current="page"]::before {
-  background: var(--win-accent);
 }
 
 .dtc-nav[aria-current="page"] svg {

@@ -1,14 +1,19 @@
 /**
- * turn.tsx — one conversation turn in the Windows grammar: the user message
- * sits in an 8px cell on the right, the assistant speaks flat on the floor,
- * 36px 8px-corner avatars, the markdown renderer beside it (markdown.tsx),
- * the collapsible cognition drawer styled as a win11 expander for
- * reasoning_content, and the meta line with time and model. The user turn
- * carries the edit affordance (the cascading checkpoint law): the pencil
- * rides the hover, the field is the win11 8px well with the accent underline,
- * and saving hands the edit to the branch logic in chatstate. Also exports
- * the functional generation status row (a 3px live bar) and the inline
- * error row with a win11 retry — the same contract as the os AuraChat.
+ * turn.tsx — one conversation turn in the reference grammar (the zcode
+ * timeline, the t3code rows): NO avatars — the user message is a
+ * right-aligned bubble in the trajectory user wash (the xl radius with
+ * the sm tail corner on its top-right, the hairline edge), the assistant
+ * speaks flat on the floor (the zero-contrast canvas IS the assistant
+ * surface — the synara law), the markdown renderer beside it
+ * (markdown.tsx), the collapsible cognition drawer owning the reasoning
+ * violet, and the meta line (time · model, the action keys) answering the
+ * hover — opacity 0 until the row lifts, the way both references hold
+ * their action rails. The user turn carries the edit affordance (the
+ * cascading checkpoint law): the pencil rides the hover, the field is
+ * the win11 8px well with the accent underline, and saving hands the
+ * edit to the branch logic in chatstate. Also exports the functional
+ * generation status row (a 3px live bar) and the inline error row with a
+ * win11 retry — the same contract as the os AuraChat.
  */
 import {
   ArrowClockwiseRegular as ArrowClockwise,
@@ -23,7 +28,6 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { type ChatTurn, cx, fmtTime } from "../../chatstate.ts";
 import { copyText, Markdown } from "./markdown.tsx";
-import { SolBotIcon } from "./solboticon.tsx";
 
 /** fmtFull — the hover timestamp of the meta line: the full locale
  * date-time (title attribute), honest on every turn. */
@@ -42,14 +46,18 @@ function fmtFull(at: number): string {
   }
 }
 
-/** Cognition — the reasoning drawer of the assistant turn. */
+/** Cognition — the reasoning drawer of the assistant turn: the trajectory
+ * reasoning violet owns the expander (the head glyph, the label, the
+ * rotating chevron) and the body reads the trace on the violet-tinted
+ * quiet. Collapsed by default — the reference law: the reasoning never
+ * shouts over the answer. */
 function Cognition({ text }: { text: string }) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   return (
     <div className="dtc-cog" data-open={open ? "true" : "false"}>
       <button type="button" className="dtc-cog__head" aria-expanded={open} onClick={() => setOpen((v) => !v)}>
         <Lightbulb fontSize={13} aria-hidden="true" />
-        <span>Cognition</span>
+        <span>Reasoning</span>
         <ChevronDown fontSize={13} aria-hidden="true" className="dtc-cog__chev" />
       </button>
       {open ? <p className="dtc-cog__body">{text}</p> : null}
@@ -58,16 +66,16 @@ function Cognition({ text }: { text: string }) {
 }
 
 /**
- * Turn — one message row: avatar, cognition drawer (assistant), bubble, meta
- * line. `fresh` marks the turn that just arrived (the chat page sets it on
- * the last turn only); the theme layer rises it 240ms and never replays the
- * history — the class is inert under reduced motion. `onEdit` arms the user
- * turn with the checkpoint affordance: the pencil appears on hover/focus,
- * the field swaps the bubble while editing, and the save hands the new text
- * to the caller (the branch round answers from the edit). `onRegenerate`
- * arms the last assistant turn with the competitor grammar: the round
- * arrow re-answers the same user turn (the old answer leaves the floor),
- * and a stopped partial carries its honest · stopped mark in the meta line.
+ * Turn — one timeline row in the reference grammar. `fresh` marks the
+ * turn that just arrived (the chat page sets it on the last turn only);
+ * the theme layer rises it 240ms and never replays the history — the
+ * class is inert under reduced motion. `onEdit` arms the user turn with
+ * the checkpoint affordance: the pencil appears on hover/focus, the field
+ * swaps the bubble while editing, and the save hands the new text to the
+ * caller (the branch round answers from the edit). `onRegenerate` arms
+ * the last assistant turn with the competitor grammar: the round arrow
+ * re-answers the same user turn (the old answer leaves the floor), and a
+ * stopped partial carries its honest · stopped mark in the meta line.
  * `onDelete` arms every turn with the row delete: the message leaves the
  * conversation (the caller commits the session without it). The copy key
  * rides every turn — the icon morphs to the checkmark on success (the
@@ -127,9 +135,6 @@ export function Turn({
   if (editable && editing) {
     return (
       <article className={cx("dtc-turn", "user", "is-editing")} aria-label="Editing message">
-        <span className="dtc-avatar" aria-hidden="true">
-          <span className="dtc-avatar__glyph">YOU</span>
-        </span>
         <form
           className="dtc-turn__stack dtc-editform"
           onSubmit={(e) => {
@@ -189,15 +194,12 @@ export function Turn({
       className={cx("dtc-turn", assistant ? "assistant" : "user", fresh && "is-fresh")}
       onMouseLeave={() => undefined}
     >
-      <span className="dtc-avatar" aria-hidden="true">
-        {assistant ? <SolBotIcon size={22} /> : <span className="dtc-avatar__glyph">YOU</span>}
-      </span>
       <div className="dtc-turn__stack">
         {assistant && turn.thought ? <Cognition text={turn.thought} /> : null}
-        <div className="dtc-bubble">
+        <div className={cx("dtc-bubble", assistant ? "dtc-bubble--assistant" : "dtc-bubble--user")}>
           {assistant ? <Markdown source={turn.content} /> : <p className="dtc-md dtc-md--plain">{turn.content}</p>}
         </div>
-        <p className="dtc-meta">
+        <p className={cx("dtc-meta", !assistant && "dtc-meta--user")}>
           <span className="dtc-meta__time" title={fmtFull(turn.at)}>
             {fmtTime(turn.at)}
           </span>{" "}
@@ -301,8 +303,9 @@ export function dayLabel(at: number): string {
 }
 
 /** DaySeparator — the timeline divider between turns of different days:
- * the hairline with the locale label chip (mono lowercase, the meta
- * grammar). Exported for the thread floor and any future surface. */
+ * the reference divider grammar (the t3code rules) — twin hairline rules
+ * carrying the tiny centered label between them, never a heavy band.
+ * Exported for the thread floor and any future surface. */
 export function DaySeparator({ at }: { at: number }) {
   return (
     <div className="dtc-daysep" role="separator" aria-label={dayLabel(at)}>
