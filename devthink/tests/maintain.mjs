@@ -185,7 +185,14 @@ const edits = [
       .replace(
         /ARG NODE_IMAGE="node:\d+(?:\.\d+){0,2}-bookworm-slim"/,
         `ARG NODE_IMAGE="node:${nodepin}-bookworm-slim"`,
-      ),
+      )
+      /* the runtime version arg walks with the same pin: the nodefetch stage
+         extracts the tarball of the exact baseline the .nvmrc carries, and the
+         containerpack and runtimepolicy gates read the arg against it — the
+         2.0.133 rung exposed the lane was missing (the arg stayed 26.12.0
+         while every other pin walked to 26.12.1 and the validation refused
+         the rung) */
+      .replace(/ARG NODE_RUNTIME_VERSION="\d+(?:\.\d+){0,2}"/, `ARG NODE_RUNTIME_VERSION="${nodepin}"`),
   ],
   ...(await Promise.all(
     workflowpins.map(async ([file, replaces]) => {
