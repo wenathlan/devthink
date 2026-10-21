@@ -1,4 +1,4 @@
-# debonair 2.0.132 — THE SITE CONTAINER FILE
+# debonair 2.0.133 — THE SITE CONTAINER FILE
 #
 # The family container doctrine in the sol shape: one versioned static
 # container per site. The sol theme builds inside the container — stage one
@@ -8,9 +8,9 @@
 # registry lanes pass it at build time, nothing is hardcoded beside the
 # stamp.
 
-FROM node:26-alpine@sha256:6f08a523443ddedf52941874c203475b0ad503e859ad70cb26ab8be9a517dbd5 AS solbuild
+FROM node:26-alpine@sha256:9bd229b644e391df00fb989efa732335aefc6170a05d8c163c5c8ca9870da401 AS solbuild
 
-ARG DEBONAIR_VERSION=2.0.132
+ARG DEBONAIR_VERSION=2.0.133
 
 WORKDIR /src
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./

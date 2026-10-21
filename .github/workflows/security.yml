@@ -58,7 +58,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v7.1.0
         with:
-          node-version: 26.12.0
+          node-version: 26.12.1
           cache: pnpm
           cache-dependency-path: devthink/pnpm-lock.yaml
       - name: Set up bun
@@ -275,7 +275,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v7.1.0
         with:
-          node-version: 26.12.0
+          node-version: 26.12.1
       - name: Run biome security rule group
         shell: bash
         run: |

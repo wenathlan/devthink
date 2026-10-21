@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# devthink 2.0.132 — THE ONE CONTAINER FILE (the saddle standard: a single
+# devthink 2.0.133 — THE ONE CONTAINER FILE (the saddle standard: a single
 # Dockerfile manages every container concern of the repository, compose is
 # absorbed, and Containerfile is the same format under the OCI name —
 # Dockerfile is the universally compatible spelling, so it is the one file
@@ -90,7 +90,7 @@
 # assets (SHA256SUMS), never written into the sources.
 #
 # build args (all overridable, workflow-friendly):
-#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.132
+#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.133
 #   DEVTHINK_REVISION  git sha baked into the OCI revision label
 #
 # runtime contract (the compose.yml stack is MERGED INTO this file: the
@@ -132,7 +132,7 @@
 #     --tmpfs /tmp:size=2g,mode=1777 \
 #     -e DEVTHINK_MEMORY_ENGINE=ram -e DEVTHINK_PLATFORM= -e DEVTHINK_CDN_URL= \
 #     -p 31080:8080 \
-#     ghcr.io/wenathlan/devthink:2.0.132
+#     ghcr.io/wenathlan/devthink:2.0.133
 #
 #   network isolation notes: `--network none` is the default posture — the
 #   site, the relay and the loopback mcp listener all answer inside the
@@ -160,7 +160,7 @@
 # text, and the container-scan heuristics parse any token containing '='
 # as a candidate credential pair.
 
-ARG NODE_IMAGE="node:26.12.0-bookworm-slim"
+ARG NODE_IMAGE="node:26.12.1-bookworm-slim"
 
 # the runtime node version of the five-architecture surface (the 2.0.16
 # pass): the nodejs.org distribution answers official linux tarballs for
@@ -174,7 +174,7 @@ ARG NODE_IMAGE="node:26.12.0-bookworm-slim"
 # Dockerfile always anticipated in its nodesource case arm. the version
 # pins to the .nvmrc/engines floor the toolchain stages carry: the
 # toolchain only builds, the runtime serves the same line.
-ARG NODE_RUNTIME_VERSION="26.12.0"
+ARG NODE_RUNTIME_VERSION="26.12.1"
 
 # ---------------------------------------------------------------------------
 # stage 1: deps (the pinned toolchain and the frozen dependency layer)
@@ -383,7 +383,7 @@ RUN set -eux; \
     test -x /out/devthink
 
 FROM gcr.io/distroless/cc-debian12:nonroot@sha256:9dac0a79194e45a7da0158a9c6da57b217585af0786db3845d1f0ec1a0dd182f AS binary-runtime
-ARG DEVTHINK_VERSION=2.0.132
+ARG DEVTHINK_VERSION=2.0.133
 ARG DEVTHINK_REVISION=unknown
 
 # OCI labels of the DevThink identity for the binary surface.
@@ -446,8 +446,8 @@ RUN set -eux; \
 # the self hosting runner — the default build target, the last stage of
 # the file)
 # ---------------------------------------------------------------------------
-FROM debian:trixie-slim@sha256:a29215f6a35e51e22adffa17f89e9d2ef06214e64a2bad10d765c46aea49f11f AS runtime
-ARG DEVTHINK_VERSION=2.0.132
+FROM debian:trixie-slim@sha256:62bd423aeee912639ca8ee681c2b762cb3e25137e0a92b20be455898a9f034ad AS runtime
+ARG DEVTHINK_VERSION=2.0.133
 ARG DEVTHINK_REVISION=unknown
 # the node runtime of the five-architecture surface: the verified tarball
 # the nodefetch stage extracted lands under /usr/local (bin/node, the npm
