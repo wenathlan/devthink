@@ -1006,3 +1006,155 @@ the eradication inside every wave, the gates before every close.
 - [ ] 948. answer the final gate ladder green from tsc to git.
 - [ ] 949. declare the house closed in the changelog with the asset count.
 - [ ] 950. start the next house at .0 with the foundation intact.
+
+## the calendar (the dated waves of the 950)
+
+the owner ordered the todo list to carry more than one hundred actions and
+more than one hundred dates. the 950 steps above are the actions; the waves
+below are the dates, one wave per day, ten steps per wave, every date in the
+owner timezone (america/sao_paulo). a wave closes only with its steps green,
+its gates run and its landing signed; a wave that slips pushes the calendar,
+the calendar never abandons a wave.
+
+### phase 1 — the foundation: the inventory and the css ground truth
+
+- [ ] wave 001 — 2026-10-21 — steps 001 to 010.
+- [ ] wave 002 — 2026-10-22 — steps 011 to 020.
+- [ ] wave 003 — 2026-10-23 — steps 021 to 030.
+- [ ] wave 004 — 2026-10-24 — steps 031 to 040.
+- [ ] wave 005 — 2026-10-25 — steps 041 to 050.
+- [ ] wave 006 — 2026-10-26 — steps 051 to 060.
+
+### phase 2 — the shell: taskbar, windows, alt-tab, menus and the desktop
+
+- [ ] wave 007 — 2026-10-27 — steps 061 to 070.
+- [ ] wave 008 — 2026-10-28 — steps 071 to 080.
+- [ ] wave 009 — 2026-10-29 — steps 081 to 090.
+- [ ] wave 010 — 2026-10-30 — steps 091 to 100.
+- [ ] wave 011 — 2026-10-31 — steps 101 to 110.
+- [ ] wave 012 — 2026-11-01 — steps 111 to 120.
+- [ ] wave 013 — 2026-11-02 — steps 121 to 130.
+
+### phase 3 — the flow: entrygate, intro, onboarding and home
+
+- [ ] wave 014 — 2026-11-03 — steps 131 to 140.
+- [ ] wave 015 — 2026-11-04 — steps 141 to 150.
+- [ ] wave 016 — 2026-11-05 — steps 151 to 160.
+- [ ] wave 017 — 2026-11-06 — steps 161 to 170.
+
+### phase 4 — the 35 native pages, eight steps each
+
+- [ ] wave 018 — 2026-11-07 — steps 171 to 180.
+- [ ] wave 019 — 2026-11-08 — steps 181 to 190.
+- [ ] wave 020 — 2026-11-09 — steps 191 to 200.
+- [ ] wave 021 — 2026-11-10 — steps 201 to 210.
+- [ ] wave 022 — 2026-11-11 — steps 211 to 220.
+- [ ] wave 023 — 2026-11-12 — steps 221 to 230.
+- [ ] wave 024 — 2026-11-13 — steps 231 to 240.
+- [ ] wave 025 — 2026-11-14 — steps 241 to 250.
+- [ ] wave 026 — 2026-11-15 — steps 251 to 260.
+- [ ] wave 027 — 2026-11-16 — steps 261 to 270.
+- [ ] wave 028 — 2026-11-17 — steps 271 to 280.
+- [ ] wave 029 — 2026-11-18 — steps 281 to 290.
+- [ ] wave 030 — 2026-11-19 — steps 291 to 300.
+- [ ] wave 031 — 2026-11-20 — steps 301 to 310.
+- [ ] wave 032 — 2026-11-21 — steps 311 to 320.
+- [ ] wave 033 — 2026-11-22 — steps 321 to 330.
+- [ ] wave 034 — 2026-11-23 — steps 331 to 340.
+- [ ] wave 035 — 2026-11-24 — steps 341 to 350.
+- [ ] wave 036 — 2026-11-25 — steps 351 to 360.
+- [ ] wave 037 — 2026-11-26 — steps 361 to 370.
+- [ ] wave 038 — 2026-11-27 — steps 371 to 380.
+- [ ] wave 039 — 2026-11-28 — steps 381 to 390.
+- [ ] wave 040 — 2026-11-29 — steps 391 to 400.
+- [ ] wave 041 — 2026-11-30 — steps 401 to 410.
+- [ ] wave 042 — 2026-12-01 — steps 411 to 420.
+- [ ] wave 043 — 2026-12-02 — steps 421 to 430.
+- [ ] wave 044 — 2026-12-03 — steps 431 to 440.
+- [ ] wave 045 — 2026-12-04 — steps 441 to 450.
+
+### phase 5 — the 15 engines of the manifest, six steps each
+
+- [ ] wave 046 — 2026-12-05 — steps 451 to 460.
+- [ ] wave 047 — 2026-12-06 — steps 461 to 470.
+- [ ] wave 048 — 2026-12-07 — steps 471 to 480.
+- [ ] wave 049 — 2026-12-08 — steps 481 to 490.
+- [ ] wave 050 — 2026-12-09 — steps 491 to 500.
+- [ ] wave 051 — 2026-12-10 — steps 501 to 510.
+- [ ] wave 052 — 2026-12-11 — steps 511 to 520.
+- [ ] wave 053 — 2026-12-12 — steps 521 to 530.
+- [ ] wave 054 — 2026-12-13 — steps 531 to 540.
+
+### phase 6 — the eradication e1-e20, one pattern per app
+
+- [ ] wave 055 — 2026-12-14 — steps 541 to 550.
+- [ ] wave 056 — 2026-12-15 — steps 551 to 560.
+- [ ] wave 057 — 2026-12-16 — steps 561 to 570.
+- [ ] wave 058 — 2026-12-17 — steps 571 to 580.
+- [ ] wave 059 — 2026-12-18 — steps 581 to 590.
+- [ ] wave 060 — 2026-12-19 — steps 591 to 600.
+- [ ] wave 061 — 2026-12-20 — steps 601 to 610.
+- [ ] wave 062 — 2026-12-21 — steps 611 to 620.
+- [ ] wave 063 — 2026-12-22 — steps 621 to 630.
+- [ ] wave 064 — 2026-12-23 — steps 631 to 640.
+- [ ] wave 065 — 2026-12-24 — steps 641 to 650.
+- [ ] wave 066 — 2026-12-25 — steps 651 to 660.
+- [ ] wave 067 — 2026-12-26 — steps 661 to 670.
+- [ ] wave 068 — 2026-12-27 — steps 671 to 680.
+- [ ] wave 069 — 2026-12-28 — steps 681 to 690.
+- [ ] wave 070 — 2026-12-29 — steps 691 to 700.
+- [ ] wave 071 — 2026-12-30 — steps 701 to 710.
+- [ ] wave 072 — 2026-12-31 — steps 711 to 720.
+- [ ] wave 073 — 2027-01-01 — steps 721 to 730.
+- [ ] wave 074 — 2027-01-02 — steps 731 to 740.
+- [ ] wave 075 — 2027-01-03 — steps 741 to 750.
+- [ ] wave 076 — 2027-01-04 — steps 751 to 760.
+
+### phase 7 — the ten gates of the ladder, wire and run green
+
+- [ ] wave 077 — 2027-01-05 — steps 761 to 770.
+- [ ] wave 078 — 2027-01-06 — steps 771 to 780.
+
+### phase 8 — the release: bump, zips, assets and the brave extension
+
+- [ ] wave 079 — 2027-01-07 — steps 781 to 790.
+- [ ] wave 080 — 2027-01-08 — steps 791 to 800.
+- [ ] wave 081 — 2027-01-09 — steps 801 to 810.
+
+### phase 9 — the two presentations: web document and installed stage
+
+- [ ] wave 082 — 2027-01-10 — steps 811 to 820.
+- [ ] wave 083 — 2027-01-11 — steps 821 to 830.
+- [ ] wave 084 — 2027-01-12 — steps 831 to 840.
+
+### phase 10 — the docs: the ladder, the doctrines and the guides
+
+- [ ] wave 085 — 2027-01-13 — steps 841 to 850.
+- [ ] wave 086 — 2027-01-14 — steps 851 to 860.
+- [ ] wave 087 — 2027-01-15 — steps 861 to 870.
+
+### phase 11 — the node maestro and the python lane
+
+- [ ] wave 088 — 2027-01-16 — steps 871 to 880.
+- [ ] wave 089 — 2027-01-17 — steps 881 to 890.
+- [ ] wave 090 — 2027-01-18 — steps 891 to 900.
+
+### phase 12 — the final qa and the closing
+
+- [ ] wave 091 — 2027-01-19 — steps 901 to 910.
+- [ ] wave 092 — 2027-01-20 — steps 911 to 920.
+- [ ] wave 093 — 2027-01-21 — steps 921 to 930.
+- [ ] wave 094 — 2027-01-22 — steps 931 to 940.
+- [ ] wave 095 — 2027-01-23 — steps 941 to 950.
+
+- [ ] wave 096 — 2027-01-24 — the buffer wave: the slips, the re runs, the restamps.
+- [ ] wave 097 — 2027-01-25 — the buffer wave: the slips, the re runs, the restamps.
+- [ ] wave 098 — 2027-01-26 — the buffer wave: the slips, the re runs, the restamps.
+- [ ] wave 099 — 2027-01-27 — the buffer wave: the slips, the re runs, the restamps.
+- [ ] wave 100 — 2027-01-28 — the buffer wave: the slips, the re runs, the restamps.
+- [ ] wave 101 — 2027-01-29 — the buffer wave: the slips, the re runs, the restamps.
+- [ ] wave 102 — 2027-01-30 — the closing wave: the report to the owner, the token rotation, the next house opened.
+
+total dated waves: 102. every date above is a commit day of the
+campaign; the ladder bumps per phase, the assets ride per release, and the
+signature walks with every landing through the vehicle.
