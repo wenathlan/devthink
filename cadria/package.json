@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/cadria",
-  "version": "2.0.132",
+  "version": "2.0.133",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
@@ -27,7 +27,7 @@
     "ecmascript": "^5.0.0",
     "firefox": ">=0.8.0",
     "iojs": "^1.0.0",
-    "node": ">=26.12.0 <27",
+    "node": ">=26.12.1 <27",
     "npm": "^12.1.0",
     "pnpm": "^12.6.0",
     "teleport": ">=0.2.0",

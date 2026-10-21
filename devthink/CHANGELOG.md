@@ -1,5 +1,26 @@
 # DevThink release notes
 
+## 2.0.133
+
+This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (2.0.132 plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: - "@biomejs/biome": "^2.5.15",
+- "@biomejs/biome": "^2.6.2",
+- "@types/chrome": "^0.3.5",
+- "@types/chrome": "^0.3.6",
+- "node": ">=26.12.0 <27",
+- "node": ">=26.12.1 <27",
+- "vite": "^8.3.4",
+- "vite": "^8.3.5",
+- 26.12.0
+- 26.12.1
+- ARG NODE_IMAGE="node:26.12.0-bookworm-slim"
+- ARG NODE_IMAGE="node:26.12.1-bookworm-slim"
+- ARG NODE_RUNTIME_VERSION="26.12.0"
+- ARG NODE_RUNTIME_VERSION="26.12.1"
+- FROM debian:trixie-slim@sha256:62bd423aeee912639ca8ee681c2b762cb3e25137e0a92b20be455898a9f034ad AS runtime
+- FROM debian:trixie-slim@sha256:a29215f6a35e51e22adffa17f89e9d2ef06214e64a2bad10d765c46aea49f11f AS runtime
+- node-version: 26.12.0
+- node-version: 26.12.1. The version stamps 2.0.133 land across the metadata family with the apifreeze artifact re-frozen and the permission baseline recorded, and the ladder keeps no long-lived branch behind: the automation branch of this rung squashes onto main when the verification pipeline answers green — and closes with its branch deleted when it answers red — so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way.
+
 ## 2.0.132
 
 This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (2.0.131 plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: - "react-resizable-panels": "^4.14.7",
