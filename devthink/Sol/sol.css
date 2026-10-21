@@ -4267,6 +4267,41 @@ legend.cmd-group {
   color: var(--sol-text);
   font-family: var(--dt-sans);
   background: var(--sol-bg);
+
+  /* the chat standard tokens (the design.chat.references doctrine — the
+   * zcode, synara and t3code marriage on the windows chrome): one type
+   * driver at the os voice (13px, the house body), six steps derived from
+   * it; the radius nesting ladder with the composer as the sanctioned 2xl
+   * exception; the trajectory ramp mapping the message kinds to color
+   * roles; the input shell tokens; and the t3code glass values married to
+   * the win11 acrylic (blur 12px, saturation 1.14, the 80 percent body).
+   * everything rides the --sol- namespace — no second system, the light
+   * theme flips the values and never the structure. */
+  --sol-type-driver: 13px;
+  --chat-t-xl: 17px;
+  --chat-t-lg: 15px;
+  --chat-t-base: var(--sol-type-driver);
+  --chat-t-caption: 12px;
+  --chat-t-sm: 11px;
+  --chat-t-xs: 9px;
+  --chat-r-2xl: 16px;
+  --chat-r-xl: 12px;
+  --chat-r-lg: 8px;
+  --chat-r-md: 6px;
+  --chat-r-sm: 4px;
+  --sol-traj-user: #60a5fa;
+  --sol-traj-assistant: #2dd4bf;
+  --sol-traj-reasoning: #a78bfa;
+  --sol-traj-tool: #f59e0b;
+  --sol-traj-result: #38bdf8;
+  --chat-input-border: rgb(255 255 255 / 10%);
+  --chat-input-border-hover: rgb(255 255 255 / 16%);
+  --chat-input-border-focus: color-mix(in srgb, var(--win-accent) 70%, transparent);
+  --chat-input-bg: rgb(255 255 255 / 5%);
+  --chat-input-bg-focus: rgb(255 255 255 / 7%);
+  --chat-glass-blur: 12px;
+  --chat-glass-sat: 1.14;
+  --chat-glass-body: rgb(32 32 34 / 80%);
 }
 
 .chat-root :focus-visible {
@@ -4311,8 +4346,11 @@ legend.cmd-group {
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  background: rgb(255 255 255 / 3%);
-  border-right: 1px solid rgb(0 0 0 / 55%);
+  /* the zero-contrast chrome (the synara law): the rail carries no tint
+   * against the canvas — the mica body IS the rail surface, only the
+   * hairline separates it, and the accent alone colors the interactive. */
+  background: transparent;
+  border-right: 1px solid rgb(255 255 255 / 6%);
 }
 
 .dtc-rail__top {
@@ -4815,13 +4853,13 @@ legend.cmd-group {
   align-items: flex-start;
   gap: 10px;
   padding: 16px;
-  border: 1px solid rgb(0 0 0 / 55%);
-  border-radius: 8px;
+  border: 1px solid var(--chat-input-border);
+  border-radius: var(--chat-r-lg);
   color: inherit;
   font: inherit;
   text-align: left;
   cursor: pointer;
-  background: rgb(255 255 255 / 4%);
+  background: var(--chat-input-bg);
   box-shadow: 0 1px 2px rgb(0 0 0 / 25%);
   transition: transform 150ms ease;
   animation: dtcRise 280ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
@@ -4889,16 +4927,29 @@ legend.cmd-group {
 }
 
 .dtc-composer {
-  padding: 8px 8px 6px;
-  border: 1px solid rgb(0 0 0 / 55%);
-  border-radius: 8px;
-  background: rgb(255 255 255 / 5%);
-  box-shadow: 0 8px 24px rgb(0 0 0 / 25%);
+  /* the composer hero (the zcode doctrine): the one content surface that
+   * earns the 2xl radius — the sanctioned exception the reference standard
+   * pins. the shell is a bordered input well reading the chat input
+   * tokens, the hover walks the border one step, the focus ring rides the
+   * windows accent at 70 percent, and the surface never lifts (the flat
+   * law: washes, never elevation theater). */
+  padding: 12px;
+  border: 1px solid var(--chat-input-border);
+  border-radius: var(--chat-r-2xl);
+  background: var(--chat-input-bg);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 22%);
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
+}
+
+.dtc-composer:hover {
+  border-color: var(--chat-input-border-hover);
 }
 
 .dtc-composer:focus-within {
-  border-color: rgb(255 255 255 / 20%);
-  background: rgb(255 255 255 / 6%);
+  border-color: var(--chat-input-border-focus);
+  background: var(--chat-input-bg-focus);
 }
 
 .dtc-microrow {
@@ -4958,9 +5009,11 @@ legend.cmd-group {
   transform: rotate(180deg);
 }
 
-/* the model flyout: the win11 menu grammar — the acrylic panel above the
- * chip, the rows at 34px with the mono id, the honest context window, and
- * the checkmark on the pressed row. */
+/* the model flyout: the glass law (the t3code tokens married to the win11
+ * acrylic) — the 80 percent body with the 12px blur and the 1.14 saturation
+ * lift over the stage, the lg shell with the sm rows (the nesting law for
+ * menus), the checkmark on the pressed row. the reduced-transparency
+ * floor below answers the solid panel. */
 .dtc-modelmenu {
   position: absolute;
   bottom: calc(100% + 6px);
@@ -4972,13 +5025,23 @@ legend.cmd-group {
   max-height: 280px;
   overflow-y: auto;
   padding: 4px;
-  border: 1px solid rgb(0 0 0 / 55%);
-  border-radius: 8px;
-  background: rgb(32 32 34 / 96%);
+  border: 1px solid var(--chat-input-border);
+  border-radius: var(--chat-r-lg);
+  background: var(--chat-glass-body);
+  backdrop-filter: blur(var(--chat-glass-blur)) saturate(var(--chat-glass-sat));
+  -webkit-backdrop-filter: blur(var(--chat-glass-blur)) saturate(var(--chat-glass-sat));
   box-shadow:
     0 8px 28px rgb(0 0 0 / 38%),
     0 0 0 1px rgb(255 255 255 / 4%) inset;
   animation: dtcModelIn 160ms var(--ease-fluent) backwards;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .dtc-modelmenu {
+    background: rgb(32 32 34 / 97%);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }
 
 @keyframes dtcModelIn {
@@ -5095,8 +5158,8 @@ legend.cmd-group {
   background: transparent;
   color: var(--sol-text);
   font: inherit;
-  font-size: 0.85rem;
-  line-height: 1.5;
+  font-size: var(--chat-t-base);
+  line-height: 1.55;
   resize: none;
   outline: none;
 }
@@ -5106,6 +5169,10 @@ legend.cmd-group {
 }
 
 .dtc-send {
+  /* the signal key: the one accent control of the surface — the windows
+   * accent (#4cc2ff dark, #0067c0 light) with its ink, the full circle
+   * (the sanctioned pill class: deliberate circles only), the press walk
+   * the fluent exit curve. */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -5113,12 +5180,12 @@ legend.cmd-group {
   height: 44px;
   flex: none;
   border: 0;
-  border-radius: 4px;
-  color: var(--sol-primary-ink);
-  background: var(--sol-primary);
+  border-radius: 999px;
+  color: var(--win-accent-ink);
+  background: var(--win-accent);
   transform-origin: center;
   transition:
-    transform 100ms ease-in-out,
+    transform 100ms var(--ease-fluent),
     opacity 150ms ease;
 }
 
@@ -5229,10 +5296,14 @@ legend.cmd-group {
  * action chip docks the row end behind a hairline separator — an action,
  * not a mode (the pane it opens carries its own execution surface) */
 .dtc-pillrow {
+  /* the control bar under the input (the zcode composer grammar): the
+   * tool chips ride left, the model/effort/meter cluster rides right —
+   * one bar, space-between, no divider (the shell owns the edges). */
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 8px;
-  margin: 6px 0 2px;
+  margin: 8px 0 0;
   min-width: 0;
 }
 
@@ -5240,6 +5311,23 @@ legend.cmd-group {
   flex: 1;
   margin: 0;
   min-width: 0;
+}
+
+/* the microrow bar variant: the model cluster inside the control bar —
+ * position relative keeps the flyouts anchored to the bar, the cluster
+ * never wraps, the mono voice rides the caption step. */
+.dtc-microrow--bar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  padding: 0 2px;
+  color: var(--sol-faint);
+  font: 500 var(--chat-t-caption) var(--dt-mono);
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
+  white-space: nowrap;
 }
 
 .dtc-pills--action {
@@ -5343,16 +5431,20 @@ legend.cmd-group {
 
 .dtc-bubble {
   padding: 2px 0;
-  font-size: 0.9rem;
-  line-height: 1.62;
+  font-size: var(--chat-t-base);
+  line-height: 1.6;
   overflow-wrap: anywhere;
 }
 
 .dtc-turn.user .dtc-bubble {
+  /* the trajectory user surface (the zcode semantics): the accent surface
+   * wash — the user hue at 12 percent under the hairline, xl radius (the
+   * first visible rounded container of the thread region), the flat law
+   * (no elevation on content, the hairline alone draws the edge). */
   padding: 10px 14px;
-  border-radius: 8px;
-  background: rgb(255 255 255 / 8%);
-  box-shadow: 0 1px 2px rgb(0 0 0 / 22%);
+  border: 1px solid color-mix(in srgb, var(--sol-traj-user) 24%, transparent);
+  border-radius: var(--chat-r-xl);
+  background: color-mix(in srgb, var(--sol-traj-user) 12%, transparent);
 }
 
 .dtc-md > * {
@@ -5384,19 +5476,19 @@ legend.cmd-group {
 }
 
 .dtc-md__h--1 {
-  font-size: 1.18rem;
+  font-size: var(--chat-t-xl);
 }
 
 .dtc-md__h--2 {
-  font-size: 1.06rem;
+  font-size: var(--chat-t-lg);
 }
 
 .dtc-md__h--3 {
-  font-size: 0.98rem;
+  font-size: var(--chat-t-base);
 }
 
 .dtc-md__h--4 {
-  font-size: 0.92rem;
+  font-size: var(--chat-t-caption);
   text-transform: none;
   letter-spacing: 0;
 }
@@ -5646,10 +5738,13 @@ legend.cmd-group {
 }
 
 .dtc-cog {
+  /* the reasoning trace (the zcode trajectory semantics): the violet
+   * ramp at the hairline and the wash — the cognition expander is the
+   * one surface the reasoning hue owns. */
   width: 100%;
-  border: 1px solid rgb(0 0 0 / 55%);
-  border-radius: 4px;
-  background: rgb(255 255 255 / 4%);
+  border: 1px solid color-mix(in srgb, var(--sol-traj-reasoning) 22%, transparent);
+  border-radius: var(--chat-r-md);
+  background: color-mix(in srgb, var(--sol-traj-reasoning) 6%, transparent);
   overflow: hidden;
 }
 
@@ -6203,6 +6298,9 @@ legend.cmd-group {
         the windows accent. ---- */
 
 .dtc-sb {
+  /* the sandbox lane (the tool trajectory): the amber ramp owns the
+   * running-state hairline — the saddle engine pane is the tool surface
+   * of the conversation, and the trajectory marks it without a fill. */
   display: flex;
   flex-direction: column;
   flex: none;
@@ -6210,7 +6308,7 @@ legend.cmd-group {
   min-height: 0;
   padding: 12px 12px 14px;
   overflow: hidden;
-  border-left: 1px solid rgb(0 0 0 / 55%);
+  border-left: 1px solid color-mix(in srgb, var(--sol-traj-tool) 26%, transparent);
   background: rgb(255 255 255 / 3%);
   transform: translateX(60px);
   opacity: 0;
@@ -7056,7 +7154,7 @@ legend.cmd-group {
   gap: 7px;
   margin: 8px 4px 0;
   color: var(--sol-warning);
-  font: 500 10px / 1.5 var(--dt-mono);
+  font: 500 var(--chat-t-sm) / 1.5 var(--dt-mono);
   letter-spacing: 0.04em;
   animation: dtcFade 0.2s ease backwards;
 }
@@ -8031,8 +8129,43 @@ tint, the grain and the fluent shadows keep their exact values */
   background: rgb(255 255 255 / 78%);
 }
 
+/* the chat redesign light flips (the design.chat.references standard): the
+ * values move, never the structure — the trajectory ramp answers the zcode
+ * light column, the input shells ride the ink-alpha borders, the glass body
+ * lightens to the 82 percent white, and the rail hairline flips to the ink
+ * alpha. */
+[data-theme="light"] .chat-root {
+  --sol-traj-user: #2563eb;
+  --sol-traj-assistant: #0f766e;
+  --sol-traj-reasoning: #7c3aed;
+  --sol-traj-tool: #d97706;
+  --sol-traj-result: #0284c7;
+  --chat-input-border: rgb(13 13 13 / 10%);
+  --chat-input-border-hover: rgb(13 13 13 / 16%);
+  --chat-input-bg: rgb(255 255 255 / 72%);
+  --chat-input-bg-focus: rgb(255 255 255 / 88%);
+  --chat-glass-body: rgb(248 248 248 / 82%);
+}
+
+[data-theme="light"] .dtc-rail {
+  border-right-color: rgb(13 13 13 / 6%);
+}
+
+[data-theme="light"] .dtc-modelmenu {
+  background: rgb(248 248 248 / 82%);
+  box-shadow:
+    0 8px 28px rgb(0 0 0 / 14%),
+    0 0 0 1px rgb(13 13 13 / 4%) inset;
+}
+
+[data-theme="light"] .dtc-avatar {
+  border-color: rgb(13 13 13 / 10%);
+  background: rgb(13 13 13 / 4%);
+}
+
 [data-theme="light"] .dtc-turn.user .dtc-bubble {
-  background: rgb(255 255 255 / 90%);
+  background: color-mix(in srgb, var(--sol-traj-user) 10%, white);
+  border-color: color-mix(in srgb, var(--sol-traj-user) 22%, transparent);
 }
 
 [data-theme="light"] .dtc-code {
@@ -9172,74 +9305,89 @@ span[data-tile] {
   animation: none;
 }
 
+/* the chat redesign wave (the design.chat.references standard): this
+   generation's winning definitions answer the zcode/synara/t3code
+   doctrine — the composer is the one 2xl shell (the pill dies here, the
+   prohibition list owns it), the turns ride the trajectory ramp, the
+   active indicators ride the windows accent, and every radius answers
+   the nesting ladder. */
 .dtc-composer {
-  padding: 0;
-  border: 0;
-  background: none;
-  box-shadow: none;
+  padding: 12px;
+  border: 1px solid var(--chat-input-border);
+  border-radius: var(--chat-r-2xl);
+  background: var(--chat-input-bg);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 22%);
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
+}
+
+.dtc-composer:hover {
+  border-color: var(--chat-input-border-hover);
+}
+
+.dtc-composer:focus-within {
+  border-color: var(--chat-input-border-focus);
+  background: var(--chat-input-bg-focus);
 }
 
 .dtc-microrow {
-  padding: 0 14px 8px;
+  /* the bar variant owns the geometry now — the standalone microrow row
+   * retired with the composer restructure (the model cluster rides the
+   * control bar under the input, the zcode grammar). */
+  padding: 0;
 }
 
 .dtc-inner {
   gap: 8px;
-  padding: 5px 5px 5px 18px;
-  border: 1px solid var(--dtv3-hairline);
-  border-radius: var(--dtv3-r-pill);
-  background: rgb(255 255 255 / 4%);
-  box-shadow: 0 12px 32px rgb(0 0 0 / 26%);
-}
-
-.dtc-composer:focus-within .dtc-inner {
-  border-color: color-mix(in srgb, var(--dtv3-sig) 42%, transparent);
-  background: rgb(255 255 255 / 6%);
-  box-shadow:
-    0 14px 36px rgb(0 0 0 / 30%),
-    0 0 0 3px color-mix(in srgb, var(--dtv3-sig) 12%, transparent);
+  padding: 4px 4px 4px 8px;
 }
 
 .dtc-inner textarea {
   min-height: 44px;
   padding: 9px 0;
-  font-size: 0.92rem;
+  font-size: var(--chat-t-base);
 }
 
 .dtc-send {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--dtv3-sig);
-  box-shadow: 0 4px 14px color-mix(in srgb, var(--dtv3-sig) 30%, transparent);
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: var(--win-accent);
+  color: var(--win-accent-ink);
 }
 
 .dtc-send:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--dtv3-sig) 86%, white);
+  background: color-mix(in srgb, var(--win-accent) 86%, white);
 }
 
 .dtc-turn.user .dtc-bubble {
-  padding: 10px 16px;
-  border: 1px solid color-mix(in srgb, var(--dtv3-sig) 26%, transparent);
-  border-radius: var(--dtv3-r-2) var(--dtv3-r-2) 4px var(--dtv3-r-2);
-  background: color-mix(in srgb, var(--dtv3-sig) 12%, transparent);
+  padding: 10px 14px;
+  border: 1px solid color-mix(in srgb, var(--sol-traj-user) 24%, transparent);
+  border-radius: var(--chat-r-xl);
+  background: color-mix(in srgb, var(--sol-traj-user) 12%, transparent);
 }
 
 .dtc-turn.assistant .dtc-bubble {
-  padding: 12px 16px;
-  border: 1px solid var(--dtv3-hairline);
-  border-radius: 4px var(--dtv3-r-2) var(--dtv3-r-2) var(--dtv3-r-2);
-  background: rgb(255 255 255 / 3%);
+  padding: 2px 0;
+  border: 0;
+  background: none;
 }
 
 .dtc-avatar {
-  border: 1px solid var(--dtv3-hairline);
-  border-radius: 12px;
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: var(--chat-r-lg);
   background: rgb(255 255 255 / 4%);
 }
 
 .dtc-turn.user .dtc-avatar {
-  color: var(--dtv3-ink-3);
+  color: var(--sol-traj-user);
+  border-color: color-mix(in srgb, var(--sol-traj-user) 30%, transparent);
+  background: color-mix(in srgb, var(--sol-traj-user) 10%, transparent);
+}
+
+.dtc-turn.assistant .dtc-avatar {
+  color: var(--sol-traj-assistant);
 }
 
 .dtc-hero__word {
@@ -9247,7 +9395,7 @@ span[data-tile] {
 }
 
 .dtc-card {
-  border-radius: var(--dtv3-r-2);
+  border-radius: var(--chat-r-lg);
 }
 
 .dtc-card__ico {
@@ -9260,25 +9408,25 @@ span[data-tile] {
 
 .dtc-item.is-active::before,
 .dtc-nav[aria-current="page"]::before {
-  background: var(--dtv3-sig);
+  background: var(--win-accent);
 }
 
 .dtc-nav[aria-current="page"] svg {
-  color: var(--dtv3-sig);
+  color: var(--win-accent);
 }
 
 .dtc-session {
-  border: 1px solid var(--dtv3-hairline);
-  border-radius: var(--dtv3-r-2);
+  border: 1px solid var(--chat-input-border);
+  border-radius: var(--chat-r-lg);
 }
 
 .dtc-modelcard {
-  border-color: var(--dtv3-hairline);
-  border-radius: var(--dtv3-r-1);
+  border-color: var(--chat-input-border);
+  border-radius: var(--chat-r-md);
 }
 
 .dtc-readout {
-  border-color: var(--dtv3-hairline);
+  border-color: var(--chat-input-border);
 }
 
 .dtc-thinking {
