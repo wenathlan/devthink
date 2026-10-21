@@ -177,6 +177,21 @@ const edits = [
       `"node": "${next.engines.node}"`,
     ),
   ],
+  /* the 2.0.133 publish regression lane: the saddle engineversions anchor
+     (the nodecurrent the dumpstate probe advertises) walked nowhere — the
+     rung stamped the pins and the engine kept answering a node the
+     repository retired, so the publish gate of the saddle extension went
+     red on the strict-equality assertion. the anchor now rides the pin
+     lane: every future rung walks it with the .nvmrc, and the test suite
+     derives both sides from the pin so drift answers red in the gate,
+     never in the publish lane again */
+  [
+    join(repoRoot, "saddle", "orchestrator.ts"),
+    (await readFile(join(repoRoot, "saddle", "orchestrator.ts"), "utf8")).replace(
+      /nodecurrent: '\d+(?:\.\d+){0,2}'/,
+      `nodecurrent: '${nodepin}'`,
+    ),
+  ],
   [
     "Dockerfile",
     (await readFile("Dockerfile", "utf8"))
