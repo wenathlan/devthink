@@ -1,28 +1,32 @@
 /**
- * composer.tsx — the send-pill composer (r2-b conversation craft, wave 3-d
- * Win11 grade): the input IS the control — a flat well (r4 top corners, hairline
- * edge, bottom hairline) carrying the autosize textarea (44 → 140px floor per
- * the D-07 chat polish) and the signal key embedded at its end (a 44px round
- * button on the windows accent #0067c0 with its accent ink — hover wash
- * lighter, press scale .96; the focus state rides the well through
- * :focus-within as the 2px accent underline in the theme layer). The technical
- * microcopy row (model name right, mono lowercase) sits above the well and
- * the tool chips sit below it; the chips toggle local modes only — each one
- * patches the system prompt of the next turn (see state.ts for the honest
- * notes) — while the sandbox action chip at the row end is not a mode: it
- * opens the saddle engine lane (the pane carries its own execution surface).
- * While no gateway is registered, an honest one-line notice rides above the
- * chips — the gateway is opt-in, nothing is fetched without a registration.
- * Enter sends, Shift+Enter breaks the line.
+ * composer.tsx — the hero composer in the reference grammar (the zcode
+ * input shell, the t3code control bar): ONE 2xl bordered well (the only
+ * content surface that earns the sanctioned exception) carrying the
+ * autosize textarea (44 → 140px, the D-07 touch floor) on top and the
+ * control bar UNDER the input, INSIDE the shell — the zcode stacked
+ * layout. The bar's lead cluster holds the tool toggles (each patches the
+ * system prompt of the next turn — see chatstate for the honest notes)
+ * plus the sandbox action chip (not a mode: it opens the saddle engine
+ * lane); the tail cluster holds the model control, the effort control
+ * and the quiet token meter, ending in the signal key — a 28px circle on
+ * the windows accent with the up-arrow glyph (the reference grammar;
+ * hover lifts the wash, press scales .96, the running round swaps it to
+ * the stop circle). The pickers fly out ABOVE their controls over the
+ * input on the glass law. While no gateway is registered, an honest
+ * one-line notice rides above the well — the gateway is opt-in, nothing
+ * is fetched without a registration. Enter sends, Shift+Enter breaks the
+ * line.
  */
 
 import {
+  ArrowUpRegular as ArrowUp,
+  BoxRegular as Box,
+  BrainCircuitRegular as BrainCircuit,
   CheckmarkRegular as Checkmark,
   ChevronDownRegular as ChevronDown,
-  LightbulbRegular as BrainCircuit,
   CubeRegular as Cube,
   type FluentIcon as LucideIcon,
-  SendRegular as Send,
+  LightbulbRegular as Lightbulb,
   StopRegular as Stop,
 } from "@fluentui/react-icons";
 import { type KeyboardEvent, type RefObject, useEffect, useMemo, useRef, useState } from "react";
@@ -37,7 +41,7 @@ import {
 import { formatCompactTokenCount } from "../../tokenestimate.ts";
 
 const TOOL_ICONS: Record<ToolId, LucideIcon> = {
-  thinking: BrainCircuit,
+  thinking: Lightbulb,
 };
 
 export function Composer({
@@ -64,14 +68,14 @@ export function Composer({
   draft: string;
   onDraft: (v: string) => void;
   onSend: () => void;
-  /** aborts the running round — the Send key swaps to the Stop glyph
-   * while busy (the competitor grammar; the partial commits on the floor). */
+  /** aborts the running round — the signal key swaps to the Stop circle
+   * while busy (the reference grammar; the partial commits on the floor). */
   onStop?: (() => void) | undefined;
   busy: boolean;
   tools: ToolId[];
   onToggleTool: (id: ToolId) => void;
   inputRef: RefObject<HTMLTextAreaElement | null>;
-  /** the honest disconnected line — rendered above the pills while set. */
+  /** the honest disconnected line — rendered above the well while set. */
   notice?: string | undefined;
   /** whether the sandbox lane is open (drives the chip pressed state). */
   sandboxOn?: boolean | undefined;
@@ -101,12 +105,12 @@ export function Composer({
     if (!el) return;
     el.style.height = "auto";
     // the D-07 composer contract: the input never sits under 44px tall (the
-    // touch law floor; the theme layer carries the well + the focus underline)
+    // touch law floor; the theme layer carries the well + the focus ring)
     el.style.height = `${Math.min(140, Math.max(44, el.scrollHeight))}px`;
   }, [draft, inputRef]);
 
-  /* the model picker (rung 124): the microrow's model chip opens the
-   * catalog flyout above the well — one row per gateway model with its
+  /* the model picker (rung 124): the tail cluster's model control opens
+   * the catalog flyout above the well — one row per gateway model with its
    * declared context window, the pressed row carrying the checkmark. The
    * outside pointerdown closes it; Escape closes it first (the chat
    * Escape stack sits above it in the body). */
@@ -165,9 +169,16 @@ export function Composer({
 
   return (
     <div className="dtc-composer">
-      <div className="dtc-inner">
+      {notice ? (
+        <p className="dtc-composer__notice" role="status">
+          {notice}
+        </p>
+      ) : null}
+
+      <div className="dtc-well">
         <textarea
           ref={inputRef}
+          className="dtc-well__input"
           value={draft}
           rows={1}
           placeholder="Ask Sol anything"
@@ -177,186 +188,187 @@ export function Composer({
           onChange={(e) => onDraft(e.target.value)}
           onKeyDown={onKeyDown}
         />
-        {busy && onStop ? (
-          <button
-            type="button"
-            className="dtc-send dtc-send--stop"
-            onClick={onStop}
-            aria-label="Stop generating"
-            title="Stop generating"
-          >
-            <Stop fontSize={16} aria-hidden="true" />
-          </button>
-        ) : (
-          <button
-            type="button"
-            className="dtc-send"
-            onClick={submit}
-            disabled={busy || !draft.trim()}
-            aria-label="Send message"
-            title="Send message"
-          >
-            <Send fontSize={18} aria-hidden="true" />
-          </button>
-        )}
-      </div>
 
-      {notice ? (
-        <p className="dtc-composer__notice" role="status">
-          {notice}
-        </p>
-      ) : null}
-
-      <div className="dtc-pillrow">
-        <fieldset className="dtc-pills" aria-label="Tool modes">
-          {CHAT_TOOLS.map((tool) => {
-            const Icon = TOOL_ICONS[tool.id];
-            const on = tools.includes(tool.id);
-            return (
-              <button
-                key={tool.id}
-                type="button"
-                className="dtc-pill"
-                aria-pressed={on}
-                onClick={() => onToggleTool(tool.id)}
-                title={tool.note}
-              >
-                <Icon fontSize={13} aria-hidden="true" />
-                <span>{tool.label}</span>
-              </button>
-            );
-          })}
-          {onToggleSandbox ? (
-            <button
-              type="button"
-              className="dtc-pill dtc-pill--sb"
-              aria-pressed={sandboxOn === true}
-              onClick={onToggleSandbox}
-              title="Open the saddle sandbox lane"
-            >
-              <Cube fontSize={13} aria-hidden="true" />
-              <span>Sandbox</span>
-              {sandboxRunning ? <i className="dtc-pill--sb__dot" aria-hidden="true" /> : null}
-            </button>
-          ) : null}
-        </fieldset>
-
-        <div className="dtc-microrow dtc-microrow--bar">
-          {onModel ? (
-            <button
-              ref={modelBtnRef}
-              type="button"
-              className="dtc-modelbtn"
-              aria-haspopup="listbox"
-              aria-expanded={modelOpen}
-              onClick={() => setModelOpen((v) => !v)}
-              title="Pick the model"
-            >
-              <span>model {activeModel}</span>
-              <ChevronDown fontSize={11} aria-hidden="true" className="dtc-modelbtn__chev" />
-            </button>
-          ) : (
-            <span>model {activeModel}</span>
-          )}
-          {modelOpen && onModel ? (
-            <div
-              ref={modelMenuRef}
-              className="dtc-modelmenu"
-              role="listbox"
-              aria-label="Models"
-              onKeyDown={(e) => {
-                if (e.key === "Escape") {
-                  e.stopPropagation();
-                  setModelOpen(false);
-                  modelBtnRef.current?.focus();
-                }
-              }}
-            >
-              {catalog.map((m) => {
-                const on = m.id === activeModel;
+        <div className="dtc-wellbar">
+          <div className="dtc-wellbar__lead">
+            <fieldset className="dtc-chips" aria-label="Tool modes">
+              {CHAT_TOOLS.map((tool) => {
+                const Icon = TOOL_ICONS[tool.id];
+                const on = tools.includes(tool.id);
                 return (
                   <button
-                    key={m.id}
+                    key={tool.id}
                     type="button"
-                    role="option"
-                    aria-selected={on}
-                    className="dtc-modelmenu__row"
-                    onClick={() => {
-                      onModel(m.id);
-                      setModelOpen(false);
-                      modelBtnRef.current?.focus();
-                    }}
+                    className="dtc-chip"
+                    aria-pressed={on}
+                    onClick={() => onToggleTool(tool.id)}
+                    title={tool.note}
                   >
-                    <span className="dtc-modelmenu__id">{m.id}</span>
-                    {m.context ? <span className="dtc-modelmenu__ctx">{Math.round(m.context / 1000)}k ctx</span> : null}
-                    {on ? <Checkmark fontSize={13} aria-hidden="true" className="dtc-modelmenu__check" /> : null}
+                    <Icon fontSize={15} aria-hidden="true" />
+                    <span>{tool.label}</span>
                   </button>
                 );
               })}
-            </div>
-          ) : null}
-          {onThinking ? (
-            <>
-              <button
-                ref={thinkBtnRef}
-                type="button"
-                className="dtc-modelbtn"
-                aria-haspopup="listbox"
-                aria-expanded={thinkOpen}
-                onClick={openThink}
-                title="Reasoning effort"
+              {onToggleSandbox ? (
+                <button
+                  type="button"
+                  className="dtc-chip dtc-chip--sb"
+                  aria-pressed={sandboxOn === true}
+                  onClick={onToggleSandbox}
+                  title="Open the saddle sandbox lane"
+                >
+                  <Cube fontSize={15} aria-hidden="true" />
+                  <span>Sandbox</span>
+                  {sandboxRunning ? <i className="dtc-chip--sb__dot" aria-hidden="true" /> : null}
+                </button>
+              ) : null}
+            </fieldset>
+          </div>
+
+          <div className="dtc-wellbar__tail">
+            {onModel ? (
+              <span className="dtc-wctrl">
+                <button
+                  ref={modelBtnRef}
+                  type="button"
+                  className="dtc-wctrl__btn"
+                  aria-haspopup="listbox"
+                  aria-expanded={modelOpen}
+                  onClick={openModel}
+                  title="Pick the model"
+                >
+                  <Box fontSize={15} aria-hidden="true" />
+                  <span className="dtc-wctrl__label">{activeModel}</span>
+                  <ChevronDown fontSize={11} aria-hidden="true" className="dtc-wctrl__chev" />
+                </button>
+                {modelOpen ? (
+                  <div
+                    ref={modelMenuRef}
+                    className="dtc-modelmenu"
+                    role="listbox"
+                    aria-label="Models"
+                    onKeyDown={(e) => {
+                      if (e.key === "Escape") {
+                        e.stopPropagation();
+                        setModelOpen(false);
+                        modelBtnRef.current?.focus();
+                      }
+                    }}
+                  >
+                    {catalog.map((m) => {
+                      const on = m.id === activeModel;
+                      return (
+                        <button
+                          key={m.id}
+                          type="button"
+                          role="option"
+                          aria-selected={on}
+                          className="dtc-modelmenu__row"
+                          onClick={() => {
+                            onModel(m.id);
+                            setModelOpen(false);
+                            modelBtnRef.current?.focus();
+                          }}
+                        >
+                          <span className="dtc-modelmenu__id">{m.id}</span>
+                          {m.context ? <span className="dtc-modelmenu__ctx">{Math.round(m.context / 1000)}k ctx</span> : null}
+                          {on ? <Checkmark fontSize={13} aria-hidden="true" className="dtc-modelmenu__check" /> : null}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : null}
+              </span>
+            ) : null}
+
+            {onThinking ? (
+              <span className="dtc-wctrl">
+                <button
+                  ref={thinkBtnRef}
+                  type="button"
+                  className="dtc-wctrl__btn"
+                  aria-haspopup="listbox"
+                  aria-expanded={thinkOpen}
+                  onClick={openThink}
+                  title="Reasoning effort"
+                >
+                  <BrainCircuit fontSize={15} aria-hidden="true" />
+                  <span className="dtc-wctrl__label">{activeThinking}</span>
+                  <ChevronDown fontSize={11} aria-hidden="true" className="dtc-wctrl__chev" />
+                </button>
+                {thinkOpen ? (
+                  <div
+                    ref={thinkMenuRef}
+                    className="dtc-modelmenu dtc-modelmenu--right"
+                    role="listbox"
+                    aria-label="Reasoning effort"
+                    onKeyDown={(e) => {
+                      if (e.key === "Escape") {
+                        e.stopPropagation();
+                        setThinkOpen(false);
+                        thinkBtnRef.current?.focus();
+                      }
+                    }}
+                  >
+                    {CHAT_THINKING_LEVELS.map((lvl) => {
+                      const on = lvl.id === activeThinking;
+                      return (
+                        <button
+                          key={lvl.id}
+                          type="button"
+                          role="option"
+                          aria-selected={on}
+                          className="dtc-modelmenu__row"
+                          title={lvl.note}
+                          onClick={() => {
+                            onThinking(lvl.id);
+                            setThinkOpen(false);
+                            thinkBtnRef.current?.focus();
+                          }}
+                        >
+                          <span className="dtc-modelmenu__id">{lvl.label}</span>
+                          <span className="dtc-modelmenu__ctx">{lvl.note}</span>
+                          {on ? <Checkmark fontSize={13} aria-hidden="true" className="dtc-modelmenu__check" /> : null}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : null}
+              </span>
+            ) : null}
+
+            {typeof tokenEstimate === "number" ? (
+              <span
+                className="dtc-meter"
+                title="Estimated with the house chars-per-token approximation — never an exact count"
               >
-                <span>think {activeThinking}</span>
-                <ChevronDown fontSize={11} aria-hidden="true" className="dtc-modelbtn__chev" />
+                {meterText}
+              </span>
+            ) : null}
+
+            {busy && onStop ? (
+              <button
+                type="button"
+                className="dtc-send dtc-send--stop"
+                onClick={onStop}
+                aria-label="Stop generating"
+                title="Stop generating"
+              >
+                <Stop fontSize={13} aria-hidden="true" />
               </button>
-              {thinkOpen ? (
-                <div
-                  ref={thinkMenuRef}
-                  className="dtc-modelmenu dtc-modelmenu--right"
-                  role="listbox"
-                  aria-label="Reasoning effort"
-                  onKeyDown={(e) => {
-                    if (e.key === "Escape") {
-                      e.stopPropagation();
-                      setThinkOpen(false);
-                      thinkBtnRef.current?.focus();
-                    }
-                  }}
-                >
-                  {CHAT_THINKING_LEVELS.map((lvl) => {
-                    const on = lvl.id === activeThinking;
-                    return (
-                      <button
-                        key={lvl.id}
-                        type="button"
-                        role="option"
-                        aria-selected={on}
-                        className="dtc-modelmenu__row"
-                        title={lvl.note}
-                        onClick={() => {
-                          onThinking(lvl.id);
-                          setThinkOpen(false);
-                          thinkBtnRef.current?.focus();
-                        }}
-                      >
-                        <span className="dtc-modelmenu__id">{lvl.label}</span>
-                        <span className="dtc-modelmenu__ctx">{lvl.note}</span>
-                        {on ? <Checkmark fontSize={13} aria-hidden="true" className="dtc-modelmenu__check" /> : null}
-                      </button>
-                    );
-                  })}
-                </div>
-              ) : null}
-              {typeof tokenEstimate === "number" ? (
-                <span
-                  className="dtc-meter"
-                  title="Estimated with the house chars-per-token approximation — never an exact count"
-                >
-                  {meterText}
-                </span>
-              ) : null}
-            </>
-          ) : null}
+            ) : (
+              <button
+                type="button"
+                className="dtc-send"
+                onClick={submit}
+                disabled={busy || !draft.trim()}
+                aria-label="Send message"
+                title="Send message"
+              >
+                <ArrowUp fontSize={16} aria-hidden="true" />
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
