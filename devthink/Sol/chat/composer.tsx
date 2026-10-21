@@ -165,124 +165,6 @@ export function Composer({
 
   return (
     <div className="dtc-composer">
-      <div className="dtc-microrow">
-        {onModel ? (
-          <button
-            ref={modelBtnRef}
-            type="button"
-            className="dtc-modelbtn"
-            aria-haspopup="listbox"
-            aria-expanded={modelOpen}
-            onClick={() => setModelOpen((v) => !v)}
-            title="Pick the model"
-          >
-            <span>model {activeModel}</span>
-            <ChevronDown fontSize={11} aria-hidden="true" className="dtc-modelbtn__chev" />
-          </button>
-        ) : (
-          <span>model {activeModel}</span>
-        )}
-        {modelOpen && onModel ? (
-          <div
-            ref={modelMenuRef}
-            className="dtc-modelmenu"
-            role="listbox"
-            aria-label="Models"
-            onKeyDown={(e) => {
-              if (e.key === "Escape") {
-                e.stopPropagation();
-                setModelOpen(false);
-                modelBtnRef.current?.focus();
-              }
-            }}
-          >
-            {catalog.map((m) => {
-              const on = m.id === activeModel;
-              return (
-                <button
-                  key={m.id}
-                  type="button"
-                  role="option"
-                  aria-selected={on}
-                  className="dtc-modelmenu__row"
-                  onClick={() => {
-                    onModel(m.id);
-                    setModelOpen(false);
-                    modelBtnRef.current?.focus();
-                  }}
-                >
-                  <span className="dtc-modelmenu__id">{m.id}</span>
-                  {m.context ? <span className="dtc-modelmenu__ctx">{Math.round(m.context / 1000)}k ctx</span> : null}
-                  {on ? <Checkmark fontSize={13} aria-hidden="true" className="dtc-modelmenu__check" /> : null}
-                </button>
-              );
-            })}
-          </div>
-        ) : null}
-        {onThinking ? (
-          <span className="dtc-microrow__right">
-            <button
-              ref={thinkBtnRef}
-              type="button"
-              className="dtc-modelbtn"
-              aria-haspopup="listbox"
-              aria-expanded={thinkOpen}
-              onClick={openThink}
-              title="Reasoning effort"
-            >
-              <span>think {activeThinking}</span>
-              <ChevronDown fontSize={11} aria-hidden="true" className="dtc-modelbtn__chev" />
-            </button>
-            {thinkOpen ? (
-              <div
-                ref={thinkMenuRef}
-                className="dtc-modelmenu dtc-modelmenu--right"
-                role="listbox"
-                aria-label="Reasoning effort"
-                onKeyDown={(e) => {
-                  if (e.key === "Escape") {
-                    e.stopPropagation();
-                    setThinkOpen(false);
-                    thinkBtnRef.current?.focus();
-                  }
-                }}
-              >
-                {CHAT_THINKING_LEVELS.map((lvl) => {
-                  const on = lvl.id === activeThinking;
-                  return (
-                    <button
-                      key={lvl.id}
-                      type="button"
-                      role="option"
-                      aria-selected={on}
-                      className="dtc-modelmenu__row"
-                      title={lvl.note}
-                      onClick={() => {
-                        onThinking(lvl.id);
-                        setThinkOpen(false);
-                        thinkBtnRef.current?.focus();
-                      }}
-                    >
-                      <span className="dtc-modelmenu__id">{lvl.label}</span>
-                      <span className="dtc-modelmenu__ctx">{lvl.note}</span>
-                      {on ? <Checkmark fontSize={13} aria-hidden="true" className="dtc-modelmenu__check" /> : null}
-                    </button>
-                  );
-                })}
-              </div>
-            ) : null}
-            {typeof tokenEstimate === "number" ? (
-              <span
-                className="dtc-meter"
-                title="Estimated with the house chars-per-token approximation — never an exact count"
-              >
-                {meterText}
-              </span>
-            ) : null}
-          </span>
-        ) : null}
-      </div>
-
       <div className="dtc-inner">
         <textarea
           ref={inputRef}
@@ -344,9 +226,7 @@ export function Composer({
               </button>
             );
           })}
-        </fieldset>
-        {onToggleSandbox ? (
-          <fieldset className="dtc-pills dtc-pills--action" aria-label="Sandbox">
+          {onToggleSandbox ? (
             <button
               type="button"
               className="dtc-pill dtc-pill--sb"
@@ -358,8 +238,126 @@ export function Composer({
               <span>Sandbox</span>
               {sandboxRunning ? <i className="dtc-pill--sb__dot" aria-hidden="true" /> : null}
             </button>
-          </fieldset>
-        ) : null}
+          ) : null}
+        </fieldset>
+
+        <div className="dtc-microrow dtc-microrow--bar">
+          {onModel ? (
+            <button
+              ref={modelBtnRef}
+              type="button"
+              className="dtc-modelbtn"
+              aria-haspopup="listbox"
+              aria-expanded={modelOpen}
+              onClick={() => setModelOpen((v) => !v)}
+              title="Pick the model"
+            >
+              <span>model {activeModel}</span>
+              <ChevronDown fontSize={11} aria-hidden="true" className="dtc-modelbtn__chev" />
+            </button>
+          ) : (
+            <span>model {activeModel}</span>
+          )}
+          {modelOpen && onModel ? (
+            <div
+              ref={modelMenuRef}
+              className="dtc-modelmenu"
+              role="listbox"
+              aria-label="Models"
+              onKeyDown={(e) => {
+                if (e.key === "Escape") {
+                  e.stopPropagation();
+                  setModelOpen(false);
+                  modelBtnRef.current?.focus();
+                }
+              }}
+            >
+              {catalog.map((m) => {
+                const on = m.id === activeModel;
+                return (
+                  <button
+                    key={m.id}
+                    type="button"
+                    role="option"
+                    aria-selected={on}
+                    className="dtc-modelmenu__row"
+                    onClick={() => {
+                      onModel(m.id);
+                      setModelOpen(false);
+                      modelBtnRef.current?.focus();
+                    }}
+                  >
+                    <span className="dtc-modelmenu__id">{m.id}</span>
+                    {m.context ? <span className="dtc-modelmenu__ctx">{Math.round(m.context / 1000)}k ctx</span> : null}
+                    {on ? <Checkmark fontSize={13} aria-hidden="true" className="dtc-modelmenu__check" /> : null}
+                  </button>
+                );
+              })}
+            </div>
+          ) : null}
+          {onThinking ? (
+            <>
+              <button
+                ref={thinkBtnRef}
+                type="button"
+                className="dtc-modelbtn"
+                aria-haspopup="listbox"
+                aria-expanded={thinkOpen}
+                onClick={openThink}
+                title="Reasoning effort"
+              >
+                <span>think {activeThinking}</span>
+                <ChevronDown fontSize={11} aria-hidden="true" className="dtc-modelbtn__chev" />
+              </button>
+              {thinkOpen ? (
+                <div
+                  ref={thinkMenuRef}
+                  className="dtc-modelmenu dtc-modelmenu--right"
+                  role="listbox"
+                  aria-label="Reasoning effort"
+                  onKeyDown={(e) => {
+                    if (e.key === "Escape") {
+                      e.stopPropagation();
+                      setThinkOpen(false);
+                      thinkBtnRef.current?.focus();
+                    }
+                  }}
+                >
+                  {CHAT_THINKING_LEVELS.map((lvl) => {
+                    const on = lvl.id === activeThinking;
+                    return (
+                      <button
+                        key={lvl.id}
+                        type="button"
+                        role="option"
+                        aria-selected={on}
+                        className="dtc-modelmenu__row"
+                        title={lvl.note}
+                        onClick={() => {
+                          onThinking(lvl.id);
+                          setThinkOpen(false);
+                          thinkBtnRef.current?.focus();
+                        }}
+                      >
+                        <span className="dtc-modelmenu__id">{lvl.label}</span>
+                        <span className="dtc-modelmenu__ctx">{lvl.note}</span>
+                        {on ? <Checkmark fontSize={13} aria-hidden="true" className="dtc-modelmenu__check" /> : null}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : null}
+              {typeof tokenEstimate === "number" ? (
+                <span
+                  className="dtc-meter"
+                  title="Estimated with the house chars-per-token approximation — never an exact count"
+                >
+                  {meterText}
+                </span>
+              ) : null}
+            </>
+          ) : null}
+        </div>
       </div>
     </div>
   );
