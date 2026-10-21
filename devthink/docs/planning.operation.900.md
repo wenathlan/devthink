@@ -23,16 +23,16 @@ the eradication inside every wave, the gates before every close.
 
 ## phase 1 — the foundation: the inventory and the css ground truth
 
-- [ ] 001. inventory the 35 native pages of the sol tree with owner, subanchor and current state.
-- [ ] 002. inventory the 15 engines of the devthink manifest with source, library or root module, and role.
-- [ ] 003. inventory the sol.css of every app with line count, appended generations and retired blocks.
-- [ ] 004. inventory the token namespaces (--sol-, --dt-, --dtv3-) per app until the overlap table is complete.
-- [ ] 005. inventory every icon in use per app: emoji, glyph, lucide and svg, file by file.
-- [ ] 006. inventory the orphaned css classes per app with the analyzer script and record the report.
-- [ ] 007. inventory the copy strings over 140 chars per app with file and line.
-- [ ] 008. inventory the transitions and animations per app with property, duration and iteration count.
-- [ ] 009. inventory the intros and onboardings per app with variant count and entry route.
-- [ ] 010. inventory the tests per app with suite, runtime and the last green commit.
+- [x] 001. inventory the 35 native pages of the sol tree with owner, subanchor and current state.
+- [x] 002. inventory the 15 engines of the devthink manifest with source, library or root module, and role.
+- [x] 003. inventory the sol.css of every app with line count, appended generations and retired blocks.
+- [x] 004. inventory the token namespaces (--sol-, --dt-, --dtv3-) per app until the overlap table is complete.
+- [x] 005. inventory every icon in use per app: emoji, glyph, lucide and svg, file by file.
+- [x] 006. inventory the orphaned css classes per app with the analyzer script and record the report.
+- [x] 007. inventory the copy strings over 140 chars per app with file and line.
+- [x] 008. inventory the transitions and animations per app with property, duration and iteration count.
+- [x] 009. inventory the intros and onboardings per app with variant count and entry route.
+- [x] 010. inventory the tests per app with suite, runtime and the last green commit.
 - [ ] 011. inventory the imports between sibling apps until every direct cross-folder path is listed.
 - [ ] 012. inventory the absorptions (devthinkos, cli-desktop, SoFlowX, akash, extension, gateway, maene, owni) with their landing surface.
 - [ ] 013. freeze the inventory as the l0 baseline doc every later layer answers to.
@@ -1018,7 +1018,7 @@ the calendar never abandons a wave.
 
 ### phase 1 — the foundation: the inventory and the css ground truth
 
-- [ ] wave 001 — 2026-10-21 — steps 001 to 010.
+- [x] wave 001 — 2026-10-21 — steps 001 to 010 (the ten inventories landed as docs/inventory.wave001.md, measured over the eleven apps at 378b3618).
 - [ ] wave 002 — 2026-10-22 — steps 011 to 020.
 - [ ] wave 003 — 2026-10-23 — steps 021 to 030.
 - [ ] wave 004 — 2026-10-24 — steps 031 to 040.
