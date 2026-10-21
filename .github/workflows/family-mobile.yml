@@ -70,7 +70,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - uses: actions/setup-node@v7.1.0
         with:
-          node-version: 26.12.0
+          node-version: 26.12.1
       - name: Set up Bun
         if: matrix.pm == 'bun'
         uses: oven-sh/setup-bun@v2.2.0
@@ -374,7 +374,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - uses: actions/setup-node@v7.1.0
         with:
-          node-version: 26.12.0
+          node-version: 26.12.1
       - name: Set up Bun
         if: matrix.pm == 'bun'
         uses: oven-sh/setup-bun@v2.2.0
