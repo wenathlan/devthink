@@ -581,26 +581,32 @@ const SQUIRCLE = "M22 0 L74 0 Q96 0 96 22 L96 66 Q96 96 66 96 L30 96 Q0 96 0 66 
 const si = (index: number): CSSProperties => ({ "--dt-i": index }) as CSSProperties;
 
 /**
- * Builds one premium icon component over a story palette and glyph.
- *
- * @param key the registry id the iconset field points at (namespaces every id)
- * @param spec the story colors and the drawn glyph of the app
+ * The module-level face every icon renders through: the story spec arrives by
+ * props so no hook ever runs inside a closure (the biome 2.6
+ * noComponentHookFactories contract the maintenance ladder walks) — one
+ * component identity for the whole icon wall, the per-icon identity carried
+ * by the wrapper the factory below returns.
  */
-function defineAppIcon(key: string, spec: AppIconSpec): ComponentType<AppIconProps> {
-  const uid = `dti-${key}`;
-  function AppIcon({ size, live }: AppIconProps) {
-    ensureIconCss();
-    useIconMotion();
-    const vars = {
-      "--story-glow": `${spec.story}73`,
-      "--story-shadow": `${spec.deep}42`,
-      "--story-shadow-soft": `${spec.deep}24`,
-    } as CSSProperties;
-    if (size !== undefined) {
-      vars.width = size;
-      vars.height = size;
-    }
-    return (
+interface AppIconFaceProps extends AppIconProps {
+  /** the namespaced gradient id prefix of this icon (dti-<key>) */
+  uid: string;
+  /** the story palette and the drawn glyph of this icon */
+  spec: AppIconSpec;
+}
+
+function AppIconFace({ size, live, uid, spec }: AppIconFaceProps) {
+  ensureIconCss();
+  useIconMotion();
+  const vars = {
+    "--story-glow": `${spec.story}73`,
+    "--story-shadow": `${spec.deep}42`,
+    "--story-shadow-soft": `${spec.deep}24`,
+  } as CSSProperties;
+  if (size !== undefined) {
+    vars.width = size;
+    vars.height = size;
+  }
+  return (
       <span
         className="dtIcon"
         data-motion={spec.motion}
@@ -725,697 +731,856 @@ function defineAppIcon(key: string, spec: AppIconSpec): ComponentType<AppIconPro
           </g>
         </svg>
       </span>
-    );
-  }
-  AppIcon.displayName = `${key}AppIcon`;
-  return AppIcon;
+  );
 }
 
 /* ------------------------------- the icons --------------------------------- */
 
 /** Chat — the assistant of the OS: a speech bubble carrying the brand star. */
-export const ChatIcon = defineAppIcon("chat", {
-  motion: "bounce",
-  story: "#ff8c42",
-  deep: "#b6520e",
-  soft: "#ffdcbd",
-  glyph: (
-    <>
-      <path
-        d="M31 29 H65 Q70 29 70 34 V55 Q70 60 65 60 H46.5 L37 68.5 Q33.5 71.2 33.5 66.6 V60 H31 Q26 60 26 55 V34 Q26 29 31 29 Z"
-        fill={BACKING}
-      />
-      <path
-        d="M48 35.5 L51.2 43.3 L59 46.5 L51.2 49.7 L48 57.5 L44.8 49.7 L37 46.5 L44.8 43.3 Z"
-        fill={IVORY}
-        stroke="none"
-      />
-    </>
-  ),
-});
+const ChatIcon_SPEC: AppIconSpec = {
+motion: "bounce",
+story: "#ff8c42",
+deep: "#b6520e",
+soft: "#ffdcbd",
+glyph: (
+  <>
+    <path
+      d="M31 29 H65 Q70 29 70 34 V55 Q70 60 65 60 H46.5 L37 68.5 Q33.5 71.2 33.5 66.6 V60 H31 Q26 60 26 55 V34 Q26 29 31 29 Z"
+      fill={BACKING}
+    />
+    <path
+      d="M48 35.5 L51.2 43.3 L59 46.5 L51.2 49.7 L48 57.5 L44.8 49.7 L37 46.5 L44.8 43.3 Z"
+      fill={IVORY}
+      stroke="none"
+    />
+  </>
+),
+};
+
+/** The bound icon component of "chat": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const ChatIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-chat" spec={ChatIcon_SPEC} />
+);
 
 /** My Files — the file explorer of the OS: the windows folder with its
  * tab and the rising arrow (the open-folder gesture of the explorer). */
-export const FilesIcon = defineAppIcon("files", {
-  motion: "rise",
-  story: "#eab308",
-  deep: "#9a6a06",
-  soft: "#fde9b0",
-  glyph: (
-    <>
-      {/* the back plane of the folder with its folded tab */}
-      <path
-        d="M27 34 Q27 31.5 29.5 31.5 H37.5 L41 35.5 H66.5 Q69 35.5 69 38 V60 Q69 62.5 66.5 62.5 H29.5 Q27 62.5 27 60 Z"
-        fill={BACKING}
-      />
-      {/* the front plane, riding lower with its own tab lifted open */}
-      <path d="M27 46 H41.5 L45.5 50 H69 V60 Q69 62.5 66.5 62.5 H29.5 Q27 62.5 27 60 Z" fill="rgba(255,255,255,.14)" />
-      <g className="dtIcon-m-sun">
-        {/* the arrow rising from the open mouth of the folder */}
-        <path d="M48 41 V53.5" strokeWidth={STROKE_SOFT} />
-        <path d="M44.2 44.6 L48 40.8 L51.8 44.6" strokeWidth={STROKE_SOFT} />
-      </g>
-    </>
-  ),
-});
+const FilesIcon_SPEC: AppIconSpec = {
+motion: "rise",
+story: "#eab308",
+deep: "#9a6a06",
+soft: "#fde9b0",
+glyph: (
+  <>
+    {/* the back plane of the folder with its folded tab */}
+    <path
+      d="M27 34 Q27 31.5 29.5 31.5 H37.5 L41 35.5 H66.5 Q69 35.5 69 38 V60 Q69 62.5 66.5 62.5 H29.5 Q27 62.5 27 60 Z"
+      fill={BACKING}
+    />
+    {/* the front plane, riding lower with its own tab lifted open */}
+    <path d="M27 46 H41.5 L45.5 50 H69 V60 Q69 62.5 66.5 62.5 H29.5 Q27 62.5 27 60 Z" fill="rgba(255,255,255,.14)" />
+    <g className="dtIcon-m-sun">
+      {/* the arrow rising from the open mouth of the folder */}
+      <path d="M48 41 V53.5" strokeWidth={STROKE_SOFT} />
+      <path d="M44.2 44.6 L48 40.8 L51.8 44.6" strokeWidth={STROKE_SOFT} />
+    </g>
+  </>
+),
+};
+
+/** The bound icon component of "files": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const FilesIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-files" spec={FilesIcon_SPEC} />
+);
 
 /** History — the session archive: a clock with a curved rewind arrow. */
-export const HistoryIcon = defineAppIcon("history", {
-  motion: "sweep",
-  story: "#d9b98c",
-  deep: "#9a7444",
-  soft: "#f4e6cb",
-  glyph: (
-    <>
-      <circle cx="49" cy="51" r="16.5" />
-      <g className="dtIcon-m-hand">
-        <path d="M49 42.5 V51 L56 55" />
-      </g>
-      <path d="M28.5 35 Q28.5 24.5 39 24.5" strokeWidth={STROKE_SOFT} />
-      <path d="M39 24.5 L33.6 21.2 M39 24.5 L34 28.2" strokeWidth={STROKE_SOFT} />
-    </>
-  ),
-});
+const HistoryIcon_SPEC: AppIconSpec = {
+motion: "sweep",
+story: "#d9b98c",
+deep: "#9a7444",
+soft: "#f4e6cb",
+glyph: (
+  <>
+    <circle cx="49" cy="51" r="16.5" />
+    <g className="dtIcon-m-hand">
+      <path d="M49 42.5 V51 L56 55" />
+    </g>
+    <path d="M28.5 35 Q28.5 24.5 39 24.5" strokeWidth={STROKE_SOFT} />
+    <path d="M39 24.5 L33.6 21.2 M39 24.5 L34 28.2" strokeWidth={STROKE_SOFT} />
+  </>
+),
+};
+
+/** The bound icon component of "history": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const HistoryIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-history" spec={HistoryIcon_SPEC} />
+);
 
 /** Projects — the workspace records: a board with two uneven columns. */
-export const ProjectsIcon = defineAppIcon("projects", {
-  motion: "kanban",
-  story: "#cd8a5e",
-  deep: "#925a34",
-  soft: "#f2ddc6",
-  glyph: (
-    <>
-      <rect x="27" y="29" width="42" height="40" rx="8" fill={BACKING} />
-      <rect
-        className="dtIcon-m-card"
-        style={si(0)}
-        x="34"
-        y="37"
-        width="9.5"
-        height="24"
-        rx="3"
-        fill={IVORY}
-        stroke="none"
-      />
-      <g className="dtIcon-m-card" style={si(1)}>
-        <rect x="52.5" y="37" width="9.5" height="13" rx="3" />
-        <path d="M52.5 56 H62" strokeWidth={STROKE_SOFT} />
-      </g>
-    </>
-  ),
-});
+const ProjectsIcon_SPEC: AppIconSpec = {
+motion: "kanban",
+story: "#cd8a5e",
+deep: "#925a34",
+soft: "#f2ddc6",
+glyph: (
+  <>
+    <rect x="27" y="29" width="42" height="40" rx="8" fill={BACKING} />
+    <rect
+      className="dtIcon-m-card"
+      style={si(0)}
+      x="34"
+      y="37"
+      width="9.5"
+      height="24"
+      rx="3"
+      fill={IVORY}
+      stroke="none"
+    />
+    <g className="dtIcon-m-card" style={si(1)}>
+      <rect x="52.5" y="37" width="9.5" height="13" rx="3" />
+      <path d="M52.5 56 H62" strokeWidth={STROKE_SOFT} />
+    </g>
+  </>
+),
+};
+
+/** The bound icon component of "projects": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const ProjectsIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-projects" spec={ProjectsIcon_SPEC} />
+);
 
 /** Console — the canonical CLI design: a prompt chevron and its cursor. */
-export const ConsoleIcon = defineAppIcon("console", {
-  motion: "blink",
-  story: "#8d8479",
-  deep: "#57514a",
-  soft: "#ded5c8",
-  glyph: (
-    <>
-      <path d="M31 35 L43.5 47.5 L31 60" strokeWidth={STROKE_BRIGHT} />
-      <path d="M50 36.5 H63" />
-      <rect className="dtIcon-m-cursor" x="49" y="53.5" width="15.5" height="9.5" rx="3" fill={IVORY} stroke="none" />
-    </>
-  ),
-});
+const ConsoleIcon_SPEC: AppIconSpec = {
+motion: "blink",
+story: "#8d8479",
+deep: "#57514a",
+soft: "#ded5c8",
+glyph: (
+  <>
+    <path d="M31 35 L43.5 47.5 L31 60" strokeWidth={STROKE_BRIGHT} />
+    <path d="M50 36.5 H63" />
+    <rect className="dtIcon-m-cursor" x="49" y="53.5" width="15.5" height="9.5" rx="3" fill={IVORY} stroke="none" />
+  </>
+),
+};
+
+/** The bound icon component of "console": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const ConsoleIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-console" spec={ConsoleIcon_SPEC} />
+);
 
 /** Gateway — the local gateway console: routes meeting at a waypoint. */
-export const GatewayIcon = defineAppIcon("gateway", {
-  motion: "ripple",
-  story: "#c9974f",
-  deep: "#8a682c",
-  soft: "#f0dcae",
-  glyph: (
-    <>
-      <path d="M48 39.5 L56.5 48 L48 56.5 L39.5 48 Z" fill={BACKING} strokeWidth={STROKE_SOFT} />
-      <circle className="dtIcon-m-node" style={si(0)} cx="29.5" cy="32.5" r="5" strokeWidth={STROKE_SOFT} />
-      <circle className="dtIcon-m-node" style={si(1)} cx="66.5" cy="63.5" r="5" strokeWidth={STROKE_SOFT} />
-      <path d="M33.5 36 Q41.5 42.5 42.5 44.8" strokeWidth={STROKE_SOFT} />
-      <path d="M53.5 51.2 Q58.5 55 60.6 57.6" strokeWidth={STROKE_SOFT} />
-    </>
-  ),
-});
+const GatewayIcon_SPEC: AppIconSpec = {
+motion: "ripple",
+story: "#c9974f",
+deep: "#8a682c",
+soft: "#f0dcae",
+glyph: (
+  <>
+    <path d="M48 39.5 L56.5 48 L48 56.5 L39.5 48 Z" fill={BACKING} strokeWidth={STROKE_SOFT} />
+    <circle className="dtIcon-m-node" style={si(0)} cx="29.5" cy="32.5" r="5" strokeWidth={STROKE_SOFT} />
+    <circle className="dtIcon-m-node" style={si(1)} cx="66.5" cy="63.5" r="5" strokeWidth={STROKE_SOFT} />
+    <path d="M33.5 36 Q41.5 42.5 42.5 44.8" strokeWidth={STROKE_SOFT} />
+    <path d="M53.5 51.2 Q58.5 55 60.6 57.6" strokeWidth={STROKE_SOFT} />
+  </>
+),
+};
+
+/** The bound icon component of "gateway": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const GatewayIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-gateway" spec={GatewayIcon_SPEC} />
+);
 
 /** Providers — the provider and model choices: a plug with its cord. */
-export const ProvidersIcon = defineAppIcon("providers", {
-  motion: "pulse",
-  story: "#bd7d55",
-  deep: "#7f5133",
-  soft: "#f0d3ba",
-  glyph: (
-    <>
-      <path d="M43.5 30.5 V38.5 M52.5 30.5 V38.5" />
-      <rect className="dtIcon-m-plug" x="39" y="38.5" width="18" height="19" rx="6.5" fill={BACKING} />
-      <path d="M48 57.5 C48 66.5 55 66 60.5 66 H66.5" strokeWidth={STROKE_SOFT} />
-    </>
-  ),
-});
+const ProvidersIcon_SPEC: AppIconSpec = {
+motion: "pulse",
+story: "#bd7d55",
+deep: "#7f5133",
+soft: "#f0d3ba",
+glyph: (
+  <>
+    <path d="M43.5 30.5 V38.5 M52.5 30.5 V38.5" />
+    <rect className="dtIcon-m-plug" x="39" y="38.5" width="18" height="19" rx="6.5" fill={BACKING} />
+    <path d="M48 57.5 C48 66.5 55 66 60.5 66 H66.5" strokeWidth={STROKE_SOFT} />
+  </>
+),
+};
+
+/** The bound icon component of "providers": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const ProvidersIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-providers" spec={ProvidersIcon_SPEC} />
+);
 
 /** Usage — the local usage records: ascending bars over a baseline. */
-export const UsageIcon = defineAppIcon("usage", {
-  motion: "meter",
-  story: "#b39a78",
-  deep: "#75603f",
-  soft: "#ecdcbe",
-  glyph: (
-    <>
-      <path d="M29.5 65 H66.5" strokeWidth={STROKE_SOFT} />
-      <rect
-        className="dtIcon-m-bar"
-        style={si(0)}
-        x="33"
-        y="47"
-        width="8"
-        height="13"
-        rx="3"
-        fill={IVORY}
-        stroke="none"
-        opacity=".78"
-      />
-      <rect
-        className="dtIcon-m-bar"
-        style={si(1)}
-        x="44"
-        y="39"
-        width="8"
-        height="21"
-        rx="3"
-        fill={IVORY}
-        stroke="none"
-        opacity=".89"
-      />
-      <rect
-        className="dtIcon-m-bar"
-        style={si(2)}
-        x="55"
-        y="30"
-        width="8"
-        height="30"
-        rx="3"
-        fill={IVORY}
-        stroke="none"
-      />
-    </>
-  ),
-});
+const UsageIcon_SPEC: AppIconSpec = {
+motion: "meter",
+story: "#b39a78",
+deep: "#75603f",
+soft: "#ecdcbe",
+glyph: (
+  <>
+    <path d="M29.5 65 H66.5" strokeWidth={STROKE_SOFT} />
+    <rect
+      className="dtIcon-m-bar"
+      style={si(0)}
+      x="33"
+      y="47"
+      width="8"
+      height="13"
+      rx="3"
+      fill={IVORY}
+      stroke="none"
+      opacity=".78"
+    />
+    <rect
+      className="dtIcon-m-bar"
+      style={si(1)}
+      x="44"
+      y="39"
+      width="8"
+      height="21"
+      rx="3"
+      fill={IVORY}
+      stroke="none"
+      opacity=".89"
+    />
+    <rect
+      className="dtIcon-m-bar"
+      style={si(2)}
+      x="55"
+      y="30"
+      width="8"
+      height="30"
+      rx="3"
+      fill={IVORY}
+      stroke="none"
+    />
+  </>
+),
+};
+
+/** The bound icon component of "usage": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const UsageIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-usage" spec={UsageIcon_SPEC} />
+);
 
 /** Routes — the stream health: two feeds merging into one stream. */
-export const RoutesIcon = defineAppIcon("routes", {
-  motion: "draw",
-  story: "#b39a87",
-  deep: "#775f4e",
-  soft: "#eeddd0",
-  glyph: (
-    <>
-      <path
-        className="dtIcon-m-run"
-        style={{ ...si(0), transformOrigin: "28.5px 34.5px" }}
-        d="M28.5 34.5 C40 34.5 39 48 48.5 48"
-      />
-      <path
-        className="dtIcon-m-run"
-        style={{ ...si(1), transformOrigin: "28.5px 61.5px" }}
-        d="M28.5 61.5 C40 61.5 39 48 48.5 48"
-      />
-      <path className="dtIcon-m-run" style={{ ...si(2), transformOrigin: "48.5px 48px" }} d="M48.5 48 H67" />
-      <circle className="dtIcon-m-dot" style={si(3)} cx="48.5" cy="48" r="4.2" fill={IVORY} stroke="none" />
-    </>
-  ),
-});
+const RoutesIcon_SPEC: AppIconSpec = {
+motion: "draw",
+story: "#b39a87",
+deep: "#775f4e",
+soft: "#eeddd0",
+glyph: (
+  <>
+    <path
+      className="dtIcon-m-run"
+      style={{ ...si(0), transformOrigin: "28.5px 34.5px" }}
+      d="M28.5 34.5 C40 34.5 39 48 48.5 48"
+    />
+    <path
+      className="dtIcon-m-run"
+      style={{ ...si(1), transformOrigin: "28.5px 61.5px" }}
+      d="M28.5 61.5 C40 61.5 39 48 48.5 48"
+    />
+    <path className="dtIcon-m-run" style={{ ...si(2), transformOrigin: "48.5px 48px" }} d="M48.5 48 H67" />
+    <circle className="dtIcon-m-dot" style={si(3)} cx="48.5" cy="48" r="4.2" fill={IVORY} stroke="none" />
+  </>
+),
+};
+
+/** The bound icon component of "routes": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const RoutesIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-routes" spec={RoutesIcon_SPEC} />
+);
 
 /** Docs — the documentation library: an open book with a raised spine. */
-export const DocsIcon = defineAppIcon("docs", {
-  motion: "lift",
-  story: "#d8cbb2",
-  deep: "#93856a",
-  soft: "#f6efe0",
-  glyph: (
-    <>
-      <path
-        className="dtIcon-m-page-l"
-        d="M48 35.5 C43 30.8 35 29.8 28.5 31.8 L28.5 59 C35 57 43 58 48 62.5 Z"
-        fill={BACKING}
-      />
-      <path
-        className="dtIcon-m-page-r"
-        d="M48 35.5 C53 30.8 61 29.8 67.5 31.8 L67.5 59 C61 57 53 58 48 62.5 Z"
-        fill={BACKING}
-      />
-      <path d="M48 35.5 V62.5" strokeWidth={STROKE_SOFT} />
-    </>
-  ),
-});
+const DocsIcon_SPEC: AppIconSpec = {
+motion: "lift",
+story: "#d8cbb2",
+deep: "#93856a",
+soft: "#f6efe0",
+glyph: (
+  <>
+    <path
+      className="dtIcon-m-page-l"
+      d="M48 35.5 C43 30.8 35 29.8 28.5 31.8 L28.5 59 C35 57 43 58 48 62.5 Z"
+      fill={BACKING}
+    />
+    <path
+      className="dtIcon-m-page-r"
+      d="M48 35.5 C53 30.8 61 29.8 67.5 31.8 L67.5 59 C61 57 53 58 48 62.5 Z"
+      fill={BACKING}
+    />
+    <path d="M48 35.5 V62.5" strokeWidth={STROKE_SOFT} />
+  </>
+),
+};
+
+/** The bound icon component of "docs": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const DocsIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-docs" spec={DocsIcon_SPEC} />
+);
 
 /** Explore — the exploration gallery: the wind rose inside its ring. */
-export const ExploreIcon = defineAppIcon("explore", {
-  motion: "compass",
-  story: "#c98d80",
-  deep: "#8a5449",
-  soft: "#f4d8cf",
-  glyph: (
-    <>
-      <circle cx="48" cy="48" r="19" strokeWidth={STROKE_SOFT} />
-      <g className="dtIcon-m-needle">
-        <path d="M33 48 L48 44.2 L63 48 L48 51.8 Z" fill={IVORY} stroke="none" opacity=".55" />
-        <path d="M48 31.5 L51.8 48 L48 64.5 L44.2 48 Z" fill={IVORY} stroke="none" />
-      </g>
-      <circle cx="48" cy="48" r="2.6" fill="#8a5449" stroke="none" />
-    </>
-  ),
-});
+const ExploreIcon_SPEC: AppIconSpec = {
+motion: "compass",
+story: "#c98d80",
+deep: "#8a5449",
+soft: "#f4d8cf",
+glyph: (
+  <>
+    <circle cx="48" cy="48" r="19" strokeWidth={STROKE_SOFT} />
+    <g className="dtIcon-m-needle">
+      <path d="M33 48 L48 44.2 L63 48 L48 51.8 Z" fill={IVORY} stroke="none" opacity=".55" />
+      <path d="M48 31.5 L51.8 48 L48 64.5 L44.2 48 Z" fill={IVORY} stroke="none" />
+    </g>
+    <circle cx="48" cy="48" r="2.6" fill="#8a5449" stroke="none" />
+  </>
+),
+};
+
+/** The bound icon component of "explore": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const ExploreIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-explore" spec={ExploreIcon_SPEC} />
+);
 
 /** OS — the family operating surface: the hex frame over a four-pane grid. */
-export const OsIcon = defineAppIcon("os", {
-  motion: "lattice",
-  story: "#aab4c2",
-  deep: "#647082",
-  soft: "#e2e8f0",
-  glyph: (
-    <>
-      <path d="M48 27 L66.5 37.5 V58.5 L48 69 L29.5 58.5 V37.5 Z" fill={BACKING} />
-      <rect
-        className="dtIcon-m-pane"
-        style={si(0)}
-        x="37.5"
-        y="37"
-        width="9"
-        height="9"
-        rx="2.5"
-        fill={IVORY}
-        stroke="none"
-        opacity=".92"
-      />
-      <rect
-        className="dtIcon-m-pane"
-        style={si(1)}
-        x="49.5"
-        y="37"
-        width="9"
-        height="9"
-        rx="2.5"
-        fill={IVORY}
-        stroke="none"
-        opacity=".92"
-      />
-      <rect
-        className="dtIcon-m-pane"
-        style={si(2)}
-        x="37.5"
-        y="49"
-        width="9"
-        height="9"
-        rx="2.5"
-        fill={IVORY}
-        stroke="none"
-        opacity=".92"
-      />
-      <rect
-        className="dtIcon-m-pane"
-        style={si(3)}
-        x="49.5"
-        y="49"
-        width="9"
-        height="9"
-        rx="2.5"
-        fill={IVORY}
-        stroke="none"
-        opacity=".92"
-      />
-    </>
-  ),
-});
+const OsIcon_SPEC: AppIconSpec = {
+motion: "lattice",
+story: "#aab4c2",
+deep: "#647082",
+soft: "#e2e8f0",
+glyph: (
+  <>
+    <path d="M48 27 L66.5 37.5 V58.5 L48 69 L29.5 58.5 V37.5 Z" fill={BACKING} />
+    <rect
+      className="dtIcon-m-pane"
+      style={si(0)}
+      x="37.5"
+      y="37"
+      width="9"
+      height="9"
+      rx="2.5"
+      fill={IVORY}
+      stroke="none"
+      opacity=".92"
+    />
+    <rect
+      className="dtIcon-m-pane"
+      style={si(1)}
+      x="49.5"
+      y="37"
+      width="9"
+      height="9"
+      rx="2.5"
+      fill={IVORY}
+      stroke="none"
+      opacity=".92"
+    />
+    <rect
+      className="dtIcon-m-pane"
+      style={si(2)}
+      x="37.5"
+      y="49"
+      width="9"
+      height="9"
+      rx="2.5"
+      fill={IVORY}
+      stroke="none"
+      opacity=".92"
+    />
+    <rect
+      className="dtIcon-m-pane"
+      style={si(3)}
+      x="49.5"
+      y="49"
+      width="9"
+      height="9"
+      rx="2.5"
+      fill={IVORY}
+      stroke="none"
+      opacity=".92"
+    />
+  </>
+),
+};
+
+/** The bound icon component of "os": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const OsIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-os" spec={OsIcon_SPEC} />
+);
 
 /** Settings — the local preferences: a gear with eight rounded teeth. */
-export const SettingsIcon = defineAppIcon("settings", {
-  motion: "turn",
-  story: "#b6ada1",
-  deep: "#6f6759",
-  soft: "#ece5da",
-  glyph: (
-    <>
-      <circle cx="48" cy="48" r="13.5" strokeWidth={STROKE_BRIGHT} />
-      <path d="M64.5 48 H69.5 M59.7 59.7 L63.2 63.2 M48 64.5 V69.5 M36.3 59.7 L32.8 63.2 M31.5 48 H26.5 M36.3 36.3 L32.8 32.8 M48 31.5 V26.5 M59.7 36.3 L63.2 32.8" />
-      <circle cx="48" cy="48" r="4.6" strokeWidth={STROKE_HAIR} />
-    </>
-  ),
-});
+const SettingsIcon_SPEC: AppIconSpec = {
+motion: "turn",
+story: "#b6ada1",
+deep: "#6f6759",
+soft: "#ece5da",
+glyph: (
+  <>
+    <circle cx="48" cy="48" r="13.5" strokeWidth={STROKE_BRIGHT} />
+    <path d="M64.5 48 H69.5 M59.7 59.7 L63.2 63.2 M48 64.5 V69.5 M36.3 59.7 L32.8 63.2 M31.5 48 H26.5 M36.3 36.3 L32.8 32.8 M48 31.5 V26.5 M59.7 36.3 L63.2 32.8" />
+    <circle cx="48" cy="48" r="4.6" strokeWidth={STROKE_HAIR} />
+  </>
+),
+};
+
+/** The bound icon component of "settings": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const SettingsIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-settings" spec={SettingsIcon_SPEC} />
+);
 
 /** Calculator — the native arithmetic app: the keypad grid with the
  * equals key. */
-export const CalculatorIcon = defineAppIcon("calculator", {
-  motion: "press",
-  story: "#9aa7b4",
-  deep: "#5c6875",
-  soft: "#dbe3ec",
-  glyph: (
-    <>
-      <rect x="29" y="25.5" width="38" height="45" rx="6.5" fill={BACKING} />
-      <rect x="35" y="31.5" width="22" height="8" rx="2" fill={IVORY} stroke="none" opacity=".86" />
-      <rect x="35" y="45.5" width="6.5" height="6.5" rx="2" fill={IVORY} stroke="none" opacity=".78" />
-      <rect x="44.25" y="45.5" width="6.5" height="6.5" rx="2" fill={IVORY} stroke="none" opacity=".78" />
-      <rect x="35" y="56" width="6.5" height="6.5" rx="2" fill={IVORY} stroke="none" opacity=".78" />
-      <rect x="44.25" y="56" width="6.5" height="6.5" rx="2" fill={IVORY} stroke="none" opacity=".78" />
-      <g className="dtIcon-m-key">
-        <path d="M54 50.5 H61.5" strokeWidth={STROKE_BRIGHT} />
-        <path d="M54 60 H61.5" strokeWidth={STROKE_BRIGHT} />
-      </g>
-    </>
-  ),
-});
+const CalculatorIcon_SPEC: AppIconSpec = {
+motion: "press",
+story: "#9aa7b4",
+deep: "#5c6875",
+soft: "#dbe3ec",
+glyph: (
+  <>
+    <rect x="29" y="25.5" width="38" height="45" rx="6.5" fill={BACKING} />
+    <rect x="35" y="31.5" width="22" height="8" rx="2" fill={IVORY} stroke="none" opacity=".86" />
+    <rect x="35" y="45.5" width="6.5" height="6.5" rx="2" fill={IVORY} stroke="none" opacity=".78" />
+    <rect x="44.25" y="45.5" width="6.5" height="6.5" rx="2" fill={IVORY} stroke="none" opacity=".78" />
+    <rect x="35" y="56" width="6.5" height="6.5" rx="2" fill={IVORY} stroke="none" opacity=".78" />
+    <rect x="44.25" y="56" width="6.5" height="6.5" rx="2" fill={IVORY} stroke="none" opacity=".78" />
+    <g className="dtIcon-m-key">
+      <path d="M54 50.5 H61.5" strokeWidth={STROKE_BRIGHT} />
+      <path d="M54 60 H61.5" strokeWidth={STROKE_BRIGHT} />
+    </g>
+  </>
+),
+};
+
+/** The bound icon component of "calculator": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const CalculatorIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-calculator" spec={CalculatorIcon_SPEC} />
+);
 
 /** Image — the native image studio: the picture frame with the mountain
  * and the sun. */
-export const ImageIcon = defineAppIcon("image", {
-  motion: "rise",
-  story: "#c084fc",
-  deep: "#7443ab",
-  soft: "#e9d9fb",
-  glyph: (
-    <>
-      <rect x="28" y="28" width="40" height="40" rx="5.5" fill={BACKING} />
-      <path d="M33 59.5 L42.5 45.5 L49.5 54.5 L55.5 47.5 L63 59.5 Z" fill={IVORY} stroke="none" opacity=".92" />
-      <circle className="dtIcon-m-sun" cx="57.5" cy="37.5" r="4.2" fill={IVORY} stroke="none" />
-    </>
-  ),
-});
+const ImageIcon_SPEC: AppIconSpec = {
+motion: "rise",
+story: "#c084fc",
+deep: "#7443ab",
+soft: "#e9d9fb",
+glyph: (
+  <>
+    <rect x="28" y="28" width="40" height="40" rx="5.5" fill={BACKING} />
+    <path d="M33 59.5 L42.5 45.5 L49.5 54.5 L55.5 47.5 L63 59.5 Z" fill={IVORY} stroke="none" opacity=".92" />
+    <circle className="dtIcon-m-sun" cx="57.5" cy="37.5" r="4.2" fill={IVORY} stroke="none" />
+  </>
+),
+};
+
+/** The bound icon component of "image": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const ImageIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-image" spec={ImageIcon_SPEC} />
+);
 
 /** Video — the native video editor: the clapperboard with the play
  * triangle. */
-export const VideoIcon = defineAppIcon("video", {
-  motion: "play",
-  story: "#f472b6",
-  deep: "#a83570",
-  soft: "#fbd8ea",
-  glyph: (
-    <>
-      <rect x="29" y="41.5" width="38" height="26.5" rx="5" fill={BACKING} />
-      <path d="M31.5 41.5 L35 30.5 L64.5 36 L61.5 41.5 Z" fill={BACKING} />
-      <path d="M42.5 33.4 L45.2 40.9 M53.5 35 L56 41" strokeWidth={STROKE_SOFT} />
-      <path className="dtIcon-m-play" d="M43.5 48 L56.5 54.75 L43.5 61.5 Z" fill={IVORY} stroke="none" />
-    </>
-  ),
-});
+const VideoIcon_SPEC: AppIconSpec = {
+motion: "play",
+story: "#f472b6",
+deep: "#a83570",
+soft: "#fbd8ea",
+glyph: (
+  <>
+    <rect x="29" y="41.5" width="38" height="26.5" rx="5" fill={BACKING} />
+    <path d="M31.5 41.5 L35 30.5 L64.5 36 L61.5 41.5 Z" fill={BACKING} />
+    <path d="M42.5 33.4 L45.2 40.9 M53.5 35 L56 41" strokeWidth={STROKE_SOFT} />
+    <path className="dtIcon-m-play" d="M43.5 48 L56.5 54.75 L43.5 61.5 Z" fill={IVORY} stroke="none" />
+  </>
+),
+};
+
+/** The bound icon component of "video": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const VideoIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-video" spec={VideoIcon_SPEC} />
+);
 
 /** Audio — the native audio studio: the sound bars over the note. */
-export const AudioIcon = defineAppIcon("audio", {
-  motion: "wave",
-  story: "#d9962e",
-  deep: "#8a5c14",
-  soft: "#f3dcb0",
-  glyph: (
-    <>
-      <circle cx="36" cy="55.5" r="4.6" fill={IVORY} stroke="none" />
-      <path d="M40.6 55.5 V36.5" strokeWidth={STROKE_BRIGHT} />
-      <path d="M40.6 36.5 Q47 38.5 48 44.5" strokeWidth={STROKE_SOFT} />
-      <rect
-        className="dtIcon-m-bar"
-        style={si(0)}
-        x="50.5"
-        y="47"
-        width="5.5"
-        height="11"
-        rx="2.75"
-        fill={IVORY}
-        stroke="none"
-        opacity=".78"
-      />
-      <rect
-        className="dtIcon-m-bar"
-        style={si(1)}
-        x="57.5"
-        y="41"
-        width="5.5"
-        height="17"
-        rx="2.75"
-        fill={IVORY}
-        stroke="none"
-        opacity=".88"
-      />
-      <rect
-        className="dtIcon-m-bar"
-        style={si(2)}
-        x="64.5"
-        y="36"
-        width="5.5"
-        height="22"
-        rx="2.75"
-        fill={IVORY}
-        stroke="none"
-      />
-    </>
-  ),
-});
+const AudioIcon_SPEC: AppIconSpec = {
+motion: "wave",
+story: "#d9962e",
+deep: "#8a5c14",
+soft: "#f3dcb0",
+glyph: (
+  <>
+    <circle cx="36" cy="55.5" r="4.6" fill={IVORY} stroke="none" />
+    <path d="M40.6 55.5 V36.5" strokeWidth={STROKE_BRIGHT} />
+    <path d="M40.6 36.5 Q47 38.5 48 44.5" strokeWidth={STROKE_SOFT} />
+    <rect
+      className="dtIcon-m-bar"
+      style={si(0)}
+      x="50.5"
+      y="47"
+      width="5.5"
+      height="11"
+      rx="2.75"
+      fill={IVORY}
+      stroke="none"
+      opacity=".78"
+    />
+    <rect
+      className="dtIcon-m-bar"
+      style={si(1)}
+      x="57.5"
+      y="41"
+      width="5.5"
+      height="17"
+      rx="2.75"
+      fill={IVORY}
+      stroke="none"
+      opacity=".88"
+    />
+    <rect
+      className="dtIcon-m-bar"
+      style={si(2)}
+      x="64.5"
+      y="36"
+      width="5.5"
+      height="22"
+      rx="2.75"
+      fill={IVORY}
+      stroke="none"
+    />
+  </>
+),
+};
+
+/** The bound icon component of "audio": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const AudioIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-audio" spec={AudioIcon_SPEC} />
+);
 
 /** Games — the native games shelf: the gamepad with its cross and studs. */
-export const GamesIcon = defineAppIcon("games", {
-  motion: "roll",
-  story: "#e8563f",
-  deep: "#9c3120",
-  soft: "#f9d6ca",
-  glyph: (
-    <>
-      <path
-        d="M35 37.5 H61 C66 37.5 68.5 41 69.3 45.5 C69.6 51 69.8 57.5 66.8 60.2 C63 62.9 58.6 60.7 56.4 56.6 L54 52.5 H42 L39.6 56.6 C37.4 60.7 33 62.9 29.2 60.2 C26.2 57.5 26.4 51 26.7 45.5 C27.5 41 30 37.5 35 37.5 Z"
-        fill={BACKING}
-      />
-      <path d="M36.5 44.5 V53.5 M32 49 H41" strokeWidth={STROKE_BRIGHT} />
-      <circle cx="58.5" cy="46.5" r="2.7" fill={IVORY} stroke="none" />
-      <circle cx="63" cy="51.5" r="2.7" fill={IVORY} stroke="none" />
-    </>
-  ),
-});
+const GamesIcon_SPEC: AppIconSpec = {
+motion: "roll",
+story: "#e8563f",
+deep: "#9c3120",
+soft: "#f9d6ca",
+glyph: (
+  <>
+    <path
+      d="M35 37.5 H61 C66 37.5 68.5 41 69.3 45.5 C69.6 51 69.8 57.5 66.8 60.2 C63 62.9 58.6 60.7 56.4 56.6 L54 52.5 H42 L39.6 56.6 C37.4 60.7 33 62.9 29.2 60.2 C26.2 57.5 26.4 51 26.7 45.5 C27.5 41 30 37.5 35 37.5 Z"
+      fill={BACKING}
+    />
+    <path d="M36.5 44.5 V53.5 M32 49 H41" strokeWidth={STROKE_BRIGHT} />
+    <circle cx="58.5" cy="46.5" r="2.7" fill={IVORY} stroke="none" />
+    <circle cx="63" cy="51.5" r="2.7" fill={IVORY} stroke="none" />
+  </>
+),
+};
+
+/** The bound icon component of "games": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const GamesIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-games" spec={GamesIcon_SPEC} />
+);
 
 /** Argan — the DNS and gateway library: the double-contour shield. */
-export const ArganIcon = defineAppIcon("argan", {
-  motion: "sway",
-  story: "#14b98c",
-  deep: "#0b7d5e",
-  soft: "#bcefdc",
-  glyph: (
-    <>
-      <path d="M48 27.5 L66 34 V49 C66 59.8 58.7 66.2 48 70.2 C37.3 66.2 30 59.8 30 49 V34 Z" fill={BACKING} />
-      <path
-        d="M48 35 L59.5 39.2 V48.6 C59.5 55.8 54.6 60.4 48 63.4 C41.4 60.4 36.5 55.8 36.5 48.6 V39.2 Z"
-        strokeWidth={STROKE_HAIR}
-        opacity=".85"
-      />
-    </>
-  ),
-});
+const ArganIcon_SPEC: AppIconSpec = {
+motion: "sway",
+story: "#14b98c",
+deep: "#0b7d5e",
+soft: "#bcefdc",
+glyph: (
+  <>
+    <path d="M48 27.5 L66 34 V49 C66 59.8 58.7 66.2 48 70.2 C37.3 66.2 30 59.8 30 49 V34 Z" fill={BACKING} />
+    <path
+      d="M48 35 L59.5 39.2 V48.6 C59.5 55.8 54.6 60.4 48 63.4 C41.4 60.4 36.5 55.8 36.5 48.6 V39.2 Z"
+      strokeWidth={STROKE_HAIR}
+      opacity=".85"
+    />
+  </>
+),
+};
+
+/** The bound icon component of "argan": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const ArganIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-argan" spec={ArganIcon_SPEC} />
+);
 
 /** Cadria — the video, image and 3D studio: a clapperboard mid-slate. */
-export const CadriaIcon = defineAppIcon("cadria", {
-  motion: "spin",
-  story: "#e04f9f",
-  deep: "#972a66",
-  soft: "#f7c4e2",
-  glyph: (
-    <>
-      <rect x="28" y="46" width="40" height="21" rx="5" fill={BACKING} />
-      <g className="dtIcon-m-slate">
-        <path d="M30.5 46 L33.8 31.5 L67.5 37.5 L65 46 Z" fill={BACKING} />
-        <path d="M41.5 33.2 L44.5 45.3 M53 35.3 L55.5 45.5" strokeWidth={STROKE_SOFT} />
-      </g>
-    </>
-  ),
-});
+const CadriaIcon_SPEC: AppIconSpec = {
+motion: "spin",
+story: "#e04f9f",
+deep: "#972a66",
+soft: "#f7c4e2",
+glyph: (
+  <>
+    <rect x="28" y="46" width="40" height="21" rx="5" fill={BACKING} />
+    <g className="dtIcon-m-slate">
+      <path d="M30.5 46 L33.8 31.5 L67.5 37.5 L65 46 Z" fill={BACKING} />
+      <path d="M41.5 33.2 L44.5 45.3 M53 35.3 L55.5 45.5" strokeWidth={STROKE_SOFT} />
+    </g>
+  </>
+),
+};
+
+/** The bound icon component of "cadria": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const CadriaIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-cadria" spec={CadriaIcon_SPEC} />
+);
 
 /** Debonair — the OS audio DAW: a five-band equalizer in full swing. */
-export const DebonairIcon = defineAppIcon("debonair", {
-  motion: "wave",
-  story: "#bd7a1a",
-  deep: "#7c4c0a",
-  soft: "#f2ddab",
-  glyph: (
-    <>
-      <rect
-        className="dtIcon-m-bar"
-        style={si(0)}
-        x="27.2"
-        y="39"
-        width="5.6"
-        height="18"
-        rx="3"
-        fill={IVORY}
-        stroke="none"
-        opacity=".78"
-      />
-      <rect
-        className="dtIcon-m-bar"
-        style={si(1)}
-        x="36.2"
-        y="34"
-        width="5.6"
-        height="28"
-        rx="3"
-        fill={IVORY}
-        stroke="none"
-        opacity=".88"
-      />
-      <rect
-        className="dtIcon-m-bar"
-        style={si(2)}
-        x="45.2"
-        y="28"
-        width="5.6"
-        height="40"
-        rx="3"
-        fill={IVORY}
-        stroke="none"
-      />
-      <rect
-        className="dtIcon-m-bar"
-        style={si(3)}
-        x="54.2"
-        y="34"
-        width="5.6"
-        height="28"
-        rx="3"
-        fill={IVORY}
-        stroke="none"
-        opacity=".88"
-      />
-      <rect
-        className="dtIcon-m-bar"
-        style={si(4)}
-        x="63.2"
-        y="39"
-        width="5.6"
-        height="18"
-        rx="3"
-        fill={IVORY}
-        stroke="none"
-        opacity=".78"
-      />
-    </>
-  ),
-});
+const DebonairIcon_SPEC: AppIconSpec = {
+motion: "wave",
+story: "#bd7a1a",
+deep: "#7c4c0a",
+soft: "#f2ddab",
+glyph: (
+  <>
+    <rect
+      className="dtIcon-m-bar"
+      style={si(0)}
+      x="27.2"
+      y="39"
+      width="5.6"
+      height="18"
+      rx="3"
+      fill={IVORY}
+      stroke="none"
+      opacity=".78"
+    />
+    <rect
+      className="dtIcon-m-bar"
+      style={si(1)}
+      x="36.2"
+      y="34"
+      width="5.6"
+      height="28"
+      rx="3"
+      fill={IVORY}
+      stroke="none"
+      opacity=".88"
+    />
+    <rect
+      className="dtIcon-m-bar"
+      style={si(2)}
+      x="45.2"
+      y="28"
+      width="5.6"
+      height="40"
+      rx="3"
+      fill={IVORY}
+      stroke="none"
+    />
+    <rect
+      className="dtIcon-m-bar"
+      style={si(3)}
+      x="54.2"
+      y="34"
+      width="5.6"
+      height="28"
+      rx="3"
+      fill={IVORY}
+      stroke="none"
+      opacity=".88"
+    />
+    <rect
+      className="dtIcon-m-bar"
+      style={si(4)}
+      x="63.2"
+      y="39"
+      width="5.6"
+      height="18"
+      rx="3"
+      fill={IVORY}
+      stroke="none"
+      opacity=".78"
+    />
+  </>
+),
+};
+
+/** The bound icon component of "debonair": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const DebonairIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-debonair" spec={DebonairIcon_SPEC} />
+);
 
 /** Stealthhead — the OS FPS platform: a scope with cardinal ticks. */
-export const StealthheadIcon = defineAppIcon("stealthhead", {
-  motion: "breathe",
-  story: "#f4694f",
-  deep: "#a63322",
-  soft: "#ffd3c4",
-  glyph: (
-    <>
-      <circle cx="48" cy="48" r="17.5" />
-      <path d="M48 26 V31.5 M48 64.5 V70 M26 48 H31.5 M64.5 48 H70" />
-      <circle cx="48" cy="48" r="4.4" fill={IVORY} stroke="none" />
-    </>
-  ),
-});
+const StealthheadIcon_SPEC: AppIconSpec = {
+motion: "breathe",
+story: "#f4694f",
+deep: "#a63322",
+soft: "#ffd3c4",
+glyph: (
+  <>
+    <circle cx="48" cy="48" r="17.5" />
+    <path d="M48 26 V31.5 M48 64.5 V70 M26 48 H31.5 M64.5 48 H70" />
+    <circle cx="48" cy="48" r="4.4" fill={IVORY} stroke="none" />
+  </>
+),
+};
+
+/** The bound icon component of "stealthhead": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const StealthheadIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-stealthhead" spec={StealthheadIcon_SPEC} />
+);
 
 /** Forge — the family forge: a mallet head over its handle. */
-export const ForgeIcon = defineAppIcon("forge", {
-  motion: "tap",
-  story: "#b5793b",
-  deep: "#7a4e22",
-  soft: "#ecc894",
-  glyph: (
-    <>
-      <g className="dtIcon-m-tap">
-        <g transform="rotate(-24 50 37)">
-          <rect x="35" y="29.5" width="30" height="15" rx="5.5" fill={BACKING} />
-        </g>
+const ForgeIcon_SPEC: AppIconSpec = {
+motion: "tap",
+story: "#b5793b",
+deep: "#7a4e22",
+soft: "#ecc894",
+glyph: (
+  <>
+    <g className="dtIcon-m-tap">
+      <g transform="rotate(-24 50 37)">
+        <rect x="35" y="29.5" width="30" height="15" rx="5.5" fill={BACKING} />
       </g>
-      <path d="M53 44 L43.5 64" strokeWidth={STROKE_BRIGHT} />
-    </>
-  ),
-});
+    </g>
+    <path d="M53 44 L43.5 64" strokeWidth={STROKE_BRIGHT} />
+  </>
+),
+};
+
+/** The bound icon component of "forge": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const ForgeIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-forge" spec={ForgeIcon_SPEC} />
+);
 
 /** Foundry — the family foundry: the sawtooth plant with its stack. */
-export const FoundryIcon = defineAppIcon("foundry", {
-  motion: "glow",
-  story: "#98a2ad",
-  deep: "#5f6b78",
-  soft: "#d4dbe2",
-  glyph: (
-    <>
-      <path d="M28.5 66 V45 L39.5 53 V45 L50.5 53 V41 H56.5 V32 H63 V66 Z" fill={BACKING} />
-      <rect
-        className="dtIcon-m-tick"
-        style={si(0)}
-        x="33.5"
-        y="56.5"
-        width="6.5"
-        height="7.5"
-        rx="2"
-        fill={IVORY}
-        stroke="none"
-        opacity=".85"
-      />
-      <rect
-        className="dtIcon-m-tick"
-        style={si(1)}
-        x="44"
-        y="56.5"
-        width="6.5"
-        height="7.5"
-        rx="2"
-        fill={IVORY}
-        stroke="none"
-        opacity=".85"
-      />
-    </>
-  ),
-});
+const FoundryIcon_SPEC: AppIconSpec = {
+motion: "glow",
+story: "#98a2ad",
+deep: "#5f6b78",
+soft: "#d4dbe2",
+glyph: (
+  <>
+    <path d="M28.5 66 V45 L39.5 53 V45 L50.5 53 V41 H56.5 V32 H63 V66 Z" fill={BACKING} />
+    <rect
+      className="dtIcon-m-tick"
+      style={si(0)}
+      x="33.5"
+      y="56.5"
+      width="6.5"
+      height="7.5"
+      rx="2"
+      fill={IVORY}
+      stroke="none"
+      opacity=".85"
+    />
+    <rect
+      className="dtIcon-m-tick"
+      style={si(1)}
+      x="44"
+      y="56.5"
+      width="6.5"
+      height="7.5"
+      rx="2"
+      fill={IVORY}
+      stroke="none"
+      opacity=".85"
+    />
+  </>
+),
+};
+
+/** The bound icon component of "foundry": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const FoundryIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-foundry" spec={FoundryIcon_SPEC} />
+);
 
 /** Vault — the family vault: the three-spoke door inside its rings. */
-export const VaultIcon = defineAppIcon("vault", {
-  motion: "dial",
-  story: "#cfa84a",
-  deep: "#8f7226",
-  soft: "#f0dc9e",
-  glyph: (
-    <>
-      <circle cx="48" cy="48" r="20" strokeWidth={STROKE_BRIGHT} />
-      <circle cx="48" cy="48" r="11" strokeWidth={STROKE_SOFT} />
-      <g className="dtIcon-m-dial">
-        <path d="M48 48 V37 M48 48 L57.5 53.5 M48 48 L38.5 53.5" strokeWidth={STROKE_SOFT} />
-      </g>
-    </>
-  ),
-});
+const VaultIcon_SPEC: AppIconSpec = {
+motion: "dial",
+story: "#cfa84a",
+deep: "#8f7226",
+soft: "#f0dc9e",
+glyph: (
+  <>
+    <circle cx="48" cy="48" r="20" strokeWidth={STROKE_BRIGHT} />
+    <circle cx="48" cy="48" r="11" strokeWidth={STROKE_SOFT} />
+    <g className="dtIcon-m-dial">
+      <path d="M48 48 V37 M48 48 L57.5 53.5 M48 48 L38.5 53.5" strokeWidth={STROKE_SOFT} />
+    </g>
+  </>
+),
+};
+
+/** The bound icon component of "vault": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const VaultIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-vault" spec={VaultIcon_SPEC} />
+);
 
 /** Getry — the family registry: the cataloged stack of plates. */
-export const GetryIcon = defineAppIcon("getry", {
-  motion: "slide",
-  story: "#6fae8f",
-  deep: "#437a61",
-  soft: "#b8dcc9",
-  glyph: (
-    <>
-      <path className="dtIcon-m-plate" style={si(0)} d="M48 28.5 L63.5 37.5 L48 46.5 L32.5 37.5 Z" fill={BACKING} />
-      <path className="dtIcon-m-plate" style={si(1)} d="M32.5 46.5 L48 55.5 L63.5 46.5" />
-      <path className="dtIcon-m-plate" style={si(2)} d="M32.5 55 L48 64 L63.5 55" />
-    </>
-  ),
-});
+const GetryIcon_SPEC: AppIconSpec = {
+motion: "slide",
+story: "#6fae8f",
+deep: "#437a61",
+soft: "#b8dcc9",
+glyph: (
+  <>
+    <path className="dtIcon-m-plate" style={si(0)} d="M48 28.5 L63.5 37.5 L48 46.5 L32.5 37.5 Z" fill={BACKING} />
+    <path className="dtIcon-m-plate" style={si(1)} d="M32.5 46.5 L48 55.5 L63.5 46.5" />
+    <path className="dtIcon-m-plate" style={si(2)} d="M32.5 55 L48 64 L63.5 55" />
+  </>
+),
+};
+
+/** The bound icon component of "getry": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const GetryIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-getry" spec={GetryIcon_SPEC} />
+);
 
 /** Saddle — the sandbox engine: the crate drawn in light isometric. */
-export const SaddleIcon = defineAppIcon("saddle", {
-  motion: "shine",
-  story: "#d6b483",
-  deep: "#8f6b3c",
-  soft: "#f2e3c8",
-  glyph: (
-    <>
-      <clipPath id="dti-saddle-shine">
-        <path d={SQUIRCLE} />
-      </clipPath>
-      <path d="M31 42.5 L40 33 H65 L56 42.5 Z" fill={BACKING} />
-      <path d="M56 42.5 L65 33 V56 L56 65.5 Z" fill="rgba(255,255,255,.09)" />
-      <rect x="31" y="42.5" width="25" height="23" rx="2.5" fill={BACKING} />
-      <g clipPath="url(#dti-saddle-shine)">
-        <g className="dtIcon-m-shine">
-          <rect x="18" y="14" width="13" height="70" fill="rgba(255,255,255,.55)" transform="skewX(-16)" />
-        </g>
+const SaddleIcon_SPEC: AppIconSpec = {
+motion: "shine",
+story: "#d6b483",
+deep: "#8f6b3c",
+soft: "#f2e3c8",
+glyph: (
+  <>
+    <clipPath id="dti-saddle-shine">
+      <path d={SQUIRCLE} />
+    </clipPath>
+    <path d="M31 42.5 L40 33 H65 L56 42.5 Z" fill={BACKING} />
+    <path d="M56 42.5 L65 33 V56 L56 65.5 Z" fill="rgba(255,255,255,.09)" />
+    <rect x="31" y="42.5" width="25" height="23" rx="2.5" fill={BACKING} />
+    <g clipPath="url(#dti-saddle-shine)">
+      <g className="dtIcon-m-shine">
+        <rect x="18" y="14" width="13" height="70" fill="rgba(255,255,255,.55)" transform="skewX(-16)" />
       </g>
-    </>
-  ),
-});
+    </g>
+  </>
+),
+};
+
+/** The bound icon component of "saddle": a module-level arrow over the
+ * shared face, the spec frozen in the closure at load. */
+export const SaddleIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <AppIconFace {...props} uid="dti-saddle" spec={SaddleIcon_SPEC} />
+);
 
 /**
  * The premium icon set of the shell, keyed by the registry `iconset` field:
