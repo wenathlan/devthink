@@ -37,7 +37,14 @@ it("declares runtime metadata and an optional browser provider peer", async () =
   const root = dirname(fileURLToPath(new URL(import.meta.url)));
   const packagejson = JSON.parse(await readFile(resolve(root, "../package.json"), "utf8"));
   assert.equal(packagejson.private, false);
-  assert.equal(packagejson.engines.node, ">=26.12.0 <27");
+  /* the 2.0.133 publish regression taught the lesson: the engines floor is
+     not a constant to freeze in a test — it walks with the node pin the
+     maintenance rung stamps, so the assertion derives the bounded form from
+     the .nvmrc the rung carries beside this manifest (a rung that walks one
+     without the other answers red here, never in the publish lane again) */
+  const nodepin = (await readFile(resolve(root, "../.nvmrc"), "utf8")).trim();
+  const nodemajor = Number(nodepin.split(".")[0]);
+  assert.equal(packagejson.engines.node, `>=${nodepin} <${nodemajor + 1}`);
   assert.equal(packagejson.packageManager, "npm@12.0.2");
   assert.equal(packagejson.peerDependencies.playwright, "^1.63.0");
   assert.equal(packagejson.peerDependenciesMeta.playwright.optional, true);

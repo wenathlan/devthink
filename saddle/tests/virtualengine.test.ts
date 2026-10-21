@@ -8,6 +8,9 @@
 
 import assert from 'node:assert/strict';
 import process from 'node:process';
+import { readFile } from 'node:fs/promises';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, it } from 'vitest';
 import {
   buildEndpoint,
@@ -30,7 +33,7 @@ import {
 /* ------------------------------------------------------------------ */
 
 describe('the virtualengine contract', () => {
-  it('engineversions carries the critical toolchain anchors', () => {
+  it('engineversions carries the critical toolchain anchors', async () => {
     assert.ok(typeof engineversions === 'object');
     for (const key of [
       'nodecurrent',
@@ -44,7 +47,11 @@ describe('the virtualengine contract', () => {
       assert.ok(key in engineversions, `engineversions must carry ${key}`);
       assert.ok(typeof engineversions[key] === 'string' && engineversions[key].length > 0);
     }
-    assert.equal(engineversions.nodecurrent, '26.12.0');
+    /* the advertised nodecurrent anchor walks with the .nvmrc pin the
+       maintenance rung stamps (the 2.0.133 lesson: an engine advertising a
+       node the repository retired is drift, and the pin is the one truth) */
+    const nodepin = (await readFile(resolve(dirname(fileURLToPath(new URL(import.meta.url))), '../.nvmrc'), 'utf8')).trim();
+    assert.equal(engineversions.nodecurrent, nodepin);
     assert.equal(engineversions.docker, '29.7.2');
     assert.equal(engineversions.qemu, '11.1.0');
     assert.equal(engineversions.typescript, '7.0.2');
