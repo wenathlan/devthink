@@ -215,3 +215,6 @@ db/*.db-shm
 db/*.db-wal
 *.db-shm
 *.db-wal
+
+# the docs audit scratch (tests/docsaudit.mjs writes beside the repo root)
+/shyz-audit/
