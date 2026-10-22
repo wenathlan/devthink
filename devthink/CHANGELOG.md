@@ -1,5 +1,26 @@
 # DevThink release notes
 
+## 2.0.134
+
+This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (2.0.133 plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: - "@opencode-ai/sdk": "^1.19.3",
+- "@opencode-ai/sdk": "^1.19.4",
+- "bun": ">=1.4.3 <2",
+- "bun": ">=1.4.4 <2",
+- "bun-types": "^1.4.3",
+- "bun-types": "^1.4.4",
+- "npm": ">=12.2.0 <13",
+- "npm": ">=12.2.1 <13",
+- "packageManager": "bun@1.4.3"
+- "packageManager": "bun@1.4.4"
+- "pnpm": "^12.14.0",
+- "pnpm": "^12.15.0",
+- bun-version: 1.4.3
+- bun-version: 1.4.4
+- uses: trufflesecurity/trufflehog@v3.99.3
+- uses: trufflesecurity/trufflehog@v3.99.4
+- version: 12.14.0
+- version: 12.15.0. The version stamps 2.0.134 land across the metadata family with the apifreeze artifact re-frozen and the permission baseline recorded, and the ladder keeps no long-lived branch behind: the automation branch of this rung squashes onto main when the verification pipeline answers green — and closes with its branch deleted when it answers red — so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way.
+
 ## 2.0.133
 
 This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (2.0.132 plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: - "@biomejs/biome": "^2.5.15",
