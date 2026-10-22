@@ -1,1589 +1,760 @@
 /**
- * appicons.tsx — the premium drawn icon set of the Sol shell. One hand-drawn
- * SVG component per desktop app (Sol/shell/appregistry.ts), exported through
- * the APP_ICONS map the app tile reads by the registry `iconset` key.
+ * appicons.tsx — the Windows 11 fluent icon set of the Sol shell. One drawn
+ * SVG component per desktop app (appregistry.ts), exported through the
+ * APP_ICONS map the app tile reads by the registry `iconset` key.
  *
- * Every icon is built in depth layers over its own guide color (the "story"):
- * a gradient squircle with a soft top gloss, a mid layer of blurred story
- * orbs over a pedestal band, and the glyph itself in thick ivory strokes with
- * a translucent filled backing and a blurred drop shadow. The finishing
- * follows the house reference (the 3D stage icon): two blurred inner
- * contours, a blurred contact ellipse at the base, a discrete film grain, a
- * two-layer drop shadow in the story color, a sheen band that sweeps once on
- * hover, a contact glow that rises and breathes, and a gentle perspective
- * tilt — all plain CSS transitions/animations on transform/opacity/filter,
- * with @property registered custom properties (--dt-fan/--dt-glow) easing at
- * the house cubic-bezier and -webkit- prefixes on every 3D/filter path.
- * No decorative dots and no microcopy: the interaction exists, the icon
- * speaks for itself.
+ * The grammar every icon follows is the Windows 11 start-menu tile: a
+ * rounded-square plate (the squircle feel at a ~12% corner radius) painted
+ * with one soft two-tone gradient of the app identity — a calm saturated
+ * top tone settling into a deeper base, never neon — and one bold simple
+ * white glyph centered on it. The depth stays subtle and inner only: a
+ * faint top sheen and a very light top-edge highlight that fades down the
+ * shoulders, no heavy shadows, no gloss, no grain, no tilt. The whole set
+ * shares one 48x48 viewBox geometry so the marks stay crisp from the 16px
+ * taskbar pin through the 26px alt-tab row and the 32px start cell up to
+ * the desktop tile, and every glyph lives inside the ~11..37 optical band
+ * around the plate center.
  *
- * The animated icon system (task C1-06, extended by campaign v3 · R1-b):
- * every drawn mark carries ONE signature motion, declared by the `motion`
- * field of its spec onto the stable `data-motion` hook of the icon root and
- * the svg root, on two layers. The idle layer is the AMBIENT loop (R1-b):
- * one slow function-true loop per app — chat bubble pulse 4s, history hand
- * sweep 12s, kanban bob, caret blink, gateway node ripple, plug pulse, usage
- * meter breathe, stream dash flow, docs page sway, compass seek, os pane
- * shimmer, gear turn 16s, argan signal ripple, cadria petal sway, debonair
- * equalizer 1.2s, stealthhead scope sweep ±2°, forge ember flicker, foundry
- * conveyor tick, vault dial rotation 16s, getry plate slide, saddle bob,
- * calculator key settle, image sun drift, video play pulse, audio equalizer
- * wave, games pad roll —
- * running 1.2–16s alternate+infinite with staggered negative delays on
- * transform/opacity/filter (plus the sanctioned stroke-dashoffset flow),
- * wrapped in `@media not (prefers-reduced-motion: reduce)`. The live layer
- * is the hover story: a one-shot that plays once per hover/live flag and
- * always takes precedence over the ambient loop (the animation shorthand
- * replaces it while live, the ambient resumes on leave). Each story ends in
- * the pose it started from, so the live flag can drop mid-story with no
- * visible snap. The stylesheet is injected once by this file (self-owned,
- * never sol.css) and doubles as the hook contract for the wave-C2 css agent:
- *   - `.dtIcon[data-motion="<token>"]` — the icon root; the svg root mirrors it
- *   - `.dtIcon[data-live="true"]` and `.dt-tile[data-live="true"]` — the live
- *     state the app tile drives from pointer hover (apptile.tsx); the sheet
- *     also accepts the direct :hover and the hover/keyboard focus of the
- *     shell wrappers (.dt-appicon, .dt-nav__app, .dt-start__app)
- *   - `--dt-stagger` — the optional entrance index (ms) a field sets per
- *     tile; the desktop field already staggers its cells and stays THE
- *     orchestrated entrance, other fields can adopt the variable as-is
- *   - `--dt-fan`/`--dt-glow` — the registered @property pair behind the
- *     tilt, the glyph lift and the contact glow
- *   - `dtIcon-m-*` classes + the `--dt-i` index — the per-part choreography
- *     hooks (bars, plates, nodes, pages, runs) with `both` fill so staggered
- *     parts hold their wind-up while their delay runs
- * Tokens: chat bounce · history sweep · projects kanban · console blink ·
- * gateway ripple · providers pulse · usage meter · routes draw · docs lift ·
- * explore compass · os lattice · settings turn · argan sway · cadria spin ·
- * debonair wave · stealthhead breathe · forge tap · foundry glow · vault dial ·
- * getry slide · saddle shine · calculator press · image rise · video play ·
- * audio wave · games roll — each token drives both its ambient idle loop
- * and its hover story. prefers-reduced-motion (and the os `data-motion`
- * setting) turn every motion off into instant states; coarse pointers keep
- * the one-shot stories on tap but drop the sustained hover transforms.
+ * One plate helper renders the shared material: the squircle path, the
+ * userSpaceOnUse gradient pair (the plate tone plus the edge light) and
+ * the clipped top rim, all keyed on unique ids per app icon (dti-<key>),
+ * so no two icons ever share a def. The glyphs are compact paths — filled
+ * shapes for the bold silhouettes, round-capped strokes for the line
+ * work — and the plate tone itself doubles as the cutout ink (the piano's
+ * black keys, the gear's bore, the vault's keyhole), so a cutout always
+ * shows the exact plate color behind it.
  *
- * The optical scale every glyph answers to (the audit ladder): one stroke
- * hierarchy — STROKE_BRIGHT 5.5 for the primary outline, STROKE 5 for the
- * base, STROKE_SOFT 4.5 for secondary details, STROKE_HAIR 4 for fine inner
- * contours; tiny windows at radius 2, panes and crate at 2.5, one bar radius
- * (3), container radii 5–6.5 and the board at 8; and one inner-padding band,
- * glyphs living within ~26–70 of the 96-unit face. The identity of every
- * glyph stays untouched; only outliers are normalized onto the ladder.
+ * The components stay pure presentational: props in, svg out — no hooks,
+ * no injected stylesheet, no external assets, no raster. The size prop
+ * pins the square box in px and, omitted, the icon fills its tile box (the
+ * app tile contract of apptile.tsx); the live flag the tile raises while
+ * the pointer hovers answers with one subtle fluent gesture — the glyph
+ * lifts half a unit and breathes up three percent through a plain CSS
+ * transform, and dropping the flag settles it right back. The identity of
+ * every app rides its own accent family: argan the jade cloud, cadria the
+ * magenta waveform, debonair the bronze piano, forge the umber anvil,
+ * foundry the slate layers, getry the sage route, saddle the taupe crate,
+ * stealthhead the coral visor, vault the deep-gold shield — and the os
+ * surfaces ride their own calm hues over the same plate.
  */
-import { type ComponentType, type CSSProperties, type ReactElement, useEffect } from "react";
-
-/** the warm ivory of every glyph stroke */
-const IVORY = "#fbf5ea";
-
-/** the backing translucency of outlined glyph shapes */
-const BACKING = "rgba(255,255,255,.14)";
-
-/** the stroke ladder: bright primary outlines */
-const STROKE_BRIGHT = 5.5;
-
-/** the stroke ladder: the base weight of the glyph group */
-const STROKE = 5;
-
-/** the stroke ladder: soft secondary details */
-const STROKE_SOFT = 4.5;
-
-/** the stroke ladder: hair-weight inner contours */
-const STROKE_HAIR = 4;
+import { type ComponentType, type CSSProperties, type ReactElement } from "react";
 
 export type AppIconProps = {
   /** rendered square size in px; omitted, the icon fills its tile box */
   size?: number;
-  /** the live flag the app tile raises on hover; omitted, the icon answers
-   *  to its own :hover (standalone renders) */
+  /** the live flag the app tile raises while the pointer hovers it; the
+   *  glyph answers with its one subtle lift and settles back on drop */
   live?: boolean;
 };
 
-interface HoudiniProp {
-  name: string;
-  syntax: string;
-  inherits: boolean;
-  initialValue: string;
-}
+/** the bold white ink of every glyph */
+const GLYPH_INK = "#ffffff";
 
-/** the animatable custom properties of the set, mirrored in the stylesheet */
-const HOUDINI_PROPS: readonly HoudiniProp[] = [
-  { name: "--dt-fan", syntax: "<number>", inherits: true, initialValue: "0" },
-  { name: "--dt-glow", syntax: "<number>", inherits: false, initialValue: "0.34" },
-];
+/** the base stroke weight of the glyph line work — crisp down to 16px */
+const STROKE = 3.4;
 
-/* ---------------------------- CSS (injected once) -------------------------- */
-const ICON_CSS = `
-@property --dt-fan { syntax: "<number>"; inherits: true; initial-value: 0; }
-@property --dt-glow { syntax: "<number>"; inherits: false; initial-value: 0.34; }
-.dtIcon {
-  --dt-fan: 0;
-  --dt-glow: 0.34;
-  position: relative; display: block; width: 100%; height: 100%;
-  transform-style: preserve-3d; -webkit-transform-style: preserve-3d;
-  isolation: isolate;
-  animation: dti-enter .5s cubic-bezier(.23,1,.32,1) backwards;
-  -webkit-animation: dti-enter .5s cubic-bezier(.23,1,.32,1) backwards;
-  animation-delay: var(--dt-stagger, 0ms);
-  -webkit-animation-delay: var(--dt-stagger, 0ms);
-}
-@keyframes dti-enter {
-  from { opacity: 0; transform: translateY(6px) scale(.965); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-html.dt-icon-fx .dtIcon { transition: --dt-fan .55s cubic-bezier(.22,.9,.3,1.15), --dt-glow .6s ease; }
+/** the soft stroke weight of secondary glyph details */
+const STROKE_SOFT = 2.7;
 
-/* the live state of an icon: the direct hover, the data-live flag the app
-   tile drives (apptile.tsx), or the hover/keyboard focus of the shell wrapper
-   around the tile (desktop + launcher cells, taskbar pin, start entry) */
-.dtIcon:is(:hover, [data-live="true"]),
-.dt-appicon:is(:hover, :focus-within) .dtIcon,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon,
-.dt-start__app:is(:hover, :focus-within) .dtIcon,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon { --dt-fan: 1; }
-.dtIcon:is(:hover, [data-live="true"]) .dtIconGlow,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIconGlow,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIconGlow,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIconGlow,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIconGlow { --dt-glow: .62; }
+/** the rounded-square plate of the set: the squircle feel at a ~12% corner
+ *  radius over the shared 48x48 viewBox */
+const PLATE_FACE = "M6 0 H42 Q48 0 48 6 V42 Q48 48 42 48 H6 Q0 48 0 42 V6 Q0 0 6 0 Z";
 
-.dtIconGlow {
-  position: absolute; left: 10%; right: 10%; bottom: -6%; height: 44%; z-index: 0;
-  border-radius: 50%; pointer-events: none;
-  background: radial-gradient(52% 60% at 50% 62%, var(--story-glow, rgba(255,140,66,.45)), transparent 76%);
-  filter: blur(9px); -webkit-filter: blur(9px);
-  opacity: var(--dt-glow);
-  transition: opacity .55s cubic-bezier(.22,.9,.3,1.15);
-  -webkit-transition: opacity .55s cubic-bezier(.22,.9,.3,1.15);
-}
-.dtIconSvg {
-  position: relative; z-index: 1; display: block; width: 100%; height: 100%;
-  overflow: visible; shape-rendering: geometricPrecision;
-  transform-style: preserve-3d; -webkit-transform-style: preserve-3d;
-  transform: perspective(340px) rotateX(0deg) rotateY(0deg);
-  -webkit-transform: perspective(340px) rotateX(0deg) rotateY(0deg);
-  will-change: transform;
-  filter: drop-shadow(0 4px 7px var(--story-shadow, rgba(0,0,0,.26))) drop-shadow(0 1.5px 3px var(--story-shadow-soft, rgba(0,0,0,.14)));
-  -webkit-filter: drop-shadow(0 4px 7px var(--story-shadow, rgba(0,0,0,.26))) drop-shadow(0 1.5px 3px var(--story-shadow-soft, rgba(0,0,0,.14)));
-  transition: transform .55s cubic-bezier(.22,.9,.3,1.15);
-  -webkit-transition: -webkit-transform .55s cubic-bezier(.22,.9,.3,1.15), transform .55s cubic-bezier(.22,.9,.3,1.15);
-}
-.dtIcon:is(:hover, [data-live="true"]) .dtIconSvg,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIconSvg,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIconSvg,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIconSvg,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIconSvg {
-  transform: perspective(340px) rotateX(4.5deg) rotateY(-5.5deg) scale(1.02);
-  -webkit-transform: perspective(340px) rotateX(4.5deg) rotateY(-5.5deg) scale(1.02);
-}
-.dtIconGlyph {
-  transform-box: view-box; -webkit-transform-box: view-box;
-  will-change: transform;
-  transition: transform .55s cubic-bezier(.22,.9,.3,1.15);
-  -webkit-transition: -webkit-transform .55s cubic-bezier(.22,.9,.3,1.15), transform .55s cubic-bezier(.22,.9,.3,1.15);
-}
-.dtIcon:is(:hover, [data-live="true"]) .dtIconGlyph,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIconGlyph,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIconGlyph,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIconGlyph,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIconGlyph {
-  transform: translateY(calc(var(--dt-fan) * -2.2px)) scale(calc(1 + var(--dt-fan) * .035));
-  -webkit-transform: translateY(calc(var(--dt-fan) * -2.2px)) scale(calc(1 + var(--dt-fan) * .035));
-}
-html.dt-icon-fx .dtIconGlyph { transition: none; -webkit-transition: none; }
-.dtIconSheenBand {
-  transform-box: view-box; -webkit-transform-box: view-box;
-  transform: translateX(-100px); -webkit-transform: translateX(-100px);
-  opacity: 0; will-change: transform, opacity; pointer-events: none;
-}
-.dtIcon:is(:hover, [data-live="true"]) .dtIconSheenBand,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIconSheenBand,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIconSheenBand,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIconSheenBand,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIconSheenBand {
-  animation: dtIconSheen .9s cubic-bezier(.3,.5,.25,1) forwards;
-  -webkit-animation: dtIconSheen .9s cubic-bezier(.3,.5,.25,1) forwards;
-}
-@keyframes dtIconSheen {
-  0% { opacity: 0; transform: translateX(-100px); }
-  16% { opacity: .42; }
-  60% { opacity: .3; }
-  100% { opacity: 0; transform: translateX(118px); }
-}
-.dtIconMid { transform-box: view-box; -webkit-transform-box: view-box; }
-
-/* ---- the signature stories: ONE motion per drawn icon, keyed on
-        [data-motion]. Each story is a one-shot that starts and ends in the
-        base pose (the live flag can drop mid-story with no visible snap) and
-        touches transform/opacity/filter only — idle stays static, no ambient
-        loops. The root declares its players as custom properties; the live
-        activation below turns exactly those players on. ---- */
-.dtIconStory { transform-box: view-box; -webkit-transform-box: view-box; will-change: transform, filter; }
-.dtIcon-m-hand { transform-box: view-box; -webkit-transform-box: view-box; transform-origin: 49px 51px; }
-.dtIcon-m-card, .dtIcon-m-node, .dtIcon-m-cursor, .dtIcon-m-plug, .dtIcon-m-bar,
-.dtIcon-m-dot, .dtIcon-m-pane, .dtIcon-m-key, .dtIcon-m-sun, .dtIcon-m-play {
-  transform-box: fill-box; -webkit-transform-box: fill-box; transform-origin: 50% 50%;
-}
-.dtIcon[data-motion="meter"] .dtIcon-m-bar,
-.dtIcon[data-motion="wave"] .dtIcon-m-bar { transform-origin: 50% 100%; }
-.dtIcon-m-page-l { transform-box: fill-box; -webkit-transform-box: fill-box; transform-origin: 100% 50%; }
-.dtIcon-m-page-r { transform-box: fill-box; -webkit-transform-box: fill-box; transform-origin: 0% 50%; }
-.dtIcon-m-needle, .dtIcon-m-dial { transform-box: view-box; -webkit-transform-box: view-box; transform-origin: 48px 48px; }
-.dtIcon-m-slate { transform-box: view-box; -webkit-transform-box: view-box; transform-origin: 30.5px 46px; }
-.dtIcon-m-tap { transform-box: view-box; -webkit-transform-box: view-box; transform-origin: 44px 62px; }
-.dtIcon-m-run, .dtIcon-m-plate { transform-box: view-box; -webkit-transform-box: view-box; }
-.dtIcon-m-shine {
-  transform-box: view-box; -webkit-transform-box: view-box;
-  opacity: 0; will-change: transform, opacity; pointer-events: none;
-}
-.dtIcon[data-motion="shine"] .dtIconSheenBand { display: none; }
-
-/* ---- the ambient signature loops (campaign v3 · R1-b): ONE slow idle
-        motion per mark, driven by the app's function, 1.2–16s,
-        alternate+infinite with staggered negative delays (--dt-i),
-        transform/opacity/filter only (plus the sanctioned stroke-dashoffset
-        flow). Declared BEFORE the live activation below, so a hover or the
-        tile's data-live flag swaps the loop for the one-shot story and the
-        loop resumes untouched on leave. The whole layer sits inside the
-        reduced-motion guard; the os data-motion="reduced" root attribute
-        kills it independently. ---- */
-@media not (prefers-reduced-motion: reduce) {
-  .dtIcon[data-motion="bounce"] .dtIconStory { animation: dtAmb-pulse 4s ease-in-out infinite alternate; }
-  .dtIcon[data-motion="sweep"] .dtIcon-m-hand { animation: dtAmb-hand 12s linear infinite; }
-  .dtIcon[data-motion="kanban"] .dtIcon-m-card { animation: dtAmb-bob 3.2s ease-in-out infinite alternate; animation-delay: calc(var(--dt-i, 0) * -420ms); }
-  .dtIcon[data-motion="blink"] .dtIcon-m-cursor { animation: dtAmb-caret 2.4s ease-in-out infinite; }
-  .dtIcon[data-motion="ripple"] .dtIcon-m-node { animation: dtAmb-node 3.6s ease-in-out infinite; animation-delay: calc(var(--dt-i, 0) * -700ms); }
-  .dtIcon[data-motion="pulse"] .dtIcon-m-plug { animation: dtAmb-plug 4s ease-in-out infinite alternate; }
-  .dtIcon[data-motion="meter"] .dtIcon-m-bar { animation: dtAmb-meter 2.8s ease-in-out infinite alternate; animation-delay: calc(var(--dt-i, 0) * -380ms); }
-  .dtIcon[data-motion="draw"] .dtIcon-m-run { stroke-dasharray: 7 9; animation: dtAmb-flow 2.6s linear infinite; }
-  .dtIcon[data-motion="draw"] .dtIcon-m-dot { animation: dtAmb-dot 2.6s ease-in-out infinite alternate; }
-  .dtIcon[data-motion="lift"] .dtIcon-m-page-l { animation: dtAmb-page-l 5.2s ease-in-out infinite alternate; }
-  .dtIcon[data-motion="lift"] .dtIcon-m-page-r { animation: dtAmb-page-r 5.2s ease-in-out infinite alternate; }
-  .dtIcon[data-motion="compass"] .dtIcon-m-needle { animation: dtAmb-needle 7s ease-in-out infinite alternate; }
-  .dtIcon[data-motion="lattice"] .dtIcon-m-pane { animation: dtAmb-pane 4.8s ease-in-out infinite alternate; animation-delay: calc(var(--dt-i, 0) * -460ms); }
-  .dtIcon[data-motion="turn"] .dtIconStory { animation: dtAmb-turn 16s linear infinite; }
-  .dtIcon[data-motion="sway"] .dtIconStory { animation: dtAmb-signal 4.8s ease-in-out infinite alternate; }
-  .dtIcon[data-motion="spin"] .dtIcon-m-slate { animation: dtAmb-sway 6s ease-in-out infinite alternate; }
-  .dtIcon[data-motion="wave"] .dtIcon-m-bar { animation: dtAmb-eq 1.2s ease-in-out infinite alternate; animation-delay: calc(var(--dt-i, 0) * -180ms); }
-  .dtIcon[data-motion="breathe"] .dtIconStory { animation: dtAmb-scope 5s ease-in-out infinite alternate; }
-  .dtIcon[data-motion="tap"] .dtIconStory { animation: dtAmb-flicker 3.2s ease-in-out infinite; }
-  .dtIcon[data-motion="glow"] .dtIcon-m-tick { animation: dtAmb-tick 2.4s ease-in-out infinite alternate; animation-delay: calc(var(--dt-i, 0) * -400ms); }
-  .dtIcon[data-motion="dial"] .dtIcon-m-dial { animation: dtAmb-dial 16s linear infinite; }
-  .dtIcon[data-motion="slide"] .dtIcon-m-plate { animation: dtAmb-plate 5.2s ease-in-out infinite alternate; animation-delay: calc(var(--dt-i, 0) * -600ms); }
-  .dtIcon[data-motion="shine"] .dtIconStory { animation: dtAmb-saddle 3.4s ease-in-out infinite alternate; }
-  .dtIcon[data-motion="press"] .dtIcon-m-key { animation: dtAmb-press 4.4s ease-in-out infinite alternate; }
-  .dtIcon[data-motion="rise"] .dtIcon-m-sun { animation: dtAmb-rise 5.2s ease-in-out infinite alternate; }
-  .dtIcon[data-motion="play"] .dtIcon-m-play { animation: dtAmb-play 3.6s ease-in-out infinite alternate; }
-  .dtIcon[data-motion="roll"] .dtIconStory { animation: dtAmb-roll 4.6s ease-in-out infinite alternate; }
-}
-[data-motion="reduced"] .dtIcon .dtIconStory,
-[data-motion="reduced"] .dtIcon [class^="dtIcon-m-"] { animation: none !important; }
-
-/* the ambient loop keyframes: ping-pong pairs ride the alternate direction,
-   the cyclic ones (hand, gear, dial, flow, caret, flicker) end where they start */
-@keyframes dtAmb-pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
-@keyframes dtAmb-hand { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-@keyframes dtAmb-bob { from { transform: translateY(0); } to { transform: translateY(-1.5px); } }
-@keyframes dtAmb-caret { 0%, 55% { opacity: 1; } 70%, 86% { opacity: .15; } 100% { opacity: 1; } }
-@keyframes dtAmb-node { 0% { transform: scale(1); opacity: 1; } 45% { transform: scale(1.32); opacity: .5; } 100% { transform: scale(1); opacity: 1; } }
-@keyframes dtAmb-plug { from { transform: scale(1); } to { transform: scale(1.06); } }
-@keyframes dtAmb-meter { from { transform: scaleY(.72); } to { transform: scaleY(1.08); } }
-@keyframes dtAmb-flow { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -32; } }
-@keyframes dtAmb-dot { from { transform: scale(1); } to { transform: scale(1.25); } }
-@keyframes dtAmb-page-l { from { transform: rotate(0deg); } to { transform: rotate(-2.6deg); } }
-@keyframes dtAmb-page-r { from { transform: rotate(0deg); } to { transform: rotate(2.6deg); } }
-@keyframes dtAmb-needle { from { transform: rotate(-6deg); } to { transform: rotate(6deg); } }
-@keyframes dtAmb-pane { from { opacity: .95; transform: scale(1); } to { opacity: .5; transform: scale(1.06); } }
-@keyframes dtAmb-turn { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-@keyframes dtAmb-signal { from { transform: scale(1); } to { transform: scale(1.045); } }
-@keyframes dtAmb-sway { from { transform: rotate(-2.5deg); } to { transform: rotate(3.5deg); } }
-@keyframes dtAmb-eq { from { transform: scaleY(1); } to { transform: scaleY(.42); } }
-@keyframes dtAmb-scope { from { transform: rotate(-2deg); } to { transform: rotate(2deg); } }
-@keyframes dtAmb-flicker { 0% { filter: brightness(1); } 28% { filter: brightness(1.18); } 46% { filter: brightness(1.03); } 64% { filter: brightness(1.24); } 82% { filter: brightness(1.06); } 100% { filter: brightness(1); } }
-@keyframes dtAmb-tick { from { transform: translateX(0); } to { transform: translateX(2.5px); } }
-@keyframes dtAmb-dial { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-@keyframes dtAmb-plate { from { transform: translateX(-1.5px); } to { transform: translateX(1.5px); } }
-@keyframes dtAmb-saddle { from { transform: translateY(0) rotate(0deg); } to { transform: translateY(-1.8px) rotate(1deg); } }
-@keyframes dtAmb-press { from { transform: translateY(0); } to { transform: translateY(1px); } }
-@keyframes dtAmb-rise { from { transform: translateY(0); } to { transform: translateY(-1.2px); } }
-@keyframes dtAmb-play { from { transform: scale(1); } to { transform: scale(1.07); } }
-@keyframes dtAmb-roll { from { transform: rotate(-1.6deg); } to { transform: rotate(1.6deg); } }
-
-/* the players each story declares (the root sets only its own) */
-.dtIcon[data-motion="bounce"] { --dt-story: dti-bounce .6s cubic-bezier(.3,1.35,.45,1); }
-.dtIcon[data-motion="sweep"] { --dt-hand: dti-sweep .75s cubic-bezier(.3,.8,.3,1); }
-.dtIcon[data-motion="kanban"] { --dt-card: dti-card .6s cubic-bezier(.3,1.3,.4,1); }
-.dtIcon[data-motion="blink"] { --dt-cursor: dti-blink .8s linear; }
-.dtIcon[data-motion="ripple"] { --dt-node: dti-node .7s cubic-bezier(.3,.9,.35,1); }
-.dtIcon[data-motion="pulse"] { --dt-plug: dti-plug .55s cubic-bezier(.3,1.3,.4,1); }
-.dtIcon[data-motion="meter"] { --dt-bar: dti-meter .55s cubic-bezier(.3,1.2,.4,1); }
-.dtIcon[data-motion="wave"] { --dt-bar: dti-wave .72s ease-in-out; }
-.dtIcon[data-motion="draw"] { --dt-run: dti-draw .5s cubic-bezier(.25,.7,.3,1); --dt-dot: dti-dot .45s cubic-bezier(.3,1.4,.45,1); }
-.dtIcon[data-motion="lift"] { --dt-page-l: dti-page-l .65s cubic-bezier(.3,.9,.3,1); --dt-page-r: dti-page-r .65s cubic-bezier(.3,.9,.3,1); }
-.dtIcon[data-motion="compass"] { --dt-needle: dti-needle .85s ease-in-out; }
-.dtIcon[data-motion="lattice"] { --dt-pane: dti-pane .5s cubic-bezier(.3,1.3,.4,1); }
-.dtIcon[data-motion="turn"] { --dt-story: dti-turn .55s cubic-bezier(.32,.72,.24,1); }
-.dtIcon[data-motion="sway"] { --dt-story: dti-sway 1s ease-in-out; }
-.dtIcon[data-motion="spin"] { --dt-slate: dti-slate .62s cubic-bezier(.3,.9,.3,1); }
-.dtIcon[data-motion="breathe"] { --dt-story: dti-breathe .9s ease-in-out; }
-.dtIcon[data-motion="tap"] { --dt-tap: dti-tap .5s cubic-bezier(.3,.9,.35,1); }
-.dtIcon[data-motion="glow"] { --dt-story: dti-furnace .9s ease-in-out; }
-.dtIcon[data-motion="dial"] { --dt-dial: dti-dial .7s cubic-bezier(.32,.72,.24,1); }
-.dtIcon[data-motion="slide"] { --dt-plate: dti-plate .6s cubic-bezier(.3,1.2,.4,1); }
-.dtIcon[data-motion="shine"] { --dt-shine: dti-shine .85s cubic-bezier(.3,.6,.3,1); }
-.dtIcon[data-motion="press"] { --dt-key: dti-press .5s cubic-bezier(.3,1.2,.4,1); }
-.dtIcon[data-motion="rise"] { --dt-sun: dti-rise .7s cubic-bezier(.3,1.25,.4,1); }
-.dtIcon[data-motion="play"] { --dt-play: dti-play .55s cubic-bezier(.3,1.35,.45,1); }
-.dtIcon[data-motion="roll"] { --dt-story: dti-roll .8s ease-in-out; }
-
-/* the activation of the players while the icon is live */
-.dtIcon:is(:hover, [data-live="true"]) .dtIconStory,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIconStory,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIconStory,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIconStory,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIconStory { animation: var(--dt-story, none) both; }
-.dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-hand,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-hand,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-hand,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-hand,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-hand { animation: var(--dt-hand, none) both; }
-.dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-card,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-card,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-card,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-card,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-card { animation: var(--dt-card, none) both; }
-.dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-cursor,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-cursor,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-cursor,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-cursor,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-cursor { animation: var(--dt-cursor, none) both; }
-.dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-node,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-node,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-node,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-node,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-node {
-  animation: var(--dt-node, none) both; animation-delay: calc(var(--dt-i, 0) * 110ms);
-}
-.dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-plug,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-plug,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-plug,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-plug,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-plug { animation: var(--dt-plug, none) both; }
-.dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-bar,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-bar,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-bar,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-bar,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-bar {
-  animation: var(--dt-bar, none) both; animation-delay: calc(var(--dt-i, 0) * 75ms);
-}
-.dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-run,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-run,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-run,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-run,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-run {
-  animation: var(--dt-run, none) both; animation-delay: calc(var(--dt-i, 0) * 110ms);
-}
-.dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-dot,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-dot,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-dot,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-dot,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-dot {
-  animation: var(--dt-dot, none) both; animation-delay: calc(var(--dt-i, 0) * 110ms);
-}
-.dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-page-l,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-page-l,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-page-l,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-page-l,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-page-l { animation: var(--dt-page-l, none) both; }
-.dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-page-r,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-page-r,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-page-r,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-page-r,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-page-r { animation: var(--dt-page-r, none) both; }
-.dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-needle,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-needle,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-needle,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-needle,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-needle { animation: var(--dt-needle, none) both; }
-.dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-pane,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-pane,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-pane,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-pane,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-pane {
-  animation: var(--dt-pane, none) both; animation-delay: calc(var(--dt-i, 0) * 70ms);
-}
-.dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-slate,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-slate,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-slate,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-slate,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-slate { animation: var(--dt-slate, none) both; }
-.dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-tap,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-tap,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-tap,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-tap,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-tap { animation: var(--dt-tap, none) both; }
-.dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-dial,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-dial,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-dial,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-dial,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-dial { animation: var(--dt-dial, none) both; }
-.dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-plate,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-plate,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-plate,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-plate,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-plate {
-  animation: var(--dt-plate, none) both; animation-delay: calc(var(--dt-i, 0) * 90ms);
-}
-.dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-shine,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-shine,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-shine,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-shine,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-shine { animation: var(--dt-shine, none) both; }
-.dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-key,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-key,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-key,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-key,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-key { animation: var(--dt-key, none) both; }
-.dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-sun,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-sun,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-sun,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-sun,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-sun { animation: var(--dt-sun, none) both; }
-.dtIcon:is(:hover, [data-live="true"]) .dtIcon-m-play,
-.dt-appicon:is(:hover, :focus-within) .dtIcon .dtIcon-m-play,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-play,
-.dt-start__app:is(:hover, :focus-within) .dtIcon .dtIcon-m-play,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIcon-m-play { animation: var(--dt-play, none) both; }
-/* the furnace story also pushes the contact glow past its usual rise */
-.dtIcon[data-motion="glow"]:is(:hover, [data-live="true"]) .dtIconGlow,
-.dt-appicon:is(:hover, :focus-within) .dtIcon[data-motion="glow"] .dtIconGlow,
-.dt-nav__app:is(:hover, :focus-within) .dtIcon[data-motion="glow"] .dtIconGlow,
-.dt-start__app:is(:hover, :focus-within) .dtIcon[data-motion="glow"] .dtIconGlow,
-html.dt-retired-dock:is(:hover, :focus-within) .dtIcon[data-motion="glow"] .dtIconGlow { --dt-glow: .85; }
-
-/* the story keyframes */
-@keyframes dti-bounce { 0% { transform: translateY(0); } 30% { transform: translateY(-5.5px); } 55% { transform: translateY(0); } 72% { transform: translateY(-2.2px); } 100% { transform: translateY(0); } }
-@keyframes dti-sweep { 0% { transform: rotate(0deg); } 42% { transform: rotate(-42deg); } 100% { transform: rotate(0deg); } }
-@keyframes dti-card { 0% { transform: translateY(0); } 40% { transform: translateY(-4px); } 100% { transform: translateY(0); } }
-@keyframes dti-blink { 0%, 20% { opacity: 1; } 25%, 45% { opacity: .12; } 50%, 70% { opacity: 1; } 75%, 95% { opacity: .12; } 100% { opacity: 1; } }
-@keyframes dti-node { 0% { transform: scale(1); opacity: 1; } 45% { transform: scale(1.6); opacity: .45; } 100% { transform: scale(1); opacity: 1; } }
-@keyframes dti-plug { 0% { transform: scale(1); } 40% { transform: scale(1.09); } 100% { transform: scale(1); } }
-@keyframes dti-meter { 0% { transform: scaleY(.35); } 62% { transform: scaleY(1.08); } 100% { transform: scaleY(1); } }
-@keyframes dti-wave { 0% { transform: scaleY(1); } 35% { transform: scaleY(.45); } 70% { transform: scaleY(1.18); } 100% { transform: scaleY(1); } }
-@keyframes dti-draw { 0% { transform: scale(.08); opacity: 0; } 35% { opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
-@keyframes dti-dot { 0% { transform: scale(0); opacity: 0; } 55% { transform: scale(1.35); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
-@keyframes dti-page-l { 0% { transform: rotate(0deg); } 45% { transform: rotate(-6deg) translateY(-1.6px); } 100% { transform: rotate(0deg); } }
-@keyframes dti-page-r { 0% { transform: rotate(0deg); } 45% { transform: rotate(6deg) translateY(-1.6px); } 100% { transform: rotate(0deg); } }
-@keyframes dti-needle { 0% { transform: rotate(0deg); } 35% { transform: rotate(-9deg); } 70% { transform: rotate(5deg); } 100% { transform: rotate(0deg); } }
-@keyframes dti-pane { 0% { transform: scale(1); } 40% { transform: scale(1.14); } 100% { transform: scale(1); } }
-@keyframes dti-turn { 0% { transform: rotate(0deg); } 100% { transform: rotate(90deg); } }
-@keyframes dti-sway { 0% { transform: rotate(0deg); } 30% { transform: rotate(-4deg); } 65% { transform: rotate(3deg); } 100% { transform: rotate(0deg); } }
-@keyframes dti-slate { 0% { transform: rotate(0deg); } 35% { transform: rotate(-14deg); } 75% { transform: rotate(2.5deg); } 100% { transform: rotate(0deg); } }
-@keyframes dti-breathe { 0% { transform: scale(1); } 45% { transform: scale(1.075); } 100% { transform: scale(1); } }
-@keyframes dti-tap { 0% { transform: rotate(0deg); } 30% { transform: rotate(7deg); } 55% { transform: rotate(-2deg); } 100% { transform: rotate(0deg); } }
-@keyframes dti-furnace { 0% { filter: brightness(1); } 45% { filter: brightness(1.22) saturate(1.12); } 100% { filter: brightness(1); } }
-@keyframes dti-dial { 0% { transform: rotate(0deg); } 100% { transform: rotate(120deg); } }
-@keyframes dti-plate { 0% { transform: translateX(0); } 40% { transform: translateX(3px); } 100% { transform: translateX(0); } }
-@keyframes dti-shine { 0% { transform: translateX(-30px); opacity: 0; } 20% { opacity: .5; } 65% { opacity: .38; } 100% { transform: translateX(52px); opacity: 0; } }
-@keyframes dti-press { 0% { transform: translateY(0); } 45% { transform: translateY(2.4px); } 100% { transform: translateY(0); } }
-@keyframes dti-rise { 0% { transform: translateY(0); } 42% { transform: translateY(-3px); } 100% { transform: translateY(0); } }
-@keyframes dti-play { 0% { transform: scale(1); } 40% { transform: scale(1.16); } 100% { transform: scale(1); } }
-@keyframes dti-roll { 0% { transform: rotate(0deg); } 35% { transform: rotate(-4deg); } 70% { transform: rotate(2.5deg); } 100% { transform: rotate(0deg); } }
-
-@media (hover: none), (pointer: coarse) {
-  .dtIcon:is(:hover, [data-live="true"]) .dtIconSvg,
-  .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIconSvg,
-  .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIconSvg,
-  .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIconSvg,
-  html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIconSvg,
-  .dtIcon:is(:hover, [data-live="true"]) .dtIconGlyph,
-  .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIconGlyph,
-  .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIconGlyph,
-  .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIconGlyph,
-  html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIconGlyph {
-    transform: none; -webkit-transform: none;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .dtIcon, .dtIconSvg, .dtIconGlyph, .dtIconStory, .dtIconSheenBand, .dtIconGlow, .dtIconMid,
-  .dtIcon [class^="dtIcon-m-"] {
-    animation: none !important; -webkit-animation: none !important;
-    transition: none !important; -webkit-transition: none !important;
-  }
-  .dtIcon:is(:hover, [data-live="true"]) .dtIconSvg,
-  .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIconSvg,
-  .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIconSvg,
-  .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIconSvg,
-  html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIconSvg,
-  .dtIcon:is(:hover, [data-live="true"]) .dtIconGlyph,
-  .dt-appicon:is(:hover, :focus-within) .dtIcon .dtIconGlyph,
-  .dt-nav__app:is(:hover, :focus-within) .dtIcon .dtIconGlyph,
-  .dt-start__app:is(:hover, :focus-within) .dtIcon .dtIconGlyph,
-  html.dt-retired-dock:is(:hover, :focus-within) .dtIcon .dtIconGlyph {
-    transform: none; -webkit-transform: none;
-  }
-}
-`;
-
-let iconCssReady = false;
-
-/** Injects the shared stylesheet of the set exactly once per document. */
-function ensureIconCss(): void {
-  if (iconCssReady || typeof document === "undefined") return;
-  iconCssReady = true;
-  const tag = document.createElement("style");
-  tag.setAttribute("data-dt-icons", "");
-  tag.textContent = ICON_CSS;
-  document.head.appendChild(tag);
-}
-
-let iconMotionChecked = false;
-
-/**
- * Registers the animatable custom properties and gates the custom-property
- * loops behind the dt-icon-fx class (browsers without the @property API
- * never run them, so nothing flips discretely).
- */
-function useIconMotion(): void {
-  useEffect(() => {
-    if (iconMotionChecked) return;
-    iconMotionChecked = true;
-    const css = typeof CSS === "undefined" ? null : (CSS as unknown as { registerProperty?: (p: HoudiniProp) => void });
-    if (css && typeof css.registerProperty === "function") {
-      for (const prop of HOUDINI_PROPS) {
-        try {
-          css.registerProperty(prop);
-        } catch {
-          /* already registered by the stylesheet */
-        }
-      }
-      document.documentElement.classList.add("dt-icon-fx");
-    }
-  }, []);
-}
-
-/* ------------------------------- the factory ------------------------------- */
-type AppIconSpec = {
-  /** the guide color of the app (the story the icon catalog row declares) */
-  story: string;
-  /** the deep shade the gradient settles into */
-  deep: string;
-  /** the warm subtone of the mid layer, contours and contact ellipse */
-  soft: string;
-  /** the signature motion token — the data-motion hook the stories key on */
-  motion: string;
-  /** the drawn glyph: thick ivory strokes with a translucent filled backing */
-  glyph: ReactElement;
+/** the recipe of one fluent icon: the two-tone plate of the app identity
+ *  and the bold white glyph centered on it */
+type AppIconPlate = {
+  /** the lighter top tone of the plate gradient */
+  top: string;
+  /** the deeper base tone the plate settles into */
+  bottom: string;
+  /** draws the glyph; the `tone` argument carries the plate gradient url
+   *  the cutout details (black keys, bores, keyholes) fill with */
+  glyph: (tone: string) => ReactElement;
 };
 
-/** The asymmetric squircle of the tile face: tighter shoulders, heavier base. */
-const SQUIRCLE = "M22 0 L74 0 Q96 0 96 22 L96 66 Q96 96 66 96 L30 96 Q0 96 0 66 L0 22 Q0 0 22 0 Z";
+/** the resting pose of the glyph group: centered on the plate and ready to
+ *  settle back the moment the live flag drops */
+const GLYPH_REST: CSSProperties = {
+  transformBox: "view-box",
+  transformOrigin: "24px 24px",
+  transition: "transform .22s cubic-bezier(.2,.8,.3,1)",
+};
 
-/** the per-part stagger index of a story: the motion delays read `--dt-i` */
-const si = (index: number): CSSProperties => ({ "--dt-i": index }) as CSSProperties;
+/** the live pose — the one fluent gesture of the set: the glyph lifts half
+ *  a unit and breathes up three percent while the pointer is on the tile */
+const GLYPH_LIVE: CSSProperties = {
+  ...GLYPH_REST,
+  transform: "translateY(-.5px) scale(1.03)",
+};
 
 /**
- * The module-level face every icon renders through: the story spec arrives by
- * props so no hook ever runs inside a closure (the biome 2.6
- * noComponentHookFactories contract the maintenance ladder walks) — one
- * component identity for the whole icon wall, the per-icon identity carried
- * by the wrapper the factory below returns.
+ * The plate helper of the set: one function rendering the rounded plate
+ * with its gradient defs (unique ids per app icon) — the two-tone face,
+ * the faint inner top sheen and the very light top-edge highlight. The
+ * gradients ride userSpaceOnUse, so any shape — glyph cutouts included —
+ * samples the exact plate tone at its own position.
  */
-interface AppIconFaceProps extends AppIconProps {
-  /** the namespaced gradient id prefix of this icon (dti-<key>) */
-  uid: string;
-  /** the story palette and the drawn glyph of this icon */
-  spec: AppIconSpec;
+function Plate({ uid, top, bottom }: { uid: string; top: string; bottom: string }) {
+  return (
+    <>
+      <defs>
+        <linearGradient id={`${uid}-tone`} gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="48">
+          <stop offset="0" stopColor={top} />
+          <stop offset="1" stopColor={bottom} />
+        </linearGradient>
+        <linearGradient id={`${uid}-edge`} gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="26">
+          <stop offset="0" stopColor="#ffffff" stopOpacity=".42" />
+          <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+        </linearGradient>
+        <clipPath id={`${uid}-clip`}>
+          <path d={PLATE_FACE} />
+        </clipPath>
+      </defs>
+      {/* the face: the soft two-tone gradient of the app identity */}
+      <path d={PLATE_FACE} fill={`url(#${uid}-tone)`} />
+      {/* the subtle inner depth: a faint top sheen plus the very light
+          top-edge highlight, the rim clipped inside the plate */}
+      <path d={PLATE_FACE} fill={`url(#${uid}-edge)`} opacity=".3" />
+      <g clipPath={`url(#${uid}-clip)`}>
+        <path d={PLATE_FACE} fill="none" stroke={`url(#${uid}-edge)`} strokeWidth="2.4" />
+      </g>
+    </>
+  );
 }
 
-function AppIconFace({ size, live, uid, spec }: AppIconFaceProps) {
-  ensureIconCss();
-  useIconMotion();
-  const vars = {
-    "--story-glow": `${spec.story}73`,
-    "--story-shadow": `${spec.deep}42`,
-    "--story-shadow-soft": `${spec.deep}24`,
-  } as CSSProperties;
-  if (size !== undefined) {
-    vars.width = size;
-    vars.height = size;
-  }
+/** The shared face every icon renders through: the plate helper under the
+ *  bold glyph group, the box pinned by the size prop or filling the tile.
+ *  One component identity for the whole icon wall; the per-icon identity
+ *  arrives by the plate spec the bound wrapper froze in its closure. */
+interface FluentIconFaceProps extends AppIconProps {
+  /** the namespaced gradient id prefix of this icon (dti-<key>) */
+  uid: string;
+  /** the plate recipe of this icon */
+  plate: AppIconPlate;
+}
+
+function FluentIconFace({ size, live, uid, plate }: FluentIconFaceProps) {
+  const box: CSSProperties = {
+    display: "block",
+    width: size === undefined ? "100%" : size,
+    height: size === undefined ? "100%" : size,
+  };
   return (
-      <span
-        className="dtIcon"
-        data-motion={spec.motion}
-        data-live={live ? "true" : undefined}
-        style={vars}
-        aria-hidden="true"
+    <svg
+      className="dtIcon"
+      viewBox="0 0 48 48"
+      style={box}
+      data-live={live ? "true" : undefined}
+      aria-hidden="true"
+      focusable="false"
+    >
+      <Plate uid={uid} top={plate.top} bottom={plate.bottom} />
+      <g
+        className="dtIconGlyph"
+        fill="none"
+        stroke={GLYPH_INK}
+        strokeWidth={STROKE}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        style={live ? GLYPH_LIVE : GLYPH_REST}
       >
-        <span className="dtIconGlow" />
-        <svg className="dtIconSvg" viewBox="0 0 96 96" data-motion={spec.motion} aria-hidden="true" focusable="false">
-          <defs>
-            <linearGradient id={`${uid}-bg`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor={spec.story} />
-              <stop offset=".6" stopColor={spec.story} />
-              <stop offset="1" stopColor={spec.deep} />
-            </linearGradient>
-            <linearGradient id={`${uid}-gloss`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor="#ffffff" stopOpacity=".32" />
-              <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
-            </linearGradient>
-            <radialGradient id={`${uid}-orb`} cx=".5" cy=".5" r=".5">
-              <stop offset="0" stopColor={spec.soft} stopOpacity=".9" />
-              <stop offset=".35" stopColor={spec.soft} stopOpacity=".5" />
-              <stop offset="1" stopColor={spec.soft} stopOpacity="0" />
-            </radialGradient>
-            <linearGradient id={`${uid}-edge-l`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor={spec.soft} stopOpacity="0" />
-              <stop offset=".45" stopColor={spec.soft} stopOpacity=".3" />
-              <stop offset="1" stopColor={spec.soft} stopOpacity=".7" />
-            </linearGradient>
-            <linearGradient id={`${uid}-edge-d`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor={spec.soft} stopOpacity="0" />
-              <stop offset=".5" stopColor={spec.soft} stopOpacity=".22" />
-              <stop offset="1" stopColor={spec.soft} stopOpacity=".55" />
-            </linearGradient>
-            <linearGradient id={`${uid}-sheen`} x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stopColor="#ffffff" stopOpacity="0" />
-              <stop offset=".45" stopColor="#ffffff" stopOpacity=".5" />
-              <stop offset=".55" stopColor="#ffffff" stopOpacity=".5" />
-              <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
-            </linearGradient>
-            <filter id={`${uid}-soft`} x="-40%" y="-40%" width="180%" height="180%">
-              <feGaussianBlur stdDeviation="3" />
-            </filter>
-            <filter id={`${uid}-wide`} x="-60%" y="-60%" width="220%" height="220%">
-              <feGaussianBlur stdDeviation="8" />
-            </filter>
-            <filter id={`${uid}-lift`} x="-40%" y="-40%" width="180%" height="180%">
-              <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor={spec.deep} floodOpacity=".38" />
-            </filter>
-            <filter id={`${uid}-grain`} x="0%" y="0%" width="100%" height="100%">
-              <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" result="n" />
-              <feColorMatrix in="n" type="saturate" values="0" />
-              <feComposite operator="in" in2="SourceGraphic" />
-            </filter>
-            <clipPath id={`${uid}-clip`}>
-              <path d={SQUIRCLE} />
-            </clipPath>
-          </defs>
-
-          {/* the face: gradient squircle with a soft top gloss */}
-          <path d={SQUIRCLE} fill={`url(#${uid}-bg)`} />
-          <path d={SQUIRCLE} fill={`url(#${uid}-gloss)`} opacity=".5" />
-
-          <g clipPath={`url(#${uid}-clip)`}>
-            {/* the mid layer: story orbs breathing over a pedestal band */}
-            <g className="dtIconMid">
-              <circle cx="48" cy="40" r="25" fill={`url(#${uid}-orb)`} filter={`url(#${uid}-wide)`} opacity=".85" />
-              <rect x="-12" y="56" width="120" height="44" fill={spec.soft} opacity=".3" filter={`url(#${uid}-soft)`} />
-            </g>
-
-            {/* two blurred inner contours of the squircle */}
-            <path
-              d={SQUIRCLE}
-              fill="none"
-              stroke={`url(#${uid}-edge-d)`}
-              strokeWidth="6"
-              filter={`url(#${uid}-wide)`}
-              opacity=".55"
-              transform="translate(1.4 1.9) scale(0.97)"
-            />
-            <path
-              d={SQUIRCLE}
-              fill="none"
-              stroke={`url(#${uid}-edge-l)`}
-              strokeWidth="2.5"
-              filter={`url(#${uid}-soft)`}
-              opacity=".5"
-            />
-
-            {/* the contact ellipse at the base */}
-            <ellipse
-              cx="48"
-              cy="94"
-              rx="30"
-              ry="7"
-              fill={`url(#${uid}-orb)`}
-              filter={`url(#${uid}-soft)`}
-              opacity=".55"
-            />
-
-            {/* the sheen band sweeping once on hover */}
-            <g className="dtIconSheenBand">
-              <rect x="-11" y="-24" width="26" height="144" fill={`url(#${uid}-sheen)`} transform="skewX(-16)" />
-            </g>
-
-            {/* the discrete film grain */}
-            <path d={SQUIRCLE} fill="#ffffff" filter={`url(#${uid}-grain)`} opacity=".08" />
-          </g>
-
-          {/* the glyph: thick ivory strokes lifting toward the viewer */}
-          <g filter={`url(#${uid}-lift)`}>
-            <g
-              className="dtIconGlyph"
-              fill="none"
-              stroke={IVORY}
-              strokeWidth={STROKE}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <g className="dtIconStory">{spec.glyph}</g>
-            </g>
-          </g>
-        </svg>
-      </span>
+        {plate.glyph(`url(#${uid}-tone)`)}
+      </g>
+    </svg>
   );
 }
 
 /* ------------------------------- the icons --------------------------------- */
 
-/** Chat — the assistant of the OS: a speech bubble carrying the brand star. */
-const ChatIcon_SPEC: AppIconSpec = {
-motion: "bounce",
-story: "#ff8c42",
-deep: "#b6520e",
-soft: "#ffdcbd",
-glyph: (
-  <>
-    <path
-      d="M31 29 H65 Q70 29 70 34 V55 Q70 60 65 60 H46.5 L37 68.5 Q33.5 71.2 33.5 66.6 V60 H31 Q26 60 26 55 V34 Q26 29 31 29 Z"
-      fill={BACKING}
-    />
-    <path
-      d="M48 35.5 L51.2 43.3 L59 46.5 L51.2 49.7 L48 57.5 L44.8 49.7 L37 46.5 L44.8 43.3 Z"
-      fill={IVORY}
-      stroke="none"
-    />
-  </>
-),
+/** Chat — the assistant of the OS: an azure plate carrying a bold speech
+ *  bubble, its three dots cut in the plate tone. */
+const ChatIcon_PLATE: AppIconPlate = {
+  top: "#56a9f0",
+  bottom: "#2b6fc9",
+  glyph: (tone) => (
+    <>
+      <rect x="12.5" y="13" width="23" height="16" rx="5.5" fill={GLYPH_INK} stroke="none" />
+      <path d="M16.9 27.9 L14.1 34.4 Q13.1 36.5 15.5 35.6 L22.7 32.2 Z" fill={GLYPH_INK} stroke="none" />
+      <circle cx="18.6" cy="21" r="1.75" fill={tone} stroke="none" />
+      <circle cx="24" cy="21" r="1.75" fill={tone} stroke="none" />
+      <circle cx="29.4" cy="21" r="1.75" fill={tone} stroke="none" />
+    </>
+  ),
 };
 
-/** The bound icon component of "chat": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "chat": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const ChatIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-chat" spec={ChatIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-chat" plate={ChatIcon_PLATE} />
 );
 
-/** My Files — the file explorer of the OS: the windows folder with its
- * tab and the rising arrow (the open-folder gesture of the explorer). */
-const FilesIcon_SPEC: AppIconSpec = {
-motion: "rise",
-story: "#eab308",
-deep: "#9a6a06",
-soft: "#fde9b0",
-glyph: (
-  <>
-    {/* the back plane of the folder with its folded tab */}
-    <path
-      d="M27 34 Q27 31.5 29.5 31.5 H37.5 L41 35.5 H66.5 Q69 35.5 69 38 V60 Q69 62.5 66.5 62.5 H29.5 Q27 62.5 27 60 Z"
-      fill={BACKING}
-    />
-    {/* the front plane, riding lower with its own tab lifted open */}
-    <path d="M27 46 H41.5 L45.5 50 H69 V60 Q69 62.5 66.5 62.5 H29.5 Q27 62.5 27 60 Z" fill="rgba(255,255,255,.14)" />
-    <g className="dtIcon-m-sun">
-      {/* the arrow rising from the open mouth of the folder */}
-      <path d="M48 41 V53.5" strokeWidth={STROKE_SOFT} />
-      <path d="M44.2 44.6 L48 40.8 L51.8 44.6" strokeWidth={STROKE_SOFT} />
-    </g>
-  </>
-),
+/** My Files — the file explorer of the OS: a gold plate carrying the folder,
+ *  its back panel riding translucent above the solid front plane. */
+const FilesIcon_PLATE: AppIconPlate = {
+  top: "#f6c455",
+  bottom: "#cf9430",
+  glyph: () => (
+    <>
+      <path
+        d="M14.3 15.6 h7.4 l3.5 4 h8.5 q2.3 0 2.3 2.3 v2.6 H12 v-6.3 q0 -2.3 2.3 -2.3 Z"
+        fill={GLYPH_INK}
+        stroke="none"
+        opacity=".6"
+      />
+      <path d="M12 22.8 h24 v7.4 q0 2.3 -2.3 2.3 h-19.4 q-2.3 0 -2.3 -2.3 Z" fill={GLYPH_INK} stroke="none" />
+    </>
+  ),
 };
 
-/** The bound icon component of "files": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "files": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const FilesIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-files" spec={FilesIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-files" plate={FilesIcon_PLATE} />
 );
 
-/** History — the session archive: a clock with a curved rewind arrow. */
-const HistoryIcon_SPEC: AppIconSpec = {
-motion: "sweep",
-story: "#d9b98c",
-deep: "#9a7444",
-soft: "#f4e6cb",
-glyph: (
-  <>
-    <circle cx="49" cy="51" r="16.5" />
-    <g className="dtIcon-m-hand">
-      <path d="M49 42.5 V51 L56 55" />
-    </g>
-    <path d="M28.5 35 Q28.5 24.5 39 24.5" strokeWidth={STROKE_SOFT} />
-    <path d="M39 24.5 L33.6 21.2 M39 24.5 L34 28.2" strokeWidth={STROKE_SOFT} />
-  </>
-),
+/** History — the session archive: a sand plate carrying the clock with its
+ *  rewind arrow sweeping counterclockwise outside the dial. */
+const HistoryIcon_PLATE: AppIconPlate = {
+  top: "#dcbf8f",
+  bottom: "#a98550",
+  glyph: () => (
+    <>
+      <circle cx="24" cy="25" r="10" />
+      <path d="M24 19.5 V25 L28.2 27.6" />
+      <path d="M15.5 14.1 A13.8 13.8 0 0 0 10.7 21.4" strokeWidth={STROKE_SOFT} />
+      <path d="M8.8 16.5 L10.7 21.4 L14.8 18.2" strokeWidth={STROKE_SOFT} />
+    </>
+  ),
 };
 
-/** The bound icon component of "history": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "history": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const HistoryIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-history" spec={HistoryIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-history" plate={HistoryIcon_PLATE} />
 );
 
-/** Projects — the workspace records: a board with two uneven columns. */
-const ProjectsIcon_SPEC: AppIconSpec = {
-motion: "kanban",
-story: "#cd8a5e",
-deep: "#925a34",
-soft: "#f2ddc6",
-glyph: (
-  <>
-    <rect x="27" y="29" width="42" height="40" rx="8" fill={BACKING} />
-    <rect
-      className="dtIcon-m-card"
-      style={si(0)}
-      x="34"
-      y="37"
-      width="9.5"
-      height="24"
-      rx="3"
-      fill={IVORY}
-      stroke="none"
-    />
-    <g className="dtIcon-m-card" style={si(1)}>
-      <rect x="52.5" y="37" width="9.5" height="13" rx="3" />
-      <path d="M52.5 56 H62" strokeWidth={STROKE_SOFT} />
-    </g>
-  </>
-),
+/** Projects — the workspace records: a clay plate carrying the board with its
+ *  three uneven columns of pinned work. */
+const ProjectsIcon_PLATE: AppIconPlate = {
+  top: "#e39a68",
+  bottom: "#b0663d",
+  glyph: () => (
+    <>
+      <rect x="13.5" y="15.5" width="21" height="18.5" rx="3.2" />
+      <rect x="16.6" y="22.8" width="3.8" height="8.2" rx="1.9" fill={GLYPH_INK} stroke="none" />
+      <rect x="22.1" y="18.6" width="3.8" height="12.4" rx="1.9" fill={GLYPH_INK} stroke="none" />
+      <rect x="27.6" y="25.4" width="3.8" height="5.6" rx="1.9" fill={GLYPH_INK} stroke="none" />
+    </>
+  ),
 };
 
-/** The bound icon component of "projects": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "projects": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const ProjectsIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-projects" spec={ProjectsIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-projects" plate={ProjectsIcon_PLATE} />
 );
 
-/** Console — the canonical CLI design: a prompt chevron and its cursor. */
-const ConsoleIcon_SPEC: AppIconSpec = {
-motion: "blink",
-story: "#8d8479",
-deep: "#57514a",
-soft: "#ded5c8",
-glyph: (
-  <>
-    <path d="M31 35 L43.5 47.5 L31 60" strokeWidth={STROKE_BRIGHT} />
-    <path d="M50 36.5 H63" />
-    <rect className="dtIcon-m-cursor" x="49" y="53.5" width="15.5" height="9.5" rx="3" fill={IVORY} stroke="none" />
-  </>
-),
+/** Console — the canonical CLI design: a graphite plate carrying the prompt
+ *  chevron and its waiting underscore. */
+const ConsoleIcon_PLATE: AppIconPlate = {
+  top: "#5d6672",
+  bottom: "#363d48",
+  glyph: () => (
+    <>
+      <path d="M14.5 17.5 L22.1 24 L14.5 30.5" />
+      <path d="M26.5 30.5 H34" />
+    </>
+  ),
 };
 
-/** The bound icon component of "console": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "console": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const ConsoleIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-console" spec={ConsoleIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-console" plate={ConsoleIcon_PLATE} />
 );
 
-/** Gateway — the local gateway console: routes meeting at a waypoint. */
-const GatewayIcon_SPEC: AppIconSpec = {
-motion: "ripple",
-story: "#c9974f",
-deep: "#8a682c",
-soft: "#f0dcae",
-glyph: (
-  <>
-    <path d="M48 39.5 L56.5 48 L48 56.5 L39.5 48 Z" fill={BACKING} strokeWidth={STROKE_SOFT} />
-    <circle className="dtIcon-m-node" style={si(0)} cx="29.5" cy="32.5" r="5" strokeWidth={STROKE_SOFT} />
-    <circle className="dtIcon-m-node" style={si(1)} cx="66.5" cy="63.5" r="5" strokeWidth={STROKE_SOFT} />
-    <path d="M33.5 36 Q41.5 42.5 42.5 44.8" strokeWidth={STROKE_SOFT} />
-    <path d="M53.5 51.2 Q58.5 55 60.6 57.6" strokeWidth={STROKE_SOFT} />
-  </>
-),
+/** Gateway — the local gateway console: a brass plate carrying the network —
+ *  one hub node wired to its four satellites. */
+const GatewayIcon_PLATE: AppIconPlate = {
+  top: "#d8a75c",
+  bottom: "#a3722c",
+  glyph: () => (
+    <>
+      <g strokeWidth={STROKE_SOFT}>
+        <path d="M24 24 L14 14.5" />
+        <path d="M24 24 L34 14.5" />
+        <path d="M24 24 L14 33.5" />
+        <path d="M24 24 L34 33.5" />
+      </g>
+      <circle cx="24" cy="24" r="3.6" fill={GLYPH_INK} stroke="none" />
+      <circle cx="14" cy="14.5" r="3.1" fill={GLYPH_INK} stroke="none" />
+      <circle cx="34" cy="14.5" r="3.1" fill={GLYPH_INK} stroke="none" />
+      <circle cx="14" cy="33.5" r="3.1" fill={GLYPH_INK} stroke="none" />
+      <circle cx="34" cy="33.5" r="3.1" fill={GLYPH_INK} stroke="none" />
+    </>
+  ),
 };
 
-/** The bound icon component of "gateway": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "gateway": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const GatewayIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-gateway" spec={GatewayIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-gateway" plate={GatewayIcon_PLATE} />
 );
 
-/** Providers — the provider and model choices: a plug with its cord. */
-const ProvidersIcon_SPEC: AppIconSpec = {
-motion: "pulse",
-story: "#bd7d55",
-deep: "#7f5133",
-soft: "#f0d3ba",
-glyph: (
-  <>
-    <path d="M43.5 30.5 V38.5 M52.5 30.5 V38.5" />
-    <rect className="dtIcon-m-plug" x="39" y="38.5" width="18" height="19" rx="6.5" fill={BACKING} />
-    <path d="M48 57.5 C48 66.5 55 66 60.5 66 H66.5" strokeWidth={STROKE_SOFT} />
-  </>
-),
+/** Providers — the provider and model choices: a sienna plate carrying the
+ *  plug with its prongs and its coiled cord. */
+const ProvidersIcon_PLATE: AppIconPlate = {
+  top: "#cf8a5f",
+  bottom: "#9a5c38",
+  glyph: () => (
+    <>
+      <path d="M20.8 13.5 V18" />
+      <path d="M27.2 13.5 V18" />
+      <rect x="17" y="18" width="14" height="12" rx="4.5" fill={GLYPH_INK} stroke="none" />
+      <path d="M24 30 V32.8 Q24 35.6 27.2 35.6 H31" strokeWidth={STROKE_SOFT} />
+    </>
+  ),
 };
 
-/** The bound icon component of "providers": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "providers": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const ProvidersIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-providers" spec={ProvidersIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-providers" plate={ProvidersIcon_PLATE} />
 );
 
-/** Usage — the local usage records: ascending bars over a baseline. */
-const UsageIcon_SPEC: AppIconSpec = {
-motion: "meter",
-story: "#b39a78",
-deep: "#75603f",
-soft: "#ecdcbe",
-glyph: (
-  <>
-    <path d="M29.5 65 H66.5" strokeWidth={STROKE_SOFT} />
-    <rect
-      className="dtIcon-m-bar"
-      style={si(0)}
-      x="33"
-      y="47"
-      width="8"
-      height="13"
-      rx="3"
-      fill={IVORY}
-      stroke="none"
-      opacity=".78"
-    />
-    <rect
-      className="dtIcon-m-bar"
-      style={si(1)}
-      x="44"
-      y="39"
-      width="8"
-      height="21"
-      rx="3"
-      fill={IVORY}
-      stroke="none"
-      opacity=".89"
-    />
-    <rect
-      className="dtIcon-m-bar"
-      style={si(2)}
-      x="55"
-      y="30"
-      width="8"
-      height="30"
-      rx="3"
-      fill={IVORY}
-      stroke="none"
-    />
-  </>
-),
+/** Usage — the local usage records: a tan plate carrying the ascending bars
+ *  of the meter. */
+const UsageIcon_PLATE: AppIconPlate = {
+  top: "#c2aa7f",
+  bottom: "#8f7550",
+  glyph: () => (
+    <>
+      <rect x="15.4" y="24.5" width="5" height="9" rx="2.5" fill={GLYPH_INK} stroke="none" opacity=".75" />
+      <rect x="21.5" y="20" width="5" height="13.5" rx="2.5" fill={GLYPH_INK} stroke="none" opacity=".88" />
+      <rect x="27.6" y="15.5" width="5" height="18" rx="2.5" fill={GLYPH_INK} stroke="none" />
+    </>
+  ),
 };
 
-/** The bound icon component of "usage": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "usage": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const UsageIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-usage" spec={UsageIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-usage" plate={UsageIcon_PLATE} />
 );
 
-/** Routes — the stream health: two feeds merging into one stream. */
-const RoutesIcon_SPEC: AppIconSpec = {
-motion: "draw",
-story: "#b39a87",
-deep: "#775f4e",
-soft: "#eeddd0",
-glyph: (
-  <>
-    <path
-      className="dtIcon-m-run"
-      style={{ ...si(0), transformOrigin: "28.5px 34.5px" }}
-      d="M28.5 34.5 C40 34.5 39 48 48.5 48"
-    />
-    <path
-      className="dtIcon-m-run"
-      style={{ ...si(1), transformOrigin: "28.5px 61.5px" }}
-      d="M28.5 61.5 C40 61.5 39 48 48.5 48"
-    />
-    <path className="dtIcon-m-run" style={{ ...si(2), transformOrigin: "48.5px 48px" }} d="M48.5 48 H67" />
-    <circle className="dtIcon-m-dot" style={si(3)} cx="48.5" cy="48" r="4.2" fill={IVORY} stroke="none" />
-  </>
-),
+/** Routes — the stream health: a dusty-rose plate carrying two feeds curving
+ *  into one arrow. */
+const RoutesIcon_PLATE: AppIconPlate = {
+  top: "#c9a894",
+  bottom: "#93715d",
+  glyph: () => (
+    <>
+      <path d="M14.5 15.5 Q14.5 24 24 24 H30" />
+      <path d="M14.5 32.5 Q14.5 24 24 24 H30" />
+      <circle cx="14.5" cy="15.5" r="2.9" fill={GLYPH_INK} stroke="none" />
+      <circle cx="14.5" cy="32.5" r="2.9" fill={GLYPH_INK} stroke="none" />
+      <path d="M27.6 20.6 L32 24 L27.6 27.4" />
+    </>
+  ),
 };
 
-/** The bound icon component of "routes": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "routes": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const RoutesIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-routes" spec={RoutesIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-routes" plate={RoutesIcon_PLATE} />
 );
 
-/** Docs — the documentation library: an open book with a raised spine. */
-const DocsIcon_SPEC: AppIconSpec = {
-motion: "lift",
-story: "#d8cbb2",
-deep: "#93856a",
-soft: "#f6efe0",
-glyph: (
-  <>
-    <path
-      className="dtIcon-m-page-l"
-      d="M48 35.5 C43 30.8 35 29.8 28.5 31.8 L28.5 59 C35 57 43 58 48 62.5 Z"
-      fill={BACKING}
-    />
-    <path
-      className="dtIcon-m-page-r"
-      d="M48 35.5 C53 30.8 61 29.8 67.5 31.8 L67.5 59 C61 57 53 58 48 62.5 Z"
-      fill={BACKING}
-    />
-    <path d="M48 35.5 V62.5" strokeWidth={STROKE_SOFT} />
-  </>
-),
+/** Docs — the documentation library: a parchment plate carrying the document
+ *  with its folded corner and its plate-toned lines of text. */
+const DocsIcon_PLATE: AppIconPlate = {
+  top: "#ddd1b8",
+  bottom: "#a89a7c",
+  glyph: (tone) => (
+    <>
+      <path
+        d="M17.3 12.5 h9.2 l5.5 5.5 v15.6 q0 2 -2 2 h-12.7 q-2 0 -2 -2 v-19.1 q0 -2 2 -2 Z"
+        fill={GLYPH_INK}
+        stroke="none"
+      />
+      <path d="M26.5 12.5 v6.4 h5.5 Z" fill={GLYPH_INK} stroke="none" opacity=".5" />
+      <path d="M19.6 26.5 h9 M19.6 31 h5.5" stroke={tone} strokeWidth={STROKE_SOFT} />
+    </>
+  ),
 };
 
-/** The bound icon component of "docs": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "docs": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const DocsIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-docs" spec={DocsIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-docs" plate={DocsIcon_PLATE} />
 );
 
-/** Explore — the exploration gallery: the wind rose inside its ring. */
-const ExploreIcon_SPEC: AppIconSpec = {
-motion: "compass",
-story: "#c98d80",
-deep: "#8a5449",
-soft: "#f4d8cf",
-glyph: (
-  <>
-    <circle cx="48" cy="48" r="19" strokeWidth={STROKE_SOFT} />
-    <g className="dtIcon-m-needle">
-      <path d="M33 48 L48 44.2 L63 48 L48 51.8 Z" fill={IVORY} stroke="none" opacity=".55" />
-      <path d="M48 31.5 L51.8 48 L48 64.5 L44.2 48 Z" fill={IVORY} stroke="none" />
-    </g>
-    <circle cx="48" cy="48" r="2.6" fill="#8a5449" stroke="none" />
-  </>
-),
+/** Explore — the exploration gallery: a terracotta plate carrying the compass,
+ *  its needle split solid north and translucent south. */
+const ExploreIcon_PLATE: AppIconPlate = {
+  top: "#d69a88",
+  bottom: "#a15c4b",
+  glyph: (tone) => (
+    <>
+      <circle cx="24" cy="24" r="11" />
+      <path d="M24 15.2 L27.5 24 H20.5 Z" fill={GLYPH_INK} stroke="none" />
+      <path d="M24 32.8 L27.5 24 H20.5 Z" fill={GLYPH_INK} stroke="none" opacity=".55" />
+      <circle cx="24" cy="24" r="2" fill={tone} stroke="none" />
+    </>
+  ),
 };
 
-/** The bound icon component of "explore": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "explore": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const ExploreIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-explore" spec={ExploreIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-explore" plate={ExploreIcon_PLATE} />
 );
 
-/** OS — the family operating surface: the hex frame over a four-pane grid. */
-const OsIcon_SPEC: AppIconSpec = {
-motion: "lattice",
-story: "#aab4c2",
-deep: "#647082",
-soft: "#e2e8f0",
-glyph: (
-  <>
-    <path d="M48 27 L66.5 37.5 V58.5 L48 69 L29.5 58.5 V37.5 Z" fill={BACKING} />
-    <rect
-      className="dtIcon-m-pane"
-      style={si(0)}
-      x="37.5"
-      y="37"
-      width="9"
-      height="9"
-      rx="2.5"
-      fill={IVORY}
-      stroke="none"
-      opacity=".92"
-    />
-    <rect
-      className="dtIcon-m-pane"
-      style={si(1)}
-      x="49.5"
-      y="37"
-      width="9"
-      height="9"
-      rx="2.5"
-      fill={IVORY}
-      stroke="none"
-      opacity=".92"
-    />
-    <rect
-      className="dtIcon-m-pane"
-      style={si(2)}
-      x="37.5"
-      y="49"
-      width="9"
-      height="9"
-      rx="2.5"
-      fill={IVORY}
-      stroke="none"
-      opacity=".92"
-    />
-    <rect
-      className="dtIcon-m-pane"
-      style={si(3)}
-      x="49.5"
-      y="49"
-      width="9"
-      height="9"
-      rx="2.5"
-      fill={IVORY}
-      stroke="none"
-      opacity=".92"
-    />
-  </>
-),
+/** OS — the family operating surface: a steel plate carrying the four-pane
+ *  window of the system. */
+const OsIcon_PLATE: AppIconPlate = {
+  top: "#8fabcf",
+  bottom: "#4f6d99",
+  glyph: () => (
+    <>
+      <rect x="14.6" y="14.6" width="7.6" height="7.6" rx="2.2" fill={GLYPH_INK} stroke="none" />
+      <rect x="25.8" y="14.6" width="7.6" height="7.6" rx="2.2" fill={GLYPH_INK} stroke="none" />
+      <rect x="14.6" y="25.8" width="7.6" height="7.6" rx="2.2" fill={GLYPH_INK} stroke="none" />
+      <rect x="25.8" y="25.8" width="7.6" height="7.6" rx="2.2" fill={GLYPH_INK} stroke="none" />
+    </>
+  ),
 };
 
-/** The bound icon component of "os": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "os": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const OsIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-os" spec={OsIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-os" plate={OsIcon_PLATE} />
 );
 
-/** Settings — the local preferences: a gear with eight rounded teeth. */
-const SettingsIcon_SPEC: AppIconSpec = {
-motion: "turn",
-story: "#b6ada1",
-deep: "#6f6759",
-soft: "#ece5da",
-glyph: (
-  <>
-    <circle cx="48" cy="48" r="13.5" strokeWidth={STROKE_BRIGHT} />
-    <path d="M64.5 48 H69.5 M59.7 59.7 L63.2 63.2 M48 64.5 V69.5 M36.3 59.7 L32.8 63.2 M31.5 48 H26.5 M36.3 36.3 L32.8 32.8 M48 31.5 V26.5 M59.7 36.3 L63.2 32.8" />
-    <circle cx="48" cy="48" r="4.6" strokeWidth={STROKE_HAIR} />
-  </>
-),
+/** Settings — the local preferences: a stone plate carrying the eight-tooth
+ *  gear, its bore cut back to the plate tone. */
+const SettingsIcon_PLATE: AppIconPlate = {
+  top: "#b9b3a8",
+  bottom: "#7d776c",
+  glyph: (tone) => (
+    <>
+      <g fill={GLYPH_INK} stroke="none">
+        <rect x="21.9" y="10.8" width="4.2" height="26.4" rx="2.1" />
+        <rect x="10.8" y="21.9" width="26.4" height="4.2" rx="2.1" />
+        <rect x="21.9" y="10.8" width="4.2" height="26.4" rx="2.1" transform="rotate(45 24 24)" />
+        <rect x="21.9" y="10.8" width="4.2" height="26.4" rx="2.1" transform="rotate(135 24 24)" />
+        <circle cx="24" cy="24" r="9.6" />
+      </g>
+      <circle cx="24" cy="24" r="4.4" fill={tone} stroke="none" />
+    </>
+  ),
 };
 
-/** The bound icon component of "settings": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "settings": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const SettingsIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-settings" spec={SettingsIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-settings" plate={SettingsIcon_PLATE} />
 );
 
-/** Calculator — the native arithmetic app: the keypad grid with the
- * equals key. */
-const CalculatorIcon_SPEC: AppIconSpec = {
-motion: "press",
-story: "#9aa7b4",
-deep: "#5c6875",
-soft: "#dbe3ec",
-glyph: (
-  <>
-    <rect x="29" y="25.5" width="38" height="45" rx="6.5" fill={BACKING} />
-    <rect x="35" y="31.5" width="22" height="8" rx="2" fill={IVORY} stroke="none" opacity=".86" />
-    <rect x="35" y="45.5" width="6.5" height="6.5" rx="2" fill={IVORY} stroke="none" opacity=".78" />
-    <rect x="44.25" y="45.5" width="6.5" height="6.5" rx="2" fill={IVORY} stroke="none" opacity=".78" />
-    <rect x="35" y="56" width="6.5" height="6.5" rx="2" fill={IVORY} stroke="none" opacity=".78" />
-    <rect x="44.25" y="56" width="6.5" height="6.5" rx="2" fill={IVORY} stroke="none" opacity=".78" />
-    <g className="dtIcon-m-key">
-      <path d="M54 50.5 H61.5" strokeWidth={STROKE_BRIGHT} />
-      <path d="M54 60 H61.5" strokeWidth={STROKE_BRIGHT} />
-    </g>
-  </>
-),
+/** Calculator — the native arithmetic app: a pale steel plate carrying the
+ *  keypad grid with its display and its equals column. */
+const CalculatorIcon_PLATE: AppIconPlate = {
+  top: "#a4b4c6",
+  bottom: "#67798c",
+  glyph: () => (
+    <>
+      <rect x="14.5" y="12.5" width="19" height="23" rx="3.2" />
+      <rect x="18" y="16.5" width="12" height="4" rx="1.4" fill={GLYPH_INK} stroke="none" />
+      <circle cx="19.4" cy="25.6" r="1.8" fill={GLYPH_INK} stroke="none" />
+      <circle cx="23.5" cy="25.6" r="1.8" fill={GLYPH_INK} stroke="none" />
+      <circle cx="19.4" cy="30" r="1.8" fill={GLYPH_INK} stroke="none" />
+      <circle cx="23.5" cy="30" r="1.8" fill={GLYPH_INK} stroke="none" />
+      <rect x="27.4" y="24.2" width="3.4" height="9.4" rx="1.7" fill={GLYPH_INK} stroke="none" />
+    </>
+  ),
 };
 
-/** The bound icon component of "calculator": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "calculator": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const CalculatorIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-calculator" spec={CalculatorIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-calculator" plate={CalculatorIcon_PLATE} />
 );
 
-/** Image — the native image studio: the picture frame with the mountain
- * and the sun. */
-const ImageIcon_SPEC: AppIconSpec = {
-motion: "rise",
-story: "#c084fc",
-deep: "#7443ab",
-soft: "#e9d9fb",
-glyph: (
-  <>
-    <rect x="28" y="28" width="40" height="40" rx="5.5" fill={BACKING} />
-    <path d="M33 59.5 L42.5 45.5 L49.5 54.5 L55.5 47.5 L63 59.5 Z" fill={IVORY} stroke="none" opacity=".92" />
-    <circle className="dtIcon-m-sun" cx="57.5" cy="37.5" r="4.2" fill={IVORY} stroke="none" />
-  </>
-),
+/** Image — the native image studio: a violet plate carrying the picture frame
+ *  with its mountain and its sun. */
+const ImageIcon_PLATE: AppIconPlate = {
+  top: "#b79ae6",
+  bottom: "#7f5cc0",
+  glyph: () => (
+    <>
+      <rect x="13" y="14.5" width="22" height="19" rx="3.4" />
+      <path d="M17.4 29.8 L22.6 23 L26.8 28.4 L29.4 25.1 L31.4 29.8 Z" fill={GLYPH_INK} stroke="none" />
+      <circle cx="28.4" cy="20.4" r="2.5" fill={GLYPH_INK} stroke="none" />
+    </>
+  ),
 };
 
-/** The bound icon component of "image": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "image": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const ImageIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-image" spec={ImageIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-image" plate={ImageIcon_PLATE} />
 );
 
-/** Video — the native video editor: the clapperboard with the play
- * triangle. */
-const VideoIcon_SPEC: AppIconSpec = {
-motion: "play",
-story: "#f472b6",
-deep: "#a83570",
-soft: "#fbd8ea",
-glyph: (
-  <>
-    <rect x="29" y="41.5" width="38" height="26.5" rx="5" fill={BACKING} />
-    <path d="M31.5 41.5 L35 30.5 L64.5 36 L61.5 41.5 Z" fill={BACKING} />
-    <path d="M42.5 33.4 L45.2 40.9 M53.5 35 L56 41" strokeWidth={STROKE_SOFT} />
-    <path className="dtIcon-m-play" d="M43.5 48 L56.5 54.75 L43.5 61.5 Z" fill={IVORY} stroke="none" />
-  </>
-),
+/** Video — the native video editor: a rose plate carrying the rounded play
+ *  triangle. */
+const VideoIcon_PLATE: AppIconPlate = {
+  top: "#eb8bb3",
+  bottom: "#c74f83",
+  glyph: () => (
+    <path d="M19.5 16.8 L32 24 L19.5 31.2 Z" fill={GLYPH_INK} stroke={GLYPH_INK} strokeLinejoin="round" />
+  ),
 };
 
-/** The bound icon component of "video": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "video": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const VideoIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-video" spec={VideoIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-video" plate={VideoIcon_PLATE} />
 );
 
-/** Audio — the native audio studio: the sound bars over the note. */
-const AudioIcon_SPEC: AppIconSpec = {
-motion: "wave",
-story: "#d9962e",
-deep: "#8a5c14",
-soft: "#f3dcb0",
-glyph: (
-  <>
-    <circle cx="36" cy="55.5" r="4.6" fill={IVORY} stroke="none" />
-    <path d="M40.6 55.5 V36.5" strokeWidth={STROKE_BRIGHT} />
-    <path d="M40.6 36.5 Q47 38.5 48 44.5" strokeWidth={STROKE_SOFT} />
-    <rect
-      className="dtIcon-m-bar"
-      style={si(0)}
-      x="50.5"
-      y="47"
-      width="5.5"
-      height="11"
-      rx="2.75"
-      fill={IVORY}
-      stroke="none"
-      opacity=".78"
-    />
-    <rect
-      className="dtIcon-m-bar"
-      style={si(1)}
-      x="57.5"
-      y="41"
-      width="5.5"
-      height="17"
-      rx="2.75"
-      fill={IVORY}
-      stroke="none"
-      opacity=".88"
-    />
-    <rect
-      className="dtIcon-m-bar"
-      style={si(2)}
-      x="64.5"
-      y="36"
-      width="5.5"
-      height="22"
-      rx="2.75"
-      fill={IVORY}
-      stroke="none"
-    />
-  </>
-),
+/** Audio — the native audio studio: an amber plate carrying the eighth note,
+ *  its head and stem and its curling flag. */
+const AudioIcon_PLATE: AppIconPlate = {
+  top: "#e8943f",
+  bottom: "#ad6217",
+  glyph: () => (
+    <>
+      <ellipse cx="20.5" cy="30.5" rx="4.4" ry="3.6" fill={GLYPH_INK} stroke="none" />
+      <path d="M24.9 30.2 V15.8" />
+      <path d="M24.9 16 Q31.8 18 31.8 24.5" />
+    </>
+  ),
 };
 
-/** The bound icon component of "audio": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "audio": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const AudioIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-audio" spec={AudioIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-audio" plate={AudioIcon_PLATE} />
 );
 
-/** Games — the native games shelf: the gamepad with its cross and studs. */
-const GamesIcon_SPEC: AppIconSpec = {
-motion: "roll",
-story: "#e8563f",
-deep: "#9c3120",
-soft: "#f9d6ca",
-glyph: (
-  <>
-    <path
-      d="M35 37.5 H61 C66 37.5 68.5 41 69.3 45.5 C69.6 51 69.8 57.5 66.8 60.2 C63 62.9 58.6 60.7 56.4 56.6 L54 52.5 H42 L39.6 56.6 C37.4 60.7 33 62.9 29.2 60.2 C26.2 57.5 26.4 51 26.7 45.5 C27.5 41 30 37.5 35 37.5 Z"
-      fill={BACKING}
-    />
-    <path d="M36.5 44.5 V53.5 M32 49 H41" strokeWidth={STROKE_BRIGHT} />
-    <circle cx="58.5" cy="46.5" r="2.7" fill={IVORY} stroke="none" />
-    <circle cx="63" cy="51.5" r="2.7" fill={IVORY} stroke="none" />
-  </>
-),
+/** Games — the native games shelf: a deep vermilion plate carrying the gamepad
+ *  with its cross and studs. */
+const GamesIcon_PLATE: AppIconPlate = {
+  top: "#d75a45",
+  bottom: "#9e2e1d",
+  glyph: () => (
+    <>
+      <path d="M17.5 18.75 H30.5 C33 18.75 34.25 20.5 34.65 22.75 C34.8 25.5 34.9 28.75 33.4 30.1 C31.5 31.45 29.3 30.35 28.2 28.3 L27 26.25 H21 L19.8 28.3 C18.7 30.35 16.5 31.45 14.6 30.1 C13.1 28.75 13.2 25.5 13.35 22.75 C13.75 20.5 15 18.75 17.5 18.75 Z" />
+      <path d="M20.3 21.7 V26.8 M17.75 24.25 H22.85" strokeWidth={STROKE_SOFT} />
+      <circle cx="27.5" cy="22.6" r="1.7" fill={GLYPH_INK} stroke="none" />
+      <circle cx="30.6" cy="25.8" r="1.7" fill={GLYPH_INK} stroke="none" />
+    </>
+  ),
 };
 
-/** The bound icon component of "games": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "games": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const GamesIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-games" spec={GamesIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-games" plate={GamesIcon_PLATE} />
 );
 
-/** Argan — the DNS and gateway library: the double-contour shield. */
-const ArganIcon_SPEC: AppIconSpec = {
-motion: "sway",
-story: "#14b98c",
-deep: "#0b7d5e",
-soft: "#bcefdc",
-glyph: (
-  <>
-    <path d="M48 27.5 L66 34 V49 C66 59.8 58.7 66.2 48 70.2 C37.3 66.2 30 59.8 30 49 V34 Z" fill={BACKING} />
-    <path
-      d="M48 35 L59.5 39.2 V48.6 C59.5 55.8 54.6 60.4 48 63.4 C41.4 60.4 36.5 55.8 36.5 48.6 V39.2 Z"
-      strokeWidth={STROKE_HAIR}
-      opacity=".85"
-    />
-  </>
-),
+/** Argan — the cloud edge platform: a jade plate carrying the bold cloud,
+ *  its puffs drawn as one silhouette. */
+const ArganIcon_PLATE: AppIconPlate = {
+  top: "#3cbd97",
+  bottom: "#0f8a68",
+  glyph: () => (
+    <g fill={GLYPH_INK} stroke="none">
+      <circle cx="17.4" cy="25.4" r="5.6" />
+      <circle cx="25.6" cy="22.4" r="7.2" />
+      <circle cx="31.6" cy="26.4" r="5" />
+      <rect x="12" y="24.6" width="22.6" height="7.2" rx="3.6" />
+    </g>
+  ),
 };
 
-/** The bound icon component of "argan": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "argan": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const ArganIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-argan" spec={ArganIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-argan" plate={ArganIcon_PLATE} />
 );
 
-/** Cadria — the video, image and 3D studio: a clapperboard mid-slate. */
-const CadriaIcon_SPEC: AppIconSpec = {
-motion: "spin",
-story: "#e04f9f",
-deep: "#972a66",
-soft: "#f7c4e2",
-glyph: (
-  <>
-    <rect x="28" y="46" width="40" height="21" rx="5" fill={BACKING} />
-    <g className="dtIcon-m-slate">
-      <path d="M30.5 46 L33.8 31.5 L67.5 37.5 L65 46 Z" fill={BACKING} />
-      <path d="M41.5 33.2 L44.5 45.3 M53 35.3 L55.5 45.5" strokeWidth={STROKE_SOFT} />
+/** Cadria — the audio studio: a magenta plate carrying the centered waveform
+ *  of five rounded bars. */
+const CadriaIcon_PLATE: AppIconPlate = {
+  top: "#e070ab",
+  bottom: "#a83a78",
+  glyph: () => (
+    <g fill={GLYPH_INK} stroke="none">
+      <rect x="10.2" y="19" width="4.4" height="10" rx="2.2" />
+      <rect x="16.1" y="16" width="4.4" height="16" rx="2.2" />
+      <rect x="22" y="13" width="4.4" height="22" rx="2.2" />
+      <rect x="27.9" y="16" width="4.4" height="16" rx="2.2" />
+      <rect x="33.8" y="19" width="4.4" height="10" rx="2.2" />
     </g>
-  </>
-),
+  ),
 };
 
-/** The bound icon component of "cadria": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "cadria": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const CadriaIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-cadria" spec={CadriaIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-cadria" plate={CadriaIcon_PLATE} />
 );
 
-/** Debonair — the OS audio DAW: a five-band equalizer in full swing. */
-const DebonairIcon_SPEC: AppIconSpec = {
-motion: "wave",
-story: "#bd7a1a",
-deep: "#7c4c0a",
-soft: "#f2ddab",
-glyph: (
-  <>
-    <rect
-      className="dtIcon-m-bar"
-      style={si(0)}
-      x="27.2"
-      y="39"
-      width="5.6"
-      height="18"
-      rx="3"
-      fill={IVORY}
-      stroke="none"
-      opacity=".78"
-    />
-    <rect
-      className="dtIcon-m-bar"
-      style={si(1)}
-      x="36.2"
-      y="34"
-      width="5.6"
-      height="28"
-      rx="3"
-      fill={IVORY}
-      stroke="none"
-      opacity=".88"
-    />
-    <rect
-      className="dtIcon-m-bar"
-      style={si(2)}
-      x="45.2"
-      y="28"
-      width="5.6"
-      height="40"
-      rx="3"
-      fill={IVORY}
-      stroke="none"
-    />
-    <rect
-      className="dtIcon-m-bar"
-      style={si(3)}
-      x="54.2"
-      y="34"
-      width="5.6"
-      height="28"
-      rx="3"
-      fill={IVORY}
-      stroke="none"
-      opacity=".88"
-    />
-    <rect
-      className="dtIcon-m-bar"
-      style={si(4)}
-      x="63.2"
-      y="39"
-      width="5.6"
-      height="18"
-      rx="3"
-      fill={IVORY}
-      stroke="none"
-      opacity=".78"
-    />
-  </>
-),
+/** Debonair — the music production studio: a bronze plate carrying the piano,
+ *  its black keys and key seams cut back to the plate tone. */
+const DebonairIcon_PLATE: AppIconPlate = {
+  top: "#d29a3e",
+  bottom: "#9b6512",
+  glyph: (tone) => (
+    <>
+      <rect x="12.8" y="16.8" width="22.4" height="15" rx="3" fill={GLYPH_INK} stroke="none" />
+      <g stroke={tone} strokeWidth="2.1">
+        <path d="M18.4 31.3 V17.3" />
+        <path d="M24 31.3 V17.3" />
+        <path d="M29.6 31.3 V17.3" />
+      </g>
+      <g fill={tone} stroke="none">
+        <rect x="16.85" y="17" width="3.1" height="6.6" rx="1.5" />
+        <rect x="22.45" y="17" width="3.1" height="6.6" rx="1.5" />
+        <rect x="28.05" y="17" width="3.1" height="6.6" rx="1.5" />
+      </g>
+    </>
+  ),
 };
 
-/** The bound icon component of "debonair": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "debonair": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const DebonairIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-debonair" spec={DebonairIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-debonair" plate={DebonairIcon_PLATE} />
 );
 
-/** Stealthhead — the OS FPS platform: a scope with cardinal ticks. */
-const StealthheadIcon_SPEC: AppIconSpec = {
-motion: "breathe",
-story: "#f4694f",
-deep: "#a63322",
-soft: "#ffd3c4",
-glyph: (
-  <>
-    <circle cx="48" cy="48" r="17.5" />
-    <path d="M48 26 V31.5 M48 64.5 V70 M26 48 H31.5 M64.5 48 H70" />
-    <circle cx="48" cy="48" r="4.4" fill={IVORY} stroke="none" />
-  </>
-),
+/** Stealthhead — the stealth ops surface: a coral plate carrying the visor,
+ *  its viewing slit cut back to the plate tone. */
+const StealthheadIcon_PLATE: AppIconPlate = {
+  top: "#ef8b70",
+  bottom: "#bb5540",
+  glyph: (tone) => (
+    <>
+      <path
+        d="M14.5 17 H33.5 Q36 17 36 19.5 V27.5 Q36 30 33.5 30 H26.6 L24 27.6 L21.4 30 H14.5 Q12 30 12 27.5 V19.5 Q12 17 14.5 17 Z"
+        fill={GLYPH_INK}
+        stroke="none"
+      />
+      <rect x="15.5" y="21" width="17" height="5.2" rx="2.6" fill={tone} stroke="none" />
+    </>
+  ),
 };
 
-/** The bound icon component of "stealthhead": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "stealthhead": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const StealthheadIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-stealthhead" spec={StealthheadIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-stealthhead" plate={StealthheadIcon_PLATE} />
 );
 
-/** Forge — the family forge: a mallet head over its handle. */
-const ForgeIcon_SPEC: AppIconSpec = {
-motion: "tap",
-story: "#b5793b",
-deep: "#7a4e22",
-soft: "#ecc894",
-glyph: (
-  <>
-    <g className="dtIcon-m-tap">
-      <g transform="rotate(-24 50 37)">
-        <rect x="35" y="29.5" width="30" height="15" rx="5.5" fill={BACKING} />
-      </g>
+/** Forge — the ci forges: an umber plate carrying the anvil, its face and
+ *  waist and flared base drawn as one silhouette. */
+const ForgeIcon_PLATE: AppIconPlate = {
+  top: "#b57d3f",
+  bottom: "#7d521f",
+  glyph: () => (
+    <g fill={GLYPH_INK} stroke="none">
+      <rect x="11.5" y="16.5" width="25" height="5.5" rx="2.2" />
+      <rect x="20.2" y="21.5" width="7.6" height="6.5" rx="1.8" />
+      <path d="M15 32.5 H33 L30.8 28 H17.2 Z" />
     </g>
-    <path d="M53 44 L43.5 64" strokeWidth={STROKE_BRIGHT} />
-  </>
-),
+  ),
 };
 
-/** The bound icon component of "forge": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "forge": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const ForgeIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-forge" spec={ForgeIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-forge" plate={ForgeIcon_PLATE} />
 );
 
-/** Foundry — the family foundry: the sawtooth plant with its stack. */
-const FoundryIcon_SPEC: AppIconSpec = {
-motion: "glow",
-story: "#98a2ad",
-deep: "#5f6b78",
-soft: "#d4dbe2",
-glyph: (
-  <>
-    <path d="M28.5 66 V45 L39.5 53 V45 L50.5 53 V41 H56.5 V32 H63 V66 Z" fill={BACKING} />
-    <rect
-      className="dtIcon-m-tick"
-      style={si(0)}
-      x="33.5"
-      y="56.5"
-      width="6.5"
-      height="7.5"
-      rx="2"
-      fill={IVORY}
-      stroke="none"
-      opacity=".85"
-    />
-    <rect
-      className="dtIcon-m-tick"
-      style={si(1)}
-      x="44"
-      y="56.5"
-      width="6.5"
-      height="7.5"
-      rx="2"
-      fill={IVORY}
-      stroke="none"
-      opacity=".85"
-    />
-  </>
-),
+/** Foundry — the artifact foundry: a slate plate carrying the layers, the
+ *  solid top sheet over its two chevron shelves. */
+const FoundryIcon_PLATE: AppIconPlate = {
+  top: "#a4abb6",
+  bottom: "#6b7381",
+  glyph: () => (
+    <>
+      <path d="M24 13 L36.4 20 L24 27 L11.6 20 Z" fill={GLYPH_INK} stroke="none" />
+      <path d="M12.8 24.5 L24 30.8 L35.2 24.5" strokeWidth={STROKE_SOFT} />
+      <path d="M12.8 29.7 L24 36 L35.2 29.7" strokeWidth={STROKE_SOFT} />
+    </>
+  ),
 };
 
-/** The bound icon component of "foundry": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "foundry": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const FoundryIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-foundry" spec={FoundryIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-foundry" plate={FoundryIcon_PLATE} />
 );
 
-/** Vault — the family vault: the three-spoke door inside its rings. */
-const VaultIcon_SPEC: AppIconSpec = {
-motion: "dial",
-story: "#cfa84a",
-deep: "#8f7226",
-soft: "#f0dc9e",
-glyph: (
-  <>
-    <circle cx="48" cy="48" r="20" strokeWidth={STROKE_BRIGHT} />
-    <circle cx="48" cy="48" r="11" strokeWidth={STROKE_SOFT} />
-    <g className="dtIcon-m-dial">
-      <path d="M48 48 V37 M48 48 L57.5 53.5 M48 48 L38.5 53.5" strokeWidth={STROKE_SOFT} />
-    </g>
-  </>
-),
+/** Vault — the storage vault: a deep-gold plate carrying the shield, its
+ *  keyhole cut back to the plate tone. */
+const VaultIcon_PLATE: AppIconPlate = {
+  top: "#d9b45a",
+  bottom: "#9c7a26",
+  glyph: (tone) => (
+    <>
+      <path
+        d="M24 12.5 L35 16.6 V25.2 Q35 33.4 24 37.9 Q13 33.4 13 25.2 V16.6 Z"
+        fill={GLYPH_INK}
+        stroke="none"
+      />
+      <circle cx="24" cy="22.3" r="3.5" fill={tone} stroke="none" />
+      <path d="M22.6 24.3 L21.2 31 H26.8 L25.4 24.3 Z" fill={tone} stroke="none" />
+    </>
+  ),
 };
 
-/** The bound icon component of "vault": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "vault": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const VaultIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-vault" spec={VaultIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-vault" plate={VaultIcon_PLATE} />
 );
 
-/** Getry — the family registry: the cataloged stack of plates. */
-const GetryIcon_SPEC: AppIconSpec = {
-motion: "slide",
-story: "#6fae8f",
-deep: "#437a61",
-soft: "#b8dcc9",
-glyph: (
-  <>
-    <path className="dtIcon-m-plate" style={si(0)} d="M48 28.5 L63.5 37.5 L48 46.5 L32.5 37.5 Z" fill={BACKING} />
-    <path className="dtIcon-m-plate" style={si(1)} d="M32.5 46.5 L48 55.5 L63.5 46.5" />
-    <path className="dtIcon-m-plate" style={si(2)} d="M32.5 55 L48 64 L63.5 55" />
-  </>
-),
+/** Getry — the family gateway: a sage plate carrying the route, its waypoint
+ *  dot and its S-curve rising into the arrowhead. */
+const GetryIcon_PLATE: AppIconPlate = {
+  top: "#7fb99a",
+  bottom: "#4c7f63",
+  glyph: () => (
+    <>
+      <circle cx="15.5" cy="33.2" r="3.1" fill={GLYPH_INK} stroke="none" />
+      <path d="M15.5 33.2 q0 -9 9 -9 q9 0 9 -9" />
+      <path d="M30.5 18.5 L33.5 15.2 L36.5 18.5" />
+    </>
+  ),
 };
 
-/** The bound icon component of "getry": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "getry": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const GetryIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-getry" spec={GetryIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-getry" plate={GetryIcon_PLATE} />
 );
 
-/** Saddle — the sandbox engine: the crate drawn in light isometric. */
-const SaddleIcon_SPEC: AppIconSpec = {
-motion: "shine",
-story: "#d6b483",
-deep: "#8f6b3c",
-soft: "#f2e3c8",
-glyph: (
-  <>
-    <clipPath id="dti-saddle-shine">
-      <path d={SQUIRCLE} />
-    </clipPath>
-    <path d="M31 42.5 L40 33 H65 L56 42.5 Z" fill={BACKING} />
-    <path d="M56 42.5 L65 33 V56 L56 65.5 Z" fill="rgba(255,255,255,.09)" />
-    <rect x="31" y="42.5" width="25" height="23" rx="2.5" fill={BACKING} />
-    <g clipPath="url(#dti-saddle-shine)">
-      <g className="dtIcon-m-shine">
-        <rect x="18" y="14" width="13" height="70" fill="rgba(255,255,255,.55)" transform="skewX(-16)" />
-      </g>
-    </g>
-  </>
-),
+/** Saddle — the sandbox engine: a taupe plate carrying the crate drawn in
+ *  light isometric, its top face seamed. */
+const SaddleIcon_PLATE: AppIconPlate = {
+  top: "#c3ae86",
+  bottom: "#8a7448",
+  glyph: () => (
+    <>
+      <path d="M24 14.5 L34.8 20.4 V30.9 L24 36.8 L13.2 30.9 V20.4 Z" />
+      <path d="M13.2 20.4 L24 26.3 L34.8 20.4 M24 26.3 V36.8" strokeWidth={STROKE_SOFT} />
+    </>
+  ),
 };
 
-/** The bound icon component of "saddle": a module-level arrow over the
- * shared face, the spec frozen in the closure at load. */
+/** The bound icon component of "saddle": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
 export const SaddleIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <AppIconFace {...props} uid="dti-saddle" spec={SaddleIcon_SPEC} />
+  <FluentIconFace {...props} uid="dti-saddle" plate={SaddleIcon_PLATE} />
 );
 
 /**
- * The premium icon set of the shell, keyed by the registry `iconset` field:
+ * The fluent icon set of the shell, keyed by the registry `iconset` field:
  * the desktop grid, the taskbar and the Start menu all reach their icons here.
  */
 export const APP_ICONS: Record<string, ComponentType<AppIconProps>> = {

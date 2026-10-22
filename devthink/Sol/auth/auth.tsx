@@ -1,34 +1,26 @@
 /**
  * auth page anchor — layer 3 of the anchor architecture. The file carrying
- * the folder's own name is the path manager of the page: it imports the
- * loose components beside it, mounts the page and re-exports the public
- * component surface. Only the theme anchor (Sol/Sol.tsx) consumes this file.
+ * the folder's own name is the path manager of the page: it keeps ONLY the
+ * stage orchestration — the lock -> signin state machine, the account
+ * contract of the root accountgate.ts, the invitation params and the
+ * navigation after the auth — and mounts the loose components that live
+ * in Sol/componentes/auth/. Only the theme anchor (Sol/Sol.tsx) consumes
+ * this file.
  *
- * Sign in — the windows sequence: the lock screen first (the big clock and
- * the date high on the face, the network status and the power corner below,
- * unlocking by a swipe up), then the authentication face over the dimmed,
- * blurred landscape. The face runs the account contract of the root
- * accountgate.ts: a machine without an account asks for the display name
- * and the password creation (the salted digest lands in the credential
- * vault of the local database — the os HD), a machine with one asks for
- * the password alone and answers the wrong-try verdict inline. The
- * password row speaks the windows grammar: one well with the reveal eye
- * and the arrow submit riding inside it. The sign-in options open the cli
- * pairing and the provider row — continue with devthink over google,
- * github and gitlab (the bots are ready on the owner accounts, the client
- * ids ride the env, the single callback page detects the origin by state);
- * the identity logic never moved.
+ * Sign in — the windows 11 sequence: the lock face first (the big clock
+ * on the LEFT side, the owner's law, the hint at the bottom), then the
+ * sign-in face over the dimmed, blurred wallpaper. The face runs the
+ * account contract of the root accountgate.ts: a machine without an
+ * account asks for the display name and the password creation (the salted
+ * digest lands in the credential vault of the local database — the os
+ * HD), a machine with one asks for the password alone and answers the
+ * wrong-try verdict inline. The provider row — continue with devthink
+ * over google, github and gitlab (the bots are ready on the owner
+ * accounts, the client ids ride the env, the single callback page
+ * detects the origin by state) — rides the face under the password well;
+ * the sign-in options open the cli pairing; the identity logic never
+ * moved.
  */
-import {
-  ArrowRightRegular,
-  ChevronUpRegular,
-  EyeOffRegular,
-  EyeRegular,
-  PersonRegular,
-  PowerRegular,
-  WindowConsoleRegular,
-  Wifi3Regular,
-} from "@fluentui/react-icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
@@ -36,27 +28,29 @@ import { ACCOUNT_NAME_KEY, type AccountState, accountstate, createAccount, verif
 import { afterAuthTarget, pairingReadiness, safegatewayurl } from "../../authgate.ts";
 import { copy, loadcopy } from "../../copy.ts";
 import {
+  type OAuthProvider,
   buildAuthorizeUrl,
   mintPkcePair,
   newOAuthState,
-  type OAuthProvider,
   oauthVerifierKey,
   providerRow,
 } from "../../oauthrow.ts";
 import { readBrowserPreferences } from "../../db";
+import { LockFace } from "../componentes/auth/lockface.tsx";
+import { PowerMenu } from "../componentes/auth/powermenu.tsx";
+import { SignInForm, type SignInEntryFields } from "../componentes/auth/signinform.tsx";
+import { StatusLine } from "../componentes/auth/statusline.tsx";
 
 export * from "../../accountgate.ts";
 export * from "../../authgate.ts";
+export * from "../componentes/auth/lockface.tsx";
+export * from "../componentes/auth/pairingform.tsx";
+export * from "../componentes/auth/powermenu.tsx";
+export * from "../componentes/auth/providerrow.tsx";
+export * from "../componentes/auth/signinform.tsx";
+export * from "../componentes/auth/statusline.tsx";
 
 type PairingResponse = { token: string; userId: string; expiresAt: number };
-
-/** The letter marks the provider buttons wear — fluent carries no brand
- * glyphs, so the letter mark is the honest code mark of each provider. */
-const PROVIDER_GLYPHS: Readonly<Record<OAuthProvider, string>> = Object.freeze({
-  google: "G",
-  github: "GH",
-  gitlab: "GL",
-});
 
 /** The authentication page-app served at /auth: the lock clock first, the
  * sign-in face behind the unlock. */
@@ -64,7 +58,6 @@ export default function Auth() {
   const [, navigate] = useLocation();
   const invitation = useRef(new URLSearchParams(window.location.search));
   const [stage, setStage] = useState<"lock" | "signin">("lock");
-  const [now, setNow] = useState(() => new Date());
   const [account, setAccount] = useState<AccountState>("absent");
   const [known, setKnown] = useState("");
   const [name, setName] = useState("");
@@ -73,8 +66,6 @@ export default function Auth() {
   const [failure, setFailure] = useState("");
   const [busy, setBusy] = useState(false);
   const [reveal, setReveal] = useState(false);
-  const [online, setOnline] = useState(() => (typeof navigator === "undefined" ? true : navigator.onLine));
-  const [poweropen, setPoweropen] = useState(false);
   const [gateway, setGateway] = useState(() => invitation.current.get("gateway") || "");
   const [pairingId, setPairingId] = useState(() => invitation.current.get("pair") || "");
   const [code, setCode] = useState(() => invitation.current.get("code")?.toUpperCase() || "");
@@ -82,27 +73,6 @@ export default function Auth() {
   const [cliopen, setCliopen] = useState(() => Boolean(invitation.current.get("pair")));
   const [, setCopylive] = useState(false);
   const [oauthbusy, setOauthbusy] = useState(false);
-  const passwordRef = useRef<HTMLInputElement | null>(null);
-  const dragstart = useRef<{ y: number } | null>(null);
-
-  /** the lock clock ticks once a minute is enough, but one tick per second
-   * keeps the minute edge honest; the interval dies with the mount */
-  useEffect(() => {
-    const timer = window.setInterval(() => setNow(new Date()), 1000);
-    return () => window.clearInterval(timer);
-  }, []);
-
-  // the network corner answers the real connection state, live
-  useEffect(() => {
-    const up = () => setOnline(true);
-    const down = () => setOnline(false);
-    window.addEventListener("online", up);
-    window.addEventListener("offline", down);
-    return () => {
-      window.removeEventListener("online", up);
-      window.removeEventListener("offline", down);
-    };
-  }, []);
 
   // the account contract of this machine's HD: whether the password exists
   // and the display name the face greets
@@ -120,13 +90,6 @@ export default function Auth() {
   useEffect(() => {
     void loadcopy().then(() => setCopylive(true));
   }, []);
-
-  // the password field takes focus as the sign-in face reveals
-  useEffect(() => {
-    if (stage !== "signin") return;
-    const timer = window.setTimeout(() => passwordRef.current?.focus(), 320);
-    return () => window.clearTimeout(timer);
-  }, [stage]);
 
   const finish = useCallback(() => {
     navigate(afterAuthTarget(window.location.search));
@@ -243,296 +206,63 @@ export default function Auth() {
   const readiness = pairingReadiness({ gatewayUrl: gateway, pairingId, code });
   const oauthrow = providerRow();
 
-  /** the unlock: a pointer swipe up, a wheel up, a click or the enter and
-   * space keys lift the lock — the windows gesture family */
+  /** the unlock: the lock face component owns the gesture family (the
+   * swipe, the click, the wheel, the keys) — the stage machine only
+   * answers */
   const unlock = useCallback(() => setStage("signin"), []);
-  const onlockpointerdown = (event: React.PointerEvent<HTMLDivElement>) => {
-    dragstart.current = { y: event.clientY };
-  };
-  const onlockpointermove = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (!dragstart.current) return;
-    if (dragstart.current.y - event.clientY > 56) {
-      dragstart.current = null;
-      unlock();
-    }
-  };
-  const onlockpointerup = () => {
-    dragstart.current = null;
-  };
-  const onlockkeydown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "Enter" || event.key === " " || event.key === "ArrowUp") {
-      event.preventDefault();
-      unlock();
-    }
-  };
 
-  const time = now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-  const date = now.toLocaleDateString([], { weekday: "long", month: "long", day: "numeric" });
-  const initials = (known || name).trim().charAt(0).toUpperCase();
-  const greeting = known ? `Welcome, ${known}` : "Welcome";
   const submitEntry = account === "ready" ? passwordEntry : createEntry;
-  const powerlabel = "Power";
+
+  /** the entry bundle of the sign-in face: the anchor owns the state, the
+   * face is a controlled surface */
+  const entry: SignInEntryFields = {
+    name,
+    password,
+    confirm,
+    failure,
+    busy,
+    reveal,
+    onNameChange: setName,
+    onPasswordChange: setPassword,
+    onConfirmChange: setConfirm,
+    onToggleReveal: () => setReveal((open) => !open),
+    submit: () => void submitEntry(),
+  };
 
   return (
     <main className={`dtw-login${stage === "signin" ? " dtw-login--signin" : ""}`}>
       <div className="dtw-login__stage" aria-hidden="true" />
 
       {stage === "lock" ? (
-        <div
-          className="dtw-login__clock"
-          role="button"
-          tabIndex={0}
-          aria-label="Unlock"
-          onPointerDown={onlockpointerdown}
-          onPointerMove={onlockpointermove}
-          onPointerUp={onlockpointerup}
-          onPointerCancel={onlockpointerup}
-          onClick={unlock}
-          onKeyDown={onlockkeydown}
-          onWheel={unlock}
-        >
-          <span className="dtw-login__time">{time}</span>
-          <span className="dtw-login__date">{date}</span>
-          <span className="dtw-login__hint">
-            <ChevronUpRegular fontSize={18} aria-hidden="true" />
-            Swipe up to unlock
-          </span>
-        </div>
+        <LockFace onUnlock={unlock} />
       ) : (
-        <div className="dtw-login__dock">
-          <section className="dtw-login__pane" aria-label="Sign in to DevThink">
-            <span className="dtw-login__avatar" aria-hidden="true">
-              {initials ? initials : <PersonRegular fontSize={44} aria-hidden="true" />}
-            </span>
-            <h1 className="dtw-login__welcome">{account === "ready" ? greeting : "Create your account"}</h1>
-
-            {account === "ready" ? (
-              <form
-                className="dtw-login__fields"
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  void submitEntry();
-                }}
-              >
-                <div className="dtw-login__row">
-                  <input
-                    ref={passwordRef}
-                    className="dtw-login__name"
-                    type={reveal ? "text" : "password"}
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
-                    placeholder="Password"
-                    autoComplete="current-password"
-                    aria-label="Password"
-                  />
-                  <button
-                    type="button"
-                    className="dtw-login__reveal"
-                    aria-label={reveal ? "Hide the password" : "Show the password"}
-                    aria-pressed={reveal}
-                    onClick={() => setReveal((open) => !open)}
-                  >
-                    {reveal ? <EyeOffRegular fontSize={16} aria-hidden="true" /> : <EyeRegular fontSize={16} aria-hidden="true" />}
-                  </button>
-                  <button type="submit" className="dtw-login__submit" disabled={busy} aria-busy={busy || undefined} aria-label="Sign in">
-                    <ArrowRightRegular fontSize={17} aria-hidden="true" />
-                  </button>
-                </div>
-                {failure ? (
-                  <p className="dtw-login__failure" role="alert">
-                    {failure}
-                  </p>
-                ) : null}
-              </form>
-            ) : (
-              <form
-                className="dtw-login__fields"
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  void submitEntry();
-                }}
-              >
-                <div className="dtw-login__row">
-                  <input
-                    className="dtw-login__name"
-                    value={name}
-                    onChange={(event) => setName(event.target.value)}
-                    placeholder="Your display name"
-                    maxLength={40}
-                    autoComplete="nickname"
-                    spellCheck={false}
-                    aria-label="Display name"
-                  />
-                </div>
-                <div className="dtw-login__row">
-                  <input
-                    ref={passwordRef}
-                    className="dtw-login__name"
-                    type={reveal ? "text" : "password"}
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
-                    placeholder="Create a password"
-                    autoComplete="new-password"
-                    aria-label="Create a password"
-                  />
-                  <button
-                    type="button"
-                    className="dtw-login__reveal"
-                    aria-label={reveal ? "Hide the password" : "Show the password"}
-                    aria-pressed={reveal}
-                    onClick={() => setReveal((open) => !open)}
-                  >
-                    {reveal ? <EyeOffRegular fontSize={16} aria-hidden="true" /> : <EyeRegular fontSize={16} aria-hidden="true" />}
-                  </button>
-                </div>
-                <div className="dtw-login__row">
-                  <input
-                    className="dtw-login__name"
-                    type={reveal ? "text" : "password"}
-                    value={confirm}
-                    onChange={(event) => setConfirm(event.target.value)}
-                    placeholder="Confirm the password"
-                    autoComplete="new-password"
-                    aria-label="Confirm the password"
-                  />
-                </div>
-                {failure ? (
-                  <p className="dtw-login__failure" role="alert">
-                    {failure}
-                  </p>
-                ) : null}
-                <button type="submit" className="dtw-login__create" disabled={busy} aria-busy={busy || undefined}>
-                  <span>Create account and sign in</span>
-                  <ArrowRightRegular fontSize={15} aria-hidden="true" />
-                </button>
-              </form>
-            )}
-
-            <div className="dtw-login__actions">
-              <button
-                type="button"
-                className="dtw-login__quiet"
-                disabled={busy}
-                aria-expanded={cliopen}
-                onClick={() => setCliopen((open) => !open)}
-              >
-                <WindowConsoleRegular fontSize={15} aria-hidden="true" />
-                Sign-in options
-              </button>
-              {cliopen ? (
-                <form
-                  className="dtw-login__pairing"
-                  onSubmit={(event) => {
-                    event.preventDefault();
-                    void consumePairing(gateway, pairingId, code);
-                  }}
-                >
-                  <div className="dtw-login__row">
-                    <input
-                      value={gateway}
-                      onChange={(event) => setGateway(event.target.value)}
-                      placeholder="http://127.0.0.1:8787"
-                      autoComplete="off"
-                      aria-label="Gateway endpoint"
-                      spellCheck={false}
-                    />
-                  </div>
-                  <div className="dtw-login__row">
-                    <input
-                      value={pairingId}
-                      onChange={(event) => setPairingId(event.target.value)}
-                      placeholder="pair id"
-                      autoComplete="off"
-                      aria-label="Pairing id"
-                      spellCheck={false}
-                    />
-                  </div>
-                  <div className="dtw-login__row">
-                    <input
-                      value={code}
-                      onChange={(event) => setCode(event.target.value.toUpperCase())}
-                      placeholder="8-char code"
-                      maxLength={8}
-                      autoComplete="one-time-code"
-                      aria-label="Access code"
-                    />
-                    <button type="submit" className="dtw-login__submit" disabled={busy} aria-label="Sync up with the cli">
-                      <ArrowRightRegular fontSize={16} aria-hidden="true" />
-                    </button>
-                  </div>
-                  <small className="dtw-login__hinttext">
-                    {readiness.ready
-                      ? "All fields present, the invitation can also arrive as a link"
-                      : `Still needed: ${readiness.missing.join(", ")}`}
-                  </small>
-                </form>
-              ) : null}
-              {cliopen ? (
-                <div className="dt-oauthrow" role="group" aria-label={copy("auth.oauth.headline")}>
-                  <p className="dt-oauthrow__headline">{copy("auth.oauth.headline")}</p>
-                  <div className="dt-oauthrow__btns">
-                    {oauthrow.providers.map((entry) => (
-                      <button
-                        key={entry.provider}
-                        type="button"
-                        className="dtw-login__create dt-oauthrow__btn"
-                        disabled={!entry.ready || oauthbusy}
-                        title={entry.ready ? undefined : copy("auth.oauth.unconfigured")}
-                        onClick={() => void beginOAuth(entry.provider)}
-                      >
-                        <span className="dt-oauthrow__glyph" aria-hidden="true">
-                          {PROVIDER_GLYPHS[entry.provider]}
-                        </span>
-                        <span className="dt-oauthrow__label">{copy(`auth.oauth.${entry.provider}`)}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ) : null}
-            </div>
-            <ul className="dtw-login__ledger">
-              <li>Local account on this machine</li>
-              <li>CLI pairing opt-in</li>
-              <li>No telemetry</li>
-            </ul>
-            <button type="button" className="dtw-login__quiet" onClick={() => setStage("lock")}>
-              Back to the clock
-            </button>
-          </section>
-        </div>
+        <SignInForm
+          account={account}
+          known={known}
+          entry={entry}
+          pairing={{
+            gateway,
+            pairingId,
+            code,
+            readiness,
+            busy,
+            onGatewayChange: setGateway,
+            onPairingIdChange: setPairingId,
+            onCodeChange: setCode,
+            onConsume: () => void consumePairing(gateway, pairingId, code),
+          }}
+          cliopen={cliopen}
+          onToggleCli={() => setCliopen((open) => !open)}
+          oauth={{ row: oauthrow, busy: oauthbusy, onBegin: (provider) => void beginOAuth(provider) }}
+          onBack={() => setStage("lock")}
+        />
       )}
 
-      {/* the windows corner: the live network status and the power flyout
-          ride the bottom right of both faces, like the lock screen of the
-          real system */}
-      <div className="dtw-login__tray" role="toolbar" aria-label="System corner">
-        <span className="dtw-login__net" role="status" data-offline={online ? "false" : "true"} title={online ? "Connected" : "Offline"}>
-          <Wifi3Regular fontSize={17} aria-hidden="true" />
-          <span className="sr-only">{online ? "Network connected" : "Network offline"}</span>
-        </span>
-        <div className="dtw-login__powerwrap">
-          <button
-            type="button"
-            className="dtw-login__power"
-            aria-label={powerlabel}
-            aria-expanded={poweropen}
-            onClick={() => setPoweropen((open) => !open)}
-          >
-            <PowerRegular fontSize={17} aria-hidden="true" />
-          </button>
-          {poweropen ? (
-            <div className="dtw-login__powermenu" role="menu" aria-label="Power options">
-              <button
-                type="button"
-                role="menuitem"
-                onClick={() => window.location.reload()}
-              >
-                Restart the session
-              </button>
-            </div>
-          ) : null}
-        </div>
-      </div>
+      {/* the windows corners: the live network status rides the bottom
+          left, the power flyout the bottom right — both faces, like the
+          lock screen of the real system */}
+      <StatusLine />
+      <PowerMenu />
     </main>
   );
 }
