@@ -13,6 +13,7 @@
 import {
   ChevronDownRegular as ChevronDown,
   CubeRegular as Cube,
+  DocumentEditRegular as CanvasGlyph,
   PanelLeftRegular as PanelLeft,
   PanelRightRegular as PanelRight,
   DeleteRegular as TrashIcon,
@@ -47,6 +48,7 @@ import { loadBrowserSession } from "../../db.ts";
 import { GATEWAY_REQUIRED_COPY, GATEWAY_SEND_NOTICE, useGatewayRegistration } from "../../gatewaybase.ts";
 import { useIsMobile } from "../../useismobile.ts";
 import { arrayOf, isString, useStoredState } from "../../usestoredstate.ts";
+import { CANVAS_OPEN_EVENT, CanvasPane, type CanvasDoc, type CanvasOpenDetail } from "./canvaspane.tsx";
 import { Composer } from "./composer.tsx";
 import { type SandboxFileChange, SandboxPane, type SandboxRunner } from "./sandboxpane.tsx";
 import { SessionPanel } from "./sessionpanel.tsx";
@@ -234,6 +236,47 @@ function sandboxContextBody(tasks: SandboxTask[]): string {
   return `sandbox tool results (the engine answered these):\n\n${sections.join("\n\n")}`;
 }
 
+/* the w6-a canvas lane: the versioned text and code buffer beside the
+ * thread — the flagship of the redesign. the openers: the topbar ghost
+ * key (an empty buffer keeps the standing record), the dom event lane
+ * (dt-canvas-open, armed today for the code block keys turn.tsx or
+ * markdown.tsx may dispatch in a later wave), and the honest auto-open
+ * — a committed assistant turn carrying a ```canvas fence opens the
+ * pane with the last fence's buffer only when the pane was closed and
+ * the round ended (the fence stays verbatim on the floor either way).
+ * the version record: every save (the pane's edit lane) and every
+ * differing opener content append one version, capped at 50 with the
+ * oldest trimmed; the record is body-local — chatstate is out of
+ * bounds, so the buffer dies with the body mount and never keys per
+ * session (the session-record seam for a later wave). */
+
+/** CANVAS_VERSION_CAP — the version record cap: a save that would pass
+ * 50 trims the oldest (the pointer rides the head, never the trimmed
+ * middle). */
+const CANVAS_VERSION_CAP = 50;
+
+/** CANVAS_FENCE — the fenced grammar of the canvas openers: a fence
+ * whose label carries the canvas tag word (the boundary keeps
+ * "canvasing" untagged), the language riding the rest of the label and
+ * the closing fence required — a stream stopped mid-fence never opens
+ * anything (the same honesty law the sandbox bridge runs). */
+const CANVAS_FENCE = /```canvas\b([^\n`]*)\n([\s\S]*?)```/g;
+
+/** lastCanvasFence — the honest scan of one committed assistant turn:
+ * the LAST canvas fence's buffer and language, null when the turn
+ * carries none (the open answers nothing — the fence stays plain
+ * markdown on the floor). */
+function lastCanvasFence(text: string): { content: string; lang: string } | null {
+  let found: { content: string; lang: string } | null = null;
+  for (const match of text.matchAll(CANVAS_FENCE)) {
+    found = {
+      content: (match[2] ?? "").replace(/\n$/, ""),
+      lang: (match[1] ?? "").trim(),
+    };
+  }
+  return found;
+}
+
 export default function ChatBody({ embedded }: { embedded?: boolean }) {
   ensureChatCss();
   const { sessions, active: persistedActive, open, startFresh, commit, remove } = useChatSessions();
@@ -295,6 +338,56 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
   const [sandboxRunning, setSandboxRunning] = useState(false);
   const sandboxMountedRef = useRef(false);
   const sandboxExitTimer = useRef<number | null>(null);
+  /* the canvas lane (w6-a) rides the same mount-state grammar as the
+   * sandbox lane: mounted hidden, a rAF flips data-open so the Windows
+   * slide-cum-fade enter plays, the exit stays mounted for the 200ms
+   * transition and a reopen reuses it. the versioned buffer outlives
+   * the pane — the doc record lives in this body (body-local by the
+   * chatstate boundary, the session-record seam noted at the top of
+   * the file), so a closed and reopened pane finds the same buffer. */
+  const [canvasMounted, setCanvasMounted] = useState(false);
+  const [canvasOpen, setCanvasOpen] = useState(false);
+  const [canvasDoc, setCanvasDoc] = useState<CanvasDoc | null>(null);
+  const canvasMountedRef = useRef(false);
+  const canvasOpenRef = useRef(false);
+  const canvasExitTimer = useRef<number | null>(null);
+  /* the canvas lane swaps the conversation body on the narrow viewport
+   * or the embedded window — the same law the sandbox lane runs (the
+   * flag derives beside the isMobile hook below). the exit seam is
+   * declared ahead of the round and the sandbox open seam below because
+   * those read it at render time through their dependency lists (the
+   * render-order law of hooks). */
+  /** closeCanvas — the slide-and-fade exit plays and the pane unmounts
+   * once the 200ms Windows transition settles; the version record
+   * stays in this body, so the next open finds the same buffer. */
+  const closeCanvas = useCallback(() => {
+    canvasOpenRef.current = false;
+    setCanvasOpen(false);
+    if (canvasExitTimer.current !== null) window.clearTimeout(canvasExitTimer.current);
+    canvasExitTimer.current = window.setTimeout(() => {
+      canvasMountedRef.current = false;
+      setCanvasMounted(false);
+    }, 220);
+  }, []);
+
+  /** the live-opener registration: the round (declared above the pane
+   * lifecycle) and the dom event listener read the open seam through
+   * this ref — the same registration law the sandbox bridge runner
+   * runs, so no dependency cycle crosses the pane lifecycle. */
+  const openCanvasRef = useRef<((content: string, title?: string, lang?: string) => void) | null>(null);
+
+  /** maybeOpenCanvasFromReply — the honest auto-open: a committed
+   * assistant turn carrying a canvas fence opens the pane with the
+   * last fence's buffer, only while the pane was closed (an open pane
+   * never yanks its buffer under the visitor) and only after the round
+   * ended (the fence is committed text — a stream stopped mid-fence
+   * never parses). */
+  const maybeOpenCanvasFromReply = useCallback((text: string) => {
+    if (canvasOpenRef.current) return;
+    const fence = lastCanvasFence(text);
+    if (fence === null) return;
+    openCanvasRef.current?.(fence.content, undefined, fence.lang);
+  }, []);
   /* the w5-a bridge state: the per-session task record (the cards are
    * work rows, never persisted turns — the record rides this body and
    * dies with the mount), the delivered watermark that keeps every
@@ -307,6 +400,10 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
   const taskCardRefs = useRef<Map<string, HTMLElement>>(new Map());
   const taskScrollTimer = useRef<number | null>(null);
   const isMobile = useIsMobile();
+  /* the canvas swap flag rides the isMobile hook answer (the same
+   * derivation the sandbox lane runs at the render, hoisted here so
+   * the open seams below read it through their dependency lists). */
+  const canvasSwap = isMobile || embedded === true;
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const lastPrompt = useRef<string | null>(null);
@@ -482,8 +579,11 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
    * controller and the partial answer commits with its stopped flag — the
    * visitor's stop is never an error. The w5-a seam: the round's history
    * carries the undelivered sandbox results as one follow-up user message
-   * (the quiet tool context, never committed to the visible thread), and
-   * the committed answer runs the tool-call bridge afterwards. */
+   * (the quiet tool context, never committed to the visible thread),
+   * the committed answer runs the tool-call bridge afterwards, and the
+   * w6-a seam: a ```canvas fence in the committed answer auto-opens the
+   * canvas lane (only while the pane was closed — the honest
+   * auto-open). */
   const runCompletion = useCallback(
     async (history: ChatSession, system: string) => {
       if (!gateway.base) {
@@ -553,6 +653,10 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
          * the cards land under this turn and wait as the next round's
          * result context. */
         runSandboxBridge(sid, reply);
+        /* the canvas auto-open (w6-a): the committed answer's last
+         * ```canvas fence opens the pane — only while it was closed
+         * (the maybe seam reads the live opener through the ref). */
+        maybeOpenCanvasFromReply(reply.content);
       } catch (err) {
         if (isChatStop(err)) {
           /* the visitor stopped the round: whatever streamed stays on the
@@ -575,6 +679,9 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
              * fences dispatch honestly (a fence left open by the stop
              * never parses). */
             runSandboxBridge(sid, committed);
+            /* the stopped partial is a committed answer too — its
+             * complete canvas fences open the pane the same way. */
+            maybeOpenCanvasFromReply(committed.content);
             toast("Generation stopped", {
               description: "The partial answer stayed on the floor — regenerate answers it again.",
             });
@@ -594,7 +701,7 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
         window.requestAnimationFrame(() => inputRef.current?.focus());
       }
     },
-    [commitLane, gateway.base, model, runSandboxBridge, thinking, tools],
+    [commitLane, gateway.base, maybeOpenCanvasFromReply, model, runSandboxBridge, thinking, tools],
   );
 
   /** stop — the Stop pill of the composer: aborts the running round. The
@@ -805,19 +912,24 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
 
   /** openSandbox — mounts the lane first; the effect flips the visible state
    * on the next frame so the enter transition plays; a reopen during the
-   * exit shows the still-mounted pane right away. */
+   * exit shows the still-mounted pane right away. the one-stage law
+   * (w6-a): on the swapped viewport the canvas lane answers the stage
+   * first in the render tree, so opening the engine lane hands the
+   * stage over — the canvas closes honestly (its buffer survives in
+   * the body), never silently unmounts. */
   const openSandbox = useCallback(() => {
     if (sandboxExitTimer.current !== null) {
       window.clearTimeout(sandboxExitTimer.current);
       sandboxExitTimer.current = null;
     }
+    if (canvasSwap && canvasOpenRef.current) closeCanvas();
     if (sandboxMountedRef.current) {
       setSandboxOpen(true);
       return;
     }
     sandboxMountedRef.current = true;
     setSandboxMounted(true);
-  }, []);
+  }, [canvasSwap, closeCanvas]);
 
   /** closeSandbox — the slide-and-fade exit plays, the engine lamp resets
    * and the pane unmounts once the 200ms Windows transition settles (the
@@ -870,6 +982,82 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     [openSandbox],
   );
 
+  /** openCanvas — the one opener seam behind every entry point: the
+   * topbar ghost key (an empty buffer keeps the standing record), the
+   * dom event lane and the fence auto-open (both reading this seam
+   * through the ref above). no doc yet → the content becomes the first
+   * version; a differing content on a standing record appends as the
+   * newest version (the model's fences and the visitor's saves join
+   * one stream); an identical content just opens. on the swapped
+   * viewport the stage holds one pane — opening the canvas hands the
+   * stage over, so the sandbox lane closes first (its engine dies
+   * honestly, never silently unmounts). */
+  const openCanvas = useCallback(
+    (content: string, title?: string, lang?: string) => {
+      canvasOpenRef.current = true;
+      setCanvasDoc((prev) => {
+        const stamp = Date.now();
+        if (prev === null) {
+          return { title: title ?? "canvas", lang: lang ?? "", versions: [{ content, at: stamp }], index: 0 };
+        }
+        const titled = title !== undefined && title.length > 0 ? title : prev.title;
+        const languaged = lang !== undefined && lang.length > 0 ? lang : prev.lang;
+        /* the empty open keeps the standing buffer — the ghost key never
+         * wipes the visitor's canvas. */
+        if (content.length === 0) return { ...prev, title: titled, lang: languaged };
+        const head = prev.versions[prev.index] ?? prev.versions[prev.versions.length - 1];
+        if (head?.content === content) return { ...prev, title: titled, lang: languaged };
+        const versions = [...prev.versions, { content, at: stamp }];
+        const capped =
+          versions.length > CANVAS_VERSION_CAP ? versions.slice(versions.length - CANVAS_VERSION_CAP) : versions;
+        return { title: titled, lang: languaged, versions: capped, index: capped.length - 1 };
+      });
+      if (canvasSwap && sandboxOpen) closeSandbox();
+      if (canvasExitTimer.current !== null) {
+        window.clearTimeout(canvasExitTimer.current);
+        canvasExitTimer.current = null;
+      }
+      if (canvasMountedRef.current) {
+        setCanvasOpen(true);
+        return;
+      }
+      canvasMountedRef.current = true;
+      setCanvasMounted(true);
+    },
+    [canvasSwap, closeSandbox, sandboxOpen],
+  );
+
+  /** toggleCanvas — the topbar ghost key flips the lane. */
+  const toggleCanvas = useCallback(() => {
+    if (canvasOpen) closeCanvas();
+    else openCanvas("");
+  }, [canvasOpen, closeCanvas, openCanvas]);
+
+  /** browseCanvas — the version navigation seam of the pane's back and
+   * forward keys: the pointer moves, clamped honestly (an out-of-range
+   * call answers nothing). */
+  const browseCanvas = useCallback((index: number) => {
+    setCanvasDoc((prev) => {
+      if (prev === null) return prev;
+      if (index < 0 || index >= prev.versions.length) return prev;
+      return { ...prev, index };
+    });
+  }, []);
+
+  /** commitCanvasVersion — the edit save seam of the pane: a changed
+   * buffer lands as the newest version (the cap trims the oldest) and
+   * the pointer moves to the head — editing a browsed-back version
+   * branches forward, the history keeps every step. */
+  const commitCanvasVersion = useCallback((content: string) => {
+    setCanvasDoc((prev) => {
+      if (prev === null) return prev;
+      const versions = [...prev.versions, { content, at: Date.now() }];
+      const capped =
+        versions.length > CANVAS_VERSION_CAP ? versions.slice(versions.length - CANVAS_VERSION_CAP) : versions;
+      return { ...prev, versions: capped, index: capped.length - 1 };
+    });
+  }, []);
+
   // mounting flips the visible state one frame later (the enter transition)
   useEffect(() => {
     if (!panelMounted) return undefined;
@@ -884,11 +1072,44 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     return () => window.cancelAnimationFrame(frame);
   }, [sandboxMounted]);
 
+  // mounting flips the canvas lane the same way (the enter transition)
+  useEffect(() => {
+    if (!canvasMounted) return undefined;
+    const frame = window.requestAnimationFrame(() => setCanvasOpen(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, [canvasMounted]);
+
+  // the live-opener registration: the round's reply seam and the dom
+  // listener below read the open seam through the ref (the law above)
+  useEffect(() => {
+    openCanvasRef.current = openCanvas;
+  }, [openCanvas]);
+
+  // the dom event lane of the canvas openers (w6-a): turn.tsx or
+  // markdown.tsx may dispatch dt-canvas-open from a code block key in a
+  // later wave — the listener is armed today, the detail validated
+  // honestly (a payload without a string content answers nothing, never
+  // a fabricated buffer).
+  useEffect(() => {
+    const onCanvasOpen = (event: Event) => {
+      const detail: unknown = (event as CustomEvent<unknown>).detail;
+      if (typeof detail !== "object" || detail === null) return;
+      const call = detail as Partial<CanvasOpenDetail>;
+      if (typeof call.content !== "string") return;
+      const title = typeof call.title === "string" && call.title.trim().length > 0 ? call.title.trim() : undefined;
+      const lang = typeof call.lang === "string" ? call.lang.trim() : undefined;
+      openCanvasRef.current?.(call.content, title, lang);
+    };
+    document.addEventListener(CANVAS_OPEN_EVENT, onCanvasOpen);
+    return () => document.removeEventListener(CANVAS_OPEN_EVENT, onCanvasOpen);
+  }, []);
+
   // the exit timers never outlive the chat body
   useEffect(
     () => () => {
       if (panelExitTimer.current !== null) window.clearTimeout(panelExitTimer.current);
       if (sandboxExitTimer.current !== null) window.clearTimeout(sandboxExitTimer.current);
+      if (canvasExitTimer.current !== null) window.clearTimeout(canvasExitTimer.current);
       if (taskScrollTimer.current !== null) window.clearTimeout(taskScrollTimer.current);
     },
     [],
@@ -977,18 +1198,21 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     if (el && streamPinnedRef.current) el.scrollTop = el.scrollHeight;
   }, [busy, live?.content.length, live?.thought?.length]);
 
-  // Escape closes the mobile drawer first, then the session panel, then the
-  // sandbox lane
+  // Escape closes the canvas pane first, then the mobile drawer, then the
+  // session panel, then the sandbox lane (the canvas is the newest surface
+  // — the w6-a ladder head, and the pane's edit lane cancels before this
+  // chain ever sees its escape)
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
-      if (isMobile && !railCollapsed) setRailCollapsed(true);
+      if (canvasOpen) closeCanvas();
+      else if (isMobile && !railCollapsed) setRailCollapsed(true);
       else if (panelOpen) closePanel();
       else if (sandboxOpen) closeSandbox();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [closePanel, closeSandbox, isMobile, railCollapsed, panelOpen, sandboxOpen]);
+  }, [canvasOpen, closeCanvas, closePanel, closeSandbox, isMobile, panelOpen, railCollapsed, sandboxOpen]);
 
   /* the token meter (rung 125): the estimated budget of the NEXT round —
    * the system prompt plus the capped history window plus the draft in the
@@ -1113,6 +1337,19 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
                 <TrashIcon fontSize={17} aria-hidden="true" />
               </button>
             ) : null}
+            {/* the canvas ghost key (w6-a): the quiet topbar opener beside
+                the panel key — an empty open keeps the standing buffer,
+                so the key is the lane toggle, never a reset. */}
+            <button
+              type="button"
+              className="dtc-tb-btn"
+              onClick={toggleCanvas}
+              aria-pressed={canvasOpen}
+              aria-label={canvasOpen ? "Close canvas pane" : "Open canvas pane"}
+              title="Canvas pane"
+            >
+              <CanvasGlyph fontSize={18} aria-hidden="true" />
+            </button>
             <button
               type="button"
               className="dtc-tb-btn"
@@ -1127,7 +1364,22 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
         </header>
 
         <div className="dtc-stage atmos">
-          {sandboxMounted && sandboxSwap ? (
+          {/* the canvas lane (w6-a): on the swapped viewport it answers
+              the stage first — opening it hands the stage over from the
+              sandbox lane (the one-stage law), so the canvas branch
+              rides ahead of the sandbox branch; the buffer guard keeps
+              the pane's doc prop honest (a mount never outruns the doc
+              seam that created it). */}
+          {canvasMounted && canvasDoc !== null && canvasSwap ? (
+            <CanvasPane
+              open={canvasOpen}
+              onClose={closeCanvas}
+              swap
+              doc={canvasDoc}
+              onBrowse={browseCanvas}
+              onCommit={commitCanvasVersion}
+            />
+          ) : sandboxMounted && sandboxSwap ? (
             <SandboxPane
               open={sandboxOpen}
               onClose={closeSandbox}
@@ -1270,6 +1522,19 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
           )}
         </div>
       </main>
+
+      {/* the canvas lane docks beside the thread (the chatgpt grammar):
+          the wide viewport lane, the pane reusing the sandbox mount law —
+          the buffer survives the close in this body. */}
+      {canvasMounted && canvasDoc !== null && !canvasSwap ? (
+        <CanvasPane
+          open={canvasOpen}
+          onClose={closeCanvas}
+          doc={canvasDoc}
+          onBrowse={browseCanvas}
+          onCommit={commitCanvasVersion}
+        />
+      ) : null}
 
       {sandboxMounted && !sandboxSwap ? (
         <SandboxPane

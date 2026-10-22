@@ -234,8 +234,20 @@ function Cognition({
       >
         <Lightbulb fontSize={13} aria-hidden="true" />
         <span className={cx("dtc-cog__label", live && "cognition-live")}>{label}</span>
-        {live ? <i className="dtc-cog__elapsed">· {secondsOf(liveMs)}s</i> : null}
-        {live && !open ? <span className="dtc-cog__roll">{rollingTail(text)}</span> : null}
+        {/* the ticking count and the rolling tail sit out of the accessible
+         * name: both churn every half second while the trace streams, and
+         * the duration already reads through the thinking row the floor
+         * mounts — the name stays the quiet frozen label. */}
+        {live ? (
+          <i className="dtc-cog__elapsed" aria-hidden="true">
+            · {secondsOf(liveMs)}s
+          </i>
+        ) : null}
+        {live && !open ? (
+          <span className="dtc-cog__roll" aria-hidden="true">
+            {rollingTail(text)}
+          </span>
+        ) : null}
         <ChevronDown fontSize={13} aria-hidden="true" className="dtc-cog__chev" />
       </button>
       {open ? (
@@ -470,10 +482,11 @@ export function Turn({
   }
 
   return (
-    <article
-      className={cx("dtc-turn", assistant ? "assistant" : "user", fresh && "is-fresh")}
-      onMouseLeave={() => undefined}
-    >
+    <article className={cx("dtc-turn", assistant ? "assistant" : "user", fresh && "is-fresh")}>
+      {/* the sr-only heading carries the thread's h-level structure: the
+       * topbar owns the one h1, every turn answers an h2 — the structure
+       * rides under the visual grammar without touching it. */}
+      <h2 className="sr-only">{assistant ? "Assistant reply" : "Your message"}</h2>
       <div className="dtc-turn__stack">
         {assistant && turn.thought ? (
           <Cognition text={turn.thought} live={thinkingLive} thinkingMs={chipMs} liveMs={now - turn.at} />
@@ -674,7 +687,13 @@ export function ThinkingRow({ streaming = false, elapsedMs = 0 }: { streaming?: 
     <div className="dtc-thinking" role="status" aria-live="polite">
       <i className="dtc-thinking__bar" aria-hidden="true" />
       <span>{streaming ? "Responding" : "Thinking"}</span>
-      {seconds > 0 ? <i className="dtc-thinking__elapsed">· {seconds}s</i> : null}
+      {/* the ticking count stays out of the announcement: the live region
+       * speaks the phase change once, never every half-second tick. */}
+      {seconds > 0 ? (
+        <i className="dtc-thinking__elapsed" aria-hidden="true">
+          · {seconds}s
+        </i>
+      ) : null}
     </div>
   );
 }

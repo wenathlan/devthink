@@ -208,8 +208,11 @@ export function Sidebar({
     return (
       <div key={s.id} className={cx("dtc-item", s.id === activeId && "is-active", isPinned && "is-pinned")}>
         {status ? (
-          <span className="dtc-item__status" data-state={status}>
+          /* the slot speaks too: the glyph alone is invisible to assistive
+           * tech, so a quiet status line carries the state the dot draws. */
+          <span className="dtc-item__status" data-state={status} role="status">
             <i className={status === "running" ? "dtc-item__spin" : "dtc-item__dot"} aria-hidden="true" />
+            <span className="sr-only">{status === "running" ? "round running" : "round failed"}</span>
           </span>
         ) : null}
         <button
@@ -263,7 +266,9 @@ export function Sidebar({
         </button>
       </div>
 
-      <button type="button" className="dtc-rail__new" onClick={onNew}>
+      {/* the label span folds under the collapsed rail (display none), so
+       * the aria-label keeps the key named in both rail states. */}
+      <button type="button" className="dtc-rail__new" onClick={onNew} aria-label="New chat">
         <Plus fontSize={17} aria-hidden="true" />
         <span className="dtc-rail__hide">New chat</span>
       </button>
@@ -331,6 +336,7 @@ export function Sidebar({
               href={item.href}
               className="dtc-nav"
               aria-current={current ? "page" : undefined}
+              aria-label={item.label}
               title={item.label}
             >
               <Icon fontSize={17} aria-hidden="true" />
