@@ -55,6 +55,7 @@ import {
   useRef,
   useState } from "react";
 import { createPortal } from "react-dom";
+import { osText } from "../../oslabels.ts";
 import { SolLogoMark } from "./logo.tsx";
 
 export type WindowState = "normal" | "maximized" | "minimized" | "snapped-left" | "snapped-right";
@@ -98,50 +99,52 @@ const snap = (zone: SnapZone, col: number, row: number, cols = 1, rows = 1): Sna
   cols,
   rows });
 
-/** the six win11 layout templates of the flyout, top-left to bottom-right */
+/** the six win11 layout templates of the flyout, top-left to bottom-right
+ * (the labels ride the os label table; the geometry stays code) */
 const SNAP_TEMPLATES: SnapTemplate[] = [
-  { id: "halves", label: "side by side", cols: 2, rows: 1, cells: [snap("left", 1, 1), snap("right", 2, 1)] },
+  { id: "halves", label: osText("win.layout.halves"), cols: 2, rows: 1, cells: [snap("left", 1, 1), snap("right", 2, 1)] },
   {
     id: "thirds-left",
-    label: "three zones left, full right",
+    label: osText("win.layout.thirdsLeft"),
     cols: 2,
     rows: 3,
     cells: [snap("free", 1, 1), snap("free", 1, 2), snap("free", 1, 3), snap("right", 2, 1, 1, 3)] },
   {
     id: "thirds-right",
-    label: "full left, three zones right",
+    label: osText("win.layout.thirdsRight"),
     cols: 2,
     rows: 3,
     cells: [snap("left", 1, 1, 1, 3), snap("free", 2, 1), snap("free", 2, 2), snap("free", 2, 3)] },
   {
     id: "quarters",
-    label: "quarters",
+    label: osText("win.layout.quarters"),
     cols: 2,
     rows: 2,
     cells: [snap("tl", 1, 1), snap("tr", 2, 1), snap("bl", 1, 2), snap("br", 2, 2)] },
   {
     id: "focus-left",
-    label: "two zones left, full right",
+    label: osText("win.layout.focusLeft"),
     cols: 2,
     rows: 2,
     cells: [snap("free", 1, 1), snap("free", 1, 2), snap("right", 2, 1, 1, 2)] },
   {
     id: "focus-right",
-    label: "full left, two zones right",
+    label: osText("win.layout.focusRight"),
     cols: 2,
     rows: 2,
     cells: [snap("left", 1, 1, 1, 2), snap("free", 2, 1), snap("free", 2, 2)] },
 ];
 
-/** the zone half of every cell aria-label (lowercase mono grammar) */
+/** the aria-label of every snap cell (lowercase mono grammar) — the words
+ * ride the os label table, quoted by zone id */
 const ZONE_WORDS: Record<SnapZone, string> = {
-  left: "left half",
-  right: "right half",
-  tl: "top left quarter",
-  tr: "top right quarter",
-  bl: "bottom left quarter",
-  br: "bottom right quarter",
-  free: "column zone" };
+  left: osText("win.zone.left"),
+  right: osText("win.zone.right"),
+  tl: osText("win.zone.tl"),
+  tr: osText("win.zone.tr"),
+  bl: osText("win.zone.bl"),
+  br: osText("win.zone.br"),
+  free: osText("win.zone.free") };
 
 export const WINDOW_MIN_WIDTH = 320;
 export const WINDOW_MIN_HEIGHT = 300;
@@ -732,7 +735,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
           <span className="shell-window__mark" aria-hidden="true">
             <SolLogoMark size={16} />
           </span>
-          <strong className="shell-window__app">DevThink</strong>
+          <strong className="shell-window__app">{osText("win.lockup")}</strong>
           <span className="shell-window__role">{win.title}</span>
         </span>
         {tabs ? <div className="shell-window__tabs">{tabs}</div> : null}
@@ -740,7 +743,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
           <div className="shell-window__snap">
             <button
               type="button"
-              aria-label="Snap left"
+              aria-label={osText("win.snap.left.aria")}
               className="shell-window__snapbtn"
               onClick={() => snapHalf("snapped-left")}
             >
@@ -748,20 +751,20 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
             </button>
             <button
               type="button"
-              aria-label="Snap right"
+              aria-label={osText("win.snap.right.aria")}
               className="shell-window__snapbtn"
               onClick={() => snapHalf("snapped-right")}
             >
               <PanelRight fontSize={13} aria-hidden="true" />
             </button>
           </div>
-          <button type="button" aria-label="Minimize" className="shell-window__caption" onClick={requestMinimize}>
+          <button type="button" aria-label={osText("win.caption.minimize")} className="shell-window__caption" onClick={requestMinimize}>
             <Minus fontSize={14} aria-hidden="true" />
           </button>
           <button
             ref={maxBtnRef}
             type="button"
-            aria-label={win.state === "maximized" ? "Restore" : "Maximize"}
+            aria-label={win.state === "maximized" ? osText("win.caption.restore") : osText("win.caption.maximize")}
             aria-haspopup="dialog"
             aria-expanded={flyout || undefined}
             className="shell-window__caption"
@@ -784,7 +787,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
               <Square fontSize={12} aria-hidden="true" />
             )}
           </button>
-          <button type="button" className="shell-window__close" aria-label="Close window" onClick={requestClose}>
+          <button type="button" className="shell-window__close" aria-label={osText("win.caption.close")} onClick={requestClose}>
             <X fontSize={15} aria-hidden="true" />
           </button>
         </div>
@@ -810,7 +813,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
               ref={flyoutRef}
               className="acrylic-menu snap-flyout"
               role="dialog"
-              aria-label="Snap layouts"
+              aria-label={osText("win.snap.layouts.aria")}
               data-reduced={prefersReducedMotion() ? "true" : undefined}
               style={{
                 position: "fixed",
@@ -853,7 +856,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
                       key={`${cell.col}:${cell.row}`}
                       type="button"
                       className="snap-flyout__cell"
-                      aria-label={`snap ${ZONE_WORDS[cell.zone]}`}
+                      aria-label={ZONE_WORDS[cell.zone]}
                       style={{
                         gridColumn: `${cell.col} / span ${cell.cols}`,
                         gridRow: `${cell.row} / span ${cell.rows}` }}

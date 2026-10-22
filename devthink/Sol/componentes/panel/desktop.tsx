@@ -31,8 +31,8 @@ import {
   useRef,
   useState } from "react";
 import { useLocation } from "wouter";
-import type { DesktopApp } from "../../../appregistry.ts";
-import { familyurl } from "../../../deploybase.ts";
+import type { DesktopApp } from "../../appregistry.ts";
+import { familyurl } from "../../deploybase.ts";
 import {
   BAND_BOTTOM_PX,
   BAND_TOP_PX,
@@ -52,8 +52,9 @@ import {
   SNAP_STEP_Y,
   saveIconSpots,
   sortAppsByKind,
-  sortAppsByName } from "../../../desktopstate.ts";
-import { useIsMobile } from "../../../useismobile.ts";
+  sortAppsByName } from "../../desktopstate.ts";
+import { useIsMobile } from "../../useismobile.ts";
+import { osText } from "../../oslabels.ts";
 import { AppTile } from "../shell/apptile.tsx";
 import { DesktopMenu, type MenuEntry } from "./desktopmenu.tsx";
 import { SolLogoMark } from "./logo.tsx";
@@ -499,20 +500,20 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
     {
       kind: "submenu",
       id: "view",
-      label: "View",
+      label: osText("desktop.menu.view"),
       icon: Eye,
       items: [
         {
           kind: "item",
           id: "view-medium",
-          label: "medium icons",
+          label: osText("desktop.menu.view.medium"),
           icon: Square,
           shortcut: iconSize === "medium" ? "radio" : undefined,
           onSelect: () => setIconSize("medium") },
         {
           kind: "item",
           id: "view-large",
-          label: "large icons",
+          label: osText("desktop.menu.view.large"),
           icon: Maximize2,
           shortcut: iconSize === "large" ? "radio" : undefined,
           onSelect: () => setIconSize("large") },
@@ -520,32 +521,32 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
         {
           kind: "item",
           id: "view-reset",
-          label: "reset layout",
+          label: osText("desktop.menu.view.reset"),
           icon: RotateCcw,
           onSelect: resetLayout },
       ] },
     {
       kind: "submenu",
       id: "sort",
-      label: "Sort by",
+      label: osText("desktop.menu.sort"),
       icon: ArrowDownUp,
       items: [
         {
           kind: "item",
           id: "sort-name",
-          label: "name",
+          label: osText("desktop.menu.sort.name"),
           icon: ArrowDownAZ,
           onSelect: () => applySort("name") },
         {
           kind: "item",
           id: "sort-kind",
-          label: "kind",
+          label: osText("desktop.menu.sort.kind"),
           icon: Shapes,
           onSelect: () => applySort("kind") },
         {
           kind: "item",
           id: "sort-original",
-          label: "original spots",
+          label: osText("desktop.menu.sort.original"),
           icon: LayoutGrid,
           onSelect: () => applySort("original") },
       ] },
@@ -553,14 +554,14 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
     {
       kind: "item",
       id: "refresh",
-      label: "Refresh",
+      label: osText("desktop.menu.refresh"),
       icon: RotateCw,
       shortcut: "F5",
       onSelect: refreshLayout },
     {
       kind: "item",
       id: "display-settings",
-      label: "Display settings",
+      label: osText("desktop.menu.display"),
       icon: Monitor,
       onSelect: openDisplaySettings },
   ];
@@ -570,7 +571,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
       {
         kind: "item",
         id: "open",
-        label: "Open",
+        label: osText("desktop.menu.open"),
         icon: SquareArrowOutUpRight,
         onSelect: () => onOpen(app) },
     ];
@@ -578,7 +579,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
       entries.push({
         kind: "item",
         id: "open-window",
-        label: "Open in new window",
+        label: osText("desktop.menu.openWindow"),
         icon: AppWindow,
         onSelect: () => openInNewWindow(app) });
     }
@@ -614,7 +615,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
     <section
       ref={desktopRef}
       className="dt-desktop absolute inset-0 overflow-hidden"
-      aria-label="DevThink desktop"
+      aria-label={osText("desktop.aria")}
       onPointerDown={onDesktopPointerDown}
       onPointerMove={onDesktopPointerMove}
       onPointerUp={onDesktopPointerUp}
@@ -629,13 +630,13 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
         {/* the one amber focus of the desktop zone: the Sol signal lives in
             the mark's star core (the active pin bar carries the other) */}
         <span className="block [&_svg]:block [&_svg]:h-auto [&_svg]:w-[clamp(116px,17vmin,158px)] max-[760px]:[&_svg]:w-[104px] [&_svg]:[filter:drop-shadow(0_18px_48px_rgb(0_0_0/55%))_drop-shadow(0_0_44px_rgb(231_233_238/16%))] light:[&_svg]:[filter:none]">
-          <SolLogoMark size={150} title="DevThink" accent />
+          <SolLogoMark size={150} title={osText("desktop.logoTitle")} accent />
         </span>
         <strong className="dt-desktop__wordmark mt-1.5 font-display text-[clamp(22px,2.8vw,30px)] leading-none font-bold tracking-[-0.02em] lowercase text-[#f3f5fa] [text-shadow:0_2px_18px_rgb(0_0_0/55%)] light:text-[#1a1a1a] light:[text-shadow:none]">
-          DevThink
+          {osText("desktop.wordmark")}
         </strong>
         <span className="dt-desktop__tagline font-mono text-[10px] font-medium tracking-[.08em] indent-[.08em] lowercase text-[rgb(235_240_248/58%)] light:text-[rgb(0_0_0/60%)]">
-          local OS — chat first
+          {osText("desktop.tagline")}
         </span>
       </div>
       <div

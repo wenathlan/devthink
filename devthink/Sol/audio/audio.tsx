@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ShellChrome } from "@/componentes/shell/ShellChrome";
 import { type NativeApp, nativeApps, osAppLabels, type StudioTrack, studioTracks } from "../../catalog";
+import { osText } from "../../oslabels.ts";
 import { queuestudiorender } from "../../runner";
 import { MusicEngine } from "../componentes/audio/musicengine.tsx";
 import { MusicTracks } from "../componentes/audio/musictracks.tsx";
@@ -30,7 +31,7 @@ const AUDIO_LABEL = osAppLabels().audio;
  * asset it is: same id, same title, same engine, and the minutes as duration. */
 function queueTrack(track: StudioTrack) {
   const asset = { id: track.id, title: track.title, studio: "music", engine: track.engine, duration: track.minutes };
-  void queuestudiorender(asset, `render requested from the music studio for ${track.title}`).then((answer) => {
+  void queuestudiorender(asset, osText("audio.queueNote").replace("{title}", track.title)).then((answer) => {
     if (answer.queued) toast.success(`${track.title} ${answer.reason}`);
     else toast.error(answer.reason);
   });
@@ -57,9 +58,9 @@ export default function Audio({ embedded }: { embedded?: boolean }) {
     <main className="dtw-app dtw-audio" style={embedded ? { height: "100%", overflow: "auto" } : undefined}>
       {!embedded && <ShellChrome />}
       <div className="dtw-pane">
-        <nav className="dtw-nav" aria-label="Audio sections">
+        <nav className="dtw-nav" aria-label={osText("audio.nav.aria")}>
           <span className="dtw-navrow" data-active="true">
-            Tracks
+            {osText("audio.navrow")}
           </span>
         </nav>
         <div className="dtw-content">

@@ -19,8 +19,9 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { alttabkeydown, mruorder, nextaltindex } from "../../../alttab.ts";
-import type { DesktopApp } from "../../../appregistry.ts";
+import { alttabkeydown, mruorder, nextaltindex } from "../../alttab.ts";
+import type { DesktopApp } from "../../appregistry.ts";
+import { osText } from "../../oslabels.ts";
 import { AppTile } from "./apptile.tsx";
 
 /** one card of the switcher: a shell window of the workspace */
@@ -120,11 +121,11 @@ export function AltTabSwitcher({ cards, onCommit, onClose }: AltTabSwitcherProps
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <section className={SWITCHER_CLASS} role="dialog" aria-label="Task switcher">
+      <section className={SWITCHER_CLASS} role="dialog" aria-label={osText("alttab.dialog.aria")}>
         <div
           className="grid grid-cols-[repeat(auto-fill,minmax(184px,1fr))] gap-1"
           role="listbox"
-          aria-label="Open windows"
+          aria-label={osText("alttab.list.aria")}
           aria-activedescendant={activeId ? `alt-card-${activeId}` : undefined}
           tabIndex={0}
         >
@@ -152,7 +153,7 @@ export function AltTabSwitcher({ cards, onCommit, onClose }: AltTabSwitcherProps
                 <span className="flex min-w-0 flex-1 flex-col">
                   <span className="overflow-hidden text-ellipsis whitespace-nowrap">{card.title}</span>
                   <span className="font-mono text-[9px] font-semibold tracking-[0.08em] lowercase text-ink-3">
-                    {card.minimized ? "minimized" : "open"}
+                    {card.minimized ? osText("alttab.state.minimized") : osText("alttab.state.open")}
                   </span>
                 </span>
               </button>

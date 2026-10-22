@@ -4,6 +4,7 @@
  * recent one leading. Loose component of the projects page.
  */
 import {AppsRegular, ArrowSyncRegular} from "@fluentui/react-icons";
+import { osText } from "../../oslabels.ts";
 
 type Workspace = { id: string; title: string; updatedAt: string; sessionCount: number };
 
@@ -20,24 +21,22 @@ export function ProjectRows({
   return (
     <>
       <p className="dtw-note">
-        <span>{paired ? "Paired gateway" : "Browser-local store"}</span>
-        <span>Ids ride the cli and the browser urls</span>
+        <span>{paired ? osText("projects.note.paired") : osText("projects.note.local")}</span>
+        <span>{osText("projects.note.ids")}</span>
       </p>
       <section className="dtw-card">
         <h2 className="dtw-cardtitle">
           <AppsRegular fontSize={15} aria-hidden="true" />
-          Workspace ledger
+          {osText("projects.card.title")}
           <span className="dtw-navrow__count">{rows.length}</span>
-          <button type="button" className="dtw-action" onClick={onRefresh} aria-label="Refresh workspaces">
+          <button type="button" className="dtw-action" onClick={onRefresh} aria-label={osText("projects.refresh.aria")}>
             <ArrowSyncRegular fontSize={13} aria-hidden="true" />
-            Refresh
+            {osText("projects.refresh")}
           </button>
         </h2>
         {rows.length === 0 ? (
           <p className="dtw-copy">
-            {loaded
-              ? "No local project yet. Open a workspace from home or pair the cli."
-              : "Loading the workspace ledger"}
+            {loaded ? osText("projects.empty") : osText("projects.loading")}
           </p>
         ) : (
           <ul className="dtw-projects__rows">
@@ -46,12 +45,13 @@ export function ProjectRows({
                 <div className="dtw-projects__body">
                   <h3>{workspace.title}</h3>
                   <p>
-                    <code>{workspace.id}</code> with {workspace.sessionCount} session
+                    <code>{workspace.id}</code>
+                    {osText("projects.session").replace("{count}", String(workspace.sessionCount))}
                     {workspace.sessionCount === 1 ? "" : "s"}
                   </p>
                 </div>
                 <time className="dtw-projects__time">{new Date(workspace.updatedAt).toLocaleString()}</time>
-                {index === 0 ? <span className="dtw-projects__latest">Latest</span> : null}
+                {index === 0 ? <span className="dtw-projects__latest">{osText("projects.latest")}</span> : null}
               </li>
             ))}
           </ul>

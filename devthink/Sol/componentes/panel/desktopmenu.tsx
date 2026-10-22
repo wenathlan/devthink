@@ -23,7 +23,8 @@ import {
   useLayoutEffect,
   useRef,
   useState } from "react";
-import { clampNumber } from "../../../desktopstate.ts";
+import { clampNumber } from "../../desktopstate.ts";
+import { osText } from "../../oslabels.ts";
 
 /** one entry of a context menu */
 export type MenuEntry =
@@ -307,6 +308,6 @@ function MenuPanel({ x, y, entries, label, depth, onCollapse, onCommit }: PanelP
 /** The desktop context menu: one root panel with optional submenu panels. */
 export function DesktopMenu({ x, y, entries, onClose }: DesktopMenuProps) {
   return (
-    <MenuPanel x={x} y={y} entries={entries} label="Desktop menu" depth={0} onCollapse={onClose} onCommit={onClose} />
+    <MenuPanel x={x} y={y} entries={entries} label={osText("desktop.menu.label")} depth={0} onCollapse={onClose} onCommit={onClose} />
   );
 }

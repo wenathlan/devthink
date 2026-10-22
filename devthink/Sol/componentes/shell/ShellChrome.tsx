@@ -43,9 +43,9 @@
 import {LockClosedRegular as Lock, SearchRegular as Search, Wifi1Regular as Wifi, DismissRegular as X} from "@fluentui/react-icons";
 import { type CSSProperties, type RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
-import { DESKTOP_APPS, type DesktopApp, searchDesktopApps } from "../../../appregistry.ts";
-import { NAVBAR_POS_EVENT, loadNavbarPosition, type NavbarPosition } from "../../../desktopstate";
-import { loadrecentapps, pushrecentapp } from "../../../recentapps.ts";
+import { DESKTOP_APPS, type DesktopApp, searchDesktopApps } from "../../appregistry.ts";
+import { osText } from "../../oslabels.ts";
+import { loadrecentapps, pushrecentapp } from "../../recentapps.ts";
 import { SolLogoMark } from "../panel/logo.tsx";
 import { AppTile } from "./apptile.tsx";
 import { JumpList, loadTaskbarPins, saveTaskbarPins } from "./jumpmenu.tsx";
@@ -187,12 +187,6 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
   /** the recently opened apps behind the Start menu recommended rail */
   const [recents, setRecents] = useState<string[]>(() => loadrecentapps());
   const [tray, setTray] = useState<TraySettings>(DEFAULT_TRAY_SETTINGS);
-  /** the navbar position the settings personalization pass persisted — the
-   * floating bottom bar (the default) or the vertical rail docked to one
-   * screen edge; the dt-navbar-pos event re-docks it the moment the choice
-   * lands (the stylesheet pass owns the rail layout itself) */
-  const [navbarPos, setNavbarPos] = useState<NavbarPosition>(() => loadNavbarPosition());
-  const rail = navbarPos !== "floating";
   const searchRef = useRef<HTMLInputElement | null>(null);
   const exitTimer = useRef<number | null>(null);
   const mountedKindRef = useRef<PanelState["kind"] | null>(null);
@@ -288,17 +282,6 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
     [],
   );
 
-  // the settings app re-docks the taskbar live through the navbar position
-  // event (the choice itself persists under "dt.navbar.pos.v1")
-  useEffect(() => {
-    const onNavbarPos = (event: Event) => {
-      const detail = (event as CustomEvent<NavbarPosition>).detail;
-      if (detail === "floating" || detail === "left" || detail === "right") setNavbarPos(detail);
-    };
-    window.addEventListener(NAVBAR_POS_EVENT, onNavbarPos);
-    return () => window.removeEventListener(NAVBAR_POS_EVENT, onNavbarPos);
-  }, []);
-
   // the night light token lives on the document root while on, gone when off
   useEffect(() => {
     const root = document.documentElement;
@@ -387,13 +370,8 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
       {/* the ONE chrome: a 48px bottom taskbar — the authentic dark acrylic
           (.acrylic-bar: rgba(32,32,32,.75) + saturate(3) blur(20px) + grain,
           light theme rides the class) over a dark top hairline; the
-          centered cluster, the omnibox and the tray split the row — the
-          data-navbar position the settings pass chose re-docks it as the
-          vertical rail of that screen edge */}
-      <header
-        className="dt-nav acrylic-bar fixed bottom-0 inset-x-0 z-50 flex h-12 min-w-0 items-center border-t border-black/55 px-2"
-        data-navbar={navbarPos}
-      >
+          centered cluster, the omnibox and the tray split the row */}
+      <header className="dt-nav acrylic-bar fixed bottom-0 inset-x-0 z-50 flex h-12 min-w-0 items-center border-t border-black/55 px-2">
         {/* the centered taskbar cluster: the mark-trigger and the pinned apps
             ride one Windows-11 centered group (pure presentation wrapper) */}
         <div
@@ -406,7 +384,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
             ref={startRef}
             type="button"
             className={`dt-nav__start ${BAR_CELL_CLASS}`}
-            aria-label="DevThink start menu"
+            aria-label={osText("shell.start.aria")}
             aria-haspopup="dialog"
             aria-expanded={openPanel?.kind === "start"}
             aria-controls={mountedPanel?.kind === "start" ? "dt-start-menu" : undefined}
@@ -423,7 +401,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
               cell, right-click opens the jump list at the cursor,
               data-dock-target is the minimize flight target of the desktop
               windows */}
-          <nav className="dt-nav__pins flex min-w-0 items-center" aria-label="Pinned apps" data-flyout-keep="true">
+          <nav className="dt-nav__pins flex min-w-0 items-center" aria-label={osText("shell.pins.aria")} data-flyout-keep="true">
             {taskbarPins.map((app) => {
               // route pins ride the location, window pins ride the live
               // desktop window state (openApps) — external pins never light
@@ -462,17 +440,14 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
           </nav>
         </div>
         {/* the clean-url doctrine: the shell navigates by internal state, so
-            the address read-out is always "/" (quiet mono, right zone) — the
-            wide pill reads only on the floating bar, the rail keeps its 48px */}
-        {rail ? null : (
-          <div
-            className="dt-nav__omnibox mr-2 ml-auto inline-flex h-[30px] w-[140px] flex-none items-center justify-center gap-[7px] self-center rounded-xs border border-white/7 bg-white/5 font-mono text-[10px] tracking-[.08em] text-ink-3 transition-colors duration-200 hover:bg-white/8 max-[1080px]:hidden"
-            aria-hidden="true"
-          >
-            <Lock fontSize={11} />
-            <span>/</span>
-          </div>
-        )}
+            the address read-out is always "/" (quiet mono, right zone) */}
+        <div
+          className="dt-nav__omnibox mr-2 ml-auto inline-flex h-[30px] w-[140px] flex-none items-center justify-center gap-[7px] self-center rounded-xs border border-white/7 bg-white/5 font-mono text-[10px] tracking-[.08em] text-ink-3 transition-colors duration-200 hover:bg-white/8 max-[1080px]:hidden"
+          aria-hidden="true"
+        >
+          <Lock fontSize={11} />
+          <span>/</span>
+        </div>
         {/* the tray cluster: the gateway pill and the clock are the quick
             settings and calendar triggers (native buttons, so the a11y
             grammar is real); the clock reads in two 11px tabular-nums lines */}
@@ -482,7 +457,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
         >
           <button
             type="button"
-            aria-label="Quick settings"
+            aria-label={osText("shell.tray.quick.aria")}
             aria-haspopup="dialog"
             aria-expanded={openPanel?.kind === "quick"}
             aria-controls={mountedPanel?.kind === "quick" ? "dt-quick-settings" : undefined}
@@ -495,19 +470,16 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
                 className={`inline-flex mx-0.5 h-11 items-center gap-1.5 rounded-xs px-2 text-[11px] lowercase transition-colors duration-200 hover:bg-white/6 light:hover:bg-black/6 ${
                   paired ? "text-[#f3f5fa] light:text-[#1a1a1a]" : "text-ink-3"
                 }`}
-                title={paired ? userId || "paired" : "local only"}
               >
                 <Wifi fontSize={13} aria-hidden="true" />
-                {/* the rail keeps the pill at its 48px width — the glyph alone,
-                    the words ride the title peek */}
-                {rail ? null : paired ? userId || "paired" : "local only"}
+                {paired ? userId || osText("shell.tray.paired") : osText("shell.tray.localOnly")}
               </span>
             )}
           </button>
           <button
             type="button"
             className="dt-nav__clock mx-0.5 flex h-11 cursor-pointer flex-col items-center justify-center rounded-xs border-0 bg-transparent px-2 text-center text-[11px] leading-[1.35] font-[inherit] text-[inherit] tabular-nums transition-[box-shadow] duration-200 focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none hover:bg-white/6 light:hover:bg-black/6"
-            aria-label="Calendar"
+            aria-label={osText("shell.tray.calendar.aria")}
             aria-haspopup="dialog"
             aria-expanded={openPanel?.kind === "calendar"}
             aria-controls={mountedPanel?.kind === "calendar" ? "dt-calendar" : undefined}
@@ -525,7 +497,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
           <button
             type="button"
             className="dt-start__backdrop fixed inset-0 z-20 block w-full cursor-default appearance-none border-0 bg-transparent p-0 focus-visible:outline-none"
-            aria-label="Close the start menu"
+            aria-label={osText("shell.start.close.aria")}
             onClick={closePanel}
           />
           {/* the start menu: 640px centered acrylic panel, 8px corners — the
@@ -537,7 +509,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
             id="dt-start-menu"
             role="dialog"
             aria-modal="true"
-            aria-label="Start menu"
+            aria-label={osText("shell.start.dialog.aria")}
             data-hide={openPanel?.kind === "start" ? undefined : "true"}
           >
             {/* the search well: 40px, flat white 5%, hairline bottom, the
@@ -548,15 +520,15 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
                 ref={searchRef}
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search apps"
-                aria-label="Search apps"
+                placeholder={osText("shell.start.search.placeholder")}
+                aria-label={osText("shell.start.search.aria")}
                 className="min-w-0 flex-1 rounded-xs border-0 bg-transparent text-xs font-normal text-ink outline-none placeholder:text-ink-3 focus-visible:outline-none light:text-[#1a1a1a]"
               />
               {query && (
                 <button
                   type="button"
                   onClick={() => setQuery("")}
-                  aria-label="Clear the search"
+                  aria-label={osText("shell.start.clear.aria")}
                   className="-mr-3 grid h-10 w-10 flex-none cursor-pointer place-items-center rounded-xs border-0 bg-transparent text-ink-2 transition-colors duration-200 hover:bg-white/10 hover:text-ink focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none"
                 >
                   <X fontSize={14} aria-hidden="true" />
@@ -564,7 +536,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
               )}
             </div>
             <p className="dt-start__label mx-8 mt-5 mb-2.5 text-sm font-medium text-ink">
-              {query ? "results" : "pinned"}
+              {query ? osText("shell.start.label.results") : osText("shell.start.label.pinned")}
             </p>
             {/* the pinned tiles: the exact win11 pnApp cell — 96×84px, 4px
                 corners, the hover wash in 100ms ease-in-out, 12px label; the
@@ -588,13 +560,13 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
               ))}
               {!results.length && (
                 <p className="dt-start__empty m-0 px-8 pb-8 pt-6 text-center font-sans text-xs text-ink-3">
-                  No app matches “{query}”.
+                  {osText("shell.start.empty").replace("{query}", query)}
                 </p>
               )}
             </div>
             {recommended.length > 0 && (
               <>
-                <p className="dt-start__label mx-8 mb-2.5 text-sm font-medium text-ink">recommended</p>
+                <p className="dt-start__label mx-8 mb-2.5 text-sm font-medium text-ink">{osText("shell.start.label.recommended")}</p>
                 <div className="dt-start__grid grid grid-cols-[repeat(auto-fill,96px)] px-8 pb-6">
                   {recommended.map((app, index) => (
                     <button
@@ -622,9 +594,9 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
                 className="dt-start__wordmark font-mono text-[10px] font-semibold tracking-[0.08em] text-ink"
                 aria-hidden="true"
               >
-                devthink
+                {osText("shell.start.wordmark")}
               </span>
-              <span>local OS</span>
+              <span>{osText("shell.start.footer")}</span>
             </footer>
           </section>
         </>

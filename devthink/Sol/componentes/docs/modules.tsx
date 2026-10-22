@@ -3,14 +3,15 @@
  * hairline rows, one row per core module with its name in mono and its
  * responsibility beside it. Loose component of the docs page.
  */
-import type { CoreModule } from "../../../catalog.ts";
+import type { CoreModule } from "../../catalog";
+import { osText } from "../../oslabels.ts";
 
 export function DocsModules({ modules }: { modules: CoreModule[] }) {
   return (
     <section className="dtw-card">
-      <h2 className="dtw-cardtitle">Modules</h2>
+      <h2 className="dtw-cardtitle">{osText("docs.section.modules")}</h2>
       {modules.length === 0 ? (
-        <p className="dtw-copy">The catalog has not answered yet</p>
+        <p className="dtw-copy">{osText("docs.modules.empty")}</p>
       ) : (
         <ul className="dtw-rows">
           {modules.map((module) => (

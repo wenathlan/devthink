@@ -12,6 +12,7 @@
  * the gtx translation runs at runtime.
  */
 import {ArrowUpRightRegular as ArrowUpRight, CubeRegular as Boxes, type FluentIcon, GlobeRegular as Globe, PuzzlePieceRegular as Puzzle, WindowConsoleRegular as SquareTerminal } from "@fluentui/react-icons";
+import { osText } from "../../oslabels.ts";
 
 /** the baked release version (vite define — see vite.config.ts) */
 declare const __dtversion__: string;
@@ -35,24 +36,24 @@ type ChannelCard = {
 const CHANNELS: ReadonlyArray<ChannelCard> = [
   {
     icon: Puzzle,
-    channel: "chromium · brave · edge",
+    channel: osText("explore.download.chromium"),
     asset: `devthink${__dtversion__}.zip`,
-    note: "the chromium build of the extension. unzip it, open chrome://extensions, turn developer mode on and load the folder unpacked." },
+    note: osText("explore.download.chromium.note") },
   {
     icon: Globe,
-    channel: "firefox",
+    channel: osText("explore.download.firefox"),
     asset: `devthink-firefox-${__dtversion__}.xpi`,
-    note: "the firefox build, ready for your signing path — while unsigned, load it temporarily from about:debugging." },
+    note: osText("explore.download.firefox.note") },
   {
     icon: SquareTerminal,
-    channel: "vs code",
+    channel: osText("explore.download.vscode"),
     asset: `devthink-vscode-${__dtversion__}.vsix`,
-    note: "the workbench vsix — install it from the release through extensions: install from vsix." },
+    note: osText("explore.download.vscode.note") },
   {
     icon: Boxes,
-    channel: "every channel",
+    channel: osText("explore.download.every"),
     asset: "SHA256SUMS.txt",
-    note: "the immutable tag also carries the safari wrapper, the native host template, the source snapshot, the sbom and the attestations." },
+    note: osText("explore.download.every.note") },
 ];
 
 /** The distribution rail: the release channels as trylle cards over the
@@ -61,13 +62,12 @@ export function DownloadRail() {
   return (
     <section className="scroll-mt-24 pb-14" id="builds" aria-labelledby="dt-sec-builds">
       <header className="mb-8 max-w-[56ch]">
-        <p className="font-mono text-[10px] tracking-[.08em] text-ink-3">the distribution rail</p>
+        <p className="font-mono text-[10px] tracking-[.08em] text-ink-3">{osText("explore.download.cap")}</p>
         <h2 id="dt-sec-builds" className="mt-2 font-display text-2xl font-semibold tracking-[-0.02em] text-ink">
-          take devthink with you
+          {osText("explore.download.title")}
         </h2>
         <p className="mt-2 text-sm leading-[1.55] text-ink-2">
-          the same code serves the site, the binary and the extension — every channel ships from the immutable
-          v{__dtversion__} tag.
+          {osText("explore.download.sub").replace("{version}", __dtversion__)}
         </p>
       </header>
       <ul className="grid gap-4 sm:grid-cols-2">
@@ -104,10 +104,9 @@ export function DownloadRail() {
           rel="noreferrer"
           className="font-medium text-ink underline decoration-hairline-strong underline-offset-4 transition-colors duration-150 ease-micro hover:decoration-ink motion-reduce:transition-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-(--color-focus)"
         >
-          browse every release
+          {osText("explore.download.browse")}
         </a>{" "}
-        — the provenance set (the sbom, the attestations and the artifact manifest) rides beside the artifacts of
-        each tag.
+        {osText("explore.download.provenance")}
       </p>
     </section>
   );

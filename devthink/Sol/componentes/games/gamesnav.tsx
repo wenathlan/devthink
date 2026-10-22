@@ -5,6 +5,7 @@
  * of the games page.
  */
 import {AppGenericRegular, BoardGamesRegular, GridRegular} from "@fluentui/react-icons";
+import { osText } from "../../oslabels.ts";
 
 export type GamesFilter = "all" | "game" | "application";
 
@@ -21,12 +22,12 @@ export function GamesNav({
   onSelect: (filter: GamesFilter) => void;
 }) {
   const rows: readonly { id: GamesFilter; label: string; count: number; icon: typeof GridRegular }[] = [
-    { id: "all", label: "All binaries", count: all, icon: GridRegular },
-    { id: "game", label: "Games", count: games, icon: BoardGamesRegular },
-    { id: "application", label: "Applications", count: applications, icon: AppGenericRegular },
+    { id: "all", label: osText("games.filter.all"), count: all, icon: GridRegular },
+    { id: "game", label: osText("games.filter.game"), count: games, icon: BoardGamesRegular },
+    { id: "application", label: osText("games.filter.application"), count: applications, icon: AppGenericRegular },
   ];
   return (
-    <nav className="dtw-nav" aria-label="Runner filters">
+    <nav className="dtw-nav" aria-label={osText("games.nav.aria")}>
       {rows.map((row) => (
         <button
           key={row.id}

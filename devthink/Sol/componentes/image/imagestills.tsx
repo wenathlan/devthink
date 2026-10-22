@@ -4,7 +4,8 @@
  * Loose component of the image page.
  */
 import {PlayFilled} from "@fluentui/react-icons";
-import type { StudioAsset } from "../../../catalog.ts";
+import type { StudioAsset } from "../../catalog";
+import { osText } from "../../oslabels.ts";
 
 /** megapixelsOf — the still's real pixel area from its catalog size
  * ("4032×3024" → 12.2mp); unparseable sizes answer null and the row skips
@@ -27,11 +28,11 @@ export function ImageStills({
   return (
     <section className="dtw-card">
       <h2 className="dtw-cardtitle">
-        Stills
+        {osText("image.stills.title")}
         {rows.length ? <span className="dtw-navrow__count">{rows.length}</span> : null}
       </h2>
       {rows.length === 0 ? (
-        <p className="dtw-copy">{loaded ? "No stills in the catalog" : "Loading the catalog"}</p>
+        <p className="dtw-copy">{loaded ? osText("image.stills.empty") : osText("studios.loading")}</p>
       ) : (
         <ul className="dtw-image__rows">
           {rows.map((asset) => {
@@ -42,18 +43,18 @@ export function ImageStills({
                   <h3>{asset.title}</h3>
                   <p className="dtw-image__meta">
                     <span>{asset.engine}</span>
-                    <span>{asset.size ?? "Unknown size"}</span>
-                    {mp !== null ? <span>{mp.toFixed(1)} mp</span> : null}
+                    <span>{asset.size ?? osText("image.stills.unknownSize")}</span>
+                    {mp !== null ? <span>{osText("image.stills.mp").replace("{value}", mp.toFixed(1))}</span> : null}
                   </p>
                 </div>
                 <button
                   type="button"
                   className="dtw-action dtw-action--primary"
                   onClick={() => onRender(asset)}
-                  aria-label={`Render ${asset.title}`}
+                  aria-label={osText("image.stills.renderAria").replace("{title}", asset.title)}
                 >
                   <PlayFilled fontSize={12} aria-hidden="true" />
-                  Render
+                  {osText("image.stills.render")}
                 </button>
               </li>
             );

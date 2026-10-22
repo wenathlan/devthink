@@ -14,11 +14,12 @@
  */
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "@/componentes/shell/ShellChrome";
+import { ShellChrome } from "@/shell/ShellChrome";
 import { osAppLabels } from "../../catalog";
 import { browserWorkspaces } from "../../db";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
-import { ProjectRows } from "../componentes/projects/projectrows.tsx";
+import { osText } from "../../oslabels.ts";
+import { ProjectRows } from "./projectrows.tsx";
 
 type Workspace = { id: string; title: string; updatedAt: string; sessionCount: number };
 
@@ -39,7 +40,7 @@ export default function Projects({ embedded }: { embedded?: boolean }) {
       setWorkspaces((await gatewayJson<{ workspaces: Workspace[] }>("/workspaces")).workspaces);
     } catch {
       setWorkspaces(await browserWorkspaces());
-      toast("Projects could not be read from the local gateway, showing browser-local workspaces");
+      toast(osText("projects.toast.unavailable"));
     } finally {
       setLoaded(true);
     }
@@ -57,9 +58,9 @@ export default function Projects({ embedded }: { embedded?: boolean }) {
     <main className="dtw-app dtw-projects" style={embedded ? { height: "100%", overflow: "auto" } : undefined}>
       {!embedded && <ShellChrome />}
       <div className="dtw-pane">
-        <nav className="dtw-nav" aria-label="Projects sections">
+        <nav className="dtw-nav" aria-label={osText("projects.nav.aria")}>
           <span className="dtw-navrow" data-active="true">
-            Workspaces
+            {osText("projects.navrow")}
             <span className="dtw-navrow__count">{workspaces.length}</span>
           </span>
         </nav>

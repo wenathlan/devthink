@@ -4,7 +4,8 @@
  * Loose component of the audio page.
  */
 import {MusicNote2PlayFilled} from "@fluentui/react-icons";
-import type { StudioTrack } from "../../../catalog.ts";
+import type { StudioTrack } from "../../catalog";
+import { osText } from "../../oslabels.ts";
 
 export function MusicTracks({
   rows,
@@ -17,11 +18,11 @@ export function MusicTracks({
   return (
     <section className="dtw-card">
       <h2 className="dtw-cardtitle">
-        Tracks
+        {osText("audio.tracks.title")}
         {rows.length ? <span className="dtw-navrow__count">{rows.length}</span> : null}
       </h2>
       {rows.length === 0 ? (
-        <p className="dtw-copy">{loaded ? "No tracks in the catalog" : "Loading the catalog"}</p>
+        <p className="dtw-copy">{loaded ? osText("audio.tracks.empty") : osText("studios.loading")}</p>
       ) : (
         <ul className="dtw-music__rows">
           {rows.map((track) => (
@@ -30,17 +31,17 @@ export function MusicTracks({
                 <h3>{track.title}</h3>
                 <p className="dtw-music__meta">
                   <span>{track.engine}</span>
-                  <span>{track.minutes} min</span>
+                  <span>{osText("audio.tracks.minutes").replace("{value}", track.minutes)}</span>
                 </p>
               </div>
               <button
                 type="button"
                 className="dtw-action dtw-action--primary"
                 onClick={() => onQueue(track)}
-                aria-label={`Queue ${track.title}`}
+                aria-label={osText("audio.tracks.queueAria").replace("{title}", track.title)}
               >
                 <MusicNote2PlayFilled fontSize={12} aria-hidden="true" />
-                Queue
+                {osText("audio.tracks.queue")}
               </button>
             </li>
           ))}

@@ -4,6 +4,7 @@
  * 40px header. Loose components of the docs page.
  */
 import { useState } from "react";
+import { osText } from "../../oslabels.ts";
 
 /** DocsCard — one content card: the title bar and the body stack. */
 export function DocsCard({ title, children }: { title: string; children: React.ReactNode }) {
@@ -28,9 +29,9 @@ export function DocsCode({ lines }: { lines: readonly string[] }) {
   return (
     <figure className="dtw-code">
       <figcaption className="dtw-codebar">
-        <span>console</span>
-        <button type="button" className="dtw-codecopy" onClick={copy} aria-label="Copy commands">
-          {copied ? "Copied" : "Copy"}
+        <span>{osText("docs.codebar")}</span>
+        <button type="button" className="dtw-codecopy" onClick={copy} aria-label={osText("docs.copy.aria")}>
+          {copied ? osText("docs.copy.copied") : osText("docs.copy.copy")}
         </button>
       </figcaption>
       <pre>

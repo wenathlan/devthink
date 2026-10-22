@@ -17,11 +17,12 @@
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "@/componentes/shell/ShellChrome";
+import { ShellChrome } from "@/shell/ShellChrome";
 import { osAppLabels } from "../../catalog";
 import { browserStoreSummary } from "../../db";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
-import { type Usage as UsageData, UsageMeasures } from "../componentes/usage/usagemeasures.tsx";
+import { osText } from "../../oslabels.ts";
+import { type Usage as UsageData, UsageMeasures } from "./usagemeasures.tsx";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */
@@ -52,7 +53,7 @@ export default function Usage({ embedded }: { embedded?: boolean }) {
       .then(setUsage)
       .catch(() => {
         void localUsage();
-        toast("Usage unavailable from the gateway, showing browser counts");
+        toast(osText("usage.toast.unavailable"));
       });
   }, [paired]);
 
@@ -60,9 +61,9 @@ export default function Usage({ embedded }: { embedded?: boolean }) {
     <main className="dtw-app dtw-usage" style={embedded ? { height: "100%", overflow: "auto" } : undefined}>
       {!embedded && <ShellChrome />}
       <div className="dtw-pane">
-        <nav className="dtw-nav" aria-label="Usage sections">
+        <nav className="dtw-nav" aria-label={osText("usage.nav.aria")}>
           <span className="dtw-navrow" data-active="true">
-            Ledger
+            {osText("usage.navrow")}
           </span>
         </nav>
         <div className="dtw-content">
@@ -71,8 +72,8 @@ export default function Usage({ embedded }: { embedded?: boolean }) {
             <UsageMeasures usage={usage} paired={paired} />
           ) : (
             <section className="dtw-card">
-              <h2 className="dtw-cardtitle">Ledger</h2>
-              <p className="dtw-copy">No usage yet. Open a workspace or pair the cli to fill the ledger.</p>
+              <h2 className="dtw-cardtitle">{osText("usage.empty.title")}</h2>
+              <p className="dtw-copy">{osText("usage.empty.copy")}</p>
             </section>
           )}
         </div>

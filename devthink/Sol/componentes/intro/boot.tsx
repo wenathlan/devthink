@@ -11,8 +11,9 @@
 import {ArrowRightRegular as ArrowRight} from "@fluentui/react-icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
-import { prefersReducedMotion } from "../../../akash.ts";
-import { browserIdentity, readBrowserPreferences, saveBrowserPreference } from "../../../db.ts";
+import { prefersReducedMotion } from "../../akash.ts";
+import { browserIdentity, readBrowserPreferences, saveBrowserPreference } from "../../db.ts";
+import { osText } from "../../oslabels.ts";
 import { SolLogoMark } from "../panel/logo.tsx";
 
 const BOOT_CSS = `
@@ -161,7 +162,7 @@ export default function Boot({ onDone }: { onDone: () => void }) {
       <div className="boot-root" role="presentation">
         <div className="boot-hello">
           <SolLogoMark size={72} />
-          <span className="boot-hello__word">hello</span>
+          <span className="boot-hello__word">{osText("boot.hello")}</span>
         </div>
       </div>
     );
@@ -189,7 +190,7 @@ export default function Boot({ onDone }: { onDone: () => void }) {
             <div className="boot-clock__date">{date}</div>
           </div>
         )}
-        {stage === "lock" && <div className="boot-hint">Press any key</div>}
+        {stage === "lock" && <div className="boot-hint">{osText("boot.hint")}</div>}
       </div>
       {stage === "signin" && (
         <div className="boot-sign">
@@ -201,23 +202,23 @@ export default function Boot({ onDone }: { onDone: () => void }) {
             }}
           >
             <span className="boot-sign__avatar" aria-hidden="true">
-              {(known || name || "D").trim().charAt(0).toUpperCase()}
+              {(known || name || osText("boot.avatarFallback")).trim().charAt(0).toUpperCase()}
             </span>
-            <span className="boot-sign__name">{known || name || "Welcome"}</span>
+            <span className="boot-sign__name">{known || name || osText("boot.welcome")}</span>
             <input
               ref={nameRef}
               className="boot-sign__field"
               value={name}
               onChange={(event) => setName(event.target.value)}
-              placeholder="Display name"
+              placeholder={osText("boot.name.placeholder")}
               maxLength={40}
-              aria-label="Display name"
+              aria-label={osText("boot.name.aria")}
             />
             <button type="submit" className="boot-sign__go" disabled={busy} aria-busy={busy || undefined}>
-              <span>Sign in</span>
+              <span>{osText("boot.signin")}</span>
               <ArrowRight fontSize={14} aria-hidden="true" />
             </button>
-            <span className="boot-sign__micro">Local identity</span>
+            <span className="boot-sign__micro">{osText("boot.localIdentity")}</span>
           </form>
         </div>
       )}

@@ -4,6 +4,7 @@
  * rows with their real values. Loose component of the usage page.
  */
 import {DatabaseRegular, PulseRegular, TabRegular} from "@fluentui/react-icons";
+import { osText } from "../../oslabels.ts";
 
 /** one durable measure the ledger answers with. */
 export type Usage = {
@@ -17,18 +18,18 @@ export type Usage = {
 
 export function UsageMeasures({ usage, paired }: { usage: Usage; paired: boolean }) {
   const measures = [
-    { id: "usage-projects", label: "Projects", value: usage.workspaces, icon: DatabaseRegular },
-    { id: "usage-sessions", label: "Sessions", value: usage.sessions, icon: PulseRegular },
-    { id: "usage-tabs", label: "Tabs", value: usage.tabs, icon: TabRegular },
+    { id: "usage-projects", label: osText("usage.measure.projects"), value: usage.workspaces, icon: DatabaseRegular },
+    { id: "usage-sessions", label: osText("usage.measure.sessions"), value: usage.sessions, icon: PulseRegular },
+    { id: "usage-tabs", label: osText("usage.measure.tabs"), value: usage.tabs, icon: TabRegular },
   ];
   return (
     <>
       <p className="dtw-console__note">
-        <span>{paired ? "Paired gateway" : "Browser cache"}</span>
-        <span>Durable counts, no billing claims</span>
+        <span>{paired ? osText("usage.note.paired") : osText("usage.note.local")}</span>
+        <span>{osText("usage.note.honest")}</span>
       </p>
       <section className="dtw-card dtw-usage__hero">
-        <span className="dtw-usage__figlabel">Messages on this device</span>
+        <span className="dtw-usage__figlabel">{osText("usage.figlabel")}</span>
         <strong className="dtw-usage__figure">{usage.messages}</strong>
       </section>
       <section className="dtw-card">

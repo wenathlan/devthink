@@ -10,7 +10,8 @@
  * focus-visible ring stays strong for the tv d-pad.
  */
 import { useEffect, useRef, useState } from "react";
-import { completions } from "../../../commandcatalog.ts";
+import { completions } from "../../commandcatalog.ts";
+import { osText } from "../../oslabels.ts";
 
 /** one rendered output row; cls mirrors the boot, ok, err and cmdline row classes. */
 export type TerminalRow = { id: number; text: string; cls: string };
@@ -88,7 +89,7 @@ export default function Terminal({ rows, prompt, state, enabled, oncommand }: Te
   return (
     <section className="dt-term" aria-labelledby="dttermtitle">
       <div className="dt-term__bar">
-        <span id="dttermtitle">devthink terminal</span>
+        <span id="dttermtitle">{osText("terminal.title")}</span>
         <span className="dt-term__state" aria-live="polite">
           {state}
         </span>
@@ -97,7 +98,7 @@ export default function Terminal({ rows, prompt, state, enabled, oncommand }: Te
         className="dt-term__out"
         role="log"
         aria-live="polite"
-        aria-label="devthink console output"
+        aria-label={osText("terminal.output.aria")}
         ref={outref}
         onClick={() => inputref.current?.focus()}
         onKeyDown={onoutkeydown}
@@ -119,7 +120,7 @@ export default function Terminal({ rows, prompt, state, enabled, oncommand }: Te
           autoComplete="off"
           autoCapitalize="off"
           spellCheck={false}
-          aria-label="terminal command input; arrow keys browse history, tab completes"
+          aria-label={osText("terminal.input.aria")}
           disabled={!enabled}
           value={value}
           onChange={(event) => setValue(event.target.value)}

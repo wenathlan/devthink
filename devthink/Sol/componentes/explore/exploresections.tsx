@@ -11,17 +11,18 @@
  * constellation, the runners answer in the panel and the launcher page).
  */
 
-import { DESKTOP_APPS, PINNED_APPS } from "../../../appregistry.ts";
-import type { FamilySite, NativeApp, Recipe, RunnerBinary, StudioAsset, StudioTrack } from "../../../catalog.ts";
+import { DESKTOP_APPS, PINNED_APPS } from "../../appregistry.ts";
+import type { FamilySite, NativeApp, Recipe, RunnerBinary, StudioAsset, StudioTrack } from "../../catalog";
+import { osText } from "../../oslabels.ts";
 import { DeckCell, TRYLLE_CARD_SHADOW, TRYLLE_CARD_SHADOW_RAISED } from "./launchdeck.tsx";
 
 /** the studio labels of the made assets, by their catalog studio field (any
  * studio value the paired database adds falls back to its own name) */
 const studiolabel: Record<string, string> = {
-  video: "video · cadria",
-  image: "image · cadria",
-  music: "music · debonair",
-  model3d: "3d · cadria" };
+  video: osText("explore.studio.video"),
+  image: osText("explore.studio.image"),
+  music: osText("explore.studio.music"),
+  model3d: osText("explore.studio.model3d") };
 
 function assetLabel(asset: StudioAsset): string {
   return studiolabel[asset.studio] ?? asset.studio;
@@ -92,7 +93,7 @@ export function ExploreSections({ assets, tracks }: ExploreSectionsProps) {
       meta: `${asset.engine} · ${asset.duration ?? asset.size}`,
       tint: studiotint[asset.studio] ?? "#9aa3b5" })),
     ...tracks.map((track) => ({
-      tag: "music · katexis",
+      tag: osText("explore.studio.track"),
       title: track.title,
       meta: `${track.minutes} min · ${track.blurb}`,
       tint: studiotint.music })),
@@ -103,24 +104,24 @@ export function ExploreSections({ assets, tracks }: ExploreSectionsProps) {
       <section className="scroll-mt-24 py-14" id="rails" aria-labelledby="dt-sec-recent">
         <SectionHead
           id="dt-sec-recent"
-          cap="section 01 · recent"
-          title="recent from the studios"
-          sub="the family's own made assets — video, image, 3d and music, straight from the catalog."
+          cap={osText("explore.sections.recent.cap")}
+          title={osText("explore.sections.recent.title")}
+          sub={osText("explore.sections.recent.sub")}
         />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {recent.map((item, index) => (
             <RecentCard key={`${item.tag}-${item.title}`} item={item} index={index} />
           ))}
-          {recent.length === 0 && <p className="py-6 font-mono text-xs text-ink-3">the studios have not answered yet.</p>}
+          {recent.length === 0 && <p className="py-6 font-mono text-xs text-ink-3">{osText("explore.sections.recent.empty")}</p>}
         </div>
       </section>
 
       <section className="scroll-mt-24 py-14" aria-labelledby="dt-sec-pinned">
         <SectionHead
           id="dt-sec-pinned"
-          cap="section 02 · pinned"
-          title="pinned of the os"
-          sub="the surfaces the os itself keeps one click away — the same rows the taskbar pins."
+          cap={osText("explore.sections.pinned.cap")}
+          title={osText("explore.sections.pinned.title")}
+          sub={osText("explore.sections.pinned.sub")}
         />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {PINNED_APPS.map((app, index) => (
@@ -132,9 +133,9 @@ export function ExploreSections({ assets, tracks }: ExploreSectionsProps) {
       <section className="scroll-mt-24 py-14" aria-labelledby="dt-sec-all">
         <SectionHead
           id="dt-sec-all"
-          cap="section 03 · all apps"
-          title="every app, one field away"
-          sub="the full registry — native surfaces and family apps, in catalog order."
+          cap={osText("explore.sections.all.cap")}
+          title={osText("explore.sections.all.title")}
+          sub={osText("explore.sections.all.sub")}
         />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {DESKTOP_APPS.map((app, index) => (

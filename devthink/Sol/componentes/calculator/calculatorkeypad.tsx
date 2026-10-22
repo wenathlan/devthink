@@ -4,7 +4,8 @@
  * answering with the key action the pure logic module understands. Loose
  * component of the calculator page.
  */
-import type { CalculatorKeyAction } from "../../../calculator.ts";
+import type { CalculatorKeyAction } from "../../calculator";
+import { osText } from "../../oslabels.ts";
 
 /** one kind of memory key the strip answers with. */
 export type CalculatorMemoryKey = "mc" | "mr" | "m+" | "m-";
@@ -16,7 +17,7 @@ const KEYPAD_ROWS: KeypadCell[][] = [
     { label: "C", action: { kind: "clear" }, muted: true },
     { label: "(", action: { kind: "lparen" }, muted: true },
     { label: ")", action: { kind: "rparen" }, muted: true },
-    { label: "\u232b", action: { kind: "backspace" }, muted: true, aria: "backspace" },
+    { label: "\u232b", action: { kind: "backspace" }, muted: true, aria: osText("calc.key.backspace") },
   ],
   [
     { label: "7", action: { kind: "digit", digit: "7" } },
@@ -45,10 +46,10 @@ const KEYPAD_ROWS: KeypadCell[][] = [
 ];
 
 const MEMORY_KEYS: { label: string; kind: CalculatorMemoryKey; aria: string }[] = [
-  { label: "MC", kind: "mc", aria: "memory clear" },
-  { label: "MR", kind: "mr", aria: "memory recall" },
-  { label: "M+", kind: "m+", aria: "memory add" },
-  { label: "M−", kind: "m-", aria: "memory subtract" },
+  { label: "MC", kind: "mc", aria: osText("calc.key.memoryClear") },
+  { label: "MR", kind: "mr", aria: osText("calc.key.memoryRecall") },
+  { label: "M+", kind: "m+", aria: osText("calc.key.memoryAdd") },
+  { label: "M−", kind: "m-", aria: osText("calc.key.memorySubtract") },
 ];
 
 export function CalculatorKeypad({
@@ -75,7 +76,7 @@ export function CalculatorKeypad({
           key={cell.label}
           type="button"
           className={cell.muted ? "dtw-calc__key dtw-calc__key--muted" : "dtw-calc__key"}
-          aria-label={cell.aria ?? (cell.action.kind === "digit" ? `digit ${cell.label}` : cell.label)}
+          aria-label={cell.aria ?? (cell.action.kind === "digit" ? osText("calc.key.digit").replace("{key}", cell.label) : cell.label)}
           onClick={() => onkey(cell.action)}
         >
           {cell.label}
@@ -84,7 +85,7 @@ export function CalculatorKeypad({
       <button
         type="button"
         className="dtw-calc__key dtw-calc__key--equals"
-        aria-label="equals"
+        aria-label={osText("calc.key.equals")}
         onClick={() => onkey({ kind: "equals" })}
       >
         =

@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ShellChrome } from "@/componentes/shell/ShellChrome";
 import { type NativeApp, nativeApps, osAppLabels, type StudioAsset, studioAssets } from "../../catalog";
+import { osText } from "../../oslabels.ts";
 import { queuestudiorender } from "../../runner";
 import { ImageEngine } from "../componentes/image/imageengine.tsx";
 import { ImageStills } from "../componentes/image/imagestills.tsx";
@@ -28,7 +29,7 @@ const IMAGE_LABEL = osAppLabels().image;
  * workbench already uses: the reason text is the honest answer of the queue
  * client, so the page keeps working when the gateway is absent. */
 function queueRender(asset: StudioAsset) {
-  void queuestudiorender(asset, `render requested from the image studio for ${asset.title}`).then((answer) => {
+  void queuestudiorender(asset, osText("image.queueNote").replace("{title}", asset.title)).then((answer) => {
     if (answer.queued) toast.success(`${asset.title} ${answer.reason}`);
     else toast.error(answer.reason);
   });
@@ -56,9 +57,9 @@ export default function ImageStudio({ embedded }: { embedded?: boolean }) {
     <main className="dtw-app dtw-image" style={embedded ? { height: "100%", overflow: "auto" } : undefined}>
       {!embedded && <ShellChrome />}
       <div className="dtw-pane">
-        <nav className="dtw-nav" aria-label="Image studio sections">
+        <nav className="dtw-nav" aria-label={osText("image.nav.aria")}>
           <span className="dtw-navrow" data-active="true">
-            Stills
+            {osText("image.navrow")}
           </span>
         </nav>
         <div className="dtw-content">

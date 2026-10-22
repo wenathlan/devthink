@@ -21,6 +21,7 @@
 import type {FluentIcon as LucideIcon} from "@fluentui/react-icons";
 import { BluetoothRegular as Bluetooth, ChevronLeftRegular as ChevronLeft, ChevronRightRegular as ChevronRight, ColorRegular as Contrast, DarkThemeRegular as MoonStar, Cellular5GRegular as Signal, WeatherSunnyRegular as Sun, Speaker1Regular as Volume2, Wifi1Regular as Wifi } from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
+import { osCalendarWeekdays, osText } from "../../oslabels.ts";
 
 /** tracks the os reduced-motion preference */
 export function useReducedMotion(): boolean {
@@ -62,11 +63,11 @@ export const DEFAULT_TRAY_SETTINGS: TraySettings = {
 type TileKey = "wifi" | "bluetooth" | "night" | "theme" | "data";
 
 const TILES: Array<{ key: TileKey; label: string; icon: LucideIcon }> = [
-  { key: "wifi", label: "wifi", icon: Wifi },
-  { key: "bluetooth", label: "bluetooth", icon: Bluetooth },
-  { key: "data", label: "cellular data", icon: Signal },
-  { key: "night", label: "night light", icon: MoonStar },
-  { key: "theme", label: "theme", icon: Contrast },
+  { key: "wifi", label: osText("tray.tile.wifi"), icon: Wifi },
+  { key: "bluetooth", label: osText("tray.tile.bluetooth"), icon: Bluetooth },
+  { key: "data", label: osText("tray.tile.data"), icon: Signal },
+  { key: "night", label: osText("tray.tile.night"), icon: MoonStar },
+  { key: "theme", label: osText("tray.tile.theme"), icon: Contrast },
 ];
 
 /** the shared tray flyout motion: the .dt-flyout hook carries the 250ms
@@ -101,11 +102,11 @@ export function QuickSettings({ open, settings, onChange }: QuickSettingsProps) 
       className={TRAY_FLYOUT_CLASS}
       id="dt-quick-settings"
       role="dialog"
-      aria-label="Quick settings"
+      aria-label={osText("shell.tray.quick.aria")}
       data-hide={open ? undefined : "true"}
       data-flyout-keep="true"
     >
-      <p className="mb-3 font-mono text-[9px] font-semibold tracking-[0.08em] lowercase text-ink-3">quick settings</p>
+      <p className="mb-3 font-mono text-[9px] font-semibold tracking-[0.08em] lowercase text-ink-3">{osText("tray.quick.heading")}</p>
       <div className="grid grid-cols-2 gap-2">
         {TILES.map((tile) => {
           const on = settings[tile.key];
@@ -133,7 +134,7 @@ export function QuickSettings({ open, settings, onChange }: QuickSettingsProps) 
             max={100}
             value={settings.volume}
             onChange={(event) => onChange({ volume: Number(event.target.value) })}
-            aria-label="Volume"
+            aria-label={osText("tray.volume.aria")}
             className="min-w-0 flex-1 accent-(--color-win) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus)"
           />
           <span className="min-w-[26px] text-right font-mono text-[11px] text-ink tabular-nums">{settings.volume}</span>
@@ -146,7 +147,7 @@ export function QuickSettings({ open, settings, onChange }: QuickSettingsProps) 
             max={100}
             value={settings.brightness}
             onChange={(event) => onChange({ brightness: Number(event.target.value) })}
-            aria-label="Brightness"
+            aria-label={osText("tray.brightness.aria")}
             className="min-w-0 flex-1 accent-(--color-win) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus)"
           />
           <span className="min-w-[26px] text-right font-mono text-[11px] text-ink tabular-nums">
@@ -158,16 +159,8 @@ export function QuickSettings({ open, settings, onChange }: QuickSettingsProps) 
   );
 }
 
-/** the sunday-first weekday row (S M T W T F S) */
-const WEEKDAYS = [
-  { key: "su", letter: "S" },
-  { key: "mo", letter: "M" },
-  { key: "tu", letter: "T" },
-  { key: "we", letter: "W" },
-  { key: "th", letter: "T" },
-  { key: "fr", letter: "F" },
-  { key: "sa", letter: "S" },
-];
+/** the sunday-first weekday row (S M T W T F S) — the label table serves the letters */
+const WEEKDAYS = osCalendarWeekdays().map((letter, index) => ({ key: `wd-${index}`, letter }));
 
 type CalendarFlyoutProps = {
   /** visible state of the mount pattern (false renders the exit pose) */
@@ -200,7 +193,7 @@ export function CalendarFlyout({ open }: CalendarFlyoutProps) {
       className={TRAY_FLYOUT_CLASS}
       id="dt-calendar"
       role="dialog"
-      aria-label="Calendar"
+      aria-label={osText("shell.tray.calendar.aria")}
       data-hide={open ? undefined : "true"}
       data-flyout-keep="true"
     >
@@ -211,7 +204,7 @@ export function CalendarFlyout({ open }: CalendarFlyoutProps) {
         <span className="flex gap-0.5">
           <button
             type="button"
-            aria-label="Previous month"
+            aria-label={osText("tray.calendar.prev")}
             onClick={() => shift(-1)}
             className={`grid h-11 w-11 cursor-pointer place-items-center rounded-xs border-0 bg-transparent text-ink-2 transition-colors duration-150 hover:bg-white/9 hover:text-ink light:hover:bg-black/8 ${TRAY_FOCUS_CLASS}`}
           >
@@ -219,7 +212,7 @@ export function CalendarFlyout({ open }: CalendarFlyoutProps) {
           </button>
           <button
             type="button"
-            aria-label="Next month"
+            aria-label={osText("tray.calendar.next")}
             onClick={() => shift(1)}
             className={`grid h-11 w-11 cursor-pointer place-items-center rounded-xs border-0 bg-transparent text-ink-2 transition-colors duration-150 hover:bg-white/9 hover:text-ink light:hover:bg-black/8 ${TRAY_FOCUS_CLASS}`}
           >

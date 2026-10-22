@@ -34,7 +34,15 @@ import type { CSSProperties } from "react";
 import { useState } from "react";
 import { Link, useRoute } from "wouter";
 import { osAppLabels } from "../../catalog.ts";
-import { ShellChrome } from "@/componentes/shell/ShellChrome";
+import {
+  osGatewayAuthMethods,
+  osGatewayRoutes,
+  osGatewayStructureBlock,
+  osGatewayThinking,
+  osGatewayUsageBlock,
+  osText,
+} from "../../oslabels.ts";
+import { ShellChrome } from "@/shell/ShellChrome";
 import { config } from "../../gatewayviewconfig.ts";
 import type { gatewayconfig } from "../../gatewayviewdefinition.ts";
 
@@ -189,37 +197,20 @@ function ConsoleFrame({ embedded, children }: { embedded?: boolean; children: Re
         {children}
         <footer className="control-page__footer">
           <TerminalSquare fontSize={14} aria-hidden="true" />
-          Credentials stay with the CLI
+          {osText("gateway.footer")}
         </footer>
       </div>
     </main>
   );
 }
 
-/** the seven routes every version generates (the engine contract — one handler per route). */
-const versionroutes = ["chat/completions", "completions", "embeddings", "keys", "messages", "models", "responses"];
+/** the seven routes every version generates — the label table owns the
+ * engine contract rows (the oslabels gateway seed). */
+const versionroutes = osGatewayRoutes();
 
-/** the auth method families of the 12 supported methods (the examples name the providers each covers). */
-const authmethods = [
-  { method: "bearer", examples: "openai nvidia groq mistral deepseek kimi openrouter" },
-  { method: "apikeyheader", examples: "anthropic x-api-key gemini x-goog-api-key azure api-key" },
-  { method: "queryparam", examples: "legacy google key api_key params" },
-  { method: "basic", examples: "generic rest base64 user pass" },
-  { method: "oauth2clientcredentials", examples: "ibm watsonx azure entra auth0" },
-  { method: "jwtsign", examples: "zhipu bigmodel hs256 keyid secret" },
-  { method: "sigv4", examples: "aws bedrock aws4-hmac-sha256" },
-  { method: "anonymous", examples: "opencode zen kilo ollama keyless" },
-];
-
-/** the display copy of each thinking level (the budgets derive from the catalog). */
-const thinkingcopy: Record<string, string> = {
-  none: "no thinking",
-  minimal: "quick reasoning",
-  low: "light reasoning",
-  medium: "balanced",
-  high: "deep reasoning default",
-  xhigh: "extra deep",
-  max: "maximum" };
+/** the auth method families of the 12 supported methods (the examples name
+ * the providers each covers) — the oslabels gateway seed. */
+const authmethods = osGatewayAuthMethods();
 
 /** the live/paused badge of one version: the state rides the data-state
  * attribute and the theme tokens paint it (status never carries the identity
@@ -227,7 +218,7 @@ const thinkingcopy: Record<string, string> = {
 function statusbadge(version: gatewayconfig) {
   return (
     <span className="gateway-badge" data-state={version.paused ? "paused" : "live"}>
-      {version.paused ? "paused" : "live"}
+      {version.paused ? osText("gateway.badge.paused") : osText("gateway.badge.live")}
     </span>
   );
 }
@@ -239,14 +230,16 @@ function versionpattern(version: gatewayconfig): string {
 
 /** the model line of one version card: the catalog count and the masked meta face. */
 function versionmodelsline(version: gatewayconfig): string {
-  return `${version.models.length} models · ${version.metamodel.id} meta`;
+  return osText("gateway.modelsLine")
+    .replace("{count}", String(version.models.length))
+    .replace("{meta}", version.metamodel.id);
 }
 
 /** the thinking levels derived from the v1 budgets — the single catalog is the source, never a copied list. */
 const thinkinglevels = Object.entries(config.versions.v1?.thinking?.budgets ?? {}).map(([level, budget]) => ({
   level,
   budget: String(budget),
-  desc: thinkingcopy[level] ?? "" }));
+  desc: osGatewayThinking(level) }));
 
 /** the compact definition summary the explorer renders: what the engine would load, one line per version. */
 const definitionsummary = {
@@ -267,53 +260,13 @@ const definitionsummary = {
     ]),
   ) };
 
-/** the library usage block the page renders beside the catalog. */
-const usageblock = [
-  "# scaffold a new gateway",
-  "npx @wenathlan/devthink gateway init",
-  "",
-  "# add a version with any baseurl any models any auth",
-  "npx @wenathlan/devthink gateway add v6",
-  "",
-  "# register keys for rotation",
-  "npx @wenathlan/devthink gateway keys v6",
-  "",
-  "# start the server",
-  "npx @wenathlan/devthink gateway serve --port 3001",
-  "",
-  "# or embed the library",
-  'import { createversion, loadconfig } from "@wenathlan/devthink"',
-  "const def = await loadconfig()",
-  "const handlers = createversion(def.versions.v1)",
-  "const response = await handlers.handlechatcompletions(request)",
-].join("\n");
+/** the library usage block the page renders beside the catalog — the
+ * oslabels gateway seed owns the lines. */
+const usageblock = osGatewayUsageBlock();
 
-/** the merged repository structure the page documents. */
-const structureblock = `devthink/
-  gateway-index.ts          # the library barrel — the ./gateway-lib surface
-  engine.ts                 # universal engine — routes, rotation, retry, fallback
-  gateway-http.ts           # the http transport — hono server + sse pipeline
-  gateway-cli.ts            # the scaffolding cli (init add keys serve export)
-  gateway-configloader.ts   # config validation + the standard Sol/config.* probe
-  gateway-auth.ts           # the 12 auth methods + key resolution
-  database.ts               # prisma + libsql client
-  types.ts                  # the public types of every family (gateway section)
-  gatewayviewconfig.ts      # the shipped v1–v5 definitions (data only)
-  gatewayviewdefinition.ts  # the view-side structural contract
-  Sol/                      # the design room of the whole project
-    App.tsx                 # the workbench entry — one router, one mount
-    gatewayview/            # this console — the embedded gateway face
-      gatewayview.tsx       # this page (self-contained, no main.tsx)
-    schema.prisma           # the database schema
-    prisma/                 # the local sqlite home — Sol/prisma/devthink.db
-    console/                # the cli design page
-    capacitor.config.ts     # the android wrapper — same interface
-    vercel.json netlify.toml # platform manifests — deploy from here
-  prisma.config.ts          # prisma 7 config (datasource url, client output)
-  Dockerfile                # the one container file
-  .github/workflows/        # ci release publish npm maven nuget ghcr security maintenance
-  tests/                    # vitest tests flat *.test.ts
-  package.json              # @wenathlan/devthink public`;
+/** the merged repository structure the page documents — the oslabels
+ * gateway seed owns the block. */
+const structureblock = osGatewayStructureBlock();
 
 /** one version row of the ledger: a route link on the page, an in-place
  * button inside the embedded window (the windows law — the detail opens in
@@ -356,7 +309,7 @@ function VersionRow({
         key={version.id}
         type="button"
         className="gv-version"
-        aria-label={`open the ${version.id} detail`}
+        aria-label={osText("gateway.openDetail").replace("{id}", version.id)}
         style={step(index)}
         onClick={() => onOpen(version.id)}
       >
@@ -369,7 +322,7 @@ function VersionRow({
       key={version.id}
       href={`/gateway/v/${version.id}`}
       className="gv-version"
-      aria-label={`open the ${version.id} detail`}
+      aria-label={osText("gateway.openDetail").replace("{id}", version.id)}
       style={step(index)}
     >
       {content}
@@ -395,14 +348,14 @@ export default function GatewayView({ embedded }: { embedded?: boolean }) {
         <header className="pagehead r2b-head shader-stage enter" style={step(0)}>
           <div className="radial-light" aria-hidden="true" />
           <div className="grain-overlay" aria-hidden="true" />
-          <p className="pagehead__eyebrow r2a-eyebrow">devthink gateway</p>
+          <p className="pagehead__eyebrow r2a-eyebrow">{osText("gateway.eyebrow")}</p>
           <h1 className="pagehead__title r2a-display">
-            {version ? `${version.id} ${version.providername}` : "version not found"}
+            {version ? `${version.id} ${version.providername}` : osText("gateway.versionNotFound")}
           </h1>
           <p className="pagehead__lede r2a-lede">
             {version
               ? `${versionpattern(version)} ${version.note ?? ""}`
-              : "The requested version stays outside the shipped catalog; open the gateway overview for the configured versions."}
+              : osText("gateway.versionNotFoundLede")}
           </p>
           {/* the retired .gateway-toolbar row rides the hero actions slot —
               inside the window the back action resets the in-window detail */}
@@ -410,12 +363,12 @@ export default function GatewayView({ embedded }: { embedded?: boolean }) {
             {embedded ? (
               <button type="button" className="gateway-back" onClick={() => setWindowDetail(null)}>
                 <ArrowLeft fontSize={14} aria-hidden="true" />
-                gateway overview
+                {osText("gateway.overview")}
               </button>
             ) : (
               <Link href="/gateway" className="gateway-back">
                 <ArrowLeft fontSize={14} aria-hidden="true" />
-                gateway overview
+                {osText("gateway.overview")}
               </Link>
             )}
             {version ? statusbadge(version) : null}
@@ -427,7 +380,7 @@ export default function GatewayView({ embedded }: { embedded?: boolean }) {
               <section className="gateway-panel" aria-labelledby="gatewaymodelstitle">
                 <h2 id="gatewaymodelstitle">
                   <KeyRound fontSize={16} />
-                  models {version.models.length} configured
+                  {osText("gateway.modelsConfigured").replace("{count}", String(version.models.length))}
                 </h2>
                 <pre className="gateway-pre">
                   {version.models
@@ -441,44 +394,50 @@ export default function GatewayView({ embedded }: { embedded?: boolean }) {
               <section className="gateway-panel" aria-labelledby="gatewaypolicytitle">
                 <h2 id="gatewaypolicytitle">
                   <RefreshCcw fontSize={16} />
-                  policy auth, rotation and retry
+                  {osText("gateway.policyTitle")}
                 </h2>
                 <div className="gv-policy">
                   <article>
-                    <span>auth</span>
+                    <span>{osText("gateway.authLabel")}</span>
                     <strong>
                       {version.auth.mode}
-                      {version.auth.required ? " required" : " optional"}
+                      {version.auth.required ? osText("gateway.auth.required") : osText("gateway.auth.optional")}
                     </strong>
-                    <small>{version.auth.keysources?.join(" ") ?? "keyless"}</small>
+                    <small>{version.auth.keysources?.join(" ") ?? osText("gateway.keyless")}</small>
                   </article>
                   <article>
-                    <span>rotation</span>
-                    <strong>{version.rotation?.mode ?? "fixed"}</strong>
+                    <span>{osText("gateway.rotationLabel")}</span>
+                    <strong>{version.rotation?.mode ?? osText("gateway.fixed")}</strong>
                     <small>
                       {version.rotation
-                        ? `${version.rotation.models.length} models every ${version.rotation.everynmessages ?? 1} message${(version.rotation.everynmessages ?? 1) === 1 ? "" : "s"}`
-                        : "the default model answers every call"}
+                        ? (version.rotation.everynmessages ?? 1) === 1
+                          ? osText("gateway.rotationLine")
+                              .replace("{models}", String(version.rotation.models.length))
+                              .replace("{messages}", String(version.rotation.everynmessages ?? 1))
+                          : osText("gateway.rotationLinePlural")
+                              .replace("{models}", String(version.rotation.models.length))
+                              .replace("{messages}", String(version.rotation.everynmessages ?? 1))
+                        : osText("gateway.defaultModel")}
                     </small>
                   </article>
                   <article>
-                    <span>retry</span>
+                    <span>{osText("gateway.retryLabel")}</span>
                     <strong>
                       {version.retry?.fallback === "crossprovider"
-                        ? "cross-provider fallback"
-                        : `max ${version.retry?.maxretries ?? 0}`}
+                        ? osText("gateway.crossProvider")
+                        : osText("gateway.maxRetries").replace("{count}", String(version.retry?.maxretries ?? 0))}
                     </strong>
                     <small>
                       {version.retry?.statuses?.length
-                        ? `retry on ${version.retry.statuses.join(" ")}`
-                        : "no status retries"}
+                        ? osText("gateway.retryOn").replace("{statuses}", version.retry.statuses.join(" "))
+                        : osText("gateway.noStatusRetries")}
                     </small>
                   </article>
                   <article>
-                    <span>meta</span>
+                    <span>{osText("gateway.metaLabel")}</span>
                     <strong>{version.metamodel.id}</strong>
                     <small>
-                      {version.metamodel.maskupstreammodel ? "upstream models masked" : "upstream models shown"}
+                      {version.metamodel.maskupstreammodel ? osText("gateway.masked") : osText("gateway.shown")}
                     </small>
                   </article>
                 </div>
@@ -488,28 +447,27 @@ export default function GatewayView({ embedded }: { embedded?: boolean }) {
               <section className="gateway-panel" aria-labelledby="gatewayroutestitle">
                 <h2 id="gatewayroutestitle">
                   <Network fontSize={16} />
-                  routes 7 per version
+                  {osText("gateway.routesTitle")}
                 </h2>
                 <div className="gv-routes">
                   {versionroutes.map((route) => (
                     <article key={route}>
-                      <span>post /api/{version.id}</span>
+                      <span>{osText("gateway.routePost").replace("{version}", version.id)}</span>
                       <code>/{route}</code>
                     </article>
                   ))}
                 </div>
                 <p className="gateway-note">
-                  get /api/{version.id}/{"{route}"} returns the version info descriptor.
+                  {osText("gateway.routeInfo").replace("{version}", version.id)}
                 </p>
               </section>
             </div>
           </div>
         ) : (
           <div className="control-empty">
-            <h2>version {detailId} not found</h2>
+            <h2>{osText("gateway.versionMissing").replace("{id}", detailId)}</h2>
             <p>
-              The shipped catalog carries {Object.keys(config.versions).length} versions; the requested id stays outside
-              it.
+              {osText("gateway.shippedCount").replace("{count}", String(Object.keys(config.versions).length))}
             </p>
           </div>
         )}
@@ -522,16 +480,16 @@ export default function GatewayView({ embedded }: { embedded?: boolean }) {
       <header className="pagehead r2b-head shader-stage enter" style={step(0)}>
         <div className="radial-light" aria-hidden="true" />
         <div className="grain-overlay" aria-hidden="true" />
-        <p className="pagehead__eyebrow r2a-eyebrow">devthink gateway</p>
+        <p className="pagehead__eyebrow r2a-eyebrow">{osText("gateway.eyebrow")}</p>
         <h1 className="pagehead__title r2a-display">{GATEWAY_LABEL?.name ?? "Gateway"}</h1>
-        <p className="pagehead__lede r2a-lede">Every provider behind one local door</p>
+        <p className="pagehead__lede r2a-lede">{osText("gateway.lede")}</p>
       </header>
       <div className="gv-body">
         <div className="gv-main">
           <section className="gateway-panel" aria-labelledby="gatewayversionstitle">
             <h2 id="gatewayversionstitle">
               <Network fontSize={16} />
-              versions {Object.keys(config.versions).length} configured
+              {osText("gateway.versionsTitle").replace("{count}", String(Object.keys(config.versions).length))}
             </h2>
             <div className="gv-versions">
               {Object.values(config.versions).map((version, index) => (
@@ -550,7 +508,7 @@ export default function GatewayView({ embedded }: { embedded?: boolean }) {
           <section className="gateway-panel" aria-labelledby="gatewaythinkingtitle">
             <h2 id="gatewaythinkingtitle">
               <RefreshCcw fontSize={16} />
-              thinking levels the 2-calls pattern
+              {osText("gateway.thinkingTitle")}
             </h2>
             <div className="gv-thinking">
               {thinkinglevels.map((level) => (
@@ -565,7 +523,7 @@ export default function GatewayView({ embedded }: { embedded?: boolean }) {
           <section className="gateway-panel" aria-labelledby="gatewayauthtitle">
             <h2 id="gatewayauthtitle">
               <ShieldCheck fontSize={16} />
-              auth methods 12 supported
+              {osText("gateway.authTitle")}
             </h2>
             <div className="gv-auth">
               {authmethods.map((auth) => (
@@ -579,7 +537,7 @@ export default function GatewayView({ embedded }: { embedded?: boolean }) {
           <section className="gateway-panel" aria-labelledby="gatewayusagetitle">
             <h2 id="gatewayusagetitle">
               <KeyRound fontSize={16} />
-              library usage
+              {osText("gateway.usageTitle")}
             </h2>
             <pre className="gateway-pre">{usageblock}</pre>
           </section>
@@ -588,12 +546,12 @@ export default function GatewayView({ embedded }: { embedded?: boolean }) {
       <section className="gateway-panel" aria-labelledby="gatewaystructuretitle">
         <h2 id="gatewaystructuretitle">
           <Network fontSize={16} />
-          structure the library at root, the design in web
+          {osText("gateway.structureTitle")}
         </h2>
         <pre className="gateway-pre">{structureblock}</pre>
       </section>
       <details className="gateway-explorer">
-        <summary>the loaded definition — the compact summary of the shipped catalog</summary>
+        <summary>{osText("gateway.explorerSummary")}</summary>
         <pre className="gateway-pre">{JSON.stringify(definitionsummary, null, 2)}</pre>
       </details>
     </ConsoleFrame>

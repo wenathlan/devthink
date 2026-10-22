@@ -5,6 +5,7 @@
  * not answered anything yet. Loose component of the calculator page.
  */
 import {HistoryRegular} from "@fluentui/react-icons";
+import { osText } from "../../oslabels.ts";
 
 /** one answered line of the history: the expression, the answer and the id
  * that keeps the list keys honest when the same line answers twice. */
@@ -12,10 +13,10 @@ export type CalculatorHistoryRow = { id: string; line: string };
 
 export function CalculatorHistory({ rows }: { rows: CalculatorHistoryRow[] }) {
   return (
-    <section className="dtw-card" aria-label="History">
+    <section className="dtw-card" aria-label={osText("calc.history.aria")}>
       <h2 className="dtw-cardtitle">
         <HistoryRegular fontSize={15} aria-hidden="true" />
-        History
+        {osText("calc.history.title")}
         {rows.length ? <span className="dtw-navrow__count">{rows.length}</span> : null}
       </h2>
       {rows.length ? (
@@ -27,7 +28,7 @@ export function CalculatorHistory({ rows }: { rows: CalculatorHistoryRow[] }) {
           ))}
         </ul>
       ) : (
-        <p className="dtw-copy">Nothing yet</p>
+        <p className="dtw-copy">{osText("calc.history.empty")}</p>
       )}
     </section>
   );

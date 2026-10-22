@@ -22,10 +22,11 @@ import { DismissRegular as X } from "@fluentui/react-icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { writeonboardingstage } from "../../onboardingstate";
-import { SolLogoMark } from "../componentes/panel/logo.tsx";
-import { ONBOARDING_STEPS, StepArt } from "../componentes/onboarding/steps.tsx";
+import { osText } from "../../oslabels.ts";
+import { SolLogoMark } from "../panel/logo.tsx";
+import { ONBOARDING_STEPS, StepArt } from "./steps.tsx";
 
-export * from "../componentes/onboarding/steps.tsx";
+export * from "./steps.tsx";
 
 /** The finish target of the flow: explore is the free SaaS surface. */
 export const ONBOARDING_HANDOVER = "/explore";
@@ -149,16 +150,16 @@ export default function Onboarding() {
         style={{ boxShadow: WINDOW_SHADOW }}
         role="dialog"
         aria-modal="true"
-        aria-label="devthink onboarding"
+        aria-label={osText("onboarding.aria")}
       >
         {/* the window grammar: the real 28px title bar with the red close glyph */}
         <header className="ob-titlebar">
           <span className="ob-brand">
             <SolLogoMark size={14} />
-            devthink
+            {osText("onboarding.brand")}
           </span>
-          <span className="ob-caption">onboarding</span>
-          <button type="button" aria-label="close onboarding" onClick={finish} className="ob-close">
+          <span className="ob-caption">{osText("onboarding.caption")}</span>
+          <button type="button" aria-label={osText("onboarding.close.aria")} onClick={finish} className="ob-close">
             <X fontSize={14} aria-hidden="true" />
           </button>
         </header>
@@ -188,16 +189,18 @@ export default function Onboarding() {
               ))}
             </span>
             <span className="ob-count">
-              step {index + 1} of {total}
+              {osText("onboarding.count")
+                .replace("{index}", String(index + 1))
+                .replace("{total}", String(total))}
             </span>
           </div>
           <div className="ob-actions">
             <button type="button" onClick={finish} className="ob-btn ob-btn--ghost">
-              skip
+              {osText("onboarding.skip")}
             </button>
             {index > 0 ? (
               <button type="button" onClick={back} className="ob-btn ob-btn--flat">
-                back
+                {osText("onboarding.back")}
               </button>
             ) : null}
             <button
@@ -206,7 +209,7 @@ export default function Onboarding() {
               className="ob-btn ob-btn--primary"
               style={{ boxShadow: PRIMARY_STACK }}
             >
-              {last ? "enter devthink" : "next"}
+              {last ? osText("onboarding.enter") : osText("onboarding.next")}
             </button>
           </div>
         </footer>

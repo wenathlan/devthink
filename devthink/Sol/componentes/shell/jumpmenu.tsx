@@ -20,8 +20,9 @@
 
 import {WindowAppsRegular as AppWindow, NavigationRegular as Compass, GlobeRegular as Globe, type FluentIcon as LucideIcon, PinRegular as Pin, PinOffRegular as PinOff, PlayRegular as Play} from "@fluentui/react-icons";
 import { type KeyboardEvent as ReactKeyboardEvent, useLayoutEffect, useRef, useState } from "react";
-import type { DesktopApp } from "../../../appregistry.ts";
-import { familyurl } from "../../../deploybase.ts";
+import type { DesktopApp } from "../../appregistry.ts";
+import { familyurl } from "../../deploybase.ts";
+import { osText } from "../../oslabels.ts";
 
 /** The localStorage key of the taskbar pin order (an id list). */
 const TASKBAR_PINS_KEY = "dt.taskbar.pins.v1";
@@ -72,13 +73,13 @@ type JumpEntry = {
 function jumpEntries(app: DesktopApp): JumpEntry[] {
   switch (app.target.kind) {
     case "window":
-      return [{ id: "window", label: "Open window", icon: AppWindow, action: "open" }];
+      return [{ id: "window", label: osText("jump.openWindow"), icon: AppWindow, action: "open" }];
     case "destination":
     case "route":
       return [
         {
           id: "surface",
-          label: `Open ${app.name}`,
+          label: osText("jump.openApp").replace("{app}", app.name),
           icon: Compass,
           action: "open" },
       ];
@@ -86,12 +87,12 @@ function jumpEntries(app: DesktopApp): JumpEntry[] {
       return [
         {
           id: "surface",
-          label: `Open ${app.name}`,
+          label: osText("jump.openApp").replace("{app}", app.name),
           icon: Compass,
           action: "open" },
         {
           id: "site",
-          label: `Open ${app.name} site`,
+          label: osText("jump.openAppSite").replace("{app}", app.name),
           icon: Globe,
           action: "site" },
       ];
@@ -215,7 +216,7 @@ export function JumpList({ app, open, x, y, pinned, onOpen, onTogglePin, onClose
         <span className={ICON_CLASS} aria-hidden="true">
           {pinned ? <PinOff fontSize={16} /> : <Pin fontSize={16} />}
         </span>
-        {pinned ? "Unpin from taskbar" : "Pin to taskbar"}
+        {pinned ? osText("jump.unpin") : osText("jump.pin")}
       </button>
     </div>
   );

@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ShellChrome } from "@/componentes/shell/ShellChrome";
 import { osAppLabels, type RunnerBinary, runnerBinaries } from "../../catalog";
+import { osText } from "../../oslabels.ts";
 import { queuebinarylaunch } from "../../runner";
 import { GamesList } from "../componentes/games/gameslist.tsx";
 import { type GamesFilter, GamesNav } from "../componentes/games/gamesnav.tsx";
@@ -63,8 +64,8 @@ export default function Games({ embedded }: { embedded?: boolean }) {
           <h1 className="dtw-title">{GAMES_LABEL?.name ?? "Games"}</h1>
           <GamesList rows={rows} loaded={loaded} onLaunch={launch} />
           <section className="dtw-card">
-            <h2 className="dtw-cardtitle">Runner boundary</h2>
-            <p className="dtw-copy">Launches queue over the gateway. Nothing installs on this machine.</p>
+            <h2 className="dtw-cardtitle">{osText("games.boundary.title")}</h2>
+            <p className="dtw-copy">{osText("games.boundary.copy")}</p>
           </section>
         </div>
       </div>

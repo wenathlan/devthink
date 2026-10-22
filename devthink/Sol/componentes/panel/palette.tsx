@@ -9,23 +9,13 @@
  * dividers, the sun-tinted selection tick of the active row. */
 import {KeyboardRegular as Command, SearchRegular as Search, DismissRegular as X} from "@fluentui/react-icons";
 import { type KeyboardEvent as ReactKeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
+import { osPaletteCommands, osText } from "../../oslabels.ts";
 
 type CommandPaletteProps = { open: boolean; onClose: () => void; onAction: (action: string) => void };
 
-const commands = [
-  ["new", "new session", "Create a clean provider-scoped session", "⌘ N"],
-  ["console", "open console", "The canonical design of the devthink cli", "⌘ C"],
-  ["gateway", "open gateway", "The embedded gateway console of the catalog", "⌘ G"],
-  ["os", "open os", "The local os shell of the family", "⌘ O"],
-  ["docs", "open docs", "The documentation library of the family", "⌘ D"],
-  ["explore", "open explore", "The exploration gallery of the family", "⌘ X"],
-  ["providers", "open providers", "Inspect local provider and model choices", "⌘ P"],
-  ["projects", "open projects", "Inspect local workspace records", "⌘ J"],
-  ["usage", "open usage", "Review compact local usage records", "⌘ U"],
-  ["routes", "inspect routes", "Show gateway and stream health", "⌘ I"],
-  ["history", "open history", "Review open local session tabs", "⌘ H"],
-  ["settings", "open settings", "Pair or revoke a local browser connection", "⌘ ,"],
-];
+/** the command rows ride the os label table (the id, the label, the detail
+ * and the shortcut badge of every palette command — catalog order). */
+const commands = osPaletteCommands();
 
 export function CommandPalette({ open, onClose, onAction }: CommandPaletteProps) {
   const [query, setQuery] = useState("");
@@ -36,7 +26,8 @@ export function CommandPalette({ open, onClose, onAction }: CommandPaletteProps)
     const needle = query.trim().toLowerCase();
     if (!needle) return commands;
     return commands.filter(
-      ([, title, detail]) => title.toLowerCase().includes(needle) || detail.toLowerCase().includes(needle),
+      (command) =>
+        command.title.toLowerCase().includes(needle) || command.detail.toLowerCase().includes(needle),
     );
   }, [query]);
 
@@ -52,7 +43,7 @@ export function CommandPalette({ open, onClose, onAction }: CommandPaletteProps)
 
   // the active row of the filtered list stays in view the way a real menu
   // scrolls its highlight
-  const activeId = matches[active]?.[0];
+  const activeId = matches[active]?.id;
   useEffect(() => {
     if (!activeId) return;
     document.getElementById(`command-palette-item-${activeId}`)?.scrollIntoView({ block: "nearest" });
@@ -63,7 +54,7 @@ export function CommandPalette({ open, onClose, onAction }: CommandPaletteProps)
   const runCommand = (index: number) => {
     const command = matches[index];
     if (!command) return;
-    onAction(command[0]);
+    onAction(command.id);
   };
 
   const onKeyDown = (event: ReactKeyboardEvent) => {
@@ -100,7 +91,7 @@ export function CommandPalette({ open, onClose, onAction }: CommandPaletteProps)
         className="command-palette acrylic-panel fixed top-[12vh] left-1/2 z-[21] w-[min(620px,calc(100vw-32px))] translate-x-[-50%] animate-palette-in overflow-hidden rounded-lg text-ink"
         role="dialog"
         aria-modal="true"
-        aria-label="Command palette"
+        aria-label={osText("palette.dialog.aria")}
       >
         <div className="command-palette__input flex items-center gap-2.5 border-b border-(--color-hairline) px-3 py-[13px] text-ink-2 transition-shadow duration-150 focus-within:shadow-[inset_0_-1px_0_rgb(231_233_238/45%)] light:focus-within:shadow-[inset_0_-1px_0_rgb(0_0_0/35%)]">
           <Search fontSize={18} />
@@ -112,12 +103,12 @@ export function CommandPalette({ open, onClose, onAction }: CommandPaletteProps)
               setActive(0);
             }}
             onKeyDown={onKeyDown}
-            placeholder="Search DevThink commands"
+            placeholder={osText("palette.search.placeholder")}
             role="combobox"
             aria-expanded="true"
             aria-controls="command-palette-list"
-            aria-activedescendant={matches[active] ? `command-palette-item-${matches[active][0]}` : undefined}
-            aria-label="Search DevThink commands"
+            aria-activedescendant={matches[active] ? `command-palette-item-${matches[active].id}` : undefined}
+            aria-label={osText("palette.search.aria")}
             autoComplete="off"
             spellCheck={false}
             className="min-h-10 min-w-0 flex-1 border-0 bg-transparent font-mono text-xs text-ink outline-none placeholder:text-ink-3"
@@ -125,22 +116,22 @@ export function CommandPalette({ open, onClose, onAction }: CommandPaletteProps)
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close the command palette"
+            aria-label={osText("palette.close.aria")}
             className="grid h-[34px] w-[34px] cursor-pointer place-items-center rounded-md border-0 bg-transparent text-ink-2 transition-colors duration-150 hover:bg-white/6 hover:text-ink active:scale-[0.94]"
           >
             <X fontSize={16} />
           </button>
         </div>
         <div className="command-palette__label flex items-center gap-1.5 px-[13px] py-2.5 font-mono text-[8px] tracking-[.08em] text-ink-3 uppercase">
-          <Command fontSize={13} /> workspace commands
+          <Command fontSize={13} /> {osText("palette.group")}
         </div>
         <div className="command-palette__list grid px-[7px] pb-[7px]" id="command-palette-list" role="listbox">
-          {matches.map(([id, title, detail, key], index) => (
+          {matches.map((command, index) => (
             <button
-              key={id}
+              key={command.id}
               type="button"
               role="option"
-              id={`command-palette-item-${id}`}
+              id={`command-palette-item-${command.id}`}
               aria-selected={index === active}
               data-active={index === active}
               className="flex min-h-7 cursor-pointer items-center justify-between gap-4 rounded-md border-0 bg-transparent px-2.5 py-2.5 text-left text-ink-2 transition-colors duration-200 ease-fluent hover:bg-white/9 hover:text-ink data-[active=true]:bg-white/9 data-[active=true]:text-ink data-[active=true]:shadow-[inset_2px_0_0_var(--color-sun)]"
@@ -148,18 +139,18 @@ export function CommandPalette({ open, onClose, onAction }: CommandPaletteProps)
               onClick={() => runCommand(index)}
             >
               <span className="flex min-w-0 items-baseline gap-2">
-                <strong className="inline whitespace-nowrap text-[11px] font-semibold text-ink">{title}</strong>
+                <strong className="inline whitespace-nowrap text-[11px] font-semibold text-ink">{command.title}</strong>
                 <small className="inline overflow-hidden text-[10px] font-normal text-ellipsis whitespace-nowrap text-ink-3">
-                  {detail}
+                  {command.detail}
                 </small>
               </span>
               <kbd className="rounded-xs border border-(--color-hairline) bg-white/4 px-[5px] py-[2px] font-mono text-[8px] tabular-nums text-ink-3">
-                {key}
+                {command.key}
               </kbd>
             </button>
           ))}
           {!matches.length && (
-            <p className="m-0 px-2.5 pt-1.5 pb-2.5 font-mono text-[10px] text-ink-3">no command matches that search</p>
+            <p className="m-0 px-2.5 pt-1.5 pb-2.5 font-mono text-[10px] text-ink-3">{osText("palette.empty")}</p>
           )}
         </div>
       </section>

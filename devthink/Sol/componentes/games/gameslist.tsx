@@ -4,7 +4,8 @@
  * the games page.
  */
 import {PlayFilled} from "@fluentui/react-icons";
-import type { RunnerBinary } from "../../../catalog.ts";
+import type { RunnerBinary } from "../../catalog";
+import { osText } from "../../oslabels.ts";
 
 /** The two leading initials of a real title, cut for the cover glyph. */
 function monogram(title: string): string {
@@ -27,9 +28,9 @@ export function GamesList({
 }) {
   return (
     <section className="dtw-card">
-      <h2 className="dtw-cardtitle">Runner binaries</h2>
+      <h2 className="dtw-cardtitle">{osText("games.list.title")}</h2>
       {rows.length === 0 ? (
-        <p className="dtw-copy">{loaded ? "No binaries in this filter" : "Loading the catalog"}</p>
+        <p className="dtw-copy">{loaded ? osText("games.list.empty") : osText("games.list.loading")}</p>
       ) : (
         <ul className="dtw-games__rows">
           {rows.map((binary) => (
@@ -52,10 +53,10 @@ export function GamesList({
                 type="button"
                 className="dtw-action dtw-action--primary"
                 onClick={() => onLaunch(binary)}
-                aria-label={`Launch ${binary.title}`}
+                aria-label={osText("games.list.launchAria").replace("{title}", binary.title)}
               >
                 <PlayFilled fontSize={12} aria-hidden="true" />
-                Launch
+                {osText("games.list.launch")}
               </button>
             </li>
           ))}

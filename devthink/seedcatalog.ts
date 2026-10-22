@@ -64,13 +64,10 @@ export const seedFamilySites: FamilySite[] = [
   },
 ];
 
-export const seedRecipes: Recipe[] = [
-  { name: "Streaming chat with plan proposal", family: "CLI", grade: "basic", duration: "5 min" },
-  { name: "Pairing the workbench to the gateway", family: "Workbench", grade: "basic", duration: "3 min" },
-  { name: "Consent-first capture with forensics", family: "Extension", grade: "medium", duration: "12 min" },
-  { name: "MCP tool catalog with approval gates", family: "MCP", grade: "medium", duration: "10 min" },
-  { name: "Multi-agent fleet with run state", family: "Swarm", grade: "advanced", duration: "20 min" },
-];
+/** the recipe gallery rides the paired database only — the demo example
+ * rows the static build once carried were retired (the owner's db-truth
+ * wave: frozen example literals never pretend to be runtime data). */
+export const seedRecipes: Recipe[] = [];
 
 export const seedRungs: Rung[] = [
   {
@@ -349,73 +346,22 @@ export const seedOsAppWindows: OsAppWindow[] = [
   },
 ];
 
-export const seedRunnerBinaries: RunnerBinary[] = [
-  {
-    id: "call-of-duty",
-    title: "Call of Duty",
-    kind: "game",
-    formats: "exe",
-    runner: "saddle virtualization",
-    blurb: "The competitor shooter boots inside the saddle virtualization layer without leaving the platform.",
-  },
-  {
-    id: "blender",
-    title: "Blender",
-    kind: "application",
-    formats: "exe",
-    runner: "saddle virtualization",
-    blurb: "The 3D suite runs beside the native studios and shares the same render queue surface.",
-  },
-  {
-    id: "brave",
-    title: "Brave",
-    kind: "application",
-    formats: "exe",
-    runner: "saddle browser surface",
-    blurb: "The competitor browser opens through the saddle browser surface instead of a second install.",
-  },
-  {
-    id: "steam",
-    title: "Steam",
-    kind: "application",
-    formats: "exe/apk",
-    runner: "saddle virtualization",
-    blurb: "The store and its library mount through the runner in both the desktop and the android packaging.",
-  },
-];
+/** the runner binaries ride the paired database only — the demo
+ * competitor-app rows (the shooter, the 3d suite, the browser, the store)
+ * the static build once carried were retired: a runner shelf that ships
+ * nothing answers honestly empty, never with frozen demo entries. */
+export const seedRunnerBinaries: RunnerBinary[] = [];
 
-export const seedStudioAssets: StudioAsset[] = [
-  { id: "asset.coastline.cut", title: "Coastline Cut", studio: "video", engine: "versawase", duration: "4:12" },
-  { id: "asset.harbor.reel", title: "Harbor Reel", studio: "video", engine: "versawase", duration: "2:38" },
-  { id: "asset.night.loop", title: "Night Loop", studio: "music", engine: "katexis", duration: "6:04" },
-  { id: "asset.amber.take", title: "Amber Take", studio: "music", engine: "katexis", duration: "3:47" },
-  { id: "asset.dune.still", title: "Dune Still", studio: "image", engine: "matiz", size: "4032×3024" },
-  { id: "asset.harbor.still", title: "Harbor Still", studio: "image", engine: "matiz", size: "1920×1080" },
-];
+/** the studio assets ride the paired database only — the demo media
+ * rows (the coastline cuts, the harbor reels, the dune stills) were
+ * retired: the studios answer their real records or the honest empty
+ * state, never frozen demo media. */
+export const seedStudioAssets: StudioAsset[] = [];
 
-export const seedStudioTracks: StudioTrack[] = [
-  {
-    id: "track.glass.river",
-    title: "Glass River",
-    engine: "katexis",
-    minutes: "4",
-    blurb: "A slow synth bed generated on the katexis engine and mastered in the debonair daw.",
-  },
-  {
-    id: "track.low.sun",
-    title: "Low Sun",
-    engine: "katexis",
-    minutes: "7",
-    blurb: "An evening loop the katexis engine renders end to end without a third party plugin.",
-  },
-  {
-    id: "track.paper.moon",
-    title: "Paper Moon",
-    engine: "katexis",
-    minutes: "5",
-    blurb: "A percussion sketch kept in the catalog so every studio page renders the same take.",
-  },
-];
+/** the studio tracks ride the paired database only — the demo track
+ * rows (glass river, low sun, paper moon) were retired with the rest of
+ * the demo studio media. */
+export const seedStudioTracks: StudioTrack[] = [];
 
 export const seedAboutBlocks: AboutBlock[] = [
   {
@@ -602,227 +548,11 @@ export const seedAppIcons: AppIcon[] = [
   },
 ];
 
-/** The premium icon set rows of the desktop apps: one row per app declaring
- * the story (the guide color hex the tile tint follows), the depth (the
- * layer stack the drawn SVG builds over that color) and the motion (the
- * hover interaction the shared stylesheet performs). The Sol icon components
- * (Sol/shell/appicons.tsx) visualize these rows; the database serves them
- * per kind once paired, these seeds answer offline. */
-export const seedAppIconSets: AppIconSet[] = [
-  {
-    app: "chat",
-    story: "#ff8c42",
-    depth:
-      "solar gradient squircle with a top gloss, a blurred peach orb over a pedestal band, the speech bubble and brand star in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the star lifts, a sheen band sweeps once and the solar contact glow rises and breathes",
-  },
-  {
-    app: "files",
-    story: "#eab308",
-    depth:
-      "manila gradient squircle with a top gloss, a blurred gold orb over a pedestal band, the windows folder with its tab and the rising arrow in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the folder lifts with its tab opening, a sheen band sweeps once and the manila contact glow rises and breathes",
-  },
-  {
-    app: "history",
-    story: "#d9b98c",
-    depth:
-      "sand gradient squircle with a top gloss, a blurred cream orb over a pedestal band, the clock and rewind arrow in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the dial lifts, a sheen band sweeps once and the sand contact glow rises and breathes",
-  },
-  {
-    app: "projects",
-    story: "#cd8a5e",
-    depth:
-      "clay gradient squircle with a top gloss, a blurred apricot orb over a pedestal band, the board and columns in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the board lifts, a sheen band sweeps once and the clay contact glow rises and breathes",
-  },
-  {
-    app: "console",
-    story: "#8d8479",
-    depth:
-      "warm graphite gradient squircle with a top gloss, a blurred stone orb over a pedestal band, the prompt chevron and cursor in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the prompt lifts, a sheen band sweeps once and the graphite contact glow rises and breathes",
-  },
-  {
-    app: "gateway",
-    story: "#c9974f",
-    depth:
-      "brass gradient squircle with a top gloss, a blurred straw orb over a pedestal band, the waypoint and its routes in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the waypoint lifts, a sheen band sweeps once and the brass contact glow rises and breathes",
-  },
-  {
-    app: "providers",
-    story: "#bd7d55",
-    depth:
-      "copper gradient squircle with a top gloss, a blurred blush orb over a pedestal band, the plug and cord in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the plug lifts, a sheen band sweeps once and the copper contact glow rises and breathes",
-  },
-  {
-    app: "usage",
-    story: "#b39a78",
-    depth:
-      "sepia gradient squircle with a top gloss, a blurred parchment orb over a pedestal band, the ascending bars and baseline in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the bars lift, a sheen band sweeps once and the sepia contact glow rises and breathes",
-  },
-  {
-    app: "routes",
-    story: "#b39a87",
-    depth:
-      "taupe gradient squircle with a top gloss, a blurred dune orb over a pedestal band, the merging streams and junction in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the junction lifts, a sheen band sweeps once and the taupe contact glow rises and breathes",
-  },
-  {
-    app: "docs",
-    story: "#d8cbb2",
-    depth:
-      "bone gradient squircle with a top gloss, a blurred ivory orb over a pedestal band, the open book and spine in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the pages lift, a sheen band sweeps once and the bone contact glow rises and breathes",
-  },
-  {
-    app: "explore",
-    story: "#c98d80",
-    depth:
-      "rose-clay gradient squircle with a top gloss, a blurred petal orb over a pedestal band, the wind rose and ring in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the rose lifts, a sheen band sweeps once and the rose-clay contact glow rises and breathes",
-  },
-  {
-    app: "os",
-    story: "#aab4c2",
-    depth:
-      "graphite silver gradient squircle with a top gloss, a blurred mist orb over a pedestal band, the hex frame and four-pane grid in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the panes lift, a sheen band sweeps once and the silver contact glow rises and breathes",
-  },
-  {
-    app: "settings",
-    story: "#b6ada1",
-    depth:
-      "warm stone gradient squircle with a top gloss, a blurred linen orb over a pedestal band, the gear and its teeth in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the gear lifts, a sheen band sweeps once and the stone contact glow rises and breathes",
-  },
-  {
-    app: "calculator",
-    story: "#9aa7b4",
-    depth:
-      "graphite gradient squircle with a top gloss, a blurred mist orb over a pedestal band, the keypad grid and the equals key in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the equals key presses, a sheen band sweeps once and the graphite contact glow rises and breathes",
-  },
-  {
-    app: "image",
-    story: "#c084fc",
-    depth:
-      "violet gradient squircle with a top gloss, a blurred lilac orb over a pedestal band, the picture frame with the mountain and the sun in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the sun lifts, a sheen band sweeps once and the violet contact glow rises and breathes",
-  },
-  {
-    app: "video",
-    story: "#f472b6",
-    depth:
-      "magenta gradient squircle with a top gloss, a blurred blossom orb over a pedestal band, the clapperboard and its play triangle in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the play triangle lifts, a sheen band sweeps once and the magenta contact glow rises and breathes",
-  },
-  {
-    app: "audio",
-    story: "#d9962e",
-    depth:
-      "brass gradient squircle with a top gloss, a blurred honey orb over a pedestal band, the sound bars over the note in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the bars lift, a sheen band sweeps once and the brass contact glow rises and breathes",
-  },
-  {
-    app: "games",
-    story: "#e8563f",
-    depth:
-      "coral gradient squircle with a top gloss, a blurred shell orb over a pedestal band, the gamepad with its cross and studs in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the gamepad lifts, a sheen band sweeps once and the coral contact glow rises and breathes",
-  },
-  {
-    app: "argan",
-    story: "#14b98c",
-    depth:
-      "jade gradient squircle with a top gloss, a blurred mint orb over a pedestal band, the double-contour shield in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the shield lifts, a sheen band sweeps once and the jade contact glow rises and breathes",
-  },
-  {
-    app: "cadria",
-    story: "#e04f9f",
-    depth:
-      "magenta gradient squircle with a top gloss, a blurred orchid orb over a pedestal band, the clapperboard and slate stripes in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the slate lifts, a sheen band sweeps once and the magenta contact glow rises and breathes",
-  },
-  {
-    app: "debonair",
-    story: "#bd7a1a",
-    depth:
-      "deep amber gradient squircle with a top gloss, a blurred honey orb over a pedestal band, the five-band equalizer in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the bands lift, a sheen band sweeps once and the amber contact glow rises and breathes",
-  },
-  {
-    app: "stealthhead",
-    story: "#f4694f",
-    depth:
-      "coral gradient squircle with a top gloss, a blurred shell orb over a pedestal band, the scope ring, ticks and center in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the scope lifts, a sheen band sweeps once and the coral contact glow rises and breathes",
-  },
-  {
-    app: "forge",
-    story: "#b5793b",
-    depth:
-      "brass gradient squircle with a top gloss, a blurred ember orb over a pedestal band, the mallet head and handle in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the mallet lifts, a sheen band sweeps once and the brass contact glow rises and breathes",
-  },
-  {
-    app: "foundry",
-    story: "#98a2ad",
-    depth:
-      "cast-steel gradient squircle with a top gloss, a blurred molten orb over a pedestal band, the sawtooth plant, stack and windows in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the plant lifts, a sheen band sweeps once and the steel contact glow rises and breathes",
-  },
-  {
-    app: "vault",
-    story: "#cfa84a",
-    depth:
-      "reserve-gold gradient squircle with a top gloss, a blurred gold orb over a pedestal band, the vault door, rings and spokes in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the door lifts, a sheen band sweeps once and the gold contact glow rises and breathes",
-  },
-  {
-    app: "getry",
-    story: "#6fae8f",
-    depth:
-      "sage gradient squircle with a top gloss, a blurred sage orb over a pedestal band, the layered plates of the registry in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the plates lift, a sheen band sweeps once and the sage contact glow rises and breathes",
-  },
-  {
-    app: "saddle",
-    story: "#d6b483",
-    depth:
-      "leather tan gradient squircle with a top gloss, a blurred dune orb over a pedestal band, the isometric crate faces in thick ivory strokes with a filled backing and a blurred drop shadow, two blurred inner contours, a contact ellipse and a film grain wash",
-    motion:
-      "hover tilts the tile in perspective, the crate lifts, a sheen band sweeps once and the tan contact glow rises and breathes",
-  },
-];
+/** The premium icon set rows were retired with the old drawn icon system:
+ * the depth and motion prose described the pre-fluent icon machinery (the
+ * perspective tilts, the sheen bands, the film grain washes) that the
+ * Windows 11 fluent icon redesign replaced with pure presentational
+ * components, and the story tint the tile read falls back to the registry
+ * tint when no row answers — the paired database serves fresh rows per
+ * kind when it lands, the demo prose never pretends to be runtime data. */
+export const seedAppIconSets: AppIconSet[] = [];

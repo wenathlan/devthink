@@ -62,6 +62,7 @@ import { useLocation } from "wouter";
 import { toast } from "sonner";
 import { DESKTOP_APPS, type DesktopApp } from "../../appregistry.ts";
 import { coreModuleTable, osAppLabels, runnerBinaries, studioAssets, studioTracks } from "../../catalog.ts";
+import { osText } from "../../oslabels.ts";
 import {
   breadcrumbs as crumbtrail,
   capacityline,
@@ -200,7 +201,7 @@ export default function Files({ embedded }: { embedded?: boolean }) {
       // the store rehydrates from the mounted owner: a fresh boot reads it
       window.location.reload();
     } catch {
-      toast.error("The drive could not be mounted.");
+      toast.error(osText("explorer.toast.mountFailed"));
       setBusy(false);
     }
   }, []);
@@ -238,7 +239,7 @@ export default function Files({ embedded }: { embedded?: boolean }) {
   }, [goTo, location]);
 
   const driveLabel = useCallback(
-    (driveId: string) => drivelist.find((drive) => drive.id === driveId)?.label ?? "Drive",
+    (driveId: string) => drivelist.find((drive) => drive.id === driveId)?.label ?? osText("explorer.drive"),
     [drivelist],
   );
 
@@ -272,15 +273,15 @@ export default function Files({ embedded }: { embedded?: boolean }) {
         label: FOLDER_NAMES[folder],
         detail: FOLDER_DETAILS[folder],
         kind: "drive" as ExplorerItemKind,
-        meta: `${foldercount(folder)} items`,
+        meta: osText("explorer.items").replace("{count}", String(foldercount(folder))),
         open: () => goTo({ kind: "folder", folder }),
       }));
       const driveItems: FileItem[] = drivelist.map((drive) => ({
         id: `drive:${drive.id}`,
         label: drive.label,
-        detail: drive.id === activedrive?.id ? "Local disk · mounted" : "Local disk",
+        detail: drive.id === activedrive?.id ? osText("explorer.localDiskMounted") : osText("explorer.localDisk"),
         kind: "drive",
-        meta: drive.id === activedrive?.id ? capacityline(capacity) : "capacity answers after mount",
+        meta: drive.id === activedrive?.id ? capacityline(capacity) : osText("explorer.capacityAfterMount"),
         open: () => goTo({ kind: "drive", driveId: drive.id }),
       }));
       return [...folders, ...driveItems];
@@ -376,34 +377,46 @@ export default function Files({ embedded }: { embedded?: boolean }) {
     const rows: FileItem[] = [
       {
         id: "record:workspaces",
-        label: "Workspaces",
-        detail: mounted ? "workspace records of this drive" : "mount the drive to read its records",
+        label: osText("explorer.records.workspaces"),
+        detail: mounted ? osText("explorer.records.workspaces.detail") : osText("explorer.records.mountHint"),
         kind: "module",
-        meta: mounted && summary?.available ? `${summary.workspaces} records` : undefined,
+        meta:
+          mounted && summary?.available
+            ? osText("explorer.records.count").replace("{count}", String(summary.workspaces))
+            : undefined,
         open: () => navigate("/projects"),
       },
       {
         id: "record:sessions",
-        label: "Sessions",
-        detail: mounted ? "session records of this drive" : "mount the drive to read its records",
+        label: osText("explorer.records.sessions"),
+        detail: mounted ? osText("explorer.records.sessions.detail") : osText("explorer.records.mountHint"),
         kind: "module",
-        meta: mounted && summary?.available ? `${summary.sessions} records` : undefined,
+        meta:
+          mounted && summary?.available
+            ? osText("explorer.records.count").replace("{count}", String(summary.sessions))
+            : undefined,
         open: () => navigate("/history"),
       },
       {
         id: "record:messages",
-        label: "Messages",
-        detail: mounted ? "message records of this drive" : "mount the drive to read its records",
+        label: osText("explorer.records.messages"),
+        detail: mounted ? osText("explorer.records.messages.detail") : osText("explorer.records.mountHint"),
         kind: "module",
-        meta: mounted && summary?.available ? `${summary.messages} records` : undefined,
+        meta:
+          mounted && summary?.available
+            ? osText("explorer.records.count").replace("{count}", String(summary.messages))
+            : undefined,
         open: () => navigate("/chat"),
       },
       {
         id: "record:preferences",
-        label: "Preferences",
-        detail: mounted ? "preference records of this drive" : "mount the drive to read its records",
+        label: osText("explorer.records.preferences"),
+        detail: mounted ? osText("explorer.records.preferences.detail") : osText("explorer.records.mountHint"),
         kind: "module",
-        meta: mounted && summary?.available ? `${summary.preferences} records` : undefined,
+        meta:
+          mounted && summary?.available
+            ? osText("explorer.records.count").replace("{count}", String(summary.preferences))
+            : undefined,
         open: () => navigate("/settings"),
       },
     ];
@@ -486,9 +499,9 @@ export default function Files({ embedded }: { embedded?: boolean }) {
       {!embedded && <ShellChrome />}
       <div className="dtfx-explorer" data-embedded={embedded ? "true" : undefined}>
         {/* ------------------------------ the toolbar ----------------------------- */}
-        <div className="dtfx-toolbar" role="toolbar" aria-label="Explorer tools">
+        <div className="dtfx-toolbar" role="toolbar" aria-label={osText("explorer.tools.aria")}>
           <div className="dtfx-toolbar__nav">
-            <button type="button" className="dtfx-navbtn" disabled={cursor === 0} onClick={goBack} aria-label="Back">
+            <button type="button" className="dtfx-navbtn" disabled={cursor === 0} onClick={goBack} aria-label={osText("explorer.nav.back")}>
               <ChevronLeft fontSize={16} aria-hidden="true" />
             </button>
             <button
@@ -496,11 +509,11 @@ export default function Files({ embedded }: { embedded?: boolean }) {
               className="dtfx-navbtn"
               disabled={cursor >= history.length - 1}
               onClick={goForward}
-              aria-label="Forward"
+              aria-label={osText("explorer.nav.forward")}
             >
               <ChevronRight fontSize={16} aria-hidden="true" />
             </button>
-            <button type="button" className="dtfx-navbtn" disabled={!uparmed} onClick={goUp} aria-label="Up">
+            <button type="button" className="dtfx-navbtn" disabled={!uparmed} onClick={goUp} aria-label={osText("explorer.nav.up")}>
               <ChevronUp fontSize={16} aria-hidden="true" />
             </button>
             <button
@@ -517,7 +530,7 @@ export default function Files({ embedded }: { embedded?: boolean }) {
                   .then(setSummary)
                   .catch(() => undefined);
               }}
-              aria-label="Refresh"
+              aria-label={osText("explorer.nav.refresh")}
             >
               <Refresh fontSize={16} aria-hidden="true" />
             </button>
@@ -525,7 +538,7 @@ export default function Files({ embedded }: { embedded?: boolean }) {
 
           {/* the breadcrumb address bar: the home crumb, This PC and the
               deeper crumbs, every crumb a real walk back */}
-          <nav className="dtfx-address" aria-label="Address">
+          <nav className="dtfx-address" aria-label={osText("explorer.address.aria")}>
             <ol className="dtfx-address__trail">
               {crumbs.map((crumb, index) => (
                 <li key={`${crumb.label}-${index}`} className="dtfx-address__crumb">
@@ -550,15 +563,15 @@ export default function Files({ embedded }: { embedded?: boolean }) {
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search"
-              aria-label="Search this folder"
+              placeholder={osText("explorer.search.placeholder")}
+              aria-label={osText("explorer.search.aria")}
               className="dtfx-search__input"
             />
           </div>
         </div>
 
         {/* ----------------------------- the command bar --------------------------- */}
-        <div className="dtfx-commandbar" role="toolbar" aria-label="Explorer commands">
+        <div className="dtfx-commandbar" role="toolbar" aria-label={osText("explorer.commands.aria")}>
           <button
             type="button"
             className="dtfx-cmdbtn dtfx-cmdbtn--primary"
@@ -567,21 +580,21 @@ export default function Files({ embedded }: { embedded?: boolean }) {
               setBusy(true);
               void createnewdrive()
                 .then((drive) => {
-                  toast(`New drive mounted: ${drive.label}. It starts empty.`);
+                  toast(osText("explorer.toast.newDrive").replace("{label}", drive.label));
                   window.location.reload();
                 })
                 .catch(() => {
-                  toast.error("The new drive could not be created on this machine.");
+                  toast.error(osText("explorer.toast.newDriveFailed"));
                   setBusy(false);
                 });
             }}
           >
             <NewGlyph fontSize={15} aria-hidden="true" />
-            New
+            {osText("explorer.new")}
             <ChevronDown fontSize={10} aria-hidden="true" className="dtfx-cmdbtn__chevron" />
           </button>
           <span className="dtfx-commandbar__divider" aria-hidden="true" />
-          <button type="button" className="dtfx-cmdbtn" disabled title="The clipboard rides the database wave">
+          <button type="button" className="dtfx-cmdbtn" disabled title={osText("explorer.disabled.clipboard")}>
             <CutGlyph fontSize={15} aria-hidden="true" />
           </button>
           <button type="button" className="dtfx-cmdbtn" disabled title="The clipboard rides the database wave">
@@ -590,10 +603,10 @@ export default function Files({ embedded }: { embedded?: boolean }) {
           <button type="button" className="dtfx-cmdbtn" disabled title="The clipboard rides the database wave">
             <PasteGlyph fontSize={15} aria-hidden="true" />
           </button>
-          <button type="button" className="dtfx-cmdbtn" disabled title="Sharing rides the pairing wave">
+          <button type="button" className="dtfx-cmdbtn" disabled title={osText("explorer.disabled.share")}>
             <ShareGlyph fontSize={15} aria-hidden="true" />
           </button>
-          <button type="button" className="dtfx-cmdbtn" disabled title="The recycle bin rides the database wave">
+          <button type="button" className="dtfx-cmdbtn" disabled title={osText("explorer.disabled.recycle")}>
             <DeleteGlyph fontSize={15} aria-hidden="true" />
           </button>
           <span className="dtfx-commandbar__divider" aria-hidden="true" />
@@ -601,26 +614,26 @@ export default function Files({ embedded }: { embedded?: boolean }) {
             type="button"
             className="dtfx-cmdbtn"
             onClick={() => setSort((current) => (current === "name" ? "kind" : "name"))}
-            aria-label={`Sort by ${sort === "name" ? "kind" : "name"}`}
+            aria-label={osText("explorer.sortBy").replace("{mode}", sort === "name" ? "kind" : "name")}
           >
             <SortGlyph fontSize={15} aria-hidden="true" />
-            Sort
+            {osText("explorer.sort")}
             <ChevronDown fontSize={10} aria-hidden="true" className="dtfx-cmdbtn__chevron" />
           </button>
           <button
             type="button"
             className="dtfx-cmdbtn"
             onClick={() => setView((current) => (current === "grid" ? "details" : "grid"))}
-            aria-label={`View as ${view === "grid" ? "details" : "grid"}`}
+            aria-label={osText("explorer.viewAs").replace("{mode}", view === "grid" ? "details" : "grid")}
           >
             {view === "grid" ? (
               <ListGlyph fontSize={15} aria-hidden="true" />
             ) : (
               <GridGlyph fontSize={15} aria-hidden="true" />
             )}
-            View
+            {osText("explorer.view")}
           </button>
-          <button type="button" className="dtfx-cmdbtn" disabled title="More rides the database wave">
+          <button type="button" className="dtfx-cmdbtn" disabled title={osText("explorer.disabled.more")}>
             <MoreGlyph fontSize={15} aria-hidden="true" />
           </button>
         </div>
@@ -630,7 +643,7 @@ export default function Files({ embedded }: { embedded?: boolean }) {
           {/* the nav pane: quick access, This PC with the drives, the
               opt-in external platforms */}
           <nav className="dtfx-nav" aria-label="Explorer navigation">
-            <p className="dtfx-nav__heading">Quick access</p>
+            <p className="dtfx-nav__heading">{osText("explorer.quickAccess")}</p>
             <ul className="dtfx-nav__list">
               {SHELL_FOLDER_ORDER.map((folder) => (
                 <li key={folder}>
@@ -655,7 +668,7 @@ export default function Files({ embedded }: { embedded?: boolean }) {
 
             <p className="dtfx-nav__heading">
               <ThisPcMark size={14} />
-              This PC
+              {osText("explorer.thisPc")}
             </p>
             <ul className="dtfx-nav__list">
               <li>
@@ -665,7 +678,7 @@ export default function Files({ embedded }: { embedded?: boolean }) {
                   onClick={() => goTo({ kind: "thispc" })}
                   aria-current={location.kind === "thispc" ? "page" : undefined}
                 >
-                  <span className="dtfx-nav__label dtfx-nav__label--strong">This PC</span>
+                  <span className="dtfx-nav__label dtfx-nav__label--strong">{osText("explorer.thisPc")}</span>
                 </button>
               </li>
               {drivelist.map((drive) => (
@@ -692,7 +705,7 @@ export default function Files({ embedded }: { embedded?: boolean }) {
               ))}
             </ul>
 
-            <p className="dtfx-nav__heading">Storage platforms</p>
+            <p className="dtfx-nav__heading">{osText("explorer.storagePlatforms")}</p>
             <ul className="dtfx-nav__list">
               {EXPLORER_PLATFORMS.map((platform) => (
                 <li key={platform.id}>
@@ -700,7 +713,7 @@ export default function Files({ embedded }: { embedded?: boolean }) {
                     type="button"
                     className="dtfx-nav__item dtfx-nav__item--muted"
                     onClick={() => navigate("/settings")}
-                    title={`${platform.name} — pair it in the settings drives panel`}
+                    title={osText("explorer.platform.pair").replace("{name}", platform.name)}
                   >
                     <span className="dtfx-nav__mark dtfx-nav__mark--platform">
                       <PlatformMark id={platform.id} />
@@ -713,7 +726,7 @@ export default function Files({ embedded }: { embedded?: boolean }) {
           </nav>
 
           {/* the content area: the Windows views */}
-          <section className="dtfx-content" aria-label="Folder view">
+          <section className="dtfx-content" aria-label={osText("explorer.folderView.aria")}>
             {location.kind === "thispc" ? (
               <ThisPcView
                 rows={rows}
@@ -746,16 +759,16 @@ export default function Files({ embedded }: { embedded?: boolean }) {
         {/* ------------------------------ the status bar ---------------------------- */}
         <footer className="dtfx-statusbar">
           <p className="dtfx-statusbar__count">
-            {rows.length} item{rows.length === 1 ? "" : "s"}
-            {query ? " found" : ""}
-            {selected ? " · 1 selected" : ""}
+            {rows.length} {rows.length === 1 ? osText("explorer.status.item") : osText("explorer.status.items")}
+            {query ? osText("explorer.status.found") : ""}
+            {selected ? osText("explorer.status.selected") : ""}
           </p>
-          <div className="dtfx-statusbar__views" role="group" aria-label="View mode">
+          <div className="dtfx-statusbar__views" role="group" aria-label={osText("explorer.viewMode.aria")}>
             <button
               type="button"
               className={view === "grid" ? "dtfx-viewbtn dtfx-viewbtn--active" : "dtfx-viewbtn"}
               onClick={() => setView("grid")}
-              aria-label="Grid view"
+              aria-label={osText("explorer.gridView.aria")}
               aria-pressed={view === "grid"}
             >
               <GridGlyph fontSize={14} aria-hidden="true" />
@@ -764,7 +777,7 @@ export default function Files({ embedded }: { embedded?: boolean }) {
               type="button"
               className={view === "details" ? "dtfx-viewbtn dtfx-viewbtn--active" : "dtfx-viewbtn"}
               onClick={() => setView("details")}
-              aria-label="Details view"
+              aria-label={osText("explorer.detailsView.aria")}
               aria-pressed={view === "details"}
             >
               <ListGlyph fontSize={14} aria-hidden="true" />
@@ -821,7 +834,7 @@ function ThisPcView({
     <div className="dtfx-scroll">
       <section aria-labelledby="dtfx-folders-heading" className="dtfx-section">
         <h2 id="dtfx-folders-heading" className="dtfx-section__heading">
-          Folders ({SHELL_FOLDER_ORDER.length})
+          {osText("explorer.foldersHeading").replace("{count}", String(SHELL_FOLDER_ORDER.length))}
         </h2>
         {view === "grid" ? (
           <ul className="dtfx-grid">
@@ -859,7 +872,7 @@ function ThisPcView({
 
       <section aria-labelledby="dtfx-devices-heading" className="dtfx-section">
         <h2 id="dtfx-devices-heading" className="dtfx-section__heading">
-          Devices and drives ({drivelist.length})
+          {osText("explorer.devicesHeading").replace("{count}", String(drivelist.length))}
         </h2>
         <ul className="dtfx-drives">
           {drivelist.map((drive, index) => {
@@ -897,13 +910,13 @@ function ThisPcView({
                       aria-valuemax={mounted ? 100 : undefined}
                       aria-valuenow={mounted ? Math.round(share) : undefined}
                       aria-label={
-                        mounted ? "Store usage — the one allocation every drive on this machine shares" : undefined
+                        mounted ? osText("explorer.usage.aria") : undefined
                       }
                     >
                       <span className="dtfx-drive__fill" style={{ width: mounted ? `${share}%` : "0%" }} />
                     </span>
                     <span className="dtfx-drive__line">
-                      {mounted ? capacityline(capacity) : "capacity answers after mount"}
+                      {mounted ? capacityline(capacity) : osText("explorer.capacityAfterMount")}
                     </span>
                     {mounted && summary?.available ? (
                       <span className="dtfx-drive__records">
@@ -960,15 +973,15 @@ type FolderProps = ViewProps & {
  * binaries, the studio rows — each opening its real surface. An empty
  * category answers the honest "empty folder". */
 function FolderView({ rows, view, selected, onSelect, onOpen, query, location }: FolderProps) {
-  const heading = location.kind === "folder" ? FOLDER_NAMES[location.folder] : "Drive";
+  const heading = location.kind === "folder" ? FOLDER_NAMES[location.folder] : osText("explorer.drive");
   return (
     <div className="dtfx-scroll">
       <section aria-labelledby="dtfx-folder-heading" className="dtfx-section">
         <h2 id="dtfx-folder-heading" className="dtfx-section__heading">
-          {heading} {query ? "· filtered" : ""}
+          {heading} {query ? osText("explorer.filtered") : ""}
         </h2>
         {rows.length === 0 ? (
-          <p className="dtfx-empty">This folder is empty.</p>
+          <p className="dtfx-empty">{osText("explorer.empty")}</p>
         ) : view === "grid" ? (
           <ul className="dtfx-grid dtfx-grid--records">
             {rows.map((row, index) => (

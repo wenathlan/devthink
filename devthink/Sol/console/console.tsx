@@ -19,6 +19,7 @@ import {RocketRegular} from "@fluentui/react-icons";
 import { useEffect, useRef, useState } from "react";
 import { ShellChrome } from "@/componentes/shell/ShellChrome";
 import { osAppLabels } from "../../catalog";
+import { osText } from "../../oslabels.ts";
 import { completions, responseof } from "../../commandcatalog.ts";
 import { bootdelay, bootlines, consoleprompt, consoleversion } from "../../consoleboot.ts";
 import { BOOT_STAGE_GAP, bootgraph, bootrunnerhandler } from "../../consolebootgraph.ts";
@@ -39,9 +40,9 @@ type ConsoleSection = "terminal" | "boot" | "reference";
 const CONSOLE_LABEL = osAppLabels().console;
 
 const SECTIONS: readonly { id: ConsoleSection; label: string }[] = [
-  { id: "terminal", label: "Terminal" },
-  { id: "boot", label: "Boot stages" },
-  { id: "reference", label: "Command reference" },
+  { id: "terminal", label: osText("console.section.terminal") },
+  { id: "boot", label: osText("console.section.boot") },
+  { id: "reference", label: osText("console.section.reference") },
 ];
 
 /** the boot stages graph of the page: the catalog built once at module load,
@@ -141,7 +142,7 @@ export default function Console({ embedded }: { embedded?: boolean }) {
     <main className="dtw-app dtw-console" style={embedded ? { height: "100%", overflow: "auto" } : undefined}>
       {!embedded && <ShellChrome />}
       <div className="dtw-pane">
-        <nav className="dtw-nav" aria-label="Console sections">
+        <nav className="dtw-nav" aria-label={osText("console.nav.aria")}>
           {SECTIONS.map((item) => (
             <button
               key={item.id}
@@ -164,9 +165,9 @@ export default function Console({ embedded }: { embedded?: boolean }) {
               <p className="dtw-console__note">
                 <span aria-live="polite" className={paired ? "is-paired" : undefined}>
                   <i className="dtw-console__lamp" aria-hidden="true" />
-                  {paired ? "Gateway paired" : "Static catalog"}
+                  {paired ? osText("console.status.paired") : osText("console.status.static")}
                 </span>
-                <span>tab completes, arrows browse, enter runs</span>
+                <span>{osText("console.keys")}</span>
               </p>
             </>
           ) : null}
@@ -175,7 +176,7 @@ export default function Console({ embedded }: { embedded?: boolean }) {
             <section className="dtw-card">
               <h2 className="dtw-cardtitle">
                 <RocketRegular fontSize={15} aria-hidden="true" />
-                Boot stages
+                {osText("console.section.boot")}
                 <span className="dtw-navrow__count">{Math.round(runview?.progress ?? 0)}%</span>
               </h2>
               <GraphView
@@ -187,12 +188,9 @@ export default function Console({ embedded }: { embedded?: boolean }) {
                 progress={runview?.progress ?? 0}
                 selected={graphselect}
                 onselect={setGraphselect}
-                label="the boot stages of the cli riding the graph runner, one wave per stage"
+                label={osText("console.boot.graphLabel")}
               />
-              <p className="dtw-copy">
-                Banner, config and the engine arm stage by stage, the gateway, mcp and palette surfaces arm together,
-                and ready closes the walk.
-              </p>
+              <p className="dtw-copy">{osText("console.boot.copy")}</p>
             </section>
           ) : null}
 

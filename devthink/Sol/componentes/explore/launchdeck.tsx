@@ -27,7 +27,8 @@
 import {ArrowUpRightRegular as ArrowUpRight} from "@fluentui/react-icons";
 import { type CSSProperties, type FormEvent, type ReactNode, useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
-import { DESKTOP_APPS, type DesktopApp, isFamilyApp } from "../../../appregistry.ts";
+import { DESKTOP_APPS, type DesktopApp, isFamilyApp } from "../../appregistry.ts";
+import { osText } from "../../oslabels.ts";
 import { AppTile } from "../shell/apptile.tsx";
 import { HeroWaves } from "./waves.tsx";
 
@@ -335,10 +336,10 @@ export function DeckCell({
 /** the scope chips of the command field */
 type DeckScope = "all" | "native" | "family" | "pinned";
 const SCOPES: ReadonlyArray<{ id: DeckScope; label: string }> = [
-  { id: "all", label: "everything" },
-  { id: "native", label: "native" },
-  { id: "family", label: "family" },
-  { id: "pinned", label: "pinned" },
+  { id: "all", label: osText("explore.launch.scope.all") },
+  { id: "native", label: osText("explore.launch.scope.native") },
+  { id: "family", label: osText("explore.launch.scope.family") },
+  { id: "pinned", label: osText("explore.launch.scope.pinned") },
 ];
 
 /** the section header of one constellation zone (mono cap, display title) */
@@ -468,14 +469,16 @@ export function LaunchDeck() {
             className="h-11 min-w-0 flex-1 bg-transparent text-[15px] text-ink outline-none placeholder:text-ink-3"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="type to open — every surface answers"
-            aria-label="Search every app of the os"
+            placeholder={osText("explore.launch.placeholder")}
+            aria-label={osText("explore.launch.search.aria")}
             autoComplete="off"
             spellCheck={false}
           />
           {needle !== "" && (
             <span className="hidden font-mono text-[11px] text-ink-3 sm:block" role="status">
-              {matches.length} {matches.length === 1 ? "answer" : "answers"}
+              {matches.length === 1
+                ? osText("explore.launch.answer").replace("{count}", String(matches.length))
+                : osText("explore.launch.answers").replace("{count}", String(matches.length))}
             </span>
           )}
           <button
@@ -483,7 +486,7 @@ export function LaunchDeck() {
             className="inline-flex h-11 flex-none items-center gap-1.5 rounded-lg bg-win px-4 text-sm font-semibold text-(--win-accent-ink) transition-[filter,transform] duration-150 ease-micro hover:brightness-95 active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
             style={{ boxShadow: TRYLLE_PRIMARY_STACK }}
           >
-            open
+            {osText("explore.launch.open")}
             <ArrowUpRight fontSize={14} aria-hidden="true" />
           </button>
         </form>
@@ -492,7 +495,7 @@ export function LaunchDeck() {
       <fieldset
         data-akash-beat
         className="flex flex-wrap items-center gap-2 pt-4"
-        aria-label="Quick filters of the launcher"
+        aria-label={osText("explore.launch.filters.aria")}
       >
         {SCOPES.map((entry) => (
           <button
@@ -506,18 +509,31 @@ export function LaunchDeck() {
           </button>
         ))}
         <span className="ml-1 font-mono text-[11px] text-ink-3">
-          {nativeTotal} native · {familyTotal} family · none of it invented
+          {osText("explore.launch.tally")
+            .replace("{native}", String(nativeTotal))
+            .replace("{family}", String(familyTotal))}
         </span>
       </fieldset>
 
-      <HeroWaves caption="01 · the constellation" meta={`${nativeTotal} native · ${familyTotal} family`} />
+      <HeroWaves
+        caption={osText("explore.launch.waves.caption")}
+        meta={osText("explore.launch.waves.meta")
+          .replace("{native}", String(nativeTotal))
+          .replace("{family}", String(familyTotal))}
+      />
 
       <div className="grid gap-12 lg:grid-cols-[1.05fr_1fr]" id="constellation">
         <div>
           <RailHead
-            cap="devthink · native"
-            title="the os, its own surfaces"
-            meta={native.length === nativeTotal ? "the full rail" : `${native.length} of ${nativeTotal} answer`}
+            cap={osText("explore.launch.native.cap")}
+            title={osText("explore.launch.native.title")}
+            meta={
+              native.length === nativeTotal
+                ? osText("explore.launch.native.meta")
+                : osText("explore.launch.native.metaPartial")
+                    .replace("{count}", String(native.length))
+                    .replace("{total}", String(nativeTotal))
+            }
           />
           <div className="flex flex-col divide-y divide-hairline">
             {native.map((app, index) => (
@@ -526,15 +542,19 @@ export function LaunchDeck() {
             {native.length === 0 && (
               <p className="py-6 font-mono text-xs text-ink-3">
                 {needle !== ""
-                  ? `no native surface answers “${query}”.`
-                  : "the native rail rests — the family owns the stage."}
+                  ? osText("explore.launch.native.empty").replace("{query}", query)
+                  : osText("explore.launch.native.resting")}
               </p>
             )}
           </div>
         </div>
 
         <div id="family">
-          <RailHead cap="the family · nine" title="one signal color each" meta="each tile opens its own site" />
+          <RailHead
+            cap={osText("explore.launch.family.cap")}
+            title={osText("explore.launch.family.title")}
+            meta={osText("explore.launch.family.meta")}
+          />
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {family.map((app, index) => (
               <FamilyTile key={app.id} app={app} index={index} raised={app.id === raisedId} />
@@ -542,8 +562,8 @@ export function LaunchDeck() {
             {family.length === 0 && (
               <p className="py-6 font-mono text-xs text-ink-3">
                 {needle !== ""
-                  ? `no family app answers “${query}”.`
-                  : "the family grid rests — the native rail owns the stage."}
+                  ? osText("explore.launch.family.empty").replace("{query}", query)
+                  : osText("explore.launch.family.resting")}
               </p>
             )}
           </div>

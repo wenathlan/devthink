@@ -18,9 +18,10 @@
 import {HomeRegular as Home} from "@fluentui/react-icons";
 import type { CSSProperties } from "react";
 import { Link } from "wouter";
-import { pagecontainerStyle, stagedEntrance } from "../componentes/shell/InstitutionalChrome.tsx";
-import { ShellChrome } from "../componentes/shell/ShellChrome.tsx";
-import { useReducedMotion } from "../componentes/shell/trayflyouts.tsx";
+import { osText } from "../../oslabels.ts";
+import { pagecontainerStyle, stagedEntrance } from "../shell/InstitutionalChrome.tsx";
+import { ShellChrome } from "../shell/ShellChrome.tsx";
+import { useReducedMotion } from "../shell/trayflyouts.tsx";
 
 /* the stage: the workbench canvas under the sticky shell navbar, lit by the
  * ONE signal source of the campaign (no second light, no cool wash); the
@@ -43,25 +44,25 @@ export default function NotFound() {
       <ShellChrome />
       <main className="notfound-page atmos grain" style={notfoundStageStyle}>
         <div className="page-container" style={pagecontainerStyle}>
-          <section className="r2c-404stage" aria-label="Page not found">
+          <section className="r2c-404stage" aria-label={osText("notfound.aria")}>
             <span className="r2c-ghost" aria-hidden="true">
               <span className="r2c-ghostnum breathe">404</span>
             </span>
             <div className="r2c-404copy">
               <p className="pagehead__eyebrow" style={{ ...ghostEyebrowStyle, ...stagedEntrance(reduced, 0) }}>
-                devthink · 404
+                {osText("notfound.eyebrow")}
               </p>
               <p className="r2c-404line" style={stagedEntrance(reduced, 70)}>
-                this address leads nowhere — nothing was lost; the workbench is one step away.
+                {osText("notfound.line")}
               </p>
               <Link
                 href="/"
                 className="r2c-btn r2c-btn--primary press"
                 style={stagedEntrance(reduced, 140)}
-                aria-label="Back home"
+                aria-label={osText("notfound.back.aria")}
               >
                 <Home fontSize={14} aria-hidden="true" />
-                back home
+                {osText("notfound.back")}
               </Link>
             </div>
           </section>

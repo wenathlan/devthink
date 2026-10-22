@@ -5,6 +5,7 @@
  * from every sync adapter. Loose component of the providers page.
  */
 import {DeleteRegular, KeyRegular} from "@fluentui/react-icons";
+import { osText } from "../../oslabels.ts";
 
 type Provider = { id: string; protocol: string; env: string };
 
@@ -30,14 +31,11 @@ export function ProviderCard({
     <section className="dtw-card">
       <h2 className="dtw-cardtitle">
         <KeyRegular fontSize={15} aria-hidden="true" />
-        Browser-local credential
+        {osText("providers.card.title")}
       </h2>
-      <p className="dtw-copy">
-        This explicit opt-in stores a credential only in this browser. It is not displayed after saving, never goes to
-        the cli gateway, and is excluded from every sync adapter.
-      </p>
+      <p className="dtw-copy">{osText("providers.card.copy")}</p>
       <label className="dtw-field">
-        <span>Provider</span>
+        <span>{osText("providers.card.provider")}</span>
         <select
           className="dtw-select"
           value={credentialProvider}
@@ -51,31 +49,32 @@ export function ProviderCard({
         </select>
       </label>
       <label className="dtw-field">
-        <span>Credential</span>
+        <span>{osText("providers.card.credential")}</span>
         <input
           className="dtw-input"
           type="password"
           value={credentialDraft}
           onChange={(event) => onCredentialDraft(event.target.value)}
           autoComplete="off"
-          placeholder="paste only if this device is trusted"
+          placeholder={osText("providers.card.placeholder")}
         />
       </label>
       <div className="dtw-actions">
         <button type="button" className="dtw-btn dtw-btn--primary" onClick={onSave}>
           <KeyRegular fontSize={14} aria-hidden="true" />
-          Save to this browser
+          {osText("providers.card.save")}
         </button>
         {browserCredentials.includes(credentialProvider) ? (
           <button type="button" className="dtw-btn" onClick={onClear}>
             <DeleteRegular fontSize={14} aria-hidden="true" />
-            Remove local credential
+            {osText("providers.card.remove")}
           </button>
         ) : null}
       </div>
       <p className="dtw-copy">
-        For the recommended device flow, use <code>devthink auth login &lt;provider&gt; --token &lt;key&gt;</code>. A
-        cli credential never enters this web page.
+        {osText("providers.card.flow.pre")}
+        <code>{osText("providers.card.flow.code")}</code>
+        {osText("providers.card.flow.post")}
       </p>
     </section>
   );
