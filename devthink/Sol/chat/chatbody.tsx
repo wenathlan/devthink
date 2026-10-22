@@ -44,6 +44,7 @@ import { estimateHistoryTokens, formatCompactTokenCount } from "../../tokenestim
 import { loadBrowserSession } from "../../db.ts";
 import { GATEWAY_REQUIRED_COPY, GATEWAY_SEND_NOTICE, useGatewayRegistration } from "../../gatewaybase.ts";
 import { useIsMobile } from "../../useismobile.ts";
+import { arrayOf, isString, useStoredState } from "../../usestoredstate.ts";
 import { Composer } from "./composer.tsx";
 import { SandboxPane } from "./sandboxpane.tsx";
 import { SessionPanel } from "./sessionpanel.tsx";
@@ -81,9 +82,20 @@ const CHAT_LABEL = osAppLabels().chat;
  * stays on this device — never persisted, never sent. */
 type Verdict = "up" | "down";
 
+/** the w4 persistence keys — the house stored-state pattern (the same law
+ * as the rail pins): the saved memory facts and the pinned project
+ * instructions, both localStorage records with a validating type-guard
+ * and storage optional. the list validator sits at module scope so the
+ * load effect identity stays stable. */
+const MEMORY_KEY = "dt-chat-memory-v1";
+const isMemoryList = arrayOf(isString);
+const INSTRUCTIONS_KEY = "dt-chat-instructions-v1";
+/** the memory cap: the oldest fact leaves when a write would pass 30. */
+const MEMORY_CAP = 30;
+
 export default function ChatBody({ embedded }: { embedded?: boolean }) {
   ensureChatCss();
-  const { sessions, active, open, startFresh, commit, remove } = useChatSessions();
+  const { sessions, active: persistedActive, open, startFresh, commit, remove } = useChatSessions();
   const [tools, setTools] = useState<ToolId[]>([]);
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
@@ -204,6 +216,67 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     return undefined;
   }, []);
 
+  /* the temporary lane (the w4 feature pass): the session that never
+   * persists. the flag rides this body — the composer's lead-cluster
+   * toggle is the composer wave's seam, so the lanes land here first:
+   * while the flag is up every conversation mutation routes into the
+   * ephemeral record below (the store never hears of the round), the
+   * rail hides the working lane and the thread renders the ephemeral
+   * session; opening a stored conversation always leaves the lane. */
+  const [temporary, setTemporary] = useState(false);
+  const [ephemeral, setEphemeral] = useState<ChatSession | null>(null);
+  /** the working session every reader below answers: the ephemeral record
+   * while the temporary flag is up, the stored record otherwise. */
+  const active = temporary ? ephemeral : persistedActive;
+
+  /* the w4 persistence pass: the saved-memory fact list and the pinned
+   * project instructions ride the house stored-state hook (localStorage
+   * plus validating type-guard, storage optional — the same law as the
+   * rail pins), so both survive the reload and the panel's edit seams
+   * write straight through. the memory list is capped: a write that
+   * would pass 30 facts trims the oldest. */
+  const [memoryFacts, setMemoryFacts] = useStoredState<string[]>(MEMORY_KEY, [], isMemoryList);
+  const [instructions, setInstructions] = useStoredState<string>(INSTRUCTIONS_KEY, "", isString);
+
+  /** changeMemory — the panel's memory seam writes through the cap: the
+   * oldest fact leaves when a write would pass 30. */
+  const changeMemory = useCallback(
+    (facts: string[]) => {
+      setMemoryFacts(facts.length > MEMORY_CAP ? facts.slice(-MEMORY_CAP) : facts);
+    },
+    [setMemoryFacts],
+  );
+
+  /** stitchSystemPrompt — the w4 prompt stitch: the pinned instructions
+   * and the remembered facts ride ahead of the Sol persona on every
+   * round. chatstate is out of bounds, so the composition happens here
+   * at the call sites — every round that built buildSystemPrompt(tools)
+   * now builds this instead. */
+  const stitchSystemPrompt = useCallback(
+    (activeTools: ToolId[]): string => {
+      const pinned = instructions.trim();
+      const head = pinned ? `project instructions:\n${pinned}\n\n` : "";
+      /* the temporary law: the memory never rides an ephemeral round —
+       * the lane reads no facts while nothing saves on this device. */
+      const facts =
+        !temporary && memoryFacts.length > 0 ? `remembered facts:\n${memoryFacts.join("\n")}\n\n` : "";
+      return `${head}${facts}${buildSystemPrompt(activeTools)}`;
+    },
+    [instructions, memoryFacts, temporary],
+  );
+
+  /** commitLane — the temporary-law router: every conversation mutation
+   * rides this seam. the persisted lane writes the store (the upsert
+   * plus the active id), the temporary lane grows the ephemeral record
+   * the thread renders from — the store never hears of the round. */
+  const commitLane = useCallback(
+    (session: ChatSession) => {
+      if (temporary) setEphemeral(session);
+      else commit(session);
+    },
+    [commit, temporary],
+  );
+
   /** runCompletion — the gateway round for a history that already ends with
    * the user turn. Without a registered gateway nothing is fetched: the
    * honest notice takes the existing inline error/retry path and busy never
@@ -253,7 +326,7 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
             },
           },
         });
-        commit({
+        commitLane({
           ...history,
           messages: capTurns([...history.messages, reply]),
           at: Date.now(),
@@ -265,7 +338,7 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
            * nothing streamed keeps the user turn for the retry path. */
           const partial = liveRef.current;
           if (partial && (partial.content.trim() || partial.thought?.trim())) {
-            commit({
+            commitLane({
               ...history,
               messages: capTurns([
                 ...history.messages,
@@ -297,7 +370,7 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
         window.requestAnimationFrame(() => inputRef.current?.focus());
       }
     },
-    [commit, gateway.base, model, thinking, tools],
+    [commitLane, gateway.base, model, thinking, tools],
   );
 
   /** stop — the Stop pill of the composer: aborts the running round. The
@@ -320,12 +393,12 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
         messages: active.messages.slice(0, -1),
         at: Date.now(),
       };
-      commit(stripped);
-      void runCompletion(stripped, buildSystemPrompt(tools));
+      commitLane(stripped);
+      void runCompletion(stripped, stitchSystemPrompt(tools));
       return;
     }
-    void runCompletion(active, buildSystemPrompt(tools));
-  }, [active, busy, commit, runCompletion, tools]);
+    void runCompletion(active, stitchSystemPrompt(tools));
+  }, [active, busy, commitLane, runCompletion, stitchSystemPrompt, tools]);
 
   /** send — commits the user turn (the empty→thread migration happens here,
    * adopting the deep-link id when the conversation is born from a link),
@@ -346,10 +419,10 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
           }
         : newSession(user, handoffRef.current ?? undefined);
       handoffRef.current = null;
-      commit(session);
-      await runCompletion(session, buildSystemPrompt(tools));
+      commitLane(session);
+      await runCompletion(session, stitchSystemPrompt(tools));
     },
-    [active, busy, commit, runCompletion, tools],
+    [active, busy, commitLane, runCompletion, stitchSystemPrompt, tools],
   );
 
   /** editTurn — the cascading checkpoint law: the edit opens the variant
@@ -362,13 +435,13 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
       if (!active || busy) return;
       const branch = cloneSessionForEdit(active, turnId, newText);
       if (!branch) return;
-      commit(branch);
+      commitLane(branch);
       toast("Checkpoint branch opened", {
         description: "The original keeps its round — the edit carries the ladder forward.",
       });
-      void runCompletion(branch, buildSystemPrompt(tools));
+      void runCompletion(branch, stitchSystemPrompt(tools));
     },
-    [active, busy, commit, runCompletion, tools],
+    [active, busy, commitLane, runCompletion, stitchSystemPrompt, tools],
   );
 
   /**
@@ -378,11 +451,11 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
   const retry = useCallback(() => {
     if (busy) return;
     if (active && active.messages.length > 0 && active.messages[active.messages.length - 1].role === "user") {
-      void runCompletion(active, buildSystemPrompt(tools));
+      void runCompletion(active, stitchSystemPrompt(tools));
       return;
     }
     if (lastPrompt.current) void send(lastPrompt.current);
-  }, [active, busy, runCompletion, send, tools]);
+  }, [active, busy, runCompletion, send, stitchSystemPrompt, tools]);
 
   /** deleteTurn — the row delete of the action row (rung 120): the message
    * leaves the conversation (the session commits without it), the toast
@@ -391,23 +464,31 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     (turnId: string) => {
       if (!active || busy) return;
       if (!active.messages.some((m) => m.id === turnId)) return;
-      commit({
+      commitLane({
         ...active,
         messages: active.messages.filter((m) => m.id !== turnId),
         at: Date.now(),
       });
       toast("Message deleted");
     },
-    [active, busy, commit],
+    [active, busy, commitLane],
   );
 
-  /** deleteActive — the topbar delete of the whole conversation. */
+  /** deleteActive — the topbar delete of the whole conversation: the
+   * temporary lane discards the ephemeral record (nothing was ever
+   * stored), the persisted lane removes it from the store. */
   const deleteActive = useCallback(() => {
-    if (!active) return;
-    remove(active.id);
+    if (temporary) {
+      setEphemeral(null);
+      setError(null);
+      toast("Conversation deleted");
+      return;
+    }
+    if (!persistedActive) return;
+    remove(persistedActive.id);
     setError(null);
     toast("Conversation deleted");
-  }, [active, remove]);
+  }, [persistedActive, remove, temporary]);
 
   const deleteFromRail = useCallback(
     (id: string) => {
@@ -417,6 +498,39 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     },
     [remove],
   );
+
+  /** openLane — the rail opener under the temporary law: opening a stored
+   * conversation always leaves the temporary lane — the past lives in the
+   * store, the temporary conversation is the one that never persists. */
+  const openLane = useCallback(
+    (id: string) => {
+      setTemporary(false);
+      setEphemeral(null);
+      open(id);
+    },
+    [open],
+  );
+
+  /** startLane — the new-chat key: a fresh chat always returns to the
+   * persisted lane — the temporary mode is the hero's explicit entry (the
+   * welcome ghost chip) and the composer's lead-cluster toggle owns the
+   * standing in-conversation switch when its wave lands, so this wave
+   * never strands a visitor in the lane without an exit. */
+  const startLane = useCallback(() => {
+    setTemporary(false);
+    setEphemeral(null);
+    startFresh();
+  }, [startFresh]);
+
+  /** startTemporary — the welcome entry chip arms the lane: the flag
+   * flips on, the working record resets and the hero answers the honest
+   * nothing-saves sub line; the first send builds the ephemeral session
+   * the store never hears of. */
+  const startTemporary = useCallback(() => {
+    setTemporary(true);
+    setEphemeral(null);
+    startFresh();
+  }, [startFresh]);
 
   /* the verdict bridge (the w3 turn contract): the per-session map of the
    * good/bad keys. The turn reports through the optional onVerdict prop —
@@ -437,14 +551,6 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     },
     [verdicts],
   );
-
-  /* the session panel seams (the w3 panel contract): the saved-memory fact
-   * list and the pinned project instructions ride this body as local state
-   * — the panel edits through the change callbacks and its export key reads
-   * the active session record; the persistence (the stored records and the
-   * system-prompt stitch) is a later wave's seam. */
-  const [memoryFacts, setMemoryFacts] = useState<string[]>([]);
-  const [instructions, setInstructions] = useState("");
 
   /** openPanel — mounts the panel first; the effect flips the visible state
    * on the next frame so the enter transition plays; a reopen during the
@@ -661,6 +767,16 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     [sessions],
   );
 
+  /** the rail slice under the temporary law: while the lane is up the
+   * working conversation never lists on the rail — the ephemeral record
+   * never enters the store, and a stored conversation the flag overtook
+   * hides for the lane's life (the belt-and-braces filter of the w4
+   * seam). */
+  const railSessions = useMemo(
+    () => (temporary ? sessions.filter((s) => s.id !== active?.id) : sessions),
+    [sessions, temporary, active?.id],
+  );
+
   /** the solbot mark state (the w3 icon seam): the phase this body already
    * tracks — thinking while a round runs before the first answer delta,
    * streaming while the answer lands, idle otherwise. Threaded into the
@@ -679,10 +795,10 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
       <Sidebar
         collapsed={railCollapsed}
         onToggleCollapsed={() => setRailCollapsed((v) => !v)}
-        sessions={sessions}
+        sessions={railSessions}
         activeId={active?.id ?? ""}
-        onOpen={open}
-        onNew={startFresh}
+        onOpen={openLane}
+        onNew={startLane}
         onDelete={deleteFromRail}
         state={markState}
         runningId={busy && active ? active.id : undefined}
@@ -710,6 +826,13 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
               sol {model} {gateway.base ? "gateway on" : "gateway off"}
             </small>
           </div>
+          {/* the temporary-lane badge (the w4 seam): the existing gateway
+              pill class carries the quiet mono chip — no new css needed. */}
+          {temporary ? (
+            <p className="dtc-gw__pill" title="this conversation never saves to this device">
+              temporary chat
+            </p>
+          ) : null}
           <div className="dtc-tb-actions">
             {active ? (
               <button
@@ -742,10 +865,19 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
             <div className="dtc-hero grain" key="hero">
               <div className="dtc-hero__wrap">
                 <Welcome
-                  onPick={(t) => void send(t)}
+                  onPick={(t) => {
+                    /* the prefill law (the w4 rewire): the chip hands its
+                     * prompt to the well — the draft rides the composer and
+                     * the focus follows; nothing sends until the visitor
+                     * presses the key. */
+                    setDraft(t);
+                    inputRef.current?.focus();
+                  }}
                   gatewayRegistered={gateway.base !== ""}
                   recent={recents}
-                  onOpenRecent={open}
+                  onOpenRecent={openLane}
+                  temporary={temporary}
+                  onTemporary={startTemporary}
                 />
               </div>
               <div className="dtc-dock">
@@ -848,7 +980,7 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
           gateway={gateway}
           session={active}
           memory={memoryFacts}
-          onMemoryChange={setMemoryFacts}
+          onMemoryChange={changeMemory}
           instructions={instructions}
           onInstructionsChange={setInstructions}
         />
