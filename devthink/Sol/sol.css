@@ -12885,47 +12885,214 @@ span[data-tile] {
 }
 
 /* ==== the settings.css skins — merged from the app folder, the folder carries tsx only ==== */
-/* settings app skins — the section fields, switches, tables and form
- * controls over the dtw kit. merges into the kit section of sol.css. the
- * app scope retunes the kit accents: the slate identity (#94a3b8, the
- * registry tint — a neutral by design) rides the section marks and the
- * active-indicator bar only, while every control keeps speaking the windows
- * grammar: the toggle ON answers the accent track with the contrast knob,
- * the inputs and selects answer the flat 44px well with the bottom hairline
- * and the 2px windows light accent underline on focus (the identity never
- * rides the chrome), and the primary CTAs keep the windows accent #0067c0.
- * the touch law reaches every interactive control: the nav rows and the
- * buttons climb to the 44px target with a press scale and a visible slate
- * focus ring, and the switch row carries the 44px hit area. */
+/* settings app skins — the Windows 11 Settings app over the dtw kit: the
+ * two-pane shell (the 292px navigation rail carrying the account card at
+ * its top, the search field and the rounded entry list; the content pane
+ * shows one category at a time), the 8px rounded cards with the 44px
+ * control rows, and the windows control grammar — the toggle ON answers
+ * the accent track, the inputs and selects answer the flat well with the
+ * 2px accent underline on focus, the selected rail entry wears the accent
+ * fill plus the left pill indicator, and the dark ladder answers the
+ * data-theme attribute the Colors card flips (the personalization pass
+ * appending at the end of this file owns the wallpaper token, the accent
+ * token, the navbar rail and the behavior flags). The touch law reaches
+ * every interactive control: 44px targets, the press scale and the
+ * visible focus ring. */
 .dtw-settings {
-  --dtv3-sig: var(--dtv3-ink-1);
+  --dtv3-sig: var(--color-win);
+  --dtw-face: #ffffff;
+  --dtw-well: rgb(15 23 42 / 4%);
+  --dtw-seg: #ffffff;
+  --dtw-seg-ink: #0f172a;
+}
+.dtw-settings[data-theme="dark"] {
+  --dtv3-ink-1: #f3f4f8;
+  --dtv3-ink-2: #c6cbd8;
+  --dtv3-ink-3: #8d94a5;
+  --dtv3-hairline: rgb(243 244 248 / 10%);
+  --dtw-face: #2b2b31;
+  --dtw-well: rgb(243 244 248 / 6%);
+  --dtw-seg: #42424a;
+  --dtw-seg-ink: #f3f4f8;
+  background: #202024;
+  color-scheme: dark;
+}
+.dtw-settings[data-theme="dark"] .dtw-card {
+  background: var(--dtw-face);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 22%);
 }
 .dtw-settings .dtw-cardtitle {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
+  margin: 6px 0 0;
+  color: var(--dtv3-ink-1);
+  font: 600 14px var(--font-sans, var(--dt-sans));
 }
 .dtw-settings .dtw-cardtitle svg {
-  color: #94a3b8;
+  color: var(--color-win);
 }
-.dtw-settings .dtw-navrow {
-  min-height: 44px;
+.dtw-settings .dtw-card {
+  gap: 2px;
+  padding: 4px 16px 12px;
+}
+.dtw-settings__carddesc {
+  margin: 0;
+  color: var(--dtv3-ink-3);
+  font: 400 12.5px / 1.55 var(--font-sans, var(--dt-sans));
+}
+/* the two-pane settings shell: the 292px rail and the one-category pane */
+.dtw-settings .dtw-pane {
+  grid-template-columns: 292px minmax(0, 1fr);
+}
+.dtw-settings .dtw-content {
+  gap: 12px;
+  padding: 20px 28px 48px;
+}
+.dtw-settings .dtw-title {
+  margin: 4px 0 8px;
+  font-size: 26px;
+}
+/* the navigation rail: the account card pinned at its top, the search
+ * field under it, the rounded entry list below */
+.dtw-settings__rail {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-content: start;
+  padding: 12px 10px 16px;
+  border-right: 1px solid var(--dtv3-hairline);
+  overflow-y: auto;
+}
+.dtw-settings__account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  margin: 0 0 6px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--dtv3-ink-1);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
   transition:
     background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
     transform 100ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
 }
+.dtw-settings__account:hover {
+  background: var(--dtw-well);
+}
+.dtw-settings__account:active {
+  transform: scale(0.98);
+}
+.dtw-settings__account:focus-visible {
+  outline: 2px solid var(--color-win);
+  outline-offset: 2px;
+}
+.dtw-settings__accountglyph {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--dtw-well);
+  color: var(--color-win);
+}
+.dtw-settings__accountmeta {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+.dtw-settings__accountmeta strong {
+  overflow: hidden;
+  font: 400 13px var(--font-sans, var(--dt-sans));
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dtw-settings__accountmeta small {
+  color: var(--dtv3-ink-3);
+  font: 400 11px var(--font-sans, var(--dt-sans));
+}
+.dtw-settings__search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  margin: 0 0 8px;
+  padding: 0 10px;
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: 6px;
+  background: var(--dtw-well);
+  color: var(--dtv3-ink-3);
+  transition: border-color 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-settings__search:focus-within {
+  border-color: var(--color-win);
+}
+.dtw-settings__search input {
+  min-width: 0;
+  flex: 1;
+  border: 0;
+  background: transparent;
+  color: var(--dtv3-ink-1);
+  font: 400 13px var(--font-sans, var(--dt-sans));
+  outline: none;
+}
+.dtw-settings__search input::placeholder {
+  color: var(--dtv3-ink-3);
+}
+.dtw-settings__entries {
+  display: grid;
+  gap: 2px;
+}
+/* the rounded entry list — the selected entry wears the accent fill and
+ * the left pill indicator */
+.dtw-settings .dtw-navrow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--dtv3-ink-2);
+  font: 400 13.5px var(--font-sans, var(--dt-sans));
+  cursor: pointer;
+  transition:
+    background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 100ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-settings .dtw-navrow:hover {
+  background: var(--dtw-well);
+}
 .dtw-settings .dtw-navrow:active {
   transform: scale(0.98);
+}
+.dtw-settings .dtw-navrow[data-active="true"] {
+  background: color-mix(in srgb, var(--color-win) 10%, transparent);
+  color: var(--dtv3-ink-1);
+  font-weight: 600;
+}
+.dtw-settings .dtw-navrow[data-active="true"]::before {
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--color-win);
 }
 .dtw-settings .dtw-navrow:focus-visible,
 .dtw-settings .dtw-btn:focus-visible,
 .dtw-settings .dtw-action:focus-visible {
-  outline: 2px solid var(--dtv3-ink-1);
+  outline: 2px solid var(--color-win);
   outline-offset: 2px;
-}
-.dtw-settings .dtw-navrow[data-active="true"]::before {
-  background: #94a3b8;
 }
 .dtw-settings .dtw-btn {
   min-height: 44px;
@@ -12936,50 +13103,45 @@ span[data-tile] {
 .dtw-settings .dtw-btn:active {
   transform: scale(0.96);
 }
-.dtw-settings .dtw-input,
-.dtw-settings .dtw-select {
+.dtw-settings .dtw-btn--primary,
+.dtw-settings .dtw-action--primary {
+  border-color: transparent;
+  background: var(--color-win);
+  color: var(--color-win-ink, #fff);
+}
+.dtw-settings .dtw-btn--primary:hover:not(:disabled),
+.dtw-settings .dtw-action--primary:hover {
+  background: color-mix(in srgb, var(--color-win) 86%, #fff);
+}
+/* the 44px control rows of the cards */
+.dtw-settings__field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   min-height: 44px;
-  padding: 0 10px;
-  border: 0;
-  border-bottom: 1px solid var(--dtv3-hairline);
-  border-radius: 4px 4px 0 0;
-  background: color-mix(in srgb, var(--dtv3-ink-1) 4%, transparent);
+  padding: 4px 0;
   color: var(--dtv3-ink-1);
   font: 400 13px var(--font-sans, var(--dt-sans));
-  transition: border-color 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
 }
-.dtw-settings .dtw-input:focus-visible,
-.dtw-settings .dtw-select:focus-visible {
-  outline: none;
-  border-bottom: 2px solid #0067c0;
+.dtw-settings__fieldlabel {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
 }
-.dtw-settings .dtc-gw__input {
-  min-height: 44px;
-  padding: 0 10px;
-  border: 0;
-  border-bottom: 1px solid var(--dtv3-hairline);
-  border-radius: 4px 4px 0 0;
-  background: color-mix(in srgb, var(--dtv3-ink-1) 4%, transparent);
+.dtw-settings__fieldlabel strong {
+  font-weight: 400;
   color: var(--dtv3-ink-1);
-  font: 400 13px var(--font-sans, var(--dt-sans));
-  transition: border-color 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
 }
-.dtw-settings .dtc-gw__input::placeholder {
+.dtw-settings__fieldlabel small {
   color: var(--dtv3-ink-3);
-}
-.dtw-settings .dtc-gw__input:focus {
-  border-color: var(--dtv3-hairline);
-  box-shadow: none;
-}
-.dtw-settings .dtc-gw__input:focus-visible {
-  outline: none;
-  border-bottom: 2px solid #0067c0;
+  font: 400 11.5px / 1.45 var(--font-sans, var(--dt-sans));
 }
 .dtw-settings__kv {
   display: flex;
   align-items: baseline;
   gap: 14px;
-  min-height: 32px;
+  min-height: 44px;
   border-bottom: 1px solid var(--dtv3-hairline);
 }
 .dtw-settings__kv:last-of-type {
@@ -12992,23 +13154,14 @@ span[data-tile] {
   letter-spacing: 0.04em;
 }
 .dtw-settings__kvvalue {
-  color: var(--dtv3-ink-1);
+  color: var(--dtv3-ink-2);
   font: 400 12.5px / 1.5 var(--font-sans, var(--dt-sans));
 }
-.dtw-settings__field {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-height: 40px;
-  color: var(--dtv3-ink-2);
-  font: 400 13px var(--font-sans, var(--dt-sans));
-}
-.dtw-settings__field > span:first-child {
-  flex: 0 0 130px;
-}
+/* the toggle switch — the accent track in the windows grammar */
 .dtw-settings__switchrow {
   display: inline-flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 8px;
   min-height: 44px;
   cursor: pointer;
@@ -13024,47 +13177,66 @@ span[data-tile] {
   align-items: center;
   width: 40px;
   height: 20px;
-  padding: 2px;
-  border: 1px solid var(--dtv3-hairline);
-  border-radius: 10px;
-  background: color-mix(in srgb, var(--dtv3-ink-1) 6%, transparent);
-  transition: background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+  padding: 0 3px;
+  border: 1px solid var(--dtv3-ink-3);
+  border-radius: 999px;
+  background: transparent;
+  transition:
+    background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
+    border-color 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
 }
 .dtw-settings__switchthumb {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: var(--dtv3-ink-2);
-  transition: transform 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+  transition:
+    transform 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
+    background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
 }
 .dtw-settings__switch:checked + .dtw-settings__switchtrack {
+  border-color: var(--color-win);
   background: var(--color-win);
-  border-color: transparent;
 }
 .dtw-settings__switch:checked + .dtw-settings__switchtrack .dtw-settings__switchthumb {
   transform: translateX(20px);
   background: #fff;
 }
 .dtw-settings__switch:focus-visible + .dtw-settings__switchtrack {
-  outline: 2px solid var(--dtv3-ink-1);
+  outline: 2px solid var(--color-win);
   outline-offset: 2px;
 }
-.dtw-settings__select,
-.dtw-settings__input {
+/* the flat well of the inputs and selects with the accent underline */
+.dtw-settings .dtw-input,
+.dtw-settings .dtw-select,
+.dtw-settings .dtc-gw__input,
+.dtw-settings__input,
+.dtw-settings__select {
   min-height: 44px;
   padding: 0 10px;
-  border: 0;
-  border-bottom: 1px solid var(--dtv3-hairline);
-  border-radius: 4px 4px 0 0;
-  background: color-mix(in srgb, var(--dtv3-ink-1) 4%, transparent);
+  border: 1px solid var(--dtv3-hairline);
+  border-bottom: 1px solid var(--dtv3-ink-3);
+  border-radius: 4px;
+  background: var(--dtw-well);
   color: var(--dtv3-ink-1);
   font: 400 13px var(--font-sans, var(--dt-sans));
   transition: border-color 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
 }
+.dtw-settings .dtc-gw__input::placeholder {
+  color: var(--dtv3-ink-3);
+}
+.dtw-settings .dtw-input:focus-visible,
+.dtw-settings .dtw-select:focus-visible,
+.dtw-settings .dtc-gw__input:focus,
+.dtw-settings .dtc-gw__input:focus-visible,
 .dtw-settings__input:focus-visible,
 .dtw-settings__select:focus-visible {
   outline: none;
-  border-bottom: 2px solid #0067c0;
+  border-color: var(--color-win);
+  border-bottom: 2px solid var(--color-win);
+}
+.dtw-settings .dtc-gw__input:focus {
+  box-shadow: none;
 }
 .dtw-settings__rangezone {
   display: inline-flex;
@@ -13083,11 +13255,127 @@ span[data-tile] {
   font: 500 11px var(--dt-mono);
   font-variant-numeric: tabular-nums;
 }
+/* the segmented control — the mode, the navbar position */
+.dtw-settings__segmented {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 6px;
+  background: var(--dtw-well);
+}
+.dtw-settings__segment {
+  min-height: 32px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--dtv3-ink-2);
+  font: 400 13px var(--font-sans, var(--dt-sans));
+  cursor: pointer;
+  transition:
+    background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
+    color 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-settings__segment:hover {
+  color: var(--dtv3-ink-1);
+}
+.dtw-settings__segment:active {
+  transform: scale(0.97);
+}
+.dtw-settings__segment:focus-visible {
+  outline: 2px solid var(--color-win);
+  outline-offset: 1px;
+}
+.dtw-settings__segment[data-selected="true"] {
+  background: var(--dtw-seg);
+  color: var(--dtw-seg-ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 14%);
+}
+/* the wallpaper picker — the visual thumbnails of the background card */
+.dtw-settings__wallgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: 12px 10px;
+  padding: 6px 0 4px;
+}
+.dtw-settings__wall {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  gap: 6px 4px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+}
+.dtw-settings__wallthumb {
+  grid-column: 1 / -1;
+  display: block;
+  height: 84px;
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgb(15 23 42 / 12%);
+  transition: box-shadow 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-settings__wall:hover .dtw-settings__wallthumb {
+  box-shadow: 0 2px 8px rgb(15 23 42 / 20%);
+}
+.dtw-settings__wall:focus-visible {
+  outline: 2px solid var(--color-win);
+  outline-offset: 2px;
+}
+.dtw-settings__wall[data-selected="true"] .dtw-settings__wallthumb {
+  border-color: var(--color-win);
+  box-shadow: 0 0 0 2px var(--color-win);
+}
+.dtw-settings__wallname {
+  color: var(--dtv3-ink-2);
+  font: 400 12.5px var(--font-sans, var(--dt-sans));
+}
+.dtw-settings__wall[data-selected="true"] .dtw-settings__wallname {
+  color: var(--dtv3-ink-1);
+  font-weight: 600;
+}
+.dtw-settings__wall > svg {
+  align-self: center;
+  color: var(--color-win);
+}
+/* the accent swatch row of the Colors card */
+.dtw-settings__accents {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.dtw-settings__accentdot {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid rgb(15 23 42 / 20%);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: box-shadow 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-settings__accentdot:hover {
+  box-shadow: 0 0 0 2px var(--dtv3-hairline);
+}
+.dtw-settings__accentdot:focus-visible {
+  outline: 2px solid var(--color-win);
+  outline-offset: 2px;
+}
+.dtw-settings__accentdot[data-selected="true"] {
+  box-shadow:
+    0 0 0 2px var(--dtw-face),
+    0 0 0 4px var(--color-win);
+}
 .dtw-settings__pill {
   margin-left: auto;
   padding: 2px 8px;
   border: 1px solid var(--dtv3-hairline);
-  border-radius: 10px;
+  border-radius: 999px;
   color: var(--dtv3-ink-2);
   font: 500 10px var(--dt-mono);
 }
@@ -13158,6 +13446,9 @@ span[data-tile] {
   gap: 8px;
   align-items: center;
 }
+.dtw-settings__addform--wide {
+  grid-template-columns: 1fr 2fr 1fr auto;
+}
 /* the drives shelf of the hard drives card: the rows carry the disk-shaped
  * fluent glyph (the hd icon law), read center-aligned at the 44px rhythm —
  * only the Open buttons are interactive, so the rows stay plain ledger. */
@@ -13173,9 +13464,6 @@ span[data-tile] {
 }
 .dtw-settings__driveicon[data-mounted="true"] {
   color: var(--dtv3-ink-1);
-}
-.dtw-settings__addform--wide {
-  grid-template-columns: 1fr 2fr 1fr auto;
 }
 
 /* ==== the console.css skins — merged from the app folder, the folder carries tsx only ==== */
@@ -15939,4 +16227,179 @@ button.dtc-recents__row:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   .dt-oauthrow__btn,
   .dt-callback__link { transition: none; }
+}
+
+/* ==========================================================================
+   the settings personalization pass — wave 3 (task 3-settings-design).
+   The channel layer the settings app paints through: the wallpaper token
+   (the --wall-fallback recipe the desktop, the lock screen and the boot
+   face already read, set inline on the document root by personalstore.ts
+   with the data-wall flag beside it), the accent token (--personal-accent
+   and its bright dark-mode sibling feeding the windows accent variable
+   --color-win at the root ladder and the light theme block — the app skins
+   keep their own pinned identities), the navbar rail (the data-navbar
+   position the shell chrome answers: floating = the bottom bar, left and
+   right = the 48px vertical rail docked to that edge with the side
+   indicator ladder, the side tooltips and the tray pressed to its foot,
+   plus the re-banded work area — the bottom reservation retires and the
+   document flow insets from the docked edge), and the behavior flags
+   (data-alttab-motion and data-taskbar-tips, the
+   on/off switches the component options card arms). Appended block only —
+   every earlier section is untouched; these rules win by cascade order.
+   ========================================================================== */
+
+/* ---- 1. the wallpaper channel: the chosen wall rides the --wall-fallback
+        variable everywhere; the lock screen drops its painted landscape
+        for every wall but the trident (the default keeps the hills) ---- */
+[data-wall]:not([data-wall="trident"]) .dtw-login__stage::after {
+  background-image: none;
+}
+
+/* ---- 2. the accent channel: --personal-accent (the deep tone) serves the
+        light surfaces and the dtw kit, --personal-accent-bright (the lifted
+        variant) serves the dark root ladder — unset, both fall back to the
+        exact values the theme pins today ---- */
+:root {
+  --color-win: var(--personal-accent-bright, #4cc2ff);
+}
+[data-theme="light"] {
+  --color-win: var(--personal-accent, #0067c0);
+}
+
+/* ---- 3. the navbar rail: the vertical dock of the shell chrome. The 48px
+        rail carries the mark, the pins and the tray in a column; the
+        omnibox and the tray words ride only the floating bar; the open /
+        active ladder turns to the screen-edge side, the tooltips to the
+        side of the icon, the clock keeps its time line ---- */
+.dt-nav[data-navbar="left"],
+.dt-nav[data-navbar="right"] {
+  top: 0;
+  bottom: 0;
+  height: auto;
+  width: 48px;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px 2px;
+}
+.dt-nav[data-navbar="left"] {
+  left: 0;
+  right: auto;
+  border-top: 0;
+  border-right: 1px solid rgb(0 0 0 / 55%);
+}
+.dt-nav[data-navbar="right"] {
+  left: auto;
+  right: 0;
+  border-top: 0;
+  border-left: 1px solid rgb(0 0 0 / 55%);
+}
+.dt-nav[data-navbar="left"] .dt-nav__cluster,
+.dt-nav[data-navbar="right"] .dt-nav__cluster {
+  position: static;
+  top: auto;
+  left: auto;
+  height: auto;
+  translate: none;
+  flex-direction: column;
+}
+.dt-nav[data-navbar="left"] .dt-nav__pins,
+.dt-nav[data-navbar="right"] .dt-nav__pins {
+  flex-direction: column;
+  min-width: 0;
+}
+.dt-nav[data-navbar="left"] .dt-nav__tray,
+.dt-nav[data-navbar="right"] .dt-nav__tray {
+  flex-direction: column;
+  margin: auto 0 0;
+}
+.dt-nav[data-navbar="left"] .dt-nav__clock span:last-child,
+.dt-nav[data-navbar="right"] .dt-nav__clock span:last-child {
+  display: none;
+}
+/* the open/active indicator ladder rides the screen-edge side of the cell */
+.dt-nav[data-navbar="left"] .dt-nav__app::after,
+.dt-nav[data-navbar="left"] .dt-nav__start::after {
+  bottom: auto;
+  top: 50%;
+  left: 0;
+  translate: 0 -50%;
+  width: 3px;
+  height: 0;
+}
+.dt-nav[data-navbar="right"] .dt-nav__app::after,
+.dt-nav[data-navbar="right"] .dt-nav__start::after {
+  bottom: auto;
+  top: 50%;
+  right: 0;
+  left: auto;
+  translate: 0 -50%;
+  width: 3px;
+  height: 0;
+}
+.dt-nav[data-navbar="left"] .dt-nav__app[data-open="true"]::after,
+.dt-nav[data-navbar="left"] .dt-nav__start[data-open="true"]::after,
+.dt-nav[data-navbar="right"] .dt-nav__app[data-open="true"]::after,
+.dt-nav[data-navbar="right"] .dt-nav__start[data-open="true"]::after {
+  width: 3px;
+  height: 6px;
+}
+.dt-nav[data-navbar="left"] .dt-nav__app[data-active="true"]::after,
+.dt-nav[data-navbar="left"] .dt-nav__start[data-active="true"]::after,
+.dt-nav[data-navbar="right"] .dt-nav__app[data-active="true"]::after,
+.dt-nav[data-navbar="right"] .dt-nav__start[data-active="true"]::after {
+  width: 3px;
+  height: 12px;
+}
+/* the app-name peek rides beside the icon (the fade reveal stays the
+   hover utility's — only the placement moves) */
+.dt-nav[data-navbar="left"] .dt-nav__tip {
+  bottom: auto;
+  top: 50%;
+  left: calc(100% + 6px);
+  translate: 0 -50%;
+}
+.dt-nav[data-navbar="right"] .dt-nav__tip {
+  bottom: auto;
+  top: 50%;
+  left: auto;
+  right: calc(100% + 6px);
+  translate: 0 -50%;
+}
+/* the flyouts clear the rail they share the edge with */
+.dt-nav[data-navbar="left"] ~ .dt-start {
+  left: calc(50% + 24px);
+}
+.dt-nav[data-navbar="right"] ~ .dt-start {
+  left: calc(50% - 24px);
+}
+.dt-nav[data-navbar="right"] ~ .dt-flyout {
+  right: calc(48px + 12px);
+}
+/* the rail dock re-bands the whole shell: the bottom band the floating
+   bar reserved retires (--shell-bottom folds to zero on the body, so every
+   surface measuring calc(100dvh - var(--shell-bottom)) breathes full
+   height and the start menu and the flyouts sit 12px off the screen
+   foot), and the document flow insets from the docked edge — the same
+   :has() reservation law the floating bar rides, turned on its side; the
+   fixed rail itself ignores the body box and keeps hugging the screen
+   edge, and the desktop workspace it overlaps measures its icon grid and
+   its windows inside the inset flow */
+body:has(.dt-nav[data-navbar="left"]),
+body:has(.dt-nav[data-navbar="right"]) {
+  --shell-bottom: 0px;
+}
+body:has(.dt-nav[data-navbar="left"]) {
+  padding-left: 48px;
+}
+body:has(.dt-nav[data-navbar="right"]) {
+  padding-right: 48px;
+}
+
+/* ---- 4. the behavior flags the component options card arms ---- */
+[data-alttab-motion="off"] .alt-switch,
+[data-alttab-motion="off"] .alt-scrim {
+  animation: none;
+}
+[data-taskbar-tips="off"] .dt-nav__tip {
+  display: none;
 }

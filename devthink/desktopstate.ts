@@ -231,3 +231,38 @@ export function flowLayoutSpots<T extends SortableApp>(apps: readonly T[], bound
   });
   return spots;
 }
+
+/* ------------------------------------------------------------------ */
+/* the navbar position — the personalization pass of the settings app  */
+/* ------------------------------------------------------------------ */
+
+/** where the shell taskbar docks: the floating bottom bar (the windows 11
+ * default) or a vertical rail on one screen edge */
+export type NavbarPosition = "floating" | "left" | "right";
+
+/** the localStorage key of the navbar position choice */
+export const NAVBAR_POS_KEY = "dt.navbar.pos.v1";
+
+/** the window event a position change dispatches — the shell chrome listens
+ * for it so the taskbar re-docks the moment the settings app chooses */
+export const NAVBAR_POS_EVENT = "dt-navbar-pos";
+
+/** reads the stored navbar position (floating when absent or stale) */
+export function loadNavbarPosition(): NavbarPosition {
+  try {
+    const raw = window.localStorage.getItem(NAVBAR_POS_KEY);
+    if (raw === "floating" || raw === "left" || raw === "right") return raw;
+  } catch {
+    /* storage unavailable: the floating bar carries the shell */
+  }
+  return "floating";
+}
+
+/** persists the navbar position (a no-op when storage is unavailable) */
+export function saveNavbarPosition(position: NavbarPosition): void {
+  try {
+    window.localStorage.setItem(NAVBAR_POS_KEY, position);
+  } catch {
+    /* storage unavailable: the dock lives for the session */
+  }
+}
