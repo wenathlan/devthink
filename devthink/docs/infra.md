@@ -1,6 +1,6 @@
 # infra.md — the official infrastructure skill of the devthink family
 
-architecture governance for the whole family: the system, the applications, the features and the processes. it consolidates the official rascunho parts 01 to 07, the session 7 owner voice, the living rule manuals and the neodocs digests into one document written in the architecture skill grammar: short, direct, functional rules in third person, grouped by correlated context, with features and rules as the same thing. the owner statements are the source, session 7 prevails, and the binding order is skill first, tree, rules, voice, logs. nothing is invented; every rule rides the corpus. when this document diverges from the tree, the tree wins and this file updates by bump.
+architecture governance for the whole family: the system, the applications, the features and the processes. it consolidates the official rascunho parts 01 to 07, the session 7 owner voice, the living rule manuals and the neodocs digests into one document written in the architecture skill grammar: short, direct, functional rules in third person, grouped by correlated context, with features and rules as the same thing. the owner statements are the source, session 7 prevails, and the binding order is skill first, tree, rules, voice, logs. nothing is invented; every rule rides the corpus. the document splits in two: the general rules that hold for every application ride first, operation, design, code, storage, sandbox, security and build; the applications walk one by one after, each with the app name as the title and everything of the app grouped and hierarchical below it. a concrete detail of size, count or duration never rides as law in the body: it rides as an example, and when a measure is truly needed it rides in professional units. links, paths and commands live only at the last paragraph, behind a comment, so the body stays clean, and every github link of the corpus lives in the links.md companion file. when this document diverges from the tree, the tree wins and this file updates by bump.
 
 ## Governance/When To Use
 
@@ -27,7 +27,7 @@ the reading is linear, hierarchical and alphabetical: index first, details after
 
 | Trigger/Topic/Item/Layer/Aspect/Mode/Folder/File | Purpose/Detail/Rule/Example |
 |--------|--------|
-| Segment read | Bash. read via sed from x to y in segments; giant files ride segments of 1000 to 4000 lines, the rest smaller segments, one file at a time, alphabetical A B C D order inside the folder. "sed 130,1130p" |
+| Segment read | Bash. read via sed from x to y in segments; giant files ride segments of, for example, one to four thousand lines, the rest smaller segments, one file at a time, alphabetical A B C D order inside the folder. "sed segments" |
 | Index first | Grep. map the markers before the directed reading: headers, block comments, rule prefixes, then read the windows that matter. "index first" |
 | Linear order | Discipline. top to bottom, never jump around; a duplicated rule is extracted once and merged at synthesis, nothing is read twice for content. "linear" |
 | Bidirectional | Sweep. dense corpora read bidirectionally on critical passes, top down and bottom up, so no context gap survives. "both directions" |
@@ -46,6 +46,8 @@ every document of the family obeys the same grammar: lowercase, dot hierarchy, o
 | Dedup | Writing. duplicate words, senses and logics merge into one statement in one place, one concept in one house, no synonym pairs, no contradictions. "merge duplicates" |
 | Tables | Writing. markdown tables are born perfect with header, separator and padded cells; library, engine and icon lists live in code boxes, never in tables; sections end with a table, rules above, tree drawings below. "tables born perfect" |
 | Clean | Writing. zero emoji anywhere, zero source citation inside the text, no telegraphic fragments, a blank line between paragraphs. "no emoji" |
+| Specifics | Writing. a concrete size, count or duration never rides as law in the body: it rides framed as an example, and a needed measure rides in professional units like px, ms and bytes, never dumped raw. "details as examples" |
+| References | Writing. links, paths and commands live only at the last paragraph of the document behind a leading comment, and every github link of the corpus lives in the links.md companion file so nothing scatters through the text. "links last" |
 | Interface | Writing. interface text is never verbose: short words, one to five words per label, icons in place of text whenever possible, and in the versawaze studio the label of an icon reveals only in the hover and focus animation. "icon first" |
 | Voice | Tone. the observer writes in third person, never first person; short, direct, functional rules. "third person" |
 
@@ -69,21 +71,21 @@ the standard is windows 11 mixed with trylle, brave, chrome, codex and apple sil
 
 | Trigger/Topic/Item/Layer/Aspect/Mode/Folder/File | Purpose/Detail/Rule/Example |
 |--------|--------|
-| Windows recipe | Chrome. taskbar 48px acrylic with blur and saturate, pins 38x38 without names and names on hover, start menu 640px floating, titlebar 28 to 30px with close red rgb(232,17,35), inactive window grayscale 80 percent, windows open in 250ms with the windows curve, snap layouts, alt tab and context menus identical to windows. "win11 millimetric" |
-| Handles | Chrome. eight resize handles outside the window and a minimum of 320x320; maximized radius 0; snap flyout 260x130 grid 3x2 with the aero snap ghost. "8 handles" |
-| Trylle ladder | Surfaces. canvas #0a0a0b, eight surface steps, hairlines through color mix, radius .625rem, micro motion 150ms cubic bezier(.22,1,.36,1), focus ring #dfe5ee. "trylle 8 steps" |
+| Windows recipe | Chrome. the chrome copies the windows 11 millimetric recipe: an acrylic taskbar with blur and saturate, for example 48 px tall, square pins without names that reveal the name on hover, a floating start menu, for example 640 px wide, a slim titlebar between 28 and 30 px with the close button in the professional red rgb(232,17,35), an inactive window desaturating, windows opening with the windows curve in around a quarter of a second, snap layouts, alt tab and context menus identical to windows. "win11 millimetric" |
+| Handles | Chrome. eight resize handles sit outside the window with a minimum window size of, for example, 320 by 320 px, a maximized window carries no radius, and the snap flyout is a small grid, for example 260 by 130 px with three by two slots carrying the aero snap ghost. "8 handles" |
+| Trylle ladder | Surfaces. the canvas sits near black, for example #0a0a0b, eight surface steps climb from it with hairlines through color mix, the radius stays modest, the micro motion rides the trylle curve in around 150 ms, and the focus ring stays near white. "trylle 8 steps" |
 | Nav | Chrome. the navbar location is configurable in settings exactly like windows moves the taskbar: floating, left, right or top. "movable taskbar" |
 | Ban list | Gates. no decorative dots, no white borders, no pill 999px, no transition all, no pure black or white fills, no emoji icons, no text dissolving, no purple blue gradients, no pastel landings, no three identical cards, no visible scrollbars. "the ban list" |
 | Color | Tokens. oklch tokens in three tiers, one signal accent per page at the 90/10 ratio, one gradient per page, hue gap above 20 degrees, indigo default purple and default blue banned as defaults. "oklch 3 tiers" |
 | Type | Tokens. space grotesk for display, ibm plex mono for data and technical labels, fluid clamp titles, tracking and tabular numbers. "grotesk plex" |
-| Motion | Motion. micro under 200ms, entrances 400 to 800ms with stagger, only transform and opacity animate, reduced motion always respected, every control carries the 8 states. "transform opacity only" |
+| Motion | Motion. micro motion stays under, for example, 200 ms, entrances run 400 to 800 ms with stagger, only transform and opacity animate, reduced motion always respected, every control carries the 8 states. "transform opacity only" |
 | Animated icon | Icon. the gradient moves inside the glyph, each layer stacked by its own index, glyph on top, ring below, background at the bottom, one signature movement per brand, and the app icon is redefined with the design. "gradient inside glyph" |
 | Fluent icons | Icon. icons come from @fluentui/react-icons always, never lucide react; font size carries the size, the filled variant rides primary actions, and the map of 108 verified icons governs the substitution. "fluent only" |
 | Hybrid mode | Track. one single design track serves everything and the only difference is presentation: the web face appears as a saas landing, tv mobile and binary adapt through responsiveness, dpi and aspect ratio, with no dedicated folder per platform, only the css converting; the hybrid mode in settings shows the same design across web tv and mobile. "css converts" |
 | App flow | Flow. the ordinal flow is intro as the presentation that surprises, onboarding once with state in the db, then the internal window; on web public pages such as the explorer stay viewable without an account like youtube. "intro onboarding window" |
 | Lock screen | Binary. the web chain enters the desktop directly with no lock screen; the lock with landscape clock and slide up rides the binary and iso intro only. "no web lock" |
 | Design method | Reference. the neodevthink doctrine decomposes every reference into macro meso and micro properties and redistributes them section by section, index by index, layer by layer into the own brand, never a literal copy. "decompose redistribute" |
-| Windows states | States. controls carry hover focus active disabled loading error empty success; targets of 44px minimum, primary buttons 56px, press scale .7 in 100ms. "8 states 44px" |
+| Windows states | States. controls carry hover focus active disabled loading error empty success, touch targets of at least, for example, 44 px, primary buttons taller, for example 56 px, and the press scale of 0.7 lands in around 100 ms. "8 states 44px" |
 
 ## Applications and Identities
 
@@ -182,12 +184,12 @@ nothing touches the person hardware: the site becomes a sandbox when the person 
 | No visitor hardware | Zero touch. the interface never uses visitor gpu cpu camera or geolocation and never compiles on anyone machine; everything else rides https domains with mimetypes, the engini virtual doctrine. "engini virtual" |
 | Modalities | Saddle. the sandbox concentrates more than twenty modalities toward thirty: complete virtual with driver cpu gpu memory, universal runner, node packages, hardened docker, ghcr containers, microvm per workflow, browser and virtual browser, mobile with capacitor, confidential with attestation, qemu and firecracker, pod, local opt in, wasm and wasi, vfs from prisma git and db. "20 to 30" |
 | Cdn lane | Saddle. the cdn of about 45 cdns is fetched inside the sandbox via vfs, never in the person browser, and the person chooses no modality: the platform resolves the join of all as the nuclear modality. "45 cdns inside" |
-| Profiles | Hardware. the profiles ride lite 2 vcpu 0 vgpu 2gb, balanced 4 0.5 8, max 8 1 16; sandbox equals account with the immutable ghcr image versus the uuid instance, the install cd versus the save game. "lite balanced max" |
+| Profiles | Hardware. the hardware profiles ride, for example, lite with around two vcpu, no vgpu and two gigabytes of memory, balanced with around four, half a vgpu and eight gigabytes, and max with around eight, one and sixteen; sandbox equals account with the immutable ghcr image versus the uuid instance, the install cd versus the save game. "lite balanced max" |
 | Plan quota | Storage. the quota rides the plan through chunks up to the terabyte scale and never a literal fixed size. "quota by plan" |
 | Sandbox models | Competitor. the market rides four sandbox models and the platform resolves the join of all: the pod per conversation of zai grok and manus, the local in browser sandbox of bolt aistudio and arena, the full vm with screen of manus vnc and grok headless, and the hybrid of local first with versioned storage outside. "4 models" |
 | Session protocol | Chat. one websocket per session carries everything: token streaming, sandbox state, filesystem rpc and heartbeat, opened with a session create that negotiates the protocol capabilities and the client toolsets, the conversation born as an attachment of the ws session with rest only for reading and persistence. "one ws per session" |
 | Sandbox handshake | Sandbox. the sandbox rises on the first send with discovery never hand built urls: the up request answers an sse of states checking quota ok initializing ready with the pod id and the explicit quotas of global per minute and per 4 hours in the handshake itself. "checking quota initializing ready" |
-| Preview | Sandbox. the preview lives on its own subdomain per session with an ephemeral jwt of 300 seconds carrying the session and port claims, and the dev server state arrives as an event with the detected frameworks before the ready. "preview subdomain jwt 300s" |
+| Preview | Sandbox. the preview lives on its own subdomain per session with an ephemeral jwt of a few minutes, for example 300 seconds, carrying the session and port claims, and the dev server state arrives as an event with the detected frameworks before the ready. "preview subdomain" |
 | Capabilities event | Sandbox. the image announces its capabilities as an event of node git ffmpeg playwright vercel, and the interface turns features on and off by the real capacity of the container; a generic rpc on the same ws serves the filesystem and the task plan with typed errors before the bind. "capabilities event" |
 | Versioned storage | Sandbox. the code survives the sandbox: the codestorage carries the repo id and the commit sha, every write generates a version uuid, and the git repo rides outside the vm. "commit sha versions" |
 | Agent hygiene | Chat. the cheap model generates the title and summary on a dedicated endpoint, the agent actions surface as chips of wrote files and ran commands, the response carries the deep link rid, and the agent browser runs headless inside the sandbox never in the visitor browser. "cheap title chips" |
@@ -253,7 +255,7 @@ the os owns the surfaces and imports every engine domain through the published p
 | 35 pages | Pages. onboarding, login, news, audio, video, image, notes, photo editor, video editor, browser, terminal, files, gallery, connectors, automations, deploy, security, docs, data, music, camera, recorder, mail, calendar, calculator, maps, store, console, gateway view, home, notfound, projects, providers, settings, usage, each a folder anchor with its components. "35 pages" |
 | Born sandbox | Chat. the conversation provisions space sandbox session and message ids automatically, the vm rides the webcontainer or docker microvm, the per conversation db isolates, and the talk embeds xterm, the headless browser and monaco. "conversation vm" |
 | Approval | Safety. the approval modal of diff command and risk levels with allow once allow always deny precedes every sensitive action, the kill switch kills vm processes and cancels api calls with checkpoint restore, automatic execution blocked by default. "approval modal" |
-| Master screens | Screens. the 8 master screens and the 45 screens of 3420 components in 9 groups, the tour magnetic onboarding with spotlight, the equivalence matrix normalizing competitor concepts. "45 screens" |
+| Master screens | Screens. the eight master screens and the full screen map, for example around forty five screens carrying thousands of components in nine groups, the tour magnetic onboarding with spotlight, the equivalence matrix normalizing competitor concepts. "master screens" |
 | Creator studio | Editors. the studio houses the video editor, the audio workstation with mixer effects rack and transport, the 3d studio with scene graph and material editor, the canvas, the code ide, the site builder and the notes, each with own ai chat, own nodes, own encoder and export. "creator studio" |
 | Tools and explore | Pages. the tools page carries 60 plus tools from assetgen to upscaler, the explore carries 15 plus categories, the lab is the meta tab with multi select, and the fusion engine merges tabs by drag with selective cloning and universal detach. "fusion engine" |
 | Persistence | State. persistence is crash proof with the 3 second idle save, the state json restoring tabs across devices, and the preview being the final video with background export in chunks. "preview is final" |
@@ -280,7 +282,7 @@ the aetherforge hypervisor plus the product surface of contracts, storage and co
 | Storage adapters | Storage. local, chunked, s3 compatible, github contents, webdav, hugging face and kaggle adapters with put get head delete list and checksums, the verified pools with quorum writes and read policies. "8 backends" |
 | Storage to ram | Compute. the bridge carries the kernel recipes of swapfile, tmpfs, zram zstd, zswap, overlayfs, mmap, git in ram and loop ram disk; storage bytes and memory bytes are the same bytes with the use flag, and the honest positioning is free compute plus storage as virtual ram, never remote ram addressable by cpu. "storage equals ram bytes" |
 | Sandbox api | Runtime. create execute sleep wake convert to ram memory stats with the ws exec channel and cron cleanup; the sdk loader loads packages from cdn in ram with the sqlite cache. "convert to ram" |
-| Cdn farm | Delivery. the farm serves 200 megabyte chunks as chained npm packages over jsdelivr unpkg and esm sh, the scdn edge delivers over r2 cloudfront bun cdn and deno deploy, and the provider chain oracle github hf gitlab kaggle runs first free runner wins. "cdn farm" |
+| Cdn farm | Delivery. the farm serves chunks of, for example, 200 megabytes as chained npm packages over jsdelivr unpkg and esm sh, the scdn edge delivers over r2 cloudfront bun cdn and deno deploy, and the provider chain oracle github hf gitlab kaggle runs first free runner wins. "cdn farm" |
 | Scraping | Tools. robots cache with crawl delay, the crawl frontier with normalization and persistent queue, the proxy pool with health rotation and revive, the manual captcha contract with evidence and hash, no automatic bypass by design. "robots cache" |
 | Isolation | Safety. the deny by default isolated execution request decision and handoff contracts, the virtual control plane that validates and denies without executing, the sensitive cache eligibility, the archive extraction limits and the magic byte classification. "deny by default" |
 | Receipts | Safety. the runner environment, crawl checkpoint, browser interaction, provenance, evidence policy and release readiness receipts with the 5 evidence levels from absent to verified. "receipts" |
@@ -321,7 +323,7 @@ the arena waves shooter importing versawaze and audio through libraries.
 
 | Trigger/Topic/Item/Layer/Aspect/Mode/Folder/File | Purpose/Detail/Rule/Example |
 |--------|--------|
-| Validation protocol | Gates. the 10 step validation with last validation as the single gate, the monte carlo balancer of ttk with 1000 runs, the 60 second performance benchmark with the budgets of draws triangles and the fps p50, the playwright smoke. "10 step gate" |
+| Validation protocol | Gates. the ten step validation with last validation as the single gate, the monte carlo balancer of ttk with, for example, a thousand runs, the performance benchmark of around one minute with the budgets of draws triangles and the fps p50, the playwright smoke. "10 step gate" |
 | Gameplay | Gameplay. the wave arena with the movement of slide tac sprint ads footsteps and spawn shield, the medals, the prone lean death cam, the smart spawn with boss telegraph and cap, the per bone hitboxes, the hitstop and the headshot fix. "arena waves" |
 | Weapons | Gameplay. the real weapon table of ak 47 intervention mp5 and m870 with dmg rpm spread recoil ads fov and falloff, the loadouts with 0 to 100 stats, the cs2 fidelity validation against the anatomy docs. "weapon table" |
 | Hud | Ui. the crosshair with spring physics and 5 styles, the hitmarker x snap, the hud i18n of en pt es with minimap leaderboard and settings, the viewmodel with the cdn mirrors chain and the per archetype enemies with skinning lod. "hud i18n" |
@@ -345,12 +347,12 @@ the deployable inference of 35 routes with the devthink meta model.
 
 | Trigger/Topic/Item/Layer/Aspect/Mode/Folder/File | Purpose/Detail/Rule/Example |
 |--------|--------|
-| Route matrix | Gateway. 35 routes of 7 endpoints across 5 versions, chat completions completions embeddings keys messages models and responses, each route self contained with the single design pattern per version. "7x5 routes" |
-| Versions | Gateway. v1 zai keyless inside the sandbox, v2 babel paused with fallback to v1, v3 nvidia with 22 rotating keys in lru, v4 opencode and kilo free only, v5 openrouter free only. "5 versions" |
-| Meta model | Gateway. the meta model devthink masks the model in every answer, the context rides the session headers with the 7 thinking levels from none to max with high default, the key rotates every request and the model every 6 messages round robin. "devthink mask" |
-| Streaming | Gateway. the sse rides the exact openai frames of role reasoning content keepalive content finish and one done, the thinking always on in every request, the keepalive 200ms, the reasoning before the content. "sse exact" |
+| Route matrix | Gateway. seven endpoints across five versions build the route matrix, for example thirty five routes of chat completions completions embeddings keys messages models and responses, each route self contained with the single design pattern per version. "7x5 routes" |
+| Versions | Gateway. v1 zai keyless inside the sandbox, v2 babel paused with fallback to v1, v3 nvidia with, for example, a couple dozen rotating keys in lru, v4 opencode and kilo free only, v5 openrouter free only. "5 versions" |
+| Meta model | Gateway. the meta model devthink masks the model in every answer, the context rides the session headers with the seven thinking levels from none to max with high default, the key rotates every request and the model every few messages, for example six, round robin. "devthink mask" |
+| Streaming | Gateway. the sse rides the exact openai frames of role reasoning content keepalive content finish and one done, the thinking always on in every request, the keepalive landing every, for example, 200 ms, the reasoning before the content. "sse exact" |
 | Autofix | Gateway. the correction is centralized and intelligent with no whitelist blacklist or mock: parameter normalization with levenshtein, clamping to max with 1 percent margin, typo to the nearest valid, string to number, boolean coercion. "autofix" |
-| Anti 429 | Gateway. retry 2 to 8 times with exponential backoff 200ms to 64s and jitter, retry after respected, pacing, reactive cooldown, concurrency mutex with waiters queue. "anti 429" |
+| Anti 429 | Gateway. retrying, for example, two to eight times with exponential backoff from around 200 ms up to about a minute with jitter, retry after respected, pacing, reactive cooldown, concurrency mutex with waiters queue. "anti 429" |
 | Replicas | Deploy. write once in the repo, the release asset carries the versioned zip, a new sandbox loads the zip or extracts into src, and n copies rise by sending the gateway doc into new chats. "replicas" |
 
 ### vault, the storage
@@ -360,7 +362,7 @@ the supabase and aws bucket competitor with the security first.
 | Trigger/Topic/Item/Layer/Aspect/Mode/Folder/File | Purpose/Detail/Rule/Example |
 |--------|--------|
 | Encryption | Security. object bytes encrypt at rest aes 256 gcm under per project wrapped keys, the master key rides env or is generated and persisted, iv of 12 bytes, never math random. "aes 256 gcm" |
-| Chunks | Storage. chunks of 1 mib with sha 256 dedupe, gzip compression and catalog with automatic reuse, reassembled on read. "1 mib chunks" |
+| Chunks | Storage. chunks of one mebibyte with sha 256 dedupe, gzip compression and catalog with automatic reuse, reassembled on read. "mebibyte chunks" |
 | Keys | Security. access keys carry the visible prefix and the 32 byte secret stored only as sha 256 hash with the constant time compare and the revoke. "hashed keys" |
 | Policies | Security. the policies of action read write list delete admin and prefix with deny overriding allow evaluated per request. "deny wins" |
 | Audit | Security. every action writes the audit row of actor action path and ok, the rate limiting rides the token bucket per key and ip, and the audit answers the queries of the console. "audit trail" |
@@ -411,7 +413,7 @@ the ladder, the master plan and the walking of any new corpus.
 
 | Trigger/Topic/Item/Layer/Aspect/Mode/Folder/File | Purpose/Detail/Rule/Example |
 |--------|--------|
-| Houses | Ladder. the houses of 200 steps run 2.0.97 to 2.0.200 opening 2.1.0, and so on to 3.0, around 2104 steps total; one commit one step, no house opens with the previous red. "house ladder" |
+| Houses | Ladder. the houses of 200 steps run 2.0.97 to 2.0.200 opening 2.1.0, and so on to 3.0, around two thousand steps in total; one commit one step, no house opens with the previous red. "house ladder" |
 | Milestones | Ladder. the eradication wave kills the old design, the standardization wave installs one grammar, the library wave moves shared logics into the published packages, the functional wave makes every app answer its real function, the depth waves walk graphs and nodes per app, and 3.0 stamps the platform certified. "5 milestone waves" |
 | Master plan | Phases. the around 1000 step plan walks 12 phases: foundation inventory, shell of taskbar windows alt tab menus, entry flow of gate intro onboarding home, the 35 native pages eight steps each, the 15 engines six steps each, the eradication patterns one per app, the ten gates wired green, the release, the two presentations, the docs, the node maestro with the python lane, and the final qa. "12 phases" |
 | Corpus walk | Reading. any new corpus source rides the linear alphabetical sed walk with the index first, and the digests append into regras and features with numbered ranges and origin cited, chasing more than 10000 rules. "append digests" |
@@ -444,6 +446,7 @@ the consolidation and the pending waves of this operation.
 |--------|--------|
 | Consolidation | Standing. this document rides infra md as the single official file, fed by the institutional docs and the corpus digests, with the app by app map closed for devthink, saddle, cadria versawaze, debonair katexis, stealthhead, argan, getry, vault, foundry, forge, cobaia, doo, the extension, the cli, the owni and the absorbed roster. "infra md" |
 | Pending waves | Standing. the queue carries the vault security core of chunks crypto keys decoy and api, the vault sol face with the copy law and the folders as pages, the versawaze engine core with the server raster exporters and the mcp bridge, the versawaze studio face, the tests and docs battery of both apps, and the copy law batelada walking app by app into the tables. "pending waves" |
+| Links file | Standing. every github link of the corpus rides extracted, deduplicated and grouped by repository in the links.md companion file beside this document, with the pinned revisions of the owner archive first, so the link knowledge survives even if the source documents are deleted. "links md" |
 
 | Category | Rules | Theme |
 | --- | --- | --- |
@@ -469,6 +472,9 @@ the consolidation and the pending waves of this operation.
 
 ## To Visit, Links, Paths and Commands, in Order
 
+> this closing block is the only place of the document allowed to carry links, paths and commands, kept last so the body above stays clean; the exhaustive list of every github link extracted from the corpus rides the links.md companion file beside this document, and the list below keeps only the entries the operation opens every day.
+
+. the companion file carrying every github link of the corpus, deduplicated and grouped by repository. devthink/docs/links.md
 . the official rascunho parts 01 to 07, the primary rule archive. https://github.com/iakadion/allan/tree/7421afded01f5ce89ded700796b58ec90605d570/docs/neodocs/outros.devthink/md
 . the official rascunho at the second pinned revision. https://github.com/iakadion/allan/tree/ca5d761315c64eb8a1d47de8c5a5256611cbc33d/docs/neodocs/outros.devthink/md
 . the official rascunho at the third pinned revision. https://github.com/iakadion/allan/tree/11349cdeca671ad2e9842477ea9ba379a8fee07a/docs/neodocs/outros.devthink/md
