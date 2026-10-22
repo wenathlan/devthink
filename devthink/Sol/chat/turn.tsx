@@ -41,6 +41,7 @@ import {
   ThumbLikeFilled as ThumbUpOn,
 } from "@fluentui/react-icons";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { chatText } from "../../chatlabels.ts";
 import { type ChatTurn, cx, fmtTime } from "../../chatstate.ts";
 import { copyText, Markdown } from "./markdown.tsx";
 
@@ -522,7 +523,11 @@ export function Turn({
           {turn.stopped ? <i className="dtc-meta__mark">· stopped</i> : null}
           {turn.edited ? <i className="dtc-meta__mark">· edited</i> : null}
           <span className="sr-only" role="status" aria-live="polite">
-            {copyState === "copied" ? "copied to clipboard" : copyState === "failed" ? "copy failed" : ""}
+            {copyState === "copied"
+              ? chatText("turn.copied")
+              : copyState === "failed"
+                ? chatText("turn.copyFailed")
+                : ""}
           </span>
           <span className="dtc-turn__acts">
             <button
@@ -649,8 +654,8 @@ export function dayLabel(at: number): string {
   const now = new Date();
   const startOf = (x: Date) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
   const diffDays = Math.round((startOf(now) - startOf(d)) / 86_400_000);
-  if (diffDays === 0) return "Today";
-  if (diffDays === 1) return "Yesterday";
+  if (diffDays === 0) return chatText("day.today");
+  if (diffDays === 1) return chatText("day.yesterday");
   const sameYear = d.getFullYear() === now.getFullYear();
   try {
     return d.toLocaleDateString(undefined, {
@@ -686,7 +691,7 @@ export function ThinkingRow({ streaming = false, elapsedMs = 0 }: { streaming?: 
   return (
     <div className="dtc-thinking" role="status" aria-live="polite">
       <i className="dtc-thinking__bar" aria-hidden="true" />
-      <span>{streaming ? "Responding" : "Thinking"}</span>
+      <span>{streaming ? chatText("turn.responding") : chatText("turn.thinking")}</span>
       {/* the ticking count stays out of the announcement: the live region
        * speaks the phase change once, never every half-second tick. */}
       {seconds > 0 ? (

@@ -30,6 +30,7 @@ import {
   PanelRightContractRegular as PanelRightClose,
 } from "@fluentui/react-icons";
 import { type KeyboardEvent, useEffect, useRef, useState } from "react";
+import { chatText } from "../../chatlabels.ts";
 import { Markdown } from "./markdown.tsx";
 
 /** CANVAS_OPEN_EVENT — the dom event lane of the openers: any floor
@@ -291,7 +292,7 @@ export function CanvasPane({
             onKeyDown={onAreaKeyDown}
           />
         ) : content.trim().length === 0 ? (
-          <p className="dtc-cv__empty">the canvas is empty — the edit key begins the buffer.</p>
+          <p className="dtc-cv__empty">{chatText("canvas.empty")}</p>
         ) : view === "md" ? (
           <div className="dtc-cv__md">
             <Markdown source={content} />

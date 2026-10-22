@@ -7,6 +7,7 @@
  * network code of its own.
  */
 import { useCallback, useMemo } from "react";
+import { chatLimit, chatPersona, chatThinkingLevels } from "./chatlabels.ts";
 import {
   ChatStoppedError,
   type GatewayMessage,
@@ -107,9 +108,12 @@ export const isChatSessionList: Validator<ChatSession[]> = arrayOf(isChatSession
 
 export const SESSIONS_KEY = "dt-chat-sessions-v1";
 export const ACTIVE_KEY = "dt-chat-active-v1";
-export const SESSION_CAP = 60;
-export const TURN_CAP = 40;
-export const HISTORY_CAP = 12;
+/** the caps ride the chatlabels table now — chatLimit answers the seed
+ * rows today and the paired database tomorrow; the exported names stay
+ * so every consumer keeps its single-import grammar. */
+export const SESSION_CAP = chatLimit("sessionCap");
+export const TURN_CAP = chatLimit("turnCap");
+export const HISTORY_CAP = chatLimit("historyCap");
 export const GATEWAY_MODEL = "devthink";
 
 /** the persisted model preference of the chat (rung 124): the picker's
@@ -131,11 +135,11 @@ export function useChatModel() {
  * effort control the competitors ship, persisted per visitor. */
 export type ChatThinking = "off" | "medium" | "high";
 
-export const CHAT_THINKING_LEVELS: Array<{ id: ChatThinking; label: string; note: string }> = [
-  { id: "off", label: "Off", note: "Answer straight — no reasoning drawer." },
-  { id: "medium", label: "Medium", note: "Reason quietly, answer fast." },
-  { id: "high", label: "High", note: "Walk the whole reasoning staircase." },
-];
+/** the cognition effort rows ride the chatlabels table now
+ * (chatThinkingLevels answers the seeds today, the paired database
+ * tomorrow) — the export keeps its name and shape so the composer's
+ * single-import grammar stays untouched. */
+export const CHAT_THINKING_LEVELS: Array<{ id: ChatThinking; label: string; note: string }> = chatThinkingLevels();
 
 export const isChatThinking: Validator<ChatThinking> = (v): v is ChatThinking =>
   v === "off" || v === "medium" || v === "high";
@@ -257,9 +261,7 @@ export const CHAT_TOOLS: ChatTool[] = [
 
 /** buildSystemPrompt — the Sol persona plus one line per active tool flag. */
 export function buildSystemPrompt(active: ToolId[]): string {
-  const lines = [
-    "You are Sol, the DevThink gateway assistant: precise, warm and technical. Answer in the user's language, prefer concrete detail over filler, and use markdown when structure helps.",
-  ];
+  const lines = [chatPersona()];
   for (const tool of CHAT_TOOLS) {
     if (active.includes(tool.id)) lines.push(`${tool.label}: ${tool.note}`);
   }

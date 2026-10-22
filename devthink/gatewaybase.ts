@@ -15,6 +15,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { readBrowserPreferences, saveBrowserPreference } from "./db";
+import { chatText } from "./chatlabels.ts";
 
 /* ------------------------------ contract ------------------------------ */
 
@@ -22,10 +23,10 @@ import { readBrowserPreferences, saveBrowserPreference } from "./db";
 export const PREF_GATEWAYBASE = "chat.gatewaybase";
 
 /** The honest disconnected line — the default copy of the opt-in surfaces. */
-export const GATEWAY_REQUIRED_COPY = "No gateway registered";
+export const GATEWAY_REQUIRED_COPY = chatText("gw.notRegistered");
 
 /** The direct one-line notice the composer shows while disconnected. */
-export const GATEWAY_SEND_NOTICE = "No gateway registered";
+export const GATEWAY_SEND_NOTICE = chatText("gw.notRegistered");
 
 /**
  * normalizeGatewayBase — trims the stored endpoint and strips trailing

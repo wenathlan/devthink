@@ -11,13 +11,18 @@
  * migration from the hero layout into the thread lives in chat.tsx.
  *
  * the temporary pass (w4): the sub line goes variant-honest — when the
- * temporary prop rides along the sub answers "temporary chat: nothing
- * saves on this device" in place of the gateway meta-model line (the
- * spec's honest sub line law for the session that never persists) — and
- * a quiet ghost chip after the suggestion row starts the temporary
- * session, rendered only when the caller passes onTemporary (chatbody
- * owns the mode machine, so an absent handler leaves the hero as it
- * was).
+ * temporary prop rides along the sub answers the table's nothing-saves
+ * promise (chatText("welcome.temporarySub")) in place of the gateway
+ * meta-model line (the spec's honest sub line law for the session that
+ * never persists) — and a quiet ghost chip after the suggestion row
+ * starts the temporary session, rendered only when the caller passes
+ * onTemporary (chatbody owns the mode machine, so an absent handler
+ * leaves the hero as it was).
+ *
+ * the db-truth pass: every word the hero renders rides the chatlabels
+ * table now — the greeting bands (chatGreetingForHour), the suggestion
+ * rows (chatSuggestions), the sub lines (chatText) — while the icons
+ * stay code keyed by the row id, because icons are code, not data.
  */
 import {
   CodeRegular as Braces,
@@ -25,56 +30,25 @@ import {
   type FluentIcon as LucideIcon,
   MicroscopeRegular as Telescope,
 } from "@fluentui/react-icons";
+import { chatGreetingForHour, chatSuggestions, chatText } from "../../chatlabels.ts";
 import { cx, GATEWAY_MODEL } from "../../chatstate.ts";
-
-/** the model line of the hero sub: the gateway meta-model name */
-const GATEWAY_MODEL_LABEL = `sol ${GATEWAY_MODEL}`;
-
-/** the honest sub line of the temporary session: the nothing-saves
- * promise, lowercase mono voice of the default sub (the spec's
- * temporary chat law — the memory off, the device untouched). */
-const TEMPORARY_SUB = "temporary chat: nothing saves on this device";
-
-/** greeting — the time-of-day voice of the reference hero (the zcode
- * boundaries): morning until noon, afternoon until six, evening until
- * eleven, night after — honest against the visitor's clock. */
-function greeting(now = new Date()): string {
-  const h = now.getHours();
-  if (h >= 5 && h < 12) return "Good morning";
-  if (h >= 12 && h < 18) return "Good afternoon";
-  if (h >= 18 && h < 23) return "Good evening";
-  return "Working late";
-}
 
 type Suggestion = {
   id: string;
-  icon: LucideIcon;
   label: string;
   prompt: string;
 };
 
-const SUGGESTIONS: Suggestion[] = [
-  {
-    id: "engineering",
-    icon: Braces,
-    label: "Trace a failure",
-    prompt: "pressure-test a provider-neutral gateway: where does the architecture break first, and what hardens it?",
-  },
-  {
-    id: "reasoning",
-    icon: BrainCircuit,
-    label: "Reason step by step",
-    prompt:
-      "reason step by step: should a provider-neutral workbench cache provider responses locally? weigh latency, cost, staleness.",
-  },
-  {
-    id: "decisions",
-    icon: Telescope,
-    label: "Weigh the trade offs",
-    prompt:
-      "self-hosting an inference gateway versus provider apis: commit to one call and name the three facts that drive it.",
-  },
-];
+/** the icon registry of the suggestion chips — icons are code, not data
+ * (the chatlabels law): the table carries the words through
+ * chatSuggestions, the registry maps the fluent glyph by the row id,
+ * Braces the quiet fallback of an unknown seed (never a crash on the
+ * interface). */
+const SUGGESTION_ICONS: Record<Suggestion["id"], LucideIcon> = {
+  engineering: Braces,
+  reasoning: BrainCircuit,
+  decisions: Telescope,
+};
 
 /** the recent conversations row — the recents the orchestrator wires
  * later. absent prop renders nothing (the quiet-when-unknown law). */
@@ -142,19 +116,25 @@ export function Welcome({
   onTemporary?: () => void;
 }) {
   const recents = recent?.slice(0, 3) ?? [];
+  const now = new Date();
+  // the gateway meta-model line of the sub — the table template, the
+  // hardcoded model name seated in it (chatText owns the words).
+  const modelLine = chatText("welcome.modelLine").replace("{model}", GATEWAY_MODEL);
   return (
     <div className="dtc-welcome">
       {/* the greeting answers h2, not h1: the topbar already owns the one
        * h1 of the chat surface, so the hero joins the order under it (the
        * class carries the size — the level change is invisible). */}
-      <h2 className="dtc-welcome__greet">{greeting()}</h2>
+      <h2 className="dtc-welcome__greet">{chatGreetingForHour(now.getHours())}</h2>
       <p className={cx("dtc-welcome__sub", temporary && "dtc-welcome__sub--temporary")}>
-        {temporary ? TEMPORARY_SUB : `${GATEWAY_MODEL_LABEL} ${gatewayRegistered ? "gateway on" : "gateway off"}`}
+        {temporary
+          ? chatText("welcome.temporarySub")
+          : `${modelLine} ${gatewayRegistered ? "gateway on" : "gateway off"}`}
       </p>
 
       <div className="dtc-suggest" role="group" aria-label="suggested prompts">
-        {SUGGESTIONS.map((s) => {
-          const Icon = s.icon;
+        {chatSuggestions().map((s) => {
+          const Icon = SUGGESTION_ICONS[s.id] ?? Braces;
           return (
             <button
               key={s.id}

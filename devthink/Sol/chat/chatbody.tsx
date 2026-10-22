@@ -21,6 +21,7 @@ import {
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { osAppLabels } from "../../catalog.ts";
+import { chatLimit, chatSandboxContract, chatText } from "../../chatlabels.ts";
 import {
   buildSystemPrompt,
   type ChatSession,
@@ -95,7 +96,7 @@ const MEMORY_KEY = "dt-chat-memory-v1";
 const isMemoryList = arrayOf(isString);
 const INSTRUCTIONS_KEY = "dt-chat-instructions-v1";
 /** the memory cap: the oldest fact leaves when a write would pass 30. */
-const MEMORY_CAP = 30;
+const MEMORY_CAP = chatLimit("memoryCap");
 
 /* the w5-a sandbox bridge: the thread and the engine finally speak. the
  * contract below rides the round's system prompt while the sandbox chip
@@ -113,21 +114,11 @@ const MEMORY_CAP = 30;
  * (one fence tagged sandbox carrying the command) and the json line
  * grammar, the honest result loop, and the law that the thread only
  * renders what the engine answered. */
-const SANDBOX_TOOL_CONTRACT = [
-  "sandbox tool contract: a saddle sandbox microvm is attached to this conversation.",
-  "to run a command in it, emit a fenced code block tagged sandbox carrying exactly one shell command:",
-  "```sandbox",
-  "lscpu",
-  "```",
-  'or a single json line: {"tool":"sandbox","command":"lscpu"}.',
-  "the engine answers help, lscpu, cat /proc/cpuinfo, cat /proc/meminfo, free -h, nvidia-smi, nvidia-smi -L, clinfo, vulkaninfo --summary, glxinfo, uname -a, ls, ls /etc/virtual, env, uptime, whoami, neofetch, echo, echo <text> > <file>, echo <text> >> <file>, touch <file>, cat <file>, rm <file>, df -h, stat <file>, pwd, history, man <command> — run help for the catalog.",
-  "each command's output and exit code return to you as the sandbox result context of the next round, and workspace files persist through the session.",
-  "emit a sandbox call only when the answer needs the engine, otherwise answer in plain text. never fabricate command output — the thread renders only what the engine answered.",
-].join("\n");
+const SANDBOX_TOOL_CONTRACT = chatSandboxContract();
 
 /** the per-command output cap of the quiet tool context: longer engine
  * answers truncate with the honest marker (never a summarized fake). */
-const SANDBOX_CONTEXT_CAP = 6000;
+const SANDBOX_CONTEXT_CAP = chatLimit("sandboxContextCap");
 
 /** one sandbox task of the bridge: the command the assistant asked the
  * engine to run, the honest answer, the measured duration and the vfs
@@ -253,7 +244,7 @@ function sandboxContextBody(tasks: SandboxTask[]): string {
 /** CANVAS_VERSION_CAP — the version record cap: a save that would pass
  * 50 trims the oldest (the pointer rides the head, never the trimmed
  * middle). */
-const CANVAS_VERSION_CAP = 50;
+const CANVAS_VERSION_CAP = chatLimit("canvasVersions");
 
 /** CANVAS_FENCE — the fenced grammar of the canvas openers: a fence
  * whose label carries the canvas tag word (the boundary keeps
@@ -682,16 +673,16 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
             /* the stopped partial is a committed answer too — its
              * complete canvas fences open the pane the same way. */
             maybeOpenCanvasFromReply(committed.content);
-            toast("Generation stopped", {
-              description: "The partial answer stayed on the floor — regenerate answers it again.",
+            toast(chatText("toast.stopped"), {
+              description: chatText("toast.stoppedDescription"),
             });
           } else {
-            toast("Generation stopped");
+            toast(chatText("toast.stopped"));
           }
         } else {
           const msg = err instanceof Error ? err.message : "unknown failure";
           setError(msg);
-          toast.error("Sol did not respond", { description: msg });
+          toast.error(chatText("toast.noRespond"), { description: msg });
         }
       } finally {
         abortRef.current = null;
@@ -767,8 +758,8 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
       const branch = cloneSessionForEdit(active, turnId, newText);
       if (!branch) return;
       commitLane(branch);
-      toast("Checkpoint branch opened", {
-        description: "The original keeps its round — the edit carries the ladder forward.",
+      toast(chatText("toast.branch"), {
+        description: chatText("toast.branchDescription"),
       });
       void runCompletion(branch, stitchSystemPrompt(tools));
     },
@@ -800,7 +791,7 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
         messages: active.messages.filter((m) => m.id !== turnId),
         at: Date.now(),
       });
-      toast("Message deleted");
+      toast(chatText("toast.messageDeleted"));
     },
     [active, busy, commitLane],
   );
@@ -812,20 +803,20 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     if (temporary) {
       setEphemeral(null);
       setError(null);
-      toast("Conversation deleted");
+      toast(chatText("toast.conversationDeleted"));
       return;
     }
     if (!persistedActive) return;
     remove(persistedActive.id);
     setError(null);
-    toast("Conversation deleted");
+    toast(chatText("toast.conversationDeleted"));
   }, [persistedActive, remove, temporary]);
 
   const deleteFromRail = useCallback(
     (id: string) => {
       remove(id);
       setError(null);
-      toast("Conversation deleted");
+      toast(chatText("toast.conversationDeleted"));
     },
     [remove],
   );
@@ -998,7 +989,12 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
       setCanvasDoc((prev) => {
         const stamp = Date.now();
         if (prev === null) {
-          return { title: title ?? "canvas", lang: lang ?? "", versions: [{ content, at: stamp }], index: 0 };
+          return {
+            title: title ?? chatText("canvas.defaultTitle"),
+            lang: lang ?? "",
+            versions: [{ content, at: stamp }],
+            index: 0,
+          };
         }
         const titled = title !== undefined && title.length > 0 ? title : prev.title;
         const languaged = lang !== undefined && lang.length > 0 ? lang : prev.lang;
@@ -1315,14 +1311,14 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
           <div className="dtc-tb-title">
             <h1>{active ? active.title : (CHAT_LABEL?.name ?? "Chat")}</h1>
             <small>
-              sol {model} {gateway.base ? "gateway on" : "gateway off"}
+              sol {model} {gateway.base ? chatText("topbar.gatewayOn") : chatText("topbar.gatewayOff")}
             </small>
           </div>
           {/* the temporary-lane badge (the w4 seam): the existing gateway
               pill class carries the quiet mono chip — no new css needed. */}
           {temporary ? (
-            <p className="dtc-gw__pill" title="this conversation never saves to this device">
-              temporary chat
+            <p className="dtc-gw__pill" title={chatText("chat.temporaryTitle")}>
+              {chatText("chat.temporaryPill")}
             </p>
           ) : null}
           <div className="dtc-tb-actions">

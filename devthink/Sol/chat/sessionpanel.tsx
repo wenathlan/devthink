@@ -22,6 +22,7 @@ import {
 } from "@fluentui/react-icons";
 import { type FormEvent, useEffect, useState } from "react";
 import { Link } from "wouter";
+import { chatText } from "../../chatlabels.ts";
 import { CHAT_TOOLS, type ChatSession, type ToolId } from "../../chatstate.ts";
 import { GATEWAY_REQUIRED_COPY, type GatewayRegistration, gatewayStatusLabel } from "../../gatewaybase.ts";
 import { CHAT_NAV } from "./sidebar.tsx";
@@ -42,7 +43,7 @@ function exportFileName(title: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 48);
-  return `${slug || "chat-session"}.md`;
+  return `${slug || chatText("panel.exportFallback")}.md`;
 }
 
 /** sessionMarkdown — the export body: the title as the one heading, every
@@ -216,12 +217,14 @@ export function SessionPanel({
           className="dtc-project__input"
           value={instructionDraft}
           onChange={(event) => editInstructions(event.target.value)}
-          placeholder="pinned instructions for the conversation"
+          placeholder={chatText("panel.instructionsPlaceholder")}
           aria-label="Pinned instructions"
           rows={3}
           tabIndex={open ? 0 : -1}
         />
-        <p className="dtc-gw__hint">{onInstructionsChange ? "saved on this device" : "a local draft for now"}</p>
+        <p className="dtc-gw__hint">
+          {onInstructionsChange ? chatText("panel.instructionsSaved") : chatText("panel.instructionsDraft")}
+        </p>
       </section>
 
       {PANEL_FEATURES.memory ? (
@@ -246,7 +249,7 @@ export function SessionPanel({
               ))}
             </ul>
           ) : (
-            <p className="dtc-memory__empty">nothing saved on this device</p>
+            <p className="dtc-memory__empty">{chatText("panel.memoryEmpty")}</p>
           )}
         </section>
       ) : null}
@@ -299,13 +302,13 @@ export function SessionPanel({
                 {gateway.formError}
               </p>
             ) : null}
-            {testing ? <p className="dtc-gw__hint">Probing the endpoint</p> : null}
+            {testing ? <p className="dtc-gw__hint">{chatText("panel.probing")}</p> : null}
           </>
         ) : null}
 
         {gateway.status === "error" ? (
           <p className="dtc-gw__error" role="alert">
-            {gateway.probeError ?? "The gateway did not answer"}
+            {gateway.probeError ?? chatText("panel.gatewayError")}
           </p>
         ) : null}
 

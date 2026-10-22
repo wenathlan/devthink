@@ -31,6 +31,7 @@ import {
 import type { SandboxSpec, SandboxState } from "@wenathlan/saddle/sandbox";
 import { bootSequence, commands, cpudata, createSandboxState, dispatch, gpudata } from "@wenathlan/saddle/sandbox";
 import { type FormEvent, type KeyboardEvent, useEffect, useId, useRef, useState } from "react";
+import { chatLimit, chatText } from "../../chatlabels.ts";
 import { osAppLabels } from "../../catalog.ts";
 
 /** one rendered log row; cls mirrors the boot, ok, err and cmdline row
@@ -66,12 +67,12 @@ export type SandboxRunner = (command: string) => SandboxRunResult | null;
 const SADDLE_LABEL = osAppLabels().saddle;
 
 /** the default spec mirrors the saddle console page: the first cpu and the
- * first gpu of the engine catalogs, 8 vcpus, 32 gb ram, mig off — the pane
- * reads every hardware identity from the engine catalogs. */
+ * first gpu of the engine catalogs, the table's default vcpus and ram, mig
+ * off — the pane reads every hardware identity from the engine catalogs. */
 const DEFAULT_SPEC: SandboxSpec = {
   model: cpudata[0].model,
-  vcpus: 8,
-  ramgb: 32,
+  vcpus: chatLimit("sandboxDefaultVcpus"),
+  ramgb: chatLimit("sandboxDefaultRamGb"),
   gpu: gpudata[0].id,
   mig: "off",
 };
@@ -144,11 +145,11 @@ export function SandboxPane({
   const [status, setStatus] = useState<SandboxStatus>("halted");
   const [booted, setBooted] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [prompt, setPrompt] = useState("root@saddle:~#");
+  const [prompt, setPrompt] = useState(chatText("sb.prompt"));
   /** the prompt mirror: the bridge executor is captured once at
    * registration, so it reads the live prompt through the ref — never a
    * stale state closure. */
-  const promptref = useRef("root@saddle:~#");
+  const promptref = useRef(chatText("sb.prompt"));
   const [value, setValue] = useState("");
   const running = status === "running";
 
@@ -210,7 +211,7 @@ export function SandboxPane({
       await sleep(28 + Math.random() * 34);
     }
     if (cancelref.current) return;
-    printrow('ok: sandbox running. type "help" for the command list.', "ok");
+    printrow(chatText("sb.running"), "ok");
     setStatus("running");
     setBusy(false);
     if (panehasfocus()) window.requestAnimationFrame(() => inputref.current?.focus());
@@ -221,7 +222,7 @@ export function SandboxPane({
     if (!running) return;
     engineref.current = null;
     setStatus("halted");
-    printrow("sandbox stopped; snapshot-less teardown complete.", "boot");
+    printrow(chatText("sb.stopped"), "boot");
   };
 
   /** execCommand — the one honest executor behind both surfaces of the
@@ -355,7 +356,7 @@ export function SandboxPane({
             {row.text}
           </span>
         ))}
-        {!booted ? <span className="boot">sandbox halted — boot to start the microvm.</span> : null}
+        {!booted ? <span className="boot">{chatText("sb.halted")}</span> : null}
       </pre>
 
       <form className={running ? "dtc-sb__in" : "dtc-sb__in off"} onSubmit={onsubmit}>

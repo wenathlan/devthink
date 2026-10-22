@@ -28,21 +28,34 @@ import {
 } from "@fluentui/react-icons";
 import { useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
+import { chatBuckets, chatNav } from "../../chatlabels.ts";
 import { type ChatSession, cx } from "../../chatstate.ts";
 import { arrayOf, isString, useStoredState } from "../../usestoredstate.ts";
 import { SolBotIcon, type SolBotState } from "./solboticon.tsx";
 
-/** The theme pages the rail links to — existing routes, not local copies. */
+/** The theme pages the rail links to — existing routes, not local
+ * copies. The href and the label of every row ride the chat label
+ * table now; the icons stay code — the registry below maps them by
+ * nav id. */
 export type RailLink = { href: string; label: string; icon: LucideIcon };
 
-export const CHAT_NAV: RailLink[] = [
-  { href: "/", label: "Home", icon: Home },
-  { href: "/panel", label: "OS", icon: Terminal },
-  { href: "/projects", label: "Projects", icon: FolderKanban },
-  { href: "/docs", label: "Docs", icon: BookOpen },
-  { href: "/explore", label: "Explore", icon: Compass },
-  { href: "/settings", label: "Settings", icon: Settings },
-];
+/* the rail icon registry keyed by the chat label table's nav ids —
+ * icons are code, never interface data, so the glyph lookup stays
+ * beside the rows it serves. */
+const NAV_ICONS: Record<string, LucideIcon> = {
+  home: Home,
+  os: Terminal,
+  projects: FolderKanban,
+  docs: BookOpen,
+  explore: Compass,
+  settings: Settings,
+};
+
+export const CHAT_NAV: RailLink[] = chatNav().map((row) => ({
+  href: row.href,
+  label: row.label,
+  icon: NAV_ICONS[row.id],
+}));
 
 const DAY_MS = 86_400_000;
 
@@ -92,37 +105,30 @@ function weekStart(at: number, firstDay: number): number {
 }
 
 /** the calendar-day buckets of the session list, newest first — the
- * quiet headers the reference grammar pins. */
-const GROUP_ORDER = [
-  "today",
-  "yesterday",
-  "2 days ago",
-  "3 days ago",
-  "this week",
-  "last week",
-  "this month",
-  "last month",
-  "older",
-] as const;
+ * quiet headers the reference grammar pins, riding the chat label
+ * table now. */
+const GROUP_ORDER = chatBuckets();
 
-type GroupLabel = (typeof GROUP_ORDER)[number];
+type GroupLabel = string;
 
 /** bucketOf — the calendar bucket a session falls into. day distances win
- * over the week and month bands (2 days ago beats this week), so the
- * group order stays strictly newest-first. */
+ * over the week and month bands (the days ago bands beat this week), so
+ * the group order stays strictly newest-first. The positions are the
+ * logic — the bucket answers the table row's label by index, so no
+ * label text lives in this file. */
 function bucketOf(at: number, now: number, firstDay: number): GroupLabel {
   const diff = dayCount(now) - dayCount(at);
-  if (diff <= 0) return "today";
-  if (diff === 1) return "yesterday";
-  if (diff === 2) return "2 days ago";
-  if (diff === 3) return "3 days ago";
+  if (diff <= 0) return GROUP_ORDER[0];
+  if (diff === 1) return GROUP_ORDER[1];
+  if (diff === 2) return GROUP_ORDER[2];
+  if (diff === 3) return GROUP_ORDER[3];
   const week = Math.round((weekStart(now, firstDay) - weekStart(at, firstDay)) / 7);
-  if (week <= 0) return "this week";
-  if (week === 1) return "last week";
+  if (week <= 0) return GROUP_ORDER[4];
+  if (week === 1) return GROUP_ORDER[5];
   const month = monthCount(now) - monthCount(at);
-  if (month <= 0) return "this month";
-  if (month === 1) return "last month";
-  return "older";
+  if (month <= 0) return GROUP_ORDER[6];
+  if (month === 1) return GROUP_ORDER[7];
+  return GROUP_ORDER[8];
 }
 
 /** groupSessions — the calendar-day buckets; empty buckets are dropped. */

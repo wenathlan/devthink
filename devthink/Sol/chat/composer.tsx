@@ -49,6 +49,7 @@ import {
   StopFilled as Stop,
 } from "@fluentui/react-icons";
 import { type CSSProperties, type KeyboardEvent, type RefObject, useEffect, useMemo, useRef, useState } from "react";
+import { chatLimit, chatText } from "../../chatlabels.ts";
 import {
   CHAT_THINKING_LEVELS,
   type ChatThinking,
@@ -73,7 +74,7 @@ const TOOL_ICONS: Record<ToolId, LucideIcon> = {
 const AUTO_EFFORT_KEY = "dt-chat-effort-auto-v1";
 const AUTO_EFFORT_BASE: ChatThinking = "medium";
 const AUTO_EFFORT_HEAVY: ChatThinking = "high";
-const AUTO_EFFORT_TOKENS = 700;
+const AUTO_EFFORT_TOKENS = chatLimit("autoEffortTokens");
 
 /* the compact before send lane: the fallback threshold when the meter's
  * declared window is unknown — the honest 8k floor. */
@@ -327,8 +328,8 @@ export function Composer({
       ? [
           {
             key: "sandbox",
-            label: "Sandbox",
-            note: "open the saddle sandbox lane",
+            label: chatText("composer.sandboxChip"),
+            note: chatText("composer.sandboxNote"),
             icon: Cube,
             on: sandboxOn === true,
             chipClass: "dtc-chip dtc-chip--sb",
@@ -404,7 +405,7 @@ export function Composer({
   const compact = wellWidth > 0 && wellWidth < 640;
   /* the state aware placeholder: the empty invitation, the follow up
    * while a round works. */
-  const placeholder = busy ? "send a follow up while it works" : "ask anything";
+  const placeholder = busy ? chatText("composer.placeholderFollowUp") : chatText("composer.placeholderIdle");
 
   /* the dock shell: relative + isolate pin the glass layer (z -1) between
    * the shell paint and the content; the radius and the padding carry the
@@ -517,7 +518,7 @@ export function Composer({
                   title="Open the saddle sandbox lane"
                 >
                   <Cube fontSize={15} aria-hidden="true" />
-                  <span>Sandbox</span>
+                  <span>{chatText("composer.sandboxChip")}</span>
                   {sandboxRunning ? <i className="dtc-chip--sb__dot" aria-hidden="true" /> : null}
                 </button>
               ) : null}
