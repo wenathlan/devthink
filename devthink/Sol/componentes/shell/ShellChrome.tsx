@@ -44,6 +44,7 @@ import {LockClosedRegular as Lock, SearchRegular as Search, Wifi1Regular as Wifi
 import { type CSSProperties, type RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DESKTOP_APPS, type DesktopApp, searchDesktopApps } from "../../../appregistry.ts";
+import { NAVBAR_POS_EVENT, loadNavbarPosition, type NavbarPosition } from "../../../desktopstate";
 import { loadrecentapps, pushrecentapp } from "../../../recentapps.ts";
 import { SolLogoMark } from "../panel/logo.tsx";
 import { AppTile } from "./apptile.tsx";
@@ -186,6 +187,12 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
   /** the recently opened apps behind the Start menu recommended rail */
   const [recents, setRecents] = useState<string[]>(() => loadrecentapps());
   const [tray, setTray] = useState<TraySettings>(DEFAULT_TRAY_SETTINGS);
+  /** the navbar position the settings personalization pass persisted — the
+   * floating bottom bar (the default) or the vertical rail docked to one
+   * screen edge; the dt-navbar-pos event re-docks it the moment the choice
+   * lands (the stylesheet pass owns the rail layout itself) */
+  const [navbarPos, setNavbarPos] = useState<NavbarPosition>(() => loadNavbarPosition());
+  const rail = navbarPos !== "floating";
   const searchRef = useRef<HTMLInputElement | null>(null);
   const exitTimer = useRef<number | null>(null);
   const mountedKindRef = useRef<PanelState["kind"] | null>(null);
@@ -281,6 +288,17 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
     [],
   );
 
+  // the settings app re-docks the taskbar live through the navbar position
+  // event (the choice itself persists under "dt.navbar.pos.v1")
+  useEffect(() => {
+    const onNavbarPos = (event: Event) => {
+      const detail = (event as CustomEvent<NavbarPosition>).detail;
+      if (detail === "floating" || detail === "left" || detail === "right") setNavbarPos(detail);
+    };
+    window.addEventListener(NAVBAR_POS_EVENT, onNavbarPos);
+    return () => window.removeEventListener(NAVBAR_POS_EVENT, onNavbarPos);
+  }, []);
+
   // the night light token lives on the document root while on, gone when off
   useEffect(() => {
     const root = document.documentElement;
@@ -369,8 +387,13 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
       {/* the ONE chrome: a 48px bottom taskbar — the authentic dark acrylic
           (.acrylic-bar: rgba(32,32,32,.75) + saturate(3) blur(20px) + grain,
           light theme rides the class) over a dark top hairline; the
-          centered cluster, the omnibox and the tray split the row */}
-      <header className="dt-nav acrylic-bar fixed bottom-0 inset-x-0 z-50 flex h-12 min-w-0 items-center border-t border-black/55 px-2">
+          centered cluster, the omnibox and the tray split the row — the
+          data-navbar position the settings pass chose re-docks it as the
+          vertical rail of that screen edge */}
+      <header
+        className="dt-nav acrylic-bar fixed bottom-0 inset-x-0 z-50 flex h-12 min-w-0 items-center border-t border-black/55 px-2"
+        data-navbar={navbarPos}
+      >
         {/* the centered taskbar cluster: the mark-trigger and the pinned apps
             ride one Windows-11 centered group (pure presentation wrapper) */}
         <div
@@ -439,14 +462,17 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
           </nav>
         </div>
         {/* the clean-url doctrine: the shell navigates by internal state, so
-            the address read-out is always "/" (quiet mono, right zone) */}
-        <div
-          className="dt-nav__omnibox mr-2 ml-auto inline-flex h-[30px] w-[140px] flex-none items-center justify-center gap-[7px] self-center rounded-xs border border-white/7 bg-white/5 font-mono text-[10px] tracking-[.08em] text-ink-3 transition-colors duration-200 hover:bg-white/8 max-[1080px]:hidden"
-          aria-hidden="true"
-        >
-          <Lock fontSize={11} />
-          <span>/</span>
-        </div>
+            the address read-out is always "/" (quiet mono, right zone) — the
+            wide pill reads only on the floating bar, the rail keeps its 48px */}
+        {rail ? null : (
+          <div
+            className="dt-nav__omnibox mr-2 ml-auto inline-flex h-[30px] w-[140px] flex-none items-center justify-center gap-[7px] self-center rounded-xs border border-white/7 bg-white/5 font-mono text-[10px] tracking-[.08em] text-ink-3 transition-colors duration-200 hover:bg-white/8 max-[1080px]:hidden"
+            aria-hidden="true"
+          >
+            <Lock fontSize={11} />
+            <span>/</span>
+          </div>
+        )}
         {/* the tray cluster: the gateway pill and the clock are the quick
             settings and calendar triggers (native buttons, so the a11y
             grammar is real); the clock reads in two 11px tabular-nums lines */}
@@ -469,9 +495,12 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
                 className={`inline-flex mx-0.5 h-11 items-center gap-1.5 rounded-xs px-2 text-[11px] lowercase transition-colors duration-200 hover:bg-white/6 light:hover:bg-black/6 ${
                   paired ? "text-[#f3f5fa] light:text-[#1a1a1a]" : "text-ink-3"
                 }`}
+                title={paired ? userId || "paired" : "local only"}
               >
                 <Wifi fontSize={13} aria-hidden="true" />
-                {paired ? userId || "paired" : "local only"}
+                {/* the rail keeps the pill at its 48px width — the glyph alone,
+                    the words ride the title peek */}
+                {rail ? null : paired ? userId || "paired" : "local only"}
               </span>
             )}
           </button>

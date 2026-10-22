@@ -11,7 +11,7 @@
  * component of the settings page, riding the dtw kit.
  */
 import { type FormEvent, useMemo, useState } from "react";
-import { type CustomProvider, createmcpregistry, localstorageadapter, type McpEndpoint } from "../../../mcpregistry.ts";
+import { type CustomProvider, createmcpregistry, localstorageadapter, type McpEndpoint } from "../../../mcpregistry";
 
 /** the one localStorage key the registry rides (mcpregistry.ts contract). */
 const REGISTRY_KEY = "dt.mcp.registry.v1";

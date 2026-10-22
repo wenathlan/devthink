@@ -9,7 +9,7 @@
 import {PersonRegular} from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { type BrowserIdentity, browserIdentity, readBrowserPreferences, saveBrowserPreference } from "../../../db.ts";
+import { type BrowserIdentity, browserIdentity, readBrowserPreferences, saveBrowserPreference } from "../../../db";
 
 /** the display-name preference key inside the local database (the same key
  * the retired lock screen and entry pass stored — nothing else reads it) */
