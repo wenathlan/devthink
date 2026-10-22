@@ -1,3 +1,4 @@
+<!-- superseded by rulesofficial.md, kept as previous plan, never deleted -->
 # the ofical rules — the canonical mapping of the owner rule file
 
 the mandatory rules of the devthink family operation, mapped by category from the owner rule file, merged and deduplicated. the owner statements are the source, session 7 prevails. every rule below is sourced, nothing is invented. the format obeys the writing rules themselves: dot hierarchy, lowercase, english, zero emoji, links only in the last paragraph.
