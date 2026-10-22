@@ -17,12 +17,25 @@ describe("the copy store", () => {
     assert.equal(copy("plans.no.such.key"), "plans.no.such.key");
   });
 
-  it("keeps the seed as the single literal surface of the page", () => {
+  it("keeps the seed as the single literal surface of the pages", () => {
     const seed = copyseed();
-    assert.ok(Object.keys(seed).length >= 20, "the plans page copy rides the seed");
+    assert.ok(Object.keys(seed).length >= 20, "the pages' copy rides the seed");
     for (const [key, text] of Object.entries(seed)) {
-      assert.ok(key.startsWith("plans."), `the seed key ${key} stays scoped to its page`);
+      assert.ok(/^(plans|auth|callback)\./.test(key), `the seed key ${key} stays scoped to its page`);
       assert.ok(text.length > 0, `the seed row ${key} carries text`);
     }
+  });
+
+  it("the provider row never says continue with the provider — the action is always devthink", () => {
+    for (const provider of ["google", "github", "gitlab"]) {
+      const label = copy(`auth.oauth.${provider}`);
+      assert.ok(label.startsWith("continue with devthink · "), `the ${provider} label carries the devthink action`);
+      assert.ok(!label.startsWith(`continue with ${provider}`), `the ${provider} label never carries the provider action`);
+    }
+  });
+
+  it("the callback receiving face names the provider through the slot", () => {
+    assert.ok(copy("callback.received").includes("{provider}"), "the receiving face carries the provider slot");
+    assert.ok(copy("callback.received.note").includes("gateway"), "the receiving face keeps the exchange honest");
   });
 });

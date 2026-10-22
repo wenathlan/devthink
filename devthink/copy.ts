@@ -51,6 +51,22 @@ const SEED: Readonly<Record<string, string>> = Object.freeze({
   "plans.tier.free.headline": "free",
   "plans.tier.pro.headline": "pro",
   "plans.tier.enterprise.headline": "enterprise",
+  "auth.oauth.headline": "Continue with DevThink",
+  "auth.oauth.google": "continue with devthink · google",
+  "auth.oauth.github": "continue with devthink · github",
+  "auth.oauth.gitlab": "continue with devthink · gitlab",
+  "auth.oauth.unconfigured": "The provider ids land with the gateway configuration.",
+  "auth.oauth.failed": "The sign-in round trip could not start on this machine.",
+  "callback.title": "The sign-in callback",
+  "callback.received": "devthink received the {provider} sign in",
+  "callback.received.note":
+    "The code waits for the token exchange — the exchange lands with the gateway wave, no account is signed in yet.",
+  "callback.error": "The provider refused the sign in",
+  "callback.error.note": "The provider answered with an error — the sign-in round trip did not complete.",
+  "callback.unknown": "Unknown origin",
+  "callback.unknown.note": "The callback carries no state marker this page minted — the round trip did not start here.",
+  "callback.back.auth": "back to the sign-in page",
+  "callback.back.panel": "to the panel",
 });
 
 /** The live rows the platform answered (null until the first load). */

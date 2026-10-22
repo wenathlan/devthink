@@ -17,6 +17,7 @@ import AboutAnchor from "./about/about.tsx";
 import AudioAnchor from "./audio/audio.tsx";
 import AuthAnchor from "./auth/auth.tsx";
 import CalculatorAnchor from "./calculator/calculator.tsx";
+import CallbackAnchor from "./callback/callback.tsx";
 import ChatAnchor from "./chat/chat.tsx";
 import ConsoleAnchor from "./console/console.tsx";
 import DocsAnchor from "./docs/docs.tsx";
@@ -95,6 +96,7 @@ export default function Sol() {
           <Route path="/onboarding" component={OnboardingAnchor} />
           <Route path="/panel" component={() => <PanelAnchor />} />
           <Route path="/auth" component={AuthAnchor} />
+          <Route path="/callback" component={CallbackAnchor} />
           <Route path="/chat" component={ChatAnchor} />
           <Route path="/files" component={() => <FilesAnchor />} />
           <Route path="/video" component={() => <VideoAnchor />} />

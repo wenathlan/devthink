@@ -14,7 +14,10 @@
  * the password alone and answers the wrong-try verdict inline. The
  * password row speaks the windows grammar: one well with the reveal eye
  * and the arrow submit riding inside it. The sign-in options open the cli
- * pairing; the identity logic never moved.
+ * pairing and the provider row — continue with devthink over google,
+ * github and gitlab (the bots are ready on the owner accounts, the client
+ * ids ride the env, the single callback page detects the origin by state);
+ * the identity logic never moved.
  */
 import {
   ArrowRightRegular,
@@ -31,12 +34,29 @@ import { toast } from "sonner";
 import { useLocation } from "wouter";
 import { ACCOUNT_NAME_KEY, type AccountState, accountstate, createAccount, verifyAccount } from "../../accountgate.ts";
 import { afterAuthTarget, pairingReadiness, safegatewayurl } from "../../authgate.ts";
+import { copy, loadcopy } from "../../copy.ts";
+import {
+  buildAuthorizeUrl,
+  mintPkcePair,
+  newOAuthState,
+  type OAuthProvider,
+  oauthVerifierKey,
+  providerRow,
+} from "../../oauthrow.ts";
 import { readBrowserPreferences } from "../../db";
 
 export * from "../../accountgate.ts";
 export * from "../../authgate.ts";
 
 type PairingResponse = { token: string; userId: string; expiresAt: number };
+
+/** The letter marks the provider buttons wear — fluent carries no brand
+ * glyphs, so the letter mark is the honest code mark of each provider. */
+const PROVIDER_GLYPHS: Readonly<Record<OAuthProvider, string>> = Object.freeze({
+  google: "G",
+  github: "GH",
+  gitlab: "GL",
+});
 
 /** The authentication page-app served at /auth: the lock clock first, the
  * sign-in face behind the unlock. */
@@ -60,6 +80,8 @@ export default function Auth() {
   const [code, setCode] = useState(() => invitation.current.get("code")?.toUpperCase() || "");
   const [paired, setPaired] = useState(() => Boolean(window.sessionStorage.getItem("devthink.pair.token")));
   const [cliopen, setCliopen] = useState(() => Boolean(invitation.current.get("pair")));
+  const [, setCopylive] = useState(false);
+  const [oauthbusy, setOauthbusy] = useState(false);
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const dragstart = useRef<{ y: number } | null>(null);
 
@@ -91,6 +113,12 @@ export default function Auth() {
         setKnown((preferences[ACCOUNT_NAME_KEY] ?? "").trim());
       })
       .catch(() => undefined);
+  }, []);
+
+  // the copy store arms on mount: the row words ride the live db rows when
+  // the platform answered, the build seed otherwise
+  useEffect(() => {
+    void loadcopy().then(() => setCopylive(true));
   }, []);
 
   // the password field takes focus as the sign-in face reveals
@@ -179,6 +207,30 @@ export default function Auth() {
     [finish],
   );
 
+  /** the provider row entry: a ready provider starts the oauth round trip —
+   * the state minted, the pkce verifier parked for the exchange, the
+   * browser handed the authorize url. Unconfigured providers never reach
+   * here (the row renders them disabled with the honest note). */
+  const beginOAuth = useCallback(async (provider: OAuthProvider) => {
+    const entry = providerRow().providers.find((candidate) => candidate.provider === provider);
+    if (!entry?.ready) return;
+    setOauthbusy(true);
+    try {
+      const state = newOAuthState(provider);
+      const pair = await mintPkcePair();
+      try {
+        window.sessionStorage.setItem(oauthVerifierKey(provider), pair.verifier);
+      } catch {
+        /* storage unavailable: the verifier stays unparked, the exchange
+           answers honestly when the gateway wave lands */
+      }
+      window.location.assign(buildAuthorizeUrl(provider, state, pair.challenge));
+    } catch {
+      setOauthbusy(false);
+      toast(copy("auth.oauth.failed"));
+    }
+  }, []);
+
   // an invitation link (?gateway&pair&code) consumes itself, exactly like
   // the panel does when the invitation lands there: the paired guard makes
   // the effect idempotent, a rejection simply waits for the next edit
@@ -189,6 +241,7 @@ export default function Auth() {
   }, [code, consumePairing, gateway, paired, pairingId]);
 
   const readiness = pairingReadiness({ gatewayUrl: gateway, pairingId, code });
+  const oauthrow = providerRow();
 
   /** the unlock: a pointer swipe up, a wheel up, a click or the enter and
    * space keys lift the lock — the windows gesture family */
@@ -413,6 +466,28 @@ export default function Auth() {
                       : `Still needed: ${readiness.missing.join(", ")}`}
                   </small>
                 </form>
+              ) : null}
+              {cliopen ? (
+                <div className="dt-oauthrow" role="group" aria-label={copy("auth.oauth.headline")}>
+                  <p className="dt-oauthrow__headline">{copy("auth.oauth.headline")}</p>
+                  <div className="dt-oauthrow__btns">
+                    {oauthrow.providers.map((entry) => (
+                      <button
+                        key={entry.provider}
+                        type="button"
+                        className="dtw-login__create dt-oauthrow__btn"
+                        disabled={!entry.ready || oauthbusy}
+                        title={entry.ready ? undefined : copy("auth.oauth.unconfigured")}
+                        onClick={() => void beginOAuth(entry.provider)}
+                      >
+                        <span className="dt-oauthrow__glyph" aria-hidden="true">
+                          {PROVIDER_GLYPHS[entry.provider]}
+                        </span>
+                        <span className="dt-oauthrow__label">{copy(`auth.oauth.${entry.provider}`)}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
               ) : null}
             </div>
             <ul className="dtw-login__ledger">
