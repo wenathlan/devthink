@@ -48,7 +48,7 @@ import { Link, useLocation } from "wouter";
 import { familyrow } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
 import { currentTheme, type Theme, toggleTheme } from "../../theme.ts";
-import { Playerbar } from "./Playerbar.tsx";
+import { Playerbar } from "../componentes/shell/Playerbar.tsx";
 
 /** one entry of the shell navigation (the legacy page prop shape, kept for
  * the anchors that type against the shell beside this folder) */

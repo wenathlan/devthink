@@ -19,22 +19,22 @@ import { apiresult, noderole, pick } from '../../dashboardlib';
  * typed ES module that replaced the window-global localauth.js of the static edge (the original
  * beside the typed module - the same convention the Login page uses. */
 import { logout, probe, session as readlocalsession } from '../../localauth.ts';
-import type { LocalSessionView } from './AccountPanel';
-import AccountPanel from './AccountPanel';
-import AdminPanel from './AdminPanel';
-import CreateSandboxForm from './CreateSandboxForm';
-import EventsTimeline from './EventsTimeline';
-import SandboxList from './SandboxList';
+import type { LocalSessionView } from '../componentes/dashboard/AccountPanel.tsx';
+import AccountPanel from '../componentes/dashboard/AccountPanel.tsx';
+import AdminPanel from '../componentes/dashboard/AdminPanel.tsx';
+import CreateSandboxForm from '../componentes/dashboard/CreateSandboxForm.tsx';
+import EventsTimeline from '../componentes/dashboard/EventsTimeline.tsx';
+import SandboxList from '../componentes/dashboard/SandboxList.tsx';
 
-export * from './AccountPanel';
-export * from './AdminPanel';
-export * from './AuditLog';
-export * from './CreateSandboxForm';
-export * from './EventsTimeline';
-export * from './GlobalSandboxesTable';
-export * from './MeshNodesTable';
-export * from './SandboxList';
-export * from './UsersTable';
+export * from '../componentes/dashboard/AccountPanel.tsx';
+export * from '../componentes/dashboard/AdminPanel.tsx';
+export * from '../componentes/dashboard/AuditLog.tsx';
+export * from '../componentes/dashboard/CreateSandboxForm.tsx';
+export * from '../componentes/dashboard/EventsTimeline.tsx';
+export * from '../componentes/dashboard/GlobalSandboxesTable.tsx';
+export * from '../componentes/dashboard/MeshNodesTable.tsx';
+export * from '../componentes/dashboard/SandboxList.tsx';
+export * from '../componentes/dashboard/UsersTable.tsx';
 
 /** which surface answers: the node api or the static-edge local engine. */
 type Phase = 'booting' | 'api' | 'local';

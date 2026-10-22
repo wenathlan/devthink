@@ -16,10 +16,10 @@
  */
 import { useEffect, useState } from "react";
 import { coreModuleTable, osAppLabels, type CoreModule } from "../../catalog";
-import { ShellChrome } from "@/shell/ShellChrome";
-import { DocsNav, type DocsSection } from "./nav.tsx";
-import { DocsCard, DocsCode } from "./card.tsx";
-import { DocsModules } from "./modules.tsx";
+import { ShellChrome } from "@/componentes/shell/ShellChrome";
+import { DocsNav, type DocsSection } from "../componentes/docs/nav.tsx";
+import { DocsCard, DocsCode } from "../componentes/docs/card.tsx";
+import { DocsModules } from "../componentes/docs/modules.tsx";
 
 const endpoints = ["GET /health", "GET /models", "POST /chat"];
 

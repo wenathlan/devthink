@@ -13,9 +13,9 @@
  * the dtw kit.
  */
 import { useEffect, useState } from "react";
-import { ShellChrome } from "@/shell/ShellChrome";
+import { ShellChrome } from "@/componentes/shell/ShellChrome";
 import { osAppLabels, type Rung, releaseLadder } from "../../catalog";
-import { HistoryLadder } from "./historyladder.tsx";
+import { HistoryLadder } from "../componentes/history/historyladder.tsx";
 
 /** the window title answers the catalog label row (bare-id fallback). */
 const HISTORY_LABEL = osAppLabels().history;

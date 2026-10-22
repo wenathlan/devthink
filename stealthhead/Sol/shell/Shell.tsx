@@ -42,10 +42,10 @@ import {
   useState,
 } from "react";
 import { Link, useLocation } from "wouter";
-import { familyrow } from "../../family";
-import { familyurl } from "../../familyurl";
-import { currentTheme, type ThemeName, toggleTheme } from "../../theme";
-import { BrandMark } from "./BrandMark";
+import { familyrow } from "../../family.ts";
+import { familyurl } from "../../familyurl.ts";
+import { currentTheme, type ThemeName, toggleTheme } from "../../theme.ts";
+import { BrandMark } from "../componentes/shell/BrandMark";
 
 /** one entry of the window rail: a page surface of the app with its glyph. */
 export type StartApp = {

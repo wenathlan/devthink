@@ -14,8 +14,8 @@
  */
 import type { CSSProperties } from "react";
 import { familyurl } from "../../familyurl";
-import { AdSlot } from "../shell/adsslot";
-import { ROSTER } from "./roster";
+import { AdSlot } from "../componentes/shell/adsslot.tsx";
+import { ROSTER } from "../componentes/apps/roster.ts";
 
 export function Apps() {
   return (

@@ -14,7 +14,7 @@ import { Component, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { Router as WouterRouter } from "wouter";
 import Sol from "./Sol/Sol";
-import { Toaster } from "./Sol/toast/Toast";
+import { Toaster } from "./Sol/toast/Toast.tsx";
 import { applyTheme } from "./theme";
 import installzoomlock from "./zoomlock";
 import "./Sol/sol.css";

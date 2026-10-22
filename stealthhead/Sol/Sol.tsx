@@ -18,7 +18,7 @@ import MatchAnchor from "./match/match";
 import NotFoundAnchor from "./notfound/notfound";
 import OnboardingAnchor from "./onboarding/onboarding";
 import RankingAnchor from "./ranking/ranking";
-import { Shell } from "./shell/Shell";
+import { Shell } from "./shell/Shell.tsx";
 import WeaponsAnchor from "./weapons/weapons";
 import WorldAnchor from "./world/world";
 

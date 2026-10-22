@@ -34,7 +34,7 @@ import type { CSSProperties } from "react";
 import { useState } from "react";
 import { Link, useRoute } from "wouter";
 import { osAppLabels } from "../../catalog.ts";
-import { ShellChrome } from "@/shell/ShellChrome";
+import { ShellChrome } from "@/componentes/shell/ShellChrome";
 import { config } from "../../gatewayviewconfig.ts";
 import type { gatewayconfig } from "../../gatewayviewdefinition.ts";
 

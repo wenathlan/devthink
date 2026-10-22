@@ -19,7 +19,7 @@ import { WindowConsoleRegular } from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 import { type GatewayVersion, listversions, liveversions, PARSERSTEPS, totalroutes } from "../../gateway";
 import { observeReveals } from "../../reveal";
-import { toast } from "../toast/Toast";
+import { toast } from "../toast/Toast.tsx";
 
 /** the quick-start calls the gateway answers out of the box. */
 const QUICKSTART = `# v1 — zai passthrough no key required

@@ -16,19 +16,19 @@
  * handoff slot.
  */
 
-import { ShellChrome } from "../shell/ShellChrome.tsx";
-import ChatBody from "./chatbody.tsx";
+import { ShellChrome } from "../componentes/shell/ShellChrome.tsx";
+import ChatBody from "../componentes/chat/chatbody.tsx";
 
 export * from "../../chatstate.ts";
 export * from "../../useismobile.ts";
-export * from "./composer.tsx";
-export * from "./markdown.tsx";
-export * from "./sandboxpane.tsx";
-export * from "./sessionpanel.tsx";
-export * from "./sidebar.tsx";
-export * from "./solboticon.tsx";
-export * from "./turn.tsx";
-export * from "./welcome.tsx";
+export * from "../componentes/chat/composer.tsx";
+export * from "../componentes/chat/markdown.tsx";
+export * from "../componentes/chat/sandboxpane.tsx";
+export * from "../componentes/chat/sessionpanel.tsx";
+export * from "../componentes/chat/sidebar.tsx";
+export * from "../componentes/chat/solboticon.tsx";
+export * from "../componentes/chat/turn.tsx";
+export * from "../componentes/chat/welcome.tsx";
 
 export default function Chat() {
   return (

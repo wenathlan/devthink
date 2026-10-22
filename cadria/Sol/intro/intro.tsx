@@ -25,10 +25,10 @@ import { useCallback, useEffect, useState } from "react";
 import { Link } from "wouter";
 import { markOnboardingStage, readOnboardingState } from "../../onboardingstate.ts";
 import { CadriaMark } from "../shell/Shell.tsx";
-import CapabilityRow from "./capabilities.tsx";
-import DemoStrip, { type DemoCue } from "./demo.tsx";
-import IntroFooter from "./footer.tsx";
-import IntroSplash from "./splash.tsx";
+import CapabilityRow from "../componentes/intro/capabilities.tsx";
+import DemoStrip, { type DemoCue } from "../componentes/intro/demo.tsx";
+import IntroFooter from "../componentes/intro/footer.tsx";
+import IntroSplash from "../componentes/intro/splash.tsx";
 
 /** the lifecycle of the opening act: pending (the state read resolves) →
  * playing (the akash floor over the landing) → done (the landing alone). */

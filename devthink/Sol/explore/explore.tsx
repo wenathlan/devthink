@@ -36,19 +36,19 @@ import {
   studioAssets,
   studioTracks } from "../../catalog";
 import { peekonboardingstate } from "../../onboardingstate";
-import { SolLogoMark } from "../panel/logo.tsx";
-import { ShellChrome } from "../shell/ShellChrome.tsx";
-import { DownloadRail } from "./downloadrail.tsx";
-import { ExploreSections } from "./exploresections.tsx";
-import { LaunchDeck, OsSigil, TRYLLE_PRIMARY_STACK } from "./launchdeck.tsx";
-import { HeroWaves } from "./waves.tsx";
-import { WindowEdgeChrome } from "./windowchrome.tsx";
+import { SolLogoMark } from "../componentes/panel/logo.tsx";
+import { ShellChrome } from "../componentes/shell/ShellChrome.tsx";
+import { DownloadRail } from "../componentes/explore/downloadrail.tsx";
+import { ExploreSections } from "../componentes/explore/exploresections.tsx";
+import { LaunchDeck, OsSigil, TRYLLE_PRIMARY_STACK } from "../componentes/explore/launchdeck.tsx";
+import { HeroWaves } from "../componentes/explore/waves.tsx";
+import { WindowEdgeChrome } from "../componentes/explore/windowchrome.tsx";
 
-export * from "./downloadrail.tsx";
-export * from "./exploresections.tsx";
-export * from "./launchdeck.tsx";
-export * from "./waves.tsx";
-export * from "./windowchrome.tsx";
+export * from "../componentes/explore/downloadrail.tsx";
+export * from "../componentes/explore/exploresections.tsx";
+export * from "../componentes/explore/launchdeck.tsx";
+export * from "../componentes/explore/waves.tsx";
+export * from "../componentes/explore/windowchrome.tsx";
 
 type LandingState = "open" | "minimized";
 type FrameState = "windowed" | "maximized";

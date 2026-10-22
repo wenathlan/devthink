@@ -48,7 +48,7 @@ import { Link, useLocation } from "wouter";
 import { FAMILY_SLUGS, familyAccentOf } from "../../family";
 import { familyurl } from "../../familyurl";
 import { currentTheme, type Theme, toggleTheme } from "../../theme";
-import { BrandMark } from "./BrandMark";
+import { BrandMark } from "../componentes/shell/BrandMark.tsx";
 
 /** one entry of the window rail: a page surface of the app with its glyph. */
 export type RailApp = {

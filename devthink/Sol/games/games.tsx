@@ -13,11 +13,11 @@
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "@/shell/ShellChrome";
+import { ShellChrome } from "@/componentes/shell/ShellChrome";
 import { osAppLabels, type RunnerBinary, runnerBinaries } from "../../catalog";
 import { queuebinarylaunch } from "../../runner";
-import { GamesList } from "./gameslist.tsx";
-import { type GamesFilter, GamesNav } from "./gamesnav.tsx";
+import { GamesList } from "../componentes/games/gameslist.tsx";
+import { type GamesFilter, GamesNav } from "../componentes/games/gamesnav.tsx";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */
