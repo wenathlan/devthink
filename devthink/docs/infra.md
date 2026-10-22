@@ -184,6 +184,15 @@ nothing touches the person hardware: the site becomes a sandbox when the person 
 | Cdn lane | Saddle. the cdn of about 45 cdns is fetched inside the sandbox via vfs, never in the person browser, and the person chooses no modality: the platform resolves the join of all as the nuclear modality. "45 cdns inside" |
 | Profiles | Hardware. the profiles ride lite 2 vcpu 0 vgpu 2gb, balanced 4 0.5 8, max 8 1 16; sandbox equals account with the immutable ghcr image versus the uuid instance, the install cd versus the save game. "lite balanced max" |
 | Plan quota | Storage. the quota rides the plan through chunks up to the terabyte scale and never a literal fixed size. "quota by plan" |
+| Sandbox models | Competitor. the market rides four sandbox models and the platform resolves the join of all: the pod per conversation of zai grok and manus, the local in browser sandbox of bolt aistudio and arena, the full vm with screen of manus vnc and grok headless, and the hybrid of local first with versioned storage outside. "4 models" |
+| Session protocol | Chat. one websocket per session carries everything: token streaming, sandbox state, filesystem rpc and heartbeat, opened with a session create that negotiates the protocol capabilities and the client toolsets, the conversation born as an attachment of the ws session with rest only for reading and persistence. "one ws per session" |
+| Sandbox handshake | Sandbox. the sandbox rises on the first send with discovery never hand built urls: the up request answers an sse of states checking quota ok initializing ready with the pod id and the explicit quotas of global per minute and per 4 hours in the handshake itself. "checking quota initializing ready" |
+| Preview | Sandbox. the preview lives on its own subdomain per session with an ephemeral jwt of 300 seconds carrying the session and port claims, and the dev server state arrives as an event with the detected frameworks before the ready. "preview subdomain jwt 300s" |
+| Capabilities event | Sandbox. the image announces its capabilities as an event of node git ffmpeg playwright vercel, and the interface turns features on and off by the real capacity of the container; a generic rpc on the same ws serves the filesystem and the task plan with typed errors before the bind. "capabilities event" |
+| Versioned storage | Sandbox. the code survives the sandbox: the codestorage carries the repo id and the commit sha, every write generates a version uuid, and the git repo rides outside the vm. "commit sha versions" |
+| Agent hygiene | Chat. the cheap model generates the title and summary on a dedicated endpoint, the agent actions surface as chips of wrote files and ran commands, the response carries the deep link rid, and the agent browser runs headless inside the sandbox never in the visitor browser. "cheap title chips" |
+| Credentials | Sandbox. every generated app rides an ephemeral token of its own with the access request of toggled permissions and its own secrets, never the account of the person. "ephemeral token per app" |
+| No captcha | Sandbox. no captcha exists anywhere in the flow: the captchas of the competitors are eliminated by the self hosted infra, the flow stays click, message, sandbox progress, agent chips, live preview, download deploy. "zero captcha" |
 
 ## Accounts, Payment and Chat
 
@@ -369,6 +378,32 @@ the site roles and the absorbed apps.
 | Owni akash | Absorbed. the owni rides the os as the gallery with the providers surface, the akash surface becomes the site builder and hosting manager dashboard, the soflowx becomes the social dev surface, the newschimp rides ansi art. "absorbed roster" |
 | Mimetypes | Infra. the mimetypes file of more than 28 thousand lines and 5 thousand types feeds saddle and the servers, and the domains become runners and keepers with the communication riding mime types. "mimetypes" |
 
+## The Competitor Feature Map
+
+the features the market already proves, mapped screen by screen and wire by wire from the captured sessions; every competitor feature enters the app that owns the domain, self hosted with no captcha and no usage billing of a third party.
+
+| Competitor | Platform | Features the family adopts |
+|--------|--------|
+| trylle | Agent | the magic session of chat plus sandbox with the chosen repo, os, region, model and effort, the unified inbox of prs issues and reviews, the onboarding accordion with the own cli key and auth, the import from github with 2 way sync, the level and balance card always visible in the sidebar, the command palette of ctrl k. "magic sessions" |
+| zai | Agent | the workspace up orchestrator with the sse of states and the quotas in the handshake, the pod bound to the chat id, the preview on the chat subdomain, the versioned storage of one uuid per write, the openai style message tree with parent and children ids, the custom sse with phases, the scene config of recommended prompts per scene, the feature quota summary of limit used remaining per feature. "workspaces up" |
+| grok build | Agent | the single ws message gateway with the capability negotiation, the named channels separating the answer from the thinking, the response persisted with the rid deep link, the rpc filesystem on the same ws with the typed error before the bind, the cheap polling of preview status before the server running event, the connector consent box of what it does private credentials read only scope third party disclaimer, the imagine presets, the automations catalog, the scheduled tasks, the private mode. "mgw ws" |
+| manus | Agent | the socket io with jwt handshake and the typed events of tool used live status plan update sandbox update computer activity agent error, the regional vm with the web port and the vnc port plus otp, the preview as the plain http server on the configured port, the publish engine of clean checkpoint build with reserved paths and audited cache headers, the two cron flavors of heartbeat http and agent session, the platform capabilities of managed db oauth stripe storage llm invoke and notify, the e2b like sandbox with the runtime daemon, the env in two layers of platform and session, the skill marketplace with version hashes. "socket io vnc" |
+| bolt | Agent | the fork of starter with the template classifier answering the starter id and files, the codestorage with the commit sha, the collaboration ws of presence stream start chat changed queue updated, the local webcontainer first with the pod as the heavy option, the title and summary by the cheap model, the action counter with good bad per message, the explicit token quota of per day and per month. "template classifier" |
+| arena | Agent | the battle of option a versus option b with the vote, the generation as an evaluation with the stream credentials and the dedicated realtime proxy per run, the rive status animations, the stop generation always visible. "battle a b" |
+| designarena | Agent | the chat id generated on the client with turn loop, the turns as typed entities with input refs and polling, the categories by artifact type, the own drive of the user inside the app, the title by dedicated endpoint, the leaderboards per category. "client chat id" |
+| aistudio | Agent | the applet of id prompt auto title and secrets with the ephemeral token per app, the prompt autocomplete in the builder, the preview client side with cdn esm deps as the free layer, the recent applets with usage counters, the gradient border composer with the connectable data chips. "applet token" |
+| chatgpt | Agent | the scheduled tasks, the projects as conversation folders, the plugin store with oauth install, the codex agent inside the chat, the library of outputs with suggested favorites and folders, the think toggle changing the greeting. "scheduled tasks" |
+| netlify | Deploy | the agent runs as first class activity with the filter, the composer of the agent inside the project, the publish in preview never touching live, the wizard of creation with rewarded credits and starters, the drag and drop deploy, the oauth apps personal tokens and authorized applications triad. "agent runs" |
+| vercel | Deploy | the team spine of projects deployments logs analytics firewall cdn domains storage flags agent sandboxes ai gateway workflows, the sandbox of drives and snapshots with the pre installed agents and the own sign in, the copy prompt for agent pattern on every setup screen, the sub sidebar with the back arrow, the usage radio rows. "copy prompt for agent" |
+| cloudflare | Deploy | the agent readiness with the diagnostics gauge and the share of voice, the ai crawl control with the per crawler grid and the markdown for agents, the ask ai as an api token with per account scopes, the global search with the slash shortcuts, the quick actions column, the pay per crawl. "agent readiness" |
+| gmi | Gateway | the model hub with hot badges, the playground with the llm multimodal workflow tabs and the neon sliders, the test routing of task chips then the cost balanced quality slider then the why this model ranking, the agent marketplace with verified only and registration, the onboarding survey with credit reward, the usage by model with time windows. "test routing" |
+| akash | Own. | the own cms readapts: the modal that expands fullscreen on focus, the floating dock, the component library with preview, the ai in the editor, the trash of 30 days, the dns manager, the dual desktop mobile; the fake login becomes the devthink auth, the localstorage becomes the own db, the gemini only becomes the multi provider matrix. "akash readapt" |
+
+| Design mix | Source | The grammar adopted |
+|--------|--------|
+| The blend | Ruler. brave chrome codex astra vivaldi windows 10 11 with the big store banners, apple silicon, awwwards saas and trylle cuteness: floating pill navs, window modals for settings, big hero banners on home, mixed sans serif italic headlines with deep gradients, mono for technical data, colored state labels, drag and drop cards, plan and balance always visible, micro trust lines under cta. "the blend" |
+| Component law | Ruler. page equals folder equals sub app: the anchor imports the subanchors, each subanchor references its loose components, the settings click opens the settings page as a floating window never inline, and the official components of each page ride the official catalog. "anchor subanchor folder" |
+
 ## Processes
 
 the ladder, the master plan and the walking of any new corpus.
@@ -420,10 +455,11 @@ the consolidation and the pending waves of this operation.
 | code | 12 | logics, copy law, quality, runtimes |
 | engines | 6 | catalog, universal library, pins |
 | data | 8 | vault, chunks, unified db, faun |
-| sandbox | 6 | modalities, zero touch, quotas |
+| sandbox | 16 | modalities, zero touch, quotas, competitor sandbox models |
 | accounts | 9 | auth, plans, chat grammar |
 | build | 8 | workflows, assets, ladder, bump |
 | security | 8 | crypto, binding, tls, devtools |
+| competitor map | 14 | the features of every captured platform |
 | per app | 8 | the feature maps of every app |
 | processes | 6 | ladder, master plan, corpus, skills |
 | checklist | 10 | the ten points before delivery |
@@ -439,6 +475,7 @@ the consolidation and the pending waves of this operation.
 . the local neodocs corpus root. C:\allan\docs\neodocs
 . the local rascunho and session folder. C:\allan\docs\neodocs\outros.devthink\md
 . the living institutional docs of the devthink app. C:\allan\docs\devthink\devthink\docs
+. the competitor screen captures of the thirteen platforms with the wire flows. C:\allan\docs\neodocs\outros.devthink\md\telas-design.md
 . the architecture skill this format obeys. C:\Users\nathalan\.config\opencode\skills\architecture\SKILL.md
 . the devthink repository. https://github.com/wenathlan/devthink
 . the allan docs root. https://github.com/iakadion/allan/tree/main/docs
