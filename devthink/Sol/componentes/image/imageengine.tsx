@@ -4,8 +4,8 @@
  * catalog has not answered. Loose component of the image page.
  */
 import {ImageRegular} from "@fluentui/react-icons";
-import type { NativeApp } from "../../catalog";
-import { osText } from "../../oslabels.ts";
+import type { NativeApp } from "../../../catalog";
+import { osText } from "../../../oslabels.ts";
 
 export function ImageEngine({ app }: { app: NativeApp | undefined }) {
   return (

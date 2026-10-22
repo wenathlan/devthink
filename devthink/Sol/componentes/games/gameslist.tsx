@@ -4,8 +4,8 @@
  * the games page.
  */
 import {PlayFilled} from "@fluentui/react-icons";
-import type { RunnerBinary } from "../../catalog";
-import { osText } from "../../oslabels.ts";
+import type { RunnerBinary } from "../../../catalog";
+import { osText } from "../../../oslabels.ts";
 
 /** The two leading initials of a real title, cut for the cover glyph. */
 function monogram(title: string): string {

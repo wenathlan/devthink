@@ -8,7 +8,7 @@
  * self-contained (theme utilities only — no stylesheet rules to restyle).
  */
 
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../../oslabels.ts";
 
 export type HeroWavesProps = {
   /** the mono caption of the zone the divider introduces */

@@ -4,7 +4,7 @@
  * recent one leading. Loose component of the projects page.
  */
 import {AppsRegular, ArrowSyncRegular} from "@fluentui/react-icons";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../../oslabels.ts";
 
 type Workspace = { id: string; title: string; updatedAt: string; sessionCount: number };
 

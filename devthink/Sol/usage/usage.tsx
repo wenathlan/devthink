@@ -17,12 +17,12 @@
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "@/shell/ShellChrome";
+import { ShellChrome } from "@/componentes/shell/ShellChrome";
 import { osAppLabels } from "../../catalog";
 import { browserStoreSummary } from "../../db";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { osText } from "../../oslabels.ts";
-import { type Usage as UsageData, UsageMeasures } from "./usagemeasures.tsx";
+import { type Usage as UsageData, UsageMeasures } from "../componentes/usage/usagemeasures.tsx";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */

@@ -4,8 +4,8 @@
  * Loose component of the audio page.
  */
 import {MusicNote2PlayFilled} from "@fluentui/react-icons";
-import type { StudioTrack } from "../../catalog";
-import { osText } from "../../oslabels.ts";
+import type { StudioTrack } from "../../../catalog";
+import { osText } from "../../../oslabels.ts";
 
 export function MusicTracks({
   rows,

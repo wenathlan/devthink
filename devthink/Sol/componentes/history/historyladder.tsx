@@ -5,8 +5,8 @@
  * page.
  */
 import {HistoryRegular} from "@fluentui/react-icons";
-import type { Rung } from "../../catalog";
-import { osText } from "../../oslabels.ts";
+import type { Rung } from "../../../catalog";
+import { osText } from "../../../oslabels.ts";
 
 export function HistoryLadder({
   rows,

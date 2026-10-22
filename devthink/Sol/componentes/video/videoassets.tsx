@@ -4,8 +4,8 @@
  * Loose component of the video page.
  */
 import {MoviesAndTvFilled} from "@fluentui/react-icons";
-import type { StudioAsset } from "../../catalog";
-import { osText } from "../../oslabels.ts";
+import type { StudioAsset } from "../../../catalog";
+import { osText } from "../../../oslabels.ts";
 
 export function VideoAssets({
   rows,

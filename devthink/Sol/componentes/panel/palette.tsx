@@ -9,7 +9,7 @@
  * dividers, the sun-tinted selection tick of the active row. */
 import {KeyboardRegular as Command, SearchRegular as Search, DismissRegular as X} from "@fluentui/react-icons";
 import { type KeyboardEvent as ReactKeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
-import { osPaletteCommands, osText } from "../../oslabels.ts";
+import { osPaletteCommands, osText } from "../../../oslabels.ts";
 
 type CommandPaletteProps = { open: boolean; onClose: () => void; onAction: (action: string) => void };
 

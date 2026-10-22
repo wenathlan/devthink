@@ -27,8 +27,8 @@
 import {ArrowUpRightRegular as ArrowUpRight} from "@fluentui/react-icons";
 import { type CSSProperties, type FormEvent, type ReactNode, useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
-import { DESKTOP_APPS, type DesktopApp, isFamilyApp } from "../../appregistry.ts";
-import { osText } from "../../oslabels.ts";
+import { DESKTOP_APPS, type DesktopApp, isFamilyApp } from "../../../appregistry.ts";
+import { osText } from "../../../oslabels.ts";
 import { AppTile } from "../shell/apptile.tsx";
 import { HeroWaves } from "./waves.tsx";
 

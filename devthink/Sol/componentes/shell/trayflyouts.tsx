@@ -21,7 +21,7 @@
 import type {FluentIcon as LucideIcon} from "@fluentui/react-icons";
 import { BluetoothRegular as Bluetooth, ChevronLeftRegular as ChevronLeft, ChevronRightRegular as ChevronRight, ColorRegular as Contrast, DarkThemeRegular as MoonStar, Cellular5GRegular as Signal, WeatherSunnyRegular as Sun, Speaker1Regular as Volume2, Wifi1Regular as Wifi } from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
-import { osCalendarWeekdays, osText } from "../../oslabels.ts";
+import { osCalendarWeekdays, osText } from "../../../oslabels.ts";
 
 /** tracks the os reduced-motion preference */
 export function useReducedMotion(): boolean {

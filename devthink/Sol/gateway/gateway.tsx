@@ -42,7 +42,7 @@ import {
   osGatewayUsageBlock,
   osText,
 } from "../../oslabels.ts";
-import { ShellChrome } from "@/shell/ShellChrome";
+import { ShellChrome } from "@/componentes/shell/ShellChrome";
 import { config } from "../../gatewayviewconfig.ts";
 import type { gatewayconfig } from "../../gatewayviewdefinition.ts";
 

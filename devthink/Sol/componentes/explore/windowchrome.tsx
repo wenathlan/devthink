@@ -13,7 +13,7 @@
 
 import {CopyRegular as Copy, SubtractRegular as Minus, StopRegular as Square, DismissRegular as X} from "@fluentui/react-icons";
 import { useEffect, useRef, useState } from "react";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../../oslabels.ts";
 import { SolLogoMark } from "../panel/logo.tsx";
 
 /** the top strip (px) that summons the chrome */

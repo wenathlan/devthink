@@ -13,7 +13,7 @@
  * key actions the on-screen keys answer while the body holds focus.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ShellChrome } from "@/shell/ShellChrome";
+import { ShellChrome } from "@/componentes/shell/ShellChrome";
 import {
   applyKey,
   type CalculatorKeyAction,
@@ -26,9 +26,9 @@ import {
   memorySubtract } from "../../calculator";
 import { osAppLabels } from "../../catalog";
 import { osText } from "../../oslabels.ts";
-import { CalculatorDisplay } from "./calculatordisplay.tsx";
-import { CalculatorHistory, type CalculatorHistoryRow } from "./calculatorhistory.tsx";
-import { CalculatorKeypad, type CalculatorMemoryKey } from "./calculatorkeypad.tsx";
+import { CalculatorDisplay } from "../componentes/calculator/calculatordisplay.tsx";
+import { CalculatorHistory, type CalculatorHistoryRow } from "../componentes/calculator/calculatorhistory.tsx";
+import { CalculatorKeypad, type CalculatorMemoryKey } from "../componentes/calculator/calculatorkeypad.tsx";
 
 /** how many answers the history keeps before the oldest one leaves. */
 const HISTORY_LIMIT = 8;

@@ -4,8 +4,8 @@
  * catalog has not answered. Loose component of the video page.
  */
 import {MoviesAndTvRegular} from "@fluentui/react-icons";
-import type { NativeApp } from "../../catalog";
-import { osText } from "../../oslabels.ts";
+import type { NativeApp } from "../../../catalog";
+import { osText } from "../../../oslabels.ts";
 
 export function VideoEngine({ app }: { app: NativeApp | undefined }) {
   return (

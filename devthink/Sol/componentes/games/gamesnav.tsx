@@ -5,7 +5,7 @@
  * of the games page.
  */
 import {AppGenericRegular, BoardGamesRegular, GridRegular} from "@fluentui/react-icons";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../../oslabels.ts";
 
 export type GamesFilter = "all" | "game" | "application";
 

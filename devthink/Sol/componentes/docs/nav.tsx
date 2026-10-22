@@ -4,7 +4,7 @@
  * quiet hover wash (the docs skins at the tail of sol.css carry the touch
  * law). Loose component of the docs page.
  */
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../../oslabels.ts";
 
 export type DocsSection = { id: string; label: string };
 

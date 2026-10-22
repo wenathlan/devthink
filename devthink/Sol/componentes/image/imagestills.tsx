@@ -4,8 +4,8 @@
  * Loose component of the image page.
  */
 import {PlayFilled} from "@fluentui/react-icons";
-import type { StudioAsset } from "../../catalog";
-import { osText } from "../../oslabels.ts";
+import type { StudioAsset } from "../../../catalog";
+import { osText } from "../../../oslabels.ts";
 
 /** megapixelsOf — the still's real pixel area from its catalog size
  * ("4032×3024" → 12.2mp); unparseable sizes answer null and the row skips

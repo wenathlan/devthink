@@ -31,8 +31,8 @@ import {
   useRef,
   useState } from "react";
 import { useLocation } from "wouter";
-import type { DesktopApp } from "../../appregistry.ts";
-import { familyurl } from "../../deploybase.ts";
+import type { DesktopApp } from "../../../appregistry.ts";
+import { familyurl } from "../../../deploybase.ts";
 import {
   BAND_BOTTOM_PX,
   BAND_TOP_PX,
@@ -52,9 +52,9 @@ import {
   SNAP_STEP_Y,
   saveIconSpots,
   sortAppsByKind,
-  sortAppsByName } from "../../desktopstate.ts";
-import { useIsMobile } from "../../useismobile.ts";
-import { osText } from "../../oslabels.ts";
+  sortAppsByName } from "../../../desktopstate.ts";
+import { useIsMobile } from "../../../useismobile.ts";
+import { osText } from "../../../oslabels.ts";
 import { AppTile } from "../shell/apptile.tsx";
 import { DesktopMenu, type MenuEntry } from "./desktopmenu.tsx";
 import { SolLogoMark } from "./logo.tsx";

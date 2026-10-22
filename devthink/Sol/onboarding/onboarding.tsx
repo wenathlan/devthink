@@ -23,10 +23,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { writeonboardingstage } from "../../onboardingstate";
 import { osText } from "../../oslabels.ts";
-import { SolLogoMark } from "../panel/logo.tsx";
-import { ONBOARDING_STEPS, StepArt } from "./steps.tsx";
+import { SolLogoMark } from "../componentes/panel/logo.tsx";
+import { ONBOARDING_STEPS, StepArt } from "../componentes/onboarding/steps.tsx";
 
-export * from "./steps.tsx";
+export * from "../componentes/onboarding/steps.tsx";
 
 /** The finish target of the flow: explore is the free SaaS surface. */
 export const ONBOARDING_HANDOVER = "/explore";

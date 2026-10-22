@@ -5,7 +5,7 @@
  * from every sync adapter. Loose component of the providers page.
  */
 import {DeleteRegular, KeyRegular} from "@fluentui/react-icons";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../../oslabels.ts";
 
 type Provider = { id: string; protocol: string; env: string };
 

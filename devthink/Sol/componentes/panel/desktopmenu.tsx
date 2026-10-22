@@ -23,8 +23,8 @@ import {
   useLayoutEffect,
   useRef,
   useState } from "react";
-import { clampNumber } from "../../desktopstate.ts";
-import { osText } from "../../oslabels.ts";
+import { clampNumber } from "../../../desktopstate.ts";
+import { osText } from "../../../oslabels.ts";
 
 /** one entry of a context menu */
 export type MenuEntry =

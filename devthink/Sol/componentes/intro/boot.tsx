@@ -11,9 +11,9 @@
 import {ArrowRightRegular as ArrowRight} from "@fluentui/react-icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
-import { prefersReducedMotion } from "../../akash.ts";
-import { browserIdentity, readBrowserPreferences, saveBrowserPreference } from "../../db.ts";
-import { osText } from "../../oslabels.ts";
+import { prefersReducedMotion } from "../../../akash.ts";
+import { browserIdentity, readBrowserPreferences, saveBrowserPreference } from "../../../db.ts";
+import { osText } from "../../../oslabels.ts";
 import { SolLogoMark } from "../panel/logo.tsx";
 
 const BOOT_CSS = `

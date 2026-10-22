@@ -3,8 +3,8 @@
  * hairline rows, one row per core module with its name in mono and its
  * responsibility beside it. Loose component of the docs page.
  */
-import type { CoreModule } from "../../catalog";
-import { osText } from "../../oslabels.ts";
+import type { CoreModule } from "../../../catalog";
+import { osText } from "../../../oslabels.ts";
 
 export function DocsModules({ modules }: { modules: CoreModule[] }) {
   return (

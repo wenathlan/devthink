@@ -43,9 +43,9 @@
 import {LockClosedRegular as Lock, SearchRegular as Search, Wifi1Regular as Wifi, DismissRegular as X} from "@fluentui/react-icons";
 import { type CSSProperties, type RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
-import { DESKTOP_APPS, type DesktopApp, searchDesktopApps } from "../../appregistry.ts";
-import { osText } from "../../oslabels.ts";
-import { loadrecentapps, pushrecentapp } from "../../recentapps.ts";
+import { DESKTOP_APPS, type DesktopApp, searchDesktopApps } from "../../../appregistry.ts";
+import { osText } from "../../../oslabels.ts";
+import { loadrecentapps, pushrecentapp } from "../../../recentapps.ts";
 import { SolLogoMark } from "../panel/logo.tsx";
 import { AppTile } from "./apptile.tsx";
 import { JumpList, loadTaskbarPins, saveTaskbarPins } from "./jumpmenu.tsx";

@@ -4,8 +4,8 @@
  * answering with the key action the pure logic module understands. Loose
  * component of the calculator page.
  */
-import type { CalculatorKeyAction } from "../../calculator";
-import { osText } from "../../oslabels.ts";
+import type { CalculatorKeyAction } from "../../../calculator";
+import { osText } from "../../../oslabels.ts";
 
 /** one kind of memory key the strip answers with. */
 export type CalculatorMemoryKey = "mc" | "mr" | "m+" | "m-";

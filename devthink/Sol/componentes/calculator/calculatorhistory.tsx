@@ -5,7 +5,7 @@
  * not answered anything yet. Loose component of the calculator page.
  */
 import {HistoryRegular} from "@fluentui/react-icons";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../../oslabels.ts";
 
 /** one answered line of the history: the expression, the answer and the id
  * that keeps the list keys honest when the same line answers twice. */

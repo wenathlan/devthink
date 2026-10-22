@@ -4,7 +4,7 @@
  * 40px header. Loose components of the docs page.
  */
 import { useState } from "react";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../../oslabels.ts";
 
 /** DocsCard — one content card: the title bar and the body stack. */
 export function DocsCard({ title, children }: { title: string; children: React.ReactNode }) {

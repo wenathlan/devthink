@@ -12,7 +12,7 @@
  * the gtx translation runs at runtime.
  */
 import {ArrowUpRightRegular as ArrowUpRight, CubeRegular as Boxes, type FluentIcon, GlobeRegular as Globe, PuzzlePieceRegular as Puzzle, WindowConsoleRegular as SquareTerminal } from "@fluentui/react-icons";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../../oslabels.ts";
 
 /** the baked release version (vite define — see vite.config.ts) */
 declare const __dtversion__: string;

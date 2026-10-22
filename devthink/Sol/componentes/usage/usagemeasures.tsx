@@ -4,7 +4,7 @@
  * rows with their real values. Loose component of the usage page.
  */
 import {DatabaseRegular, PulseRegular, TabRegular} from "@fluentui/react-icons";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../../oslabels.ts";
 
 /** one durable measure the ledger answers with. */
 export type Usage = {

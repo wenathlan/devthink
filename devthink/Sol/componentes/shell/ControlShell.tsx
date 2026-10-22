@@ -22,7 +22,7 @@ import {
   pagestageStyle,
   stagedEntrance } from "./InstitutionalChrome.tsx";
 import { ShellChrome } from "./ShellChrome.tsx";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../../oslabels.ts";
 import { useReducedMotion } from "./trayflyouts.tsx";
 
 type ControlShellProps = {

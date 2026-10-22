@@ -10,8 +10,8 @@
  * motion; this file only marks the beat).
  */
 
-import { DESKTOP_APPS, type DesktopApp } from "../../appregistry.ts";
-import { osOnboardingSteps } from "../../oslabels.ts";
+import { DESKTOP_APPS, type DesktopApp } from "../../../appregistry.ts";
+import { osOnboardingSteps } from "../../../oslabels.ts";
 import { SolLogoMark } from "../panel/logo.tsx";
 import { AppTile } from "../shell/apptile.tsx";
 
