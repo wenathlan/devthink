@@ -14241,3 +14241,705 @@ span[data-tile] {
 .plans-confirm:disabled { opacity: 0.6; cursor: wait; }
 .plans-back { color: var(--accent, #4cc2ff); text-decoration: none; }
 .plans-back:hover { text-decoration: underline; }
+
+/* ==========================================================================
+   the wave 3 grammar pass — the reference redesign lands: the composer
+   glass dock with the resting pill, the turn timeline with the reasoning
+   chips and the streaming caret, the solbot mark motion states, the
+   welcome recents row, the rail search with pin and date ladder, the
+   session inspector memory, instructions and export. every block answers
+   the design.chat.spec.md decisions; every motion inert under the
+   reduced-motion guards at the close.
+   ========================================================================== */
+
+/* ---- the composer glass dock (w3 a) ---- */
+
+/* .dtc-well — the fill moves to the glass layer (the inline overlay the
+   component carries): the shell keeps the border, the radius and the dock
+   shadow only; neutralizes the base, the focus and the light fills */
+.dtc-well,
+.dtc-well:focus-within,
+[data-theme="light"] .dtc-well {
+  background: transparent;
+}
+
+/* .dtc-well__glass — the edge: the glass washes over the shell border, so
+   the hairline rides the glass layer itself and walks the border tokens
+   (rest, hover, focus-within); border-radius comes from the inline
+   inherit so the pill morph keeps its edge */
+.dtc-well__glass {
+  box-shadow: inset 0 0 0 1px var(--chat-input-border);
+}
+
+.dtc-well:hover .dtc-well__glass {
+  box-shadow: inset 0 0 0 1px var(--chat-input-border-hover);
+}
+
+.dtc-well:focus-within .dtc-well__glass {
+  box-shadow: inset 0 0 0 1px var(--chat-input-border-focus);
+}
+
+/* .dtc-send--busy — the submitting morph: the gateway ring rides the 32px
+   send key and turns; inert under the reduced motion flag */
+@keyframes dtcSendSpin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.dtc-send--busy .dtc-send__spin {
+  width: 14px;
+  height: 14px;
+  animation: dtcSendSpin 700ms linear infinite;
+}
+
+[data-motion="reduced"] .dtc-send--busy .dtc-send__spin {
+  animation: none;
+}
+
+/* ---- the turn timeline grammar (w3 b) ---- */
+
+/* the cognition live label — the violet gradient sweep while the trace
+   streams (the decided shimmer law) */
+.cognition-live {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--sol-traj-reasoning) 45%, var(--sol-muted)) 0%,
+    var(--sol-traj-reasoning) 28%,
+    color-mix(in srgb, var(--sol-traj-reasoning) 45%, var(--sol-muted)) 55%,
+    var(--sol-traj-reasoning) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: cognitionSweep 2.6s linear infinite;
+}
+
+@keyframes cognitionSweep {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+/* the live cognition surface: the violet border lifts a step while the
+   trace streams */
+.dtc-cog[data-live="true"] {
+  border-color: color-mix(in srgb, var(--sol-traj-reasoning) 34%, transparent);
+}
+
+/* the cognition head re-weighed for the chip grammar */
+.dtc-cog__head .dtc-cog__label {
+  flex: none;
+}
+
+.dtc-cog__elapsed {
+  flex: none;
+  margin-left: 4px;
+  font-style: italic;
+  font-variant-numeric: tabular-nums;
+  color: color-mix(in srgb, var(--sol-muted) 85%, var(--sol-traj-reasoning));
+}
+
+/* the one-line rolling summary of the live trace (collapsed head) */
+.dtc-cog__head .dtc-cog__roll {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--sol-faint);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 18px, #000 calc(100% - 18px), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 18px, #000 calc(100% - 18px), transparent);
+}
+
+/* the expanded trace — the max-h-96 scroller law of the decided spec */
+.dtc-cog__body {
+  max-height: 384px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* the streaming caret — the 2px current-color block riding the text end */
+.dtc-bubble--assistant.is-streaming .dtc-md {
+  display: contents;
+}
+
+.dtc-bubble--assistant.is-streaming .dtc-md > p:last-child {
+  display: inline;
+}
+
+.dtc-bubble--assistant.is-streaming .dtc-md > *:has(+ p:last-child) {
+  margin-bottom: 10px;
+}
+
+.stream-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 3px;
+  background: currentColor;
+  vertical-align: -0.125em;
+  animation: streamCaretBlink 1s steps(1) infinite;
+}
+
+@keyframes streamCaretBlink {
+  50% { opacity: 0; }
+}
+
+/* the long user message collapse — the measured 176px line */
+.dtc-bubble--user.is-clamped {
+  max-height: 176px;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, #000 72%, transparent);
+  mask-image: linear-gradient(180deg, #000 72%, transparent);
+}
+
+.dtc-expand {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: var(--chat-r-sm);
+  color: var(--sol-muted);
+  background: transparent;
+  font: 500 10px var(--dt-mono);
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  cursor: pointer;
+  transition: color 120ms ease, background 120ms ease;
+}
+
+.dtc-expand:hover {
+  color: var(--sol-text);
+  background: color-mix(in srgb, var(--sol-ink) 8%, transparent);
+}
+
+/* the touch laws of the decided meta economy */
+@media (hover: none), (pointer: coarse) {
+  .dtc-turn .dtc-turn__act {
+    opacity: 1;
+  }
+
+  .dtc-bubble--user.is-clamped {
+    max-height: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .dtc-expand {
+    display: none;
+  }
+}
+
+/* the read aloud key speaking state — the signal-key pattern */
+.dtc-turn__act.is-speaking {
+  opacity: 1;
+  color: var(--sol-primary);
+  background: color-mix(in srgb, var(--sol-primary) 10%, transparent);
+}
+
+/* the verdict keys — the landed verdict holds the accent with the filled
+   glyph */
+.dtc-turn__act--verdict[aria-pressed="true"] {
+  opacity: 1;
+  color: var(--sol-primary);
+  background: color-mix(in srgb, var(--sol-primary) 10%, transparent);
+}
+
+/* ---- the solbot mark (w3 c) — motion keyed by data-state ---- */
+
+.dtc-frame {
+  --dtc-sol: oklch(0.754 0.164 50.4);
+}
+
+[data-theme="light"] .dtc-frame {
+  --dtc-sol: oklch(0.68 0.15 45);
+}
+
+.dtc-solbot {
+  display: block;
+  overflow: visible;
+}
+
+.dtc-solbot[data-state="thinking"] .dtc-solbot__rays {
+  animation: dtcSolTurn 10s linear infinite;
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+}
+
+.dtc-solbot[data-state="streaming"] .dtc-solbot__core {
+  animation: dtcSolBreathe 2s ease-in-out infinite;
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+}
+
+.dtc-solbot[data-state="speaking"] .dtc-solbot__rays {
+  animation: dtcSolPulse 1.8s ease-in-out infinite;
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+}
+
+.dtc-solbot__core {
+  transition: opacity 150ms linear;
+}
+
+.dtc-solbot[data-state="halted"] .dtc-solbot__core {
+  opacity: 0.35;
+}
+
+@keyframes dtcSolTurn {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes dtcSolBreathe {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.72; }
+}
+
+@keyframes dtcSolPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.85; }
+}
+
+/* ---- the welcome row and the rail surface (w3 d) ---- */
+
+.dtc-welcome {
+  container-type: inline-size;
+}
+
+.dtc-welcome__greet {
+  font-size: 1.375rem;
+}
+
+/* the container-query clamp takes over where inline-size containers answer */
+@supports (container-type: inline-size) {
+  .dtc-welcome__greet {
+    font-size: clamp(1.25rem, 5cqw, 1.75rem);
+  }
+}
+
+.dtc-suggest {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  gap: 8px;
+  margin: 0 auto;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.dtc-suggest::-webkit-scrollbar {
+  display: none;
+}
+
+.dtc-suggest__chip:nth-child(2) { animation-delay: 65ms; }
+.dtc-suggest__chip:nth-child(3) { animation-delay: 130ms; }
+.dtc-suggest__chip:nth-child(4) { animation-delay: 195ms; }
+.dtc-suggest__chip:nth-child(5) { animation-delay: 260ms; }
+.dtc-suggest__chip:nth-child(6) { animation-delay: 325ms; }
+
+.dtc-recents {
+  width: min(100%, 30rem);
+  margin-top: 28px;
+  text-align: left;
+}
+
+.dtc-recents__label {
+  margin: 0 0 6px;
+  padding: 0 2px;
+  color: var(--sol-faint);
+  font: 600 10px var(--dt-mono);
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+}
+
+.dtc-recents__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dtc-recents__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--chat-r-lg);
+  background: transparent;
+  color: var(--sol-muted);
+  font: inherit;
+  font-size: var(--chat-t-base);
+  font-weight: 450;
+  text-align: left;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+button.dtc-recents__row {
+  cursor: pointer;
+}
+
+button.dtc-recents__row:hover,
+button.dtc-recents__row:focus-visible {
+  background: rgb(255 255 255 / 5%);
+  color: var(--sol-text);
+}
+
+button.dtc-recents__row:focus-visible {
+  outline: 2px solid var(--sol-primary);
+  outline-offset: -2px;
+}
+
+.dtc-recents__title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dtc-recents__when {
+  flex: none;
+  color: var(--sol-faint);
+  font: 500 var(--chat-t-sm) var(--dt-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+[data-theme="light"] button.dtc-recents__row:hover,
+[data-theme="light"] button.dtc-recents__row:focus-visible {
+  background: rgb(0 0 0 / 5%);
+}
+
+/* the rail search field */
+.dtc-rail__search {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 8px 0 0;
+}
+
+.dtc-rail__field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 4px 0 8px;
+  border: 1px solid var(--chat-input-border);
+  border-radius: var(--chat-r-lg);
+  background: transparent;
+  transition: border-color 150ms ease;
+}
+
+.dtc-rail__field:focus-within {
+  border-color: var(--chat-input-border-hover);
+}
+
+.dtc-rail__field > svg {
+  flex: none;
+  color: var(--sol-faint);
+}
+
+.dtc-rail__input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--sol-text);
+  font: inherit;
+  font-size: var(--chat-t-base);
+  font-weight: 450;
+}
+
+.dtc-rail__input:focus {
+  outline: none;
+}
+
+.dtc-rail__input::placeholder {
+  color: var(--sol-faint);
+}
+
+.dtc-rail__input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.dtc-rail__clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--sol-faint);
+  cursor: pointer;
+  transition: color 150ms ease, background 150ms ease;
+}
+
+.dtc-rail__clear:hover {
+  color: var(--sol-text);
+  background: rgb(255 255 255 / 10%);
+}
+
+[data-theme="light"] .dtc-rail__clear:hover {
+  background: rgb(0 0 0 / 8%);
+}
+
+.dtc-rail__count {
+  margin: 0;
+  padding: 0 2px;
+  color: var(--sol-faint);
+  font: 500 var(--chat-t-sm) var(--dt-mono);
+  letter-spacing: 0.04em;
+}
+
+.dtc-rail__label--pin {
+  color: var(--sol-muted);
+}
+
+/* the row's leading status slot */
+.dtc-item__status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 34px;
+  flex: none;
+  margin-left: 8px;
+  color: var(--sol-muted);
+  pointer-events: none;
+}
+
+.dtc-item__spin {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  border: 2px solid color-mix(in srgb, currentColor 28%, transparent);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: dtcSpin 800ms linear infinite;
+}
+
+@keyframes dtcSpin {
+  to { transform: rotate(360deg); }
+}
+
+.dtc-item__dot {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--sol-error);
+}
+
+/* the pin toggle */
+.dtc-item__pin {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--sol-faint);
+  opacity: 0;
+  transition: opacity 150ms ease, color 150ms ease, background 150ms ease;
+}
+
+.dtc-item__pin::after {
+  content: "";
+  position: absolute;
+  inset: -7px;
+}
+
+.dtc-item:hover .dtc-item__pin,
+.dtc-item__pin:focus-visible {
+  opacity: 1;
+}
+
+.dtc-item__pin:hover {
+  color: var(--sol-text);
+  background: rgb(255 255 255 / 10%);
+}
+
+[data-theme="light"] .dtc-item__pin:hover {
+  background: rgb(0 0 0 / 8%);
+}
+
+.dtc-item__pin.is-on {
+  color: var(--sol-primary);
+}
+
+/* ---- the session inspector seams (w3 e) ---- */
+
+.dtc-project__input {
+  display: block;
+  width: 100%;
+  min-height: 72px;
+  padding: 8px 10px;
+  border: 1px solid var(--chat-input-border);
+  border-radius: 4px;
+  color: var(--sol-text);
+  background: rgb(255 255 255 / 6%);
+  font: 500 11px / 1.6 var(--dt-mono);
+  resize: vertical;
+}
+
+.dtc-project__input::placeholder {
+  color: var(--sol-faint);
+}
+
+.dtc-project__input:focus-visible {
+  outline: 2px solid #dfe5ee;
+  outline-offset: -2px;
+  border-color: rgb(255 255 255 / 20%);
+}
+
+[data-theme="light"] .dtc-project__input:focus-visible {
+  outline-color: #1a1d24;
+}
+
+.dtc-memory__list {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dtc-memory__fact {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px 7px 10px;
+  border: 1px solid var(--chat-input-border);
+  border-radius: 4px;
+  background: rgb(255 255 255 / 4%);
+}
+
+.dtc-memory__text {
+  flex: 1;
+  min-width: 0;
+  color: var(--sol-text);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.dtc-memory__del {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  color: var(--sol-faint);
+  cursor: pointer;
+}
+
+.dtc-memory__del:hover {
+  color: var(--sol-error);
+  background: color-mix(in srgb, var(--sol-error) 12%, transparent);
+}
+
+.dtc-memory__del:focus-visible {
+  outline: 2px solid #dfe5ee;
+  outline-offset: -2px;
+}
+
+[data-theme="light"] .dtc-memory__del:focus-visible {
+  outline-color: #1a1d24;
+}
+
+.dtc-memory__empty {
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px dashed var(--chat-input-border);
+  border-radius: 4px;
+  color: var(--sol-faint);
+  font: 500 10px / 1.6 var(--dt-mono);
+}
+
+.dtc-session__export {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 40px;
+  margin-top: 4px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 4px;
+  color: var(--sol-muted);
+  font: 500 0.8rem var(--dt-sans);
+  cursor: pointer;
+}
+
+.dtc-session__export svg {
+  flex: none;
+  color: var(--sol-faint);
+}
+
+.dtc-session__export:hover:not(:disabled) {
+  color: var(--sol-text);
+  background: rgb(255 255 255 / 8%);
+}
+
+.dtc-session__export:hover:not(:disabled) svg {
+  color: var(--sol-text);
+}
+
+.dtc-session__export:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+[data-theme="light"] .dtc-session__export:hover:not(:disabled) {
+  background: rgb(0 0 0 / 6%);
+}
+
+[data-theme="light"] .dtc-memory__fact,
+[data-theme="light"] .dtc-project__input {
+  background: rgb(0 0 0 / 4%);
+}
+
+/* ---- the wave 3 reduced-motion guard — every new motion idles inert
+   under the os setting and the system preference alike ---- */
+
+[data-motion="reduced"] .cognition-live,
+[data-motion="reduced"] .stream-caret,
+[data-motion="reduced"] .dtc-solbot[data-state="thinking"] .dtc-solbot__rays,
+[data-motion="reduced"] .dtc-solbot[data-state="streaming"] .dtc-solbot__core,
+[data-motion="reduced"] .dtc-solbot[data-state="speaking"] .dtc-solbot__rays,
+[data-motion="reduced"] .dtc-item__spin {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cognition-live,
+  .stream-caret,
+  .dtc-solbot[data-state="thinking"] .dtc-solbot__rays,
+  .dtc-solbot[data-state="streaming"] .dtc-solbot__core,
+  .dtc-solbot[data-state="speaking"] .dtc-solbot__rays,
+  .dtc-item__spin {
+    animation: none;
+  }
+}

@@ -2,10 +2,12 @@
  * sessionpanel.tsx — the right session panel (~320px), a floating acrylic
  * sheet (the start-menu recipe) that the caller mounts on open and unmounts
  * once the 200ms Windows slide-cum-fade exit settles: the active model, the
- * live turn count, the local persistence readout, the active tool flags, the
- * explicit gateway opt-in block and quick links into the existing theme
- * pages. The gateway block is the opt-in contract of the chat (shared with
- * the settings page through os/gatewaybase.ts): the natural state is
+ * live turn count, the local persistence readout, the active tool flags,
+ * the pinned-instructions seam, the saved-memories fact list, the explicit
+ * gateway opt-in block, quick links into the existing theme pages and the
+ * per-session export key (the conversation as a .md download). The gateway
+ * block is the opt-in contract of the chat (shared with the settings page
+ * through os/gatewaybase.ts): the natural state is
  * disconnected, the endpoint is never inferred or pre-filled, registering
  * persists the preference and probes the endpoint for real, and
  * disconnecting confirms inline — no window.confirm. While mounted the
@@ -13,12 +15,46 @@
  * transition runs both ways.
  */
 
-import { PanelRightContractRegular as PanelRightClose } from "@fluentui/react-icons";
+import {
+  ArrowExportRegular as ExportIcon,
+  DismissRegular as Dismiss,
+  PanelRightContractRegular as PanelRightClose,
+} from "@fluentui/react-icons";
 import { type FormEvent, useEffect, useState } from "react";
 import { Link } from "wouter";
-import { CHAT_TOOLS, type ToolId } from "../../chatstate.ts";
+import { CHAT_TOOLS, type ChatSession, type ToolId } from "../../chatstate.ts";
 import { GATEWAY_REQUIRED_COPY, type GatewayRegistration, gatewayStatusLabel } from "../../gatewaybase.ts";
 import { CHAT_NAV } from "./sidebar.tsx";
+
+/** the inspector feature flags — one quiet gate per block that ships ahead
+ * of its wiring. the memory fact list rides its flag so the surface can be
+ * held back, or retired, in one flip without touching the render tree. */
+const PANEL_FEATURES = {
+  memory: true,
+} as const;
+
+/** exportFileName — the session title slugged to a quiet file name: the
+ * non-alphanumerics collapse to dashes and an empty slug falls back to the
+ * honest generic. */
+function exportFileName(title: string): string {
+  const slug = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 48);
+  return `${slug || "chat-session"}.md`;
+}
+
+/** sessionMarkdown — the export body: the title as the one heading, every
+ * turn as its own "## user" / "## assistant" section, nothing invented
+ * between the lines. */
+function sessionMarkdown(session: ChatSession): string {
+  const lines: string[] = [`# ${session.title}`, ""];
+  for (const turn of session.messages) {
+    lines.push(`## ${turn.role}`, "", turn.content, "");
+  }
+  return lines.join("\n");
+}
 
 /**
  * SessionPanel — the inspector of the current conversation.
@@ -30,6 +66,14 @@ import { CHAT_NAV } from "./sidebar.tsx";
  * @param sessionCount conversations persisted on this device.
  * @param tools the tool flags currently on.
  * @param gateway the shared opt-in machine (base, status, register/disconnect).
+ * @param session the active session record — powers the export key; absent
+ *   keeps the export row out of the quick links until the caller wires it.
+ * @param memory the saved facts of the memory block; absent falls back to a
+ *   local list seeded empty (the persistence seam is the caller's).
+ * @param onMemoryChange fires with the next fact list on every delete key.
+ * @param instructions the pinned project instructions; absent falls back to
+ *   a local draft (the persistence seam is the caller's).
+ * @param onInstructionsChange fires with the draft on every keystroke.
  */
 export function SessionPanel({
   open,
@@ -39,6 +83,11 @@ export function SessionPanel({
   sessionCount,
   tools,
   gateway,
+  session,
+  memory,
+  onMemoryChange,
+  instructions,
+  onInstructionsChange,
 }: {
   open: boolean;
   onClose: () => void;
@@ -47,6 +96,11 @@ export function SessionPanel({
   sessionCount: number;
   tools: ToolId[];
   gateway: GatewayRegistration;
+  session?: ChatSession | null;
+  memory?: string[];
+  onMemoryChange?: (facts: string[]) => void;
+  instructions?: string;
+  onInstructionsChange?: (value: string) => void;
 }) {
   const toolLabel =
     tools.length > 0
@@ -62,6 +116,51 @@ export function SessionPanel({
     setEndpointDraft(gateway.base);
   }, [gateway.base]);
   const [confirmArmed, setConfirmArmed] = useState(false);
+
+  /* the pinned-instructions seam: the endpoint-draft grammar — the prop
+   * seeds the local draft, every keystroke updates it and reaches the
+   * caller through the optional callback, so the panel is lightly
+   * editable before the persistence lands. */
+  const [instructionDraft, setInstructionDraft] = useState(instructions ?? "");
+  useEffect(() => {
+    setInstructionDraft(instructions ?? "");
+  }, [instructions]);
+  const editInstructions = (value: string) => {
+    setInstructionDraft(value);
+    onInstructionsChange?.(value);
+  };
+
+  /* the saved-memories lane: the facts arrive as an optional prop and fall
+   * back to a local list seeded empty — the delete keys drive both lanes,
+   * the honest state never claims a save that did not happen. */
+  const [memoryDraft, setMemoryDraft] = useState<string[]>(() => memory ?? []);
+  /* the guard keeps an absent prop inert: the fallback lane only re-seeds
+   * when the caller actually hands facts over, and it keeps the last seeded
+   * list if the prop retreats to undefined. */
+  useEffect(() => {
+    if (memory !== undefined) setMemoryDraft(memory);
+  }, [memory]);
+  const forgetFact = (index: number) => {
+    const next = memoryDraft.filter((_, i) => i !== index);
+    setMemoryDraft(next);
+    onMemoryChange?.(next);
+  };
+
+  /* the export key: the conversation folded to markdown and handed to the
+   * browser's own download lane — a blob url minted, clicked and revoked in
+   * the same breath; no service, no clipboard detour. */
+  const downloadSession = () => {
+    if (!session || session.messages.length === 0) return;
+    const blob = new Blob([sessionMarkdown(session)], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = exportFileName(session.title);
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
+  };
 
   const submitRegister = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -110,6 +209,47 @@ export function SessionPanel({
           </div>
         </dl>
       </section>
+
+      <section className="dtc-session__sec" aria-label="Project instructions">
+        <p className="dtc-session__label">Project</p>
+        <textarea
+          className="dtc-project__input"
+          value={instructionDraft}
+          onChange={(event) => editInstructions(event.target.value)}
+          placeholder="pinned instructions for the conversation"
+          aria-label="Pinned instructions"
+          rows={3}
+          tabIndex={open ? 0 : -1}
+        />
+        <p className="dtc-gw__hint">{onInstructionsChange ? "saved on this device" : "a local draft for now"}</p>
+      </section>
+
+      {PANEL_FEATURES.memory ? (
+        <section className="dtc-session__sec" aria-label="Saved memory">
+          <p className="dtc-session__label">Memory</p>
+          {memoryDraft.length > 0 ? (
+            <ul className="dtc-memory__list">
+              {memoryDraft.map((fact, index) => (
+                <li key={`${index}-${fact}`} className="dtc-memory__fact">
+                  <span className="dtc-memory__text">{fact}</span>
+                  <button
+                    type="button"
+                    className="dtc-memory__del"
+                    onClick={() => forgetFact(index)}
+                    aria-label={`Delete fact: ${fact}`}
+                    title="Delete this fact"
+                    tabIndex={open ? 0 : -1}
+                  >
+                    <Dismiss fontSize={13} aria-hidden="true" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="dtc-memory__empty">nothing saved on this device</p>
+          )}
+        </section>
+      ) : null}
 
       <section className="dtc-session__sec dtc-gw" aria-label="Gateway registration">
         <p className="dtc-session__label">Gateway</p>
@@ -244,6 +384,20 @@ export function SessionPanel({
             );
           })}
         </nav>
+        {session ? (
+          <button
+            type="button"
+            className="dtc-session__export"
+            onClick={downloadSession}
+            disabled={session.messages.length === 0}
+            aria-label="Export conversation as markdown"
+            title={session.messages.length === 0 ? "nothing to export yet" : "Download this conversation as markdown"}
+            tabIndex={open ? 0 : -1}
+          >
+            <ExportIcon fontSize={15} aria-hidden="true" />
+            <span>Export .md</span>
+          </button>
+        ) : null}
       </section>
 
       <p className="dtc-session__foot">History stays in this browser</p>

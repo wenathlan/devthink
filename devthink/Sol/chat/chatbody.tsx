@@ -48,8 +48,9 @@ import { Composer } from "./composer.tsx";
 import { SandboxPane } from "./sandboxpane.tsx";
 import { SessionPanel } from "./sessionpanel.tsx";
 import { Sidebar } from "./sidebar.tsx";
+import { type SolBotState } from "./solboticon.tsx";
 import { DaySeparator, ErrorRow, dayKey, ThinkingRow, Turn } from "./turn.tsx";
-import { Welcome } from "./welcome.tsx";
+import { Welcome, type RecentConversation } from "./welcome.tsx";
 
 /** The chat slice of the wave atmosphere contract: the C1-01 atmosphere
  * layers (.atmos light source, .grain film) are painted by the theme stylesheet — this guard only guarantees they never sit on
@@ -74,6 +75,11 @@ function ensureChatCss(): void {
  * a hardcoded literal (the bare id keeps the heading honest if the row is
  * missing). */
 const CHAT_LABEL = osAppLabels().chat;
+
+/** the verdict grammar of the turn action rail (the w3 turn contract): the
+ * good/bad keys report through the optional onVerdict prop and the record
+ * stays on this device — never persisted, never sent. */
+type Verdict = "up" | "down";
 
 export default function ChatBody({ embedded }: { embedded?: boolean }) {
   ensureChatCss();
@@ -412,6 +418,34 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     [remove],
   );
 
+  /* the verdict bridge (the w3 turn contract): the per-session map of the
+   * good/bad keys. The turn reports through the optional onVerdict prop —
+   * null reads as the explicit toggle off — the record lives only in this
+   * body (the verdict stays on the device), and the same key twice also
+   * reads as off. The reset effect below clears the map when the
+   * conversation switches — the verdict belongs to the turn it rated,
+   * never to the rail slot. */
+  const [verdicts, setVerdicts] = useState<Record<string, Verdict>>({});
+  const verdictSessionRef = useRef<string>("");
+
+  const recordVerdict = useCallback(
+    (turnId: string, verdict: Verdict | null) => {
+      const next: Record<string, Verdict> = {};
+      for (const [id, mark] of Object.entries(verdicts)) if (id !== turnId) next[id] = mark;
+      if (verdict !== null && verdicts[turnId] !== verdict) next[turnId] = verdict;
+      setVerdicts(next);
+    },
+    [verdicts],
+  );
+
+  /* the session panel seams (the w3 panel contract): the saved-memory fact
+   * list and the pinned project instructions ride this body as local state
+   * — the panel edits through the change callbacks and its export key reads
+   * the active session record; the persistence (the stored records and the
+   * system-prompt stitch) is a later wave's seam. */
+  const [memoryFacts, setMemoryFacts] = useState<string[]>([]);
+  const [instructions, setInstructions] = useState("");
+
   /** openPanel — mounts the panel first; the effect flips the visible state
    * on the next frame so the enter transition plays; a reopen during the
    * exit shows the still-mounted panel right away. */
@@ -550,6 +584,15 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     }
   }, [active]);
 
+  // the verdict map is per-session: the conversation switch resets it (the
+  // map rides the body, the verdicts never outlive their thread)
+  useEffect(() => {
+    const sid = active?.id ?? "";
+    if (verdictSessionRef.current === sid) return;
+    verdictSessionRef.current = sid;
+    setVerdicts({});
+  }, [active?.id]);
+
   // the stream follower: while tokens land, the thread tracks the growth only
   // when the visitor rides the bottom (the classic chat pin — reading history
   // mid-answer never yanks the floor away). A new turn or a status flip always
@@ -605,6 +648,26 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     return row?.context;
   }, [model, models]);
 
+  /** the hero recents slice (the w3 welcome seam): up to three spoken
+   * conversations, newest first — the session list is already newest-first
+   * (upsertSession), the empty shells never surface on the hero, and the
+   * row shape is the sibling's RecentConversation record. */
+  const recents = useMemo<RecentConversation[]>(
+    () =>
+      sessions
+        .filter((session) => session.messages.length > 0)
+        .slice(0, 3)
+        .map((session) => ({ id: session.id, title: session.title, when: session.at })),
+    [sessions],
+  );
+
+  /** the solbot mark state (the w3 icon seam): the phase this body already
+   * tracks — thinking while a round runs before the first answer delta,
+   * streaming while the answer lands, idle otherwise. Threaded into the
+   * sidebar so the rail brand answers the floor; the glyph union lives in
+   * solboticon.tsx (speaking and halted join with their later waves). */
+  const markState: SolBotState = !busy ? "idle" : live?.content ? "streaming" : "thinking";
+
   const empty = !active || active.messages.length === 0;
   /** the sandbox pane docks as a right-side lane while the viewport is wide
    * on the full page; the narrow viewport and the embedded window swap the
@@ -621,6 +684,9 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
         onOpen={open}
         onNew={startFresh}
         onDelete={deleteFromRail}
+        state={markState}
+        runningId={busy && active ? active.id : undefined}
+        errorId={error && active ? active.id : undefined}
       />
       {isMobile && !railCollapsed ? (
         <button type="button" className="dtc-scrim" aria-label="Close sidebar" onClick={() => setRailCollapsed(true)} />
@@ -675,7 +741,12 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
           ) : empty ? (
             <div className="dtc-hero grain" key="hero">
               <div className="dtc-hero__wrap">
-                <Welcome onPick={(t) => void send(t)} gatewayRegistered={gateway.base !== ""} />
+                <Welcome
+                  onPick={(t) => void send(t)}
+                  gatewayRegistered={gateway.base !== ""}
+                  recent={recents}
+                  onOpenRecent={open}
+                />
               </div>
               <div className="dtc-dock">
                 <Composer
@@ -716,6 +787,7 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
                           fresh={m.id === freshId}
                           busy={busy}
                           onEdit={m.role === "user" ? (text) => editTurn(m.id, text) : undefined}
+                          onVerdict={m.role === "assistant" ? (v: Verdict | null) => recordVerdict(m.id, v) : undefined}
                           onRegenerate={
                             m.role === "assistant" && m.id === active.messages[active.messages.length - 1]?.id && !busy
                               ? regenerate
@@ -774,6 +846,11 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
           sessionCount={sessions.length}
           tools={tools}
           gateway={gateway}
+          session={active}
+          memory={memoryFacts}
+          onMemoryChange={setMemoryFacts}
+          instructions={instructions}
+          onInstructionsChange={setInstructions}
         />
       ) : null}
     </div>
