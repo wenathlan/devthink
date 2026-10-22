@@ -34,17 +34,17 @@ import {
 import type { DevThinkTab } from "../../paneltypes.ts";
 import { historypath } from "../../routebase.ts";
 import type { WorkspaceDestination } from "../../workspace.ts";
-import { BootScreen, shouldBoot } from "./boot.tsx";
-import { CommandPalette } from "./palette.tsx";
-import { ShellWorkspace } from "./workspace.tsx";
+import { BootScreen, shouldBoot } from "../componentes/panel/boot.tsx";
+import { CommandPalette } from "../componentes/panel/palette.tsx";
+import { ShellWorkspace } from "../componentes/panel/workspace.tsx";
 
-export * from "./boot.tsx";
-export * from "./desktop.tsx";
-export * from "./logo.tsx";
-export * from "./palette.tsx";
-export * from "./tabs.tsx";
-export * from "./windowframe.tsx";
-export * from "./workspace.tsx";
+export * from "../componentes/panel/boot.tsx";
+export * from "../componentes/panel/desktop.tsx";
+export * from "../componentes/panel/logo.tsx";
+export * from "../componentes/panel/palette.tsx";
+export * from "../componentes/panel/tabs.tsx";
+export * from "../componentes/panel/windowframe.tsx";
+export * from "../componentes/panel/workspace.tsx";
 
 /** The old persisted shell stage ("identity" / "entry" / "shell") is no
  * longer a gate: every value lands on the desktop. The key is retired from

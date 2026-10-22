@@ -33,7 +33,7 @@ import {
   queueOrder,
 } from "../../queue.ts";
 import { modes as RUNNER_MODES, type RunnerMode } from "../../runner.ts";
-import { EmptyState } from "../shell/EmptyState";
+import { EmptyState } from "../componentes/shell/EmptyState.tsx";
 
 /** the seed of the rehearsal queue (shown on the page, pinned by the tests) */
 export const QUEUE_SEED = 731004;

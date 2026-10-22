@@ -14,11 +14,11 @@
  */
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "@/shell/ShellChrome";
+import { ShellChrome } from "@/componentes/shell/ShellChrome";
 import { osAppLabels } from "../../catalog";
 import { browserWorkspaces } from "../../db";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
-import { ProjectRows } from "./projectrows.tsx";
+import { ProjectRows } from "../componentes/projects/projectrows.tsx";
 
 type Workspace = { id: string; title: string; updatedAt: string; sessionCount: number };
 

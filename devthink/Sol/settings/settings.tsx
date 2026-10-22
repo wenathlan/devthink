@@ -14,7 +14,7 @@
  */
 import {ArrowSyncRegular, LocalLanguageRegular, PlugDisconnectedRegular, SettingsRegular} from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
-import { ShellChrome } from "@/shell/ShellChrome";
+import { ShellChrome } from "@/componentes/shell/ShellChrome";
 import { osAppLabels } from "../../catalog";
 import {
   type BrowserStoreSummary,
@@ -25,15 +25,15 @@ import {
 import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { currentlang } from "../../translategtx.ts";
 import { setlanguage } from "../../translatedom.ts";
-import { AutomationMcp } from "./automationmcp.tsx";
-import { GatewayCard } from "./gatewaycard.tsx";
-import { HardDrives } from "./harddrives.tsx";
-import { LocalAccount } from "./identity.tsx";
+import { AutomationMcp } from "../componentes/settings/automationmcp.tsx";
+import { GatewayCard } from "../componentes/settings/gatewaycard.tsx";
+import { HardDrives } from "../componentes/settings/harddrives.tsx";
+import { LocalAccount } from "../componentes/settings/identity.tsx";
 
-export * from "./automationmcp.tsx";
-export * from "./gatewaycard.tsx";
-export * from "./identity.tsx";
-export * from "./pairing.tsx";
+export * from "../componentes/settings/automationmcp.tsx";
+export * from "../componentes/settings/gatewaycard.tsx";
+export * from "../componentes/settings/identity.tsx";
+export * from "../componentes/settings/pairing.tsx";
 
 type SettingsSnapshot = {
   identity: { userId: string; deviceId: string };

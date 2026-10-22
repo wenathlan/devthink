@@ -19,7 +19,7 @@ import {
 import { useMemo, useState } from "react";
 import { type BucketRule, type BucketShelf, retentionLabel, seedRules, shelfOf } from "../../buckets.ts";
 import { formatBytes, seedVault, type VaultObject } from "../../objects.ts";
-import { EmptyState } from "../shell/EmptyState";
+import { EmptyState } from "../componentes/shell/EmptyState.tsx";
 
 /** the seed of the rehearsal shelf (shown on the page, pinned by the tests) */
 export const SHELF_SEED = 912731;

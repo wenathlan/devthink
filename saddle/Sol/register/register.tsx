@@ -17,13 +17,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { apibase, apierrormessage, apifetch, apistatustext } from '../../api';
-import PasswordConfirm from './PasswordConfirm';
-import PasswordMeter from './PasswordMeter';
-import UsernameRules, { usernamere } from './UsernameRules';
+import PasswordConfirm from '../componentes/register/PasswordConfirm.tsx';
+import PasswordMeter from '../componentes/register/PasswordMeter.tsx';
+import UsernameRules, { usernamere } from '../componentes/register/UsernameRules.tsx';
 
-export * from './PasswordConfirm';
-export * from './PasswordMeter';
-export * from './UsernameRules';
+export * from '../componentes/register/PasswordConfirm.tsx';
+export * from '../componentes/register/PasswordMeter.tsx';
+export * from '../componentes/register/UsernameRules.tsx';
 
 /** meta description carried by the absorbed static page. */
 export const registerpagedescription =

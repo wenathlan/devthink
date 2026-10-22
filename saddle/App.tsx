@@ -11,7 +11,7 @@
 import { createRoot } from 'react-dom/client';
 import { Router as WouterRouter } from 'wouter';
 import Sol from './Sol/Sol';
-import { ErrorBoundary, ThemeProvider, Toaster, TooltipProvider } from './Sol/shell/Shell';
+import { ErrorBoundary, ThemeProvider, Toaster, TooltipProvider } from './Sol/shell/Shell.tsx';
 import './Sol/sol.css';
 import installzoomlock from './zoomlock';
 

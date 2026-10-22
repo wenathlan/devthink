@@ -27,7 +27,7 @@ import {
   logText,
   runLogLines,
 } from "../../runstream.ts";
-import { EmptyState } from "../shell/EmptyState";
+import { EmptyState } from "../componentes/shell/EmptyState.tsx";
 
 /** the seed of the replayed run (shown on the page, pinned by the tests) */
 export const LOG_SEED = 421337;

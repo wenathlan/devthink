@@ -15,11 +15,11 @@
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "@/shell/ShellChrome";
+import { ShellChrome } from "@/componentes/shell/ShellChrome";
 import { type NativeApp, nativeApps, osAppLabels, type StudioTrack, studioTracks } from "../../catalog";
 import { queuestudiorender } from "../../runner";
-import { MusicEngine } from "./musicengine.tsx";
-import { MusicTracks } from "./musictracks.tsx";
+import { MusicEngine } from "../componentes/audio/musicengine.tsx";
+import { MusicTracks } from "../componentes/audio/musictracks.tsx";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */

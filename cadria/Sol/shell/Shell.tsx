@@ -62,9 +62,9 @@ import { familyrow } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
 import { currentTheme, type Theme, toggleTheme } from "../../theme.ts";
 import { type WinSnapZone, winsnaprect, winsnapzone } from "../../winsnap.ts";
-import BrandMark from "./BrandMark.tsx";
+import BrandMark from "../componentes/shell/BrandMark.tsx";
 
-export { CadriaMark } from "./CadriaMark.tsx";
+export { CadriaMark } from "../componentes/shell/CadriaMark.tsx";
 
 /** one entry of the shell navigation (the legacy page prop shape, kept for
  * the anchors that type against the shell beside this folder) */

@@ -36,7 +36,7 @@ import PolicyAnchor from "./policy/policy.tsx";
 import ProjectsAnchor from "./projects/projects.tsx";
 import ProvidersAnchor from "./providers/providers.tsx";
 import SettingsAnchor from "./settings/settings.tsx";
-import { RouteSurface } from "./shell/routesurface.tsx";
+import { RouteSurface } from "./componentes/shell/routesurface.tsx";
 import TermsAnchor from "./terms/terms.tsx";
 import UsageAnchor from "./usage/usage.tsx";
 import VideoAnchor from "./video/video.tsx";

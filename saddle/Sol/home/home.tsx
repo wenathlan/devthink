@@ -38,7 +38,7 @@ import {
 // Signal & Ledger: home as the landing — declare the sandbox, read the matrix, boot the console.
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'wouter';
-import { SectionRail } from '../shell/Shell';
+import { SectionRail } from '../shell/Shell.tsx';
 import { type MediaSlot, mediaSlots } from '../../catalog';
 import { specenvlimits } from '../../sandboxenvprofile.ts';
 import {
@@ -50,12 +50,12 @@ import {
         type sandboxbaseid,
         type sandboxosid,
 } from '../../sandboxprofile.ts';
-import EntryGate from './entrygate';
-import MetricStrip from './MetricStrip';
-import RuntimeDiagram from './RuntimeDiagram';
+import EntryGate from '../componentes/home/entrygate.tsx';
+import MetricStrip from '../componentes/home/MetricStrip.tsx';
+import RuntimeDiagram from '../componentes/home/RuntimeDiagram.tsx';
 
-export * from './MetricStrip';
-export * from './RuntimeDiagram';
+export * from '../componentes/home/MetricStrip.tsx';
+export * from '../componentes/home/RuntimeDiagram.tsx';
 
 /** the session key the boot key writes and the console reads (once, then spent). */
 const DECLARED_KEY = 'saddle.declared';

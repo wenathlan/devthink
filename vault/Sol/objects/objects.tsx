@@ -30,7 +30,7 @@ import {
   vaultCensus,
   verifyObject,
 } from "../../objects.ts";
-import { EmptyState } from "../shell/EmptyState";
+import { EmptyState } from "../componentes/shell/EmptyState.tsx";
 
 /** the seed of the rehearsal vault (shown on the page, pinned by the tests) */
 export const VAULT_SEED = 20260314;

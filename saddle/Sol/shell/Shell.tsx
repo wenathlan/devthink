@@ -58,10 +58,10 @@ import {
 } from 'react';
 import { Toaster as Sonner, type ToasterProps } from 'sonner';
 import { Link, useLocation } from 'wouter';
-import type { MediaSlot } from '../../catalog';
-import { familyrow } from '../../family';
-import { familyurl } from '../../familyurl';
-import { cn } from '../../utils';
+import type { MediaSlot } from '../../catalog.ts';
+import { familyrow } from '../../family.ts';
+import { familyurl } from '../../familyurl.ts';
+import { cn } from '../../utils.ts';
 
 /* ============================ theme context ============================ */
 

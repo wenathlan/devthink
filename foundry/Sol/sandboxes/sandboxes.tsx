@@ -30,7 +30,7 @@ import {
   seedHerd,
   step,
 } from "../../sandbox.ts";
-import { EmptyState } from "../shell/EmptyState";
+import { EmptyState } from "../componentes/shell/EmptyState.tsx";
 
 /** the seed of the rehearsal herd (shown on the page, pinned by the tests) */
 export const HERD_SEED = 620221;
