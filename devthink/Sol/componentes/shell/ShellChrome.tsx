@@ -45,6 +45,7 @@ import { type CSSProperties, type RefObject, useCallback, useEffect, useLayoutEf
 import { useLocation } from "wouter";
 import { DESKTOP_APPS, type DesktopApp, searchDesktopApps } from "../../../appregistry.ts";
 import { NAVBAR_POS_EVENT, loadNavbarPosition, type NavbarPosition } from "../../../desktopstate";
+import { osText } from "../../../oslabels.ts";
 import { loadrecentapps, pushrecentapp } from "../../../recentapps.ts";
 import { SolLogoMark } from "../panel/logo.tsx";
 import { AppTile } from "./apptile.tsx";
@@ -406,7 +407,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
             ref={startRef}
             type="button"
             className={`dt-nav__start ${BAR_CELL_CLASS}`}
-            aria-label="DevThink start menu"
+            aria-label={osText("shell.start.aria")}
             aria-haspopup="dialog"
             aria-expanded={openPanel?.kind === "start"}
             aria-controls={mountedPanel?.kind === "start" ? "dt-start-menu" : undefined}
@@ -423,7 +424,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
               cell, right-click opens the jump list at the cursor,
               data-dock-target is the minimize flight target of the desktop
               windows */}
-          <nav className="dt-nav__pins flex min-w-0 items-center" aria-label="Pinned apps" data-flyout-keep="true">
+          <nav className="dt-nav__pins flex min-w-0 items-center" aria-label={osText("shell.pins.aria")} data-flyout-keep="true">
             {taskbarPins.map((app) => {
               // route pins ride the location, window pins ride the live
               // desktop window state (openApps) — external pins never light
@@ -482,7 +483,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
         >
           <button
             type="button"
-            aria-label="Quick settings"
+            aria-label={osText("shell.tray.quick.aria")}
             aria-haspopup="dialog"
             aria-expanded={openPanel?.kind === "quick"}
             aria-controls={mountedPanel?.kind === "quick" ? "dt-quick-settings" : undefined}
@@ -495,7 +496,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
                 className={`inline-flex mx-0.5 h-11 items-center gap-1.5 rounded-xs px-2 text-[11px] lowercase transition-colors duration-200 hover:bg-white/6 light:hover:bg-black/6 ${
                   paired ? "text-[#f3f5fa] light:text-[#1a1a1a]" : "text-ink-3"
                 }`}
-                title={paired ? userId || "paired" : "local only"}
+                title={paired ? userId || osText("shell.tray.paired") : osText("shell.tray.localOnly")}
               >
                 <Wifi fontSize={13} aria-hidden="true" />
                 {/* the rail keeps the pill at its 48px width — the glyph alone,
@@ -507,7 +508,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
           <button
             type="button"
             className="dt-nav__clock mx-0.5 flex h-11 cursor-pointer flex-col items-center justify-center rounded-xs border-0 bg-transparent px-2 text-center text-[11px] leading-[1.35] font-[inherit] text-[inherit] tabular-nums transition-[box-shadow] duration-200 focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none hover:bg-white/6 light:hover:bg-black/6"
-            aria-label="Calendar"
+            aria-label={osText("shell.tray.calendar.aria")}
             aria-haspopup="dialog"
             aria-expanded={openPanel?.kind === "calendar"}
             aria-controls={mountedPanel?.kind === "calendar" ? "dt-calendar" : undefined}
@@ -525,7 +526,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
           <button
             type="button"
             className="dt-start__backdrop fixed inset-0 z-20 block w-full cursor-default appearance-none border-0 bg-transparent p-0 focus-visible:outline-none"
-            aria-label="Close the start menu"
+            aria-label={osText("shell.start.close.aria")}
             onClick={closePanel}
           />
           {/* the start menu: 640px centered acrylic panel, 8px corners — the
@@ -537,7 +538,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
             id="dt-start-menu"
             role="dialog"
             aria-modal="true"
-            aria-label="Start menu"
+            aria-label={osText("shell.start.dialog.aria")}
             data-hide={openPanel?.kind === "start" ? undefined : "true"}
           >
             {/* the search well: 40px, flat white 5%, hairline bottom, the
@@ -548,15 +549,15 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
                 ref={searchRef}
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search apps"
-                aria-label="Search apps"
+                placeholder={osText("shell.start.search.placeholder")}
+                aria-label={osText("shell.start.search.aria")}
                 className="min-w-0 flex-1 rounded-xs border-0 bg-transparent text-xs font-normal text-ink outline-none placeholder:text-ink-3 focus-visible:outline-none light:text-[#1a1a1a]"
               />
               {query && (
                 <button
                   type="button"
                   onClick={() => setQuery("")}
-                  aria-label="Clear the search"
+                  aria-label={osText("shell.start.clear.aria")}
                   className="-mr-3 grid h-10 w-10 flex-none cursor-pointer place-items-center rounded-xs border-0 bg-transparent text-ink-2 transition-colors duration-200 hover:bg-white/10 hover:text-ink focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none"
                 >
                   <X fontSize={14} aria-hidden="true" />
@@ -564,7 +565,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
               )}
             </div>
             <p className="dt-start__label mx-8 mt-5 mb-2.5 text-sm font-medium text-ink">
-              {query ? "results" : "pinned"}
+              {query ? osText("shell.start.label.results") : osText("shell.start.label.pinned")}
             </p>
             {/* the pinned tiles: the exact win11 pnApp cell — 96×84px, 4px
                 corners, the hover wash in 100ms ease-in-out, 12px label; the
@@ -588,13 +589,13 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
               ))}
               {!results.length && (
                 <p className="dt-start__empty m-0 px-8 pb-8 pt-6 text-center font-sans text-xs text-ink-3">
-                  No app matches “{query}”.
+                  {osText("shell.start.empty").replace("{query}", query)}
                 </p>
               )}
             </div>
             {recommended.length > 0 && (
               <>
-                <p className="dt-start__label mx-8 mb-2.5 text-sm font-medium text-ink">recommended</p>
+                <p className="dt-start__label mx-8 mb-2.5 text-sm font-medium text-ink">{osText("shell.start.label.recommended")}</p>
                 <div className="dt-start__grid grid grid-cols-[repeat(auto-fill,96px)] px-8 pb-6">
                   {recommended.map((app, index) => (
                     <button
@@ -622,9 +623,9 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
                 className="dt-start__wordmark font-mono text-[10px] font-semibold tracking-[0.08em] text-ink"
                 aria-hidden="true"
               >
-                devthink
+                {osText("shell.start.wordmark")}
               </span>
-              <span>local OS</span>
+              <span>{osText("shell.start.localos")}</span>
             </footer>
           </section>
         </>

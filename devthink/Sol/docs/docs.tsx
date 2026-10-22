@@ -16,22 +16,25 @@
  */
 import { useEffect, useState } from "react";
 import { coreModuleTable, osAppLabels, type CoreModule } from "../../catalog";
+import { osDocsEndpoints, osDocsQuickstartCommands, osText } from "../../oslabels.ts";
 import { ShellChrome } from "@/componentes/shell/ShellChrome";
 import { DocsNav, type DocsSection } from "../componentes/docs/nav.tsx";
 import { DocsCard, DocsCode } from "../componentes/docs/card.tsx";
 import { DocsModules } from "../componentes/docs/modules.tsx";
 
-const endpoints = ["GET /health", "GET /models", "POST /chat"];
+/** the loopback endpoints the http card lists — the label table owns the
+ * rows (the oslabels docs seed). */
+const endpoints = osDocsEndpoints();
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */
 const DOCS_LABEL = osAppLabels().docs;
 
 const sections: readonly DocsSection[] = [
-  { id: "quickstart", label: "Quickstart" },
-  { id: "boundary", label: "Boundary" },
-  { id: "http", label: "HTTP" },
-  { id: "modules", label: "Modules" },
+  { id: "quickstart", label: osText("docs.section.quickstart") },
+  { id: "boundary", label: osText("docs.section.boundary") },
+  { id: "http", label: osText("docs.section.http") },
+  { id: "modules", label: osText("docs.section.modules") },
 ];
 
 /** The docs app: the Windows body when embedded (the desktop window hosts
@@ -56,25 +59,28 @@ export default function Docs({ embedded }: { embedded?: boolean }) {
           <h1 className="dtw-title">{DOCS_LABEL?.name ?? "Docs"}</h1>
 
           {section === "quickstart" ? (
-            <DocsCard title="Quickstart">
-              <p className="dtw-copy">Install the CLI, init the workspace, open the help</p>
-              <DocsCode lines={["npm install --global @wenathlan/devthink", "devthink init", "devthink --help"]} />
+            <DocsCard title={osText("docs.section.quickstart")}>
+              <p className="dtw-copy">{osText("docs.quickstart.copy")}</p>
+              <DocsCode lines={osDocsQuickstartCommands()} />
               <p className="dtw-copy">
-                Preferences ride <code>devthink.json</code>. Credentials ride <code>auth.json</code>.
+                {osText("docs.quickstart.prefs")}
+                <code>devthink.json</code>
+                {osText("docs.quickstart.credentials")}
+                <code>auth.json</code>.
               </p>
             </DocsCard>
           ) : null}
 
           {section === "boundary" ? (
-            <DocsCard title="Boundary">
-              <p className="dtw-copy">Provider neutral CLI. Local sessions, streaming, plugins, loopback API.</p>
-              <p className="dtw-copy">User provided keys only. No cookie capture, no captcha bypass.</p>
+            <DocsCard title={osText("docs.section.boundary")}>
+              <p className="dtw-copy">{osText("docs.boundary.copy1")}</p>
+              <p className="dtw-copy">{osText("docs.boundary.copy2")}</p>
             </DocsCard>
           ) : null}
 
           {section === "http" ? (
-            <DocsCard title="HTTP">
-              <p className="dtw-copy">The server binds the loopback. The port is drawn when none is set.</p>
+            <DocsCard title={osText("docs.section.http")}>
+              <p className="dtw-copy">{osText("docs.http.copy")}</p>
               <ul className="dtw-rows">
                 {endpoints.map((endpoint) => (
                   <li key={endpoint} className="dtw-row">

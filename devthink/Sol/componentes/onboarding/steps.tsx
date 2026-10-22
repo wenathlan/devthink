@@ -11,6 +11,7 @@
  */
 
 import { DESKTOP_APPS, type DesktopApp } from "../../../appregistry.ts";
+import { osOnboardingSteps } from "../../../oslabels.ts";
 import { SolLogoMark } from "../panel/logo.tsx";
 import { AppTile } from "../shell/apptile.tsx";
 
@@ -26,29 +27,10 @@ export type onboardingstep = {
   app: string | null;
 };
 
-/** The four frames of the tour, in walk order. */
-export const ONBOARDING_STEPS: readonly onboardingstep[] = [
-  {
-    eyebrow: "the os",
-    title: "One OS, many apps",
-    body: "devthink is the family os — sibling apps open as windows inside it, pinned to the taskbar.",
-    app: null },
-  {
-    eyebrow: "explore",
-    title: "Explore is the free floor",
-    body: "the catalog at /explore — every family app answers without an account.",
-    app: "explore" },
-  {
-    eyebrow: "auth, then panel",
-    title: "Auth opens the panel",
-    body: "one identity signs everything — /auth hands the session to /panel: chat, projects, studios.",
-    app: "panel" },
-  {
-    eyebrow: "mcp",
-    title: "MCP is opt-in",
-    body: "register an mcp endpoint only when you want one — nothing connects without its probe.",
-    app: "settings" },
-] as const;
+/** The four frames of the tour, in walk order — the label table owns the
+ * copy (the oslabels onboarding seed); this file only keeps the frame
+ * contract the anchor walks. */
+export const ONBOARDING_STEPS: readonly onboardingstep[] = osOnboardingSteps();
 
 /** the Linear shadow with its ring, on the art card of every frame */
 const ART_SHADOW = "0 0 0 1px rgb(0 0 0 / 24%), 0 1px 2px rgb(0 0 0 / 20%), 0 3px 12px rgb(0 0 0 / 9%)";

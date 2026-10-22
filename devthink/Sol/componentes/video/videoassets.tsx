@@ -4,7 +4,8 @@
  * Loose component of the video page.
  */
 import {MoviesAndTvFilled} from "@fluentui/react-icons";
-import type { StudioAsset } from "../../../catalog.ts";
+import type { StudioAsset } from "../../../catalog";
+import { osText } from "../../../oslabels.ts";
 
 export function VideoAssets({
   rows,
@@ -17,11 +18,11 @@ export function VideoAssets({
   return (
     <section className="dtw-card">
       <h2 className="dtw-cardtitle">
-        Assets
+        {osText("video.assets.title")}
         {rows.length ? <span className="dtw-navrow__count">{rows.length}</span> : null}
       </h2>
       {rows.length === 0 ? (
-        <p className="dtw-copy">{loaded ? "No assets in the catalog" : "Loading the catalog"}</p>
+        <p className="dtw-copy">{loaded ? osText("video.assets.empty") : osText("studios.loading")}</p>
       ) : (
         <ul className="dtw-video__rows">
           {rows.map((asset) => (
@@ -37,10 +38,10 @@ export function VideoAssets({
                 type="button"
                 className="dtw-action dtw-action--primary"
                 onClick={() => onRender(asset)}
-                aria-label={`Render ${asset.title}`}
+                aria-label={osText("video.assets.renderAria").replace("{title}", asset.title)}
               >
                 <MoviesAndTvFilled fontSize={12} aria-hidden="true" />
-                Render
+                {osText("video.assets.render")}
               </button>
             </li>
           ))}

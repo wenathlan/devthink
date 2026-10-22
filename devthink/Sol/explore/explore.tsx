@@ -36,6 +36,7 @@ import {
   studioAssets,
   studioTracks } from "../../catalog";
 import { peekonboardingstate } from "../../onboardingstate";
+import { osText } from "../../oslabels.ts";
 import { SolLogoMark } from "../componentes/panel/logo.tsx";
 import { ShellChrome } from "../componentes/shell/ShellChrome.tsx";
 import { DownloadRail } from "../componentes/explore/downloadrail.tsx";
@@ -85,11 +86,11 @@ const heroGrainStyle = {
 
 /** the anchor rows of the page head (the jump links of the landing) */
 const ANCHORS: ReadonlyArray<{ href: string; label: string }> = [
-  { href: "#constellation", label: "constellation" },
-  { href: "#family", label: "family" },
-  { href: "#rails", label: "sections" },
-  { href: "#does", label: "modules" },
-  { href: "#builds", label: "builds" },
+  { href: "#constellation", label: osText("explore.nav.constellation") },
+  { href: "#family", label: osText("explore.nav.family") },
+  { href: "#rails", label: osText("explore.nav.sections") },
+  { href: "#does", label: osText("explore.nav.modules") },
+  { href: "#builds", label: osText("explore.nav.builds") },
 ];
 
 /** The DevThink free exploration landing, served at /explore (the web intro
@@ -150,7 +151,7 @@ export default function Explore() {
         style={{ boxShadow: STRIP_SHADOW }}
       >
         <SolLogoMark size={16} />
-        <span>explore — devthink</span>
+        <span>{osText("explore.window.title")}</span>
         <RotateCcw fontSize={13} aria-hidden="true" />
       </button>
     );
@@ -179,9 +180,9 @@ export default function Explore() {
             className={`mx-auto w-full px-6 pb-24 ${frame === "maximized" ? "max-w-none" : "max-w-5xl"}`}
           >
             <header className="flex flex-wrap items-center justify-between gap-4 pt-6">
-              <p className="font-mono text-[10px] tracking-[.08em] text-ink-3">devthink · explore</p>
+              <p className="font-mono text-[10px] tracking-[.08em] text-ink-3">{osText("explore.eyebrow")}</p>
               <div className="flex flex-wrap items-center gap-5">
-                <nav className="flex items-center gap-5 text-sm text-ink-2" aria-label="Site navigation">
+                <nav className="flex items-center gap-5 text-sm text-ink-2" aria-label={osText("explore.nav.aria")}>
                   {ANCHORS.map((anchor) => (
                     <a
                       key={anchor.href}
@@ -198,7 +199,7 @@ export default function Explore() {
                   className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-win px-5 text-sm font-semibold text-(--win-accent-ink) transition-[filter,transform] duration-150 ease-micro hover:brightness-95 active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
                   style={{ boxShadow: TRYLLE_PRIMARY_STACK }}
                 >
-                  enter devthink
+                  {osText("explore.enter")}
                   <ArrowRight fontSize={15} aria-hidden="true" />
                 </button>
               </div>
@@ -206,7 +207,7 @@ export default function Explore() {
 
             <section
               className="relative pb-6 pt-[clamp(56px,9vh,118px)]"
-              aria-label="DevThink — the launcher of the os"
+              aria-label={osText("explore.hero.aria")}
             >
               {/* the atmosphere: one warm light source
               dissolves and the film grain — layered, pointer-transparent */}
@@ -218,7 +219,7 @@ export default function Explore() {
                   data-akash-beat
                   className="flex items-center gap-2 font-mono text-[10px] tracking-[.08em] text-ink-3"
                 >
-                  <OsSigil size={18} /> <span>devthink · explore — the launcher</span>
+                  <OsSigil size={18} /> <span>{osText("explore.hero.eyebrow")}</span>
                 </p>
                 {/* the trylle hero: display face, weight 600, tracking -0.02em,
                 the clamp of the ruler — never italic */}
@@ -227,11 +228,10 @@ export default function Explore() {
                   className="mt-4 font-display text-[clamp(2.25rem,5vw,3.75rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-ink"
                   style={{ textWrap: "balance", fontFamily: "var(--font-display)" }}
                 >
-                  every surface of the os, one command away
+                  {osText("explore.hero.title")}
                 </h1>
                 <p data-akash-beat className="mt-4 max-w-[560px] text-sm leading-[1.55] text-ink-2">
-                  the stage reads the whole registry: type, filter, open. the native surfaces and the nine family apps
-                  share one field.
+                  {osText("explore.hero.sub")}
                 </p>
               </div>
 
@@ -240,23 +240,21 @@ export default function Explore() {
               </div>
             </section>
 
-            <HeroWaves caption="02 · the sections" meta="recent · pinned · all apps" />
+            <HeroWaves caption={osText("explore.waves.sections")} meta={osText("explore.waves.sectionsMeta")} />
 
             <ExploreSections assets={assets} tracks={tracks} />
 
-            <HeroWaves caption="03 · the modules" meta="the core catalog" />
+            <HeroWaves caption={osText("explore.waves.modules")} meta={osText("explore.waves.modulesMeta")} />
 
             {/* the catalog strip: the core modules as a horizontal strip of
             trylle cards — the same rows the panel serves after you enter */}
             <section className="scroll-mt-24 pb-14" id="does" aria-labelledby="dt-sec-does">
               <header className="mb-8 max-w-[56ch]">
-                <p className="font-mono text-[10px] tracking-[.08em] text-ink-3">the catalog strip</p>
+                <p className="font-mono text-[10px] tracking-[.08em] text-ink-3">{osText("explore.modules.cap")}</p>
                 <h2 id="dt-sec-does" className="mt-2 font-display text-2xl font-semibold tracking-[-0.02em] text-ink">
-                  what the platform does
+                  {osText("explore.modules.title")}
                 </h2>
-                <p className="mt-2 text-sm leading-[1.55] text-ink-2">
-                  the modules of the core catalog — the same rows the panel serves after you enter.
-                </p>
+                <p className="mt-2 text-sm leading-[1.55] text-ink-2">{osText("explore.modules.sub")}</p>
               </header>
               <ul className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3">
                 {modules.map((module, index) => (
@@ -275,12 +273,12 @@ export default function Explore() {
                   </li>
                 ))}
                 {modules.length === 0 && (
-                  <li className="py-6 font-mono text-xs text-ink-3">the catalog has not answered yet.</li>
+                  <li className="py-6 font-mono text-xs text-ink-3">{osText("explore.modules.empty")}</li>
                 )}
               </ul>
             </section>
 
-            <HeroWaves caption="04 · the builds" meta="chromium · firefox · vs code · safari" />
+            <HeroWaves caption={osText("explore.waves.builds")} meta={osText("explore.waves.buildsMeta")} />
 
             {/* the distribution rail: the release channels of the immutable
             tag — the extension, the vsix and the provenance set, walkable
@@ -292,32 +290,29 @@ export default function Explore() {
             <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4">
               <span className="flex items-center gap-2 text-sm font-medium text-ink" aria-hidden="true">
                 <SolLogoMark size={18} accent />
-                DevThink
+                {osText("explore.footer.wordmark")}
               </span>
-              <nav aria-label="Institutional" className="flex items-center gap-5 text-sm text-ink-2">
+              <nav aria-label={osText("explore.footer.nav.aria")} className="flex items-center gap-5 text-sm text-ink-2">
                 <a
                   href="/about"
                   className="rounded-xs transition-colors duration-150 ease-micro hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
                 >
-                  about
+                  {osText("explore.footer.about")}
                 </a>
                 <a
                   href="/terms"
                   className="rounded-xs transition-colors duration-150 ease-micro hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
                 >
-                  terms
+                  {osText("explore.footer.terms")}
                 </a>
                 <a
                   href="/policy"
                   className="rounded-xs transition-colors duration-150 ease-micro hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
                 >
-                  privacy
+                  {osText("explore.footer.policy")}
                 </a>
               </nav>
-              <small className="text-xs leading-[1.55] text-ink-3">
-                exploration is free and reads the public catalog · the local identity of the os is yours: no remote
-                authentication, no telemetry
-              </small>
+              <small className="text-xs leading-[1.55] text-ink-3">{osText("explore.footer.note")}</small>
             </div>
           </footer>
         </div>

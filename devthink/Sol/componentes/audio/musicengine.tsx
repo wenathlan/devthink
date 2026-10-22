@@ -4,21 +4,24 @@
  * catalog has not answered. Loose component of the audio page.
  */
 import {MusicNote2Regular} from "@fluentui/react-icons";
-import type { NativeApp } from "../../../catalog.ts";
+import type { NativeApp } from "../../../catalog";
+import { osText } from "../../../oslabels.ts";
 
 export function MusicEngine({ app }: { app: NativeApp | undefined }) {
   return (
     <section className="dtw-card">
       <h2 className="dtw-cardtitle">
         <MusicNote2Regular fontSize={15} aria-hidden="true" />
-        Engine
+        {osText("studios.engine")}
       </h2>
       {app ? (
         <p className="dtw-copy">
-          Renders queue over the gateway to <code>{app.engine}</code>, the debonair engine.
+          {osText("studios.engineLede")}
+          <code>{app.engine}</code>
+          {osText("audio.engineTail")}
         </p>
       ) : (
-        <p className="dtw-copy">The catalog has not answered the engine yet</p>
+        <p className="dtw-copy">{osText("studios.enginePending")}</p>
       )}
     </section>
   );

@@ -8,6 +8,8 @@
  * self-contained (theme utilities only — no stylesheet rules to restyle).
  */
 
+import { osText } from "../../../oslabels.ts";
+
 export type HeroWavesProps = {
   /** the mono caption of the zone the divider introduces */
   caption?: string;
@@ -15,7 +17,7 @@ export type HeroWavesProps = {
   meta?: string;
 };
 
-export function HeroWaves({ caption = "the stage", meta }: HeroWavesProps = {}) {
+export function HeroWaves({ caption = osText("explore.waves.defaultCaption"), meta }: HeroWavesProps = {}) {
   return (
     <div className="flex items-center gap-4 py-10 text-ink-3">
       <span className="font-mono text-[10px] tracking-[.08em]">{caption}</span>

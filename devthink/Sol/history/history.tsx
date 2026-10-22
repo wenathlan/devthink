@@ -15,6 +15,7 @@
 import { useEffect, useState } from "react";
 import { ShellChrome } from "@/componentes/shell/ShellChrome";
 import { osAppLabels, type Rung, releaseLadder } from "../../catalog";
+import { osText } from "../../oslabels.ts";
 import { HistoryLadder } from "../componentes/history/historyladder.tsx";
 
 /** the window title answers the catalog label row (bare-id fallback). */
@@ -43,17 +44,17 @@ export default function History({ embedded }: { embedded?: boolean }) {
     <main className="dtw-app dtw-history" style={embedded ? { height: "100%", overflow: "auto" } : undefined}>
       {!embedded && <ShellChrome />}
       <div className="dtw-pane">
-        <nav className="dtw-nav" aria-label="History sections">
+        <nav className="dtw-nav" aria-label={osText("history.nav.aria")}>
           <span className="dtw-navrow" data-active="true">
-            Release ladder
+            {osText("history.navrow")}
             <span className="dtw-navrow__count">{rungs.length}</span>
           </span>
         </nav>
         <div className="dtw-content">
           <h1 className="dtw-title">{HISTORY_LABEL?.name ?? "History"}</h1>
           <p className="dtw-note">
-            <span>Every release stamps a rung</span>
-            <span>The full chain lives in the changelog</span>
+            <span>{osText("history.note.stamps")}</span>
+            <span>{osText("history.note.chain")}</span>
           </p>
           <HistoryLadder rows={rungs} loaded={loaded} latest={latest} oldest={oldest} />
         </div>

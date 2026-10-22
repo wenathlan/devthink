@@ -22,6 +22,7 @@ import {
   pagestageStyle,
   stagedEntrance } from "./InstitutionalChrome.tsx";
 import { ShellChrome } from "./ShellChrome.tsx";
+import { osText } from "../../../oslabels.ts";
 import { useReducedMotion } from "./trayflyouts.tsx";
 
 type ControlShellProps = {
@@ -75,7 +76,8 @@ export function ControlShell({ eyebrow, title, summary, actions, children }: Con
       </div>
       <footer className="control-page__footer">
         <TerminalSquare fontSize={14} />
-        provider credentials stay in <code>~/.config/devthink/auth.json</code>
+        {osText("shell.control.footer")}
+        <code>~/.config/devthink/auth.json</code>
       </footer>
     </main>
   );

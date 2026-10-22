@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ShellChrome } from "@/componentes/shell/ShellChrome";
 import { type NativeApp, nativeApps, osAppLabels, type StudioAsset, studioAssets } from "../../catalog";
+import { osText } from "../../oslabels.ts";
 import { queuestudiorender } from "../../runner";
 import { VideoAssets } from "../componentes/video/videoassets.tsx";
 import { VideoEngine } from "../componentes/video/videoengine.tsx";
@@ -29,7 +30,7 @@ const VIDEO_LABEL = osAppLabels().video;
  * workbench already uses: the reason text is the honest answer of the queue
  * client. */
 function queueRender(asset: StudioAsset) {
-  void queuestudiorender(asset, `render requested from the video studio for ${asset.title}`).then((answer) => {
+  void queuestudiorender(asset, osText("video.queueNote").replace("{title}", asset.title)).then((answer) => {
     if (answer.queued) toast.success(`${asset.title} ${answer.reason}`);
     else toast.error(answer.reason);
   });
@@ -56,9 +57,9 @@ export default function Video({ embedded }: { embedded?: boolean }) {
     <main className="dtw-app dtw-video" style={embedded ? { height: "100%", overflow: "auto" } : undefined}>
       {!embedded && <ShellChrome />}
       <div className="dtw-pane">
-        <nav className="dtw-nav" aria-label="Video sections">
+        <nav className="dtw-nav" aria-label={osText("video.nav.aria")}>
           <span className="dtw-navrow" data-active="true">
-            Assets
+            {osText("video.navrow")}
           </span>
         </nav>
         <div className="dtw-content">

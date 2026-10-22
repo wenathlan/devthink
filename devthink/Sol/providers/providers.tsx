@@ -26,6 +26,7 @@ import {
   saveBrowserCredential,
   saveBrowserPreference } from "../../db";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
+import { osProviders, osText } from "../../oslabels.ts";
 import { ProviderCard } from "../componentes/providers/providercard.tsx";
 import { ProvidersList } from "../componentes/providers/providerslist.tsx";
 
@@ -35,20 +36,10 @@ const PROVIDERS_LABEL = osAppLabels().providers;
 
 type Provider = { id: string; protocol: string; env: string };
 
-const fallback: Provider[] = [
-  "openai",
-  "zai",
-  "anthropic",
-  "google",
-  "qwen",
-  "openrouter",
-  "deepseek",
-  "groq",
-  "mistral",
-  "xai",
-  "ollama",
-  "mimo",
-].map((id) => ({ id, protocol: "configured locally", env: "CLI" }));
+/** the offline answer of the provider index — the label table owns the
+ * registry rows (the oslabels providers seed: the ids mirror the local
+ * provider registry, the protocol and env words are interface copy). */
+const fallback: Provider[] = osProviders();
 
 /** The providers app: the Windows body when embedded (the desktop window
  * hosts it without the shell), the full surface with the taskbar on the
@@ -69,7 +60,7 @@ export default function Providers({ embedded }: { embedded?: boolean }) {
     try {
       setProviders(await gatewayJson<Provider[]>("/providers"));
     } catch {
-      toast("The paired gateway could not load providers.");
+      toast(osText("providers.toast.loadFailed"));
     } finally {
       setLoading(false);
     }
@@ -89,7 +80,7 @@ export default function Providers({ embedded }: { embedded?: boolean }) {
     if (!paired) {
       await saveBrowserPreference("activeProvider", provider.id);
       setActive(provider.id);
-      return toast(`${provider.id} is selected for this browser-local workspace.`);
+      return toast(osText("providers.toast.selected").replace("{id}", provider.id));
     }
     try {
       await gatewayJson("/providers/active", {
@@ -98,31 +89,29 @@ export default function Providers({ embedded }: { embedded?: boolean }) {
         body: JSON.stringify({ provider: provider.id }) });
       await saveBrowserPreference("activeProvider", provider.id);
       setActive(provider.id);
-      toast(`${provider.id} is now active in the local cli.`);
+      toast(osText("providers.toast.activated").replace("{id}", provider.id));
     } catch {
-      toast("Provider activation was rejected by the local gateway.");
+      toast(osText("providers.toast.activationRejected"));
     }
   };
 
   const saveCredential = async () => {
     const value = credentialDraft.trim();
-    if (!value) return toast("Enter a provider credential before saving it locally.");
+    if (!value) return toast(osText("providers.toast.enterCredential"));
     if (
-      !window.confirm(
-        `Store this ${credentialProvider} credential only in this browser? It will never be synced to the cli or a remote adapter.`,
-      )
+      !window.confirm(osText("providers.confirm.store").replace("{id}", credentialProvider))
     )
       return;
     await saveBrowserCredential(credentialProvider, value);
     setCredentialDraft("");
     setBrowserCredentials(await browserCredentialProviders());
-    toast(`${credentialProvider} credential saved only in this browser.`);
+    toast(osText("providers.toast.saved").replace("{id}", credentialProvider));
   };
 
   const clearCredential = async () => {
     await removeBrowserCredential(credentialProvider);
     setBrowserCredentials(await browserCredentialProviders());
-    toast(`${credentialProvider} browser-local credential removed.`);
+    toast(osText("providers.toast.removed").replace("{id}", credentialProvider));
   };
 
   /* the active provider leads the index; the stable sort keeps the rest in
@@ -133,7 +122,7 @@ export default function Providers({ embedded }: { embedded?: boolean }) {
     <main className="dtw-app dtw-providers" style={embedded ? { height: "100%", overflow: "auto" } : undefined}>
       {!embedded && <ShellChrome />}
       <div className="dtw-pane">
-        <nav className="dtw-nav" aria-label="Providers sections">
+        <nav className="dtw-nav" aria-label={osText("providers.nav.aria")}>
           <button
             type="button"
             className="dtw-navrow"
@@ -141,7 +130,7 @@ export default function Providers({ embedded }: { embedded?: boolean }) {
             onClick={() => setSection("index")}
             aria-current={section === "index" ? "page" : undefined}
           >
-            Providers
+            {osText("providers.navrow.index")}
             <span className="dtw-navrow__count">{providers.length}</span>
           </button>
           <button
@@ -151,7 +140,7 @@ export default function Providers({ embedded }: { embedded?: boolean }) {
             onClick={() => setSection("credentials")}
             aria-current={section === "credentials" ? "page" : undefined}
           >
-            Credentials
+            {osText("providers.navrow.credentials")}
           </button>
         </nav>
         <div className="dtw-content">

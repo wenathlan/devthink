@@ -5,7 +5,8 @@
  * page.
  */
 import {HistoryRegular} from "@fluentui/react-icons";
-import type { Rung } from "../../../catalog.ts";
+import type { Rung } from "../../../catalog";
+import { osText } from "../../../oslabels.ts";
 
 export function HistoryLadder({
   rows,
@@ -21,11 +22,11 @@ export function HistoryLadder({
     <section className="dtw-card">
       <h2 className="dtw-cardtitle">
         <HistoryRegular fontSize={15} aria-hidden="true" />
-        Milestones
+        {osText("history.ladder.milestones")}
         <span className="dtw-navrow__count">{rows.length}</span>
       </h2>
       {rows.length === 0 ? (
-        <p className="dtw-copy">{loaded ? "No rungs stamped yet" : "Loading the ladder"}</p>
+        <p className="dtw-copy">{loaded ? osText("history.ladder.empty") : osText("history.ladder.loading")}</p>
       ) : (
         <>
           <ul className="dtw-history__rows">
@@ -34,7 +35,7 @@ export function HistoryLadder({
                 <div className="dtw-history__body">
                   <h3>
                     {rung.version}
-                    {rung.latest ? <span className="dtw-history__badge">Latest</span> : null}
+                    {rung.latest ? <span className="dtw-history__badge">{osText("history.ladder.latest")}</span> : null}
                   </h3>
                   <p>{rung.note}</p>
                 </div>
@@ -44,13 +45,13 @@ export function HistoryLadder({
           </ul>
           <div className="dtw-history__facts">
             <span>
-              Rungs stamped <b>{rows.length}</b>
+              {osText("history.facts.rungs")} <b>{rows.length}</b>
             </span>
             <span>
-              Latest <b>{latest}</b>
+              {osText("history.ladder.latest")} <b>{latest}</b>
             </span>
             <span>
-              Chain{" "}
+              {osText("history.facts.chain")}{" "}
               <b>
                 {oldest} to {latest}
               </b>

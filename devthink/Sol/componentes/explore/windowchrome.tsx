@@ -13,6 +13,7 @@
 
 import {CopyRegular as Copy, SubtractRegular as Minus, StopRegular as Square, DismissRegular as X} from "@fluentui/react-icons";
 import { useEffect, useRef, useState } from "react";
+import { osText } from "../../../oslabels.ts";
 import { SolLogoMark } from "../panel/logo.tsx";
 
 /** the top strip (px) that summons the chrome */
@@ -65,15 +66,15 @@ export function WindowEdgeChrome({ maximized, onMinimize, onMaximize, onClose }:
       <span className="text-ink-2" aria-hidden="true">
         <SolLogoMark size={13} />
       </span>
-      <span className="font-mono text-[11px] text-ink-2">explore — devthink</span>
+      <span className="font-mono text-[11px] text-ink-2">{osText("explore.window.title")}</span>
       <span className="ml-auto flex items-center">
-        <button type="button" tabIndex={visible ? 0 : -1} aria-label="Minimize the landing" onClick={onMinimize} className={captionIdle}>
+        <button type="button" tabIndex={visible ? 0 : -1} aria-label={osText("explore.window.minimize")} onClick={onMinimize} className={captionIdle}>
           <Minus fontSize={13} aria-hidden="true" />
         </button>
         <button
           type="button"
           tabIndex={visible ? 0 : -1}
-          aria-label={maximized ? "Restore the landing" : "Maximize the landing"}
+          aria-label={maximized ? osText("explore.window.restore") : osText("explore.window.maximize")}
           onClick={onMaximize}
           className={captionIdle}
         >
@@ -82,7 +83,7 @@ export function WindowEdgeChrome({ maximized, onMinimize, onMaximize, onClose }:
         <button
           type="button"
           tabIndex={visible ? 0 : -1}
-          aria-label="Close and return to the intro"
+          aria-label={osText("explore.window.close")}
           onClick={onClose}
           className={`${captionBase} rounded-none hover:bg-(--color-close) hover:text-white active:bg-(--color-close-deep) active:text-white`}
         >

@@ -4,6 +4,8 @@
  * quiet hover wash (the docs skins at the tail of sol.css carry the touch
  * law). Loose component of the docs page.
  */
+import { osText } from "../../../oslabels.ts";
+
 export type DocsSection = { id: string; label: string };
 
 export function DocsNav({
@@ -15,7 +17,7 @@ export function DocsNav({
   onSelect: (id: DocsSection["id"]) => void;
 }) {
   return (
-    <nav className="dtw-nav" aria-label="Docs sections">
+    <nav className="dtw-nav" aria-label={osText("docs.nav.aria")}>
       {sections.map((item) => (
         <button
           key={item.id}

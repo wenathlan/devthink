@@ -25,6 +25,7 @@ import {
   memoryRecallExpression,
   memorySubtract } from "../../calculator";
 import { osAppLabels } from "../../catalog";
+import { osText } from "../../oslabels.ts";
 import { CalculatorDisplay } from "../componentes/calculator/calculatordisplay.tsx";
 import { CalculatorHistory, type CalculatorHistoryRow } from "../componentes/calculator/calculatorhistory.tsx";
 import { CalculatorKeypad, type CalculatorMemoryKey } from "../componentes/calculator/calculatorkeypad.tsx";
@@ -64,7 +65,7 @@ export default function Calculator({ embedded }: { embedded?: boolean }) {
       setHistory((rows) => [row, ...rows].slice(0, HISTORY_LIMIT));
     } catch (cause) {
       setAnswer(null);
-      setError(cause instanceof Error ? cause.message : "The expression could not be evaluated");
+      setError(cause instanceof Error ? cause.message : osText("calc.error"));
     }
   }, [expression]);
 
@@ -138,9 +139,9 @@ export default function Calculator({ embedded }: { embedded?: boolean }) {
     >
       {!embedded && <ShellChrome />}
       <div className="dtw-pane">
-        <nav className="dtw-nav" aria-label="Calculator modes">
+        <nav className="dtw-nav" aria-label={osText("calc.nav.aria")}>
           <span className="dtw-navrow" data-active="true">
-            Standard
+            {osText("calc.mode.standard")}
           </span>
         </nav>
         <div className="dtw-content">
