@@ -144,7 +144,10 @@ export function Welcome({
   const recents = recent?.slice(0, 3) ?? [];
   return (
     <div className="dtc-welcome">
-      <h1 className="dtc-welcome__greet">{greeting()}</h1>
+      {/* the greeting answers h2, not h1: the topbar already owns the one
+       * h1 of the chat surface, so the hero joins the order under it (the
+       * class carries the size — the level change is invisible). */}
+      <h2 className="dtc-welcome__greet">{greeting()}</h2>
       <p className={cx("dtc-welcome__sub", temporary && "dtc-welcome__sub--temporary")}>
         {temporary ? TEMPORARY_SUB : `${GATEWAY_MODEL_LABEL} ${gatewayRegistered ? "gateway on" : "gateway off"}`}
       </p>

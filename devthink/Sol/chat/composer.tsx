@@ -535,6 +535,7 @@ export function Composer({
                   className="dtc-wctrl__btn dtc-toolkey"
                   aria-haspopup="menu"
                   aria-expanded={toolOpen}
+                  aria-label="More tools"
                   onClick={openTool}
                   title="More tools"
                 >
@@ -587,6 +588,7 @@ export function Composer({
                   className="dtc-wctrl__btn"
                   aria-haspopup="listbox"
                   aria-expanded={modelOpen}
+                  aria-label={`Model: ${activeModel}`}
                   onClick={openModel}
                   title="Pick the model"
                 >
@@ -644,6 +646,7 @@ export function Composer({
                   className="dtc-wctrl__btn"
                   aria-haspopup="listbox"
                   aria-expanded={thinkOpen}
+                  aria-label={`Reasoning effort: ${autoEffort ? "auto" : activeThinking}`}
                   onClick={openThink}
                   title={
                     autoEffort

@@ -15399,3 +15399,156 @@ button.dtc-recents__row:focus-visible {
     animation: none;
   }
 }
+
+/* ==========================================================================
+   the wave 6 pass — the canvas pane, the flagship lane beside the thread,
+   and the a11y audit lifts: the touch reveal of the rail keys
+   ========================================================================== */
+
+.dtc-cv {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  width: min(460px, 42%);
+  min-height: 0;
+  padding: 12px 12px 14px;
+  overflow: hidden;
+  border-left: 1px solid rgb(255 255 255 / 6%);
+  background: rgb(255 255 255 / 3%);
+  transform: translateX(60px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    transform 0.2s var(--ease-fluent),
+    opacity 0.2s var(--ease-fluent),
+    visibility 0.2s;
+}
+
+.dtc-cv[data-open="true"] {
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.dtc-cv[data-swap="true"] {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: auto;
+  border-left: 0;
+  border-top: 1px solid rgb(0 0 0 / 55%);
+  background: rgb(18 18 20 / 40%);
+}
+
+.dtc-cv__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  min-width: 0;
+}
+
+.dtc-cv__title {
+  margin: 0;
+  min-width: 0;
+  font-size: 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dtc-cv__count {
+  flex: none;
+  margin: 0;
+  color: var(--sol-muted);
+  font: 600 10px var(--dt-mono);
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  font-variant-numeric: tabular-nums;
+}
+
+.dtc-cv__keys {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+}
+
+.dtc-cv__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.dtc-cv__md {
+  padding: 2px 4px;
+}
+
+.dtc-cv__code {
+  flex: 1;
+  margin: 0;
+  padding: 10px 12px;
+  overflow: auto;
+  font: 500 0.84rem/1.55 var(--dt-mono);
+}
+
+.dtc-cv__area {
+  flex: 1;
+  width: 100%;
+  resize: none;
+  border: 0;
+  padding: 10px 12px;
+  background: transparent;
+  color: var(--sol-text);
+  font: 500 0.84rem/1.55 var(--dt-mono);
+}
+
+.dtc-cv__area:focus {
+  outline: none;
+}
+
+.dtc-cv__empty {
+  margin: 12px 4px;
+  color: var(--sol-faint);
+  font-size: 0.85rem;
+}
+
+.dtc-cv__key--save {
+  color: var(--signal);
+}
+
+[data-theme="light"] .dtc-cv {
+  background: rgb(0 0 0 / 2%);
+  border-left-color: rgb(0 0 0 / 8%);
+}
+
+[data-theme="light"] .dtc-cv[data-swap="true"] {
+  background: rgb(255 255 255 / 60%);
+  border-top-color: rgb(0 0 0 / 10%);
+}
+
+/* the a11y audit lift (w6 b): the rail pin and delete keys stay visible on
+   hover-less touch surfaces — the same reveal law the turn acts carry */
+@media (hover: none), (pointer: coarse) {
+  .dtc-item .dtc-item__pin,
+  .dtc-item .dtc-item__del {
+    opacity: 1;
+  }
+}
+
+/* the wave 6 reduced-motion guard */
+[data-motion="reduced"] .dtc-cv {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dtc-cv {
+    transition: none;
+  }
+}
