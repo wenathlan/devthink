@@ -2,9 +2,11 @@
  * sidebar.tsx — the chat rail, windows 11 style: brand, "New chat", the
  * conversation search field (titles and turn text, live), the pinned
  * group above the calendar-day history groups (today, yesterday, the
- * days ago, this week, last week, this month, last month, older) and
- * the theme page links routed through wouter (the real /, /panel,
- * /projects, /docs, /explore and /settings pages — never local copies).
+ * days ago, this week, last week, this month, last month, older), the
+ * quiet tag chips and the edit-ordinal badge the session rows carry
+ * beside their titles, and the theme page links routed through wouter
+ * (the real /, /panel, /projects, /docs, /explore and /settings pages —
+ * never local copies).
  * The pin flag persists through the os stored-state pattern in its own
  * key — the session record carries no pinned field yet, so the seam
  * lands beside the sessions until chatstate adopts it. Collapses to an
@@ -29,7 +31,7 @@ import {
 import { useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { chatBuckets, chatNav } from "../../chatlabels.ts";
-import { type ChatSession, cx } from "../../chatstate.ts";
+import { checkpointCount, type ChatSession, cx } from "../../chatstate.ts";
 import { arrayOf, isString, useStoredState } from "../../usestoredstate.ts";
 import { SolBotIcon, type SolBotState } from "./solboticon.tsx";
 
@@ -206,8 +208,9 @@ export function Sidebar({
 
   /** renderRow — one conversation row: the leading status slot (spinner
    * while running, error dot on failure — only when the caller carries
-   * the state), the open button, the hover-revealed pin toggle and the
-   * delete key. */
+   * the state), the open button (carrying the quiet tag chips and the
+   * branch's edit ordinal when the record holds them), the hover-revealed
+   * pin toggle and the delete key. */
   const renderRow = (s: ChatSession) => {
     const isPinned = pinned.has(s.id);
     const status = s.id === runningId ? "running" : s.id === errorId ? "error" : null;
@@ -229,6 +232,24 @@ export function Sidebar({
           aria-current={s.id === activeId ? "true" : undefined}
         >
           {s.title}
+          {s.tags && s.tags.length > 0 ? (
+            /* the quiet mono chips — display only this wave, never buttons
+             * inside the open key: two ride the row, the overflow folds to
+             * a "+N" chip. */
+            <span className="dtc-rail__tags">
+              {s.tags.slice(0, 2).map((tag) => (
+                <span key={tag} className="dtc-rail__tag">
+                  {tag}
+                </span>
+              ))}
+              {s.tags.length > 2 ? <span className="dtc-rail__tag">+{s.tags.length - 2}</span> : null}
+            </span>
+          ) : null}
+          {s.editOf ? (
+            /* the honest edit ordinal of the branch — the ladder size the
+             * record carries, mono uppercase. */
+            <span className="dtc-rail__branch">e{checkpointCount(s)}</span>
+          ) : null}
         </button>
         <button
           type="button"

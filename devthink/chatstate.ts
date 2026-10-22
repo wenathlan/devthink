@@ -8,6 +8,7 @@
  */
 import { useCallback, useMemo } from "react";
 import { chatLimit, chatPersona, chatThinkingLevels } from "./chatlabels.ts";
+import { createCompactId } from "./ids.ts";
 import {
   ChatStoppedError,
   type GatewayMessage,
@@ -55,6 +56,20 @@ export type ChatCheckpoint = {
   edit: number;
 };
 
+/** The birth identity of a conversation — the sandbox law of the house:
+ * every conversation is born with its space, its sandbox and its own
+ * session identity provisioned automatically, so the saddle lane and the
+ * deep links always have real ids to bind (never a display-time guess).
+ * Branches inherit the same birth: the identity belongs to the lineage. */
+export type ChatBirth = {
+  /** the workspace the conversation lives in. */
+  spaceId: string;
+  /** the saddle sandbox the conversation was born with. */
+  sandboxId: string;
+  /** the conversation identity itself. */
+  sessionId: string;
+};
+
 export type ChatSession = {
   id: string;
   title: string;
@@ -65,6 +80,12 @@ export type ChatSession = {
   checkpoints?: ChatCheckpoint[];
   /** the session this branch was born from — the original stays intact. */
   editOf?: string;
+  /** the birth identity (space, sandbox, session) — minted at creation,
+   * inherited by every branch of the lineage. */
+  birth?: ChatBirth;
+  /** the visitor tags of the conversation — free labels, capped, the
+   * sidebar chips and the panel editor read and write them. */
+  tags?: string[];
 };
 
 export const isChatTurn: Validator<ChatTurn> = (v): v is ChatTurn => {
@@ -88,6 +109,12 @@ export const isChatCheckpoint: Validator<ChatCheckpoint> = (v): v is ChatCheckpo
   return typeof t.at === "number" && typeof t.turnId === "string" && typeof t.edit === "number";
 };
 
+export const isChatBirth: Validator<ChatBirth> = (v): v is ChatBirth => {
+  if (typeof v !== "object" || v === null) return false;
+  const b = v as Record<string, unknown>;
+  return typeof b.spaceId === "string" && typeof b.sandboxId === "string" && typeof b.sessionId === "string";
+};
+
 export const isChatSession: Validator<ChatSession> = (v): v is ChatSession => {
   if (typeof v !== "object" || v === null) return false;
   const s = v as Record<string, unknown>;
@@ -98,6 +125,8 @@ export const isChatSession: Validator<ChatSession> = (v): v is ChatSession => {
     s.messages.every(isChatTurn) &&
     (s.checkpoints === undefined || (Array.isArray(s.checkpoints) && s.checkpoints.every(isChatCheckpoint))) &&
     (s.editOf === undefined || typeof s.editOf === "string") &&
+    (s.birth === undefined || isChatBirth(s.birth)) &&
+    (s.tags === undefined || (Array.isArray(s.tags) && s.tags.every((t) => typeof t === "string"))) &&
     typeof s.at === "number"
   );
 };
@@ -182,11 +211,17 @@ export function userTurn(content: string): ChatTurn {
  * second identity the link can never find again).
  */
 export function newSession(first: ChatTurn, id?: string): ChatSession {
+  const sessionId = id || `s-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
   return {
-    id: id || `s-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    id: sessionId,
     title: deriveTitle(first.content),
     messages: [first],
     at: Date.now(),
+    birth: {
+      spaceId: createCompactId("sp"),
+      sandboxId: createCompactId("sb"),
+      sessionId,
+    },
   };
 }
 
@@ -408,12 +443,55 @@ export function cloneSessionForEdit(session: ChatSession, turnId: string, newTex
     at: Date.now(),
     checkpoints: ladder,
     editOf: session.id,
+    /* the lineage owns one identity: the branch inherits the birth and
+     * the visitor tags of the conversation it continues. */
+    birth: session.birth,
+    tags: session.tags,
   };
 }
 
 /** checkpointCount — the honest ladder size for the surfaces. */
 export function checkpointCount(session: ChatSession): number {
   return session.checkpoints?.length ?? 0;
+}
+
+/* --------------------------- tags and lineage --------------------------- */
+
+/** addTag — one visitor label joins the conversation (deduplicated,
+ * trimmed, capped by the table's tagsCap; unknown casing is normalized
+ * to lower so chips stay quiet). Pure logic, zero services. */
+export function addTag(session: ChatSession, raw: string, cap = chatLimit("tagsCap")): ChatSession {
+  const tag = raw.trim().toLowerCase().slice(0, 24);
+  if (!tag) return session;
+  const tags = session.tags ?? [];
+  if (tags.includes(tag) || tags.length >= cap) return session;
+  return { ...session, tags: [...tags, tag] };
+}
+
+/** removeTag — one visitor label leaves the conversation. */
+export function removeTag(session: ChatSession, tag: string): ChatSession {
+  const tags = (session.tags ?? []).filter((t) => t !== tag);
+  return tags.length === 0 ? { ...session, tags: undefined } : { ...session, tags };
+}
+
+/** lineageKey — the identity the branch family shares: the id before the
+ * first branch mark (the root session id the edit law forks from). */
+export function lineageKey(session: ChatSession): string {
+  return session.id.split("~")[0] ?? session.id;
+}
+
+/** siblingBranches — the whole branch family of the session (the root
+ * and every fork, the session itself included), newest first — the
+ * lineage switcher reads exactly this list. */
+export function siblingBranches(sessions: ChatSession[], session: ChatSession): ChatSession[] {
+  const key = lineageKey(session);
+  return sessions.filter((s) => lineageKey(s) === key).sort((a, b) => b.at - a.at);
+}
+
+/** branchLabel — the honest ordinal of a branch: the edit count the
+ * ladder carries, zero meaning the root round itself. */
+export function branchLabel(session: ChatSession): number {
+  return checkpointCount(session);
 }
 
 /* --------------------------------- hook ------------------------------- */

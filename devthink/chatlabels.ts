@@ -148,6 +148,7 @@ const seedChatLimits: ChatLimitRow[] = [
   { id: "autoEffortTokens", value: 700 },
   { id: "sandboxDefaultVcpus", value: 8 },
   { id: "sandboxDefaultRamGb", value: 32 },
+  { id: "tagsCap", value: 8 },
 ];
 
 export type ChatLimitId = (typeof seedChatLimits)[number]["id"];

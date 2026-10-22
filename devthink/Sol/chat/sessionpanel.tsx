@@ -3,7 +3,9 @@
  * sheet (the start-menu recipe) that the caller mounts on open and unmounts
  * once the 200ms Windows slide-cum-fade exit settles: the active model, the
  * live turn count, the local persistence readout, the active tool flags,
- * the pinned-instructions seam, the saved-memories fact list, the explicit
+ * the pinned-instructions seam, the saved-memories fact list, the
+ * session-identity readout (the birth ids — space, sandbox, session),
+ * the visitor-tags editor (the capped chip row) and the explicit
  * gateway opt-in block, quick links into the existing theme pages and the
  * per-session export key (the conversation as a .md download). The gateway
  * block is the opt-in contract of the chat (shared with the settings page
@@ -22,8 +24,8 @@ import {
 } from "@fluentui/react-icons";
 import { type FormEvent, useEffect, useState } from "react";
 import { Link } from "wouter";
-import { chatText } from "../../chatlabels.ts";
-import { CHAT_TOOLS, type ChatSession, type ToolId } from "../../chatstate.ts";
+import { chatLimit, chatText } from "../../chatlabels.ts";
+import { addTag, CHAT_TOOLS, type ChatSession, removeTag, type ToolId } from "../../chatstate.ts";
 import { GATEWAY_REQUIRED_COPY, type GatewayRegistration, gatewayStatusLabel } from "../../gatewaybase.ts";
 import { CHAT_NAV } from "./sidebar.tsx";
 
@@ -67,14 +69,17 @@ function sessionMarkdown(session: ChatSession): string {
  * @param sessionCount conversations persisted on this device.
  * @param tools the tool flags currently on.
  * @param gateway the shared opt-in machine (base, status, register/disconnect).
- * @param session the active session record — powers the export key; absent
- *   keeps the export row out of the quick links until the caller wires it.
+ * @param session the active session record — powers the export key, the
+ *   identity readout and the tags chips; absent keeps those rows out until
+ *   the caller wires it.
  * @param memory the saved facts of the memory block; absent falls back to a
  *   local list seeded empty (the persistence seam is the caller's).
  * @param onMemoryChange fires with the next fact list on every delete key.
  * @param instructions the pinned project instructions; absent falls back to
  *   a local draft (the persistence seam is the caller's).
  * @param onInstructionsChange fires with the draft on every keystroke.
+ * @param onTagsChange fires with the next tag list on every add or remove
+ *   key; absent keeps the chips read-only (the seam is the caller's).
  */
 export function SessionPanel({
   open,
@@ -89,6 +94,7 @@ export function SessionPanel({
   onMemoryChange,
   instructions,
   onInstructionsChange,
+  onTagsChange,
 }: {
   open: boolean;
   onClose: () => void;
@@ -102,6 +108,7 @@ export function SessionPanel({
   onMemoryChange?: (facts: string[]) => void;
   instructions?: string;
   onInstructionsChange?: (value: string) => void;
+  onTagsChange?: (tags: string[]) => void;
 }) {
   const toolLabel =
     tools.length > 0
@@ -129,6 +136,26 @@ export function SessionPanel({
   const editInstructions = (value: string) => {
     setInstructionDraft(value);
     onInstructionsChange?.(value);
+  };
+
+  /* the visitor-tags lane: the chips ride the session record itself — no
+   * local echo to keep — and the input carries the only local draft; every
+   * commit runs through the pure addTag law (trim, lowercase, the table's
+   * cap) before it reaches the caller, and the remove key through
+   * removeTag, so the panel never widens the law on its own. */
+  const [tagDraft, setTagDraft] = useState("");
+  const sessionTags = session?.tags ?? [];
+  const tagsCap = chatLimit("tagsCap");
+  const submitTag = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!session || !onTagsChange) return;
+    const next = addTag(session, tagDraft);
+    setTagDraft("");
+    if (next !== session) onTagsChange(next.tags ?? []);
+  };
+  const dropTag = (tag: string) => {
+    if (!session || !onTagsChange) return;
+    onTagsChange(removeTag(session, tag).tags ?? []);
   };
 
   /* the saved-memories lane: the facts arrive as an optional prop and fall
@@ -211,6 +238,28 @@ export function SessionPanel({
         </dl>
       </section>
 
+      <section className="dtc-session__sec" aria-label="Session identity">
+        <p className="dtc-session__label">Identity</p>
+        {session?.birth ? (
+          <dl className="dtc-ident">
+            <dt className="dtc-ident__key">space</dt>
+            <dd className="dtc-ident__val" title={session.birth.spaceId}>
+              {session.birth.spaceId}
+            </dd>
+            <dt className="dtc-ident__key">sandbox</dt>
+            <dd className="dtc-ident__val" title={session.birth.sandboxId}>
+              {session.birth.sandboxId}
+            </dd>
+            <dt className="dtc-ident__key">session</dt>
+            <dd className="dtc-ident__val" title={session.birth.sessionId}>
+              {session.birth.sessionId}
+            </dd>
+          </dl>
+        ) : (
+          <p className="dtc-gw__hint">ids mint at the first message</p>
+        )}
+      </section>
+
       <section className="dtc-session__sec" aria-label="Project instructions">
         <p className="dtc-session__label">Project</p>
         <textarea
@@ -250,6 +299,56 @@ export function SessionPanel({
             </ul>
           ) : (
             <p className="dtc-memory__empty">{chatText("panel.memoryEmpty")}</p>
+          )}
+        </section>
+      ) : null}
+
+      {session ? (
+        <section className="dtc-session__sec" aria-label="Session tags">
+          <p className="dtc-session__label">Tags</p>
+          {onTagsChange ? (
+            <form className="dtc-tags" onSubmit={submitTag}>
+              {sessionTags.map((tag) => (
+                <span key={tag} className="dtc-tag">
+                  {tag}
+                  <button
+                    type="button"
+                    className="dtc-tag__del"
+                    onClick={() => dropTag(tag)}
+                    aria-label="Remove tag"
+                    title="Remove this tag"
+                    tabIndex={open ? 0 : -1}
+                  >
+                    <Dismiss fontSize={13} aria-hidden="true" />
+                  </button>
+                </span>
+              ))}
+              <input
+                className="dtc-tags__input"
+                value={tagDraft}
+                onChange={(event) => setTagDraft(event.target.value)}
+                placeholder="add a tag"
+                aria-label="Add a tag"
+                spellCheck={false}
+                autoComplete="off"
+                tabIndex={open ? 0 : -1}
+              />
+            </form>
+          ) : (
+            <div className="dtc-tags">
+              {sessionTags.map((tag) => (
+                <span key={tag} className="dtc-tag">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+          {onTagsChange ? (
+            sessionTags.length >= tagsCap ? (
+              <p className="dtc-gw__hint">{tagsCap} tags is the cap</p>
+            ) : null
+          ) : (
+            <p className="dtc-gw__hint">editing lands with the panel seam</p>
           )}
         </section>
       ) : null}

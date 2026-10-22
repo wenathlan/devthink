@@ -23,11 +23,13 @@ import { toast } from "sonner";
 import { osAppLabels } from "../../catalog.ts";
 import { chatLimit, chatSandboxContract, chatText } from "../../chatlabels.ts";
 import {
+  branchLabel,
   buildSystemPrompt,
   type ChatSession,
   type ChatThinking,
   type ChatTurn,
   capTurns,
+  checkpointCount,
   clearChatHandoff,
   cloneSessionForEdit,
   deriveTitle,
@@ -38,6 +40,7 @@ import {
   newSession,
   readChatHandoff,
   runTurnStream,
+  siblingBranches,
   type ToolId,
   useChatModel,
   useChatSessions,
@@ -812,6 +815,19 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     toast(chatText("toast.conversationDeleted"));
   }, [persistedActive, remove, temporary]);
 
+  /** changeTags — the panel's tag seam (w8): the visitor labels ride the
+   * session record through the same commit lane every conversation
+   * mutation rides — an empty list clears the field (undefined is the
+   * stored shape). the temporary lane writes nothing: nothing saves, so
+   * no label ever lands (the honest lane). */
+  const changeTags = useCallback(
+    (tags: string[]) => {
+      if (temporary || persistedActive === null) return;
+      commitLane({ ...persistedActive, tags: tags.length > 0 ? tags : undefined });
+    },
+    [commitLane, persistedActive, temporary],
+  );
+
   const deleteFromRail = useCallback(
     (id: string) => {
       remove(id);
@@ -1194,21 +1210,45 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     if (el && streamPinnedRef.current) el.scrollTop = el.scrollHeight;
   }, [busy, live?.content.length, live?.thought?.length]);
 
-  // Escape closes the canvas pane first, then the mobile drawer, then the
-  // session panel, then the sandbox lane (the canvas is the newest surface
-  // — the w6-a ladder head, and the pane's edit lane cancels before this
-  // chain ever sees its escape)
+  /* the branch lineage chip (w8): a session carrying an edit fork or a
+   * checkpoint ladder wears the lineage mark in the topbar — the chip
+   * opens the family flyout (the root and every sibling of the same
+   * lineage key, newest first) and a row click rides the rail opener.
+   * the flyout follows the composer-menu discipline: the outside
+   * pointerdown closes it, Escape closes it first on the ladder below —
+   * and the temporary lane never renders it (nothing saves, so no
+   * lineage exists to switch). */
+  const [lineageOpen, setLineageOpen] = useState(false);
+  const lineageBtnRef = useRef<HTMLButtonElement | null>(null);
+  const lineageMenuRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!lineageOpen) return;
+    const onDocPointer = (e: PointerEvent) => {
+      const t = e.target as Node | null;
+      if (!lineageMenuRef.current?.contains(t) && !lineageBtnRef.current?.contains(t)) setLineageOpen(false);
+    };
+    document.addEventListener("pointerdown", onDocPointer);
+    return () => document.removeEventListener("pointerdown", onDocPointer);
+  }, [lineageOpen]);
+
+  // Escape closes the lineage flyout first, then the canvas pane, then the
+  // mobile drawer, then the session panel, then the sandbox lane (the
+  // lineage menu is the smallest surface — a topbar flyout answers before
+  // any lane, the canvas stays the newest surface, the w6-a ladder head,
+  // and the pane's edit lane cancels before this chain ever sees its
+  // escape)
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
-      if (canvasOpen) closeCanvas();
+      if (lineageOpen) setLineageOpen(false);
+      else if (canvasOpen) closeCanvas();
       else if (isMobile && !railCollapsed) setRailCollapsed(true);
       else if (panelOpen) closePanel();
       else if (sandboxOpen) closeSandbox();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [canvasOpen, closeCanvas, closePanel, closeSandbox, isMobile, panelOpen, railCollapsed, sandboxOpen]);
+  }, [canvasOpen, closeCanvas, closePanel, closeSandbox, isMobile, lineageOpen, panelOpen, railCollapsed, sandboxOpen]);
 
   /* the token meter (rung 125): the estimated budget of the NEXT round —
    * the system prompt plus the capped history window plus the draft in the
@@ -1332,6 +1372,51 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
               >
                 <TrashIcon fontSize={17} aria-hidden="true" />
               </button>
+            ) : null}
+            {/* the branch lineage chip (w8): an edit fork or a ladder
+                carrier wears the mark beside the canvas key — the label
+                is the honest ordinal of the branch. the temporary lane
+                renders nothing: nothing saves, so no lineage exists. */}
+            {!temporary && active !== null && (active.editOf || checkpointCount(active) > 0) ? (
+              <button
+                type="button"
+                ref={lineageBtnRef}
+                className="dtc-lineage"
+                data-open={lineageOpen ? "true" : "false"}
+                aria-expanded={lineageOpen}
+                aria-haspopup="menu"
+                onClick={() => setLineageOpen((v) => !v)}
+                title="Branch lineage"
+              >
+                <span className="dtc-lineage__mark" aria-hidden="true" />
+                branch · edit {branchLabel(active)}
+              </button>
+            ) : null}
+            {/* the family flyout (w8): every sibling of the lineage key,
+                newest first — the root round and each edit fork; the
+                active row carries aria-current and a row click rides the
+                rail opener, the same open seam the rail rows use. */}
+            {lineageOpen && !temporary && active !== null ? (
+              <div ref={lineageMenuRef} className="dtc-lineage__menu" role="menu" aria-label="Branch lineage">
+                {siblingBranches(sessions, active).map((sib) => (
+                  <button
+                    key={sib.id}
+                    type="button"
+                    role="menuitem"
+                    className="dtc-lineage__row"
+                    aria-current={sib.id === active.id ? "true" : undefined}
+                    onClick={() => {
+                      setLineageOpen(false);
+                      openLane(sib.id);
+                    }}
+                  >
+                    <span className="dtc-lineage__ordinal">
+                      {branchLabel(sib) === 0 ? "root" : `edit ${branchLabel(sib)}`}
+                    </span>
+                    <span className="dtc-lineage__title">{sib.title}</span>
+                  </button>
+                ))}
+              </div>
             ) : null}
             {/* the canvas ghost key (w6-a): the quiet topbar opener beside
                 the panel key — an empty open keeps the standing buffer,
@@ -1555,6 +1640,7 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
           onMemoryChange={changeMemory}
           instructions={instructions}
           onInstructionsChange={setInstructions}
+          onTagsChange={changeTags}
         />
       ) : null}
     </div>
