@@ -15096,3 +15096,306 @@ button.dtc-recents__row:focus-visible {
     transition: none;
   }
 }
+
+/* ==========================================================================
+   the wave 5 pass — the sandbox bridge task cards and the code block
+   grammar: the thread and the engine finally speak, the fenced blocks
+   carry the header row with the ghost keys and the sandbox hairline
+   ========================================================================== */
+
+/* ---- the sandbox task cards (w5 a) ---- */
+
+.dtc-tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 2px 0 10px;
+}
+
+.dtc-tasks__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  min-height: 24px;
+  padding: 2px 10px;
+  border: 1px solid color-mix(in srgb, var(--sol-muted) 22%, transparent);
+  border-radius: 9999px;
+  background: transparent;
+  color: var(--sol-muted);
+  font: 600 10px var(--dt-mono);
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  cursor: pointer;
+  transition: color 0.15s var(--ease-fluent), border-color 0.15s var(--ease-fluent);
+}
+
+.dtc-tasks__chip:hover {
+  color: var(--sol-text);
+  border-color: color-mix(in srgb, var(--sol-muted) 45%, transparent);
+}
+
+.dtc-tasks__count {
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+  color: var(--sol-primary);
+}
+
+.dtc-task {
+  border: 1px solid color-mix(in srgb, var(--sol-muted) 16%, transparent);
+  border-radius: var(--chat-r-md);
+  background: color-mix(in srgb, var(--sol-muted) 4%, transparent);
+  overflow: hidden;
+}
+
+.dtc-task[data-verdict="fail"] {
+  border-color: color-mix(in srgb, var(--sol-error) 32%, transparent);
+  background: color-mix(in srgb, var(--sol-error) 5%, transparent);
+}
+
+.dtc-task__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 32px;
+  padding: 4px 10px;
+  border: 0;
+  background: transparent;
+  color: var(--sol-muted);
+  font: 400 0.74rem var(--dt-mono);
+  text-align: left;
+  cursor: pointer;
+}
+
+.dtc-task__head:hover {
+  color: var(--sol-text);
+  background: rgb(255 255 255 / 4%);
+}
+
+[data-theme="light"] .dtc-task__head:hover {
+  background: rgb(0 0 0 / 4%);
+}
+
+.dtc-task__cmd {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--sol-text);
+}
+
+.dtc-task__verdict {
+  flex: none;
+  font: 600 10px var(--dt-mono);
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  color: var(--sol-success);
+}
+
+.dtc-task[data-verdict="fail"] .dtc-task__verdict {
+  color: var(--sol-error);
+}
+
+.dtc-task__dur {
+  flex: none;
+  font: 500 10px var(--dt-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--sol-muted);
+}
+
+.dtc-task__chev {
+  flex: none;
+  color: var(--sol-muted);
+  transition: transform 0.2s var(--ease-fluent);
+}
+
+.dtc-task__head[aria-expanded="true"] .dtc-task__chev {
+  transform: rotate(var(--rot-open));
+}
+
+.dtc-task__body {
+  padding: 0 10px 8px;
+  animation: dtcFade 0.2s ease backwards;
+}
+
+.dtc-task__log {
+  margin: 0 0 6px;
+  padding: 8px 10px;
+  max-height: 16rem;
+  overflow: auto;
+  border-radius: 8px;
+  background: rgb(0 0 0 / 22%);
+  color: var(--sol-muted);
+  font: 11px / 1.6 var(--dt-mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  scrollbar-width: thin;
+}
+
+[data-theme="light"] .dtc-task__log {
+  background: rgb(0 0 0 / 6%);
+}
+
+.dtc-task__quiet {
+  margin: 0 0 6px;
+  color: var(--sol-muted);
+  font: italic 400 10px var(--dt-mono);
+}
+
+.dtc-task__diff {
+  padding-top: 6px;
+  border-top: 1px solid color-mix(in srgb, var(--sol-muted) 14%, transparent);
+}
+
+.dtc-task__diffpath {
+  margin: 0 0 4px;
+  color: var(--sol-muted);
+  font: 600 10px var(--dt-mono);
+  letter-spacing: 0.04em;
+}
+
+.dtc-task__dline {
+  display: block;
+  padding: 0 8px;
+  font: 11px / 1.55 var(--dt-mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.dtc-task__dline--add {
+  background: color-mix(in srgb, var(--sol-success) 12%, transparent);
+  color: var(--sol-success);
+}
+
+.dtc-task__dline--del {
+  background: color-mix(in srgb, var(--sol-error) 10%, transparent);
+  color: var(--sol-error);
+}
+
+/* ---- the code block grammar (w5 b) ---- */
+
+.dtc-code {
+  border-radius: 0.65rem;
+}
+
+.dtc-code__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 6px 4px 12px;
+  border-bottom: 1px solid rgb(0 0 0 / 40%);
+  color: var(--sol-muted);
+}
+
+[data-theme="light"] .dtc-code__head {
+  border-bottom-color: rgb(0 0 0 / 12%);
+}
+
+.dtc-code__lang {
+  font: 500 0.72rem var(--dt-mono);
+  letter-spacing: 0.01em;
+  text-transform: lowercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dtc-code__keys {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+}
+
+.dtc-code__key {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--sol-muted);
+  transition:
+    color 120ms var(--ease-fluent, ease),
+    background 120ms var(--ease-fluent, ease);
+}
+
+.dtc-code__key::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+}
+
+.dtc-code__key:hover {
+  color: var(--sol-text);
+  background: rgb(255 255 255 / 10%);
+}
+
+.dtc-code__key:active {
+  transform: scale(0.96);
+}
+
+.dtc-code__key[aria-pressed="true"] {
+  color: var(--sol-text);
+  background: rgb(255 255 255 / 8%);
+}
+
+[data-theme="light"] .dtc-code__key:hover {
+  background: rgb(0 0 0 / 8%);
+}
+
+[data-theme="light"] .dtc-code__key[aria-pressed="true"] {
+  background: rgb(0 0 0 / 6%);
+}
+
+.dtc-code__pre {
+  border-radius: 1rem;
+  margin: 5px;
+}
+
+.dtc-code--wrap .dtc-code__pre {
+  white-space: pre-wrap;
+  overflow-x: visible;
+  overflow-wrap: break-word;
+}
+
+.dtc-code--sandbox {
+  border-left: 2px solid color-mix(in srgb, var(--sol-accent, #7aa2ff) 55%, transparent);
+}
+
+.dtc-md__list:not(.dtc-md__list--ol) .dtc-md__li--task {
+  list-style: none;
+}
+
+.dtc-md__task {
+  width: 13px;
+  height: 13px;
+  margin-inline-end: 7px;
+  vertical-align: -2px;
+  accent-color: var(--sol-accent, #7aa2ff);
+}
+
+.dtc-md__li--done {
+  color: var(--sol-muted);
+}
+
+/* the wave 5 reduced-motion guard */
+[data-motion="reduced"] .dtc-task__body {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dtc-task__body {
+    animation: none;
+  }
+}

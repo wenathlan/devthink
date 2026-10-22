@@ -15,7 +15,12 @@
  * saddle cadence and hands every typed line to the engine dispatcher,
  * which answers help, lscpu, cat, echo and the rest honestly. The sandbox
  * is ephemeral session state: closing the pane unmounts it and the engine
- * state dies with the component — nothing persists in chatstate.
+ * state dies with the component — nothing persists in chatstate. The
+ * w5-a tool bridge: while the lane is open and the engine runs, the pane
+ * hands its command executor to the chat body through onBridgeChange so
+ * the thread's sandbox tool calls dispatch through the same engine lane
+ * — the executor answers null whenever the lane closes or the engine
+ * halts, so the bridge never fabricates a result.
  */
 
 import {
@@ -35,6 +40,25 @@ export type SandboxRow = { id: number; text: string; cls: string };
 /** the lamp status of the pane: halted before boot, booting while the dmesg
  * streams, running once the engine dispatcher answers. */
 export type SandboxStatus = "halted" | "booting" | "running";
+
+/** one vfs change the engine wrote while a bridge command ran: the before
+ * and after buffers of a workspace file (after null reads as the file
+ * leaving the workspace). */
+export type SandboxFileChange = { path: string; before: string; after: string | null };
+
+/** the bridge answer of one dispatched command: the engine result fields
+ * plus the vfs change list the diff view renders. */
+export type SandboxRunResult = {
+  output: string;
+  exitCode: number;
+  clear: boolean;
+  changes: SandboxFileChange[];
+};
+
+/** the executor the pane hands the thread bridge: one command in, the
+ * honest engine answer out — null while the engine is halted, so the
+ * bridge never invents a result. */
+export type SandboxRunner = (command: string) => SandboxRunResult | null;
 
 /** the engine family identity of the pane (the catalog label row, never a
  * hardcoded literal — the bare id keeps the mark honest when the row is
@@ -56,6 +80,32 @@ const DEFAULT_SPEC: SandboxSpec = {
  * the console page streams at — the one adapter this pane owns). */
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
+/** snapshotFiles — the honest vfs snapshot for the diff view: one content
+ * pair per workspace file of the live engine state (an empty map while
+ * the engine is halted — nothing pretends to exist). */
+const snapshotFiles = (engine: SandboxState | null): Map<string, string> => {
+  const snap = new Map<string, string>();
+  if (engine === null) return snap;
+  for (const [path, file] of engine.files) snap.set(path, file.content);
+  return snap;
+};
+
+/** vfsChanges — the before/after comparison of one dispatch: every born
+ * or changed file carries both buffers, every deleted file answers its
+ * old content with after null (the diff view reads exactly these rows). */
+const vfsChanges = (before: Map<string, string>, after: Map<string, string>): SandboxFileChange[] => {
+  const changes: SandboxFileChange[] = [];
+  for (const [path, content] of after) {
+    if (!before.has(path) || before.get(path) !== content) {
+      changes.push({ path, before: before.get(path) ?? "", after: content });
+    }
+  }
+  for (const [path, content] of before) {
+    if (!after.has(path)) changes.push({ path, before: content, after: null });
+  }
+  return changes;
+};
+
 /**
  * SandboxPane — the sandbox lane of the chat body.
  *
@@ -64,17 +114,22 @@ const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve,
  * @param swap body-swap mode (the narrow viewport or the embedded window):
  * the pane fills the conversation stage instead of docking as a lane.
  * @param onRunningChange reports the engine lamp to the composer chip.
+ * @param onBridgeChange the w5-a thread bridge handoff: the pane registers
+ * its command executor while the lane is open and the engine runs, and
+ * null whenever either falls — the caller holds the last registration.
  */
 export function SandboxPane({
   open,
   onClose,
   swap,
   onRunningChange,
+  onBridgeChange,
 }: {
   open: boolean;
   onClose: () => void;
   swap?: boolean;
   onRunningChange?: (running: boolean) => void;
+  onBridgeChange?: (runner: SandboxRunner | null) => void;
 }) {
   const paneid = useId();
   const rowseq = useRef(0);
@@ -90,6 +145,10 @@ export function SandboxPane({
   const [booted, setBooted] = useState(false);
   const [busy, setBusy] = useState(false);
   const [prompt, setPrompt] = useState("root@saddle:~#");
+  /** the prompt mirror: the bridge executor is captured once at
+   * registration, so it reads the live prompt through the ref — never a
+   * stale state closure. */
+  const promptref = useRef("root@saddle:~#");
   const [value, setValue] = useState("");
   const running = status === "running";
 
@@ -140,7 +199,9 @@ export function SandboxPane({
     setRows([]);
     const state = createSandboxState(DEFAULT_SPEC);
     engineref.current = state;
-    setPrompt(`root@${state.hostname}:~#`);
+    const banner = `root@${state.hostname}:~#`;
+    setPrompt(banner);
+    promptref.current = banner;
     printrow(`saddle sandbox booting (${state.model}, ${state.vcpus} vcpus, ${state.ramgb} gb, ${state.gpu})`, "boot");
     const lines = bootSequence(DEFAULT_SPEC.model, state.vcpus, DEFAULT_SPEC.ramgb, DEFAULT_SPEC.gpu);
     for (const bootline of lines) {
@@ -163,18 +224,43 @@ export function SandboxPane({
     printrow("sandbox stopped; snapshot-less teardown complete.", "boot");
   };
 
-  /** runs one command through the engine dispatcher — the clear flag wipes
-   * the log and the exit code picks the ok or err row class. */
-  const runcommand = (raw: string) => {
-    printrow(`${prompt} ${raw}`, "cmdline");
+  /** execCommand — the one honest executor behind both surfaces of the
+   * pane: the command well and the w5-a thread bridge. The cmdline row
+   * prints first (the live prompt rides the ref so a captured executor
+   * never goes stale), the vfs snapshots wrap the engine dispatch — the
+   * diff view answers the buffers the engine really wrote — the exit
+   * code picks the ok or err row class, and the clear flag wipes the log. */
+  const execCommand = (raw: string): SandboxRunResult => {
+    printrow(`${promptref.current} ${raw}`, "cmdline");
     const engine = engineref.current;
+    const before = snapshotFiles(engine);
     const result = engine !== null ? dispatch(raw, engine) : { output: "the sandbox is not running", exitCode: 1 };
+    const changes = vfsChanges(before, snapshotFiles(engine));
     if (result.clear === true) {
       setRows([]);
-      return;
+      return { output: result.output, exitCode: result.exitCode, clear: true, changes };
     }
     if (result.output.length > 0) printrow(result.output, result.exitCode === 0 ? "ok" : "err");
+    return { output: result.output, exitCode: result.exitCode, clear: false, changes };
   };
+
+  // the w5-a thread bridge: while the lane is open and the engine runs,
+  // the pane hands its executor to the body — the lane stays the only
+  // dispatcher, and a closed lane or a halted engine answers null so a
+  // round's fenced blocks render as plain markdown instead of work rows.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the registered executor reads the engine and prompt refs and writes through the stable setRows — its render closure never goes stale, so the registration keys on the lane state and the lamp alone
+  useEffect(() => {
+    if (onBridgeChange === undefined) return undefined;
+    if (!open || !running) {
+      onBridgeChange(null);
+      return undefined;
+    }
+    onBridgeChange((command: string) => {
+      const engine = engineref.current;
+      return engine === null ? null : execCommand(command);
+    });
+    return () => onBridgeChange(null);
+  }, [onBridgeChange, open, running]);
 
   const onsubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -184,7 +270,7 @@ export function SandboxPane({
     if (trimmed.length === 0) return;
     historyref.current.push(trimmed);
     historyindex.current = historyref.current.length;
-    runcommand(trimmed);
+    execCommand(trimmed);
   };
 
   /** the arrow keys browse the command history, tab completes over the

@@ -11,6 +11,8 @@
  */
 
 import {
+  ChevronDownRegular as ChevronDown,
+  CubeRegular as Cube,
   PanelLeftRegular as PanelLeft,
   PanelRightRegular as PanelRight,
   DeleteRegular as TrashIcon,
@@ -46,7 +48,7 @@ import { GATEWAY_REQUIRED_COPY, GATEWAY_SEND_NOTICE, useGatewayRegistration } fr
 import { useIsMobile } from "../../useismobile.ts";
 import { arrayOf, isString, useStoredState } from "../../usestoredstate.ts";
 import { Composer } from "./composer.tsx";
-import { SandboxPane } from "./sandboxpane.tsx";
+import { type SandboxFileChange, SandboxPane, type SandboxRunner } from "./sandboxpane.tsx";
 import { SessionPanel } from "./sessionpanel.tsx";
 import { Sidebar } from "./sidebar.tsx";
 import { type SolBotState } from "./solboticon.tsx";
@@ -92,6 +94,145 @@ const isMemoryList = arrayOf(isString);
 const INSTRUCTIONS_KEY = "dt-chat-instructions-v1";
 /** the memory cap: the oldest fact leaves when a write would pass 30. */
 const MEMORY_CAP = 30;
+
+/* the w5-a sandbox bridge: the thread and the engine finally speak. the
+ * contract below rides the round's system prompt while the sandbox chip
+ * is on, the parser reads the assistant's fenced blocks and json
+ * tool-call lines, the pane's executor dispatches each command through
+ * the engine lane, the task cards render under the turn that spawned
+ * them, and the undelivered results ride the next round's history as one
+ * follow-up user message — the quiet tool context that closes the
+ * model's loop. honesty laws: no dispatch while the lane is closed or
+ * the engine halted, no fabricated output, no error surface for a parse
+ * miss (a malformed fence or line is today's plain markdown). */
+
+/** SANDBOX_TOOL_CONTRACT — the tool-calling instruction the round's
+ * system prompt gains while the sandbox chip is on: the fenced grammar
+ * (one fence tagged sandbox carrying the command) and the json line
+ * grammar, the honest result loop, and the law that the thread only
+ * renders what the engine answered. */
+const SANDBOX_TOOL_CONTRACT = [
+  "sandbox tool contract: a saddle sandbox microvm is attached to this conversation.",
+  "to run a command in it, emit a fenced code block tagged sandbox carrying exactly one shell command:",
+  "```sandbox",
+  "lscpu",
+  "```",
+  'or a single json line: {"tool":"sandbox","command":"lscpu"}.',
+  "the engine answers help, lscpu, cat /proc/cpuinfo, cat /proc/meminfo, free -h, nvidia-smi, nvidia-smi -L, clinfo, vulkaninfo --summary, glxinfo, uname -a, ls, ls /etc/virtual, env, uptime, whoami, neofetch, echo, echo <text> > <file>, echo <text> >> <file>, touch <file>, cat <file>, rm <file>, df -h, stat <file>, pwd, history, man <command> — run help for the catalog.",
+  "each command's output and exit code return to you as the sandbox result context of the next round, and workspace files persist through the session.",
+  "emit a sandbox call only when the answer needs the engine, otherwise answer in plain text. never fabricate command output — the thread renders only what the engine answered.",
+].join("\n");
+
+/** the per-command output cap of the quiet tool context: longer engine
+ * answers truncate with the honest marker (never a summarized fake). */
+const SANDBOX_CONTEXT_CAP = 6000;
+
+/** one sandbox task of the bridge: the command the assistant asked the
+ * engine to run, the honest answer, the measured duration and the vfs
+ * changes the command wrote — grouped under the turn that spawned it. */
+type SandboxTask = {
+  id: string;
+  turnId: string;
+  command: string;
+  output: string;
+  exitCode: number;
+  durationMs: number;
+  changes: SandboxFileChange[];
+};
+
+/** the task id sequence — one counter for every card this body lands,
+ * the react keys never collide. */
+let sandboxTaskSeq = 0;
+
+/** one row of the quiet diff: a removed or added line with its stable
+ * row id. */
+type DiffRow = { id: number; mark: "-" | "+"; text: string };
+
+/** diffLines — the quiet line diff of one vfs change: the common head
+ * and tail trim away, the changed middle answers as removed (-) and
+ * added (+) rows — a deleted file is every line removed, a born file
+ * every line added, an append or overwrite shows exactly the lines that
+ * moved. */
+function diffLines(before: string, after: string | null): DiffRow[] {
+  const oldlines = before.length === 0 ? [] : before.split("\n");
+  const newlines = after === null || after.length === 0 ? [] : after.split("\n");
+  let head = 0;
+  while (head < oldlines.length && head < newlines.length && oldlines[head] === newlines[head]) head += 1;
+  let tailold = oldlines.length;
+  let tailnew = newlines.length;
+  while (tailold > head && tailnew > head && oldlines[tailold - 1] === newlines[tailnew - 1]) {
+    tailold -= 1;
+    tailnew -= 1;
+  }
+  const rows: DiffRow[] = [];
+  let seq = 0;
+  const push = (mark: "-" | "+", text: string) => {
+    seq += 1;
+    rows.push({ id: seq, mark, text });
+  };
+  for (let i = head; i < tailold; i += 1) push("-", oldlines[i] ?? "");
+  for (let i = head; i < tailnew; i += 1) push("+", newlines[i] ?? "");
+  return rows;
+}
+
+/** parseSandboxCalls — the tool-call parser of the bridge: the fenced
+ * grammar first (a fence tagged sandbox carrying the command lines — the
+ * closing fence must stand, so a stream stopped mid-fence never fires),
+ * then the json line grammar ({"tool":"sandbox","command":"…"} on its
+ * own line). a parse miss answers nothing: a malformed fence or line is
+ * today's plain markdown, never an error surface. */
+function parseSandboxCalls(text: string): string[] {
+  const calls: string[] = [];
+  /* the fence pass collects the commands and strips the matched blocks,
+   * so the json line pass below never re-reads a line a fence already
+   * answered (a json line inside a fence is a command, not a call). */
+  const rest = text.replace(/```sandbox[^\n]*\n([\s\S]*?)```/g, (_full: string, body: string) => {
+    for (const line of body.split("\n")) {
+      const command = line.trim();
+      if (command.length > 0) calls.push(command);
+    }
+    return "";
+  });
+  for (const line of rest.split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed.startsWith("{") || !trimmed.endsWith("}")) continue;
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(trimmed);
+    } catch {
+      continue;
+    }
+    if (typeof parsed !== "object" || parsed === null) continue;
+    const call = parsed as { tool?: unknown; command?: unknown };
+    if (call.tool === "sandbox" && typeof call.command === "string" && call.command.trim().length > 0) {
+      calls.push(call.command.trim());
+    }
+  }
+  return calls;
+}
+
+/** fmtTaskDuration — the honest engine duration of a task card: the
+ * sub-millisecond dispatch reads "<1 ms", the rest the whole
+ * milliseconds the clock measured (never a rounded-up zero or a padded
+ * fake). */
+function fmtTaskDuration(ms: number): string {
+  return ms < 1 ? "<1 ms" : `${Math.round(ms)} ms`;
+}
+
+/** sandboxContextBody — the quiet tool section the model reads: every
+ * command with its engine answer and exit code, the long outputs capped
+ * with the honest truncation marker (never a fabricated summary). */
+function sandboxContextBody(tasks: SandboxTask[]): string {
+  const sections = tasks.map((task) => {
+    const out =
+      task.output.length > SANDBOX_CONTEXT_CAP
+        ? `${task.output.slice(0, SANDBOX_CONTEXT_CAP)}\n[output truncated: ${task.output.length} chars total]`
+        : task.output;
+    const body = out.length > 0 ? `\n${out}` : "";
+    return `$ ${task.command}${body}\n[exit ${task.exitCode}]`;
+  });
+  return `sandbox tool results (the engine answered these):\n\n${sections.join("\n\n")}`;
+}
 
 export default function ChatBody({ embedded }: { embedded?: boolean }) {
   ensureChatCss();
@@ -154,6 +295,17 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
   const [sandboxRunning, setSandboxRunning] = useState(false);
   const sandboxMountedRef = useRef(false);
   const sandboxExitTimer = useRef<number | null>(null);
+  /* the w5-a bridge state: the per-session task record (the cards are
+   * work rows, never persisted turns — the record rides this body and
+   * dies with the mount), the delivered watermark that keeps every
+   * engine result reaching the model exactly once, the pane's executor
+   * handoff, and the first-card anchors the turn chips scroll to. */
+  const [sandboxTasks, setSandboxTasks] = useState<Record<string, SandboxTask[]>>({});
+  const sandboxTasksRef = useRef<Record<string, SandboxTask[]>>({});
+  const sandboxDeliveredRef = useRef<Record<string, number>>({});
+  const sandboxRunnerRef = useRef<SandboxRunner | null>(null);
+  const taskCardRefs = useRef<Map<string, HTMLElement>>(new Map());
+  const taskScrollTimer = useRef<number | null>(null);
   const isMobile = useIsMobile();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
@@ -251,18 +403,21 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
    * and the remembered facts ride ahead of the Sol persona on every
    * round. chatstate is out of bounds, so the composition happens here
    * at the call sites — every round that built buildSystemPrompt(tools)
-   * now builds this instead. */
+   * now builds this instead. the w5-a seam: while the sandbox chip is
+   * on, the sandbox tool contract joins the context blocks (the bridge
+   * dispatches only while the engine lane answers — a closed lane
+   * renders the fenced blocks as plain markdown, never fake work). */
   const stitchSystemPrompt = useCallback(
     (activeTools: ToolId[]): string => {
       const pinned = instructions.trim();
       const head = pinned ? `project instructions:\n${pinned}\n\n` : "";
       /* the temporary law: the memory never rides an ephemeral round —
        * the lane reads no facts while nothing saves on this device. */
-      const facts =
-        !temporary && memoryFacts.length > 0 ? `remembered facts:\n${memoryFacts.join("\n")}\n\n` : "";
-      return `${head}${facts}${buildSystemPrompt(activeTools)}`;
+      const facts = !temporary && memoryFacts.length > 0 ? `remembered facts:\n${memoryFacts.join("\n")}\n\n` : "";
+      const sandbox = sandboxOpen ? `${SANDBOX_TOOL_CONTRACT}\n\n` : "";
+      return `${head}${facts}${sandbox}${buildSystemPrompt(activeTools)}`;
     },
-    [instructions, memoryFacts, temporary],
+    [instructions, memoryFacts, sandboxOpen, temporary],
   );
 
   /** commitLane — the temporary-law router: every conversation mutation
@@ -277,6 +432,46 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     [commit, temporary],
   );
 
+  /** runSandboxBridge — the honest loop of the w5-a tool bridge: the
+   * committed assistant text parses for sandbox calls and every call
+   * dispatches through the pane's engine executor — the command and its
+   * answer land as task cards under the turn that spawned them and wait
+   * as the next round's result context. the pass acts only while the
+   * bridge is armed: a closed lane, a halted engine or a parse miss
+   * answers nothing, and the fenced blocks stay plain markdown. */
+  const runSandboxBridge = useCallback((sessionId: string, reply: ChatTurn) => {
+    const runner = sandboxRunnerRef.current;
+    if (runner === null) return;
+    const calls = parseSandboxCalls(reply.content);
+    if (calls.length === 0) return;
+    const landed: SandboxTask[] = [];
+    for (const command of calls) {
+      const started = performance.now();
+      const result = runner(command);
+      const durationMs = performance.now() - started;
+      /* the engine went away mid-pass — nothing fakes the rest of the
+       * round's calls. */
+      if (result === null) continue;
+      sandboxTaskSeq += 1;
+      landed.push({
+        id: `sb-${sandboxTaskSeq}`,
+        turnId: reply.id,
+        command,
+        output: result.output,
+        exitCode: result.exitCode,
+        durationMs,
+        changes: result.changes,
+      });
+    }
+    if (landed.length === 0) return;
+    const next: Record<string, SandboxTask[]> = {
+      ...sandboxTasksRef.current,
+      [sessionId]: [...(sandboxTasksRef.current[sessionId] ?? []), ...landed],
+    };
+    sandboxTasksRef.current = next;
+    setSandboxTasks(next);
+  }, []);
+
   /** runCompletion — the gateway round for a history that already ends with
    * the user turn. Without a registered gateway nothing is fetched: the
    * honest notice takes the existing inline error/retry path and busy never
@@ -285,7 +480,10 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
    * grow the live turn on the floor, and the committed turn replaces the
    * live one when the stream closes (one [DONE]). The Stop pill aborts the
    * controller and the partial answer commits with its stopped flag — the
-   * visitor's stop is never an error. */
+   * visitor's stop is never an error. The w5-a seam: the round's history
+   * carries the undelivered sandbox results as one follow-up user message
+   * (the quiet tool context, never committed to the visible thread), and
+   * the committed answer runs the tool-call bridge afterwards. */
   const runCompletion = useCallback(
     async (history: ChatSession, system: string) => {
       if (!gateway.base) {
@@ -304,8 +502,19 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
       const seedLive: ChatTurn = { id: "t-live", role: "assistant", content: "", at: Date.now() };
       liveRef.current = seedLive;
       setLive(seedLive);
+      /* the sandbox result context (w5-a): the undelivered engine answers
+       * ride this round's history as one follow-up user message — the task
+       * cards carry the visible surface, this quiet context closes the
+       * model's loop, and the message never commits to the conversation
+       * (the watermark below advances only after the round answered, so a
+       * failed fetch re-delivers on the retry — no result is ever lost). */
+      const sid = history.id;
+      const delivered = sandboxDeliveredRef.current[sid] ?? 0;
+      const undelivered = (sandboxTasksRef.current[sid] ?? []).slice(delivered);
+      const toolContext = undelivered.length > 0 ? userTurn(sandboxContextBody(undelivered)) : null;
+      const roundMessages = toolContext === null ? history.messages : [...history.messages, toolContext];
       try {
-        const reply = await runTurnStream(history.messages, system, {
+        const reply = await runTurnStream(roundMessages, system, {
           base: gateway.base,
           model: model === GATEWAY_MODEL ? undefined : model,
           sessionId: history.id.split("~")[0],
@@ -326,11 +535,24 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
             },
           },
         });
+        /* the round answered — the results it consumed mark delivered
+         * (each engine result reaches the model exactly once). */
+        if (toolContext !== null) {
+          sandboxDeliveredRef.current = {
+            ...sandboxDeliveredRef.current,
+            [sid]: delivered + undelivered.length,
+          };
+        }
         commitLane({
           ...history,
           messages: capTurns([...history.messages, reply]),
           at: Date.now(),
         });
+        /* the tool-call bridge (w5-a): the committed answer parses for
+         * sandbox calls and every call dispatches through the engine —
+         * the cards land under this turn and wait as the next round's
+         * result context. */
+        runSandboxBridge(sid, reply);
       } catch (err) {
         if (isChatStop(err)) {
           /* the visitor stopped the round: whatever streamed stays on the
@@ -338,19 +560,21 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
            * nothing streamed keeps the user turn for the retry path. */
           const partial = liveRef.current;
           if (partial && (partial.content.trim() || partial.thought?.trim())) {
+            const committed: ChatTurn = {
+              ...partial,
+              id: `t-${Date.now()}-a`,
+              model: partial.model ?? GATEWAY_MODEL,
+              stopped: true,
+            };
             commitLane({
               ...history,
-              messages: capTurns([
-                ...history.messages,
-                {
-                  ...partial,
-                  id: `t-${Date.now()}-a`,
-                  model: partial.model ?? GATEWAY_MODEL,
-                  stopped: true,
-                },
-              ]),
+              messages: capTurns([...history.messages, committed]),
               at: Date.now(),
             });
+            /* the stopped partial is a committed answer too — its complete
+             * fences dispatch honestly (a fence left open by the stop
+             * never parses). */
+            runSandboxBridge(sid, committed);
             toast("Generation stopped", {
               description: "The partial answer stayed on the floor — regenerate answers it again.",
             });
@@ -370,7 +594,7 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
         window.requestAnimationFrame(() => inputRef.current?.focus());
       }
     },
-    [commitLane, gateway.base, model, thinking, tools],
+    [commitLane, gateway.base, model, runSandboxBridge, thinking, tools],
   );
 
   /** stop — the Stop pill of the composer: aborts the running round. The
@@ -620,6 +844,32 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     setSandboxRunning(running);
   }, []);
 
+  /** registerSandboxRunner — the pane's bridge handoff (stable identity so
+   * the pane registration effect never loops): the body holds the last
+   * registration in a ref — null while the lane is closed or the engine
+   * halted, the live executor while both stand. */
+  const registerSandboxRunner = useCallback((runner: SandboxRunner | null) => {
+    sandboxRunnerRef.current = runner;
+  }, []);
+
+  /** revealSandboxWork — the turn chip's action (w5-a): the lane mount
+   * grammar opens the pane and the turn's task group centers once the
+   * enter transition settles (the docking reflows the thread column, so
+   * the scroll rides 240ms behind it). on the swapped viewport the pane
+   * replaces the thread — the honest destination is the engine itself
+   * and the scroll rests. */
+  const revealSandboxWork = useCallback(
+    (turnId: string) => {
+      openSandbox();
+      if (taskScrollTimer.current !== null) window.clearTimeout(taskScrollTimer.current);
+      taskScrollTimer.current = window.setTimeout(() => {
+        taskScrollTimer.current = null;
+        taskCardRefs.current.get(turnId)?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 240);
+    },
+    [openSandbox],
+  );
+
   // mounting flips the visible state one frame later (the enter transition)
   useEffect(() => {
     if (!panelMounted) return undefined;
@@ -639,6 +889,7 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     () => () => {
       if (panelExitTimer.current !== null) window.clearTimeout(panelExitTimer.current);
       if (sandboxExitTimer.current !== null) window.clearTimeout(sandboxExitTimer.current);
+      if (taskScrollTimer.current !== null) window.clearTimeout(taskScrollTimer.current);
     },
     [],
   );
@@ -743,12 +994,17 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
    * the system prompt plus the capped history window plus the draft in the
    * well. It is the house approximation (chars-per-token by script), it
    * always reads as an estimate, and the declared context window of the
-   * selected model turns it into an honest percent. */
+   * selected model turns it into an honest percent. the w5-a seam: the
+   * pending sandbox result context joins the window — the meter estimates
+   * the payload the next round really carries. */
   const meterTokens = useMemo(() => {
     const window = (active?.messages ?? []).slice(-12).map((m) => ({ role: m.role, content: m.content }));
     if (draft.trim()) window.push({ role: "user", content: draft });
+    const sid = active?.id ?? "";
+    const pending = (sandboxTasks[sid] ?? []).slice(sandboxDeliveredRef.current[sid] ?? 0);
+    if (pending.length > 0) window.push({ role: "user", content: sandboxContextBody(pending) });
     return estimateHistoryTokens(window);
-  }, [active?.messages, draft]);
+  }, [active?.id, active?.messages, draft, sandboxTasks]);
   const meterContext = useMemo(() => {
     const row = models.find((m) => m.id === model);
     return row?.context;
@@ -783,6 +1039,18 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
    * sidebar so the rail brand answers the floor; the glyph union lives in
    * solboticon.tsx (speaking and halted join with their later waves). */
   const markState: SolBotState = !busy ? "idle" : live?.content ? "streaming" : "thinking";
+
+  /** the per-turn grouping of the session's sandbox tasks (w5-a): the
+   * cards render under the turn that spawned them, in dispatch order. */
+  const tasksByTurn = useMemo(() => {
+    const groups = new Map<string, SandboxTask[]>();
+    for (const task of sandboxTasks[active?.id ?? ""] ?? []) {
+      const lane = groups.get(task.turnId);
+      if (lane === undefined) groups.set(task.turnId, [task]);
+      else lane.push(task);
+    }
+    return groups;
+  }, [sandboxTasks, active?.id]);
 
   const empty = !active || active.messages.length === 0;
   /** the sandbox pane docks as a right-side lane while the viewport is wide
@@ -860,7 +1128,13 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
 
         <div className="dtc-stage atmos">
           {sandboxMounted && sandboxSwap ? (
-            <SandboxPane open={sandboxOpen} onClose={closeSandbox} swap onRunningChange={reportSandboxRunning} />
+            <SandboxPane
+              open={sandboxOpen}
+              onClose={closeSandbox}
+              swap
+              onRunningChange={reportSandboxRunning}
+              onBridgeChange={registerSandboxRunner}
+            />
           ) : empty ? (
             <div className="dtc-hero grain" key="hero">
               <div className="dtc-hero__wrap">
@@ -911,6 +1185,7 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
                   {active.messages.map((m, i) => {
                     const prev = i > 0 ? active.messages[i - 1] : null;
                     const newDay = !prev || dayKey(prev.at) !== dayKey(m.at);
+                    const laneTasks = tasksByTurn.get(m.id) ?? [];
                     return (
                       <Fragment key={m.id}>
                         {newDay ? <DaySeparator at={m.at} /> : null}
@@ -927,6 +1202,37 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
                           }
                           onDelete={!busy ? () => deleteTurn(m.id) : undefined}
                         />
+                        {/* the sandbox work lane (w5-a): the task cards of
+                            the commands this turn's round dispatched through
+                            the engine, grouped under the turn that spawned
+                            them — the chip opens the pane and centers the
+                            first card of the group. */}
+                        {laneTasks.length > 0 ? (
+                          <section
+                            className="dtc-tasks"
+                            aria-label={`sandbox commands from this turn (${laneTasks.length})`}
+                            ref={(el) => {
+                              const anchors = taskCardRefs.current;
+                              if (el === null) anchors.delete(m.id);
+                              else anchors.set(m.id, el);
+                            }}
+                          >
+                            <button
+                              type="button"
+                              className="dtc-tasks__chip"
+                              onClick={() => revealSandboxWork(m.id)}
+                              aria-label={`open the sandbox pane and show the ${laneTasks.length} commands this turn ran`}
+                              title="open the sandbox pane"
+                            >
+                              <Cube fontSize={12} aria-hidden="true" />
+                              <span>sandbox</span>
+                              <i className="dtc-tasks__count">{laneTasks.length}</i>
+                            </button>
+                            {laneTasks.map((task) => (
+                              <SandboxTaskCard key={task.id} task={task} />
+                            ))}
+                          </section>
+                        ) : null}
                       </Fragment>
                     );
                   })}
@@ -966,7 +1272,12 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
       </main>
 
       {sandboxMounted && !sandboxSwap ? (
-        <SandboxPane open={sandboxOpen} onClose={closeSandbox} onRunningChange={reportSandboxRunning} />
+        <SandboxPane
+          open={sandboxOpen}
+          onClose={closeSandbox}
+          onRunningChange={reportSandboxRunning}
+          onBridgeChange={registerSandboxRunner}
+        />
       ) : null}
 
       {panelMounted ? (
@@ -986,5 +1297,67 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
         />
       ) : null}
     </div>
+  );
+}
+
+/** SandboxTaskCard — one dispatched sandbox command of the w5-a bridge:
+ * the command (mono), the engine verdict (ok or fail with its exit
+ * code), the honest duration, and the collapsed body carrying the log
+ * scroller (the max-h-64 cap the css owns) with the vfs diff rows of
+ * every file the command wrote. The card renders only what the engine
+ * answered — no field is synthesized, a failure keeps its exit code on
+ * the face. */
+function SandboxTaskCard({ task }: { task: SandboxTask }) {
+  const [open, setOpen] = useState(false);
+  const ok = task.exitCode === 0;
+  return (
+    <article className="dtc-task" data-verdict={ok ? "ok" : "fail"}>
+      <button
+        type="button"
+        className="dtc-task__head"
+        aria-expanded={open}
+        aria-label={`sandbox command ${task.command} — ${
+          ok ? "ok" : `failed, exit ${task.exitCode}`
+        } — expand the engine output`}
+        title="expand the engine output"
+        onClick={() => setOpen((v) => !v)}
+      >
+        <span className="dtc-task__cmd">{task.command}</span>
+        <span className="dtc-task__verdict">{ok ? "ok" : `fail ${task.exitCode}`}</span>
+        <span className="dtc-task__dur">{fmtTaskDuration(task.durationMs)}</span>
+        <ChevronDown fontSize={12} aria-hidden="true" className="dtc-task__chev" />
+      </button>
+      {open ? (
+        <div className="dtc-task__body">
+          {task.output.length > 0 ? (
+            <pre className="dtc-task__log">{task.output}</pre>
+          ) : (
+            <p className="dtc-task__quiet">no output</p>
+          )}
+          {task.changes.map((change) => {
+            const rows = diffLines(change.before, change.after);
+            if (rows.length === 0) return null;
+            return (
+              <div className="dtc-task__diff" key={change.path}>
+                <p className="dtc-task__diffpath">
+                  {change.path}
+                  {change.after === null ? " (deleted)" : ""}
+                </p>
+                {rows.map((row) => (
+                  <span
+                    key={row.id}
+                    className={
+                      row.mark === "+" ? "dtc-task__dline dtc-task__dline--add" : "dtc-task__dline dtc-task__dline--del"
+                    }
+                  >
+                    {row.mark} {row.text}
+                  </span>
+                ))}
+              </div>
+            );
+          })}
+        </div>
+      ) : null}
+    </article>
   );
 }

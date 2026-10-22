@@ -1,14 +1,17 @@
 /**
  * markdown.tsx — the in-house renderer of the chat: the block grammar
- * (paragraphs, headings, ordered and nested unordered lists, blockquotes,
- * horizontal rules, tables, fenced code blocks with a language header, a
- * clipboard copy and the in-house syntax highlighter) over the inline
- * grammar (bold, italic, inline code, safe links with citations).
- * Loose component of the chat page; turn.tsx composes it. The parser is
- * line-based and streaming-honest: a fence left open mid-stream renders as
- * a code block in progress, and no block ever flashes raw markers on the
- * floor (rungs 122-123 — the markdown v2 waves).
+ * (paragraphs, headings, ordered and nested unordered lists with the gfm
+ * task checkboxes, blockquotes, horizontal rules, tables, fenced code
+ * blocks with the header row — the language label, the copy key with the
+ * checkmark morph, the soft wrap toggle, the sandbox tag treatment — and
+ * the in-house syntax highlighter) over the inline grammar (bold, italic,
+ * inline code, safe links with citations). Loose component of the chat
+ * page; turn.tsx composes it. The parser is line-based and
+ * streaming-honest: a fence left open mid-stream renders as a code block
+ * in progress, and no block ever flashes raw markers on the floor (rungs
+ * 122-123 — the markdown v2 waves; the code grammar re-weighed in w5-b).
  */
+import { CheckmarkRegular as Checkmark, CopyRegular as Copy, TextWrapRegular as TextWrap } from "@fluentui/react-icons";
 import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 
 type Token = { kind: "text" | "bold" | "italic" | "code"; text: string } | { kind: "link"; text: string; href: string };
@@ -19,7 +22,7 @@ type Block =
   | { kind: "heading"; level: number; text: string }
   | { kind: "hr" }
   | { kind: "quote"; text: string }
-  | { kind: "list"; ordered: boolean; items: Array<{ depth: number; text: string }> }
+  | { kind: "list"; ordered: boolean; items: Array<{ depth: number; text: string; task: boolean | null }> }
   | { kind: "table"; align: Array<"left" | "center" | "right">; head: string[]; rows: string[][] };
 
 const FENCE = /```([^\n`]*)\n?([\s\S]*?)```/g;
@@ -32,6 +35,10 @@ const HEADING = /^(#{1,6})\s+(.+?)\s*#*\s*$/;
 const HR = /^\s{0,3}(?:(?:-\s*){3,}|(?:\*\s*){3,}|(?:_\s*){3,})$/;
 const QUOTE = /^\s{0,3}>\s?(.*)$/;
 const LIST = /^(\s*)([-*+]|\d{1,9}[.)])\s+(.*)$/;
+/* the gfm task marker: [ ] or [x] riding the head of one list item — the
+ * follower whitespace is required, so a bracket link like [x](url) never
+ * turns into a task and a lone [x] stays literal text */
+const TASK = /^\s*\[([ xX])]\s+(.*)$/;
 const BLANK = /^\s*$/;
 const TABLE_DIVIDER = /^\s*\|?(\s*:?-{3,}:?\s*\|)+\s*:?-{3,}:?\s*\|?\s*$/;
 
@@ -96,7 +103,7 @@ function parseProse(segment: string): Block[] {
   const lines = segment.split("\n");
   let para: string[] = [];
   let quote: string[] = [];
-  let list: { ordered: boolean; items: Array<{ depth: number; text: string }> } | null = null;
+  let list: { ordered: boolean; items: Array<{ depth: number; text: string; task: boolean | null }> } | null = null;
 
   const flushPara = () => {
     if (para.length) {
@@ -178,7 +185,14 @@ function parseProse(segment: string): Block[] {
       if (!list) {
         list = { ordered, items: [] };
       }
-      list.items.push({ depth, text: item[3] });
+      /* the gfm task lane: the checkbox state parses out of the item head
+       * here, so the raw brackets never reach the floor */
+      const task = item[3].match(TASK);
+      list.items.push({
+        depth,
+        text: task ? task[2] : item[3],
+        task: task ? task[1].toLowerCase() === "x" : null,
+      });
       continue;
     }
     flushQuote();
@@ -356,8 +370,28 @@ function highlight(code: string, lang: string): CodeToken[] {
   return tokens;
 }
 
+/* ------------------------- the code block ------------------------------ */
+/*
+ * The w5-b code grammar: the header row rides the block's top edge — the
+ * language label on the left (the quiet mono voice), the ghost keys on
+ * the right. The copy key morphs to the checkmark for 1200ms on success
+ * (the same grammar as the turn copy key — the clipboard answer is the
+ * feedback itself, no toast noise; a failure keeps the copy glyph so the
+ * retry stays armed). The soft wrap key freezes the pane between the
+ * horizontal scroll and the wrapped read — state per block, aria-pressed,
+ * never persisted. Blocks tagged `sandbox` carry the accent hairline and
+ * the mono label, and stay fully visible as code: the bridge parses
+ * them, the floor never hides them (the honesty law).
+ */
+
+/** SANDBOX_TAG — the fence label word that routes the block to the
+ * sandbox bridge (the tag is the first word of the label, case-quiet —
+ * "sandbox py" is tagged, "sandboxed" is not). */
+const SANDBOX_TAG = /^\s*sandbox\b/i;
+
 function CodeBlock({ lang, code }: { lang: string; code: string }) {
-  const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
+  const [wrap, setWrap] = useState(false);
   const timer = useRef<number | null>(null);
   const tokens = useMemo(() => (code ? highlight(code, lang) : []), [code, lang]);
   useEffect(
@@ -369,21 +403,51 @@ function CodeBlock({ lang, code }: { lang: string; code: string }) {
 
   const onCopy = () => {
     void copyText(code).then((result) => {
-      setState(result);
+      setCopyState(result);
       if (timer.current !== null) window.clearTimeout(timer.current);
-      timer.current = window.setTimeout(() => setState("idle"), 2000);
+      timer.current = window.setTimeout(() => setCopyState("idle"), result === "copied" ? 1200 : 2400);
     });
   };
 
+  const sandboxed = SANDBOX_TAG.test(lang);
+  const label = lang.trim() || "code";
+
   return (
-    <figure className="dtc-code">
+    <figure className={`dtc-code${sandboxed ? " dtc-code--sandbox" : ""}${wrap ? " dtc-code--wrap" : ""}`}>
       <figcaption className="dtc-code__head">
-        <span>{lang || "code"}</span>
-        <button type="button" className="dtc-code__copy" onClick={onCopy} aria-label="Copy code">
-          {state === "copied" ? "copied" : state === "failed" ? "failed" : "copy"}
-        </button>
+        <span className="dtc-code__lang">{label}</span>
+        <span className="dtc-code__keys">
+          <button
+            type="button"
+            className="dtc-code__key dtc-code__wrapkey"
+            onClick={() => setWrap((on) => !on)}
+            aria-pressed={wrap}
+            aria-label={wrap ? "disable soft wrap" : "enable soft wrap"}
+            title={wrap ? "disable soft wrap" : "enable soft wrap"}
+          >
+            <TextWrap fontSize={13} aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            className="dtc-code__key dtc-code__copy"
+            onClick={onCopy}
+            aria-label={
+              copyState === "copied" ? "copied" : copyState === "failed" ? "copy failed — retry" : "copy code"
+            }
+            title={copyState === "failed" ? "copy failed — retry" : "copy code"}
+          >
+            {copyState === "copied" ? (
+              <Checkmark fontSize={13} aria-hidden="true" />
+            ) : (
+              <Copy fontSize={13} aria-hidden="true" />
+            )}
+          </button>
+          <span className="sr-only" role="status" aria-live="polite">
+            {copyState === "copied" ? "copied to clipboard" : copyState === "failed" ? "copy failed" : ""}
+          </span>
+        </span>
       </figcaption>
-      <pre>
+      <pre className="dtc-code__pre">
         <code>
           {tokens.length
             ? tokens.map((t, i) => (
@@ -410,7 +474,9 @@ function headingTag(level: number): "h3" | "h4" | "h5" | "h6" {
 }
 
 /** Markdown — the block renderer: paragraphs, the heading ladder, rules,
- * quotes, ordered and nested unordered lists, fenced code with copy. */
+ * quotes, ordered and nested unordered lists with the gfm task
+ * checkboxes, tables, fenced code with the header row — the copy morph
+ * and the soft wrap key. */
 export function Markdown({ source }: { source: string }) {
   const blocks = useMemo(() => parseBlocks(source), [source]);
   return (
@@ -446,12 +512,21 @@ export function Markdown({ source }: { source: string }) {
           return (
             // biome-ignore lint/suspicious/noArrayIndexKey: the blocks are a static parse of one source string — they never reorder, only remount together
             <Tag key={`${i}-l`} className={b.ordered ? "dtc-md__list dtc-md__list--ol" : "dtc-md__list"}>
-              {b.items.map((item, j) => (
-                // biome-ignore lint/suspicious/noArrayIndexKey: static parse, same rationale
-                <li key={j} className={`dtc-md__li dtc-md__li--d${item.depth}`}>
-                  {renderInline(item.text)}
-                </li>
-              ))}
+              {b.items.map((item, j) => {
+                /* the gfm task lane: the checkbox mirrors the parsed marker
+                 * state, inert on the floor — the chat renders the list, it
+                 * never edits it */
+                const taskCls = item.task === null ? "" : ` dtc-md__li--task${item.task ? " dtc-md__li--done" : ""}`;
+                return (
+                  // biome-ignore lint/suspicious/noArrayIndexKey: static parse, same rationale
+                  <li key={j} className={`dtc-md__li dtc-md__li--d${item.depth}${taskCls}`}>
+                    {item.task === null ? null : (
+                      <input type="checkbox" className="dtc-md__task" checked={item.task === true} disabled readOnly />
+                    )}
+                    {renderInline(item.text)}
+                  </li>
+                );
+              })}
             </Tag>
           );
         }
