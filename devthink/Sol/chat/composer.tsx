@@ -23,10 +23,21 @@
  * phase: the empty invitation, the follow up while a round works. While
  * no gateway is registered, an honest one-line notice rides above the
  * well — the gateway is opt-in, nothing is fetched without a
- * registration. Enter sends, Shift+Enter breaks the line.
+ * registration. the w4 feature pass adds three lanes: the effort
+ * picker's auto row (the adaptive resolution — auto maps to the default
+ * level unless the draft's token estimate crosses ~700 tokens, then
+ * high; the meta persists as a flag while the level store the send path
+ * reads always holds the RESOLVED level), the tool graduation (past
+ * four tools the lead chips collapse into the plus-key flyout above the
+ * well, the pressed tools staying visible as chips), and the compact
+ * before send pill (the warning that surfaces when the next round's
+ * estimate overflows the context window — the send path carries no
+ * compact parameter yet, so the key marks the intent only). Enter sends,
+ * Shift+Enter breaks the line.
  */
 
 import {
+  AddRegular as Add,
   ArrowUpRegular as ArrowUp,
   BoxRegular as Box,
   BrainCircuitRegular as BrainCircuit,
@@ -46,11 +57,33 @@ import {
   GATEWAY_MODEL,
   type ToolId,
 } from "../../chatstate.ts";
-import { formatCompactTokenCount } from "../../tokenestimate.ts";
+import { estimateTokens, formatCompactTokenCount } from "../../tokenestimate.ts";
+import { useStoredFlag } from "../../usestoredstate.ts";
 
 const TOOL_ICONS: Record<ToolId, LucideIcon> = {
   thinking: Lightbulb,
 };
+
+/* the auto effort lane (the w4 feature pass): the adaptive resolution —
+ * auto maps to the chatstate default level (medium) unless the draft's
+ * token estimate crosses the ~700 token weight, then it maps to high. the
+ * meta persists under the house flag key because chatstate's ChatThinking
+ * union (and its validator) admit levels only — the level store the send
+ * path reads always holds the resolved level, never the "auto" literal. */
+const AUTO_EFFORT_KEY = "dt-chat-effort-auto-v1";
+const AUTO_EFFORT_BASE: ChatThinking = "medium";
+const AUTO_EFFORT_HEAVY: ChatThinking = "high";
+const AUTO_EFFORT_TOKENS = 700;
+
+/* the compact before send lane: the fallback threshold when the meter's
+ * declared window is unknown — the honest 8k floor. */
+const COMPACT_FALLBACK_TOKENS = 8192;
+
+/* the tool graduation count (the w4 feature pass): the lead cluster's
+ * chips collapse into the plus-key flyout only once the tool count
+ * exceeds four — today the registry carries one action chip, so the
+ * path stays dormant until the tools grow. */
+const TOOL_GRADUATION_COUNT = 4;
 
 export function Composer({
   draft,
@@ -208,33 +241,131 @@ export function Composer({
    * Escape stack sits above it in the body). */
   const [modelOpen, setModelOpen] = useState(false);
   const [thinkOpen, setThinkOpen] = useState(false);
+  const [toolOpen, setToolOpen] = useState(false);
   const modelBtnRef = useRef<HTMLButtonElement | null>(null);
   const modelMenuRef = useRef<HTMLDivElement | null>(null);
   const thinkBtnRef = useRef<HTMLButtonElement | null>(null);
   const thinkMenuRef = useRef<HTMLDivElement | null>(null);
+  const toolBtnRef = useRef<HTMLButtonElement | null>(null);
+  const toolMenuRef = useRef<HTMLDivElement | null>(null);
+  /* the auto effort meta (the w4 feature pass): chatstate's ChatThinking
+   * union and its validator admit levels only (chatstate.ts lives outside
+   * this file's boundary), so the auto meta persists under the house
+   * useStoredFlag key while the level store the send path reads always
+   * holds the RESOLVED level — never the "auto" literal itself. */
+  const [autoEffort, setAutoEffort] = useStoredFlag(AUTO_EFFORT_KEY, false);
+  /* the compact before send flag: the send api (onSend) carries no
+   * compact/truncate parameter, so the toggled state is the ready seam —
+   * informational today, honest about it. */
+  const [compactOn, setCompactOn] = useState(false);
   useEffect(() => {
-    if (!modelOpen && !thinkOpen) return;
+    if (!modelOpen && !thinkOpen && !toolOpen) return;
     const onDocPointer = (e: PointerEvent) => {
       const t = e.target as Node | null;
       if (modelOpen && !modelMenuRef.current?.contains(t) && !modelBtnRef.current?.contains(t)) setModelOpen(false);
       if (thinkOpen && !thinkMenuRef.current?.contains(t) && !thinkBtnRef.current?.contains(t)) setThinkOpen(false);
+      if (toolOpen && !toolMenuRef.current?.contains(t) && !toolBtnRef.current?.contains(t)) setToolOpen(false);
     };
     document.addEventListener("pointerdown", onDocPointer);
     return () => document.removeEventListener("pointerdown", onDocPointer);
-  }, [modelOpen, thinkOpen]);
-  /* one flyout at a time — opening one closes the other. */
+  }, [modelOpen, thinkOpen, toolOpen]);
+  /* one flyout at a time — opening one closes the others. */
   const openModel = () => {
     setThinkOpen(false);
+    setToolOpen(false);
     setModelOpen((v) => !v);
   };
   const openThink = () => {
     setModelOpen(false);
+    setToolOpen(false);
     setThinkOpen((v) => !v);
+  };
+  const openTool = () => {
+    setModelOpen(false);
+    setThinkOpen(false);
+    setToolOpen((v) => !v);
   };
 
   const catalog: GatewayModel[] = models && models.length > 0 ? models : [{ id: GATEWAY_MODEL }];
   const activeModel = model ?? GATEWAY_MODEL;
   const activeThinking: ChatThinking = thinking ?? "medium";
+
+  /* the auto resolution (the honest adaptive law): the DRAFT's own weight
+   * — the existing house estimator, not the round's history budget —
+   * decides the level. auto maps to the chatstate default (medium) unless
+   * the draft crosses the ~700 token weight, then high. */
+  const draftTokens = useMemo(() => estimateTokens(draft), [draft]);
+  const autoLevel: ChatThinking = draftTokens > AUTO_EFFORT_TOKENS ? AUTO_EFFORT_HEAVY : AUTO_EFFORT_BASE;
+
+  /* the tool registry the lead cluster answers to: the chatstate toggles
+   * plus the sandbox action chip. the graduation check below is honest —
+   * today the registry carries one row, so the chips stay inline and the
+   * plus-key flyout path stays dormant until the tools grow past four. */
+  const toolRows: Array<{
+    key: string;
+    label: string;
+    note: string;
+    icon: LucideIcon;
+    on: boolean;
+    chipClass: string;
+    chipTitle: string;
+    dot: boolean;
+    toggle: () => void;
+  }> = [
+    ...CHAT_TOOLS.map((tool) => ({
+      key: tool.id,
+      label: tool.label,
+      note: tool.note,
+      icon: TOOL_ICONS[tool.id],
+      on: tools.includes(tool.id),
+      chipClass: "dtc-chip",
+      chipTitle: tool.note,
+      dot: false,
+      toggle: () => onToggleTool(tool.id),
+    })),
+    ...(onToggleSandbox
+      ? [
+          {
+            key: "sandbox",
+            label: "Sandbox",
+            note: "open the saddle sandbox lane",
+            icon: Cube,
+            on: sandboxOn === true,
+            chipClass: "dtc-chip dtc-chip--sb",
+            chipTitle: "Open the saddle sandbox lane",
+            dot: sandboxRunning === true,
+            toggle: onToggleSandbox,
+          },
+        ]
+      : []),
+  ];
+  const graduateTools = toolRows.length > TOOL_GRADUATION_COUNT;
+
+  /* the compact before send lane: the threshold the next round's estimate
+   * must overflow before the pill surfaces — the meter's declared window
+   * when the model carries one, else the honest 8k floor. */
+  const compactThreshold = tokenContext && tokenContext > 0 ? tokenContext : COMPACT_FALLBACK_TOKENS;
+  const compactOverflow = typeof tokenEstimate === "number" && tokenEstimate > compactThreshold;
+
+  /* the auto resolution writes (the honest adaptive wiring): the send api
+   * reads the persisted level store directly (the body's round composes
+   * the x-thinking-level header from it — onSend takes no level), so the
+   * composer resolves auto → level CONTINUOUSLY while the meta is on:
+   * every draft change re-derives the effective level and writes it
+   * through onThinking, keeping the store send-ready at all times —
+   * opening the picker and pressing send both read the already-resolved
+   * store, and the submit belt below repeats the write idempotently for
+   * the same-flush edge. */
+  useEffect(() => {
+    if (!autoEffort || !onThinking) return;
+    if (thinking !== autoLevel) onThinking(autoLevel);
+  }, [autoEffort, autoLevel, onThinking, thinking]);
+
+  /* the compact flag resets when the overflow clears — a stale toggle
+   * never rides a later draft. */
+  useEffect(() => {
+    if (!compactOverflow) setCompactOn(false);
+  }, [compactOverflow]);
 
   /* the token meter (rung 125): the estimate reads with the ~ mark and
    * the declared window turns it into an honest percent. the meter rides
@@ -251,6 +382,10 @@ export function Composer({
 
   const submit = () => {
     if (!draft.trim() || busy) return;
+    /* the send-time resolution belt: the continuous effect above keeps
+     * the store resolved, this idempotent write covers the same-flush
+     * edge (a draft change and the send press in one commit). */
+    if (autoEffort && onThinking && thinking !== autoLevel) onThinking(autoLevel);
     onSend();
   };
 
@@ -264,7 +399,7 @@ export function Composer({
   /* the resting pill (the t3code grammar): unfocused with a single line
    * of draft the well collapses to the round pill; focus, a multiline
    * draft or an open picker returns the 1.2rem block. */
-  const resting = !focusWithin && !multiline && !modelOpen && !thinkOpen;
+  const resting = !focusWithin && !multiline && !modelOpen && !thinkOpen && !toolOpen;
   /* the measured ladder: the tail labels leave under 640px of well. */
   const compact = wellWidth > 0 && wellWidth < 640;
   /* the state aware placeholder: the empty invitation, the follow up
@@ -339,24 +474,41 @@ export function Composer({
         <div className="dtc-wellbar" style={resting ? { display: "contents" } : undefined}>
           <div className="dtc-wellbar__lead" style={resting ? { gridArea: "1 / 1" } : undefined}>
             <fieldset className="dtc-chips" aria-label="Tool modes">
-              {CHAT_TOOLS.map((tool) => {
-                const Icon = TOOL_ICONS[tool.id];
-                const on = tools.includes(tool.id);
-                return (
-                  <button
-                    key={tool.id}
-                    type="button"
-                    className="dtc-chip"
-                    aria-pressed={on}
-                    onClick={() => onToggleTool(tool.id)}
-                    title={tool.note}
-                  >
-                    <Icon fontSize={15} aria-hidden="true" />
-                    <span>{tool.label}</span>
-                  </button>
-                );
-              })}
-              {onToggleSandbox ? (
+              {graduateTools
+                ? toolRows
+                    .filter((row) => row.on)
+                    .map((row) => (
+                      <button
+                        key={row.key}
+                        type="button"
+                        className={row.chipClass}
+                        aria-pressed={row.on}
+                        onClick={row.toggle}
+                        title={row.chipTitle}
+                      >
+                        <row.icon fontSize={15} aria-hidden="true" />
+                        <span>{row.label}</span>
+                        {row.dot ? <i className="dtc-chip--sb__dot" aria-hidden="true" /> : null}
+                      </button>
+                    ))
+                : CHAT_TOOLS.map((tool) => {
+                    const Icon = TOOL_ICONS[tool.id];
+                    const on = tools.includes(tool.id);
+                    return (
+                      <button
+                        key={tool.id}
+                        type="button"
+                        className="dtc-chip"
+                        aria-pressed={on}
+                        onClick={() => onToggleTool(tool.id)}
+                        title={tool.note}
+                      >
+                        <Icon fontSize={15} aria-hidden="true" />
+                        <span>{tool.label}</span>
+                      </button>
+                    );
+                  })}
+              {!graduateTools && onToggleSandbox ? (
                 <button
                   type="button"
                   className="dtc-chip dtc-chip--sb"
@@ -370,6 +522,60 @@ export function Composer({
                 </button>
               ) : null}
             </fieldset>
+            {graduateTools ? (
+              /* the plus ghost key — the graduated door: the 28px rounded-lg
+               * key opening the tool flyout above the well on the model
+               * picker's outside-pointerdown + escape contract. it rides
+               * OUTSIDE the scrolling chips fieldset so the flyout never
+               * clips against the chips' overflow lane. */
+              <span className="dtc-wctrl">
+                <button
+                  ref={toolBtnRef}
+                  type="button"
+                  className="dtc-wctrl__btn dtc-toolkey"
+                  aria-haspopup="menu"
+                  aria-expanded={toolOpen}
+                  onClick={openTool}
+                  title="More tools"
+                >
+                  <Add fontSize={15} aria-hidden="true" />
+                </button>
+                {toolOpen ? (
+                  <div
+                    ref={toolMenuRef}
+                    className="dtc-modelmenu dtc-toolmenu"
+                    role="menu"
+                    aria-label="Tools"
+                    onKeyDown={(e) => {
+                      if (e.key === "Escape") {
+                        e.stopPropagation();
+                        setToolOpen(false);
+                        toolBtnRef.current?.focus();
+                      }
+                    }}
+                  >
+                    {toolRows.map((row) => (
+                      <button
+                        key={row.key}
+                        type="button"
+                        role="menuitemcheckbox"
+                        aria-checked={row.on}
+                        className="dtc-modelmenu__row dtc-toolmenu__row"
+                        title={row.note}
+                        onClick={row.toggle}
+                      >
+                        <row.icon fontSize={16} aria-hidden="true" className="dtc-toolmenu__icon" />
+                        <span className="dtc-modelmenu__id">{row.label}</span>
+                        <span className="dtc-modelmenu__ctx">{row.note}</span>
+                        {row.on ? (
+                          <Checkmark fontSize={13} aria-hidden="true" className="dtc-modelmenu__check" />
+                        ) : null}
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            ) : null}
           </div>
 
           <div className="dtc-wellbar__tail" style={resting ? { gridArea: "1 / 3" } : undefined}>
@@ -439,10 +645,14 @@ export function Composer({
                   aria-haspopup="listbox"
                   aria-expanded={thinkOpen}
                   onClick={openThink}
-                  title="Reasoning effort"
+                  title={
+                    autoEffort
+                      ? `Reasoning effort — auto routes by prompt weight (${autoLevel} now)`
+                      : "Reasoning effort"
+                  }
                 >
                   <BrainCircuit fontSize={15} aria-hidden="true" />
-                  {compact ? null : <span className="dtc-wctrl__label">{activeThinking}</span>}
+                  {compact ? null : <span className="dtc-wctrl__label">{autoEffort ? "auto" : activeThinking}</span>}
                   <ChevronDown fontSize={11} aria-hidden="true" className="dtc-wctrl__chev" />
                 </button>
                 {thinkOpen ? (
@@ -459,8 +669,33 @@ export function Composer({
                       }
                     }}
                   >
+                    {/* the auto row (the w4 feature pass): the adaptive meta
+                     * above the manual ladder — the honest live resolution
+                     * rides the row title, the description states the law */}
+                    <button
+                      type="button"
+                      role="option"
+                      aria-selected={autoEffort}
+                      className="dtc-modelmenu__row dtc-effortmenu__auto"
+                      title={`routes by prompt weight — resolves ${autoLevel} for this draft`}
+                      onClick={() => {
+                        setAutoEffort(true);
+                        /* the pick-time resolution: the effect above owns
+                         * the continuous writes, this lands the first one
+                         * the moment the meta flips on */
+                        if (thinking !== autoLevel) onThinking(autoLevel);
+                        setThinkOpen(false);
+                        thinkBtnRef.current?.focus();
+                      }}
+                    >
+                      <span className="dtc-modelmenu__id">auto</span>
+                      <span className="dtc-modelmenu__ctx">routes by prompt weight</span>
+                      {autoEffort ? (
+                        <Checkmark fontSize={13} aria-hidden="true" className="dtc-modelmenu__check" />
+                      ) : null}
+                    </button>
                     {CHAT_THINKING_LEVELS.map((lvl) => {
-                      const on = lvl.id === activeThinking;
+                      const on = !autoEffort && lvl.id === activeThinking;
                       return (
                         <button
                           key={lvl.id}
@@ -470,6 +705,7 @@ export function Composer({
                           className="dtc-modelmenu__row"
                           title={lvl.note}
                           onClick={() => {
+                            setAutoEffort(false);
                             onThinking(lvl.id);
                             setThinkOpen(false);
                             thinkBtnRef.current?.focus();
@@ -484,6 +720,25 @@ export function Composer({
                   </div>
                 ) : null}
               </span>
+            ) : null}
+
+            {compactOverflow ? (
+              /* the compact before send pill (the w4 feature pass): the
+               * warning that the next round's estimate overflows the
+               * window — the rounded-full h-8 pill with tabular numbers.
+               * clicking toggles the compact flag, an informational intent
+               * today (the send path carries no compact parameter), the
+               * ready seam the day one lands. it stays visible under the
+               * compact ladder: warnings win over the label diet. */
+              <button
+                type="button"
+                className="dtc-compactpill"
+                aria-pressed={compactOn}
+                onClick={() => setCompactOn((v) => !v)}
+                title="the next round's estimate overflows the context window — the send path carries no compact parameter yet, so the key marks the intent only"
+              >
+                compact {formatCompactTokenCount(compactThreshold)}
+              </button>
             ) : null}
 
             {typeof tokenEstimate === "number" && !compact ? (

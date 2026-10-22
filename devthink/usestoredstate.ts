@@ -43,7 +43,8 @@ export function useStoredState<T>(
     const stored = load(key, validate);
     if (stored !== null) setState(stored);
     loaded.current = true;
-  }, [key, validate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- validate is pure; the identity must not re-trigger the load
+  }, [key]);
 
   // persists every change after the load
   useEffect(() => {

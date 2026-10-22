@@ -9,6 +9,15 @@
  * the chips when the caller carries them. Clicking a chip hands its
  * prompt to onPick (the caller owns the send-versus-prefill law) and the
  * migration from the hero layout into the thread lives in chat.tsx.
+ *
+ * the temporary pass (w4): the sub line goes variant-honest — when the
+ * temporary prop rides along the sub answers "temporary chat: nothing
+ * saves on this device" in place of the gateway meta-model line (the
+ * spec's honest sub line law for the session that never persists) — and
+ * a quiet ghost chip after the suggestion row starts the temporary
+ * session, rendered only when the caller passes onTemporary (chatbody
+ * owns the mode machine, so an absent handler leaves the hero as it
+ * was).
  */
 import {
   CodeRegular as Braces,
@@ -16,10 +25,15 @@ import {
   type FluentIcon as LucideIcon,
   MicroscopeRegular as Telescope,
 } from "@fluentui/react-icons";
-import { GATEWAY_MODEL } from "../../chatstate.ts";
+import { cx, GATEWAY_MODEL } from "../../chatstate.ts";
 
 /** the model line of the hero sub: the gateway meta-model name */
 const GATEWAY_MODEL_LABEL = `sol ${GATEWAY_MODEL}`;
+
+/** the honest sub line of the temporary session: the nothing-saves
+ * promise, lowercase mono voice of the default sub (the spec's
+ * temporary chat law — the memory off, the device untouched). */
+const TEMPORARY_SUB = "temporary chat: nothing saves on this device";
 
 /** greeting — the time-of-day voice of the reference hero (the zcode
  * boundaries): morning until noon, afternoon until six, evening until
@@ -100,13 +114,17 @@ function fullStamp(when: number): string {
   }
 }
 
-/** Welcome — the hero of the empty chat: the greeting, the honest sub,
- * the suggestion chip row, the recents row when the data rides along. */
+/** Welcome — the hero of the empty chat: the greeting, the honest sub
+ * (the gateway line by default, the nothing-saves line when temporary),
+ * the suggestion chip row, the temporary entry chip when the caller
+ * arms it, the recents row when the data rides along. */
 export function Welcome({
   onPick,
   gatewayRegistered,
   recent,
   onOpenRecent,
+  temporary = false,
+  onTemporary,
 }: {
   onPick: (text: string) => void;
   gatewayRegistered: boolean;
@@ -116,16 +134,22 @@ export function Welcome({
   recent?: RecentConversation[];
   /** opens a recents row — an absent prop renders the rows as quiet text. */
   onOpenRecent?: (id: string) => void;
+  /** temporary mode — swaps the sub line to the honest nothing-saves
+   * variant of the session that never persists. defaults false. */
+  temporary?: boolean;
+  /** starts a temporary chat — the ghost entry chip renders only when
+   * the caller arms the handler (chatbody owns the mode machine). */
+  onTemporary?: () => void;
 }) {
   const recents = recent?.slice(0, 3) ?? [];
   return (
     <div className="dtc-welcome">
       <h1 className="dtc-welcome__greet">{greeting()}</h1>
-      <p className="dtc-welcome__sub">
-        {GATEWAY_MODEL_LABEL} {gatewayRegistered ? "gateway on" : "gateway off"}
+      <p className={cx("dtc-welcome__sub", temporary && "dtc-welcome__sub--temporary")}>
+        {temporary ? TEMPORARY_SUB : `${GATEWAY_MODEL_LABEL} ${gatewayRegistered ? "gateway on" : "gateway off"}`}
       </p>
 
-      <div className="dtc-suggest">
+      <div className="dtc-suggest" role="group" aria-label="suggested prompts">
         {SUGGESTIONS.map((s) => {
           const Icon = s.icon;
           return (
@@ -142,6 +166,14 @@ export function Welcome({
           );
         })}
       </div>
+
+      {/* the temporary entry — the quiet ghost toggle after the row, a
+       * rendered key only when the caller arms the handler. */}
+      {onTemporary ? (
+        <button type="button" className="dtc-welcome__ghost" onClick={onTemporary} title="nothing saves on this device">
+          start a temporary chat
+        </button>
+      ) : null}
 
       {recents.length > 0 ? (
         <div className="dtc-recents">

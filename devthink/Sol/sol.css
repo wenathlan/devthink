@@ -14943,3 +14943,156 @@ button.dtc-recents__row:focus-visible {
     animation: none;
   }
 }
+
+/* ==========================================================================
+   the wave 4 feature pass — the auto effort row with the adaptive
+   resolution, the graduated tool menu behind the plus key, the compact
+   before send warning pill, the temporary chat entry and its honest sub
+   ========================================================================== */
+
+/* .dtc-toolkey — the graduated plus key: the wctrl btn grammar made
+   square — the 28px ghost door with the lg radius. */
+.dtc-toolkey {
+  width: 28px;
+  padding: 0;
+  justify-content: center;
+}
+
+/* .dtc-toolmenu — the graduated tool flyout: the model-menu grammar
+   widened for the description column. */
+.dtc-toolmenu {
+  min-width: 300px;
+}
+
+.dtc-toolmenu .dtc-modelmenu__ctx {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dtc-toolmenu__icon {
+  flex: none;
+}
+
+.dtc-toolmenu__row[aria-checked="true"] {
+  color: var(--sol-text);
+}
+
+.dtc-toolmenu__row[aria-checked="true"] .dtc-toolmenu__icon {
+  color: var(--sol-primary);
+}
+
+/* .dtc-effortmenu__auto — the auto row above the effort ladder. */
+.dtc-effortmenu__auto {
+  margin-bottom: 4px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--chat-input-border);
+}
+
+/* .dtc-compactpill — the compact before send warning. */
+.dtc-compactpill {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  flex: none;
+  padding: 0 10px;
+  border: 1px solid rgb(232 163 61 / 45%);
+  border-radius: 9999px;
+  color: #e8a33d;
+  background: rgb(232 163 61 / 8%);
+  font: 500 var(--chat-t-caption) var(--dt-mono);
+  letter-spacing: 0.05em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    border-color 120ms ease;
+}
+
+.dtc-compactpill:hover {
+  background: rgb(232 163 61 / 14%);
+}
+
+.dtc-compactpill:focus-visible {
+  outline: 2px solid var(--sol-primary);
+  outline-offset: 1px;
+}
+
+.dtc-compactpill[aria-pressed="true"] {
+  color: var(--sol-text);
+  background: rgb(232 163 61 / 20%);
+  border-color: rgb(232 163 61 / 70%);
+}
+
+[data-theme="light"] .dtc-compactpill {
+  color: #92600a;
+  border-color: rgb(146 96 10 / 45%);
+  background: rgb(146 96 10 / 8%);
+}
+
+[data-theme="light"] .dtc-compactpill:hover {
+  background: rgb(146 96 10 / 14%);
+}
+
+[data-theme="light"] .dtc-compactpill[aria-pressed="true"] {
+  color: var(--sol-text);
+  background: rgb(146 96 10 / 18%);
+  border-color: rgb(146 96 10 / 65%);
+}
+
+/* ---- the temporary pass (w4 c) ---- */
+
+.dtc-welcome__sub--temporary {
+  color: var(--sol-muted);
+}
+
+.dtc-welcome__ghost {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  margin-top: 14px;
+  padding: 0 12px;
+  border: 1px dashed var(--chat-input-border);
+  border-radius: 9999px;
+  background: transparent;
+  color: var(--sol-faint);
+  font: 450 var(--chat-t-sm) var(--dt-mono);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease, background 150ms ease;
+  animation: dtcFade 320ms cubic-bezier(0.22, 1, 0.36, 1) 120ms backwards;
+}
+
+.dtc-welcome__ghost:hover,
+.dtc-welcome__ghost:focus-visible {
+  border-color: var(--chat-input-border-hover);
+  color: var(--sol-muted);
+  background: var(--chat-input-bg);
+}
+
+.dtc-welcome__ghost:focus-visible {
+  outline: 2px solid var(--sol-primary);
+  outline-offset: 1px;
+}
+
+.dtc-welcome__ghost:active {
+  transform: scale(0.97);
+}
+
+[data-motion="reduced"] .dtc-welcome__ghost,
+[data-motion="reduced"] .dtc-compactpill {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dtc-welcome__ghost {
+    animation: none;
+  }
+  .dtc-compactpill {
+    transition: none;
+  }
+}
