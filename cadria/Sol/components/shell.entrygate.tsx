@@ -9,7 +9,7 @@
  */
 import { type ReactNode, useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { entrytarget, readOnboardingState, type VisitorOnboarding } from "../../../onboardingstate.ts";
+import { entrytarget, readOnboardingState, type VisitorOnboarding } from "../../onboardingstate.ts";
 
 export default function EntryGate({ children }: { children: ReactNode }) {
   const [, navigate] = useLocation();

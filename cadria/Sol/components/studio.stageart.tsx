@@ -1,17 +1,19 @@
 /**
- * stage-art.tsx — the artwork well of the stage pane: injects the render
+ * stageart.tsx — the artwork well of the stage pane, self contained on the
+ * silk law (the panel-silk well carries the frame): injects the render
  * layer's deterministic SVG and, when motion is available and the OS allows
  * it, runs the rAF beat loop — the nearest pulse keyframe at/before the loop
  * phase (wrap-aware) drives renderKeyframePerturbation, so the frame breathes
  * on the descriptor's own beat grid (loopMs = 60000/bpm from synthmotion).
- * Reduced motion answers one static frame — no loop, no beat.
+ * Reduced motion answers one static frame — no loop, no beat. The empty well
+ * stays honest: one line of absence, no placeholder art.
  * The serialized svg is the engine's own deterministic serializer output
  * (internal IR, hex-guarded colors, no user input, no network).
  */
 
 import { useEffect, useState } from "react";
-import { type RenderFrame, renderKeyframePerturbation, renderSvg } from "../../../imagerender.ts";
-import type { MotionSpec } from "../../../synthmotion.ts";
+import { type RenderFrame, renderKeyframePerturbation, renderSvg } from "../../imagerender.ts";
+import type { MotionSpec } from "../../synthmotion.ts";
 
 /** the beat envelope quantization — 16 steps per loop keeps the pulse smooth
  * without re-serializing the whole svg every frame. */
@@ -83,6 +85,7 @@ export function StageArt({ frame, motion, caption }: StageArtProps) {
     <div
       role="img"
       aria-label={caption}
+      className="panel-silk"
       style={{
         width: "100%",
         maxWidth: 560,
@@ -91,9 +94,6 @@ export function StageArt({ frame, motion, caption }: StageArtProps) {
         alignItems: "center",
         justifyContent: "center",
         overflow: "hidden",
-        border: "1px solid var(--line)",
-        borderRadius: "var(--radius-lg)",
-        background: "var(--surface-1)",
       }}
     >
       {svg ? (

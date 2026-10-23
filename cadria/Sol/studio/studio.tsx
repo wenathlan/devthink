@@ -14,7 +14,7 @@
  * session record — nothing touches browser storage. The anchor renders BARE:
  * the one Shell chrome lives in Sol/Sol.tsx.
  *
- * The previous anchor-ledger page (parts.tsx, visualize-panel.tsx beside
+ * The previous anchor-ledger page (parts.tsx, visualizepanel.tsx beside
  * this file) is retired from the route but NOT deleted — the house rule
  * "nada se apaga" keeps those code paths on disk and exported; the
  * generation studio simply no longer mounts them.
@@ -31,11 +31,11 @@ import { imageStyles, type StyleSpec, styleForDescriptor } from "../../imagestyl
 import type { DemoFixtureId } from "../../introfixtures.ts";
 import { generateStudioProject, reseededSeed, type SessionSave, type StudioGeneration } from "../../studiogenerate.ts";
 import { analyzeSource, fileSource, fixtureSource, type StudioSource } from "../../studiosource.ts";
-import ControlsPane from "../components/studio.controls-pane.tsx";
-import ExportRow from "../components/studio.export-row.tsx";
+import ControlsPane from "../components/studio.controls.tsx";
+import ExportRow from "../components/studio.exportrow.tsx";
 import Readout from "../components/studio.readout.tsx";
-import SourceRail from "../components/studio.source-rail.tsx";
-import StageArt from "../components/studio.stage-art.tsx";
+import SourceRail from "../components/studio.sourcerail.tsx";
+import StageArt from "../components/studio.stageart.tsx";
 
 /** the staged beat before the synchronous compute lands — skipped under reduced motion. */
 const STAGE_MS = 240;

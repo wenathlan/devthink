@@ -1,14 +1,17 @@
 /**
- * controls-pane.tsx — the RIGHT pane of the generation studio: the style
- * picker (the 15 imagestyles names + tags, preselected by styleForDescriptor
- * and overridable by hand), the square canvas presets (1080/1440), the seed
- * field with its deterministic reseed button, and the generate control with
- * its own aria-live progress line.
+ * controls.tsx — the RIGHT pane of the generation studio, self contained on
+ * the silk law (panel-silk surface, the neutral reseed action on silk-btn,
+ * the accent generate on .btn): the style picker (the 15 imagestyles names +
+ * tags, preselected by styleForDescriptor and overridable by hand), the
+ * square canvas presets (1080/1440), the seed field with its deterministic
+ * reseed button, and the generate control with its own aria-live progress
+ * line. The button family answers its eight states through sol.css: rest,
+ * hover, press, focus, disabled, loading (aria-busy), success and danger.
  */
 
 import { ArrowShuffleRegular, WandRegular } from "@fluentui/react-icons";
-import type { StyleSpec } from "../../../imagestyles.ts";
-import { styleFingerprint } from "../../../imagestyles.ts";
+import type { StyleSpec } from "../../imagestyles.ts";
+import { styleFingerprint } from "../../imagestyles.ts";
 
 type ControlsPaneProps = {
   styles: readonly StyleSpec[];
@@ -48,7 +51,7 @@ export function ControlsPane({
   error,
 }: ControlsPaneProps) {
   return (
-    <aside aria-label="generation controls" style={{ minWidth: 0 }}>
+    <aside aria-label="generation controls" className="panel-silk" style={{ minWidth: 0 }}>
       <p className="mono-label" style={{ margin: "0 0 10px" }}>
         controls
       </p>
@@ -115,7 +118,7 @@ export function ControlsPane({
           />
           <button
             type="button"
-            className="btn secondary"
+            className="silk-btn"
             aria-label="reseed — fold a fresh nonce into the seed"
             data-tip="reseed"
             onClick={onReseed}

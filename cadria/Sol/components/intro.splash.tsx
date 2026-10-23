@@ -9,7 +9,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { CadriaMark } from "../../shell/Shell.tsx";
+import { CadriaMark } from "../shell/Shell.tsx";
 
 /** the beat plan of the splash (ms): mark 0 → name 140 → role 400 → leave 1250. */
 const BEATS = { name: 140, role: 400, leave: 1250 } as const;

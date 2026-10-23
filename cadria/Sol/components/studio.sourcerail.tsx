@@ -1,5 +1,6 @@
 /**
- * source-rail.tsx — the LEFT pane of the generation studio: the upload
+ * sourcerail.tsx — the LEFT pane of the generation studio, self contained on
+ * the silk law (panel-silk surface): the upload
  * dropzone (a real button + a hidden file input, fully keyboard operable —
  * drag is a bonus, never the only path) and the three built-in fixtures
  * reused from the intro demo, plus the compact meta rows of the active
@@ -9,8 +10,8 @@
 
 import { ArrowUploadRegular } from "@fluentui/react-icons";
 import { useRef, useState } from "react";
-import { type DemoFixtureId, demoFixtures } from "../../../introfixtures.ts";
-import type { StudioSource } from "../../../studiosource.ts";
+import { type DemoFixtureId, demoFixtures } from "../../introfixtures.ts";
+import type { StudioSource } from "../../studiosource.ts";
 
 /** the input's accept list — wav rides the native path, the rest web audio. */
 const ACCEPT = ".wav,.mp3,.ogg,.flac,.m4a,audio/*";
@@ -76,7 +77,7 @@ export function SourceRail({ disabled, source, activeFixture, onFixture, onFile 
   };
 
   return (
-    <aside aria-label="audio source" style={{ minWidth: 0 }}>
+    <aside aria-label="audio source" className="panel-silk" style={{ minWidth: 0 }}>
       <p className="mono-label" style={{ margin: "0 0 10px" }}>
         source
       </p>

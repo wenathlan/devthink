@@ -2,14 +2,16 @@
  * capabilities.tsx — the capability zone of the intro: the four generation
  * lanes of the deterministic engine (spectrum → color, structure →
  * composition, timbre → texture, rhythm → motion) laid out as the house
- * asymmetric ledger — ONE feature card (the spectrum lane, with the pure-css
- * mini visual of the engine's own bar grammar) beside the three remaining
+ * asymmetric ledger — ONE feature card (the spectrum lane, carried by the
+ * engine's own glyph) beside the three remaining
  * lanes as hairline rows. No equal-card pyramid: the anti-amador rule holds.
- * The copy states exactly what the engine maps, nothing invented.
+ * No decorative visuals and no invented numbers — the real engine output
+ * lives one section below in the demo strip. The copy states exactly what
+ * the engine maps, nothing invented.
  */
 
 import { FingerprintRegular, GridRegular, MusicNote2Regular, PulseRegular } from "@fluentui/react-icons";
-import type { ComponentType, CSSProperties } from "react";
+import type { ComponentType } from "react";
 
 /** the identity rose of the campaign, straight from the token foundation. */
 const ROSE = "var(--rose-500, #f472b6)";
@@ -52,10 +54,6 @@ const CAPABILITIES: readonly Capability[] = [
   },
 ];
 
-/** the deterministic bar pattern of the mini visual (the engine's own rhythm
- * grammar shape — tall on the beat, low between), percentages for --h. */
-const BARS: readonly number[] = [64, 30, 18, 88, 44, 22, 70, 34, 16, 96, 40, 24, 58, 28, 14, 78];
-
 /** The capability zone: the feature lane beside the ledger of the other three. */
 export function CapabilityRow() {
   const sectionStyle = {
@@ -97,16 +95,9 @@ export function CapabilityRow() {
       </header>
 
       <div className="anchorledger reveal" style={{ marginTop: 28 }}>
-        {/* the feature lane: spectrum → color, with the engine's bar grammar */}
+        {/* the feature lane: spectrum → color, the engine's own glyph carries it */}
         {feature && (
           <article className="anchor-feature" aria-label={feature.lane}>
-            <div className="mv-shell">
-              <div className="mv mv-daw" aria-hidden="true">
-                {BARS.map((height) => (
-                  <i key={`bar-${height}`} style={{ "--h": height } as CSSProperties} />
-                ))}
-              </div>
-            </div>
             <span className="icon-anim" aria-hidden="true" style={iconStyle}>
               <feature.icon fontSize={20} aria-hidden="true" />
             </span>

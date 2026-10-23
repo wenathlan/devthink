@@ -1,12 +1,14 @@
 /**
- * readout.tsx — the analyze readout of the stage pane: the reportDigest line
+ * readout.tsx — the analyze readout of the stage pane, self contained on the
+ * silk law (the panel-silk surface carries the report): the reportDigest line
  * plus the five stat blocks of the wave-1 report (spectrum · rhythm ·
  * harmonic · timbre · structure) as compact mono rows, then the decode and
  * analysis timings. Pure presentation over one AnalysisReport — the pipeline
- * owns every number.
+ * owns every number; nothing is invented and nothing renders when there is
+ * no report.
  */
 
-import { type AnalysisReport, reportDigest } from "../../../audiopipeline.ts";
+import { type AnalysisReport, reportDigest } from "../../audiopipeline.ts";
 
 /** pitch-class names, c first — the same table reportDigest spells. */
 const PITCH_CLASSES = ["c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"] as const;
@@ -58,7 +60,7 @@ export function Readout({ report }: { report: AnalysisReport }) {
   const { spectrum, rhythm, harmonic, timbre, structure } = report;
   const keyName = `${PITCH_CLASSES[Math.min(11, Math.max(0, Math.round(harmonic.key.tonic)))]} ${harmonic.key.mode}`;
   return (
-    <section aria-label="analysis readout" style={{ marginTop: 18, minWidth: 0 }}>
+    <section aria-label="analysis readout" className="panel-silk" style={{ marginTop: 18, minWidth: 0 }}>
       <p
         style={{
           margin: "0 0 12px",

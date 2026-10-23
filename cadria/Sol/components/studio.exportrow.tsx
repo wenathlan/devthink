@@ -1,5 +1,7 @@
 /**
- * export-row.tsx — the export + gallery-handoff row under the stage: download
+ * exportrow.tsx — the export + gallery-handoff row under the stage, self
+ * contained on the silk law (panel-silk surface, the neutral actions on
+ * silk-btn, the accent save on .btn): download
  * the svg master via a blob URL, rasterize a png through OffscreenCanvas when
  * the browser has it (graceful no-op otherwise), copy the reportDigest, and
  * save to the gallery in the documented dual mode:
@@ -15,8 +17,8 @@
 
 import { ArrowDownloadRegular, CheckmarkRegular, ImageRegular, SaveRegular } from "@fluentui/react-icons";
 import { useCallback, useState } from "react";
-import { type AnalysisReport, reportDigest } from "../../../audiopipeline.ts";
-import type { ImageProject } from "../../../imageproject.ts";
+import { type AnalysisReport, reportDigest } from "../../audiopipeline.ts";
+import type { ImageProject } from "../../imageproject.ts";
 import {
   downloadBlob,
   pngFromSvg,
@@ -24,7 +26,7 @@ import {
   probeGateway,
   type SessionSave,
   saveToGateway,
-} from "../../../studiogenerate.ts";
+} from "../../studiogenerate.ts";
 
 type ExportRowProps = {
   svg: string | null;
@@ -115,18 +117,18 @@ export function ExportRow({ svg, project, report, styleName, seed, session, onRe
   const ready = svg !== null && project !== null;
 
   return (
-    <section aria-label="export and gallery handoff" style={{ marginTop: 22, minWidth: 0 }}>
+    <section aria-label="export and gallery handoff" className="panel-silk" style={{ marginTop: 22, minWidth: 0 }}>
       <p className="mono-label" style={{ margin: "0 0 8px" }}>
         export
       </p>
       <div className="row row--wrap" style={{ gap: 8 }}>
-        <button type="button" className="btn secondary" disabled={!ready} onClick={onSvg}>
+        <button type="button" className="silk-btn" disabled={!ready} onClick={onSvg}>
           <ArrowDownloadRegular fontSize={14} aria-hidden="true" />
           svg
         </button>
         <button
           type="button"
-          className="btn secondary"
+          className="silk-btn"
           disabled={!ready || !pngReady}
           data-tip={
             pngReady
@@ -138,7 +140,12 @@ export function ExportRow({ svg, project, report, styleName, seed, session, onRe
           <ImageRegular fontSize={14} aria-hidden="true" />
           png
         </button>
-        <button type="button" className="btn secondary" disabled={!report} onClick={onCopy}>
+        <button
+          type="button"
+          className={copied ? "silk-btn success" : "silk-btn"}
+          disabled={!report}
+          onClick={onCopy}
+        >
           {copied ? <CheckmarkRegular fontSize={14} aria-hidden="true" /> : null}
           copy digest
         </button>
