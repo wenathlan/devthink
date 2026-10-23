@@ -12,7 +12,7 @@
  */
 import { type ReactNode, useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { loadOnboardingState, type OnboardingSnapshot, readOnboardingState } from "../../../onboardingstate.ts";
+import { loadOnboardingState, type OnboardingSnapshot, readOnboardingState } from "../../onboardingstate.ts";
 
 /** the verdict of the gate: still resolving, or the route the visitor belongs to */
 type GateVerdict = "resolving" | "intro" | "onboarding" | "home";

@@ -183,6 +183,7 @@
   --dur-1: 100ms;
   --dur-2: 150ms;
   --dur-3: 250ms;
+  --ease-silk: cubic-bezier(0.2, 0.8, 0.2, 1);
   --focus-ring: 2px solid var(--color-win);
   --mica: #202020 radial-gradient(#1a1f35 25%, #202020 100%) no-repeat fixed;
   --mica-local: #202020 radial-gradient(#1a1f35 25%, #202020 100%) no-repeat;
@@ -202,7 +203,21 @@
   --z-overlay: 100;
   --z-dock: 150;
   --z-modal: 200;
+  --z-toast: 300;
   --z-tooltip: 400;
+
+  /* shell geometry: the positioning variables the resize and the re dock
+     write, so the browser relayouts without a re render of the interface */
+  --shell-sidebar: 264px;
+  --shell-sidebar-min: 208px;
+  --shell-topbar: 52px;
+  --shell-gutter: 12px;
+  --shell-handle: 4px;
+  --shell-radius: 8px;
+
+  /* the family law aliases: the short names the appended law sections read */
+  --s1: var(--color-s1);
+  --ink: var(--color-ink);
 
   /* the sol vocabulary the sections compose — every name below resolves to
      a doctrine token above, so the whole file tracks the one source */
@@ -608,8 +623,8 @@ pre {
   color: var(--sol-ink);
   font-size: 13px;
   font-weight: 550;
-  box-shadow: var(--sol-btn-tone), inset 0 0 0 1px var(--sol-hairline), 0 0 0 1px var(--sol-hairline-strong),
-    0 1px 2px rgb(0 0 0 / 22%), 0 3px 5px -1px rgb(0 0 0 / 28%);
+  box-shadow: var(--sol-btn-tone), inset 0 1px 0 0 rgb(255 255 255 / 16%), inset 0 0 0 1px var(--sol-hairline),
+    0 0 0 1px var(--sol-hairline-strong), 0 1px 2px rgb(0 0 0 / 14%), 0 3px 5px -1px rgb(0 0 0 / 28%);
   transition: background-color var(--sol-micro) var(--sol-ease-out), box-shadow var(--sol-micro) var(--sol-ease-out),
     transform 100ms var(--win-ease-exit);
 }
@@ -618,10 +633,6 @@ pre {
   background-color: var(--sol-surface-5);
   box-shadow: var(--sol-btn-tone-hover), inset 0 0 0 1px var(--sol-hairline), 0 0 0 1px var(--sol-hairline-strong),
     0 1px 2px rgb(0 0 0 / 26%), 0 4px 8px -2px rgb(0 0 0 / 30%);
-}
-
-.btn:active {
-  transform: scale(0.98);
 }
 
 .btn.secondary {
@@ -657,13 +668,23 @@ pre {
 .btn:not(.secondary) {
   background-color: var(--sol-btn-accent-bg);
   color: var(--sol-btn-accent-ink);
-  box-shadow: var(--sol-btn-tone), inset 0 0 0 1px color-mix(in oklab, var(--arg-jade-deep) 40%, transparent),
-    0 0 0 1px color-mix(in oklab, var(--arg-jade-deep) 55%, transparent), 0 1px 2px rgb(0 0 0 / 22%),
+  box-shadow: var(--sol-btn-tone), inset 0 1px 0 0 rgb(255 255 255 / 16%), inset 0 0 0 1px color-mix(in oklab, var(--arg-jade-deep) 40%, transparent),
+    0 0 0 1px color-mix(in oklab, var(--arg-jade-deep) 55%, transparent), 0 1px 2px rgb(0 0 0 / 14%),
     0 3px 5px -1px rgb(0 0 0 / 28%);
 }
 
 .btn:not(.secondary):hover {
   background-color: color-mix(in oklab, var(--sol-btn-accent-bg) 90%, var(--sol-ink));
+}
+
+/* the pressed physics of the family: the key scales to 0.97 and the resting
+   highlight trades for the pressed inset (the swap rides after the variant
+   rules so it wins the cascade on every face) */
+.btn:active,
+.btn.secondary:active,
+.btn:not(.secondary):active {
+  transform: scale(0.97);
+  box-shadow: inset 0 1px 0 0 rgb(0 0 0 / 8%);
 }
 
 /* the badge: a tone-coded chip — the status is the dot, never a fill */
@@ -912,7 +933,7 @@ pre {
   position: fixed;
   right: 20px;
   bottom: 20px;
-  z-index: 120;
+  z-index: var(--z-toast);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -1013,7 +1034,7 @@ pre {
 
 .winapp {
   position: relative;
-  z-index: 10;
+  z-index: var(--z-content);
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -1050,7 +1071,7 @@ pre {
    win10 corner grips shown while the window is hovered */
 .winapp__handle {
   position: absolute;
-  z-index: 24;
+  z-index: calc(var(--z-float) + 4);
   pointer-events: none;
   opacity: 0;
   transition: opacity var(--sol-micro) var(--sol-ease-out);
@@ -1425,7 +1446,7 @@ main.shell {
   position: fixed;
   bottom: 20px;
   left: 20px;
-  z-index: 30;
+  z-index: calc(var(--z-float) + 10);
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -1483,7 +1504,7 @@ main.shell {
 .winintro {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: var(--z-overlay);
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -1552,7 +1573,7 @@ main.shell {
 .winonboard {
   position: fixed;
   inset: 0;
-  z-index: 90;
+  z-index: calc(var(--z-overlay) - 10);
   display: grid;
   place-items: center;
   padding: 20px;
@@ -3213,3 +3234,132 @@ a.r3a-row:hover {
 /* the embedded contract: the power clip frame hosts the stage bare — the
    stage fills the frame and scrolls itself, no window chrome of its own */
 .shell--embedded { max-width: none; height: 100vh; overflow-y: auto; }
+
+/* ==========================================================================
+   the family motion law: the duty cycled loops, the reduced motion and the
+   pause hook. the loops ride the stepped keyframes so the compositor draws
+   a handful of frames per cycle instead of repainting every vsync, the
+   offscreen surfaces pause through the anim paused attribute, and the
+   reduced motion preference zeroes every custom animation.
+   ========================================================================== */
+
+@keyframes skeletonStep {
+  0% { opacity: 0.45; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.45; }
+}
+
+@keyframes pulseStep {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pingStep {
+  0% { opacity: 0.7; transform: scale(1); }
+  70% { opacity: 0; transform: scale(2.2); }
+  100% { opacity: 0; transform: scale(2.2); }
+}
+
+.anim-skeleton { animation: skeletonStep 2.4s steps(8, end) infinite; }
+.anim-pulse { animation: pulseStep 2s steps(8, end) infinite; }
+.anim-ping { animation: pingStep 2s steps(8, end) infinite; }
+
+[data-anim-paused] .anim-skeleton,
+[data-anim-paused] .anim-pulse,
+[data-anim-paused] .anim-ping,
+[data-anim-paused] [class*="anim-"] {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-skeleton, .anim-pulse, .anim-ping, [class*="anim-"] {
+    animation: none;
+  }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================================================
+   the silk surface law: the panels, the buttons and the inputs of the
+   family ride the layered shadows with the inset highlight, the silk curve
+   for the transitions, and the guards of the reduced transparency, so the
+   app chrome renders exactly like the design showcase of the os app.
+   ========================================================================== */
+
+.panel-silk {
+  border: 1px solid rgb(255 255 255 / 8%);
+  background: color-mix(in srgb, var(--s1) 86%, transparent);
+  border-radius: var(--shell-radius);
+  padding: 14px;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), 0 1px 2px rgb(0 0 0 / 28%), 0 10px 28px -18px rgb(0 0 0 / 55%);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+}
+
+.silk-btn {
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 10px;
+  min-height: 44px;
+  padding: 0 14px;
+  color: var(--ink);
+  background: rgb(255 255 255 / 5%);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%), 0 1px 2px rgb(0 0 0 / 30%);
+  transition: transform 140ms var(--ease-silk), box-shadow 140ms var(--ease-silk), opacity 140ms var(--ease-silk), background-color 140ms var(--ease-silk), border-color 140ms var(--ease-silk);
+}
+
+.silk-btn:hover {
+  background: rgb(255 255 255 / 9%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%), 0 2px 4px rgb(0 0 0 / 28%), 0 8px 20px -10px rgb(0 0 0 / 48%);
+}
+
+.silk-btn:active {
+  transform: translateY(1px);
+}
+
+.silk-btn:focus-visible,
+.silk-input:focus-visible,
+.silk-area:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.silk-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+  box-shadow: none;
+}
+
+.silk-input,
+.silk-area {
+  width: 100%;
+  color: var(--ink);
+  background: rgb(0 0 0 / 26%);
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 10px;
+  padding: 11px 12px;
+  font: inherit;
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 24%);
+  transition: border-color 140ms var(--ease-silk), background-color 140ms var(--ease-silk);
+}
+
+.silk-area { resize: vertical; }
+
+.silk-input:hover,
+.silk-area:hover {
+  border-color: rgb(255 255 255 / 18%);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .panel-silk {
+    background: var(--s1);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
