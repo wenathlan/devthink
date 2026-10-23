@@ -44,7 +44,7 @@ import { Link, useLocation } from "wouter";
 import { familyrow } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
 import { currentTheme, type ThemeName, toggleTheme } from "../../theme.ts";
-import { BrandMark } from "../componentes/shell/BrandMark";
+import { BrandMark } from "../components/shell.brandmark";
 
 /** one entry of the window rail: a page surface of the app with its glyph. */
 export type StartApp = {

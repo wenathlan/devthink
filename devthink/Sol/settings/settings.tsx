@@ -13,13 +13,13 @@
  * Drives, Automation & MCP, About — routed by internal state. The anchor
  * owns only the data machine (the gateway snapshot, the browser-local
  * identity and preference stores, the save / revoke actions) and the
- * category routing; every card lives in Sol/componentes/settings/. The
+ * category routing; every card lives in Sol/components. The
  * personalization pass paints its stored choices onto the document root
  * once at module load, so the wallpaper, the theme ladder, the accent and
  * the behavior flags hold before the lock screen or the desktop mount.
  */
 import { useEffect, useState } from "react";
-import { ShellChrome } from "@/componentes/shell/ShellChrome";
+import { ShellChrome } from "@/components/shell.shellchrome";
 import { copy } from "../../copy";
 import {
   type BrowserStoreSummary,
@@ -28,30 +28,30 @@ import {
   readBrowserPreferences,
   saveBrowserPreference } from "../../db";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
-import { AboutSettings } from "../componentes/settings/aboutsettings.tsx";
-import { AccountsCategory } from "../componentes/settings/accountscategory.tsx";
-import { AutomationMcp } from "../componentes/settings/automationmcp.tsx";
-import { GatewayPairing } from "../componentes/settings/gatewaypairing.tsx";
-import { HardDrives } from "../componentes/settings/harddrives.tsx";
-import { initPersonalization, loadThemeMirror, syncThemeFromPreference } from "../componentes/settings/personalstore.ts";
-import { Personalization } from "../componentes/settings/personalization.tsx";
-import { SettingsNav } from "../componentes/settings/settingsnav.tsx";
-import type { PreferenceKey, SettingsCategoryId, SettingsSnapshot } from "../componentes/settings/settingstypes.ts";
+import { AboutSettings } from "../components/settings.aboutsettings.tsx";
+import { AccountsCategory } from "../components/settings.accountscategory.tsx";
+import { AutomationMcp } from "../components/settings.automationmcp.tsx";
+import { GatewayPairing } from "../components/settings.gatewaypairing.tsx";
+import { HardDrives } from "../components/settings.harddrives.tsx";
+import { initPersonalization, loadThemeMirror, syncThemeFromPreference } from "../components/settings.personalstore.ts";
+import { Personalization } from "../components/settings.personalization.tsx";
+import { SettingsNav } from "../components/settings.settingsnav.tsx";
+import type { PreferenceKey, SettingsCategoryId, SettingsSnapshot } from "../components/settings.settingstypes.ts";
 
-export * from "../componentes/settings/aboutsettings.tsx";
-export * from "../componentes/settings/accountscategory.tsx";
-export * from "../componentes/settings/automationmcp.tsx";
-export * from "../componentes/settings/backgroundpicker.tsx";
-export * from "../componentes/settings/gatewaycard.tsx";
-export * from "../componentes/settings/gatewaypairing.tsx";
-export * from "../componentes/settings/identity.tsx";
-export * from "../componentes/settings/languagecard.tsx";
-export * from "../componentes/settings/navbarposition.tsx";
-export * from "../componentes/settings/pairing.tsx";
-export * from "../componentes/settings/personalization.tsx";
-export * from "../componentes/settings/personalstore.ts";
-export * from "../componentes/settings/settingsnav.tsx";
-export * from "../componentes/settings/settingsrow.tsx";
+export * from "../components/settings.aboutsettings.tsx";
+export * from "../components/settings.accountscategory.tsx";
+export * from "../components/settings.automationmcp.tsx";
+export * from "../components/settings.backgroundpicker.tsx";
+export * from "../components/settings.gatewaycard.tsx";
+export * from "../components/settings.gatewaypairing.tsx";
+export * from "../components/settings.identity.tsx";
+export * from "../components/settings.languagecard.tsx";
+export * from "../components/settings.navbarposition.tsx";
+export * from "../components/settings.pairing.tsx";
+export * from "../components/settings.personalization.tsx";
+export * from "../components/settings.personalstore.ts";
+export * from "../components/settings.settingsnav.tsx";
+export * from "../components/settings.settingsrow.tsx";
 
 /** paints the stored personalization choices before any route mounts (the
  * same law initautotranslate rides at the theme anchor). */

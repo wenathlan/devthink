@@ -17,7 +17,7 @@
 
 import {RocketRegular} from "@fluentui/react-icons";
 import { useEffect, useRef, useState } from "react";
-import { ShellChrome } from "@/componentes/shell/ShellChrome";
+import { ShellChrome } from "@/components/shell.shellchrome";
 import { osAppLabels } from "../../catalog";
 import { osText } from "../../oslabels.ts";
 import { completions, responseof } from "../../commandcatalog.ts";
@@ -26,12 +26,12 @@ import { BOOT_STAGE_GAP, bootgraph, bootrunnerhandler } from "../../consolebootg
 import { gatewayReady } from "../../gateway.js";
 import { createrunner, type runstageview } from "../../graphrunner.js";
 import { makeviewstate } from "../../graphviewstate.js";
-import { ConsoleReference } from "../componentes/console/consolereference.tsx";
-import { GraphView } from "../componentes/console/graphview.tsx";
-import type { TerminalRow, TerminalState } from "../componentes/console/terminal.tsx";
-import Terminal from "../componentes/console/terminal.tsx";
+import { ConsoleReference } from "../components/console.consolereference.tsx";
+import { GraphView } from "../components/console.graphview.tsx";
+import type { TerminalRow, TerminalState } from "../components/console.terminal.tsx";
+import Terminal from "../components/console.terminal.tsx";
 
-export * from "../componentes/console/terminal.tsx";
+export * from "../components/console.terminal.tsx";
 
 /** the three real sections of the console deck. */
 type ConsoleSection = "terminal" | "boot" | "reference";

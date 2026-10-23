@@ -27,11 +27,11 @@ import { familyrow } from "../../family";
 import { familyurl } from "../../familyurl";
 import type { HomeProps } from "../../hometypes.ts";
 import { modes } from "../../runner.ts";
-import { BrandMark } from "../componentes/shell/BrandMark.tsx";
-import { Entry } from "../componentes/home/entry.tsx";
+import { BrandMark } from "../components/shell.brandmark.tsx";
+import { Entry } from "../components/home.entry.tsx";
 
-export * from "../componentes/home/entry.tsx";
-export * from "../componentes/home/tabs.tsx";
+export * from "../components/home.entry.tsx";
+export * from "../components/home.tabs.tsx";
 
 /** the honest flow of a run, end to end — the floor's own doctrine */
 const FLOW_STEPS = [

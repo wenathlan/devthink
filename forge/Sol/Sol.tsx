@@ -19,7 +19,7 @@
  * shared shell.
  */
 import { Route, Switch } from "wouter";
-import { EntryGate } from "./componentes/home/entrygate.tsx";
+import { EntryGate } from "./components/home.entrygate.tsx";
 import HomeAnchor from "./home/home";
 import IntroAnchor from "./intro/intro";
 import LogsAnchor from "./logs/logs";

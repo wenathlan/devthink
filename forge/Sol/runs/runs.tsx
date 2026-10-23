@@ -23,8 +23,8 @@ import {
   seedFleet,
 } from "../../fleet.ts";
 import { planrehearsal, type planstate, RUNPLAN } from "../../graphplan.ts";
-import { EmptyState } from "../componentes/shell/EmptyState.tsx";
-import GraphPanel from "../componentes/runs/graphpanel.tsx";
+import { EmptyState } from "../components/shell.emptystate.tsx";
+import GraphPanel from "../components/runs.graphpanel.tsx";
 
 /** the seed of the rehearsal floor (shown on the page, pinned by the tests) */
 export const FLOOR_SEED = 20260214;

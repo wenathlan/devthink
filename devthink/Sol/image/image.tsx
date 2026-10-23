@@ -14,12 +14,12 @@
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "@/componentes/shell/ShellChrome";
+import { ShellChrome } from "@/components/shell.shellchrome";
 import { type NativeApp, nativeApps, osAppLabels, type StudioAsset, studioAssets } from "../../catalog";
 import { osText } from "../../oslabels.ts";
 import { queuestudiorender } from "../../runner";
-import { ImageEngine } from "../componentes/image/imageengine.tsx";
-import { ImageStills } from "../componentes/image/imagestills.tsx";
+import { ImageEngine } from "../components/image.imageengine.tsx";
+import { ImageStills } from "../components/image.imagestills.tsx";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */

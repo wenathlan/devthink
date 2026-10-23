@@ -21,8 +21,8 @@ import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { type IntroTarget, resolveintrotarget } from "../../introtarget";
 import { readonboardingstate, writeonboardingstage } from "../../onboardingstate";
-import Boot from "../componentes/intro/boot.tsx";
-import Saas from "../componentes/intro/saas.tsx";
+import Boot from "../components/intro.boot.tsx";
+import Saas from "../components/intro.saas.tsx";
 
 export type { IntroTarget } from "../../introtarget.ts";
 

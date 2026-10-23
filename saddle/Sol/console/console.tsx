@@ -20,20 +20,20 @@ import type { ExecResult, SandboxCreated, SandboxSpecPayload } from '../../api';
 import { apibase, apifetch, fetchhealth } from '../../api';
 import type { SandboxState } from '../../sandbox.ts';
 import { bootSequence, cpudata, createSandboxState, dispatch, gpudata } from '../../sandbox.ts';
-import ApiBadge from '../componentes/console/ApiBadge.tsx';
-import type { SandboxEvent, SandboxEventKind } from '../componentes/console/EventsTimeline.tsx';
-import EventsTimeline from '../componentes/console/EventsTimeline.tsx';
-import SnapshotControls from '../componentes/console/SnapshotControls.tsx';
-import type { SandboxSpecSelection } from '../componentes/console/SpecPanel.tsx';
-import SpecPanel from '../componentes/console/SpecPanel.tsx';
-import type { TerminalRow, TerminalState } from '../componentes/console/Terminal.tsx';
-import Terminal from '../componentes/console/Terminal.tsx';
+import ApiBadge from '../components/console.apibadge.tsx';
+import type { SandboxEvent, SandboxEventKind } from '../components/console.eventstimeline.tsx';
+import EventsTimeline from '../components/console.eventstimeline.tsx';
+import SnapshotControls from '../components/console.snapshotcontrols.tsx';
+import type { SandboxSpecSelection } from '../components/console.specpanel.tsx';
+import SpecPanel from '../components/console.specpanel.tsx';
+import type { TerminalRow, TerminalState } from '../components/console.terminal.tsx';
+import Terminal from '../components/console.terminal.tsx';
 
-export * from '../componentes/console/ApiBadge.tsx';
-export * from '../componentes/console/EventsTimeline.tsx';
-export * from '../componentes/console/SnapshotControls.tsx';
-export * from '../componentes/console/SpecPanel.tsx';
-export * from '../componentes/console/Terminal.tsx';
+export * from '../components/console.apibadge.tsx';
+export * from '../components/console.eventstimeline.tsx';
+export * from '../components/console.snapshotcontrols.tsx';
+export * from '../components/console.specpanel.tsx';
+export * from '../components/console.terminal.tsx';
 
 /** display cap for very large payloads such as cpuinfo at 192 vcpus. */
 const displaycap = 120000;

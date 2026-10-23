@@ -15,7 +15,7 @@ import { ShieldRegular } from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 import type { ConfigBlock, FeatureCard, RolloverStep, SignalBadge } from "../../argan.ts";
 import { listConfigBlocks, listDnssecAlgorithms, listDnssecKeyCards, listRolloverSteps } from "../../catalog.ts";
-import EmptyState from "../componentes/shell/EmptyState.tsx";
+import EmptyState from "../components/shell.emptystate.tsx";
 import { type NavLink, Shell } from "../shell/Shell";
 
 const FOOTER_LINKS: readonly NavLink[] = [

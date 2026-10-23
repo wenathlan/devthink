@@ -20,7 +20,7 @@ import { useEffect, useState } from "react";
 import { type ApiKeyRow, type ChatMessageRow, listkeys, listmessages, maskkey, rotationsummary } from "../../db";
 import { observeReveals } from "../../reveal";
 import { contextshare, freshestfirst, listsessions, rotationindex, type SessionContextRow } from "../../sessions";
-import EmptyState from "../componentes/shell/EmptyState.tsx";
+import EmptyState from "../components/shell.emptystate.tsx";
 import { toast } from "../toast/Toast.tsx";
 
 /** the rungs of the rotation ladder the dots walk (one per rotation step). */

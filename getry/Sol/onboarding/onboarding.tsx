@@ -18,7 +18,7 @@ import { ArrowLeftRegular, ArrowRightRegular, HomeRegular } from "@fluentui/reac
 import { useCallback, useState } from "react";
 import { useLocation } from "wouter";
 import { markOnboardingSeen } from "../../onboardingstate.ts";
-import { BrandMark } from "../componentes/shell/BrandMark.tsx";
+import { BrandMark } from "../components/shell.brandmark.tsx";
 import { START_APPS } from "../shell/Shell.tsx";
 
 /** the honest statement of the opening frame (what the app is). */
