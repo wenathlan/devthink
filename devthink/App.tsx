@@ -15,12 +15,17 @@ import { createRoot } from "react-dom/client";
 import { Toaster } from "sonner";
 import { Router as WouterRouter } from "wouter";
 import { armGuard, guardStatus } from "./guard.ts";
+import { seedLabels } from "./labels.ts";
 import Sol from "./Sol/Sol.tsx";
 import installzoomlock from "./zoomlock.ts";
 import "./Sol/sol.css";
 
 // the zoom lock arms before the first render: the interface boots pinned at 100%
 if (typeof window !== "undefined") installzoomlock();
+
+// the label seed rides the boot: the manifest ingests into the store and the
+ // translation overrides load before the surfaces read their copy
+if (typeof window !== "undefined") void seedLabels().catch(() => {});
 
 class WorkbenchErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
   state: { error: Error | null } = { error: null };
