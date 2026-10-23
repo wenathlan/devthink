@@ -228,6 +228,7 @@
   --dur-1: 100ms;
   --dur-2: 150ms;
   --dur-3: 250ms;
+  --ease-silk: cubic-bezier(0.2, 0.8, 0.2, 1);
 
   --focus-ring: 2px solid var(--color-focus);
 
@@ -249,7 +250,17 @@
   --z-overlay: 100;
   --z-dock: 150;
   --z-modal: 200;
+  --z-toast: 300;
   --z-tooltip: 400;
+
+  /* shell geometry: the positioning variables the resize and the re dock
+     write, so the browser relayouts without a re render of the interface */
+  --shell-sidebar: 264px;
+  --shell-sidebar-min: 208px;
+  --shell-topbar: 52px;
+  --shell-gutter: 12px;
+  --shell-handle: 4px;
+  --shell-radius: 8px;
 
   color: var(--color-ink);
   background: var(--color-canvas);
@@ -646,7 +657,10 @@ a[href] {
   cursor: pointer;
   color: var(--signal-ink);
   background: var(--signal);
-  transition: transform var(--dur-1) var(--ease-micro);
+  /* the resting physics: the top highlight of the fluent key and the
+     small drop shadow, both suppressed while pressed */
+  box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 16%), 0 1px 2px rgb(0 0 0 / 14%);
+  transition: transform var(--dur-1) var(--ease-micro), box-shadow var(--dur-1) var(--ease-micro), background var(--dur-1) var(--ease-micro);
   text-decoration: none;
 }
 
@@ -656,7 +670,8 @@ a[href] {
 }
 
 .btn:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
+  box-shadow: inset 0 1px 0 0 rgb(0 0 0 / 8%);
 }
 
 .btn:disabled,
@@ -11609,7 +11624,7 @@ span[data-tile] {
 /* the sign-in dock: the centered column over the mica wash */
 .dtw-login__dock {
   position: relative;
-  z-index: 10;
+  z-index: var(--z-content);
   display: grid;
   place-items: center;
   padding: 24px clamp(12px, 3vw, 32px);
@@ -11622,7 +11637,7 @@ span[data-tile] {
 .dtw-login__clock {
   position: absolute;
   inset: 0;
-  z-index: 20;
+  z-index: var(--z-float);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -11691,7 +11706,7 @@ span[data-tile] {
  * micro curve of the house */
 .dtw-login__pane {
   position: relative;
-  z-index: 30;
+  z-index: calc(var(--z-float) + 10);
   display: grid;
   justify-items: center;
   gap: 18px;
@@ -11903,7 +11918,7 @@ span[data-tile] {
   position: absolute;
   left: 10px;
   bottom: 8px;
-  z-index: 40;
+  z-index: calc(var(--z-float) + 20);
   display: grid;
   place-items: center;
   width: 44px;
@@ -11919,7 +11934,7 @@ span[data-tile] {
   position: absolute;
   right: 10px;
   bottom: 8px;
-  z-index: 40;
+  z-index: calc(var(--z-float) + 20);
 }
 .dtw-login__power {
   display: grid;
@@ -15932,7 +15947,7 @@ button.dtc-recents__row:focus-visible {
   position: absolute;
   top: 40px;
   right: 12px;
-  z-index: 30;
+  z-index: var(--z-menu);
   width: 264px;
   max-height: 264px;
   overflow-y: auto;
@@ -16449,4 +16464,133 @@ body:has(.dt-nav[data-navbar="right"]) {
 }
 [data-taskbar-tips="off"] .dt-nav__tip {
   display: none;
+}
+
+/* ==========================================================================
+   the family motion law: the duty cycled loops, the reduced motion and the
+   pause hook. the loops ride the stepped keyframes so the compositor draws
+   a handful of frames per cycle instead of repainting every vsync, the
+   offscreen surfaces pause through the anim paused attribute, and the
+   reduced motion preference zeroes every custom animation.
+   ========================================================================== */
+
+@keyframes skeletonStep {
+  0% { opacity: 0.45; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.45; }
+}
+
+@keyframes pulseStep {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pingStep {
+  0% { opacity: 0.7; transform: scale(1); }
+  70% { opacity: 0; transform: scale(2.2); }
+  100% { opacity: 0; transform: scale(2.2); }
+}
+
+.anim-skeleton { animation: skeletonStep 2.4s steps(8, end) infinite; }
+.anim-pulse { animation: pulseStep 2s steps(8, end) infinite; }
+.anim-ping { animation: pingStep 2s steps(8, end) infinite; }
+
+[data-anim-paused] .anim-skeleton,
+[data-anim-paused] .anim-pulse,
+[data-anim-paused] .anim-ping,
+[data-anim-paused] [class*="anim-"] {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-skeleton, .anim-pulse, .anim-ping, [class*="anim-"] {
+    animation: none;
+  }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================================================
+   the silk surface law: the panels, the buttons and the inputs of the
+   family ride the layered shadows with the inset highlight, the silk curve
+   for the transitions, and the guards of the reduced transparency, so the
+   app chrome renders exactly like the design showcase of the os app.
+   ========================================================================== */
+
+.panel-silk {
+  border: 1px solid rgb(255 255 255 / 8%);
+  background: color-mix(in srgb, var(--s1) 86%, transparent);
+  border-radius: var(--shell-radius);
+  padding: 14px;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), 0 1px 2px rgb(0 0 0 / 28%), 0 10px 28px -18px rgb(0 0 0 / 55%);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+}
+
+.silk-btn {
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 10px;
+  min-height: 44px;
+  padding: 0 14px;
+  color: var(--ink);
+  background: rgb(255 255 255 / 5%);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%), 0 1px 2px rgb(0 0 0 / 30%);
+  transition: transform 140ms var(--ease-silk), box-shadow 140ms var(--ease-silk), opacity 140ms var(--ease-silk), background-color 140ms var(--ease-silk), border-color 140ms var(--ease-silk);
+}
+
+.silk-btn:hover {
+  background: rgb(255 255 255 / 9%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%), 0 2px 4px rgb(0 0 0 / 28%), 0 8px 20px -10px rgb(0 0 0 / 48%);
+}
+
+.silk-btn:active {
+  transform: translateY(1px);
+}
+
+.silk-btn:focus-visible,
+.silk-input:focus-visible,
+.silk-area:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.silk-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+  box-shadow: none;
+}
+
+.silk-input,
+.silk-area {
+  width: 100%;
+  color: var(--ink);
+  background: rgb(0 0 0 / 26%);
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 10px;
+  padding: 11px 12px;
+  font: inherit;
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 24%);
+  transition: border-color 140ms var(--ease-silk), background-color 140ms var(--ease-silk);
+}
+
+.silk-area { resize: vertical; }
+
+.silk-input:hover,
+.silk-area:hover {
+  border-color: rgb(255 255 255 / 18%);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .panel-silk {
+    background: var(--s1);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }
