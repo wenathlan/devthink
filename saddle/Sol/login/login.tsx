@@ -14,9 +14,9 @@
 // asymmetric interior — the form (1.2fr) beside the trust rail (1fr) that
 // carries the real session facts; 44px inputs, the sand focus ring.
 import { Link } from 'wouter';
-import LoginForm from '../componentes/login/LoginForm.tsx';
+import LoginForm from '../components/login.loginform.tsx';
 
-export * from '../componentes/login/LoginForm.tsx';
+export * from '../components/login.loginform.tsx';
 
 /** meta description carried by the absorbed static page. */
 export const loginpagedescription =

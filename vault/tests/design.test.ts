@@ -16,8 +16,8 @@ function read(path: string): string {
 
 const CSS = read("../Sol/sol.css");
 const ENTRY = read("../index.html");
-const MARK = read("../Sol/componentes/shell/BrandMark.tsx");
-const SHELL = read("../Sol/componentes/shell/Shell.tsx");
+const MARK = read("../Sol/components/shell.brandmark.tsx");
+const SHELL = read("../Sol/shell/Shell.tsx");
 const TOML = read("../devthink.toml");
 const SOL = read("../Sol/Sol.tsx");
 
@@ -113,7 +113,7 @@ describe("design contract", () => {
   });
 
   it("mounts the flow law (the entry gate on /, intro and onboarding in the chain)", () => {
-    const GATE = read("../Sol/componentes/home/entrygate.tsx");
+    const GATE = read("../Sol/components/home.entrygate.tsx");
     const HOME = read("../Sol/home/home.tsx");
     const INTRO = read("../Sol/intro/intro.tsx");
     const ONBOARDING = read("../Sol/onboarding/onboarding.tsx");
@@ -156,7 +156,7 @@ describe("design contract", () => {
   });
 
   it("links the family row from the one table (zero drift between chrome and landing)", () => {
-    assert.match(SHELL, /from "\.\.\/\.\.\/\.\.\/family\.ts"/, "the shell reads family.ts");
+    assert.match(SHELL, /from "\.\.\/\.\.\/family\.ts"/, "the shell reads family.ts");
     const HOME = read("../Sol/home/home.tsx");
     assert.match(HOME, /familyrow/, "the landing footer reads the same table");
   });

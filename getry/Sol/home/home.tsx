@@ -31,9 +31,9 @@ import {
 import { observeReveals } from "../../reveal";
 import { ROTATIONEVERY } from "../../sessions";
 import { budgetof, DEFAULTTHINKINGLEVEL, formatbudget, THINKINGLEVELS } from "../../thinking";
-import { BrandMark } from "../componentes/shell/BrandMark.tsx";
+import { BrandMark } from "../components/shell.brandmark.tsx";
 import { toast } from "../toast/Toast.tsx";
-import EntryGate from "../componentes/home/entrygate.tsx";
+import EntryGate from "../components/home.entrygate.tsx";
 
 /** the honest answer of the send key: the surface stores nothing. */
 const SENDTOAST = "answers on the self-hosted gateway over HTTPS — this surface stores nothing";
