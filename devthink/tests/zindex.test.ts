@@ -1,5 +1,5 @@
 /**
- * zenbex.test.ts — the layer discipline guard of the sol css.
+ * zindex.test.ts — the layer discipline guard of the sol css.
  * the ladder of the family is the contract: every stacking context rides a
  * named band variable, the local stacking of a component stays inside the
  * small local range, and the ten bands of the family are declared in the
@@ -25,7 +25,7 @@ const bands = [
   "--z-tooltip",
 ];
 
-describe("zenbex layer discipline", () => {
+describe("zindex layer discipline", () => {
   it("declares the ten bands of the family in the root block", () => {
     for (const band of bands) {
       expect(css).toContain(band);
