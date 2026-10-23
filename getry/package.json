@@ -162,5 +162,26 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "packageManager": "pnpm@12.3.4"
+  "packageManager": "pnpm@12.3.4",
+  "overrides": {
+    "esbuild": "^0.28.2",
+    "deepmerge-ts": "^8.0.0",
+    "mysql2": "^3.23.1",
+    "uuid": "^11.1.1",
+    "postcss-selector-parser": "^7.1.6",
+    "source-map-js": "1.2.2",
+    "katex": "^0.18.2",
+    "proxy-addr": "2.0.8"
+  },
+  "trustedDependencies": [
+    "@prisma/engines",
+    "@tailwindcss/oxide",
+    "better-sqlite3",
+    "cpu-features",
+    "esbuild",
+    "prisma",
+    "protobufjs",
+    "ssh2",
+    "workerd"
+  ]
 }
