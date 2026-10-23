@@ -70,12 +70,27 @@ export type BrowserStoreSummary = {
   mode: "local-only" | "paired-gateway" | "remote-adapter";
 };
 
-type StoreName = "meta" | "workspaces" | "sessions" | "tabs" | "messages" | "preferences" | "credentials";
+type StoreName =
+  | "meta"
+  | "workspaces"
+  | "sessions"
+  | "tabs"
+  | "messages"
+  | "preferences"
+  | "labels"
+  | "credentials";
 type MetaEntry = { key: string; value: BrowserIdentity };
 
 const databaseName = "devthink.db";
-const databaseVersion = 2;
-const dataStores: Array<Exclude<StoreName, "meta">> = ["workspaces", "sessions", "tabs", "messages", "preferences"];
+const databaseVersion = 3;
+const dataStores: Array<Exclude<StoreName, "meta" | "credentials">> = [
+  "workspaces",
+  "sessions",
+  "tabs",
+  "messages",
+  "preferences",
+  "labels",
+];
 const ownerExpression = /^[a-z][a-z0-9]{9,14}$/;
 
 function timestamp(): string {
@@ -226,6 +241,26 @@ export async function readBrowserPreferences(): Promise<Record<string, string>> 
   const identity = await browserIdentity();
   const preferences = await allOwned<BrowserPreference>("preferences", identity.userId);
   return Object.fromEntries(preferences.map((preference) => [preference.key, preference.value]));
+}
+
+/** the label store: every interface string of the app lives here, never
+ * hardcoded inside a widget. the id is the page.widget.key path, the text
+ * rides the english source of truth, and the translated flag protects the
+ * runtime translation from the seed overwrite. */
+export type BrowserLabel = { id: string; text: string; revision: number; updatedAt: string; translated?: boolean };
+
+export async function saveLabel(id: string, text: string, revision: number, translated = false): Promise<BrowserLabel> {
+  return put<BrowserLabel>("labels", { id, text, revision, updatedAt: timestamp(), translated });
+}
+
+export async function readLabel(id: string): Promise<BrowserLabel | undefined> {
+  return withStore("labels", "readonly", async (store) => (await request(store.get(id))) as BrowserLabel | undefined);
+}
+
+export async function readAllLabels(): Promise<BrowserLabel[]> {
+  return withStore("labels", "readonly", async (store) =>
+    (await request(store.getAll())) as unknown as BrowserLabel[],
+  );
 }
 
 /** Reads one locally stored credential value by its provider id, or null when the machine holds none. The value never leaves the browser: the caller receives the stored string itself, so account hashes stay device-local. */
