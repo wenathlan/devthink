@@ -1,7 +1,10 @@
 // Signal & Ledger: the account panel absorbed from dashboard.js — dl of
 // session fields (api) or the browser-local account (static edge),
-// with the backup/restore keyfile covering a full storage wipe.
-import { useRef } from 'react';
+// with the backup/restore keyfile covering a full storage wipe. the widget
+// owns its states: the loading skeleton before the session lands, the busy
+// flag on the backup controls and the inline status line instead of a
+// browser dialog.
+import { useRef, useState } from 'react';
 import type { SessionUser } from '../../../dashboardlib.ts';
 import { fmtdate } from '../../../dashboardlib.ts';
 import { adminusers, exportaccounts, importaccounts } from '../../../localauth.ts';
@@ -17,7 +20,7 @@ export type LocalSessionView = {
 type AccountPanelProps = {
 	/** "api" renders the /auth/me account; "local" the browser session. */
 	mode: 'api' | 'local';
-	/** the normalized account (api mode). */
+	/** the normalized account (api mode; null while the session boots). */
 	user: SessionUser | null;
 	/** the normalized local session (local mode). */
 	local: LocalSessionView | null;
@@ -25,26 +28,33 @@ type AccountPanelProps = {
 
 export default function AccountPanel({ mode, user, local }: AccountPanelProps) {
 	const fileref = useRef<HTMLInputElement>(null);
+	const [busy, setbusy] = useState(false);
+	const [status, setstatus] = useState('');
 
 	/** downloads the accounts keyfile (salt + hash only, never passwords). */
 	async function backup() {
+		setbusy(true);
+		setstatus('');
 		try {
 			const count = await exportaccounts();
-			window.alert(
+			setstatus(
 				count > 0
 					? `backup downloaded (${count} account(s)). keep the file safe; it restores every account after a full browser wipe.`
 					: 'no accounts to back up yet.',
 			);
 		} catch {
-			window.alert('the backup download failed.');
+			setstatus('the backup download failed.');
 		}
+		setbusy(false);
 	}
 
 	/** imports accounts from the chosen keyfile (merge, never overwrite). */
 	async function restore(file: File) {
+		setbusy(true);
+		setstatus('');
 		try {
 			const imported = await importaccounts(file);
-			window.alert(
+			setstatus(
 				imported > 0
 					? `${imported} account(s) restored from the backup.`
 					: 'no new accounts in that backup (already present or invalid).',
@@ -52,7 +62,8 @@ export default function AccountPanel({ mode, user, local }: AccountPanelProps) {
 			window.location.reload();
 		} catch (error) {
 			const message = error instanceof Error && error.message ? error.message : 'import failed.';
-			window.alert(message);
+			setstatus(message);
+			setbusy(false);
 		}
 	}
 
@@ -78,12 +89,13 @@ export default function AccountPanel({ mode, user, local }: AccountPanelProps) {
 				{/* account backup controls: the keyfile covers a full wipe (the
             IndexedDB mirror already covers partial clears). */}
 				<div className="dash-actions">
-					<button type="button" className="dash-btn" onClick={() => void backup()}>
+					<button type="button" className="dash-btn" disabled={busy} onClick={() => void backup()}>
 						backup accounts
 					</button>
 					<button
 						type="button"
 						className="dash-btn"
+						disabled={busy}
 						onClick={() => {
 							fileref.current?.click();
 						}}
@@ -91,6 +103,11 @@ export default function AccountPanel({ mode, user, local }: AccountPanelProps) {
 						restore accounts
 					</button>
 				</div>
+				{status !== '' && (
+					<p className="dash-statusnote" role="status" aria-live="polite">
+						{status}
+					</p>
+				)}
 				<input
 					ref={fileref}
 					type="file"
@@ -107,17 +124,21 @@ export default function AccountPanel({ mode, user, local }: AccountPanelProps) {
 		);
 	}
 
+	/* api mode: the account is null only while the session bootstrap runs —
+	   the skeleton is the honest load, never a invented field */
 	const account = user;
 	return (
 		<dl className="dash-kv">
 			<dt>username</dt>
-			<dd>{account?.username ?? '...'}</dd>
+			<dd>{account === null ? <span className="dash-skeleton" /> : account.username}</dd>
 			<dt>role</dt>
-			<dd>{account?.role ?? '...'}</dd>
+			<dd>{account === null ? <span className="dash-skeleton" /> : account.role}</dd>
 			<dt>created</dt>
-			<dd>{fmtdate(account?.createdat)}</dd>
+			<dd>{account === null ? <span className="dash-skeleton" /> : fmtdate(account.createdat)}</dd>
 			<dt>last login</dt>
-			<dd>{fmtdate(account?.lastloginat)}</dd>
+			<dd>
+				{account === null ? <span className="dash-skeleton" /> : fmtdate(account.lastloginat)}
+			</dd>
 			{account?.id !== null && account?.id !== undefined && (
 				<>
 					<dt>id</dt>

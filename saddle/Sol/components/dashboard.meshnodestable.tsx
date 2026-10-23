@@ -140,8 +140,9 @@ export default function MeshNodesTable({ mode, reloadkey }: MeshNodesTableProps)
 										<td>
 											<button
 												type="button"
-												className="mini"
+												className="dash-btn mini"
 												aria-label={`ping mesh node ${url}`}
+												aria-busy={pingstate?.busy === true ? 'true' : undefined}
 												disabled={pingstate?.busy === true}
 												onClick={() => {
 													runping(url);

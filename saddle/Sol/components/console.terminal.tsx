@@ -26,7 +26,7 @@ type TerminalProps = {
 /**
  * the virtual container terminal: a dark log pane (role=log, polite
  * aria-live), a command input with history browsing and tab completion,
- * and the status dots bar.
+ * and the lifecycle label in the bar.
  */
 export default function Terminal({ rows, prompt, state, enabled, oncommand }: TerminalProps) {
 	const outref = useRef<HTMLPreElement>(null);
@@ -80,11 +80,6 @@ export default function Terminal({ rows, prompt, state, enabled, oncommand }: Te
 	return (
 		<section className="term" data-state={state} aria-labelledby="termtitle">
 			<div className="term-bar">
-				<span className="term-dots" aria-hidden="true">
-					<span className="term-dot on" />
-					<span className="term-dot on" />
-					<span className="term-dot" />
-				</span>
 				<span id="termtitle">root@saddle — virtual container</span>
 				<span className="term-state" aria-live="polite">
 					{state}

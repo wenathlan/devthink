@@ -163,10 +163,16 @@ export default function CreateSandboxForm({ mode, oncreated, onrefresh }: Create
                                 </p>
                         )}
                         <div className="dash-actions">
-                                <button type="submit" className="primary" disabled={busy} aria-label="create a new sandbox">
+                                <button
+                                        type="submit"
+                                        className="primary"
+                                        disabled={busy}
+                                        aria-busy={busy ? 'true' : undefined}
+                                        aria-label="create a new sandbox"
+                                >
                                         create sandbox
                                 </button>
-                                <button type="button" aria-label="reload the sandbox list" onClick={onrefresh}>
+                                <button type="button" className="button" aria-label="reload the sandbox list" onClick={onrefresh}>
                                         refresh
                                 </button>
                         </div>

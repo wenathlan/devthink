@@ -183,7 +183,12 @@ export default function LoginForm() {
 					{error}
 				</p>
 			)}
-			<button className="button button-primary auth-submit" type="submit" disabled={pending}>
+			<button
+				className="button button-primary auth-submit"
+				type="submit"
+				disabled={pending}
+				aria-busy={pending ? 'true' : undefined}
+			>
 				{pending ? 'signing in...' : 'sign in'}
 			</button>
 			<p className="auth-statusline">{statusline}</p>

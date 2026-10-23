@@ -4,10 +4,10 @@
 import { useEffect, useState } from 'react';
 import { apiresult, fmtuptime, pick, readlocalsandboxes } from '../../../dashboardlib.ts';
 import { available } from '../../../localauth.ts';
-import AuditLog from './AuditLog';
-import GlobalSandboxesTable from './GlobalSandboxesTable';
-import MeshNodesTable from './MeshNodesTable';
-import UsersTable from './UsersTable';
+import AuditLog from './dashboard.auditlog.tsx';
+import GlobalSandboxesTable from './dashboard.globalsandboxestable.tsx';
+import MeshNodesTable from './dashboard.meshnodestable.tsx';
+import UsersTable from './dashboard.userstable.tsx';
 
 type AdminPanelProps = {
 	/** "api" reads the admin surface; "local" the browser-local overview. */
@@ -24,14 +24,14 @@ type Overview = {
 	uptime: string;
 };
 
-/** the placeholder state while the overview loads. */
-const pending: Overview = {
-	users: '...',
-	nodes: '...',
-	sandboxes: '...',
-	sessions: '...',
-	events: '...',
-	uptime: '...',
+/** the honest failure state: every counter names its absence. */
+const unavailable: Overview = {
+	users: 'n/a',
+	nodes: 'n/a',
+	sandboxes: 'n/a',
+	sessions: 'n/a',
+	events: 'n/a',
+	uptime: 'n/a',
 };
 
 /** the browser-local overview of the static edge admin. */
@@ -58,7 +58,8 @@ function localoverview(): Overview {
 }
 
 export default function AdminPanel({ mode }: AdminPanelProps) {
-	const [overview, setoverview] = useState<Overview>(pending);
+	/* null while the overview loads: the cards render the honest skeleton */
+	const [overview, setoverview] = useState<Overview | null>(null);
 	const [reloadkey, setreloadkey] = useState(0);
 
 	useEffect(() => {
@@ -74,7 +75,7 @@ export default function AdminPanel({ mode }: AdminPanelProps) {
 					return;
 				}
 				if (!result.ok || result.body === null || typeof result.body !== 'object') {
-					setoverview({ ...pending, users: 'n/a' });
+					setoverview(unavailable);
 					return;
 				}
 				const body = result.body as Record<string, unknown>;
@@ -94,7 +95,7 @@ export default function AdminPanel({ mode }: AdminPanelProps) {
 				});
 			} catch {
 				if (!stopped) {
-					setoverview({ ...pending, users: 'n/a' });
+					setoverview(unavailable);
 				}
 			}
 		})();
@@ -110,34 +111,49 @@ export default function AdminPanel({ mode }: AdminPanelProps) {
 				<div className="dash-cards">
 					<div className="dash-card">
 						<div className="k">users</div>
-						<div className="v">{overview.users}</div>
+						<div className="v">
+							{overview === null ? <span className="dash-skeleton" /> : overview.users}
+						</div>
 					</div>
 					<div className="dash-card">
 						<div className="k">nodes</div>
-						<div className="v">{overview.nodes}</div>
+						<div className="v">
+							{overview === null ? <span className="dash-skeleton" /> : overview.nodes}
+						</div>
 					</div>
 					<div className="dash-card">
 						<div className="k">sandboxes</div>
-						<div className="v">{overview.sandboxes}</div>
+						<div className="v">
+							{overview === null ? <span className="dash-skeleton" /> : overview.sandboxes}
+						</div>
 					</div>
 					<div className="dash-card">
 						<div className="k">sessions</div>
-						<div className="v">{overview.sessions}</div>
+						<div className="v">
+							{overview === null ? <span className="dash-skeleton" /> : overview.sessions}
+						</div>
 					</div>
 					<div className="dash-card">
 						<div className="k">events</div>
-						<div className="v">{overview.events}</div>
+						<div className="v">
+							{overview === null ? <span className="dash-skeleton" /> : overview.events}
+						</div>
 					</div>
 					<div className="dash-card">
 						<div className="k">uptime</div>
-						<div className="v">{overview.uptime}</div>
+						<div className="v">
+							{overview === null ? <span className="dash-skeleton" /> : overview.uptime}
+						</div>
 					</div>
 				</div>
 				<div className="dash-actions">
 					<button
 						type="button"
+						className="button"
 						aria-label="reload every admin table"
+						aria-busy={overview === null ? 'true' : undefined}
 						onClick={() => {
+							setoverview(null);
 							setreloadkey((key) => key + 1);
 						}}
 					>
