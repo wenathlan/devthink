@@ -1,3 +1,4 @@
+// the family biome baseline: identical across the apps, the identity only names the app.
 {
   "$schema": "https://biomejs.dev/schemas/2.5.15/schema.json",
   "vcs": {

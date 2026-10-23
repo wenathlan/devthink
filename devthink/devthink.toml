@@ -1,0 +1,5 @@
+# application identity on the platform
+app = "devthink"
+role = "the operating system and the superplatform: the boot, the desktop, the chat flagship, the store and the tiers, importing the published engines of the family"
+theme = "Sol"
+pages = ["intro", "onboarding", "home", "chat", "panel", "files", "explore", "settings", "auth", "calculator", "console", "docs", "games", "history", "image", "audio", "video", "gateway", "providers", "projects", "usage", "plans", "policy", "terms", "about", "callback", "notfound"]

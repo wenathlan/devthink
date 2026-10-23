@@ -1,4 +1,4 @@
-// the forge biome baseline.
+// the family biome baseline: identical across the apps, the identity only names the app.
 {
   "$schema": "https://biomejs.dev/schemas/2.5.15/schema.json",
   "vcs": {
@@ -13,9 +13,11 @@
       "**/*.js",
       "**/*.mjs",
       "**/*.cjs",
+      "**/*.css",
       "**/*.json",
       "!**/dist",
       "!**/distpackage",
+      "!**/target",
       "!**/node_modules",
       "!**/bun.lock",
       "!**/*.min.js",
@@ -87,6 +89,11 @@
       "arrowParentheses": "always"
     }
   },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
   "overrides": [
     {
       "includes": ["**/*"],
@@ -94,6 +101,16 @@
         "rules": {
           "suspicious": {
             "noDebugger": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["tests/workflowcheck.mjs"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noTemplateCurlyInString": "off"
           }
         }
       }
