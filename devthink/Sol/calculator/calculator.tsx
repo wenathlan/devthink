@@ -26,9 +26,9 @@ import {
   memorySubtract } from "../../calculator";
 import { osAppLabels } from "../../catalog";
 import { osText } from "../../oslabels.ts";
-import { CalculatorDisplay } from "../components/calculator.calculatordisplay.tsx";
-import { CalculatorHistory, type CalculatorHistoryRow } from "../components/calculator.calculatorhistory.tsx";
-import { CalculatorKeypad, type CalculatorMemoryKey } from "../components/calculator.calculatorkeypad.tsx";
+import { CalculatorDisplay } from "../components/calculator.display.tsx";
+import { CalculatorHistory, type CalculatorHistoryRow } from "../components/calculator.history.tsx";
+import { CalculatorKeypad, type CalculatorMemoryKey } from "../components/calculator.keypad.tsx";
 
 /** how many answers the history keeps before the oldest one leaves. */
 const HISTORY_LIMIT = 8;

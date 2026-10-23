@@ -33,7 +33,7 @@ import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspa
 import { type WindowEntry, windowcatalog, windowspawn } from "../../window.ts";
 import AudioAnchor from "../audio/audio.tsx";
 import CalculatorAnchor from "../calculator/calculator.tsx";
-import ChatBody from "./chat.chatbody.tsx";
+import ChatBody from "./chat.body.tsx";
 import ConsoleAnchor from "../console/console.tsx";
 import DocsAnchor from "../docs/docs.tsx";
 import FilesAnchor from "../files/files.tsx";

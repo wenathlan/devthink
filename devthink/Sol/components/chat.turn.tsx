@@ -42,6 +42,7 @@ import {
 } from "@fluentui/react-icons";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { chatText } from "../../chatlabels.ts";
+import { label } from "../../labels.ts";
 import { type ChatTurn, cx, fmtTime } from "../../chatstate.ts";
 import { copyText, Markdown } from "./chat.markdown.tsx";
 
@@ -220,7 +221,11 @@ function Cognition({
     if (!away) el.scrollTop = el.scrollHeight;
   }, [live, open, traceLen]);
 
-  const label = live ? "Thinking" : thinkingMs !== null ? `Thought for ${secondsOf(thinkingMs)}s` : "Reasoning";
+  const cogLabel = live
+    ? label("chat.body.thinking")
+    : thinkingMs !== null
+      ? label("chat.turn.thoughtFor").replace("{n}", String(secondsOf(thinkingMs)))
+      : label("chat.composer.reasoning");
 
   return (
     <div className="dtc-cog" data-open={open ? "true" : "false"} data-live={live ? "true" : "false"}>
@@ -234,7 +239,7 @@ function Cognition({
         }}
       >
         <Lightbulb fontSize={13} aria-hidden="true" />
-        <span className={cx("dtc-cog__label", live && "cognition-live")}>{label}</span>
+        <span className={cx("dtc-cog__label", live && "cognition-live")}>{cogLabel}</span>
         {/* the ticking count and the rolling tail sit out of the accessible
          * name: both churn every half second while the trace streams, and
          * the duration already reads through the thinking row the floor
@@ -427,7 +432,7 @@ export function Turn({
 
   if (editable && editing) {
     return (
-      <article className={cx("dtc-turn", "user", "is-editing")} aria-label="Editing message">
+      <article className={cx("dtc-turn", "user", "is-editing")} aria-label={label("chat.turn.editing")}>
         <form
           className="dtc-turn__stack dtc-editform"
           onSubmit={(e) => {
@@ -447,7 +452,7 @@ export function Turn({
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             rows={Math.min(8, Math.max(2, draft.split("\n").length + 1))}
-            aria-label="Edit message"
+            aria-label={label("chat.turn.edit")}
             onKeyDown={(e) => {
               if (e.key === "Escape") {
                 e.preventDefault();
@@ -461,21 +466,21 @@ export function Turn({
             }}
           />
           <div className="dtc-editrow">
-            <button type="submit" className="dtc-editbtn is-primary" aria-label="Save edit and branch">
-              <Checkmark fontSize={14} aria-hidden="true" /> Save
+            <button type="submit" className="dtc-editbtn is-primary" aria-label={label("chat.turn.saveEdit")}>
+              <Checkmark fontSize={14} aria-hidden="true" /> {label("chat.turn.save")}
             </button>
             <button
               type="button"
               className="dtc-editbtn"
-              aria-label="Cancel edit"
+              aria-label={label("chat.turn.cancelEdit")}
               onClick={() => {
                 setDraft(turn.content);
                 setEditing(false);
               }}
             >
-              <Dismiss fontSize={14} aria-hidden="true" /> Cancel
+              <Dismiss fontSize={14} aria-hidden="true" /> {label("chat.turn.cancel")}
             </button>
-            <span className="dtc-editnote">Saving opens the checkpoint branch</span>
+            <span className="dtc-editnote">{label("chat.turn.saveEditHint")}</span>
           </div>
         </form>
       </article>
@@ -487,7 +492,7 @@ export function Turn({
       {/* the sr-only heading carries the thread's h-level structure: the
        * topbar owns the one h1, every turn answers an h2 — the structure
        * rides under the visual grammar without touching it. */}
-      <h2 className="sr-only">{assistant ? "Assistant reply" : "Your message"}</h2>
+      <h2 className="sr-only">{assistant ? label("chat.body.assistantReply") : label("chat.body.yourMessage")}</h2>
       <div className="dtc-turn__stack">
         {assistant && turn.thought ? (
           <Cognition text={turn.thought} live={thinkingLive} thinkingMs={chipMs} liveMs={now - turn.at} />
@@ -509,19 +514,23 @@ export function Turn({
             type="button"
             className="dtc-expand"
             aria-expanded={expanded}
-            aria-label={expanded ? "Show less of the message" : "Show full message"}
+            aria-label={expanded ? label("chat.body.showLess") : label("chat.body.showFull")}
             onClick={() => setExpanded((v) => !v)}
           >
-            {expanded ? "show less" : "show full message"}
+            {expanded ? label("chat.body.showLess") : label("chat.body.showFull")}
           </button>
         ) : null}
         <p className={cx("dtc-meta", !assistant && "dtc-meta--user")}>
           <span className="dtc-meta__time" title={fmtFull(turn.at)}>
             {fmtDayTime(turn.at)}
           </span>{" "}
-          {assistant ? (turn.model ?? "devthink").toUpperCase() : "YOU"}
-          {turn.stopped ? <i className="dtc-meta__mark">· stopped</i> : null}
-          {turn.edited ? <i className="dtc-meta__mark">· edited</i> : null}
+          {assistant ? (turn.model ?? "devthink").toUpperCase() : label("chat.turn.you")}
+          {turn.stopped ? (
+            <i className="dtc-meta__mark">· {label("chat.turn.stoppedMark")}</i>
+          ) : null}
+          {turn.edited ? (
+            <i className="dtc-meta__mark">· {label("chat.turn.editedMark")}</i>
+          ) : null}
           <span className="sr-only" role="status" aria-live="polite">
             {copyState === "copied"
               ? chatText("turn.copied")
@@ -538,9 +547,13 @@ export function Turn({
                 copyState === "failed" && "is-failed",
               )}
               aria-label={
-                copyState === "copied" ? "Copied" : copyState === "failed" ? "Copy failed — retry" : "Copy message"
+                copyState === "copied"
+                  ? label("chat.turn.copied")
+                  : copyState === "failed"
+                    ? label("chat.turn.copyFailed")
+                    : label("chat.turn.copy")
               }
-              title={copyState === "failed" ? "Copy failed — retry" : "Copy message"}
+              title={copyState === "failed" ? label("chat.turn.copyFailed") : label("chat.turn.copy")}
               onClick={onCopy}
             >
               {copyState === "copied" ? (
@@ -553,8 +566,8 @@ export function Turn({
               <button
                 type="button"
                 className={cx("dtc-turn__act", speaking && "is-speaking")}
-                aria-label={speaking ? "Stop reading aloud" : "Read message aloud"}
-                title={speaking ? "Stop reading aloud" : "Read message aloud"}
+                aria-label={speaking ? label("chat.turn.stopReading") : label("chat.turn.readAloud")}
+                title={speaking ? label("chat.turn.stopReading") : label("chat.turn.readAloud")}
                 onClick={onSpeak}
               >
                 {speaking ? (
@@ -569,8 +582,8 @@ export function Turn({
                 type="button"
                 className="dtc-turn__act dtc-turn__act--verdict"
                 aria-pressed={verdict === "up"}
-                aria-label="Good response"
-                title="Good response"
+                aria-label={label("chat.body.goodResponse")}
+                title={label("chat.body.goodResponse")}
                 onClick={() => onVerdictKey("up")}
               >
                 {verdict === "up" ? (
@@ -585,8 +598,8 @@ export function Turn({
                 type="button"
                 className="dtc-turn__act dtc-turn__act--verdict"
                 aria-pressed={verdict === "down"}
-                aria-label="Bad response"
-                title="Bad response"
+                aria-label={label("chat.body.badResponse")}
+                title={label("chat.body.badResponse")}
                 onClick={() => onVerdictKey("down")}
               >
                 {verdict === "down" ? (
@@ -600,8 +613,8 @@ export function Turn({
               <button
                 type="button"
                 className="dtc-turn__act dtc-turn__act--del"
-                aria-label="Delete message"
-                title="Delete message"
+                aria-label={label("chat.turn.delete")}
+                title={label("chat.turn.delete")}
                 onClick={() => onDelete?.()}
               >
                 <Delete fontSize={13} aria-hidden="true" />
@@ -611,8 +624,8 @@ export function Turn({
               <button
                 type="button"
                 className="dtc-turn__act"
-                aria-label="Regenerate response"
-                title="Regenerate response"
+                aria-label={label("chat.turn.regenerate")}
+                title={label("chat.turn.regenerate")}
                 onClick={() => onRegenerate?.()}
               >
                 <ArrowClockwise fontSize={13} aria-hidden="true" />
@@ -622,8 +635,8 @@ export function Turn({
               <button
                 type="button"
                 className="dtc-turn__act"
-                aria-label="Edit message"
-                title="Edit message"
+                aria-label={label("chat.turn.edit")}
+                title={label("chat.turn.edit")}
                 onClick={() => {
                   setDraft(turn.content);
                   setEditing(true);
@@ -709,7 +722,7 @@ export function ErrorRow({ message, onRetry }: { message: string; onRetry: () =>
     <div className="dtc-error" role="alert">
       <p>{message}</p>
       <button type="button" className="dtc-error__retry" onClick={onRetry}>
-        <ArrowClockwise fontSize={15} aria-hidden="true" /> Retry
+        <ArrowClockwise fontSize={15} aria-hidden="true" /> {label("chat.turn.retry")}
       </button>
     </div>
   );

@@ -31,6 +31,7 @@ import {
   MicroscopeRegular as Telescope,
 } from "@fluentui/react-icons";
 import { chatGreetingForHour, chatSuggestions, chatText } from "../../chatlabels.ts";
+import { label } from "../../labels.ts";
 import { cx, GATEWAY_MODEL } from "../../chatstate.ts";
 
 type Suggestion = {
@@ -64,12 +65,12 @@ export type RecentConversation = {
  * law: default locale, never a hardcode). */
 function relativeWhen(when: number, now = Date.now()): string {
   const mins = Math.max(0, Math.round((now - when) / 60_000));
-  if (mins < 1) return "now";
-  if (mins < 60) return `${mins}m ago`;
+  if (mins < 1) return label("chat.welcome.now");
+  if (mins < 60) return label("chat.welcome.minutesAgo").replace("{n}", String(mins));
   const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
+  if (hours < 24) return label("chat.welcome.hoursAgo").replace("{n}", String(hours));
   const days = Math.floor(hours / 24);
-  if (days < 7) return `${days}d ago`;
+  if (days < 7) return label("chat.welcome.daysAgo").replace("{n}", String(days));
   try {
     return new Date(when).toLocaleDateString(undefined, { month: "short", day: "numeric" });
   } catch {
@@ -129,10 +130,10 @@ export function Welcome({
       <p className={cx("dtc-welcome__sub", temporary && "dtc-welcome__sub--temporary")}>
         {temporary
           ? chatText("welcome.temporarySub")
-          : `${modelLine} ${gatewayRegistered ? "gateway on" : "gateway off"}`}
+          : `${modelLine} ${gatewayRegistered ? label("chat.welcome.gatewayOn") : label("chat.welcome.gatewayOff")}`}
       </p>
 
-      <div className="dtc-suggest" role="group" aria-label="suggested prompts">
+      <div className="dtc-suggest" role="group" aria-label={label("chat.welcome.suggestedPrompts")}>
         {chatSuggestions().map((s) => {
           const Icon = SUGGESTION_ICONS[s.id] ?? Braces;
           return (
@@ -141,7 +142,7 @@ export function Welcome({
               type="button"
               className="dtc-suggest__chip"
               onClick={() => onPick(s.prompt)}
-              aria-label={`Start with ${s.label}`}
+              aria-label={label("chat.welcome.startWith").replace("{prompt}", s.label)}
             >
               <Icon fontSize={15} aria-hidden="true" />
               <span>{s.label}</span>
@@ -153,14 +154,14 @@ export function Welcome({
       {/* the temporary entry — the quiet ghost toggle after the row, a
        * rendered key only when the caller arms the handler. */}
       {onTemporary ? (
-        <button type="button" className="dtc-welcome__ghost" onClick={onTemporary} title="nothing saves on this device">
-          start a temporary chat
+        <button type="button" className="dtc-welcome__ghost" onClick={onTemporary} title={label("chat.welcome.temporaryTitle")}>
+          {label("chat.welcome.temporaryChip")}
         </button>
       ) : null}
 
       {recents.length > 0 ? (
         <div className="dtc-recents">
-          <p className="dtc-recents__label">Recent conversations</p>
+          <p className="dtc-recents__label">{label("chat.body.recentConversations")}</p>
           <ul className="dtc-recents__list">
             {recents.map((r) => (
               <li key={r.id}>

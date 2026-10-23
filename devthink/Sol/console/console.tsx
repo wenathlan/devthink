@@ -26,7 +26,7 @@ import { BOOT_STAGE_GAP, bootgraph, bootrunnerhandler } from "../../consolebootg
 import { gatewayReady } from "../../gateway.js";
 import { createrunner, type runstageview } from "../../graphrunner.js";
 import { makeviewstate } from "../../graphviewstate.js";
-import { ConsoleReference } from "../components/console.consolereference.tsx";
+import { ConsoleReference } from "../components/console.reference.tsx";
 import { GraphView } from "../components/console.graphview.tsx";
 import type { TerminalRow, TerminalState } from "../components/console.terminal.tsx";
 import Terminal from "../components/console.terminal.tsx";

@@ -60,6 +60,7 @@ import {
 } from "../../chatstate.ts";
 import { estimateTokens, formatCompactTokenCount } from "../../tokenestimate.ts";
 import { useStoredFlag } from "../../usestoredstate.ts";
+import { label } from "../../labels.ts";
 
 const TOOL_ICONS: Record<ToolId, LucideIcon> = {
   thinking: Lightbulb,
@@ -333,7 +334,7 @@ export function Composer({
             icon: Cube,
             on: sandboxOn === true,
             chipClass: "dtc-chip dtc-chip--sb",
-            chipTitle: "Open the saddle sandbox lane",
+            chipTitle: label("chat.composer.sandboxLane"),
             dot: sandboxRunning === true,
             toggle: onToggleSandbox,
           },
@@ -464,7 +465,7 @@ export function Composer({
           value={draft}
           rows={1}
           placeholder={placeholder}
-          aria-label="Message Sol"
+          aria-label={label("chat.composer.placeholder")}
           autoComplete="off"
           enterKeyHint="send"
           onChange={(e) => onDraft(e.target.value)}
@@ -474,7 +475,7 @@ export function Composer({
 
         <div className="dtc-wellbar" style={resting ? { display: "contents" } : undefined}>
           <div className="dtc-wellbar__lead" style={resting ? { gridArea: "1 / 1" } : undefined}>
-            <fieldset className="dtc-chips" aria-label="Tool modes">
+            <fieldset className="dtc-chips" aria-label={label("chat.composer.toolModes")}>
               {graduateTools
                 ? toolRows
                     .filter((row) => row.on)
@@ -515,7 +516,7 @@ export function Composer({
                   className="dtc-chip dtc-chip--sb"
                   aria-pressed={sandboxOn === true}
                   onClick={onToggleSandbox}
-                  title="Open the saddle sandbox lane"
+                  title={label("chat.composer.sandboxLane")}
                 >
                   <Cube fontSize={15} aria-hidden="true" />
                   <span>{chatText("composer.sandboxChip")}</span>
@@ -536,9 +537,9 @@ export function Composer({
                   className="dtc-wctrl__btn dtc-toolkey"
                   aria-haspopup="menu"
                   aria-expanded={toolOpen}
-                  aria-label="More tools"
+                  aria-label={label("chat.composer.moreTools")}
                   onClick={openTool}
-                  title="More tools"
+                  title={label("chat.composer.moreTools")}
                 >
                   <Add fontSize={15} aria-hidden="true" />
                 </button>
@@ -547,7 +548,7 @@ export function Composer({
                     ref={toolMenuRef}
                     className="dtc-modelmenu dtc-toolmenu"
                     role="menu"
-                    aria-label="Tools"
+                    aria-label={label("chat.composer.tools")}
                     onKeyDown={(e) => {
                       if (e.key === "Escape") {
                         e.stopPropagation();
@@ -589,9 +590,9 @@ export function Composer({
                   className="dtc-wctrl__btn"
                   aria-haspopup="listbox"
                   aria-expanded={modelOpen}
-                  aria-label={`Model: ${activeModel}`}
+                  aria-label={label("chat.composer.modelAria").replace("{model}", activeModel)}
                   onClick={openModel}
-                  title="Pick the model"
+                  title={label("chat.composer.pickModel")}
                 >
                   <Box fontSize={15} aria-hidden="true" />
                   {compact ? null : <span className="dtc-wctrl__label">{activeModel}</span>}
@@ -602,7 +603,7 @@ export function Composer({
                     ref={modelMenuRef}
                     className="dtc-modelmenu"
                     role="listbox"
-                    aria-label="Models"
+                    aria-label={label("chat.composer.models")}
                     onKeyDown={(e) => {
                       if (e.key === "Escape") {
                         e.stopPropagation();
@@ -628,7 +629,7 @@ export function Composer({
                         >
                           <span className="dtc-modelmenu__id">{m.id}</span>
                           {m.context ? (
-                            <span className="dtc-modelmenu__ctx">{Math.round(m.context / 1000)}k ctx</span>
+                            <span className="dtc-modelmenu__ctx">{`${Math.round(m.context / 1000)}${label("chat.composer.ctxSuffix")}`}</span>
                           ) : null}
                           {on ? <Checkmark fontSize={13} aria-hidden="true" className="dtc-modelmenu__check" /> : null}
                         </button>
@@ -647,16 +648,16 @@ export function Composer({
                   className="dtc-wctrl__btn"
                   aria-haspopup="listbox"
                   aria-expanded={thinkOpen}
-                  aria-label={`Reasoning effort: ${autoEffort ? "auto" : activeThinking}`}
+                  aria-label={label("chat.composer.effortAria").replace("{level}", autoEffort ? label("chat.composer.auto") : activeThinking)}
                   onClick={openThink}
                   title={
                     autoEffort
-                      ? `Reasoning effort — auto routes by prompt weight (${autoLevel} now)`
-                      : "Reasoning effort"
+                      ? label("chat.composer.effortAutoTitle").replace("{level}", autoLevel)
+                      : label("chat.composer.effort")
                   }
                 >
                   <BrainCircuit fontSize={15} aria-hidden="true" />
-                  {compact ? null : <span className="dtc-wctrl__label">{autoEffort ? "auto" : activeThinking}</span>}
+                  {compact ? null : <span className="dtc-wctrl__label">{autoEffort ? label("chat.composer.auto") : activeThinking}</span>}
                   <ChevronDown fontSize={11} aria-hidden="true" className="dtc-wctrl__chev" />
                 </button>
                 {thinkOpen ? (
@@ -664,7 +665,7 @@ export function Composer({
                     ref={thinkMenuRef}
                     className="dtc-modelmenu dtc-modelmenu--right"
                     role="listbox"
-                    aria-label="Reasoning effort"
+                    aria-label={label("chat.composer.effort")}
                     onKeyDown={(e) => {
                       if (e.key === "Escape") {
                         e.stopPropagation();
@@ -681,7 +682,7 @@ export function Composer({
                       role="option"
                       aria-selected={autoEffort}
                       className="dtc-modelmenu__row dtc-effortmenu__auto"
-                      title={`routes by prompt weight — resolves ${autoLevel} for this draft`}
+                      title={label("chat.composer.effortAutoRow").replace("{level}", autoLevel)}
                       onClick={() => {
                         setAutoEffort(true);
                         /* the pick-time resolution: the effect above owns
@@ -692,8 +693,8 @@ export function Composer({
                         thinkBtnRef.current?.focus();
                       }}
                     >
-                      <span className="dtc-modelmenu__id">auto</span>
-                      <span className="dtc-modelmenu__ctx">routes by prompt weight</span>
+                      <span className="dtc-modelmenu__id">{label("chat.composer.auto")}</span>
+                      <span className="dtc-modelmenu__ctx">{label("chat.composer.autoRoutes")}</span>
                       {autoEffort ? (
                         <Checkmark fontSize={13} aria-hidden="true" className="dtc-modelmenu__check" />
                       ) : null}
@@ -739,16 +740,16 @@ export function Composer({
                 className="dtc-compactpill"
                 aria-pressed={compactOn}
                 onClick={() => setCompactOn((v) => !v)}
-                title="the next round's estimate overflows the context window — the send path carries no compact parameter yet, so the key marks the intent only"
+                title={label("chat.composer.compactHint")}
               >
-                compact {formatCompactTokenCount(compactThreshold)}
+                {label("chat.composer.compact")} {formatCompactTokenCount(compactThreshold)}
               </button>
             ) : null}
 
             {typeof tokenEstimate === "number" && !compact ? (
               <span
                 className="dtc-meter"
-                title="Estimated with the house chars-per-token approximation — never an exact count"
+                title={label("chat.composer.meterHint")}
               >
                 {meterText}
               </span>
@@ -759,8 +760,8 @@ export function Composer({
                 type="button"
                 className="dtc-send dtc-send--stop"
                 onClick={onStop}
-                aria-label="Stop generating"
-                title="Stop generating"
+                aria-label={label("chat.composer.stop")}
+                title={label("chat.composer.stop")}
               >
                 <Stop fontSize={13} aria-hidden="true" />
               </button>
@@ -770,8 +771,8 @@ export function Composer({
                 className={busy ? "dtc-send dtc-send--busy" : "dtc-send"}
                 onClick={submit}
                 disabled={busy || !draft.trim()}
-                aria-label={busy ? "Sending" : "Send message"}
-                title={busy ? "Sending" : "Send message"}
+                aria-label={busy ? label("chat.composer.sending") : label("chat.composer.send")}
+                title={busy ? label("chat.composer.sending") : label("chat.composer.send")}
               >
                 {busy ? (
                   <i className="dtc-gw__spinner dtc-send__spin" aria-hidden="true" />

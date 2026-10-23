@@ -73,7 +73,6 @@ const ABOUT_CSS = `
 .family-wall__tile:active { transform: translateY(0) scale(.97); }
 .family-wall__tile:focus-visible { outline: 2px solid color-mix(in srgb, var(--dtv3-sig) 45%, transparent); outline-offset: 2px; }
 [data-theme="light"] .family-wall__tile:hover { background: rgb(23 25 31 / 3%); }
-.family-wall__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--tile-accent, var(--dtv3-sig)); box-shadow: 0 0 0 3px color-mix(in oklab, var(--tile-accent, var(--dtv3-sig)) 20%, transparent); }
 .family-wall__tile strong { color: var(--dtv3-ink-1); font: 600 14px/1.35 var(--font-display, var(--dt-sans)); letter-spacing: -.01em; }
 .family-wall__tile p { margin: 0; color: var(--dtv3-ink-2); font-size: 12.5px; line-height: 1.65; text-wrap: pretty; }
 .family-wall__tile--dominant { grid-column: span 7; padding: 22px 20px; }

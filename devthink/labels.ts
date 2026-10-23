@@ -11,7 +11,7 @@ import { readAllLabels, saveLabel, type BrowserLabel } from "./db.ts";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 1;
+export const LABEL_REVISION = 2;
 
 /** the english manifest: the page.widget.key path answers the surface text. */
 export const labelManifest = {
@@ -53,6 +53,63 @@ export const labelManifest = {
   // the composer keys
   "chat.composer.keyEnter": "Enter",
   "chat.composer.keyEscape": "Escape",
+  // the chat composer surface (the copy wave: the hardcoded literals leave)
+  "chat.composer.auto": "auto",
+  "chat.composer.autoRoutes": "routes by prompt weight",
+  "chat.composer.effortAutoRow": "routes by prompt weight — resolves {level} for this draft",
+  "chat.composer.effortAutoTitle": "Reasoning effort — auto routes by prompt weight ({level} now)",
+  "chat.composer.effortAria": "Reasoning effort: {level}",
+  "chat.composer.modelAria": "Model: {model}",
+  "chat.composer.compact": "compact",
+  "chat.composer.compactHint":
+    "the next round's estimate overflows the context window — the send path carries no compact parameter yet, so the key marks the intent only",
+  "chat.composer.meterHint": "Estimated with the house chars-per-token approximation — never an exact count",
+  "chat.composer.ctxSuffix": "k ctx",
+  // the chat body surface (the conversation frame and the sandbox cards)
+  "chat.body.closeSidebar": "Close sidebar",
+  "chat.body.openSidebar": "Open sidebar",
+  "chat.body.deleteConversation": "Delete conversation",
+  "chat.body.branchLineage": "Branch lineage",
+  "chat.body.branch": "branch",
+  "chat.body.edit": "edit",
+  "chat.body.root": "root",
+  "chat.body.canvasPane": "Canvas pane",
+  "chat.body.openCanvasPane": "Open canvas pane",
+  "chat.body.closeCanvasPane": "Close canvas pane",
+  "chat.body.sessionPanel": "Session panel",
+  "chat.body.openSessionPanel": "Open session panel",
+  "chat.body.closeSessionPanel": "Close session panel",
+  "chat.body.sandbox": "sandbox",
+  "chat.body.sandboxCommands": "sandbox commands from this turn ({n})",
+  "chat.body.sandboxChipOpen": "open the sandbox pane and show the {n} commands this turn ran",
+  "chat.body.sandboxPaneTitle": "open the sandbox pane",
+  "chat.body.sandboxCommandAria": "sandbox command {command} — {verdict} — expand the engine output",
+  "chat.body.expandEngineOutput": "expand the engine output",
+  "chat.body.verdictOk": "ok",
+  "chat.body.verdictFail": "fail {code}",
+  "chat.body.verdictFailedExit": "failed, exit {code}",
+  "chat.body.noOutput": "no output",
+  "chat.body.deletedSuffix": "(deleted)",
+  "chat.body.noGateway": "No gateway registered",
+  // the chat turn surface (the cognition head, the edit form, the meta marks)
+  "chat.turn.thoughtFor": "Thought for {n}s",
+  "chat.turn.save": "Save",
+  "chat.turn.cancel": "Cancel",
+  "chat.turn.retry": "Retry",
+  "chat.turn.stoppedMark": "stopped",
+  "chat.turn.editedMark": "edited",
+  "chat.turn.you": "YOU",
+  // the chat welcome surface (the recents row and the relative stamps)
+  "chat.welcome.now": "now",
+  "chat.welcome.minutesAgo": "{n}m ago",
+  "chat.welcome.hoursAgo": "{n}h ago",
+  "chat.welcome.daysAgo": "{n}d ago",
+  "chat.welcome.gatewayOn": "gateway on",
+  "chat.welcome.gatewayOff": "gateway off",
+  "chat.welcome.suggestedPrompts": "suggested prompts",
+  "chat.welcome.startWith": "Start with {prompt}",
+  "chat.welcome.temporaryTitle": "nothing saves on this device",
+  "chat.welcome.temporaryChip": "start a temporary chat",
 } as const;
 
 export type LabelKey = keyof typeof labelManifest & string;

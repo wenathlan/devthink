@@ -38,16 +38,16 @@ import {
 import { readBrowserPreferences } from "../../db";
 import { LockFace } from "../components/auth.lockface.tsx";
 import { PowerMenu } from "../components/auth.powermenu.tsx";
-import { SignInForm, type SignInEntryFields } from "../components/auth.signinform.tsx";
+import { SignInForm, type SignInEntryFields } from "../components/auth.signin.tsx";
 import { StatusLine } from "../components/auth.statusline.tsx";
 
 export * from "../../accountgate.ts";
 export * from "../../authgate.ts";
 export * from "../components/auth.lockface.tsx";
-export * from "../components/auth.pairingform.tsx";
+export * from "../components/auth.pairing.tsx";
 export * from "../components/auth.powermenu.tsx";
 export * from "../components/auth.providerrow.tsx";
-export * from "../components/auth.signinform.tsx";
+export * from "../components/auth.signin.tsx";
 export * from "../components/auth.statusline.tsx";
 
 type PairingResponse = { token: string; userId: string; expiresAt: number };

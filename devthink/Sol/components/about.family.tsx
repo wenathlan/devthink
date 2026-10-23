@@ -76,7 +76,6 @@ export function AboutFamily() {
             href={site.host}
             style={tileStyleFor(site.host, index)}
           >
-            <span className="family-wall__dot" aria-hidden="true" />
             <span className="family-wall__host" style={hostStyle}>
               {site.host.replace("https://", "")}
             </span>

@@ -10,7 +10,7 @@ import { ArrowSyncRegular, ShieldRegular } from "@fluentui/react-icons";
 import type { BrowserStoreSummary } from "../../db";
 import { copy } from "../../copy";
 import { GatewayCard } from "./settings.gatewaycard";
-import { SettingsRow } from "./settings.settingsrow";
+import { SettingsRow } from "./settings.row";
 import type { SettingsSnapshot } from "./settings.settingstypes";
 
 type GatewayPairingProps = {

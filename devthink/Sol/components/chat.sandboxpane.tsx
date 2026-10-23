@@ -77,10 +77,6 @@ const DEFAULT_SPEC: SandboxSpec = {
   mig: "off",
 };
 
-/** the sleep that animates the boot dmesg line by line (the saddle cadence
- * the console page streams at — the one adapter this pane owns). */
-const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
-
 /** snapshotFiles — the honest vfs snapshot for the diff view: one content
  * pair per workspace file of the live engine state (an empty map while
  * the engine is halted — nothing pretends to exist). */
@@ -192,7 +188,7 @@ export function SandboxPane({
 
   /** boots the sandbox: the default spec commit, the animated dmesg, then
    * the engine dispatcher answers — the flow the saddle console runs. */
-  const bootsandbox = async () => {
+  const bootsandbox = () => {
     if (busy) return;
     setBusy(true);
     setStatus("booting");
@@ -208,7 +204,6 @@ export function SandboxPane({
     for (const bootline of lines) {
       if (cancelref.current) return;
       printrow(bootline, "boot");
-      await sleep(28 + Math.random() * 34);
     }
     if (cancelref.current) return;
     printrow(chatText("sb.running"), "ok");

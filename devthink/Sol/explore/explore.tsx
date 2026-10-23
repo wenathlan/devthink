@@ -13,7 +13,7 @@ import {ArrowRightRegular as ArrowRight, ArrowCounterclockwiseRegular as RotateC
  * over the campaign atmosphere (one warm radial light, the film grain
  * dissolves, one film-grain veil), then the prompt-giga command field and
  * the app constellation (launchdeck.tsx), the curated grade of trylle cards
- * (exploresections.tsx), the catalog strip and the editorial ledger. Every
+ * (sections.tsx), the catalog strip and the editorial ledger. Every
  * card rides the trylle grammar: rounded-2xl, ring-1, the Linear shadow
  * with its ring, p-8. The "enter devthink" CTA carries the exact trylle
  * primary tone stack. The window chrome on the top edge (windowchrome.tsx)
@@ -40,13 +40,13 @@ import { osText } from "../../oslabels.ts";
 import { SolLogoMark } from "../components/panel.logo.tsx";
 import { ShellChrome } from "../components/shell.shellchrome.tsx";
 import { DownloadRail } from "../components/explore.downloadrail.tsx";
-import { ExploreSections } from "../components/explore.exploresections.tsx";
+import { ExploreSections } from "../components/explore.sections.tsx";
 import { LaunchDeck, OsSigil, TRYLLE_PRIMARY_STACK } from "../components/explore.launchdeck.tsx";
 import { HeroWaves } from "../components/explore.waves.tsx";
 import { WindowEdgeChrome } from "../components/explore.windowchrome.tsx";
 
 export * from "../components/explore.downloadrail.tsx";
-export * from "../components/explore.exploresections.tsx";
+export * from "../components/explore.sections.tsx";
 export * from "../components/explore.launchdeck.tsx";
 export * from "../components/explore.waves.tsx";
 export * from "../components/explore.windowchrome.tsx";

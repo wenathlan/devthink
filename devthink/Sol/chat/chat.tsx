@@ -17,7 +17,7 @@
  */
 
 import { ShellChrome } from "../components/shell.shellchrome.tsx";
-import ChatBody from "../components/chat.chatbody.tsx";
+import ChatBody from "../components/chat.body.tsx";
 
 export * from "../../chatstate.ts";
 export * from "../../useismobile.ts";

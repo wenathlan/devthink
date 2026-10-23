@@ -1,14 +1,15 @@
 /**
  * saasrails.tsx — the media sections of the SaaS face: the Cadria top ten
  * with its hero, the explorer reel wall, the Debonair track rail, the Doo
- * advisor demo and the footer. Loose components of the intro page. Every
+ * advisor card and the footer. Loose components of the intro page. Every
  * action funnels to the enter callback — the login face is the next page of
- * the chain and the panel stays last.
+ * the chain and the panel stays last. The sections stage the real catalog
+ * rows and nothing invented: no fake playback, no fake replies, no
+ * invented counters — the honest action is the enter callback.
  */
 
-import {ArrowDownRegular as ArrowDown, ArrowLeftRegular as ArrowLeft, ArrowRightRegular as ArrowRight, ArrowUpRightRegular as ArrowUpRight, HeartRegular as Heart, ChatRegular as MessageSquare, PlayRegular as Play, AddRegular as Plus, SendRegular as Send} from "@fluentui/react-icons";
+import {ArrowDownRegular as ArrowDown, ArrowLeftRegular as ArrowLeft, ArrowRightRegular as ArrowRight, ArrowUpRightRegular as ArrowUpRight, HeartRegular as Heart, ChatRegular as MessageSquare, PlayRegular as Play} from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 import { saasfilms, saasreels, saastracks } from "../../saascontent.ts";
 import { SolLogoMark } from "./panel.logo.tsx";
 import { SaddleTabBridge, ScoopedCard, Studiomark } from "./intro.saaskit.tsx";
@@ -58,7 +59,7 @@ export function SaasFlowStrip({ scrollto }: Pick<SectionProps, "scrollto">) {
 
 /** The Cadria section: the category tabs, the film hero, the top ten rail
  * with the giant rank numerals and the live TV banner. */
-export function SaasCadria() {
+export function SaasCadria({ onenter }: Pick<SectionProps, "onenter">) {
   const [category, setCategory] = useState<filmcategory>("trending");
   const [hero, setHero] = useState(saasfilms[0]);
   const rows = category === "trending" ? saasfilms : saasfilms.filter((film) => film.category === category);
@@ -123,19 +124,11 @@ export function SaasCadria() {
             <div className="mt-6 flex items-center gap-3">
               <button
                 type="button"
-                onClick={() => toast(`Playing ${hero.title}`)}
+                onClick={onenter}
                 className="flex items-center gap-2 rounded-lg bg-[#fafafa] px-7 py-3 text-sm font-extrabold tracking-[-0.035em] text-slate-950 transition hover:bg-slate-200 active:scale-[0.97]"
               >
                 <Play className="h-4 w-4 fill-current" aria-hidden="true" />
                 <span>Play</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => toast("Added to my list")}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-black/50 text-white transition hover:bg-white/20 active:scale-90"
-                aria-label="Add to my list"
-              >
-                <Plus className="h-4 w-4" aria-hidden="true" />
               </button>
             </div>
           </div>
@@ -174,7 +167,6 @@ export function SaasCadria() {
             {rows.map((film) => {
               const preview = () => {
                 setHero(film);
-                toast(`Loaded ${film.title}`);
               };
               return (
                 <button
@@ -229,12 +221,12 @@ export function SaasCadria() {
                 </span>
               </div>
               <p className="mt-3 text-sm font-normal tracking-[-0.005em] text-white/85">
-                Lap 27 of 39, 38 watching now
+                Live TV rides the explorer inside the os
               </p>
             </div>
             <button
               type="button"
-              onClick={() => toast("Playing live")}
+              onClick={onenter}
               className="flex shrink-0 items-center gap-2 rounded-lg bg-[#fafafa] px-7 py-3 text-sm font-extrabold tracking-[-0.035em] text-slate-950 transition active:scale-[0.97]"
             >
               <Play className="h-4 w-4 fill-current" aria-hidden="true" />
@@ -278,9 +270,6 @@ export function SaasExplorerWall({ onenter }: Pick<SectionProps, "onenter">) {
         </div>
       </div>
       <div className="relative mx-auto max-w-[1320px] text-center">
-        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-[#FDE68A]/70 px-4 py-1.5 text-xs font-extrabold tracking-[-0.035em] text-amber-950">
-          <span>Over 100,000 human and AI creators</span>
-        </div>
         <h2 className="mx-auto max-w-3xl text-3xl font-extrabold tracking-[-0.035em] text-slate-950 sm:text-5xl lg:text-[56px]">
           Publish once, stream across every studio
         </h2>
@@ -304,7 +293,7 @@ export function SaasExplorerWall({ onenter }: Pick<SectionProps, "onenter">) {
                 type="button"
                 key={reel.title}
                 onMouseEnter={() => setActive(index)}
-                onClick={() => toast(`Playing ${reel.title}`)}
+                onClick={onenter}
                 className={`group relative cursor-pointer overflow-hidden rounded-[24px] border-0 bg-transparent p-0 transition-[transform,opacity,box-shadow] duration-300 ${height} ${selected ? "z-20 scale-105 ring-4 ring-slate-950 shadow-2xl" : "opacity-90 shadow-lg hover:opacity-100"} ${index >= 4 ? "hidden sm:block" : ""} ${index === 6 ? "hidden lg:block" : ""}`}
               >
                 <img
@@ -345,8 +334,8 @@ export function SaasExplorerWall({ onenter }: Pick<SectionProps, "onenter">) {
 }
 
 /** The Debonair section: the editorial hero and the trending track rail. */
-export function SaasDebonair() {
-  const [liked, setLiked] = useState<Record<number, boolean>>({ 1: true });
+export function SaasDebonair({ onenter }: Pick<SectionProps, "onenter">) {
+  const [liked, setLiked] = useState<Record<number, boolean>>({});
   return (
     <section id="sonic-deck" className="overflow-hidden bg-[#0A0B0E] pt-0 pb-24 text-white sm:pb-28">
       <div className="relative z-20 mb-8 w-full inset-x-0 top-0">
@@ -365,9 +354,6 @@ export function SaasDebonair() {
           <Studiomark app="debonair" className="h-9 w-9" />
           <span className="text-[15px] font-extrabold tracking-[-0.035em] text-white">DEBONAIR</span>
           <span className="ml-2 text-[11px] font-normal tracking-[-0.005em] text-slate-400">Lossless AI DAW</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-normal tracking-[-0.005em] text-slate-400">12:35 · 25°C</span>
         </div>
       </div>
       <div className="mx-auto mt-12 max-w-[1360px] px-6 sm:px-10 lg:px-16">
@@ -391,7 +377,7 @@ export function SaasDebonair() {
             <div className="mt-6 flex items-center gap-3">
               <button
                 type="button"
-                onClick={() => toast("Playing No Ordinary Love")}
+                onClick={onenter}
                 className="flex items-center gap-2 rounded-lg bg-[#fafafa] px-7 py-3 text-sm font-extrabold tracking-[-0.035em] text-slate-950 transition hover:bg-slate-200 active:scale-[0.97]"
               >
                 <Play className="h-4 w-4 fill-current" aria-hidden="true" />
@@ -399,7 +385,7 @@ export function SaasDebonair() {
               </button>
               <button
                 type="button"
-                onClick={() => toast("Opening the DAW")}
+                onClick={onenter}
                 className="rounded-lg border border-white/25 bg-white/10 px-7 py-3 text-sm font-extrabold tracking-[-0.035em] text-white transition hover:bg-white/20 active:scale-[0.97]"
               >
                 Open the DAW
@@ -437,9 +423,9 @@ export function SaasDebonair() {
                 key={track.title}
                 role="button"
                 tabIndex={0}
-                onClick={() => toast(`Playing ${track.title}`)}
+                onClick={onenter}
                 onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") toast(`Playing ${track.title}`);
+                  if (event.key === "Enter" || event.key === " ") onenter();
                 }}
                 className="group w-[220px] shrink-0 cursor-pointer snap-start"
               >
@@ -481,16 +467,8 @@ export function SaasDebonair() {
   );
 }
 
-/** The Doo section: the advisor statement with the demo chat card. */
+/** The Doo section: the advisor statement with the honest studio card. */
 export function SaasDoo({ onenter }: Pick<SectionProps, "onenter">) {
-  const [draft, setDraft] = useState("");
-  const [reply, setReply] = useState("Yes, I have 3 years of experience on UI and UX");
-  const send = () => {
-    if (!draft.trim()) return;
-    setReply(draft);
-    setDraft("");
-    toast("Doo replied");
-  };
   return (
     <section id="advisor-dark" className="relative overflow-hidden bg-[#fafafa] px-6 pt-0 pb-24 sm:px-10 sm:pb-32 lg:px-16">
       <div className="relative z-20 mb-12 w-full inset-x-0 top-0">
@@ -534,17 +512,10 @@ export function SaasDoo({ onenter }: Pick<SectionProps, "onenter">) {
               Explore studios
             </button>
           </div>
-          <div className="mt-10 grid max-w-md grid-cols-3 gap-4">
-            {[
-              ["35", "Studios"],
-              ["60", "FPS cloud"],
-              ["24", "Bit audio"],
-            ].map(([value, label]) => (
-              <div key={label} className="stat-tile rounded-2xl p-4 text-center">
-                <span className="block text-xl font-extrabold tracking-[-0.035em]">{value}</span>
-                <span className="text-[11px] font-normal tracking-[-0.005em] text-slate-500">{label}</span>
-              </div>
-            ))}
+          <div className="mt-10 max-w-md">
+            <p className="text-[13px] font-normal tracking-[-0.005em] text-slate-500">
+              Doo runs inside the os — the real advisor conversation opens there
+            </p>
           </div>
         </div>
         <div className="lg:col-span-6">
@@ -554,36 +525,22 @@ export function SaasDoo({ onenter }: Pick<SectionProps, "onenter">) {
                 <Studiomark app="doo" className="h-11 w-11" />
                 <div>
                   <h3 className="text-base font-extrabold tracking-[-0.035em]">Doo</h3>
-                  <p className="text-xs font-normal tracking-[-0.005em] text-slate-400">Online, replies instantly</p>
+                  <p className="text-xs font-normal tracking-[-0.005em] text-slate-400">The advisor inside the os</p>
                 </div>
               </div>
               <div className="mt-8 space-y-4">
-                <div className="max-w-[85%] rounded-2xl rounded-tl-md border border-white/10 bg-white/10 p-4 text-sm font-normal tracking-[-0.005em]">
-                  Can you review my interface and make it feel premium?
-                </div>
-                <div className="ml-auto max-w-[85%] rounded-2xl rounded-tr-md bg-indigo-600 p-4 text-sm font-semibold tracking-[-0.018em]">
-                  {reply}
+                <div className="max-w-[85%] rounded-2xl rounded-tl-md border border-white/10 bg-white/10 p-4 text-sm font-normal tracking-[-0.005em] text-white/85">
+                  The conversation opens inside the os — this card stages the studio, it never fakes a reply.
                 </div>
               </div>
             </div>
-            <div className="mt-8 flex items-center gap-2.5 rounded-full border border-white/12 bg-white/[0.06] p-2">
-              <input
-                value={draft}
-                onChange={(event) => setDraft(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") send();
-                }}
-                placeholder="Ask Doo anything"
-                className="flex-1 bg-transparent px-4 text-sm outline-none placeholder:text-slate-500"
-                aria-label="Ask Doo"
-              />
+            <div className="flex flex-wrap items-center gap-3">
               <button
                 type="button"
-                onClick={send}
-                className="btn-tactile-3d flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white"
-                aria-label="Send"
+                onClick={onenter}
+                className="btn-tactile-3d rounded-full px-6 py-3 text-[13px] font-extrabold tracking-[-0.035em] text-white"
               >
-                <Send className="h-4 w-4" aria-hidden="true" />
+                Open the advisor
               </button>
             </div>
           </ScoopedCard>

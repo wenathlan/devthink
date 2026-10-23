@@ -9,7 +9,7 @@
 import { PersonRegular, PlugDisconnectedRegular } from "@fluentui/react-icons";
 import { copy } from "../../copy";
 import { LocalAccount } from "./settings.identity";
-import { SettingsRow } from "./settings.settingsrow";
+import { SettingsRow } from "./settings.row";
 import type { SettingsSnapshot } from "./settings.settingstypes";
 
 type AccountsCategoryProps = {

@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import { ShellChrome } from "@/components/shell.shellchrome";
 import { osAppLabels, type Rung, releaseLadder } from "../../catalog";
 import { osText } from "../../oslabels.ts";
-import { HistoryLadder } from "../components/history.historyladder.tsx";
+import { HistoryLadder } from "../components/history.ladder.tsx";
 
 /** the window title answers the catalog label row (bare-id fallback). */
 const HISTORY_LABEL = osAppLabels().history;

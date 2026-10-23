@@ -256,9 +256,9 @@ export default function Saas({ onDone }: { onDone: () => void }) {
         <SaasStudios onenter={enter} scrollto={scrollto} />
         <SaasRibbon />
         <SaasFlowStrip scrollto={scrollto} />
-        <SaasCadria />
+        <SaasCadria onenter={enter} />
         <SaasExplorerWall onenter={enter} />
-        <SaasDebonair />
+        <SaasDebonair onenter={enter} />
         <SaasDoo onenter={enter} />
         <SaasRibbon />
         <SaasFooter onenter={enter} scrollto={scrollto} />

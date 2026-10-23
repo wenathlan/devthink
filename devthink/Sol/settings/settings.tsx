@@ -28,17 +28,17 @@ import {
   readBrowserPreferences,
   saveBrowserPreference } from "../../db";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
-import { AboutSettings } from "../components/settings.aboutsettings.tsx";
+import { AboutSettings } from "../components/settings.about.tsx";
 import { AccountsCategory } from "../components/settings.accountscategory.tsx";
 import { AutomationMcp } from "../components/settings.automationmcp.tsx";
 import { GatewayPairing } from "../components/settings.gatewaypairing.tsx";
 import { HardDrives } from "../components/settings.harddrives.tsx";
 import { initPersonalization, loadThemeMirror, syncThemeFromPreference } from "../components/settings.personalstore.ts";
 import { Personalization } from "../components/settings.personalization.tsx";
-import { SettingsNav } from "../components/settings.settingsnav.tsx";
+import { SettingsNav } from "../components/settings.nav.tsx";
 import type { PreferenceKey, SettingsCategoryId, SettingsSnapshot } from "../components/settings.settingstypes.ts";
 
-export * from "../components/settings.aboutsettings.tsx";
+export * from "../components/settings.about.tsx";
 export * from "../components/settings.accountscategory.tsx";
 export * from "../components/settings.automationmcp.tsx";
 export * from "../components/settings.backgroundpicker.tsx";
@@ -50,8 +50,8 @@ export * from "../components/settings.navbarposition.tsx";
 export * from "../components/settings.pairing.tsx";
 export * from "../components/settings.personalization.tsx";
 export * from "../components/settings.personalstore.ts";
-export * from "../components/settings.settingsnav.tsx";
-export * from "../components/settings.settingsrow.tsx";
+export * from "../components/settings.nav.tsx";
+export * from "../components/settings.row.tsx";
 
 /** paints the stored personalization choices before any route mounts (the
  * same law initautotranslate rides at the theme anchor). */
