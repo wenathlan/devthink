@@ -355,7 +355,6 @@ function IngestSurface() {
           <div className="ing-shelf">
             {records.map((record) => (
               <article key={record.id} className="ing-row">
-                <span className="ing-row-dot" aria-hidden="true" />
                 <div className="ing-row-main">
                   <p className="ing-row-name">{record.doc.name}</p>
                   <p className="ing-row-meta">

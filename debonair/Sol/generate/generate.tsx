@@ -227,10 +227,7 @@ export default function Generate() {
                     <div className="lane-head">
                       <span className="lane-name">{plan.name}</span>
                       <span className="badge">{plan.genreLabel}</span>
-                      <span className="badge success">
-                        <span className="dot" />
-                        ready
-                      </span>
+                      <span className="badge success">ready</span>
                     </div>
                     <div className="cellrun" data-state="ready" aria-hidden="true">
                       {CELL_RUN.map((no) => (

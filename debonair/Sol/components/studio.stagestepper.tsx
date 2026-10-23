@@ -8,7 +8,7 @@
  * the stepper owns no scrolling of its own.
  */
 
-import { STUDIO_STAGES, type StageId } from "../../../stages.ts";
+import { STUDIO_STAGES, type StageId } from "../../stages.ts";
 
 /** The props of the stage bar. */
 type StageStepperProps = {

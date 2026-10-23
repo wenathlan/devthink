@@ -6,7 +6,7 @@
  * No input[type=range] rotation trick — the geometry is honest.
  */
 import { type KeyboardEvent, type PointerEvent, useCallback, useRef } from "react";
-import { clampFader, FADER_MAX_DB, FADER_MIN_DB, faderToUnit, unitToFader } from "../../../dawview.ts";
+import { clampFader, FADER_MAX_DB, FADER_MIN_DB, faderToUnit, unitToFader } from "../../dawview.ts";
 
 /** The keyboard walk per press (fine and coarse, in dB). */
 const STEP_FINE = 0.5;

@@ -6,7 +6,7 @@
  * last honest reading without transition.
  */
 import type { CSSProperties } from "react";
-import { levelToPercent } from "../../../dawview.ts";
+import { levelToPercent } from "../../dawview.ts";
 
 type VuMeterProps = {
   /** The strip the meter belongs to (aria). */
@@ -35,6 +35,7 @@ export function VuMeter({ name, level, live = false, rest = 0 }: VuMeterProps) {
       aria-valuemin={0}
       aria-valuemax={100}
       aria-valuenow={Math.round(percent)}
+      data-idle={live ? undefined : "true"}
     >
       <i style={{ "--m": `${percent.toFixed(1)}%` } as CSSProperties} />
     </div>

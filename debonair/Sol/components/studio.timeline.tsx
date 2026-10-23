@@ -13,8 +13,8 @@
 
 import { CopyRegular, CutRegular, DeleteRegular } from "@fluentui/react-icons";
 import { type KeyboardEvent, type PointerEvent, useCallback, useMemo, useRef, useState } from "react";
-import { beatSecondsOf, ROLE_NAMES, type TakePlan } from "../../../arranger.ts";
-import { formatClock } from "../../../dawview.ts";
+import { beatSecondsOf, ROLE_NAMES, type TakePlan } from "../../arranger.ts";
+import { formatClock } from "../../dawview.ts";
 import {
   moveClip,
   snapToGrid,
@@ -24,7 +24,7 @@ import {
   TimelineModelError,
   trimClip,
   validatePlacement,
-} from "../../../timelinemodel.ts";
+} from "../../timelinemodel.ts";
 
 /** the seconds→pixels law of the editor (the lanes scroll, nothing squeezes) */
 const PX_PER_SECOND = 56;

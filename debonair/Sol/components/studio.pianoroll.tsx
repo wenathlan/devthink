@@ -11,7 +11,7 @@
 
 import { AddRegular, DeleteRegular, EraserRegular, PinRegular, SubtractRegular } from "@fluentui/react-icons";
 import { type KeyboardEvent, useCallback, useMemo, useState } from "react";
-import { type ArrangerRole, RACK_LANES, type TakePlan } from "../../../arranger.ts";
+import { type ArrangerRole, RACK_LANES, type TakePlan } from "../../arranger.ts";
 import {
   addNote,
   type EditableNote,
@@ -22,8 +22,8 @@ import {
   removeNote,
   resizeNote,
   validateNotes,
-} from "../../../pianoroll.ts";
-import type { TakeSchedule } from "../../../takeevents.ts";
+} from "../../pianoroll.ts";
+import type { TakeSchedule } from "../../takeevents.ts";
 
 /** the detent ladder the velocity key cycles through (the rack's glyph law) */
 const VELOCITY_LADDER: readonly number[] = Object.values(PIANOROLL_CONSTANTS.VELOCITY_STEPS);

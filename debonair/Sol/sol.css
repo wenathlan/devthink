@@ -173,6 +173,7 @@
   --dur-enter: 640ms;
   --dur-press: 100ms;
   --sol-micro: 150ms;
+  --ease-silk: cubic-bezier(0.2, 0.8, 0.2, 1);
 
   --focus-ring: 2px solid var(--color-focus);
 
@@ -186,13 +187,26 @@
   --scrollbar-thumb: rgb(255 255 255 / 45%);
 
   /* z bands: atmosphere 0 · content 10 · float 20 · bar 50 · menu 60 ·
-     overlay 100 · modal 200 · toast 300 · tooltip 400 */
+     overlay 100 · dock 150 · modal 200 · toast 300 · tooltip 400 */
   --z-atmosphere: 0;
   --z-content: 10;
   --z-float: 20;
   --z-bar: 50;
+  --z-menu: 60;
+  --z-overlay: 100;
+  --z-dock: 150;
   --z-modal: 200;
   --z-toast: 300;
+  --z-tooltip: 400;
+
+  /* shell geometry: the positioning variables the resize and the re dock
+     write, so the browser relayouts without a re render of the interface */
+  --shell-sidebar: 264px;
+  --shell-sidebar-min: 208px;
+  --shell-topbar: 52px;
+  --shell-gutter: 12px;
+  --shell-handle: 4px;
+  --shell-radius: 8px;
 
   color: var(--color-ink);
   background: var(--color-canvas);
@@ -481,13 +495,16 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); min-height: 44px; padding: 0 var(--space-5);
   border: 0; border-radius: var(--win-radius-ctl); background: var(--accent); color: var(--accent-ink); font-weight: 600;
-  box-shadow: var(--sol-btn-inset), 0 0 0 1px rgb(0 0 0 / 20%), 0 2px 3px color-mix(in srgb, var(--accent) 26%, transparent),
-    0 4px 7px -1px color-mix(in srgb, var(--accent) 34%, transparent);
-  transition: background-color var(--sol-micro) var(--sol-ease-out), color var(--sol-micro) var(--sol-ease-out),
-    box-shadow var(--sol-micro) var(--sol-ease-out), transform var(--dur-press) ease-in-out;
+  /* the resting physics: the top highlight of the fluent key and the small
+     drop shadow, both suppressed while pressed (the family press law) */
+  box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 16%), 0 1px 2px rgb(0 0 0 / 14%), var(--sol-btn-inset), 0 0 0 1px rgb(0 0 0 / 20%),
+    0 2px 3px color-mix(in srgb, var(--accent) 26%, transparent), 0 4px 7px -1px color-mix(in srgb, var(--accent) 34%, transparent);
+  transition: transform var(--dur-press) ease-in-out, box-shadow var(--dur-press) ease-in-out,
+    background var(--dur-press) ease-in-out, color var(--sol-micro) var(--sol-ease-out);
 }
 .btn:hover { background: color-mix(in oklab, var(--accent) 88%, var(--accent-ink)); text-decoration: none; box-shadow: var(--sol-btn-inset-hover), 0 0 0 1px rgb(0 0 0 / 28%), 0 2px 3px color-mix(in srgb, var(--accent) 34%, transparent), 0 4px 7px -1px color-mix(in srgb, var(--accent) 44%, transparent); }
-.btn:active { transform: scale(0.97); }
+/* the pressed key: the resting highlight trades for the pressed shadow */
+.btn:active { transform: scale(0.97); box-shadow: inset 0 1px 0 0 rgb(0 0 0 / 8%); }
 .btn:disabled, .btn[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; transform: none; }
 /* the legacy `secondary` and `danger-ghost` ride the flat recipes */
 .btn.secondary { background: var(--surface-2); border: 1px solid var(--line-strong); color: var(--ink); box-shadow: 0 1px 1px -0.5px var(--sol-drop); }
@@ -574,7 +591,7 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   min-height: 100dvh;
   max-height: 100dvh; padding: clamp(12px, 3vh, 40px) clamp(12px, 2.5vw, 48px);
 }
-.appframe::before { content: ""; position: fixed; inset: 0; z-index: 0; background-image: var(--noise); pointer-events: none; }
+.appframe::before { content: ""; position: fixed; inset: 0; z-index: var(--z-atmosphere); background-image: var(--noise); pointer-events: none; }
 .appframe[data-maximized="true"] { padding: 0; }
 .winapp {
   position: relative; z-index: var(--z-content); display: flex; flex-direction: column; flex: 1;
@@ -1025,7 +1042,9 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
    channel rack with the running step, the mixer with fader and live VU */
 .stage-asym { display: grid; gap: 14px; }
 @media (min-width: 940px) { .stage-asym { grid-template-columns: minmax(0, 1.75fr) minmax(236px, 1fr); align-items: start; } }
-.rack-panel { border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface-1); box-shadow: var(--shadow-1); }
+/* the widget panels ride the silk surface law: the inset highlight, the
+   layered drops, the hairline edge — the layout geometry stays untouched */
+.rack-panel { border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface-1); box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), 0 1px 2px rgb(0 0 0 / 28%), 0 10px 28px -18px rgb(0 0 0 / 55%); }
 .scope-note { margin-top: 18px; padding: 16px 18px; }
 .scope-note .card-h { margin: 0 0 6px; font-size: 0.95rem; }
 /* transport: the machined keys over the webaudio clock */
@@ -1044,6 +1063,17 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .tkey:hover { background: var(--surface-4); border-color: var(--ink-3); text-decoration: none; }
 .tkey:active { transform: scale(0.94); }
 .tkey svg { width: 16px; height: 16px; }
+/* the honest states of the desk key: disabled fades, busy spins, tones speak */
+.tkey:disabled,
+.tkey[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; transform: none; }
+.tkey[aria-busy="true"] { position: relative; color: transparent; pointer-events: none; }
+.tkey[aria-busy="true"]::after {
+  content: ""; position: absolute; top: 50%; left: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px;
+  border-radius: 50%; border: 2px solid color-mix(in srgb, var(--ink) 30%, transparent); border-top-color: var(--ink);
+  animation: solSpin 700ms linear infinite;
+}
+.tkey[data-tone="ok"] { border-color: color-mix(in srgb, var(--ok) 55%, transparent); color: var(--ok); }
+.tkey[data-tone="err"] { border-color: color-mix(in srgb, var(--err) 55%, transparent); color: var(--err); }
 .tkey[aria-pressed="true"] { border-color: transparent; background: var(--accent); color: var(--accent-ink); box-shadow: var(--sol-btn-inset), 0 0 0 1px rgb(0 0 0 / 22%); }
 .tkey--loop[aria-pressed="true"] { background: var(--surface-6); color: var(--brass-300); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent); }
 .readout .lbl { display: block; font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: var(--sol-track-label); text-transform: lowercase; color: var(--ink-3); }
@@ -1118,16 +1148,19 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .vfader { position: relative; width: 34px; height: 168px; touch-action: none; cursor: grab; border-radius: var(--win-radius-ctl); }
 .vfader:active { cursor: grabbing; }
 .vfader:focus-visible { outline: 2px solid var(--win-accent); outline-offset: 2px; }
+/* the honest disabled fader: the travel holds, the hand dims */
+.vfader[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; }
 .vfader__rail { position: absolute; top: 4px; bottom: 4px; left: 50%; width: 4px; transform: translateX(-50%); border-radius: 2px; background: var(--surface-3); box-shadow: inset 0 0 0 1px var(--line); }
 .vfader__fill { position: absolute; left: 50%; bottom: 4px; width: 4px; transform: translateX(-50%); border-radius: 2px; background: linear-gradient(180deg, var(--brass-300), var(--accent) 62%, var(--brass-600)); }
 .vfader__cap {
   position: absolute; left: 50%; width: 30px; height: 26px; transform: translateX(-50%);
   border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent); border-radius: 5px;
   background: linear-gradient(180deg, var(--surface-6), var(--surface-4));
-  box-shadow: var(--shadow-2); display: grid; place-items: center;
-  transition: border-color var(--sol-micro) var(--sol-ease-out), box-shadow var(--sol-micro) var(--sol-ease-out);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 8%), 0 1px 2px rgb(0 0 0 / 28%), 0 4px 12px -6px rgb(0 0 0 / 45%);
+  display: grid; place-items: center;
+  transition: border-color var(--sol-micro) var(--ease-silk), box-shadow var(--sol-micro) var(--ease-silk);
 }
-.vfader:hover .vfader__cap { border-color: color-mix(in srgb, var(--accent) 85%, transparent); box-shadow: var(--shadow-3); }
+.vfader:hover .vfader__cap { border-color: color-mix(in srgb, var(--accent) 85%, transparent); box-shadow: inset 0 1px 0 rgb(255 255 255 / 8%), 0 2px 4px rgb(0 0 0 / 28%), 0 8px 20px -10px rgb(0 0 0 / 48%); }
 .vfader__cap i { display: block; width: 18px; height: 3px; border-radius: 2px; background: var(--accent); }
 .vfader--master .vfader__cap { border-color: color-mix(in srgb, var(--accent) 80%, transparent); }
 .vfader--master .vfader__cap i { background: var(--brass-300); }
@@ -1136,6 +1169,8 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .vu { position: relative; flex: none; width: 12px; height: 168px; border: 1px solid var(--line); border-radius: 5px; background: var(--surface-2); overflow: hidden; }
 .vu i { position: absolute; left: 1px; right: 1px; bottom: 1px; display: block; height: var(--m, 0%); border-radius: 4px; background: linear-gradient(0deg, var(--ok), var(--brass-300) 62%, var(--brass-600)); transition: height 110ms linear; }
 .vu i::after { content: ""; position: absolute; inset: 0 0 auto 0; height: 2px; background: var(--brass-300); opacity: 0.85; }
+/* the honest resting meter: the transport stopped, the column dims */
+.vu[data-idle="true"] { opacity: 0.55; }
 
 /* settings — the preference rows */
 .pref-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); padding: 12px 0; border-bottom: 1px solid var(--line); }
@@ -1284,18 +1319,32 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   padding: 12px 12px 14px;
   border-radius: var(--radius-xl);
   background: linear-gradient(180deg, var(--suno-card-a), var(--suno-card-b));
-  box-shadow: 0 0 0 1px var(--suno-edge), 0 1px 1px -0.5px var(--sol-drop), 0 6px 12px -6px rgb(0 0 0 / 45%);
-  transition: box-shadow var(--sol-micro) var(--sol-ease-out), transform var(--dur-2) var(--ease-window), background-color var(--sol-micro) var(--sol-ease-out);
+  /* the silk surface law: the inset highlight rides the ring, the drops layer */
+  box-shadow: 0 0 0 1px var(--suno-edge), inset 0 1px 0 rgb(255 255 255 / 5%), 0 1px 2px rgb(0 0 0 / 28%),
+    0 10px 28px -18px rgb(0 0 0 / 55%);
+  transition: box-shadow var(--sol-micro) var(--ease-silk), transform var(--dur-2) var(--ease-window),
+    background-color var(--sol-micro) var(--ease-silk), opacity var(--sol-micro) var(--ease-silk);
 }
 .song-card:hover {
   background: linear-gradient(180deg, var(--suno-card-b), var(--suno-card-hover));
   transform: translateY(-5px);
-  box-shadow: 0 0 0 1px var(--suno-edge-strong), 0 1px 1px -0.5px var(--sol-drop), 0 10px 20px -8px rgb(0 0 0 / 55%),
-    0 24px 48px -24px rgb(0 0 0 / 45%);
+  box-shadow: 0 0 0 1px var(--suno-edge-strong), inset 0 1px 0 rgb(255 255 255 / 5%), 0 2px 4px rgb(0 0 0 / 28%),
+    0 10px 20px -8px rgb(0 0 0 / 55%), 0 24px 48px -24px rgb(0 0 0 / 45%);
 }
+/* the card states: the keyboard focus rides the play key inside, the
+   disabled card fades honestly, the press answers a hair of scale */
+.song-card:focus-within {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-focus) 60%, transparent), inset 0 1px 0 rgb(255 255 255 / 5%),
+    0 1px 2px rgb(0 0 0 / 28%), 0 10px 28px -18px rgb(0 0 0 / 55%);
+}
+.song-card:active { transform: scale(0.99); }
+.song-card[data-disabled="true"],
+.song-card[aria-disabled="true"] { opacity: 0.5; }
+.song-card[data-disabled="true"]:hover,
+.song-card[aria-disabled="true"]:hover { transform: none; background: linear-gradient(180deg, var(--suno-card-a), var(--suno-card-b)); }
 .song-card[data-live="true"] {
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--brass-300) 60%, transparent), 0 1px 1px -0.5px var(--sol-drop),
-    0 10px 20px -8px rgb(0 0 0 / 55%);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--brass-300) 60%, transparent), inset 0 1px 0 rgb(255 255 255 / 5%),
+    0 1px 2px rgb(0 0 0 / 28%), 0 10px 20px -8px rgb(0 0 0 / 55%);
 }
 /* the now-playing breath: the live card's brass ring pulses softly — the
    feedback loop the player bar closes (transform-free, opacity only) */
@@ -1360,6 +1409,7 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .song-play:hover { background-color: rgb(32 32 32 / 90%); }
 .song-play:active { transform: scale(0.7); transition-duration: var(--dur-press); }
 .song-play:focus-visible { outline: 2px solid var(--win-accent); outline-offset: 2px; opacity: 1; transform: none; }
+.song-play:disabled { cursor: not-allowed; opacity: 0.5; transform: none; }
 /* the skeleton: the shimmer sweep rides translate only */
 .song-skeleton {
   position: relative;
@@ -1404,7 +1454,7 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   border: 1px solid var(--line);
   border-radius: var(--sol-radius);
   background: var(--surface-1);
-  box-shadow: var(--shadow-1);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), 0 1px 2px rgb(0 0 0 / 28%), 0 10px 28px -18px rgb(0 0 0 / 55%);
 }
 .stage-step {
   position: relative;
@@ -1422,6 +1472,7 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 }
 .stage-step:hover { background: var(--win-hover); color: var(--ink); }
 .stage-step:active { transform: scale(0.7); }
+.stage-step:disabled, .stage-step[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; transform: none; }
 .stage-step:focus-visible { outline: 2px solid var(--win-accent); outline-offset: -2px; }
 /* the windows indicator law: the 3px bar — 0 closed → 6px open (#858585) →
    12px on the active stage, on the windows accent */
@@ -1512,7 +1563,8 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   background-blend-mode: soft-light;
   backdrop-filter: saturate(3) blur(20px);
   -webkit-backdrop-filter: saturate(3) blur(20px);
-  box-shadow: 0 -8px 24px -16px rgb(0 0 0 / 45%);
+  /* the silk bar: the inset highlight closes the acrylic from the top */
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), 0 -8px 24px -16px rgb(0 0 0 / 45%);
 }
 .pbar-identity {
   display: flex;
@@ -1620,6 +1672,18 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .pkey:hover { background: var(--surface-4); border-color: var(--ink-3); }
 .pkey:active { transform: scale(0.7); }
 .pkey:focus-visible { outline: 2px solid var(--win-accent); outline-offset: 2px; }
+/* the honest states of the transport key: the disabled fade holds the layout,
+   the busy key renders the spinner in place, the tones name the outcome */
+.pkey:disabled,
+.pkey[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; transform: none; }
+.pkey[aria-busy="true"] { position: relative; color: transparent; pointer-events: none; }
+.pkey[aria-busy="true"]::after {
+  content: ""; position: absolute; width: 15px; height: 15px; border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--ink) 30%, transparent); border-top-color: var(--ink);
+  animation: solSpin 700ms linear infinite;
+}
+.pkey[data-tone="ok"] { border-color: color-mix(in srgb, var(--ok) 55%, transparent); color: var(--ok); }
+.pkey[data-tone="err"] { border-color: color-mix(in srgb, var(--err) 55%, transparent); color: var(--err); }
 /* the one bar surface the windows accent fills: the running CTA */
 .pkey--cta {
   border-color: transparent;
@@ -1727,7 +1791,6 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .ing-row { display: flex; align-items: center; gap: 14px; padding: 12px 10px; border-bottom: 1px solid var(--line);
   transition: background var(--micro) var(--ease-micro); }
 .ing-row:hover { background: color-mix(in srgb, var(--surface-1) 72%, transparent); }
-.ing-row-dot { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--signal); opacity: 0.85; }
 .ing-row-main { min-width: 0; flex: 1; }
 .ing-row-name { margin: 0; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ing-row-meta { margin: 2px 0 0; font-size: 0.78rem; color: var(--ink-3); }
@@ -1805,8 +1868,18 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 /* -- arrangement editor (the timeline grows hands) ------------------------- */
 .tled { display: grid; gap: 10px; }
 .tled-keys { display: flex; gap: 8px; margin-left: auto; }
-.tled-key { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 12px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface-2); color: var(--ink-2); font-size: 12px; font-weight: 500; cursor: pointer; transition: background var(--sol-micro) var(--sol-ease-out), border-color var(--sol-micro) var(--sol-ease-out); }
+.tled-key { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 12px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface-2); color: var(--ink-2); font-size: 12px; font-weight: 500; cursor: pointer; transition: background var(--sol-micro) var(--ease-silk), border-color var(--sol-micro) var(--ease-silk), transform var(--dur-press) ease-in-out, opacity var(--sol-micro) var(--ease-silk); }
 .tled-key:hover { background: var(--surface-3); border-color: var(--line-strong); }
+.tled-key:active { transform: scale(0.96); }
+.tled-key:disabled, .tled-key[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; transform: none; }
+.tled-key[aria-busy="true"] { position: relative; color: transparent; pointer-events: none; }
+.tled-key[aria-busy="true"]::after {
+  content: ""; position: absolute; top: 50%; left: 50%; width: 12px; height: 12px; margin: -6px 0 0 -6px;
+  border-radius: 50%; border: 2px solid color-mix(in srgb, var(--ink) 30%, transparent); border-top-color: var(--ink);
+  animation: solSpin 700ms linear infinite;
+}
+.tled-key[data-tone="ok"] { border-color: color-mix(in srgb, var(--ok) 55%, transparent); color: var(--ok); }
+.tled-key[data-tone="err"] { border-color: color-mix(in srgb, var(--err) 55%, transparent); color: var(--err); }
 .tled-icon { flex: none; }
 .tled-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface-1); }
 .tled-inner { position: relative; --tled-label: 96px; }
@@ -1833,8 +1906,10 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .roll { display: grid; gap: 10px; }
 .roll-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 .roll-tabs { display: flex; gap: 6px; margin-left: auto; }
-.roll-tab { min-height: 28px; padding: 0 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-1); color: var(--ink-3); font-family: var(--font-mono); font-size: 11px; cursor: pointer; transition: background var(--sol-micro) var(--sol-ease-out), color var(--sol-micro) var(--sol-ease-out); }
+.roll-tab { min-height: 28px; padding: 0 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-1); color: var(--ink-3); font-family: var(--font-mono); font-size: 11px; cursor: pointer; transition: background var(--sol-micro) var(--ease-silk), color var(--sol-micro) var(--ease-silk), transform var(--dur-press) ease-in-out; }
 .roll-tab:hover { background: var(--surface-2); color: var(--ink-2); }
+.roll-tab:active { transform: scale(0.96); }
+.roll-tab:disabled, .roll-tab[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; transform: none; }
 .roll-tab.is-on { border-color: transparent; background: var(--surface-4); color: var(--ink); }
 .roll-nav { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .roll-bar { width: 64px; min-height: 32px; font-family: var(--font-mono); }
@@ -1845,8 +1920,10 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .roll-row + .roll-row { margin-top: 4px; }
 .roll-key { width: 52px; flex: none; display: flex; align-items: center; font-family: var(--font-mono); font-size: 9px; color: var(--ink-3); }
 .roll-cells { display: flex; gap: 3px; }
-.roll-cell { width: 26px; height: 26px; flex: none; padding: 0; border: 1px solid var(--line); border-radius: 3px; background: var(--surface-2); cursor: pointer; transition: background var(--sol-micro) var(--sol-ease-out), border-color var(--sol-micro) var(--sol-ease-out); }
+.roll-cell { width: 26px; height: 26px; flex: none; padding: 0; border: 1px solid var(--line); border-radius: 3px; background: var(--surface-2); cursor: pointer; transition: background var(--sol-micro) var(--ease-silk), border-color var(--sol-micro) var(--ease-silk), transform var(--dur-press) ease-in-out; }
 .roll-cell:hover { background: var(--surface-3); }
+.roll-cell:active { transform: scale(0.94); }
+.roll-cell:disabled, .roll-cell[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; transform: none; }
 .roll-cell[data-beat="true"] { border-left: 2px solid var(--line-strong); }
 .roll-cell[data-held="true"] { border-color: transparent; background: color-mix(in srgb, var(--accent) 30%, var(--surface-2)); }
 .roll-cell[data-on="true"] { border-color: transparent; background: color-mix(in srgb, var(--accent) 78%, var(--surface-4)); }
@@ -1858,3 +1935,132 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .exp-keys { display: flex; gap: 8px; flex-wrap: wrap; }
 .scope-panel { padding: 10px 12px; }
 .scope { display: block; width: 100%; height: 88px; border-radius: var(--radius-sm); }
+
+/* ==========================================================================
+   the family motion law: the duty cycled loops, the reduced motion and the
+   pause hook. the loops ride the stepped keyframes so the compositor draws
+   a handful of frames per cycle instead of repainting every vsync, the
+   offscreen surfaces pause through the anim paused attribute, and the
+   reduced motion preference zeroes every custom animation.
+   ========================================================================== */
+
+@keyframes skeletonStep {
+  0% { opacity: 0.45; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.45; }
+}
+
+@keyframes pulseStep {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pingStep {
+  0% { opacity: 0.7; transform: scale(1); }
+  70% { opacity: 0; transform: scale(2.2); }
+  100% { opacity: 0; transform: scale(2.2); }
+}
+
+.anim-skeleton { animation: skeletonStep 2.4s steps(8, end) infinite; }
+.anim-pulse { animation: pulseStep 2s steps(8, end) infinite; }
+.anim-ping { animation: pingStep 2s steps(8, end) infinite; }
+
+[data-anim-paused] .anim-skeleton,
+[data-anim-paused] .anim-pulse,
+[data-anim-paused] .anim-ping,
+[data-anim-paused] [class*="anim-"] {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-skeleton, .anim-pulse, .anim-ping, [class*="anim-"] {
+    animation: none;
+  }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================================================
+   the silk surface law: the panels, the buttons and the inputs of the
+   family ride the layered shadows with the inset highlight, the silk curve
+   for the transitions, and the guards of the reduced transparency, so the
+   app chrome renders exactly like the design showcase of the os app.
+   ========================================================================== */
+
+.panel-silk {
+  border: 1px solid rgb(255 255 255 / 8%);
+  background: color-mix(in srgb, var(--s1) 86%, transparent);
+  border-radius: var(--shell-radius);
+  padding: 14px;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), 0 1px 2px rgb(0 0 0 / 28%), 0 10px 28px -18px rgb(0 0 0 / 55%);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+}
+
+.silk-btn {
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 10px;
+  min-height: 44px;
+  padding: 0 14px;
+  color: var(--ink);
+  background: rgb(255 255 255 / 5%);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%), 0 1px 2px rgb(0 0 0 / 30%);
+  transition: transform 140ms var(--ease-silk), box-shadow 140ms var(--ease-silk), opacity 140ms var(--ease-silk), background-color 140ms var(--ease-silk), border-color 140ms var(--ease-silk);
+}
+
+.silk-btn:hover {
+  background: rgb(255 255 255 / 9%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%), 0 2px 4px rgb(0 0 0 / 28%), 0 8px 20px -10px rgb(0 0 0 / 48%);
+}
+
+.silk-btn:active {
+  transform: translateY(1px);
+}
+
+.silk-btn:focus-visible,
+.silk-input:focus-visible,
+.silk-area:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.silk-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+  box-shadow: none;
+}
+
+.silk-input,
+.silk-area {
+  width: 100%;
+  color: var(--ink);
+  background: rgb(0 0 0 / 26%);
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 10px;
+  padding: 11px 12px;
+  font: inherit;
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 24%);
+  transition: border-color 140ms var(--ease-silk), background-color 140ms var(--ease-silk);
+}
+
+.silk-area { resize: vertical; }
+
+.silk-input:hover,
+.silk-area:hover {
+  border-color: rgb(255 255 255 / 18%);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .panel-silk {
+    background: var(--s1);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}

@@ -199,7 +199,6 @@ function HomeSurface() {
         <div className="badge-row reveal">
           {badges.map((badge) => (
             <span key={badge.label} className={`badge${badge.tone === "default" ? "" : ` ${badge.tone}`}`}>
-              {badge.dot ? <span className="dot" /> : null}
               {badge.label}
             </span>
           ))}

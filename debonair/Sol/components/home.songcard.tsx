@@ -10,9 +10,9 @@
 
 import { PlayFilled } from "@fluentui/react-icons";
 import type { CSSProperties } from "react";
-import type { TakePlan } from "../../../arranger.ts";
-import type { LibraryTrackRow } from "../../../katexis.ts";
-import { CoverArt } from "./coverart.tsx";
+import type { TakePlan } from "../../arranger.ts";
+import type { LibraryTrackRow } from "../../katexis.ts";
+import { CoverArt } from "./home.coverart.tsx";
 
 /** The props of one song card. */
 type SongCardProps = {

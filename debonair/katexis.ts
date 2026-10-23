@@ -82,7 +82,6 @@ export interface SignalBadge {
   group: string;
   label: string;
   tone: BadgeTone;
-  dot?: boolean;
 }
 
 /** One option of the settings selects. */

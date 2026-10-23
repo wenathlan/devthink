@@ -13,10 +13,10 @@
 import { NextRegular, PauseRegular, PlayFilled } from "@fluentui/react-icons";
 import { type CSSProperties, useEffect, useState } from "react";
 import { Link } from "wouter";
-import type { TakePlan } from "../../../arranger.ts";
-import { formatClock } from "../../../dawview.ts";
-import { busPause, busPlay, busSeek, busSelect, busSubscribe, type PlayerSnapshot } from "../../../playerbus.ts";
-import { CoverArt } from "../home/coverart.tsx";
+import type { TakePlan } from "../../arranger.ts";
+import { formatClock } from "../../dawview.ts";
+import { busPause, busPlay, busSeek, busSelect, busSubscribe, type PlayerSnapshot } from "../../playerbus.ts";
+import { CoverArt } from "./home.coverart.tsx";
 
 /**
  * Playerbar — the fixed bottom bar of the application window.

@@ -13,7 +13,7 @@
  */
 import { type ReactNode, useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { loadOnboardingState, readOnboardingState, type VisitorOnboarding } from "../../../onboardingstate.ts";
+import { loadOnboardingState, readOnboardingState, type VisitorOnboarding } from "../../onboardingstate.ts";
 
 /** the gate lifecycle: resolving (render null) → through (the home shows). */
 type GatePhase = "resolving" | "through";
