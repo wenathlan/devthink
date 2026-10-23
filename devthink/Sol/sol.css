@@ -16746,3 +16746,22 @@ body:has(.dt-nav[data-navbar="right"]) {
 }
 
 .uichip__x:hover { background: rgb(255 255 255 / 10%); }
+
+/* the identity micro interaction: the icon gradient moves inside the glyph.
+   the sol core wash drifts slowly inside the rim — the ambient loop of the
+   family, transform only, paused by the hook and zeroed by the reduced
+   motion preference. */
+@keyframes glyphDrift {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(0.6px, -0.5px); }
+  50% { transform: translate(0.2px, 0.7px); }
+  75% { transform: translate(-0.6px, 0.3px); }
+  100% { transform: translate(0, 0); }
+}
+
+.dtc-solbot__core { animation: glyphDrift 10s var(--ease-silk) infinite; }
+[data-anim-paused] .dtc-solbot__core { animation-play-state: paused; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dtc-solbot__core { animation: none; }
+}
