@@ -16,7 +16,7 @@ import { Router as WouterRouter } from "wouter";
 import { applyNow, syncCanonical } from "./cleanurl";
 import { initReveal } from "./reveal";
 import Sol from "./Sol/Sol";
-import { ToastProvider } from "./Sol/toast/Toast";
+import { ToastProvider } from "./Sol/components/toast.toast";
 import { initTheme } from "./theme";
 import installzoomlock from "./zoomlock";
 import "./Sol/sol.css";

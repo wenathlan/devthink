@@ -22,8 +22,8 @@ import { ArrowLeftRegular, ArrowRightRegular } from "@fluentui/react-icons";
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { markOnboardingSeen } from "../../onboardingstate";
-import { BrandMark } from "../componentes/shell/BrandMark.tsx";
-import { RAIL_APPS } from "../shell/Shell";
+import { BrandMark } from "../components/shell.brandmark.tsx";
+import { RAIL_APPS } from "../shell/shell";
 
 /** the honest statement of the opening frame (what the app is). */
 const WHAT_IT_IS =

@@ -19,22 +19,22 @@ import { apiresult, noderole, pick } from '../../dashboardlib';
  * typed ES module that replaced the window-global localauth.js of the static edge (the original
  * beside the typed module - the same convention the Login page uses. */
 import { logout, probe, session as readlocalsession } from '../../localauth.ts';
-import type { LocalSessionView } from '../componentes/dashboard/AccountPanel.tsx';
-import AccountPanel from '../componentes/dashboard/AccountPanel.tsx';
-import AdminPanel from '../componentes/dashboard/AdminPanel.tsx';
-import CreateSandboxForm from '../componentes/dashboard/CreateSandboxForm.tsx';
-import EventsTimeline from '../componentes/dashboard/EventsTimeline.tsx';
-import SandboxList from '../componentes/dashboard/SandboxList.tsx';
+import type { LocalSessionView } from '../components/dashboard.accountpanel.tsx';
+import AccountPanel from '../components/dashboard.accountpanel.tsx';
+import AdminPanel from '../components/dashboard.adminpanel.tsx';
+import CreateSandboxForm from '../components/dashboard.createsandboxform.tsx';
+import EventsTimeline from '../components/dashboard.eventstimeline.tsx';
+import SandboxList from '../components/dashboard.sandboxlist.tsx';
 
-export * from '../componentes/dashboard/AccountPanel.tsx';
-export * from '../componentes/dashboard/AdminPanel.tsx';
-export * from '../componentes/dashboard/AuditLog.tsx';
-export * from '../componentes/dashboard/CreateSandboxForm.tsx';
-export * from '../componentes/dashboard/EventsTimeline.tsx';
-export * from '../componentes/dashboard/GlobalSandboxesTable.tsx';
-export * from '../componentes/dashboard/MeshNodesTable.tsx';
-export * from '../componentes/dashboard/SandboxList.tsx';
-export * from '../componentes/dashboard/UsersTable.tsx';
+export * from '../components/dashboard.accountpanel.tsx';
+export * from '../components/dashboard.adminpanel.tsx';
+export * from '../components/dashboard.auditlog.tsx';
+export * from '../components/dashboard.createsandboxform.tsx';
+export * from '../components/dashboard.eventstimeline.tsx';
+export * from '../components/dashboard.globalsandboxestable.tsx';
+export * from '../components/dashboard.meshnodestable.tsx';
+export * from '../components/dashboard.sandboxlist.tsx';
+export * from '../components/dashboard.userstable.tsx';
 
 /** which surface answers: the node api or the static-edge local engine. */
 type Phase = 'booting' | 'api' | 'local';

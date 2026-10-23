@@ -19,7 +19,7 @@
  * shared shell.
  */
 import { Route, Switch } from "wouter";
-import { EntryGate } from "./componentes/home/entrygate.tsx";
+import { EntryGate } from "./components/home.entrygate.tsx";
 import HomeAnchor from "./home/home";
 import IntroAnchor from "./intro/intro";
 import LogsAnchor from "./logs/logs";
@@ -27,7 +27,7 @@ import NotFoundAnchor from "./notfound/notfound";
 import OnboardingAnchor from "./onboarding/onboarding";
 import QueueAnchor from "./queue/queue";
 import RunsAnchor from "./runs/runs";
-import { Shell } from "./shell/Shell";
+import { Shell } from "./shell/shell";
 
 /** the landing behind the entry gate: the gate resolves the first-run state
  * (rendering nothing while it does), replaces to /intro or /onboarding when

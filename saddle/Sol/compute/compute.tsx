@@ -19,7 +19,7 @@ import {
 	HardDriveRegular as HardDrive,
 	RamRegular as MemoryStick,
 } from '@fluentui/react-icons';
-import { PageShell } from '../shell/Shell.tsx';
+import { PageShell } from '../shell/shell.tsx';
 
 const providers = [
 	{ name: 'GitHub Actions', spec: '4 vCPU / 16 GB', state: 'primary' },

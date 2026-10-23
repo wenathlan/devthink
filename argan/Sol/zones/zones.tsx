@@ -16,8 +16,8 @@ import { useEffect, useState } from "react";
 import type { PublicationStep, RecordSetRow, ZoneSnapshot } from "../../argan.ts";
 import { apexZoneFile } from "../../argan.ts";
 import { listApexRecordSets, listPublicationSteps, listZones } from "../../catalog.ts";
-import EmptyState from "../componentes/shell/EmptyState.tsx";
-import { type NavLink, Shell } from "../shell/Shell";
+import EmptyState from "../components/shell.emptystate.tsx";
+import { type NavLink, Shell } from "../shell/shell";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Home", href: "/" },

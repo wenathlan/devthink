@@ -17,8 +17,8 @@ import { listOptionChoices } from "../../catalog.ts";
 import { applyNow } from "../../cleanurl";
 import { reduceMotionApplied, setReduceMotion } from "../../motionpref";
 import { currentTheme, toggleTheme } from "../../theme";
-import { type NavLink, Shell } from "../shell/Shell";
-import { useToast } from "../toast/Toast";
+import { type NavLink, Shell } from "../shell/shell";
+import { useToast } from "../components/toast.toast";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Home", href: "/" },

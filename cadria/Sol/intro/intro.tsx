@@ -24,11 +24,11 @@ import { ArrowDownRegular, ArrowUpRightRegular } from "@fluentui/react-icons";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "wouter";
 import { markOnboardingStage, readOnboardingState } from "../../onboardingstate.ts";
-import { CadriaMark } from "../shell/Shell.tsx";
-import CapabilityRow from "../componentes/intro/capabilities.tsx";
-import DemoStrip, { type DemoCue } from "../componentes/intro/demo.tsx";
-import IntroFooter from "../componentes/intro/footer.tsx";
-import IntroSplash from "../componentes/intro/splash.tsx";
+import { CadriaMark } from "../shell/shell.tsx";
+import CapabilityRow from "../components/intro.capabilities.tsx";
+import DemoStrip, { type DemoCue } from "../components/intro.demo.tsx";
+import IntroFooter from "../components/intro.footer.tsx";
+import IntroSplash from "../components/intro.splash.tsx";
 
 /** the lifecycle of the opening act: pending (the state read resolves) →
  * playing (the akash floor over the landing) → done (the landing alone). */

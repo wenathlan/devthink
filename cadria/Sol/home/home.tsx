@@ -28,8 +28,8 @@ import {
 import { type ReactElement, useCallback, useEffect, useState } from "react";
 import { Link } from "wouter";
 import { type GatewayProject, listGatewayProjects } from "../../gatewayclient.ts";
-import { EmptyState } from "../componentes/shell/EmptyState.tsx";
-import EntryGate from "../componentes/home/entrygate.tsx";
+import { EmptyState } from "../components/shell.emptystate.tsx";
+import EntryGate from "../components/home.entrygate.tsx";
 
 /** the abort window the recent-generations fetch rides (ms). */
 const RECENT_TIMEOUT_MS = 800;

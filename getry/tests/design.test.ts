@@ -22,11 +22,11 @@ function read(path: string): string {
 
 const CSS = read("../Sol/sol.css");
 const ENTRY = read("../index.html");
-const MARK = read("../Sol/componentes/shell/BrandMark.tsx");
-const SHELL = read("../Sol/componentes/shell/Shell.tsx");
+const MARK = read("../Sol/components/shell.brandmark.tsx");
+const SHELL = read("../Sol/shell/shell.tsx");
 const SOL = read("../Sol/Sol.tsx");
 const HOME = read("../Sol/home/home.tsx");
-const GATE = read("../Sol/componentes/home/entrygate.tsx");
+const GATE = read("../Sol/components/home.entrygate.tsx");
 const INTRO = read("../Sol/intro/intro.tsx");
 const ONBOARDING = read("../Sol/onboarding/onboarding.tsx");
 const STATE = read("../onboardingstate.ts");
@@ -194,7 +194,7 @@ describe("flow contract — intro → onboarding → the platform", () => {
   });
 
   it("gates the home anchor on the seen state before anything shows", () => {
-    expect(HOME).toMatch(/import EntryGate from "\.\.\/componentes\/home\/entrygate\.tsx"/);
+    expect(HOME).toMatch(/import EntryGate from "\.\.\/components\/home\.entrygate\.tsx"/);
     expect(GATE).toContain('navigate("/intro", { replace: true })');
     expect(GATE).toContain('navigate("/onboarding", { replace: true })');
     expect(GATE).toContain("flowthrough");

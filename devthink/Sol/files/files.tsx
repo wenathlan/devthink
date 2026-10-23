@@ -82,9 +82,9 @@ import {
 } from "../../fileexplorer.ts";
 import { browserStoreSummary } from "../../db";
 import { drives, type HardDrive } from "../../harddrives.ts";
-import { ShellChrome } from "@/componentes/shell/ShellChrome";
-import { AppTile } from "@/componentes/shell/apptile.tsx";
-import { DriveIcon, PlatformMark, ShellFolderIcon, ThisPcMark } from "../componentes/files/foldericons.tsx";
+import { ShellChrome } from "@/components/shell.shellchrome";
+import { AppTile } from "@/components/shell.apptile.tsx";
+import { DriveIcon, PlatformMark, ShellFolderIcon, ThisPcMark } from "../components/files.foldericons.tsx";
 
 /** the window title answers the catalog label row (bare-id fallback). */
 const FILES_LABEL = osAppLabels().files ?? { name: "My Files", detail: "", pinned: true };

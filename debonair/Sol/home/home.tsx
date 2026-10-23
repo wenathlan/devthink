@@ -29,9 +29,9 @@ import type { FeatureCard, LibraryTrackRow, SignalBadge } from "../../katexis.ts
 import { MASTERING, PROMPT_MAX_LENGTH } from "../../katexis.ts";
 import { busFeature, busPlay, busSubscribe } from "../../playerbus.ts";
 import { PROMPT_DRAFT_KEY, type PromptDraft } from "../generate/generate.tsx";
-import { DebonairMark, type NavLink, Shell } from "../shell/Shell.tsx";
-import EntryGate from "../componentes/home/entrygate.tsx";
-import { SongCard, SongCardSkeleton } from "../componentes/home/songcard.tsx";
+import { DebonairMark, type NavLink, Shell } from "../shell/shell.tsx";
+import EntryGate from "../components/home.entrygate.tsx";
+import { SongCard, SongCardSkeleton } from "../components/home.songcard.tsx";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Studio", href: "/studio" },

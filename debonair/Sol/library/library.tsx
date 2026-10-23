@@ -25,9 +25,9 @@ import {
   TAKE_SELECT_KEY,
   type TakeRecord,
 } from "../../takestore.ts";
-import { CoverArt } from "../componentes/home/coverart.tsx";
-import { type NavLink, Shell } from "../shell/Shell.tsx";
-import { useToast } from "../toast/Toast.tsx";
+import { CoverArt } from "../components/home.coverart.tsx";
+import { type NavLink, Shell } from "../shell/shell.tsx";
+import { useToast } from "../components/toast.toast.tsx";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Studio", href: "/studio" },

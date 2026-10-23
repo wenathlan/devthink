@@ -15,7 +15,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { markIntroSeen } from "../../onboardingstate";
-import { ArganMark } from "../shell/Shell";
+import { ArganMark } from "../shell/shell";
 
 /** how long the brand holds before the exit (ms) — the doctrine asks ~1.6s */
 const HOLD_MS = 1600;

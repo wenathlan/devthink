@@ -32,7 +32,7 @@ import NotFoundAnchor from './notfound/notfound';
 import OnboardingAnchor from './onboarding/onboarding';
 import PlaygroundAnchor from './playground/playground';
 import RegisterAnchor from './register/register';
-import { Shell } from './shell/Shell.tsx';
+import { Shell } from './shell/shell.tsx';
 
 /** The window stage: the ONE application window wrapping the whole page
  * route table — every existing route stays alive inside the stage. */

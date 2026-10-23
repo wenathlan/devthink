@@ -16,8 +16,8 @@ import { applyNow } from "../../cleanurl.ts";
 import type { OptionChoice } from "../../katexis.ts";
 import { reduceMotionApplied, setReduceMotion } from "../../motionpref.ts";
 import { currentTheme, toggleTheme } from "../../theme.ts";
-import { type NavLink, Shell } from "../shell/Shell.tsx";
-import { useToast } from "../toast/Toast.tsx";
+import { type NavLink, Shell } from "../shell/shell.tsx";
+import { useToast } from "../components/toast.toast.tsx";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Studio", href: "/studio" },

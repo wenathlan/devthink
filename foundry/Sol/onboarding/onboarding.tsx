@@ -19,7 +19,7 @@
 import { useCallback, useState } from "react";
 import { useLocation } from "wouter";
 import { markOnboardingSeen } from "../../onboardingstate";
-import { BrandMark } from "../componentes/shell/BrandMark.tsx";
+import { BrandMark } from "../components/shell.brandmark.tsx";
 
 /** the three beats of the walk, in the family copy grammar (third-person,
  * lowercase): what it is, what it does, enter */

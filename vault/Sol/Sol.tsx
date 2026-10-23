@@ -24,7 +24,7 @@ import NotFoundAnchor from "./notfound/notfound";
 import ObjectsAnchor from "./objects/objects";
 import OnboardingAnchor from "./onboarding/onboarding";
 import RetentionAnchor from "./retention/retention";
-import { Shell } from "./shell/Shell.tsx";
+import { Shell } from "./shell/shell.tsx";
 
 /** the landing: the home surface riding the application window */
 function Fundamentals() {

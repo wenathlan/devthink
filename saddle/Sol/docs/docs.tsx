@@ -17,7 +17,7 @@ import {
 	RecordRegular as GitCommitHorizontal,
 	PlayCircleRegular as PlayCircle,
 } from '@fluentui/react-icons';
-import { PageShell } from '../shell/Shell.tsx';
+import { PageShell } from '../shell/shell.tsx';
 
 const docs = [
 	{

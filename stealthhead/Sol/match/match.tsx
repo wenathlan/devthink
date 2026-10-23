@@ -33,7 +33,7 @@ import {
 } from "../../match.ts";
 import { nextactions, progressof } from "../../matchrules.ts";
 import { observeReveals } from "../../reveal";
-import { toast } from "../toast/Toast.tsx";
+import { toast } from "../components/toast.toast.tsx";
 
 /** one lobby card: rounds plus the ranked seats of the match. */
 function LobbyCard({ lobby }: { lobby: MatchLobby }) {

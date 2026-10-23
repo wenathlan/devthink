@@ -26,8 +26,8 @@ import NotFoundAnchor from "./notfound/notfound.tsx";
 import OnboardingAnchor from "./onboarding/onboarding.tsx";
 import PlayerAnchor from "./player/player.tsx";
 import SettingsAnchor from "./settings/settings.tsx";
-import EntryGate from "./componentes/shell/EntryGate.tsx";
-import Shell from "./shell/Shell.tsx";
+import EntryGate from "./components/shell.entrygate.tsx";
+import Shell from "./shell/shell.tsx";
 import StudioAnchor from "./studio/studio.tsx";
 
 /** the home seat behind the entry gate: the reform law rides here — intro

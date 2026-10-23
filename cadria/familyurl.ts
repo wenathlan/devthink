@@ -10,7 +10,7 @@
  * up from the current deploy unit, then into the sibling folder — so the
  * rail foot of the window resolves the family from wherever the app is
  * mounted. pure and multi-mode: the same call runs in the browser (the rail
- * links of Sol/shell/Shell.tsx) and in node (the unit tests), with zero
+ * links of Sol/shell/shell.tsx) and in node (the unit tests), with zero
  * storage.
  */
 

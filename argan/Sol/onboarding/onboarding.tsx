@@ -19,7 +19,7 @@ import { ArrowLeftRegular, ArrowRightRegular, HomeRegular } from "@fluentui/reac
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { markOnboardingSeen } from "../../onboardingstate";
-import { ArganMark, START_APPS } from "../shell/Shell";
+import { ArganMark, START_APPS } from "../shell/shell";
 
 /** the honest statement of the opening frame (what the app is). */
 const WHAT_IT_IS =

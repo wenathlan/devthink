@@ -20,7 +20,7 @@ import {
 	ShieldTaskRegular as ShieldCheck,
 } from '@fluentui/react-icons';
 import { type CSSProperties, useMemo, useState } from 'react';
-import { PageShell } from '../shell/Shell.tsx';
+import { PageShell } from '../shell/shell.tsx';
 
 const fixture = Object.freeze({
 	id: 'fixture.binary.001',

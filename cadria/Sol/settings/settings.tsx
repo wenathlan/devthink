@@ -18,7 +18,7 @@
 import { useCallback, useState } from "react";
 import { gatewayHealth, gatewayUrl, setGatewayUrl } from "../../gatewayclient.ts";
 import { applyTheme, currentTheme, type Theme } from "../../theme";
-import { useToast } from "../toast/Toast.tsx";
+import { useToast } from "../components/toast.toast.tsx";
 
 /** synced by hand with cadria/package.json "version" — package.json is forbidden to import at runtime. */
 const VERSION = "2.0.97";

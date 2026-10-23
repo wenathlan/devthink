@@ -35,8 +35,8 @@ import {
 } from "../../catalog.ts";
 import { familyrow } from "../../family";
 import { familyurl } from "../../familyurl";
-import { ArganMark, type NavLink, Shell } from "../shell/Shell";
-import { EntryGate } from "../componentes/home/entrygate.tsx";
+import { ArganMark, type NavLink, Shell } from "../shell/shell";
+import { EntryGate } from "../components/home.entrygate.tsx";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Zones", href: "/zones" },

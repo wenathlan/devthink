@@ -27,7 +27,7 @@ import IntroAnchor from "./intro/intro";
 import NotFoundAnchor from "./notfound/notfound";
 import OnboardingAnchor from "./onboarding/onboarding";
 import SandboxesAnchor from "./sandboxes/sandboxes";
-import { Shell } from "./shell/Shell.tsx";
+import { Shell } from "./shell/shell.tsx";
 
 /** the landing: the home surface riding the application window */
 function Fundamentals() {

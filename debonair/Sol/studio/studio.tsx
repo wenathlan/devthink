@@ -36,13 +36,13 @@ import {
   TAKE_SELECT_KEY,
 } from "../../takestore.ts";
 import type { TimelineClip } from "../../timelinemodel.ts";
-import { type NavLink, Shell } from "../shell/Shell.tsx";
-import { Fader } from "../componentes/studio/Fader.tsx";
-import { PianoRoll } from "../componentes/studio/pianoroll.tsx";
-import { StageStepper } from "../componentes/studio/StageStepper.tsx";
-import { Spectrum } from "../componentes/studio/spectrum.tsx";
-import { Timeline } from "../componentes/studio/timeline.tsx";
-import { VuMeter } from "../componentes/studio/VuMeter.tsx";
+import { type NavLink, Shell } from "../shell/shell.tsx";
+import { Fader } from "../components/studio.fader.tsx";
+import { PianoRoll } from "../components/studio.pianoroll.tsx";
+import { StageStepper } from "../components/studio.stagestepper.tsx";
+import { Spectrum } from "../components/studio.spectrum.tsx";
+import { Timeline } from "../components/studio.timeline.tsx";
+import { VuMeter } from "../components/studio.vumeter.tsx";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: "Generate", href: "/generate" },

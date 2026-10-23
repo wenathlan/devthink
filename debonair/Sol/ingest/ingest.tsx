@@ -32,8 +32,8 @@ import { type ChangeEvent, type DragEvent, useEffect, useRef, useState } from "r
 import { formatClock } from "../../dawview.ts";
 import { type IngestDocument, ingestPcm } from "../../ingest.ts";
 import { droppingest, type IngestRecord, listingests, saveingest } from "../../ingeststore.ts";
-import { Shell } from "../shell/Shell.tsx";
-import { useToast } from "../toast/Toast.tsx";
+import { Shell } from "../shell/shell.tsx";
+import { useToast } from "../components/toast.toast.tsx";
 
 /** The decode/analysis phases the bench walks through, in order. */
 const PHASES: readonly { id: BenchPhase; label: string; detail: string }[] = [

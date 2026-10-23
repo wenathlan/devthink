@@ -24,7 +24,7 @@ import {
   pourOrder,
   seedImages,
 } from "../../imagestore.ts";
-import { EmptyState } from "../componentes/shell/EmptyState.tsx";
+import { EmptyState } from "../components/shell.emptystate.tsx";
 
 /** the seed of the rehearsal shelf (shown on the page, pinned by the tests) */
 export const SHELF_SEED = 314159;

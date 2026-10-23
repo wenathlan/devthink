@@ -22,7 +22,7 @@ import {
 	readOnboardingState,
 	type VisitorOnboarding,
 } from '../../onboardingstate.ts';
-import { SaddleMark } from '../shell/Shell.tsx';
+import { SaddleMark } from '../shell/shell.tsx';
 
 /** how long the brand holds before the exit (ms) — the doctrine asks ~1.6s */
 const HOLD_MS = 1600;

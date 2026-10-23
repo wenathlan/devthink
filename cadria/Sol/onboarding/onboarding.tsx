@@ -31,7 +31,7 @@ import { markOnboardingStage } from "../../onboardingstate.ts";
 import { compositionBlocks, rhythmScatter } from "../../synthcomposition.ts";
 import { synthPalette } from "../../synthpalette.ts";
 import { synthTexture } from "../../synthtexture.ts";
-import { CadriaMark } from "../shell/Shell.tsx";
+import { CadriaMark } from "../shell/shell.tsx";
 
 /** the canvas the see frame renders at (px; the render layer clamps and centers it). */
 const SEE_CANVAS = 520;
