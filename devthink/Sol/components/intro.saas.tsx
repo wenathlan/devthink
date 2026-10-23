@@ -34,12 +34,14 @@ const SAAS_CSS = `
 
 .btn-tactile-3d { background: linear-gradient(180deg, #243047 0%, #090D16 100%); box-shadow: 0 14px 28px -8px rgba(9,13,22,0.55), 0 4px 10px -2px rgba(9,13,22,0.35), inset 0 1.5px 2px rgba(255,255,255,0.42), inset 0 -3px 6px rgba(0,0,0,0.65); border: 1px solid rgba(255,255,255,0.16); transition: transform 0.25s cubic-bezier(0.16,1,0.3,1), box-shadow 0.25s ease; }
 .btn-tactile-3d:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 20px 34px -8px rgba(79,70,229,0.45), inset 0 2px 3px rgba(255,255,255,0.55), inset 0 -3px 6px rgba(0,0,0,0.75); }
+.btn-tactile-3d:active { transform: translateY(0) scale(0.96); transition-duration: 0.08s; box-shadow: 0 8px 18px -8px rgba(9,13,22,0.55), inset 0 1.5px 2px rgba(255,255,255,0.32), inset 0 -2px 5px rgba(0,0,0,0.55); }
 .icon-frame-3d { background: rgba(255,255,255,0.92); border: 1px solid rgba(203,213,225,0.85); box-shadow: 0 8px 18px -6px rgba(15,23,42,0.10), inset 0 1px 2px rgba(255,255,255,1); transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease; }
 .icon-frame-3d:hover { transform: translateY(-1.5px); border-color: rgba(99,102,241,0.5); box-shadow: 0 12px 22px -6px rgba(79,70,229,0.18), inset 0 1px 2px rgba(255,255,255,1); }
-.icon-frame-3d-active { background: #FFFFFF; border: 1px solid rgba(99,102,241,0.6); box-shadow: 0 10px 22px -6px rgba(79,70,229,0.24), inset 0 1px 2px rgba(255,255,255,1); }
-.surface-card { background: #FFFFFF; border: 1px solid rgba(226,232,240,0.95); box-shadow: 0 16px 36px -14px rgba(15,23,42,0.10); }
+.icon-frame-3d:active { transform: translateY(0) scale(0.94); transition-duration: 0.08s; }
+.icon-frame-3d-active { background: #FAFAFA; border: 1px solid rgba(99,102,241,0.6); box-shadow: 0 10px 22px -6px rgba(79,70,229,0.24), inset 0 1px 2px rgba(255,255,255,1); }
+.surface-card { background: #FAFAFA; border: 1px solid rgba(226,232,240,0.95); box-shadow: 0 16px 36px -14px rgba(15,23,42,0.10); }
 .stat-tile { background: #F4F6FB; border: 1px solid rgba(226,232,240,0.9); }
-.indigo-tactile-surface { background: linear-gradient(145deg, #4F46E5 0%, #3730A3 58%, #312E81 100%); box-shadow: 0 22px 44px -12px rgba(55,48,163,0.5), inset 0 2px 5px rgba(255,255,255,0.32), inset 0 -5px 10px rgba(15,23,42,0.4); }
+.tactile-navy-surface { background: linear-gradient(145deg, #243047 0%, #1A2438 58%, #090D16 100%); box-shadow: 0 22px 44px -12px rgba(9,13,22,0.55), inset 0 2px 5px rgba(255,255,255,0.28), inset 0 -5px 10px rgba(15,23,42,0.4); }
 .hero-inline-switch { background: linear-gradient(125deg, #60A5FA 0%, #A855F7 48%, #EC4899 78%, #F97316 100%); box-shadow: 0 12px 26px -6px rgba(168,85,247,0.45), inset 0 2px 4px rgba(255,255,255,0.55); }
 .hero-switch-thumb { background: radial-gradient(circle at 30% 30%, #FFFFFF 0%, #F1F5F9 70%, #CBD5E1 100%); box-shadow: -3px 4px 10px rgba(15,23,42,0.35), inset 0 2px 3px rgba(255,255,255,1); }
 @keyframes shaderPulse { 0%,100% { transform: scale(1) translate(0,0); } 50% { transform: scale(1.05) translate(10px,-8px); } }
@@ -60,7 +62,7 @@ const SAAS_CSS = `
 .mask-fade-x { -webkit-mask-image: linear-gradient(to right, transparent, #000 52px, #000 calc(100% - 52px), transparent); mask-image: linear-gradient(to right, transparent, #000 52px, #000 calc(100% - 52px), transparent); }
 .rail-scroll::-webkit-scrollbar { display: none; }
 .rail-scroll { scrollbar-width: none; -ms-overflow-style: none; }
-.text-gradient-brand { background: linear-gradient(92deg, #6366F1 0%, #38BDF8 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.text-gradient-brand { background: linear-gradient(92deg, #0A0F1C 0%, #38BDF8 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
 @keyframes cardSwingLeft { 0%,100% { transform: translateY(0) rotate(-0.7deg); } 50% { transform: translateY(-8px) rotate(0.5deg); } }
 @keyframes cardSwingCenter { 0%,100% { transform: translateY(10px) rotate(0.5deg); } 50% { transform: translateY(0) rotate(-0.5deg); } }
 @keyframes cardSwingRight { 0%,100% { transform: translateY(0) rotate(0.7deg); } 50% { transform: translateY(-9px) rotate(-0.5deg); } }
@@ -72,6 +74,7 @@ const SAAS_CSS = `
 .animate-float-card-delayed { animation: subtleFloat 6.6s ease-in-out 1.2s infinite; }
 @media (prefers-reduced-motion: reduce) {
   .hero-gaussian-shader, .spin-badge-slow, .swing-card-1, .swing-card-2, .swing-card-3, .animate-float-card, .animate-float-card-delayed, .fan-swap { animation: none; }
+  .btn-tactile-3d, .icon-frame-3d, .saas-root .hero-switch-thumb { transition: none; }
 }
 `;
 
@@ -127,7 +130,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                   type="button"
                   onClick={() => scrollto(item.id)}
                   aria-label={item.rail}
-                  className={`group relative flex h-10 w-10 items-center justify-center rounded-full transition-all duration-300 ${current ? "scale-105 bg-gradient-to-tr from-indigo-600 to-sky-500 text-white" : "bg-white/10 text-slate-300 hover:bg-white/20 hover:text-white"}`}
+                  className={`group relative flex h-10 w-10 items-center justify-center rounded-full transition-[transform,color] duration-300 ${current ? "scale-105 bg-gradient-to-tr from-[#243047] to-[#090D16] text-white" : "bg-white/10 text-slate-300 hover:bg-white/20 hover:text-white"}`}
                 >
                   <Icon className="h-4 w-4" aria-hidden="true" />
                   <span className="pointer-events-none absolute left-14 rounded-lg border border-white/10 bg-slate-950 px-2.5 py-1 text-[11px] font-semibold tracking-[-0.018em] whitespace-nowrap text-white opacity-0 transition group-hover:opacity-100">
@@ -167,23 +170,23 @@ export default function Saas({ onDone }: { onDone: () => void }) {
         </button>
       </div>
 
-      <main className="relative z-10 min-h-[calc(100vh-5px)] w-full overflow-hidden rounded-[30px] border border-white bg-[#F2F5FC] shadow-[0_25px_80px_-15px_rgba(15,23,42,0.25)] sm:rounded-[34px]">
+      <main className="relative z-10 min-h-[calc(100vh-5px)] w-full overflow-hidden rounded-[30px] border border-[#fafafa] bg-[#F2F5FC] shadow-[0_25px_80px_-15px_rgba(15,23,42,0.25)] sm:rounded-[34px]">
         <section id="saas-header" className="relative bg-[#F2F5FC]">
           <header className="relative z-40">
-            <div className="h-1.5 w-full bg-white" />
+            <div className="h-1.5 w-full bg-[#fafafa]" />
             <div className="-mt-[1px] flex w-full items-start justify-center gap-2 px-4 sm:gap-4 sm:px-8">
               <div className="ml-1 flex shrink-0 items-center pt-2 sm:ml-3">
                 <button
                   type="button"
                   onClick={() => scrollto("hero-os")}
-                  className="group inline-flex items-center gap-1 text-slate-950 transition hover:scale-[1.015]"
+                  className="group inline-flex items-center gap-1 text-slate-950 transition hover:scale-[1.015] active:scale-[0.99]"
                 >
                   <SolLogoMark size={28} />
                   <SolWordmark height={18} title="DevThink" />
                 </button>
               </div>
               <div className="flex shrink-0 flex-col items-center drop-shadow-[0_10px_20px_rgba(15,23,42,0.06)]">
-                <SaddleTabBridge fillColor="#FFFFFF" className="h-[52px]">
+                <SaddleTabBridge fillColor="#fafafa" className="h-[52px]">
                   <nav className="flex items-center gap-2" aria-label="Sections">
                     {NAV.slice(0, 5).map((tab) => {
                       const Icon = tab.icon;
@@ -193,14 +196,14 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                           key={tab.id}
                           type="button"
                           onClick={() => scrollto(tab.id)}
-                          className={`group flex items-center rounded-xl px-3 py-2 transition-all ${current ? "icon-frame-3d-active text-slate-950" : "icon-frame-3d text-slate-800"}`}
+                          className={`group flex items-center rounded-xl px-3 py-2 transition-[background-color,border-color,box-shadow,color] ${current ? "icon-frame-3d-active text-slate-950" : "icon-frame-3d text-slate-800"}`}
                           aria-label={tab.label}
                         >
                           <Icon
                             className={`h-4 w-4 ${tab.id === "hero-os" ? "text-indigo-600" : tab.id === "workspace-subapps" ? "text-sky-600" : tab.id === "creators-doo" ? "text-purple-600" : tab.id === "spatial-bento" ? "text-pink-600" : "text-blue-600"}`}
                             aria-hidden="true"
                           />
-                          <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-all group-hover:ml-2 group-hover:max-w-[90px] group-hover:opacity-100">
+                          <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-[max-width,margin,opacity] group-hover:ml-2 group-hover:max-w-[90px] group-hover:opacity-100">
                             {tab.label}
                           </span>
                         </button>
@@ -217,7 +220,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                   aria-label="Alerts"
                 >
                   <Bell className="h-4 w-4" aria-hidden="true" />
-                  <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-all group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
+                  <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-[max-width,margin,opacity] group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
                     Alerts
                   </span>
                 </button>
@@ -228,7 +231,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                   aria-label="Sign in"
                 >
                   <LogIn className="h-4 w-4" aria-hidden="true" />
-                  <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-all group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
+                  <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-[max-width,margin,opacity] group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
                     Sign in
                   </span>
                 </button>
@@ -239,7 +242,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                   aria-label="Launch"
                 >
                   <ArrowUpRight className="h-4 w-4 text-sky-400" aria-hidden="true" />
-                  <span className="max-w-0 overflow-hidden text-xs font-extrabold tracking-[-0.035em] whitespace-nowrap opacity-0 transition-all group-hover:mr-1 group-hover:ml-2 group-hover:max-w-[80px] group-hover:opacity-100">
+                  <span className="max-w-0 overflow-hidden text-xs font-extrabold tracking-[-0.035em] whitespace-nowrap opacity-0 transition-[max-width,margin,opacity] group-hover:mr-1 group-hover:ml-2 group-hover:max-w-[80px] group-hover:opacity-100">
                     Launch
                   </span>
                 </button>

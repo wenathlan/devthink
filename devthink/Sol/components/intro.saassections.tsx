@@ -64,7 +64,7 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
           <button
             type="button"
             onClick={() => scrollto("creators-doo")}
-            className="surface-card flex items-center gap-2.5 rounded-full px-7 py-4 text-sm font-semibold tracking-[-0.018em] text-slate-900 transition hover:border-indigo-300"
+            className="surface-card flex items-center gap-2.5 rounded-full px-7 py-4 text-sm font-semibold tracking-[-0.018em] text-slate-900 transition hover:border-indigo-300 active:scale-[0.98]"
           >
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-950 text-white">
               <Play className="ml-0.5 h-3 w-3 fill-current" aria-hidden="true" />
@@ -76,7 +76,7 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
         <div className="mt-20 grid w-full grid-cols-1 items-stretch gap-6 text-left lg:grid-cols-12">
           <ScoopedCard
             className="animate-float-card lg:col-span-4"
-            surface="indigo-tactile-surface flex min-h-[300px] flex-col justify-between p-8 text-white"
+            surface="tactile-navy-surface flex min-h-[300px] flex-col justify-between p-8 text-white"
             topRight={
               <button
                 type="button"
@@ -166,7 +166,7 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
             <div
               className="pointer-events-none absolute top-10 right-6 h-16 w-16 rounded-full opacity-90"
               style={{
-                background: "radial-gradient(circle at 30% 30%, #FFFFFF, #C084FC 55%, #4F46E5)",
+                background: "radial-gradient(circle at 30% 30%, #FFFFFF, #38BDF8 55%, #243047)",
                 boxShadow: "inset 0 3px 6px rgba(255,255,255,0.85), 0 10px 20px rgba(0,0,0,0.45)" }}
             />
             <div className="relative z-10 flex items-center gap-3 pr-12">
@@ -212,10 +212,10 @@ export function SaasCreators({ onenter }: SectionProps) {
       title: "AI teams",
       body: "Cocreate with agents in sync",
       tag: "Getry and Doo",
-      tone: "indigo",
-      surface: "indigo-tactile-surface p-6 text-white",
+      tone: "navy",
+      surface: "tactile-navy-surface p-6 text-white",
       titletone: "text-white",
-      bodytone: "text-indigo-100",
+      bodytone: "text-slate-200",
       tagtone: "text-white" },
     {
       app: "saddle",
@@ -230,7 +230,7 @@ export function SaasCreators({ onenter }: SectionProps) {
   ];
   const swings = ["swing-card-1", "swing-card-2", "swing-card-3"];
   return (
-    <section id="creators-doo" className="relative bg-white px-6 py-24 sm:px-10 sm:py-32 lg:px-16">
+    <section id="creators-doo" className="relative bg-[#fafafa] px-6 py-24 sm:px-10 sm:py-32 lg:px-16">
       <div className="mx-auto grid max-w-[1360px] grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
         <div className="lg:col-span-7">
           <div className="mb-8 flex items-center gap-3">
@@ -282,7 +282,7 @@ export function SaasCreators({ onenter }: SectionProps) {
               >
                 <div>
                   <div
-                    className={`relative flex h-24 items-start justify-end overflow-hidden rounded-[20px] bg-gradient-to-tr p-2.5 ${index === 0 ? "from-sky-200 via-indigo-100 to-pink-100" : "from-indigo-200 via-purple-100 to-sky-100"}`}
+                    className={`relative flex h-24 items-start justify-end overflow-hidden rounded-[20px] bg-gradient-to-tr p-2.5 ${index === 0 ? "from-sky-200 via-slate-100 to-rose-100" : "from-amber-200 via-sky-100 to-rose-100"}`}
                   >
                     <button
                       type="button"
@@ -291,7 +291,7 @@ export function SaasCreators({ onenter }: SectionProps) {
                         setFollowed((current) => ({ ...current, [creator.id]: next }));
                         toast(next ? `Following ${creator.name}` : `Unfollowed`);
                       }}
-                      className="relative z-10 flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-[11px] font-extrabold tracking-[-0.035em] text-slate-900 shadow-sm"
+                      className="relative z-10 flex items-center gap-1.5 rounded-full bg-[#fafafa]/95 px-3 py-1.5 text-[11px] font-extrabold tracking-[-0.035em] text-slate-900 shadow-sm transition active:scale-95"
                     >
                       {followed[creator.id] ? "Following" : "Follow"}
                       {followed[creator.id] ? (
@@ -303,7 +303,7 @@ export function SaasCreators({ onenter }: SectionProps) {
                   </div>
                   <div className="relative z-10 -mt-8 flex items-end justify-between px-2">
                     <div
-                      className={`${index === 1 ? "conic-rainbow-ring" : "bg-white"} h-16 w-16 rounded-full p-1 shadow-sm`}
+                      className={`${index === 1 ? "conic-rainbow-ring" : "bg-[#fafafa]"} h-16 w-16 rounded-full p-1 shadow-sm`}
                     >
                       <img
                         src={creator.avatar}
@@ -377,14 +377,14 @@ export function SaasStudios({ onenter }: SectionProps) {
     <section id="workspace-subapps" className="obsidian-grid-bg relative overflow-hidden pt-0 pb-0 text-white">
       <div className="urbanist-frosted-blur pointer-events-none absolute inset-0 z-0" />
       <div
-        className="pointer-events-none absolute top-1/3 left-1/2 h-[320px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-20 transition-all duration-500"
+        className="pointer-events-none absolute top-1/3 left-1/2 h-[320px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-20 transition-opacity duration-500"
         style={{
           background: `radial-gradient(closest-side, ${["#8B5CF6", "#FB7185", "#38BDF8", "#10B981", "#3B82F6"][active]}, transparent)` }}
       />
       <div className="relative z-20 mb-8 w-full inset-x-0 top-0">
-        <div className="h-2 w-full bg-white" />
+        <div className="h-2 w-full bg-[#fafafa]" />
         <div className="flex w-full justify-center -mt-[1px]">
-          <SaddleTabBridge fillColor="#FFFFFF" className="h-[44px]">
+          <SaddleTabBridge fillColor="#fafafa" className="h-[44px]">
             <span className="text-xs font-extrabold tracking-tight text-slate-950">
               Native studios for every creator
             </span>
@@ -415,7 +415,7 @@ export function SaasStudios({ onenter }: SectionProps) {
                   style={{
                     zIndex: 30 - Math.abs(offset) * 5,
                     transform: `translateY(${Math.abs(offset) * 18}px) rotate(${offset * 5.5}deg) scale(${center ? 1.08 : 1 - Math.abs(offset) * 0.05})` }}
-                  className={`fan-clay group relative flex h-[270px] cursor-pointer flex-col justify-between overflow-hidden rounded-[20px] border bg-gradient-to-b p-5 text-left transition-all duration-500 ease-out sm:-mx-4 sm:h-[300px] ${card.gradient} ${center ? "border-white/60" : "border-white/30 opacity-85 hover:opacity-100"}`}
+                  className={`fan-clay group relative flex h-[270px] cursor-pointer flex-col justify-between overflow-hidden rounded-[20px] border bg-gradient-to-b p-5 text-left transition-[transform,opacity,border-color] duration-500 ease-out sm:-mx-4 sm:h-[300px] ${card.gradient} ${center ? "border-white/60" : "border-white/30 opacity-85 hover:opacity-100"}`}
                 >
                   <div className="fan-sheen pointer-events-none absolute inset-0" />
                   <div key={card.id} className="fan-swap relative z-10 flex h-full flex-col justify-between">
@@ -447,7 +447,7 @@ export function SaasStudios({ onenter }: SectionProps) {
                       <span className="text-[10px] font-extrabold tracking-wider text-white/90 uppercase">
                         {card.badge}
                       </span>
-                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-slate-950 shadow-md transition group-hover:scale-110">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#fafafa] text-slate-950 shadow-md transition group-hover:scale-110">
                         <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
                       </span>
                     </div>
@@ -461,7 +461,7 @@ export function SaasStudios({ onenter }: SectionProps) {
           <button
             type="button"
             onClick={onenter}
-            className="group flex items-center gap-3 rounded-full bg-white py-2 pr-2 pl-6 text-xs font-extrabold tracking-[-0.035em] text-slate-950 shadow-[0_14px_30px_rgba(255,255,255,0.2)] transition hover:scale-105 sm:text-sm"
+            className="group flex items-center gap-3 rounded-full bg-[#fafafa] py-2 pr-2 pl-6 text-xs font-extrabold tracking-[-0.035em] text-slate-950 shadow-[0_14px_30px_rgba(255,255,255,0.2)] transition hover:scale-105 active:scale-95 sm:text-sm"
           >
             <span>Open {saasstudios[active].name} studio</span>
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-white transition group-hover:bg-indigo-600">
@@ -479,7 +479,7 @@ export function SaasStudios({ onenter }: SectionProps) {
                   onMouseEnter={() => setActive(index)}
                   onClick={onenter}
                   aria-label={studio.name}
-                  className={`transition-all duration-300 hover:scale-110 ${active === index ? "scale-110 opacity-100" : "opacity-60 hover:opacity-100"}`}
+                  className={`transition-[transform,opacity] duration-300 hover:scale-110 ${active === index ? "scale-110 opacity-100" : "opacity-60 hover:opacity-100"}`}
                 >
                   <Studiomark app={studio.id as studiomarkid} className="h-11 w-11 sm:h-12 sm:w-12" />
                 </button>

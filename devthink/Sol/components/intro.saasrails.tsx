@@ -48,7 +48,7 @@ export function SaasFlowStrip({ scrollto }: Pick<SectionProps, "scrollto">) {
       <button
         type="button"
         onClick={() => scrollto("spatial-bento")}
-        className="mt-6 rounded-full bg-slate-950 px-7 py-3 text-xs font-extrabold tracking-[-0.035em] text-white transition hover:scale-105 sm:text-sm"
+        className="mt-6 rounded-full bg-slate-950 px-7 py-3 text-xs font-extrabold tracking-[-0.035em] text-white transition hover:scale-105 active:scale-95 sm:text-sm"
       >
         Enter Cadria
       </button>
@@ -87,7 +87,7 @@ export function SaasCadria() {
                   key={tab.id}
                   type="button"
                   onClick={() => setCategory(tab.id)}
-                  className={`rounded-xl px-3 py-1.5 text-xs font-semibold tracking-[-0.018em] transition ${category === tab.id ? "bg-white text-slate-950" : "bg-white/10 text-slate-200 hover:bg-white/20"}`}
+                  className={`rounded-xl px-3 py-1.5 text-xs font-semibold tracking-[-0.018em] transition active:scale-[0.97] ${category === tab.id ? "bg-[#fafafa] text-slate-950" : "bg-white/10 text-slate-200 hover:bg-white/20"}`}
                 >
                   {tab.label}
                 </button>
@@ -124,7 +124,7 @@ export function SaasCadria() {
               <button
                 type="button"
                 onClick={() => toast(`Playing ${hero.title}`)}
-                className="flex items-center gap-2 rounded-lg bg-white px-7 py-3 text-sm font-extrabold tracking-[-0.035em] text-slate-950 transition hover:bg-slate-200"
+                className="flex items-center gap-2 rounded-lg bg-[#fafafa] px-7 py-3 text-sm font-extrabold tracking-[-0.035em] text-slate-950 transition hover:bg-slate-200 active:scale-[0.97]"
               >
                 <Play className="h-4 w-4 fill-current" aria-hidden="true" />
                 <span>Play</span>
@@ -132,7 +132,7 @@ export function SaasCadria() {
               <button
                 type="button"
                 onClick={() => toast("Added to my list")}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-black/50 text-white transition hover:bg-white/20"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-black/50 text-white transition hover:bg-white/20 active:scale-90"
                 aria-label="Add to my list"
               >
                 <Plus className="h-4 w-4" aria-hidden="true" />
@@ -155,7 +155,7 @@ export function SaasCadria() {
               <button
                 type="button"
                 onClick={() => document.getElementById("cadria-rail")?.scrollBy({ left: -540, behavior: "smooth" })}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:bg-white/20"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:bg-white/20 active:scale-90"
                 aria-label="Scroll back"
               >
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" />
@@ -163,7 +163,7 @@ export function SaasCadria() {
               <button
                 type="button"
                 onClick={() => document.getElementById("cadria-rail")?.scrollBy({ left: 540, behavior: "smooth" })}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:bg-white/20"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:bg-white/20 active:scale-90"
                 aria-label="Scroll forward"
               >
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -221,7 +221,7 @@ export function SaasCadria() {
           <div className="absolute inset-0 flex flex-col items-start justify-between gap-6 p-8 sm:flex-row sm:items-center sm:p-10">
             <div>
               <div className="flex items-center gap-2.5">
-                <span className="rounded bg-white px-2 py-1 text-[11px] font-extrabold tracking-[-0.035em] text-[#E50914]">
+                <span className="rounded bg-[#fafafa] px-2 py-1 text-[11px] font-extrabold tracking-[-0.035em] text-[#E50914]">
                   LIVE
                 </span>
                 <span className="text-[11px] font-extrabold tracking-[0.2em] text-white">
@@ -235,7 +235,7 @@ export function SaasCadria() {
             <button
               type="button"
               onClick={() => toast("Playing live")}
-              className="flex shrink-0 items-center gap-2 rounded-lg bg-white px-7 py-3 text-sm font-extrabold tracking-[-0.035em] text-slate-950"
+              className="flex shrink-0 items-center gap-2 rounded-lg bg-[#fafafa] px-7 py-3 text-sm font-extrabold tracking-[-0.035em] text-slate-950 transition active:scale-[0.97]"
             >
               <Play className="h-4 w-4 fill-current" aria-hidden="true" />
               <span>Watch live</span>
@@ -305,7 +305,7 @@ export function SaasExplorerWall({ onenter }: Pick<SectionProps, "onenter">) {
                 key={reel.title}
                 onMouseEnter={() => setActive(index)}
                 onClick={() => toast(`Playing ${reel.title}`)}
-                className={`group relative cursor-pointer overflow-hidden rounded-[24px] border-0 bg-transparent p-0 transition-all duration-300 ${height} ${selected ? "z-20 scale-105 ring-4 ring-slate-950 shadow-2xl" : "opacity-90 shadow-lg hover:opacity-100"} ${index >= 4 ? "hidden sm:block" : ""} ${index === 6 ? "hidden lg:block" : ""}`}
+                className={`group relative cursor-pointer overflow-hidden rounded-[24px] border-0 bg-transparent p-0 transition-[transform,opacity,box-shadow] duration-300 ${height} ${selected ? "z-20 scale-105 ring-4 ring-slate-950 shadow-2xl" : "opacity-90 shadow-lg hover:opacity-100"} ${index >= 4 ? "hidden sm:block" : ""} ${index === 6 ? "hidden lg:block" : ""}`}
               >
                 <img
                   src={reel.image}
@@ -314,7 +314,7 @@ export function SaasExplorerWall({ onenter }: Pick<SectionProps, "onenter">) {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent" />
                 <div className="absolute top-2.5 left-2.5">
-                  <span className="rounded-full bg-white/90 px-2 py-0.5 text-[9px] font-extrabold tracking-[-0.035em] text-slate-950">
+                  <span className="rounded-full bg-[#fafafa]/90 px-2 py-0.5 text-[9px] font-extrabold tracking-[-0.035em] text-slate-950">
                     {reel.tag}
                   </span>
                 </div>
@@ -333,7 +333,7 @@ export function SaasExplorerWall({ onenter }: Pick<SectionProps, "onenter">) {
             <button
               type="button"
               onClick={onenter}
-              className="rounded-full bg-[#FF6B5B] px-7 py-3 text-xs font-extrabold tracking-[-0.035em] text-white shadow-[0_10px_24px_rgba(255,107,91,0.4)] transition hover:scale-105 hover:bg-[#ff5542] sm:text-sm"
+              className="rounded-full bg-[#FF6B5B] px-7 py-3 text-xs font-extrabold tracking-[-0.035em] text-white shadow-[0_10px_24px_rgba(255,107,91,0.4)] transition hover:scale-105 hover:bg-[#ff5542] active:scale-95 sm:text-sm"
             >
               Explore creations
             </button>
@@ -392,7 +392,7 @@ export function SaasDebonair() {
               <button
                 type="button"
                 onClick={() => toast("Playing No Ordinary Love")}
-                className="flex items-center gap-2 rounded-lg bg-white px-7 py-3 text-sm font-extrabold tracking-[-0.035em] text-slate-950 transition hover:bg-slate-200"
+                className="flex items-center gap-2 rounded-lg bg-[#fafafa] px-7 py-3 text-sm font-extrabold tracking-[-0.035em] text-slate-950 transition hover:bg-slate-200 active:scale-[0.97]"
               >
                 <Play className="h-4 w-4 fill-current" aria-hidden="true" />
                 <span>Play</span>
@@ -400,7 +400,7 @@ export function SaasDebonair() {
               <button
                 type="button"
                 onClick={() => toast("Opening the DAW")}
-                className="rounded-lg border border-white/25 bg-white/10 px-7 py-3 text-sm font-extrabold tracking-[-0.035em] text-white transition hover:bg-white/20"
+                className="rounded-lg border border-white/25 bg-white/10 px-7 py-3 text-sm font-extrabold tracking-[-0.035em] text-white transition hover:bg-white/20 active:scale-[0.97]"
               >
                 Open the DAW
               </button>
@@ -416,7 +416,7 @@ export function SaasDebonair() {
               <button
                 type="button"
                 onClick={() => document.getElementById("debonair-rail")?.scrollBy({ left: -480, behavior: "smooth" })}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:bg-white/20"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:bg-white/20 active:scale-90"
                 aria-label="Scroll back"
               >
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" />
@@ -424,7 +424,7 @@ export function SaasDebonair() {
               <button
                 type="button"
                 onClick={() => document.getElementById("debonair-rail")?.scrollBy({ left: 480, behavior: "smooth" })}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:bg-white/20"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:bg-white/20 active:scale-90"
                 aria-label="Scroll forward"
               >
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -492,7 +492,7 @@ export function SaasDoo({ onenter }: Pick<SectionProps, "onenter">) {
     toast("Doo replied");
   };
   return (
-    <section id="advisor-dark" className="relative overflow-hidden bg-white px-6 pt-0 pb-24 sm:px-10 sm:pb-32 lg:px-16">
+    <section id="advisor-dark" className="relative overflow-hidden bg-[#fafafa] px-6 pt-0 pb-24 sm:px-10 sm:pb-32 lg:px-16">
       <div className="relative z-20 mb-12 w-full inset-x-0 top-0">
         <div className="h-2 w-full bg-[#0A0B0E]" />
         <div className="flex w-full justify-center">

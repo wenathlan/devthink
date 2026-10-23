@@ -292,7 +292,7 @@ export function ScoopedCard({
   topRight,
   topRightWide = false,
   bottomRight,
-  surface = "bg-white",
+  surface = "bg-[#fafafa]",
   className = "" }: ScoopedCardProps) {
   const root = useRef<HTMLDivElement | null>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
