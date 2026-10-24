@@ -18,6 +18,7 @@ import { Link } from 'wouter';
 import { PageShell } from '../shell/Shell.tsx';
 import type { ExecResult, SandboxCreated, SandboxSpecPayload } from '../../api';
 import { apibase, apifetch, fetchhealth } from '../../api';
+import { label, labelfill } from '../../labels.ts';
 import type { SandboxState } from '../../sandbox.ts';
 import { bootSequence, cpudata, createSandboxState, dispatch, gpudata } from '../../sandbox.ts';
 import ApiBadge from '../widgets/console.apibadge.tsx';
@@ -73,9 +74,9 @@ export default function Console() {
 	const [running, setRunning] = useState(false);
 	const [busy, setBusy] = useState(false);
 	const [termstate, setTermstate] = useState<TerminalState>('halted');
-	const [prompt, setPrompt] = useState('root@saddle:~#');
+	const [prompt, setPrompt] = useState(labelfill('console.prompt', { host: 'saddle' }));
 	const [apimode, setApimode] = useState(false);
-	const [badgelabel, setBadgelabel] = useState('engine: local (no api)');
+	const [badgelabel, setBadgelabel] = useState(label('console.badge.local'));
 	const [declared, setDeclared] = useState<DeclaredSpec | null>(null);
 
 	/** api detection: probe the health endpoint once (1.5s budget). */
@@ -86,13 +87,18 @@ export default function Console() {
 			if (cancelled) return;
 			if (health !== null) {
 				setApimode(true);
-				setBadgelabel(`api connected (v${health.version}, uptime ${health.uptime}s)`);
+				setBadgelabel(
+					labelfill('console.badge.api', {
+						version: String(health.version),
+						uptime: String(health.uptime),
+					}),
+				);
 			} else {
-				setBadgelabel('engine: local (no api)');
+				setBadgelabel(label('console.badge.local'));
 			}
 		};
 		detect().catch(() => {
-			if (!cancelled) setBadgelabel('engine: local (no api)');
+			if (!cancelled) setBadgelabel(label('console.badge.local'));
 		});
 		return () => {
 			cancelled = true;
@@ -128,7 +134,7 @@ export default function Console() {
 				{ id, text: text.slice(0, displaycap), cls },
 				{
 					id: truncid,
-					text: `... output truncated for display (${text.length} bytes total)`,
+					text: labelfill('console.boot.truncated', { bytes: String(text.length) }),
 					cls: 'trunc',
 				},
 			]);
@@ -172,11 +178,16 @@ export default function Console() {
 		};
 		const state = createSandboxState(spec);
 		engineref.current = state;
-		setPrompt(`root@${state.hostname}:~#`);
+		setPrompt(labelfill('console.prompt', { host: state.hostname }));
 
 		logevent(
 			'vm:creating',
-			`${spec.model} x${state.vcpus} vcpus, ${spec.ramgb} gb ram, ${spec.gpu}`,
+			labelfill('console.event.creating', {
+				model: spec.model,
+				vcpus: String(state.vcpus),
+				ram: String(spec.ramgb),
+				gpu: spec.gpu,
+			}),
 			'lifecycle',
 		);
 
@@ -192,22 +203,23 @@ export default function Console() {
 					apiref.current = created.id;
 					logevent(
 						'sandbox:created',
-						`api sandbox ${created.id} state ${created.state}`,
+						labelfill('console.event.created', { id: created.id, state: created.state }),
 						'lifecycle',
 					);
 				}
 			} catch {
 				apiref.current = null;
-				logevent(
-					'sandbox:create-failed',
-					'api unreachable; falling back to the local engine',
-					'lifecycle',
-				);
+				logevent('sandbox:create-failed', label('console.event.createFailed'), 'lifecycle');
 			}
 		}
 
 		printrow(
-			`saddle sandbox booting (${spec.model}, ${state.vcpus} vcpus, ${spec.ramgb} gb, ${spec.gpu})`,
+			labelfill('console.boot.line', {
+				model: spec.model,
+				vcpus: String(state.vcpus),
+				ram: String(spec.ramgb),
+				gpu: spec.gpu,
+			}),
 			'boot',
 		);
 		const lines = bootSequence(spec.model, state.vcpus, spec.ramgb, spec.gpu);
@@ -215,9 +227,9 @@ export default function Console() {
 			printrow(bootline, 'boot');
 			await sleep(28 + Math.random() * 34);
 		}
-		printrow('ok: sandbox running. type "help" for the command list.', 'ok');
-		logevent('vm:created', `sandbox ${state.id} specs committed`, 'lifecycle');
-		logevent('vm:started', 'firecracker microvm 125 ms bring-up complete', 'lifecycle');
+		printrow(label('console.boot.ready'), 'ok');
+		logevent('vm:created', labelfill('console.event.specsCommitted', { id: state.id }), 'lifecycle');
+		logevent('vm:started', label('console.event.started'), 'lifecycle');
 
 		setRunning(true);
 		setTermstate('running');
@@ -226,7 +238,7 @@ export default function Console() {
 
 	const onstart = () => {
 		bootsandbox().catch(() => {
-			printrow('boot failed unexpectedly; check the console log', 'err');
+			printrow(label('console.boot.failed'), 'err');
 			setBusy(false);
 		});
 	};
@@ -260,23 +272,31 @@ export default function Console() {
 			result =
 				engineref.current !== null
 					? dispatch(rawcommand, engineref.current)
-					: { output: 'the sandbox is not running', exitCode: 1 };
+					: { output: label('console.boot.notrunning'), exitCode: 1 };
 			source = 'local';
 		}
 		if (result.output.length > 0) {
 			printrow(result.output, result.exitCode === 0 ? '' : 'err');
 		}
-		logevent('exec:completed', `"${rawcommand}" exit ${result.exitCode} via ${source}`, 'exec');
+		logevent(
+			'exec:completed',
+			labelfill('console.event.exec', {
+				command: rawcommand,
+				code: String(result.exitCode),
+				source,
+			}),
+			'exec',
+		);
 	};
 
 	/** snapshot: precopy stage 1 of 1, memory + disk. */
 	const onsnapshot = () => {
 		if (!running) return;
 		const snapid = `snap-${Math.random().toString(16).slice(2, 10)}`;
-		printrow(`snapshot ${snapid} created (memory + disk, precopy stage 1 of 1)`, 'ok');
+		printrow(labelfill('console.snapshot.created', { id: snapid }), 'ok');
 		logevent(
 			'snapshot:created',
-			`${snapid} for sandbox ${engineref.current?.id ?? 'n/a'}`,
+			labelfill('console.event.snapshot', { id: snapid, sandbox: engineref.current?.id ?? 'n/a' }),
 			'snapshot',
 		);
 	};
@@ -286,15 +306,19 @@ export default function Console() {
 		if (!running) return;
 		setRunning(false);
 		setTermstate('stopped');
-		printrow('sandbox stopped; snapshot-less teardown complete.', 'boot');
-		logevent('vm:stopped', `sandbox ${engineref.current?.id ?? 'n/a'} torn down`, 'lifecycle');
+		printrow(label('console.stop.done'), 'boot');
+		logevent(
+			'vm:stopped',
+			labelfill('console.event.stopped', { id: engineref.current?.id ?? 'n/a' }),
+			'lifecycle',
+		);
 		if (apiref.current !== null) {
 			const id = apiref.current;
 			try {
 				await apifetch(`/api/v1/sandboxes/${id}`, { method: 'DELETE' });
-				logevent('vm:deleted', `api sandbox ${id} destroyed`, 'lifecycle');
+				logevent('vm:deleted', labelfill('console.event.deleted', { id }), 'lifecycle');
 			} catch {
-				logevent('vm:delete-failed', `api sandbox ${id} unreachable`, 'lifecycle');
+				logevent('vm:delete-failed', labelfill('console.event.deleteFailed', { id }), 'lifecycle');
 			}
 			apiref.current = null;
 		}
@@ -302,17 +326,17 @@ export default function Console() {
 
 	return (
 		<PageShell
-			section="06 / 07"
-			label="Console"
-			title="The sandbox runs here."
-			intro="Pick the virtual hardware, boot the microvm and type: the same engine dispatcher answers locally in the browser and through the self-hosted node api. No account needed to run it; sign in to keep sandboxes."
+			section={label('console.shell.section')}
+			label={label('console.shell.label')}
+			title={label('console.shell.title')}
+			intro={label('console.shell.intro')}
 		>
 			<section className="content-section console-section">
 				<div className="content-section-heading">
-					<p className="eyebrow">LIVE SANDBOX / SPEC PANEL · TERMINAL · BUS EVENTS</p>
+					<p className="eyebrow">{label('console.eyebrow')}</p>
 					<div className="console-heading-side">
 						<Link href="/login" className="console-signin">
-							sign in
+							{label('console.signin')}
 						</Link>
 						<ApiBadge apion={apimode} label={badgelabel} />
 					</div>
@@ -320,20 +344,26 @@ export default function Console() {
 				<div className="sandbox-grid">
 					<section className="sandbox-panel" aria-labelledby="specstitle">
 						<h2 className="sandbox-panel-title" id="specstitle">
-							sandbox specs
+							{label('console.specs.title')}
 						</h2>
 						{declared !== null &&
 							(declared.base !== null || declared.os !== null || declared.arch !== null) && (
 								<p className="r3-declared-ribbon" role="note">
-									declared on the landing:{' '}
+									{label('console.declared.head')}
 									{[
-										declared.base !== null ? `base ${declared.base}` : null,
-										declared.os !== null ? `guest ${declared.os}` : null,
-										declared.arch !== null ? `arch ${declared.arch}` : null,
+										declared.base !== null
+											? labelfill('console.declared.base', { value: declared.base })
+											: null,
+										declared.os !== null
+											? labelfill('console.declared.guest', { value: declared.os })
+											: null,
+										declared.arch !== null
+											? labelfill('console.declared.arch', { value: declared.arch })
+											: null,
 									]
 										.filter(Boolean)
 										.join(' · ')}
-									{' — '}hardware identities stay caller choices below.
+									{label('console.declared.tail')}
 								</p>
 							)}
 						<SpecPanel spec={selection} onChange={onselectionchange} disabled={busy || running} />
@@ -343,9 +373,9 @@ export default function Console() {
 								type="button"
 								onClick={onstart}
 								disabled={busy || running}
-								aria-label="start the virtual sandbox"
+								aria-label={label('console.startAria')}
 							>
-								start sandbox
+								{label('console.start')}
 							</button>
 							<SnapshotControls running={running} onsnapshot={onsnapshot} onstop={onstop} />
 						</div>
@@ -359,7 +389,7 @@ export default function Console() {
 					/>
 					<EventsTimeline events={events} />
 				</div>
-				<p className="console-note">self-hosted node api · no serverless functions</p>
+				<p className="console-note">{label('console.note')}</p>
 			</section>
 		</PageShell>
 	);

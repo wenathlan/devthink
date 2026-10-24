@@ -1,6 +1,8 @@
 // Events timeline: faithful absorption of the console.html bus events aside —
 // the newest event on top, kind-tinted left borders and a 50 entry cap
 // maintained by the console page.
+import { label } from '../../labels.ts';
+
 /** timeline entry kinds tinting the left border. */
 export type SandboxEventKind = 'lifecycle' | 'exec' | 'snapshot';
 
@@ -25,16 +27,16 @@ export default function EventsTimeline({ events }: EventsTimelineProps) {
 	return (
 		<aside className="events-panel" aria-labelledby="eventstitle">
 			<h2 className="sandbox-panel-title" id="eventstitle">
-				bus events
+				{label('console.events.title')}
 			</h2>
 			<ol
 				className="events-list"
 				role="log"
 				aria-live="polite"
-				aria-label="sandbox lifecycle event timeline"
+				aria-label={label('console.events.aria')}
 			>
 				{events.length === 0 ? (
-					<li className="events-empty">no events yet; start the sandbox.</li>
+					<li className="events-empty">{label('console.events.empty')}</li>
 				) : (
 					events.map((event) => (
 						<li key={event.id} className={event.kind}>

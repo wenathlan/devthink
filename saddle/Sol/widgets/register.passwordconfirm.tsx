@@ -1,5 +1,7 @@
 // Password confirmation field: live match feedback — faithful absorption of
 // the register.html confirm field and register.js paintconfirm().
+import { label } from '../../labels.ts';
+
 type PasswordConfirmProps = {
 	password: string;
 	value: string;
@@ -21,10 +23,10 @@ export default function PasswordConfirm({
 	const empty = value.length === 0;
 	const match = password === value;
 	const hintclass = empty ? 'auth-hint' : match ? 'auth-hint ok' : 'auth-hint bad';
-	const hinttext = empty ? '\u00a0' : match ? 'passwords match.' : 'passwords do not match.';
+	const hinttext = empty ? '\u00a0' : match ? label('register.confirm.match') : label('register.confirm.mismatch');
 	return (
 		<div className="auth-field">
-			<label htmlFor="password2">confirm password</label>
+			<label htmlFor="password2">{label('register.confirm.label')}</label>
 			<input
 				className="auth-input"
 				id="password2"

@@ -14,6 +14,7 @@
 // asymmetric interior — the form (1.2fr) beside the trust rail (1fr) that
 // carries the real session facts; 44px inputs, the sand focus ring.
 import { Link } from 'wouter';
+import { label } from '../../labels.ts';
 import LoginForm from '../widgets/login.form.tsx';
 
 export * from '../widgets/login.form.tsx';
@@ -22,19 +23,27 @@ export * from '../widgets/login.form.tsx';
 export const loginpagedescription =
 	'saddle sign in: username and password only, session carried by the saddlesession cookie';
 
-/** the real session facts of the trust rail (the page's own absorbed copy). */
-const trustfacts = [
-	{
-		label: 'session',
-		body: 'the saddlesession cookie, httponly — nothing sensitive in localstorage.',
-	},
-	{ label: 'transport', body: 'the self-hosted node api · no serverless functions.' },
-	{ label: 'errors', body: 'generic on purpose — no user enumeration, no cause leak.' },
-	{
-		label: 'fallback',
-		body: 'no api at this base: accounts stay browser-local on the static edge.',
-	},
-];
+/** the real session facts of the trust rail: the labels ride the store. */
+function trustfacts(): { label: string; body: string }[] {
+	return [
+		{
+			label: label('login.trust.sessionLabel'),
+			body: label('login.trust.sessionBody'),
+		},
+		{
+			label: label('login.trust.transportLabel'),
+			body: label('login.trust.transportBody'),
+		},
+		{
+			label: label('login.trust.errorsLabel'),
+			body: label('login.trust.errorsBody'),
+		},
+		{
+			label: label('login.trust.fallbackLabel'),
+			body: label('login.trust.fallbackBody'),
+		},
+	];
+}
 
 /**
  * the sign-in page frame: brand lockup, the instrument card (form beside
@@ -47,22 +56,22 @@ export default function Login() {
 				<header className="auth-head">
 					{/* logo discipline: the wordmark speaks — the mark stays in the window title bar */}
 					<Link href="/" className="brand-lockup">
-						<span className="brand-wordmark">saddle</span>
+						<span className="brand-wordmark">{label('login.brand')}</span>
 					</Link>
-					<span className="auth-tagline">sign in</span>
+					<span className="auth-tagline">{label('login.tagline')}</span>
 				</header>
 
 				<main className="r3-authgrid">
 					<section className="auth-panel" aria-labelledby="formtitle">
 						<h2 className="auth-panel-title" id="formtitle">
-							account
+							{label('login.panel.title')}
 						</h2>
 						<LoginForm />
 					</section>
-					<aside className="r3-authtrust" aria-label="session facts">
-						<p className="eyebrow">the trust rail</p>
+					<aside className="r3-authtrust" aria-label={label('login.trust.aria')}>
+						<p className="eyebrow">{label('login.trust.eyebrow')}</p>
 						<ul className="r3-trustlist">
-							{trustfacts.map((fact) => (
+							{trustfacts().map((fact) => (
 								<li className="r3-trustfact" key={fact.label}>
 									<span className="r3-trustlabel">{fact.label}</span>
 									<span className="r3-trustbody">{fact.body}</span>
@@ -73,8 +82,8 @@ export default function Login() {
 				</main>
 
 				<footer className="auth-foot">
-					<span>session cookie: saddlesession (httponly)</span>
-					<span className="auth-foot-right">self-hosted node api · no serverless functions</span>
+					<span>{label('login.footer.cookie')}</span>
+					<span className="auth-foot-right">{label('login.footer.api')}</span>
 				</footer>
 			</div>
 		</div>

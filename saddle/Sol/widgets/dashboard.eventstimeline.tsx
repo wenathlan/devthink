@@ -3,6 +3,7 @@
 // prepend and a 50-entry cap; on the static edge it becomes the honest note.
 import { useEffect, useRef, useState } from 'react';
 import { apiresult, asarray, fmtdate, pick } from '../../dashboardlib.ts';
+import { label } from '../../labels.ts';
 
 type EventsTimelineProps = {
 	/** "api" polls the bus; "local" shows the static-edge note. */
@@ -101,10 +102,10 @@ export default function EventsTimeline({ mode, ready }: EventsTimelineProps) {
 				className="dash-timeline"
 				role="log"
 				aria-live="polite"
-				aria-label="mesh bus event timeline"
+				aria-label={label('dashboard.events.aria')}
 			>
 				<li className="dash-empty">
-					<span>bus events stream from the main node api; nothing to poll on the static edge.</span>
+					<span>{label('dashboard.events.localNote')}</span>
 				</li>
 			</ol>
 		);
@@ -116,9 +117,9 @@ export default function EventsTimeline({ mode, ready }: EventsTimelineProps) {
 				className="dash-timeline"
 				role="log"
 				aria-live="polite"
-				aria-label="mesh bus event timeline"
+				aria-label={label('dashboard.events.aria')}
 			>
-				{entries.length === 0 && <li className="dash-empty">waiting for events...</li>}
+				{entries.length === 0 && <li className="dash-empty">{label('dashboard.events.empty')}</li>}
 				{entries.map((entry) => (
 					<li key={entry.key} className={entry.kind}>
 						<span className="time">{entry.time} </span>
@@ -127,7 +128,7 @@ export default function EventsTimeline({ mode, ready }: EventsTimelineProps) {
 					</li>
 				))}
 			</ol>
-			<p className="dash-statusnote">polls /api/v1/events every 10 s while the tab is visible.</p>
+			<p className="dash-statusnote">{label('dashboard.events.pollNote')}</p>
 		</div>
 	);
 }

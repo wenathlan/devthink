@@ -1,8 +1,16 @@
 // Password strength meter: four segments, score 0-4 from length gates and
 // character classes — faithful absorption of the register.html meter and
 // register.js strength()/paintmeter().
-/** human labels for the strength scores 0-4. */
-export const strengthnames = ['-', 'weak', 'fair', 'good', 'strong'];
+import { label, labelfill, type LabelKey } from '../../labels.ts';
+
+/** the store keys of the strength names, score 0-4. */
+const strengthkeys: readonly LabelKey[] = [
+	'register.meter.strength0',
+	'register.meter.strength1',
+	'register.meter.strength2',
+	'register.meter.strength3',
+	'register.meter.strength4',
+];
 
 /**
  * strength score 0-4: length gates, character classes add.
@@ -55,16 +63,14 @@ export default function PasswordMeter({ password }: PasswordMeterProps) {
 				))}
 			</div>
 			<p className="auth-meterlabel" role="status" aria-live="polite">
-				strength: {strengthnames[score]}
+				{labelfill('register.meter.strengthLabel', { name: label(strengthkeys[score]) })}
 			</p>
 			<p className="auth-hint" id="passwordhint">
-				minimum 8 characters
+				{label('register.meter.minHint')}
 			</p>
 			<ul className="auth-rules" id="passwordrules">
-				<li className={lengthok ? 'ok' : undefined}>at least 8 characters</li>
-				<li className={classesok ? 'ok' : undefined}>
-					mix character classes (lower, upper, digit, symbol)
-				</li>
+				<li className={lengthok ? 'ok' : undefined}>{label('register.meter.ruleLength')}</li>
+				<li className={classesok ? 'ok' : undefined}>{label('register.meter.ruleClasses')}</li>
 			</ul>
 		</>
 	);

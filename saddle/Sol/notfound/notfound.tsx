@@ -9,24 +9,22 @@
 
 // # NotFound — the 404 of the saddle theme: a route the static edge never mapped.
 import { Link } from 'wouter';
+import { label } from '../../labels.ts';
 
 export default function NotFound() {
 	return (
 		<div className="site-frame notfound-page">
 			<main>
 				<section className="container notfound-frame">
-					<p className="eyebrow">404 · route not mapped</p>
-					<h1>This route never connected.</h1>
-					<p>
-						The static edge reached a path no saddle surface claims. The session stayed clean — head
-						back to the home page or open the agent browser.
-					</p>
+					<p className="eyebrow">{label('notfound.eyebrow')}</p>
+					<h1>{label('notfound.title')}</h1>
+					<p>{label('notfound.body')}</p>
 					<div className="notfound-actions">
 						<Link href="/" className="button button-primary">
-							Back home
+							{label('notfound.backHome')}
 						</Link>
 						<Link href="/agent-browser" className="button">
-							Open the agent browser
+							{label('notfound.agentBrowser')}
 						</Link>
 					</div>
 				</section>

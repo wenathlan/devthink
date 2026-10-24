@@ -3,6 +3,7 @@
 // api); on the static edge, the browser-local registry.
 import { useEffect, useState } from 'react';
 import { apiresult, asarray, chipclass, fmtdate, pick } from '../../dashboardlib.ts';
+import { label, labelfill } from '../../labels.ts';
 import { available, roleof } from '../../localauth.ts';
 
 type UsersTableProps = {
@@ -45,14 +46,14 @@ export default function UsersTable({ mode, reloadkey }: UsersTableProps) {
 					return;
 				}
 				if (!result.ok) {
-					seterror(`user table unavailable (status ${result.status}).`);
+					seterror(labelfill('dashboard.users.unavailable', { status: String(result.status) }));
 					return;
 				}
 				seterror('');
 				setusers(asarray(result.body, ['users', 'items', 'data', 'list']));
 			} catch {
 				if (!stopped) {
-					seterror('the users endpoint is unreachable.');
+					seterror(label('dashboard.users.unreachable'));
 				}
 			}
 		})();
@@ -71,35 +72,40 @@ export default function UsersTable({ mode, reloadkey }: UsersTableProps) {
 	return (
 		<div>
 			<div className="dash-field" style={{ maxWidth: '340px' }}>
-				<label htmlFor="usersearch">search by username</label>
+				<label htmlFor="usersearch">{label('dashboard.users.searchLabel')}</label>
 				<input
 					type="search"
 					id="usersearch"
-					placeholder="filter..."
-					aria-label="filter the users table by username"
+					placeholder={label('dashboard.users.searchPlaceholder')}
+					aria-label={label('dashboard.users.searchAria')}
 					value={query}
 					onChange={(event) => {
 						setquery(event.target.value);
 					}}
 				/>
 			</div>
-			<div className="dash-tablescroll" tabIndex={0} role="region" aria-label="users table">
+			<div
+				className="dash-tablescroll"
+				tabIndex={0}
+				role="region"
+				aria-label={label('dashboard.users.tableAria')}
+			>
 				<table>
 					{rows.length === 0 && error === '' && (
 						<caption className="dash-empty">
 							{needle === ''
 								? mode === 'local'
-									? 'no accounts registered in this browser.'
-									: 'no users registered yet.'
-								: `no users match "${needle}".`}
+									? label('dashboard.users.emptyLocal')
+									: label('dashboard.users.empty')
+								: labelfill('dashboard.users.noMatch', { needle })}
 						</caption>
 					)}
 					<thead>
 						<tr>
-							<th scope="col">username</th>
-							<th scope="col">role</th>
-							<th scope="col">last login</th>
-							<th scope="col">created</th>
+							<th scope="col">{label('dashboard.users.colUsername')}</th>
+							<th scope="col">{label('dashboard.users.colRole')}</th>
+							<th scope="col">{label('dashboard.users.colLastLogin')}</th>
+							<th scope="col">{label('dashboard.users.colCreated')}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -108,7 +114,7 @@ export default function UsersTable({ mode, reloadkey }: UsersTableProps) {
 									<tr key={String(name)}>
 										<td>{String(name)}</td>
 										<td>{roleof(String(name))}</td>
-										<td>browser-local</td>
+										<td>{label('dashboard.users.localCell')}</td>
 									</tr>
 								))
 							: rows.map((user) => {
@@ -132,9 +138,7 @@ export default function UsersTable({ mode, reloadkey }: UsersTableProps) {
 				</table>
 			</div>
 			{mode !== 'local' && (
-				<p className="dash-statusnote">
-					password hashes and salts never leave the api; this table renders account fields only.
-				</p>
+				<p className="dash-statusnote">{label('dashboard.users.hashesNote')}</p>
 			)}
 			{error !== '' && <p className="dash-panelerror">{error}</p>}
 		</div>

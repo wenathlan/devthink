@@ -3,6 +3,7 @@
 // edge, the honest note pointing to the user view.
 import { useEffect, useState } from 'react';
 import { apiresult, asarray, chipclass, fmtdate, pick } from '../../dashboardlib.ts';
+import { label, labelfill } from '../../labels.ts';
 
 type GlobalSandboxesTableProps = {
 	/** "api" lists /api/v1/admin/sandboxes; "local" shows the static note. */
@@ -27,14 +28,14 @@ export default function GlobalSandboxesTable({ mode, reloadkey }: GlobalSandboxe
 					return;
 				}
 				if (!result.ok) {
-					seterror(`sandbox table unavailable (status ${result.status}).`);
+					seterror(labelfill('dashboard.global.unavailable', { status: String(result.status) }));
 					return;
 				}
 				seterror('');
 				setitems(asarray(result.body, ['sandboxes', 'items', 'data', 'list']));
 			} catch {
 				if (!stopped) {
-					seterror('the sandboxes endpoint is unreachable.');
+					seterror(label('dashboard.global.unreachable'));
 				}
 			}
 		})();
@@ -44,12 +45,7 @@ export default function GlobalSandboxesTable({ mode, reloadkey }: GlobalSandboxe
 	}, [mode, reloadkey]);
 
 	if (mode === 'local') {
-		return (
-			<p className="dash-empty">
-				the global sandbox table lives on the main node api; the local engine shelf stays in the
-				user view.
-			</p>
-		);
+		return <p className="dash-empty">{label('dashboard.global.localNote')}</p>;
 	}
 
 	return (
@@ -58,20 +54,20 @@ export default function GlobalSandboxesTable({ mode, reloadkey }: GlobalSandboxe
 				className="dash-tablescroll"
 				tabIndex={0}
 				role="region"
-				aria-label="global sandboxes table"
+				aria-label={label('dashboard.global.tableAria')}
 			>
 				<table>
 					{items.length === 0 && error === '' && (
-						<caption className="dash-empty">no sandboxes on this node.</caption>
+						<caption className="dash-empty">{label('dashboard.global.empty')}</caption>
 					)}
 					<thead>
 						<tr>
-							<th scope="col">id</th>
-							<th scope="col">owner</th>
-							<th scope="col">state</th>
-							<th scope="col">spec</th>
-							<th scope="col">created</th>
-							<th scope="col">expires</th>
+							<th scope="col">{label('dashboard.global.colId')}</th>
+							<th scope="col">{label('dashboard.global.colOwner')}</th>
+							<th scope="col">{label('dashboard.global.colState')}</th>
+							<th scope="col">{label('dashboard.global.colSpec')}</th>
+							<th scope="col">{label('dashboard.global.colCreated')}</th>
+							<th scope="col">{label('dashboard.global.colExpires')}</th>
 						</tr>
 					</thead>
 					<tbody>

@@ -40,6 +40,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { SectionRail } from '../shell/Shell.tsx';
 import { type MediaSlot, mediaSlots } from '../../catalog';
+import { label, labelfill } from '../../labels.ts';
 import { specenvlimits } from '../../sandboxenvprofile.ts';
 import {
         SANDBOXARCHES,
@@ -80,81 +81,101 @@ function parsedraft(raw: string): Declaration {
         };
 }
 
-/** the chip groups of the hero: the three fixed vocabularies, verbatim. */
-const chipgroups: readonly { key: keyof Declaration; label: string; items: readonly string[] }[] = [
-        { key: 'base', label: 'base', items: SANDBOXBASES },
-        { key: 'os', label: 'guest', items: SANDBOXOSES },
-        { key: 'arch', label: 'arch', items: SANDBOXARCHES },
-];
+/** the chip groups of the hero: the three fixed vocabularies — the tokens
+ * are the declared data, the group labels ride the store. */
+function chipgroups(): readonly { key: keyof Declaration; label: string; items: readonly string[] }[] {
+        return [
+                { key: 'base', label: label('home.chips.base'), items: SANDBOXBASES },
+                { key: 'os', label: label('home.chips.guest'), items: SANDBOXOSES },
+                { key: 'arch', label: label('home.chips.arch'), items: SANDBOXARCHES },
+        ];
+}
 
-/** the surfaces ledger: one engine, three shells (the existing surfaces copy). */
-const surfaces = [
-        {
-                index: '01',
-                icon: Cable,
-                title: 'Agent Browser',
-                body: 'Capture and replay of human movement in reproducible sessions.',
-                href: '/agent-browser',
-        },
-        {
-                index: '02',
-                icon: Layers3,
-                title: 'Computational memory',
-                body: 'Repos and buckets enter the process without pretending latency does not exist.',
-                href: '/compute',
-        },
-        {
-                index: '03',
-                icon: Package,
-                title: 'Package surfaces',
-                body: 'The same machine can appear as a CLI, library, extension or app.',
-                href: '/integrations',
-        },
-];
+/** the surfaces ledger: one engine, three shells (the labels ride the store). */
+function surfaces(): readonly {
+        index: string;
+        icon: typeof Cable;
+        title: string;
+        body: string;
+        href: string;
+}[] {
+        return [
+                {
+                        index: '01',
+                        icon: Cable,
+                        title: label('home.surface.browser.title'),
+                        body: label('home.surface.browser.body'),
+                        href: '/agent-browser',
+                },
+                {
+                        index: '02',
+                        icon: Layers3,
+                        title: label('home.surface.compute.title'),
+                        body: label('home.surface.compute.body'),
+                        href: '/compute',
+                },
+                {
+                        index: '03',
+                        icon: Package,
+                        title: label('home.surface.packages.title'),
+                        body: label('home.surface.packages.body'),
+                        href: '/integrations',
+                },
+        ];
+}
 
 /** the 01–03 steps of the landing: declare → boot → keep. */
-const steps = [
-        {
-                index: '01',
-                title: 'declare',
-                body: 'Name the base, the guest and the arch — the chips are the declared vocabulary.',
-        },
-        {
-                index: '02',
-                title: 'boot',
-                body: 'The console boots the microvm: spec panel, terminal, bus events.',
-                href: '/console',
-        },
-        {
-                index: '03',
-                title: 'keep',
-                body: 'Snapshot the machine, or keep it on the dashboard shelf.',
-                href: '/dashboard',
-        },
-];
+function steps(): readonly { index: string; title: string; body: string; href?: string }[] {
+        return [
+                {
+                        index: '01',
+                        title: label('home.steps.declare.title'),
+                        body: label('home.steps.declare.body'),
+                },
+                {
+                        index: '02',
+                        title: label('home.steps.boot.title'),
+                        body: label('home.steps.boot.body'),
+                        href: '/console',
+                },
+                {
+                        index: '03',
+                        title: label('home.steps.keep.title'),
+                        body: label('home.steps.keep.body'),
+                        href: '/dashboard',
+                },
+        ];
+}
 
 /** the footer meta-quad: the four moves of the platform. */
-const quad = [
-        { index: '01', title: 'boot', body: 'the console: spec, terminal, bus events', href: '/console' },
-        {
-                index: '02',
-                title: 'operate',
-                body: 'the dashboard: shelf, account, admin',
-                href: '/dashboard',
-        },
-        {
-                index: '03',
-                title: 'chain',
-                body: 'compute: the provider farm and the bridge',
-                href: '/compute',
-        },
-        {
-                index: '04',
-                title: 'thesis',
-                body: 'architecture: repo → runner → pages',
-                href: '/architecture',
-        },
-];
+function quad(): readonly { index: string; title: string; body: string; href: string }[] {
+        return [
+                {
+                        index: '01',
+                        title: label('home.quad.boot.title'),
+                        body: label('home.quad.boot.body'),
+                        href: '/console',
+                },
+                {
+                        index: '02',
+                        title: label('home.quad.operate.title'),
+                        body: label('home.quad.operate.body'),
+                        href: '/dashboard',
+                },
+                {
+                        index: '03',
+                        title: label('home.quad.chain.title'),
+                        body: label('home.quad.chain.body'),
+                        href: '/compute',
+                },
+                {
+                        index: '04',
+                        title: label('home.quad.thesis.title'),
+                        body: label('home.quad.thesis.body'),
+                        href: '/architecture',
+                },
+        ];
+}
 
 /** the landing surface: the hero stage, the ledgers and the footer quad
  * (mounted only when the entry gate lets the flow through). */
@@ -172,14 +193,14 @@ function HomeSurface() {
         /** the live parse: chips and the typed draft share one source of truth. */
         const parsed = useMemo(() => parsedraft(draft), [draft]);
         const declaredbits = [
-                parsed.base !== null ? `base ${parsed.base}` : null,
-                parsed.os !== null ? `guest ${parsed.os}` : null,
-                parsed.arch !== null ? `arch ${parsed.arch}` : null,
+                parsed.base !== null ? labelfill('home.declared.base', { value: parsed.base }) : null,
+                parsed.os !== null ? labelfill('home.declared.guest', { value: parsed.os }) : null,
+                parsed.arch !== null ? labelfill('home.declared.arch', { value: parsed.arch }) : null,
         ].filter(Boolean);
         const declaredline =
                 declaredbits.length > 0
-                        ? `declared: ${declaredbits.join(' · ')} — the boot key hands it to the console`
-                        : 'nothing declared yet — tap a chip or type the words';
+                        ? labelfill('home.declared.line', { parts: declaredbits.join(' · ') })
+                        : label('home.declared.none');
 
         /** toggles one vocabulary token inside the draft line. */
         const toggletoken = (token: string) => {
@@ -212,11 +233,21 @@ function HomeSurface() {
                 return {
                         id,
                         featured: id === 'max',
-                        guests: `${SANDBOXOSES.length} guests`,
-                        arch: 'arm64 · amd64',
+                        guests: labelfill('home.matrix.guests', { n: String(SANDBOXOSES.length) }),
+                        arch: label('home.matrix.archValue'),
                         vgpu:
-                                row.maxvgpus === 0 ? 'none' : `${row.maxvgpus} ${row.maxvgpus === 1 ? 'slice' : 'slices'}`,
-                        ceiling: `${row.maxvcpus} vcpu · ${row.maxramgb} gb ram · ${row.maxdiskgb} gb disk · ${Math.round(row.maxtimeoutseconds / 60)} min`,
+                                row.maxvgpus === 0
+                                        ? label('home.matrix.vgpuNone')
+                                        : labelfill(
+                                                  row.maxvgpus === 1 ? 'home.matrix.vgpuOne' : 'home.matrix.vgpuMany',
+                                                  { n: String(row.maxvgpus) },
+                                          ),
+                        ceiling: labelfill('home.matrix.ceiling', {
+                                vcpus: String(row.maxvcpus),
+                                ram: String(row.maxramgb),
+                                disk: String(row.maxdiskgb),
+                                minutes: String(Math.round(row.maxtimeoutseconds / 60)),
+                        }),
                 };
         });
 
@@ -228,48 +259,47 @@ function HomeSurface() {
                                  * in the window title bar) */}
                                 <section className="r3-hero halftone" aria-labelledby="r3herotitle">
                                         <div className="r3-hero-inner">
-                                                <div className="r3-hero-copy">
-                                                        <p className="eyebrow r3-hero-eyebrow">
-                                                                <span className="status-dot" /> saddle · the sandbox runner of the family
-                                                        </p>
-                                                        <h1 className="r3-display" id="r3herotitle">
-                                                                Spin a<br />
-                                                                <em>sandbox</em>.
-                                                        </h1>
-                                                        <p className="r3-hero-lede">
-                                                                Declared, never assembled: one line names the base, the guest and the arch — the
-                                                                engine boots it and the result ships back as a package.
-                                                        </p>
-                                                        <form
-                                                                className="r3-prompt"
-                                                                aria-label="declare a sandbox and boot the console"
-                                                                onSubmit={(event) => {
-                                                                        event.preventDefault();
-                                                                        spin();
-                                                                }}
-                                                        >
-                                                                <label className="r3-prompt-label" htmlFor="r3declare">
-                                                                        declare
-                                                                </label>
-                                                                <input
-                                                                        id="r3declare"
-                                                                        className="r3-prompt-input"
-                                                                        type="text"
-                                                                        value={draft}
-                                                                        placeholder="spin a sandbox — try: omarchy · max · arm64"
-                                                                        spellCheck={false}
-                                                                        autoComplete="off"
-                                                                        onChange={(event) => setDraft(event.target.value)}
-                                                                />
-                                                                <button className="r3-prompt-key" type="submit">
-                                                                        boot <ArrowDownRight fontSize={15} aria-hidden="true" />
-                                                                </button>
-                                                        </form>
-                                                        <fieldset className="r3-chips">
-                                                                <legend className="r3-chips-legend">the declared vocabulary</legend>
-                                                                {chipgroups.map((group) => (
-                                                                        <div className="r3-chipgroup" key={group.key}>
-                                                                                <span className="r3-chipgroup-label">{group.label}</span>
+                                        <div className="r3-hero-copy">
+                                                <p className="eyebrow r3-hero-eyebrow">
+                                                        <span className="status-dot" /> {label('home.hero.eyebrow')}
+                                                </p>
+                                                <h1 className="r3-display" id="r3herotitle">
+                                                        {label('home.hero.titleLine1')}
+                                                        <br />
+                                                        <em>{label('home.hero.titleLine2')}</em>
+                                                </h1>
+                                                <p className="r3-hero-lede">{label('home.hero.lede')}</p>
+                                                <form
+                                                        className="r3-prompt"
+                                                        aria-label={label('home.hero.formAria')}
+                                                        onSubmit={(event) => {
+                                                                event.preventDefault();
+                                                                spin();
+                                                        }}
+                                                >
+                                                        <label className="r3-prompt-label" htmlFor="r3declare">
+                                                                {label('home.hero.declareLabel')}
+                                                        </label>
+                                                        <input
+                                                                id="r3declare"
+                                                                className="r3-prompt-input"
+                                                                type="text"
+                                                                value={draft}
+                                                                placeholder={label('home.hero.placeholder')}
+                                                                spellCheck={false}
+                                                                autoComplete="off"
+                                                                onChange={(event) => setDraft(event.target.value)}
+                                                        />
+                                                        <button className="r3-prompt-key" type="submit">
+                                                                {label('home.hero.boot')}
+                                                                <ArrowDownRight fontSize={15} aria-hidden="true" />
+                                                        </button>
+                                                </form>
+                                                <fieldset className="r3-chips">
+                                                        <legend className="r3-chips-legend">{label('home.hero.chipsLegend')}</legend>
+                                                        {chipgroups().map((group) => (
+                                                                <div className="r3-chipgroup" key={group.key}>
+                                                                        <span className="r3-chipgroup-label">{group.label}</span>
                                                                                 {group.items.map((token) => (
                                                                                         <button
                                                                                                 key={token}
@@ -288,19 +318,19 @@ function HomeSurface() {
                                                                 {declaredline}
                                                         </p>
                                                 </div>
-                                                <aside className="r3-matrix" aria-label="the sandbox matrix">
+                                                <aside className="r3-matrix" aria-label={label('home.matrix.aria')}>
                                                         <div className="r3-matrix-head">
-                                                                <span>the sandbox matrix</span>
-                                                                <span className="mono-label">three bases · bootstrap limits</span>
+                                                                <span>{label('home.matrix.title')}</span>
+                                                                <span className="mono-label">{label('home.matrix.subtitle')}</span>
                                                         </div>
                                                         <table className="r3-matrix-table">
                                                                 <thead>
                                                                         <tr>
-                                                                                <th scope="col">base</th>
-                                                                                <th scope="col">guests</th>
-                                                                                <th scope="col">arch</th>
-                                                                                <th scope="col">vgpu</th>
-                                                                                <th scope="col">ceiling</th>
+                                                                                <th scope="col">{label('home.matrix.colBase')}</th>
+                                                                                <th scope="col">{label('home.matrix.colGuests')}</th>
+                                                                                <th scope="col">{label('home.matrix.colArch')}</th>
+                                                                                <th scope="col">{label('home.matrix.colVgpu')}</th>
+                                                                                <th scope="col">{label('home.matrix.colCeiling')}</th>
                                                                         </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -316,8 +346,7 @@ function HomeSurface() {
                                                                 </tbody>
                                                         </table>
                                                         <p className="r3-matrix-note">
-                                                                the documented development bootstrap limits — the table is configuration
-                                                                (SADDLE_SPEC_LIMITS), never a product rule. guests: {SANDBOXOSES.join(' · ')}.
+                                                                {labelfill('home.matrix.note', { oses: SANDBOXOSES.join(' · ') })}
                                                         </p>
                                                 </aside>
                                         </div>
@@ -326,44 +355,55 @@ function HomeSurface() {
                                 <section className="metric-section container">
                                         <MetricStrip
                                                 metrics={[
-                                                        { value: '03', label: 'runtime bases', detail: 'lite / balanced / max' },
-                                                        { value: '70+', label: 'storage backends', detail: 'rclone-compatible' },
+                                                        {
+                                                                value: label('home.metric.bases.value'),
+                                                                label: label('home.metric.bases.label'),
+                                                                detail: label('home.metric.bases.detail'),
+                                                        },
+                                                        {
+                                                                value: label('home.metric.storage.value'),
+                                                                label: label('home.metric.storage.label'),
+                                                                detail: label('home.metric.storage.detail'),
+                                                        },
                                                         {
                                                                 value: String(SANDBOXFORMS.length).padStart(2, '0'),
-                                                                label: 'package forms',
-                                                                detail: 'runtime / full / published',
+                                                                label: label('home.metric.forms.label'),
+                                                                detail: label('home.metric.forms.detail'),
                                                         },
                                                 ]}
                                         />
                                 </section>
 
                                 <section id="thesis" className="thesis-section container section-with-rail">
-                                        <SectionRail number="01" label="the thesis" />
+                                        <SectionRail number="01" label={label('home.thesis.railLabel')} />
                                         <div className="thesis-content">
-                                                <p className="eyebrow">core principle / 01</p>
+                                                <p className="eyebrow">{label('home.thesis.eyebrow')}</p>
                                                 <h2 className="section-title">
-                                                        The bytes are already there. <span>The flag is the machine.</span>
+                                                        {label('home.thesis.title')}
+                                                        <span>{label('home.thesis.titleAccent')}</span>
                                                 </h2>
                                                 <div className="thesis-grid">
                                                         <p>
-                                                                RAM and disk are the same construct at the byte level. What changes is the usage
-                                                                flag: <b>keep</b> or <b>process</b>. Saddle makes that distinction explicit, then
-                                                                routes work to a runner that belongs to someone else.
+                                                                {label('home.thesis.bodyLead')}
+                                                                <b>{label('home.thesis.keep')}</b>
+                                                                {label('home.thesis.join')}
+                                                                <b>{label('home.thesis.process')}</b>
+                                                                {label('home.thesis.bodyTail')}
                                                         </p>
                                                         <div className="evidence-card">
                                                                 <div className="evidence-card-head">
                                                                         <Command fontSize={16} />
-                                                                        <span>INODE / DENTRY / FILE_OPS</span>
-                                                                        <span className="card-index">[01]</span>
+                                                                        <span>{label('home.evidence.head')}</span>
+                                                                        <span className="card-index">{label('home.evidence.index')}</span>
                                                                 </div>
                                                                 <div className="evidence-equation">
-                                                                        <span>storage</span>
-                                                                        <b>=</b>
-                                                                        <span>compute memory</span>
+                                                                        <span>{label('home.evidence.storage')}</span>
+                                                                        <b>{label('home.evidence.equals')}</b>
+                                                                        <span>{label('home.evidence.memory')}</span>
                                                                 </div>
                                                                 <div className="evidence-card-foot">
-                                                                        <span>difference</span>
-                                                                        <b>usage flag</b>
+                                                                        <span>{label('home.evidence.difference')}</span>
+                                                                        <b>{label('home.evidence.usageFlag')}</b>
                                                                 </div>
                                                         </div>
                                                 </div>
@@ -372,15 +412,16 @@ function HomeSurface() {
 
                                 <section className="runtime-section">
                                         <div className="container section-with-rail">
-                                                <SectionRail number="02" label="the chain" />
+                                                <SectionRail number="02" label={label('home.chain.railLabel')} />
                                                 <div className="runtime-content">
                                                         <div className="section-heading-row">
                                                                 <div>
-                                                                        <p className="eyebrow">REPO → RUNNER → SURFACE</p>
-                                                                        <h2 className="section-title">A repo can behave like a CPU.</h2>
+                                                                        <p className="eyebrow">{label('home.chain.eyebrow')}</p>
+                                                                        <h2 className="section-title">{label('home.chain.title')}</h2>
                                                                 </div>
                                                                 <Link href="/architecture" className="small-arrow-link">
-                                                                        Open architecture <MoveRight fontSize={15} />
+                                                                        {label('home.chain.archLink')}
+                                                                        <MoveRight fontSize={15} />
                                                                 </Link>
                                                         </div>
                                                         <div className="runtime-layout">
@@ -390,7 +431,7 @@ function HomeSurface() {
                                                                                 <figure
                                                                                         className="media-area"
                                                                                         style={{ aspectRatio: runtimeSlot.ratio }}
-                                                                                        aria-label="media area"
+                                                                                        aria-label={label('home.media.area')}
                                                                                 >
                                                                                         <figcaption>
                                                                                                 <span>{runtimeSlot.label}</span>
@@ -398,7 +439,7 @@ function HomeSurface() {
                                                                                         </figcaption>
                                                                                 </figure>
                                                                         )}
-                                                                        <span>FIG. 02 / REMOTE RUNTIME MAP</span>
+                                                                        <span>{label('home.chain.fig')}</span>
                                                                 </div>
                                                         </div>
                                                 </div>
@@ -406,21 +447,25 @@ function HomeSurface() {
                                 </section>
 
                                 <section className="surfaces-section container section-with-rail">
-                                        <SectionRail number="03" label="the surfaces" />
+                                        <SectionRail number="03" label={label('home.surfaces.railLabel')} />
                                         <div className="surfaces-content">
                                                 <div className="section-heading-row">
                                                         <div>
-                                                                <p className="eyebrow">ONE ENGINE / MANY SHELLS</p>
+                                                                <p className="eyebrow">{label('home.surfaces.eyebrow')}</p>
                                                                 <h2 className="section-title">
-                                                                        Use the same machine
+                                                                        {label('home.surfaces.titleLine1')}
                                                                         <br />
-                                                                        where your work already lives.
+                                                                        {label('home.surfaces.titleLine2')}
                                                                 </h2>
                                                         </div>
-                                                        <span className="mono-label">{`available / ${String(surfaces.length).padStart(2, '0')}`}</span>
+                                                        <span className="mono-label">
+                                                                {labelfill('home.surfaces.available', {
+                                                                        n: String(surfaces().length).padStart(2, '0'),
+                                                                })}
+                                                        </span>
                                                 </div>
                                                 <div className="surface-list">
-                                                        {surfaces.map((surface) => {
+                                                        {surfaces().map((surface) => {
                                                                 const Icon = surface.icon;
                                                                 return (
                                                                         <Link className="surface-row" href={surface.href} key={surface.title}>
@@ -438,15 +483,16 @@ function HomeSurface() {
                                         </div>
                                 </section>
 
-                                <section className="r3-steps container" aria-label="the first three moves">
-                                        {steps.map((step) => (
+                                <section className="r3-steps container" aria-label={label('home.steps.aria')}>
+                                        {steps().map((step) => (
                                                 <div className="r3-step" key={step.index}>
                                                         <span className="r3-step-index">{step.index}</span>
                                                         <h3 className="r3-step-title">{step.title}</h3>
                                                         <p className="r3-step-body">{step.body}</p>
                                                         {step.href && (
                                                                 <Link className="r3-step-link" href={step.href}>
-                                                                        open the {step.title} <ArrowUpRight fontSize={14} aria-hidden="true" />
+                                                                        {labelfill('home.steps.link', { title: step.title })}
+                                                                        <ArrowUpRight fontSize={14} aria-hidden="true" />
                                                                 </Link>
                                                         )}
                                                 </div>
@@ -457,7 +503,7 @@ function HomeSurface() {
                         {/* the footer meta-quad: the four moves flush to the window floor */}
                         <footer className="r3-quad">
                                 <div className="r3-quad-grid container">
-                                        {quad.map((cell) => (
+                                        {quad().map((cell) => (
                                                 <Link className="r3-quad-cell" href={cell.href} key={cell.index}>
                                                         <span className="r3-quad-index">{cell.index}</span>
                                                         <span className="r3-quad-title">{cell.title}</span>
@@ -466,8 +512,8 @@ function HomeSurface() {
                                         ))}
                                 </div>
                                 <div className="site-footer container">
-                                        <span>© 2026 Saddle / distributed by design</span>
-                                        <span className="mono-label">storage == compute</span>
+                                        <span>{label('home.footer.copyright')}</span>
+                                        <span className="mono-label">{label('home.footer.mono')}</span>
                                 </div>
                         </footer>
                 </div>

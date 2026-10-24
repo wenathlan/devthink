@@ -4,6 +4,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { apibase, apifetch, apistatustext } from '../../api.ts';
+import { label } from '../../labels.ts';
 
 /** fallback target when no ?next= parameter is present. */
 const defaulttarget = 'dashboard';
@@ -67,7 +68,7 @@ export default function LoginForm() {
 			if (cancelled) return;
 			if (!apianswers) {
 				setApimode('local');
-				setStatusline('accounts: local browser (static edge, no api)');
+				setStatusline(label('login.status.local'));
 			} else {
 				setApimode('remote');
 			}
@@ -96,7 +97,7 @@ export default function LoginForm() {
 		if (trimmedusername.length === 0 || password.length === 0) {
 			setUsernameinvalid(trimmedusername.length === 0);
 			setPasswordinvalid(password.length === 0);
-			showerror('enter both the username and the password.');
+			showerror(label('login.error.bothFields'));
 			return;
 		}
 		setUsernameinvalid(false);
@@ -111,7 +112,7 @@ export default function LoginForm() {
 				navigate(`/${safenext()}`);
 			} catch (loginerror) {
 				const message =
-					loginerror instanceof Error ? loginerror.message : 'invalid username or password.';
+					loginerror instanceof Error ? loginerror.message : label('login.error.invalid');
 				showerror(message);
 				setPending(false);
 			}
@@ -128,15 +129,13 @@ export default function LoginForm() {
 				return;
 			}
 			if (response.status === 404) {
-				showerror(
-					'auth is not available at this api target; set ?api=<main node url> and try again.',
-				);
+				showerror(label('login.error.noAuth'));
 			} else {
 				/* generic message on purpose: no user enumeration, no cause leak */
-				showerror('invalid username or password.');
+				showerror(label('login.error.invalid'));
 			}
 		} catch {
-			showerror('the api is unreachable; check the api target or try again later.');
+			showerror(label('login.error.unreachable'));
 		}
 		setPending(false);
 	};
@@ -144,7 +143,7 @@ export default function LoginForm() {
 	return (
 		<form className="auth-form" noValidate onSubmit={onsubmit}>
 			<div className="auth-field">
-				<label htmlFor="username">username</label>
+				<label htmlFor="username">{label('login.field.username')}</label>
 				<input
 					ref={usernameref}
 					className="auth-input"
@@ -161,11 +160,11 @@ export default function LoginForm() {
 					onChange={(event) => setUsername(event.target.value)}
 				/>
 				<p className="auth-hint" id="usernamehint">
-					username only; this project has no e-mail field.
+					{label('login.hint.username')}
 				</p>
 			</div>
 			<div className="auth-field">
-				<label htmlFor="password">password</label>
+				<label htmlFor="password">{label('login.field.password')}</label>
 				<input
 					className="auth-input"
 					id="password"
@@ -189,13 +188,13 @@ export default function LoginForm() {
 				disabled={pending}
 				aria-busy={pending ? 'true' : undefined}
 			>
-				{pending ? 'signing in...' : 'sign in'}
+				{pending ? label('login.submitPending') : label('login.submit')}
 			</button>
 			<p className="auth-statusline">{statusline}</p>
 			<p className="auth-statusline">
-				no account? <Link href="/register">create one</Link>
+				{label('login.noAccount')} <Link href="/register">{label('login.link.create')}</Link>
 				<span aria-hidden="true"> · </span>
-				<Link href="/console">back to the sandbox</Link>
+				<Link href="/console">{label('login.link.backConsole')}</Link>
 			</p>
 		</form>
 	);

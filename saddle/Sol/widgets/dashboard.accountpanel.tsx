@@ -7,6 +7,7 @@
 import { useRef, useState } from 'react';
 import type { SessionUser } from '../../dashboardlib.ts';
 import { fmtdate } from '../../dashboardlib.ts';
+import { label, labelfill } from '../../labels.ts';
 import { adminusers, exportaccounts, importaccounts } from '../../localauth.ts';
 
 /** the local browser session normalized at boot (defensive read). */
@@ -39,11 +40,11 @@ export default function AccountPanel({ mode, user, local }: AccountPanelProps) {
 			const count = await exportaccounts();
 			setstatus(
 				count > 0
-					? `backup downloaded (${count} account(s)). keep the file safe; it restores every account after a full browser wipe.`
-					: 'no accounts to back up yet.',
+					? labelfill('dashboard.account.backupDone', { count: String(count) })
+					: label('dashboard.account.backupEmpty'),
 			);
 		} catch {
-			setstatus('the backup download failed.');
+			setstatus(label('dashboard.account.backupFailed'));
 		}
 		setbusy(false);
 	}
@@ -56,12 +57,13 @@ export default function AccountPanel({ mode, user, local }: AccountPanelProps) {
 			const imported = await importaccounts(file);
 			setstatus(
 				imported > 0
-					? `${imported} account(s) restored from the backup.`
-					: 'no new accounts in that backup (already present or invalid).',
+					? labelfill('dashboard.account.restoreDone', { count: String(imported) })
+					: label('dashboard.account.restoreEmpty'),
 			);
 			window.location.reload();
 		} catch (error) {
-			const message = error instanceof Error && error.message ? error.message : 'import failed.';
+			const message =
+				error instanceof Error && error.message ? error.message : label('dashboard.account.importFailed');
 			setstatus(message);
 			setbusy(false);
 		}
@@ -72,25 +74,26 @@ export default function AccountPanel({ mode, user, local }: AccountPanelProps) {
 		return (
 			<div>
 				<dl className="dash-kv">
-					<dt>username</dt>
+					<dt>{label('dashboard.account.username')}</dt>
 					<dd>{local.user}</dd>
-					<dt>role</dt>
-					<dd>{isadmin ? `admin (CODEOWNERS allowlist: ${adminusers.join(', ')})` : 'user'}</dd>
-					<dt>mode</dt>
+					<dt>{label('dashboard.account.role')}</dt>
 					<dd>
-						local browser account (static edge; pbkdf2 in localstorage, never synced; the built-in
-						admin seed survives storage resets)
+						{isadmin
+							? labelfill('dashboard.account.adminRole', { list: adminusers.join(', ') })
+							: local.role}
 					</dd>
-					<dt>signed in</dt>
+					<dt>{label('dashboard.account.mode')}</dt>
+					<dd>{label('dashboard.account.modeLocal')}</dd>
+					<dt>{label('dashboard.account.signedIn')}</dt>
 					<dd>{fmtdate(new Date(local.issuedat).toISOString())}</dd>
-					<dt>expires</dt>
+					<dt>{label('dashboard.account.expires')}</dt>
 					<dd>{fmtdate(new Date(local.expiresat).toISOString())}</dd>
 				</dl>
 				{/* account backup controls: the keyfile covers a full wipe (the
             IndexedDB mirror already covers partial clears). */}
 				<div className="dash-actions">
 					<button type="button" className="dash-btn" disabled={busy} onClick={() => void backup()}>
-						backup accounts
+						{label('dashboard.account.backup')}
 					</button>
 					<button
 						type="button"
@@ -100,7 +103,7 @@ export default function AccountPanel({ mode, user, local }: AccountPanelProps) {
 							fileref.current?.click();
 						}}
 					>
-						restore accounts
+						{label('dashboard.account.restore')}
 					</button>
 				</div>
 				{status !== '' && (
@@ -129,19 +132,19 @@ export default function AccountPanel({ mode, user, local }: AccountPanelProps) {
 	const account = user;
 	return (
 		<dl className="dash-kv">
-			<dt>username</dt>
+			<dt>{label('dashboard.account.username')}</dt>
 			<dd>{account === null ? <span className="dash-skeleton" /> : account.username}</dd>
-			<dt>role</dt>
+			<dt>{label('dashboard.account.role')}</dt>
 			<dd>{account === null ? <span className="dash-skeleton" /> : account.role}</dd>
-			<dt>created</dt>
+			<dt>{label('dashboard.account.created')}</dt>
 			<dd>{account === null ? <span className="dash-skeleton" /> : fmtdate(account.createdat)}</dd>
-			<dt>last login</dt>
+			<dt>{label('dashboard.account.lastLogin')}</dt>
 			<dd>
 				{account === null ? <span className="dash-skeleton" /> : fmtdate(account.lastloginat)}
 			</dd>
 			{account?.id !== null && account?.id !== undefined && (
 				<>
-					<dt>id</dt>
+					<dt>{label('dashboard.account.id')}</dt>
 					<dd>{String(account.id)}</dd>
 				</>
 			)}

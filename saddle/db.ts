@@ -8,8 +8,8 @@
  * table. the file is created with mode 0o600 right after open because it
  * carries password hashes and session token hashes.
  *
- * contexts (12): dbopen, filemode, rowtypes, executeschema, users,
- * sessions, nodes, sandboxes, sandboxfiles, events, audit, counts.
+ * contexts (13): dbopen, filemode, rowtypes, executeschema, users,
+ * sessions, nodes, sandboxes, sandboxfiles, events, audit, labels, counts.
  *
  * rules: lowercase identifiers, english jsdoc in third person, no emoji,
  * try/catch on every fallible path with the standardized {code,message}
@@ -22,6 +22,7 @@ import { DatabaseSync } from 'node:sqlite';
 import type { StatementSync } from 'node:sqlite';
 import { resolve } from 'node:path';
 import process from 'node:process';
+import { LABEL_REVISION, labelmanifest } from './labels.ts';
 
 /* ------------------------------------------------------------------ */
 /* context: rowtypes — the typed sqlite projections                    */
@@ -131,6 +132,18 @@ export type OnboardingStateRow = {
 
 /** the boolean projection of the onboarding flags the gateway serves. */
 export type OnboardingFlags = { introseen: boolean; onboardingseen: boolean };
+
+/** one labels row: the interface copy store. the id is the page.widget.key
+ * path, the text rides the english source of truth (labels.ts), and the
+ * translated flag protects a runtime translation from the seed overwrite.
+ * the shape mirrors the browser seed rows in labels.ts one to one. */
+export type LabelRow = {
+  id: string;
+  text: string;
+  revision: number;
+  updatedAt: string;
+  translated?: boolean;
+};
 
 /** the standardized database error: the machine readable code plus the
  * non-enumerable internal and publicmessage properties set by dberror. */
@@ -274,6 +287,7 @@ function dberror(code: string, message: string): DbError {
     'db-event-failed': 'database error',
     'db-audit-failed': 'database error',
     'db-onboarding-failed': 'database error',
+    'db-label-failed': 'database error',
   };
   const publicmessage = publicmessages[code] ?? code;
   const err = Object.assign(new Error(publicmessage), { code });
@@ -339,11 +353,12 @@ export function sandboxquota(): number {
 /* ------------------------------------------------------------------ */
 
 /**
- * the v7 schema plus the v10 sandboxfiles workspace table and the
- * onboarding_states entry-flow table: users, sessions, nodes, sandboxes
- * (with the v10 files/bytes usage columns), sandboxfiles, events, audit
- * and onboarding_states. every table is created with "if not exists" so
- * boots are idempotent and the same statements run against any node role.
+ * the v7 schema plus the v10 sandboxfiles workspace table, the
+ * onboarding_states entry-flow table and the labels copy store: users,
+ * sessions, nodes, sandboxes (with the v10 files/bytes usage columns),
+ * sandboxfiles, events, audit, onboarding_states and labels. every table
+ * is created with "if not exists" so boots are idempotent and the same
+ * statements run against any node role.
  */
 const schema = `
 create table if not exists users (
@@ -420,6 +435,13 @@ create table if not exists onboarding_states (
   introseen integer not null default 0,
   onboardingseen integer not null default 0,
   updatedAt text not null default (datetime('now'))
+);
+create table if not exists labels (
+  id text primary key,
+  text text not null,
+  revision integer not null default 0,
+  updatedAt text not null default (datetime('now')),
+  translated integer not null default 0
 );
 `;
 
@@ -1197,6 +1219,121 @@ export function setonboardingstage(
 }
 
 /* ------------------------------------------------------------------ */
+/* context: labels — the interface copy store                          */
+/* ------------------------------------------------------------------ */
+
+/** projects one raw labels row into the stored label projection. */
+function labelrow(row: {
+  id: string;
+  text: string;
+  revision: number;
+  updatedAt: string;
+  translated: number;
+}): LabelRow {
+  return {
+    id: row.id,
+    text: row.text,
+    revision: row.revision,
+    updatedAt: row.updatedAt,
+    ...(row.translated === 1 ? { translated: true } : {}),
+  };
+}
+
+/**
+ * writes one label row (idempotent upsert; the caller owns the revision).
+ *
+ * @param id the page.widget.key path of the label.
+ * @param text the surface text.
+ * @param revision the manifest revision the text carries.
+ * @param translated true when the row carries a runtime translation.
+ * @returns the stored label projection.
+ */
+export function savelabel(id: string, text: string, revision: number, translated = false): LabelRow {
+  try {
+    stmt(
+      `insert into labels (id, text, revision, updatedAt, translated) values (?, ?, ?, datetime('now'), ?)
+       on conflict(id) do update set
+         text = excluded.text,
+         revision = excluded.revision,
+         updatedAt = excluded.updatedAt,
+         translated = excluded.translated`,
+    ).run(id, text, revision, translated ? 1 : 0);
+    const row = stmt('select id, text, revision, updatedAt, translated from labels where id = ?').get(
+      id,
+    ) as { id: string; text: string; revision: number; updatedAt: string; translated: number } | undefined;
+    if (row === undefined) {
+      throw dberror('db-label-failed', `label "${id}" write did not land`);
+    }
+    return labelrow(row);
+  } catch (error) {
+    if (error instanceof Error && (error as DbError).code === 'db-label-failed') {
+      throw error;
+    }
+    throw dberror('db-label-failed', error instanceof Error ? error.message : String(error));
+  }
+}
+
+/**
+ * reads one label row by its page.widget.key path.
+ *
+ * @param id the label id.
+ * @returns the row or null when absent.
+ */
+export function readlabel(id: string): LabelRow | null {
+  try {
+    const row = stmt('select id, text, revision, updatedAt, translated from labels where id = ?').get(
+      id,
+    ) as { id: string; text: string; revision: number; updatedAt: string; translated: number } | undefined;
+    return row === undefined ? null : labelrow(row);
+  } catch (error) {
+    throw dberror('db-label-failed', error instanceof Error ? error.message : String(error));
+  }
+}
+
+/**
+ * reads every label row of the store ordered by id.
+ *
+ * @returns the label rows.
+ */
+export function readalllabels(): LabelRow[] {
+  try {
+    return (
+      stmt('select id, text, revision, updatedAt, translated from labels order by id asc')
+        .all() as { id: string; text: string; revision: number; updatedAt: string; translated: number }[]
+    ).map(labelrow);
+  } catch (error) {
+    throw dberror('db-label-failed', error instanceof Error ? error.message : String(error));
+  }
+}
+
+/**
+ * ingests the english manifest of labels.ts into the labels table — the
+ * db-side twin of the browser seedlabels: idempotent, the changed rows
+ * refresh, and the translated rows stay protected from the overwrite.
+ *
+ * @returns the seeded and protected row counts.
+ */
+export async function seedlabelrows(): Promise<{ seeded: number; protected: number }> {
+  try {
+    executeschema();
+    const rows = new Map(readalllabels().map((row) => [row.id, row]));
+    let seeded = 0;
+    let saved = 0;
+    for (const [id, text] of Object.entries(labelmanifest)) {
+      const row = rows.get(id);
+      if (row === undefined || (row.translated !== true && row.text !== text)) {
+        savelabel(id, text, LABEL_REVISION, row?.translated ?? false);
+        seeded += 1;
+      }
+      saved += 1;
+    }
+    return { seeded, protected: saved - seeded };
+  } catch (error) {
+    throw dberror('db-label-failed', error instanceof Error ? error.message : String(error));
+  }
+}
+
+/* ------------------------------------------------------------------ */
 /* context: counts and health                                          */
 /* ------------------------------------------------------------------ */
 
@@ -1311,6 +1448,10 @@ const store = {
   listaudit,
   getonboardingstate,
   setonboardingstage,
+  savelabel,
+  readlabel,
+  readalllabels,
+  seedlabelrows,
   counts,
   healthcheck,
   executeschema,
@@ -1332,5 +1473,11 @@ const store = {
  * tables in place; a failure here is fatal by design (bad path, locked
  * file) and surfaces as a boot error instead of a runtime 500. */
 executeschema();
+
+/* the copy law rides the db boot: the label seed ingests the english
+ * manifest of labels.ts beside the schema (fire and forget with the
+ * catch — the interface strings land in the store, the translated rows
+ * protected from the overwrite). */
+void seedlabelrows().catch(() => {});
 
 export default store;

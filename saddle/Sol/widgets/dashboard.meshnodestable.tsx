@@ -3,6 +3,7 @@
 // browser latency probe; on the static edge, the "this browser" row.
 import { useEffect, useState } from 'react';
 import { apiresult, asarray, chipclass, fmtdate, pick } from '../../dashboardlib.ts';
+import { label, labelfill } from '../../labels.ts';
 
 type MeshNodesTableProps = {
 	/** "api" lists /api/v1/admin/nodes; "local" renders the browser row. */
@@ -27,7 +28,9 @@ async function meshping(url: string): Promise<string> {
 		});
 		if (post.ok) {
 			const rtt = pick(post.body, ['rttMs', 'rtt', 'latencyMs', 'latency'], null);
-			return rtt !== null ? `pong ${String(rtt)} ms (mesh)` : 'pong (mesh)';
+			return rtt !== null
+				? labelfill('dashboard.mesh.pongMesh', { rtt: String(rtt) })
+				: label('dashboard.mesh.pongMeshPlain');
 		}
 	} catch {
 		/* fall through to the client probe */
@@ -43,9 +46,11 @@ async function meshping(url: string): Promise<string> {
 			signal: controller.signal,
 		});
 		clearTimeout(timer);
-		return `pong ~${Math.max(1, Math.round(performance.now() - started))} ms (client probe)`;
+		return labelfill('dashboard.mesh.pongProbe', {
+			ms: String(Math.max(1, Math.round(performance.now() - started))),
+		});
 	} catch {
-		return 'unreachable';
+		return label('dashboard.mesh.unreachable');
 	}
 }
 
@@ -67,14 +72,14 @@ export default function MeshNodesTable({ mode, reloadkey }: MeshNodesTableProps)
 				}
 				if (!result.ok) {
 					setnodes([]);
-					seterror(`node table unavailable (status ${result.status}).`);
+					seterror(labelfill('dashboard.mesh.nodeUnavailable', { status: String(result.status) }));
 					return;
 				}
 				seterror('');
 				setnodes(asarray(result.body, ['nodes', 'items', 'data', 'list']));
 			} catch {
 				if (!stopped) {
-					seterror('the nodes endpoint is unreachable.');
+					seterror(label('dashboard.mesh.nodesUnreachable'));
 				}
 			}
 		})();
@@ -85,7 +90,10 @@ export default function MeshNodesTable({ mode, reloadkey }: MeshNodesTableProps)
 
 	/** runs one ping and paints the result cell beside the button. */
 	function runping(url: string) {
-		setpings((previous) => ({ ...previous, [url]: { busy: true, result: 'pinging...' } }));
+		setpings((previous) => ({
+			...previous,
+			[url]: { busy: true, result: label('dashboard.mesh.pinging') },
+		}));
 		void meshping(url).then((result) => {
 			setpings((previous) => ({ ...previous, [url]: { busy: false, result } }));
 		});
@@ -93,30 +101,33 @@ export default function MeshNodesTable({ mode, reloadkey }: MeshNodesTableProps)
 
 	return (
 		<div>
-			<p className="dash-statusnote">
-				ping goes through /api/v1/mesh (hmac signed server side); this page never holds mesh keys.
-			</p>
-			<div className="dash-tablescroll" tabIndex={0} role="region" aria-label="mesh nodes table">
+			<p className="dash-statusnote">{label('dashboard.mesh.pollNote')}</p>
+			<div
+				className="dash-tablescroll"
+				tabIndex={0}
+				role="region"
+				aria-label={label('dashboard.mesh.tableAria')}
+			>
 				<table>
 					{mode === 'api' && nodes.length === 0 && error === '' && (
-						<caption className="dash-empty">no nodes registered yet.</caption>
+						<caption className="dash-empty">{label('dashboard.mesh.empty')}</caption>
 					)}
 					<thead>
 						<tr>
-							<th scope="col">url</th>
-							<th scope="col">region</th>
-							<th scope="col">status</th>
-							<th scope="col">last heartbeat</th>
-							<th scope="col">ping</th>
+							<th scope="col">{label('dashboard.mesh.colUrl')}</th>
+							<th scope="col">{label('dashboard.mesh.colRegion')}</th>
+							<th scope="col">{label('dashboard.mesh.colStatus')}</th>
+							<th scope="col">{label('dashboard.mesh.colHeartbeat')}</th>
+							<th scope="col">{label('dashboard.mesh.colPing')}</th>
 						</tr>
 					</thead>
 					<tbody>
 						{mode === 'local' ? (
 							<tr>
-								<td>this browser</td>
-								<td>static edge (github pages / vercel / netlify clone)</td>
-								<td>local</td>
-								<td>n/a</td>
+								<td>{label('dashboard.mesh.localNode')}</td>
+								<td>{label('dashboard.mesh.localRegion')}</td>
+								<td>{label('dashboard.mesh.localStatus')}</td>
+								<td>{label('dashboard.mesh.na')}</td>
 							</tr>
 						) : (
 							nodes.map((node) => {
@@ -137,23 +148,23 @@ export default function MeshNodesTable({ mode, reloadkey }: MeshNodesTableProps)
 											<span className={chipclass(status)}>{status}</span>
 										</td>
 										<td>{fmtdate(heartbeat)}</td>
-										<td>
-											<button
-												type="button"
-												className="dash-btn mini"
-												aria-label={`ping mesh node ${url}`}
-												aria-busy={pingstate?.busy === true ? 'true' : undefined}
-												disabled={pingstate?.busy === true}
-												onClick={() => {
-													runping(url);
-												}}
-											>
-												ping
-											</button>{' '}
-											<span className="wrapcell" role="status" aria-live="polite">
-												{pingstate === undefined ? '-' : pingstate.result}
-											</span>
-										</td>
+											<td>
+												<button
+													type="button"
+													className="dash-btn mini"
+													aria-label={labelfill('dashboard.mesh.pingAria', { url })}
+													aria-busy={pingstate?.busy === true ? 'true' : undefined}
+													disabled={pingstate?.busy === true}
+													onClick={() => {
+														runping(url);
+													}}
+												>
+													{label('dashboard.mesh.ping')}
+												</button>{' '}
+												<span className="wrapcell" role="status" aria-live="polite">
+													{pingstate === undefined ? label('dashboard.mesh.nopong') : pingstate.result}
+												</span>
+											</td>
 									</tr>
 								);
 							})

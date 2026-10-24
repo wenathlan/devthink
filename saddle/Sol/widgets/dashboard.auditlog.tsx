@@ -3,6 +3,7 @@
 // static edge, the honest note.
 import { useEffect, useState } from 'react';
 import { apiresult, asarray, fmtdate, pick } from '../../dashboardlib.ts';
+import { label, labelfill } from '../../labels.ts';
 
 type AuditLogProps = {
 	/** "api" lists /api/v1/admin/audit; "local" shows the static note. */
@@ -27,14 +28,14 @@ export default function AuditLog({ mode, reloadkey }: AuditLogProps) {
 					return;
 				}
 				if (!result.ok) {
-					seterror(`audit log unavailable (status ${result.status}).`);
+					seterror(labelfill('dashboard.audit.unavailable', { status: String(result.status) }));
 					return;
 				}
 				seterror('');
 				setitems(asarray(result.body, ['entries', 'audit', 'items', 'data', 'list', 'logs']));
 			} catch {
 				if (!stopped) {
-					seterror('the audit endpoint is unreachable.');
+					seterror(label('dashboard.audit.unreachable'));
 				}
 			}
 		})();
@@ -44,26 +45,27 @@ export default function AuditLog({ mode, reloadkey }: AuditLogProps) {
 	}, [mode, reloadkey]);
 
 	if (mode === 'local') {
-		return (
-			<p className="dash-empty">
-				the audit trail lives on the main node api; the static edge keeps no audit records.
-			</p>
-		);
+		return <p className="dash-empty">{label('dashboard.audit.localNote')}</p>;
 	}
 
 	return (
 		<div>
-			<div className="dash-tablescroll" tabIndex={0} role="region" aria-label="audit log table">
+			<div
+				className="dash-tablescroll"
+				tabIndex={0}
+				role="region"
+				aria-label={label('dashboard.audit.tableAria')}
+			>
 				<table>
 					{items.length === 0 && error === '' && (
-						<caption className="dash-empty">no audit entries yet.</caption>
+						<caption className="dash-empty">{label('dashboard.audit.empty')}</caption>
 					)}
 					<thead>
 						<tr>
-							<th scope="col">action</th>
-							<th scope="col">username</th>
-							<th scope="col">ip</th>
-							<th scope="col">when</th>
+							<th scope="col">{label('dashboard.audit.colAction')}</th>
+							<th scope="col">{label('dashboard.audit.colUser')}</th>
+							<th scope="col">{label('dashboard.audit.colIp')}</th>
+							<th scope="col">{label('dashboard.audit.colWhen')}</th>
 						</tr>
 					</thead>
 					<tbody>

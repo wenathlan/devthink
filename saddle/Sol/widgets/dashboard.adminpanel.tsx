@@ -3,6 +3,7 @@
 // audit; on the static edge, the browser's own overview.
 import { useEffect, useState } from 'react';
 import { apiresult, fmtuptime, pick, readlocalsandboxes } from '../../dashboardlib.ts';
+import { label } from '../../labels.ts';
 import { available } from '../../localauth.ts';
 import AuditLog from './dashboard.auditlog.tsx';
 import GlobalSandboxesTable from './dashboard.globalsandboxestable.tsx';
@@ -25,14 +26,10 @@ type Overview = {
 };
 
 /** the honest failure state: every counter names its absence. */
-const unavailable: Overview = {
-	users: 'n/a',
-	nodes: 'n/a',
-	sandboxes: 'n/a',
-	sessions: 'n/a',
-	events: 'n/a',
-	uptime: 'n/a',
-};
+function unavailableoverview(): Overview {
+	const na = label('dashboard.admin.na');
+	return { users: na, nodes: na, sandboxes: na, sessions: na, events: na, uptime: na };
+}
 
 /** the browser-local overview of the static edge admin. */
 function localoverview(): Overview {
@@ -49,11 +46,11 @@ function localoverview(): Overview {
 	const localboxes = available() ? readlocalsandboxes().length : 0;
 	return {
 		users: String(accounts),
-		nodes: '1 (this browser)',
+		nodes: label('dashboard.admin.localNodes'),
 		sandboxes: String(localboxes),
-		sessions: 'local',
-		events: 'n/a',
-		uptime: 'n/a',
+		sessions: label('dashboard.admin.localSessions'),
+		events: label('dashboard.admin.na'),
+		uptime: label('dashboard.admin.na'),
 	};
 }
 
@@ -75,7 +72,7 @@ export default function AdminPanel({ mode }: AdminPanelProps) {
 					return;
 				}
 				if (!result.ok || result.body === null || typeof result.body !== 'object') {
-					setoverview(unavailable);
+					setoverview(unavailableoverview());
 					return;
 				}
 				const body = result.body as Record<string, unknown>;
@@ -86,16 +83,18 @@ export default function AdminPanel({ mode }: AdminPanelProps) {
 							? body.overview
 							: body;
 				setoverview({
-					users: String(pick(counts, ['users', 'userCount', 'totalUsers', 'usercount'], 'n/a')),
-					nodes: String(pick(counts, ['nodes', 'nodeCount', 'totalNodes', 'nodecount'], 'n/a')),
-					sandboxes: String(pick(counts, ['sandboxes', 'sandboxCount', 'totalSandboxes'], 'n/a')),
-					sessions: String(pick(counts, ['sessions', 'sessionCount', 'totalSessions'], 'n/a')),
-					events: String(pick(counts, ['events', 'eventCount', 'totalEvents'], 'n/a')),
+					users: String(pick(counts, ['users', 'userCount', 'totalUsers', 'usercount'], label('dashboard.admin.na'))),
+					nodes: String(pick(counts, ['nodes', 'nodeCount', 'totalNodes', 'nodecount'], label('dashboard.admin.na'))),
+					sandboxes: String(
+						pick(counts, ['sandboxes', 'sandboxCount', 'totalSandboxes'], label('dashboard.admin.na')),
+					),
+					sessions: String(pick(counts, ['sessions', 'sessionCount', 'totalSessions'], label('dashboard.admin.na'))),
+					events: String(pick(counts, ['events', 'eventCount', 'totalEvents'], label('dashboard.admin.na'))),
 					uptime: fmtuptime(pick(counts, ['uptime', 'uptimeSeconds', 'uptime_seconds'], 0)),
 				});
 			} catch {
 				if (!stopped) {
-					setoverview(unavailable);
+					setoverview(unavailableoverview());
 				}
 			}
 		})();
@@ -107,40 +106,40 @@ export default function AdminPanel({ mode }: AdminPanelProps) {
 	return (
 		<div>
 			<section className="dash-panel" aria-labelledby="overtitle">
-				<h2 id="overtitle">overview</h2>
+				<h2 id="overtitle">{label('dashboard.admin.overview')}</h2>
 				<div className="dash-cards">
 					<div className="dash-card">
-						<div className="k">users</div>
+						<div className="k">{label('dashboard.card.users')}</div>
 						<div className="v">
 							{overview === null ? <span className="dash-skeleton" /> : overview.users}
 						</div>
 					</div>
 					<div className="dash-card">
-						<div className="k">nodes</div>
+						<div className="k">{label('dashboard.card.nodes')}</div>
 						<div className="v">
 							{overview === null ? <span className="dash-skeleton" /> : overview.nodes}
 						</div>
 					</div>
 					<div className="dash-card">
-						<div className="k">sandboxes</div>
+						<div className="k">{label('dashboard.card.sandboxes')}</div>
 						<div className="v">
 							{overview === null ? <span className="dash-skeleton" /> : overview.sandboxes}
 						</div>
 					</div>
 					<div className="dash-card">
-						<div className="k">sessions</div>
+						<div className="k">{label('dashboard.card.sessions')}</div>
 						<div className="v">
 							{overview === null ? <span className="dash-skeleton" /> : overview.sessions}
 						</div>
 					</div>
 					<div className="dash-card">
-						<div className="k">events</div>
+						<div className="k">{label('dashboard.card.events')}</div>
 						<div className="v">
 							{overview === null ? <span className="dash-skeleton" /> : overview.events}
 						</div>
 					</div>
 					<div className="dash-card">
-						<div className="k">uptime</div>
+						<div className="k">{label('dashboard.card.uptime')}</div>
 						<div className="v">
 							{overview === null ? <span className="dash-skeleton" /> : overview.uptime}
 						</div>
@@ -150,35 +149,35 @@ export default function AdminPanel({ mode }: AdminPanelProps) {
 					<button
 						type="button"
 						className="button"
-						aria-label="reload every admin table"
+						aria-label={label('dashboard.admin.refreshAria')}
 						aria-busy={overview === null ? 'true' : undefined}
 						onClick={() => {
 							setoverview(null);
 							setreloadkey((key) => key + 1);
 						}}
 					>
-						refresh all
+						{label('dashboard.admin.refresh')}
 					</button>
 				</div>
 			</section>
 
 			<section className="dash-panel" aria-labelledby="nodestitle">
-				<h2 id="nodestitle">mesh nodes</h2>
+				<h2 id="nodestitle">{label('dashboard.admin.nodes')}</h2>
 				<MeshNodesTable mode={mode} reloadkey={reloadkey} />
 			</section>
 
 			<section className="dash-panel" aria-labelledby="userstitle">
-				<h2 id="userstitle">users</h2>
+				<h2 id="userstitle">{label('dashboard.admin.users')}</h2>
 				<UsersTable mode={mode} reloadkey={reloadkey} />
 			</section>
 
 			<section className="dash-panel" aria-labelledby="boxestitle">
-				<h2 id="boxestitle">sandboxes (global)</h2>
+				<h2 id="boxestitle">{label('dashboard.admin.sandboxes')}</h2>
 				<GlobalSandboxesTable mode={mode} reloadkey={reloadkey} />
 			</section>
 
 			<section className="dash-panel" aria-labelledby="audittitle">
-				<h2 id="audittitle">audit log</h2>
+				<h2 id="audittitle">{label('dashboard.admin.audit')}</h2>
 				<AuditLog mode={mode} reloadkey={reloadkey} />
 			</section>
 		</div>

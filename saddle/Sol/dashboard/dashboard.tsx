@@ -15,6 +15,7 @@ import { Link, useLocation } from 'wouter';
 import { apibase } from '../../api';
 import type { ApiResult, SessionUser } from '../../dashboardlib';
 import { apiresult, noderole, pick } from '../../dashboardlib';
+import { label, labelfill } from '../../labels.ts';
 /* the explicit .ts suffix keeps the resolution unambiguous while the
  * typed ES module that replaced the window-global localauth.js of the static edge (the original
  * beside the typed module - the same convention the Login page uses. */
@@ -45,7 +46,7 @@ export default function Dashboard() {
 	const [fatal, setfatal] = useState<string | null>(null);
 	const [me, setme] = useState<SessionUser | null>(null);
 	const [localview, setlocalview] = useState<LocalSessionView | null>(null);
-	const [nodelabel, setnodelabel] = useState('...');
+	const [nodelabel, setnodelabel] = useState(label('dashboard.node.pending'));
 	const [tab, settab] = useState<'user' | 'admin'>('user');
 	const [sandboxreload, setsandboxreload] = useState(0);
 	const [leaving, setleaving] = useState(false);
@@ -62,7 +63,7 @@ export default function Dashboard() {
 		} catch {
 			/* health is decorative; the badge simply stays neutral */
 		}
-		setnodelabel('standalone (no api)');
+		setnodelabel(label('dashboard.node.standalone'));
 	}
 
 	/** the account bootstrap: /auth/me fills the session or the fatal gate. */
@@ -71,15 +72,15 @@ export default function Dashboard() {
 		try {
 			result = await apiresult('/api/v1/auth/me');
 		} catch {
-			setfatal('the api is unreachable; set the api target (?api=...) or try again later.');
+			setfatal(label('dashboard.fatal.apiUnreachable'));
 			return;
 		}
 		if (result.status === 401 || result.status === 403) {
-			setfatal('this page needs a signed in session.');
+			setfatal(label('dashboard.fatal.needsSession'));
 			return;
 		}
 		if (!result.ok || result.body === null || typeof result.body !== 'object') {
-			setfatal('the api answered but the account payload was not understood.');
+			setfatal(label('dashboard.fatal.payload'));
 			return;
 		}
 		const envelope = result.body as Record<string, unknown>;
@@ -107,12 +108,10 @@ export default function Dashboard() {
 			}
 			if (!answers) {
 				setphase('local');
-				setnodelabel('static edge (no api)');
+				setnodelabel(label('dashboard.node.edge'));
 				const raw = (await readlocalsession()) as unknown;
 				if (raw === null || raw === undefined) {
-					setfatal(
-						'this static page has no signed-in browser session; sign in or create a local account first.',
-					);
+					setfatal(label('dashboard.fatal.noLocalSession'));
 					return;
 				}
 				const view = {
@@ -165,10 +164,14 @@ export default function Dashboard() {
 	const adminvisible = me !== null && me.role === 'admin';
 	const userbadge =
 		me === null
-			? '...'
+			? label('dashboard.userbadge.pending')
 			: mode === 'local'
-				? `${me.username}${me.role === 'admin' ? ' (admin, local)' : ' (local)'}`
-				: `${me.username}${me.role === 'admin' ? ' (admin)' : ''}`;
+				? me.role === 'admin'
+					? labelfill('dashboard.userbadge.localAdmin', { name: me.username })
+					: labelfill('dashboard.userbadge.local', { name: me.username })
+				: me.role === 'admin'
+					? labelfill('dashboard.userbadge.admin', { name: me.username })
+					: me.username;
 	const roleclass =
 		nodelabel === 'main' || nodelabel === 'clone'
 			? `dash-rolebadge ${nodelabel}`
@@ -179,36 +182,36 @@ export default function Dashboard() {
 			<div className="dash-wrap">
 				<header className="dash-topbar">
 					<h1>
-						<Link href="/console">saddle</Link>
+						<Link href="/console">{label('dashboard.brand')}</Link>
 					</h1>
-					<span className="dash-tagline">dashboard</span>
+					<span className="dash-tagline">{label('dashboard.tagline')}</span>
 					<span className={roleclass} aria-live="polite">
-						node: {nodelabel}
+						{labelfill('dashboard.nodeBadge', { label: nodelabel })}
 					</span>
 					<span className="dash-spacer" />
 					<span className="dash-userbadge">{userbadge}</span>
 					<button
 						type="button"
-						aria-label="end the session and return to the sign in page"
+						aria-label={label('dashboard.logoutAria')}
 						disabled={leaving}
 						onClick={() => {
 							void dolgout();
 						}}
 					>
-						logout
+						{label('dashboard.logout')}
 					</button>
 				</header>
 
 				{fatal !== null && (
 					<div className="dash-panel dash-fatal" aria-live="polite">
-						<h2>session required</h2>
+						<h2>{label('dashboard.fatal.title')}</h2>
 						<p>{fatal}</p>
 						<div className="dash-actions">
 							<Link className="dash-btn" href="/login">
-								sign in
+								{label('dashboard.fatal.signin')}
 							</Link>
 							<Link className="dash-btn" href="/console">
-								back to the sandbox
+								{label('dashboard.fatal.backConsole')}
 							</Link>
 						</div>
 					</div>
@@ -218,7 +221,7 @@ export default function Dashboard() {
 					<div
 						className="dash-tabs"
 						role="tablist"
-						aria-label="dashboard views"
+						aria-label={label('dashboard.tabsAria')}
 						onKeyDown={(event) => {
 							if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') {
 								return;
@@ -243,7 +246,7 @@ export default function Dashboard() {
 								selecttab('user');
 							}}
 						>
-							user
+							{label('dashboard.tab.user')}
 						</button>
 						{adminvisible && (
 							<button
@@ -260,7 +263,7 @@ export default function Dashboard() {
 									selecttab('admin');
 								}}
 							>
-								admin
+								{label('dashboard.tab.admin')}
 							</button>
 						)}
 					</div>
@@ -271,7 +274,7 @@ export default function Dashboard() {
 						<div className="dash-grid2">
 							<div>
 								<section className="dash-panel" aria-labelledby="boxtitle">
-									<h2 id="boxtitle">my sandboxes</h2>
+									<h2 id="boxtitle">{label('dashboard.panel.sandboxes')}</h2>
 									<CreateSandboxForm
 										mode={mode}
 										oncreated={() => {
@@ -286,11 +289,11 @@ export default function Dashboard() {
 							</div>
 							<div>
 								<section className="dash-panel" aria-labelledby="infotitle">
-									<h2 id="infotitle">my account</h2>
+									<h2 id="infotitle">{label('dashboard.panel.account')}</h2>
 									<AccountPanel mode={mode} user={me} local={localview} />
 								</section>
 								<section className="dash-panel" aria-labelledby="eventstitle">
-									<h2 id="eventstitle">bus events</h2>
+									<h2 id="eventstitle">{label('dashboard.panel.events')}</h2>
 									<EventsTimeline mode={mode} ready={me !== null} />
 								</section>
 							</div>
@@ -310,11 +313,9 @@ export default function Dashboard() {
 				)}
 
 				<footer className="dash-footer">
-					<span>session cookie: saddlesession (httponly)</span>
-					<span>nothing sensitive in localstorage</span>
-					<span style={{ marginLeft: 'auto' }}>
-						self-hosted node api &middot; no serverless functions
-					</span>
+					<span>{label('dashboard.footer.cookie')}</span>
+					<span>{label('dashboard.footer.storage')}</span>
+					<span style={{ marginLeft: 'auto' }}>{label('dashboard.footer.api')}</span>
 				</footer>
 			</div>
 		</div>

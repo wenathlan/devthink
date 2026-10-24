@@ -17,6 +17,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { apibase, apierrormessage, apifetch, apistatustext } from '../../api';
+import { label } from '../../labels.ts';
 import PasswordConfirm from '../widgets/register.passwordconfirm.tsx';
 import PasswordMeter from '../widgets/register.passwordmeter.tsx';
 import UsernameRules, { usernamere } from '../widgets/register.usernamerules.tsx';
@@ -32,13 +33,27 @@ export const registerpagedescription =
 /** state of the static-edge detection: does an api answer at this base? */
 type ApiMode = 'probing' | 'remote' | 'local';
 
-/** the real policy facts of the trust rail (the page's own absorbed copy). */
-const trustfacts = [
-	{ label: 'identity', body: 'username + password only — no e-mail field by project policy.' },
-	{ label: 'hashing', body: 'passwords hashed with scrypt server-side.' },
-	{ label: 'charset', body: '3-32 chars, lowercase a-z 0-9 . - (auto-lowercased as you type).' },
-	{ label: 'session', body: 'the saddlesession cookie, httponly, set by the backend on success.' },
-];
+/** the real policy facts of the trust rail: the labels ride the store. */
+function trustfacts(): { label: string; body: string }[] {
+	return [
+		{
+			label: label('register.trust.identityLabel'),
+			body: label('register.trust.identityBody'),
+		},
+		{
+			label: label('register.trust.hashingLabel'),
+			body: label('register.trust.hashingBody'),
+		},
+		{
+			label: label('register.trust.charsetLabel'),
+			body: label('register.trust.charsetBody'),
+		},
+		{
+			label: label('register.trust.sessionLabel'),
+			body: label('register.trust.sessionBody'),
+		},
+	];
+}
 
 /**
  * the create-account page: brand lockup, the instrument card (form beside
@@ -69,7 +84,7 @@ export default function Register() {
 			if (cancelled) return;
 			if (!apianswers) {
 				setApimode('local');
-				setStatusline('accounts: local browser (static edge, no api)');
+				setStatusline(label('register.status.local'));
 			} else {
 				setApimode('remote');
 			}
@@ -128,7 +143,7 @@ export default function Register() {
 			setConfirminvalid(false);
 		}
 		if (!valid) {
-			setError('fix the highlighted fields and try again.');
+			setError(label('register.error.fixFields'));
 			return;
 		}
 
@@ -143,7 +158,7 @@ export default function Register() {
 				navigate('/dashboard');
 			} catch (registererror) {
 				const message =
-					registererror instanceof Error ? registererror.message : 'local registration failed.';
+					registererror instanceof Error ? registererror.message : label('register.error.localFailed');
 				setError(message);
 				setPending(false);
 			}
@@ -162,11 +177,9 @@ export default function Register() {
 				return;
 			}
 			if (response.status === 404) {
-				setError(
-					'registration is not available at this api target; set ?api=<main node url> and try again.',
-				);
+				setError(label('register.error.noRegister'));
 			} else {
-				let message = 'registration failed; try again.';
+				let message = label('register.error.generic');
 				if (response.status === 400 || response.status === 409 || response.status === 429) {
 					const payloadmessage = await apierrormessage(response);
 					if (payloadmessage !== null) {
@@ -176,7 +189,7 @@ export default function Register() {
 				setError(message);
 			}
 		} catch {
-			setError('the api is unreachable; check the api target or try again later.');
+			setError(label('register.error.unreachable'));
 		}
 		setPending(false);
 	};
@@ -194,31 +207,32 @@ export default function Register() {
 				<header className="auth-head">
 					{/* logo discipline: the wordmark speaks — the mark stays in the window title bar */}
 					<Link href="/" className="brand-lockup">
-						<span className="brand-wordmark">saddle</span>
+						<span className="brand-wordmark">{label('register.brand')}</span>
 					</Link>
-					<span className="auth-tagline">create account</span>
+					<span className="auth-tagline">{label('register.tagline')}</span>
 				</header>
 
 				<main className="r3-authgrid">
 					<section className="auth-panel" aria-labelledby="formtitle">
 						<h2 className="auth-panel-title" id="formtitle">
-							username + password only
+							{label('register.panel.title')}
 						</h2>
 						{succeeded ? (
 							<div className="auth-success">
 								<p className="auth-success-title" role="status" aria-live="polite">
-									account created; opening your dashboard.
+									{label('register.success.title')}
 								</p>
 								<p className="auth-statusline">
-									continue <Link href="/dashboard">to the dashboard</Link>
+									{label('register.success.continue')}{' '}
+									<Link href="/dashboard">{label('register.success.dashboardLink')}</Link>
 									<span aria-hidden="true"> · </span>
-									<Link href="/login">sign in</Link>
+									<Link href="/login">{label('register.success.signinLink')}</Link>
 								</p>
 							</div>
 						) : (
 							<form className="auth-form" noValidate onSubmit={onsubmit}>
 								<div className="auth-field">
-									<label htmlFor="username">username</label>
+									<label htmlFor="username">{label('register.field.username')}</label>
 									<input
 										ref={usernameref}
 										className="auth-input"
@@ -238,11 +252,11 @@ export default function Register() {
 										onChange={onusernamechange}
 									/>
 									<p className={hintstate} id="usernamehint">
-										3-32 chars, lowercase a-z 0-9 . - (auto-lowercased)
+										{label('register.hint.username')}
 									</p>
 								</div>
 								<div className="auth-field">
-									<label htmlFor="password">password</label>
+									<label htmlFor="password">{label('register.field.password')}</label>
 									<input
 										className="auth-input"
 										id="password"
@@ -273,19 +287,19 @@ export default function Register() {
 									type="submit"
 									disabled={pending}
 								>
-									{pending ? 'creating...' : 'create account'}
+									{pending ? label('register.submitPending') : label('register.submit')}
 								</button>
 							</form>
 						)}
 					</section>
-					<aside className="r3-authtrust" aria-label="live rules and policy facts">
-						<p className="eyebrow">the trust rail</p>
+					<aside className="r3-authtrust" aria-label={label('register.trust.aria')}>
+						<p className="eyebrow">{label('register.trust.eyebrow')}</p>
 						<UsernameRules value={username} />
 						<div className="r3-trustmeter">
 							<PasswordMeter password={password} />
 						</div>
 						<ul className="r3-trustlist">
-							{trustfacts.map((fact) => (
+							{trustfacts().map((fact) => (
 								<li className="r3-trustfact" key={fact.label}>
 									<span className="r3-trustlabel">{fact.label}</span>
 									<span className="r3-trustbody">{fact.body}</span>
@@ -297,14 +311,14 @@ export default function Register() {
 
 				<p className="auth-statusline">{statusline}</p>
 				<p className="auth-statusline">
-					already registered? <Link href="/login">sign in</Link>
+					{label('register.already')} <Link href="/login">{label('register.signinLink')}</Link>
 					<span aria-hidden="true"> · </span>
-					<Link href="/console">back to the sandbox</Link>
+					<Link href="/console">{label('register.backConsole')}</Link>
 				</p>
 
 				<footer className="auth-foot">
-					<span>no e-mail field: project policy is username + password only</span>
-					<span className="auth-foot-right">passwords hashed with scrypt server-side</span>
+					<span>{label('register.footer.policy')}</span>
+					<span className="auth-foot-right">{label('register.footer.hashing')}</span>
 				</footer>
 			</div>
 		</div>

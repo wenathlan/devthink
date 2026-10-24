@@ -1,5 +1,7 @@
 // Snapshot controls: faithful absorption of the console.html snapshot/stop
 // buttons — both stay disabled until a sandbox is running.
+import { label } from '../../labels.ts';
+
 type SnapshotControlsProps = {
 	running: boolean;
 	onsnapshot: () => void;
@@ -15,18 +17,18 @@ export default function SnapshotControls({ running, onsnapshot, onstop }: Snapsh
 				type="button"
 				disabled={!running}
 				onClick={onsnapshot}
-				aria-label="create a snapshot of the running sandbox"
+				aria-label={label('console.snapshotAria')}
 			>
-				snapshot
+				{label('console.snapshot')}
 			</button>
 			<button
 				className="button"
 				type="button"
 				disabled={!running}
 				onClick={onstop}
-				aria-label="stop the running sandbox"
+				aria-label={label('console.stopAria')}
 			>
-				stop
+				{label('console.stop')}
 			</button>
 		</>
 	);

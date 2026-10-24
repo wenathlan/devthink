@@ -14,6 +14,7 @@ import {
         readlocalsandboxes,
         writelocalsandboxes,
 } from '../../dashboardlib.ts';
+import { label, labelfill } from '../../labels.ts';
 
 type SandboxListProps = {
         /** "api" polls the shelf endpoint; "local" renders the sessionStorage shelf. */
@@ -48,12 +49,12 @@ export default function SandboxList({ mode, reloadkey, ready }: SandboxListProps
                         result = await apiresult('/api/v1/sandboxes');
                 } catch {
                         setloading(false);
-                        seterror('the sandbox list is unreachable right now.');
+                        seterror(label('dashboard.list.unreachable'));
                         return;
                 }
                 if (result.status === 401 || result.status === 403) {
                         setloading(false);
-                        seterror('the session expired; sign in again.');
+                        seterror(label('dashboard.list.sessionExpired'));
                         return;
                 }
                 setloading(false);
@@ -106,10 +107,15 @@ export default function SandboxList({ mode, reloadkey, ready }: SandboxListProps
                         if (result.ok) {
                                 await load(true);
                         } else {
-                                seterror(errormessage(result, `delete failed with status ${result.status}.`));
+                                seterror(
+                                        errormessage(
+                                                result,
+                                                labelfill('dashboard.list.deleteFailed', { status: String(result.status) }),
+                                        ),
+                                );
                         }
                 } catch {
-                        seterror('the api is unreachable; the sandbox was not deleted.');
+                        seterror(label('dashboard.list.deleteUnreachable'));
                 }
                 setdeleting(null);
         }
@@ -127,7 +133,7 @@ export default function SandboxList({ mode, reloadkey, ready }: SandboxListProps
 
         return (
                 <div>
-                        <h3>the sandbox list</h3>
+                        <h3>{label('dashboard.list.title')}</h3>
                         {loading && (
                                 <div aria-hidden="true">
                                         <div className="dash-skeleton" />
@@ -136,15 +142,23 @@ export default function SandboxList({ mode, reloadkey, ready }: SandboxListProps
                                 </div>
                         )}
                         {listvisible && (
-                                <ul className="dash-boxlist" aria-live="polite" aria-label="my sandboxes">
+                                <ul
+                                        className="dash-boxlist"
+                                        aria-live="polite"
+                                        aria-label={label('dashboard.list.aria')}
+                                >
                                         {mode === 'local'
                                                 ? locals.map((record) => {
                                                                 const spectext = [
                                                                         record.spec.model,
-                                                                        `x${record.spec.vcpus} vcpus`,
-                                                                        `${record.spec.ramgb} gb`,
+                                                                        labelfill('dashboard.list.specVcpus', {
+                                                                                vcpus: String(record.spec.vcpus),
+                                                                        }),
+                                                                        labelfill('dashboard.list.specRam', { ram: String(record.spec.ramgb) }),
                                                                         record.spec.gpu,
-                                                                        record.spec.mig && record.spec.mig !== 'off' ? `mig ${record.spec.mig}` : '',
+                                                                        record.spec.mig && record.spec.mig !== 'off'
+                                                                                ? labelfill('dashboard.list.specMig', { mig: record.spec.mig })
+                                                                                : '',
                                                                 ]
                                                                         .filter(Boolean)
                                                                         .join(' / ');
@@ -159,15 +173,19 @@ export default function SandboxList({ mode, reloadkey, ready }: SandboxListProps
                                                                                                 <button
                                                                                                         type="button"
                                                                                                         className="danger mini"
-                                                                                                        aria-label={`stop ${record.id}`}
+                                                                                                        aria-label={labelfill('dashboard.list.stopAria', { id: record.id })}
                                                                                                         onClick={() => stop(record.id)}
                                                                                                 >
-                                                                                                        stop
+                                                                                                        {label('dashboard.list.stop')}
                                                                                                 </button>
                                                                                         </span>
                                                                                 </div>
                                                                                 <span className="specs">{spectext}</span>
-                                                                                <span className="meta">created {fmtdate(record.createdat)}</span>
+                                                                                <span className="meta">
+                                                                                        {labelfill('dashboard.list.metaCreated', {
+                                                                                                date: fmtdate(record.createdat),
+                                                                                        })}
+                                                                                </span>
                                                                         </li>
                                                                 );
                                                         })
@@ -178,17 +196,33 @@ export default function SandboxList({ mode, reloadkey, ready }: SandboxListProps
                                                                 const spec = specobj !== null && typeof specobj === 'object' ? specobj : record;
                                                                 const spectext = [
                                                                         String(pick(spec, ['model'], '?')),
-                                                                        `x${String(pick(spec, ['vcpus'], '?'))} vcpus`,
-                                                                        `${String(pick(spec, ['ramgb', 'ramGb', 'ram'], '?'))} gb`,
+                                                                        labelfill('dashboard.list.specVcpus', {
+                                                                                vcpus: String(pick(spec, ['vcpus'], '?')),
+                                                                        }),
+                                                                        labelfill('dashboard.list.specRam', {
+                                                                                ram: String(pick(spec, ['ramgb', 'ramGb', 'ram'], '?')),
+                                                                        }),
                                                                         String(pick(spec, ['gpu'], '?')),
-                                                                        `mig ${String(pick(spec, ['mig'], 'off'))}`,
+                                                                        labelfill('dashboard.list.specMig', {
+                                                                                mig: String(pick(spec, ['mig'], 'off')),
+                                                                        }),
                                                                 ].join(' / ');
                                                                 const files = pick(record, ['files'], null);
-                                                                const meta =
-                                                                        `created ${fmtdate(pick(record, ['createdAt', 'createdat', 'created_at'], null))}` +
-                                                                        ` / expires ${fmtdate(pick(record, ['expiresAt', 'expiresat', 'expires_at'], null))}` +
-                                                                        ` / execs ${String(pick(record, ['execCount', 'execcount'], 0))}` +
-                                                                        (files !== null && files !== undefined ? ` / files ${String(files)}` : '');
+                                                                const metafrags = [
+                                                                        labelfill('dashboard.list.metaCreated', {
+                                                                                date: fmtdate(pick(record, ['createdAt', 'createdat', 'created_at'], null)),
+                                                                        }),
+                                                                        labelfill('dashboard.list.metaExpires', {
+                                                                                date: fmtdate(pick(record, ['expiresAt', 'expiresat', 'expires_at'], null)),
+                                                                        }),
+                                                                        labelfill('dashboard.list.metaExecs', {
+                                                                                count: String(pick(record, ['execCount', 'execcount'], 0)),
+                                                                        }),
+                                                                ];
+                                                                if (files !== null && files !== undefined) {
+                                                                        metafrags.push(labelfill('dashboard.list.metaFiles', { count: String(files) }));
+                                                                }
+                                                                const meta = metafrags.join(' / ');
                                                                 return (
                                                                         <li key={id}>
                                                                                 <div className="rowtop">
@@ -198,20 +232,20 @@ export default function SandboxList({ mode, reloadkey, ready }: SandboxListProps
                                                                                                 <Link
                                                                                                         className="dash-btn mini"
                                                                                                         href={`/console?sandbox=${encodeURIComponent(id)}`}
-                                                                                                        aria-label={`open sandbox ${id} in the terminal`}
+                                                                                                        aria-label={labelfill('dashboard.list.openAria', { id })}
                                                                                                 >
-                                                                                                        open
+                                                                                                        {label('dashboard.list.open')}
                                                                                                 </Link>
                                                                                                 <button
                                                                                                         type="button"
                                                                                                         className="danger mini"
-                                                                                                        aria-label={`delete sandbox ${id}`}
+                                                                                                        aria-label={labelfill('dashboard.list.deleteAria', { id })}
                                                                                                         disabled={deleting === id}
                                                                                                         onClick={() => {
                                                                                                                 void destroy(id);
                                                                                                         }}
                                                                                                 >
-                                                                                                        delete
+                                                                                                        {label('dashboard.list.delete')}
                                                                                                 </button>
                                                                                         </span>
                                                                                 </div>
@@ -225,10 +259,10 @@ export default function SandboxList({ mode, reloadkey, ready }: SandboxListProps
                         {emptyvisible && (
                                 <p className="dash-empty">
                                         {notlive
-                                                ? 'the sandbox list is not live on this node yet; creation still works.'
-                                                : 'no sandboxes yet; create one above or boot the local engine from the '}
-                                        {!notlive && <Link href="/console">console</Link>}
-                                        {!notlive && '.'}
+                                                ? label('dashboard.list.emptyNotLive')
+                                                : label('dashboard.list.empty')}
+                                        {!notlive && <Link href="/console">{label('dashboard.list.consoleLink')}</Link>}
+                                        {!notlive && label('dashboard.list.emptyPeriod')}
                                 </p>
                         )}
                         {error !== '' && <p className="dash-panelerror">{error}</p>}

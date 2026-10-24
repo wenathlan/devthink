@@ -2,6 +2,7 @@
 // model, workspace quota, vcpus slider, ram slider + exact numeric field,
 // gpu model and mig profile, each with the live catalog hints.
 import { type CSSProperties, useEffect, useRef, useState } from 'react';
+import { label, type LabelKey, labelfill } from '../../labels.ts';
 import { cpudata, gpudata } from '../../sandbox.ts';
 
 /** the sandbox specification selection held by the console page. */
@@ -23,13 +24,21 @@ type SpecPanelProps = {
 /** workspace quota options in MiB (16 selected by default). */
 const quotaoptions = [4, 16, 64, 256];
 
-/** mig slicing profiles of the 96 gb-class virtual device. */
-const migoptions = [
-	{ value: 'off', label: 'off (full device)' },
-	{ value: '1g.24gb', label: '1g.24gb · 24 gb x 4' },
-	{ value: '2g.48gb', label: '2g.48gb · 48 gb x 2' },
-	{ value: '4g.96gb', label: '4g.96gb · 96 gb x 1' },
-];
+/** the mig slicing profile values of the 96 gb-class virtual device. */
+const migvalues = ['off', '1g.24gb', '2g.48gb', '4g.96gb'] as const;
+
+/** the mig profile labels of the store, keyed by the profile value. */
+const miglabels: Record<(typeof migvalues)[number], LabelKey> = {
+	off: 'console.spec.migOff',
+	'1g.24gb': 'console.spec.mig1g',
+	'2g.48gb': 'console.spec.mig2g',
+	'4g.96gb': 'console.spec.mig4g',
+};
+
+/** the mig profile options: the value stays data, the label rides the store. */
+function migoptions(): { value: string; label: string }[] {
+	return migvalues.map((value) => ({ value, label: label(miglabels[value]) }));
+}
 
 /** ram ceiling shared by the slider and the exact numeric field. */
 const ramceiling = 18432;
@@ -60,43 +69,56 @@ export default function SpecPanel({ spec, onChange, disabled }: SpecPanelProps) 
 	const cpu = cpudata.find((entry) => entry.model === spec.model);
 	const gpu = gpudata.find((entry) => entry.id === spec.gpu);
 	const cpuhint = cpu
-		? `${cpu.microarch} · ${cpu.memorytype} · up to ${cpu.maxmemorygb} gb · ${cpu.tdpwatts} w`
+		? labelfill('console.spec.cpuHint', {
+				arch: cpu.microarch,
+				memory: cpu.memorytype,
+				max: String(cpu.maxmemorygb),
+				watts: String(cpu.tdpwatts),
+			})
 		: '';
 	const gpuhint = gpu
-		? `${gpu.arch} · ${gpu.bandwidthgbs} gb/s · mig ${gpu.mig ? 'supported' : 'not supported (profile emulated)'}`
+		? labelfill('console.spec.gpuHint', {
+				arch: gpu.arch,
+				bandwidth: String(gpu.bandwidthgbs),
+				mig: gpu.mig ? label('console.spec.migSupported') : label('console.spec.migEmulated'),
+			})
 		: '';
 
 	return (
 		<>
 			<div className="spec-field">
-				<label htmlFor="cpusel">cpu model</label>
+				<label htmlFor="cpusel">{label('console.spec.cpuLabel')}</label>
 				<select
 					className="spec-select"
 					id="cpusel"
 					disabled={disabled}
-					aria-label="virtual cpu model"
+					aria-label={label('console.spec.cpuAria')}
 					value={spec.model}
 					onChange={(event) => onChange({ model: event.target.value })}
 				>
 					{cpudata.map((entry) => (
 						<option key={entry.model} value={entry.model}>
-							{`${entry.model} (${entry.cores}c/${entry.threads}t)`}
+							{labelfill('console.spec.cpuOption', {
+								model: entry.model,
+								cores: String(entry.cores),
+								threads: String(entry.threads),
+							})}
 						</option>
 					))}
 				</select>
 				<div className="spec-field">
-					<label htmlFor="quotasel">workspace quota</label>
+					<label htmlFor="quotasel">{label('console.spec.quotaLabel')}</label>
 					<select
 						className="spec-select"
 						id="quotasel"
 						disabled={disabled}
-						aria-label="persistent workspace quota"
+						aria-label={label('console.spec.quotaAria')}
 						value={String(spec.quotamb)}
 						onChange={(event) => onChange({ quotamb: Number(event.target.value) })}
 					>
 						{quotaoptions.map((quota) => (
 							<option key={quota} value={String(quota)}>
-								{`${quota} MiB`}
+								{labelfill('console.spec.quotaOption', { quota: String(quota) })}
 							</option>
 						))}
 					</select>
@@ -105,7 +127,7 @@ export default function SpecPanel({ spec, onChange, disabled }: SpecPanelProps) 
 			</div>
 			<div className="spec-field">
 				<label htmlFor="vcpurange">
-					vcpus <span className="spec-val">{spec.vcpus}</span>
+					{label('console.spec.vcpusLabel')} <span className="spec-val">{spec.vcpus}</span>
 				</label>
 				<input
 					className="spec-range"
@@ -115,7 +137,7 @@ export default function SpecPanel({ spec, onChange, disabled }: SpecPanelProps) 
 					max={192}
 					value={spec.vcpus}
 					disabled={disabled}
-					aria-label="virtual cpu count"
+					aria-label={label('console.spec.vcpusAria')}
 					style={
 						{
 							'--r3-meter': `${Math.max(2, Math.min(100, (spec.vcpus / 192) * 100))}%`,
@@ -126,7 +148,7 @@ export default function SpecPanel({ spec, onChange, disabled }: SpecPanelProps) 
 			</div>
 			<div className="spec-field">
 				<label htmlFor="ramrange">
-					ram (gb) <span className="spec-val">{spec.ramgb}</span>
+					{label('console.spec.ramLabel')} <span className="spec-val">{spec.ramgb}</span>
 				</label>
 				<input
 					className="spec-range"
@@ -136,7 +158,7 @@ export default function SpecPanel({ spec, onChange, disabled }: SpecPanelProps) 
 					max={ramceiling}
 					value={spec.ramgb}
 					disabled={disabled}
-					aria-label="virtual memory in gigabytes, up to 18 tb"
+					aria-label={label('console.spec.ramAria')}
 					style={
 						{
 							'--r3-meter': `${Math.max(2, Math.min(100, (spec.ramgb / ramceiling) * 100))}%`,
@@ -144,7 +166,7 @@ export default function SpecPanel({ spec, onChange, disabled }: SpecPanelProps) 
 					}
 					onChange={(event) => onChange({ ramgb: Number(event.target.value) })}
 				/>
-				<label htmlFor="ramnum">exact ram (gb)</label>
+				<label htmlFor="ramnum">{label('console.spec.ramExactLabel')}</label>
 				<input
 					ref={ramnumref}
 					className="spec-select spec-number"
@@ -154,39 +176,43 @@ export default function SpecPanel({ spec, onChange, disabled }: SpecPanelProps) 
 					max={ramceiling}
 					value={ramdraft}
 					disabled={disabled}
-					aria-label="exact virtual memory in gigabytes"
+					aria-label={label('console.spec.ramExactAria')}
 					onChange={(event) => onramnuminput(event.target.value)}
 				/>
 			</div>
 			<div className="spec-field">
-				<label htmlFor="gpusel">gpu</label>
+				<label htmlFor="gpusel">{label('console.spec.gpuLabel')}</label>
 				<select
 					className="spec-select"
 					id="gpusel"
 					disabled={disabled}
-					aria-label="virtual gpu model"
+					aria-label={label('console.spec.gpuAria')}
 					value={spec.gpu}
 					onChange={(event) => onChange({ gpu: event.target.value })}
 				>
 					{gpudata.map((entry) => (
 						<option key={entry.id} value={entry.id}>
-							{`${entry.name} (${entry.memtype} ${entry.vrammib / 1024} gb)`}
+							{labelfill('console.spec.gpuOption', {
+								name: entry.name,
+								memtype: entry.memtype,
+								gb: String(entry.vrammib / 1024),
+							})}
 						</option>
 					))}
 				</select>
 				<p className="spec-hint">{gpuhint}</p>
 			</div>
 			<div className="spec-field">
-				<label htmlFor="migsel">vram mig profile</label>
+				<label htmlFor="migsel">{label('console.spec.migLabel')}</label>
 				<select
 					className="spec-select"
 					id="migsel"
 					disabled={disabled}
-					aria-label="gpu mig slicing profile"
+					aria-label={label('console.spec.migAria')}
 					value={spec.mig}
 					onChange={(event) => onChange({ mig: event.target.value })}
 				>
-					{migoptions.map((option) => (
+					{migoptions().map((option) => (
 						<option key={option.value} value={option.value}>
 							{option.label}
 						</option>

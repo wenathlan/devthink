@@ -10,6 +10,7 @@ import {
         readlocalsandboxes,
         writelocalsandboxes,
 } from '../../dashboardlib.ts';
+import { label, labelfill } from '../../labels.ts';
 import { cpudata, createSandboxState, gpudata } from '../../sandbox.ts';
 
 type CreateSandboxFormProps = {
@@ -77,22 +78,27 @@ export default function CreateSandboxForm({ mode, oncreated, onrefresh }: Create
                         if (result.ok) {
                                 oncreated();
                         } else {
-                                seterror(errormessage(result, `creation failed with status ${result.status}.`));
+                                seterror(
+                                        errormessage(
+                                                result,
+                                                labelfill('dashboard.create.failedStatus', { status: String(result.status) }),
+                                        ),
+                                );
                         }
                 } catch {
-                        seterror('the api is unreachable; the sandbox was not created.');
+                        seterror(label('dashboard.create.unreachable'));
                 }
                 setbusy(false);
         }
 
         return (
-                <form noValidate aria-label="create a new sandbox" onSubmit={submit}>
+                <form noValidate aria-label={label('dashboard.create.formAria')} onSubmit={submit}>
                         <div className="dash-formrow">
                                 <div className="dash-field">
-                                        <label htmlFor="newmodel">cpu model</label>
+                                        <label htmlFor="newmodel">{label('dashboard.create.cpuLabel')}</label>
                                         <select
                                                 id="newmodel"
-                                                aria-label="virtual cpu model"
+                                                aria-label={label('dashboard.create.cpuAria')}
                                                 value={model}
                                                 onChange={(event) => setmodel(event.target.value)}
                                         >
@@ -104,34 +110,34 @@ export default function CreateSandboxForm({ mode, oncreated, onrefresh }: Create
                                         </select>
                                 </div>
                                 <div className="dash-field">
-                                        <label htmlFor="newvcpus">vcpus</label>
+                                        <label htmlFor="newvcpus">{label('dashboard.create.vcpusLabel')}</label>
                                         <input
                                                 type="number"
                                                 id="newvcpus"
                                                 min={1}
                                                 max={192}
                                                 value={vcpus}
-                                                aria-label="virtual cpu count"
+                                                aria-label={label('dashboard.create.vcpusAria')}
                                                 onChange={(event) => setvcpus(Number(event.target.value))}
                                         />
                                 </div>
                                 <div className="dash-field">
-                                        <label htmlFor="newram">ram (gb)</label>
+                                        <label htmlFor="newram">{label('dashboard.create.ramLabel')}</label>
                                         <input
                                                 type="number"
                                                 id="newram"
                                                 min={1}
                                                 max={1024}
                                                 value={ramgb}
-                                                aria-label="virtual memory in gigabytes"
+                                                aria-label={label('dashboard.create.ramAria')}
                                                 onChange={(event) => setramgb(Number(event.target.value))}
                                         />
                                 </div>
                                 <div className="dash-field">
-                                        <label htmlFor="newgpu">gpu</label>
+                                        <label htmlFor="newgpu">{label('dashboard.create.gpuLabel')}</label>
                                         <select
                                                 id="newgpu"
-                                                aria-label="virtual gpu model"
+                                                aria-label={label('dashboard.create.gpuAria')}
                                                 value={gpu}
                                                 onChange={(event) => setgpu(event.target.value)}
                                         >
@@ -143,10 +149,10 @@ export default function CreateSandboxForm({ mode, oncreated, onrefresh }: Create
                                         </select>
                                 </div>
                                 <div className="dash-field">
-                                        <label htmlFor="newmig">mig profile</label>
+                                        <label htmlFor="newmig">{label('dashboard.create.migLabel')}</label>
                                         <select
                                                 id="newmig"
-                                                aria-label="gpu mig slicing profile"
+                                                aria-label={label('dashboard.create.migAria')}
                                                 value={mig}
                                                 onChange={(event) => setmig(event.target.value)}
                                         >
@@ -168,12 +174,17 @@ export default function CreateSandboxForm({ mode, oncreated, onrefresh }: Create
                                         className="primary"
                                         disabled={busy}
                                         aria-busy={busy ? 'true' : undefined}
-                                        aria-label="create a new sandbox"
+                                        aria-label={label('dashboard.create.submitAria')}
                                 >
-                                        create sandbox
+                                        {label('dashboard.create.submit')}
                                 </button>
-                                <button type="button" className="button" aria-label="reload the sandbox list" onClick={onrefresh}>
-                                        refresh
+                                <button
+                                        type="button"
+                                        className="button"
+                                        aria-label={label('dashboard.create.refreshAria')}
+                                        onClick={onrefresh}
+                                >
+                                        {label('dashboard.create.refresh')}
                                 </button>
                         </div>
                 </form>

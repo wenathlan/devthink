@@ -3,6 +3,7 @@
 // keys, tab completion over the sandbox command list, the live prompt and
 // the focus-on-click output pane.
 import { useEffect, useRef, useState } from 'react';
+import { label, type LabelKey } from '../../labels.ts';
 import { commands } from '../../sandbox.ts';
 
 /** one rendered output row; cls mirrors the static page row classes. */
@@ -14,6 +15,15 @@ export type TerminalRow = {
 
 /** the terminal lifecycle label shown in the bar. */
 export type TerminalState = 'halted' | 'booting' | 'running' | 'stopped';
+
+/** the lifecycle state tokens answer their store labels (data stays data,
+ * the rendered words ride the label store). */
+const statelabels: Record<TerminalState, LabelKey> = {
+	halted: 'console.terminal.state.halted',
+	booting: 'console.terminal.state.booting',
+	running: 'console.terminal.state.running',
+	stopped: 'console.terminal.state.stopped',
+};
 
 type TerminalProps = {
 	rows: TerminalRow[];
@@ -80,16 +90,16 @@ export default function Terminal({ rows, prompt, state, enabled, oncommand }: Te
 	return (
 		<section className="term" data-state={state} aria-labelledby="termtitle">
 			<div className="term-bar">
-				<span id="termtitle">root@saddle — virtual container</span>
+				<span id="termtitle">{label('console.terminal.title')}</span>
 				<span className="term-state" aria-live="polite">
-					{state}
+					{label(statelabels[state])}
 				</span>
 			</div>
 			<pre
 				className="term-out"
 				role="log"
 				aria-live="polite"
-				aria-label="sandbox terminal output"
+				aria-label={label('console.terminal.outputAria')}
 				ref={outref}
 				onClick={() => inputref.current?.focus()}
 			>
@@ -110,7 +120,7 @@ export default function Terminal({ rows, prompt, state, enabled, oncommand }: Te
 					className="term-input"
 					autoComplete="off"
 					spellCheck={false}
-					aria-label="terminal command input; arrow keys browse history"
+					aria-label={label('console.terminal.inputAria')}
 					disabled={!enabled}
 					value={value}
 					onChange={(event) => setValue(event.target.value)}
