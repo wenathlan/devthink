@@ -364,7 +364,7 @@
     "sync:maintenance": "node tests/maintain.mjs sync",
     "sync:metadata": "node tests/release.mjs sync",
     "test": "vitest run",
-    "test:runtime": "vitest run --exclude \"tests/{doccheck,matrixverify,package,readiness,releasenotes,publishingpipeline,librarymodes,nativebridge}.test.ts\"",
+    "test:runtime": "vitest run --exclude \"tests/{doccheck,matrixverify,package,readiness,releasenotes,publishingpipeline,librarymodes,nativebridge,sweep}.test.ts\"",
     "test:chromium": "node tests/chromiumsmoke.mjs",
     "test:node": "node --experimental-strip-types --test tests/core.test.ts tests/provider/*.test.ts",
     "typecheck": "tsc --noEmit",
