@@ -169,16 +169,16 @@ jobs:
             echo "version=$version"
           } >> "$GITHUB_OUTPUT"
       # the package validator, inlined from the retired composite action
-      # (dependency install plus the pack dry-run). the family package
-      # rides the github npm registry: the scope auth rides the job token
-      # so the frozen install can fetch the saddle engine package the
-      # manifest pins.
+      # (dependency install plus the pack dry-run). the setup node registry
+      # url rewrites the project npmrc with the github package registry
+      # redirect, but the job token cannot read that cross repo package
+      # and the family mirror publishes the same package to npmjs: the
+      # install restores the committed npmrc so bun resolves the public
+      # mirror with the family settings intact.
       - name: install dependencies
-        env:
-          INSTALL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd devthink
-          printf '@wenathlan:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=%s\n' "${INSTALL_TOKEN}" > ~/.npmrc
+          git checkout -- .npmrc
           bun install --frozen-lockfile --ignore-scripts
       - name: build the distribution set
         run: cd devthink && node tests/build.mjs

@@ -145,7 +145,7 @@
     "vitest": "^5.0.5",
     "wouter": "^3.13.0",
     "yaml": "^2.9.1",
-    "zod": "^4.6.6"
+    "zod": "^4.6.7"
   },
   "files": [
     "README.md",
@@ -165,6 +165,10 @@
     "body-parser": "^2.4.0",
     "fast-uri": "^3.1.9",
     "follow-redirects": "^1.16.1",
-    "zod": "^4.6.6"
+    "zod": "^4.6.7",
+    "esbuild": "^0.28.2",
+    "undici": "^7.30.1",
+    "uuid": "^11.1.1",
+    "postcss-selector-parser": "^7.1.6"
   }
 }
