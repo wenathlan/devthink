@@ -1,0 +1,80 @@
+# Security Triage
+
+## 2026-08-27 CodeQL review
+
+The repository code-scanning dashboard reported two open high-severity `js/incomplete-sanitization` alerts in `tests/buildresearchcatalog.mjs`, at lines 51 and 56, on `main`. The alerts concern interpolation of public GitHub-search metadata into generated Markdown without escaping characters that have structural meaning in Markdown tables or links. No secret-scanning, dependency-audit or execution-control alert was shown in this review. The 1.1.3 correction encodes all externally supplied Markdown values and accepts only canonical HTTPS GitHub repository URLs before rendering the research catalogue; CodeQL will be rerun against that commit.
+
+The dashboard also showed that the CodeQL tool itself was operating normally. The existing `verify` and `security` workflows had already completed successfully for the preceding 1.1.2 commit; the requested 1.1.3 change will separately exercise the metadata workflow and a manually dispatched release path after its code and workflow corrections are validated.
+
+## 2026-08-27 Dependabot review
+
+One open pull request exists: [#1](https://github.com/wenathlan/extension/pull/1), `build(deps): bump devops-actions/actionlint from 0.1.3 to 0.1.13`. It changes only the immutable commit reference for the `devops-actions/actionlint` workflow action from `e7ee33fbf5aa8c9f9ee1145137f3e52e25d6a35b` to `ec02b36684b2f574f1d219ad0a43b082e46bf3e4`. The observed verification, CodeQL and supply-chain checks for that pull request all passed. The same reviewed immutable pin is incorporated in the 1.1.3 change, so the pull request can later be closed as superseded only with the repository owner's explicit confirmation.
+
+The final branch inventory shows no branch other than `main`. Pull request #1 is now closed and its Dependabot source branch is absent; no branch or pull request remains to be closed, archived or deleted. This working session did not issue a close or delete operation after presenting the inventory. The available repository state does not identify the actor or reason for the observed closure, so no attribution is made.
+
+## 2026-08-27 release v1.1.3 recovery
+
+The release workflow verified and assembled v1.1.3 successfully. It also published the Maven and NuGet distribution packages. Three release jobs needed a corrective release instead of a retag: GitHub Release ran outside a checkout and did not pass an explicit repository to `gh release create`; GitHub Packages npm lacked an npm registry configuration; and the GHCR container did not copy `pnpm-workspace.yaml`, which contains the explicit `allowBuilds` policy for esbuild. Version 1.1.4 repaired those items and proved GitHub Release, Maven and NuGet. The v1.1.4 run then exposed two remaining release-environment prerequisites: GitHub Packages npm needed the tagged `.nvmrc` checkout before setup-node, and the container image needed the `zip` binary used by the reproducible archive build. Version 1.1.5 repaired those controls and proved GitHub Packages npm, but its container gate then exposed the corresponding missing `unzip` command used by the ZIP inspector. Version 1.1.6 installs both archive utilities for the final complete release-path test.
+
+## 2026-08-27 release v1.1.6 outcome
+
+The v1.1.6 release workflow completed successfully. It created the public GitHub Release with `devthink1.1.6.zip`, `wenathlan-extension-1.1.6.tgz` and `SHA256SUMS.txt`; published GitHub Packages npm, Maven and NuGet distributions; pushed and attested the GHCR validation image; and deliberately skipped npmjs because its explicit publisher gate remains disabled. The CodeQL dashboard was then checked again and reports zero open alerts and two closed alerts. All immutable corrective tags from v1.1.3 through v1.1.6 remain preserved for traceability.
+
+## 2026-08-27 metadata completeness recovery
+
+The v1.1.6 release was technically successful, but subsequent review identified stale 1.1.1 references in the README. The release metadata synchronizer and the maintenance workflow now explicitly cover the README. Version 1.1.7 is required to publish the corrected README inside the library package and release assets; prior tags remain immutable and are not rewritten.
+
+## 2026-08-27 release v1.1.7 outcome
+
+The v1.1.7 release workflow completed successfully after the README synchronization correction. It created the public GitHub Release with the version-matched extension ZIP, npm tarball and SHA-256 checksum; published GitHub Packages npm, Maven and NuGet distributions; and pushed an attested GHCR validation image. npmjs remains intentionally skipped because public npm publication requires both its dedicated publisher authorization and the explicit repository gate. The latest CodeQL dashboard continues to show zero open alerts.
+
+## 2026-08-27 release v1.1.9 outcome
+
+The v1.1.9 release workflow completed successfully. Its NuGet job packed and published a descriptor validated in the runner with package ID `extension` and version `1.1.9`, while the npm, Maven, GitHub Release and GHCR jobs also completed. An attempted post-release listing of the owner NuGet catalog returned `403 Resource not accessible by integration` for the delegated CLI credential; this limits catalog readback only and does not contradict the successful authenticated publish job. The release job log is retained as the publication evidence.
+
+## 2026-08-27 release v1.1.10 and v1.1.11 outcome
+
+The automatic v1.1.10 release correctly validated, assembled, published Maven, NuGet and GHCR, but the npm publisher jobs received a tarball path without an explicit `./` prefix. npm interpreted that string as a Git source rather than the downloaded release artifact. The tag remains immutable and no retry or force move was used.
+
+Version 1.1.11 changes only that path handling. Its automatic release completed and the public npm registry resolves `@wenathlan/extension@1.1.11`; its GitHub Release includes the extension ZIP, npm tarball, source ZIP, generated release notes, NuGet package, Maven descriptor, container reference/digest/JSON and SHA-256 manifest. The Code Scanning dashboard remains at zero open and two closed CodeQL alerts.
+
+## 2026-08-27 bounded legacy NuGet migration
+
+The repository owner explicitly confirmed that only `Wenathlan.Devthink.Extension` is obsolete. GitHub Packages REST management requires a classic personal access token for external API administration, while a workflow `GITHUB_TOKEN` can delete a package associated with its repository when that workflow has package-admin access. The v1.1.12 release ran the exact-name, exact-namespace preflight and deletion job successfully; its log reports `Deleted only the confirmed legacy NuGet package: Wenathlan.Devthink.Extension`. The current `extension` package, tags and other registries were excluded. [1] [2]
+
+## 2026-08-27 checksum manifest follow-up
+
+Independent download verification of v1.1.12 found that `SHA256SUMS.txt` listed runner-local `release/` prefixes even though GitHub Release downloads place the assets directly in the chosen directory. The aggregate artifacts themselves were present, but the manifest could not be used directly with `sha256sum --check`. Version 1.1.13 changes the generator to hash only bare asset filenames, excludes the manifest from its own input and preserves deterministic ordering. No release tag or existing asset is rewritten.
+
+The automatic v1.1.13 release completed its verify, GitHub Packages npm, npmjs, Maven, NuGet, GHCR, asset aggregation and GitHub Release jobs. An independent full download of its release assets verified every manifest entry with `sha256sum --check SHA256SUMS.txt`.
+
+## 2026-08-27 release v1.1.14 container correction
+
+v1.1.14 verified Node 26.8.1, npm 12.0.2, pnpm 11.24.0 and Bun 1.4.0 in the verification job. The image build failed because the Node 26.8.1 base no longer supplies `corepack`; the failure occurred before image push, attestation, asset aggregation and GitHub Release creation. npmjs, GitHub Packages npm, Maven and NuGet completed. v1.1.15 removes the unavailable executable and installs the canonical npm/pnpm versions explicitly from package metadata, with a static gate against reintroducing Corepack.
+
+The automatic v1.1.15 run completed every release job: verification, GitHub Packages npm, npmjs, Maven, NuGet, GHCR build and attestation, complete asset aggregation and GitHub Release creation. Its release contains ten truthful assets, including the container reference, digest and JSON, and npmjs resolves `@wenathlan/extension@1.1.15` with a published integrity value. The one-time legacy NuGet deletion is absent from this and later workflows.
+
+## 2026-08-28 Chromium smoke-test follow-up
+
+The automatic v1.1.16, v1.1.17, v1.1.18, v1.1.19, v1.1.20 and v1.1.22 release chains each stopped in the isolated Chromium verification step before publishing any registry package or GitHub Release. The v1.1.16 test relied on a fixed remote-debugging port. The v1.1.17 test switched to Chromium's `DevToolsActivePort` but left the browser on `about:blank`; the GitHub-hosted Chrome exposed its DevTools endpoint but did not start the lazy MV3 worker. The v1.1.18 test instead tried to read a Chrome `Preferences` file that Chrome had not yet created. The v1.1.19 test allowed only Devthink but the hosted headless browser still did not expose an extension worker. The v1.1.20 virtual-display test also did not register an unpacked worker in hosted Chrome. Version 1.1.22 supplied an explicit public extension identity and local popup but likewise did not expose either expected target. The failure outputs show no user profile, external site, credential, form or browser action.
+
+Version 1.1.23 kept the temporary profile, unpacked release ZIP, loopback debugger and bounded diagnostics, but its remote target summary remained empty during the original ten-second wait. Version 1.1.24 likewise did not obtain a readable target list during its bounded thirty-second startup. Version 1.1.25 established the loopback endpoint and opened only the local Devthink popup, but its worker was not retained until a runtime message. Version 1.1.26 sent only the popup's existing read-only `context` message, but the CDP evaluation returned no value. Version 1.1.27 exposed the exact isolated-test defect: a template literal in the CDP fallback expression was syntactically incomplete. Version 1.1.28 showed that the DevTools popup execution context has no `chrome.runtime`, so an idle worker target is not a correct proof of a packaged MV3 extension. Version 1.1.29 proved that the branded browser blocks the unpacked package with `ERR_BLOCKED_BY_CLIENT`; no bypass is used. The successful v1.1.30 run invokes Chrome for Testing in the same temporary, Devthink-only profile and validates real extension registration, the local `background.js` bundle and the rendered popup DOM. No private key is versioned. Local type, unit, manifest, package, Maven, NuGet and Chromium checks passed; remote verify and security succeeded, followed by npmjs, GitHub Packages, Maven, NuGet, GHCR, asset aggregation and GitHub Release publication.
+
+## References
+
+[1]: https://docs.github.com/en/rest/packages/packages "REST API endpoints for packages"
+[2]: https://docs.github.com/en/packages/learn-github-packages/deleting-and-restoring-a-package "Deleting and restoring a package"
+
+## The native transport threat model (1.1.85)
+
+The native host bridge extends the attack surface to the desktop process and closes it per boundary: the manifest declares the native messaging permission in the optional set only and the deep manifest checks refuse it in the required set, so the transport never ships enabled. The host manifest the installer writes allows exactly one extension origin (the generated extension id placeholder filled at install), the install consent gate explains the scope before any write, a system wide install refuses without the explicit flag, and the uninstaller removes the manifest and its preferences. The wsbridge binds the loopback only — every other address refuses at the bind itself, so a connection from another machine never reaches the socket — the per session token authenticates every frame, the raw token rides the native port advertisement only (never a log, an audit entry or a stored record — the records keep the sha-256 hash), and a quiet session expires after the user configured idle window. The native host never receives key vault material: the secret exclusion refuses any frame body with a key shaped field, and the audit records carry the correlation id, the surface, the class and the outcome without payloads. The kill switch and the escape hatch stop every native call in one press, the per class consents never widen a read grant, the sensitive class routes through the human approval gate, the per session rate cap bounds the call flood, a crashed or outdated host degrades with the run alive, and the companion builds from source with plain node — no binary blob, no native compiler and no vendor endpoint anywhere in the recipe.
+
+## Signing and attestation posture (1.1.87)
+
+The publishing pipeline of 1.1.87 carries its provenance without any signing key material in the repository: the provenance attestations ride the oidc identity of the release workflow run (the `id-token` and `attestations` permissions), the container image attestation rides the same identity against the pushed digest, and any future signing key a channel requires lives in repository secrets the workflow references — never in the tree, never in a manifest and never in a log line. The attest job creates one attestation per release asset, the attestations record lists every artifact with its sha256 beside the identity statement, and the cyclonedx sbom documents every artifact with its hash so a consumer verifies the whole set offline through `SHA256SUMS.txt`.
+
+The publication gates stay deny by default: the registry jobs and the github release require the `release-approval` environment protection (the operator's reviewers approve before anything publishes), every publish retries inside a bounded three attempt policy instead of retrying forever, the draft release gathers every artifact before publication, and the verification step downloads every asset back and verifies the checksums before the release leaves the draft state. The rollback procedure pins the previous artifact set through its immutable tag with the pinned checksums of the previous artifact manifest, so a rollback restores the exact previous set instead of a mutable latest.
+
+## The release candidate triage flow (1.1.95)
+
+A release candidate of the 1.1.95 chain and every later release walks one triage flow before the go decision: an incoming report or a gate finding first lands in the security review (`docs/securityreview.md`) as a finding row with its fix and its verification, the three security gates answer on every run (`node tests/pentest.mjs`, `node tests/cspaudit.mjs` and `node tests/permdiff.mjs` — a red gate refuses the candidate outright through the nonzero exit the package validate chain and the verify workflow both honor), a permission finding routes into the permdiff justification table of `docs/01.extensionpermissions.md` where an unjustified addition blocks the release, and a policy or bundle finding routes into `docs/cspaudit.md` where the frozen rules stay the contract. A finding the gates cannot verify statically (the manual half of the checklist) stays the operator's responsibility with the human verification steps of `docs/pentest.md`, and a finding that names a residual boundary the design keeps open lands in the residual risk table of the security review with its owner. The candidate never leaves the draft release state while any row stays open — the `release-approval` environment protection holds the publication gates — and the security workflows (codeql, dependency review, secret scanning and the sbom) keep their per change and per release cadence beside the flow.
