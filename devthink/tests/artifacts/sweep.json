@@ -31,8 +31,8 @@
     {
       "family": "todoentries",
       "name": "docs/todo.md records the sweep results and the closed defect count",
-      "status": "open",
-      "detail": "docs/todo.md is absent"
+      "status": "fixed",
+      "detail": "the todo document carries 0 closed entries and the sweep holds no open failure to file"
     },
     {
       "family": "replay",
@@ -110,7 +110,7 @@
   "summary": {
     "families": 5,
     "total": 16,
-    "fixed": 15,
-    "open": 1
+    "fixed": 16,
+    "open": 0
   }
 }
