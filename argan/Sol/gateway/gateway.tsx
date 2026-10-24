@@ -15,7 +15,7 @@ import { PlugConnectedRegular } from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 import type { ConfigBlock, DnsTransport, FeatureCard } from "../../argan.ts";
 import { listConfigBlocks, listDohFirstCards, listTransports } from "../../catalog.ts";
-import EmptyState from "../components/shell.emptystate.tsx";
+import EmptyState from "../widgets/shell.emptystate.tsx";
 import { type NavLink, Shell } from "../shell/Shell";
 
 const FOOTER_LINKS: readonly NavLink[] = [

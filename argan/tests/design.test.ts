@@ -105,7 +105,7 @@ describe("design contract", () => {
   });
 
   it("carries the flow contract sources (the entry gate behind the home anchor, the shared state module)", () => {
-    const GATE = read("../Sol/components/home.entrygate.tsx");
+    const GATE = read("../Sol/widgets/home.entrygate.tsx");
     const STATE = read("../onboardingstate.ts");
     const HOME = read("../Sol/home/home.tsx");
     const ONBOARDING = read("../Sol/onboarding/onboarding.tsx");
