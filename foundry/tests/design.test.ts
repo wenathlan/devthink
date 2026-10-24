@@ -16,7 +16,7 @@ function read(path: string): string {
 
 const CSS = read("../Sol/sol.css");
 const ENTRY = read("../index.html");
-const MARK = read("../Sol/components/shell.brandmark.tsx");
+const MARK = read("../Sol/widgets/shell.brandmark.tsx");
 const SHELL = read("../Sol/shell/Shell.tsx");
 const TOML = read("../devthink.toml");
 const SOL = read("../Sol/Sol.tsx");
@@ -123,7 +123,7 @@ describe("design contract", () => {
   });
 
   it("carries the flow contract sources (the entry gate behind the home anchor)", () => {
-    const GATE = read("../Sol/components/home.entrygate.tsx");
+    const GATE = read("../Sol/widgets/home.entrygate.tsx");
     const HOME = read("../Sol/home/home.tsx");
     const INTRO = read("../Sol/intro/intro.tsx");
     const ONBOARDING = read("../Sol/onboarding/onboarding.tsx");

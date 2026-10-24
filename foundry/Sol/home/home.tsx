@@ -29,13 +29,13 @@ import { type CSSProperties, useEffect, useRef, useState } from "react";
 import { familyrow } from "../../family";
 import { familyurl } from "../../familyurl";
 import type { HomeProps } from "../../hometypes.ts";
-import { BrandMark } from "../components/shell.brandmark.tsx";
-import { Entry } from "../components/home.entry.tsx";
-import { EntryGate } from "../components/home.entrygate.tsx";
-import { Tabs } from "../components/home.tabs.tsx";
+import { BrandMark } from "../widgets/shell.brandmark.tsx";
+import { Entry } from "../widgets/home.entry.tsx";
+import { EntryGate } from "../widgets/home.entrygate.tsx";
+import { Tabs } from "../widgets/home.tabs.tsx";
 
-export * from "../components/home.entry.tsx";
-export * from "../components/home.tabs.tsx";
+export * from "../widgets/home.entry.tsx";
+export * from "../widgets/home.tabs.tsx";
 
 /** one clone format of the herd shelf — the real archives the family
  * clones and ships (the release archives travel as tar.xz) */

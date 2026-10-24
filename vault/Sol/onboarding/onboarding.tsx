@@ -19,7 +19,7 @@
 import { useCallback, useState } from "react";
 import { useLocation } from "wouter";
 import { markOnboardingStage } from "../../onboardingstate.ts";
-import { BrandMark } from "../components/shell.brandmark.tsx";
+import { BrandMark } from "../widgets/shell.brandmark.tsx";
 
 /** the three beats of the walk: what it is, what it does, enter */
 const STEPS = [

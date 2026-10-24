@@ -22,7 +22,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { markOnboardingStage, readOnboardingState } from "../../onboardingstate.ts";
-import { BrandMark } from "../components/shell.brandmark.tsx";
+import { BrandMark } from "../widgets/shell.brandmark.tsx";
 
 /** the beat plan of the intro (ms): 1.6s of open, 0.8s of slide-up exit */
 const OPEN_MS = 1600;
