@@ -17,6 +17,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { useLocation } from "wouter";
 import { familyurl } from "../../familyurl";
+import { ROSTER } from "../components/apps.roster.ts";
 import { BrandMark } from "../components/shell.brand.tsx";
 
 /** the section links of the top bar, in reading order (home is the mark). */
@@ -27,21 +28,9 @@ const NAVLINKS: readonly { href: string; label: string }[] = [
   { href: "/support", label: "support" },
 ];
 
-/** the family row of the footer: every deploy unit beside the cobaia, with
- * the one accent each carries (the spec §12 table, mirrored from the argan
- * contract; the devthink OS rides the family sun). */
-const FAMILYROW: readonly { slug: string; accent: string }[] = [
-  { slug: "devthink", accent: "#f59e0b" },
-  { slug: "saddle", accent: "#e86f2d" },
-  { slug: "forge", accent: "#a2cb3a" },
-  { slug: "foundry", accent: "#2fb8b5" },
-  { slug: "vault", accent: "#a3d7e6" },
-  { slug: "getry", accent: "#8b5cf6" },
-  { slug: "cadria", accent: "#f472b6" },
-  { slug: "debonair", accent: "#d9962e" },
-  { slug: "stealthhead", accent: "#e8563f" },
-  { slug: "argan", accent: "#34d8a8" },
-];
+/** the family row of the footer: every deploy unit beside the cobaia, read
+ * from the one roster table (the spec §12 accents) so the footer can never
+ * drift from the /apps directory. */
 
 /** the shared chrome: the top bar, the page surface and the footer row. */
 export function Shell({ children }: { children: ReactNode }) {
@@ -109,7 +98,7 @@ export function Shell({ children }: { children: ReactNode }) {
           <div className="cb-footcol cb-footfamily">
             <p className="cb-foothead">the family</p>
             <div className="cb-famgrid">
-              {FAMILYROW.map((member) => (
+              {ROSTER.map((member) => (
                 <a
                   key={member.slug}
                   className="cb-famlink"

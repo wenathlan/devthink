@@ -188,6 +188,7 @@
   --ease-micro: cubic-bezier(0.22, 1, 0.36, 1);
   --sol-ease-out: var(--ease-micro);
   --win-ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
+  --ease-silk: cubic-bezier(0.2, 0.8, 0.2, 1);
 
   /* the interactive accent: the WINDOWS accent governs the focus, the CTA
      and every interactive voice of the site; the dark amber of the identity
@@ -213,10 +214,39 @@
   --win-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
   --mica: #0a0a0b;
 
-  /* the content measure and the z bands (documented) */
+  /* the content measure, the z bands and the shell geometry */
   --cb-maxw: 1060px;
+
+  /* z bands: atmosphere 0 · content 10 · float 20 · bar 50 · menu 60 ·
+     overlay 100 · dock 150 · modal 200 · toast 300 · tooltip 400 */
+  --z-atmosphere: 0;
   --z-content: 10;
+  --z-float: 20;
   --z-bar: 50;
+  --z-menu: 60;
+  --z-overlay: 100;
+  --z-dock: 150;
+  --z-modal: 200;
+  --z-toast: 300;
+  --z-tooltip: 400;
+
+  /* shell geometry: the positioning variables the resize and the re dock
+     write, so the browser relayouts without a re render of the interface */
+  --shell-sidebar: 264px;
+  --shell-sidebar-min: 208px;
+  --shell-topbar: 52px;
+  --shell-gutter: 12px;
+  --shell-handle: 4px;
+  --shell-radius: 8px;
+
+  /* status tones: the outcome voices of the eight state family (the ok and
+     err fills of the success and danger buttons, the semantic accents) */
+  --color-ok: #7fd1a8;
+  --color-warn: #e2c26a;
+  --color-err: #f08a7a;
+  --ok: var(--color-ok);
+  --warn: var(--color-warn);
+  --err: var(--color-err);
 
   color-scheme: dark;
   font-size: 16px;
@@ -253,8 +283,18 @@
   --bar-hairline: rgb(0 0 0 / 10%);
   --scroll: rgb(0 0 0 / 35%);
   --scroll-hover: rgb(0 0 0 / 45%);
+  --color-ok: #1e7f4f;
+  --color-warn: #9a6b00;
+  --color-err: #c23b2c;
   --mica: #f4f4f5;
   color-scheme: light;
+}
+
+/* ---------- 1b. SHORT NAMES — the aliases the family law sections compose
+   (they track the :root tokens above, so the light flip follows) ---------- */
+:root {
+  --ink: var(--color-ink);
+  --s1: var(--color-s1);
 }
 
 /* ---------- 2. BASE — the trylle body on the windows controls ---------- */
@@ -661,12 +701,9 @@ code {
   color: var(--sol-accent-ink);
   font: 600 14px/1 var(--sol-sans);
   cursor: pointer;
-  box-shadow:
-    inset 0 1.2px 0 0 rgb(255 255 255 / 45%),
-    inset 0 8px 14px -6px rgb(255 255 255 / 22%),
-    0 0 0 1px var(--sol-accent-deep),
-    0 1px 2px rgb(0 0 0 / 22%),
-    0 3px 5px -1px rgb(0 0 0 / 26%);
+  /* the resting physics: the top highlight of the fluent key and the
+     small drop shadow, both suppressed while pressed */
+  box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 16%), 0 1px 2px rgb(0 0 0 / 14%);
   transition:
     background-color var(--sol-micro) var(--sol-ease-out),
     box-shadow var(--sol-micro) var(--sol-ease-out),
@@ -675,29 +712,17 @@ code {
 }
 .cb-btn:hover {
   background: color-mix(in oklab, var(--sol-accent) 90%, #ffffff);
-  box-shadow:
-    inset 0 1.2px 0 0 rgb(255 255 255 / 55%),
-    inset 0 8px 14px -6px rgb(255 255 255 / 30%),
-    0 0 0 1px var(--sol-accent-deep),
-    0 2px 3px rgb(0 0 0 / 26%),
-    0 4px 7px -1px rgb(0 0 0 / 30%);
+  box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 16%), 0 1px 2px rgb(0 0 0 / 14%);
   text-decoration: none;
 }
 .cb-btn:focus-visible {
   outline: none;
-  box-shadow:
-    inset 0 1.2px 0 0 rgb(255 255 255 / 45%),
-    inset 0 -2px 0 var(--sol-focus),
-    0 0 0 1px var(--sol-accent-deep),
-    0 1px 2px rgb(0 0 0 / 22%),
-    0 3px 5px -1px rgb(0 0 0 / 26%);
+  box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 16%), inset 0 -2px 0 var(--sol-focus),
+    0 1px 2px rgb(0 0 0 / 14%);
 }
 .cb-btn:active {
   transform: scale(0.97);
-  box-shadow:
-    inset 0 1.2px 0 0 rgb(255 255 255 / 30%),
-    0 0 0 1px var(--sol-accent-deep),
-    0 1px 2px rgb(0 0 0 / 18%);
+  box-shadow: inset 0 1px 0 0 rgb(0 0 0 / 8%);
 }
 .cb-btn:disabled,
 .cb-btn[aria-disabled="true"] {
@@ -706,30 +731,70 @@ code {
   transform: none;
   box-shadow: var(--sol-shadow-1);
 }
+/* the outcome voices of the eight state family: the same key, the ok and
+   err tones riding the declared variables */
+.cb-btn.success {
+  background: var(--ok);
+  color: #0a0a0a;
+}
+.cb-btn.success:hover {
+  background: color-mix(in srgb, var(--ok) 90%, #fefefe);
+}
+.cb-btn.danger {
+  background: var(--err);
+  color: #0a0a0a;
+}
+.cb-btn.danger:hover {
+  background: color-mix(in srgb, var(--err) 90%, #fefefe);
+}
+/* the loading voice: aria-busy hides the label and spins the honest wheel
+   in place — the layout holds, the action never pretends to be done */
+.cb-btn[aria-busy="true"] {
+  position: relative;
+  color: transparent;
+  pointer-events: none;
+}
+.cb-btn[aria-busy="true"]::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 15px;
+  height: 15px;
+  margin: -7.5px 0 0 -7.5px;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--sol-accent) 35%, transparent);
+  border-top-color: var(--sol-accent);
+  animation: solSpin 700ms linear infinite;
+}
 .cb-btn--ghost {
   background: var(--wash-soft);
   color: var(--sol-ink);
   box-shadow:
-    inset 0 1.2px 0 0 rgb(255 255 255 / 10%),
+    inset 0 1px 0 0 rgb(255 255 255 / 10%),
     0 0 0 1px var(--sol-hairline-strong),
-    0 1px 2px rgb(0 0 0 / 24%);
+    0 1px 2px rgb(0 0 0 / 14%);
 }
 .cb-btn--ghost:hover {
   background: var(--wash);
   border-color: transparent;
   color: var(--sol-ink);
   box-shadow:
-    inset 0 1.2px 0 0 rgb(255 255 255 / 14%),
+    inset 0 1px 0 0 rgb(255 255 255 / 14%),
     0 0 0 1px color-mix(in oklab, var(--sol-ink) 16%, transparent),
-    0 2px 3px rgb(0 0 0 / 28%);
+    0 1px 2px rgb(0 0 0 / 16%);
 }
 .cb-btn--ghost:focus-visible {
   outline: none;
   box-shadow:
-    inset 0 1.2px 0 0 rgb(255 255 255 / 10%),
+    inset 0 1px 0 0 rgb(255 255 255 / 10%),
     inset 0 -2px 0 var(--sol-focus),
     0 0 0 1px var(--sol-hairline-strong),
-    0 1px 2px rgb(0 0 0 / 24%);
+    0 1px 2px rgb(0 0 0 / 14%);
+}
+.cb-btn--ghost:active {
+  transform: scale(0.97);
+  box-shadow: inset 0 1px 0 0 rgb(0 0 0 / 8%), 0 0 0 1px var(--sol-hairline-strong);
 }
 
 /* the text link voice — the focus underline answers the windows accent */
@@ -1124,6 +1189,12 @@ code {
     opacity: 0.45;
   }
 }
+/* the honest wheel of the aria-busy loading voice */
+@keyframes solSpin {
+  to {
+    transform: rotate(1turn);
+  }
+}
 /* dtPopIntro — the pin entrance of the windows recipe: 0 → 1.125 (40%) →
    0.725 (70%) → 1 (the bounce); the bar entries pop on mount, staggered */
 @media (prefers-reduced-motion: no-preference) {
@@ -1214,5 +1285,134 @@ code {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================================================
+   the family motion law: the duty cycled loops, the reduced motion and the
+   pause hook. the loops ride the stepped keyframes so the compositor draws
+   a handful of frames per cycle instead of repainting every vsync, the
+   offscreen surfaces pause through the anim paused attribute, and the
+   reduced motion preference zeroes every custom animation.
+   ========================================================================== */
+
+@keyframes skeletonStep {
+  0% { opacity: 0.45; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.45; }
+}
+
+@keyframes pulseStep {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pingStep {
+  0% { opacity: 0.7; transform: scale(1); }
+  70% { opacity: 0; transform: scale(2.2); }
+  100% { opacity: 0; transform: scale(2.2); }
+}
+
+.anim-skeleton { animation: skeletonStep 2.4s steps(8, end) infinite; }
+.anim-pulse { animation: pulseStep 2s steps(8, end) infinite; }
+.anim-ping { animation: pingStep 2s steps(8, end) infinite; }
+
+[data-anim-paused] .anim-skeleton,
+[data-anim-paused] .anim-pulse,
+[data-anim-paused] .anim-ping,
+[data-anim-paused] [class*="anim-"] {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-skeleton, .anim-pulse, .anim-ping, [class*="anim-"] {
+    animation: none;
+  }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================================================
+   the silk surface law: the panels, the buttons and the inputs of the
+   family ride the layered shadows with the inset highlight, the silk curve
+   for the transitions, and the guards of the reduced transparency, so the
+   app chrome renders exactly like the design showcase of the os app.
+   ========================================================================== */
+
+.panel-silk {
+  border: 1px solid rgb(255 255 255 / 8%);
+  background: color-mix(in srgb, var(--s1) 86%, transparent);
+  border-radius: var(--shell-radius);
+  padding: 14px;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), 0 1px 2px rgb(0 0 0 / 28%), 0 10px 28px -18px rgb(0 0 0 / 55%);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+}
+
+.silk-btn {
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 10px;
+  min-height: 44px;
+  padding: 0 14px;
+  color: var(--ink);
+  background: rgb(255 255 255 / 5%);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%), 0 1px 2px rgb(0 0 0 / 30%);
+  transition: transform 140ms var(--ease-silk), box-shadow 140ms var(--ease-silk), opacity 140ms var(--ease-silk), background-color 140ms var(--ease-silk), border-color 140ms var(--ease-silk);
+}
+
+.silk-btn:hover {
+  background: rgb(255 255 255 / 9%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%), 0 2px 4px rgb(0 0 0 / 28%), 0 8px 20px -10px rgb(0 0 0 / 48%);
+}
+
+.silk-btn:active {
+  transform: translateY(1px);
+}
+
+.silk-btn:focus-visible,
+.silk-input:focus-visible,
+.silk-area:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.silk-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+  box-shadow: none;
+}
+
+.silk-input,
+.silk-area {
+  width: 100%;
+  color: var(--ink);
+  background: rgb(0 0 0 / 26%);
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 10px;
+  padding: 11px 12px;
+  font: inherit;
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 24%);
+  transition: border-color 140ms var(--ease-silk), background-color 140ms var(--ease-silk);
+}
+
+.silk-area { resize: vertical; }
+
+.silk-input:hover,
+.silk-area:hover {
+  border-color: rgb(255 255 255 / 18%);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .panel-silk {
+    background: var(--s1);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 }

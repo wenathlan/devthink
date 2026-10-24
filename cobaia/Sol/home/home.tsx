@@ -17,33 +17,15 @@
  */
 import type { CSSProperties } from "react";
 import { familyurl } from "../../familyurl";
+import { ROSTER } from "../components/apps.roster.ts";
 import { AdSlot } from "../components/shell.adsslot.tsx";
 import { BrandMark } from "../components/shell.brand.tsx";
 
 /** the featured deploy units of the landing preview (the full directory
- * lives on /apps): the OS, the engine, the store and one studio. */
-const FEATURED: readonly { slug: string; accent: string; role: string }[] = [
-  {
-    slug: "devthink",
-    accent: "#f59e0b",
-    role: "the OS: the one interface where the whole family opens as windows.",
-  },
-  {
-    slug: "saddle",
-    accent: "#e86f2d",
-    role: "the virtualized sandbox engine: runs any sandbox, the modules stay library-grade.",
-  },
-  {
-    slug: "vault",
-    accent: "#a3d7e6",
-    role: "the storage clone: keeps every site database and receives the data backups.",
-  },
-  {
-    slug: "cadria",
-    accent: "#f472b6",
-    role: "the video and image studio: player, editor and gallery on the versawase engine.",
-  },
-];
+ * lives on /apps): the OS, the engine, the store and one studio — read
+ * from the one roster table so the preview can never drift from /apps. */
+const FEATUREDSLUGS: readonly string[] = ["devthink", "saddle", "vault", "cadria"];
+const FEATURED = ROSTER.filter((member) => FEATUREDSLUGS.includes(member.slug));
 
 /** the three steps of the landing: what the family is made of. */
 const STEPS = [
