@@ -388,7 +388,9 @@ jobs:
           set -euo pipefail
           cd devthink
           test "$(bun --version)" = "$(node -p "require('./package.json').engines.bun.match(/>=([^ ]+)/)[1]")"
-          bun x vitest run
+          # the modes lane answers the runtime contract: the release truth
+          # tests ride the ladder where their gates regenerate the artifacts
+          bun x vitest run --exclude "tests/{doccheck,matrixverify,package,readiness,releasenotes,publishingpipeline,librarymodes,nativebridge}.test.ts"
       - name: Bun import smoke over the bun entry
         if: matrix.runtime == 'bun'
         run: cd devthink && bun --eval "const library = await import('./dist/bun.js'); if (typeof library.bunadapter !== 'function') throw new Error('The bun mode lost its adapter.'); if (typeof library.surfacepalette !== 'function') throw new Error('The bun mode lost its surface.');"

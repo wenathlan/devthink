@@ -117,7 +117,7 @@ jobs:
             if (globalThis.devthink.bundlestamp().mode !== 'umd') throw new Error('The umd mode lost its stamp.');
             "
           else
-            bun run test
+            bun run test:runtime
           fi
       - name: Flat tarball check over the single distribution
         if: matrix.runtime == 'node'
