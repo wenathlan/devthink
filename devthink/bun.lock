@@ -16,7 +16,6 @@
         "motion": "^12.23.0",
         "react": "^19.3.1",
         "react-devtools-core": "^8.0.0",
-        "tailwindcss": "^4.1.0",
         "z-ai-web-dev-sdk": "^0.0.18",
       },
       "devDependencies": {

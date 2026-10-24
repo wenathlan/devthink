@@ -136,7 +136,7 @@ jobs:
         # engine logic the vite build reads.
         run: |
           set -euo pipefail
-          pnpm --dir "${{ matrix.app }}" install --frozen-lockfile
+          pnpm --dir "${{ matrix.app }}" install --frozen-lockfile --ignore-scripts
           # the family theme answers under its own subpath of the project
           # pages site: the absolute base declares the mount to the vite
           # build and to the wouter router (a relative base leaves the
