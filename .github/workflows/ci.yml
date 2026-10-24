@@ -263,10 +263,12 @@ jobs:
           # zero-build sites ship their own engine copy per deploy unit
           # (engine.css, engine.js, clean-url.js|ts) the way a standalone
           # static site must; the per-unit sol lockfiles are generated pins
-          # riding the same rule, and the live tree outside them answers no
-          # duplicate content above the 512-byte stub floor.
+          # riding the same rule, and the family biome baseline is the
+          # deliberate identical config the parity gate enforces; the live
+          # tree outside them answers no duplicate content above the
+          # 512-byte stub floor.
           duplicates="$(
-            git ls-files | grep -vE '^(devthink/tests/code/|devthink/docs/antigravity/)' | grep -vE '(^|/)LICENSE$' | grep -vE 'engine\.(css|js)$|clean-url\.(js|ts)$|/pnpm-lock\.yaml$' | while IFS= read -r file; do
+            git ls-files | grep -vE '^(devthink/tests/code/|devthink/docs/antigravity/)' | grep -vE '(^|/)LICENSE$' | grep -vE 'engine\.(css|js)$|clean-url\.(js|ts)$|/pnpm-lock\.yaml$|/biome\.jsonc$' | while IFS= read -r file; do
               test -f "${file}" || continue
               size="$(wc -c < "${file}")"
               if [ "${size}" -gt 512 ]; then
@@ -398,7 +400,12 @@ jobs:
           set -euo pipefail
           cd "${{ matrix.app }}"
           if [ -f pnpm-lock.yaml ]; then
-            npm install -g --no-fund --no-audit "$(node -p 'require("./package.json").packageManager')"
+            pm="$(node -p 'require("./package.json").packageManager || ""')"
+            if [ -n "${pm}" ]; then
+              npm install -g --no-fund --no-audit "${pm}"
+            else
+              npm install -g --no-fund --no-audit pnpm@12
+            fi
             pnpm install --frozen-lockfile --ignore-scripts
           else
             bun install --frozen-lockfile --ignore-scripts
@@ -407,4 +414,7 @@ jobs:
       - name: Run the app suite
         if: steps.suite.outputs.present == 'true'
         working-directory: ${{ matrix.app }}
-        run: bunx vitest run
+        # the app answers its own runner: the vitest dialect apps ride their
+        # vitest script and the node test dialect apps ride theirs, so the
+        # matrix never forces one runner on the family.
+        run: npm test

@@ -1,5 +1,5 @@
 {
-  "release": "2.0.133",
+  "release": "2.0.134",
   "trails": [
     "tests/artifacts/agentcert.json",
     "tests/artifacts/costcert.json",
@@ -31,8 +31,8 @@
     {
       "family": "todoentries",
       "name": "docs/todo.md records the sweep results and the closed defect count",
-      "status": "fixed",
-      "detail": "the todo document carries 0 closed entries and the sweep holds no open failure to file"
+      "status": "open",
+      "detail": "docs/todo.md is absent"
     },
     {
       "family": "replay",
@@ -68,7 +68,7 @@
       "family": "scans",
       "name": "no secret material appears in the bundle",
       "status": "fixed",
-      "detail": "no literal key, token or password value appears in the 258 shipped sources or the 20 compiled bundles"
+      "detail": "no literal key, token or password value appears in the 289 shipped sources or the 20 compiled bundles"
     },
     {
       "family": "scans",
@@ -110,7 +110,7 @@
   "summary": {
     "families": 5,
     "total": 16,
-    "fixed": 16,
-    "open": 0
+    "fixed": 15,
+    "open": 1
   }
 }

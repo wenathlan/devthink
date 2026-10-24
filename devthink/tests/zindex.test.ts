@@ -6,10 +6,9 @@
  * immutable block. a raw band scale value outside the ladder fails the
  * pipeline, so the layering drift dies at the test gate.
  */
-import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { describe, it } from "node:test";
+import { describe, expect, it } from "vitest";
 
 const css = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
 
@@ -28,7 +27,7 @@ const bands = [
 
 describe("zindex layer discipline", () => {
   it("declares the ten bands of the family in the root block", () => {
-    for (const band of bands) assert.ok(css.includes(band), `the band ${band} is missing from the root block`);
+    for (const band of bands) expect(css).toContain(band);
   });
 
   it("carries no raw band scale z index outside the ladder", () => {
@@ -43,15 +42,15 @@ describe("zindex layer discipline", () => {
       const parsed = Number.parseInt(value, 10);
       return Number.isFinite(parsed) && Math.abs(parsed) > 5;
     });
-    assert.deepEqual(leaks, [], `raw band scale values escaped the ladder: ${leaks.join(", ")}`);
+    expect(leaks).toEqual([]);
   });
 
   it("declares the shell geometry variables of the family", () => {
     for (const geo of ["--shell-sidebar", "--shell-topbar", "--shell-gutter", "--shell-handle"])
-      assert.ok(css.includes(geo), `the geometry variable ${geo} is missing`);
+      expect(css).toContain(geo);
   });
 
   it("carries the silk curve of the family", () => {
-    assert.ok(css.includes("--ease-silk"), "the silk curve token is missing");
+    expect(css).toContain("--ease-silk");
   });
 });

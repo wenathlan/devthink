@@ -1,5 +1,5 @@
 {
-  "release": "2.0.133",
+  "release": "2.0.134",
   "matrix": {
     "browsers": [
       "chromium",
@@ -38,7 +38,7 @@
       "family": "cli",
       "name": "the cli surface answers the manifest and help commands in library mode",
       "outcome": "pass",
-      "detail": "manifest and help answered for 2.0.133"
+      "detail": "manifest and help answered for 2.0.134"
     },
     {
       "family": "mcp",
@@ -73,8 +73,8 @@
     {
       "family": "gates",
       "name": "the pool audit gate runs green over the 626 item pool",
-      "outcome": "pass",
-      "detail": "Pool audit of 626 items against 4378 shipped symbols: 623 implemented, 3 planned, 0 unknown."
+      "outcome": "fail",
+      "detail": "Command failed: C:\\Users\\nathalan\\nodejs\\node.exe tests/poolaudit.mjs\nnode:internal/modules/run_main:107\r\n    triggerUncaughtException(\r\n    ^\r\n\r\n[Error: ENOENT: no such file or directory, open 'C:\\allan\\devthink\\devthink\\docs\\12.crxfeaturemining.md'] {\r\n  errno: -4058,\r\n  code: 'ENOENT',\r\n  syscall: 'open',\r\n  path: 'C:\\\\allan\\\\devthink\\\\devthink\\\\docs\\\\12.crxfeaturemining.md'\r\n}\r\n\r\nNode.js v26.8.2\r\n"
     },
     {
       "family": "gates",
@@ -91,8 +91,8 @@
     {
       "family": "gates",
       "name": "the permission diff gate runs green over the versioned baseline",
-      "outcome": "pass",
-      "detail": "Permission set hash: 1d6e1579114bf176eba45a159e9f166c9c4a2587a53644bd2a63f880506a6262 over 11 permission entries; the baseline of tests/permdiff.json carries the recorded set of the release."
+      "outcome": "fail",
+      "detail": "Command failed: C:\\Users\\nathalan\\nodejs\\node.exe tests/permdiff.mjs\nPERMDIFF The permdiff justification table lives in docs/01.extensionpermissions.md; the document is missing.\n"
     },
     {
       "family": "gates",
@@ -115,14 +115,14 @@
     {
       "family": "gates",
       "name": "the sweep artifact records a green run",
-      "outcome": "pass",
-      "detail": "the sweep artifact records zero failures"
+      "outcome": "fail",
+      "detail": "the sweep artifact records 1 open findings"
     }
   ],
-  "coverage": 100,
+  "coverage": 83,
   "summary": {
     "total": 18,
-    "passed": 18,
-    "failed": 0
+    "passed": 15,
+    "failed": 3
   }
 }
