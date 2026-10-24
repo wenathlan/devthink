@@ -21,7 +21,7 @@
  */
 
 // the legacy anchor visuals stay public beside the page (nothing is turned off)
-export * from "../components/studio.parts.tsx";
+export * from "../widgets/studio.parts.tsx";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { type AnalysisReport, PipelineError } from "../../audiopipeline.ts";
@@ -31,11 +31,11 @@ import { imageStyles, type StyleSpec, styleForDescriptor } from "../../imagestyl
 import type { DemoFixtureId } from "../../introfixtures.ts";
 import { generateStudioProject, reseededSeed, type SessionSave, type StudioGeneration } from "../../studiogenerate.ts";
 import { analyzeSource, fileSource, fixtureSource, type StudioSource } from "../../studiosource.ts";
-import ControlsPane from "../components/studio.controls.tsx";
-import ExportRow from "../components/studio.exportrow.tsx";
-import Readout from "../components/studio.readout.tsx";
-import SourceRail from "../components/studio.sourcerail.tsx";
-import StageArt from "../components/studio.stageart.tsx";
+import ControlsPane from "../widgets/studio.controls.tsx";
+import ExportRow from "../widgets/studio.exportrow.tsx";
+import Readout from "../widgets/studio.readout.tsx";
+import SourceRail from "../widgets/studio.sourcerail.tsx";
+import StageArt from "../widgets/studio.stageart.tsx";
 
 /** the staged beat before the synchronous compute lands — skipped under reduced motion. */
 const STAGE_MS = 240;

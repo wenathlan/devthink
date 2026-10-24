@@ -26,7 +26,7 @@ import NotFoundAnchor from "./notfound/notfound.tsx";
 import OnboardingAnchor from "./onboarding/onboarding.tsx";
 import PlayerAnchor from "./player/player.tsx";
 import SettingsAnchor from "./settings/settings.tsx";
-import EntryGate from "./components/shell.entrygate.tsx";
+import EntryGate from "./widgets/shell.entrygate.tsx";
 import Shell from "./shell/Shell.tsx";
 import StudioAnchor from "./studio/studio.tsx";
 

@@ -26,7 +26,7 @@ import {
   listGatewayProjects,
 } from "../../gatewayclient.ts";
 import { imageStyles } from "../../imagestyles.ts";
-import { EmptyState } from "../components/shell.emptystate.tsx";
+import { EmptyState } from "../widgets/shell.emptystate.tsx";
 import { useToast } from "../toast/Toast.tsx";
 
 /** how many generations the wall asks for (the gateway clamps 1-200). */
