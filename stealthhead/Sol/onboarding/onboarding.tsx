@@ -23,7 +23,7 @@ import {
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { markOnboardingStage } from "../../onboardingstate.ts";
-import { BrandMark } from "../components/shell.brandmark.tsx";
+import { BrandMark } from "../widgets/shell.brandmark.tsx";
 import { START_APPS } from "../shell/Shell.tsx";
 
 /** the honest statement of the opening frame (what the app is). */

@@ -33,10 +33,10 @@ import { familyurl } from "../../familyurl";
 import { currentround, listmatches, type MatchLobby, orderlobbies, roundcounts } from "../../match.ts";
 import { progressof } from "../../matchrules.ts";
 import { observeReveals } from "../../reveal";
-import { BrandMark } from "../components/shell.brandmark.tsx";
+import { BrandMark } from "../widgets/shell.brandmark.tsx";
 import { toast } from "../toast/Toast.tsx";
-import { EntryGate } from "../components/home.entrygate.tsx";
-import { Scope } from "../components/home.scope.tsx";
+import { EntryGate } from "../widgets/home.entrygate.tsx";
+import { Scope } from "../widgets/home.scope.tsx";
 
 /** the four game domains of the platform (navigation, not data). */
 const domains: { href: string; label: string; about: string; meta: string; icon: typeof Crosshair }[] = [

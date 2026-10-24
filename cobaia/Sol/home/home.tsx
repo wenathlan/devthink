@@ -17,9 +17,9 @@
  */
 import type { CSSProperties } from "react";
 import { familyurl } from "../../familyurl";
-import { ROSTER } from "../components/apps.roster.ts";
-import { AdSlot } from "../components/shell.adsslot.tsx";
-import { BrandMark } from "../components/shell.brand.tsx";
+import { ROSTER } from "../widgets/apps.roster.ts";
+import { AdSlot } from "../widgets/shell.adsslot.tsx";
+import { BrandMark } from "../widgets/shell.brand.tsx";
 
 /** the featured deploy units of the landing preview (the full directory
  * lives on /apps): the OS, the engine, the store and one studio — read

@@ -17,8 +17,8 @@
 import type { CSSProperties, ReactNode } from "react";
 import { useLocation } from "wouter";
 import { familyurl } from "../../familyurl";
-import { ROSTER } from "../components/apps.roster.ts";
-import { BrandMark } from "../components/shell.brand.tsx";
+import { ROSTER } from "../widgets/apps.roster.ts";
+import { BrandMark } from "../widgets/shell.brand.tsx";
 
 /** the section links of the top bar, in reading order (home is the mark). */
 const NAVLINKS: readonly { href: string; label: string }[] = [
