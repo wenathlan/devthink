@@ -1,0 +1,32 @@
+# Execution environments
+
+Devthink 1.1.60 gives every reviewed step a concrete execution environment. The consent gates do not move: every environment executes only reviewed steps of approved plans against granted origins, no environment ever bypasses the human review, and no pool size, heartbeat interval, zombie tolerance or environment posture is hardcoded — they are user choices.
+
+## The four environments
+
+| Environment | Adapter | What runs there |
+| --- | --- | --- |
+| `pagecontext` | the page bridge | Dom actions that need page events: clicks, typing, scrolling, form fills and every read the live page serves. The manifest registers content scripts in the isolated world by default while the actual injection stays behind the granted scripting calls on reviewed origins, so nothing auto-runs on any site. |
+| `isolatedworld` | the scripting api world | `evaluate` steps only. The injection carries reviewed arguments only, and page globals stay unreachable from step code because the isolated world shares no objects with the page. |
+| `offscreenworker` | the offscreen document worker pool | Parse heavy read kinds: html snapshots (`readhtml`, `parsehtml`, `readertree`, `readoutline`, `classifypage`), network json payloads (`readjson`, `parsejson`), table row reductions (`readtable`, `scrapetable`, `detecttables`, `deduperows`, `transformvalues`), accessibility tree shaping (`a11ytree`), complex selector evaluation (`resolvexpath`, `deriveselector`, `detectvirtual`) and screenshot stitching (`contactsheet`, `timelapse`, `makethumbs`). The optional `offscreen` permission gates the document; without the grant every one of these steps falls back to inline parsing inside the page instead of refusing the reviewed work. |
+| `sandboxframe` | the sandboxed page | Steps whose reviewed options carry untrusted markup. The adapter strips scripts and event handlers before the render, assigns a per render nonce to every message, posts through the `devthinksandbox` channel and the result never reenters the dom outside the frame. The sandbox page runs under the manifest `sandbox` key with no extension privileges. |
+
+## Routing
+
+`environments.ts` holds the routing table: `environmentsof` reads the allowed environments of a step, `defaultenvironment` reads its default, `routeenvironment` resolves the reviewed `environment` field against the table, applies the parse offload toggle and the offscreen capability grant, and returns an inline fallback decision. `policy.ts` validates the same table through `stepenvironmentvalid`, narrows sessions through `environmentgrantgate`, refuses `offscreenworker` steps without the capability through `offscreencapabilitygate` and exposes `environmentrequirements()` so the panel and the executor read one grammar. The executor registry maps each environmentkind to its runtime adapter; the page bridge keeps `pagecontext` execution for dom actions that need page events and routes every other step to the environment the policy names.
+
+## The offscreen document and the worker pool
+
+The background spawns the offscreen document on first use behind the `offscreen` capability negotiated through the permissions api, reuses the single document across the steps of one run and closes it when the run completes; the registry in memory keeps the reasons and justification of every spawn. Inside the document a worker pool grows and shrinks with the pending parse queue; a user configured `workerpoolsize` pins the pool with no engine cap. Executor traffic rides `workerrequest` and `workerresponse` envelopes with the parse family, the payload, the transferable keys moved as buffers where possible and streamed partial results. The manifest carries the offscreen declaration — document, `DOM_PARSER` and `WORKERS` reasons, justification — and the cli manifest validator allows it beside the `sandbox` key.
+
+## Keepalive and run state
+
+`runstate.ts` holds the typed run state: `openrun` opens the keepalive port with its start event, `beatrun` emits one heartbeat per interval (the roadmap documents thirty seconds; the `keepaliveinterval` setting owns the value), `closerun` closes the port at the terminal state and `reattachrun` reattaches after a service worker restart from the persisted record. The run state persists on every heartbeat, so a restart resumes exactly the `pendingstepid` (`recoveryplan` refuses to guess beyond it), and `zombiesweep` reaps runs whose heartbeat fell silent past the user configured `zombieintervals` (the roadmap documents three). A storage level run lock holds one session against concurrent runs, steps that share one tab across parallel branches serialize (`serializesteps`), and every navigation lands a url history entry in the run record.
+
+## Persistence and honesty
+
+Run state persists per profile, sealed with a sha-256 integrity digest so a tampered record at rest never reaches the recovery — the browser offers no at-rest encryption for its storage areas, so the honest derivation is the integrity seal. Retention (`runstateretention`) reduces stale stopped runs to their keepalive summaries, the quota tracking prunes the oldest finished run states under the user configured `runstatebytes` pressure ceiling, every persisted environment event carries provenance (origin, step, environment), and `exportrunstates` hands the auditor one record. Memory keeps the offscreen document registry with reasons and the sandbox render provenance with source origin and nonce; the adapter seam documents the future worker state backend.
+
+## Surfaces
+
+The popup shows the active environment status per running session with the keepalive heartbeat indicator, a zombie run warning with its reap action and the offscreen grant request. The sidepanel renders the environment badge on each step row, the environments panel groups steps by execution environment, shows worker activity counts and turnarounds, the offscreen registry, the sandbox renders, the url history of the open run, the restart recovery notice, the run locks, the environment grants (which join the origin grants of the session record) and the per profile options: the parse offload toggle, the worker pool size with no hard cap, the sandbox origin list and the keepalive documentation. The vitest suite covers environment routing for every action kind, worker round trips, sandbox noncing and handler stripping, keepalive heartbeat emission and port closure, zombie detection and reaping, restart recovery, storage quota pruning and the concurrency lock, all on plain fixtures.
