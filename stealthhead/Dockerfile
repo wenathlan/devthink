@@ -16,7 +16,7 @@ ARG STEALTHHEAD_VERSION=2.0.134
 WORKDIR /src
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN apk add --no-cache python3 make g++ \
- && npm install -g --no-fund --no-audit "$(node -p 'require("./package.json").packageManager')" \
+ && npm install -g --no-fund --no-audit pnpm@12.3.4 \
  && pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build

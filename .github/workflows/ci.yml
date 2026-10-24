@@ -400,12 +400,11 @@ jobs:
           set -euo pipefail
           cd "${{ matrix.app }}"
           if [ -f pnpm-lock.yaml ]; then
-            pm="$(node -p 'require("./package.json").packageManager || ""')"
-            if [ -n "${pm}" ]; then
-              npm install -g --no-fund --no-audit "${pm}"
-            else
-              npm install -g --no-fund --no-audit pnpm@12
-            fi
+            # the family pins one pnpm rung - every pnpm manifest of the
+            # matrix carries packageManager pnpm@12.3.4 and the lockless
+            # legs answer bun - so the install answers the exact version
+            # the code scanning pin doctrine demands
+            npm install -g --no-fund --no-audit pnpm@12.3.4
             pnpm install --frozen-lockfile --ignore-scripts
           else
             bun install --frozen-lockfile --ignore-scripts
