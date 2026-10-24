@@ -28,26 +28,27 @@ import {
   plantally,
   type runplan,
 } from "../../graphplan.ts";
+import { labelfill, label } from "../../labels.ts";
 
 /** the drawn card of one plan node (the trylle surface the graph rides) */
 const CARD = { width: 176, height: 56 } as const;
 
 /** the readable label of each plan state (the text beside the dot) */
 const STATE_LABEL: Readonly<Record<planstate, string>> = {
-  pending: "pending",
-  running: "running",
-  done: "done",
-  failed: "failed",
-  skipped: "skipped",
+  pending: label("artifacts.plan.state.pending"),
+  running: label("artifacts.plan.state.running"),
+  done: label("artifacts.plan.state.done"),
+  failed: label("artifacts.plan.state.failed"),
+  skipped: label("artifacts.plan.state.skipped"),
 };
 
 /** the tooltip note of each tally chip (what the state means on the line) */
 const STATE_TIP: Readonly<Record<planstate, string>> = {
-  pending: "the stage waits for its turn in the ride order",
-  running: "the stage runs now — the windows accent marks the live stage",
-  done: "the stage settled — its output already rides the line",
-  failed: "the stage rode red — the failure keeps its record on the plan",
-  skipped: "the stage was stranded by an earlier red rung",
+  pending: label("artifacts.plan.tip.pending"),
+  running: label("artifacts.plan.tip.running"),
+  done: label("artifacts.plan.tip.done"),
+  failed: label("artifacts.plan.tip.failed"),
+  skipped: label("artifacts.plan.tip.skipped"),
 };
 
 /** the bezier path of one wire: right edge of the source card to the left
@@ -84,7 +85,7 @@ function PlanNode({
 }) {
   return (
     <g className="fag-node" data-state={node.state}>
-      <title>{`${String(index + 1).padStart(2, "0")} · ${node.label} — ${node.note} (${STATE_LABEL[node.state]})`}</title>
+      <title>{labelfill("artifacts.plan.nodeTitle", { no: String(index + 1).padStart(2, "0"), label: node.label, note: node.note, state: STATE_LABEL[node.state] })}</title>
       <rect className="fag-node__card" fill={surface} width={CARD.width} height={CARD.height} rx={10} />
       <rect className="fag-node__wash" width={CARD.width} height={CARD.height} rx={10} />
       <text className="fag-node__kind" x={14} y={17}>
@@ -116,20 +117,24 @@ export default function GraphPanel({ plan, states }: { plan: runplan; states: Re
   const progress = useMemo(() => planprogress(states), [states]);
   const stageCount = useMemo(() => planstages(plan).length, [plan]);
 
-  const aria = `the pipeline plan graph: ${plan.steps.length} steps across ${stageCount} stages, ${tally.done} done, ${tally.running} running, ${tally.failed} failed`;
+  const aria = labelfill("artifacts.plan.graphAria", {
+    steps: String(plan.steps.length),
+    stages: String(stageCount),
+    done: String(tally.done),
+    running: String(tally.running),
+    failed: String(tally.failed),
+  });
 
   return (
-    <section className="fag-panel" aria-label="the pipeline plan stage graph">
+    <section className="fag-panel" aria-label={label("artifacts.plan.aria")}>
       <div className="fag-head">
-        <p className="fag-eyebrow">
-          the pipeline plan · {plan.id} · {stageCount} stages
-        </p>
-        <p className="fag-progress" data-tip={`the done share of the plan rides at ${progress} percent`}>
+        <p className="fag-eyebrow">{labelfill("artifacts.plan.eyebrow", { id: plan.id, stages: String(stageCount) })}</p>
+        <p className="fag-progress" data-tip={labelfill("artifacts.plan.progressTip", { progress: String(progress) })}>
           {progress}%
         </p>
       </div>
 
-      <ul className="fag-tally" aria-label="the plan state tally">
+      <ul className="fag-tally" aria-label={label("artifacts.plan.tallyAria")}>
         {PLAN_STATES.map((state) => (
           <TallyChip key={state} state={state} count={tally[state]} />
         ))}
@@ -174,7 +179,7 @@ export default function GraphPanel({ plan, states }: { plan: runplan; states: Re
         </svg>
       </div>
 
-      <ul className="fag-stages" aria-label="the plan stages in ride order">
+      <ul className="fag-stages" aria-label={label("artifacts.plan.stagesAria")}>
         {plan.steps.map((step, index) => {
           const state = states[step.id] ?? "pending";
           return (
@@ -182,7 +187,7 @@ export default function GraphPanel({ plan, states }: { plan: runplan; states: Re
               key={step.id}
               className="fag-stage"
               data-state={state}
-              data-tip={`${step.note} — ${STATE_LABEL[state]}`}
+              data-tip={labelfill("artifacts.plan.stepTip", { note: step.note, state: STATE_LABEL[state] })}
             >
               <i aria-hidden="true" />
               <span className="fag-stage__index">{String(index + 1).padStart(2, "0")}</span>
@@ -194,7 +199,9 @@ export default function GraphPanel({ plan, states }: { plan: runplan; states: Re
       </ul>
 
       <p className="sr-only">
-        {plan.steps.map((step, index) => `${index + 1}. ${step.label} (${step.kind}): ${step.note}`).join(" ")}
+        {plan.steps.map((step, index) =>
+          labelfill("artifacts.plan.srStep", { no: String(index + 1), label: step.label, kind: step.kind, note: step.note }),
+        ).join(" ")}
       </p>
     </section>
   );

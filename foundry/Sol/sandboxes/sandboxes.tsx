@@ -30,27 +30,32 @@ import {
   seedHerd,
   step,
 } from "../../sandbox.ts";
+import { labelfill, label } from "../../labels.ts";
 import { EmptyState } from "../widgets/shell.emptystate.tsx";
 
 /** the seed of the rehearsal herd (shown on the page, pinned by the tests) */
 export const HERD_SEED = 620221;
 
 /** the state label of a census cell */
-const STATE_LABEL: Readonly<Record<Sandbox["state"], string>> = { cold: "cold", warm: "warm", hot: "hot" };
+const STATE_LABEL: Readonly<Record<Sandbox["state"], string>> = {
+  cold: label("sand.state.cold"),
+  warm: label("sand.state.warm"),
+  hot: label("sand.state.hot"),
+};
 
 /** the summary band of the machine room. */
 function Census({ census }: { census: HerdCensus }) {
   return (
-    <section className="fs-summary" aria-label="the herd census">
+    <section className="fs-summary" aria-label={label("sand.census.aria")}>
       <div className="fs-summary__cell">
         <p className="fs-summary__label">
           <BoxMultipleRegular fontSize={13} aria-hidden="true" />
-          sandboxes
+          {label("sand.census.sandboxes")}
         </p>
         <p className="fs-summary__value">{census.total}</p>
       </div>
       <div className="fs-summary__cell fs-summary__cell--wide">
-        <p className="fs-summary__label">the state ladder</p>
+        <p className="fs-summary__label">{label("sand.census.ladder")}</p>
         <p className="fs-summary__value fs-summary__ladder">
           {SANDBOX_STATES.map((state) => (
             <span key={state} className="fs-statecount" data-state={state}>
@@ -61,7 +66,7 @@ function Census({ census }: { census: HerdCensus }) {
         </p>
       </div>
       <div className="fs-summary__cell">
-        <p className="fs-summary__label">warm share</p>
+        <p className="fs-summary__label">{label("sand.census.warmShare")}</p>
         <p className="fs-summary__value">{Math.round(census.warmShare * 100)}%</p>
       </div>
     </section>
@@ -90,54 +95,54 @@ function SandboxRow({
           {STATE_LABEL[sandbox.state]}
         </span>
         <span className="fs-row__facts">
-          boots {sandbox.boots} · steps {sandbox.steps}
+          {labelfill("sand.row.facts", { boots: String(sandbox.boots), steps: String(sandbox.steps) })}
         </span>
       </div>
       <div className="fs-row__actions">
         <button
           type="button"
           className="fs-act"
-          aria-label={`warm ${sandbox.name}`}
+          aria-label={labelfill("sand.act.warmAria", { name: sandbox.name })}
           onClick={() => onAction(sandbox.id, "warm")}
         >
           <TemperatureRegular fontSize={13} aria-hidden="true" />
-          warm
+          {label("sand.act.warm")}
         </button>
         <button
           type="button"
           className="fs-act"
-          aria-label={`heat ${sandbox.name}`}
+          aria-label={labelfill("sand.act.heatAria", { name: sandbox.name })}
           onClick={() => onAction(sandbox.id, "heat")}
         >
           <FireRegular fontSize={13} aria-hidden="true" />
-          heat
+          {label("sand.act.heat")}
         </button>
         <button
           type="button"
           className="fs-act"
-          aria-label={`cool ${sandbox.name}`}
+          aria-label={labelfill("sand.act.coolAria", { name: sandbox.name })}
           onClick={() => onAction(sandbox.id, "cool")}
         >
           <WeatherSnowflakeRegular fontSize={13} aria-hidden="true" />
-          cool
+          {label("sand.act.cool")}
         </button>
         <button
           type="button"
           className="fs-act"
-          aria-label={`freeze ${sandbox.name}`}
+          aria-label={labelfill("sand.act.freezeAria", { name: sandbox.name })}
           onClick={() => onAction(sandbox.id, "freeze")}
         >
-          freeze
+          {label("sand.act.freeze")}
         </button>
         <button
           type="button"
           className="fs-act fs-act--step"
-          aria-label={`run one step on ${sandbox.name}`}
+          aria-label={labelfill("sand.act.stepAria", { name: sandbox.name })}
           onClick={() => onStep(sandbox.id)}
           disabled={sandbox.state !== "hot"}
         >
           <PlayFilled fontSize={13} aria-hidden="true" />
-          step
+          {label("sand.act.step")}
         </button>
       </div>
     </article>
@@ -179,17 +184,13 @@ export default function Sandboxes() {
   return (
     <main className="shell fs-page">
       <header className="pagehead">
-        <p className="pagehead__eyebrow">sandboxes · the machine room</p>
-        <h1 className="pagehead__title">Sandboxes</h1>
-        <p className="pagehead__lede">
-          The herd rides the cold → warm → hot ladder — cold waits built, warm keeps its working set, hot executes. A
-          seeded rehearsal (seed {seed}) fills the room; the buttons drive the real state machine and the machine
-          refuses what it does not do.
-        </p>
+        <p className="pagehead__eyebrow">{label("sand.eyebrow")}</p>
+        <h1 className="pagehead__title">{label("sand.title")}</h1>
+        <p className="pagehead__lede">{labelfill("sand.lede", { seed: String(seed) })}</p>
         <div className="pagehead__actions">
           <button type="button" className="btn" onClick={reseed}>
             <ArrowSyncRegular fontSize={14} aria-hidden="true" />
-            reseed the herd
+            {label("sand.reseed")}
           </button>
         </div>
       </header>
@@ -198,31 +199,31 @@ export default function Sandboxes() {
 
       {refusal ? (
         <p className="fs-refusal" role="alert">
-          the machine refuses: {refusal}
+          {labelfill("sand.refused", { why: refusal })}
         </p>
       ) : (
         <p className="fs-refusal" data-idle="true" role="status">
-          the machine answers — every move rides the cold → warm → hot ladder
+          {label("sand.answered")}
         </p>
       )}
 
       {herd.length === 0 ? (
         <EmptyState
           icon={BoxMultipleRegular}
-          title="the machine room stands empty"
-          line="No sandbox is herded right now — reseed the rehearsal to fill the room again."
+          title={label("sand.empty.title")}
+          line={label("sand.empty.line")}
           action={
             <button type="button" className="btn secondary" onClick={reseed}>
-              herd the rehearsal again
+              {label("sand.empty.action")}
             </button>
           }
         />
       ) : (
-        <section className="fs-herd" aria-label="the sandbox herd">
+        <section className="fs-herd" aria-label={label("sand.herd.aria")}>
           <div className="fs-herd__head" aria-hidden="true">
-            <span>sandbox</span>
-            <span>state</span>
-            <span>the machine</span>
+            <span>{label("sand.head.sandbox")}</span>
+            <span>{label("sand.head.state")}</span>
+            <span>{label("sand.head.machine")}</span>
           </div>
           {herd.map((sandbox) => (
             <SandboxRow key={sandbox.id} sandbox={sandbox} onAction={act} onStep={runStep} />
@@ -230,10 +231,7 @@ export default function Sandboxes() {
         </section>
       )}
 
-      <p className="fr-footnote">
-        the machine allows cold → warm → hot and the cooling paths back — a cold sandbox never executes and a hot one is
-        already executing. states: {SANDBOX_STATES.join(" · ")}.
-      </p>
+      <p className="fr-footnote">{labelfill("sand.footnote", { list: SANDBOX_STATES.join(" · ") })}</p>
     </main>
   );
 }

@@ -24,6 +24,7 @@ import {
   pourOrder,
   seedImages,
 } from "../../imagestore.ts";
+import { labelfill, label } from "../../labels.ts";
 import { EmptyState } from "../widgets/shell.emptystate.tsx";
 
 /** the seed of the rehearsal shelf (shown on the page, pinned by the tests) */
@@ -41,11 +42,11 @@ function ImageRow({ image }: { image: HerdImage }) {
       <span className="fi-row__ext">{spec?.ext}</span>
       <div className="fi-row__sizes">
         <span className="fi-metric">
-          <span className="fi-metric__label">tar stream</span>
+          <span className="fi-metric__label">{label("images.metric.tar")}</span>
           <span className="fi-metric__value">{formatBytes(image.tarBytes)}</span>
         </span>
         <span className="fi-metric">
-          <span className="fi-metric__label">sealed est.</span>
+          <span className="fi-metric__label">{label("images.metric.sealed")}</span>
           <span className="fi-metric__value">{formatBytes(estimateSize(image.tarBytes, image.format))}</span>
         </span>
       </div>
@@ -64,29 +65,26 @@ export default function Images() {
   return (
     <main className="shell fi-page">
       <header className="pagehead">
-        <p className="pagehead__eyebrow">images · the herd shelf</p>
-        <h1 className="pagehead__title">Herd shelf</h1>
-        <p className="pagehead__lede">
-          The herd travels in three formats — .tzst clones fast, .tar.gz opens anywhere, .tar.xz rides the releases. A
-          seeded rehearsal (seed {seed}) fills the shelf; the conversion plan below is the real floor logic.
-        </p>
+        <p className="pagehead__eyebrow">{label("images.eyebrow")}</p>
+        <h1 className="pagehead__title">{label("images.title")}</h1>
+        <p className="pagehead__lede">{labelfill("images.lede", { seed: String(seed) })}</p>
         <div className="pagehead__actions">
           <button type="button" className="btn" onClick={() => setSeed((value) => value + 1)}>
             <ArrowSyncRegular fontSize={14} aria-hidden="true" />
-            reseed the shelf
+            {label("images.reseed")}
           </button>
         </div>
       </header>
 
       {/* the conversion plan: from · to, the honest steps */}
-      <section className="fi-plan" aria-label="the conversion plan">
+      <section className="fi-plan" aria-label={label("images.plan.aria")}>
         <p className="fi-plan__head">
           <LayerRegular fontSize={13} aria-hidden="true" />
-          the conversion plan
+          {label("images.plan.head")}
         </p>
         <div className="fi-plan__pick">
-          <fieldset className="fi-chips" aria-label="convert from format">
-            <legend className="fi-chips__legend">from</legend>
+          <fieldset className="fi-chips" aria-label={label("images.plan.fromAria")}>
+            <legend className="fi-chips__legend">{label("images.plan.from")}</legend>
             {FORMATS.map((format) => (
               <button
                 key={format.id}
@@ -102,8 +100,8 @@ export default function Images() {
           <span className="fi-plan__arrow" aria-hidden="true">
             <ArrowRightRegular fontSize={16} />
           </span>
-          <fieldset className="fi-chips" aria-label="convert to format">
-            <legend className="fi-chips__legend">to</legend>
+          <fieldset className="fi-chips" aria-label={label("images.plan.toAria")}>
+            <legend className="fi-chips__legend">{label("images.plan.to")}</legend>
             {FORMATS.map((format) => (
               <button
                 key={format.id}
@@ -123,28 +121,31 @@ export default function Images() {
           ))}
         </ol>
         <p className="fi-plan__note">
-          estimates on a 1 GB tar stream:{" "}
-          {FORMATS.map((format) => `${format.ext} ${formatBytes(estimateSize(1_000_000_000, format.id))}`).join(" · ")}
+          {labelfill("images.plan.note", {
+            list: FORMATS.map((format) => `${format.ext} ${formatBytes(estimateSize(1_000_000_000, format.id))}`).join(
+              " · ",
+            ),
+          })}
         </p>
       </section>
 
       {images.length === 0 ? (
         <EmptyState
           icon={LayerRegular}
-          title="the shelf stands empty"
-          line="No image is shelved right now — reseed the rehearsal to pour the herds again."
+          title={label("images.empty.title")}
+          line={label("images.empty.line")}
           action={
             <button type="button" className="btn secondary" onClick={() => setSeed(SHELF_SEED)}>
-              pour the rehearsal shelf
+              {label("images.empty.action")}
             </button>
           }
         />
       ) : (
-        <section className="fi-shelf" aria-label="the image shelf">
+        <section className="fi-shelf" aria-label={label("images.shelf.aria")}>
           <div className="fi-shelf__head" aria-hidden="true">
-            <span>image</span>
-            <span>format</span>
-            <span>sizes</span>
+            <span>{label("images.head.image")}</span>
+            <span>{label("images.head.format")}</span>
+            <span>{label("images.head.sizes")}</span>
           </div>
           {images.map((image) => (
             <ImageRow key={image.id} image={image} />
@@ -153,11 +154,11 @@ export default function Images() {
       )}
 
       <p className="fr-footnote">
-        pour order:{" "}
-        {pourOrder()
-          .map((format) => format.ext)
-          .join(" → ")}{" "}
-        — the lead herd clones fast, the release herd rides small.
+        {labelfill("images.footnote", {
+          list: pourOrder()
+            .map((format) => format.ext)
+            .join(" → "),
+        })}
       </p>
     </main>
   );

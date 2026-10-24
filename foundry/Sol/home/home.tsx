@@ -29,6 +29,7 @@ import { type CSSProperties, useEffect, useRef, useState } from "react";
 import { familyrow } from "../../family";
 import { familyurl } from "../../familyurl";
 import type { HomeProps } from "../../hometypes.ts";
+import { labelfill, label } from "../../labels";
 import { BrandMark } from "../widgets/shell.brandmark.tsx";
 import { Entry } from "../widgets/home.entry.tsx";
 import { EntryGate } from "../widgets/home.entrygate.tsx";
@@ -38,28 +39,29 @@ export * from "../widgets/home.entry.tsx";
 export * from "../widgets/home.tabs.tsx";
 
 /** one clone format of the herd shelf — the real archives the family
- * clones and ships (the release archives travel as tar.xz) */
+ * clones and ships (the release archives travel as tar.xz). the ext is the
+ * format identity the engine speaks (data); the prose rides the label store. */
 const FORMATS = [
   {
     id: "tzst",
     ext: ".tzst",
-    herd: "the quick herd",
-    line: "tar over zstd — the herd that clones fast",
-    state: "lead herd",
+    herd: label("home.format.tzstHerd"),
+    line: label("home.format.tzstLine"),
+    state: label("home.format.tzstState"),
   },
   {
     id: "targz",
     ext: ".tar.gz",
-    herd: "the pack herd",
-    line: "tar over gzip — the herd that opens anywhere",
-    state: "kept",
+    herd: label("home.format.targzHerd"),
+    line: label("home.format.targzLine"),
+    state: label("home.format.stateKept"),
   },
   {
     id: "tarxz",
     ext: ".tar.xz",
-    herd: "the release herd",
-    line: "tar over xz — the family releases travel as tar.xz",
-    state: "kept",
+    herd: label("home.format.tarxzHerd"),
+    line: label("home.format.tarxzLine"),
+    state: label("home.format.stateKept"),
   },
 ] as const;
 
@@ -68,19 +70,16 @@ type FormatId = (typeof FORMATS)[number]["id"];
 
 /** the capability steps of the floor: run · store · clone */
 const STEPS = [
-  { n: "01", title: "run", text: "the forge pours the images and the sandboxes rise working." },
-  { n: "02", title: "store", text: "the vault shelf keeps every record the floor makes." },
-  { n: "03", title: "clone", text: "the working set travels as .tzst, .tar.gz and .tar.xz clones." },
+  { n: "01", title: label("home.step.runTitle"), text: label("home.step.runText") },
+  { n: "02", title: label("home.step.storeTitle"), text: label("home.step.storeText") },
+  { n: "03", title: label("home.step.cloneTitle"), text: label("home.step.cloneText") },
 ] as const;
-
-/** the honesty line under the shelf: the staging surface stores nothing */
-const SHELF_NOTE = "no herd is stored on this staging surface yet — the shelf lists the clone formats, not herds.";
 
 /** the family row of the landing footer: the nine siblings, spec §12 dots */
 function FamilyRow() {
   return (
-    <nav className="fd-familyrow" aria-label="the DevThink family">
-      <p className="fd-familyrow__head">the family</p>
+    <nav className="fd-familyrow" aria-label={label("home.family.aria")}>
+      <p className="fd-familyrow__head">{label("home.family.head")}</p>
       <div className="fd-familyrow__links">
         {familyrow().map((member) => (
           <a
@@ -89,8 +88,8 @@ function FamilyRow() {
             href={familyurl(member.slug)}
             target="_blank"
             rel="noreferrer"
-            data-tip={`open ${member.slug} — a family application`}
-            aria-label={`open ${member.slug} — a family application`}
+            data-tip={labelfill("home.family.openAria", { slug: member.slug })}
+            aria-label={labelfill("home.family.openAria", { slug: member.slug })}
           >
             <span className="fd-familyrow__dot" style={{ background: member.accent }} aria-hidden="true" />
             {member.slug}
@@ -121,8 +120,12 @@ export function Home(props: HomeProps) {
   );
 
   const active = FORMATS.find((f) => f.id === format) ?? FORMATS[0];
-  const herdName = draft.trim() === "" ? "unnamed herd" : draft.trim();
-  const readout = `${stamped ? "draft stamped" : "herd draft"} · ${herdName}${active.ext}`;
+  const herdName = draft.trim() === "" ? label("home.forge.unnamed") : draft.trim();
+  const readout = labelfill("home.forge.readout", {
+    state: stamped ? label("home.forge.readoutStamped") : label("home.forge.readoutDraft"),
+    name: herdName,
+    ext: active.ext,
+  });
 
   /** the forge key: flashes the stamp readout for a beat, then reverts */
   function stamp() {
@@ -135,7 +138,7 @@ export function Home(props: HomeProps) {
     <EntryGate>
       <main className="page fd-page">
         {/* the hero stage: the one azul furnace light of the landing */}
-        <section className="fdx-stage halftone grain" aria-label="foundry — the foundry of clone herds">
+        <section className="fdx-stage halftone grain" aria-label={label("home.hero.aria")}>
           <span className="fdx-light" aria-hidden="true" />
           <div className="fdx-lockup fdx-in">
             <span className="fdx-mark">
@@ -146,21 +149,20 @@ export function Home(props: HomeProps) {
             </span>
           </div>
           <p className="fdx-eyebrow fdx-in" style={{ "--fdx-d": 1 } as CSSProperties}>
-            foundry · runs and stores
+            {label("home.hero.eyebrow")}
           </p>
           <h1 className="fdx-title fdx-in" style={{ "--fdx-d": 2 } as CSSProperties}>
-            One floor. Every herd.
+            {label("home.hero.title")}
           </h1>
           <p className="fdx-lede fdx-in" style={{ "--fdx-d": 3 } as CSSProperties}>
-            the foundry of clone herds — the working set of the family runs here and stays stored as .tzst, .tar.gz and
-            .tar.xz clones.
+            {label("home.hero.lede")}
           </p>
         </section>
 
         {/* the industrial-store heart: the forge console and the herd shelf */}
-        <section id="surface" aria-label="the forge console and the herd shelf">
+        <section id="surface" aria-label={label("home.forge.aria")}>
           <div className="fdx-forge fdx-in" style={{ "--fdx-d": 4 } as CSSProperties}>
-            <p className="fdx-forgehead">the forge · name a herd, pick the clone format</p>
+            <p className="fdx-forgehead">{label("home.forge.head")}</p>
             <div className="fdx-field">
               <span className="fdx-sigil" aria-hidden="true">
                 ›
@@ -170,17 +172,17 @@ export function Home(props: HomeProps) {
                 type="text"
                 value={draft}
                 maxLength={48}
-                placeholder="forge a clone — name the herd"
-                aria-label="name the herd to clone"
+                placeholder={label("home.forge.placeholder")}
+                aria-label={label("home.forge.inputAria")}
                 onChange={(event) => setDraft(event.target.value)}
               />
               <button type="button" className="fdx-key" onClick={stamp}>
-                forge
+                {label("home.forge.key")}
               </button>
             </div>
             <div className="fdx-console">
               <fieldset className="fdx-chips">
-                <legend className="fdx-chipslegend">clone format</legend>
+                <legend className="fdx-chipslegend">{label("home.forge.legend")}</legend>
                 {FORMATS.map((f) => (
                   <button
                     key={f.id}
@@ -200,7 +202,7 @@ export function Home(props: HomeProps) {
           </div>
 
           <div className="fdx-shelf">
-            <p className="fdx-shelfhead">the herd shelf · the clone formats the store keeps</p>
+            <p className="fdx-shelfhead">{label("home.shelf.head")}</p>
             <ul className="fdx-rows">
               {FORMATS.map((f, index) => (
                 <li
@@ -218,7 +220,7 @@ export function Home(props: HomeProps) {
                 </li>
               ))}
             </ul>
-            <p className="fdx-note">{SHELF_NOTE}</p>
+            <p className="fdx-note">{label("home.shelf.note")}</p>
           </div>
 
           <div className="fdx-steps">
@@ -242,20 +244,20 @@ export function Home(props: HomeProps) {
         <footer className="fdx-quad">
           <div className="fdx-quads">
             <div className="fdx-cell">
-              <p className="fdx-quadh">foundry</p>
-              <p className="fdx-quadt">the family foundry — runs the floor and stores the herds.</p>
+              <p className="fdx-quadh">{label("home.quad.foundryHead")}</p>
+              <p className="fdx-quadt">{label("home.quad.foundryText")}</p>
             </div>
             <div className="fdx-cell">
-              <p className="fdx-quadh">the store</p>
-              <p className="fdx-quadt">clone archives kept as .tzst · .tar.gz · .tar.xz.</p>
+              <p className="fdx-quadh">{label("home.quad.storeHead")}</p>
+              <p className="fdx-quadt">{label("home.quad.storeText")}</p>
             </div>
             <div className="fdx-cell">
-              <p className="fdx-quadh">the floor</p>
-              <p className="fdx-quadt">the platform answers on /sandboxes · /images · /artifacts.</p>
+              <p className="fdx-quadh">{label("home.quad.floorHead")}</p>
+              <p className="fdx-quadt">{label("home.quad.floorText")}</p>
             </div>
             <div className="fdx-cell">
-              <p className="fdx-quadh">the family</p>
-              <p className="fdx-quadt">nine deploy units share the engine — foundry keeps their working set.</p>
+              <p className="fdx-quadh">{label("home.quad.familyHead")}</p>
+              <p className="fdx-quadt">{label("home.quad.familyText")}</p>
             </div>
           </div>
           <Tabs />

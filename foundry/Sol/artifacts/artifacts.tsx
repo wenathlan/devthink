@@ -22,6 +22,7 @@ import {
   verifyArtifact,
 } from "../../artifact.ts";
 import { PIPELINE, planrehearsal, type planstate } from "../../graphplan.ts";
+import { labelfill, label } from "../../labels.ts";
 import { EmptyState } from "../widgets/shell.emptystate.tsx";
 import GraphPanel from "../widgets/artifacts.graphpanel.tsx";
 
@@ -37,17 +38,17 @@ function ArtifactRow({ artifact }: { artifact: Artifact }) {
         <h3 className="fa-row__name">{artifact.name}</h3>
         <p className="fa-row__identity">{artifact.identity}</p>
       </div>
-      <span className="fa-row__bytes">{artifact.bytes.toLocaleString("en-US")} b</span>
+      <span className="fa-row__bytes">{labelfill("artifacts.row.bytes", { bytes: artifact.bytes.toLocaleString("en-US") })}</span>
       <span
         className="fa-row__checksum"
-        data-tip={`fnv-1a over: ${artifact.identity}`}
-        aria-label={`checksum ${artifact.checksum}, fnv-1a over ${artifact.identity}`}
+        data-tip={labelfill("artifacts.row.checksumTip", { identity: artifact.identity })}
+        aria-label={labelfill("artifacts.row.checksumAria", { checksum: artifact.checksum, identity: artifact.identity })}
       >
         {artifact.checksum}
       </span>
       <span className="fa-row__seal">
         <ShieldCheckmarkRegular fontSize={13} aria-hidden="true" />
-        {intact ? "sealed" : "mismatch"}
+        {intact ? label("artifacts.row.sealed") : label("artifacts.row.mismatch")}
       </span>
     </article>
   );
@@ -67,8 +68,8 @@ export default function Artifacts() {
   // advance walks the shelf AND the stage graph together (one run, two
   // views of the same rehearsal)
   const planstates = useMemo<Record<string, planstate>>(() => planrehearsal(PIPELINE, seed, tick), [seed, tick]);
-  const draftName = name.trim() || "unnamed-artifact";
-  const draftPreview = `${draftName}.tzst · ${4096 + payload.length} b`;
+  const draftName = name.trim() || label("artifacts.unnamed");
+  const draftPreview = labelfill("artifacts.form.preview", { name: draftName, bytes: String(4096 + payload.length) });
 
   /** seals a drafted artifact through the real engine (an honest default
    * name when the draft is empty — the line never invents a name) */
@@ -84,16 +85,13 @@ export default function Artifacts() {
   return (
     <main className="shell fa-page">
       <header className="pagehead">
-        <p className="pagehead__eyebrow">artifacts · the packaging line</p>
-        <h1 className="pagehead__title">Artifacts</h1>
-        <p className="pagehead__lede">
-          Every packaged artifact carries its checksum — fnv-1a over the canonical identity (name · ext · bytes ·
-          payload), sealed once and re-verified on sight. A seeded rehearsal (seed {seed}) fills the line.
-        </p>
+        <p className="pagehead__eyebrow">{label("artifacts.eyebrow")}</p>
+        <h1 className="pagehead__title">{label("artifacts.title")}</h1>
+        <p className="pagehead__lede">{labelfill("artifacts.lede", { seed: String(seed) })}</p>
         <div className="pagehead__actions">
           <button type="button" className="btn" onClick={() => setTick((value) => value + 1)}>
             <PlayFilled fontSize={14} aria-hidden="true" />
-            walk the pipeline
+            {label("artifacts.walk")}
           </button>
           <button
             type="button"
@@ -104,88 +102,94 @@ export default function Artifacts() {
             }}
           >
             <ArrowSyncRegular fontSize={14} aria-hidden="true" />
-            rerun the line
+            {label("artifacts.rerun")}
           </button>
         </div>
       </header>
 
-      <section className="fa-summary" aria-label="the line summary">
+      <section className="fa-summary" aria-label={label("artifacts.summary.aria")}>
         <div className="fa-summary__cell">
           <p className="fa-summary__label">
             <CheckmarkCircleRegular fontSize={13} aria-hidden="true" />
-            artifacts
+            {label("artifacts.summary.count")}
           </p>
           <p className="fa-summary__value">{shelf.length}</p>
         </div>
         <div className="fa-summary__cell">
-          <p className="fa-summary__label">all sealed</p>
-          <p className="fa-summary__value">{shelf.every((artifact) => verifyArtifact(artifact)) ? "yes" : "no"}</p>
+          <p className="fa-summary__label">{label("artifacts.summary.allSealed")}</p>
+          <p className="fa-summary__value">
+            {shelf.every((artifact) => verifyArtifact(artifact))
+              ? label("artifacts.summary.yes")
+              : label("artifacts.summary.no")}
+          </p>
         </div>
         <div className="fa-summary__cell">
-          <p className="fa-summary__label">digest</p>
-          <p className="fa-summary__value">fnv-1a · 8 hex</p>
+          <p className="fa-summary__label">{label("artifacts.summary.digest")}</p>
+          <p className="fa-summary__value">{label("artifacts.summary.digestValue")}</p>
         </div>
         <div className="fa-summary__cell">
-          <p className="fa-summary__label">identity string</p>
-          <p className="fa-summary__value fa-summary__mono">name · ext · bytes · payload</p>
+          <p className="fa-summary__label">{label("artifacts.summary.identity")}</p>
+          <p className="fa-summary__value fa-summary__mono">{label("artifacts.summary.identityValue")}</p>
         </div>
       </section>
 
       <GraphPanel plan={PIPELINE} states={planstates} />
 
-      <form className="fa-form" onSubmit={sealDraft} aria-label="seal a draft artifact">
-        <p className="fa-form__head">seal a draft</p>
+      <form className="fa-form" onSubmit={sealDraft} aria-label={label("artifacts.form.aria")}>
+        <p className="fa-form__head">{label("artifacts.form.head")}</p>
         <div className="fa-form__grid">
           <label className="fa-form__field">
-            <span>name</span>
+            <span>{label("artifacts.form.name")}</span>
             <input
               type="text"
               value={name}
               maxLength={40}
-              placeholder="my-herd"
-              aria-label="name of the artifact"
+              placeholder={label("artifacts.form.namePlaceholder")}
+              aria-label={label("artifacts.form.nameAria")}
               onChange={(event) => setName(event.target.value)}
             />
           </label>
           <label className="fa-form__field">
-            <span>payload digest (any string)</span>
+            <span>{label("artifacts.form.payload")}</span>
             <input
               type="text"
               value={payload}
               maxLength={40}
-              placeholder="rev-2026-02-14"
-              aria-label="payload string of the artifact"
+              placeholder={label("artifacts.form.payloadPlaceholder")}
+              aria-label={label("artifacts.form.payloadAria")}
               onChange={(event) => setPayload(event.target.value)}
             />
           </label>
           <button type="submit" className="btn">
-            seal it
+            {label("artifacts.form.submit")}
           </button>
         </div>
         <p className="fa-form__hint">
-          the draft seals as {draftPreview} · fnv-1a{" "}
-          {fnv1aHex(`${draftName} · .tzst · ${4096 + payload.length} · ${payload}`)}
+          {labelfill("artifacts.form.hint", {
+            preview: draftPreview,
+            digest: fnv1aHex(`${draftName} · .tzst · ${4096 + payload.length} · ${payload}`),
+          })}
         </p>
       </form>
 
       {shelf.length === 0 ? (
         <EmptyState
           icon={CheckmarkCircleRegular}
-          title="the packaging line is clear"
-          line="No artifact is sealed right now — rerun the line or seal a draft above."
+          title={label("artifacts.empty.title")}
+          line={label("artifacts.empty.line")}
           action={
             <button type="button" className="btn secondary" onClick={() => setSeed((value) => value + 1)}>
-              rerun the packaging line
+              {label("artifacts.empty.action")}
             </button>
           }
         />
       ) : (
-        <section className="fa-line" aria-label="the packaging line">
+        <section className="fa-line" aria-label={label("artifacts.line.aria")}>
           <div className="fa-line__head" aria-hidden="true">
-            <span>artifact</span>
-            <span>bytes</span>
-            <span>checksum</span>
-            <span>seal</span>
+            <span>{label("artifacts.head.artifact")}</span>
+            <span>{label("artifacts.head.bytes")}</span>
+            <span>{label("artifacts.head.checksum")}</span>
+            <span>{label("artifacts.head.seal")}</span>
           </div>
           {shelf.map((artifact) => (
             <ArtifactRow key={`${artifact.id}-${artifact.identity}`} artifact={artifact} />
@@ -193,10 +197,12 @@ export default function Artifacts() {
         </section>
       )}
 
-      <figure className="fa-manifestwrap" aria-label="the manifest of the line">
+      <figure className="fa-manifestwrap" aria-label={label("artifacts.manifest.aria")}>
         <pre className="fa-manifest">{shelfManifest}</pre>
       </figure>
-      {shelf[0] ? <p className="fr-footnote">{artifactLine(shelf[0])} — the manifest renders the same line.</p> : null}
+      {shelf[0] ? (
+        <p className="fr-footnote">{labelfill("artifacts.footnote", { line: artifactLine(shelf[0]) })}</p>
+      ) : null}
     </main>
   );
 }

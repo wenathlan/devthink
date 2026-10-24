@@ -47,6 +47,7 @@ import {
 import { Link, useLocation } from "wouter";
 import { FAMILY_SLUGS, familyAccentOf } from "../../family";
 import { familyurl } from "../../familyurl";
+import { labelfill, label } from "../../labels";
 import { currentTheme, type Theme, toggleTheme } from "../../theme";
 import { BrandMark } from "../widgets/shell.brandmark.tsx";
 
@@ -63,10 +64,10 @@ export type RailApp = {
  * pages of the runner floor. exported for the flow components beside this
  * folder. */
 export const RAIL_APPS: readonly RailApp[] = [
-  { href: "/", label: "home", detail: "the landing of the forge", icon: HomeRegular },
-  { href: "/runs", label: "runs", detail: "the runner fleets and their health", icon: PulseRegular },
-  { href: "/queue", label: "queue", detail: "the execution queue and its priorities", icon: ListRegular },
-  { href: "/logs", label: "logs", detail: "the seeded replay of a run log", icon: WindowConsoleRegular },
+  { href: "/", label: label("nav.home"), detail: label("nav.homeDetail"), icon: HomeRegular },
+  { href: "/runs", label: label("nav.runs"), detail: label("nav.runsDetail"), icon: PulseRegular },
+  { href: "/queue", label: label("nav.queue"), detail: label("nav.queueDetail"), icon: ListRegular },
+  { href: "/logs", label: label("nav.logs"), detail: label("nav.logsDetail"), icon: WindowConsoleRegular },
 ];
 
 /** the hand-over route of the close caption: closing the window restarts
@@ -133,8 +134,8 @@ function ThemeToggle() {
     <button
       type="button"
       className="win-theme"
-      data-tip="toggle theme"
-      aria-label="toggle theme"
+      data-tip={label("shell.theme.tip")}
+      aria-label={label("shell.theme.tip")}
       onClick={() => setTheme(toggleTheme())}
     >
       {theme === "dark" ? (
@@ -284,11 +285,11 @@ export function Shell({ children }: { children: ReactNode }) {
         <button
           type="button"
           className="win-chip"
-          aria-label="Restore the forge window"
+          aria-label={label("shell.chip.restoreAria")}
           onClick={() => setMinimized(false)}
         >
           <BrandMark size={16} />
-          <span>forge</span>
+          <span>{label("shell.brand")}</span>
         </button>
       </div>
     );
@@ -305,7 +306,7 @@ export function Shell({ children }: { children: ReactNode }) {
         data-landing={location === "/" ? "true" : undefined}
         data-max={maximized ? "true" : undefined}
         data-moving={dragging || resizing ? "true" : undefined}
-        aria-label="forge window"
+        aria-label={label("shell.window.aria")}
         style={frameStyle}
       >
         {/* biome-ignore lint/a11y/noStaticElementInteractions: the title bar is the drag surface; the window controls inside it are real buttons */}
@@ -320,14 +321,14 @@ export function Shell({ children }: { children: ReactNode }) {
         >
           <span className="win-title">
             <BrandMark size={18} />
-            <strong>forge</strong>
-            <span className="win-title__role">the runner floor of the family</span>
+            <strong>{label("shell.brand")}</strong>
+            <span className="win-title__role">{label("shell.title.role")}</span>
           </span>
           <div className="win-controls">
             <button
               type="button"
               className="win-control"
-              aria-label="Minimize forge"
+              aria-label={label("shell.controls.minimize")}
               onClick={() => setMinimized(true)}
             >
               <SubtractRegular fontSize={14} aria-hidden="true" />
@@ -335,7 +336,7 @@ export function Shell({ children }: { children: ReactNode }) {
             <button
               type="button"
               className="win-control"
-              aria-label={maximized ? "Restore forge" : "Maximize forge"}
+              aria-label={maximized ? label("shell.controls.restore") : label("shell.controls.maximize")}
               onClick={toggleMaximize}
             >
               {maximized ? (
@@ -347,7 +348,7 @@ export function Shell({ children }: { children: ReactNode }) {
             <button
               type="button"
               className="win-control win-control--close"
-              aria-label="Close forge"
+              aria-label={label("shell.controls.close")}
               onClick={closeWindow}
             >
               <DismissRegular fontSize={14} aria-hidden="true" />
@@ -373,7 +374,7 @@ export function Shell({ children }: { children: ReactNode }) {
           <span className="win-handle" data-dir="se" aria-hidden="true" />
         </div>
         <div className="win-body">
-          <nav className="win-rail" aria-label="Pages">
+          <nav className="win-rail" aria-label={label("shell.rail.aria")}>
             {RAIL_APPS.map((app) => {
               const Icon = app.icon;
               return (
@@ -401,7 +402,7 @@ export function Shell({ children }: { children: ReactNode }) {
                       target="_blank"
                       rel="noreferrer"
                       data-tip={slug}
-                      aria-label={`open ${slug} — a family application`}
+                      aria-label={labelfill("shell.family.openAria", { slug })}
                     >
                       <span
                         className="win-family__dot"

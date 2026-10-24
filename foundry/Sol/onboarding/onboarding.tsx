@@ -18,24 +18,16 @@
 // skip, the flow is never forced again) and the walk hands the window at "/".
 import { useCallback, useState } from "react";
 import { useLocation } from "wouter";
+import { labelfill, label } from "../../labels";
 import { markOnboardingSeen } from "../../onboardingstate";
 import { BrandMark } from "../widgets/shell.brandmark.tsx";
 
 /** the three beats of the walk, in the family copy grammar (third-person,
- * lowercase): what it is, what it does, enter */
+ * lowercase): what it is, what it does, enter — the label keys of the frames */
 const STEPS = [
-  {
-    title: "what it is",
-    text: "foundry is the pipeline application of the devthink family — the working set stored and executed together, the vault layer beside the forge layer in one unit.",
-  },
-  {
-    title: "what it does",
-    text: "it drives the sandboxes and shapes the images while keeping the records of both. the engine lives in saddle: foundry runs and stores at once.",
-  },
-  {
-    title: "enter",
-    text: "the window ahead is the herd floor — the forge console, the shelf and the records of the family. the enter button opens the pipeline.",
-  },
+  { title: "onboarding.steps.is", text: "onboarding.steps.isText" },
+  { title: "onboarding.steps.does", text: "onboarding.steps.doesText" },
+  { title: "onboarding.steps.enter", text: "onboarding.steps.enterText" },
 ] as const;
 
 /** The onboarding page: the three-step walk into the application window —
@@ -44,7 +36,7 @@ export default function Onboarding() {
   const [, navigate] = useLocation();
   const [step, setStep] = useState(0);
   const last = step === STEPS.length - 1;
-  const current = STEPS[step];
+  const current = { title: label(STEPS[step].title), text: label(STEPS[step].text) };
 
   /** the hand-over: the onboarding counts as seen (finish and skip alike —
    * seen = may skip; never forced again) and the platform opens on the home. */
@@ -55,21 +47,25 @@ export default function Onboarding() {
 
   return (
     <main className="ob">
-      <section className="ob__card" aria-label="foundry onboarding">
+      <section className="ob__card" aria-label={label("onboarding.aria")}>
         <header className="ob__head">
           <BrandMark size={30} />
           <div className="ob__heading">
-            <p className="ob__eyebrow">foundry onboarding</p>
+            <p className="ob__eyebrow">{label("onboarding.eyebrow")}</p>
             <h1 className="ob__title">{current.title}</h1>
           </div>
           <button type="button" className="ob__skip" onClick={enterPlatform}>
-            skip
+            {label("onboarding.skip")}
           </button>
         </header>
         <p className="ob__text" key={current.title}>
           {current.text}
         </p>
-        <div className="ob__meter" role="img" aria-label={`step ${step + 1} of ${STEPS.length}`}>
+        <div
+          className="ob__meter"
+          role="img"
+          aria-label={labelfill("onboarding.meterAria", { no: String(step + 1), total: String(STEPS.length) })}
+        >
           {STEPS.map((s, index) => (
             <span key={s.title} className="ob__seg" data-done={index <= step ? "true" : undefined} />
           ))}
@@ -81,11 +77,11 @@ export default function Onboarding() {
             onClick={() => setStep((value) => Math.max(0, value - 1))}
             disabled={step === 0}
           >
-            back
+            {label("onboarding.back")}
           </button>
           {last ? (
             <button type="button" className="ob__btn ob__btn--accent" onClick={enterPlatform}>
-              enter foundry
+              {label("onboarding.enterCta")}
             </button>
           ) : (
             <button
@@ -93,7 +89,7 @@ export default function Onboarding() {
               className="ob__btn"
               onClick={() => setStep((value) => Math.min(STEPS.length - 1, value + 1))}
             >
-              next
+              {label("onboarding.next")}
             </button>
           )}
         </footer>

@@ -23,6 +23,7 @@ import {
   seedFleet,
 } from "../../fleet.ts";
 import { planrehearsal, type planstate, RUNPLAN } from "../../graphplan.ts";
+import { labelfill, label } from "../../labels";
 import { EmptyState } from "../widgets/shell.emptystate.tsx";
 import GraphPanel from "../widgets/runs.graphpanel.tsx";
 
@@ -33,11 +34,11 @@ const FLEET_SIZE = 8;
 
 /** the readable label of a runner state */
 const STATE_LABEL: Readonly<Record<Runner["state"], string>> = {
-  idle: "idle",
-  starting: "starting",
-  busy: "busy",
-  draining: "draining",
-  offline: "offline",
+  idle: label("runs.state.idle"),
+  starting: label("runs.state.starting"),
+  busy: label("runs.state.busy"),
+  draining: label("runs.state.draining"),
+  offline: label("runs.state.offline"),
 };
 
 /** one fleet row: name, mode, state, load, record and the health rung. */
@@ -58,20 +59,24 @@ function RunnerRow({ runner }: { runner: Runner }) {
       </div>
       <div className="fr-row__load">
         <span className="fr-metric">
-          <span className="fr-metric__label">load</span>
+          <span className="fr-metric__label">{label("runs.row.load")}</span>
           <span className="fr-metric__value">{Math.round(runner.load * 100)}%</span>
         </span>
-        <span className="fr-loadbar" role="img" aria-label={`load ${Math.round(runner.load * 100)} percent`}>
+        <span
+          className="fr-loadbar"
+          role="img"
+          aria-label={labelfill("runs.row.loadAria", { percent: String(Math.round(runner.load * 100)) })}
+        >
           <i style={{ width: `${Math.round(runner.load * 100)}%` }} />
         </span>
       </div>
       <div className="fr-row__record">
         <span className="fr-metric">
-          <span className="fr-metric__label">runs</span>
+          <span className="fr-metric__label">{label("runs.row.runs")}</span>
           <span className="fr-metric__value">{runner.runs}</span>
         </span>
         <span className="fr-metric">
-          <span className="fr-metric__label">failures</span>
+          <span className="fr-metric__label">{label("runs.row.failures")}</span>
           <span className="fr-metric__value">{runner.failures}</span>
         </span>
       </div>
@@ -80,7 +85,7 @@ function RunnerRow({ runner }: { runner: Runner }) {
           className="fr-ladder"
           data-rung={health.rung}
           role="img"
-          aria-label={`health ${health.label} (rung ${health.rung + 1} of 3)`}
+          aria-label={labelfill("runs.row.healthAria", { label: health.label, rung: String(health.rung + 1) })}
         >
           <i />
           <i />
@@ -107,17 +112,13 @@ export default function Runs() {
   return (
     <main className="shell fr-page">
       <header className="pagehead">
-        <p className="pagehead__eyebrow">runs · the runner floor</p>
-        <h1 className="pagehead__title">Runner fleets</h1>
-        <p className="pagehead__lede">
-          A seeded rehearsal of the runner floor — seed {seed}, {FLEET_SIZE} runners on the saddle engine boundary. The
-          tick advances the floor by its own rules; nothing here claims a live build. The run plan draws its own stage
-          graph from the same seed and tick.
-        </p>
+        <p className="pagehead__eyebrow">{label("runs.eyebrow")}</p>
+        <h1 className="pagehead__title">{label("runs.title")}</h1>
+        <p className="pagehead__lede">{labelfill("runs.lede", { seed: String(seed), count: String(FLEET_SIZE) })}</p>
         <div className="pagehead__actions">
           <button type="button" className="btn" onClick={() => setTick((value) => value + 1)}>
             <PlayFilled fontSize={14} aria-hidden="true" />
-            advance the floor
+            {label("runs.advance")}
           </button>
           <button
             type="button"
@@ -127,29 +128,29 @@ export default function Runs() {
               setTick(0);
             }}
           >
-            reseed the rehearsal
+            {label("runs.reseed")}
           </button>
         </div>
       </header>
 
-      <section className="fr-summary" aria-label="the floor summary">
+      <section className="fr-summary" aria-label={label("runs.summary.aria")}>
         <div className="fr-summary__cell">
           <p className="fr-summary__label">
             <PulseRegular fontSize={13} aria-hidden="true" />
-            runners
+            {label("runs.summary.runners")}
           </p>
           <p className="fr-summary__value">{summary.total}</p>
         </div>
         <div className="fr-summary__cell">
           <p className="fr-summary__label">
             <HeartPulseRegular fontSize={13} aria-hidden="true" />
-            health ladder
+            {label("runs.summary.health")}
           </p>
           <p className="fr-summary__value fr-summary__ladder">
-            {HEALTH_LADDER.map((label) => (
-              <span key={label} className="fr-lanecount" data-health={label}>
+            {HEALTH_LADDER.map((health) => (
+              <span key={health} className="fr-lanecount" data-health={health}>
                 <i aria-hidden="true" />
-                {summary.byHealth[label]} {label}
+                {summary.byHealth[health]} {health}
               </span>
             ))}
           </p>
@@ -157,14 +158,14 @@ export default function Runs() {
         <div className="fr-summary__cell">
           <p className="fr-summary__label">
             <GaugeRegular fontSize={13} aria-hidden="true" />
-            busy load
+            {label("runs.summary.busyLoad")}
           </p>
           <p className="fr-summary__value">{Math.round(summary.busyLoad * 100)}%</p>
         </div>
         <div className="fr-summary__cell">
-          <p className="fr-summary__label">floor verdict</p>
+          <p className="fr-summary__label">{label("runs.summary.verdictLabel")}</p>
           <p className="fr-summary__value fr-summary__verdict" data-healthy={summary.healthy ? "true" : "false"}>
-            {summary.healthy ? "healthy — no red on the floor" : "not healthy — a runner rides red"}
+            {summary.healthy ? label("runs.summary.healthy") : label("runs.summary.unhealthy")}
           </p>
         </div>
       </section>
@@ -174,22 +175,22 @@ export default function Runs() {
       {floor.length === 0 ? (
         <EmptyState
           icon={PulseRegular}
-          title="no runners mustered"
-          line="The floor stands empty — reseed the rehearsal to muster the fleet again."
+          title={label("runs.empty.title")}
+          line={label("runs.empty.line")}
           action={
             <button type="button" className="btn secondary" onClick={() => setSeed(FLOOR_SEED)}>
-              muster the rehearsal fleet
+              {label("runs.empty.action")}
             </button>
           }
         />
       ) : (
-        <section className="fr-fleet" aria-label="the runner fleet">
+        <section className="fr-fleet" aria-label={label("runs.fleet.aria")}>
           <div className="fr-fleet__head" aria-hidden="true">
-            <span>runner</span>
-            <span>state</span>
-            <span>load</span>
-            <span>record</span>
-            <span>health</span>
+            <span>{label("runs.head.runner")}</span>
+            <span>{label("runs.head.state")}</span>
+            <span>{label("runs.head.load")}</span>
+            <span>{label("runs.head.record")}</span>
+            <span>{label("runs.head.health")}</span>
           </div>
           {floor.map((runner) => (
             <RunnerRow key={runner.id} runner={runner} />
@@ -197,10 +198,7 @@ export default function Runs() {
         </section>
       )}
 
-      <p className="fr-footnote">
-        states the floor answers: {RUNNER_STATES.join(" · ")} — the health ladder is green → amber → red, and red never
-        hides its failure record.
-      </p>
+      <p className="fr-footnote">{labelfill("runs.footnote", { list: RUNNER_STATES.join(" · ") })}</p>
     </main>
   );
 }

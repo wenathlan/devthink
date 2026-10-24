@@ -33,6 +33,7 @@ import {
   queueOrder,
 } from "../../queue.ts";
 import { modes as RUNNER_MODES, type RunnerMode } from "../../runner.ts";
+import { labelfill, label } from "../../labels";
 import { EmptyState } from "../widgets/shell.emptystate.tsx";
 
 /** the seed of the rehearsal queue (shown on the page, pinned by the tests) */
@@ -51,8 +52,8 @@ function Lane({ lane, depth }: { lane: QueuePriority; depth: number }) {
 /** the priority picker chips of the enqueue form. */
 function PriorityChips({ value, onPick }: { value: QueuePriority; onPick: (priority: QueuePriority) => void }) {
   return (
-    <fieldset className="fq-chips" aria-label="priority of the new run">
-      <legend className="fq-chips__legend">priority</legend>
+    <fieldset className="fq-chips" aria-label={label("queue.chips.priorityAria")}>
+      <legend className="fq-chips__legend">{label("queue.chips.priority")}</legend>
       {QUEUE_PRIORITIES.map((priority) => (
         <button
           key={priority}
@@ -71,8 +72,8 @@ function PriorityChips({ value, onPick }: { value: QueuePriority; onPick: (prior
 /** the runner-mode picker chips of the enqueue form. */
 function ModeChips({ value, onPick }: { value: RunnerMode; onPick: (mode: RunnerMode) => void }) {
   return (
-    <fieldset className="fq-chips" aria-label="runner mode of the new run">
-      <legend className="fq-chips__legend">runner mode</legend>
+    <fieldset className="fq-chips" aria-label={label("queue.chips.modeAria")}>
+      <legend className="fq-chips__legend">{label("queue.chips.mode")}</legend>
       {RUNNER_MODES.map((mode) => (
         <button key={mode} type="button" className="fq-chip" aria-pressed={mode === value} onClick={() => onPick(mode)}>
           {mode}
@@ -89,20 +90,18 @@ function QueueRow({ item, position, onCancel }: { item: QueueItem; position: num
       <span className="fq-row__pos">{String(position + 1).padStart(2, "0")}</span>
       <div className="fq-row__main">
         <h3 className="fq-row__label">{item.label}</h3>
-        <p className="fq-row__meta">
-          {item.mode} · seq {item.seq}
-        </p>
+        <p className="fq-row__meta">{labelfill("queue.row.meta", { mode: item.mode, seq: String(item.seq) })}</p>
       </div>
       <span className="fq-row__priority">{item.priority}</span>
-      <span className="fq-row__eta">ahead: {position}</span>
+      <span className="fq-row__eta">{labelfill("queue.row.ahead", { position: String(position) })}</span>
       <button
         type="button"
         className="fq-row__cancel"
-        aria-label={`cancel ${item.label}`}
+        aria-label={labelfill("queue.row.cancelAria", { label: item.label })}
         onClick={() => onCancel(item.id)}
       >
         <DismissRegular fontSize={14} aria-hidden="true" />
-        cancel
+        {label("queue.row.cancel")}
       </button>
     </article>
   );
@@ -111,7 +110,7 @@ function QueueRow({ item, position, onCancel }: { item: QueueItem; position: num
 /** The queue page: the serving order of the floor. */
 export default function QueueList() {
   const [queue, setQueue] = useState<QueueItem[]>(() => queueFromSeed(QUEUE_SEED, 7));
-  const [label, setLabel] = useState("");
+  const [draftLabel, setDraftLabel] = useState("");
   const [priority, setPriority] = useState<QueuePriority>("normal");
   const [mode, setMode] = useState<RunnerMode>(RUNNER_MODES[0]);
   const [served, setServed] = useState<QueueItem | undefined>(undefined);
@@ -131,7 +130,7 @@ export default function QueueList() {
    * back to the honest default — the queue never invents a name) */
   function addRun(event: React.FormEvent) {
     event.preventDefault();
-    const clean = label.trim() || "unnamed run";
+    const clean = draftLabel.trim() || label("queue.unnamed");
     setQueue(
       enqueue(queue, {
         id: `q-${Date.now().toString(36)}-${queueDepth(queue) + 1}`,
@@ -141,40 +140,37 @@ export default function QueueList() {
         enqueuedAt: 0,
       }),
     );
-    setLabel("");
+    setDraftLabel("");
   }
 
   return (
     <main className="shell fq-page">
       <header className="pagehead">
-        <p className="pagehead__eyebrow">queue · the serving order</p>
-        <h1 className="pagehead__title">Execution queue</h1>
-        <p className="pagehead__lede">
-          Runs wait in three priority lanes — express cuts ahead, batch rides last, FIFO inside the lane. A seeded
-          rehearsal (seed {QUEUE_SEED}) fills the order; the engine under the buttons is the real queue logic.
-        </p>
+        <p className="pagehead__eyebrow">{label("queue.eyebrow")}</p>
+        <h1 className="pagehead__title">{label("queue.title")}</h1>
+        <p className="pagehead__lede">{labelfill("queue.lede", { seed: String(QUEUE_SEED) })}</p>
         <div className="pagehead__actions">
           <button type="button" className="btn" onClick={serveNext}>
             <PlayFilled fontSize={14} aria-hidden="true" />
-            serve next
+            {label("queue.serve")}
           </button>
           <button type="button" className="btn secondary" onClick={() => setQueue(queueFromSeed(QUEUE_SEED, 7))}>
             <ArrowRotateCounterclockwiseRegular fontSize={14} aria-hidden="true" />
-            reseed the rehearsal
+            {label("queue.reseed")}
           </button>
         </div>
       </header>
 
-      <section className="fq-summary" aria-label="the queue summary">
+      <section className="fq-summary" aria-label={label("queue.summary.aria")}>
         <div className="fq-summary__cell">
           <p className="fq-summary__label">
             <ListRegular fontSize={13} aria-hidden="true" />
-            depth
+            {label("queue.summary.depth")}
           </p>
           <p className="fq-summary__value">{queueDepth(queue)}</p>
         </div>
         <div className="fq-summary__cell fq-summary__cell--wide">
-          <p className="fq-summary__label">lanes</p>
+          <p className="fq-summary__label">{label("queue.summary.lanes")}</p>
           <p className="fq-summary__value fq-summary__lanes">
             {QUEUE_PRIORITIES.map((lane) => (
               <Lane key={lane} lane={lane} depth={lanes[lane]} />
@@ -182,32 +178,34 @@ export default function QueueList() {
           </p>
         </div>
         <div className="fq-summary__cell">
-          <p className="fq-summary__label">head of the order</p>
-          <p className="fq-summary__value fq-summary__head">{head ? head.label : "—"}</p>
+          <p className="fq-summary__label">{label("queue.summary.head")}</p>
+          <p className="fq-summary__value fq-summary__head">{head ? head.label : label("queue.summary.none")}</p>
         </div>
         <div className="fq-summary__cell">
-          <p className="fq-summary__label">last served</p>
-          <p className="fq-summary__value fq-summary__head">{served ? served.label : "nothing yet"}</p>
+          <p className="fq-summary__label">{label("queue.summary.served")}</p>
+          <p className="fq-summary__value fq-summary__head">
+            {served ? served.label : label("queue.summary.nothingYet")}
+          </p>
         </div>
       </section>
 
-      <form className="fq-form" onSubmit={addRun} aria-label="enqueue a run">
+      <form className="fq-form" onSubmit={addRun} aria-label={label("queue.form.aria")}>
         <p className="fq-form__head">
           <AddRegular fontSize={13} aria-hidden="true" />
-          enqueue a run
+          {label("queue.form.head")}
         </p>
         <div className="fq-form__field">
           <input
             className="fq-form__input"
             type="text"
-            value={label}
+            value={draftLabel}
             maxLength={64}
-            placeholder="label the run — e.g. build the family site"
-            aria-label="label of the run to enqueue"
-            onChange={(event) => setLabel(event.target.value)}
+            placeholder={label("queue.form.placeholder")}
+            aria-label={label("queue.form.inputAria")}
+            onChange={(event) => setDraftLabel(event.target.value)}
           />
           <button type="submit" className="btn">
-            queue it
+            {label("queue.form.submit")}
           </button>
         </div>
         <div className="fq-form__chips">
@@ -219,21 +217,21 @@ export default function QueueList() {
       {order.length === 0 ? (
         <EmptyState
           icon={ListRegular}
-          title="the queue is empty"
-          line="The floor has nothing waiting — enqueue a run or reseed the rehearsal queue."
+          title={label("queue.empty.title")}
+          line={label("queue.empty.line")}
           action={
             <button type="button" className="btn secondary" onClick={() => setQueue(queueFromSeed(QUEUE_SEED, 7))}>
-              seed the rehearsal queue
+              {label("queue.empty.action")}
             </button>
           }
         />
       ) : (
-        <section className="fq-order" aria-label="the serving order">
+        <section className="fq-order" aria-label={label("queue.order.aria")}>
           <div className="fq-order__head" aria-hidden="true">
-            <span>pos</span>
-            <span>run</span>
-            <span>priority</span>
-            <span>wait</span>
+            <span>{label("queue.head.pos")}</span>
+            <span>{label("queue.head.run")}</span>
+            <span>{label("queue.head.priority")}</span>
+            <span>{label("queue.head.wait")}</span>
             <span />
           </div>
           {order.map((item, index) => (
@@ -243,8 +241,9 @@ export default function QueueList() {
       )}
 
       <p className="fr-footnote">
-        the serving rank is fixed: {QUEUE_PRIORITIES.map((lane) => `${lane} = ${PRIORITY_RANK[lane]}`).join(" · ")} —
-        lower serves first, arrival order breaks the ties.
+        {labelfill("queue.footnote", {
+          list: QUEUE_PRIORITIES.map((lane) => `${lane} = ${PRIORITY_RANK[lane]}`).join(" · "),
+        })}
       </p>
     </main>
   );

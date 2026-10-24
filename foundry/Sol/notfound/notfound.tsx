@@ -9,11 +9,13 @@
  */
 
 // NotFound — the 404 page sub-anchor of the foundry
+import { label } from "../../labels";
+
 export function NotFound() {
   return (
     <main className="page">
-      <h1>404</h1>
-      <p>This address neither stores nor executes in the foundry.</p>
+      <h1>{label("notfound.eyebrow")}</h1>
+      <p>{label("notfound.lede")}</p>
     </main>
   );
 }

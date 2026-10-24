@@ -2,6 +2,7 @@
  * better-sqlite3 with prepared statements only — every external input rides a
  * bound parameter, never a concatenated string (the parameterized query rule). */
 import Database from "better-sqlite3";
+import { LABEL_MANIFEST, LABEL_REVISION } from "./labels.ts";
 
 export type Runner = { id: string; name: string; kind: string; boundary: string; status: string };
 export type RunEntry = { id: string; runnerId: string; outcome: string; detail: string; createdAt: string };
@@ -30,6 +31,13 @@ database.exec(`
     onboardingseen INTEGER NOT NULL DEFAULT 0,
     "updatedAt" TEXT NOT NULL DEFAULT ''
   );
+  CREATE TABLE IF NOT EXISTS labels (
+    id         TEXT PRIMARY KEY,
+    text       TEXT NOT NULL,
+    revision   INTEGER NOT NULL DEFAULT 0,
+    updatedAt  TEXT NOT NULL DEFAULT (datetime('now')),
+    translated INTEGER NOT NULL DEFAULT 0
+  );
 `);
 
 const listrunners = database.prepare("SELECT id, name, kind, boundary, status FROM runners ORDER BY name");
@@ -50,6 +58,20 @@ const upsertOnboarding = database.prepare(
      onboardingseen = MAX(onboardingseen, excluded.onboardingseen),
      "updatedAt" = excluded."updatedAt"`,
 );
+const upsertLabel = database.prepare(
+  `INSERT INTO labels (id, text, revision, updatedAt, translated) VALUES (?, ?, ?, datetime('now'), ?)
+   ON CONFLICT(id) DO UPDATE SET
+     text = excluded.text,
+     revision = excluded.revision,
+     updatedAt = excluded.updatedAt,
+     translated = excluded.translated`,
+);
+const selectLabel = database.prepare(
+  "SELECT id, text, revision, updatedAt, translated FROM labels WHERE id = ?",
+);
+const selectAllLabels = database.prepare(
+  "SELECT id, text, revision, updatedAt, translated FROM labels ORDER BY id ASC",
+);
 
 /** the mirrored row of the onboarding_state table (the first-run state of one visitor). */
 export type OnboardingStateRow = {
@@ -57,6 +79,18 @@ export type OnboardingStateRow = {
   introseen: boolean;
   onboardingseen: boolean;
   updatedAt: string;
+};
+
+/** one labels row: the interface copy store. the id is the page.widget.key
+ * path, the text rides the english source of truth (labels.ts), and the
+ * translated flag protects a runtime translation from the seed overwrite.
+ * the shape mirrors the browser seed rows in labels.ts one to one. */
+export type LabelRow = {
+  id: string;
+  text: string;
+  revision: number;
+  updatedAt: string;
+  translated?: boolean;
 };
 
 export function runners(): Runner[] {
@@ -104,4 +138,101 @@ export function getonboardingstate(visitor: string): OnboardingStateRow | undefi
  */
 export function setonboardingstage(visitor: string, stage: "intro" | "onboarding"): void {
   upsertOnboarding.run(visitor, 1, stage === "onboarding" ? 1 : 0, new Date().toISOString());
+}
+
+/* --------------------------------------------------------------------- */
+/* labels — the interface copy store                                      */
+/* --------------------------------------------------------------------- */
+
+/**
+ * Writes one label row (idempotent upsert; the caller owns the revision),
+ * prepared and parameterized, never concatenated SQL.
+ *
+ * @param id the page.widget.key path of the label.
+ * @param text the surface text.
+ * @param revision the manifest revision the text carries.
+ * @param translated true when the row carries a runtime translation.
+ * @returns the stored label row.
+ */
+export function saveLabel(id: string, text: string, revision: number, translated = false): LabelRow {
+  upsertLabel.run(id, text, revision, translated ? 1 : 0);
+  const row = selectLabel.get(id) as
+    | { id: string; text: string; revision: number; updatedAt: string; translated: number }
+    | undefined;
+  if (!row) throw new Error(`label "${id}" write did not land`);
+  return labelRowOf(row);
+}
+
+/**
+ * Reads one label row by its page.widget.key path.
+ *
+ * @param id the label id.
+ * @returns the row, or undefined when absent.
+ */
+export function readLabel(id: string): LabelRow | undefined {
+  const row = selectLabel.get(id) as
+    | { id: string; text: string; revision: number; updatedAt: string; translated: number }
+    | undefined;
+  return row ? labelRowOf(row) : undefined;
+}
+
+/**
+ * Reads every label row of the store ordered by id.
+ *
+ * @returns the label rows.
+ */
+export function readAllLabels(): LabelRow[] {
+  return (selectAllLabels.all() as { id: string; text: string; revision: number; updatedAt: string; translated: number }[]).map(
+    labelRowOf,
+  );
+}
+
+/**
+ * Ingests the english manifest of labels.ts into the labels table — the
+ * db-side twin of the browser seedLabels: idempotent, the changed rows
+ * refresh, and the translated rows stay protected from the overwrite.
+ *
+ * @returns the seeded and protected row counts.
+ */
+export function seedLabelRows(): { seeded: number; protected: number } {
+  const rows = new Map(readAllLabels().map((row) => [row.id, row]));
+  let seeded = 0;
+  let saved = 0;
+  for (const [id, text] of Object.entries(LABEL_MANIFEST)) {
+    const row = rows.get(id);
+    if (row === undefined || (row.translated !== true && row.text !== text)) {
+      saveLabel(id, text, LABEL_REVISION, row?.translated ?? false);
+      seeded += 1;
+    }
+    saved += 1;
+  }
+  return { seeded, protected: saved - seeded };
+}
+
+/** Projects one raw labels row (translated rides the 0/1 cell) into the
+ * stored label projection. */
+function labelRowOf(row: {
+  id: string;
+  text: string;
+  revision: number;
+  updatedAt: string;
+  translated: number;
+}): LabelRow {
+  return {
+    id: row.id,
+    text: row.text,
+    revision: row.revision,
+    updatedAt: row.updatedAt,
+    ...(row.translated === 1 ? { translated: true } : {}),
+  };
+}
+
+/* the copy law rides the db boot: the label seed ingests the english manifest
+ * of labels.ts beside the schema (the interface strings land in the store,
+ * the translated rows protected from the overwrite). best effort: a sealed
+ * store never blocks the boot, the manifest always answers the widgets. */
+try {
+  seedLabelRows();
+} catch {
+  /* the manifest answers; the store catches up on the next boot */
 }

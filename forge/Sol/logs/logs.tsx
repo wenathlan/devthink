@@ -27,6 +27,7 @@ import {
   logText,
   runLogLines,
 } from "../../runstream.ts";
+import { labelfill, label } from "../../labels";
 import { EmptyState } from "../widgets/shell.emptystate.tsx";
 
 /** the seed of the replayed run (shown on the page, pinned by the tests) */
@@ -77,12 +78,9 @@ export default function Logs() {
   return (
     <main className="shell fl-page">
       <header className="pagehead">
-        <p className="pagehead__eyebrow">logs · the run evidence</p>
-        <h1 className="pagehead__title">Run logs — a seeded replay</h1>
-        <p className="pagehead__lede">
-          One run of the floor, replayed line by line from seed {seed} — the same seed always answers the same stream,
-          in the browser and in the tests. Outcome and evidence stay beside the runner.
-        </p>
+        <p className="pagehead__eyebrow">{label("logs.eyebrow")}</p>
+        <h1 className="pagehead__title">{label("logs.title")}</h1>
+        <p className="pagehead__lede">{labelfill("logs.lede", { seed: String(seed) })}</p>
         <div className="pagehead__actions">
           <button
             type="button"
@@ -97,20 +95,20 @@ export default function Logs() {
             ) : (
               <PlayFilled fontSize={14} aria-hidden="true" />
             )}
-            {done ? "replay the run" : playing ? "pause the tail" : "resume the tail"}
+            {done ? label("logs.replay") : playing ? label("logs.pause") : label("logs.resume")}
           </button>
           <button type="button" className="btn secondary" onClick={replay}>
             <ArrowRotateCounterclockwiseRegular fontSize={14} aria-hidden="true" />
-            restart from zero
+            {label("logs.restart")}
           </button>
         </div>
       </header>
 
-      <section className="fl-console" aria-label="the replay controls">
+      <section className="fl-console" aria-label={label("logs.console.aria")}>
         <div className="fl-console__seeds">
           <p className="fl-console__head">
             <WindowConsoleRegular fontSize={13} aria-hidden="true" />
-            seeds
+            {label("logs.seeds")}
           </p>
           <div className="fl-seedrow">
             {PRESET_SEEDS.map((preset) => (
@@ -132,42 +130,36 @@ export default function Logs() {
         </div>
         <dl className="fl-console__facts">
           <div className="fl-fact">
-            <dt>run clock</dt>
+            <dt>{label("logs.factClock")}</dt>
             <dd>
               {formatLogTime(clock)} / {formatLogTime(duration)}
             </dd>
           </div>
           <div className="fl-fact">
-            <dt>lines</dt>
+            <dt>{label("logs.factLines")}</dt>
             <dd>
               {visible.length} / {lines.length}
             </dd>
           </div>
           <div className="fl-fact">
-            <dt>census</dt>
-            <dd>
-              {census.info} info · {census.warn} warn · {census.error} error
-            </dd>
+            <dt>{label("logs.factCensus")}</dt>
+            <dd>{labelfill("logs.censusValue", { info: String(census.info), warn: String(census.warn), error: String(census.error) })}</dd>
           </div>
           <div className="fl-fact">
-            <dt>outcome</dt>
+            <dt>{label("logs.factOutcome")}</dt>
             <dd data-outcome={outcome}>{outcome}</dd>
           </div>
         </dl>
       </section>
 
       {lines.length === 0 ? (
-        <EmptyState
-          icon={WindowConsoleRegular}
-          title="no stream for this seed"
-          line="The replay engine answered nothing — pick one of the preset seeds to roll a run."
-        />
+        <EmptyState icon={WindowConsoleRegular} title={label("logs.empty.title")} line={label("logs.empty.line")} />
       ) : (
-        <section className="fl-stream" aria-label="the log stream" aria-live="polite">
+        <section className="fl-stream" aria-label={label("logs.stream.aria")} aria-live="polite">
           <div className="fl-stream__head" aria-hidden="true">
-            <span>clock</span>
-            <span>level</span>
-            <span>line</span>
+            <span>{label("logs.head.clock")}</span>
+            <span>{label("logs.head.level")}</span>
+            <span>{label("logs.head.line")}</span>
           </div>
           <ol className="fl-stream__lines">
             {visible.map((line) => (
@@ -179,14 +171,13 @@ export default function Logs() {
             ))}
           </ol>
           <p className="fl-stream__cursor" data-done={done ? "true" : "false"}>
-            {done ? "— end of stream — outcome reported over https" : "— tailing —"}
+            {done ? label("logs.cursorDone") : label("logs.cursorTailing")}
           </p>
         </section>
       )}
 
       <p className="fr-footnote">
-        the copyable form of the stream rides the same engine: logText(seed) — {logText(lines).split("\n").length} lines
-        total for seed {seed}.
+        {labelfill("logs.footnote", { count: String(logText(lines).split("\n").length), seed: String(seed) })}
       </p>
     </main>
   );

@@ -21,20 +21,13 @@
 import { ArrowLeftRegular, ArrowRightRegular } from "@fluentui/react-icons";
 import { useState } from "react";
 import { useLocation } from "wouter";
+import { labelfill, label } from "../../labels";
 import { markOnboardingSeen } from "../../onboardingstate";
 import { BrandMark } from "../widgets/shell.brandmark.tsx";
 import { RAIL_APPS } from "../shell/Shell";
 
-/** the honest statement of the opening frame (what the app is). */
-const WHAT_IT_IS =
-  "forge is the execution application of the wenathlan family — the build floor of the clones: any build runs through the saddle sandbox engine, and the outcomes travel back over https.";
-
-/** the honest statement of the closing frame (the hand-over). */
-const WHAT_ENTER =
-  "the window opens on the landing and every surface rides the same rail. the theme starts dark and stays in memory only — nothing is written to this machine.";
-
-/** the three frames of the first run, in order. */
-const STEPS = ["what it is", "what it does", "enter"] as const;
+/** the three frames of the first run, in order (the label keys of the steps). */
+const STEPS = ["onboarding.steps.is", "onboarding.steps.does", "onboarding.steps.enter"] as const;
 
 /**
  * The onboarding page: a three-step first-run dialog that hands the surface
@@ -56,24 +49,24 @@ export default function Onboarding() {
 
   return (
     <div className="ob">
-      <section className="ob__card" aria-label="forge first run">
+      <section className="ob__card" aria-label={label("onboarding.aria")}>
         <header className="ob__head">
           <BrandMark size={20} />
-          <span className="ob__title">welcome to forge</span>
+          <span className="ob__title">{label("onboarding.title")}</span>
         </header>
 
         <div className="ob__body">
           {step === 0 && (
             <article className="ob__step" key="is">
-              <p className="ob__eyebrow">01 — {STEPS[0]}</p>
-              <h2 className="ob__lead">the runner floor of the family</h2>
-              <p className="ob__lede">{WHAT_IT_IS}</p>
+              <p className="ob__eyebrow">{labelfill("onboarding.eyebrow", { no: "01", step: label(STEPS[0]) })}</p>
+              <h2 className="ob__lead">{label("onboarding.what.lead")}</h2>
+              <p className="ob__lede">{label("onboarding.what.body")}</p>
             </article>
           )}
           {step === 1 && (
             <article className="ob__step" key="does">
-              <p className="ob__eyebrow">02 — {STEPS[1]}</p>
-              <h2 className="ob__lead">what the window hosts</h2>
+              <p className="ob__eyebrow">{labelfill("onboarding.eyebrow", { no: "02", step: label(STEPS[1]) })}</p>
+              <h2 className="ob__lead">{label("onboarding.hosts.lead")}</h2>
               <ul className="ob__facts">
                 {RAIL_APPS.map((app) => {
                   const Icon = app.icon;
@@ -91,37 +84,41 @@ export default function Onboarding() {
           )}
           {step === 2 && (
             <article className="ob__step" key="enter">
-              <p className="ob__eyebrow">03 — {STEPS[2]}</p>
-              <h2 className="ob__lead">ready to enter</h2>
-              <p className="ob__lede">{WHAT_ENTER}</p>
+              <p className="ob__eyebrow">{labelfill("onboarding.eyebrow", { no: "03", step: label(STEPS[2]) })}</p>
+              <h2 className="ob__lead">{label("onboarding.enter.lead")}</h2>
+              <p className="ob__lede">{label("onboarding.enter.body")}</p>
             </article>
           )}
         </div>
 
         <footer className="ob__foot">
-          <div className="ob__meter" role="img" aria-label={`step ${step + 1} of ${STEPS.length}`}>
-            {STEPS.map((label, index) => (
-              <span key={label} className="ob__seg" data-done={index <= step ? "true" : undefined} />
+          <div
+            className="ob__meter"
+            role="img"
+            aria-label={labelfill("onboarding.meterAria", { no: String(step + 1), total: String(STEPS.length) })}
+          >
+            {STEPS.map((stepKey, index) => (
+              <span key={stepKey} className="ob__seg" data-done={index <= step ? "true" : undefined} />
             ))}
           </div>
           <div className="ob__actions">
             <button type="button" className="ob__skip" onClick={finish}>
-              skip
+              {label("onboarding.skip")}
             </button>
             {step > 0 && (
               <button type="button" className="ob__btn" onClick={() => setStep((value) => value - 1)}>
                 <ArrowLeftRegular fontSize={14} aria-hidden="true" />
-                back
+                {label("onboarding.back")}
               </button>
             )}
             {last ? (
               <button type="button" className="ob__btn ob__btn--accent" onClick={finish}>
-                enter forge
+                {label("onboarding.enterCta")}
                 <ArrowRightRegular fontSize={14} aria-hidden="true" />
               </button>
             ) : (
               <button type="button" className="ob__btn ob__btn--accent" onClick={() => setStep((value) => value + 1)}>
-                continue
+                {label("onboarding.continue")}
                 <ArrowRightRegular fontSize={14} aria-hidden="true" />
               </button>
             )}

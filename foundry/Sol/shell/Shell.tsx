@@ -53,6 +53,7 @@ import {
 import { Link, useLocation } from "wouter";
 import { familyAccentOf, familyrow } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
+import { labelfill, label } from "../../labels.ts";
 import { BrandMark } from "../widgets/shell.brandmark";
 
 /** the theme in memory: flips the data-theme attribute, stores nothing */
@@ -105,18 +106,18 @@ export type RailApp = {
  * pages of the machine room. exported for the onboarding copy beside this
  * folder. */
 export const START_APPS: readonly RailApp[] = [
-  { href: "/", label: "home", detail: "the landing of the foundry", icon: HomeRegular },
+  { href: "/", label: label("nav.home"), detail: label("nav.homeDetail"), icon: HomeRegular },
   {
     href: "/sandboxes",
-    label: "sandboxes",
-    detail: "the herd on the cold → warm → hot ladder",
+    label: label("nav.sandboxes"),
+    detail: label("nav.sandboxesDetail"),
     icon: BoxMultipleRegular,
   },
-  { href: "/images", label: "images", detail: "the herd shelf and the conversion plans", icon: LayerRegular },
+  { href: "/images", label: label("nav.images"), detail: label("nav.imagesDetail"), icon: LayerRegular },
   {
     href: "/artifacts",
-    label: "artifacts",
-    detail: "the packaging line with sealed checksums",
+    label: label("nav.artifacts"),
+    detail: label("nav.artifactsDetail"),
     icon: CheckmarkCircleRegular,
   },
 ];
@@ -172,7 +173,7 @@ function clampDrag(x: number, y: number): { x: number; y: number } {
 function ThemeToggle() {
   const [current, setCurrent] = useState<ThemeName>(currentTheme());
   return (
-    <button type="button" className="win-theme" aria-label="toggle theme" onClick={() => setCurrent(toggleTheme())}>
+    <button type="button" className="win-theme" aria-label={label("shell.theme.tip")} onClick={() => setCurrent(toggleTheme())}>
       {current === "dark" ? (
         <WeatherSunnyRegular fontSize={14} aria-hidden="true" />
       ) : (
@@ -343,11 +344,11 @@ export function Shell({ children }: { children: ReactNode }) {
         <button
           type="button"
           className="win-chip"
-          aria-label="Restore the foundry window"
+          aria-label={label("shell.chip.restoreAria")}
           onClick={() => setMinimized(false)}
         >
           <BrandMark size={16} />
-          <span>foundry</span>
+          <span>{label("shell.brand")}</span>
         </button>
       </div>
     );
@@ -366,7 +367,7 @@ export function Shell({ children }: { children: ReactNode }) {
         data-sized={size && !maximized ? "true" : undefined}
         data-inactive={inactive ? "true" : undefined}
         data-landing={location === "/" ? "true" : undefined}
-        aria-label="foundry window"
+        aria-label={label("shell.window.aria")}
         style={
           {
             "--win-x": `${drag.x}px`,
@@ -387,14 +388,14 @@ export function Shell({ children }: { children: ReactNode }) {
         >
           <span className="win-title">
             <BrandMark size={18} />
-            <strong>foundry</strong>
-            <span className="win-title__role">the machine room of the family</span>
+            <strong>{label("shell.brand")}</strong>
+            <span className="win-title__role">{label("shell.title.role")}</span>
           </span>
           <div className="win-controls">
             <button
               type="button"
               className="win-control"
-              aria-label="Minimize foundry"
+              aria-label={label("shell.controls.minimize")}
               onClick={() => setMinimized(true)}
             >
               <SubtractRegular fontSize={14} aria-hidden="true" />
@@ -402,7 +403,7 @@ export function Shell({ children }: { children: ReactNode }) {
             <button
               type="button"
               className="win-control"
-              aria-label={maximized ? "Restore foundry" : "Maximize foundry"}
+              aria-label={maximized ? label("shell.controls.restore") : label("shell.controls.maximize")}
               onClick={toggleMaximize}
             >
               {maximized ? (
@@ -414,7 +415,7 @@ export function Shell({ children }: { children: ReactNode }) {
             <button
               type="button"
               className="win-control win-control--close"
-              aria-label="Close foundry"
+              aria-label={label("shell.controls.close")}
               onClick={closeWindow}
             >
               <DismissRegular fontSize={14} aria-hidden="true" />
@@ -422,9 +423,9 @@ export function Shell({ children }: { children: ReactNode }) {
           </div>
         </header>
         <div className="win-body">
-          <nav className="win-rail" aria-label="foundry pages">
+          <nav className="win-rail" aria-label={label("shell.rail.aria")}>
             <p className="win-railhead" aria-hidden="true">
-              pages
+              {label("shell.rail.head")}
             </p>
             {START_APPS.map((app) => {
               const Icon = app.icon;
@@ -444,7 +445,7 @@ export function Shell({ children }: { children: ReactNode }) {
             })}
             <div className="win-railfoot">
               <p className="win-railhead" aria-hidden="true">
-                family
+                {label("shell.family.head")}
               </p>
               {FAMILY.map((app) => {
                 const member = familyAccentOf(app.slug);
@@ -455,8 +456,8 @@ export function Shell({ children }: { children: ReactNode }) {
                     href={familyurl(app.slug)}
                     target="_blank"
                     rel="noreferrer"
-                    data-tip={`${app.slug} — the family application beside the foundry`}
-                    aria-label={`open ${app.slug} — the family application beside the foundry`}
+                    data-tip={labelfill("shell.family.tip", { slug: app.slug })}
+                    aria-label={labelfill("shell.family.openAria", { slug: app.slug })}
                     style={{ "--fd-dot": member?.accent } as CSSProperties}
                   >
                     <span className="win-famdot" aria-hidden="true" />

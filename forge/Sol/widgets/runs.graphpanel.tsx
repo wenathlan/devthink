@@ -26,26 +26,27 @@ import {
   plantally,
   type runplan,
 } from "../../graphplan.ts";
+import { labelfill, label } from "../../labels";
 
 /** the drawn card of one plan node (the trylle surface the graph rides) */
 const CARD = { width: 176, height: 56 } as const;
 
 /** the readable label of each plan state (the text beside the dot) */
 const STATE_LABEL: Readonly<Record<planstate, string>> = {
-  pending: "pending",
-  running: "running",
-  done: "done",
-  failed: "failed",
-  skipped: "skipped",
+  pending: label("runs.plan.state.pending"),
+  running: label("runs.plan.state.running"),
+  done: label("runs.plan.state.done"),
+  failed: label("runs.plan.state.failed"),
+  skipped: label("runs.plan.state.skipped"),
 };
 
 /** the tooltip note of each tally chip (what the state means on the floor) */
 const STATE_TIP: Readonly<Record<planstate, string>> = {
-  pending: "the stage waits for its turn in the ride order",
-  running: "the stage runs now — the windows accent marks the live stage",
-  done: "the stage settled — its evidence is already in the run record",
-  failed: "the stage rode red — the failure keeps its record on the plan",
-  skipped: "the stage was stranded by an earlier red rung",
+  pending: label("runs.plan.tip.pending"),
+  running: label("runs.plan.tip.running"),
+  done: label("runs.plan.tip.done"),
+  failed: label("runs.plan.tip.failed"),
+  skipped: label("runs.plan.tip.skipped"),
 };
 
 /** the bezier path of one wire: right edge of the source card to the left
@@ -82,7 +83,7 @@ function PlanNode({
 }) {
   return (
     <g className="frg-node" data-state={node.state}>
-      <title>{`${String(index + 1).padStart(2, "0")} · ${node.label} — ${node.note} (${STATE_LABEL[node.state]})`}</title>
+      <title>{labelfill("runs.plan.nodeTitle", { no: String(index + 1).padStart(2, "0"), label: node.label, note: node.note, state: STATE_LABEL[node.state] })}</title>
       <rect className="frg-node__card" fill={surface} width={CARD.width} height={CARD.height} rx={10} />
       <rect className="frg-node__wash" width={CARD.width} height={CARD.height} rx={10} />
       <text className="frg-node__kind" x={14} y={17}>
@@ -114,20 +115,24 @@ export default function GraphPanel({ plan, states }: { plan: runplan; states: Re
   const progress = useMemo(() => planprogress(states), [states]);
   const stageCount = useMemo(() => planstages(plan).length, [plan]);
 
-  const aria = `the run plan graph: ${plan.steps.length} steps across ${stageCount} stages, ${tally.done} done, ${tally.running} running, ${tally.failed} failed`;
+  const aria = labelfill("runs.plan.graphAria", {
+    steps: String(plan.steps.length),
+    stages: String(stageCount),
+    done: String(tally.done),
+    running: String(tally.running),
+    failed: String(tally.failed),
+  });
 
   return (
-    <section className="frg-panel" aria-label="the run plan stage graph">
+    <section className="frg-panel" aria-label={label("runs.plan.aria")}>
       <div className="frg-head">
-        <p className="frg-eyebrow">
-          the run plan · {plan.id} · {stageCount} stages
-        </p>
-        <p className="frg-progress" data-tip={`the done share of the plan rides at ${progress} percent`}>
+        <p className="frg-eyebrow">{labelfill("runs.plan.eyebrow", { id: plan.id, stages: String(stageCount) })}</p>
+        <p className="frg-progress" data-tip={labelfill("runs.plan.progressTip", { progress: String(progress) })}>
           {progress}%
         </p>
       </div>
 
-      <ul className="frg-tally" aria-label="the plan state tally">
+      <ul className="frg-tally" aria-label={label("runs.plan.tallyAria")}>
         {PLAN_STATES.map((state) => (
           <TallyChip key={state} state={state} count={tally[state]} />
         ))}
@@ -172,7 +177,7 @@ export default function GraphPanel({ plan, states }: { plan: runplan; states: Re
         </svg>
       </div>
 
-      <ul className="frg-stages" aria-label="the plan stages in ride order">
+      <ul className="frg-stages" aria-label={label("runs.plan.stagesAria")}>
         {plan.steps.map((step, index) => {
           const state = states[step.id] ?? "pending";
           return (
@@ -180,7 +185,7 @@ export default function GraphPanel({ plan, states }: { plan: runplan; states: Re
               key={step.id}
               className="frg-stage"
               data-state={state}
-              data-tip={`${step.note} — ${STATE_LABEL[state]}`}
+              data-tip={labelfill("runs.plan.stepTip", { note: step.note, state: STATE_LABEL[state] })}
             >
               <i aria-hidden="true" />
               <span className="frg-stage__index">{String(index + 1).padStart(2, "0")}</span>
@@ -192,7 +197,9 @@ export default function GraphPanel({ plan, states }: { plan: runplan; states: Re
       </ul>
 
       <p className="sr-only">
-        {plan.steps.map((step, index) => `${index + 1}. ${step.label} (${step.kind}): ${step.note}`).join(" ")}
+        {plan.steps.map((step, index) =>
+          labelfill("runs.plan.srStep", { no: String(index + 1), label: step.label, kind: step.kind, note: step.note }),
+        ).join(" ")}
       </p>
     </section>
   );

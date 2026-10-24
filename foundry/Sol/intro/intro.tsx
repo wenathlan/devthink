@@ -14,6 +14,7 @@
  */
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
+import { label } from "../../labels";
 import { markIntroSeen } from "../../onboardingstate";
 import { BrandMark } from "../widgets/shell.brandmark.tsx";
 
@@ -67,16 +68,16 @@ export default function Intro() {
   }, [leaving, navigate]);
 
   return (
-    <div className={leaving ? "intro intro--exit" : "intro"} role="status" aria-label="foundry is opening">
+    <div className={leaving ? "intro intro--exit" : "intro"} role="status" aria-label={label("intro.aria")}>
       <div className="intro__stage" aria-hidden="true">
         <span className="intro__mark">
           <BrandMark size={96} />
         </span>
-        <strong className="intro__word">foundry</strong>
-        <p className="intro__line">foundry runs and stores the working set of the family.</p>
+        <strong className="intro__word">{label("intro.name")}</strong>
+        <p className="intro__line">{label("intro.line")}</p>
       </div>
       <span className="intro__skip" aria-hidden="true">
-        click or press any key to continue
+        {label("intro.skip")}
       </span>
     </div>
   );

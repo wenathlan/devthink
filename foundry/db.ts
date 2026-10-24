@@ -11,6 +11,7 @@
 import { mkdirSync } from "node:fs";
 import path from "node:path";
 import Database from "better-sqlite3";
+import { LABEL_MANIFEST, LABEL_REVISION } from "./labels.ts";
 
 /** the correlated tables the runtime keeps (the family sync contract names). */
 export const tables = ["keys", "payloads", "onboarding_states"] as const;
@@ -67,6 +68,13 @@ CREATE TABLE IF NOT EXISTS onboarding_states (
   introseen      INTEGER NOT NULL DEFAULT 0,
   onboardingseen INTEGER NOT NULL DEFAULT 0,
   updatedAt      TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE TABLE IF NOT EXISTS labels (
+  id         TEXT PRIMARY KEY,
+  text       TEXT NOT NULL,
+  revision   INTEGER NOT NULL DEFAULT 0,
+  updatedAt  TEXT NOT NULL DEFAULT (datetime('now')),
+  translated INTEGER NOT NULL DEFAULT 0
 );
 `;
 
@@ -127,4 +135,120 @@ export function setOnboardingStage(visitor: string, stage: "intro" | "onboarding
     [visitor, stage === "intro" ? 1 : 0, stage === "onboarding" ? 1 : 0],
   );
   return getOnboardingState(visitor) ?? { introseen: false, onboardingseen: false };
+}
+
+/* --------------------------------------------------------------------- */
+/* labels — the interface copy store                                      */
+/* --------------------------------------------------------------------- */
+
+/** one labels row: the interface copy store. the id is the page.widget.key
+ * path, the text rides the english source of truth (labels.ts), and the
+ * translated flag protects a runtime translation from the seed overwrite.
+ * the shape mirrors the browser seed rows in labels.ts one to one. */
+export type LabelRow = {
+  id: string;
+  text: string;
+  revision: number;
+  updatedAt: string;
+  translated?: boolean;
+};
+
+/** the raw labels projection sqlite answers (translated rides the 0/1 cell). */
+type LabelRowSql = {
+  id: string;
+  text: string;
+  revision: number;
+  updatedAt: string;
+  translated: number;
+};
+
+/** Projects one raw labels row into the stored label projection. */
+function labelRowOf(row: LabelRowSql): LabelRow {
+  return {
+    id: row.id,
+    text: row.text,
+    revision: row.revision,
+    updatedAt: row.updatedAt,
+    ...(row.translated === 1 ? { translated: true } : {}),
+  };
+}
+
+/**
+ * Writes one label row (idempotent upsert; the caller owns the revision),
+ * prepared and parameterized, never concatenated SQL.
+ *
+ * @param id the page.widget.key path of the label.
+ * @param text the surface text.
+ * @param revision the manifest revision the text carries.
+ * @param translated true when the row carries a runtime translation.
+ * @returns the stored label projection.
+ */
+export function saveLabel(id: string, text: string, revision: number, translated = false): LabelRow {
+  execute(
+    `INSERT INTO labels (id, text, revision, updatedAt, translated) VALUES (?, ?, ?, datetime('now'), ?)
+     ON CONFLICT(id) DO UPDATE SET
+       text = excluded.text,
+       revision = excluded.revision,
+       updatedAt = excluded.updatedAt,
+       translated = excluded.translated`,
+    [id, text, revision, translated ? 1 : 0],
+  );
+  const row = queryOne<LabelRowSql>("SELECT id, text, revision, updatedAt, translated FROM labels WHERE id = ?", [id]);
+  if (!row) throw new Error(`label "${id}" write did not land`);
+  return labelRowOf(row);
+}
+
+/**
+ * Reads one label row by its page.widget.key path.
+ *
+ * @param id the label id.
+ * @returns the row, or undefined when absent.
+ */
+export function readLabel(id: string): LabelRow | undefined {
+  const row = queryOne<LabelRowSql>("SELECT id, text, revision, updatedAt, translated FROM labels WHERE id = ?", [id]);
+  return row ? labelRowOf(row) : undefined;
+}
+
+/**
+ * Reads every label row of the store ordered by id.
+ *
+ * @returns the label rows.
+ */
+export function readAllLabels(): LabelRow[] {
+  return queryAll<LabelRowSql>("SELECT id, text, revision, updatedAt, translated FROM labels ORDER BY id ASC").map(
+    labelRowOf,
+  );
+}
+
+/**
+ * Ingests the english manifest of labels.ts into the labels table — the
+ * db-side twin of the browser seedLabels: idempotent, the changed rows
+ * refresh, and the translated rows stay protected from the overwrite.
+ *
+ * @returns the seeded and protected row counts.
+ */
+export function seedLabelRows(): { seeded: number; protected: number } {
+  ensureSchema();
+  const rows = new Map(readAllLabels().map((row) => [row.id, row]));
+  let seeded = 0;
+  let saved = 0;
+  for (const [id, text] of Object.entries(LABEL_MANIFEST)) {
+    const row = rows.get(id);
+    if (row === undefined || (row.translated !== true && row.text !== text)) {
+      saveLabel(id, text, LABEL_REVISION, row?.translated ?? false);
+      seeded += 1;
+    }
+    saved += 1;
+  }
+  return { seeded, protected: saved - seeded };
+}
+
+/* the copy law rides the db boot: the label seed ingests the english manifest
+ * of labels.ts beside the schema (the interface strings land in the store,
+ * the translated rows protected from the overwrite). best effort: a sealed
+ * store never blocks the boot, the manifest always answers the widgets. */
+try {
+  seedLabelRows();
+} catch {
+  /* the manifest answers; the store catches up on the next boot */
 }

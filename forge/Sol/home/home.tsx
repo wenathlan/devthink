@@ -26,6 +26,7 @@ import { useLocation } from "wouter";
 import { familyrow } from "../../family";
 import { familyurl } from "../../familyurl";
 import type { HomeProps } from "../../hometypes.ts";
+import { labelfill, label } from "../../labels";
 import { modes } from "../../runner.ts";
 import { BrandMark } from "../widgets/shell.brandmark.tsx";
 import { Entry } from "../widgets/home.entry.tsx";
@@ -37,18 +38,18 @@ export * from "../widgets/home.tabs.tsx";
 const FLOW_STEPS = [
   {
     no: "01",
-    title: "Mount",
-    text: "The floor mounts a full-virtual sandbox on the saddle engine and hands the build to a runner.",
+    title: label("home.flow.mount"),
+    text: label("home.flow.mountBody"),
   },
   {
     no: "02",
-    title: "Run",
-    text: "The build executes in the sandbox and its log lines land beside the runner that produced them.",
+    title: label("home.flow.run"),
+    text: label("home.flow.runBody"),
   },
   {
     no: "03",
-    title: "Report",
-    text: "The outcome travels over https — success, failure and the log reference — back to the family.",
+    title: label("home.flow.report"),
+    text: label("home.flow.reportBody"),
   },
 ] as const;
 
@@ -56,32 +57,32 @@ const FLOW_STEPS = [
 const CAPABILITIES = [
   {
     no: "01",
-    target: "register runners",
-    text: "The runner floor musters the fleet — name, mode, state and the health ladder of every runner.",
-    status: "ready",
-    meta: "on /runs",
+    target: label("home.cap.registerTarget"),
+    text: label("home.cap.registerBody"),
+    status: label("home.cap.statusReady"),
+    meta: label("home.cap.registerMeta"),
   },
   {
     no: "02",
-    target: "queue the work",
-    text: "Runs wait in three priority lanes — express cuts ahead, batch rides last, FIFO inside the lane.",
-    status: "ready",
-    meta: "on /queue",
+    target: label("home.cap.queueTarget"),
+    text: label("home.cap.queueBody"),
+    status: label("home.cap.statusReady"),
+    meta: label("home.cap.queueMeta"),
   },
   {
     no: "03",
-    target: "record run logs",
-    text: "Every run keeps its line stream beside the runner — replayed from one seed, line-exact.",
-    status: "ready",
-    meta: "on /logs",
+    target: label("home.cap.logsTarget"),
+    text: label("home.cap.logsBody"),
+    status: label("home.cap.statusReady"),
+    meta: label("home.cap.logsMeta"),
   },
 ] as const;
 
 /** the family row of the landing footer: the nine siblings, spec §12 dots */
 function FamilyRow() {
   return (
-    <nav className="fg-familyrow" aria-label="the DevThink family">
-      <p className="fg-familyrow__head">the family</p>
+    <nav className="fg-familyrow" aria-label={label("home.family.aria")}>
+      <p className="fg-familyrow__head">{label("home.family.head")}</p>
       <div className="fg-familyrow__links">
         {familyrow().map((member) => (
           <a
@@ -90,8 +91,8 @@ function FamilyRow() {
             href={familyurl(member.slug)}
             target="_blank"
             rel="noreferrer"
-            data-tip={`open ${member.slug} — a family application`}
-            aria-label={`open ${member.slug} — a family application`}
+            data-tip={labelfill("home.family.openAria", { slug: member.slug })}
+            aria-label={labelfill("home.family.openAria", { slug: member.slug })}
           >
             <span className="fg-familyrow__dot" style={{ background: member.accent }} aria-hidden="true" />
             {member.slug}
@@ -125,31 +126,26 @@ export function HomeRegular(_props: HomeProps) {
           <span className="hero-mark">
             <BrandMark size={44} />
           </span>
-          <span className="hero-name">forge</span>
+          <span className="hero-name">{label("home.hero.name")}</span>
         </div>
         <h1 id="home-h" className="hero-h reveal in">
-          Builds that run themselves.
+          {label("home.hero.title")}
         </h1>
-        <p className="hero-lede reveal in">
-          The runner floor of the DevThink family — runners muster, work queues by priority and every run leaves its log
-          behind, on the saddle sandbox engine.
-        </p>
+        <p className="hero-lede reveal in">{label("home.hero.lede")}</p>
         <form className="prompt-giga reveal in" onSubmit={run}>
           <input
             className="pg-input"
             type="text"
-            placeholder="npm run build · full-virtual sandbox"
-            aria-label="Describe the build to run"
+            placeholder={label("home.hero.placeholder")}
+            aria-label={label("home.hero.inputAria")}
           />
           <button className="pg-key" type="submit">
-            step onto the floor
+            {label("home.hero.cta")}
             <ArrowRightRegular fontSize={16} aria-hidden="true" />
           </button>
         </form>
-        <p className="pg-hint reveal in">
-          enter walks down to the runner floor · the targets ride the runner modes of the saddle engine
-        </p>
-        <fieldset className="pg-chips reveal in" aria-label="Runtime targets">
+        <p className="pg-hint reveal in">{label("home.hero.hint")}</p>
+        <fieldset className="pg-chips reveal in" aria-label={label("home.hero.chipsAria")}>
           {modes.map((mode) => (
             <button
               key={mode}
@@ -162,7 +158,7 @@ export function HomeRegular(_props: HomeProps) {
             </button>
           ))}
         </fieldset>
-        <Entry note="forge · the runner floor of the family" />
+        <Entry note={label("home.entry.noteFloor")} />
       </section>
 
       {/* THE RUN LEDGER — hairline capability rows, the ONE raised featured
@@ -170,28 +166,26 @@ export function HomeRegular(_props: HomeProps) {
           ledger presents capabilities — never invented run stats. */}
       <section className="section" id="surface" aria-labelledby="floor-h">
         <div className="section-head">
-          <p className="eyebrow reveal in">the runner floor</p>
+          <p className="eyebrow reveal in">{label("home.floor.eyebrow")}</p>
           <h2 id="floor-h" className="h2-xl reveal in">
-            One floor, three jobs
+            {label("home.floor.title")}
           </h2>
         </div>
         <div className="ledger reveal in">
-          <article className="ledger-row fg-featured" aria-label="the runner floor — the platform pages answer">
+          <article className="ledger-row fg-featured" aria-label={label("home.floor.featuredAria")}>
             <span className="ledger-no" aria-hidden="true">
               00
             </span>
             <div className="ledger-main">
-              <h3 className="ledger-title">the platform answers</h3>
-              <p className="ledger-text">
-                The platform answers on three pages of this app: the fleets, the queue and the seeded log replay.
-              </p>
+              <h3 className="ledger-title">{label("home.floor.featuredTitle")}</h3>
+              <p className="ledger-text">{label("home.floor.featuredBody")}</p>
             </div>
             <div className="ledger-side">
               <span className="fg-live">
                 <i aria-hidden="true" />
-                this app
+                {label("home.floor.live")}
               </span>
-              <span className="ledger-badge">runs · queue · logs</span>
+              <span className="ledger-badge">{label("home.floor.badge")}</span>
             </div>
           </article>
           {CAPABILITIES.map((cap) => (
@@ -219,9 +213,9 @@ export function HomeRegular(_props: HomeProps) {
           rail (air + hairlines, never a nested box) */}
       <section className="section" aria-labelledby="flow-h">
         <div className="section-head">
-          <p className="eyebrow reveal in">the run, end to end</p>
+          <p className="eyebrow reveal in">{label("home.flow.eyebrow")}</p>
           <h2 id="flow-h" className="h2-xl reveal in">
-            Mount, run, report
+            {label("home.flow.title")}
           </h2>
         </div>
         <div className="fg-split">
@@ -238,14 +232,11 @@ export function HomeRegular(_props: HomeProps) {
               </li>
             ))}
           </ol>
-          <aside className="fg-side reveal in" aria-label="the honest state of the floor">
-            <p className="fg-side__head">the honest state</p>
-            <p className="fg-side__text">
-              This surface rehearses the floor from one seed — the fleets, the queue and the log replay are the real
-              engine logic, and no live build is claimed. The family reports its outcomes here.
-            </p>
+          <aside className="fg-side reveal in" aria-label={label("home.side.aria")}>
+            <p className="fg-side__head">{label("home.side.head")}</p>
+            <p className="fg-side__text">{label("home.side.body")}</p>
             <a className="fg-side__link" href="https://github.com/wenathlan/devthink" target="_blank" rel="noreferrer">
-              the family on github
+              {label("home.side.link")}
               <ArrowUpRightRegular fontSize={14} aria-hidden="true" />
             </a>
           </aside>
@@ -260,31 +251,31 @@ export function HomeRegular(_props: HomeProps) {
           window floor */}
       <footer className="meta-quad reveal in">
         <div className="quad-col">
-          <p className="quad-head">floor</p>
+          <p className="quad-head">{label("home.quad.floorHead")}</p>
           <a className="quad-link" href="/runs">
-            the runner fleets
+            {label("home.quad.fleetsLink")}
           </a>
           <a className="quad-link" href="/queue">
-            the execution queue
+            {label("home.quad.queueLink")}
           </a>
           <a className="quad-link" href="/logs">
-            the run logs
+            {label("home.quad.logsLink")}
           </a>
         </div>
         <div className="quad-col">
-          <p className="quad-head">engine</p>
-          <span className="quad-line">saddle · the sandbox engine</span>
+          <p className="quad-head">{label("home.quad.engineHead")}</p>
+          <span className="quad-line">{label("home.quad.engineLine")}</span>
           <span className="quad-line">{modes.join(" · ")}</span>
         </div>
         <div className="quad-col">
-          <p className="quad-head">identity</p>
-          <span className="quad-line">forge · lime-brasa #a2cb3a</span>
-          <span className="quad-line">charcoal × lime — it just runs</span>
+          <p className="quad-head">{label("home.quad.identityHead")}</p>
+          <span className="quad-line">{label("home.quad.identityLine1")}</span>
+          <span className="quad-line">{label("home.quad.identityLine2")}</span>
         </div>
         <div className="quad-col">
-          <p className="quad-head">domain</p>
-          <span className="quad-line">forge · the family forge</span>
-          <span className="quad-line">runs the deployed builds</span>
+          <p className="quad-head">{label("home.quad.domainHead")}</p>
+          <span className="quad-line">{label("home.quad.domainLine1")}</span>
+          <span className="quad-line">{label("home.quad.domainLine2")}</span>
         </div>
       </footer>
     </main>

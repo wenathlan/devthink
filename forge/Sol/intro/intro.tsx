@@ -19,6 +19,7 @@
 // the home entry gate decides whether the splash plays at all).
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
+import { label } from "../../labels";
 import { markIntroSeen } from "../../onboardingstate";
 import { BrandMark } from "../widgets/shell.brandmark.tsx";
 
@@ -71,7 +72,7 @@ export default function Intro() {
       className="intro"
       data-leaving={leaving ? "true" : undefined}
       role="status"
-      aria-label="forge is opening"
+      aria-label={label("intro.aria")}
       onClick={leave}
       onKeyDown={leave}
     >
@@ -79,11 +80,11 @@ export default function Intro() {
         <span className="intro__mark">
           <BrandMark size={96} />
         </span>
-        <strong className="intro__word">forge</strong>
-        <p className="intro__line">forge runs the builds of the family.</p>
+        <strong className="intro__word">{label("intro.name")}</strong>
+        <p className="intro__line">{label("intro.line")}</p>
       </div>
       <p className="intro__skip" aria-hidden="true">
-        click or press any key to continue
+        {label("intro.skip")}
       </p>
     </div>
   );

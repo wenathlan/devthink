@@ -14,12 +14,17 @@ import { ArrowCounterclockwiseRegular as RotateCcw, WarningRegular as AlertTrian
 import { Component, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { Router as WouterRouter } from "wouter";
+import { label, seedLabels } from "./labels";
 import Sol from "./Sol/Sol";
 import installzoomlock from "./zoomlock";
 import "./Sol/sol.css";
 
 // the zoom lock arms before the first render: the interface boots pinned at 100%
 if (typeof window !== "undefined") installzoomlock();
+
+// the copy law rides the boot: the seed refreshes the label store rows
+// (translated rows protected) before the first paint answers
+if (typeof window !== "undefined") void seedLabels().catch(() => {});
 
 class ThemeErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
   state: { error: Error | null } = { error: null };
@@ -38,11 +43,11 @@ class ThemeErrorBoundary extends Component<{ children: ReactNode }, { error: Err
         style={{ padding: "48px 24px", maxWidth: 720, margin: "0 auto" }}
       >
         <AlertTriangle fontSize={34} />
-        <p>forge could not render this page frame.</p>
+        <p>{label("app.boundary.body")}</p>
         <pre>{error.stack}</pre>
         <button type="button" onClick={() => window.location.reload()}>
           <RotateCcw fontSize={14} />
-          reload the page
+          {label("app.boundary.reload")}
         </button>
       </main>
     );
