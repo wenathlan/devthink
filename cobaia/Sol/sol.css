@@ -409,7 +409,7 @@ code {
 .cb-root {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100%;
 }
 
 /* the skip link: hidden until keyboard focus; chrome answers the windows accent */
@@ -630,6 +630,187 @@ code {
   border-top: 1px solid var(--sol-hairline);
   color: var(--sol-faint);
   font: 400 11px/1.6 var(--sol-mono);
+}
+
+/* ---------- 3b. WINDOW CHROME — the app window the family law gives every
+   deploy unit: the fluent frame over the mica canvas, the title bar with the
+   ONE logo slot, the three caption buttons (the hover ladder and the red
+   close), the eight resize handles and the inactive grayscale law. The
+   caption buttons answer the shell's real handlers where they exist — the
+   cobaia shell owns none yet, so they render in the disabled honest fade and
+   the owner wires the window state later (never a fake action). ---------- */
+.cb-winroot {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  padding: clamp(12px, 3vh, 40px) clamp(12px, 2.5vw, 48px);
+}
+
+/* the application window: the fluent frame — the site measure, the deep
+   float shadow, the open pop on the micro out curve (scale .95 → 1); the
+   maximize and inactive states ride the data attributes the shell owns */
+.cb-window {
+  position: relative;
+  z-index: var(--z-content);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: min(var(--cb-maxw), 100%);
+  min-height: 0;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid var(--sol-hairline-strong);
+  border-radius: var(--radius-md);
+  background: var(--sol-canvas);
+  box-shadow: var(--sol-shadow-6);
+  animation: cbWinOpen var(--sol-micro) var(--ease-micro) backwards;
+}
+.cb-window[data-max="true"] {
+  width: 100%;
+  border-radius: 0;
+}
+/* the windows inactive law: a window the document is not focused on turns grayscale */
+.cb-window[data-inactive="true"] {
+  filter: grayscale(80%);
+}
+
+/* the title bar: the bar acrylic over the grain — the ONE logo slot (the
+   drawn mark, the name, the role) and the caption zone flush at the right
+   edge; the drag-surface grammar stands ready for the shell's title drag */
+.cb-titlebar {
+  display: flex;
+  align-items: center;
+  flex: none;
+  height: 44px;
+  padding-left: 12px;
+  border-bottom: 1px solid var(--bar-hairline);
+  background-color: var(--bar-acrylic);
+  background-image: var(--win-noise);
+  background-blend-mode: soft-light;
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  backdrop-filter: saturate(3) blur(20px);
+  cursor: default;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.cb-wbrand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.cb-wname {
+  color: var(--sol-ink);
+  font: 600 13px/1 var(--sol-sans);
+  letter-spacing: var(--sol-track-display);
+  white-space: nowrap;
+}
+.cb-wrole {
+  overflow: hidden;
+  color: var(--sol-muted);
+  font: 400 12px/1 var(--sol-sans);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* the caption zone and the three caption buttons: the fluent 44px targets
+   at the 4px control radius — the wash hover, the wash-soft press, the
+   windows red close (rgb(232 17 35), hover deepens to rgb(139 10 20));
+   no handler yet → the disabled honest fade answers nothing */
+.cb-caption {
+  display: flex;
+  align-self: stretch;
+  margin-left: auto;
+}
+.cb-cap {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  border: 0;
+  border-radius: var(--win-radius-ctl);
+  background: transparent;
+  color: var(--sol-muted);
+  transition:
+    background-color var(--sol-micro) var(--sol-ease-out),
+    color var(--sol-micro) var(--sol-ease-out);
+}
+.cb-cap:hover {
+  background-color: var(--wash);
+  color: var(--sol-ink);
+}
+.cb-cap:active {
+  background-color: var(--wash-soft);
+}
+.cb-cap--close:hover {
+  background-color: rgb(232 17 35);
+  color: rgb(255 255 255 / 92%);
+}
+.cb-cap--close:active {
+  background-color: rgb(139 10 20);
+}
+.cb-cap:focus-visible {
+  outline-offset: -4px;
+}
+.cb-cap:disabled,
+.cb-cap:disabled:hover,
+.cb-cap:disabled:active {
+  background: transparent;
+  color: color-mix(in srgb, var(--sol-faint) 60%, transparent);
+  cursor: default;
+}
+
+/* the window body: the scroll stage — the site chrome and the page surface
+   live inside the frame, the sticky bar answers the stage, not the viewport */
+.cb-winbody {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* the eight resize handles of the window chrome (n/s/e/w + the corners) —
+   laid inside the edge (the window clips its overflow, the border is still
+   the first px of the frame); the grammar stands ready for the shell's
+   resize sessions — the spans render when the handlers land (never a fake
+   resize cursor) */
+.cb-rz {
+  position: absolute;
+  z-index: var(--z-float);
+  touch-action: none;
+}
+.cb-rz[data-edge="n"] { top: 0; left: 10px; right: 10px; height: 6px; cursor: ns-resize; }
+.cb-rz[data-edge="s"] { bottom: 0; left: 10px; right: 10px; height: 6px; cursor: ns-resize; }
+.cb-rz[data-edge="e"] { right: 0; top: 10px; bottom: 10px; width: 6px; cursor: ew-resize; }
+.cb-rz[data-edge="w"] { left: 0; top: 10px; bottom: 10px; width: 6px; cursor: ew-resize; }
+.cb-rz[data-edge="ne"] { top: 0; right: 0; width: 13px; height: 13px; cursor: nesw-resize; }
+.cb-rz[data-edge="nw"] { top: 0; left: 0; width: 13px; height: 13px; cursor: nwse-resize; }
+.cb-rz[data-edge="se"] { bottom: 0; right: 0; width: 13px; height: 13px; cursor: nwse-resize; }
+.cb-rz[data-edge="sw"] { bottom: 0; left: 0; width: 13px; height: 13px; cursor: nesw-resize; }
+.cb-window[data-max="true"] .cb-rz { display: none; }
+
+/* the window's own stops: reduced motion stills the entrance, reduced
+   transparency lands the bar acrylic on the solid floor (the house guard
+   dialect), the small ratio drops the role */
+@media (prefers-reduced-motion: reduce) {
+  .cb-window {
+    animation: none;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .cb-titlebar {
+    background-color: #0a0a0b;
+    background-image: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+@media (max-width: 760px) {
+  .cb-wrole {
+    display: none;
+  }
 }
 
 /* ---------- 4. PAGE SCAFFOLDING — hero, sections, entrance ---------- */
@@ -1176,6 +1357,15 @@ code {
   from {
     opacity: 0;
     transform: translateY(16px);
+  }
+}
+/* cbWinOpen — the window entrance of the family law: the fluent frame pops
+   from scale .95 on the micro out curve (the animation runs backwards so the
+   window states never pin the scale over a later transform) */
+@keyframes cbWinOpen {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
   }
 }
 /* the skeleton shimmer: opacity only — the reserved wells breathe while
