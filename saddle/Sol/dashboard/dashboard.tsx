@@ -20,22 +20,22 @@ import { label, labelfill } from '../../labels.ts';
  * typed ES module that replaced the window-global localauth.js of the static edge (the original
  * beside the typed module - the same convention the Login page uses. */
 import { logout, probe, session as readlocalsession } from '../../localauth.ts';
-import type { LocalSessionView } from '../widgets/dashboard.accountpanel.tsx';
-import AccountPanel from '../widgets/dashboard.accountpanel.tsx';
-import AdminPanel from '../widgets/dashboard.adminpanel.tsx';
-import CreateSandboxForm from '../widgets/dashboard.createsandboxform.tsx';
-import EventsTimeline from '../widgets/dashboard.eventstimeline.tsx';
-import SandboxList from '../widgets/dashboard.sandboxlist.tsx';
+import { AccountPanel as type, LocalSessionView } from '../widgets';
+import { AccountPanel as AccountPanel } from '../widgets';
+import { AdminPanel as AdminPanel } from '../widgets';
+import { CreateSandboxForm as CreateSandboxForm } from '../widgets';
+import { DashboardEventstimeline as EventsTimeline } from '../widgets';
+import { SandboxList as SandboxList } from '../widgets';
 
-export * from '../widgets/dashboard.accountpanel.tsx';
-export * from '../widgets/dashboard.adminpanel.tsx';
-export * from '../widgets/dashboard.auditlog.tsx';
-export * from '../widgets/dashboard.createsandboxform.tsx';
-export * from '../widgets/dashboard.eventstimeline.tsx';
-export * from '../widgets/dashboard.globalsandboxestable.tsx';
-export * from '../widgets/dashboard.meshnodestable.tsx';
-export * from '../widgets/dashboard.sandboxlist.tsx';
-export * from '../widgets/dashboard.userstable.tsx';
+export * from '../widgets';
+export * from '../widgets';
+export * from '../widgets';
+export * from '../widgets';
+export * from '../widgets';
+export * from '../widgets';
+export * from '../widgets';
+export * from '../widgets';
+export * from '../widgets';
 
 /** which surface answers: the node api or the static-edge local engine. */
 type Phase = 'booting' | 'api' | 'local';

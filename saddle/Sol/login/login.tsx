@@ -15,9 +15,9 @@
 // carries the real session facts; 44px inputs, the sand focus ring.
 import { Link } from 'wouter';
 import { label } from '../../labels.ts';
-import LoginForm from '../widgets/login.form.tsx';
+import { LoginForm as LoginForm } from '../widgets';
 
-export * from '../widgets/login.form.tsx';
+export * from '../widgets';
 
 /** meta description carried by the absorbed static page. */
 export const loginpagedescription =

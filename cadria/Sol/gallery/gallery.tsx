@@ -28,7 +28,7 @@ import {
 import { imageStyles } from "../../imagestyles.ts";
 import { label } from "../../labels.ts";
 import { useToast } from "../toast/Toast.tsx";
-import { EmptyState } from "../widgets/shell.emptystate.tsx";
+import { EmptyState } from "../widgets";
 
 /** how many generations the wall asks for (the gateway clamps 1-200). */
 const WALL_LIMIT = 60;

@@ -27,8 +27,8 @@ import {
   saveBrowserPreference } from "../../db";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { osProviders, osText } from "../../oslabels.ts";
-import { ProviderCard } from "../widgets/providers.card.tsx";
-import { ProvidersList } from "../widgets/providers.list.tsx";
+import { ProviderCard } from "../widgets";
+import { ProvidersList } from "../widgets";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */

@@ -18,9 +18,9 @@ import { useEffect, useState } from "react";
 import { coreModuleTable, osAppLabels, type CoreModule } from "../../catalog";
 import { osDocsEndpoints, osDocsQuickstartCommands, osText } from "../../oslabels.ts";
 import { ShellChrome } from "@/widgets/shell.shellchrome";
-import { DocsNav, type DocsSection } from "../widgets/docs.nav.tsx";
-import { DocsCard, DocsCode } from "../widgets/docs.card.tsx";
-import { DocsModules } from "../widgets/docs.modules.tsx";
+import { DocsNav, type DocsSection } from "../widgets";
+import { DocsCard, DocsCode } from "../widgets";
+import { DocsModules } from "../widgets";
 
 /** the loopback endpoints the http card lists — the label table owns the
  * rows (the oslabels docs seed). */

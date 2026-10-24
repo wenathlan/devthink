@@ -18,8 +18,8 @@ import { ShellChrome } from "@/widgets/shell.shellchrome";
 import { type NativeApp, nativeApps, osAppLabels, type StudioAsset, studioAssets } from "../../catalog";
 import { osText } from "../../oslabels.ts";
 import { queuestudiorender } from "../../runner";
-import { ImageEngine } from "../widgets/image.imageengine.tsx";
-import { ImageStills } from "../widgets/image.imagestills.tsx";
+import { ImageEngine } from "../widgets";
+import { ImageStills } from "../widgets";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */

@@ -17,7 +17,7 @@ import type { PublicationStep, RecordSetRow, ZoneSnapshot } from "../../argan.ts
 import { apexZoneFile } from "../../argan.ts";
 import { listApexRecordSets, listPublicationSteps, listZones } from "../../catalog.ts";
 import { label, labelfill } from "../../labels";
-import EmptyState from "../widgets/shell.emptystate.tsx";
+import { ShellEmptystate as EmptyState } from "../widgets";
 import { type NavLink, Shell } from "../shell/Shell";
 
 const FOOTER_LINKS: readonly NavLink[] = [

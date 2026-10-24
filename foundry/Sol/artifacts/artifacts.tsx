@@ -23,8 +23,8 @@ import {
 } from "../../artifact.ts";
 import { PIPELINE, planrehearsal, type planstate } from "../../graphplan.ts";
 import { labelfill, label } from "../../labels.ts";
-import { EmptyState } from "../widgets/shell.emptystate.tsx";
-import GraphPanel from "../widgets/artifacts.graphpanel.tsx";
+import { EmptyState } from "../widgets";
+import { GraphPanel as GraphPanel } from "../widgets";
 
 /** the seed of the packaging rehearsal (shown on the page, pinned by the tests) */
 export const LINE_SEED = 804613;

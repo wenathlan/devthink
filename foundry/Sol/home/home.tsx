@@ -30,13 +30,13 @@ import { familyrow } from "../../family";
 import { familyurl } from "../../familyurl";
 import type { HomeProps } from "../../hometypes.ts";
 import { labelfill, label } from "../../labels";
-import { BrandMark } from "../widgets/shell.brandmark.tsx";
-import { Entry } from "../widgets/home.entry.tsx";
-import { EntryGate } from "../widgets/home.entrygate.tsx";
-import { Tabs } from "../widgets/home.tabs.tsx";
+import { BrandMark } from "../widgets";
+import { Entry } from "../widgets";
+import { EntryGate } from "../widgets";
+import { Tabs } from "../widgets";
 
-export * from "../widgets/home.entry.tsx";
-export * from "../widgets/home.tabs.tsx";
+export * from "../widgets";
+export * from "../widgets";
 
 /** one clone format of the herd shelf — the real archives the family
  * clones and ships (the release archives travel as tar.xz). the ext is the

@@ -26,12 +26,12 @@ import { BOOT_STAGE_GAP, bootgraph, bootrunnerhandler } from "../../consolebootg
 import { gatewayReady } from "../../gateway.js";
 import { createrunner, type runstageview } from "../../graphrunner.js";
 import { makeviewstate } from "../../graphviewstate.js";
-import { ConsoleReference } from "../widgets/console.reference.tsx";
-import { GraphView } from "../widgets/console.graphview.tsx";
-import type { TerminalRow, TerminalState } from "../widgets/console.terminal.tsx";
-import Terminal from "../widgets/console.terminal.tsx";
+import { ConsoleReference } from "../widgets";
+import { GraphView } from "../widgets";
+import { Terminal as type, TerminalRow, TerminalState } from "../widgets";
+import { Terminal as Terminal } from "../widgets";
 
-export * from "../widgets/console.terminal.tsx";
+export * from "../widgets";
 
 /** the three real sections of the console deck. */
 type ConsoleSection = "terminal" | "boot" | "reference";

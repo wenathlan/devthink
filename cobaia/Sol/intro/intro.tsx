@@ -25,10 +25,10 @@
 import type { CSSProperties } from "react";
 import { useCallback, useEffect, useState } from "react";
 import { label } from "../../labels";
-import IntroFooter from "../widgets/intro.footer.tsx";
-import IntroPlans from "../widgets/intro.plans.tsx";
-import IntroSplash from "../widgets/intro.splash.tsx";
-import { BrandMark } from "../widgets/shell.brand.tsx";
+import { IntroFooter as IntroFooter } from "../widgets";
+import { IntroPlans as IntroPlans } from "../widgets";
+import { IntroSplash as IntroSplash } from "../widgets";
+import { BrandMark } from "../widgets";
 
 /** the lifecycle of the opening act: resolving (the motion preference
  * decides) → playing (the akash floor over the landing) → done (the

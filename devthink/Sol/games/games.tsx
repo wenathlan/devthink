@@ -17,8 +17,8 @@ import { ShellChrome } from "@/widgets/shell.shellchrome";
 import { osAppLabels, type RunnerBinary, runnerBinaries } from "../../catalog";
 import { osText } from "../../oslabels.ts";
 import { queuebinarylaunch } from "../../runner";
-import { GamesList } from "../widgets/games.list.tsx";
-import { type GamesFilter, GamesNav } from "../widgets/games.nav.tsx";
+import { GamesList } from "../widgets";
+import { type GamesFilter, GamesNav } from "../widgets";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */

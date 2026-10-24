@@ -49,7 +49,7 @@ import { FAMILY_SLUGS, familyAccentOf } from "../../family";
 import { familyurl } from "../../familyurl";
 import { labelfill, label } from "../../labels";
 import { currentTheme, type Theme, toggleTheme } from "../../theme";
-import { BrandMark } from "../widgets/shell.brandmark.tsx";
+import { BrandMark } from "../widgets";
 
 /** one entry of the window rail: a page surface of the app with its glyph. */
 export type RailApp = {

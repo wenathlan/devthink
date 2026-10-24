@@ -54,27 +54,27 @@ import { DESKTOP_APPS, isFamilyApp } from "../../appregistry.ts";
 import { label } from "../../labels.ts";
 import { peekonboardingstate } from "../../onboardingstate";
 import { osText } from "../../oslabels.ts";
-import { SolLogoMark } from "../widgets/panel.logo.tsx";
-import { ShellChrome } from "../widgets/shell.shellchrome.tsx";
-import { DownloadRail } from "../widgets/explore.downloadrail.tsx";
-import { ExploreSidebar } from "../widgets/explore.sidebar.tsx";
+import { SolLogoMark } from "../widgets";
+import { ShellChrome } from "../widgets";
+import { DownloadRail } from "../widgets";
+import { ExploreSidebar } from "../widgets";
 import {
   CategoryDeck,
   CategorySectionDeck,
   exploreCategories,
   exploreRecents,
   type ExploreCategoryId,
-  type ExploreData } from "../widgets/explore.sections.tsx";
-import { LaunchDeck, OsSigil, TRYLLE_PRIMARY_STACK } from "../widgets/explore.launchdeck.tsx";
-import { HeroWaves } from "../widgets/explore.waves.tsx";
-import { WindowEdgeChrome } from "../widgets/explore.windowchrome.tsx";
+  type ExploreData } from "../widgets";
+import { LaunchDeck, OsSigil, TRYLLE_PRIMARY_STACK } from "../widgets";
+import { HeroWaves } from "../widgets";
+import { WindowEdgeChrome } from "../widgets";
 
-export * from "../widgets/explore.downloadrail.tsx";
-export * from "../widgets/explore.sidebar.tsx";
-export * from "../widgets/explore.sections.tsx";
-export * from "../widgets/explore.launchdeck.tsx";
-export * from "../widgets/explore.waves.tsx";
-export * from "../widgets/explore.windowchrome.tsx";
+export * from "../widgets";
+export * from "../widgets";
+export * from "../widgets";
+export * from "../widgets";
+export * from "../widgets";
+export * from "../widgets";
 
 type LandingState = "open" | "minimized";
 type FrameState = "windowed" | "maximized";

@@ -21,20 +21,20 @@ import { apibase, apifetch, fetchhealth } from '../../api';
 import { label, labelfill } from '../../labels.ts';
 import type { SandboxState } from '../../sandbox.ts';
 import { bootSequence, cpudata, createSandboxState, dispatch, gpudata } from '../../sandbox.ts';
-import ApiBadge from '../widgets/console.apibadge.tsx';
-import type { SandboxEvent, SandboxEventKind } from '../widgets/console.eventstimeline.tsx';
-import EventsTimeline from '../widgets/console.eventstimeline.tsx';
-import SnapshotControls from '../widgets/console.snapshotcontrols.tsx';
-import type { SandboxSpecSelection } from '../widgets/console.specpanel.tsx';
-import SpecPanel from '../widgets/console.specpanel.tsx';
-import type { TerminalRow, TerminalState } from '../widgets/console.terminal.tsx';
-import Terminal from '../widgets/console.terminal.tsx';
+import { ApiBadge as ApiBadge } from '../widgets';
+import { EventsTimeline as type, SandboxEvent, SandboxEventKind } from '../widgets';
+import { EventsTimeline as EventsTimeline } from '../widgets';
+import { SnapshotControls as SnapshotControls } from '../widgets';
+import { SpecPanel as type, SandboxSpecSelection } from '../widgets';
+import { SpecPanel as SpecPanel } from '../widgets';
+import { Terminal as type, TerminalRow, TerminalState } from '../widgets';
+import { Terminal as Terminal } from '../widgets';
 
-export * from '../widgets/console.apibadge.tsx';
-export * from '../widgets/console.eventstimeline.tsx';
-export * from '../widgets/console.snapshotcontrols.tsx';
-export * from '../widgets/console.specpanel.tsx';
-export * from '../widgets/console.terminal.tsx';
+export * from '../widgets';
+export * from '../widgets';
+export * from '../widgets';
+export * from '../widgets';
+export * from '../widgets';
 
 /** display cap for very large payloads such as cpuinfo at 192 vcpus. */
 const displaycap = 120000;
