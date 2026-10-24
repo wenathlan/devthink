@@ -22,6 +22,7 @@ import {
   readOnboardingState,
   type VisitorOnboarding,
 } from "../../onboardingstate.ts";
+import { label } from "../../labels.ts";
 import { DebonairMark } from "../shell/Shell.tsx";
 
 /** how long the brand holds before the exit (ms) — the doctrine asks ~1.6s */
@@ -109,17 +110,17 @@ export default function Intro() {
       className="winintro"
       data-leaving={phase === "leaving" ? "true" : undefined}
       role="status"
-      aria-label="debonair is opening"
+      aria-label={label("intro.aria")}
     >
       <div className="winintro__stage">
         <span className="winintro__mark" aria-hidden="true">
           <DebonairMark size={96} />
         </span>
-        <h1 className="winintro__name">debonair</h1>
-        <p className="winintro__role">the audio home of the family</p>
+        <h1 className="winintro__name">{label("intro.name")}</h1>
+        <p className="winintro__role">{label("intro.role")}</p>
       </div>
       <p className="winintro__skip" aria-hidden="true">
-        click or press any key to skip
+        {label("intro.skip")}
       </p>
     </div>
   );

@@ -15,6 +15,7 @@ import { CopyRegular, CutRegular, DeleteRegular } from "@fluentui/react-icons";
 import { type KeyboardEvent, type PointerEvent, useCallback, useMemo, useRef, useState } from "react";
 import { beatSecondsOf, ROLE_NAMES, type TakePlan } from "../../arranger.ts";
 import { formatClock } from "../../dawview.ts";
+import { label, labelfill } from "../../labels.ts";
 import {
   moveClip,
   snapToGrid,
@@ -156,7 +157,7 @@ export function Timeline({ plan, clips, playhead, selectedId, onSelect, onEdit, 
         onEdit([...next]);
         return true;
       } catch (error) {
-        onNotice(error instanceof TimelineModelError ? error.message : "the arrangement refused this edit");
+        onNotice(error instanceof TimelineModelError ? error.message : label("studio.timeline.refusedEdit"));
         return false;
       }
     },
@@ -166,16 +167,16 @@ export function Timeline({ plan, clips, playhead, selectedId, onSelect, onEdit, 
   const selected = clips.find((clip) => clip.id === selectedId) ?? null;
 
   const split = useCallback(() => {
-    if (!selected) return onNotice("select a clip to split");
+    if (!selected) return onNotice(label("studio.timeline.selectSplit"));
     if (playhead <= selected.start + 1e-6 || playhead >= selected.start + selected.duration - 1e-6)
-      return onNotice("the playhead sits outside the clip — park it inside to split");
+      return onNotice(label("studio.timeline.playheadOutside"));
     const rest = clips.filter((clip) => clip.id !== selected.id);
     const [left, right] = splitClip(selected, playhead);
     if (place([...rest, left, right])) onSelect(left.id);
   }, [clips, onNotice, place, playhead, selected, onSelect]);
 
   const duplicate = useCallback(() => {
-    if (!selected) return onNotice("select a clip to duplicate");
+    if (!selected) return onNotice(label("studio.timeline.selectDup"));
     let copyIndex = 1;
     let candidate = {
       ...selected,
@@ -197,11 +198,11 @@ export function Timeline({ plan, clips, playhead, selectedId, onSelect, onEdit, 
         candidate = { ...candidate, start: snapToGrid(candidate.start + grid.stepseconds, grid) };
       }
     }
-    onNotice("no free slot after the clip — the duplicate needs room");
+    onNotice(label("studio.timeline.noRoom"));
   }, [clips, grid, onEdit, onNotice, onSelect, plan.bars, plan.durationSeconds, selected]);
 
   const remove = useCallback(() => {
-    if (!selected) return onNotice("select a clip to delete");
+    if (!selected) return onNotice(label("studio.timeline.selectDelete"));
     onEdit(clips.filter((clip) => clip.id !== selected.id));
     onSelect("");
   }, [clips, onEdit, onNotice, selected, onSelect]);
@@ -227,7 +228,7 @@ export function Timeline({ plan, clips, playhead, selectedId, onSelect, onEdit, 
           const moved = moveClip(selected, dir * grid.stepseconds, others(selected.id), { grid });
           place(clips.map((clip) => (clip.id === selected.id ? moved : clip)));
         } catch (error) {
-          onNotice(error instanceof TimelineModelError ? error.message : "the arrangement refused this move");
+          onNotice(error instanceof TimelineModelError ? error.message : label("studio.timeline.refusedMove"));
         }
       }
     },
@@ -238,30 +239,37 @@ export function Timeline({ plan, clips, playhead, selectedId, onSelect, onEdit, 
     ghost && ghost.id === clip.id ? ghost : { start: clip.start, duration: clip.duration };
 
   return (
-    <section className="rack-panel tled" aria-label="Arrangement editor">
+    <section className="rack-panel tled" aria-label={label("studio.timeline.aria")}>
       <header className="rack-head">
-        <h2 className="rack-title">arrangement editor</h2>
+        <h2 className="rack-title">{label("studio.timeline.title")}</h2>
         <span className="rack-meta">
-          {formatClock(plan.durationSeconds)} · snap {grid.stepseconds.toFixed(3)} s · drag moves, edges trim, arrows
-          walk · delete deletes, d duplicates
+          {labelfill("studio.timeline.meta", {
+            clock: formatClock(plan.durationSeconds),
+            snap: grid.stepseconds.toFixed(3),
+          })}
         </span>
         <div className="tled-keys">
           <button
             className="tled-key"
             type="button"
-            aria-label="Split the selected clip at the playhead"
+            aria-label={label("studio.timeline.splitAria")}
             onClick={split}
           >
             <CutRegular className="tled-icon" fontSize={14} aria-hidden="true" />
-            Split
+            {label("studio.timeline.split")}
           </button>
-          <button className="tled-key" type="button" aria-label="Duplicate the selected clip" onClick={duplicate}>
+          <button
+            className="tled-key"
+            type="button"
+            aria-label={label("studio.timeline.dupAria")}
+            onClick={duplicate}
+          >
             <CopyRegular className="tled-icon" fontSize={14} aria-hidden="true" />
-            Duplicate
+            {label("studio.timeline.dup")}
           </button>
-          <button className="tled-key" type="button" aria-label="Delete the selected clip" onClick={remove}>
+          <button className="tled-key" type="button" aria-label={label("studio.timeline.deleteAria")} onClick={remove}>
             <DeleteRegular className="tled-icon" fontSize={14} aria-hidden="true" />
-            Delete
+            {label("studio.timeline.delete")}
           </button>
         </div>
       </header>
@@ -283,7 +291,7 @@ export function Timeline({ plan, clips, playhead, selectedId, onSelect, onEdit, 
                 step={0.1}
                 value={Math.min(playhead, plan.durationSeconds)}
                 onChange={(event) => onSeek(Number(event.currentTarget.value))}
-                aria-label="Seek the take"
+                aria-label={label("studio.timeline.seekAria")}
               />
             </div>
           </div>
@@ -313,7 +321,12 @@ export function Timeline({ plan, clips, playhead, selectedId, onSelect, onEdit, 
                           className="tled-clipbody"
                           type="button"
                           aria-pressed={isSelected}
-                          aria-label={`clip ${clip.label} on ${role}, ${formatClock(geo.start)} long ${formatClock(geo.duration)}`}
+                          aria-label={labelfill("studio.timeline.clipAria", {
+                            label: clip.label,
+                            role,
+                            start: formatClock(geo.start),
+                            length: formatClock(geo.duration),
+                          })}
                           onKeyDown={onKeyDown}
                           onPointerDown={beginDrag("move", clip)}
                           onPointerMove={onDragMove}

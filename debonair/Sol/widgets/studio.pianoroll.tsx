@@ -12,6 +12,7 @@
 import { AddRegular, DeleteRegular, EraserRegular, PinRegular, SubtractRegular } from "@fluentui/react-icons";
 import { type KeyboardEvent, useCallback, useMemo, useState } from "react";
 import { type ArrangerRole, RACK_LANES, type TakePlan } from "../../arranger.ts";
+import { label, labelfill } from "../../labels.ts";
 import {
   addNote,
   type EditableNote,
@@ -86,7 +87,7 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
   );
 
   const onCellClick = useCallback(
-    (midi: number, label: string, step: number): void => {
+    (midi: number, rowLabel: string, step: number): void => {
       const holder = barNotes.find(
         (note) =>
           note.step <= step &&
@@ -106,7 +107,7 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
         const next = addNote(
           notes,
           role === "drums"
-            ? { role, lane: label, bar, step, velocity: PIANOROLL_CONSTANTS.VELOCITY_STEPS.hard }
+            ? { role, lane: rowLabel, bar, step, velocity: PIANOROLL_CONSTANTS.VELOCITY_STEPS.hard }
             : { role, midi, bar, step, velocity: PIANOROLL_CONSTANTS.VELOCITY_STEPS.hard },
           window,
           plan,
@@ -116,7 +117,7 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
         );
         apply(next, added?.id);
       } catch (error) {
-        onNotice(error instanceof Error ? error.message : "the roll refused this note");
+        onNotice(error instanceof Error ? error.message : label("studio.roll.refusedNote"));
       }
     },
     [apply, bar, barNotes, erase, notes, onNotice, plan, role, selectedId, window],
@@ -126,12 +127,12 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
   const transpose = useCallback(
     (delta: number): void => {
       if (!selected) {
-        onNotice("select a note to transpose");
+        onNotice(label("studio.roll.selectTranspose"));
         return;
       }
       const midi = selected.midi + delta;
       if (midi < PIANOROLL_CONSTANTS.NOTE_MIN || midi > PIANOROLL_CONSTANTS.NOTE_MAX) {
-        onNotice("the note leaves the C2..C6 window");
+        onNotice(label("studio.roll.windowLeft"));
         return;
       }
       try {
@@ -164,7 +165,7 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
         );
         apply(next, added?.id);
       } catch (error) {
-        onNotice(error instanceof Error ? error.message : "the roll refused this move");
+        onNotice(error instanceof Error ? error.message : label("studio.roll.refusedMove"));
       }
     },
     [apply, notes, onNotice, plan, role, selected, window],
@@ -180,7 +181,7 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
         try {
           apply(moveNote(notes, selected.id, event.key === "ArrowLeft" ? -1 : 1, window, plan));
         } catch (error) {
-          onNotice(error instanceof Error ? error.message : "the roll refused this move");
+          onNotice(error instanceof Error ? error.message : label("studio.roll.refusedMove"));
         }
       }
     },
@@ -189,7 +190,7 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
 
   const velocityCycle = useCallback((): void => {
     if (!selected) {
-      onNotice("select a note to cycle the velocity");
+      onNotice(label("studio.roll.selectVelocity"));
       return;
     }
     const index = VELOCITY_LADDER.findIndex((value) => Math.abs(value - selected.velocity) < 1e-6);
@@ -210,18 +211,18 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
       );
       apply(next, added?.id);
     } catch (error) {
-      onNotice(error instanceof Error ? error.message : "the roll refused this velocity");
+      onNotice(error instanceof Error ? error.message : label("studio.roll.refusedVelocity"));
     }
   }, [apply, notes, onNotice, plan, role, selected, window]);
 
   return (
-    <section className="roll rack-panel" aria-label="Piano roll">
+    <section className="roll rack-panel" aria-label={label("studio.roll.aria")}>
       <header className="roll-head">
-        <h2 className="rack-title">piano roll</h2>
+        <h2 className="rack-title">{label("studio.roll.title")}</h2>
         <span className="rack-meta">
-          bar {bar + 1} of {plan.bars} · click adds, click a note selects · arrows walk the step
+          {labelfill("studio.roll.meta", { bar: String(bar + 1), bars: String(plan.bars) })}
         </span>
-        <div className="roll-tabs" role="tablist" aria-label="Roll role">
+        <div className="roll-tabs" role="tablist" aria-label={label("studio.roll.tabsAria")}>
           {(["drums", "bass", "keys", "lead"] as ArrangerRole[]).map((entry) => (
             <button
               key={entry}
@@ -243,12 +244,12 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
         <button
           className="tkey"
           type="button"
-          aria-label="Previous bar"
+          aria-label={label("studio.roll.prevBarAria")}
           onClick={() => setBar((current) => Math.max(0, current - 1))}
           disabled={bar === 0}
         >
           <SubtractRegular className="svg" fontSize={14} aria-hidden="true" />
-          Bar
+          {label("studio.roll.barKey")}
         </button>
         <input
           className="input roll-bar"
@@ -260,27 +261,27 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
             const next = Number(event.currentTarget.value);
             if (Number.isFinite(next)) setBar(Math.min(plan.bars - 1, Math.max(0, next - 1)));
           }}
-          aria-label="Roll bar"
+          aria-label={label("studio.roll.barAria")}
         />
         <button
           className="tkey"
           type="button"
-          aria-label="Next bar"
+          aria-label={label("studio.roll.nextBarAria")}
           onClick={() => setBar((current) => Math.min(plan.bars - 1, current + 1))}
           disabled={bar >= plan.bars - 1}
         >
           <AddRegular className="svg" fontSize={14} aria-hidden="true" />
-          Bar
+          {label("studio.roll.barKey")}
         </button>
         <button
           className="tkey"
           type="button"
-          aria-label="Erase mode"
+          aria-label={label("studio.roll.eraseAria")}
           aria-pressed={erase}
           onClick={() => setErase((current) => !current)}
         >
           <EraserRegular className="svg" fontSize={14} aria-hidden="true" />
-          Erase
+          {label("studio.roll.erase")}
         </button>
         {selected ? (
           <span className="roll-pick">
@@ -288,12 +289,12 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
             <button
               className="tkey"
               type="button"
-              aria-label="Step back"
+              aria-label={label("studio.roll.stepBackAria")}
               onClick={() => {
                 try {
                   apply(moveNote(notes, selected.id, -1, window, plan));
                 } catch (error) {
-                  onNotice(error instanceof Error ? error.message : "the roll refused this move");
+                  onNotice(error instanceof Error ? error.message : label("studio.roll.refusedMove"));
                 }
               }}
             >
@@ -302,71 +303,76 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
             <button
               className="tkey"
               type="button"
-              aria-label="Step forward"
+              aria-label={label("studio.roll.stepForwardAria")}
               onClick={() => {
                 try {
                   apply(moveNote(notes, selected.id, 1, window, plan));
                 } catch (error) {
-                  onNotice(error instanceof Error ? error.message : "the roll refused this move");
+                  onNotice(error instanceof Error ? error.message : label("studio.roll.refusedMove"));
                 }
               }}
             >
               <AddRegular className="svg" fontSize={12} aria-hidden="true" />
             </button>
-            <button className="tkey" type="button" aria-label="Row up" onClick={() => transpose(1)}>
+            <button className="tkey" type="button" aria-label={label("studio.roll.rowUpAria")} onClick={() => transpose(1)}>
               <AddRegular className="svg" fontSize={12} aria-hidden="true" />
-              Row
-            </button>
-            <button className="tkey" type="button" aria-label="Row down" onClick={() => transpose(-1)}>
-              <SubtractRegular className="svg" fontSize={12} aria-hidden="true" />
-              Row
+              {label("studio.roll.rowKey")}
             </button>
             <button
               className="tkey"
               type="button"
-              aria-label="Shorten the note"
+              aria-label={label("studio.roll.rowDownAria")}
+              onClick={() => transpose(-1)}
+            >
+              <SubtractRegular className="svg" fontSize={12} aria-hidden="true" />
+              {label("studio.roll.rowKey")}
+            </button>
+            <button
+              className="tkey"
+              type="button"
+              aria-label={label("studio.roll.shortenAria")}
               onClick={() => {
                 try {
                   apply(resizeNote(notes, selected.id, selected.steps - 1, window, plan));
                 } catch (error) {
-                  onNotice(error instanceof Error ? error.message : "the roll refused this length");
+                  onNotice(error instanceof Error ? error.message : label("studio.roll.refusedLength"));
                 }
               }}
             >
               <SubtractRegular className="svg" fontSize={12} aria-hidden="true" />
-              Len
+              {label("studio.roll.lenKey")}
             </button>
             <button
               className="tkey"
               type="button"
-              aria-label="Lengthen the note"
+              aria-label={label("studio.roll.lengthenAria")}
               onClick={() => {
                 try {
                   apply(resizeNote(notes, selected.id, selected.steps + 1, window, plan));
                 } catch (error) {
-                  onNotice(error instanceof Error ? error.message : "the roll refused this length");
+                  onNotice(error instanceof Error ? error.message : label("studio.roll.refusedLength"));
                 }
               }}
             >
               <AddRegular className="svg" fontSize={12} aria-hidden="true" />
-              Len
+              {label("studio.roll.lenKey")}
             </button>
-            <button className="tkey" type="button" aria-label="Cycle the velocity" onClick={velocityCycle}>
-              vel {Math.round(selected.velocity * 100)}%
+            <button className="tkey" type="button" aria-label={label("studio.roll.velAria")} onClick={velocityCycle}>
+              {labelfill("studio.roll.velKey", { vel: String(Math.round(selected.velocity * 100)) })}
             </button>
             <button
               className="tkey"
               type="button"
-              aria-label="Quantize the note to the grid"
+              aria-label={label("studio.roll.quantAria")}
               onClick={() => apply(quantizeNote(notes, selected.id, 1))}
             >
               <PinRegular className="svg" fontSize={12} aria-hidden="true" />
-              Quant
+              {label("studio.roll.quantKey")}
             </button>
             <button
               className="tkey"
               type="button"
-              aria-label="Delete the note"
+              aria-label={label("studio.roll.deleteAria")}
               onClick={() => {
                 apply(removeNote(notes, selected.id));
                 setSelectedId("");
@@ -399,8 +405,14 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
                     data-current={start && start.id === selectedId ? "true" : undefined}
                     aria-label={
                       start
-                        ? `${row.label} note at step ${step + 1}, vel ${Math.round(start.velocity * 100)}%, ${start.steps} step${start.steps === 1 ? "" : "s"}`
-                        : `${row.label} empty at step ${step + 1}`
+                        ? labelfill("studio.roll.cellNote", {
+                            row: row.label,
+                            step: String(step + 1),
+                            vel: String(Math.round(start.velocity * 100)),
+                            steps: String(start.steps),
+                            s: start.steps === 1 ? "" : "s",
+                          })
+                        : labelfill("studio.roll.cellEmpty", { row: row.label, step: String(step + 1) })
                     }
                     aria-pressed={Boolean(start)}
                     onClick={() => onCellClick(row.midi, row.label, step)}
@@ -413,8 +425,15 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
       </div>
       <footer className="roll-foot">
         <span>
-          {barNotes.length} note{barNotes.length === 1 ? "" : "s"} this bar · {schedule.events.length} in the take ·{" "}
-          {problems.length === 0 ? "roll validated" : `roll problems: ${problems.length}`}
+          {labelfill("studio.roll.foot", {
+            count: String(barNotes.length),
+            s: barNotes.length === 1 ? "" : "s",
+            total: String(schedule.events.length),
+            verdict:
+              problems.length === 0
+                ? label("studio.roll.footValid")
+                : labelfill("studio.roll.footProblems", { count: String(problems.length) }),
+          })}
         </span>
       </footer>
     </section>

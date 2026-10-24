@@ -25,6 +25,7 @@ import { listHeroBadges, listLibraryTracks, listStageCards } from "../../catalog
 import { familyrow } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
 import { GENRES } from "../../genrematrix.ts";
+import { label, labelfill } from "../../labels.ts";
 import type { FeatureCard, LibraryTrackRow, SignalBadge } from "../../katexis.ts";
 import { MASTERING, PROMPT_MAX_LENGTH } from "../../katexis.ts";
 import { busFeature, busPlay, busSubscribe } from "../../playerbus.ts";
@@ -32,20 +33,6 @@ import { PROMPT_DRAFT_KEY, type PromptDraft } from "../generate/generate.tsx";
 import { DebonairMark, type NavLink, Shell } from "../shell/Shell.tsx";
 import EntryGate from "../widgets/home.entrygate.tsx";
 import { SongCard, SongCardSkeleton } from "../widgets/home.songcard.tsx";
-
-const FOOTER_LINKS: readonly NavLink[] = [
-  { label: "Studio", href: "/studio" },
-  { label: "Generate", href: "/generate" },
-  { label: "Library", href: "/library" },
-  { label: "Settings", href: "/settings" },
-];
-
-/** the create flow of the landing: three mono-numbered steps — the honest flow */
-const FLOW_STEPS: readonly { no: string; title: string; text: string }[] = [
-  { no: "01", title: "Describe", text: "One line is enough — a genre, a mood, a key." },
-  { no: "02", title: "Arrange", text: "The katexis engine drafts the full multitrack take." },
-  { no: "03", title: "Master", text: "Genre-aware mix, true-peak limiter, WAV out." },
-];
 
 /** the deterministic amplitudes of the hero waveform strip (the engine floor
  * — a fixed 48-bar walk, decorative only, the same value every render) */
@@ -55,22 +42,44 @@ const HERO_WAVE: readonly number[] = Array.from({ length: 48 }, (_, index) => {
   return Math.min(1, Math.max(0.08, envelope * carrier + 0.06));
 });
 
-/** the spec proof of the hero ledger: the engine's own configuration — no invented numbers */
-const SPEC_ROWS: readonly { label: string; value: string }[] = [
-  { label: "engine", value: "katexis" },
-  { label: "render", value: `${MASTERING.sampleRateHz / 1000} kHz WAV` },
-  { label: "true peak", value: `${MASTERING.truePeakDbtp} dBTP` },
-  { label: "loudness", value: MASTERING.loudnessStandard },
-  {
-    label: "platform targets",
-    value: `${Object.entries(MASTERING.platformTargetsLufs)
-      .map(([platform, lufs]) => `${platform} ${lufs}`)
-      .join(" · ")} LUFS`,
-  },
-];
-
 /** the home surface the gate reveals (the landing hero, rails and ledgers). */
 function HomeSurface() {
+  // the footer links, the create flow and the spec proof read the label
+  // store at render time (the manifest answers english, the store answers
+  // the translated rows the seed protected)
+  const FOOTER_LINKS: readonly NavLink[] = [
+    { label: label("nav.studio"), href: "/studio" },
+    { label: label("nav.generate"), href: "/generate" },
+    { label: label("nav.library"), href: "/library" },
+    { label: label("nav.settings"), href: "/settings" },
+  ];
+
+  /** the create flow of the landing: three mono-numbered steps — the honest flow */
+  const FLOW_STEPS: readonly { no: string; title: string; text: string }[] = [
+    { no: "01", title: label("home.flow.describe"), text: label("home.flow.describeBody") },
+    { no: "02", title: label("home.flow.arrange"), text: label("home.flow.arrangeBody") },
+    { no: "03", title: label("home.flow.master"), text: label("home.flow.masterBody") },
+  ];
+
+  /** the spec proof of the hero ledger: the engine's own configuration — no invented numbers */
+  const SPEC_ROWS: readonly { label: string; value: string }[] = [
+    { label: label("home.spec.engine"), value: "katexis" },
+    {
+      label: label("home.spec.render"),
+      value: labelfill("home.spec.renderValue", { khz: String(MASTERING.sampleRateHz / 1000) }),
+    },
+    { label: label("home.spec.peak"), value: labelfill("home.spec.peakValue", { dbtp: String(MASTERING.truePeakDbtp) }) },
+    { label: label("home.spec.loudness"), value: MASTERING.loudnessStandard },
+    {
+      label: label("home.spec.targets"),
+      value: labelfill("home.spec.targetsValue", {
+        list: Object.entries(MASTERING.platformTargetsLufs)
+          .map(([platform, lufs]) => `${platform} ${lufs}`)
+          .join(" · "),
+      }),
+    },
+  ];
+
   const [, navigate] = useLocation();
   const [cards, setCards] = useState<readonly FeatureCard[]>([]);
   const [badges, setBadges] = useState<readonly SignalBadge[]>([]);
@@ -142,7 +151,7 @@ function HomeSurface() {
     <Shell
       name="debonair"
       contained={false}
-      cta={{ label: "Open studio", href: "/studio" }}
+      cta={{ label: label("home.cta"), href: "/studio" }}
       footerLinks={FOOTER_LINKS}
       domain="devthink.pro"
     >
@@ -155,16 +164,19 @@ function HomeSurface() {
           <span className="hero-mark" aria-hidden="true">
             <DebonairMark size={40} />
           </span>
-          <span className="hero-name">debonair</span>
+          <span className="hero-name">{label("home.brand")}</span>
         </div>
         <h1 id="home-h" className="hero-h reveal">
-          Describe a track.
+          {label("home.hero.title1")}
           <br />
-          Hear it mastered.
+          {label("home.hero.title2")}
         </h1>
         <p className="hero-lede reveal">
-          One line in, the <code>katexis</code> engine drafts, edits and masters the whole arrangement —{" "}
-          <strong className="ink-strong">suno × FL Studio</strong>, on your own domain.
+          {label("home.hero.ledeLead")}
+          <code>katexis</code>
+          {label("home.hero.ledeTail")}
+          <strong className="ink-strong">{label("home.hero.ledeStrong")}</strong>
+          {label("home.hero.ledeTail2")}
         </p>
         <form className="prompt-giga reveal" onSubmit={create}>
           <input
@@ -173,16 +185,16 @@ function HomeSurface() {
             value={draft}
             onChange={(event) => setDraft(event.target.value)}
             maxLength={PROMPT_MAX_LENGTH}
-            placeholder="midnight house, warm sub bass, dusty keys — C minor, 124 BPM"
-            aria-label="Describe the track"
+            placeholder={label("home.hero.placeholder")}
+            aria-label={label("home.hero.inputAria")}
           />
           <button className="pg-key" type="submit">
-            Create
+            {label("home.hero.create")}
             <ArrowRightRegular fontSize={16} aria-hidden="true" />
           </button>
         </form>
-        <p className="pg-hint reveal">enter opens the composer with your draft · {PROMPT_MAX_LENGTH} characters max</p>
-        <fieldset className="pg-chips reveal" aria-label="Genre mood">
+        <p className="pg-hint reveal">{labelfill("home.hero.hint", { max: String(PROMPT_MAX_LENGTH) })}</p>
+        <fieldset className="pg-chips reveal" aria-label={label("home.hero.chipsAria")}>
           {GENRES.map((genre) => (
             <button
               key={genre.id}
@@ -190,7 +202,12 @@ function HomeSurface() {
               className="pg-chip"
               aria-pressed={genre.id === mood}
               onClick={() => setMood(genre.id)}
-              title={`${genre.bpmin}–${genre.bpmax} bpm · ${genre.pattern} drums · ${genre.lufs} LUFS target`}
+              title={labelfill("home.hero.chipTitle", {
+                min: String(genre.bpmin),
+                max: String(genre.bpmax),
+                pattern: genre.pattern,
+                lufs: String(genre.lufs),
+              })}
             >
               {genre.label}
             </button>
@@ -218,9 +235,9 @@ function HomeSurface() {
           while the catalog answers and the row enters on the 60ms stagger */}
       <section className="shell section" aria-labelledby="rail-h">
         <div className="section-head">
-          <p className="eyebrow reveal">from the library</p>
+          <p className="eyebrow reveal">{label("home.rail.eyebrow")}</p>
           <h2 id="rail-h" className="h2-xl reveal">
-            Fresh from the render queue
+            {label("home.rail.title")}
           </h2>
         </div>
         <div className="song-grid">
@@ -242,20 +259,20 @@ function HomeSurface() {
               })}
         </div>
         <p className="rail-foot reveal">
-          The engine's real takes play right here — press a cover, the bar below carries it — or{" "}
+          {label("home.rail.footLead")}
           <Link className="rail-link" href="/studio">
-            open the console
-          </Link>{" "}
-          and ride the desk.
+            {label("home.rail.footLink")}
+          </Link>
+          {label("home.rail.footTail")}
         </p>
       </section>
 
       {/* FLOW — the create steps 01–03 */}
       <section className="shell section" aria-labelledby="flow-h">
         <div className="section-head">
-          <p className="eyebrow reveal">the flow</p>
+          <p className="eyebrow reveal">{label("home.flow.eyebrow")}</p>
           <h2 id="flow-h" className="h2-xl reveal">
-            Prompt to master, one engine
+            {label("home.flow.title")}
           </h2>
         </div>
         <ol className="flow-steps reveal">
@@ -276,9 +293,9 @@ function HomeSurface() {
       {/* ENGINE LEDGER + SPEC PROOF — hairline rows, never a quote carousel */}
       <section className="shell section" aria-labelledby="eng-h">
         <div className="section-head">
-          <p className="eyebrow reveal">what it does</p>
+          <p className="eyebrow reveal">{label("home.engine.eyebrow")}</p>
           <h2 id="eng-h" className="h2-xl reveal">
-            Four stages, one take
+            {label("home.engine.title")}
           </h2>
         </div>
         <div className="ledger reveal">
@@ -308,7 +325,7 @@ function HomeSurface() {
       {/* FOOTER META-QUAD — create / browse / engine / family */}
       <footer className="meta-quad reveal">
         <div className="quad-col">
-          <p className="quad-head">create</p>
+          <p className="quad-head">{label("home.quad.create")}</p>
           {FOOTER_LINKS.slice(0, 2).map((link) => (
             <Link key={link.href} className="quad-link" href={link.href}>
               {link.label}
@@ -316,7 +333,7 @@ function HomeSurface() {
           ))}
         </div>
         <div className="quad-col">
-          <p className="quad-head">browse</p>
+          <p className="quad-head">{label("home.quad.browse")}</p>
           {FOOTER_LINKS.slice(2).map((link) => (
             <Link key={link.href} className="quad-link" href={link.href}>
               {link.label}
@@ -324,14 +341,19 @@ function HomeSurface() {
           ))}
         </div>
         <div className="quad-col">
-          <p className="quad-head">engine</p>
-          <span className="quad-line">katexis · {MASTERING.sampleRateHz / 1000} kHz WAV</span>
+          <p className="quad-head">{label("home.quad.engine")}</p>
           <span className="quad-line">
-            {MASTERING.loudnessStandard} · {MASTERING.truePeakDbtp} dBTP
+            {labelfill("home.quad.engineLine1", { khz: String(MASTERING.sampleRateHz / 1000) })}
+          </span>
+          <span className="quad-line">
+            {labelfill("home.quad.engineLine2", {
+              standard: MASTERING.loudnessStandard,
+              dbtp: String(MASTERING.truePeakDbtp),
+            })}
           </span>
         </div>
         <div className="quad-col quad-col--family">
-          <p className="quad-head">family</p>
+          <p className="quad-head">{label("home.quad.family")}</p>
           <div className="quad-family">
             {familyrow().map((member) => (
               <a

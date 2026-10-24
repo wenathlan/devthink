@@ -17,6 +17,7 @@ import { useLocation } from "wouter";
 import { planTake, type TakePlan } from "../../arranger.ts";
 import { listLibraryTracks } from "../../catalog.ts";
 import { formatClock } from "../../dawview.ts";
+import { label, labelfill } from "../../labels.ts";
 import type { LibraryTrackRow } from "../../katexis.ts";
 import {
   loadTakeRecords,
@@ -28,12 +29,6 @@ import {
 import { CoverArt } from "../widgets/home.coverart.tsx";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
 import { useToast } from "../toast/Toast.tsx";
-
-const FOOTER_LINKS: readonly NavLink[] = [
-  { label: "Studio", href: "/studio" },
-  { label: "Generate", href: "/generate" },
-  { label: "Settings", href: "/settings" },
-];
 
 /** the demo plan the studio also opens (real engine output, fixed seed) */
 const DEMO_PROMPT = "midnight studio take, warm sub bass, dusty keys, brass light";
@@ -67,6 +62,14 @@ function sparkPath(seedText: string, count: number): string {
 }
 
 export default function Library() {
+  // the footer links read the label store at render time (the manifest
+  // answers english, the store answers the translated rows the seed protected)
+  const FOOTER_LINKS: readonly NavLink[] = [
+    { label: label("nav.studio"), href: "/studio" },
+    { label: label("nav.generate"), href: "/generate" },
+    { label: label("nav.settings"), href: "/settings" },
+  ];
+
   const toast = useToast();
   const [, navigate] = useLocation();
   const [records, setRecords] = useState<readonly TakeRecord[]>([]);
@@ -122,31 +125,30 @@ export default function Library() {
   /** drops a take from the session shelf */
   const drop = (plan: TakePlan): void => {
     setRecords(removeTakePlan(plan.id, sessionStorageOrMemory()));
-    toast.show(`${plan.name} left the shelf`, "info");
+    toast.show(labelfill("library.toast.dropped", { name: plan.name }), "info");
   };
 
   return (
     <Shell
       name="debonair"
       contained
-      cta={{ label: "Generate a track", href: "/generate" }}
+      cta={{ label: label("library.cta"), href: "/generate" }}
       footerLinks={FOOTER_LINKS}
       domain="devthink.pro"
     >
-      <p className="eyebrow reveal">debonair · library</p>
-      <h1 className="reveal page-title">Library</h1>
+      <p className="eyebrow reveal">{label("library.eyebrow")}</p>
+      <h1 className="reveal page-title">{label("library.title")}</h1>
       <p className="reveal lede" style={{ maxWidth: 640 }}>
-        Every take this session composed, with the engine's own numbers — genre, bpm, key, duration and seed. Open one
-        in the studio, or drop it from the shelf. Nothing uploads, nothing leaves the tab.
+        {label("library.lede")}
       </p>
 
       <div className="field reveal" style={{ maxWidth: 380 }}>
-        <label htmlFor="lib-search">Search</label>
+        <label htmlFor="lib-search">{label("library.search.label")}</label>
         <input
           id="lib-search"
           className="input"
           type="search"
-          placeholder="Filter by name, genre, key or seed…"
+          placeholder={label("library.search.placeholder")}
           autoComplete="off"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
@@ -154,8 +156,8 @@ export default function Library() {
       </div>
 
       {/* the composed takes — the real shelf */}
-      <section className="lib-list reveal" aria-label="Composed takes">
-        <p className="lib-shelfhead">composed this session — {takes.length}</p>
+      <section className="lib-list reveal" aria-label={label("library.takes.aria")}>
+        <p className="lib-shelfhead">{labelfill("library.takes.head", { count: String(takes.length) })}</p>
         {takes.map(({ plan }, index) => (
           <article key={plan.id} className="lib-row" data-status="ready">
             <span className="lib-index" aria-hidden="true">
@@ -167,8 +169,13 @@ export default function Library() {
             <div className="lib-main">
               <h2 className="lib-name">{plan.name}</h2>
               <p className="lib-meta">
-                {plan.genreLabel} · {plan.bpm} bpm · {plan.keyLabel} · {formatClock(plan.durationSeconds)} · seed{" "}
-                {plan.seed}
+                {labelfill("library.row.meta", {
+                  genre: plan.genreLabel,
+                  bpm: String(plan.bpm),
+                  key: plan.keyLabel,
+                  clock: formatClock(plan.durationSeconds),
+                  seed: plan.seed,
+                })}
               </p>
             </div>
             <svg
@@ -182,10 +189,10 @@ export default function Library() {
             </svg>
             <span className="lib-actions">
               <button className="btn small secondary" type="button" onClick={() => openInStudio(plan)}>
-                Studio
+                {label("library.row.open")}
               </button>
               <button className="btn small danger-ghost" type="button" onClick={() => drop(plan)}>
-                Drop
+                {label("library.row.drop")}
               </button>
             </span>
           </article>
@@ -193,16 +200,16 @@ export default function Library() {
         {takes.length === 0 && (
           <p className="lib-empty">
             {needle.trim()
-              ? `No takes match “${needle.trim()}”.`
-              : "The shelf is empty — compose a take in the composer."}
+              ? labelfill("library.empty.match", { needle: needle.trim() })
+              : label("library.empty.shelf")}
           </p>
         )}
       </section>
 
       {/* the site's sample rows — honest static content, not engine takes */}
       {sampleRows.length > 0 ? (
-        <section className="lib-list reveal" aria-label="Sample rows">
-          <p className="lib-shelfhead">site samples — served content rows</p>
+        <section className="lib-list reveal" aria-label={label("library.samples.aria")}>
+          <p className="lib-shelfhead">{label("library.samples.head")}</p>
           {sampleRows.map((row) => (
             <article key={row.name} className="lib-row" data-status={row.status}>
               <span className="lib-index" aria-hidden="true">
@@ -233,11 +240,11 @@ export default function Library() {
       ) : null}
 
       <section className="glass card reveal mt-18" style={{ maxWidth: 660 }}>
-        <h2 className="card-h">Formats</h2>
+        <h2 className="card-h">{label("library.formats.title")}</h2>
         <p className="flush">
-          Takes carry the engine mastering spec — {`48`} kHz WAV with −1 dBTP true peak and per-platform loudness
-          targets (Spotify −14 / Apple −16 / Beatport −9 LUFS). Stems and MIDI bounce per take ride the export wave of
-          the <code>katexis</code> roadmap; the arrangement itself is already open in the studio.
+          {label("library.formats.lead")}
+          <code>katexis</code>
+          {label("library.formats.tail")}
         </p>
       </section>
     </Shell>

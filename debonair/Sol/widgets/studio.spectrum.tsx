@@ -9,6 +9,7 @@
 
 import { useEffect, useRef } from "react";
 import type { TakeEngine } from "../../audioengine.ts";
+import { label } from "../../labels.ts";
 import { reduceMotionApplied } from "../../motionpref.ts";
 
 /** the fft bins the scope draws (half of the 512 tap, log-ladder feel kept simple) */
@@ -93,7 +94,7 @@ export function Spectrum({ engine, live }: SpectrumProps) {
       width={640}
       height={88}
       role="img"
-      aria-label={live ? "Live spectrum of the master bus" : "Spectrum idle — the transport is stopped"}
+      aria-label={live ? label("studio.spectrum.live") : label("studio.spectrum.idle")}
     />
   );
 }

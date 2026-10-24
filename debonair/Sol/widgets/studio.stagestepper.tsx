@@ -8,6 +8,7 @@
  * the stepper owns no scrolling of its own.
  */
 
+import { label } from "../../labels.ts";
 import { STUDIO_STAGES, type StageId } from "../../stages.ts";
 
 /** The props of the stage bar. */
@@ -26,7 +27,7 @@ type StageStepperProps = {
  */
 export function StageStepper({ active, onSelect }: StageStepperProps) {
   return (
-    <nav className="stagebar reveal" aria-label="Studio stages">
+    <nav className="stagebar reveal" aria-label={label("studio.stagebar.aria")}>
       {STUDIO_STAGES.map((stage) => (
         <button
           key={stage.id}

@@ -11,6 +11,7 @@
 import { PlayFilled } from "@fluentui/react-icons";
 import type { CSSProperties } from "react";
 import type { TakePlan } from "../../arranger.ts";
+import { labelfill } from "../../labels.ts";
 import type { LibraryTrackRow } from "../../katexis.ts";
 import { CoverArt } from "./home.coverart.tsx";
 
@@ -42,8 +43,12 @@ export function SongCard({ track, take, slot, live, onPlay }: SongCardProps) {
         <button
           type="button"
           className="song-play"
-          aria-label={`Play ${track.name}`}
-          title={`Play ${track.name} — ${track.genre} · ${track.duration}`}
+          aria-label={labelfill("home.songcard.playAria", { name: track.name })}
+          title={labelfill("home.songcard.playTitle", {
+            name: track.name,
+            genre: track.genre,
+            duration: track.duration,
+          })}
           onClick={() => onPlay(take)}
         >
           <PlayFilled fontSize={18} aria-hidden="true" />

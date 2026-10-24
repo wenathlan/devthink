@@ -7,6 +7,7 @@
  */
 import type { CSSProperties } from "react";
 import { levelToPercent } from "../../dawview.ts";
+import { labelfill } from "../../labels.ts";
 
 type VuMeterProps = {
   /** The strip the meter belongs to (aria). */
@@ -31,7 +32,7 @@ export function VuMeter({ name, level, live = false, rest = 0 }: VuMeterProps) {
     <div
       className="vu"
       role="meter"
-      aria-label={`${name} level`}
+      aria-label={labelfill("studio.vu.aria", { name })}
       aria-valuemin={0}
       aria-valuemax={100}
       aria-valuenow={Math.round(percent)}

@@ -15,6 +15,7 @@ import { type CSSProperties, useEffect, useState } from "react";
 import { Link } from "wouter";
 import type { TakePlan } from "../../arranger.ts";
 import { formatClock } from "../../dawview.ts";
+import { label, labelfill } from "../../labels.ts";
 import { busPause, busPlay, busSeek, busSelect, busSubscribe, type PlayerSnapshot } from "../../playerbus.ts";
 import { CoverArt } from "./home.coverart.tsx";
 
@@ -34,8 +35,8 @@ export function Playerbar() {
   const progress = view.duration > 0 ? Math.min(100, (view.position / view.duration) * 100) : 0;
 
   return (
-    <aside className="playerbar" aria-label="Player bar">
-      <Link className="pbar-identity" href="/studio" title={`${current.name} — open in the studio`}>
+    <aside className="playerbar" aria-label={label("shell.playerbar.aria")}>
+      <Link className="pbar-identity" href="/studio" title={labelfill("shell.playerbar.openTitle", { name: current.name })}>
         <span className="pbar-cover" aria-hidden="true">
           <CoverArt name={current.name} />
         </span>
@@ -56,7 +57,7 @@ export function Playerbar() {
             step={0.1}
             value={Math.min(view.position, view.duration)}
             onChange={(event) => busSeek(Number(event.currentTarget.value))}
-            aria-label={`Seek ${current.name}`}
+            aria-label={labelfill("shell.playerbar.seekAria", { name: current.name })}
             style={{ "--p": `${progress}%` } as CSSProperties}
           />
           <span className="pbar-clock">{formatClock(view.position)}</span>
@@ -66,9 +67,12 @@ export function Playerbar() {
         <button
           type="button"
           className={`pkey${view.playing ? " pkey--cta" : ""}`}
-          aria-label={view.playing ? "Pause" : "Play"}
+          aria-label={view.playing ? label("shell.playerbar.pause") : label("shell.playerbar.play")}
           aria-pressed={view.playing}
-          title={view.notice || (view.playing ? "Pause the take" : "Play the take")}
+          title={
+            view.notice ||
+            (view.playing ? label("shell.playerbar.pauseTitle") : label("shell.playerbar.playTitle"))
+          }
           onClick={() => {
             if (view.playing) busPause();
             else {
@@ -83,7 +87,13 @@ export function Playerbar() {
             <PlayFilled fontSize={16} aria-hidden="true" />
           )}
         </button>
-        <button type="button" className="pkey" aria-label="Next take" title="Next take" onClick={() => busSelect()}>
+        <button
+          type="button"
+          className="pkey"
+          aria-label={label("shell.playerbar.next")}
+          title={label("shell.playerbar.next")}
+          onClick={() => busSelect()}
+        >
           <NextRegular fontSize={16} aria-hidden="true" />
         </button>
       </div>

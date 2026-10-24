@@ -7,6 +7,7 @@
  */
 import { type KeyboardEvent, type PointerEvent, useCallback, useRef } from "react";
 import { clampFader, FADER_MAX_DB, FADER_MIN_DB, faderToUnit, unitToFader } from "../../dawview.ts";
+import { labelfill } from "../../labels.ts";
 
 /** The keyboard walk per press (fine and coarse, in dB). */
 const STEP_FINE = 0.5;
@@ -87,11 +88,11 @@ export function Fader({ name, value, onChange, master }: FaderProps) {
       className={master ? "vfader vfader--master" : "vfader"}
       role="slider"
       tabIndex={0}
-      aria-label={`${name} fader`}
+      aria-label={labelfill("studio.fader.aria", { name })}
       aria-valuemin={FADER_MIN_DB}
       aria-valuemax={FADER_MAX_DB}
       aria-valuenow={Number(value.toFixed(1))}
-      aria-valuetext={`${value.toFixed(1)} decibels`}
+      aria-valuetext={labelfill("studio.fader.valueText", { value: value.toFixed(1) })}
       aria-orientation="vertical"
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}

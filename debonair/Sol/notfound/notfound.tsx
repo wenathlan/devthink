@@ -9,28 +9,29 @@
 
 // # NotFound — sub-anchor of the 404: dead air. The only 404 of the theme; there is
 // no 404.html anywhere.
+import { label } from "../../labels.ts";
 import { Link } from "wouter";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
 
-const FOOTER_LINKS: readonly NavLink[] = [
-  { label: "Studio", href: "/studio" },
-  { label: "Library", href: "/library" },
-];
-
 export default function NotFound() {
+  // the footer links read the label store at render time (the manifest
+  // answers english, the store answers the translated rows the seed protected)
+  const FOOTER_LINKS: readonly NavLink[] = [
+    { label: label("nav.studio"), href: "/studio" },
+    { label: label("nav.library"), href: "/library" },
+  ];
+
   return (
     <Shell name="debonair" contained footerLinks={FOOTER_LINKS} themeButton={false} domain="devthink.pro">
-      <p className="eyebrow">debonair · 404</p>
-      <h1 className="wordmark wordmark-xl">Dead air</h1>
-      <p className="lede-tight">
-        This page never made it to tape. The fader was up, the mic was hot — and the URL bar stayed clean, by the way.
-      </p>
+      <p className="eyebrow">{label("notfound.eyebrow")}</p>
+      <h1 className="wordmark wordmark-xl">{label("notfound.title")}</h1>
+      <p className="lede-tight">{label("notfound.lede")}</p>
       <div className="btn-row-tight">
         <Link className="btn" href="/">
-          Back home
+          {label("notfound.backHome")}
         </Link>
         <Link className="btn secondary" href="/studio">
-          Open the studio
+          {label("notfound.openStudio")}
         </Link>
       </div>
     </Shell>

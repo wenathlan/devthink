@@ -13,22 +13,26 @@
 import { useEffect, useState } from "react";
 import { listOptionChoices } from "../../catalog.ts";
 import { applyNow } from "../../cleanurl.ts";
+import { label } from "../../labels.ts";
 import type { OptionChoice } from "../../katexis.ts";
 import { reduceMotionApplied, setReduceMotion } from "../../motionpref.ts";
 import { currentTheme, toggleTheme } from "../../theme.ts";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
 import { useToast } from "../toast/Toast.tsx";
 
-const FOOTER_LINKS: readonly NavLink[] = [
-  { label: "Studio", href: "/studio" },
-  { label: "Library", href: "/library" },
-];
-
-const DIRTY_URL = "?utm_source=newsletter&utm_campaign=launch&gclid=ABC123&fbclid=XY99#/settings";
-
 type UrlOut = { text: string; tone: "error" | "ok" };
 
+/** the dirty url the demo pollutes the address bar with (test data, not copy). */
+const DIRTY_URL = "?utm_source=newsletter&utm_campaign=launch&gclid=ABC123&fbclid=XY99#/settings";
+
 export default function Settings() {
+  // the footer links read the label store at render time (the manifest
+  // answers english, the store answers the translated rows the seed protected)
+  const FOOTER_LINKS: readonly NavLink[] = [
+    { label: label("nav.studio"), href: "/studio" },
+    { label: label("nav.library"), href: "/library" },
+  ];
+
   const toast = useToast();
   const [light, setLight] = useState(currentTheme() === "light");
   const [reduced, setReduced] = useState(() => reduceMotionApplied());
@@ -56,7 +60,7 @@ export default function Settings() {
     const next = !reduceMotionApplied();
     setReduceMotion(next);
     setReduced(next);
-    toast.show(next ? "Motion reduced for this session" : "Motion restored for this session", "info");
+    toast.show(next ? label("settings.toast.motionOn") : label("settings.toast.motionOff"), "info");
   };
 
   const showDirty = (): void => {
@@ -66,50 +70,53 @@ export default function Settings() {
   const showClean = (): void => {
     applyNow();
     setUrlOut({ text: window.location.pathname + window.location.search, tone: "ok" });
-    toast.show("URL cleaned — no hash, no trackers", "success");
+    toast.show(label("settings.toast.cleaned"), "success");
   };
 
   const savePreferences = (): void => {
     // preference state lives in memory only: the interface never writes to the visitor machine
-    toast.show("Preferences saved locally", "success");
+    toast.show(label("settings.toast.saved"), "success");
   };
 
   return (
     <Shell name="debonair" contained footerLinks={FOOTER_LINKS} themeButton={false} domain="devthink.pro">
-      <p className="eyebrow">debonair · settings</p>
-      <h1 className="page-title">Settings</h1>
+      <p className="eyebrow">{label("settings.eyebrow")}</p>
+      <h1 className="page-title">{label("settings.title")}</h1>
       <p className="lede" style={{ maxWidth: 600 }}>
-        Site preferences only. Product credentials and session audio never live here — they belong to{" "}
-        <code>~/.config/debonair/</code> on your machine.
+        {label("settings.ledeLead")}
+        <code>~/.config/debonair/</code>
+        {label("settings.ledeTail")}
       </p>
 
       <div className="stack">
         <section className="glass card card-gap">
-          <h2 className="card-h">Appearance</h2>
+          <h2 className="card-h">{label("settings.appearance.title")}</h2>
           <div className="pref-row">
             <div>
-              <p className="pref-title">Light theme</p>
-              <p className="pref-hint">Solar dark is the default — the mixer reads better at night.</p>
+              <p className="pref-title">{label("settings.appearance.light")}</p>
+              <p className="pref-hint">{label("settings.appearance.lightHint")}</p>
             </div>
             <label className="toggle">
-              <input type="checkbox" checked={light} onChange={onLightToggle} aria-label="Toggle light theme" />
+              <input
+                type="checkbox"
+                checked={light}
+                onChange={onLightToggle}
+                aria-label={label("settings.appearance.lightAria")}
+              />
               <span className="track" />
             </label>
           </div>
           <div className="pref-row pref-row-last">
             <div>
-              <p className="pref-title">Reduce motion</p>
-              <p className="pref-hint">
-                Freezes the meters, the rack sweep and the entry choreography for this session — on top of the OS
-                setting, never against it.
-              </p>
+              <p className="pref-title">{label("settings.appearance.motion")}</p>
+              <p className="pref-hint">{label("settings.appearance.motionHint")}</p>
             </div>
             <label className="toggle">
               <input
                 type="checkbox"
                 checked={reduced}
                 onChange={onReduceMotionToggle}
-                aria-label="Toggle reduce motion"
+                aria-label={label("settings.appearance.motionAria")}
               />
               <span className="track" />
             </label>
@@ -117,27 +124,37 @@ export default function Settings() {
         </section>
 
         <section className="glass card card-gap">
-          <h2 className="card-h">Clean URLs</h2>
+          <h2 className="card-h">{label("settings.urls.title")}</h2>
           <p className="p-sm">
-            This site runs the <code>clean-url</code> module: hash routes, <code>index.html</code>, duplicate slashes
-            and campaign trackers (<code>utm_*</code>, <code>gclid</code>, <code>fbclid</code>…) are stripped from the
-            address bar automatically — without reloading or polluting history.
+            {label("settings.urls.lead")}
+            <code>clean-url</code>
+            {label("settings.urls.mid1")}
+            <code>index.html</code>
+            {label("settings.urls.mid2")}
+            <code>utm_*</code>
+            {label("settings.urls.sep")}
+            <code>gclid</code>
+            {label("settings.urls.sep")}
+            <code>fbclid</code>
+            {label("settings.urls.mid3")}
           </p>
           <div className="btn-row" style={{ marginTop: 0 }}>
             <button className="btn secondary small" type="button" onClick={showDirty}>
-              Poll this URL with trackers
+              {label("settings.urls.dirty")}
             </button>
             <button className="btn small" type="button" onClick={showClean}>
-              Watch it clean itself
+              {label("settings.urls.clean")}
             </button>
           </div>
-          <p className={`badge url-out${urlOut ? ` ${urlOut.tone}` : ""}`}>{urlOut ? urlOut.text : "—"}</p>
+          <p className={`badge url-out${urlOut ? ` ${urlOut.tone}` : ""}`}>
+            {urlOut ? urlOut.text : label("settings.urls.empty")}
+          </p>
         </section>
 
         <section className="glass card">
-          <h2 className="card-h">Region</h2>
+          <h2 className="card-h">{label("settings.region.title")}</h2>
           <div className="field">
-            <label htmlFor="locale">Language</label>
+            <label htmlFor="locale">{label("settings.region.language")}</label>
             <select
               id="locale"
               className="input measure-sm"
@@ -152,7 +169,7 @@ export default function Settings() {
             </select>
           </div>
           <button className="btn small" type="button" onClick={savePreferences}>
-            Save preferences
+            {label("settings.save")}
           </button>
         </section>
       </div>

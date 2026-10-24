@@ -36,6 +36,7 @@ import {
   TAKE_SELECT_KEY,
 } from "../../takestore.ts";
 import type { TimelineClip } from "../../timelinemodel.ts";
+import { label, labelfill } from "../../labels.ts";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
 import { Fader } from "../widgets/studio.fader.tsx";
 import { PianoRoll } from "../widgets/studio.pianoroll.tsx";
@@ -43,12 +44,6 @@ import { StageStepper } from "../widgets/studio.stagestepper.tsx";
 import { Spectrum } from "../widgets/studio.spectrum.tsx";
 import { Timeline } from "../widgets/studio.timeline.tsx";
 import { VuMeter } from "../widgets/studio.vumeter.tsx";
-
-const FOOTER_LINKS: readonly NavLink[] = [
-  { label: "Generate", href: "/generate" },
-  { label: "Library", href: "/library" },
-  { label: "Settings", href: "/settings" },
-];
 
 /** the demo take: a real engine plan over a fixed prompt and seed */
 const DEMO_PROMPT = "midnight studio take, warm sub bass, dusty keys, brass light";
@@ -58,6 +53,14 @@ const DEMO_SEED = "debonair-demo";
 const STEP_NOS: readonly number[] = Array.from({ length: 16 }, (_, step) => step + 1);
 
 export default function Studio() {
+  // the footer links read the label store at render time (the manifest
+  // answers english, the store answers the translated rows the seed protected)
+  const FOOTER_LINKS: readonly NavLink[] = [
+    { label: label("nav.generate"), href: "/generate" },
+    { label: label("nav.library"), href: "/library" },
+    { label: label("nav.settings"), href: "/settings" },
+  ];
+
   const engineRef = useRef<TakeEngine | null>(null);
   /** the take id the transport last loaded (the edit reloads keep the ride). */
   const loadedIdRef = useRef<string | null>(null);
@@ -165,7 +168,7 @@ export default function Studio() {
         }
       })
       .catch((error: unknown) => {
-        if (live) setNotice(error instanceof Error ? error.message : "the transport refused this take");
+        if (live) setNotice(error instanceof Error ? error.message : label("studio.notice.transportTake"));
       });
     return () => {
       live = false;
@@ -197,7 +200,7 @@ export default function Studio() {
       setPlaying(true);
       setNotice("");
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "the transport refused to start");
+      setNotice(error instanceof Error ? error.message : label("studio.notice.transportStart"));
     }
   }, [loop, plan, position]);
 
@@ -259,7 +262,7 @@ export default function Studio() {
         saveTakePlan(nextPlan);
         setPlans((current) => current.map((take) => (take.id === nextPlan.id ? nextPlan : take)));
       } catch {
-        setNotice("the shelf refused this arrangement — the desk keeps it for the session");
+        setNotice(label("studio.notice.shelfRefused"));
       }
     },
     [plan],
@@ -273,7 +276,7 @@ export default function Studio() {
     setArrangement(null);
     setEdits(null);
     setSelectedClipId("");
-    setNotice("the desk reset — the seeded take answers again");
+    setNotice(label("studio.notice.deskReset"));
   }, []);
 
   /** one export action: a real render, real bytes, an honest notice. */
@@ -284,9 +287,9 @@ export default function Studio() {
       try {
         const files = await exportTake(kind, plan, schedule);
         for (const file of files) downloadFile(file);
-        setNotice(`exported ${files.map((file) => file.name).join(", ")}`);
+        setNotice(labelfill("studio.notice.exported", { files: files.map((file) => file.name).join(", ") }));
       } catch (error) {
-        setNotice(error instanceof Error ? error.message : "the export refused this take");
+        setNotice(error instanceof Error ? error.message : label("studio.notice.exportRefused"));
       } finally {
         setBusyExport("");
       }
@@ -317,15 +320,16 @@ export default function Studio() {
     <Shell
       name="debonair"
       contained
-      cta={{ label: "Generate a track", href: "/generate" }}
+      cta={{ label: label("studio.cta"), href: "/generate" }}
       footerLinks={FOOTER_LINKS}
       domain="devthink.pro"
     >
-      <p className="eyebrow reveal">debonair · studio</p>
-      <h1 className="reveal page-title">Studio</h1>
+      <p className="eyebrow reveal">{label("studio.eyebrow")}</p>
+      <h1 className="reveal page-title">{label("studio.title")}</h1>
       <p className="reveal lede" style={{ maxWidth: 640 }}>
-        The console, live: the <code>katexis</code> engine schedules the take on the WebAudio clock — transport,
-        playlist, channel rack and mixer all read and drive the same plan. Play it.
+        {label("studio.ledeLead")}
+        <code>katexis</code>
+        {label("studio.ledeTail")}
       </p>
 
       {notice ? (
@@ -345,18 +349,22 @@ export default function Studio() {
           className="stage-section rack-panel reveal"
           data-stage="prompt"
           ref={stageRef("prompt")}
-          aria-label="Stage prompt"
+          aria-label={labelfill("studio.stage.aria", { stage: "Prompt" })}
         >
-          <p className="stage-eyebrow">stage · prompt</p>
+          <p className="stage-eyebrow">{labelfill("studio.stage.eyebrow", { stage: "prompt" })}</p>
           <blockquote className="stage-quote">
             {plan.prompt}
             <footer>
-              seed <code>{plan.seed}</code> · take <code>{plan.id.slice(0, 6)}</code>
+              {label("studio.prompt.seedLead")}
+              <code>{plan.seed}</code>
+              {label("studio.prompt.takeLead")}
+              <code>{plan.id.slice(0, 6)}</code>
             </footer>
           </blockquote>
           <p className="stage-hint">
-            New material? <Link href="/generate">Compose a fresh prompt</Link> and come back — same prompt and seed
-            always rebuild this exact take.
+            {label("studio.prompt.hintLead")}
+            <Link href="/generate">{label("studio.prompt.hintLink")}</Link>
+            {label("studio.prompt.hintTail")}
           </p>
         </section>
       ) : null}
@@ -367,12 +375,13 @@ export default function Studio() {
           className="stage-section reveal"
           data-stage="lyrics"
           ref={stageRef("lyrics")}
-          aria-label="Stage lyrics"
+          aria-label={labelfill("studio.stage.aria", { stage: "Lyrics" })}
         >
-          <p className="stage-eyebrow">stage · lyrics</p>
+          <p className="stage-eyebrow">{labelfill("studio.stage.eyebrow", { stage: "lyrics" })}</p>
           <p className="stage-hint">
-            The lead sheet of the take — <strong className="ink-strong">{plan.keyLabel}</strong>, one chord a bar over{" "}
-            {plan.bars} bars.
+            {label("studio.lyrics.hintLead")}
+            <strong className="ink-strong">{plan.keyLabel}</strong>
+            {labelfill("studio.lyrics.hintTail", { bars: String(plan.bars) })}
           </p>
           <ol className="lyric-sheet">
             {plan.chords.map((event) => (
@@ -392,39 +401,52 @@ export default function Studio() {
 
       {/* STAGE STYLE — the genre, the pattern and the loudness law of the take */}
       {plan ? (
-        <section className="stage-section reveal" data-stage="style" ref={stageRef("style")} aria-label="Stage style">
-          <p className="stage-eyebrow">stage · style</p>
+        <section
+          className="stage-section reveal"
+          data-stage="style"
+          ref={stageRef("style")}
+          aria-label={labelfill("studio.stage.aria", { stage: "Style" })}
+        >
+          <p className="stage-eyebrow">{labelfill("studio.stage.eyebrow", { stage: "style" })}</p>
           <dl className="spec-ledger stage-spec">
             <div className="spec-row">
-              <dt>genre</dt>
+              <dt>{label("studio.style.genre")}</dt>
               <dd>{plan.genreLabel}</dd>
             </div>
             <div className="spec-row">
-              <dt>tempo</dt>
+              <dt>{label("studio.style.tempo")}</dt>
               <dd>
-                {plan.bpm} bpm · swing {Math.round((plan.swing - 0.5) * 200)}%
+                {labelfill("studio.style.tempoValue", {
+                  bpm: String(plan.bpm),
+                  swing: String(Math.round((plan.swing - 0.5) * 200)),
+                })}
               </dd>
             </div>
             <div className="spec-row">
-              <dt>key</dt>
+              <dt>{label("studio.style.key")}</dt>
               <dd>{plan.keyLabel}</dd>
             </div>
             <div className="spec-row">
-              <dt>drums</dt>
+              <dt>{label("studio.style.drums")}</dt>
               <dd>{plan.pattern}</dd>
             </div>
             <div className="spec-row">
-              <dt>loudness law</dt>
+              <dt>{label("studio.style.loudness")}</dt>
               <dd>
-                {plan.lufsTarget} LUFS · {plan.mastering.truePeakDbtp} dBTP
+                {labelfill("studio.style.loudnessValue", {
+                  lufs: String(plan.lufsTarget),
+                  dbtp: String(plan.mastering.truePeakDbtp),
+                })}
               </dd>
             </div>
             <div className="spec-row">
-              <dt>render</dt>
-              <dd>{plan.mastering.sampleRateHz / 1000} kHz WAV</dd>
+              <dt>{label("studio.style.render")}</dt>
+              <dd>{labelfill("studio.style.renderValue", { khz: String(plan.mastering.sampleRateHz / 1000) })}</dd>
             </div>
           </dl>
-          {problems.length > 0 ? <p className="badge warning">{`Plan problems: ${problems.join("; ")}`}</p> : null}
+          {problems.length > 0 ? (
+            <p className="badge warning">{labelfill("studio.planProblems", { list: problems.join("; ") })}</p>
+          ) : null}
         </section>
       ) : null}
 
@@ -434,14 +456,20 @@ export default function Studio() {
           className="stage-section reveal"
           data-stage="generate"
           ref={stageRef("generate")}
-          aria-label="Stage generate"
+          aria-label={labelfill("studio.stage.aria", { stage: "Generate" })}
         >
-          <p className="stage-eyebrow">stage · generate</p>
+          <p className="stage-eyebrow">{labelfill("studio.stage.eyebrow", { stage: "generate" })}</p>
 
           {/* TRANSPORT — real keys over the WebAudio clock */}
-          <section className="transport rack-panel" aria-label="Transport bar">
+          <section className="transport rack-panel" aria-label={label("studio.transport.aria")}>
             <div className="group">
-              <button className="tkey" type="button" aria-label="Play" aria-pressed={playing} onClick={togglePlay}>
+              <button
+                className="tkey"
+                type="button"
+                aria-label={label("studio.transport.playAria")}
+                aria-pressed={playing}
+                onClick={togglePlay}
+              >
                 <svg
                   className="svg"
                   viewBox="0 0 24 24"
@@ -456,9 +484,9 @@ export default function Studio() {
                 >
                   <polygon points="6 3 20 12 6 21 6 3" />
                 </svg>
-                {playing ? "Pause" : "Play"}
+                {playing ? label("studio.transport.pause") : label("studio.transport.play")}
               </button>
-              <button className="tkey" type="button" aria-label="Stop" onClick={stop}>
+              <button className="tkey" type="button" aria-label={label("studio.transport.stopAria")} onClick={stop}>
                 <svg
                   className="svg"
                   viewBox="0 0 24 24"
@@ -473,12 +501,12 @@ export default function Studio() {
                 >
                   <rect x="5" y="5" width="14" height="14" rx="2" />
                 </svg>
-                Stop
+                {label("studio.transport.stop")}
               </button>
               <button
                 className="tkey tkey--loop"
                 type="button"
-                aria-label="Loop the take"
+                aria-label={label("studio.transport.loopAria")}
                 aria-pressed={loop}
                 onClick={toggleLoop}
               >
@@ -499,31 +527,31 @@ export default function Studio() {
                   <path d="M7 22l-4-4 4-4" />
                   <path d="M21 13v1a4 4 0 0 1-4 4H3" />
                 </svg>
-                Loop
+                {label("studio.transport.loop")}
               </button>
             </div>
             <div className="readouts">
               <div className="readout">
-                <span className="lbl">Position</span>
+                <span className="lbl">{label("studio.transport.position")}</span>
                 <span className="val">{formatClock(position)}</span>
               </div>
               <div className="readout">
-                <span className="lbl">Bar</span>
+                <span className="lbl">{label("studio.transport.bar")}</span>
                 <span className="val">
                   {rackPosition.bar + 1}.{rackPosition.step + 1}
                 </span>
               </div>
               <div className="readout">
-                <span className="lbl">BPM</span>
+                <span className="lbl">{label("studio.transport.bpm")}</span>
                 <span className="val">{plan.bpm}</span>
               </div>
               <div className="readout">
-                <span className="lbl">Key</span>
+                <span className="lbl">{label("studio.transport.key")}</span>
                 <span className="val">{plan.keyLabel}</span>
               </div>
               <div className="readout">
-                <span className="lbl">Target</span>
-                <span className="val">{plan.lufsTarget} LUFS</span>
+                <span className="lbl">{label("studio.transport.target")}</span>
+                <span className="val">{labelfill("studio.transport.targetValue", { lufs: String(plan.lufsTarget) })}</span>
               </div>
             </div>
           </section>
@@ -543,17 +571,21 @@ export default function Studio() {
           />
 
           {/* SPECTRUM — the master bus, live: the scope is feedback, never decor */}
-          <section className="rack-panel scope-panel" aria-label="Master scope">
+          <section className="rack-panel scope-panel" aria-label={label("studio.scope.aria")}>
             <Spectrum engine={engineRef.current} live={playing} />
           </section>
 
           {/* CHANNEL RACK — the real grid: velocities, fills, the running step */}
-          <section className="rack rack-panel" aria-label="Channel rack">
+          <section className="rack rack-panel" aria-label={label("studio.rack.aria")}>
             <header className="rack-head">
-              <h2 className="rack-title">channel rack</h2>
+              <h2 className="rack-title">{label("studio.rack.title")}</h2>
               <span className="rack-meta">
-                {plan.pattern} · swing {Math.round((plan.swing - 0.5) * 200)}% · {plan.bpm} bpm · beat{" "}
-                {beatSecondsOf(plan).toFixed(3)} s
+                {labelfill("studio.rack.meta", {
+                  pattern: plan.pattern,
+                  swing: String(Math.round((plan.swing - 0.5) * 200)),
+                  bpm: String(plan.bpm),
+                  beat: beatSecondsOf(plan).toFixed(3),
+                })}
               </span>
             </header>
             <div>
@@ -572,7 +604,7 @@ export default function Studio() {
                           data-beat={step % 4 === 0 ? "true" : undefined}
                           data-current={current ? "true" : undefined}
                           style={velocity > 0 ? { opacity: (0.42 + velocity * 0.58).toFixed(2) } : undefined}
-                          title={velocity > 0 ? `vel ${(velocity * 100).toFixed(0)}%` : undefined}
+                          title={velocity > 0 ? labelfill("studio.rack.stepVel", { vel: (velocity * 100).toFixed(0) }) : undefined}
                         />
                       );
                     })}
@@ -596,61 +628,82 @@ export default function Studio() {
           ) : null}
 
           {/* EXPORT BAR — real bounces: the wavs, the midi and the stems */}
-          <section className="rack-panel exp" aria-label="Export desk">
-            <h2 className="card-h">export</h2>
-            <p className="flush p-sm">
-              The bounce rides the same graph the desk plays — the plan's faders, the glue and this take's seeded noise.
-            </p>
+          <section className="rack-panel exp" aria-label={label("studio.export.aria")}>
+            <h2 className="card-h">{label("studio.export.title")}</h2>
+            <p className="flush p-sm">{label("studio.export.body")}</p>
             <div className="exp-keys">
               {(Object.keys(EXPORT_LABELS) as ExportKind[]).map((kind) => (
                 <button
                   key={kind}
                   className="tkey"
                   type="button"
-                  aria-label={`Export ${EXPORT_LABELS[kind]}`}
+                  aria-label={labelfill("studio.export.keyAria", { label: EXPORT_LABELS[kind] })}
                   disabled={busyExport !== ""}
                   onClick={() => void runExport(kind)}
                 >
-                  {busyExport === kind ? "rendering…" : EXPORT_LABELS[kind]}
+                  {busyExport === kind ? label("studio.export.rendering") : EXPORT_LABELS[kind]}
                 </button>
               ))}
-              <button className="tkey" type="button" aria-label="Reset the desk to the seeded take" onClick={resetDesk}>
-                reset desk
+              <button
+                className="tkey"
+                type="button"
+                aria-label={label("studio.export.resetAria")}
+                onClick={resetDesk}
+              >
+                {label("studio.export.reset")}
               </button>
             </div>
-            {edits ? (
-              <p className="flush p-sm">
-                the roll owns the schedule this desk session — reset the desk to hear the seeded take again.
-              </p>
-            ) : null}
+            {edits ? <p className="flush p-sm">{label("studio.export.rollNote")}</p> : null}
           </section>
 
           {/* the plan ledger — the engine's own numbers, no invented specs */}
           {schedule ? (
-            <section className="rack-panel scope-note" aria-label="Take ledger">
-              <h2 className="card-h">Take ledger</h2>
+            <section className="rack-panel scope-note" aria-label={label("studio.ledger.aria")}>
+              <h2 className="card-h">{label("studio.ledger.title")}</h2>
               <p className="flush">
-                <strong className="ink-strong">{plan.name}</strong> — {plan.genreLabel} · {plan.keyLabel} · {plan.bpm}{" "}
-                bpm · {plan.bars} bars · {formatClock(plan.durationSeconds)} · {schedule.events.length} scheduled events
-                ({schedule.perRole.drums} drums, {schedule.perRole.bass} bass, {schedule.perRole.keys} keys,{" "}
-                {schedule.perRole.lead} lead) · seed <code>{plan.seed}</code> · target {plan.lufsTarget} LUFS /{" "}
-                {plan.mastering.truePeakDbtp} dBTP true peak. Chords:{" "}
-                {plan.chords
-                  .slice(0, 8)
-                  .map((chord) => chord.symbol)
-                  .join(" · ")}
-                {plan.bars > 8 ? " …" : ""}.{" "}
-                {problems.length === 0 ? "Plan validated." : `Plan problems: ${problems.join("; ")}`}
+                <strong className="ink-strong">{plan.name}</strong>
+                {labelfill("studio.ledger.bodyLead", {
+                  genre: plan.genreLabel,
+                  key: plan.keyLabel,
+                  bpm: String(plan.bpm),
+                  bars: String(plan.bars),
+                  clock: formatClock(plan.durationSeconds),
+                  events: String(schedule.events.length),
+                  drums: String(schedule.perRole.drums),
+                  bass: String(schedule.perRole.bass),
+                  keys: String(schedule.perRole.keys),
+                  lead: String(schedule.perRole.lead),
+                })}
+                <code>{plan.seed}</code>
+                {labelfill("studio.ledger.bodyTail", {
+                  lufs: String(plan.lufsTarget),
+                  dbtp: String(plan.mastering.truePeakDbtp),
+                  chords: plan.chords
+                    .slice(0, 8)
+                    .map((chord) => chord.symbol)
+                    .join(" · "),
+                  more: plan.bars > 8 ? label("studio.ledger.more") : "",
+                  verdict:
+                    problems.length === 0
+                      ? label("studio.ledger.valid")
+                      : labelfill("studio.planProblems", { list: problems.join("; ") }),
+                })}
               </p>
               <p className="flush p-sm">
-                Same prompt and seed always rebuild this exact take. Edit the desk live — the faders, mutes and solos
-                ride <code>mixergraph</code> onto the audio buses while it plays. Loop is{" "}
-                {loop ? "on — the take wraps at the top" : "off — the transport stops at the end"}. Master fader{" "}
-                {formatGain(graph?.channels.find((channel) => channel.id === graph.masterid)?.gaindb ?? -2)} dB.
+                {label("studio.ledger.loopLead")}
+                <code>mixergraph</code>
+                {label("studio.ledger.loopTail")}
+                {loop ? label("studio.ledger.loopOn") : label("studio.ledger.loopOff")}
+                {labelfill("studio.ledger.masterTail", {
+                  gain: formatGain(graph?.channels.find((channel) => channel.id === graph.masterid)?.gaindb ?? -2),
+                })}
               </p>
               <p className="flush p-sm">
-                New material? <Link href="/generate">Compose a take</Link> or browse the shelf in the{" "}
-                <Link href="/library">library</Link>.
+                {label("studio.ledger.newLead")}
+                <Link href="/generate">{label("studio.ledger.composeLink")}</Link>
+                {label("studio.ledger.browseMid")}
+                <Link href="/library">{label("studio.ledger.libraryLink")}</Link>
+                {label("studio.ledger.newTail")}
               </p>
             </section>
           ) : null}
@@ -663,15 +716,17 @@ export default function Studio() {
           className="stage-section rack-panel reveal"
           data-stage="takes"
           ref={stageRef("takes")}
-          aria-label="Stage takes"
+          aria-label={labelfill("studio.stage.aria", { stage: "Takes" })}
         >
-          <p className="stage-eyebrow">stage · takes</p>
+          <p className="stage-eyebrow">{labelfill("studio.stage.eyebrow", { stage: "takes" })}</p>
           <p className="stage-hint">
-            {plans.length} take{plans.length === 1 ? "" : "s"} on the shelf — the desk, the bar and the library all read
-            the same render.
+            {labelfill("studio.takes.count", {
+              count: String(plans.length),
+              s: plans.length === 1 ? "" : "s",
+            })}
           </p>
           <label className="field takepick">
-            <span className="field-label">Take</span>
+            <span className="field-label">{label("studio.takes.field")}</span>
             <select
               className="input"
               value={plan.id}
@@ -692,9 +747,14 @@ export default function Studio() {
 
       {/* STAGE MIX — the desk: faders, mute/solo keys, live meters, the master bus */}
       {plan && graph ? (
-        <section className="stage-section reveal" data-stage="mix" ref={stageRef("mix")} aria-label="Stage mix">
-          <p className="stage-eyebrow">stage · mix</p>
-          <section className="mixer" aria-label="Mixer">
+        <section
+          className="stage-section reveal"
+          data-stage="mix"
+          ref={stageRef("mix")}
+          aria-label={labelfill("studio.stage.aria", { stage: "Mix" })}
+        >
+          <p className="stage-eyebrow">{labelfill("studio.stage.eyebrow", { stage: "mix" })}</p>
+          <section className="mixer" aria-label={label("studio.mixer.aria")}>
             {graph.channels
               .filter((channel) => channel.id !== graph.masterid)
               .map((channel) => {
@@ -707,19 +767,19 @@ export default function Studio() {
                         type="button"
                         className={`strip-key${channel.mute ? " is-on" : ""}`}
                         aria-pressed={channel.mute}
-                        aria-label={`${channel.id} mute`}
+                        aria-label={labelfill("studio.mixer.muteAria", { id: channel.id })}
                         onClick={() => patchDesk(channel.id, { mute: !channel.mute })}
                       >
-                        M
+                        {label("studio.mixer.muteKey")}
                       </button>
                       <button
                         type="button"
                         className={`strip-key strip-key--solo${channel.solo ? " is-on" : ""}`}
                         aria-pressed={channel.solo}
-                        aria-label={`${channel.id} solo`}
+                        aria-label={labelfill("studio.mixer.soloAria", { id: channel.id })}
                         onClick={() => patchDesk(channel.id, { solo: !channel.solo })}
                       >
-                        S
+                        {label("studio.mixer.soloKey")}
                       </button>
                     </div>
                     <div className="strip-stage">
@@ -737,7 +797,7 @@ export default function Studio() {
                 <div className="strip master">
                   <h3>master</h3>
                   <div className="strip-keys">
-                    <span className="db glue">bus</span>
+                    <span className="db glue">{label("studio.mixer.bus")}</span>
                   </div>
                   <div className="strip-stage">
                     <Fader name="master" value={master.gaindb} master onChange={(db) => setFader("master", db)} />

@@ -32,18 +32,20 @@ import { type ChangeEvent, type DragEvent, useEffect, useRef, useState } from "r
 import { formatClock } from "../../dawview.ts";
 import { type IngestDocument, ingestPcm } from "../../ingest.ts";
 import { droppingest, type IngestRecord, listingests, saveingest } from "../../ingeststore.ts";
+import { label, labelfill, type LabelKey } from "../../labels.ts";
 import { Shell } from "../shell/Shell.tsx";
 import { useToast } from "../toast/Toast.tsx";
 
-/** The decode/analysis phases the bench walks through, in order. */
-const PHASES: readonly { id: BenchPhase; label: string; detail: string }[] = [
-  { id: "idle", label: "waiting", detail: "drop an audio file to decompose" },
-  { id: "decode", label: "decode", detail: "file → mono pcm" },
-  { id: "separate", label: "separate", detail: "hpss → harmonic + percussive stems" },
-  { id: "analyze", label: "analyze", detail: "rhythm, key, bands, loudness" },
-  { id: "segment", label: "segment", detail: "one vector frame per second" },
-  { id: "ready", label: "ready", detail: "the document is complete" },
-  { id: "error", label: "failed", detail: "the file did not survive the bench" },
+/** The decode/analysis phases the bench walks through, in order (the ids
+ * ride the state machine; the label and detail keys answer the label store). */
+const PHASES: readonly { id: BenchPhase; labelKey: LabelKey; detailKey: LabelKey }[] = [
+  { id: "idle", labelKey: "ingest.phase.waiting", detailKey: "ingest.phase.waitingDetail" },
+  { id: "decode", labelKey: "ingest.phase.decode", detailKey: "ingest.phase.decodeDetail" },
+  { id: "separate", labelKey: "ingest.phase.separate", detailKey: "ingest.phase.separateDetail" },
+  { id: "analyze", labelKey: "ingest.phase.analyze", detailKey: "ingest.phase.analyzeDetail" },
+  { id: "segment", labelKey: "ingest.phase.segment", detailKey: "ingest.phase.segmentDetail" },
+  { id: "ready", labelKey: "ingest.phase.ready", detailKey: "ingest.phase.readyDetail" },
+  { id: "error", labelKey: "ingest.phase.error", detailKey: "ingest.phase.errorDetail" },
 ];
 
 type BenchPhase = "idle" | "decode" | "separate" | "analyze" | "segment" | "ready" | "error";
@@ -92,23 +94,23 @@ function StemCard({
       </p>
       <dl className="ing-dl">
         <div>
-          <dt>rms</dt>
+          <dt>{label("ingest.card.rms")}</dt>
           <dd>{rms.toFixed(4)}</dd>
         </div>
         <div>
-          <dt>peak</dt>
+          <dt>{label("ingest.card.peak")}</dt>
           <dd>{peak.toFixed(4)}</dd>
         </div>
         <div>
-          <dt>onsets</dt>
+          <dt>{label("ingest.card.onsets")}</dt>
           <dd>{onsets}</dd>
         </div>
         <div>
-          <dt>frames</dt>
+          <dt>{label("ingest.card.frames")}</dt>
           <dd>{seconds}</dd>
         </div>
         <div>
-          <dt>pcm hash</dt>
+          <dt>{label("ingest.card.hash")}</dt>
           <dd>
             <code>{(hash >>> 0).toString(16)}</code>
           </dd>
@@ -155,10 +157,15 @@ function IngestSurface() {
       const document = ingestPcm(mono, sampleRate, { name: file.name.replace(/\.[^.]+$/, "") });
       setDoc(document);
       setPhase("ready");
-      toast.show(`${document.durationSeconds.toFixed(1)}s decomposed into ${document.segments.length} vector frames`);
+      toast.show(
+        labelfill("ingest.toast.decomposed", {
+          seconds: document.durationSeconds.toFixed(1),
+          frames: String(document.segments.length),
+        }),
+      );
     } catch (error) {
       setPhase("error");
-      toast.show(error instanceof Error ? error.message : "the file did not survive the bench", "error");
+      toast.show(error instanceof Error ? error.message : label("ingest.phase.errorDetail"), "error");
     }
   };
 
@@ -182,7 +189,7 @@ function IngestSurface() {
       setCopied(true);
       setTimeout(() => setCopied(false), 1600);
     } catch {
-      toast.show("the clipboard refused the document", "error");
+      toast.show(label("ingest.toast.clipboard"), "error");
     }
   };
 
@@ -203,17 +210,17 @@ function IngestSurface() {
     const record = await saveingest(doc);
     setSaving(false);
     if (!record) {
-      toast.show("the store refused the document", "error");
+      toast.show(label("ingest.toast.storeRefused"), "error");
       return;
     }
     setSaved(record.where);
-    toast.show(record.where === "db" ? "stored in the library db" : "stored in the offline mirror", "success");
+    toast.show(record.where === "db" ? label("ingest.toast.storedDb") : label("ingest.toast.storedOffline"), "success");
     loadShelf();
   };
 
   const drop = async (id: string): Promise<void> => {
     await droppingest(id);
-    toast.show("record dropped");
+    toast.show(label("ingest.toast.dropped"));
     loadShelf();
   };
 
@@ -227,16 +234,17 @@ function IngestSurface() {
       <section className="ing-hero halftone grain" aria-labelledby="ing-h">
         <div className="hero-light breathe" aria-hidden="true" />
         <h1 id="ing-h" className="hero-h reveal">
-          Ingest a real track.
+          {label("ingest.hero.title")}
         </h1>
         <p className="hero-lede reveal">
-          One file in: the <code>katexis</code> engine separates the stems, decomposes every second into vector
-          parameters and stores the document — the pre-training data the composer mines.
+          {label("ingest.hero.ledeLead")}
+          <code>katexis</code>
+          {label("ingest.hero.ledeTail")}
         </p>
         <button
           type="button"
           className={`ing-drop${drag ? " is-drag" : ""}`}
-          aria-label="Drop an audio file or browse"
+          aria-label={label("ingest.drop.aria")}
           onClick={() => inputRef.current?.click()}
           onDragOver={(event) => {
             event.preventDefault();
@@ -246,29 +254,27 @@ function IngestSurface() {
           onDrop={onDrop}
         >
           <ArrowUploadRegular fontSize={28} aria-hidden="true" />
-          <p className="ing-drop-title">drop audio here</p>
-          <p className="ing-drop-sub">
-            {fileName ? fileName : "mp3, wav, ogg, flac — the file never leaves the bench"}
-          </p>
+          <p className="ing-drop-title">{label("ingest.drop.title")}</p>
+          <p className="ing-drop-sub">{fileName ? fileName : label("ingest.drop.sub")}</p>
           <input ref={inputRef} type="file" accept="audio/*" hidden onChange={onInput} />
         </button>
-        <ol className="ing-meter" aria-label="Bench phases">
+        <ol className="ing-meter" aria-label={label("ingest.meter.aria")}>
           {PHASES.filter((p) => p.id !== "idle" && p.id !== "error").map((p, index) => {
             const order = PHASES.findIndex((x) => x.id === phase);
             const state = phase === "error" ? "idle" : p.id === phase ? "live" : index < order ? "done" : "idle";
             return (
-              <li key={p.id} className={`ing-step is-${state}`} data-label={p.label}>
+              <li key={p.id} className={`ing-step is-${state}`} data-label={label(p.labelKey)}>
                 <span className="ing-step-dot" aria-hidden="true" />
-                <span className="ing-step-label">{p.label}</span>
-                <span className="ing-step-detail">{p.detail}</span>
+                <span className="ing-step-label">{label(p.labelKey)}</span>
+                <span className="ing-step-detail">{label(p.detailKey)}</span>
               </li>
             );
           })}
           {phase === "error" ? (
             <li className="ing-step is-live">
               <span className="ing-step-dot" aria-hidden="true" />
-              <span className="ing-step-label">{phaseRow.label}</span>
-              <span className="ing-step-detail">{phaseRow.detail}</span>
+              <span className="ing-step-label">{label(phaseRow.labelKey)}</span>
+              <span className="ing-step-detail">{label(phaseRow.detailKey)}</span>
             </li>
           ) : null}
         </ol>
@@ -278,11 +284,15 @@ function IngestSurface() {
       {doc ? (
         <section className="shell section" aria-labelledby="doc-h">
           <div className="section-head">
-            <p className="eyebrow">the document</p>
+            <p className="eyebrow">{label("ingest.doc.eyebrow")}</p>
             <h2 id="doc-h" className="h2-xl">
               {doc.name}{" "}
               <span className="ing-dim">
-                · {formatClock(doc.durationSeconds)} · {doc.sampleRate / 1000} kHz · schema {doc.schema}
+                {labelfill("ingest.doc.meta", {
+                  clock: formatClock(doc.durationSeconds),
+                  khz: String(doc.sampleRate / 1000),
+                  schema: String(doc.schema),
+                })}
               </span>
             </h2>
           </div>
@@ -312,7 +322,7 @@ function IngestSurface() {
           <div className="ing-actions">
             <button className="btn primary" type="button" onClick={() => void save()} disabled={saving}>
               <DataUsageRegular fontSize={15} aria-hidden="true" />
-              {saving ? "storing" : "store in the library db"}
+              {saving ? label("ingest.action.storing") : label("ingest.action.store")}
             </button>
             <button className="btn secondary" type="button" onClick={() => void copyJson()}>
               {copied ? (
@@ -320,22 +330,22 @@ function IngestSurface() {
               ) : (
                 <CopyRegular fontSize={15} aria-hidden="true" />
               )}
-              copy json
+              {label("ingest.action.copy")}
             </button>
             <button className="btn secondary" type="button" onClick={downloadJson}>
               <ArrowDownloadRegular fontSize={15} aria-hidden="true" />
-              download json
+              {label("ingest.action.download")}
             </button>
             {saved ? (
               <span className={`badge${saved === "db" ? " default" : ""}`}>
-                {saved === "db" ? "in the db" : "offline mirror"}
+                {saved === "db" ? label("ingest.saved.db") : label("ingest.saved.offline")}
               </span>
             ) : null}
           </div>
           <pre className="ing-json">
             {jsonPreview.slice(0, 6000)}
             {jsonPreview.length > 6000
-              ? `\n… ${(jsonPreview.length / 1000).toFixed(0)} kB total — copy or download for the whole document`
+              ? `\n${labelfill("ingest.json.truncated", { size: (jsonPreview.length / 1000).toFixed(0) })}`
               : ""}
           </pre>
         </section>
@@ -344,13 +354,13 @@ function IngestSurface() {
       {/* SHELF — what the library already holds, spotify-row grammar */}
       <section className="shell section" aria-labelledby="shelf-h">
         <div className="section-head">
-          <p className="eyebrow">the reference shelf</p>
+          <p className="eyebrow">{label("ingest.shelf.eyebrow")}</p>
           <h2 id="shelf-h" className="h2-xl">
-            Ingested documents
+            {label("ingest.shelf.title")}
           </h2>
         </div>
         {records.length === 0 ? (
-          <p className="rail-foot">The shelf is empty — ingest the first real track above.</p>
+          <p className="rail-foot">{label("ingest.shelf.empty")}</p>
         ) : (
           <div className="ing-shelf">
             {records.map((record) => (
@@ -358,18 +368,21 @@ function IngestSurface() {
                 <div className="ing-row-main">
                   <p className="ing-row-name">{record.doc.name}</p>
                   <p className="ing-row-meta">
-                    {formatClock(record.doc.durationSeconds)} · {record.doc.segments.length} frames ·{" "}
-                    {record.doc.stems.map((s) => s.role).join(" + ")} ·{" "}
-                    {new Date(record.doc.ingestedAt).toLocaleDateString()}
+                    {labelfill("ingest.row.meta", {
+                      clock: formatClock(record.doc.durationSeconds),
+                      frames: String(record.doc.segments.length),
+                      roles: record.doc.stems.map((s) => s.role).join(" + "),
+                      date: new Date(record.doc.ingestedAt).toLocaleDateString(),
+                    })}
                   </p>
                 </div>
                 <span className={`badge${record.where === "db" ? " default" : ""}`}>
-                  {record.where === "db" ? "db" : "mirror"}
+                  {record.where === "db" ? label("ingest.row.badgeDb") : label("ingest.row.badgeMirror")}
                 </span>
                 <button
                   className="ing-row-key"
                   type="button"
-                  aria-label={`Drop ${record.doc.name}`}
+                  aria-label={labelfill("ingest.row.dropAria", { name: record.doc.name })}
                   onClick={() => void drop(record.id)}
                 >
                   <DeleteRegular fontSize={15} aria-hidden="true" />
