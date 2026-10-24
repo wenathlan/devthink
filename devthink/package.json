@@ -14,7 +14,11 @@
     "source-map-js": "1.2.2",
     "shell-quote": "^1.11.0",
     "katex": "^0.18.2",
-    "proxy-addr": "2.0.8"
+    "proxy-addr": "2.0.8",
+    "body-parser": "^2.4.0",
+    "fast-uri": "^3.1.9",
+    "follow-redirects": "^1.16.1",
+    "zod": "^4.6.6"
   },
   "dependencies": {
     "@fluentui/react-icons": "^2.0.344",
@@ -25,7 +29,7 @@
     "@wenathlan/saddle": "^2.1.6",
     "hono": "^4.13.13",
     "ink": "^7.1.1",
-    "motion": "^12.23.0",
+    "motion": "^12.43.0",
     "react": "^19.3.1",
     "react-devtools-core": "^8.0.0",
     "z-ai-web-dev-sdk": "^0.0.18"
@@ -114,7 +118,7 @@
     "vitest": "^5.0.5",
     "wouter": "^3.13.0",
     "yaml": "^2.9.1",
-    "zod": "^4.6.7"
+    "zod": "^4.6.6"
   },
   "exports": {
     ".": {
