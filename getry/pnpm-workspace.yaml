@@ -27,8 +27,13 @@ onlyBuiltDependencies:
   - workerd
 dangerouslyAllowAllBuilds: true
 minimumReleaseAgeExclude:
+  - zod@4.6.6
+  - follow-redirects@1.16.1
+  - fast-uri@3.1.9
+  - body-parser@2.4.0
   - '@opencode-ai/sdk@1.18.34'
   - framer-motion@13.5.0
   - motion-dom@13.5.0
   - motion-utils@13.5.0
   - vite@8.3.2
+  - react-hook-form@7.91.0
