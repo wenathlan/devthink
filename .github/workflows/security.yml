@@ -40,7 +40,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Review dependency changes
-        uses: actions/dependency-review-action@v5.0.0
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
         with:
           fail-on-severity: low
 
@@ -50,13 +50,13 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up pnpm
-        uses: pnpm/action-setup@v6.1.0
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           version: 12.15.0
       - name: Set up Node
-        uses: actions/setup-node@v7.1.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 26.12.1
           cache: pnpm
@@ -64,7 +64,7 @@ jobs:
       - name: Set up bun
         # the devthink application pins bun (packageManager bun@1.4.2), so the
         # install rides bun directly and the frozen bun.lock governs the graph.
-        uses: oven-sh/setup-bun@v2.2.0
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: 1.4.2
       - name: Install workbench dependencies
@@ -134,7 +134,7 @@ jobs:
           printf 'pnpm audit answered status %s; the gate verdict is %s.\n' "$status" "$(cat build/security/pnpm-audit.exit)"
       - name: Upload audit evidence
         if: always()
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: devthink.security.pnpm-audit
           path: build/security/pnpm-audit.*
@@ -151,7 +151,7 @@ jobs:
       present: ${{ steps.desktop.outputs.present }}
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Detect Cargo desktop manifest
         id: desktop
         shell: bash
@@ -170,14 +170,18 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up Rust
         # the pinned toolchain (the family runtime doctrine, Regra 54/125:
-        # never the moving `@stable` channel): the version branch is the
-        # action's immutable per-release ref (verified via the GitHub
-        # repository's branch list) - the lane is the optional desktop
-        # audit, so the pin rides the current stable Rust release.
-        uses: dtolnay/rust-toolchain@v1.120
+        # never the moving `@stable` channel): the commit sha of the
+        # action's 1.120 version branch is the immutable per-release ref
+        # (the branch name rides as the comment and the toolchain input,
+        # because the sha ref no longer carries the version the action
+        # reads) - the lane is the optional desktop audit, so the pin
+        # rides the current stable Rust release.
+        uses: dtolnay/rust-toolchain@9bd08f027b2fe39fa33325f9c2d201979b1cc076 # 1.120
+        with:
+          toolchain: "1.120"
       - name: Install cargo audit
         run: cargo install cargo-audit --locked
       - name: Resolve and audit desktop graph
@@ -187,7 +191,7 @@ jobs:
           (cd desktop && cargo generate-lockfile && cargo audit --json) > build/security/cargo-audit.json
       - name: Upload cargo audit evidence
         if: always()
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: devthink.security.cargo-audit
           path: build/security/cargo-audit.json
@@ -214,11 +218,11 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout full history
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Run TruffleHog
-        uses: trufflesecurity/trufflehog@v3.99.7
+        uses: trufflesecurity/trufflehog@31ce31ee1abbcc7dc8eee5764c17121c3044c8b2 # v3.99.7
         with:
           extra_args: --results=verified
 
@@ -234,9 +238,9 @@ jobs:
       contents: read
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Run Trivy filesystem scan
-        uses: aquasecurity/trivy-action@v0.36.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           scan-type: fs
           scan-ref: .
@@ -248,7 +252,7 @@ jobs:
           exit-code: "1"
       - name: Upload Trivy evidence
         if: always()
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: devthink.security.trivy
           path: trivy-results.sarif
@@ -271,9 +275,9 @@ jobs:
       BIOME_VERSION: "2.5.13"
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up Node
-        uses: actions/setup-node@v7.1.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 26.12.1
       - name: Run biome security rule group
@@ -368,9 +372,9 @@ jobs:
       contents: read
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up Bun
-        uses: oven-sh/setup-bun@v2.2.0
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: 1.4.2
       - name: Check npm dependency licenses
@@ -415,9 +419,9 @@ jobs:
       security-events: write
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Setup docker buildx
-        uses: docker/setup-buildx-action@v4.4.1
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
       - name: Build image for scanning
         # the scan stays single-platform: a loadable linux/amd64 image
         # (GitHub-hosted runners cannot load a multi-platform image into
@@ -427,7 +431,7 @@ jobs:
         # crosses runs, nothing is published beside the product image; the
         # cross-run gha cache proved fragile when the service evicts
         # blobs and the next build reads orphan references).
-        uses: docker/build-push-action@v7.4.0
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: ./devthink
           file: ./devthink/Dockerfile
@@ -446,14 +450,14 @@ jobs:
         # the node slim base layer internals the CIS-DI-0010 heuristic
         # misreads as credential holders (none are secrets, and
         # the scanner only reports the first unaccepted match per layer).
-        uses: goodwithtech/dockle-action@v0.4.15
+        uses: goodwithtech/dockle-action@e30e6af832aad6ea7dca2a248d31a85eab6dbd68 # v0.4.15
         with:
           image: devthink-security-scan:latest
           exit-code: "1"
           exit-level: FATAL
           accept-key: NODE_ENV,DEVTHINK_HTTP_BIND,DEVTHINK_HTTP_PORT,DEVTHINK_RELAY_PATH,DEVTHINK_MCP_BIND,DEVTHINK_MCP_PORT,DEVTHINK_MCP_PATH,DEVTHINK_MEMORY_ENGINE,DEVTHINK_PLATFORM,DEVTHINK_CDN_URL,NODE_IMAGE,DEVTHINK_VERSION,DEVTHINK_REVISION,PATH,NODE_VERSION,runnerpid,waited,smokebudget,apt_update_tries,dpkgArch,ARCH,OPENSSL_ARCH,GNUPGHOME,--strip-components,--chown,/,APT::AutoRemove::RecommendsImportant,org.opencontainers.image.title,org.opencontainers.image.description,org.opencontainers.image.documentation,org.opencontainers.image.version,org.opencontainers.image.licenses,org.opencontainers.image.source,org.opencontainers.image.revision
       - name: Scan image with trivy (sarif report)
-        uses: aquasecurity/trivy-action@v0.36.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           image-ref: devthink-security-scan:latest
           format: sarif
@@ -470,7 +474,7 @@ jobs:
           sarif_file: trivy-container.sarif
           category: trivy-container
       - name: Gate on critical vulnerabilities
-        uses: aquasecurity/trivy-action@v0.36.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           image-ref: devthink-security-scan:latest
           format: table
@@ -488,11 +492,11 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Prepare SBOM directory
         run: mkdir -p build/security
       - name: Generate CycloneDX SBOM
-        uses: anchore/sbom-action@v0.24.3
+        uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
         with:
           path: .
           format: cyclonedx-json
@@ -500,7 +504,7 @@ jobs:
           upload-artifact: false
           upload-release-assets: false
       - name: Upload SBOM
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: devthink.security.sbom
           path: build/security/devthink.sbom.cdx.json
@@ -580,7 +584,7 @@ jobs:
             build-mode: none
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Initialize CodeQL
         # the exact-version pin (Regra 56a/125: one version per action in
         # every workflow, never the bare moving @v4 major tag): the latest
@@ -609,11 +613,11 @@ jobs:
       id-token: write
     steps:
       - name: Checkout DevThink source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Run scorecard analysis
-        uses: ossf/scorecard-action@v2.4.4
+        uses: ossf/scorecard-action@2d1146689b8cda280b9bc96326124645441f03bc # v2.4.4
         with:
           results_file: scorecard-results.sarif
           results_format: sarif
@@ -635,7 +639,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Check out repository
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Assert the supported line in SECURITY.md
         run: |
@@ -654,7 +658,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # the workflow lint lives in the dedicated workflowlint lane (the
       # correlated grouping: one concern, one workflow) — the security
       # battery carries the audit, the scanner and the container legs.

@@ -92,7 +92,7 @@ const DESKTOP_CANONICAL = [
   "    env:",
   "      APP: ${{ matrix.app }}",
   "    steps:",
-  "      - uses: actions/checkout@v7.0.1",
+  "      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1",
   "      - name: resolve the application version",
   "        id: appversion",
   "        shell: bash",
@@ -101,17 +101,17 @@ const DESKTOP_CANONICAL = [
   '          version="$(node -p "require(\'./${{ matrix.app }}/package.json\').version")"',
   '          echo "version=$version" >> "$GITHUB_OUTPUT"',
   "      - name: Set up Node",
-  "        uses: actions/setup-node@v7.1.0",
+  "        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0",
   "        with:",
   "          node-version: 26.12.0",
   "      - name: Set up Bun",
   "        if: ${{ matrix.app == 'devthink' }}",
-  "        uses: oven-sh/setup-bun@v2.2.0",
+  "        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0",
   "        with:",
   "          bun-version: 1.4.2",
   "      - name: Set up pnpm",
   "        if: ${{ matrix.app != 'devthink' && matrix.app != 'saddle' }}",
-  "        uses: pnpm/action-setup@v6.1.0",
+  "        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0",
   "        with:",
   "          version: 12.8.1",
   "      - name: install linux webkit dependencies",
@@ -152,7 +152,7 @@ const DESKTOP_CANONICAL = [
   "          done",
   "          test -f build/web/index.html",
   "      - name: install the rust toolchain",
-  "        uses: dtolnay/rust-toolchain@stable",
+  "        uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable",
   "        with:",
   "          targets: ${{ matrix.target }}",
   "      - name: scaffold the desktop rust shell",
@@ -342,7 +342,7 @@ const DESKTOP_CANONICAL = [
   "            shasum -a 256 build/release-assets/desktop/* | sed 's#build/release-assets/desktop/##' > \"build/release-assets/desktop/${{ matrix.app }}.sha256.desktop.${{ matrix.platform }}.${version}\"",
   "          fi",
   '          printf \'{\\n  "version": "%s",\\n  "application": "%s",\\n  "platform": "desktop-tauri",\\n  "target": "%s",\\n  "bundles": "%s",\\n  "signing": "%s",\\n  "notarization": "%s"\\n}\\n\' "$version" "${{ matrix.app }}" "${{ matrix.target }}" "${{ matrix.bundles }}" "${FAMILY_SIGNING:-unsigned}" "${FAMILY_NOTARIZATION:-none}" > "build/release-assets/desktop/${{ matrix.app }}.manifest.desktop.${{ matrix.platform }}.${version}.json"',
-  "      - uses: actions/upload-artifact@v7.0.2",
+  "      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2",
   "        with:",
   "          name: ${{ matrix.app }}.desktop.${{ matrix.platform }}.${{ steps.appversion.outputs.version }}",
   "          path: ${{ matrix.app }}/build/release-assets/desktop",
@@ -364,7 +364,7 @@ const DESKTOP_CANONICAL = [
   "        # family wide: every artifact this lane ships answers the workflow",
   "        # identity the same way the os release assets answer it",
   "        if: github.event_name == 'release'",
-  "        uses: actions/attest@v4.2.2",
+  "        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2",
   "        with:",
   "          subject-path: ${{ matrix.app }}/build/release-assets/desktop/*",
   "          show-snippet: false",
@@ -422,7 +422,7 @@ function mobilelane(content) {
   );
   next = next.replace(
     '      - name: attach android assets to the release\n        if: github.event_name == \'release\'\n        env:\n          GH_TOKEN: ${{ github.token }}\n        run: gh release upload "${{ github.event.release.tag_name }}" "${{ matrix.app }}/build/mobile/android/*" --clobber\n',
-    "      - name: attach android assets to the release\n        # the doctrine the owner pinned: every member application ships its\n        # mobile lanes on the release the os ships (the capacitor apk and\n        # aab, the checksums and the manifest - the same rights), and the\n        # lane attaches its own assets the moment it builds them (--clobber\n        # keeps a re-run idempotent over its own names, which carry the\n        # application prefix and never collide with another lane's grammar)\n        if: github.event_name == 'release'\n        env:\n          GH_TOKEN: ${{ github.token }}\n        run: gh release upload \"${{ github.event.release.tag_name }}\" \"${{ matrix.app }}/build/mobile/android/*\" --clobber\n      - name: attest the android assets\n        # the signed by GitHub provenance the release machinery carries\n        # family wide: every artifact this lane ships answers the workflow\n        # identity the same way the os release assets answer it\n        if: github.event_name == 'release'\n        uses: actions/attest@v4.2.2\n        with:\n          subject-path: ${{ matrix.app }}/build/mobile/android/*\n          show-snippet: false\n",
+    "      - name: attach android assets to the release\n        # the doctrine the owner pinned: every member application ships its\n        # mobile lanes on the release the os ships (the capacitor apk and\n        # aab, the checksums and the manifest - the same rights), and the\n        # lane attaches its own assets the moment it builds them (--clobber\n        # keeps a re-run idempotent over its own names, which carry the\n        # application prefix and never collide with another lane's grammar)\n        if: github.event_name == 'release'\n        env:\n          GH_TOKEN: ${{ github.token }}\n        run: gh release upload \"${{ github.event.release.tag_name }}\" \"${{ matrix.app }}/build/mobile/android/*\" --clobber\n      - name: attest the android assets\n        # the signed by GitHub provenance the release machinery carries\n        # family wide: every artifact this lane ships answers the workflow\n        # identity the same way the os release assets answer it\n        if: github.event_name == 'release'\n        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2\n        with:\n          subject-path: ${{ matrix.app }}/build/mobile/android/*\n          show-snippet: false\n",
   );
   next = next.replace(
     "    runs-on: macos-15\n    timeout-minutes: 45\n",
@@ -438,7 +438,7 @@ function mobilelane(content) {
   );
   next = next.replace(
     '      - name: attach ios assets to the release\n        if: github.event_name == \'release\'\n        env:\n          GH_TOKEN: ${{ github.token }}\n        run: gh release upload "${{ github.event.release.tag_name }}" "${{ matrix.app }}/build/mobile/ipa/*" --clobber\n',
-    "      - name: attach ios assets to the release\n        if: github.event_name == 'release'\n        env:\n          GH_TOKEN: ${{ github.token }}\n        run: gh release upload \"${{ github.event.release.tag_name }}\" \"${{ matrix.app }}/build/mobile/ipa/*\" --clobber\n      - name: attest the ios assets\n        # the signed by GitHub provenance beside the ipa lane the same way\n        # the android lane carries it\n        if: github.event_name == 'release'\n        uses: actions/attest@v4.2.2\n        with:\n          subject-path: ${{ matrix.app }}/build/mobile/ipa/*\n          show-snippet: false\n",
+    "      - name: attach ios assets to the release\n        if: github.event_name == 'release'\n        env:\n          GH_TOKEN: ${{ github.token }}\n        run: gh release upload \"${{ github.event.release.tag_name }}\" \"${{ matrix.app }}/build/mobile/ipa/*\" --clobber\n      - name: attest the ios assets\n        # the signed by GitHub provenance beside the ipa lane the same way\n        # the android lane carries it\n        if: github.event_name == 'release'\n        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2\n        with:\n          subject-path: ${{ matrix.app }}/build/mobile/ipa/*\n          show-snippet: false\n",
   );
   return next;
 }

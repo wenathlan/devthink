@@ -309,7 +309,7 @@ function parsePyproject(text, origin, samplePath) {
           const vm = /version\s*=\s*"([^"]+)"/.exec(p.value);
           if (vm) spec = vm[1];
         }
-        const kind = h.startsWith('tool.poetry') ? 'python.poetry' : (h === 'packages' || h === 'dev-packages' ? 'python.pipfile' : 'python.' + h.replace(/\./g, '.'));
+        const kind = h.startsWith('tool.poetry') ? 'python.poetry' : (h === 'packages' || h === 'dev-packages' ? 'python.pipfile' : 'python.' + h);
         addPackage(p.key, kind === 'python.poetry' && /dev/.test(h) ? 'python.poetry.dev' : kind, spec, origin, samplePath);
       }
     }

@@ -651,7 +651,7 @@ ENTRYPOINT ["/usr/bin/tini", "--", "qemu-system-x86_64"]
 # architecture-independent, while the tailwind/lightningcss pipeline only
 # ships native bindings for the builder platforms - the per-arch legs never
 # run it under QEMU.
-FROM --platform=$BUILDPLATFORM node:26.8.1-slim AS saddle-build
+FROM --platform=$BUILDPLATFORM node:26.8.1-slim@sha256:c0753125a3789977aefe869cbebccf70e3cfd7ea84ca48547458f02e4f1d7146 AS saddle-build
 
 ARG SADDLE_VERSION
 WORKDIR /app
@@ -1310,7 +1310,7 @@ ENTRYPOINT ["/entrypoint.sh"]
 #   docker build --target saddle-runtime -t saddle:<version> .
 # ══════════════════════════════════════════════════════════════════════
 
-FROM node:26.8.1-slim AS saddle-runtime
+FROM node:26.8.1-slim@sha256:c0753125a3789977aefe869cbebccf70e3cfd7ea84ca48547458f02e4f1d7146 AS saddle-runtime
 
 ARG SADDLE_VERSION
 LABEL org.opencontainers.image.title="Saddle" \

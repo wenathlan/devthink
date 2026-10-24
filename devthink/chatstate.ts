@@ -8,7 +8,7 @@
  */
 import { useCallback, useMemo } from "react";
 import { chatLimit, chatPersona, chatThinkingLevels } from "./chatlabels.ts";
-import { createCompactId } from "./ids.ts";
+import { compactToken, createCompactId } from "./ids.ts";
 import {
   ChatStoppedError,
   type GatewayMessage,
@@ -211,7 +211,7 @@ export function userTurn(content: string): ChatTurn {
  * second identity the link can never find again).
  */
 export function newSession(first: ChatTurn, id?: string): ChatSession {
-  const sessionId = id || `s-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+  const sessionId = id || `s-${Date.now()}-${compactToken().slice(0, 5)}`;
   return {
     id: sessionId,
     title: deriveTitle(first.content),
@@ -437,7 +437,7 @@ export function cloneSessionForEdit(session: ChatSession, turnId: string, newTex
     { at: Date.now(), turnId, edit: (session.checkpoints?.length ?? 0) + 1 },
   ];
   return {
-    id: `${session.id.split("~")[0]}~e${ladder.length}-${Math.random().toString(36).slice(2, 6)}`,
+    id: `${session.id.split("~")[0]}~e${ladder.length}-${compactToken().slice(0, 4)}`,
     title: session.title,
     messages: [...session.messages.slice(0, index), edited],
     at: Date.now(),
