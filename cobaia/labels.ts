@@ -1,0 +1,271 @@
+/**
+ * labels.ts — the copy law of cobaia: every interface string lives in the
+ * label store, the widgets and page anchors read through this typed
+ * accessor, and a hardcoded string inside a widget is a defect. the
+ * manifest below is the english source of truth extracted from the real
+ * strings of the Sol widgets and the page anchors; the seed ingests it
+ * into the labels store (the site db through db.ts on the server, the
+ * browser rows cache in the visitor machine) and the seed never overwrites
+ * a translated row.
+ *
+ * the browser never imports db.ts (better-sqlite3 cannot ride the static
+ * bundle): the type comes across erased, the browser seed mirrors the rows
+ * into the local cache.
+ *
+ * data stays data: the app roster (apps.roster.ts — slugs, accents, the
+ * roles each app declares in its own devthink.toml), the plan table and
+ * the support hrefs (checkoutlinks.ts), the ad slot registry (ads.config.ts
+ * — the fixed ad contract label and note ride there, pinned by the tests),
+ * the blog posts (posts.ts) and the route hrefs keep flowing from the data
+ * modules; the prose and the affordances around them ride here.
+ */
+
+import type { LabelRow } from "./db";
+
+/** the label revision of the manifest: bump on every copy wave so the seed
+ * refreshes the store rows of the changed strings. */
+export const LABEL_REVISION = 1;
+
+/** the english manifest: the page.widget.key path answers the surface text.
+ * every entry is the verbatim string the widgets and page anchors rendered
+ * before the copy wave — zero invented copy. */
+export const LABEL_MANIFEST = {
+  // the window shell widget (the one chrome of the content site)
+  "shell.skip": "skip to content",
+  "shell.window.aria": "cobaia",
+  "shell.brand.aria": "cobaia — home",
+  "shell.name": "cobaia",
+  "shell.role": "the devthink family site",
+  "shell.caption.minimize": "Minimize cobaia",
+  "shell.caption.maximize": "Maximize cobaia",
+  "shell.caption.close": "Close cobaia",
+  "shell.nav.aria": "site sections",
+  "shell.nav.apps": "apps",
+  "shell.nav.pricing": "pricing",
+  "shell.nav.blog": "blog",
+  "shell.nav.support": "support",
+  "shell.foot.aboutHead": "cobaia",
+  "shell.foot.aboutText":
+    "the front door of the devthink family: ten deployable applications built on one engine, shipped as static sites, tracked nowhere. pricing, support, the app directory and the update blog live here.",
+  "shell.foot.siteHead": "site",
+  "shell.foot.apps": "apps",
+  "shell.foot.pricing": "pricing",
+  "shell.foot.blog": "blog",
+  "shell.foot.support": "support",
+  "shell.foot.legal": "legal",
+  "shell.foot.familyHead": "the family",
+  "shell.colophon": "cobaia — a provisional name. part of the devthink family · ten honest tools, one engine.",
+  // the home page anchor (the landing)
+  "home.aria.hero": "cobaia — the devthink family site",
+  "home.eyebrow": "the devthink family site",
+  "home.title": "One family. Ten tools. Zero tracking.",
+  "home.lede":
+    "devthink builds and ships a family of deployable web applications — sandbox engines, studios, gateways and a game platform — as static sites on shared free hosting. this site is the front door: the directory, the pricing, the support page and the update blog.",
+  "home.action.pricing": "see the pricing",
+  "home.action.apps": "browse the ten apps",
+  "home.section.stepsAria": "what the family is made of",
+  "home.section.stepsTitle": "What the family is made of",
+  "home.section.stepsLede": "the same three choices behind every member of the family.",
+  "home.steps.engine.n": "01",
+  "home.steps.engine.title": "one engine",
+  "home.steps.engine.text":
+    "the sandbox runner and the storage layer live as library-grade modules. every application assembles the parts it needs and ships as one folder of the same monorepo.",
+  "home.steps.static.n": "02",
+  "home.steps.static.title": "static first",
+  "home.steps.static.text":
+    "every public surface builds down to one stylesheet and a handful of bundles on free static hosting. nothing is stored on the visitor machine — no cookies, no accounts, no tracking.",
+  "home.steps.honest.n": "03",
+  "home.steps.honest.title": "honest money",
+  "home.steps.honest.text":
+    "the family runs on about us$15 a month of domains. the pricing and the support page exist to cover that floor first — and the apps themselves stay free of ads.",
+  "home.section.previewAria": "a preview of the app directory",
+  "home.section.previewTitle": "A few of the ten",
+  "home.section.previewLede": "every member is a folder beside this site on the same origin. the full directory lives on",
+  "home.section.previewLink": "/apps",
+  "home.section.previewTail": ".",
+  "home.appcard.open": "open {slug}",
+  "home.section.supportAria": "supporting the family",
+  "home.section.supportTitle": "Keep the family independent",
+  "home.section.supportLede":
+    "github sponsors and ko-fi keep the domains paid and the tools free — both charge zero platform fees, so the support goes straight to the hosting floor.",
+  "home.action.support": "ways to support",
+  // the apps page anchor (the directory)
+  "apps.aria.hero": "the devthink app directory",
+  "apps.eyebrow": "the directory",
+  "apps.title": "Ten deploy units. One origin.",
+  "apps.lede":
+    "every member of the family is a folder beside this site on the same origin, linked through the familyurl contract — and every member links back. the roles below are the honest ones each app declares for itself; the accents are the family's spec table.",
+  "apps.section.rosterAria": "the family roster",
+  "apps.card.open": "open {slug}",
+  // the pricing page anchor (the plans)
+  "pricing.action.choose": "choose {name}",
+  "pricing.action.notConfigured": "checkout not configured yet",
+  "pricing.aria.hero": "cobaia pricing",
+  "pricing.eyebrow": "pricing",
+  "pricing.title": "Pay for what you use. Or use it free.",
+  "pricing.lede":
+    "the core surface of every application is free and stays free. the paid plans add the pro features of one app or of the whole family. the prices below are placeholders until billing goes live — a plan activates the moment its checkout link is configured, and says so honestly until then.",
+  "pricing.section.plansAria": "the plans",
+  "pricing.card.planAria": "{name} plan",
+  "pricing.section.moneyAria": "what the money covers",
+  "pricing.section.moneyTitle": "What the money covers",
+  "pricing.section.moneyLede":
+    "the family runs on about us$15 a month of domains and free static hosting. the paid plans cover that floor first, then the gateway tiers. there are no ads inside the applications — the ad slots live only on this site's content pages, and they are labeled and reserved.",
+  "pricing.section.moneyNote":
+    "billing decision pending: stripe payment links or paddle (merchant of record). the checkout hrefs are configuration at the app root — never code, never a committed key.",
+  // the support page anchor (the channels)
+  "support.action.notConfigured": "link not configured yet",
+  "support.aria.hero": "cobaia support",
+  "support.eyebrow": "support",
+  "support.title": "Keep the family independent.",
+  "support.lede":
+    "the family runs on about us$15 a month of domains and free hosting. support covers that floor, keeps every tool free to use and keeps the applications free of ads. both channels below charge zero platform fees, so the support goes where it says.",
+  "support.section.channelsAria": "the support channels",
+  "support.channel.sponsors.name": "GitHub Sponsors",
+  "support.channel.sponsors.promise":
+    "sponsor the maintainer through github. zero platform fee, payouts land automatically, and the sponsorship shows up next to the public work it funds.",
+  "support.channel.sponsors.cta": "sponsor on github",
+  "support.channel.kofi.name": "Ko-fi",
+  "support.channel.kofi.promise":
+    "one-off donations and monthly memberships through ko-fi. zero fee on donations, no account required on your side beyond the payment.",
+  "support.channel.kofi.cta": "buy a coffee",
+  "support.section.otherAria": "other ways to help",
+  "support.section.otherTitle": "Other ways to help",
+  "support.section.otherLede":
+    "use the tools and tell the truth about them — report what breaks in the public issue tracker, write about what the family does well or badly, and link the directory when a tool earns it. none of it costs anything and all of it compounds.",
+  "support.section.otherNote":
+    "the honest line: no ad clicking, no traffic exchange, no bots. automated traffic against an ad surface is invalid traffic — it would end the ad account and the domain reputation. the family does not do it.",
+  // the blog page anchor (the update blog)
+  "blog.aria.hero": "the family update blog",
+  "blog.eyebrow": "updates",
+  "blog.title": "What the family is building.",
+  "blog.lede":
+    "short, written updates on the family — how the sites are built, what they cost and why they ship the way they do. every post lives on this page; the index jumps to it.",
+  "blog.section.indexAria": "the post index",
+  "blog.section.fullAria": "the posts in full",
+  "blog.post.meta": "{date} · {words} words · {tags}",
+  // the legal page anchor (privacy and terms)
+  "legal.aria.hero": "cobaia legal",
+  "legal.eyebrow": "legal",
+  "legal.title": "Privacy and terms.",
+  "legal.lede":
+    "the short version: the family sites are static files, they collect nothing by default, they track nobody, and the details below are the long version of the same promise. last updated 2026-10-10.",
+  "legal.privacy.aria": "privacy policy",
+  "legal.privacy.title": "Privacy policy",
+  "legal.privacy.collect.head": "What we collect: nothing, by default.",
+  "legal.privacy.collect.text":
+    "The family sites are static files served from a CDN. They set no cookies, run no analytics, embed no fingerprinting and write nothing to your browser — no local storage, no indexed databases, no session records. The only thing a visitor machine does is load the interface.",
+  "legal.privacy.logs.head": "Server logs.",
+  "legal.privacy.logs.text":
+    "The hosting providers (netlify, vercel, cloudflare and equivalents) keep standard access logs on their own infrastructure for security and abuse prevention. The family does not add identifiers to them and does not export them for profiling.",
+  "legal.privacy.ads.head": "Advertising.",
+  "legal.privacy.ads.text":
+    "The family site runs reserved, visibly labeled ad containers on its content pages. No ad script ships in the code: the advertising partner's loader is only added after the partner approves the site, and it arrives through the deploy environment. Once live, third-party vendors including Google may serve ads and use cookies to personalize them, as governed by the partner's own policies. You can opt out of personalized advertising through your ad settings (for Google, adssettings.google.com). Ads never appear inside the applications themselves.",
+  "legal.privacy.analytics.head": "Analytics.",
+  "legal.privacy.analytics.text":
+    "There is no analytics on the family sites today. If that ever changes, it will be opt-in, minimal and disclosed on this page before it goes live.",
+  "legal.privacy.payments.head": "Payments.",
+  "legal.privacy.payments.text":
+    "When paid plans go live, checkout runs on the payment provider's own pages (stripe, paddle or equivalents). The family sites never see or store card data.",
+  "legal.privacy.contact.head": "Contact.",
+  "legal.privacy.contact.text":
+    "Privacy questions and data requests go through the public issue tracker of the family repository — the same channel the software itself uses.",
+  "legal.terms.aria": "terms of use",
+  "legal.terms.title": "Terms of use",
+  "legal.terms.service.head": "The service.",
+  "legal.terms.service.text":
+    "The family applications and this site are provided as is, without warranty of any kind. They are tools built in public: features change, break and get fixed in the open. Nothing here is offered as professional advice or with any availability guarantee.",
+  "legal.terms.use.head": "Acceptable use.",
+  "legal.terms.use.text":
+    "Use the tools like a person. Do not run automated traffic against the sites or, above all, against any advertising surface: clicking your own ads, exchanging traffic or driving bots at ad containers is invalid traffic — it defrauds the advertisers, it ends the ad account and it burns the domain reputation. The family does not do it and asks nobody else to.",
+  "legal.terms.data.head": "Your data.",
+  "legal.terms.data.text":
+    "Since the sites collect nothing, there is nothing to export or delete. What you do inside the hosted tools stays governed by the tool's own page.",
+  "legal.terms.ip.head": "Intellectual property.",
+  "legal.terms.ip.text":
+    'The family code is free software under its repository license; the name devthink and the family marks belong to their author. The site name "cobaia" is provisional and may change.',
+  "legal.terms.changes.head": "Changes.",
+  "legal.terms.changes.text":
+    "These terms change when the facts change, and the changes land on this page with a new date. Using the sites after a change means you accept it.",
+  // the notfound page anchor (the empty address)
+  "notfound.eyebrow": "404",
+  "notfound.title": "This address is not part of the family.",
+  "notfound.lede":
+    "the page you asked for does not exist here. the front door and the app directory are the honest way back in.",
+  "notfound.action.home": "back to the front door",
+  "notfound.action.apps": "browse the apps",
+  // the ad slot widget (the reserved box of the content pages)
+  "ads.slot.reserved": "reserved · {format}",
+} as const;
+
+export type LabelKey = keyof typeof LABEL_MANIFEST & string;
+
+/** the translation overrides the runtime loads from the store at boot: the
+ * key answers the translated text when the person changed the language. */
+const overrides = new Map<string, string>();
+
+/** the browser cache of the labels table: the rows mirror the site db (the
+ * db is the source of truth; the cache carries the translated rows offline). */
+const CACHE_KEY = "cobaia.labels.rows";
+
+function readCache(): LabelRow[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(CACHE_KEY);
+    if (!raw) return [];
+    const parsed: unknown = JSON.parse(raw);
+    return Array.isArray(parsed)
+      ? (parsed.filter((row): row is LabelRow => !!row && typeof row === "object") as LabelRow[])
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeCache(rows: readonly LabelRow[]): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(CACHE_KEY, JSON.stringify(rows));
+  } catch {
+    // the cache is best effort: the manifest always answers
+  }
+}
+
+/** the typed accessor of the copy: the only door a widget or page anchor uses. */
+export function label(key: LabelKey): string {
+  return overrides.get(key) ?? LABEL_MANIFEST[key];
+}
+
+/** the placeholder door: fills the {token} slots of one format key with the
+ * runtime values (the store keeps the sentence, the widget passes the data). */
+export function labelfill(key: LabelKey, values: Record<string, string>): string {
+  return label(key).replace(/\{(\w+)\}/g, (match, token: string) => values[token] ?? match);
+}
+
+/** the seed ingests the manifest into the labels store, idempotent, and the
+ * translated rows stay protected from the overwrite. in the browser the rows
+ * ride the local cache of the site db; on the server db.ts seeds the same
+ * manifest into the labels table through seedLabelRows. */
+export async function seedLabels(): Promise<{ seeded: number; protected: number }> {
+  const stored = readCache();
+  const rows = new Map<string, LabelRow>(stored.map((row) => [row.id, row]));
+  let seeded = 0;
+  let saved = 0;
+  for (const [id, text] of Object.entries(LABEL_MANIFEST)) {
+    const row = rows.get(id);
+    overrides.set(id, row && row.translated ? row.text : text);
+    if (!row || (!row.translated && row.text !== text)) {
+      rows.set(id, {
+        id,
+        text,
+        revision: LABEL_REVISION,
+        updatedAt: new Date().toISOString(),
+        ...(row?.translated ? { translated: true } : {}),
+      });
+      seeded += 1;
+    }
+    saved += 1;
+  }
+  writeCache([...rows.values()]);
+  return { seeded, protected: saved - seeded };
+}

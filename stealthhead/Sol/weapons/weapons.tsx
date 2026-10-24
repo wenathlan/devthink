@@ -16,6 +16,7 @@ import { TargetRegular as Crosshair } from "@fluentui/react-icons";
 // weapons logic (typed DB accessor over HTTPS with the in-memory seed
 // fallback); the component carries no data.
 import { type CSSProperties, useEffect, useMemo, useState } from "react";
+import { labelfill, label } from "../../labels";
 import { observeReveals } from "../../reveal";
 import {
   bydamage,
@@ -39,12 +40,13 @@ function peakof(rows: Weapon[], field: "firerate" | "recoil"): number {
   return rows.reduce((peak, row) => Math.max(peak, row[field]), 1);
 }
 
-/** one stat meter of the ledger: mono key row over a hairline bar. */
-function StatMeter({ label, value, share, aria }: { label: string; value: string; share: number; aria: string }) {
+/** one stat meter of the ledger: mono key row over a hairline bar. the key
+ * and the aria sentence ride the label store. */
+function StatMeter({ label: statlabel, value, share, aria }: { label: string; value: string; share: number; aria: string }) {
   return (
     <div className="shm">
       <p className="shm__key">
-        <b>{label}</b> {value}
+        <b>{statlabel}</b> {value}
       </p>
       <div className="shm__track" role="img" aria-label={aria}>
         <span style={{ width: `${Math.max(3, Math.min(100, share))}%` }} />
@@ -101,23 +103,20 @@ export default function Weapons() {
   return (
     <>
       <header className="pagehead halftone grain">
-        <p className="eyebrow">stealthhead · weapons</p>
-        <h1>the armory</h1>
-        <p>
-          Every weapon of the platform with the damage and kind helpers of the root armory logic. The catalog lives in
-          the site DB and answers over HTTPS — the interface is read-only by doctrine.
-        </p>
+        <p className="eyebrow">{label("weapons.eyebrow")}</p>
+        <h1>{label("weapons.title")}</h1>
+        <p>{label("weapons.lede")}</p>
       </header>
-      <div className="toolbar" role="tablist" aria-label="weapon kinds">
+      <div className="toolbar" role="tablist" aria-label={label("weapons.kinds.aria")}>
         <div className="tabs">
           <button
             type="button"
             role="tab"
             aria-selected={selected === "all"}
-            data-tip="every kind of the armory"
+            data-tip={label("weapons.kind.allTip")}
             onClick={() => setSelected("all")}
           >
-            all
+            {label("weapons.kind.all")}
           </button>
           {armorykinds.map((kind) => (
             <button
@@ -125,7 +124,7 @@ export default function Weapons() {
               type="button"
               role="tab"
               aria-selected={selected === kind}
-              data-tip={`filter the armory by ${kind}`}
+              data-tip={labelfill("weapons.kind.filterTip", { kind })}
               onClick={() => setSelected(kind)}
             >
               {kind}
@@ -156,46 +155,58 @@ export default function Weapons() {
                     <span className="badge">{weapon.kind}</span>
                     <span className={`badge ${stable ? "success" : "warning"}`}>
                       <Crosshair fontSize={10} aria-hidden="true" />
-                      {stable ? "stable" : "wild"}
+                      {stable ? label("weapons.row.stable") : label("weapons.row.wild")}
                     </span>
                   </p>
                   <h3 className="armoryname">{weapon.name}</h3>
                 </div>
                 <div className="armorymeters">
                   <StatMeter
-                    label="dmg"
+                    label={label("weapons.meter.dmg")}
                     value={`${weapon.damage}`}
                     share={(weapon.damage / peaks.damage) * 100}
-                    aria={`damage ${weapon.damage} of ${peaks.damage}`}
+                    aria={labelfill("weapons.meter.damageAria", {
+                      value: String(weapon.damage),
+                      peak: String(peaks.damage),
+                    })}
                   />
                   <StatMeter
-                    label="rate"
-                    value={`${weapon.firerate} rpm`}
+                    label={label("weapons.meter.rate")}
+                    value={labelfill("weapons.meter.rateValue", { value: String(weapon.firerate) })}
                     share={(weapon.firerate / peaks.rate) * 100}
-                    aria={`fire rate ${weapon.firerate} of ${peaks.rate} rpm`}
+                    aria={labelfill("weapons.meter.rateAria", {
+                      value: String(weapon.firerate),
+                      peak: String(peaks.rate),
+                    })}
                   />
                   <StatMeter
-                    label="recoil"
+                    label={label("weapons.meter.recoil")}
                     value={`${weapon.recoil}`}
                     share={(weapon.recoil / peaks.recoil) * 100}
-                    aria={`recoil ${weapon.recoil} of ${peaks.recoil}`}
+                    aria={labelfill("weapons.meter.recoilAria", {
+                      value: String(weapon.recoil),
+                      peak: String(peaks.recoil),
+                    })}
                   />
                 </div>
                 <p className="armorystats">
                   <span>
-                    <b>dps</b> {dps(weapon)}
+                    <b>{label("weapons.stats.dps")}</b> {dps(weapon)}
                   </span>
                   <span>
-                    <b>ttk {ARMORYTARGET.meters}m</b> {ttk}s
+                    <b>{labelfill("weapons.stats.ttk", { meters: String(ARMORYTARGET.meters) })}</b>{" "}
+                    {labelfill("weapons.stats.ttkValue", { value: String(ttk) })}
                   </span>
                   <span>
-                    <b>range</b> {weapon.rangemeters} m
+                    <b>{label("weapons.stats.range")}</b>{" "}
+                    {labelfill("weapons.stats.rangeValue", { value: String(weapon.rangemeters) })}
                   </span>
                   <span>
-                    <b>magazine</b> {weapon.magazine}
+                    <b>{label("weapons.stats.magazine")}</b> {weapon.magazine}
                   </span>
                   <span>
-                    <b>reload</b> {weapon.reloadseconds}s
+                    <b>{label("weapons.stats.reload")}</b>{" "}
+                    {labelfill("weapons.stats.reloadValue", { value: String(weapon.reloadseconds) })}
                   </span>
                 </p>
               </article>

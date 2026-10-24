@@ -16,6 +16,7 @@
  */
 import type { CSSProperties } from "react";
 import { ADS_EMPTY, ADS_LABEL, adsslotfor, adsslotlive } from "../../ads.config.ts";
+import { labelfill } from "../../labels";
 
 type AdSlotProps = {
   /** the content page the slot belongs to (home, apps, blog) */
@@ -34,7 +35,7 @@ export function AdSlot({ page }: AdSlotProps) {
         {live ? (
           // the reserved container: the network script mounts here after
           // approval, injected by the deploy environment — never committed
-          <span className="cb-adsnote">reserved · {slot.format}</span>
+          <span className="cb-adsnote">{labelfill("ads.slot.reserved", { format: slot.format })}</span>
         ) : (
           <span className="cb-empty cb-skel">{ADS_EMPTY}</span>
         )}

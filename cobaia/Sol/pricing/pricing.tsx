@@ -16,6 +16,7 @@
  */
 import type { CSSProperties } from "react";
 import { PLANS, isconfigured, type checkoutplan } from "../../checkoutlinks";
+import { labelfill, label } from "../../labels";
 
 /** renders one plan's checkout control: a live anchor when the owner
  * configured the link, the honest disabled state until then. */
@@ -23,16 +24,16 @@ function PlanAction({ plan }: { plan: checkoutplan }) {
   if (isconfigured(plan.href)) {
     return (
       <a className="cb-btn" href={plan.href} rel="noreferrer">
-        choose {plan.name}
+        {labelfill("pricing.action.choose", { name: plan.name })}
       </a>
     );
   }
   return (
     <>
       <button className="cb-btn" type="button" disabled>
-        choose {plan.name}
+        {labelfill("pricing.action.choose", { name: plan.name })}
       </button>
-      <p className="cb-note">checkout not configured yet</p>
+      <p className="cb-note">{label("pricing.action.notConfigured")}</p>
     </>
   );
 }
@@ -40,28 +41,26 @@ function PlanAction({ plan }: { plan: checkoutplan }) {
 export function Pricing() {
   return (
     <div className="cb-page">
-      <section className="cb-hero" aria-label="cobaia pricing">
+      <section className="cb-hero" aria-label={label("pricing.aria.hero")}>
         <p className="cb-eyebrow cb-in" style={{ "--cb-d": 0 } as CSSProperties}>
-          pricing
+          {label("pricing.eyebrow")}
         </p>
         <h1 className="cb-title cb-in" style={{ "--cb-d": 1 } as CSSProperties}>
-          Pay for what you use. Or use it free.
+          {label("pricing.title")}
         </h1>
         <p className="cb-lede cb-in" style={{ "--cb-d": 2 } as CSSProperties}>
-          the core surface of every application is free and stays free. the paid plans add the pro features of one app
-          or of the whole family. the prices below are placeholders until billing goes live — a plan activates the moment
-          its checkout link is configured, and says so honestly until then.
+          {label("pricing.lede")}
         </p>
       </section>
 
-      <section className="cb-section" aria-label="the plans">
+      <section className="cb-section" aria-label={label("pricing.section.plansAria")}>
         <div className="cb-plans">
           {PLANS.map((plan, index) => (
             <article
               key={plan.id}
               className={plan.id === "studio" ? "cb-plan cb-plan--lead cb-in" : "cb-plan cb-in"}
               style={{ "--cb-d": index + 1 } as CSSProperties}
-              aria-label={`${plan.name} plan`}
+              aria-label={labelfill("pricing.card.planAria", { name: plan.name })}
             >
               <p className="cb-planname">{plan.name}</p>
               <p className="cb-planprice">
@@ -82,19 +81,12 @@ export function Pricing() {
         </div>
       </section>
 
-      <section className="cb-section" aria-label="what the money covers">
+      <section className="cb-section" aria-label={label("pricing.section.moneyAria")}>
         <div className="cb-secthead">
-          <h2 className="cb-secttitle">What the money covers</h2>
-          <p className="cb-sectlede">
-            the family runs on about us$15 a month of domains and free static hosting. the paid plans cover that floor
-            first, then the gateway tiers. there are no ads inside the applications — the ad slots live only on this
-            site's content pages, and they are labeled and reserved.
-          </p>
+          <h2 className="cb-secttitle">{label("pricing.section.moneyTitle")}</h2>
+          <p className="cb-sectlede">{label("pricing.section.moneyLede")}</p>
         </div>
-        <p className="cb-note is-live">
-          billing decision pending: stripe payment links or paddle (merchant of record). the checkout hrefs are
-          configuration at the app root — never code, never a committed key.
-        </p>
+        <p className="cb-note is-live">{label("pricing.section.moneyNote")}</p>
       </section>
     </div>
   );

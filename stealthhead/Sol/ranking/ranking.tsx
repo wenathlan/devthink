@@ -18,6 +18,7 @@ import { TrophyRegular as Trophy } from "@fluentui/react-icons";
 import { useEffect, useMemo, useState } from "react";
 import { assignpositions, listranking, type RankingEntry, winrate } from "../../ranking.ts";
 import { type KBand, ratingdelta } from "../../rankingladder.ts";
+import { labelfill, label } from "../../labels";
 import { observeReveals } from "../../reveal";
 
 /** the season k bands the preview renders with — a season tunes its ladder
@@ -59,12 +60,9 @@ export default function Ranking() {
   return (
     <>
       <header className="pagehead halftone grain">
-        <p className="eyebrow">stealthhead · ranking</p>
-        <h1>the competitive ladder</h1>
-        <p>
-          The season ladder of the platform, sorted and positioned by the root ranking logic. The rows live in the site
-          DB and reach this table over HTTPS — your machine stores nothing.
-        </p>
+        <p className="eyebrow">{label("ranking.eyebrow")}</p>
+        <h1>{label("ranking.title")}</h1>
+        <p>{label("ranking.lede")}</p>
       </header>
       {ladder === null ? (
         <div className="loadingrows" aria-busy="true">
@@ -80,10 +78,10 @@ export default function Ranking() {
                 <span className="position">#{entry.position}</span>
                 <div className="podiumplayer">{entry.player}</div>
                 <div style={{ fontSize: "0.82rem", color: "var(--sol-muted)" }}>
-                  squad {entry.squad} · {entry.region}
+                  {labelfill("ranking.card.squad", { squad: entry.squad, region: entry.region })}
                 </div>
                 <div className="stat">
-                  <span className="statlabel">season score</span>
+                  <span className="statlabel">{label("ranking.card.scoreLabel")}</span>
                   <span className="statvalue">{entry.score}</span>
                 </div>
               </article>
@@ -91,8 +89,12 @@ export default function Ranking() {
           </div>
           {ladder.length >= 2 ? (
             <p className="mono rankrail__preview">
-              season preview: a win over {ladder[1].player} lifts the leader by +
-              {ratingdelta(ladder[0].score, ladder[1].score, "win", { ...SEASONLADDER, ktable: SEASONKBANDS })} pts
+              {labelfill("ranking.preview", {
+                player: ladder[1].player,
+                delta: String(
+                  ratingdelta(ladder[0].score, ladder[1].score, "win", { ...SEASONLADDER, ktable: SEASONKBANDS }),
+                ),
+              })}
             </p>
           ) : null}
           <div className="rankbody">
@@ -100,16 +102,16 @@ export default function Ranking() {
               <table className="table ladder scoreboard">
                 <thead>
                   <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">player</th>
-                    <th scope="col">squad</th>
-                    <th scope="col">region</th>
-                    <th scope="col">season</th>
-                    <th scope="col">score</th>
-                    <th scope="col">wins</th>
-                    <th scope="col">matches</th>
-                    <th scope="col">win rate</th>
-                    <th scope="col">k/d</th>
+                    <th scope="col">{label("ranking.table.rank")}</th>
+                    <th scope="col">{label("ranking.table.player")}</th>
+                    <th scope="col">{label("ranking.table.squad")}</th>
+                    <th scope="col">{label("ranking.table.region")}</th>
+                    <th scope="col">{label("ranking.table.season")}</th>
+                    <th scope="col">{label("ranking.table.score")}</th>
+                    <th scope="col">{label("ranking.table.wins")}</th>
+                    <th scope="col">{label("ranking.table.matches")}</th>
+                    <th scope="col">{label("ranking.table.winrate")}</th>
+                    <th scope="col">{label("ranking.table.kd")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -117,7 +119,10 @@ export default function Ranking() {
                     <tr key={entry.id}>
                       <td>#{entry.position}</td>
                       <td>
-                        {entry.position === 1 ? <Trophy fontSize={13} aria-label="season leader" /> : null} {entry.player}
+                        {entry.position === 1 ? (
+                          <Trophy fontSize={13} aria-label={label("ranking.row.leaderAria")} />
+                        ) : null}{" "}
+                        {entry.player}
                       </td>
                       <td>{entry.squad}</td>
                       <td>{entry.region}</td>
@@ -125,40 +130,37 @@ export default function Ranking() {
                       <td>{entry.score}</td>
                       <td>{entry.wins}</td>
                       <td>{entry.matches}</td>
-                      <td>{winrate(entry)}%</td>
+                      <td>{labelfill("ranking.row.winrate", { rate: String(winrate(entry)) })}</td>
                       <td>{entry.kd.toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-            <aside className="rankrail" aria-label="season facts">
+            <aside className="rankrail" aria-label={label("ranking.rail.aria")}>
               <div className="rankrail__block">
-                <p className="eyebrow">season facts</p>
+                <p className="eyebrow">{label("ranking.rail.facts")}</p>
                 <div className="rankrail__rows">
                   <span>
-                    <b>rows served</b> {ladder.length}
+                    <b>{label("ranking.rail.rows")}</b> {ladder.length}
                   </span>
                   <span>
-                    <b>season</b> {ladder[0]?.season ?? "—"}
+                    <b>{label("ranking.rail.season")}</b> {ladder[0]?.season ?? "—"}
                   </span>
                   <span>
-                    <b>regions</b> {new Set(ladder.map((entry) => entry.region)).size}
+                    <b>{label("ranking.rail.regions")}</b> {new Set(ladder.map((entry) => entry.region)).size}
                   </span>
                   <span>
-                    <b>squads</b> {new Set(ladder.map((entry) => entry.squad)).size}
+                    <b>{label("ranking.rail.squads")}</b> {new Set(ladder.map((entry) => entry.squad)).size}
                   </span>
                   <span>
-                    <b>leader</b> {ladder[0]?.player ?? "—"}
+                    <b>{label("ranking.rail.leader")}</b> {ladder[0]?.player ?? "—"}
                   </span>
                 </div>
               </div>
               <div className="rankrail__block">
-                <p className="eyebrow">the ladder answers</p>
-                <p className="rankrail__note">
-                  The rows live in the site DB and reach this table over HTTPS — your machine stores nothing. Positions
-                  are stamped by the root ranking logic, deltas ride the season k bands.
-                </p>
+                <p className="eyebrow">{label("ranking.rail.answers")}</p>
+                <p className="rankrail__note">{label("ranking.rail.note")}</p>
               </div>
             </aside>
           </div>

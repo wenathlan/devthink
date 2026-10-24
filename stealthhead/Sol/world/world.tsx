@@ -16,6 +16,7 @@ import { BoxMultipleRegular as Boxes, ShieldTaskRegular as ShieldCheck } from "@
 // prepared, hash-verified assets and never runs a 3D engine client side:
 // the visitor machine compiles nothing and stores nothing.
 import { useEffect, useMemo, useState } from "react";
+import { labelfill, label } from "../../labels";
 import { observeReveals } from "../../reveal";
 import {
   filterbykind,
@@ -70,24 +71,20 @@ export default function World() {
   return (
     <>
       <header className="pagehead halftone grain">
-        <p className="eyebrow">stealthhead · world</p>
-        <h1>world assets</h1>
-        <p>
-          The GLB catalog of the platform as DB rows: name, kind, path and the sha-256 the build verifies against the
-          downloaded binary. Every asset ships pre-compiled on the family domains — the visitor VGPU/VCPU never compiles
-          anything, and the interface renders rows, not scenes.
-        </p>
+        <p className="eyebrow">{label("world.eyebrow")}</p>
+        <h1>{label("world.title")}</h1>
+        <p>{label("world.lede")}</p>
       </header>
-      <div className="toolbar" role="tablist" aria-label="asset kinds">
+      <div className="toolbar" role="tablist" aria-label={label("world.kinds.aria")}>
         <div className="tabs">
           <button
             type="button"
             role="tab"
             aria-selected={selected === "all"}
-            data-tip="every kind of the catalog"
+            data-tip={label("world.kind.allTip")}
             onClick={() => setSelected("all")}
           >
-            all
+            {label("world.kind.all")}
           </button>
           {assetkinds.map((kind) => (
             <button
@@ -95,7 +92,7 @@ export default function World() {
               type="button"
               role="tab"
               aria-selected={selected === kind}
-              data-tip={`filter the catalog by ${kind}`}
+              data-tip={labelfill("world.kind.filterTip", { kind })}
               onClick={() => setSelected(kind)}
             >
               {kind}
@@ -121,7 +118,7 @@ export default function World() {
                 {asset.precompiled ? (
                   <span className="badge success">
                     <ShieldCheck fontSize={11} aria-hidden="true" />
-                    pre-compiled
+                    {label("world.plate.precompiled")}
                   </span>
                 ) : null}
                 <span className="badge info worldplate__push">{humansize(asset.size)}</span>
@@ -129,12 +126,10 @@ export default function World() {
               <h3 className="worldplate__name">{asset.name}</h3>
               <code className="assetpath">{asset.path}</code>
               <code className="assethash" data-tip={asset.sha256}>
-                sha-256 {asset.sha256}
+                {labelfill("world.plate.hash", { digest: asset.sha256 })}
               </code>
               <p className="worldplate__verify">
-                {ishashshape(asset.sha256)
-                  ? "hash shape verified — the binary is cataloged in the site DB and tracked by git lfs."
-                  : "the digest of this row is not a well formed sha-256."}
+                {ishashshape(asset.sha256) ? label("world.plate.verified") : label("world.plate.unverified")}
               </p>
             </article>
           ))}

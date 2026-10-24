@@ -14,27 +14,26 @@
  */
 import type { CSSProperties } from "react";
 import { familyurl } from "../../familyurl";
+import { labelfill, label } from "../../labels";
 import { AdSlot } from "../widgets/shell.adsslot.tsx";
 import { ROSTER } from "../widgets/apps.roster.ts";
 
 export function Apps() {
   return (
     <div className="cb-page">
-      <section className="cb-hero" aria-label="the devthink app directory">
+      <section className="cb-hero" aria-label={label("apps.aria.hero")}>
         <p className="cb-eyebrow cb-in" style={{ "--cb-d": 0 } as CSSProperties}>
-          the directory
+          {label("apps.eyebrow")}
         </p>
         <h1 className="cb-title cb-in" style={{ "--cb-d": 1 } as CSSProperties}>
-          Ten deploy units. One origin.
+          {label("apps.title")}
         </h1>
         <p className="cb-lede cb-in" style={{ "--cb-d": 2 } as CSSProperties}>
-          every member of the family is a folder beside this site on the same origin, linked through the familyurl
-          contract — and every member links back. the roles below are the honest ones each app declares for itself; the
-          accents are the family's spec table.
+          {label("apps.lede")}
         </p>
       </section>
 
-      <section className="cb-section" aria-label="the family roster">
+      <section className="cb-section" aria-label={label("apps.section.rosterAria")}>
         <div className="cb-appgrid">
           {ROSTER.map((member, index) => (
             <a
@@ -50,7 +49,7 @@ export function Apps() {
                 <span className="cb-appname">{member.slug}</span>
               </span>
               <span className="cb-approle">{member.role}</span>
-              <span className="cb-appopen">open {member.slug}</span>
+              <span className="cb-appopen">{labelfill("apps.card.open", { slug: member.slug })}</span>
             </a>
           ))}
         </div>

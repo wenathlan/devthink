@@ -7,20 +7,20 @@
  * part of the family — the way out is the home and the directory.
  */
 
+import { label } from "../../labels";
+
 export function NotFound() {
   return (
     <div className="cb-page cb-missing">
-      <p className="cb-eyebrow">404</p>
-      <h1 className="cb-title">This address is not part of the family.</h1>
-      <p className="cb-lede">
-        the page you asked for does not exist here. the front door and the app directory are the honest way back in.
-      </p>
+      <p className="cb-eyebrow">{label("notfound.eyebrow")}</p>
+      <h1 className="cb-title">{label("notfound.title")}</h1>
+      <p className="cb-lede">{label("notfound.lede")}</p>
       <div className="cb-btnrow">
         <a className="cb-btn" href="/">
-          back to the front door
+          {label("notfound.action.home")}
         </a>
         <a className="cb-btn cb-btn--ghost" href="/apps">
-          browse the apps
+          {label("notfound.action.apps")}
         </a>
       </div>
     </div>

@@ -15,13 +15,18 @@
  */
 import type { CSSProperties } from "react";
 import { postindex, postwords, type blogpost } from "../../posts";
+import { labelfill, label } from "../../labels";
 import { AdSlot } from "../widgets/shell.adsslot.tsx";
 
 /** the meta line of one post: the date and the honest word count. */
 function PostMeta({ post }: { post: blogpost }) {
   return (
     <p className="cb-postdate">
-      {post.date} · {postwords(post)} words · {post.tags.join(" / ")}
+      {labelfill("blog.post.meta", {
+        date: post.date,
+        words: String(postwords(post)),
+        tags: post.tags.join(" / "),
+      })}
     </p>
   );
 }
@@ -30,20 +35,19 @@ export function Blog() {
   const posts = postindex();
   return (
     <div className="cb-page">
-      <section className="cb-hero" aria-label="the family update blog">
+      <section className="cb-hero" aria-label={label("blog.aria.hero")}>
         <p className="cb-eyebrow cb-in" style={{ "--cb-d": 0 } as CSSProperties}>
-          updates
+          {label("blog.eyebrow")}
         </p>
         <h1 className="cb-title cb-in" style={{ "--cb-d": 1 } as CSSProperties}>
-          What the family is building.
+          {label("blog.title")}
         </h1>
         <p className="cb-lede cb-in" style={{ "--cb-d": 2 } as CSSProperties}>
-          short, written updates on the family — how the sites are built, what they cost and why they ship the way they
-          do. every post lives on this page; the index jumps to it.
+          {label("blog.lede")}
         </p>
       </section>
 
-      <section className="cb-section" aria-label="the post index">
+      <section className="cb-section" aria-label={label("blog.section.indexAria")}>
         <ul className="cb-postlist">
           {posts.map((post, index) => (
             <li key={post.slug} className="cb-postrow cb-in" style={{ "--cb-d": index + 1 } as CSSProperties}>
@@ -57,7 +61,7 @@ export function Blog() {
         </ul>
       </section>
 
-      <section className="cb-section" aria-label="the posts in full">
+      <section className="cb-section" aria-label={label("blog.section.fullAria")}>
         {posts.map((post) => (
           <article key={post.slug} id={post.slug} className="cb-article" aria-label={post.title}>
             <h2 className="cb-posttitle">{post.title}</h2>

@@ -18,6 +18,7 @@ import {
   DismissRegular as X,
 } from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
+import { label } from "../../labels";
 
 /** the tones a toast can carry. */
 export type ToastTone = "success" | "error" | "info";
@@ -99,8 +100,8 @@ export function Toaster() {
             <span>{entry.message}</span>
             <button
               type="button"
-              aria-label="dismiss notification"
-              data-tip="dismiss"
+              aria-label={label("toast.dismiss.aria")}
+              data-tip={label("toast.dismiss.tip")}
               onClick={() => dismiss(entry.id)}
             >
               <X fontSize={13} aria-hidden="true" />

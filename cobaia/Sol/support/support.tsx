@@ -14,6 +14,7 @@
  */
 import type { CSSProperties } from "react";
 import { SUPPORTLINKS, isconfigured } from "../../checkoutlinks";
+import { label } from "../../labels";
 
 /** one support channel: the card, the promise and its config link. */
 function Channel({
@@ -43,7 +44,7 @@ function Channel({
           <button className="cb-btn" type="button" disabled>
             {cta}
           </button>
-          <p className="cb-note">link not configured yet</p>
+          <p className="cb-note">{label("support.action.notConfigured")}</p>
         </>
       )}
     </article>
@@ -53,52 +54,43 @@ function Channel({
 export function Support() {
   return (
     <div className="cb-page">
-      <section className="cb-hero" aria-label="cobaia support">
+      <section className="cb-hero" aria-label={label("support.aria.hero")}>
         <p className="cb-eyebrow cb-in" style={{ "--cb-d": 0 } as CSSProperties}>
-          support
+          {label("support.eyebrow")}
         </p>
         <h1 className="cb-title cb-in" style={{ "--cb-d": 1 } as CSSProperties}>
-          Keep the family independent.
+          {label("support.title")}
         </h1>
         <p className="cb-lede cb-in" style={{ "--cb-d": 2 } as CSSProperties}>
-          the family runs on about us$15 a month of domains and free hosting. support covers that floor, keeps every
-          tool free to use and keeps the applications free of ads. both channels below charge zero platform fees, so the
-          support goes where it says.
+          {label("support.lede")}
         </p>
       </section>
 
-      <section className="cb-section" aria-label="the support channels">
+      <section className="cb-section" aria-label={label("support.section.channelsAria")}>
         <div className="cb-grid cb-grid--2">
           <Channel
             index={1}
-            name="GitHub Sponsors"
-            promise="sponsor the maintainer through github. zero platform fee, payouts land automatically, and the sponsorship shows up next to the public work it funds."
+            name={label("support.channel.sponsors.name")}
+            promise={label("support.channel.sponsors.promise")}
             href={SUPPORTLINKS.sponsors}
-            cta="sponsor on github"
+            cta={label("support.channel.sponsors.cta")}
           />
           <Channel
             index={2}
-            name="Ko-fi"
-            promise="one-off donations and monthly memberships through ko-fi. zero fee on donations, no account required on your side beyond the payment."
+            name={label("support.channel.kofi.name")}
+            promise={label("support.channel.kofi.promise")}
             href={SUPPORTLINKS.kofi}
-            cta="buy a coffee"
+            cta={label("support.channel.kofi.cta")}
           />
         </div>
       </section>
 
-      <section className="cb-section" aria-label="other ways to help">
+      <section className="cb-section" aria-label={label("support.section.otherAria")}>
         <div className="cb-secthead">
-          <h2 className="cb-secttitle">Other ways to help</h2>
-          <p className="cb-sectlede">
-            use the tools and tell the truth about them — report what breaks in the public issue tracker, write about
-            what the family does well or badly, and link the directory when a tool earns it. none of it costs anything
-            and all of it compounds.
-          </p>
+          <h2 className="cb-secttitle">{label("support.section.otherTitle")}</h2>
+          <p className="cb-sectlede">{label("support.section.otherLede")}</p>
         </div>
-        <p className="cb-note is-live">
-          the honest line: no ad clicking, no traffic exchange, no bots. automated traffic against an ad surface is
-          invalid traffic — it would end the ad account and the domain reputation. the family does not do it.
-        </p>
+        <p className="cb-note is-live">{label("support.section.otherNote")}</p>
       </section>
     </div>
   );

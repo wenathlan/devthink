@@ -13,6 +13,7 @@
  */
 import { WarningRegular as AlertCircle, HomeRegular as Home } from "@fluentui/react-icons";
 import { useLocation } from "wouter";
+import { label } from "../../labels";
 
 /**
  * the not found page.
@@ -32,18 +33,18 @@ export default function NotFound() {
         <div style={{ display: "grid", placeItems: "center", gap: 12 }}>
           <span className="badge error" style={{ gap: 8 }}>
             <AlertCircle fontSize={13} />
-            404
+            {label("notfound.badge")}
           </span>
-          <h2 style={{ margin: 0 }}>Page Not Found</h2>
+          <h2 style={{ margin: 0 }}>{label("notfound.title")}</h2>
           <p>
-            This frame of the platform does not exist.
+            {label("notfound.line1")}
             <br />
-            It may have been moved or never deployed.
+            {label("notfound.line2")}
           </p>
           <div>
             <button type="button" className="btn" onClick={handleGoHome}>
               <Home fontSize={15} />
-              back to home
+              {label("notfound.action")}
             </button>
           </div>
         </div>

@@ -11,12 +11,15 @@
  * (data-landing, see Shell.tsx and the r3-stealthhead section of sol.css).
  */
 
-/** the drawn scope reticle of the landing stage. */
+import { label } from "../../labels";
+
+/** the drawn scope reticle of the landing stage. the drawing carries no
+ * text of its own: the svg title rides the label accessor. */
 export function Scope() {
   return (
     <span className="shs-root" aria-hidden="true">
       <svg className="shs-svg" viewBox="0 0 200 200" focusable="false" role="presentation">
-        <title>scope reticle</title>
+        <title>{label("home.scope.title")}</title>
         {/* the rim: the outer ring and the signal arc that carries the light */}
         <circle className="shs-ring" cx="100" cy="100" r="86" />
         <path className="shs-arc" d="M 100 6 A 94 94 0 0 1 194 100" />

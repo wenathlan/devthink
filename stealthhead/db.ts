@@ -20,6 +20,7 @@
 
 import process from "node:process";
 import Database from "better-sqlite3";
+import { LABELMANIFEST, LABELREVISION } from "./labels.ts";
 import { MATCHPLAYERSEED, MATCHSEED, type MatchLobby, type MatchPlayer, type MatchRound } from "./match.ts";
 import { RANKINGSEED, type RankingEntry } from "./ranking.ts";
 import { WEAPONCATALOG, type Weapon } from "./weapons.ts";
@@ -96,6 +97,13 @@ sqlite.exec(`
     onboardingseen integer not null default 0,
     updatedat text not null default ''
   );
+  create table if not exists labels (
+    id text primary key,
+    text text not null,
+    revision integer not null default 0,
+    updatedat text not null default '',
+    translated integer not null default 0
+  );
 `);
 
 /** every write below is a prepared statement with bound parameters. */
@@ -123,6 +131,19 @@ const upsertonboardingstage = sqlite.prepare(
      onboardingseen = max(onboardingseen, excluded.onboardingseen),
      updatedat = excluded.updatedat`,
 );
+
+/** the label writes and reads (the interface copy store). */
+const upsertlabel = sqlite.prepare(
+  `insert into labels (id, text, revision, updatedat, translated)
+   values (?, ?, ?, ?, ?)
+   on conflict(id) do update set
+     text = excluded.text,
+     revision = excluded.revision,
+     updatedat = excluded.updatedat,
+     translated = excluded.translated`,
+);
+const selectlabelbyid = sqlite.prepare("select id, text, revision, updatedat, translated from labels where id = ?");
+const selectalllabels = sqlite.prepare("select id, text, revision, updatedat, translated from labels order by id");
 
 /** every read below is a prepared statement with bound parameters. */
 const selectmatchbyid = sqlite.prepare("select id, title, region, state, capacity, rounds from matches where id = ?");
@@ -310,6 +331,111 @@ export function getonboardingstate(visitor: string): OnboardingStateRow | undefi
  */
 export function setonboardingstage(visitor: string, stage: "intro" | "onboarding"): void {
   upsertonboardingstage.run(visitor, 1, stage === "onboarding" ? 1 : 0, new Date().toISOString());
+}
+
+/* --------------------------------------------------------------------- */
+/* labels — the interface copy store                                      */
+/* --------------------------------------------------------------------- */
+
+/** one labels row: the interface copy store. the id is the page.widget.key
+ * path, the text rides the english source of truth (labels.ts), and the
+ * translated flag protects a runtime translation from the seed overwrite.
+ * the shape mirrors the browser seed rows in labels.ts one to one. */
+export type LabelRow = {
+  id: string;
+  text: string;
+  revision: number;
+  updatedAt: string;
+  translated?: boolean;
+};
+
+/**
+ * writes one label row (idempotent upsert; the caller owns the revision),
+ * prepared and parameterized, never concatenated sql.
+ *
+ * @param id the page.widget.key path of the label.
+ * @param text the surface text.
+ * @param revision the manifest revision the text carries.
+ * @param translated true when the row carries a runtime translation.
+ * @returns the stored label projection.
+ */
+export function savelabel(id: string, text: string, revision: number, translated = false): LabelRow {
+  upsertlabel.run(id, text, revision, new Date().toISOString(), translated ? 1 : 0);
+  return readlabel(id) as LabelRow;
+}
+
+/**
+ * reads one label row by its page.widget.key path.
+ *
+ * @param id the label id.
+ * @returns the row, or undefined when absent.
+ */
+export function readlabel(id: string): LabelRow | undefined {
+  const row = selectlabelbyid.get(id) as
+    | { id: string; text: string; revision: number; updatedat: string; translated: number }
+    | undefined;
+  if (!row) return undefined;
+  return {
+    id: row.id,
+    text: row.text,
+    revision: row.revision,
+    updatedAt: row.updatedat,
+    ...(row.translated === 1 ? { translated: true } : {}),
+  };
+}
+
+/**
+ * reads every label row of the store ordered by id.
+ *
+ * @returns the label rows.
+ */
+export function readalllabels(): LabelRow[] {
+  const rows = selectalllabels.all() as Array<{
+    id: string;
+    text: string;
+    revision: number;
+    updatedat: string;
+    translated: number;
+  }>;
+  return rows.map((row) => ({
+    id: row.id,
+    text: row.text,
+    revision: row.revision,
+    updatedAt: row.updatedat,
+    ...(row.translated === 1 ? { translated: true } : {}),
+  }));
+}
+
+/**
+ * ingests the english manifest of labels.ts into the labels table — the
+ * db-side twin of the browser seedlabels: idempotent, the changed rows
+ * refresh, and the translated rows stay protected from the overwrite.
+ *
+ * @returns the seeded and protected row counts.
+ */
+export function seedlabelrows(): { seeded: number; protected: number } {
+  const rows = new Map(readalllabels().map((row) => [row.id, row]));
+  let seeded = 0;
+  let saved = 0;
+  for (const [id, text] of Object.entries(LABELMANIFEST)) {
+    const row = rows.get(id);
+    if (row === undefined || (row.translated !== true && row.text !== text)) {
+      savelabel(id, text, LABELREVISION, row?.translated ?? false);
+      seeded += 1;
+    }
+    saved += 1;
+  }
+  return { seeded, protected: saved - seeded };
+}
+
+/* the copy law rides the db boot: the label seed ingests the english manifest
+ * of labels.ts beside the schema (the interface strings land in the store,
+ * the translated rows protected from the overwrite). best effort: a sealed
+ * store never blocks the boot, the manifest always answers the widgets. */
+try {
+  seedlabelrows();
+} catch {
+  /* the manifest answers; the store catches up on the next boot */
 }
 
 /** the raw driver, exported for the migration and backup tooling. */

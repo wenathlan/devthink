@@ -22,20 +22,18 @@ import {
 } from "@fluentui/react-icons";
 import { useState } from "react";
 import { useLocation } from "wouter";
+import { type LabelKey, label } from "../../labels";
 import { markOnboardingStage } from "../../onboardingstate.ts";
 import { BrandMark } from "../widgets/shell.brandmark.tsx";
 import { START_APPS } from "../shell/Shell.tsx";
 
-/** the honest statement of the opening frame (what the app is). */
-const WHAT_IT_IS =
-  "stealthhead is the FPS game platform of the wenathlan family — not an operating system: one application window holding the match surfaces, the season ladder and the armory of the game.";
-
-/** the honest statement of the closing frame (the hand-over). */
-const WHAT_ENTER =
-  "the window opens on the home dashboard and every page rides the same rail. the theme starts dark and stays in memory only — nothing is written to this machine.";
-
-/** the three frames of the first run, in order. */
-const STEPS = ["the app", "the surfaces", "enter"] as const;
+/** the three frames of the first run, in order — the copy rides the store
+ * (the id keeps the ladder segments keyed, the key answers the eyebrow). */
+const STEPS: readonly { id: string; eyebrowKey: LabelKey }[] = [
+  { id: "is", eyebrowKey: "onboarding.steps.is.eyebrow" },
+  { id: "does", eyebrowKey: "onboarding.steps.does.eyebrow" },
+  { id: "enter", eyebrowKey: "onboarding.steps.enter.eyebrow" },
+];
 
 /**
  * The onboarding page: a three-step first-run dialog that hands the
@@ -56,24 +54,24 @@ export default function Onboarding() {
 
   return (
     <div className="winonboard">
-      <section className="winonboard__card" aria-label="stealthhead first run">
+      <section className="winonboard__card" aria-label={label("onboarding.aria")}>
         <header className="winonboard__head">
           <BrandMark size={18} />
-          <span className="winonboard__title">welcome to stealthhead</span>
+          <span className="winonboard__title">{label("onboarding.title")}</span>
         </header>
 
         <div className="winonboard__body">
           {step === 0 && (
             <article className="winonboard__step" key="what">
-              <p className="winonboard__eyebrow">01 — {STEPS[0]}</p>
-              <h2 className="winonboard__lead">one window, the whole platform</h2>
-              <p className="winonboard__lede">{WHAT_IT_IS}</p>
+              <p className="winonboard__eyebrow">{label(STEPS[0].eyebrowKey)}</p>
+              <h2 className="winonboard__lead">{label("onboarding.steps.is.title")}</h2>
+              <p className="winonboard__lede">{label("onboarding.steps.is.text")}</p>
             </article>
           )}
           {step === 1 && (
             <article className="winonboard__step" key="does">
-              <p className="winonboard__eyebrow">02 — {STEPS[1]}</p>
-              <h2 className="winonboard__lead">what the window hosts</h2>
+              <p className="winonboard__eyebrow">{label(STEPS[1].eyebrowKey)}</p>
+              <h2 className="winonboard__lead">{label("onboarding.steps.does.title")}</h2>
               <ul className="winonboard__facts">
                 {START_APPS.map((app) => {
                   const Icon = app.icon ?? LayoutDashboard;
@@ -81,7 +79,7 @@ export default function Onboarding() {
                     <li key={app.href} className="winonboard__fact">
                       <Icon fontSize={16} strokeWidth={1.7} aria-hidden="true" />
                       <span>
-                        <strong>{app.label}</strong> — {app.detail}
+                        <strong>{label(app.labelKey)}</strong> — {label(app.detailKey)}
                       </span>
                     </li>
                   );
@@ -91,32 +89,32 @@ export default function Onboarding() {
           )}
           {step === 2 && (
             <article className="winonboard__step" key="enter">
-              <p className="winonboard__eyebrow">03 — {STEPS[2]}</p>
-              <h2 className="winonboard__lead">ready to enter</h2>
-              <p className="winonboard__lede">{WHAT_ENTER}</p>
+              <p className="winonboard__eyebrow">{label(STEPS[2].eyebrowKey)}</p>
+              <h2 className="winonboard__lead">{label("onboarding.steps.enter.title")}</h2>
+              <p className="winonboard__lede">{label("onboarding.steps.enter.text")}</p>
             </article>
           )}
         </div>
 
         <footer className="winonboard__foot">
           <div className="winonboard__ladder" aria-hidden="true">
-            {STEPS.map((label, index) => (
-              <span key={label} className="winonboard__segrun" data-active={index === step ? "true" : undefined} />
+            {STEPS.map((frame) => (
+              <span key={frame.id} className="winonboard__segrun" data-active={STEPS[step].id === frame.id ? "true" : undefined} />
             ))}
           </div>
           <div className="winonboard__actions">
             <button type="button" className="winonboard__skip" onClick={finish}>
-              skip
+              {label("onboarding.skip")}
             </button>
             {step > 0 && (
               <button type="button" className="winonboard__act" onClick={() => setStep((value) => value - 1)}>
                 <ArrowLeft fontSize={14} aria-hidden="true" />
-                back
+                {label("onboarding.back")}
               </button>
             )}
             {last ? (
               <button type="button" className="winonboard__act winonboard__act--primary" onClick={finish}>
-                enter stealthhead
+                {label("onboarding.enterCta")}
                 <ArrowRight fontSize={14} aria-hidden="true" />
               </button>
             ) : (
@@ -125,7 +123,7 @@ export default function Onboarding() {
                 className="winonboard__act winonboard__act--primary"
                 onClick={() => setStep((value) => value + 1)}
               >
-                continue
+                {label("onboarding.next")}
                 <ArrowRight fontSize={14} aria-hidden="true" />
               </button>
             )}

@@ -14,6 +14,7 @@
  */
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
+import { label } from "../../labels";
 import { markOnboardingStage } from "../../onboardingstate.ts";
 import { BrandMark } from "../widgets/shell.brandmark.tsx";
 
@@ -67,7 +68,7 @@ export default function Intro() {
       className="winintro"
       data-leaving={leaving ? "true" : undefined}
       role="status"
-      aria-label="stealthhead is opening"
+      aria-label={label("intro.aria")}
       onClick={leave}
       onKeyDown={leave}
     >
@@ -75,11 +76,11 @@ export default function Intro() {
         <span className="winintro__mark" aria-hidden="true">
           <BrandMark size={96} />
         </span>
-        <h1 className="winintro__name">stealthhead</h1>
-        <p className="winintro__role">the FPS game platform of the wenathlan family</p>
+        <h1 className="winintro__name">{label("intro.name")}</h1>
+        <p className="winintro__role">{label("intro.role")}</p>
       </div>
       <p className="winintro__skip" aria-hidden="true">
-        click or press any key to skip
+        {label("intro.skip")}
       </p>
     </div>
   );

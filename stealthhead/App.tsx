@@ -17,10 +17,16 @@ import Sol from "./Sol/Sol";
 import { Toaster } from "./Sol/toast/Toast.tsx";
 import { applyTheme } from "./theme";
 import installzoomlock from "./zoomlock";
+import { label, seedlabels } from "./labels";
 import "./Sol/sol.css";
 
 // the zoom lock arms before the first render: the interface boots pinned at 100%
 if (typeof window !== "undefined") installzoomlock();
+
+// the copy law rides the boot: the seed refreshes the label store rows from
+// the manifest (the browser cache mirrors the site db rows) before the theme
+// renders — best effort, the manifest always answers the widgets.
+if (typeof window !== "undefined") void seedlabels().catch(() => {});
 
 /** the error boundary of the theme: one panel, one reload action. */
 class ThemeErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
@@ -36,11 +42,11 @@ class ThemeErrorBoundary extends Component<{ children: ReactNode }, { error: Err
     return (
       <main className="failure" role="alert">
         <AlertTriangle fontSize={34} />
-        <p>stealthhead could not render this frame.</p>
+        <p>{label("app.boundary.body")}</p>
         <pre>{error.stack}</pre>
         <button type="button" onClick={() => window.location.reload()}>
           <RotateCcw fontSize={14} />
-          reload the interface
+          {label("app.boundary.reload")}
         </button>
       </main>
     );

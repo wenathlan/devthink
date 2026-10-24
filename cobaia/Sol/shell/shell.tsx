@@ -28,15 +28,17 @@ import type { CSSProperties, ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { familyurl } from "../../familyurl";
+import { type LabelKey, label } from "../../labels";
 import { ROSTER } from "../widgets/apps.roster.ts";
 import { BrandMark } from "../widgets/shell.brand.tsx";
 
-/** the section links of the top bar, in reading order (home is the mark). */
-const NAVLINKS: readonly { href: string; label: string }[] = [
-  { href: "/apps", label: "apps" },
-  { href: "/pricing", label: "pricing" },
-  { href: "/blog", label: "blog" },
-  { href: "/support", label: "support" },
+/** the section links of the top bar, in reading order (home is the mark).
+ * the href rides the route table, the text rides the label accessor. */
+const NAVLINKS: readonly { href: string; key: LabelKey }[] = [
+  { href: "/apps", key: "shell.nav.apps" },
+  { href: "/pricing", key: "shell.nav.pricing" },
+  { href: "/blog", key: "shell.nav.blog" },
+  { href: "/support", key: "shell.nav.support" },
 ];
 
 /** the family row of the footer: every deploy unit beside the cobaia, read
@@ -96,26 +98,26 @@ export function Shell({ children }: { children: ReactNode }) {
       {/* the skip link rides outside the window frame: the frame clips its
        * overflow, the skip answers the viewport like it always did */}
       <a className="cb-skip" href="#content">
-        skip to content
+        {label("shell.skip")}
       </a>
-      <section className="cb-window" data-inactive={inactive ? "true" : undefined} aria-label="cobaia">
+      <section className="cb-window" data-inactive={inactive ? "true" : undefined} aria-label={label("shell.window.aria")}>
         {/* the title bar: the ONE logo slot and the caption zone — the fluent
          * red close flush at the right edge; the caption buttons render in
          * the disabled honest fade until the shell owns window state */}
         <header className="cb-titlebar">
-          <a className="cb-wbrand" href="/" aria-label="cobaia — home">
+          <a className="cb-wbrand" href="/" aria-label={label("shell.brand.aria")}>
             <BrandMark size={18} />
-            <span className="cb-wname">cobaia</span>
-            <span className="cb-wrole">the devthink family site</span>
+            <span className="cb-wname">{label("shell.name")}</span>
+            <span className="cb-wrole">{label("shell.role")}</span>
           </a>
           <div className="cb-caption">
-            <button type="button" className="cb-cap" disabled aria-label="Minimize cobaia">
+            <button type="button" className="cb-cap" disabled aria-label={label("shell.caption.minimize")}>
               <CapGlyph kind="min" />
             </button>
-            <button type="button" className="cb-cap" disabled aria-label="Maximize cobaia">
+            <button type="button" className="cb-cap" disabled aria-label={label("shell.caption.maximize")}>
               <CapGlyph kind="max" />
             </button>
-            <button type="button" className="cb-cap cb-cap--close" disabled aria-label="Close cobaia">
+            <button type="button" className="cb-cap cb-cap--close" disabled aria-label={label("shell.caption.close")}>
               <CapGlyph kind="close" />
             </button>
           </div>
@@ -126,7 +128,7 @@ export function Shell({ children }: { children: ReactNode }) {
         <div className="cb-winbody">
           <div className="cb-root">
             <header className="cb-top">
-              <nav className="cb-nav" aria-label="site sections">
+              <nav className="cb-nav" aria-label={label("shell.nav.aria")}>
                 {NAVLINKS.map((link) => (
                   <a
                     key={link.href}
@@ -134,7 +136,7 @@ export function Shell({ children }: { children: ReactNode }) {
                     href={link.href}
                     aria-current={isActive(link.href) ? "page" : undefined}
                   >
-                    {link.label}
+                    {label(link.key)}
                   </a>
                 ))}
               </nav>
@@ -147,32 +149,29 @@ export function Shell({ children }: { children: ReactNode }) {
             <footer className="cb-foot">
               <div className="cb-footgrid">
                 <div className="cb-footcol cb-footabout">
-                  <p className="cb-foothead">cobaia</p>
-                  <p className="cb-foottext">
-                    the front door of the devthink family: ten deployable applications built on one engine, shipped as
-                    static sites, tracked nowhere. pricing, support, the app directory and the update blog live here.
-                  </p>
+                  <p className="cb-foothead">{label("shell.foot.aboutHead")}</p>
+                  <p className="cb-foottext">{label("shell.foot.aboutText")}</p>
                 </div>
                 <div className="cb-footcol">
-                  <p className="cb-foothead">site</p>
+                  <p className="cb-foothead">{label("shell.foot.siteHead")}</p>
                   <a className="cb-footlink" href="/apps">
-                    apps
+                    {label("shell.foot.apps")}
                   </a>
                   <a className="cb-footlink" href="/pricing">
-                    pricing
+                    {label("shell.foot.pricing")}
                   </a>
                   <a className="cb-footlink" href="/blog">
-                    blog
+                    {label("shell.foot.blog")}
                   </a>
                   <a className="cb-footlink" href="/support">
-                    support
+                    {label("shell.foot.support")}
                   </a>
                   <a className="cb-footlink" href="/legal">
-                    legal
+                    {label("shell.foot.legal")}
                   </a>
                 </div>
                 <div className="cb-footcol cb-footfamily">
-                  <p className="cb-foothead">the family</p>
+                  <p className="cb-foothead">{label("shell.foot.familyHead")}</p>
                   <div className="cb-famgrid">
                     {ROSTER.map((member) => (
                       <a
@@ -190,9 +189,7 @@ export function Shell({ children }: { children: ReactNode }) {
                   </div>
                 </div>
               </div>
-              <p className="cb-colophon">
-                cobaia — a provisional name. part of the devthink family · ten honest tools, one engine.
-              </p>
+              <p className="cb-colophon">{label("shell.colophon")}</p>
             </footer>
           </div>
         </div>

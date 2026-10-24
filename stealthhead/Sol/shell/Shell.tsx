@@ -44,14 +44,16 @@ import {
 import { Link, useLocation } from "wouter";
 import { familyrow } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
+import { type LabelKey, labelfill, label } from "../../labels";
 import { currentTheme, type ThemeName, toggleTheme } from "../../theme.ts";
 import { BrandMark } from "../widgets/shell.brandmark";
 
-/** one entry of the window rail: a page surface of the app with its glyph. */
+/** one entry of the window rail: a page surface of the app with its glyph.
+ * the text rides the label accessor — the keys answer the store. */
 export type StartApp = {
   href: string;
-  label: string;
-  detail: string;
+  labelKey: LabelKey;
+  detailKey: LabelKey;
   icon: typeof LayoutDashboard;
 };
 
@@ -59,11 +61,11 @@ export type StartApp = {
  * grammar order (home, match, weapons, world, ranking). exported for the
  * onboarding copy beside this folder. */
 export const START_APPS: readonly StartApp[] = [
-  { href: "/", label: "home", detail: "the FPS platform of the family", icon: LayoutDashboard },
-  { href: "/match", label: "match", detail: "lobbies, rounds and live seats", icon: Swords },
-  { href: "/weapons", label: "weapons", detail: "armory grid with damage stats", icon: Crosshair },
-  { href: "/world", label: "world", detail: "hash-verified GLB world assets", icon: Globe },
-  { href: "/ranking", label: "ranking", detail: "the competitive ladder of the season", icon: Trophy },
+  { href: "/", labelKey: "shell.rail.home", detailKey: "shell.rail.homeDetail", icon: LayoutDashboard },
+  { href: "/match", labelKey: "shell.rail.match", detailKey: "shell.rail.matchDetail", icon: Swords },
+  { href: "/weapons", labelKey: "shell.rail.weapons", detailKey: "shell.rail.weaponsDetail", icon: Crosshair },
+  { href: "/world", labelKey: "shell.rail.world", detailKey: "shell.rail.worldDetail", icon: Globe },
+  { href: "/ranking", labelKey: "shell.rail.ranking", detailKey: "shell.rail.rankingDetail", icon: Trophy },
 ];
 
 /** the hand-over route of the close caption: closing the window restarts the
@@ -120,7 +122,7 @@ function clampDrag(x: number, y: number): { x: number; y: number } {
 function ThemeToggle() {
   const [theme, setTheme] = useState<ThemeName>(currentTheme());
   return (
-    <button type="button" className="winapp__theme" aria-label="toggle theme" onClick={() => setTheme(toggleTheme())}>
+    <button type="button" className="winapp__theme" aria-label={label("shell.theme.aria")} onClick={() => setTheme(toggleTheme())}>
       {theme === "dark" ? <Sun fontSize={14} aria-hidden="true" /> : <Moon fontSize={14} aria-hidden="true" />}
       {theme}
     </button>
@@ -278,7 +280,7 @@ export function Shell({ children }: { children: ReactNode }) {
         data-sized={size && !maximized ? "true" : undefined}
         data-inactive={inactive ? "true" : undefined}
         data-landing={location === "/" ? "true" : undefined}
-        aria-label="stealthhead"
+        aria-label={label("shell.window.aria")}
         style={
           {
             "--winapp-x": `${drag.x}px`,
@@ -299,17 +301,17 @@ export function Shell({ children }: { children: ReactNode }) {
         >
           <div className="winapp__brand">
             <BrandMark size={20} />
-            <span className="winapp__name">stealthhead</span>
-            <span className="winapp__role">the FPS game platform of the wenathlan family</span>
+            <span className="winapp__name">{label("shell.name")}</span>
+            <span className="winapp__role">{label("shell.role")}</span>
           </div>
           <div className="winapp__caption">
-            <button type="button" className="winapp__cap" aria-label="Minimize" onClick={() => setMinimized(true)}>
+            <button type="button" className="winapp__cap" aria-label={label("shell.caption.minimize")} onClick={() => setMinimized(true)}>
               <Minus fontSize={14} aria-hidden="true" />
             </button>
             <button
               type="button"
               className="winapp__cap"
-              aria-label={maximized ? "Restore" : "Maximize"}
+              aria-label={maximized ? label("shell.caption.restore") : label("shell.caption.maximize")}
               onClick={toggleMaximize}
             >
               {maximized ? <Copy fontSize={12} aria-hidden="true" /> : <Square fontSize={11} aria-hidden="true" />}
@@ -317,7 +319,7 @@ export function Shell({ children }: { children: ReactNode }) {
             <button
               type="button"
               className="winapp__cap winapp__cap--close"
-              aria-label="Close"
+              aria-label={label("shell.caption.close")}
               onClick={() => navigate(RESTART_ROUTE)}
             >
               <X fontSize={14} aria-hidden="true" />
@@ -326,9 +328,9 @@ export function Shell({ children }: { children: ReactNode }) {
         </header>
 
         <div className="winapp__body">
-          <nav className="winapp__rail" aria-label="Pages">
+          <nav className="winapp__rail" aria-label={label("shell.rail.aria")}>
             <p className="winapp__railhead" aria-hidden="true">
-              pages
+              {label("shell.rail.head")}
             </p>
             {START_APPS.map((app) => {
               const Icon = app.icon;
@@ -337,18 +339,18 @@ export function Shell({ children }: { children: ReactNode }) {
                   key={app.href}
                   href={app.href}
                   className="winapp__raillink"
-                  data-tip={app.detail}
-                  aria-label={app.label}
+                  data-tip={label(app.detailKey)}
+                  aria-label={label(app.labelKey)}
                   aria-current={isActive(app.href) ? "page" : undefined}
                 >
                   <Icon fontSize={16} strokeWidth={1.7} aria-hidden="true" />
-                  <span className="winapp__raillabel">{app.label}</span>
+                  <span className="winapp__raillabel">{label(app.labelKey)}</span>
                 </Link>
               );
             })}
             <div className="winapp__railfoot">
               <p className="winapp__familyhead" aria-hidden="true">
-                family
+                {label("shell.family.head")}
               </p>
               <div className="winapp__family">
                 {familyrow().map((member) => (
@@ -358,8 +360,8 @@ export function Shell({ children }: { children: ReactNode }) {
                     href={familyurl(member.slug)}
                     target="_blank"
                     rel="noreferrer"
-                    data-tip={`${member.slug} — opens in a new tab`}
-                    aria-label={`open ${member.slug} in a new tab`}
+                    data-tip={labelfill("shell.family.tip", { slug: member.slug })}
+                    aria-label={labelfill("shell.family.aria", { slug: member.slug })}
                     style={{ "--fam-dot": member.accent } as CSSProperties}
                   >
                     <span className="winapp__famdot" aria-hidden="true" />
@@ -391,9 +393,14 @@ export function Shell({ children }: { children: ReactNode }) {
       </section>
 
       {minimized && (
-        <button type="button" className="winchip" aria-label="Restore stealthhead" onClick={() => setMinimized(false)}>
+        <button
+          type="button"
+          className="winchip"
+          aria-label={label("shell.chip.restoreAria")}
+          onClick={() => setMinimized(false)}
+        >
           <BrandMark size={16} />
-          <span>stealthhead</span>
+          <span>{label("shell.chip.name")}</span>
         </button>
       )}
     </div>

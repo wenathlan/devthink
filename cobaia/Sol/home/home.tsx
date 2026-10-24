@@ -17,6 +17,7 @@
  */
 import type { CSSProperties } from "react";
 import { familyurl } from "../../familyurl";
+import { type LabelKey, labelfill, label } from "../../labels";
 import { ROSTER } from "../widgets/apps.roster.ts";
 import { AdSlot } from "../widgets/shell.adsslot.tsx";
 import { BrandMark } from "../widgets/shell.brand.tsx";
@@ -27,81 +28,68 @@ import { BrandMark } from "../widgets/shell.brand.tsx";
 const FEATUREDSLUGS: readonly string[] = ["devthink", "saddle", "vault", "cadria"];
 const FEATURED = ROSTER.filter((member) => FEATUREDSLUGS.includes(member.slug));
 
-/** the three steps of the landing: what the family is made of. */
-const STEPS = [
-  {
-    n: "01",
-    title: "one engine",
-    text: "the sandbox runner and the storage layer live as library-grade modules. every application assembles the parts it needs and ships as one folder of the same monorepo.",
-  },
-  {
-    n: "02",
-    title: "static first",
-    text: "every public surface builds down to one stylesheet and a handful of bundles on free static hosting. nothing is stored on the visitor machine — no cookies, no accounts, no tracking.",
-  },
-  {
-    n: "03",
-    title: "honest money",
-    text: "the family runs on about us$15 a month of domains. the pricing and the support page exist to cover that floor first — and the apps themselves stay free of ads.",
-  },
-] as const;
+/** the three steps of the landing: what the family is made of — the text
+ * rides the label accessor (the store keeps the sentence). */
+const STEPS: readonly { n: LabelKey; title: LabelKey; text: LabelKey }[] = [
+  { n: "home.steps.engine.n", title: "home.steps.engine.title", text: "home.steps.engine.text" },
+  { n: "home.steps.static.n", title: "home.steps.static.title", text: "home.steps.static.text" },
+  { n: "home.steps.honest.n", title: "home.steps.honest.title", text: "home.steps.honest.text" },
+];
 
 export function Home() {
   return (
     <div className="cb-page">
       {/* the hero: the family said plainly */}
-      <section className="cb-hero" aria-label="cobaia — the devthink family site">
+      <section className="cb-hero" aria-label={label("home.aria.hero")}>
         <div className="cb-in" style={{ "--cb-d": 0 } as CSSProperties}>
           <BrandMark size={52} />
         </div>
         <p className="cb-eyebrow cb-in" style={{ "--cb-d": 1 } as CSSProperties}>
-          the devthink family site
+          {label("home.eyebrow")}
         </p>
         <h1 className="cb-title cb-in" style={{ "--cb-d": 2 } as CSSProperties}>
-          One family. Ten tools. Zero tracking.
+          {label("home.title")}
         </h1>
         <p className="cb-lede cb-in" style={{ "--cb-d": 3 } as CSSProperties}>
-          devthink builds and ships a family of deployable web applications — sandbox engines, studios, gateways and a
-          game platform — as static sites on shared free hosting. this site is the front door: the directory, the
-          pricing, the support page and the update blog.
+          {label("home.lede")}
         </p>
         <div className="cb-btnrow cb-in" style={{ "--cb-d": 4 } as CSSProperties}>
           <a className="cb-btn" href="/pricing">
-            see the pricing
+            {label("home.action.pricing")}
           </a>
           <a className="cb-btn cb-btn--ghost" href="/apps">
-            browse the ten apps
+            {label("home.action.apps")}
           </a>
         </div>
       </section>
 
       {/* the three steps, on hairline seams */}
-      <section className="cb-section" aria-label="what the family is made of">
+      <section className="cb-section" aria-label={label("home.section.stepsAria")}>
         <div className="cb-secthead cb-in" style={{ "--cb-d": 0 } as CSSProperties}>
-          <h2 className="cb-secttitle">What the family is made of</h2>
-          <p className="cb-sectlede">the same three choices behind every member of the family.</p>
+          <h2 className="cb-secttitle">{label("home.section.stepsTitle")}</h2>
+          <p className="cb-sectlede">{label("home.section.stepsLede")}</p>
         </div>
         <div className="cb-grid cb-grid--3">
           {STEPS.map((step, index) => (
             <div key={step.n} className="cb-card cb-in" style={{ "--cb-d": index + 1 } as CSSProperties}>
-              <p className="cb-cardmeta">{step.n}</p>
-              <h3 className="cb-cardtitle">{step.title}</h3>
-              <p className="cb-cardtext">{step.text}</p>
+              <p className="cb-cardmeta">{label(step.n)}</p>
+              <h3 className="cb-cardtitle">{label(step.title)}</h3>
+              <p className="cb-cardtext">{label(step.text)}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* the directory preview: four of the ten, the rest on /apps */}
-      <section className="cb-section" aria-label="a preview of the app directory">
+      <section className="cb-section" aria-label={label("home.section.previewAria")}>
         <div className="cb-secthead cb-in" style={{ "--cb-d": 0 } as CSSProperties}>
-          <h2 className="cb-secttitle">A few of the ten</h2>
+          <h2 className="cb-secttitle">{label("home.section.previewTitle")}</h2>
           <p className="cb-sectlede">
-            every member is a folder beside this site on the same origin. the full directory lives on{" "}
+            {label("home.section.previewLede")}{" "}
             <a className="cb-link" href="/apps">
-              /apps
+              {label("home.section.previewLink")}
             </a>
-            .
+            {label("home.section.previewTail")}
           </p>
         </div>
         <div className="cb-appgrid">
@@ -119,24 +107,21 @@ export function Home() {
                 <span className="cb-appname">{app.slug}</span>
               </span>
               <span className="cb-approle">{app.role}</span>
-              <span className="cb-appopen">open {app.slug}</span>
+              <span className="cb-appopen">{labelfill("home.appcard.open", { slug: app.slug })}</span>
             </a>
           ))}
         </div>
       </section>
 
       {/* the support strip: the honest ask */}
-      <section className="cb-section" aria-label="supporting the family">
+      <section className="cb-section" aria-label={label("home.section.supportAria")}>
         <div className="cb-secthead cb-in" style={{ "--cb-d": 0 } as CSSProperties}>
-          <h2 className="cb-secttitle">Keep the family independent</h2>
-          <p className="cb-sectlede">
-            github sponsors and ko-fi keep the domains paid and the tools free — both charge zero platform fees, so
-            the support goes straight to the hosting floor.
-          </p>
+          <h2 className="cb-secttitle">{label("home.section.supportTitle")}</h2>
+          <p className="cb-sectlede">{label("home.section.supportLede")}</p>
         </div>
         <div className="cb-btnrow cb-in" style={{ "--cb-d": 1 } as CSSProperties}>
           <a className="cb-btn cb-btn--ghost" href="/support">
-            ways to support
+            {label("home.action.support")}
           </a>
         </div>
       </section>

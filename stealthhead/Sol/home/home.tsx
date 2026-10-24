@@ -30,6 +30,7 @@ import { type CSSProperties, useEffect, useState } from "react";
 import { Link } from "wouter";
 import { familyrow } from "../../family";
 import { familyurl } from "../../familyurl";
+import { type LabelKey, labelfill, label } from "../../labels";
 import { currentround, listmatches, type MatchLobby, orderlobbies, roundcounts } from "../../match.ts";
 import { progressof } from "../../matchrules.ts";
 import { observeReveals } from "../../reveal";
@@ -38,34 +39,35 @@ import { toast } from "../toast/Toast.tsx";
 import { EntryGate } from "../widgets/home.entrygate.tsx";
 import { Scope } from "../widgets/home.scope.tsx";
 
-/** the four game domains of the platform (navigation, not data). */
-const domains: { href: string; label: string; about: string; meta: string; icon: typeof Crosshair }[] = [
+/** the four game domains of the platform (navigation, not data) — the text
+ * rides the label accessor, the href rides the route table. */
+const domains: { href: string; labelKey: LabelKey; aboutKey: LabelKey; metaKey: LabelKey; icon: typeof Crosshair }[] = [
   {
     href: "/match",
-    label: "match",
-    about: "Lobbies, rounds and the live seat table of every running match.",
-    meta: "lobbies · rounds · seats",
+    labelKey: "home.domain.match",
+    aboutKey: "home.domain.matchAbout",
+    metaKey: "home.domain.matchMeta",
     icon: Crosshair,
   },
   {
     href: "/ranking",
-    label: "ranking",
-    about: "The competitive ladder of the season, seeded and served by the site DB.",
-    meta: "ladder · elo deltas",
+    labelKey: "home.domain.ranking",
+    aboutKey: "home.domain.rankingAbout",
+    metaKey: "home.domain.rankingMeta",
     icon: Trophy,
   },
   {
     href: "/weapons",
-    label: "weapons",
-    about: "The armory ledger with damage, handling and kind helpers from the root logic.",
-    meta: "damage · ttk · falloff",
+    labelKey: "home.domain.weapons",
+    aboutKey: "home.domain.weaponsAbout",
+    metaKey: "home.domain.weaponsMeta",
     icon: Swords,
   },
   {
     href: "/world",
-    label: "world",
-    about: "Pre-compiled GLB world assets listed as hash-verified DB rows.",
-    meta: "glb rows · sha-256",
+    labelKey: "home.domain.world",
+    aboutKey: "home.domain.worldAbout",
+    metaKey: "home.domain.worldMeta",
     icon: Boxes,
   },
 ];
@@ -120,19 +122,15 @@ function HomeLanding() {
               <span className="shstage__mark">
                 <BrandMark size={38} flow />
               </span>
-              <p className="eyebrow">stealthhead · fps platform</p>
+              <p className="eyebrow">{label("home.eyebrow")}</p>
             </div>
             <h1 className="shstage__h reveal" id="shstage-h">
-              Sights on. Stage set.
+              {label("home.title")}
             </h1>
-            <p className="shstage__lede reveal">
-              The first-person shooter platform of the family — it imports versawase from cadria and audio from
-              debonair, carries no engine file of its own, and serves match, ranking, weapons and world from one DB
-              layer.
-            </p>
+            <p className="shstage__lede reveal">{label("home.lede")}</p>
             <div className="shstage__actions reveal">
               <Link href="/match" className="btn press">
-                enter a match
+                {label("home.cta.match")}
                 <ArrowRight fontSize={16} />
               </Link>
               {/* the ONE CTA law: the hero closes with the single machined key;
@@ -141,24 +139,22 @@ function HomeLanding() {
               <button
                 type="button"
                 className="shstage__cue press"
-                onClick={() =>
-                  toast("the ladder answers from the site DB over HTTPS — nothing is stored on your machine", "info")
-                }
+                onClick={() => toast(label("home.data.toast"), "info")}
               >
-                how data reaches you
+                {label("home.cta.dataCue")}
               </button>
             </div>
             <div className="shstage__chips reveal">
               <span className="badge">
                 <PlugZap fontSize={11} />
-                versawase — imported from cadria
+                {label("home.badge.versawase")}
               </span>
               <span className="badge">
                 <Volume2 fontSize={11} />
-                audio — imported from debonair
+                {label("home.badge.audio")}
               </span>
-              <span className="badge info">no engine file of its own</span>
-              <span className="badge success">ships pre-compiled</span>
+              <span className="badge info">{label("home.badge.noEngine")}</span>
+              <span className="badge success">{label("home.badge.precompiled")}</span>
             </div>
           </div>
           <div className="shstage__scope reveal">
@@ -169,12 +165,16 @@ function HomeLanding() {
 
       {/* THE FEATURED MATCH — the ONE raised tile of the landing, carrying the
           board the site DB is serving right now. */}
-      <section className="shsection" aria-label="featured match">
-        {boardwait ? <p className="shstage__wait mono">reading the board from the site db…</p> : null}
+      <section className="shsection" aria-label={label("home.featured.aria")}>
+        {boardwait ? <p className="shstage__wait mono">{label("home.featured.wait")}</p> : null}
         {featured && counts ? (
-          <Link href="/match" className="shfeat reveal" data-tip={`open the board of ${featured.title}`}>
+          <Link
+            href="/match"
+            className="shfeat reveal"
+            data-tip={labelfill("home.featured.tip", { title: featured.title })}
+          >
             <div className="shfeat__head">
-              <span className="shfeat__eyebrow">featured match</span>
+              <span className="shfeat__eyebrow">{label("home.featured.eyebrow")}</span>
               <span className={`badge ${liveBoard ? "error" : featured.state === "open" ? "success" : ""}`}>
                 {liveBoard ? <span className="dot livedot" aria-hidden="true" /> : null}
                 {featured.state}
@@ -182,20 +182,27 @@ function HomeLanding() {
             </div>
             <h2 className="shfeat__title">{featured.title}</h2>
             <p className="shfeat__meta mono">
-              {featured.region} · capacity {featured.capacity} · rounds {counts.scored} scored / {counts.live} live /{" "}
-              {counts.pending} pending
+              {labelfill("home.featured.meta", {
+                region: featured.region,
+                capacity: String(featured.capacity),
+                scored: String(counts.scored),
+                live: String(counts.live),
+                pending: String(counts.pending),
+              })}
             </p>
             <div className="shfeat__map">
-              <span className="shfeat__mapname">{current ? current.map : "settled"}</span>
+              <span className="shfeat__mapname">{current ? current.map : label("home.featured.settled")}</span>
               <span className="shfeat__mapmode mono">
-                {current ? `${current.mode} · r${current.index}` : "every round of this lobby is scored."}
+                {current
+                  ? labelfill("home.featured.mode", { mode: current.mode, index: String(current.index) })
+                  : label("home.featured.settledNote")}
               </span>
             </div>
-            <div className="shmeter" role="img" aria-label={`round progress ${progress} of 100`}>
+            <div className="shmeter" role="img" aria-label={labelfill("home.featured.progressAria", { progress: String(progress) })}>
               <span style={{ width: `${progress}%` }} />
             </div>
             <span className="shfeat__cta">
-              open the board
+              {label("home.featured.cta")}
               <ArrowRight fontSize={14} />
             </span>
           </Link>
@@ -204,10 +211,10 @@ function HomeLanding() {
 
       {/* THE DOMAIN LEDGER — the four consoles of the platform as hairline
           rows (zero box design). */}
-      <section className="shsection" aria-label="game domains">
+      <section className="shsection" aria-label={label("home.domains.aria")}>
         <div className="shsection__head reveal">
-          <p className="eyebrow">the four domains</p>
-          <h2 className="shsection__h">One platform. Four consoles.</h2>
+          <p className="eyebrow">{label("home.domains.eyebrow")}</p>
+          <h2 className="shsection__h">{label("home.domains.title")}</h2>
         </div>
         <div className="shledger">
           {domains.map((domain, index) => {
@@ -224,10 +231,10 @@ function HomeLanding() {
                   <Icon fontSize={17} strokeWidth={1.7} />
                 </span>
                 <span className="shledger__body">
-                  <span className="shledger__name">{domain.label}</span>
-                  <span className="shledger__about">{domain.about}</span>
+                  <span className="shledger__name">{label(domain.labelKey)}</span>
+                  <span className="shledger__about">{label(domain.aboutKey)}</span>
                 </span>
-                <span className="shledger__meta mono">{domain.meta}</span>
+                <span className="shledger__meta mono">{label(domain.metaKey)}</span>
                 <span className="shledger__arrow" aria-hidden="true">
                   <ArrowRight fontSize={15} />
                 </span>
@@ -239,34 +246,34 @@ function HomeLanding() {
 
       {/* THE META-QUAD — platform / domains / engine / doctrine, flush to the
           window floor. */}
-      <footer className="shquad" role="contentinfo" aria-label="platform index">
+      <footer className="shquad" role="contentinfo" aria-label={label("home.quad.aria")}>
         <div className="shquad__col">
-          <p className="shquad__head">platform</p>
-          <p className="shquad__line">stealthhead — the fps game platform of the wenathlan family</p>
+          <p className="shquad__head">{label("home.quad.platform")}</p>
+          <p className="shquad__line">{label("home.quad.platformLine")}</p>
         </div>
         <div className="shquad__col">
-          <p className="shquad__head">domains</p>
+          <p className="shquad__head">{label("home.quad.domains")}</p>
           {domains.map((domain) => (
             <Link key={domain.href} href={domain.href} className="shquad__link">
-              {domain.label}
+              {label(domain.labelKey)}
             </Link>
           ))}
         </div>
         <div className="shquad__col">
-          <p className="shquad__head">engine</p>
-          <p className="shquad__line">versawase — imported from cadria</p>
-          <p className="shquad__line">audio — imported from debonair</p>
+          <p className="shquad__head">{label("home.quad.engine")}</p>
+          <p className="shquad__line">{label("home.badge.versawase")}</p>
+          <p className="shquad__line">{label("home.badge.audio")}</p>
         </div>
         <div className="shquad__col">
-          <p className="shquad__head">doctrine</p>
-          <p className="shquad__line">pre-compiled on the family domains</p>
-          <p className="shquad__line">one db layer · zero client storage</p>
+          <p className="shquad__head">{label("home.quad.doctrine")}</p>
+          <p className="shquad__line">{label("home.quad.doctrineLine1")}</p>
+          <p className="shquad__line">{label("home.quad.doctrineLine2")}</p>
         </div>
         {/* the family row of the landing footer: the same family.ts table the
             rail foot renders (spec §12 accents, familyurl links) — the two
             surfaces share one source, so the row can never drift */}
-        <nav className="shquad__family" aria-label="the family apps">
-          <span className="shquad__familyhead">the devthink family</span>
+        <nav className="shquad__family" aria-label={label("home.family.aria")}>
+          <span className="shquad__familyhead">{label("home.family.head")}</span>
           {familyrow().map((member) => (
             <a
               key={member.slug}
@@ -274,8 +281,8 @@ function HomeLanding() {
               href={familyurl(member.slug)}
               target="_blank"
               rel="noreferrer"
-              data-tip={`open ${member.slug} in its own deploy`}
-              aria-label={`open ${member.slug} in a new tab`}
+              data-tip={labelfill("home.family.tip", { slug: member.slug })}
+              aria-label={labelfill("home.family.ariaOpen", { slug: member.slug })}
             >
               <span
                 className="shquad__famdot"
