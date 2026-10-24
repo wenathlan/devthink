@@ -20,20 +20,20 @@ import type { ExecResult, SandboxCreated, SandboxSpecPayload } from '../../api';
 import { apibase, apifetch, fetchhealth } from '../../api';
 import type { SandboxState } from '../../sandbox.ts';
 import { bootSequence, cpudata, createSandboxState, dispatch, gpudata } from '../../sandbox.ts';
-import ApiBadge from '../components/console.apibadge.tsx';
-import type { SandboxEvent, SandboxEventKind } from '../components/console.eventstimeline.tsx';
-import EventsTimeline from '../components/console.eventstimeline.tsx';
-import SnapshotControls from '../components/console.snapshotcontrols.tsx';
-import type { SandboxSpecSelection } from '../components/console.specpanel.tsx';
-import SpecPanel from '../components/console.specpanel.tsx';
-import type { TerminalRow, TerminalState } from '../components/console.terminal.tsx';
-import Terminal from '../components/console.terminal.tsx';
+import ApiBadge from '../widgets/console.apibadge.tsx';
+import type { SandboxEvent, SandboxEventKind } from '../widgets/console.eventstimeline.tsx';
+import EventsTimeline from '../widgets/console.eventstimeline.tsx';
+import SnapshotControls from '../widgets/console.snapshotcontrols.tsx';
+import type { SandboxSpecSelection } from '../widgets/console.specpanel.tsx';
+import SpecPanel from '../widgets/console.specpanel.tsx';
+import type { TerminalRow, TerminalState } from '../widgets/console.terminal.tsx';
+import Terminal from '../widgets/console.terminal.tsx';
 
-export * from '../components/console.apibadge.tsx';
-export * from '../components/console.eventstimeline.tsx';
-export * from '../components/console.snapshotcontrols.tsx';
-export * from '../components/console.specpanel.tsx';
-export * from '../components/console.terminal.tsx';
+export * from '../widgets/console.apibadge.tsx';
+export * from '../widgets/console.eventstimeline.tsx';
+export * from '../widgets/console.snapshotcontrols.tsx';
+export * from '../widgets/console.specpanel.tsx';
+export * from '../widgets/console.terminal.tsx';
 
 /** display cap for very large payloads such as cpuinfo at 192 vcpus. */
 const displaycap = 120000;

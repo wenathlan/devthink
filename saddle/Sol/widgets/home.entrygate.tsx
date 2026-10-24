@@ -16,7 +16,7 @@ import {
 	loadOnboardingState,
 	readOnboardingState,
 	type VisitorOnboarding,
-} from '../../../onboardingstate.ts';
+} from '../../onboardingstate.ts';
 
 /** the gate lifecycle: resolving (render null) → through (the home shows). */
 type GatePhase = 'resolving' | 'through';

@@ -2,7 +2,7 @@
 // ping through the signed /api/v1/mesh/ping route with fallback to the
 // browser latency probe; on the static edge, the "this browser" row.
 import { useEffect, useState } from 'react';
-import { apiresult, asarray, chipclass, fmtdate, pick } from '../../../dashboardlib.ts';
+import { apiresult, asarray, chipclass, fmtdate, pick } from '../../dashboardlib.ts';
 
 type MeshNodesTableProps = {
 	/** "api" lists /api/v1/admin/nodes; "local" renders the browser row. */

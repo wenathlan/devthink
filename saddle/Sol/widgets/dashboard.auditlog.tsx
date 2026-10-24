@@ -2,7 +2,7 @@
 // user, ip and instant of the entries the main node registers; on the
 // static edge, the honest note.
 import { useEffect, useState } from 'react';
-import { apiresult, asarray, fmtdate, pick } from '../../../dashboardlib.ts';
+import { apiresult, asarray, fmtdate, pick } from '../../dashboardlib.ts';
 
 type AuditLogProps = {
 	/** "api" lists /api/v1/admin/audit; "local" shows the static note. */

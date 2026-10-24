@@ -5,9 +5,9 @@
 // flag on the backup controls and the inline status line instead of a
 // browser dialog.
 import { useRef, useState } from 'react';
-import type { SessionUser } from '../../../dashboardlib.ts';
-import { fmtdate } from '../../../dashboardlib.ts';
-import { adminusers, exportaccounts, importaccounts } from '../../../localauth.ts';
+import type { SessionUser } from '../../dashboardlib.ts';
+import { fmtdate } from '../../dashboardlib.ts';
+import { adminusers, exportaccounts, importaccounts } from '../../localauth.ts';
 
 /** the local browser session normalized at boot (defensive read). */
 export type LocalSessionView = {

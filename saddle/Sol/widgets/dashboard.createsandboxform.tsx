@@ -9,8 +9,8 @@ import {
         fallbackgpus,
         readlocalsandboxes,
         writelocalsandboxes,
-} from '../../../dashboardlib.ts';
-import { cpudata, createSandboxState, gpudata } from '../../../sandbox.ts';
+} from '../../dashboardlib.ts';
+import { cpudata, createSandboxState, gpudata } from '../../sandbox.ts';
 
 type CreateSandboxFormProps = {
         /** "api" posts /api/v1/sandboxes; "local" drives the browser engine shelf. */

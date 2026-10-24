@@ -2,8 +2,8 @@
 // cards with global refresh, mesh nodes, users, global sandboxes and
 // audit; on the static edge, the browser's own overview.
 import { useEffect, useState } from 'react';
-import { apiresult, fmtuptime, pick, readlocalsandboxes } from '../../../dashboardlib.ts';
-import { available } from '../../../localauth.ts';
+import { apiresult, fmtuptime, pick, readlocalsandboxes } from '../../dashboardlib.ts';
+import { available } from '../../localauth.ts';
 import AuditLog from './dashboard.auditlog.tsx';
 import GlobalSandboxesTable from './dashboard.globalsandboxestable.tsx';
 import MeshNodesTable from './dashboard.meshnodestable.tsx';
