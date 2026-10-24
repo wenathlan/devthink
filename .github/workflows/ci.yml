@@ -416,8 +416,11 @@ jobs:
         working-directory: ${{ matrix.app }}
         # the suites that assert the built surface need the dist on disk:
         # the app build script runs when the app declares one, and the
-        # answer stays honest when it does not.
-        run: npm run build --if-present
+        # vite entry rewrite the build performs on the source index reverts
+        # right after, so the design contracts read the source form.
+        run: |
+          npm run build --if-present
+          git checkout -- index.html 2>/dev/null || true
 
       - name: Run the app suite
         if: steps.suite.outputs.present == 'true'
