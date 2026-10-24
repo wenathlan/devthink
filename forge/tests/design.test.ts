@@ -42,26 +42,36 @@ describe("design contract", () => {
   });
 
   it("builds on the trylle foundation (canvas, deep floor, ink)", () => {
-    assert.match(CSS, /--sol-canvas: #0a0a0b/);
-    assert.match(CSS, /--sol-canvas-deep: #060607/);
-    assert.match(CSS, /--sol-ink: #fafafa/);
-    assert.match(CSS, /--sol-surface-1: #171717/);
-    assert.match(CSS, /--sol-surface-8: #484848/);
+    // the foundation rebuild carries the campaign literals on the @theme
+    // source and maps the trylle sol names onto them — both stay pinned
+    assert.match(CSS, /--color-canvas: #202020/);
+    assert.match(CSS, /--color-deep: #191919/);
+    assert.match(CSS, /--color-ink: #fafafa/);
+    assert.match(CSS, /--color-s0: #242424/);
+    assert.match(CSS, /--color-s7: #494949/);
+    assert.match(CSS, /--sol-canvas: var\(--color-canvas\)/);
+    assert.match(CSS, /--sol-canvas-deep: var\(--color-deep\)/);
+    assert.match(CSS, /--sol-ink: var\(--color-ink\)/);
+    assert.match(CSS, /--sol-surface-1: var\(--color-s0\)/);
+    assert.match(CSS, /--sol-surface-8: var\(--color-s7\)/);
   });
 
   it("carries the forge lime #a2cb3a as the one identity signal (brand, CTAs, active ladder)", () => {
-    assert.match(CSS, /--fg-lime: #a2cb3a/);
-    assert.match(CSS, /--sol-primary: #a2cb3a/);
+    assert.match(CSS, /--color-signal: #a2cb3a/);
+    assert.match(CSS, /--fg-lime: var\(--color-signal\)/);
+    assert.match(CSS, /--sol-primary: var\(--color-signal\)/);
     assert.match(MARK, /#a2cb3a/);
   });
 
   it("rides the windows accent #4cc2ff for focus (the win10 #0067c0 in the light face)", () => {
-    assert.match(CSS, /--win-accent: #4cc2ff/);
-    assert.match(CSS, /--win-accent: #0067c0/);
-    assert.match(CSS, /--sol-focus: var\(--win-accent\)/);
-    const dark = CSS.indexOf("--win-accent: #4cc2ff");
-    const light = CSS.indexOf("--win-accent: #0067c0");
+    assert.match(CSS, /--color-win: #4cc2ff/);
+    assert.match(CSS, /--color-focus: #4cc2ff/);
+    assert.match(CSS, /--win-accent: var\(--color-win\)/);
+    assert.match(CSS, /--sol-focus: var\(--color-focus\)/);
+    const dark = CSS.indexOf("--color-win: #4cc2ff");
+    const light = CSS.indexOf("--color-win: #0067c0");
     assert.ok(light > dark, "the light accent must be restated after the dark one");
+    assert.match(CSS, /--color-focus: #0067c0/);
   });
 
   it("keeps the pill out of the stylesheet (no 999px, no stadium radius)", () => {
@@ -122,8 +132,10 @@ describe("design contract", () => {
   it("wears the windows hands (press scale .7, dtPopIntro, the state ladder, the red close)", () => {
     assert.match(CSS, /@keyframes dtPopIntro/);
     assert.match(CSS, /transform: scale\(0\.7\)/);
-    assert.match(CSS, /--win-close: rgb\(232, 17, 35\)/);
-    assert.match(CSS, /--win-close-hot: rgb\(139, 10, 20\)/);
+    assert.match(CSS, /--color-close: #e81123/);
+    assert.match(CSS, /--color-close-deep: #8b0a14/);
+    assert.match(CSS, /--win-close: var\(--color-close\)/);
+    assert.match(CSS, /--win-close-hot: var\(--color-close-deep\)/);
     assert.match(CSS, /grayscale\(80%\)/);
   });
 

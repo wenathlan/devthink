@@ -36,8 +36,9 @@ describe("design contract", () => {
   });
 
   it("carries the argan jade #34d8a8 as the one signal (mark story #14b98c)", () => {
-    expect(CSS).toMatch(/--sol-primary: #34d8a8/);
+    // the jade token stands literal and the primary rides it — both stay pinned
     expect(CSS).toMatch(/--arg-jade: #34d8a8/);
+    expect(CSS).toMatch(/--sol-primary: var\(--arg-jade\)/);
     expect(MARK).toMatch(/#14b98c/);
   });
 

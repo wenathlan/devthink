@@ -76,8 +76,11 @@ describe("design contract — the devthink foundation", () => {
     expect(CSS).toContain("0 96px 96px -48px");
     expect(CSS).toContain("--shadow-window: 0 32px 64px rgb(0 0 0 / 24%), 0 0 8px rgb(0 0 0 / 20%)");
     expect(CSS).toContain("--ease-window: cubic-bezier(0.85, 0.14, 0.14, 0.85)");
-    expect(CSS).toContain("--sol-micro: 150ms");
-    expect(CSS).toContain("--sol-ease-out: cubic-bezier(0.22, 1, 0.36, 1)");
+    // the sol aliases ride the underlying motion tokens — both stay pinned
+    expect(CSS).toContain("--sol-micro: var(--dur-1)");
+    expect(CSS).toContain("--dur-1: 150ms");
+    expect(CSS).toContain("--sol-ease-out: var(--ease-micro)");
+    expect(CSS).toContain("--ease-micro: cubic-bezier(0.22, 1, 0.36, 1)");
   });
 
   it("keeps the trylle button tone stack (the real site recipe)", () => {

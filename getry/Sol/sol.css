@@ -1265,3 +1265,16 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
     -webkit-backdrop-filter: none;
   }
 }
+
+/* the hard stop: the last word of the file — every animation and transition
+   collapses to 0.01ms and nothing moves */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

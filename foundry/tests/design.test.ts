@@ -39,9 +39,13 @@ describe("design contract", () => {
   });
 
   it("keeps the azul identity and the windows accent in their lanes", () => {
-    assert.match(CSS, /--sol-primary: #4d8edd/, "the azul identity token stands");
-    assert.match(CSS, /--win-accent: #4cc2ff/, "the windows accent governs focus and the bar cta");
-    assert.match(CSS, /--win-accent: #0067c0/, "the light theme follows the windows light law");
+    // the foundation rebuild carries the identity on the @theme signal and
+    // maps the azules onto it — the token, the alias and both stay pinned
+    assert.match(CSS, /--color-signal: #4d8edd/, "the azul identity token stands");
+    assert.match(CSS, /--sol-primary: var\(--color-signal\)/, "the primary rides the signal slot");
+    assert.match(CSS, /--win-accent: var\(--color-win\)/, "the windows accent rides its own slot");
+    assert.match(CSS, /--color-win: #4cc2ff/, "the windows accent governs focus and the bar cta");
+    assert.match(CSS, /--color-win: #0067c0/, "the light theme follows the windows light law");
     assert.match(MARK, /#2fb8b5/, "the drawn mark keeps its têmpera story");
   });
 

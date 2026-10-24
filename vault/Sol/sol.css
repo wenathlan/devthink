@@ -2,9 +2,9 @@
 
 /* vault theme sol — the single stylesheet of the theme (the 8-h
    FAMILY-FOUNDATION-2 pass). The foundation is the devthink doctrine
-   foundation carried with the exact campaign values, wearing the vault ice
-   gelo #7dd8ff as the app signal (brand mark, content cta and the content
-   voice ONLY — focus and the chrome answer the windows accent #4cc2ff).
+   foundation carried with the exact campaign values, wearing the vault
+   gelo-de-cofre #a3d7e6 as the app signal (brand mark, content cta and the
+   content voice ONLY — focus and the chrome answer the windows accent #4cc2ff).
    Tailwind-first: the @theme block below is the one source of truth and
    Tailwind 4 generates the utilities the pages can compose (bg-s0..s7,
    text-ink/muted/faint, border-hairline, shadow-window/flyout,
@@ -76,9 +76,10 @@
   --color-hairline: color-mix(in oklab, #fefefe 5%, transparent);
   --color-hairline-strong: color-mix(in oklab, #fefefe 10%, transparent);
 
-  /* ---- the signal: the vault ice (gelo #7dd8ff) — the app identity,
-     brand mark / content cta / content voice only; the chrome never wears it ---- */
-  --color-signal: #7dd8ff;
+  /* ---- the signal: the vault gelo-de-cofre #a3d7e6 (ink #072330) — the app
+     identity, brand mark / content cta / content voice only; the chrome never
+     wears it ---- */
+  --color-signal: #a3d7e6;
   --color-signal-strong: #b3e7ff;
   --color-signal-deep: #3f97bd;
   --color-signal-ink: #072330;
@@ -292,7 +293,7 @@
   --accent-ink: var(--color-signal-ink);
   --sol-accent: var(--color-signal);
   --sol-accent-ink: var(--color-signal-ink);
-  --sol-signal: 125 216 255;
+  --sol-signal: 163 215 230;
   --sol-ember: #6cc4e4;
   --sol-tangerine: var(--color-signal-strong);
   --sol-gold: #e3f6ff;
@@ -371,7 +372,6 @@
   --win-wash: var(--win-hover);
   --win-page-wash: var(--wash-soft);
   --win-scroll: var(--scrollbar-thumb);
-  --r-pill: 100px;
 }
 
 /* the light theme: one flip on the same ladder — the devthink daylight
@@ -477,7 +477,7 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   background: var(--scrollbar-thumb);
   background-clip: padding-box;
   border: 3px solid transparent;
-  border-radius: var(--r-pill, 100px);
+  border-radius: var(--radius-3xl);
 }
 
 *:hover::-webkit-scrollbar-thumb, *:focus-within::-webkit-scrollbar-thumb { visibility: visible; }

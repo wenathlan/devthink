@@ -78,9 +78,9 @@
   --color-hairline: color-mix(in oklab, #fefefe 5%, transparent);
   --color-hairline-strong: color-mix(in oklab, #fefefe 10%, transparent);
 
-  /* ---- the signal: the forge lime #d6f74b — the app identity, brand mark /
+  /* ---- the signal: the forge lime #a2cb3a — the app identity, brand mark /
      content cta / content voice only; the chrome never wears it ---- */
-  --color-signal: #d6f74b;
+  --color-signal: #a2cb3a;
   --color-signal-strong: #e9ffa1;
   --color-signal-deep: #7e9e1c;
   --color-signal-ink: #161d03;
@@ -264,7 +264,7 @@
   --sol-primary-ink: var(--color-signal-ink);
   --sol-btn-accent-bg: var(--color-signal);
   --sol-btn-accent-ink: var(--color-signal-ink);
-  --sol-signal: 214 247 75;
+  --sol-signal: 162 203 58;
   --sol-focus: var(--color-focus);
   --sol-success: var(--color-ok);
   --sol-warning: var(--color-warn);
@@ -329,7 +329,6 @@
   /* the window geometry */
   --win-titlebar-h: 48px;
   --win-rail-w: 48px;
-  --r-pill: 100px;
 }
 
 /* the light face: one flip on the same ladder — the devthink daylight values,
@@ -547,7 +546,7 @@ kbd {
   background: var(--scrollbar-thumb);
   background-clip: padding-box;
   border: 3px solid transparent;
-  border-radius: var(--r-pill, 100px);
+  border-radius: var(--radius-3xl);
 }
 
 *:hover::-webkit-scrollbar-thumb,

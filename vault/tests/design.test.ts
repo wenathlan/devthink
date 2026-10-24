@@ -24,9 +24,10 @@ const SOL = read("../Sol/Sol.tsx");
 const BANNED = [/3b82f6/i, /2563eb/i, /f97316/i];
 
 /** strips the windows pin keyframe — the one sanctioned scale(0) entrance —
- * so the floor law can be asserted on everything else. */
+ * so the floor law can be asserted on everything else (the block spans
+ * lines, so the strip rides a line-aware lazy match). */
 function cssWithoutPinIntro(source: string): string {
-  return source.replace(/@keyframes dtPopIntro \{.*\} \}/, "");
+  return source.replace(/@keyframes dtPopIntro \{[\s\S]*?\n\}/g, "");
 }
 
 describe("design contract", () => {
@@ -39,9 +40,13 @@ describe("design contract", () => {
   });
 
   it("keeps the gelo identity and the windows accent in their lanes", () => {
-    assert.match(CSS, /--sol-primary: #a3d7e6/, "the gelo identity token stands");
-    assert.match(CSS, /--win-accent: #4cc2ff/, "the windows accent governs focus and the bar cta");
-    assert.match(CSS, /--win-accent: #0067c0/, "the light theme follows the windows light law");
+    // the foundation rebuild carries the identity on the @theme signal and
+    // maps the gelo names onto it — the token, the alias and both stay pinned
+    assert.match(CSS, /--color-signal: #a3d7e6/, "the gelo identity token stands");
+    assert.match(CSS, /--sol-primary: var\(--color-signal\)/, "the primary rides the signal slot");
+    assert.match(CSS, /--win-accent: var\(--color-win\)/, "the windows accent rides its own slot");
+    assert.match(CSS, /--color-win: #4cc2ff/, "the windows accent governs focus and the bar cta");
+    assert.match(CSS, /--color-win: #0067c0/, "the light theme follows the windows light law");
     assert.match(MARK, /#a3d7e6/, "the mark rides the gelo");
   });
 
