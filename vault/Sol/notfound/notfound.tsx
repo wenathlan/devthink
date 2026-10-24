@@ -14,26 +14,24 @@ import { ArchiveRegular, LockClosedRegular } from "@fluentui/react-icons";
 // to the real surfaces (the ledger and the shelf), and the copy stays
 // honest about what a 404 is: an empty address, not a broken safe.
 import { Link } from "wouter";
+import { label } from "../../labels";
 
 /** The 404 page of the vault. */
 export function NotFound() {
   return (
     <main className="shell vn-page">
       <header className="pagehead">
-        <p className="pagehead__eyebrow">404 · the address guards nothing</p>
-        <h1 className="pagehead__title">Nothing is sealed at this address</h1>
-        <p className="pagehead__lede">
-          The store answers: no object, bucket or ledger row lives on this path. The safe itself is unharmed — walk back
-          to a real surface of the vault.
-        </p>
+        <p className="pagehead__eyebrow">{label("notfound.eyebrow")}</p>
+        <h1 className="pagehead__title">{label("notfound.title")}</h1>
+        <p className="pagehead__lede">{label("notfound.lede")}</p>
         <div className="pagehead__actions">
-          <Link className="btn" href="/objects" aria-label="open the sealed inventory">
+          <Link className="btn" href="/objects" aria-label={label("notfound.objectsAria")}>
             <ArchiveRegular fontSize={14} aria-hidden="true" />
-            the sealed inventory
+            {label("notfound.objects")}
           </Link>
-          <Link className="btn secondary" href="/buckets" aria-label="open the retention shelf">
+          <Link className="btn secondary" href="/buckets" aria-label={label("notfound.bucketsAria")}>
             <LockClosedRegular fontSize={14} aria-hidden="true" />
-            the retention shelf
+            {label("notfound.buckets")}
           </Link>
         </div>
       </header>

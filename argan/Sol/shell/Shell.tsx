@@ -42,6 +42,7 @@ import {
 import { Link, useLocation } from "wouter";
 import { familyrow } from "../../family";
 import { familyurl } from "../../familyurl";
+import { label, labelfill } from "../../labels";
 import { currentTheme, type Theme, toggleTheme } from "../../theme";
 
 /** one entry of the shell navigation (the legacy page prop shape, kept for
@@ -57,13 +58,24 @@ export type StartApp = {
 };
 
 /** the pages the application window hosts, one rail entry each (the apex
- * home first). exported for the onboarding copy beside this folder. */
+ * home first). exported for the onboarding copy beside this folder. the
+ * labels ride the copy law (labels.ts). */
 export const START_APPS: readonly StartApp[] = [
-  { href: "/", label: "home", detail: "the dns and zones home of the family", icon: HomeRegular },
-  { href: "/zones", label: "zones", detail: "the zone table and the publication flow", icon: GlobeRegular },
-  { href: "/dnssec", label: "dnssec", detail: "the signing pipeline and the rollover", icon: ShieldRegular },
-  { href: "/gateway", label: "gateway", detail: "the dns transports, doh-first", icon: PlugConnectedRegular },
-  { href: "/settings", label: "settings", detail: "appearance and clean urls", icon: SettingsRegular },
+  { href: "/", label: label("shell.rail.home"), detail: label("shell.rail.homeDetail"), icon: HomeRegular },
+  { href: "/zones", label: label("shell.rail.zones"), detail: label("shell.rail.zonesDetail"), icon: GlobeRegular },
+  { href: "/dnssec", label: label("shell.rail.dnssec"), detail: label("shell.rail.dnssecDetail"), icon: ShieldRegular },
+  {
+    href: "/gateway",
+    label: label("shell.rail.gateway"),
+    detail: label("shell.rail.gatewayDetail"),
+    icon: PlugConnectedRegular,
+  },
+  {
+    href: "/settings",
+    label: label("shell.rail.settings"),
+    detail: label("shell.rail.settingsDetail"),
+    icon: SettingsRegular,
+  },
 ];
 
 /** the hand-over route of the close caption: closing the window restarts the
@@ -297,7 +309,7 @@ function clampDrag(x: number, y: number): { x: number; y: number } {
  */
 function FamilyRow() {
   return (
-    <nav className="winapp__family" aria-label="the family apps">
+    <nav className="winapp__family" aria-label={label("shell.family.aria")}>
       {familyrow().map((member) => (
         <a
           key={member.slug}
@@ -305,7 +317,7 @@ function FamilyRow() {
           href={familyurl(member.slug)}
           target="_blank"
           rel="noreferrer"
-          data-tip={`open ${member.slug} in its own deploy`}
+          data-tip={labelfill("shell.family.tip", { slug: member.slug })}
           aria-label={member.slug}
         >
           <span
@@ -328,7 +340,7 @@ function FamilyRow() {
 function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>(currentTheme());
   return (
-    <button type="button" className="winapp__theme" aria-label="toggle theme" onClick={() => setTheme(toggleTheme())}>
+    <button type="button" className="winapp__theme" aria-label={label("shell.theme.aria")} onClick={() => setTheme(toggleTheme())}>
       {theme === "dark" ? (
         <WeatherSunnyRegular fontSize={14} aria-hidden="true" />
       ) : (
@@ -435,7 +447,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
         data-landing={landing ? "true" : undefined}
         hidden={minimized}
         data-maximized={maximized ? "true" : undefined}
-        aria-label="argan"
+        aria-label={label("shell.window.aria")}
         style={{ "--winapp-x": `${drag.x}px`, "--winapp-y": `${drag.y}px` } as CSSProperties}
       >
         {/* biome-ignore lint/a11y/noStaticElementInteractions: the title bar is the drag surface; the window controls inside it are real buttons */}
@@ -450,17 +462,22 @@ export function Shell({ children, themeButton = true }: ShellProps) {
         >
           <div className="winapp__brand">
             <ArganMark size={20} hidden />
-            <span className="winapp__name">argan</span>
-            <span className="winapp__role">dns and zones of the family</span>
+            <span className="winapp__name">{label("shell.brand")}</span>
+            <span className="winapp__role">{label("shell.role")}</span>
           </div>
           <div className="winapp__caption">
-            <button type="button" className="winapp__cap" aria-label="Minimize" onClick={() => setMinimized(true)}>
+            <button
+              type="button"
+              className="winapp__cap"
+              aria-label={label("shell.caption.minimize")}
+              onClick={() => setMinimized(true)}
+            >
               <SubtractRegular fontSize={14} aria-hidden="true" />
             </button>
             <button
               type="button"
               className="winapp__cap"
-              aria-label={maximized ? "Restore" : "Maximize"}
+              aria-label={maximized ? label("shell.caption.restore") : label("shell.caption.maximize")}
               onClick={toggleMaximize}
             >
               {maximized ? (
@@ -472,7 +489,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
             <button
               type="button"
               className="winapp__cap winapp__cap--close"
-              aria-label="Close"
+              aria-label={label("shell.caption.close")}
               onClick={() => navigate(RESTART_ROUTE)}
             >
               <DismissRegular fontSize={14} aria-hidden="true" />
@@ -492,9 +509,9 @@ export function Shell({ children, themeButton = true }: ShellProps) {
         <span className="winapp__handle" data-handle="se" aria-hidden="true" />
 
         <div className="winapp__body">
-          <nav className="winapp__rail" aria-label="Pages">
+          <nav className="winapp__rail" aria-label={label("shell.rail.aria")}>
             <p className="winapp__railhead" aria-hidden="true">
-              pages
+              {label("shell.rail.head")}
             </p>
             {START_APPS.map((app) => {
               const Icon = app.icon;
@@ -515,7 +532,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
             {themeButton ? (
               <div className="winapp__railfoot">
                 <p className="winapp__familyhead" aria-hidden="true">
-                  family
+                  {label("shell.family.head")}
                 </p>
                 <FamilyRow />
                 <ThemeToggle />
@@ -529,9 +546,9 @@ export function Shell({ children, themeButton = true }: ShellProps) {
       </section>
 
       {minimized && (
-        <button type="button" className="winchip" aria-label="Restore argan" onClick={() => setMinimized(false)}>
+        <button type="button" className="winchip" aria-label={label("shell.chip.restoreAria")} onClick={() => setMinimized(false)}>
           <ArganMark size={16} hidden />
-          <span>argan</span>
+          <span>{label("shell.brand")}</span>
         </button>
       )}
     </div>

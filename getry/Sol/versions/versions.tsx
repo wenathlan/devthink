@@ -18,34 +18,12 @@ import { WindowConsoleRegular } from "@fluentui/react-icons";
  */
 import { useEffect, useState } from "react";
 import { type GatewayVersion, listversions, liveversions, PARSERSTEPS, totalroutes } from "../../gateway";
+import { label, labelfill } from "../../labels";
 import { observeReveals } from "../../reveal";
 import { toast } from "../toast/Toast.tsx";
 
-/** the quick-start calls the gateway answers out of the box. */
-const QUICKSTART = `# v1 — zai passthrough no key required
-curl -x post http://localhost:3000/v1/chat/completions \\
-  -h "content-type: application/json" \\
-  -d '{"messages":[{"role":"user","content":"hi"}],"stream":true}'
-
-# v3 — nvidia nim free models
-curl -x post http://localhost:3000/v3/chat/completions \\
-  -h "content-type: application/json" \\
-  -d '{"model":"devthink","messages":[{"role":"user","content":"hi"}]}'
-
-# v4 — opencode kilo anonymous free tier
-curl -x post http://localhost:3000/v4/chat/completions \\
-  -h "content-type: application/json" \\
-  -d '{"model":"devthink","messages":[{"role":"user","content":"hi"}]}'
-
-# v5 — openrouter free models requires key
-curl -x post http://localhost:3000/v5/chat/completions \\
-  -h "content-type: application/json" \\
-  -h "authorization: bearer $openrouter_api_key" \\
-  -d '{"model":"devthink","messages":[{"role":"user","content":"hi"}]}'
-
-# model discovery — v4 and v5 catalogs are dynamic (free-tag filter)
-curl http://localhost:3000/v4/models
-curl http://localhost:3000/v5/models`;
+/** the quick-start calls the gateway answers out of the box (the copy law). */
+const QUICKSTART = label("versions.quickstart");
 
 /**
  * renders one gateway row of the registry ledger.
@@ -72,7 +50,7 @@ function Gaterow({ version }: { version: GatewayVersion }) {
         <p className="gaterow__note">{version.note}</p>
       </div>
       <div className="gaterow__routes">
-        <p className="gaterow__count">{version.routes.length} routes</p>
+        <p className="gaterow__count">{labelfill("versions.row.routes", { count: String(version.routes.length) })}</p>
         <div className="gaterow__chips">
           {version.routes.map((route) => (
             <button
@@ -80,7 +58,10 @@ function Gaterow({ version }: { version: GatewayVersion }) {
               type="button"
               className="routechip"
               onClick={() =>
-                toast(`/${version.v}/${route} answers on the self-hosted gateway, never on this surface`, "info")
+                toast(
+                  labelfill("versions.toast.route", { endpoint: `/${version.v}/${route}` }),
+                  "info",
+                )
               }
             >
               /{version.v}/{route}
@@ -107,15 +88,12 @@ export default function Versions() {
   return (
     <>
       <section className="pagehead halftone">
-        <p className="eyebrow">getry · versions</p>
-        <h1>five gateways, thirty-five routes</h1>
-        <p>
-          Each version owns one provider family and answers the same seven OpenAI-compatible routes. The v2 babel
-          service is paused and falls back to v1 zai; v4 and v5 discover their models live through the free-tag filter.
-        </p>
+        <p className="eyebrow">{label("versions.eyebrow")}</p>
+        <h1>{label("versions.title")}</h1>
+        <p>{label("versions.lede")}</p>
       </section>
 
-      <section className="section r3-ops" aria-label="gateway registry">
+      <section className="section r3-ops" aria-label={label("versions.registry.aria")}>
         <div className="r3-split">
           <div className="gatelog r3-gatelog">
             {versions.map((version) => (
@@ -125,7 +103,7 @@ export default function Versions() {
 
           <aside className="r3-rail">
             <div className="railmeta reveal">
-              <p className="railmeta__head">canonical parser pattern</p>
+              <p className="railmeta__head">{label("versions.parser.head")}</p>
               <ol className="parserlist r3-parser">
                 {PARSERSTEPS.map((step) => (
                   <li key={step}>{step}</li>
@@ -133,36 +111,33 @@ export default function Versions() {
               </ol>
             </div>
             <div className="railmeta reveal">
-              <p className="railmeta__head">the registry at a glance</p>
+              <p className="railmeta__head">{label("versions.glance.head")}</p>
               <div className="railmeta__row">
-                <span>replicas</span>
+                <span>{label("versions.glance.replicas")}</span>
                 <strong>{versions.length}</strong>
               </div>
               <div className="railmeta__row">
-                <span>live</span>
+                <span>{label("versions.glance.live")}</span>
                 <strong>{liveversions().length}</strong>
               </div>
               <div className="railmeta__row">
-                <span>routes</span>
+                <span>{label("versions.glance.routes")}</span>
                 <strong>{totalroutes()}</strong>
               </div>
               <div className="railmeta__row">
-                <span>mask</span>
+                <span>{label("versions.glance.mask")}</span>
                 <strong>devthink</strong>
               </div>
-              <p className="railmeta__foot">
-                Every replica serves the same meta model — the parser masks the upstream name before the bytes leave the
-                lane.
-              </p>
+              <p className="railmeta__foot">{label("versions.glance.foot")}</p>
             </div>
           </aside>
         </div>
       </section>
 
-      <section className="section" aria-label="quick start">
+      <section className="section" aria-label={label("versions.quickstart.aria")}>
         <div className="glass card reveal">
           <h2>
-            <WindowConsoleRegular fontSize={18} /> quick start
+            <WindowConsoleRegular fontSize={18} /> {label("versions.quickstart.title")}
           </h2>
           <pre className="codeblock">{QUICKSTART}</pre>
         </div>

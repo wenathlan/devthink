@@ -28,15 +28,13 @@ import {
   liveversions,
   totalroutes,
 } from "../../gateway";
+import { label, labelfill } from "../../labels";
 import { observeReveals } from "../../reveal";
 import { ROTATIONEVERY } from "../../sessions";
 import { budgetof, DEFAULTTHINKINGLEVEL, formatbudget, THINKINGLEVELS } from "../../thinking";
 import { BrandMark } from "../widgets/shell.brandmark.tsx";
 import { toast } from "../toast/Toast.tsx";
 import EntryGate from "../widgets/home.entrygate.tsx";
-
-/** the honest answer of the send key: the surface stores nothing. */
-const SENDTOAST = "answers on the self-hosted gateway over HTTPS — this surface stores nothing";
 
 /** the parsed endpoint: the replica the prefix names and the route kind that follows. */
 function parseendpoint(value: string): { version: GatewayVersion | null; route: string | null; tail: string } {
@@ -54,31 +52,24 @@ function parseendpoint(value: string): { version: GatewayVersion | null; route: 
 /** the status line under the field: what the typed endpoint resolves to. */
 function statusline(value: string): string {
   const { version, route, tail } = parseendpoint(value);
-  if (!version) return `unrouted · the replicas answer /v1 through /v${listversions().length}`;
-  if (route) return `${version.v} · ${version.provider} · /${version.v}/${route} · ${version.badge}`;
-  if (tail) return `${version.v} · ${version.provider} · unknown route — the replicas answer the seven kinds`;
-  return `${version.v} · ${version.provider} · ${version.badge} · name a route`;
+  if (!version) return labelfill("home.status.unrouted", { count: String(listversions().length) });
+  if (route)
+    return labelfill("home.status.routed", {
+      v: version.v,
+      provider: version.provider,
+      route,
+      badge: version.badge,
+    });
+  if (tail) return labelfill("home.status.unknownRoute", { v: version.v, provider: version.provider });
+  return labelfill("home.status.nameRoute", { v: version.v, provider: version.provider, badge: version.badge });
 }
 
-/** the deploy steps of the landing (the real gateway doctrine, 01–03). */
+/** the deploy steps of the landing (the real gateway doctrine, 01–03). the
+ * step ordinals ride the presentation; the copy rides the labels store. */
 const STEPS: { step: string; title: string; phrase: string }[] = [
-  {
-    step: "01",
-    title: "deploy the mirror",
-    phrase:
-      "the Next mirrors ship from the release assets — this Sol surface is one static deploy of the same gateway.",
-  },
-  {
-    step: "02",
-    title: "name a route",
-    phrase: "35 OpenAI-compatible endpoints answer on the self-hosted lanes — the seven kinds ride every replica.",
-  },
-  {
-    step: "03",
-    title: "ride the mask",
-    phrase:
-      "the parser re-emits every chunk as devthink — reasoning deltas before content, keepalives holding the stream.",
-  },
+  { step: "01", title: label("home.steps.deploy.title"), phrase: label("home.steps.deploy.phrase") },
+  { step: "02", title: label("home.steps.route.title"), phrase: label("home.steps.route.phrase") },
+  { step: "03", title: label("home.steps.mask.title"), phrase: label("home.steps.mask.phrase") },
 ];
 
 /**
@@ -119,7 +110,7 @@ function HomeSurface() {
   function sendcompletion(event: FormEvent) {
     event.preventDefault();
     const target = endpoint.trim().toLowerCase() || "/v1/chat/completions";
-    toast(`${target} ${SENDTOAST}`, "info");
+    toast(labelfill("home.hero.sendToast", { endpoint: target }), "info");
   }
 
   /** a replica chip: rewrites the version segment, keeps the named route. */
@@ -135,19 +126,18 @@ function HomeSurface() {
   return (
     <>
       <section className="hero grain halftone r3-hero">
-        <p className="eyebrow reveal">getry · deployable inference gateway</p>
+        <p className="eyebrow reveal">{label("home.eyebrow")}</p>
         <div className="r3-hero__grid">
           <div className="r3-hero__main">
-            <h1 className="r3-headline reveal">many gateways, one mask</h1>
+            <h1 className="r3-headline reveal">{label("home.title")}</h1>
             <p className="r3-phrase reveal">
-              getry spins five provider replicas behind the devthink meta-model — {totalroutes()} OpenAI-compatible
-              routes, pure byte passthrough, nothing on your machine.
+              {labelfill("home.lede", { count: String(totalroutes()) })}
             </p>
 
             <form className="r3-prompt reveal" onSubmit={sendcompletion}>
               <div className="r3-prompt__field">
                 <span className="r3-prompt__label" aria-hidden="true">
-                  send a completion
+                  {label("home.hero.label")}
                 </span>
                 <input
                   className="r3-prompt__input"
@@ -155,10 +145,10 @@ function HomeSurface() {
                   onChange={(event) => setEndpoint(event.target.value)}
                   spellCheck={false}
                   autoComplete="off"
-                  aria-label="gateway endpoint"
+                  aria-label={label("home.hero.inputAria")}
                 />
                 <button type="submit" className="r3-prompt__key">
-                  send
+                  {label("home.hero.send")}
                   <ArrowEnterRegular fontSize={13} aria-hidden="true" />
                 </button>
               </div>
@@ -167,7 +157,7 @@ function HomeSurface() {
               </p>
               <div className="r3-prompt__chips">
                 <fieldset className="r3-chipset">
-                  <legend className="r3-chipset__legend">replica</legend>
+                  <legend className="r3-chipset__legend">{label("home.chips.replica")}</legend>
                   {versions.map((version) => (
                     <button
                       key={version.v}
@@ -181,7 +171,7 @@ function HomeSurface() {
                   ))}
                 </fieldset>
                 <fieldset className="r3-chipset">
-                  <legend className="r3-chipset__legend">route</legend>
+                  <legend className="r3-chipset__legend">{label("home.chips.route")}</legend>
                   {GATEWAYROUTES.map((route) => (
                     <button
                       key={route}
@@ -198,9 +188,9 @@ function HomeSurface() {
             </form>
 
             <div className="importstrip reveal">
-              <span className="badge">{liveversions().length} replicas live</span>
-              <span className="badge info">{totalroutes()} routes</span>
-              <span className="badge success">pure byte passthrough</span>
+              <span className="badge">{labelfill("home.badge.live", { count: String(liveversions().length) })}</span>
+              <span className="badge info">{labelfill("home.badge.routes", { count: String(totalroutes()) })}</span>
+              <span className="badge success">{label("home.badge.passthrough")}</span>
             </div>
           </div>
           <div className="r3-hero__side" aria-hidden="true">
@@ -211,22 +201,19 @@ function HomeSurface() {
         </div>
       </section>
 
-      <section className="section" aria-label="replica matrix">
+      <section className="section" aria-label={label("home.matrix.aria")}>
         <div className="section-head reveal">
-          <h2>the replica matrix</h2>
-          <p>
-            One meta model, five copies of itself: every replica serves devthink over its provider family — the mask is
-            the product, the lane is the detail.
-          </p>
+          <h2>{label("home.matrix.title")}</h2>
+          <p>{label("home.matrix.lede")}</p>
         </div>
         <table className="r3-matrix reveal">
           <thead>
             <tr>
-              <th scope="col">replica</th>
-              <th scope="col">serves</th>
-              <th scope="col">lane</th>
-              <th scope="col">routes</th>
-              <th scope="col">status</th>
+              <th scope="col">{label("home.table.replica")}</th>
+              <th scope="col">{label("home.table.serves")}</th>
+              <th scope="col">{label("home.table.lane")}</th>
+              <th scope="col">{label("home.table.routes")}</th>
+              <th scope="col">{label("home.table.status")}</th>
             </tr>
           </thead>
           <tbody>
@@ -244,7 +231,7 @@ function HomeSurface() {
                   </td>
                   <td className="r3-matrix__serves">
                     <span className="r3-tag">devthink</span>
-                    {featured ? <span className="r3-matrix__featnote">22 keys round robin</span> : null}
+                    {featured ? <span className="r3-matrix__featnote">{label("home.matrix.featnote")}</span> : null}
                   </td>
                   <td className="r3-matrix__lane">/{version.v}/chat/completions</td>
                   <td className="r3-matrix__count">{version.routes.length}</td>
@@ -261,13 +248,10 @@ function HomeSurface() {
             })}
           </tbody>
         </table>
-        <p className="r3-matrix__note reveal">
-          The paused v2 babel lane falls back to v1 zai; v4 and v5 discover their free-tag models live — zero hardcoded
-          names anywhere.
-        </p>
+        <p className="r3-matrix__note reveal">{label("home.matrix.note")}</p>
       </section>
 
-      <section className="section" aria-label="deploy steps">
+      <section className="section" aria-label={label("home.steps.aria")}>
         <div className="r3-steps">
           {STEPS.map((item) => (
             <article key={item.step} className="r3-step reveal">
@@ -283,43 +267,48 @@ function HomeSurface() {
 
       <footer className="r3-quad">
         <div className="r3-quad__col">
-          <p className="r3-quad__head">gateway</p>
+          <p className="r3-quad__head">{label("home.quad.gateway")}</p>
           <p className="r3-quad__meta">
-            {versions.length} replicas · {totalroutes()} routes · {liveversions().length} live
+            {labelfill("home.quad.gatewayMeta", {
+              replicas: String(versions.length),
+              routes: String(totalroutes()),
+              live: String(liveversions().length),
+            })}
           </p>
         </div>
         <div className="r3-quad__col">
-          <p className="r3-quad__head">thinking</p>
+          <p className="r3-quad__head">{label("home.quad.thinking")}</p>
           <p className="r3-quad__meta">
-            {THINKINGLEVELS.length} rungs · default {DEFAULTTHINKINGLEVEL} ·{" "}
-            {formatbudget(budgetof(DEFAULTTHINKINGLEVEL))} token ceiling
+            {labelfill("home.quad.thinkingMeta", {
+              rungs: String(THINKINGLEVELS.length),
+              default: DEFAULTTHINKINGLEVEL,
+              budget: formatbudget(budgetof(DEFAULTTHINKINGLEVEL)),
+            })}
           </p>
         </div>
         <div className="r3-quad__col">
-          <p className="r3-quad__head">store</p>
-          <p className="r3-quad__meta">
-            rotation every {ROTATIONEVERY} turns · keys masked at render · zero client storage
-          </p>
+          <p className="r3-quad__head">{label("home.quad.store")}</p>
+          <p className="r3-quad__meta">{labelfill("home.quad.storeMeta", { every: String(ROTATIONEVERY) })}</p>
         </div>
-        <nav className="r3-quad__col" aria-label="gateway domains">
-          <p className="r3-quad__head">pages</p>
+        <nav className="r3-quad__col" aria-label={label("home.quad.domainsAria")}>
+          <p className="r3-quad__head">{label("home.quad.pages")}</p>
           <p className="r3-quad__meta r3-quad__links">
             <Link href="/versions">
-              versions
+              {label("nav.versions")}
               <ArrowRightRegular fontSize={12} aria-hidden="true" />
             </Link>
             <Link href="/thinking">
-              thinking
+              {label("nav.thinking")}
               <ArrowRightRegular fontSize={12} aria-hidden="true" />
             </Link>
             <Link href="/sessions">
-              sessions
+              {label("nav.sessions")}
               <ArrowRightRegular fontSize={12} aria-hidden="true" />
             </Link>
           </p>
         </nav>
-        <nav className="r3-quad__family" aria-label="the family apps">
-          <span className="r3-quad__familyhead">the devthink family</span>
+        <nav className="r3-quad__family" aria-label={label("home.family.aria")}>
+          <span className="r3-quad__familyhead">{label("home.family.head")}</span>
           {familyrow().map((member) => (
             <a
               key={member.slug}
@@ -327,7 +316,7 @@ function HomeSurface() {
               href={familyurl(member.slug)}
               target="_blank"
               rel="noreferrer"
-              data-tip={`open ${member.slug} in its own deploy`}
+              data-tip={labelfill("home.family.tip", { slug: member.slug })}
               aria-label={member.slug}
             >
               <span className="r3-quad__famdot" aria-hidden="true" style={{ backgroundColor: member.accent }} />

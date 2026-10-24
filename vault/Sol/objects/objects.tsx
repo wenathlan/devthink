@@ -30,6 +30,7 @@ import {
   vaultCensus,
   verifyObject,
 } from "../../objects.ts";
+import { label, labelfill } from "../../labels";
 import { EmptyState } from "../widgets/shell.emptystate.tsx";
 
 /** the seed of the rehearsal vault (shown on the page, pinned by the tests) */
@@ -51,12 +52,16 @@ function ObjectRow({ object }: { object: VaultObject }) {
         {object.lfs ? "lfs" : "blob"}
       </span>
       <span className="vo-row__size">{formatBytes(object.size)}</span>
-      <span className="vo-row__digest" data-tip={object.digest} aria-label={`digest ${object.digest}`}>
+      <span
+        className="vo-row__digest"
+        data-tip={object.digest}
+        aria-label={labelfill("objects.row.digestAria", { digest: object.digest })}
+      >
         {digestShort(object.digest)}
       </span>
       <span className="vo-row__seal" data-intact={intact ? "true" : "false"}>
         <ShieldCheckmarkRegular fontSize={13} aria-hidden="true" />
-        {intact ? "sealed" : "broken"}
+        {intact ? label("objects.seal.intact") : label("objects.seal.broken")}
       </span>
     </article>
   );
@@ -96,12 +101,9 @@ export default function Objects() {
   return (
     <main className="shell vo-page">
       <header className="pagehead">
-        <p className="pagehead__eyebrow">objects · the sealed inventory</p>
-        <h1 className="pagehead__title">Objects</h1>
-        <p className="pagehead__lede">
-          A seeded rehearsal of the safe — seed {seed}, {census.total} rows sealed under the real storage contract. The
-          deposit line rides the same rules the family serves over https; nothing here claims live bytes.
-        </p>
+        <p className="pagehead__eyebrow">{label("objects.eyebrow")}</p>
+        <h1 className="pagehead__title">{label("objects.title")}</h1>
+        <p className="pagehead__lede">{labelfill("objects.lede", { seed: String(seed), count: String(census.total) })}</p>
         <div className="pagehead__actions">
           <button
             type="button"
@@ -115,7 +117,7 @@ export default function Objects() {
             }}
           >
             <PlayFilled fontSize={14} aria-hidden="true" />
-            reseed the rehearsal
+            {label("objects.action.reseed")}
           </button>
           <button
             type="button"
@@ -128,41 +130,41 @@ export default function Objects() {
             }}
           >
             <ArrowRotateCounterclockwiseRegular fontSize={14} aria-hidden="true" />
-            restore the ledger
+            {label("objects.action.restore")}
           </button>
         </div>
       </header>
 
-      <section className="vo-summary" aria-label="the census of the safe">
+      <section className="vo-summary" aria-label={label("objects.census.aria")}>
         <div className="vo-summary__cell">
           <p className="vo-summary__label">
             <BoxMultipleRegular fontSize={13} aria-hidden="true" />
-            rows sealed
+            {label("objects.census.rows")}
           </p>
           <p className="vo-summary__value">{census.total}</p>
         </div>
         <div className="vo-summary__cell">
           <p className="vo-summary__label">
             <LockClosedRegular fontSize={13} aria-hidden="true" />
-            bytes under seal
+            {label("objects.census.bytes")}
           </p>
           <p className="vo-summary__value">{formatBytes(census.bytes)}</p>
         </div>
         <div className="vo-summary__cell vo-summary__cell--wide">
-          <p className="vo-summary__label">channels</p>
+          <p className="vo-summary__label">{label("objects.census.channels")}</p>
           <p className="vo-summary__value vo-summary__channels">
             <span className="vo-lanecount" data-channel="lfs">
               <i aria-hidden="true" />
-              {census.lfsRows} lfs · {formatBytes(census.lfsBytes)}
+              {labelfill("objects.census.lfs", { rows: String(census.lfsRows), bytes: formatBytes(census.lfsBytes) })}
             </span>
             <span className="vo-lanecount" data-channel="blob">
               <i aria-hidden="true" />
-              {census.blobRows} blob · {formatBytes(census.blobBytes)}
+              {labelfill("objects.census.blob", { rows: String(census.blobRows), bytes: formatBytes(census.blobBytes) })}
             </span>
           </p>
         </div>
         <div className="vo-summary__cell">
-          <p className="vo-summary__label">biggest under seal</p>
+          <p className="vo-summary__label">{label("objects.census.biggest")}</p>
           <p className="vo-summary__value vo-summary__big">
             {census.biggest ? census.biggest.path : "—"}
             {census.biggest ? <span className="vo-summary__bigsize">{formatBytes(census.biggest.size)}</span> : null}
@@ -170,10 +172,10 @@ export default function Objects() {
         </div>
       </section>
 
-      <form className="vo-form" onSubmit={deposit} aria-label="seal a deposit">
+      <form className="vo-form" onSubmit={deposit} aria-label={label("objects.form.aria")}>
         <p className="vo-form__head">
           <LockClosedRegular fontSize={13} aria-hidden="true" />
-          seal a deposit — path · mime · size
+          {label("objects.form.head")}
         </p>
         <div className="vo-form__row">
           <input
@@ -181,8 +183,8 @@ export default function Objects() {
             type="text"
             value={draft.path}
             onChange={(event) => setDraft({ ...draft, path: event.target.value })}
-            placeholder="/sites/state.db"
-            aria-label="the absolute path of the deposit"
+            placeholder={label("objects.form.pathPlaceholder")}
+            aria-label={label("objects.form.pathAria")}
             spellCheck={false}
           />
           <input
@@ -190,8 +192,8 @@ export default function Objects() {
             type="text"
             value={draft.mime}
             onChange={(event) => setDraft({ ...draft, mime: event.target.value })}
-            placeholder="application/x-sqlite3"
-            aria-label="the mime type of the deposit"
+            placeholder={label("objects.form.mimePlaceholder")}
+            aria-label={label("objects.form.mimeAria")}
             spellCheck={false}
           />
           <input
@@ -200,15 +202,15 @@ export default function Objects() {
             inputMode="numeric"
             value={draft.size}
             onChange={(event) => setDraft({ ...draft, size: event.target.value })}
-            placeholder="48211046"
-            aria-label="the byte size of the deposit"
+            placeholder={label("objects.form.sizePlaceholder")}
+            aria-label={label("objects.form.sizeAria")}
             spellCheck={false}
           />
           <button type="submit" className="btn">
-            seal it
+            {label("objects.form.seal")}
           </button>
         </div>
-        <fieldset className="vo-form__buckets" aria-label="the bucket the deposit rides">
+        <fieldset className="vo-form__buckets" aria-label={label("objects.form.bucketsAria")}>
           {["all", ...VAULT_BUCKETS].map((name) => (
             <button
               key={name}
@@ -223,18 +225,22 @@ export default function Objects() {
         </fieldset>
         <p className="vo-form__readout" aria-live="polite">
           {refusal ??
-            `rides the ${preview.channel} channel — ${preview.why} · digest ${preview.digestShape} · the row must pass the five checks of storageRecordValid`}
+            labelfill("objects.form.readout", {
+              channel: preview.channel,
+              why: preview.why,
+              digest: preview.digestShape,
+            })}
         </p>
       </form>
 
       {visible.length === 0 ? (
         <EmptyState
           icon={BoxMultipleRegular}
-          title="the shelf holds nothing here"
+          title={label("objects.empty.title")}
           line={
             bucket === "all"
-              ? "The safe stands empty — reseed the rehearsal to seal the ledger again."
-              : `No object rides the ${bucket} bucket — seal a deposit into it or pick another bucket.`
+              ? label("objects.empty.all")
+              : labelfill("objects.empty.bucket", { bucket })
           }
           action={
             <button
@@ -245,18 +251,18 @@ export default function Objects() {
                 setBucket("all");
               }}
             >
-              reseed the rehearsal vault
+              {label("objects.empty.action")}
             </button>
           }
         />
       ) : (
-        <section className="vo-ledger" aria-label="the sealed ledger">
+        <section className="vo-ledger" aria-label={label("objects.ledger.aria")}>
           <div className="vo-ledger__head" aria-hidden="true">
-            <span>object</span>
-            <span>channel</span>
-            <span>size</span>
-            <span>digest</span>
-            <span>seal</span>
+            <span>{label("objects.ledger.object")}</span>
+            <span>{label("objects.ledger.channel")}</span>
+            <span>{label("objects.ledger.size")}</span>
+            <span>{label("objects.ledger.digest")}</span>
+            <span>{label("objects.ledger.seal")}</span>
           </div>
           {visible.map((object) => (
             <ObjectRow key={object.id} object={object} />
@@ -264,10 +270,7 @@ export default function Objects() {
         </section>
       )}
 
-      <p className="fr-footnote">
-        the channels split at the 1,000,000-byte threshold — lfs carries the masters with a three-line pointer, the
-        small text-like rows ride the in-db git objects.
-      </p>
+      <p className="fr-footnote">{label("objects.footnote")}</p>
     </main>
   );
 }

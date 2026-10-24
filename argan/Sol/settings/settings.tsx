@@ -15,16 +15,17 @@ import { useEffect, useState } from "react";
 import type { OptionChoice } from "../../argan.ts";
 import { listOptionChoices } from "../../catalog.ts";
 import { applyNow } from "../../cleanurl";
+import { label } from "../../labels";
 import { reduceMotionApplied, setReduceMotion } from "../../motionpref";
 import { currentTheme, toggleTheme } from "../../theme";
 import { type NavLink, Shell } from "../shell/Shell";
 import { useToast } from "../toast/Toast";
 
 const FOOTER_LINKS: readonly NavLink[] = [
-  { label: "Home", href: "/" },
-  { label: "Zones", href: "/zones" },
-  { label: "DNSSEC", href: "/dnssec" },
-  { label: "Gateway", href: "/gateway" },
+  { label: label("nav.home"), href: "/" },
+  { label: label("nav.zones"), href: "/zones" },
+  { label: label("nav.dnssec"), href: "/dnssec" },
+  { label: label("nav.gateway"), href: "/gateway" },
 ];
 
 const DIRTY_URL = "?utm_source=newsletter&utm_campaign=launch&gclid=ABC123&fbclid=XY99#/settings";
@@ -64,7 +65,7 @@ export default function Settings() {
     const next = !reduceMotionApplied();
     setReduceMotion(next);
     setReduced(next);
-    toast.show(next ? "Motion reduced for this session" : "Motion restored for this session", "info");
+    toast.show(next ? label("settings.toast.motionOn") : label("settings.toast.motionOff"), "info");
   };
 
   const showDirty = (): void => {
@@ -74,30 +75,27 @@ export default function Settings() {
   const showClean = (): void => {
     applyNow();
     setUrlOut({ text: window.location.pathname + window.location.search, tone: "ok" });
-    toast.show("URL cleaned — no hash, no trackers", "success");
+    toast.show(label("settings.toast.cleaned"), "success");
   };
 
   const savePreferences = (): void => {
     // preference state lives in memory only: the interface never writes to the visitor machine
-    toast.show("Preferences saved locally", "success");
+    toast.show(label("settings.toast.saved"), "success");
   };
 
   return (
     <Shell name="argan" contained footerLinks={FOOTER_LINKS} domain="argan.devthink.pro">
       <header className="r3a-head">
-        <p className="r3a-head__eyebrow">argan · settings</p>
-        <h1 className="r3a-head__title">Site preferences only.</h1>
-        <p className="r3a-head__lede">
-          Zone credentials, TSIG keys and cluster secrets never live here — they belong to the argan database on the
-          host that runs the pipeline.
-        </p>
+        <p className="r3a-head__eyebrow">{label("settings.eyebrow")}</p>
+        <h1 className="r3a-head__title">{label("settings.title")}</h1>
+        <p className="r3a-head__lede">{label("settings.lede")}</p>
       </header>
 
       <div className="r3a-set">
-        <nav className="r3a-set__rail" aria-label="Settings sections">
-          <a href="#sec-appearance">appearance</a>
-          <a href="#sec-urls">clean urls</a>
-          <a href="#sec-network">network</a>
+        <nav className="r3a-set__rail" aria-label={label("settings.nav.aria")}>
+          <a href="#sec-appearance">{label("settings.nav.appearance")}</a>
+          <a href="#sec-urls">{label("settings.nav.urls")}</a>
+          <a href="#sec-network">{label("settings.nav.network")}</a>
         </nav>
 
         <div className="r3a-set__body">
@@ -107,33 +105,35 @@ export default function Settings() {
                 01
               </span>
               <h2 id="ap-h" className="r3a-h__title">
-                Appearance
+                {label("settings.appearance.title")}
               </h2>
             </div>
             <div className="r3a-set__row">
               <div>
-                <p className="pref-title">Light theme</p>
-                <p className="pref-hint">Solar dark is the default.</p>
+                <p className="pref-title">{label("settings.appearance.light")}</p>
+                <p className="pref-hint">{label("settings.appearance.lightHint")}</p>
               </div>
               <label className="toggle">
-                <input type="checkbox" checked={light} onChange={onLightToggle} aria-label="Toggle light theme" />
+                <input
+                  type="checkbox"
+                  checked={light}
+                  onChange={onLightToggle}
+                  aria-label={label("settings.appearance.lightAria")}
+                />
                 <span className="track" />
               </label>
             </div>
             <div className="r3a-set__row">
               <div>
-                <p className="pref-title">Reduce motion</p>
-                <p className="pref-hint">
-                  Stills the mark, the window entry and the fresh-serial pulse for this session — on top of the OS
-                  setting, never against it.
-                </p>
+                <p className="pref-title">{label("settings.appearance.motion")}</p>
+                <p className="pref-hint">{label("settings.appearance.motionHint")}</p>
               </div>
               <label className="toggle">
                 <input
                   type="checkbox"
                   checked={reduced}
                   onChange={onReduceMotionToggle}
-                  aria-label="Toggle reduce motion"
+                  aria-label={label("settings.appearance.motionAria")}
                 />
                 <span className="track" />
               </label>
@@ -146,23 +146,33 @@ export default function Settings() {
                 02
               </span>
               <h2 id="url-h" className="r3a-h__title">
-                Clean URLs
+                {label("settings.urls.title")}
               </h2>
             </div>
             <p className="r3a-set__copy">
-              This site runs the <code>clean-url</code> module: hash routes, <code>index.html</code>, duplicate slashes
-              and campaign trackers (<code>utm_*</code>, <code>gclid</code>, <code>fbclid</code>…) are stripped from the
-              address bar automatically — without reloading or polluting history.
+              {label("settings.urls.lead")}
+              <code>clean-url</code>
+              {label("settings.urls.mid1")}
+              <code>index.html</code>
+              {label("settings.urls.mid2")}
+              <code>utm_*</code>
+              {label("settings.urls.sep")}
+              <code>gclid</code>
+              {label("settings.urls.sep")}
+              <code>fbclid</code>
+              {label("settings.urls.mid3")}
             </p>
             <div className="btn-row" style={{ marginTop: 0 }}>
               <button className="btn secondary small" type="button" onClick={showDirty}>
-                Poll this URL with trackers
+                {label("settings.urls.dirty")}
               </button>
               <button className="btn small" type="button" onClick={showClean}>
-                Watch it clean itself
+                {label("settings.urls.clean")}
               </button>
             </div>
-            <p className={`badge url-out${urlOut ? ` ${urlOut.tone}` : ""}`}>{urlOut ? urlOut.text : "—"}</p>
+            <p className={`badge url-out${urlOut ? ` ${urlOut.tone}` : ""}`}>
+              {urlOut ? urlOut.text : label("settings.urls.empty")}
+            </p>
           </section>
 
           <section id="sec-network" className="r3a-set__sec" aria-labelledby="net-h">
@@ -171,12 +181,12 @@ export default function Settings() {
                 03
               </span>
               <h2 id="net-h" className="r3a-h__title">
-                Network &amp; region
+                {label("settings.network.title")}
               </h2>
             </div>
             <div className="r3a-set__fields">
               <div className="field">
-                <label htmlFor="resolver">Preferred resolver</label>
+                <label htmlFor="resolver">{label("settings.network.resolver")}</label>
                 <select
                   id="resolver"
                   className="input"
@@ -191,7 +201,7 @@ export default function Settings() {
                 </select>
               </div>
               <div className="field">
-                <label htmlFor="locale">Language</label>
+                <label htmlFor="locale">{label("settings.network.language")}</label>
                 <select
                   id="locale"
                   className="input"
@@ -207,7 +217,7 @@ export default function Settings() {
               </div>
             </div>
             <button className="btn small" type="button" onClick={savePreferences}>
-              Save preferences
+              {label("settings.save")}
             </button>
           </section>
         </div>

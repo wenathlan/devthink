@@ -20,6 +20,8 @@
 
 /// <reference types="better-sqlite3" />
 
+import { LABEL_MANIFEST, LABEL_REVISION } from "./labels";
+
 /** fetch budget for the HTTPS answers of the self-hosted DB. */
 const fetchbudget = 2500;
 
@@ -333,24 +335,47 @@ CREATE TABLE IF NOT EXISTS onboarding_states (
 );
 `;
 
+/** the labels schema of the sqlite mirror (idempotent — the interface copy store). */
+const LABELS_SCHEMA = `
+CREATE TABLE IF NOT EXISTS labels (
+  id         TEXT PRIMARY KEY,
+  text       TEXT NOT NULL,
+  revision   INTEGER NOT NULL DEFAULT 0,
+  updatedAt  TEXT NOT NULL DEFAULT (datetime('now')),
+  translated INTEGER NOT NULL DEFAULT 0
+);
+`;
+
 /** the prepared statements of the mirror, created once per process. */
 type OnboardingStatements = {
   select: import("better-sqlite3").Statement;
   upsert: import("better-sqlite3").Statement;
 };
 
+/** the prepared label statements of the mirror, created once per process. */
+type LabelStatements = {
+  select: import("better-sqlite3").Statement;
+  selectAll: import("better-sqlite3").Statement;
+  upsert: import("better-sqlite3").Statement;
+};
+
 /** the cached driver bundle (null until the first node call). */
-let mirror: { db: import("better-sqlite3").Database; statements: OnboardingStatements } | null = null;
+let mirror: { db: import("better-sqlite3").Database; statements: OnboardingStatements; labels: LabelStatements } | null =
+  null;
 
 /**
  * Boots the sqlite mirror exactly once per process: opens DATABASE_URL
  * (creating parent folders), rides WAL and the busy timeout, creates the
- * onboarding_states table when absent (idempotent seed-on-first-run) and
- * prepares every statement — never concatenated SQL.
+ * onboarding_states and labels tables when absent (idempotent seed-on-
+ * first-run) and prepares every statement — never concatenated SQL.
  *
  * @returns the open database with its prepared statements.
  */
-async function openMirror(): Promise<{ db: import("better-sqlite3").Database; statements: OnboardingStatements }> {
+async function openMirror(): Promise<{
+  db: import("better-sqlite3").Database;
+  statements: OnboardingStatements;
+  labels: LabelStatements;
+}> {
   if (mirror) return mirror;
   const nodefs = await import(/* @vite-ignore */ "node:fs");
   const nodepath = await import(/* @vite-ignore */ "node:path");
@@ -362,6 +387,7 @@ async function openMirror(): Promise<{ db: import("better-sqlite3").Database; st
   db.pragma("journal_mode = WAL");
   db.pragma("busy_timeout = 5000");
   db.exec(ONBOARDING_SCHEMA);
+  db.exec(LABELS_SCHEMA);
   mirror = {
     db,
     statements: {
@@ -375,6 +401,18 @@ async function openMirror(): Promise<{ db: import("better-sqlite3").Database; st
            introseen = MAX(introseen, excluded.introseen),
            onboardingseen = MAX(onboardingseen, excluded.onboardingseen),
            updatedAt = datetime('now')`,
+      ),
+    },
+    labels: {
+      select: db.prepare("SELECT id, text, revision, updatedAt, translated FROM labels WHERE id = ?"),
+      selectAll: db.prepare("SELECT id, text, revision, updatedAt, translated FROM labels ORDER BY id ASC"),
+      upsert: db.prepare(
+        `INSERT INTO labels (id, text, revision, updatedAt, translated) VALUES (?, ?, ?, datetime('now'), ?)
+         ON CONFLICT(id) DO UPDATE SET
+           text = excluded.text,
+           revision = excluded.revision,
+           updatedAt = excluded.updatedAt,
+           translated = excluded.translated`,
       ),
     },
   };
@@ -415,3 +453,128 @@ export async function setonboardingstage(visitor: string, stage: "intro" | "onbo
   statements.upsert.run(visitor, stage === "intro" ? 1 : 0, stage === "onboarding" ? 1 : 0);
   return (await getonboardingstate(visitor)) ?? { introseen: false, onboardingseen: false };
 }
+
+/* --------------------------------------------------------------------- */
+/* labels — the interface copy store                                      */
+/* --------------------------------------------------------------------- */
+
+/** one labels row: the interface copy store. the id is the page.widget.key
+ * path, the text rides the english source of truth (labels.ts), and the
+ * translated flag protects a runtime translation from the seed overwrite.
+ * the shape mirrors the browser seed rows in labels.ts one to one. */
+export type LabelRow = {
+  id: string;
+  text: string;
+  revision: number;
+  updatedAt: string;
+  translated?: boolean;
+};
+
+/** Projects one raw labels row into the stored label projection (translated
+ * rides the 0/1 cell of the mirror). */
+function labelRowOf(row: {
+  id: string;
+  text: string;
+  revision: number;
+  updatedAt: string;
+  translated: number;
+}): LabelRow {
+  return {
+    id: row.id,
+    text: row.text,
+    revision: row.revision,
+    updatedAt: row.updatedAt,
+    ...(row.translated === 1 ? { translated: true } : {}),
+  };
+}
+
+/**
+ * Writes one label row (idempotent upsert; the caller owns the revision),
+ * prepared and bound, never concatenated SQL.
+ *
+ * @param id the page.widget.key path of the label.
+ * @param text the surface text.
+ * @param revision the manifest revision the text carries.
+ * @param translated true when the row carries a runtime translation.
+ * @returns the stored label projection (undefined outside a node process).
+ */
+export async function saveLabel(id: string, text: string, revision: number, translated = false): Promise<LabelRow | undefined> {
+  if (!isnode()) return undefined;
+  const { labels } = await openMirror();
+  labels.upsert.run(id, text, revision, translated ? 1 : 0);
+  const row = labels.select.get(id) as
+    | { id: string; text: string; revision: number; updatedAt: string; translated: number }
+    | undefined;
+  if (!row) throw new Error(`label "${id}" write did not land`);
+  return labelRowOf(row);
+}
+
+/**
+ * Reads one label row by its page.widget.key path.
+ *
+ * @param id the label id.
+ * @returns the row, or undefined when absent (or outside a node process).
+ */
+export async function readLabel(id: string): Promise<LabelRow | undefined> {
+  if (!isnode()) return undefined;
+  const { labels } = await openMirror();
+  const row = labels.select.get(id) as
+    | { id: string; text: string; revision: number; updatedAt: string; translated: number }
+    | undefined;
+  return row ? labelRowOf(row) : undefined;
+}
+
+/**
+ * Reads every label row of the store ordered by id.
+ *
+ * @returns the label rows (empty outside a node process).
+ */
+export async function readAllLabels(): Promise<LabelRow[]> {
+  if (!isnode()) return [];
+  const { labels } = await openMirror();
+  return (
+    labels.selectAll.all() as { id: string; text: string; revision: number; updatedAt: string; translated: number }[]
+  ).map(labelRowOf);
+}
+
+/**
+ * Ingests the english manifest of labels.ts into the labels table — the
+ * gateway-side twin of the browser seedLabels: idempotent, the changed rows
+ * refresh, and the translated rows stay protected from the overwrite.
+ *
+ * @returns the seeded and protected row counts (zeros outside a node process).
+ */
+export async function seedLabelRows(): Promise<{ seeded: number; protected: number }> {
+  if (!isnode()) return { seeded: 0, protected: 0 };
+  const { labels } = await openMirror();
+  const rows = new Map(
+    (
+      labels.selectAll.all() as {
+        id: string;
+        text: string;
+        revision: number;
+        updatedAt: string;
+        translated: number;
+      }[]
+    ).map((row) => [row.id, labelRowOf(row)]),
+  );
+  let seeded = 0;
+  let saved = 0;
+  for (const [id, text] of Object.entries(LABEL_MANIFEST)) {
+    const row = rows.get(id);
+    if (row === undefined || (row.translated !== true && row.text !== text)) {
+      labels.upsert.run(id, text, LABEL_REVISION, row?.translated === true ? 1 : 0);
+      seeded += 1;
+    }
+    saved += 1;
+  }
+  return { seeded, protected: saved - seeded };
+}
+
+/* the copy law rides the mirror boot: the label seed ingests the english
+ * manifest of labels.ts when the gateway runtime opens the store (the
+ * interface strings land in the labels table, the translated rows protected
+ * from the overwrite). best effort: a sealed store never blocks the boot,
+ * the manifest always answers the widgets; the browser never runs this —
+ * the visitor machine mirrors the rows through seedLabels in labels.ts. */
+if (isnode()) void seedLabelRows().catch(() => {});

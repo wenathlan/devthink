@@ -18,6 +18,7 @@ import { ArrowSyncRegular, ChatMultipleRegular } from "@fluentui/react-icons";
  */
 import { useEffect, useState } from "react";
 import { type ApiKeyRow, type ChatMessageRow, listkeys, listmessages, maskkey, rotationsummary } from "../../db";
+import { label, labelfill } from "../../labels";
 import { observeReveals } from "../../reveal";
 import { contextshare, freshestfirst, listsessions, rotationindex, type SessionContextRow } from "../../sessions";
 import EmptyState from "../widgets/shell.emptystate.tsx";
@@ -33,7 +34,7 @@ const ROTDOTS = [0, 1, 2, 3, 4, 5] as const;
  * @returns the short label.
  */
 function shortstamp(value: string | null | undefined): string {
-  if (!value) return "never";
+  if (!value) return label("sessions.stamp.never");
   return value.slice(0, 16).replace("T", " ");
 }
 
@@ -69,35 +70,32 @@ export default function Sessions() {
 
   /** the honest reload action of the empty frames (the store never persists on the visitor). */
   const reload = (): void => {
-    toast("the store answers from the self-hosted DB — seeds on the static build; reload to ask again", "info");
+    toast(label("sessions.toast.reload"), "info");
   };
 
   return (
     <>
       <section className="pagehead halftone">
-        <p className="eyebrow">getry · sessions</p>
-        <h1>sessions, keys and the chat log</h1>
-        <p>
-          One row per session and provider carries the rotation index, the thinking budget and the context window math.
-          The key pools rotate in round robin; the meta model rotates every six messages.
-        </p>
+        <p className="eyebrow">{label("sessions.eyebrow")}</p>
+        <h1>{label("sessions.title")}</h1>
+        <p>{label("sessions.lede")}</p>
       </section>
 
-      <section className="section r3-ops" aria-label="session registry">
+      <section className="section r3-ops" aria-label={label("sessions.registry.aria")}>
         <div className="ledger r3-ledger">
           <div className="ledger__main">
-            <p className="railmeta__head reveal">session contexts — one row per session and provider</p>
+            <p className="railmeta__head reveal">{label("sessions.registry.head")}</p>
             <div className="tablewrap reveal">
               <table className="table ladder">
                 <thead>
                   <tr>
-                    <th>session</th>
-                    <th>model</th>
-                    <th>messages</th>
-                    <th>context</th>
-                    <th>rotation</th>
-                    <th>thinking</th>
-                    <th>last message</th>
+                    <th>{label("sessions.table.session")}</th>
+                    <th>{label("sessions.table.model")}</th>
+                    <th>{label("sessions.table.messages")}</th>
+                    <th>{label("sessions.table.context")}</th>
+                    <th>{label("sessions.table.rotation")}</th>
+                    <th>{label("sessions.table.thinking")}</th>
+                    <th>{label("sessions.table.last")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -134,7 +132,9 @@ export default function Sessions() {
                         <span className="ladderdots" aria-hidden="true">
                           <i data-on={session.thinkingEnabled ? "true" : undefined} />
                         </span>{" "}
-                        {session.thinkingEnabled ? (session.thinkingLevel ?? "default") : "off"}
+                        {session.thinkingEnabled
+                          ? (session.thinkingLevel ?? label("sessions.think.default"))
+                          : label("sessions.think.off")}
                       </td>
                       <td className="cellstamp">{shortstamp(session.lastMessageAt)}</td>
                     </tr>
@@ -145,10 +145,10 @@ export default function Sessions() {
                         {loaded ? (
                           <EmptyState
                             icon={ChatMultipleRegular}
-                            note="the session store answered no rows — the self-hosted DB is offline and this static build carries no seeds for it"
+                            note={label("sessions.empty.sessions")}
                             action={
                               <button type="button" className="btn secondary small" onClick={reload}>
-                                ask the store again
+                                {label("sessions.action.store")}
                               </button>
                             }
                           />
@@ -156,7 +156,7 @@ export default function Sessions() {
                           <>
                             <span className="skel" style={{ width: "46%" }} aria-hidden="true" />
                             <span className="skel" style={{ width: "72%" }} aria-hidden="true" />
-                            <span className="sr-only">loading the session store…</span>
+                            <span className="sr-only">{label("sessions.loading.sessions")}</span>
                           </>
                         )}
                       </td>
@@ -169,37 +169,34 @@ export default function Sessions() {
 
           <aside className="ledger__rail">
             <div className="railmeta reveal">
-              <p className="railmeta__head">rotation</p>
+              <p className="railmeta__head">{label("sessions.rail.rotation")}</p>
               <div className="railmeta__row">
-                <span>active keys</span>
+                <span>{label("sessions.rail.activeKeys")}</span>
                 <strong>{summary.active}</strong>
               </div>
               <div className="railmeta__row">
-                <span>in rotation</span>
+                <span>{label("sessions.rail.inRotation")}</span>
                 <strong>{summary.rotating}</strong>
               </div>
               <div className="railmeta__row">
-                <span>erroring</span>
+                <span>{label("sessions.rail.erroring")}</span>
                 <strong>{summary.erroring}</strong>
               </div>
               <div className="railmeta__row">
-                <span>meta model turns</span>
-                <strong>every 6</strong>
+                <span>{label("sessions.rail.metaTurns")}</span>
+                <strong>{label("sessions.rail.everySix")}</strong>
               </div>
-              <p className="railmeta__foot">
-                The real keys live in the environment of the self-hosted deploy — this surface only ever renders the
-                masked answers.
-              </p>
+              <p className="railmeta__foot">{label("sessions.rail.foot")}</p>
             </div>
             <div className="railmeta reveal">
-              <p className="railmeta__head">provider keys</p>
+              <p className="railmeta__head">{label("sessions.rail.keys")}</p>
               {keys.length === 0 ? (
                 <EmptyState
                   icon={ChatMultipleRegular}
-                  note="the key pool answered no rows — the /v1/keys lane of the self-hosted DB is not answering"
+                  note={label("sessions.empty.keys")}
                   action={
                     <button type="button" className="btn secondary small" onClick={reload}>
-                      ask the pool again
+                      {label("sessions.action.pool")}
                     </button>
                   }
                 />
@@ -211,7 +208,12 @@ export default function Sessions() {
                       <i data-on={key.rateLimitHit || key.status !== "active" ? undefined : "true"} />
                     </span>
                     <span className="edgerow__meta">
-                      {key.provider} · {key.label ?? "unlabeled"} · {key.useCount} uses · rotated {key.rotationCount}×
+                      {labelfill("sessions.key.meta", {
+                        provider: key.provider,
+                        label: key.label ?? label("sessions.key.unlabeled"),
+                        uses: String(key.useCount),
+                        rotated: String(key.rotationCount),
+                      })}
                     </span>
                   </article>
                 ))
@@ -221,27 +223,24 @@ export default function Sessions() {
         </div>
       </section>
 
-      <section className="section r3-log" aria-label="recent chat log">
+      <section className="section r3-log" aria-label={label("sessions.log.aria")}>
         <div className="section-head reveal">
           <h2>
-            <ChatMultipleRegular fontSize={17} /> recent chat log
+            <ChatMultipleRegular fontSize={17} /> {label("sessions.log.title")}
           </h2>
-          <p>
-            Every gateway request and response lands in the ChatMessage kind with its route, tokens and round-trip
-            duration — the slice the gateway lanes consume.
-          </p>
+          <p>{label("sessions.log.lede")}</p>
         </div>
         <div className="tablewrap reveal">
           <table className="table ladder">
             <thead>
               <tr>
-                <th>chat</th>
-                <th>provider</th>
-                <th>route</th>
-                <th>role</th>
-                <th>tokens</th>
-                <th>duration</th>
-                <th>at</th>
+                <th>{label("sessions.log.chat")}</th>
+                <th>{label("sessions.log.provider")}</th>
+                <th>{label("sessions.log.route")}</th>
+                <th>{label("sessions.log.role")}</th>
+                <th>{label("sessions.log.tokens")}</th>
+                <th>{label("sessions.log.durationHead")}</th>
+                <th>{label("sessions.log.at")}</th>
               </tr>
             </thead>
             <tbody>
@@ -252,7 +251,7 @@ export default function Sessions() {
                   <td>{message.route}</td>
                   <td>{message.role}</td>
                   <td>{message.totalTokens ?? "—"}</td>
-                  <td>{message.durationMs ? `${message.durationMs}ms` : "—"}</td>
+                  <td>{message.durationMs ? labelfill("sessions.log.duration", { ms: String(message.durationMs) }) : "—"}</td>
                   <td>{shortstamp(message.createdAt)}</td>
                 </tr>
               ))}
@@ -262,10 +261,10 @@ export default function Sessions() {
                     {loaded ? (
                       <EmptyState
                         icon={ChatMultipleRegular}
-                        note="the chat log answered no entries — no gateway request has been logged to this store yet"
+                        note={label("sessions.empty.log")}
                         action={
                           <button type="button" className="btn secondary small" onClick={reload}>
-                            ask the log again
+                            {label("sessions.action.log")}
                           </button>
                         }
                       />
@@ -273,7 +272,7 @@ export default function Sessions() {
                       <>
                         <span className="skel" style={{ width: "38%" }} aria-hidden="true" />
                         <span className="skel" style={{ width: "64%" }} aria-hidden="true" />
-                        <span className="sr-only">loading the chat log…</span>
+                        <span className="sr-only">{label("sessions.loading.log")}</span>
                       </>
                     )}
                   </td>
@@ -286,12 +285,10 @@ export default function Sessions() {
           <button
             type="button"
             className="btn secondary"
-            onClick={() =>
-              toast("the seeds refresh from the site DB on every load — nothing persists on your machine", "info")
-            }
+            onClick={() => toast(label("sessions.toast.refresh"), "info")}
           >
             <ArrowSyncRegular fontSize={14} />
-            how the rows arrive
+            {label("sessions.action.how")}
           </button>
         </div>
       </section>

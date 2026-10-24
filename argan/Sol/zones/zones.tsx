@@ -16,14 +16,15 @@ import { useEffect, useState } from "react";
 import type { PublicationStep, RecordSetRow, ZoneSnapshot } from "../../argan.ts";
 import { apexZoneFile } from "../../argan.ts";
 import { listApexRecordSets, listPublicationSteps, listZones } from "../../catalog.ts";
+import { label, labelfill } from "../../labels";
 import EmptyState from "../widgets/shell.emptystate.tsx";
 import { type NavLink, Shell } from "../shell/Shell";
 
 const FOOTER_LINKS: readonly NavLink[] = [
-  { label: "Home", href: "/" },
-  { label: "DNSSEC", href: "/dnssec" },
-  { label: "Gateway", href: "/gateway" },
-  { label: "Settings", href: "/settings" },
+  { label: label("nav.home"), href: "/" },
+  { label: label("nav.dnssec"), href: "/dnssec" },
+  { label: label("nav.gateway"), href: "/gateway" },
+  { label: label("nav.settings"), href: "/settings" },
 ];
 
 /** the apex zone (the anchor of the hung model) — the featured ledger row */
@@ -79,12 +80,9 @@ export default function Zones() {
   return (
     <Shell name="argan" contained footerLinks={FOOTER_LINKS} domain="argan.devthink.pro">
       <header className="r3a-head">
-        <p className="r3a-head__eyebrow">argan · zones</p>
-        <h1 className="r3a-head__title">Every name lives in a zone.</h1>
-        <p className="r3a-head__lede">
-          Masters written by the pipeline, secondaries pulled by authenticated transfer, serials bumped on every
-          republication.
-        </p>
+        <p className="r3a-head__eyebrow">{label("zones.eyebrow")}</p>
+        <h1 className="r3a-head__title">{label("zones.title")}</h1>
+        <p className="r3a-head__lede">{label("zones.lede")}</p>
       </header>
 
       {/* the asymmetric console: one dominant zone ledger + the publication rail */}
@@ -95,12 +93,13 @@ export default function Zones() {
               01
             </span>
             <h2 id="zt-h" className="r3a-h__title">
-              Zones under management
+              {label("zones.ledger.title")}
             </h2>
-            <p className="r3a-h__aside">{zones.length} zones</p>
+            <p className="r3a-h__aside">{labelfill("zones.ledger.count", { count: String(zones.length) })}</p>
             <p className="r3a-h__note">
-              Snapshot of the staging cluster — serials follow <code>YYYYMMDDNN</code>, date plus revision of the day.
-              The row with the newest serial carries the pulse — the last republication of the snapshot.
+              {label("zones.ledger.noteLead")}
+              <code>YYYYMMDDNN</code>
+              {label("zones.ledger.noteTail")}
             </p>
           </div>
           <div className="scroll-x">
@@ -108,16 +107,16 @@ export default function Zones() {
               <EmptyState
                 icon={GlobeRegular}
                 pending={pending > 0}
-                note="the zone table answered no rows — the catalog is still loading or the staging cluster is offline"
+                note={label("zones.empty.ledger")}
               />
             ) : (
               <table className="table r3a-table">
                 <thead>
                   <tr>
-                    <th scope="col">zone</th>
-                    <th scope="col">type</th>
-                    <th scope="col">serial</th>
-                    <th scope="col">status</th>
+                    <th scope="col">{label("zones.table.zone")}</th>
+                    <th scope="col">{label("zones.table.type")}</th>
+                    <th scope="col">{label("zones.table.serial")}</th>
+                    <th scope="col">{label("zones.table.status")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -149,14 +148,17 @@ export default function Zones() {
 
         <aside className="r3a-rail" aria-labelledby="pub-h">
           <div className="r3a-railblock">
-            <p className="r3a-railblock__name">pending publication · the hung model</p>
+            <p className="r3a-railblock__name">{label("zones.rail.hung")}</p>
             <p className="r3a-railblock__text">
-              A label stays <em>pending</em> until the flow completes. Subdomains hang from the bought apex with a
-              wildcard record to the same edge — stock DNS resolves it, the vhost is picked by <code>Host</code> header.
+              {label("zones.rail.hungLead")}
+              <em>pending</em>
+              {label("zones.rail.hungMid")}
+              <code>Host</code>
+              {label("zones.rail.hungTail")}
             </p>
           </div>
           <div className="r3a-railblock">
-            <p className="r3a-railblock__name">the flow · five moves</p>
+            <p className="r3a-railblock__name">{label("zones.rail.flow")}</p>
             <ol className="r3a-ledger r3a-ledger--flow">
               {steps.map((step) => (
                 <li key={step.ordinal} className="r3a-row r3a-row--flow">
@@ -179,9 +181,9 @@ export default function Zones() {
             02
           </span>
           <h2 id="rr-h" className="r3a-h__title">
-            What the apex serves today
+            {label("zones.records.title")}
           </h2>
-          <p className="r3a-h__aside">{records.length} records</p>
+          <p className="r3a-h__aside">{labelfill("zones.records.count", { count: String(records.length) })}</p>
           {directives ? <p className="r3a-h__note">{directives}</p> : null}
         </div>
         <div className="r3a-ledger">
@@ -189,7 +191,7 @@ export default function Zones() {
             <EmptyState
               icon={GlobeRegular}
               pending={pending > 0}
-              note="the apex record set arrived empty — the snapshot has no records to rule yet"
+              note={label("zones.empty.records")}
             />
           ) : (
             records.map((row) => (
@@ -206,7 +208,7 @@ export default function Zones() {
         </div>
         {records.length > 0 ? (
           <details className="r3a-file">
-            <summary>zone file — verbatim</summary>
+            <summary>{label("zones.file.summary")}</summary>
             <pre className="r3a-term">
               <code>{apexZoneFile(recordSets)}</code>
             </pre>

@@ -24,6 +24,7 @@
 import { useCallback, useState } from "react";
 import { familyrow } from "../../family";
 import { familyurl } from "../../familyurl";
+import { label, labelfill } from "../../labels";
 import type { HomeProps } from "../../hometypes.ts";
 import { lfsPointerFrom, storageModeFor } from "../../storage";
 import { Entry } from "../widgets/home.entry.tsx";
@@ -39,32 +40,32 @@ export * from "../widgets/home.tabs.tsx";
  * document of lfsPointerText, the five checks of storageRecordValid. */
 const CHANNELS = [
   {
-    name: "lfs masters",
-    note: "binary masters and any row over the threshold ride the lfs objects — sha-256 sealed, 64-bit pointers.",
+    name: label("home.channel.lfs.name"),
+    note: label("home.channel.lfs.note"),
     kind: "lfs",
     size: "> 1,000,000 b",
     state: "sealed",
     featured: true,
   },
   {
-    name: "in-db blobs",
-    note: "small text-like rows ride the git objects inside the self-hosted database — sha-1 oid.",
+    name: label("home.channel.blobs.name"),
+    note: label("home.channel.blobs.note"),
     kind: "blob",
     size: "≤ 1,000,000 b",
     state: "sealed",
     featured: false,
   },
   {
-    name: "lfs pointers",
-    note: "version · oid sha-256 · size — the three-line pointer, cataloged beside the bytes.",
+    name: label("home.channel.pointers.name"),
+    note: label("home.channel.pointers.note"),
     kind: "catalog",
     size: "3 lines",
     state: "guarded",
     featured: false,
   },
   {
-    name: "storage records",
-    note: "id · path · mime · size · digest — five checks before a record is served over https.",
+    name: label("home.channel.records.name"),
+    note: label("home.channel.records.note"),
     kind: "serve",
     size: "5 checks",
     state: "served",
@@ -75,8 +76,8 @@ const CHANNELS = [
 /** the family row of the landing footer: the nine siblings, spec §12 dots */
 function FamilyRow() {
   return (
-    <nav className="vt-familyrow" aria-label="the DevThink family">
-      <p className="vt-familyrow__head">the family</p>
+    <nav className="vt-familyrow" aria-label={label("home.family.aria")}>
+      <p className="vt-familyrow__head">{label("home.family.head")}</p>
       <div className="vt-familyrow__links">
         {familyrow().map((member) => (
           <a
@@ -85,7 +86,7 @@ function FamilyRow() {
             href={familyurl(member.slug)}
             target="_blank"
             rel="noreferrer"
-            data-tip={`open ${member.slug} — a family application`}
+            data-tip={labelfill("home.family.tip", { slug: member.slug })}
             aria-label={member.slug}
           >
             <span className="vt-familyrow__dot" style={{ background: member.accent }} aria-hidden="true" />
@@ -100,35 +101,36 @@ function FamilyRow() {
 /** the three jobs of the safe (the family copy, unchanged) */
 const JOBS = [
   {
-    title: "every site database",
-    text: "vault keeps the databases of the whole family: one deployable clone of storage where every site state lives.",
+    title: label("home.jobs.db.title"),
+    text: label("home.jobs.db.text"),
   },
   {
-    title: "the data backups",
-    text: "backups ride the same house tree — the network stores its recoverable copies here, beside the state they protect.",
+    title: label("home.jobs.backups.title"),
+    text: label("home.jobs.backups.text"),
   },
   {
-    title: "one house tree",
-    text: "one folder per application, no src/: the loose logics, the docs, the tests and the Sol theme under the same roof.",
+    title: label("home.jobs.tree.title"),
+    text: label("home.jobs.tree.text"),
   },
 ] as const;
 
-/** the seal · store · attest flow of the deposit console */
+/** the seal · store · attest flow of the deposit console (the ordinals ride
+ * the presentation; the copy rides the labels store) */
 const STEPS = [
   {
     num: "01",
-    title: "seal",
-    text: "every artifact is named, measured and digested before the door closes.",
+    title: label("home.steps.seal.title"),
+    text: label("home.steps.seal.text"),
   },
   {
     num: "02",
-    title: "store",
-    text: "the row rides its channel — lfs for the masters, the in-db git objects for the small.",
+    title: label("home.steps.store.title"),
+    text: label("home.steps.store.text"),
   },
   {
     num: "03",
-    title: "attest",
-    text: "the record answers for itself over https: path, mime, size and digest.",
+    title: label("home.steps.attest.title"),
+    text: label("home.steps.attest.text"),
   },
 ] as const;
 
@@ -157,17 +159,29 @@ function parseDepositLine(line: string): { path: string; mime: string; size: num
 function sealReadout(line: string): string {
   const pointer = lfsPointerFrom(line);
   if (pointer) {
-    return `lfs pointer accepted — oid sha256:${pointer.oid.slice(0, 12)}… · size ${Number(pointer.size).toLocaleString("en-US")} b · rides the lfs channel · digest sha-256 (64 hex)`;
+    return labelfill("home.readout.pointer", {
+      oid: pointer.oid.slice(0, 12),
+      size: Number(pointer.size).toLocaleString("en-US"),
+    });
   }
   const deposit = parseDepositLine(line);
   if (!deposit) {
-    return "not a deposit yet — name it as: path · mime · size (or paste a git-lfs pointer)";
+    return label("home.readout.hint");
   }
   const mode = storageModeFor(deposit.size, deposit.mime);
   const digest = mode === "lfs" ? "sha-256 (64 hex)" : "sha-1 (40 hex)";
   const why =
-    mode === "lfs" ? "binary master or over the 1,000,000-byte threshold" : "small text-like row under the threshold";
-  return `sealed for the ${mode} channel — ${deposit.path} · ${deposit.mime} · ${deposit.size.toLocaleString("en-US")} b · ${why} · digest ${digest}`;
+    mode === "lfs"
+      ? label("home.readout.whyLfs")
+      : label("home.readout.whyBlob");
+  return labelfill("home.readout.sealed", {
+    mode,
+    path: deposit.path,
+    mime: deposit.mime,
+    size: deposit.size.toLocaleString("en-US"),
+    why,
+    digest,
+  });
 }
 
 /** Sets (or replaces) the mime token of a deposit draft line. */
@@ -193,30 +207,30 @@ function DepositField({ onSeal }: { onSeal: () => void }) {
   return (
     <form
       className="vt-deposit vt-rise"
-      aria-label="deposit an artifact into the vault"
+      aria-label={label("home.deposit.aria")}
       onSubmit={(event) => {
         event.preventDefault();
         onSeal();
       }}
     >
-      <p className="vt-deposit__label">deposit an artifact</p>
+      <p className="vt-deposit__label">{label("home.deposit.label")}</p>
       <div className="vt-deposit__field">
         <input
           className="vt-deposit__input"
           type="text"
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
-          placeholder="/sites/state.db application/x-sqlite3 48211046"
-          aria-label="artifact line: path, mime and size"
+          placeholder={label("home.deposit.placeholder")}
+          aria-label={label("home.deposit.inputAria")}
           spellCheck={false}
           autoComplete="off"
         />
         <button className="vt-deposit__key" type="submit">
-          seal
+          {label("home.deposit.seal")}
         </button>
       </div>
       <fieldset className="vt-chips">
-        <legend className="vt-chips__legend">artifact kinds — the real families of the storage contract</legend>
+        <legend className="vt-chips__legend">{label("home.deposit.kinds")}</legend>
         {KINDS.map((kind) => (
           <button
             key={kind}
@@ -249,7 +263,7 @@ function VtDoor() {
       className="vt-door"
       viewBox="0 0 320 356"
       role="img"
-      aria-label="the vault door of the family safe"
+      aria-label={label("home.door.aria")}
       focusable="false"
     >
       {/* the frame and the slab */}
@@ -340,14 +354,11 @@ export function HomeSurface(props: HomeProps) {
       <section className="vt-hero halftone" aria-labelledby="vt-hero-title">
         <div className="vt-hero__grid">
           <div className="vt-hero__copy">
-            <p className="vt-eyebrow vt-rise">vault · the family vault — only stores</p>
+            <p className="vt-eyebrow vt-rise">{label("home.eyebrow")}</p>
             <h1 className="vt-display vt-rise" id="vt-hero-title">
-              the family keeps its state here.
+              {label("home.title")}
             </h1>
-            <p className="vt-lede vt-rise">
-              one deployable clone of storage keeps every site database and receives every data backup — nothing
-              executes inside the safe.
-            </p>
+            <p className="vt-lede vt-rise">{label("home.lede")}</p>
             <DepositField onSeal={sealToLedger} />
             <div className="vt-hero__anchors vt-rise">
               <Tabs />
@@ -355,18 +366,18 @@ export function HomeSurface(props: HomeProps) {
           </div>
           <figure className="vt-doorfig vt-rise">
             <VtDoor />
-            <figcaption className="vt-cap">the vault door — one dial, eight bolts, sealed</figcaption>
+            <figcaption className="vt-cap">{label("home.door.caption")}</figcaption>
             <dl className="vt-doorfacts">
               <div className="vt-doorfact">
-                <dt>channels</dt>
+                <dt>{label("home.facts.channels")}</dt>
                 <dd>2 — lfs + blob</dd>
               </div>
               <div className="vt-doorfact">
-                <dt>digests</dt>
+                <dt>{label("home.facts.digests")}</dt>
                 <dd>sha-256 · sha-1</dd>
               </div>
               <div className="vt-doorfact">
-                <dt>sizes</dt>
+                <dt>{label("home.facts.sizes")}</dt>
                 <dd>64-bit pointers</dd>
               </div>
             </dl>
@@ -380,28 +391,23 @@ export function HomeSurface(props: HomeProps) {
       {/* the vault console — the capability ledger, the flow, the jobs rail */}
       <section className="vt-zone" id="surface" aria-labelledby="surface-title">
         <header className="vt-zonehead">
-          <p className="vt-eyebrow">the vault ledger</p>
+          <p className="vt-eyebrow">{label("home.ledger.eyebrow")}</p>
           <h2 className="vt-zonetitle" id="surface-title">
-            what the safe keeps
+            {label("home.ledger.title")}
           </h2>
-          <p className="vt-zonelede">
-            no artifact rows are served by the staging surface yet — the ledger presents the storage contract itself,
-            channel by channel.
-          </p>
+          <p className="vt-zonelede">{label("home.ledger.lede")}</p>
         </header>
         <div className="vt-console">
           <div className="vt-console__main">
             <div className="vt-ledgerscroll">
               <table className="vt-ledger">
-                <caption className="vt-ledger__caption">
-                  the storage channels of the vault — kind, sealed size and status
-                </caption>
+                <caption className="vt-ledger__caption">{label("home.ledger.caption")}</caption>
                 <thead>
                   <tr>
-                    <th scope="col">channel</th>
-                    <th scope="col">kind</th>
-                    <th scope="col">sealed</th>
-                    <th scope="col">status</th>
+                    <th scope="col">{label("home.table.channel")}</th>
+                    <th scope="col">{label("home.table.kind")}</th>
+                    <th scope="col">{label("home.table.sealed")}</th>
+                    <th scope="col">{label("home.table.status")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -437,7 +443,7 @@ export function HomeSurface(props: HomeProps) {
             </ol>
           </div>
           <aside className="vt-console__rail">
-            <p className="vt-eyebrow">the three jobs</p>
+            <p className="vt-eyebrow">{label("home.jobs.eyebrow")}</p>
             <ol className="vt-jobs">
               {JOBS.map((job, index) => (
                 <li key={job.title} className="vt-run">
@@ -449,9 +455,7 @@ export function HomeSurface(props: HomeProps) {
                 </li>
               ))}
             </ol>
-            <p className="vt-footnote">
-              the house tree keeps every state recoverable — nothing executes inside the vault.
-            </p>
+            <p className="vt-footnote">{label("home.jobs.footnote")}</p>
           </aside>
         </div>
       </section>
@@ -464,21 +468,21 @@ export function HomeSurface(props: HomeProps) {
       <footer className="vt-quad">
         <div className="vt-quad__grid">
           <div className="vt-quad__col">
-            <p className="vt-quad__head">store</p>
-            <p className="vt-quad__text">two channels, one threshold — lfs for the masters, blobs for the small.</p>
+            <p className="vt-quad__head">{label("home.quad.store")}</p>
+            <p className="vt-quad__text">{label("home.quad.storeText")}</p>
           </div>
           <div className="vt-quad__col">
-            <p className="vt-quad__head">guard</p>
-            <p className="vt-quad__text">sha-256 and sha-1 digests attest every sealed byte.</p>
+            <p className="vt-quad__head">{label("home.quad.guard")}</p>
+            <p className="vt-quad__text">{label("home.quad.guardText")}</p>
           </div>
           <div className="vt-quad__col">
-            <p className="vt-quad__head">recover</p>
-            <p className="vt-quad__text">backups ride the same house tree, beside the state they protect.</p>
+            <p className="vt-quad__head">{label("home.quad.recover")}</p>
+            <p className="vt-quad__text">{label("home.quad.recoverText")}</p>
           </div>
           <div className="vt-quad__col">
-            <p className="vt-quad__head">family</p>
+            <p className="vt-quad__head">{label("home.quad.family")}</p>
             <a className="vt-quad__link" href="https://github.com/wenathlan/devthink" target="_blank" rel="noreferrer">
-              the devthink family
+              {label("home.quad.familyLink")}
             </a>
           </div>
         </div>

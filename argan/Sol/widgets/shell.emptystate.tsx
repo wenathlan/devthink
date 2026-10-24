@@ -9,6 +9,7 @@
  */
 import type { GlobeRegular } from "@fluentui/react-icons";
 import type { ReactNode } from "react";
+import { label } from "../../labels";
 
 type EmptyStateProps = {
   /** the fluent glyph component that speaks for the empty surface */
@@ -37,7 +38,7 @@ export function EmptyState({ icon: Icon, note, action, pending }: EmptyStateProp
         <span className="skeleton" style={{ width: "44%" }} aria-hidden="true" />
         <span className="skeleton" style={{ width: "68%" }} aria-hidden="true" />
         <span className="skeleton" style={{ width: "30%" }} aria-hidden="true" />
-        <span className="r3a-sr">loading — the rows are still on their way</span>
+        <span className="r3a-sr">{label("widget.emptystate.loading")}</span>
       </div>
     );
   }

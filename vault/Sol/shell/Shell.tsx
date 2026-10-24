@@ -52,6 +52,7 @@ import {
 import { Link, useLocation } from "wouter";
 import { FAMILY_SLUGS, familyAccentOf } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
+import { label, labelfill } from "../../labels";
 import { BrandMark } from "../widgets/shell.brandmark";
 
 /** the theme in memory: flips the data-theme attribute, stores nothing */
@@ -107,15 +108,26 @@ export type RailApp = {
 
 /** the pages the application window hosts, one rail entry each — the real
  * surface set of the vault: the landing first, then the three platform
- * pages of the safe. exported for the flow components beside this folder. */
+ * pages of the safe. exported for the flow components beside this folder.
+ * the labels ride the copy law (labels.ts). */
 export const RAIL_APPS: readonly RailApp[] = [
-  { href: "/", label: "home", detail: "the staging surface of the vault", icon: HomeRegular },
-  { href: "/objects", label: "objects", detail: "the sealed inventory and its census", icon: ArchiveRegular },
-  { href: "/buckets", label: "buckets", detail: "the retention shelf and its drawers", icon: LockClosedRegular },
+  { href: "/", label: label("shell.rail.home"), detail: label("shell.rail.homeDetail"), icon: HomeRegular },
+  {
+    href: "/objects",
+    label: label("shell.rail.objects"),
+    detail: label("shell.rail.objectsDetail"),
+    icon: ArchiveRegular,
+  },
+  {
+    href: "/buckets",
+    label: label("shell.rail.buckets"),
+    detail: label("shell.rail.bucketsDetail"),
+    icon: LockClosedRegular,
+  },
   {
     href: "/retention",
-    label: "retention",
-    detail: "the clock of the safe and the sweep plan",
+    label: label("shell.rail.retention"),
+    detail: label("shell.rail.retentionDetail"),
     icon: HourglassRegular,
   },
 ];
@@ -166,7 +178,7 @@ function clampDrag(x: number, y: number): { x: number; y: number } {
 function ThemeToggle() {
   const [current, setCurrent] = useState<ThemeName>(currentTheme());
   return (
-    <button type="button" className="win-theme" aria-label="toggle theme" onClick={() => setCurrent(toggleTheme())}>
+    <button type="button" className="win-theme" aria-label={label("shell.theme.aria")} onClick={() => setCurrent(toggleTheme())}>
       {current === "dark" ? (
         <WeatherSunnyRegular fontSize={14} aria-hidden="true" />
       ) : (
@@ -329,11 +341,11 @@ export function Shell({ children }: { children: ReactNode }) {
         <button
           type="button"
           className="win-chip"
-          aria-label="Restore the vault window"
+          aria-label={label("shell.chip.restoreAria")}
           onClick={() => setMinimized(false)}
         >
           <BrandMark size={16} />
-          <span>vault</span>
+          <span>{label("shell.brand")}</span>
         </button>
       </div>
     );
@@ -352,7 +364,7 @@ export function Shell({ children }: { children: ReactNode }) {
         data-sized={size && !maximized ? "true" : undefined}
         data-inactive={inactive ? "true" : undefined}
         data-landing={location === "/" ? "true" : undefined}
-        aria-label="vault window"
+        aria-label={label("shell.window.aria")}
         style={
           {
             "--win-x": `${drag.x}px`,
@@ -373,14 +385,14 @@ export function Shell({ children }: { children: ReactNode }) {
         >
           <span className="win-title">
             <BrandMark size={18} />
-            <strong>vault</strong>
-            <span className="win-title__role">the family vault</span>
+            <strong>{label("shell.brand")}</strong>
+            <span className="win-title__role">{label("shell.role")}</span>
           </span>
           <div className="win-controls">
             <button
               type="button"
               className="win-control"
-              aria-label="Minimize vault"
+              aria-label={label("shell.caption.minimize")}
               onClick={() => setMinimized(true)}
             >
               <SubtractRegular fontSize={14} aria-hidden="true" />
@@ -388,7 +400,7 @@ export function Shell({ children }: { children: ReactNode }) {
             <button
               type="button"
               className="win-control"
-              aria-label={maximized ? "Restore vault" : "Maximize vault"}
+              aria-label={maximized ? label("shell.caption.restore") : label("shell.caption.maximize")}
               onClick={toggleMaximize}
             >
               {maximized ? (
@@ -400,7 +412,7 @@ export function Shell({ children }: { children: ReactNode }) {
             <button
               type="button"
               className="win-control win-control--close"
-              aria-label="Close vault"
+              aria-label={label("shell.caption.close")}
               onClick={closeWindow}
             >
               <DismissRegular fontSize={14} aria-hidden="true" />
@@ -409,9 +421,9 @@ export function Shell({ children }: { children: ReactNode }) {
         </header>
 
         <div className="win-body">
-          <nav className="win-rail" aria-label="Pages">
+          <nav className="win-rail" aria-label={label("shell.rail.aria")}>
             <p className="win-rail__head" aria-hidden="true">
-              pages
+              {label("shell.rail.head")}
             </p>
             {RAIL_APPS.map((app) => {
               const Icon = app.icon;
@@ -433,7 +445,7 @@ export function Shell({ children }: { children: ReactNode }) {
             })}
             <div className="win-rail__foot">
               <p className="win-fam__head" aria-hidden="true">
-                family
+                {label("shell.family.head")}
               </p>
               <div className="win-fam">
                 {FAMILY.map((slug) => {
@@ -445,7 +457,7 @@ export function Shell({ children }: { children: ReactNode }) {
                       href={familyurl(slug)}
                       target="_blank"
                       rel="noreferrer"
-                      data-tip={`open ${slug} — the family answers both ways`}
+                      data-tip={labelfill("shell.family.tip", { slug })}
                       aria-label={slug}
                     >
                       <span

@@ -15,14 +15,15 @@ import { ShieldRegular } from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 import type { ConfigBlock, FeatureCard, RolloverStep, SignalBadge } from "../../argan.ts";
 import { listConfigBlocks, listDnssecAlgorithms, listDnssecKeyCards, listRolloverSteps } from "../../catalog.ts";
+import { label } from "../../labels";
 import EmptyState from "../widgets/shell.emptystate.tsx";
 import { type NavLink, Shell } from "../shell/Shell";
 
 const FOOTER_LINKS: readonly NavLink[] = [
-  { label: "Home", href: "/" },
-  { label: "Zones", href: "/zones" },
-  { label: "Gateway", href: "/gateway" },
-  { label: "Settings", href: "/settings" },
+  { label: label("nav.home"), href: "/" },
+  { label: label("nav.zones"), href: "/zones" },
+  { label: label("nav.gateway"), href: "/gateway" },
+  { label: label("nav.settings"), href: "/settings" },
 ];
 
 export default function Dnssec() {
@@ -77,12 +78,9 @@ export default function Dnssec() {
   return (
     <Shell name="argan" contained footerLinks={FOOTER_LINKS} domain="argan.devthink.pro">
       <header className="r3a-head">
-        <p className="r3a-head__eyebrow">argan · dnssec</p>
-        <h1 className="r3a-head__title">Signed on day one.</h1>
-        <p className="r3a-head__lede">
-          Real signatures, real validation, no opt-in — build, test and hash happen in CI, and the signed zone is what
-          gets served.
-        </p>
+        <p className="r3a-head__eyebrow">{label("dnssec.eyebrow")}</p>
+        <h1 className="r3a-head__title">{label("dnssec.title")}</h1>
+        <p className="r3a-head__lede">{label("dnssec.lede")}</p>
       </header>
 
       {/* the asymmetric console: the key ledger dominant, algorithms on the rail */}
@@ -93,7 +91,7 @@ export default function Dnssec() {
               01
             </span>
             <h2 id="keys-h" className="r3a-h__title">
-              KSK signs keys, ZSK signs zones
+              {label("dnssec.keys.title")}
             </h2>
           </div>
           <div className="r3a-ledger">
@@ -101,7 +99,7 @@ export default function Dnssec() {
               <EmptyState
                 icon={ShieldRegular}
                 pending={pending > 0}
-                note="the key ledger answered no rows — the signing pipeline has not published keys to this snapshot yet"
+                note={label("dnssec.empty.keys")}
               />
             ) : (
               keyCards.map((card, index) => (
@@ -118,9 +116,9 @@ export default function Dnssec() {
           </div>
         </section>
 
-        <aside className="r3a-rail" aria-label="signing algorithms">
+        <aside className="r3a-rail" aria-label={label("dnssec.algorithms.aria")}>
           <div className="r3a-railblock">
-            <p className="r3a-railblock__name">algorithms · new zones</p>
+            <p className="r3a-railblock__name">{label("dnssec.algorithms.title")}</p>
             <div className="r3a-ledger">
               {algorithms.map((algorithm) => (
                 <div key={algorithm.label} className="r3a-row r3a-row--flow">
@@ -131,11 +129,8 @@ export default function Dnssec() {
             </div>
           </div>
           <div className="r3a-railblock">
-            <p className="r3a-railblock__name">denial &amp; digest</p>
-            <p className="r3a-railblock__text">
-              NSEC3 with a fresh random salt on each republication; the DS handed to the parent uses the SHA-256 digest
-              (algorithm 2).
-            </p>
+            <p className="r3a-railblock__name">{label("dnssec.digest.title")}</p>
+            <p className="r3a-railblock__text">{label("dnssec.digest.body")}</p>
           </div>
         </aside>
       </div>
@@ -147,16 +142,12 @@ export default function Dnssec() {
             02
           </span>
           <h2 id="pipe-h" className="r3a-h__title">
-            Never hand-edit a production zone
+            {label("dnssec.pipeline.title")}
           </h2>
-          <p className="r3a-h__note">
-            Rule nd-6002 · pipeline-only — the zone file is versioned, signed and published by the pipeline with a fresh
-            serial; the previous version stays available for instant rollback. Nobody types changes into a live zone.
-            The terminal below rides the staging snapshot — the output shape of one sign run, never a live capture.
-          </p>
+          <p className="r3a-h__note">{label("dnssec.pipeline.note")}</p>
         </div>
         <pre className="r3a-term">
-          <code>{signOutput || ";; the sign pipeline answered no output block for this snapshot"}</code>
+          <code>{signOutput || label("dnssec.pipeline.empty")}</code>
         </pre>
       </section>
 
@@ -167,12 +158,9 @@ export default function Dnssec() {
             03
           </span>
           <h2 id="rot-h" className="r3a-h__title">
-            Key rotation, four moves
+            {label("dnssec.rollover.title")}
           </h2>
-          <p className="r3a-h__note">
-            ZSK every 90 days, KSK every 360. CDS/CDNSKEY automation hands the new DS to the parent without a registrar
-            ticket.
-          </p>
+          <p className="r3a-h__note">{label("dnssec.rollover.note")}</p>
         </div>
         <ol className="r3a-steps r3a-steps--wide">
           {rollover.map((step) => (

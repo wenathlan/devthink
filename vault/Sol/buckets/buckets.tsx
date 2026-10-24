@@ -19,6 +19,7 @@ import {
 import { useMemo, useState } from "react";
 import { type BucketRule, type BucketShelf, retentionLabel, seedRules, shelfOf } from "../../buckets.ts";
 import { formatBytes, seedVault, type VaultObject } from "../../objects.ts";
+import { label, labelfill } from "../../labels";
 import { EmptyState } from "../widgets/shell.emptystate.tsx";
 
 /** the seed of the rehearsal shelf (shown on the page, pinned by the tests) */
@@ -49,10 +50,14 @@ function BucketCard({
         {retentionLabel(entry.rule.days)}
       </span>
       <span className="vb-card__facts">
-        <span>{entry.objects} rows</span>
+        <span>{labelfill("buckets.card.rows", { count: String(entry.objects) })}</span>
         <span>{formatBytes(entry.bytes)}</span>
       </span>
-      <span className="vb-share" role="img" aria-label={`lfs share ${Math.round(entry.lfsShare * 100)} percent`}>
+      <span
+        className="vb-share"
+        role="img"
+        aria-label={labelfill("buckets.card.shareAria", { share: String(Math.round(entry.lfsShare * 100)) })}
+      >
         <i style={{ width: `${Math.round(entry.lfsShare * 100)}%` }} />
       </span>
       <span className="vb-card__note">{entry.rule.note}</span>
@@ -96,16 +101,19 @@ export default function Buckets() {
   return (
     <main className="shell vb-page">
       <header className="pagehead">
-        <p className="pagehead__eyebrow">buckets · the retention shelf</p>
-        <h1 className="pagehead__title">Buckets</h1>
+        <p className="pagehead__eyebrow">{label("buckets.eyebrow")}</p>
+        <h1 className="pagehead__title">{label("buckets.title")}</h1>
         <p className="pagehead__lede">
-          {shelf.length} groups hold the rehearsal vault — seed {seed}, {formatBytes(totalBytes)} under seal. Every
-          bucket answers with its policy and its rollup; the drawer lists the rows it keeps.
+          {labelfill("buckets.lede", {
+            groups: String(shelf.length),
+            seed: String(seed),
+            bytes: formatBytes(totalBytes),
+          })}
         </p>
         <div className="pagehead__actions">
           <button type="button" className="btn" onClick={reseed}>
             <PlayFilled fontSize={14} aria-hidden="true" />
-            reseed the shelf
+            {label("buckets.action.reseed")}
           </button>
           <button
             type="button"
@@ -117,7 +125,7 @@ export default function Buckets() {
             }}
           >
             <ArrowRotateCounterclockwiseRegular fontSize={14} aria-hidden="true" />
-            restore the policies
+            {label("buckets.action.restore")}
           </button>
         </div>
       </header>
@@ -125,11 +133,11 @@ export default function Buckets() {
       {shelf.every((entry) => entry.objects === 0) ? (
         <EmptyState
           icon={ArchiveRegular}
-          title="the shelf stands empty"
-          line="No bucket holds a row of the rehearsal — restore the ledger on /objects to fill the shelf again."
+          title={label("buckets.empty.shelfTitle")}
+          line={label("buckets.empty.shelfLine")}
         />
       ) : (
-        <section className="vb-shelf" aria-label="the bucket shelf">
+        <section className="vb-shelf" aria-label={label("buckets.shelf.aria")}>
           {shelf.map((entry) => (
             <BucketCard
               key={entry.rule.bucket}
@@ -145,13 +153,17 @@ export default function Buckets() {
         drawer.length === 0 ? (
           <EmptyState
             icon={LockClosedRegular}
-            title={`the ${active} bucket keeps nothing`}
-            line="The policy holds, the rows do not — seal a deposit into this bucket on /objects."
+            title={labelfill("buckets.empty.drawerTitle", { bucket: active })}
+            line={label("buckets.empty.drawerLine")}
           />
         ) : (
-          <section className="vb-drawer" aria-label={`the objects of the ${active} bucket`}>
+          <section className="vb-drawer" aria-label={labelfill("buckets.drawer.aria", { bucket: active })}>
             <p className="vb-drawer__head">
-              {active} · {drawer.length} rows · {formatBytes(drawer.reduce((total, object) => total + object.size, 0))}
+              {labelfill("buckets.drawer.head", {
+                bucket: active,
+                rows: String(drawer.length),
+                bytes: formatBytes(drawer.reduce((total, object) => total + object.size, 0)),
+              })}
             </p>
             <ul className="vb-objects">
               {drawer.map((object) => (
@@ -161,7 +173,7 @@ export default function Buckets() {
           </section>
         )
       ) : (
-        <p className="fr-footnote">pick a bucket to open its drawer — the policy and the rollup answer first.</p>
+        <p className="fr-footnote">{label("buckets.footnote")}</p>
       )}
     </main>
   );

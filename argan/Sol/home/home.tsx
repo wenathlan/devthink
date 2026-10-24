@@ -35,14 +35,15 @@ import {
 } from "../../catalog.ts";
 import { familyrow } from "../../family";
 import { familyurl } from "../../familyurl";
+import { label, labelfill } from "../../labels";
 import { ArganMark, type NavLink, Shell } from "../shell/Shell";
 import { EntryGate } from "../widgets/home.entrygate.tsx";
 
 const FOOTER_LINKS: readonly NavLink[] = [
-  { label: "Zones", href: "/zones" },
-  { label: "DNSSEC", href: "/dnssec" },
-  { label: "Gateway", href: "/gateway" },
-  { label: "Settings", href: "/settings" },
+  { label: label("nav.zones"), href: "/zones" },
+  { label: label("nav.dnssec"), href: "/dnssec" },
+  { label: label("nav.gateway"), href: "/gateway" },
+  { label: label("nav.settings"), href: "/settings" },
 ];
 
 /** the apex the landing resolves against (the zone argan is authoritative for) */
@@ -167,7 +168,7 @@ function HomeLanding() {
     <Shell
       name="argan"
       contained={false}
-      cta={{ label: "Get started", href: "/zones" }}
+      cta={{ label: label("home.cta"), href: "/zones" }}
       footerLinks={FOOTER_LINKS}
       domain="argan.devthink.pro"
     >
@@ -182,36 +183,37 @@ function HomeLanding() {
               <span className="r3a-ripple__ring" />
               <ArganMark size={38} hidden flow />
             </span>
-            <span className="r3a-lockup__name">argan</span>
-            <span className="r3a-lockup__role">dns &amp; gateway of the family</span>
+            <span className="r3a-lockup__name">{label("home.brand")}</span>
+            <span className="r3a-lockup__role">{label("home.hero.role")}</span>
           </div>
-          <h1 className="r3a-hero__title">Names that resolve.</h1>
+          <h1 className="r3a-hero__title">{label("home.hero.title")}</h1>
           <p className="r3a-hero__lede">
-            Authoritative zones and a real DNSSEC pipeline on the <code>{APEX}</code> apex — published to the world
-            through ordinary DNS. No plugin, nothing on the visitor's side.
+            {label("home.hero.ledeLead")}
+            <code>{APEX}</code>
+            {label("home.hero.ledeTail")}
           </p>
 
           {/* the hero object: a dig query resolved against the served snapshot */}
           <form className="r3a-dig" onSubmit={onSubmit}>
             <div className="r3a-dig__bar">
               <span className="r3a-dig__mark" aria-hidden="true">
-                $
+                {label("home.dig.mark")}
               </span>
               <input
                 className="r3a-dig__input"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder={`dig ${APEX} MX`}
-                aria-label="Resolve a name against the apex snapshot"
+                placeholder={labelfill("home.hero.placeholder", { apex: APEX })}
+                aria-label={label("home.hero.inputAria")}
                 spellCheck={false}
                 autoComplete="off"
               />
               <button className="r3a-dig__key" type="submit">
-                resolve
+                {label("home.hero.resolve")}
               </button>
             </div>
             <fieldset className="r3a-dig__chips">
-              <legend className="r3a-sr">record type</legend>
+              <legend className="r3a-sr">{label("home.dig.legend")}</legend>
               {chipTypes.map((type) => (
                 <button
                   key={type}
@@ -226,30 +228,33 @@ function HomeLanding() {
             </fieldset>
             <div className="r3a-dig__out" role="status">
               {!answer ? (
-                <p className="is-head flush">;; try the apex — every answer below resolves from the served snapshot</p>
+                <p className="is-head flush">{label("home.dig.idle")}</p>
               ) : (
                 <>
                   <p className="is-head flush">
-                    ;; QUERY {digName(answer.label, "@")} IN {answer.type}
+                    {labelfill("home.dig.query", { name: digName(answer.label, "@"), type: answer.type })}
                   </p>
                   {answer.status === "ok"
                     ? answer.rows.map((row) => (
                         <p key={`${row.name}-${row.type}-${row.data}`} className="flush">
-                          <span className="is-name">{digName(answer.label, row.name ?? "@")}</span> IN {row.type}{" "}
-                          {row.data}
+                          <span className="is-name">{digName(answer.label, row.name ?? "@")}</span>{" "}
+                          {labelfill("home.dig.answerTail", { type: row.type ?? "", data: row.data ?? "" })}
                         </p>
                       ))
                     : null}
                   {answer.status === "nodata" ? (
-                    <p className="is-nx flush">;; the name exists — no {answer.type} records ride it</p>
+                    <p className="is-nx flush">{labelfill("home.dig.nodata", { type: answer.type })}</p>
                   ) : null}
                   {answer.status === "nxdomain" ? (
-                    <p className="is-nx flush">;; the name is not in the served apex snapshot</p>
+                    <p className="is-nx flush">{label("home.dig.nxdomain")}</p>
                   ) : null}
                   <p className="is-head flush">
-                    ;; status: {answer.status === "nxdomain" ? "NXDOMAIN" : "NOERROR"} · zone {APEX} · serial{" "}
-                    {apexZone?.serial ?? "—"}
-                    {ttlLine ? ` · ${ttlLine.toLowerCase()}` : ""}
+                    {labelfill("home.dig.status", {
+                      status: answer.status === "nxdomain" ? "NXDOMAIN" : "NOERROR",
+                      apex: APEX,
+                      serial: apexZone?.serial ?? "—",
+                      ttl: ttlLine ? ` · ${ttlLine.toLowerCase()}` : "",
+                    })}
                   </p>
                 </>
               )}
@@ -265,8 +270,11 @@ function HomeLanding() {
             ))}
           </div>
           <p className="r3a-hero__meta">
-            {zones.length} zones · {transports.length} transports · {apexRecords.length} apex records · serials
-            YYYYMMDDNN
+            {labelfill("home.hero.meta", {
+              zones: String(zones.length),
+              transports: String(transports.length),
+              records: String(apexRecords.length),
+            })}
           </p>
         </div>
       </section>
@@ -278,12 +286,13 @@ function HomeLanding() {
             01
           </span>
           <h2 id="zones-h" className="r3a-h__title">
-            Zones under management
+            {label("home.zones.title")}
           </h2>
-          <p className="r3a-h__aside">{zones.length} zones · staging snapshot</p>
+          <p className="r3a-h__aside">{labelfill("home.zones.aside", { count: String(zones.length) })}</p>
           <p className="r3a-h__note">
-            Masters written by the pipeline, secondaries pulled by authenticated transfer — serials follow{" "}
-            <code>YYYYMMDDNN</code>.
+            {label("home.zones.noteLead")}
+            <code>YYYYMMDDNN</code>
+            {label("home.zones.noteTail")}
           </p>
         </div>
         <div className="r3a-ledger">
@@ -303,7 +312,7 @@ function HomeLanding() {
           ))}
         </div>
         <p className="r3a-sec__more">
-          <Link href="/zones">open the zones console →</Link>
+          <Link href="/zones">{label("home.zones.link")}</Link>
         </p>
       </section>
 
@@ -314,11 +323,9 @@ function HomeLanding() {
             02
           </span>
           <h2 id="lib-h" className="r3a-h__title">
-            One library, four jobs
+            {label("home.library.title")}
           </h2>
-          <p className="r3a-h__note">
-            Every site in the family consumes argan by configuration — no fixed address, port or credential in code.
-          </p>
+          <p className="r3a-h__note">{label("home.library.note")}</p>
         </div>
         <div className="r3a-ledger">
           {cards.map((card, index) => (
@@ -345,9 +352,9 @@ function HomeLanding() {
             03
           </span>
           <h2 id="flow-h" className="r3a-h__title">
-            A label becomes a live URL
+            {label("home.flow.title")}
           </h2>
-          <p className="r3a-h__note">The pending-publication flow — a typed label never skips a stage.</p>
+          <p className="r3a-h__note">{label("home.flow.note")}</p>
         </div>
         <ol className="r3a-steps">
           {steps.slice(0, 3).map((step) => (
@@ -362,32 +369,33 @@ function HomeLanding() {
         </ol>
         <p className="r3a-sec__more">
           {steps.length > 3
-            ? `+${steps.length - 3} more in the console — ${steps
-                .slice(3)
-                .map((step) => step.title.toLowerCase())
-                .join(" · ")} ·`
+            ? labelfill("home.flow.more", {
+                count: String(steps.length - 3),
+                list: steps
+                  .slice(3)
+                  .map((step) => step.title.toLowerCase())
+                  .join(" · "),
+              })
             : null}{" "}
-          <Link href="/zones">the zones console →</Link>
+          <Link href="/zones">{label("home.flow.link")}</Link>
         </p>
       </section>
 
       {/* CTA — the apex anchor line */}
-      <section className="shell r3a-cta" aria-label="anchor a name on the apex">
+      <section className="shell r3a-cta" aria-label={label("home.cta.aria")}>
         <div>
-          <h2 className="r3a-cta__title">Anchor a name on the apex</h2>
-          <code className="r3a-cta__code">
-            npm install --global @devthink/argan &amp;&amp; argan publish --label mysite --zone {APEX}
-          </code>
+          <h2 className="r3a-cta__title">{label("home.cta.title")}</h2>
+          <code className="r3a-cta__code">{labelfill("home.cta.command", { apex: APEX })}</code>
         </div>
         <Link className="btn" href="/dnssec">
-          See the signing pipeline
+          {label("home.cta.pipeline")}
         </Link>
       </section>
 
       {/* FOOTER — the meta-quad, flush to the window floor */}
       <footer className="r3a-bleed r3a-foot">
         <div className="r3a-foot__col">
-          <p className="r3a-foot__head">console</p>
+          <p className="r3a-foot__head">{label("home.foot.console")}</p>
           <ul>
             {FOOTER_LINKS.map((link) => (
               <li key={link.href}>
@@ -397,21 +405,21 @@ function HomeLanding() {
           </ul>
         </div>
         <div className="r3a-foot__col">
-          <p className="r3a-foot__head">the apex</p>
+          <p className="r3a-foot__head">{label("home.foot.apex")}</p>
           <ul>
             <li>
               <span className="r3a-foot__line">{APEX}</span>
             </li>
             <li>
-              <span className="r3a-foot__line">ns1 · ns2.{APEX}</span>
+              <span className="r3a-foot__line">{labelfill("home.foot.nameservers", { apex: APEX })}</span>
             </li>
             <li>
-              <span className="r3a-foot__line">* → the same edge (hung model)</span>
+              <span className="r3a-foot__line">{label("home.foot.wildcard")}</span>
             </li>
           </ul>
         </div>
         <div className="r3a-foot__col">
-          <p className="r3a-foot__head">publication</p>
+          <p className="r3a-foot__head">{label("home.foot.publication")}</p>
           <ul>
             {steps.map((step) => (
               <li key={step.ordinal}>
@@ -423,7 +431,7 @@ function HomeLanding() {
           </ul>
         </div>
         <div className="r3a-foot__col">
-          <p className="r3a-foot__head">the stack</p>
+          <p className="r3a-foot__head">{label("home.foot.stack")}</p>
           <ul>
             {badges.map((badge) => (
               <li key={badge.label}>
@@ -432,8 +440,8 @@ function HomeLanding() {
             ))}
           </ul>
         </div>
-        <nav className="r3a-foot__family" aria-label="the family apps">
-          <span className="r3a-foot__familyhead">the devthink family</span>
+        <nav className="r3a-foot__family" aria-label={label("home.foot.family")}>
+          <span className="r3a-foot__familyhead">{label("home.foot.family")}</span>
           {familyrow().map((member) => (
             <a
               key={member.slug}
@@ -441,7 +449,7 @@ function HomeLanding() {
               href={familyurl(member.slug)}
               target="_blank"
               rel="noreferrer"
-              data-tip={`open ${member.slug} in its own deploy`}
+              data-tip={labelfill("home.foot.familyTip", { slug: member.slug })}
               aria-label={member.slug}
             >
               <span className="r3a-foot__famdot" aria-hidden="true" style={{ backgroundColor: member.accent }} />
@@ -450,8 +458,8 @@ function HomeLanding() {
           ))}
         </nav>
         <div className="r3a-foot__base">
-          <span>argan — dns and gateway of the devthink os family</span>
-          <span>argan.devthink.pro</span>
+          <span>{label("home.foot.base")}</span>
+          <span>{label("home.foot.domain")}</span>
         </div>
       </footer>
     </Shell>

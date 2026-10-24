@@ -18,22 +18,23 @@
 // is never forced again) and the walk hands the window at "/".
 import { useCallback, useState } from "react";
 import { useLocation } from "wouter";
+import { label, labelfill } from "../../labels";
 import { markOnboardingStage } from "../../onboardingstate.ts";
 import { BrandMark } from "../widgets/shell.brandmark.tsx";
 
-/** the three beats of the walk: what it is, what it does, enter */
+/** the three beats of the walk: what it is, what it does, enter (the copy law) */
 const STEPS = [
   {
-    title: "what it is",
-    text: "vault is the storage application of the devthink family — one deployable clone that exists to hold state, in the same window tree as every other application of the house.",
+    title: label("onboarding.steps.is.title"),
+    text: label("onboarding.steps.is.text"),
   },
   {
-    title: "what it does",
-    text: "it guards the family databases, receives the data backups and hands out the unified store. nothing executes here: vault only keeps, serves and recovers.",
+    title: label("onboarding.steps.does.title"),
+    text: label("onboarding.steps.does.text"),
   },
   {
-    title: "enter",
-    text: "the window ahead is the staging surface — the dashboard of the guarded databases, the backups and the unified store. the enter button opens the vault.",
+    title: label("onboarding.steps.enter.title"),
+    text: label("onboarding.steps.enter.text"),
   },
 ] as const;
 
@@ -57,19 +58,23 @@ export default function Onboarding() {
 
   return (
     <main className="ob">
-      <section className="ob__card" aria-label="vault onboarding">
+      <section className="ob__card" aria-label={label("onboarding.aria")}>
         <header className="ob__head">
           <BrandMark size={30} />
           <div className="ob__heading">
-            <p className="ob__eyebrow">vault onboarding</p>
+            <p className="ob__eyebrow">{label("onboarding.eyebrow")}</p>
             <h1 className="ob__title">{current.title}</h1>
           </div>
           <button type="button" className="ob__skip" onClick={enterPlatform}>
-            skip
+            {label("onboarding.skip")}
           </button>
         </header>
         <p className="ob__text">{current.text}</p>
-        <div className="ob__meter" role="img" aria-label={`step ${step + 1} of ${STEPS.length}`}>
+        <div
+          className="ob__meter"
+          role="img"
+          aria-label={labelfill("onboarding.meterAria", { step: String(step + 1), total: String(STEPS.length) })}
+        >
           {STEPS.map((s, index) => (
             <span key={s.title} className="ob__seg" data-done={index <= step ? "true" : undefined} />
           ))}
@@ -81,11 +86,11 @@ export default function Onboarding() {
             onClick={() => setStep((value) => Math.max(0, value - 1))}
             disabled={step === 0}
           >
-            back
+            {label("onboarding.back")}
           </button>
           {last ? (
             <button type="button" className="ob__btn ob__btn--accent" onClick={enterPlatform}>
-              enter vault
+              {label("onboarding.enterCta")}
             </button>
           ) : (
             <button
@@ -93,7 +98,7 @@ export default function Onboarding() {
               className="ob__btn"
               onClick={() => setStep((value) => Math.min(STEPS.length - 1, value + 1))}
             >
-              next
+              {label("onboarding.next")}
             </button>
           )}
         </footer>

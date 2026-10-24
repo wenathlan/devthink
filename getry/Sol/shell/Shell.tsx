@@ -43,6 +43,7 @@ import {
 import { Link, useLocation } from "wouter";
 import { familyrow } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
+import { label, labelfill } from "../../labels";
 import { currentTheme, type ThemeName, toggleTheme } from "../../theme.ts";
 import { BrandMark } from "../widgets/shell.brandmark";
 
@@ -57,12 +58,27 @@ export type StartApp = {
 /** the pages the application window hosts, one rail entry each (the gateway
  * home first, then the session store, the reasoning ladder and the gateway
  * versions — the rail order of the polish pass). exported for the onboarding
- * copy beside this folder. */
+ * copy beside this folder. the labels ride the copy law (labels.ts). */
 export const START_APPS: readonly StartApp[] = [
-  { href: "/", label: "home", detail: "the gateway surface of the family", icon: HomeRegular },
-  { href: "/sessions", label: "sessions", detail: "the session store and key rotation", icon: ChatMultipleRegular },
-  { href: "/thinking", label: "thinking", detail: "the 7-level reasoning ladder", icon: BrainRegular },
-  { href: "/versions", label: "versions", detail: "five provider gateways and their routes", icon: LayerRegular },
+  { href: "/", label: label("shell.rail.home"), detail: label("shell.rail.homeDetail"), icon: HomeRegular },
+  {
+    href: "/sessions",
+    label: label("shell.rail.sessions"),
+    detail: label("shell.rail.sessionsDetail"),
+    icon: ChatMultipleRegular,
+  },
+  {
+    href: "/thinking",
+    label: label("shell.rail.thinking"),
+    detail: label("shell.rail.thinkingDetail"),
+    icon: BrainRegular,
+  },
+  {
+    href: "/versions",
+    label: label("shell.rail.versions"),
+    detail: label("shell.rail.versionsDetail"),
+    icon: LayerRegular,
+  },
 ];
 
 /** the hand-over route of the close caption: closing the window restarts the
@@ -116,7 +132,12 @@ function clampDrag(x: number, y: number): { x: number; y: number } {
 function ThemeToggle() {
   const [theme, setTheme] = useState<ThemeName>(currentTheme());
   return (
-    <button type="button" className="winapp__theme" aria-label="toggle theme" onClick={() => setTheme(toggleTheme())}>
+    <button
+      type="button"
+      className="winapp__theme"
+      aria-label={label("shell.theme.aria")}
+      onClick={() => setTheme(toggleTheme())}
+    >
       {theme === "dark" ? (
         <WeatherSunnyRegular fontSize={15} aria-hidden="true" />
       ) : (
@@ -277,7 +298,7 @@ export function Shell({ children }: { children: ReactNode }) {
         data-maximized={maximized ? "true" : undefined}
         data-sized={size && !maximized ? "true" : undefined}
         data-inactive={inactive ? "true" : undefined}
-        aria-label="getry"
+        aria-label={label("shell.window.aria")}
         style={
           {
             "--winapp-x": `${drag.x}px`,
@@ -298,18 +319,23 @@ export function Shell({ children }: { children: ReactNode }) {
         >
           <div className="winapp__brand">
             <BrandMark size={20} />
-            <span className="winapp__name">getry</span>
-            <span className="winapp__role">the AI gateway of the wenathlan family</span>
+            <span className="winapp__name">{label("shell.brand")}</span>
+            <span className="winapp__role">{label("shell.role")}</span>
           </div>
           <div className="winapp__caption">
             <ThemeToggle />
-            <button type="button" className="winapp__cap" aria-label="Minimize" onClick={() => setMinimized(true)}>
+            <button
+              type="button"
+              className="winapp__cap"
+              aria-label={label("shell.caption.minimize")}
+              onClick={() => setMinimized(true)}
+            >
               <SubtractRegular fontSize={14} aria-hidden="true" />
             </button>
             <button
               type="button"
               className="winapp__cap"
-              aria-label={maximized ? "Restore" : "Maximize"}
+              aria-label={maximized ? label("shell.caption.restore") : label("shell.caption.maximize")}
               onClick={toggleMaximize}
             >
               {maximized ? (
@@ -321,7 +347,7 @@ export function Shell({ children }: { children: ReactNode }) {
             <button
               type="button"
               className="winapp__cap winapp__cap--close"
-              aria-label="Close"
+              aria-label={label("shell.caption.close")}
               onClick={() => navigate(RESTART_ROUTE)}
             >
               <DismissRegular fontSize={14} aria-hidden="true" />
@@ -336,7 +362,7 @@ export function Shell({ children }: { children: ReactNode }) {
             resolved through the familyurl contract so every link survives
             any mount point) */}
         <div className="winapp__body">
-          <nav className="railnav railnav--enter" aria-label="primary">
+          <nav className="railnav railnav--enter" aria-label={label("shell.rail.aria")}>
             {START_APPS.map((app) => {
               const Icon = app.icon;
               return (
@@ -352,7 +378,7 @@ export function Shell({ children }: { children: ReactNode }) {
                 </Link>
               );
             })}
-            <fieldset className="railnav__foot" aria-label="the wenathlan family">
+            <fieldset className="railnav__foot" aria-label={label("shell.family.aria")}>
               {familyrow().map((member) => (
                 <a
                   key={member.slug}
@@ -360,10 +386,10 @@ export function Shell({ children }: { children: ReactNode }) {
                   href={familyurl(member.slug)}
                   target="_blank"
                   rel="noreferrer"
-                  data-tip={`${member.slug} — a family surface`}
+                  data-tip={labelfill("shell.family.tip", { slug: member.slug })}
                 >
                   <span aria-hidden="true" className="railnav__famdot" style={{ background: member.accent }} />
-                  <span className="sr-only">{`open ${member.slug} in its own tab`}</span>
+                  <span className="sr-only">{labelfill("shell.family.tab", { slug: member.slug })}</span>
                 </a>
               ))}
             </fieldset>
@@ -389,9 +415,9 @@ export function Shell({ children }: { children: ReactNode }) {
       </section>
 
       {minimized && (
-        <button type="button" className="winchip" aria-label="Restore getry" onClick={() => setMinimized(false)}>
+        <button type="button" className="winchip" aria-label={label("shell.chip.restoreAria")} onClick={() => setMinimized(false)}>
           <BrandMark size={16} />
-          <span>getry</span>
+          <span>{label("shell.brand")}</span>
         </button>
       )}
     </div>

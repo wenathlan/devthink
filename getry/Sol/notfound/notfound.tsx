@@ -13,6 +13,7 @@
  */
 import { ErrorCircleRegular, HomeRegular } from "@fluentui/react-icons";
 import { useLocation } from "wouter";
+import { label } from "../../labels";
 
 /**
  * the not found page.
@@ -34,16 +35,16 @@ export default function NotFound() {
             <ErrorCircleRegular fontSize={13} />
             404
           </span>
-          <h2 style={{ margin: 0 }}>Route Not Found</h2>
+          <h2 style={{ margin: 0 }}>{label("notfound.title")}</h2>
           <p>
-            This route of the gateway does not exist.
+            {label("notfound.lede1")}
             <br />
-            It may have been moved or never served.
+            {label("notfound.lede2")}
           </p>
           <div>
             <button type="button" className="btn" onClick={handleGoHome}>
               <HomeRegular fontSize={15} />
-              back to home
+              {label("notfound.backHome")}
             </button>
           </div>
         </div>

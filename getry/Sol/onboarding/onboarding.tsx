@@ -17,20 +17,21 @@
 import { ArrowLeftRegular, ArrowRightRegular, HomeRegular } from "@fluentui/react-icons";
 import { useCallback, useState } from "react";
 import { useLocation } from "wouter";
+import { label, labelfill } from "../../labels";
 import { markOnboardingSeen } from "../../onboardingstate.ts";
 import { BrandMark } from "../widgets/shell.brandmark.tsx";
 import { START_APPS } from "../shell/Shell.tsx";
 
-/** the honest statement of the opening frame (what the app is). */
-const WHAT_IT_IS =
-  "getry is the AI gateway of the wenathlan family — not an operating system: one application window holding the console over the provider gateways, the reasoning ladder and the session store.";
+/** the honest statements of the frames, riding the copy law (labels.ts). */
+const WHAT_IT_IS = label("onboarding.what.body");
+const WHAT_ENTER = label("onboarding.enter.body");
 
-/** the honest statement of the closing frame (the hand-over). */
-const WHAT_ENTER =
-  "the window opens on the gateway home and every surface rides the same rail. the theme starts dark and stays in memory only — nothing is written to this machine.";
-
-/** the three frames of the first run, in order. */
-const STEPS = ["the app", "the surfaces", "enter"] as const;
+/** the three frames of the first run, in order (the label keys of the copy law). */
+const STEPS = [
+  { id: "app", eyebrowNo: "01", label: label("onboarding.steps.app") },
+  { id: "surfaces", eyebrowNo: "02", label: label("onboarding.steps.surfaces") },
+  { id: "enter", eyebrowNo: "03", label: label("onboarding.steps.enter") },
+] as const;
 
 /**
  * The onboarding page: a three-step first-run dialog that hands the
@@ -52,27 +53,31 @@ export default function Onboarding() {
 
   return (
     <div className="winonboard">
-      <section className="winonboard__card" aria-label="getry first run">
+      <section className="winonboard__card" aria-label={label("onboarding.aria")}>
         <header className="winonboard__head">
           <BrandMark size={18} />
-          <span className="winonboard__title">welcome to getry</span>
+          <span className="winonboard__title">{label("onboarding.title")}</span>
           <button type="button" className="winonboard__skip" onClick={enterHome}>
-            skip ahead
+            {label("onboarding.skip")}
           </button>
         </header>
 
         <div className="winonboard__body">
           {step === 0 && (
             <article className="winonboard__step" key="what">
-              <p className="winonboard__eyebrow">01 — {STEPS[0]}</p>
-              <h2 className="winonboard__lead">one window, the whole gateway</h2>
+              <p className="winonboard__eyebrow">
+                {labelfill("onboarding.step.eyebrow", { no: STEPS[0].eyebrowNo, step: STEPS[0].label })}
+              </p>
+              <h2 className="winonboard__lead">{label("onboarding.what.title")}</h2>
               <p className="winonboard__lede">{WHAT_IT_IS}</p>
             </article>
           )}
           {step === 1 && (
             <article className="winonboard__step" key="does">
-              <p className="winonboard__eyebrow">02 — {STEPS[1]}</p>
-              <h2 className="winonboard__lead">what the window hosts</h2>
+              <p className="winonboard__eyebrow">
+                {labelfill("onboarding.step.eyebrow", { no: STEPS[1].eyebrowNo, step: STEPS[1].label })}
+              </p>
+              <h2 className="winonboard__lead">{label("onboarding.hosts.title")}</h2>
               <ul className="winonboard__facts">
                 {START_APPS.map((app) => {
                   const Icon = app.icon ?? HomeRegular;
@@ -90,8 +95,10 @@ export default function Onboarding() {
           )}
           {step === 2 && (
             <article className="winonboard__step" key="enter">
-              <p className="winonboard__eyebrow">03 — {STEPS[2]}</p>
-              <h2 className="winonboard__lead">ready to enter</h2>
+              <p className="winonboard__eyebrow">
+                {labelfill("onboarding.step.eyebrow", { no: STEPS[2].eyebrowNo, step: STEPS[2].label })}
+              </p>
+              <h2 className="winonboard__lead">{label("onboarding.enter.title")}</h2>
               <p className="winonboard__lede">{WHAT_ENTER}</p>
             </article>
           )}
@@ -99,20 +106,20 @@ export default function Onboarding() {
 
         <footer className="winonboard__foot">
           <div className="winonboard__ladder" aria-hidden="true">
-            {STEPS.map((label, index) => (
-              <span key={label} className="winonboard__segrun" data-active={index === step ? "true" : undefined} />
+            {STEPS.map((frame, index) => (
+              <span key={frame.id} className="winonboard__segrun" data-active={index === step ? "true" : undefined} />
             ))}
           </div>
           <div className="winonboard__actions">
             {step > 0 && (
               <button type="button" className="winonboard__act" onClick={() => setStep((value) => value - 1)}>
                 <ArrowLeftRegular fontSize={14} aria-hidden="true" />
-                back
+                {label("onboarding.back")}
               </button>
             )}
             {last ? (
               <button type="button" className="winonboard__act winonboard__act--primary" onClick={enterHome}>
-                enter getry
+                {label("onboarding.enterCta")}
                 <ArrowRightRegular fontSize={14} aria-hidden="true" />
               </button>
             ) : (
@@ -121,7 +128,7 @@ export default function Onboarding() {
                 className="winonboard__act winonboard__act--primary"
                 onClick={() => setStep((value) => value + 1)}
               >
-                continue
+                {label("onboarding.continue")}
                 <ArrowRightRegular fontSize={14} aria-hidden="true" />
               </button>
             )}

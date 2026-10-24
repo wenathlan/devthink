@@ -15,14 +15,15 @@ import { PlugConnectedRegular } from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 import type { ConfigBlock, DnsTransport, FeatureCard } from "../../argan.ts";
 import { listConfigBlocks, listDohFirstCards, listTransports } from "../../catalog.ts";
+import { label, labelfill } from "../../labels";
 import EmptyState from "../widgets/shell.emptystate.tsx";
 import { type NavLink, Shell } from "../shell/Shell";
 
 const FOOTER_LINKS: readonly NavLink[] = [
-  { label: "Home", href: "/" },
-  { label: "Zones", href: "/zones" },
-  { label: "DNSSEC", href: "/dnssec" },
-  { label: "Settings", href: "/settings" },
+  { label: label("nav.home"), href: "/" },
+  { label: label("nav.zones"), href: "/zones" },
+  { label: label("nav.dnssec"), href: "/dnssec" },
+  { label: label("nav.settings"), href: "/settings" },
 ];
 
 export default function Gateway() {
@@ -68,12 +69,9 @@ export default function Gateway() {
   return (
     <Shell name="argan" contained footerLinks={FOOTER_LINKS} domain="argan.devthink.pro">
       <header className="r3a-head">
-        <p className="r3a-head__eyebrow">argan · gateway</p>
-        <h1 className="r3a-head__title">One endpoint, every transport.</h1>
-        <p className="r3a-head__lede">
-          The gateway answers the same wire protocol over UDP, TCP, TLS, HTTPS and QUIC — it serves the zones argan is
-          authoritative for and forwards the rest.
-        </p>
+        <p className="r3a-head__eyebrow">{label("gateway.eyebrow")}</p>
+        <h1 className="r3a-head__title">{label("gateway.title")}</h1>
+        <p className="r3a-head__lede">{label("gateway.lede")}</p>
       </header>
 
       {/* the asymmetric console: the transport ledger dominant, doh-first on the rail */}
@@ -84,29 +82,26 @@ export default function Gateway() {
               01
             </span>
             <h2 id="tr-h" className="r3a-h__title">
-              Transports
+              {label("gateway.transports.title")}
             </h2>
-            <p className="r3a-h__aside">{transports.length} transports</p>
-            <p className="r3a-h__note">
-              Transport choice is a trade, not a dogma: classic is the fastest and the most visible; DoH blends into web
-              traffic; DoQ adds privacy with zero-RTT where UDP passes.
-            </p>
+            <p className="r3a-h__aside">{labelfill("gateway.transports.count", { count: String(transports.length) })}</p>
+            <p className="r3a-h__note">{label("gateway.transports.note")}</p>
           </div>
           <div className="scroll-x">
             {transports.length === 0 ? (
               <EmptyState
                 icon={PlugConnectedRegular}
                 pending={pending > 0}
-                note="the transport table answered no rows — the gateway core has not published its listeners yet"
+                note={label("gateway.empty.transports")}
               />
             ) : (
               <table className="table r3a-table">
                 <thead>
                   <tr>
-                    <th scope="col">transport</th>
-                    <th scope="col">port</th>
-                    <th scope="col">spec</th>
-                    <th scope="col">status</th>
+                    <th scope="col">{label("gateway.table.transport")}</th>
+                    <th scope="col">{label("gateway.table.port")}</th>
+                    <th scope="col">{label("gateway.table.spec")}</th>
+                    <th scope="col">{label("gateway.table.status")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -133,9 +128,9 @@ export default function Gateway() {
 
         <aside className="r3a-rail" aria-labelledby="doh-h">
           <div className="r3a-railblock">
-            <p className="r3a-railblock__name">rule nd-6005 · doh-first</p>
+            <p className="r3a-railblock__name">{label("gateway.doh.rule")}</p>
             <h2 id="doh-h" className="r3a-h__title">
-              Port 53 blocked? DoH first.
+              {label("gateway.doh.title")}
             </h2>
             <ol className="r3a-ledger r3a-ledger--flow">
               {dohFirst.map((card, index) => (
@@ -150,12 +145,8 @@ export default function Gateway() {
             </ol>
           </div>
           <div className="r3a-railblock">
-            <p className="r3a-railblock__name">where 53 is blocked</p>
-            <p className="r3a-railblock__text">
-              Everything runs over DoH on plain HTTPS — indistinguishable from web traffic, crossing home, corporate and
-              mobile firewalls. Valid public HTTPS comes from the edge with a tunnel; self-signed certificates stay in
-              dev and on the LAN.
-            </p>
+            <p className="r3a-railblock__name">{label("gateway.blocked.title")}</p>
+            <p className="r3a-railblock__text">{label("gateway.blocked.body")}</p>
           </div>
         </aside>
       </div>
@@ -167,17 +158,12 @@ export default function Gateway() {
             02
           </span>
           <h2 id="core-h" className="r3a-h__title">
-            Gateway core, staging shape
+            {label("gateway.core.title")}
           </h2>
-          <p className="r3a-h__note">
-            The authoritative zone block, a privacy forwarder for the rest of the world, and the DoH listener that
-            survives a firewalled 53.
-          </p>
+          <p className="r3a-h__note">{label("gateway.core.note")}</p>
         </div>
         <pre className="r3a-term">
-          <code>
-            {corefile || "# the corefile block answered empty — the gateway core has not been served to this snapshot"}
-          </code>
+          <code>{corefile || label("gateway.core.empty")}</code>
         </pre>
       </section>
     </Shell>

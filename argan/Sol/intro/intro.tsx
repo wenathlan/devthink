@@ -14,6 +14,7 @@
  */
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
+import { label } from "../../labels";
 import { markIntroSeen } from "../../onboardingstate";
 import { ArganMark } from "../shell/Shell";
 
@@ -66,7 +67,7 @@ export default function Intro() {
       className="winintro"
       data-leaving={leaving ? "true" : undefined}
       role="status"
-      aria-label="argan is opening"
+      aria-label={label("intro.aria")}
       onClick={leave}
       onKeyDown={leave}
     >
@@ -74,11 +75,11 @@ export default function Intro() {
         <span className="winintro__mark" aria-hidden="true">
           <ArganMark size={96} />
         </span>
-        <h1 className="winintro__name">argan</h1>
-        <p className="winintro__role">dns and zones of the family</p>
+        <h1 className="winintro__name">{label("intro.name")}</h1>
+        <p className="winintro__role">{label("intro.role")}</p>
       </div>
       <p className="winintro__skip" aria-hidden="true">
-        click or press any key to skip
+        {label("intro.skip")}
       </p>
     </div>
   );

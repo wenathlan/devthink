@@ -21,6 +21,7 @@
 // and the leave marks introseen before the DIRECT hand to /onboarding.
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
+import { label } from "../../labels";
 import { markOnboardingStage, readOnboardingState } from "../../onboardingstate.ts";
 import { BrandMark } from "../widgets/shell.brandmark.tsx";
 
@@ -94,15 +95,15 @@ export default function Intro() {
   if (phase === "resolving") return null;
 
   return (
-    <div className={phase === "exit" ? "intro intro--exit" : "intro"} role="status" aria-label="vault is opening">
+    <div className={phase === "exit" ? "intro intro--exit" : "intro"} role="status" aria-label={label("intro.aria")}>
       <div className="intro__stage" aria-hidden="true">
         <span className="intro__mark">
           <BrandMark size={96} />
         </span>
-        <strong className="intro__word">vault</strong>
-        <p className="intro__line">vault guards the state of the family.</p>
+        <strong className="intro__word">{label("intro.name")}</strong>
+        <p className="intro__line">{label("intro.role")}</p>
       </div>
-      <span className="intro__skip">click or press any key to continue</span>
+      <span className="intro__skip">{label("intro.skip")}</span>
     </div>
   );
 }

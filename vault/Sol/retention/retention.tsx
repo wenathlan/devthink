@@ -22,6 +22,7 @@ import {
 import { useMemo, useState } from "react";
 import { type BucketRule, retentionLabel, seedRules } from "../../buckets.ts";
 import { formatBytes, seedVault, type VaultObject } from "../../objects.ts";
+import { label, labelfill } from "../../labels";
 import {
   firstDueTick,
   horizonTick,
@@ -43,14 +44,17 @@ function VerdictRow({ verdict }: { verdict: RetentionVerdict }) {
       <div className="vr-row__id">
         <h3 className="vr-row__path">{verdict.object.path}</h3>
         <p className="vr-row__meta">
-          {verdict.object.bucket} · sealed at {tickLabel(verdict.object.sealedAt)}
+          {labelfill("retention.row.meta", {
+            bucket: verdict.object.bucket,
+            tick: tickLabel(verdict.object.sealedAt),
+          })}
         </p>
       </div>
       <span className="vr-state">
         <i aria-hidden="true" />
         {verdict.state}
       </span>
-      <span className="vr-row__age">age {verdict.ageDays}d</span>
+      <span className="vr-row__age">{labelfill("retention.row.age", { days: String(verdict.ageDays) })}</span>
       <span className="vr-row__why">{verdict.why}</span>
     </article>
   );
@@ -73,16 +77,13 @@ export default function Retention() {
   return (
     <main className="shell vr-page">
       <header className="pagehead">
-        <p className="pagehead__eyebrow">retention · the clock of the safe</p>
-        <h1 className="pagehead__title">Retention</h1>
-        <p className="pagehead__lede">
-          One tick of the vault is one day of rehearsal time — the clock now rides {tickLabel(now)}. The engine answers
-          the verdicts and the sweep PLAN; the rehearsal never deletes a byte.
-        </p>
+        <p className="pagehead__eyebrow">{label("retention.eyebrow")}</p>
+        <h1 className="pagehead__title">{label("retention.title")}</h1>
+        <p className="pagehead__lede">{labelfill("retention.lede", { tick: tickLabel(now) })}</p>
         <div className="pagehead__actions">
           <button type="button" className="btn" onClick={() => setNow((value) => value + ROLL_STEP)}>
             <PlayFilled fontSize={14} aria-hidden="true" />
-            roll the clock +{ROLL_STEP}d
+            {labelfill("retention.action.roll", { step: String(ROLL_STEP) })}
           </button>
           <button
             type="button"
@@ -95,7 +96,7 @@ export default function Retention() {
             }}
           >
             <ArrowRotateCounterclockwiseRegular fontSize={14} aria-hidden="true" />
-            restore the rehearsal
+            {label("retention.action.restore")}
           </button>
           <button
             type="button"
@@ -109,43 +110,45 @@ export default function Retention() {
             }}
           >
             <HourglassRegular fontSize={14} aria-hidden="true" />
-            reseed seed {seed + 1}
+            {labelfill("retention.action.reseed", { seed: String(seed + 1) })}
           </button>
         </div>
       </header>
 
-      <section className="vr-summary" aria-label="the retention summary">
+      <section className="vr-summary" aria-label={label("retention.summary.aria")}>
         <div className="vr-summary__cell">
           <p className="vr-summary__label">
             <ClockRegular fontSize={13} aria-hidden="true" />
-            the clock
+            {label("retention.summary.clock")}
           </p>
           <p className="vr-summary__value">{tickLabel(now)}</p>
         </div>
         <div className="vr-summary__cell">
           <p className="vr-summary__label">
             <ShieldCheckmarkRegular fontSize={13} aria-hidden="true" />
-            inside the window
+            {label("retention.summary.window")}
           </p>
-          <p className="vr-summary__value">{sealedCount} sealed</p>
+          <p className="vr-summary__value">{labelfill("retention.summary.sealed", { count: String(sealedCount) })}</p>
         </div>
         <div className="vr-summary__cell">
-          <p className="vr-summary__label">forever rows</p>
-          <p className="vr-summary__value">{protectedCount} protected</p>
+          <p className="vr-summary__label">{label("retention.summary.forever")}</p>
+          <p className="vr-summary__value">
+            {labelfill("retention.summary.protected", { count: String(protectedCount) })}
+          </p>
         </div>
         <div className="vr-summary__cell vr-summary__cell--wide">
           <p className="vr-summary__label">
             <DeleteRegular fontSize={13} aria-hidden="true" />
-            the sweep would collect
+            {label("retention.summary.sweep")}
           </p>
           <p className="vr-summary__value">
-            {plan.due.length} rows · {formatBytes(plan.bytes)}
+            {labelfill("retention.summary.plan", { rows: String(plan.due.length), bytes: formatBytes(plan.bytes) })}
           </p>
         </div>
       </section>
 
-      <section className="vr-timeline" aria-label="the retention timeline of the shelf">
-        <p className="vr-timeline__head">the shelf policies — window days per bucket</p>
+      <section className="vr-timeline" aria-label={label("retention.timeline.aria")}>
+        <p className="vr-timeline__head">{label("retention.timeline.head")}</p>
         <ul className="vr-ladder">
           {rules.map((rule) => (
             <li key={rule.bucket} className="vr-rung">
@@ -153,7 +156,7 @@ export default function Retention() {
               <span
                 className="vr-rung__bar"
                 role="img"
-                aria-label={`${rule.bucket}: ${retentionLabel(rule.days)}`}
+                aria-label={labelfill("retention.rung.aria", { bucket: rule.bucket, label: retentionLabel(rule.days) })}
                 data-forever={rule.days === 0 ? "true" : undefined}
               >
                 <i style={{ width: rule.days === 0 ? "100%" : `${Math.min(100, (rule.days / 365) * 100)}%` }} />
@@ -164,17 +167,18 @@ export default function Retention() {
           ))}
         </ul>
         <p className="vr-timeline__fact">
-          the first window expires at {Number.isFinite(firstDue) ? tickLabel(firstDue) : "never"} · the far end of the
-          shelf rides {horizon === 0 ? "forever" : tickLabel(horizon)} · the ladder bar reads against a 365-day scale
-          (forever fills it — labeled, never colored alone)
+          {labelfill("retention.timeline.fact", {
+            first: Number.isFinite(firstDue) ? tickLabel(firstDue) : label("retention.tick.never"),
+            horizon: horizon === 0 ? label("retention.tick.forever") : tickLabel(horizon),
+          })}
         </p>
       </section>
 
       {verdicts.length === 0 ? (
         <EmptyState
           icon={HourglassRegular}
-          title="the clock reads an empty vault"
-          line="No row rides the ledger — restore the rehearsal to set the clock against real objects."
+          title={label("retention.empty.title")}
+          line={label("retention.empty.line")}
           action={
             <button
               type="button"
@@ -184,17 +188,17 @@ export default function Retention() {
                 setNow(0);
               }}
             >
-              restore the rehearsal vault
+              {label("retention.empty.action")}
             </button>
           }
         />
       ) : (
-        <section className="vr-ledger" aria-label="the retention verdicts">
+        <section className="vr-ledger" aria-label={label("retention.ledger.aria")}>
           <div className="vr-ledger__head" aria-hidden="true">
-            <span>object</span>
-            <span>state</span>
-            <span>age</span>
-            <span>why</span>
+            <span>{label("retention.ledger.object")}</span>
+            <span>{label("retention.ledger.state")}</span>
+            <span>{label("retention.ledger.age")}</span>
+            <span>{label("retention.ledger.why")}</span>
           </div>
           {verdicts.map((verdict) => (
             <VerdictRow key={verdict.object.id} verdict={verdict} />
@@ -203,8 +207,11 @@ export default function Retention() {
       )}
 
       <p className="fr-footnote">
-        the sweep is a plan, never an action — {plan.due.length} rows · {formatBytes(plan.bytes)} would leave the safe
-        at {tickLabel(now)}, and the rehearsal keeps every byte of them.
+        {labelfill("retention.footnote", {
+          rows: String(plan.due.length),
+          bytes: formatBytes(plan.bytes),
+          tick: tickLabel(now),
+        })}
       </p>
     </main>
   );

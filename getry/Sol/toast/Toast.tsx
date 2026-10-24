@@ -10,6 +10,7 @@
 
 import { CheckmarkCircleRegular, DismissRegular, ErrorCircleRegular, InfoRegular } from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
+import { label } from "../../labels";
 
 /** the tones a toast can carry. */
 export type ToastTone = "success" | "error" | "info";
@@ -89,7 +90,7 @@ export function Toaster() {
           <div key={entry.id} className={`toast ${entry.tone}`}>
             <Icon fontSize={16} />
             <span>{entry.message}</span>
-            <button type="button" aria-label="dismiss" onClick={() => dismiss(entry.id)}>
+            <button type="button" aria-label={label("toast.dismiss")} onClick={() => dismiss(entry.id)}>
               <DismissRegular fontSize={13} />
             </button>
           </div>
