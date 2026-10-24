@@ -11,7 +11,7 @@ import { readAllLabels, saveLabel, type BrowserLabel } from "./db.ts";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 2;
+export const LABEL_REVISION = 3;
 
 /** the english manifest: the page.widget.key path answers the surface text. */
 export const labelManifest = {
@@ -110,6 +110,101 @@ export const labelManifest = {
   "chat.welcome.startWith": "Start with {prompt}",
   "chat.welcome.temporaryTitle": "nothing saves on this device",
   "chat.welcome.temporaryChip": "start a temporary chat",
+
+  /* ------------------------ explore · the categories ---------------------- */
+  // the nouns of the gallery — every category answers a real surface of the
+  // family (the registry rows, the studios, the console, the library, the
+  // runner shelf, the family sites), never an invented one.
+  "explore.cat.video": "video",
+  "explore.cat.video.sub": "the native editor on the versawase engine, owned by cadria",
+  "explore.cat.image": "image",
+  "explore.cat.image.sub": "the native studio on the matiz pixel engine, owned by cadria",
+  "explore.cat.audio": "audio",
+  "explore.cat.audio.sub": "the native studio on the katexis engine, owned by debonair",
+  "explore.cat.model3d": "three dee",
+  "explore.cat.model3d.sub": "the cadria studio carries the 3d lane of the family",
+  "explore.cat.code": "code",
+  "explore.cat.code.sub": "the core modules of the cli — the same rows the console serves",
+  "explore.cat.documents": "documents",
+  "explore.cat.documents.sub": "the documents the platform publishes — about, terms and policy",
+  "explore.cat.sandbox": "sandbox runs",
+  "explore.cat.sandbox.sub": "the runner shelf over the saddle engine boundary — forge and foundry execute",
+  "explore.cat.shares": "community shares",
+  "explore.cat.shares.sub": "the family sites — every row a real deploy the platform serves",
+  "explore.nav.categories": "categories",
+  "explore.categories.aria": "the category gallery",
+  "explore.categories.cap": "the category rail",
+  "explore.categories.title": "browse by category",
+  "explore.categories.sub":
+    "every category answers a real surface of the family — the studios, the console, the library, the runner shelf and the community sites.",
+  "explore.categories.pick": "browse {name}",
+  "explore.categories.waves": "02 · the categories",
+  "explore.categories.wavesMeta":
+    "video · image · audio · three dee · code · documents · sandbox runs · community shares",
+
+  /* --------------------- explore · the sidebar grammar -------------------- */
+  // the captured grammar: nouns first, the section stacks, the per-row
+  // overflow menus, the soft imperative voices of three to five words.
+  "explore.sidebar.aria": "Explore sections",
+  "explore.sidebar.categories": "the categories",
+  "explore.sidebar.recents": "recents",
+  "explore.sidebar.family": "the family",
+  "explore.sidebar.overflow": "More actions for {name}",
+  "explore.sidebar.act.openSurface": "open the surface",
+  "explore.sidebar.act.browse": "browse the entries",
+  "explore.sidebar.act.openWindow": "open the window",
+  "explore.sidebar.act.visitSite": "visit the site",
+  "explore.sidebar.rowAria": "{name} — {detail}",
+  "explore.sidebar.count": "{count} entries",
+  "explore.sidebar.none": "no entries yet",
+  "explore.sidebar.pending": "reading the catalog",
+  "explore.sidebar.recentsEmpty": "nothing made yet — the studios answer the catalog first.",
+  "explore.sidebar.recentsAct": "open a studio",
+  "explore.sidebar.familyEmpty": "the registry has not answered yet.",
+
+  /* ------------------------ explore · the section deck -------------------- */
+  "explore.deck.waves": "03 · the section deck",
+  "explore.deck.wavesMeta": "the entries the catalog answers",
+  "explore.deck.cap": "the section deck",
+  "explore.deck.idle": "pick a category — its real entries open here.",
+  "explore.deck.empty": "the {name} catalog answers empty — nothing invented in its place.",
+  "explore.deck.act.studio": "open the studio",
+  "explore.deck.act.runner": "open the runner shelf",
+  "explore.deck.detail": "open the detail of {name}",
+  "explore.deck.back": "back to the categories",
+
+  /* -------------------------- explore · the detail ------------------------ */
+  "explore.detail.aria": "the entry detail",
+  "explore.detail.close": "close the detail",
+  "explore.detail.act.studio": "open the studio",
+  "explore.detail.act.window": "open the window",
+  "explore.detail.act.visit": "visit the site",
+  "explore.detail.act.console": "open the console",
+  "explore.detail.act.docs": "read the docs",
+  "explore.detail.act.read": "read the document",
+
+  /* ------------------------ explore · the share surface ------------------- */
+  "explore.share.cap": "the share surface",
+  "explore.share.title": "the community shares",
+  "explore.share.sub": "the sites the family serves — every row answers a real deploy of the platform.",
+
+  /* -------------------------- explore · the states ------------------------ */
+  // the honest ladder: the loading, the empty with the next action and the
+  // error with the retry — never a fake row, never an invented number.
+  "explore.state.loading": "reading the catalog",
+  "explore.state.error": "the catalog could not be read",
+  "explore.state.errorLine":
+    "the reviewed seeds answer when the database is absent — retry to ask the paired endpoint again.",
+  "explore.state.retry": "retry the catalog",
+  "explore.state.paragraphs": "{count} paragraphs",
+  "explore.state.kind.asset": "studio asset",
+  "explore.state.kind.track": "studio track",
+  "explore.state.kind.module": "core module",
+  "explore.state.kind.document": "document",
+  "explore.state.kind.site": "family site",
+  "explore.state.kind.binary": "runner binary",
+  "explore.modules.waves": "04 · the modules",
+  "explore.download.waves": "05 · the builds",
 } as const;
 
 export type LabelKey = keyof typeof labelManifest & string;
