@@ -5,9 +5,11 @@
  * open pop on the micro out curve), the title bar carrying the ONE logo slot
  * (the drawn mark, the name, the role) flush against the caption zone: the
  * three fluent 44px caption buttons with the wash hover, the wash-soft press
- * and the windows red close. The cobaia shell owns no window state handlers
- * yet, so the buttons render in the disabled honest fade — the owner wires
- * the minimize / maximize / close handlers later, never a fake action. The
+ * and the windows red close. The close caption carries the intro door where
+ * the siblings carry theirs (the relaunch metaphor): closing the window
+ * walks the site to /intro, the bare presentation page. Minimize and
+ * maximize own no window state yet, so they render in the disabled honest
+ * fade — the owner wires those handlers later, never a fake action. The
  * inactive law is real today: a window the document is not focused on turns
  * grayscale(80%). Inside the frame the site keeps its own voice — the sticky
  * section bar (the acrylic nav pins over the drawn home mark), the page
@@ -31,6 +33,11 @@ import { familyurl } from "../../familyurl";
 import { type LabelKey, label } from "../../labels";
 import { ROSTER } from "../widgets/apps.roster.ts";
 import { BrandMark } from "../widgets/shell.brand.tsx";
+
+/** the hand-over route of the close caption: closing the window relaunches
+ * the site at the intro (the relaunch metaphor — the family grammar's door
+ * back to the bare presentation page, where the siblings carry theirs). */
+const RESTART_ROUTE = "/intro";
 
 /** the section links of the top bar, in reading order (home is the mark).
  * the href rides the route table, the text rides the label accessor. */
@@ -74,7 +81,7 @@ function CapGlyph({ kind }: { kind: "min" | "max" | "close" }) {
  * slot and the caption zone), the site bar, the page surface and the footer
  * row inside the window body stage. */
 export function Shell({ children }: { children: ReactNode }) {
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
 
   // the Windows inactive law: a window the document is not focused on turns
   // grayscale — the state rides the document focus alone (session scope)
@@ -100,9 +107,14 @@ export function Shell({ children }: { children: ReactNode }) {
       <a className="cb-skip" href="#content">
         {label("shell.skip")}
       </a>
-      <section className="cb-window" data-inactive={inactive ? "true" : undefined} aria-label={label("shell.window.aria")}>
+      <section
+        className="cb-window"
+        data-inactive={inactive ? "true" : undefined}
+        aria-label={label("shell.window.aria")}
+      >
         {/* the title bar: the ONE logo slot and the caption zone — the fluent
-         * red close flush at the right edge; the caption buttons render in
+         * red close flush at the right edge; the close caption carries the
+         * family relaunch door (→ /intro), minimize and maximize render in
          * the disabled honest fade until the shell owns window state */}
         <header className="cb-titlebar">
           <a className="cb-wbrand" href="/" aria-label={label("shell.brand.aria")}>
@@ -117,7 +129,15 @@ export function Shell({ children }: { children: ReactNode }) {
             <button type="button" className="cb-cap" disabled aria-label={label("shell.caption.maximize")}>
               <CapGlyph kind="max" />
             </button>
-            <button type="button" className="cb-cap cb-cap--close" disabled aria-label={label("shell.caption.close")}>
+            {/* close = relaunch: the flow restarts at the intro on purpose
+             * (the family law the siblings carry — a real hand-over, never
+             * a fake window action) */}
+            <button
+              type="button"
+              className="cb-cap cb-cap--close"
+              aria-label={label("shell.caption.close")}
+              onClick={() => navigate(RESTART_ROUTE)}
+            >
               <CapGlyph kind="close" />
             </button>
           </div>

@@ -24,7 +24,7 @@ import type { LabelRow } from "./db";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 1;
+export const LABEL_REVISION = 2;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the widgets and page anchors rendered
@@ -80,7 +80,8 @@ export const LABEL_MANIFEST = {
     "the family runs on about us$15 a month of domains. the pricing and the support page exist to cover that floor first — and the apps themselves stay free of ads.",
   "home.section.previewAria": "a preview of the app directory",
   "home.section.previewTitle": "A few of the ten",
-  "home.section.previewLede": "every member is a folder beside this site on the same origin. the full directory lives on",
+  "home.section.previewLede":
+    "every member is a folder beside this site on the same origin. the full directory lives on",
   "home.section.previewLink": "/apps",
   "home.section.previewTail": ".",
   "home.appcard.open": "open {slug}",
@@ -194,6 +195,46 @@ export const LABEL_MANIFEST = {
     "the page you asked for does not exist here. the front door and the app directory are the honest way back in.",
   "notfound.action.home": "back to the front door",
   "notfound.action.apps": "browse the apps",
+  // the intro page anchor (the bare presentation — the family grammar's last
+  // seat: every app carries an intro; the cobaia one presents the real offer,
+  // never invented numbers, never fake testimonials)
+  "intro.aria.page": "cobaia — the intro",
+  "intro.aria.splash": "the cobaia intro splash",
+  "intro.splash.name": "cobaia",
+  "intro.splash.role": "the devthink family site",
+  "intro.splash.skip": "click, tap or any key to skip",
+  "intro.bar.aria": "the intro doors",
+  "intro.hero.eyebrow": "the presentation",
+  "intro.hero.title": "The family's front door, and its price list.",
+  "intro.hero.lede":
+    "cobaia is the monetization face of the devthink family, kept apart so the ten applications stay clean — no ads inside the apps. the directory, the plans, the support channels and the update blog live here, on one static site that collects nothing by default.",
+  "intro.hero.cta": "enter the site",
+  "intro.hero.cue": "see the plans",
+  "intro.hero.note":
+    "the name is provisional, the hosting is free and static, the storage is zero — the long version of that promise rides the legal page.",
+  "intro.plans.aria": "the plans as they really are",
+  "intro.plans.eyebrow": "the plans",
+  "intro.plans.title": "The plans, as they really are.",
+  "intro.plans.lede":
+    "the same three plans the pricing page carries — us$0, 5 and 19 a month, placeholder prices until billing lands. a plan activates the moment its checkout link is configured, and says so honestly until then.",
+  "intro.plans.choose": "choose {name}",
+  "intro.plans.notConfigured": "checkout not configured yet",
+  "intro.plans.door": "the full pricing page",
+  "intro.doors.aria": "the doors of the site",
+  "intro.doors.eyebrow": "the doors",
+  "intro.doors.title": "Where the family lives.",
+  "intro.doors.apps": "the app directory",
+  "intro.doors.appsText":
+    "ten deploy units live beside this site on the same origin. the full directory, with the honest role each application declares for itself, is one door away.",
+  "intro.doors.appsCta": "browse the ten apps",
+  "intro.doors.legal": "privacy and terms",
+  "intro.doors.legalText":
+    "the family sites are static files: they collect nothing by default and they track nobody. the privacy policy and the terms of use are the long version of the same promise.",
+  "intro.doors.legalCta": "read the legal page",
+  "intro.footer.siteAria": "the site doors",
+  "intro.footer.familyAria": "the family row",
+  "intro.footer.family": "the family",
+  "intro.footer.memberTip": "open {slug} — the door beside this site",
   // the ad slot widget (the reserved box of the content pages)
   "ads.slot.reserved": "reserved · {format}",
 } as const;
@@ -224,7 +265,7 @@ export function labelfill(key: LabelKey, values: Record<string, string>): string
  * ride the local cache of the site db; on the server db.ts seeds the same
  * manifest into the labels table through seedLabelRows. */
 export async function seedLabels(): Promise<{ seeded: number; protected: number }> {
-  let seeded = 0;
+  const seeded = 0;
   let saved = 0;
   for (const [id, text] of Object.entries(LABEL_MANIFEST)) {
     overrides.set(id, text);

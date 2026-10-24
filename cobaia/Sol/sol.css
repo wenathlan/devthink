@@ -6,11 +6,12 @@
    the controls: the press bounce (scale .7, 100ms), the dtPopIntro mount
    pop on the nav pins, the 3px ladder indicator, the focus underline on the
    Windows accent, the Win11 scrollbar, the skeleton shimmer by opacity.
-   cobaia is a CONTENT site: no intro, no onboarding, no window chrome —
-   the home renders directly and every page is public. Sections: foundation
-   · tokens · light face · base · chrome · page · components · ad slot ·
-   404 · brand mark · responsive · keyframes · guards (reduced-motion
-   hard-stop last).
+   cobaia is a CONTENT site: no onboarding, no entry gate — the home renders
+   directly and every page is public; the intro (/intro) is the one bare
+   presentation page outside the window chrome (the family law: every app
+   carries one). Sections: foundation · tokens · light face · base · chrome ·
+   page · components · ad slot · 404 · brand mark · responsive · keyframes ·
+   intro · guards (reduced-motion hard-stop last).
    doctrine: the trylle canvas #0a0a0b flat (deep #060607) · the 8-step
    trylle surface ladder #171717→#484848 · ink #fafafa · hairlines ink
    5%/10% · the DARK AMBER identity only in the brand mark — focus, CTA and
@@ -38,10 +39,9 @@
 @theme {
   /* ---- type: the trylle ruler ---- */
   --font-display: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Inter Variable", "Inter", "Segoe UI Variable Text", "Segoe UI", "Selawik",
-    ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, SFMono-Regular,
-    Menlo, monospace;
+  --font-sans:
+    "Inter Variable", "Inter", "Segoe UI Variable Text", "Segoe UI", "Selawik", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* ---- the trylle canvas and the 8-step surface ladder ---- */
   --color-canvas: #0a0a0b;
@@ -142,9 +142,9 @@
   /* the linear shadows: the 1px ring first, then the doubling layers —
      one rung deeper per elevation, level 3+ gains the inset highlight */
   --sol-shadow-1: 0 0 0 1px var(--sol-hairline), 0 1px 1px -0.5px rgb(0 0 0 / 30%);
-  --sol-shadow-2: 0 0 0 1px var(--sol-hairline), 0 1px 1px -0.5px rgb(0 0 0 / 28%),
-    0 2px 4px -1px rgb(0 0 0 / 26%);
-  --sol-shadow-3: 0 0 0 1px var(--sol-hairline), 0 1px 1px -0.5px rgb(0 0 0 / 26%),
+  --sol-shadow-2: 0 0 0 1px var(--sol-hairline), 0 1px 1px -0.5px rgb(0 0 0 / 28%), 0 2px 4px -1px rgb(0 0 0 / 26%);
+  --sol-shadow-3:
+    0 0 0 1px var(--sol-hairline), 0 1px 1px -0.5px rgb(0 0 0 / 26%),
     0 2px 4px -1px rgb(0 0 0 / 24%), 0 4px 8px -2px rgb(0 0 0 / 20%),
     inset 0 1px 0 rgb(255 255 255 / 5%);
   --sol-shadow-4: var(--sol-shadow-3), 0 8px 16px -4px rgb(0 0 0 / 18%);
@@ -154,10 +154,9 @@
 
   /* typography — the trylle triad: Inter Variable rides every surface,
      Geist Mono Variable rides micro-labels and every number */
-  --sol-sans: "Inter Variable", "Inter", "Segoe UI Variable Text", "Segoe UI", "Selawik",
-    ui-sans-serif, system-ui, sans-serif;
-  --sol-mono: "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, SFMono-Regular,
-    Menlo, monospace;
+  --sol-sans:
+    "Inter Variable", "Inter", "Segoe UI Variable Text", "Segoe UI", "Selawik", ui-sans-serif, system-ui, sans-serif;
+  --sol-mono: "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, monospace;
   --sol-track-display: -0.02em;
   --sol-track-label: 0.14em;
   --sol-text-h1: clamp(2.25rem, 5vw, 3.75rem);
@@ -425,7 +424,7 @@ code {
   border-radius: var(--win-radius-ctl);
   background: var(--win-accent);
   color: var(--win-accent-ink);
-  font: 600 13px/1 var(--sol-sans);
+  font: 600 13px / 1 var(--sol-sans);
   transition: top var(--sol-micro) var(--sol-ease-out);
 }
 .cb-skip:focus-visible {
@@ -466,7 +465,9 @@ code {
   border-radius: var(--win-radius-ctl);
   font-size: 0.95rem;
   letter-spacing: var(--sol-track-display);
-  transition: background-color 200ms ease, color var(--sol-micro) var(--sol-ease-out);
+  transition:
+    background-color 200ms ease,
+    color var(--sol-micro) var(--sol-ease-out);
 }
 .cb-brand:hover {
   background: var(--wash);
@@ -483,7 +484,7 @@ code {
 }
 .cb-brandtag {
   color: var(--sol-faint);
-  font: 500 10.5px/1.4 var(--sol-mono);
+  font: 500 10.5px / 1.4 var(--sol-mono);
   letter-spacing: var(--sol-track-label);
   text-transform: uppercase;
 }
@@ -505,7 +506,7 @@ code {
   padding: 6px 10px;
   border-radius: var(--win-radius-ctl);
   color: var(--sol-muted);
-  font: 600 13.5px/1.4 var(--sol-sans);
+  font: 600 13.5px / 1.4 var(--sol-sans);
   letter-spacing: 0.01em;
   transition:
     background-color 200ms ease,
@@ -581,7 +582,7 @@ code {
 .cb-foothead {
   margin: 0 0 12px;
   color: var(--sol-faint);
-  font: 600 10.5px/1.4 var(--sol-mono);
+  font: 600 10.5px / 1.4 var(--sol-mono);
   letter-spacing: var(--sol-track-label);
   text-transform: uppercase;
 }
@@ -596,7 +597,7 @@ code {
   align-items: center;
   min-height: 44px;
   color: var(--sol-muted);
-  font: 500 13px/1.5 var(--sol-sans);
+  font: 500 13px / 1.5 var(--sol-sans);
   transition: color var(--sol-micro) var(--sol-ease-out);
 }
 .cb-famgrid {
@@ -610,7 +611,7 @@ code {
   gap: 8px;
   min-height: 44px;
   color: var(--sol-muted);
-  font: 500 12.5px/1.5 var(--sol-mono);
+  font: 500 12.5px / 1.5 var(--sol-mono);
   transition: color var(--sol-micro) var(--sol-ease-out);
 }
 .cb-famlink:hover {
@@ -629,7 +630,7 @@ code {
   padding: 14px clamp(16px, 4vw, 32px) 22px;
   border-top: 1px solid var(--sol-hairline);
   color: var(--sol-faint);
-  font: 400 11px/1.6 var(--sol-mono);
+  font: 400 11px / 1.6 var(--sol-mono);
 }
 
 /* ---------- 3b. WINDOW CHROME — the app window the family law gives every
@@ -702,14 +703,14 @@ code {
 }
 .cb-wname {
   color: var(--sol-ink);
-  font: 600 13px/1 var(--sol-sans);
+  font: 600 13px / 1 var(--sol-sans);
   letter-spacing: var(--sol-track-display);
   white-space: nowrap;
 }
 .cb-wrole {
   overflow: hidden;
   color: var(--sol-muted);
-  font: 400 12px/1 var(--sol-sans);
+  font: 400 12px / 1 var(--sol-sans);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -781,15 +782,65 @@ code {
   z-index: var(--z-float);
   touch-action: none;
 }
-.cb-rz[data-edge="n"] { top: 0; left: 10px; right: 10px; height: 6px; cursor: ns-resize; }
-.cb-rz[data-edge="s"] { bottom: 0; left: 10px; right: 10px; height: 6px; cursor: ns-resize; }
-.cb-rz[data-edge="e"] { right: 0; top: 10px; bottom: 10px; width: 6px; cursor: ew-resize; }
-.cb-rz[data-edge="w"] { left: 0; top: 10px; bottom: 10px; width: 6px; cursor: ew-resize; }
-.cb-rz[data-edge="ne"] { top: 0; right: 0; width: 13px; height: 13px; cursor: nesw-resize; }
-.cb-rz[data-edge="nw"] { top: 0; left: 0; width: 13px; height: 13px; cursor: nwse-resize; }
-.cb-rz[data-edge="se"] { bottom: 0; right: 0; width: 13px; height: 13px; cursor: nwse-resize; }
-.cb-rz[data-edge="sw"] { bottom: 0; left: 0; width: 13px; height: 13px; cursor: nesw-resize; }
-.cb-window[data-max="true"] .cb-rz { display: none; }
+.cb-rz[data-edge="n"] {
+  top: 0;
+  left: 10px;
+  right: 10px;
+  height: 6px;
+  cursor: ns-resize;
+}
+.cb-rz[data-edge="s"] {
+  bottom: 0;
+  left: 10px;
+  right: 10px;
+  height: 6px;
+  cursor: ns-resize;
+}
+.cb-rz[data-edge="e"] {
+  right: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 6px;
+  cursor: ew-resize;
+}
+.cb-rz[data-edge="w"] {
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 6px;
+  cursor: ew-resize;
+}
+.cb-rz[data-edge="ne"] {
+  top: 0;
+  right: 0;
+  width: 13px;
+  height: 13px;
+  cursor: nesw-resize;
+}
+.cb-rz[data-edge="nw"] {
+  top: 0;
+  left: 0;
+  width: 13px;
+  height: 13px;
+  cursor: nwse-resize;
+}
+.cb-rz[data-edge="se"] {
+  bottom: 0;
+  right: 0;
+  width: 13px;
+  height: 13px;
+  cursor: nwse-resize;
+}
+.cb-rz[data-edge="sw"] {
+  bottom: 0;
+  left: 0;
+  width: 13px;
+  height: 13px;
+  cursor: nesw-resize;
+}
+.cb-window[data-max="true"] .cb-rz {
+  display: none;
+}
 
 /* the window's own stops: reduced motion stills the entrance, reduced
    transparency lands the bar acrylic on the solid floor (the house guard
@@ -823,7 +874,7 @@ code {
 .cb-eyebrow {
   margin: 0 0 16px;
   color: var(--sol-faint);
-  font: 600 11px/1.4 var(--sol-mono);
+  font: 600 11px / 1.4 var(--sol-mono);
   letter-spacing: var(--sol-track-label);
   text-transform: uppercase;
 }
@@ -880,11 +931,13 @@ code {
   border-radius: var(--win-radius-ctl);
   background: var(--sol-accent);
   color: var(--sol-accent-ink);
-  font: 600 14px/1 var(--sol-sans);
+  font: 600 14px / 1 var(--sol-sans);
   cursor: pointer;
   /* the resting physics: the top highlight of the fluent key and the
      small drop shadow, both suppressed while pressed */
-  box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 16%), 0 1px 2px rgb(0 0 0 / 14%);
+  box-shadow:
+    inset 0 1px 0 0 rgb(255 255 255 / 16%),
+    0 1px 2px rgb(0 0 0 / 14%);
   transition:
     background-color var(--sol-micro) var(--sol-ease-out),
     box-shadow var(--sol-micro) var(--sol-ease-out),
@@ -893,12 +946,16 @@ code {
 }
 .cb-btn:hover {
   background: color-mix(in oklab, var(--sol-accent) 90%, #ffffff);
-  box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 16%), 0 1px 2px rgb(0 0 0 / 14%);
+  box-shadow:
+    inset 0 1px 0 0 rgb(255 255 255 / 16%),
+    0 1px 2px rgb(0 0 0 / 14%);
   text-decoration: none;
 }
 .cb-btn:focus-visible {
   outline: none;
-  box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 16%), inset 0 -2px 0 var(--sol-focus),
+  box-shadow:
+    inset 0 1px 0 0 rgb(255 255 255 / 16%),
+    inset 0 -2px 0 var(--sol-focus),
     0 1px 2px rgb(0 0 0 / 14%);
 }
 .cb-btn:active {
@@ -975,7 +1032,9 @@ code {
 }
 .cb-btn--ghost:active {
   transform: scale(0.97);
-  box-shadow: inset 0 1px 0 0 rgb(0 0 0 / 8%), 0 0 0 1px var(--sol-hairline-strong);
+  box-shadow:
+    inset 0 1px 0 0 rgb(0 0 0 / 8%),
+    0 0 0 1px var(--sol-hairline-strong);
 }
 
 /* the text link voice — the focus underline answers the windows accent */
@@ -985,7 +1044,9 @@ code {
   text-decoration: underline;
   text-underline-offset: 3px;
   text-decoration-color: var(--sol-hairline-strong);
-  transition: color var(--sol-micro) var(--sol-ease-out), text-decoration-color var(--sol-micro) var(--sol-ease-out);
+  transition:
+    color var(--sol-micro) var(--sol-ease-out),
+    text-decoration-color var(--sol-micro) var(--sol-ease-out);
 }
 .cb-link:hover {
   color: var(--sol-accent);
@@ -1009,7 +1070,7 @@ code {
   padding: 8px 12px;
   border-left: 2px solid var(--sol-hairline-strong);
   color: var(--sol-faint);
-  font: 400 11.5px/1.6 var(--sol-mono);
+  font: 400 11.5px / 1.6 var(--sol-mono);
 }
 .cb-note.is-live {
   border-left-color: color-mix(in oklab, var(--sol-accent) 55%, transparent);
@@ -1027,7 +1088,7 @@ code {
   border: 1px solid var(--sol-hairline);
   border-radius: var(--sol-radius-sm);
   color: var(--sol-faint);
-  font: 400 11.5px/1.5 var(--sol-mono);
+  font: 400 11.5px / 1.5 var(--sol-mono);
   letter-spacing: 0.04em;
 }
 .cb-skel {
@@ -1073,7 +1134,7 @@ code {
 .cb-cardmeta {
   margin: 12px 0 0;
   color: var(--sol-faint);
-  font: 500 11px/1.5 var(--sol-mono);
+  font: 500 11px / 1.5 var(--sol-mono);
   letter-spacing: 0.06em;
 }
 
@@ -1094,11 +1155,13 @@ code {
 }
 .cb-plan--lead {
   background: var(--sol-surface-2);
-  box-shadow: var(--sol-shadow-3), inset 0 2px 0 var(--sol-accent);
+  box-shadow:
+    var(--sol-shadow-3),
+    inset 0 2px 0 var(--sol-accent);
 }
 .cb-planname {
   margin: 0 0 4px;
-  font: 600 12px/1.4 var(--sol-mono);
+  font: 600 12px / 1.4 var(--sol-mono);
   letter-spacing: var(--sol-track-label);
   text-transform: uppercase;
   color: var(--sol-faint);
@@ -1117,7 +1180,7 @@ code {
 .cb-planper {
   margin: 0 0 10px;
   color: var(--sol-faint);
-  font: 500 12px/1.5 var(--sol-mono);
+  font: 500 12px / 1.5 var(--sol-mono);
 }
 .cb-planblurb {
   margin: 0 0 14px;
@@ -1182,7 +1245,7 @@ code {
 .cb-appname {
   margin: 0;
   color: var(--sol-ink);
-  font: 600 14.5px/1.4 var(--sol-mono);
+  font: 600 14.5px / 1.4 var(--sol-mono);
   letter-spacing: -0.01em;
 }
 .cb-approle {
@@ -1193,7 +1256,7 @@ code {
 .cb-appopen {
   margin: 10px 0 0;
   color: var(--sol-faint);
-  font: 500 10.5px/1.4 var(--sol-mono);
+  font: 500 10.5px / 1.4 var(--sol-mono);
   letter-spacing: var(--sol-track-label);
   text-transform: uppercase;
   transition: color var(--sol-micro) var(--sol-ease-out);
@@ -1226,7 +1289,7 @@ code {
 .cb-postdate {
   margin: 0 0 2px;
   color: var(--sol-faint);
-  font: 500 11px/1.5 var(--sol-mono);
+  font: 500 11px / 1.5 var(--sol-mono);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.06em;
 }
@@ -1288,7 +1351,7 @@ code {
   display: block;
   margin-bottom: 10px;
   color: var(--sol-faint);
-  font: 600 10px/1.4 var(--sol-mono);
+  font: 600 10px / 1.4 var(--sol-mono);
   letter-spacing: var(--sol-track-label);
   text-transform: uppercase;
 }
@@ -1303,7 +1366,7 @@ code {
 }
 .cb-adsnote {
   color: var(--sol-faint);
-  font: 400 11.5px/1.5 var(--sol-mono);
+  font: 400 11.5px / 1.5 var(--sol-mono);
   letter-spacing: 0.04em;
 }
 
@@ -1422,6 +1485,400 @@ code {
   }
 }
 
+/* ---------- 10b. INTRO — the bare presentation page (/intro) ---------- */
+/* the family grammar's last seat: every app carries an intro; the cobaia
+   one mounts BARE — no window chrome — riding the site voice. The akash
+   splash plays the family recipe (the mark spring on the overshoot curve
+   cubic-bezier(.34,1.56,.64,1), the leave cubic-bezier(0.76,0,0.24,1) at
+   0.8s), the landing rides the cb-in stagger under the second, the layers
+   ride the surface-ladder bands (canvas → s0 → deep), the door panes ride
+   the silk law (layered shadows, the inset highlight, the silk curve).
+   Reduced motion stills the splash and the entrances; reduced transparency
+   lands the bar on the solid floor. */
+
+/* the bare page: the canvas floor, no frame, no window padding */
+.cb-intro {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: var(--sol-canvas);
+}
+
+/* the measure of the bare page: the site measure without the window gutters */
+.cb-introwrap {
+  width: 100%;
+  max-width: var(--cb-maxw);
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 32px);
+  box-sizing: border-box;
+}
+
+/* the intro bar: the same acrylic voice as the site bar, unframed */
+.cb-introbar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-bar);
+  border-bottom: 1px solid var(--bar-hairline);
+  background-color: var(--bar-acrylic);
+  background-image: var(--win-noise);
+  background-blend-mode: soft-light;
+  -webkit-backdrop-filter: saturate(3) blur(20px);
+  backdrop-filter: saturate(3) blur(20px);
+}
+.cb-introbar__in {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: var(--cb-maxw);
+  margin: 0 auto;
+  padding: 10px clamp(16px, 4vw, 32px);
+}
+.cb-introbar__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+.cb-introbar__word {
+  color: var(--sol-ink);
+  font: 600 13px / 1 var(--sol-sans);
+  letter-spacing: var(--sol-track-display);
+}
+.cb-introbar__spacer {
+  flex: 1;
+}
+.cb-introbar__nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cb-introdoor {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: var(--win-radius-ctl);
+  color: var(--sol-muted);
+  font: 600 13px / 1 var(--sol-sans);
+  transition:
+    background-color var(--sol-micro) var(--sol-ease-out),
+    color var(--sol-micro) var(--sol-ease-out);
+}
+.cb-introdoor:hover {
+  background: var(--wash);
+  color: var(--sol-ink);
+  text-decoration: none;
+}
+.cb-introdoor:active {
+  background: var(--wash-soft);
+}
+.cb-introdoor:focus-visible {
+  outline: none;
+  box-shadow: inset 0 -2px 0 var(--sol-focus);
+}
+
+/* the hero band: the canvas floor, the mark opens the stagger */
+.cb-introhero {
+  padding: clamp(56px, 9vw, 112px) 0 clamp(40px, 6vw, 72px);
+}
+.cb-introhero__mark {
+  display: inline-grid;
+  place-items: center;
+  margin-bottom: 26px;
+}
+
+/* the ladder bands: the layers step the surface ladder — canvas (hero) →
+   the s0 rung (plans) → the deep floor (doors); hairlines close each band */
+.cb-introband {
+  border-top: 1px solid var(--sol-hairline);
+  padding: clamp(32px, 5vw, 56px) 0 clamp(40px, 6vw, 72px);
+}
+.cb-introband--s1 {
+  background: var(--sol-surface-1);
+}
+.cb-introband--deep {
+  background: var(--sol-canvas-deep);
+  border-bottom: 1px solid var(--sol-hairline);
+}
+
+/* the door panes: the silk law — the inset highlight, the layered drop
+   shadows, the silk curve on the transitions, one hover raise */
+.cb-introdoorgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+.cb-intropane {
+  display: flex;
+  flex-direction: column;
+  padding: 22px;
+  border: 1px solid var(--sol-hairline-strong);
+  border-radius: var(--sol-radius-lg);
+  background: var(--sol-surface-2);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 5%),
+    0 1px 2px rgb(0 0 0 / 28%),
+    0 10px 28px -18px rgb(0 0 0 / 55%);
+  transition:
+    background-color 140ms var(--ease-silk),
+    box-shadow 140ms var(--ease-silk),
+    transform 140ms var(--ease-silk);
+}
+.cb-intropane:hover {
+  background: var(--sol-surface-3);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 6%),
+    0 2px 4px rgb(0 0 0 / 28%),
+    0 16px 36px -18px rgb(0 0 0 / 50%);
+  transform: translateY(-2px);
+}
+.cb-intropane__text {
+  margin: 6px 0 16px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--sol-muted);
+}
+.cb-intropane__door {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  align-self: flex-start;
+  min-height: 44px;
+  margin-top: auto;
+  padding: 0 16px;
+  border-radius: var(--win-radius-ctl);
+  background: var(--wash-soft);
+  color: var(--sol-ink);
+  font: 600 14px / 1 var(--sol-sans);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 10%),
+    0 0 0 1px var(--sol-hairline-strong),
+    0 1px 2px rgb(0 0 0 / 14%);
+  transition:
+    background-color 140ms var(--ease-silk),
+    color 140ms var(--ease-silk),
+    box-shadow 140ms var(--ease-silk);
+}
+.cb-intropane__door:hover {
+  background: var(--wash);
+  color: var(--sol-ink);
+  text-decoration: none;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 14%),
+    0 0 0 1px color-mix(in oklab, var(--sol-ink) 16%, transparent),
+    0 2px 4px rgb(0 0 0 / 16%);
+}
+.cb-intropane__door:active {
+  transform: scale(0.97);
+  box-shadow:
+    inset 0 1px 0 rgb(0 0 0 / 8%),
+    0 0 0 1px var(--sol-hairline-strong);
+}
+.cb-intropane__door:focus-visible {
+  outline: none;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 10%),
+    inset 0 -2px 0 var(--sol-focus),
+    0 0 0 1px var(--sol-hairline-strong);
+}
+.cb-intropane__glyph {
+  flex: none;
+  color: var(--sol-accent);
+  transition: transform 140ms var(--ease-silk);
+}
+.cb-intropane__door:hover .cb-intropane__glyph {
+  transform: translateX(2px);
+}
+
+/* the plans door line: the one text link under the table */
+.cb-introdoorline {
+  margin: 22px 0 0;
+}
+
+/* the footer strip: hairline top, the door rows and the legal line */
+.cb-introfoot {
+  margin-top: auto;
+  border-top: 1px solid var(--sol-hairline);
+  background: var(--sol-canvas-deep);
+}
+.cb-introfoot__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 18px;
+}
+.cb-introfoot__door {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  color: var(--sol-muted);
+  font: 600 13px / 1 var(--sol-sans);
+  transition: color var(--sol-micro) var(--sol-ease-out);
+}
+.cb-introfoot__door:hover {
+  color: var(--sol-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--sol-hairline-strong);
+}
+.cb-introfoot__fam {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--sol-muted);
+  font: 500 12.5px / 1 var(--sol-mono);
+  transition: color var(--sol-micro) var(--sol-ease-out);
+}
+.cb-introfoot__fam:hover {
+  color: var(--sol-ink);
+}
+.cb-introfoot__dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--cb-dot, var(--sol-accent));
+}
+.cb-introfoot__legal {
+  margin: 18px 0 0;
+  padding: 14px 0 22px;
+  border-top: 1px solid var(--sol-hairline);
+  color: var(--sol-faint);
+  font: 400 11px / 1.6 var(--sol-mono);
+  letter-spacing: 0.02em;
+}
+.cb-introfoot .cb-eyebrow {
+  margin: 8px 0;
+}
+.cb-introfoot .cb-introwrap {
+  padding-top: 26px;
+}
+
+/* the splash: the akash floor — the deep canvas + the grain, the mark
+   springing on the overshoot curve, the name rising with the same spring,
+   the role fading late; the leave slides the whole overlay up in 0.8s on
+   the leave curve and reveals the landing beneath. No loading dots. */
+.cb-splash {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  display: grid;
+  place-items: center;
+  background: var(--sol-canvas-deep);
+  cursor: pointer;
+}
+.cb-splash::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--win-noise);
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+.cb-splash__stage {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  padding: 0 24px;
+  text-align: center;
+}
+.cb-splash__mark {
+  display: grid;
+  place-items: center;
+  animation: cbSplashSpring 600ms cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+.cb-splash__name {
+  margin: 0;
+  color: var(--sol-ink);
+  font: 800 clamp(2rem, 5vw, 3rem) / 1.05 var(--sol-sans);
+  letter-spacing: var(--sol-track-display);
+  animation: cbSplashRise 550ms cubic-bezier(0.34, 1.56, 0.64, 1) 140ms backwards;
+}
+.cb-splash__role {
+  margin: 0;
+  color: var(--sol-muted);
+  font: 400 12px / 1.6 var(--sol-sans);
+  letter-spacing: var(--sol-track-label);
+  text-transform: lowercase;
+  animation: cbSplashFade 300ms var(--sol-ease-out) 400ms backwards;
+}
+.cb-splash__skip {
+  position: absolute;
+  bottom: 22px;
+  left: 0;
+  right: 0;
+  color: var(--sol-faint);
+  font: 500 11px / 1 var(--sol-mono);
+  letter-spacing: var(--sol-track-label);
+  text-align: center;
+  text-transform: lowercase;
+  animation: cbSplashFade 300ms var(--sol-ease-out) 600ms backwards;
+}
+.cb-splash[data-leaving="true"] {
+  animation: cbSplashLeave 800ms cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+@keyframes cbSplashSpring {
+  from {
+    opacity: 0;
+    transform: scale(0.72);
+  }
+}
+@keyframes cbSplashRise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+@keyframes cbSplashFade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes cbSplashLeave {
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+/* the intro's own stops: reduced motion stills the splash and the entrances
+   (the splash never mounts under the preference — the belt here is the
+   second one), reduced transparency lands the bar on the solid floor */
+@media (prefers-reduced-motion: reduce) {
+  .cb-splash,
+  .cb-splash__mark,
+  .cb-splash__name,
+  .cb-splash__role,
+  .cb-splash__skip {
+    animation: none !important;
+  }
+  .cb-intropane,
+  .cb-intropane__door,
+  .cb-introdoor,
+  .cb-introfoot__door,
+  .cb-introfoot__fam,
+  .cb-intropane__glyph {
+    transition: none !important;
+  }
+  .cb-intropane:hover,
+  .cb-intropane__door:active,
+  .cb-intropane__door:hover .cb-intropane__glyph {
+    transform: none;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .cb-introbar {
+    background-color: #0a0a0b;
+    background-image: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .cb-splash::after {
+    display: none;
+  }
+}
+
 /* ---------- 11. GUARDS — the house stops (reduced motion WINS, last) ---------- */
 @media (prefers-reduced-transparency: reduce) {
   /* the solid floors: the bar acrylic lands on a rung, the blur dies */
@@ -1487,26 +1944,56 @@ code {
    ========================================================================== */
 
 @keyframes skeletonStep {
-  0% { opacity: 0.45; }
-  50% { opacity: 0.8; }
-  100% { opacity: 0.45; }
+  0% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0.45;
+  }
 }
 
 @keyframes pulseStep {
-  0% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(1.06); }
-  100% { opacity: 1; transform: scale(1); }
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.06);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes pingStep {
-  0% { opacity: 0.7; transform: scale(1); }
-  70% { opacity: 0; transform: scale(2.2); }
-  100% { opacity: 0; transform: scale(2.2); }
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  70% {
+    opacity: 0;
+    transform: scale(2.2);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.2);
+  }
 }
 
-.anim-skeleton { animation: skeletonStep 2.4s steps(8, end) infinite; }
-.anim-pulse { animation: pulseStep 2s steps(8, end) infinite; }
-.anim-ping { animation: pingStep 2s steps(8, end) infinite; }
+.anim-skeleton {
+  animation: skeletonStep 2.4s steps(8, end) infinite;
+}
+.anim-pulse {
+  animation: pulseStep 2s steps(8, end) infinite;
+}
+.anim-ping {
+  animation: pingStep 2s steps(8, end) infinite;
+}
 
 [data-anim-paused] .anim-skeleton,
 [data-anim-paused] .anim-pulse,
@@ -1516,10 +2003,15 @@ code {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .anim-skeleton, .anim-pulse, .anim-ping, [class*="anim-"] {
+  .anim-skeleton,
+  .anim-pulse,
+  .anim-ping,
+  [class*="anim-"] {
     animation: none;
   }
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
   }
@@ -1537,7 +2029,10 @@ code {
   background: color-mix(in srgb, var(--s1) 86%, transparent);
   border-radius: var(--shell-radius);
   padding: 14px;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), 0 1px 2px rgb(0 0 0 / 28%), 0 10px 28px -18px rgb(0 0 0 / 55%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 5%),
+    0 1px 2px rgb(0 0 0 / 28%),
+    0 10px 28px -18px rgb(0 0 0 / 55%);
   backdrop-filter: blur(14px) saturate(120%);
   -webkit-backdrop-filter: blur(14px) saturate(120%);
 }
@@ -1552,13 +2047,23 @@ code {
   font: inherit;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%), 0 1px 2px rgb(0 0 0 / 30%);
-  transition: transform 140ms var(--ease-silk), box-shadow 140ms var(--ease-silk), opacity 140ms var(--ease-silk), background-color 140ms var(--ease-silk), border-color 140ms var(--ease-silk);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 6%),
+    0 1px 2px rgb(0 0 0 / 30%);
+  transition:
+    transform 140ms var(--ease-silk),
+    box-shadow 140ms var(--ease-silk),
+    opacity 140ms var(--ease-silk),
+    background-color 140ms var(--ease-silk),
+    border-color 140ms var(--ease-silk);
 }
 
 .silk-btn:hover {
   background: rgb(255 255 255 / 9%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%), 0 2px 4px rgb(0 0 0 / 28%), 0 8px 20px -10px rgb(0 0 0 / 48%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 6%),
+    0 2px 4px rgb(0 0 0 / 28%),
+    0 8px 20px -10px rgb(0 0 0 / 48%);
 }
 
 .silk-btn:active {
@@ -1589,10 +2094,14 @@ code {
   padding: 11px 12px;
   font: inherit;
   box-shadow: inset 0 1px 2px rgb(0 0 0 / 24%);
-  transition: border-color 140ms var(--ease-silk), background-color 140ms var(--ease-silk);
+  transition:
+    border-color 140ms var(--ease-silk),
+    background-color 140ms var(--ease-silk);
 }
 
-.silk-area { resize: vertical; }
+.silk-area {
+  resize: vertical;
+}
 
 .silk-input:hover,
 .silk-area:hover {

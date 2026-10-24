@@ -3,8 +3,10 @@
  * TSX outside the cobaia theme. cobaia is the family site: the front door of
  * the DevThink family — the pricing, the support page, the app directory and
  * the update blog for the ten deployable applications. The site is a plain
- * CONTENT surface: no intro, no onboarding, no window chrome — the home
- * renders directly and every page is public. The root manages the theme as
+ * CONTENT surface: no onboarding, no entry gate — the home renders directly
+ * and every page is public; the intro (/intro) is the one bare presentation
+ * page the family grammar gives every app, mounted outside the window
+ * chrome. The root manages the theme as
  * a single file: it
  * imports only the theme anchor (Sol/Sol.tsx — the file named after the
  * theme folder, beside Sol/sol.css) and the theme stylesheet and renders

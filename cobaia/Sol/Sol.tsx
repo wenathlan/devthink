@@ -9,18 +9,22 @@
  * this file follows the new name and App.tsx keeps importing the anchor by
  * the folder path.
  *
- * The cobaia is a CONTENT site (the monetization surface of the family):
- * no intro, no onboarding, no window chrome — every route is a page of the
- * site. Every content route renders as the page body of the ONE shared
- * shell (the header and the footer); every page is freely reachable — the
- * home renders directly on the bare root, and the catch-all lands on the
- * 404 anchor.
+ * The cobaia is a CONTENT site (the monetization surface of the family): no
+ * onboarding, no entry gate — every content route is a page of the site, and
+ * the home renders directly on the bare root. The intro (/intro) is the one
+ * public presentation page of the family grammar (every app carries one) and
+ * mounts BARE — outside the window chrome, like the sibling sites mount
+ * theirs; the shell's close-caption door relaunches the site at it. Every
+ * content route renders as the page body of the ONE shared shell (the header
+ * and the footer); every page is freely reachable, and the catch-all lands
+ * on the 404 anchor.
  */
 import type { ReactNode } from "react";
 import { Route, Switch } from "wouter";
 import AppsAnchor from "./apps/apps";
 import BlogAnchor from "./blog/blog";
 import HomeAnchor from "./home/home";
+import IntroAnchor from "./intro/intro";
 import LegalAnchor from "./legal/legal";
 import NotFoundAnchor from "./notfound/notfound";
 import PricingAnchor from "./pricing/pricing";
@@ -42,12 +46,15 @@ function Unrouted() {
   );
 }
 
-/** Mounts the theme surface through the page anchors: the content pages of
- * the site — the home on the bare root, the five public sections, and the
- * catch-all last. No entry flow: the site is content end to end. */
+/** Mounts the theme surface through the page anchors: the bare intro first
+ * (the public presentation, outside the chrome, like the siblings mount
+ * theirs), then the content pages of the site — the home on the bare root,
+ * the five public sections, and the catch-all last. No entry flow: the site
+ * is content end to end. */
 export default function Sol() {
   return (
     <Switch>
+      <Route path="/intro" component={IntroAnchor} />
       <Route path="/">
         <Content>
           <HomeAnchor />
