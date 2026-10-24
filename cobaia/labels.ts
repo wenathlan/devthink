@@ -204,32 +204,9 @@ export type LabelKey = keyof typeof LABEL_MANIFEST & string;
  * key answers the translated text when the person changed the language. */
 const overrides = new Map<string, string>();
 
-/** the browser cache of the labels table: the rows mirror the site db (the
- * db is the source of truth; the cache carries the translated rows offline). */
-const CACHE_KEY = "cobaia.labels.rows";
-
-function readCache(): LabelRow[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = window.localStorage.getItem(CACHE_KEY);
-    if (!raw) return [];
-    const parsed: unknown = JSON.parse(raw);
-    return Array.isArray(parsed)
-      ? (parsed.filter((row): row is LabelRow => !!row && typeof row === "object") as LabelRow[])
-      : [];
-  } catch {
-    return [];
-  }
-}
-
-function writeCache(rows: readonly LabelRow[]): void {
-  if (typeof window === "undefined") return;
-  try {
-    window.localStorage.setItem(CACHE_KEY, JSON.stringify(rows));
-  } catch {
-    // the cache is best effort: the manifest always answers
-  }
-}
+/** the monetization surface carries the no storage law of its own legal copy:
+ * the visitor browser never writes, so the overrides ride the runtime api of
+ * the site db alone and the manifest answers the english source of truth. */
 
 /** the typed accessor of the copy: the only door a widget or page anchor uses. */
 export function label(key: LabelKey): string {
@@ -247,25 +224,11 @@ export function labelfill(key: LabelKey, values: Record<string, string>): string
  * ride the local cache of the site db; on the server db.ts seeds the same
  * manifest into the labels table through seedLabelRows. */
 export async function seedLabels(): Promise<{ seeded: number; protected: number }> {
-  const stored = readCache();
-  const rows = new Map<string, LabelRow>(stored.map((row) => [row.id, row]));
   let seeded = 0;
   let saved = 0;
   for (const [id, text] of Object.entries(LABEL_MANIFEST)) {
-    const row = rows.get(id);
-    overrides.set(id, row && row.translated ? row.text : text);
-    if (!row || (!row.translated && row.text !== text)) {
-      rows.set(id, {
-        id,
-        text,
-        revision: LABEL_REVISION,
-        updatedAt: new Date().toISOString(),
-        ...(row?.translated ? { translated: true } : {}),
-      });
-      seeded += 1;
-    }
+    overrides.set(id, text);
     saved += 1;
   }
-  writeCache([...rows.values()]);
   return { seeded, protected: saved - seeded };
 }
