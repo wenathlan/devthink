@@ -4,7 +4,7 @@
  * stage orchestration — the lock -> signin state machine, the account
  * contract of the root accountgate.ts, the invitation params and the
  * navigation after the auth — and mounts the loose components that live
- * in Sol/components. Only the theme anchor (Sol/Sol.tsx) consumes
+ * in Sol/widgets. Only the theme anchor (Sol/Sol.tsx) consumes
  * this file.
  *
  * Sign in — the windows 11 sequence: the lock face first (the big clock
@@ -36,19 +36,19 @@ import {
   providerRow,
 } from "../../oauthrow.ts";
 import { readBrowserPreferences } from "../../db";
-import { LockFace } from "../components/auth.lockface.tsx";
-import { PowerMenu } from "../components/auth.powermenu.tsx";
-import { SignInForm, type SignInEntryFields } from "../components/auth.signin.tsx";
-import { StatusLine } from "../components/auth.statusline.tsx";
+import { LockFace } from "../widgets/auth.lockface.tsx";
+import { PowerMenu } from "../widgets/auth.powermenu.tsx";
+import { SignInForm, type SignInEntryFields } from "../widgets/auth.signin.tsx";
+import { StatusLine } from "../widgets/auth.statusline.tsx";
 
 export * from "../../accountgate.ts";
 export * from "../../authgate.ts";
-export * from "../components/auth.lockface.tsx";
-export * from "../components/auth.pairing.tsx";
-export * from "../components/auth.powermenu.tsx";
-export * from "../components/auth.providerrow.tsx";
-export * from "../components/auth.signin.tsx";
-export * from "../components/auth.statusline.tsx";
+export * from "../widgets/auth.lockface.tsx";
+export * from "../widgets/auth.pairing.tsx";
+export * from "../widgets/auth.powermenu.tsx";
+export * from "../widgets/auth.providerrow.tsx";
+export * from "../widgets/auth.signin.tsx";
+export * from "../widgets/auth.statusline.tsx";
 
 type PairingResponse = { token: string; userId: string; expiresAt: number };
 

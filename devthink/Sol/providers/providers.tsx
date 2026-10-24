@@ -17,7 +17,7 @@
  */
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "@/components/shell.shellchrome";
+import { ShellChrome } from "@/widgets/shell.shellchrome";
 import { osAppLabels } from "../../catalog";
 import {
   browserCredentialProviders,
@@ -27,8 +27,8 @@ import {
   saveBrowserPreference } from "../../db";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { osProviders, osText } from "../../oslabels.ts";
-import { ProviderCard } from "../components/providers.card.tsx";
-import { ProvidersList } from "../components/providers.list.tsx";
+import { ProviderCard } from "../widgets/providers.card.tsx";
+import { ProvidersList } from "../widgets/providers.list.tsx";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */

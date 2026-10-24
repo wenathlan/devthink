@@ -13,13 +13,13 @@
  * Drives, Automation & MCP, About — routed by internal state. The anchor
  * owns only the data machine (the gateway snapshot, the browser-local
  * identity and preference stores, the save / revoke actions) and the
- * category routing; every card lives in Sol/components. The
+ * category routing; every card lives in Sol/widgets. The
  * personalization pass paints its stored choices onto the document root
  * once at module load, so the wallpaper, the theme ladder, the accent and
  * the behavior flags hold before the lock screen or the desktop mount.
  */
 import { useEffect, useState } from "react";
-import { ShellChrome } from "@/components/shell.shellchrome";
+import { ShellChrome } from "@/widgets/shell.shellchrome";
 import { copy } from "../../copy";
 import {
   type BrowserStoreSummary,
@@ -28,30 +28,30 @@ import {
   readBrowserPreferences,
   saveBrowserPreference } from "../../db";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
-import { AboutSettings } from "../components/settings.about.tsx";
-import { AccountsCategory } from "../components/settings.accountscategory.tsx";
-import { AutomationMcp } from "../components/settings.automationmcp.tsx";
-import { GatewayPairing } from "../components/settings.gatewaypairing.tsx";
-import { HardDrives } from "../components/settings.harddrives.tsx";
-import { initPersonalization, loadThemeMirror, syncThemeFromPreference } from "../components/settings.personalstore.ts";
-import { Personalization } from "../components/settings.personalization.tsx";
-import { SettingsNav } from "../components/settings.nav.tsx";
-import type { PreferenceKey, SettingsCategoryId, SettingsSnapshot } from "../components/settings.settingstypes.ts";
+import { AboutSettings } from "../widgets/settings.about.tsx";
+import { AccountsCategory } from "../widgets/settings.accountscategory.tsx";
+import { AutomationMcp } from "../widgets/settings.automationmcp.tsx";
+import { GatewayPairing } from "../widgets/settings.gatewaypairing.tsx";
+import { HardDrives } from "../widgets/settings.harddrives.tsx";
+import { initPersonalization, loadThemeMirror, syncThemeFromPreference } from "../widgets/settings.personalstore.ts";
+import { Personalization } from "../widgets/settings.personalization.tsx";
+import { SettingsNav } from "../widgets/settings.nav.tsx";
+import type { PreferenceKey, SettingsCategoryId, SettingsSnapshot } from "../widgets/settings.settingstypes.ts";
 
-export * from "../components/settings.about.tsx";
-export * from "../components/settings.accountscategory.tsx";
-export * from "../components/settings.automationmcp.tsx";
-export * from "../components/settings.backgroundpicker.tsx";
-export * from "../components/settings.gatewaycard.tsx";
-export * from "../components/settings.gatewaypairing.tsx";
-export * from "../components/settings.identity.tsx";
-export * from "../components/settings.languagecard.tsx";
-export * from "../components/settings.navbarposition.tsx";
-export * from "../components/settings.pairing.tsx";
-export * from "../components/settings.personalization.tsx";
-export * from "../components/settings.personalstore.ts";
-export * from "../components/settings.nav.tsx";
-export * from "../components/settings.row.tsx";
+export * from "../widgets/settings.about.tsx";
+export * from "../widgets/settings.accountscategory.tsx";
+export * from "../widgets/settings.automationmcp.tsx";
+export * from "../widgets/settings.backgroundpicker.tsx";
+export * from "../widgets/settings.gatewaycard.tsx";
+export * from "../widgets/settings.gatewaypairing.tsx";
+export * from "../widgets/settings.identity.tsx";
+export * from "../widgets/settings.languagecard.tsx";
+export * from "../widgets/settings.navbarposition.tsx";
+export * from "../widgets/settings.pairing.tsx";
+export * from "../widgets/settings.personalization.tsx";
+export * from "../widgets/settings.personalstore.ts";
+export * from "../widgets/settings.nav.tsx";
+export * from "../widgets/settings.row.tsx";
 
 /** paints the stored personalization choices before any route mounts (the
  * same law initautotranslate rides at the theme anchor). */

@@ -30,10 +30,10 @@ import {
   mediaSlots,
   type Principle,
   principleTable } from "../../catalog";
-import { InstitutionalChrome, InstitutionalFooter } from "../components/shell.institutionalchrome.tsx";
-import { AboutFamily } from "../components/about.family.tsx";
-import { AboutHero } from "../components/about.hero.tsx";
-import { AboutTimeline } from "../components/about.timeline.tsx";
+import { InstitutionalChrome, InstitutionalFooter } from "../widgets/shell.institutionalchrome.tsx";
+import { AboutFamily } from "../widgets/about.family.tsx";
+import { AboutHero } from "../widgets/about.hero.tsx";
+import { AboutTimeline } from "../widgets/about.timeline.tsx";
 
 /* --------------------------------------------------------------------------
  * the about page-app stylesheet — the r2-a editorial pass of this folder:

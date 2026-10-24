@@ -15,12 +15,12 @@
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "@/components/shell.shellchrome";
+import { ShellChrome } from "@/widgets/shell.shellchrome";
 import { type NativeApp, nativeApps, osAppLabels, type StudioAsset, studioAssets } from "../../catalog";
 import { osText } from "../../oslabels.ts";
 import { queuestudiorender } from "../../runner";
-import { VideoAssets } from "../components/video.assets.tsx";
-import { VideoEngine } from "../components/video.engine.tsx";
+import { VideoAssets } from "../widgets/video.assets.tsx";
+import { VideoEngine } from "../widgets/video.engine.tsx";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */

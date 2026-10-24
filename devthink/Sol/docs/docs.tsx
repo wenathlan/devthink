@@ -17,10 +17,10 @@
 import { useEffect, useState } from "react";
 import { coreModuleTable, osAppLabels, type CoreModule } from "../../catalog";
 import { osDocsEndpoints, osDocsQuickstartCommands, osText } from "../../oslabels.ts";
-import { ShellChrome } from "@/components/shell.shellchrome";
-import { DocsNav, type DocsSection } from "../components/docs.nav.tsx";
-import { DocsCard, DocsCode } from "../components/docs.card.tsx";
-import { DocsModules } from "../components/docs.modules.tsx";
+import { ShellChrome } from "@/widgets/shell.shellchrome";
+import { DocsNav, type DocsSection } from "../widgets/docs.nav.tsx";
+import { DocsCard, DocsCode } from "../widgets/docs.card.tsx";
+import { DocsModules } from "../widgets/docs.modules.tsx";
 
 /** the loopback endpoints the http card lists — the label table owns the
  * rows (the oslabels docs seed). */
