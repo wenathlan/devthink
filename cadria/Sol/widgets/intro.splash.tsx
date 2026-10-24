@@ -9,6 +9,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { label } from "../../labels.ts";
 import { CadriaMark } from "../shell/Shell.tsx";
 
 /** the beat plan of the splash (ms): mark 0 → name 140 → role 400 → leave 1250. */
@@ -87,8 +88,8 @@ export function IntroSplash({ onLeave, onDone }: SplashProps) {
         <span className="cdr-splash__mark">
           <CadriaMark size={96} hidden flow />
         </span>
-        <p className="cdr-splash__name">cadria</p>
-        <p className="cdr-splash__role">video and image of the family</p>
+        <p className="cdr-splash__name">{label("intro.splash.name")}</p>
+        <p className="cdr-splash__role">{label("intro.splash.role")}</p>
       </div>
     </div>
   );

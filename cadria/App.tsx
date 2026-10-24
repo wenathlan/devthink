@@ -14,6 +14,7 @@ import { Component, type ReactNode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { Router as WouterRouter } from "wouter";
 import { applyNow, syncCanonical } from "./cleanurl";
+import { label, seedLabels } from "./labels";
 import { initReveal } from "./reveal";
 import Sol from "./Sol/Sol";
 import { ToastProvider } from "./Sol/toast/Toast.tsx";
@@ -23,6 +24,10 @@ import "./Sol/sol.css";
 
 // the zoom lock arms before the first render: the interface boots pinned at 100%
 if (typeof window !== "undefined") installzoomlock();
+
+// the copy law rides the boot: the seed refreshes the label store rows
+// (translated rows protected) before the first paint answers
+if (typeof window !== "undefined") void seedLabels().catch(() => {});
 
 initTheme();
 
@@ -43,11 +48,11 @@ class ThemeErrorBoundary extends Component<{ children: ReactNode }, { error: Err
         style={{ padding: "48px 24px", maxWidth: 720, margin: "0 auto" }}
       >
         <AlertTriangle fontSize={34} />
-        <p>cadria could not render this page frame.</p>
+        <p>{label("app.boot.failed")}</p>
         <pre>{error.stack}</pre>
         <button type="button" className="btn secondary" onClick={() => window.location.reload()}>
           <RotateCcw fontSize={14} />
-          reload the page
+          {label("app.boot.reload")}
         </button>
       </main>
     );

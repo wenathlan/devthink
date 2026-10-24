@@ -13,6 +13,7 @@
 
 import { useEffect, useState } from "react";
 import { type RenderFrame, renderKeyframePerturbation, renderSvg } from "../../imagerender.ts";
+import { label } from "../../labels.ts";
 import type { MotionSpec } from "../../synthmotion.ts";
 
 /** the beat envelope quantization — 16 steps per loop keeps the pulse smooth
@@ -101,7 +102,7 @@ export function StageArt({ frame, motion, caption }: StageArtProps) {
         <div style={{ width: "100%", lineHeight: 0 }} dangerouslySetInnerHTML={{ __html: svg }} />
       ) : (
         <p className="mono-label" style={{ margin: 0, padding: 20, textAlign: "center" }}>
-          the frame lands here — analyze a source, then generate
+          {label("studio.stage.empty")}
         </p>
       )}
     </div>

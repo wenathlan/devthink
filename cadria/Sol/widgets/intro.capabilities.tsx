@@ -12,45 +12,46 @@
 
 import { FingerprintRegular, GridRegular, MusicNote2Regular, PulseRegular } from "@fluentui/react-icons";
 import type { ComponentType } from "react";
+import { type LabelKey, label } from "../../labels.ts";
 
 /** the identity rose of the campaign, straight from the token foundation. */
 const ROSE = "var(--rose-500, #f472b6)";
 /** quiet secondary text: the page ink, softened (theme-proof). */
 const MUTED = "color-mix(in srgb, currentColor 64%, transparent)";
 
-/** one generation lane of the engine. */
+/** one generation lane of the engine (the copy rides the label store). */
 type Capability = {
   icon: ComponentType<{ fontSize?: number | string; "aria-hidden"?: true | "true" }>;
-  lane: string;
-  title: string;
-  text: string;
+  lane: LabelKey;
+  title: LabelKey;
+  text: LabelKey;
 };
 
-/** the four generation lanes, in engine order. */
+/** the four generation lanes, in engine order (the keys answer the store). */
 const CAPABILITIES: readonly Capability[] = [
   {
     icon: MusicNote2Regular,
-    lane: "spectrum → color",
-    title: "palette from key",
-    text: "tonal center and brightness set the anchor hue, the chroma depth and the accent fan of the palette.",
+    lane: "intro.capabilities.spectrumLane",
+    title: "intro.capabilities.spectrumTitle",
+    text: "intro.capabilities.spectrumText",
   },
   {
     icon: GridRegular,
-    lane: "structure → composition",
-    title: "layout from sections",
-    text: "section count and narrative shape cast the hero, cadre, field and edge blocks of the frame.",
+    lane: "intro.capabilities.structureLane",
+    title: "intro.capabilities.structureTitle",
+    text: "intro.capabilities.structureText",
   },
   {
     icon: FingerprintRegular,
-    lane: "timbre → texture",
-    title: "surface from timbre",
-    text: "noisiness, warmth and flux drive the grain, the stroke softness and the glaze of the surface.",
+    lane: "intro.capabilities.timbreLane",
+    title: "intro.capabilities.timbreTitle",
+    text: "intro.capabilities.timbreText",
   },
   {
     icon: PulseRegular,
-    lane: "rhythm → motion",
-    title: "move from bpm",
-    text: "tempo, punch and regularity pace the pulse, drift, wipe and reveal of every loop.",
+    lane: "intro.capabilities.rhythmLane",
+    title: "intro.capabilities.rhythmTitle",
+    text: "intro.capabilities.rhythmText",
   },
 ];
 
@@ -87,25 +88,25 @@ export function CapabilityRow() {
     <section aria-labelledby="intro-cap-h" style={sectionStyle}>
       <header style={{ maxWidth: "62ch" }}>
         <p className="mono-label reveal" style={{ margin: "0 0 10px" }}>
-          what the engine reads
+          {label("intro.capabilities.eyebrow")}
         </p>
         <h2 id="intro-cap-h" className="reveal" style={h2Style}>
-          four lanes, one image
+          {label("intro.capabilities.title")}
         </h2>
       </header>
 
       <div className="anchorledger reveal" style={{ marginTop: 28 }}>
         {/* the feature lane: spectrum → color, the engine's own glyph carries it */}
         {feature && (
-          <article className="anchor-feature" aria-label={feature.lane}>
+          <article className="anchor-feature" aria-label={label(feature.lane)}>
             <span className="icon-anim" aria-hidden="true" style={iconStyle}>
               <feature.icon fontSize={20} aria-hidden="true" />
             </span>
             <p className="mono-label" style={{ margin: "12px 0 0" }}>
-              {feature.lane}
+              {label(feature.lane)}
             </p>
-            <h3 style={h3Style}>{feature.title}</h3>
-            <p style={{ margin: 0, color: MUTED, fontSize: "0.95rem", lineHeight: 1.55 }}>{feature.text}</p>
+            <h3 style={h3Style}>{label(feature.title)}</h3>
+            <p style={{ margin: 0, color: MUTED, fontSize: "0.95rem", lineHeight: 1.55 }}>{label(feature.text)}</p>
           </article>
         )}
 
@@ -120,11 +121,11 @@ export function CapabilityRow() {
                 </span>
                 <div style={{ minWidth: 0 }}>
                   <p className="mono-label" style={{ margin: "0 0 4px" }}>
-                    {capability.lane}
+                    {label(capability.lane)}
                   </p>
-                  <h3 style={{ margin: 0, fontSize: "1.05rem" }}>{capability.title}</h3>
+                  <h3 style={{ margin: 0, fontSize: "1.05rem" }}>{label(capability.title)}</h3>
                   <p style={{ margin: "4px 0 0", color: MUTED, fontSize: "0.92rem", lineHeight: 1.5 }}>
-                    {capability.text}
+                    {label(capability.text)}
                   </p>
                 </div>
                 <span className="icon-anim" aria-hidden="true" style={rowIconStyle}>

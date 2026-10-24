@@ -8,6 +8,7 @@
 
 import { familyrow } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
+import { label } from "../../labels.ts";
 
 /** quiet secondary text: the page ink, softened (theme-proof). */
 const MUTED = "color-mix(in srgb, currentColor 64%, transparent)";
@@ -40,9 +41,9 @@ export function IntroFooter() {
   return (
     <footer style={footStyle}>
       <div style={innerStyle}>
-        <nav aria-label="the wenathlan family" style={rowStyle}>
+        <nav aria-label={label("intro.footer.familyAria")} style={rowStyle}>
           <span className="mono-label" style={{ margin: 0 }}>
-            the family
+            {label("intro.footer.family")}
           </span>
           {familyrow().map((member) => (
             <a
@@ -52,15 +53,14 @@ export function IntroFooter() {
               rel="noreferrer"
               className="intro-foot__link"
               style={linkStyle}
-              data-tip={`${member.slug} — the ${member.slug} surface of the family`}
+              data-tip={label("intro.footer.memberTip").replaceAll("{slug}", member.slug)}
             >
               {member.slug}
             </a>
           ))}
         </nav>
         <p className="mono-label" style={legalStyle}>
-          cadria — the video and image home of the wenathlan family · every render is computed locally; nothing is
-          stored, uploaded or tracked · © wenathlan, gpl-3.0-only
+          {label("intro.footer.legal")}
         </p>
       </div>
     </footer>

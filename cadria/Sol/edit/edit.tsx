@@ -47,6 +47,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { label } from "../../labels.ts";
 import {
   type EditItem,
   type EditTrack,
@@ -107,7 +108,7 @@ function nextid(track: EditTrack): number {
 
 /** the clip face label: the master in point, deterministic from the item. */
 function cliplabel(item: EditItem, rate: FrameRate): string {
-  return `slate · in ${formattimecode(item.sourceIn, rate)}`;
+  return label("edit.clipLabel").replace("{in}", formattimecode(item.sourceIn, rate));
 }
 
 /** one drag gesture: origin snapshot + gesture kind + start x. */
@@ -134,7 +135,7 @@ export default function Edit() {
   const [snap, setSnap] = useState(true);
   const [mode, setMode] = useState<"overwrite" | "insert">("overwrite");
   const [lane, setLane] = useState<0 | 1>(0);
-  const [note, setNote] = useState<string>("the sequence is empty — click a stock slate to lay the first cut.");
+  const [note, setNote] = useState<string>(() => label("edit.noteEmpty"));
   const bin = useMemo(() => stockbin(), []);
   const frame = frameduration(rate);
   const pps = ZOOM_LEVELS[zoomIndex] ?? 64;
@@ -274,7 +275,12 @@ export default function Edit() {
       setTrackAt(lane, out.value);
       setSelected({ trackIndex: lane, itemId: item.id });
       setNote(
-        `${slateName} → ${lane === 0 ? "v1" : "a1"} (${mode}) · src in ${formattimecode(item.sourceIn, rate)} · at ${formattimecode(start, rate)}`,
+        label("edit.placed")
+          .replace("{slate}", slateName)
+          .replace("{lane}", lane === 0 ? label("edit.laneV1") : label("edit.laneA1"))
+          .replace("{mode}", mode)
+          .replace("{src}", formattimecode(item.sourceIn, rate))
+          .replace("{at}", formattimecode(start, rate)),
       );
     },
     [lane, mode, playhead, rate, scrubTick, setTrackAt, tracks],
@@ -298,13 +304,17 @@ export default function Edit() {
     }
     setTrackAt(index, out.value.track);
     setSelected({ trackIndex: index, itemId: out.value.rightId });
-    setNote(`split · right piece ${out.value.rightId} · ${formattimecode(playhead, rate)}`);
+    setNote(
+      label("edit.splitNote")
+        .replace("{id}", String(out.value.rightId))
+        .replace("{timecode}", formattimecode(playhead, rate)),
+    );
   }, [frame, playhead, rate, selected, setTrackAt, tracks]);
 
   const rangeOp = useCallback(
     (op: "lift" | "extract") => {
       if (!selected) {
-        setNote("select a clip first — the range ops ride the selection.");
+        setNote(label("edit.selectFirst"));
         return;
       }
       const track = tracks[selected.trackIndex];
@@ -323,14 +333,14 @@ export default function Edit() {
       }
       setTrackAt(selected.trackIndex, out.value);
       setSelected(null);
-      setNote(op === "lift" ? "lifted — the gap stays." : "extracted — the gap closed (ripple).");
+      setNote(op === "lift" ? label("edit.lifted") : label("edit.extracted"));
     },
     [selected, setTrackAt, tracks],
   );
 
   const duplicateSelected = useCallback(() => {
     if (!selected) {
-      setNote("select a clip first — duplicate rides the selection.");
+      setNote(label("edit.selectFirstDuplicate"));
       return;
     }
     const track = tracks[selected.trackIndex];
@@ -347,7 +357,7 @@ export default function Edit() {
     }
     setTrackAt(selected.trackIndex, out.value);
     setSelected({ trackIndex: selected.trackIndex, itemId: copy.id });
-    setNote(`duplicated · ${formattimecode(copy.start, rate)}`);
+    setNote(label("edit.duplicated").replace("{timecode}", formattimecode(copy.start, rate)));
   }, [rate, selected, setTrackAt, tracks]);
 
   // ---- the drag gestures (trim in/out, slide) ------------------------------------
@@ -377,7 +387,9 @@ export default function Edit() {
         const out = slide(gesture.origin, gesture.itemId, delta);
         if (out.ok) {
           setTrackAt(gesture.trackIndex, out.value);
-          setNote(`slid ${delta > 0 ? "+" : ""}${(delta / TICKS_PER_SECOND).toFixed(2)} s`);
+          setNote(
+            label("edit.slid").replace("{delta}", `${delta > 0 ? "+" : ""}${(delta / TICKS_PER_SECOND).toFixed(2)}`),
+          );
         }
         return;
       }
@@ -387,7 +399,11 @@ export default function Edit() {
       });
       if (out.ok) {
         setTrackAt(gesture.trackIndex, out.value);
-        setNote(`trim ${gesture.edge} ${delta > 0 ? "+" : ""}${(delta / TICKS_PER_SECOND).toFixed(2)} s`);
+        setNote(
+          label("edit.trim")
+            .replace("{edge}", gesture.edge)
+            .replace("{delta}", `${delta > 0 ? "+" : ""}${(delta / TICKS_PER_SECOND).toFixed(2)}`),
+        );
       } else {
         setNote(refusalnote(out.error));
       }
@@ -461,27 +477,25 @@ export default function Edit() {
     <>
       <header className="reveal" style={{ maxWidth: "68ch", marginBottom: 22 }}>
         <p className="eyebrow" style={{ margin: "0 0 8px" }}>
-          cadria · editor
+          {label("edit.eyebrow")}
         </p>
         <h1 className="page-title" style={{ fontSize: "clamp(1.9rem, 4vw, 2.75rem)", margin: "0 0 10px" }}>
-          the timeline
+          {label("edit.title")}
         </h1>
         <p className="lede-tight" style={{ margin: 0, lineHeight: 1.6 }}>
-          clips, trims and the playhead on exact ticks — every edit folds through the versawase edit algebra, every
-          number is frame-exact SMPTE. the material is the stock slate the surface ships; nothing is uploaded, nothing
-          is stored.
+          {label("edit.lede")}
         </p>
       </header>
 
-      <section className="tl-workbench reveal" aria-label="the edit timeline">
+      <section className="tl-workbench reveal" aria-label={label("edit.workbenchAria")}>
         {/* TOOLBAR — transport, tools, zoom, snap, rate; every number mono tnum */}
-        <div className="tl-toolbar" role="toolbar" aria-label="edit transport and tools">
+        <div className="tl-toolbar" role="toolbar" aria-label={label("edit.toolbarAria")}>
           <button
             type="button"
             className="tkey"
             aria-pressed={playing}
-            aria-label={playing ? "pause" : "play"}
-            data-tip={playing ? "pause (space)" : "play (space)"}
+            aria-label={playing ? label("edit.pause") : label("edit.play")}
+            data-tip={playing ? label("edit.pauseTip") : label("edit.playTip")}
             onClick={() => setPlaying((current) => !current)}
           >
             {playing ? (
@@ -493,8 +507,8 @@ export default function Edit() {
           <button
             type="button"
             className="tkey"
-            aria-label="to start"
-            data-tip="to the sequence start (home)"
+            aria-label={label("edit.toStart")}
+            data-tip={label("edit.toStartTip")}
             onClick={() => {
               setPlaying(false);
               setPlayhead(0);
@@ -505,8 +519,8 @@ export default function Edit() {
           <button
             type="button"
             className="tkey"
-            aria-label="previous edit point"
-            data-tip="previous edit point (shift+←)"
+            aria-label={label("edit.prevPoint")}
+            data-tip={label("edit.prevPointTip")}
             onClick={() => walkPoint(-1)}
           >
             <ArrowLeftRegular fontSize={15} aria-hidden="true" />
@@ -514,8 +528,8 @@ export default function Edit() {
           <button
             type="button"
             className="tkey"
-            aria-label="next edit point"
-            data-tip="next edit point (shift+→)"
+            aria-label={label("edit.nextPoint")}
+            data-tip={label("edit.nextPointTip")}
             onClick={() => walkPoint(1)}
           >
             <ArrowRightRegular fontSize={15} aria-hidden="true" />
@@ -533,8 +547,8 @@ export default function Edit() {
           <button
             type="button"
             className="tkey"
-            aria-label="split at the playhead"
-            data-tip="split at the playhead (s)"
+            aria-label={label("edit.split")}
+            data-tip={label("edit.splitTip")}
             onClick={splitAtPlayhead}
           >
             <CutRegular fontSize={15} aria-hidden="true" />
@@ -542,8 +556,8 @@ export default function Edit() {
           <button
             type="button"
             className="tkey"
-            aria-label="lift the selection"
-            data-tip="lift the selection — the gap stays (delete)"
+            aria-label={label("edit.lift")}
+            data-tip={label("edit.liftTip")}
             onClick={() => rangeOp("lift")}
           >
             <EraserRegular fontSize={15} aria-hidden="true" />
@@ -551,8 +565,8 @@ export default function Edit() {
           <button
             type="button"
             className="tkey"
-            aria-label="extract the selection"
-            data-tip="extract the selection — the gap closes (ripple)"
+            aria-label={label("edit.extract")}
+            data-tip={label("edit.extractTip")}
             onClick={() => rangeOp("extract")}
           >
             <span className="mono-label" style={{ fontSize: 10 }}>
@@ -562,8 +576,8 @@ export default function Edit() {
           <button
             type="button"
             className="tkey"
-            aria-label="duplicate the selection"
-            data-tip="duplicate the selection after itself"
+            aria-label={label("edit.duplicate")}
+            data-tip={label("edit.duplicateTip")}
             onClick={duplicateSelected}
           >
             <CopyRegular fontSize={14} aria-hidden="true" />
@@ -577,24 +591,24 @@ export default function Edit() {
             type="button"
             className="tkey"
             aria-pressed={mode === "insert"}
-            aria-label="place mode: insert pushes the rest right"
-            data-tip="place mode: insert pushes the rest right"
+            aria-label={label("edit.insert")}
+            data-tip={label("edit.insert")}
             onClick={() => setMode("insert")}
           >
             <span className="mono-label" style={{ fontSize: 10 }}>
-              ins
+              {label("edit.insertMark")}
             </span>
           </button>
           <button
             type="button"
             className="tkey"
             aria-pressed={mode === "overwrite"}
-            aria-label="place mode: overwrite covers the span"
-            data-tip="place mode: overwrite covers the span"
+            aria-label={label("edit.overwrite")}
+            data-tip={label("edit.overwrite")}
             onClick={() => setMode("overwrite")}
           >
             <span className="mono-label" style={{ fontSize: 10 }}>
-              ovr
+              {label("edit.overwriteMark")}
             </span>
           </button>
 
@@ -606,24 +620,24 @@ export default function Edit() {
             type="button"
             className="tkey"
             aria-pressed={lane === 0}
-            aria-label="target lane v1 — the picture lane"
-            data-tip="target lane v1 — the picture lane"
+            aria-label={label("edit.v1Target")}
+            data-tip={label("edit.v1Target")}
             onClick={() => setLane(0)}
           >
             <span className="mono-label" style={{ fontSize: 10 }}>
-              v1
+              {label("edit.v1Mark")}
             </span>
           </button>
           <button
             type="button"
             className="tkey"
             aria-pressed={lane === 1}
-            aria-label="target lane a1 — the sound lane"
-            data-tip="target lane a1 — the sound lane (the same algebra, the same refusals)"
+            aria-label={label("edit.a1Target")}
+            data-tip={label("edit.a1TargetTip")}
             onClick={() => setLane(1)}
           >
             <span className="mono-label" style={{ fontSize: 10 }}>
-              a1
+              {label("edit.a1Mark")}
             </span>
           </button>
 
@@ -632,8 +646,8 @@ export default function Edit() {
             type="button"
             className="tkey"
             aria-pressed={snap}
-            aria-label="snap the playhead to edit points"
-            data-tip="snap the playhead to the edit points"
+            aria-label={label("edit.snapAria")}
+            data-tip={label("edit.snapTip")}
             onClick={() => setSnap((current) => !current)}
           >
             <PinRegular fontSize={15} aria-hidden="true" />
@@ -641,8 +655,8 @@ export default function Edit() {
           <button
             type="button"
             className="tkey"
-            aria-label="zoom out"
-            data-tip="zoom out"
+            aria-label={label("edit.zoomOut")}
+            data-tip={label("edit.zoomOut")}
             onClick={() => setZoomIndex((i) => Math.max(0, i - 1))}
           >
             <ZoomOutRegular fontSize={15} aria-hidden="true" />
@@ -650,15 +664,15 @@ export default function Edit() {
           <button
             type="button"
             className="tkey"
-            aria-label="zoom in"
-            data-tip="zoom in"
+            aria-label={label("edit.zoomIn")}
+            data-tip={label("edit.zoomIn")}
             onClick={() => setZoomIndex((i) => Math.min(ZOOM_LEVELS.length - 1, i + 1))}
           >
             <ZoomInRegular fontSize={15} aria-hidden="true" />
           </button>
           <span className="tl-kv">{pps} px/s</span>
           <label className="tl-kv" htmlFor="tl-rate">
-            rate
+            {label("edit.rate")}
           </label>
           <select
             id="tl-rate"
@@ -672,7 +686,7 @@ export default function Edit() {
           >
             {COMMON_FRAME_RATES.map((option) => (
               <option key={`${option.num}/${option.den}`} value={`${option.num}/${option.den}`}>
-                {framelabel(option)} fps
+                {label("edit.rateFps").replace("{rate}", framelabel(option))}
               </option>
             ))}
           </select>
@@ -707,7 +721,7 @@ export default function Edit() {
                 max={Math.max(1, seqEnd)}
                 step={frame}
                 value={playhead}
-                aria-label="the playhead — drag to scrub"
+                aria-label={label("edit.scrubAria")}
                 onChange={onScrubInput}
               />
             </div>
@@ -715,22 +729,26 @@ export default function Edit() {
             {tracks.map((track, trackIndex) => (
               <div key={track.id} className="tl-track" data-locked={track.locked}>
                 <div className="tl-thead">
-                  <span>{trackIndex === 0 ? "v1" : "a1"}</span>
+                  <span>{trackIndex === 0 ? label("edit.laneV1") : label("edit.laneA1")}</span>
                   <button
                     type="button"
                     className="tl-lock"
                     aria-pressed={track.locked}
                     aria-label={
                       track.locked
-                        ? `unlock lane ${trackIndex === 0 ? "v1" : "a1"}`
-                        : `lock lane ${trackIndex === 0 ? "v1" : "a1"}`
+                        ? label("edit.unlockLane").replace(
+                            "{lane}",
+                            trackIndex === 0 ? label("edit.laneV1") : label("edit.laneA1"),
+                          )
+                        : label("edit.lockLane").replace(
+                            "{lane}",
+                            trackIndex === 0 ? label("edit.laneV1") : label("edit.laneA1"),
+                          )
                     }
-                    data-tip={track.locked ? "unlock the lane" : "lock the lane — every edit refuses"}
+                    data-tip={track.locked ? label("edit.unlockTip") : label("edit.lockTip")}
                     onClick={() => {
                       setTrackAt(trackIndex, { ...track, locked: !track.locked });
-                      setNote(
-                        track.locked ? "lane unlocked." : "lane locked — every edit refuses until you unlock it.",
-                      );
+                      setNote(track.locked ? label("edit.laneUnlocked") : label("edit.laneLocked"));
                     }}
                   >
                     <span className="tl-lockdot" data-on={track.locked} />
@@ -741,9 +759,7 @@ export default function Edit() {
                     className="mono-label"
                     style={{ position: "absolute", left: 84, top: "50%", transform: "translateY(-50%)", margin: 0 }}
                   >
-                    {trackIndex === 0
-                      ? "no picture yet — place a stock slate from the bin"
-                      : "no sound yet — the sound lane rides the same algebra"}
+                    {trackIndex === 0 ? label("edit.v1Empty") : label("edit.a1Empty")}
                   </p>
                 )}
                 {track.items.map((item) => {
@@ -809,23 +825,24 @@ export default function Edit() {
         {/* READOUT — the sequence's own ledger, mono tabular-nums */}
         <div className="tl-readout">
           <span className="tl-kv">
-            sequence <strong>{formattimecode(seqEnd, rate)}</strong>
+            {label("edit.readout.sequence")} <strong>{formattimecode(seqEnd, rate)}</strong>
           </span>
           <span className="tl-kv">
-            clips <strong>{v1.items.length + a1.items.length}</strong>
+            {label("edit.readout.clips")} <strong>{v1.items.length + a1.items.length}</strong>
           </span>
           <span className="tl-kv">
-            edit points <strong>{points.length}</strong>
+            {label("edit.readout.editPoints")} <strong>{points.length}</strong>
           </span>
           {selectedItem ? (
             <span className="tl-kv">
-              clip <strong>{selectedItem.id}</strong> · in <strong>{formattimecode(selectedItem.start, rate)}</strong> ·
-              out <strong>{formattimecode(itemend(selectedItem), rate)}</strong> · src{" "}
+              {label("edit.readout.clip")} <strong>{selectedItem.id}</strong> · {label("edit.readout.in")}{" "}
+              <strong>{formattimecode(selectedItem.start, rate)}</strong> · {label("edit.readout.out")}{" "}
+              <strong>{formattimecode(itemend(selectedItem), rate)}</strong> · {label("edit.readout.src")}{" "}
               <strong>{formattimecode(selectedItem.sourceIn, rate)}</strong> ·{" "}
               <strong>{selectedItem.speed.toFixed(2)}×</strong>
             </span>
           ) : (
-            <span className="tl-kv">no selection</span>
+            <span className="tl-kv">{label("edit.readout.noSelection")}</span>
           )}
           <span className="tl-kv" role="status" aria-live="polite" style={{ marginLeft: "auto" }}>
             {note}
@@ -833,17 +850,24 @@ export default function Edit() {
         </div>
 
         {/* THE BIN — the honest material: the stock slate cuts, in-code */}
-        <fieldset className="tl-bin" aria-label="the stock slate bin">
+        <fieldset className="tl-bin" aria-label={label("edit.binAria")}>
           <span className="mono-label" style={{ margin: "0 6px 0 0", alignSelf: "center" }}>
-            stock slate · 20 s master
+            {label("edit.binHead")}
           </span>
           {bin.map((slate, index) => (
             <button
               key={slate.id}
               type="button"
               className="chip"
-              data-tip={`${slate.detail} — ${mode} on ${lane === 0 ? "v1" : "a1"} at the playhead`}
-              aria-label={`place ${slate.name} — ${slate.detail} — ${mode} on ${lane === 0 ? "v1" : "a1"} at the playhead`}
+              data-tip={label("edit.slateTip")
+                .replace("{detail}", slate.detail)
+                .replace("{mode}", mode)
+                .replace("{lane}", lane === 0 ? label("edit.laneV1") : label("edit.laneA1"))}
+              aria-label={label("edit.slateAria")
+                .replace("{slate}", slate.name)
+                .replace("{detail}", slate.detail)
+                .replace("{mode}", mode)
+                .replace("{lane}", lane === 0 ? label("edit.laneV1") : label("edit.laneA1"))}
               onClick={() => placeSlate(slate.name, index, slate.duration)}
             >
               {slate.name} · {(slate.duration / TICKS_PER_SECOND).toFixed(0)}s
@@ -854,9 +878,7 @@ export default function Edit() {
 
       {/* the keyboard map, quiet and honest */}
       <p className="mono-label" style={{ margin: "14px 4px 0", maxWidth: "72ch", lineHeight: 1.7 }}>
-        keys — space play/pause · s split at the playhead · delete lift the selection · ←/→ step a frame · shift+←/→
-        walk the edit points · home start · end sequence end · drag the ruler to scrub · drag a clip body to slide ·
-        drag a clip edge to trim (limited by the master's handles) — the bin places on the targeted lane (v1/a1)
+        {label("edit.keys")}
       </p>
     </>
   );

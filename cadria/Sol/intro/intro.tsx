@@ -23,6 +23,7 @@
 import { ArrowDownRegular, ArrowUpRightRegular } from "@fluentui/react-icons";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "wouter";
+import { type LabelKey, label } from "../../labels.ts";
 import { markOnboardingStage, readOnboardingState } from "../../onboardingstate.ts";
 import { CadriaMark } from "../shell/Shell.tsx";
 import CapabilityRow from "../widgets/intro.capabilities.tsx";
@@ -40,11 +41,11 @@ const MUTED = "color-mix(in srgb, currentColor 64%, transparent)";
 const HAIR = "1px solid color-mix(in srgb, currentColor 18%, transparent)";
 
 /** the mono platform links of the landing bar (the rail seats, lowercased). */
-const NAV_LINKS: readonly { label: string; href: string }[] = [
-  { label: "studio", href: "/studio" },
-  { label: "editor", href: "/edit" },
-  { label: "gallery", href: "/gallery" },
-  { label: "player", href: "/player" },
+const NAV_LINKS: readonly { label: LabelKey; href: string }[] = [
+  { label: "intro.nav.studio", href: "/studio" },
+  { label: "intro.nav.editor", href: "/edit" },
+  { label: "intro.nav.gallery", href: "/gallery" },
+  { label: "intro.nav.player", href: "/player" },
 ];
 
 /**
@@ -136,15 +137,15 @@ export default function Intro() {
       {/* LANDING BAR — the wordmark rides the bar; the drawn mark stays the
           hero's (the ONE brand focus per surface — spec principle 10) */}
       <header className="intro-nav">
-        <span className="intro-nav__word">cadria</span>
+        <span className="intro-nav__word">{label("intro.nav.word")}</span>
         <span className="intro-nav__spacer" />
         {NAV_LINKS.map((link) => (
           <Link key={link.href} href={link.href} className="intro-nav__link">
-            {link.label}
+            {label(link.label)}
           </Link>
         ))}
         <Link href="/onboarding" className="btn" style={{ minHeight: 40 }}>
-          open the studio
+          {label("intro.nav.cta")}
         </Link>
       </header>
 
@@ -155,31 +156,28 @@ export default function Intro() {
             <CadriaMark size={112} hidden flow />
           </span>
           <p className="mono-label reveal" style={{ margin: "28px 0 0" }}>
-            cadria · the studio that listens
+            {label("intro.hero.eyebrow")}
           </p>
           <h1 id="intro-h" className="reveal" style={h1Style}>
-            hear a sound.
+            {label("intro.hero.titleLine1")}
             <br />
-            see its picture.
+            {label("intro.hero.titleLine2")}
           </h1>
           <p className="reveal" style={ledeStyle}>
-            drop any audio — the engine reads its spectrum, rhythm, tonality, timbre and structure, then
-            deterministically generates the artwork the sound implies: palettes from key, composition from sections,
-            texture from timbre, motion from bpm. one hundred percent client-side — the same audio always renders the
-            same image.
+            {label("intro.hero.lede")}
           </p>
           <div className="reveal" style={ctaRowStyle}>
             <Link href="/onboarding" className="btn">
-              open the studio
+              {label("intro.hero.cta")}
               <ArrowUpRightRegular fontSize={15} aria-hidden="true" />
             </Link>
             <button type="button" className="intro-cue" onClick={hearToSee}>
-              hear to see — the engine, live
+              {label("intro.hero.cue")}
               <ArrowDownRegular fontSize={13} aria-hidden="true" />
             </button>
           </div>
           <p className="mono-label reveal" style={{ margin: "26px auto 0", maxWidth: "72ch" }}>
-            no uploads · no accounts · deterministic by construction — the demo below runs the real chain
+            {label("intro.hero.note")}
           </p>
         </section>
 

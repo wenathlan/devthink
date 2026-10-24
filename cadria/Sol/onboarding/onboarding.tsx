@@ -27,6 +27,7 @@ import { useLocation } from "wouter";
 import { type AnalysisReport, analyzePcm, reportDigest } from "../../audiopipeline.ts";
 import { renderCommands, renderSvg, renderThumbnailSignature } from "../../imagerender.ts";
 import { type DemoFixtureId, demoFixtures } from "../../introfixtures.ts";
+import { type LabelKey, label } from "../../labels.ts";
 import { markOnboardingStage } from "../../onboardingstate.ts";
 import { compositionBlocks, rhythmScatter } from "../../synthcomposition.ts";
 import { synthPalette } from "../../synthpalette.ts";
@@ -45,16 +46,13 @@ const MUTED = "color-mix(in srgb, currentColor 64%, transparent)";
 /** the hairline the page draws beside the contract's own. */
 const HAIR = "1px solid color-mix(in srgb, currentColor 18%, transparent)";
 
-/** the honest statement of the opening frame. */
-const WHAT_IT_IS =
-  "cadria is the video and image home of the wenathlan family — the studio listens to audio and renders the artwork it implies, the player shows the frames, the gallery keeps them. not an operating system: one honest application window.";
-
-/** the honest statement of the closing frame. */
-const WHAT_ENTER =
-  "the home is the desk: generate in the studio, play the renders in the player, keep them in the gallery. everything runs client-side and session-only — nothing is written to this machine.";
-
-/** the four frames of the first run, in order. */
-const STEPS = ["welcome", "hear", "see", "enter"] as const;
+/** the four frames of the first run, in order (the keys answer the store). */
+const STEPS: readonly LabelKey[] = [
+  "onboarding.step.welcome",
+  "onboarding.step.hear",
+  "onboarding.step.see",
+  "onboarding.step.enter",
+];
 
 /** the reduce check the demo beat consults: the settings session override beside the os media query. */
 function motionHeld(): boolean {
@@ -111,7 +109,7 @@ export default function Onboarding() {
   const recorderRef = useRef<MediaRecorder | null>(null);
 
   /** runs the real decode + wave-1 chain over one audio blob; errors surface honest. */
-  const analyzeBlob = useCallback(async (blob: Blob, label: string) => {
+  const analyzeBlob = useCallback(async (blob: Blob, sourceName: string) => {
     setHearStatus("reading");
     setHearMessage(null);
     try {
@@ -119,10 +117,10 @@ export default function Onboarding() {
       const next = analyzePcm(slice.samples, slice.sampleRate, 1);
       setReport(next);
       setHearStatus("ready");
-      setHearMessage(`read ${label} — the chain heard it.`);
+      setHearMessage(label("onboarding.hear.read").replace("{name}", sourceName));
     } catch (error) {
       setReport(null);
-      setHearMessage(error instanceof Error ? error.message : "the chain refused this slice — try a longer clip.");
+      setHearMessage(error instanceof Error ? error.message : label("onboarding.hear.refused"));
       setHearStatus("error");
     }
   }, []);
@@ -131,7 +129,7 @@ export default function Onboarding() {
   const startRecording = useCallback(async () => {
     if (!navigator.mediaDevices?.getUserMedia) {
       setHearStatus("error");
-      setHearMessage("this browser offers no microphone api — pick a file instead.");
+      setHearMessage(label("onboarding.hear.noMic"));
       return;
     }
     try {
@@ -144,16 +142,19 @@ export default function Onboarding() {
       recorder.addEventListener("stop", () => {
         for (const track of stream.getTracks()) track.stop();
         setRecording(false);
-        void analyzeBlob(new Blob(chunks, { type: recorder.mimeType || "audio/webm" }), "the recording");
+        void analyzeBlob(
+          new Blob(chunks, { type: recorder.mimeType || "audio/webm" }),
+          label("onboarding.hear.recordingName"),
+        );
       });
       recorder.start();
       recorderRef.current = recorder;
       setRecording(true);
       setHearStatus("reading");
-      setHearMessage("recording — play or speak, then stop.");
+      setHearMessage(label("onboarding.hear.recording"));
     } catch {
       setHearStatus("error");
-      setHearMessage("the microphone is off limits — pick a file instead.");
+      setHearMessage(label("onboarding.hear.micRefused"));
     }
   }, [analyzeBlob]);
 
@@ -178,11 +179,11 @@ export default function Onboarding() {
       try {
         let active: AnalysisReport;
         if (pick === "yours") {
-          if (!report) throw new Error("nothing heard yet — give the hear frame a slice first.");
+          if (!report) throw new Error(label("onboarding.see.nothingHeard"));
           active = report;
         } else {
           const fixture = demoFixtures().find((entry) => entry.id === pick);
-          if (!fixture) throw new Error(`no such fixture: ${pick}`);
+          if (!fixture) throw new Error(label("onboarding.see.noFixture").replace("{id}", pick));
           active = analyzePcm(fixture.samples, fixture.sampleRate, 1);
         }
         const descriptor = active.descriptor;
@@ -198,13 +199,13 @@ export default function Onboarding() {
           svg: fitArtSvg(renderSvg(frame)),
           digest: reportDigest(active),
           signature: renderThumbnailSignature(frame.commands),
-          source: pick === "yours" ? "your audio" : pick,
+          source: pick === "yours" ? label("onboarding.see.yours") : pick,
         });
         setSeeStatus("ready");
       } catch (error) {
         if (!live) return;
         setSee(null);
-        setSeeMessage(error instanceof Error ? error.message : "the engine refused this slice.");
+        setSeeMessage(error instanceof Error ? error.message : label("onboarding.see.refused"));
         setSeeStatus("error");
       }
     };
@@ -219,40 +220,41 @@ export default function Onboarding() {
 
   return (
     <main className="winonboard">
-      <section className="winonboard__card" aria-label="cadria first run">
+      <section className="winonboard__card" aria-label={label("onboarding.cardAria")}>
         <header className="winonboard__head">
           <CadriaMark size={18} hidden />
-          <span className="winonboard__title">first run</span>
+          <span className="winonboard__title">{label("onboarding.title")}</span>
           <button
             type="button"
             className="mono-label"
             style={{ marginLeft: "auto", background: "none", border: 0, cursor: "pointer", padding: "8px 10px" }}
             onClick={enterPlatform}
           >
-            skip ahead
+            {label("onboarding.skip")}
           </button>
         </header>
 
         <div className="winonboard__body">
           {step === 0 && (
             <article className="winonboard__step" key="welcome">
-              <p className="winonboard__eyebrow">01 — {STEPS[0]}</p>
-              <h2 className="winonboard__lead">one window, video and image</h2>
-              <p className="winonboard__lede">{WHAT_IT_IS}</p>
+              <p className="winonboard__eyebrow">
+                {label("onboarding.stepEyebrow").replace("{n}", "01").replace("{step}", label(STEPS[0]))}
+              </p>
+              <h2 className="winonboard__lead">{label("onboarding.welcome.lead")}</h2>
+              <p className="winonboard__lede">{label("onboarding.welcome.lede")}</p>
             </article>
           )}
           {step === 1 && (
             <article className="winonboard__step" key="hear">
-              <p className="winonboard__eyebrow">02 — {STEPS[1]}</p>
-              <h2 className="winonboard__lead">give it something to hear</h2>
-              <p className="winonboard__lede">
-                pick an audio file or record a slice — the genuine wave-1 chain reads it right here: spectrum, rhythm,
-                tonality, timbre, structure. nothing is uploaded, nothing is stored.
+              <p className="winonboard__eyebrow">
+                {label("onboarding.stepEyebrow").replace("{n}", "02").replace("{step}", label(STEPS[1]))}
               </p>
+              <h2 className="winonboard__lead">{label("onboarding.hear.lead")}</h2>
+              <p className="winonboard__lede">{label("onboarding.hear.lede")}</p>
               <div className="row row--wrap" style={{ gap: 10 }}>
                 <label className="winonboard__act" style={{ cursor: "pointer" }}>
                   <FolderOpenRegular fontSize={14} aria-hidden="true" />
-                  pick audio
+                  {label("onboarding.hear.pick")}
                   <input
                     type="file"
                     accept="audio/*,.wav,.mp3,.ogg,.flac,.m4a,.webm"
@@ -275,11 +277,13 @@ export default function Onboarding() {
                   ) : (
                     <MicRegular fontSize={14} aria-hidden="true" />
                   )}
-                  {recording ? "stop recording" : "record a slice"}
+                  {recording ? label("onboarding.hear.stop") : label("onboarding.hear.record")}
                 </button>
               </div>
               <p role="status" aria-live="polite" className="mono-label" style={{ margin: 0 }}>
-                {hearStatus === "reading" ? "listening…" : (hearMessage ?? "no slice yet — pick or record.")}
+                {hearStatus === "reading"
+                  ? label("onboarding.hear.listening")
+                  : (hearMessage ?? label("onboarding.hear.noSlice"))}
               </p>
               {hearStatus === "error" && (
                 <p role="alert" style={{ margin: 0, color: "var(--err)", fontSize: 13 }}>
@@ -295,14 +299,13 @@ export default function Onboarding() {
           )}
           {step === 2 && (
             <article className="winonboard__step" key="see">
-              <p className="winonboard__eyebrow">03 — {STEPS[2]}</p>
-              <h2 className="winonboard__lead">the picture of what it heard</h2>
-              <p className="winonboard__lede">
-                the genuine wave-2 render layer draws the frame the descriptor describes — palette from key, composition
-                from sections, texture from timbre, motion from bpm. same audio, same image, always.
+              <p className="winonboard__eyebrow">
+                {label("onboarding.stepEyebrow").replace("{n}", "03").replace("{step}", label(STEPS[2]))}
               </p>
+              <h2 className="winonboard__lead">{label("onboarding.see.lead")}</h2>
+              <p className="winonboard__lede">{label("onboarding.see.lede")}</p>
               <fieldset
-                aria-label="what the frame renders from"
+                aria-label={label("onboarding.see.sourceAria")}
                 style={{ border: 0, margin: 0, padding: 0, display: "flex", flexWrap: "wrap", gap: 8 }}
               >
                 {(report
@@ -318,13 +321,17 @@ export default function Onboarding() {
                     style={seeActive === id ? { borderColor: "var(--rose-500)", color: "var(--rose-500)" } : undefined}
                     onClick={() => setSeePick(id)}
                   >
-                    {id === "yours" ? "your audio" : id}
+                    {id === "yours" ? label("onboarding.see.yours") : id}
                   </button>
                 ))}
               </fieldset>
               <div
                 role="img"
-                aria-label={see ? `rendered artwork from ${see.source}` : "the rendered frame lands here"}
+                aria-label={
+                  see
+                    ? label("onboarding.see.frameAria").replace("{source}", see.source)
+                    : label("onboarding.see.frameEmptyAria")
+                }
                 style={{
                   display: "grid",
                   placeItems: "center",
@@ -342,7 +349,7 @@ export default function Onboarding() {
                   <div style={{ width: "100%", lineHeight: 0 }} dangerouslySetInnerHTML={{ __html: see.svg }} />
                 ) : (
                   <p className="mono-label" style={{ margin: 0, color: MUTED }}>
-                    the frame lands here
+                    {label("onboarding.see.frameEmpty")}
                   </p>
                 )}
               </div>
@@ -354,10 +361,12 @@ export default function Onboarding() {
                   style={{ margin: 0, overflowWrap: "anywhere" }}
                 >
                   {seeStatus === "reading"
-                    ? "reading · rendering…"
+                    ? label("onboarding.see.reading")
                     : see
-                      ? `${see.digest} · sig ${see.signature}`
-                      : "pick what the frame renders from."}
+                      ? label("onboarding.see.signature")
+                          .replace("{digest}", see.digest)
+                          .replace("{signature}", see.signature)
+                      : label("onboarding.see.idle")}
                 </p>
               )}
               {seeStatus === "error" && (
@@ -369,18 +378,20 @@ export default function Onboarding() {
           )}
           {step === 3 && (
             <article className="winonboard__step" key="enter">
-              <p className="winonboard__eyebrow">04 — {STEPS[3]}</p>
-              <h2 className="winonboard__lead">ready to enter</h2>
-              <p className="winonboard__lede">{WHAT_ENTER}</p>
+              <p className="winonboard__eyebrow">
+                {label("onboarding.stepEyebrow").replace("{n}", "04").replace("{step}", label(STEPS[3]))}
+              </p>
+              <h2 className="winonboard__lead">{label("onboarding.enter.lead")}</h2>
+              <p className="winonboard__lede">{label("onboarding.enter.lede")}</p>
             </article>
           )}
         </div>
 
         <footer className="winonboard__foot">
           <div className="row" aria-hidden="true" style={{ gap: 8 }}>
-            {STEPS.map((label, index) => (
+            {STEPS.map((stepKey, index) => (
               <span
-                key={label}
+                key={stepKey}
                 style={{
                   width: 7,
                   height: 7,
@@ -391,7 +402,10 @@ export default function Onboarding() {
             ))}
           </div>
           <p className="mono-label" style={{ margin: "0 14px" }}>
-            step {step + 1} / {STEPS.length} · {STEPS[step]}
+            {label("onboarding.progress")
+              .replace("{n}", String(step + 1))
+              .replace("{total}", String(STEPS.length))
+              .replace("{step}", label(STEPS[step]))}
           </p>
           <div className="winonboard__actions" style={{ marginLeft: "auto" }}>
             {step > 0 && (
@@ -401,12 +415,12 @@ export default function Onboarding() {
                 onClick={() => setStep((value) => Math.max(0, value - 1))}
               >
                 <ArrowLeftRegular fontSize={14} aria-hidden="true" />
-                back
+                {label("onboarding.back")}
               </button>
             )}
             {last ? (
               <button type="button" className="winonboard__act winonboard__act--primary" onClick={enterPlatform}>
-                enter cadria
+                {label("onboarding.enterCta")}
                 <ArrowRightRegular fontSize={14} aria-hidden="true" />
               </button>
             ) : (
@@ -415,7 +429,7 @@ export default function Onboarding() {
                 className="winonboard__act winonboard__act--primary"
                 onClick={() => setStep((value) => Math.min(STEPS.length - 1, value + 1))}
               >
-                continue
+                {label("onboarding.continue")}
                 <ArrowRightRegular fontSize={14} aria-hidden="true" />
               </button>
             )}

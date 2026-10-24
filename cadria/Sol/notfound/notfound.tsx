@@ -7,12 +7,13 @@
  * which now lives here as the page mount itself.
  */
 
+import { Link } from "wouter";
 // # NotFound — the quiet 404 (design doctrine pass): one animated icon, one
 // lowercase line, one honest sentence, one quiet action home. no stand-in
 // frame, no second cta, no loud button — the page doesn't pretend the
 // destination exists. the anchor renders BARE: the one Shell chrome lives in
 // Sol/Sol.tsx (the catch-all lands inside the platform frame).
-import { Link } from "wouter";
+import { label } from "../../labels.ts";
 
 export default function NotFound() {
   return (
@@ -34,17 +35,17 @@ export default function NotFound() {
         </svg>
       </span>
       <p className="mono-label reveal" style={{ margin: "0 0 12px" }}>
-        404 · empty frame
+        {label("notfound.eyebrow")}
       </p>
       <h1 id="nf-h" className="wordmark reveal" style={{ margin: "0 0 14px" }}>
-        nothing lives here.
+        {label("notfound.title")}
       </h1>
       <p className="lede-tight reveal" style={{ marginBottom: 0 }}>
-        the url reached a frame the engine never rendered. the queue stays honest — this page carries no stand-in.
+        {label("notfound.line")}
       </p>
       <div className="btn-row-tight reveal">
         <Link className="btn btn--quiet" href="/">
-          back home
+          {label("notfound.home")}
         </Link>
       </div>
     </section>

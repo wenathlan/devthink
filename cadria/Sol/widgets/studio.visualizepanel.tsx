@@ -10,6 +10,7 @@
  * here; the root library stays multi-mode (browser + node, no canvas).
  */
 import { useCallback, useRef, useState } from "react";
+import { label } from "../../labels.ts";
 import {
   type ImageInput,
   VisualizeError,
@@ -24,11 +25,11 @@ const MAX_WORKING_SIDE = 512;
 /** the panel lifecycle: idle → working → ready, with error beside any of them. */
 type PanelStatus = "idle" | "working" | "ready" | "error";
 
-/** the honest status line of the block, per lifecycle stage. */
+/** the honest status line of the block, per lifecycle stage (the copy law). */
 function statusLine(status: PanelStatus): string {
-  if (status === "working") return "decoding the image and triangulating the mesh…";
-  if (status === "ready") return "mesh ready — the downloads carry the same triangulation.";
-  return "pick an image; the mesh builds client-side — nothing leaves the page.";
+  if (status === "working") return label("studio.visualize.statusWorking");
+  if (status === "ready") return label("studio.visualize.statusReady");
+  return label("studio.visualize.statusIdle");
 }
 
 /** decodes a picked file to RGBA pixels, downscaled to the working side limit. */
@@ -83,7 +84,7 @@ export function VisualizePanel() {
       resultRef.current = null;
       setStats(null);
       setStatus("error");
-      setMessage(error instanceof VisualizeError ? error.message : "visualize failed — unexpected error");
+      setMessage(error instanceof VisualizeError ? error.message : label("studio.visualize.failed"));
     }
   }, []);
 
@@ -99,7 +100,7 @@ export function VisualizePanel() {
         resultRef.current = null;
         setStats(null);
         setStatus("error");
-        setMessage("could not decode this image — try a png or jpg");
+        setMessage(label("studio.visualize.decodeFailed"));
       }
     },
     [depth, step, blurRadius, run],
@@ -133,16 +134,20 @@ export function VisualizePanel() {
   const working = status === "working";
 
   return (
-    <section className="panel-silk card-gap" aria-label="visualize: image to mesh" aria-busy={working ? "true" : undefined}>
+    <section
+      className="panel-silk card-gap"
+      aria-label={label("studio.visualize.paneAria")}
+      aria-busy={working ? "true" : undefined}
+    >
       <p className="mono-label" style={{ margin: "0 0 8px" }}>
-        visualize
+        {label("studio.visualize.head")}
       </p>
       <p className="p-sm" style={{ marginTop: 0 }}>
-        image to 3d mesh, decoded and triangulated client-side — heightmap from luminance, step decimation and blur on
-        the controls. downloads run through the root <code>visualize</code> library.
+        {label("studio.visualize.lede")} <code>{label("studio.visualize.ledeCode")}</code>{" "}
+        {label("studio.visualize.ledeTail")}
       </p>
       <div className="field">
-        <label htmlFor="visualize-image">image</label>
+        <label htmlFor="visualize-image">{label("studio.visualize.image")}</label>
         <input
           id="visualize-image"
           type="file"
@@ -156,7 +161,7 @@ export function VisualizePanel() {
       </div>
       <div className="grid cols-3" style={{ marginTop: 14 }}>
         <div className="field">
-          <label htmlFor="visualize-depth">depth</label>
+          <label htmlFor="visualize-depth">{label("studio.visualize.depth")}</label>
           <input
             id="visualize-depth"
             type="number"
@@ -168,7 +173,7 @@ export function VisualizePanel() {
           />
         </div>
         <div className="field">
-          <label htmlFor="visualize-step">step</label>
+          <label htmlFor="visualize-step">{label("studio.visualize.step")}</label>
           <input
             id="visualize-step"
             type="number"
@@ -180,7 +185,7 @@ export function VisualizePanel() {
           />
         </div>
         <div className="field">
-          <label htmlFor="visualize-blur">blur</label>
+          <label htmlFor="visualize-blur">{label("studio.visualize.blur")}</label>
           <input
             id="visualize-blur"
             type="number"
@@ -194,10 +199,12 @@ export function VisualizePanel() {
       </div>
       {stats && (
         <p className="p-sm" role="status" style={{ marginTop: 12 }}>
-          <span className="badge">{stats.vertices} vertices</span>{" "}
-          <span className="badge">{stats.triangles} triangles</span>{" "}
+          <span className="badge">{label("studio.visualize.vertices").replace("{n}", String(stats.vertices))}</span>{" "}
+          <span className="badge">{label("studio.visualize.triangles").replace("{n}", String(stats.triangles))}</span>{" "}
           <span className="badge">
-            {stats.columns}×{stats.rows} grid
+            {label("studio.visualize.grid")
+              .replace("{cols}", String(stats.columns))
+              .replace("{rows}", String(stats.rows))}
           </span>
         </p>
       )}
@@ -214,19 +221,19 @@ export function VisualizePanel() {
           type="button"
           className="silk-btn"
           disabled={status !== "ready"}
-          data-tip="wavefront obj — the triangulated mesh with vertex colors"
+          data-tip={label("studio.visualize.objTip")}
           onClick={onObj}
         >
-          download .obj
+          {label("studio.visualize.obj")}
         </button>
         <button
           type="button"
           className="silk-btn"
           disabled={status !== "ready"}
-          data-tip="binary stl — the same mesh for the slicers"
+          data-tip={label("studio.visualize.stlTip")}
           onClick={onStl}
         >
-          download .stl
+          {label("studio.visualize.stl")}
         </button>
       </div>
     </section>

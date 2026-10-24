@@ -7,6 +7,7 @@
 import { mkdirSync } from "node:fs";
 import path from "node:path";
 import Database from "better-sqlite3";
+import { labelManifest, LABEL_REVISION } from "./labels.ts";
 import {
   seedAnchors,
   seedAutoplayChoices,
@@ -100,6 +101,13 @@ CREATE TABLE IF NOT EXISTS content_rows (
   payload TEXT NOT NULL,
   PRIMARY KEY (kind, ordinal)
 );
+CREATE TABLE IF NOT EXISTS labels (
+  id         TEXT PRIMARY KEY,
+  text       TEXT NOT NULL,
+  revision   INTEGER NOT NULL DEFAULT 0,
+  updatedAt  TEXT NOT NULL DEFAULT (datetime('now')),
+  translated INTEGER NOT NULL DEFAULT 0
+);
 `;
 
 /** Creates the tables when they do not exist (idempotent, mirrors the prisma schema). */
@@ -110,6 +118,9 @@ export function ensureSchema(): void {
 /** Inserts the seed tables of the site when the content rows are still empty. */
 export function seedIfEmpty(): void {
   ensureSchema();
+  // the label seed rides the db boot beside the content seed: fire and forget
+  // with the catch — the interface strings land in the site's own store
+  void seedLabelRows().catch(() => {});
   const count = queryOne<{ total: number }>("SELECT COUNT(*) AS total FROM content_rows");
   if (count && count.total > 0) return;
 
@@ -157,6 +168,88 @@ export function projectRows(discipline: string): { id: number; title: string; di
     discipline,
     discipline,
   ]);
+}
+
+/** the label store: every interface string of the app lives here, never
+ * hardcoded inside a widget. the id is the page.widget.key path, the text
+ * rides the english source of truth, and the translated flag protects the
+ * runtime translation from the seed overwrite. the shapes mirror the os app
+ * store (devthink/db.ts) one to one: the same row type, the same three
+ * accessors, over the site's own sqlite instead of a browser index. */
+export type BrowserLabel = { id: string; text: string; revision: number; updatedAt: string; translated?: boolean };
+
+function labelRow(row: {
+  id: string;
+  text: string;
+  revision: number;
+  updatedAt: string;
+  translated: number;
+}): BrowserLabel {
+  return {
+    id: row.id,
+    text: row.text,
+    revision: row.revision,
+    updatedAt: row.updatedAt,
+    ...(row.translated === 1 ? { translated: true } : {}),
+  };
+}
+
+/** Writes one label row (idempotent upsert; the caller owns the revision). */
+export async function saveLabel(id: string, text: string, revision: number, translated = false): Promise<BrowserLabel> {
+  execute(
+    `INSERT INTO labels (id, text, revision, updatedAt, translated) VALUES (?, ?, ?, datetime('now'), ?)
+     ON CONFLICT(id) DO UPDATE SET
+       text = excluded.text,
+       revision = excluded.revision,
+       updatedAt = excluded.updatedAt,
+       translated = excluded.translated`,
+    [id, text, revision, translated ? 1 : 0],
+  );
+  const row = queryOne<{ id: string; text: string; revision: number; updatedAt: string; translated: number }>(
+    "SELECT id, text, revision, updatedAt, translated FROM labels WHERE id = ?",
+    [id],
+  );
+  if (!row) throw new Error("cadria label store write did not land.");
+  return labelRow(row);
+}
+
+/** Reads one label row by its page.widget.key path, or undefined when absent. */
+export async function readLabel(id: string): Promise<BrowserLabel | undefined> {
+  const row = queryOne<{ id: string; text: string; revision: number; updatedAt: string; translated: number }>(
+    "SELECT id, text, revision, updatedAt, translated FROM labels WHERE id = ?",
+    [id],
+  );
+  return row ? labelRow(row) : undefined;
+}
+
+/** Reads every label row of the store. */
+export async function readAllLabels(): Promise<BrowserLabel[]> {
+  return queryAll<{ id: string; text: string; revision: number; updatedAt: string; translated: number }>(
+    "SELECT id, text, revision, updatedAt, translated FROM labels ORDER BY id",
+  ).map(labelRow);
+}
+
+/**
+ * Ingests the english manifest into the labels table — the db-side twin of
+ * the browser seedLabels: idempotent, the changed rows refresh, and the
+ * translated rows stay protected from the overwrite.
+ *
+ * @returns the seeded and protected row counts.
+ */
+export async function seedLabelRows(): Promise<{ seeded: number; protected: number }> {
+  ensureSchema();
+  const rows = new Map((await readAllLabels()).map((row) => [row.id, row]));
+  let seeded = 0;
+  let saved = 0;
+  for (const [id, text] of Object.entries(labelManifest)) {
+    const row = rows.get(id);
+    if (!row || (!row.translated && row.text !== text)) {
+      await saveLabel(id, text, LABEL_REVISION, row?.translated ?? false);
+      seeded += 1;
+    }
+    saved += 1;
+  }
+  return { seeded, protected: saved - seeded };
 }
 
 /** one row of the onboarding_states table (the entry-flow gates of a visitor). */

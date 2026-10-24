@@ -14,6 +14,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { type AnalysisReport, analyzePcm, reportDigest } from "../../audiopipeline.ts";
 import { renderCommands, renderSvg, renderThumbnailSignature } from "../../imagerender.ts";
 import { type DemoFixtureId, demoFixtures } from "../../introfixtures.ts";
+import { label } from "../../labels.ts";
 import { compositionBlocks, rhythmScatter } from "../../synthcomposition.ts";
 import { synthPalette } from "../../synthpalette.ts";
 import { synthTexture } from "../../synthtexture.ts";
@@ -43,12 +44,12 @@ function fitArtSvg(svg: string): string {
   return svg.replace("<svg ", '<svg aria-hidden="true" style="width:100%;height:auto;display:block" ');
 }
 
-/** the honest status line of the readout, per lifecycle stage. */
+/** the honest status line of the readout, per lifecycle stage (the copy law). */
 function statusLine(status: DemoStatus, message: string | null): string {
-  if (status === "idle") return "idle — pick a fixture; the chain answers in under a second.";
-  if (status === "reading") return "reading spectrum · rhythm · tonality · timbre · structure…";
-  if (status === "error") return message ?? "the engine refused this slice.";
-  return "rendered from the fused descriptor — run it again: same audio, same image.";
+  if (status === "idle") return label("intro.demo.statusIdle");
+  if (status === "reading") return label("intro.demo.statusReading");
+  if (status === "error") return message ?? label("intro.demo.statusError");
+  return label("intro.demo.statusReady");
 }
 
 /** The demo strip: fixture chips, the analysis readout and the rendered frame. */
@@ -96,7 +97,7 @@ export function DemoStrip({ cue }: { cue: DemoCue | null }) {
         setStatus("ready");
       } catch (error) {
         setResult(null);
-        setMessage(error instanceof Error ? error.message : "the engine refused this slice.");
+        setMessage(error instanceof Error ? error.message : label("intro.demo.statusError"));
         setStatus("error");
       }
     };
@@ -165,7 +166,7 @@ export function DemoStrip({ cue }: { cue: DemoCue | null }) {
     <section id="intro-demo" aria-labelledby="intro-demo-h" style={sectionStyle}>
       <header style={{ maxWidth: "62ch" }}>
         <p className="mono-label reveal" style={{ margin: "0 0 10px" }}>
-          the engine, live
+          {label("intro.demo.eyebrow")}
         </p>
         <h2
           id="intro-demo-h"
@@ -178,17 +179,16 @@ export function DemoStrip({ cue }: { cue: DemoCue | null }) {
             fontWeight: 600,
           }}
         >
-          pick a fixture. hear to see.
+          {label("intro.demo.title")}
         </h2>
         <p className="reveal" style={{ margin: 0, color: MUTED, lineHeight: 1.6 }}>
-          three synthetic fixtures are synthesized in code — no upload, no network. the real chain reads the slice, the
-          readout reports what it heard, and the render layer draws the frame the audio describes.
+          {label("intro.demo.lede")}
         </p>
       </header>
 
       <div className="surface reveal" style={benchStyle}>
         <fieldset
-          aria-label="built-in synthetic fixtures"
+          aria-label={label("intro.demo.fixturesAria")}
           style={{ border: "none", margin: 0, padding: 0, display: "flex", flexWrap: "wrap", gap: 8 }}
         >
           {fixtures.map((fixture) => (
@@ -210,7 +210,7 @@ export function DemoStrip({ cue }: { cue: DemoCue | null }) {
         <div className="demo-grid reveal" style={gridStyle}>
           <div className="demo-readout" style={readoutStyle}>
             <p className="mono-label" style={{ margin: 0 }}>
-              analysis
+              {label("intro.demo.analysis")}
             </p>
             <p role="status" aria-live="polite" style={{ margin: 0, color: MUTED, lineHeight: 1.55 }}>
               {statusLine(status, message)}
@@ -221,7 +221,9 @@ export function DemoStrip({ cue }: { cue: DemoCue | null }) {
                   {result.digest}
                 </p>
                 <p className="mono-label" style={{ margin: 0 }}>
-                  sig {result.signature} · {CANVAS}×{CANVAS} px · deterministic
+                  {label("intro.demo.signature")
+                    .replace("{signature}", result.signature)
+                    .replaceAll("{size}", String(CANVAS))}
                 </p>
               </>
             )}
@@ -238,8 +240,8 @@ export function DemoStrip({ cue }: { cue: DemoCue | null }) {
             role="img"
             aria-label={
               result
-                ? `deterministic artwork rendered from the ${result.fixture} fixture`
-                : "the rendered frame lands here"
+                ? label("intro.demo.artAria").replace("{fixture}", result.fixture)
+                : label("intro.demo.artEmptyAria")
             }
           >
             {result ? (
@@ -247,7 +249,7 @@ export function DemoStrip({ cue }: { cue: DemoCue | null }) {
               <div style={{ width: "100%", lineHeight: 0 }} dangerouslySetInnerHTML={{ __html: result.svg }} />
             ) : (
               <p className="mono-label" style={{ margin: 0, color: MUTED }}>
-                the frame lands here
+                {label("intro.demo.artEmpty")}
               </p>
             )}
           </div>

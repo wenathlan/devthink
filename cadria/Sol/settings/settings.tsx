@@ -17,6 +17,7 @@
 // chrome lives in Sol/Sol.tsx.
 import { useCallback, useState } from "react";
 import { gatewayHealth, gatewayUrl, setGatewayUrl } from "../../gatewayclient.ts";
+import { label } from "../../labels.ts";
 import { applyTheme, currentTheme, type Theme } from "../../theme";
 import { useToast } from "../toast/Toast.tsx";
 
@@ -54,7 +55,7 @@ export default function Settings() {
     const saved = setGatewayUrl(urlDraft);
     setUrlDraft(saved);
     setHealth("unknown");
-    toast.show(`gateway set to ${saved} — session only`, "info");
+    toast.show(label("settings.gateway.savedToast").replace("{url}", saved), "info");
   };
 
   /** asks the gateway for health; the answer lands in the quiet readout. */
@@ -62,59 +63,51 @@ export default function Settings() {
     setHealth("checking");
     const online = await gatewayHealth();
     setHealth(online ? "online" : "offline");
-    toast.show(online ? "the gateway answers" : "the gateway is not answering", online ? "success" : "error");
+    toast.show(online ? label("settings.onlineToast") : label("settings.offlineToast"), online ? "success" : "error");
   }, [toast]);
 
   return (
     <>
       <section aria-labelledby="settings-h" style={{ maxWidth: 640 }}>
-        <p className="eyebrow">cadria · settings</p>
+        <p className="eyebrow">{label("settings.eyebrow")}</p>
         <h1 id="settings-h" className="page-title" style={{ fontSize: "clamp(1.9rem, 4vw, 2.8rem)" }}>
-          settings
+          {label("settings.title")}
         </h1>
-        <p className="lede">
-          site preferences only, all session scope — the interface never writes to the visitor machine. project assets
-          and render keys belong to the studio.
-        </p>
+        <p className="lede">{label("settings.lede")}</p>
       </section>
 
       <div className="stack" style={{ marginTop: 26, maxWidth: 640 }}>
         {/* APPEARANCE — the theme flip + the motion override, one toggle each */}
         <section className="card" aria-labelledby="appearance-h">
           <h2 id="appearance-h" className="card-h">
-            appearance
+            {label("settings.appearance.head")}
           </h2>
           <div className="pref-row">
             <div>
-              <p className="pref-title">light theme</p>
-              <p className="pref-hint">
-                sol dark is the default — the frame reads better in the darkroom. holds for the session.
-              </p>
+              <p className="pref-title">{label("settings.appearance.light")}</p>
+              <p className="pref-hint">{label("settings.appearance.lightHint")}</p>
             </div>
             <label className="toggle">
               <input
                 type="checkbox"
                 checked={theme === "light"}
                 onChange={flipTheme}
-                aria-label="toggle the light theme"
+                aria-label={label("settings.appearance.lightAria")}
               />
               <span className="track" />
             </label>
           </div>
           <div className="pref-row pref-row-last">
             <div>
-              <p className="pref-title">reduce motion</p>
-              <p className="pref-hint">
-                the os setting is respected automatically; this override holds the js-driven beats too (the player loop,
-                the onboarding demo) — session scope.
-              </p>
+              <p className="pref-title">{label("settings.appearance.motion")}</p>
+              <p className="pref-hint">{label("settings.appearance.motionHint")}</p>
             </div>
             <label className="toggle">
               <input
                 type="checkbox"
                 checked={reduceMotion}
                 onChange={(event) => flipMotion(event.target.checked)}
-                aria-label="override the motion preference to reduced"
+                aria-label={label("settings.appearance.motionAria")}
               />
               <span className="track" />
             </label>
@@ -124,14 +117,11 @@ export default function Settings() {
         {/* GATEWAY — the session base url the studio/gallery/player fetches ride */}
         <section className="card" aria-labelledby="gateway-h">
           <h2 id="gateway-h" className="card-h">
-            gateway
+            {label("settings.gateway.head")}
           </h2>
-          <p className="p-sm">
-            the local generation gateway the studio posts to and the gallery, home and player read from. the base lives
-            in memory for this session only — reload resets it to the default.
-          </p>
+          <p className="p-sm">{label("settings.gateway.line")}</p>
           <div className="field">
-            <label htmlFor="gateway-url">gateway base url</label>
+            <label htmlFor="gateway-url">{label("settings.gateway.urlLabel")}</label>
             <input
               id="gateway-url"
               className="input measure-sm"
@@ -143,7 +133,7 @@ export default function Settings() {
           </div>
           <div className="row row--wrap" style={{ gap: 10 }}>
             <button type="button" className="btn" style={{ minHeight: 40 }} onClick={saveUrl}>
-              save for this session
+              {label("settings.gateway.save")}
             </button>
             <button
               type="button"
@@ -151,10 +141,10 @@ export default function Settings() {
               style={{ minHeight: 40 }}
               onClick={() => void checkHealth()}
             >
-              check health
+              {label("settings.gateway.check")}
             </button>
             <span className="mono-label" role="status" style={{ marginLeft: "auto" }}>
-              status: {health}
+              {label("settings.gateway.status").replace("{health}", health)}
             </span>
           </div>
         </section>
@@ -162,27 +152,27 @@ export default function Settings() {
         {/* ABOUT — the quiet ledger, the version synced by hand with package.json */}
         <section className="card" aria-labelledby="about-h">
           <h2 id="about-h" className="card-h">
-            about
+            {label("settings.about.head")}
           </h2>
           <dl className="spec-ledger" style={{ margin: 0 }}>
             <div className="spec-row">
-              <dt>version</dt>
+              <dt>{label("settings.about.version")}</dt>
               <dd>{VERSION}</dd>
             </div>
             <div className="spec-row">
-              <dt>engine</dt>
-              <dd>versawase · deterministic analysis → render</dd>
+              <dt>{label("settings.about.engine")}</dt>
+              <dd>{label("settings.about.engineValue")}</dd>
             </div>
             <div className="spec-row">
-              <dt>storage</dt>
-              <dd>none — session only</dd>
+              <dt>{label("settings.about.storage")}</dt>
+              <dd>{label("settings.about.storageValue")}</dd>
             </div>
             <div className="spec-row">
-              <dt>license</dt>
+              <dt>{label("settings.about.license")}</dt>
               <dd>GPL-3.0-only</dd>
             </div>
             <div className="spec-row">
-              <dt>domain</dt>
+              <dt>{label("settings.about.domain")}</dt>
               <dd>cadria.devthink.pro</dd>
             </div>
           </dl>

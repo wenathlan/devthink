@@ -29,6 +29,7 @@ import { type ImageProject, ProjectError } from "../../imageproject.ts";
 import { renderSvg, renderThumbnailSignature } from "../../imagerender.ts";
 import { imageStyles, type StyleSpec, styleForDescriptor } from "../../imagestyles.ts";
 import type { DemoFixtureId } from "../../introfixtures.ts";
+import { label } from "../../labels.ts";
 import { generateStudioProject, reseededSeed, type SessionSave, type StudioGeneration } from "../../studiogenerate.ts";
 import { analyzeSource, fileSource, fixtureSource, type StudioSource } from "../../studiosource.ts";
 import ControlsPane from "../widgets/studio.controls.tsx";
@@ -40,39 +41,37 @@ import StageArt from "../widgets/studio.stageart.tsx";
 /** the staged beat before the synchronous compute lands — skipped under reduced motion. */
 const STAGE_MS = 240;
 
-/** the analyze status line, per lifecycle stage. */
+/** the analyze status line, per lifecycle stage (the copy law). */
 function analyzeLine(
   status: "idle" | "reading" | "ready" | "error",
   source: StudioSource | null,
   note: string | null,
 ): string {
-  if (status === "idle")
-    return "idle — drop an audio file or pick a built-in fixture; the chain answers in under a second.";
+  if (status === "idle") return label("studio.analyzeIdle");
   if (status === "reading")
     return source
-      ? `reading ${source.name} · spectrum · rhythm · tonality · timbre · structure…`
-      : "reading the source…";
-  if (status === "error") return note ?? "the analysis refused this source.";
-  return "analyzed — the descriptor is fused; tune the controls and generate.";
+      ? label("studio.analyzeReading").replace("{name}", source.name)
+      : label("studio.analyzeReadingGeneric");
+  if (status === "error") return note ?? label("studio.analyzeRefused");
+  return label("studio.analyzed");
 }
 
 /** the analyze failure message: pipeline codes first, then the raw traceable message. */
 function analyzeMessage(error: unknown): string {
   if (error instanceof PipelineError) {
-    if (error.code === "pipeline-too-short")
-      return "the slice is shorter than one second — the pipeline needs at least 1 s of audio.";
-    if (error.code === "pipeline-empty-samples") return "the source carries no readable samples.";
-    if (error.code === "pipeline-unsupported-sample-rate")
-      return "the source's sample rate is not usable — try re-exporting the file.";
+    if (error.code === "pipeline-too-short") return label("studio.errorTooShort");
+    if (error.code === "pipeline-empty-samples") return label("studio.errorEmpty");
+    if (error.code === "pipeline-unsupported-sample-rate") return label("studio.errorRate");
     return error.message;
   }
-  return error instanceof Error ? error.message : "the analysis refused this source.";
+  return error instanceof Error ? error.message : label("studio.analyzeRefused");
 }
 
 /** the generation failure message: project codes first, then the raw message. */
 function generateMessage(error: unknown): string {
-  if (error instanceof ProjectError) return `the project layer refused the fold (${error.code}): ${error.message}`;
-  return error instanceof Error ? error.message : "the generation refused this descriptor.";
+  if (error instanceof ProjectError)
+    return label("studio.projectRefused").replace("{code}", error.code).replace("{message}", error.message);
+  return error instanceof Error ? error.message : label("studio.generateRefused");
 }
 
 /** the wide-viewport probe behind the three-pane grid (collapses to one column below 1120px). */
@@ -167,7 +166,7 @@ export default function Studio() {
         runAnalyze(fixtureSource(id), id);
       } catch (error) {
         setAnalyzeStatus("error");
-        setAnalyzeNote(error instanceof Error ? error.message : "the fixture could not be built.");
+        setAnalyzeNote(error instanceof Error ? error.message : label("studio.fixtureError"));
       }
     },
     [runAnalyze],
@@ -189,7 +188,7 @@ export default function Studio() {
           setSource(null);
           setReport(null);
           setAnalyzeStatus("error");
-          setAnalyzeNote(error instanceof Error ? error.message : "the source could not be read.");
+          setAnalyzeNote(error instanceof Error ? error.message : label("studio.sourceError"));
         });
     },
     [runAnalyze],
@@ -201,7 +200,7 @@ export default function Studio() {
     if (generateTimer.current !== null) window.clearTimeout(generateTimer.current);
     setGenerating(true);
     setGenError(null);
-    setGenStatus("folding style · palette · blocks · texture · motion…");
+    setGenStatus(label("studio.genStatus"));
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const compute = (): void => {
       generateTimer.current = null;
@@ -214,7 +213,9 @@ export default function Studio() {
         });
         setGeneration(next);
         setGenStatus(
-          `rendered · sig ${renderThumbnailSignature(next.frame.commands)} · ${next.project.id} · deterministic`,
+          label("studio.genReady")
+            .replace("{signature}", renderThumbnailSignature(next.frame.commands))
+            .replace("{id}", next.project.id),
         );
         setGenerating(false);
       } catch (error) {
@@ -263,15 +264,13 @@ export default function Studio() {
     <>
       <header className="reveal" style={{ maxWidth: "68ch", marginBottom: 26 }}>
         <p className="eyebrow" style={{ margin: "0 0 8px" }}>
-          cadria · studio
+          {label("studio.eyebrow")}
         </p>
         <h1 className="page-title" style={{ fontSize: "clamp(1.9rem, 4vw, 2.75rem)", margin: "0 0 10px" }}>
-          generation studio
+          {label("studio.title")}
         </h1>
         <p className="lede-tight" style={{ margin: 0, lineHeight: 1.6 }}>
-          audio in, artwork out — the real chain, live: analyze the source, let the fused descriptor pick a style,
-          generate the deterministic frame and breathe it on the beat. exports ship the svg master; saves ride the
-          gateway when it answers, the session memory when it doesn't.
+          {label("studio.lede")}
         </p>
       </header>
 
@@ -284,9 +283,9 @@ export default function Studio() {
           onFile={onFile}
         />
 
-        <section aria-label="generation stage" style={{ minWidth: 0 }}>
+        <section aria-label={label("studio.stageAria")} style={{ minWidth: 0 }}>
           <p className="mono-label" style={paneHeadStyle}>
-            stage
+            {label("studio.stage")}
           </p>
           <p
             role="status"
@@ -300,8 +299,11 @@ export default function Studio() {
             motion={generation?.motion ?? null}
             caption={
               generation
-                ? `deterministic artwork rendered from ${source?.name ?? "the source"} · style ${generation.project.style} · seed ${generation.project.seed}`
-                : "the rendered frame lands here"
+                ? label("studio.stageCaption")
+                    .replace("{source}", source?.name ?? label("studio.stageSourceFallback"))
+                    .replace("{style}", generation.project.style)
+                    .replace("{seed}", generation.project.seed)
+                : label("studio.stageCaptionEmpty")
             }
           />
           {report && <Readout report={report} />}

@@ -28,18 +28,19 @@ import {
 import { type ReactElement, useCallback, useEffect, useState } from "react";
 import { Link } from "wouter";
 import { type GatewayProject, listGatewayProjects } from "../../gatewayclient.ts";
-import { EmptyState } from "../widgets/shell.emptystate.tsx";
+import { label } from "../../labels.ts";
 import EntryGate from "../widgets/home.entrygate.tsx";
+import { EmptyState } from "../widgets/shell.emptystate.tsx";
 
 /** the abort window the recent-generations fetch rides (ms). */
 const RECENT_TIMEOUT_MS = 800;
 
 /** the lowercase greeting the local hour answers (session only, no storage). */
 function greeting(hour: number): string {
-  if (hour < 5) return "good night";
-  if (hour < 12) return "good morning";
-  if (hour < 18) return "good afternoon";
-  return "good evening";
+  if (hour < 5) return label("home.greeting.night");
+  if (hour < 12) return label("home.greeting.morning");
+  if (hour < 18) return label("home.greeting.afternoon");
+  return label("home.greeting.evening");
 }
 
 /** the lifecycle of the recent-generations strip. */
@@ -86,7 +87,7 @@ function HomeSurface() {
       {/* GREETING — the mono eyebrow carries the hour greeting, the display headline stays lowercase */}
       <section aria-labelledby="home-h" style={{ maxWidth: 720 }}>
         <p className="mono-label reveal" style={{ margin: "0 0 14px" }}>
-          cadria · home — {greeting(new Date().getHours())}
+          {label("home.hero.eyebrow").replace("{greeting}", greeting(new Date().getHours()))}
         </p>
         <h1
           id="home-h"
@@ -99,17 +100,16 @@ function HomeSurface() {
             lineHeight: 1.04,
           }}
         >
-          make the picture the sound implies.
+          {label("home.hero.title")}
         </h1>
         <p className="reveal lede" style={{ margin: 0 }}>
-          one window: the studio listens to audio, the engine renders the artwork it implies, the gallery keeps the
-          frames. deterministic, client-side, nothing sent anywhere.
+          {label("home.hero.lede")}
         </p>
       </section>
 
       {/* THE GENERATION ENTRY — the one prominent cta, the animated icon rides icon-anim */}
       <section aria-labelledby="entry-h" style={{ marginTop: 44 }}>
-        {sectionHead("entry-h", "generate")}
+        {sectionHead("entry-h", label("home.entry.head"))}
         <Link
           href="/studio"
           className="btn btn--ghost reveal"
@@ -126,8 +126,8 @@ function HomeSurface() {
             <WandRegular fontSize={18} />
           </span>
           <span style={{ textAlign: "left" }}>
-            <strong style={{ display: "block" }}>open the studio</strong>
-            <span className="mono-label">drop audio · analyze · render</span>
+            <strong style={{ display: "block" }}>{label("home.entry.title")}</strong>
+            <span className="mono-label">{label("home.entry.sub")}</span>
           </span>
           <ArrowRightRegular fontSize={16} aria-hidden="true" style={{ marginLeft: "auto" }} />
         </Link>
@@ -136,10 +136,10 @@ function HomeSurface() {
       {/* RECENT GENERATIONS — the gateway's own list as hairline ledger rows, honest when offline */}
       <section aria-labelledby="recent-h" style={{ marginTop: 44 }}>
         <div className="row">
-          {sectionHead("recent-h", "recent generations")}
+          {sectionHead("recent-h", label("home.recent.head"))}
           {recent === "online" && (
             <span className="mono-label" style={{ marginLeft: "auto" }}>
-              {projects.length} from the gateway
+              {label("home.recent.count").replace("{n}", String(projects.length))}
             </span>
           )}
         </div>
@@ -158,11 +158,11 @@ function HomeSurface() {
           {recent === "offline" && (
             <EmptyState
               icon={WifiOffRegular}
-              title="the gateway isn't answering"
-              line="the recents read the local generation store — nothing shown that the engine did not render. start it, then retry."
+              title={label("home.recent.offlineTitle")}
+              line={label("home.recent.offlineLine")}
               action={
                 <button type="button" className="btn" style={{ minHeight: 40 }} onClick={() => loadRecent(() => true)}>
-                  retry the gateway
+                  {label("home.recent.retry")}
                 </button>
               }
             />
@@ -170,11 +170,11 @@ function HomeSurface() {
           {recent === "online" && projects.length === 0 && (
             <EmptyState
               icon={SparkleRegular}
-              title="no generations yet"
-              line="the gateway answers and the queue is open — the first render the studio finishes lands here, with its bpm and key."
+              title={label("home.recent.emptyTitle")}
+              line={label("home.recent.emptyLine")}
               action={
                 <Link href="/studio" className="btn" style={{ minHeight: 40 }}>
-                  open the studio
+                  {label("home.recent.openStudio")}
                 </Link>
               }
             />
@@ -209,7 +209,7 @@ function HomeSurface() {
 
       {/* QUICK LINKS — the presentation pages, the same hairline ledger */}
       <section aria-labelledby="links-h" style={{ marginTop: 44 }}>
-        {sectionHead("links-h", "quick links")}
+        {sectionHead("links-h", label("home.links.head"))}
         <div className="ledger reveal">
           <Link href="/intro" className="ledger-row" style={{ textDecoration: "none" }}>
             <span className="ledger-no" aria-hidden="true">
@@ -217,10 +217,10 @@ function HomeSurface() {
             </span>
             <div className="ledger-main">
               <h3 className="ledger-title" style={{ fontSize: "1rem" }}>
-                the presentation
+                {label("home.links.presentationTitle")}
               </h3>
               <p className="ledger-text" style={{ margin: 0 }}>
-                what cadria is — the studio that listens, with the real engine running live on the page.
+                {label("home.links.presentationLine")}
               </p>
             </div>
             <ArrowUpRightRegular fontSize={14} aria-hidden="true" style={{ alignSelf: "center" }} />
@@ -231,10 +231,10 @@ function HomeSurface() {
             </span>
             <div className="ledger-main">
               <h3 className="ledger-title" style={{ fontSize: "1rem" }}>
-                first run
+                {label("home.links.firstRunTitle")}
               </h3>
               <p className="ledger-text" style={{ margin: 0 }}>
-                four frames — welcome, hear, see, enter — with your own audio or a built-in fixture.
+                {label("home.links.firstRunLine")}
               </p>
             </div>
             <ArrowUpRightRegular fontSize={14} aria-hidden="true" style={{ alignSelf: "center" }} />

@@ -60,6 +60,7 @@ import {
 import { Link, useLocation } from "wouter";
 import { familyrow } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
+import { type LabelKey, label } from "../../labels.ts";
 import { currentTheme, type Theme, toggleTheme } from "../../theme.ts";
 import { type WinSnapZone, winsnaprect, winsnapzone } from "../../winsnap.ts";
 import BrandMark from "../widgets/shell.brandmark.tsx";
@@ -73,46 +74,66 @@ export type NavLink = { label: string; href: string };
 /** one entry of the icon rail: a page surface of the app with its glyph. */
 export type StartApp = {
   href: string;
-  label: string;
-  detail: string;
+  label: LabelKey;
+  detail: LabelKey;
   icon?: typeof HomeRegular;
 };
 
 /** the pages the platform hosts, one rail entry each (the apex home first).
  * exported for the onboarding copy beside this folder. */
 export const START_APPS: readonly StartApp[] = [
-  { href: "/", label: "home", detail: "the video and image home of the family", icon: HomeRegular },
-  { href: "/player", label: "player", detail: "the artwork viewer — local video and engine frames", icon: PlayCircleRegular },
-  { href: "/studio", label: "studio", detail: "the creative workspace over the versawase engine", icon: WandRegular },
+  { href: "/", label: "shell.rail.home", detail: "shell.rail.homeDetail", icon: HomeRegular },
+  {
+    href: "/player",
+    label: "shell.rail.player",
+    detail: "shell.rail.playerDetail",
+    icon: PlayCircleRegular,
+  },
+  {
+    href: "/studio",
+    label: "shell.rail.studio",
+    detail: "shell.rail.studioDetail",
+    icon: WandRegular,
+  },
   {
     href: "/edit",
-    label: "editor",
-    detail: "the timeline: clips, trims and the playhead on exact ticks",
+    label: "shell.rail.editor",
+    detail: "shell.rail.editorDetail",
     icon: CutRegular,
   },
-  { href: "/gallery", label: "gallery", detail: "renders by discipline, video and image", icon: ImageRegular },
-  { href: "/settings", label: "settings", detail: "appearance and player defaults", icon: SettingsRegular },
+  {
+    href: "/gallery",
+    label: "shell.rail.gallery",
+    detail: "shell.rail.galleryDetail",
+    icon: ImageRegular,
+  },
+  {
+    href: "/settings",
+    label: "shell.rail.settings",
+    detail: "shell.rail.settingsDetail",
+    icon: SettingsRegular,
+  },
 ];
 
 /** the titlebar page titles, route → mono-label (the rail labels plus the
  * two framed pages that stay off the rail). */
-const ROUTE_TITLES: Readonly<Record<string, string>> = {
-  "/": "home",
-  "/studio": "studio",
-  "/edit": "editor",
-  "/gallery": "gallery",
-  "/player": "player",
-  "/settings": "settings",
-  "/onboarding": "first run",
-  "/404": "not found",
+const ROUTE_TITLES: Readonly<Record<string, LabelKey>> = {
+  "/": "shell.title.home",
+  "/studio": "shell.title.studio",
+  "/edit": "shell.title.editor",
+  "/gallery": "shell.title.gallery",
+  "/player": "shell.title.player",
+  "/settings": "shell.title.settings",
+  "/onboarding": "shell.title.onboarding",
+  "/404": "shell.title.notfound",
 };
 
 /** the titlebar title for a location: the rail page, the framed extras, or
  * the not-found label for everything else. */
 function routeTitle(location: string): string {
-  if (ROUTE_TITLES[location]) return ROUTE_TITLES[location];
+  if (ROUTE_TITLES[location]) return label(ROUTE_TITLES[location]);
   const base = `/${location.split("/")[1] ?? ""}`;
-  return ROUTE_TITLES[base] ?? "not found";
+  return label(ROUTE_TITLES[base] ?? "shell.title.notfound");
 }
 
 /** the hand-over route of the close caption: closing the window restarts the
@@ -181,8 +202,8 @@ function ThemeToggle() {
     <button
       type="button"
       className="icon-anim"
-      data-tip={`${next} theme`}
-      aria-label={`switch to the ${next} theme`}
+      data-tip={next === "light" ? label("shell.theme.tipLight") : label("shell.theme.tipDark")}
+      aria-label={next === "light" ? label("shell.theme.ariaLight") : label("shell.theme.ariaDark")}
       onClick={() => setTheme(toggleTheme())}
     >
       {theme === "dark" ? (
@@ -441,7 +462,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
     <div className="appframe" data-maximized={maximized ? "true" : undefined}>
       <style>{SHELL_CSS}</style>
       <a className="sol-skip" href="#sol-main">
-        skip to content
+        {label("shell.skip")}
       </a>
 
       <section
@@ -452,7 +473,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
         data-snapped={snapped ?? undefined}
         data-sized={size && !maximized && !snapped ? "true" : undefined}
         data-inactive={inactive ? "true" : undefined}
-        aria-label="cadria"
+        aria-label={label("shell.windowAria")}
         style={
           {
             "--winapp-x": `${drag.x}px`,
@@ -473,8 +494,8 @@ export function Shell({ children, themeButton = true }: ShellProps) {
         >
           <div className="winapp__brand">
             <BrandMark size={18} />
-            <span className="winapp__name">cadria</span>
-            <span className="winapp__role">video and image of the family</span>
+            <span className="winapp__name">{label("shell.name")}</span>
+            <span className="winapp__role">{label("shell.role")}</span>
           </div>
           <span className="titlebar__role mono-label" aria-hidden="true" style={{ flex: "none" }}>
             {routeTitle(path)}
@@ -485,8 +506,8 @@ export function Shell({ children, themeButton = true }: ShellProps) {
             <button
               type="button"
               className="winapp__cap"
-              data-tip="minimize"
-              aria-label="Minimize"
+              data-tip={label("shell.caption.minimize")}
+              aria-label={label("shell.caption.minimizeAria")}
               onClick={() => setMinimized(true)}
             >
               <SubtractRegular fontSize={14} aria-hidden="true" />
@@ -494,8 +515,8 @@ export function Shell({ children, themeButton = true }: ShellProps) {
             <button
               type="button"
               className="winapp__cap"
-              data-tip={maximized ? "restore" : "maximize"}
-              aria-label={maximized ? "Restore" : "Maximize"}
+              data-tip={maximized ? label("shell.caption.restore") : label("shell.caption.maximize")}
+              aria-label={maximized ? label("shell.caption.restoreAria") : label("shell.caption.maximizeAria")}
               onClick={toggleMaximize}
             >
               {maximized ? (
@@ -507,8 +528,8 @@ export function Shell({ children, themeButton = true }: ShellProps) {
             <button
               type="button"
               className="winapp__cap winapp__cap--close"
-              data-tip="close"
-              aria-label="Close"
+              data-tip={label("shell.caption.close")}
+              aria-label={label("shell.caption.closeAria")}
               onClick={() => navigate(RESTART_ROUTE)}
             >
               <DismissRegular fontSize={14} aria-hidden="true" />
@@ -521,7 +542,11 @@ export function Shell({ children, themeButton = true }: ShellProps) {
             family row: one accent dot per sibling, resolved through the
             familyurl contract so every link survives any mount point */}
         <div className="winapp__body">
-          <nav className="railnav railnav--enter" aria-label="primary" style={{ borderRight: "1px solid var(--line)" }}>
+          <nav
+            className="railnav railnav--enter"
+            aria-label={label("shell.rail.primary")}
+            style={{ borderRight: "1px solid var(--line)" }}
+          >
             {START_APPS.map((app) => {
               const Icon = app.icon ?? HomeRegular;
               return (
@@ -529,15 +554,15 @@ export function Shell({ children, themeButton = true }: ShellProps) {
                   key={app.href}
                   href={app.href}
                   className="railnav__item"
-                  data-tip={app.label}
-                  aria-label={app.label}
+                  data-tip={label(app.label)}
+                  aria-label={label(app.label)}
                   aria-current={isActive(app.href) ? "page" : undefined}
                 >
                   <Icon fontSize={20} aria-hidden="true" />
                 </Link>
               );
             })}
-            <fieldset className="railnav__foot" aria-label="the wenathlan family">
+            <fieldset className="railnav__foot" aria-label={label("shell.rail.family")}>
               {familyrow().map((member) => (
                 <a
                   key={member.slug}
@@ -545,10 +570,10 @@ export function Shell({ children, themeButton = true }: ShellProps) {
                   target="_blank"
                   rel="noreferrer"
                   className="railnav__fam"
-                  data-tip={`${member.slug} — a family surface`}
+                  data-tip={label("shell.rail.familyTip").replace("{slug}", member.slug)}
                 >
                   <span aria-hidden="true" className="railnav__famdot" style={{ background: member.accent }} />
-                  <span className="sr-only">{`open ${member.slug} in its own tab`}</span>
+                  <span className="sr-only">{label("shell.rail.familyOpen").replace("{slug}", member.slug)}</span>
                 </a>
               ))}
             </fieldset>
@@ -592,9 +617,14 @@ export function Shell({ children, themeButton = true }: ShellProps) {
       ) : null}
 
       {minimized && (
-        <button type="button" className="winchip" aria-label="Restore cadria" onClick={() => setMinimized(false)}>
+        <button
+          type="button"
+          className="winchip"
+          aria-label={label("shell.restore.aria")}
+          onClick={() => setMinimized(false)}
+        >
           <BrandMark size={16} />
-          <span>cadria</span>
+          <span>{label("shell.restore.chip")}</span>
         </button>
       )}
     </div>

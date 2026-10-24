@@ -12,6 +12,7 @@
 import { ArrowShuffleRegular, WandRegular } from "@fluentui/react-icons";
 import type { StyleSpec } from "../../imagestyles.ts";
 import { styleFingerprint } from "../../imagestyles.ts";
+import { label } from "../../labels.ts";
 
 type ControlsPaneProps = {
   styles: readonly StyleSpec[];
@@ -51,13 +52,13 @@ export function ControlsPane({
   error,
 }: ControlsPaneProps) {
   return (
-    <aside aria-label="generation controls" className="panel-silk" style={{ minWidth: 0 }}>
+    <aside aria-label={label("studio.controls.paneAria")} className="panel-silk" style={{ minWidth: 0 }}>
       <p className="mono-label" style={{ margin: "0 0 10px" }}>
-        controls
+        {label("studio.controls.head")}
       </p>
 
       <div className="field" style={{ marginBottom: 14 }}>
-        <label htmlFor="studio-style">style</label>
+        <label htmlFor="studio-style">{label("studio.controls.style")}</label>
         <select id="studio-style" value={styleName} onChange={(event) => onStyle(event.currentTarget.value)}>
           {styles.map((style) => (
             <option key={style.name} value={style.name}>
@@ -79,12 +80,17 @@ export function ControlsPane({
             ))}
           </div>
           <p className="mono-label" style={{ margin: "8px 0 0" }}>
-            fingerprint {styleFingerprint(selected)} · symmetry {selected.compositionBias.symmetry}
+            {label("studio.controls.fingerprint")
+              .replace("{value}", styleFingerprint(selected))
+              .replace("{bias}", String(selected.compositionBias.symmetry))}
           </p>
         </div>
       )}
 
-      <fieldset aria-label="canvas size" style={{ border: 0, margin: "0 0 14px", padding: 0, display: "flex", gap: 6 }}>
+      <fieldset
+        aria-label={label("studio.controls.canvasSize")}
+        style={{ border: 0, margin: "0 0 14px", padding: 0, display: "flex", gap: 6 }}
+      >
         {SIZE_PRESETS.map((preset) => (
           <button
             key={preset}
@@ -106,7 +112,7 @@ export function ControlsPane({
       </fieldset>
 
       <div className="field" style={{ marginBottom: 14 }}>
-        <label htmlFor="studio-seed">seed</label>
+        <label htmlFor="studio-seed">{label("studio.controls.seed")}</label>
         <div className="row" style={{ gap: 8 }}>
           <input
             id="studio-seed"
@@ -119,8 +125,8 @@ export function ControlsPane({
           <button
             type="button"
             className="silk-btn"
-            aria-label="reseed — fold a fresh nonce into the seed"
-            data-tip="reseed"
+            aria-label={label("studio.controls.reseedAria")}
+            data-tip={label("studio.controls.reseedTip")}
             onClick={onReseed}
             style={{ flex: "none", padding: "0 12px" }}
           >
@@ -138,14 +144,11 @@ export function ControlsPane({
         style={{ width: "100%" }}
       >
         <WandRegular fontSize={15} aria-hidden="true" />
-        generate frame
+        {label("studio.controls.generate")}
       </button>
 
       <p role="status" aria-live="polite" style={{ margin: "10px 0 0", fontSize: "0.82rem", color: "var(--ink-2)" }}>
-        {status ??
-          (canGenerate
-            ? "the descriptor is ready — generate renders the deterministic frame."
-            : "analyze a source to arm the controls.")}
+        {status ?? (canGenerate ? label("studio.controls.ready") : label("studio.controls.armFirst"))}
       </p>
       {error && (
         <p

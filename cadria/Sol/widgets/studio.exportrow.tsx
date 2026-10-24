@@ -19,6 +19,7 @@ import { ArrowDownloadRegular, CheckmarkRegular, ImageRegular, SaveRegular } fro
 import { useCallback, useState } from "react";
 import { type AnalysisReport, reportDigest } from "../../audiopipeline.ts";
 import type { ImageProject } from "../../imageproject.ts";
+import { label } from "../../labels.ts";
 import {
   downloadBlob,
   pngFromSvg,
@@ -51,9 +52,14 @@ export function ExportRow({ svg, project, report, styleName, seed, session, onRe
     if (!svg || !project) return;
     try {
       downloadBlob(`${project.id}.svg`, svg, "image/svg+xml;charset=utf-8");
-      setNote(`downloaded ${project.id}.svg`);
+      setNote(label("studio.export.downloadedSvg").replace("{name}", `${project.id}.svg`));
     } catch (error) {
-      setNote(`svg download failed: ${error instanceof Error ? error.message : "unknown error"}`);
+      setNote(
+        label("studio.export.svgFailed").replace(
+          "{message}",
+          error instanceof Error ? error.message : label("studio.export.unknownError"),
+        ),
+      );
     }
   }, [svg, project]);
 
@@ -63,13 +69,23 @@ export function ExportRow({ svg, project, report, styleName, seed, session, onRe
     try {
       const blob = await pngFromSvg(svg, project.canvas.width, project.canvas.height);
       if (!blob) {
-        setNote("png export needs OffscreenCanvas support — this browser falls back to the svg master.");
+        setNote(label("studio.export.pngFallback"));
         return;
       }
       downloadBlob(`${project.id}.png`, blob, "image/png");
-      setNote(`downloaded ${project.id}.png (${project.canvas.width}×${project.canvas.height})`);
+      setNote(
+        label("studio.export.downloadedPng")
+          .replace("{name}", `${project.id}.png`)
+          .replace("{w}", String(project.canvas.width))
+          .replace("{h}", String(project.canvas.height)),
+      );
     } catch (error) {
-      setNote(`png export failed: ${error instanceof Error ? error.message : "unknown error"}`);
+      setNote(
+        label("studio.export.pngFailed").replace(
+          "{message}",
+          error instanceof Error ? error.message : label("studio.export.unknownError"),
+        ),
+      );
     }
   }, [svg, project]);
 
@@ -79,10 +95,10 @@ export function ExportRow({ svg, project, report, styleName, seed, session, onRe
     try {
       await navigator.clipboard.writeText(reportDigest(report));
       setCopied(true);
-      setNote("digest copied to the clipboard");
+      setNote(label("studio.export.digestCopied"));
       window.setTimeout(() => setCopied(false), 1600);
     } catch {
-      setNote("the clipboard refused the write — select the digest line instead.");
+      setNote(label("studio.export.clipboardRefused"));
     }
   }, [report]);
 
@@ -97,17 +113,20 @@ export function ExportRow({ svg, project, report, styleName, seed, session, onRe
         const id = await saveToGateway(report, styleName, seed);
         setLastMode("gateway");
         onRecordSave(project, "gateway", id);
-        setNote(`saved to the gallery gateway as ${id}`);
+        setNote(label("studio.export.savedGateway").replace("{id}", id));
       } else {
         setLastMode("local");
         onRecordSave(project, "local", project.id);
-        setNote("gateway unreachable — the project is kept as a local session record.");
+        setNote(label("studio.export.savedLocal"));
       }
     } catch (error) {
       setLastMode("local");
       onRecordSave(project, "local", project.id);
       setNote(
-        `gateway save failed (${error instanceof Error ? error.message : "unknown error"}) — kept as a local session record.`,
+        label("studio.export.saveFailed").replace(
+          "{message}",
+          error instanceof Error ? error.message : label("studio.export.unknownError"),
+        ),
       );
     } finally {
       setSaving(false);
@@ -117,14 +136,14 @@ export function ExportRow({ svg, project, report, styleName, seed, session, onRe
   const ready = svg !== null && project !== null;
 
   return (
-    <section aria-label="export and gallery handoff" className="panel-silk" style={{ marginTop: 22, minWidth: 0 }}>
+    <section aria-label={label("studio.export.paneAria")} className="panel-silk" style={{ marginTop: 22, minWidth: 0 }}>
       <p className="mono-label" style={{ margin: "0 0 8px" }}>
-        export
+        {label("studio.export.head")}
       </p>
       <div className="row row--wrap" style={{ gap: 8 }}>
         <button type="button" className="silk-btn" disabled={!ready} onClick={onSvg}>
           <ArrowDownloadRegular fontSize={14} aria-hidden="true" />
-          svg
+          {label("studio.export.svg")}
         </button>
         <button
           type="button"
@@ -132,22 +151,19 @@ export function ExportRow({ svg, project, report, styleName, seed, session, onRe
           disabled={!ready || !pngReady}
           data-tip={
             pngReady
-              ? `png ${project?.canvas.width ?? 0}×${project?.canvas.height ?? 0}`
-              : "png export needs OffscreenCanvas support"
+              ? label("studio.export.pngTipReady")
+                  .replace("{w}", String(project?.canvas.width ?? 0))
+                  .replace("{h}", String(project?.canvas.height ?? 0))
+              : label("studio.export.pngTipUnsupported")
           }
           onClick={onPng}
         >
           <ImageRegular fontSize={14} aria-hidden="true" />
-          png
+          {label("studio.export.png")}
         </button>
-        <button
-          type="button"
-          className={copied ? "silk-btn success" : "silk-btn"}
-          disabled={!report}
-          onClick={onCopy}
-        >
+        <button type="button" className={copied ? "silk-btn success" : "silk-btn"} disabled={!report} onClick={onCopy}>
           {copied ? <CheckmarkRegular fontSize={14} aria-hidden="true" /> : null}
-          copy digest
+          {label("studio.export.copyDigest")}
         </button>
         <button
           type="button"
@@ -157,22 +173,19 @@ export function ExportRow({ svg, project, report, styleName, seed, session, onRe
           onClick={onSave}
         >
           <SaveRegular fontSize={14} aria-hidden="true" />
-          save to gallery
+          {label("studio.export.saveGallery")}
         </button>
-        {lastMode === "local" && <span className="badge">local session · in-memory</span>}
+        {lastMode === "local" && <span className="badge">{label("studio.export.localBadge")}</span>}
       </div>
 
       <p role="status" aria-live="polite" style={{ margin: "10px 0 0", fontSize: "0.82rem", color: "var(--ink-2)" }}>
-        {note ??
-          (report && !ready
-            ? "generate a frame to unlock the export row."
-            : "the svg master is the always-shipped artifact; png rides OffscreenCanvas when present.")}
+        {note ?? (report && !ready ? label("studio.export.unlock") : label("studio.export.defaultNote"))}
       </p>
 
       {session.length > 0 && (
         <div style={{ marginTop: 14, borderTop: "1px solid var(--line)" }}>
           <p className="mono-label" style={{ margin: "10px 0 4px" }}>
-            session saves ({session.length})
+            {label("studio.export.sessionSaves").replace("{n}", String(session.length))}
           </p>
           {session.map((item) => (
             <div
@@ -196,13 +209,16 @@ export function ExportRow({ svg, project, report, styleName, seed, session, onRe
                   whiteSpace: "nowrap",
                 }}
               >
-                {item.id} · {item.style} · bpm {item.bpm}
+                {label("studio.export.sessionLine")
+                  .replace("{id}", item.id)
+                  .replace("{style}", item.style)
+                  .replace("{bpm}", String(item.bpm))}
               </span>
               <span
                 className="mono-label"
                 style={{ flex: "none", color: item.mode === "gateway" ? "var(--ok)" : "var(--ink-3)" }}
               >
-                {item.mode}
+                {item.mode === "gateway" ? label("studio.export.modeGateway") : label("studio.export.modeLocal")}
               </span>
             </div>
           ))}
@@ -210,8 +226,7 @@ export function ExportRow({ svg, project, report, styleName, seed, session, onRe
       )}
 
       <p style={{ margin: "10px 0 0", fontSize: "0.72rem", color: "var(--ink-3)", lineHeight: 1.5 }}>
-        dual mode: when /api/health answers within 800 ms the save persists in the gallery gateway; otherwise the record
-        stays in this page's memory for the session only — nothing is written to storage.
+        {label("studio.export.dualMode")}
       </p>
     </section>
   );

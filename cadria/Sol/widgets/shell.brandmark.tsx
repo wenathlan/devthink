@@ -9,6 +9,8 @@
  * rose mark (CadriaMark) belongs to the page hero zones, never to the bar.
  */
 
+import { label } from "../../labels.ts";
+
 export type BrandMarkProps = {
   /** the glyph square size in px; the wordmark scales with it */
   size?: number;
@@ -55,7 +57,7 @@ export function BrandMark({ size = 18, hidden }: BrandMarkProps) {
           whiteSpace: "nowrap",
         }}
       >
-        cadria
+        {label("shell.brandmark.wordmark")}
       </span>
     </span>
   );

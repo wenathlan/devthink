@@ -9,6 +9,7 @@
  */
 
 import { type AnalysisReport, reportDigest } from "../../audiopipeline.ts";
+import { label } from "../../labels.ts";
 
 /** pitch-class names, c first — the same table reportDigest spells. */
 const PITCH_CLASSES = ["c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"] as const;
@@ -60,7 +61,11 @@ export function Readout({ report }: { report: AnalysisReport }) {
   const { spectrum, rhythm, harmonic, timbre, structure } = report;
   const keyName = `${PITCH_CLASSES[Math.min(11, Math.max(0, Math.round(harmonic.key.tonic)))]} ${harmonic.key.mode}`;
   return (
-    <section aria-label="analysis readout" className="panel-silk" style={{ marginTop: 18, minWidth: 0 }}>
+    <section
+      aria-label={label("studio.readout.paneAria")}
+      className="panel-silk"
+      style={{ marginTop: 18, minWidth: 0 }}
+    >
       <p
         style={{
           margin: "0 0 12px",
@@ -75,59 +80,61 @@ export function Readout({ report }: { report: AnalysisReport }) {
       </p>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "10px 22px", alignItems: "start" }}>
         <StatBlock
-          head="spectrum"
+          head={label("studio.readout.spectrum")}
           rows={[
-            { label: "centroid", value: `${Math.round(spectrum.centroidMean)} hz` },
-            { label: "rolloff", value: `${Math.round(spectrum.rolloffMean)} hz` },
-            { label: "flatness", value: fix(spectrum.flatnessMean, 2) },
-            { label: "brightness", value: fix(spectrum.brightnessIndex, 2) },
+            { label: label("studio.readout.centroid"), value: `${Math.round(spectrum.centroidMean)} hz` },
+            { label: label("studio.readout.rolloff"), value: `${Math.round(spectrum.rolloffMean)} hz` },
+            { label: label("studio.readout.flatness"), value: fix(spectrum.flatnessMean, 2) },
+            { label: label("studio.readout.brightness"), value: fix(spectrum.brightnessIndex, 2) },
           ]}
         />
         <StatBlock
-          head="rhythm"
+          head={label("studio.readout.rhythm")}
           rows={[
-            { label: "bpm", value: fix(rhythm.bpm, 1) },
-            { label: "pulse trust", value: fix(rhythm.confidence, 2) },
-            { label: "onsets/s", value: fix(rhythm.onsetsPerSecond, 2) },
-            { label: "groove", value: fix(rhythm.regularityIndex, 2) },
+            { label: label("studio.readout.bpm"), value: fix(rhythm.bpm, 1) },
+            { label: label("studio.readout.pulseTrust"), value: fix(rhythm.confidence, 2) },
+            { label: label("studio.readout.onsets"), value: fix(rhythm.onsetsPerSecond, 2) },
+            { label: label("studio.readout.groove"), value: fix(rhythm.regularityIndex, 2) },
             {
-              label: "swing",
-              value: `${fix(rhythm.swing.ratio, 2)} ${rhythm.swing.swung ? "swung" : "straight"}`,
+              label: label("studio.readout.swing"),
+              value: `${fix(rhythm.swing.ratio, 2)} ${rhythm.swing.swung ? label("studio.readout.swung") : label("studio.readout.straight")}`,
             },
           ]}
         />
         <StatBlock
-          head="harmonic"
+          head={label("studio.readout.harmonic")}
           rows={[
-            { label: "key", value: keyName },
-            { label: "strength", value: fix(harmonic.key.strength, 2) },
-            { label: "change rate", value: fix(harmonic.harmonicChangeRate, 2) },
-            { label: "dissonance", value: fix(harmonic.dissonanceIndex, 2) },
+            { label: label("studio.readout.key"), value: keyName },
+            { label: label("studio.readout.strength"), value: fix(harmonic.key.strength, 2) },
+            { label: label("studio.readout.changeRate"), value: fix(harmonic.harmonicChangeRate, 2) },
+            { label: label("studio.readout.dissonance"), value: fix(harmonic.dissonanceIndex, 2) },
           ]}
         />
         <StatBlock
-          head="timbre"
+          head={label("studio.readout.timbre")}
           rows={[
-            { label: "noisiness", value: fix(timbre.noisiness, 2) },
-            { label: "warmth", value: fix(timbre.warmth, 2) },
-            { label: "range", value: `${fix(timbre.dynamics.rangeDb, 1)} db` },
-            { label: "crest", value: fix(timbre.dynamics.crestFactor, 1) },
+            { label: label("studio.readout.noisiness"), value: fix(timbre.noisiness, 2) },
+            { label: label("studio.readout.warmth"), value: fix(timbre.warmth, 2) },
+            { label: label("studio.readout.range"), value: `${fix(timbre.dynamics.rangeDb, 1)} db` },
+            { label: label("studio.readout.crest"), value: fix(timbre.dynamics.crestFactor, 1) },
           ]}
         />
         <StatBlock
-          head="structure"
+          head={label("studio.readout.structure")}
           rows={[
-            { label: "length", value: `${fix(structure.durationMs / 1000, 1)} s` },
-            { label: "sections", value: String(structure.sectionCount) },
-            { label: "peak", value: `${fix(structure.peakSectionMs / 1000, 1)} s` },
-            { label: "repetition", value: fix(structure.repetitionIndex, 2) },
-            { label: "shape", value: structure.narrativeShape },
+            { label: label("studio.readout.length"), value: `${fix(structure.durationMs / 1000, 1)} s` },
+            { label: label("studio.readout.sections"), value: String(structure.sectionCount) },
+            { label: label("studio.readout.peak"), value: `${fix(structure.peakSectionMs / 1000, 1)} s` },
+            { label: label("studio.readout.repetition"), value: fix(structure.repetitionIndex, 2) },
+            { label: label("studio.readout.shape"), value: structure.narrativeShape },
           ]}
         />
       </div>
       <p className="mono-label" style={{ margin: "12px 0 0" }}>
-        decode {Math.round(report.timings.decodeMs)} ms · analysis {Math.round(report.timings.analysisMs)} ms · schema v
-        {report.schemaVersion} · deterministic
+        {label("studio.readout.timings")
+          .replace("{decode}", String(Math.round(report.timings.decodeMs)))
+          .replace("{analysis}", String(Math.round(report.timings.analysisMs)))
+          .replace("{version}", String(report.schemaVersion))}
       </p>
     </section>
   );

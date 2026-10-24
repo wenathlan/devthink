@@ -11,6 +11,7 @@
 import { ArrowUploadRegular } from "@fluentui/react-icons";
 import { useRef, useState } from "react";
 import { type DemoFixtureId, demoFixtures } from "../../introfixtures.ts";
+import { label } from "../../labels.ts";
 import type { StudioSource } from "../../studiosource.ts";
 
 /** the input's accept list — wav rides the native path, the rest web audio. */
@@ -77,9 +78,9 @@ export function SourceRail({ disabled, source, activeFixture, onFixture, onFile 
   };
 
   return (
-    <aside aria-label="audio source" className="panel-silk" style={{ minWidth: 0 }}>
+    <aside aria-label={label("studio.source.paneAria")} className="panel-silk" style={{ minWidth: 0 }}>
       <p className="mono-label" style={{ margin: "0 0 10px" }}>
-        source
+        {label("studio.source.head")}
       </p>
 
       <button
@@ -110,9 +111,9 @@ export function SourceRail({ disabled, source, activeFixture, onFixture, onFile 
         }}
       >
         <ArrowUploadRegular fontSize={18} aria-hidden="true" />
-        <span>drop audio here — or press to browse</span>
+        <span>{label("studio.source.drop")}</span>
         <span style={{ fontSize: "0.7rem", fontWeight: 500, color: "var(--ink-3)" }}>
-          wav decodes natively · mp3/ogg/flac/m4a via web audio
+          {label("studio.source.formats")}
         </span>
       </button>
       <input
@@ -130,7 +131,7 @@ export function SourceRail({ disabled, source, activeFixture, onFixture, onFile 
       />
 
       <fieldset
-        aria-label="built-in synthetic fixtures"
+        aria-label={label("studio.source.fixturesAria")}
         style={{ border: 0, margin: "14px 0 0", padding: 0, display: "grid", gap: 6 }}
       >
         {fixtures.map((fixture) => {
@@ -163,12 +164,12 @@ export function SourceRail({ disabled, source, activeFixture, onFixture, onFile 
 
       {source && (
         <div style={{ marginTop: 14, borderTop: "1px solid var(--line-strong)" }}>
-          <MetaRow label="name" value={source.name} />
-          <MetaRow label="path" value={source.detail} />
-          <MetaRow label="rate" value={`${source.sampleRate} hz`} />
-          <MetaRow label="channels" value={String(source.channels)} />
-          <MetaRow label="length" value={`${(source.durationMs / 1000).toFixed(2)} s`} />
-          <MetaRow label="bytes" value={sizeLine(source.sizeBytes)} />
+          <MetaRow label={label("studio.source.metaName")} value={source.name} />
+          <MetaRow label={label("studio.source.metaPath")} value={source.detail} />
+          <MetaRow label={label("studio.source.metaRate")} value={`${source.sampleRate} hz`} />
+          <MetaRow label={label("studio.source.metaChannels")} value={String(source.channels)} />
+          <MetaRow label={label("studio.source.metaLength")} value={`${(source.durationMs / 1000).toFixed(2)} s`} />
+          <MetaRow label={label("studio.source.metaBytes")} value={sizeLine(source.sizeBytes)} />
         </div>
       )}
     </aside>

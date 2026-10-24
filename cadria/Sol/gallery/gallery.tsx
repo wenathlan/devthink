@@ -26,8 +26,9 @@ import {
   listGatewayProjects,
 } from "../../gatewayclient.ts";
 import { imageStyles } from "../../imagestyles.ts";
-import { EmptyState } from "../widgets/shell.emptystate.tsx";
+import { label } from "../../labels.ts";
 import { useToast } from "../toast/Toast.tsx";
+import { EmptyState } from "../widgets/shell.emptystate.tsx";
 
 /** how many generations the wall asks for (the gateway clamps 1-200). */
 const WALL_LIMIT = 60;
@@ -85,7 +86,9 @@ function RenderThumb({ id }: { id: string }) {
     <div
       className="gal-thumb"
       role="img"
-      aria-label={svg ? `rendered frame ${id}` : `frame ${id} not fetched — placeholder glyph`}
+      aria-label={
+        svg ? label("gallery.thumbAria").replace("{id}", id) : label("gallery.thumbPlaceholder").replace("{id}", id)
+      }
     >
       {svg ? (
         // biome-ignore lint/security/noDangerouslySetInnerHtml: the svg is the gateway's own renderSvg serializer output (engine IR, hex-guarded colors, no user input) — the documented injection point, as on the intro demo
@@ -138,11 +141,13 @@ export default function Gallery() {
       try {
         await deleteGatewayProject(project.id);
         setProjects((current) => current.filter((row) => row.id !== project.id));
-        toast.show("render deleted from the gateway", "success");
+        toast.show(label("gallery.deletedToast"), "success");
       } catch (error) {
         const status = (error as GatewayClientError).status ?? 0;
         toast.show(
-          status === 0 ? "gateway offline — nothing deleted" : `the gateway refused the delete (${status})`,
+          status === 0
+            ? label("gallery.offlineToast")
+            : label("gallery.refusedToast").replace("{status}", String(status)),
           "error",
         );
       } finally {
@@ -155,24 +160,23 @@ export default function Gallery() {
   return (
     <>
       <section aria-labelledby="gallery-h">
-        <p className="eyebrow reveal">cadria · gallery</p>
+        <p className="eyebrow reveal">{label("gallery.eyebrow")}</p>
         <h1 id="gallery-h" className="page-title reveal" style={{ fontSize: "clamp(1.9rem, 4vw, 2.8rem)" }}>
-          the render wall
+          {label("gallery.title")}
         </h1>
         <p className="reveal lede" style={{ maxWidth: 600 }}>
-          every frame the engine rendered through the gateway, as the gateway reports it — no stand-ins, no cached
-          pretend art.
+          {label("gallery.lede")}
         </p>
       </section>
 
       {/* FILTER ROW — style chips from the imagestyles table, all first */}
       <section aria-labelledby="filter-h" style={{ marginTop: 26 }}>
         <h2 id="filter-h" className="mono-label" style={{ margin: "0 0 10px", fontWeight: 600 }}>
-          filter by style
+          {label("gallery.filterHead")}
         </h2>
         <fieldset
           className="reveal"
-          aria-label="filter the wall by generation style"
+          aria-label={label("gallery.filterAria")}
           style={{ border: 0, margin: 0, padding: 0, display: "flex", flexWrap: "wrap", gap: 8 }}
         >
           {["all", ...STYLE_NAMES].map((name) => (
@@ -186,7 +190,7 @@ export default function Gallery() {
                 filter === name ? { borderColor: "var(--rose-500)", color: "var(--rose-500)" } : { borderRadius: 4 }
               }
             >
-              {name}
+              {name === "all" ? label("gallery.filterAll") : name}
             </button>
           ))}
         </fieldset>
@@ -195,7 +199,7 @@ export default function Gallery() {
       {/* THE WALL — flat hairline cards, the gateway's own renders, honest states */}
       <section aria-labelledby="wall-h" style={{ marginTop: 24 }}>
         <h2 id="wall-h" className="sr-only">
-          the wall
+          {label("gallery.wallSr")}
         </h2>
         {state === "loading" && (
           <div className="gal-grid" role="status" aria-busy="true" style={{ marginTop: 8 }}>
@@ -209,14 +213,14 @@ export default function Gallery() {
                 </div>
               </div>
             ))}
-            <span className="sr-only">reading the gateway…</span>
+            <span className="sr-only">{label("gallery.readingSr")}</span>
           </div>
         )}
         {state === "offline" && (
           <EmptyState
             icon={WifiOffRegular}
-            title="the gateway isn't answering"
-            line="the wall reads the local generation store — until it answers, the wall stays honest and shows nothing it doesn't hold."
+            title={label("gallery.offlineTitle")}
+            line={label("gallery.offlineLine")}
             action={
               <button
                 type="button"
@@ -224,7 +228,7 @@ export default function Gallery() {
                 style={{ minHeight: 40 }}
                 onClick={() => load(() => true)}
               >
-                retry the gateway
+                {label("gallery.retry")}
               </button>
             }
           />
@@ -232,11 +236,11 @@ export default function Gallery() {
         {state === "online" && projects.length === 0 && (
           <EmptyState
             icon={ImageOffRegular}
-            title="the wall is bare"
-            line="the gateway answers and holds nothing yet — the first render lands here the moment the studio finishes one."
+            title={label("gallery.emptyTitle")}
+            line={label("gallery.emptyLine")}
             action={
               <Link href="/studio" className="btn" style={{ minHeight: 40 }}>
-                open the studio
+                {label("gallery.openStudio")}
               </Link>
             }
           />
@@ -244,8 +248,8 @@ export default function Gallery() {
         {state === "online" && projects.length > 0 && visible.length === 0 && (
           <EmptyState
             icon={ImageOffRegular}
-            title={`no renders in the ${filter} style`}
-            line="the chips only filter what the gateway really holds — switch style or clear the filter to see the full wall."
+            title={label("gallery.filteredTitle").replace("{style}", filter)}
+            line={label("gallery.filteredLine")}
             action={
               <button
                 type="button"
@@ -253,7 +257,7 @@ export default function Gallery() {
                 style={{ minHeight: 40 }}
                 onClick={() => setFilter("all")}
               >
-                show every style
+                {label("gallery.showAll")}
               </button>
             }
           />
@@ -261,7 +265,11 @@ export default function Gallery() {
         {visible.length > 0 && (
           <div className="gal-grid reveal" style={{ marginTop: 8 }}>
             {visible.map((project) => (
-              <article key={project.id} className="gal-card" aria-label={`${project.style} render ${project.id}`}>
+              <article
+                key={project.id}
+                className="gal-card"
+                aria-label={label("gallery.cardAria").replace("{style}", project.style).replace("{id}", project.id)}
+              >
                 <RenderThumb id={project.id} />
                 <div className="gal-card__body">
                   <h3 style={{ margin: 0, fontSize: "0.98rem" }}>{project.style}</h3>
@@ -277,7 +285,7 @@ export default function Gallery() {
                       style={{ minHeight: 36, padding: "0 12px", fontSize: "0.85rem" }}
                       href={`/player?id=${encodeURIComponent(project.id)}`}
                     >
-                      open
+                      {label("gallery.open")}
                     </Link>
                     <button
                       type="button"
@@ -286,7 +294,11 @@ export default function Gallery() {
                       disabled={deleting === project.id}
                       onClick={() => void onDelete(project)}
                     >
-                      {deleting === project.id ? <DeleteRegular fontSize={14} aria-hidden="true" /> : "delete"}
+                      {deleting === project.id ? (
+                        <DeleteRegular fontSize={14} aria-hidden="true" />
+                      ) : (
+                        label("gallery.delete")
+                      )}
                     </button>
                   </div>
                 </div>
