@@ -500,8 +500,10 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
               >
                 <Wifi fontSize={13} aria-hidden="true" />
                 {/* the rail keeps the pill at its 48px width — the glyph alone,
-                    the words ride the title peek */}
-                {rail ? null : paired ? userId || "paired" : "local only"}
+                    the words ride the title peek; the narrow floating bar drops
+                    the words too so the tray never pushes the pins off a
+                    portrait phone */}
+                {rail ? null : <span className="max-[560px]:hidden">{paired ? userId || "paired" : "local only"}</span>}
               </span>
             )}
           </button>

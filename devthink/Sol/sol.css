@@ -16765,3 +16765,135 @@ body:has(.dt-nav[data-navbar="right"]) {
 @media (prefers-reduced-motion: reduce) {
   .dtc-solbot__core { animation: none; }
 }
+
+/* ==========================================================================
+   the portrait answer — the owner's law: one design track for everything,
+   and the aspect ratio decides the device (landscape is the tablet, the
+   tv, the notebook and the pc; portrait is the phone). the only difference
+   between the phone and the tv is the responsiveness and the dpi, so this
+   block gives the portrait class its answers: the shell geometry variables
+   retune themselves narrow, the desktop lanes stack instead of clipping,
+   the touch targets ride the 44px floor on the coarse pointers, and every
+   size rides the existing px/rem ladder of the theme — never a new unit
+   system. appended block only: every earlier section is untouched; these
+   rules win by cascade order alone.
+   ========================================================================== */
+
+/* ---- 1. the shell geometry narrow answers. the portrait class retunes the
+   positioning variables: the sidebar can never exceed the 86vw drawer law
+   the chat rail already answers, the collapsed rail keeps its 80px answer
+   scaled to the pocket, the legacy 52px topbar band drops to the 44px
+   touch floor and the gutter breathes tighter. ---- */
+@media (orientation: portrait) {
+  :root {
+    --shell-sidebar: min(264px, 86vw);
+    --shell-sidebar-min: min(80px, 22vw);
+    --shell-topbar: 44px;
+    --shell-gutter: 8px;
+  }
+
+  /* the tray flyout (the 360px quick settings / calendar panel) never
+     clips the narrow portrait edge */
+  .dt-flyout {
+    max-width: calc(100vw - 16px);
+  }
+
+  /* the snap lanes stack on the portrait class: the half-lane snap is a
+     landscape gesture — on a portrait surface both lanes take the full
+     width instead of clipping each other */
+  .shell-window[data-state="snapped-left"],
+  .shell-window[data-state="snapped-right"] {
+    width: 100%;
+  }
+
+  /* the start menu grid and footer breathe the tighter portrait gutter */
+  .dt-start__grid {
+    padding-inline: 20px;
+  }
+
+  .dt-start__foot {
+    padding-inline: 20px;
+  }
+}
+
+/* ---- 1b. the wide portrait surfaces (the tablets): the static chat rail
+   consumes the retuned geometry variables live; the ≤860px drawer above
+   keeps its own answer. ---- */
+@media (orientation: portrait) and (min-width: 861px) {
+  .dtc-rail {
+    width: var(--shell-sidebar, 264px);
+  }
+
+  .dtc-rail[data-collapsed="true"] {
+    width: var(--shell-sidebar-min, 80px);
+  }
+}
+
+/* ---- 2. the phone pocket: the portrait class under the 560px band. the
+   chat timeline and the composer breathe — the gutters drop to 12px, the
+   timeline step and the welcome type step down one rung on the rem
+   ladder — and the taskbar keeps the clock to its time line (the phone
+   taskbar truth), the tray pill to its glyph and the pins reachable by
+   their own scroll. ---- */
+@media (orientation: portrait) and (max-width: 560px) {
+  .dtc-hero {
+    padding: 16px 12px 28px;
+  }
+
+  .dtc-scroll {
+    padding: 16px 12px 10px;
+  }
+
+  .dtc-scroll__inner {
+    gap: 20px;
+  }
+
+  .dtc-dock {
+    padding: 10px 12px 14px;
+  }
+
+  .dtc-welcome__greet {
+    font-size: 1.1875rem;
+  }
+
+  .dt-nav__clock span:last-child {
+    display: none;
+  }
+
+  .dt-nav__pins {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .dt-nav__pins::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ---- 3. the touch floors: on the coarse pointers the interactive keys of
+   the chat surfaces ride the 44px family floor — the topbar keys, the
+   composer well controls and chips, the suggestion chips, the turn action
+   rail, the conversation rows and the rail keys all lift to the generous
+   target (the coarse reveal laws above stay untouched) ---- */
+@media (hover: none), (pointer: coarse) {
+  .dtc-tb-btn,
+  .dtc-wctrl__btn,
+  .dtc-chip,
+  .dtc-suggest__chip,
+  .dtc-turn__act,
+  .dtc-turn__act--verdict {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .dtc-item {
+    min-height: 44px;
+  }
+
+  .dtc-rail__brand,
+  .dtc-rail__collapse,
+  .dtc-nav {
+    min-height: 44px;
+  }
+}

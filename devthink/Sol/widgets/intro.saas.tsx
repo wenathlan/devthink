@@ -182,7 +182,12 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                   className="group inline-flex items-center gap-1 text-slate-950 transition hover:scale-[1.015] active:scale-[0.99]"
                 >
                   <SolLogoMark size={28} />
-                  <SolWordmark height={18} title="DevThink" />
+                  {/* the wordmark retires under the sm band — the narrow
+                      portrait header keeps the mark and the tab bridge
+                      without clipping */}
+                  <span className="hidden sm:block">
+                    <SolWordmark height={18} title="DevThink" />
+                  </span>
                 </button>
               </div>
               <div className="flex shrink-0 flex-col items-center drop-shadow-[0_10px_20px_rgba(15,23,42,0.06)]">

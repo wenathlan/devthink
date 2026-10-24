@@ -49,7 +49,7 @@ import VideoAnchor from "../video/video.tsx";
 import { type AltTabCard, AltTabSwitcher } from "./shell.alttabswitcher.tsx";
 import { ShellChrome } from "./shell.shellchrome.tsx";
 import { DesktopSurface } from "./panel.desktop.tsx";
-import { WINDOW_MIN_HEIGHT, WindowFrame, type WindowSnapshot } from "./panel.windowframe.tsx";
+import { WINDOW_MIN_HEIGHT, WINDOW_MIN_WIDTH, WindowFrame, type WindowSnapshot } from "./panel.windowframe.tsx";
 
 /** One windowed app: the anchor component with the embedded contract and
  * the spawn geometry the frame opens at. */
@@ -148,7 +148,14 @@ function appById(id: string): DesktopApp {
 function defaultSnapshot(id: string, title: string, openCount: number): WindowSnapshot {
   const cascade = (openCount % 4) * 26;
   const spawn = windowspawn(id);
-  const width = Math.min(spawn?.width ?? 760, Math.max(460, Math.round(window.innerWidth * 0.52)));
+  /* the width answers the portrait law: the 460px floor never exceeds the
+     viewport minus the gutter — on a 390px phone the window spawns 374px
+     wide and stays on the surface instead of spawning off-screen */
+  const width = Math.min(
+    spawn?.width ?? 760,
+    Math.max(460, Math.round(window.innerWidth * 0.52)),
+    Math.max(WINDOW_MIN_WIDTH, Math.round(window.innerWidth) - 16),
+  );
   const height = Math.max(
     WINDOW_MIN_HEIGHT,
     Math.min(
