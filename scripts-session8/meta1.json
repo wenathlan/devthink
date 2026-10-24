@@ -1,6 +1,0 @@
-{
-  "title": "fix(verify): the wave 1 catalog heal — the oauth origins join the reviewed rows",
-  "body": "The Verify gate ladder broke on every landing since the wave 9 oauth doors: the sweep found two hardcoded origins oauthrow.ts names (gitlab.com and auth.devthink.pro) outside the reviewed deep link catalog, and the gate ladder exits nonzero on any open finding. The heal follows the house doctrine the reviewed catalog already carries: the documented official endpoints stay data rows of tests/artifacts/reviewedorigins.json, never code literals, and every endpoint stays user configurable. The battery goes green again on every future landing.",
-  "commitTitle": "fix(verify): the wave 1 catalog heal lands — the oauth origins join the reviewed rows (#1)",
-  "commitMessage": "the sweep finding that broke the verify battery on every push since the wave 9 oauth doors closes: gitlab.com and auth.devthink.pro ride the reviewed origins data file as rows beside the provider endpoints the merged lineages already catalog, the doctrine unchanged (documented official endpoints stay data rows, never code literals, every endpoint user configurable)."
-}
