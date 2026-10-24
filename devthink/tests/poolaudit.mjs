@@ -1,4 +1,4 @@
-/** Audits the consolidated feature pool of the crx feature mining evidence against the shipped symbol surface: the gate parses the 626 candidate items of docs/12.crxfeaturemining.md, matches every item's vocabulary against the real exported symbol corpus (the 335 action kinds, the 35 mcp tools, the 181 audit kinds, the 14 cli commands, the 23 protocol messages and every declared export of the compiled declaration set), and records the per item disposition — implemented for the items whose vocabulary the shipped surface covers, planned for the partial matches the roadmap carries, and no item stays unknown. The report lands in tests/artifacts/poolcoverage.json with no timestamps so reruns stay byte identical, the gate exits nonzero when the pool parses to a different count, when an item stays unknown or when the implemented count regresses below the recorded floor, and the coverage document docs/poolcoverage.md carries the per group counts. */
+/** Audits the consolidated feature pool of the crx feature mining evidence against the shipped symbol surface: the gate parses the 626 candidate items of the featurepool corpus that lives inside tests/crxharvest.mjs (the harvest generator embedded the consolidated pool when it wrote the removed docs/12.crxfeaturemining.md report, so the generator source carries the corpus now), matches every item's vocabulary against the real exported symbol corpus (the 335 action kinds, the 35 mcp tools, the audit kinds, the cli commands, the 23 protocol messages and every declared export of the compiled declaration set), and records the per item disposition — implemented for the items whose vocabulary the shipped surface covers, planned for the partial matches the roadmap carried, and no item stays unknown. The report lands in tests/artifacts/poolcoverage.json with no timestamps so reruns stay byte identical, and the gate exits nonzero when the pool parses to a different count, when an item stays unknown or when the implemented count regresses below the recorded floor. */
 import { existsSync } from "node:fs";
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -109,19 +109,28 @@ async function symbolcorpus() {
   return corpus;
 }
 
-/** Parses the consolidated feature pool of the mining document: the numbered items under the pool heading grouped by their context section. */
+/** Parses the consolidated feature pool of the harvest generator: the corpus the removed mining report carried survives as the featurepool constant inside tests/crxharvest.mjs, so the pool parses from its surviving source with the same normalization dedupe and the same running numbering the report builder applied when it rendered the numbered pool sections. */
 async function parsepool() {
-  const text = await readFile("docs/12.crxfeaturemining.md", "utf8");
-  const poolstart = text.indexOf("## Consolidated feature pool");
+  const text = await readFile("tests/crxharvest.mjs", "utf8");
+  const poolstart = text.indexOf("const featurepool = [");
   if (poolstart === -1)
-    throw new Error("The consolidated feature pool heading of docs/12.crxfeaturemining.md is absent.");
-  const pooltext = text.slice(poolstart);
-  const sections = pooltext.split(/^### /m).slice(1);
+    throw new Error("The featurepool corpus of tests/crxharvest.mjs is absent; the harvest generator carries the consolidated pool.");
+  const pooltext = text.slice(poolstart, text.indexOf("\n];", poolstart));
   const items = [];
-  for (const section of sections) {
-    const group = section.split("\n")[0].trim();
-    for (const match of section.matchAll(/^(\d+)\. (.+)$/gm))
-      items.push({ id: Number(match[1]), group, text: match[2].trim() });
+  const seen = new Set();
+  let counter = 0;
+  for (const groupmatch of pooltext.matchAll(/group:\s*"([^"]+)",\s*\n\s*items:\s*\[([\s\S]*?)\]/g)) {
+    const group = groupmatch[1].charAt(0).toUpperCase() + groupmatch[1].slice(1);
+    for (const itemmatch of groupmatch[2].matchAll(/"([^"]+)"/g)) {
+      const key = itemmatch[1]
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, " ")
+        .trim();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      counter += 1;
+      items.push({ id: counter, group, text: itemmatch[1].trim() });
+    }
   }
   return items;
 }
