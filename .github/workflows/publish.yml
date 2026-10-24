@@ -170,14 +170,15 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       # the package validator, inlined from the retired composite action
       # (dependency install plus the pack dry-run). the setup node registry
-      # url rewrites the project npmrc with the github package registry
-      # redirect, but the job token cannot read that cross repo package
-      # and the family mirror publishes the same package to npmjs: the
-      # install restores the committed npmrc so bun resolves the public
-      # mirror with the family settings intact.
+      # url writes the github package registry redirect into the home npmrc
+      # (and the project one), but the job token cannot read that cross
+      # repo package and the family mirror publishes the same package to
+      # npmjs: the install neutralizes the home redirect and restores the
+      # committed project npmrc so bun resolves the public mirror.
       - name: install dependencies
         run: |
           cd devthink
+          rm -f "$HOME/.npmrc"
           git checkout -- .npmrc
           bun install --frozen-lockfile --ignore-scripts
       - name: build the distribution set
@@ -2154,7 +2155,14 @@ jobs:
 
       - name: install dependencies
         shell: bash
-        run: cd devthink && bun install --frozen-lockfile --ignore-scripts
+        # the setup node registry url leaves the github package redirect in
+        # the home npmrc: the install neutralizes it so bun resolves the
+        # public npmjs mirror the family publishes.
+        run: |
+          cd devthink
+          rm -f "$HOME/.npmrc"
+          git checkout -- .npmrc
+          bun install --frozen-lockfile --ignore-scripts
 
       # the prisma client the compiled binary embeds: the @prisma/client
       # package re-exports the generated .prisma/client/default module, so a
@@ -3596,7 +3604,14 @@ jobs:
 
       - name: install dependencies
         shell: bash
-        run: cd devthink && bun install --frozen-lockfile --ignore-scripts
+        # the setup node registry url leaves the github package redirect in
+        # the home npmrc: the install neutralizes it so bun resolves the
+        # public npmjs mirror the family publishes.
+        run: |
+          cd devthink
+          rm -f "$HOME/.npmrc"
+          git checkout -- .npmrc
+          bun install --frozen-lockfile --ignore-scripts
 
       # the build engine: one deterministic pass assembles every artifact
       # from the merged tree (the library bundles, the extension surface
