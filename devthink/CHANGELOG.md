@@ -1,5 +1,9 @@
 # DevThink release notes
 
+## 2.0.135
+
+This release is the workflow recovery rung of the ladder: the ci battery, the verify gate ladder, the pages deploy, the security scans and the publish lanes all answer green again after the roots healed — the vitest dialect of the zindex guard, the release artifacts regenerated at the current version, the operational reference documents restored from the overbroad purge, the supply chain age gate admitting the fresh security fixes, the override law reaching the pnpm workspaces beside the manifests, the lint debt of the harvest scripts cleared, and the publish install neutralizing the registry redirect the setup leaves in the home npmrc.
+
 ## 2.0.134
 
 This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (2.0.133 plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: - "@opencode-ai/sdk": "^1.19.3",
