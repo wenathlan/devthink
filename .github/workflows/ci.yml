@@ -411,6 +411,14 @@ jobs:
             bun install --frozen-lockfile --ignore-scripts
           fi
 
+      - name: Build the app surface
+        if: steps.suite.outputs.present == 'true'
+        working-directory: ${{ matrix.app }}
+        # the suites that assert the built surface need the dist on disk:
+        # the app build script runs when the app declares one, and the
+        # answer stays honest when it does not.
+        run: npm run build --if-present
+
       - name: Run the app suite
         if: steps.suite.outputs.present == 'true'
         working-directory: ${{ matrix.app }}
