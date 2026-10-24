@@ -13,7 +13,10 @@ name: DevThink CI
 # of the consolidated house rides here too: the webpack job packs the same
 # core bundle the esbuild recipe produced through webpack and asserts the
 # webpack shape stays a sane, non-empty bundle (the lane lived as its own
-# workflow file until the webpack pass folded it in).
+# workflow file until the webpack pass folded it in). The family config
+# parity and the family test matrix fold here as well (the configs workflow
+# file and the orphaned app suites answer one correlated owner), so the
+# reported check count stops swinging with the folder moves.
 
 on:
   push:
@@ -331,3 +334,77 @@ jobs:
           npx webpack --entry ./dist/index.js --output-path ./distpackage/webpack --output-filename devthink.webpack.js --mode production --target node
           test -s ./distpackage/webpack/devthink.webpack.js
           du -h ./distpackage/webpack/devthink.webpack.js
+
+  configparity:
+    # the family config parity lane (the configs workflow file folds here,
+    # the same push and pull request triggers and the same gate family):
+    # every app root carries the standard set of framework configs and the
+    # biome baseline rides byte identical across the family, so the parity
+    # script of the os app walks the app folders and fails the pipeline on
+    # the first drift.
+    name: Config parity across the family
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout the DevThink source
+        uses: actions/checkout@v7.0.1
+
+      - name: Run the config parity gate
+        working-directory: devthink
+        run: node tests/configparity.mjs
+
+  family-tests:
+    # the family test lane: the ten family apps carry their own vitest
+    # suites beside the os suite, and this matrix gives them their owner,
+    # so the reported test count stops swinging with the folder moves and
+    # every app answers its own battery on every push. the install
+    # respects the pnpm and bun split of the family and carries the ignore
+    # scripts policy the pages lane learned, and the empty suites answer
+    # green with the guard instead of failing the matrix.
+    name: Family suite on ${{ matrix.app }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [argan, cadria, cobaia, debonair, forge, foundry, getry, saddle, stealthhead, vault]
+    steps:
+      - name: Checkout the DevThink source
+        uses: actions/checkout@v7.0.1
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.4.4
+          cache: false
+
+      - name: Guard the suite presence
+        id: suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          glob='*.test'
+          if find "${{ matrix.app }}/tests" -name "${glob}.ts" 2>/dev/null | grep -q .; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "the ${{ matrix.app }} suite is empty — the lane answers green with nothing to run"
+          fi
+
+      - name: Install the locked tree
+        if: steps.suite.outputs.present == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "${{ matrix.app }}"
+          if [ -f pnpm-lock.yaml ]; then
+            npm install -g --no-fund --no-audit "$(node -p 'require("./package.json").packageManager')"
+            pnpm install --frozen-lockfile --ignore-scripts
+          else
+            bun install --frozen-lockfile --ignore-scripts
+          fi
+
+      - name: Run the app suite
+        if: steps.suite.outputs.present == 'true'
+        working-directory: ${{ matrix.app }}
+        run: bunx vitest run
