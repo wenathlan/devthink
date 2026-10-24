@@ -169,9 +169,17 @@ jobs:
             echo "version=$version"
           } >> "$GITHUB_OUTPUT"
       # the package validator, inlined from the retired composite action
-      # (dependency install plus the pack dry-run).
+      # (dependency install plus the pack dry-run). the family package
+      # rides the github npm registry: the scope auth rides the job token
+      # so the frozen install can fetch the saddle engine package the
+      # manifest pins.
       - name: install dependencies
-        run: cd devthink && bun install --frozen-lockfile --ignore-scripts
+        env:
+          INSTALL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd devthink
+          printf '@wenathlan:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=%s\n' "${INSTALL_TOKEN}" > ~/.npmrc
+          bun install --frozen-lockfile --ignore-scripts
       - name: build the distribution set
         run: cd devthink && node tests/build.mjs
       - name: package dry-run
