@@ -162,9 +162,10 @@ describe("containerpack", () => {
     expect(publish).toContain('. == ["amd64", "arm64", "ppc64le", "riscv64", "s390x"]');
     expect(publish).toContain("provenance: mode=max");
     expect(publish).toContain("sbom: true");
-    /* the action answers by its version tag (the family tag-pin doctrine:
-    no hash string is hardcoded anywhere; the digests ride the build records) */
-    expect(publish).toContain("aquasecurity/trivy-action@v0.36.0");
+    /* the action answers by its immutable commit sha with the moving tag
+    riding as the trailing comment (the 2.0.136 supply chain pin doctrine
+    the code scanning closure demanded; the digests ride the build records) */
+    expect(publish).toContain("aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0");
   });
 
   it("builds the release container archive from THE Dockerfile", async () => {

@@ -35,7 +35,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: lint workflows
         # actionlint validates GitHub Actions workflow syntax, expression
         # contexts, action inputs and reusable workflow call graphs; the
@@ -44,7 +44,7 @@ jobs:
         # and the shellcheck noise the house deliberately carries (the
         # single-quoted node scripts, the typed copy loops) stays out
         # through .github/actionlint.yaml.
-        uses: reviewdog/action-actionlint@v1.73.4
+        uses: reviewdog/action-actionlint@d290e336d5a743810aef4404f757dc862276d2ae # v1.73.4
         with:
           reporter: github-check
           fail_level: error

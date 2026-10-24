@@ -1,5 +1,9 @@
 # DevThink release notes
 
+## 2.0.136
+
+This release is the security closure rung of the ladder: the supply chain pins answer the code scanning findings — every github actions reference across the ten workflow files resolves to its immutable commit sha with the moving tag riding as the trailing comment, every literal docker FROM line in the family container files carries its registry digest (the variable ARG images and the build stage names stay untouched by design), the broken rust toolchain reference of the optional desktop audit heals against the commit of its version branch with the toolchain input the sha ref can no longer carry, the chat session identifiers mint their random suffixes from the webcrypto well of the identity contract instead of the math random the insecure randomness finding flagged, and the harvest walker drops its identity replacement no-op. The release lane itself reruns over the freeze artifacts the 2.0.135 rung re-stamped, because the release trigger only fires on a version bump and the artifacts heal landed without one.
+
 ## 2.0.135
 
 This release is the workflow recovery rung of the ladder: the ci battery, the verify gate ladder, the pages deploy, the security scans and the publish lanes all answer green again after the roots healed — the vitest dialect of the zindex guard, the release artifacts regenerated at the current version, the operational reference documents restored from the overbroad purge, the supply chain age gate admitting the fresh security fixes, the override law reaching the pnpm workspaces beside the manifests, the lint debt of the harvest scripts cleared, and the publish install neutralizing the registry redirect the setup leaves in the home npmrc.

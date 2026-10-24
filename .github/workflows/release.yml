@@ -84,7 +84,7 @@ jobs:
       released: ${{ steps.versions.outputs.changed }}
     steps:
       - name: Checkout the DevThink release source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Resolve the bumped version against the latest tag
@@ -193,7 +193,7 @@ jobs:
       ref: ${{ steps.source.outputs.ref }}
     steps:
       - name: Checkout the DevThink release source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
           fetch-depth: 0
@@ -275,17 +275,17 @@ jobs:
       ref: ${{ needs.metadata.outputs.ref }}
     steps:
       - name: Checkout the DevThink release source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ needs.metadata.outputs.ref }}
           fetch-depth: 0
       - name: Set up Bun
-        uses: oven-sh/setup-bun@v2.2.0
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: 1.4.4
           cache: false
       - name: Set up Node
-        uses: actions/setup-node@v7.1.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: devthink/.nvmrc
       - name: Install the locked dependencies
@@ -366,7 +366,7 @@ jobs:
           test -f "release/devthink-${VERSION}-source.zip"
           test -f "release/RELEASENOTES.md"
       - name: Upload the base release assets
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-base-${{ needs.metadata.outputs.version }}
           path: devthink/release/*
@@ -380,7 +380,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout the DevThink release source
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ needs.assemble.outputs.ref }}
           fetch-depth: 0
@@ -395,7 +395,7 @@ jobs:
         # folder. The build stays on the GitHub machines.
         run: node devthink/tests/scripts/nextconvert.ts "${{ needs.assemble.outputs.version }}"
       - name: Upload the nextzips release assets
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-nextzips-${{ needs.assemble.outputs.version }}
           path: release/*
@@ -411,7 +411,7 @@ jobs:
       contents: read
     steps:
       - name: Download the base release assets
-        uses: actions/download-artifact@v8.0.2
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: release-base-${{ needs.assemble.outputs.version }}
           path: release
@@ -437,7 +437,7 @@ jobs:
           console.log(JSON.stringify({ valid: true, name: fields.name, publisher: fields.publisher }));
           "
       - name: Upload the verified vsix
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-vsix-${{ needs.assemble.outputs.version }}
           path: release/devthink-vscode-${{ needs.assemble.outputs.version }}.vsix
@@ -453,7 +453,7 @@ jobs:
       contents: read
     steps:
       - name: Download the base release assets
-        uses: actions/download-artifact@v8.0.2
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: release-base-${{ needs.assemble.outputs.version }}
           path: release
@@ -466,7 +466,7 @@ jobs:
           test -f "release/devthink-safari-${VERSION}.zip"
           unzip -l "release/devthink-safari-${VERSION}.zip" | grep -F "project.pbxproj"
       - name: Upload the verified browser channel packages
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-firefox-${{ needs.assemble.outputs.version }}
           path: |
@@ -484,7 +484,7 @@ jobs:
       contents: read
     steps:
       - name: Download the base release assets
-        uses: actions/download-artifact@v8.0.2
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: release-base-${{ needs.assemble.outputs.version }}
           path: release
@@ -496,7 +496,7 @@ jobs:
           unzip -l "release/devthink-site-${VERSION}.zip" | grep -F "index.html"
           unzip -l "release/devthink-site-${VERSION}.zip" | grep -F "_headers"
       - name: Upload the verified site artifact
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-site-${{ needs.assemble.outputs.version }}
           path: release/devthink-site-${{ needs.assemble.outputs.version }}.zip
@@ -512,7 +512,7 @@ jobs:
       contents: read
     steps:
       - name: Download every release lane artifact
-        uses: actions/download-artifact@v8.0.2
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: release-*
           path: staging
@@ -544,7 +544,7 @@ jobs:
           console.log(JSON.stringify({ artifacts: artifacts.length, sbom: module.sbomnameof(version) }));
           "
       - name: Upload the sbom inventory
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-sbom-${{ needs.assemble.outputs.version }}
           path: release/devthink-sbom-${{ needs.assemble.outputs.version }}.json
@@ -562,13 +562,13 @@ jobs:
       id-token: write
     steps:
       - name: Download every release lane artifact
-        uses: actions/download-artifact@v8.0.2
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: release-*
           path: release
           merge-multiple: true
       - name: Create the provenance attestations of every release artifact
-        uses: actions/attest@v4.2.2
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         with:
           subject-path: release/*
           show-snippet: false
@@ -590,7 +590,7 @@ jobs:
           console.log(JSON.stringify({ artifacts: artifacts.length, record: 'devthink-attestations-' + version + '.json' }));
           "
       - name: Upload the attestations record
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-attestations-${{ needs.assemble.outputs.version }}
           path: release/devthink-attestations-${{ needs.assemble.outputs.version }}.json
@@ -606,7 +606,7 @@ jobs:
       contents: read
     steps:
       - name: Download every release lane artifact
-        uses: actions/download-artifact@v8.0.2
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: release-*
           path: staging
@@ -645,7 +645,7 @@ jobs:
           test -f "release/wenathlan-devthink-${VERSION}.tgz"
           ls -lah release
       - name: Upload the complete release set
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-complete-${{ needs.assemble.outputs.version }}
           path: release/*
@@ -665,19 +665,19 @@ jobs:
       - name: Checkout the release source for the node baseline file
         # the npmjs lane publishes from the downloaded artifact set alone, so
         # the node-version-file the setup reads needs its sparse checkout.
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ needs.assemble.outputs.ref }}
           sparse-checkout: |
             devthink/.nvmrc
           fetch-depth: 1
       - name: Download the verified release set
-        uses: actions/download-artifact@v8.0.2
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: release-complete-${{ needs.assemble.outputs.version }}
           path: release
       - name: Set up Node with the npmjs registry
-        uses: actions/setup-node@v7.1.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: devthink/.nvmrc
           registry-url: https://registry.npmjs.org
@@ -719,7 +719,7 @@ jobs:
       contents: write
     steps:
       - name: Download the complete release set
-        uses: actions/download-artifact@v8.0.2
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: release-complete-${{ needs.assemble.outputs.version }}
           path: release
@@ -790,7 +790,7 @@ jobs:
     # releaseassets lane sweeps the artifact automatically.
     steps:
       - name: Download the base release assets
-        uses: actions/download-artifact@v8.0.2
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: release-base-${{ needs.assemble.outputs.version }}
           path: release
@@ -830,7 +830,7 @@ jobs:
           xorriso -as mkisofs -iso-level 3 -J -joliet-long -V "DEVTHINK_${VERSION}" -output "release/devthink-v${VERSION}-install.iso" iso/
           (cd release && sha256sum "devthink-v${VERSION}-install.iso")
       - name: Upload the installable OS distribution artifact
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-iso-${{ needs.assemble.outputs.version }}
           path: release/devthink-v${{ needs.assemble.outputs.version }}-install.iso
@@ -849,7 +849,7 @@ jobs:
     # sandbox mounts at run time.
     steps:
       - name: Checkout the release source for the engine cores
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ needs.assemble.outputs.ref }}
           sparse-checkout: |
@@ -860,14 +860,14 @@ jobs:
             devthink/bun.lock
           fetch-depth: 1
       - name: Set up Node
-        uses: actions/setup-node@v7.1.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: devthink/.nvmrc
           package-manager-cache: false
       - name: Set up bun
         # the devthink application pins bun (packageManager bun@1.4.2), so the
         # toolchain installs that touch it delegate to this exact bun build.
-        uses: oven-sh/setup-bun@v2.2.0
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: 1.4.4
       - name: Install the locked toolchain and the javy quickjs-wasm compiler
@@ -898,7 +898,7 @@ jobs:
           tar -cf - -C wasmwork versawase.wasm katexis.wasm manifest.json | xz -9e -T0 > "release/devthink-v${VERSION}-wasm.tar.xz"
           (cd release && sha256sum "devthink-v${VERSION}-wasm.tar.xz")
       - name: Upload the wasm distribution artifact
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-wasm-${{ needs.assemble.outputs.version }}
           path: release/devthink-v${{ needs.assemble.outputs.version }}-wasm.tar.xz
@@ -919,7 +919,7 @@ jobs:
     # by the releaseassets lane.
     steps:
       - name: Checkout the release source for the family envelopes
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ needs.assemble.outputs.ref }}
           fetch-depth: 1
@@ -938,7 +938,7 @@ jobs:
           done
           ls -lah familypack
       - name: Upload the family distribution packages
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-family-${{ needs.assemble.outputs.version }}
           path: familypack/*.tgz
