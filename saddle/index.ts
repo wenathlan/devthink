@@ -40,7 +40,7 @@ export const engineversions = {
   npm: '12.0.2',
   /** python stable confirmed 2026-08-23. */
   python: '3.14.7',
-  nodecurrent: '26.12.0',
+  nodecurrent: '26.12.1',
   nodelts: '24.19.0',
   typescript: '7.0.2',
   docker: '29.7.2',

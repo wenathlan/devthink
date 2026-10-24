@@ -104,6 +104,7 @@ export default function MeshNodesTable({ mode, reloadkey }: MeshNodesTableProps)
 			<p className="dash-statusnote">{label('dashboard.mesh.pollNote')}</p>
 			<div
 				className="dash-tablescroll"
+				// biome-ignore lint/a11y/noNoninteractiveTabindex: deliberate wcag scrollable-region pattern: the tabIndex keeps the overflowing table keyboard-scrollable; the interactive cells are real buttons, the region itself only scrolls
 				tabIndex={0}
 				role="region"
 				aria-label={label('dashboard.mesh.tableAria')}

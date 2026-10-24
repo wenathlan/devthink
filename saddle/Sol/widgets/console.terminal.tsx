@@ -95,6 +95,7 @@ export default function Terminal({ rows, prompt, state, enabled, oncommand }: Te
 					{label(statelabels[state])}
 				</span>
 			</div>
+			{/* biome-ignore lint/a11y/useKeyWithClickEvents: click-to-focus is a deliberate mouse-only convenience: the log region is intentionally not focusable and keyboard users reach the prompt input directly through the tab order, so a keyboard handler here would be dead code */}
 			<pre
 				className="term-out"
 				role="log"

@@ -62,8 +62,9 @@ function App() {
  * wrapper is gone, so this module is the single entry the html loads
  * (the doctrine of the 2.1.0 universal interface: one tsx app, the
  * router and the mount live together). */
-if (typeof document !== 'undefined' && document.getElementById('root')) {
-        createRoot(document.getElementById('root')!).render(<App />);
+const rootmount = typeof document !== 'undefined' ? document.getElementById('root') : null;
+if (rootmount) {
+        createRoot(rootmount).render(<App />);
 }
 
 export default App;

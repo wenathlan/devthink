@@ -71,7 +71,7 @@
     var sanitized = {};
     for (var k in value) {
       if (Object.hasOwn(value, k)) {
-        var isSensitive = CONFIG.sensitiveFields.some((f) => k.toLowerCase().indexOf(f) !== -1);
+        const isSensitive = CONFIG.sensitiveFields.some((f) => k.toLowerCase().indexOf(f) !== -1);
         if (isSensitive) {
           sanitized[k] = '[REDACTED]';
         } else {
@@ -96,7 +96,7 @@
 
   function formatArgs(args) {
     var result = [];
-    for (var i = 0; i < args.length; i++) result.push(formatArg(args[i]));
+    for (let i = 0; i < args.length; i++) result.push(formatArg(args[i]));
     return result;
   }
 
@@ -128,7 +128,7 @@
 
   function compactText(s, maxLen) {
     try {
-      var t = (s || '').trim().replace(/\s+/g, ' ');
+      const t = (s || '').trim().replace(/\s+/g, ' ');
       if (!t) return '';
       return t.length > maxLen ? `${t.slice(0, maxLen)}…` : t;
     } catch (_e) {
@@ -138,7 +138,7 @@
 
   function elText(el) {
     try {
-      var t = el.innerText || el.textContent || '';
+      const t = el.innerText || el.textContent || '';
       return compactText(t, CONFIG.uiTextMaxLen);
     } catch (_e) {
       return '';
@@ -619,7 +619,7 @@
         } else {
           // Safe to read responseText for text responses
           try {
-            var text = this.responseText || '';
+            const text = this.responseText || '';
             if (text.length > CONFIG.maxBodyLength) {
               responseBody = `${text.slice(0, CONFIG.maxBodyLength)}...[truncated]`;
             } else {
@@ -750,12 +750,12 @@
     };
 
     if (navigator.sendBeacon) {
-      var payloadStr = JSON.stringify(payload);
+      let payloadStr = JSON.stringify(payload);
       // sendBeacon has ~64KB limit, truncate if too large
-      var MAX_BEACON_SIZE = 60000; // Leave some margin
+      const MAX_BEACON_SIZE = 60000; // Leave some margin
       if (payloadStr.length > MAX_BEACON_SIZE) {
         // Prioritize: keep recent events, drop older logs
-        var truncatedPayload = {
+        const truncatedPayload = {
           timestamp: Date.now(),
           consoleLogs: consoleLogs.slice(-50),
           networkRequests: networkRequests.slice(-20),

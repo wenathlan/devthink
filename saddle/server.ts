@@ -33,7 +33,9 @@ export function nodeserver(options = {}) {
       const webrequest = new Request(new URL(request.url ?? "/", `http://${options.host}:${options.port}`), { method: request.method, headers, body: body || undefined });
       const result = await options.handle(webrequest);
       response.statusCode = result.status;
-      result.headers.forEach((value, key) => response.setHeader(key, value));
+      result.headers.forEach((value, key) => {
+        response.setHeader(key, value);
+      });
       response.end(Buffer.from(await result.arrayBuffer()));
     } catch (error) {
       response.statusCode = 500;

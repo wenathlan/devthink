@@ -895,11 +895,15 @@ function htmlToMarkdown(html: string): string {
         break;
       }
       default:
-        el.childNodes.forEach(child => processNode(child, depth));
+        el.childNodes.forEach((child) => {
+          processNode(child, depth);
+        });
     }
   }
 
-  doc.body?.childNodes.forEach((child: globalThis.Node) => processNode(child));
+  doc.body?.childNodes.forEach((child: globalThis.Node) => {
+    processNode(child);
+  });
   return md.replace(/\n{3,}/g, '\n\n').trim();
 }
 

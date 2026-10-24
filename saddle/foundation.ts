@@ -185,7 +185,9 @@ function hashbytes(value) {
   }
   const output = new Uint8Array(32);
   const view = new DataView(output.buffer);
-  state.forEach((word, index) => view.setUint32(index * 4, word));
+  state.forEach((word, index) => {
+    view.setUint32(index * 4, word);
+  });
   return output;
 }
 

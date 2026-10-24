@@ -52,6 +52,7 @@ export default function GlobalSandboxesTable({ mode, reloadkey }: GlobalSandboxe
 		<div>
 			<div
 				className="dash-tablescroll"
+				// biome-ignore lint/a11y/noNoninteractiveTabindex: deliberate wcag scrollable-region pattern: the tabIndex keeps the overflowing table keyboard-scrollable; the rows are display data and the interactive cells (none here) use real buttons
 				tabIndex={0}
 				role="region"
 				aria-label={label('dashboard.global.tableAria')}
