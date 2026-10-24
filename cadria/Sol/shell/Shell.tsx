@@ -63,9 +63,9 @@ import { familyurl } from "../../familyurl.ts";
 import { type LabelKey, label } from "../../labels.ts";
 import { currentTheme, type Theme, toggleTheme } from "../../theme.ts";
 import { type WinSnapZone, winsnaprect, winsnapzone } from "../../winsnap.ts";
-import BrandMark from "../widgets/shell.brandmark.tsx";
+import { ShellBrandmark as BrandMark } from "../widgets";
 
-export { CadriaMark } from "../widgets/shell.cadriamark.tsx";
+export { CadriaMark } from "../widgets";
 
 /** one entry of the shell navigation (the legacy page prop shape, kept for
  * the anchors that type against the shell beside this folder) */

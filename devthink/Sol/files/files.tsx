@@ -83,8 +83,8 @@ import {
 import { browserStoreSummary } from "../../db";
 import { drives, type HardDrive } from "../../harddrives.ts";
 import { ShellChrome } from "@/widgets/shell.shellchrome";
-import { AppTile } from "@/widgets/shell.apptile.tsx";
-import { DriveIcon, PlatformMark, ShellFolderIcon, ThisPcMark } from "../widgets/files.foldericons.tsx";
+import { AppTile } from "@/widgets";
+import { DriveIcon, PlatformMark, ShellFolderIcon, ThisPcMark } from "../widgets";
 
 /** the window title answers the catalog label row (bare-id fallback). */
 const FILES_LABEL = osAppLabels().files ?? { name: "My Files", detail: "", pinned: true };

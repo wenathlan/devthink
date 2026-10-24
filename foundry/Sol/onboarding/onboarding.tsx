@@ -20,7 +20,7 @@ import { useCallback, useState } from "react";
 import { useLocation } from "wouter";
 import { labelfill, label } from "../../labels";
 import { markOnboardingSeen } from "../../onboardingstate";
-import { BrandMark } from "../widgets/shell.brandmark.tsx";
+import { BrandMark } from "../widgets";
 
 /** the three beats of the walk, in the family copy grammar (third-person,
  * lowercase): what it is, what it does, enter — the label keys of the frames */

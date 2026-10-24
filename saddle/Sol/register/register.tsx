@@ -18,13 +18,13 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { apibase, apierrormessage, apifetch, apistatustext } from '../../api';
 import { label } from '../../labels.ts';
-import PasswordConfirm from '../widgets/register.passwordconfirm.tsx';
-import PasswordMeter from '../widgets/register.passwordmeter.tsx';
-import UsernameRules, { usernamere } from '../widgets/register.usernamerules.tsx';
+import { PasswordConfirm as PasswordConfirm } from '../widgets';
+import { PasswordMeter as PasswordMeter } from '../widgets';
+import { UsernameRules as UsernameRules, usernamere } from '../widgets';
 
-export * from '../widgets/register.passwordconfirm.tsx';
-export * from '../widgets/register.passwordmeter.tsx';
-export * from '../widgets/register.usernamerules.tsx';
+export * from '../widgets';
+export * from '../widgets';
+export * from '../widgets';
 
 /** meta description carried by the absorbed static page. */
 export const registerpagedescription =

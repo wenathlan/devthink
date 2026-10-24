@@ -31,8 +31,8 @@ import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { familyurl } from "../../familyurl";
 import { type LabelKey, label } from "../../labels";
-import { ROSTER } from "../widgets/apps.roster.ts";
-import { BrandMark } from "../widgets/shell.brand.tsx";
+import { ROSTER } from "../widgets";
+import { BrandMark } from "../widgets";
 
 /** the hand-over route of the close caption: closing the window relaunches
  * the site at the intro (the relaunch metaphor — the family grammar's door

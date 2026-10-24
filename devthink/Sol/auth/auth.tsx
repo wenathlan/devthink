@@ -36,19 +36,19 @@ import {
   providerRow,
 } from "../../oauthrow.ts";
 import { readBrowserPreferences } from "../../db";
-import { LockFace } from "../widgets/auth.lockface.tsx";
-import { PowerMenu } from "../widgets/auth.powermenu.tsx";
-import { SignInForm, type SignInEntryFields } from "../widgets/auth.signin.tsx";
-import { StatusLine } from "../widgets/auth.statusline.tsx";
+import { LockFace } from "../widgets";
+import { PowerMenu } from "../widgets";
+import { SignInForm, type SignInEntryFields } from "../widgets";
+import { StatusLine } from "../widgets";
 
 export * from "../../accountgate.ts";
 export * from "../../authgate.ts";
-export * from "../widgets/auth.lockface.tsx";
-export * from "../widgets/auth.pairing.tsx";
-export * from "../widgets/auth.powermenu.tsx";
-export * from "../widgets/auth.providerrow.tsx";
-export * from "../widgets/auth.signin.tsx";
-export * from "../widgets/auth.statusline.tsx";
+export * from "../widgets";
+export * from "../widgets";
+export * from "../widgets";
+export * from "../widgets";
+export * from "../widgets";
+export * from "../widgets";
 
 type PairingResponse = { token: string; userId: string; expiresAt: number };
 

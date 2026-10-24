@@ -28,30 +28,30 @@ import {
   readBrowserPreferences,
   saveBrowserPreference } from "../../db";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
-import { AboutSettings } from "../widgets/settings.about.tsx";
-import { AccountsCategory } from "../widgets/settings.accountscategory.tsx";
-import { AutomationMcp } from "../widgets/settings.automationmcp.tsx";
-import { GatewayPairing } from "../widgets/settings.gatewaypairing.tsx";
-import { HardDrives } from "../widgets/settings.harddrives.tsx";
-import { initPersonalization, loadThemeMirror, syncThemeFromPreference } from "../widgets/settings.personalstore.ts";
-import { Personalization } from "../widgets/settings.personalization.tsx";
-import { SettingsNav } from "../widgets/settings.nav.tsx";
-import type { PreferenceKey, SettingsCategoryId, SettingsSnapshot } from "../widgets/settings.settingstypes.ts";
+import { AboutSettings } from "../widgets";
+import { AccountsCategory } from "../widgets";
+import { AutomationMcp } from "../widgets";
+import { GatewayPairing } from "../widgets";
+import { HardDrives } from "../widgets";
+import { initPersonalization, loadThemeMirror, syncThemeFromPreference } from "../widgets";
+import { Personalization } from "../widgets";
+import { SettingsNav } from "../widgets";
+import type { PreferenceKey, SettingsCategoryId, SettingsSnapshot } from "../widgets";
 
-export * from "../widgets/settings.about.tsx";
-export * from "../widgets/settings.accountscategory.tsx";
-export * from "../widgets/settings.automationmcp.tsx";
-export * from "../widgets/settings.backgroundpicker.tsx";
-export * from "../widgets/settings.gatewaycard.tsx";
-export * from "../widgets/settings.gatewaypairing.tsx";
-export * from "../widgets/settings.identity.tsx";
-export * from "../widgets/settings.languagecard.tsx";
-export * from "../widgets/settings.navbarposition.tsx";
-export * from "../widgets/settings.pairing.tsx";
-export * from "../widgets/settings.personalization.tsx";
-export * from "../widgets/settings.personalstore.ts";
-export * from "../widgets/settings.nav.tsx";
-export * from "../widgets/settings.row.tsx";
+export * from "../widgets";
+export * from "../widgets";
+export * from "../widgets";
+export * from "../widgets";
+export * from "../widgets";
+export * from "../widgets";
+export * from "../widgets";
+export * from "../widgets";
+export * from "../widgets";
+export * from "../widgets";
+export * from "../widgets";
+export * from "../widgets";
+export * from "../widgets";
+export * from "../widgets";
 
 /** paints the stored personalization choices before any route mounts (the
  * same law initautotranslate rides at the theme anchor). */

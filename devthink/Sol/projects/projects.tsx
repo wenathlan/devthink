@@ -19,7 +19,7 @@ import { osAppLabels } from "../../catalog";
 import { browserWorkspaces } from "../../db";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { osText } from "../../oslabels.ts";
-import { ProjectRows } from "../widgets/projects.rows.tsx";
+import { ProjectRows } from "../widgets";
 
 type Workspace = { id: string; title: string; updatedAt: string; sessionCount: number };
 

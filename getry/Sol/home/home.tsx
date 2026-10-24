@@ -32,9 +32,9 @@ import { label, labelfill } from "../../labels";
 import { observeReveals } from "../../reveal";
 import { ROTATIONEVERY } from "../../sessions";
 import { budgetof, DEFAULTTHINKINGLEVEL, formatbudget, THINKINGLEVELS } from "../../thinking";
-import { BrandMark } from "../widgets/shell.brandmark.tsx";
+import { BrandMark } from "../widgets";
 import { toast } from "../toast/Toast.tsx";
-import EntryGate from "../widgets/home.entrygate.tsx";
+import { HomeEntrygate as EntryGate } from "../widgets";
 
 /** the parsed endpoint: the replica the prefix names and the route kind that follows. */
 function parseendpoint(value: string): { version: GatewayVersion | null; route: string | null; tail: string } {

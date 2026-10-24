@@ -51,12 +51,12 @@ import {
         type sandboxbaseid,
         type sandboxosid,
 } from '../../sandboxprofile.ts';
-import EntryGate from '../widgets/home.entrygate.tsx';
-import MetricStrip from '../widgets/home.metricstrip.tsx';
-import RuntimeDiagram from '../widgets/home.runtimediagram.tsx';
+import { HomeEntrygate as EntryGate } from '../widgets';
+import { MetricStrip as MetricStrip } from '../widgets';
+import { RuntimeDiagram as RuntimeDiagram } from '../widgets';
 
-export * from '../widgets/home.metricstrip.tsx';
-export * from '../widgets/home.runtimediagram.tsx';
+export * from '../widgets';
+export * from '../widgets';
 
 /** the session key the boot key writes and the console reads (once, then spent). */
 const DECLARED_KEY = 'saddle.declared';

@@ -34,7 +34,7 @@ import {
 } from "../../queue.ts";
 import { modes as RUNNER_MODES, type RunnerMode } from "../../runner.ts";
 import { labelfill, label } from "../../labels";
-import { EmptyState } from "../widgets/shell.emptystate.tsx";
+import { EmptyState } from "../widgets";
 
 /** the seed of the rehearsal queue (shown on the page, pinned by the tests) */
 export const QUEUE_SEED = 731004;

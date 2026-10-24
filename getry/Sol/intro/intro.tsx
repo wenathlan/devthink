@@ -23,7 +23,7 @@ import {
   readOnboardingState,
   type VisitorOnboarding,
 } from "../../onboardingstate.ts";
-import { BrandMark } from "../widgets/shell.brandmark.tsx";
+import { BrandMark } from "../widgets";
 
 /** how long the brand holds before the exit (ms) — the doctrine asks ~1.6s */
 const HOLD_MS = 1600;

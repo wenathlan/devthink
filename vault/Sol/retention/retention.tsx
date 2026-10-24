@@ -32,7 +32,7 @@ import {
   sweepPlan,
   tickLabel,
 } from "../../retention.ts";
-import { EmptyState } from "../widgets/shell.emptystate.tsx";
+import { EmptyState } from "../widgets";
 
 /** the seed of the rehearsal clock (shown on the page, pinned by the tests) */
 export const RETENTION_SEED = 440215;

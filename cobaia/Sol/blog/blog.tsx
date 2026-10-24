@@ -16,7 +16,7 @@
 import type { CSSProperties } from "react";
 import { postindex, postwords, type blogpost } from "../../posts";
 import { labelfill, label } from "../../labels";
-import { AdSlot } from "../widgets/shell.adsslot.tsx";
+import { AdSlot } from "../widgets";
 
 /** the meta line of one post: the date and the honest word count. */
 function PostMeta({ post }: { post: blogpost }) {
