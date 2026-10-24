@@ -506,7 +506,9 @@ async function main() {
     }
   };
   const queues = Array.from({ length: 3 }, () => []);
-  commits.forEach((c, i) => queues[i % 3].push(c));
+  commits.forEach((c, i) => {
+    queues[i % 3].push(c);
+  });
   await Promise.all(queues.map(treeWorker));
   console.log('[' + label + '] unique manifest blobs: ' + blobMap.size);
 
@@ -580,7 +582,9 @@ async function main() {
     }
   };
   const blobQueues = Array.from({ length: blobWorkers }, () => []);
-  chunks.forEach((ch, i) => blobQueues[i % blobWorkers].push(ch));
+  chunks.forEach((ch, i) => {
+    blobQueues[i % blobWorkers].push(ch);
+  });
   await Promise.all(blobQueues.map(blobWorker));
   console.log('[' + label + '] blobs parsed: ' + blobsSeen);
 
