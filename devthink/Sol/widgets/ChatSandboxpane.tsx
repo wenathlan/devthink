@@ -20,7 +20,13 @@
  * hands its command executor to the chat body through onBridgeChange so
  * the thread's sandbox tool calls dispatch through the same engine lane
  * — the executor answers null whenever the lane closes or the engine
- * halts, so the bridge never fabricates a result.
+ * halts, so the bridge never fabricates a result. The client-first lane:
+ * every boot and every command tries the real server lane first through
+ * sandboxclient.ts (the sandbox routes of server.ts) — a server answer
+ * renders its rows exactly like the local ones with the exit code
+ * honored, and a null answer falls back to the browser-pure simulator
+ * with the honest offline row printed once per pane session: the lane
+ * answers locally, the deployed copy carries the server lane.
  */
 
 import {
@@ -32,7 +38,9 @@ import type { SandboxSpec, SandboxState } from "@wenathlan/saddle/sandbox";
 import { bootSequence, commands, cpudata, createSandboxState, dispatch, gpudata } from "@wenathlan/saddle/sandbox";
 import { type FormEvent, type KeyboardEvent, useEffect, useId, useRef, useState } from "react";
 import { chatLimit, chatText } from "../../chatlabels.ts";
+import { boot as sandboxboot, modalities as sandboxmodalities, run as sandboxrun } from "../../sandboxclient.ts";
 import { osAppLabels } from "../../catalog.ts";
+import { compactToken } from "../../ids.ts";
 
 /** one rendered log row; cls mirrors the boot, ok, err and cmdline row
  * classes the console terminal carries. */
@@ -57,9 +65,25 @@ export type SandboxRunResult = {
 };
 
 /** the executor the pane hands the thread bridge: one command in, the
- * honest engine answer out — null while the engine is halted, so the
- * bridge never invents a result. */
-export type SandboxRunner = (command: string) => SandboxRunResult | null;
+ * honest lane answer out — the local engine answers in place, the server
+ * lane answers through the sandbox client (a promise), and null while the
+ * lane closes or the pane unmounts, so the bridge never invents a
+ * result. */
+export type SandboxRunner = (command: string) => SandboxRunResult | null | Promise<SandboxRunResult | null>;
+
+/** the honest offline row — the one declaration a fallen lane makes: the
+ * pane answers locally from here on and the deployed copy carries the
+ * server lane. It prints once per pane session, never per command. */
+const OFFLINE_ROW = "offline: the lane answers locally — the deployed copy carries the server lane.";
+
+/** newsessionid — the ephemeral per-pane session id of the server lane:
+ * the route gate form (letters, digits and dashes, four to sixty four
+ * chars) built from the webcrypto well the house ids ride; the id lives in
+ * this pane mount only — no storage anywhere. */
+const newsessionid = (): string => {
+  const draw = [Date.now().toString(36), compactToken().slice(0, 10)].join("");
+  return ["sb", draw].join("-");
+};
 
 /** the engine family identity of the pane (the catalog label row, never a
  * hardcoded literal — the bare id keeps the mark honest when the row is
@@ -132,6 +156,17 @@ export function SandboxPane({
   const rowseq = useRef(0);
   const paneref = useRef<HTMLElement | null>(null);
   const engineref = useRef<SandboxState | null>(null);
+  /** the lane state of this pane session: idle before the first boot,
+   * server while the sandbox client answers, local once the honest
+   * offline row declared the fallback. */
+  const laneref = useRef<"idle" | "server" | "local">("idle");
+  /** the ephemeral server session id — generated once per pane mount,
+   * dies with the component (the server jail outlives it, the pane does
+   * not persist it anywhere). */
+  const sessionref = useRef(newsessionid());
+  /** the offline declaration — the row prints once per pane session,
+   * never per command. */
+  const offlineref = useRef(false);
   const cancelref = useRef(false);
   const outref = useRef<HTMLPreElement>(null);
   const inputref = useRef<HTMLInputElement>(null);
@@ -186,20 +221,49 @@ export function SandboxPane({
     return pane !== null && document.activeElement !== null && pane.contains(document.activeElement);
   };
 
-  /** boots the sandbox: the default spec commit, the animated dmesg, then
-   * the engine dispatcher answers — the flow the saddle console runs. */
-  const bootsandbox = () => {
+  /** declarelane — the honest lane fall: the pane answers locally from
+   * this call on. A local engine boots when none stands yet (the server
+   * lane never created one) and the offline row prints once per pane
+   * session, never per command — the fallback is declared, never silent. */
+  const declarelane = () => {
+    laneref.current = "local";
+    if (engineref.current === null) engineref.current = createSandboxState(DEFAULT_SPEC);
+    if (!offlineref.current) {
+      offlineref.current = true;
+      printrow(OFFLINE_ROW, "boot");
+    }
+  };
+
+  /** boots the sandbox: the intro row, then the lane decision — the real
+   * server session first (the sandbox client, the routes of server.ts)
+   * and its rows verbatim when it answers, else the offline declaration
+   * and the simulator path: the default spec commit, the animated dmesg,
+   * then the engine dispatcher answers — the flow the saddle console
+   * runs. */
+  const bootsandbox = async () => {
     if (busy) return;
     setBusy(true);
     setStatus("booting");
     setBooted(true);
     setRows([]);
+    printrow(`saddle sandbox booting (${DEFAULT_SPEC.model}, ${DEFAULT_SPEC.vcpus} vcpus, ${DEFAULT_SPEC.ramgb} gb, ${DEFAULT_SPEC.gpu})`, "boot");
+    const sessionrows = await sandboxboot(sessionref.current);
+    if (cancelref.current) return;
+    if (sessionrows !== null) {
+      laneref.current = "server";
+      for (const row of sessionrows) printrow(row, "boot");
+      printrow(chatText("sb.running"), "ok");
+      setStatus("running");
+      setBusy(false);
+      if (panehasfocus()) window.requestAnimationFrame(() => inputref.current?.focus());
+      return;
+    }
+    declarelane();
     const state = createSandboxState(DEFAULT_SPEC);
     engineref.current = state;
     const banner = `root@${state.hostname}:~#`;
     setPrompt(banner);
     promptref.current = banner;
-    printrow(`saddle sandbox booting (${state.model}, ${state.vcpus} vcpus, ${state.ramgb} gb, ${state.gpu})`, "boot");
     const lines = bootSequence(DEFAULT_SPEC.model, state.vcpus, DEFAULT_SPEC.ramgb, DEFAULT_SPEC.gpu);
     for (const bootline of lines) {
       if (cancelref.current) return;
@@ -212,22 +276,21 @@ export function SandboxPane({
     if (panehasfocus()) window.requestAnimationFrame(() => inputref.current?.focus());
   };
 
-  /** stops the sandbox: the engine state drops with this pane session. */
+  /** stops the sandbox: the lane state drops with this pane session (the
+   * next boot asks the server lane first again). */
   const stopsandbox = () => {
     if (!running) return;
     engineref.current = null;
+    laneref.current = "idle";
     setStatus("halted");
     printrow(chatText("sb.stopped"), "boot");
   };
 
-  /** execCommand — the one honest executor behind both surfaces of the
-   * pane: the command well and the w5-a thread bridge. The cmdline row
-   * prints first (the live prompt rides the ref so a captured executor
-   * never goes stale), the vfs snapshots wrap the engine dispatch — the
-   * diff view answers the buffers the engine really wrote — the exit
-   * code picks the ok or err row class, and the clear flag wipes the log. */
-  const execCommand = (raw: string): SandboxRunResult => {
-    printrow(`${promptref.current} ${raw}`, "cmdline");
+  /** execlocal — the local half of the executor: the vfs snapshots wrap
+   * the engine dispatch — the diff view answers the buffers the engine
+   * really wrote — the exit code picks the ok or err row class, and the
+   * clear flag wipes the log (the cmdline row printed before this runs). */
+  const execlocal = (raw: string): SandboxRunResult => {
     const engine = engineref.current;
     const before = snapshotFiles(engine);
     const result = engine !== null ? dispatch(raw, engine) : { output: "the sandbox is not running", exitCode: 1 };
@@ -240,11 +303,52 @@ export function SandboxPane({
     return { output: result.output, exitCode: result.exitCode, clear: false, changes };
   };
 
+  /** execlane — the one honest executor behind both surfaces of the
+   * pane: the command well and the w5-a thread bridge. The cmdline row
+   * prints first (the live prompt rides the ref so a captured executor
+   * never goes stale), then the lane decides: a live server lane answers
+   * through the sandbox client — the real rows rendered exactly like the
+   * local ones, the exit code honored, the run tool riding the dedicated
+   * modalities route — and a null answer falls to the local engine
+   * through declarelane, the offline row already printed once per pane
+   * session. The lane fell with the pane gone answers null (the bridge
+   * never fabricates a result). */
+  const execlane = async (raw: string): Promise<SandboxRunResult | null> => {
+    printrow(`${promptref.current} ${raw}`, "cmdline");
+    if (laneref.current === "server") {
+      const tool = (raw.trim().split(/\s+/)[0] ?? "").toLowerCase();
+      if (tool === "run") {
+        const rows = await sandboxmodalities();
+        if (rows !== null && !cancelref.current) {
+          const output = rows.join("\n");
+          if (output.length > 0) printrow(output, "ok");
+          return { output, exitCode: 0, clear: false, changes: [] };
+        }
+      } else {
+        const answer = await sandboxrun(sessionref.current, raw);
+        if (answer !== null && !cancelref.current) {
+          if (answer.tool === "clear") {
+            setRows([]);
+            return { output: "", exitCode: answer.exitcode, clear: true, changes: [] };
+          }
+          const output = answer.rows.map((row) => row.line).join("\n");
+          if (output.length > 0) printrow(output, answer.exitcode === 0 ? "ok" : "err");
+          return { output, exitCode: answer.exitcode, clear: false, changes: [] };
+        }
+      }
+      declarelane();
+    }
+    return execlocal(raw);
+  };
+
   // the w5-a thread bridge: while the lane is open and the engine runs,
   // the pane hands its executor to the body — the lane stays the only
-  // dispatcher, and a closed lane or a halted engine answers null so a
-  // round's fenced blocks render as plain markdown instead of work rows.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: the registered executor reads the engine and prompt refs and writes through the stable setRows — its render closure never goes stale, so the registration keys on the lane state and the lamp alone
+  // dispatcher, and every command rides the same client-first path the
+  // command well runs (the server lane answers through the sandbox
+  // client, the local engine answers in place). A closed lane or an
+  // unmounted pane answers null so a round's fenced blocks render as
+  // plain markdown instead of work rows.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the registered executor reads the lane, engine and prompt refs and writes through the stable setRows — its render closure never goes stale, so the registration keys on the lane state and the lamp alone
   useEffect(() => {
     if (onBridgeChange === undefined) return undefined;
     if (!open || !running) {
@@ -252,8 +356,8 @@ export function SandboxPane({
       return undefined;
     }
     onBridgeChange((command: string) => {
-      const engine = engineref.current;
-      return engine === null ? null : execCommand(command);
+      if (cancelref.current) return null;
+      return execlane(command);
     });
     return () => onBridgeChange(null);
   }, [onBridgeChange, open, running]);
@@ -266,7 +370,7 @@ export function SandboxPane({
     if (trimmed.length === 0) return;
     historyref.current.push(trimmed);
     historyindex.current = historyref.current.length;
-    execCommand(trimmed);
+    void execlane(trimmed);
   };
 
   /** the arrow keys browse the command history, tab completes over the

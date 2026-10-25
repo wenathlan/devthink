@@ -526,7 +526,9 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
 
   /** runSandboxBridge — the honest loop of the w5-a tool bridge: the
    * committed assistant text parses for sandbox calls and every call
-   * dispatches through the pane's engine executor — the command and its
+   * dispatches through the pane's lane executor (the server lane through
+   * the sandbox client, or the local engine — the same client-first path
+   * the command well runs, awaited in order) — the command and its
    * answer land as task cards under the turn that spawned them and wait
    * as the next round's result context. the pass acts only while the
    * bridge is armed: a closed lane, a halted engine or a parse miss
@@ -536,32 +538,34 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
     if (runner === null) return;
     const calls = parseSandboxCalls(reply.content);
     if (calls.length === 0) return;
-    const landed: SandboxTask[] = [];
-    for (const command of calls) {
-      const started = performance.now();
-      const result = runner(command);
-      const durationMs = performance.now() - started;
-      /* the engine went away mid-pass — nothing fakes the rest of the
-       * round's calls. */
-      if (result === null) continue;
-      sandboxTaskSeq += 1;
-      landed.push({
-        id: `sb-${sandboxTaskSeq}`,
-        turnId: reply.id,
-        command,
-        output: result.output,
-        exitCode: result.exitCode,
-        durationMs,
-        changes: result.changes,
-      });
-    }
-    if (landed.length === 0) return;
-    const next: Record<string, SandboxTask[]> = {
-      ...sandboxTasksRef.current,
-      [sessionId]: [...(sandboxTasksRef.current[sessionId] ?? []), ...landed],
-    };
-    sandboxTasksRef.current = next;
-    setSandboxTasks(next);
+    void (async () => {
+      const landed: SandboxTask[] = [];
+      for (const command of calls) {
+        const started = performance.now();
+        const result = await runner(command);
+        const durationMs = performance.now() - started;
+        /* the engine went away mid-pass — nothing fakes the rest of the
+         * round's calls. */
+        if (result === null) continue;
+        sandboxTaskSeq += 1;
+        landed.push({
+          id: `sb-${sandboxTaskSeq}`,
+          turnId: reply.id,
+          command,
+          output: result.output,
+          exitCode: result.exitCode,
+          durationMs,
+          changes: result.changes,
+        });
+      }
+      if (landed.length === 0) return;
+      const next: Record<string, SandboxTask[]> = {
+        ...sandboxTasksRef.current,
+        [sessionId]: [...(sandboxTasksRef.current[sessionId] ?? []), ...landed],
+      };
+      sandboxTasksRef.current = next;
+      setSandboxTasks(next);
+    })();
   }, []);
 
   /** runCompletion — the gateway round for a history that already ends with
