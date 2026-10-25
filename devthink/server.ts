@@ -915,6 +915,16 @@ import {
   runsandboxline,
   writesandboxfile,
 } from "./sandboxlane.js";
+import {
+  DEFAULTQUOTAMB,
+  StorageError,
+  deleteobject,
+  getobject,
+  keyvalid,
+  listobjects,
+  putobject,
+  usagefor,
+} from "./storagelane.js";
 
 /** route resources per version — the canonical 7 */
 const resources = ["keys", "models", "chat/completions", "completions", "messages", "responses", "embeddings"] as const;
@@ -1113,6 +1123,69 @@ async function createserver(): Promise<Hono> {
   app.get("/api/v1/sandbox/modalities", async (c) => {
     const rows = await hostmodalityreport();
     return c.json({ rows });
+  });
+
+  // the storage lane: the vault-shaped record surface the platform stores
+  // everything through. The quota composes from the plan the owner set (the
+  // 900 floor when no plan answers), the database file lives in the data
+  // home outside every served root, and this module is the only swap point
+  // when the vault service deploys with its own host.
+  const storagequotafor = async (visitor: string): Promise<number> => {
+    const row = await getplan(visitor);
+    if (!row || row.storagemb === null) return DEFAULTQUOTAMB;
+    return Number(row.storagemb);
+  };
+  app.get("/api/v1/storage/quota", async (c) => {
+    const visitor = c.req.query("visitor") ?? "";
+    if (!/^[a-z0-9][a-z0-9-]{5,63}$/i.test(visitor)) return c.json({ error: "invalid owner" }, 400);
+    return c.json({ quotamb: await storagequotafor(visitor) });
+  });
+  app.post("/api/v1/storage/objects", async (c) => {
+    const body = (await c.req.json().catch(() => null)) as {
+      owner?: unknown;
+      key?: unknown;
+      content?: unknown;
+    } | null;
+    const owner = typeof body?.owner === "string" ? body.owner : "";
+    const key = typeof body?.key === "string" ? body.key : "";
+    const content = typeof body?.content === "string" ? body.content : "";
+    if (!/^[a-z0-9][a-z0-9-]{5,63}$/i.test(owner)) return c.json({ error: "invalid owner" }, 400);
+    if (!keyvalid(key)) return c.json({ error: "invalid key" }, 400);
+    const quotamb = await storagequotafor(owner);
+    try {
+      const stored = putobject(owner, key, content, quotamb);
+      return c.json({ stored: { key: stored.key, bytes: stored.bytes, updatedAt: stored.updatedAt } });
+    } catch (error) {
+      if (error instanceof StorageError) {
+        const over = error.message.includes("quota");
+        return c.json({ error: error.message }, over ? 413 : 400);
+      }
+      return c.json({ error: "the storage write failed" }, 500);
+    }
+  });
+  app.get("/api/v1/storage/objects", async (c) => {
+    const owner = c.req.query("owner") ?? "";
+    const key = c.req.query("key") ?? "";
+    if (!/^[a-z0-9][a-z0-9-]{5,63}$/i.test(owner)) return c.json({ error: "invalid owner" }, 400);
+    if (!keyvalid(key)) return c.json({ error: "invalid key" }, 400);
+    if (key) {
+      const found = getobject(owner, key);
+      if (!found) return c.json({ error: "not found" }, 404);
+      return c.json({ object: found });
+    }
+    return c.json({ objects: listobjects(owner) });
+  });
+  app.delete("/api/v1/storage/objects", async (c) => {
+    const owner = c.req.query("owner") ?? "";
+    const key = c.req.query("key") ?? "";
+    if (!/^[a-z0-9][a-z0-9-]{5,63}$/i.test(owner)) return c.json({ error: "invalid owner" }, 400);
+    if (!keyvalid(key)) return c.json({ error: "invalid key" }, 400);
+    return c.json({ removed: deleteobject(owner, key) });
+  });
+  app.get("/api/v1/storage/usage", async (c) => {
+    const owner = c.req.query("owner") ?? "";
+    if (!/^[a-z0-9][a-z0-9-]{5,63}$/i.test(owner)) return c.json({ error: "invalid owner" }, 400);
+    return c.json({ usage: usagefor(owner, await storagequotafor(owner)) });
   });
 
   // register routes for every configured version

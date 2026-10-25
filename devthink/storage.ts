@@ -26,6 +26,8 @@ function databasedriver(): DatabaseConstructor {
   return cacheddriver;
 }
 
+export { databasedriver as sharedatabasedriver };
+
 export type StoredWorkspace = { id: string; title: string; createdAt: string; updatedAt: string };
 export type StoredTab = {
   id: string;
