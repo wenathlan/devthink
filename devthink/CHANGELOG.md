@@ -1,5 +1,9 @@
 # DevThink release notes
 
+## 2.0.138
+
+This release is the surface proof rung of the ladder: the release lane's portable static web build caught the one seam of the universal widget surface — the barrel of the os wrote every widget reference with the tsx extension while three widgets of the family answer as plain ts modules (the two settings stores of the os and the roster of cobaia), so the barrels now carry the real file names and the web graph resolves through the surface again (the local rolldown build proves the graph in under two seconds). The family mobile lanes heal the same rung: the four applications whose mysql2 override aligned at the previous rung re-freeze their pnpm locks against the aligned override, so the frozen install of the android lanes stops refusing the lock that still recorded the old spec. The rung stamps the whole metadata family at 2.0.138 with the freeze artifacts re-stamped and the standing gates green.
+
 ## 2.0.137
 
 This release is the mobile lane alignment rung of the ladder: the android icon steps of argan, forge, getry and foundry install with npm, and npm refuses a manifest override that lags its direct dependency — the four apps carried the ^3.23.1 mysql2 override in both package.json and the pnpm workspace while the dependency wave moved the direct mysql2 to ^3.24.6 — so both override sites align with the direct dependency, exactly the elevation saddle already carries, and the family mobile battery answers green again. The rung also carries the two waves that landed beside the closure: the purged reference corpus of the 2.0.134 era returned whole (228 files of architecture series, engineering history and media assets, only deleted paths restored), and the universal widget surface answered from one place (every application gained Sol/widgets/index.ts, the dotted widget name lives exactly once inside the surface, and seventy five page files import their components from the single module).

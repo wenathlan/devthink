@@ -5,7 +5,7 @@
  * lives exactly once (here) instead of repeating across every page —
  * the components stay complete independent files beside this surface.
  */
-export * from "./apps.roster.tsx";
+export * from "./apps.roster.ts";
 export { default as IntroFooter } from "./intro.footer.tsx";
 export * from "./intro.footer.tsx";
 export { default as IntroPlans } from "./intro.plans.tsx";
