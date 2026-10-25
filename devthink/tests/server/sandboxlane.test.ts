@@ -45,7 +45,9 @@ describe("sandboxlane", () => {
 
   it("refuses a target that escapes the jail and creates nothing outside", async () => {
     const sessionid = newsessionid();
-    const answer = await runsandboxline(sessionid, "write ..\\..\\escape.txt escaped payload");
+    // the forward-slash traversal resolves outside the jail on every platform
+    // (a backslash form is a legal file NAME on posix, so it stays inside)
+    const answer = await runsandboxline(sessionid, "write ../../escape.txt escaped payload");
     expect(joinedrows(answer)).toContain("path escapes the session jail");
     let outside = "";
     try {
