@@ -1,6 +1,6 @@
 import { getIdentity } from "./authfamily.js";
 import { listSessions, loadWorkspace, type Session, type Workspace } from "./workbenchsession.js";
-import { isSecureRemoteEndpoint } from "./compatibility.js";
+import { isSecureRemoteEndpoint } from "./gatewayfamily.js";
 import type { DevThinkConfig, DevThinkPaths } from "./config.ts";
 
 export type SyncSnapshot = {

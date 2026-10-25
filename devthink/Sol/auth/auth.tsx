@@ -44,7 +44,7 @@ import {
   storedaccountowner,
   verifyAccount,
 } from "../../authfamily.ts";
-import { afterAuthTarget, pairingReadiness, safegatewayurl } from "../../authgate.ts";
+import { afterAuthTarget, pairingReadiness, safegatewayurl } from "../../gatewayfamily.ts";
 import { copy, loadcopy } from "../../copy.ts";
 import { readBrowserPreferences } from "../../db";
 import { LockFace } from "../widgets";
@@ -53,7 +53,7 @@ import { SignInForm, type SignInEntryFields } from "../widgets";
 import { StatusLine } from "../widgets";
 
 export * from "../../authfamily.ts";
-export * from "../../authgate.ts";
+export * from "../../gatewayfamily.ts";
 export * from "../widgets";
 export * from "../widgets";
 export * from "../widgets";

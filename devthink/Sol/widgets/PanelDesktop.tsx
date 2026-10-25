@@ -32,7 +32,7 @@ import {
   useState } from "react";
 import { useLocation } from "wouter";
 import type { DesktopApp } from "../../appregistry.ts";
-import { familyurl } from "../../deploybase.ts";
+import { familyurl } from "../../gatewayfamily.ts";
 import {
   BAND_BOTTOM_PX,
   BAND_TOP_PX,

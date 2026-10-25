@@ -44,7 +44,7 @@ import {
 } from "../../oslabels.ts";
 import { ShellChrome } from "@/widgets/ShellShellchrome";
 import { config } from "../../gatewayviewconfig.ts";
-import type { gatewayconfig } from "../../gatewayviewdefinition.ts";
+import type { gatewayconfig } from "../../gatewayfamily.ts";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */

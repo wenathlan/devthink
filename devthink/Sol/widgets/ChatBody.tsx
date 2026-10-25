@@ -49,7 +49,7 @@ import {
 } from "../../chatstate.ts";
 import { estimateHistoryTokens, formatCompactTokenCount } from "../../tokenestimate.ts";
 import { loadBrowserSession } from "../../db.ts";
-import { GATEWAY_REQUIRED_COPY, GATEWAY_SEND_NOTICE, useGatewayRegistration } from "../../gatewaybase.ts";
+import { GATEWAY_REQUIRED_COPY, GATEWAY_SEND_NOTICE, useGatewayRegistration } from "../../gatewayfamily.ts";
 import { useIsMobile } from "../../useismobile.ts";
 import { arrayOf, isString, useStoredState } from "../../usestoredstate.ts";
 import { label } from "../../labels.ts";

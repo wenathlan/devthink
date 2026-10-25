@@ -42,9 +42,8 @@ import { dirname, join } from "node:path";
 import { type DevThinkPaths, ensurePaths, resolvePaths } from "./config.js";
 import { createCompactId } from "./ids.js";
 import { sharedatabasedriver } from "./storage.js";
-import { browserIdentity, readBrowserCredential, readBrowserPreferences, saveBrowserCredential, saveBrowserPreference } from "./db.ts";
-import { PREF_GATEWAYBASE, normalizeGatewayBase } from "./gatewaybase.ts";
-import { gatewayContext } from "./gateway.ts";
+import { browserIdentity, readBrowserCredential, saveBrowserCredential, saveBrowserPreference } from "./db.ts";
+import { lanefetch } from "./gatewayfamily.ts";
 
 /* ============================================================================
  * @section 1 — accountgate: the local browser account of the os.
@@ -1413,10 +1412,11 @@ export async function exchangeoauthcode(
  * section is the one seam between the entry surfaces and the real account
  * routes of server.ts — the account creation, the sign in, the oauth
  * exchange the callback page completes, the session summary and the
- * revoke. Every call resolves the server base through the same gateway
- * machinery the sandbox client rides: the paired gateway context first
- * (the guarded ?gateway= base with its ephemeral bearer), then the chat's
- * registered gateway preference. The verdict union keeps the three honest
+ * revoke. Every call resolves the server base through the ONE lane-client
+ * seam of the gateway family (gatewayfamily.ts §5 — D8's single survivor,
+ * the same seam the sandbox and storage-usage clients ride): the paired
+ * gateway context first (the guarded ?gateway= base with its ephemeral
+ * bearer), then the chat's registered gateway preference. The verdict union keeps the three honest
  * outcomes apart — the lane answered and signed in, the lane answered and
  * refused, the lane never answered (offline) — so the faces declare the
  * fallback instead of pretending. The section keeps no state of its own
@@ -1457,53 +1457,24 @@ export const ACCOUNT_TOKEN_KEY = "devthink.account.token";
 /** The sessionStorage slot of the account owner handle. */
 export const ACCOUNT_OWNER_KEY = "devthink.account.owner";
 
-/** TIMEOUTMS — the call bound: a lane that has not answered within ten
- * seconds answers offline (the caller falls back, the face never hangs). */
-const TIMEOUTMS = 10_000;
-
 /**
- * @subsection lane — the base resolution and the one bounded fetch every
- * surface rides.
+ * @subsection lane — the bounded fetch every surface rides.
  */
 
-/** accountlane — resolve one lane call site: the paired gateway context
- * first, else the chat's registered gateway preference. Neither present
- * answers an empty base and the call falls back without touching the wire. */
-async function accountlane(): Promise<{ base: string; token?: string }> {
-  const context = gatewayContext();
-  if (context.url) return { base: context.url, token: context.token };
-  let registered = "";
-  try {
-    const prefs = await readBrowserPreferences();
-    registered = normalizeGatewayBase(prefs[PREF_GATEWAYBASE] ?? "");
-  } catch {
-    registered = "";
-  }
-  return { base: registered };
-}
-
 /** accountfetch — one bounded json call against the resolved lane base:
- * the bearer rides when the pairing context carries one, the abort
- * controller bounds the wait at TIMEOUTMS, and every failure mode — no
- * base, network error, timeout, unreadable body — answers null so the
- * caller declares the offline verdict honestly. */
+ * the ONE lane-client seam of the gateway family (gatewayfamily.ts §5
+ * `lanefetch` — D8's single survivor) answers the raw response with the
+ * base resolution (pairing context first, registered preference second),
+ * the bearer, the ten-second bound and the null-on-transport-failure law.
+ * This wrapper adds the account lane's own two twists: the family cookie
+ * rides every call (credentials: include — the restore subsection depends
+ * on it) and the answer keeps the status beside the payload so the verdict
+ * union tells a refusal from an offline lane. */
 async function accountfetch(path: string, init?: RequestInit): Promise<{ status: number; payload: unknown } | null> {
-  const lane = await accountlane();
-  if (!lane.base) return null;
-  const headers = new Headers(init?.headers);
-  if (lane.token) headers.set("authorization", ["Bearer ", lane.token].join(""));
-  if (init?.body && !headers.has("content-type")) headers.set("content-type", "application/json");
-  const ctrl = new AbortController();
-  const timer = window.setTimeout(() => ctrl.abort(), TIMEOUTMS);
-  try {
-    const response = await fetch([lane.base, path].join(""), { ...init, headers, signal: ctrl.signal, credentials: "include" });
-    const payload: unknown = await response.json().catch(() => null);
-    return { status: response.status, payload };
-  } catch {
-    return null;
-  } finally {
-    window.clearTimeout(timer);
-  }
+  const response = await lanefetch(path, { ...init, credentials: "include" });
+  if (!response) return null;
+  const payload: unknown = await response.json().catch(() => null);
+  return { status: response.status, payload };
 }
 
 /** errorof — the honest refusal message of a lane error body. */

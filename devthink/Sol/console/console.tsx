@@ -23,7 +23,7 @@ import { osText } from "../../oslabels.ts";
 import { completions, responseof } from "../../commandcatalog.ts";
 import { bootdelay, bootlines, consoleprompt, consoleversion } from "../../consoleboot.ts";
 import { BOOT_STAGE_GAP, bootgraph, bootrunnerhandler } from "../../consolebootgraph.ts";
-import { gatewayReady } from "../../gateway.js";
+import { gatewayReady } from "../../gatewayfamily.js";
 import { createrunner, type runstageview } from "../../graphrunner.js";
 import { makeviewstate } from "../../graphviewstate.js";
 import { ConsoleReference } from "../widgets";

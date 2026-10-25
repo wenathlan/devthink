@@ -1000,6 +1000,9 @@ jobs:
           npm whoami
           publish_one() {
             tarball="$1"
+            # the ./ prefix keeps npm reading the path as a file: a bare
+            # folder/tarball form parses as a git shorthand and the publish
+            # dials ssh instead of the registry
             package="@wenathlan/$(basename "$tarball" | sed -E 's/^wenathlan-(.+)-[0-9]+\.[0-9]+\.[0-9]+\.tgz$/\1/')@${RELEASE_VERSION}"
             if npm view "$package" version --registry=https://registry.npmjs.org >/dev/null 2>&1; then
               echo "$package already exists; skipping publish."
@@ -1007,7 +1010,7 @@ jobs:
             fi
             published=false
             for attempt in 1 2 3; do
-              publish_output="$(npm publish "$tarball" --registry=https://registry.npmjs.org --access public --provenance 2>&1)" && { published=true; break; }
+              publish_output="$(npm publish "./${tarball}" --registry=https://registry.npmjs.org --access public --provenance 2>&1)" && { published=true; break; }
               if printf '%s' "$publish_output" | grep -qiE "cannot publish over previously (published|staged)"; then
                 echo "$package landed through the sibling lane; the latecomer answers already published."
                 published=true; break
@@ -1055,6 +1058,14 @@ jobs:
           set -euo pipefail
           for app in argan cadria cobaia debonair devthink forge foundry getry saddle stealthhead vault; do
             test -f "./${app}/Dockerfile" || { echo "${app}: no Dockerfile, skipping."; continue; }
+            # a sibling file: pin (forge and foundry ride the vault tree
+            # beside them) cannot resolve inside an application-scoped build
+            # context — those images answer a dedicated family-context lane,
+            # never a silent failure here
+            if grep -q 'file:\.\./' "./${app}/package.json"; then
+              echo "${app}: the manifest pins a sibling tree; the container waits for the family-context lane."
+              continue
+            fi
             image="ghcr.io/${OWNER,,}/${app}"
             echo "building ${image}:${RELEASE_VERSION}"
             docker build -t "${image}:${RELEASE_VERSION}" "./${app}"

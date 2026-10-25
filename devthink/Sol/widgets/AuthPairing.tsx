@@ -8,7 +8,7 @@
  * kit of sol.css.
  */
 import { ArrowRightRegular } from "@fluentui/react-icons";
-import type { PairingReadiness } from "../../authgate.ts";
+import type { PairingReadiness } from "../../gatewayfamily.ts";
 
 export interface PairingFormProps {
   /** the gateway endpoint of the visitor's local cli. */

@@ -5,7 +5,7 @@
  * window body and carries the app title for the accessibility tree. Loose
  * component of the window registry.
  */
-import { familyurl } from "../../deploybase.ts";
+import { familyurl } from "../../gatewayfamily.ts";
 
 /** FamilyFrame — one family app inside the window. */
 export function FamilyFrame({ slug, title }: { slug: string; title: string }) {
