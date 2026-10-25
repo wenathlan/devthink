@@ -31,7 +31,7 @@ import {
 import { useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { chatBuckets, chatNav } from "../../chatlabels.ts";
-import { type ChatSession, checkpointCount, cx } from "../../chatstate.ts";
+import { checkpointCount, type ChatSession, cx } from "../../chatstate.ts";
 import { arrayOf, isString, useStoredState } from "../../usestoredstate.ts";
 import { SolBotIcon, type SolBotState } from "./ChatSolboticon.tsx";
 

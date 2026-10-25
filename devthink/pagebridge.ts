@@ -1,40 +1,23 @@
-import { checksum } from "./data.js";
-import {
-  builda11ytree,
-  buildpagetree,
-  buildreader,
-  clean,
-  collectsiblings,
-  collecttables,
-  detectlistpatterns,
-  flushconsole,
-  harvestdialoglog,
-  elementlabel as label,
-  normalizetable,
-  type observeddialog,
-  resolvestep,
-  revertemulationlayer,
-  runcdpstep,
-  rundebugwatch,
-  runemulationstep,
-  runinteractstep,
-  runpageaction,
-  runpagecontrol,
-  runpagedata,
-  runpagedetection,
-  runpageform,
-  runpagenav,
-  runpageobservation,
-  runpageread,
-  runpagewatch,
-  runpagewizard,
-  runpointerstep,
-  runprofilestep,
-  elementselector as selector,
-  type stepresult,
-} from "./page.js";
-import { maskformstate, maskobservation, masktypedvalues } from "./security.js";
 import type { observation, regionrect, resolvedtarget, toolstep } from "./types.js";
+import { maskformstate, maskobservation, masktypedvalues } from "./security.js";
+import { runpageaction, type stepresult } from "./page.js";
+import { runpageread } from "./page.js";
+import { runpagecontrol } from "./page.js";
+import { runinteractstep } from "./page.js";
+import { runpointerstep } from "./page.js";
+import { runpagenav } from "./page.js";
+import { harvestdialoglog, type observeddialog } from "./page.js";
+import { builda11ytree, buildpagetree, buildreader, runpageobservation } from "./page.js";
+import { collecttables, detectlistpatterns, collectsiblings, normalizetable, runpagedetection } from "./page.js";
+import { runpagewatch } from "./page.js";
+import { runcdpstep, rundebugwatch, flushconsole } from "./page.js";
+import { runprofilestep } from "./page.js";
+import { runemulationstep, revertemulationlayer } from "./page.js";
+import { runpageform } from "./page.js";
+import { runpagewizard } from "./page.js";
+import { runpagedata } from "./page.js";
+import { checksum } from "./data.js";
+import { clean, elementlabel as label, elementselector as selector, resolvestep } from "./page.js";
 
 /**
  * Page bridge for reviewed steps.

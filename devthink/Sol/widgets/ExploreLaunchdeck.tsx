@@ -24,13 +24,13 @@
  * loop-eradication pass, so the tiles rest static while the devthink sigil
  * still draws itself (the one stroke-dashoffset story).
  */
-import { ArrowUpRightRegular as ArrowUpRight } from "@fluentui/react-icons";
+import {ArrowUpRightRegular as ArrowUpRight} from "@fluentui/react-icons";
 import { type CSSProperties, type FormEvent, type ReactNode, useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { DESKTOP_APPS, type DesktopApp, isFamilyApp } from "../../appregistry.ts";
 import { osText } from "../../oslabels.ts";
-import { HeroWaves } from "./ExploreWaves.tsx";
 import { AppTile } from "./ShellApptile.tsx";
+import { HeroWaves } from "./ExploreWaves.tsx";
 
 /** the trylle primary tone stack of every enter action (the exact rest
  * stack of the quality ruler: inset gloss, inset glow, inset ring, outer
@@ -60,8 +60,7 @@ const FAMILY_TINT: Record<string, string> = {
   foundry: "#d97706",
   vault: "#eab308",
   getry: "#8b5cf6",
-  saddle: "#d6b483",
-};
+  saddle: "#d6b483" };
 
 /** the neutral tint a family mark falls back to when the registry grows a
  * row the identity map does not know yet (never a blank tile) */
@@ -206,8 +205,7 @@ const MARKS: Record<string, (tint: string) => ReactNode> = {
       <path d="M16 6.2 23.4 10.4v8.9L16 23.5l-7.4-4.2v-8.9z" stroke={tint} strokeWidth="1.4" strokeLinejoin="round" />
       <path d="M8.6 10.4 16 14.6l7.4-4.2M16 14.6v8.9" stroke={tint} strokeWidth="1.2" opacity=".55" />
     </g>
-  ),
-};
+  ) };
 
 type FamilyMarkProps = {
   /** the registry id of the family app (the mark key) */
@@ -309,8 +307,7 @@ function DeckMark({ app, phase }: { app: DesktopApp; phase: number }) {
 export function DeckCell({
   app,
   featured = false,
-  phase = 0,
-}: {
+  phase = 0 }: {
   app: DesktopApp;
   featured?: boolean;
   phase?: number;
@@ -398,8 +395,7 @@ function FamilyTile({ app, index, raised }: { app: DesktopApp; index: number; ra
       }`}
       style={{
         boxShadow: raised ? TRYLLE_CARD_SHADOW_RAISED : TRYLLE_CARD_SHADOW,
-        backgroundImage: `radial-gradient(150px 110px at 22% 14%, ${tint}24, transparent 70%)`,
-      }}
+        backgroundImage: `radial-gradient(150px 110px at 22% 14%, ${tint}24, transparent 70%)` }}
       href={appRoute(app)}
       aria-label={`${app.name} — ${app.detail}`}
     >

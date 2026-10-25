@@ -10,8 +10,9 @@
 import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import type { SandboxAnswer } from "../../sandboxlane.js";
+
 import { createsandboxsession, hostmodalityreport, runsandboxline } from "../../sandboxlane.js";
+import type { SandboxAnswer } from "../../sandboxlane.js";
 
 let counter = 0;
 

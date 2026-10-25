@@ -44,23 +44,23 @@ import {
   CheckmarkRegular as Checkmark,
   ChevronDownRegular as ChevronDown,
   CubeRegular as Cube,
-  LightbulbRegular as Lightbulb,
   type FluentIcon as LucideIcon,
+  LightbulbRegular as Lightbulb,
   StopFilled as Stop,
 } from "@fluentui/react-icons";
 import { type CSSProperties, type KeyboardEvent, type RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { chatLimit, chatText } from "../../chatlabels.ts";
 import {
   CHAT_THINKING_LEVELS,
-  CHAT_TOOLS,
   type ChatThinking,
-  GATEWAY_MODEL,
+  CHAT_TOOLS,
   type GatewayModel,
+  GATEWAY_MODEL,
   type ToolId,
 } from "../../chatstate.ts";
-import { label } from "../../labels.ts";
 import { estimateTokens, formatCompactTokenCount } from "../../tokenestimate.ts";
 import { useStoredFlag } from "../../usestoredstate.ts";
+import { label } from "../../labels.ts";
 
 const TOOL_ICONS: Record<ToolId, LucideIcon> = {
   thinking: Lightbulb,
@@ -648,10 +648,7 @@ export function Composer({
                   className="dtc-wctrl__btn"
                   aria-haspopup="listbox"
                   aria-expanded={thinkOpen}
-                  aria-label={label("chat.composer.effortAria").replace(
-                    "{level}",
-                    autoEffort ? label("chat.composer.auto") : activeThinking,
-                  )}
+                  aria-label={label("chat.composer.effortAria").replace("{level}", autoEffort ? label("chat.composer.auto") : activeThinking)}
                   onClick={openThink}
                   title={
                     autoEffort
@@ -660,11 +657,7 @@ export function Composer({
                   }
                 >
                   <BrainCircuit fontSize={15} aria-hidden="true" />
-                  {compact ? null : (
-                    <span className="dtc-wctrl__label">
-                      {autoEffort ? label("chat.composer.auto") : activeThinking}
-                    </span>
-                  )}
+                  {compact ? null : <span className="dtc-wctrl__label">{autoEffort ? label("chat.composer.auto") : activeThinking}</span>}
                   <ChevronDown fontSize={11} aria-hidden="true" className="dtc-wctrl__chev" />
                 </button>
                 {thinkOpen ? (
@@ -754,7 +747,10 @@ export function Composer({
             ) : null}
 
             {typeof tokenEstimate === "number" && !compact ? (
-              <span className="dtc-meter" title={label("chat.composer.meterHint")}>
+              <span
+                className="dtc-meter"
+                title={label("chat.composer.meterHint")}
+              >
                 {meterText}
               </span>
             ) : null}

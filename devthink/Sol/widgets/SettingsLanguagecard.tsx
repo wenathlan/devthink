@@ -11,8 +11,8 @@
 import { LocalLanguageRegular } from "@fluentui/react-icons";
 import { useState } from "react";
 import { copy } from "../../copy";
-import { setlanguage } from "../../translatedom.ts";
 import { currentlang } from "../../translategtx.ts";
+import { setlanguage } from "../../translatedom.ts";
 
 /** the GTX language ladder, native names per the windows grammar. */
 const LANGUAGES: readonly { code: string; native: string }[] = [

@@ -31,8 +31,8 @@ import {
 import type { SandboxSpec, SandboxState } from "@wenathlan/saddle/sandbox";
 import { bootSequence, commands, cpudata, createSandboxState, dispatch, gpudata } from "@wenathlan/saddle/sandbox";
 import { type FormEvent, type KeyboardEvent, useEffect, useId, useRef, useState } from "react";
-import { osAppLabels } from "../../catalog.ts";
 import { chatLimit, chatText } from "../../chatlabels.ts";
+import { osAppLabels } from "../../catalog.ts";
 
 /** one rendered log row; cls mirrors the boot, ok, err and cmdline row
  * classes the console terminal carries. */

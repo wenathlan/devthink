@@ -16,8 +16,7 @@ export type SettingsSnapshot = {
     local: boolean;
     persistence: string;
     workspaces: number;
-    sessions: number;
-  };
+    sessions: number };
 };
 
 /** the workbench preference keys the preference machine persists (the same
@@ -26,4 +25,10 @@ export type PreferenceKey = keyof SettingsSnapshot["preferences"];
 
 /** the settings categories of the Windows 11 rail — one content pane at a
  * time, routed by internal state. */
-export type SettingsCategoryId = "personalization" | "accounts" | "gateway" | "drives" | "automation" | "about";
+export type SettingsCategoryId =
+  | "personalization"
+  | "accounts"
+  | "gateway"
+  | "drives"
+  | "automation"
+  | "about";

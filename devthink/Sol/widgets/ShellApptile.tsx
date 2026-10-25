@@ -40,10 +40,10 @@
  * parents win where they compose a [&_.dt-tile] override.
  */
 import { type ComponentType, type CSSProperties, useEffect, useState } from "react";
-import type { DesktopApp } from "../../appregistry.ts";
 import { appIconSets } from "../../catalog.ts";
 import { SolLogoMark } from "./PanelLogo.tsx";
 import { APP_ICONS, type AppIconProps } from "./ShellAppicons.tsx";
+import type { DesktopApp } from "../../appregistry.ts";
 
 type AppTileProps = {
   app: DesktopApp;
@@ -117,8 +117,7 @@ export function AppTile({ app, size = 22, label }: AppTileProps) {
       if (hoverCapable()) setLive(true);
     },
     onPointerLeave: () => setLive(false),
-    onPointerCancel: () => setLive(false),
-  };
+    onPointerCancel: () => setLive(false) };
   const liveFlag = live ? "true" : undefined;
   /* the tile material, composed on the token system (task 3-a): the fluent
      squircle tinted by the app identity color — a subtle per-app gradient

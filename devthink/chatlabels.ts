@@ -20,7 +20,8 @@ export const seedChatSuggestions: ChatSuggestion[] = [
   {
     id: "engineering",
     label: "Trace a failure",
-    prompt: "pressure-test a provider-neutral gateway: where does the architecture break first, and what hardens it?",
+    prompt:
+      "pressure-test a provider-neutral gateway: where does the architecture break first, and what hardens it?",
   },
   {
     id: "reasoning",

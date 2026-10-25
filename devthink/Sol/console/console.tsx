@@ -15,25 +15,21 @@
  * body rides the dtw kit.
  */
 
-import { RocketRegular } from "@fluentui/react-icons";
+import {RocketRegular} from "@fluentui/react-icons";
 import { useEffect, useRef, useState } from "react";
 import { ShellChrome } from "@/widgets/ShellShellchrome";
 import { osAppLabels } from "../../catalog";
+import { osText } from "../../oslabels.ts";
 import { completions, responseof } from "../../commandcatalog.ts";
 import { bootdelay, bootlines, consoleprompt, consoleversion } from "../../consoleboot.ts";
 import { BOOT_STAGE_GAP, bootgraph, bootrunnerhandler } from "../../consolebootgraph.ts";
 import { gatewayReady } from "../../gateway.js";
 import { createrunner, type runstageview } from "../../graphrunner.js";
 import { makeviewstate } from "../../graphviewstate.js";
-import { osText } from "../../oslabels.ts";
-import {
-  ConsoleReference,
-  GraphView,
-  Terminal,
-  type TerminalRow,
-  type TerminalState,
-  Terminal as type,
-} from "../widgets";
+import { ConsoleReference } from "../widgets";
+import { GraphView } from "../widgets";
+import { Terminal as type, TerminalRow, TerminalState } from "../widgets";
+import { Terminal as Terminal } from "../widgets";
 
 export * from "../widgets";
 
@@ -111,8 +107,7 @@ export default function Console({ embedded }: { embedded?: boolean }) {
       stagegap: BOOT_STAGE_GAP,
       onview: (view) => {
         if (!cancelled) setRunview(view);
-      },
-    });
+      } });
     ride.run().catch(() => {
       /* the boot ride stays decorative: the terminal carries the session state */
     });

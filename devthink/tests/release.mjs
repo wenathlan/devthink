@@ -461,7 +461,7 @@ const edits = [
           `# devthink ${version} — THE ONE CONTAINER FILE`,
         )
         .replace(
-          /DEVTHINK_VERSION {3}baked into the OCI version label, default [0-9][0-9A-Za-z.-]*/,
+          /DEVTHINK_VERSION   baked into the OCI version label, default [0-9][0-9A-Za-z.-]*/,
           `DEVTHINK_VERSION   baked into the OCI version label, default ${version}`,
         )
         .replace(/ghcr\.io\/wenathlan\/devthink:[0-9][0-9A-Za-z.-]*/g, `ghcr.io/wenathlan/devthink:${version}`)

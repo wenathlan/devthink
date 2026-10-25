@@ -18,15 +18,7 @@
  * handled by the chrome.
  */
 
-import {
-  WindowAppsRegular as AppWindow,
-  NavigationRegular as Compass,
-  GlobeRegular as Globe,
-  type FluentIcon as LucideIcon,
-  PinRegular as Pin,
-  PinOffRegular as PinOff,
-  PlayRegular as Play,
-} from "@fluentui/react-icons";
+import {WindowAppsRegular as AppWindow, NavigationRegular as Compass, GlobeRegular as Globe, type FluentIcon as LucideIcon, PinRegular as Pin, PinOffRegular as PinOff, PlayRegular as Play} from "@fluentui/react-icons";
 import { type KeyboardEvent as ReactKeyboardEvent, useLayoutEffect, useRef, useState } from "react";
 import type { DesktopApp } from "../../appregistry.ts";
 import { familyurl } from "../../deploybase.ts";
@@ -89,8 +81,7 @@ function jumpEntries(app: DesktopApp): JumpEntry[] {
           id: "surface",
           label: osText("jump.openApp").replace("{app}", app.name),
           icon: Compass,
-          action: "open",
-        },
+          action: "open" },
       ];
     case "external":
       return [
@@ -98,14 +89,12 @@ function jumpEntries(app: DesktopApp): JumpEntry[] {
           id: "surface",
           label: osText("jump.openApp").replace("{app}", app.name),
           icon: Compass,
-          action: "open",
-        },
+          action: "open" },
         {
           id: "site",
           label: osText("jump.openAppSite").replace("{app}", app.name),
           icon: Globe,
-          action: "site",
-        },
+          action: "site" },
       ];
   }
 }
@@ -198,8 +187,7 @@ export function JumpList({ app, open, x, y, pinned, onOpen, onTogglePin, onClose
       style={{
         position: "fixed",
         left: pos.x,
-        top: pos.y,
-      }}
+        top: pos.y }}
     >
       <button type="button" role="menuitem" className={ITEM_CLASS} onClick={onOpen}>
         <span className={ICON_CLASS} aria-hidden="true">

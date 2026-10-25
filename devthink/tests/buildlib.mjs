@@ -21,8 +21,8 @@
  * the package is esm only — node engine floor, no cjs output.
  */
 
-import { execSync } from "node:child_process";
 import { existsSync } from "node:fs";
+import { execSync } from "node:child_process";
 
 const root = process.cwd();
 

@@ -33,57 +33,57 @@
  * navigation. English text only — the gtx translation runs at runtime.
  */
 import {
-  WindowAppsRegular as AppGlyph,
-  ImageRegular as AssetGlyph,
-  CubeRegular as BinaryGlyph,
-  CheckmarkRegular as CheckGlyph,
-  ChevronDownRegular as ChevronDown,
   ArrowLeftRegular as ChevronLeft,
   ArrowRightRegular as ChevronRight,
   ArrowUpRegular as ChevronUp,
-  ClipboardRegular as CopyGlyph,
-  CutRegular as CutGlyph,
-  DeleteRegular as DeleteGlyph,
-  type FluentIcon,
-  GridRegular as GridGlyph,
-  AppsListRegular as ListGlyph,
-  BookOpenRegular as ModuleGlyph,
-  MoreHorizontalRegular as MoreGlyph,
-  AddRegular as NewGlyph,
-  ClipboardPasteRegular as PasteGlyph,
   ArrowClockwiseRegular as Refresh,
   SearchRegular as Search,
-  ShareRegular as ShareGlyph,
+  ChevronDownRegular as ChevronDown,
+  AddRegular as NewGlyph,
   ArrowSortRegular as SortGlyph,
+  GridRegular as GridGlyph,
+  AppsListRegular as ListGlyph,
+  CutRegular as CutGlyph,
+  ClipboardRegular as CopyGlyph,
+  ClipboardPasteRegular as PasteGlyph,
+  ShareRegular as ShareGlyph,
+  DeleteRegular as DeleteGlyph,
+  MoreHorizontalRegular as MoreGlyph,
+  CheckmarkRegular as CheckGlyph,
+  WindowAppsRegular as AppGlyph,
+  BookOpenRegular as ModuleGlyph,
+  CubeRegular as BinaryGlyph,
+  ImageRegular as AssetGlyph,
   MusicNote2Regular as TrackGlyph,
+  type FluentIcon,
 } from "@fluentui/react-icons";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { toast } from "sonner";
 import { useLocation } from "wouter";
-import { AppTile } from "@/widgets";
-import { ShellChrome } from "@/widgets/ShellShellchrome";
+import { toast } from "sonner";
 import { DESKTOP_APPS, type DesktopApp } from "../../appregistry.ts";
 import { coreModuleTable, osAppLabels, runnerBinaries, studioAssets, studioTracks } from "../../catalog.ts";
-import { browserStoreSummary } from "../../db";
+import { osText } from "../../oslabels.ts";
 import {
+  breadcrumbs as crumbtrail,
   capacityline,
   capacityshare,
-  breadcrumbs as crumbtrail,
   EXPLORER_PLATFORMS,
+  FOLDER_DETAILS,
+  FOLDER_NAMES,
   type ExplorerItemKind,
   type ExplorerLocation,
   type ExplorerSort,
   type ExplorerViewMode,
-  FOLDER_DETAILS,
-  FOLDER_NAMES,
   hasparent,
   itemmatches,
   parentlocation,
   SHELL_FOLDER_ORDER,
   sortitems,
 } from "../../fileexplorer.ts";
+import { browserStoreSummary } from "../../db";
 import { drives, type HardDrive } from "../../harddrives.ts";
-import { osText } from "../../oslabels.ts";
+import { ShellChrome } from "@/widgets/ShellShellchrome";
+import { AppTile } from "@/widgets";
 import { DriveIcon, PlatformMark, ShellFolderIcon, ThisPcMark } from "../widgets";
 
 /** the window title answers the catalog label row (bare-id fallback). */
@@ -501,13 +501,7 @@ export default function Files({ embedded }: { embedded?: boolean }) {
         {/* ------------------------------ the toolbar ----------------------------- */}
         <div className="dtfx-toolbar" role="toolbar" aria-label={osText("explorer.tools.aria")}>
           <div className="dtfx-toolbar__nav">
-            <button
-              type="button"
-              className="dtfx-navbtn"
-              disabled={cursor === 0}
-              onClick={goBack}
-              aria-label={osText("explorer.nav.back")}
-            >
+            <button type="button" className="dtfx-navbtn" disabled={cursor === 0} onClick={goBack} aria-label={osText("explorer.nav.back")}>
               <ChevronLeft fontSize={16} aria-hidden="true" />
             </button>
             <button
@@ -519,13 +513,7 @@ export default function Files({ embedded }: { embedded?: boolean }) {
             >
               <ChevronRight fontSize={16} aria-hidden="true" />
             </button>
-            <button
-              type="button"
-              className="dtfx-navbtn"
-              disabled={!uparmed}
-              onClick={goUp}
-              aria-label={osText("explorer.nav.up")}
-            >
+            <button type="button" className="dtfx-navbtn" disabled={!uparmed} onClick={goUp} aria-label={osText("explorer.nav.up")}>
               <ChevronUp fontSize={16} aria-hidden="true" />
             </button>
             <button
@@ -921,7 +909,9 @@ function ThisPcView({
                       aria-valuemin={mounted ? 0 : undefined}
                       aria-valuemax={mounted ? 100 : undefined}
                       aria-valuenow={mounted ? Math.round(share) : undefined}
-                      aria-label={mounted ? osText("explorer.usage.aria") : undefined}
+                      aria-label={
+                        mounted ? osText("explorer.usage.aria") : undefined
+                      }
                     >
                       <span className="dtfx-drive__fill" style={{ width: mounted ? `${share}%` : "0%" }} />
                     </span>

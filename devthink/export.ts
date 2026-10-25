@@ -1,7 +1,5 @@
 /** The export module of the 1.1.90 consolidation: every correlated variation of the data egress, the minimization and the portability logic interned in this one file, so the module family carries one surface without duplicate variations. */
 
-import { exportchaingate, exportmaskgate, importexportgate } from "./policy.js";
-import { defaultmaskshapes, maskexport, maskmarker, verifylogchain } from "./security.js";
 /* ── Merged from exporttools.ts: the 1.1.90 consolidation interns the correlated exporttools logic here, so no variation of the same file lives beside another. ── */
 import type {
   cookiejarrecord,
@@ -18,10 +16,13 @@ import type {
   scanverdict,
   sitenote,
   storedrunlog,
-  syncrecord,
   syncsettings,
+  syncrecord,
   telemetrypolicy,
 } from "./types.js";
+import { defaultmaskshapes, maskexport, maskmarker } from "./security.js";
+import { exportchaingate, exportmaskgate, importexportgate } from "./policy.js";
+import { verifylogchain } from "./security.js";
 
 /**
  * Exporttools logic of the 1.1.67 family.

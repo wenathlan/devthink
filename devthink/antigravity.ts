@@ -27,12 +27,27 @@
  *    builtins + global fetch only.
  */
 
-import { createHash, randomBytes, randomInt } from "node:crypto";
-import { chmodSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync, chmodSync } from "node:fs";
 import * as fsp from "node:fs/promises";
-import { homedir, arch as osArch, platform as osPlatform, release as osRelease } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { join, resolve, dirname } from "node:path";
+import { homedir, platform as osPlatform, arch as osArch, release as osRelease } from "node:os";
+import { randomInt, createHash, randomBytes } from "node:crypto";
+// merged siblings (base names only)
+import {
+  getGlobalSignatureCache,
+  getGlobalPreservationStore,
+  isValidThinkingSignature,
+  stripInvalidSignatures,
+} from "./recovery.js";
+import * as oauthMod from "./oauth.js";
 import * as accountsMod from "./accounts.js";
+import {
+  resolveOAuthIdentity,
+  identityFromAccountType,
+  getAntigravityCliHeaders,
+  ANTIGRAVITY_CLI_OAUTH_SCOPES,
+} from "./oauth.js";
+import { getVersion } from "./versionregistry.js";
 // v2.1.14 dedupe: stateless constants imported from their single owners
 // (constants.ts / models.ts) instead of local copies. Runtime functions and
 // stateful caches stay local to this Layer-1 entry by design.
@@ -50,21 +65,6 @@ import {
   GEMINI_CLI_USER_AGENT_PLAIN,
   PLUGIN_VERSION,
 } from "./constants.js";
-import * as oauthMod from "./oauth.js";
-import {
-  ANTIGRAVITY_CLI_OAUTH_SCOPES,
-  getAntigravityCliHeaders,
-  identityFromAccountType,
-  resolveOAuthIdentity,
-} from "./oauth.js";
-// merged siblings (base names only)
-import {
-  getGlobalPreservationStore,
-  getGlobalSignatureCache,
-  isValidThinkingSignature,
-  stripInvalidSignatures,
-} from "./recovery.js";
-import { getVersion } from "./versionregistry.js";
 // v2.1.16 cleanup: FORBIDDEN_HEADERS / FETCH_TIMEOUT_MS / GEMINI_CLI_SCOPES
 // were imported but never used in the file body — they stay reachable through
 // the re-export block below, so the dead import bindings are gone.
@@ -91,38 +91,34 @@ export type PluginOptions = {
 // v2.1.15 Phase C: the Account interface moved to accounts.js (account store
 // owner) — imported type-only (erased at runtime).
 
-import type { Account } from "./accounts.js";
 // v2.1.15 Phase B: generic utilities (fnv hash family, jitter) come from
 // core.js — THE owner; identity masquerade (dynamic UA, antigravity headers)
 // comes from fingerprint.js — THE owner.
 import { fnv1a32, fnv1a32Hex, getJitter } from "./core.js";
-import { buildAntagravityHeaders, getDynamicUserAgent, X_GOOG_API_CLIENT_GEMINI_CLI } from "./fingerprint.js";
-import type { ThinkingLevel } from "./models.js";
+import { buildAntagravityHeaders, getDynamicUserAgent } from "./fingerprint.js";
+import { X_GOOG_API_CLIENT_GEMINI_CLI } from "./fingerprint.js";
 import {
   ALL_MODELS_2026,
   ANTIGRAVITY_VERSION_MIN,
-  buildImageGenConfig,
   CODE_ASSIST_ENDPOINTS,
   CONTEXT_WINDOW_CLAUDE,
   CONTEXT_WINDOW_GEMINI,
   CONTEXT_WINDOW_GPT_OSS,
   ENDPOINT_ORDER_GEMINI_CLI,
-  getEndpointsForModel,
-  isGeminiCLIOnlyModel,
-  isImageGenModel,
   MODELS_2026_PROVIDER,
-  mapModelToGroup,
   OUTPUT_LIMIT_CLAUDE,
   OUTPUT_LIMIT_GEMINI,
   OUTPUT_LIMIT_GPT_OSS,
-  shouldSkipSandbox,
   THINKING_BUDGET_MAP,
   THINKING_LEVELS,
+  buildImageGenConfig,
+  getEndpointsForModel,
+  isGeminiCLIOnlyModel,
+  isImageGenModel,
+  mapModelToGroup,
 } from "./models.js";
+import type { ThinkingLevel } from "./models.js";
 import { resolveProjectId } from "./project.js";
-import { QUOTA_METHOD } from "./quota.js";
-import { detectFetchErrorType, fetchSessionRecovery, preserveValidatedSignature } from "./recovery.js";
-import type { BuildOptions, BuildResult } from "./request.js";
 // v2.1.15 Phase D: the live request pipeline (transformRequest, the Cloud Code
 // builders, fetchWithCascade and the method paths) lives ONLY in request.ts;
 // the fetch-cascade recovery helpers live ONLY in recovery.ts.
@@ -130,15 +126,19 @@ import {
   buildAntigravityRequest,
   buildGeminiCLIRequest,
   fetchWithCascade,
+  transformRequest,
+  STREAM_METHOD,
   GENERATE_METHOD,
   LOAD_METHOD,
   ONBOARD_METHOD,
-  STREAM_METHOD,
-  transformRequest,
 } from "./request.js";
+import type { BuildOptions, BuildResult } from "./request.js";
+import { detectFetchErrorType, fetchSessionRecovery, preserveValidatedSignature } from "./recovery.js";
+import { shouldSkipSandbox } from "./models.js";
+import { QUOTA_METHOD } from "./quota.js";
 
+import type { Account } from "./accounts.js";
 export type { Account };
-
 import type { ResolveProjectIdOptions, ResolveResult } from "./project.js";
 
 // v2.1.14 dedupe: re-export the consolidated constants so this module's
@@ -147,34 +147,34 @@ export {
   ANTIGRAVITY_VERSION_FALLBACK,
   CONTENT_TIMEOUT_MS,
   FALLBACK_PROJECT_ID,
-  FETCH_TIMEOUT_MS,
   FORBIDDEN_HEADERS,
+  FETCH_TIMEOUT_MS,
   GEMINI_CLI_SCOPES,
   PLUGIN_VERSION,
 } from "./constants.js";
 export { fnv1a32, fnv1a32Hex, getJitter } from "./core.js";
 export { buildAntagravityHeaders, getDynamicUserAgent } from "./fingerprint.js";
-export type { ModelId2026, ThinkingLevel } from "./models.js";
 export {
   ALL_MODELS_2026,
   ANTIGRAVITY_VERSION_MIN,
-  buildImageGenConfig,
   CODE_ASSIST_ENDPOINTS,
   ENDPOINT_ORDER,
   ENDPOINT_ORDER_GEMINI_CLI,
   GEMINI_CLI_ONLY_MODELS,
+  MODELS_2026_BASE,
+  MODELS_2026_ANTIGRAVITY_ALIAS,
+  THINKING_BUDGET_MAP,
+  THINKING_LEVELS,
+  buildImageGenConfig,
   getEndpointsForModel,
   isGeminiCLIOnlyModel,
   isImageGenModel,
-  MODELS_2026_ANTIGRAVITY_ALIAS,
-  MODELS_2026_BASE,
-  MODELS_2026_PROVIDER as MODELS_2026,
   mapModelToGroup,
-  THINKING_BUDGET_MAP,
-  THINKING_LEVELS,
 } from "./models.js";
-export type { ResolveProjectIdOptions, ResolveResult } from "./project.js";
+export { MODELS_2026_PROVIDER as MODELS_2026 } from "./models.js";
+export type { ModelId2026, ThinkingLevel } from "./models.js";
 export { resolveProjectId } from "./project.js";
+export type { ResolveProjectIdOptions, ResolveResult } from "./project.js";
 
 // Node types (no DOM lib) do not expose the RequestInfo name globally; derive it from fetch itself.
 type RequestInfo = Parameters<typeof fetch>[0];
@@ -191,7 +191,7 @@ function stripTrailingSlashes(value: string): string {
 
 // --- optional internal modules (they themselves only use node:* + fetch) ---
 // The observer tries to reuse them when present, but v2 is self-contained to guarantee bypass logic.
-const __AccountManagerCtor: any = null;
+let __AccountManagerCtor: any = null;
 try {
   // dynamic import via top-level await not allowed here, will lazy import in init
 } catch {
@@ -721,6 +721,7 @@ export class AntigravityPlugin {
         return candidate as Account;
       } catch (e) {
         lastErr = e;
+        continue;
       }
     }
     // fallback any
@@ -1133,6 +1134,7 @@ export class AntigravityPlugin {
               buildOpts.accessToken = accessToken;
               buildOpts.projectId = (account as any).projectId ?? projectId;
               buildResult = builder(buildOpts);
+              continue;
             }
           }
         }

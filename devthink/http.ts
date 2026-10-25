@@ -2,30 +2,30 @@
 
 /* ── Merged from httpclient.ts: the 1.1.88 consolidation interns the correlated httpclient logic here, so no variation of the same file lives beside another. ── */
 import type {
-  allowlistentry,
-  clientrecord,
   endpointrecord,
-  fetchoptions,
   fetchrequest,
+  fetchoptions,
   graphqlrequest,
   htmlquery,
-  httpstreamconfig,
   jsonpathrule,
-  jsonrpcframe,
-  mcpserverconfig,
   parsedfield,
   payloadschema,
-  relayserverconnection,
-  relayserversession,
-  relayserverstate,
-  rpcerror,
-  serverenvelope,
-  sessiontoken,
-  streamchannel,
   streamwindow,
+  jsonrpcframe,
+  mcpserverconfig,
+  sessiontoken,
   tlsconfig,
-  toolnamespace,
   transportkind,
+  allowlistentry,
+  clientrecord,
+  httpstreamconfig,
+  rpcerror,
+  streamchannel,
+  toolnamespace,
+  relayserverconnection,
+  relayserverstate,
+  relayserversession,
+  serverenvelope,
 } from "./types.js";
 
 /**
@@ -612,7 +612,7 @@ export async function callgraphql(input: {
 
 /* ── Merged from httpserve.ts: the 1.1.88 consolidation interns the correlated httpserve logic here, so no variation of the same file lives beside another. ── */
 import { bindlocalhost, localhostbind, parseframe, rpcerrorof } from "./mcp.js";
-import { decodemessage, encodemessage, framesof, isnotification } from "./serve.js";
+import { encodemessage, decodemessage, framesof, isnotification } from "./serve.js";
 
 /**
  * Http transport of the 1.1.84 mcp server mode.
@@ -749,9 +749,9 @@ export function routepath(config: mcpserverconfig, path: string): "endpoint" | "
 /** The documented bind of the http listener: localhost only, kept beside the transport so the serve state and the docs share one name. */
 export const documentedbind = localhostbind;
 
-import { authrefusedmessage, checkallowlist, scopecheck, tlsstateof, verifytoken } from "./auth.js";
 /* ── Merged from httpstream.ts: the 1.1.88 consolidation interns the correlated httpstream logic here, so no variation of the same file lives beside another. ── */
 import { namespaceof } from "./tools.js";
+import { authrefusedmessage, checkallowlist, scopecheck, tlsstateof, verifytoken } from "./auth.js";
 
 /**
  * Http stream transport of the 1.1.55 agent protocol part two.
@@ -1400,20 +1400,11 @@ export function createlinepump(input: {
 
 /* ── Merged: the grand merge section ── the correlated web api transport logics of the merged repository interned here, one surface without duplicate variations. ── */
 
-import { urlencodeform } from "./auth.js";
-/* ── Merged from webapi.ts: the 1.1.88 consolidation interns the correlated webapi logic here, so no variation of the same file lives beside another. ── */
-/**
- * Web api transport logics of the 1.1.76 family.
- * Every correlated rule for the widened transport surface lives in this one module: the server sent events subscription lifecycle with field parsing, last event id resume, clean cancellation and channel error surfacing; the long poll request loop that waits on the response cursor, retries on the configured timeout backoff and stops on cancellation or plan expiry; the graphql subscription message mapping of next, error and complete frames into step results; the urlencoded form post and the streamed multipart upload with their part encodings and upload progress; the per run correlation id assignment that joins request and response pairs and exports one request map to the audit trail; the rate limit directive parsing that delays the next request until the reset window and honors the retry after wait of 429 and 503 answers; and the per run response cache that keys by url, method and body hash, serves repeated read only calls inside one run, expires entries by the response headers and the user policy and never caches a response that follows a mutation.
- * The module reuses the socketbus parsing of the 1.1.43 family for the event stream grammar and the poll cursor decisions, and the netauth encodings of the 1.1.44 family for the urlencoded and multipart wire shapes, so the transport widening extends the reviewed families instead of duplicating them.
- * Message payloads and field values are opaque reviewed text; no payload value enters any audit summary built from these results, and every timeout, backoff, retention and bound stays a user choice with no code default — an absent value never hides a hardcoded ceiling.
- */
-import { parsessetext, polldecision, pollurl, retryafterof, type sseevent, sserequestheaders } from "./net.js";
 import type {
   apicallrecord,
   cacheentry,
-  correlatedrequest,
   correlationcontext,
+  correlatedrequest,
   eventsubscription,
   formpayload,
   graphqlsubscription,
@@ -1423,6 +1414,16 @@ import type {
   pollcursor,
   ratelimitdirective,
 } from "./types.js";
+/* ── Merged from webapi.ts: the 1.1.88 consolidation interns the correlated webapi logic here, so no variation of the same file lives beside another. ── */
+/**
+ * Web api transport logics of the 1.1.76 family.
+ * Every correlated rule for the widened transport surface lives in this one module: the server sent events subscription lifecycle with field parsing, last event id resume, clean cancellation and channel error surfacing; the long poll request loop that waits on the response cursor, retries on the configured timeout backoff and stops on cancellation or plan expiry; the graphql subscription message mapping of next, error and complete frames into step results; the urlencoded form post and the streamed multipart upload with their part encodings and upload progress; the per run correlation id assignment that joins request and response pairs and exports one request map to the audit trail; the rate limit directive parsing that delays the next request until the reset window and honors the retry after wait of 429 and 503 answers; and the per run response cache that keys by url, method and body hash, serves repeated read only calls inside one run, expires entries by the response headers and the user policy and never caches a response that follows a mutation.
+ * The module reuses the socketbus parsing of the 1.1.43 family for the event stream grammar and the poll cursor decisions, and the netauth encodings of the 1.1.44 family for the urlencoded and multipart wire shapes, so the transport widening extends the reviewed families instead of duplicating them.
+ * Message payloads and field values are opaque reviewed text; no payload value enters any audit summary built from these results, and every timeout, backoff, retention and bound stays a user choice with no code default — an absent value never hides a hardcoded ceiling.
+ */
+import { parsessetext, polldecision, pollurl, sserequestheaders, type sseevent } from "./net.js";
+import { urlencodeform } from "./auth.js";
+import { retryafterof } from "./net.js";
 
 /** Stream open seam: one reviewed url with its request headers resolves to a reader of text chunks or an error class; the extension executor wires the fetch stream, tests wire plain fixtures. */
 export type streamopen = (
@@ -1957,7 +1958,7 @@ export function cachekeyof(input: { runid: string; url: string; method: string; 
 
 /** Resolves the expiry timestamp of one stored response from its headers and the user policy: the cache-control max-age and the expires date cap the entry while the user configured retention bounds the entries per run, and an absent fact keeps the entry until the run ends. */
 export function cacheexpiryof(headers: Record<string, string>, now: number, retention?: number): number | undefined {
-  const candidates: number[] = [];
+  let candidates: number[] = [];
   for (const key of Object.keys(headers)) {
     const lowered = key.toLowerCase();
     const value = headers[key];

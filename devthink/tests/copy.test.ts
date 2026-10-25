@@ -30,10 +30,7 @@ describe("the copy store", () => {
     for (const provider of ["google", "github", "gitlab"]) {
       const label = copy(`auth.oauth.${provider}`);
       assert.ok(label.startsWith("continue with devthink · "), `the ${provider} label carries the devthink action`);
-      assert.ok(
-        !label.startsWith(`continue with ${provider}`),
-        `the ${provider} label never carries the provider action`,
-      );
+      assert.ok(!label.startsWith(`continue with ${provider}`), `the ${provider} label never carries the provider action`);
     }
   });
 

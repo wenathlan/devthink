@@ -1,16 +1,10 @@
 /* ── The headless entry section the family kept before the 1.1.88 merge. ── */
 /** The headless library entry of the 1.1.80 family: the library runtime without a browser extension, so a host opens the run handle over a plan, a state source and a policy and drives the read only replay against recorded page state fixtures; the 1.1.81 library modes stamp the entry so it reports the bundle it runs from. */
 export { bundlestamp } from "./runtime.js";
-
 import { stampbundle } from "./runtime.js";
 
 stampbundle("headless", "headless.js");
 
-import type { memoryadapter } from "./memory.js";
-import { randomid, sessionmemory } from "./memory.js";
-import { actionrisk, fixtureconsentgate, headlessconsentgate, headlesstelemetrygate, validatestep } from "./policy.js";
-import { recordoutcome, recordstep } from "./progress.js";
-import { readverifiedlog } from "./security.js";
 /* ── Merged from headlesslib.ts: the 1.1.88 consolidation interns the correlated headlesslib logic here, so no variation of the same file lives beside another. ── */
 import type {
   consentprovider,
@@ -30,7 +24,12 @@ import type {
   storedrunlog,
   toolstep,
 } from "./types.js";
+import type { memoryadapter } from "./memory.js";
 import { protocolversion } from "./types.js";
+import { actionrisk, fixtureconsentgate, headlessconsentgate, headlesstelemetrygate, validatestep } from "./policy.js";
+import { recordoutcome, recordstep } from "./progress.js";
+import { readverifiedlog } from "./security.js";
+import { randomid, sessionmemory } from "./memory.js";
 
 /** Executes one read only step against one recorded page state fixture: the fixture consent gate grades the kind against the fixture grants, the read only vocabulary with a recorded projection executes against the observation, and every other kind reports unsupported with the reason a fixture cannot satisfy it. */
 export function headlessfixturestep(fixture: headlessfixture, step: planfilestep): headlessfixtureoutcome {

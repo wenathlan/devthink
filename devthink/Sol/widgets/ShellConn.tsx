@@ -35,7 +35,9 @@ export function Conn({ state, text, title }: ConnProps) {
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }} title={title}>
       <Dot tone={toneOf[state]} ping={state === "connecting"} pulse={state === "error"} />
-      {text ? <span style={{ font: "500 12px/1 var(--font-sans)", color: "var(--ink-2)" }}>{text}</span> : null}
+      {text ? (
+        <span style={{ font: "500 12px/1 var(--font-sans)", color: "var(--ink-2)" }}>{text}</span>
+      ) : null}
     </span>
   );
 }

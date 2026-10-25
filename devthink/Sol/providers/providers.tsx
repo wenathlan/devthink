@@ -24,11 +24,11 @@ import {
   readBrowserPreferences,
   removeBrowserCredential,
   saveBrowserCredential,
-  saveBrowserPreference,
-} from "../../db";
+  saveBrowserPreference } from "../../db";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { osProviders, osText } from "../../oslabels.ts";
-import { ProviderCard, ProvidersList } from "../widgets";
+import { ProviderCard } from "../widgets";
+import { ProvidersList } from "../widgets";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */
@@ -86,8 +86,7 @@ export default function Providers({ embedded }: { embedded?: boolean }) {
       await gatewayJson("/providers/active", {
         method: "PATCH",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ provider: provider.id }),
-      });
+        body: JSON.stringify({ provider: provider.id }) });
       await saveBrowserPreference("activeProvider", provider.id);
       setActive(provider.id);
       toast(osText("providers.toast.activated").replace("{id}", provider.id));
@@ -99,7 +98,10 @@ export default function Providers({ embedded }: { embedded?: boolean }) {
   const saveCredential = async () => {
     const value = credentialDraft.trim();
     if (!value) return toast(osText("providers.toast.enterCredential"));
-    if (!window.confirm(osText("providers.confirm.store").replace("{id}", credentialProvider))) return;
+    if (
+      !window.confirm(osText("providers.confirm.store").replace("{id}", credentialProvider))
+    )
+      return;
     await saveBrowserCredential(credentialProvider, value);
     setCredentialDraft("");
     setBrowserCredentials(await browserCredentialProviders());

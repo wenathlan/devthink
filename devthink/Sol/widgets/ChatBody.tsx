@@ -11,9 +11,9 @@
  */
 
 import {
-  DocumentEditRegular as CanvasGlyph,
   ChevronDownRegular as ChevronDown,
   CubeRegular as Cube,
+  DocumentEditRegular as CanvasGlyph,
   PanelLeftRegular as PanelLeft,
   PanelRightRegular as PanelRight,
   DeleteRegular as TrashIcon,
@@ -33,9 +33,9 @@ import {
   clearChatHandoff,
   cloneSessionForEdit,
   deriveTitle,
-  GATEWAY_MODEL,
   type GatewayModel,
   gatewayModels,
+  GATEWAY_MODEL,
   isChatStop,
   newSession,
   readChatHandoff,
@@ -47,20 +47,20 @@ import {
   useChatThinking,
   userTurn,
 } from "../../chatstate.ts";
+import { estimateHistoryTokens, formatCompactTokenCount } from "../../tokenestimate.ts";
 import { loadBrowserSession } from "../../db.ts";
 import { GATEWAY_REQUIRED_COPY, GATEWAY_SEND_NOTICE, useGatewayRegistration } from "../../gatewaybase.ts";
-import { label } from "../../labels.ts";
-import { estimateHistoryTokens, formatCompactTokenCount } from "../../tokenestimate.ts";
 import { useIsMobile } from "../../useismobile.ts";
 import { arrayOf, isString, useStoredState } from "../../usestoredstate.ts";
-import { CANVAS_OPEN_EVENT, type CanvasDoc, type CanvasOpenDetail, CanvasPane } from "./ChatCanvaspane.tsx";
+import { label } from "../../labels.ts";
+import { CANVAS_OPEN_EVENT, CanvasPane, type CanvasDoc, type CanvasOpenDetail } from "./ChatCanvaspane.tsx";
 import { Composer } from "./ChatComposer.tsx";
 import { type SandboxFileChange, SandboxPane, type SandboxRunner } from "./ChatSandboxpane.tsx";
 import { SessionPanel } from "./ChatSessionpanel.tsx";
 import { Sidebar } from "./ChatSidebar.tsx";
-import type { SolBotState } from "./ChatSolboticon.tsx";
-import { DaySeparator, dayKey, ErrorRow, ThinkingRow, Turn } from "./ChatTurn.tsx";
-import { type RecentConversation, Welcome } from "./ChatWelcome.tsx";
+import { type SolBotState } from "./ChatSolboticon.tsx";
+import { DaySeparator, ErrorRow, dayKey, ThinkingRow, Turn } from "./ChatTurn.tsx";
+import { Welcome, type RecentConversation } from "./ChatWelcome.tsx";
 
 /** The chat slice of the wave atmosphere contract: the C1-01 atmosphere
  * layers (.atmos light source, .grain film) are painted by the theme stylesheet — this guard only guarantees they never sit on
@@ -1334,12 +1334,7 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
         errorId={error && active ? active.id : undefined}
       />
       {isMobile && !railCollapsed ? (
-        <button
-          type="button"
-          className="dtc-scrim"
-          aria-label={label("chat.body.closeSidebar")}
-          onClick={() => setRailCollapsed(true)}
-        />
+        <button type="button" className="dtc-scrim" aria-label={label("chat.body.closeSidebar")} onClick={() => setRailCollapsed(true)} />
       ) : null}
 
       <main className="dtc-main">
@@ -1403,12 +1398,7 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
                 active row carries aria-current and a row click rides the
                 rail opener, the same open seam the rail rows use. */}
             {lineageOpen && !temporary && active !== null ? (
-              <div
-                ref={lineageMenuRef}
-                className="dtc-lineage__menu"
-                role="menu"
-                aria-label={label("chat.body.branchLineage")}
-              >
+              <div ref={lineageMenuRef} className="dtc-lineage__menu" role="menu" aria-label={label("chat.body.branchLineage")}>
                 {siblingBranches(sessions, active).map((sib) => (
                   <button
                     key={sib.id}
@@ -1422,9 +1412,7 @@ export default function ChatBody({ embedded }: { embedded?: boolean }) {
                     }}
                   >
                     <span className="dtc-lineage__ordinal">
-                      {branchLabel(sib) === 0
-                        ? label("chat.body.root")
-                        : `${label("chat.body.edit")} ${branchLabel(sib)}`}
+                      {branchLabel(sib) === 0 ? label("chat.body.root") : `${label("chat.body.edit")} ${branchLabel(sib)}`}
                     </span>
                     <span className="dtc-lineage__title">{sib.title}</span>
                   </button>
@@ -1680,9 +1668,7 @@ function SandboxTaskCard({ task }: { task: SandboxTask }) {
           .replace("{command}", task.command)
           .replace(
             "{verdict}",
-            ok
-              ? label("chat.body.verdictOk")
-              : label("chat.body.verdictFailedExit").replace("{code}", String(task.exitCode)),
+            ok ? label("chat.body.verdictOk") : label("chat.body.verdictFailedExit").replace("{code}", String(task.exitCode)),
           )}
         title={label("chat.body.expandEngineOutput")}
         onClick={() => setOpen((v) => !v)}

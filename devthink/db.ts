@@ -70,7 +70,15 @@ export type BrowserStoreSummary = {
   mode: "local-only" | "paired-gateway" | "remote-adapter";
 };
 
-type StoreName = "meta" | "workspaces" | "sessions" | "tabs" | "messages" | "preferences" | "labels" | "credentials";
+type StoreName =
+  | "meta"
+  | "workspaces"
+  | "sessions"
+  | "tabs"
+  | "messages"
+  | "preferences"
+  | "labels"
+  | "credentials";
 type MetaEntry = { key: string; value: BrowserIdentity };
 
 const databaseName = "devthink.db";
@@ -250,7 +258,9 @@ export async function readLabel(id: string): Promise<BrowserLabel | undefined> {
 }
 
 export async function readAllLabels(): Promise<BrowserLabel[]> {
-  return withStore("labels", "readonly", async (store) => (await request(store.getAll())) as unknown as BrowserLabel[]);
+  return withStore("labels", "readonly", async (store) =>
+    (await request(store.getAll())) as unknown as BrowserLabel[],
+  );
 }
 
 /** Reads one locally stored credential value by its provider id, or null when the machine holds none. The value never leaves the browser: the caller receives the stored string itself, so account hashes stay device-local. */

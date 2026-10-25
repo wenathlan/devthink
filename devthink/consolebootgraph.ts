@@ -12,9 +12,8 @@
  * file only declares what the boot is, so the page draws and runs the real
  * shape (banner → config → engine → the three surfaces → ready).
  */
-
-import { bootdelay } from "./consoleboot.ts";
 import { connectnodes, makenode, type nodegraph } from "./graphnodes.js";
+import { bootdelay } from "./consoleboot.ts";
 
 /** One boot stage of the catalog: the graph node fields plus the one-line note the ledger reads. */
 export interface bootstageentry {

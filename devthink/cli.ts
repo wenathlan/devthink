@@ -1,36 +1,18 @@
 /** The cli module of the 1.1.88 consolidation: the terminal entry and the cli tools interned in this one file, so the cli surface carries one module without duplicate variations. */
 
-import { createHash } from "node:crypto";
-import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
-import { join, resolve } from "node:path";
 /* ── Merged from cli/devthink.ts: the terminal entry of the cli. ── */
 import { createInterface } from "node:readline/promises";
+import { mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
+import { join, resolve } from "node:path";
 import {
-  apifreezedate,
-  apifreezerelease,
-  capmanifestof,
-  type capmanifestsurface,
-  deprecationwindow,
-  protocolsupported,
-  sharedprotocolversion,
-} from "./apifreeze.js";
-import {
-  hostmanifestdestination,
-  installnativehost,
-  nativedefaultstate,
-  nativediagnostics,
-  nativehostmanifesttemplate,
-  uninstallnativehost,
-} from "./bridge.js";
-import {
-  exportchain,
-  exportdescriptorof,
-  exportextractions,
-  exportnotes,
-  exportrecords,
-  secretfieldshapes,
-} from "./export.js";
-import type { flowdriver } from "./flow.js";
+  formatdiagnostics,
+  lintplanfile,
+  parseplanfile,
+  planlintsummary,
+  rulesetcachekey,
+  plansteprisk,
+} from "./plan.js";
 import {
   dryflowdriver,
   flowrunreport,
@@ -40,89 +22,108 @@ import {
   renderflowtimeline,
   runflow,
 } from "./flow.js";
+import type { flowdriver } from "./flow.js";
+import {
+  exportchain,
+  exportdescriptorof,
+  exportextractions,
+  exportnotes,
+  exportrecords,
+  secretfieldshapes,
+} from "./export.js";
 import { openheadlesssession, openlibraryrun, remoteattachframes } from "./headless.js";
-import { createlinepump, httpanswer, httpendpoint, parsepost, routepath } from "./http.js";
 import {
-  createservesession,
-  defaultmcpport,
-  localhostbind,
-  routeserveframe,
-  shutdowndrain,
-  startserve,
-  transportendpoints,
-} from "./mcp.js";
-import { sessionmemory } from "./memory.js";
-import {
-  formatdiagnostics,
-  lintplanfile,
-  parseplanfile,
-  planlintsummary,
-  plansteprisk,
-  rulesetcachekey,
-} from "./plan.js";
-import {
-  actionkindcatalog,
-  actionrisk,
-  cssselectorvalid,
-  dryrunprojection,
-  fixtureconsentgate,
-  kindoptionfields,
-  mcpmodegate,
-  nativeinstallconsentgate,
-  portablerulesetof,
-  validatetargetref,
-} from "./policy.js";
-import { toolcallframe } from "./protocol.js";
-import { acquirerunlock, releaserunlock } from "./run.js";
+  dryrunworkflow,
+  newworkflowrun,
+  runworkflow,
+  composeworkflow,
+  workflowblockof,
+  workflowstepof,
+} from "./workflow.js";
+import { platformtargets } from "./runtime.js";
 import {
   adapterdeclarationsof,
   capabilityprobeof,
   filesystemstorageadapter,
-  platformtargets,
   portablecapabilityset,
 } from "./runtime.js";
-import { defaultmaskshapes, exportlogchain, maskmarker } from "./security.js";
+import {
+  actionkindcatalog,
+  actionrisk,
+  dryrunprojection,
+  portablerulesetof,
+  mcpmodegate,
+  nativeinstallconsentgate,
+  cssselectorvalid,
+  fixtureconsentgate,
+  kindoptionfields,
+  validatetargetref,
+} from "./policy.js";
+import { clicommands, surfacepalette } from "./views.js";
+import {
+  apifreezedate,
+  apifreezerelease,
+  capmanifestof,
+  deprecationwindow,
+  protocolsupported,
+  sharedprotocolversion,
+  type capmanifestsurface,
+} from "./apifreeze.js";
+import { toolcallframe } from "./protocol.js";
+import { defaultmaskshapes, maskmarker } from "./security.js";
+import { sessionmemory } from "./memory.js";
+import { acquirerunlock, releaserunlock } from "./run.js";
+import { exportlogchain } from "./security.js";
+import { packageversion } from "./version.js";
+import {
+  createservesession,
+  routeserveframe,
+  shutdowndrain,
+  startserve,
+  transportendpoints,
+  defaultmcpport,
+  localhostbind,
+} from "./mcp.js";
+import { createlinepump, httpanswer, httpendpoint, parsepost, routepath } from "./http.js";
+import {
+  hostmanifestdestination,
+  installnativehost,
+  nativedefaultstate,
+  nativediagnostics,
+  nativehostmanifesttemplate,
+  uninstallnativehost,
+} from "./bridge.js";
 import type {
   auditevent,
   cliconfiguration,
   clientrecord,
   consentprovider,
-  exportdescriptor,
-  exportresult,
   headlessfixture,
-  headlessfixtureoutcome,
   immutablelogentry,
-  manifestcheckfinding,
   mcpserverconfig,
   planfile,
   planfilestep,
   planlintdiagnostic,
-  planprogress,
-  planrisksummary,
   portableruleset,
   runlogentry,
-  runworkflowoutcome,
   sitenote,
   stepoutcome,
   storedrunlog,
   toolmock,
   transportkind,
   variablescope,
+  workflowstep,
+  exportdescriptor,
+  exportresult,
+  headlessfixtureoutcome,
+  manifestcheckfinding,
+  planprogress,
+  planrisksummary,
+  runworkflowoutcome,
   workflowdocument,
   workflowrecord,
   workflowrun,
-  workflowstep,
 } from "./types.js";
-import { packageversion } from "./version.js";
-import { clicommands, surfacepalette } from "./views.js";
-import {
-  composeworkflow,
-  dryrunworkflow,
-  newworkflowrun,
-  runworkflow,
-  workflowblockof,
-  workflowstepof,
-} from "./workflow.js";
 
 const forbidden = new Set([
   "debugger",
@@ -170,7 +171,7 @@ async function recordedidentitydigest(): Promise<string | undefined> {
     try {
       const text = await readFile(resolve(candidate), "utf8");
       for (const line of text.split("\n")) {
-        const match = /^([0-9a-f]{64}) {2}manifest\.json key$/.exec(line.trim());
+        const match = /^([0-9a-f]{64})  manifest\.json key$/.exec(line.trim());
         if (match !== null) return match[1];
       }
     } catch {
@@ -202,7 +203,9 @@ function parseflags(args: string[]): { positional: string[]; flags: Map<string, 
 }
 
 /** Reads the global invocation state the commands share: the parsed configuration, the verbosity and the json output marker, all resolved before any command dispatches. */
-async function globalstate(args: string[]): Promise<{
+async function globalstate(
+  args: string[],
+): Promise<{
   config: cliconfiguration;
   verbosity: "quiet" | "normal" | "verbose";
   json: boolean;

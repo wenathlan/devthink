@@ -11,8 +11,7 @@ export type DocsSection = { id: string; label: string };
 export function DocsNav({
   sections,
   active,
-  onSelect,
-}: {
+  onSelect }: {
   sections: readonly DocsSection[];
   active: string;
   onSelect: (id: DocsSection["id"]) => void;

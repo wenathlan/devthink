@@ -23,17 +23,12 @@ import {
   memoryAdd,
   memoryClear,
   memoryRecallExpression,
-  memorySubtract,
-} from "../../calculator";
+  memorySubtract } from "../../calculator";
 import { osAppLabels } from "../../catalog";
 import { osText } from "../../oslabels.ts";
-import {
-  CalculatorDisplay,
-  CalculatorHistory,
-  type CalculatorHistoryRow,
-  CalculatorKeypad,
-  type CalculatorMemoryKey,
-} from "../widgets";
+import { CalculatorDisplay } from "../widgets";
+import { CalculatorHistory, type CalculatorHistoryRow } from "../widgets";
+import { CalculatorKeypad, type CalculatorMemoryKey } from "../widgets";
 
 /** how many answers the history keeps before the oldest one leaves. */
 const HISTORY_LIMIT = 8;
@@ -66,8 +61,7 @@ export default function Calculator({ embedded }: { embedded?: boolean }) {
       historyserial.current += 1;
       const row: CalculatorHistoryRow = {
         id: `calc.history.${historyserial.current.toString(36)}`,
-        line: `${expression} = ${text}`,
-      };
+        line: `${expression} = ${text}` };
       setHistory((rows) => [row, ...rows].slice(0, HISTORY_LIMIT));
     } catch (cause) {
       setAnswer(null);

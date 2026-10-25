@@ -8,7 +8,7 @@
  * the web intro, not the boot. The stylesheet injects once at import time.
  */
 
-import { ArrowRightRegular as ArrowRight } from "@fluentui/react-icons";
+import {ArrowRightRegular as ArrowRight} from "@fluentui/react-icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { prefersReducedMotion } from "../../akash.ts";

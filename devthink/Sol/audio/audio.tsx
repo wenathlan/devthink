@@ -19,7 +19,8 @@ import { ShellChrome } from "@/widgets/ShellShellchrome";
 import { type NativeApp, nativeApps, osAppLabels, type StudioTrack, studioTracks } from "../../catalog";
 import { osText } from "../../oslabels.ts";
 import { queuestudiorender } from "../../runner";
-import { MusicEngine, MusicTracks } from "../widgets";
+import { MusicEngine } from "../widgets";
+import { MusicTracks } from "../widgets";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */

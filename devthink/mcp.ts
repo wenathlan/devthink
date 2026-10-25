@@ -1,73 +1,65 @@
+import { protocolmajorversion, protocolversion } from "./types.js";
 import { negotiateprotocol, protocolmajorof } from "./apifreeze.js";
 import type {
   agentplan,
   agentsession,
+  callcontext,
+  capabilityset,
+  clientrecord,
+  jsonrpcframe,
+  mcpserverconfig,
+  methodentry,
+  rpcerror,
+  rpcerrorcode,
+  stdiobridge,
+  toolcatalog,
+  toolcallrecord,
+  toolnamespace,
+  toolresult,
+  toolstep,
+  transportkind,
   allowlistentry,
   approvalrequest,
   auditevent,
   batchcall,
   batchoutcome,
-  callcontext,
   callratelimit,
-  capabilityset,
   clientbinding,
-  clientrecord,
   idempotencyrecord,
-  jsonrpcframe,
-  mcpserverconfig,
-  methodentry,
   progressnotice,
   prompttemplate,
   resourcewatch,
-  rpcerror,
-  rpcerrorcode,
   samplingrequest,
-  servedresource,
   servehealth,
+  servedresource,
   servetransport,
-  stdiobridge,
   streamchunk,
   structurederror,
-  toolcallrecord,
-  toolcatalog,
   toolmock,
-  toolnamespace,
-  toolresult,
-  toolstep,
-  transportkind,
 } from "./types.js";
-import { protocolmajorversion, protocolversion } from "./types.js";
-
-export * from "./agent.js";
-export * from "./auth.js";
-export * from "./bridge.js";
-export * from "./bridge.js";
-export * from "./bridge.js";
-export * from "./gates.js";
-export * from "./http.js";
-export * from "./http.js";
-export * from "./http.js";
-export * from "./policy.js";
 /* ── The mcp entry section the family kept before the 1.1.88 merge. ── */
 /** The mcp server library entry of the 1.1.84 family: the full model context protocol server surface of devthink as one tree shakable entry — the serve mode with its frame router, session bindings, approval gates and dispatch composition, the json rpc message codec with its structured retry hints, the stdio and http transports with their injected seams, the served resources with their change subscriptions, the prompt exposure of the template library and the walkthroughs, and the tool catalog, call runtime, client auth, http stream and server contract families the serve mode composes; the 1.1.85 native host bridge family joins the entry so the nativehost and wsbridge surfaces — the native call events the subscribed mcp clients stream and the servercontract envelope translation the wsbridge frames reuse — ride the same tree shakable server surface. */
 export * from "./serve.js";
 export * from "./serve.js";
 export * from "./serve.js";
+export * from "./http.js";
+export * from "./http.js";
 export * from "./tools.js";
+export * from "./agent.js";
 export * from "./tools.js";
+export * from "./auth.js";
+export * from "./gates.js";
+export * from "./http.js";
+export * from "./bridge.js";
+export * from "./bridge.js";
+export * from "./bridge.js";
+export * from "./policy.js";
 
 /* ── Merged from mcpmode.ts: the 1.1.88 consolidation interns the correlated mcpmode logic here, so no variation of the same file lives beside another. ── */
-import { callprompt, canceltool, listprompts, notifyprogress, requestsampling, streamchunkof } from "./agent.js";
-import { checkallowlist } from "./auth.js";
-import {
-  composeenvelope,
-  eventpostbody,
-  frameof,
-  progresseventpayload,
-  servercontractversion,
-  stableopid,
-} from "./bridge.js";
+import { notifyprogress, requestsampling, streamchunkof, canceltool, callprompt, listprompts } from "./agent.js";
 import { requireapproval } from "./gates.js";
+import { checkallowlist } from "./auth.js";
+import { notificationframe } from "./serve.js";
 import { randomid } from "./memory.js";
 import {
   degradationgate,
@@ -77,33 +69,28 @@ import {
   tooldispatchgate,
   unknownfieldsgate,
 } from "./policy.js";
+import { listmcpprompts, rendermcpprompt } from "./serve.js";
+import { publishchange, readresource, resourceof, resourceslist, servedresources, subscriberesource } from "./serve.js";
 import {
-  listmcpprompts,
-  notificationframe,
-  publishchange,
-  readresource,
-  rendermcpprompt,
-  resourceof,
-  resourceslist,
-  servedresources,
-  subscriberesource,
-} from "./serve.js";
+  composeenvelope,
+  eventpostbody,
+  frameof,
+  progresseventpayload,
+  servercontractversion,
+  stableopid,
+} from "./bridge.js";
+import { packageversion } from "./version.js";
+import { alltools, buildtoolcatalog, namespaceof, resolvetool, toolnamespaces } from "./tools.js";
 import {
-  alltools,
   applymock,
   applyratelimit,
   begincall,
-  buildtoolcatalog,
   checkidempotency,
   dryruntool,
   endcall,
-  namespaceof,
   recordidempotency,
-  resolvetool,
   runbatch,
-  toolnamespaces,
 } from "./tools.js";
-import { packageversion } from "./version.js";
 
 /**
  * Mcp server mode of the 1.1.84 family.

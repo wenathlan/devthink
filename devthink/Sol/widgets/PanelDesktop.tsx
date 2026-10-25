@@ -19,21 +19,7 @@
  * the floating windows.
  */
 
-import {
-  WindowAppsRegular as AppWindow,
-  ArrowSortDownRegular as ArrowDownAZ,
-  ArrowSortRegular as ArrowDownUp,
-  EyeRegular as Eye,
-  InfoRegular as Info,
-  AppsListRegular as LayoutGrid,
-  MaximizeRegular as Maximize2,
-  DesktopRegular as Monitor,
-  ArrowCounterclockwiseRegular as RotateCcw,
-  ArrowClockwiseRegular as RotateCw,
-  ShapesRegular as Shapes,
-  StopRegular as Square,
-  OpenRegular as SquareArrowOutUpRight,
-} from "@fluentui/react-icons";
+import {WindowAppsRegular as AppWindow, ArrowSortDownRegular as ArrowDownAZ, ArrowSortRegular as ArrowDownUp, EyeRegular as Eye, InfoRegular as Info, AppsListRegular as LayoutGrid, MaximizeRegular as Maximize2, DesktopRegular as Monitor, ArrowCounterclockwiseRegular as RotateCcw, ArrowClockwiseRegular as RotateCw, ShapesRegular as Shapes, StopRegular as Square, OpenRegular as SquareArrowOutUpRight} from "@fluentui/react-icons";
 import {
   type CSSProperties,
   type KeyboardEvent as ReactKeyboardEvent,
@@ -43,8 +29,7 @@ import {
   useLayoutEffect,
   useMemo,
   useRef,
-  useState,
-} from "react";
+  useState } from "react";
 import { useLocation } from "wouter";
 import type { DesktopApp } from "../../appregistry.ts";
 import { familyurl } from "../../deploybase.ts";
@@ -67,13 +52,12 @@ import {
   SNAP_STEP_Y,
   saveIconSpots,
   sortAppsByKind,
-  sortAppsByName,
-} from "../../desktopstate.ts";
-import { osText } from "../../oslabels.ts";
+  sortAppsByName } from "../../desktopstate.ts";
 import { useIsMobile } from "../../useismobile.ts";
+import { osText } from "../../oslabels.ts";
+import { AppTile } from "./ShellApptile.tsx";
 import { DesktopMenu, type MenuEntry } from "./PanelDesktopmenu.tsx";
 import { SolLogoMark } from "./PanelLogo.tsx";
-import { AppTile } from "./ShellApptile.tsx";
 
 /** the pointer travel (px) that turns a press into a drag */
 const DRAG_THRESHOLD = 4;
@@ -227,8 +211,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
     const sortable = apps.map((app) => ({
       id: app.id,
       name: app.name,
-      kind: app.target.kind,
-    }));
+      kind: app.target.kind }));
     return flowLayoutSpots(sortAppsByKind(sortable), bounds);
   }, [apps, bounds]);
 
@@ -267,8 +250,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
       grabY: event.clientY - (cellRect.top + cellRect.height / 2),
       moved: false,
       openable: !event.ctrlKey && !event.metaKey && !event.shiftKey,
-      desktopRect: desktopRef.current?.getBoundingClientRect() ?? null,
-    };
+      desktopRect: desktopRef.current?.getBoundingClientRect() ?? null };
     event.currentTarget.setPointerCapture(event.pointerId);
   };
 
@@ -288,8 +270,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
     const spot = clampSpot(
       {
         x: (centerLeft / rect.width) * 100,
-        y: (centerTop / rect.height) * 100,
-      },
+        y: (centerTop / rect.height) * 100 },
       currentBounds(),
     );
     event.currentTarget.style.left = `${spot.x}%`;
@@ -316,8 +297,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
     const spot = fitSpot(
       {
         x: ((cellRect.left + cellRect.width / 2 - rect.left) / rect.width) * 100,
-        y: ((cellRect.top + cellRect.height / 2 - rect.top) / rect.height) * 100,
-      },
+        y: ((cellRect.top + cellRect.height / 2 - rect.top) / rect.height) * 100 },
       currentBounds(),
     );
     event.currentTarget.style.left = `${spot.x}%`;
@@ -353,8 +333,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
         kind: "cell",
         appId: app.id,
         x: rect.left + rect.width / 2,
-        y: rect.bottom,
-      });
+        y: rect.bottom });
       return;
     }
     const delta =
@@ -396,15 +375,13 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
       y0: event.clientY,
       moved: false,
       desktopRect: desktopRef.current?.getBoundingClientRect() ?? null,
-      hits: new Set<string>(),
-    };
+      hits: new Set<string>() };
     setMarquee({
       x0: event.clientX,
       y0: event.clientY,
       x1: event.clientX,
       y1: event.clientY,
-      hits: new Set(),
-    });
+      hits: new Set() });
     event.currentTarget.setPointerCapture(event.pointerId);
   };
 
@@ -421,8 +398,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
       left: Math.min(state.x0, event.clientX),
       top: Math.min(state.y0, event.clientY),
       right: Math.max(state.x0, event.clientX),
-      bottom: Math.max(state.y0, event.clientY),
-    };
+      bottom: Math.max(state.y0, event.clientY) };
     const hits = new Set<string>();
     desktopRef.current?.querySelectorAll<HTMLElement>(".dsk-cell[data-app-id]").forEach((cell) => {
       const id = cell.dataset.appId;
@@ -441,8 +417,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
       y0: state.y0,
       x1: event.clientX,
       y1: event.clientY,
-      hits,
-    });
+      hits });
   };
 
   const onDesktopPointerUp = (event: ReactPointerEvent<HTMLElement>) => {
@@ -498,8 +473,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
     const sortable = apps.map((app) => ({
       id: app.id,
       name: app.name,
-      kind: app.target.kind,
-    }));
+      kind: app.target.kind }));
     const sorted = order === "name" ? sortAppsByName(sortable) : sortAppsByKind(sortable);
     commitOverrides(flowLayoutSpots(sorted, currentBounds()));
   };
@@ -535,26 +509,22 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
           label: osText("desktop.menu.view.medium"),
           icon: Square,
           shortcut: iconSize === "medium" ? "radio" : undefined,
-          onSelect: () => setIconSize("medium"),
-        },
+          onSelect: () => setIconSize("medium") },
         {
           kind: "item",
           id: "view-large",
           label: osText("desktop.menu.view.large"),
           icon: Maximize2,
           shortcut: iconSize === "large" ? "radio" : undefined,
-          onSelect: () => setIconSize("large"),
-        },
+          onSelect: () => setIconSize("large") },
         { kind: "sep", id: "view-sep" },
         {
           kind: "item",
           id: "view-reset",
           label: osText("desktop.menu.view.reset"),
           icon: RotateCcw,
-          onSelect: resetLayout,
-        },
-      ],
-    },
+          onSelect: resetLayout },
+      ] },
     {
       kind: "submenu",
       id: "sort",
@@ -566,24 +536,20 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
           id: "sort-name",
           label: osText("desktop.menu.sort.name"),
           icon: ArrowDownAZ,
-          onSelect: () => applySort("name"),
-        },
+          onSelect: () => applySort("name") },
         {
           kind: "item",
           id: "sort-kind",
           label: osText("desktop.menu.sort.kind"),
           icon: Shapes,
-          onSelect: () => applySort("kind"),
-        },
+          onSelect: () => applySort("kind") },
         {
           kind: "item",
           id: "sort-original",
           label: osText("desktop.menu.sort.original"),
           icon: LayoutGrid,
-          onSelect: () => applySort("original"),
-        },
-      ],
-    },
+          onSelect: () => applySort("original") },
+      ] },
     { kind: "sep", id: "desktop-sep" },
     {
       kind: "item",
@@ -591,15 +557,13 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
       label: osText("desktop.menu.refresh"),
       icon: RotateCw,
       shortcut: "F5",
-      onSelect: refreshLayout,
-    },
+      onSelect: refreshLayout },
     {
       kind: "item",
       id: "display-settings",
       label: osText("desktop.menu.display"),
       icon: Monitor,
-      onSelect: openDisplaySettings,
-    },
+      onSelect: openDisplaySettings },
   ];
 
   const cellMenuEntries = (app: DesktopApp): MenuEntry[] => {
@@ -609,8 +573,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
         id: "open",
         label: osText("desktop.menu.open"),
         icon: SquareArrowOutUpRight,
-        onSelect: () => onOpen(app),
-      },
+        onSelect: () => onOpen(app) },
     ];
     if (supportsNewWindow(app)) {
       entries.push({
@@ -618,8 +581,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
         id: "open-window",
         label: osText("desktop.menu.openWindow"),
         icon: AppWindow,
-        onSelect: () => openInNewWindow(app),
-      });
+        onSelect: () => openInNewWindow(app) });
     }
     entries.push({ kind: "sep", id: "cell-sep" });
     entries.push({ kind: "label", id: "props-name", label: app.name });
@@ -628,8 +590,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
       id: "props-detail",
       label: app.detail,
       icon: Info,
-      disabled: true,
-    });
+      disabled: true });
     return entries;
   };
 
@@ -701,8 +662,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
                 {
                   left: `${spot.x}%`,
                   top: `${spot.y}%`,
-                  animationDelay: reduced ? undefined : `${Math.min(index * 70, 630)}ms`,
-                } as CSSProperties
+                  animationDelay: reduced ? undefined : `${Math.min(index * 70, 630)}ms` } as CSSProperties
               }
               onPointerDown={(event) => onCellPointerDown(app, event)}
               onPointerMove={(event) => onCellPointerMove(app, event)}
@@ -729,8 +689,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
             left: `${marqueeGeometry.left}px`,
             top: `${marqueeGeometry.top}px`,
             width: `${marqueeGeometry.width}px`,
-            height: `${marqueeGeometry.height}px`,
-          }}
+            height: `${marqueeGeometry.height}px` }}
         />
       )}
       {menu && menu.kind === "desktop" && (

@@ -31,8 +31,8 @@ import {
   MicroscopeRegular as Telescope,
 } from "@fluentui/react-icons";
 import { chatGreetingForHour, chatSuggestions, chatText } from "../../chatlabels.ts";
-import { cx, GATEWAY_MODEL } from "../../chatstate.ts";
 import { label } from "../../labels.ts";
+import { cx, GATEWAY_MODEL } from "../../chatstate.ts";
 
 type Suggestion = {
   id: string;
@@ -154,12 +154,7 @@ export function Welcome({
       {/* the temporary entry — the quiet ghost toggle after the row, a
        * rendered key only when the caller arms the handler. */}
       {onTemporary ? (
-        <button
-          type="button"
-          className="dtc-welcome__ghost"
-          onClick={onTemporary}
-          title={label("chat.welcome.temporaryTitle")}
-        >
+        <button type="button" className="dtc-welcome__ghost" onClick={onTemporary} title={label("chat.welcome.temporaryTitle")}>
           {label("chat.welcome.temporaryChip")}
         </button>
       ) : null}

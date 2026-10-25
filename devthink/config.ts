@@ -447,11 +447,11 @@ export function parseConfigValue(raw: string): unknown {
  * @version 2.1.16
  */
 
-import * as crypto from "node:crypto";
 import * as fs from "node:fs";
 import * as fsp from "node:fs/promises";
-import * as os from "node:os";
 import * as path from "node:path";
+import * as os from "node:os";
+import * as crypto from "node:crypto";
 
 // ---------------------------------------------------------------------------
 // Gemini CLI bypass identity constants (v1) — OAuth client, headers, models
@@ -521,34 +521,31 @@ export const GEMINI_CLI_DEFAULT_MODEL = "gemini-3-pro-preview" as const;
 
 /** Cloud Code Assist PA (Playground API) base endpoints. */
 
-import type { RotationStrategy } from "./accounts.js";
 // v2.1.15 Phase A: MODELS_2026 (the 11-id legacy bypass list) and the
 // Model2026 union moved to models.ts (MODELS_2026_LEGACY / Model2026) —
 // imported under the historical name and re-exported so the public surface
 // is unchanged.
 import { MODELS_2026_LEGACY as MODELS_2026 } from "./models.js";
-
+import type { RotationStrategy } from "./accounts.js";
 export type { RotationStrategy };
-
+// v2.1.15 Phase B: identity masquerade (gemini UA builder, gl-node api-client
+// snapshot) comes from fingerprint.js; raw shared values (client metadata,
+// project fallback, cloudcode endpoints) come from constants.js.
+import { buildGeminiUserAgent, X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.js";
 import {
   CLIENT_METADATA,
   CLIENT_METADATA_STRING,
   CLOUDCODE_BASE_URL,
   CLOUDCODE_ENDPOINTS,
-  GEMINI_CLI_USER_AGENT,
   GEMINI_CLI_OAUTH_CLIENT_ID as OAUTH_CLIENT_ID,
   GEMINI_CLI_OAUTH_CLIENT_SECRET as OAUTH_CLIENT_SECRET,
   GEMINI_CLI_SCOPES as OAUTH_SCOPES,
+  GEMINI_CLI_USER_AGENT,
   PROJECT_FALLBACK,
 } from "./constants.js";
-// v2.1.15 Phase B: identity masquerade (gemini UA builder, gl-node api-client
-// snapshot) comes from fingerprint.js; raw shared values (client metadata,
-// project fallback, cloudcode endpoints) come from constants.js.
-import { buildGeminiUserAgent, X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.js";
 import type { Model2026 } from "./models.js";
-
-export type { Model2026 };
 export { MODELS_2026 };
+export type { Model2026 };
 
 // ---------------------------------------------------------------------------
 // Dynamic user-agent helpers (v1) — platform variation anti-fingerprinting
@@ -2916,7 +2913,9 @@ export const fetchVersionChain = async (): Promise<string> => {
       const j: any = await r.json().catch(async () => ({ text: await r.text() }));
       const v = j.version || j.tag_name || j.text || "";
       if (v) return String(v).replace(/^v/, "");
-    } catch {}
+    } catch {
+      continue;
+    }
   }
   return VERSION_FALLBACK;
 };

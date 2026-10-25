@@ -15,9 +15,8 @@ import {
   InfoRegular,
   PersonCircleRegular,
   PlugConnectedRegular,
-  SearchRegular,
-} from "@fluentui/react-icons";
-import { type ComponentType, useState } from "react";
+  SearchRegular } from "@fluentui/react-icons";
+import { useState, type ComponentType } from "react";
 import { copy } from "../../copy";
 import type { SettingsCategoryId } from "./SettingsSettingstypes";
 
@@ -46,7 +45,9 @@ type SettingsNavProps = {
 export function SettingsNav({ active, onSelect, paired, accountId }: SettingsNavProps) {
   const [query, setQuery] = useState("");
   const needle = query.trim().toLowerCase();
-  const entries = needle ? ENTRIES.filter((entry) => copy(entry.key).toLowerCase().includes(needle)) : ENTRIES;
+  const entries = needle
+    ? ENTRIES.filter((entry) => copy(entry.key).toLowerCase().includes(needle))
+    : ENTRIES;
 
   return (
     <nav className="dtw-nav dtw-settings__rail" aria-label="Settings sections">

@@ -376,7 +376,7 @@ const DESKTOP_CANONICAL = [
  * compares the file again — the maintenance ladders own the mutable pins
  * afterward, so this walk never fights them). */
 const MOBILE_MARKERS = [
-  'include: ${{ github.event_name == \'release\' && fromJson(\'[{"app":"argan"',
+  'include: \${{ github.event_name == \'release\' && fromJson(\'[{"app":"argan"',
   "attest the android assets",
   "attest the ios assets",
   "${{ matrix.app }}.sha256.android.",

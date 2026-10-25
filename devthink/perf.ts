@@ -4,35 +4,35 @@
  * No window, budget, factor or threshold is ever hardcoded: every bound stays the user's choice with no engine cap, and the meters measure and never refuse.
  */
 
-import { randomid } from "./memory.js";
 /* ── Merged from perfrecords.ts ── */
 import type {
-  adaptivepollwindow,
-  artifactcompressrecord,
-  backpressuresignal,
-  batchqueryplan,
-  batteryawarestate,
-  cadencecontrol,
-  coalescedrequest,
-  debouncedbatch,
-  debounceprofile,
-  domainlane,
-  durationsample,
-  incrsnapshotdelta,
-  lazyloadrecord,
-  lazymoddescriptor,
-  logprunerule,
-  networkretryrule,
   perfrecord,
   queuedepthsample,
+  incrsnapshotdelta,
+  snapshotchange,
+  batchqueryplan,
+  debouncedbatch,
+  debounceprofile,
+  durationsample,
   selectorstats,
   slowmosession,
-  snapshotchange,
-  startupbudget,
   startupsample,
   steptracespan,
+  artifactcompressrecord,
+  batteryawarestate,
+  logprunerule,
+  networkretryrule,
   tabsuspendstate,
+  adaptivepollwindow,
+  backpressuresignal,
+  cadencecontrol,
+  coalescedrequest,
+  domainlane,
+  lazyloadrecord,
+  lazymoddescriptor,
+  startupbudget,
 } from "./types.js";
+import { randomid } from "./memory.js";
 
 /**
  * Perfrecords logic of the 1.1.68 family.

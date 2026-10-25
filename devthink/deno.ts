@@ -4,9 +4,8 @@
  */
 
 export * from "./index.js";
-
-import type { denokvprimitives } from "./runtime.js";
 import { denoplatformadapter, stampbundle } from "./runtime.js";
+import type { denokvprimitives } from "./runtime.js";
 
 stampbundle("esm", "deno.js");
 

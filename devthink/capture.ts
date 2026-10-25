@@ -425,8 +425,8 @@ export function annotationplanof(input: {
 import type {
   assetrecord,
   convertdirective,
-  imagedescriptor,
   imagefilter,
+  imagedescriptor,
   mediadatum,
   pdfoptions,
   recordingoptions,
@@ -886,9 +886,6 @@ export function streamsummaries(
 
 /* ── Merged from vision.ts ── */
 
-import { bodyhashof } from "./http.js";
-import { randomid } from "./memory.js";
-import { maskingfield } from "./security.js";
 import type {
   framereference,
   groundingmatch,
@@ -903,6 +900,9 @@ import type {
   visioncacheentry,
   visiondescription,
 } from "./types.js";
+import { maskingfield } from "./security.js";
+import { randomid } from "./memory.js";
+import { bodyhashof } from "./http.js";
 
 /**
  * Vision and ocr logic of the 1.1.77 family.
@@ -1584,7 +1584,7 @@ export function templateof(step: Pick<toolstep, "kind" | "options">): string {
   if (step.options) {
     try {
       const parsed = JSON.parse(step.options) as unknown;
-      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+      if (Boolean(parsed) && typeof parsed === "object" && !Array.isArray(parsed)) {
         const template = (parsed as Record<string, unknown>).template;
         if (typeof template === "string" && template.trim() !== "") return template.trim();
       }

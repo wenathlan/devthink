@@ -25,7 +25,11 @@ export function PowerMenu() {
       </button>
       {open ? (
         <div className="dtw-login__powermenu" role="menu" aria-label="Power options">
-          <button type="button" role="menuitem" onClick={() => window.location.reload()}>
+          <button
+            type="button"
+            role="menuitem"
+            onClick={() => window.location.reload()}
+          >
             Restart the session
           </button>
         </div>

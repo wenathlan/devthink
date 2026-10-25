@@ -4,21 +4,21 @@
  * No binding is ever hardcoded: every node, deno and browser primitive arrives injected through the seam so the neutral and browser bundles never carry a platform import, and no adapter ever bypasses the human review.
  */
 
-import type { memoryadapter } from "./memory.js";
 /* ── Merged from platformadapter.ts ── */
 import type {
   adaptercontract,
   bundlemode,
   capabilityprobe,
   clockadapter,
-  featuredowngrade,
   fetchadapter,
   librarymode,
   loggeradapter,
-  platformmatrix,
   platformtarget,
   runtimeadapterdeclaration,
+  featuredowngrade,
+  platformmatrix,
 } from "./types.js";
+import type { memoryadapter } from "./memory.js";
 import { packageversion } from "./version.js";
 
 /**

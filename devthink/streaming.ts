@@ -48,16 +48,16 @@ import {
   BACKOFF_BASE_MS,
   BACKOFF_FACTOR,
   BACKOFF_MAX_MS,
-  CLIENT_METADATA_RAW,
-  CLOUDCODE_PA_BASE,
   GEMINI_CLI_OAUTH_CLIENT_ID as GEMINI_CLI_CLIENT_ID,
   GEMINI_CLI_OAUTH_CLIENT_SECRET as GEMINI_CLI_CLIENT_SECRET,
-  GEMINI_CLI_USER_AGENT,
   JITTER_MAX_MS,
   JITTER_MIN_MS,
   LRU_THINKING_CACHE_SIZE,
   MAX_RETRIES,
   PROJECT_FALLBACK,
+  GEMINI_CLI_USER_AGENT,
+  CLIENT_METADATA_RAW,
+  CLOUDCODE_PA_BASE,
   RETRYABLE_STATUS_CODES,
 } from "./constants.js";
 import { fnv1a32, getJitter, thinkingCache } from "./core.js";
@@ -73,15 +73,15 @@ export {
   BACKOFF_BASE_MS,
   BACKOFF_FACTOR,
   BACKOFF_MAX_MS,
-  fnv1a32,
   GEMINI_CLI_CLIENT_ID,
   GEMINI_CLI_CLIENT_SECRET,
-  getJitter,
   JITTER_MAX_MS,
   JITTER_MIN_MS,
   LRU_THINKING_CACHE_SIZE,
   MAX_RETRIES,
   PROJECT_FALLBACK,
+  fnv1a32,
+  getJitter,
   thinkingCache,
 };
 
@@ -368,7 +368,7 @@ export function parseSSEChunk(chunk: string, state: SSEParserState): ParsedSSEEv
     const nextStart = delimiterIdx + 2;
     // Parse block lines
     const lines = block.split("\n");
-    const dataLines: string[] = [];
+    let dataLines: string[] = [];
     let eventType: string | undefined;
     let id: string | undefined;
     let retry: number | undefined;
@@ -666,7 +666,7 @@ export function normalizePart(part: unknown): {
     const nameRaw = fc.name || fc.functionName || p.name || "unknown_tool";
     // Sanitize name: must start with letter or underscore for gemini, but we normalize
     const name = String(nameRaw).replace(/[^a-zA-Z0-9_.-]/g, "_");
-    const argsRaw = fc.args || fc.arguments || fc.input || {};
+    let argsRaw = fc.args || fc.arguments || fc.input || {};
     let argsJson: string;
     let argsParsed: unknown = argsRaw;
 
@@ -1659,7 +1659,7 @@ export async function fetchWithExponentialRetry(
 
     // Backoff before next attempt
     if (attempt < maxRetries) {
-      const delay = Math.min(baseMs * factor ** attempt, maxMs);
+      const delay = Math.min(baseMs * Math.pow(factor, attempt), maxMs);
       await sleepWithJitter(delay);
     }
 
@@ -1732,7 +1732,7 @@ export async function withAutoRecoveryStreaming(
         throw err;
       }
       const delay = Math.min(
-        (retryOpts.baseMs ?? BACKOFF_BASE_MS) * (retryOpts.factor ?? BACKOFF_FACTOR) ** attempt,
+        (retryOpts.baseMs ?? BACKOFF_BASE_MS) * Math.pow(retryOpts.factor ?? BACKOFF_FACTOR, attempt),
         retryOpts.maxMs ?? BACKOFF_MAX_MS,
       );
       await sleepWithJitter(delay);
@@ -1748,7 +1748,7 @@ export async function withAutoRecoveryStreaming(
           // ignore
         }
         const delay = Math.min(
-          (retryOpts.baseMs ?? BACKOFF_BASE_MS) * (retryOpts.factor ?? BACKOFF_FACTOR) ** attempt,
+          (retryOpts.baseMs ?? BACKOFF_BASE_MS) * Math.pow(retryOpts.factor ?? BACKOFF_FACTOR, attempt),
           retryOpts.maxMs ?? BACKOFF_MAX_MS,
         );
         await sleepWithJitter(delay);
@@ -1788,11 +1788,13 @@ export async function withAutoRecoveryStreaming(
         throw streamErr;
       }
       const delay = Math.min(
-        (retryOpts.baseMs ?? BACKOFF_BASE_MS) * (retryOpts.factor ?? BACKOFF_FACTOR) ** attempt,
+        (retryOpts.baseMs ?? BACKOFF_BASE_MS) * Math.pow(retryOpts.factor ?? BACKOFF_FACTOR, attempt),
         retryOpts.maxMs ?? BACKOFF_MAX_MS,
       );
       await sleepWithJitter(delay);
       attempt++;
+      // Continue retry loop — will re-fetch and continue? Note: we lost progress but tracker preserves sent state for dedup
+      continue;
     }
   }
 }
@@ -2019,15 +2021,14 @@ export async function* streamToAnthropic(
 
 /** Client-Metadata header string used by Gemini CLI bypass requests. */
 
-import type { ModelId2026 } from "./models.js";
 // v2.1.15 Phase A: MODELS_2026 (the 11-id legacy bypass list) and the
 // ModelId2026 union moved to models.ts (MODELS_2026_LEGACY / ModelId2026) —
 // imported under the historical name and re-exported so the public surface
 // is unchanged.
 import { MODELS_2026_LEGACY as MODELS_2026, UA_DEFAULT_MODEL } from "./models.js";
-
-export type { ModelId2026 };
+import type { ModelId2026 } from "./models.js";
 export { MODELS_2026 };
+export type { ModelId2026 };
 
 // ---------------------------------------------------------------------------
 // Merged: raw cloudcode-pa payload types
@@ -2398,7 +2399,7 @@ function safeJsonParseArray(text: string): { objects: CloudCodeRawChunk[]; remai
   // Trim BOM
   if (remainder.charCodeAt(0) === 0xfeff) remainder = remainder.slice(1);
 
-  const buffer = remainder;
+  let buffer = remainder;
   remainder = "";
 
   const lines = buffer.split(/\r?\n/);
@@ -3035,6 +3036,7 @@ export function transformToOpenAIChunks(payloads: NormalizedPayload[], state: St
           ],
         });
       } else if (part.kind === "thought_signature") {
+        continue;
       }
     }
 
@@ -3585,7 +3587,7 @@ const DEFAULT_RETRY_ON = [429, 500, 502, 503, 504];
  * @param jitter - apply jitter
  */
 export function computeExponentialDelay(attempt: number, base: number, max: number, jitter: boolean): number {
-  let delay = base * 2 ** attempt;
+  let delay = base * Math.pow(2, attempt);
   if (delay > max) delay = max;
   if (jitter) {
     const jitterFactor = 0.7 + Math.random() * 0.6;

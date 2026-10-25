@@ -21,8 +21,8 @@ import {
 } from "./osgateway";
 import { arrayOf, isString, useStoredState, type Validator } from "./usestoredstate.ts";
 
-export { type GatewayModel, gatewayModels } from "./osgateway";
 export { ChatStoppedError, isChatStop };
+export { type GatewayModel, gatewayModels } from "./osgateway";
 
 /* ------------------------------- types -------------------------------- */
 

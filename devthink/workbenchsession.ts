@@ -5,11 +5,11 @@
  * node surface keeps the workbench chat session files).
  */
 /** DevThink session model: one stable identity contract for CLI, gateway, local database, and URL-addressable web state. */
-import { existsSync, readdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, renameSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { type DevThinkPaths, ensurePaths } from "./config.js";
-import { createCompactId } from "./ids.js";
+import { ensurePaths, type DevThinkPaths } from "./config.js";
 import type { ChatMessage } from "./providers.ts";
+import { createCompactId } from "./ids.js";
 import { mirrorSession, type StoredSession, type StoredWorkspace } from "./storage.js";
 
 export type SessionSection =

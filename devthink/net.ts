@@ -6,7 +6,6 @@
 
 /* ── Merged from netwatch.ts ── */
 
-import { readpath } from "./http.js";
 import type {
   apimapentry,
   apireplayspec,
@@ -16,6 +15,7 @@ import type {
   headerfilter,
   responseentry,
 } from "./types.js";
+import { readpath } from "./http.js";
 
 /**
  * Network observation part two watch logics for the 1.1.43 family.
@@ -731,7 +731,9 @@ export function sserequestheaders(record: { lasteventid?: string }): Record<stri
 }
 
 /** Normalizes reviewed subscription options: the event stream url, the lifetime window, the resume point and the reviewed cancellation path. */
-export function subscriptionoptionsof(value: unknown):
+export function subscriptionoptionsof(
+  value: unknown,
+):
   | {
       url: string;
       lifetime?: number;
@@ -936,7 +938,9 @@ export function newblockrule(input: {
 }
 
 /** Parses one reviewed mock fixture from step options: url pattern, status, headers and either the reviewed body or the reference of a captured body of the 1.1.43 body store the fixture replays. */
-export function mockspecof(value: unknown):
+export function mockspecof(
+  value: unknown,
+):
   | {
       urlpattern: string;
       status: number;

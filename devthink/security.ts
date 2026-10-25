@@ -6,19 +6,19 @@
 
 /* ── Merged from originpolicy.ts ── */
 
-import { randomid } from "./memory.js";
 import type {
   actionkind,
   automationallowlistentry,
   classconsent,
-  consentscope,
   consentwindow,
+  consentscope,
   deniedevidence,
   originprofile,
   revokerunevent,
   sensitiveclass,
   toolstep,
 } from "./types.js";
+import { randomid } from "./memory.js";
 
 /**
  * Origin consent policy logic of the 1.1.61 family.
@@ -162,7 +162,9 @@ function stepoptions(step: Pick<toolstep, "options">): Record<string, unknown> {
   if (!step.options) return {};
   try {
     const parsed = JSON.parse(step.options);
-    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? (parsed as Record<string, unknown>) : {};
+    return Boolean(parsed) && typeof parsed === "object" && !Array.isArray(parsed)
+      ? (parsed as Record<string, unknown>)
+      : {};
   } catch {
     return {};
   }
@@ -919,11 +921,12 @@ export function maskrecord(record: Record<string, unknown>, shapes: string[]): R
           : maskfield({ name: key, value, shapes });
     } else if (Array.isArray(value))
       masked[key] = value.map((item) =>
-        item && typeof item === "object" && !Array.isArray(item)
+        Boolean(item) && typeof item === "object" && !Array.isArray(item)
           ? maskrecord(item as Record<string, unknown>, shapes)
           : item,
       );
-    else if (value && typeof value === "object") masked[key] = maskrecord(value as Record<string, unknown>, shapes);
+    else if (Boolean(value) && typeof value === "object")
+      masked[key] = maskrecord(value as Record<string, unknown>, shapes);
     else masked[key] = value;
   }
   return masked;
@@ -940,7 +943,7 @@ export function masktypedvalues(input: {
   if (input.step.options !== undefined) {
     try {
       const parsed = JSON.parse(input.step.options) as unknown;
-      if (parsed && typeof parsed === "object" && !Array.isArray(parsed))
+      if (Boolean(parsed) && typeof parsed === "object" && !Array.isArray(parsed))
         maskedoptions = JSON.stringify(maskrecord(parsed as Record<string, unknown>, input.shapes));
     } catch {
       /* an options payload outside the json grammar keeps its reviewed text */
@@ -1157,7 +1160,9 @@ export async function readverifiedlog(
 }
 
 /** Reads the verification status of one stored run log for the panel: the chain validity, the entry count, the broken link when one exists and the seal hash at completion. */
-export async function chainreportof(log: storedrunlog): Promise<{
+export async function chainreportof(
+  log: storedrunlog,
+): Promise<{
   runid: string;
   valid: boolean;
   entries: number;
@@ -1185,7 +1190,9 @@ export async function chainreportof(log: storedrunlog): Promise<{
 }
 
 /** Exports one run log as an audit record only after the chain verifies: the entries, the chain status and the seal hash travel together while a broken link refuses the export. */
-export async function exportlogchain(log: storedrunlog): Promise<{
+export async function exportlogchain(
+  log: storedrunlog,
+): Promise<{
   runid: string;
   entries: number;
   chainvalid: boolean;
@@ -1548,7 +1555,9 @@ export function secretshapecarrying(step: Pick<toolstep, "kind" | "target" | "va
 }
 
 /** Builds the vault view the surfaces render: the labels, scopes, provenance and last use times only, because no surface ever displays or exports a secret value. */
-export function vaultview(entries: secretvaultentry[]): Array<{
+export function vaultview(
+  entries: secretvaultentry[],
+): Array<{
   vaultid: string;
   label: string;
   scope: string;

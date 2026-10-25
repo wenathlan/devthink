@@ -9,7 +9,7 @@
  * page, riding the dtw kit.
  */
 
-import { PlugConnectedRegular } from "@fluentui/react-icons";
+import {PlugConnectedRegular} from "@fluentui/react-icons";
 import { type FormEvent, useEffect, useState } from "react";
 import { GATEWAY_REQUIRED_COPY, gatewayStatusLabel, useGatewayRegistration } from "../../gatewaybase.ts";
 

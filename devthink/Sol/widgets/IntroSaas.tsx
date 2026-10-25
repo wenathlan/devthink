@@ -9,22 +9,11 @@
  * the saas-* root and the reference class names.
  */
 
-import {
-  ArrowUpRightRegular as ArrowUpRight,
-  AlertRegular as Bell,
-  HeadphonesRegular as Headphones,
-  StackRegular as Layers,
-  ArrowImportRegular as LogIn,
-  MaximizeRegular as Maximize2,
-  ChatRegular as MessageSquare,
-  SparkleRegular as Sparkles,
-  StarRegular as Star,
-  TvRegular as Tv,
-  PeopleRegular as Users,
-} from "@fluentui/react-icons";
+import {ArrowUpRightRegular as ArrowUpRight, AlertRegular as Bell, HeadphonesRegular as Headphones, StackRegular as Layers, ArrowImportRegular as LogIn, MaximizeRegular as Maximize2, ChatRegular as MessageSquare, SparkleRegular as Sparkles, StarRegular as Star, TvRegular as Tv, PeopleRegular as Users} from "@fluentui/react-icons";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
+import { SolLogoMark, SolWordmark } from "./PanelLogo.tsx";
 import { SaddleTabBridge, VerticalSaddleBridge } from "./IntroSaaskit.tsx";
 import {
   SaasCadria,
@@ -33,10 +22,8 @@ import {
   SaasExplorerWall,
   SaasFlowStrip,
   SaasFooter,
-  SaasRibbon,
-} from "./IntroSaasrails.tsx";
+  SaasRibbon } from "./IntroSaasrails.tsx";
 import { SaasCreators, SaasHero, SaasStudios } from "./IntroSaassections.tsx";
-import { SolLogoMark, SolWordmark } from "./PanelLogo.tsx";
 
 const SAAS_CSS = `
 .saas-root { font-family: 'Urbanist', sans-serif; letter-spacing: -0.015em; background: #DCE2EE; }

@@ -36,10 +36,10 @@ import PolicyAnchor from "./policy/policy.tsx";
 import ProjectsAnchor from "./projects/projects.tsx";
 import ProvidersAnchor from "./providers/providers.tsx";
 import SettingsAnchor from "./settings/settings.tsx";
+import { RouteSurface } from "./widgets";
 import TermsAnchor from "./terms/terms.tsx";
 import UsageAnchor from "./usage/usage.tsx";
 import VideoAnchor from "./video/video.tsx";
-import { RouteSurface } from "./widgets";
 
 // the gtx translation arms beside the shield: the theme language rides the visitor choice
 initautotranslate();

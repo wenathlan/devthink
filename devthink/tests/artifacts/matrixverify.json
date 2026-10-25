@@ -1,7 +1,11 @@
 {
   "release": "2.0.144",
   "matrix": {
-    "browsers": ["chromium", "firefox", "safari"],
+    "browsers": [
+      "chromium",
+      "firefox",
+      "safari"
+    ],
     "kinds": 335,
     "cells": 18
   },

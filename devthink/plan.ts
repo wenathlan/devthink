@@ -6,8 +6,6 @@
 
 /* ── Merged from planlint.ts ── */
 
-import { portablecapabilitygate, resolvedrisk } from "./policy.js";
-import { missingclassconsents, originprofileof, profilegrade, sensitiveclassesof } from "./security.js";
 import type {
   actionkind,
   classconsent,
@@ -19,6 +17,8 @@ import type {
   sensitiveclass,
   toolstep,
 } from "./types.js";
+import { missingclassconsents, originprofileof, profilegrade, sensitiveclassesof } from "./security.js";
+import { portablecapabilitygate, resolvedrisk } from "./policy.js";
 
 /**
  * Planlint logic of the 1.1.67 family.
@@ -331,10 +331,6 @@ export function plansensitiveclasses(file: planfile): sensitiveclass[] {
 
 /* ── Merged from planreview.ts ── */
 
-import { defaultenvironment } from "./environments.js";
-import { randomid } from "./memory.js";
-import { entryhashof } from "./security.js";
-import { matchingcorrections } from "./session.js";
 import type {
   actionrisk,
   agentplan,
@@ -346,14 +342,18 @@ import type {
   loglevel,
   logstreamevent,
   logstreamfilter,
+  planprogress,
   plancard,
   plancardgroup,
-  planprogress,
   stepapproveresolution,
   stepoutcome,
   stepstimelinenode,
   uisurface,
 } from "./types.js";
+import { defaultenvironment } from "./environments.js";
+import { matchingcorrections } from "./session.js";
+import { entryhashof } from "./security.js";
+import { randomid } from "./memory.js";
 
 /**
  * Plan review surface logic of the 1.1.64 family, part one.
@@ -454,8 +454,8 @@ export function diffpreviewof(input: {
   const changes: diffchange[] = [];
   const fields = [...new Set([...Object.keys(input.before), ...Object.keys(input.after)])];
   for (const field of fields) {
-    const hasbefore = Object.hasOwn(input.before, field);
-    const hasafter = Object.hasOwn(input.after, field);
+    const hasbefore = Object.prototype.hasOwnProperty.call(input.before, field);
+    const hasafter = Object.prototype.hasOwnProperty.call(input.after, field);
     const beforevalue = input.before[field];
     const aftervalue = input.after[field];
     if (hasbefore && !hasafter && beforevalue !== undefined)

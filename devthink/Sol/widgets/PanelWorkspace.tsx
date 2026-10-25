@@ -29,27 +29,27 @@ import { useLocation } from "wouter";
 import { alttabkeydown } from "../../alttab.ts";
 import { DESKTOP_APPS, type DesktopApp } from "../../appregistry.ts";
 import { pushrecentapp } from "../../recentapps.ts";
-import { type WindowEntry, windowcatalog, windowspawn } from "../../window.ts";
 import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspace.ts";
+import { type WindowEntry, windowcatalog, windowspawn } from "../../window.ts";
 import AudioAnchor from "../audio/audio.tsx";
 import CalculatorAnchor from "../calculator/calculator.tsx";
+import ChatBody from "./ChatBody.tsx";
 import ConsoleAnchor from "../console/console.tsx";
 import DocsAnchor from "../docs/docs.tsx";
 import FilesAnchor from "../files/files.tsx";
-import GamesAnchor from "../games/games.tsx";
 import GatewayView from "../gateway/gateway.tsx";
+import GamesAnchor from "../games/games.tsx";
 import ImageAnchor from "../image/image.tsx";
 import ProjectsAnchor from "../projects/projects.tsx";
 import ProvidersAnchor from "../providers/providers.tsx";
 import SettingsAnchor from "../settings/settings.tsx";
+import { FamilyFrame } from "./ShellFamilyframe.tsx";
 import UsageAnchor from "../usage/usage.tsx";
 import VideoAnchor from "../video/video.tsx";
-import ChatBody from "./ChatBody.tsx";
+import { type AltTabCard, AltTabSwitcher } from "./ShellAlttabswitcher.tsx";
+import { ShellChrome } from "./ShellShellchrome.tsx";
 import { DesktopSurface } from "./PanelDesktop.tsx";
 import { WINDOW_MIN_HEIGHT, WINDOW_MIN_WIDTH, WindowFrame, type WindowSnapshot } from "./PanelWindowframe.tsx";
-import { type AltTabCard, AltTabSwitcher } from "./ShellAlttabswitcher.tsx";
-import { FamilyFrame } from "./ShellFamilyframe.tsx";
-import { ShellChrome } from "./ShellShellchrome.tsx";
 
 /** One windowed app: the anchor component with the embedded contract and
  * the spawn geometry the frame opens at. */
@@ -171,8 +171,7 @@ function defaultSnapshot(id: string, title: string, openCount: number): WindowSn
     width,
     height,
     state: "normal",
-    z: Z_BASE,
-  };
+    z: Z_BASE };
 }
 
 /** The persisted window layout (the desktopstate pattern): the snapshots
@@ -201,8 +200,7 @@ export function ShellWorkspace({
   railMode,
   onDestination,
   onSelectTab,
-  onNavigate,
-}: ShellWorkspaceProps) {
+  onNavigate }: ShellWorkspaceProps) {
   const [location] = useLocation();
   const destination: WorkspaceDestination = isWorkspaceDestination(sectionId) ? sectionId : "chat";
   /** the desktop boots with the persisted layout (empty on a fresh device) —
@@ -347,8 +345,7 @@ export function ShellWorkspace({
         id: win.id,
         title: win.title,
         minimized: win.state === "minimized",
-        app: appById(win.id),
-      })),
+        app: appById(win.id) })),
     [windows],
   );
 

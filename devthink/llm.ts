@@ -4,19 +4,6 @@
  * No provider, key or template is ever hardcoded: every route and prompt stays the user's choice, and no model call ever bypasses the consent gates.
  */
 
-import { type fetchtransport, sendfetch, type transportresponse } from "./http.js";
-import { randomid } from "./memory.js";
-import {
-  egressconsentgate,
-  gatewaybaseurlgate,
-  gatewaycachewindowvalid,
-  gatewayconsentgate,
-  gatewaykeyconsentgate,
-  gatewayprefixgate,
-  gatewayretrycapvalid,
-  planlint,
-} from "./policy.js";
-import { secretleakscan, vaultdelete, vaultstore, vaultvaluefor } from "./security.js";
 import type {
   apikeyref,
   baseurlconfig,
@@ -40,8 +27,8 @@ import type {
   plandraft,
   policyevaluation,
   prompttemplate,
-  protocolstyle,
   providerconfig,
+  protocolstyle,
   reflectnote,
   replanrecord,
   secretvaultentry,
@@ -50,6 +37,19 @@ import type {
   tooldef,
   usagerecord,
 } from "./types.js";
+import {
+  planlint,
+  egressconsentgate,
+  gatewaybaseurlgate,
+  gatewaycachewindowvalid,
+  gatewayconsentgate,
+  gatewaykeyconsentgate,
+  gatewayprefixgate,
+  gatewayretrycapvalid,
+} from "./policy.js";
+import { sendfetch, type fetchtransport, type transportresponse } from "./http.js";
+import { randomid } from "./memory.js";
+import { secretleakscan, vaultdelete, vaultstore, vaultvaluefor } from "./security.js";
 
 /**
  * Llm integration logics of the 1.1.57 family.

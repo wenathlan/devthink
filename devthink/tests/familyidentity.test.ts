@@ -10,8 +10,8 @@
  * fails before any view renders unlit.
  */
 import { describe, expect, it } from "vitest";
-import { FAMILY_ACCENT, familyAccentOf } from "../familyaccent";
 import { APPS, appMeta } from "../osapps";
+import { FAMILY_ACCENT, familyAccentOf } from "../familyaccent";
 import { seedFamilySites } from "../seedcatalog";
 
 /** the spec-12 accent table, verbatim — the decided colors of the campaign. */

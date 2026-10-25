@@ -29,21 +29,11 @@
  * 240ms at 60ms steps, reduced-motion guarded. No route, data or export
  * changes.
  */
-import {
-  ArrowLeftRegular as ArrowLeft,
-  KeyRegular as KeyRound,
-  CommunicationRegular as Network,
-  ArrowCounterclockwiseRegular as RefreshCcw,
-  ShieldRegular as ShieldCheck,
-  WindowConsoleRegular as TerminalSquare,
-} from "@fluentui/react-icons";
+import {ArrowLeftRegular as ArrowLeft, KeyRegular as KeyRound, CommunicationRegular as Network, ArrowCounterclockwiseRegular as RefreshCcw, ShieldRegular as ShieldCheck, WindowConsoleRegular as TerminalSquare} from "@fluentui/react-icons";
 import type { CSSProperties } from "react";
 import { useState } from "react";
 import { Link, useRoute } from "wouter";
-import { ShellChrome } from "@/widgets/ShellShellchrome";
 import { osAppLabels } from "../../catalog.ts";
-import { config } from "../../gatewayviewconfig.ts";
-import type { gatewayconfig } from "../../gatewayviewdefinition.ts";
 import {
   osGatewayAuthMethods,
   osGatewayRoutes,
@@ -52,6 +42,9 @@ import {
   osGatewayUsageBlock,
   osText,
 } from "../../oslabels.ts";
+import { ShellChrome } from "@/widgets/ShellShellchrome";
+import { config } from "../../gatewayviewconfig.ts";
+import type { gatewayconfig } from "../../gatewayviewdefinition.ts";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */
@@ -246,8 +239,7 @@ function versionmodelsline(version: gatewayconfig): string {
 const thinkinglevels = Object.entries(config.versions.v1?.thinking?.budgets ?? {}).map(([level, budget]) => ({
   level,
   budget: String(budget),
-  desc: osGatewayThinking(level),
-}));
+  desc: osGatewayThinking(level) }));
 
 /** the compact definition summary the explorer renders: what the engine would load, one line per version. */
 const definitionsummary = {
@@ -264,11 +256,9 @@ const definitionsummary = {
         defaultmodel: version.defaultmodel,
         rotation: version.rotation?.mode ?? "fixed",
         metamodel: version.metamodel.id,
-        paused: version.paused === true,
-      },
+        paused: version.paused === true },
     ]),
-  ),
-};
+  ) };
 
 /** the library usage block the page renders beside the catalog — the
  * oslabels gateway seed owns the lines. */
@@ -285,8 +275,7 @@ function VersionRow({
   version,
   index,
   embedded,
-  onOpen,
-}: {
+  onOpen }: {
   version: gatewayconfig;
   index: number;
   embedded: boolean;
@@ -364,7 +353,9 @@ export default function GatewayView({ embedded }: { embedded?: boolean }) {
             {version ? `${version.id} ${version.providername}` : osText("gateway.versionNotFound")}
           </h1>
           <p className="pagehead__lede r2a-lede">
-            {version ? `${versionpattern(version)} ${version.note ?? ""}` : osText("gateway.versionNotFoundLede")}
+            {version
+              ? `${versionpattern(version)} ${version.note ?? ""}`
+              : osText("gateway.versionNotFoundLede")}
           </p>
           {/* the retired .gateway-toolbar row rides the hero actions slot —
               inside the window the back action resets the in-window detail */}
@@ -466,14 +457,18 @@ export default function GatewayView({ embedded }: { embedded?: boolean }) {
                     </article>
                   ))}
                 </div>
-                <p className="gateway-note">{osText("gateway.routeInfo").replace("{version}", version.id)}</p>
+                <p className="gateway-note">
+                  {osText("gateway.routeInfo").replace("{version}", version.id)}
+                </p>
               </section>
             </div>
           </div>
         ) : (
           <div className="control-empty">
             <h2>{osText("gateway.versionMissing").replace("{id}", detailId)}</h2>
-            <p>{osText("gateway.shippedCount").replace("{count}", String(Object.keys(config.versions).length))}</p>
+            <p>
+              {osText("gateway.shippedCount").replace("{count}", String(Object.keys(config.versions).length))}
+            </p>
           </div>
         )}
       </ConsoleFrame>

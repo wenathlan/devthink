@@ -7,7 +7,7 @@
  * seed never overwrites a translated row.
  */
 
-import { type BrowserLabel, readAllLabels, saveLabel } from "./db.ts";
+import { readAllLabels, saveLabel, type BrowserLabel } from "./db.ts";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */

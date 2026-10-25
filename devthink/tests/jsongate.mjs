@@ -1,7 +1,6 @@
 /** Strict JSON validation of every tracked document, the gateway family json gate ported to the merged tree. */
-
-import { execFileSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
+import { execFileSync } from "node:child_process";
 
 /* The gateway ci lane carries the strict json gate (the maene and e2ugh
    lanes carry the same battery): every tracked .json file must parse as
@@ -20,8 +19,7 @@ const tracked = execFileSync("git", ["ls-files", "*.json"], { encoding: "utf8" }
   .filter((line) => line.trim().length > 0)
   .sort();
 
-if (tracked.length === 0)
-  throw new Error("No tracked JSON documents were found; the json gate refuses to run over an empty tree.");
+if (tracked.length === 0) throw new Error("No tracked JSON documents were found; the json gate refuses to run over an empty tree.");
 
 const stripBom = (text) => text.replace(/^\uFEFF/, "");
 
@@ -124,12 +122,7 @@ for (const file of tracked) {
      level by design (recorded repository evidence, not configuration),
      so a generic object demand would fail the evidence trees the grand
      merge deliberately tracks. */
-  const isManifest =
-    file === "package.json" ||
-    file === "manifest.json" ||
-    file === "biome.json" ||
-    file === "deno.json" ||
-    isTsconfig(file);
+  const isManifest = file === "package.json" || file === "manifest.json" || file === "biome.json" || file === "deno.json" || isTsconfig(file);
   if (isManifest && (!data || typeof data !== "object" || Array.isArray(data))) {
     console.error(`::error file=${file}::The manifest must be an object at the top level.`);
     failures += 1;
@@ -153,7 +146,5 @@ for (const file of tracked) {
 const rootmanifest = JSON.parse(stripBom(await readFile("package.json", "utf8")));
 
 for (const report of reports) console.log(report);
-console.log(
-  `The json gate validated ${tracked.length} tracked documents: ${failures} failure(s), ${warnings} warning(s).`,
-);
+console.log(`The json gate validated ${tracked.length} tracked documents: ${failures} failure(s), ${warnings} warning(s).`);
 if (failures > 0) throw new Error(`${failures} tracked JSON document(s) failed the strict parse battery.`);

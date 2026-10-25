@@ -1101,7 +1101,10 @@ async function createserver(): Promise<Hono> {
     const content = typeof body?.content === "string" ? body.content : "";
     if (!sandboxsessionpattern.test(sessionid)) return c.json({ error: "invalid session" }, 400);
     const targetsafe =
-      target.length > 0 && !target.startsWith("/") && !target.startsWith("\\") && !target.split(/[\\/]/).includes("..");
+      target.length > 0 &&
+      !target.startsWith("/") &&
+      !target.startsWith("\\") &&
+      !target.split(/[\\/]/).includes("..");
     if (!targetsafe) return c.json({ error: "invalid target" }, 400);
     if (content.length > 5_000_000) return c.json({ error: "content too large" }, 400);
     await writesandboxfile(sessionid, target, content);

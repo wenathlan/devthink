@@ -9,7 +9,7 @@
  */
 import { useState } from "react";
 import { copy } from "../../copy";
-import { ACCENTS, type AccentId, loadAccent, saveAccent } from "./SettingsPersonalstore";
+import { ACCENTS, loadAccent, saveAccent, type AccentId } from "./SettingsPersonalstore";
 
 /** AccentRow — the swatch row of the Colors card. */
 export function AccentRow() {

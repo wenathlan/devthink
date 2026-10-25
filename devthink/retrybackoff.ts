@@ -86,11 +86,7 @@ export function isRetryableStatus(status: number): boolean {
  * @returns the delay in milliseconds, or undefined when the header is absent
  *   or unparseable.
  */
-export function parseRetryAfterMs(
-  value: string | null | undefined,
-  now = Date.now(),
-  maxDelayMs = 120_000,
-): number | undefined {
+export function parseRetryAfterMs(value: string | null | undefined, now = Date.now(), maxDelayMs = 120_000): number | undefined {
   const raw = value?.trim();
   if (!raw) return undefined;
   if (/^\d+$/.test(raw)) return clampDelay(Number.parseInt(raw, 10) * 1_000, maxDelayMs);
@@ -181,9 +177,7 @@ export async function retryWithBackoff<T>(attempt: () => Promise<T>, opts: Retry
       lastError = err;
       if (isAbortError(err)) throw err;
       const status = err instanceof RetryableError ? err.status : -1;
-      const retry = opts.shouldRetry
-        ? opts.shouldRetry(err, status)
-        : err instanceof RetryableError && isRetryableStatus(status);
+      const retry = opts.shouldRetry ? opts.shouldRetry(err, status) : err instanceof RetryableError && isRetryableStatus(status);
       if (!retry || attemptNo >= config.maxRetries) throw err;
       const hint = err instanceof RetryableError && err.retryAfterMs !== undefined ? err.retryAfterMs : undefined;
       const delayMs = hint ?? delayForAttempt(config, attemptNo + 1);

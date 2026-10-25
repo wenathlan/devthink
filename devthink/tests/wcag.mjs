@@ -1,7 +1,7 @@
 /** Executes the accessibility sweep gate of the 2.0.0 roadmap item 55 ("an accessibility sweep audits every ui surface against the wcag checklist") over the surface templates and the generated view markup: the gate reads the one design file design.html, extracts every surface template the build splits into the extension pages (the site, the popup, the sidepanel, the dashboardpage, the optionspage, the transparencypage, the sandbox host and the offscreen host) and audits each surface against the checklist — every image carries its alt text, every button carries an accessible name, every input, textarea and select carries its label, the heading hierarchy starts at the h1 with no skipped level, the default theme tokens meet the computed contrast ratios, the stylesheet carries its focus visible outlines, no positive tabindex reorders the focus, the built surface pages stamp their html lang and no template overrides it, and the decorative markers stay off the interactive elements. The contrast math recomputes the WCAG relative luminance ratio from the token values parsed out of the stylesheet so a token change re-audits, the high contrast variants another lane owns stay outside this sweep, and the generated markup cross-check proves every class the templates reference, every state class the view scripts toggle and every class of the shared template vocabulary resolves to a real stylesheet rule. The audit is honest about its limits: it is static analysis of the templates, the stylesheet and the view sources with no screen reader emulation and no runtime focus walk. The artifact tests/artifacts/wcag.json records every executed check with its outcome in a fixed order with no timestamps so reruns stay byte identical, and the gate exits nonzero on any failed check. The checklist with its success criterion references and the invocation walkthrough live in docs/wcag.md. */
-
+import { mkdir, writeFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
-import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -91,7 +91,7 @@ function attributesof(tagmatch) {
 function channelsof(hex) {
   const digits = hex.replace("#", "");
   const parts = [0, 2, 4].map((index) => parseInt(digits.slice(index, index + 2), 16) / 255);
-  return parts.map((value) => (value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4));
+  return parts.map((value) => (value <= 0.03928 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4)));
 }
 
 /** Computes the WCAG relative luminance of one hex color. */

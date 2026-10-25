@@ -6,7 +6,7 @@
  * this file.
  */
 
-import { ArrowRightRegular as ArrowRight, ArrowCounterclockwiseRegular as RotateCcw } from "@fluentui/react-icons";
+import {ArrowRightRegular as ArrowRight, ArrowCounterclockwiseRegular as RotateCcw} from "@fluentui/react-icons";
 /** Style: DevThink landing SaaS — the trylle ruler over the Windows canvas,
  * rebuilt into the category experience: the person enters and EXPLORES —
  * the categories of video, image, audio, three dee, code, documents,
@@ -34,44 +34,40 @@ import { ArrowRightRegular as ArrowRight, ArrowCounterclockwiseRegular as Rotate
  * micro curve. */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "wouter";
-import { DESKTOP_APPS, isFamilyApp } from "../../appregistry.ts";
 import {
-  type AboutBlock,
   aboutBlocks,
-  type CoreModule,
   coreModuleTable,
-  type FamilySite,
   familySites,
-  type LegalSection,
   policySections,
-  type RunnerBinary,
   runnerBinaries,
-  type StudioAsset,
-  type StudioTrack,
   studioAssets,
   studioTracks,
   termsSections,
-} from "../../catalog";
+  type AboutBlock,
+  type CoreModule,
+  type FamilySite,
+  type LegalSection,
+  type RunnerBinary,
+  type StudioAsset,
+  type StudioTrack } from "../../catalog";
+import { DESKTOP_APPS, isFamilyApp } from "../../appregistry.ts";
 import { label } from "../../labels.ts";
 import { peekonboardingstate } from "../../onboardingstate";
 import { osText } from "../../oslabels.ts";
+import { SolLogoMark } from "../widgets";
+import { ShellChrome } from "../widgets";
+import { DownloadRail } from "../widgets";
+import { ExploreSidebar } from "../widgets";
 import {
   CategoryDeck,
   CategorySectionDeck,
-  DownloadRail,
-  type ExploreCategoryId,
-  type ExploreData,
-  ExploreSidebar,
   exploreCategories,
   exploreRecents,
-  HeroWaves,
-  LaunchDeck,
-  OsSigil,
-  ShellChrome,
-  SolLogoMark,
-  TRYLLE_PRIMARY_STACK,
-  WindowEdgeChrome,
-} from "../widgets";
+  type ExploreCategoryId,
+  type ExploreData } from "../widgets";
+import { LaunchDeck, OsSigil, TRYLLE_PRIMARY_STACK } from "../widgets";
+import { HeroWaves } from "../widgets";
+import { WindowEdgeChrome } from "../widgets";
 
 export * from "../widgets";
 export * from "../widgets";
@@ -91,8 +87,7 @@ const STRIP_SHADOW = "0 1px 2px rgb(0 0 0 / 26%), 0 3px 12px rgb(0 0 0 / 12%)";
  * #202020 radial #1a1f35 and the light #f3f3f3 radial #eff4f9 of the spec)
  * so the hub rides the os surface of the live theme — never a hardcode */
 const MICA_STYLE = {
-  background: "var(--mica)",
-} as const;
+  background: "var(--mica)" } as const;
 
 /* ---- the hero atmosphere: the named light source and the film grain — layered over the mica floor, all
         presentational, pointer-transparent, riding the campaign recipes ---- */
@@ -102,8 +97,7 @@ const heroLightStyle = {
   zIndex: 0,
   pointerEvents: "none",
   background:
-    "radial-gradient(1200px 700px at 72% -12%, rgb(255 95 0 / 15%), transparent 62%), radial-gradient(900px 620px at 6% 110%, rgb(255 159 46 / 9%), transparent 58%)",
-} as const;
+    "radial-gradient(1200px 700px at 72% -12%, rgb(255 95 0 / 15%), transparent 62%), radial-gradient(900px 620px at 6% 110%, rgb(255 159 46 / 9%), transparent 58%)" } as const;
 /** the film grain: feTurbulence fractal noise, 2 octaves, 140px tile,
  * soft-light — the doctrine veil, additive over the mica */
 const heroGrainStyle = {
@@ -113,8 +107,7 @@ const heroGrainStyle = {
   pointerEvents: "none",
   mixBlendMode: "soft-light",
   backgroundImage:
-    "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.07'/%3E%3C/svg%3E\")",
-} as const;
+    "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.07'/%3E%3C/svg%3E\")" } as const;
 
 /** the anchor rows of the page head (the jump links of the landing) — the
  * new zone reads the label store, the inherited rows stay on the os table */
@@ -155,20 +148,18 @@ export default function Explore() {
       policySections(),
       runnerBinaries(),
     ])
-      .then(
-        ([assets, tracks, modules, sites, about, terms, policy, binaries]: [
-          StudioAsset[],
-          StudioTrack[],
-          CoreModule[],
-          FamilySite[],
-          AboutBlock[],
-          LegalSection[],
-          LegalSection[],
-          RunnerBinary[],
-        ]) => {
-          setData({ assets, tracks, modules, sites, about, terms, policy, binaries });
-        },
-      )
+      .then(([assets, tracks, modules, sites, about, terms, policy, binaries]: [
+        StudioAsset[],
+        StudioTrack[],
+        CoreModule[],
+        FamilySite[],
+        AboutBlock[],
+        LegalSection[],
+        LegalSection[],
+        RunnerBinary[],
+      ]) => {
+        setData({ assets, tracks, modules, sites, about, terms, policy, binaries });
+      })
       .catch(() => setFailed(true));
   }
 
@@ -308,7 +299,10 @@ export default function Explore() {
                 </div>
               </header>
 
-              <section className="relative pb-6 pt-[clamp(40px,7vh,96px)]" aria-label={osText("explore.hero.aria")}>
+              <section
+                className="relative pb-6 pt-[clamp(40px,7vh,96px)]"
+                aria-label={osText("explore.hero.aria")}
+              >
                 {/* the atmosphere: one warm light source
                 dissolves and the film grain — layered, pointer-transparent */}
                 <div style={heroLightStyle} aria-hidden="true" />
@@ -340,7 +334,10 @@ export default function Explore() {
                 </div>
               </section>
 
-              <HeroWaves caption={label("explore.categories.waves")} meta={label("explore.categories.wavesMeta")} />
+              <HeroWaves
+                caption={label("explore.categories.waves")}
+                meta={label("explore.categories.wavesMeta")}
+              />
 
               <CategoryDeck
                 categories={categories}
@@ -350,7 +347,10 @@ export default function Explore() {
                 zoneRef={categoriesRef}
               />
 
-              <HeroWaves caption={label("explore.deck.waves")} meta={label("explore.deck.wavesMeta")} />
+              <HeroWaves
+                caption={label("explore.deck.waves")}
+                meta={label("explore.deck.wavesMeta")}
+              />
 
               <CategorySectionDeck
                 categories={categories}
@@ -366,7 +366,10 @@ export default function Explore() {
                 zoneRef={deckRef}
               />
 
-              <HeroWaves caption={label("explore.modules.waves")} meta={osText("explore.waves.modulesMeta")} />
+              <HeroWaves
+                caption={label("explore.modules.waves")}
+                meta={osText("explore.waves.modulesMeta")}
+              />
 
               {/* the catalog strip: the core modules as a horizontal strip of
               trylle cards — the same rows the panel serves after you enter */}
@@ -392,10 +395,7 @@ export default function Explore() {
                         className="flex w-[248px] flex-none snap-start flex-col rounded-2xl bg-s0 p-5 ring-1 ring-hairline-strong"
                         style={{ boxShadow: STRIP_SHADOW }}
                       >
-                        <span
-                          className="font-mono text-[10px] text-ink-3"
-                          style={{ fontVariantNumeric: "tabular-nums" }}
-                        >
+                        <span className="font-mono text-[10px] text-ink-3" style={{ fontVariantNumeric: "tabular-nums" }}>
                           {String(index + 1).padStart(2, "0")}
                         </span>
                         <strong className="mt-3 block font-display text-sm font-semibold tracking-[-0.01em] text-ink">
@@ -411,7 +411,10 @@ export default function Explore() {
                 )}
               </section>
 
-              <HeroWaves caption={label("explore.download.waves")} meta={osText("explore.waves.buildsMeta")} />
+              <HeroWaves
+                caption={label("explore.download.waves")}
+                meta={osText("explore.waves.buildsMeta")}
+              />
 
               {/* the distribution rail: the release channels of the immutable
               tag — the extension, the vsix and the provenance set, walkable
@@ -426,10 +429,7 @@ export default function Explore() {
                 <SolLogoMark size={18} accent />
                 {osText("explore.footer.wordmark")}
               </span>
-              <nav
-                aria-label={osText("explore.footer.nav.aria")}
-                className="flex items-center gap-5 text-sm text-ink-2"
-              >
+              <nav aria-label={osText("explore.footer.nav.aria")} className="flex items-center gap-5 text-sm text-ink-2">
                 <a
                   href="/about"
                   className="rounded-xs transition-colors duration-150 ease-micro hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"

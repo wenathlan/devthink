@@ -29,8 +29,7 @@ const titleStyle = {
   color: "var(--dtv3-ink-1, var(--dt-text))",
   font: `700 clamp(46px, 7vw, 96px)/0.98 ${DISPLAY}`,
   letterSpacing: "-.04em",
-  textWrap: "balance",
-} as const;
+  textWrap: "balance" } as const;
 const ledeStyle = { margin: 0, maxWidth: "44ch", color: "var(--dt-muted)", fontSize: 14, lineHeight: 1.75 } as const;
 
 export function AboutHero() {

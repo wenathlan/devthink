@@ -228,9 +228,8 @@ import * as path from "node:path";
 // Governance constants — identical values owned by constants.ts
 // ---------------------------------------------------------------------------
 
-import { cfgDir } from "./config.js";
 import { DEBUG_BUFFER_TUI_LINES, DEBUG_LOG_MAX_BYTES, DEBUG_LOG_RETENTION_DAYS } from "./constants.js";
-
+import { cfgDir } from "./config.js";
 export { DEBUG_BUFFER_TUI_LINES, DEBUG_LOG_MAX_BYTES, DEBUG_LOG_RETENTION_DAYS };
 
 // ---------------------------------------------------------------------------
@@ -442,14 +441,14 @@ export function parseAntigravityDebugEnv(raw: string | undefined): EnvParseResul
  */
 const SECRET_PATTERNS: Array<{ regex: RegExp; replacement: string }> = [
   // Full GOCSPX client secret
-  { regex: /GOCSPX-[A-Za-z0-9_-]{20,}/g, replacement: "GOCSPX-***REDACTED***" },
+  { regex: /GOCSPX-[A-Za-z0-9_\-]{20,}/g, replacement: "GOCSPX-***REDACTED***" },
   // Client ID patterns (avoid leaking the full identifier in logs)
   { regex: /681255809395-[a-z0-9]{20,}\.apps\.googleusercontent\.com/gi, replacement: "***CLIENT_ID_REDACTED***" },
   { regex: /\b681255809395-oo8f…b135j\b/g, replacement: "***CLIENT_ID_REDACTED***" },
 
   // Bearer tokens - header form or bare value
-  { regex: /(Bearer\s+)[A-Za-z0-9\-_.=]+/gi, replacement: "$1***REDACTED***" },
-  { regex: /(Authorization['"]?\s*[:=]\s*['"]?)(Bearer\s+)?[A-Za-z0-9\-_.]+/gi, replacement: "$1***REDACTED***" },
+  { regex: /(Bearer\s+)[A-Za-z0-9\-_\.=]+/gi, replacement: "$1***REDACTED***" },
+  { regex: /(Authorization['"]?\s*[:=]\s*['"]?)(Bearer\s+)?[A-Za-z0-9\-_\.]+/gi, replacement: "$1***REDACTED***" },
 
   // Generic OAuth fields
   {
@@ -462,13 +461,13 @@ const SECRET_PATTERNS: Array<{ regex: RegExp; replacement: string }> = [
   { regex: /([?&](?:access_token|id_token|refresh_token|api_key|key)=)([^&\s]+)/gi, replacement: "$1***REDACTED***" },
 
   // JWT-like tokens (three base64 parts)
-  { regex: /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/g, replacement: "***JWT_REDACTED***" },
+  { regex: /\beyJ[A-Za-z0-9_\-]{10,}\.[A-Za-z0-9_\-]{10,}\.[A-Za-z0-9_\-]{10,}\b/g, replacement: "***JWT_REDACTED***" },
 
   // Google OAuth access tokens (ya29.*)
-  { regex: /\b(ya29\.[A-Za-z0-9_-]+)\b/g, replacement: "ya29.***REDACTED***" },
+  { regex: /\b(ya29\.[A-Za-z0-9_\-]+)\b/g, replacement: "ya29.***REDACTED***" },
 
   // X-Goog headers carrying tokens
-  { regex: /(X-Goog-[A-Za-z-]+:\s*)(.+)/gi, replacement: "$1***REDACTED***" },
+  { regex: /(X-Goog-[A-Za-z\-]+:\s*)(.+)/gi, replacement: "$1***REDACTED***" },
 ];
 
 /**
@@ -503,7 +502,7 @@ export function redactSecretsText(input: string): string {
   );
 
   // 2. Bearer header with long token
-  out = out.replace(/(Bearer\s+)[A-Za-z0-9\-_.=]{20,}/gi, "$1[REDACTED]");
+  out = out.replace(/(Bearer\s+)[A-Za-z0-9\-_\.=]{20,}/gi, "$1[REDACTED]");
 
   // 3. Google OAuth access tokens ya29.*
   out = out.replace(/\bya29\.[A-Za-z0-9\-_]{20,}/g, "[REDACTED_GOOGLE_TOKEN]");

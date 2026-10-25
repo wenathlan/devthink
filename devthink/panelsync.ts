@@ -8,7 +8,7 @@
 import { randomBytes, scryptSync } from "node:crypto";
 import { readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
-import { admins, allowSite, syncCodeowners } from "./admins.js";
+import { allowSite, admins, syncCodeowners } from "./admins.js";
 
 export type PanelSyncReport = { adminCount: number; hosts: string[]; digest: string };
 

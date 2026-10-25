@@ -1,11 +1,10 @@
 #!/usr/bin/env bun
 
 import { readFileSync } from "node:fs";
-import { stdin, stdout } from "node:process";
 import { createInterface } from "node:readline/promises";
+import { stdin, stdout } from "node:process";
 import {
   clearAuthCredential,
-  type DevThinkConfig,
   ensurePaths,
   getConfigValue,
   migrateLegacyCredentials,
@@ -18,23 +17,11 @@ import {
   saveConfig,
   setAuthCredential,
   setConfigValue,
+  type DevThinkConfig,
 } from "./config.js";
-import {
-  createPairing,
-  createPairingLink,
-  getIdentity,
-  pairingStatus,
-  revokeBrowserSessions,
-  setIdentityUserId,
-} from "./identity.js";
+import { createMemoryStore, memorySummary } from "./workbenchmemory.js";
 import { listModes, modePrompt, resolveMode } from "./modes.js";
 import { listModels, listProviders, streamChat } from "./providers.js";
-import { banner, box, colors, formatConfig, formatEvent, statusBar } from "./Sol/widgets/ConsoleTerminalui.js";
-import { startServer } from "./server.js";
-import { readPreferences, savePreference } from "./storage.js";
-import type { ChatEvent } from "./streaming.js";
-import { exportLocalSnapshot, remoteSyncStatus } from "./sync.js";
-import { createMemoryStore, memorySummary } from "./workbenchmemory.js";
 import {
   appendMessage,
   createSession,
@@ -43,6 +30,19 @@ import {
   loadSession,
   type Session,
 } from "./workbenchsession.js";
+import {
+  createPairing,
+  createPairingLink,
+  getIdentity,
+  pairingStatus,
+  revokeBrowserSessions,
+  setIdentityUserId,
+} from "./identity.js";
+import { readPreferences, savePreference } from "./storage.js";
+import type { ChatEvent } from "./streaming.js";
+import { banner, box, colors, formatConfig, formatEvent, statusBar } from "./Sol/widgets/ConsoleTerminalui.js";
+import { startServer } from "./server.js";
+import { exportLocalSnapshot, remoteSyncStatus } from "./sync.js";
 
 export type ParsedArgs = { flags: Record<string, string | boolean>; positional: string[] };
 

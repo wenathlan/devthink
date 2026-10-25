@@ -21,7 +21,7 @@ import {
   WindowConsoleRegular,
 } from "@fluentui/react-icons";
 import { useEffect, useRef } from "react";
-import type { AccountState } from "../../accountgate.ts";
+import { type AccountState } from "../../accountgate.ts";
 import { PairingForm, type PairingFormProps } from "./AuthPairing.tsx";
 import { ProviderRow, type ProviderRowProps } from "./AuthProviderrow.tsx";
 
@@ -118,19 +118,9 @@ export function SignInForm({ account, known, entry, pairing, cliopen, onToggleCl
                 aria-pressed={entry.reveal}
                 onClick={entry.onToggleReveal}
               >
-                {entry.reveal ? (
-                  <EyeOffRegular fontSize={16} aria-hidden="true" />
-                ) : (
-                  <EyeRegular fontSize={16} aria-hidden="true" />
-                )}
+                {entry.reveal ? <EyeOffRegular fontSize={16} aria-hidden="true" /> : <EyeRegular fontSize={16} aria-hidden="true" />}
               </button>
-              <button
-                type="submit"
-                className="dtw-login__submit"
-                disabled={entry.busy}
-                aria-busy={entry.busy || undefined}
-                aria-label="Sign in"
-              >
+              <button type="submit" className="dtw-login__submit" disabled={entry.busy} aria-busy={entry.busy || undefined} aria-label="Sign in">
                 <ArrowRightRegular fontSize={17} aria-hidden="true" />
               </button>
             </div>
@@ -178,11 +168,7 @@ export function SignInForm({ account, known, entry, pairing, cliopen, onToggleCl
                 aria-pressed={entry.reveal}
                 onClick={entry.onToggleReveal}
               >
-                {entry.reveal ? (
-                  <EyeOffRegular fontSize={16} aria-hidden="true" />
-                ) : (
-                  <EyeRegular fontSize={16} aria-hidden="true" />
-                )}
+                {entry.reveal ? <EyeOffRegular fontSize={16} aria-hidden="true" /> : <EyeRegular fontSize={16} aria-hidden="true" />}
               </button>
             </div>
             <div className="dtw-login__row">
@@ -201,12 +187,7 @@ export function SignInForm({ account, known, entry, pairing, cliopen, onToggleCl
                 {entry.failure}
               </p>
             ) : null}
-            <button
-              type="submit"
-              className="dtw-login__create"
-              disabled={entry.busy}
-              aria-busy={entry.busy || undefined}
-            >
+            <button type="submit" className="dtw-login__create" disabled={entry.busy} aria-busy={entry.busy || undefined}>
               <span>Create account and sign in</span>
               <ArrowRightRegular fontSize={15} aria-hidden="true" />
             </button>

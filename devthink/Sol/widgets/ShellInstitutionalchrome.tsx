@@ -28,44 +28,38 @@ export const pagecontainerStyle: CSSProperties = {
   width: "100%",
   maxWidth: 1180,
   margin: "0 auto",
-  padding: "24px 32px",
-};
+  padding: "24px 32px" };
 
 export const pageheadStyle: CSSProperties = {
   display: "grid",
   justifyItems: "start",
   rowGap: 12,
   padding: "36px 0 26px",
-  borderBottom: "1px solid var(--dt-edge)",
-};
+  borderBottom: "1px solid var(--dt-edge)" };
 
 export const pageheadEyebrowStyle: CSSProperties = {
   margin: 0,
   color: "var(--sol-sun)",
   font: "600 10px var(--dt-mono)",
-  letterSpacing: ".08em",
-};
+  letterSpacing: ".08em" };
 
 export const pageheadTitleStyle: CSSProperties = {
   margin: 0,
   color: "var(--dt-text)",
   font: "700 30px/1.15 var(--font-display, var(--dt-sans))",
-  letterSpacing: "-0.02em",
-};
+  letterSpacing: "-0.02em" };
 
 export const pageheadLedeStyle: CSSProperties = {
   margin: 0,
   maxWidth: 640,
   color: "var(--dt-muted)",
-  font: "400 13px/1.7 var(--dt-sans)",
-};
+  font: "400 13px/1.7 var(--dt-sans)" };
 
 export const pageheadActionsStyle: CSSProperties = {
   display: "flex",
   flexWrap: "wrap",
   gap: 8,
-  justifySelf: "end",
-};
+  justifySelf: "end" };
 
 /** the one orchestrated entrance per view: a single staggered rise (hero →
  * body) that ends in stillness — never per-block scroll fades. Consumers
@@ -82,8 +76,7 @@ export function stagedEntrance(reduced: boolean, delay: number): CSSProperties |
  * accent) — --sol-canvas stays the base so the theme tokens keep owning it. */
 export const pagestageStyle: CSSProperties = {
   background:
-    "radial-gradient(1200px 700px at 76% -12%, color-mix(in srgb, var(--color-win) 8%, transparent), transparent 62%), radial-gradient(900px 620px at 6% 108%, rgb(201 205 214 / 5%), transparent 58%), var(--sol-canvas)",
-};
+    "radial-gradient(1200px 700px at 76% -12%, color-mix(in srgb, var(--color-win) 8%, transparent), transparent 62%), radial-gradient(900px 620px at 6% 108%, rgb(201 205 214 / 5%), transparent 58%), var(--sol-canvas)" };
 
 /** the institutional pages every public surface links to */
 const pages = [

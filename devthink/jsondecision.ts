@@ -69,20 +69,13 @@ export type DecisionVerdict =
  * @throws decisionerror with the failing part.
  */
 export function validatedecision(request: DecisionRequest): DecisionRequest {
-  if (!request || typeof request !== "object")
-    throw new decisionerror("bad-request", null, "decision request must be an object");
+  if (!request || typeof request !== "object") throw new decisionerror("bad-request", null, "decision request must be an object");
   if (request.kind !== "choice" && request.kind !== "score" && request.kind !== "yesno")
     throw new decisionerror("bad-kind", String((request as { kind?: unknown }).kind));
   if (typeof request.prompt !== "string" || request.prompt.trim() === "")
     throw new decisionerror("bad-request", "prompt", "the decision prompt must be a non-empty string");
   const policy = request.policy;
-  if (
-    !policy ||
-    typeof policy !== "object" ||
-    !Number.isFinite(policy.minconfidence) ||
-    policy.minconfidence < 0 ||
-    policy.minconfidence > 1
-  )
+  if (!policy || typeof policy !== "object" || !Number.isFinite(policy.minconfidence) || policy.minconfidence < 0 || policy.minconfidence > 1)
     throw new decisionerror("bad-policy", null, "the confidence policy must carry a minconfidence between 0 and 1");
   if (request.kind === "choice" && (!Array.isArray(request.options) || request.options.length < 2))
     throw new decisionerror("bad-request", "options", "a choice decision carries at least two options");
@@ -108,7 +101,7 @@ export function gateverdict(
   kind: DecisionKind,
   value: string | number | boolean,
   confidence: number,
-  policy: DecisionPolicy,
+  policy: DecisionPolicy
 ): DecisionVerdict {
   if (confidence >= policy.minconfidence) return { ok: true, kind, value, confidence };
   if (policy.fallback) return { ok: true, kind, value: policy.fallback.value, confidence };

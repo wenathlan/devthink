@@ -1173,7 +1173,8 @@ for (const group of ["caps", "schemas", "fixtures"]) {
     await writeFile(join(stage, group, entry), await readFile(join(root, "dist", group, entry)));
   }
 }
-for (const file of ["README.md", "CHANGELOG.md"]) await writeFile(join(stage, file), await readFile(join(root, file)));
+for (const file of ["README.md", "CHANGELOG.md"])
+  await writeFile(join(stage, file), await readFile(join(root, file)));
 await writeFile(join(stage, "manifest.json"), await readFile(join(root, "manifest.json")));
 
 /** The staged package manifest: the repository package.json is the single source of truth, the build derives the published manifest from it — the entry paths remap from the dist folder to the package root, the repository machinery (files allowlist, scripts, devDependencies, the packageManager pin) drops out, and every field a registry consumer reads rides verbatim — so the two manifests never drift. */

@@ -47,8 +47,7 @@ function validbands(bands: BandThresholds): BandThresholds {
  */
 export function confidenceband(confidence: number, bands: BandThresholds = { high: 0.8, low: 0.5 }): ConfidenceBand {
   validbands(bands);
-  if (!Number.isFinite(confidence))
-    throw new policyerror("bad-band", String(confidence), "the confidence must be a number");
+  if (!Number.isFinite(confidence)) throw new policyerror("bad-band", String(confidence), "the confidence must be a number");
   if (confidence >= bands.high) return "act";
   if (confidence < bands.low) return "escalate";
   return "surface";
@@ -74,12 +73,7 @@ export function buildpolicytable(entries: readonly PolicyEntry[]): readonly Poli
     if (!policy || !Number.isFinite(policy.minconfidence) || policy.minconfidence < 0 || policy.minconfidence > 1)
       throw new policyerror("bad-table", entry.name, "the policy floor must sit between 0 and 1");
     const fallback = policy.fallback?.value;
-    if (
-      fallback !== undefined &&
-      typeof fallback !== "string" &&
-      typeof fallback !== "number" &&
-      typeof fallback !== "boolean"
-    )
+    if (fallback !== undefined && typeof fallback !== "string" && typeof fallback !== "number" && typeof fallback !== "boolean")
       throw new policyerror("bad-table", entry.name, "the fallback answers a string, number or boolean");
   }
   return entries.map((entry) => ({ ...entry, policy: { ...entry.policy } }));
@@ -157,19 +151,12 @@ export type HonestMeasurement = {
  */
 export function createmeasurement(config: { cap?: number; bands?: BandThresholds } = {}): HonestMeasurement {
   const cap = config.cap ?? 500;
-  if (!Number.isInteger(cap) || cap < 1)
-    throw new policyerror("bad-record", null, "the log cap must be a positive integer");
+  if (!Number.isInteger(cap) || cap < 1) throw new policyerror("bad-record", null, "the log cap must be a positive integer");
   const bands = validbands(config.bands ?? { high: 0.8, low: 0.5 });
   const lines: MeasurementRecord[] = [];
 
   const normalized = (entry: MeasurementRecord): MeasurementRecord => {
-    if (
-      !entry ||
-      typeof entry.question !== "string" ||
-      entry.question.trim() === "" ||
-      typeof entry.action !== "string" ||
-      entry.action.trim() === ""
-    )
+    if (!entry || typeof entry.question !== "string" || entry.question.trim() === "" || typeof entry.action !== "string" || entry.action.trim() === "")
       throw new policyerror("bad-record", null, "the log line names a question and an action");
     if (!Number.isFinite(entry.confidence) || entry.confidence < 0 || entry.confidence > 1)
       throw new policyerror("bad-record", entry.question, "the logged confidence must sit between 0 and 1");
@@ -215,15 +202,7 @@ export function createmeasurement(config: { cap?: number; bands?: BandThresholds
             if (line.confidence >= bands.low && line.confidence < bands.high) medium += 1;
           }
         }
-        out.push({
-          question: name,
-          total: bucket.length,
-          bands: bandcount,
-          judgedhigh,
-          righthigh,
-          judged,
-          mediumshare: judged === 0 ? 0 : medium / judged,
-        });
+        out.push({ question: name, total: bucket.length, bands: bandcount, judgedhigh, righthigh, judged, mediumshare: judged === 0 ? 0 : medium / judged });
       }
       return out;
     },
@@ -248,12 +227,7 @@ export type RolloutPolicy = {
 /** validates one rollout policy. */
 function validrollout(policy: RolloutPolicy): RolloutPolicy {
   const finite01 = (value: number) => Number.isFinite(value) && value > 0 && value <= 1;
-  if (
-    !Number.isInteger(policy.minjudged) ||
-    policy.minjudged < 1 ||
-    !Number.isInteger(policy.minjudgedkill) ||
-    policy.minjudgedkill < 1
-  )
+  if (!Number.isInteger(policy.minjudged) || policy.minjudged < 1 || !Number.isInteger(policy.minjudgedkill) || policy.minjudgedkill < 1)
     throw new policyerror("bad-rollout", null, "the rollout carries positive integer windows");
   if (!finite01(policy.promoteaccuracy) || !finite01(policy.killaccuracy) || !finite01(policy.chronicmedium))
     throw new policyerror("bad-rollout", null, "the rollout rates must sit inside 0-1");
@@ -268,47 +242,20 @@ function validrollout(policy: RolloutPolicy): RolloutPolicy {
  */
 export function reviewrollout(
   summary: MeasurementSummary,
-  policy: Partial<RolloutPolicy> = {},
+  policy: Partial<RolloutPolicy> = {}
 ): { question: string; verdict: RolloutVerdict; reason: string } {
-  const full = validrollout({
-    minjudged: 20,
-    promoteaccuracy: 0.9,
-    minjudgedkill: 30,
-    killaccuracy: 0.9,
-    chronicmedium: 0.5,
-    ...policy,
-  });
+  const full = validrollout({ minjudged: 20, promoteaccuracy: 0.9, minjudgedkill: 30, killaccuracy: 0.9, chronicmedium: 0.5, ...policy });
   const accuracy = summary.judgedhigh === 0 ? 0 : summary.righthigh / summary.judgedhigh;
   const percent = `${(accuracy * 100).toFixed(0)}%`;
   if (summary.judgedhigh >= full.minjudgedkill && accuracy < full.killaccuracy)
-    return {
-      question: summary.question,
-      verdict: "demote",
-      reason: `high-band accuracy ${percent} over ${summary.judgedhigh} judged`,
-    };
+    return { question: summary.question, verdict: "demote", reason: `high-band accuracy ${percent} over ${summary.judgedhigh} judged` };
   if (summary.mediumshare >= full.chronicmedium && summary.judgedhigh < full.minjudgedkill)
-    return {
-      question: summary.question,
-      verdict: "demote",
-      reason: `chronic medium confidence (${(summary.mediumshare * 100).toFixed(0)}% of judged) — the question is malformed`,
-    };
+    return { question: summary.question, verdict: "demote", reason: `chronic medium confidence (${(summary.mediumshare * 100).toFixed(0)}% of judged) — the question is malformed` };
   if (summary.judgedhigh >= full.minjudged && accuracy >= full.promoteaccuracy)
-    return {
-      question: summary.question,
-      verdict: "promote",
-      reason: `high-band accuracy ${percent} over ${summary.judgedhigh} judged`,
-    };
+    return { question: summary.question, verdict: "promote", reason: `high-band accuracy ${percent} over ${summary.judgedhigh} judged` };
   if (summary.judgedhigh < full.minjudged)
-    return {
-      question: summary.question,
-      verdict: "insufficient",
-      reason: `only ${summary.judgedhigh} judged high-band lines (need ${full.minjudged})`,
-    };
-  return {
-    question: summary.question,
-    verdict: "keep-shadow",
-    reason: `high-band accuracy ${percent} below the promote bar`,
-  };
+    return { question: summary.question, verdict: "insufficient", reason: `only ${summary.judgedhigh} judged high-band lines (need ${full.minjudged})` };
+  return { question: summary.question, verdict: "keep-shadow", reason: `high-band accuracy ${percent} below the promote bar` };
 }
 
 /** one reference route: the question form and the recipe that serves it. */
@@ -331,33 +278,17 @@ export type ReferenceRouter = {
  * alternate recipe takes the route — the complement of the engine's static
  * recipe table.
  */
-export function createreferencerouter(config: {
-  routes: readonly RouterRoute[];
-  minaccuracy?: number;
-  minjudged?: number;
-}): ReferenceRouter {
+export function createreferencerouter(config: { routes: readonly RouterRoute[]; minaccuracy?: number; minjudged?: number }): ReferenceRouter {
   if (!config || !Array.isArray(config.routes) || config.routes.length === 0)
     throw new policyerror("bad-router", null, "the router carries at least one route");
   const minaccuracy = config.minaccuracy ?? 0.6;
   const minjudged = config.minjudged ?? 5;
-  if (
-    !Number.isFinite(minaccuracy) ||
-    minaccuracy <= 0 ||
-    minaccuracy >= 1 ||
-    !Number.isInteger(minjudged) ||
-    minjudged < 1
-  )
+  if (!Number.isFinite(minaccuracy) || minaccuracy <= 0 || minaccuracy >= 1 || !Number.isInteger(minjudged) || minjudged < 1)
     throw new policyerror("bad-router", null, "the router floor sits inside 0-1 and the window is a positive integer");
 
   const table = new Map<string, RouterRoute>();
   for (const route of config.routes) {
-    if (
-      !route ||
-      typeof route.form !== "string" ||
-      route.form.trim() === "" ||
-      typeof route.recipe !== "string" ||
-      route.recipe.trim() === ""
-    )
+    if (!route || typeof route.form !== "string" || route.form.trim() === "" || typeof route.recipe !== "string" || route.recipe.trim() === "")
       throw new policyerror("bad-router", null, "every route names a form and a recipe");
     const key = route.form.trim().toLowerCase();
     if (table.has(key)) throw new policyerror("bad-router", route.form, "the router maps a form twice");
@@ -378,8 +309,7 @@ export function createreferencerouter(config: {
     const book = history.get(key);
     const judged = book ? book.hit + book.miss : 0;
     const accuracy = book && judged > 0 ? book.hit / judged : 1;
-    const rotate =
-      book !== undefined && judged >= minjudged && accuracy < minaccuracy && typeof route.alternate === "string";
+    const rotate = book !== undefined && judged >= minjudged && accuracy < minaccuracy && typeof route.alternate === "string";
     return rotate && route.alternate ? route.alternate : route.recipe;
   };
 
@@ -398,12 +328,7 @@ export function createreferencerouter(config: {
       const key = keyof(form);
       const book = history.get(key);
       const judged = book ? book.hit + book.miss : 0;
-      return {
-        hit: book?.hit ?? 0,
-        miss: book?.miss ?? 0,
-        accuracy: book && judged > 0 ? book.hit / judged : null,
-        serving: servingfor(key),
-      };
+      return { hit: book?.hit ?? 0, miss: book?.miss ?? 0, accuracy: book && judged > 0 ? book.hit / judged : null, serving: servingfor(key) };
     },
   };
 }

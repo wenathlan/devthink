@@ -271,10 +271,7 @@ const seedOsStrings: OsStringRow[] = [
   { id: "console.status.paired", text: "Gateway paired" },
   { id: "console.status.static", text: "Static catalog" },
   { id: "console.keys", text: "tab completes, arrows browse, enter runs" },
-  {
-    id: "console.boot.copy",
-    text: "Banner, config and the engine arm stage by stage, the gateway, mcp and palette surfaces arm together, and ready closes the walk.",
-  },
+  { id: "console.boot.copy", text: "Banner, config and the engine arm stage by stage, the gateway, mcp and palette surfaces arm together, and ready closes the walk." },
   {
     id: "console.boot.graphLabel",
     text: "the boot stages of the cli riding the graph runner, one wave per stage",

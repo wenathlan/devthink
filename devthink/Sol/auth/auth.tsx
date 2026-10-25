@@ -27,16 +27,19 @@ import { useLocation } from "wouter";
 import { ACCOUNT_NAME_KEY, type AccountState, accountstate, createAccount, verifyAccount } from "../../accountgate.ts";
 import { afterAuthTarget, pairingReadiness, safegatewayurl } from "../../authgate.ts";
 import { copy, loadcopy } from "../../copy.ts";
-import { readBrowserPreferences } from "../../db";
 import {
+  type OAuthProvider,
   buildAuthorizeUrl,
   mintPkcePair,
   newOAuthState,
-  type OAuthProvider,
   oauthVerifierKey,
   providerRow,
 } from "../../oauthrow.ts";
-import { LockFace, PowerMenu, type SignInEntryFields, SignInForm, StatusLine } from "../widgets";
+import { readBrowserPreferences } from "../../db";
+import { LockFace } from "../widgets";
+import { PowerMenu } from "../widgets";
+import { SignInForm, type SignInEntryFields } from "../widgets";
+import { StatusLine } from "../widgets";
 
 export * from "../../accountgate.ts";
 export * from "../../authgate.ts";
@@ -145,8 +148,7 @@ export default function Auth() {
         const response = await fetch(`${gateway}/pairings/consume`, {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({ pairingId: pairingIdValue, code: pairingCode }),
-        });
+          body: JSON.stringify({ pairingId: pairingIdValue, code: pairingCode }) });
         if (!response.ok) throw new Error("Pairing was rejected.");
         const result = (await response.json()) as PairingResponse;
         // the exact keys the creation panel reads on boot
