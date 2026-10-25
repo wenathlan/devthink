@@ -1165,7 +1165,11 @@ export function cleanToolsArray(tools: unknown): CleanedTool[] {
       const cleaned = cleanRawToolSchema(t);
       map.set(cleaned.name, cleaned);
       if (map.size >= MAX_TOOLS_PER_REQUEST) break;
-    } catch {}
+    } catch (toolerror) {
+      // a malformed tool schema drops that one tool and keeps the rest of
+      // the request alive — the skip is the surfacing
+      void toolerror;
+    }
   }
   return Array.from(map.values());
 }
@@ -2098,7 +2102,11 @@ export function normalizeIncomingMessages(messages: unknown): GeminiMessage[] {
             args = argsRaw as Record<string, unknown>;
           }
           parts.push({ functionCall: { name, args } });
-        } catch {}
+        } catch (parseerror) {
+          // a malformed streamed tool fragment drops that fragment and keeps
+          // the stream alive — the skip is the surfacing
+          void parseerror;
+        }
       }
     }
 
