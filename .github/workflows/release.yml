@@ -1036,9 +1036,9 @@ jobs:
       packages: write
     # the container distribution law: every family application builds its
     # own Dockerfile and pushes the image to the github container registry
-    # under the family owner, tagged with the release version and the
-    # rolling latest - the distributions the original saddle repository
-    # carried now answer for the whole family inside the monorepo.
+    # under the family owner, tagged with the release version - the immutable
+    # version form the release identity policy carries (the rolling tag
+    # stays with the registry conventions, never this lane).
     steps:
       - name: Checkout the release source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -1057,8 +1057,7 @@ jobs:
             test -f "./${app}/Dockerfile" || { echo "${app}: no Dockerfile, skipping."; continue; }
             image="ghcr.io/${OWNER,,}/${app}"
             echo "building ${image}:${RELEASE_VERSION}"
-            docker build -t "${image}:${RELEASE_VERSION}" -t "${image}:latest" "./${app}"
+            docker build -t "${image}:${RELEASE_VERSION}" "./${app}"
             docker push "${image}:${RELEASE_VERSION}"
-            docker push "${image}:latest"
-            echo "${app}: pushed ${image}:${RELEASE_VERSION} and latest"
+            echo "${app}: pushed ${image}:${RELEASE_VERSION}"
           done
