@@ -17,6 +17,10 @@ Sol/.vite
 *.log
 coverage
 
+# the server side sandbox jails of the run and storage lane (session state
+# of the infrastructure, never committed)
+.sandboxrun
+
 # the generated capacitor shells of the mobile lane (runner-side toolchain output, never committed)
 android/
 ios/

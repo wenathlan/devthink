@@ -429,7 +429,7 @@ function CodeBlock({ lang, code }: { lang: string; code: string }) {
           </button>
           <button
             type="button"
-            className="dtc-code__key dtc-code__copy"
+            className={`dtc-code__key dtc-code__copy${copyState === "copied" ? " is-copied" : copyState === "failed" ? " is-failed" : ""}`}
             onClick={onCopy}
             aria-label={
               copyState === "copied" ? "copied" : copyState === "failed" ? "copy failed — retry" : "copy code"

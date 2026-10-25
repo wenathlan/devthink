@@ -67,8 +67,10 @@
  */
 
 import * as os from "node:os";
+
 const osPlatform = os.platform;
 const osArch = os.arch;
+
 import { randomBytes, randomInt } from "node:crypto";
 // v2.1.15 Phase B: raw shared values (identity UA, client metadata family,
 // project fallback, forbidden header lists, FNV constants, cloudcode bases,
@@ -82,21 +84,22 @@ import {
   CLIENT_METADATA_STRING,
   CLOUDCODE_DAILY_BASE,
   CLOUDCODE_PA_BASE,
-  FALLBACK_PROJECT_ID,
-  FORBIDDEN_HEADERS,
-  FNV_OFFSET_BASIS,
-  FNV_PRIME,
-  GEMINI_CLI_OAUTH_CLIENT_ID,
-  GEMINI_CLI_OAUTH_CLIENT_SECRET,
   CODE_ASSIST_BASE_URL,
   CODE_ASSIST_PATH_MAP,
   CONTENT_TIMEOUT_MS,
+  FALLBACK_PROJECT_ID,
+  FNV_OFFSET_BASIS,
+  FNV_PRIME,
+  FORBIDDEN_HEADERS,
+  GEMINI_CLI_OAUTH_CLIENT_ID,
+  GEMINI_CLI_OAUTH_CLIENT_SECRET,
   GEMINI_CLI_USER_AGENT,
   HEADERS_TO_STRIP,
   PLUGIN_VERSION,
   PROJECT_FALLBACK,
 } from "./constants.js";
 import { fnv1a32, fnv1a32Hex, getJitter, isRetryableStatus } from "./core.js";
+
 const MODELS_2026_SET = new Set<string>(FETCH_AVAILABLE_MODELS_2026 as readonly string[]);
 export const TOOL_NAME_MAX_LENGTH = 64 as const;
 
@@ -133,8 +136,11 @@ export const THINKING_BUDGET_MAX = THINKING_BUDGET_MAX_CLAUDE;
 export const THINKING_BUDGET_MIN = 1024 as const;
 
 // v2.1.15 Phase C: historical alias names for the gemini-cli client pair.
-export { GEMINI_CLI_OAUTH_CLIENT_ID as GEMINI_CLI_CLIENT_ID } from "./constants.js";
-export { GEMINI_CLI_OAUTH_CLIENT_SECRET as GEMINI_CLI_CLIENT_SECRET } from "./constants.js";
+export {
+  GEMINI_CLI_OAUTH_CLIENT_ID as GEMINI_CLI_CLIENT_ID,
+  GEMINI_CLI_OAUTH_CLIENT_SECRET as GEMINI_CLI_CLIENT_SECRET,
+} from "./constants.js";
+
 import {
   buildClientMetadata,
   getDynamicUserAgent,
@@ -143,6 +149,7 @@ import {
   normalizePlatform,
   X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT,
 } from "./fingerprint.js";
+import type { FetchAvailableModel2026, ThinkingLevel } from "./models.js";
 // v2.1.15 Phase A: model-identification families (the observed 2026-08-25
 // fetchAvailableModels list, the Gemini-CLI-only routing list, search model
 // ids, thinking tables and the endpoint routing orders/classifiers) are
@@ -154,33 +161,33 @@ import {
   ENDPOINT_ORDER_GEMINI_CLI,
   FETCH_AVAILABLE_MODELS_2026,
   GEMINI_CLI_ONLY_MODELS,
+  getEndpointsForModel,
+  isGeminiCLIOnlyModel,
   SEARCH_MODEL,
   SEARCH_MODEL_PREVIEW,
   THINKING_BUDGET_MAP,
   THINKING_BUDGET_MAX_CLAUDE,
   THINKING_BUDGET_MAX_GEMINI,
   THINKING_LEVELS,
-  getEndpointsForModel,
-  isGeminiCLIOnlyModel,
 } from "./models.js";
-import type { FetchAvailableModel2026, ThinkingLevel } from "./models.js";
 
+export type { ThinkingLevel } from "./models.js";
+/** Historical request-module alias of the models.ts owner list. */
 export {
   ENDPOINT_ORDER_ANTIGRAVITY,
   ENDPOINT_ORDER_GEMINI_CLI,
+  FETCH_AVAILABLE_MODELS_2026 as MODELS_2026,
   GEMINI_CLI_ONLY_MODELS,
+  getEndpointsForModel,
+  isGeminiCLIOnlyModel,
   SEARCH_MODEL,
   SEARCH_MODEL_PREVIEW,
   THINKING_BUDGET_MAP,
   THINKING_BUDGET_MAX_CLAUDE,
   THINKING_BUDGET_MAX_GEMINI,
   THINKING_LEVELS,
-  getEndpointsForModel,
-  isGeminiCLIOnlyModel,
 } from "./models.js";
-export type { ThinkingLevel } from "./models.js";
-/** Historical request-module alias of the models.ts owner list. */
-export { FETCH_AVAILABLE_MODELS_2026 as MODELS_2026 } from "./models.js";
+
 // v2.1.15 Phase A: the ModelId2026 alias re-export was deleted — the name
 // is owned by models.ts (import it from there when needed).
 
@@ -1102,7 +1109,7 @@ export function cleanRawToolSchema(raw: unknown): CleanedTool {
     (src as any).parameters_json,
   ];
 
-  let parametersRaw: unknown = undefined;
+  let parametersRaw: unknown;
   for (const cand of potentialSchemas) {
     if (cand && isPlainObject(cand)) {
       parametersRaw = cand;
@@ -1158,8 +1165,10 @@ export function cleanToolsArray(tools: unknown): CleanedTool[] {
       const cleaned = cleanRawToolSchema(t);
       map.set(cleaned.name, cleaned);
       if (map.size >= MAX_TOOLS_PER_REQUEST) break;
-    } catch {
-      continue;
+    } catch (toolerror) {
+      // a malformed tool schema drops that one tool and keeps the rest of
+      // the request alive — the skip is the surfacing
+      void toolerror;
     }
   }
   return Array.from(map.values());
@@ -2093,8 +2102,10 @@ export function normalizeIncomingMessages(messages: unknown): GeminiMessage[] {
             args = argsRaw as Record<string, unknown>;
           }
           parts.push({ functionCall: { name, args } });
-        } catch {
-          continue;
+        } catch (parseerror) {
+          // a malformed streamed tool fragment drops that fragment and keeps
+          // the stream alive — the skip is the surfacing
+          void parseerror;
         }
       }
     }
@@ -2181,7 +2192,7 @@ export function enhanceAgySdkErrorResponse(
   let code: string | undefined;
   let status: number | undefined;
   let statusText: string | undefined;
-  let details: unknown = undefined;
+  let details: unknown;
   let requestId = context?.requestId;
   let modelId = context?.modelId;
 
@@ -2194,11 +2205,8 @@ export function enhanceAgySdkErrorResponse(
       if (typeof (parsed as any).message === "string") message = (parsed as any).message;
       if (typeof (parsed as any).error === "string") message = (parsed as any).error;
       if (typeof (parsed as any).code === "string") code = (parsed as any).code;
-      // @ts-ignore
       if ((parsed as any).error?.message) message = (parsed as any).error.message;
-      // @ts-ignore
       if ((parsed as any).error?.code) code = (parsed as any).error.code;
-      // @ts-ignore
       if ((parsed as any).error?.status) code = (parsed as any).error.status;
     }
   } else if (error instanceof Error) {
@@ -3718,9 +3726,9 @@ function sanitizeToolName(name: string): string {
 function ensureUniqueToolNames(names: string[]): string[] {
   const seen = new Map<string, number>();
   const out: string[] = [];
-  for (let raw of names) {
+  for (const raw of names) {
     let cand = raw;
-    let cnt = seen.get(raw) ?? 0;
+    const cnt = seen.get(raw) ?? 0;
     if (cnt > 0 || out.includes(cand)) {
       let idx = 1;
       while (out.includes(`${raw}_${idx}`)) idx++;
@@ -3741,7 +3749,7 @@ function cleanJsonSchema(input: any, seen = new WeakSet()): any {
   seen.add(input);
   const out: any = {};
   if (input.type) {
-    let rt = Array.isArray(input.type) ? (input.type.find((t: any) => t !== "null") ?? input.type[0]) : input.type;
+    const rt = Array.isArray(input.type) ? (input.type.find((t: any) => t !== "null") ?? input.type[0]) : input.type;
     if (typeof rt === "string") out.type = rt.toUpperCase();
   }
   for (const k of Object.keys(input)) {
@@ -3796,7 +3804,6 @@ function validateAndSanitizeTools(rawTools?: any[]): { declarations: any[] } {
         parameters: schemaRaw ? cleanJsonSchema(schemaRaw) : { type: "OBJECT", properties: {} },
         originalName: String(entry.name),
       });
-      continue;
     }
   }
   const names = decls.map((d) => d.name);
@@ -4341,7 +4348,6 @@ export async function fetchWithCascade(
       clearTimeout(to);
       lastError = e instanceof Error ? e : new Error(String(e));
       if (fetchOptions?.signal?.aborted) throw lastError;
-      continue;
     } finally {
       clearTimeout(to);
     }

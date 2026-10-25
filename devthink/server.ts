@@ -908,6 +908,13 @@ import { loadconfig, validateconfig } from "./config.js";
 import { copyseed } from "./copy.ts";
 import { getonboardingstate, getplan, listcopyrows, setonboardingstage, setplan, upsertcopyrows } from "./database.ts";
 import { createversion } from "./engine.ts";
+import {
+  createsandboxsession,
+  hostmodalityreport,
+  listsandboxtree,
+  runsandboxline,
+  writesandboxfile,
+} from "./sandboxlane.js";
 
 /** route resources per version — the canonical 7 */
 const resources = ["keys", "models", "chat/completions", "completions", "messages", "responses", "embeddings"] as const;
@@ -1054,6 +1061,58 @@ async function createserver(): Promise<Hono> {
         since: row.since.toISOString(),
       },
     });
+  });
+
+  // sandbox endpoints — the server-side sandbox of the run and storage
+  // lane: nothing runs or stores in the visitor browser, every tool lands
+  // inside the session jail under .sandboxrun, and the lanes the sandbox
+  // does not carry answer honestly through the pending rows
+  const sandboxsessionpattern = /^[a-z0-9][a-z0-9-]{3,63}$/i;
+  app.post("/api/v1/sandbox/session", async (c) => {
+    const body = (await c.req.json().catch(() => null)) as { sessionId?: unknown } | null;
+    const sessionid = typeof body?.sessionId === "string" ? body.sessionId : "";
+    if (!sandboxsessionpattern.test(sessionid)) return c.json({ error: "invalid session" }, 400);
+    const rows = await createsandboxsession(sessionid);
+    return c.json({ rows });
+  });
+  app.post("/api/v1/sandbox/run", async (c) => {
+    const body = (await c.req.json().catch(() => null)) as { sessionId?: unknown; line?: unknown } | null;
+    const sessionid = typeof body?.sessionId === "string" ? body.sessionId : "";
+    if (!sandboxsessionpattern.test(sessionid)) return c.json({ error: "invalid session" }, 400);
+    if (typeof body?.line !== "string") return c.json({ error: "invalid line" }, 400);
+    if (body.line.length > 2000) return c.json({ error: "line too long" }, 400);
+    const answer = await runsandboxline(sessionid, body.line);
+    return c.json(answer);
+  });
+  app.get("/api/v1/sandbox/files", async (c) => {
+    const sessionid = String(c.req.query("sessionId") || "");
+    if (!sandboxsessionpattern.test(sessionid)) return c.json({ error: "invalid session" }, 400);
+    const rows = await listsandboxtree(sessionid);
+    return c.json({ rows });
+  });
+  app.post("/api/v1/sandbox/write", async (c) => {
+    const body = (await c.req.json().catch(() => null)) as {
+      sessionId?: unknown;
+      target?: unknown;
+      content?: unknown;
+    } | null;
+    const sessionid = typeof body?.sessionId === "string" ? body.sessionId : "";
+    const target = typeof body?.target === "string" ? body.target : "";
+    const content = typeof body?.content === "string" ? body.content : "";
+    if (!sandboxsessionpattern.test(sessionid)) return c.json({ error: "invalid session" }, 400);
+    const targetsafe =
+      target.length > 0 &&
+      !target.startsWith("/") &&
+      !target.startsWith("\\") &&
+      !target.split(/[\\/]/).includes("..");
+    if (!targetsafe) return c.json({ error: "invalid target" }, 400);
+    if (content.length > 5_000_000) return c.json({ error: "content too large" }, 400);
+    await writesandboxfile(sessionid, target, content);
+    return c.json({ ok: true });
+  });
+  app.get("/api/v1/sandbox/modalities", async (c) => {
+    const rows = await hostmodalityreport();
+    return c.json({ rows });
   });
 
   // register routes for every configured version

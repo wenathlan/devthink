@@ -16,8 +16,7 @@
  * handoff slot.
  */
 
-import { ShellChrome } from "../widgets";
-import { ChatBody as ChatBody } from "../widgets";
+import { ChatBody, ShellChrome } from "../widgets";
 
 export * from "../../chatstate.ts";
 export * from "../../useismobile.ts";
