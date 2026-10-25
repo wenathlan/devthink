@@ -34,6 +34,22 @@ export const OAUTH_SCOPES: Readonly<Record<OAuthProvider, string>> = Object.free
   gitlab: "read_user",
 });
 
+/** The token endpoints the gateway exchange redeems the code against —
+ * the server half of the row contract, ridden through the url gate. */
+export const OAUTH_TOKEN_ENDPOINTS: Readonly<Record<OAuthProvider, string>> = Object.freeze({
+  google: "https://oauth2.googleapis.com/token",
+  github: "https://github.com/login/oauth/access_token",
+  gitlab: "https://gitlab.com/oauth/token",
+});
+
+/** The profile endpoints the gateway exchange reads the identity from —
+ * one request per provider, the identity floor scope only. */
+export const OAUTH_PROFILE_ENDPOINTS: Readonly<Record<OAuthProvider, string>> = Object.freeze({
+  google: "https://openidconnect.googleapis.com/v1/userinfo",
+  github: "https://api.github.com/user",
+  gitlab: "https://gitlab.com/api/v4/user",
+});
+
 /** The env names the client ids ride (the ids land with the gateway
  * configuration — the code never carries them). */
 export const OAUTH_ID_ENV: Readonly<Record<OAuthProvider, string>> = Object.freeze({

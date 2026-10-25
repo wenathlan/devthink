@@ -28,6 +28,13 @@ import {
   readBrowserPreferences,
   saveBrowserPreference } from "../../db";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
+import {
+  type AccountSessionState,
+  accountbearer,
+  accountsessionstate,
+  clearaccountsession,
+  revokeaccountsessionbearer,
+} from "../../accountclient.ts";
 import { AboutSettings } from "../widgets";
 import { AccountsCategory } from "../widgets";
 import { AutomationMcp } from "../widgets";
@@ -63,6 +70,7 @@ initPersonalization();
 export default function Settings({ embedded }: { embedded?: boolean }) {
   const [snapshot, setSnapshot] = useState<SettingsSnapshot>();
   const [local, setLocal] = useState<BrowserStoreSummary>();
+  const [accountSession, setAccountSession] = useState<AccountSessionState>();
   const [localIdentity, setLocalIdentity] = useState<{ userId: string; deviceId: string }>();
   const [localPreferences, setLocalPreferences] = useState<SettingsSnapshot["preferences"]>(() => ({
     // the theme mirror answers before the async store does (the preference
@@ -91,6 +99,15 @@ export default function Settings({ embedded }: { embedded?: boolean }) {
         setPublicId(next.identity.userId);
       })
       .catch(() => setSnapshot(undefined));
+    // the family session: the real account lane state of this browser —
+    // the card answers when the lane answered, nothing pretends otherwise
+    if (!accountbearer()) {
+      setAccountSession(undefined);
+      return;
+    }
+    void accountsessionstate()
+      .then((state) => setAccountSession(state ?? undefined))
+      .catch(() => setAccountSession(undefined));
   }
 
   useEffect(refresh, [paired]);
@@ -132,6 +149,14 @@ export default function Settings({ embedded }: { embedded?: boolean }) {
     window.location.assign("./");
   }
 
+  /** the family sign out: revoke the account session at the lane and drop
+   * the parked family session of this browser */
+  async function revokeAccount() {
+    await revokeaccountsessionbearer();
+    clearaccountsession();
+    setAccountSession(undefined);
+  }
+
   /** the preference rows the pages answer: the paired deck mirrors the cli
    * gateway, the browser-local deck keeps its own rows. */
   const preferences = paired && snapshot ? snapshot.preferences : localPreferences;
@@ -161,6 +186,8 @@ export default function Settings({ embedded }: { embedded?: boolean }) {
               onPublicIdChange={setPublicId}
               onSaveIdentity={() => void saveIdentity()}
               onRevoke={() => void revoke()}
+              account={accountSession}
+              onRevokeAccount={() => void revokeAccount()}
             />
           ) : null}
 

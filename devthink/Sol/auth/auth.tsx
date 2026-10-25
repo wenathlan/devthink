@@ -9,12 +9,13 @@
  *
  * Sign in — the windows 11 sequence: the lock face first (the big clock
  * on the LEFT side, the owner's law, the hint at the bottom), then the
- * sign-in face over the dimmed, blurred wallpaper. The face runs the
- * account contract of the root accountgate.ts: a machine without an
- * account asks for the display name and the password creation (the salted
- * digest lands in the credential vault of the local database — the os
- * HD), a machine with one asks for the password alone and answers the
- * wrong-try verdict inline. The provider row — continue with devthink
+ * sign-in face over the dimmed, blurred wallpaper. The face rides the
+ * REAL account lane first (accountclient.ts over the server account
+ * routes): the creation and the password entry land on the server, the
+ * family session covers every device of the family deploy. The local
+ * accountgate of the root accountgate.ts stays as the DECLARED offline
+ * fallback only — the honest offline row names it when the lane never
+ * answered. The provider row — continue with devthink
  * over google, github and gitlab (the bots are ready on the owner
  * accounts, the client ids ride the env, the single callback page
  * detects the origin by state) — rides the face under the password well;
@@ -25,6 +26,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 import { ACCOUNT_NAME_KEY, type AccountState, accountstate, createAccount, verifyAccount } from "../../accountgate.ts";
+import {
+  createserveraccount,
+  normalizeaccountowner,
+  saveaccountsession,
+  signinserveraccount,
+  storedaccountowner,
+} from "../../accountclient.ts";
 import { afterAuthTarget, pairingReadiness, safegatewayurl } from "../../authgate.ts";
 import { copy, loadcopy } from "../../copy.ts";
 import {
@@ -95,18 +103,47 @@ export default function Auth() {
     navigate(afterAuthTarget(window.location.search));
   }, [navigate]);
 
-  /** the first entry: the account is created on this machine's HD (name +
-   * password digest) and the desktop hands over */
+  /**
+   * the first entry: the account is created on the SERVER when the lane
+   * answers — the real account of the family, the session issued in the
+   * same answer. A taken owner with a matching secret signs in. When the
+   * lane never answers, the local accountgate is the DECLARED offline
+   * fallback: the account lands on this machine's HD and the honest
+   * offline row says so — no pretending.
+   */
   const createEntry = useCallback(async () => {
     const display = name.trim();
+    const owner = normalizeaccountowner(display);
     if (!display) return setFailure("Choose the display name of this account.");
+    if (!owner) return setFailure("The display name needs 3 or more letters, digits or dashes to hold the account.");
     if (password.length < 4) return setFailure("The password needs at least 4 characters.");
     if (password !== confirm) return setFailure("The passwords don't match. Try again.");
     setBusy(true);
     setFailure("");
     try {
+      const verdict = await createserveraccount(owner, password);
+      if (verdict.verdict === "ok") {
+        saveaccountsession(verdict.session.token, verdict.session.owner);
+        finish();
+        return;
+      }
+      if (verdict.verdict === "refused") {
+        // the owner may already exist on the server — the same secret signs in
+        const signin = await signinserveraccount(owner, password);
+        if (signin.verdict === "ok") {
+          saveaccountsession(signin.session.token, signin.session.owner);
+          finish();
+          return;
+        }
+        if (signin.verdict === "refused") {
+          setFailure("The account owner is taken and that password does not match it.");
+          return;
+        }
+      }
+      // the lane never answered — the declared offline fallback carries
+      // the account on this machine's HD only, and the row says so
       await createAccount(display, password);
-      finish();
+      setFailure(copy("auth.account.offline"));
     } catch {
       setFailure("The account could not be saved on this machine.");
     } finally {
@@ -114,13 +151,32 @@ export default function Auth() {
     }
   }, [confirm, finish, name, password]);
 
-  /** the returning entry: the password is verified against this machine's
-   * verifier — the wrong try answers inline, never a navigation */
+  /**
+   * the returning entry: the password is verified against the SERVER
+   * account when the lane answers and an owner handle is known. A refusal
+   * answers the wrong-try verdict inline. When the lane never answers,
+   * the local accountgate is the declared offline fallback.
+   */
   const passwordEntry = useCallback(async () => {
     if (!password) return setFailure("Enter the password of this account.");
     setBusy(true);
     setFailure("");
     try {
+      const owner = storedaccountowner() || normalizeaccountowner(known);
+      if (owner) {
+        const verdict = await signinserveraccount(owner, password);
+        if (verdict.verdict === "ok") {
+          saveaccountsession(verdict.session.token, verdict.session.owner);
+          finish();
+          return;
+        }
+        if (verdict.verdict === "refused") {
+          setFailure("The password is incorrect. Try again.");
+          return;
+        }
+      }
+      // the lane never answered — the declared offline fallback verifies
+      // against this machine's HD
       if (await verifyAccount(password)) return finish();
       setFailure("The password is incorrect. Try again.");
     } catch {
@@ -128,7 +184,7 @@ export default function Auth() {
     } finally {
       setBusy(false);
     }
-  }, [finish, password]);
+  }, [finish, known, password]);
 
   /** the sync up: pairs this browser with the visitor's own local CLI
    * gateway through the exact contract the panel already speaks */

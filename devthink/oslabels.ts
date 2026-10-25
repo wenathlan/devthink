@@ -204,6 +204,22 @@ const seedOsStrings: OsStringRow[] = [
   { id: "explorer.toast.mountFailed", text: "The drive could not be mounted." },
   { id: "explorer.toast.newDrive", text: "New drive mounted: {label}. It starts empty." },
   { id: "explorer.toast.newDriveFailed", text: "The new drive could not be created on this machine." },
+  /* the capacity bar sources: the paired lane answers the real usage and
+     the plan quota, the offline surface answers the browser estimate —
+     every bar labels its own source honestly */
+  { id: "explorer.storage.lane", text: "Infrastructure storage" },
+  { id: "explorer.storage.lane.line", text: "{used} used of {quota} plan quota" },
+  { id: "explorer.storage.lane.objects", text: "{count} objects on the plan" },
+  {
+    id: "explorer.storage.lane.aria",
+    text: "Infrastructure storage — the usage the server lane answers against the plan quota",
+  },
+  { id: "explorer.storage.browser", text: "Browser storage" },
+  { id: "explorer.storage.browser.line", text: "{line} — this device's honest estimate" },
+  {
+    id: "explorer.storage.browser.aria",
+    text: "Browser storage — the allocation this browser answers for the origin store",
+  },
 
   /* ------------------------------ gateway view ---------------------------- */
   { id: "gateway.eyebrow", text: "devthink gateway" },

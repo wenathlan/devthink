@@ -17713,3 +17713,796 @@ button.dtc-recents__row {
   animation: none;
   opacity: 0;
 }
+
+/**
+ * @section trio craft pass — the finish of the settings shell, the console
+ * deck and the My Files explorer
+ * The wave-2 trio rides one material grammar. Settings gains the spring nav
+ * indicator (every rail row draws the pill, only the active state grows it),
+ * the hover lift and pressed seat on the rows, the segmented settle, the
+ * picker selection rings and the switch spring; the console reads like a
+ * real terminal (the duty-cycled block cursor, the streaming rows, the
+ * token status colors, the staged boot graph) and the reference sheet wears
+ * the same material; My Files gains the explorer grammar (the collapsible
+ * tree groups with rotating carets, the drag-over wash, the view swap fade,
+ * the selection settle) and the honest capacity bar (the solid accent fill
+ * answers the infrastructure lane, the hatched fill answers the browser
+ * estimate — every bar labels its own source).
+ * Cascade note: this section keeps the file's linear unlayered cascade —
+ * @layer would DEMOTE these overrides beneath the unlayered waves above, so
+ * hierarchy is carried by the JSDoc headers and the appended position (the
+ * chat craft pass precedent).
+ * @depends-on tokens --color-win --color-ink --color-ink-2 --color-ink-3
+ *   --color-ok --color-err --color-warn --color-close --color-hairline
+ *   --ease-micro --ease-spring --ease-window --font-mono --font-sans
+ *   --mask-ink (the @theme foundation and the root runtime flags; every new
+ *   color derives through color-mix in oklab/srgb — no literal values, no
+ *   new tokens) plus the established family locals --dtv3-* --dtw-*
+ *   --dtfx-* the surfaces already define
+ * @depends-on keyframes dtfxStagger (defined earlier in this file — reused,
+ *   never duplicated)
+ * @consumed-by SettingsNav SettingsPersonalization SettingsAccentrow
+ *   SettingsBackgroundpicker SettingsComponentoptions SettingsNavbarposition
+ *   SettingsLanguagecard SettingsGatewaypairing SettingsHarddrives Console
+ *   ConsoleTerminal ConsoleReference ConsoleGraphview Files — presentation
+ *   classes only; zero logic, zero new strings: every state binds a
+ *   data-attribute or an aria flag the components already emit (data-active,
+ *   aria-current, aria-checked, data-selected, aria-pressed, aria-expanded,
+ *   data-state, data-source, data-dragover, data-view, data-embedded)
+ * @guards [data-motion="reduced"] prefers-reduced-motion
+ *   prefers-reduced-transparency (collected in §D)
+ */
+
+/* ==========================================================================
+   §A — the settings shell
+   ========================================================================== */
+
+/* -- A1 the card material: the token-derived depth replacing the literal
+   shadows (the light body rides a hair of mask ink, the dark flip deepens
+   one step — the same walk the dtw families carry) -- */
+.dtw-app .dtw-card {
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--mask-ink) 6%, transparent);
+}
+
+.dtw-settings[data-theme="dark"] .dtw-card {
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--mask-ink) 22%, transparent);
+}
+
+.dtw-console .dtw-card {
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--color-ink) 40%, transparent),
+    0 1px 2px color-mix(in srgb, var(--mask-ink) 6%, transparent);
+}
+
+/* -- A2 the rail: the moving active indicator (the spring pill the chat
+   rail carries — every row and the account card draw the bar, only the
+   active state grows it), the hover lift and the pressed seat -- */
+.dtw-settings .dtw-navrow::before,
+.dtw-settings__account::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--color-win);
+  transform: scaleY(0);
+  transform-origin: center;
+  transition: transform 220ms var(--ease-spring);
+  pointer-events: none;
+}
+
+.dtw-settings .dtw-navrow[data-active="true"]::before,
+.dtw-settings__account[aria-current="true"]::before {
+  transform: scaleY(1);
+}
+
+.dtw-settings__account {
+  position: relative;
+}
+
+.dtw-settings__account[aria-current="true"] {
+  background: color-mix(in srgb, var(--color-win) 10%, transparent);
+}
+
+.dtw-settings .dtw-navrow {
+  transition:
+    background 150ms var(--ease-micro),
+    color 150ms ease,
+    transform 160ms var(--ease-micro);
+}
+
+.dtw-settings .dtw-navrow:hover {
+  transform: translateY(-1px);
+}
+
+.dtw-settings .dtw-navrow:active {
+  transform: translateY(0) scale(0.98);
+  transition-duration: 80ms;
+}
+
+/* the account card rides the same walk */
+.dtw-settings__account {
+  transition:
+    background 150ms var(--ease-micro),
+    transform 160ms var(--ease-micro);
+}
+
+.dtw-settings__account:hover {
+  transform: translateY(-1px);
+}
+
+.dtw-settings__account:active {
+  transform: translateY(0) scale(0.98);
+  transition-duration: 80ms;
+}
+
+/* -- A3 the segmented control: the inset hairline ring around the well and
+   the spring settle when the selection lands (one shot on the flag flip,
+   never a loop) -- */
+.dtw-settings__segmented {
+  box-shadow: inset 0 0 0 1px var(--dtv3-hairline);
+}
+
+.dtw-settings__segment[data-selected="true"] {
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--mask-ink) 14%, transparent);
+  animation: dtsSegSettle 280ms var(--ease-spring);
+}
+
+@keyframes dtsSegSettle {
+  0% {
+    transform: scale(0.92);
+  }
+
+  55% {
+    transform: scale(1.04);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* -- A4 the personalization pickers: the wallpaper ring settles on the
+   spring curve (the halo contracts into the resting ring), the accent
+   swatches pop and the switch thumb walks the spring -- */
+.dtw-settings__wallthumb {
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--mask-ink) 12%, transparent);
+  transition:
+    box-shadow 150ms var(--ease-micro),
+    transform 160ms var(--ease-micro);
+}
+
+.dtw-settings__wall:hover .dtw-settings__wallthumb {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--mask-ink) 20%, transparent);
+}
+
+.dtw-settings__wall[data-selected="true"] .dtw-settings__wallthumb {
+  animation: dtsRingSettle 320ms var(--ease-spring);
+}
+
+@keyframes dtsRingSettle {
+  0% {
+    box-shadow:
+      0 0 0 2px var(--color-win),
+      0 0 0 6px color-mix(in srgb, var(--color-win) 28%, transparent);
+  }
+
+  60% {
+    box-shadow:
+      0 0 0 2px var(--color-win),
+      0 0 0 3px color-mix(in srgb, var(--color-win) 12%, transparent);
+  }
+
+  100% {
+    box-shadow:
+      0 0 0 2px var(--color-win),
+      0 0 0 0 transparent;
+  }
+}
+
+.dtw-settings__accentdot {
+  border-color: color-mix(in srgb, var(--mask-ink) 20%, transparent);
+  transition:
+    box-shadow 150ms var(--ease-micro),
+    transform 200ms var(--ease-spring);
+}
+
+.dtw-settings__accentdot:hover {
+  transform: scale(1.12);
+}
+
+.dtw-settings__accentdot[data-selected="true"] {
+  animation: dtsDotSettle 320ms var(--ease-spring);
+}
+
+@keyframes dtsDotSettle {
+  0% {
+    transform: scale(0.8);
+  }
+
+  55% {
+    transform: scale(1.14);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.dtw-settings__switchthumb {
+  transition:
+    transform 260ms var(--ease-spring),
+    background 150ms ease;
+}
+
+.dtw-settings__switchrow:hover .dtw-settings__switchtrack {
+  border-color: var(--dtv3-ink-2);
+}
+
+/* the registry error copy rides the close token (status colors from the
+   tokens only) */
+.dtw-settings__error {
+  color: var(--color-close);
+}
+
+/* -- A5 the focus law: every field that answered with a border walk alone
+   gains the soft accent halo, the range gains the ring it never had -- */
+.dtw-settings .dtw-input:focus-visible,
+.dtw-settings .dtw-select:focus-visible,
+.dtw-settings .dtc-gw__input:focus-visible,
+.dtw-settings__input:focus-visible,
+.dtw-settings__select:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-win) 16%, transparent);
+}
+
+.dtw-settings__range:focus-visible {
+  outline: 2px solid var(--color-win);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ==========================================================================
+   §B — the console deck
+   ========================================================================== */
+
+/* -- B1 the status colors from the tokens only: the registry green resolves
+   to --color-ok, the error rows to --color-err, the terminal ladders to the
+   ink tokens (the light body re-binds --color-win to the deep accent, so
+   the graph strokes stay the windows light accent by token) -- */
+.dtw-console .dtw-cardtitle svg {
+  color: var(--color-ok);
+}
+
+.dtw-console .dtw-navrow[data-active="true"]::before {
+  background: var(--color-ok);
+}
+
+.dtw-console__note > span:first-child.is-paired .dtw-console__lamp {
+  background: var(--color-ok);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--mask-ink) 45%, transparent);
+  animation: dtkLampTick 2.4s steps(8, end) infinite;
+}
+
+@keyframes dtkLampTick {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.dtw-console .dt-term__bar,
+.dtw-console .dt-term__state {
+  color: var(--color-ink-2);
+}
+
+.dtw-console .dt-term__out .boot {
+  color: var(--color-ink-3);
+}
+
+.dtw-console .dt-term__out .cmdline {
+  color: var(--color-ink);
+}
+
+.dtw-console .dt-term__out .ok {
+  color: color-mix(in oklab, var(--color-ink) 88%, var(--color-warn));
+}
+
+.dtw-console .dt-term__out .err {
+  color: var(--color-err);
+}
+
+.dtw-console .dt-term__prompt {
+  color: var(--color-ok);
+}
+
+.dtw-console .dt-term__input {
+  caret-color: var(--color-ok);
+}
+
+/* the input row answers focus with a faint wash — the caret stays the
+   primary indicator, the way a real terminal reads */
+.dtw-console .dt-term__in {
+  transition: background-color 150ms var(--ease-micro);
+}
+
+.dtw-console .dt-term__in:focus-within {
+  background: color-mix(in srgb, var(--color-ok) 6%, transparent);
+}
+
+/* -- B2 the terminal surface: the fluent depth under the dark pane, the
+   rows streaming in (each appended row plays its 180ms arrival), and the
+   duty-cycled block cursor riding the last row while the console runs
+   (the :has gate reads the off flag the form already carries) -- */
+.dtw-console .dt-term {
+  box-shadow:
+    0 2px 8px color-mix(in srgb, var(--mask-ink) 12%, transparent),
+    0 16px 48px color-mix(in srgb, var(--mask-ink) 16%, transparent);
+}
+
+.dtw-console .dt-term__out > span {
+  animation: dtkRowStream 180ms var(--ease-micro) backwards;
+}
+
+@keyframes dtkRowStream {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.dtw-console .dt-term:has(.dt-term__in:not(.off)) .dt-term__out > span:last-child::after {
+  content: "";
+  display: inline-block;
+  inline-size: 0.55em;
+  block-size: 1em;
+  margin-left: 3px;
+  vertical-align: -0.12em;
+  background: var(--color-ok);
+  animation: dtkCursorTick 1.1s linear infinite;
+}
+
+@keyframes dtkCursorTick {
+  0%,
+  49% {
+    opacity: 1;
+  }
+
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* -- B3 the reference sheet: the registry rows answer the hover with the
+   command word sliding a step toward the reader -- */
+.dtw-console__refrun strong {
+  transition: transform 160ms var(--ease-micro);
+}
+
+.dtw-console__refrun:hover:not(:disabled) strong {
+  transform: translateX(2px);
+}
+
+/* -- B4 the boot graph: the nodes enter staged (the --gview-i index the
+   drawing carries steps the cascade at the 55ms grammar — opacity only,
+   the attribute transform of the svg cards stays untouched), the state
+   marks settle when the runner flips them, and the status paints ride the
+   tokens (css overrides the svg presentation attributes) -- */
+.gview .gview__card {
+  animation: dtkGraphRise 340ms var(--ease-micro) backwards;
+  animation-delay: calc(var(--gview-i, 0) * 55ms);
+}
+
+@keyframes dtkGraphRise {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.gview .gview__card[data-state="done"] .gview__mark-done,
+.gview .gview__card[data-state="failed"] .gview__mark-failed {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: dtkMarkSettle 300ms var(--ease-spring);
+}
+
+@keyframes dtkMarkSettle {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+
+  60% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.gview .gview__card:focus-visible rect.gview__surface,
+.gview .gview__card[data-selected="true"] rect.gview__surface,
+.gview .gview__card[data-state="running"] rect.gview__surface {
+  stroke: var(--color-win);
+}
+
+.gview .gview__card[data-state="running"] rect.gview__pulse {
+  stroke: var(--color-win);
+}
+
+.gview .gview__card[data-state="running"] circle.gview__pulse {
+  fill: var(--color-win);
+}
+
+.gview .gview__port--live {
+  fill: var(--color-win);
+}
+
+.gview .gview__mark-failed {
+  stroke: var(--color-close);
+}
+
+.gview .gview__label {
+  fill: var(--dtv3-ink-1, var(--color-ink));
+}
+
+.gview .gview__kind {
+  fill: var(--dtv3-ink-3, var(--color-ink-3));
+}
+
+/* ==========================================================================
+   §C — the My Files explorer
+   ========================================================================== */
+
+/* -- C1 the nav pane tree: the collapsible group header (a real button
+   carrying the heading styles), the caret that rotates on aria-expanded
+   with the spring, the hover wash of the items -- */
+.dtfx-nav__group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  width: 100%;
+  margin: 8px 0 2px;
+  padding: 2px 6px 2px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--dtfx-ink-3);
+  cursor: pointer;
+  transition:
+    background 130ms var(--dtfx-ease),
+    color 130ms var(--dtfx-ease);
+}
+
+.dtfx-nav__group:hover {
+  background: var(--dtfx-hover);
+  color: var(--dtfx-ink-1);
+}
+
+.dtfx-nav__group:focus-visible {
+  outline: 2px solid var(--dtfx-sig);
+  outline-offset: -2px;
+}
+
+.dtfx-nav__group .dtfx-nav__heading {
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.dtfx-nav__caret {
+  display: grid;
+  place-items: center;
+  flex: none;
+  color: var(--dtfx-ink-3);
+  transition:
+    transform 220ms var(--ease-spring),
+    color 130ms var(--dtfx-ease);
+}
+
+.dtfx-nav__group[aria-expanded="false"] .dtfx-nav__caret {
+  transform: rotate(-90deg);
+}
+
+@media (max-width: 720px) {
+  .dtfx-nav__group {
+    justify-content: center;
+    padding: 2px;
+  }
+}
+
+/* -- C2 the content area: the drag-over wash (the presentation flag only —
+   the inset ring and the tint answer the gesture, no drop is claimed), the
+   view swap fade (the grid and the details list replay their arrival when
+   the toggle remounts them) -- */
+.dtfx-content {
+  transition:
+    background-color 160ms var(--dtfx-ease),
+    box-shadow 160ms var(--dtfx-ease);
+}
+
+.dtfx-content[data-dragover="true"] {
+  background: color-mix(in srgb, var(--dtfx-sig) 4%, var(--dtfx-card));
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--dtfx-sig) 40%, transparent);
+}
+
+.dtfx-grid,
+.dtfx-details {
+  animation: dtfxViewSwap 220ms var(--dtfx-ease) backwards;
+}
+
+@keyframes dtfxViewSwap {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* the selection settles with the spring (one shot on the class flip) */
+.dtfx-tile--selected {
+  animation: dtfxSelectSettle 240ms var(--ease-spring);
+}
+
+@keyframes dtfxSelectSettle {
+  0% {
+    transform: scale(0.96);
+  }
+
+  60% {
+    transform: scale(1.02);
+  }
+
+  100% {
+    transform: none;
+  }
+}
+
+/* the status bar view pips pop on the pressed toggle */
+.dtfx-viewbtn {
+  transition:
+    background 130ms var(--dtfx-ease),
+    color 130ms var(--dtfx-ease),
+    transform 140ms var(--dtfx-ease);
+}
+
+.dtfx-viewbtn:active {
+  transform: scale(0.92);
+}
+
+.dtfx-viewbtn--active {
+  animation: dtfxPipPop 220ms var(--ease-spring);
+}
+
+@keyframes dtfxPipPop {
+  0% {
+    transform: scale(0.9);
+  }
+
+  60% {
+    transform: scale(1.08);
+  }
+
+  100% {
+    transform: none;
+  }
+}
+
+/* -- C3 the toolbar springs: the navigation cluster and the command bar
+   answer the hover with a half-pixel lift and the press with the seat; the
+   breadcrumb leaf carries the weight of the current place -- */
+.dtfx-navbtn,
+.dtfx-cmdbtn {
+  transition:
+    background 130ms var(--dtfx-ease),
+    color 130ms var(--dtfx-ease),
+    transform 140ms var(--dtfx-ease);
+}
+
+.dtfx-navbtn:hover:not(:disabled),
+.dtfx-cmdbtn:hover:not(:disabled) {
+  transform: translateY(-0.5px);
+}
+
+.dtfx-navbtn:active:not(:disabled),
+.dtfx-cmdbtn:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.dtfx-address__leaf {
+  font-weight: 500;
+}
+
+/* -- C4 the capacity bar: every bar labels its own source — the
+   infrastructure lane paints the solid accent fill (real usage against the
+   plan quota), the browser estimate paints the hatched fill (the honest
+   device answer), the source dot carries the status token -- */
+.dtfx-drive {
+  transition:
+    border-color 130ms var(--dtfx-ease),
+    box-shadow 130ms var(--dtfx-ease),
+    transform 160ms var(--dtfx-ease);
+}
+
+.dtfx-drive:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--dtfx-sig) 35%, transparent);
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--mask-ink) 8%, transparent);
+}
+
+.dtfx-drive__source {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--dtfx-ink-2);
+  font: 500 10px var(--font-mono, monospace);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.dtfx-drive__source::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-ok);
+  flex: none;
+}
+
+.dtfx-drive__source[data-source="browser"]::before {
+  background: var(--color-warn);
+}
+
+.dtfx-drive__objects {
+  color: var(--dtfx-ink-3);
+  font: 400 10.5px var(--font-mono, monospace);
+  font-variant-numeric: tabular-nums;
+}
+
+.dtfx-drive__bar[data-source="lane"] .dtfx-drive__fill {
+  background: linear-gradient(90deg, var(--dtfx-sig), color-mix(in oklab, var(--dtfx-sig) 82%, var(--mask-ink)));
+}
+
+.dtfx-drive__bar[data-source="browser"] .dtfx-drive__fill {
+  background-image: repeating-linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--dtfx-sig) 62%, transparent) 0 4px,
+    color-mix(in srgb, var(--dtfx-sig) 28%, transparent) 4px 8px
+  );
+}
+
+/* ==========================================================================
+   §D — the guards
+   ========================================================================== */
+
+/* the os setting and the system preference alike: the settle pops, the
+   streaming arrivals, the duty-cycled cursor and lamp, the staged graph
+   and the swap fades all idle inert — the standing states (the active
+   pill, the selection wash, the source dots) remain, the feedback never
+   dies, only the movement */
+[data-motion="reduced"] {
+  & .dtw-settings .dtw-navrow::before,
+  & .dtw-settings__account::before,
+  & .dtw-settings__segment[data-selected="true"],
+  & .dtw-settings__wall[data-selected="true"] .dtw-settings__wallthumb,
+  & .dtw-settings__accentdot[data-selected="true"],
+  & .dtw-console .dt-term__out > span,
+  & .dtw-console .dt-term:has(.dt-term__in:not(.off)) .dt-term__out > span:last-child::after,
+  & .dtw-console__note > span:first-child.is-paired .dtw-console__lamp,
+  & .gview .gview__card,
+  & .gview .gview__card[data-state="done"] .gview__mark-done,
+  & .gview .gview__card[data-state="failed"] .gview__mark-failed,
+  & .dtfx-grid,
+  & .dtfx-details,
+  & .dtfx-tile--selected,
+  & .dtfx-viewbtn--active {
+    animation: none;
+  }
+
+  & .dtw-settings .dtw-navrow,
+  & .dtw-settings__account,
+  & .dtfx-drive,
+  & .dtfx-navbtn,
+  & .dtfx-cmdbtn,
+  & .dtfx-viewbtn,
+  & .dtfx-nav__caret,
+  & .dtfx-nav__group {
+    transition: none;
+  }
+
+  & .dtw-settings .dtw-navrow:hover,
+  & .dtw-settings__account:hover,
+  & .dtfx-drive:hover,
+  & .dtfx-navbtn:hover:not(:disabled),
+  & .dtfx-cmdbtn:hover:not(:disabled) {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dtw-settings .dtw-navrow::before,
+  .dtw-settings__account::before,
+  .dtw-settings__segment[data-selected="true"],
+  .dtw-settings__wall[data-selected="true"] .dtw-settings__wallthumb,
+  .dtw-settings__accentdot[data-selected="true"],
+  .dtw-console .dt-term__out > span,
+  .dtw-console .dt-term:has(.dt-term__in:not(.off)) .dt-term__out > span:last-child::after,
+  .dtw-console__note > span:first-child.is-paired .dtw-console__lamp,
+  .gview .gview__card,
+  .gview .gview__card[data-state="done"] .gview__mark-done,
+  .gview .gview__card[data-state="failed"] .gview__mark-failed,
+  .dtfx-grid,
+  .dtfx-details,
+  .dtfx-tile--selected,
+  .dtfx-viewbtn--active {
+    animation: none;
+  }
+
+  .dtw-settings .dtw-navrow,
+  .dtw-settings__account,
+  .dtfx-drive,
+  .dtfx-navbtn,
+  .dtfx-cmdbtn,
+  .dtfx-viewbtn,
+  .dtfx-nav__caret,
+  .dtfx-nav__group {
+    transition: none;
+  }
+
+  .dtw-settings .dtw-navrow:hover,
+  .dtw-settings__account:hover,
+  .dtfx-drive:hover,
+  .dtfx-navbtn:hover:not(:disabled),
+  .dtfx-cmdbtn:hover:not(:disabled) {
+    transform: none;
+  }
+}
+
+/* the transparency law: the drag wash drops the tint and keeps the solid
+   ring — the state stays readable without the wash */
+@media (prefers-reduced-transparency: reduce) {
+  .dtfx-content[data-dragover="true"] {
+    background: var(--dtfx-card);
+    box-shadow: inset 0 0 0 2px var(--dtfx-sig);
+  }
+}
+
+/* the touch floors: the status pips and the tree headers lift to the
+   generous target on the coarse pointers */
+@media (hover: none), (pointer: coarse) {
+  .dtfx-viewbtn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .dtfx-nav__group {
+    min-height: 36px;
+  }
+}
+
