@@ -37,7 +37,7 @@ import {
   pairingStatus,
   revokeBrowserSessions,
   setIdentityUserId,
-} from "./identity.js";
+} from "./authfamily.js";
 import { readPreferences, savePreference } from "./storage.js";
 import type { ChatEvent } from "./streaming.js";
 import { banner, box, colors, formatConfig, formatEvent, statusBar } from "./Sol/widgets/ConsoleTerminalui.js";

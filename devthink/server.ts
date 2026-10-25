@@ -10,13 +10,25 @@ import { createServer, type IncomingMessage, type Server, type ServerResponse } 
 import { isAllowedOrigin } from "./compatibility.js";
 import { type DevThinkConfig, type DevThinkPaths, ensurePaths, resolvePaths, saveConfig } from "./config.js";
 import {
+  AccountError,
+  accountsessiontokenvalid,
   consumePairing,
+  createaccount,
+  exchangeoauthcode,
+  GateError,
   getIdentity,
+  issueaccountsession,
+  type OAuthProvider,
+  OAUTH_PROVIDERS,
   pairingStatus,
+  prepareaccounts,
   revokeBrowserSessions,
+  revokeaccountsession,
   setIdentityUserId,
   verifyBrowserSession,
-} from "./identity.js";
+  verifyaccount,
+  verifyaccountsession,
+} from "./authfamily.js";
 import { type ChatMessage, listModels, listProviders, streamChat } from "./providers.js";
 import { readPreferences, savePreference } from "./storage.js";
 import {
@@ -902,7 +914,7 @@ import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
-import { Hono } from "hono";
+import { Hono, type Context } from "hono";
 import { cors } from "hono/cors";
 import { loadconfig, validateconfig } from "./config.js";
 import { copyseed } from "./copy.ts";
@@ -925,19 +937,6 @@ import {
   putobject,
   usagefor,
 } from "./storagelane.js";
-import {
-  AccountError,
-  accountsessiontokenvalid,
-  createaccount,
-  exchangeoauthcode,
-  issueaccountsession,
-  prepareaccounts,
-  revokeaccountsession,
-  verifyaccount,
-  verifyaccountsession,
-} from "./accountlane.js";
-import { GateError } from "./urlgate.js";
-import { OAUTH_PROVIDERS, type OAuthProvider } from "./oauthrow.ts";
 
 /** route resources per version — the canonical 7 */
 const resources = ["keys", "models", "chat/completions", "completions", "messages", "responses", "embeddings"] as const;
@@ -1220,6 +1219,33 @@ async function createserver(): Promise<Hono> {
     const token = value.replace(/^bearer\s+/i, "").trim();
     return accountsessiontokenvalid(token) ? token : "";
   };
+  // the persistent family session rides an HttpOnly cookie the server mints
+  // at every session door: the canonical state stays server side, the
+  // visitor side never holds it in a scriptable store
+  const FAMILYCOOKIENAME = "devthinkfamily";
+  const FAMILYCOOKIEAGE = 60 * 60 * 24 * 30;
+  const setfamilycookie = (c: Context, token: string): void => {
+    const secure = c.req.url.startsWith("https://") ? [" Secure"] : [];
+    c.header(
+      "set-cookie",
+      [[FAMILYCOOKIENAME, "=", token].join(""), "; Path=/; HttpOnly; SameSite=Lax", ["; Max-Age=", String(FAMILYCOOKIEAGE)].join(""), ...secure].join(""),
+    );
+  };
+  const clearfamilycookie = (c: Context): void => {
+    c.header("set-cookie", [FAMILYCOOKIENAME, "=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0"].join(""));
+  };
+  const familycookiebearer = (cookieheader: string | undefined): string => {
+    const header = typeof cookieheader === "string" ? cookieheader : "";
+    let token = "";
+    for (const piece of header.split(";")) {
+      const parts = piece.trim().split("=");
+      if (parts[0] === FAMILYCOOKIENAME && parts.length >= 2) {
+        const candidate = parts[1] || "";
+        if (accountsessiontokenvalid(candidate)) token = candidate;
+      }
+    }
+    return token;
+  };
   app.post("/api/v1/accounts", async (c) => {
     const body = (await c.req.json().catch(() => null)) as { owner?: unknown; secret?: unknown } | null;
     const owner = typeof body?.owner === "string" ? body.owner : "";
@@ -1228,6 +1254,7 @@ async function createserver(): Promise<Hono> {
     try {
       const account = createaccount(owner, secret);
       const session = issueaccountsession(account.id);
+      setfamilycookie(c, session.token);
       return c.json(
         { owner: account.owner, createdAt: account.createdAt, token: session.token, expiresAt: session.expiresAt },
         201,
@@ -1247,15 +1274,39 @@ async function createserver(): Promise<Hono> {
     const account = verifyaccount(owner, secret);
     if (!account) return c.json({ error: "the owner and the secret do not match" }, 401);
     const session = issueaccountsession(account.id);
+    setfamilycookie(c, session.token);
     return c.json({ owner: account.owner, token: session.token, expiresAt: session.expiresAt });
   });
   app.get("/api/v1/accounts/session", async (c) => {
-    const view = verifyaccountsession(accountbearer(c.req.header("authorization")));
+    const headerbearer = accountbearer(c.req.header("authorization"));
+    // the persistent restore: a request with no authorization header but a
+    // live family cookie answers a rotated session, so the sign in survives
+    // the browser restart without any canonical state on the visitor side
+    if (!headerbearer) {
+      const cookiebearer = familycookiebearer(c.req.header("cookie"));
+      if (cookiebearer) {
+        const view = verifyaccountsession(cookiebearer);
+        if (view) {
+          const rotated = issueaccountsession(view.accountid);
+          setfamilycookie(c, rotated.token);
+          return c.json({
+            owner: view.owner,
+            createdAt: view.createdAt,
+            expiresAt: rotated.expiresAt,
+            token: rotated.token,
+            rotated: true,
+          });
+        }
+        return c.json({ error: "a current account session bearer is required" }, 401);
+      }
+    }
+    const view = verifyaccountsession(headerbearer);
     if (!view) return c.json({ error: "a current account session bearer is required" }, 401);
     return c.json({ owner: view.owner, createdAt: view.createdAt, expiresAt: view.expiresAt });
   });
   app.delete("/api/v1/accounts/session", async (c) => {
-    const token = accountbearer(c.req.header("authorization"));
+    const token = accountbearer(c.req.header("authorization")) || familycookiebearer(c.req.header("cookie"));
+    clearfamilycookie(c);
     if (!token || !revokeaccountsession(token)) {
       return c.json({ error: "a current account session bearer is required" }, 401);
     }
@@ -1275,6 +1326,7 @@ async function createserver(): Promise<Hono> {
     if (!OAUTH_PROVIDERS.includes(provider as OAuthProvider)) return c.json({ error: "unknown provider" }, 400);
     try {
       const answer = await exchangeoauthcode(provider, code, verifier, redirectUri);
+      setfamilycookie(c, answer.token);
       return c.json(answer, 201);
     } catch (error) {
       if (error instanceof AccountError) return c.json({ error: error.message }, 400);

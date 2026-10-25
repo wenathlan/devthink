@@ -18506,3 +18506,1358 @@ button.dtc-recents__row {
   }
 }
 
+/**
+ * @section entry craft pass — the finish of the entry chain and the
+ * remaining internal surfaces (intro boot · intro saas · explore · auth ·
+ * onboarding · about/docs/terms/policy/notfound · gateway/providers/
+ * projects/history/usage/plans · calculator/games/audio/video/image)
+ * The wave-2 completion pass: every internal surface that had not yet
+ * received the craft grammar now wears the same material. The composition
+ * of each surface stays (the anchors and widgets keep their structure, their
+ * copy and their contracts); the finish is rebuilt: the shaders-grade
+ * layered material (inset hairline + inset gloss + fluent depth) on every
+ * standing panel, ONE hero light per page, and micro-interactions that
+ * answer — arrival rises on mount, hover lifts with the press seating back,
+ * spring settles on selection flips, duty-cycled status lamps, sliding rows,
+ * underline-draw links. The intro faces ride double-class scoping so the
+ * finish wins the tie against the per-page injected sheets (the boot and
+ * saas faces inject at import time; the cascade keeps the file's linear
+ * unlayered law — @layer would DEMOTE this section beneath the earlier
+ * unlayered waves, so hierarchy is carried by the JSDoc header and the
+ * appended position, exactly the chat and trio craft pass precedent).
+ * @depends-on tokens --color-win --win-accent --win-accent-ink --color-ink
+ *   --color-ink-2 --color-ink-3 --color-ok --color-warn --color-err
+ *   --color-doo --color-focus --color-hairline --color-s1 --color-s2
+ *   --font-mono --font-sans --mask-ink --ease-micro --ease-spring
+ *   --ease-entry --z-atmosphere (the @theme foundation and the root runtime
+ *   flags; every color derives through color-mix in oklab/srgb — no literal
+ *   values, no new tokens) plus the established family locals the surfaces
+ *   already define --dtv3-ink-1 --dtv3-ink-2 --dtv3-ink-3 --dtv3-hairline
+ *   --dtv3-sig (the light trident bodies)
+ * @depends-on keyframes dtkLampTick dtsDotSettle (defined earlier in this
+ *   file — reused, never duplicated; the lamp keeps the family duty-cycle
+ *   cadence, the dot settle keeps the spring)
+ * @consumed-by IntroBoot IntroSaas SaasHero SaasCreators SaasStudios
+ *   SaasCadria SaasExplorerWall SaasDebonair SaasDoo SaasFooter
+ *   IntroSaasrails ExploreDownloadrail Explore Onboarding OnboardingSteps
+ *   Auth AuthLockface AuthSignin AuthPairing AuthStatusline AuthPowermenu
+ *   AuthProviderrow AboutFamily AboutHero AboutTimeline DocsNav DocsCard
+ *   DocsModules TermsLegalkit InstitutionalChrome Notfound Gateway Plans
+ *   ProjectRows ProvidersList HistoryLadder UsageMeasures GamesList
+ *   GamesNav CalculatorDisplay CalculatorKeypad CalculatorHistory
+ *   AudioMusicengine AudioMusictracks VideoEngine VideoAssets
+ *   ImageImageengine ImageImagestills — presentation classes only; zero
+ *   logic, zero new strings: every state binds a data-attribute, an aria
+ *   flag or a class the components already emit (data-active, data-on,
+ *   data-offline, data-kind, data-latest, aria-pressed, aria-expanded,
+ *   aria-busy, is-picked, is-tier) plus the four dtv-x class bindings the
+ *   explore page anchor carries
+ * @guards [data-motion="reduced"] prefers-reduced-motion
+ *   prefers-reduced-transparency [data-anim-paused] (collected in §Z)
+ */
+
+/* ==========================================================================
+   §A — the intro boot (the owned face)
+   The boot sheet injects at import time with single-class rules; every rule
+   here scopes through .boot-root so the finish wins the tie on cascade
+   order alone.
+   ========================================================================== */
+
+/* -- A1 the hello stage: the word carries the letterpress shadow (the
+   dark-room light budget 1), the mark stays the drawn mark -- */
+.boot-root .boot-hello__word {
+  text-shadow:
+    0 1px 24px color-mix(in oklab, var(--mask-ink) 45%, transparent),
+    0 1px 0 color-mix(in oklab, var(--color-ink) 12%, transparent);
+}
+
+/* -- A2 the lock sheet: the one material touch — a top gloss on the sign
+   stage, the drawn sky keeps its light -- */
+.boot-root .boot-sign {
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--color-ink) 7%, transparent);
+}
+
+/* -- A3 the sign fields: the accent underline walk, the caret answers the
+   accent, the placeholder recedes one step while the row holds focus -- */
+.boot-root .boot-sign__field {
+  caret-color: var(--color-win);
+  transition: border-color 150ms var(--ease-micro);
+  animation: dtqRise 300ms var(--ease-micro) 120ms backwards;
+}
+
+.boot-root .boot-sign__field:focus {
+  border-bottom-color: var(--color-win);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--color-win) 26%, transparent);
+}
+
+.boot-root .boot-sign__field::placeholder {
+  transition: opacity 150ms var(--ease-micro);
+}
+
+.boot-root .boot-sign__card:focus-within .boot-sign__field::placeholder {
+  opacity: 0.6;
+}
+
+/* -- A4 the sign key: the arrival rise (one shot — the card mounts on the
+   signin stage flip), the hover lift, the pressed seat, the thin focus
+   ring; the colored drop rides the accent family -- */
+.boot-root .boot-sign__go {
+  box-shadow:
+    0 8px 20px -10px color-mix(in oklab, var(--color-win) 55%, transparent),
+    inset 0 1px 0 color-mix(in oklab, var(--color-ink) 22%, transparent);
+  animation: dtqRise 260ms var(--ease-micro) 180ms backwards;
+  transition:
+    background 150ms ease,
+    transform 160ms var(--ease-micro),
+    box-shadow 160ms var(--ease-micro);
+}
+
+.boot-root .boot-sign__go:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-win) 86%, var(--color-ink));
+  transform: translateY(-1px);
+}
+
+.boot-root .boot-sign__go:active:not(:disabled) {
+  transform: translateY(0) scale(0.97);
+  transition-duration: 80ms;
+}
+
+.boot-root .boot-sign__go:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* -- A5 the avatar plate and the card choreography: the token-derived ring
+   replacing the literal shadow stack (inset top light, hairline ring,
+   fluent drop) and the 60ms entry waterfall (avatar, name, field, key) -- */
+.boot-root .boot-sign__avatar {
+  box-shadow:
+    inset 0 2px 3px color-mix(in oklab, var(--color-ink) 38%, transparent),
+    0 0 0 1px color-mix(in oklab, var(--color-ink) 22%, transparent),
+    0 18px 40px color-mix(in oklab, var(--mask-ink) 45%, transparent);
+  animation: dtqRise 300ms var(--ease-micro) backwards;
+}
+
+.boot-root .boot-sign__name {
+  animation: dtqRise 300ms var(--ease-micro) 60ms backwards;
+}
+
+.boot-root .boot-sign__micro {
+  animation: dtqRise 300ms var(--ease-micro) 240ms backwards;
+}
+
+/* -- A6 the hint: the faint token step -- */
+.boot-root .boot-hint {
+  color: color-mix(in oklab, var(--color-ink) 55%, transparent);
+}
+
+/* the arrival curve of the entry pass (rise 6px, one pass) */
+@keyframes dtqRise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ==========================================================================
+   §B — the intro saas (the web face)
+   The saas sheet injects at import time; the same double-class scoping
+   re-derives its literal palette through the tokens (the indigo→violet
+   crutch and the five-hue shader retire to the ONE accent family — the
+   color lock law), the tactile keys keep their physics.
+   ========================================================================== */
+
+/* -- B1 the tactile key: the pressed gloss stays, the hover glow re-derives
+   from the accent (the indigo shadow dies) -- */
+.saas-root .btn-tactile-3d:hover {
+  box-shadow:
+    0 20px 34px -8px color-mix(in oklab, var(--color-win) 34%, transparent),
+    inset 0 2px 3px color-mix(in oklab, var(--color-ink) 55%, transparent),
+    inset 0 -3px 6px color-mix(in oklab, var(--mask-ink) 75%, transparent);
+}
+
+.saas-root .btn-tactile-3d:active {
+  box-shadow:
+    0 8px 18px -8px color-mix(in oklab, var(--mask-ink) 55%, transparent),
+    inset 0 1.5px 2px color-mix(in oklab, var(--color-ink) 32%, transparent),
+    inset 0 -2px 5px color-mix(in oklab, var(--mask-ink) 55%, transparent);
+}
+
+/* -- B2 the icon frames: the hover hairline and the wash ride the accent
+   family at the wash strengths the chrome law keeps -- */
+.saas-root .icon-frame-3d:hover {
+  border-color: color-mix(in oklab, var(--color-win) 50%, transparent);
+  box-shadow:
+    0 12px 22px -6px color-mix(in oklab, var(--color-win) 18%, transparent),
+    inset 0 1px 2px color-mix(in oklab, var(--color-ink) 90%, transparent);
+}
+
+.saas-root .icon-frame-3d-active {
+  border-color: color-mix(in oklab, var(--color-win) 60%, transparent);
+  box-shadow:
+    0 10px 22px -6px color-mix(in oklab, var(--color-win) 24%, transparent),
+    inset 0 1px 2px color-mix(in oklab, var(--color-ink) 90%, transparent);
+}
+
+/* -- B3 the hero shader: the five-hue rainbow retires — one halo family
+   (the accent carrying the field, one warm counterweight at the far stop),
+   the blur and the slow breathe stay (the single light source of the face) -- */
+.saas-root .hero-gaussian-shader {
+  background:
+    radial-gradient(circle at 16% 72%, color-mix(in oklab, var(--color-win) 58%, transparent) 0%, transparent 50%),
+    radial-gradient(circle at 40% 82%, color-mix(in oklab, var(--color-win) 38%, transparent) 0%, transparent 46%),
+    radial-gradient(circle at 64% 66%, color-mix(in oklab, var(--color-win) 28%, transparent) 0%, transparent 44%),
+    radial-gradient(circle at 86% 70%, color-mix(in oklab, var(--color-warn) 24%, transparent) 0%, transparent 42%);
+}
+
+/* -- B4 the hero inline switch: the gradient re-derives from the same
+   family (accent core, one warm shoulder) — never a second palette -- */
+.saas-root .hero-inline-switch {
+  background: linear-gradient(
+    125deg,
+    color-mix(in oklab, var(--color-win) 72%, var(--color-ink)) 0%,
+    var(--color-win) 48%,
+    color-mix(in oklab, var(--color-warn) 55%, var(--color-win)) 100%
+  );
+  box-shadow:
+    0 12px 26px -6px color-mix(in oklab, var(--color-win) 38%, transparent),
+    inset 0 2px 4px color-mix(in oklab, var(--color-ink) 55%, transparent);
+}
+
+.saas-root .hero-switch-thumb {
+  box-shadow:
+    -3px 4px 10px color-mix(in oklab, var(--mask-ink) 35%, transparent),
+    inset 0 2px 3px color-mix(in oklab, var(--color-ink) 90%, transparent);
+}
+
+/* -- B5 the conic ring: the token conic (accent core, the doo counterpoint,
+   the warm shoulder) replacing the six-hue literal wheel -- */
+.saas-root .conic-rainbow-ring {
+  background: conic-gradient(
+    from 180deg at 50% 50%,
+    color-mix(in oklab, var(--color-warn) 88%, var(--color-ink)) 0deg,
+    var(--color-win) 120deg,
+    color-mix(in oklab, var(--color-win) 60%, var(--color-doo)) 216deg,
+    color-mix(in oklab, var(--color-warn) 70%, var(--color-win)) 312deg,
+    color-mix(in oklab, var(--color-warn) 88%, var(--color-ink)) 360deg
+  );
+}
+
+/* -- B6 the brand gradient word and the standing cards: the literals
+   re-derive through the ink and mask tokens -- */
+.saas-root .text-gradient-brand {
+  background: linear-gradient(92deg, var(--color-signal-ink) 0%, var(--color-win) 100%);
+}
+
+.saas-root .surface-card {
+  box-shadow: 0 16px 36px -14px color-mix(in oklab, var(--mask-ink) 10%, transparent);
+}
+
+.saas-root .tactile-navy-surface {
+  box-shadow:
+    0 22px 44px -12px color-mix(in oklab, var(--mask-ink) 55%, transparent),
+    inset 0 2px 5px color-mix(in oklab, var(--color-ink) 28%, transparent),
+    inset 0 -5px 10px color-mix(in oklab, var(--mask-ink) 40%, transparent);
+}
+
+/* -- B7 the selection and the focus: the accent family carries both (the
+   indigo selection dies) -- */
+.saas-root ::selection {
+  background: color-mix(in oklab, var(--color-win) 78%, var(--color-ink));
+}
+
+.saas-root button:focus-visible,
+.saas-root input:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--color-focus) 82%, var(--color-win));
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   §C — the explore hub (the launch deck)
+   The anchor carries the four dtv-x bindings (root, restore chip, enter
+   key, the modules strip); the sidebar and the decks already ride the
+   token grammar — the finish adds the answers.
+   ========================================================================== */
+
+/* -- C1 the restore chip: the arrival rise, the logo mark answers the
+   hover (the spring) -- */
+.dtv-x__chip {
+  animation: dtqRise 260ms var(--ease-micro) backwards;
+}
+
+.dtv-x__chip svg {
+  transition: transform 200ms var(--ease-spring);
+}
+
+.dtv-x__chip:hover svg {
+  transform: rotate(-90deg);
+}
+
+/* -- C2 the enter key: the accent arrival halo settles once on mount and
+   the hover lift carries the accent drop (the key keeps its inline trylle
+   stack — the css adds only the walk) -- */
+.dtv-x__enter {
+  transition:
+    filter 150ms var(--ease-micro),
+    transform 160ms var(--ease-micro),
+    box-shadow 180ms var(--ease-micro);
+  animation: dtqEnterHalo 520ms var(--ease-micro) 420ms backwards;
+}
+
+.dtv-x__enter:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1.2px 0 0 color-mix(in oklab, var(--color-ink) 45%, transparent),
+    inset 0 8px 14px -6px color-mix(in oklab, var(--color-ink) 22%, transparent),
+    inset 0 0 0 1px color-mix(in oklab, var(--color-ink) 18%, transparent),
+    0 0 0 1px var(--mask-ink),
+    0 2px 4px color-mix(in srgb, var(--mask-ink) 22%, transparent),
+    0 6px 12px -2px color-mix(in oklab, var(--color-win) 40%, transparent);
+}
+
+/* the one-shot halo: contracts into rest — never a loop */
+@keyframes dtqEnterHalo {
+  0% {
+    box-shadow:
+      0 0 0 2px color-mix(in srgb, var(--color-win) 45%, transparent),
+      0 0 0 8px color-mix(in srgb, var(--color-win) 16%, transparent);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+/* -- C3 the modules strip: the card lift with the raised shadow (the
+   trylle raised stack, token-derived), the numeral keeps its tabular
+   rhythm; the press seats -- */
+.dtv-x__strip li {
+  transition:
+    transform 180ms var(--ease-micro),
+    box-shadow 180ms var(--ease-micro);
+}
+
+.dtv-x__strip li:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 2px 3px color-mix(in srgb, var(--mask-ink) 26%, transparent),
+    0 6px 20px -4px color-mix(in srgb, var(--mask-ink) 22%, transparent);
+}
+
+.dtv-x__strip li:active {
+  transform: translateY(0);
+  transition-duration: 80ms;
+}
+
+/* -- C4 the footer: the underline draw on the links (one wire language —
+   the currentColor rule grows from the left), the wordmark answers -- */
+.dtv-x__foot a {
+  background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0% 1px;
+  transition: background-size 200ms var(--ease-micro);
+}
+
+.dtv-x__foot a:hover {
+  background-size: 100% 1px;
+}
+
+.dtv-x__foot svg {
+  transition: transform 200ms var(--ease-spring);
+}
+
+.dtv-x__foot a:hover svg,
+.dtv-x__foot > div:hover svg {
+  transform: scale(1.08);
+}
+
+/* ==========================================================================
+   §D — the auth face (the lock and the sign-in)
+   The account lanes stay exactly as the wiring carries them (server-first
+   sign-in, offline row, power menu) — the finish styles the same flags the
+   components already emit.
+   ========================================================================== */
+
+/* -- D1 the pane material: the layered sheet (inset hairline + top gloss +
+   fluent depth — the session-panel recipe carried to the login), the pane
+   rises once when the sign-in pose mounts -- */
+.dtw-login__pane {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--color-ink) 7%, transparent),
+    inset 0 1px 0 color-mix(in oklab, var(--color-ink) 5%, transparent),
+    0 2px 8px color-mix(in oklab, var(--mask-ink) 30%, transparent),
+    0 16px 48px color-mix(in oklab, var(--mask-ink) 45%, transparent);
+  animation: dtqPaneRise 420ms var(--ease-entry) backwards;
+}
+
+@keyframes dtqPaneRise {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* -- D2 the fields: the focus halo rides the accent (the caret answers
+   too), the border walk keeps the row calm -- */
+.dtw-login__row {
+  caret-color: var(--win-accent);
+  transition:
+    border-color 150ms var(--ease-micro),
+    box-shadow 180ms var(--ease-micro);
+}
+
+.dtw-login__row:focus-within {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--win-accent) 14%, transparent);
+}
+
+/* -- D3 the sign key and the reveal: the arrival, the lift, the pressed
+   seat, the busy state quiets the transform (the spinner keeps working) -- */
+.dtw-login__submit,
+.dtw-login__reveal {
+  transition:
+    background 150ms ease,
+    transform 160ms var(--ease-micro);
+}
+
+.dtw-login__submit {
+  box-shadow:
+    0 8px 20px -10px color-mix(in oklab, var(--win-accent) 55%, transparent),
+    inset 0 1px 0 color-mix(in oklab, var(--color-ink) 20%, transparent);
+  animation: dtqRise 260ms var(--ease-micro) 120ms backwards;
+}
+
+.dtw-login__submit:hover:not(:disabled),
+.dtw-login__reveal:hover {
+  transform: translateY(-1px);
+}
+
+.dtw-login__submit:active:not(:disabled),
+.dtw-login__reveal:active {
+  transform: translateY(0) scale(0.97);
+  transition-duration: 80ms;
+}
+
+.dtw-login__submit:disabled {
+  transform: none;
+}
+
+/* -- D4 the failure row: the arrival (one shot, never a shake) -- */
+.dtw-login__failure {
+  animation: dtqRise 240ms var(--ease-micro) backwards;
+}
+
+/* -- D5 the lanes: the paired lane keeps its live dot; the offline row
+   reads the warn token (the state the server-first sign-in honestly
+   reports) -- */
+.dtw-login__net {
+  transition: border-color 160ms var(--ease-micro);
+}
+
+.dtw-login__net[data-offline="true"] {
+  border-color: color-mix(in srgb, var(--color-warn) 34%, transparent);
+}
+
+/* -- D6 the provider rows (the oauth row): the glyph nudges, the key
+   lifts, the press seats -- */
+.dt-oauthrow__btn {
+  transition:
+    background 150ms ease,
+    transform 160ms var(--ease-micro);
+}
+
+.dt-oauthrow__btn:hover {
+  transform: translateY(-1px);
+}
+
+.dt-oauthrow__btn:active {
+  transform: translateY(0) scale(0.97);
+  transition-duration: 80ms;
+}
+
+.dt-oauthrow__glyph {
+  transition: transform 160ms var(--ease-micro);
+}
+
+.dt-oauthrow__btn:hover .dt-oauthrow__glyph {
+  transform: translateX(1px);
+}
+
+/* -- D7 the power menu: the sheet rises on the open flip (event-driven —
+   the menu mounts on the press), the keys seat on the press -- */
+.dtw-login__powermenu {
+  animation: dtqRise 180ms var(--ease-micro) backwards;
+}
+
+.dtw-login__powermenu button {
+  transition: transform 120ms var(--ease-micro);
+}
+
+.dtw-login__powermenu button:active {
+  transform: scale(0.96);
+}
+
+/* -- D8 the lock face clock: the hint and the date keep the drawn shadow
+   budget; the pairing field answers the halo like the sign-in fields -- */
+.dtw-login__pairing input:focus {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--win-accent) 14%, transparent);
+}
+
+/* ==========================================================================
+   §E — the onboarding tour (the frame-a-frame window)
+   ========================================================================== */
+
+/* -- E1 the window material: the inset ring + the top gloss as a paint-only
+   overlay (the inline shadow stays the depth layer), pointer-transparent -- */
+.ob-window::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: var(--z-atmosphere);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--color-ink) 8%, transparent),
+    inset 0 1px 0 color-mix(in oklab, var(--color-ink) 6%, transparent);
+}
+
+/* -- E2 the art card: the accent wash behind the step art (the ONE ghost of
+   the window) and the hairline edge -- */
+.ob-artcard {
+  background-image: radial-gradient(120% 100% at 50% 0%, color-mix(in oklab, var(--color-win) 10%, transparent), transparent 70%);
+  box-shadow: inset 0 0 0 1px var(--color-hairline);
+  transition: box-shadow 200ms var(--ease-micro);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .ob-artcard {
+    background-image: none;
+  }
+}
+
+/* -- E3 the progress dots: the active pip grows on the spring and carries
+   the one-shot halo settle; the count reads tabular -- */
+.ob-dot {
+  transition:
+    width 240ms var(--ease-spring),
+    background 150ms ease,
+    box-shadow 200ms var(--ease-micro);
+}
+
+.ob-dot--active {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-win) 16%, transparent);
+  animation: dtsDotSettle 300ms var(--ease-spring);
+}
+
+.ob-count {
+  font-variant-numeric: tabular-nums;
+}
+
+/* -- E4 the title bar: the close seat and the brand quiet; the caption
+   stays the mono micro -- */
+.ob-close {
+  transition:
+    background 120ms ease,
+    color 120ms ease;
+}
+
+/* -- E5 the actions: the primary lifts (the inline trylle stack stays the
+   depth), the flat and ghost keys keep the press scale the anchor carries -- */
+.ob-btn--primary {
+  transition:
+    transform 140ms var(--ease-micro),
+    filter 150ms var(--ease-micro);
+}
+
+.ob-btn--primary:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.ob-btn--primary:active {
+  transform: translateY(0) scale(0.97);
+  transition-duration: 80ms;
+}
+
+/* ==========================================================================
+   §F — the editorial and institutional set (about · docs · terms · policy ·
+   notfound)
+   The editorial law stays: quiet type, hairline ledgers, no card spam. The
+   finish adds the answers — the timeline dot grows on the hover, the media
+   frames answer the pointer, the family tiles carry the depth, the 404
+   stage gains its one light.
+   ========================================================================== */
+
+/* -- F1 the about family wall: the tile hover carries the lifted shadow
+   (the editorial depth, token-derived) and the press seats -- */
+.inst-page .family-wall__tile:hover {
+  box-shadow: 0 12px 28px -16px color-mix(in oklab, var(--mask-ink) 40%, transparent);
+}
+
+/* -- F2 the about timeline: the rung dot grows on the row hover (the spring
+   transform — the same indicator grammar the rails carry) -- */
+.inst-page .inst-timeline li::before {
+  transition: transform 220ms var(--ease-spring);
+}
+
+.inst-page .inst-timeline li:hover::before {
+  transform: scale(1.45);
+}
+
+/* -- F3 the media band: the frame hairline brightens on the hover, the
+   label keeps the sig -- */
+.inst-page .inst-media {
+  transition: border-color 160ms var(--ease-micro);
+}
+
+.inst-page .inst-media:hover {
+  border-color: color-mix(in oklab, var(--color-ink) 16%, transparent);
+}
+
+/* -- F4 the about manifesto: the leading index numeral settles the tabular
+   rhythm; the dominant row keeps the type walk it carries -- */
+.inst-page .about-manifesto__index,
+.inst-page .about-block__index {
+  font-variant-numeric: tabular-nums;
+}
+
+/* -- F5 the docs deck: the code head wears the sheen (the chat code recipe
+   carried over), the copy key lifts and pops on the press -- */
+.dtw-docs .dtw-codebar {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--dtv3-ink-1) 4%, transparent),
+    color-mix(in oklab, var(--dtv3-ink-1) 2%, transparent)
+  );
+}
+
+.dtw-docs .dtw-codecopy {
+  transition:
+    background 130ms var(--ease-micro),
+    transform 140ms var(--ease-micro);
+}
+
+.dtw-docs .dtw-codecopy:hover {
+  transform: translateY(-1px);
+}
+
+.dtw-docs .dtw-codecopy:active {
+  transform: scale(0.94);
+}
+
+.dtw-docs .dtw-navrow {
+  transition:
+    background 150ms var(--ease-micro),
+    transform 160ms var(--ease-micro);
+}
+
+.dtw-docs .dtw-navrow:hover {
+  transform: translateX(2px);
+}
+
+/* -- F6 the 404 stage: the one light of the page (the accent halo behind
+   the copy — the ghost numeral stays the quiet mass), the primary key
+   keeps its press; the stage carries the arrival -- */
+.notfound-page .r2c-404stage::before {
+  content: "";
+  position: absolute;
+  inset: -10% -6% auto;
+  height: 60%;
+  z-index: var(--z-atmosphere);
+  pointer-events: none;
+  background: radial-gradient(
+    46% 52% at 30% 8%,
+    color-mix(in oklab, var(--color-win) 7%, transparent),
+    transparent 72%
+  );
+}
+
+.notfound-page .r2c-404copy {
+  animation: dtqRise 340ms var(--ease-micro) backwards;
+}
+
+.notfound-page .r2c-btn--primary {
+  transition:
+    transform 160ms var(--ease-micro),
+    box-shadow 180ms var(--ease-micro);
+  box-shadow:
+    0 8px 20px -10px color-mix(in oklab, var(--dtv3-sig) 55%, transparent),
+    inset 0 1px 0 color-mix(in oklab, var(--color-ink) 20%, transparent);
+}
+
+.notfound-page .r2c-btn--primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.notfound-page .r2c-btn--primary:active:not(:disabled) {
+  transform: translateY(0) scale(0.97);
+  transition-duration: 80ms;
+}
+
+/* -- F7 the terms and policy kit: the legal section rules keep their
+   nth-child cadence; the kit answers the pointer with the same quiet edge
+   the media band carries -- */
+.inst-page.r2c-inst .inst-legal__section {
+  transition: border-color 160ms var(--ease-micro);
+}
+
+.inst-page.r2c-inst .inst-legal__section:hover {
+  border-color: color-mix(in oklab, var(--color-ink) 16%, transparent);
+}
+
+/* ==========================================================================
+   §G — the gateway family and the ops deck (gateway · plans · projects ·
+   providers · history · usage)
+   The trio craft pass finished settings, console and My Files; this block
+   carries the same material grammar to the remaining dtw bodies and the
+   gateway console. The light trident bodies read the --dtv3-* locals the
+   .dtw-app scope re-binds; the gateway console re-derives through the
+   root aliases (the neutral signal on the dark canvas).
+   ========================================================================== */
+
+/* -- G1 the shared ops card material: the hairline depth the settings
+   bodies carry (the light body rides a hair of mask ink) -- */
+.dtw-projects .dtw-card,
+.dtw-providers .dtw-card,
+.dtw-history .dtw-card,
+.dtw-usage .dtw-card,
+.dtw-calc .dtw-card,
+.dtw-games .dtw-card,
+.dtw-audio .dtw-card,
+.dtw-video .dtw-card,
+.dtw-image .dtw-card {
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--mask-ink) 6%, transparent);
+}
+
+/* -- G2 the ledger rows: the hover slides the row one step toward the
+   reader and seats it back on the press (the dtc rail grammar on the
+   light bodies) -- */
+.dtw-projects__row,
+.dtw-providers__row,
+.dtw-history__row,
+.dtw-usage__row,
+.dtw-games__row,
+.dtw-music__row,
+.dtw-video__row,
+.dtw-image__row {
+  transition: transform 160ms var(--ease-micro);
+}
+
+.dtw-projects__row:hover,
+.dtw-providers__row:hover,
+.dtw-history__row:hover,
+.dtw-games__row:hover,
+.dtw-music__row:hover,
+.dtw-video__row:hover,
+.dtw-image__row:hover {
+  transform: translateX(2px);
+}
+
+.dtw-projects__row:active,
+.dtw-providers__row:active,
+.dtw-history__row:active,
+.dtw-games__row:active,
+.dtw-music__row:active,
+.dtw-video__row:active,
+.dtw-image__row:active {
+  transform: translateX(0);
+  transition-duration: 80ms;
+}
+
+/* -- G3 the projects deck: the leading record keeps the emphasis by
+   position; the latest stamp settles with the spring when it renders -- */
+.dtw-projects__latest {
+  animation: dtsDotSettle 300ms var(--ease-spring);
+}
+
+.dtw-projects__time {
+  font-variant-numeric: tabular-nums;
+}
+
+/* -- G4 the providers deck: the active row answers with the wash, the live
+   dot carries the duty-cycled tick (the family lamp cadence — armed only
+   while the provider answers), the dot settles on the flip -- */
+.dtw-providers__row[data-active="true"] {
+  background: color-mix(in srgb, var(--dtv3-sig) 7%, transparent);
+}
+
+.dtw-providers__dot {
+  transition: box-shadow 200ms var(--ease-micro);
+}
+
+.dtw-providers__dot[data-on="true"] {
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--dtv3-sig) 16%, transparent);
+  animation: dtkLampTick 2.4s steps(8, end) infinite;
+}
+
+/* -- G5 the history deck: the latest rung grows the 3px indicator (every
+   row draws the bar, only the flag grows it — the family rail law), the
+   badge keeps the accent chip -- */
+.dtw-history__row {
+  position: relative;
+}
+
+.dtw-history__row::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  width: 3px;
+  height: 16px;
+  border-radius: 2px;
+  background: var(--color-win);
+  transform: translateY(-50%) scaleY(0);
+  transform-origin: center;
+  transition: transform 220ms var(--ease-spring);
+  pointer-events: none;
+}
+
+.dtw-history__row[data-latest="true"]::before {
+  transform: translateY(-50%) scaleY(1);
+}
+
+.dtw-history__stamp {
+  font-variant-numeric: tabular-nums;
+}
+
+/* -- G6 the usage deck: the hero figure is the one mega of the page — the
+   tabular numerals and the arrival rise; the rows keep the hairline walk -- */
+.dtw-usage__figure {
+  font-variant-numeric: tabular-nums;
+  animation: dtqRise 340ms var(--ease-micro) backwards;
+}
+
+.dtw-usage__value {
+  font-variant-numeric: tabular-nums;
+}
+
+.dtw-usage__row svg {
+  transition: transform 160ms var(--ease-micro);
+}
+
+.dtw-usage__row:hover svg {
+  transform: translateX(1px);
+}
+
+/* -- G7 the plans gate: the tier cards lift on the hover, the picked card
+   settles with the spring (one shot on the flag flip), the pick key pops,
+   the confirm key carries the accent drop and the pressed seat -- */
+.plans-page .plans-card {
+  transition:
+    border-color 150ms var(--ease-micro),
+    box-shadow 180ms var(--ease-micro),
+    transform 180ms var(--ease-micro);
+}
+
+.plans-page .plans-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px -16px color-mix(in oklab, var(--mask-ink) 45%, transparent);
+}
+
+.plans-page .plans-card.is-picked {
+  animation: dtqCardPick 300ms var(--ease-spring);
+}
+
+@keyframes dtqCardPick {
+  0% {
+    transform: scale(0.985);
+  }
+
+  60% {
+    transform: scale(1.012);
+  }
+
+  100% {
+    transform: none;
+  }
+}
+
+.plans-page .plans-pick[aria-pressed="true"] {
+  animation: dtsDotSettle 280ms var(--ease-spring);
+}
+
+.plans-page .plans-confirm {
+  box-shadow: 0 8px 20px -10px color-mix(in oklab, var(--win-accent) 55%, transparent);
+  transition:
+    transform 160ms var(--ease-micro),
+    box-shadow 180ms var(--ease-micro);
+}
+
+.plans-page .plans-confirm:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.plans-page .plans-confirm:active:not(:disabled) {
+  transform: translateY(0) scale(0.97);
+  transition-duration: 80ms;
+}
+
+.plans-page .plans-badge {
+  font-variant-numeric: tabular-nums;
+}
+
+.plans-page .plans-current {
+  font-variant-numeric: tabular-nums;
+}
+
+/* -- G8 the gateway console: the catalog rows slide one step on the hover
+   (the injected sheet owns the wash), the version ids keep the tabular
+   rhythm, the back link nudges its glyph -- */
+.control-page .gv-routes article,
+.control-page .gv-thinking article,
+.control-page .gv-version {
+  transition:
+    background 160ms var(--ease-micro),
+    transform 180ms var(--ease-micro);
+}
+
+.control-page .gv-routes article:hover,
+.control-page .gv-thinking article:hover,
+.control-page .gv-version:hover {
+  transform: translateX(2px);
+}
+
+.control-page .gv-routes article:active,
+.control-page .gv-thinking article:active {
+  transform: translateX(0);
+  transition-duration: 80ms;
+}
+
+.control-page .gv-version__id,
+.control-page .gv-version__models,
+.control-page .gv-thinking__budget {
+  font-variant-numeric: tabular-nums;
+}
+
+.control-page .gateway-back {
+  transition: transform 160ms var(--ease-micro);
+}
+
+.control-page .gateway-back:hover {
+  transform: translateX(-2px);
+}
+
+.control-page .gateway-badge {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==========================================================================
+   §H — the utility studios (calculator · games · audio · video · image)
+   The dtw studio bodies; the memory flag, the keys, the covers and the
+   launch keys answer with the same micro grammar.
+   ========================================================================== */
+
+/* -- H1 the calculator well: the display reads as an inset instrument (the
+   top gloss and the hairline well), the value and the expression ride the
+   tabular numerals, the memory flag pops when it renders -- */
+.dtw-calc__display {
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--color-ink) 4%, transparent),
+    inset 0 0 0 1px var(--dtv3-hairline);
+}
+
+.dtw-calc__value,
+.dtw-calc__expression {
+  font-variant-numeric: tabular-nums;
+}
+
+.dtw-calc__flag {
+  animation: dtsDotSettle 280ms var(--ease-spring);
+}
+
+.dtw-calc__error {
+  animation: dtqRise 240ms var(--ease-micro) backwards;
+}
+
+/* -- H2 the keys: the press walks down into the well (translateY + the
+   shadow reduce), the equals key carries the accent drop and the one-shot
+   ring on the hit; the memory strip stays the quiet tier -- */
+.dtw-calc__key {
+  transition:
+    background 130ms var(--ease-micro),
+    transform 120ms var(--ease-micro),
+    box-shadow 140ms var(--ease-micro);
+}
+
+.dtw-calc__key:active {
+  transform: translateY(1px);
+  transition-duration: 70ms;
+}
+
+.dtw-calc__key--equals {
+  box-shadow:
+    0 6px 16px -8px color-mix(in srgb, var(--dtv3-sig) 55%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--color-ink) 18%, transparent);
+}
+
+.dtw-calc__key--equals:not(:disabled):active {
+  box-shadow:
+    0 2px 8px -6px color-mix(in srgb, var(--dtv3-sig) 45%, transparent),
+    0 0 0 3px color-mix(in srgb, var(--dtv3-sig) 18%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--color-ink) 18%, transparent);
+}
+
+.dtw-calc__key--memory {
+  letter-spacing: 0.04em;
+}
+
+.dtw-calc__row {
+  transition: transform 160ms var(--ease-micro);
+}
+
+.dtw-calc__row:hover {
+  transform: translateX(2px);
+}
+
+/* -- H3 the games deck: the monogram cover lifts with the row (the spring
+   transform), the kind pip keeps the token lamp; the launch key keeps the
+   44px touch law the page already carries -- */
+.dtw-games__cover {
+  transition:
+    transform 220ms var(--ease-spring),
+    border-color 150ms var(--ease-micro);
+}
+
+.dtw-games__row:hover .dtw-games__cover {
+  transform: scale(1.06);
+  border-color: color-mix(in srgb, var(--dtv3-sig) 30%, transparent);
+}
+
+.dtw-games__row:hover .dtw-games__cover:active {
+  transform: scale(1);
+}
+
+/* -- H4 the audio, video and image decks: the queue and render keys carry
+   the accent drop and the pressed seat; the meta rows keep the mono rhythm
+   with the tabular numerals (the minutes and the stills counts) -- */
+.dtw-audio .dtw-action--primary,
+.dtw-video .dtw-action--primary,
+.dtw-image .dtw-action--primary {
+  box-shadow:
+    0 6px 16px -8px color-mix(in srgb, var(--dtv3-sig) 55%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--color-ink) 18%, transparent);
+  transition:
+    background 150ms var(--ease-micro),
+    transform 160ms var(--ease-micro);
+}
+
+.dtw-audio .dtw-action--primary:hover:not(:disabled),
+.dtw-video .dtw-action--primary:hover:not(:disabled),
+.dtw-image .dtw-action--primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.dtw-audio .dtw-action--primary:active:not(:disabled),
+.dtw-video .dtw-action--primary:active:not(:disabled),
+.dtw-image .dtw-action--primary:active:not(:disabled) {
+  transform: translateY(0) scale(0.96);
+  transition-duration: 80ms;
+}
+
+.dtw-audio .dtw-action--primary:focus-visible,
+.dtw-video .dtw-action--primary:focus-visible,
+.dtw-image .dtw-action--primary:focus-visible {
+  outline: 2px solid var(--dtv3-ink-1);
+  outline-offset: 2px;
+}
+
+.dtw-music__meta,
+.dtw-video__meta,
+.dtw-image__meta {
+  font-variant-numeric: tabular-nums;
+}
+
+/* -- H5 the touch floor: the studio action keys lift to the generous
+   target on the coarse pointers (the keys and the plans gate too) -- */
+@media (hover: none), (pointer: coarse) {
+  .dtw-audio .dtw-action,
+  .dtw-video .dtw-action,
+  .dtw-image .dtw-action,
+  .plans-page .plans-pick,
+  .plans-page .plans-confirm {
+    min-height: 44px;
+  }
+}
+
+/* ==========================================================================
+   §Z — the guards
+   ========================================================================== */
+
+/* the os setting and the system preference alike: the arrivals idle inert,
+   the duty-cycled lamp and the paused hook stop — the standing states (the
+   active pill, the picked card ring, the offline edge) remain, the feedback
+   never dies, only the movement */
+[data-motion="reduced"] {
+  & .boot-root .boot-sign__avatar,
+  & .boot-root .boot-sign__name,
+  & .boot-root .boot-sign__field,
+  & .boot-root .boot-sign__go,
+  & .boot-root .boot-sign__micro,
+  & .dtv-x__chip,
+  & .dtv-x__enter,
+  & .dtw-login__pane,
+  & .dtw-login__submit,
+  & .dtw-login__failure,
+  & .dtw-login__powermenu,
+  & .ob-dot--active,
+  & .notfound-page .r2c-404copy,
+  & .dtw-usage__figure,
+  & .dtw-projects__latest,
+  & .dtw-providers__dot[data-on="true"],
+  & .dtw-history__row[data-latest="true"]::before,
+  & .plans-page .plans-card.is-picked,
+  & .plans-page .plans-pick[aria-pressed="true"],
+  & .dtw-calc__flag,
+  & .dtw-calc__error {
+    animation: none;
+  }
+
+  & .saas-root .hero-gaussian-shader,
+  & .saas-root .spin-badge-slow,
+  & .saas-root .swing-card-1,
+  & .saas-root .swing-card-2,
+  & .saas-root .swing-card-3,
+  & .saas-root .animate-float-card,
+  & .saas-root .animate-float-card-delayed,
+  & .saas-root .fan-swap,
+  & .boot-root .boot-ring {
+    animation: none;
+  }
+
+  & .dtv-x__strip li,
+  & .dtv-x__foot a,
+  & .dtw-login__row,
+  & .dtw-login__submit,
+  & .dtw-login__reveal,
+  & .dt-oauthrow__btn,
+  & .dt-oauthrow__glyph,
+  & .dtw-login__net,
+  & .inst-page .inst-timeline li::before,
+  & .inst-page .inst-media,
+  & .dtw-docs .dtw-codecopy,
+  & .dtw-docs .dtw-navrow,
+  & .dtw-projects__row,
+  & .dtw-providers__row,
+  & .dtw-history__row,
+  & .dtw-usage__row,
+  & .dtw-usage__row svg,
+  & .dtw-games__row,
+  & .dtw-games__cover,
+  & .dtw-music__row,
+  & .dtw-video__row,
+  & .dtw-image__row,
+  & .plans-page .plans-card,
+  & .plans-page .plans-confirm,
+  & .control-page .gv-routes article,
+  & .control-page .gv-thinking article,
+  & .control-page .gv-version,
+  & .control-page .gateway-back,
+  & .dtw-calc__key,
+  & .dtw-calc__row,
+  & .dtw-audio .dtw-action--primary,
+  & .dtw-video .dtw-action--primary,
+  & .dtw-image .dtw-action--primary,
+  & .ob-dot,
+  & .ob-btn--primary,
+  & .notfound-page .r2c-btn--primary,
+  & .dtv-x__chip svg,
+  & .dtv-x__enter,
+  & .dtv-x__foot svg {
+    transition: none;
+  }
+
+  & .dtv-x__strip li:hover,
+  & .dtv-x__enter:hover,
+  & .dtw-login__submit:hover:not(:disabled),
+  & .dtw-login__reveal:hover,
+  & .dt-oauthrow__btn:hover,
+  & .dtw-docs .dtw-codecopy:hover,
+  & .dtw-docs .dtw-navrow:hover,
+  & .dtw-projects__row:hover,
+  & .dtw-providers__row:hover,
+  & .dtw-history__row:hover,
+  & .dtw-games__row:hover,
+  & .dtw-music__row:hover,
+  & .dtw-video__row:hover,
+  & .dtw-image__row:hover,
+  & .dtw-usage__row:hover svg,
+  & .dtw-games__row:hover .dtw-games__cover,
+  & .plans-page .plans-card:hover,
+  & .plans-page .plans-confirm:hover:not(:disabled),
+  & .control-page .gv-routes article:hover,
+  & .control-page .gv-thinking article:hover,
+  & .control-page .gv-version:hover,
+  & .control-page .gateway-back:hover,
+  & .dtw-calc__key:active,
+  & .dtw-calc__row:hover,
+  & .dtw-calc__key--equals:not(:disabled):active,
+  & .dtw-audio .dtw-action--primary:hover:not(:disabled),
+  & .dtw-video .dtw-action--primary:hover:not(:disabled),
+  & .dtw-image .dtw-action--primary:hover:not(:disabled),
+  & .ob-btn--primary:hover,
+  & .notfound-page .r2c-btn--primary:hover:not(:disabled) {
+    transform: none;
+  }
+}
+
+/* the pause hook: the ambient idles of the injected faces and the
+   duty-cycled lamp park mid-frame — the duty cycle keeps the frame, the
+   pause keeps the paint */
+[data-anim-paused] .saas-root .hero-gaussian-shader,
+[data-anim-paused] .saas-root .spin-badge-slow,
+[data-anim-paused] .saas-root .swing-card-1,
+[data-anim-paused] .saas-root .swing-card-2,
+[data-anim-paused] .saas-root .swing-card-3,
+[data-anim-paused] .saas-root .animate-float-card,
+[data-anim-paused] .saas-root .animate-float-card-delayed,
+[data-anim-paused] .saas-root .fan-swap,
+[data-anim-paused] .boot-root .boot-ring,
+[data-anim-paused] .dtw-providers__dot[data-on="true"] {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boot-root .boot-sign__avatar,
+  .boot-root .boot-sign__name,
+  .boot-root .boot-sign__field,
+  .boot-root .boot-sign__go,
+  .boot-root .boot-sign__micro,
+  .dtv-x__chip,
+  .dtv-x__enter,
+  .dtw-login__pane,
+  .dtw-login__submit,
+  .dtw-login__failure,
+  .dtw-login__powermenu,
+  .ob-dot--active,
+  .notfound-page .r2c-404copy,
+  .dtw-usage__figure,
+  .dtw-projects__latest,
+  .dtw-providers__dot[data-on="true"],
+  .dtw-history__row[data-latest="true"]::before,
+  .plans-page .plans-card.is-picked,
+  .plans-page .plans-pick[aria-pressed="true"],
+  .dtw-calc__flag,
+  .dtw-calc__error,
+  .saas-root .hero-gaussian-shader,
+  .saas-root .spin-badge-slow,
+  .saas-root .swing-card-1,
+  .saas-root .swing-card-2,
+  .saas-root .swing-card-3,
+  .saas-root .animate-float-card,
+  .saas-root .animate-float-card-delayed,
+  .saas-root .fan-swap,
+  .boot-root .boot-ring {
+    animation: none;
+  }
+
+  .dtv-x__strip li,
+  .dtv-x__foot a,
+  .dtw-login__row,
+  .dtw-login__submit,
+  .dtw-login__reveal,
+  .dt-oauthrow__btn,
+  .dt-oauthrow__glyph,
+  .dtw-login__net,
+  .inst-page .inst-timeline li::before,
+  .inst-page .inst-media,
+  .dtw-docs .dtw-codecopy,
+  .dtw-docs .dtw-navrow,
+  .dtw-projects__row,
+  .dtw-providers__row,
+  .dtw-history__row,
+  .dtw-usage__row,
+  .dtw-usage__row svg,
+  .dtw-games__row,
+  .dtw-games__cover,
+  .dtw-music__row,
+  .dtw-video__row,
+  .dtw-image__row,
+  .plans-page .plans-card,
+  .plans-page .plans-confirm,
+  .control-page .gv-routes article,
+  .control-page .gv-thinking article,
+  .control-page .gv-version,
+  .control-page .gateway-back,
+  .dtw-calc__key,
+  .dtw-calc__row,
+  .dtw-audio .dtw-action--primary,
+  .dtw-video .dtw-action--primary,
+  .dtw-image .dtw-action--primary,
+  .ob-dot,
+  .ob-btn--primary,
+  .notfound-page .r2c-btn--primary,
+  .dtv-x__chip svg,
+  .dtv-x__enter,
+  .dtv-x__foot svg {
+    transition: none;
+  }
+
+  .dtv-x__strip li:hover,
+  .dtv-x__enter:hover,
+  .dtw-login__submit:hover:not(:disabled),
+  .dtw-login__reveal:hover,
+  .dt-oauthrow__btn:hover,
+  .dtw-docs .dtw-codecopy:hover,
+  .dtw-docs .dtw-navrow:hover,
+  .dtw-projects__row:hover,
+  .dtw-providers__row:hover,
+  .dtw-history__row:hover,
+  .dtw-games__row:hover,
+  .dtw-music__row:hover,
+  .dtw-video__row:hover,
+  .dtw-image__row:hover,
+  .dtw-usage__row:hover svg,
+  .dtw-games__row:hover .dtw-games__cover,
+  .plans-page .plans-card:hover,
+  .plans-page .plans-confirm:hover:not(:disabled),
+  .control-page .gv-routes article:hover,
+  .control-page .gv-thinking article:hover,
+  .control-page .gv-version:hover,
+  .control-page .gateway-back:hover,
+  .dtw-calc__key:active,
+  .dtw-calc__row:hover,
+  .dtw-calc__key--equals:not(:disabled):active,
+  .dtw-audio .dtw-action--primary:hover:not(:disabled),
+  .dtw-video .dtw-action--primary:hover:not(:disabled),
+  .dtw-image .dtw-action--primary:hover:not(:disabled),
+  .ob-btn--primary:hover,
+  .notfound-page .r2c-btn--primary:hover:not(:disabled) {
+    transform: none;
+  }
+}
+
+/* the transparency law: the washes drop the tint and keep the solid state —
+   the accent edge and the rings carry the meaning without the tint */
+@media (prefers-reduced-transparency: reduce) {
+  .dtw-providers__row[data-active="true"] {
+    background: transparent;
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--dtv3-sig) 30%, transparent);
+  }
+
+  .dtw-providers__dot[data-on="true"] {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--dtv3-sig) 40%, transparent);
+  }
+
+  .dtv-x__enter {
+    animation: none;
+  }
+
+  .ob-dot--active {
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-win) 55%, transparent);
+  }
+
+  .notfound-page .r2c-404stage::before {
+    opacity: 0.4;
+  }
+}
+
+/* ==== dtv entry craft pass · end of section ==== */
+

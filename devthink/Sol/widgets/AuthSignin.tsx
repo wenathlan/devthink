@@ -21,7 +21,7 @@ import {
   WindowConsoleRegular,
 } from "@fluentui/react-icons";
 import { useEffect, useRef } from "react";
-import { type AccountState } from "../../accountgate.ts";
+import { type AccountState } from "../../authfamily.ts";
 import { PairingForm, type PairingFormProps } from "./AuthPairing.tsx";
 import { ProviderRow, type ProviderRowProps } from "./AuthProviderrow.tsx";
 

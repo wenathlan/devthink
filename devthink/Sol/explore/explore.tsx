@@ -230,7 +230,7 @@ export default function Explore() {
       <button
         type="button"
         onClick={() => setLanding("open")}
-        className="fixed bottom-5 left-1/2 z-[80] flex min-h-11 -translate-x-1/2 items-center gap-2 rounded-lg bg-s1 px-4 text-sm font-medium text-ink ring-1 ring-hairline-strong transition-[background-color,transform] duration-150 ease-micro hover:bg-s2 active:scale-[.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
+        className="dtv-x__chip fixed bottom-5 left-1/2 z-[80] flex min-h-11 -translate-x-1/2 items-center gap-2 rounded-lg bg-s1 px-4 text-sm font-medium text-ink ring-1 ring-hairline-strong transition-[background-color,transform] duration-150 ease-micro hover:bg-s2 active:scale-[.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
         style={{ boxShadow: STRIP_SHADOW }}
       >
         <SolLogoMark size={16} />
@@ -241,7 +241,7 @@ export default function Explore() {
   }
 
   return (
-    <div className="min-h-dvh" style={MICA_STYLE}>
+    <div className="dtv-x min-h-dvh" style={MICA_STYLE}>
       <div className={frame === "maximized" ? "" : "p-3"}>
         <div
           className={`min-h-dvh ${frame === "maximized" ? "" : "mx-auto max-w-[1400px] overflow-clip rounded-lg ring-1 ring-hairline-strong"}`}
@@ -290,7 +290,7 @@ export default function Explore() {
                   <button
                     type="button"
                     onClick={enterOs}
-                    className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-win px-5 text-sm font-semibold text-(--win-accent-ink) transition-[filter,transform] duration-150 ease-micro hover:brightness-95 active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
+                    className="dtv-x__enter inline-flex min-h-11 items-center gap-2 rounded-lg bg-win px-5 text-sm font-semibold text-(--win-accent-ink) transition-[filter,transform] duration-150 ease-micro hover:brightness-95 active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
                     style={{ boxShadow: TRYLLE_PRIMARY_STACK }}
                   >
                     {osText("explore.enter")}
@@ -388,7 +388,7 @@ export default function Explore() {
                     ))}
                   </div>
                 ) : (
-                  <ul className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3">
+                  <ul className="dtv-x__strip flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3">
                     {data.modules.map((module, index) => (
                       <li
                         key={module.name}
@@ -423,7 +423,7 @@ export default function Explore() {
             </main>
           </div>
 
-          <footer className="border-t border-hairline px-6 py-10">
+          <footer className="dtv-x__foot border-t border-hairline px-6 py-10">
             <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4">
               <span className="flex items-center gap-2 text-sm font-medium text-ink" aria-hidden="true">
                 <SolLogoMark size={18} accent />
