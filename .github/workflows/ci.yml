@@ -393,6 +393,16 @@ jobs:
             echo "the ${{ matrix.app }} suite is empty — the lane answers green with nothing to run"
           fi
 
+      # the package manager answers the pinned action instead of a npm
+      # install: the scorecard pin doctrine demands hash pinning the npm
+      # command line can never carry, and the action resolves to its
+      # immutable commit sha like every other battery action
+      - name: Set up the family package manager
+        if: steps.suite.outputs.present == 'true' && hashFiles(format('{0}/pnpm-lock.yaml', matrix.app)) != ''
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          version: 12.3.4
+
       - name: Install the locked tree
         if: steps.suite.outputs.present == 'true'
         shell: bash
@@ -402,9 +412,7 @@ jobs:
           if [ -f pnpm-lock.yaml ]; then
             # the family pins one pnpm rung - every pnpm manifest of the
             # matrix carries packageManager pnpm@12.3.4 and the lockless
-            # legs answer bun - so the install answers the exact version
-            # the code scanning pin doctrine demands
-            npm install -g --no-fund --no-audit pnpm@12.3.4
+            # legs answer bun
             pnpm install --frozen-lockfile --ignore-scripts
           else
             bun install --frozen-lockfile --ignore-scripts
