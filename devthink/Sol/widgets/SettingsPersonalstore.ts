@@ -11,8 +11,12 @@
  * stylesheet passes. The theme keeps the browser preference machine as its
  * source of truth (the panel and the paired gateway read it); the
  * localStorage mirror only lets the boot paint the ladder before the async
- * identity store answers.
+ * identity store answers. The devtools wall flag rides the same channel:
+ * the choice persists here, the suspension seam lives in devtoolsguard.ts
+ * (the single wall module the akash study lands).
  */
+
+import { suspenddevtoolsguard } from "../../devtoolsguard.ts";
 
 /** one wallpaper of the picker: an id plus the layered css recipe the
  * --wall-fallback variable serves. */
@@ -298,6 +302,28 @@ export function saveTaskbarTips(on: boolean): void {
   saveFlag(TASKBAR_TIPS_KEY, on, applyTaskbarTips);
 }
 
+/** the localStorage key of the devtools wall flag (the owner switch of
+ * the guard — on by default, the adoption form the akash study lands). */
+export const DEVTOOLS_WALL_KEY = "dt.devtools.wall.v1";
+
+/** arms or suspends the devtools wall: off parks every prong of the wall
+ * (devtoolsguard.ts owns the machinery — suspended, it never loops); on
+ * lets the duty cycle run again. The seam answers on every build so the
+ * toggle behaves the same in dev. */
+export function applyDevtoolsWall(on: boolean): void {
+  suspenddevtoolsguard(!on);
+}
+
+/** the stored devtools wall flag (on by default — the owner's want). */
+export function loadDevtoolsWall(): boolean {
+  return loadFlag(DEVTOOLS_WALL_KEY, true);
+}
+
+/** persists the devtools wall flag and arms it. */
+export function saveDevtoolsWall(on: boolean): void {
+  saveFlag(DEVTOOLS_WALL_KEY, on, applyDevtoolsWall);
+}
+
 /**
  * paints every stored personalization choice onto the document root — the
  * settings anchor calls this once at module load, so the wallpaper, the
@@ -314,6 +340,10 @@ export function initPersonalization(): void {
     if (mirror) applyTheme(mirror);
     applyAltTabMotion(loadAltTabMotion());
     applyTaskbarTips(loadTaskbarTips());
+    // the devtools wall flag lands before App arms the wall (the settings
+    // anchor module loads inside the App import graph), so a stored off
+    // suspends the prongs from the first tick
+    applyDevtoolsWall(loadDevtoolsWall());
   } catch {
     /* the stylesheet defaults carry the whole surface */
   }

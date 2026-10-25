@@ -14,7 +14,11 @@ import { Component, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { Toaster } from "sonner";
 import { Router as WouterRouter } from "wouter";
-import { armGuard, guardStatus } from "./guard.ts";
+import {
+  installdevtoolsguard,
+  ondevtoolstrip,
+  showdevtoolsinterstitial } from "./devtoolsguard.ts";
+import { guardStatus, reportguardstrike } from "./guard.ts";
 import { seedLabels } from "./labels.ts";
 import Sol from "./Sol/Sol.tsx";
 import installzoomlock from "./zoomlock.ts";
@@ -68,10 +72,31 @@ function routerBase(): string {
   return "";
 }
 
+/** The devtools wall strike hook: one registration per module life (the
+ * hot reload replaces the listener, never stacks them) — the wall trips,
+ * the strike report rides the site api. */
+let wallstrikehook: (() => void) | null = null;
+
+/** Arms the devtools wall once per module life: the two prongs install
+ * (production builds only — the dev machine keeps its tools) and the
+ * owner toggle suspends them through the personalization channel, which
+ * the settings anchor applies on boot before this call runs. */
+function armdevtoolswall(): void {
+  if (wallstrikehook) wallstrikehook();
+  wallstrikehook = ondevtoolstrip((signal) => {
+    void reportguardstrike(signal);
+  });
+  installdevtoolsguard();
+}
+
 function App() {
-  // the devtools shield arms before the first render: a banned address sees a blank site
-  void guardStatus();
-  armGuard();
+  // the devtools wall arms before the first render: a tripped or banned
+  // address sees the calm interstitial (never a blank), the strike report
+  // rides the site api and the owner toggle gates the prongs (default on)
+  void guardStatus().then((banned) => {
+    if (banned) showdevtoolsinterstitial();
+  });
+  armdevtoolswall();
   return (
     <WorkbenchErrorBoundary>
       <Toaster richColors theme="dark" />

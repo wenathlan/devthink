@@ -623,6 +623,18 @@ const seedOsStrings: OsStringRow[] = [
 
   /* ---------------------------------- about ------------------------------- */
   { id: "about.timeline.heading", text: "How the platform moved" },
+
+  /* -------------------------------- guard wall ------------------------------ */
+  { id: "guard.wall.aria", text: "Developer tools notice" },
+  { id: "guard.wall.title", text: "Developer tools are open" },
+  {
+    id: "guard.wall.body",
+    text: "This workspace pauses its surface while developer tools inspect it. Close the tools and reload the page to continue where you left off.",
+  },
+  {
+    id: "guard.wall.note",
+    text: "Nothing was closed and nothing was erased — the session stays intact and one strike report rides to the site api.",
+  },
 ];
 
 export type OsStringId = (typeof seedOsStrings)[number]["id"];
