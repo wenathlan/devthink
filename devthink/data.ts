@@ -1,5 +1,6 @@
 /** The data module of the 1.1.90 consolidation: every correlated variation of the dataset records, the streaming pipelines and the chunked parsing logic interned in this one file, so the module family carries one surface without duplicate variations. */
 
+import { tocsv, toexcel, tojson } from "./page.js";
 /* ── Merged from datacommand.ts: the 1.1.90 consolidation interns the correlated datacommand logic here, so no variation of the same file lives beside another. ── */
 import type {
   artifactrecord,
@@ -15,18 +16,17 @@ import type {
   extractrow,
   extractsession,
   gridcolumn,
-  provlogentry,
   provenancerecord,
+  provlogentry,
   samplepolicy,
   sourcestamprecord,
   streamcursor,
-  streamstate,
   streamparsechunk,
   streamparsetoken,
+  streamstate,
   toolstep,
   transformrule,
 } from "./types.js";
-import { tocsv, toexcel, tojson } from "./page.js";
 
 /**
  * Dataset command logics for the background executors.
@@ -421,7 +421,7 @@ export function transformvalues(input: { rows: extractrow[]; rules: transformrul
       let transformed = original;
       if (rule.operation === "trim") transformed = original.replace(/\s+/g, " ").trim();
       if (rule.operation === "case") transformed = original.toUpperCase();
-      if (rule.operation === "number") transformed = original.replace(/[^\d.\-]/g, "");
+      if (rule.operation === "number") transformed = original.replace(/[^\d.-]/g, "");
       if (rule.operation === "date") {
         const parsed = Date.parse(original.trim());
         if (Number.isNaN(parsed)) {
@@ -756,7 +756,7 @@ export function streamparsechunkof(input: {
 
 /** Validates one streamparse chunk through the same schemastrict validation the one pass parser runs: a chunk outside the shape the parser accepts refuses the whole stream before any observation yields. */
 export function validatesetreamparsechunk(chunk: unknown, expectedindex: number): { valid: boolean; reason?: string } {
-  if (!Boolean(chunk) || typeof chunk !== "object" || Array.isArray(chunk))
+  if (!chunk || typeof chunk !== "object" || Array.isArray(chunk))
     return {
       valid: false,
       reason: "Every streamparse chunk travels as one plain object; schemastrict refuses the chunk carrier.",

@@ -18,7 +18,8 @@ export function FamilyFrame({ slug, title }: { slug: string; title: string }) {
         width: "100%",
         height: "100%",
         border: "0",
-        background: "#ffffff" }}
+        background: "#ffffff",
+      }}
     />
   );
 }

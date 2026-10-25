@@ -8,11 +8,19 @@
  * invented counters — the honest action is the enter callback.
  */
 
-import {ArrowDownRegular as ArrowDown, ArrowLeftRegular as ArrowLeft, ArrowRightRegular as ArrowRight, ArrowUpRightRegular as ArrowUpRight, HeartRegular as Heart, ChatRegular as MessageSquare, PlayRegular as Play} from "@fluentui/react-icons";
+import {
+  ArrowDownRegular as ArrowDown,
+  ArrowLeftRegular as ArrowLeft,
+  ArrowRightRegular as ArrowRight,
+  ArrowUpRightRegular as ArrowUpRight,
+  HeartRegular as Heart,
+  ChatRegular as MessageSquare,
+  PlayRegular as Play,
+} from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 import { saasfilms, saasreels, saastracks } from "../../saascontent.ts";
-import { SolLogoMark } from "./PanelLogo.tsx";
 import { SaddleTabBridge, ScoopedCard, Studiomark } from "./IntroSaaskit.tsx";
+import { SolLogoMark } from "./PanelLogo.tsx";
 
 type SectionProps = {
   onenter: () => void;
@@ -470,7 +478,10 @@ export function SaasDebonair({ onenter }: Pick<SectionProps, "onenter">) {
 /** The Doo section: the advisor statement with the honest studio card. */
 export function SaasDoo({ onenter }: Pick<SectionProps, "onenter">) {
   return (
-    <section id="advisor-dark" className="relative overflow-hidden bg-[#fafafa] px-6 pt-0 pb-24 sm:px-10 sm:pb-32 lg:px-16">
+    <section
+      id="advisor-dark"
+      className="relative overflow-hidden bg-[#fafafa] px-6 pt-0 pb-24 sm:px-10 sm:pb-32 lg:px-16"
+    >
       <div className="relative z-20 mb-12 w-full inset-x-0 top-0">
         <div className="h-2 w-full bg-[#0A0B0E]" />
         <div className="flex w-full justify-center">

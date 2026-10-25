@@ -8,7 +8,7 @@
  * the auth page, riding the dt-oauthrow kit over the dtw-login fills.
  */
 import { copy } from "../../copy.ts";
-import { type OAuthProvider, type ProviderRowView } from "../../oauthrow.ts";
+import type { OAuthProvider, ProviderRowView } from "../../oauthrow.ts";
 
 /** The letter marks the provider buttons wear — fluent carries no brand
  * glyphs, so the letter mark is the honest code mark of each provider. */

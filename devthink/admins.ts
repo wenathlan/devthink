@@ -4,10 +4,11 @@
 // the shared ban table every clone syncs. Everything rides prepared
 // statements (bound parameters only — never a concatenated string) and the
 // password never lands in the database, only its scrypt digest.
-import Database from "better-sqlite3";
+
 import { createHash, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import Database from "better-sqlite3";
 
 export type AdminSource = "owner" | "codeowner" | "ai";
 export type Admin = { handle: string; role: string; source: AdminSource; addedAt: string };
@@ -19,11 +20,16 @@ const database = new Database(process.env.DEVTHINK_ADMIN_DB ?? "admin.db");
 database.pragma("journal_mode = WAL");
 database.pragma("foreign_keys = ON");
 
-const schemaAdmins = "CREATE TABLE IF NOT EXISTS admins (handle TEXT PRIMARY KEY, role TEXT NOT NULL DEFAULT 'admin', source TEXT NOT NULL, addedAt TEXT NOT NULL DEFAULT (datetime('now')))";
-const schemaBans = "CREATE TABLE IF NOT EXISTS bans (ip TEXT PRIMARY KEY, reason TEXT NOT NULL, until TEXT NOT NULL, strikes INTEGER NOT NULL DEFAULT 1)";
-const schemaSites = "CREATE TABLE IF NOT EXISTS allowed_sites (host TEXT PRIMARY KEY, secretDigest TEXT NOT NULL, addedAt TEXT NOT NULL DEFAULT (datetime('now')))";
-const schemaAudit = "CREATE TABLE IF NOT EXISTS audit (at TEXT NOT NULL DEFAULT (datetime('now')), actor TEXT NOT NULL, action TEXT NOT NULL, detail TEXT NOT NULL DEFAULT '')";
-const schemaSessions = "CREATE TABLE IF NOT EXISTS sessions (tokenDigest TEXT PRIMARY KEY, handle TEXT NOT NULL REFERENCES admins(handle), expiresAt TEXT NOT NULL)";
+const schemaAdmins =
+  "CREATE TABLE IF NOT EXISTS admins (handle TEXT PRIMARY KEY, role TEXT NOT NULL DEFAULT 'admin', source TEXT NOT NULL, addedAt TEXT NOT NULL DEFAULT (datetime('now')))";
+const schemaBans =
+  "CREATE TABLE IF NOT EXISTS bans (ip TEXT PRIMARY KEY, reason TEXT NOT NULL, until TEXT NOT NULL, strikes INTEGER NOT NULL DEFAULT 1)";
+const schemaSites =
+  "CREATE TABLE IF NOT EXISTS allowed_sites (host TEXT PRIMARY KEY, secretDigest TEXT NOT NULL, addedAt TEXT NOT NULL DEFAULT (datetime('now')))";
+const schemaAudit =
+  "CREATE TABLE IF NOT EXISTS audit (at TEXT NOT NULL DEFAULT (datetime('now')), actor TEXT NOT NULL, action TEXT NOT NULL, detail TEXT NOT NULL DEFAULT '')";
+const schemaSessions =
+  "CREATE TABLE IF NOT EXISTS sessions (tokenDigest TEXT PRIMARY KEY, handle TEXT NOT NULL REFERENCES admins(handle), expiresAt TEXT NOT NULL)";
 for (const statement of [schemaAdmins, schemaBans, schemaSites, schemaAudit, schemaSessions]) {
   database.prepare(statement).run();
 }
@@ -69,7 +75,9 @@ export function syncCodeowners(repoRoot: string): number {
     return 0;
   }
   const handles = new Set(
-    [...text.matchAll(/@([A-Za-z0-9-]+)/g)].map((match) => match[1].toLowerCase()).filter((handle) => handle !== OWNER_HANDLE.toLowerCase()),
+    [...text.matchAll(/@([A-Za-z0-9-]+)/g)]
+      .map((match) => match[1].toLowerCase())
+      .filter((handle) => handle !== OWNER_HANDLE.toLowerCase()),
   );
   for (const handle of handles) addAdmin.run(handle, "admin", "codeowner");
   insertAudit.run("system", "sync.codeowners", `${handles.size} handles`);

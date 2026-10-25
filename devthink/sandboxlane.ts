@@ -73,9 +73,7 @@ function contain(jail: string, relative: string): string {
  * surgery on user content */
 function cliptext(text: string, cap: number): string {
   if (text.length <= cap) return text;
-  return Array.from(text)
-    .slice(0, cap)
-    .join("");
+  return Array.from(text).slice(0, cap).join("");
 }
 
 /** tokenize — split a command line into tokens; double and single quoted

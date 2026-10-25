@@ -57,7 +57,7 @@
  *  @version 2.1.2 — ONDA 5 CORRECTION V2 26/08/2026
  */
 
-import { arch as osArch, platform as osPlatform, homedir } from "node:os";
+import { homedir, arch as osArch, platform as osPlatform } from "node:os";
 import * as nodePath from "node:path";
 // v2.1.15 Phase B: every FUNCTION that used to live here moved to its domain
 // owner (core.ts for generic utilities, fingerprint.ts for identity

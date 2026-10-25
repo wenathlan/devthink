@@ -55,14 +55,13 @@
 
 import * as crypto from "node:crypto";
 import * as os from "node:os";
-
+import type { Account } from "./accounts.js";
 // Deduplicated against the frozen owners: symbols whose local definitions were
 // value-identical to constants.ts / models.ts are imported here and re-exported
 // below, so each has exactly one definition (library dedupe task 2-d1).
 import {
-  stripTrailingSlashes,
-  ANTIGRAVITY_VERSION_FALLBACK,
   ANTIGRAVITY_USER_AGENT_FALLBACK,
+  ANTIGRAVITY_VERSION_FALLBACK,
   CLIENT_METADATA,
   CLIENT_METADATA_STRING,
   CLOUDCODE_BASE_URL,
@@ -70,16 +69,18 @@ import {
   CODE_ASSIST_PATH_MAP,
   FALLBACK_PROJECT_ID,
   FETCH_TIMEOUT_MS,
+  GEMINI_CLI_USER_AGENT_MINIMAL as GEMINI_CLI_USER_AGENT,
   GEMINI_CLI_OAUTH_CLIENT_ID as OAUTH_CLIENT_ID,
   GEMINI_CLI_OAUTH_CLIENT_SECRET as OAUTH_CLIENT_SECRET,
-  GEMINI_CLI_USER_AGENT_MINIMAL as GEMINI_CLI_USER_AGENT,
+  stripTrailingSlashes,
 } from "./constants.js";
 // v2.1.15 Phase B: generic utilities (fnv hash, fetch timeout wrapper, retry
 // predicate) come from core.js; identity masquerade (gl-node api-client
 // snapshot, antigravity header builder) comes from fingerprint.js.
 import { fetchWithTimeout, fnv1a32, isRetryable } from "./core.js";
-import { buildAntagravityHeaders, X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.js";
 import type { AntigravityHeadersOptions } from "./fingerprint.js";
+import { buildAntagravityHeaders, X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.js";
+import type { Model2026 } from "./models.js";
 // v2.1.15 Phase A: project.ts is THE single owner of project discovery. All
 // model-identification families it consumes (endpoint routing orders + the
 // flat catalog lists) are imported from models.ts (layer 1, legal direction);
@@ -95,8 +96,7 @@ import {
   MODELS_2026_BASE,
   MODELS_2026_LEGACY,
 } from "./models.js";
-import type { Model2026 } from "./models.js";
-import type { Account } from "./accounts.js";
+
 export type { Account };
 
 // ---------------------------------------------------------------------------
@@ -105,11 +105,11 @@ export type { Account };
 // ---------------------------------------------------------------------------
 
 export {
+  ANTIGRAVITY_USER_AGENT_FALLBACK,
+  ANTIGRAVITY_VERSION_FALLBACK,
+  CODE_ASSIST_ENDPOINTS,
   ENDPOINT_ORDER,
   FALLBACK_PROJECT_ID,
-  ANTIGRAVITY_VERSION_FALLBACK,
-  ANTIGRAVITY_USER_AGENT_FALLBACK,
-  CODE_ASSIST_ENDPOINTS,
   FETCH_TIMEOUT_MS,
 };
 
@@ -200,21 +200,24 @@ export const CODE_ASSIST_PATHS = {
 // names; the values are byte-identical to the former local copies.
 // ---------------------------------------------------------------------------
 
+/** Union type of the v1 static fallback list ids. */
+export type { Model2026 };
 /**
  * Canonical model list up to 2026-08-25. Best-effort validated via
  * fetchAvailableModels without failing when rollout has not reached
  * DAILY/SANDBOX yet.
  */
-export { MODELS_2026_BASE, MODELS_2026_ANTIGRAVITY, MODELS_2026_ALL, MODELS_2026_LEGACY };
-
 /**
  * Historical project-module alias of {@link MODELS_2026_BASE} (the former
  * local `MODELS_2026 = MODELS_2026_BASE` binding).
  */
-export { MODELS_2026_BASE as MODELS_2026 };
-
-/** Union type of the v1 static fallback list ids. */
-export type { Model2026 };
+export {
+  MODELS_2026_ALL,
+  MODELS_2026_ANTIGRAVITY,
+  MODELS_2026_BASE,
+  MODELS_2026_BASE as MODELS_2026,
+  MODELS_2026_LEGACY,
+};
 
 // ---------------------------------------------------------------------------
 // 05. TYPES - CLOUD CODE CONTRACTS
@@ -663,7 +666,7 @@ async function pollOperation(opts: PollOperationOptions): Promise<string | null>
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     if (attempt > 0) {
-      const delayMs = Math.min(500 * Math.pow(2, attempt - 1), 8000);
+      const delayMs = Math.min(500 * 2 ** (attempt - 1), 8000);
       await new Promise((r) => setTimeout(r, delayMs));
     }
     try {
@@ -683,9 +686,7 @@ async function pollOperation(opts: PollOperationOptions): Promise<string | null>
         if (extracted) return extracted;
         return null;
       }
-    } catch {
-      continue;
-    }
+    } catch {}
   }
   return null;
 }
@@ -758,9 +759,7 @@ export async function fetchAvailableModels(opts: FetchModelsOptions): Promise<Av
 // 13. resolveProjectId ORCHESTRATOR (v2 canonical)
 // ---------------------------------------------------------------------------
 
-export interface AccountMetadataSaver {
-  (projectId: string): Promise<void> | void;
-}
+export type AccountMetadataSaver = (projectId: string) => Promise<void> | void;
 
 export interface ResolveProjectIdOptions {
   accessToken: string;
@@ -965,7 +964,6 @@ export async function resolveProjectId(opts: ResolveProjectIdOptions): Promise<R
         500,
         endpoint,
       );
-      continue;
     }
   }
 
@@ -1091,7 +1089,6 @@ export async function resolveProjectIdAsGeminiCliBypass(
         }
       } catch (e: any) {
         if (e instanceof ProjectDiscoveryError && !isRetryable(e.status ?? 0) && e.status !== 0) throw e;
-        continue;
       }
     }
   }
@@ -1162,7 +1159,6 @@ export async function resolveProjectIdAsGeminiCliBypass(
         continue;
       }
       lastError = new ProjectDiscoveryError(`unexpected at ${ep}: ${String(e?.message ?? e)}`, 500, ep, true);
-      continue;
     }
   }
 

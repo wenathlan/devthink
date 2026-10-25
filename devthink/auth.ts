@@ -1,25 +1,25 @@
 /** The auth module of the 1.1.88 consolidation: every correlated variation of the auth logic interned in this one file, so the module family carries one surface without duplicate variations. */
 
+import { randomid } from "./memory.js";
+import { toolnamespaces } from "./tools.js";
 /* ── Merged from clientauth.ts: the 1.1.88 consolidation interns the correlated clientauth logic here, so no variation of the same file lives beside another. ── */
 import type {
   allowlistentry,
   authchallenge,
   authmethod,
+  bridgepairingrecord,
   clientidentity,
+  formpayload,
+  multipartpayload,
+  oauthflow,
   pairingcode,
+  relaytokenrecord,
+  revocationrule,
   sessiontoken,
   tlsconfig,
   tokenhash,
   toolnamespace,
-  formpayload,
-  multipartpayload,
-  oauthflow,
-  revocationrule,
-  bridgepairingrecord,
-  relaytokenrecord,
 } from "./types.js";
-import { randomid } from "./memory.js";
-import { toolnamespaces } from "./tools.js";
 
 /**
  * Client auth of the 1.1.55 agent protocol part two.

@@ -14,11 +14,11 @@
  * storage.
  */
 import {
+  type DecisionRequest,
+  type DecisionVerdict,
   decisionerror,
   gateverdict,
   validatedecision,
-  type DecisionRequest,
-  type DecisionVerdict,
 } from "./jsondecision.ts";
 import { extractjsonobject, validateverdict } from "./jsonparse.ts";
 
@@ -31,7 +31,9 @@ export type DecisionRecipe = {
 };
 
 /** the injected LLM link: one round over the configured gateway. */
-export type Completer = (messages: Array<{ role: "system" | "user" | "assistant"; content: string }>) => Promise<string>;
+export type Completer = (
+  messages: Array<{ role: "system" | "user" | "assistant"; content: string }>,
+) => Promise<string>;
 
 /** the trail of one decide run (the internal cognition of the verdict). */
 export type DecisionTrail = {
@@ -96,10 +98,21 @@ export function createjsonmodel(config: {
         return { verdict: gateverdict(validated.kind, parsed.value, parsed.confidence, validated.policy), trail };
       } catch (error) {
         lasterror = error;
-        if (round === 0) messages.push({ role: "assistant", content: answer }, { role: "user", content: "Answer again with only the JSON object. No prose, no fences." });
+        if (round === 0)
+          messages.push(
+            { role: "assistant", content: answer },
+            { role: "user", content: "Answer again with only the JSON object. No prose, no fences." },
+          );
       }
     }
     const detail = lasterror instanceof decisionerror ? lasterror.detail : null;
-    return { verdict: { ok: false, kind: validated.kind, reason: `the model never answered a parseable verdict${detail ? ` (${detail})` : ""}` }, trail };
+    return {
+      verdict: {
+        ok: false,
+        kind: validated.kind,
+        reason: `the model never answered a parseable verdict${detail ? ` (${detail})` : ""}`,
+      },
+      trail,
+    };
   };
 }

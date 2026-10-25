@@ -26,20 +26,19 @@
 import {
   ArrowLeftRegular as ArrowLeft,
   ArrowRightRegular as ArrowRight,
+  MusicNote2Regular as AudioLines,
   BookOpenRegular as BookOpen,
+  VideoClipRegular as Clapperboard,
+  TargetRegular as Crosshair,
   CubeRegular as Cube,
-  DismissRegular as X,
+  type FluentIcon,
   GlobeRegular as Globe,
   ImageRegular as Image,
-  MusicNote2Regular as AudioLines,
-  TargetRegular as Crosshair,
-  VideoClipRegular as Clapperboard,
   WindowConsoleRegular as Terminal,
-  type FluentIcon } from "@fluentui/react-icons";
+  DismissRegular as X,
+} from "@fluentui/react-icons";
 import { type Ref, useEffect, useRef } from "react";
 import { Link } from "wouter";
-import { label, type LabelKey } from "../../labels.ts";
-import { osText } from "../../oslabels.ts";
 import type {
   AboutBlock,
   CoreModule,
@@ -47,26 +46,21 @@ import type {
   LegalSection,
   RunnerBinary,
   StudioAsset,
-  StudioTrack } from "../../catalog";
+  StudioTrack,
+} from "../../catalog";
+import { type LabelKey, label } from "../../labels.ts";
+import { osText } from "../../oslabels.ts";
+import { TRYLLE_CARD_SHADOW, TRYLLE_CARD_SHADOW_RAISED } from "./ExploreLaunchdeck.tsx";
 import { Banner } from "./ShellBanner.tsx";
 import { Chip } from "./ShellChip.tsx";
 import { Dot } from "./ShellDot.tsx";
-import { TRYLLE_CARD_SHADOW, TRYLLE_CARD_SHADOW_RAISED } from "./ExploreLaunchdeck.tsx";
 
 /** the doctrine micro curve of every quiet entrance */
 const MICRO = "cubic-bezier(0.22, 1, 0.36, 1)";
 
 /* --------------------------------- types --------------------------------- */
 
-export type ExploreCategoryId =
-  | "video"
-  | "image"
-  | "audio"
-  | "model3d"
-  | "code"
-  | "documents"
-  | "sandbox"
-  | "shares";
+export type ExploreCategoryId = "video" | "image" | "audio" | "model3d" | "code" | "documents" | "sandbox" | "shares";
 
 export type ExploreEntryKind = "asset" | "track" | "module" | "document" | "site" | "binary";
 
@@ -127,7 +121,8 @@ const CATEGORY_TINT: Record<ExploreCategoryId, string> = {
   code: "#4ade80",
   documents: "#cbd5e1",
   sandbox: "#d6b483",
-  shares: "#d97757" };
+  shares: "#d97757",
+};
 
 const CATEGORY_ICONS: Record<ExploreCategoryId, FluentIcon> = {
   video: Clapperboard,
@@ -137,14 +132,16 @@ const CATEGORY_ICONS: Record<ExploreCategoryId, FluentIcon> = {
   code: Terminal,
   documents: BookOpen,
   sandbox: Crosshair,
-  shares: Globe };
+  shares: Globe,
+};
 
 /** the studio tints of the made assets (the origin surfaces of the registry) */
 const STUDIO_TINT: Record<string, string> = {
   video: "#f472b6",
   image: "#c084fc",
   music: "#d9962e",
-  model3d: "#ec4899" };
+  model3d: "#ec4899",
+};
 
 /** the studio tags of the made assets, by their catalog studio field (any
  * studio value the paired database adds falls back to its own name) */
@@ -153,7 +150,8 @@ function assetTag(asset: StudioAsset): string {
     video: osText("explore.studio.video"),
     image: osText("explore.studio.image"),
     music: osText("explore.studio.music"),
-    model3d: osText("explore.studio.model3d") };
+    model3d: osText("explore.studio.model3d"),
+  };
   return tags[asset.studio] ?? asset.studio;
 }
 
@@ -183,58 +181,67 @@ export function exploreCategories(data: ExploreData | null): ExploreCategoryRow[
       sub: label("explore.cat.video.sub"),
       route: "/video",
       routes: ["/video"],
-      count: answered ? assets.filter((asset) => asset.studio === "video").length : null },
+      count: answered ? assets.filter((asset) => asset.studio === "video").length : null,
+    },
     {
       id: "image",
       name: label("explore.cat.image"),
       sub: label("explore.cat.image.sub"),
       route: "/image",
       routes: ["/image"],
-      count: answered ? assets.filter((asset) => asset.studio === "image").length : null },
+      count: answered ? assets.filter((asset) => asset.studio === "image").length : null,
+    },
     {
       id: "audio",
       name: label("explore.cat.audio"),
       sub: label("explore.cat.audio.sub"),
       route: "/audio",
       routes: ["/audio"],
-      count: answered
-        ? tracks.length + assets.filter((asset) => asset.studio === "music").length
-        : null },
+      count: answered ? tracks.length + assets.filter((asset) => asset.studio === "music").length : null,
+    },
     {
       id: "model3d",
       name: label("explore.cat.model3d"),
       sub: label("explore.cat.model3d.sub"),
       route: "/cadria",
       routes: ["/cadria"],
-      count: answered ? assets.filter((asset) => asset.studio === "model3d").length : null },
+      count: answered ? assets.filter((asset) => asset.studio === "model3d").length : null,
+    },
     {
       id: "code",
       name: label("explore.cat.code"),
       sub: label("explore.cat.code.sub"),
       route: "/console",
       routes: ["/console", "/docs"],
-      count: answered ? modules.length : null },
+      count: answered ? modules.length : null,
+    },
     {
       id: "documents",
       name: label("explore.cat.documents"),
       sub: label("explore.cat.documents.sub"),
       route: "/docs",
       routes: ["/docs", "/about", "/terms", "/policy"],
-      count: answered ? about.length + terms.length + policy.length : null },
+      count: answered ? about.length + terms.length + policy.length : null,
+    },
     {
       id: "sandbox",
       name: label("explore.cat.sandbox"),
       sub: label("explore.cat.sandbox.sub"),
       route: "/games",
       routes: ["/games", "/forge", "/foundry", "/saddle"],
-      count: answered ? binaries.length : null },
+      count: answered ? binaries.length : null,
+    },
     {
       id: "shares",
       name: label("explore.cat.shares"),
       sub: label("explore.cat.shares.sub"),
       route: null,
-      routes: sites.map((site) => siteSlug(site)).filter((slug): slug is string => slug !== null).map((slug) => `/${slug}`),
-      count: answered ? sites.length : null },
+      routes: sites
+        .map((site) => siteSlug(site))
+        .filter((slug): slug is string => slug !== null)
+        .map((slug) => `/${slug}`),
+      count: answered ? sites.length : null,
+    },
   ];
   return rows.map((row) => ({ ...row, icon: CATEGORY_ICONS[row.id], tint: CATEGORY_TINT[row.id] }));
 }
@@ -249,7 +256,8 @@ function assetEntry(asset: StudioAsset, route: string): ExploreEntry {
     meta: `${asset.engine} · ${asset.duration ?? asset.size ?? osText("image.stills.unknownSize")}`,
     body: [`${assetTag(asset)} — ${asset.engine}`],
     route,
-    tint: STUDIO_TINT[asset.studio] };
+    tint: STUDIO_TINT[asset.studio],
+  };
 }
 
 /** The entries of one category — every row built from the real catalog
@@ -268,16 +276,15 @@ export function exploreEntries(id: ExploreCategoryId, data: ExploreData): Explor
         meta: `${track.minutes} min · ${track.blurb}`,
         body: [track.blurb],
         route: "/audio",
-        tint: STUDIO_TINT.music }));
+        tint: STUDIO_TINT.music,
+      }));
       const musicAssets: ExploreEntry[] = data.assets
         .filter((asset) => asset.studio === "music")
         .map((asset) => assetEntry(asset, "/audio"));
       return [...trackEntries, ...musicAssets];
     }
     case "model3d":
-      return data.assets
-        .filter((asset) => asset.studio === "model3d")
-        .map((asset) => assetEntry(asset, "/cadria"));
+      return data.assets.filter((asset) => asset.studio === "model3d").map((asset) => assetEntry(asset, "/cadria"));
     case "code":
       return data.modules.map((module) => ({
         id: `module:${module.name}`,
@@ -285,7 +292,8 @@ export function exploreEntries(id: ExploreCategoryId, data: ExploreData): Explor
         title: module.name,
         meta: module.role,
         body: [module.role],
-        route: "/console" }));
+        route: "/console",
+      }));
     case "documents": {
       const documentEntry = (section: LegalSection, route: string): ExploreEntry => ({
         id: `document:${route.slice(1)}:${section.id}`,
@@ -293,15 +301,19 @@ export function exploreEntries(id: ExploreCategoryId, data: ExploreData): Explor
         title: section.title,
         meta: label("explore.state.paragraphs").replace("{count}", String(section.paragraphs.length)),
         body: section.paragraphs,
-        route });
+        route,
+      });
       return [
-        ...data.about.map((block): ExploreEntry => ({
-          id: `document:about:${block.id}`,
-          kind: "document",
-          title: block.heading,
-          meta: label("explore.state.paragraphs").replace("{count}", String(block.body.length)),
-          body: block.body,
-          route: "/about" })),
+        ...data.about.map(
+          (block): ExploreEntry => ({
+            id: `document:about:${block.id}`,
+            kind: "document",
+            title: block.heading,
+            meta: label("explore.state.paragraphs").replace("{count}", String(block.body.length)),
+            body: block.body,
+            route: "/about",
+          }),
+        ),
         ...data.terms.map((section) => documentEntry(section, "/terms")),
         ...data.policy.map((section) => documentEntry(section, "/policy")),
       ];
@@ -313,7 +325,8 @@ export function exploreEntries(id: ExploreCategoryId, data: ExploreData): Explor
         title: binary.title,
         meta: `${binary.formats} · ${binary.runner}`,
         body: [binary.blurb],
-        route: "/games" }));
+        route: "/games",
+      }));
     case "shares":
       return data.sites.map((site) => {
         const slug = siteSlug(site);
@@ -325,7 +338,8 @@ export function exploreEntries(id: ExploreCategoryId, data: ExploreData): Explor
           body: [site.blurb],
           ...(slug ? { route: `/${slug}` } : {}),
           href: site.host,
-          tint: CATEGORY_TINT.shares } satisfies ExploreEntry;
+          tint: CATEGORY_TINT.shares,
+        } satisfies ExploreEntry;
       });
   }
 }
@@ -336,10 +350,7 @@ export function exploreRecents(data: ExploreData): ExploreEntry[] {
   const assetEntries: ExploreEntry[] = data.assets
     .filter((asset) => asset.studio !== "music")
     .map((asset) =>
-      assetEntry(
-        asset,
-        asset.studio === "model3d" ? "/cadria" : asset.studio === "video" ? "/video" : "/image",
-      ),
+      assetEntry(asset, asset.studio === "model3d" ? "/cadria" : asset.studio === "video" ? "/video" : "/image"),
     );
   const trackEntries: ExploreEntry[] = data.tracks.map((track) => ({
     id: `track:${track.id}`,
@@ -348,7 +359,8 @@ export function exploreRecents(data: ExploreData): ExploreEntry[] {
     meta: `${track.minutes} min · ${track.blurb}`,
     body: [track.blurb],
     route: "/audio",
-    tint: STUDIO_TINT.music }));
+    tint: STUDIO_TINT.music,
+  }));
   const musicEntries: ExploreEntry[] = data.assets
     .filter((asset) => asset.studio === "music")
     .map((asset) => assetEntry(asset, "/audio"));
@@ -396,7 +408,8 @@ const KIND_LABEL: Record<ExploreEntryKind, LabelKey> = {
   module: "explore.state.kind.module",
   document: "explore.state.kind.document",
   site: "explore.state.kind.site",
-  binary: "explore.state.kind.binary" };
+  binary: "explore.state.kind.binary",
+};
 
 function kindLabel(kind: ExploreEntryKind): string {
   return label(KIND_LABEL[kind]);
@@ -417,10 +430,7 @@ function ZoneHead(props: { cap: string; title: string; sub: string; id?: string 
 
 /** the merged zone ref: the stagger reads the inner ref, the anchor reads
  * the external one — one element, two readers. */
-function mergeZoneRef(
-  inner: { current: HTMLElement | null },
-  external?: Ref<HTMLElement | null>,
-) {
+function mergeZoneRef(inner: { current: HTMLElement | null }, external?: Ref<HTMLElement | null>) {
   return (el: HTMLElement | null) => {
     inner.current = el;
     if (!external) return;
@@ -476,7 +486,8 @@ export function CategoryDeck(props: {
               }`}
               style={{
                 boxShadow: active ? TRYLLE_CARD_SHADOW_RAISED : TRYLLE_CARD_SHADOW,
-                backgroundImage: `radial-gradient(150px 110px at 20% 12%, ${category.tint}24, transparent 70%)` }}
+                backgroundImage: `radial-gradient(150px 110px at 20% 12%, ${category.tint}24, transparent 70%)`,
+              }}
             >
               <span
                 className="grid h-10 w-10 flex-none place-items-center rounded-lg ring-1 ring-hairline"
@@ -485,9 +496,7 @@ export function CategoryDeck(props: {
               >
                 <Icon fontSize={18} style={{ color: category.tint }} />
               </span>
-              <span className="mt-auto pt-2 text-sm font-semibold tracking-[-0.01em] text-ink">
-                {category.name}
-              </span>
+              <span className="mt-auto pt-2 text-sm font-semibold tracking-[-0.01em] text-ink">{category.name}</span>
               <span className="line-clamp-2 text-xs leading-[1.5] text-ink-2">{category.sub}</span>
               <span className="flex items-center gap-2 font-mono text-[11px] text-ink-3">
                 <Dot
@@ -595,9 +604,7 @@ export function EntryDetail(props: { entry: ExploreEntry; onClose: () => void })
               </Chip>
             )}
           </div>
-          <h3 className="mt-3 font-display text-xl font-semibold tracking-[-0.02em] text-ink">
-            {props.entry.title}
-          </h3>
+          <h3 className="mt-3 font-display text-xl font-semibold tracking-[-0.02em] text-ink">{props.entry.title}</h3>
           <p className="mt-1 font-mono text-[11px] leading-[1.5] text-ink-3">{props.entry.meta}</p>
         </div>
         <button
@@ -698,12 +705,7 @@ export function CategorySectionDeck(props: {
   const shareMode = category?.id === "shares";
 
   return (
-    <section
-      ref={props.zoneRef}
-      className="scroll-mt-24 pb-14"
-      id="deck"
-      aria-label={label("explore.deck.cap")}
-    >
+    <section ref={props.zoneRef} className="scroll-mt-24 pb-14" id="deck" aria-label={label("explore.deck.cap")}>
       <div ref={innerRef} key={props.active ?? "idle"}>
         {props.failed ? (
           <Banner
@@ -725,11 +727,7 @@ export function CategorySectionDeck(props: {
           <>
             <ZoneHead
               id="dt-sec-deck"
-              cap={
-                shareMode
-                  ? label("explore.share.cap")
-                  : `${label("explore.deck.cap")} · ${category.name}`
-              }
+              cap={shareMode ? label("explore.share.cap") : `${label("explore.deck.cap")} · ${category.name}`}
               title={shareMode ? label("explore.share.title") : category.name}
               sub={shareMode ? label("explore.share.sub") : category.sub}
             />
@@ -757,7 +755,10 @@ export function CategorySectionDeck(props: {
                 <CardSkeleton />
               )
             ) : entries.length === 0 ? (
-              <div data-akash-beat className="flex flex-wrap items-center gap-3 rounded-lg bg-s0 px-4 py-5 ring-1 ring-hairline">
+              <div
+                data-akash-beat
+                className="flex flex-wrap items-center gap-3 rounded-lg bg-s0 px-4 py-5 ring-1 ring-hairline"
+              >
                 <p className="font-mono text-xs text-ink-3">
                   {label("explore.deck.empty").replace("{name}", category.name)}
                 </p>
@@ -766,10 +767,7 @@ export function CategorySectionDeck(props: {
                   category.id === "audio" ||
                   category.id === "model3d") &&
                   category.route && (
-                    <Link
-                      className="silk-btn text-sm"
-                      href={category.route}
-                    >
+                    <Link className="silk-btn text-sm" href={category.route}>
                       {label("explore.deck.act.studio")}
                       <ArrowRight fontSize={14} aria-hidden="true" />
                     </Link>
@@ -798,9 +796,7 @@ export function CategorySectionDeck(props: {
                       {String(index + 1).padStart(2, "0")}
                     </span>
                     <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                      <span className="truncate text-sm font-semibold tracking-[-0.01em] text-ink">
-                        {entry.title}
-                      </span>
+                      <span className="truncate text-sm font-semibold tracking-[-0.01em] text-ink">{entry.title}</span>
                       <span className="truncate font-mono text-[11px] text-ink-3">{entry.meta}</span>
                     </span>
                     <ArrowRight
@@ -824,7 +820,8 @@ export function CategorySectionDeck(props: {
                       boxShadow: TRYLLE_CARD_SHADOW,
                       backgroundImage: entry.tint
                         ? `radial-gradient(150px 110px at 20% 12%, ${entry.tint}24, transparent 70%)`
-                        : undefined }}
+                        : undefined,
+                    }}
                   >
                     <Chip tone="neutral">{kindLabel(entry.kind)}</Chip>
                     <strong className="mt-auto pt-3 font-display text-[15px] font-semibold tracking-[-0.01em] text-ink">
@@ -836,9 +833,7 @@ export function CategorySectionDeck(props: {
               </div>
             )}
 
-            {activeEntry && props.data !== null && (
-              <EntryDetail entry={activeEntry} onClose={props.onCloseEntry} />
-            )}
+            {activeEntry && props.data !== null && <EntryDetail entry={activeEntry} onClose={props.onCloseEntry} />}
           </>
         )}
       </div>

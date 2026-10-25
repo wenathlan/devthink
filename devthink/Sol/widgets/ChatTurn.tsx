@@ -42,8 +42,8 @@ import {
 } from "@fluentui/react-icons";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { chatText } from "../../chatlabels.ts";
-import { label } from "../../labels.ts";
 import { type ChatTurn, cx, fmtTime } from "../../chatstate.ts";
+import { label } from "../../labels.ts";
 import { copyText, Markdown } from "./ChatMarkdown.tsx";
 
 /** fmtFull — the hover timestamp of the meta line: the full locale
@@ -525,12 +525,8 @@ export function Turn({
             {fmtDayTime(turn.at)}
           </span>{" "}
           {assistant ? (turn.model ?? "devthink").toUpperCase() : label("chat.turn.you")}
-          {turn.stopped ? (
-            <i className="dtc-meta__mark">· {label("chat.turn.stoppedMark")}</i>
-          ) : null}
-          {turn.edited ? (
-            <i className="dtc-meta__mark">· {label("chat.turn.editedMark")}</i>
-          ) : null}
+          {turn.stopped ? <i className="dtc-meta__mark">· {label("chat.turn.stoppedMark")}</i> : null}
+          {turn.edited ? <i className="dtc-meta__mark">· {label("chat.turn.editedMark")}</i> : null}
           <span className="sr-only" role="status" aria-live="polite">
             {copyState === "copied"
               ? chatText("turn.copied")

@@ -36,73 +36,45 @@
  * @since 2026
  */
 
+import * as crypto from "node:crypto";
+import { createHash } from "node:crypto";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import * as crypto from "node:crypto";
-import { createHash } from "node:crypto";
-
+import type { QuotaGroup } from "./constants.js";
 // Deduplicated against the frozen owners (constants.ts / models.ts) and the
 // canonical in-set file (project.ts): symbols whose local definitions were
 // value-identical are imported and re-exported below, so each has exactly one
 // definition (library dedupe task 2-d1).
 import {
-  PROJECT_FALLBACK,
-  QUOTA_SOFT_THRESHOLD,
-  QUOTA_CACHE_TTL_MIN_MS,
-  QUOTA_CACHE_TTL_MS,
-  QUOTA_TIMEOUT_MS,
-  JITTER_MIN_MS,
-  JITTER_MAX_MS,
-  ANTIGRAVITY_VERSION_FALLBACK,
-  ANTIGRAVITY_USER_AGENT_FALLBACK,
   ANTIGRAVITY_CLIENT_ID_IS_BLINDED,
   ANTIGRAVITY_CLIENT_SECRET_IS_BLINDED,
   ANTIGRAVITY_ENDPOINT_FALLBACKS,
-  GEMINI_CLI_ENDPOINT,
-  QUOTA_ENDPOINT,
-  PROJECT_ID_FALLBACK,
-  PROJECT_NAME_FALLBACK,
-} from "./constants.js";
-import { fnv1a32, isRetryableStatus } from "./core.js";
-import { getXGoogApiClient } from "./fingerprint.js";
-import type { QuotaGroup } from "./constants.js";
-import { ANTIGRAVITY_VERSION_MIN, isGeminiCLIOnlyModel, MODELS_2026_LEGACY, UA_DEFAULT_MODEL } from "./models.js";
-import { API_PATHS, API_PATHS_DAILY } from "./request.js";
-import {
-  QUOTA_CACHE_TTL_MAX_MS,
-  QUOTA_HARD_THRESHOLD,
+  ANTIGRAVITY_USER_AGENT_FALLBACK,
+  ANTIGRAVITY_VERSION_FALLBACK,
   CLIENT_METADATA_STRING,
+  GEMINI_CLI_ENDPOINT,
   GEMINI_CLI_OAUTH_CLIENT_ID,
   GEMINI_CLI_OAUTH_CLIENT_SECRET,
   GEMINI_CLI_USER_AGENT,
-} from "./constants.js";
-import { X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.js";
-
-// Re-exports preserve this module's public surface after the dedupe.
-export {
-  PROJECT_FALLBACK,
-  QUOTA_SOFT_THRESHOLD,
-  QUOTA_CACHE_TTL_MIN_MS,
-  QUOTA_CACHE_TTL_MS,
-  QUOTA_TIMEOUT_MS,
-  JITTER_MIN_MS,
   JITTER_MAX_MS,
-  ANTIGRAVITY_VERSION_FALLBACK,
-  ANTIGRAVITY_USER_AGENT_FALLBACK,
-  ANTIGRAVITY_CLIENT_ID_IS_BLINDED,
-  ANTIGRAVITY_CLIENT_SECRET_IS_BLINDED,
-  ANTIGRAVITY_ENDPOINT_FALLBACKS,
-  GEMINI_CLI_ENDPOINT,
-  QUOTA_ENDPOINT,
+  JITTER_MIN_MS,
+  PROJECT_FALLBACK,
   PROJECT_ID_FALLBACK,
   PROJECT_NAME_FALLBACK,
-  getXGoogApiClient,
-  ANTIGRAVITY_VERSION_MIN,
-  isRetryableStatus,
-  X_GOOG_API_CLIENT,
-  CLIENT_METADATA_STRING,
-};
+  QUOTA_CACHE_TTL_MAX_MS,
+  QUOTA_CACHE_TTL_MIN_MS,
+  QUOTA_CACHE_TTL_MS,
+  QUOTA_ENDPOINT,
+  QUOTA_HARD_THRESHOLD,
+  QUOTA_SOFT_THRESHOLD,
+  QUOTA_TIMEOUT_MS,
+} from "./constants.js";
+import { fnv1a32, isRetryableStatus } from "./core.js";
+import { getXGoogApiClient, X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.js";
+import { ANTIGRAVITY_VERSION_MIN, isGeminiCLIOnlyModel, MODELS_2026_LEGACY, UA_DEFAULT_MODEL } from "./models.js";
+import { API_PATHS, API_PATHS_DAILY } from "./request.js";
+
 // v2.1.15 Phase C: the historical OAUTH_CLIENT_ID/OAUTH_CLIENT_SECRET names
 // (gemini-cli pair) are re-exported from the constants.js owner.
 export {
@@ -110,6 +82,30 @@ export {
   GEMINI_CLI_OAUTH_CLIENT_SECRET as OAUTH_CLIENT_SECRET,
 } from "./constants.js";
 export type { QuotaGroup };
+// Re-exports preserve this module's public surface after the dedupe.
+export {
+  ANTIGRAVITY_CLIENT_ID_IS_BLINDED,
+  ANTIGRAVITY_CLIENT_SECRET_IS_BLINDED,
+  ANTIGRAVITY_ENDPOINT_FALLBACKS,
+  ANTIGRAVITY_USER_AGENT_FALLBACK,
+  ANTIGRAVITY_VERSION_FALLBACK,
+  ANTIGRAVITY_VERSION_MIN,
+  CLIENT_METADATA_STRING,
+  GEMINI_CLI_ENDPOINT,
+  getXGoogApiClient,
+  isRetryableStatus,
+  JITTER_MAX_MS,
+  JITTER_MIN_MS,
+  PROJECT_FALLBACK,
+  PROJECT_ID_FALLBACK,
+  PROJECT_NAME_FALLBACK,
+  QUOTA_CACHE_TTL_MIN_MS,
+  QUOTA_CACHE_TTL_MS,
+  QUOTA_ENDPOINT,
+  QUOTA_SOFT_THRESHOLD,
+  QUOTA_TIMEOUT_MS,
+  X_GOOG_API_CLIENT,
+};
 
 // =============================================================================
 // BLINDED CONSTANTS - GEMINI CLI BYPASS
@@ -981,7 +977,7 @@ export async function retrieveUserQuotaSummary(
 
       // Timeout / network - retry while attempts remain
       if (attempt < retries) {
-        const backoff = 200 * Math.pow(2, attempt) + Math.random() * 200;
+        const backoff = 200 * 2 ** attempt + Math.random() * 200;
         await new Promise((r) => setTimeout(r, backoff));
         continue;
       }
@@ -1094,7 +1090,7 @@ function saveFileCacheSync(entries: Record<string, QuotaCacheEntry>): void {
 }
 
 let _memoryFileCache: Record<string, QuotaCacheEntry> | null = null;
-let _inflightFetches: Map<string, Promise<QuotaSummaryParsed>> = new Map();
+const _inflightFetches: Map<string, Promise<QuotaSummaryParsed>> = new Map();
 
 function getFileCache(): Record<string, QuotaCacheEntry> {
   if (_memoryFileCache) return _memoryFileCache;

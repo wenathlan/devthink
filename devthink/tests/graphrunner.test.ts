@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { makenode, makeedge, makegraph, resetnodestates } from "../graphnodes.js";
-import { type runevent, createrunner, initialview, resetview, stageofnode, viewprogress } from "../graphrunner.js";
+import { makeedge, makegraph, makenode, resetnodestates } from "../graphnodes.js";
+import { createrunner, initialview, resetview, type runevent, stageofnode, viewprogress } from "../graphrunner.js";
 
 /** the ride the runner tests share: banner → config → {gateway, mcp} → ready. */
 function bootgraph() {

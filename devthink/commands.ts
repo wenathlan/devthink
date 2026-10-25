@@ -1,5 +1,7 @@
 /** The commands module of the 1.1.90 consolidation: every correlated variation of the background command executors for tabs, files, clipboard, downloads and navigation interned in this one file, so the module family carries one surface without duplicate variations. */
 
+import { parseoptions } from "./policy.js";
+import { assigntasktab, tasktabs } from "./progress.js";
 /* ── Merged from tabscommand.ts: the 1.1.90 consolidation interns the correlated tabscommand logic here, so no variation of the same file lives beside another. ── */
 import type {
   artifactinventoryentry,
@@ -29,8 +31,6 @@ import type {
   toolstep,
   urlvisit,
 } from "./types.js";
-import { parseoptions } from "./policy.js";
-import { assigntasktab, tasktabs } from "./progress.js";
 
 /**
  * Tabs and windows command logics for reviewed steps.

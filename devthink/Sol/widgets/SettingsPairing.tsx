@@ -1,12 +1,17 @@
 /** Style: DevThink Orbital Signal Room — local pairing is a compact connection beacon that expands only when the user needs it. The C1 card chrome rides the beacon: 8px corners, var(--dt-edge) hairline, tabular numerals and the lowercase mono eyebrow header; the fields reuse the shared dtc-gw input ring. */
-import {LinkRegular as Link2, ShieldRegular as ShieldCheck, PlugDisconnectedRegular as Unplug} from "@fluentui/react-icons";
+import {
+  LinkRegular as Link2,
+  ShieldRegular as ShieldCheck,
+  PlugDisconnectedRegular as Unplug,
+} from "@fluentui/react-icons";
 import { type CSSProperties, type FormEvent, useEffect, useState } from "react";
 
 const cardStyle: CSSProperties = {
   borderRadius: 8,
   borderColor: "var(--dt-edge)",
   padding: 16,
-  fontVariantNumeric: "tabular-nums" };
+  fontVariantNumeric: "tabular-nums",
+};
 const eyebrowStyle: CSSProperties = { fontSize: 10, letterSpacing: ".08em" };
 const fieldClass = "dtc-gw__input";
 
@@ -43,7 +48,8 @@ export function PairingPanel({
   onPairingIdChange,
   onCodeChange,
   onSubmit,
-  onRevoke }: PairingPanelProps) {
+  onRevoke,
+}: PairingPanelProps) {
   const invitationDetected = Boolean(gatewayUrl && pairingId && code);
   const [requestedUserId, setRequestedUserId] = useState(userId || "");
   useEffect(() => setRequestedUserId(userId || ""), [userId]);

@@ -83,7 +83,8 @@ export function AutomationMcp() {
         : registry.updateprovider(editing.id, {
             label: editing.label,
             baseUrl: editing.baseUrl,
-            keyref: editing.keyref });
+            keyref: editing.keyref,
+          });
     if (settle(answer)) setEditing(null);
   }
 

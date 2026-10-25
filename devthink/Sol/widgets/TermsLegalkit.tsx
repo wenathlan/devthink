@@ -23,18 +23,21 @@ const heroEyebrowStyle: CSSProperties = {
   margin: 0,
   color: "var(--dtv3-sig)",
   font: "600 10px var(--dt-mono)",
-  letterSpacing: ".08em" };
+  letterSpacing: ".08em",
+};
 const heroTitleStyle: CSSProperties = {
   margin: 0,
   color: "var(--dt-text)",
   font: "700 clamp(34px, 5vw, 52px)/1.06 var(--font-display, var(--dt-sans))",
   letterSpacing: "-0.02em",
-  textWrap: "balance" };
+  textWrap: "balance",
+};
 const heroLedeStyle: CSSProperties = {
   margin: 0,
   maxWidth: "54ch",
   color: "var(--dt-muted)",
-  font: "400 13px/1.7 var(--dt-sans)" };
+  font: "400 13px/1.7 var(--dt-sans)",
+};
 
 /** the numbered index of a section/toc entry (01, 02, …). */
 const index2 = (index: number) => String(index + 1).padStart(2, "0");

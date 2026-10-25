@@ -4,7 +4,7 @@ import { join, resolve } from "node:path";
 
 const repoRoot = resolve(process.cwd(), "..");
 const workflow = await readFile(join(repoRoot, ".github/workflows/release.yml"), "utf8");
-const match = workflow.match(/^  npmjs:\n([\s\S]*?)(?=^  [a-z][a-z0-9_-]+:\n|\Z)/m);
+const match = workflow.match(/^ {2}npmjs:\n([\s\S]*?)(?=^ {2}[a-z][a-z0-9_-]+:\n|Z)/m);
 if (!match) throw new Error("Release workflow is missing the npmjs publication job.");
 
 const npmjs = match[0];
@@ -24,7 +24,7 @@ if (npmjs.includes("echo $NODE_AUTH_TOKEN") || npmjs.includes("echo $NPM_TOKEN")
 }
 if (npmjs.includes("vars.PUBLISH_NPM")) throw new Error("npmjs must publish automatically after identity validation.");
 
-const assemblematch = workflow.match(/^  assemble:\n([\s\S]*?)(?=^  [a-z][a-z0-9_-]+:\n|\Z)/m);
+const assemblematch = workflow.match(/^ {2}assemble:\n([\s\S]*?)(?=^ {2}[a-z][a-z0-9_-]+:\n|Z)/m);
 if (!assemblematch) throw new Error("Release workflow is missing the assemble job.");
 const assemble = assemblematch[0];
 const nativebundles = [

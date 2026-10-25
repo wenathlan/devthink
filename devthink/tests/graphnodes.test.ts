@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
-  addnode,
   addedge,
+  addnode,
   ancestors,
   connectnodes,
   descendants,
@@ -13,14 +13,14 @@ import {
   hascycle,
   issettled,
   leafnodes,
-  makenode,
   makeedge,
   makegraph,
+  makenode,
   nodebyid,
   nodecount,
   nodelevels,
-  removenode,
   removeedge,
+  removenode,
   resetnodestates,
   rootnodes,
   serializegraph,
@@ -41,7 +41,12 @@ function diamond() {
     makenode("c", "c", { inputs: ["in"], outputs: ["next"] }),
     makenode("d", "d", { inputs: ["in"] }),
   ];
-  const edges = [makeedge("a", "b", "next"), makeedge("a", "c", "next"), makeedge("b", "d", "next"), makeedge("c", "d", "next")];
+  const edges = [
+    makeedge("a", "b", "next"),
+    makeedge("a", "c", "next"),
+    makeedge("b", "d", "next"),
+    makeedge("c", "d", "next"),
+  ];
   return makegraph(nodes, edges);
 }
 
@@ -111,7 +116,11 @@ describe("graphnodes model", () => {
 
   it("detects cycles and answers the walked path", () => {
     const graph = makegraph(
-      [makenode("a", "a", { outputs: ["next"] }), makenode("b", "b", { inputs: ["in"], outputs: ["next"] }), makenode("c", "c", { inputs: ["in"] })],
+      [
+        makenode("a", "a", { outputs: ["next"] }),
+        makenode("b", "b", { inputs: ["in"], outputs: ["next"] }),
+        makenode("c", "c", { inputs: ["in"] }),
+      ],
       [makeedge("a", "b", "next"), makeedge("b", "c", "next")],
     );
     expect(hascycle(graph)).toBe(false);

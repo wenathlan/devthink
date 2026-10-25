@@ -7,7 +7,7 @@
  * item, Enter runs it, Escape closes. The paint is Tailwind composition on
  * the design tokens (task 3-a): the acrylic mica panel, the hairline
  * dividers, the sun-tinted selection tick of the active row. */
-import {KeyboardRegular as Command, SearchRegular as Search, DismissRegular as X} from "@fluentui/react-icons";
+import { KeyboardRegular as Command, SearchRegular as Search, DismissRegular as X } from "@fluentui/react-icons";
 import { type KeyboardEvent as ReactKeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { osPaletteCommands, osText } from "../../oslabels.ts";
 
@@ -26,8 +26,7 @@ export function CommandPalette({ open, onClose, onAction }: CommandPaletteProps)
     const needle = query.trim().toLowerCase();
     if (!needle) return commands;
     return commands.filter(
-      (command) =>
-        command.title.toLowerCase().includes(needle) || command.detail.toLowerCase().includes(needle),
+      (command) => command.title.toLowerCase().includes(needle) || command.detail.toLowerCase().includes(needle),
     );
   }, [query]);
 

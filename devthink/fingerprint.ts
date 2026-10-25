@@ -37,9 +37,9 @@
  * @license MIT
  */
 
+import * as crypto from "node:crypto";
 import * as os from "node:os";
 import * as path from "node:path";
-import * as crypto from "node:crypto";
 
 // ============================================================================
 // Section: Mandatory constants (OAuth bypass context) — identical values are
@@ -47,6 +47,7 @@ import * as crypto from "node:crypto";
 // kept below with an explicit marker
 // ============================================================================
 
+import type { AntigravityVersion, SupportedArch, SupportedPlatform } from "./constants.js";
 import {
   ANTIGRAVITY_CLI_VERSION_POOL,
   ANTIGRAVITY_CLIENT_METADATA_TEMPLATE,
@@ -58,21 +59,21 @@ import {
   CURRENT_GAPI_CLIENT_VERSION,
   CURRENT_GEMINI_CLI_VERSION,
   CURRENT_GL_NODE_VERSION,
-  FINGERPRINT_IDE_TYPES,
-  FINGERPRINT_PLATFORMS,
-  FINGERPRINT_PLUGIN_TYPES,
+  type FINGERPRINT_IDE_TYPES,
+  type FINGERPRINT_PLATFORMS,
+  type FINGERPRINT_PLUGIN_TYPES,
   FINGERPRINT_USER_AGENT_SOURCES,
   GAPI_CLIENT_VERSION_POOL,
-  GEMINI_CLI_OAUTH_CLIENT_ID as OAUTH_CLIENT_ID,
-  GEMINI_CLI_OAUTH_CLIENT_SECRET as OAUTH_CLIENT_SECRET,
   GEMINI_CLI_SCOPES,
   GEMINI_CLI_VERSION_POOL,
   GL_NODE_VERSION_POOL,
+  GEMINI_CLI_OAUTH_CLIENT_ID as OAUTH_CLIENT_ID,
+  GEMINI_CLI_OAUTH_CLIENT_SECRET as OAUTH_CLIENT_SECRET,
   PLATFORM_POOL,
   PROJECT_FALLBACK,
   VERSION_FETCH_TIMEOUT_MS,
 } from "./constants.js";
-import type { AntigravityVersion, SupportedArch, SupportedPlatform } from "./constants.js";
+
 export { ANTIGRAVITY_VERSION_FALLBACK, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET, PROJECT_FALLBACK };
 
 // local variant: diverges from constants (constants.GEMINI_CLI_SCOPES is the 9-scope antigravity set with openid/email/profile/cclog; this is the 3-scope Gemini CLI set — value equals constants.GEMINI_CLI_SCOPES)
@@ -80,9 +81,9 @@ export { ANTIGRAVITY_VERSION_FALLBACK, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET, PRO
 // v2.1.15 Phase C: GEMINI_CLI_SCOPES (3-scope Gemini CLI set) is constants.js
 // GEMINI_CLI_SCOPES — imported from the owner.
 
+export type { AntigravityVersion, SupportedArch, SupportedPlatform };
 /** Base URL for the Cloud Code API (imported from constants.js — canonical owner since v2.1.15 Phase B). */
 export { CLOUDCODE_BASE_URL };
-export type { AntigravityVersion, SupportedArch, SupportedPlatform };
 
 // local variant: diverges from core (core.ENDPOINTS is the {PROD,DAILY,SANDBOX} base-URL map; this is the full v1internal URL map keyed by RPC name)
 /**
@@ -96,14 +97,15 @@ const FINGERPRINT_API_PATHS = {
   loadCodeAssist: `${CLOUDCODE_BASE_URL}/v1internal:loadCodeAssist`,
 } as const;
 
+import type { ModelId2026 } from "./models.js";
 // v2.1.15 Phase A: MODELS_2026 (the 11-id legacy bypass list) and the
 // ModelId2026 union moved to models.ts (MODELS_2026_LEGACY / ModelId2026) —
 // imported under the historical name and re-exported so the public surface
 // is unchanged.
 import { MODELS_2026_LEGACY as MODELS_2026, UA_DEFAULT_MODEL } from "./models.js";
-import type { ModelId2026 } from "./models.js";
-export { MODELS_2026 };
+
 export type { ModelId2026 };
+export { MODELS_2026 };
 
 // ============================================================================
 // Section: Platform types - coherent anti-ban pools
@@ -434,9 +436,7 @@ export async function fetchRemoteAntigravityVersion(): Promise<string | null> {
           if (m) return m[1] ?? null;
         }
         if (json?.latest && /^\d+\.\d+\.\d+/.test(json.latest)) return json.latest;
-      } catch {
-        continue;
-      }
+      } catch {}
     }
     return null;
   } finally {

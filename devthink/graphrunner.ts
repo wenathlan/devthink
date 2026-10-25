@@ -17,13 +17,22 @@
  * event and a view callback on every transition.
  */
 
-import { type graphnode, type nodegraph, type nodestate, nodebyid, resetnodestates, stagewaves } from "./graphnodes.js";
+import { type graphnode, nodebyid, type nodegraph, type nodestate, resetnodestates, stagewaves } from "./graphnodes.js";
 
 /** The status of the whole run: idle before it starts, running on the waves, done or failed at the end. */
 export type runstatus = "idle" | "running" | "done" | "failed";
 
 /** The kinds of event the engine answers on the onevent callback, in run order. */
-export type runeventtype = "runbegin" | "stagebegin" | "nodestart" | "nodeattempt" | "nodedone" | "nodefailed" | "nodeskipped" | "stageend" | "runend";
+export type runeventtype =
+  | "runbegin"
+  | "stagebegin"
+  | "nodestart"
+  | "nodeattempt"
+  | "nodedone"
+  | "nodefailed"
+  | "nodeskipped"
+  | "stageend"
+  | "runend";
 
 /** One event of the run: the kind, the stage it rode, the node it touched, the attempt number and the run progress at the moment. */
 export interface runevent {
@@ -161,7 +170,9 @@ export function createrunner(graph: nodegraph, options: runneroptions = {}): gra
     }
     return { donecount, failedcount, skippedcount };
   };
-  const viewof = (base: Omit<runstageview, "donecount" | "failedcount" | "skippedcount" | "progress" | "totalcount">): runstageview => {
+  const viewof = (
+    base: Omit<runstageview, "donecount" | "failedcount" | "skippedcount" | "progress" | "totalcount">,
+  ): runstageview => {
     const tally = counts(base.nodestates);
     return {
       ...base,

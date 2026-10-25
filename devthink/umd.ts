@@ -4,6 +4,7 @@
  */
 
 export * from "./index.js";
+
 import { stampbundle } from "./runtime.js";
 
 stampbundle("umd", "devthink.umd.js");

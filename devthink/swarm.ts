@@ -700,9 +700,7 @@ export function requeue(input: { queue: taskqueue; now: number; window?: number 
 }
 
 /** Reports every lane with its queued, claimed, done and cancelled task counts and the live claims, so the queue view reads the lanes at a glance. */
-export function lanereport(
-  queue: taskqueue,
-): Array<{
+export function lanereport(queue: taskqueue): Array<{
   lane: string;
   queued: number;
   claimed: number;

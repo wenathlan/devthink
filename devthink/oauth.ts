@@ -71,21 +71,21 @@
  *              dependencies, no project-file imports.
  */
 
+import { spawn } from "node:child_process";
 // node:* imports of the three former files, deduplicated into one block. The
 // namespace forms serve the former oauth.ts bodies; the named forms serve the
 // former auth.ts bodies (both kept verbatim, so the two styles coexist).
 import * as crypto from "node:crypto";
-import * as http from "node:http";
-import * as os from "node:os";
-import * as readline from "node:readline";
-import * as net from "node:net";
-import * as url from "node:url";
-import { spawn } from "node:child_process";
 import { createHash, randomBytes } from "node:crypto";
+import { chmodSync, existsSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
+import * as http from "node:http";
 import { createServer } from "node:http";
-import { homedir, platform, arch } from "node:os";
+import * as net from "node:net";
+import * as os from "node:os";
+import { arch, homedir, platform } from "node:os";
 import { join } from "node:path";
-import { existsSync, mkdirSync, readFileSync, writeFileSync, chmodSync, renameSync, unlinkSync } from "node:fs";
+import * as readline from "node:readline";
+import * as url from "node:url";
 
 // =============================================================================
 // SECTION A - ANTIGRAVITY CLI IDENTITY BUNDLE (former antigravity-cli.ts, v2.1.8)
@@ -491,6 +491,25 @@ export function getAvailablePort(): Promise<number> {
  */
 // v2.1.15 Phase B: PROJECT_FALLBACK moved to constants.js (raw value owner).
 
+import { atomicWrite, cfgDir } from "./config.js";
+import {
+  ANTIGRAVITY_CLI_VERSION_POOL,
+  ANTIGRAVITY_USER_AGENT,
+  CLIENT_METADATA_STRING,
+  CLOUDCODE_BASE,
+  CLOUDCODE_ENDPOINTS,
+  GEMINI_CLI_SCOPES_JOINED as GEMINI_CLI_OAUTH_SCOPE_STR,
+  GEMINI_CLI_SCOPES,
+  OAUTH_AUTH_URL,
+  OAUTH_TOKEN_URL,
+  PROJECT_FALLBACK,
+  OAUTH_USERINFO_URL as USERINFO_URL,
+} from "./constants.js";
+// v2.1.15 Phase B: generic retry predicate from core.js; identity UA builders
+// from fingerprint.js; raw shared values from constants.js.
+import { fetchWithTimeout, isRetryable } from "./core.js";
+import { apiClient, buildGeminiUserAgent, ua, X_GOOG_API_CLIENT_GEMINI_CLI } from "./fingerprint.js";
+import type { SupportedModel2026 } from "./models.js";
 /**
  * Available models 2026 - Antigravity + Gemini.
  * Merged: unprefixed claude-opus-4-6-thinking and claude-sonnet-4-6 from
@@ -503,28 +522,9 @@ export function getAvailablePort(): Promise<number> {
 // (SUPPORTED_MODELS_2026 / SupportedModel2026) — imported and re-exported
 // under the historical names so both entry points stay valid.
 import { SUPPORTED_MODELS_2026 } from "./models.js";
-// v2.1.15 Phase B: generic retry predicate from core.js; identity UA builders
-// from fingerprint.js; raw shared values from constants.js.
-import { isRetryable, fetchWithTimeout } from "./core.js";
-import { atomicWrite, cfgDir } from "./config.js";
-import { apiClient, buildGeminiUserAgent, ua, X_GOOG_API_CLIENT_GEMINI_CLI } from "./fingerprint.js";
-import {
-  ANTIGRAVITY_CLI_VERSION_POOL,
-  ANTIGRAVITY_USER_AGENT,
-  CLIENT_METADATA_STRING,
-  CLOUDCODE_BASE,
-  CLOUDCODE_ENDPOINTS,
-  GEMINI_CLI_SCOPES,
-  GEMINI_CLI_SCOPES_JOINED as GEMINI_CLI_OAUTH_SCOPE_STR,
-  OAUTH_AUTH_URL,
-  OAUTH_TOKEN_URL,
-  OAUTH_USERINFO_URL as USERINFO_URL,
-  PROJECT_FALLBACK,
-} from "./constants.js";
-import type { SupportedModel2026 } from "./models.js";
-export { SUPPORTED_MODELS_2026 };
-export { SUPPORTED_MODELS_2026 as OAUTH_MODELS_2026 };
+
 export type { SupportedModel2026 };
+export { SUPPORTED_MODELS_2026, SUPPORTED_MODELS_2026 as OAUTH_MODELS_2026 };
 
 /**
  * Updated User-Agent of the 2.0.0 lineage (GPN:GeminiCLI style).
@@ -1776,9 +1776,7 @@ export const retrieveQuota = async (
         limit: Number(j.limit ?? 1000),
         used: Number(j.used ?? 0),
       };
-    } catch {
-      continue;
-    }
+    } catch {}
   }
   return null;
 };

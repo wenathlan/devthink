@@ -54,11 +54,7 @@ export async function releasepat(mode) {
   if (!new Set(["check", "sync"]).has(mode)) throw new Error("Use check or sync.");
   const workflowpath = join(repoRoot, ".github/workflows/release.yml");
   const content = await readFile(workflowpath, "utf8");
-  const createStatus = content.includes(createNew)
-    ? "already"
-    : content.includes(createOld)
-      ? "walks"
-      : "unmatched";
+  const createStatus = content.includes(createNew) ? "already" : content.includes(createOld) ? "walks" : "unmatched";
   const flipStatus = content.includes(flipNew) ? "already" : content.includes(flipOld) ? "walks" : "unmatched";
   let drift = false;
   if (mode === "sync") {

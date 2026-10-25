@@ -151,7 +151,9 @@ export function removenode(graph: nodegraph, id: string): nodegraph {
 
 /** Removes the first edge that matches the triple; no match, no change. */
 export function removeedge(graph: nodegraph, edge: graphedge): nodegraph {
-  const index = graph.edges.findIndex((entry) => entry.from === edge.from && entry.to === edge.to && entry.port === edge.port);
+  const index = graph.edges.findIndex(
+    (entry) => entry.from === edge.from && entry.to === edge.to && entry.port === edge.port,
+  );
   if (index < 0) return graph;
   return { ...graph, edges: graph.edges.filter((entry, at) => at !== index) };
 }
@@ -331,7 +333,8 @@ export function nodelevels(graph: nodegraph): Record<string, number> {
     }
   }
   // the cycle members ride one past the deepest resolved level (never stuck)
-  const floor = resolved.size === 0 ? 0 : Math.max(...graph.nodes.filter((n) => resolved.has(n.id)).map((n) => levels[n.id] ?? 0));
+  const floor =
+    resolved.size === 0 ? 0 : Math.max(...graph.nodes.filter((n) => resolved.has(n.id)).map((n) => levels[n.id] ?? 0));
   for (const node of graph.nodes) {
     if (!resolved.has(node.id)) levels[node.id] = floor + 1;
   }
@@ -448,19 +451,31 @@ export function validategraph(graph: nodegraph): graphreport {
   const problems: graphproblem[] = [];
   const seen = new Set<string>();
   for (const [index, node] of graph.nodes.entries()) {
-    if (node.id.trim().length === 0) problems.push({ code: "emptyid", detail: "a node carries an empty id", node: `#${index}` });
-    if (seen.has(node.id)) problems.push({ code: "duplicateid", detail: `the id ${node.id} rides two nodes`, node: node.id });
+    if (node.id.trim().length === 0)
+      problems.push({ code: "emptyid", detail: "a node carries an empty id", node: `#${index}` });
+    if (seen.has(node.id))
+      problems.push({ code: "duplicateid", detail: `the id ${node.id} rides two nodes`, node: node.id });
     seen.add(node.id);
   }
   for (const [index, edge] of graph.edges.entries()) {
-    if (edge.from === edge.to) problems.push({ code: "selfedge", detail: `the node ${edge.from} wires itself`, node: edge.from, edge: index });
+    if (edge.from === edge.to)
+      problems.push({ code: "selfedge", detail: `the node ${edge.from} wires itself`, node: edge.from, edge: index });
     if (!seen.has(edge.from) || !seen.has(edge.to)) {
-      problems.push({ code: "unknownnode", detail: `the wire ${index} names an endpoint the graph holds no node for`, edge: index });
+      problems.push({
+        code: "unknownnode",
+        detail: `the wire ${index} names an endpoint the graph holds no node for`,
+        edge: index,
+      });
       continue;
     }
     const source = nodebyid(graph, edge.from);
     if (source && !hasoutputport(source, edge.port)) {
-      problems.push({ code: "portmismatch", detail: `the wire ${index} rides the port ${edge.port} the source never declared`, node: edge.from, edge: index });
+      problems.push({
+        code: "portmismatch",
+        detail: `the wire ${index} rides the port ${edge.port} the source never declared`,
+        node: edge.from,
+        edge: index,
+      });
     }
   }
   const cycle = findcycle(graph);
@@ -491,7 +506,10 @@ export function withnodestate(graph: nodegraph, id: string, state: nodestate): n
  * Example: `withnodestates(graph, view.nodestates)`.
  */
 export function withnodestates(graph: nodegraph, states: Readonly<Record<string, nodestate>>): nodegraph {
-  return { ...graph, nodes: graph.nodes.map((node) => (node.id in states ? { ...node, state: states[node.id] as nodestate } : node)) };
+  return {
+    ...graph,
+    nodes: graph.nodes.map((node) => (node.id in states ? { ...node, state: states[node.id] as nodestate } : node)),
+  };
 }
 
 /** Answers the graph with every node back on the given state (pending by default). */
@@ -552,7 +570,11 @@ export function isnodegraph(value: unknown): value is nodegraph {
         Array.isArray((node as graphnode).outputs),
     ) &&
     candidate.edges.every(
-      (edge) => typeof edge === "object" && edge !== null && typeof (edge as graphedge).from === "string" && typeof (edge as graphedge).to === "string",
+      (edge) =>
+        typeof edge === "object" &&
+        edge !== null &&
+        typeof (edge as graphedge).from === "string" &&
+        typeof (edge as graphedge).to === "string",
     )
   );
 }
@@ -594,8 +616,12 @@ export function tryparsegraph(json: string): { ok: true; graph: nodegraph } | { 
  */
 export function graphfingerprint(graph: nodegraph): string {
   const canonical = {
-    nodes: [...graph.nodes].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)).map((node) => [node.id, node.kind, node.label, [...node.inputs], [...node.outputs]]),
-    edges: [...graph.edges].map((edge) => [edge.from, edge.to, edge.port]).sort((a, b) => (a.join("|") < b.join("|") ? -1 : 1)),
+    nodes: [...graph.nodes]
+      .sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+      .map((node) => [node.id, node.kind, node.label, [...node.inputs], [...node.outputs]]),
+    edges: [...graph.edges]
+      .map((edge) => [edge.from, edge.to, edge.port])
+      .sort((a, b) => (a.join("|") < b.join("|") ? -1 : 1)),
   };
   const text = JSON.stringify(canonical);
   let hash = 5381;

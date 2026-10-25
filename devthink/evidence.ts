@@ -1,5 +1,6 @@
 /** The evidence module of the 1.1.90 consolidation: every correlated variation of the capture forensics and the run comparison logic interned in this one file, so the module family carries one surface without duplicate variations. */
 
+import { randomid } from "./memory.js";
 /* ── Merged from forensics.ts: the 1.1.90 consolidation interns the correlated forensics logic here, so no variation of the same file lives beside another. ── */
 import type {
   beforeafterpair,
@@ -13,11 +14,10 @@ import type {
   outputcomparesession,
   provlogentry,
   runlogentry,
+  thumbnailrecord,
   timelapseconfig,
   timelapseframe,
-  thumbnailrecord,
 } from "./types.js";
-import { randomid } from "./memory.js";
 
 /**
  * Capture forensics logic of the 1.1.78 family.
@@ -396,7 +396,7 @@ export function namecaptures(input: {
       .replace(/\{timestamp\}/g, String(part.timestamp))
       .replace(/\{sequence\}/g, String(part.sequence))
       .toLowerCase()
-      .replace(/[^a-z0-9\-]+/g, "-");
+      .replace(/[^a-z0-9-]+/g, "-");
     /* the dash trim walks a single linear scan: a polynomial dash expression over library input answers attacker paced backtracking, and the name rule feeds the pattern the parts carry */
     const stamped = trimdashes(base);
     let name = stamped === "" ? `capture-${part.sequence}` : stamped;
@@ -498,7 +498,7 @@ function trimdashes(value: string): string {
 
 /** Folds one naming part into the lowercase identifier rule the capture filenames follow. */
 function lowercaseid(value: string): string {
-  return trimdashes(value.toLowerCase().replace(/[^a-z0-9\-]+/g, "-"));
+  return trimdashes(value.toLowerCase().replace(/[^a-z0-9-]+/g, "-"));
 }
 
 /* ── Merged from outputcompare.ts: the 1.1.90 consolidation interns the correlated outputcompare logic here, so no variation of the same file lives beside another. ── */
@@ -620,9 +620,7 @@ export function comparesessionmetrics(session: outputcomparesession): {
 }
 
 /** Reads the side by side view of one comparison session: one row per joined step with both summaries and the duration delta beside the divergence highlight. */
-export function outputcompareview(
-  session: outputcomparesession,
-): Array<{
+export function outputcompareview(session: outputcomparesession): Array<{
   stepid: string;
   index: number;
   agreement: string;

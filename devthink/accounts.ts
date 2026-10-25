@@ -25,31 +25,18 @@
  * @version 3.1.0
  */
 
+import * as crypto from "node:crypto";
 import * as fs from "node:fs";
 import * as fsp from "node:fs/promises";
-import * as path from "node:path";
 import * as os from "node:os";
-import * as crypto from "node:crypto";
-
+import * as path from "node:path";
+import { resolveConfigDir as configResolveConfigDir } from "./config.js";
 // Deduplicated against the frozen owner (constants.ts) and the canonical
 // in-set file (project.ts): symbols whose local definitions were value-identical
 // are imported and re-exported below, so each has exactly one definition
 // (library dedupe task 2-d1).
-import {
-  GEMINI_CLI_OAUTH_CLIENT_ID,
-  GEMINI_CLI_OAUTH_CLIENT_SECRET,
-  OAUTH_TOKEN_URL,
-  PROJECT_FALLBACK,
-  resolveOpenCodeBaseDir,
-} from "./constants.js";
 // v2.1.15 Phase B: the minimal Gemini CLI UA and the gl-node api-client
 // snapshot come from the owners (constants.js / fingerprint.js).
-import {
-  GEMINI_CLI_USER_AGENT_MINIMAL as GEMINI_CLI_USER_AGENT,
-  GEMINI_CLI_USER_AGENT as GEMINI_CLI_USER_AGENT_FULL,
-} from "./constants.js";
-import { X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.js";
-import { resolveConfigDir as configResolveConfigDir } from "./config.js";
 // v2.1.16 single-owner fix + the grand merge consolidation: the real
 // antigravity-cli client pair is imported from constants.js (the layer-0
 // raw-value owner — env-overridable, live-validated); the former local
@@ -59,24 +46,30 @@ import { resolveConfigDir as configResolveConfigDir } from "./config.js";
 import {
   ANTIGRAVITY_CLI_OAUTH_CLIENT_ID as AGCLI_CLIENT_ID_OWNER,
   ANTIGRAVITY_CLI_OAUTH_CLIENT_SECRET as AGCLI_CLIENT_SECRET_OWNER,
-} from "./constants.js";
-import {
+  CLIENT_METADATA_STRING as CLIENT_METADATA,
   CLOUDCODE_BASE_URL,
   CLOUDCODE_ENDPOINTS,
-  CLIENT_METADATA_STRING as CLIENT_METADATA,
+  GEMINI_CLI_OAUTH_CLIENT_ID,
+  GEMINI_CLI_OAUTH_CLIENT_SECRET,
   GEMINI_CLI_SCOPES,
+  GEMINI_CLI_USER_AGENT_MINIMAL as GEMINI_CLI_USER_AGENT,
+  GEMINI_CLI_USER_AGENT as GEMINI_CLI_USER_AGENT_FULL,
+  GEMINI_CLI_SCOPES as OAUTH_SCOPES,
+  OAUTH_TOKEN_URL,
   OAUTH_USERINFO_URL_V3,
+  PROJECT_FALLBACK,
+  resolveOpenCodeBaseDir,
 } from "./constants.js";
-import { GEMINI_CLI_SCOPES as OAUTH_SCOPES } from "./constants.js";
+import { X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.js";
 
 // Re-exports preserve this module's public surface after the dedupe.
 export {
   GEMINI_CLI_OAUTH_CLIENT_ID,
   GEMINI_CLI_OAUTH_CLIENT_SECRET,
-  OAUTH_TOKEN_URL,
-  PROJECT_FALLBACK,
   GEMINI_CLI_USER_AGENT,
   GEMINI_CLI_USER_AGENT_FULL,
+  OAUTH_TOKEN_URL,
+  PROJECT_FALLBACK,
   X_GOOG_API_CLIENT,
 };
 
@@ -123,14 +116,15 @@ export const ANTIGRAVITY_CLI_OAUTH_CLIENT_SECRET: string = AGCLI_CLIENT_SECRET_O
 
 // PROJECT_FALLBACK: identical "rising-fact-p41fc" — imported and re-exported above.
 
+import type { Model2026 } from "./models.js";
 // v2.1.15 Phase A: MODELS_2026 (the 11-id legacy bypass list) and the
 // Model2026 union moved to models.ts (MODELS_2026_LEGACY / Model2026) —
 // imported under the historical name and re-exported so the public surface
 // is unchanged.
 import { MODELS_2026_LEGACY as MODELS_2026 } from "./models.js";
-import type { Model2026 } from "./models.js";
-export { MODELS_2026 };
+
 export type { Model2026 };
+export { MODELS_2026 };
 
 // ============================================================================
 // SECTION 01. CORE TYPES
@@ -331,6 +325,7 @@ export interface QuotaExhaustedOptions {
 // v2.1.15 Phase C: resolveConfigDir moved to config.js (configuration
 // management owner) — re-exported below for the module surface.
 import { resolveConfigDir } from "./config.js";
+
 export { resolveConfigDir };
 
 export function resolveAccountsFilePath(customDir?: string): string {

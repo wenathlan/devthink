@@ -79,8 +79,7 @@ function familydevbridge(): Plugin {
               // and the manifests all serve through the fs allow list)
               const rewritten = html.replace(
                 /(src|href)="\.\/([^"]+)"/g,
-                (_whole: string, attr: string, ref: string) =>
-                  `${attr}="/@fs${siblingroot(slug)}/${ref}"`,
+                (_whole: string, attr: string, ref: string) => `${attr}="/@fs${siblingroot(slug)}/${ref}"`,
               );
               const transformed = await server.transformIndexHtml(`/${slug}/`, rewritten);
               res.statusCode = 200;

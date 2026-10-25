@@ -10,8 +10,8 @@
  * dtw kit.
  */
 import { useState } from "react";
-import { NAVBAR_POS_EVENT, loadNavbarPosition, saveNavbarPosition, type NavbarPosition } from "../../desktopstate";
 import { copy } from "../../copy";
+import { loadNavbarPosition, NAVBAR_POS_EVENT, type NavbarPosition, saveNavbarPosition } from "../../desktopstate";
 
 /** the three dock positions the segmented control offers. */
 const POSITIONS: readonly NavbarPosition[] = ["floating", "left", "right"];

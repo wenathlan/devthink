@@ -12,7 +12,7 @@
  * component — the wave-2 stylesheet owns the shared classes, this block only
  * fixes what this footnote's grammar needs, on data attributes.
  */
-import {PlugConnectedRegular as PlugZap} from "@fluentui/react-icons";
+import { PlugConnectedRegular as PlugZap } from "@fluentui/react-icons";
 import { Link } from "wouter";
 
 /** the note's slice of the theme grammar: eyebrow, body, link affordance */

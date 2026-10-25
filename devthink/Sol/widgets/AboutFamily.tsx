@@ -9,7 +9,7 @@
  * rides the engine .enter kit at 70ms steps.
  */
 
-import {OpenRegular as SquareArrowOutUpRight} from "@fluentui/react-icons";
+import { OpenRegular as SquareArrowOutUpRight } from "@fluentui/react-icons";
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import { type FamilySite, familySites } from "../../catalog.ts";

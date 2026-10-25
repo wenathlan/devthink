@@ -54,7 +54,8 @@ const MEMORY_KEYS: { label: string; kind: CalculatorMemoryKey; aria: string }[] 
 
 export function CalculatorKeypad({
   onkey,
-  onmemory }: {
+  onmemory,
+}: {
   onkey: (action: CalculatorKeyAction) => void;
   onmemory: (key: CalculatorMemoryKey) => void;
 }) {
@@ -76,7 +77,10 @@ export function CalculatorKeypad({
           key={cell.label}
           type="button"
           className={cell.muted ? "dtw-calc__key dtw-calc__key--muted" : "dtw-calc__key"}
-          aria-label={cell.aria ?? (cell.action.kind === "digit" ? osText("calc.key.digit").replace("{key}", cell.label) : cell.label)}
+          aria-label={
+            cell.aria ??
+            (cell.action.kind === "digit" ? osText("calc.key.digit").replace("{key}", cell.label) : cell.label)
+          }
           onClick={() => onkey(cell.action)}
         >
           {cell.label}

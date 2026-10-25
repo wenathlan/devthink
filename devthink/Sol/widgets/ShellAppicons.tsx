@@ -40,7 +40,7 @@
  * member keeps its own silhouette, and the os surfaces ride their own
  * calm hues over the same plate.
  */
-import { type ComponentType, type CSSProperties, type ReactElement } from "react";
+import type { ComponentType, CSSProperties, ReactElement } from "react";
 
 export type AppIconProps = {
   /** rendered square size in px; omitted, the icon fills its tile box */
@@ -194,7 +194,7 @@ function FluentIconFace({ size, live, uid, plate }: FluentIconFaceProps) {
       </g>
       {/* the live sheen: one clipped specular band the stylesheet sweeps
           across the face while the tile is live */}
-      <g clipPath={`url(#${uid}-clip)`} aria-hidden="true">
+      <g clipPath={`url(#${uid}-clip)`}>
         <rect className="dtIconSheen" x="-12" y="-2" width="9" height="52" fill={`url(#${uid}-sweep)`} />
       </g>
     </svg>
@@ -795,11 +795,7 @@ const VaultIcon_PLATE: AppIconPlate = {
   bottom: "#ab8630",
   glyph: (tone) => (
     <>
-      <path
-        d="M24 12.2 L35 16.4 V25.1 Q35 33.4 24 38 Q13 33.4 13 25.1 V16.4 Z"
-        fill={GLYPH_INK}
-        stroke="none"
-      />
+      <path d="M24 12.2 L35 16.4 V25.1 Q35 33.4 24 38 Q13 33.4 13 25.1 V16.4 Z" fill={GLYPH_INK} stroke="none" />
       <path
         d="M24 15.2 L32.3 18.3 V25 Q32.3 31.4 24 35.1 Q15.7 31.4 15.7 25 V18.3 Z"
         fill="none"

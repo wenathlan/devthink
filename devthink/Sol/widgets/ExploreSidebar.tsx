@@ -16,12 +16,12 @@
  * anchor loads — the category table, the catalog answer, the registry —
  * nothing is hardcoded here.
  */
-import { MoreHorizontalRegular as More, type FluentIcon } from "@fluentui/react-icons";
+import { type FluentIcon, MoreHorizontalRegular as More } from "@fluentui/react-icons";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
-import { label } from "../../labels.ts";
 import type { DesktopApp } from "../../appregistry.ts";
 import type { FamilySite } from "../../catalog";
+import { label } from "../../labels.ts";
 import { FamilyMark } from "./ExploreLaunchdeck.tsx";
 import type { ExploreCategoryId, ExploreCategoryRow, ExploreEntry } from "./ExploreSections.tsx";
 import { Banner } from "./ShellBanner.tsx";
@@ -152,9 +152,7 @@ function RowMenu(props: { title: string; items: RowMenuItem[] }) {
 
 /** the section caption of one stack (the mono voice of the rail) */
 function StackCaption(props: { text: string }) {
-  return (
-    <p className="px-2.5 font-mono text-[10px] tracking-[.08em] text-ink-3">{props.text}</p>
-  );
+  return <p className="px-2.5 font-mono text-[10px] tracking-[.08em] text-ink-3">{props.text}</p>;
 }
 
 /** the row shell: the 44px target, the hover band, the press physics, the
@@ -201,10 +199,7 @@ function CategoryRow(props: {
           </span>
         )}
       </button>
-      <RowMenu
-        title={label("explore.sidebar.overflow").replace("{name}", category.name)}
-        items={menu}
-      />
+      <RowMenu title={label("explore.sidebar.overflow").replace("{name}", category.name)} items={menu} />
     </div>
   );
 }
@@ -223,7 +218,8 @@ function FamilyRow(props: { app: DesktopApp; sites: FamilySite[] | null }) {
       key: "site",
       text: label("explore.sidebar.act.visitSite"),
       href: site.host,
-      external: true });
+      external: true,
+    });
   }
   return (
     <div className="group/row flex items-center gap-0.5">
@@ -239,10 +235,7 @@ function FamilyRow(props: { app: DesktopApp; sites: FamilySite[] | null }) {
         </span>
         <span className="min-w-0 flex-1 truncate">{props.app.name}</span>
       </Link>
-      <RowMenu
-        title={label("explore.sidebar.overflow").replace("{name}", props.app.name)}
-        items={menu}
-      />
+      <RowMenu title={label("explore.sidebar.overflow").replace("{name}", props.app.name)} items={menu} />
     </div>
   );
 }
@@ -354,9 +347,7 @@ export function ExploreSidebar(props: {
         <div className="flex flex-col gap-1 border-t border-hairline pt-3">
           <StackCaption text={label("explore.sidebar.family")} />
           {props.family.length === 0 ? (
-            <p className="px-2.5 py-1 text-xs leading-[1.5] text-ink-3">
-              {label("explore.sidebar.familyEmpty")}
-            </p>
+            <p className="px-2.5 py-1 text-xs leading-[1.5] text-ink-3">{label("explore.sidebar.familyEmpty")}</p>
           ) : (
             props.family.map((app) => <FamilyRow key={app.id} app={app} sites={props.sites} />)
           )}

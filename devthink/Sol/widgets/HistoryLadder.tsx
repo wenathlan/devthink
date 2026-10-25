@@ -4,7 +4,7 @@
  * the real chain facts closing the card. Loose component of the history
  * page.
  */
-import {HistoryRegular} from "@fluentui/react-icons";
+import { HistoryRegular } from "@fluentui/react-icons";
 import type { Rung } from "../../catalog";
 import { osText } from "../../oslabels.ts";
 
@@ -12,7 +12,8 @@ export function HistoryLadder({
   rows,
   loaded,
   latest,
-  oldest }: {
+  oldest,
+}: {
   rows: readonly Rung[];
   loaded: boolean;
   latest: string;

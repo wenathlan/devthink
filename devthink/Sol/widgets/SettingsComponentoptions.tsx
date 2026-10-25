@@ -10,12 +10,8 @@
  */
 import { useState } from "react";
 import { copy } from "../../copy";
+import { loadAltTabMotion, loadTaskbarTips, saveAltTabMotion, saveTaskbarTips } from "./SettingsPersonalstore";
 import type { PreferenceKey, SettingsSnapshot } from "./SettingsSettingstypes";
-import {
-  loadAltTabMotion,
-  loadTaskbarTips,
-  saveAltTabMotion,
-  saveTaskbarTips } from "./SettingsPersonalstore";
 
 type ComponentOptionsProps = {
   /** the preference machine rows the rail mode and the zoom ride */

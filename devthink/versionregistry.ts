@@ -41,45 +41,44 @@
  * @license MIT
  */
 
+import * as crypto from "node:crypto";
 import * as fs from "node:fs";
 import * as fsp from "node:fs/promises";
-import * as path from "node:path";
 import * as os from "node:os";
-import * as crypto from "node:crypto";
-
+import * as path from "node:path";
+import { isValidSemver } from "./config.js";
 // Deduplicated against the frozen owner (constants.ts): symbols whose local
 // definitions were value-identical are imported and re-exported below, so each
 // has exactly one definition (library dedupe task 2-d1).
 import {
+  ANTIGRAVITY_BLOCKED_VERSIONS,
   ANTIGRAVITY_VERSION_FALLBACK,
   ANTIGRAVITY_VERSION_MIN_SUPPORTED,
-  ANTIGRAVITY_BLOCKED_VERSIONS,
   ANTIGRAVITY_VERSION_REMOTE_URLS,
-  VERSION_FETCH_TIMEOUT_MS,
+  CLIENT_METADATA_STRING,
+  CLOUDCODE_BASE_URL,
+  CODE_ASSIST_PATH_MAP,
   FETCH_TIMEOUT_MS,
   GEMINI_CLI_OAUTH_CLIENT_ID,
   GEMINI_CLI_OAUTH_CLIENT_SECRET,
   GEMINI_CLI_SCOPES,
   GEMINI_CLI_USER_AGENT,
-  CLIENT_METADATA_STRING,
-  CLOUDCODE_BASE_URL,
-  CODE_ASSIST_PATH_MAP,
   PROJECT_FALLBACK,
+  VERSION_FETCH_TIMEOUT_MS,
 } from "./constants.js";
+import { fetchWithTimeout } from "./core.js";
+import { X_GOOG_API_CLIENT_GEMINI_CLI } from "./fingerprint.js";
 // v2.1.16 single-owner fix: the MODELS_2026 reference list comes from
 // models.js (model identification owner — the 11-id legacy list).
 import { MODELS_2026_LEGACY as MODELS_2026_REFERENCE } from "./models.js";
-import { X_GOOG_API_CLIENT_GEMINI_CLI } from "./fingerprint.js";
-import { fetchWithTimeout } from "./core.js";
-import { isValidSemver } from "./config.js";
-export { isValidSemver };
 
 // Re-exports preserve this module's public surface after the dedupe.
 export {
+  ANTIGRAVITY_BLOCKED_VERSIONS,
   ANTIGRAVITY_VERSION_FALLBACK,
   ANTIGRAVITY_VERSION_MIN_SUPPORTED,
-  ANTIGRAVITY_BLOCKED_VERSIONS,
   ANTIGRAVITY_VERSION_REMOTE_URLS,
+  isValidSemver,
   VERSION_FETCH_TIMEOUT_MS,
 };
 
@@ -726,9 +725,7 @@ async function fetchFromChangelog(): Promise<AntigravityVersionInfo | null> {
         expiresAt: now + VERSION_CACHE_TTL_MS,
         url,
       };
-    } catch {
-      continue;
-    }
+    } catch {}
   }
   return null;
 }
@@ -836,10 +833,7 @@ export async function fetchLatestVersion(opts: FetchOptions = {}): Promise<strin
       }
 
       return parsedVersion;
-    } catch {
-      // Per-URL failure swallowed - continue down the chain.
-      continue;
-    }
+    } catch {}
   }
 
   return null;

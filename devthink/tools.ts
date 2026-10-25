@@ -8,13 +8,8 @@
 import type {
   actionkind,
   actionrisk,
-  toolcatalog,
-  tooldef,
-  toolnamespace,
-  toolschema,
-  toolschemaproperty,
-  agentsession,
   agentplan,
+  agentsession,
   batchoutcome,
   callcontext,
   callratelimit,
@@ -23,9 +18,14 @@ import type {
   idempotencyrecord,
   retryhint,
   structurederror,
+  toolcatalog,
+  tooldef,
   tooldryrun,
   toolmock,
+  toolnamespace,
   toolresult,
+  toolschema,
+  toolschemaproperty,
 } from "./types.js";
 
 /**
@@ -440,9 +440,9 @@ export function toolsbynamespace(
   }));
 }
 
+import { randomid } from "./memory.js";
 /* ── Merged from toolcalls.ts ── */
 import { tooldispatchgate } from "./policy.js";
-import { randomid } from "./memory.js";
 
 /**
  * Tool call runtime of the 1.1.56 agent protocol part three.

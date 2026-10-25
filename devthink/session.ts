@@ -18,8 +18,8 @@ import type {
   sessionmatch,
   sessionrecord,
   sessiontab,
-  snapshotscope,
   snapshotplan,
+  snapshotscope,
   stepoutcome,
   taskstate,
 } from "./types.js";
@@ -444,14 +444,15 @@ export function crashinterrupted(state: taskstate | undefined, plansteps: number
 
 /* ── Merged from sessioninterface.ts ── */
 
+import { randomid } from "./memory.js";
 import type {
   agentplan,
   cancelrunaction,
   consentmemoryentry,
   correctionentry,
   emptystatesurface,
-  errorsurface,
   errorcause,
+  errorsurface,
   historyindexentry,
   historysearchhit,
   historysearchquery,
@@ -467,7 +468,6 @@ import type {
   storedrunlog,
   tabsessionref,
 } from "./types.js";
-import { randomid } from "./memory.js";
 
 /**
  * Session interface logic of the 1.1.63 family.

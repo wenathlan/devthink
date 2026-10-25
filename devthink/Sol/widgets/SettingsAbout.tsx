@@ -6,8 +6,8 @@
  * component of the settings page, riding the dtw kit.
  */
 import { InfoRegular, SettingsRegular } from "@fluentui/react-icons";
-import type { BrowserStoreSummary } from "../../db";
 import { copy } from "../../copy";
+import type { BrowserStoreSummary } from "../../db";
 import { SettingsRow } from "./SettingsRow";
 import type { SettingsSnapshot } from "./SettingsSettingstypes";
 

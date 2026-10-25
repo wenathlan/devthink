@@ -13,7 +13,7 @@
  * surface never improvises geometry.
  */
 
-import { type nodegraph, descendants, stagewaves } from "./graphnodes.js";
+import { descendants, type nodegraph, stagewaves } from "./graphnodes.js";
 
 /** One drawn position: the x/y on the view canvas plus the layer and the row that produced them. */
 export interface viewposition {
@@ -72,7 +72,9 @@ export function layoutgraphview(graph: nodegraph, options: layoutoptions = {}): 
   const positions: Record<string, viewposition> = {};
   const waves = stagewaves(graph);
   waves.forEach((wave, layer) => {
-    const sorted = [...wave].sort((a, b) => (order.get(a) ?? Number.MAX_SAFE_INTEGER) - (order.get(b) ?? Number.MAX_SAFE_INTEGER));
+    const sorted = [...wave].sort(
+      (a, b) => (order.get(a) ?? Number.MAX_SAFE_INTEGER) - (order.get(b) ?? Number.MAX_SAFE_INTEGER),
+    );
     sorted.forEach((id, row) => {
       positions[id] = { x: originx + layer * columnwidth, y: originy + row * rowheight, layer, row };
     });
@@ -183,7 +185,8 @@ export function viewbounds(
   const cardheight = options.cardheight ?? 56;
   const padding = options.padding ?? 24;
   const entries = Object.values(positions);
-  if (entries.length === 0) return { minx: 0, miny: 0, width: cardwidth + padding * 2, height: cardheight + padding * 2 };
+  if (entries.length === 0)
+    return { minx: 0, miny: 0, width: cardwidth + padding * 2, height: cardheight + padding * 2 };
   const minx = Math.min(...entries.map((position) => position.x)) - padding;
   const miny = Math.min(...entries.map((position) => position.y)) - padding;
   const maxx = Math.max(...entries.map((position) => position.x + cardwidth)) + padding;

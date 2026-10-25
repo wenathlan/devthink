@@ -39,15 +39,15 @@
  * @version 2.0.0
  */
 
-import * as os from "node:os";
-import { platform as osPlatform, arch as osArch, release as osRelease } from "node:os";
-import * as net from "node:net";
-import * as tls from "node:tls";
+import { createHash } from "node:crypto";
+import { mkdirSync, writeFileSync } from "node:fs";
 import * as http from "node:http";
 import * as https from "node:https";
-import { createHash } from "node:crypto";
+import * as net from "node:net";
+import * as os from "node:os";
+import { arch as osArch, platform as osPlatform, release as osRelease } from "node:os";
 import { join as pathJoin } from "node:path";
-import { mkdirSync, writeFileSync } from "node:fs";
+import * as tls from "node:tls";
 
 // ---------------------------------------------------------------------------
 // Frozen-owner imports — identical values owned by constants.ts / core.ts /
@@ -58,12 +58,12 @@ import {
   ANTIGRAVITY_USER_AGENT_FALLBACK,
   ANTIGRAVITY_VERSION_FALLBACK,
   DEFAULT_TIMEOUT_MS,
+  FETCH_TIMEOUT_MS,
   GENERATE_CONTENT_ENDPOINT,
   JITTER_MAX_MS,
   JITTER_MIN_MS,
   PLUGIN_VERSION,
   STREAM_GENERATE_ENDPOINT,
-  FETCH_TIMEOUT_MS,
 } from "./constants.js";
 import { fnv1a32, getJitter, isRetryableStatus } from "./core.js";
 import {
@@ -73,11 +73,14 @@ import {
   normalizeArch,
   normalizePlatform,
 } from "./fingerprint.js";
+import type { ThinkingLevel } from "./models.js";
 // v2.1.15 Phase A: model-identification families (search/default model ids,
 // thinking tables, image-gen helpers) are imported from models.ts — THE
 // single owner — instead of the former constants.js re-exports.
 import {
+  buildImageGenConfig,
   CODE_ASSIST_ENDPOINTS,
+  isImageGenModel,
   SEARCH_MODEL,
   SEARCH_MODEL_FALLBACKS,
   SEARCH_MODEL_PREVIEW,
@@ -85,10 +88,8 @@ import {
   THINKING_BUDGET_MAX_CLAUDE,
   THINKING_BUDGET_MAX_GEMINI,
   THINKING_LEVELS,
-  buildImageGenConfig,
-  isImageGenModel,
 } from "./models.js";
-import type { ThinkingLevel } from "./models.js";
+
 // v2.1.15 Phase A: parseGrounding moved from core.ts — web-citation
 // extraction is search-grounding domain logic.
 function parseGrounding(meta: any): { uri: string; title?: string }[] {
@@ -96,14 +97,20 @@ function parseGrounding(meta: any): { uri: string; title?: string }[] {
   return chunks.map((c: any) => (c.web ? { uri: c.web.uri, title: c.web.title } : null)).filter(Boolean);
 }
 
+export type { ThinkingLevel };
 export {
   ANTIGRAVITY_USER_AGENT_FALLBACK,
   ANTIGRAVITY_VERSION_FALLBACK,
+  buildImageGenConfig,
   CODE_ASSIST_ENDPOINTS,
   DEFAULT_TIMEOUT_MS,
   GENERATE_CONTENT_ENDPOINT,
+  getDynamicUserAgent,
+  getJitter,
+  isImageGenModel,
   JITTER_MAX_MS,
   JITTER_MIN_MS,
+  parseGrounding,
   SEARCH_MODEL,
   SEARCH_MODEL_FALLBACKS,
   SEARCH_MODEL_PREVIEW,
@@ -112,13 +119,7 @@ export {
   THINKING_BUDGET_MAX_CLAUDE,
   THINKING_BUDGET_MAX_GEMINI,
   THINKING_LEVELS,
-  buildImageGenConfig,
-  getDynamicUserAgent,
-  getJitter,
-  isImageGenModel,
 };
-export type { ThinkingLevel };
-export { parseGrounding };
 
 // ---------------------------------------------------------------------------
 // Constants — observer notes prod is authoritative

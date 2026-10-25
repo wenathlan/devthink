@@ -72,7 +72,10 @@ export async function queuebinarylaunch(binary: RunnerBinary): Promise<{ queued:
 
 /** Queues one studio render over the gateway with the same pattern as the launch
  * queue: the note travels with the asset, and the answer stays a plain object. */
-export async function queuestudiorender(asset: StudioAsset, note: string): Promise<{ queued: boolean; reason: string }> {
+export async function queuestudiorender(
+  asset: StudioAsset,
+  note: string,
+): Promise<{ queued: boolean; reason: string }> {
   const base = catalogbase();
   if (!base) return { queued: false, reason: "No catalog base is paired, so the render queue stays closed." };
   try {

@@ -131,7 +131,11 @@ export function createmcpregistry(storage: McpStorageAdapter): McpRegistry {
     addendpoint({ label, url }: McpEndpointInput): McpAnswer<McpEndpoint> {
       const name = label.trim();
       if (!name) return { ok: false, reason: "An endpoint needs a label before it can be stored." };
-      if (!safeurl(url)) return { ok: false, reason: "Only public http/https urls are accepted — localhost and private ranges stay closed." };
+      if (!safeurl(url))
+        return {
+          ok: false,
+          reason: "Only public http/https urls are accepted — localhost and private ranges stay closed.",
+        };
       const row: McpEndpoint = { id: nextid("mcp.endpoint"), label: name, url: url.trim(), enabled: false };
       const next = state();
       next.endpoints.push(row);
@@ -140,7 +144,10 @@ export function createmcpregistry(storage: McpStorageAdapter): McpRegistry {
     },
     updateendpoint(id: string, patch: Partial<Omit<McpEndpoint, "id">>): McpAnswer<McpEndpoint> {
       if (patch.url !== undefined && !safeurl(patch.url))
-        return { ok: false, reason: "Only public http/https urls are accepted — localhost and private ranges stay closed." };
+        return {
+          ok: false,
+          reason: "Only public http/https urls are accepted — localhost and private ranges stay closed.",
+        };
       const next = state();
       const row = next.endpoints.find((candidate) => candidate.id === id);
       if (!row) return { ok: false, reason: "No endpoint carries that id." };
@@ -169,9 +176,16 @@ export function createmcpregistry(storage: McpStorageAdapter): McpRegistry {
       const name = label.trim();
       const reference = keyref.trim();
       if (!name) return { ok: false, reason: "A provider needs a label before it can be stored." };
-      if (!reference) return { ok: false, reason: "A provider needs the name of its credential — the secret itself never rides here." };
+      if (!reference)
+        return {
+          ok: false,
+          reason: "A provider needs the name of its credential — the secret itself never rides here.",
+        };
       if (!safeurl(baseUrl))
-        return { ok: false, reason: "Only public http/https urls are accepted — localhost and private ranges stay closed." };
+        return {
+          ok: false,
+          reason: "Only public http/https urls are accepted — localhost and private ranges stay closed.",
+        };
       const row: CustomProvider = {
         id: nextid("mcp.provider"),
         label: name,
@@ -186,7 +200,10 @@ export function createmcpregistry(storage: McpStorageAdapter): McpRegistry {
     },
     updateprovider(id: string, patch: Partial<Omit<CustomProvider, "id">>): McpAnswer<CustomProvider> {
       if (patch.baseUrl !== undefined && !safeurl(patch.baseUrl))
-        return { ok: false, reason: "Only public http/https urls are accepted — localhost and private ranges stay closed." };
+        return {
+          ok: false,
+          reason: "Only public http/https urls are accepted — localhost and private ranges stay closed.",
+        };
       const next = state();
       const row = next.providers.find((candidate) => candidate.id === id);
       if (!row) return { ok: false, reason: "No provider carries that id." };
@@ -197,7 +214,11 @@ export function createmcpregistry(storage: McpStorageAdapter): McpRegistry {
       }
       if (patch.keyref !== undefined) {
         const reference = patch.keyref.trim();
-        if (!reference) return { ok: false, reason: "A provider needs the name of its credential — the secret itself never rides here." };
+        if (!reference)
+          return {
+            ok: false,
+            reason: "A provider needs the name of its credential — the secret itself never rides here.",
+          };
         row.keyref = reference;
       }
       if (patch.baseUrl !== undefined) row.baseUrl = patch.baseUrl.trim();

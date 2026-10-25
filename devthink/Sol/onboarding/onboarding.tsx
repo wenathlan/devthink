@@ -23,8 +23,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { writeonboardingstage } from "../../onboardingstate";
 import { osText } from "../../oslabels.ts";
-import { SolLogoMark } from "../widgets";
-import { ONBOARDING_STEPS, StepArt } from "../widgets";
+import { ONBOARDING_STEPS, SolLogoMark, StepArt } from "../widgets";
 
 export * from "../widgets";
 

@@ -424,7 +424,7 @@ export function browserpolyfillstructerrorof(input: {
 }
 
 /* ── Merged from firefoxprep.ts ── */
-import type { browsermanifestsource, browsermanifestoverlay, browsermanifestadapted } from "./types.js";
+import type { browsermanifestadapted, browsermanifestoverlay, browsermanifestsource } from "./types.js";
 
 /**
  * Firefoxprep of the 1.1.86 browser coverage family.

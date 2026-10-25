@@ -94,7 +94,10 @@ export function estimateMessageTokens(message: BudgetMessage, weights: TokenWeig
  * @param messages the conversation history.
  * @param weights the per-script weights.
  */
-export function estimateHistoryTokens(messages: readonly BudgetMessage[], weights: TokenWeights = DEFAULT_TOKEN_WEIGHTS): number {
+export function estimateHistoryTokens(
+  messages: readonly BudgetMessage[],
+  weights: TokenWeights = DEFAULT_TOKEN_WEIGHTS,
+): number {
   let total = 0;
   for (const message of messages) total += estimateMessageTokens(message, weights);
   return total;
@@ -110,7 +113,11 @@ export function estimateHistoryTokens(messages: readonly BudgetMessage[], weight
  * @param weights the per-script weights.
  * @returns the truncated text (the original when it already fits).
  */
-export function truncateToTokenBudget(text: string, budgetTokens: number, weights: TokenWeights = DEFAULT_TOKEN_WEIGHTS): string {
+export function truncateToTokenBudget(
+  text: string,
+  budgetTokens: number,
+  weights: TokenWeights = DEFAULT_TOKEN_WEIGHTS,
+): string {
   if (budgetTokens <= 0) return "";
   if (estimateTokens(text, weights) <= budgetTokens) return text;
   // effective chars-per-token of THIS text, used to land near the cut in one step

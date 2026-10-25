@@ -18,8 +18,18 @@
  * focus rule: a 2px accent underline (inset box-shadow), never a halo.
  */
 
-import type {FluentIcon as LucideIcon} from "@fluentui/react-icons";
-import { BluetoothRegular as Bluetooth, ChevronLeftRegular as ChevronLeft, ChevronRightRegular as ChevronRight, ColorRegular as Contrast, DarkThemeRegular as MoonStar, Cellular5GRegular as Signal, WeatherSunnyRegular as Sun, Speaker1Regular as Volume2, Wifi1Regular as Wifi } from "@fluentui/react-icons";
+import type { FluentIcon as LucideIcon } from "@fluentui/react-icons";
+import {
+  BluetoothRegular as Bluetooth,
+  ChevronLeftRegular as ChevronLeft,
+  ChevronRightRegular as ChevronRight,
+  ColorRegular as Contrast,
+  DarkThemeRegular as MoonStar,
+  Cellular5GRegular as Signal,
+  WeatherSunnyRegular as Sun,
+  Speaker1Regular as Volume2,
+  Wifi1Regular as Wifi,
+} from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 import { osCalendarWeekdays, osText } from "../../oslabels.ts";
 
@@ -58,7 +68,8 @@ export const DEFAULT_TRAY_SETTINGS: TraySettings = {
   theme: true,
   data: true,
   volume: 70,
-  brightness: 100 };
+  brightness: 100,
+};
 
 type TileKey = "wifi" | "bluetooth" | "night" | "theme" | "data";
 
@@ -106,7 +117,9 @@ export function QuickSettings({ open, settings, onChange }: QuickSettingsProps) 
       data-hide={open ? undefined : "true"}
       data-flyout-keep="true"
     >
-      <p className="mb-3 font-mono text-[9px] font-semibold tracking-[0.08em] lowercase text-ink-3">{osText("tray.quick.heading")}</p>
+      <p className="mb-3 font-mono text-[9px] font-semibold tracking-[0.08em] lowercase text-ink-3">
+        {osText("tray.quick.heading")}
+      </p>
       <div className="grid grid-cols-2 gap-2">
         {TILES.map((tile) => {
           const on = settings[tile.key];

@@ -1,6 +1,7 @@
 /** Shared contracts for every Devthink target. */
-import { packageversion, protocolmajor } from "./version.js";
+
 import type { memoryadapter } from "./memory.js";
+import { packageversion, protocolmajor } from "./version.js";
 
 export const protocolversion = packageversion;
 

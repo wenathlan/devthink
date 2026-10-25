@@ -7,59 +7,59 @@
 import type {
   actionrisk,
   blockinvocation,
-  delaystep,
-  expressiontype,
-  nestedparam,
-  regexrule,
-  runlogentry,
-  steptemplate,
-  variablebinding,
-  variablekind,
-  variablescope,
-  variablevalue,
-  watchdogconfig,
-  workflowblock,
-  workflowrecord,
-  workflowrun,
-  workflowstep,
-  stepoutcome,
   branchoutcome,
   branchpath,
   branchstep,
   conditionstep,
   controlflowdecision,
+  delaystep,
+  editoredge,
+  editorlayout,
+  editormodel,
+  editornode,
   errorhandler,
+  exportformat,
+  expressiontype,
   foreachstep,
   joinrecord,
   loopcounter,
   loopstep,
+  manualrun,
+  minimapstate,
+  nestedparam,
+  palettecategory,
+  palettenode,
   paralleloutcome,
   parallelstep,
+  regexrule,
   repeatuntilstep,
-  retrypolicy,
   retryattempt,
-  timeoutabort,
-  trystep,
-  whilestep,
-  manualrun,
+  retrypolicy,
   rulestats,
+  runlogentry,
+  siteoverride,
+  steplibraryentry,
+  stepoutcome,
+  steptemplate,
+  timeoutabort,
   triggerfamily,
   triggerfire,
   triggerstate,
   triggerule,
-  webhookfield,
-  editoredge,
-  editormodel,
-  editornode,
-  editorlayout,
-  exportformat,
-  minimapstate,
-  palettecategory,
-  palettenode,
-  siteoverride,
-  steplibraryentry,
+  trystep,
+  variablebinding,
+  variablekind,
+  variablescope,
+  variablevalue,
   versiondiff,
+  watchdogconfig,
+  webhookfield,
+  whilestep,
+  workflowblock,
   workflowfile,
+  workflowrecord,
+  workflowrun,
+  workflowstep,
 } from "./types.js";
 
 /**
@@ -1496,9 +1496,7 @@ export function controlsteps(step: workflowstep): workflowstep[] {
 }
 
 /** Builds the review summary of one control step: the path names with the else path, the loop bounds and bodies, the parallel branches with the join policy and the try retry and timeout policies. */
-export function controlsummary(
-  step: workflowstep,
-):
+export function controlsummary(step: workflowstep):
   | {
       kind: string;
       paths?: string[];
@@ -1682,9 +1680,7 @@ interface controlcontextbase {
 }
 
 /** Runs the child steps of one control body sequentially through the step machinery: control children dispatch recursively and every child outcome lands in the runlog. */
-async function runbody(
-  input: controlcontextbase & { steps: workflowstep[] },
-): Promise<{
+async function runbody(input: controlcontextbase & { steps: workflowstep[] }): Promise<{
   ok: boolean;
   scopes: variablescope[];
   log: runlogentry[];

@@ -10,8 +10,9 @@
  * solar light source and the C1 atmosphere hooks (atmos / grain);
  * the body rises once, staggered behind the hero, then holds still. */
 
-import {WindowConsoleRegular as TerminalSquare} from "@fluentui/react-icons";
+import { WindowConsoleRegular as TerminalSquare } from "@fluentui/react-icons";
 import type { CSSProperties, ReactNode } from "react";
+import { osText } from "../../oslabels.ts";
 import {
   pagecontainerStyle,
   pageheadActionsStyle,
@@ -20,9 +21,9 @@ import {
   pageheadStyle,
   pageheadTitleStyle,
   pagestageStyle,
-  stagedEntrance } from "./ShellInstitutionalchrome.tsx";
+  stagedEntrance,
+} from "./ShellInstitutionalchrome.tsx";
 import { ShellChrome } from "./ShellShellchrome.tsx";
-import { osText } from "../../oslabels.ts";
 import { useReducedMotion } from "./ShellTrayflyouts.tsx";
 
 type ControlShellProps = {
@@ -46,7 +47,8 @@ export const controlStripStyle: CSSProperties = {
   border: 0,
   borderBottom: "1px solid var(--dt-edge)",
   borderRadius: 0,
-  padding: "0 0 12px" };
+  padding: "0 0 12px",
+};
 
 export function ControlShell({ eyebrow, title, summary, actions, children }: ControlShellProps) {
   const reduced = useReducedMotion();

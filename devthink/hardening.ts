@@ -1,5 +1,5 @@
 /** The security hardening family of the 1.1.95 release: the gates the release candidates carry live in their own root module beside the policy family so the frozen library surface of index.ts stays byte identical — the background service worker imports these gates directly, tests/pentest.mjs exercises every one of them against the compiled dist/hardening.js bundle, and the module stays out of the index.ts export graph because the api freeze of 1.1.91 pins that surface until 2.0.0. The family covers the log text masking of the audit trail, the local signature check of the virus scanning hook, the visible confirmation banner of the escape hatch, the review mode pause on new domains, the run trace purge, the key rotation of the encrypted sync path, the client signature verification of the local stdio bridge and the masking plus redaction pass of the transparency exports. */
-import { maskexport, maskvalue, maskingfield } from "./security.js";
+import { maskexport, maskingfield, maskvalue } from "./security.js";
 import type { policyevaluation, redactregion, scanverdict } from "./types.js";
 
 /** Masks the secret shaped key value pairs of one free form log text: a summary a step, a body or a console line embedded stays masked when its key matches a masked shape, because a log field the families gained since the masking audit never leaks its typed value through the text the audit trail keeps. */
@@ -178,7 +178,7 @@ export function transparencyexportmask(input: {
   const maskedfields = Object.keys(input.report).filter((key) => maskingfield(key, input.shapes));
   if (input.regions.length > 0 && Array.isArray(payload.captures))
     payload.captures = (payload.captures as unknown[]).map((entry) =>
-      Boolean(entry) && typeof entry === "object" && !Array.isArray(entry)
+      entry && typeof entry === "object" && !Array.isArray(entry)
         ? { ...(entry as Record<string, unknown>), redacted: true, redactedregions: input.regions.length }
         : entry,
     );

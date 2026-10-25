@@ -393,8 +393,8 @@ export function sitemanifestof(version: number = servercontractversion): {
 
 /* ── Merged from socketrelay.ts ── */
 
-import type { bridgeeventrecord, bridgequeuerecord } from "./types.js";
 import { reconnectwaits } from "./net.js";
+import type { bridgeeventrecord, bridgequeuerecord } from "./types.js";
 
 /**
  * Socket relay client of the 1.1.82 site integration family.
@@ -1347,18 +1347,18 @@ export function wsbridgeframecounted(
 
 /* ── Merged from nativehost.ts ── */
 
+import { notificationframe } from "./serve.js";
+import type { jsonrpcframe } from "./types.js";
 import {
-  protocolversion,
   type companionhandshake,
   type nativecallclass,
   type nativecallrecord,
   type nativeerror,
   type nativehoststate,
   type nativesurfacekind,
+  protocolversion,
   type runsettings,
 } from "./types.js";
-import { notificationframe } from "./serve.js";
-import type { jsonrpcframe } from "./types.js";
 
 /**
  * Nativehost of the 1.1.85 native host bridge family.

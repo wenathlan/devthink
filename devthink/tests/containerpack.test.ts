@@ -29,7 +29,9 @@ describe("containerpack", () => {
     readable for the human, the digest pins the build, and the maintenance
     rung restamps both — the digests also ride the sbom and attest records
     the release lane publishes). */
-    expect(dockerfile).toMatch(/^FROM gcr\.io\/distroless\/cc-debian12:nonroot@sha256:[0-9a-f]{64} AS binary-runtime$/m);
+    expect(dockerfile).toMatch(
+      /^FROM gcr\.io\/distroless\/cc-debian12:nonroot@sha256:[0-9a-f]{64} AS binary-runtime$/m,
+    );
     /* the runtime base is its own arg: the four-arch family surface rides
     the multi-architecture debian trixie slim base whose manifest answers
     every arch of the five-architecture family index (amd64, arm64, ppc64le,

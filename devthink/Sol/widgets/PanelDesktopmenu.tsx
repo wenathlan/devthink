@@ -14,7 +14,7 @@
  * arrow.
  */
 
-import type {FluentIcon as LucideIcon} from "@fluentui/react-icons";
+import type { FluentIcon as LucideIcon } from "@fluentui/react-icons";
 import { ChevronRightRegular as ChevronRight, RecordRegular as Circle } from "@fluentui/react-icons";
 import {
   type KeyboardEvent as ReactKeyboardEvent,
@@ -22,7 +22,8 @@ import {
   useEffect,
   useLayoutEffect,
   useRef,
-  useState } from "react";
+  useState,
+} from "react";
 import { clampNumber } from "../../desktopstate.ts";
 import { osText } from "../../oslabels.ts";
 
@@ -136,7 +137,8 @@ function MenuPanel({ x, y, entries, label, depth, onCollapse, onCommit }: PanelP
       setSubmenu({
         id,
         x: (rect ? rect.right : x) - SUBMENU_OVERLAP,
-        y: (rect ? rect.top : y) - SUBMENU_OVERLAP });
+        y: (rect ? rect.top : y) - SUBMENU_OVERLAP,
+      });
     },
     [entries, x, y],
   );
@@ -308,6 +310,14 @@ function MenuPanel({ x, y, entries, label, depth, onCollapse, onCommit }: PanelP
 /** The desktop context menu: one root panel with optional submenu panels. */
 export function DesktopMenu({ x, y, entries, onClose }: DesktopMenuProps) {
   return (
-    <MenuPanel x={x} y={y} entries={entries} label={osText("desktop.menu.label")} depth={0} onCollapse={onClose} onCommit={onClose} />
+    <MenuPanel
+      x={x}
+      y={y}
+      entries={entries}
+      label={osText("desktop.menu.label")}
+      depth={0}
+      onCollapse={onClose}
+      onCommit={onClose}
+    />
   );
 }

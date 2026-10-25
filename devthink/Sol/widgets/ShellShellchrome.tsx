@@ -40,11 +40,16 @@
  * session-only and reversible.
  */
 
-import {LockClosedRegular as Lock, SearchRegular as Search, Wifi1Regular as Wifi, DismissRegular as X} from "@fluentui/react-icons";
+import {
+  LockClosedRegular as Lock,
+  SearchRegular as Search,
+  Wifi1Regular as Wifi,
+  DismissRegular as X,
+} from "@fluentui/react-icons";
 import { type CSSProperties, type RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DESKTOP_APPS, type DesktopApp, searchDesktopApps } from "../../appregistry.ts";
-import { NAVBAR_POS_EVENT, loadNavbarPosition, type NavbarPosition } from "../../desktopstate";
+import { loadNavbarPosition, NAVBAR_POS_EVENT, type NavbarPosition } from "../../desktopstate";
 import { osText } from "../../oslabels.ts";
 import { loadrecentapps, pushrecentapp } from "../../recentapps.ts";
 import { SolLogoMark } from "./PanelLogo.tsx";
@@ -55,7 +60,8 @@ import {
   DEFAULT_TRAY_SETTINGS,
   QuickSettings,
   type TraySettings,
-  useReducedMotion } from "./ShellTrayflyouts.tsx";
+  useReducedMotion,
+} from "./ShellTrayflyouts.tsx";
 
 /** the default apps pinned to the bottom bar: the essential surfaces as
  * icons only — every other app of the catalog lives in the Start menu grid
@@ -111,11 +117,14 @@ function formatClock(date: Date): { time: string; date: string } {
   return {
     time: new Intl.DateTimeFormat(undefined, {
       hour: "2-digit",
-      minute: "2-digit" }).format(date),
+      minute: "2-digit",
+    }).format(date),
     date: new Intl.DateTimeFormat(undefined, {
       day: "2-digit",
       month: "2-digit",
-      year: "numeric" }).format(date) };
+      year: "numeric",
+    }).format(date),
+  };
 }
 
 /** the tray clock, refreshed twice a minute */
@@ -424,7 +433,11 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
               cell, right-click opens the jump list at the cursor,
               data-dock-target is the minimize flight target of the desktop
               windows */}
-          <nav className="dt-nav__pins flex min-w-0 items-center" aria-label={osText("shell.pins.aria")} data-flyout-keep="true">
+          <nav
+            className="dt-nav__pins flex min-w-0 items-center"
+            aria-label={osText("shell.pins.aria")}
+            data-flyout-keep="true"
+          >
             {taskbarPins.map((app) => {
               // route pins ride the location, window pins ride the live
               // desktop window state (openApps) — external pins never light
@@ -448,7 +461,8 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
                       kind: "jump",
                       app,
                       x: event.clientX,
-                      y: event.clientY });
+                      y: event.clientY,
+                    });
                   }}
                 >
                   <span className={BAR_FACE_CLASS}>
@@ -597,7 +611,9 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
             </div>
             {recommended.length > 0 && (
               <>
-                <p className="dt-start__label mx-8 mb-2.5 text-sm font-medium text-ink">{osText("shell.start.label.recommended")}</p>
+                <p className="dt-start__label mx-8 mb-2.5 text-sm font-medium text-ink">
+                  {osText("shell.start.label.recommended")}
+                </p>
                 <div className="dt-start__grid grid grid-cols-[repeat(auto-fill,96px)] px-8 pb-6">
                   {recommended.map((app, index) => (
                     <button
@@ -664,7 +680,8 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
             inset: 0,
             zIndex: 55,
             background: "rgb(255 176 46 / 6%)",
-            pointerEvents: "none" }}
+            pointerEvents: "none",
+          }}
         />
       )}
       {dim > 0 && (
@@ -677,7 +694,8 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
             zIndex: 55,
             background: "rgb(0 0 0)",
             opacity: dim,
-            pointerEvents: "none" }}
+            pointerEvents: "none",
+          }}
         />
       )}
     </>

@@ -161,14 +161,16 @@ export function GraphView({
   progress = 0,
   selected,
   onselect,
-  label }: GraphViewProps) {
+  label,
+}: GraphViewProps) {
   const gradientid = `gview-${useId().replace(/[^a-zA-Z0-9-]/g, "")}`;
   const waves = stages ?? [];
   const drawn = graph.nodes.filter((node) => node.id in positions);
   const bounds = viewbounds(positions, {
     cardwidth: GRAPHVIEW_CARD_WIDTH,
     cardheight: GRAPHVIEW_CARD_HEIGHT,
-    padding: 20 });
+    padding: 20,
+  });
   const maplabel =
     label ?? `node graph: ${drawn.length} nodes on ${waves.length || 1} stages, ${Math.round(progress)} percent done`;
   const picknode = (id: string) => () => onselect?.(id);

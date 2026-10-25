@@ -3,14 +3,15 @@
  * the real catalog fields (title, engine, minutes) and the queue action.
  * Loose component of the audio page.
  */
-import {MusicNote2PlayFilled} from "@fluentui/react-icons";
+import { MusicNote2PlayFilled } from "@fluentui/react-icons";
 import type { StudioTrack } from "../../catalog";
 import { osText } from "../../oslabels.ts";
 
 export function MusicTracks({
   rows,
   loaded,
-  onQueue }: {
+  onQueue,
+}: {
   rows: readonly StudioTrack[];
   loaded: boolean;
   onQueue: (track: StudioTrack) => void;

@@ -439,12 +439,12 @@ import type {
   checkpointrecord,
   heartbeatrecord,
   planprogress,
+  queuedtask,
   rollbackitem,
   runrecord,
   runsettings,
   runstate,
   runtransition,
-  queuedtask,
   toolstep,
 } from "./types.js";
 
@@ -1445,8 +1445,8 @@ export function consolediff(input: {
 
 /* ── Merged from runbudget.ts ── */
 
-import type { budgetalert, runbudgetrecord, timeoutcancelevent, timeoutcancelpolicy } from "./types.js";
 import { randomid } from "./memory.js";
+import type { budgetalert, runbudgetrecord, timeoutcancelevent, timeoutcancelpolicy } from "./types.js";
 
 /**
  * Runbudget logic of the 1.1.69 family.
@@ -1953,8 +1953,8 @@ export function sessioncontainerof(input: { profile: string; taskid: string }): 
 
 /* ── Merged from backgroundruns.ts ── */
 
-import type { backgroundqueueentry } from "./types.js";
 import { backgroundrungate } from "./policy.js";
+import type { backgroundqueueentry } from "./types.js";
 
 /**
  * Background run queue logic of the 1.1.66 family.
@@ -2059,9 +2059,7 @@ export function backgroundrunattention(
 }
 
 /** Reads the dashboard view of the background queue: one row per entry with its state and its progress by the workflow step count. */
-export function backgroundrunsview(
-  queue: backgroundqueueentry[],
-): Array<{
+export function backgroundrunsview(queue: backgroundqueueentry[]): Array<{
   id: string;
   workflowid: string;
   state: string;

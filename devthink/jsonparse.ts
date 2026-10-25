@@ -11,7 +11,7 @@
  * the same call runs in the browser and in node, with zero DOM and zero
  * storage.
  */
-import { decisionerror, type DecisionKind, type DecisionRequest } from "./jsondecision.ts";
+import { type DecisionKind, type DecisionRequest, decisionerror } from "./jsondecision.ts";
 
 /** extracts the first balanced json object of a model answer.
  *
@@ -70,14 +70,16 @@ export type VerdictObject = { value: unknown; confidence: unknown };
  */
 export function validateverdict(
   request: Pick<DecisionRequest, "kind" | "options" | "range">,
-  object: Record<string, unknown>
+  object: Record<string, unknown>,
 ): { value: string | number | boolean; confidence: number } {
   const rawvalue = object.value;
   const rawconfidence = typeof object.confidence === "number" ? object.confidence : Number(object.confidence);
-  if (!Number.isFinite(rawconfidence)) throw new decisionerror("bad-verdict", "confidence", "the verdict carries no numeric confidence");
+  if (!Number.isFinite(rawconfidence))
+    throw new decisionerror("bad-verdict", "confidence", "the verdict carries no numeric confidence");
   const confidence = Math.min(1, Math.max(0, rawconfidence));
   if (request.kind === "choice") {
-    if (typeof rawvalue !== "string") throw new decisionerror("bad-verdict", "value", "a choice verdict answers a string");
+    if (typeof rawvalue !== "string")
+      throw new decisionerror("bad-verdict", "value", "a choice verdict answers a string");
     const options = request.options ?? [];
     const match = options.find((option) => option.toLowerCase() === rawvalue.trim().toLowerCase());
     if (!match) throw new decisionerror("bad-verdict", rawvalue, "the choice answer leaves the declared options");

@@ -97,11 +97,8 @@
  */
 
 import { createHash, randomInt } from "node:crypto";
-import { platform as osPlatform, arch as osArch } from "node:os";
-// v2.1.15 Phase A: models.ts owns every model substrate locally (flat id
-// lists, rich definition lists, the v1 routing catalog). Only generic
-// non-model constants come from constants.ts (layer 0).
-import { fnv1a32 } from "./core.js";
+import { arch as osArch, platform as osPlatform } from "node:os";
+import type { AntigravityVersion, CodeAssistEndpointPath, QuotaGroup } from "./constants.js";
 import {
   ANTIGRAVITY_USER_AGENT_FALLBACK,
   ANTIGRAVITY_VERSION_FALLBACK,
@@ -111,7 +108,10 @@ import {
   FNV_PRIME,
   PROJECT_FALLBACK,
 } from "./constants.js";
-import type { AntigravityVersion, CodeAssistEndpointPath, QuotaGroup } from "./constants.js";
+// v2.1.15 Phase A: models.ts owns every model substrate locally (flat id
+// lists, rich definition lists, the v1 routing catalog). Only generic
+// non-model constants come from constants.ts (layer 0).
+import { fnv1a32 } from "./core.js";
 
 // ===========================================================================
 // Raw model substrates (v2.1.15 Phase A — moved from constants.ts so that

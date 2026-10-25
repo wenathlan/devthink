@@ -11,7 +11,14 @@
  * every quiet hover, the 2px accent focus underline. English text only —
  * the gtx translation runs at runtime.
  */
-import {ArrowUpRightRegular as ArrowUpRight, CubeRegular as Boxes, type FluentIcon, GlobeRegular as Globe, PuzzlePieceRegular as Puzzle, WindowConsoleRegular as SquareTerminal } from "@fluentui/react-icons";
+import {
+  ArrowUpRightRegular as ArrowUpRight,
+  CubeRegular as Boxes,
+  type FluentIcon,
+  GlobeRegular as Globe,
+  PuzzlePieceRegular as Puzzle,
+  WindowConsoleRegular as SquareTerminal,
+} from "@fluentui/react-icons";
 import { osText } from "../../oslabels.ts";
 
 /** the baked release version (vite define — see vite.config.ts) */
@@ -38,22 +45,26 @@ const CHANNELS: ReadonlyArray<ChannelCard> = [
     icon: Puzzle,
     channel: osText("explore.download.chromium"),
     asset: `devthink${__dtversion__}.zip`,
-    note: osText("explore.download.chromium.note") },
+    note: osText("explore.download.chromium.note"),
+  },
   {
     icon: Globe,
     channel: osText("explore.download.firefox"),
     asset: `devthink-firefox-${__dtversion__}.xpi`,
-    note: osText("explore.download.firefox.note") },
+    note: osText("explore.download.firefox.note"),
+  },
   {
     icon: SquareTerminal,
     channel: osText("explore.download.vscode"),
     asset: `devthink-vscode-${__dtversion__}.vsix`,
-    note: osText("explore.download.vscode.note") },
+    note: osText("explore.download.vscode.note"),
+  },
   {
     icon: Boxes,
     channel: osText("explore.download.every"),
     asset: "SHA256SUMS.txt",
-    note: osText("explore.download.every.note") },
+    note: osText("explore.download.every.note"),
+  },
 ];
 
 /** The distribution rail: the release channels as trylle cards over the

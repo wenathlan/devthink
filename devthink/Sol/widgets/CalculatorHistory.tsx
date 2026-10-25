@@ -4,7 +4,7 @@
  * answer with the honest count and the empty state while the keypad has
  * not answered anything yet. Loose component of the calculator page.
  */
-import {HistoryRegular} from "@fluentui/react-icons";
+import { HistoryRegular } from "@fluentui/react-icons";
 import { osText } from "../../oslabels.ts";
 
 /** one answered line of the history: the expression, the answer and the id

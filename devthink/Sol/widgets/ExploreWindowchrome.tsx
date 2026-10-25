@@ -11,7 +11,12 @@
  * to the intro). Fully self-contained: theme utilities, no stylesheet rules.
  */
 
-import {CopyRegular as Copy, SubtractRegular as Minus, StopRegular as Square, DismissRegular as X} from "@fluentui/react-icons";
+import {
+  CopyRegular as Copy,
+  SubtractRegular as Minus,
+  StopRegular as Square,
+  DismissRegular as X,
+} from "@fluentui/react-icons";
 import { useEffect, useRef, useState } from "react";
 import { osText } from "../../oslabels.ts";
 import { SolLogoMark } from "./PanelLogo.tsx";
@@ -68,7 +73,13 @@ export function WindowEdgeChrome({ maximized, onMinimize, onMaximize, onClose }:
       </span>
       <span className="font-mono text-[11px] text-ink-2">{osText("explore.window.title")}</span>
       <span className="ml-auto flex items-center">
-        <button type="button" tabIndex={visible ? 0 : -1} aria-label={osText("explore.window.minimize")} onClick={onMinimize} className={captionIdle}>
+        <button
+          type="button"
+          tabIndex={visible ? 0 : -1}
+          aria-label={osText("explore.window.minimize")}
+          onClick={onMinimize}
+          className={captionIdle}
+        >
           <Minus fontSize={13} aria-hidden="true" />
         </button>
         <button

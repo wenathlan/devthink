@@ -25,7 +25,17 @@
  *            consumers (command menu, gateway cards) route by data.
  */
 import type { FluentIcon as LucideIcon } from "@fluentui/react-icons";
-import { MusicNote2Regular as AudioLines, VideoClipRegular as Clapperboard, TargetRegular as Crosshair, BuildingFactoryRegular as Factory, GlobeRegular as Globe, ToolboxRegular as Hammer, KeyRegular as KeyRound, ShieldRegular as Shield, VaultRegular as Vault } from "@fluentui/react-icons";
+import {
+  MusicNote2Regular as AudioLines,
+  VideoClipRegular as Clapperboard,
+  TargetRegular as Crosshair,
+  BuildingFactoryRegular as Factory,
+  GlobeRegular as Globe,
+  ToolboxRegular as Hammer,
+  KeyRegular as KeyRound,
+  ShieldRegular as Shield,
+  VaultRegular as Vault,
+} from "@fluentui/react-icons";
 
 export type AppId =
   | "devthink"

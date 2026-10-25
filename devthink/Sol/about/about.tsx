@@ -29,11 +29,9 @@ import {
   type MediaSlot,
   mediaSlots,
   type Principle,
-  principleTable } from "../../catalog";
-import { InstitutionalChrome, InstitutionalFooter } from "../widgets";
-import { AboutFamily } from "../widgets";
-import { AboutHero } from "../widgets";
-import { AboutTimeline } from "../widgets";
+  principleTable,
+} from "../../catalog";
+import { AboutFamily, AboutHero, AboutTimeline, InstitutionalChrome, InstitutionalFooter } from "../widgets";
 
 /* --------------------------------------------------------------------------
  * the about page-app stylesheet — the r2-a editorial pass of this folder:
@@ -132,7 +130,8 @@ const containerStyle = {
   padding: "24px clamp(24px, 4vw, 32px) 96px",
   display: "grid",
   alignContent: "start",
-  gap: 40 } as const;
+  gap: 40,
+} as const;
 
 const bodyStyle = { margin: 0, maxWidth: "68ch", fontSize: 14, lineHeight: 1.8 } as const;
 const blockTitleStyle = { margin: 0, letterSpacing: "-.02em" } as const;

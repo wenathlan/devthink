@@ -6,24 +6,24 @@
 
 /* ── Merged from flowlibrary.ts ── */
 
-import type {
-  flowlibraryentry,
-  flowlibrarymanifest,
-  flowlibrarystep,
-  dataexpectation,
-  publishdescriptor,
-  workflowrecord,
-  schemaerror,
-  actionkind,
-} from "./types.js";
 import {
   actionrisk,
   librarycapabilitygate,
+  libraryimportgate,
   librarymanifestgate,
   libraryquarantinegate,
   librarysensitivegate,
-  libraryimportgate,
 } from "./policy.js";
+import type {
+  actionkind,
+  dataexpectation,
+  flowlibraryentry,
+  flowlibrarymanifest,
+  flowlibrarystep,
+  publishdescriptor,
+  schemaerror,
+  workflowrecord,
+} from "./types.js";
 
 /**
  * Flowlibrary logic of the 1.1.66 family.
@@ -69,7 +69,7 @@ export async function validatemanifest(input: {
 }): Promise<{ ok: boolean; errors: schemaerror[]; reason: string; manifest?: flowlibrarymanifest }> {
   const errors: schemaerror[] = [];
   const raw = input.manifest;
-  if (!Boolean(raw) || typeof raw !== "object" || Array.isArray(raw))
+  if (!raw || typeof raw !== "object" || Array.isArray(raw))
     return {
       ok: false,
       errors: [
@@ -129,7 +129,7 @@ export async function validatemanifest(input: {
     candidate.steps.forEach((step, index) => {
       const shape = step as Partial<flowlibrarystep> | undefined;
       if (
-        !Boolean(shape) ||
+        !shape ||
         typeof shape !== "object" ||
         typeof shape.id !== "string" ||
         shape.id.trim() === "" ||
@@ -236,7 +236,7 @@ export async function validatemanifest(input: {
 
 /** Narrows one raw publish descriptor into its typed shape. */
 function isPublish(value: unknown): value is publishdescriptor {
-  if (!Boolean(value) || typeof value !== "object") return false;
+  if (!value || typeof value !== "object") return false;
   const shape = value as Partial<publishdescriptor>;
   return (
     typeof shape.publisher === "string" &&
@@ -520,9 +520,7 @@ export function librarybrowserow(entry: flowlibraryentry): {
 }
 
 /** Reads the full step list of one library entry the entry view shows before install: every step with its kind, label, target and namespace beside the data expectations with their minimization hints. */
-export function librarystepsview(
-  entry: flowlibraryentry,
-): Array<{
+export function librarystepsview(entry: flowlibraryentry): Array<{
   id: string;
   kind: string;
   label: string;
@@ -593,9 +591,7 @@ export function libraryeventof(input: {
 }
 
 /** Exports the manifest list of the flowlibrary for audit: one entry per manifest with its digest, publisher, version, state and provenance and no step payload. */
-export function exportlibrarymanifests(
-  entries: flowlibraryentry[],
-): Array<{
+export function exportlibrarymanifests(entries: flowlibraryentry[]): Array<{
   id: string;
   title: string;
   publisher: string;
@@ -619,23 +615,22 @@ export function exportlibrarymanifests(
 
 /* ── Merged from flowrun.ts ── */
 
+import { flowrungrantgate, headlessconsentgate, resolvedrisk } from "./policy.js";
+import { parseworkflowproposal } from "./protocol.js";
+import { appendlogentry, openrunlog, sealrunlog, sensitiveclassesof } from "./security.js";
 import type {
   consentprovider,
   flowrunevent,
+  flowrungate,
   flowrunoptions,
   flowrunoutcome,
   flowrunrequest,
-  flowrungate,
   planfile,
   planfilestep,
   storedrunlog,
   toolstep,
 } from "./types.js";
 import { protocolversion } from "./types.js";
-import { appendlogentry, openrunlog, sealrunlog } from "./security.js";
-import { flowrungrantgate, headlessconsentgate, resolvedrisk } from "./policy.js";
-import { sensitiveclassesof } from "./security.js";
-import { parseworkflowproposal } from "./protocol.js";
 
 /**
  * Flowrun logic of the 1.1.67 family.
@@ -973,8 +968,8 @@ export function flowrunreport(input: { outcome: flowrunoutcome; events: flowrune
 
 /* ── Merged from syncbridge.ts ── */
 
-import type { syncbridgeconflict, syncbridgehook } from "./types.js";
 import { syncbridgeoptingate, syncbridgescopegate } from "./policy.js";
+import type { syncbridgeconflict, syncbridgehook } from "./types.js";
 
 /**
  * Syncbridge logic of the 1.1.66 family.
@@ -1042,9 +1037,7 @@ export function syncbridgeproviders(): Array<{
 }
 
 /** Exports one manifest list as the syncbridge file payload: the manifests travel with their digests while secrets and logs never enter the payload under any flag. */
-export async function syncbridgeexportpayload(
-  manifests: flowlibrarymanifest[],
-): Promise<{
+export async function syncbridgeexportpayload(manifests: flowlibrarymanifest[]): Promise<{
   version: 1;
   kind: "syncbridge";
   manifests: flowlibrarymanifest[];

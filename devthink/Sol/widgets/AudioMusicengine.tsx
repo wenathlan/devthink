@@ -3,7 +3,7 @@
  * engine row the catalog serves, with the honest empty state while the
  * catalog has not answered. Loose component of the audio page.
  */
-import {MusicNote2Regular} from "@fluentui/react-icons";
+import { MusicNote2Regular } from "@fluentui/react-icons";
 import type { NativeApp } from "../../catalog";
 import { osText } from "../../oslabels.ts";
 

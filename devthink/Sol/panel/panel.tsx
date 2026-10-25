@@ -30,13 +30,12 @@ import {
   cacheBrowserIdentity,
   cacheGatewaySession,
   ensureBrowserSession,
-  readBrowserPreferences } from "../../db";
+  readBrowserPreferences,
+} from "../../db";
 import type { DevThinkTab } from "../../paneltypes.ts";
 import { historypath } from "../../routebase.ts";
 import type { WorkspaceDestination } from "../../workspace.ts";
-import { BootScreen, shouldBoot } from "../widgets";
-import { CommandPalette } from "../widgets";
-import { ShellWorkspace } from "../widgets";
+import { BootScreen, CommandPalette, ShellWorkspace, shouldBoot } from "../widgets";
 
 export * from "../widgets";
 export * from "../widgets";
@@ -94,7 +93,8 @@ type WorkbenchPreferences = {
 const defaultPreferences: WorkbenchPreferences = {
   theme: "light",
   railMode: "auto",
-  interfaceZoom: "100" };
+  interfaceZoom: "100",
+};
 
 function stableId(): string {
   const alphabet = "0123456789abcdefghjkmnpqrstvwxyz";
@@ -129,7 +129,8 @@ function readLocalRoute(): RouteState {
           workspaceId: parsed.workspaceId,
           sessionId: parsed.sessionId,
           tabId: parsed.tabId,
-          sectionId: "chat" };
+          sectionId: "chat",
+        };
     }
   } catch {
     // storage unavailable or malformed: mint a fresh local route below
@@ -138,7 +139,8 @@ function readLocalRoute(): RouteState {
     workspaceId: stableId(),
     sessionId: stableId(),
     tabId: stableId(),
-    sectionId: "chat" };
+    sectionId: "chat",
+  };
   try {
     window.sessionStorage.setItem(LOCAL_ROUTE_KEY, JSON.stringify(fresh));
   } catch {
@@ -169,7 +171,8 @@ function toShellTab(tab: {
     label: tab.label,
     provider: tab.provider || "local",
     sectionId: tab.sectionId,
-    createdAt: tab.createdAt };
+    createdAt: tab.createdAt,
+  };
 }
 
 export default function Panel({ familySlug: familyRoute }: { familySlug?: string }) {
@@ -200,7 +203,8 @@ export default function Panel({ familySlug: familyRoute }: { familySlug?: string
           workspaceId: params.workspaceId,
           sessionId: params.sessionId,
           tabId: params.tabId,
-          sectionId: params.sectionId }
+          sectionId: params.sectionId,
+        }
       : fallbackRoute,
   );
   const [tabs, setTabs] = useState<DevThinkTab[]>([]);
@@ -262,7 +266,8 @@ export default function Panel({ familySlug: familyRoute }: { familySlug?: string
       providers: "/providers",
       projects: "/projects",
       usage: "/usage",
-      settings: "/settings" };
+      settings: "/settings",
+    };
     if (directRoutes[destination]) return setLocation(directRoutes[destination] as string);
     navigate({ sectionId: destination === "chat" ? "all" : destination });
   }
@@ -296,7 +301,8 @@ export default function Panel({ familySlug: familyRoute }: { familySlug?: string
       const response = await fetch(`${gatewayUrl}/pairings/consume`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ pairingId, code: pairingCode }) });
+        body: JSON.stringify({ pairingId, code: pairingCode }),
+      });
       if (!response.ok) throw new Error("Pairing was rejected.");
       rememberPairing((await response.json()) as PairingResponse);
     } catch {
@@ -311,7 +317,8 @@ export default function Panel({ familySlug: familyRoute }: { familySlug?: string
       if (gatewayUrl && browserToken)
         await fetch(`${gatewayUrl}/pairings/revoke`, {
           method: "POST",
-          headers: { "content-type": "application/json", ...browserHeaders } });
+          headers: { "content-type": "application/json", ...browserHeaders },
+        });
     } finally {
       for (const key of ["devthink.pair.token", "devthink.pair.user", "devthink.pair.expires"])
         window.sessionStorage.removeItem(key);
@@ -330,7 +337,8 @@ export default function Panel({ familySlug: familyRoute }: { familySlug?: string
       const response = await fetch(`${gatewayUrl}/preferences`, {
         method: "PATCH",
         headers: { "content-type": "application/json", ...browserHeaders },
-        body: JSON.stringify({ key, value }) });
+        body: JSON.stringify({ key, value }),
+      });
       if (!response.ok) throw new Error("Preference was rejected.");
       setPreferences(next);
       toast(`${key} updated in the local DevThink workspace.`);
@@ -345,7 +353,8 @@ export default function Panel({ familySlug: familyRoute }: { familySlug?: string
       const response = await fetch(`${gatewayUrl}/identity`, {
         method: "PUT",
         headers: { "content-type": "application/json", ...browserHeaders },
-        body: JSON.stringify({ userId }) });
+        body: JSON.stringify({ userId }),
+      });
       if (!response.ok) throw new Error("Public ID was rejected.");
       const result = (await response.json()) as IdentityResponse;
       setPairedIdentity(result.identity);
@@ -432,7 +441,8 @@ export default function Panel({ familySlug: familyRoute }: { familySlug?: string
     void fetch(`${gatewayUrl}/sessions`, {
       method: "POST",
       headers: { "content-type": "application/json", ...browserHeaders },
-      body: JSON.stringify({ mode: "chat", sectionId: "chat" }) })
+      body: JSON.stringify({ mode: "chat", sectionId: "chat" }),
+    })
       .then(async (response) =>
         response.ok
           ? (response.json() as Promise<GatewaySession>)
@@ -443,7 +453,8 @@ export default function Panel({ familySlug: familyRoute }: { familySlug?: string
           workspaceId: session.workspaceId,
           sessionId: session.id,
           tabId: session.activeTabId,
-          sectionId: "chat" });
+          sectionId: "chat",
+        });
         setTabs(session.tabs.map(toShellTab));
       })
       .catch(() => {

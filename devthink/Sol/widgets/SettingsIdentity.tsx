@@ -6,7 +6,7 @@
  * place where a person sees and edits it. It is a settings page, never a
  * login screen. Loose component of the settings page, riding the dtw kit.
  */
-import {PersonRegular} from "@fluentui/react-icons";
+import { PersonRegular } from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { type BrowserIdentity, browserIdentity, readBrowserPreferences, saveBrowserPreference } from "../../db";

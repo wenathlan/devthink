@@ -6,8 +6,8 @@
 
 /* ── Merged from confirmgates.ts ── */
 
-import type { confirmgate, gatekind, gateresolution, sensitiveclass, toolstep } from "./types.js";
 import { randomid } from "./memory.js";
+import type { confirmgate, gatekind, gateresolution, sensitiveclass, toolstep } from "./types.js";
 
 /**
  * Confirm gates of the 1.1.62 family.
@@ -20,9 +20,7 @@ function stepoptions(step: Pick<toolstep, "options">): Record<string, unknown> {
   if (!step.options) return {};
   try {
     const parsed = JSON.parse(step.options);
-    return Boolean(parsed) && typeof parsed === "object" && !Array.isArray(parsed)
-      ? (parsed as Record<string, unknown>)
-      : {};
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? (parsed as Record<string, unknown>) : {};
   } catch {
     return {};
   }
@@ -219,7 +217,7 @@ export function gateforstep(input: {
 
 /* ── Merged from approvalgate.ts ── */
 
-import type { allowlistentry, approvalrequest, approvalstate, approvalexec, clientidentity } from "./types.js";
+import type { allowlistentry, approvalexec, approvalrequest, approvalstate, clientidentity } from "./types.js";
 
 /**
  * Approval gates of the 1.1.55 agent protocol part two.

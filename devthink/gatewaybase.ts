@@ -14,8 +14,8 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { readBrowserPreferences, saveBrowserPreference } from "./db";
 import { chatText } from "./chatlabels.ts";
+import { readBrowserPreferences, saveBrowserPreference } from "./db";
 
 /* ------------------------------ contract ------------------------------ */
 

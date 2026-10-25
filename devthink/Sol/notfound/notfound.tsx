@@ -15,27 +15,27 @@
  * editorial copy column: the mono eyebrow, ONE mono line and ONE action
  * button (back home, the .press voice). The copy rises once, staggered;
  * everything holds still for the reduced-motion visitor. */
-import {HomeRegular as Home} from "@fluentui/react-icons";
+import { HomeRegular as Home } from "@fluentui/react-icons";
 import type { CSSProperties } from "react";
 import { Link } from "wouter";
 import { osText } from "../../oslabels.ts";
-import { pagecontainerStyle, stagedEntrance } from "../widgets";
-import { ShellChrome } from "../widgets";
-import { useReducedMotion } from "../widgets";
+import { pagecontainerStyle, ShellChrome, stagedEntrance, useReducedMotion } from "../widgets";
 
 /* the stage: the workbench canvas under the sticky shell navbar, lit by the
  * ONE signal source of the campaign (no second light, no cool wash); the
  * container owns the measure, so the stage carries no padding of its own */
 const notfoundStageStyle: CSSProperties = {
   padding: 0,
-  background: "radial-gradient(1200px 720px at 78% -14%, rgb(255 95 0 / 9%), transparent 62%), var(--sol-canvas)" };
+  background: "radial-gradient(1200px 720px at 78% -14%, rgb(255 95 0 / 9%), transparent 62%), var(--sol-canvas)",
+};
 
 /* the head + line grammar of the batch: mono signal eyebrow, one mono line */
 const ghostEyebrowStyle: CSSProperties = {
   margin: 0,
   color: "var(--dtv3-sig)",
   font: "600 10px var(--dt-mono)",
-  letterSpacing: ".08em" };
+  letterSpacing: ".08em",
+};
 
 export default function NotFound() {
   const reduced = useReducedMotion();

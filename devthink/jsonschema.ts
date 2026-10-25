@@ -10,7 +10,7 @@
  * same call runs in the browser (the chat second layer) and in node (the
  * unit tests), with zero DOM and zero storage.
  */
-import { decisionerror, type DecisionRequest } from "./jsondecision.ts";
+import { type DecisionRequest, decisionerror } from "./jsondecision.ts";
 import type { Completer, DecisionTrail } from "./jsonengine.ts";
 import { extractjsonobject } from "./jsonparse.ts";
 
@@ -71,7 +71,15 @@ export type CompiledSchema = {
 
 /** describes one field for the instruction (the definition, not the label). */
 function describefield(field: SchemaField): string {
-  const base = field.enum ? `one of [${field.enum.join(" | ")}]` : field.type === "integer" ? "an integer" : field.type === "number" ? "a number" : field.type === "boolean" ? "true or false" : "a string";
+  const base = field.enum
+    ? `one of [${field.enum.join(" | ")}]`
+    : field.type === "integer"
+      ? "an integer"
+      : field.type === "number"
+        ? "a number"
+        : field.type === "boolean"
+          ? "true or false"
+          : "a string";
   const note = field.instructions ? ` — ${field.instructions}` : "";
   const optional = field.optional ? " (optional)" : "";
   return `${base}${note}${optional}`;
@@ -79,21 +87,32 @@ function describefield(field: SchemaField): string {
 
 /** validates one declared field. */
 function validfield(name: string, field: SchemaField): void {
-  if (!field || (field.type !== "string" && field.type !== "integer" && field.type !== "number" && field.type !== "boolean"))
+  if (
+    !field ||
+    (field.type !== "string" && field.type !== "integer" && field.type !== "number" && field.type !== "boolean")
+  )
     throw new schemaerror(name, "the property type is one of string, integer, number, boolean");
   if (field.instructions !== undefined && typeof field.instructions !== "string")
     throw new schemaerror(name, "the instructions are a string");
   if (field.enum !== undefined) {
-    if (field.type === "boolean") throw new schemaerror(name, "a boolean carries no enum — true and false are the enum");
-    if (!Array.isArray(field.enum) || field.enum.length === 0) throw new schemaerror(name, "the enum carries at least one candidate");
+    if (field.type === "boolean")
+      throw new schemaerror(name, "a boolean carries no enum — true and false are the enum");
+    if (!Array.isArray(field.enum) || field.enum.length === 0)
+      throw new schemaerror(name, "the enum carries at least one candidate");
     if (field.enum.length > ENUM_CAP) throw new schemaerror(name, `the enum carries at most ${ENUM_CAP} candidates`);
     const seen = new Set(field.enum.map((option) => String(option)));
     if (seen.size !== field.enum.length) throw new schemaerror(name, "the enum repeats a candidate");
     const wrongtype = field.enum.find(
-      (option) => (field.type === "string" && typeof option !== "string") || (field.type !== "string" && typeof option !== "number")
+      (option) =>
+        (field.type === "string" && typeof option !== "string") ||
+        (field.type !== "string" && typeof option !== "number"),
     );
-    if (wrongtype !== undefined) throw new schemaerror(name, `the enum candidate ${String(wrongtype)} leaves the declared type`);
-    if (field.type === "integer" && field.enum.some((option) => typeof option === "number" && !Number.isInteger(option)))
+    if (wrongtype !== undefined)
+      throw new schemaerror(name, `the enum candidate ${String(wrongtype)} leaves the declared type`);
+    if (
+      field.type === "integer" &&
+      field.enum.some((option) => typeof option === "number" && !Number.isInteger(option))
+    )
       throw new schemaerror(name, "an integer enum carries integers only");
   }
 }
@@ -124,7 +143,8 @@ export function compilejsonschema(schema: JsonObjectSchema): CompiledSchema {
 
   const header = `Answer only a JSON object with exactly these properties${schema.instructions ? ` — ${schema.instructions}` : ""}. No prose, no fences.`;
   const lines = names.map((name) => `- "${name}": ${describefield(schema.properties[name])}`);
-  if (!names.includes("confidence")) lines.push('- "confidence": a number between 0 and 1 — your self graded confidence in the answer.');
+  if (!names.includes("confidence"))
+    lines.push('- "confidence": a number between 0 and 1 — your self graded confidence in the answer.');
   const instruction = [header, ...lines].join("\n");
 
   return {
@@ -144,18 +164,24 @@ export function compilejsonschema(schema: JsonObjectSchema): CompiledSchema {
         if (field?.type === "string") {
           if (typeof raw !== "string") throw new decisionerror("bad-verdict", name, "the property answers a string");
           const text = raw.trim();
-          if (field.enum && !field.enum.some((option) => option === text)) throw new decisionerror("bad-verdict", name, "the answer leaves the declared enum");
+          if (field.enum && !field.enum.some((option) => option === text))
+            throw new decisionerror("bad-verdict", name, "the answer leaves the declared enum");
           value[name] = text;
         } else if (field?.type === "integer") {
-          if (typeof raw !== "number" || !Number.isInteger(raw)) throw new decisionerror("bad-verdict", name, "the property answers an integer");
-          if (field.enum && !field.enum.some((option) => option === raw)) throw new decisionerror("bad-verdict", name, "the answer leaves the declared enum");
+          if (typeof raw !== "number" || !Number.isInteger(raw))
+            throw new decisionerror("bad-verdict", name, "the property answers an integer");
+          if (field.enum && !field.enum.some((option) => option === raw))
+            throw new decisionerror("bad-verdict", name, "the answer leaves the declared enum");
           value[name] = raw;
         } else if (field?.type === "number") {
-          if (typeof raw !== "number" || !Number.isFinite(raw)) throw new decisionerror("bad-verdict", name, "the property answers a number");
-          if (field.enum && !field.enum.some((option) => option === raw)) throw new decisionerror("bad-verdict", name, "the answer leaves the declared enum");
+          if (typeof raw !== "number" || !Number.isFinite(raw))
+            throw new decisionerror("bad-verdict", name, "the property answers a number");
+          if (field.enum && !field.enum.some((option) => option === raw))
+            throw new decisionerror("bad-verdict", name, "the answer leaves the declared enum");
           value[name] = raw;
         } else {
-          if (typeof raw !== "boolean") throw new decisionerror("bad-verdict", name, "the property answers true or false");
+          if (typeof raw !== "boolean")
+            throw new decisionerror("bad-verdict", name, "the property answers true or false");
           value[name] = raw;
         }
       }
@@ -164,7 +190,8 @@ export function compilejsonschema(schema: JsonObjectSchema): CompiledSchema {
           throw new decisionerror("bad-verdict", key, "the answer carries an out-of-schema property");
       }
       const rawconfidence = typeof object.confidence === "number" ? object.confidence : Number(object.confidence);
-      if (!Number.isFinite(rawconfidence)) throw new decisionerror("bad-verdict", "confidence", "the verdict carries no numeric confidence");
+      if (!Number.isFinite(rawconfidence))
+        throw new decisionerror("bad-verdict", "confidence", "the verdict carries no numeric confidence");
       return { value, confidence: Math.min(1, Math.max(0, rawconfidence)) };
     },
   };
@@ -193,7 +220,11 @@ export type SchemaVerdict =
  * @param config the completer, the declared schema and the policy.
  * @returns the decide function over the schema.
  */
-export function createschemamodel(config: { complete: Completer; schema: JsonObjectSchema; policy: SchemaPolicy }): (prompt: string) => Promise<{ verdict: SchemaVerdict; trail: DecisionTrail }> {
+export function createschemamodel(config: {
+  complete: Completer;
+  schema: JsonObjectSchema;
+  policy: SchemaPolicy;
+}): (prompt: string) => Promise<{ verdict: SchemaVerdict; trail: DecisionTrail }> {
   if (!config || typeof config.complete !== "function")
     throw new decisionerror("bad-policy", null, "the schema model carries an injected completer");
   const compiled = compilejsonschema(config.schema);
@@ -221,15 +252,27 @@ export function createschemamodel(config: { complete: Completer; schema: JsonObj
           return { verdict: { ok: true, value: parsed.value, confidence: parsed.confidence }, trail };
         if (policy.fallback)
           return { verdict: { ok: true, value: policy.fallback.value, confidence: parsed.confidence }, trail };
-        return { verdict: { ok: false, reason: `confidence ${parsed.confidence} below the policy floor ${policy.minconfidence}` }, trail };
+        return {
+          verdict: {
+            ok: false,
+            reason: `confidence ${parsed.confidence} below the policy floor ${policy.minconfidence}`,
+          },
+          trail,
+        };
       } catch (error) {
         lasterror = error;
         if (round === 0)
-          messages.push({ role: "assistant", content: answer }, { role: "user", content: "Answer again with only the JSON object. No prose, no fences." });
+          messages.push(
+            { role: "assistant", content: answer },
+            { role: "user", content: "Answer again with only the JSON object. No prose, no fences." },
+          );
       }
     }
     const detail = lasterror instanceof decisionerror ? lasterror.detail : null;
-    return { verdict: { ok: false, reason: `the model never answered a schema-valid object${detail ? ` (${detail})` : ""}` }, trail };
+    return {
+      verdict: { ok: false, reason: `the model never answered a schema-valid object${detail ? ` (${detail})` : ""}` },
+      trail,
+    };
   };
 }
 

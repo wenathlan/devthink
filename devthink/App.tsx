@@ -24,7 +24,7 @@ import "./Sol/sol.css";
 if (typeof window !== "undefined") installzoomlock();
 
 // the label seed rides the boot: the manifest ingests into the store and the
- // translation overrides load before the surfaces read their copy
+// translation overrides load before the surfaces read their copy
 if (typeof window !== "undefined") void seedLabels().catch(() => {});
 
 class WorkbenchErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {

@@ -3,7 +3,7 @@
  * engine row the catalog serves, with the honest empty state while the
  * catalog has not answered. Loose component of the image page.
  */
-import {ImageRegular} from "@fluentui/react-icons";
+import { ImageRegular } from "@fluentui/react-icons";
 import type { NativeApp } from "../../catalog";
 import { osText } from "../../oslabels.ts";
 

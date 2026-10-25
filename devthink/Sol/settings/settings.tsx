@@ -26,17 +26,22 @@ import {
   browserIdentity,
   browserStoreSummary,
   readBrowserPreferences,
-  saveBrowserPreference } from "../../db";
+  saveBrowserPreference,
+} from "../../db";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
-import { AboutSettings } from "../widgets";
-import { AccountsCategory } from "../widgets";
-import { AutomationMcp } from "../widgets";
-import { GatewayPairing } from "../widgets";
-import { HardDrives } from "../widgets";
-import { initPersonalization, loadThemeMirror, syncThemeFromPreference } from "../widgets";
-import { Personalization } from "../widgets";
-import { SettingsNav } from "../widgets";
 import type { PreferenceKey, SettingsCategoryId, SettingsSnapshot } from "../widgets";
+import {
+  AboutSettings,
+  AccountsCategory,
+  AutomationMcp,
+  GatewayPairing,
+  HardDrives,
+  initPersonalization,
+  loadThemeMirror,
+  Personalization,
+  SettingsNav,
+  syncThemeFromPreference,
+} from "../widgets";
 
 export * from "../widgets";
 export * from "../widgets";
@@ -69,7 +74,8 @@ export default function Settings({ embedded }: { embedded?: boolean }) {
     // machine heals it on its first read)
     theme: loadThemeMirror() ?? "dark",
     railMode: "auto",
-    interfaceZoom: "100" }));
+    interfaceZoom: "100",
+  }));
   const [publicId, setPublicId] = useState("");
   const [category, setCategory] = useState<SettingsCategoryId>("personalization");
   const paired = gatewayReady();
@@ -98,13 +104,15 @@ export default function Settings({ embedded }: { embedded?: boolean }) {
   async function saveIdentity() {
     const response = await gatewayJson<{ identity: SettingsSnapshot["identity"] }>("/identity", {
       method: "PUT",
-      body: JSON.stringify({ userId: publicId }) });
+      body: JSON.stringify({ userId: publicId }),
+    });
     setSnapshot((current) =>
       current
         ? {
             ...current,
             identity: response.identity,
-            database: { ...current.database, ownerUserId: response.identity.userId } }
+            database: { ...current.database, ownerUserId: response.identity.userId },
+          }
         : current,
     );
   }
