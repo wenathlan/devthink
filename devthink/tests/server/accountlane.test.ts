@@ -16,7 +16,7 @@ import {
   revokeaccountsession,
   verifyaccount,
   verifyaccountsession,
-} from "../../accountlane.js";
+} from "../../authfamily.js";
 
 let sequence = 0;
 function newowner(): string {

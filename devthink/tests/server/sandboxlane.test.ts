@@ -63,13 +63,36 @@ describe("sandboxlane", () => {
     expect(joinedrows(answer)).toContain("invalid session");
   });
 
-  it("answers the run line through the saddle vm modalities honestly", async () => {
+  it("answers the run line through the container modality — executing when the host carries docker, refusing honestly otherwise", async () => {
     const sessionid = newsessionid();
-    const answer = await runsandboxline(sessionid, "run");
+    // a real jailed script: the write lands in the session jail, the run
+    // executes it inside the container when the runtime answers
+    const placed = await runsandboxline(
+      sessionid,
+      "write hello.js console.log(process.version)",
+    );
+    expect(placed.exitcode).toBe(0);
+    const answer = await runsandboxline(sessionid, "run hello.js");
     expect(answer.exitcode).toBe(0);
     const text = joinedrows(answer);
-    expect(text).toContain("vm modalities");
-    expect(text).toContain("runner-node: available on this host");
+    if (text.includes("no docker runtime")) {
+      // the honest refusal: the host carries no container runtime, nothing
+      // executed, and the modality report rides along
+      expect(text).toContain("nothing executed");
+      expect(text).toContain("container-docker");
+    } else {
+      // the container executed the jailed script: the node version row and
+      // the exit row answer
+      expect(text).toContain("exit 0");
+      expect(text).toMatch(/v\d+\.\d+\.\d+/);
+    }
+  }, 120_000);
+
+  it("refuses a run line whose arguments carry a rejected character", async () => {
+    const sessionid = newsessionid();
+    const answer = await runsandboxline(sessionid, ["run", "hello.js", "a;rm"].join(" "));
+    expect(answer.exitcode).toBe(1);
+    expect(joinedrows(answer)).toContain("rejected character");
   });
 
   it("answers 127 with an honest row for an unknown tool", async () => {

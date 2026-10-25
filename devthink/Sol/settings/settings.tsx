@@ -33,8 +33,9 @@ import {
   accountbearer,
   accountsessionstate,
   clearaccountsession,
+  restoreonce,
   revokeaccountsessionbearer,
-} from "../../accountclient.ts";
+} from "../../authfamily.ts";
 import { AboutSettings } from "../widgets";
 import { AccountsCategory } from "../widgets";
 import { AutomationMcp } from "../widgets";
@@ -100,12 +101,17 @@ export default function Settings({ embedded }: { embedded?: boolean }) {
       })
       .catch(() => setSnapshot(undefined));
     // the family session: the real account lane state of this browser —
-    // the card answers when the lane answered, nothing pretends otherwise
-    if (!accountbearer()) {
-      setAccountSession(undefined);
-      return;
-    }
-    void accountsessionstate()
+    // the card answers when the lane answered, nothing pretends otherwise.
+    // the persistent restore runs first: a live family cookie answers a
+    // rotated session and parks the fresh cache copy before the read
+    void restoreonce()
+      .then(() => {
+        if (!accountbearer()) {
+          setAccountSession(undefined);
+          return undefined;
+        }
+        return accountsessionstate();
+      })
       .then((state) => setAccountSession(state ?? undefined))
       .catch(() => setAccountSession(undefined));
   }

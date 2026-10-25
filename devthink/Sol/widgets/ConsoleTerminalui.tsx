@@ -3,7 +3,7 @@
 import { Box, render, Text, useApp, useInput, useWindowSize } from "ink";
 import { useMemo, useState } from "react";
 import type { DevThinkConfig, DevThinkPaths } from "../../config.js";
-import { getIdentity, pairingStatus } from "../../identity.js";
+import { getIdentity, pairingStatus } from "../../authfamily.js";
 import { listProviders } from "../../providers.js";
 import { readPreferences, savePreference } from "../../storage.js";
 import type { ChatEvent } from "../../streaming.js";

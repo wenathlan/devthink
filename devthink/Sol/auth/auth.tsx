@@ -25,31 +25,34 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
-import { ACCOUNT_NAME_KEY, type AccountState, accountstate, createAccount, verifyAccount } from "../../accountgate.ts";
 import {
+  ACCOUNT_NAME_KEY,
+  type AccountState,
+  accountstate,
+  buildAuthorizeUrl,
+  createAccount,
   createserveraccount,
+  mintPkcePair,
+  newOAuthState,
   normalizeaccountowner,
+  type OAuthProvider,
+  oauthVerifierKey,
+  providerRow,
+  restoreonce,
   saveaccountsession,
   signinserveraccount,
   storedaccountowner,
-} from "../../accountclient.ts";
+  verifyAccount,
+} from "../../authfamily.ts";
 import { afterAuthTarget, pairingReadiness, safegatewayurl } from "../../authgate.ts";
 import { copy, loadcopy } from "../../copy.ts";
-import {
-  type OAuthProvider,
-  buildAuthorizeUrl,
-  mintPkcePair,
-  newOAuthState,
-  oauthVerifierKey,
-  providerRow,
-} from "../../oauthrow.ts";
 import { readBrowserPreferences } from "../../db";
 import { LockFace } from "../widgets";
 import { PowerMenu } from "../widgets";
 import { SignInForm, type SignInEntryFields } from "../widgets";
 import { StatusLine } from "../widgets";
 
-export * from "../../accountgate.ts";
+export * from "../../authfamily.ts";
 export * from "../../authgate.ts";
 export * from "../widgets";
 export * from "../widgets";
@@ -102,6 +105,14 @@ export default function Auth() {
   const finish = useCallback(() => {
     navigate(afterAuthTarget(window.location.search));
   }, [navigate]);
+
+  // the persistent family session: the server cookie restores the sign in
+  // without asking again — a live lane answer walks the face straight in
+  useEffect(() => {
+    void restoreonce().then((restored) => {
+      if (restored) finish();
+    });
+  }, [finish]);
 
   /**
    * the first entry: the account is created on the SERVER when the lane

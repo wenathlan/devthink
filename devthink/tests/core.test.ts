@@ -22,7 +22,7 @@ import {
   saveConfig,
   setAuthCredential,
 } from "../config.js";
-import { createPairing, createPairingLink, getIdentity, setIdentityUserId } from "../identity.js";
+import { createPairing, createPairingLink, getIdentity, setIdentityUserId } from "../authfamily.js";
 import { isCompactId } from "../ids.js";
 import { listModes } from "../modes.js";
 import { type ServerHandle, startServer } from "../server.js";

@@ -11,7 +11,7 @@
  * where the state marker names the origin (detectProviderFromState of the
  * root oauthrow.ts). The page COMPLETES the round trip: the code arrival
  * redeems the parked pkce verifier through the gateway wave
- * (exchangeoauthcode of the root accountclient.ts), the family session
+ * (exchangeoauthcodeclient of the root authfamily.ts), the family session
  * lands in the account slots, and the honest verdict rows answer — a
  * provider error answers the error face, a completed exchange answers the
  * signed-in face, a lane refusal answers the refused face, a lane that
@@ -23,8 +23,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { copy, loadcopy } from "../../copy.ts";
-import { detectProviderFromState, oauthVerifierKey } from "../../oauthrow.ts";
-import { exchangeoauthcode, saveaccountsession } from "../../accountclient.ts";
+import { detectProviderFromState, exchangeoauthcodeclient, oauthVerifierKey, saveaccountsession } from "../../authfamily.ts";
 
 /** The sign-in callback page served at /callback: the completing face of
  * every provider round trip, the honest verdict of the exchange. */
@@ -54,7 +53,7 @@ export default function Callback() {
     let alive = true;
     const verifier = window.sessionStorage.getItem(oauthVerifierKey(provider)) || "";
     const redirectUri = [window.location.origin, window.location.pathname].join("");
-    void exchangeoauthcode(provider, code, verifier, redirectUri).then((verdict) => {
+    void exchangeoauthcodeclient(provider, code, verifier, redirectUri).then((verdict) => {
       if (!alive) return;
       if (verdict.verdict === "ok") {
         saveaccountsession(verdict.session.token, verdict.session.owner);

@@ -1,4 +1,4 @@
-import { getIdentity } from "./identity.js";
+import { getIdentity } from "./authfamily.js";
 import { listSessions, loadWorkspace, type Session, type Workspace } from "./workbenchsession.js";
 import { isSecureRemoteEndpoint } from "./compatibility.js";
 import type { DevThinkConfig, DevThinkPaths } from "./config.ts";

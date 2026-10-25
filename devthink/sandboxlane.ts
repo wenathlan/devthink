@@ -10,6 +10,7 @@
  * of pretending.
  */
 
+import { spawn } from "node:child_process";
 import { appendFile, copyFile, mkdir, readdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 
@@ -41,6 +42,8 @@ const CAPS = {
   maxentries: 5_000,
   maxtreedepth: 6,
   maxtreeentries: 500,
+  timeoutms: 10_000,
+  maxprocesschars: 32_000,
 };
 
 /** resolvejail — validate the session id and answer its jail directory,
@@ -252,14 +255,75 @@ export interface SandboxAnswer {
 
 /** toolpending — the honest answer of a lane this sandbox does not carry:
  * it names the lane that owns the capability instead of pretending */
-function toolpending(kind: "network" | "run"): string[] {
-  if (kind === "network") {
+function toolpending(kind: "network"): string[] {
+  return [
+    "the network lane answers through the url gate of the gateway wave",
+    "this sandbox carries no network tool yet, so nothing was fetched",
+  ];
+}
+
+/** the container image the run lane executes inside (the node runtime the
+ * family toolchain already pins) */
+const RUNIMAGE = "node:26-alpine";
+
+/** the token shape a run argument may carry (the argv list stays the only
+ * transport — no shell ever parses a run line) */
+const RUNTOKENPATTERN = /^[a-zA-Z0-9._/@:=+,-]{1,512}$/;
+
+/** toolruncontainer — the run lane of the sandbox: the jailed script
+ * executes inside a container of the container-docker modality, the jail
+ * bind mounted at /work, the network disabled, the memory and cpu capped,
+ * the wall clock bounded. The spawn rides an argument list with no shell —
+ * the safe form the security gate prescribes. A host without the docker
+ * runtime answers the honest refusal with the modality report, never a
+ * simulated execution. */
+async function toolruncontainer(jail: string, args: string[]): Promise<string[]> {
+  // the argument shape gates answer first on every host: a rejected
+  // character refuses before anything else, so the validation never depends
+  // on which runtime the host carries
+  for (const token of args) {
+    if (!RUNTOKENPATTERN.test(token)) throw new SandboxError("the run arguments carry a rejected character");
+  }
+  if (!(await binaryonpath("docker"))) {
+    const report = await hostmodalityreport();
     return [
-      "the network lane answers through the url gate of the gateway wave",
-      "this sandbox carries no network tool yet, so nothing was fetched",
+      "the run lane isolates through the container modality of the family",
+      "this host carries no docker runtime, so nothing executed",
+      ...report.map((row) => ["  ", row].join("")),
     ];
   }
-  return ["the run lane goes through the saddle vm modalities of the family infrastructure"];
+  const scriptabsolute = contain(jail, args[0]);
+  const scriptrelative = path.relative(jail, scriptabsolute).split(path.sep).join("/");
+  const childargs = [
+    "run", "--rm",
+    "-v", [jail, ":/work"].join(""),
+    "-w", "/work",
+    "--network", "none",
+    "--memory", "512m",
+    "--cpus", "1",
+    RUNIMAGE,
+    "node", scriptrelative,
+    ...args.filter((token, index) => index > 0),
+  ];
+  const child = spawn("docker", childargs, { cwd: jail, shell: false, timeout: CAPS.timeoutms * 6 });
+  const outchunks: string[] = [];
+  const errchunks: string[] = [];
+  child.stdout.setEncoding("utf8");
+  child.stderr.setEncoding("utf8");
+  child.stdout.on("data", (chunk: string) => outchunks.push(chunk));
+  child.stderr.on("data", (chunk: string) => errchunks.push(chunk));
+  const code = await new Promise<number>((resolve) => {
+    child.on("close", (exitcode) => resolve(exitcode ?? 0));
+    child.on("error", () => resolve(127));
+  });
+  const rows: string[] = [];
+  for (const line of outchunks.join("").split(/\r?\n/).slice(0, 200)) rows.push(line);
+  const errtext = errchunks.join("");
+  if (errtext.length > 0) {
+    for (const line of errtext.split(/\r?\n/).slice(0, 60)) rows.push(["[stderr] ", line].join(""));
+  }
+  rows.push(["exit ", String(code)].join(""));
+  return rows;
 }
 
 /** helpsurface — the honest tool list of the sandbox */
@@ -282,7 +346,7 @@ function helpsurface(): string[] {
     "  stat <path>                        size, modified time and kind",
     "  clear                              empty the answer",
     "  curl | fetch | wget                pending — the network lane owns this",
-    "  run                                pending — the run lane owns this",
+    "  run <script.js> [args]            execute in the container modality",
     "  help                               this list",
   ];
 }
@@ -385,9 +449,11 @@ export async function runsandboxline(sessionid: string, line: string): Promise<S
         rows.push(...toolpending("network"));
         break;
       case "run": {
-        rows.push(...toolpending("run"));
-        const report = await hostmodalityreport();
-        for (const row of report) rows.push(["  ", row].join(""));
+        // the run lane: the jailed script executes inside the container
+        // modality on the family infrastructure — bind mounted jail, no
+        // network, memory and cpu capped, argv only, never a shell
+        if (!args[0]) throw new SandboxError("run needs a script file");
+        rows.push(...(await toolruncontainer(jail, args)));
         break;
       }
       case "help":
