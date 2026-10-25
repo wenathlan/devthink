@@ -40,6 +40,7 @@ import { type FormEvent, type KeyboardEvent, useEffect, useId, useRef, useState 
 import { chatLimit, chatText } from "../../chatlabels.ts";
 import { boot as sandboxboot, modalities as sandboxmodalities, run as sandboxrun } from "../../sandboxclient.ts";
 import { osAppLabels } from "../../catalog.ts";
+import { compactToken } from "../../ids.ts";
 
 /** one rendered log row; cls mirrors the boot, ok, err and cmdline row
  * classes the console terminal carries. */
@@ -77,11 +78,11 @@ const OFFLINE_ROW = "offline: the lane answers locally — the deployed copy car
 
 /** newsessionid — the ephemeral per-pane session id of the server lane:
  * the route gate form (letters, digits and dashes, four to sixty four
- * chars) built from an unpredicable draw; the id lives in this pane mount
- * only — no storage anywhere. */
+ * chars) built from the webcrypto well the house ids ride; the id lives in
+ * this pane mount only — no storage anywhere. */
 const newsessionid = (): string => {
-  const draw = `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 12)}`;
-  return `sb-${draw}`;
+  const draw = [Date.now().toString(36), compactToken().slice(0, 10)].join("");
+  return ["sb", draw].join("-");
 };
 
 /** the engine family identity of the pane (the catalog label row, never a
