@@ -16897,3 +16897,819 @@ body:has(.dt-nav[data-navbar="right"]) {
     min-height: 44px;
   }
 }
+
+/**
+ * @section chat craft pass — the finish of the workspace of creation
+ * The wave-2 redesign of the chat presentation. The composition stays
+ * (dock, rail, timeline, lanes); the surface finish is rebuilt: shaders-grade
+ * material (layered inset highlight + hairline + fluent depth on every
+ * standing panel), ONE hero light (the halo — light budget 1), and
+ * micro-interactions that answer (breathing focus ring, send arrival,
+ * chip glyph lift, sliding rail reveal, spring active indicator, copy
+ * morph pop, duty-cycled status ticks, cross-fading lane lamps).
+ * Cascade note: this section keeps the file's linear unlayered cascade —
+ * @layer would DEMOTE these overrides beneath the unlayered waves above
+ * (unlayered author styles win over layered ones), so hierarchy is carried
+ * by the JSDoc headers instead.
+ * @depends-on tokens --color-win --color-ink --color-signal --mask-ink
+ *   --ease-micro --ease-spring --ease-window --ease-fluent
+ *   --chat-input-border(-hover/-focus) --chat-r-* --sol-traj-user
+ *   --sol-muted --sol-error --win-accent (the @theme ladder and the
+ *   .chat-root subapp block; every color derives through color-mix in
+ *   oklab — no literal values, no new tokens)
+ * @depends-on keyframes r2bTurnRise dtcRise dtcFade dtcModelIn skeletonStep
+ *   (defined earlier in this file — reused, never duplicated)
+ * @consumed-by ChatBody ChatComposer ChatWelcome ChatTurn ChatMarkdown
+ *   ChatSidebar ChatSessionpanel ChatSandboxpane ChatCanvaspane
+ *   ChatSolboticon — the dtc-* presentation classes only; zero logic, zero
+ *   new strings: every state binds a data-attribute or an aria flag the
+ *   components already emit (data-open, data-state, data-resting,
+ *   data-verdict, data-collapsed, aria-pressed, aria-current, is-active,
+ *   is-fresh, is-copied)
+ * @guards [data-motion="reduced"] prefers-reduced-motion
+ *   prefers-reduced-transparency [data-anim-paused] (collected in §10)
+ */
+
+/* -- §0 the craft token flags: the values the well's glass reads (the state
+   ladder re-binds them on hover/focus-within); the easings stay the six
+   named curves, referenced directly -- */
+.dtc-frame {
+  --dtc-gloss: color-mix(in oklab, var(--color-ink) 5%, transparent);
+  --dtc-hairline-edge: var(--chat-input-border);
+}
+
+/* -- §1 the hero light: ONE halo behind the welcome (the single light
+   source of the chat surface; the grain film owns ::before, the halo rides
+   ::after). isolation keeps the -1 paint inside the hero's own context so
+   the wash never sinks under the canvas. -- */
+.dtc-hero {
+  isolation: isolate;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -18% -12% auto;
+    height: 72%;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(
+      52% 58% at 50% 10%,
+      color-mix(in oklab, var(--color-win) 8%, transparent),
+      transparent 72%
+    );
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    &::after {
+      opacity: 0.35;
+    }
+  }
+}
+
+/* -- §2 the composer well: the shaders-grade surface. the glass layer
+   carries the hairline PLUS the layered inset gloss the silk law pins —
+   material, not decoration. the breathing ring is a one-shot event halo
+   (replays only on a fresh focus-within, never a loop); the standing
+   hairline ring stays the accessible indicator. -- */
+.dtc-well {
+  & .dtc-well__glass {
+    box-shadow:
+      inset 0 0 0 1px var(--dtc-hairline-edge),
+      inset 0 1px 0 var(--dtc-gloss);
+  }
+
+  &:hover .dtc-well__glass {
+    --dtc-hairline-edge: var(--chat-input-border-hover);
+    --dtc-gloss: color-mix(in oklab, var(--color-ink) 7%, transparent);
+  }
+
+  &:focus-within .dtc-well__glass {
+    --dtc-hairline-edge: var(--chat-input-border-focus);
+    --dtc-gloss: color-mix(in oklab, var(--color-ink) 8%, transparent);
+  }
+
+  /* the exhale ring: settles over the first 150ms of the micro curve */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--win-accent) 26%, transparent),
+      0 0 0 4px color-mix(in oklab, var(--win-accent) 14%, transparent);
+  }
+
+  &:focus-within::after {
+    animation: dtcFocusBreath 480ms var(--ease-micro) backwards;
+  }
+
+  /* the accent caret; the invitation recedes one step while typing */
+  & .dtc-well__input {
+    caret-color: var(--win-accent);
+
+    &::placeholder {
+      transition: opacity 150ms var(--ease-micro);
+    }
+  }
+
+  &:focus-within .dtc-well__input::placeholder {
+    opacity: 0.72;
+  }
+}
+
+@keyframes dtcFocusBreath {
+  0% {
+    opacity: 1;
+    transform: scale(0.996);
+  }
+
+  32% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+/* -- §3 the signal key: the accent circle gains its palette shadow (the
+   colored drop-shadow law) and the arrival pop — the animation runs only
+   when the key flips from disabled to armed (a state change, never a
+   loop); the stop key keeps the graphite interrupt (no accent shadow) and
+   the press walks the spring. -- */
+.dtc-send {
+  &:not(:disabled):not(.dtc-send--stop) {
+    box-shadow:
+      0 8px 20px -10px color-mix(in oklab, var(--win-accent) 60%, transparent),
+      inset 0 1px 0 color-mix(in oklab, var(--color-ink) 25%, transparent);
+    animation: dtcSendArrive 260ms var(--ease-spring) backwards;
+  }
+
+  &:not(:disabled):hover {
+    transform: translateY(-1px);
+  }
+
+  &:not(:disabled):active {
+    transform: scale(0.94);
+    transition-duration: 80ms;
+  }
+}
+
+@keyframes dtcSendArrive {
+  from {
+    transform: scale(0.86);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* -- §4 the toolbar chips: the hover lifts the glyph half a pixel, the
+   press seats it back, the running engine dot ticks duty-cycled (steps,
+   the family law cadence) — a status lamp, armed only while the engine
+   answers (the dot renders only on sandboxRunning). -- */
+.dtc-chip {
+  & svg {
+    transition:
+      color 120ms ease,
+      transform 160ms var(--ease-micro);
+  }
+
+  &:hover svg {
+    transform: translateY(-0.5px);
+  }
+
+  &:active svg {
+    transform: translateY(0);
+  }
+}
+
+.dtc-chip--sb {
+  & svg {
+    transition:
+      color 120ms ease,
+      transform 160ms var(--ease-micro);
+  }
+
+  &:hover svg {
+    transform: translateY(-0.5px);
+  }
+
+  &:active svg {
+    transform: translateY(0);
+  }
+
+  & .dtc-chip--sb__dot {
+    animation: dtcDotTick 2.4s steps(8, end) infinite;
+  }
+}
+
+@keyframes dtcDotTick {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* -- §5 the welcome: the suggestion cards lift with the flyout shadow on
+   hover (transform only — no layout shift), the recents rows slide two
+   pixels and stagger behind the chips (the entry waterfall continues down
+   the column at the 60ms grammar), the ghost chip already enters at
+   120ms. -- */
+.dtc-suggest__chip {
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px -10px color-mix(in oklab, var(--mask-ink) 45%, transparent);
+  }
+
+  /* the press answers through the hover state so touch keeps the base rule */
+  &:hover:active {
+    transform: translateY(0) scale(0.97);
+  }
+
+  [data-theme="light"] &:hover {
+    box-shadow: 0 6px 16px -10px color-mix(in oklab, var(--mask-ink) 22%, transparent);
+  }
+}
+
+button.dtc-recents__row {
+  transition:
+    background 150ms ease,
+    color 150ms ease,
+    transform 160ms var(--ease-micro);
+
+  &:hover {
+    transform: translateX(2px);
+  }
+}
+
+.dtc-recents__list {
+  & li:nth-child(1) .dtc-recents__row {
+    animation: dtcRise 260ms var(--ease-micro) 130ms backwards;
+  }
+
+  & li:nth-child(2) .dtc-recents__row {
+    animation: dtcRise 260ms var(--ease-micro) 190ms backwards;
+  }
+
+  & li:nth-child(3) .dtc-recents__row {
+    animation: dtcRise 260ms var(--ease-micro) 250ms backwards;
+  }
+}
+
+/* -- §6 the turn grammar: the user bubble quiets one step (the surface
+   carries the distinction, not a loud border) and gains the inset gloss;
+   the fresh turn rises its 240ms (the r2-b keyframe, re-armed); the copy
+   morph pops on both copy keys; the code head gains the sheen; the
+   thinking dot ticks duty-cycled. -- */
+.dtc-bubble--user {
+  border-color: color-mix(in oklab, var(--sol-traj-user) 16%, transparent);
+  background: color-mix(in oklab, var(--sol-traj-user) 9%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--sol-traj-user) 10%, transparent);
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
+
+  [data-theme="light"] & {
+    box-shadow: inset 0 1px 0 color-mix(in oklab, var(--color-ink) 55%, transparent);
+  }
+}
+
+.dtc-turn {
+  /* the r2-b fresh rise, re-armed (the keyframe and its guard already live) */
+  &.is-fresh {
+    animation: r2bTurnRise 240ms var(--ease-micro) backwards;
+  }
+
+  /* the action keys rise to rest on hover (the 1px seating leaves) */
+  & .dtc-turn__act:hover {
+    transform: translateY(0);
+  }
+
+  /* the copy verdict pop: the checkmark lands with the spring */
+  & .dtc-turn__act.is-copied {
+    animation: dtcCopyPop 260ms var(--ease-spring);
+  }
+}
+
+@keyframes dtcCopyPop {
+  0% {
+    transform: scale(0.78);
+  }
+
+  55% {
+    transform: scale(1.14);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.dtc-code {
+  transition: border-color 160ms var(--ease-micro);
+
+  &:hover {
+    border-color: color-mix(in oklab, var(--color-ink) 10%, transparent);
+  }
+
+  /* the head sheen over the existing band; the keys keep their ghost grammar */
+  & .dtc-code__head {
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-ink) 4%, transparent),
+      color-mix(in oklab, var(--color-ink) 2%, transparent)
+    );
+  }
+
+  & .dtc-code__key.is-copied {
+    animation: dtcCopyPop 260ms var(--ease-spring);
+  }
+
+  [data-theme="light"] & {
+    &:hover {
+      border-color: color-mix(in oklab, var(--mask-ink) 16%, transparent);
+    }
+
+    & .dtc-code__head {
+      background: linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--mask-ink) 3%, transparent),
+        color-mix(in oklab, var(--mask-ink) 1%, transparent)
+      );
+    }
+  }
+}
+
+/* the generation status dot: the duty-cycled tick (the skeleton law,
+   reused from the family motion block) */
+.dtc-thinking__bar {
+  animation: skeletonStep 2.4s steps(8, end) infinite;
+}
+
+/* the error row lands with the entry fade; the retry lifts */
+.dtc-error {
+  animation: dtcFade 240ms var(--ease-micro) backwards;
+}
+
+.dtc-error__retry {
+  transition:
+    background 120ms ease,
+    transform 160ms var(--ease-micro);
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.97);
+  }
+}
+
+/* -- §7 the rail: the collapse breathes (width + padding walk the window
+   curve), the active conversation and the current page grow a 3px
+   indicator with the spring, the hover reveal of the pin and delete keys
+   slides in instead of fading, the search field gains the focus glow,
+   the brand mark answers the hover. -- */
+.dtc-rail {
+  transition:
+    width 200ms var(--ease-window),
+    padding 200ms var(--ease-window);
+}
+
+.dtc-item {
+  &::before {
+    /* the shared indicator bar (drawn per row; only the active state grows it) */
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 3px;
+    height: 14px;
+    border-radius: 2px;
+    background: var(--color-signal);
+    transform: translateY(-50%) scaleY(0);
+    transform-origin: center;
+    transition: transform 220ms var(--ease-spring);
+    pointer-events: none;
+  }
+
+  &.is-active::before {
+    transform: translateY(-50%) scaleY(1);
+  }
+
+  & .dtc-item__pin,
+  & .dtc-item__del {
+    transform: translateX(3px);
+    transition:
+      opacity 150ms ease,
+      transform 180ms var(--ease-micro),
+      color 150ms ease,
+      background 150ms ease;
+  }
+
+  &:hover .dtc-item__pin,
+  &:hover .dtc-item__del,
+  & .dtc-item__pin:focus-visible,
+  & .dtc-item__del:focus-visible {
+    transform: translateX(0);
+  }
+}
+
+.dtc-nav {
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 3px;
+    height: 14px;
+    border-radius: 2px;
+    background: var(--color-signal);
+    transform: translateY(-50%) scaleY(0);
+    transform-origin: center;
+    transition: transform 220ms var(--ease-spring);
+    pointer-events: none;
+  }
+
+  &[aria-current="page"]::before {
+    transform: translateY(-50%) scaleY(1);
+  }
+}
+
+/* the session-panel quick links share the glyph nudge */
+.dtc-session__link {
+  & svg {
+    transition: transform 160ms var(--ease-micro);
+  }
+
+  &:hover svg {
+    transform: translateX(1px);
+  }
+}
+
+.dtc-rail__field {
+  transition:
+    border-color 150ms ease,
+    box-shadow 180ms var(--ease-micro);
+
+  &:focus-within {
+    border-color: var(--chat-input-border-focus);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--win-accent) 10%, transparent);
+  }
+}
+
+.dtc-rail__brand {
+  & svg {
+    transition: transform 200ms var(--ease-spring);
+  }
+
+  &:hover svg {
+    transform: scale(1.08);
+  }
+}
+
+/* -- §8 the session panel: the acrylic sheet wears the layered material —
+   the inset hairline, the top gloss, the fluent depth (the start-menu
+   recipe finished); the readouts and the model card gain the same gloss;
+   the gateway pill cross-fades between its data-state values. -- */
+.dtc-session {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--color-ink) 7%, transparent),
+    inset 0 1px 0 color-mix(in oklab, var(--color-ink) 5%, transparent),
+    0 2px 8px color-mix(in oklab, var(--mask-ink) 30%, transparent),
+    0 16px 48px color-mix(in oklab, var(--mask-ink) 45%, transparent);
+
+  [data-theme="light"] & {
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, var(--mask-ink) 8%, transparent),
+      inset 0 1px 0 color-mix(in oklab, var(--color-ink) 70%, transparent),
+      0 2px 8px color-mix(in oklab, var(--mask-ink) 12%, transparent),
+      0 16px 48px color-mix(in oklab, var(--mask-ink) 18%, transparent);
+  }
+}
+
+.dtc-modelcard {
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--color-ink) 4%, transparent);
+}
+
+.dtc-readout {
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--color-ink) 4%, transparent);
+  transition: background 140ms ease;
+
+  &:hover {
+    background: color-mix(in oklab, var(--color-ink) 6%, transparent);
+  }
+
+  [data-theme="light"] & {
+    box-shadow: inset 0 1px 0 color-mix(in oklab, var(--color-ink) 80%, transparent);
+
+    &:hover {
+      background: color-mix(in oklab, var(--mask-ink) 3%, transparent);
+    }
+  }
+}
+
+.dtc-gw__pill {
+  &,
+  &::before {
+    transition:
+      color 160ms var(--ease-micro),
+      background-color 160ms var(--ease-micro),
+      border-color 160ms var(--ease-micro);
+  }
+}
+
+.dtc-session__export {
+  transition:
+    color 150ms ease,
+    background 150ms ease,
+    transform 160ms var(--ease-micro);
+
+  &:not(:disabled):hover {
+    transform: translateY(-1px);
+  }
+}
+
+/* -- §9 the lanes (sandbox, canvas): the composer's material grammar — the
+   inset gloss on the pane edge, the lamp cross-fading between halted,
+   booting and running with a spring pop on the dot, the boot rows fading
+   in as the dmesg streams, the lifecycle buttons on the spring press, the
+   task chip lifting. -- */
+.dtc-sb {
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--color-ink) 4%, transparent);
+
+  & .dtc-sb__lamp {
+    transition:
+      color 160ms var(--ease-micro),
+      background-color 160ms var(--ease-micro),
+      border-color 160ms var(--ease-micro);
+  }
+
+  & .dtc-sb__dot {
+    transition:
+      background-color 160ms var(--ease-micro),
+      transform 260ms var(--ease-spring);
+  }
+
+  /* the running lamp pops once per state arrival (data-state flag) */
+  & .dtc-sb__lamp[data-state="running"] .dtc-sb__dot {
+    animation: dtcDotPop 280ms var(--ease-spring);
+  }
+
+  & .dtc-sb__out > span {
+    animation: dtcRowIn 160ms var(--ease-micro) backwards;
+  }
+
+  & .dtc-sb__btn {
+    transition:
+      background 150ms ease,
+      border-color 150ms ease,
+      transform 160ms var(--ease-spring);
+
+    &:active:not(:disabled) {
+      transform: scale(0.95);
+    }
+  }
+
+  [data-theme="light"] & {
+    box-shadow: inset 0 1px 0 color-mix(in oklab, var(--color-ink) 60%, transparent);
+  }
+}
+
+@keyframes dtcDotPop {
+  0% {
+    transform: scale(0.6);
+  }
+
+  60% {
+    transform: scale(1.25);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes dtcRowIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.dtc-cv {
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--color-ink) 4%, transparent);
+
+  [data-theme="light"] & {
+    box-shadow: inset 0 1px 0 color-mix(in oklab, var(--color-ink) 60%, transparent);
+  }
+}
+
+.dtc-tasks__chip {
+  transition:
+    color 150ms var(--ease-fluent),
+    border-color 150ms var(--ease-fluent),
+    transform 160ms var(--ease-micro);
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.97);
+  }
+}
+
+.dtc-task {
+  transition:
+    border-color 160ms var(--ease-micro),
+    background-color 160ms var(--ease-micro);
+
+  &:hover {
+    border-color: color-mix(in oklab, var(--sol-muted) 30%, transparent);
+  }
+
+  /* the failure keeps its own walk (the data-verdict flag) */
+  &[data-verdict="fail"]:hover {
+    border-color: color-mix(in oklab, var(--sol-error) 44%, transparent);
+  }
+}
+
+/* the lineage flyout enters with the menu curve (mounted per open) */
+.dtc-lineage__menu {
+  animation: dtcModelIn 160ms var(--ease-fluent) backwards;
+  transform-origin: top right;
+}
+
+/* -- §9b the sol mark: the idle treatment — one duty-cycled glint on the
+   core (steps, the family cadence, 7s period), pausable through the house
+   hook. thinking keeps the existing 10s rotation; streaming and speaking
+   keep their existing stories. -- */
+.dtc-solbot {
+  &[data-state="idle"] .dtc-solbot__core {
+    animation: dtcSolIdle 7s steps(14, end) infinite;
+    transform-box: view-box;
+    transform-origin: 50% 50%;
+  }
+}
+
+@keyframes dtcSolIdle {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.8;
+    transform: scale(0.97);
+  }
+}
+
+[data-anim-paused] {
+  & .dtc-solbot__core,
+  & .dtc-solbot__rays,
+  & .dtc-thinking__bar,
+  & .dtc-chip--sb__dot {
+    animation-play-state: paused;
+  }
+}
+
+/* -- §10 the guards: every new motion idles inert under the os setting and
+   the system preference alike; the pause hook stops the loops; the touch
+   surfaces seat the slid keys. the standing hairline focus ring, the
+   pressed states and the color walks remain — the feedback never dies,
+   only the movement. -- */
+[data-motion="reduced"] {
+  & .dtc-well:focus-within::after,
+  & .dtc-send:not(:disabled):not(.dtc-send--stop),
+  & .dtc-turn.is-fresh,
+  & .dtc-turn__act.is-copied,
+  & .dtc-code__key.is-copied,
+  & .dtc-thinking__bar,
+  & .dtc-chip--sb__dot,
+  & .dtc-sb__lamp[data-state="running"] .dtc-sb__dot,
+  & .dtc-sb__out > span,
+  & .dtc-error,
+  & .dtc-lineage__menu,
+  & .dtc-solbot[data-state="idle"] .dtc-solbot__core,
+  & .dtc-recents__list .dtc-recents__row {
+    animation: none;
+  }
+
+  & .dtc-rail,
+  & .dtc-item::before,
+  & .dtc-nav::before,
+  & .dtc-item__pin,
+  & .dtc-item__del {
+    transition: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dtc-well:focus-within::after,
+  .dtc-send:not(:disabled):not(.dtc-send--stop),
+  .dtc-turn.is-fresh,
+  .dtc-turn__act.is-copied,
+  .dtc-code__key.is-copied,
+  .dtc-thinking__bar,
+  .dtc-chip--sb__dot,
+  .dtc-sb__lamp[data-state="running"] .dtc-sb__dot,
+  .dtc-sb__out > span,
+  .dtc-error,
+  .dtc-lineage__menu,
+  .dtc-solbot[data-state="idle"] .dtc-solbot__core,
+  .dtc-recents__list .dtc-recents__row {
+    animation: none;
+  }
+
+  .dtc-rail,
+  .dtc-item::before,
+  .dtc-nav::before,
+  .dtc-item__pin,
+  .dtc-item__del {
+    transition: none;
+  }
+
+  /* the lifts flatten: no travel on a reduced-motion surface */
+  .dtc-suggest__chip:hover,
+  .dtc-send:not(:disabled):hover,
+  .dtc-session__export:not(:disabled):hover,
+  .dtc-tasks__chip:hover,
+  .dtc-error__retry:hover {
+    transform: none;
+  }
+}
+
+/* the coarse pointers: the always-visible rail keys seat at rest (the
+   w6-b touch reveal law keeps them opaque; the slide stays a hover grace) */
+@media (hover: none), (pointer: coarse) {
+  .dtc-item__pin,
+  .dtc-item__del {
+    transform: none;
+  }
+}
+
+/* ==========================================================================
+   THE PREMIUM APPICON SKIN — the drawn icon set (Sol/widgets/ShellAppicons.tsx)
+   The drawn plates carry their own paint (the identity gradient, the rim
+   light, the grounded shade ride the SVG defs); what stays here is the one
+   gesture the stylesheet owns: the specular sheen sweep the live flag of
+   the app tile (data-live, raised by apptile.tsx on hover/focus of the
+   wrapper) drives across the face — one pass, then dark again. The glyph
+   lift stays inline in the component (the transform the tile contract
+   reads). Class family: .dtIcon / .dtIconGlyph / .dtIconSheen (the camel
+   hooks the set emits), tokens: --ease-micro from the @theme foundation.
+   ========================================================================== */
+
+.dtIconSheen {
+  opacity: 0;
+  transform-box: view-box;
+}
+
+.dtIcon[data-live="true"] .dtIconSheen {
+  animation: dtIconSheen 480ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)) forwards;
+}
+
+@keyframes dtIconSheen {
+  from {
+    opacity: 0;
+    transform: translateX(-20px) skewX(-16deg);
+  }
+  30% {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(36px) skewX(-16deg);
+  }
+}
+
+/* the motion law: the sweep is decorative — reduced motion keeps the
+   plates still (the glyph lift settles by its own inline transition) */
+@media (prefers-reduced-motion: reduce) {
+  .dtIcon[data-live="true"] .dtIconSheen {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+[data-motion="reduced"] .dtIcon[data-live="true"] .dtIconSheen {
+  animation: none;
+  opacity: 0;
+}
