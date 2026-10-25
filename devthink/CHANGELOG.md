@@ -1,5 +1,9 @@
 # DevThink release notes
 
+## 2.0.140
+
+This release is the registry lane rung of the ladder: the github npm publish lane installs the os tree before it packs, and the setup node registry step of that lane leaves the github registry redirect in the runner temp npmrc the NPM_CONFIG_USERCONFIG env points at — bun honors the env, the scope resolved against npm.pkg.github.com with no token, and the frozen install refused the saddle engine package with a 403. The install step of that lane empties the userconfig so the project npmrc answers instead and the install resolves the public family mirror every registry lane publishes; the publish steps keep the registry configuration untouched. The rung stamps the whole metadata family at 2.0.140 with the freeze artifacts re-stamped, and the full battery walks again over the healed lane.
+
 ## 2.0.139
 
 This release is the twin lane rung of the ladder: the npm publish of the release ladder and the twin npm lane of the publish workflow race the same rung (the release published event fires the twin while the ladder still walks), and when the twin won the race the ladder's bounded retry treated the already-published answer as a retryable failure - so the retry loop rechecks the registry between attempts and a version that landed through the sibling answers as the idempotent win it is, never an error. The rung stamps the whole metadata family at 2.0.139 with the freeze artifacts re-stamped, and the battery answers green: the code scanning page of the repository carries zero open findings (the supply chain pins closed the moving references, the webcrypto well closed the insecure randomness, and the npm hash limitation answers as the documented wont fix it is), the ten workflow lanes stand green together, and every landing of the wave carries the verified signature of the squash vehicle with a completed check before the merge.
