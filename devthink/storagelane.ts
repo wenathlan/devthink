@@ -40,8 +40,8 @@ let cacheddatabase: Database | undefined;
 
 /** The schema statements the storage store lays down once per fresh file. */
 const SCHEMASTATEMENTS = [
-  "CREATE TABLE IF NOT EXISTS storageobjects (owner TEXT NOT NULL, key TEXT NOT NULL, content BLOB NOT NULL, bytes INTEGER NOT NULL, updated_at TEXT NOT NULL, PRIMARY KEY (owner, key))",
-  "CREATE INDEX IF NOT EXISTS storageobjects_owner ON storageobjects(owner, updated_at DESC)",
+  "CREATE TABLE IF NOT EXISTS storageobjects (owner TEXT NOT NULL, key TEXT NOT NULL, content BLOB NOT NULL, bytes INTEGER NOT NULL, updatedat TEXT NOT NULL, PRIMARY KEY (owner, key))",
+  "CREATE INDEX IF NOT EXISTS storageobjectsowner ON storageobjects(owner, updatedat DESC)",
 ];
 
 /** Opens the storage database once per process and lays the vault-shaped schema down. */
@@ -112,7 +112,7 @@ export function putobject(owner: string, key: string, content: string, quotamb: 
   const updatedAt = new Date().toISOString();
   database
     .prepare(
-      "INSERT INTO storageobjects (owner, key, content, bytes, updated_at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(owner, key) DO UPDATE SET content = excluded.content, bytes = excluded.bytes, updated_at = excluded.updated_at",
+      "INSERT INTO storageobjects (owner, key, content, bytes, updatedat) VALUES (?, ?, ?, ?, ?) ON CONFLICT(owner, key) DO UPDATE SET content = excluded.content, bytes = excluded.bytes, updatedat = excluded.updatedat",
     )
     .run(owner, key, content, bytes, updatedAt);
   return { owner, key, content, bytes, updatedAt };
@@ -124,11 +124,11 @@ export function getobject(owner: string, key: string): StorageObject | null {
   if (!keyvalid(key)) throw new StorageError("invalid key");
   const database = storagedatabase();
   const rows = database
-    .prepare("SELECT owner, key, content, bytes, updated_at FROM storageobjects WHERE owner = ? AND key = ?")
-    .all(owner, key) as Array<{ owner: string; key: string; content: string; bytes: number; updated_at: string }>;
+    .prepare("SELECT owner, key, content, bytes, updatedat FROM storageobjects WHERE owner = ? AND key = ?")
+    .all(owner, key) as Array<{ owner: string; key: string; content: string; bytes: number; updatedat: string }>;
   const row = rows[0];
   if (!row) return null;
-  return { owner: row.owner, key: row.key, content: row.content, bytes: Number(row.bytes), updatedAt: row.updated_at };
+  return { owner: row.owner, key: row.key, content: row.content, bytes: Number(row.bytes), updatedAt: row.updatedat };
 }
 
 /** Removes one object of an owner, answering whether something was removed. */
@@ -157,9 +157,9 @@ export function listobjects(owner: string): Array<{ key: string; bytes: number; 
   if (!ownervalid(owner)) throw new StorageError("invalid owner");
   const database = storagedatabase();
   const rows = database
-    .prepare("SELECT key, bytes, updated_at FROM storageobjects WHERE owner = ? ORDER BY updated_at DESC LIMIT 500")
-    .all(owner) as Array<{ key: string; bytes: number; updated_at: string }>;
-  return rows.map((row) => ({ key: row.key, bytes: Number(row.bytes), updatedAt: row.updated_at }));
+    .prepare("SELECT key, bytes, updatedat FROM storageobjects WHERE owner = ? ORDER BY updatedat DESC LIMIT 500")
+    .all(owner) as Array<{ key: string; bytes: number; updatedat: string }>;
+  return rows.map((row) => ({ key: row.key, bytes: Number(row.bytes), updatedAt: row.updatedat }));
 }
 
 /** Ensures the storage database exists before the first route touches it. */
