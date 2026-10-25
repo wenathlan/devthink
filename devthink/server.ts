@@ -925,6 +925,19 @@ import {
   putobject,
   usagefor,
 } from "./storagelane.js";
+import {
+  AccountError,
+  accountsessiontokenvalid,
+  createaccount,
+  exchangeoauthcode,
+  issueaccountsession,
+  prepareaccounts,
+  revokeaccountsession,
+  verifyaccount,
+  verifyaccountsession,
+} from "./accountlane.js";
+import { GateError } from "./urlgate.js";
+import { OAUTH_PROVIDERS, type OAuthProvider } from "./oauthrow.ts";
 
 /** route resources per version — the canonical 7 */
 const resources = ["keys", "models", "chat/completions", "completions", "messages", "responses", "embeddings"] as const;
@@ -1023,6 +1036,9 @@ async function createserver(): Promise<Hono> {
   // seed the bundle already carries
   const seedcopyrows = Object.entries(copyseed()).map(([key, text]) => ({ key, text }));
   await upsertcopyrows(seedcopyrows);
+  // the account lane boots with the store: the data home exists, the
+  // account schema lays down before the first route touches it
+  await prepareaccounts();
   app.get("/api/v1/copy", async (c) => {
     const rows = await listcopyrows();
     return c.json({ rows });
@@ -1186,6 +1202,85 @@ async function createserver(): Promise<Hono> {
     const owner = c.req.query("owner") ?? "";
     if (!/^[a-z0-9][a-z0-9-]{5,63}$/i.test(owner)) return c.json({ error: "invalid owner" }, 400);
     return c.json({ usage: usagefor(owner, await storagequotafor(owner)) });
+  });
+
+  // the account lane: the REAL accounts of the platform — the shared
+  // sqlite store in the data home beside the storage one, outside every
+  // served root. A family deploy pointing the shared data home (or
+  // DATABASE_URL) at the same store logs the whole family in with one
+  // session: every device reads the same rows. The secret rides only as a
+  // salted scrypt digest, the session bearer only as its sha-256 digest,
+  // and the oauth exchange redeems the provider code through the url gate
+  // (every hop resolves public addresses, the provider rides the oauthrow
+  // catalog).
+  const accountownerpattern = /^[a-z0-9][a-z0-9-]{2,63}$/i;
+  const accountbearer = (header: string | undefined): string => {
+    const value = typeof header === "string" ? header : "";
+    if (!/^bearer\s+/i.test(value)) return "";
+    const token = value.replace(/^bearer\s+/i, "").trim();
+    return accountsessiontokenvalid(token) ? token : "";
+  };
+  app.post("/api/v1/accounts", async (c) => {
+    const body = (await c.req.json().catch(() => null)) as { owner?: unknown; secret?: unknown } | null;
+    const owner = typeof body?.owner === "string" ? body.owner : "";
+    const secret = typeof body?.secret === "string" ? body.secret : "";
+    if (!accountownerpattern.test(owner)) return c.json({ error: "invalid owner" }, 400);
+    try {
+      const account = createaccount(owner, secret);
+      const session = issueaccountsession(account.id);
+      return c.json(
+        { owner: account.owner, createdAt: account.createdAt, token: session.token, expiresAt: session.expiresAt },
+        201,
+      );
+    } catch (error) {
+      if (error instanceof AccountError) {
+        return c.json({ error: error.message }, error.message.includes("taken") ? 409 : 400);
+      }
+      return c.json({ error: "the account could not be created" }, 500);
+    }
+  });
+  app.post("/api/v1/accounts/session", async (c) => {
+    const body = (await c.req.json().catch(() => null)) as { owner?: unknown; secret?: unknown } | null;
+    const owner = typeof body?.owner === "string" ? body.owner : "";
+    const secret = typeof body?.secret === "string" ? body.secret : "";
+    if (!accountownerpattern.test(owner)) return c.json({ error: "invalid owner" }, 400);
+    const account = verifyaccount(owner, secret);
+    if (!account) return c.json({ error: "the owner and the secret do not match" }, 401);
+    const session = issueaccountsession(account.id);
+    return c.json({ owner: account.owner, token: session.token, expiresAt: session.expiresAt });
+  });
+  app.get("/api/v1/accounts/session", async (c) => {
+    const view = verifyaccountsession(accountbearer(c.req.header("authorization")));
+    if (!view) return c.json({ error: "a current account session bearer is required" }, 401);
+    return c.json({ owner: view.owner, createdAt: view.createdAt, expiresAt: view.expiresAt });
+  });
+  app.delete("/api/v1/accounts/session", async (c) => {
+    const token = accountbearer(c.req.header("authorization"));
+    if (!token || !revokeaccountsession(token)) {
+      return c.json({ error: "a current account session bearer is required" }, 401);
+    }
+    return c.json({ revoked: true });
+  });
+  app.post("/api/v1/auth/exchange", async (c) => {
+    const body = (await c.req.json().catch(() => null)) as {
+      provider?: unknown;
+      code?: unknown;
+      verifier?: unknown;
+      redirectUri?: unknown;
+    } | null;
+    const provider = typeof body?.provider === "string" ? body.provider : "";
+    const code = typeof body?.code === "string" ? body.code : "";
+    const verifier = typeof body?.verifier === "string" ? body.verifier : "";
+    const redirectUri = typeof body?.redirectUri === "string" ? body.redirectUri : "";
+    if (!OAUTH_PROVIDERS.includes(provider as OAuthProvider)) return c.json({ error: "unknown provider" }, 400);
+    try {
+      const answer = await exchangeoauthcode(provider, code, verifier, redirectUri);
+      return c.json(answer, 201);
+    } catch (error) {
+      if (error instanceof AccountError) return c.json({ error: error.message }, 400);
+      if (error instanceof GateError) return c.json({ error: "the provider exchange did not answer" }, 502);
+      return c.json({ error: "the exchange failed" }, 500);
+    }
   });
 
   // register routes for every configured version

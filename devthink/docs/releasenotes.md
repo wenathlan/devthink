@@ -1,6 +1,6 @@
-# Devthink 2.0.145
+# Devthink 2.0.146
 
-This release is the client and storage rung of the ladder: the chat sandbox pane stops pretending — every boot and command tries the real server lane first through a bounded client module that rides the paired gateway context, the server answers render exactly like the local rows with the exit code honored, and when no server answers (the static deploy) the pane falls back to the browser pure simulator and declares the fallback once per session with an honest offline row, so the visitor always knows which lane answered. The sandbox tool bridge keeps its contract and rides the same client first path. The storage lane lands beside it: the vault shaped record surface (owner, key, content, bytes, updated) stores everything through the node native sqlite the workbench mirror already carries, the database file sits in the devthink data home outside every served root so the visitor can never download it, the quota composes from the plan the owner of the account set with the generous 900 megabyte floor and never a hardcoded cap, and five routes under /api/v1/storage expose quota, objects, usage and removal with six real tests over the roundtrip, the replacement, the quota refusal and the key shape. The metadata family stamps 2.0.145 with the battery artifacts re-stamped and the registry lane answers the publish of the rung.
+This release is the accounts and surfaces rung of the ladder: the account creation of the platform becomes real — the server owns the accounts now, the secret answers as a scrypt digest bound to a per account salt with the session bearer stored only as its sha-256 shadow, the family session rides the shared data home so one login covers the whole family when the deploy points the same store, and the routes under /api/v1/accounts and /api/v1/auth/exchange answer create, signin, session, revoke and the oauth token exchange. The exchange closes the dead end: the callback completes the flow through the provider token endpoints behind the url gate, and the url gate is the one door every server url request rides — http and https only, every hostname resolved and every resolved address held to the public ranges, refused by address and never by name. The client face goes server first with the honest offline row and the local account answers only as the declared fallback, the account category shows the real session state with the revoke action, and the family session parks in the session storage as the disposable cache it is. The surfaces rung rides beside it: settings, console and My Files receive the craft grammar — the moving nav indicator, the spring settled segmented controls and pickers, the streaming terminal rows with the duty cycled cursor and the staged boot graph, and the My Files explorer with the collapsible tree, the cross fading views, the drag over wash and the capacity bar that answers the real usage and quota of the infrastructure storage when the lane is up and the browser estimate with the hatched honesty marker when it is not. The metadata family stamps 2.0.146 with the battery artifacts re-stamped and the registry lane answers the publish of the rung.
 
 ## Distribution channels
 
@@ -8,22 +8,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.145.tgz`
+- `wenathlan-devthink-2.0.146.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.145.nupkg`
+- `devthink.2.0.146.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.145.pom`
-- `devthink-2.0.145.jar`
-- `devthink2.0.145.zip`
-- `devthink-declarations-2.0.145.zip`
+- `devthink-2.0.146.pom`
+- `devthink-2.0.146.jar`
+- `devthink2.0.146.zip`
+- `devthink-declarations-2.0.146.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -37,77 +37,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.145.gem`
+- `devthink-2.0.146.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.145.vsix`
+- `devthink-vscode-2.0.146.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.145.xpi`
+- `devthink-firefox-2.0.146.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.145.zip`
+- `devthink-safari-2.0.146.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.145.zip`
-- `devthink-2.0.145-source.tar.xz`
-- `devthink-nativehost-2.0.145.template.json`
+- `devthink2.0.146.zip`
+- `devthink-2.0.146-source.tar.xz`
+- `devthink-nativehost-2.0.146.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.145.zip`
+- `devthink-site-2.0.146.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.145.zip`
+- `devthink-declarations-2.0.146.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.145.json`
-- `devthink-attestations-2.0.145.json`
-- `devthink-artifactmanifest-2.0.145.json`
+- `devthink-sbom-2.0.146.json`
+- `devthink-attestations-2.0.146.json`
+- `devthink-artifactmanifest-2.0.146.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.145.tgz`
-- `devthink.2.0.145.nupkg`
-- `devthink-2.0.145.pom`
-- `devthink-2.0.145.jar`
-- `devthink-2.0.145.gem`
+- `wenathlan-devthink-2.0.146.tgz`
+- `devthink.2.0.146.nupkg`
+- `devthink-2.0.146.pom`
+- `devthink-2.0.146.jar`
+- `devthink-2.0.146.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.145.vsix`
-- `devthink-firefox-2.0.145.xpi`
-- `devthink-safari-2.0.145.zip`
-- `devthink2.0.145.zip`
-- `devthink-2.0.145-source.tar.xz`
-- `devthink-nativehost-2.0.145.template.json`
-- `devthink-site-2.0.145.zip`
-- `devthink-declarations-2.0.145.zip`
-- `devthink-sbom-2.0.145.json`
-- `devthink-attestations-2.0.145.json`
-- `devthink-artifactmanifest-2.0.145.json`
+- `devthink-vscode-2.0.146.vsix`
+- `devthink-firefox-2.0.146.xpi`
+- `devthink-safari-2.0.146.zip`
+- `devthink2.0.146.zip`
+- `devthink-2.0.146-source.tar.xz`
+- `devthink-nativehost-2.0.146.template.json`
+- `devthink-site-2.0.146.zip`
+- `devthink-declarations-2.0.146.zip`
+- `devthink-sbom-2.0.146.json`
+- `devthink-attestations-2.0.146.json`
+- `devthink-artifactmanifest-2.0.146.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 
@@ -115,7 +115,7 @@ Every artifact above attaches to the release of the immutable tag beside the che
 
 ## The chain to this candidate
 
-Every release from the 1.1.31 base to this candidate, grouped by the phases the roadmap declared: 140 released versions the changelog records, 69 roadmap sections the phases draw their titles from.
+Every release from the 1.1.31 base to this candidate, grouped by the phases the roadmap declared: 141 released versions the changelog records, 69 roadmap sections the phases draw their titles from.
 
 ### The base (1.1.31)
 

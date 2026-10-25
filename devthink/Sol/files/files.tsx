@@ -70,6 +70,7 @@ import {
   EXPLORER_PLATFORMS,
   FOLDER_DETAILS,
   FOLDER_NAMES,
+  formatbytes,
   type ExplorerItemKind,
   type ExplorerLocation,
   type ExplorerSort,
@@ -80,8 +81,9 @@ import {
   SHELL_FOLDER_ORDER,
   sortitems,
 } from "../../fileexplorer.ts";
-import { browserStoreSummary } from "../../db";
+import { browserIdentity, browserStoreSummary } from "../../db";
 import { drives, type HardDrive } from "../../harddrives.ts";
+import { storageusage, type StorageLaneUsage } from "../../storageusageclient.ts";
 import { ShellChrome } from "@/widgets/ShellShellchrome";
 import { AppTile } from "@/widgets";
 import { DriveIcon, PlatformMark, ShellFolderIcon, ThisPcMark } from "../widgets";
@@ -121,6 +123,30 @@ async function createnewdrive(): Promise<HardDrive> {
   return newdrive(undefined);
 }
 
+/** one collapsible group of the nav pane tree: the heading rides a real
+ * button with the expand caret (the rotate answers aria-expanded), the
+ * list mounts only while the group stands open. Presentation state only —
+ * the accessible name stays the heading text, the state stays aria. */
+function NavGroup({ heading, children }: { heading: React.ReactNode; children: React.ReactNode }) {
+  const [open, setOpen] = useState(true);
+  return (
+    <>
+      <button
+        type="button"
+        className="dtfx-nav__group"
+        aria-expanded={open}
+        onClick={() => setOpen((current) => !current)}
+      >
+        <span className="dtfx-nav__heading dtfx-nav__heading--live">{heading}</span>
+        <span className="dtfx-nav__caret" aria-hidden="true">
+          <ChevronDown fontSize={10} />
+        </span>
+      </button>
+      {open ? children : null}
+    </>
+  );
+}
+
 /** The My Files app: the Windows body when embedded (the desktop window
  * hosts it without the shell), the full surface with the taskbar on the
  * route. */
@@ -140,12 +166,20 @@ export default function Files({ embedded }: { embedded?: boolean }) {
   const [query, setQuery] = useState("");
   const [view, setView] = useState<ExplorerViewMode>("grid");
   const [sort, setSort] = useState<ExplorerSort>("name");
+  /** the drag-over flag of the content area (the explorer grammar wash —
+   * presentation only: no drop behavior, no preventDefault, the flag just
+   * paints the state the stylesheet reads) */
+  const [dragover, setDragover] = useState(false);
 
   /* -------------------------------- live data ------------------------------ */
 
   const [drivelist, setDrivelist] = useState<HardDrive[]>([]);
   const [activedrive, setActivedrive] = useState<HardDrive>();
   const [capacity, setCapacity] = useState<Capacity>();
+  /** the storage lane answer (the real usage and the plan quota of this
+   * identity) — undefined while no lane stands and the bar rides the
+   * browser estimate with its honest label */
+  const [laneusage, setLaneusage] = useState<StorageLaneUsage>();
   const [summary, setSummary] = useState<Summary>();
   const [busy, setBusy] = useState(false);
 
@@ -178,6 +212,16 @@ export default function Files({ embedded }: { embedded?: boolean }) {
         })
         .catch(() => undefined);
     }
+    // the lane answer of the capacity bar: the real usage and plan quota of
+    // this identity when a server lane stands — the client answers null on
+    // every failure mode and the bar keeps the browser estimate, honestly
+    // labeled
+    void browserIdentity()
+      .then((identity) => storageusage(identity.userId))
+      .then((answer) => {
+        if (answer) setLaneusage(answer);
+      })
+      .catch(() => undefined);
     void coreModuleTable()
       .then(setModules)
       .catch(() => undefined);
@@ -640,11 +684,12 @@ export default function Files({ embedded }: { embedded?: boolean }) {
 
         {/* ------------------------------- the body --------------------------------- */}
         <div className="dtfx-body">
-          {/* the nav pane: quick access, This PC with the drives, the
-              opt-in external platforms */}
+          {/* the nav pane: the explorer tree — quick access, This PC with
+              the drives, the opt-in external platforms, each group a real
+              collapsible node with the rotating expand caret */}
           <nav className="dtfx-nav" aria-label="Explorer navigation">
-            <p className="dtfx-nav__heading">{osText("explorer.quickAccess")}</p>
-            <ul className="dtfx-nav__list">
+            <NavGroup heading={osText("explorer.quickAccess")}>
+              <ul className="dtfx-nav__list">
               {SHELL_FOLDER_ORDER.map((folder) => (
                 <li key={folder}>
                   <button
@@ -664,13 +709,18 @@ export default function Files({ embedded }: { embedded?: boolean }) {
                   </button>
                 </li>
               ))}
-            </ul>
+              </ul>
+            </NavGroup>
 
-            <p className="dtfx-nav__heading">
-              <ThisPcMark size={14} />
-              {osText("explorer.thisPc")}
-            </p>
-            <ul className="dtfx-nav__list">
+            <NavGroup
+              heading={
+                <>
+                  <ThisPcMark size={14} />
+                  {osText("explorer.thisPc")}
+                </>
+              }
+            >
+              <ul className="dtfx-nav__list">
               <li>
                 <button
                   type="button"
@@ -695,7 +745,11 @@ export default function Files({ embedded }: { embedded?: boolean }) {
                   >
                     <span className="dtfx-nav__drivemark">
                       <DriveIcon
-                        share={drive.id === activedrive?.id ? capacityshare(capacity) : 0}
+                        share={
+                          drive.id === activedrive?.id
+                            ? capacityshare(laneusage ? { usage: laneusage.bytes, quota: laneusage.quotabytes } : capacity)
+                            : 0
+                        }
                         mounted={drive.id === activedrive?.id}
                       />
                     </span>
@@ -703,10 +757,11 @@ export default function Files({ embedded }: { embedded?: boolean }) {
                   </button>
                 </li>
               ))}
-            </ul>
+              </ul>
+            </NavGroup>
 
-            <p className="dtfx-nav__heading">{osText("explorer.storagePlatforms")}</p>
-            <ul className="dtfx-nav__list">
+            <NavGroup heading={osText("explorer.storagePlatforms")}>
+              <ul className="dtfx-nav__list">
               {EXPLORER_PLATFORMS.map((platform) => (
                 <li key={platform.id}>
                   <button
@@ -722,11 +777,28 @@ export default function Files({ embedded }: { embedded?: boolean }) {
                   </button>
                 </li>
               ))}
-            </ul>
+              </ul>
+            </NavGroup>
           </nav>
 
-          {/* the content area: the Windows views */}
-          <section className="dtfx-content" aria-label={osText("explorer.folderView.aria")}>
+          {/* the content area: the Windows views — data-view carries the
+              mode the swap fade reads, data-dragover paints the drag wash
+              (presentation only, no drop behavior is claimed) */}
+          <section
+            className="dtfx-content"
+            aria-label={osText("explorer.folderView.aria")}
+            data-view={view}
+            data-dragover={dragover ? "true" : undefined}
+            onDragEnter={() => setDragover(true)}
+            onDragOver={() => setDragover(true)}
+            onDragLeave={(event) => {
+              if (!(event.relatedTarget instanceof Node) || !event.currentTarget.contains(event.relatedTarget)) {
+                setDragover(false);
+              }
+            }}
+            onDrop={() => setDragover(false)}
+            onDragEnd={() => setDragover(false)}
+          >
             {location.kind === "thispc" ? (
               <ThisPcView
                 rows={rows}
@@ -735,6 +807,7 @@ export default function Files({ embedded }: { embedded?: boolean }) {
                 onSelect={setSelected}
                 onOpen={(item) => item.open?.()}
                 capacity={capacity}
+                laneusage={laneusage}
                 activedrive={activedrive}
                 drivelist={drivelist}
                 summary={summary}
@@ -803,6 +876,9 @@ type ViewProps = {
 
 type ThisPcProps = ViewProps & {
   capacity?: Capacity;
+  /** the storage lane answer — the real usage and plan quota when a server
+   * lane stands; undefined keeps the browser estimate with its label */
+  laneusage?: StorageLaneUsage;
   activedrive?: HardDrive;
   drivelist: HardDrive[];
   summary?: Summary;
@@ -821,6 +897,7 @@ function ThisPcView({
   onSelect,
   onOpen,
   capacity,
+  laneusage,
   activedrive,
   drivelist,
   summary,
@@ -877,7 +954,13 @@ function ThisPcView({
         <ul className="dtfx-drives">
           {drivelist.map((drive, index) => {
             const mounted = drive.id === activedrive?.id;
-            const share = mounted ? capacityshare(capacity) : 0;
+            /* the honest share: the lane answer (real bytes against the plan
+               quota) when one stands, else the browser estimate — the bar
+               labels its own source either way */
+            const share = mounted
+              ? capacityshare(laneusage ? { usage: laneusage.bytes, quota: laneusage.quotabytes } : capacity)
+              : 0;
+            const source = laneusage ? "lane" : "browser";
             const row = driveRows.find((entry) => entry.id === `drive:${drive.id}`);
             return (
               <li
@@ -903,21 +986,42 @@ function ThisPcView({
                   </span>
                   <span className="dtfx-drive__body">
                     <span className="dtfx-drive__label">{drive.label}</span>
+                    {mounted ? (
+                      <span className="dtfx-drive__source" data-source={source}>
+                        {laneusage ? osText("explorer.storage.lane") : osText("explorer.storage.browser")}
+                      </span>
+                    ) : null}
                     <span
                       className={mounted ? "dtfx-drive__bar dtfx-drive__bar--live" : "dtfx-drive__bar"}
+                      data-source={mounted ? source : undefined}
                       role={mounted ? "progressbar" : undefined}
                       aria-valuemin={mounted ? 0 : undefined}
                       aria-valuemax={mounted ? 100 : undefined}
                       aria-valuenow={mounted ? Math.round(share) : undefined}
                       aria-label={
-                        mounted ? osText("explorer.usage.aria") : undefined
+                        mounted
+                          ? laneusage
+                            ? osText("explorer.storage.lane.aria")
+                            : osText("explorer.storage.browser.aria")
+                          : undefined
                       }
                     >
                       <span className="dtfx-drive__fill" style={{ width: mounted ? `${share}%` : "0%" }} />
                     </span>
                     <span className="dtfx-drive__line">
-                      {mounted ? capacityline(capacity) : osText("explorer.capacityAfterMount")}
+                      {mounted
+                        ? laneusage
+                          ? osText("explorer.storage.lane.line")
+                              .replace("{used}", formatbytes(laneusage.bytes))
+                              .replace("{quota}", formatbytes(laneusage.quotabytes))
+                          : osText("explorer.storage.browser.line").replace("{line}", capacityline(capacity))
+                        : osText("explorer.capacityAfterMount")}
                     </span>
+                    {mounted && laneusage ? (
+                      <span className="dtfx-drive__objects">
+                        {osText("explorer.storage.lane.objects").replace("{count}", String(laneusage.objects))}
+                      </span>
+                    ) : null}
                     {mounted && summary?.available ? (
                       <span className="dtfx-drive__records">
                         {summary.workspaces} workspaces · {summary.sessions} sessions · {summary.messages} messages

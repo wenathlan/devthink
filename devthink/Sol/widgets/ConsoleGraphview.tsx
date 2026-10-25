@@ -216,7 +216,7 @@ export function GraphView({
               </g>
             );
           })}
-        {drawn.map((node) => {
+        {drawn.map((node, index) => {
           const position = positions[node.id];
           if (!position) return null;
           const state = stateof(nodestates, node.id);
@@ -226,6 +226,9 @@ export function GraphView({
               className="gview__card"
               data-state={state}
               data-selected={selected === node.id ? "true" : undefined}
+              /* the presentation index of the staged entry (the craft pass
+                 reads --gview-i for the stagger delay) */
+              style={{ "--gview-i": index } as React.CSSProperties}
               /* biome-ignore lint/a11y/useSemanticElements: an svg g cannot host a semantic button element; the keyboard contract stays on tabindex, aria-label and onKeyDown */
               role="button"
               tabIndex={0}
