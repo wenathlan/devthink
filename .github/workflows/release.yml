@@ -702,15 +702,24 @@ jobs:
           else
             published=false
             for attempt in 1 2 3; do
-              if npm publish "./release/wenathlan-devthink-${RELEASE_VERSION}.tgz" --registry=https://registry.npmjs.org --access public --provenance; then published=true; break; fi
+              publish_output="$(npm publish "./release/wenathlan-devthink-${RELEASE_VERSION}.tgz" --registry=https://registry.npmjs.org --access public --provenance 2>&1)" && { published=true; break; }
               # the twin npm lane of the publish workflow races this one on
               # the same rung (the release published event fires it while
-              # this ladder still walks): a version that landed through the
-              # sibling is the idempotent win, never a retryable failure
-              if npm view "$PACKAGE" version --registry=https://registry.npmjs.org >/dev/null 2>&1; then
+              # this ladder still walks): the registry answers 409 "cannot
+              # publish over previously published" when the twin already
+              # landed and 409 "previously staged" while the twin landing
+              # still finalizes (the version stays invisible to npm view
+              # until it does) - both forms mean OUR rung is live through
+              # the sibling and answer as the idempotent win
+              if printf '%s' "$publish_output" | grep -qiE "cannot publish over previously (published|staged)"; then
                 echo "npmjs version landed through the sibling lane; the latecomer answers already published."
                 published=true; break
               fi
+              if npm view "$PACKAGE" version --registry=https://registry.npmjs.org >/dev/null 2>&1; then
+                echo "npmjs version landed through the sibling lane; the registry view answers present."
+                published=true; break
+              fi
+              printf '%s\n' "$publish_output"
               echo "The npmjs publish attempt ${attempt} failed; the bounded retry policy retries inside three attempts."
               sleep "$((attempt * 5))"
             done
