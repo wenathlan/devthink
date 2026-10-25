@@ -46,7 +46,7 @@ import { familyrow } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
 import { type LabelKey, labelfill, label } from "../../labels";
 import { currentTheme, type ThemeName, toggleTheme } from "../../theme.ts";
-import { BrandMark } from "../widgets/shell.brandmark";
+import { BrandMark } from "../widgets/ShellBrandmark";
 
 /** one entry of the window rail: a page surface of the app with its glyph.
  * the text rides the label accessor — the keys answer the store. */

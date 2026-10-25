@@ -19,7 +19,7 @@ function read(path: string): string {
 const CSS = read("../Sol/sol.css");
 const ENTRY = read("../index.html");
 const SHELL = read("../Sol/shell/Shell.tsx");
-const MARK = read("../Sol/widgets/shell.brandmark.tsx");
+const MARK = read("../Sol/widgets/ShellBrandmark.tsx");
 const TOML = read("../devthink.toml");
 const SOL = read("../Sol/Sol.tsx");
 const FAVICON = read("../favicon.svg");
@@ -114,7 +114,7 @@ describe("design contract", () => {
   });
 
   it("carries the flow contract sources (the entry gate behind the home anchor, the shared state module)", () => {
-    const GATE = read("../Sol/widgets/home.entrygate.tsx");
+    const GATE = read("../Sol/widgets/HomeEntrygate.tsx");
     const STATE = read("../onboardingstate.ts");
     const HOME = read("../Sol/home/home.tsx");
     const ONBOARDING = read("../Sol/onboarding/onboarding.tsx");

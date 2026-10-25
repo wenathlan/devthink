@@ -5,21 +5,21 @@
  * lives exactly once (here) instead of repeating across every page —
  * the components stay complete independent files beside this surface.
  */
-export * from "./home.coverart.tsx";
-export { default as HomeEntrygate } from "./home.entrygate.tsx";
-export * from "./home.entrygate.tsx";
-export * from "./home.songcard.tsx";
-export { default as ShellPlayerbar } from "./shell.playerbar.tsx";
-export * from "./shell.playerbar.tsx";
-export { default as StudioFader } from "./studio.fader.tsx";
-export * from "./studio.fader.tsx";
-export { default as StudioPianoroll } from "./studio.pianoroll.tsx";
-export * from "./studio.pianoroll.tsx";
-export { default as StudioSpectrum } from "./studio.spectrum.tsx";
-export * from "./studio.spectrum.tsx";
-export { default as StudioStagestepper } from "./studio.stagestepper.tsx";
-export * from "./studio.stagestepper.tsx";
-export { default as StudioTimeline } from "./studio.timeline.tsx";
-export * from "./studio.timeline.tsx";
-export { default as StudioVumeter } from "./studio.vumeter.tsx";
-export * from "./studio.vumeter.tsx";
+export * from "./HomeCoverart.tsx";
+export { default as HomeEntrygate } from "./HomeEntrygate.tsx";
+export * from "./HomeEntrygate.tsx";
+export * from "./HomeSongcard.tsx";
+export { default as ShellPlayerbar } from "./ShellPlayerbar.tsx";
+export * from "./ShellPlayerbar.tsx";
+export { default as StudioFader } from "./StudioFader.tsx";
+export * from "./StudioFader.tsx";
+export { default as StudioPianoroll } from "./StudioPianoroll.tsx";
+export * from "./StudioPianoroll.tsx";
+export { default as StudioSpectrum } from "./StudioSpectrum.tsx";
+export * from "./StudioSpectrum.tsx";
+export { default as StudioStagestepper } from "./StudioStagestepper.tsx";
+export * from "./StudioStagestepper.tsx";
+export { default as StudioTimeline } from "./StudioTimeline.tsx";
+export * from "./StudioTimeline.tsx";
+export { default as StudioVumeter } from "./StudioVumeter.tsx";
+export * from "./StudioVumeter.tsx";

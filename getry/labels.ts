@@ -33,7 +33,7 @@ export const LABEL_MANIFEST = {
   "app.boundary.reload": "reload the interface",
   // the window shell widget (the one chrome of the application)
   "shell.window.aria": "getry",
-  "shell.brand": "getry",
+  "ShellBrand": "getry",
   "shell.role": "the AI gateway of the wenathlan family",
   "shell.caption.minimize": "Minimize",
   "shell.caption.maximize": "Maximize",

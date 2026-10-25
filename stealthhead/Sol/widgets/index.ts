@@ -5,9 +5,9 @@
  * lives exactly once (here) instead of repeating across every page —
  * the components stay complete independent files beside this surface.
  */
-export { default as HomeEntrygate } from "./home.entrygate.tsx";
-export * from "./home.entrygate.tsx";
-export { default as HomeScope } from "./home.scope.tsx";
-export * from "./home.scope.tsx";
-export { default as ShellBrandmark } from "./shell.brandmark.tsx";
-export * from "./shell.brandmark.tsx";
+export { default as HomeEntrygate } from "./HomeEntrygate.tsx";
+export * from "./HomeEntrygate.tsx";
+export { default as HomeScope } from "./HomeScope.tsx";
+export * from "./HomeScope.tsx";
+export { default as ShellBrandmark } from "./ShellBrandmark.tsx";
+export * from "./ShellBrandmark.tsx";

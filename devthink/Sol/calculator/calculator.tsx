@@ -13,7 +13,7 @@
  * key actions the on-screen keys answer while the body holds focus.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ShellChrome } from "@/widgets/shell.shellchrome";
+import { ShellChrome } from "@/widgets/ShellShellchrome";
 import {
   applyKey,
   type CalculatorKeyAction,

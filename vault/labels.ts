@@ -33,7 +33,7 @@ export const LABEL_MANIFEST = {
   "app.boundary.reload": "reload the page",
   // the window shell widget (the one chrome of the application)
   "shell.window.aria": "vault window",
-  "shell.brand": "vault",
+  "ShellBrand": "vault",
   "shell.role": "the family vault",
   "shell.caption.minimize": "Minimize vault",
   "shell.caption.maximize": "Maximize vault",

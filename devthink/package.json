@@ -1,14 +1,14 @@
 {
   "name": "@wenathlan/devthink",
-  "version": "2.0.141",
+  "version": "2.0.143",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
   },
   "overrides": {
     "esbuild": "^0.28.2",
-    "deepmerge-ts": "8.0.2",
-    "mysql2": "3.23.1",
+    "deepmerge-ts": "^8.0.0",
+    "mysql2": "^3.24.6",
     "uuid": "^11.1.1",
     "postcss-selector-parser": "^7.1.6",
     "source-map-js": "1.2.2",

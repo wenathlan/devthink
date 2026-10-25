@@ -14,7 +14,7 @@
  */
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "@/widgets/shell.shellchrome";
+import { ShellChrome } from "@/widgets/ShellShellchrome";
 import { osAppLabels } from "../../catalog";
 import { browserWorkspaces } from "../../db";
 import { gatewayJson, gatewayReady } from "../../gateway.js";

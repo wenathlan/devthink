@@ -5,12 +5,12 @@
  * lives exactly once (here) instead of repeating across every page —
  * the components stay complete independent files beside this surface.
  */
-export * from "./home.entry.tsx";
-export { default as HomeEntrygate } from "./home.entrygate.tsx";
-export * from "./home.entrygate.tsx";
-export * from "./home.tabs.tsx";
-export { default as GraphPanel } from "./runs.graphpanel.tsx";
-export { default as ShellBrandmark } from "./shell.brandmark.tsx";
-export * from "./shell.brandmark.tsx";
-export { default as ShellEmptystate } from "./shell.emptystate.tsx";
-export * from "./shell.emptystate.tsx";
+export * from "./HomeEntry.tsx";
+export { default as HomeEntrygate } from "./HomeEntrygate.tsx";
+export * from "./HomeEntrygate.tsx";
+export * from "./HomeTabs.tsx";
+export { default as GraphPanel } from "./RunsGraphpanel.tsx";
+export { default as ShellBrandmark } from "./ShellBrandmark.tsx";
+export * from "./ShellBrandmark.tsx";
+export { default as ShellEmptystate } from "./ShellEmptystate.tsx";
+export * from "./ShellEmptystate.tsx";

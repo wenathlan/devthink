@@ -53,7 +53,7 @@ import { Link, useLocation } from "wouter";
 import { FAMILY_SLUGS, familyAccentOf } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
 import { label, labelfill } from "../../labels";
-import { BrandMark } from "../widgets/shell.brandmark";
+import { BrandMark } from "../widgets/ShellBrandmark";
 
 /** the theme in memory: flips the data-theme attribute, stores nothing */
 type ThemeName = "dark" | "light";
@@ -345,7 +345,7 @@ export function Shell({ children }: { children: ReactNode }) {
           onClick={() => setMinimized(false)}
         >
           <BrandMark size={16} />
-          <span>{label("shell.brand")}</span>
+          <span>{label("ShellBrand")}</span>
         </button>
       </div>
     );
@@ -385,7 +385,7 @@ export function Shell({ children }: { children: ReactNode }) {
         >
           <span className="win-title">
             <BrandMark size={18} />
-            <strong>{label("shell.brand")}</strong>
+            <strong>{label("ShellBrand")}</strong>
             <span className="win-title__role">{label("shell.role")}</span>
           </span>
           <div className="win-controls">
