@@ -83,7 +83,7 @@ import {
 } from "../../fileexplorer.ts";
 import { browserIdentity, browserStoreSummary } from "../../db";
 import { drives, type HardDrive } from "../../harddrives.ts";
-import { storageusage, type StorageLaneUsage } from "../../storageusageclient.ts";
+import { storageusage, type StorageLaneUsage } from "../../gatewayfamily.ts";
 import { ShellChrome } from "@/widgets/ShellShellchrome";
 import { AppTile } from "@/widgets";
 import { DriveIcon, PlatformMark, ShellFolderIcon, ThisPcMark } from "../widgets";

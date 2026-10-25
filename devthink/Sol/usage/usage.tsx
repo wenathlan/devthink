@@ -20,7 +20,7 @@ import { toast } from "sonner";
 import { ShellChrome } from "@/widgets/ShellShellchrome";
 import { osAppLabels } from "../../catalog";
 import { browserStoreSummary } from "../../db";
-import { gatewayJson, gatewayReady } from "../../gateway.js";
+import { gatewayJson, gatewayReady } from "../../gatewayfamily.js";
 import { osText } from "../../oslabels.ts";
 import { type Usage as UsageData, UsageMeasures } from "../widgets";
 

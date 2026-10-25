@@ -26,7 +26,7 @@ import { type FormEvent, useEffect, useState } from "react";
 import { Link } from "wouter";
 import { chatLimit, chatText } from "../../chatlabels.ts";
 import { addTag, CHAT_TOOLS, type ChatSession, removeTag, type ToolId } from "../../chatstate.ts";
-import { GATEWAY_REQUIRED_COPY, type GatewayRegistration, gatewayStatusLabel } from "../../gatewaybase.ts";
+import { GATEWAY_REQUIRED_COPY, type GatewayRegistration, gatewayStatusLabel } from "../../gatewayfamily.ts";
 import { CHAT_NAV } from "./ChatSidebar.tsx";
 
 /** the inspector feature flags — one quiet gate per block that ships ahead

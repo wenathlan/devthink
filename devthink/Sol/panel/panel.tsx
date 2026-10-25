@@ -23,7 +23,7 @@ import { type FormEvent, useCallback, useEffect, useMemo, useState } from "react
 import { toast } from "sonner";
 import { useLocation, useRoute } from "wouter";
 import { PairingPanel } from "@/settings/settings";
-import { safegatewayurl } from "../../authgate.ts";
+import { safegatewayurl } from "../../gatewayfamily.ts";
 import { writeChatHandoff } from "../../chatstate.ts";
 import {
   browserIdentity,
@@ -32,7 +32,7 @@ import {
   ensureBrowserSession,
   readBrowserPreferences } from "../../db";
 import type { DevThinkTab } from "../../paneltypes.ts";
-import { historypath } from "../../routebase.ts";
+import { historypath } from "../../gatewayfamily.ts";
 import type { WorkspaceDestination } from "../../workspace.ts";
 import { BootScreen, shouldBoot } from "../widgets";
 import { CommandPalette } from "../widgets";

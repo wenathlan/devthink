@@ -7,7 +7,7 @@
 
 import { randomInt } from "node:crypto";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
-import { isAllowedOrigin } from "./compatibility.js";
+import { isAllowedOrigin } from "./gatewayfamily.js";
 import { type DevThinkConfig, type DevThinkPaths, ensurePaths, resolvePaths, saveConfig } from "./config.js";
 import {
   AccountError,

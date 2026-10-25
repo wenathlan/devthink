@@ -21,7 +21,7 @@
 import {WindowAppsRegular as AppWindow, NavigationRegular as Compass, GlobeRegular as Globe, type FluentIcon as LucideIcon, PinRegular as Pin, PinOffRegular as PinOff, PlayRegular as Play} from "@fluentui/react-icons";
 import { type KeyboardEvent as ReactKeyboardEvent, useLayoutEffect, useRef, useState } from "react";
 import type { DesktopApp } from "../../appregistry.ts";
-import { familyurl } from "../../deploybase.ts";
+import { familyurl } from "../../gatewayfamily.ts";
 import { osText } from "../../oslabels.ts";
 
 /** The localStorage key of the taskbar pin order (an id list). */

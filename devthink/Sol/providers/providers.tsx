@@ -25,7 +25,7 @@ import {
   removeBrowserCredential,
   saveBrowserCredential,
   saveBrowserPreference } from "../../db";
-import { gatewayJson, gatewayReady } from "../../gateway.js";
+import { gatewayJson, gatewayReady } from "../../gatewayfamily.js";
 import { osProviders, osText } from "../../oslabels.ts";
 import { ProviderCard } from "../widgets";
 import { ProvidersList } from "../widgets";

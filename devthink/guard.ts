@@ -20,14 +20,17 @@ export function armGuard(): void {
   // 2. the size delta: a docked devtools changes the outer/inner viewport ratio
   const delta = Math.abs(window.outerWidth - window.innerWidth) + Math.abs(window.outerHeight - window.innerHeight);
   if (delta > 220) detectOnce("size.delta");
-  // 3. the console getter: touching it answers the strike
+  // 3. the console getter: the devtools console formats the regex through
+  // the overridden toString when it renders it — the arm never calls the
+  // getter itself (the self-read of the earlier form tripped the strike on
+  // every boot and blanked production)
   try {
     const probe = /devtools/i;
     probe.toString = () => {
       detectOnce("console.getter");
       return "";
     };
-    void String(probe);
+    void probe;
   } catch {
     /* the probe never throws the interface */
   }

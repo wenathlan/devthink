@@ -9,7 +9,7 @@ import {
   normalizeBasePath,
   redactProviderError,
   retryDelay,
-} from "../compatibility.js";
+} from "../gatewayfamily.js";
 import {
   type DevThinkConfig,
   migrateLegacyCredentials,

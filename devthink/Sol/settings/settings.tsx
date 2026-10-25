@@ -27,7 +27,7 @@ import {
   browserStoreSummary,
   readBrowserPreferences,
   saveBrowserPreference } from "../../db";
-import { gatewayJson, gatewayReady } from "../../gateway.js";
+import { gatewayJson, gatewayReady } from "../../gatewayfamily.js";
 import {
   type AccountSessionState,
   accountbearer,

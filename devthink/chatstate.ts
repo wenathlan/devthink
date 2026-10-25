@@ -184,11 +184,11 @@ export function useChatThinking() {
 /**
  * The gateway opt-in contract — the preference key, the endpoint validator
  * and the registration machine live in the shared os kernel
- * (gatewaybase.ts) so the chat panel and the settings page consume
- * ONE contract; re-exported here to keep the chat surface's single-import
- * grammar.
+ * (gatewayfamily.ts §gatewaybase) so the chat panel and the settings page
+ * consume ONE contract; re-exported here to keep the chat surface's
+ * single-import grammar.
  */
-export { normalizeGatewayBase, PREF_GATEWAYBASE } from "./gatewaybase.ts";
+export { normalizeGatewayBase, PREF_GATEWAYBASE } from "./gatewayfamily.ts";
 
 /**
  * deriveTitle — the session title is the first user message, single line,
