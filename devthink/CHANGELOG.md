@@ -1,5 +1,9 @@
 # DevThink release notes
 
+## 2.0.141
+
+This release is the staged twin rung of the ladder: the twin npm lane won the publish race at the previous rung while its landing still finalized on the registry, and the 409 "previously staged" answer stayed invisible to the registry view the latecomer rechecked - so the retry loop now reads the registry answer itself and both forms of the idempotent win (the version already published and the version still staging through the sibling) close the lane green, while every other failure keeps the bounded retry. The rung stamps the whole metadata family at 2.0.141 with the freeze artifacts re-stamped and the battery walks again.
+
 ## 2.0.140
 
 This release is the registry lane rung of the ladder: the github npm publish lane installs the os tree before it packs, and the setup node registry step of that lane leaves the github registry redirect in the runner temp npmrc the NPM_CONFIG_USERCONFIG env points at — bun honors the env, the scope resolved against npm.pkg.github.com with no token, and the frozen install refused the saddle engine package with a 403. The install step of that lane empties the userconfig so the project npmrc answers instead and the install resolves the public family mirror every registry lane publishes; the publish steps keep the registry configuration untouched. The rung stamps the whole metadata family at 2.0.140 with the freeze artifacts re-stamped, and the full battery walks again over the healed lane.
