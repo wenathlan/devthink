@@ -703,6 +703,14 @@ jobs:
             published=false
             for attempt in 1 2 3; do
               if npm publish "./release/wenathlan-devthink-${RELEASE_VERSION}.tgz" --registry=https://registry.npmjs.org --access public --provenance; then published=true; break; fi
+              # the twin npm lane of the publish workflow races this one on
+              # the same rung (the release published event fires it while
+              # this ladder still walks): a version that landed through the
+              # sibling is the idempotent win, never a retryable failure
+              if npm view "$PACKAGE" version --registry=https://registry.npmjs.org >/dev/null 2>&1; then
+                echo "npmjs version landed through the sibling lane; the latecomer answers already published."
+                published=true; break
+              fi
               echo "The npmjs publish attempt ${attempt} failed; the bounded retry policy retries inside three attempts."
               sleep "$((attempt * 5))"
             done
