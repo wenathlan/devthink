@@ -31,7 +31,7 @@ import {
 } from "@fluentui/react-icons";
 import { type KeyboardEvent, useEffect, useRef, useState } from "react";
 import { chatText } from "../../chatlabels.ts";
-import { Markdown } from "./chat.markdown.tsx";
+import { Markdown } from "./ChatMarkdown.tsx";
 
 /** CANVAS_OPEN_EVENT — the dom event lane of the openers: any floor
  * surface (a code block key of a turn, a later artifact chip) dispatches

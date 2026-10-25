@@ -33,7 +33,7 @@ import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspa
 import { type WindowEntry, windowcatalog, windowspawn } from "../../window.ts";
 import AudioAnchor from "../audio/audio.tsx";
 import CalculatorAnchor from "../calculator/calculator.tsx";
-import ChatBody from "./chat.body.tsx";
+import ChatBody from "./ChatBody.tsx";
 import ConsoleAnchor from "../console/console.tsx";
 import DocsAnchor from "../docs/docs.tsx";
 import FilesAnchor from "../files/files.tsx";
@@ -43,13 +43,13 @@ import ImageAnchor from "../image/image.tsx";
 import ProjectsAnchor from "../projects/projects.tsx";
 import ProvidersAnchor from "../providers/providers.tsx";
 import SettingsAnchor from "../settings/settings.tsx";
-import { FamilyFrame } from "./shell.familyframe.tsx";
+import { FamilyFrame } from "./ShellFamilyframe.tsx";
 import UsageAnchor from "../usage/usage.tsx";
 import VideoAnchor from "../video/video.tsx";
-import { type AltTabCard, AltTabSwitcher } from "./shell.alttabswitcher.tsx";
-import { ShellChrome } from "./shell.shellchrome.tsx";
-import { DesktopSurface } from "./panel.desktop.tsx";
-import { WINDOW_MIN_HEIGHT, WINDOW_MIN_WIDTH, WindowFrame, type WindowSnapshot } from "./panel.windowframe.tsx";
+import { type AltTabCard, AltTabSwitcher } from "./ShellAlttabswitcher.tsx";
+import { ShellChrome } from "./ShellShellchrome.tsx";
+import { DesktopSurface } from "./PanelDesktop.tsx";
+import { WINDOW_MIN_HEIGHT, WINDOW_MIN_WIDTH, WindowFrame, type WindowSnapshot } from "./PanelWindowframe.tsx";
 
 /** One windowed app: the anchor component with the embedded contract and
  * the spawn geometry the frame opens at. */

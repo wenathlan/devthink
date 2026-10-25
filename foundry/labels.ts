@@ -40,7 +40,7 @@ export const LABEL_MANIFEST = {
   // the application window chrome (the shell)
   "shell.theme.tip": "toggle theme",
   "shell.chip.restoreAria": "Restore the foundry window",
-  "shell.brand": "foundry",
+  "ShellBrand": "foundry",
   "shell.window.aria": "foundry window",
   "shell.title.role": "the machine room of the family",
   "shell.controls.minimize": "Minimize foundry",

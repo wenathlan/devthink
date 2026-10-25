@@ -41,8 +41,8 @@
  */
 import { type ComponentType, type CSSProperties, useEffect, useState } from "react";
 import { appIconSets } from "../../catalog.ts";
-import { SolLogoMark } from "./panel.logo.tsx";
-import { APP_ICONS, type AppIconProps } from "./shell.appicons.tsx";
+import { SolLogoMark } from "./PanelLogo.tsx";
+import { APP_ICONS, type AppIconProps } from "./ShellAppicons.tsx";
 import type { DesktopApp } from "../../appregistry.ts";
 
 type AppTileProps = {

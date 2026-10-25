@@ -39,7 +39,7 @@ export const LABEL_MANIFEST = {
   "app.boundary.reload": "reload the page",
   // the window shell widget (the one chrome of the application)
   "shell.window.aria": "argan",
-  "shell.brand": "argan",
+  "ShellBrand": "argan",
   "shell.role": "dns and zones of the family",
   "shell.caption.minimize": "Minimize",
   "shell.caption.maximize": "Maximize",

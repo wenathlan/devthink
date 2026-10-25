@@ -10,7 +10,7 @@ import {HeartPulseRegular as Activity, ArrowUpRightRegular as ArrowUpRight, Ment
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { saascreators, saasstudios } from "../../saascontent.ts";
-import { SaddleTabBridge, SaddleTabBridgeUp, ScoopedCard, Studiomark, type studiomarkid } from "./intro.saaskit.tsx";
+import { SaddleTabBridge, SaddleTabBridgeUp, ScoopedCard, Studiomark, type studiomarkid } from "./IntroSaaskit.tsx";
 
 type SectionProps = {
   /** the enter action: every path of the landing funnels to the login face */

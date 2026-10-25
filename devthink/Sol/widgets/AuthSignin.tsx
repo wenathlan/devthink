@@ -22,8 +22,8 @@ import {
 } from "@fluentui/react-icons";
 import { useEffect, useRef } from "react";
 import { type AccountState } from "../../accountgate.ts";
-import { PairingForm, type PairingFormProps } from "./auth.pairing.tsx";
-import { ProviderRow, type ProviderRowProps } from "./auth.providerrow.tsx";
+import { PairingForm, type PairingFormProps } from "./AuthPairing.tsx";
+import { ProviderRow, type ProviderRowProps } from "./AuthProviderrow.tsx";
 
 /** the entry bundle: the credential fields of the face, controlled by the
  * anchor — the stage machine owns the state, this is a controlled face,

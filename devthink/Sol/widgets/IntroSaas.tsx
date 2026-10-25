@@ -13,8 +13,8 @@ import {ArrowUpRightRegular as ArrowUpRight, AlertRegular as Bell, HeadphonesReg
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
-import { SolLogoMark, SolWordmark } from "./panel.logo.tsx";
-import { SaddleTabBridge, VerticalSaddleBridge } from "./intro.saaskit.tsx";
+import { SolLogoMark, SolWordmark } from "./PanelLogo.tsx";
+import { SaddleTabBridge, VerticalSaddleBridge } from "./IntroSaaskit.tsx";
 import {
   SaasCadria,
   SaasDebonair,
@@ -22,8 +22,8 @@ import {
   SaasExplorerWall,
   SaasFlowStrip,
   SaasFooter,
-  SaasRibbon } from "./intro.saasrails.tsx";
-import { SaasCreators, SaasHero, SaasStudios } from "./intro.saassections.tsx";
+  SaasRibbon } from "./IntroSaasrails.tsx";
+import { SaasCreators, SaasHero, SaasStudios } from "./IntroSaassections.tsx";
 
 const SAAS_CSS = `
 .saas-root { font-family: 'Urbanist', sans-serif; letter-spacing: -0.015em; background: #DCE2EE; }

@@ -44,7 +44,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { chatText } from "../../chatlabels.ts";
 import { label } from "../../labels.ts";
 import { type ChatTurn, cx, fmtTime } from "../../chatstate.ts";
-import { copyText, Markdown } from "./chat.markdown.tsx";
+import { copyText, Markdown } from "./ChatMarkdown.tsx";
 
 /** fmtFull — the hover timestamp of the meta line: the full locale
  * date-time (title attribute), honest on every turn. */

@@ -33,7 +33,7 @@ import { Link, useLocation } from "wouter";
 import { chatBuckets, chatNav } from "../../chatlabels.ts";
 import { checkpointCount, type ChatSession, cx } from "../../chatstate.ts";
 import { arrayOf, isString, useStoredState } from "../../usestoredstate.ts";
-import { SolBotIcon, type SolBotState } from "./chat.solboticon.tsx";
+import { SolBotIcon, type SolBotState } from "./ChatSolboticon.tsx";
 
 /** The theme pages the rail links to — existing routes, not local
  * copies. The href and the label of every row ride the chat label

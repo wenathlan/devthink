@@ -40,7 +40,7 @@ export const LABEL_MANIFEST = {
   // the application window chrome (the shell)
   "shell.theme.tip": "toggle theme",
   "shell.chip.restoreAria": "Restore the forge window",
-  "shell.brand": "forge",
+  "ShellBrand": "forge",
   "shell.window.aria": "forge window",
   "shell.title.role": "the runner floor of the family",
   "shell.controls.minimize": "Minimize forge",

@@ -345,7 +345,7 @@ export function Shell({ children }: { children: ReactNode }) {
           onClick={() => setMinimized(false)}
         >
           <BrandMark size={16} />
-          <span>{label("shell.brand")}</span>
+          <span>{label("ShellBrand")}</span>
         </button>
       </div>
     );
@@ -385,7 +385,7 @@ export function Shell({ children }: { children: ReactNode }) {
         >
           <span className="win-title">
             <BrandMark size={18} />
-            <strong>{label("shell.brand")}</strong>
+            <strong>{label("ShellBrand")}</strong>
             <span className="win-title__role">{label("shell.role")}</span>
           </span>
           <div className="win-controls">

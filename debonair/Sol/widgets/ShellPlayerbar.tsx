@@ -17,7 +17,7 @@ import type { TakePlan } from "../../arranger.ts";
 import { formatClock } from "../../dawview.ts";
 import { label, labelfill } from "../../labels.ts";
 import { busPause, busPlay, busSeek, busSelect, busSubscribe, type PlayerSnapshot } from "../../playerbus.ts";
-import { CoverArt } from "./home.coverart.tsx";
+import { CoverArt } from "./HomeCoverart.tsx";
 
 /**
  * Playerbar — the fixed bottom bar of the application window.

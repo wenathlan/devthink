@@ -13,7 +13,7 @@
 import type { CSSProperties } from "react";
 import { Link } from "wouter";
 import { packageversion } from "../../version.ts";
-import { ShellChrome } from "./shell.shellchrome.tsx";
+import { ShellChrome } from "./ShellShellchrome.tsx";
 
 /* --------------------------------------------------------------------------
  * The .pagehead contract (design campaign C1 — the ONE page hero grammar):

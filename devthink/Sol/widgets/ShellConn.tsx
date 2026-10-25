@@ -5,7 +5,7 @@
  * label rides the prop, never a hardcoded string.
  */
 
-import { Dot } from "./shell.dot.tsx";
+import { Dot } from "./ShellDot.tsx";
 
 export type ConnState = "connected" | "connecting" | "error" | "offline";
 

@@ -11,8 +11,8 @@
 import {ArrowDownRegular as ArrowDown, ArrowLeftRegular as ArrowLeft, ArrowRightRegular as ArrowRight, ArrowUpRightRegular as ArrowUpRight, HeartRegular as Heart, ChatRegular as MessageSquare, PlayRegular as Play} from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 import { saasfilms, saasreels, saastracks } from "../../saascontent.ts";
-import { SolLogoMark } from "./panel.logo.tsx";
-import { SaddleTabBridge, ScoopedCard, Studiomark } from "./intro.saaskit.tsx";
+import { SolLogoMark } from "./PanelLogo.tsx";
+import { SaddleTabBridge, ScoopedCard, Studiomark } from "./IntroSaaskit.tsx";
 
 type SectionProps = {
   onenter: () => void;

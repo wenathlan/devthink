@@ -14,7 +14,7 @@ import { useLocation } from "wouter";
 import { prefersReducedMotion } from "../../akash.ts";
 import { browserIdentity, readBrowserPreferences, saveBrowserPreference } from "../../db.ts";
 import { osText } from "../../oslabels.ts";
-import { SolLogoMark } from "./panel.logo.tsx";
+import { SolLogoMark } from "./PanelLogo.tsx";
 
 const BOOT_CSS = `
 .boot-root { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; overflow: hidden; color: #f4f3ed; background-color: #202020; background-image: radial-gradient(#1a1f35 25%, #202020 100%); }

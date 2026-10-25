@@ -53,14 +53,14 @@ import { GATEWAY_REQUIRED_COPY, GATEWAY_SEND_NOTICE, useGatewayRegistration } fr
 import { useIsMobile } from "../../useismobile.ts";
 import { arrayOf, isString, useStoredState } from "../../usestoredstate.ts";
 import { label } from "../../labels.ts";
-import { CANVAS_OPEN_EVENT, CanvasPane, type CanvasDoc, type CanvasOpenDetail } from "./chat.canvaspane.tsx";
-import { Composer } from "./chat.composer.tsx";
-import { type SandboxFileChange, SandboxPane, type SandboxRunner } from "./chat.sandboxpane.tsx";
-import { SessionPanel } from "./chat.sessionpanel.tsx";
-import { Sidebar } from "./chat.sidebar.tsx";
-import { type SolBotState } from "./chat.solboticon.tsx";
-import { DaySeparator, ErrorRow, dayKey, ThinkingRow, Turn } from "./chat.turn.tsx";
-import { Welcome, type RecentConversation } from "./chat.welcome.tsx";
+import { CANVAS_OPEN_EVENT, CanvasPane, type CanvasDoc, type CanvasOpenDetail } from "./ChatCanvaspane.tsx";
+import { Composer } from "./ChatComposer.tsx";
+import { type SandboxFileChange, SandboxPane, type SandboxRunner } from "./ChatSandboxpane.tsx";
+import { SessionPanel } from "./ChatSessionpanel.tsx";
+import { Sidebar } from "./ChatSidebar.tsx";
+import { type SolBotState } from "./ChatSolboticon.tsx";
+import { DaySeparator, ErrorRow, dayKey, ThinkingRow, Turn } from "./ChatTurn.tsx";
+import { Welcome, type RecentConversation } from "./ChatWelcome.tsx";
 
 /** The chat slice of the wave atmosphere contract: the C1-01 atmosphere
  * layers (.atmos light source, .grain film) are painted by the theme stylesheet — this guard only guarantees they never sit on

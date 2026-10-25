@@ -319,7 +319,7 @@ export function Shell({ children }: { children: ReactNode }) {
         >
           <div className="winapp__brand">
             <BrandMark size={20} />
-            <span className="winapp__name">{label("shell.brand")}</span>
+            <span className="winapp__name">{label("ShellBrand")}</span>
             <span className="winapp__role">{label("shell.role")}</span>
           </div>
           <div className="winapp__caption">
@@ -417,7 +417,7 @@ export function Shell({ children }: { children: ReactNode }) {
       {minimized && (
         <button type="button" className="winchip" aria-label={label("shell.chip.restoreAria")} onClick={() => setMinimized(false)}>
           <BrandMark size={16} />
-          <span>{label("shell.brand")}</span>
+          <span>{label("ShellBrand")}</span>
         </button>
       )}
     </div>

@@ -22,7 +22,7 @@ import { createPortal } from "react-dom";
 import { alttabkeydown, mruorder, nextaltindex } from "../../alttab.ts";
 import type { DesktopApp } from "../../appregistry.ts";
 import { osText } from "../../oslabels.ts";
-import { AppTile } from "./shell.apptile.tsx";
+import { AppTile } from "./ShellApptile.tsx";
 
 /** one card of the switcher: a shell window of the workspace */
 export type AltTabCard = {

@@ -20,10 +20,10 @@ import {
   pageheadStyle,
   pageheadTitleStyle,
   pagestageStyle,
-  stagedEntrance } from "./shell.institutionalchrome.tsx";
-import { ShellChrome } from "./shell.shellchrome.tsx";
+  stagedEntrance } from "./ShellInstitutionalchrome.tsx";
+import { ShellChrome } from "./ShellShellchrome.tsx";
 import { osText } from "../../oslabels.ts";
-import { useReducedMotion } from "./shell.trayflyouts.tsx";
+import { useReducedMotion } from "./ShellTrayflyouts.tsx";
 
 type ControlShellProps = {
   eyebrow: string;

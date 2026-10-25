@@ -12,7 +12,7 @@
  * akash-floor splash), /onboarding (the first-run frames) — and every other
  * route renders as the content of the ONE application window (the Shell
  * hosts the fundamentals; there is no OS chrome anymore). The flow contract
- * rides the home anchor's entry gate (Sol/widgets/home.entrygate.tsx): "/"
+ * rides the home anchor's entry gate (Sol/widgets/HomeEntrygate.tsx): "/"
  * consults the seen flags (onboardingstate.ts) before anything shows, the
  * intro hands straight to /onboarding and the onboarding lands home.
  */

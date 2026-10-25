@@ -13,7 +13,7 @@
  * onboardingstate.ts), the desktop never replays a second boot on top of it. */
 import { useEffect, useRef, useState } from "react";
 import { peekonboardingstate } from "../../onboardingstate.ts";
-import { SolLogoMark } from "./panel.logo.tsx";
+import { SolLogoMark } from "./PanelLogo.tsx";
 
 const BOOT_KEY = "devthink.boot.done";
 /** bootMarkIn / riseIn settle inside this window; bootFill runs 0→1600ms */

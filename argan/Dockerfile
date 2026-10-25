@@ -1,4 +1,4 @@
-# argan 2.0.141 — THE SITE CONTAINER FILE
+# argan 2.0.142 — THE SITE CONTAINER FILE
 #
 # The family container doctrine in the sol shape: one versioned static
 # container per site. The sol theme builds inside the container — stage one
@@ -10,7 +10,7 @@
 
 FROM node:26-alpine@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS solbuild
 
-ARG ARGAN_VERSION=2.0.141
+ARG ARGAN_VERSION=2.0.142
 
 WORKDIR /src
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./

@@ -55,9 +55,9 @@ import {
   sortAppsByName } from "../../desktopstate.ts";
 import { useIsMobile } from "../../useismobile.ts";
 import { osText } from "../../oslabels.ts";
-import { AppTile } from "./shell.apptile.tsx";
-import { DesktopMenu, type MenuEntry } from "./panel.desktopmenu.tsx";
-import { SolLogoMark } from "./panel.logo.tsx";
+import { AppTile } from "./ShellApptile.tsx";
+import { DesktopMenu, type MenuEntry } from "./PanelDesktopmenu.tsx";
+import { SolLogoMark } from "./PanelLogo.tsx";
 
 /** the pointer travel (px) that turns a press into a drag */
 const DRAG_THRESHOLD = 4;

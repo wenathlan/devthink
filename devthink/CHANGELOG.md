@@ -1,5 +1,9 @@
 # DevThink release notes
 
+## 2.0.142
+
+This release is the naming rung of the ladder: the dot leaves the component names for good, so every one of the 178 dotted widget files across the eleven family applications now carries a dot-free PascalCase name that says what it renders, every barrel and every import follows, and the widget surface law keeps the single import point alive with the new names. The rung also answers the family package law: every dependency, devDependency and override pin shared by two or more applications answers to the majority pin of the family (cobaia caught up on twelve pins, devthink answers the family biome, panels, saddle and mysql2 pins), the cobaia manifest adopts the family package manager pnpm 12.3.4, and the touched locks regenerate frozen. The battery walks again over the renamed surface.
+
 ## 2.0.141
 
 This release is the staged twin rung of the ladder: the twin npm lane won the publish race at the previous rung while its landing still finalized on the registry, and the 409 "previously staged" answer stayed invisible to the registry view the latecomer rechecked - so the retry loop now reads the registry answer itself and both forms of the idempotent win (the version already published and the version still staging through the sibling) close the lane green, while every other failure keeps the bounded retry. The rung stamps the whole metadata family at 2.0.141 with the freeze artifacts re-stamped and the battery walks again.

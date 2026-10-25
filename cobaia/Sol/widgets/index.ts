@@ -5,14 +5,14 @@
  * lives exactly once (here) instead of repeating across every page —
  * the components stay complete independent files beside this surface.
  */
-export * from "./apps.roster.ts";
-export { default as IntroFooter } from "./intro.footer.tsx";
-export * from "./intro.footer.tsx";
-export { default as IntroPlans } from "./intro.plans.tsx";
-export * from "./intro.plans.tsx";
-export { default as IntroSplash } from "./intro.splash.tsx";
-export * from "./intro.splash.tsx";
-export { default as ShellAdsslot } from "./shell.adsslot.tsx";
-export * from "./shell.adsslot.tsx";
-export { default as ShellBrand } from "./shell.brand.tsx";
-export * from "./shell.brand.tsx";
+export * from "./AppsRoster.ts";
+export { default as IntroFooter } from "./IntroFooter.tsx";
+export * from "./IntroFooter.tsx";
+export { default as IntroPlans } from "./IntroPlans.tsx";
+export * from "./IntroPlans.tsx";
+export { default as IntroSplash } from "./IntroSplash.tsx";
+export * from "./IntroSplash.tsx";
+export { default as ShellAdsslot } from "./ShellAdsslot.tsx";
+export * from "./ShellAdsslot.tsx";
+export { default as ShellBrand } from "./ShellBrand.tsx";
+export * from "./ShellBrand.tsx";

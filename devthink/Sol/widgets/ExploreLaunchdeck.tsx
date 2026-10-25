@@ -29,8 +29,8 @@ import { type CSSProperties, type FormEvent, type ReactNode, useMemo, useState }
 import { Link, useLocation } from "wouter";
 import { DESKTOP_APPS, type DesktopApp, isFamilyApp } from "../../appregistry.ts";
 import { osText } from "../../oslabels.ts";
-import { AppTile } from "./shell.apptile.tsx";
-import { HeroWaves } from "./explore.waves.tsx";
+import { AppTile } from "./ShellApptile.tsx";
+import { HeroWaves } from "./ExploreWaves.tsx";
 
 /** the trylle primary tone stack of every enter action (the exact rest
  * stack of the quality ruler: inset gloss, inset glow, inset ring, outer

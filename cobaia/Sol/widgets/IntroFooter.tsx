@@ -12,7 +12,7 @@
 import type { CSSProperties } from "react";
 import { familyurl } from "../../familyurl";
 import { type LabelKey, label } from "../../labels";
-import { ROSTER } from "./apps.roster.ts";
+import { ROSTER } from "./AppsRoster.ts";
 
 /** the site doors of the footer row, in reading order (the labels ride the
  * shell foot keys — the same words the chrome's footer carries). */

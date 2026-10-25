@@ -27,7 +27,7 @@ import { Link } from "wouter";
 import { chatLimit, chatText } from "../../chatlabels.ts";
 import { addTag, CHAT_TOOLS, type ChatSession, removeTag, type ToolId } from "../../chatstate.ts";
 import { GATEWAY_REQUIRED_COPY, type GatewayRegistration, gatewayStatusLabel } from "../../gatewaybase.ts";
-import { CHAT_NAV } from "./chat.sidebar.tsx";
+import { CHAT_NAV } from "./ChatSidebar.tsx";
 
 /** the inspector feature flags — one quiet gate per block that ships ahead
  * of its wiring. the memory fact list rides its flag so the surface can be

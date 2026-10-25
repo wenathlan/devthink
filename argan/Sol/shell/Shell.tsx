@@ -462,7 +462,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
         >
           <div className="winapp__brand">
             <ArganMark size={20} hidden />
-            <span className="winapp__name">{label("shell.brand")}</span>
+            <span className="winapp__name">{label("ShellBrand")}</span>
             <span className="winapp__role">{label("shell.role")}</span>
           </div>
           <div className="winapp__caption">
@@ -548,7 +548,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
       {minimized && (
         <button type="button" className="winchip" aria-label={label("shell.chip.restoreAria")} onClick={() => setMinimized(false)}>
           <ArganMark size={16} hidden />
-          <span>{label("shell.brand")}</span>
+          <span>{label("ShellBrand")}</span>
         </button>
       )}
     </div>

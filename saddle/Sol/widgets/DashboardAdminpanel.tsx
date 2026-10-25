@@ -5,10 +5,10 @@ import { useEffect, useState } from 'react';
 import { apiresult, fmtuptime, pick, readlocalsandboxes } from '../../dashboardlib.ts';
 import { label } from '../../labels.ts';
 import { available } from '../../localauth.ts';
-import AuditLog from './dashboard.auditlog.tsx';
-import GlobalSandboxesTable from './dashboard.globalsandboxestable.tsx';
-import MeshNodesTable from './dashboard.meshnodestable.tsx';
-import UsersTable from './dashboard.userstable.tsx';
+import AuditLog from './DashboardAuditlog.tsx';
+import GlobalSandboxesTable from './DashboardGlobalsandboxestable.tsx';
+import MeshNodesTable from './DashboardMeshnodestable.tsx';
+import UsersTable from './DashboardUserstable.tsx';
 
 type AdminPanelProps = {
 	/** "api" reads the admin surface; "local" the browser-local overview. */

@@ -22,10 +22,10 @@ import { Link } from "wouter";
 import { label } from "../../labels.ts";
 import type { DesktopApp } from "../../appregistry.ts";
 import type { FamilySite } from "../../catalog";
-import { FamilyMark } from "./explore.launchdeck.tsx";
-import type { ExploreCategoryId, ExploreCategoryRow, ExploreEntry } from "./explore.sections.tsx";
-import { Banner } from "./shell.banner.tsx";
-import { Dot } from "./shell.dot.tsx";
+import { FamilyMark } from "./ExploreLaunchdeck.tsx";
+import type { ExploreCategoryId, ExploreCategoryRow, ExploreEntry } from "./ExploreSections.tsx";
+import { Banner } from "./ShellBanner.tsx";
+import { Dot } from "./ShellDot.tsx";
 
 /** the fallback tint a family mark falls back to when the registry grows a
  * row the identity map does not know yet (never a blank tile) */

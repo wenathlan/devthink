@@ -47,15 +47,15 @@ import { DESKTOP_APPS, type DesktopApp, searchDesktopApps } from "../../appregis
 import { NAVBAR_POS_EVENT, loadNavbarPosition, type NavbarPosition } from "../../desktopstate";
 import { osText } from "../../oslabels.ts";
 import { loadrecentapps, pushrecentapp } from "../../recentapps.ts";
-import { SolLogoMark } from "./panel.logo.tsx";
-import { AppTile } from "./shell.apptile.tsx";
-import { JumpList, loadTaskbarPins, saveTaskbarPins } from "./shell.jumpmenu.tsx";
+import { SolLogoMark } from "./PanelLogo.tsx";
+import { AppTile } from "./ShellApptile.tsx";
+import { JumpList, loadTaskbarPins, saveTaskbarPins } from "./ShellJumpmenu.tsx";
 import {
   CalendarFlyout,
   DEFAULT_TRAY_SETTINGS,
   QuickSettings,
   type TraySettings,
-  useReducedMotion } from "./shell.trayflyouts.tsx";
+  useReducedMotion } from "./ShellTrayflyouts.tsx";
 
 /** the default apps pinned to the bottom bar: the essential surfaces as
  * icons only — every other app of the catalog lives in the Start menu grid

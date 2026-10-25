@@ -48,10 +48,10 @@ import type {
   RunnerBinary,
   StudioAsset,
   StudioTrack } from "../../catalog";
-import { Banner } from "./shell.banner.tsx";
-import { Chip } from "./shell.chip.tsx";
-import { Dot } from "./shell.dot.tsx";
-import { TRYLLE_CARD_SHADOW, TRYLLE_CARD_SHADOW_RAISED } from "./explore.launchdeck.tsx";
+import { Banner } from "./ShellBanner.tsx";
+import { Chip } from "./ShellChip.tsx";
+import { Dot } from "./ShellDot.tsx";
+import { TRYLLE_CARD_SHADOW, TRYLLE_CARD_SHADOW_RAISED } from "./ExploreLaunchdeck.tsx";
 
 /** the doctrine micro curve of every quiet entrance */
 const MICRO = "cubic-bezier(0.22, 1, 0.36, 1)";

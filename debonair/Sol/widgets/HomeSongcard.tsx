@@ -13,7 +13,7 @@ import type { CSSProperties } from "react";
 import type { TakePlan } from "../../arranger.ts";
 import { labelfill } from "../../labels.ts";
 import type { LibraryTrackRow } from "../../katexis.ts";
-import { CoverArt } from "./home.coverart.tsx";
+import { CoverArt } from "./HomeCoverart.tsx";
 
 /** The props of one song card. */
 type SongCardProps = {
