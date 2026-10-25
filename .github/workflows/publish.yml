@@ -532,8 +532,17 @@ jobs:
             echo "version=$version"
           } >> "$GITHUB_OUTPUT"
       # the package validator, inlined from the retired composite action
-      # (dependency install plus the pack dry-run).
+      # (dependency install plus the pack dry-run). the setup node registry
+      # of this lane leaves the github registry redirect in the runner temp
+      # npmrc the NPM_CONFIG_USERCONFIG env points at, and bun honors it:
+      # the scope would resolve against npm.pkg.github.com with no token
+      # and the frozen install would 403 on the saddle engine package. the
+      # empty userconfig answers the project npmrc instead, so the install
+      # resolves the public family mirror the registry lanes publish; the
+      # publish steps below keep the registry-url configuration untouched.
       - name: install dependencies
+        env:
+          NPM_CONFIG_USERCONFIG: ""
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: build the distribution set
         run: cd devthink && node tests/build.mjs
