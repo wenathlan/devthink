@@ -17,7 +17,7 @@
 import { useEffect, useState } from "react";
 import { coreModuleTable, osAppLabels, type CoreModule } from "../../catalog";
 import { osDocsEndpoints, osDocsQuickstartCommands, osText } from "../../oslabels.ts";
-import { ShellChrome } from "@/widgets/shell.shellchrome";
+import { ShellChrome } from "@/widgets/ShellShellchrome";
 import { DocsNav, type DocsSection } from "../widgets";
 import { DocsCard, DocsCode } from "../widgets";
 import { DocsModules } from "../widgets";

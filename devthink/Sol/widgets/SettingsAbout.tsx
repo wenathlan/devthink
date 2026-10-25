@@ -8,8 +8,8 @@
 import { InfoRegular, SettingsRegular } from "@fluentui/react-icons";
 import type { BrowserStoreSummary } from "../../db";
 import { copy } from "../../copy";
-import { SettingsRow } from "./settings.row";
-import type { SettingsSnapshot } from "./settings.settingstypes";
+import { SettingsRow } from "./SettingsRow";
+import type { SettingsSnapshot } from "./SettingsSettingstypes";
 
 type AboutSettingsProps = {
   /** paired gateways answer the gateway database ledger */

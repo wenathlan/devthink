@@ -8,9 +8,9 @@
  */
 import { PersonRegular, PlugDisconnectedRegular } from "@fluentui/react-icons";
 import { copy } from "../../copy";
-import { LocalAccount } from "./settings.identity";
-import { SettingsRow } from "./settings.row";
-import type { SettingsSnapshot } from "./settings.settingstypes";
+import { LocalAccount } from "./SettingsIdentity";
+import { SettingsRow } from "./SettingsRow";
+import type { SettingsSnapshot } from "./SettingsSettingstypes";
 
 type AccountsCategoryProps = {
   /** paired gateways answer the public identity card */

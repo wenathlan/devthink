@@ -1,5 +1,9 @@
 # DevThink release notes
 
+## 2.0.143
+
+This release is the surviving-reference rung of the ladder: the naming pass of the previous rung rewrote every import that carried the file extension, and three quieter forms kept the dotted name — the extension-less alias paths the typecheck resolves (`@/widgets/shell.shellchrome`), the same-folder sibling imports inside the widget folder (`./settings.row`), and the strip-types CLI import that rides a `.js` suffix. This rung rewrites all three forms from the rename map of the commit itself: eighteen path-form references, eight sibling-form references and the terminal UI import of the CLI entry, so the typecheck of the merged tree, the web workbench check, the static surface builds and the CLI contract answer green again. The rung stamps the metadata family at 2.0.143 with the battery artifacts re-stamped and the battery walks again.
+
 ## 2.0.142
 
 This release is the naming rung of the ladder: the dot leaves the component names for good, so every one of the 178 dotted widget files across the eleven family applications now carries a dot-free PascalCase name that says what it renders, every barrel and every import follows, and the widget surface law keeps the single import point alive with the new names. The rung also answers the family package law: every dependency, devDependency and override pin shared by two or more applications answers to the majority pin of the family (cobaia caught up on twelve pins, devthink answers the family biome, panels, saddle and mysql2 pins), the cobaia manifest adopts the family package manager pnpm 12.3.4, and the touched locks regenerate frozen. The battery walks again over the renamed surface.

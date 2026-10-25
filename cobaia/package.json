@@ -1,7 +1,7 @@
 {
   "name": "@wenathlan/cobaia",
   "packageManager": "pnpm@12.3.4",
-  "version": "2.0.142",
+  "version": "2.0.143",
   "description": "cobaia is the monetization surface of the wenathlan family: the content site that carries the plans, the support rails and the honest advertisement slots while the family apps stay clean; the name is provisional until the owner picks the official one",
   "type": "module",
   "repository": {

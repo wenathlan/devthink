@@ -82,7 +82,7 @@ import {
 } from "../../fileexplorer.ts";
 import { browserStoreSummary } from "../../db";
 import { drives, type HardDrive } from "../../harddrives.ts";
-import { ShellChrome } from "@/widgets/shell.shellchrome";
+import { ShellChrome } from "@/widgets/ShellShellchrome";
 import { AppTile } from "@/widgets";
 import { DriveIcon, PlatformMark, ShellFolderIcon, ThisPcMark } from "../widgets";
 

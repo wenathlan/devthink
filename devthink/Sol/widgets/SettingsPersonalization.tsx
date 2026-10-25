@@ -12,13 +12,13 @@
  */
 import { ColorRegular, ImageRegular, PersonRegular, WindowRegular } from "@fluentui/react-icons";
 import { copy } from "../../copy";
-import { AccentRow } from "./settings.accentrow";
-import { BackgroundPicker } from "./settings.backgroundpicker";
-import { ComponentOptions } from "./settings.componentoptions";
-import { LanguageCard } from "./settings.languagecard";
-import { NavbarPositionControl } from "./settings.navbarposition";
-import { saveThemeMirror } from "./settings.personalstore";
-import type { PreferenceKey, SettingsSnapshot } from "./settings.settingstypes";
+import { AccentRow } from "./SettingsAccentrow";
+import { BackgroundPicker } from "./SettingsBackgroundpicker";
+import { ComponentOptions } from "./SettingsComponentoptions";
+import { LanguageCard } from "./SettingsLanguagecard";
+import { NavbarPositionControl } from "./SettingsNavbarposition";
+import { saveThemeMirror } from "./SettingsPersonalstore";
+import type { PreferenceKey, SettingsSnapshot } from "./SettingsSettingstypes";
 
 type PersonalizationProps = {
   /** the preference machine rows the mode, the rail and the zoom ride */

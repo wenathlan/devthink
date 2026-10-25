@@ -45,7 +45,7 @@ import { familyrow } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
 import { label, labelfill } from "../../labels";
 import { currentTheme, type ThemeName, toggleTheme } from "../../theme.ts";
-import { BrandMark } from "../widgets/shell.brandmark";
+import { BrandMark } from "../widgets/ShellBrandmark";
 
 /** one entry of the window rail: a page surface of the app with its glyph. */
 export type StartApp = {

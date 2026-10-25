@@ -53,7 +53,7 @@ import { Link, useLocation } from "wouter";
 import { FAMILY_SLUGS, familyAccentOf } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
 import { label, labelfill } from "../../labels";
-import { BrandMark } from "../widgets/shell.brandmark";
+import { BrandMark } from "../widgets/ShellBrandmark";
 
 /** the theme in memory: flips the data-theme attribute, stores nothing */
 type ThemeName = "dark" | "light";

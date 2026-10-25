@@ -18,7 +18,7 @@ import {
   SearchRegular } from "@fluentui/react-icons";
 import { useState, type ComponentType } from "react";
 import { copy } from "../../copy";
-import type { SettingsCategoryId } from "./settings.settingstypes";
+import type { SettingsCategoryId } from "./SettingsSettingstypes";
 
 /** one rail entry: the category id, its fluent glyph and its copy key. */
 const ENTRIES: readonly { id: SettingsCategoryId; icon: ComponentType<{ fontSize?: number }>; key: string }[] = [

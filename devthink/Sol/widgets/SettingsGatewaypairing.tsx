@@ -9,9 +9,9 @@
 import { ArrowSyncRegular, ShieldRegular } from "@fluentui/react-icons";
 import type { BrowserStoreSummary } from "../../db";
 import { copy } from "../../copy";
-import { GatewayCard } from "./settings.gatewaycard";
-import { SettingsRow } from "./settings.row";
-import type { SettingsSnapshot } from "./settings.settingstypes";
+import { GatewayCard } from "./SettingsGatewaycard";
+import { SettingsRow } from "./SettingsRow";
+import type { SettingsSnapshot } from "./SettingsSettingstypes";
 
 type GatewayPairingProps = {
   /** paired gateways answer the snapshot sync ledger */
