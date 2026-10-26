@@ -42,6 +42,33 @@ export type saascreator = {
   stats: readonly (readonly [string, string])[];
 };
 
+/** One mode row of the hero segmented control: the label the control
+ * shows, the line the sub-headline wears while the mode rides. */
+export type saasheromode = { id: string; label: string; line: string };
+
+/** The hero copy of the landing: the owner phrase the innovative face
+ * wears again — the lead words, the ever keyword the pink gradient sweep
+ * carries, the mode rows the segmented control switches and the two key
+ * labels of the statement row. */
+export const saashero: {
+  lead: string;
+  ever: string;
+  modelabel: string;
+  modes: readonly saasheromode[];
+  keyprimary: string;
+  keysecondary: string;
+} = {
+  lead: "Build for",
+  ever: "Ever AI",
+  modelabel: "Made for",
+  modes: [
+    { id: "agents", label: "Agents", line: "Create, stream and run every studio and your agents in one OS" },
+    { id: "studios", label: "Studios", line: "Create, stream and run your studios and every AI team in one OS" },
+  ],
+  keyprimary: "Get started",
+  keysecondary: "Why DevThink",
+};
+
 /** The native studios the fan deck cycles through. */
 export const saasstudios: readonly saasstudio[] = [
   {

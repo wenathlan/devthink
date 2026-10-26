@@ -6,10 +6,21 @@
  * line, no hyphens, no dots, no marketing prose.
  */
 
-import {HeartPulseRegular as Activity, ArrowUpRightRegular as ArrowUpRight, MentionRegular as AtSign, CheckmarkRegular as Check, GlobeRegular as Globe, PlayRegular as Play, AddRegular as Plus, ShareRegular as Share2, StarRegular as Star} from "@fluentui/react-icons";
+import {
+  ArrowUpRightRegular as ArrowUpRight,
+  MentionRegular as AtSign,
+  CheckmarkRegular as Check,
+  HeadphonesRegular as Headphones,
+  GlobeRegular as Globe,
+  PlayRegular as Play,
+  AddRegular as Plus,
+  ShareRegular as Share2,
+  StarRegular as Star,
+  TvRegular as Tv,
+} from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { saascreators, saasstudios } from "../../saascontent.ts";
+import { saascreators, saashero, saasstudios } from "../../saascontent.ts";
 import { SaddleTabBridge, SaddleTabBridgeUp, ScoopedCard, Studiomark, type studiomarkid } from "./IntroSaaskit.tsx";
 
 type SectionProps = {
@@ -19,38 +30,43 @@ type SectionProps = {
   scrollto: (id: string) => void;
 };
 
-/** The hero: the OS statement, the inline engine switch and the three
- * scooped stat cards. */
+/** The hero: the ever statement the owner ordered back — the lead words
+ * with the ever keyword on the pink gradient sweep, the gradient hairline
+ * under it, the labeled segmented control that carries the agents and
+ * studios mode (a switch never rides inside the headline again), the mode
+ * line and the three scooped stat cards. */
 export function SaasHero({ onenter, scrollto }: SectionProps) {
-  const [engine, setEngine] = useState(true);
+  const [modeid, setModeid] = useState("agents");
+  const mode = saashero.modes.find((row) => row.id === modeid) ?? saashero.modes[0];
   return (
     <section id="hero-os" className="relative flex flex-col overflow-hidden bg-[#F2F5FC] pt-0 pb-32 sm:pb-40">
       <div className="hero-gaussian-shader pointer-events-none absolute inset-x-0 -bottom-20 z-0 h-[520px] opacity-90" />
+      <div className="saas-hero-bloom pointer-events-none absolute top-[-140px] left-1/2 z-0 h-[480px] w-[min(920px,120vw)] -translate-x-1/2" />
       <div className="relative z-20 mx-auto flex w-full max-w-[1360px] flex-col items-center px-6 pt-16 text-center sm:px-10 sm:pt-24 lg:px-16">
-        <h1 className="max-w-5xl text-[44px] leading-[1.02] font-extrabold tracking-[-0.035em] text-slate-950 sm:text-7xl lg:text-[84px]">
-          <span>An OS </span>
-          <span className="surface-card mx-2 inline-flex h-12 w-12 items-center justify-center rounded-2xl align-middle text-orange-500 sm:h-14 sm:w-14">
-            <Activity className="h-6 w-6 animate-pulse sm:h-7 sm:w-7" aria-hidden="true" />
-          </span>
-          <span> built for</span>
-          <br />
-          <span className="text-slate-400">every AI </span>
-          <button
-            type="button"
-            onClick={() => setEngine((current) => !current)}
-            aria-label="Switch OS mode"
-            className="hero-inline-switch mx-3 inline-flex h-12 w-24 cursor-pointer items-center rounded-full p-1.5 align-middle sm:h-14 sm:w-28"
-          >
-            <span
-              className={`hero-switch-thumb block h-9 w-9 rounded-full transition-transform duration-300 sm:h-11 sm:w-11 ${engine ? "translate-x-12 sm:translate-x-14" : "translate-x-0"}`}
-            />
-          </button>
-          <span className={engine ? "text-slate-950" : "text-indigo-600"}>
-            {engine ? "and your agents" : "and your studios"}
-          </span>
+        <h1 className="max-w-5xl text-[44px] leading-[1.04] font-extrabold tracking-[-0.035em] text-slate-950 sm:text-7xl lg:text-[84px]">
+          {saashero.lead} <span className="saas-hero-ever">{saashero.ever}</span>
         </h1>
-        <p className="mt-8 max-w-xl text-[15px] font-normal tracking-[-0.005em] text-slate-600 sm:text-lg">
-          Create, stream and run every studio and AI team in one OS
+        <span className="saas-hero-rule mt-7" aria-hidden="true" />
+        <div className="saas-hero-mode mt-8" role="radiogroup" aria-label={saashero.modelabel}>
+          <span className="saas-hero-mode__label">{saashero.modelabel}</span>
+          <div className="saas-hero-mode__track">
+            {saashero.modes.map((row) => (
+              <button
+                key={row.id}
+                type="button"
+                role="radio"
+                aria-checked={mode.id === row.id}
+                data-active={mode.id === row.id ? "true" : "false"}
+                onClick={() => setModeid(row.id)}
+                className="saas-hero-mode__seg"
+              >
+                {row.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <p className="mt-6 max-w-xl text-[15px] font-normal tracking-[-0.005em] text-slate-600 sm:text-lg">
+          {mode.line}
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
           <button
@@ -58,7 +74,7 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
             onClick={onenter}
             className="btn-tactile-3d flex items-center gap-2.5 rounded-full px-10 py-4 text-sm font-extrabold tracking-[-0.035em] text-white"
           >
-            <span>Get started</span>
+            <span>{saashero.keyprimary}</span>
             <ArrowUpRight className="h-4 w-4 text-sky-400" aria-hidden="true" />
           </button>
           <button
@@ -69,7 +85,7 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-950 text-white">
               <Play className="ml-0.5 h-3 w-3 fill-current" aria-hidden="true" />
             </span>
-            <span>Why DevThink</span>
+            <span>{saashero.keysecondary}</span>
           </button>
         </div>
 
@@ -120,7 +136,7 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
                 className="btn-tactile-3d flex h-10 w-10 items-center justify-center rounded-full text-white"
                 aria-label="Open Cadria"
               >
-                <Activity className="h-4 w-4 text-sky-400" aria-hidden="true" />
+                <Tv className="h-4 w-4 text-sky-400" aria-hidden="true" />
               </button>
             }
           >
@@ -159,7 +175,7 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
                 className="icon-frame-3d flex h-10 w-10 items-center justify-center rounded-full text-slate-950"
                 aria-label="Open Debonair"
               >
-                <Activity className="h-4 w-4 text-indigo-600" aria-hidden="true" />
+                <Headphones className="h-4 w-4 text-indigo-600" aria-hidden="true" />
               </button>
             }
           >
@@ -167,7 +183,8 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
               className="pointer-events-none absolute top-10 right-6 h-16 w-16 rounded-full opacity-90"
               style={{
                 background: "radial-gradient(circle at 30% 30%, #FFFFFF, #38BDF8 55%, #243047)",
-                boxShadow: "inset 0 3px 6px rgba(255,255,255,0.85), 0 10px 20px rgba(0,0,0,0.45)" }}
+                boxShadow: "inset 0 3px 6px rgba(255,255,255,0.85), 0 10px 20px rgba(0,0,0,0.45)",
+              }}
             />
             <div className="relative z-10 flex items-center gap-3 pr-12">
               <Studiomark app="doo" className="h-10 w-10" />
@@ -206,7 +223,8 @@ export function SaasCreators({ onenter }: SectionProps) {
       surface: "surface-card p-6",
       titletone: "text-slate-950",
       bodytone: "text-slate-500",
-      tagtone: "text-pink-600" },
+      tagtone: "text-pink-600",
+    },
     {
       app: "getry",
       title: "AI teams",
@@ -216,7 +234,8 @@ export function SaasCreators({ onenter }: SectionProps) {
       surface: "tactile-navy-surface p-6 text-white",
       titletone: "text-white",
       bodytone: "text-slate-200",
-      tagtone: "text-white" },
+      tagtone: "text-white",
+    },
     {
       app: "saddle",
       title: "Saddle cloud",
@@ -226,7 +245,8 @@ export function SaasCreators({ onenter }: SectionProps) {
       surface: "surface-card p-6",
       titletone: "text-slate-950",
       bodytone: "text-slate-500",
-      tagtone: "text-sky-600" },
+      tagtone: "text-sky-600",
+    },
   ];
   const swings = ["swing-card-1", "swing-card-2", "swing-card-3"];
   return (
@@ -379,7 +399,8 @@ export function SaasStudios({ onenter }: SectionProps) {
       <div
         className="pointer-events-none absolute top-1/3 left-1/2 h-[320px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-20 transition-opacity duration-500"
         style={{
-          background: `radial-gradient(closest-side, ${["#8B5CF6", "#FB7185", "#38BDF8", "#10B981", "#3B82F6"][active]}, transparent)` }}
+          background: `radial-gradient(closest-side, ${["#8B5CF6", "#FB7185", "#38BDF8", "#10B981", "#3B82F6"][active]}, transparent)`,
+        }}
       />
       <div className="relative z-20 mb-8 w-full inset-x-0 top-0">
         <div className="h-2 w-full bg-[#fafafa]" />
@@ -414,7 +435,8 @@ export function SaasStudios({ onenter }: SectionProps) {
                   onClick={onenter}
                   style={{
                     zIndex: 30 - Math.abs(offset) * 5,
-                    transform: `translateY(${Math.abs(offset) * 18}px) rotate(${offset * 5.5}deg) scale(${center ? 1.08 : 1 - Math.abs(offset) * 0.05})` }}
+                    transform: `translateY(${Math.abs(offset) * 18}px) rotate(${offset * 5.5}deg) scale(${center ? 1.08 : 1 - Math.abs(offset) * 0.05})`,
+                  }}
                   className={`fan-clay group relative flex h-[270px] cursor-pointer flex-col justify-between overflow-hidden rounded-[20px] border bg-gradient-to-b p-5 text-left transition-[transform,opacity,border-color] duration-500 ease-out sm:-mx-4 sm:h-[300px] ${card.gradient} ${center ? "border-white/60" : "border-white/30 opacity-85 hover:opacity-100"}`}
                 >
                   <div className="fan-sheen pointer-events-none absolute inset-0" />

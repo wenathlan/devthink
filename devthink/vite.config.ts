@@ -100,6 +100,141 @@ function familydevbridge(): Plugin {
   };
 }
 
+/** The multi-mode engine edge, closed for good: the shared core graph
+ * (constants, models, fingerprint, core, the provider lineage) is authored
+ * once for node, bun AND the browser bundle, and the browser answers the
+ * neutral stubs the doctrine always described — vite's default
+ * browser-external proxy throws on the first property binding, which killed
+ * the whole module graph at import time and blanked the OS. Every builtin
+ * the graph speaks resolves here to a small honest browser surface:
+ * identifiers answer neutral values, the filesystem answers absent and
+ * inert, and the crypto-strong draws ride the platform randomness. Nothing
+ * server-only (dns probes, readline, scrypt) is faked: those paths throw
+ * the same way they would on a host without them, and every caller in the
+ * browser graph already carries its guarded fallback. */
+function nodebuiltinshim(): Plugin {
+  const shims: Record<string, string> = {
+    os: [
+      "export const EOL = \"\\n\";",
+      "export const arch = () => \"wasm\";",
+      "export const platform = () => \"browser\";",
+      "export const release = () => \"\";",
+      "export const type = () => \"Browser\";",
+      "export const hostname = () => \"localhost\";",
+      "export const homedir = () => \"/\";",
+      "export const tmpdir = () => \"/tmp\";",
+      "export const cpus = () => [];",
+      "export const totalmem = () => 0;",
+      "export const freemem = () => 0;",
+      "export const uptime = () => 0;",
+      "export const loadavg = () => [0, 0, 0];",
+      "export const networkInterfaces = () => [];",
+      "export const userInfo = () => ({ username: \"devthink\", uid: -1, gid: -1, homedir: \"/\", shell: null });",
+      "export const constants = {};",
+      "export default { EOL, arch, platform, release, type, hostname, homedir, tmpdir, cpus, totalmem, freemem, uptime, loadavg, networkInterfaces, userInfo, constants };",
+    ].join("\n"),
+    path: [
+      "const normalizeone = (value) => value.replace(/\\/{2,}/g, \"/\").replace(/\\/$/, \"\") || \"/\";",
+      "export const sep = \"/\";",
+      "export const delimiter = \":\";",
+      "export const isAbsolute = (value) => value.startsWith(\"/\");",
+      "export const normalize = (value) => normalizeone(value);",
+      "export const join = (...parts) => normalizeone(parts.filter(Boolean).join(\"/\"));",
+      "export const resolve = (...parts) => normalizeone(parts.filter(Boolean).join(\"/\"));",
+      "export const dirname = (value) => { const cut = normalizeone(value).lastIndexOf(\"/\"); return cut <= 0 ? \"/\" : normalizeone(value).slice(0, cut); };",
+      "export const basename = (value, ext) => { const base = normalizeone(value).split(\"/\").pop() || \"\"; return ext && base.endsWith(ext) ? base.slice(0, -ext.length) : base; };",
+      "export const extname = (value) => { const base = normalizeone(value).split(\"/\").pop() || \"\"; const dot = base.lastIndexOf(\".\"); return dot > 0 ? base.slice(dot) : \"\"; };",
+      "export const relative = (from, to) => normalizeone(to).replace(normalizeone(from), \"\").replace(/^\\//, \"\") || \".\";",
+      "export const posix = { sep, delimiter, isAbsolute, normalize, join, resolve, dirname, basename, extname, relative };",
+      "export const win32 = { sep: \"\\\\\\\\\", delimiter: \";\", isAbsolute, normalize, join, resolve, dirname, basename, extname, relative };",
+      "export default { sep, delimiter, isAbsolute, normalize, join, resolve, dirname, basename, extname, relative, posix, win32 };",
+    ].join("\n"),
+    fs: [
+      "const absent = (name) => { throw new Error(`[devthink browser bundle] node:fs ${name} is absent on this host`); };",
+      "export const existsSync = () => false;",
+      "export const mkdirSync = () => undefined;",
+      "export const writeFileSync = () => undefined;",
+      "export const appendFileSync = () => undefined;",
+      "export const renameSync = () => undefined;",
+      "export const chmodSync = () => undefined;",
+      "export const unlinkSync = () => undefined;",
+      "export const statSync = () => absent(\"statSync\");",
+      "export const readFileSync = () => absent(\"readFileSync\");",
+      "export const readdirSync = () => [];",
+      "export default { existsSync, mkdirSync, writeFileSync, appendFileSync, renameSync, chmodSync, unlinkSync, statSync, readFileSync, readdirSync };",
+    ].join("\n"),
+    "fs/promises": [
+      "const absent = (name) => Promise.reject(new Error(`[devthink browser bundle] node:fs/promises ${name} is absent on this host`));",
+      "export const mkdir = () => Promise.resolve(undefined);",
+      "export const writeFile = () => Promise.resolve(undefined);",
+      "export const rename = () => Promise.resolve(undefined);",
+      "export const readFile = () => absent(\"readFile\");",
+      "export const stat = () => absent(\"stat\");",
+      "export const readdir = () => Promise.resolve([]);",
+      "export default { mkdir, writeFile, rename, readFile, stat, readdir };",
+    ].join("\n"),
+    crypto: [
+      "const absent = (name) => { throw new Error(`[devthink browser bundle] node:crypto ${name} is absent on this host`); };",
+      "export const randomUUID = () => globalThis.crypto.randomUUID();",
+      "export const randomBytes = (size) => globalThis.crypto.getRandomValues(new Uint8Array(size));",
+      "export const randomInt = (min, max) => Math.floor(Math.random() * (max - min)) + min;",
+      "export const createHash = () => absent(\"createHash\");",
+      "export const createHmac = () => absent(\"createHmac\");",
+      "export const scryptSync = () => absent(\"scryptSync\");",
+      "export const timingSafeEqual = () => absent(\"timingSafeEqual\");",
+      "export default { randomUUID, randomBytes, randomInt, createHash, createHmac, scryptSync, timingSafeEqual };",
+    ].join("\n"),
+    url: [
+      "export const pathToFileURL = (value) => new URL(`file://${value}`);",
+      "export const fileURLToPath = (value) => String(value).replace(/^file:\\/\\//, \"\");",
+      "export default { pathToFileURL, fileURLToPath };",
+    ].join("\n"),
+    util: [
+      "export const inspect = (value) => String(value);",
+      "export const format = (...parts) => parts.map((part) => (typeof part === \"string\" ? part : String(part))).join(\" \");",
+      "export const promisify = (fn) => fn;",
+      "export default { inspect, format, promisify };",
+    ].join("\n"),
+    process: [
+      "export const env = {};",
+      "export const platform = \"browser\";",
+      "export const arch = \"wasm\";",
+      "export const argv = [];",
+      "export const pid = 0;",
+      "export const versions = {};",
+      "export const cwd = () => \"/\";",
+      "export const nextTick = (fn) => Promise.resolve().then(fn);",
+      "export default { env, platform, arch, argv, pid, versions, cwd, nextTick };",
+    ].join("\n"),
+    tty: [
+      "export const isatty = () => false;",
+      "export default { isatty };",
+    ].join("\n"),
+    "dns/promises": [
+      "const absent = (name) => Promise.reject(new Error(`[devthink browser bundle] node:dns ${name} is absent on this host`));",
+      "export const lookup = () => absent(\"lookup\");",
+      "export const resolve = () => absent(\"resolve\");",
+      "export default { lookup, resolve };",
+    ].join("\n"),
+    readline: [
+      "export const createInterface = () => { throw new Error(\"[devthink browser bundle] node:readline is absent on this host\"); };",
+      "export default { createInterface };",
+    ].join("\n"),
+  };
+  const shimpath = path.resolve(import.meta.dirname, "nodeshim.ts");
+  const shimmed = new Set(Object.keys(shims));
+  return {
+    name: "devthink-node-builtin-shim",
+    enforce: "pre",
+    resolveId(source) {
+      if (source.startsWith("node:") && shimmed.has(source.slice("node:".length))) {
+        return shimpath;
+      }
+      return null;
+    },
+  };
+}
+
 export default defineConfig({
   define: {
     __dtversion__: JSON.stringify(manifestversion),
@@ -108,9 +243,16 @@ export default defineConfig({
      * introtarget.ts; an unset variable answers "web", the safe public
      * default. */
     "import.meta.env.VITE_DT_TARGET": JSON.stringify(process.env.VITE_DT_TARGET?.trim() || "web"),
+    /** the multi-mode engine edge: the shared core graph (constants, models,
+     * the provider lineage) reads process.env at module scope the way node
+     * and bun answer it, and the browser bundle would throw ReferenceError
+     * at import time before any guard could run — the neutral empty object
+     * keeps the module link safe while every env-overridable constant falls
+     * back to its compiled default. */
+    "process.env": "({})",
   },
   base: pagesBasePath(process.env.VITE_BASE_PATH),
-  plugins: [react(), tailwindcss(), familydevbridge()],
+  plugins: [nodebuiltinshim(), react(), tailwindcss(), familydevbridge()],
   resolve: {
     alias: {
       /** the exact-subpath bridge to the sibling saddle engine: the chat

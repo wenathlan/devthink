@@ -744,6 +744,11 @@ export async function resolvelane(): Promise<{ base: string; token?: string }> {
   } catch {
     registered = "";
   }
+  /* the same-origin default: the dev server proxies /api to the gateway and
+   * the deployed envelope serves the lane beside the app, so an unregistered
+   * lane answers through the page's own origin instead of answering offline —
+   * a registered base or a pairing context still wins, the empty base rides
+   * the relative fetch the browser resolves against this host. */
   return { base: registered };
 }
 
@@ -758,14 +763,18 @@ export async function resolvelane(): Promise<{ base: string; token?: string }> {
  */
 export async function lanefetch(path: string, init?: RequestInit): Promise<Response | null> {
   const lane = await resolvelane();
-  if (!lane.base) return null;
+  /* the same-origin default rides the relative fetch: the empty base the
+   * resolver answers when nothing is registered fetches against this host,
+   * where the dev proxy and the deployed envelope both serve the lane —
+   * only a registered base or a pairing context redirects elsewhere. */
+  const base = lane.base ?? "";
   const headers = new Headers(init?.headers);
   if (lane.token) headers.set("authorization", `Bearer ${lane.token}`);
   if (init?.body && !headers.has("content-type")) headers.set("content-type", "application/json");
   const ctrl = new AbortController();
   const timer = window.setTimeout(() => ctrl.abort(), LANETIMEOUTMS);
   try {
-    return await fetch(`${lane.base}${path}`, { ...init, headers, signal: ctrl.signal });
+    return await fetch(`${base}${path}`, { ...init, headers, signal: ctrl.signal });
   } catch {
     return null;
   } finally {
@@ -907,16 +916,18 @@ export async function modalities(): Promise<string[] | null> {
 
 /* ============================================================================
  * @section 7 — storageusageclient: the browser client of the storage usage
- * route.
+ * route and the object read/write routes.
  * ========================================================================== */
 
 /**
- * storageusageclient — the browser client of the server storage usage
- * route (GET /api/v1/storage/usage?owner=).
+ * storageusageclient — the browser client of the server storage routes
+ * (GET /api/v1/storage/usage?owner=, GET /api/v1/storage/objects?owner=&key=
+ * and POST /api/v1/storage/objects).
  *
  * The My Files capacity bar stops guessing when a devthink server answers:
  * this section is the one seam between the explorer and the storage lane of
- * server.ts — the real usage and the plan quota of one owner. Every call
+ * server.ts — the real usage and the plan quota of one owner, one stored
+ * object of the owner, and the object write the user actions own. Every call
  * rides the ONE lane-client seam (§5 resolvelane/lanefetch — the former
  * usagelane twin is deduped into it): the paired gateway context first (the
  * guarded ?gateway= base with its ephemeral bearer), then the chat's
@@ -924,13 +935,21 @@ export async function modalities(): Promise<string[] | null> {
  * the session panel persist). No base, a failed fetch, an aborted timeout, a
  * non-ok status or a wrong-shaped body answers null, so the caller falls
  * back to the browser storage estimate and declares the fallback instead of
- * pretending. The section keeps no state of its own — no storage, no new
- * dependency, no hardcoded origin.
+ * pretending. The object calls keep the three honest outcomes apart — the
+ * lane answered, the lane refused, the lane never answered — the same
+ * verdict union the account client carries (authfamily.ts §6), because a
+ * refused write must never wear the offline mask. The section keeps no
+ * state of its own — no storage, no new dependency, no hardcoded origin.
  */
 
 /** OWNERPATTERN — the owner gate the server route enforces; the client
  * refuses a malformed owner before any wire bytes leave. */
 const OWNERPATTERN = /^[a-z0-9][a-z0-9-]{5,63}$/i;
+
+/** STORAGEKEYPATTERN — the key gate the server route enforces (relative,
+ * dot-free segments, bounded length); the client refuses a malformed key
+ * before any wire bytes leave. */
+const STORAGEKEYPATTERN = /^[a-z0-9][a-z0-9-]{0,63}(?:\/[a-z0-9][a-z0-9-]{0,63})*$/i;
 
 /** the honest usage answer of one owner: the bytes the lane stores, the
  * object count and the plan quota composed to bytes (the wire carries
@@ -969,6 +988,133 @@ function usageshape(parsed: unknown): StorageLaneUsage | null {
   if (typeof objects !== "number" || !Number.isFinite(objects) || objects < 0) return null;
   if (typeof quotamb !== "number" || !Number.isFinite(quotamb) || quotamb <= 0) return null;
   return { bytes, objects, quotabytes: quotamb * 1024 * 1024 };
+}
+
+/**
+ * @subsection objects — the read and the write of one stored object, the
+ * two calls the My Files plan folders ride. The verdict unions keep the
+ * honest outcomes apart so the explorer can answer each one with its own
+ * line instead of a disguised fallback.
+ */
+
+/** one stored object as the read route answers it — the record the lane
+ * holds for the owner, content included (the folder registry parses its
+ * own body). */
+export type StorageLaneRecord = { owner: string; key: string; content: string; bytes: number; updatedAt: string };
+
+/** the honest verdict of one object read: the lane answered the record,
+ * the lane answered that the key holds nothing (the absent branch, never
+ * an invented record), the lane refused, or the lane never answered. */
+export type StorageObjectVerdict =
+  | { verdict: "ok"; object: StorageLaneRecord }
+  | { verdict: "absent" }
+  | { verdict: "refused"; error: string }
+  | { verdict: "offline" };
+
+/** the honest verdict of one object write: the lane stored the record (the
+ * stored summary it answers), the lane refused (the refusal reason rides),
+ * or the lane never answered. */
+export type StorageWriteVerdict =
+  | { verdict: "ok"; stored: { key: string; bytes: number; updatedAt: string } }
+  | { verdict: "refused"; error: string }
+  | { verdict: "offline" };
+
+/** storagebody — one bounded json call against the resolved lane base with
+ * the status kept beside the payload (the accountclient twist minus the
+ * cookie: the storage routes own their visitor through the query and the
+ * body, never a session). An answer without json is an absent lane (the
+ * static 404 page a plain host answers) — offline, never a disguised
+ * refusal. */
+async function storagebody(response: Response | null): Promise<{ status: number; payload: unknown } | null> {
+  if (!response) return null;
+  const payload: unknown = await response.json().catch(() => null);
+  if (payload === null) return null;
+  return { status: response.status, payload };
+}
+
+/** storageerrorof — the honest refusal message of a lane error body. */
+function storageerrorof(payload: unknown): string {
+  if (payload && typeof payload === "object") {
+    const message = (payload as { error?: unknown }).error;
+    if (typeof message === "string" && message) return message;
+  }
+  return "the lane refused the request";
+}
+
+/** recordshape — the honest check of the { object } body: the five fields
+ * the read route answers, anything else is not a lane answer. */
+function recordshape(payload: unknown): StorageLaneRecord | null {
+  if (typeof payload !== "object" || payload === null) return null;
+  const object = (payload as { object?: unknown }).object;
+  if (typeof object !== "object" || object === null) return null;
+  const body = object as Record<string, unknown>;
+  if (typeof body.owner !== "string" || !body.owner) return null;
+  if (typeof body.key !== "string" || !body.key) return null;
+  if (typeof body.content !== "string") return null;
+  if (typeof body.bytes !== "number" || !Number.isFinite(body.bytes) || body.bytes < 0) return null;
+  if (typeof body.updatedAt !== "string" || !body.updatedAt) return null;
+  return { owner: body.owner, key: body.key, content: body.content, bytes: body.bytes, updatedAt: body.updatedAt };
+}
+
+/** storedshape — the honest check of the { stored } body: the three fields
+ * the write route answers, anything else is not a lane answer. */
+function storedshape(payload: unknown): { key: string; bytes: number; updatedAt: string } | null {
+  if (typeof payload !== "object" || payload === null) return null;
+  const stored = (payload as { stored?: unknown }).stored;
+  if (typeof stored !== "object" || stored === null) return null;
+  const body = stored as Record<string, unknown>;
+  if (typeof body.key !== "string" || !body.key) return null;
+  if (typeof body.bytes !== "number" || !Number.isFinite(body.bytes) || body.bytes < 0) return null;
+  if (typeof body.updatedAt !== "string" || !body.updatedAt) return null;
+  return { key: body.key, bytes: body.bytes, updatedAt: body.updatedAt };
+}
+
+/**
+ * storageobject — one stored object of one owner: get
+ * /api/v1/storage/objects with the owner and the key, answering the
+ * verdict union the explorer reads. The 404 answer walks the absent branch
+ * (the lane stands, the key holds nothing), every other non-ok answer
+ * walks refused with the lane's own reason, and no lane at all walks
+ * offline — the three outcomes never wear each other's masks.
+ */
+export async function storageobject(owner: string, key: string): Promise<StorageObjectVerdict> {
+  if (!OWNERPATTERN.test(owner)) return { verdict: "refused", error: "invalid owner" };
+  if (!STORAGEKEYPATTERN.test(key)) return { verdict: "refused", error: "invalid key" };
+  const answer = await storagebody(
+    await lanefetch(`/api/v1/storage/objects?owner=${encodeURIComponent(owner)}&key=${encodeURIComponent(key)}`),
+  );
+  if (!answer) return { verdict: "offline" };
+  if (answer.status === 200) {
+    const object = recordshape(answer.payload);
+    return object ? { verdict: "ok", object } : { verdict: "refused", error: "the lane answered a wrong shape" };
+  }
+  if (answer.status === 404) return { verdict: "absent" };
+  return { verdict: "refused", error: storageerrorof(answer.payload) };
+}
+
+/**
+ * putstorageobject — the object write of one owner: post
+ * /api/v1/storage/objects with the owner, the key and the content — the
+ * exact JSON shape the route reads. The write answers the verdict union:
+ * the stored summary on the ok branch, the lane's own refusal reason (the
+ * quota bound included) on the refused branch, and the absent lane on the
+ * offline branch, so the surface answers each one with its honest line.
+ */
+export async function putstorageobject(owner: string, key: string, content: string): Promise<StorageWriteVerdict> {
+  if (!OWNERPATTERN.test(owner)) return { verdict: "refused", error: "invalid owner" };
+  if (!STORAGEKEYPATTERN.test(key)) return { verdict: "refused", error: "invalid key" };
+  const answer = await storagebody(
+    await lanefetch("/api/v1/storage/objects", {
+      method: "POST",
+      body: JSON.stringify({ owner, key, content }),
+    }),
+  );
+  if (!answer) return { verdict: "offline" };
+  if (answer.status === 200) {
+    const stored = storedshape(answer.payload);
+    return stored ? { verdict: "ok", stored } : { verdict: "refused", error: "the lane answered a wrong shape" };
+  }
+  return { verdict: "refused", error: storageerrorof(answer.payload) };
 }
 
 /* ============================================================================

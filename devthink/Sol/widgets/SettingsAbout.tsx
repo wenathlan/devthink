@@ -9,7 +9,7 @@ import { InfoRegular, SettingsRegular } from "@fluentui/react-icons";
 import type { BrowserStoreSummary } from "../../storagefamily.ts";
 import { copy } from "../../copy";
 import { SettingsRow } from "./SettingsRow";
-import type { SettingsSnapshot } from "./SettingsSettingstypes";
+import type { SettingsSnapshot } from "./Settingstypes";
 
 type AboutSettingsProps = {
   /** paired gateways answer the gateway database ledger */

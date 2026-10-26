@@ -13,7 +13,7 @@ import { copy } from "../../copy";
 import type { AccountSessionState } from "../../authfamily.ts";
 import { LocalAccount } from "./SettingsIdentity";
 import { SettingsRow } from "./SettingsRow";
-import type { SettingsSnapshot } from "./SettingsSettingstypes";
+import type { SettingsSnapshot } from "./Settingstypes";
 
 type AccountsCategoryProps = {
   /** paired gateways answer the public identity card */

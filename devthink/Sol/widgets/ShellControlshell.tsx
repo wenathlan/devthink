@@ -21,7 +21,7 @@ import {
   pageheadTitleStyle,
   pagestageStyle,
   stagedEntrance } from "./ShellInstitutionalchrome.tsx";
-import { ShellChrome } from "./ShellShellchrome.tsx";
+import { ShellChrome } from "./Shellchrome.tsx";
 import { osText } from "../../oslabels.ts";
 import { useReducedMotion } from "./ShellTrayflyouts.tsx";
 

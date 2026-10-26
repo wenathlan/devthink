@@ -152,6 +152,76 @@ export function ShellFolderIcon({ folder }: { folder: ShellFolderId }) {
   );
 }
 
+/** the plan folder tile: the same Win11 two-plane manila the shell folders
+ * carry, drawn with the vault cylinder riding the face — the folder this
+ * account created on the plan storage carries no shell category, only the
+ * store it lives in. */
+export function PlanFolderIcon() {
+  const uid = `dtf-plan-${(mint += 1)}`;
+  return (
+    <svg {...TILE} aria-hidden="true" className="dtfx-tile">
+      <defs>
+        <linearGradient id={`${uid}-back`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#e5ad35" />
+          <stop offset="1" stopColor="#c8911f" />
+        </linearGradient>
+        <linearGradient id={`${uid}-front`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#ffe08a" />
+          <stop offset=".45" stopColor="#ffce55" />
+          <stop offset="1" stopColor="#efb32c" />
+        </linearGradient>
+        <linearGradient id={`${uid}-gloss`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#ffffff" stopOpacity=".42" />
+          <stop offset=".5" stopColor="#ffffff" stopOpacity=".1" />
+          <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+        </linearGradient>
+        <clipPath id={`${uid}-face`}>
+          <path d="M6 19.5 Q6 16.5 9 16.5 H19.5 L23 20.5 H39 Q42 20.5 42 23.5 V38 Q42 41 39 41 H9 Q6 41 6 38 Z" />
+        </clipPath>
+      </defs>
+
+      {/* the back panel: the darker manila with the folder tab */}
+      <path
+        d="M6 14.5 Q6 11.5 9 11.5 H18.5 L22.5 15.5 H39 Q42 15.5 42 18.5 V20 Q40.5 18 38 18 H22.8 L19 14.2 Q17.8 13 16.2 13 H9 Q6.8 13 6.6 15 Z"
+        fill={`url(#${uid}-back)`}
+      />
+      {/* the front panel: the lit warm face the glyph rides on */}
+      <path
+        d="M6 19.5 Q6 16.5 9 16.5 H19.5 L23 20.5 H39 Q42 20.5 42 23.5 V38 Q42 41 39 41 H9 Q6 41 6 38 Z"
+        fill={`url(#${uid}-front)`}
+      />
+      <path
+        d="M6 19.5 Q6 16.5 9 16.5 H19.5 L23 20.5 H39 Q42 20.5 42 23.5 V38 Q42 41 39 41 H9 Q6 41 6 38 Z"
+        fill={`url(#${uid}-gloss)`}
+      />
+      {/* the soft edge the Win11 folder carries under its face */}
+      <path
+        d="M6 19.5 Q6 16.5 9 16.5 H19.5 L23 20.5 H39 Q42 20.5 42 23.5 V38 Q42 41 39 41 H9 Q6 41 6 38 Z"
+        fill="none"
+        stroke="#a9771b"
+        strokeOpacity=".5"
+        strokeWidth=".8"
+      />
+
+      {/* the vault cylinder riding the face: the store the folder lives
+          in, drawn in the same deep ink as the category glyphs */}
+      <g clipPath={`url(#${uid}-face)`}>
+        <g
+          fill="none"
+          stroke={FOLDER_INK}
+          strokeOpacity=".85"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <ellipse cx="24" cy="27.5" rx="7" ry="2.4" fill={FOLDER_INK} fillOpacity=".16" />
+          <path d="M17 27.5 V35.5 Q17 38 24 38 Q31 38 31 35.5 V27.5" />
+        </g>
+      </g>
+    </svg>
+  );
+}
+
 /** the drive tile of the "Devices and drives" wall: the Win11 disk icon —
  *  the dark rounded body lit from above, the pale face plate, the activity
  *  light and the blue capacity bar riding under the body the way the

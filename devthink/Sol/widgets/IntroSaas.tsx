@@ -9,12 +9,24 @@
  * the saas-* root and the reference class names.
  */
 
-import {ArrowUpRightRegular as ArrowUpRight, AlertRegular as Bell, HeadphonesRegular as Headphones, StackRegular as Layers, ArrowImportRegular as LogIn, MaximizeRegular as Maximize2, ChatRegular as MessageSquare, SparkleRegular as Sparkles, StarRegular as Star, TvRegular as Tv, PeopleRegular as Users} from "@fluentui/react-icons";
+import {
+  ArrowUpRightRegular as ArrowUpRight,
+  AlertRegular as Bell,
+  HeadphonesRegular as Headphones,
+  StackRegular as Layers,
+  ArrowImportRegular as LogIn,
+  MaximizeRegular as Maximize2,
+  ChatRegular as MessageSquare,
+  SparkleRegular as Sparkles,
+  StarRegular as Star,
+  TvRegular as Tv,
+  PeopleRegular as Users,
+} from "@fluentui/react-icons";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 import { SolLogoMark, SolWordmark } from "./PanelLogo.tsx";
-import { SaddleTabBridge, VerticalSaddleBridge } from "./IntroSaaskit.tsx";
+import { SaddleTabBridge } from "./IntroSaaskit.tsx";
 import {
   SaasCadria,
   SaasDebonair,
@@ -22,7 +34,8 @@ import {
   SaasExplorerWall,
   SaasFlowStrip,
   SaasFooter,
-  SaasRibbon } from "./IntroSaasrails.tsx";
+  SaasRibbon,
+} from "./IntroSaasrails.tsx";
 import { SaasCreators, SaasHero, SaasStudios } from "./IntroSaassections.tsx";
 
 const SAAS_CSS = `
@@ -117,33 +130,38 @@ export default function Saas({ onDone }: { onDone: () => void }) {
   }, []);
   return (
     <div className="saas-root min-h-screen w-full overflow-x-hidden p-[2.5px] text-slate-900 select-none sm:select-auto">
-      <aside className="fixed top-1/2 left-0 z-50 hidden -translate-y-1/2 flex-col items-center lg:flex">
-        <VerticalSaddleBridge fillColor="#0A0B0E" className="py-2">
-          <div className="flex flex-col items-center gap-3 px-1">
-            <div className="my-0.5 h-[1px] w-5 bg-white/15" />
-            {NAV.map((item) => {
-              const Icon = item.icon;
-              const current = active === item.id;
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => scrollto(item.id)}
-                  aria-label={item.rail}
-                  className={`group relative flex h-10 w-10 items-center justify-center rounded-full transition-[transform,color] duration-300 ${current ? "scale-105 bg-gradient-to-tr from-[#243047] to-[#090D16] text-white" : "bg-white/10 text-slate-300 hover:bg-white/20 hover:text-white"}`}
-                >
-                  <Icon className="h-4 w-4" aria-hidden="true" />
-                  <span className="pointer-events-none absolute left-14 rounded-lg border border-white/10 bg-slate-950 px-2.5 py-1 text-[11px] font-semibold tracking-[-0.018em] whitespace-nowrap text-white opacity-0 transition group-hover:opacity-100">
-                    {item.rail}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </VerticalSaddleBridge>
+      {/* the floating section rail: the windows 11 acrylic pane — the fluent
+          bed, the house grain, the hairline ring; the ever wash answers the
+          active stop. the saddle slab that hugged the screen edge retired
+          (its curved caps cut the corner notch the audit caught) */}
+      <aside className="fixed top-1/2 left-3 z-50 hidden -translate-y-1/2 lg:flex">
+        <nav className="saas-rail" aria-label="Sections">
+          <span className="saas-rail__divider" aria-hidden="true" />
+          {NAV.map((item) => {
+            const Icon = item.icon;
+            const current = active === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => scrollto(item.id)}
+                aria-label={item.rail}
+                aria-pressed={current}
+                data-active={current ? "true" : "false"}
+                className="saas-rail__btn group relative"
+              >
+                <Icon className="h-4 w-4" aria-hidden="true" />
+                <span className="pointer-events-none absolute left-12 rounded-lg border border-white/10 bg-slate-950 px-2.5 py-1 text-[11px] font-semibold tracking-[-0.018em] whitespace-nowrap text-white opacity-0 transition group-hover:opacity-100">
+                  {item.rail}
+                </span>
+              </button>
+            );
+          })}
+        </nav>
       </aside>
 
-      <div className="surface-card fixed right-4 bottom-8 z-40 hidden flex-col items-center gap-2 rounded-2xl p-2 text-slate-700 md:flex">
+      {/* the corner dock: the light acrylic companion of the rail */}
+      <div className="saas-dock fixed right-4 bottom-8 z-40 hidden text-slate-700 md:flex">
         <button
           type="button"
           onClick={() => toast("Saved")}
@@ -170,10 +188,12 @@ export default function Saas({ onDone }: { onDone: () => void }) {
         </button>
       </div>
 
-      <main className="relative z-10 min-h-[calc(100vh-5px)] w-full overflow-hidden rounded-[30px] border border-[#fafafa] bg-[#F2F5FC] shadow-[0_25px_80px_-15px_rgba(15,23,42,0.25)] sm:rounded-[34px]">
+      <main className="saas-palco relative z-10 min-h-[calc(100vh-5px)] w-full overflow-hidden rounded-[30px] border border-[#fafafa] bg-[#F2F5FC] shadow-[0_25px_80px_-15px_rgba(15,23,42,0.25)] sm:rounded-[34px]">
         <section id="saas-header" className="relative bg-[#F2F5FC]">
           <header className="relative z-40">
-            <div className="h-1.5 w-full bg-[#fafafa]" />
+            {/* the light mica band of the top chrome: the token white over the
+                faint windows counterweight with the house grain */}
+            <div className="saas-chrome-strip w-full" aria-hidden="true" />
             <div className="-mt-[1px] flex w-full items-start justify-center gap-2 px-4 sm:gap-4 sm:px-8">
               <div className="ml-1 flex shrink-0 items-center pt-2 sm:ml-3">
                 <button
@@ -205,7 +225,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                           aria-label={tab.label}
                         >
                           <Icon
-                            className={`h-4 w-4 ${tab.id === "hero-os" ? "text-indigo-600" : tab.id === "workspace-subapps" ? "text-sky-600" : tab.id === "creators-doo" ? "text-purple-600" : tab.id === "spatial-bento" ? "text-pink-600" : "text-blue-600"}`}
+                            className={`h-4 w-4 ${current ? "text-[var(--color-ever-deep)]" : "text-slate-700"}`}
                             aria-hidden="true"
                           />
                           <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-[max-width,margin,opacity] group-hover:ml-2 group-hover:max-w-[90px] group-hover:opacity-100">

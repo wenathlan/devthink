@@ -34,7 +34,10 @@ export * from "./ConsoleGraphview.tsx";
 export * from "./ConsoleReference.tsx";
 export { default as Terminal } from "./ConsoleTerminal.tsx";
 export * from "./ConsoleTerminal.tsx";
-export * from "./ConsoleTerminalui.tsx";
+/* the ink terminal ui never rides the web barrel: the CLI entry imports it
+ * directly (devthink.ts), and the browser bundle would otherwise link the
+ * terminal renderer into the page graph — the one interface law keeps the
+ * terminal variant on its own build lane. */
 export * from "./DocsCard.tsx";
 export * from "./DocsModules.tsx";
 export * from "./DocsNav.tsx";
@@ -48,8 +51,8 @@ export * from "./FilesFoldericons.tsx";
 export * from "./GamesList.tsx";
 export * from "./GamesNav.tsx";
 export * from "./HistoryLadder.tsx";
-export * from "./ImageImageengine.tsx";
-export * from "./ImageImagestills.tsx";
+export * from "./Imageengine.tsx";
+export * from "./Imagestills.tsx";
 export { default as Boot } from "./IntroBoot.tsx";
 export { default as Saas } from "./IntroSaas.tsx";
 export * from "./IntroSaaskit.tsx";
@@ -84,7 +87,7 @@ export * from "./SettingsPairing.tsx";
 export * from "./SettingsPersonalization.tsx";
 export * from "./SettingsPersonalstore.ts";
 export * from "./SettingsRow.tsx";
-export * from "./SettingsSettingstypes.ts";
+export * from "./Settingstypes.ts";
 export * from "./ShellAlttabswitcher.tsx";
 export * from "./ShellAppicons.tsx";
 export * from "./ShellApptile.tsx";
@@ -95,6 +98,7 @@ export { default as ShellBanner } from "./ShellBanner.tsx";
 export * from "./ShellBanner.tsx";
 export { default as ShellChip } from "./ShellChip.tsx";
 export * from "./ShellChip.tsx";
+export * from "./Shellchrome.tsx";
 export { default as ShellConn } from "./ShellConn.tsx";
 export * from "./ShellConn.tsx";
 export * from "./ShellControlshell.tsx";
@@ -108,7 +112,6 @@ export * from "./ShellKbd.tsx";
 export * from "./ShellRoutesurface.tsx";
 export { default as ShellSegmented } from "./ShellSegmented.tsx";
 export * from "./ShellSegmented.tsx";
-export * from "./ShellShellchrome.tsx";
 export * from "./ShellTrayflyouts.tsx";
 export * from "./TermsLegalkit.tsx";
 export * from "./UsageMeasures.tsx";

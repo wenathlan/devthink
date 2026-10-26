@@ -1479,6 +1479,9 @@ async function accountfetch(path: string, init?: RequestInit): Promise<{ status:
   const response = await lanefetch(path, { ...init, credentials: "include" });
   if (!response) return null;
   const payload: unknown = await response.json().catch(() => null);
+  /* an answer without json is an absent lane (the static 404 page a plain
+   * host answers): the verdict walks offline, never a disguised refusal */
+  if (payload === null) return null;
   return { status: response.status, payload };
 }
 

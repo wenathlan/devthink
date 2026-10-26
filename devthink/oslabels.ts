@@ -220,6 +220,23 @@ const seedOsStrings: OsStringRow[] = [
     id: "explorer.storage.browser.aria",
     text: "Browser storage — the allocation this browser answers for the origin store",
   },
+  /* the plan folders lane: the folders this account creates on the
+     infrastructure storage — every write rides the real storage lane and
+     every state answers its own line (offline, refused, empty) */
+  { id: "explorer.newFolder", text: "New folder" },
+  { id: "explorer.planHeading", text: "Plan folders ({count})" },
+  { id: "explorer.planHeadingPending", text: "Plan folders" },
+  { id: "explorer.planFolder.detail", text: "folder kept on the plan" },
+  { id: "explorer.planForm.aria", text: "New folder form" },
+  { id: "explorer.planName", text: "Folder name" },
+  { id: "explorer.planNameHint", text: "Letters, numbers and hyphens only" },
+  { id: "explorer.planCreate", text: "Create folder" },
+  { id: "explorer.planCreating", text: "Creating folder" },
+  { id: "explorer.planCancel", text: "Cancel" },
+  { id: "explorer.planOffline", text: "The storage lane is offline" },
+  { id: "explorer.planEmpty", text: "No folders yet" },
+  { id: "explorer.planExists", text: "That folder name exists" },
+  { id: "explorer.toast.folderCreated", text: "Folder created on the plan: {name}" },
 
   /* ------------------------------ gateway view ---------------------------- */
   { id: "gateway.eyebrow", text: "devthink gateway" },

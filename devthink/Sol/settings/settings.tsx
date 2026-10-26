@@ -19,7 +19,7 @@
  * the behavior flags hold before the lock screen or the desktop mount.
  */
 import { useEffect, useState } from "react";
-import { ShellChrome } from "@/widgets/ShellShellchrome";
+import { ShellChrome } from "@/widgets/Shellchrome";
 import { copy } from "../../copy";
 import {
   type BrowserStoreSummary,

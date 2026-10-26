@@ -12,7 +12,7 @@
  */
 import { useState } from "react";
 import { copy } from "../../copy";
-import type { PreferenceKey, SettingsSnapshot } from "./SettingsSettingstypes";
+import type { PreferenceKey, SettingsSnapshot } from "./Settingstypes";
 import {
   loadAltTabMotion,
   loadDevtoolsWall,

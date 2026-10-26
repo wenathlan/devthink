@@ -57,7 +57,11 @@
  *  @version 2.1.2 — ONDA 5 CORRECTION V2 26/08/2026
  */
 
-import { arch as osArch, platform as osPlatform, homedir } from "node:os";
+/* The browser-portable os edge: the namespace import keeps the module link
+ * safe under vite's node-external shim (a named binding would throw at eval
+ * time in the browser before any guard could run), and every access stays
+ * behind the runtime guards the multi-mode engine doctrine demands. */
+import * as nodeos from "node:os";
 import * as nodePath from "node:path";
 // v2.1.15 Phase B: every FUNCTION that used to live here moved to its domain
 // owner (core.ts for generic utilities, fingerprint.ts for identity
@@ -91,7 +95,7 @@ export const ANTIGRAVITY_USER_AGENT: string = ANTIGRAVITY_USER_AGENT_FALLBACK;
 /* The grand merge folded this constants module into the shared core graph the platform-portable bundles ship: the user agent fallback reads the live os identifiers under node and bun while a stubbed browser bundle answers the neutral fallback, so the top-level evaluation never throws at import time. */
 const osidentifiers = (): string => {
   try {
-    return `${osPlatform()}/${osArch()}`;
+    return `${nodeos.platform()}/${nodeos.arch()}`;
   } catch {
     return "unknown/unknown";
   }
@@ -812,7 +816,7 @@ export function resolveOpenCodeBaseDir(): string {
   if (envDir && envDir.length > 0) {
     return nodePath.resolve(envDir);
   }
-  return nodePath.join(homedir(), ".config", "opencode");
+  return nodePath.join(nodeos.homedir(), ".config", "opencode");
 }
 
 /** Resolves critical plugin file paths. */

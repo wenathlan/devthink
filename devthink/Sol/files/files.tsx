@@ -25,6 +25,16 @@
  * binaries, the studio catalog rows). An empty category answers "empty
  * folder" — the explorer never invents a record.
  *
+ * The plan folders are the write lane of the explorer: the folders this
+ * account creates ride the real storage lane of the server (POST
+ * /api/v1/storage/objects, the vault-shaped object contract — the folder
+ * directory is one stored object the surface reads and writes through the
+ * lane client of gatewayfamily.ts §7), the lane stays the only canonical
+ * store, and every state answers itself honestly: the skeleton while the
+ * directory reads, the inline refusal line when the lane refuses, the
+ * offline line when no lane stands, the empty answer when the directory
+ * holds nothing yet.
+ *
  * The Windows grammar rides the whole surface: single click selects,
  * double click (or Enter) opens, the keyboard carries Alt+Left/Right
  * (back/forward), Alt+Up (the parent), Ctrl+F (search focus) and Escape
@@ -51,6 +61,7 @@ import {
   DeleteRegular as DeleteGlyph,
   MoreHorizontalRegular as MoreGlyph,
   CheckmarkRegular as CheckGlyph,
+  FolderRegular as FolderGlyph,
   WindowAppsRegular as AppGlyph,
   BookOpenRegular as ModuleGlyph,
   CubeRegular as BinaryGlyph,
@@ -83,10 +94,15 @@ import {
   sortitems,
 } from "../../fileexplorer.ts";
 import { browserIdentity, browserStoreSummary, drives, type HardDrive } from "../../storagefamily.ts";
-import { storageusage, type StorageLaneUsage } from "../../gatewayfamily.ts";
-import { ShellChrome } from "@/widgets/ShellShellchrome";
+import {
+  putstorageobject,
+  storageobject,
+  storageusage,
+  type StorageLaneUsage,
+} from "../../gatewayfamily.ts";
+import { ShellChrome } from "@/widgets/Shellchrome";
 import { AppTile } from "@/widgets";
-import { DriveIcon, PlatformMark, ShellFolderIcon, ThisPcMark } from "../widgets";
+import { DriveIcon, PlanFolderIcon, PlatformMark, ShellFolderIcon, ThisPcMark } from "../widgets";
 
 /** the window title answers the catalog label row (bare-id fallback). */
 const FILES_LABEL = osAppLabels().files ?? { name: "My Files", detail: "", pinned: true };
@@ -115,9 +131,39 @@ type FileItem = {
 /** one navigation step of the history stack */
 type HistoryEntry = { location: ExplorerLocation; scroll: number };
 
-/** the new-drive menu: the only "New" the explorer carries today (a new
- * hd partition — the same action the settings drives panel owns); the
- * Windows "New folder" grammar lands with the database wave */
+/** the registry key of the plan folders: the one storage lane object
+ * whose content is the folder directory of this owner. The vault-shaped
+ * store carries no folder primitive — the POST contract is the plain
+ * object write (owner, key, content) — so the Windows "New folder" grammar
+ * lands as the honest read-modify-write of this directory record: every
+ * folder the account creates rides the real /api/v1/storage/objects lane,
+ * survives every refresh and every device, and the lane stays the only
+ * canonical store (nothing is parked in the visitor browser). */
+const FOLDERREGISTRYKEY = "folders";
+
+/** the folder name shape the directory accepts — the same segment law the
+ * storage key pattern enforces (one word of letters, numbers, hyphens),
+ * bounded to the sixty four characters of a key segment */
+const FOLDERNAMEPATTERN = /^[a-z0-9][a-z0-9-]{0,63}$/i;
+
+/** the honest names of a registry body: the valid folder name rows the lane
+ * object holds — anything else drops (never a crash, never an invented
+ * row) */
+function folderregistrynames(content: string): string[] {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(content);
+  } catch {
+    return [];
+  }
+  if (!Array.isArray(parsed)) return [];
+  return parsed.filter((name): name is string => typeof name === "string" && FOLDERNAMEPATTERN.test(name));
+}
+
+/** the new-drive menu: the local "New" of the explorer (a new hd partition
+ * — the same action the settings drives panel owns, a machine record the
+ * storage family keeps); the lane "New folder" rides the plan folders
+ * section below */
 async function createnewdrive(): Promise<HardDrive> {
   const { newdrive } = await import("../../storagefamily.ts");
   return newdrive(undefined);
@@ -183,12 +229,67 @@ export default function Files({ embedded }: { embedded?: boolean }) {
   const [summary, setSummary] = useState<Summary>();
   const [busy, setBusy] = useState(false);
 
+  /* ------------------------- the plan folders lane ------------------------- */
+
+  /** the folder directory the lane answers — undefined while the first read
+   * has not landed (the skeleton answers), null when no lane stands or the
+   * read was refused (the offline line answers with the failure text), the
+   * honest rows otherwise (an absent registry answers the empty list) */
+  const [planfolders, setPlanfolders] = useState<string[] | null>();
+  /** the pending flag of the first registry read (the skeleton tiles) */
+  const [planpending, setPlanpending] = useState(true);
+  /** the failure line of the plan folders lane (the refusal reason or the
+   * offline label — set only when the directory could not be read) */
+  const [planfailure, setPlanfailure] = useState<string>();
+  /** the open naming form of "New folder" — undefined while closed, the
+   * typed name while open */
+  const [folderdraft, setFolderdraft] = useState<string>();
+  /** the busy flag of the folder write (the form and its buttons lock) */
+  const [folderbusy, setFolderbusy] = useState(false);
+  /** the inline failure line of the folder write — the lane refusal reason
+   * or the offline label, never an alert */
+  const [folderfailure, setFolderfailure] = useState<string>();
+
   /** the catalog rows of the folder views (the reviewed seeds answer
    * offline; the paired endpoint serves the same shape over HTTPS) */
   const [modules, setModules] = useState<Awaited<ReturnType<typeof coreModuleTable>>>();
   const [binaries, setBinaries] = useState<Awaited<ReturnType<typeof runnerBinaries>>>();
   const [assets, setAssets] = useState<Awaited<ReturnType<typeof studioAssets>>>();
   const [tracks, setTracks] = useState<Awaited<ReturnType<typeof studioTracks>>>();
+
+  /** reads the lane answers of this identity: the usage of the capacity bar
+   * and the folder directory of the plan folders section — every failure
+   * mode answers its own honest state (the browser estimate fallback, the
+   * offline line), never a disguised refusal */
+  const loadlanelanes = useCallback(async () => {
+    let owner = "";
+    try {
+      owner = (await browserIdentity()).userId;
+    } catch {
+      setPlanpending(false);
+      setPlanfolders(null);
+      setPlanfailure(osText("explorer.planOffline"));
+      return;
+    }
+    const [usage, registry] = await Promise.all([
+      storageusage(owner),
+      storageobject(owner, FOLDERREGISTRYKEY),
+    ]);
+    if (usage) setLaneusage(usage);
+    setPlanpending(false);
+    if (registry.verdict === "ok") {
+      setPlanfolders(folderregistrynames(registry.object.content));
+      setPlanfailure(undefined);
+      return;
+    }
+    if (registry.verdict === "absent") {
+      setPlanfolders([]);
+      setPlanfailure(undefined);
+      return;
+    }
+    setPlanfolders(null);
+    setPlanfailure(registry.verdict === "refused" ? registry.error : osText("explorer.planOffline"));
+  }, []);
 
   /** reads the machine truth once per mount: the drive registry, the
    * store summary and the one byte answer of the storage manager */
@@ -212,16 +313,12 @@ export default function Files({ embedded }: { embedded?: boolean }) {
         })
         .catch(() => undefined);
     }
-    // the lane answer of the capacity bar: the real usage and plan quota of
-    // this identity when a server lane stands — the client answers null on
-    // every failure mode and the bar keeps the browser estimate, honestly
-    // labeled
-    void browserIdentity()
-      .then((identity) => storageusage(identity.userId))
-      .then((answer) => {
-        if (answer) setLaneusage(answer);
-      })
-      .catch(() => undefined);
+    // the lane answers of the capacity bar and the plan folders: the real
+    // usage and plan quota of this identity plus the folder directory when
+    // a server lane stands — the client answers its honest verdicts on
+    // every failure mode and the surface keeps the browser estimate and
+    // the offline line, honestly labeled
+    void loadlanelanes();
     void coreModuleTable()
       .then(setModules)
       .catch(() => undefined);
@@ -234,7 +331,7 @@ export default function Files({ embedded }: { embedded?: boolean }) {
     void studioTracks()
       .then(setTracks)
       .catch(() => undefined);
-  }, []);
+  }, [loadlanelanes]);
 
   /** mounts one known drive of the machine (the Windows "open drive") */
   const mountdrive = useCallback(async (driveId: string) => {
@@ -310,8 +407,10 @@ export default function Files({ embedded }: { embedded?: boolean }) {
    * record source of its category, never a decorative tile */
   const items = useMemo<FileItem[]>(() => {
     if (location.kind === "thispc") {
-      /* the root view: the seven shell folders (each opens its category)
-         and the drives of the machine (each opens its record view) */
+      /* the root view: the seven shell folders (each opens its category),
+         the plan folders the storage lane answers (each a folder this
+         account created on the infrastructure store) and the drives of the
+         machine (each opens its record view) */
       const folders: FileItem[] = SHELL_FOLDER_ORDER.map((folder) => ({
         id: `folder:${folder}`,
         label: FOLDER_NAMES[folder],
@@ -319,6 +418,12 @@ export default function Files({ embedded }: { embedded?: boolean }) {
         kind: "drive" as ExplorerItemKind,
         meta: osText("explorer.items").replace("{count}", String(foldercount(folder))),
         open: () => goTo({ kind: "folder", folder }),
+      }));
+      const planItems: FileItem[] = (planfolders ?? []).map((name) => ({
+        id: `plan:${name}`,
+        label: name,
+        detail: osText("explorer.planFolder.detail"),
+        kind: "drive" as ExplorerItemKind,
       }));
       const driveItems: FileItem[] = drivelist.map((drive) => ({
         id: `drive:${drive.id}`,
@@ -328,7 +433,7 @@ export default function Files({ embedded }: { embedded?: boolean }) {
         meta: drive.id === activedrive?.id ? capacityline(capacity) : osText("explorer.capacityAfterMount"),
         open: () => goTo({ kind: "drive", driveId: drive.id }),
       }));
-      return [...folders, ...driveItems];
+      return [...folders, ...planItems, ...driveItems];
     }
     if (location.kind === "folder") {
       const folder = location.folder;
@@ -466,7 +571,7 @@ export default function Files({ embedded }: { embedded?: boolean }) {
     ];
     return rows;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activedrive, assets, binaries, capacity, drivelist, location, modules, navigate, summary, tracks]);
+  }, [activedrive, assets, binaries, capacity, drivelist, location, modules, navigate, planfolders, summary, tracks]);
 
   /** the honest item count of one shell folder — the record count of the
    * category the folder holds (never an invented figure) */
@@ -490,6 +595,71 @@ export default function Files({ embedded }: { embedded?: boolean }) {
       ),
     [items, query, sort],
   );
+
+  /* ------------------------- the folder creation lane ---------------------- */
+
+  /** opens the naming form of the lane "New folder" — the form rides the
+   * plan folders section of the This PC home, so a click from a deeper
+   * location walks the explorer home first (the directory the write owns
+   * lives at the plan root) */
+  const openplanfolderform = useCallback(() => {
+    setFolderfailure(undefined);
+    setFolderdraft((current) => (current === undefined ? "" : current));
+    if (location.kind !== "thispc") goTo({ kind: "thispc" });
+  }, [goTo, location]);
+
+  /** closes the naming form without a write */
+  const cancelplanfolder = useCallback(() => {
+    setFolderdraft(undefined);
+    setFolderfailure(undefined);
+  }, []);
+
+  /** creates one folder on the plan storage: the honest read-modify-write
+   * of the directory record the lane owns — read the registry object, add
+   * the name, post the whole body back through the real
+   * /api/v1/storage/objects contract. Every refusal answers its inline
+   * line (the lane's own reason, the offline label), never an alert, and
+   * the ok branch refreshes the lane answers beside it (the usage the
+   * capacity bar reads) so no stale figure stays on the surface */
+  const submitplanfolder = useCallback(async () => {
+    const name = (folderdraft ?? "").trim();
+    if (!FOLDERNAMEPATTERN.test(name)) {
+      setFolderfailure(osText("explorer.planNameHint"));
+      return;
+    }
+    setFolderbusy(true);
+    setFolderfailure(undefined);
+    try {
+      const owner = (await browserIdentity()).userId;
+      const registry = await storageobject(owner, FOLDERREGISTRYKEY);
+      if (registry.verdict === "offline") {
+        setFolderfailure(osText("explorer.planOffline"));
+        return;
+      }
+      if (registry.verdict === "refused") {
+        setFolderfailure(registry.error);
+        return;
+      }
+      const names = registry.verdict === "ok" ? folderregistrynames(registry.object.content) : [];
+      if (names.includes(name)) {
+        setFolderfailure(osText("explorer.planExists"));
+        return;
+      }
+      const write = await putstorageobject(owner, FOLDERREGISTRYKEY, JSON.stringify([...names, name]));
+      if (write.verdict === "ok") {
+        setPlanfolders([...names, name]);
+        setFolderdraft(undefined);
+        toast(osText("explorer.toast.folderCreated").replace("{name}", name));
+        void loadlanelanes();
+        return;
+      }
+      setFolderfailure(write.verdict === "refused" ? write.error : osText("explorer.planOffline"));
+    } catch {
+      setFolderfailure(osText("explorer.planOffline"));
+    } finally {
+      setFolderbusy(false);
+    }
+  }, [folderdraft, loadlanelanes]);
 
   /* -------------------------------- keyboard ------------------------------- */
 
@@ -573,6 +743,9 @@ export default function Files({ embedded }: { embedded?: boolean }) {
                 void browserStoreSummary(false)
                   .then(setSummary)
                   .catch(() => undefined);
+                // the lane answers reload beside the machine truth: the
+                // usage and the folder directory re-read on every refresh
+                void loadlanelanes();
               }}
               aria-label={osText("explorer.nav.refresh")}
             >
@@ -636,6 +809,13 @@ export default function Files({ embedded }: { embedded?: boolean }) {
             <NewGlyph fontSize={15} aria-hidden="true" />
             {osText("explorer.new")}
             <ChevronDown fontSize={10} aria-hidden="true" className="dtfx-cmdbtn__chevron" />
+          </button>
+          {/* the lane "New folder": the Windows folder grammar riding the
+              real storage lane — the naming form opens in the plan folders
+              section of the This PC home */}
+          <button type="button" className="dtfx-cmdbtn" onClick={openplanfolderform}>
+            <FolderGlyph fontSize={15} aria-hidden="true" />
+            {osText("explorer.newFolder")}
           </button>
           <span className="dtfx-commandbar__divider" aria-hidden="true" />
           <button type="button" className="dtfx-cmdbtn" disabled title={osText("explorer.disabled.clipboard")}>
@@ -814,6 +994,16 @@ export default function Files({ embedded }: { embedded?: boolean }) {
                 busy={busy}
                 onMount={mountdrive}
                 foldercount={foldercount}
+                planfolders={planfolders}
+                planpending={planpending}
+                planfailure={planfailure}
+                query={query}
+                folderdraft={folderdraft}
+                folderbusy={folderbusy}
+                folderfailure={folderfailure}
+                onFolderDraft={setFolderdraft}
+                onFolderSubmit={() => void submitplanfolder()}
+                onFolderCancel={cancelplanfolder}
               />
             ) : (
               <FolderView
@@ -885,9 +1075,26 @@ type ThisPcProps = ViewProps & {
   busy: boolean;
   onMount: (driveId: string) => void;
   foldercount: (folder: string) => number;
+  /* the plan folders lane: the directory rows the storage lane answers
+   * (undefined while the first read is pending, null when the lane stands
+   * nowhere — the failure line answers), the pending flag, the failure
+   * line, the search query of the view and the naming form state with its
+   * handlers (the "New folder" write rides the real object lane) */
+  planfolders?: string[] | null;
+  planpending: boolean;
+  planfailure?: string;
+  query: string;
+  folderdraft?: string;
+  folderbusy: boolean;
+  folderfailure?: string;
+  onFolderDraft: (value: string) => void;
+  onFolderSubmit: () => void;
+  onFolderCancel: () => void;
 };
 
-/** The "This PC" home: "Pastas (7)" — the shell folder grid — over
+/** The "This PC" home: "Pastas (7)" — the shell folder grid — over the
+ * plan folders of the storage lane (the folders this account created on
+ * the infrastructure store, every write riding the real object lane) and
  * "Dispositivos e unidades (N)" — the drive cards with the capacity bar
  * and the record counts, drawn after the reference shot. */
 function ThisPcView({
@@ -904,9 +1111,29 @@ function ThisPcView({
   busy,
   onMount,
   foldercount,
+  planfolders,
+  planpending,
+  planfailure,
+  query,
+  folderdraft,
+  folderbusy,
+  folderfailure,
+  onFolderDraft,
+  onFolderSubmit,
+  onFolderCancel,
 }: ThisPcProps) {
   const folderRows = rows.filter((row) => row.id.startsWith("folder:"));
   const driveRows = rows.filter((row) => row.id.startsWith("drive:"));
+  const planRows = rows.filter((row) => row.id.startsWith("plan:"));
+  /* the naming form focus: the input takes the focus when the form opens
+   * (the user asked for it by pressing the New folder command — the
+   * programmatic focus lands only on that transition, never an autofocus
+   * attribute the a11y law refuses) */
+  const folderformopen = folderdraft !== undefined;
+  const folderinputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (folderformopen) folderinputRef.current?.focus();
+  }, [folderformopen]);
   return (
     <div className="dtfx-scroll">
       <section aria-labelledby="dtfx-folders-heading" className="dtfx-section">
@@ -944,6 +1171,102 @@ function ThisPcView({
           </ul>
         ) : (
           <DetailsList rows={folderRows} selected={selected} onSelect={onSelect} onOpen={onOpen} />
+        )}
+      </section>
+
+      {/* the plan folders of the storage lane: the directory the real object
+          lane answers — the skeleton while the first read is pending, the
+          offline line when no lane stands, the honest empty answer when the
+          directory holds nothing yet, and the folder grid every write
+          grows (the naming form rides the top of the section) */}
+      <section aria-labelledby="dtfx-plan-heading" className="dtfx-section">
+        <h2 id="dtfx-plan-heading" className="dtfx-section__heading">
+          {planpending || planfolders == null
+            ? osText("explorer.planHeadingPending")
+            : osText("explorer.planHeading").replace("{count}", String(planfolders.length))}
+        </h2>
+        {folderdraft !== undefined ? (
+          <div
+            className="dtfx-statusbar__views"
+            role="group"
+            aria-label={osText("explorer.planForm.aria")}
+          >
+            <div className="dtfx-toolbar__search">
+              <input
+                ref={folderinputRef}
+                className="dtfx-search__input"
+                value={folderdraft}
+                placeholder={osText("explorer.planName")}
+                aria-label={osText("explorer.planName")}
+                maxLength={64}
+                disabled={folderbusy}
+                onChange={(event) => onFolderDraft(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault();
+                    onFolderSubmit();
+                  }
+                  if (event.key === "Escape") {
+                    event.preventDefault();
+                    onFolderCancel();
+                  }
+                }}
+              />
+            </div>
+            <button
+              type="button"
+              className="dtfx-cmdbtn dtfx-cmdbtn--primary"
+              disabled={folderbusy}
+              onClick={onFolderSubmit}
+            >
+              <CheckGlyph fontSize={15} aria-hidden="true" />
+              {folderbusy ? osText("explorer.planCreating") : osText("explorer.planCreate")}
+            </button>
+            <button type="button" className="dtfx-cmdbtn" disabled={folderbusy} onClick={onFolderCancel}>
+              {osText("explorer.planCancel")}
+            </button>
+          </div>
+        ) : null}
+        {folderfailure ? (
+          <p className="dtfx-drive__objects" role="alert">
+            {folderfailure}
+          </p>
+        ) : null}
+        {planpending ? (
+          <ul className="dtfx-grid" aria-hidden="true">
+            {[0, 1, 2].map((index) => (
+              <li key={index} className="dtfx-grid__cell">
+                <div className="anim-skeleton h-[92px] rounded-[7px] bg-s1" />
+              </li>
+            ))}
+          </ul>
+        ) : planfolders == null ? (
+          <p className="dtfx-empty" role="alert">
+            {planfailure ?? osText("explorer.planOffline")}
+          </p>
+        ) : planRows.length === 0 && !query ? (
+          <p className="dtfx-empty">{osText("explorer.planEmpty")}</p>
+        ) : view === "grid" ? (
+          <ul className="dtfx-grid">
+            {planRows.map((row, index) => (
+              <li key={row.id} className="dtfx-grid__cell" style={{ "--dtfx-i": index } as React.CSSProperties}>
+                <button
+                  type="button"
+                  className={selected === row.id ? "dtfx-tile dtfx-tile--selected" : "dtfx-tile"}
+                  onClick={() => onSelect(row.id)}
+                  aria-label={`${row.label} — ${row.detail}`}
+                >
+                  <span className="dtfx-tile__mark">
+                    <PlanFolderIcon />
+                  </span>
+                  <span className="dtfx-tile__label">{row.label}</span>
+                  <span className="dtfx-tile__meta">{row.detail}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <DetailsList rows={planRows} selected={selected} onSelect={onSelect} onOpen={onOpen} />
         )}
       </section>
 
@@ -1121,14 +1444,18 @@ function FolderView({ rows, view, selected, onSelect, onOpen, query, location }:
 }
 
 /** the mark of one record row: the premium tile of an app row, the drawn
- * folder of a folder row, the drive icon of a drive row and the quiet
- * fluent glyph of every other kind */
+ * folder of a folder row, the plan folder mark of a lane folder row, the
+ * drive icon of a drive row and the quiet fluent glyph of every other
+ * kind */
 function ItemMark({ row }: { row: FileItem }) {
   if (row.app) {
     return <AppTile app={row.app} size={40} label={row.label} />;
   }
   if (row.id.startsWith("folder:")) {
     return <ShellFolderIcon folder={row.id.slice("folder:".length) as keyof typeof FOLDER_NAMES} />;
+  }
+  if (row.id.startsWith("plan:")) {
+    return <PlanFolderIcon />;
   }
   if (row.id.startsWith("drive:")) {
     return <DriveIcon share={0} />;

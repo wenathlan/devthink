@@ -18,7 +18,7 @@ import { ComponentOptions } from "./SettingsComponentoptions";
 import { LanguageCard } from "./SettingsLanguagecard";
 import { NavbarPositionControl } from "./SettingsNavbarposition";
 import { saveThemeMirror } from "./SettingsPersonalstore";
-import type { PreferenceKey, SettingsSnapshot } from "./SettingsSettingstypes";
+import type { PreferenceKey, SettingsSnapshot } from "./Settingstypes";
 
 type PersonalizationProps = {
   /** the preference machine rows the mode, the rail and the zoom ride */

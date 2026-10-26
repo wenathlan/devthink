@@ -47,7 +47,7 @@ import { FamilyFrame } from "./ShellFamilyframe.tsx";
 import UsageAnchor from "../usage/usage.tsx";
 import VideoAnchor from "../video/video.tsx";
 import { type AltTabCard, AltTabSwitcher } from "./ShellAlttabswitcher.tsx";
-import { ShellChrome } from "./ShellShellchrome.tsx";
+import { ShellChrome } from "./Shellchrome.tsx";
 import { DesktopSurface } from "./PanelDesktop.tsx";
 import { WINDOW_MIN_HEIGHT, WINDOW_MIN_WIDTH, WindowFrame, type WindowSnapshot } from "./PanelWindowframe.tsx";
 

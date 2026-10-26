@@ -27,7 +27,8 @@
     "yarn": "^4.17.1"
   },
   "scripts": {
-    "dev": "cd devthink && bunx vite --port 3000 --host 0.0.0.0",
+    "dev": "cd devthink && (bun server.ts serve &) && bunx vite --port 3000 --host 0.0.0.0",
+    "gateway": "cd devthink && bun server.ts serve",
     "start": "bun run dev"
   }
 }

@@ -25,7 +25,11 @@
  * fetchWithTimeout (models, plugin, project, quota, search, version, auth's
  * fetchTimeout). Every other module imports these from core.js.
  */
-import { randomInt } from "node:crypto";
+/* The browser-portable crypto edge: the namespace import keeps the module
+ * link safe under vite's node-external shim (a named binding would throw at
+ * eval time before the Math.random fallbacks could answer), matching the
+ * multi-mode engine doctrine the compact ids already ride. */
+import * as nodecrypto from "node:crypto";
 import { FETCH_TIMEOUT_MS, JITTER_MAX_MS, JITTER_MIN_MS } from "./constants.js";
 
 /**
@@ -91,7 +95,7 @@ export function fnv1a64Bytes(input: string): bigint {
  */
 export const jitter = (): number => {
   try {
-    return randomInt(JITTER_MIN_MS, JITTER_MAX_MS + 1);
+    return nodecrypto.randomInt(JITTER_MIN_MS, JITTER_MAX_MS + 1);
   } catch {
     return Math.floor(Math.random() * (JITTER_MAX_MS - JITTER_MIN_MS + 1)) + JITTER_MIN_MS;
   }
@@ -113,7 +117,7 @@ export function getJitter(): number {
  */
 export function getJitterMs(minMs = 0, maxMs = 80): number {
   try {
-    return randomInt(minMs, maxMs + 1);
+    return nodecrypto.randomInt(minMs, maxMs + 1);
   } catch {
     return Math.floor(Math.random() * (maxMs - minMs + 1)) + minMs;
   }
@@ -127,7 +131,7 @@ export function getJitterMs(minMs = 0, maxMs = 80): number {
  */
 export function pickRandom<T>(pool: readonly T[]): T {
   try {
-    return pool[randomInt(0, pool.length)]!;
+    return pool[nodecrypto.randomInt(0, pool.length)]!;
   } catch {
     return pool[Math.floor(Math.random() * pool.length)]!;
   }
@@ -269,8 +273,14 @@ const CLEANUP_EVERY_WRITES = 50;
 
 function getDefaultLogDir(): string {
   // Same result as path.join(home, ".config", "opencode", "antigravity-logs"),
-  // derived from the exported governance constant.
-  return path.join(os.homedir(), ...DEBUG_LOG_DIR_SUBPATH.split("/"));
+  // derived from the exported governance constant. The browser bundle has no
+  // homedir to resolve: the in-memory transport answers there and the neutral
+  // relative dir keeps the module-scope logger instantiation link-safe.
+  try {
+    return path.join(os.homedir(), ...DEBUG_LOG_DIR_SUBPATH.split("/"));
+  } catch {
+    return DEBUG_LOG_DIR_SUBPATH.split("/").join("/");
+  }
 }
 
 function getLogFilePath(logDir: string): string {

@@ -454,7 +454,10 @@ export async function fetchRemoteAntigravityVersion(): Promise<string | null> {
  */
 export function getXGoogApiClient(version?: string): string {
   const ver = version ?? ANTIGRAVITY_VERSION_FALLBACK;
-  const nodeVer = process.versions.node;
+  /* the multi-mode edge: the browser bundle carries no process object, so the
+   * node runtime identifier answers the neutral snapshot the fallback lane
+   * always carried instead of throwing at module scope. */
+  const nodeVer = typeof process !== "undefined" ? (process.versions?.node ?? "22") : "22";
   return `antigravity/${ver} gl-node/${nodeVer} gax/4.9.0 grpc/1.14.0`;
 }
 

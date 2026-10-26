@@ -11,7 +11,7 @@ import type { BrowserStoreSummary } from "../../storagefamily.ts";
 import { copy } from "../../copy";
 import { GatewayCard } from "./SettingsGatewaycard";
 import { SettingsRow } from "./SettingsRow";
-import type { SettingsSnapshot } from "./SettingsSettingstypes";
+import type { SettingsSnapshot } from "./Settingstypes";
 
 type GatewayPairingProps = {
   /** paired gateways answer the snapshot sync ledger */
