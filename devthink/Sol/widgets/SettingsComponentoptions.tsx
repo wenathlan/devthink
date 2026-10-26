@@ -1,20 +1,24 @@
 /**
  * componentoptions.tsx — the Component options card of the Personalization
  * page: the shell behaviors this machine plays. The alt-tab entrance
- * animation and the taskbar tooltips are the two personalstore toggles
- * (the flags the stylesheet respects — data-alttab-motion and
- * data-taskbar-tips on the document root); the desktop rail mode and the
- * interface zoom keep riding the preference machine the workbench flags
- * always rode. Every control is a 44px row with the switch in the accent
- * color. Loose component of the settings page, riding the dtw kit.
+ * animation, the taskbar tooltips and the devtools wall are the three
+ * personalstore toggles (the stylesheet flags data-alttab-motion and
+ * data-taskbar-tips on the document root; the devtools wall rides the
+ * suspend seam of devtoolsguard.ts, the single wall module); the desktop
+ * rail mode and the interface zoom keep riding the preference machine the
+ * workbench flags always rode. Every control is a 44px row with the switch
+ * in the accent color. Loose component of the settings page, riding the
+ * dtw kit.
  */
 import { useState } from "react";
 import { copy } from "../../copy";
 import type { PreferenceKey, SettingsSnapshot } from "./SettingsSettingstypes";
 import {
   loadAltTabMotion,
+  loadDevtoolsWall,
   loadTaskbarTips,
   saveAltTabMotion,
+  saveDevtoolsWall,
   saveTaskbarTips } from "./SettingsPersonalstore";
 
 type ComponentOptionsProps = {
@@ -62,6 +66,7 @@ function ToggleRow({
 export function ComponentOptions({ preferences, save }: ComponentOptionsProps) {
   const [altTab, setAltTab] = useState<boolean>(() => loadAltTabMotion());
   const [tips, setTips] = useState<boolean>(() => loadTaskbarTips());
+  const [devtoolsWall, setDevtoolsWall] = useState<boolean>(() => loadDevtoolsWall());
 
   return (
     <>
@@ -81,6 +86,15 @@ export function ComponentOptions({ preferences, save }: ComponentOptionsProps) {
         onChange={(next) => {
           setTips(next);
           saveTaskbarTips(next);
+        }}
+      />
+      <ToggleRow
+        label={copy("settings.toggle.devtoolswall")}
+        description={copy("settings.toggle.devtoolswall.desc")}
+        checked={devtoolsWall}
+        onChange={(next) => {
+          setDevtoolsWall(next);
+          saveDevtoolsWall(next);
         }}
       />
       <div className="dtw-settings__field">

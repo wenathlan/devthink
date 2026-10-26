@@ -30,7 +30,7 @@ import {
   cacheBrowserIdentity,
   cacheGatewaySession,
   ensureBrowserSession,
-  readBrowserPreferences } from "../../db";
+  readBrowserPreferences } from "../../storagefamily.ts";
 import type { DevThinkTab } from "../../paneltypes.ts";
 import { historypath } from "../../gatewayfamily.ts";
 import type { WorkspaceDestination } from "../../workspace.ts";

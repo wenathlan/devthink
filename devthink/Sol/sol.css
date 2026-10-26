@@ -19861,3 +19861,99 @@ button.dtc-recents__row {
 
 /* ==== dtv entry craft pass · end of section ==== */
 
+/* ==========================================================================
+   §AA — the devtools wall interstitial (devtoolsguard.ts trip response)
+   The calm answer of the wall: one fixed overlay appended to the body,
+   wearing the house tokens (the same instrument grammar the workbench
+   failure face rides), standing over every layer of the ladder. The live
+   surface keeps every child it has — the overlay only adds itself. Tokens
+   only, zero magic color; the entrance is one quiet rise that both motion
+   laws (the os attribute and the media query) stop, and the transparency
+   law drops the veil tint.
+   ========================================================================== */
+
+.dt-devtools-wall {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-modal) + 10);
+  display: grid;
+  place-items: center;
+  gap: 14px;
+  padding: 24px;
+  text-align: center;
+  font: 12px / 1.6 var(--dt-mono);
+  color: var(--dt-text);
+  background:
+    radial-gradient(620px 460px at 70% -15%, rgb(231 233 238 / 8%), transparent 70%),
+    color-mix(in srgb, var(--dt-base) 88%, transparent);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  animation: dtwWallRise 280ms var(--ease-micro) backwards;
+}
+
+/* the wall mark: the quiet lamp of the notice, a token ring around the
+   signal dot — no icon font, no image, the css paints it */
+.dt-devtools-wall__mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--dt-edge);
+  background:
+    radial-gradient(circle at 50% 44%, color-mix(in srgb, var(--sol-error) 26%, transparent) 0%, transparent 62%),
+    var(--dt-panel);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--color-ink) 6%, transparent);
+}
+
+.dt-devtools-wall__title {
+  font: 600 15px / 1.4 var(--dt-mono);
+  letter-spacing: 0.01em;
+}
+
+.dt-devtools-wall__body {
+  max-width: min(520px, 88vw);
+  color: var(--dt-muted);
+}
+
+.dt-devtools-wall__note {
+  max-width: min(460px, 84vw);
+  font-size: 11px;
+  color: color-mix(in oklab, var(--dt-muted) 82%, var(--dt-base));
+}
+
+/* the entrance: one quiet rise out of the veil (the rise carries no
+   scale — the notice is calm, not alarmed) */
+@keyframes dtwWallRise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* the motion law: the os setting and the system preference alike stop the
+   entrance — the wall stands, the rise never plays */
+[data-motion="reduced"] .dt-devtools-wall,
+.dt-devtools-wall[data-motion="reduced"] {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dt-devtools-wall {
+    animation: none;
+  }
+}
+
+/* the transparency law: the veil drops the tint and keeps the solid state */
+@media (prefers-reduced-transparency: reduce) {
+  .dt-devtools-wall {
+    background: var(--dt-base);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* ==== devtools wall interstitial · end of section ==== */
+

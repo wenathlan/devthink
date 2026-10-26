@@ -48,7 +48,7 @@ afterAll(() => {
 
 // imported after the env is pinned — the lazy client reads the url on the
 // first database touch, so every call below resolves the pushed database
-const { getsession, getsessionmessages, savemsg } = await import("../../database.js");
+const { getsession, getsessionmessages, savemsg } = await import("../../storagefamily.js");
 const { createversion } = await import("../../engine.js");
 
 /** the persisted shape after the engine's persist() coercion — startedat

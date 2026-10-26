@@ -51,7 +51,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { readBrowserPreferences, saveBrowserPreference } from "./db.ts";
+import { readBrowserPreferences, saveBrowserPreference } from "./storagefamily.ts";
 import { chatText } from "./chatlabels.ts";
 
 /* ============================================================================

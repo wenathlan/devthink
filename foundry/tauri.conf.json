@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Foundry",
-  "version": "2.0.148",
+  "version": "2.0.149",
   "identifier": "com.wenathlan.foundry",
   "build": {
     "beforeDevCommand": "pnpm dev",

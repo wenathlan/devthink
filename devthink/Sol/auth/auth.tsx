@@ -46,7 +46,7 @@ import {
 } from "../../authfamily.ts";
 import { afterAuthTarget, pairingReadiness, safegatewayurl } from "../../gatewayfamily.ts";
 import { copy, loadcopy } from "../../copy.ts";
-import { readBrowserPreferences } from "../../db";
+import { readBrowserPreferences } from "../../storagefamily.ts";
 import { LockFace } from "../widgets";
 import { PowerMenu } from "../widgets";
 import { SignInForm, type SignInEntryFields } from "../widgets";

@@ -5,9 +5,13 @@ import { useMemo, useState } from "react";
 import type { DevThinkConfig, DevThinkPaths } from "../../config.js";
 import { getIdentity, pairingStatus } from "../../authfamily.js";
 import { listProviders } from "../../providers.js";
-import { readPreferences, savePreference } from "../../storage.js";
+import {
+  listSessions,
+  readPreferences,
+  savePreference,
+  type Session,
+} from "../../storagefamily.js";
 import type { ChatEvent } from "../../streaming.js";
-import { listSessions, type Session } from "../../workbenchsession.js";
 import {
   isWorkspaceDestination,
   type WorkspaceDestination,

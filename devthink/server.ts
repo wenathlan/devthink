@@ -30,7 +30,6 @@ import {
   verifyaccountsession,
 } from "./authfamily.js";
 import { type ChatMessage, listModels, listProviders, streamChat } from "./providers.js";
-import { readPreferences, savePreference } from "./storage.js";
 import {
   appendMessage,
   createSession,
@@ -38,9 +37,11 @@ import {
   listSessions,
   loadSession,
   loadWorkspace,
+  readPreferences,
+  savePreference,
   type SessionSection,
   updateTab,
-} from "./workbenchsession.js";
+} from "./storagefamily.js";
 
 export type ServerOptions = {
   port?: number | undefined;
@@ -918,7 +919,22 @@ import { Hono, type Context } from "hono";
 import { cors } from "hono/cors";
 import { loadconfig, validateconfig } from "./config.js";
 import { copyseed } from "./copy.ts";
-import { getonboardingstate, getplan, listcopyrows, setonboardingstage, setplan, upsertcopyrows } from "./database.ts";
+import {
+  DEFAULTQUOTAMB,
+  StorageError,
+  deleteobject,
+  getobject,
+  getonboardingstate,
+  getplan,
+  keyvalid,
+  listcopyrows,
+  listobjects,
+  putobject,
+  setonboardingstage,
+  setplan,
+  upsertcopyrows,
+  usagefor,
+} from "./storagefamily.ts";
 import { createversion } from "./engine.ts";
 import {
   createsandboxsession,
@@ -927,16 +943,6 @@ import {
   runsandboxline,
   writesandboxfile,
 } from "./sandboxlane.js";
-import {
-  DEFAULTQUOTAMB,
-  StorageError,
-  deleteobject,
-  getobject,
-  keyvalid,
-  listobjects,
-  putobject,
-  usagefor,
-} from "./storagelane.js";
 
 /** route resources per version — the canonical 7 */
 const resources = ["keys", "models", "chat/completions", "completions", "messages", "responses", "embeddings"] as const;
@@ -1492,7 +1498,7 @@ async function keysfromdb(auth: authconfig): Promise<resolvedkey[]> {
   const model = auth.dbmodel ?? "apiKey";
   const take = auth.dbtake ?? 50;
   try {
-    const { db } = await import("./database.ts");
+    const { db } = await import("./storagefamily.ts");
     const table = (
       db as unknown as Record<
         string,
@@ -2539,8 +2545,8 @@ async function consolemain(): Promise<void> {
    the server surface answers the whole library contract from one module. */
 // config loading — bridge to the user customization layer
 export { getversion, listversions, loadconfig, reloadconfig, validateconfig } from "./config.js";
-// database — prisma persistence
-export { db, getsession, getsessionmessages, savemsg } from "./database.js";
+// database — prisma persistence (the storage family)
+export { db, getsession, getsessionmessages, savemsg } from "./storagefamily.js";
 // engine — the universal request pipeline
 export { createversion, engineinternals } from "./engine.js";
 // types — the configuration surface

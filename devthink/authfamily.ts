@@ -41,8 +41,13 @@ import { mkdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { type DevThinkPaths, ensurePaths, resolvePaths } from "./config.js";
 import { createCompactId } from "./ids.js";
-import { sharedatabasedriver } from "./storage.js";
-import { browserIdentity, readBrowserCredential, saveBrowserCredential, saveBrowserPreference } from "./db.ts";
+import {
+  browserIdentity,
+  readBrowserCredential,
+  saveBrowserCredential,
+  saveBrowserPreference,
+  sharedatabasedriver,
+} from "./storagefamily.ts";
 import { lanefetch } from "./gatewayfamily.ts";
 
 /* ============================================================================

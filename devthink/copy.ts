@@ -119,6 +119,9 @@ const SEED: Readonly<Record<string, string>> = Object.freeze({
   "settings.toggle.alttab.desc": "The task switcher animates in when it opens.",
   "settings.toggle.tips": "Taskbar tooltips",
   "settings.toggle.tips.desc": "The app name surfaces above a taskbar icon.",
+  "settings.toggle.devtoolswall": "Developer tools wall",
+  "settings.toggle.devtoolswall.desc":
+    "The os wall answers when developer tools open on this surface (on by default).",
   "settings.rail.title": "Desktop rail",
   "settings.rail.always": "Always",
   "settings.rail.auto": "Auto",

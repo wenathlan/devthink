@@ -1,78 +1,64 @@
-// # guard — the devtools shield of the interface (component-scoped logic, lives
-// at the web root). The moment a visitor opens devtools or scripts the network
-// layer, the guard reports the strike to the site api, the api records the ban
-// in the shared table every clone db syncs, and the interface goes blank for
-// that address: six minutes on the first strike, doubling every repeat. The
-// visitor machine is never touched — only the report rides over https.
+/**
+ * guard — the reporting channel of the devtools wall (component-scoped
+ * logic, lives at the web root). The detection machinery and the trip
+ * surface live in devtoolsguard.ts, the single module; this file only
+ * speaks to the site api: the strike report a tripped wall emits and the
+ * ban status question the boot asks. The api records the strike in the
+ * shared table every clone db syncs; the interface answer is the wall's
+ * calm interstitial (devtoolsguard.ts owns it) — never a blank, never a
+ * wipe. The visitor machine is never touched — only the report rides
+ * over https.
+ *
+ * @section base the catalog base the reports ride
+ * @section strike the strike report (the wall's trip listener calls it)
+ * @section status the ban status question of the boot
+ * @depends-on devtoolsguard.ts (the caller of the strike, the owner of the response)
+ * @consumed-by App.tsx (the boot wiring)
+ */
+
+/** @section base — the catalog base of the site api (empty means offline:
+ * every call below stays silent and the interface renders). */
 const GUARD_BASE = (import.meta.env?.VITE_CATALOG_URL as string | undefined)?.replace(/\/$/, "") ?? "";
 
-/** Detection signals: debugger timing trap, window size delta and the console getter. */
-function detectOnce(signal: string): void {
-  strike(signal);
-}
-
-export function armGuard(): void {
-  // 1. the debugger trap: an open devtools pauses here and the timing gap answers
-  const started = Date.now();
-  // eslint-disable-next-line no-debugger
-  debugger;
-  if (Date.now() - started > 120) detectOnce("debugger.trap");
-  // 2. the size delta: a docked devtools changes the outer/inner viewport ratio
-  const delta = Math.abs(window.outerWidth - window.innerWidth) + Math.abs(window.outerHeight - window.innerHeight);
-  if (delta > 220) detectOnce("size.delta");
-  // 3. the console getter: the devtools console formats the regex through
-  // the overridden toString when it renders it — the arm never calls the
-  // getter itself (the self-read of the earlier form tripped the strike on
-  // every boot and blanked production)
-  try {
-    const probe = /devtools/i;
-    probe.toString = () => {
-      detectOnce("console.getter");
-      return "";
-    };
-    void probe;
-  } catch {
-    /* the probe never throws the interface */
-  }
-}
-
-/** Reports one strike and blanks the interface — the api owns the shared ban table. */
-async function strike(signal: string): Promise<void> {
-  blank();
+/**
+ * @section strike — reports one strike to the site api. The call changes
+ * nothing on the surface (the interstitial already stands when the wall
+ * emits); offline stays silent.
+ *
+ * @param signal the dotted prong id that tripped (the api records it).
+ */
+export async function reportguardstrike(signal: string): Promise<void> {
   try {
     if (GUARD_BASE) {
-      await fetch(`${GUARD_BASE}/guard/strike`, {
+      await fetch([GUARD_BASE, "guard", "strike"].join("/"), {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ signal, href: location.href }),
       });
     }
   } catch {
-    /* offline: the blank mode still answers locally */
+    /* offline: the wall still answers locally */
   }
 }
 
-/** Asks the api whether this address is banned; banned interfaces render nothing. */
+/**
+ * @section status — asks the api whether this address is banned. The
+ * answer is a boolean and nothing else: the caller decides the surface
+ * (the boot shows the wall interstitial when true); this channel never
+ * blanks anything itself.
+ *
+ * @returns true when the api answers banned, false everywhere else.
+ */
 export async function guardStatus(): Promise<boolean> {
   try {
     if (!GUARD_BASE) return false;
-    const answer = await fetch(`${GUARD_BASE}/guard/status`, { headers: { accept: "application/json" } });
+    const answer = await fetch([GUARD_BASE, "guard", "status"].join("/"), { headers: { accept: "application/json" } });
     if (answer.ok) {
       const payload = (await answer.json()) as { banned?: boolean };
-      if (payload.banned) {
-        blank();
-        return true;
-      }
+      if (payload.banned) return true;
     }
   } catch {
     /* offline: the interface renders */
   }
   return false;
-}
-
-/** The blank mode: the site goes white and stays there for the banned address. */
-export function blank(): void {
-  const root = document.getElementById("root");
-  if (root) root.textContent = "";
-  document.documentElement.style.background = "#ffffff";
 }
