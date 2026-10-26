@@ -1011,6 +1011,13 @@ jobs:
             published=false
             for attempt in 1 2 3; do
               publish_output="$(npm publish "./${tarball}" --registry=https://registry.npmjs.org --access public --provenance 2>&1)" && { published=true; break; }
+              # one refused envelope never blocks the family: a private-marked
+              # or otherwise unregistrable envelope answers the honest skip
+              # and the loop walks on to the next sibling
+              if printf '%s' "$publish_output" | grep -qiE "has been marked as private"; then
+                echo "$package is marked private in its manifest; the envelope waits for the manifest fix, the family walks on."
+                return 0
+              fi
               if printf '%s' "$publish_output" | grep -qiE "cannot publish over previously (published|staged)"; then
                 echo "$package landed through the sibling lane; the latecomer answers already published."
                 published=true; break
