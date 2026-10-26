@@ -183,10 +183,20 @@ export function wireformatnames(name) {
   );
 }
 
-/** The wire format field names of the gateway and maene provider protocols of the grand merge: the OpenAI-compatible, Anthropic and Gemini request and response envelopes (reasoning_content, finish_reason, max_tokens, prompt_tokens, the tool call shapes), the OAuth token exchange of the maene lineage (grant_type, access_token, code_challenge), the sqlite column names of the gateway persistence (chat_id, session_id, created_at, init_database) and the provider environment keys (api_key, https_proxy) — the names belong to the protocols, the databases and the environments they speak, never to the reviewed identifier vocabulary. */
+/** The wire format field names of the gateway and maene provider protocols of the grand merge: the OpenAI-compatible, Anthropic and Gemini request and response envelopes (reasoning_content, finish_reason, max_tokens, prompt_tokens, the tool call shapes), the OAuth token exchange of the maene lineage (grant_type, access_token, code_challenge), the sqlite column names of the gateway persistence (chat_id, session_id, created_at, init_database) and the provider environment keys (api_key, https_proxy) — the names belong to the protocols, the databases and the environments they speak, never to the reviewed identifier vocabulary. The init-prefixed names the esbuild lazy module wrappers carry join the list beside init_database (its own precedent): the storage family merge of the 2.0.149 rung made the constants, core, config, models and fingerprint module inits lazy the same way, so their wrapper names belong to the bundler, never to the review. */
 export function gatewaywirefields(name) {
   return [
     "init_database",
+    "init_constants",
+    "init_core",
+    "init_config",
+    "init_models",
+    "init_fingerprint",
+    "init_ids",
+    "init_authfamily",
+    "init_storagefamily",
+    "init_gatewayfamily",
+    "init_chatlabels",
     "chat_id",
     "session_id",
     "api_key",
