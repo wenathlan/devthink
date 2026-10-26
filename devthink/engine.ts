@@ -20,7 +20,7 @@
  */
 
 import { buildauthheaders, extractrequestid, extractsessionid, resolvekeys } from "./server.js";
-import { getsessionmessages, savemsg } from "./database.ts";
+import { getsessionmessages, savemsg } from "./storagefamily.ts";
 import { makechunk, makefinalchunk, makestreamresponse } from "./server.js";
 import type {
   gatewayconfig,

@@ -18,8 +18,9 @@
  *
  * Every figure is real: the capacity bar reads the storage manager's
  * allocation for the origin store, the drives read the machine's drive
- * registry (harddrives.ts), the record counts read the live store summary
- * (db.ts) and every folder holds the honest records of its category (the
+ * registry (storagefamily.ts §harddrives), the record counts read the live
+ * store summary (storagefamily.ts §db) and every folder holds the honest
+ * records of its category (the
  * installed apps of the registry, the docs library modules, the runner
  * binaries, the studio catalog rows). An empty category answers "empty
  * folder" — the explorer never invents a record.
@@ -81,8 +82,7 @@ import {
   SHELL_FOLDER_ORDER,
   sortitems,
 } from "../../fileexplorer.ts";
-import { browserIdentity, browserStoreSummary } from "../../db";
-import { drives, type HardDrive } from "../../harddrives.ts";
+import { browserIdentity, browserStoreSummary, drives, type HardDrive } from "../../storagefamily.ts";
 import { storageusage, type StorageLaneUsage } from "../../gatewayfamily.ts";
 import { ShellChrome } from "@/widgets/ShellShellchrome";
 import { AppTile } from "@/widgets";
@@ -119,7 +119,7 @@ type HistoryEntry = { location: ExplorerLocation; scroll: number };
  * hd partition — the same action the settings drives panel owns); the
  * Windows "New folder" grammar lands with the database wave */
 async function createnewdrive(): Promise<HardDrive> {
-  const { newdrive } = await import("../../harddrives.ts");
+  const { newdrive } = await import("../../storagefamily.ts");
   return newdrive(undefined);
 }
 
@@ -240,7 +240,7 @@ export default function Files({ embedded }: { embedded?: boolean }) {
   const mountdrive = useCallback(async (driveId: string) => {
     setBusy(true);
     try {
-      const { opendrive } = await import("../../harddrives.ts");
+      const { opendrive } = await import("../../storagefamily.ts");
       await opendrive(driveId);
       // the store rehydrates from the mounted owner: a fresh boot reads it
       window.location.reload();

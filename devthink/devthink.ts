@@ -19,17 +19,22 @@ import {
   setConfigValue,
   type DevThinkConfig,
 } from "./config.js";
-import { createMemoryStore, memorySummary } from "./workbenchmemory.js";
-import { listModes, modePrompt, resolveMode } from "./modes.js";
-import { listModels, listProviders, streamChat } from "./providers.js";
 import {
   appendMessage,
+  createMemoryStore,
   createSession,
+  exportLocalSnapshot,
   exportSession,
   listSessions,
   loadSession,
+  memorySummary,
+  readPreferences,
+  remoteSyncStatus,
+  savePreference,
   type Session,
-} from "./workbenchsession.js";
+} from "./storagefamily.js";
+import { listModes, modePrompt, resolveMode } from "./modes.js";
+import { listModels, listProviders, streamChat } from "./providers.js";
 import {
   createPairing,
   createPairingLink,
@@ -38,11 +43,9 @@ import {
   revokeBrowserSessions,
   setIdentityUserId,
 } from "./authfamily.js";
-import { readPreferences, savePreference } from "./storage.js";
 import type { ChatEvent } from "./streaming.js";
 import { banner, box, colors, formatConfig, formatEvent, statusBar } from "./Sol/widgets/ConsoleTerminalui.js";
 import { startServer } from "./server.js";
-import { exportLocalSnapshot, remoteSyncStatus } from "./sync.js";
 
 export type ParsedArgs = { flags: Record<string, string | boolean>; positional: string[] };
 

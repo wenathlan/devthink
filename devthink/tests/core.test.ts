@@ -27,8 +27,7 @@ import { isCompactId } from "../ids.js";
 import { listModes } from "../modes.js";
 import { type ServerHandle, startServer } from "../server.js";
 import { type ChatEvent, parseEventStream } from "../streaming.js";
-import { createMemoryStore } from "../workbenchmemory.js";
-import { appendMessage, createSession, createTab, loadWorkspace } from "../workbenchsession.js";
+import { appendMessage, createMemoryStore, createSession, createTab, loadWorkspace } from "../storagefamily.js";
 
 const temporary: string[] = [];
 const servers: ServerHandle[] = [];

@@ -18,8 +18,7 @@ import { AddRegular, DeleteRegular, HardDriveRegular } from "@fluentui/react-ico
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
-import { browserStoreSummary } from "../../db";
-import { DRIVES_KEY, drives, type HardDrive, newdrive, opendrive } from "../../harddrives.ts";
+import { DRIVES_KEY, browserStoreSummary, drives, type HardDrive, newdrive, opendrive } from "../../storagefamily.ts";
 
 export { DRIVES_KEY };
 

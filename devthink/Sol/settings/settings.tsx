@@ -26,7 +26,7 @@ import {
   browserIdentity,
   browserStoreSummary,
   readBrowserPreferences,
-  saveBrowserPreference } from "../../db";
+  saveBrowserPreference } from "../../storagefamily.ts";
 import { gatewayJson, gatewayReady } from "../../gatewayfamily.js";
 import {
   type AccountSessionState,
