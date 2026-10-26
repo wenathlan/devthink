@@ -111,7 +111,11 @@ function familydevbridge(): Plugin {
  * inert, and the crypto-strong draws ride the platform randomness. Nothing
  * server-only (dns probes, readline, scrypt) is faked: those paths throw
  * the same way they would on a host without them, and every caller in the
- * browser graph already carries its guarded fallback. */
+ * browser graph already carries its guarded fallback. The prisma client
+ * edge rides the same law: the lazy db proxy's import("@prisma/client")
+ * resolves onto the neutral prismashim instead of the generated client the
+ * browser condition demands, so a fresh checkout bundles the web without
+ * running prisma generate first. */
 function nodebuiltinshim(): Plugin {
   const shims: Record<string, string> = {
     os: [
@@ -222,6 +226,7 @@ function nodebuiltinshim(): Plugin {
     ].join("\n"),
   };
   const shimpath = path.resolve(import.meta.dirname, "nodeshim.ts");
+  const prismashimpath = path.resolve(import.meta.dirname, "prismashim.ts");
   const shimmed = new Set(Object.keys(shims));
   return {
     name: "devthink-node-builtin-shim",
@@ -229,6 +234,19 @@ function nodebuiltinshim(): Plugin {
     resolveId(source) {
       if (source.startsWith("node:") && shimmed.has(source.slice("node:".length))) {
         return shimpath;
+      }
+      /* the prisma client edge: the lazy db proxy of storagefamily.ts
+       * speaks a dynamic import("@prisma/client") on the first database
+       * touch, and the browser condition of that package lands on
+       * index-browser.js — a bare require of the generated .prisma/client
+       * that only exists after prisma generate, so a fresh checkout (the
+       * runner) refused the whole web bundle at build time. The browser
+       * never touches the real client (the os HD is the IndexedDB store):
+       * every @prisma/client and .prisma/client specifier answers the
+       * neutral prismashim, while the node and cli lanes keep resolving the
+       * real package untouched (this hook only serves the vite build). */
+      if (source === "@prisma/client" || source === ".prisma/client" || source.startsWith(".prisma/client/")) {
+        return prismashimpath;
       }
       return null;
     },
