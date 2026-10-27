@@ -37,7 +37,7 @@ export function SaasRibbon() {
 export function SaasFlowStrip({ scrollto }: Pick<SectionProps, "scrollto">) {
   return (
     <section id="studio-flow" className="w-full bg-[#F9F6F0] px-6 py-14 text-center text-slate-950">
-      <div className="mb-4 inline-flex items-center rounded-full bg-slate-950 px-4 py-1.5 text-xs font-extrabold tracking-[-0.035em] text-white">
+      <div className="mb-4 inline-flex items-center rounded-lg bg-slate-950 px-4 py-1.5 text-xs font-extrabold tracking-[-0.035em] text-white">
         <span>Keep exploring</span>
       </div>
       <h2 className="mx-auto max-w-3xl text-3xl font-extrabold tracking-[-0.035em] sm:text-5xl">
@@ -49,7 +49,7 @@ export function SaasFlowStrip({ scrollto }: Pick<SectionProps, "scrollto">) {
       <button
         type="button"
         onClick={() => scrollto("spatial-bento")}
-        className="mt-6 rounded-full bg-slate-950 px-7 py-3 text-xs font-extrabold tracking-[-0.035em] text-white transition hover:scale-105 active:scale-95 sm:text-sm"
+        className="mt-6 rounded-[10px] bg-slate-950 px-7 py-3 text-xs font-extrabold tracking-[-0.035em] text-white transition hover:scale-105 active:scale-95 sm:text-sm"
       >
         Enter Cadria
       </button>
@@ -72,7 +72,7 @@ export function SaasCadria({ onenter }: Pick<SectionProps, "onenter">) {
   return (
     <section
       id="spatial-bento"
-      className="relative overflow-hidden border-t border-white/10 bg-[#0B0D14] pt-0 pb-24 text-white sm:pb-28"
+      className="relative overflow-hidden border-t border-white/8 bg-[#0B0D14] pt-0 pb-24 text-white sm:pb-28"
     >
       <div className="mb-12 w-full inset-x-0 top-0">
         <div className="h-2 w-full bg-[#1E293B]" />
@@ -99,7 +99,7 @@ export function SaasCadria({ onenter }: Pick<SectionProps, "onenter">) {
       </div>
 
       <div className="mx-auto max-w-[1360px] px-6 sm:px-10 lg:px-16">
-        <div className="group relative h-[400px] overflow-hidden rounded-[32px] border border-white/15 sm:h-[500px]">
+        <div className="group relative h-[400px] overflow-hidden rounded-[32px] border border-white/8 sm:h-[500px]">
           <img
             src={hero.image}
             alt={hero.title}
@@ -148,7 +148,7 @@ export function SaasCadria({ onenter }: Pick<SectionProps, "onenter">) {
               <button
                 type="button"
                 onClick={() => document.getElementById("cadria-rail")?.scrollBy({ left: -540, behavior: "smooth" })}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:bg-white/20 active:scale-90"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/8 bg-white/10 text-white transition hover:bg-white/20 active:scale-90"
                 aria-label="Scroll back"
               >
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" />
@@ -156,7 +156,7 @@ export function SaasCadria({ onenter }: Pick<SectionProps, "onenter">) {
               <button
                 type="button"
                 onClick={() => document.getElementById("cadria-rail")?.scrollBy({ left: 540, behavior: "smooth" })}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:bg-white/20 active:scale-90"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/8 bg-white/10 text-white transition hover:bg-white/20 active:scale-90"
                 aria-label="Scroll forward"
               >
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -301,9 +301,9 @@ export function SaasExplorerWall({ onenter }: Pick<SectionProps, "onenter">) {
                   alt={reel.title}
                   className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0B0D14]/80 via-[#0B0D14]/15 to-transparent" />
                 <div className="absolute top-2.5 left-2.5">
-                  <span className="rounded-full bg-[#fafafa]/90 px-2 py-0.5 text-[9px] font-extrabold tracking-[-0.035em] text-slate-950">
+                  <span className="rounded-md bg-[#fafafa]/90 px-2 py-0.5 text-[9px] font-extrabold tracking-[-0.035em] text-slate-950">
                     {reel.tag}
                   </span>
                 </div>
@@ -318,11 +318,11 @@ export function SaasExplorerWall({ onenter }: Pick<SectionProps, "onenter">) {
           })}
         </div>
         <div className="mt-9 flex items-center justify-center gap-4">
-          <div className="rounded-full border border-dashed border-[#FF6B5B] p-1.5">
+          <div className="rounded-[14px] border border-dashed border-[#FF6B5B] p-1.5">
             <button
               type="button"
               onClick={onenter}
-              className="rounded-full bg-[#FF6B5B] px-7 py-3 text-xs font-extrabold tracking-[-0.035em] text-white shadow-[0_10px_24px_rgba(255,107,91,0.4)] transition hover:scale-105 hover:bg-[#ff5542] active:scale-95 sm:text-sm"
+              className="rounded-[10px] bg-[#FF6B5B] px-7 py-3 text-xs font-extrabold tracking-[-0.035em] text-white shadow-[0_10px_24px_rgba(255,107,91,0.4)] transition hover:scale-105 hover:bg-[#ff5542] active:scale-95 sm:text-sm"
             >
               Explore creations
             </button>
@@ -349,7 +349,7 @@ export function SaasDebonair({ onenter }: Pick<SectionProps, "onenter">) {
           </SaddleTabBridge>
         </div>
       </div>
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 px-6 py-4 sm:px-10">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/8 px-6 py-4 sm:px-10">
         <div className="flex items-center gap-3">
           <Studiomark app="debonair" className="h-9 w-9" />
           <span className="text-[15px] font-extrabold tracking-[-0.035em] text-white">DEBONAIR</span>
@@ -386,7 +386,7 @@ export function SaasDebonair({ onenter }: Pick<SectionProps, "onenter">) {
               <button
                 type="button"
                 onClick={onenter}
-                className="rounded-lg border border-white/25 bg-white/10 px-7 py-3 text-sm font-extrabold tracking-[-0.035em] text-white transition hover:bg-white/20 active:scale-[0.97]"
+                className="rounded-lg border border-white/8 bg-white/10 px-7 py-3 text-sm font-extrabold tracking-[-0.035em] text-white transition hover:bg-white/20 active:scale-[0.97]"
               >
                 Open the DAW
               </button>
@@ -402,7 +402,7 @@ export function SaasDebonair({ onenter }: Pick<SectionProps, "onenter">) {
               <button
                 type="button"
                 onClick={() => document.getElementById("debonair-rail")?.scrollBy({ left: -480, behavior: "smooth" })}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:bg-white/20 active:scale-90"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/8 bg-white/10 text-white transition hover:bg-white/20 active:scale-90"
                 aria-label="Scroll back"
               >
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" />
@@ -410,7 +410,7 @@ export function SaasDebonair({ onenter }: Pick<SectionProps, "onenter">) {
               <button
                 type="button"
                 onClick={() => document.getElementById("debonair-rail")?.scrollBy({ left: 480, behavior: "smooth" })}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:bg-white/20 active:scale-90"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/8 bg-white/10 text-white transition hover:bg-white/20 active:scale-90"
                 aria-label="Scroll forward"
               >
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -484,8 +484,8 @@ export function SaasDoo({ onenter }: Pick<SectionProps, "onenter">) {
       </div>
       <div className="mx-auto grid max-w-[1360px] grid-cols-1 items-center gap-12 lg:grid-cols-12">
         <div className="lg:col-span-6">
-          <div className="stat-tile mb-6 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] font-semibold tracking-[-0.018em] text-slate-600">
-            <MessageSquare className="h-3.5 w-3.5 text-indigo-600" aria-hidden="true" />
+          <div className="stat-tile mb-6 inline-flex items-center gap-2 rounded-lg px-4 py-1.5 text-[11px] font-semibold tracking-[-0.018em] text-slate-600">
+            <MessageSquare className="h-3.5 w-3.5 text-[var(--color-ever-deep)]" aria-hidden="true" />
             <span>Doo native AI</span>
           </div>
           <h2 className="text-4xl leading-[1.02] font-extrabold tracking-[-0.035em] text-slate-950 sm:text-[56px]">
@@ -500,14 +500,14 @@ export function SaasDoo({ onenter }: Pick<SectionProps, "onenter">) {
             <button
               type="button"
               onClick={onenter}
-              className="btn-tactile-3d rounded-full px-6 py-3 text-[13px] font-extrabold tracking-[-0.035em] text-white"
+              className="btn-tactile-3d rounded-[10px] px-6 py-3 text-[13px] font-extrabold tracking-[-0.035em] text-white"
             >
               Draft my portfolio
             </button>
             <button
               type="button"
               onClick={onenter}
-              className="surface-card rounded-full px-6 py-3 text-[13px] font-semibold tracking-[-0.018em] text-slate-900"
+              className="surface-card rounded-[10px] px-6 py-3 text-[13px] font-semibold tracking-[-0.018em] text-slate-900"
             >
               Explore studios
             </button>
@@ -519,7 +519,7 @@ export function SaasDoo({ onenter }: Pick<SectionProps, "onenter">) {
           </div>
         </div>
         <div className="lg:col-span-6">
-          <ScoopedCard surface="flex min-h-[440px] flex-col justify-between border border-white/15 bg-[#0B0D16] p-8 text-white sm:p-10">
+          <ScoopedCard surface="flex min-h-[440px] flex-col justify-between border border-white/8 bg-[#0B0D16] p-8 text-white sm:p-10">
             <div>
               <div className="flex items-center gap-3">
                 <Studiomark app="doo" className="h-11 w-11" />
@@ -529,7 +529,7 @@ export function SaasDoo({ onenter }: Pick<SectionProps, "onenter">) {
                 </div>
               </div>
               <div className="mt-8 space-y-4">
-                <div className="max-w-[85%] rounded-2xl rounded-tl-md border border-white/10 bg-white/10 p-4 text-sm font-normal tracking-[-0.005em] text-white/85">
+                <div className="max-w-[85%] rounded-2xl rounded-tl-md border border-white/8 bg-white/10 p-4 text-sm font-normal tracking-[-0.005em] text-white/85">
                   The conversation opens inside the os — this card stages the studio, it never fakes a reply.
                 </div>
               </div>
@@ -538,7 +538,7 @@ export function SaasDoo({ onenter }: Pick<SectionProps, "onenter">) {
               <button
                 type="button"
                 onClick={onenter}
-                className="btn-tactile-3d rounded-full px-6 py-3 text-[13px] font-extrabold tracking-[-0.035em] text-white"
+                className="btn-tactile-3d rounded-[10px] px-6 py-3 text-[13px] font-extrabold tracking-[-0.035em] text-white"
               >
                 Open the advisor
               </button>
@@ -571,7 +571,7 @@ export function SaasFooter({ onenter, scrollto }: SectionProps) {
               <button
                 type="button"
                 onClick={onenter}
-                className="btn-tactile-3d flex items-center gap-2 rounded-full px-6 py-3 text-[13px] font-extrabold tracking-[-0.035em] text-white"
+                className="btn-tactile-3d flex items-center gap-2 rounded-[10px] px-6 py-3 text-[13px] font-extrabold tracking-[-0.035em] text-white"
               >
                 Launch
                 <ArrowUpRight className="h-4 w-4 text-sky-400" aria-hidden="true" />
