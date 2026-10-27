@@ -7,7 +7,7 @@
  * windows material of the house: the mica ring, the ever gradient, the
  * fluent glyphs, zero indigo, zero lucide, zero dots.
  *
- * The form speaks the account contract of the root authfamily.ts
+ * The form speaks the account contract of the root account.ts
  * through the anchor's controlled props: a machine without an account
  * asks for the display name and the password creation, a machine with
  * one asks for the password alone and answers the wrong-try verdict
@@ -21,7 +21,7 @@
  */
 import { ArrowRightRegular, EyeOffRegular, EyeRegular, PersonRegular } from "@fluentui/react-icons";
 import { useEffect, useRef, useState } from "react";
-import type { AccountState } from "../../authfamily.ts";
+import type { AccountState } from "../../account.ts";
 import { copy } from "../../copy.ts";
 import { ProviderRow, type ProviderRowProps } from "./AuthProviderrow.tsx";
 import { SolLogoMark, SolWordmark } from "./PanelLogo.tsx";

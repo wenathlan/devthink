@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
-import { runreadinesssuite } from "./readiness.mjs";
+import { runreadinesssuite } from "./readiness.ts";
 
 describe("the release readiness review of the platform release", () => {
   it("answers a verdict row with its evidence link for every gate the review walks", async () => {

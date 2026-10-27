@@ -13,7 +13,7 @@
 #      compute service published as ghcr.io/wenathlan/saddle:<version>
 #      across the four-arch family standard (amd64, arm64, ppc64le, s390x
 #      — the trixie slim base line; the stage also builds the web SPA so
-#      the image serves the self-hosted console via `node /app/web/server.ts`).
+#      the image serves the self-hosted console via `node /app/webserver.ts`).
 #
 # saddle v2 (grand merge) - virtual hardware engine, multi-stage, multi-arch image.
 #
@@ -641,17 +641,20 @@ ENTRYPOINT ["/usr/bin/tini", "--", "qemu-system-x86_64"]
 # ---------------------------------------------------------------------------
 # saddle-build: the node-engine build stage (defined here, before the
 # vhe runtime, so BOTH container surfaces can consume its output: the
-# vhe runtime copies the built web SPA for its /engine/web console and
-# the saddle-runtime stage copies the engine dist plus the same web
-# tree - one build, two consumers). The stage runs native (never under
-# QEMU): its outputs are platform-independent static/js payloads.
+# vhe runtime copies the built web SPA beside the console server at
+# /engine and the saddle-runtime stage copies the engine dist plus the
+# same staged SPA - one build, two consumers). The stage runs native
+# (never under QEMU): its outputs are platform-independent static/js
+# payloads.
 
 # the build stage pins to the native build platform ($BUILDPLATFORM): its
 # outputs (the engine dist, pure js, and the web SPA, static assets) are
 # architecture-independent, while the tailwind/lightningcss pipeline only
 # ships native bindings for the builder platforms - the per-arch legs never
-# run it under QEMU.
-FROM --platform=$BUILDPLATFORM node:26.8.1-slim@sha256:c0753125a3789977aefe869cbebccf70e3cfd7ea84ca48547458f02e4f1d7146 AS saddle-build
+# run it under QEMU. The base rides the family tag contract (tags only,
+# never a @sha256: digest - a single digest cannot serve the
+# four-architecture matrix the registry resolves per platform).
+FROM --platform=$BUILDPLATFORM node:26.8.1-slim AS saddle-build
 
 ARG SADDLE_VERSION
 WORKDIR /app
@@ -663,7 +666,16 @@ RUN npm ci --ignore-scripts --legacy-peer-deps
 COPY . .
 RUN npm run build:engine \
     && node --check dist/cli.js \
-    && npm run web:build:pages
+    && npm run web:build:pages \
+    # the theme build emits the hashed SPA bundles straight at the app
+    # root (the family static-first vite contract): stage them into a
+    # clean folder so the runtime stages copy exactly the console
+    # surface - the shell, the hashed js/css bundles and the icon and
+    # manifest assets the shell references. the extension popup
+    # stylesheet is the one root css that never belongs to the spa.
+    && mkdir -p /out/spa \
+    && cp index.html *.js *.css *.svg *.webmanifest /out/spa/ \
+    && rm -f /out/spa/popup.css
 
 FROM ${UBUNTU} AS runtime
 ARG TARGETARCH
@@ -895,19 +907,24 @@ COPY --from=python-bridge /bridge/qemubridge.py /engine/qemubridge.py
 # the engine sources and the specification files consumed at runtime
 # (docker.config "final" stage copies the whole tree; the flat layout
 # keeps that a single COPY layer).
-COPY *.ts package.json tsconfig.json biome.json jsdom.d.ts /engine/
+COPY *.ts package.json tsconfig.json biome.jsonc jsdom.d.ts /engine/
 COPY processors.json gpus.json cores.json boards.json vm.config.json virtualhardware.json /engine/
-COPY qemu.config mttg.config passage.config docker.config /engine/
+COPY qemu.config mttg.config passage.config docker.config mime.types /engine/
 
 # the web node ships inside the main container: the mesh edition (auth,
 # sqlite database, dashboard and the browser sandbox pages) runs from the
 # same image, so one container serves the engine AND the web surface.
-# run it with: docker run ghcr.io/wenathlan/saddle node /engine/web/server.ts
-COPY web /engine/web
-# the built web SPA (vite, from the saddle-build stage): the console
-# server (node /engine/web/server.ts) serves web/dist/public - the
-# unified React interface that absorbed the former static pages.
-COPY --from=saddle-build /app/web/dist /engine/web/dist
+# run it with: docker run ghcr.io/wenathlan/saddle node /engine/webserver.ts
+# (the console server is a root engine source - the COPY *.ts line above
+# already lands it at /engine together with its console stack, and the
+# extension denylist of its static resolver keeps every .ts/.json/.sql
+# source unreachable).
+# the built web SPA (vite, staged by saddle-build): the theme build emits
+# the hashed bundles straight at the app root, so the staged spa lands
+# beside the console server at /engine and webserver.ts serves it from
+# its own module directory - the unified React interface that absorbed
+# the former static pages.
+COPY --from=saddle-build /out/spa /engine/
 
 RUN set -eux; \
     chmod 0755 /usr/local/bin/nvidia-smi /usr/local/bin/aetherforge; \
@@ -1310,7 +1327,7 @@ ENTRYPOINT ["/entrypoint.sh"]
 #   docker build --target saddle-runtime -t saddle:<version> .
 # ══════════════════════════════════════════════════════════════════════
 
-FROM node:26.8.1-slim@sha256:c0753125a3789977aefe869cbebccf70e3cfd7ea84ca48547458f02e4f1d7146 AS saddle-runtime
+FROM node:26.8.1-slim AS saddle-runtime
 
 ARG SADDLE_VERSION
 LABEL org.opencontainers.image.title="Saddle" \
@@ -1357,12 +1374,15 @@ RUN apt-get update \
     && rm -rf node_modules/cpu-features/deps \
     && find node_modules -type f -name Dockerfile -delete
 COPY --from=saddle-build /app/dist ./dist
-# the web service surface (self-hosted console): the built SPA
-# (web/dist/public from the saddle-build vite run) plus the pure-node
-# server stack (server.ts, db.ts, auth.ts, mesh.ts, sandbox.ts,
-# mime.types, init.sql, schema.prisma) - zero npm dependencies, the
-# node 26 runtime carries everything (node:sqlite, node:crypto).
-COPY --from=saddle-build /app/web ./web
+# the web service surface (self-hosted console): the staged spa plus the
+# pure-node server stack (webserver.ts, db.ts, labels.ts, auth.ts,
+# mesh.ts, sandbox.ts, sandboxprofile.ts, sandboxenvprofile.ts,
+# sandboxquota.ts, mime.types, init.sql, schema.prisma) - zero npm
+# dependencies, the node 26 runtime carries everything (node:sqlite,
+# node:crypto, native type stripping for the .ts sources).
+# run the console with: docker run saddle:<version> node webserver.ts
+COPY --from=saddle-build /app/webserver.ts /app/db.ts /app/labels.ts /app/auth.ts /app/mesh.ts /app/sandbox.ts /app/sandboxprofile.ts /app/sandboxenvprofile.ts /app/sandboxquota.ts /app/mime.types /app/init.sql /app/schema.prisma ./
+COPY --from=saddle-build /out/spa ./
 
 USER node
 

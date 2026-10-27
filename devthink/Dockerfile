@@ -39,7 +39,7 @@
 #             the whole dependency tree as its own cacheable layer, so
 #             source edits never invalidate the install layer.
 #   builder   the deps layer plus the whole source tree: the library build
-#             (node tests/build.mjs — every dist target: the library
+#             (node tests/build.ts — every dist target: the library
 #             bundles, the extension surface, the static site with its
 #             hashed assets and immutable cache headers, the flat
 #             distpackage staging, the frozen schemas and the fixture set)
@@ -290,7 +290,7 @@ COPY . .
 # static site with content-hashed file names and the immutable cache header
 # configuration, the frozen schemas, the fixture set and the flat
 # distpackage staging.
-RUN node tests/build.mjs
+RUN node tests/build.ts
 
 # the build checks the builder runs before the runtime stage ships — an
 # image whose checks fail never ships:
@@ -306,7 +306,7 @@ RUN node dist/cli.js headless dist/fixtures/plans/release-notes-plan.json --fixt
 
 # the native smoke (the companion recipe and the wsbridge answer against a
 # fake host process).
-RUN node tests/nativesmoke.mjs
+RUN node tests/nativesmoke.ts
 
 # the firefox prep check (the overlay of manifest.json layers
 # onto the source manifest through the crossbrowser adapter: the host
@@ -320,7 +320,7 @@ RUN bun run checksecrets.ts
 # THIS build: the readiness test the vitest suite carries walks the
 # recorded evidence, and the committed artifact predates the build (the
 # same build, sweep, suite order the ci and verify lanes keep).
-RUN node tests/wcag.mjs
+RUN node tests/wcag.ts
 
 # the vitest suite. the whole suite runs on the native build platform of
 # the builder stage — the $BUILDPLATFORM pin keeps every leg native, so the
@@ -343,7 +343,7 @@ RUN export DEVTHINK_TEST_TIMEOUT_MS=900000 DEVTHINK_TEST_BUDGET_MS=10000; \
 # the pack verification (the reproducible extension archive answers with
 # every required artifact, the packaged manifest matches the package stamp,
 # the icon family and the page bundles ship complete).
-RUN node tests/packageextension.mjs
+RUN node tests/packageextension.ts
 
 # ---------------------------------------------------------------------------
 # stages 3 and 4: the devthink single-binary image — the compiled cli of

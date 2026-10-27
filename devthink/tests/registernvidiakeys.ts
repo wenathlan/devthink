@@ -7,7 +7,7 @@
 
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { db } from "../storagefamily";
+import { db } from "../storage";
 
 async function main() {
   console.log("[register-nvidia-keys] starting...");

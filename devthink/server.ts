@@ -7,7 +7,7 @@
 
 import { randomInt } from "node:crypto";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
-import { isAllowedOrigin } from "./gatewayfamily.js";
+import { isAllowedOrigin } from "./gateway.js";
 import { type DevThinkConfig, type DevThinkPaths, ensurePaths, resolvePaths, saveConfig } from "./config.js";
 import {
   AccountError,
@@ -28,7 +28,7 @@ import {
   verifyBrowserSession,
   verifyaccount,
   verifyaccountsession,
-} from "./authfamily.js";
+} from "./account.js";
 import { type ChatMessage, listModels, listProviders, streamChat } from "./providers.js";
 import {
   appendMessage,
@@ -41,7 +41,7 @@ import {
   savePreference,
   type SessionSection,
   updateTab,
-} from "./storagefamily.js";
+} from "./storage.js";
 
 export type ServerOptions = {
   port?: number | undefined;
@@ -934,7 +934,7 @@ import {
   setplan,
   upsertcopyrows,
   usagefor,
-} from "./storagefamily.ts";
+} from "./storage.ts";
 import { createversion } from "./engine.ts";
 import {
   createsandboxsession,
@@ -1498,7 +1498,7 @@ async function keysfromdb(auth: authconfig): Promise<resolvedkey[]> {
   const model = auth.dbmodel ?? "apiKey";
   const take = auth.dbtake ?? 50;
   try {
-    const { db } = await import("./storagefamily.ts");
+    const { db } = await import("./storage.ts");
     const table = (
       db as unknown as Record<
         string,
@@ -2546,7 +2546,7 @@ async function consolemain(): Promise<void> {
 // config loading — bridge to the user customization layer
 export { getversion, listversions, loadconfig, reloadconfig, validateconfig } from "./config.js";
 // database — prisma persistence (the storage family)
-export { db, getsession, getsessionmessages, savemsg } from "./storagefamily.js";
+export { db, getsession, getsessionmessages, savemsg } from "./storage.js";
 // engine — the universal request pipeline
 export { createversion, engineinternals } from "./engine.js";
 // types — the configuration surface

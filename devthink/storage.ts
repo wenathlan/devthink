@@ -1,5 +1,5 @@
 /**
- * storagefamily.ts — the ONE keyed file of the storage family (root layer).
+ * storage.ts — the ONE keyed file of the storage family (root layer).
  *
  * The owner's law: every family of correlated logic lives in one keyed file
  * with a name that says the family. This file carries the whole storage
@@ -28,11 +28,11 @@
  * The cross-family seams this file owns (both one-directional at the call
  * level and both lazy — every cross-family reference sits inside a function
  * body, so the module graph evaluates without an import-time touch):
- *   - authfamily.ts imports `sharedatabasedriver` (§1, the account lane's
+ *   - account.ts imports `sharedatabasedriver` (§1, the account lane's
  *     sqlite) and the browser credential-vault fns of §4 — the merged file
  *     exports both exactly as the members did.
- *   - §8 (sync) keeps importing `getIdentity` from authfamily and
- *     `isSecureRemoteEndpoint` from gatewayfamily, as sync.ts did after
+ *   - §8 (sync) keeps importing `getIdentity` from account and
+ *     `isSecureRemoteEndpoint` from gateway, as sync.ts did after
  *     wave 5 repointed it.
  *
  * @section 1  storage — the local sqlite mirror of the workbench records
@@ -53,8 +53,8 @@ import type { PrismaClient } from "@prisma/client";
 import { ensurePaths, resolvePaths, type DevThinkConfig, type DevThinkPaths } from "./config.js";
 import { createCompactId } from "./ids.js";
 import type { ChatMessage } from "./providers.js";
-import { getIdentity } from "./authfamily.js";
-import { isSecureRemoteEndpoint } from "./gatewayfamily.js";
+import { getIdentity } from "./account.js";
+import { isSecureRemoteEndpoint } from "./gateway.js";
 
 /* ============================================================================
  * @section 1 — storage: the local sqlite mirror of the workbench records.

@@ -44,14 +44,14 @@ import {
   signinserveraccount,
   storedaccountowner,
   verifyAccount,
-} from "../../authfamily.ts";
+} from "../../account.ts";
 import { copy, loadcopy } from "../../copy.ts";
-import { afterAuthTarget, pairingReadiness, safegatewayurl } from "../../gatewayfamily.ts";
-import { readBrowserPreferences } from "../../storagefamily.ts";
+import { afterAuthTarget, pairingReadiness, safegatewayurl } from "../../gateway.ts";
+import { readBrowserPreferences } from "../../storage.ts";
 import { LockFace, PowerMenu, type SignInEntryFields, SignInForm, StatusLine } from "../widgets";
 
-export * from "../../authfamily.ts";
-export * from "../../gatewayfamily.ts";
+export * from "../../account.ts";
+export * from "../../gateway.ts";
 export * from "../widgets";
 
 type PairingResponse = { token: string; userId: string; expiresAt: number };

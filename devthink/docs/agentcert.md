@@ -1,6 +1,6 @@
 # Multi agent certification
 
-The security review of 1.1.94 cleared the single agent surface, so the certification of 1.1.96 covers the coordination layer end to end: the agentcert gate of `tests/agentcert.mjs` drives every coordination scenario against the real compiled modules of `dist/`, and the costcert gate of `tests/costcert.mjs` proves the shared accounting reconciles. This document describes the coordination suite; the accounting verification method lives in `docs/costcert.md`, the six certified topologies in `docs/agentscenarios.md` and the multi agent dashboard in `docs/dashdone.md`. The five agent recipes of `tests/code/recipes/` — `agentswarm`, `agentsreview`, `agentsforms`, `agentsmonitor` and `agentscompete` — are the certified plan file examples of the swarm, review, parallel, monitor and compete topologies, indexed with their kinds and expected durations in the gallery documentation of `docs/gallery.md`.
+The security review of 1.1.94 cleared the single agent surface, so the certification of 1.1.96 covers the coordination layer end to end: the agentcert gate of `tests/agentcert.ts` drives every coordination scenario against the real compiled modules of `dist/`, and the costcert gate of `tests/costcert.ts` proves the shared accounting reconciles. This document describes the coordination suite; the accounting verification method lives in `docs/costcert.md`, the six certified topologies in `docs/agentscenarios.md` and the multi agent dashboard in `docs/dashdone.md`. The five agent recipes of `tests/code/recipes/` — `agentswarm`, `agentsreview`, `agentsforms`, `agentsmonitor` and `agentscompete` — are the certified plan file examples of the swarm, review, parallel, monitor and compete topologies, indexed with their kinds and expected durations in the gallery documentation of `docs/gallery.md`.
 
 ## The automated coordination checklist
 
@@ -41,7 +41,7 @@ Every entry below executes one real function call sequence of the swarm, agent, 
 
 ## The fake clock mode and the fake tab provider
 
-The coordination suite gains a fake clock mode for deterministic runs: the gate starts its clock at the fixed epoch and every tick advances exactly one thousand milliseconds, so every scenario replays byte identical and the artifact carries no wall clock read. The real clock mode exists only for the live verification runs the operator drives with `node tests/agentcert.mjs --clock real`.
+The coordination suite gains a fake clock mode for deterministic runs: the gate starts its clock at the fixed epoch and every tick advances exactly one thousand milliseconds, so every scenario replays byte identical and the artifact carries no wall clock read. The real clock mode exists only for the live verification runs the operator drives with `node tests/agentcert.ts --clock real`.
 
 The fake tab provider covers every browser kind for the agent scenarios: one deterministic tab id per browser kind and per slot (chromium 101, firefox 201, safari 301 and so on), so the coordination entries bind tabs the same way on chromium, firefox and safari — the same binding rule the live surface applies through the one tab one agent invariant. Every scenario of `docs/agentscenarios.md` references this provider for its fake tab setup.
 
@@ -90,14 +90,14 @@ The scenario doc of `docs/agentscenarios.md` maps every one of the six certified
 
 ## The certification entry gate
 
-The certification entry gate runs agentcert and costcert together: `pnpm validate:agents` executes `node tests/agentcert.mjs && node tests/costcert.mjs`, the chain joins `pnpm validate` after `validate:security`, and the verify workflow runs both gates beside the security gates so every candidate certifies its coordination layer before the freeze. The certification artifacts `tests/artifacts/agentcert.json` and `tests/artifacts/costcert.json` join the release evidence bundle (the gate regenerates them deterministically on every run of the verify workflow, so the candidate evidence always carries the current release stamp), and the certification summary reports the covered scenario count — thirty coordination scenario entries and nine accounting checks at the current release. The artifact diff against 1.1.94 shows no regression: no coordination artifact existed before this release, so the diff is pure addition — thirty passing entries with no removed or downgraded record.
+The certification entry gate runs agentcert and costcert together: `pnpm validate:agents` executes `node tests/agentcert.ts && node tests/costcert.ts`, the chain joins `pnpm validate` after `validate:security`, and the verify workflow runs both gates beside the security gates so every candidate certifies its coordination layer before the freeze. The certification artifacts `tests/artifacts/agentcert.json` and `tests/artifacts/costcert.json` join the release evidence bundle (the gate regenerates them deterministically on every run of the verify workflow, so the candidate evidence always carries the current release stamp), and the certification summary reports the covered scenario count — thirty coordination scenario entries and nine accounting checks at the current release. The artifact diff against 1.1.94 shows no regression: no coordination artifact existed before this release, so the diff is pure addition — thirty passing entries with no removed or downgraded record.
 
 ## Rerunning the certification
 
 Run one command from the repository root after a build:
 
 ```bash
-pnpm build && node tests/agentcert.mjs
+pnpm build && node tests/agentcert.ts
 ```text
 
 The gate prints one line per entry with its outcome, prints the summary json (with the clock mode, the fake tab kinds and the pool coverage), writes `tests/artifacts/agentcert.json` with every executed entry, its family, its module and its detail, and exits nonzero on any failed entry. The chromium smoke run executes the leader worker topology scenario end to end against the shipped bundles inside a live browser, and the artifact test of `tests/agentcert.test.ts` verifies the artifact covers every scenario — running the gate itself when a built tree carries no fresh artifact of the current release, so every lane that builds before the vitest suite verifies the checklist without depending on gate ordering.

@@ -54,7 +54,7 @@ describe("the publishing pipeline", () => {
     const changelog = await readFile("CHANGELOG.md", "utf8");
     const heading = new RegExp(`^##\\s+${version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?:\\s|$)`, "m");
     expect(heading.test(changelog)).toBe(true);
-    /* the generated release-document family — the readme version line, the release gates table, the runtime version catalog, the release notes document and the popup eyebrow label — stamps through the release metadata synchronization (node tests/release.mjs sync, the restamp the release pass runs), so those carries join the drift family at the restamp instead of a second version source living in the test */
+    /* the generated release-document family — the readme version line, the release gates table, the runtime version catalog, the release notes document and the popup eyebrow label — stamps through the release metadata synchronization (node tests/release.ts sync, the restamp the release pass runs), so those carries join the drift family at the restamp instead of a second version source living in the test */
   });
 
   it("emits and validates the release workflow controls through the checked test scripts", async () => {
@@ -62,9 +62,9 @@ describe("the publishing pipeline", () => {
     checks answer at the repository surface only, the smoke boot skips them */
     if (!existsSync(join(repoRoot, ".github/workflows"))) return;
     /* the workflowcheck asserts the channel jobs, the gates and the new release steps; the npmgate asserts the new bundles stay allowed in the tarball */
-    const workflowcheck = await execute("node", ["tests/workflowcheck.mjs"]);
+    const workflowcheck = await execute("node", ["tests/workflowcheck.ts"]);
     expect(workflowcheck.stdout).toContain("verified");
-    const npmgate = await execute("node", ["tests/npmgate.mjs"]);
+    const npmgate = await execute("node", ["tests/npmgate.ts"]);
     expect(npmgate.stdout).toContain('"valid": true');
   });
 

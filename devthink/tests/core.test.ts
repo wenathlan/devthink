@@ -9,7 +9,7 @@ import {
   normalizeBasePath,
   redactProviderError,
   retryDelay,
-} from "../gatewayfamily.js";
+} from "../gateway.js";
 import {
   type DevThinkConfig,
   migrateLegacyCredentials,
@@ -22,12 +22,12 @@ import {
   saveConfig,
   setAuthCredential,
 } from "../config.js";
-import { createPairing, createPairingLink, getIdentity, setIdentityUserId } from "../authfamily.js";
+import { createPairing, createPairingLink, getIdentity, setIdentityUserId } from "../account.js";
 import { isCompactId } from "../ids.js";
 import { listModes } from "../modes.js";
 import { type ServerHandle, startServer } from "../server.js";
 import { type ChatEvent, parseEventStream } from "../streaming.js";
-import { appendMessage, createMemoryStore, createSession, createTab, loadWorkspace } from "../storagefamily.js";
+import { appendMessage, createMemoryStore, createSession, createTab, loadWorkspace } from "../storage.js";
 
 const temporary: string[] = [];
 const servers: ServerHandle[] = [];

@@ -28,7 +28,7 @@ describe("package governance surface", () => {
     expect(contributing).toContain("Adding a native surface");
     expect(contributing).toContain("Adding a release channel");
     expect(contributing).toContain("docs/kinddocs.md");
-    expect(contributing).toContain("node tests/doccheck.mjs");
+    expect(contributing).toContain("node tests/doccheck.ts");
     /* the maene lineage contract and the merged release lockstep */
     expect(contributing).toContain("tests/provider");
     expect(contributing).toContain("sync:metadata");

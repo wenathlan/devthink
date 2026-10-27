@@ -11,7 +11,7 @@
  * auth page, riding the dt-oauthrow kit over the dtw-login fills.
  */
 import { WindowConsoleRegular } from "@fluentui/react-icons";
-import type { OAuthProvider, ProviderRowView } from "../../authfamily.ts";
+import type { OAuthProvider, ProviderRowView } from "../../account.ts";
 import { copy } from "../../copy.ts";
 
 /** the official four color google g mark of the sign in buttons. */

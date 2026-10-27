@@ -1,6 +1,6 @@
 # Content security audit
 
-The extension ships a content security policy set the cspaudit gate verifies at every release: the root manifest declares one extension pages policy, both browser overlays (the `browsers.firefox` and the `browsers.safari` sections of the root `manifest.json`) carry the same policy so every webextension dialect answers the identical frozen rules, and the shipped chromium manifest copy answers the same audit. `tests/cspaudit.mjs` extracts every policy, parses its directives and refuses the release on any violation; the results per surface land in the audit report the gate prints and in `docs/securityreview.md`.
+The extension ships a content security policy set the cspaudit gate verifies at every release: the root manifest declares one extension pages policy, both browser overlays (the `browsers.firefox` and the `browsers.safari` sections of the root `manifest.json`) carry the same policy so every webextension dialect answers the identical frozen rules, and the shipped chromium manifest copy answers the same audit. `tests/cspaudit.ts` extracts every policy, parses its directives and refuses the release on any violation; the results per surface land in the audit report the gate prints and in `docs/securityreview.md`.
 
 ## The policy set
 
@@ -28,7 +28,7 @@ The gate enforces one rule per check, and any failure exits nonzero:
 ## Rerunning the audit
 
 ```bash
-pnpm build && node tests/cspaudit.mjs
+pnpm build && node tests/cspaudit.ts
 ```text
 
 The gate runs against the built extension bundles so it answers for the shipped artifacts, prints one deterministic json report with every extracted policy, its directives, the audited bundle and page sets, the dynamic function site counts and the sandbox frame declaration, and exits nonzero on any failure. The audit joins `pnpm validate` through the `validate:security` chain and the verify workflow beside the api freeze.
