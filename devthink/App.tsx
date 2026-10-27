@@ -14,13 +14,11 @@ import { Component, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { Toaster } from "sonner";
 import { Router as WouterRouter } from "wouter";
-import {
-  installdevtoolsguard,
-  ondevtoolstrip,
-  showdevtoolsinterstitial } from "./devtoolsguard.ts";
+import { installdevtoolsguard, ondevtoolstrip, showdevtoolsinterstitial } from "./devtoolsguard.ts";
 import { guardStatus, reportguardstrike } from "./guard.ts";
 import { seedLabels } from "./labels.ts";
 import Sol from "./Sol/Sol.tsx";
+import { loadDevtoolsWall } from "./Sol/widgets/SettingsPersonalstore.ts";
 import installzoomlock from "./zoomlock.ts";
 import "./Sol/sol.css";
 
@@ -28,7 +26,7 @@ import "./Sol/sol.css";
 if (typeof window !== "undefined") installzoomlock();
 
 // the label seed rides the boot: the manifest ingests into the store and the
- // translation overrides load before the surfaces read their copy
+// translation overrides load before the surfaces read their copy
 if (typeof window !== "undefined") void seedLabels().catch(() => {});
 
 class WorkbenchErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
@@ -77,22 +75,22 @@ function routerBase(): string {
  * the strike report rides the site api. */
 let wallstrikehook: (() => void) | null = null;
 
-/** Arms the devtools wall once per module life: the two prongs install
- * (production builds only — the dev machine keeps its tools) and the
- * owner toggle suspends them through the personalization channel, which
- * the settings anchor applies on boot before this call runs. */
+/** Arms the devtools wall once per module life: the wall is OPT-IN (the
+ * stored owner switch reads before the arm — default off, the false
+ * positive era dies) and production builds only arm when the switch says
+ * on; the personalization channel stays the only writer of the choice. */
 function armdevtoolswall(): void {
   if (wallstrikehook) wallstrikehook();
   wallstrikehook = ondevtoolstrip((signal) => {
     void reportguardstrike(signal);
   });
-  installdevtoolsguard();
+  installdevtoolsguard(loadDevtoolsWall() ? undefined : { suspend: true });
 }
 
 function App() {
-  // the devtools wall arms before the first render: a tripped or banned
-  // address sees the calm interstitial (never a blank), the strike report
-  // rides the site api and the owner toggle gates the prongs (default on)
+  // the devtools wall answers the stored owner switch: the boot reads the
+  // choice before the arm (default off — the interstitial only ever stands
+  // on the debugger trap of an explicitly armed wall or a server ban)
   void guardStatus().then((banned) => {
     if (banned) showdevtoolsinterstitial();
   });

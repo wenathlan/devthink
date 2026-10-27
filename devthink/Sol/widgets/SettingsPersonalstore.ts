@@ -303,7 +303,8 @@ export function saveTaskbarTips(on: boolean): void {
 }
 
 /** the localStorage key of the devtools wall flag (the owner switch of
- * the guard — on by default, the adoption form the akash study lands). */
+ * the guard — off by default: the wall is opt-in, the false positive era
+ * the owner charged dies with the default). */
 export const DEVTOOLS_WALL_KEY = "dt.devtools.wall.v1";
 
 /** arms or suspends the devtools wall: off parks every prong of the wall
@@ -314,9 +315,11 @@ export function applyDevtoolsWall(on: boolean): void {
   suspenddevtoolsguard(!on);
 }
 
-/** the stored devtools wall flag (on by default — the owner's want). */
+/** the stored devtools wall flag (off by default — the wall is opt-in:
+ * the owner arms it through the settings row, every visitor else never
+ * meets the interstitial). */
 export function loadDevtoolsWall(): boolean {
-  return loadFlag(DEVTOOLS_WALL_KEY, true);
+  return loadFlag(DEVTOOLS_WALL_KEY, false);
 }
 
 /** persists the devtools wall flag and arms it. */
