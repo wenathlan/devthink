@@ -325,7 +325,16 @@ jobs:
       # every folder answers its own registry leg to the end.
       fail-fast: false
       matrix:
-        package: [argan, cadria, debonair, forge, foundry, stealthhead, vault]
+        # the canonical family pass order - argan, cadria, debonair, forge,
+        # foundry, stealthhead, vault - and saddle always last, the
+        # heaviest pass of the house (the SADDLE BLOCK order the release
+        # family pack loop already carries). the saddle envelope rode the
+        # release familynpmjs lane alone since the consolidation and that
+        # lane reds on every rung while the npm ordering refusal stands;
+        # the family mirror here gives the saddle envelope the same
+        # graceful token gate, the same retry and the same race tolerance
+        # every sibling leg carries.
+        package: [argan, cadria, debonair, forge, foundry, stealthhead, vault, saddle]
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -422,12 +431,22 @@ jobs:
             published=0
             until [ "$attempt" -ge 3 ]; do
               attempt=$((attempt + 1))
+              # the owner rule: the envelope publishes ALWAYS while the
+              # token exists - registry versions are distinct strings and
+              # a rung landing BELOW the registry latest (saddle stamps
+              # 2.0.150 while its retired 2.1.6 line still holds the
+              # latest tag) must never skip. npm 12 refuses the IMPLICIT
+              # latest tag in that case ("Cannot implicitly apply the
+              # latest tag"); the explicit tag answers the refusal, the
+              # publish lands, and the dist-tag step below pins latest to
+              # the release version - the maene realignment doctrine the
+              # lane already carries for the rungs of an older line.
               if [ "$provenance" = "true" ]; then
-                if npm publish --access public --provenance; then
+                if npm publish --access public --provenance --tag latest; then
                   published=1
                 fi
               else
-                if npm publish --access public; then
+                if npm publish --access public --tag latest; then
                   published=1
                 fi
               fi
