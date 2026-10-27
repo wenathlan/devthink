@@ -19207,6 +19207,119 @@ button.dtc-recents__row {
 }
 
 /* ==========================================================================
+   §B — the intro saas (the web face)
+   The saas sheet injects at import time; the same double-class scoping
+   re-derives its literal palette through the tokens (the indigo→violet
+   crutch and the five-hue shader retire to the ONE accent family — the
+   color lock law), the tactile keys keep their physics.
+   ========================================================================== */
+
+/* -- B1 the tactile key: the pressed gloss stays, the hover glow re-derives
+   from the accent (the indigo shadow dies) -- */
+.saas-root .btn-tactile-3d:hover {
+  box-shadow:
+    0 20px 34px -8px color-mix(in oklab, var(--color-win) 34%, transparent),
+    inset 0 2px 3px color-mix(in oklab, var(--color-ink) 55%, transparent),
+    inset 0 -3px 6px color-mix(in oklab, var(--mask-ink) 75%, transparent);
+}
+
+.saas-root .btn-tactile-3d:active {
+  box-shadow:
+    0 8px 18px -8px color-mix(in oklab, var(--mask-ink) 55%, transparent),
+    inset 0 1.5px 2px color-mix(in oklab, var(--color-ink) 32%, transparent),
+    inset 0 -2px 5px color-mix(in oklab, var(--mask-ink) 55%, transparent);
+}
+
+/* -- B2 the icon frames: the hover hairline and the wash ride the accent
+   family at the wash strengths the chrome law keeps -- */
+.saas-root .icon-frame-3d:hover {
+  border-color: color-mix(in oklab, var(--color-win) 50%, transparent);
+  box-shadow:
+    0 12px 22px -6px color-mix(in oklab, var(--color-win) 18%, transparent),
+    inset 0 1px 2px color-mix(in oklab, var(--color-ink) 90%, transparent);
+}
+
+.saas-root .icon-frame-3d-active {
+  border-color: color-mix(in oklab, var(--color-win) 60%, transparent);
+  box-shadow:
+    0 10px 22px -6px color-mix(in oklab, var(--color-win) 24%, transparent),
+    inset 0 1px 2px color-mix(in oklab, var(--color-ink) 90%, transparent);
+}
+
+/* -- B3 the hero shader: the five-hue rainbow retires — one halo family
+   (the accent carrying the field, one warm counterweight at the far stop),
+   the blur and the slow breathe stay (the single light source of the face) -- */
+.saas-root .hero-gaussian-shader {
+  background:
+    radial-gradient(circle at 16% 72%, color-mix(in oklab, var(--color-win) 58%, transparent) 0%, transparent 50%),
+    radial-gradient(circle at 40% 82%, color-mix(in oklab, var(--color-win) 38%, transparent) 0%, transparent 46%),
+    radial-gradient(circle at 64% 66%, color-mix(in oklab, var(--color-win) 28%, transparent) 0%, transparent 44%),
+    radial-gradient(circle at 86% 70%, color-mix(in oklab, var(--color-warn) 24%, transparent) 0%, transparent 42%);
+}
+
+/* -- B4 the hero inline switch: the gradient re-derives from the same
+   family (accent core, one warm shoulder) — never a second palette -- */
+.saas-root .hero-inline-switch {
+  background: linear-gradient(
+    125deg,
+    color-mix(in oklab, var(--color-win) 72%, var(--color-ink)) 0%,
+    var(--color-win) 48%,
+    color-mix(in oklab, var(--color-warn) 55%, var(--color-win)) 100%
+  );
+  box-shadow:
+    0 12px 26px -6px color-mix(in oklab, var(--color-win) 38%, transparent),
+    inset 0 2px 4px color-mix(in oklab, var(--color-ink) 55%, transparent);
+}
+
+.saas-root .hero-switch-thumb {
+  box-shadow:
+    -3px 4px 10px color-mix(in oklab, var(--mask-ink) 35%, transparent),
+    inset 0 2px 3px color-mix(in oklab, var(--color-ink) 90%, transparent);
+}
+
+/* -- B5 the conic ring: the token conic (accent core, the doo counterpoint,
+   the warm shoulder) replacing the six-hue literal wheel -- */
+.saas-root .conic-rainbow-ring {
+  background: conic-gradient(
+    from 180deg at 50% 50%,
+    color-mix(in oklab, var(--color-warn) 88%, var(--color-ink)) 0deg,
+    var(--color-win) 120deg,
+    color-mix(in oklab, var(--color-win) 60%, var(--color-doo)) 216deg,
+    color-mix(in oklab, var(--color-warn) 70%, var(--color-win)) 312deg,
+    color-mix(in oklab, var(--color-warn) 88%, var(--color-ink)) 360deg
+  );
+}
+
+/* -- B6 the brand gradient word and the standing cards: the literals
+   re-derive through the ink and mask tokens -- */
+.saas-root .text-gradient-brand {
+  background: linear-gradient(92deg, var(--color-signal-ink) 0%, var(--color-win) 100%);
+}
+
+.saas-root .surface-card {
+  box-shadow: 0 16px 36px -14px color-mix(in oklab, var(--mask-ink) 10%, transparent);
+}
+
+.saas-root .tactile-navy-surface {
+  box-shadow:
+    0 22px 44px -12px color-mix(in oklab, var(--mask-ink) 55%, transparent),
+    inset 0 2px 5px color-mix(in oklab, var(--color-ink) 28%, transparent),
+    inset 0 -5px 10px color-mix(in oklab, var(--mask-ink) 40%, transparent);
+}
+
+/* -- B7 the selection and the focus: the accent family carries both (the
+   indigo selection dies) -- */
+.saas-root ::selection {
+  background: color-mix(in oklab, var(--color-win) 78%, var(--color-ink));
+}
+
+.saas-root button:focus-visible,
+.saas-root input:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--color-focus) 82%, var(--color-win));
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
    §C — the explore hub (the launch deck)
    The anchor carries the four dtv-x bindings (root, restore chip, enter
    key, the modules strip); the sidebar and the decks already ride the
@@ -20364,3 +20477,291 @@ button.dtc-recents__row {
 
 /* ==== devtools wall interstitial · end of section ==== */
 
+
+/* ==========================================================================
+   §AB — the intro ever hero and the landing materials
+   The innovative face the owner ordered back: the "Build for Ever AI"
+   statement wears the ever token family of the @theme ladder — the pink
+   gradient sweep on the keyword, the gradient hairline under the
+   statement, the soft radial bloom of the backdrop. The raw toggle the
+   old headline carried INSIDE itself retires into the labeled segmented
+   control under the rule. The floating chrome (the left rail, the corner
+   dock) answers the windows 11 acrylic law: blur + saturate over
+   translucent token tints with the house grain, hairline rings, fluent
+   depth. The palco carries the material film (grain + the ever wash from
+   the top). Every rule rides tokens — zero raw color outside @theme.
+   ========================================================================== */
+
+/* -- AB1 the ever keyword: the gradient sweep the headline wears — the
+   magenta depth opening through the rose into the light tip, clipped to
+   the glyphs; the deep ever keeps the ink for the clip-less engines -- */
+.saas-root .saas-hero-ever {
+  color: var(--color-ever-deep);
+  background: linear-gradient(
+    94deg,
+    var(--color-ever-deep) 0%,
+    var(--color-ever) 46%,
+    color-mix(in oklab, var(--color-ever) 45%, var(--color-ink)) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .saas-root .saas-hero-ever {
+    background: none;
+    color: var(--color-ever-deep);
+  }
+}
+
+/* -- AB2 the gradient hairline: the one rule under the statement — the
+   ever sweep carrying a single windows counterweight stop, fading to
+   nothing at both ends -- */
+.saas-root .saas-hero-rule {
+  display: block;
+  width: min(440px, 70vw);
+  height: 2px;
+  border: 0;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in oklab, var(--color-ever) 70%, transparent) 26%,
+    color-mix(in oklab, var(--color-ever-deep) 60%, transparent) 50%,
+    color-mix(in oklab, var(--color-win) 38%, transparent) 74%,
+    transparent 100%
+  );
+}
+
+/* -- AB3 the ever bloom: the soft radial wash behind the statement — the
+   petal tint above, the rose core at the keyword line; the component
+   positions the plane -- */
+.saas-root .saas-hero-bloom {
+  background:
+    radial-gradient(60% 42% at 50% 10%, color-mix(in oklab, var(--color-ever-soft) 40%, transparent) 0%, transparent 72%),
+    radial-gradient(44% 36% at 50% 38%, color-mix(in oklab, var(--color-ever) 24%, transparent) 0%, transparent 70%);
+  filter: blur(12px);
+}
+
+/* -- AB4 the hero mode control: the labeled segmented switch that replaced
+   the raw toggle the old headline carried inside itself — never inside the
+   h1 again. the track is light acrylic (blur + the grain), the selected
+   segment wears the ever wash with its hairline ring, data-attr carries
+   the state -- */
+.saas-root .saas-hero-mode {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.saas-root .saas-hero-mode__label {
+  color: color-mix(in oklab, var(--color-mask-ink) 52%, transparent);
+  font: 600 11px / 1 var(--font-sans);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.saas-root .saas-hero-mode__track {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--radius-md);
+  background-color: color-mix(in oklab, var(--color-veil) 62%, transparent);
+  background-image: var(--noise);
+  background-blend-mode: soft-light;
+  -webkit-backdrop-filter: saturate(1.4) blur(14px);
+  backdrop-filter: saturate(1.4) blur(14px);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-mask-ink) 10%, transparent);
+}
+
+.saas-root .saas-hero-mode__seg {
+  min-height: 36px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: color-mix(in oklab, var(--color-mask-ink) 64%, transparent);
+  font: 600 13px var(--font-sans);
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition:
+    background 150ms var(--ease-micro),
+    color 150ms var(--ease-micro),
+    box-shadow 150ms var(--ease-micro);
+}
+
+.saas-root .saas-hero-mode__seg:hover {
+  background: color-mix(in oklab, var(--color-mask-ink) 6%, transparent);
+}
+
+.saas-root .saas-hero-mode__seg[data-active="true"] {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--color-ever) 26%, transparent),
+    color-mix(in oklab, var(--color-ever-deep) 18%, transparent)
+  );
+  color: var(--color-ever-ink);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--color-ever-deep) 38%, transparent),
+    inset 0 1px 0 color-mix(in oklab, var(--color-ink) 45%, transparent);
+}
+
+/* -- AB5 the hero shader retune: the ever field — the rose family carries
+   the light, one windows blue keeps the counterweight at the near stop;
+   the blur, the saturate and the slow breathe stay the single light
+   source of the face -- */
+.saas-root .hero-gaussian-shader {
+  background:
+    radial-gradient(circle at 12% 70%, color-mix(in oklab, var(--color-win) 42%, transparent) 0%, transparent 46%),
+    radial-gradient(circle at 38% 78%, color-mix(in oklab, var(--color-ever) 34%, transparent) 0%, transparent 46%),
+    radial-gradient(circle at 64% 66%, color-mix(in oklab, var(--color-ever) 44%, transparent) 0%, transparent 44%),
+    radial-gradient(circle at 88% 72%, color-mix(in oklab, var(--color-ever-deep) 32%, transparent) 0%, transparent 42%);
+}
+
+/* -- AB6 the left rail: the windows 11 floating acrylic pane — the saddle
+   slab that hugged the screen edge (and cut the corner notch at its
+   curved caps) retires; the rail floats 12px off the edge with the fluent
+   bed, the grain, the hairline ring and the fluent depth. data-attr
+   carries the active stop, the ever wash answers it -- */
+.saas-root .saas-rail {
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 8px;
+  border-radius: var(--radius-xl);
+  background-color: color-mix(in oklab, var(--color-night) 78%, transparent);
+  background-image: var(--noise);
+  background-blend-mode: soft-light;
+  -webkit-backdrop-filter: saturate(1.6) blur(20px);
+  backdrop-filter: saturate(1.6) blur(20px);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--color-veil) 16%, transparent),
+    inset 0 1px 0 color-mix(in oklab, var(--color-veil) 12%, transparent),
+    0 16px 40px -12px color-mix(in oklab, var(--color-mask-ink) 48%, transparent);
+}
+
+.saas-root .saas-rail__divider {
+  display: block;
+  width: 20px;
+  height: 1px;
+  margin: 4px 0;
+  background: color-mix(in oklab, var(--color-veil) 20%, transparent);
+}
+
+.saas-root .saas-rail__btn {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: color-mix(in oklab, var(--color-veil) 62%, var(--color-night));
+  cursor: pointer;
+  transition:
+    background 150ms var(--ease-micro),
+    color 150ms var(--ease-micro);
+}
+
+.saas-root .saas-rail__btn:hover {
+  background: color-mix(in oklab, var(--color-veil) 10%, transparent);
+  color: color-mix(in oklab, var(--color-veil) 88%, var(--color-night));
+}
+
+.saas-root .saas-rail__btn[data-active="true"] {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--color-ever) 30%, transparent),
+    color-mix(in oklab, var(--color-ever-deep) 20%, transparent)
+  );
+  color: color-mix(in oklab, var(--color-ever-soft) 85%, var(--color-veil));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--color-ever-deep) 42%, transparent),
+    inset 0 1px 0 color-mix(in oklab, var(--color-veil) 30%, transparent);
+}
+
+/* -- AB7 the corner dock: the dark acrylic companion of the rail — the
+   icon frames keep their tactile physics over the bed -- */
+.saas-root .saas-dock {
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: var(--radius-xl);
+  background-color: color-mix(in oklab, var(--color-night) 66%, transparent);
+  background-image: var(--noise);
+  background-blend-mode: soft-light;
+  -webkit-backdrop-filter: saturate(1.5) blur(18px);
+  backdrop-filter: saturate(1.5) blur(18px);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--color-veil) 14%, transparent),
+    0 16px 40px -14px color-mix(in oklab, var(--color-mask-ink) 32%, transparent);
+}
+
+/* -- AB8 the palco film: the materiality of the canvas — the house grain
+   over every section background under the floating layers, with the ever
+   wash fading in from the top edge; pointer-transparent, clipped to the
+   palco corners -- */
+.saas-root .saas-palco::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  background-image:
+    radial-gradient(58% 26% at 50% 0%, color-mix(in oklab, var(--color-ever-soft) 38%, transparent), transparent 74%),
+    var(--noise);
+}
+
+/* -- AB9 the top chrome band: the light mica of the title strip — the
+   stable veil over the faint ever counterweight, the grain soft-light,
+   the hairline under -- */
+.saas-root .saas-chrome-strip {
+  height: 6px;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-veil) 97%, transparent),
+      color-mix(in oklab, var(--color-veil) 92%, var(--color-ever-soft) 3%)
+    ),
+    var(--noise);
+  background-blend-mode: normal, soft-light;
+  box-shadow: 0 1px 0 color-mix(in oklab, var(--color-mask-ink) 6%, transparent);
+}
+
+/* -- AB10 the transparency law of the landing materials: the acrylic beds
+   answer the solid state, the bloom and the film retire -- */
+@media (prefers-reduced-transparency: reduce) {
+  .saas-root .saas-rail {
+    background-color: var(--color-night);
+    background-image: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .saas-root .saas-dock {
+    background-color: var(--color-night);
+    background-image: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .saas-root .saas-hero-mode__track {
+    background-color: color-mix(in oklab, var(--color-veil) 96%, var(--color-ever-soft));
+    background-image: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .saas-root .saas-hero-bloom,
+  .saas-root .saas-palco::after {
+    background-image: none;
+  }
+
+  .saas-root .saas-hero-bloom {
+    filter: none;
+  }
+}
+
+/* ==== intro ever hero · end of section ==== */

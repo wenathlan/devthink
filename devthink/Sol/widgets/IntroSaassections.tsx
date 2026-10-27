@@ -1,88 +1,86 @@
 /**
  * saassections.tsx — the opening sections of the SaaS face: the hero with
- * the OS statement and the inline engine switch, the creator cards and the
- * studio fan deck. Loose components of the intro page — the anchor
- * (intro.tsx) mounts the page (saas.tsx) and the page composes these. All
- * copy rides the landing data layer (saascontent.ts).
+ * the inline OS switch, the creator cards and the studio fan deck. Loose
+ * components of the intro page — the anchor (intro.tsx) mounts the page
+ * (saas.tsx) and the page composes these. Labels stay short: one idea per
+ * line, no hyphens, no dots, no marketing prose.
  */
 
+import {
+  ArrowUpRightRegular as ArrowUpRight,
+  MentionRegular as AtSign,
+  CheckmarkRegular as Check,
+  HeadphonesRegular as Headphones,
+  GlobeRegular as Globe,
+  PlayRegular as Play,
+  AddRegular as Plus,
+  ShareRegular as Share2,
+  StarRegular as Star,
+  TvRegular as Tv,
+} from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
-import {
-  saascreators,
-  saascreatorsintro,
-  saashero,
-  saasstudios,
-  saasstudiosintro,
-  saastoasts,
-} from "../../saascontent.ts";
+import { toast } from "sonner";
+import { saascreators, saashero, saasstudios } from "../../saascontent.ts";
 import { SaddleTabBridge, SaddleTabBridgeUp, ScoopedCard, Studiomark, type studiomarkid } from "./IntroSaaskit.tsx";
-import {
-  Activity,
-  Arrowright,
-  Arrowupright,
-  Atsign,
-  Check,
-  Globe,
-  Play,
-  Plus,
-  Share,
-  Star,
-  Wave,
-} from "./Saasglyphs.tsx";
 
 type SectionProps = {
-  /** the enter action: every launch path of the landing funnels to the login face */
+  /** the enter action: every path of the landing funnels to the login face */
   onenter: () => void;
   /** the smooth scroll to a landing section id */
   scrollto: (id: string) => void;
 };
 
-/** The hero: the OS statement with the activity tile and the inline engine
- * switch, the sub line, the two keys and the three scooped stat cards. */
+/** The hero: the ever statement the owner ordered back — the lead words
+ * with the ever keyword on the pink gradient sweep, the gradient hairline
+ * under it, the labeled segmented control that carries the agents and
+ * studios mode (a switch never rides inside the headline again), the mode
+ * line and the three scooped stat cards. */
 export function SaasHero({ onenter, scrollto }: SectionProps) {
-  const [engine, setEngine] = useState(true);
+  const [modeid, setModeid] = useState("agents");
+  const mode = saashero.modes.find((row) => row.id === modeid) ?? saashero.modes[0];
   return (
     <section id="hero-os" className="relative flex flex-col overflow-hidden bg-[#F2F5FC] pt-0 pb-32 sm:pb-40">
       <div className="hero-gaussian-shader pointer-events-none absolute inset-x-0 -bottom-20 z-0 h-[520px] opacity-90" />
+      <div className="saas-hero-bloom pointer-events-none absolute top-[-140px] left-1/2 z-0 h-[480px] w-[min(920px,120vw)] -translate-x-1/2" />
       <div className="relative z-20 mx-auto flex w-full max-w-[1360px] flex-col items-center px-6 pt-16 text-center sm:px-10 sm:pt-24 lg:px-16">
-        <h1 className="max-w-5xl text-[44px] leading-[1.02] font-extrabold tracking-[-0.035em] text-slate-950 sm:text-7xl lg:text-[84px]">
-          <span>{saashero.leada} </span>
-          <span className="surface-card mx-2 inline-flex h-12 w-12 items-center justify-center rounded-2xl align-middle text-orange-500 sm:h-14 sm:w-14">
-            <Activity className="h-6 w-6 animate-pulse sm:h-7 sm:w-7" aria-hidden="true" />
-          </span>
-          <span> {saashero.leadb}</span>
-          <br />
-          <span className="text-slate-400">{saashero.leadc} </span>
-          <button
-            type="button"
-            onClick={() => setEngine((current) => !current)}
-            aria-label={saashero.togglelabel}
-            className="hero-inline-switch mx-3 inline-flex h-12 w-24 cursor-pointer items-center rounded-full p-1.5 align-middle sm:h-14 sm:w-28"
-          >
-            <span
-              className={`hero-switch-thumb block h-9 w-9 rounded-full transition-transform duration-300 sm:h-11 sm:w-11 ${engine ? "translate-x-12 sm:translate-x-14" : "translate-x-0"}`}
-            />
-          </button>
-          <span className={engine ? "text-slate-950" : "text-indigo-600"}>
-            {engine ? saashero.modeagents : saashero.modestudios}
-          </span>
+        <h1 className="max-w-5xl text-[44px] leading-[1.04] font-extrabold tracking-[-0.035em] text-slate-950 sm:text-7xl lg:text-[84px]">
+          {saashero.lead} <span className="saas-hero-ever">{saashero.ever}</span>
         </h1>
-        <p className="mt-8 max-w-xl text-[15px] font-normal tracking-[-0.005em] text-slate-600 sm:text-lg">
-          {saashero.subtitle}
+        <span className="saas-hero-rule mt-7" aria-hidden="true" />
+        <div className="saas-hero-mode mt-8" role="radiogroup" aria-label={saashero.modelabel}>
+          <span className="saas-hero-mode__label">{saashero.modelabel}</span>
+          <div className="saas-hero-mode__track">
+            {saashero.modes.map((row) => (
+              <button
+                key={row.id}
+                type="button"
+                role="radio"
+                aria-checked={mode.id === row.id}
+                data-active={mode.id === row.id ? "true" : "false"}
+                onClick={() => setModeid(row.id)}
+                className="saas-hero-mode__seg"
+              >
+                {row.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <p className="mt-6 max-w-xl text-[15px] font-normal tracking-[-0.005em] text-slate-600 sm:text-lg">
+          {mode.line}
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
           <button
             type="button"
             onClick={onenter}
-            className="btn-tactile-3d flex items-center gap-2.5 rounded-full px-10 py-4 text-sm font-extrabold tracking-[-0.035em] text-white"
+            className="btn-tactile-3d flex items-center gap-2.5 rounded-[10px] px-10 py-4 text-sm font-extrabold tracking-[-0.035em] text-white"
           >
             <span>{saashero.keyprimary}</span>
-            <Arrowupright className="h-4 w-4 text-sky-400" aria-hidden="true" />
+            <ArrowUpRight className="h-4 w-4 text-sky-400" aria-hidden="true" />
           </button>
           <button
             type="button"
             onClick={() => scrollto("creators-doo")}
-            className="surface-card flex items-center gap-2.5 rounded-full px-7 py-4 text-sm font-semibold tracking-[-0.018em] text-slate-900 transition hover:border-indigo-300"
+            className="surface-card flex items-center gap-2.5 rounded-[10px] px-7 py-4 text-sm font-semibold tracking-[-0.018em] text-slate-900 transition hover:border-[var(--color-ever)] active:scale-[0.98]"
           >
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-950 text-white">
               <Play className="ml-0.5 h-3 w-3 fill-current" aria-hidden="true" />
@@ -94,35 +92,35 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
         <div className="mt-20 grid w-full grid-cols-1 items-stretch gap-6 text-left lg:grid-cols-12">
           <ScoopedCard
             className="animate-float-card lg:col-span-4"
-            surface="indigo-tactile-surface flex min-h-[300px] flex-col justify-between p-8 text-white"
+            surface="tactile-navy-surface flex min-h-[300px] flex-col justify-between p-8 text-white"
             topRight={
               <button
                 type="button"
-                onClick={() => scrollto("workspace-subapps")}
+                onClick={onenter}
                 className="icon-frame-3d flex h-10 w-10 items-center justify-center rounded-full text-slate-950"
-                aria-label="Explorer"
+                aria-label="Enter"
               >
-                <Arrowupright className="h-4 w-4" aria-hidden="true" />
+                <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
               </button>
             }
           >
             <div className="flex items-baseline gap-2.5 pr-12">
-              <span className="text-5xl font-extrabold tracking-[-0.035em] sm:text-6xl">{saashero.rating}</span>
+              <span className="text-5xl font-extrabold tracking-[-0.035em] sm:text-6xl">4,9</span>
               <Star className="h-5 w-5 fill-amber-300 text-amber-300" aria-hidden="true" />
             </div>
-            <div className="mt-8 flex items-center justify-between gap-4 rounded-2xl border border-white/15 bg-white/10 p-4">
+            <div className="mt-8 flex items-center justify-between gap-4 rounded-2xl border border-white/8 bg-white/10 p-4">
               <h3 className="text-sm leading-snug font-extrabold tracking-[-0.035em] text-white">
-                {saashero.organizer}
+                The organizer and team builder of every AI
               </h3>
               <div className="flex shrink-0 -space-x-2">
                 <img
-                  src={saashero.faces[0]}
-                  className="h-7 w-7 rounded-full object-cover ring-2 ring-indigo-500"
+                  src={saascreators[0].avatar}
+                  className="h-7 w-7 rounded-full object-cover ring-2 ring-[var(--color-ever)]"
                   alt=""
                 />
                 <img
-                  src={saashero.faces[1]}
-                  className="h-7 w-7 rounded-full object-cover ring-2 ring-indigo-500"
+                  src={saascreators[1].avatar}
+                  className="h-7 w-7 rounded-full object-cover ring-2 ring-[var(--color-ever)]"
                   alt=""
                 />
               </div>
@@ -138,15 +136,17 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
                 className="btn-tactile-3d flex h-10 w-10 items-center justify-center rounded-full text-white"
                 aria-label="Open Cadria"
               >
-                <Activity className="h-4 w-4 text-sky-400" aria-hidden="true" />
+                <Tv className="h-4 w-4 text-sky-400" aria-hidden="true" />
               </button>
             }
           >
             <div className="pr-12">
               <h3 className="text-xl leading-tight font-extrabold tracking-[-0.035em] text-slate-950">
-                {saashero.timetitle}
+                Use time to your advantage every day
               </h3>
-              <p className="mt-3 text-sm font-normal tracking-[-0.005em] text-slate-500">{saashero.timebody}</p>
+              <p className="mt-3 text-sm font-normal tracking-[-0.005em] text-slate-500">
+                Studios, agents and streams in sync
+              </p>
             </div>
             <div className="stat-tile mt-8 flex items-center justify-between gap-4 rounded-2xl p-4">
               <div className="flex items-center gap-2">
@@ -155,11 +155,11 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
                 <Studiomark app="saddle" className="h-9 w-9" />
               </div>
               <div className="flex h-8 items-end gap-1.5">
-                {saashero.chart.map((height, index) => (
+                {[42, 70, 55, 88, 100, 76, 92, 64].map((height, index) => (
                   <span
                     key={height}
                     style={{ height: `${height}%` }}
-                    className={`w-1.5 rounded-full ${index === 4 || index === 6 ? "bg-indigo-600" : "bg-slate-300"}`}
+                    className={`w-1.5 rounded-full ${index === 4 || index === 6 ? "bg-[var(--color-ever-deep)]" : "bg-slate-300"}`}
                   />
                 ))}
               </div>
@@ -167,7 +167,7 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
           </ScoopedCard>
           <ScoopedCard
             className="animate-float-card lg:col-span-4"
-            surface="relative flex min-h-[300px] flex-col justify-between overflow-hidden border border-white/20 bg-[#0B0D16] p-8 text-white"
+            surface="relative flex min-h-[300px] flex-col justify-between overflow-hidden border border-white/8 bg-[#0B0D16] p-8 text-white"
             topRight={
               <button
                 type="button"
@@ -175,21 +175,24 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
                 className="icon-frame-3d flex h-10 w-10 items-center justify-center rounded-full text-slate-950"
                 aria-label="Open Debonair"
               >
-                <Wave className="h-4 w-4 text-indigo-600" aria-hidden="true" />
+                <Headphones className="h-4 w-4 text-[var(--color-ever-deep)]" aria-hidden="true" />
               </button>
             }
           >
             <div
               className="pointer-events-none absolute top-10 right-6 h-16 w-16 rounded-full opacity-90"
               style={{
-                background: "radial-gradient(circle at 30% 30%, #FFFFFF, #C084FC 55%, #4F46E5)",
+                background: "radial-gradient(circle at 30% 30%, #F4F7FE, #38BDF8 55%, #243047)",
                 boxShadow: "inset 0 3px 6px rgba(255,255,255,0.85), 0 10px 20px rgba(0,0,0,0.45)",
               }}
             />
             <div className="relative z-10 flex items-center gap-3 pr-12">
               <Studiomark app="doo" className="h-10 w-10" />
-              <h3 className="text-xl font-extrabold tracking-[-0.035em] text-white">{saashero.shader}</h3>
+              <h3 className="text-xl font-extrabold tracking-[-0.035em] text-white">Neural shader core</h3>
             </div>
+            <p className="relative z-10 text-sm font-normal tracking-[-0.005em] text-slate-300">
+              The render brain behind every scene and stream
+            </p>
           </ScoopedCard>
         </div>
       </div>
@@ -198,21 +201,66 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
 }
 
 /** The creators section: the three build cards and the follow cards. */
-export function SaasCreators({ onenter, showtoast }: SectionProps & { showtoast: (message: string) => void }) {
+export function SaasCreators({ onenter }: SectionProps) {
   const [followed, setFollowed] = useState<Record<string, boolean>>({ nato: true });
+  const cards: readonly {
+    app: studiomarkid;
+    title: string;
+    body: string;
+    tag: string;
+    tone: string;
+    surface: string;
+    titletone: string;
+    bodytone: string;
+    tagtone: string;
+  }[] = [
+    {
+      app: "cadria",
+      title: "Create and stream",
+      body: "Build 3D scenes and publish straight to Cadria",
+      tag: "Cadria",
+      tone: "pink",
+      surface: "surface-card p-6",
+      titletone: "text-slate-950",
+      bodytone: "text-slate-500",
+      tagtone: "text-pink-600",
+    },
+    {
+      app: "getry",
+      title: "AI teams",
+      body: "Cocreate with agents in sync",
+      tag: "Getry and Doo",
+      tone: "navy",
+      surface: "tactile-navy-surface p-6 text-white",
+      titletone: "text-white",
+      bodytone: "text-slate-200",
+      tagtone: "text-white",
+    },
+    {
+      app: "saddle",
+      title: "Saddle cloud",
+      body: "Run heavy studios and games in the browser",
+      tag: "Saddle",
+      tone: "sky",
+      surface: "surface-card p-6",
+      titletone: "text-slate-950",
+      bodytone: "text-slate-500",
+      tagtone: "text-sky-600",
+    },
+  ];
   const swings = ["swing-card-1", "swing-card-2", "swing-card-3"];
   return (
-    <section id="creators-doo" className="relative bg-white px-6 py-24 sm:px-10 sm:py-32 lg:px-16">
+    <section id="creators-doo" className="relative bg-[#fafafa] px-6 py-24 sm:px-10 sm:py-32 lg:px-16">
       <div className="mx-auto grid max-w-[1360px] grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
         <div className="lg:col-span-7">
           <div className="mb-8 flex items-center gap-3">
             <Studiomark app="doo" className="h-11 w-11" />
             <h2 className="text-3xl font-extrabold tracking-[-0.035em] text-slate-950 sm:text-[40px]">
-              {saascreatorsintro.headinga} <span className="text-gradient-brand">{saascreatorsintro.headingb}</span>
+              Ready to create <span className="text-gradient-brand">great things</span>
             </h2>
           </div>
           <div className="grid grid-cols-1 items-stretch gap-5 sm:grid-cols-3">
-            {saascreatorsintro.cards.map((card, index) => (
+            {cards.map((card, index) => (
               <ScoopedCard
                 key={card.title}
                 className={swings[index]}
@@ -224,12 +272,12 @@ export function SaasCreators({ onenter, showtoast }: SectionProps & { showtoast:
                     className="icon-frame-3d flex h-9 w-9 items-center justify-center rounded-full text-slate-800"
                     aria-label="Enter"
                   >
-                    <Arrowupright className="h-4 w-4" aria-hidden="true" />
+                    <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
                   </button>
                 }
               >
                 <div>
-                  <Studiomark app={card.app as studiomarkid} className="mb-4 h-11 w-11" />
+                  <Studiomark app={card.app} className="mb-4 h-11 w-11" />
                   <h3 className={`text-[15px] font-extrabold tracking-[-0.035em] ${card.titletone}`}>{card.title}</h3>
                   <p className={`mt-2 text-[13px] font-normal tracking-[-0.005em] ${card.bodytone}`}>{card.body}</p>
                 </div>
@@ -245,9 +293,7 @@ export function SaasCreators({ onenter, showtoast }: SectionProps & { showtoast:
           </div>
         </div>
         <div className="lg:col-span-5">
-          <h3 className="mb-6 text-2xl font-extrabold tracking-[-0.035em] text-slate-950">
-            {saascreatorsintro.followheading}
-          </h3>
+          <h3 className="mb-6 text-2xl font-extrabold tracking-[-0.035em] text-slate-950">Follow your creators</h3>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             {saascreators.map((creator, index) => (
               <div
@@ -256,30 +302,28 @@ export function SaasCreators({ onenter, showtoast }: SectionProps & { showtoast:
               >
                 <div>
                   <div
-                    className={`relative flex h-24 items-start justify-end overflow-hidden rounded-[20px] bg-gradient-to-tr p-2.5 ${creator.covergradient}`}
+                    className={`relative flex h-24 items-start justify-end overflow-hidden rounded-[20px] bg-gradient-to-tr p-2.5 ${index === 0 ? "from-sky-200 via-slate-100 to-rose-100" : "from-amber-200 via-sky-100 to-rose-100"}`}
                   >
                     <button
                       type="button"
                       onClick={() => {
                         const next = !followed[creator.id];
                         setFollowed((current) => ({ ...current, [creator.id]: next }));
-                        showtoast(
-                          next ? `${saastoasts.following} ${creator.name}` : `${saastoasts.unfollowed} ${creator.name}`,
-                        );
+                        toast(next ? `Following ${creator.name}` : `Unfollowed`);
                       }}
-                      className="relative z-10 flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-[11px] font-extrabold tracking-[-0.035em] text-slate-900 shadow-sm transition active:scale-95"
+                      className="relative z-10 flex items-center gap-1.5 rounded-lg bg-[#fafafa]/95 px-3 py-1.5 text-[11px] font-extrabold tracking-[-0.035em] text-slate-900 shadow-sm transition active:scale-95"
                     >
                       {followed[creator.id] ? "Following" : "Follow"}
                       {followed[creator.id] ? (
-                        <Check className="h-3 w-3 text-indigo-600" aria-hidden="true" />
+                        <Check className="h-3 w-3 text-[var(--color-ever-deep)]" aria-hidden="true" />
                       ) : (
-                        <Plus className="h-3 w-3 text-indigo-600" aria-hidden="true" />
+                        <Plus className="h-3 w-3 text-[var(--color-ever-deep)]" aria-hidden="true" />
                       )}
                     </button>
                   </div>
                   <div className="relative z-10 -mt-8 flex items-end justify-between px-2">
                     <div
-                      className={`${index === 1 ? "conic-rainbow-ring" : "bg-white"} h-16 w-16 rounded-full p-1 shadow-sm`}
+                      className={`${index === 1 ? "conic-rainbow-ring" : "bg-[#fafafa]"} h-16 w-16 rounded-full p-1 shadow-sm`}
                     >
                       <img
                         src={creator.avatar}
@@ -308,27 +352,27 @@ export function SaasCreators({ onenter, showtoast }: SectionProps & { showtoast:
                   <div className="mt-3 flex justify-center gap-2">
                     <button
                       type="button"
-                      onClick={() => showtoast(saastoasts.shared)}
+                      onClick={() => toast("Shared")}
                       className="icon-frame-3d flex h-7 w-7 items-center justify-center rounded-full text-slate-600"
-                      aria-label="Website"
+                      aria-label="Share"
                     >
                       <Globe className="h-3.5 w-3.5" aria-hidden="true" />
                     </button>
                     <button
                       type="button"
-                      onClick={() => showtoast(saastoasts.shared)}
-                      className="icon-frame-3d flex h-7 w-7 items-center justify-center rounded-full text-slate-600"
-                      aria-label="Share"
-                    >
-                      <Share className="h-3.5 w-3.5" aria-hidden="true" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => showtoast(saastoasts.shared)}
+                      onClick={() => toast("Shared")}
                       className="icon-frame-3d flex h-7 w-7 items-center justify-center rounded-full text-slate-600"
                       aria-label="Mention"
                     >
-                      <Atsign className="h-3.5 w-3.5" aria-hidden="true" />
+                      <AtSign className="h-3.5 w-3.5" aria-hidden="true" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => toast("Shared")}
+                      className="icon-frame-3d flex h-7 w-7 items-center justify-center rounded-full text-slate-600"
+                      aria-label="Send"
+                    >
+                      <Share2 className="h-3.5 w-3.5" aria-hidden="true" />
                     </button>
                   </div>
                 </div>
@@ -353,25 +397,27 @@ export function SaasStudios({ onenter }: SectionProps) {
     <section id="workspace-subapps" className="obsidian-grid-bg relative overflow-hidden pt-0 pb-0 text-white">
       <div className="urbanist-frosted-blur pointer-events-none absolute inset-0 z-0" />
       <div
-        className="pointer-events-none absolute top-1/3 left-1/2 h-[320px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-20 transition-all duration-500"
+        className="pointer-events-none absolute top-1/3 left-1/2 h-[320px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-20 transition-opacity duration-500"
         style={{
-          background: `radial-gradient(closest-side, ${["#8B5CF6", "#FB7185", "#38BDF8", "#10B981", "#3B82F6"][active]}, transparent)`,
+          background: `radial-gradient(closest-side, ${["#8B5CF6", "#FB7185", "#38BDF8", "#34D399", "#FBBF24"][active]}, transparent)`,
         }}
       />
       <div className="relative z-20 mb-8 w-full inset-x-0 top-0">
-        <div className="h-2 w-full bg-white" />
+        <div className="h-2 w-full bg-[#fafafa]" />
         <div className="flex w-full justify-center -mt-[1px]">
-          <SaddleTabBridge fillColor="#FFFFFF" className="h-[44px]">
-            <span className="text-xs font-extrabold tracking-tight text-slate-950">{saasstudiosintro.bridge}</span>
+          <SaddleTabBridge fillColor="#fafafa" className="h-[44px]">
+            <span className="text-xs font-extrabold tracking-tight text-slate-950">
+              Native studios for every creator
+            </span>
           </SaddleTabBridge>
         </div>
       </div>
       <div className="relative z-10 mx-auto max-w-[1320px] px-4 sm:px-8 lg:px-14 xl:pl-20">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-extrabold tracking-[-0.035em] text-white sm:text-5xl">
-            {saasstudiosintro.headinga}
+            Native studios
             <br />
-            <span className="text-slate-400">{saasstudiosintro.headingb}</span>
+            <span className="text-slate-400">built for every creator</span>
           </h2>
         </div>
         <div className="relative mt-6 flex items-end justify-center pt-8 pb-8">
@@ -391,7 +437,7 @@ export function SaasStudios({ onenter }: SectionProps) {
                     zIndex: 30 - Math.abs(offset) * 5,
                     transform: `translateY(${Math.abs(offset) * 18}px) rotate(${offset * 5.5}deg) scale(${center ? 1.08 : 1 - Math.abs(offset) * 0.05})`,
                   }}
-                  className={`fan-clay group relative flex h-[270px] cursor-pointer flex-col justify-between overflow-hidden rounded-[20px] border bg-gradient-to-b p-5 text-left transition-all duration-500 ease-out sm:-mx-4 sm:h-[300px] ${card.gradient} ${card.glow} ${center ? "border-white/60" : "border-white/30 opacity-85 hover:opacity-100"}`}
+                  className={`fan-clay group relative flex h-[270px] cursor-pointer flex-col justify-between overflow-hidden rounded-[20px] border bg-gradient-to-b p-5 text-left transition-[transform,opacity,border-color] duration-500 ease-out sm:-mx-4 sm:h-[300px] ${card.gradient} ${center ? "border-white/8 shadow-[0_0_0_1px_rgba(255,255,255,0.06)]" : "border-white/8 opacity-85 hover:opacity-100"}`}
                 >
                   <div className="fan-sheen pointer-events-none absolute inset-0" />
                   <div key={card.id} className="fan-swap relative z-10 flex h-full flex-col justify-between">
@@ -419,12 +465,12 @@ export function SaasStudios({ onenter }: SectionProps) {
                         />
                       </div>
                     </div>
-                    <div className="relative z-10 flex items-center justify-between border-t border-white/20 pt-2">
+                    <div className="relative z-10 flex items-center justify-between border-t border-white/8 pt-2">
                       <span className="text-[10px] font-extrabold tracking-wider text-white/90 uppercase">
                         {card.badge}
                       </span>
-                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-slate-950 shadow-md transition group-hover:scale-110">
-                        <Arrowupright className="h-3.5 w-3.5" aria-hidden="true" />
+                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#fafafa] text-slate-950 shadow-md transition group-hover:scale-110">
+                        <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
                       </span>
                     </div>
                   </div>
@@ -437,13 +483,11 @@ export function SaasStudios({ onenter }: SectionProps) {
           <button
             type="button"
             onClick={onenter}
-            className="group flex items-center gap-3 rounded-full bg-white py-2 pr-2 pl-6 text-xs font-extrabold tracking-[-0.035em] text-slate-950 shadow-[0_14px_30px_rgba(255,255,255,0.2)] transition hover:scale-105 active:scale-95 sm:text-sm"
+            className="group flex items-center gap-3 rounded-[10px] bg-[#fafafa] py-2 pr-2 pl-6 text-xs font-extrabold tracking-[-0.035em] text-slate-950 shadow-[0_14px_30px_rgba(255,255,255,0.2)] transition hover:scale-105 active:scale-95 sm:text-sm"
           >
-            <span>
-              {saasstudiosintro.openprefix} {saasstudios[active].name} {saasstudiosintro.opensuffix}
-            </span>
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-white transition group-hover:bg-indigo-600">
-              <Arrowright className="h-4 w-4" aria-hidden="true" />
+            <span>Open {saasstudios[active].name} studio</span>
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-white transition group-hover:bg-[var(--color-ever-deep)]">
+              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
             </span>
           </button>
         </div>
@@ -457,7 +501,7 @@ export function SaasStudios({ onenter }: SectionProps) {
                   onMouseEnter={() => setActive(index)}
                   onClick={onenter}
                   aria-label={studio.name}
-                  className={`transition-all duration-300 hover:scale-110 ${active === index ? "scale-110 opacity-100" : "opacity-60 hover:opacity-100"}`}
+                  className={`transition-[transform,opacity] duration-300 hover:scale-110 ${active === index ? "scale-110 opacity-100" : "opacity-60 hover:opacity-100"}`}
                 >
                   <Studiomark app={studio.id as studiomarkid} className="h-11 w-11 sm:h-12 sm:w-12" />
                 </button>

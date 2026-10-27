@@ -1,6 +1,6 @@
 {
   "release": "2.0.150",
-  "mode": "sync",
+  "mode": "check",
   "generatedat": 1800000000000,
   "verdicts": [
     {
@@ -143,7 +143,7 @@
     "gates": 27,
     "ok": 27,
     "blocked": 0,
-    "durationms": 756
+    "durationms": 568
   },
   "godecision": "go"
 }
