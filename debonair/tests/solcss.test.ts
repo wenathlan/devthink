@@ -4,16 +4,19 @@
 //   transition:all, zero scale(0) entries OUTSIDE the windows pin law (the
 //   dtPopIntro bounce is the one lawful scale-from-zero), the reduced-motion
 //   hard stop and the reduced-transparency floors present, the in-session
-//   data-motion mirror, the tabular-nums discipline, the trylle type stacks
-//   and the two-accent contract (the brass identity beside the windows
-//   accent) all verified verbatim. The stylesheet is read as text — no
-//   browser, no DOM.
+//   data-motion mirror, the tabular-nums discipline, the trylle type stacks,
+//   the two-accent contract (the brass identity beside the windows accent),
+//   the FAMILY STANDALONE LAW (the shell answers the direct url full-bleed,
+//   the window chrome lives only inside the os embed) and the rail pin law
+//   all verified verbatim. The sources are read as text — no browser, no
+//   DOM.
 
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { describe, it } from "vitest";
 
 const css = readFileSync(new URL("../Sol/sol.css", import.meta.url), "utf8");
+const shell = readFileSync(new URL("../Sol/shell/Shell.tsx", import.meta.url), "utf8");
 
 /** Strips comments so the guards read rules, not the doctrine prose. */
 function rules(source: string): string {
@@ -133,16 +136,25 @@ describe("sol.css — the trylle foundation", () => {
     assert.match(css, /\.meta-quad \{[^}]*margin-top: auto/, "the footer no longer glues to the floor");
   });
 
-  it("keeps the windows hands on the chrome", () => {
-    assert.ok(css.includes("grayscale(80%)"), "the inactive window law left the stylesheet");
-    assert.ok(css.includes("rgb(232 17 35)"), "the fluent red close left the stylesheet");
-    assert.ok(css.includes("rgb(139 10 20)"), "the deep close hover left the stylesheet");
-    assert.ok(css.includes(".winapp__rz[data-edge="), "the eight resize handles left the stylesheet");
+  it("keeps the windows hands on the rail (the pin press law)", () => {
     assert.match(css, /\.railnav__item:active \{ transform: scale\(0\.7\)/, "the pin press law left the rail");
-    assert.match(
-      css,
-      /\.winapp \{[^}]*animation: winappOpen var\(--dur-2\) var\(--ease-window\)/,
-      "the window curve left the frame",
+  });
+
+  it("answers the direct url full-bleed — the window chrome lives only inside the os", () => {
+    /* the family standalone law: an app accessed by its own url is the
+    normal application, one hundred percent — the shell renders
+    shell--standalone with no window chrome of its own (no title bar, no
+    captions, no resize handles, no inactive law, no entry scale), while
+    the framed contract keeps the bare stage for the os power clip */
+    assert.ok(shell.includes("shell--standalone"), "the standalone law left the shell");
+    assert.ok(shell.includes("shell--embedded"), "the framed contract left the shell");
+    assert.ok(
+      !/className="appframe"|winapp__title|winapp__cap|winapp__rz|winchip|setPointerCapture|data-inactive/.test(shell),
+      "the window chrome still rides the standalone shell",
     );
+    assert.match(css, /\.shell--standalone \{[^}]*height: 100vh/, "the standalone block must fill the viewport");
+    // the window tokens stay in the stylesheet for the os embed lane
+    assert.ok(css.includes("--shadow-window"), "the window float token left the tokens");
+    assert.ok(css.includes("--ease-window: cubic-bezier(0.85, 0.14, 0.14, 0.85)"), "the window curve left the tokens");
   });
 });

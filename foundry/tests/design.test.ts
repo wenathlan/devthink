@@ -105,12 +105,25 @@ describe("design contract", () => {
     assert.ok(blocks.length >= 4, `expected the hard stop on every layer, found ${blocks.length}`);
   });
 
-  it("wears the windows hands on the shell (press law, pin entrance, resize, inactive)", () => {
+  it("wears the windows hands on the rail (the pin entrance, the press law)", () => {
     assert.match(CSS, /dtPopIntro/, "the pin entrance keyframe stands");
-    assert.match(SHELL, /RESIZE_EDGES/, "the eight resize handles mount");
-    assert.match(CSS, /win-rz\[data-edge="se"\]/, "the resize handles ride the frame edges");
-    assert.match(CSS, /grayscale\(80%\)/, "the inactive window law stands");
-    assert.match(CSS, /rgb\(232 17 35\)/, "the close caption wears the windows red");
+    assert.match(CSS, /win-raillink:active \{[^}]*transform: scale\(0\.7\)/, "the pin press law stands");
+  });
+
+  it("answers the direct url full-bleed — the window chrome lives only inside the os", () => {
+    /* the family standalone law: an app accessed by its own url is the
+    normal application, one hundred percent — the shell renders
+    shell--standalone with no window chrome of its own (no title bar, no
+    captions, no resize handles, no inactive law, no entry scale), while
+    the framed contract keeps the bare stage for the os power clip */
+    assert.match(SHELL, /shell--standalone/, "the standalone law must mount");
+    assert.match(SHELL, /shell--embedded/, "the framed contract stands");
+    assert.doesNotMatch(
+      SHELL,
+      /win-root|win-window|win-titlebar|win-control|win-rz|win-chip|setPointerCapture|RESIZE_EDGES|data-landing/,
+      "the window chrome still rides the standalone shell",
+    );
+    assert.match(CSS, /\.shell--standalone \{[^}]*height: 100vh/, "the standalone block must fill the viewport");
   });
 
   it("declares the honest page set (home, sandboxes, images, artifacts, notfound)", () => {
@@ -158,11 +171,6 @@ describe("design contract", () => {
     assert.match(CSS, /font-variant-numeric:\s*tabular-nums/);
   });
 
-  it("rests the title-bar mark on the landing (logo discipline)", () => {
-    assert.match(CSS, /data-landing/);
-    assert.ok(SHELL.includes("data-landing"), "the shell carries the landing attribute");
-  });
-
   it("runs the family flow signature inside the mark strokes", () => {
     assert.match(MARK, /fdMarkFlow/, "the flow layer exists on the foundry mark");
     assert.match(MARK, /fdm-flow/, "the flow gradient is declared");
@@ -173,7 +181,7 @@ describe("design contract", () => {
     );
   });
 
-  it("links the family row from the one table (zero drift between chrome and landing)", () => {
+  it("links the family row from the one table (zero drift between rail and landing)", () => {
     assert.match(SHELL, /from "\.\.\/\.\.\/family\.ts"/, "the shell reads family.ts");
     const HOME = read("../Sol/home/home.tsx");
     assert.match(HOME, /familyrow/, "the landing footer reads the same table");

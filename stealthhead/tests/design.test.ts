@@ -8,7 +8,9 @@
 // the source-face entry, the reduced-motion stop, tabular numerals, the
 // sticky-footer law, the honest page set of the application identity, the
 // first-run flow contract (the entry gate, the shared onboarding state, the
-// db mirror) and the trylle-canvas/windows-hands foundation.
+// db mirror), the trylle-canvas/windows-hands foundation and the FAMILY
+// STANDALONE LAW (the shell answers the direct url full-bleed, the window
+// chrome lives only inside the os embed).
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
@@ -90,9 +92,18 @@ describe("design contract", () => {
     expect(CSS).toMatch(/font-variant-numeric:\s*tabular-nums/);
   });
 
-  it("rests the title-bar mark on the landing (logo discipline)", () => {
-    expect(CSS).toMatch(/data-landing/);
-    expect(SHELL).toMatch(/data-landing/);
+  it("answers the direct url full-bleed — the window chrome lives only inside the os", () => {
+    /* the family standalone law: an app accessed by its own url is the
+    normal application, one hundred percent — the shell renders
+    shell--standalone with no window chrome of its own (no title bar, no
+    captions, no resize handles, no inactive law, no entry scale), while
+    the framed contract keeps the bare stage for the os power clip */
+    expect(SHELL).toContain("shell--standalone");
+    expect(SHELL).toContain("shell--embedded");
+    expect(SHELL).not.toMatch(
+      /className="appframe"|winapp__title|winapp__cap|winapp__rz|winchip|setPointerCapture|data-inactive/,
+    );
+    expect(CSS).toMatch(/\.shell--standalone \{[^}]*height: 100vh/);
   });
 
   it("pins the footer to the window floor (the sticky-footer law)", () => {
@@ -137,14 +148,9 @@ describe("design contract", () => {
     expect(DB).toMatch(/setonboardingstage/);
   });
 
-  it("wears the windows hands on the chrome (resize handles, inactive law, red close, dtPopIntro)", () => {
-    expect(CSS).toMatch(/winapp__rz\[data-edge="se"\]/);
-    expect(CSS).toMatch(/grayscale\(80%\)/);
-    expect(CSS).toMatch(/rgb\(232, 17, 35\)/);
-    expect(CSS).toMatch(/rgb\(139, 10, 20\)/);
+  it("wears the windows hands on the rail (the pin bounce, the press law)", () => {
     expect(CSS).toMatch(/@keyframes dtPopIntro/);
-    expect(SHELL).toMatch(/data-inactive/);
-    expect(SHELL).toMatch(/winapp__rz/);
+    expect(CSS).toMatch(/\.winapp__raillink:active > svg \{[^}]*transform: scale\(0\.7\)/);
   });
 
   it("rides the trylle foundation (canvas, surfaces, hairlines, linear shadow ladder)", () => {

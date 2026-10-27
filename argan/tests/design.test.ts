@@ -5,9 +5,11 @@
 // app identity, route anchor) and pins the family laws: no banned hue, no
 // pill, no all-properties transition, no zero-scale entry (the windows
 // dtPopIntro bounce excepted), the trylle font stacks, the source-face entry,
-// the reduced-motion stop, tabular numerals, the sticky-footer law, the honest
-// page set of the application identity and the first-run flow contract (the
-// entry gate, the shared onboarding state, the db mirror).
+// the reduced-motion stop, tabular numerals, the sticky-footer law, the
+// FAMILY STANDALONE LAW (the direct url answers full-bleed, the window
+// chrome lives only inside the os embed), the honest page set of the
+// application identity and the first-run flow contract (the entry gate,
+// the shared onboarding state, the db mirror).
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
@@ -82,9 +84,21 @@ describe("design contract", () => {
     expect(CSS).toMatch(/font-variant-numeric:\s*tabular-nums/);
   });
 
-  it("rests the title-bar mark on the landing (logo discipline)", () => {
-    expect(CSS).toMatch(/data-landing/);
-    expect(MARK).toMatch(/data-landing/);
+  it("answers the direct url full-bleed — the window chrome lives only inside the os", () => {
+    /* the family standalone law: an app accessed by its own url is the
+    normal application, one hundred percent — the shell renders
+    shell--standalone with no window chrome of its own (no title bar, no
+    captions, no resize handles), while the framed contract keeps the
+    bare stage for the os power clip */
+    expect(MARK).toContain("shell--standalone");
+    expect(MARK).toContain("shell--embedded");
+    expect(MARK).not.toMatch(/className="appframe"|className="winapp /);
+    expect(MARK).not.toContain("winapp__title");
+    expect(MARK).not.toContain("winapp__cap");
+    expect(MARK).not.toContain("winapp__handle");
+    expect(MARK).not.toContain("winchip");
+    expect(MARK).not.toContain("setPointerCapture");
+    expect(CSS).toMatch(/\.shell--standalone \{[^}]*height: 100vh/);
   });
 
   it("pins the footer to the window floor (the sticky-footer law)", () => {
