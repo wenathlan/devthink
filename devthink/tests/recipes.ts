@@ -5,6 +5,7 @@ import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
+import type { actionkind, classconsent, consentprovider, sensitiveclass } from "../types.ts";
 
 const execute = promisify(execFile);
 const mode = process.argv[2] ?? "check";
@@ -65,7 +66,7 @@ interface galleryentry {
   origin: string;
   expecteddurationms: number;
   capabilities: string[];
-  consentclasses: string[];
+  consentclasses: sensitiveclass[];
   kinds?: string[];
   exportformat?: string;
   schedule?: string;
@@ -295,8 +296,8 @@ function selectorproblems(target: string, html: string): string[] {
 }
 
 /** Builds the fresh class consent records one consent recipe needs: every declared sensitive class of the entry origin grants now with a one hour window, exactly the record the review flow writes after its prompt. */
-function consentsof(entry: galleryentry, now: number) {
-  return (entry.consentclasses ?? []).map((sensitiveclass) => ({
+function consentsof(entry: galleryentry, now: number): classconsent[] {
+  return (entry.consentclasses ?? []).map((sensitiveclass): classconsent => ({
     id: `gallery:${entry.id}:${sensitiveclass}`,
     origin: entry.origin,
     sensitiveclass,
@@ -410,7 +411,8 @@ export async function runrecipessuite(): Promise<recipereport> {
   const catalog = policy.actionkindcatalog();
   const readonlykinds = catalog.filter((kind: string) => {
     try {
-      return policy.actionrisk(kind) === "read";
+      /* the catalog entries are the reviewed action kinds the actionrisk grader accepts; the catch answers the impossible stranger the same way the engine escape hatch graders do. */
+      return policy.actionrisk(kind as actionkind) === "read";
     } catch {
       return false;
     }
@@ -466,7 +468,8 @@ export async function runrecipessuite(): Promise<recipereport> {
     /* 3b. the frozen schema validation of the overlap contract. */
     const riskof = (kind: string) => {
       try {
-        return policy.actionrisk(kind);
+        /* the plan grammar validates its kinds against the reviewed catalog before the risk grader runs, so the string carries a real actionkind here — the same seam idiom the engine lint path of plan.ts carries. */
+        return policy.actionrisk(kind as actionkind);
       } catch {
         return "sensitive";
       }
@@ -531,7 +534,8 @@ export async function runrecipessuite(): Promise<recipereport> {
       const demanded = new Set<string>();
       for (const step of parsed.steps) {
         const classes = library.sensitiveclassesof({
-          kind: step.kind,
+          /* the lint catalog rule already refused every kind outside the reviewed catalog before this pass, the same validated seam the engine lint of plan.ts casts across. */
+          kind: step.kind as actionkind,
           ...(step.value !== undefined ? { value: step.value } : {}),
           ...(step.options !== undefined ? { options: step.options } : {}),
         });
@@ -655,8 +659,8 @@ export async function runrecipessuite(): Promise<recipereport> {
     if (parsed !== undefined) {
       try {
         const resolvedgates: string[] = [];
-        const provider = {
-          resolvegate: async (gate: { id: string }) => {
+        const provider: consentprovider = {
+          resolvegate: async (gate) => {
             resolvedgates.push(gate.id);
             return "approve";
           },

@@ -5,6 +5,7 @@ import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { promisify } from "node:util";
 import { pathToFileURL } from "node:url";
+import type { actionkind } from "../types.ts";
 
 const execute = promisify(execFile);
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
@@ -82,11 +83,14 @@ export async function runmatrixverifysuite() {
         let interactions = 0;
         let sensitive = 0;
         for (const kind of catalog) {
+          /* the catalog entries are the reviewed action kinds themselves (actionkindcatalog spreads the Set<actionkind> of the policy module), so the bridge rides the same validated seam the engine call sites of background.ts and protocol.ts ride. */
+          const reviewedkind = kind as actionkind;
           const step = {
             id: `matrix-${browser}-${kind}`,
-            kind,
+            kind: reviewedkind,
             summary: `The matrix cell of ${kind} on ${browser}`,
-            target: policy.needstarget(kind) ? "https://example.org/#main" : undefined,
+            risk: policy.actionrisk(reviewedkind),
+            target: policy.needstarget(reviewedkind) ? "https://example.org/#main" : undefined,
             value: kind === "navigate" ? "https://example.org/" : undefined,
           };
           const verdict = policy.validatestep(step, "https://example.org");
@@ -94,7 +98,7 @@ export async function runmatrixverifysuite() {
             verdict !== undefined && typeof verdict.allowed === "boolean",
             `the kind ${kind} crashed the step policy instead of answering a verdict`,
           );
-          const risk = policy.actionrisk(kind);
+          const risk = policy.actionrisk(reviewedkind);
           if (risk === "read") reads += 1;
           else if (risk === "interaction") interactions += 1;
           else sensitive += 1;
@@ -154,7 +158,7 @@ export async function runmatrixverifysuite() {
       const catalogbuilt = library.buildtoolcatalog();
       const handshake = library.serveinitialize({
         params: { clientinfo: { name: "matrixverify", version: "1" } },
-        config: { transport: "stdio", enabled: true },
+        config: { bind: "127.0.0.1", port: 7436, transports: ["stdio"], enabled: true },
         catalog: catalogbuilt,
         templates: [],
       });

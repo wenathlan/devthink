@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import type { agentrecord } from "../types.ts";
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
@@ -373,19 +374,14 @@ export async function runsweepsuite() {
 
     /* 6b. the cancel paths: a queued run cancels without touching the executed steps of the sealed log. */
     try {
+      /* the run rides the real initialrun constructor the engine itself answers, so the fixture keeps the exact runrecord shape. */
       const run = modules.library.cancelrunrecord(
-        {
-          id: "sweep-cancel",
+        modules.library.initialrun({
           planid: "sweep-plan",
-          origin: "https://example.org",
-          startedat: 1_800_000_000_000,
-          state: "running",
-          steps: [],
-          settings: undefined,
-          log: [],
-          heartbeats: [],
-          budget: undefined,
-        },
+          sessionid: "sweep-session",
+          runid: "sweep-cancel",
+          now: 1_800_000_000_000,
+        }),
         1_800_000_001_000,
       );
       const action = modules.library.cancelrunactionof({
@@ -414,23 +410,21 @@ export async function runsweepsuite() {
 
     /* 6c. the escape hatch: the kill switch stops every agent at once from any surface. */
     try {
-      const records = [
+      const records: agentrecord[] = [
         {
           id: "a1",
           name: "Scout",
           role: "worker",
-          depth: 0,
+          origin: "https://example.org",
           state: "active",
-          tabid: 101,
           registeredat: 1_800_000_000_000,
         },
         {
           id: "w1",
           name: "Scribe",
           role: "worker",
-          depth: 0,
+          origin: "https://example.org",
           state: "active",
-          tabid: 102,
           registeredat: 1_800_000_000_000,
         },
       ];

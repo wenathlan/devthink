@@ -1,6 +1,7 @@
 /** Executes the shared accounting certification of the 1.1.96 multi agent certification release against the real compiled modules: every check replays one recorded run or one live accounting family and recomputes the cost lines from the recorded evidence — the per agent token accounting against the step logs, the shared cost accounting against the agent totals, the budget alerts at their thresholds, the refunds of cancelled steps under the provider rule that bills only the chunks that left the wire, the model routing attribution, the exported cost report reconciliation and the audit trail completeness. The artifact tests/artifacts/costcert.json records every executed check with its outcome in a fixed order with no timestamps so reruns stay byte identical, and the gate exits nonzero on any accounting mismatch. The verification method lives in docs/costcert.md. */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
+import type { callcontext, providerconfig } from "../types.ts";
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
@@ -41,21 +42,21 @@ async function entry(spec: { id: number; title: string; family: string; module: 
   }
 }
 
-/** Asserts one condition with the message the failure reports. */
-function check(condition: unknown, message: string) {
+/** Asserts one condition with the message the failure reports; the declared assertion carries the runtime throw onto the type level so the guarded reads below stay honest without casts. */
+function check(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(message);
 }
 
-/** The in-memory adapter seam the memory store accepts, so the recorded runs persist through the real sessionmemory of the compiled memory module. */
+/** The in-memory adapter seam the memory store accepts, so the recorded runs persist through the real sessionmemory of the compiled memory module; the erased storage cast sits at the same seam boundary the engine adapters of runtime.ts carry. */
 class fakeadapter {
   data: Map<string, unknown>;
   constructor() {
     this.data = new Map();
   }
-  async get(key: string) {
-    return this.data.get(key);
+  async get<T>(key: string): Promise<T | undefined> {
+    return this.data.get(key) as T | undefined;
   }
-  async set(key: string, value: unknown) {
+  async set<T>(key: string, value: T): Promise<void> {
     this.data.set(key, value);
   }
 }
@@ -284,6 +285,7 @@ export async function runcostcertsuite() {
         `the cost ledger split summed ${unitssum} units while the entries carry ${entries.reduce((total, entry) => total + entry.units, 0)}`,
       );
       const a1 = split.find((share: { agentid: string }) => share.agentid === "w1");
+      check(a1 !== undefined, "the shared cost split lost the share of w1");
       check(
         a1.units === 6 && a1.share === 3,
         `the shared cost split of w1 carried ${a1.units} units and share ${a1.share}`,
@@ -387,7 +389,7 @@ export async function runcostcertsuite() {
       );
       check(library.assemblechunks(chunks) === deliveredcontent, "the delivered chunks never reassembled");
       const streamed = chunks.length;
-      const context = {
+      const context: callcontext = {
         callid: "call-1",
         clientid: "client-1",
         tool: "browser.readtext",
@@ -399,9 +401,10 @@ export async function runcostcertsuite() {
         contexts: [context],
         callid: "call-1",
         reason: "The user cancelled the step mid stream.",
-        partial: { content: deliveredcontent },
+        partial: { content: deliveredcontent, iserror: false },
         now: now + 100,
       });
+      check(cancelled.context !== undefined, "the cancelled call lost its context");
       check(
         cancelled.context.state === "cancelled" && cancelled.context.partial !== undefined,
         "the cancelled call lost its state or its partial result",
@@ -435,22 +438,24 @@ export async function runcostcertsuite() {
         { id: "r1", kind: "draftplan", providerid: "p1", model: "model-a", revision: 1, updatedat: now },
         { id: "r2", kind: "extract", providerid: "p2", model: "model-b", revision: 1, updatedat: now },
       ];
-      const providers = [
+      const providers: providerconfig[] = [
         {
           id: "p1",
           name: "planner gateway",
           endpoint: "https://planner.example/v1",
-          style: "openai",
+          style: "chatcompletions",
           models: ["model-a"],
           status: "available",
+          createdat: now,
         },
         {
           id: "p2",
           name: "extraction gateway",
           endpoint: "https://extract.example/v1",
-          style: "anthropic",
+          style: "messages",
           models: ["model-b"],
           status: "available",
+          createdat: now,
         },
       ];
       for (const route of routes)

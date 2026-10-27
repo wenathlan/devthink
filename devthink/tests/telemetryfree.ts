@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
+import type { agentidentity, leaderworker } from "../types.ts";
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
@@ -49,7 +50,7 @@ export async function runtelemetryfreesuite() {
   const policy = await import("./../dist/policy.js");
   const dashdone = await import("./../dist/dashdone.js");
   const hardening = await import("./../dist/hardening.js");
-  const paths = [
+  const paths: Array<{ path: string; gate: keyof typeof policy }> = [
     { path: "sendfetch of the http family", gate: "fetchconsentcovers" },
     { path: "opensocket of the net family", gate: "socketgate" },
     { path: "subscribesse of the net family", gate: "socketgate" },
@@ -97,7 +98,7 @@ export async function runtelemetryfreesuite() {
     const catalogbuilt = library.buildtoolcatalog();
     const handshake = library.serveinitialize({
       params: { clientinfo: { name: "telemetryfree", version: "1" } },
-      config: { transport: "stdio", enabled: true },
+      config: { bind: "127.0.0.1", port: 7436, transports: ["stdio"], enabled: true },
       catalog: catalogbuilt,
       templates: [],
     });
@@ -141,7 +142,7 @@ export async function runtelemetryfreesuite() {
   }
   try {
     /* the dashboard render: the dashdone views render their panels from the fixture state without the network. */
-    const topology = {
+    const topology: leaderworker = {
       id: "top1",
       leaderid: "a1",
       workerids: ["w1"],
@@ -151,7 +152,7 @@ export async function runtelemetryfreesuite() {
       rule: { kind: "first" },
       electedat: 1_800_000_000_000,
     };
-    const agents = [
+    const agents: agentidentity[] = [
       {
         id: "a1",
         name: "Scout",
