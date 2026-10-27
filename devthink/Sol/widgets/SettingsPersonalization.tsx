@@ -16,7 +16,7 @@ import { AccentRow } from "./SettingsAccentrow";
 import { BackgroundPicker } from "./SettingsBackgroundpicker";
 import { ComponentOptions } from "./SettingsComponentoptions";
 import { LanguageCard } from "./SettingsLanguagecard";
-import { NavbarPositionControl } from "./SettingsNavbarposition";
+import { NavbarPositionControl, NavbarStyleControl } from "./SettingsNavbarposition";
 import { saveThemeMirror } from "./SettingsPersonalstore";
 import type { PreferenceKey, SettingsSnapshot } from "./Settingstypes";
 
@@ -100,6 +100,12 @@ export function Personalization({ preferences, save }: PersonalizationProps) {
             <strong>{copy("settings.personal.navbar")}</strong>
           </span>
           <NavbarPositionControl />
+        </div>
+        <div className="dtw-settings__field">
+          <span className="dtw-settings__fieldlabel">
+            <strong>{copy("settings.personal.navbarstyle")}</strong>
+          </span>
+          <NavbarStyleControl />
         </div>
       </section>
 

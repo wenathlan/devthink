@@ -266,3 +266,40 @@ export function saveNavbarPosition(position: NavbarPosition): void {
     /* storage unavailable: the dock lives for the session */
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* the navbar style — the face the bar wears (windows taskbar or the   */
+/* apple dock), the second personalization axis of the settings app    */
+/* ------------------------------------------------------------------ */
+
+/** the face the shell bar wears: the windows taskbar (the full-width
+ * acrylic bar — the default) or the apple dock (the centered floating
+ * mica pad with the magnifying pins) */
+export type NavbarStyle = "windows" | "apple";
+
+/** the localStorage key of the navbar style choice */
+export const NAVBAR_STYLE_KEY = "dt.navbar.style.v1";
+
+/** the window event a style change dispatches — the shell chrome listens
+ * for it so the bar re-faces the moment the settings app chooses */
+export const NAVBAR_STYLE_EVENT = "dt-navbar-style";
+
+/** reads the stored navbar style (the windows taskbar when absent or stale) */
+export function loadNavbarStyle(): NavbarStyle {
+  try {
+    const raw = window.localStorage.getItem(NAVBAR_STYLE_KEY);
+    if (raw === "windows" || raw === "apple") return raw;
+  } catch {
+    /* storage unavailable: the taskbar carries the shell */
+  }
+  return "windows";
+}
+
+/** persists the navbar style (a no-op when storage is unavailable) */
+export function saveNavbarStyle(style: NavbarStyle): void {
+  try {
+    window.localStorage.setItem(NAVBAR_STYLE_KEY, style);
+  } catch {
+    /* storage unavailable: the face lives for the session */
+  }
+}
