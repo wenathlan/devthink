@@ -4,12 +4,12 @@
  * data-description), the WeakMaps keep the original authored texts so a
  * re-render never doubles a translation, the MutationObserver picks the newly
  * mounted surfaces (dialogs, toasts, route swaps) and the language switch
- * rewalks the body with the reveal effect. The authored surface is english,
- * so an en target never touches the network. The correlated logics
- * group per ts file: translategtx.ts owns the cache and the transport and
- * translatefx.ts owns the reveal effect.
+ * rewalks the body. The settled strings paint IMMEDIATELY — the owner law:
+ * the translation is a normal swap with zero dispersion effect on the text.
+ * The authored surface is english, so an en target never touches the network.
+ * The correlated logics group per ts file: translategtx.ts owns the cache
+ * and the transport and this file owns the dom walk.
  */
-import { scrambleeffect } from "./translatefx.ts";
 import { currentlang, storedlang, storelang, translatetextchunk } from "./translategtx.ts";
 
 const TARGETATTRS = ["placeholder", "title", "alt", "aria-label", "data-description"] as const;
@@ -97,9 +97,9 @@ const collect = (container: Node): { items: translationitem[]; texts: string[] }
   return { items, texts };
 };
 
-/** Translates one container: the batches ride the gtx transport in order and every
- * settled string paints through the reveal effect; a language switch mid flight
- * abandons the stale batches. */
+/** Translates one container: the batches ride the gtx transport in order and
+ * every settled string paints immediately — a plain swap, zero reveal
+ * theater; a language switch mid flight abandons the stale batches. */
 export const translatecontainer = async (container: Node, targetlang: string): Promise<void> => {
   const { items, texts } = collect(container);
   if (items.length === 0) return;
@@ -112,9 +112,9 @@ export const translatecontainer = async (container: Node, targetlang: string): P
       const translation = settled[idx];
       if (translation === undefined) return;
       if (item.kind === "text") {
-        if (item.node.nodeValue !== translation) scrambleeffect(item.node, translation);
+        if (item.node.nodeValue !== translation) item.node.nodeValue = translation;
       } else if (item.node.getAttribute(item.attr) !== translation) {
-        scrambleeffect(item.node, translation, true, item.attr);
+        item.node.setAttribute(item.attr, translation);
       }
     });
   }

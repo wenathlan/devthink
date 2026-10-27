@@ -4,9 +4,9 @@
  * chunks, the localStorage cache keeps every settled pair across reloads
  * and the delimiter chunking packs many strings into one request while
  * respecting the url length budget. The correlated logics group per ts
- * file: this file owns the cache and the transport, translatefx.ts owns
- * the reveal effect and translatedom.ts owns the dom walk and the
- * language switching.
+ * file: this file owns the cache and the transport and translatedom.ts
+ * owns the dom walk and the language switching — the settled strings
+ * paint immediately, zero reveal effect (the owner law).
  */
 
 const CACHEKEY = "translation-cache-v4";
