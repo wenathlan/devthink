@@ -5,6 +5,7 @@ import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { promisify } from "node:util";
 import { pathToFileURL } from "node:url";
+import type { actionkind, toolstep } from "../types.ts";
 
 const execute = promisify(execFile);
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
@@ -82,19 +83,20 @@ export async function runmatrixverifysuite() {
         let interactions = 0;
         let sensitive = 0;
         for (const kind of catalog) {
-          const step = {
+          const step: toolstep = {
             id: `matrix-${browser}-${kind}`,
-            kind,
+            kind: kind as actionkind,
             summary: `The matrix cell of ${kind} on ${browser}`,
-            target: policy.needstarget(kind) ? "https://example.org/#main" : undefined,
+            target: policy.needstarget(kind as actionkind) ? "https://example.org/#main" : undefined,
             value: kind === "navigate" ? "https://example.org/" : undefined,
+            risk: policy.actionrisk(kind as actionkind),
           };
           const verdict = policy.validatestep(step, "https://example.org");
           check(
             verdict !== undefined && typeof verdict.allowed === "boolean",
             `the kind ${kind} crashed the step policy instead of answering a verdict`,
           );
-          const risk = policy.actionrisk(kind);
+          const risk = policy.actionrisk(kind as actionkind);
           if (risk === "read") reads += 1;
           else if (risk === "interaction") interactions += 1;
           else sensitive += 1;
@@ -154,7 +156,7 @@ export async function runmatrixverifysuite() {
       const catalogbuilt = library.buildtoolcatalog();
       const handshake = library.serveinitialize({
         params: { clientinfo: { name: "matrixverify", version: "1" } },
-        config: { transport: "stdio", enabled: true },
+        config: { port: 7436, transports: ["stdio"], enabled: true },
         catalog: catalogbuilt,
         templates: [],
       });
