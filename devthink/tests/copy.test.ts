@@ -21,7 +21,7 @@ describe("the copy store", () => {
     const seed = copyseed();
     assert.ok(Object.keys(seed).length >= 20, "the pages' copy rides the seed");
     for (const [key, text] of Object.entries(seed)) {
-      assert.ok(/^(plans|auth|callback|settings)\./.test(key), `the seed key ${key} stays scoped to its page`);
+      assert.ok(/^(plans|auth|callback|settings|panel)\./.test(key), `the seed key ${key} stays scoped to its page`);
       assert.ok(text.length > 0, `the seed row ${key} carries text`);
     }
   });
