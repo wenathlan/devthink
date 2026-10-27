@@ -1,5 +1,48 @@
 # DevThink release notes
 
+## 2.0.151
+
+This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (2.0.150 plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: - # (tests/build.mjs typechecks tsconfig.build.json only, so the sources
+- # (tests/build.ts typechecks tsconfig.build.json only, so the sources
+- # (tests/packageextension.mjs) and the artifact manifest consume, so no
+- # (tests/packageextension.ts) and the artifact manifest consume, so no
+- # The root build (node tests/build.mjs) runs BEFORE the deterministic suite:
+- # The root build (node tests/build.ts) runs BEFORE the deterministic suite:
+- # devthink-<version>.pom (tests/release.mjs).
+- # devthink-<version>.pom (tests/release.ts).
+- # devthink/tests/consumersmoke.mjs orphaned until this lane restored the mold with
+- # devthink/tests/consumersmoke.ts orphaned until this lane restored the mold with
+- # dist/devthink<version>.zip the build engine (tests/build.mjs)
+- # dist/devthink<version>.zip the build engine (tests/build.ts)
+- # every artifact the validation walks (tests/build.mjs, the
+- # every artifact the validation walks (tests/build.ts, the
+- # gate (tests/npmgate.mjs) demands: the flat distpackage tarball publish with
+- # gate (tests/npmgate.ts) demands: the flat distpackage tarball publish with
+- # generates inside tests/build.mjs itself.
+- # generates inside tests/build.ts itself.
+- # generator (node tests/build.mjs + node tests/packageextension.mjs: the flat
+- # generator (node tests/build.ts + node tests/packageextension.ts: the flat
+- # same ordering the root build carries through tests/build.mjs).
+- # same ordering the root build carries through tests/build.ts).
+- cp tests/consumersmoke.mjs /tmp/devthink-consumer-smoke/consumer/
+- cp tests/consumersmoke.ts /tmp/devthink-consumer-smoke/consumer/
+- node tests/apifreeze.mjs
+- node tests/apifreeze.ts
+- node tests/build.mjs
+- node tests/build.ts
+- node tests/packageextension.mjs
+- node tests/packageextension.ts
+- node tests/permdiff.mjs
+- node tests/permdiff.ts
+- node tests/release.mjs check
+- node tests/release.ts check
+- run: cd devthink && node tests/agentcert.mjs
+- run: cd devthink && node tests/agentcert.ts
+- run: cd devthink && node tests/apifreeze.mjs
+- run: cd devthink && node tests/apifreeze.ts
+- run: cd devthink && node tests/build.mjs
+- run: cd devthink && node tests/build.ts. The version stamps 2.0.151 land across the metadata family with the apifreeze artifact re-frozen and the permission baseline recorded, and the ladder keeps no long-lived branch behind: the automation branch of this rung squashes onto main when the verification pipeline answers green — and closes with its branch deleted when it answers red — so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way.
+
 ## 2.0.150
 
 This release is the family registry rung of the ladder: every family envelope answers the registry the flat application always answered. The getry and cobaia manifests drop the private mark that refused their envelopes (the registry error that stopped the alphabetical walk before it ever reached the saddle engine), and the family publish lane learns the family-first law: a refused envelope answers the honest skip and the walk continues to the next sibling, so one bad manifest never blocks the whole family again. The containers answer the same healing from the prior rung — the standalone family images push to the container index and the sibling-pinned pair waits for its dedicated context lane. The metadata family stamps 2.0.150 with the battery artifacts re-stamped and the registry lanes answer the publish of the rung.
