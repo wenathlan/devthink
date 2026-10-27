@@ -3,6 +3,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { pathToFileURL } from "node:url";
+import type { actionkind, toolstep, variablescope, workflowrun } from "../types.ts";
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
@@ -20,12 +21,12 @@ interface seamstep {
   target?: string;
 }
 
-/** The soak run context the executor seam carries: the memory store, the open log, the live run state, the keepalive heartbeat, the dispatched step ids and the pricing row counter, all riding the compiled seam types. */
+/** The soak run context the executor seam carries: the memory store, the open log, the live run state, the keepalive heartbeat, the dispatched step ids and the pricing row counter — every field types through the dist declaration seam the run itself loads (the sessionmemory instance and the exact return shapes of openrunlog, openrun and runheartbeat), so the context cannot drift from the engine shapes. */
 interface soakcontext {
-  store: memorybundle;
-  log: librarybundle;
-  state: librarybundle;
-  heartbeat: librarybundle | undefined;
+  store: InstanceType<memorybundle["sessionmemory"]>;
+  log: ReturnType<librarybundle["openrunlog"]>;
+  state: ReturnType<librarybundle["openrun"]>;
+  heartbeat: ReturnType<librarybundle["runheartbeat"]> | undefined;
   dispatched: string[];
   rowcounter: number;
 }
@@ -85,16 +86,16 @@ const faketabprovider = {
   },
 };
 
-/** The in-memory adapter seam the memory store accepts, so the soak records persist through the real sessionmemory of the compiled memory module. */
+/** The in-memory adapter seam the memory store accepts, so the soak records persist through the real sessionmemory of the compiled memory module; the erased storage cast sits at the same seam boundary the engine adapters of runtime.ts carry. */
 class fakeadapter {
   data: Map<string, unknown>;
   constructor() {
     this.data = new Map();
   }
-  async get(key: string) {
-    return this.data.get(key);
+  async get<T>(key: string): Promise<T | undefined> {
+    return this.data.get(key) as T | undefined;
   }
-  async set(key: string, value: unknown) {
+  async set<T>(key: string, value: T): Promise<void> {
     this.data.set(key, value);
   }
 }
@@ -167,7 +168,8 @@ function countstep(library: librarybundle, id: string, result: string, leftref: 
 function soakworkflow(library: librarybundle, policy: policybundle) {
   const catalog = policy.actionkindcatalog();
   const kindallowed = (kind: string) => catalog.includes(kind);
-  const riskof = (kind: string) => policy.actionrisk(kind);
+  /* the risk grader rides the same seam idiom the engine itself uses at every composeworkflow call site (policy.ts, background.ts, protocol.ts): composeworkflow grades only kinds its own normalization and the kindallowed gate already reviewed, so the string carries a real actionkind at runtime. */
+  const riskof = (kind: string) => policy.actionrisk(kind as actionkind);
   return library.composeworkflow({
     id: "wf-soak",
     name: "soak pricing sweep",
@@ -212,7 +214,7 @@ function soakworkflow(library: librarybundle, policy: policybundle) {
 }
 
 /** Builds the root scope of the soak workflow: the three list variables of the three passes, one row per retention window slot. */
-function soakscopes(library: librarybundle) {
+function soakscopes(library: librarybundle): variablescope[] {
   return [
     {
       name: "root",
@@ -276,7 +278,7 @@ function soakexecutor(library: librarybundle, memorymodule: memorybundle, contex
 }
 
 /** Opens the soak run state and store: the keepalive port opens at the epoch with the one second heartbeat interval and the memory store carries the audit retention window of the run. */
-async function opensoakrun(library: librarybundle, memorymodule: memorybundle) {
+async function opensoakrun(library: librarybundle, memorymodule: memorybundle): Promise<soakcontext> {
   resetclock();
   const store = new memorymodule.sessionmemory(new fakeadapter());
   await store.setsettings({ auditretention: retentionwindow });
@@ -333,7 +335,7 @@ async function runsoaksegmented(library: librarybundle, policy: policybundle, me
   context.state = library.markpending(context.state, record.steps[boundary]?.id, clocknow);
   context.state = library.reattachrun(context.state, clocknow);
   const recovery = library.recoveryplan(context.state);
-  const paused = { ...run, state: "paused", cursor: boundary, pausedat: clocknow };
+  const paused: workflowrun = { ...run, state: "paused", cursor: boundary, pausedat: clocknow };
   const resumed = await library.runworkflow({
     record,
     run: paused,
@@ -737,7 +739,7 @@ export async function runsoaksuite() {
           audit.length === retentionwindow,
           `the audit trail of the soak run kept ${audit.length} events instead of the retention window of ${retentionwindow}`,
         );
-        const plansteps = [
+        const plansteps: toolstep[] = [
           { id: "readrow", kind: "readtext", summary: "Read the pricing row of the fixture page.", risk: "read" },
         ];
         const summarytext = library.stepsummaryfor(items[items.length - 1] ?? items[0], plansteps);

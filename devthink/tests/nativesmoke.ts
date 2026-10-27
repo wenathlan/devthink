@@ -61,7 +61,7 @@ if (!negotiated.ok) throw new Error(negotiated.reason ?? "The native capability 
 if (negotiated.surfaces.join(",") !== "osdialog,notification")
   throw new Error(`The negotiation enumerated the surfaces ${negotiated.surfaces.join(",")}.`);
 
-send(host, nativehost.nativeheartbeatframe(correlationid));
+send(host, nativehost.nativeheartbeatframe(correlationid, Date.now()));
 const heartbeat = await wait();
 if (heartbeat.kind !== "heartbeat")
   throw new Error(`The fake host answered the ${heartbeat.kind} kind instead of the heartbeat.`);

@@ -4,6 +4,7 @@ import { existsSync } from "node:fs";
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { promisify } from "node:util";
+import type { actionkind } from "../types.ts";
 
 const execute = promisify(execFile);
 const checks: Array<{ name: string; ok: boolean; detail: string }> = [];
@@ -33,8 +34,9 @@ if (process.exitCode !== 1) {
   const { alltools, buildtoolcatalog } = await import("./../dist/index.js");
   const { frozenmessagecatalog } = await import("./../dist/protocol.js");
   const catalog: string[] = actionkindcatalog();
-  const riskof = Object.fromEntries(catalog.map((kind) => [kind, actionrisk(kind)]));
-  const targetof = Object.fromEntries(catalog.map((kind) => [kind, needstarget(kind)]));
+  /* the catalog entries are the reviewed action kinds themselves (actionkindcatalog spreads the Set<actionkind> of the policy module), so the bridge rides the same validated seam the engine call sites of background.ts and protocol.ts ride. */
+  const riskof = Object.fromEntries(catalog.map((kind) => [kind, actionrisk(kind as actionkind)]));
+  const targetof = Object.fromEntries(catalog.map((kind) => [kind, needstarget(kind as actionkind)]));
 
   /* 1. the kind documentation covers every action kind of the catalog exactly. */
   const kinddocstext = await text("docs/kinddocs.md");
