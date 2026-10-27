@@ -12064,9 +12064,9 @@ span[data-tile] {
   opacity: 0.45;
   cursor: not-allowed;
 }
-/* the provider row rides the dt-oauthrow kit over the create fill: the
- * page scope lifts its buttons to the 44px touch floor of the family and
- * calms the lane hairline to the veil strength of the card */
+/* the provider row rides the dt-oauthrow kit: the page scope holds its
+ * cells on the 44px touch floor of the family and calms the lane
+ * hairline to the veil strength of the card */
 .dtw-login .dt-oauthrow__btn {
   min-height: 44px;
 }
@@ -16426,10 +16426,14 @@ button.dtc-recents__row:focus-visible {
   }
 }
 
-/* the wave 9 oauth row grammar — the provider row of the sign-in options
-   (the three owner-account buttons, the honest unconfigured verdict) and
-   the single callback page (the receiving, error and unknown-origin
-   faces) ride the existing token ladder (dtc surfaces, windows hands). */
+/* the wave 9 oauth row grammar — the icon-only provider row of the
+   sign-in options (the three owner-account cells, the honest
+   unconfigured verdict) and the single callback page (the receiving,
+   error and unknown-origin faces) ride the existing token ladder (dtc
+   surfaces, windows hands). the owner law: the auth box wears only the
+   glyphs — quiet square cells at the 44px touch floor, a subtle wash on
+   hover, the flat focus ring, and the words ride the aria-label and
+   title surfaces of the buttons, zero visible labels. */
 
 .dt-oauthrow {
   display: grid;
@@ -16438,21 +16442,36 @@ button.dtc-recents__row:focus-visible {
   padding: 12px 0 0;
   border-top: 1px solid var(--dtc-hairline, rgb(255 255 255 / 14%));
 }
-.dt-oauthrow__headline {
-  margin: 0;
-  color: var(--dtc-ink-3, rgb(255 255 255 / 58%));
-  font: 400 11px / 1.6 var(--font-mono, var(--dt-mono));
-  text-align: center;
-}
-.dt-oauthrow__btns { display: grid; gap: 8px; }
+.dt-oauthrow__btns { display: flex; justify-content: center; gap: 8px; }
 .dt-oauthrow__btn {
-  min-height: 40px;
-  border-radius: 6px;
-  font: 600 12.5px var(--font-sans, var(--dt-sans));
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--dtc-hairline, rgb(255 255 255 / 14%));
+  border-radius: var(--radius-md, 8px);
+  background: transparent;
+  cursor: pointer;
+}
+.dt-oauthrow__btn:hover:not(:disabled) {
+  border-color: rgb(255 255 255 / 24%);
+  background: var(--dtc-wash, rgb(255 255 255 / 4%));
+}
+.dt-oauthrow__btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 .dt-oauthrow__btn:focus-visible {
   outline: 2px solid var(--dtc-accent, var(--color-win, #4cc2ff));
   outline-offset: 2px;
+}
+[data-theme="light"] .dt-oauthrow__btn {
+  border-color: rgb(0 0 0 / 10%);
+}
+[data-theme="light"] .dt-oauthrow__btn:hover:not(:disabled) {
+  border-color: rgb(0 0 0 / 16%);
+  background: rgb(0 0 0 / 4%);
 }
 .dt-oauthrow__glyph {
   display: inline-grid;
@@ -16472,7 +16491,6 @@ button.dtc-recents__row:focus-visible {
 .dt-oauthrow__glyph svg {
   display: block;
 }
-.dt-oauthrow__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* the single callback page: one verdict card over the canvas, the same
    page for every provider — the origin rides the state marker */
@@ -19375,8 +19393,8 @@ button.dtc-recents__row {
   border-color: color-mix(in srgb, var(--color-warn) 34%, transparent);
 }
 
-/* -- D6 the provider rows (the oauth row): the glyph nudges, the key
-   lifts, the press seats -- */
+/* -- D6 the provider cells (the oauth row): the key lifts on the hover
+   wash, the press seats -- */
 .dt-oauthrow__btn {
   transition:
     background 150ms ease,
@@ -19390,14 +19408,6 @@ button.dtc-recents__row {
 .dt-oauthrow__btn:active {
   transform: translateY(0) scale(0.97);
   transition-duration: 80ms;
-}
-
-.dt-oauthrow__glyph {
-  transition: transform 160ms var(--ease-micro);
-}
-
-.dt-oauthrow__btn:hover .dt-oauthrow__glyph {
-  transform: translateX(1px);
 }
 
 /* -- D7 the power menu: the sheet rises on the open flip (event-driven —

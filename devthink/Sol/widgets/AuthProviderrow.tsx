@@ -1,14 +1,15 @@
 /**
- * providerrow.tsx — the continue-with row of the sign-in face: google,
+ * providerrow.tsx — the icon-only provider row of the sign-in face: google,
  * github and gitlab over the oauthrow.ts contract (the bots are ready on
  * the owner accounts, the client ids ride the env, the single callback page
  * detects the origin by state), plus the cli pairing row under the same
  * button grammar — one simple button, zero manual configuration, exactly
- * like the provider buttons the owner pointed to. The brand marks are the
- * official svg glyphs of each provider (the four color google g, the
- * octocat mark, the three color tanuki) drawn inline at 18px; the row words
- * ride the copy store (auth.oauth.*, auth.cli.*). Loose component of the
- * auth page, riding the dt-oauthrow kit over the dtw-login fills.
+ * like the provider buttons the owner pointed to. The owner law: the auth
+ * box wears only the glyphs (the four color google g, the octocat mark,
+ * the three color tanuki, the fluent console glyph) — zero visible labels;
+ * the row words ride the copy store through the aria-label and title
+ * surfaces of the buttons (auth.oauth.*, auth.cli.*). Loose component of
+ * the auth page, riding the dt-oauthrow kit.
  */
 import { WindowConsoleRegular } from "@fluentui/react-icons";
 import type { OAuthProvider, ProviderRowView } from "../../account.ts";
@@ -86,14 +87,14 @@ export interface ProviderRowProps {
   onPair: () => void;
 }
 
-/** ProviderRow — the continue-with row under the password well: the three
- * provider buttons wearing the official brand marks, the cli pairing
- * button under the same grammar. Zero manual fields: the pairing consumes
- * the invitation link by itself. */
+/** ProviderRow — the icon-only provider row under the password well: the
+ * three provider cells wearing the official brand marks, the cli pairing
+ * cell under the same grammar. Zero visible words: the names ride the
+ * aria-label and title of each cell, the pairing consumes the invitation
+ * link by itself. */
 export function ProviderRow({ row, busy, onBegin, onPair }: ProviderRowProps) {
   return (
     <div className="dt-oauthrow" role="group" aria-label={copy("auth.oauth.headline")}>
-      <p className="dt-oauthrow__headline">{copy("auth.oauth.headline")}</p>
       <div className="dt-oauthrow__btns">
         {row.providers.map((entry) => {
           const Mark = PROVIDER_MARKS[entry.provider];
@@ -101,23 +102,29 @@ export function ProviderRow({ row, busy, onBegin, onPair }: ProviderRowProps) {
             <button
               key={entry.provider}
               type="button"
-              className="dtw-login__create dt-oauthrow__btn"
+              className="dt-oauthrow__btn"
               disabled={!entry.ready || busy}
-              title={entry.ready ? undefined : copy("auth.oauth.unconfigured")}
+              aria-label={copy(`auth.oauth.${entry.provider}`)}
+              title={entry.ready ? copy(`auth.oauth.${entry.provider}`) : copy("auth.oauth.unconfigured")}
               onClick={() => onBegin(entry.provider)}
             >
               <span className="dt-oauthrow__glyph" data-brand={entry.provider} aria-hidden="true">
                 <Mark />
               </span>
-              <span className="dt-oauthrow__label">{copy(`auth.oauth.${entry.provider}`)}</span>
             </button>
           );
         })}
-        <button type="button" className="dtw-login__create dt-oauthrow__btn" disabled={busy} onClick={onPair}>
+        <button
+          type="button"
+          className="dt-oauthrow__btn"
+          disabled={busy}
+          aria-label={copy("auth.cli")}
+          title={copy("auth.cli")}
+          onClick={onPair}
+        >
           <span className="dt-oauthrow__glyph" aria-hidden="true">
             <WindowConsoleRegular fontSize={17} />
           </span>
-          <span className="dt-oauthrow__label">{copy("auth.cli")}</span>
         </button>
       </div>
     </div>
