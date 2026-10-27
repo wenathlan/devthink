@@ -12153,6 +12153,77 @@ span[data-tile] {
   font: 400 11px / 1.6 var(--dt-mono);
   text-align: center;
 }
+/* the panel gate face: the honest wait of the entry chain — the mark, the
+ * label and the reading bar over the night canvas (the same mica night the
+ * auth faces paint). the desktop never flashes behind it: the gate owns the
+ * paint until a door answers. */
+.dtw-gate {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 16px;
+  background:
+    radial-gradient(120% 90% at 50% 108%, rgb(26 31 53 / 55%) 0%, transparent 72%),
+    radial-gradient(140% 110% at 50% 0%, #1a1f35 0%, #202020 62%),
+    #202020;
+  color: rgb(255 255 255 / 92%);
+}
+.dtw-gate::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--noise);
+  opacity: 0.6;
+  pointer-events: none;
+}
+.dtw-gate__mark {
+  display: grid;
+  place-items: center;
+}
+.dtw-gate__label {
+  font: 400 13px var(--font-sans, var(--dt-sans));
+  color: rgb(255 255 255 / 72%);
+  letter-spacing: 0.01em;
+}
+/* the reading bar: the indeterminate walk of the honest wait — a 2px rail
+ * whose light band travels the 160px track, duty-cycled, zeroed under
+ * reduced motion */
+.dtw-gate__bar {
+  position: relative;
+  width: 160px;
+  height: 2px;
+  border-radius: 2px;
+  background: rgb(255 255 255 / 12%);
+  overflow: hidden;
+}
+.dtw-gate__bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  border-radius: 2px;
+  background: var(--color-ever);
+  animation: dtwgatewalk 1.4s var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)) infinite;
+}
+@keyframes dtwgatewalk {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(350%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dtw-gate__bar::after {
+    animation: none;
+    transform: none;
+    width: 100%;
+    background: rgb(255 255 255 / 18%);
+  }
+}
 /* the windows corners: the live network status rides the bottom left, the
  * power flyout the bottom right — both faces, like the lock screen of the
  * real system. dark ink over the lock landscape, white over the dimmed

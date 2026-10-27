@@ -6,7 +6,7 @@
  * does not know — the safe default of the public site.
  */
 import { describe, expect, it } from "vitest";
-import { INTRO_SEEN_KEY, type IntroTarget, resolveintrotarget } from "../introtarget";
+import { INTRO_SEEN_KEY, type IntroTarget, panelgateverdict, resolveintrotarget } from "../introtarget";
 
 describe("the intro target resolver", () => {
   it("resolves every literal target the intro choreography knows", () => {
@@ -35,5 +35,34 @@ describe("the intro target resolver", () => {
 describe("the intro session contract", () => {
   it("keeps the seen flag under the doctrine key", () => {
     expect(INTRO_SEEN_KEY).toBe("dt.intro.seen");
+  });
+});
+
+describe("the panel gate verdict (the entry chain: the panel is the last page)", () => {
+  const session = { owner: "nathlan", createdAt: "2026-10-27T00:00:00.000Z", expiresAt: Date.now() + 60000 };
+
+  it("opens the owned targets straight (the boot IS their intro)", () => {
+    for (const target of ["desktop", "installer", "android", "extension"] as const) {
+      expect(panelgateverdict(target, null, false)).toBe("open");
+      expect(panelgateverdict(target, undefined, false)).toBe("open");
+    }
+  });
+
+  it("locks the web target with no session and no offline unlock (the chain walks back to the auth face)", () => {
+    expect(panelgateverdict("web", null, false)).toBe("locked");
+    expect(panelgateverdict("web", undefined, false)).toBe("locked");
+  });
+
+  it("opens the web target with a live family session (the real door)", () => {
+    expect(panelgateverdict("web", session, false)).toBe("open");
+  });
+
+  it("opens the web target with the declared offline unlock marker (the fallback door)", () => {
+    expect(panelgateverdict("web", null, true)).toBe("open");
+  });
+
+  it("never lets a falsy session shape open the web gate", () => {
+    expect(panelgateverdict("web", null, false)).toBe("locked");
+    expect(panelgateverdict("web", undefined, false)).toBe("locked");
   });
 });

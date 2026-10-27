@@ -105,6 +105,7 @@ const SEED: Readonly<Record<string, string>> = Object.freeze({
   "auth.signin.reveal.hide": "Hide the password",
   "auth.signin.options": "Sign-in options",
   "auth.signin.back": "Back to the clock",
+  "panel.gate.label": "Checking the family session",
   "settings.search.placeholder": "Find a setting",
   "settings.nav.personalization": "Personalization",
   "settings.nav.accounts": "Accounts",

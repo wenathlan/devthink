@@ -40,6 +40,7 @@ import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { type DevThinkPaths, ensurePaths, resolvePaths } from "./config.js";
+import { lanefetch } from "./gatewayfamily.ts";
 import { createCompactId } from "./ids.js";
 import {
   browserIdentity,
@@ -48,7 +49,6 @@ import {
   saveBrowserPreference,
   sharedatabasedriver,
 } from "./storagefamily.ts";
-import { lanefetch } from "./gatewayfamily.ts";
 
 /* ============================================================================
  * @section 1 — accountgate: the local browser account of the os.
@@ -553,10 +553,7 @@ function ipv6groups(address: string): number[] | null {
     const tail = text.match(IPV4TAILPATTERN);
     if (!tail) return null;
     const octets = tail[2].split(".").map(Number);
-    if (
-      octets.length !== 4 ||
-      octets.some((value) => !Number.isInteger(value) || value < 0 || value > 255)
-    ) {
+    if (octets.length !== 4 || octets.some((value) => !Number.isInteger(value) || value < 0 || value > 255)) {
       return null;
     }
     const high = ((octets[0] << 8) | octets[1]).toString(16);
@@ -1289,9 +1286,9 @@ export function verifyaccountsession(token: string): AccountSessionView | null {
  */
 export function revokeaccountsession(token: string): boolean {
   if (!SESSIONTOKENPATTERN.test(token)) return false;
-  const answer = accountdatabase()
-    .prepare("DELETE FROM accountssessions WHERE token = ?")
-    .run(sha256hex(token)) as { changes?: number };
+  const answer = accountdatabase().prepare("DELETE FROM accountssessions WHERE token = ?").run(sha256hex(token)) as {
+    changes?: number;
+  };
   return Number(answer.changes ?? 0) > 0;
 }
 
@@ -1335,9 +1332,11 @@ function provideridentity(provider: OAuthProvider, payload: Record<string, unkno
     provider === "google"
       ? payload.sub
       : provider === "github"
-        ? payload.id ?? payload.login
-        : payload.id ?? payload.username;
-  return String(raw ?? "").trim().toLowerCase();
+        ? (payload.id ?? payload.login)
+        : (payload.id ?? payload.username);
+  return String(raw ?? "")
+    .trim()
+    .toLowerCase();
 }
 
 /** Parses a json object body; anything else answers the empty record. */
@@ -1590,7 +1589,11 @@ export async function revokeaccountsessionbearer(): Promise<boolean> {
  * @subsection storage — the family session slots the pages read and clear.
  */
 
-/** saveaccountsession — park the family session the lane issued. */
+/** saveaccountsession — park the family session the lane issued. The
+ * parked bearer also retires the shared restore answer of this page load:
+ * the next restoreonce re-asks the lane with the fresh bearer in hand (the
+ * sign-in face parks, the panel gate asks — the stale null of the
+ * pre-sign-in answer must never lock the chain back). */
 export function saveaccountsession(token: string, owner: string): void {
   try {
     window.sessionStorage.setItem(ACCOUNT_TOKEN_KEY, token);
@@ -1598,9 +1601,12 @@ export function saveaccountsession(token: string, owner: string): void {
   } catch {
     /* storage unavailable: the session lives for this page load only */
   }
+  restorepromise = null;
 }
 
-/** clearaccountsession — drop the parked family session (after a revoke). */
+/** clearaccountsession — drop the parked family session (after a revoke).
+ * The drop retires the shared restore answer too: the next restoreonce
+ * re-asks from the honest empty state. */
 export function clearaccountsession(): void {
   try {
     window.sessionStorage.removeItem(ACCOUNT_TOKEN_KEY);
@@ -1608,6 +1614,7 @@ export function clearaccountsession(): void {
   } catch {
     /* storage unavailable */
   }
+  restorepromise = null;
 }
 
 /** accountbearer — the stored bearer, or the empty answer when absent.
@@ -1643,6 +1650,33 @@ export function storedaccountowner(): string {
 /** The one shared restore of this page load: every surface awaits the same
  * promise, the lane is asked once, the cache parks once. */
 let restorepromise: Promise<AccountSessionState | null> | null = null;
+
+/** The sessionStorage key of the declared offline unlock: the local
+ * accountgate fallback parks it after a verified password so the panel
+ * gate accepts this browser session without a family lane behind it. The
+ * marker is disposable by design — a new tab answers locked and the auth
+ * face verifies the secret again. */
+const ACCOUNT_LOCAL_UNLOCK_KEY = "devthink.account.local";
+
+/** parklocalunlock — mark this browser session as locally unlocked (the
+ * declared offline fallback of the sign-in face calls it after the
+ * verifier answers). */
+export function parklocalunlock(): void {
+  try {
+    window.sessionStorage.setItem(ACCOUNT_LOCAL_UNLOCK_KEY, "unlocked");
+  } catch {
+    /* storage unavailable: the panel gate answers locked, the honest path */
+  }
+}
+
+/** islocalunlocked — the offline unlock marker of this browser session. */
+export function islocalunlocked(): boolean {
+  try {
+    return window.sessionStorage.getItem(ACCOUNT_LOCAL_UNLOCK_KEY) === "unlocked";
+  } catch {
+    return false;
+  }
+}
 
 /** restoreonce — the persistent sign in restore: with no local bearer the
  * call still carries the family cookie, and a live lane answer rotates the

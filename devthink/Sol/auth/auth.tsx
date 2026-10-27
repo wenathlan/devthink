@@ -37,6 +37,7 @@ import {
   normalizeaccountowner,
   type OAuthProvider,
   oauthVerifierKey,
+  parklocalunlock,
   providerRow,
   restoreonce,
   saveaccountsession,
@@ -44,13 +45,10 @@ import {
   storedaccountowner,
   verifyAccount,
 } from "../../authfamily.ts";
-import { afterAuthTarget, pairingReadiness, safegatewayurl } from "../../gatewayfamily.ts";
 import { copy, loadcopy } from "../../copy.ts";
+import { afterAuthTarget, pairingReadiness, safegatewayurl } from "../../gatewayfamily.ts";
 import { readBrowserPreferences } from "../../storagefamily.ts";
-import { LockFace } from "../widgets";
-import { PowerMenu } from "../widgets";
-import { SignInForm, type SignInEntryFields } from "../widgets";
-import { StatusLine } from "../widgets";
+import { LockFace, PowerMenu, type SignInEntryFields, SignInForm, StatusLine } from "../widgets";
 
 export * from "../../authfamily.ts";
 export * from "../../gatewayfamily.ts";
@@ -187,8 +185,12 @@ export default function Auth() {
         }
       }
       // the lane never answered — the declared offline fallback verifies
-      // against this machine's HD
-      if (await verifyAccount(password)) return finish();
+      // against this machine's HD and parks the session unlock marker the
+      // panel gate reads (the honest offline door of the entry chain)
+      if (await verifyAccount(password)) {
+        parklocalunlock();
+        return finish();
+      }
       setFailure("The password is incorrect. Try again.");
     } catch {
       setFailure("The sign in could not be completed on this machine.");
@@ -215,7 +217,8 @@ export default function Auth() {
         const response = await fetch(`${gateway}/pairings/consume`, {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({ pairingId: pairingIdValue, code: pairingCode }) });
+          body: JSON.stringify({ pairingId: pairingIdValue, code: pairingCode }),
+        });
         if (!response.ok) throw new Error("Pairing was rejected.");
         const result = (await response.json()) as PairingResponse;
         // the exact keys the creation panel reads on boot

@@ -23,20 +23,21 @@ import { type FormEvent, useCallback, useEffect, useMemo, useState } from "react
 import { toast } from "sonner";
 import { useLocation, useRoute } from "wouter";
 import { PairingPanel } from "@/settings/settings";
-import { safegatewayurl } from "../../gatewayfamily.ts";
+import { islocalunlocked, restoreonce } from "../../authfamily.ts";
 import { writeChatHandoff } from "../../chatstate.ts";
+import { copy } from "../../copy.ts";
+import { historypath, safegatewayurl } from "../../gatewayfamily.ts";
+import { panelgateverdict, resolveintrotarget } from "../../introtarget.ts";
+import type { DevThinkTab } from "../../paneltypes.ts";
 import {
   browserIdentity,
   cacheBrowserIdentity,
   cacheGatewaySession,
   ensureBrowserSession,
-  readBrowserPreferences } from "../../storagefamily.ts";
-import type { DevThinkTab } from "../../paneltypes.ts";
-import { historypath } from "../../gatewayfamily.ts";
+  readBrowserPreferences,
+} from "../../storagefamily.ts";
 import type { WorkspaceDestination } from "../../workspace.ts";
-import { BootScreen, shouldBoot } from "../widgets";
-import { CommandPalette } from "../widgets";
-import { ShellWorkspace } from "../widgets";
+import { BootScreen, CommandPalette, ShellWorkspace, SolLogoMark, shouldBoot } from "../widgets";
 
 export * from "../widgets";
 export * from "../widgets";
@@ -94,7 +95,8 @@ type WorkbenchPreferences = {
 const defaultPreferences: WorkbenchPreferences = {
   theme: "light",
   railMode: "auto",
-  interfaceZoom: "100" };
+  interfaceZoom: "100",
+};
 
 function stableId(): string {
   const alphabet = "0123456789abcdefghjkmnpqrstvwxyz";
@@ -129,7 +131,8 @@ function readLocalRoute(): RouteState {
           workspaceId: parsed.workspaceId,
           sessionId: parsed.sessionId,
           tabId: parsed.tabId,
-          sectionId: "chat" };
+          sectionId: "chat",
+        };
     }
   } catch {
     // storage unavailable or malformed: mint a fresh local route below
@@ -138,7 +141,8 @@ function readLocalRoute(): RouteState {
     workspaceId: stableId(),
     sessionId: stableId(),
     tabId: stableId(),
-    sectionId: "chat" };
+    sectionId: "chat",
+  };
   try {
     window.sessionStorage.setItem(LOCAL_ROUTE_KEY, JSON.stringify(fresh));
   } catch {
@@ -169,7 +173,8 @@ function toShellTab(tab: {
     label: tab.label,
     provider: tab.provider || "local",
     sectionId: tab.sectionId,
-    createdAt: tab.createdAt };
+    createdAt: tab.createdAt,
+  };
 }
 
 export default function Panel({ familySlug: familyRoute }: { familySlug?: string }) {
@@ -200,7 +205,8 @@ export default function Panel({ familySlug: familyRoute }: { familySlug?: string
           workspaceId: params.workspaceId,
           sessionId: params.sessionId,
           tabId: params.tabId,
-          sectionId: params.sectionId }
+          sectionId: params.sectionId,
+        }
       : fallbackRoute,
   );
   const [tabs, setTabs] = useState<DevThinkTab[]>([]);
@@ -216,6 +222,14 @@ export default function Panel({ familySlug: familyRoute }: { familySlug?: string
   );
   const [pairedIdentity, setPairedIdentity] = useState<PairedIdentity>();
   const [booting, setBooting] = useState(() => shouldBoot());
+  /** the auth gate of the entry chain: "pending" while the family session
+   * question rides, "open" when a door answered, "locked" when the chain
+   * walks back to the auth face (the panel is the LAST page — the owner's
+   * law). The owned targets (desktop, installer, android, extension) open
+   * straight: the boot IS their intro, no gate ever blocks the system face. */
+  const [gate, setGate] = useState<"pending" | "open" | "locked">(() =>
+    resolveintrotarget(import.meta.env.VITE_DT_TARGET as string | undefined) === "web" ? "pending" : "open",
+  );
   const [preferences, setPreferences] = useState<WorkbenchPreferences>(defaultPreferences);
   const browserHeaders = useMemo(() => {
     const headers: Record<string, string> = {};
@@ -262,7 +276,8 @@ export default function Panel({ familySlug: familyRoute }: { familySlug?: string
       providers: "/providers",
       projects: "/projects",
       usage: "/usage",
-      settings: "/settings" };
+      settings: "/settings",
+    };
     if (directRoutes[destination]) return setLocation(directRoutes[destination] as string);
     navigate({ sectionId: destination === "chat" ? "all" : destination });
   }
@@ -296,7 +311,8 @@ export default function Panel({ familySlug: familyRoute }: { familySlug?: string
       const response = await fetch(`${gatewayUrl}/pairings/consume`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ pairingId, code: pairingCode }) });
+        body: JSON.stringify({ pairingId, code: pairingCode }),
+      });
       if (!response.ok) throw new Error("Pairing was rejected.");
       rememberPairing((await response.json()) as PairingResponse);
     } catch {
@@ -311,7 +327,8 @@ export default function Panel({ familySlug: familyRoute }: { familySlug?: string
       if (gatewayUrl && browserToken)
         await fetch(`${gatewayUrl}/pairings/revoke`, {
           method: "POST",
-          headers: { "content-type": "application/json", ...browserHeaders } });
+          headers: { "content-type": "application/json", ...browserHeaders },
+        });
     } finally {
       for (const key of ["devthink.pair.token", "devthink.pair.user", "devthink.pair.expires"])
         window.sessionStorage.removeItem(key);
@@ -330,7 +347,8 @@ export default function Panel({ familySlug: familyRoute }: { familySlug?: string
       const response = await fetch(`${gatewayUrl}/preferences`, {
         method: "PATCH",
         headers: { "content-type": "application/json", ...browserHeaders },
-        body: JSON.stringify({ key, value }) });
+        body: JSON.stringify({ key, value }),
+      });
       if (!response.ok) throw new Error("Preference was rejected.");
       setPreferences(next);
       toast(`${key} updated in the local DevThink workspace.`);
@@ -345,7 +363,8 @@ export default function Panel({ familySlug: familyRoute }: { familySlug?: string
       const response = await fetch(`${gatewayUrl}/identity`, {
         method: "PUT",
         headers: { "content-type": "application/json", ...browserHeaders },
-        body: JSON.stringify({ userId }) });
+        body: JSON.stringify({ userId }),
+      });
       if (!response.ok) throw new Error("Public ID was rejected.");
       const result = (await response.json()) as IdentityResponse;
       setPairedIdentity(result.identity);
@@ -361,6 +380,43 @@ export default function Panel({ familySlug: familyRoute }: { familySlug?: string
     if (browserToken || !gatewayUrl || !pairingId || pairingCode.length !== 8) return;
     void consumeLocalInvitation();
   }, [browserToken, gatewayUrl, pairingCode, pairingId, consumeLocalInvitation]);
+
+  /** the auth gate: the family session question rides once per mount. A
+   * live restore (the rotated cookie or the parked bearer) opens the
+   * desktop; the declared offline unlock of this browser session opens it
+   * too; every other answer walks the chain back to the auth face with
+   * the arrival address riding ?next= so the sign-in returns exactly
+   * here. The owned targets never ask — they opened at the state init. */
+  useEffect(() => {
+    if (gate !== "pending") return;
+    let alive = true;
+    void restoreonce()
+      .then((session) => {
+        if (!alive) return;
+        const verdict = panelgateverdict(
+          resolveintrotarget(import.meta.env.VITE_DT_TARGET as string | undefined),
+          session,
+          islocalunlocked(),
+        );
+        if (verdict === "open") {
+          setGate("open");
+          return;
+        }
+        setGate("locked");
+        const arrival = window.location.pathname + window.location.search;
+        setLocation(["/auth?next=", encodeURIComponent(arrival)].join(""));
+      })
+      .catch(() => {
+        if (!alive) return;
+        // the session question itself failed: the honest answer is locked —
+        // the desktop never opens on a question that could not be asked
+        setGate("locked");
+        setLocation("/auth");
+      });
+    return () => {
+      alive = false;
+    };
+  }, [gate, setLocation]);
 
   useEffect(() => {
     void Promise.all([browserIdentity(), readBrowserPreferences()])
@@ -432,7 +488,8 @@ export default function Panel({ familySlug: familyRoute }: { familySlug?: string
     void fetch(`${gatewayUrl}/sessions`, {
       method: "POST",
       headers: { "content-type": "application/json", ...browserHeaders },
-      body: JSON.stringify({ mode: "chat", sectionId: "chat" }) })
+      body: JSON.stringify({ mode: "chat", sectionId: "chat" }),
+    })
       .then(async (response) =>
         response.ok
           ? (response.json() as Promise<GatewaySession>)
@@ -443,7 +500,8 @@ export default function Panel({ familySlug: familyRoute }: { familySlug?: string
           workspaceId: session.workspaceId,
           sessionId: session.id,
           tabId: session.activeTabId,
-          sectionId: "chat" });
+          sectionId: "chat",
+        });
         setTabs(session.tabs.map(toShellTab));
       })
       .catch(() => {
@@ -497,6 +555,21 @@ export default function Panel({ familySlug: familyRoute }: { familySlug?: string
     if (action === "providers" || action === "projects" || action === "usage") return openDestination(action);
     toast("Command is not available in this local workspace.");
   }
+
+  /** the gate face: while the family session question rides (and the brief
+   * moment the locked redirect walks), the desktop NEVER flashes — the
+   * honest wait face carries the mark, the label and the reading bar over
+   * the night canvas. */
+  if (gate !== "open")
+    return (
+      <div className="dtw-gate" role="status" aria-live="polite">
+        <span className="dtw-gate__mark" aria-hidden="true">
+          <SolLogoMark size={34} />
+        </span>
+        <span className="dtw-gate__label">{copy("panel.gate.label")}</span>
+        <span className="dtw-gate__bar" aria-hidden="true" />
+      </div>
+    );
 
   if (booting)
     return (

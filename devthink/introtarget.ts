@@ -32,3 +32,24 @@ export function resolveintrotarget(target?: string): IntroTarget {
   const normalized = target?.trim().toLowerCase();
   return TARGETS.includes(normalized as IntroTarget) ? (normalized as IntroTarget) : "web";
 }
+
+/**
+ * The panel gate verdict: the entry chain the owner pinned — intro →
+ * onboarding → auth → panel, the panel LAST. The web target (the public
+ * saas face) only opens the desktop with a live answer of one of the two
+ * honest doors: a family session (the real path — the server account the
+ * restore rotates) or the declared offline unlock of this browser session
+ * (the local accountgate fallback). The owned targets (desktop, installer,
+ * android, extension) open straight — the boot IS their intro and no gate
+ * ever blocks the system face.
+ *
+ * @param target the resolved build target.
+ * @param session the family session state (null when absent).
+ * @param localunlocked the offline unlock marker of this browser session.
+ * @returns "open" when the desktop answers, "locked" when the chain walks
+ * back to the auth face.
+ */
+export function panelgateverdict(target: IntroTarget, session: unknown, localunlocked: boolean): "open" | "locked" {
+  if (target !== "web") return "open";
+  return session !== null && session !== undefined ? "open" : localunlocked ? "open" : "locked";
+}
