@@ -234,7 +234,7 @@ npm run web:check
 VITE_BASE_PATH=/saddle npm run web:build:pages
 ```
 
-Small public configuration and visual assets live under `web/public/`. The development collector is TypeScript source at `web/debugcollector.ts`, injected only in development, and uses `/debuglogs`; it is not part of the production build. The obsolete `web/public/__manus__` directory is intentionally absent.
+Small public configuration and visual assets live under `web/public/`. The obsolete `web/public/__manus__` directory is intentionally absent; the development debug collector (the visitor-browser telemetry hook at the former `web/debugcollector.ts`) left the saddle together with the scrape lanes — the engine keeps no surface that watches the user's browser.
 
 ## Development
 

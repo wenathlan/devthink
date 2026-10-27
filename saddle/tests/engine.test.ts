@@ -30,7 +30,6 @@ import { artifacthandoff, cancellationplan, providerchain, renderdispatch } from
 import { cdncapabilities, deliverymanifest, pwaplan, verifydelivery } from "../distribution.js";
 import { applicationbridge, dnsplan, miniappplan } from "../automation.js";
 import { validatesession } from "../foundation.js";
-import { detectcontenttype, normalizeresponse, normalizeresult } from "../acquisition.js";
 import { sessionstore } from "../execution.js";
 import { externalmemory, internalmemory, vectorizedmemory } from "../virtual.js";
 import { modeprofile } from "../modes.js";
@@ -42,10 +41,6 @@ import { jobqueue } from "../execution.js";
 import { saga } from "../execution.js";
 import { workflowdispatch } from "../execution.js";
 import { replay } from "../execution.js";
-import { robotsallowed, robotsrules } from "../acquisition.js";
-import { extracthtml } from "../acquisition.js";
-import { extractsemantic } from "../acquisition.js";
-import { scraper } from "../acquisition.js";
 import { distributionmanifest, binaryplan, containerplan } from "../distribution.js";
 import { forgejoadapter } from "../integration.js";
 import { parsecommand } from "../automation.js";
@@ -65,21 +60,13 @@ import { githubworkflow, gitlabworkflow, woodpeckerworkflow } from "../automatio
 import { workflowregistry } from "../automation.js";
 import { memoryengine } from "../virtual.js";
 import { targetfactory, targeturi } from "../virtual.js";
-import { normalizeurl, crawl, persistentqueue as crawlqueue, crawlfrontier } from "../acquisition.js";
-import { saddleservice } from "../communication.js";
 import { filesessions } from "../execution.js";
-import { extractwithschema, extractstructured } from "../acquisition.js";
-import { parseSitemap } from "../webscrape.js";
 import { mcpserver } from "../integration.js";
 import { runtimename, runtimefeatures } from "../execution.js";
 import { deadline } from "../execution.js";
 import { publishplan, registrymanifest } from "../distribution.js";
 import { fingerprintfor, fingerprintvalidate } from "../browser.js";
 import { browsersession } from "../browser.js";
-import { proxypool } from "../webscrape.js";
-import { captchacontract } from "../acquisition.js";
-import { evidence } from "../acquisition.js";
-import { captchaguard } from "../acquisition.js";
 import { estimatetokens, fitscontext, tokenbudget } from "../intelligence.js";
 import { chunkmarkdown } from "../intelligence.js";
 import { ragmanifest, vectorrecord } from "../intelligence.js";
@@ -94,7 +81,6 @@ import { desktopadapter, mobileadapter } from "../automation.js";
 import { controlsurface } from "../automation.js";
 import { backupplan, operationsmetrics, retentionpolicy, threatmodel } from "../automation.js";
 import { n8nactions, n8nmatch, n8nnode, n8nexecute } from "../automation.js";
-import { scrapeurl, scrapehtml, serializeresult, formatforagent, batchscrape } from "../operations.js";
 import { browseragent } from "../browser.js";
 import { actionbatch, actionfailure, actionresult } from "../browser.js";
 import { browsercontext } from "../browser.js";
@@ -393,54 +379,6 @@ it("validates replay context identifiers and records context provenance", () => 
   assert.throws(() => validatesession({ version: 1, id: "session1", agentname: "test", originurl: "https://example.com", seed: "seed", status: "closed", startedat: 1, events: [{ t: 0, type: "click", context: { tabid: 7 } }] }), (error) => error.code === "INVALID_INPUT");
 });
 
-it("enforces robots rules and extracts structured html", () => {
-  const rules = robotsrules("user-agent: *\ndisallow: /private\nallow: /private/public");
-  assert.equal(robotsallowed(rules, "https://example.com/private/data"), false);
-  assert.equal(robotsallowed(rules, "https://example.com/private/public"), true);
-  const result = extracthtml("<html><head><title>Test</title><meta name=\"description\" content=\"A page\"></head><body><a href=\"/next\">Next</a><p>Hello world</p></body></html>", "https://example.com/");
-  assert.equal(result.title, "Test");
-  assert.equal(result.description, "A page");
-  assert.equal(result.links[0], "https://example.com/next");
-  assert.equal(result.text.includes("Hello world"), true);
-});
-
-it("normalizes JSON, markup and bounded binary responses without assuming a transport", async () => {
-  const json = normalizeresult('{"ok":true}', { contenttype: "application/json; charset=utf-8", url: "https://example.com/data" });
-  assert.equal(json.kind, "json");
-  assert.equal(json.data.ok, true);
-  assert.equal(detectcontenttype(undefined, "https://example.com/feed.xml"), "application/xml");
-  assert.equal(normalizeresult("# Title", { contenttype: "text/markdown" }).kind, "markdown");
-  assert.equal(normalizeresult(new Uint8Array([0, 1, 2]), { contenttype: "image/png" }).kind, "binary");
-  assert.throws(() => normalizeresult("too long", { contenttype: "text/plain", maxbytes: 3 }), (error) => error.code === "CONTENT_TOO_LARGE");
-  const encoded = new TextEncoder().encode('{"id":1}');
-  const response = await normalizeresponse({ headers: { get(name) { return name === "content-type" ? "application/json" : null; } }, arrayBuffer: async () => encoded.buffer }, { url: "https://example.com/data" });
-  assert.equal(response.data.id, 1);
-});
-
-it("routes public scrapeurl JSON through the content normalizer", async () => {
-  const result = await scrapeurl("https://example.com/data.json", { fetcher: async () => ({ ok: true, status: 200, headers: { get: () => "application/json" }, arrayBuffer: async () => new TextEncoder().encode('{"ready":true}').buffer }) });
-  assert.equal(result.data.ready, true);
-  assert.equal(result.metadata.contenttype, "application/json");
-});
-
-it("extracts semantic headings landmarks controls and links safely", () => {
-  const result = extractsemantic("<title>Page</title><main aria-label='Content'><h1>Title</h1><button aria-label='Run'>Go</button><a href='/docs'>Docs</a></main>", "https://example.com/");
-  assert.equal(result.headings[0].level, 1);
-  assert.equal(result.landmarks[0].role, "main");
-  assert.equal(result.controls[0].name, "Run");
-  assert.equal(result.links[0].url, "https://example.com/docs");
-});
-
-it("scrapes with robots and cache through injected transport", async () => {
-  let calls = 0;
-  const result = scraper({ fetcher: async (url) => { calls += 1; return { ok: true, status: 200, text: async () => url.endsWith("robots.txt") ? "user-agent: *\nallow: /" : "<title>Cached</title>" }; }, cacheoptions: { ttl: 1000 } });
-  const first = await result.scrape("https://example.com/page");
-  const second = await result.scrape("https://example.com/page");
-  assert.equal(first.title, "Cached");
-  assert.equal(second.title, "Cached");
-  assert.equal(calls, 2);
-});
-
 it("builds open distribution plans", () => {
   const manifest = distributionmanifest({ name: "saddle", version: "0.2.0", entry: "cli/main.js" });
   const binary = binaryplan(manifest, { tool: "node" });
@@ -651,45 +589,6 @@ it("builds open memory targets and transforms", () => {
   assert.equal(result.payload.byteLength, 6);
 });
 
-it("crawls breadth first with normalized same domain links", async () => {
-  const pages = { "https://example.com/": { url: "https://example.com/", title: "home", links: ["https://example.com/next?utm_source=x", "https://other.example/skip"] }, "https://example.com/next": { url: "https://example.com/next", title: "next", links: [] } };
-  const result = await crawl("https://example.com/?utm_source=test", { maxdepth: 1, maxpages: 3, samedomain: true, scrape: async (url) => pages[url] });
-  assert.equal(normalizeurl("https://example.com/next?utm_source=x"), "https://example.com/next");
-  assert.equal(result.results.length, 2);
-  assert.equal(result.results[1].title, "next");
-});
-
-it("follows nested sitemap indexes without duplicates or cycles", async () => {
-  const pages = new Map([
-    ["https://example.test/root.xml", "<sitemapindex><sitemap><loc>https://example.test/child.xml</loc></sitemap><sitemap><loc>https://example.test/root.xml</loc></sitemap></sitemapindex>"],
-    ["https://example.test/child.xml", "<sitemapindex><sitemap><loc>https://example.test/leaf.xml</loc></sitemap></sitemapindex>"],
-    ["https://example.test/leaf.xml", "<urlset><url><loc>https://example.test/a</loc></url><url><loc>https://example.test/a#fragment</loc></url><url><loc>https://example.test/b</loc></url></urlset>"],
-  ]);
-  const result = await parseSitemap("https://example.test/root.xml", { maxUrls: 2, maxDepth: 4, fetcher: async (url) => new Response(pages.get(String(url)), { status: 200 }) });
-  assert.deepEqual(result.map((entry) => entry.loc), ["https://example.test/a", "https://example.test/b"]);
-});
-
-it("prioritizes crawl frontier items and applies per-domain budgets", () => {
-  const frontier = crawlfrontier({ maxpages: 4, maxperdomain: 1 });
-  frontier.add({ url: "https://example.com/low", priority: 0 });
-  frontier.add({ url: "https://example.org/high", priority: 3 });
-  assert.equal(frontier.next().url, "https://example.org/high");
-  frontier.complete("https://example.org/high");
-  assert.equal(frontier.next().url, "https://example.com/low");
-  assert.equal(frontier.add({ url: "https://example.com/second" }), true);
-  assert.equal(frontier.next(), null);
-});
-
-it("serves universal api routes with web request response objects", async () => {
-  const service = saddleservice({ scrape: async (url) => ({ url, links: [] }) });
-  const health = await service.handle(new Request("https://api.example.com/health"));
-  assert.equal((await health.json()).healthy, true);
-  const scrape = await service.handle(new Request("https://api.example.com/v1/scrape", { method: "POST", body: JSON.stringify({ url: "https://example.com" }), headers: { "content-type": "application/json" } }));
-  assert.equal((await scrape.json()).url, "https://example.com");
-  const stream = await service.handle(new Request("https://api.example.com/v1/event"));
-  assert.equal(stream.headers.get("content-type").startsWith("text/event-stream"), true);
-});
-
 it("keeps API identity and authorization caller-owned", async () => {
   const request = new Request("https://api.example.com/health", { headers: { authorization: "Bearer token", "x-request-id": "req1" } });
   const context = requestcontext(request, { path: "/health" });
@@ -711,18 +610,6 @@ it("exposes optional browser snapshot and action tools through MCP", async () =>
   assert.equal((await tools.browser_action({ action: "click" })).action, "click");
 });
 
-it("restores persistent crawl queue and completes entries", async () => {
-  const saved = new Map();
-  const store = { list: async () => [...saved.values()], save: async (item) => saved.set(item.url, item), update: async (key, item) => saved.set(key, item) };
-  const queue = crawlqueue({ store });
-  await queue.add({ url: "https://example.com", depth: 0 });
-  const item = await queue.next();
-  await queue.complete(item.url);
-  const restored = crawlqueue({ store });
-  await restored.restore();
-  assert.equal(restored.list().length, 0);
-});
-
 it("saves and loads a validated session file", async () => {
   const root = await mkdtemp(join(tmpdir(), "saddle-session-file"));
   const store = filesessions(root);
@@ -731,29 +618,11 @@ it("saves and loads a validated session file", async () => {
   assert.equal((await store.load("sessionfile")).id, "sessionfile");
 });
 
-it("extracts fields from a safe schema and serves MCP tools", async () => {
-  const html = "<title>Saddle</title><h1>Engine</h1><a href=\"/docs\">Docs</a>";
-  const extracted = extractwithschema(html, { title: "title", heading: { selector: "h1" } }, "https://example.com");
-  assert.equal(extracted.title, "Saddle");
-  assert.equal(extracted.heading, "Engine");
-  const server = mcpserver({ scrape: async (url) => ({ url, links: [] }) });
-  const response = await server.handle({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: "scrape", arguments: { url: "https://example.com" } } });
+it("serves the transport-neutral MCP tool surface", async () => {
+  const server = mcpserver();
+  const response = await server.handle({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: "serialize", arguments: { value: { ok: true } } } });
   assert.equal(response.result.content[0].type, "text");
-});
-
-it("returns bounded structured extraction with field provenance", () => {
-  const result = extractstructured("<h1>Saddle</h1><p>bounded text</p>", { heading: { selector: "h1" }, body: { selector: "p" } }, { url: "https://example.com", now: 1, maxbytes: 80 });
-  assert.equal(result.provenance.heading.sourceurl, "https://example.com");
-  assert.equal(result.provenance.heading.selector, "h1");
-  assert.equal(result.extractedat, new Date(1).toISOString());
-  assert.equal(result.bytes <= result.maxbytes, true);
-});
-
-it("accepts a caller-owned structured extraction parser", () => {
-  const seen = [];
-  const result = extractstructured("ignored", { title: "title" }, { url: "https://example.com", parser: (input) => { seen.push(input.url); return { title: "caller-value" }; } });
-  assert.deepEqual(seen, ["https://example.com"]);
-  assert.equal(result.values.title, "caller-value");
+  assert.equal(JSON.parse(response.result.content[0].text), '{"ok":true}');
 });
 
 it("detects universal runtime capabilities and creates a deadline", () => {
@@ -781,26 +650,6 @@ it("keeps a coherent browser fingerprint bound to a session", () => {
   assert.equal(session.events().length, 1);
 });
 
-it("rotates proxy entries by usage and moves repeated failures to graveyard", () => {
-  const pool = proxypool({ proxies: [{ id: "proxy1" }, { id: "proxy2" }], failurethreshold: 2, recoverytime: 100000 });
-  const first = pool.choose();
-  pool.report(first.id, { ok: false });
-  pool.report(first.id, { ok: false });
-  assert.equal(pool.list().find((item) => item.id === first.id).status, "graveyard");
-  assert.notEqual(pool.choose().id, first.id);
-});
-
-it("keeps captcha solving explicit and evidence auditable", async () => {
-  const contract = captchacontract({ detect: async () => ({ kind: "hcaptcha", detected: true, sitekey: "site" }), solve: async () => ({ passed: true, solver: "external", token: "token" }) });
-  const guard = captchaguard({ contract });
-  const check = await guard.check({ url: "https://example.com" });
-  assert.equal(check.allowed, false);
-  assert.equal(check.action, "reviewrequired");
-  const solved = await contract.solve({ kind: "hcaptcha" });
-  assert.equal(contract.assert(solved).passed, true);
-  assert.equal(evidence({ kind: "hcaptcha", passed: true, data: "proof" }).sha256.length, 64);
-});
-
 it("chunks markdown and builds a deduplicated rag manifest", async () => {
   const markdown = "# Intro\n\nSaddle engine content.\n\n## Detail\n\nMore content.";
   const chunks = chunkmarkdown(markdown, { maxtokens: 20 });
@@ -817,9 +666,9 @@ it("keeps retrieval provenance and low-cardinality metrics", () => {
   assert.equal(merged.sources.length, 2);
   assert.equal(merged.chunks.length, 2);
   const metrics = metricstore();
-  metrics.count("scrape.completed", 1, { source: "test" });
-  metrics.observe("scrape.latency", 4, { source: "test" });
-  assert.equal(metrics.snapshot().counters['scrape.completed|[["source","test"]]'], 1);
+  metrics.count("engine.completed", 1, { source: "test" });
+  metrics.observe("engine.latency", 4, { source: "test" });
+  assert.equal(metrics.snapshot().counters['engine.completed|[["source","test"]]'], 1);
 });
 
 it("estimates token budgets and generates llms text", () => {
@@ -843,7 +692,7 @@ it("verifies signed webhooks and drops duplicate deliveries", async () => {
 });
 
 it("creates packaging surfaces for n8n and browser targets", async () => {
-  const manifest = surfacemanifest({ target: "n8n", capabilities: ["scrape"] });
+  const manifest = surfacemanifest({ target: "n8n", capabilities: ["memory"] });
   assert.equal(surfacebundle(manifest).install, "n8n import");
   const node = n8nnode({ name: "saddle" });
   const output = await n8nexecute(node, { command: "status" }, async ({ input }) => input.command);
@@ -859,9 +708,11 @@ it("defines caller-owned desktop mobile and n8n surface contracts", async () => 
   const adapter = desktopadapter({ handlers: { status: async () => ({ ready: true }) } });
   assert.deepEqual((await adapter.invoke("status")).result, { ready: true });
   assert.equal((await mobileadapter().invoke("status")).supported, false);
-  const node = n8nnode({ triggers: ["webhook"], actions: ["scrape"] });
+  const node = n8nnode({ triggers: ["webhook"], actions: ["browser"] });
   assert.equal(n8nmatch(node, { type: "webhook" }).matched, true);
-  assert.equal(n8nactions.includes("crawl"), true);
+  assert.equal(n8nactions.includes("scrape"), false);
+  assert.equal(n8nactions.includes("crawl"), false);
+  assert.equal(n8nactions.includes("browser"), true);
   await assert.rejects(() => n8nexecute(node, { command: "status" }, async () => "no"), /unsupported n8n action/);
 });
 
@@ -914,18 +765,6 @@ it("bridges browser worker messages through an injected dispatcher", async () =>
   await handler({ data: { requestid: "worker1", value: "ok" } });
   assert.deepEqual(responses[0], { ok: true, requestid: "worker1", data: { echoed: "ok" } });
   bridge.close();
-});
-
-it("exposes public scrape formats and batch progress", async () => {
-  const fetcher = async () => ({ ok: true, status: 200, text: async () => "<title>Page</title><p>Content here.</p>" });
-  const result = await scrapeurl("https://example.com", { fetcher, format: "markdown" });
-  assert.equal(result.serialized.includes("# Page"), true);
-  assert.equal(scrapehtml("<title>Page</title><p>Content</p>").content.includes("Content"), true);
-  assert.equal(serializeresult(result, { format: "text" }).includes("Content"), true);
-  assert.equal(formatforagent(result).chunks.length > 0, true);
-  let progress;
-  assert.equal((await batchscrape({ urls: ["https://example.com", "https://example.com/two"], fetcher, onprogress: (value) => { progress = value; } })).length, 2);
-  assert.equal(progress.completed, 2);
 });
 
 it("delegates browser agent methods to an injected adapter", async () => {
