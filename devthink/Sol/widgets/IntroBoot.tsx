@@ -41,7 +41,7 @@ const BOOT_CSS = `
 .boot-sign__field { width: min(260px, calc(100vw - 96px)); min-height: 44px; padding: 0 14px; color: #f4f3ed; background: rgb(255 255 255 / 8%); border: 0; border-bottom: 1px solid rgb(255 255 255 / 30%); border-radius: 4px; outline: 0; font: 400 13px 'Geist Mono', monospace; }
 .boot-sign__field::placeholder { color: rgb(244 243 237 / 45%); }
 .boot-sign__field:focus { border-bottom-color: #4cc2ff; }
-.boot-sign__go { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 22px; color: #ffffff; background: #0067c0; border: 0; border-radius: 4px; font: 600 13px 'Urbanist', sans-serif; cursor: pointer; transition: background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)); }
+.boot-sign__go { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 22px; color: #f5f7fc; background: #0067c0; border: 0; border-radius: 4px; font: 600 13px 'Urbanist', sans-serif; cursor: pointer; transition: background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)); }
 .boot-sign__go:hover { background: #1975c5; }
 .boot-sign__go:active { transform: scale(0.98); }
 .boot-sign__go:focus-visible { outline: 2px solid #4cc2ff; outline-offset: 2px; }
