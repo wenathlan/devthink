@@ -12,7 +12,7 @@ describe("the costcert reconciliation artifact", () => {
   it("declares every accounting check of the release candidate reconciliation with its family and module", async () => {
     const source = await readFile("tests/costcert.ts", "utf8");
     const declarations = [
-      ...source.matchAll(/await entry\(\{ id: (\d+), title: "([^"]+)", family: "([^"]+)", module: "([^"]+)" \}/g),
+      ...source.matchAll(/await entry\(\s*\{\s*id: (\d+),\s*title: "([^"]+)",\s*family: "([^"]+)",\s*module: "([^"]+)"\s*,?\s*\}/g),
     ].map((match) => ({ id: Number(match[1]), title: match[2], family: match[3], module: match[4] }));
     expect(declarations).toHaveLength(9);
     expect(declarations.map((entry) => entry.id)).toEqual(Array.from({ length: 9 }, (_, index) => index + 1));

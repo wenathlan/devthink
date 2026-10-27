@@ -14,17 +14,17 @@ const artifactpath = "tests/artifacts/matrixverify.json";
 /** The fake tab provider of the matrix: one deterministic tab id per browser kind and per slot, so the kind cells bind tabs the same way on chromium, firefox and safari — the fake tab covers every browser kind the extension ships. */
 const faketabprovider = {
   kinds: ["chromium", "firefox", "safari"],
-  tabof(browser, slot) {
-    const base = { chromium: 100, firefox: 200, safari: 300 }[browser] ?? 0;
+  tabof(browser: string, slot: number) {
+    const base = ({ chromium: 100, firefox: 200, safari: 300 } as Record<string, number>)[browser] ?? 0;
     return base + slot;
   },
 };
 
 /** Collects one matrix cell with its outcome; the detail names what the cell covered and what it answered. */
-const cells = [];
+const cells: Array<{ family: string; name: string; outcome: string; detail: string }> = [];
 
 /** Runs one matrix cell body and records the outcome deterministically. */
-async function cell(spec, body) {
+async function cell(spec: { family: string; name: string }, body: () => Promise<string>) {
   try {
     const detail = await body();
     cells.push({ family: spec.family, name: spec.name, outcome: "pass", detail: detail ?? "" });
@@ -39,14 +39,19 @@ async function cell(spec, body) {
 }
 
 /** Asserts one condition with the message the failure reports. */
-function check(condition, message) {
+function check(condition: unknown, message: string) {
   if (!condition) throw new Error(message);
 }
 
 /** Runs one gate script as a subprocess cell and answers its one line summary. */
-async function runcells(script) {
+async function runcells(script: string) {
   const outcome = await execute(process.execPath, [script], { cwd: process.cwd() });
   return outcome.stdout.trim().split("\n").at(-1) ?? "";
+}
+
+/** One recorded gate report the matrix replays through its artifact: the summary fields the standing gates answer. */
+interface gatereport {
+  summary: { failed: number; open: number };
 }
 
 /** Runs the full matrix verification and answers the report the artifact records. */
@@ -263,7 +268,7 @@ export async function runmatrixverifysuite() {
     ["costcert", "tests/artifacts/costcert.json", (report) => report.summary.failed],
     ["doccheck", "tests/artifacts/doccheck.json", (report) => report.summary.failed],
     ["sweep", "tests/artifacts/sweep.json", (report) => report.summary.open],
-  ]) {
+  ] as Array<[string, string, (report: gatereport) => number]>) {
     await cell({ family: "gates", name: `the ${gate} artifact records a green run` }, async () => {
       check(existsSync(artifact), `the ${gate} artifact is absent; run the gate before the matrix`);
       const report = JSON.parse(await readFile(artifact, "utf8"));

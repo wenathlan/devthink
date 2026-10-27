@@ -136,7 +136,7 @@ async function parsepool() {
 }
 
 /** The stem forms one token carries: the plain form, the progressive without its ing, the plural without its s and the past without its ed — the shipped symbols name their concepts in the plain form, so the inflected variants of one pool item still match. */
-function stems(token) {
+function stems(token: string) {
   const forms = [token];
   if (token.endsWith("ing") && token.length - 3 >= 4) forms.push(token.slice(0, -3));
   if (token.endsWith("es") && token.length - 2 >= 4) forms.push(token.slice(0, -2));
@@ -145,8 +145,22 @@ function stems(token) {
   return forms;
 }
 
+/** One parsed pool item: the running number, the context group and the item text the harvest generator numbered. */
+interface poolitem {
+  id: number;
+  group: string;
+  text: string;
+}
+
+/** The disposition of one pool item against the shipped corpus, with its token and match counts. */
+interface disposition {
+  status: "implemented" | "planned" | "unknown";
+  tokens: number;
+  matched: number;
+}
+
 /** Matches one pool item against the corpus: an item is implemented when at least half its vocabulary tokens appear inside a shipped symbol or contain a shipped symbol themselves (in any of their stem forms), planned when the match is partial, unknown when no token matches. */
-function dispositionof(item, corpus) {
+function dispositionof(item: poolitem, corpus: Set<string>): disposition {
   const tokens = item.text
     .toLowerCase()
     .split(/[^a-z0-9]+/)
@@ -166,12 +180,20 @@ function dispositionof(item, corpus) {
   return { status: "unknown", tokens: tokens.length, matched: matched.length };
 }
 
+/** One context group of the pool report: the total and per disposition counts of its items. */
+interface groupcounts {
+  total: number;
+  implemented: number;
+  planned: number;
+  unknown: number;
+}
+
 /** Runs the pool audit suite and answers the report the artifact records. */
 export async function runpoolauditsuite() {
   const expectedcount = 626;
   const implementedfloor = 590;
-  const checks = [];
-  function record(name, ok, detail) {
+  const checks: Array<{ name: string; ok: boolean; detail: string }> = [];
+  function record(name: string, ok: boolean, detail: string) {
     checks.push({ name, ok, detail });
   }
   if (!existsSync("dist/index.js") || !existsSync("dist/policy.js") || !existsSync("dist/protocol.js")) {
@@ -212,7 +234,7 @@ export async function runpoolauditsuite() {
     counts.implemented >= implementedfloor,
     `${counts.implemented} implemented of the floor ${implementedfloor}; a regression below the floor fails the release`,
   );
-  const groups = {};
+  const groups: Record<string, groupcounts> = {};
   for (const item of items) {
     groups[item.group] ??= { total: 0, implemented: 0, planned: 0, unknown: 0 };
     groups[item.group].total += 1;
