@@ -10,10 +10,22 @@
  * through the body, and the deep base settling underneath — so the plate
  * reads as one lit surface instead of a flat fill. The depth stays inner
  * and disciplined: the rim light along the top shoulders, a soft grounded
- * shade along the bottom edge, no gloss, no grain, no tilt, no tinted
- * glow. On hover the tile raises the live flag and the stylesheet answers
- * with one quiet specular sweep across the face while the glyph lifts
- * half a unit and breathes three percent.
+ * shade along the bottom edge, no gloss, no grain, no tinted glow. On
+ * hover the tile raises the live flag and the stylesheet answers with the
+ * quiet specular sweep across the face while the glyph lifts half a unit
+ * and breathes three percent — and the whole icon leans its subtle tilt
+ * into the pointer over the perspective bed the tile carries.
+ *
+ * The animable grammar is the three-layer index the icon law mandates:
+ * every svg carries data-layer="bg" (the outer background — the squircle
+ * plate with the story gradient), data-layer="ring" (the contour — the
+ * ~1px inner chamfer stroke riding the squircle inset) and
+ * data-layer="glyph" (the inner parts — the thick fluent mark), so the
+ * stylesheet moves each layer on its own index: the plate hue walks its
+ * 9s duty cycle while the background breathes inside the ring, the
+ * contour catches light on the live flag, and the glyph answers with its
+ * inline lift. The root svg carries the dt-appicon-anim class — the hook
+ * the animation ladder of sol.css keys every layer move on.
  *
  * One plate helper renders the shared material keyed on unique ids per
  * app icon (dti-<key>): the identity gradient itself (userSpaceOnUse, so
@@ -62,6 +74,16 @@ const STROKE_SOFT = 2.7;
 /** the rounded-square plate of the set: the squircle feel at a ~12% corner
  *  radius over the shared 48x48 viewBox */
 const PLATE_FACE = "M6 0 H42 Q48 0 48 6 V42 Q48 48 42 48 H6 Q0 48 0 42 V6 Q0 0 6 0 Z";
+
+/** the contour the ring layer traces: the squircle face inset by ~1.6
+ *  units — the quiet machined chamfer holding the plate inside its edge,
+ *  stroked at ~1px in white at low alpha so it reads as depth, not a
+ *  border */
+const ringFace = "M6 1.6 H42 Q46.4 1.6 46.4 6 V42 Q46.4 46.4 42 46.4 H6 Q1.6 46.4 1.6 42 V6 Q1.6 1.6 6 1.6 Z";
+
+/** the rest stroke of the ring contour — white at low alpha, the rgb form
+ *  the css of the set can brighten on the live flag */
+const ringInk = "rgb(255 255 255 / 22%)";
 
 /** mixes a hex color toward white (t > 0) or toward black (t < 0) in sRGB —
  *  the tiny gain the identity gradient spends on its lit cap and its
@@ -153,11 +175,13 @@ function Plate({ uid, top, bottom }: { uid: string; top: string; bottom: string 
   );
 }
 
-/** The shared face every icon renders through: the plate helper under the
- *  bold glyph group and the clipped sheen band over it, the box pinned by
- *  the size prop or filling the tile. One component identity for the whole
- *  icon wall; the per-icon identity arrives by the plate spec the bound
- *  wrapper froze in its closure. */
+/** The shared face every icon renders through: the three indexed layers of
+ *  the animable grammar — the bg group (the plate helper under the story
+ *  gradient), the ring path (the inner contour at the squircle inset) and
+ *  the glyph group (the inner parts) — with the clipped sheen band over
+ *  them, the box pinned by the size prop or filling the tile. One
+ *  component identity for the whole icon wall; the per-icon identity
+ *  arrives by the plate spec the bound wrapper froze in its closure. */
 interface FluentIconFaceProps extends AppIconProps {
   /** the namespaced gradient id prefix of this icon (dti-<key>) */
   uid: string;
@@ -173,16 +197,27 @@ function FluentIconFace({ size, live, uid, plate }: FluentIconFaceProps) {
   };
   return (
     <svg
-      className="dtIcon"
+      className="dtIcon dt-appicon-anim"
       viewBox="0 0 48 48"
       style={box}
       data-live={live ? "true" : undefined}
       aria-hidden="true"
       focusable="false"
     >
-      <Plate uid={uid} top={plate.top} bottom={plate.bottom} />
+      {/* layer 3 — the outer background: the plate the story gradient of the
+          app paints; the stylesheet breathes it inside the ring on the
+          ambient duty cycle while the hue walks at the root */}
+      <g className="dtIconPlate" data-layer="bg">
+        <Plate uid={uid} top={plate.top} bottom={plate.bottom} />
+      </g>
+      {/* layer 2 — the ring: the inner contour stroke at the squircle inset,
+          the quiet chamfer that catches light while the tile is live */}
+      <path className="dtIconRing" data-layer="ring" d={ringFace} fill="none" stroke={ringInk} strokeWidth="1" />
+      {/* layer 1 — the inner parts: the bold glyph over the moving plate,
+          lifting half a unit while the live flag is up */}
       <g
         className="dtIconGlyph"
+        data-layer="glyph"
         fill="none"
         stroke={GLYPH_INK}
         strokeWidth={STROKE}

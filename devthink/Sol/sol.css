@@ -18028,6 +18028,203 @@ button.dtc-recents__row {
   opacity: 0;
 }
 
+/* ==========================================================================
+   THE PREMIUM APPICON ANIM — the three-layer grammar upgrade (wave 5)
+   The drawn set grew its animable depth: every icon svg now carries the
+   three indexed layers the icon law mandates — data-layer="bg" (the outer
+   background: the squircle plate with the story gradient), data-layer="ring"
+   (the contour: the ~1px inner chamfer stroke at the squircle inset) and
+   data-layer="glyph" (the inner parts: the thick fluent mark) — so this
+   ladder moves each layer on its own index while the svg stays one
+   complete drawing (zero emoji, zero external glyph libraries; the fluent
+   marks ride the plates). The moves, all on the token system:
+   - the gradient movement: the plate hue walks one quiet step around its
+     story on the 9s duty cycle while the bg layer breathes a 2.8% scale
+     inside the ring — the gradient reads as moving inside the glyph. The
+     hue walk rides the icon root (not the bg group alone) on purpose: the
+     plate-toned cutouts — the chat dots, the gear bore — live in the glyph
+     layer, so the whole icon must drift together or the holes would part
+     from the plate behind them;
+   - the hover tilt: the tile (the wrapper) carries the perspective bed
+     and the icon answers the live flag with the ~3° lean of a lit plate
+     (max 4° of the law) — the taskbar pins, the start cells and the
+     desktop cells all raise the flag from their whole hit area, and the
+     keyboard focus of those wrappers plays the same lean;
+   - the sheen: a css glint band slides across the tile face on the live
+     flag and seats at low opacity — the svg keeps its own one-pass
+     specular sweep, so the two compose (the sweep crosses, the glint
+     seats);
+   - the press: the house press physics seat (scale .96, the 150ms micro
+     curve) keyed on the active state of the interactive hosts (button or
+     link — :active matches the pressed element and its ancestors, never
+     its descendants, so the key rides the wrapper), composing with the
+     per-context tile presses (the desktop cell keeps its deeper .7 seat
+     — no fight, they multiply).
+   Class family: .dt-appicon-anim (the icon root the set emits) plus the
+   [data-layer] hooks; tokens: --ease-micro; durations ride the established
+   appicon patterns (the 150ms micro, the 480ms sweep family, the 9s duty
+   cycle). Guards: prefers-reduced-motion and the [data-motion="reduced"]
+   runtime flag flatten the travel to still plates;
+   prefers-reduced-transparency drops the glint (solid plates stay).
+   ========================================================================== */
+
+/* -- 1. the ambient story: the plate hue walks its duty cycle at the root
+        while the bg layer breathes inside the ring (transform only on the
+        layer — the compositor owns both moves) -- */
+.dt-appicon-anim {
+  animation: dtAppiconHue 9s ease-in-out infinite alternate;
+  transition: transform 150ms var(--ease-micro);
+}
+
+@keyframes dtAppiconHue {
+  from {
+    filter: hue-rotate(0deg);
+  }
+  to {
+    filter: hue-rotate(7deg);
+  }
+}
+
+.dt-appicon-anim [data-layer="bg"] {
+  transform-box: view-box;
+  transform-origin: 24px 24px;
+  animation: dtAppiconDrift 9s ease-in-out infinite alternate;
+}
+
+@keyframes dtAppiconDrift {
+  from {
+    transform: scale(1) translateY(0);
+  }
+  to {
+    transform: scale(1.028) translateY(-0.6px);
+  }
+}
+
+/* -- 2. the ring: the contour catches light while the flag is up — the
+        machined chamfer answers the pointer with one quiet brighten -- */
+.dt-appicon-anim [data-layer="ring"] {
+  transition: stroke 150ms var(--ease-micro);
+}
+
+.dt-appicon-anim[data-live="true"] [data-layer="ring"] {
+  stroke: rgb(255 255 255 / 34%);
+}
+
+/* -- 3. the hover tilt: the premium tile carries the perspective bed (and
+        the positioned box the glint band measures itself against); the
+        icon leans into the pointer on the live flag, and the keyboard
+        focus of the three wrappers plays the same lean -- */
+.dt-tile[data-tile="set"] {
+  position: relative;
+  perspective: 320px;
+}
+
+.dt-appicon-anim[data-live="true"],
+.dsk-cell:focus-visible .dt-appicon-anim,
+.dt-start__app:focus-visible .dt-appicon-anim,
+.dt-nav__app:focus-visible .dt-appicon-anim {
+  transform: rotateX(2.6deg) rotateY(-2.2deg);
+}
+
+/* -- 4. the sheen: the css glint band — one soft diagonal highlight that
+        slides across the tile face on the live flag and seats at low
+        opacity (the svg sweep crosses once on top of it; the band itself
+        is out of flow, so the svg keeps its centered grid seat) -- */
+.dt-tile[data-tile="set"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-72%);
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    transparent 34%,
+    rgb(255 255 255 / 34%) 50%,
+    transparent 66%,
+    transparent 100%
+  );
+  transition: opacity 150ms var(--ease-micro), transform 480ms var(--ease-micro);
+}
+
+.dt-tile[data-tile="set"][data-live="true"]::after {
+  opacity: 0.16;
+  transform: translateX(0);
+}
+
+/* -- 5. the press: the house press physics seat — the icon answers the
+        active press of any interactive host (button or link) with the
+        0.96 seat, composing with the per-context tile presses (the desktop
+        cell keeps its deeper .7 — they multiply, they never fight) -- */
+:is(button, a):active .dt-appicon-anim {
+  transform: scale(0.96);
+}
+
+/* the motion law: the story stops on a reduced-motion surface — the hue
+   walk, the bg breath and the travel flatten to still plates (the ring
+   keeps its brighten as a quiet state change; the glint fades in place;
+   the press keeps its seat, seated at once) */
+@media (prefers-reduced-motion: reduce) {
+  .dt-appicon-anim,
+  .dt-appicon-anim [data-layer="bg"] {
+    animation: none;
+  }
+
+  .dt-appicon-anim {
+    transition: none;
+  }
+
+  .dt-appicon-anim[data-live="true"],
+  .dsk-cell:focus-visible .dt-appicon-anim,
+  .dt-start__app:focus-visible .dt-appicon-anim,
+  .dt-nav__app:focus-visible .dt-appicon-anim {
+    transform: none;
+  }
+
+  :is(button, a):active .dt-appicon-anim {
+    transform: scale(0.96);
+  }
+
+  .dt-tile[data-tile="set"]::after {
+    transform: none;
+    transition: opacity 150ms var(--ease-micro);
+  }
+}
+
+[data-motion="reduced"] .dt-appicon-anim,
+[data-motion="reduced"] .dt-appicon-anim [data-layer="bg"] {
+  animation: none;
+}
+
+[data-motion="reduced"] .dt-appicon-anim {
+  transition: none;
+}
+
+[data-motion="reduced"] .dt-appicon-anim[data-live="true"],
+[data-motion="reduced"] :is(.dsk-cell, .dt-start__app, .dt-nav__app):focus-visible .dt-appicon-anim {
+  transform: none;
+}
+
+[data-motion="reduced"] :is(button, a):active .dt-appicon-anim,
+[data-motion="reduced"] :is(button, a):active .dt-appicon-anim[data-live="true"] {
+  transform: scale(0.96);
+}
+
+[data-motion="reduced"] .dt-tile[data-tile="set"]::after {
+  transform: none;
+  transition: opacity 150ms var(--ease-micro);
+}
+
+/* the transparency law: the glint is pure veil — the solid plates stay,
+   the band drops */
+@media (prefers-reduced-transparency: reduce) {
+  .dt-tile[data-tile="set"]::after {
+    display: none;
+  }
+}
+
 /**
  * @section trio craft pass — the finish of the settings shell, the console
  * deck and the My Files explorer
