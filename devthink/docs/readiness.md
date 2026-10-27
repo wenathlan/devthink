@@ -1,6 +1,6 @@
 # Release readiness review
 
-The readiness gate of the 2.0.150 platform release walked every release gate of the chain against the evidence the candidate lanes recorded. The gate reads the pool audit, the sweep, the verification matrix, the pentest checklist, the doc check, the agent and cost certifications, the recipes runner, the telemetry free verification, the permission diff and the api freeze record, verifies the source level guarantees the artifacts cannot carry and answers the go decision below. The runner lives in `tests/readiness.mjs`, the verdict artifact in `tests/artifacts/readiness.json` and the entry joins the verification lane as the final gate of the release.
+The readiness gate of the 2.0.150 platform release walked every release gate of the chain against the evidence the candidate lanes recorded. The gate reads the pool audit, the sweep, the verification matrix, the pentest checklist, the doc check, the agent and cost certifications, the recipes runner, the telemetry free verification, the permission diff and the api freeze record, verifies the source level guarantees the artifacts cannot carry and answers the go decision below. The runner lives in `tests/readiness.ts`, the verdict artifact in `tests/artifacts/readiness.json` and the entry joins the verification lane as the final gate of the release.
 
 ## The gate table
 

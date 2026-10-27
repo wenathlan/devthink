@@ -31,7 +31,7 @@ describe("nugetpack", () => {
     expect(paths).toContain("contentFiles/any/any/fixtures/example-org-pagestate.json");
     expect(paths).toContain("contentFiles/any/any/fixtures/plans/release-notes-plan.json");
     expect(paths).toContain("contentFiles/any/any/fixtures/plans/form-inventory-plan.json");
-    expect(paths).toContain("contentFiles/any/any/fixtures/mcp-client.mjs");
+    expect(paths).toContain("contentFiles/any/any/fixtures/mcp-client.ts");
   });
 
   it("declares the framework targets matching the csproj profile", () => {

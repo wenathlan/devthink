@@ -26,8 +26,8 @@ import {
   browserIdentity,
   browserStoreSummary,
   readBrowserPreferences,
-  saveBrowserPreference } from "../../storagefamily.ts";
-import { gatewayJson, gatewayReady } from "../../gatewayfamily.js";
+  saveBrowserPreference } from "../../storage.ts";
+import { gatewayJson, gatewayReady } from "../../gateway.js";
 import {
   type AccountSessionState,
   accountbearer,
@@ -35,7 +35,7 @@ import {
   clearaccountsession,
   restoreonce,
   revokeaccountsessionbearer,
-} from "../../authfamily.ts";
+} from "../../account.ts";
 import { AboutSettings } from "../widgets";
 import { AccountsCategory } from "../widgets";
 import { AutomationMcp } from "../widgets";

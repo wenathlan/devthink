@@ -18,8 +18,8 @@
  *
  * Every figure is real: the capacity bar reads the storage manager's
  * allocation for the origin store, the drives read the machine's drive
- * registry (storagefamily.ts §harddrives), the record counts read the live
- * store summary (storagefamily.ts §db) and every folder holds the honest
+ * registry (storage.ts §harddrives), the record counts read the live
+ * store summary (storage.ts §db) and every folder holds the honest
  * records of its category (the
  * installed apps of the registry, the docs library modules, the runner
  * binaries, the studio catalog rows). An empty category answers "empty
@@ -29,7 +29,7 @@
  * account creates ride the real storage lane of the server (POST
  * /api/v1/storage/objects, the vault-shaped object contract — the folder
  * directory is one stored object the surface reads and writes through the
- * lane client of gatewayfamily.ts §7), the lane stays the only canonical
+ * lane client of gateway.ts §7), the lane stays the only canonical
  * store, and every state answers itself honestly: the skeleton while the
  * directory reads, the inline refusal line when the lane refuses, the
  * offline line when no lane stands, the empty answer when the directory
@@ -93,13 +93,13 @@ import {
   SHELL_FOLDER_ORDER,
   sortitems,
 } from "../../fileexplorer.ts";
-import { browserIdentity, browserStoreSummary, drives, type HardDrive } from "../../storagefamily.ts";
+import { browserIdentity, browserStoreSummary, drives, type HardDrive } from "../../storage.ts";
 import {
   putstorageobject,
   storageobject,
   storageusage,
   type StorageLaneUsage,
-} from "../../gatewayfamily.ts";
+} from "../../gateway.ts";
 import { ShellChrome } from "@/widgets/Shellchrome";
 import { AppTile } from "@/widgets";
 import { DriveIcon, PlanFolderIcon, PlatformMark, ShellFolderIcon, ThisPcMark } from "../widgets";
@@ -165,7 +165,7 @@ function folderregistrynames(content: string): string[] {
  * storage family keeps); the lane "New folder" rides the plan folders
  * section below */
 async function createnewdrive(): Promise<HardDrive> {
-  const { newdrive } = await import("../../storagefamily.ts");
+  const { newdrive } = await import("../../storage.ts");
   return newdrive(undefined);
 }
 
@@ -337,7 +337,7 @@ export default function Files({ embedded }: { embedded?: boolean }) {
   const mountdrive = useCallback(async (driveId: string) => {
     setBusy(true);
     try {
-      const { opendrive } = await import("../../storagefamily.ts");
+      const { opendrive } = await import("../../storage.ts");
       await opendrive(driveId);
       // the store rehydrates from the mounted owner: a fresh boot reads it
       window.location.reload();

@@ -10,7 +10,7 @@
  */
 import { PersonRegular, PlugDisconnectedRegular } from "@fluentui/react-icons";
 import { copy } from "../../copy";
-import type { AccountSessionState } from "../../authfamily.ts";
+import type { AccountSessionState } from "../../account.ts";
 import { LocalAccount } from "./SettingsIdentity";
 import { SettingsRow } from "./SettingsRow";
 import type { SettingsSnapshot } from "./Settingstypes";

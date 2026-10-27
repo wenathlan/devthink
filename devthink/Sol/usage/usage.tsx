@@ -19,8 +19,8 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ShellChrome } from "@/widgets/Shellchrome";
 import { osAppLabels } from "../../catalog";
-import { browserStoreSummary } from "../../storagefamily.ts";
-import { gatewayJson, gatewayReady } from "../../gatewayfamily.js";
+import { browserStoreSummary } from "../../storage.ts";
+import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { osText } from "../../oslabels.ts";
 import { type Usage as UsageData, UsageMeasures } from "../widgets";
 

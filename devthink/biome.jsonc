@@ -106,7 +106,7 @@
       }
     },
     {
-      "includes": ["tests/workflowcheck.mjs"],
+      "includes": ["tests/workflowcheck.ts"],
       "linter": {
         "rules": {
           "suspicious": {

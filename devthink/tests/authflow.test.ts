@@ -7,7 +7,7 @@
  * verdict.
  */
 import { describe, expect, it } from "vitest";
-import { afterAuthTarget, handoverPath, normalizeGateway, pairingReadiness, safegatewayurl } from "../gatewayfamily";
+import { afterAuthTarget, handoverPath, normalizeGateway, pairingReadiness, safegatewayurl } from "../gateway";
 
 describe("the post-auth redirect guard", () => {
   it("lands on the creation panel by default", () => {

@@ -50,7 +50,7 @@ import type {
   providerconfig,
   tooldef,
 } from "../types.js";
-import { startgatewayfixtureserver } from "./gatewayserver.mjs";
+import { startgatewayfixtureserver } from "./gatewayserver.ts";
 
 const now = 1_800_000_000_000;
 const instant = (): Promise<void> => Promise.resolve();
@@ -863,7 +863,7 @@ describe("hardcoded provider url scan of the source tree", () => {
     for (const path of files) await access(path);
 
     for (const entry of await readdir(join(root, "tests")))
-      if (entry.endsWith(".mjs")) files.push(join(root, "tests", entry));
+      if (entry.endsWith(".ts")) files.push(join(root, "tests", entry));
     expect(files.length).toBeGreaterThan(50);
     const providerhosts = [
       /api\.openai\.com/,

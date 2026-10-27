@@ -16,8 +16,8 @@ import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ShellChrome } from "@/widgets/Shellchrome";
 import { osAppLabels } from "../../catalog";
-import { browserWorkspaces } from "../../storagefamily.ts";
-import { gatewayJson, gatewayReady } from "../../gatewayfamily.js";
+import { browserWorkspaces } from "../../storage.ts";
+import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { osText } from "../../oslabels.ts";
 import { ProjectRows } from "../widgets";
 

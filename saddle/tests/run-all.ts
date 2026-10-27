@@ -27,14 +27,14 @@ async function run(label: string, cmd: string, args: string[], opts: Record<stri
 }
 
 console.log('='.repeat(55));
-console.log('  DevThink Webscrape — Test Runner');
+console.log('  DevThink Saddle — the sandbox engine test runner');
 console.log('='.repeat(55));
 console.log(`  CWD: ${WS_ROOT}`);
 console.log('='.repeat(55));
 
 const start = Date.now();
 
-await run('Vitest (core + agent-utils)', 'npx', ['vitest', 'run']);
+await run('Vitest (the engine suites)', 'npx', ['vitest', 'run']);
 
 const elapsed = ((Date.now() - start) / 1000).toFixed(1);
 

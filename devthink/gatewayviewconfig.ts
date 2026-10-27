@@ -28,7 +28,7 @@
  * use the cli to scaffold a fresh config (gateway init) and edit the values
  */
 
-import type { gatewaydefinition } from "./gatewayfamily.ts";
+import type { gatewaydefinition } from "./gateway.ts";
 
 export const config: gatewaydefinition = {
   name: "DevThink Gateway",
