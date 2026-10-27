@@ -69,6 +69,7 @@ export * from "./PanelWorkspace.tsx";
 export * from "./ProjectsRows.tsx";
 export * from "./ProvidersCard.tsx";
 export * from "./ProvidersList.tsx";
+export * from "./Saasglyphs.tsx";
 export * from "./SettingsAbout.tsx";
 export * from "./SettingsAccentrow.tsx";
 export * from "./SettingsAccountscategory.tsx";
