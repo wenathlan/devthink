@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/devthink",
-  "version": "2.0.150",
+  "version": "2.0.151",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
@@ -27,7 +27,7 @@
     "@libsql/client": "^0.18.0",
     "@prisma/adapter-libsql": "^7.10.1",
     "@prisma/client": "^7.10.1",
-    "@wenathlan/saddle": "^2.1.6",
+    "@wenathlan/saddle": "^2.0.150",
     "hono": "^4.13.14",
     "ink": "^7.1.1",
     "motion": "^12.43.0",
@@ -82,7 +82,7 @@
     "@vitejs/plugin-react": "^6.1.2",
     "add": "^2.0.9",
     "autoprefixer": "^10.6.2",
-    "axios": "^1.20.0",
+    "axios": "^1.21.0",
     "better-sqlite3": "^13.0.3",
     "bun-types": "^1.4.4",
     "class-variance-authority": "^0.7.1",
