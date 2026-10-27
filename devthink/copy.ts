@@ -51,7 +51,7 @@ const SEED: Readonly<Record<string, string>> = Object.freeze({
   "plans.tier.free.headline": "free",
   "plans.tier.pro.headline": "pro",
   "plans.tier.enterprise.headline": "enterprise",
-  "auth.oauth.headline": "Continue with DevThink",
+  "auth.oauth.row": "Sign-in providers",
   "auth.oauth.google": "Continue with Google",
   "auth.oauth.github": "Continue with GitHub",
   "auth.oauth.gitlab": "Continue with GitLab",

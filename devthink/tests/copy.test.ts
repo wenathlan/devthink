@@ -4,6 +4,8 @@
 // literals live for the build to bake. runnable with vitest:
 // pnpm vitest run tests/copy.test.ts
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, it } from "vitest";
 import { copy, copyseed } from "../copy.ts";
 
@@ -26,15 +28,37 @@ describe("the copy store", () => {
     }
   });
 
-  it("the provider row wears the provider button grammar — continue with google and the family, zero separator ornaments", () => {
+  it("the provider row answers the icon law — the brand marks ride alone, the continue with words stay as the accessible names", () => {
     const brandnames = { google: "Google", github: "GitHub", gitlab: "GitLab" } as Record<string, string>;
     for (const provider of ["google", "github", "gitlab"]) {
       const label = copy(`auth.oauth.${provider}`);
-      assert.equal(label, `Continue with ${brandnames[provider]}`, `the ${provider} label carries the standard button grammar`);
-      assert.ok(!label.includes("·"), `the ${provider} label never carries the separator ornament`);
+      assert.equal(
+        label,
+        `Continue with ${brandnames[provider]}`,
+        `the ${provider} name carries the standard button grammar`,
+      );
+      assert.ok(!label.includes("·"), `the ${provider} name never carries the separator ornament`);
     }
     // the cli pairing row answers the same simple grammar the owner ordered
     assert.equal(copy("auth.cli"), "Continue with CLI");
+    // the continue-with headline dies with the icon-only row — the words
+    // never print again (the row group keeps its own accessible name)
+    assert.equal(copy("auth.oauth.headline"), "auth.oauth.headline");
+    assert.ok(copy("auth.oauth.row").length > 0, "the row group keeps its accessible name");
+    // the component renders the marks alone: zero visible label element,
+    // zero headline element, and every icon button carries its accessible
+    // name from the copy store (an icon without a name is banned)
+    const source = readFileSync(join(import.meta.dirname, "..", "Sol", "widgets", "AuthProviderrow.tsx"), "utf8");
+    assert.ok(!source.includes("dt-oauthrow__label"), "the visible label element is gone from the row");
+    assert.ok(!source.includes("dt-oauthrow__headline"), "the headline element is gone from the row");
+    assert.ok(
+      source.includes("aria-label={copy(`auth.oauth.${entry.provider}`)}"),
+      "every provider button carries its accessible name from the copy store",
+    );
+    assert.ok(
+      source.includes('aria-label={copy("auth.cli")}'),
+      "the cli button carries its accessible name from the copy store",
+    );
     // the back to the clock row and the options disclosure are gone by the owner order
     assert.equal(copy("auth.signin.back"), "auth.signin.back");
     assert.equal(copy("auth.signin.options"), "auth.signin.options");
