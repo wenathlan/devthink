@@ -35,10 +35,12 @@
  * compact paths — bold filled silhouettes for the app identities, round
  * capped strokes for the line work, translucent white second planes for
  * layered depth — every mark living inside the ~11..37 optical band
- * around the plate center and carrying at most one plate-toned cutout
- * idea (the chat dots, the gear bore, the vault keyhole) so the set
- * stays legible from the 16px taskbar pin through the 32px start cell to
- * the desktop tile.
+ * around the plate center (the official os mark alone rides its own
+ * authored extents, its 800x800 logo box scaled whole onto the plate)
+ * and carrying at most one plate-toned cutout idea (the chat dots, the
+ * gear bore, the vault keyhole, the mark star) so the set stays legible
+ * from the 16px taskbar pin through the 32px start cell to the desktop
+ * tile.
  *
  * The components stay pure presentational: props in, svg out — no hooks,
  * no injected stylesheet, no external assets, no raster. The size prop
@@ -49,8 +51,10 @@
  * foundry the slate strata, getry the sage route, saddle the taupe
  * crate, stealthhead the coral visor, vault the deep-gold shield — the
  * family shares one plate material and one glyph discipline while every
- * member keeps its own silhouette, and the os surfaces ride their own
- * calm hues over the same plate.
+ * member keeps its own silhouette, and the os tile wears the official
+ * mark itself — the two canonical logo paths, the frame in the glyph ink
+ * over the star cut back to the plate tone — on its own calm steel of
+ * the same plate.
  */
 import type { ComponentType, CSSProperties, ReactElement } from "react";
 
@@ -517,17 +521,57 @@ export const ExploreIcon: ComponentType<AppIconProps> = (props: AppIconProps) =>
   <FluentIconFace {...props} uid="dti-explore" plate={ExploreIcon_PLATE} />
 );
 
-/** OS — the family operating surface: a steel plate carrying the window
- *  drawn as one filled rounded square, its four panes cut back to the
- *  plate tone by the cross seam. */
+/** the star core of the official devthink mark — the first of the two
+ *  canonical logo paths (the 800x800 viewbox of logo.tsx), transcribed
+ *  verbatim so the os tile wears exactly the mark the panel carries */
+const CORE_PATH =
+  "m111.246 554.483 311.148-132.035c17.311-7.346 35.01-6.438 50.73 2.603l215.63 124.001-257.93-198.009c-14.35-11.017-20.741-26.815-21.096-45.306L404.81 48.985l-39.884 333.29c-2.21 18.466-13.3 33.262-29.635 42.703z";
+
+/** the hexagon frame of the official mark — the second canonical path,
+ *  drawn over the star in the official paint order */
+const FRAME_PATH =
+  "m187.507 510.586 5.665 10.27 200.806 126.509 10.125.012 192.746-120.802c6.182-3.875 10.271-9.165 12.459-16.126l2.481-7.887-5.286-3.756-22.835-16.868-3.901 3.904-.001 2.46c-.002 11.406-5.636 21.592-15.303 27.648l-147.928 92.709c-10.752 6.739-23.987 6.724-34.723-.04l-147.119-92.686c-9.592-6.044-15.237-16.266-15.236-27.606l-.001-176.655c0-11.379 5.608-21.543 15.235-27.607l147.122-92.683c10.733-6.763 23.976-6.779 34.723-.043l147.928 92.711c9.643 6.045 15.3 16.265 15.3 27.648l.021 138.629 2.128 2.128 28.452 20.018 2.128-2.125-.781-180.928-5.659-10.23-201.951-126.567-10.121.013-200.808 126.508-5.666 10.267z";
+
+/** the steel tones of the os plate — the calm family surface the official
+ *  mark rides, named once so the plate face and the mark-tone walk below
+ *  share the same pair */
+const OS_PLATE_TOP = "#8fabcf";
+const OS_PLATE_BASE = "#4f6d99";
+
+/** OS — the family operating surface: the steel plate carrying the official
+ *  devthink mark itself — the two canonical logo paths scaled whole from
+ *  their 800x800 viewbox onto the 48 plate by the centered 48/800 scale
+ *  (the mark is authored centered in its box, so the hexagon frame lands
+ *  dead center riding the optical band edge to edge while the star spikes
+ *  sweep past it, exactly the geometry the logo file draws), the frame
+ *  inked in the bold white glyph weight and the star core cut back to the
+ *  plate tone — the brand story on the family plate. */
 const OsIcon_PLATE: AppIconPlate = {
-  top: "#8fabcf",
-  bottom: "#4f6d99",
-  glyph: (tone) => (
+  top: OS_PLATE_TOP,
+  bottom: OS_PLATE_BASE,
+  glyph: () => (
     <>
-      <rect x="12.6" y="12.6" width="22.8" height="22.8" rx="4.6" fill={GLYPH_INK} stroke="none" />
-      <rect x="22.9" y="12.6" width="2.2" height="22.8" fill={tone} stroke="none" />
-      <rect x="12.6" y="22.9" width="22.8" height="2.2" fill={tone} stroke="none" />
+      <defs>
+        {/* the mark tone — the plate gradient re-declared over the mark's
+            own 800 box: a userSpaceOnUse gradient resolves in the local
+            space of the shape that references it, so inside the scaled
+            group the 0..48 plate walk would clamp the star flat to the
+            deep base; re-declaring the same three stops over 0..800 maps
+            one-to-one onto the centered 48/800 scale, so the star samples
+            the exact plate color at its own position. the id rides the
+            dti-os namespace of the bound wrapper below */}
+        <linearGradient id="dti-os-marktone" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="800">
+          <stop offset="0" stopColor={shade(OS_PLATE_TOP, 0.2)} />
+          <stop offset=".45" stopColor={OS_PLATE_TOP} />
+          <stop offset="1" stopColor={OS_PLATE_BASE} />
+        </linearGradient>
+      </defs>
+      {/* the official mark: both logo paths verbatim in their own 800x800
+          box, the star under the frame in the official paint order */}
+      <g fillRule="evenodd" stroke="none" transform="translate(0 0) scale(0.06)">
+        <path d={CORE_PATH} fill="url(#dti-os-marktone)" />
+        <path d={FRAME_PATH} fill={GLYPH_INK} />
+      </g>
     </>
   ),
 };
@@ -704,7 +748,7 @@ export const ArganIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
 );
 
 /** Cadria — the audio studio: a magenta plate carrying the live waveform —
- *  five rounded bars of uneven breath, the tall bar off-center. */
+ *  five rounded bars of uneven breath, the tall bar riding center. */
 const CadriaIcon_PLATE: AppIconPlate = {
   top: "#ef5fa4",
   bottom: "#cd2f7e",
