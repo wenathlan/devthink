@@ -29,6 +29,15 @@ const allowed = new Set([
   "anchore/sbom-action",
 ]);
 const latest = new Map();
+// the runner law rides the same stamper: the ts conversion retired every
+// .mjs runner of the battery, so any workflow still calling one walks to its
+// .ts twin — the transitional shims the landing carried answer the legacy
+// names while the stamps lag, and this pass retires them by pointing every
+// command at the real ts lane. the repair is idempotent, so a clean tree
+// answers unchanged and a drifted one converges back to the law.
+const repairs: Array<[RegExp, string]> = [
+  [/\b(tests\/[A-Za-z0-9][A-Za-z0-9._-]*)\.mjs\b/g, "$1.ts"],
+];
 async function versionfor(action: string) {
   if (!latest.has(action)) {
     const token = process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN;
@@ -44,6 +53,7 @@ async function versionfor(action: string) {
 }
 let drift = false;
 const skippedmajors = [];
+const runnerlaw: string[] = [];
 for (const file of (await readdir(join(repoRoot, ".github/workflows")))
   .filter((entry) => /\.ya?ml$/i.test(entry))
   .sort()) {
@@ -63,6 +73,10 @@ for (const file of (await readdir(join(repoRoot, ".github/workflows")))
     }
     if (version !== pinned) next = next.replace(`uses: ${action}@${pinned}`, `uses: ${action}@${version}`);
   }
+  let walked = next;
+  for (const [pattern, replacement] of repairs) walked = walked.replace(pattern, replacement);
+  if (walked !== next) runnerlaw.push(file);
+  next = walked;
   if (next !== current) {
     drift = true;
     if (mode === "sync") await writeFile(path, next);
@@ -72,7 +86,7 @@ if (drift && mode === "check")
   throw new Error("A mutable GitHub Action release tag is outdated. Run pnpm workflow:updates in a review branch.");
 console.log(
   JSON.stringify(
-    { mode, allowmajors, checked: allowed.size, skippedmajors, drift, immutablePinsPreserved: true },
+    { mode, allowmajors, checked: allowed.size, skippedmajors, runnerlaw, drift, immutablePinsPreserved: true },
     null,
     2,
   ),
