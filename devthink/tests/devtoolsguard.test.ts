@@ -17,7 +17,8 @@ import {
   installdevtoolsguard,
   ondevtoolstrip,
   showdevtoolsinterstitial,
-  suspenddevtoolsguard } from "../devtoolsguard.ts";
+  suspenddevtoolsguard,
+} from "../devtoolsguard.ts";
 
 /** the module source, read once: the structural contracts (no wipe
  * vector, no size heuristic) are asserted against the bytes the build
@@ -79,8 +80,16 @@ describe("the devtools guard", () => {
     assert.equal(source.includes("outerHeight"), false, "no outer height probe");
   });
 
-  it("keeps the console probe free of self reads (the override only a rendering console invokes)", () => {
+  it("keeps the console probe free of self reads and format strings (the lazy getter form)", () => {
     assert.equal(source.includes("String(probe)"), false, "the probe is never stringified");
     assert.equal(source.includes("`${"), false, "no template literal rides the module");
+    // the percent c lesson of the live false positive: the format directive
+    // stringifies its argument eagerly for every visitor — the plain object
+    // log is the only lazy form the wall may feed
+    assert.equal(source.includes('console.log("%c"'), false, "no format directive rides the probe log");
+    assert.equal(source.includes("console.log(consoleprobe)"), true, "the probe logs the plain object form");
+    // the probe is report-only: the wall stands on the debugger trap alone
+    assert.ok(source.includes("function report(signal: string): void"), "the report seam exists");
+    assert.ok(!/trip\("console\.getter"\)/.test(source), "the probe never stands the wall");
   });
 });

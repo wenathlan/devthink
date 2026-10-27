@@ -10,10 +10,18 @@
  *    length) so the wall costs almost nothing between bursts, and every
  *    tick checks the suspend seam first: suspended, the wall parks and
  *    never loops.
- * 2. the console-getter probe — a RegExp whose overridden toString only a
- *    rendering devtools console invokes. The module NEVER reads the
- *    override itself (the self-read form of the old shield tripped on
- *    every boot); the probe is only ever handed to console.log.
+ * 2. the console-getter probe — a plain object whose getter only a
+ *    rendering devtools console invokes (the object preview walks the
+ *    accessor when the panel expands it). The module NEVER reads the
+ *    getter itself and NEVER logs through a format string: the percent c
+ *    form the earlier revision carried made the console stringify the
+ *    argument eagerly at log time — the false positive that tripped the
+ *    wall on every visitor of the deployed site (verified live: the
+ *    percent c directive demands the css value before any panel opens).
+ *    The probe is REPORT-ONLY (the second signal): it reports through
+ *    the trip listeners so the server answers, but the wall interstitial
+ *    stands on the debugger trap alone — the one prong that cannot fire
+ *    without an attached debugger.
  *
  * The window-size heuristic is deliberately absent: browser zoom, edge
  * split screens and snapped windows all impersonate docked devtools — it
@@ -173,30 +181,37 @@ function walktrap(): void {
 
 /* --------------------------------- probe --------------------------------- */
 
-/** The console-getter probe (created once per install): devtools renders
- * the logged RegExp through the overridden toString — nothing else ever
- * calls it. */
-let consoleprobe: RegExp | null = null;
+/** The console-getter probe (created once per install): a plain object
+ * whose getter only a rendering devtools console invokes — the object
+ * preview walks the accessor when the panel formats or expands the row.
+ * The probe reports (the second signal); it never stands the wall. */
+type consoleprobeobject = { readonly devtools: number };
+let consoleprobe: consoleprobeobject | null = null;
 
-/** Builds the probe. The override only trips when a rendering console
- * formats the value; the module itself never reads the probe's strings —
+/** Builds the probe. The getter only fires when a rendering console
+ * formats the value; the module itself never reads the probe's accessor,
  * never stringifies it, never templates it (the self-read form of the old
- * shield blanked production on every boot). */
-function makeconsoleprobe(): RegExp {
-  const probe = /devthink/;
-  probe.toString = () => {
-    trip("console.getter");
-    return "";
+ * shield blanked production on every boot) and never logs it behind a
+ * format string (the percent c form stringified eagerly for every
+ * visitor — the live false positive of the deployed site). */
+function makeconsoleprobe(): consoleprobeobject {
+  return {
+    get devtools(): number {
+      report("console.getter");
+      return 0;
+    },
   };
-  return probe;
 }
 
 /** Hands the probe to the console: the log line itself never trips
- * anything, only a rendering devtools panel invoking the override does. */
+ * anything and never stringifies anything — only a rendering devtools
+ * panel invoking the getter reports. No format directive rides the call
+ * (percent c demands the css value eagerly; the plain object stays
+ * lazy). */
 function feedprobe(): void {
   if (!consoleprobe) return;
   try {
-    console.log("%c", consoleprobe);
+    console.log(consoleprobe);
   } catch {
     /* the console refused: not a trip */
   }
@@ -254,9 +269,26 @@ export function showdevtoolsinterstitial(): string | null {
 
 /* ---------------------------------- trip --------------------------------- */
 
+/** Reports a second-signal sighting without standing the wall (the
+ * console probe rides this): the listeners answer — the strike report of
+ * guard.ts rides the site api — but the interstitial never shows on a
+ * probe alone and the duty cycle keeps running (the trap stays armed for
+ * the real answer). */
+function report(signal: string): void {
+  for (const listener of listeners) {
+    try {
+      listener(signal);
+    } catch {
+      /* a listener failure never stops the wall */
+    }
+  }
+}
+
 /** Fires the wall once (the prongs converge here): the duty cycle parks
  * (the wall answered — no further polling, the study's rest-after-trip),
- * the interstitial stands, then the listeners answer. */
+ * the interstitial stands, then the listeners answer. Only the debugger
+ * trap calls this — the one prong that cannot fire without an attached
+ * debugger. */
 function trip(signal: string): void {
   if (state.tripped) return;
   state.tripped = true;
