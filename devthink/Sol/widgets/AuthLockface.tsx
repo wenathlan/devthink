@@ -12,6 +12,7 @@
  */
 import { ChevronUpRegular } from "@fluentui/react-icons";
 import { useEffect, useRef, useState } from "react";
+import { copy } from "../../copy.ts";
 
 export interface LockFaceProps {
   /** the unlock: the stage machine of the anchor lifts the lock into the
@@ -80,7 +81,7 @@ export function LockFace({ onUnlock }: LockFaceProps) {
       </div>
       <span className="dtw-login__hint">
         <ChevronUpRegular fontSize={18} aria-hidden="true" />
-        Swipe up to unlock
+        {copy("auth.lock.hint")}
       </span>
     </div>
   );
