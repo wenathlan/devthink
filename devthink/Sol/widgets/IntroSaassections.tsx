@@ -3,10 +3,24 @@
  * the OS statement and the inline engine switch, the creator cards and the
  * studio fan deck. Loose components of the intro page — the anchor
  * (intro.tsx) mounts the page (saas.tsx) and the page composes these. All
- * copy rides the landing data layer (saascontent.ts).
+ * copy rides the landing data layer (saascontent.ts) and the glyphs ride
+ * the fluent set.
  */
 
 import { useEffect, useState } from "react";
+import {
+  ArrowRightRegular as Arrowright,
+  ArrowUpRightRegular as Arrowupright,
+  AddRegular as Plus,
+  CheckmarkRegular as Check,
+  GlobeRegular as Globe,
+  HeartPulseRegular as Activity,
+  HeadphonesSoundWaveRegular as Wave,
+  MentionRegular as Atsign,
+  PlayRegular as Play,
+  ShareRegular as Share,
+  StarRegular as Star,
+} from "@fluentui/react-icons";
 import {
   saascreators,
   saascreatorsintro,
@@ -16,19 +30,6 @@ import {
   saastoasts,
 } from "../../saascontent.ts";
 import { SaddleTabBridge, SaddleTabBridgeUp, ScoopedCard, Studiomark, type studiomarkid } from "./IntroSaaskit.tsx";
-import {
-  Activity,
-  Arrowright,
-  Arrowupright,
-  Atsign,
-  Check,
-  Globe,
-  Play,
-  Plus,
-  Share,
-  Star,
-  Wave,
-} from "./Saasglyphs.tsx";
 
 type SectionProps = {
   /** the enter action: every launch path of the landing funnels to the login face */
