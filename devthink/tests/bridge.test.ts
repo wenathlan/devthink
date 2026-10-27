@@ -75,7 +75,7 @@ import {
 } from "../policy.js";
 import { bridgepayloadreport } from "../protocol.js";
 import type { agentplan, auditkind, bridgeeventrecord, bridgequeuerecord, bridgereviewcard } from "../types.js";
-import { starttestrelay } from "./testrelay.mjs";
+import { starttestrelay } from "./testrelay.ts";
 
 const now = 1_800_000_000_000;
 const capabilities = contractcapabilities();

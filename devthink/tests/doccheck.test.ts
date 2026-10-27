@@ -10,7 +10,7 @@ const execute = promisify(execFile);
 
 describe("the documentation consistency artifact", () => {
   it("declares every check family the gate runs over the documentation", async () => {
-    const source = await readFile("tests/doccheck.mjs", "utf8");
+    const source = await readFile("tests/doccheck.ts", "utf8");
     for (const family of [
       "kindcoverage",
       "kindfields",
@@ -36,10 +36,10 @@ describe("the documentation consistency artifact", () => {
     const built = existsSync("dist/policy.js");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
     /* a built tree runs the gate itself when no fresh artifact of this release exists, so every lane that builds before the suite verifies the documentation artifact without depending on gate ordering */
-    if (built && !existsSync(artifactpath)) await execute("node", ["tests/doccheck.mjs"]);
+    if (built && !existsSync(artifactpath)) await execute("node", ["tests/doccheck.ts"]);
     if (built && existsSync(artifactpath)) {
       const stored = JSON.parse(await readFile(artifactpath, "utf8")) as { release: string };
-      if (stored.release !== packagejson.version) await execute("node", ["tests/doccheck.mjs"]);
+      if (stored.release !== packagejson.version) await execute("node", ["tests/doccheck.ts"]);
     }
     const stored = existsSync(artifactpath);
     if (built) expect(stored).toBe(true);

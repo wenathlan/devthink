@@ -235,7 +235,7 @@ function nodebuiltinshim(): Plugin {
       if (source.startsWith("node:") && shimmed.has(source.slice("node:".length))) {
         return shimpath;
       }
-      /* the prisma client edge: the lazy db proxy of storagefamily.ts
+      /* the prisma client edge: the lazy db proxy of storage.ts
        * speaks a dynamic import("@prisma/client") on the first database
        * touch, and the browser condition of that package lands on
        * index-browser.js — a bare require of the generated .prisma/client

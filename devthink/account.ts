@@ -1,9 +1,9 @@
 /**
- * authfamily.ts — the ONE keyed file of the auth/identity family (root layer).
+ * account.ts — the ONE keyed file of the account/session family (root layer).
  *
  * The owner's law: every family of correlated logic lives in one keyed file
- * with a name that says the family. This file carries the whole
- * authentication and identity family of the platform — the local browser
+ * with a name that says the family. This file carries the whole account and
+ * session family of the platform — the local browser
  * account, the device identity and pairing ledger, the outbound url gate,
  * the provider oauth row contract, the server account lane and the browser
  * client of that lane — merged from six root modules (accountgate.ts,
@@ -40,7 +40,7 @@ import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { type DevThinkPaths, ensurePaths, resolvePaths } from "./config.js";
-import { lanefetch } from "./gatewayfamily.ts";
+import { lanefetch } from "./gateway.ts";
 import { createCompactId } from "./ids.js";
 import {
   browserIdentity,
@@ -48,7 +48,7 @@ import {
   saveBrowserCredential,
   saveBrowserPreference,
   sharedatabasedriver,
-} from "./storagefamily.ts";
+} from "./storage.ts";
 
 /* ============================================================================
  * @section 1 — accountgate: the local browser account of the os.
@@ -1417,7 +1417,7 @@ export async function exchangeoauthcode(
  * routes of server.ts — the account creation, the sign in, the oauth
  * exchange the callback page completes, the session summary and the
  * revoke. Every call resolves the server base through the ONE lane-client
- * seam of the gateway family (gatewayfamily.ts §5 — D8's single survivor,
+ * seam of the gateway family (gateway.ts §5 — D8's single survivor,
  * the same seam the sandbox and storage-usage clients ride): the paired
  * gateway context first (the guarded ?gateway= base with its ephemeral
  * bearer), then the chat's registered gateway preference. The verdict union keeps the three honest
@@ -1466,7 +1466,7 @@ export const ACCOUNT_OWNER_KEY = "devthink.account.owner";
  */
 
 /** accountfetch — one bounded json call against the resolved lane base:
- * the ONE lane-client seam of the gateway family (gatewayfamily.ts §5
+ * the ONE lane-client seam of the gateway family (gateway.ts §5
  * `lanefetch` — D8's single survivor) answers the raw response with the
  * base resolution (pairing context first, registered preference second),
  * the bearer, the ten-second bound and the null-on-transport-failure law.

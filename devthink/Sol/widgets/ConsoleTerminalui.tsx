@@ -3,14 +3,14 @@
 import { Box, render, Text, useApp, useInput, useWindowSize } from "ink";
 import { useMemo, useState } from "react";
 import type { DevThinkConfig, DevThinkPaths } from "../../config.js";
-import { getIdentity, pairingStatus } from "../../authfamily.js";
+import { getIdentity, pairingStatus } from "../../account.js";
 import { listProviders } from "../../providers.js";
 import {
   listSessions,
   readPreferences,
   savePreference,
   type Session,
-} from "../../storagefamily.js";
+} from "../../storage.js";
 import type { ChatEvent } from "../../streaming.js";
 import {
   isWorkspaceDestination,

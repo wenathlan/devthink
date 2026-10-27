@@ -1,6 +1,6 @@
 # Certified agent scenarios
 
-The six certified topologies of the multi agent certification describe every coordination shape the agentcert suite drives: each scenario lists its topology diagram, its cost characteristics, its consent model and its fake tab setup, and maps onto the pool items 469 through 502 the suite verifies. All six run inside `tests/agentcert.mjs` through the real compiled modules with the fake clock mode keeping every run deterministic; the per scenario verification lives in `docs/agentcert.md`.
+The six certified topologies of the multi agent certification describe every coordination shape the agentcert suite drives: each scenario lists its topology diagram, its cost characteristics, its consent model and its fake tab setup, and maps onto the pool items 469 through 502 the suite verifies. All six run inside `tests/agentcert.ts` through the real compiled modules with the fake clock mode keeping every run deterministic; the per scenario verification lives in `docs/agentcert.md`.
 
 The fake tab setup every scenario shares: the fake tab provider hands out one deterministic tab id per browser kind and per slot — chromium 101 and 102, firefox 201 and 202, safari 301 — so every agent binds a tab the same way on every browser kind the extension ships (chromium, firefox and safari), through the same one tab one agent invariant the live surface enforces.
 

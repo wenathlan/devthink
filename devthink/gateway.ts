@@ -1,5 +1,5 @@
 /**
- * gatewayfamily.ts — the ONE keyed file of the gateway family (root layer).
+ * gateway.ts — the ONE keyed file of the gateway family (root layer).
  *
  * The owner's law: every family of correlated logic lives in one keyed file
  * with a name that says the family. This file carries the whole gateway
@@ -29,7 +29,7 @@
  *     timeout, null answer on every failure mode). The three lane clients
  *     keep their thin typed wrappers so their verdict unions stay: the
  *     sandbox client (§6) and the storage-usage client (§7) live here, and
- *     the account client (authfamily.ts §6) imports the same seam.
+ *     the account client (account.ts §6) imports the same seam.
  *
  * The one deliberate exclusion: gateway.config.ts stays a file of its own.
  * It is not an imported module but a runtime-discovered CONFIG FILE — the
@@ -51,7 +51,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { readBrowserPreferences, saveBrowserPreference } from "./storagefamily.ts";
+import { readBrowserPreferences, saveBrowserPreference } from "./storage.ts";
 import { chatText } from "./chatlabels.ts";
 
 /* ============================================================================
@@ -706,7 +706,7 @@ export interface gatewaydefinition {
 /**
  * laneclient — the ONE seam every browser lane client rides (D8's single
  * survivor). The former per-client twins — accountlane/accountfetch (the
- * account client of authfamily.ts §6), sandboxlane/sandboxfetch (§6) and
+ * account client of account.ts §6), sandboxlane/sandboxfetch (§6) and
  * usagelane (§7) — carried byte-identical base resolution and a bounded
  * fetch with bearer and timeout; both live here once now.
  *
@@ -937,7 +937,7 @@ export async function modalities(): Promise<string[] | null> {
  * back to the browser storage estimate and declares the fallback instead of
  * pretending. The object calls keep the three honest outcomes apart — the
  * lane answered, the lane refused, the lane never answered — the same
- * verdict union the account client carries (authfamily.ts §6), because a
+ * verdict union the account client carries (account.ts §6), because a
  * refused write must never wear the offline mask. The section keeps no
  * state of its own — no storage, no new dependency, no hardcoded origin.
  */

@@ -7,7 +7,7 @@
  * the settings page, riding the dtw kit.
  */
 import { ArrowSyncRegular, ShieldRegular } from "@fluentui/react-icons";
-import type { BrowserStoreSummary } from "../../storagefamily.ts";
+import type { BrowserStoreSummary } from "../../storage.ts";
 import { copy } from "../../copy";
 import { GatewayCard } from "./SettingsGatewaycard";
 import { SettingsRow } from "./SettingsRow";

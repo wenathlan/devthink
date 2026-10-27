@@ -4,8 +4,9 @@
 #   vhe stages: the native sources at the root (virtualhardware.c,
 #     gpumonitor.cpp, virtualizationcore.cpp — the former libs/), qemubridge.py,
 #     the flat .ts engine sources with their manifests and hardware catalogs,
-#     and the web tree (the unified console surface: pure-node server stack
-#     plus the React SPA sources; the built dist comes from saddle-build);
+#     and the console server stack at the root (the pure-node web surface:
+#     webserver.ts with its sqlite/auth/mesh/sandbox modules plus the Sol
+#     theme sources the saddle-build stage compiles into the SPA);
 #   saddle stages: package.json + lockfile, the full root source tree and
 #     tests/scripts/buildengine.mjs (the build gate).
 # The entrypoint bootstrap stays embedded in the Dockerfile heredoc (the one
@@ -41,7 +42,6 @@ tests/
 
 # local development state never enters the build
 node_modules
-web/node_modules
 npm-debug.log
 *.log
 *.sqlite
@@ -64,10 +64,6 @@ saddle.gemspec
 pom.xml
 settings.xml
 
-# legacy scrape sub-project configs (preserved documents, not build inputs)
-scrape.tsconfig.json
-scrape.biome.json
-
 # build outputs and archives
 build
 dist
@@ -79,10 +75,13 @@ dist
 *.nupkg
 *.snupkg
 
-# the whole web tree enters the context: the saddle-build stage builds
-# the SPA (vite config at the repository root, React sources at the web
-# root) and both runtime surfaces carry the web tree (the vhe runtime at
-# /engine/web with the built dist, the saddle runtime at /app/web). only
-# local state and build outputs stay out (web/node_modules; web/dist is
-# never committed - the docker build produces it inside saddle-build).
-web/node_modules
+# the root vite outputs of a local theme build never ride the context: the
+# static-first theme build emits the hashed bundles straight at the app root
+# (emptyOutDir is false, so a local build leaves them beside the sources);
+# the saddle-build stage runs its own vite build inside the image, so the
+# local hashed bundles stay out (the tracked sources - index.html,
+# icon.svg, favicon.svg, manifest.webmanifest, popup.css - keep entering).
+/index-*.js
+/index-*.css
+/icon-*.svg
+/manifest-*.webmanifest

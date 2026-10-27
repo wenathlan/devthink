@@ -3,7 +3,7 @@
  * application (root layer).
  */
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { derivebase, familyurl } from "../gatewayfamily.ts";
+import { derivebase, familyurl } from "../gateway.ts";
 
 afterEach(() => {
   vi.unstubAllEnvs();

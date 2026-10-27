@@ -48,8 +48,8 @@ import {
   userTurn,
 } from "../../chatstate.ts";
 import { estimateHistoryTokens, formatCompactTokenCount } from "../../tokenestimate.ts";
-import { loadBrowserSession } from "../../storagefamily.ts";
-import { GATEWAY_REQUIRED_COPY, GATEWAY_SEND_NOTICE, useGatewayRegistration } from "../../gatewayfamily.ts";
+import { loadBrowserSession } from "../../storage.ts";
+import { GATEWAY_REQUIRED_COPY, GATEWAY_SEND_NOTICE, useGatewayRegistration } from "../../gateway.ts";
 import { useIsMobile } from "../../useismobile.ts";
 import { arrayOf, isString, useStoredState } from "../../usestoredstate.ts";
 import { label } from "../../labels.ts";

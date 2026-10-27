@@ -1,6 +1,6 @@
 # Cost certification
 
-The costcert gate of `tests/costcert.mjs` proves the shared accounting of the multi agent layer reconciles: every check replays one recorded run or one live accounting family and recomputes the cost lines from the recorded evidence. The gate records every executed check with its outcome in `tests/artifacts/costcert.json` in a fixed order with no timestamps so reruns stay byte identical, and exits nonzero on any accounting mismatch. The coordination scenarios whose costs the accounting covers live in `docs/agentscenarios.md`.
+The costcert gate of `tests/costcert.ts` proves the shared accounting of the multi agent layer reconciles: every check replays one recorded run or one live accounting family and recomputes the cost lines from the recorded evidence. The gate records every executed check with its outcome in `tests/artifacts/costcert.json` in a fixed order with no timestamps so reruns stay byte identical, and exits nonzero on any accounting mismatch. The coordination scenarios whose costs the accounting covers live in `docs/agentscenarios.md`.
 
 ## The accounting verification method
 
@@ -18,7 +18,7 @@ The method is replay and recompute: a recorded run persists through the real `se
 | 6 | routing | llm.js | The model routing costs land on the right agent: the draftplan kind of w1 routed onto the planner gateway with its model and the extract kind of w2 onto the extraction gateway, every cost line carrying its routed provider and model with the unrouted kind reporting why nothing routed. |
 | 7 | export | llm.js and agent.js | The exported cost report reconciles to the total: the report carries both agent rows and its totals row, the totals reconcile three ways (the swarm accounting, the run usage totals and the sum of the exported rows) and the serialized payload reparses with the same numbers. |
 | 8 | audit trail | memory.js | No cost event is missing from the audit trail: every usage line carries its model audit entry naming its token counts, the ledger entry carries its budget audit entry, and the trail recompute answers the same token total over the recorded events. |
-| 9 | report | costcert.mjs | The reconciliation report records every check and the exit answers the mismatches: the report carries the executed checks with their outcomes and details, the summary computes the pass count, and the gate sets its nonzero exit the moment any accounting mismatch lands in the artifact. |
+| 9 | report | costcert.ts | The reconciliation report records every check and the exit answers the mismatches: the report carries the executed checks with their outcomes and details, the summary computes the pass count, and the gate sets its nonzero exit the moment any accounting mismatch lands in the artifact. |
 
 ## The refund rule
 
@@ -33,7 +33,7 @@ Every run of the gate answers the invariants the artifact test of `tests/costcer
 Run one command from the repository root after a build:
 
 ```bash
-pnpm build && node tests/costcert.mjs
+pnpm build && node tests/costcert.ts
 ```text
 
 The gate prints one line per check with its outcome, prints the summary json, writes `tests/artifacts/costcert.json` with every executed check, its family, its module and its detail, and exits nonzero on any accounting mismatch. The gate runs beside the coordination gate through `pnpm validate:agents` inside `pnpm validate` and inside the verify workflow, and the artifact test runs the gate itself when a built tree carries no fresh artifact of the current release, so every lane that builds before the vitest suite verifies the reconciliation without depending on gate ordering.

@@ -24,8 +24,8 @@ import {
   readBrowserPreferences,
   removeBrowserCredential,
   saveBrowserCredential,
-  saveBrowserPreference } from "../../storagefamily.ts";
-import { gatewayJson, gatewayReady } from "../../gatewayfamily.js";
+  saveBrowserPreference } from "../../storage.ts";
+import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { osProviders, osText } from "../../oslabels.ts";
 import { ProviderCard } from "../widgets";
 import { ProvidersList } from "../widgets";

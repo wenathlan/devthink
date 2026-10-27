@@ -13,7 +13,8 @@
     "types": ["chrome", "node", "vite/client"],
     "paths": {
       "@/*": ["./Sol/*", "./*"],
-      "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"]
+      "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"],
+      "@wenathlan/devthink/server": ["./server.ts"]
     }
   },
   "include": ["*.ts", "tests/**/*.ts", "Sol/**/*.ts", "Sol/**/*.tsx"],

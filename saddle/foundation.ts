@@ -53,25 +53,27 @@ export function aserror(error, jobid) {
   return saddleerror(`job ${jobid} failed`, { code: errorcodes.jobfailed, cause: error, details: { jobid } });
 }
 
-/** Scrape error presets keep status, recovery and retry decisions explicit. */
+/** Operational error presets keep status, recovery and retry decisions
+ * explicit for the engine's outbound lanes (registry pulls, runner
+ * handshakes, package fetches); the presets answer the sandbox engine
+ * only — the scrape lanes that once consumed them left the package. */
 export const errorcatalog = Object.freeze({
   timeout: { code: "E1001", statuscode: 504, retryable: true, recovery: "WAIT_AND_RETRY" },
   connectionrefused: { code: "E1002", statuscode: 503, retryable: true, recovery: "WAIT_AND_RETRY" },
-  dns: { code: "E1003", statuscode: 503, retryable: true, recovery: "ROTATE_PROXY" },
+  dns: { code: "E1003", statuscode: 503, retryable: true, recovery: "WAIT_AND_RETRY" },
   ratelimited: { code: "E2001", statuscode: 429, retryable: true, recovery: "WAIT_AND_RETRY" },
-  forbidden: { code: "E2002", statuscode: 403, retryable: false, recovery: "REVIEW_ROBOTS_TXT" },
-  notfound: { code: "E2003", statuscode: 404, retryable: false, recovery: "STOP_CRAWLING" },
-  parse: { code: "E4002", statuscode: 422, retryable: false, recovery: "STOP_CRAWLING" },
-  captcha: { code: "E4003", statuscode: 403, retryable: false, recovery: "REVIEW_ROBOTS_TXT" },
-  session: { code: "E5001", statuscode: 401, retryable: true, recovery: "ROTATE_USER_AGENT" },
-  config: { code: "E6001", statuscode: 400, retryable: false, recovery: "STOP_CRAWLING" }
+  forbidden: { code: "E2002", statuscode: 403, retryable: false, recovery: "REVIEW_CREDENTIALS" },
+  notfound: { code: "E2003", statuscode: 404, retryable: false, recovery: "ABANDON" },
+  parse: { code: "E4002", statuscode: 422, retryable: false, recovery: "ABANDON" },
+  session: { code: "E5001", statuscode: 401, retryable: true, recovery: "REFRESH_SESSION" },
+  config: { code: "E6001", statuscode: 400, retryable: false, recovery: "ABANDON" }
 });
 
-/** Creates a stable scrape error with recovery metadata. */
-export function webscrapeerror(kind, message, options = {}) { const preset = errorcatalog[kind] ?? errorcatalog.config; const error = new Error(message, { cause: options.cause }); error.name = "webscrapeerror"; error.code = options.code ?? preset.code; error.statuscode = options.statuscode ?? preset.statuscode; error.retryable = options.retryable ?? preset.retryable; error.recovery = options.recovery ?? preset.recovery; error.severity = options.severity ?? (error.statuscode >= 500 ? "high" : "medium"); error.details = options.details ?? {}; return error; }
+/** Creates a stable operational error with recovery metadata. */
+export function operationerror(kind, message, options = {}) { const preset = errorcatalog[kind] ?? errorcatalog.config; const error = new Error(message, { cause: options.cause }); error.name = "operationerror"; error.code = options.code ?? preset.code; error.statuscode = options.statuscode ?? preset.statuscode; error.retryable = options.retryable ?? preset.retryable; error.recovery = options.recovery ?? preset.recovery; error.severity = options.severity ?? (error.statuscode >= 500 ? "high" : "medium"); error.details = options.details ?? {}; return error; }
 
-/** Converts unknown failures into the stable scrape taxonomy. */
-export function classifyerror(error) { if (error?.name === "webscrapeerror") return error; const message = String(error?.message ?? error); if (/timeout|aborted/i.test(message)) return webscrapeerror("timeout", message, { cause: error }); if (/dns|enotfound/i.test(message)) return webscrapeerror("dns", message, { cause: error }); return webscrapeerror("config", message, { cause: error }); }
+/** Converts unknown failures into the stable operational taxonomy. */
+export function classifyerror(error) { if (error?.name === "operationerror") return error; const message = String(error?.message ?? error); if (/timeout|aborted/i.test(message)) return operationerror("timeout", message, { cause: error }); if (/dns|enotfound/i.test(message)) return operationerror("dns", message, { cause: error }); return operationerror("config", message, { cause: error }); }
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 2: core/events.ts — append only events are the small protocol shared by adapters. */

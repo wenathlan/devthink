@@ -13,7 +13,7 @@ import {
   listobjects,
   putobject,
   usagefor,
-} from "../../storagefamily.js";
+} from "../../storage.js";
 
 let sequence = 0;
 function newowner(): string {

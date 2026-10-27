@@ -76,7 +76,7 @@ The purge options of the minimization family carry the same posture: the purge c
 The agentcert gate of the coordination suite configures its own clock and never reads a user setting: the fake clock mode stays the default so every certification run replays byte identical — the clock starts at the fixed epoch 1_800_000_000_000 and every tick advances exactly one thousand milliseconds, the artifact carries no timestamp and reruns rewrite the same bytes. The real clock mode exists only for the live verification runs the operator drives with the explicit switch:
 
 ```text
-node tests/agentcert.mjs --clock real
+node tests/agentcert.ts --clock real
 ```
 
 The fake tab provider needs no configuration either: it hands out one deterministic tab id per browser kind and per slot (chromium 101 and 102, firefox 201 and 202, safari 301) so the coordination scenarios bind tabs the same way on every browser kind the extension ships, through the same one tab one agent invariant the live surface enforces. The costcert gate shares the fixed epoch for its recorded evidence; the scenario docs of `docs/agentscenarios.md` reference the same setup for every topology, and the certification doc of `docs/agentcert.md` documents the rerun instructions.

@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
-import { diffpermissionsets, permissionsetof, previousof } from "./permdiff.mjs";
+import { diffpermissionsets, permissionsetof, previousof } from "./permdiff.ts";
 
 /* ── The 1.1.95 permission diff logic against fixture manifests. ── */
 

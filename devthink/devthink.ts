@@ -32,7 +32,7 @@ import {
   remoteSyncStatus,
   savePreference,
   type Session,
-} from "./storagefamily.js";
+} from "./storage.js";
 import { listModes, modePrompt, resolveMode } from "./modes.js";
 import { listModels, listProviders, streamChat } from "./providers.js";
 import {
@@ -42,7 +42,7 @@ import {
   pairingStatus,
   revokeBrowserSessions,
   setIdentityUserId,
-} from "./authfamily.js";
+} from "./account.js";
 import type { ChatEvent } from "./streaming.js";
 import { banner, box, colors, formatConfig, formatEvent, statusBar } from "./Sol/widgets/ConsoleTerminalui.js";
 import { startServer } from "./server.js";

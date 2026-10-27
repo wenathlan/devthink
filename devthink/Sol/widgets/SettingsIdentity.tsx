@@ -14,7 +14,7 @@ import {
   browserIdentity,
   readBrowserPreferences,
   saveBrowserPreference,
-} from "../../storagefamily.ts";
+} from "../../storage.ts";
 
 /** the display-name preference key inside the local database (the same key
  * the retired lock screen and entry pass stored — nothing else reads it) */

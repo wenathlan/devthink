@@ -37,14 +37,14 @@ import {
 } from "../runtime.js";
 import type { stepoutcome } from "../types.js";
 import { clicommands, surfacepalette } from "../views.js";
-import { stripstrings, underscorednames } from "./bundlescan.mjs";
-import { umdwrap } from "./umdwrap.mjs";
+import { stripstrings, underscorednames } from "./bundlescan.ts";
+import { umdwrap } from "./umdwrap.ts";
 
 const execute = promisify(execFile);
 const require = createRequire(import.meta.url);
 const outbase = await mkdtemp(join(tmpdir(), "devthink-library-"));
 
-/** Resolves the repo-local tsc binary the declaration pass rides: the merged repo carries typescript as its own devdependency, so the emission needs no package-manager exec indirection (pnpm exec retired with the merge — the same resolution tests/build.mjs uses). */
+/** Resolves the repo-local tsc binary the declaration pass rides: the merged repo carries typescript as its own devdependency, so the emission needs no package-manager exec indirection (pnpm exec retired with the merge — the same resolution tests/build.ts uses). */
 function resolvetsc(): string {
   const self = require.resolve("typescript/package.json");
   return join(dirname(self), "bin", "tsc");

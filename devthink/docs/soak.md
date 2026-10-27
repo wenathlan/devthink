@@ -1,6 +1,6 @@
 # Soak run walkthrough
 
-This walkthrough drives the soak run of the 2.0.0 roadmap item 51: a long workflow stays alive across the full retention window without drift. The gate of `tests/soak.mjs` composes one long workflow of three loop passes over the rows of a fixture pricing table — a repeated extraction — and runs it through the real compiled engine with one keepalive heartbeat, one audit event, one hash chained log entry and one provenance carrying memory item per iteration, in the fake clock mode so the whole run replays byte identical. The run spans the audit retention window read back from the library settings three times over, checkpoints mid-run, resumes from the checkpoint after a simulated service worker restart, and proves the no drift contract four ways. The evidence lands in `tests/artifacts/soak.json` with no timestamps so reruns stay byte identical, and the gate exits nonzero on any failed check.
+This walkthrough drives the soak run of the 2.0.0 roadmap item 51: a long workflow stays alive across the full retention window without drift. The gate of `tests/soak.ts` composes one long workflow of three loop passes over the rows of a fixture pricing table — a repeated extraction — and runs it through the real compiled engine with one keepalive heartbeat, one audit event, one hash chained log entry and one provenance carrying memory item per iteration, in the fake clock mode so the whole run replays byte identical. The run spans the audit retention window read back from the library settings three times over, checkpoints mid-run, resumes from the checkpoint after a simulated service worker restart, and proves the no drift contract four ways. The evidence lands in `tests/artifacts/soak.json` with no timestamps so reruns stay byte identical, and the gate exits nonzero on any failed check.
 
 ## 1. Build the compiled modules
 
@@ -13,7 +13,7 @@ The soak gate drives the compiled library, policy and memory bundles (`dist/inde
 ## 2. Run the soak gate
 
 ```bash
-node tests/soak.mjs
+node tests/soak.ts
 ```
 
 The gate prints one line per executed check with its outcome and answers the final JSON summary (`release`, `artifact`, `total`, `passed`, `failed`); any failed check prints to stderr, sets the exit code nonzero and lands in the artifact with its failure detail. The artifact is `tests/artifacts/soak.json`.
@@ -59,6 +59,6 @@ The retention bounds hold while the run records: the audit trail stays at the ei
 | 6 | no drift | workflow.js and security.js | Repeated soak runs seal the identical audit hash: two full runs from the same fixed epoch produced byte identical outcomes over the run, the log entries and the outputs and sealed the identical seal hash. |
 | 7 | memory | memory.js | The memory items keep their provenance inside the retention bounds: every item kept the identical provenance across the window, the audit trail stayed bounded, the expiry pass purged the aged items with every purge summary keeping its provenance and the audit export round tripped through its chunks. |
 | 8 | browser matrix | run.js | Every browser kind keeps the run alive on its fake tab: the beating runs survived every zombie sweep on chromium, firefox and safari while their silent twins reaped, the tab isolation namespace bound each run and the run state export answered the beats. |
-| 9 | report | soak.mjs | The soak report records every check and the exit answers the failures: the report carries the executed checks with their outcomes and details and the gate sets its nonzero exit the moment any failed check lands in the artifact. |
+| 9 | report | soak.ts | The soak report records every check and the exit answers the failures: the report carries the executed checks with their outcomes and details and the gate sets its nonzero exit the moment any failed check lands in the artifact. |
 
 The retention settings the window reads live in `docs/configuration.md`, the run lifecycle family the gate drives lives in the run and workflow modules the architecture doc maps, and the release gate row that lands this walkthrough lives in `docs/releasegates.md`.

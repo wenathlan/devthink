@@ -23,10 +23,10 @@ import { type FormEvent, useCallback, useEffect, useMemo, useState } from "react
 import { toast } from "sonner";
 import { useLocation, useRoute } from "wouter";
 import { PairingPanel } from "@/settings/settings";
-import { islocalunlocked, restoreonce } from "../../authfamily.ts";
+import { islocalunlocked, restoreonce } from "../../account.ts";
 import { writeChatHandoff } from "../../chatstate.ts";
 import { copy } from "../../copy.ts";
-import { historypath, safegatewayurl } from "../../gatewayfamily.ts";
+import { historypath, safegatewayurl } from "../../gateway.ts";
 import { panelgateverdict, resolveintrotarget } from "../../introtarget.ts";
 import type { DevThinkTab } from "../../paneltypes.ts";
 import {
@@ -35,7 +35,7 @@ import {
   cacheGatewaySession,
   ensureBrowserSession,
   readBrowserPreferences,
-} from "../../storagefamily.ts";
+} from "../../storage.ts";
 import type { WorkspaceDestination } from "../../workspace.ts";
 import { BootScreen, CommandPalette, ShellWorkspace, SolLogoMark, shouldBoot } from "../widgets";
 

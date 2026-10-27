@@ -11,7 +11,7 @@
  * where the state marker names the origin (detectProviderFromState of the
  * root oauthrow.ts). The page COMPLETES the round trip: the code arrival
  * redeems the parked pkce verifier through the gateway wave
- * (exchangeoauthcodeclient of the root authfamily.ts), the family session
+ * (exchangeoauthcodeclient of the root account.ts), the family session
  * lands in the account slots, and the honest verdict rows answer — a
  * provider error answers the error face, a completed exchange answers the
  * signed-in face, a lane refusal answers the refused face, a lane that
@@ -23,7 +23,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { copy, loadcopy } from "../../copy.ts";
-import { detectProviderFromState, exchangeoauthcodeclient, oauthVerifierKey, saveaccountsession } from "../../authfamily.ts";
+import { detectProviderFromState, exchangeoauthcodeclient, oauthVerifierKey, saveaccountsession } from "../../account.ts";
 
 /** The sign-in callback page served at /callback: the completing face of
  * every provider round trip, the honest verdict of the exchange. */

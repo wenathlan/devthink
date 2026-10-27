@@ -86,7 +86,7 @@ import { actionbatch, actionfailure, actionresult } from "../browser.js";
 import { browsercontext } from "../browser.js";
 import { actionrecorder } from "../browser.js";
 import { assertfreshsnapshot, pagesnapshot, pagesnapshotdiff, snapshotref, projectcontext } from "../browser.js";
-import { webscrapeerror, classifyerror } from "../foundation.js";
+import { operationerror, classifyerror } from "../foundation.js";
 import { retrypolicy, circuitbreaker } from "../execution.js";
 import { nodeserver } from "../server.js";
 import { githubcontents } from "../virtual.js";
@@ -728,9 +728,9 @@ it("exposes auditable operator controls for core resources", async () => {
 
 it("defines bounded operational metrics recovery and policy boundaries", async () => {
   const metrics = operationsmetrics({ collector: metricstore() });
-  metrics.record("queuedepth", 2, { queue: "crawl" });
-  metrics.record("latency", 12, { operation: "scrape" });
-  assert.equal(metrics.snapshot().counters['queuedepth|[["queue","crawl"]]'], 2);
+  metrics.record("queuedepth", 2, { queue: "sandbox" });
+  metrics.record("latency", 12, { operation: "boot" });
+  assert.equal(metrics.snapshot().counters['queuedepth|[["queue","sandbox"]]'], 2);
   const policy = retentionpolicy({ days: 1, maxbytes: 100 });
   assert.equal(policy.keeps({ updatedat: Date.now(), bytes: 50 }), true);
   assert.equal(policy.keeps({ updatedat: Date.now(), bytes: 101 }), false);
@@ -777,11 +777,11 @@ it("delegates browser agent methods to an injected adapter", async () => {
 });
 
 it("classifies errors and retries only transient failures", async () => {
-  const error = webscrapeerror("ratelimited", "slow down");
+  const error = operationerror("ratelimited", "slow down");
   assert.equal(error.code, "E2001");
   assert.equal(classifyerror(new Error("timeout")).retryable, true);
   let attempts = 0;
-  const result = await retrypolicy({ maxattempts: 2, base: 0 }).run(async () => { attempts += 1; if (attempts === 1) throw webscrapeerror("timeout", "retry"); return "ok"; });
+  const result = await retrypolicy({ maxattempts: 2, base: 0 }).run(async () => { attempts += 1; if (attempts === 1) throw operationerror("timeout", "retry"); return "ok"; });
   assert.equal(result, "ok");
   assert.equal(attempts, 2);
 });
@@ -882,7 +882,7 @@ it("leases persistent queue items and preserves idempotency keys", async () => {
 });
 
 it("frames MCP JSONL and blocks private network targets", async () => {
-  const server = mcpserver({ scrape: async (url) => ({ url }) });
+  const server = mcpserver();
   const transport = mcptransport(server);
   const line = await transport.handleline(JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/list" }));
   assert.equal(JSON.parse(line).result.tools.length > 0, true);

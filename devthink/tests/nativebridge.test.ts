@@ -98,7 +98,7 @@ async function fakehost(...args: string[]): Promise<{
   read: () => Promise<Record<string, unknown>>;
   close: () => Promise<void>;
 }> {
-  const child = spawn(process.execPath, [join(import.meta.dirname, "fakehost.mjs"), ...args], {
+  const child = spawn(process.execPath, [join(import.meta.dirname, "fakehost.ts"), ...args], {
     stdio: ["pipe", "pipe", "inherit"],
   });
   const chunks: Buffer[] = [];

@@ -1471,5 +1471,8 @@ export * from './foundation.js';
 export * from './integration.js';
 export * from './intelligence.js';
 export * from './isolation.js';
+/** Re-exports the sandbox modality registry — the catalog the join
+ * resolver reads (the spine of the sandbox modalities the engine opens). */
+export * from './modalityregistry.js';
 export * from './modes.js';
 export * from './virtual.js';

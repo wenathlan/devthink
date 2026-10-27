@@ -11,7 +11,7 @@
  * transport retries ride retryDelay backoff (3 attempts, 5xx only).
  */
 
-import { type ProviderProtocol, redactProviderError, retryDelay } from "./gatewayfamily.js";
+import { type ProviderProtocol, redactProviderError, retryDelay } from "./gateway.js";
 import { type DevThinkConfig, type DevThinkPaths, resolveCredential } from "./config.js";
 import { type ChatEvent, parseEventStream } from "./streaming.js";
 
