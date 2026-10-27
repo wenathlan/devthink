@@ -15,12 +15,12 @@
  * family session covers every device of the family deploy. The local
  * accountgate of the root accountgate.ts stays as the DECLARED offline
  * fallback only — the honest offline row names it when the lane never
- * answered. The provider row — continue with devthink
- * over google, github and gitlab (the bots are ready on the owner
- * accounts, the client ids ride the env, the single callback page
- * detects the origin by state) — rides the face under the password well;
- * the sign-in options open the cli pairing; the identity logic never
- * moved.
+ * answered. The provider row — continue with google, github and gitlab
+ * wearing the official brand marks, plus the cli pairing button under
+ * the same simple grammar (one button, zero manual configuration: the
+ * invitation link consumes itself, the honest note answers a plain
+ * click) — rides the face under the password well; the identity logic
+ * never moved.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -53,11 +53,6 @@ import { LockFace, PowerMenu, type SignInEntryFields, SignInForm, StatusLine } f
 export * from "../../authfamily.ts";
 export * from "../../gatewayfamily.ts";
 export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
 
 type PairingResponse = { token: string; userId: string; expiresAt: number };
 
@@ -75,11 +70,13 @@ export default function Auth() {
   const [failure, setFailure] = useState("");
   const [busy, setBusy] = useState(false);
   const [reveal, setReveal] = useState(false);
-  const [gateway, setGateway] = useState(() => invitation.current.get("gateway") || "");
-  const [pairingId, setPairingId] = useState(() => invitation.current.get("pair") || "");
-  const [code, setCode] = useState(() => invitation.current.get("code")?.toUpperCase() || "");
+  // the invitation params ride the url once — the auto-consume effect and
+  // the cli button read them, the manual form is gone so the states never
+  // change after mount
+  const gateway = invitation.current.get("gateway") || "";
+  const pairingId = invitation.current.get("pair") || "";
+  const code = (invitation.current.get("code") || "").toUpperCase();
   const [paired, setPaired] = useState(() => Boolean(window.sessionStorage.getItem("devthink.pair.token")));
-  const [cliopen, setCliopen] = useState(() => Boolean(invitation.current.get("pair")));
   const [, setCopylive] = useState(false);
   const [oauthbusy, setOauthbusy] = useState(false);
 
@@ -200,7 +197,9 @@ export default function Auth() {
   }, [finish, known, password]);
 
   /** the sync up: pairs this browser with the visitor's own local CLI
-   * gateway through the exact contract the panel already speaks */
+   * gateway through the exact contract the panel already speaks — the
+   * simple button answers the invitation link when one rides the url and
+   * the honest note otherwise, zero manual configuration */
   const consumePairing = useCallback(
     async (gatewayUrl: string, pairingIdValue: string, pairingCode: string) => {
       const readiness = pairingReadiness({ gatewayUrl, pairingId: pairingIdValue, code: pairingCode });
@@ -227,18 +226,27 @@ export default function Auth() {
         window.sessionStorage.setItem("devthink.pair.user", result.userId);
         window.sessionStorage.setItem("devthink.pair.expires", String(result.expiresAt));
         setPaired(true);
-        toast("DevThink is paired with your local CLI.");
+        toast(copy("auth.cli.paired"));
         finish();
       } catch {
-        toast(
-          "The sync up could not be completed. Confirm the cli gateway is running, the page origin is allowed, and the code has not expired.",
-        );
+        toast(copy("auth.cli.hint"));
       } finally {
         setBusy(false);
       }
     },
     [finish],
   );
+
+  /** the cli button entry: the invitation link consumes itself when its
+   * params ride the url, the honest hint answers a plain click — the
+   * manual configuration form is gone by the owner order. */
+  const pairClick = useCallback(() => {
+    if (paired) return toast(copy("auth.cli.paired"));
+    if (!gateway.trim() || !pairingId.trim() || code.trim().length !== 8) {
+      return toast(copy("auth.cli.hint"));
+    }
+    void consumePairing(gateway, pairingId, code);
+  }, [code, consumePairing, gateway, paired, pairingId]);
 
   /** the provider row entry: a ready provider starts the oauth round trip —
    * the state minted, the pkce verifier parked for the exchange, the
@@ -273,7 +281,6 @@ export default function Auth() {
     void consumePairing(gateway, pairingId, code);
   }, [code, consumePairing, gateway, paired, pairingId]);
 
-  const readiness = pairingReadiness({ gatewayUrl: gateway, pairingId, code });
   const oauthrow = providerRow();
 
   /** the unlock: the lock face component owns the gesture family (the
@@ -310,21 +317,12 @@ export default function Auth() {
           account={account}
           known={known}
           entry={entry}
-          pairing={{
-            gateway,
-            pairingId,
-            code,
-            readiness,
-            busy,
-            onGatewayChange: setGateway,
-            onPairingIdChange: setPairingId,
-            onCodeChange: setCode,
-            onConsume: () => void consumePairing(gateway, pairingId, code),
+          oauth={{
+            row: oauthrow,
+            busy: oauthbusy,
+            onBegin: (provider) => void beginOAuth(provider),
+            onPair: pairClick,
           }}
-          cliopen={cliopen}
-          onToggleCli={() => setCliopen((open) => !open)}
-          oauth={{ row: oauthrow, busy: oauthbusy, onBegin: (provider) => void beginOAuth(provider) }}
-          onBack={() => setStage("lock")}
         />
       )}
 

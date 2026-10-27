@@ -11968,9 +11968,9 @@ span[data-tile] {
 }
 /* the windows password well: one dark rounded cell carrying the input, the
  * reveal eye and the arrow submit — the fluent corner of the grammar, the
- * hairline ring of the control law, and the 2px accent underline the focus
- * answers with the sliding draw of the windows 11 fields (scalex from the
- * center, 200ms micro), the 44px touch floor of the family */
+ * hairline ring of the control law, and the honest focus answers with the
+ * border brightening alone (zero gradient underline, zero halo — the flat
+ * light law of the ban list), the 44px touch floor of the family */
 .dtw-login__row {
   position: relative;
   display: flex;
@@ -11983,29 +11983,9 @@ span[data-tile] {
   transition: border-color 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
     background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
 }
-.dtw-login__row::after {
-  content: "";
-  position: absolute;
-  right: 10px;
-  bottom: -1px;
-  left: 10px;
-  height: 2px;
-  border-radius: 2px;
-  background: linear-gradient(
-    90deg,
-    var(--color-win),
-    color-mix(in oklab, var(--color-win) 55%, var(--color-doo))
-  );
-  transform: scaleX(0);
-  transform-origin: center;
-  transition: transform 200ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
-}
 .dtw-login__row:focus-within {
   border-color: color-mix(in oklab, var(--color-veil) 26%, transparent);
   background: color-mix(in oklab, var(--color-mask-ink) 42%, transparent);
-}
-.dtw-login__row:focus-within::after {
-  transform: scaleX(1);
 }
 .dtw-login__name {
   flex: 1;
@@ -12099,59 +12079,6 @@ span[data-tile] {
   font: 400 12.5px / 1.45 var(--font-sans, var(--dt-sans));
   text-align: center;
   text-shadow: 0 1px 6px rgb(0 0 0 / 40%);
-}
-.dtw-login__quiet {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 0 16px;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
-  color: rgb(255 255 255 / 78%);
-  font: 400 12.5px var(--font-sans, var(--dt-sans));
-  cursor: pointer;
-  transition: background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
-}
-.dtw-login__quiet:hover:not(:disabled) {
-  background: rgb(255 255 255 / 12%);
-}
-.dtw-login__quiet:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
-.dtw-login__actions {
-  display: grid;
-  justify-items: center;
-  gap: 4px;
-  margin-top: 2px;
-  width: 100%;
-}
-.dtw-login__pairing {
-  display: grid;
-  width: 100%;
-  gap: 8px;
-  padding: 12px 0 0;
-  border-top: 1px solid rgb(255 255 255 / 14%);
-}
-.dtw-login__pairing input {
-  flex: 1;
-  min-width: 0;
-  padding: 0 14px;
-  border: 0;
-  background: transparent;
-  color: #fff;
-  font: 400 12.5px var(--dt-mono);
-  outline: none;
-}
-.dtw-login__pairing input::placeholder {
-  color: rgb(255 255 255 / 55%);
-}
-.dtw-login__hinttext {
-  color: rgb(255 255 255 / 58%);
-  font: 400 11px / 1.6 var(--dt-mono);
-  text-align: center;
 }
 /* the panel gate face: the honest wait of the entry chain — the mark, the
  * label and the reading bar over the night canvas (the same mica night the
@@ -16533,12 +16460,17 @@ button.dtc-recents__row:focus-visible {
   flex: none;
   width: 20px;
   height: 20px;
-  border: 1px solid var(--dtc-hairline, rgb(255 255 255 / 18%));
-  border-radius: 6px;
-  background: var(--dtc-wash, rgb(255 255 255 / 8%));
   color: var(--dtc-ink-2, #a6a6b0);
-  font: 600 9px / 1 var(--font-mono, var(--dt-mono));
-  letter-spacing: 0.04em;
+}
+/* the brand marks ride raw: the official svg glyphs carry their own
+ * colors, zero boxed cell around them — the google g, the octocat and
+ * the tanuki read exactly the way their own buttons wear them */
+.dt-oauthrow__glyph[data-brand] {
+  border: 0;
+  background: none;
+}
+.dt-oauthrow__glyph svg {
+  display: block;
 }
 .dt-oauthrow__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
@@ -19596,10 +19528,7 @@ button.dtc-recents__row {
 }
 
 /* -- D8 the lock face clock: the hint and the date keep the drawn shadow
-   budget; the pairing field answers the halo like the sign-in fields -- */
-.dtw-login__pairing input:focus {
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--win-accent) 14%, transparent);
-}
+   budget -- */
 
 /* ==========================================================================
    §E — the onboarding tour (the frame-a-frame window)

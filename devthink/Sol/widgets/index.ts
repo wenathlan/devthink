@@ -11,7 +11,6 @@ export * from "./AboutTimeline.tsx";
 export * from "./AudioMusicengine.tsx";
 export * from "./AudioMusictracks.tsx";
 export * from "./AuthLockface.tsx";
-export * from "./AuthPairing.tsx";
 export * from "./AuthPowermenu.tsx";
 export * from "./AuthProviderrow.tsx";
 export * from "./AuthSignin.tsx";

@@ -26,12 +26,18 @@ describe("the copy store", () => {
     }
   });
 
-  it("the provider row never says continue with the provider — the action is always devthink", () => {
+  it("the provider row wears the provider button grammar — continue with google and the family, zero separator ornaments", () => {
+    const brandnames = { google: "Google", github: "GitHub", gitlab: "GitLab" } as Record<string, string>;
     for (const provider of ["google", "github", "gitlab"]) {
       const label = copy(`auth.oauth.${provider}`);
-      assert.ok(label.startsWith("continue with devthink · "), `the ${provider} label carries the devthink action`);
-      assert.ok(!label.startsWith(`continue with ${provider}`), `the ${provider} label never carries the provider action`);
+      assert.equal(label, `Continue with ${brandnames[provider]}`, `the ${provider} label carries the standard button grammar`);
+      assert.ok(!label.includes("·"), `the ${provider} label never carries the separator ornament`);
     }
+    // the cli pairing row answers the same simple grammar the owner ordered
+    assert.equal(copy("auth.cli"), "Continue with CLI");
+    // the back to the clock row and the options disclosure are gone by the owner order
+    assert.equal(copy("auth.signin.back"), "auth.signin.back");
+    assert.equal(copy("auth.signin.options"), "auth.signin.options");
   });
 
   it("the callback receiving face names the provider through the slot", () => {

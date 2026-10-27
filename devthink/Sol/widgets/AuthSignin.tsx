@@ -13,23 +13,16 @@
  * one asks for the password alone and answers the wrong-try verdict
  * inline. The password well keeps the windows grammar: one rounded cell
  * carrying the input, the reveal eye and the arrow submit riding inside
- * it. Below the well: the provider row (continue with devthink over
- * google, github and gitlab) and the sign-in options disclosure with the
- * cli pairing. Every string rides the copy catalog (the seed of copy.ts
- * is the one place literals live). Loose component of the auth page,
- * riding the dtw-login kit of sol.css.
+ * it. Below the well: the provider row (continue with google, github,
+ * gitlab and the cli pairing button under the same simple grammar — one
+ * button, zero manual configuration). Every string rides the copy
+ * catalog (the seed of copy.ts is the one place literals live). Loose
+ * component of the auth page, riding the dtw-login kit of sol.css.
  */
-import {
-  ArrowRightRegular,
-  EyeOffRegular,
-  EyeRegular,
-  PersonRegular,
-  WindowConsoleRegular,
-} from "@fluentui/react-icons";
+import { ArrowRightRegular, EyeOffRegular, EyeRegular, PersonRegular } from "@fluentui/react-icons";
 import { useEffect, useRef, useState } from "react";
 import type { AccountState } from "../../authfamily.ts";
 import { copy } from "../../copy.ts";
-import { PairingForm, type PairingFormProps } from "./AuthPairing.tsx";
 import { ProviderRow, type ProviderRowProps } from "./AuthProviderrow.tsx";
 import { SolLogoMark, SolWordmark } from "./PanelLogo.tsx";
 
@@ -69,24 +62,17 @@ export interface SignInFormProps {
   /** the display name the face greets ("" before the HD answers). */
   known: string;
   entry: SignInEntryFields;
-  /** the cli pairing fields and the consume contract (see auth.pairing). */
-  pairing: PairingFormProps;
-  /** the cli pairing disclosure is open. */
-  cliopen: boolean;
-  onToggleCli: () => void;
   /** the provider row bundle (see providerrow). */
   oauth: ProviderRowProps;
-  /** back to the lock clock. */
-  onBack: () => void;
 }
 
 /** SignInForm — the split sign-in card over the dimmed, blurred mica
  * wallpaper: the visual panel (the brand, the rotating value slides, the
  * slide rails) beside the form panel (the avatar, the welcome, the
- * windows password well, the provider row, the sign-in options and the
- * way back to the clock). The password field takes focus as the face
- * reveals (the 320ms ride the entrance curve of the card). */
-export function SignInForm({ account, known, entry, pairing, cliopen, onToggleCli, oauth, onBack }: SignInFormProps) {
+ * windows password well, the provider row with the cli button). The
+ * password field takes focus as the face reveals (the 320ms ride the
+ * entrance curve of the card). */
+export function SignInForm({ account, known, entry, oauth }: SignInFormProps) {
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const [slide, setSlide] = useState(0);
   const [still, setStill] = useState(false);
@@ -274,23 +260,6 @@ export function SignInForm({ account, known, entry, pairing, cliopen, onToggleCl
           )}
 
           <ProviderRow {...oauth} />
-
-          <div className="dtw-login__actions">
-            <button
-              type="button"
-              className="dtw-login__quiet"
-              disabled={entry.busy}
-              aria-expanded={cliopen}
-              onClick={onToggleCli}
-            >
-              <WindowConsoleRegular fontSize={15} aria-hidden="true" />
-              {copy("auth.signin.options")}
-            </button>
-            {cliopen ? <PairingForm {...pairing} /> : null}
-          </div>
-          <button type="button" className="dtw-login__quiet" onClick={onBack}>
-            {copy("auth.signin.back")}
-          </button>
         </div>
       </section>
     </div>
