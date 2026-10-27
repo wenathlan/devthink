@@ -15,6 +15,18 @@ const breaking = (current: string, latest: string) => {
   const [latestmajor, latestminor] = parseversion(latest);
   return major !== latestmajor || (major === 0 && minor !== latestminor);
 };
+/** declaredahead — the manifest rides a NEWER release than the registry
+ * latest tag points at (the saddle lane publishes its rung stamps off the
+ * latest tag). The ladder never proposes a step backwards: an ahead
+ * manifest is satisfied, not drifted. */
+const declaredahead = (current: string, latest: string) => {
+  const [major, minor, patch] = parseversion(current);
+  const [latestmajor, latestminor, latestpatch] = parseversion(latest);
+  return (
+    major > latestmajor ||
+    (major === latestmajor && (minor > latestminor || (minor === latestminor && patch > latestpatch)))
+  );
+};
 const skippedmajors = [];
 const next = structuredClone(packagejson);
 for (const section of ["dependencies", "devDependencies", "optionalDependencies"]) {
@@ -36,6 +48,11 @@ for (const section of ["dependencies", "devDependencies", "optionalDependencies"
       throw new Error(`npm registry did not provide a stable version for ${name}`);
     if (breaking(declared, latest) && !allowmajors) {
       skippedmajors.push({ name, current: declared, latest });
+      continue;
+    }
+    if (declaredahead(declared, latest)) {
+      /* the manifest is ahead of the registry latest tag: nothing to propose
+       * — a downgrade is never an update. */
       continue;
     }
     next[section][name] = `${declared.startsWith("~") ? "~" : "^"}${latest}`;
