@@ -1462,7 +1462,6 @@ export * from './virtualmemory.js';
 
 /* ── Section 2: the saddle domain routing barrel ── */
 
-export * from './acquisition.js';
 export * from './automation.js';
 export * from './browser.js';
 export * from './communication.js';
@@ -1473,5 +1472,4 @@ export * from './integration.js';
 export * from './intelligence.js';
 export * from './isolation.js';
 export * from './modes.js';
-export * from './operations.js';
 export * from './virtual.js';

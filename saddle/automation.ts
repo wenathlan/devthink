@@ -222,7 +222,7 @@ export function saddlebot(options = {}) {
     const parsed = typeof input === "string" ? parsecommand(input) : input;
     state.commands += 1;
     if (parsed.command === "status") return getstatus();
-    if (parsed.command === "help") return { commands: ["capture", "scrape", "review", "deploy", "memory", "test", "release", "webhook", "schedule", "publish", "artifact", "status"] };
+    if (parsed.command === "help") return { commands: ["capture", "review", "deploy", "memory", "test", "release", "webhook", "schedule", "publish", "artifact", "status"] };
     const platform = parsed.flags.platform ?? context.platform;
     const adapter = adapters.get(platform);
     if (!adapter) throw new Error(`no adapter registered for ${platform ?? "command"}`);
@@ -259,7 +259,7 @@ export function n8nnode(options = {}) {
 }
 
 export const n8ntriggers = Object.freeze(["manual", "dispatch", "webhook", "schedule", "retry", "heartbeat"]);
-export const n8nactions = Object.freeze(["status", "scrape", "crawl", "extract", "batch", "browser", "memory", "sync"]);
+export const n8nactions = Object.freeze(["status", "browser", "memory", "sync"]);
 
 /** Matches an incoming event against the trigger declarations of a node. */
 export function n8nmatch(node, event = {}) { const type = String(event.type ?? "manual"); return { matched: Boolean(node?.triggers?.includes(type)), type, requestid: event.requestid ?? `${node?.name ?? "saddle"}/${type}` }; }
@@ -304,7 +304,7 @@ export const surfaceformats = Object.freeze({
 export function surfacemanifest(options = {}) {
   const target = options.target ?? "library";
   if (!surfaces.includes(target)) throw new TypeError(`unsupported surface: ${target}`);
-  return { target, name: options.name ?? "saddle", entry: options.entry ?? "dist/index.js", runtime: options.runtime ?? "caller", formats: [...(options.formats ?? surfaceformats[target] ?? [])], permissions: options.permissions ?? [], capabilities: options.capabilities ?? ["memory", "scrape", "workflow"], metadata: options.metadata ?? {} };
+  return { target, name: options.name ?? "saddle", entry: options.entry ?? "dist/index.js", runtime: options.runtime ?? "caller", formats: [...(options.formats ?? surfaceformats[target] ?? [])], permissions: options.permissions ?? [], capabilities: options.capabilities ?? ["memory", "workflow"], metadata: options.metadata ?? {} };
 }
 
 /** Creates a desktop surface manifest with caller-selected packaging formats. */

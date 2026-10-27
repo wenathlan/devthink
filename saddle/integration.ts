@@ -11,7 +11,6 @@
  */
 
 import { jsondecode, jsonencode } from "./communication.js";
-import { crawl, extractwithschema } from "./acquisition.js";
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 1: adapters/transport.ts — transport centralizes timeout retry and jitter without choosing a host or vendor. */
@@ -190,12 +189,7 @@ export function mcptransport(server) {
  */
 
 export function mcpserver(options = {}) {
-  if (typeof options.scrape !== "function") throw new TypeError("mcp server requires scrape");
   const tools = {
-    scrape: async (input) => options.scrape(input.url, input),
-    crawl: async (input) => crawl(input.url, { ...input, scrape: (url) => options.scrape(url, input) }),
-    batch: async (input) => ({ results: await Promise.all((input.urls ?? []).map((url) => options.scrape(url, input))) }),
-    extract: async (input) => extractwithschema(input.html, input.schema, input.url),
     serialize: async (input) => jsonencode(input.value),
     ...(options.browser ? browsertools(options.browser) : {}),
     ...(options.tools ?? {})
