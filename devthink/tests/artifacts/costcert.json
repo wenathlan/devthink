@@ -1,5 +1,5 @@
 {
-  "release": "2.0.149",
+  "release": "2.0.150",
   "checklist": "docs/costcert.md",
   "entries": [
     {
@@ -70,7 +70,7 @@
       "id": 9,
       "title": "the reconciliation report records every check and the exit answers the mismatches",
       "family": "report",
-      "module": "costcert.mjs",
+      "module": "costcert.ts",
       "outcome": "pass",
       "detail": "the reconciliation report carries the eight executed checks with their outcomes and details, the summary computes 9 of 9 passed, and the gate sets its nonzero exit the moment any accounting mismatch lands in the artifact."
     }
