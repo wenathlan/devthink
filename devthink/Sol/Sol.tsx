@@ -31,6 +31,7 @@ import IntroAnchor from "./intro/intro.tsx";
 import NotFoundAnchor from "./notfound/notfound.tsx";
 import OnboardingAnchor from "./onboarding/onboarding.tsx";
 import PanelAnchor from "./panel/panel.tsx";
+import { FamilyStage } from "./widgets/ShellFamilyframe.tsx";
 import PlansAnchor from "./plans/plans.tsx";
 import PolicyAnchor from "./policy/policy.tsx";
 import ProjectsAnchor from "./projects/projects.tsx";
@@ -82,8 +83,10 @@ function DeepRouteReplay() {
  * face at /auth, which continues to the OS desktop at /panel; the panel is
  * the last page of the chain. The explorer (/explore) and the onboarding
  * tour (/onboarding) are indirect subapps: routable, never panel icons. The
- * deep /w/… workspace routes keep falling into the panel exactly as they
- * always fell into the desktop. */
+ * family routes (/<slug>) are the apps themselves: the fullscreen stage at
+ * the address bar — the window only exists inside the OS. The deep /w/…
+ * workspace routes keep falling into the panel exactly as they always fell
+ * into the desktop. */
 export default function Sol() {
   return (
     <>
@@ -118,11 +121,12 @@ export default function Sol() {
           <Route path="/plans" component={PlansAnchor} />
           <Route path="/terms" component={TermsAnchor} />
           <Route path="/policy" component={PolicyAnchor} />
-          {/* the family routes: DevThink barra <app> — the address carries the
-              app's own subpath and the panel opens the power clip window of
-              that app on arrival (the windows law with its own URL) */}
+          {/* the family routes: DevThink barra <app> — the address IS the
+              app, one hundred percent: the fullscreen stage owns the whole
+              viewport with no shell and no window. The window only exists
+              inside the OS (the panel workspace power clip). */}
           {FAMILY_SLUGS.map((slug) => (
-            <Route key={slug} path={`/${slug}`} component={() => <PanelAnchor familySlug={slug} />} />
+            <Route key={slug} path={`/${slug}`} component={() => <FamilyStage slug={slug} />} />
           ))}
           <Route path="/w/:workspaceId/s/:sessionId/t/:tabId/:sectionId" component={() => <PanelAnchor />} />
           <Route path="/404" component={NotFoundAnchor} />

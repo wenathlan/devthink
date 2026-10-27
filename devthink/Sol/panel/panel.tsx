@@ -177,16 +177,16 @@ function toShellTab(tab: {
   };
 }
 
-export default function Panel({ familySlug: familyRoute }: { familySlug?: string }) {
+export default function Panel() {
   const [_location, setLocation] = useLocation();
   const [, params] = useRoute("/w/:workspaceId/s/:sessionId/t/:tabId/:sectionId");
   const configuredGateway = gatewayFromSearch(window.location.search);
   const invitation = useMemo(() => new URLSearchParams(window.location.search), []);
-  /** the family arrival, from either handoff: the OS's own /<slug> route
-   * (the address the bar keeps) or the ?arrive= slug the standalone app
-   * index stamped before the OS took over (the typed-URL law: devthink barra
-   * <app> lands INSIDE the os, the same window the double click opens) */
-  const familySlug = familyRoute ?? invitation.get("arrive") ?? undefined;
+  /** the family arrival the standalone app index stamped before the OS took
+   * over (?arrive=): the in-OS handoff that opens the window. The typed URL
+   * never lands here — devthink barra <app> is the fullscreen stage of the
+   * app itself; the window only exists inside the OS */
+  const familySlug = invitation.get("arrive") ?? undefined;
   const [gatewayInput, setGatewayInput] = useState(
     () => configuredGateway || window.sessionStorage.getItem("devthink.gateway") || "",
   );
@@ -471,9 +471,9 @@ export default function Panel({ familySlug: familyRoute }: { familySlug?: string
     // the ids ride the route state (a history write here would bounce the
     // tree between two Route elements — the ping-pong the shell once shipped)
     if (familySlug) {
-      // a family arrival route keeps its own address (DevThink barra <app>):
-      // the local session still boots into the HD, but the bar never leaves
-      // the app's subpath
+      // a family arrival (?arrive=) opens the window on the desktop: the
+      // local session still boots into the HD while the window takes the
+      // stage — the typed URL never lands here (the fullscreen stage owns it)
       void ensureBrowserSession(fallbackRoute)
         .then((snapshot) => setTabs(snapshot.tabs.map(toShellTab)))
         .catch(() => undefined);
