@@ -398,6 +398,19 @@ describe("the open contract (double click on the desktop, single tap on mobile)"
   });
 });
 
+describe("the family window law (the double click never leaves the os)", () => {
+  it("the external app opens as the power clip window — the panel never navigates away", () => {
+    // the charged defect: the double click on a family icon navigated to the
+    // fullscreen stage (the typed-url surface), leaving the desktop behind;
+    // the owner's law answers the opposite split — the double click inside
+    // the panel opens the window (the power clip) exactly like every native
+    // app of the catalog, while the address bar keeps owning the fullscreen
+    expect(workspace).toContain('if (app.target.kind === "external") {');
+    expect(workspace).toContain("toggleWindow(app.target.slug, app.name);");
+    expect(workspace).not.toContain("onNavigate(`/${app.target.slug}`)");
+  });
+});
+
 describe("the chat bar out of the panel (the conversation lives in the window)", () => {
   it("the panel anchor carries no conversation surface — the source refuses the chat bar", () => {
     expect(panel).not.toContain("sendMessage");
