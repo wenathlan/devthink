@@ -130,6 +130,12 @@
   --shadow-window: 0 32px 64px rgb(0 0 0 / 24%), 0 0 8px rgb(0 0 0 / 20%);
   --shadow-flyout: 0 4px 8px rgb(0 0 0 / 14%), 0 0 2px rgb(0 0 0 / 12%);
   --shadow-lt: 0 1px 1px rgb(0 0 0 / 25%);
+  /* the desktop label shadow: the legibility law of the icon cells — the
+     tight contact shadow grounds the 12px letterforms (the glyph reads)
+     while one wide soft halo keeps the contrast over any wallpaper; the
+     triple same-radius blur halo this replaces dissolved the final
+     letters (the live audit read stealthhead as stealthhear) */
+  --shadow-label: 0 1px 2px rgb(0 0 0 / 88%), 0 0 10px rgb(0 0 0 / 55%);
 
   /* ---- motion curves: window 250ms, micro 150ms, entry decelerate, exit
      accelerate, the fluent menu curve and the spring overshoot ---- */
@@ -507,6 +513,9 @@
   --shadow-window: 0 32px 64px rgb(0 0 0 / 14%), 0 0 8px rgb(0 0 0 / 8%);
   --shadow-flyout: 0 4px 8px rgb(0 0 0 / 10%), 0 0 2px rgb(0 0 0 / 8%);
   --shadow-lt: 0 1px 1px rgb(0 0 0 / 12%);
+  /* the label shadow flips with the theme: the light halo reads behind the
+     dark ink of the light mode cells */
+  --shadow-label: 0 1px 2px rgb(255 255 255 / 85%), 0 0 10px rgb(255 255 255 / 70%);
   --mica: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat fixed;
   --mica-local: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat;
   --acrylic: rgb(243 243 244 / 82%);
