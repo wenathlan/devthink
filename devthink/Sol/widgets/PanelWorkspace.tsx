@@ -25,31 +25,30 @@
 import { ClockRegular as Clock } from "@fluentui/react-icons";
 import type { ComponentType } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useLocation } from "wouter";
 import { alttabkeydown } from "../../alttab.ts";
 import { DESKTOP_APPS, type DesktopApp } from "../../appregistry.ts";
 import { pushrecentapp } from "../../recentapps.ts";
-import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspace.ts";
 import { type WindowEntry, windowcatalog, windowspawn } from "../../window.ts";
+import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspace.ts";
 import AudioAnchor from "../audio/audio.tsx";
 import CalculatorAnchor from "../calculator/calculator.tsx";
-import ChatBody from "./ChatBody.tsx";
 import ConsoleAnchor from "../console/console.tsx";
 import DocsAnchor from "../docs/docs.tsx";
 import FilesAnchor from "../files/files.tsx";
-import GatewayView from "../gateway/gateway.tsx";
 import GamesAnchor from "../games/games.tsx";
+import GatewayView from "../gateway/gateway.tsx";
 import ImageAnchor from "../image/image.tsx";
 import ProjectsAnchor from "../projects/projects.tsx";
 import ProvidersAnchor from "../providers/providers.tsx";
 import SettingsAnchor from "../settings/settings.tsx";
-import { FamilyFrame } from "./ShellFamilyframe.tsx";
 import UsageAnchor from "../usage/usage.tsx";
 import VideoAnchor from "../video/video.tsx";
-import { type AltTabCard, AltTabSwitcher } from "./ShellAlttabswitcher.tsx";
-import { ShellChrome } from "./Shellchrome.tsx";
+import ChatBody from "./ChatBody.tsx";
 import { DesktopSurface } from "./PanelDesktop.tsx";
 import { WINDOW_MIN_HEIGHT, WINDOW_MIN_WIDTH, WindowFrame, type WindowSnapshot } from "./PanelWindowframe.tsx";
+import { type AltTabCard, AltTabSwitcher } from "./ShellAlttabswitcher.tsx";
+import { ShellChrome } from "./Shellchrome.tsx";
+import { FamilyFrame } from "./ShellFamilyframe.tsx";
 
 /** One windowed app: the anchor component with the embedded contract and
  * the spawn geometry the frame opens at. */
@@ -171,7 +170,8 @@ function defaultSnapshot(id: string, title: string, openCount: number): WindowSn
     width,
     height,
     state: "normal",
-    z: Z_BASE };
+    z: Z_BASE,
+  };
 }
 
 /** The persisted window layout (the desktopstate pattern): the snapshots
@@ -200,8 +200,8 @@ export function ShellWorkspace({
   railMode,
   onDestination,
   onSelectTab,
-  onNavigate }: ShellWorkspaceProps) {
-  const [location] = useLocation();
+  onNavigate,
+}: ShellWorkspaceProps) {
   const destination: WorkspaceDestination = isWorkspaceDestination(sectionId) ? sectionId : "chat";
   /** the desktop boots with the persisted layout (empty on a fresh device) —
    * windows open on demand and the layout rides localStorage */
@@ -345,7 +345,8 @@ export function ShellWorkspace({
         id: win.id,
         title: win.title,
         minimized: win.state === "minimized",
-        app: appById(win.id) })),
+        app: appById(win.id),
+      })),
     [windows],
   );
 
@@ -378,19 +379,17 @@ export function ShellWorkspace({
         return;
       }
       if (app.target.kind === "external") {
-        // the windows law with its own address: the family app redirects to
-        // its repository subpath (DevThink barra <app>) and the arrival
-        // route opens the power clip window inside the os — already on the
-        // route, the click toggles the window in place instead
-        if (location === `/${app.target.slug}`) {
-          toggleWindow(app.target.slug, app.name);
-          return;
-        }
-        onNavigate(`/${app.target.slug}`);
+        // the windows law: the double click inside the panel opens the
+        // family app as the power clip window exactly like every native
+        // app of the catalog — the desktop never navigates away from the
+        // os. the address bar keeps owning the fullscreen stage (DevThink
+        // barra <app> answers the typed url) and the standalone handoff
+        // keeps riding the arrive param the panel anchor reads
+        toggleWindow(app.target.slug, app.name);
         return;
       }
     },
-    [location, onDestination, onNavigate, toggleWindow],
+    [onDestination, onNavigate, toggleWindow],
   );
 
   return (
