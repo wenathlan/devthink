@@ -1,4 +1,3 @@
-// the debonair stage stepper — the studio rides in stages.
 /**
  * StageStepper.tsx — the loose component that draws the studio stage bar:
  * one key per stage of stages.ts, in the owner's fixed order, with the

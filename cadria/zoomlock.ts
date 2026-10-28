@@ -1,6 +1,5 @@
-// the cadria zoom lock.
 /**
- * zoomlock — pins the interface zoom at the boot 100% and refuses every user
+ * zoomlock of cadria — pins the interface zoom at the boot 100% and refuses every user
  * zoom gesture. The owner order: the zoom stays fixed at 100% — no zoom
  * scrolling, no dancing interface, one stable render. The lock captures the
  * boot devicePixelRatio as the immutable 100% baseline; whenever the live

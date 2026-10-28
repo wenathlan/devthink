@@ -1,6 +1,5 @@
-// the entry gate of the argan home.
 /**
- * entrygate.tsx — the entry gate of the APPLICATION (the flow contract of the
+ * entrygate of argan — the entry gate of the APPLICATION (the flow contract of the
  * reform): the home anchor consults this component before rendering anything.
  * On mount it reads the first-run state from onboardingstate (the DB-backed
  * accessor — the offline cache answers the fast path, the platform gateway

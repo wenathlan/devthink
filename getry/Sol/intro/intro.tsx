@@ -1,4 +1,3 @@
-// the getry intro of the theme.
 /**
  * intro.tsx — the opening splash of the APPLICATION: the akash floor. The
  * drawn mark lands with the Akash spring (the overshoot curve

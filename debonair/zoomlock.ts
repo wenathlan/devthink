@@ -1,4 +1,3 @@
-// the debonair zoom lock.
 /**
  * zoomlock — pins the interface zoom at the boot 100% and refuses every user
  * zoom gesture. The owner order: the zoom stays fixed at 100% — no zoom

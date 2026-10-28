@@ -1,16 +1,16 @@
-// the entry gate of the stealthhead home.
 /**
- * entrygate.tsx — the entry gate of the APPLICATION (the flow law: intro →
- * onboarding → the platform). The home anchor mounts it on the "/" route:
- * on mount it reads the visitor onboarding state through the one accessor
- * (onboardingstate.ts — database, cache, memory) and, while the read
- * resolves, renders null so the stage never flashes the home behind the
- * gate. An unseen intro navigates to /intro; an unseen onboarding to
- * /onboarding; both seen, the home renders normally and the gate steps out
- * of the way. The gate only reads — marking the stages seen belongs to the
- * pages that show them.
+ * entrygate of stealthhead — the entry gate of the APPLICATION (the flow law:
+ * intro → onboarding → the platform). The home anchor mounts it on the "/"
+ * route: on mount it reads the visitor onboarding state through the one
+ * accessor (onboardingstate.ts — database, cache, memory) and, while the read
+ * resolves, renders null so the stage never flashes the home behind the gate.
+ * An unseen intro navigates to /intro; an unseen onboarding to /onboarding;
+ * both seen, the home renders normally and the gate steps out of the way.
+ * The gate only reads — marking the stages seen belongs to the pages that
+ * show them. The embedded pass answers the window law: inside the os power
+ * clip the first-run flow belongs to the shell, so the frame lands straight
+ * home exactly like every sibling of the family.
  */
-
 import { type ReactNode, useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { readOnboardingState } from "../../onboardingstate.ts";
@@ -25,10 +25,15 @@ type GatePhase = "resolving" | "through";
  * @returns the gated element.
  */
 export function EntryGate({ children }: { children: ReactNode }) {
+  /* the embedded pass is the bare stage: inside the os window the first-run
+   * flow belongs to the shell, so the frame lands straight home — the frame
+   * of a mount never changes, the hooks stay unconditional for the lint */
+  const embedded = typeof window !== "undefined" && window.self !== window.top;
   const [, navigate] = useLocation();
-  const [phase, setPhase] = useState<GatePhase>("resolving");
+  const [phase, setPhase] = useState<GatePhase>(embedded ? "through" : "resolving");
 
   useEffect(() => {
+    if (embedded) return;
     let live = true;
     readOnboardingState().then((state) => {
       if (!live) return;
@@ -39,7 +44,7 @@ export function EntryGate({ children }: { children: ReactNode }) {
     return () => {
       live = false;
     };
-  }, [navigate]);
+  }, [embedded, navigate]);
 
   return phase === "through" ? children : null;
 }

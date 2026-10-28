@@ -1,4 +1,3 @@
-// the entry gate of the forge home.
 /**
  * entrygate.tsx — the entry gate of the APPLICATION (the flow contract of the
  * reform): the home route consults this component before rendering anything.
