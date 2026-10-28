@@ -12757,6 +12757,119 @@ span[data-tile] {
   font-variant-numeric: tabular-nums;
 }
 
+/* the playback stage of the video studio: the real element the person's
+   local file rides, the Windows media transport under it and the honest
+   empty face while nothing is open. The floor stays near black whatever
+   the theme, the way every media stage reads. */
+.dtw-videoplayer__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.dtw-videoplayer__head .dtw-cardtitle {
+  margin: 0;
+}
+.dtw-videostage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 260px;
+  border-radius: 10px;
+  background: #0b0d12;
+  overflow: hidden;
+}
+.dtw-videostage:fullscreen {
+  min-height: 100vh;
+  border-radius: 0;
+}
+.dtw-videostage__element {
+  display: block;
+  width: 100%;
+  max-height: min(58vh, 520px);
+  object-fit: contain;
+  background: transparent;
+}
+.dtw-videostage__empty {
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  padding: 28px 20px;
+  text-align: center;
+}
+.dtw-videostage__line {
+  margin: 0;
+  color: var(--dtv3-ink-2);
+  font: 600 13px / 1.4 var(--font-sans, var(--dt-sans));
+}
+.dtw-videostage__hint {
+  margin: 0;
+  color: var(--dtv3-ink-4);
+  font: 400 11px / 1.4 var(--font-sans, var(--dt-sans));
+}
+.dtw-videostage__name {
+  position: absolute;
+  bottom: 58px;
+  left: 12px;
+  margin: 0;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgb(11 13 18 / 72%);
+  color: #e7ebf3;
+  font: 500 11px var(--dt-mono);
+  letter-spacing: 0.02em;
+  pointer-events: none;
+}
+/* the transport row: the play key, the tabular time pair, the scrub lane
+   and the two state keys, all at the 44px touch law */
+.dtw-videotransport {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px 10px;
+  box-sizing: border-box;
+  background: linear-gradient(to top, rgb(11 13 18 / 92%), rgb(11 13 18 / 0%));
+}
+.dtw-videotransport__key {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #e7ebf3;
+  transition: background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dtw-videotransport__key:hover {
+  background: rgb(255 255 255 / 10%);
+}
+.dtw-videotransport__key:active {
+  transform: scale(0.94);
+}
+.dtw-videotransport__key:focus-visible {
+  outline: 2px solid #e7ebf3;
+  outline-offset: -2px;
+}
+.dtw-videotransport__time {
+  color: #c6cdd9;
+  font: 500 11px var(--dt-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.dtw-videotransport__scrub {
+  flex: 1;
+  min-width: 60px;
+  height: 44px;
+  margin: 0;
+  accent-color: #f472b6;
+  cursor: pointer;
+}
+
 /* ==== the usage.css skins — merged from the app folder, the folder carries tsx only ==== */
 /* usage app skins — the ledger figures over the dtw kit. merges into the
  * kit section of sol.css. the app scope retunes the kit accents: the sage

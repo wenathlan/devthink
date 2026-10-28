@@ -116,3 +116,4 @@ export * from "./TermsLegalkit.tsx";
 export * from "./UsageMeasures.tsx";
 export * from "./VideoAssets.tsx";
 export * from "./VideoEngine.tsx";
+export * from "./VideoPlayer.tsx";
