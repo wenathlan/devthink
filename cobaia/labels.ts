@@ -14,7 +14,7 @@
  *
  * data stays data: the app roster (apps.roster.ts — slugs, accents, the
  * roles each app declares in its own devthink.toml), the plan table and
- * the support hrefs (checkoutlinks.ts), the ad slot registry (ads.config.ts
+ * the support hrefs (checkoutlinks.ts), the ad slot registry (adsconfig.ts
  * — the fixed ad contract label and note ride there, pinned by the tests),
  * the blog posts (posts.ts) and the route hrefs keep flowing from the data
  * modules; the prose and the affordances around them ride here.
