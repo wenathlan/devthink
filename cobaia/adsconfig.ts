@@ -1,5 +1,5 @@
 /**
- * ads.config.ts — the honest ad slot registry of the family site, pure data
+ * adsconfig.ts — the honest ad slot registry of the family site, pure data
  * at the app root. The family site carries ONE reserved ad container per
  * content page (home, the app directory, the blog index), always at the end
  * of the content, always labeled "advertisement", always a fixed aspect
