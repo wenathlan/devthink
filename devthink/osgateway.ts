@@ -5,14 +5,15 @@
  * osgateway to avoid clashing with the Sol workbench gateway.ts. Zero
  * network outside this module — everything is client-first.
  *
- * Retry wiring: the fetch round runs through retrybackoff.ts — failures
+ * Retry wiring: the fetch round runs through queue.ts (the queue family's
+ * retry section) — failures
  * classified as transient (network, 408/425/429, 5xx) retry with exponential
  * backoff + jitter, and the server's Retry-After hint wins over the curve.
  * Default `retries` is 0, which preserves the historical one-shot contract;
  * opt in per call with `retries`.
  */
 
-import { parseRetryAfterMs, RetryableError, retryWithBackoff } from "./retrybackoff.ts";
+import { parseRetryAfterMs, RetryableError, retryWithBackoff } from "./queue.ts";
 
 /**
  * ChatStoppedError — the honest stop marker of the chat contract: the
@@ -100,7 +101,7 @@ export async function gatewayModels(base: string, timeoutMs = 6000): Promise<Gat
  * @param opts the optional gateway base, model, timeout and abort signal —
  *   an empty base talks to the same origin (the local gateway); a configured
  *   base points the client at a deployed gateway of the family. `retries`
- *   (default 0) adds retrybackoff rounds for transient failures, honoring
+ *   (default 0) adds queue retry rounds for transient failures, honoring
  *   Retry-After.
  * @returns the gateway reply.
  */

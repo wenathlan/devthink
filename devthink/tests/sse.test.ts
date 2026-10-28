@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createSseParser, isDoneFrame, jsonDataOf, parseSseChunk, SSE_DONE, SseDataError, sseEvents } from "../sse.js";
+import { createSseParser, isDoneFrame, jsonDataOf, parseSseChunk, SSE_DONE, SseDataError, sseEvents } from "../queue.ts";
 
 describe("sse canonical SSE parser", () => {
   it("parses a complete frame with event and data", () => {

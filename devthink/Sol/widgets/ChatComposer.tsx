@@ -58,7 +58,7 @@ import {
   GATEWAY_MODEL,
   type ToolId,
 } from "../../chatstate.ts";
-import { estimateTokens, formatCompactTokenCount } from "../../tokenestimate.ts";
+import { estimateTokens, formatCompactTokenCount } from "../../queue.ts";
 import { useStoredFlag } from "../../usestoredstate.ts";
 import { label } from "../../labels.ts";
 

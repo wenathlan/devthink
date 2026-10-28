@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createRequestQueue, QueueCancelledError } from "../requestqueue.js";
+import { createRequestQueue, QueueCancelledError } from "../queue.ts";
 
 /** Waits until the running count observed through the probe matches. */
 async function until(fn: () => boolean): Promise<void> {

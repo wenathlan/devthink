@@ -8,7 +8,7 @@
  */
 import { useCallback, useMemo } from "react";
 import { chatLimit, chatPersona, chatThinkingLevels } from "./chatlabels.ts";
-import { compactToken, createCompactId } from "./ids.ts";
+import { compactToken, createCompactId } from "./queue.ts";
 import {
   ChatStoppedError,
   type GatewayMessage,

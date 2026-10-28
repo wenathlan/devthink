@@ -8,7 +8,7 @@ import {
   formatCompactTokenCount,
   TOKENS_PER_MESSAGE,
   truncateToTokenBudget,
-} from "../tokenestimate.js";
+} from "../queue.ts";
 
 describe("tokenestimate per-script estimation", () => {
   it("estimates latin text at ~4 chars per token", () => {

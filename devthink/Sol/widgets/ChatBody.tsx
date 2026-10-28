@@ -47,7 +47,7 @@ import {
   useChatThinking,
   userTurn,
 } from "../../chatstate.ts";
-import { estimateHistoryTokens, formatCompactTokenCount } from "../../tokenestimate.ts";
+import { estimateHistoryTokens, formatCompactTokenCount } from "../../queue.ts";
 import { loadBrowserSession } from "../../storage.ts";
 import { GATEWAY_REQUIRED_COPY, GATEWAY_SEND_NOTICE, useGatewayRegistration } from "../../gateway.ts";
 import { useIsMobile } from "../../useismobile.ts";

@@ -40,7 +40,7 @@ import { type FormEvent, type KeyboardEvent, useEffect, useId, useRef, useState 
 import { chatLimit, chatText } from "../../chatlabels.ts";
 import { boot as sandboxboot, modalities as sandboxmodalities, run as sandboxrun } from "../../gateway.ts";
 import { osAppLabels } from "../../catalog.ts";
-import { compactToken } from "../../ids.ts";
+import { compactToken } from "../../queue.ts";
 
 /** one rendered log row; cls mirrors the boot, ok, err and cmdline row
  * classes the console terminal carries. */

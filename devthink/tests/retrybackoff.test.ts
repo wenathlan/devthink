@@ -8,7 +8,7 @@ import {
   RetryableError,
   retryWithBackoff,
   sleepMs,
-} from "../retrybackoff.js";
+} from "../queue.ts";
 
 const noJitter: typeof RETRY_DEFAULTS = { ...RETRY_DEFAULTS, jitterRatio: 0, initialIntervalMs: 1_000 };
 
