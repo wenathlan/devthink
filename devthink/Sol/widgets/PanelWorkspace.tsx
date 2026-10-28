@@ -83,7 +83,7 @@ function bindentry(id: string, entry: WindowEntry): WindowApp {
   if (entry.kind === "family") {
     const slug = entry.slug ?? id;
     return {
-      component: () => <FamilyFrame slug={slug} title={slug} />,
+      component: () => <FamilyFrame slug={slug} />,
       spawn: windowspawn(id),
     };
   }
