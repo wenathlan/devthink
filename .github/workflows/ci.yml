@@ -75,12 +75,12 @@ jobs:
           set -euo pipefail
           cd devthink
           if [ "${{ matrix.runtime }}" = "node" ]; then
-            node tests/build.mjs
+            node tests/build.ts
             node dist/cli.js --help
           elif [ "${{ matrix.runtime }}" = "deno" ]; then
-            node tests/build.mjs
+            node tests/build.ts
           else
-            node tests/build.mjs
+            node tests/build.ts
             bun devthink.ts --help
           fi
       - name: Deno check over the deno entry
@@ -101,7 +101,7 @@ jobs:
         # the readiness test the suite carries walks the committed evidence:
         # the sweep reruns here so the recorded wcag artifact reflects the
         # built surfaces (the committed artifact predates this build).
-        run: cd devthink && node tests/wcag.mjs
+        run: cd devthink && node tests/wcag.ts
       - name: Run deterministic test suite
         shell: bash
         run: |
@@ -171,7 +171,7 @@ jobs:
         # the database module imports the PrismaClient the generated
         # .prisma/client tree declares — a fresh install carries the stub
         # alone, so the client generates before the declaration walk (the
-        # same ordering the root build carries through tests/build.mjs).
+        # same ordering the root build carries through tests/build.ts).
         run: cd devthink && npm run db:generate
       - name: Typecheck the merged tree on the LTS line
         run: cd devthink && npm run typecheck
@@ -332,7 +332,7 @@ jobs:
       - name: Build the core bundle and pack it through webpack
         run: |
           cd devthink
-          node tests/build.mjs
+          node tests/build.ts
           npx webpack --entry ./dist/index.js --output-path ./distpackage/webpack --output-filename devthink.webpack.js --mode production --target node
           test -s ./distpackage/webpack/devthink.webpack.js
           du -h ./distpackage/webpack/devthink.webpack.js
@@ -353,7 +353,7 @@ jobs:
 
       - name: Run the config parity gate
         working-directory: devthink
-        run: node tests/configparity.mjs
+        run: node tests/configparity.ts
 
   family-tests:
     # the family test lane: the ten family apps carry their own vitest

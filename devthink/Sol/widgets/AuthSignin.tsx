@@ -13,9 +13,10 @@
  * one asks for the password alone and answers the wrong-try verdict
  * inline. The password well keeps the windows grammar: one rounded cell
  * carrying the input, the reveal eye and the arrow submit riding inside
- * it. Below the well: the provider row (continue with google, github,
- * gitlab and the cli pairing button under the same simple grammar — one
- * button, zero manual configuration). Every string rides the copy
+ * it. Below the well: the icon-only provider row (the google g, the
+ * octocat, the tanuki and the cli pairing glyph riding alone, the
+ * continue-with words living as the accessible names — zero manual
+ * configuration). Every string rides the copy
  * catalog (the seed of copy.ts is the one place literals live). Loose
  * component of the auth page, riding the dtw-login kit of sol.css.
  */

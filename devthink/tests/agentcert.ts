@@ -2,6 +2,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { readFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
+import type { agentidentity, agentmailbox, agentrecord, arbitrationrule, leaderworker, runrecord } from "../types.ts";
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
@@ -44,21 +45,12 @@ const faketabprovider = {
   },
 };
 
-/** One registered agent of the fake fleet as the compiled registeragent answers it. */
-interface agentrecord {
-  id: string;
-  name: string;
-  role: string;
-  state?: string;
-  tabid?: number;
-  registeredat?: number;
-  lastseenat?: number;
-  heartbeatat?: number;
-}
+/** The compiled library bundle the certification drives, typed the way the runtime import resolves it: the built tree answers through its declaration emit while the declaration seam covers the clean tree. */
+type librarybundle = typeof import("../dist/index.js");
 
 /** The fake agent fixture of the certification: five agents registered through the real registeragent with the roles the leader worker topology needs, bound to fake tabs of every browser kind. */
-function fiveagents(agentmodule: { registeragent: (input: { agents: agentrecord[]; id: string; name: string; role: string; tabid: number; now: number }) => agentrecord[] }) {
-  let agents: agentrecord[] = [];
+function fiveagents(agentmodule: librarybundle) {
+  let agents: agentidentity[] = [];
   const registrations = [
     { id: "a1", name: "Scout", role: "worker", browser: "chromium", slot: 1 },
     { id: "w1", name: "Scribe", role: "worker", browser: "chromium", slot: 2 },
@@ -132,21 +124,24 @@ export async function runagentcertsuite() {
 
   await entry({ id: 4, title: "the verifier agent confirms the results before the completion", family: "verification", module: "swarm.js and policy.js" }, async () => {
     const pass = swarm.checkclaim({ id: "ver-cert", verifierid: "v1", claimagentid: "w1", claim: "The table holds 42 rows.", method: "re-read", outcome: "pass", evidence: "The re-read counted 42 rows.", taskid: "t1", now: now() });
+    if (pass.evidence === undefined) throw new Error("the verifier pass lost its evidence");
     check(pass.outcome === "pass" && pass.evidence.includes("42"), "the verifier pass lost its outcome or evidence");
     const fail = swarm.checkclaim({ id: "ver-cert-2", verifierid: "v1", claimagentid: "w2", claim: "The footer shows the total.", method: "compare", outcome: "fail", evidence: "The compare found no total.", taskid: "t2", now: now() });
     check(fail.outcome === "fail", "the verifier fail lost its outcome");
     check(policy.verifiermethodgrade({ method: "re-read", allowed: ["re-read", "compare"] }).allowed === true, "the re-read method failed the verifier method grade");
     check(policy.verifiermethodgrade({ method: "guess", allowed: ["re-read", "compare"] }).allowed === false, "the guess method passed the verifier method grade");
-    const topology = { id: "top-ver", leaderid: "a1", workerids: ["w1", "w2"], criticids: ["c1"], verifierids: ["v1"], assignments: [{ workerid: "w1", taskid: "t1", slice: "Read the table", assignedat: now() }, { workerid: "w2", taskid: "t2", slice: "Read the footer", assignedat: now() }], rule: { kind: "first" }, electedat: now() };
+    const topology: leaderworker = { id: "top-ver", leaderid: "a1", workerids: ["w1", "w2"], criticids: ["c1"], verifierids: ["v1"], assignments: [{ workerid: "w1", taskid: "t1", slice: "Read the table", assignedat: now() }, { workerid: "w2", taskid: "t2", slice: "Read the footer", assignedat: now() }], rule: { kind: "first" }, electedat: now() };
     const gathered = swarm.collectresults({ topology, outputs: [{ workerid: "w1", taskid: "t1", state: "done", summary: "42 rows read." }, { workerid: "w2", taskid: "t2", state: "failed", summary: "No total found." }] });
-    check(gathered.gathered.find((row: { taskid: string; state: string }) => row.taskid === "t2").state === "failed", "the failed verification still reported done");
+    const failedrow = gathered.gathered.find((row: { taskid: string; state: string }) => row.taskid === "t2");
+    if (failedrow === undefined) throw new Error("the collection lost the failed footer slice");
+    check(failedrow.state === "failed", "the failed verification still reported done");
     return `checkclaim marked the w1 claim pass with the re-read evidence and the w2 claim fail; the method grade refused the guess method and the failed slice reported failed instead of done.`;
   });
 
   await entry({ id: 5, title: "message passing delivers between every agent pair", family: "messaging", module: "agent.js" }, async () => {
     const agents = fiveagents(agent);
-    const ids = agents.map((identity: agentrecord) => identity.id);
-    let mailboxes = ids.map(id => ({ agentid: id, inbox: [], outbox: [], unread: 0 }));
+    const ids = agents.map((identity: agentidentity) => identity.id);
+    let mailboxes: agentmailbox[] = ids.map(id => ({ agentid: id, inbox: [], outbox: [], unread: 0 }));
     let counter = 0;
     for (const sender of ids) {
       for (const recipient of ids) {
@@ -230,6 +225,7 @@ export async function runagentcertsuite() {
     const fold = agent.mergeresults({ entries, rule: "first", now: now() + 4 });
     check(fold.refused === false && fold.entries.length === 2, "the merge fold refused or lost keys");
     const rowcount = fold.entries.find((candidate: { key: string }) => candidate.key === "rowcount");
+    if (rowcount === undefined) throw new Error("the merge fold lost the rowcount key");
     check(rowcount.value === "42" && rowcount.agentid === "w1", "the first rule kept the wrong value or provenance");
     check(String(rowcount.conflict).includes("w1, w2"), "the merged entry lost its conflict note naming both writers");
     const lessonboard = agent.sharelesson({ board: swarm.emptyboard(), id: "l1", agentid: "w1", statement: "The footer renders only after the scroll.", verifiedby: "v1", now: now() });
@@ -241,21 +237,25 @@ export async function runagentcertsuite() {
     let movedbrowsercount = 0;
     for (const browser of faketabprovider.kinds) {
       const tabid = faketabprovider.tabof(browser, 1);
-      const agents = [
+      const agents: agentidentity[] = [
         { id: "a1", name: "Scout", role: "worker", depth: 0, state: "active", registeredat: now(), heartbeatat: now(), tabid },
         { id: "a2", name: "Scribe", role: "worker", depth: 0, state: "active", registeredat: now(), heartbeatat: now() },
       ];
       const prepared = agent.preparehandoff({ agents, id: `h-${browser}`, fromagentid: "a1", toagentid: "a2", taskstate: "Halfway through the footer.", reason: "The user moved the work.", now: now() });
       check(prepared.tabid === tabid, `the ${browser} handoff lost its tab binding`);
       const moved = agent.transferhandoff({ agents, handoffs: [prepared], id: `h-${browser}`, now: now() });
-      check(moved.agents.find((identity: agentrecord) => identity.id === "a1").tabid === undefined, `the ${browser} sender kept the tab`);
-      check(moved.agents.find((identity: agentrecord) => identity.id === "a2").tabid === tabid, `the ${browser} receiver never took the tab`);
+      const sender = moved.agents.find((identity: agentidentity) => identity.id === "a1");
+      const receiver = moved.agents.find((identity: agentidentity) => identity.id === "a2");
+      if (sender === undefined) throw new Error(`the ${browser} handoff lost the sender identity`);
+      if (receiver === undefined) throw new Error(`the ${browser} handoff lost the receiver identity`);
+      check(sender.tabid === undefined, `the ${browser} sender kept the tab`);
+      check(receiver.tabid === tabid, `the ${browser} receiver never took the tab`);
       const resumed = agent.resumehandoff({ handoffs: moved.handoffs, id: `h-${browser}`, now: now() });
       check(resumed.taskstate === "Halfway through the footer.", `the ${browser} handoff lost the packaged session state`);
       movedbrowsercount += 1;
     }
     check(movedbrowsercount === 3, "the tab handoff did not cover every browser kind");
-    const contested = [
+    const contested: agentidentity[] = [
       { id: "a1", name: "Scout", role: "worker", depth: 0, state: "active", registeredat: now(), heartbeatat: now(), tabid: 101 },
       { id: "a3", name: "Probe", role: "worker", depth: 0, state: "active", registeredat: now(), heartbeatat: now(), tabid: 101 },
     ];
@@ -311,11 +311,17 @@ export async function runagentcertsuite() {
     ];
     const first = agent.mergeresults({ entries: parallel, rule: "first", now: now() + 3 });
     check(first.refused === false && first.entries.length === 2, "the first rule fold lost keys");
-    check(first.entries.find((candidate: { key: string; value: string }) => candidate.key === "rowcount").value === "42", "the first rule kept the wrong value");
+    const firstrow = first.entries.find((candidate: { key: string; value: string }) => candidate.key === "rowcount");
+    if (firstrow === undefined) throw new Error("the first rule fold lost the rowcount key");
+    check(firstrow.value === "42", "the first rule kept the wrong value");
     const last = agent.mergeresults({ entries: parallel, rule: "last", now: now() + 3 });
-    check(last.entries.find((candidate: { key: string; value: string }) => candidate.key === "rowcount").value === "41", "the last rule kept the wrong value");
+    const lastrow = last.entries.find((candidate: { key: string; value: string }) => candidate.key === "rowcount");
+    if (lastrow === undefined) throw new Error("the last rule fold lost the rowcount key");
+    check(lastrow.value === "41", "the last rule kept the wrong value");
     const preferred = agent.mergeresults({ entries: parallel, rule: "preferagent", preferagent: "w2", now: now() + 3 });
-    check(preferred.entries.find((candidate: { key: string; value: string }) => candidate.key === "rowcount").value === "41", "the preferagent rule kept the wrong value");
+    const preferredrow = preferred.entries.find((candidate: { key: string; value: string }) => candidate.key === "rowcount");
+    if (preferredrow === undefined) throw new Error("the preferagent rule fold lost the rowcount key");
+    check(preferredrow.value === "41", "the preferagent rule kept the wrong value");
     const refused = agent.mergeresults({ entries: parallel, rule: "fail", now: now() + 3 });
     check(refused.refused === true, "the fail rule folded a conflicting merge anyway");
     check(policy.conflictresolutiongrade("first").allowed === true, "the conflict resolution grade refused the first rule");
@@ -341,7 +347,9 @@ export async function runagentcertsuite() {
     check(closed === true, "the carried round accepted another vote");
     const record = agent.consensusrecordof({ id: "con-rec", proposal: "Abort the second pass", votes: [{ agentid: "w1", vote: "no", reason: "The re-read is cheap.", castat: now() }, { agentid: "w2", vote: "no", castat: now() }, { agentid: "v1", vote: "abstain", castat: now() }], quorum: 2, voters: 3, now: now() });
     check(record.outcome === "failed" && record.tally.no === 2, "the completed round under the quorum never failed");
-    check(record.votes.find((vote: { agentid: string; reason?: string }) => vote.agentid === "w1").reason !== undefined, "the dissenting reason left the record");
+    const dissent = record.votes.find((vote: { agentid: string; reason?: string }) => vote.agentid === "w1");
+    if (dissent === undefined) throw new Error("the completed round lost the dissenting vote of w1");
+    check(dissent.reason !== undefined, "the dissenting reason left the record");
     check(policy.voteweightvalid({ votes: record.votes }).allowed === true, "the vote weight grade refused one vote per agent");
     return `openconsensus and castvote carried the round at the quorum of three yes votes and refused the late vote, consensusrecordof failed the complete no round with the dissenting reasons kept, and the quorum and weight grades held.`;
   });
@@ -349,10 +357,10 @@ export async function runagentcertsuite() {
   await entry({ id: 14, title: "the kill switch stops every agent at once", family: "emergency stops", module: "agent.js and swarm.js" }, async () => {
     const agents = fiveagents(agent);
     const outcome = agent.killall({ agents, reason: "The user halted the swarm.", now: now() });
-    check(outcome.agents.every((identity: agentrecord) => identity.state === "stopped"), "an agent survived the kill switch");
+    check(outcome.agents.every((identity: agentidentity) => identity.state === "stopped"), "an agent survived the kill switch");
     check(outcome.killswitch.engaged === true, "the kill switch never engaged");
-    const records = agents.map((identity: agentrecord) => ({ id: identity.id, name: identity.name, role: identity.role, origin: "https://example.com", state: identity.state === "stopped" ? "active" : "active", registeredat: identity.registeredat, lastseenat: now() }));
-    const runs = ["a1", "w1", "w2"].map(agentid => ({ ...library.initialrun({ planid: "plan", sessionid: "session", runid: `run-${agentid}`, now: now() }), agentid, state: "running" }));
+    const records: agentrecord[] = agents.map((identity: agentidentity) => ({ id: identity.id, name: identity.name, role: identity.role, origin: "https://example.com", state: identity.state === "stopped" ? "active" : "active", registeredat: identity.registeredat, lastseenat: now() }));
+    const runs: runrecord[] = ["a1", "w1", "w2"].map(agentid => ({ ...library.initialrun({ planid: "plan", sessionid: "session", runid: `run-${agentid}`, now: now() }), agentid, state: "running" }));
     let queue = swarm.emptyqueue({ lanes: ["extraction"] });
     queue = swarm.enqueue({ queue, id: "t1", lane: "extraction", priority: 1, payload: "Read the table.", now: now() });
     const stopped = agent.engagekillswitch({ records, runs, queues: [queue], reason: "The user halted the swarm.", now: now() });
@@ -367,23 +375,29 @@ export async function runagentcertsuite() {
   await entry({ id: 15, title: "pausing one agent leaves the others running", family: "lifecycle", module: "agent.js and policy.js" }, async () => {
     const agents = fiveagents(agent);
     const paused = agent.pauseone({ agents, agentid: "w1", now: now() });
-    check(paused.find((identity: agentrecord) => identity.id === "w1").state === "paused", "the named agent never paused");
-    check(paused.filter((identity: agentrecord) => identity.id !== "w1").every((identity: agentrecord) => identity.state === "active"), "the pause stopped a peer agent");
+    const pausedone = paused.find((identity: agentidentity) => identity.id === "w1");
+    if (pausedone === undefined) throw new Error("the pause lost the named agent w1");
+    check(pausedone.state === "paused", "the named agent never paused");
+    check(paused.filter((identity: agentidentity) => identity.id !== "w1").every((identity: agentidentity) => identity.state === "active"), "the pause stopped a peer agent");
     const resumed = agent.resumeone({ agents: paused, agentid: "w1", now: now() });
-    check(resumed.find((identity: agentrecord) => identity.id === "w1").state === "active", "the paused agent never resumed");
+    const resumedone = resumed.find((identity: agentidentity) => identity.id === "w1");
+    if (resumedone === undefined) throw new Error("the resume lost the named agent w1");
+    check(resumedone.state === "active", "the paused agent never resumed");
     let unpausedrefused = false;
     try { agent.resumeone({ agents: resumed, agentid: "w2", now: now() }); } catch { unpausedrefused = true; }
     check(unpausedrefused === true, "the resume accepted an agent that never paused");
-    const records = paused.map((identity: agentrecord) => ({ id: identity.id, name: identity.name, role: identity.role, origin: "https://example.com", state: identity.state === "stopped" ? "stopped" : identity.state, registeredat: identity.registeredat, lastseenat: now() }));
+    const records: agentrecord[] = paused.map((identity: agentidentity) => ({ id: identity.id, name: identity.name, role: identity.role, origin: "https://example.com", state: identity.state === "stopped" ? "stopped" : identity.state, registeredat: identity.registeredat, lastseenat: now() }));
     check(policy.pauseagentgate({ records, agentid: "w2" }).allowed === true, "the pause gate refused an active agent");
     check(policy.pauseagentgate({ records, agentid: "ghost" }).allowed === false, "the pause gate allowed an unknown agent");
     const beat = agent.agentheartbeat({ agents: resumed, agentid: "w2", now: now() + 5_000 });
-    check(beat.find((identity: agentrecord) => identity.id === "w2").heartbeatat === now() + 5_000, "the heartbeat never refreshed");
+    const refreshed = beat.find((identity: agentidentity) => identity.id === "w2");
+    if (refreshed === undefined) throw new Error("the heartbeat lost the agent w2");
+    check(refreshed.heartbeatat === now() + 5_000, "the heartbeat never refreshed");
     return `pauseone paused only w1 while a1, w2, c1 and v1 kept running, resumeone lifted the pause and refused the never-paused agent, the pause gate held and the heartbeat of w2 refreshed.`;
   });
 
   await entry({ id: 16, title: "the depth limit refuses the spawned sub agents past the ceiling", family: "sub agents", module: "agent.js and swarm.js" }, async () => {
-    const parent = { id: "p1", name: "planner", role: "planner", origin: "https://example.com", state: "active", registeredat: now(), lastseenat: now() };
+    const parent: agentrecord = { id: "p1", name: "planner", role: "planner", origin: "https://example.com", state: "active", registeredat: now(), lastseenat: now() };
     const spawned = agent.spawnsubagent({ records: [parent], spawns: [], spec: { parentid: "p1", objective: "Read the pricing table", depth: 1 }, parentscope: { agentid: "p1", origins: ["https://example.com"], toolnamespaces: ["browser", "memory"], actionkinds: ["observe", "readtext"] }, id: "c1", now: now() });
     check(spawned.spawn.depth === 1 && spawned.spawn.parentid === "p1", "the spawn lost its lineage");
     check(spawned.scope.origins.join(",") === "https://example.com", "the child scope widened past the parent");
@@ -419,9 +433,9 @@ export async function runagentcertsuite() {
   });
 
   await entry({ id: 18, title: "the review request flow routes between the agents of the shared origin", family: "review flow", module: "agent.js and policy.js" }, async () => {
-    const from = { id: "w1", name: "scout", role: "worker", origin: "https://example.com", state: "active", registeredat: now(), lastseenat: now() };
-    const to = { id: "c1", name: "judge", role: "critic", origin: "https://example.com", state: "active", registeredat: now(), lastseenat: now() };
-    const foreign = { id: "x1", name: "stranger", role: "critic", origin: "https://outside.example", state: "active", registeredat: now(), lastseenat: now() };
+    const from: agentrecord = { id: "w1", name: "scout", role: "worker", origin: "https://example.com", state: "active", registeredat: now(), lastseenat: now() };
+    const to: agentrecord = { id: "c1", name: "judge", role: "critic", origin: "https://example.com", state: "active", registeredat: now(), lastseenat: now() };
+    const foreign: agentrecord = { id: "x1", name: "stranger", role: "critic", origin: "https://outside.example", state: "active", registeredat: now(), lastseenat: now() };
     check(policy.reviewrequestgate({ from, to }).allowed === true, "the review request gate refused the shared origin pair");
     check(policy.reviewrequestgate({ from, to: foreign }).allowed === false, "the review request gate allowed a foreign origin reviewer");
     const record = agent.reviewrecordof({ id: "rev-flow", fromagentid: "w1", toagentid: "c1", subject: "The extraction output", output: "The table rows", now: now() });
@@ -485,19 +499,24 @@ export async function runagentcertsuite() {
     check(policy.lanechangegate({ lane: lanes[2], sensitive: true, confirmed: false }).allowed === false, "the lane change gate allowed a sensitive downgrade without the confirmation");
     check(policy.lanechangegate({ lane: lanes[2], sensitive: true, confirmed: true }).allowed === true, "the lane change gate refused a confirmed sensitive change");
     let queue = swarm.emptyqueue({ lanes: ["high", "low"], priorities: [1, 10] });
-    for (const task of ordered) queue = swarm.enqueue({ queue, id: task.id, lane: task.lane === "interactive" ? "high" : task.lane, priority: task.priority, payload: `The task ${task.id}.`, now: now() });
+    for (const task of ordered) {
+      if (task.priority === undefined) throw new Error(`the lane order lost the priority of the task ${task.id}`);
+      queue = swarm.enqueue({ queue, id: task.id, lane: task.lane === "interactive" ? "high" : task.lane, priority: task.priority, payload: `The task ${task.id}.`, now: now() });
+    }
     const claimed = swarm.claim({ queue, agentid: "w1", now: now() });
+    if (claimed.task === undefined) throw new Error("the queue claim never handed out a task");
     check(claimed.task.id === "low1", `the queue claim picked ${claimed.task?.id} instead of the highest priority queued task`);
     return `prioritylaneof moved the sensitive task into the interactive lane and ordered the rest by lane priority with the round robin fallback, the lane change gate demanded the confirmation for the sensitive downgrade, and the queue claim picked the highest priority task first.`;
   });
 
   await entry({ id: 22, title: "the resource arbitration orders the contenders under contention", family: "arbitration", module: "swarm.js and agent.js" }, async () => {
     const claims = [{ agentid: "w2", claimedat: now() + 5 }, { agentid: "w1", claimedat: now() }, { agentid: "v1", claimedat: now() + 2 }];
-    const priority = { id: "rule-cert", strategy: "priority", priorityorder: ["v1", "w2"], configuredat: now() };
+    const priority: arbitrationrule = { id: "rule-cert", strategy: "priority", priorityorder: ["v1", "w2"], configuredat: now() };
     check(swarm.arbitrate({ rule: priority, claims }).join(",") === "v1,w2,w1", "the priority strategy lost its user order");
     check(swarm.arbitrate({ rule: { ...priority, strategy: "age" }, claims }).join(",") === "w1,v1,w2", "the age strategy lost the oldest claim first");
     check(swarm.arbitrate({ rule: { ...priority, strategy: "leader" }, leaderid: "w2", claims }).join(",") === "w2,w1,v1", "the leader strategy lost its leader first");
     const caseopened = agent.arbitrationcaseof({ id: "case-cert", resource: "https://example.com/pricing", origin: "https://example.com", requesters: ["w1", "w2"], lanes: [{ name: "fastlane", priority: 9, agentids: ["w2"] }, { name: "background", priority: 1, agentids: ["w1"] }], now: now() });
+    if (caseopened.verdict === undefined) throw new Error("the arbitration case closed without a verdict");
     check(caseopened.verdict.holderagentid === "w2" && caseopened.verdict.lane === "fastlane", "the lane priority never granted the fastlane contender");
     const released = agent.releasecase({ cases: [caseopened], id: "case-cert", holderfinished: true, now: now() + 1_000 });
     check(released.state === "released" && released.closedat === now() + 1_000, "the finished holder never released the case");
@@ -520,8 +539,12 @@ export async function runagentcertsuite() {
     check(policy.workerscalevalid(3).allowed === true && policy.workerscalevalid(undefined).allowed === true, "the workerscale grade refused a legal bound");
     const reports = [agent.loadreportof({ origin: "https://example.com", concurrency: 1, latency: 80, now: now() }), agent.loadreportof({ origin: "https://shop.example", concurrency: 3, latency: 4_500, now: now() })];
     const suggestions = agent.scalesuggestion({ reports, lowthreshold: 200, throttlethreshold: 4_000 });
-    check(suggestions.find((suggestion: { origin: string; suggestion: string }) => suggestion.origin === "https://example.com").suggestion === "spawn", "the idle origin never suggested a spawn");
-    check(suggestions.find((suggestion: { origin: string; suggestion: string }) => suggestion.origin === "https://shop.example").suggestion === "pause", "the throttled origin never suggested a pause");
+    const idlesuggestion = suggestions.find((suggestion: { origin: string; suggestion: string }) => suggestion.origin === "https://example.com");
+    if (idlesuggestion === undefined) throw new Error("the idle origin never reported a scale suggestion");
+    check(idlesuggestion.suggestion === "spawn", "the idle origin never suggested a spawn");
+    const throttledsuggestion = suggestions.find((suggestion: { origin: string; suggestion: string }) => suggestion.origin === "https://shop.example");
+    if (throttledsuggestion === undefined) throw new Error("the throttled origin never reported a scale suggestion");
+    check(throttledsuggestion.suggestion === "pause", "the throttled origin never suggested a pause");
     check(policy.scaleconsentgate({ userconsented: false, origin: "https://example.com" }).allowed === false, "the scale consent gate allowed an unconsented scale");
     return `scaleworkers grew the worker lane to the pending load inside the user bound and retired the idle workers, the load reports suggested a spawn on the idle origin and a pause on the throttled one, and the consent gate refused the unconsented scale.`;
   });
@@ -556,6 +579,7 @@ export async function runagentcertsuite() {
     check(observer.readonly === true, "the observer scope lost its readonly marker");
     check(policy.agentscopegate({ scope: observer, kind: "click", origin: "https://example.com" }).allowed === false, "the observer scope allowed a click");
     const child = agent.childscopeof({ agentid: "s1", parent: scope, narrowed: { origins: ["https://shop.example"], actionkinds: ["readtext"] } });
+    if (child.actionkinds === undefined) throw new Error("the child scope lost its action kinds");
     check(child.origins.join(",") === "https://shop.example" && child.actionkinds.join(",") === "readtext", "the child scope lost its narrowing");
     let widened = false;
     try { agent.childscopeof({ agentid: "s2", parent: scope, narrowed: { origins: ["https://outside.example"] } }); } catch { widened = true; }
@@ -606,22 +630,27 @@ export async function runagentcertsuite() {
     const second = agent.lessonrecordof({ id: "l2", agentid: "w2", finding: "The login form refuses pasted passwords on the shop.", origin: "https://shop.example", now: now() });
     check(first.reusecount === 0 && second.reusecount === 0, "the fresh lessons carried reuse counts");
     let reused = agent.lessonreuse({ lessons: [first, second], id: "l1", now: now() + 1_000 });
-    check(reused.find((lesson: { id: string; reusecount: number }) => lesson.id === "l1").reusecount === 1, "the reuse count never grew");
+    const regrown = reused.find((lesson: { id: string; reusecount: number }) => lesson.id === "l1");
+    if (regrown === undefined) throw new Error("the reuse pass lost the lesson l1");
+    check(regrown.reusecount === 1, "the reuse count never grew");
     class fakeadapter {
       data: Map<string, unknown>;
       constructor() { this.data = new Map(); }
-      async get(key: string) { return this.data.get(key); }
-      async set(key: string, value: unknown) { this.data.set(key, value); }
+      async get<T>(key: string): Promise<T | undefined> { return this.data.get(key) as T | undefined; }
+      async set<T>(key: string, value: T): Promise<void> { this.data.set(key, value); }
     }
     const store = new library.sessionmemory(new fakeadapter());
     await store.setlesson(first);
     await store.setlesson(second);
     check((await store.getlessons()).length === 2, "the store lost a lesson");
     const updated = reused.find((lesson: { id: string }) => lesson.id === "l1");
+    if (updated === undefined) throw new Error("the reuse pass lost the rewritten lesson l1");
     await store.setlesson(updated);
     const stored = await store.getlessons();
     check(stored.length === 2, `the store duplicated the rewritten lesson: ${stored.length} entries`);
-    check(stored.find((lesson: { id: string; reusecount: number }) => lesson.id === "l1").reusecount === 1, "the rewritten lesson lost its reuse count");
+    const rewritten = stored.find((lesson: { id: string; reusecount: number }) => lesson.id === "l1");
+    if (rewritten === undefined) throw new Error("the store lost the rewritten lesson l1");
+    check(rewritten.reusecount === 1, "the rewritten lesson lost its reuse count");
     const matches = agent.lessonmatches({ lessons: stored, task: "Read the pricing table of the hero again", origin: "https://example.com" });
     check(matches.map((lesson: { id: string }) => lesson.id).join(",") === "l1", `the matches served ${matches.map((lesson: { id: string }) => lesson.id).join(",")}`);
     const decayed = agent.lessondecay({ lessons: stored, now: now() + 100_000_000, stalewindow: 1_000_000 });
@@ -648,7 +677,7 @@ export async function runagentcertsuite() {
     check(Object.keys(pool).length === 34, `the pool mapping covered ${Object.keys(pool).length} items instead of thirty four`);
     const split = agent.sharedcostsplit({ entries: [agent.costentryof({ agentid: "w1", runid: "run-1", units: 4, description: "The pricing table read.", now: now() }), agent.costentryof({ agentid: "w2", runid: "run-2", units: 2, description: "The footer read.", now: now() })] });
     check(split.length === 2 && split.every((share: { units: number }) => share.units > 0), "the shared cost split lost an agent share");
-    const overview = agent.swarmoverview({ agents: fleet, queue: swarm.emptyqueue({ lanes: ["extraction"] }), mailboxes: fleet.map((identity: agentrecord) => ({ agentid: identity.id, inbox: [], outbox: [], unread: 0 })) });
+    const overview = agent.swarmoverview({ agents: fleet, queue: swarm.emptyqueue({ lanes: ["extraction"] }), mailboxes: fleet.map((identity: agentidentity): agentmailbox => ({ agentid: identity.id, inbox: [], outbox: [], unread: 0 })) });
     check(overview.agents === 5, "the swarm overview lost the fleet count");
     return `every pool item 469 through 502 maps onto one real exported function of the compiled agent.js or swarm.js modules (thirty four items, none missing), the shared cost split and the swarm overview answering beside them.`;
   });
@@ -662,6 +691,7 @@ export async function runagentcertsuite() {
     check(inventory.scenarios === 6, "the inventory lost the six certified scenario families");
     check(inventory.certified === true, "the inventory never certified the live topology");
     const leader = inventory.entries.find((candidate: { agentid: string; lane: string; scenarios: string[] }) => candidate.agentid === "a1");
+    if (leader === undefined) throw new Error("the inventory lost the leader entry of a1");
     check(leader.lane === "leader" && leader.scenarios.includes("leader worker scrape"), "the leader entry lost its lane or scenarios");
     const snapshot = { release, inventory };
     check(JSON.stringify(snapshot).includes("w1"), "the snapshot serialization lost an agent");
@@ -685,7 +715,7 @@ export async function runleaderworkertopologyscenario() {
   const agent = library;
   const swarm = library;
   const clock = fakeclock("fake");
-  let agents: agentrecord[] = [];
+  let agents: agentidentity[] = [];
   for (const registration of [
     { id: "a1", name: "Scout", role: "worker", tab: faketabprovider.tabof("chromium", 1) },
     { id: "w1", name: "Scribe", role: "worker", tab: faketabprovider.tabof("chromium", 2) },

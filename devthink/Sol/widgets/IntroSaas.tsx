@@ -1,18 +1,31 @@
 /**
  * saas.tsx — the SaaS face of the intro (layer 3, page body): the approved
  * landing restored at full parity — the pale canvas (#DCE2EE) with the
- * palco (#F2F5FC) at radius 30, the saddle rail at the left edge, the
- * Urbanist tiers, the gaussian shader hero with the inline engine switch,
- * the studio fan deck, the Cadria top ten, the explorer reel wall, the
- * Debonair rail, the Doo demo and the footer. Every launch path funnels to
- * the login face: the panel is the last page of the chain. The stylesheet
- * injects once at import time, scoped to the saas-* root and the
- * reference class names.
+ * palco (#F2F5FC) at radius 30, the saddle rail at the left edge with its
+ * snug fitted curve, the Urbanist tiers, the gaussian shader hero with the
+ * inline engine switch, the studio fan deck, the Cadria top ten, the
+ * explorer reel wall, the Debonair rail, the Doo demo and the footer. The
+ * glyphs ride the fluent set the owner pinned for this face. Every launch
+ * path funnels to the login face: the panel is the last page of the chain.
+ * The stylesheet injects once at import time, scoped to the saas-* root and
+ * the reference class names.
  */
 
-import type { SVGProps } from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type ComponentType } from "react";
 import { useLocation } from "wouter";
+import {
+  AlertRegular as Bell,
+  ArrowImportRegular as Login,
+  ArrowUpRightRegular as Arrowupright,
+  ChatRegular as Messagesquare,
+  HeadphonesRegular as Headphones,
+  MaximizeRegular as Maximize,
+  PeopleRegular as Users,
+  SparkleRegular as Sparkle,
+  StackRegular as Layers,
+  StarRegular as Star,
+  TvRegular as Tv,
+} from "@fluentui/react-icons";
 import { saaschrome, saasheadertabs, saasrailstops, saastoasts } from "../../saascontent.ts";
 import { SaddleTabBridge, Studiomark, VerticalSaddleBridge } from "./IntroSaaskit.tsx";
 import {
@@ -26,22 +39,6 @@ import {
 } from "./IntroSaasrails.tsx";
 import { SaasCreators, SaasHero, SaasStudios } from "./IntroSaassections.tsx";
 import { SolLogoMark, SolWordmark } from "./PanelLogo.tsx";
-import {
-  Arrowupright,
-  Bell,
-  Compass,
-  Film,
-  Headphones,
-  Layers,
-  Login,
-  Maximize,
-  Messagesquare,
-  Music,
-  Sparkle,
-  Star,
-  Tv,
-  Users,
-} from "./Saasglyphs.tsx";
 
 const SAAS_CSS = `
 .saas-root { font-family: 'Urbanist', sans-serif; letter-spacing: -0.015em; background: #DCE2EE; }
@@ -109,16 +106,16 @@ function ensureSaasCss(): void {
 }
 ensureSaasCss();
 
-/** One stroke glyph of the glyph family, addressable by its section id. */
-type glyphkind = (props: SVGProps<SVGSVGElement>) => React.ReactElement;
+/** One glyph of the fluent set, addressable by its section id. */
+type glyphkind = ComponentType<{ className?: string; "aria-hidden"?: boolean | "true" | "false" }>;
 
 /** The glyph each header tab of the saddle bridge wears. */
 const TABGLYPH: Record<string, glyphkind> = {
   "hero-os": Sparkle,
-  "workspace-subapps": Compass,
+  "workspace-subapps": Layers,
   "creators-doo": Users,
-  "spatial-bento": Film,
-  "sonic-deck": Music,
+  "spatial-bento": Tv,
+  "sonic-deck": Headphones,
 };
 
 /** The tone each header tab glyph rides. */
@@ -133,7 +130,7 @@ const TABTONE: Record<string, string> = {
 /** The glyph each left rail stop wears. */
 const RAILGLYPH: Record<string, glyphkind> = {
   "hero-os": Sparkle,
-  "creators-doo": Compass,
+  "creators-doo": Users,
   "workspace-subapps": Layers,
   "spatial-bento": Tv,
   "sonic-deck": Headphones,
@@ -263,7 +260,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                           className={`group flex items-center rounded-xl px-3 py-2 transition-all ${current ? "icon-frame-3d-active text-slate-950" : "icon-frame-3d text-slate-800"}`}
                           aria-label={tab.label}
                         >
-                          <Glyph strokeWidth={1.7} className={`h-4 w-4 ${TABTONE[tab.id]}`} aria-hidden="true" />
+                          <Glyph className={`h-4 w-4 ${TABTONE[tab.id]}`} aria-hidden="true" />
                           <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-all group-hover:ml-2 group-hover:max-w-[90px] group-hover:opacity-100">
                             {tab.label}
                           </span>
@@ -280,7 +277,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                   className="icon-frame-3d group flex items-center rounded-full p-2.5 text-slate-800"
                   aria-label={saaschrome.alerts}
                 >
-                  <Bell strokeWidth={1.7} className="h-4 w-4" aria-hidden="true" />
+                  <Bell className="h-4 w-4" aria-hidden="true" />
                   <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-all group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
                     {saaschrome.alerts}
                   </span>
@@ -291,7 +288,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                   className="icon-frame-3d group hidden items-center rounded-full p-2.5 text-slate-800 sm:flex"
                   aria-label={saaschrome.signin}
                 >
-                  <Login strokeWidth={1.7} className="h-4 w-4" aria-hidden="true" />
+                  <Login className="h-4 w-4" aria-hidden="true" />
                   <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-all group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
                     {saaschrome.signin}
                   </span>

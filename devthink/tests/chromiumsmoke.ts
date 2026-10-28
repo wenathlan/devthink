@@ -5,6 +5,7 @@ import { access, mkdir, mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
+import type { fetchtransport } from "../http.ts";
 
 const execute = promisify(execFile);
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
@@ -158,8 +159,12 @@ try {
         // Network observation smoke: fetch the reviewed DevTools url of the isolated browser through the shipped http client and parse its json.
         const { sendfetch, readpath } = await import("../dist/index.js");
         const reviewedurl = `http://127.0.0.1:${port}/json/version`;
-        const transport = async (url: string, init?: RequestInit) => {
-          const response = await fetch(url, init);
+        const transport: fetchtransport = async (url, init) => {
+          const response = await fetch(url, {
+            method: init.method,
+            headers: init.headers,
+            ...(init.body !== undefined ? { body: init.body } : {}),
+          });
           const headers: Record<string, string> = {};
           response.headers.forEach((value, name) => {
             headers[name] = value;

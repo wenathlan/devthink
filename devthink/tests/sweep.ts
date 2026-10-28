@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import type { agentrecord } from "../types.ts";
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
@@ -375,16 +376,12 @@ export async function runsweepsuite() {
     try {
       const run = modules.library.cancelrunrecord(
         {
-          id: "sweep-cancel",
+          runid: "sweep-cancel",
           planid: "sweep-plan",
-          origin: "https://example.org",
-          startedat: 1_800_000_000_000,
+          sessionid: "sweep-session",
           state: "running",
-          steps: [],
-          settings: undefined,
-          log: [],
-          heartbeats: [],
-          budget: undefined,
+          createdat: 1_800_000_000_000,
+          updatedat: 1_800_000_000_000,
         },
         1_800_000_001_000,
       );
@@ -414,23 +411,21 @@ export async function runsweepsuite() {
 
     /* 6c. the escape hatch: the kill switch stops every agent at once from any surface. */
     try {
-      const records = [
+      const records: agentrecord[] = [
         {
           id: "a1",
           name: "Scout",
           role: "worker",
-          depth: 0,
+          origin: "https://example.org",
           state: "active",
-          tabid: 101,
           registeredat: 1_800_000_000_000,
         },
         {
           id: "w1",
           name: "Scribe",
           role: "worker",
-          depth: 0,
+          origin: "https://example.org",
           state: "active",
-          tabid: 102,
           registeredat: 1_800_000_000_000,
         },
       ];
