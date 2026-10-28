@@ -402,8 +402,10 @@ export function SaddleTabBridgeUp({ fillColor, children, className = "" }: Bridg
 }
 
 /** The vertical saddle bridge of the left rail — the snug fitted curve
- *  the owner pinned: the flare hugs the body edge and tucks to the spine
- *  with a crisp short sweep, never the wide quarter-pipe. */
+ *  the owner pinned again: the sweep hugs the spine the whole way and
+ *  flares to the body edge only in the last crisp moment (bem mais
+ *  ajustadinha), never the wide quarter-pipe and never the long diagonal
+ *  shoulder of the first fluent cut. */
 export function VerticalSaddleBridge({ fillColor, children, className = "" }: BridgeProps) {
   return (
     <div className={`relative inline-flex flex-col items-center justify-center ${className}`}>
@@ -414,7 +416,7 @@ export function VerticalSaddleBridge({ fillColor, children, className = "" }: Br
         fill="none"
         aria-hidden="true"
       >
-        <path d="M0 0 V76 H56 C56 50 8 54 0 0 Z" fill={fillColor} />
+        <path d="M0 0 V76 H56 C10 58 4 30 0 0 Z" fill={fillColor} />
       </svg>
       <div
         style={{ backgroundColor: fillColor }}
@@ -429,7 +431,7 @@ export function VerticalSaddleBridge({ fillColor, children, className = "" }: Br
         fill="none"
         aria-hidden="true"
       >
-        <path d="M0 76 V0 H56 C56 26 8 22 0 76 Z" fill={fillColor} />
+        <path d="M0 76 V0 H56 C10 18 4 46 0 76 Z" fill={fillColor} />
       </svg>
     </div>
   );
