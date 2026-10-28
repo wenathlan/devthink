@@ -23,6 +23,7 @@
  */
 
 import type { CSSProperties } from "react";
+import { Link } from "wouter";
 import { useCallback, useEffect, useState } from "react";
 import { label } from "../../labels";
 import { IntroFooter as IntroFooter } from "../widgets";
@@ -108,12 +109,12 @@ export function Intro() {
           </span>
           <span className="cb-introbar__spacer" />
           <nav className="cb-introbar__nav" aria-label={label("intro.bar.aria")}>
-            <a className="cb-introdoor" href="/apps">
+            <Link className="cb-introdoor" href="/apps">
               {label("shell.foot.apps")}
-            </a>
-            <a className="cb-introdoor" href="/pricing">
+            </Link>
+            <Link className="cb-introdoor" href="/pricing">
               {label("shell.foot.pricing")}
-            </a>
+            </Link>
           </nav>
         </div>
       </header>
@@ -135,9 +136,9 @@ export function Intro() {
               {label("intro.hero.lede")}
             </p>
             <div className="cb-btnrow cb-in" style={{ "--cb-d": 4 } as CSSProperties}>
-              <a className="cb-btn" href="/">
+              <Link className="cb-btn" href="/">
                 {label("intro.hero.cta")}
-              </a>
+              </Link>
               <button type="button" className="cb-btn cb-btn--ghost" onClick={cuePlans}>
                 {label("intro.hero.cue")}
               </button>
@@ -162,18 +163,18 @@ export function Intro() {
               <article className="cb-intropane cb-in" style={{ "--cb-d": 1 } as CSSProperties}>
                 <p className="cb-cardmeta">{label("intro.doors.apps")}</p>
                 <p className="cb-intropane__text">{label("intro.doors.appsText")}</p>
-                <a className="cb-intropane__door" href="/apps">
+                <Link className="cb-intropane__door" href="/apps">
                   {label("intro.doors.appsCta")}
                   <DoorGlyph />
-                </a>
+                </Link>
               </article>
               <article className="cb-intropane cb-in" style={{ "--cb-d": 2 } as CSSProperties}>
                 <p className="cb-cardmeta">{label("intro.doors.legal")}</p>
                 <p className="cb-intropane__text">{label("intro.doors.legalText")}</p>
-                <a className="cb-intropane__door" href="/legal">
+                <Link className="cb-intropane__door" href="/legal">
                   {label("intro.doors.legalCta")}
                   <DoorGlyph />
-                </a>
+                </Link>
               </article>
             </div>
           </div>
