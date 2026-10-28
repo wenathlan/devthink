@@ -14,7 +14,6 @@
     "paths": {
       "@/*": ["./Sol/*", "./*"],
       "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"],
-      "@wenathlan/saddle/modalities": ["../saddle/modalityregistry.ts"],
       "@wenathlan/devthink/server": ["./server.ts"]
     }
   },

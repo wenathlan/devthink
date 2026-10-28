@@ -2,9 +2,11 @@
  * sandboxlane — the server-side sandbox of the run and storage lane
  * real filesystem round trips inside the session jail: write, list, read,
  * removal, the containment refusal, the invalid session gate, the honest
- * pending answers, the modalities report and the once-only welcome page.
- * every test drives a unique session id so the .sandboxrun root under the
- * package cwd stays isolated per run.
+ * pending answers, the modalities report and the once-only welcome page,
+ * and the vendored registry mirror pinned byte-identical to the engine
+ * source (the single-source law of the catalog). every test drives a
+ * unique session id so the .sandboxrun root under the package cwd stays
+ * isolated per run.
  */
 
 import { readFile, stat } from "node:fs/promises";
@@ -13,6 +15,7 @@ import { describe, expect, it } from "vitest";
 
 import { createsandboxsession, hostmodalityreport, runsandboxline } from "../../sandboxlane.js";
 import type { SandboxAnswer } from "../../sandboxlane.js";
+import { MODALITIES, MODALITYPLANCOUNT, planreport } from "../../modalities.js";
 
 let counter = 0;
 
@@ -150,5 +153,36 @@ describe("sandboxlane", () => {
     for (const row of rows.slice(1)) {
       expect(row).toMatch(/: (live lane — |host runtime |planned — )/);
     }
+  });
+});
+
+describe("the vendored registry mirror (the single-source law)", () => {
+  it("pins the devthink vendor byte-identical to the saddle engine source", async () => {
+    // the registry of record lives in the engine (saddle/modalityregistry.ts);
+    // the devthink tree carries the vendored mirror because the container
+    // build installs the published envelope (sources only, the stale
+    // catalog) and never sees the workspace — the byte pin is the law that
+    // keeps the vendor a mirror instead of a second author. the day the
+    // published envelope carries the built registry, the vendor retires and
+    // the lane returns to the library specifier
+    const engine = await readFile(path.join(import.meta.dirname, "..", "..", "..", "saddle", "modalityregistry.ts"), "utf8");
+    const vendor = await readFile(path.join(import.meta.dirname, "..", "..", "modalities.ts"), "utf8");
+    expect(vendor).toBe(engine);
+  });
+
+  it("answers the forty plan from the vendored registry the lane reads", () => {
+    // the vendor the lane imports answers the same census the engine
+    // battery pins — the two suites hold the same truth from both ends
+    expect(MODALITYPLANCOUNT).toBe(40);
+    expect(MODALITIES).toHaveLength(40);
+    const report = planreport();
+    expect(report).toEqual({
+      plancount: 40,
+      catalogcount: 40,
+      live: 3,
+      host: 3,
+      planned: 34,
+      plananswered: true,
+    });
   });
 });

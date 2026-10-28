@@ -151,12 +151,6 @@ export default config
       ...process.env,
       PORT: String(serverport),
       DEVTHINK_DATABASE_URL: `file:${join(configdir, "test.db")}`,
-      // the sandbox lane reads the sibling saddle registry through the
-      // library specifier, and tsx resolves the bridge through the tsconfig
-      // paths — the spawn runs from this foreign config directory, so the
-      // config path is pinned explicitly (the bridges retire when the
-      // published saddle envelope carries the ./modalities export)
-      TSX_TSCONFIG_PATH: join(import.meta.dirname, "..", "..", "tsconfig.json"),
     },
     detached: true,
     stdio: ["ignore", "pipe", "pipe"],

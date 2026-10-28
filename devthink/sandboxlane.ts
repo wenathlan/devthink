@@ -13,15 +13,19 @@
 import { spawn } from "node:child_process";
 import { appendFile, copyFile, mkdir, readdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
-// the modality registry of the sibling saddle engine — the single source of
-// the catalog (this lane keeps no modality list of its own). The library
-// specifier answers every runner through the bridge family: the tsconfig
-// paths (the typechecker, bun, tsx and the library build), the vite and
-// vitest aliases (the dev server and the tests) and the declaration seam
-// (the declaration emit). The bridges retire when the published saddle
-// envelope carries the ./modalities export — the same retirement the
-// sandbox bridge of the vite config names
-import { MODALITIES, planreport } from "@wenathlan/saddle/modalities";
+// the modality registry of the saddle engine — the single source of the
+// catalog (this lane keeps no modality list of its own). The registry of
+// record lives in the engine (saddle/modalityregistry.ts); the devthink
+// tree carries the vendored mirror at ./modalities.ts because the
+// container build never sees the workspace: it installs the published
+// @wenathlan/saddle envelope from the registry, and that envelope ships
+// sources only — the ./modalities export points at a dist file the
+// tarball never carries (and the tarball's registry is the stale catalog
+// besides). The sandboxlane battery pins the mirror byte-identical to the
+// engine source, so the vendor can never drift from the registry in
+// silence — and the vendor retires the day the published envelope carries
+// the built registry (the import returns to the library specifier)
+import { MODALITIES, planreport } from "./modalities.js";
 
 /**
  * @section jail — the session root, the id gate and the path containment
