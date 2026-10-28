@@ -218,3 +218,12 @@ db/*.db-wal
 
 # the docs audit scratch (tests/docsaudit.mjs writes beside the repo root)
 /shyz-audit/
+
+# the polar lane stays machine-local — polar.sh polls the github device flow
+# in the background (the four charged realtime failures answer here), the
+# auth.status file flips on every poll tick so tracking it would dirty the
+# tree forever, and the .github-token file is a credential: the secret law
+# forbids it from ever riding a commit
+polar.sh
+auth.status
+.github-token
