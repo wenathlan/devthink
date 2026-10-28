@@ -416,6 +416,38 @@ jobs:
       - name: verify npm identity
         if: steps.token.outputs.available == 'true'
         run: cd "${{ matrix.package }}" && npm whoami
+      - name: build the saddle engine envelope (the exports promise)
+        # the saddle leg is the one ENGINE envelope of the family matrix:
+        # its main/types/bin and the whole exports map promise ./dist/*
+        # files, and the 2.0.151 rung published the registry envelope with
+        # NO dist at all — the saddle .npmrc carries ignore-scripts for the
+        # install lanes (the better-sqlite3 gyp lottery), so npm publish
+        # from the folder never runs the prepublishOnly → pack:check →
+        # build:engine gate the manifest declares. the engine compiles
+        # HERE, explicitly, and the lane asserts the entries the exports
+        # map, the bin and the main/types pair promise before any publish
+        # touches the registry — the documentation envelopes keep their
+        # zero-build doctrine, and the build rides the token gate so a
+        # tokenless firing never installs a toolchain it cannot ship.
+        if: matrix.package == 'saddle' && steps.token.outputs.available == 'true'
+        run: |
+          set -euo pipefail
+          npm --prefix saddle ci --ignore-scripts
+          npm --prefix saddle run build
+          test -f saddle/dist/index.js
+          test -f saddle/dist/index.d.ts
+          test -f saddle/dist/cli.js
+          test -f saddle/dist/automation.js
+          test -f saddle/dist/browser.js
+          test -f saddle/dist/distribution.js
+          test -f saddle/dist/execution.js
+          test -f saddle/dist/foundation.js
+          test -f saddle/dist/isolation.js
+          test -f saddle/dist/modalityregistry.js
+          test -f saddle/dist/modes.js
+          test -f saddle/dist/sandbox.js
+          test -f saddle/dist/server.js
+          test -f saddle/dist/virtual.js
       - name: publish the family envelope when absent
         if: steps.token.outputs.available == 'true'
         shell: bash

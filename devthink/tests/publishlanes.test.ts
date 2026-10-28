@@ -433,3 +433,139 @@ describe("the release assets census (the 300 plus law)", () => {
     expect(census).toBe(9 * 26 + 36 + 100 + 9);
   });
 });
+
+describe("the built envelope law (the exports promise)", () => {
+  /** the dist entries the exports map, the bin and the main/types pair of
+   * the saddle envelope declare — the set every publish lane must compile
+   * and assert before the envelope touches a registry (the source and
+   * config targets ship as the files field carries them; the dist targets
+   * need the engine build). */
+  const EXPORTDISTTARGETS = [
+    "dist/automation.js",
+    "dist/browser.js",
+    "dist/distribution.js",
+    "dist/execution.js",
+    "dist/foundation.js",
+    "dist/index.js",
+    "dist/isolation.js",
+    "dist/modalityregistry.js",
+    "dist/modes.js",
+    "dist/sandbox.js",
+    "dist/server.js",
+    "dist/virtual.js",
+  ];
+  const LANEASSERTIONS = [
+    ...EXPORTDISTTARGETS,
+    "dist/index.d.ts" /* the types pair of the main entry */,
+    "dist/cli.js" /* the bin the manifest declares */,
+  ];
+
+  /** the steps of a workflow job, name-indexed in declaration order. */
+  const stepsof = (workflow: workflow, job: string): Array<{ name?: string; if?: string; run?: string }> =>
+    (workflow.jobs?.[job]?.steps as Array<{ name?: string; if?: string; run?: string }>) ?? [];
+
+  it("the saddle manifest promises the dist the registry envelope must carry", async () => {
+    const saddle = JSON.parse(await readFile(join(repoRoot, "saddle", "package.json"), "utf8")) as {
+      main?: string;
+      types?: string;
+      bin?: Record<string, string>;
+      files?: string[];
+      exports?: Record<string, unknown>;
+      scripts?: Record<string, string>;
+    };
+    /* the entry pair, the bin and the files allowlist all answer the built
+     * dist — the 2.0.151 registry envelope shipped none of it. */
+    expect(saddle.main).toBe("./dist/index.js");
+    expect(saddle.types).toBe("./dist/index.d.ts");
+    expect(saddle.bin?.saddle).toBe("./dist/cli.js");
+    expect(saddle.files).toContain("dist");
+    /* every dist target the exports map resolves: the computed set is the
+     * lane's assertion list, so a new export can never silently promise a
+     * file the lanes do not compile-and-assert. */
+    const targets = [
+      ...new Set(
+        Object.values(saddle.exports ?? {})
+          .flatMap((value) => (typeof value === "string" ? [value] : Object.values(value as Record<string, string>)))
+          .filter((value): value is string => typeof value === "string" && value.startsWith("./dist/")),
+      ),
+    ].sort();
+    expect(targets.map((target) => target.replace(/^\.\//, ""))).toEqual(EXPORTDISTTARGETS);
+  });
+
+  it("the saddle manifest gates publish on the built dist (the local contract)", async () => {
+    /* prepublishOnly → pack:check → check → build:engine: the chain a
+     * LOCAL publish from the saddle folder walks (the vitest suite and the
+     * formatcheck beside it). the CI lanes cannot lean on it — the saddle
+     * .npmrc carries ignore-scripts for the install lanes — so they build
+     * explicitly; this pin keeps the manifest gate honest for every
+     * publish that runs with scripts alive. */
+    const saddle = JSON.parse(await readFile(join(repoRoot, "saddle", "package.json"), "utf8")) as {
+      scripts?: Record<string, string>;
+    };
+    const scripts = saddle.scripts ?? {};
+    expect(scripts.prepublishOnly).toContain("pack:check");
+    expect(scripts["pack:check"]).toContain("npm run check");
+    expect(scripts.check).toContain("build:engine");
+    expect(scripts.check).toContain("node --check dist/index.js");
+    expect(scripts["build:engine"]).toContain("tests/scripts/buildengine.ts");
+    expect(scripts.build).toBe("npm run build:engine");
+  });
+
+  it("the saddle npmrc silences the manifest gate — the reason the lanes build explicitly", async () => {
+    /* the ignore-scripts law of the saddle npmrc exists for the install
+     * lanes (the better-sqlite3 gyp rebuild rides a mirror lottery no lane
+     * ever depended on); the side effect is that npm publish from the
+     * saddle folder never runs prepublishOnly — the 2.0.151 envelope
+     * shipped sources-only because of it. the pin holds the hazard visible:
+     * if the npmrc ever drops the flag, the explicit lane builds stay (they
+     * are the registry contract), and if it keeps it, no lane may lean on
+     * the manifest gate alone. */
+    const npmrc = await readFile(join(repoRoot, "saddle", ".npmrc"), "utf8");
+    expect(npmrc).toContain("ignore-scripts=true");
+  });
+
+  it("the release ladder builds the saddle engine before the family pack", async () => {
+    const release = await parseworkflow("release.yml");
+    const steps = stepsof(release, "family");
+    const names = steps.map((step) => step.name ?? "");
+    const buildindex = names.indexOf("Build the saddle engine envelope (the exports promise)");
+    const packindex = names.indexOf("Pack every family envelope beside the application tarball");
+    expect(buildindex).toBeGreaterThan(-1);
+    expect(packindex).toBeGreaterThan(buildindex); /* the build precedes every pack */
+    const build = steps[buildindex];
+    expect(build?.run).toContain("npm --prefix saddle ci --ignore-scripts");
+    expect(build?.run).toContain("npm --prefix saddle run build");
+    for (const entry of LANEASSERTIONS) expect(build?.run).toContain(`test -f saddle/${entry}`);
+  });
+
+  it("the publish mirror builds the saddle leg before the envelope publish", async () => {
+    const publish = await parseworkflow("publish.yml");
+    const steps = stepsof(publish, "family-npmjs");
+    const names = steps.map((step) => step.name ?? "");
+    const buildindex = names.indexOf("build the saddle engine envelope (the exports promise)");
+    expect(buildindex).toBeGreaterThan(-1);
+    /* the build rides between the identity check and the publish, and only
+     * the saddle leg with the token present ever installs the toolchain. */
+    const identityindex = names.indexOf("verify npm identity");
+    const publishindex = names.indexOf("publish the family envelope when absent");
+    expect(identityindex).toBeGreaterThan(-1);
+    expect(buildindex).toBeGreaterThan(identityindex);
+    expect(publishindex).toBeGreaterThan(buildindex);
+    const build = steps[buildindex];
+    expect(build?.if).toBe("matrix.package == 'saddle' && steps.token.outputs.available == 'true'");
+    expect(build?.run).toContain("npm --prefix saddle ci --ignore-scripts");
+    expect(build?.run).toContain("npm --prefix saddle run build");
+    for (const entry of LANEASSERTIONS) expect(build?.run).toContain(`test -f saddle/${entry}`);
+  });
+
+  it("the release ladder's familynpmjs loop publishes the tarball the built family job packs", async () => {
+    /* the twin lane publishes familypack/*.tgz — the tarballs the family
+     * job packs AFTER its build step: publishing a tarball never runs
+     * lifecycle scripts, so the build-before-pack of the family job is the
+     * only thing that puts dist inside the twin's envelope. both lanes
+     * fixed means whichever wins the race carries the built set. */
+    const release = await readworkflow("release.yml");
+    expect(release).toContain('publish_output="$(npm publish "./${tarball}"');
+    expect(release).toContain("for tarball in familypack/*.tgz; do");
+  });
+});
