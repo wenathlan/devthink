@@ -262,13 +262,19 @@ jobs:
           # tests/code mining corpus and the antigravity archives) and the
           # zero-build sites ship their own engine copy per deploy unit
           # (engine.css, engine.js, clean-url.js|ts) the way a standalone
-          # static site must; the per-unit sol lockfiles are generated pins
-          # riding the same rule, the family biome baseline and the family
-          # pnpm workspace baseline are the deliberate identical configs the
-          # parity law enforces; the live tree outside them answers no
-          # duplicate content above the 512-byte stub floor.
+          # static site must; the devthink modalities vendor rides the same
+          # engine-copy doctrine — the container build is a standalone
+          # deploy unit that never sees the saddle workspace and the
+          # published envelope cannot carry the registry, so devthink
+          # ships the mirrored registry the sandboxlane battery pins
+          # byte-identical to the engine source; the per-unit sol lockfiles
+          # are generated pins riding the same rule, the family biome
+          # baseline and the family pnpm workspace baseline are the
+          # deliberate identical configs the parity law enforces; the live
+          # tree outside them answers no duplicate content above the
+          # 512-byte stub floor.
           duplicates="$(
-            git ls-files | grep -vE '^(devthink/tests/code/|devthink/docs/antigravity/)' | grep -vE '(^|/)LICENSE$' | grep -vE 'engine\.(css|js)$|clean-url\.(js|ts)$|/pnpm-lock\.yaml$|/biome\.jsonc$|/pnpm-workspace\.yaml$' | while IFS= read -r file; do
+            git ls-files | grep -vE '^(devthink/tests/code/|devthink/docs/antigravity/)' | grep -vE '(^|/)LICENSE$' | grep -vE 'engine\.(css|js)$|clean-url\.(js|ts)$|/pnpm-lock\.yaml$|/biome\.jsonc$|/pnpm-workspace\.yaml$|^devthink/modalities\.ts$' | while IFS= read -r file; do
               test -f "${file}" || continue
               size="$(wc -c < "${file}")"
               if [ "${size}" -gt 512 ]; then
