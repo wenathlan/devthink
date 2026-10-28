@@ -5,10 +5,24 @@
  * launch paths funnel to the enter callback — the login face is the next
  * page of the chain and the panel stays last — while the demo actions
  * speak the reference toasts through the page pill. All copy rides the
- * landing data layer (saascontent.ts).
+ * landing data layer (saascontent.ts) and the glyphs ride the fluent set.
  */
 
 import { useState } from "react";
+import {
+  ArrowLeftRegular as Arrowleft,
+  ArrowRightRegular as Arrowright,
+  ArrowUpRightRegular as Arrowupright,
+  ChatRegular as Messagesquare,
+  ClockRegular as Clock,
+  GlobeRegular as Globe,
+  HeartRegular as Heart,
+  MaximizeRegular as Maximize,
+  PlayRegular as Play,
+  AddRegular as Plus,
+  SendRegular as Send,
+  ShareRegular as Share,
+} from "@fluentui/react-icons";
 import {
   saascadria,
   saasdebonair,
@@ -23,20 +37,6 @@ import {
 } from "../../saascontent.ts";
 import { SaddleTabBridge, ScoopedCard, Studiomark } from "./IntroSaaskit.tsx";
 import { SolLogoMark, SolWordmark } from "./PanelLogo.tsx";
-import {
-  Arrowleft,
-  Arrowright,
-  Arrowupright,
-  Clock,
-  Globe,
-  Heart,
-  Maximize,
-  Messagesquare,
-  Play,
-  Plus,
-  Send,
-  Share,
-} from "./Saasglyphs.tsx";
 
 type SectionProps = {
   /** the enter action: every launch path of the landing funnels to the login face */
