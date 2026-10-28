@@ -1,6 +1,5 @@
-// the devthink control shell of the workbench.
 /** Style: DevThink Shell OS — focused management pages sharing the ONE
- * chrome of the theme (Sol/shell/ShellChrome.tsx: the floating top navbar
+ * chrome of the theme (Sol/widgets/Shellchrome.tsx: the floating top navbar
  * with the Start menu) above the .pagehead hero and the .page-container
  * body of the campaign contract. The hero renders the contract classes
  * (pagehead__eyebrow / __title / __lede / __actions) over a hairline rule —

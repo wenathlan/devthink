@@ -21,13 +21,6 @@ import { ChatBody, ShellChrome } from "../widgets";
 export * from "../../chatstate.ts";
 export * from "../../useismobile.ts";
 export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
 
 export default function Chat() {
   return (

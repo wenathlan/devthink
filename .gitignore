@@ -227,3 +227,12 @@ db/*.db-wal
 polar.sh
 auth.status
 .github-token
+
+# the study lane stays machine-local — the official site mirror, the allan
+# corpus copies, the neo.img logo references and the neo.temp catalog pulls
+# are sandbox study material of the reading waves; the two-repos law keeps
+# them out of the family code repository (allan already archives the sources)
+allan-md/
+neo-img/
+neo-temp-ref/
+official-mirror/

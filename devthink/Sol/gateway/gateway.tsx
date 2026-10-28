@@ -1,7 +1,7 @@
 /**
- * gatewayview page anchor — layer 3 of the anchor architecture. The file
+ * gateway page anchor — layer 3 of the anchor architecture. The file
  * carrying the folder's own name is the path manager of the page; only the
- * theme anchor (Sol/Sol.tsx) and the window binding (Sol/panel/workspace.tsx)
+ * theme anchor (Sol/Sol.tsx) and the window binding (Sol/widgets/PanelWorkspace.tsx)
  * consume this file.
  *
  * gatewayview — the embedded gateway console of the devthink workbench: the

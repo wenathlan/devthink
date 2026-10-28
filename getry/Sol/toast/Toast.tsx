@@ -1,4 +1,3 @@
-// the getry toast surface of the family.
 /**
  * toast.tsx — the in-memory toast of the Sol theme.
  *

@@ -1,4 +1,3 @@
-// the aero snap math of the studio window.
 /**
  * winsnap — the pure math behind the aero snap of the cadria studio window
  * (Sol/shell/Shell.tsx): the screen-edge zones a title-bar drag can land in
