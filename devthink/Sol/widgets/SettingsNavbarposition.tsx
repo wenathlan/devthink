@@ -9,10 +9,14 @@
  * owns the accessors) and the component dispatches the NAVBAR_POS_EVENT
  * and NAVBAR_STYLE_EVENT the shell chrome listens for, so the bar
  * re-docks and re-faces the moment a choice lands — every button and
- * flyout keeps working. Loose component of the settings page, riding the
+ * flyout keeps working. The apple face locks the position control (the
+ * dock is the floating pad by law, so the edge choices answer the windows
+ * taskbar only): the segments ride the windows disabled grammar with the
+ * hint line naming the law, and the lock follows the style choice live
+ * through the same event. Loose component of the settings page, riding the
  * dtw kit.
  */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { copy } from "../../copy";
 import {
   loadNavbarPosition,
@@ -31,9 +35,25 @@ const POSITIONS: readonly NavbarPosition[] = ["floating", "left", "right"];
 /** the two faces the style control offers. */
 const STYLES: readonly NavbarStyle[] = ["windows", "apple"];
 
-/** NavbarPositionControl — the segmented control of the Navbar position card. */
+/** NavbarPositionControl — the segmented control of the Navbar position card.
+ * Under the apple face the control locks: the dock is the floating pad by
+ * law, so the segments ride the disabled grammar with the hint naming it
+ * (the stored choice survives — the windows taskbar answers it the moment
+ * the style returns). */
 export function NavbarPositionControl() {
   const [position, setPosition] = useState<NavbarPosition>(() => loadNavbarPosition());
+  const [locked, setLocked] = useState<boolean>(() => loadNavbarStyle() === "apple");
+
+  // the lock follows the style choice live (the same event the shell
+  // chrome re-faces on — the card answers the apple choice instantly)
+  useEffect(() => {
+    const onNavbarStyle = (event: Event) => {
+      const detail = (event as CustomEvent<NavbarStyle>).detail;
+      if (detail === "windows" || detail === "apple") setLocked(detail === "apple");
+    };
+    window.addEventListener(NAVBAR_STYLE_EVENT, onNavbarStyle);
+    return () => window.removeEventListener(NAVBAR_STYLE_EVENT, onNavbarStyle);
+  }, []);
 
   function choose(next: NavbarPosition) {
     setPosition(next);
@@ -42,23 +62,28 @@ export function NavbarPositionControl() {
   }
 
   return (
-    <div className="dtw-settings__segmented" role="radiogroup" aria-label={copy("settings.personal.navbar")}>
-      {POSITIONS.map((option) => {
-        const selected = option === position;
-        return (
-          <button
-            key={option}
-            type="button"
-            role="radio"
-            aria-checked={selected}
-            className="dtw-settings__segment"
-            data-selected={selected ? "true" : undefined}
-            onClick={() => choose(option)}
-          >
-            {copy(`settings.navbar.${option}`)}
-          </button>
-        );
-      })}
+    <div className="dtw-settings__control">
+      <div className="dtw-settings__segmented" role="radiogroup" aria-label={copy("settings.personal.navbar")}>
+        {POSITIONS.map((option) => {
+          const selected = option === position;
+          return (
+            <button
+              key={option}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              className="dtw-settings__segment"
+              data-selected={selected ? "true" : undefined}
+              disabled={locked}
+              aria-disabled={locked ? "true" : undefined}
+              onClick={() => choose(option)}
+            >
+              {copy(`settings.navbar.${option}`)}
+            </button>
+          );
+        })}
+      </div>
+      {locked ? <p className="dtw-settings__hint">{copy("settings.navbar.docklocked")}</p> : null}
     </div>
   );
 }
