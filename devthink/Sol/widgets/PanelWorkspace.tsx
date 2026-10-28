@@ -9,7 +9,7 @@
  * WindowFrame, and a minimized window keeps its dock entry lit with the
  * data-minimized dimmer until a click glides it back out. While any window
  * is open the wallpaper hero recedes (logo discipline: one brand voice per
- * zone). The shared chrome (Sol/shell/ShellChrome.tsx) carries the thin
+ * zone). The shared chrome (Sol/widgets/Shellchrome.tsx) carries the thin
  * taskbar with the Start button; the dock keeps the session and the family
  * apps one click away.
  *

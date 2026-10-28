@@ -1,4 +1,3 @@
-// the alt-tab cycling math of the OS shell.
 /**
  * alttab — the pure logic behind the Windows alt-tab switcher of the Sol
  * shell (Sol/shell/alttabswitcher.tsx). One responsibility: the cycle math

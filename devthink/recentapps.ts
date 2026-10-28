@@ -1,4 +1,3 @@
-// the recently opened apps of the Start menu.
 /**
  * recentapps — the persistence behind the Start menu "recommended" rail
  * (the Windows 11 recommended list). One responsibility: the recent app id

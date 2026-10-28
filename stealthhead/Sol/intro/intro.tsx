@@ -1,4 +1,3 @@
-// the stealthhead intro of the theme.
 /**
  * intro.tsx — the opening splash of the APPLICATION (the flow contract of the
  * reform): the app announces itself before the window — the deep trylle

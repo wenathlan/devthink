@@ -1,4 +1,3 @@
-// the entry gate of the stealthhead home.
 /**
  * entrygate.tsx — the entry gate of the APPLICATION (the flow law: intro →
  * onboarding → the platform). The home anchor mounts it on the "/" route:

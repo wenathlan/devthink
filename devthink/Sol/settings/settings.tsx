@@ -3,7 +3,7 @@
  * carrying the folder's own name is the path manager of the page: it
  * imports the loose components beside it, mounts the page and re-exports
  * the public component surface. Only the theme anchor (Sol/Sol.tsx) and
- * the window registry (Sol/panel/workspace.tsx) consume this file. The
+ * the window registry (Sol/widgets/PanelWorkspace.tsx) consume this file. The
  * home anchor consumes the pairing panel through this surface.
  *
  * Settings — the Windows 11 Settings app: the left navigation rail (the
