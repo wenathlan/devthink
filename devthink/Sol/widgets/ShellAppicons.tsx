@@ -4,7 +4,8 @@
  * APP_ICONS map the app tile reads by the registry `iconset` key.
  *
  * The grammar every icon follows is the studio-light squircle: the shared
- * 48x48 plate (the squircle feel at a ~12% corner radius) painted with a
+ * 48x48 plate (the squircle feel at the ~23% fluent shoulder radius,
+ * concentric with the rounded tile box the stylesheet carries) painted with a
  * three-stop identity gradient derived from each app's registry tint — a
  * lit cap at the top (the one light source of the mark), the pure tint
  * through the body, and the deep base settling underneath — so the plate
@@ -75,15 +76,19 @@ const STROKE = 3.4;
 /** the soft stroke weight of secondary glyph details */
 const STROKE_SOFT = 2.7;
 
-/** the rounded-square plate of the set: the squircle feel at a ~12% corner
- *  radius over the shared 48x48 viewBox */
-const PLATE_FACE = "M6 0 H42 Q48 0 48 6 V42 Q48 48 42 48 H6 Q0 48 0 42 V6 Q0 0 6 0 Z";
+/** the rounded-square plate of the set: the squircle feel at the ~23%
+ *  corner radius of the fluent icon-plate canon over the shared 48x48
+ *  viewBox — the shoulder the tile rounding of the stylesheet answers at
+ *  the same fraction, so the glint band, the focus ring and the plate edge
+ *  stay concentric at every mount size */
+const PLATE_FACE = "M11 0 H37 Q48 0 48 11 V37 Q48 48 37 48 H11 Q0 48 0 37 V11 Q0 0 11 0 Z";
 
 /** the contour the ring layer traces: the squircle face inset by ~1.6
  *  units — the quiet machined chamfer holding the plate inside its edge,
  *  stroked at ~1px in white at low alpha so it reads as depth, not a
- *  border */
-const ringFace = "M6 1.6 H42 Q46.4 1.6 46.4 6 V42 Q46.4 46.4 42 46.4 H6 Q1.6 46.4 1.6 42 V6 Q1.6 1.6 6 1.6 Z";
+ *  border — the corner radius keeps the concentric law against the plate
+ *  (11 − 1.6 = 9.4 on the same corner centers) */
+const ringFace = "M11 1.6 H37 Q46.4 1.6 46.4 11 V37 Q46.4 46.4 37 46.4 H11 Q1.6 46.4 1.6 37 V11 Q1.6 1.6 11 1.6 Z";
 
 /** the rest stroke of the ring contour — white at low alpha, the rgb form
  *  the css of the set can brighten on the live flag */
@@ -115,11 +120,14 @@ type AppIconPlate = {
 };
 
 /** the resting pose of the glyph group: centered on the plate and ready to
- *  settle back the moment the live flag drops */
+ *  settle back the moment the live flag drops — the transition reads the
+ *  icon-wave motion tokens of sol.css (the 250ms normal rung on the
+ *  icon-fluent curve) with hand fallbacks, so the glyph lift, the tilt and
+ *  the sheen sweep share one motion language */
 const GLYPH_REST: CSSProperties = {
   transformBox: "view-box",
   transformOrigin: "24px 24px",
-  transition: "transform .22s cubic-bezier(.2,.8,.3,1)",
+  transition: "transform var(--dur-normal, 250ms) var(--ease-icon-fluent, cubic-bezier(0, 0, 0, 1))",
 };
 
 /** the live pose — the one fluent gesture of the set: the glyph lifts half
@@ -153,9 +161,12 @@ function Plate({ uid, top, bottom }: { uid: string; top: string; bottom: string 
           <stop offset="0" stopColor="#ffffff" stopOpacity=".5" />
           <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
         </linearGradient>
+        {/* the grounded shade walks the plate's own hue — the deep base
+            darkened toward its own shadow instead of dead black, so the
+            contact edge reads as warm occlusion under the lit surface */}
         <linearGradient id={`${uid}-shad`} gradientUnits="userSpaceOnUse" x1="0" y1="24" x2="0" y2="48">
-          <stop offset="0" stopColor="#000000" stopOpacity="0" />
-          <stop offset="1" stopColor="#000000" stopOpacity=".3" />
+          <stop offset="0" stopColor={shade(bottom, -0.55)} stopOpacity="0" />
+          <stop offset="1" stopColor={shade(bottom, -0.55)} stopOpacity=".5" />
         </linearGradient>
         {/* the specular band the live sweep drives across the face */}
         <linearGradient id={`${uid}-sweep`} gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="9" y2="0">
@@ -169,10 +180,11 @@ function Plate({ uid, top, bottom }: { uid: string; top: string; bottom: string 
       </defs>
       {/* the face: the three-stop identity gradient of the app tint */}
       <path d={PLATE_FACE} fill={`url(#${uid}-tone)`} />
-      {/* the inner finish: the rim light along the top shoulders and the
-          soft grounded shade along the bottom edge, both clipped inside */}
+      {/* the inner finish: the rim light along the top shoulders at 2.2 —
+          the crisper cap the softer fluent shoulder carries — and the soft
+          grounded shade along the bottom edge, both clipped inside */}
       <g clipPath={`url(#${uid}-clip)`}>
-        <path d={PLATE_FACE} fill="none" stroke={`url(#${uid}-edge)`} strokeWidth="2.4" />
+        <path d={PLATE_FACE} fill="none" stroke={`url(#${uid}-edge)`} strokeWidth="2.2" />
         <path d={PLATE_FACE} fill="none" stroke={`url(#${uid}-shad)`} strokeWidth="2.6" />
       </g>
     </>

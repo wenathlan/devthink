@@ -30,13 +30,14 @@ import { APP_ICONS } from "../Sol/widgets/ShellAppicons.tsx";
  * or a catalog label fails the zero-emoji law */
 const EMOJI = /\p{Extended_Pictographic}/u;
 
-/** the squircle plate face every drawn icon paints — the ~12% corner radius
- * of the 48x48 studio-light grammar (the geometry pin) */
-const PLATE_FACE = "M6 0 H42 Q48 0 48 6 V42 Q48 48 42 48 H6 Q0 48 0 42 V6 Q0 0 6 0 Z";
+/** the squircle plate face every drawn icon paints — the ~23% corner
+ * radius of the 48x48 studio-light grammar (the fluent shoulder of the
+ * icon redesign wave, concentric with the rounded tile — the geometry pin) */
+const PLATE_FACE = "M11 0 H37 Q48 0 48 11 V37 Q48 48 37 48 H11 Q0 48 0 37 V11 Q0 0 11 0 Z";
 
 /** the contour the ring layer traces — the machined chamfer at the
- * squircle inset */
-const RING_FACE = "M6 1.6 H42 Q46.4 1.6 46.4 6 V42 Q46.4 46.4 42 46.4 H6 Q1.6 46.4 1.6 42 V6 Q1.6 1.6 6 1.6 Z";
+ * squircle inset, concentric with the plate corner (11 − 1.6) */
+const RING_FACE = "M11 1.6 H37 Q46.4 1.6 46.4 11 V37 Q46.4 46.4 37 46.4 H11 Q1.6 46.4 1.6 37 V11 Q1.6 1.6 11 1.6 Z";
 
 /** the reviewed label rows of the catalog — the exact names the desktop
  * cells print, pinned so a typo (stealthhear, prolerts, debomair) fails
