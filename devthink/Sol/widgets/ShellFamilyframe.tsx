@@ -5,14 +5,23 @@
  * under the same site) and carry the app title for the accessibility tree.
  * Loose components of the window registry.
  */
+import { osAppLabels } from "../../catalog.ts";
 import { familyurl } from "../../gateway.ts";
 
+/** the display title of a family app: the catalog label row answers (the
+ * reviewed seed serves offline), the slug stays the honest fallback when a
+ * row has not landed yet — the window title never rides a hardcoded
+ * literal, the label law holds on both family surfaces */
+function familytitle(slug: string): string {
+  return osAppLabels()[slug]?.name ?? slug;
+}
+
 /** FamilyFrame — one family app inside the window. */
-export function FamilyFrame({ slug, title }: { slug: string; title: string }) {
+export function FamilyFrame({ slug, title }: { slug: string; title?: string }) {
   return (
     <iframe
       src={familyurl(slug)}
-      title={title}
+      title={title ?? familytitle(slug)}
       style={{
         display: "block",
         width: "100%",
@@ -31,7 +40,7 @@ export function FamilyStage({ slug }: { slug: string }) {
   return (
     <iframe
       src={familyurl(slug)}
-      title={slug}
+      title={familytitle(slug)}
       style={{
         position: "fixed",
         inset: 0,

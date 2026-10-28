@@ -1,4 +1,3 @@
-// the stealthhead onboarding of the theme.
 /**
  * onboarding.tsx — the first-run steps of the APPLICATION (the flow contract
  * of the reform): three short frames presented like a Windows 11 first-run

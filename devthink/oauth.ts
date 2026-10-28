@@ -21,21 +21,6 @@
  *              barrel (index.ts) never carries it, so the browser bundles
  *              stay free of node imports: node:* builtins first, global
  *              fetch beside them.
-/**
- * @file oauth.ts — the provider oauth family of the merged repository.
- * @description v2.1.14 physical consolidation: ONE file owns the ENTIRE
- *              authentication context (OAuth clients, PKCE, consent URL,
- *              callback server, token exchange, token refresh, userinfo,
- *              account file management, identity bundles). Absorbed verbatim:
- *              (a) Antigravity CLI (`agy`) identity bundle - former antigravity-cli.ts;
- *              (b) Gemini CLI OAuth client + shared endpoint/model constants - former oauth.ts;
- *              (c) full-featured OAuth primitives (PKCE, auth URL builder,
- *                  callback server, exchange, refresh, userinfo) - former oauth.ts;
- *              (d) minimal legacy flow + v3 account manager + project/quota
- *                  helpers - the original auth.ts content;
- *              (e) former oauth.ts orchestrators and helpers (authenticate,
- *                  startOAuthFlow, validation, model lists, header builders,
- *                  platform detection, legacy default export object).
  *
  *              History (v2.1.13 header of the former auth.ts): v5 definitive
  *              full flow with researches 9router omniroute gemini-cli;

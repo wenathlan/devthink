@@ -1,4 +1,3 @@
-// the debonair song card — the suno-style grid tile of the landing.
 /**
  * songcard.tsx — the loose components of the home song grid: one card per
  * catalog row (deterministic cover, title, the genre line as the artist

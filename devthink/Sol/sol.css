@@ -6630,7 +6630,7 @@ legend.cmd-group {
   -webkit-mask-image: radial-gradient(120% 72% at 50% 0%, black 20%, transparent 76%);
 }
 /* ---- institutional top bar: retired — the institutional pages carry the
-        ONE chrome of the theme (Sol/shell/ShellChrome.tsx, the .dt-nav
+        ONE chrome of the theme (Sol/widgets/Shellchrome.tsx, the .dt-nav
         navbar) like every other page; no second topbar is mounted ---- */
 
 .inst-section {
@@ -6821,7 +6821,7 @@ legend.cmd-group {
    SHELL CHROME HOOKS — the semantic remainder of the one chrome (task 3-a):
    the taskbar, start menu, tray, flyouts, the app tile material and the
    desktop composition all moved INTO the components as Tailwind composition
-   (Sol/shell/ShellChrome.tsx, apptile.tsx, panel/desktop.tsx). What stays
+   (Sol/widgets/Shellchrome.tsx, apptile.tsx, panel/desktop.tsx). What stays
    here is the grammar utilities cannot own: the atmosphere light bed of the
    desktop (the C1/C2 grain textures read this hook) and the
    start-mark draw (the stroke-dashoffset choreography).
@@ -10447,7 +10447,7 @@ span[data-tile] {
 
 /* sol.css.shelldelta — the named classes born in the task 1-b shell
    eradication wave (the tailwind exit of Sol/panel/windowframe.tsx and the
-   menu marks of Sol/panel/desktopmenu.tsx). One file, one namespace block
+   menu marks of Sol/widgets/PanelDesktopmenu.tsx). One file, one namespace block
    per consumer: .dsk-menu-* rides the desktop context menus, .shell-window*
    rides the floating window chrome, .snap-flyout / .snap-ghost ride the snap
    layouts. Every rule speaks pure hand css over the --color-* token ladder

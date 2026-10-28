@@ -1,4 +1,3 @@
-// the debonair cover plate.
 /**
  * coverart.tsx — the deterministic cover plate of a take: one integer hash
  * walked over the track name (the same walk the library sparkbar uses) picks

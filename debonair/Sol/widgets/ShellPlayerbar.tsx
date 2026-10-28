@@ -1,4 +1,3 @@
-// the debonair player bar — the suno bar, riding the windows hands.
 /**
  * Playerbar.tsx — the loose component of the shell chrome: the bottom bar
  * the suno.com grammar lends the family — cover, title, artist line, the

@@ -1,6 +1,6 @@
 /**
  * desktopmenu.tsx — the Windows context menus of the desktop surface
- * (Sol/panel/desktop.tsx): the desktop menu (View, Sort by, Refresh,
+ * (Sol/widgets/PanelDesktop.tsx): the desktop menu (View, Sort by, Refresh,
  * Display settings) and the per-cell menu (Open, Open in new window,
  * properties-lite), painted as Tailwind composition on the design tokens
  * (task 3-a): the .acrylic-menu Fluent surface (rgb(43 43 43 / 85%) +
