@@ -16,6 +16,7 @@
  * Styled entirely by Sol/sol.css.
  */
 import type { CSSProperties } from "react";
+import { Link } from "wouter";
 import { familyurl } from "../../familyurl";
 import { type LabelKey, labelfill, label } from "../../labels";
 import { ROSTER } from "../widgets";
@@ -54,12 +55,12 @@ export function Home() {
           {label("home.lede")}
         </p>
         <div className="cb-btnrow cb-in" style={{ "--cb-d": 4 } as CSSProperties}>
-          <a className="cb-btn" href="/pricing">
+          <Link className="cb-btn" href="/pricing">
             {label("home.action.pricing")}
-          </a>
-          <a className="cb-btn cb-btn--ghost" href="/apps">
+          </Link>
+          <Link className="cb-btn cb-btn--ghost" href="/apps">
             {label("home.action.apps")}
-          </a>
+          </Link>
         </div>
       </section>
 
@@ -86,9 +87,9 @@ export function Home() {
           <h2 className="cb-secttitle">{label("home.section.previewTitle")}</h2>
           <p className="cb-sectlede">
             {label("home.section.previewLede")}{" "}
-            <a className="cb-link" href="/apps">
+            <Link className="cb-link" href="/apps">
               {label("home.section.previewLink")}
-            </a>
+            </Link>
             {label("home.section.previewTail")}
           </p>
         </div>
@@ -120,9 +121,9 @@ export function Home() {
           <p className="cb-sectlede">{label("home.section.supportLede")}</p>
         </div>
         <div className="cb-btnrow cb-in" style={{ "--cb-d": 1 } as CSSProperties}>
-          <a className="cb-btn cb-btn--ghost" href="/support">
+          <Link className="cb-btn cb-btn--ghost" href="/support">
             {label("home.action.support")}
-          </a>
+          </Link>
         </div>
       </section>
 

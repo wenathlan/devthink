@@ -7,6 +7,8 @@
  * part of the family — the way out is the home and the directory.
  */
 
+import { Link } from "wouter";
+
 import { label } from "../../labels";
 
 export function NotFound() {
@@ -16,12 +18,12 @@ export function NotFound() {
       <h1 className="cb-title">{label("notfound.title")}</h1>
       <p className="cb-lede">{label("notfound.lede")}</p>
       <div className="cb-btnrow">
-        <a className="cb-btn" href="/">
+        <Link className="cb-btn" href="/">
           {label("notfound.action.home")}
-        </a>
-        <a className="cb-btn cb-btn--ghost" href="/apps">
+        </Link>
+        <Link className="cb-btn cb-btn--ghost" href="/apps">
           {label("notfound.action.apps")}
-        </a>
+        </Link>
       </div>
     </div>
   );

@@ -11,6 +11,7 @@
  */
 
 import type { CSSProperties } from "react";
+import { Link } from "wouter";
 import { type checkoutplan, isconfigured, PLANS } from "../../checkoutlinks";
 import { label, labelfill } from "../../labels";
 
@@ -75,9 +76,9 @@ export function IntroPlans() {
           ))}
         </div>
         <p className="cb-introdoorline cb-in" style={{ "--cb-d": 4 } as CSSProperties}>
-          <a className="cb-link" href="/pricing">
+          <Link className="cb-link" href="/pricing">
             {label("intro.plans.door")}
-          </a>
+          </Link>
         </p>
       </div>
     </section>

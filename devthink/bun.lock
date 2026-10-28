@@ -10,7 +10,7 @@
         "@libsql/client": "^0.18.0",
         "@prisma/adapter-libsql": "^7.10.1",
         "@prisma/client": "^7.10.1",
-        "@wenathlan/saddle": "^2.0.150",
+        "@wenathlan/saddle": "^2.0.151",
         "hono": "^4.13.14",
         "ink": "^7.1.1",
         "motion": "^12.43.0",
@@ -767,7 +767,7 @@
 
     "@vitest/spy": ["@vitest/spy@5.0.5", "", {}, "sha512-lwJRExuH417257Q5wv9QYugN9IMJkoxcrKrYxGPQkBzl7wlNpTUxD/5yNX4ESKVUIShKPgkGchYPFMWOOk0wzw=="],
 
-    "@wenathlan/saddle": ["@wenathlan/saddle@2.1.6", "", { "optionalDependencies": { "commander": "^13.1.0", "dockerode": "^5.0.1", "express": "^5.1.0" }, "peerDependencies": { "playwright": "^1.63.0" }, "optionalPeers": ["playwright"], "bin": { "saddle": "dist/cli.js" } }, "sha512-P5t4blGys3LsCtzuPolf7AqZecn8t/AY0OUw2Umag3zyCMyndzX+sro5UcFi8o4b3iKItI1nbr6sue1b+e4G2w=="],
+    "@wenathlan/saddle": ["@wenathlan/saddle@2.0.151", "", { "optionalDependencies": { "commander": "^15.0.0", "dockerode": "^5.0.1", "express": "^5.3.0" }, "peerDependencies": { "playwright": "^1.63.0" }, "optionalPeers": ["playwright"], "bin": { "saddle": "dist/cli.js" } }, "sha512-y1JnP/YvmPuDXf1manIVBPJ6B+BgwuLMEPdaNxpKFjb1/xM+8akcfio/uAD351OCNibGTvhwR5IJ9cCFq/NKLA=="],
 
     "@xmldom/xmldom": ["@xmldom/xmldom@0.9.12", "", {}, "sha512-5AXjrcMClTryPe9LgZrygpB1lj7s0S9E0+W+AHaVKAVyHanafK86iPSvG5xHVSp/jC+VH1UXu0TAEmY279xH7A=="],
 
