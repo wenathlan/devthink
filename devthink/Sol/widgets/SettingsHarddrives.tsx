@@ -1,44 +1,35 @@
 /**
- * harddrives.tsx — the drives panel of the settings app, beside the anchor:
- * the windows-style drive manager of the os. the os treats databases as
- * hard drives, so the shelf above lists the local drives (the owner
- * partitions of the store) the way the file manager of a desktop lists its
- * disks: the disk glyph, the capacity bar with the bytes the browser
- * honestly answers, the record counts of the mounted partition. a drive
- * that is not mounted answers "capacity after mount" — never an invented
- * figure. the wall below is the opt-in external storage: the platforms the
- * operator may bring (the google drive, the dropbox, the onedrive, the
- * box, an s3-compatible bucket or any file host by url), each with its
- * quiet monochrome mark, each "not connected" until the operator pairs it.
- * pairing lands with the database wave: the drafts stay local ui state,
- * nothing is sent and nothing is faked.
+ * harddrives.tsx — the Drives page of the Windows 11 settings shell: the
+ * local drives card (the os treats databases as hard drives, so the rows
+ * list the owner partitions of the store the way a desktop lists its
+ * disks — the disk-shaped fluent glyph, the honest capacity meter of the
+ * one allocation the browser answers, the record counts of the mounted
+ * partition; a drive that is not mounted answers its open action, never
+ * an invented figure) and the external storage card (the opt-in platforms
+ * the operator may bring, each with its quiet monochrome mark, each not
+ * connected until the operator pairs it — the drafts stay local ui
+ * state, nothing is sent and nothing is faked; pairing lands with the
+ * database wave). The page rides the same dtw kit the other categories
+ * wear — the borderless card, the 44px ledger rows separated by breath,
+ * the flat wells and the one accent meter — so the windows 11 grammar
+ * holds across the whole settings face. Loose component of the settings
+ * page.
  */
 
-import { AddRegular, DeleteRegular, HardDriveRegular } from "@fluentui/react-icons";
+import { AddRegular, CloudRegular, HardDriveRegular } from "@fluentui/react-icons";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
-import { DRIVES_KEY, browserStoreSummary, drives, type HardDrive, newdrive, opendrive } from "../../storage.ts";
+import { copy } from "../../copy";
+import { browserStoreSummary, DRIVES_KEY, drives, type HardDrive, newdrive, opendrive } from "../../storage.ts";
 
 export { DRIVES_KEY };
 
-/** the soft layers under the hairline ring of the trylle cards */
-const STRIP_SHADOW = "0 1px 2px rgb(0 0 0 / 26%), 0 3px 12px rgb(0 0 0 / 12%)";
-
-/** the quiet button of the panel (open, connect, cancel): the s1 fill over
- * the s0 card, the strong hairline ring and the 44px touch target */
-const BUTTON_QUIET =
-  "inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-lg bg-s1 px-4 text-sm font-medium text-ink ring-1 ring-hairline-strong transition-colors duration-150 ease-micro hover:bg-ink/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none disabled:pointer-events-none disabled:opacity-50";
-
-/** the strong button of the panel (new hd, pair drive): the windows accent
- * of the chrome with the micro press of the landing */
-const BUTTON_PRIMARY =
-  "inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-lg bg-win px-5 text-sm font-semibold text-(--win-accent-ink) transition-[filter,transform] duration-150 ease-micro hover:brightness-95 active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none disabled:pointer-events-none disabled:opacity-50";
-
-/** the field of the panel forms: the s2 fill, the hairline ring and the
- * two-pixel focus ring of the theme */
-const FIELD =
-  "min-h-11 w-full min-w-0 rounded-lg bg-s2 px-3.5 text-sm text-ink ring-1 ring-hairline transition-colors duration-150 ease-micro placeholder:text-ink-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none";
+/** fills the {slot} holes of one copy row — the template grammar the
+ * callback face rides (an unknown slot stays loud, never silent). */
+function fill(key: string, slots: Record<string, string>): string {
+  return copy(key).replace(/\{(\w+)\}/g, (hole, name: string) => slots[name] ?? hole);
+}
 
 /** the byte answer of the storage manager: the one allocation the browser
  * reports for the origin store every local drive shares */
@@ -47,54 +38,25 @@ type Capacity = { usage: number; quota: number };
 /** the ids of the external platforms of the opt-in wall */
 type PlatformId = "gdrive" | "dropbox" | "onedrive" | "box" | "s3" | "host";
 
-/** a pairing draft of one platform: the local ui state the panel holds
+/** a pairing draft of one platform: the local ui state the card holds
  * until the database wave lands the real pairing — the key stays in
  * memory, never rendered and never sent */
 type PairDraft = { label: string; endpoint: string; key: string };
 
-/** one external platform of the opt-in wall: the name, the honest blurb
- * and whether the pairing form asks for an endpoint and a key */
-type Platform = { id: PlatformId; name: string; blurb: string; keyed: boolean };
+/** one external platform of the opt-in wall: the id keys the drawn mark
+ * and the copy row, the keyed flag answers whether the pairing form asks
+ * for an endpoint and a key */
+type Platform = { id: PlatformId; keyed: boolean };
 
 /** the platforms of the opt-in wall, never pre-connected: every row starts
  * "not connected" and stays that way until the operator pairs it */
 const PLATFORMS: readonly Platform[] = [
-  {
-    id: "gdrive",
-    name: "Google Drive",
-    blurb: "The drive you already hold on Google — the files stay on their servers.",
-    keyed: false,
-  },
-  {
-    id: "dropbox",
-    name: "Dropbox",
-    blurb: "The Dropbox you already sync, mounted as one more drive of the os.",
-    keyed: false,
-  },
-  {
-    id: "onedrive",
-    name: "OneDrive",
-    blurb: "Microsoft's drive, under the same opt-in law as every platform here.",
-    keyed: false,
-  },
-  {
-    id: "box",
-    name: "Box",
-    blurb: "The Box account you already hold — the content stays on their side.",
-    keyed: false,
-  },
-  {
-    id: "s3",
-    name: "S3 compatible",
-    blurb: "Any S3-compatible bucket: you bring the endpoint and the keys.",
-    keyed: true,
-  },
-  {
-    id: "host",
-    name: "File host by url",
-    blurb: "Your own file host over http — the generic door for anything that answers.",
-    keyed: true,
-  },
+  { id: "gdrive", keyed: false },
+  { id: "dropbox", keyed: false },
+  { id: "onedrive", keyed: false },
+  { id: "box", keyed: false },
+  { id: "s3", keyed: true },
+  { id: "host", keyed: true },
 ];
 
 /** the windows-style byte formatter of the capacity lines: real numbers
@@ -111,31 +73,22 @@ function formatbytes(bytes: number): string {
   return `${figure} ${units[unit]}`;
 }
 
-/** the honest capacity answer of one drive: the bytes the browser reports
- * for the store the mounted partition lives in, or the quiet unknown
- * states — never an invented figure */
-function capacityanswer(mounted: boolean, capacity?: Capacity): string {
-  if (!mounted) return "capacity answers after mount";
-  if (!capacity) return "the browser does not answer a quota on this machine";
-  return `${formatbytes(capacity.usage)} used of ${formatbytes(capacity.quota)}`;
-}
-
 /** the identity mark of one external platform, drawn inline as a quiet
- * monochrome stroke glyph at 28px: no external asset ever loads on this
- * surface and the panel keeps its chrome-neutral ink */
+ * monochrome stroke glyph at 22px: no external asset ever loads on this
+ * surface and the card keeps its chrome-neutral ink */
 function PlatformMark({ id }: { id: PlatformId }) {
   return (
     <svg
       viewBox="0 0 24 24"
-      width={28}
-      height={28}
+      width={22}
+      height={22}
       fill="none"
       stroke="currentColor"
       strokeWidth={1.5}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
-      className="shrink-0 text-ink-2"
+      className="dtw-settings__drivemark"
     >
       {id === "gdrive" ? (
         <>
@@ -183,7 +136,7 @@ function PlatformMark({ id }: { id: PlatformId }) {
   );
 }
 
-/** The drives panel: the windows-style drive cards of this machine, the
+/** The drives page: the windows-style drive ledger of this machine, the
  * new-drive action and the opt-in wall of the external platforms. */
 export function HardDrives() {
   const [, navigate] = useLocation();
@@ -232,7 +185,7 @@ export function HardDrives() {
       // the store rehydrates from the mounted owner: a fresh boot reads it
       window.location.reload();
     } catch {
-      toast.error("The drive could not be mounted.");
+      toast.error(copy("settings.drives.mount.fail"));
       setBusy(false);
     }
   }
@@ -245,11 +198,11 @@ export function HardDrives() {
       setActive(drive);
       const state = await drives();
       setList(state.list);
-      toast(`New drive mounted: ${drive.label}. It starts empty.`);
+      toast(fill("settings.drives.new.done", { label: drive.label }));
       navigate("/panel");
       window.location.reload();
     } catch {
-      toast.error("The new drive could not be created on this machine.");
+      toast.error(copy("settings.drives.new.fail"));
     } finally {
       setBusy(false);
     }
@@ -264,14 +217,14 @@ export function HardDrives() {
     setPairing(platform.id);
   }
 
-  /** files the pairing as a draft of this panel: the drive registry knows
+  /** files the pairing as a draft of this card: the drive registry knows
    * local partitions only, so the real pairing lands with the database
    * wave and no connected state is ever faked */
   function pair(platform: Platform) {
     setDrafts((current) => ({
       ...current,
       [platform.id]: {
-        label: pairlabel.trim() || platform.name,
+        label: pairlabel.trim() || copy(`settings.drives.platform.${platform.id}`),
         endpoint: pairendpoint.trim(),
         key: pairkey,
       },
@@ -291,179 +244,156 @@ export function HardDrives() {
     });
   }
 
-  // the shelf folds the mounted drive back in (the first read of the
+  // the ledger folds the mounted drive back in (the first read of the
   // registry can return the list before the lazy registration lands) and
   // mounts it first, the way the file manager of a desktop lists the
   // system disk
   const shelf = active ? [active, ...list.filter((drive) => drive.id !== active.id)] : list;
+  const share = capacity ? Math.min(100, Math.max(0, (capacity.usage / capacity.quota) * 100)) : 0;
+  const pairingplatform = PLATFORMS.find((platform) => platform.id === pairing);
 
   return (
     <>
-      <section aria-labelledby="dt-drives-local-heading" className="grid gap-4">
-        <header className="max-w-[56ch]">
-          <p className="font-mono text-[10px] tracking-[.08em] text-ink-3">the local drives</p>
-          <h2
-            id="dt-drives-local-heading"
-            className="mt-2 font-display text-2xl font-semibold tracking-[-0.02em] text-ink"
-          >
-            Drives on this machine
-          </h2>
-          <p className="mt-2 text-sm leading-[1.55] text-ink-2">
-            The os treats databases as hard drives: every drive below is one owner partition of the local store. Mount a
-            new partition or reopen one you made before — the records never leave this browser.
-          </p>
-        </header>
+      <section className="dtw-card" aria-label={copy("settings.drives.local")}>
+        <h2 className="dtw-cardtitle">
+          <HardDriveRegular fontSize={15} aria-hidden="true" />
+          {copy("settings.drives.local")}
+        </h2>
+        <p className="dtw-settings__carddesc">{copy("settings.drives.local.desc")}</p>
 
         {shelf.length === 0 ? (
-          <p
-            className="rounded-2xl bg-s0 p-5 font-mono text-xs text-ink-3 ring-1 ring-hairline-strong"
-            style={{ boxShadow: STRIP_SHADOW }}
-          >
-            Reading the drives of this machine…
-          </p>
+          <p className="dtw-settings__base">{copy("settings.drives.pending")}</p>
         ) : (
-          <ul className="grid grid-cols-1 gap-4" aria-label="The drives of this machine">
+          <ul className="dtw-rows" aria-label={copy("settings.drives.local.aria")}>
             {shelf.map((drive) => {
               const mounted = drive.id === active?.id;
-              const share = capacity ? Math.min(100, Math.max(0, (capacity.usage / capacity.quota) * 100)) : 0;
               return (
-                <li
-                  key={drive.id}
-                  className="rounded-2xl bg-s0 p-4 ring-1 ring-hairline-strong sm:p-5"
-                  style={{ boxShadow: STRIP_SHADOW }}
-                >
-                  <div className="flex items-center gap-4">
-                    <span
-                      aria-hidden="true"
-                      className={
-                        mounted
-                          ? "grid size-11 shrink-0 place-items-center rounded-lg bg-s2 text-ink ring-1 ring-hairline-strong"
-                          : "grid size-11 shrink-0 place-items-center rounded-lg bg-s1 text-ink-3 ring-1 ring-hairline"
-                      }
-                    >
-                      <HardDriveRegular fontSize={20} />
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <h3 className="truncate font-display text-sm font-semibold tracking-[-0.01em] text-ink">
-                        {drive.label}
-                      </h3>
-                      <p className="mt-1 truncate font-mono text-[11px] text-ink-3">
-                        {mounted ? "mounted" : "unmounted"} · {drive.id} · created {drive.createdAt.slice(0, 10)}
-                      </p>
-                    </div>
-                    {mounted ? null : (
-                      <button
-                        type="button"
-                        className={BUTTON_QUIET}
-                        disabled={busy}
-                        onClick={() => void mount(drive.id)}
-                        aria-label={`Open the drive ${drive.label}`}
-                      >
-                        Open
-                      </button>
-                    )}
-                  </div>
-                  {mounted && capacity ? (
-                    <div
-                      className="mt-4 h-1.5 overflow-hidden rounded-full bg-s2"
-                      role="progressbar"
-                      aria-valuemin={0}
-                      aria-valuemax={100}
-                      aria-valuenow={Math.round(share)}
-                      aria-label="Store usage — the one allocation every drive on this machine shares"
-                    >
-                      <div className="h-full rounded-full bg-win" style={{ width: `${share}%` }} />
-                    </div>
-                  ) : (
-                    <div className="mt-4 h-1.5 rounded-full bg-s2" aria-hidden="true" />
-                  )}
-                  <p
-                    className={
-                      mounted && capacity
-                        ? "mt-2 font-mono text-xs tabular-nums text-ink-2"
-                        : "mt-2 font-mono text-xs text-ink-3"
-                    }
+                <li key={drive.id} className="dtw-row">
+                  <span
+                    className="dtw-settings__driveicon"
+                    data-mounted={mounted ? "true" : undefined}
+                    aria-hidden="true"
                   >
-                    {capacityanswer(mounted, capacity)}
-                  </p>
-                  {mounted && summary?.available ? (
-                    <p className="mt-1 font-mono text-xs tabular-nums text-ink-3">
-                      {summary.workspaces} workspaces · {summary.sessions} sessions · {summary.messages} messages
-                    </p>
-                  ) : null}
+                    <HardDriveRegular fontSize={18} />
+                  </span>
+                  <span className="dtw-settings__drivemeta">
+                    <strong>{drive.label}</strong>
+                    <small>
+                      {copy(mounted ? "settings.drives.mounted" : "settings.drives.unmounted")} · {drive.id} ·{" "}
+                      {fill("settings.drives.created", { date: drive.createdAt.slice(0, 10) })}
+                    </small>
+                  </span>
+                  {mounted ? null : (
+                    <button
+                      type="button"
+                      className="dtw-btn"
+                      disabled={busy}
+                      onClick={() => void mount(drive.id)}
+                      aria-label={fill("settings.drives.open.aria", { label: drive.label })}
+                    >
+                      {copy("settings.drives.open")}
+                    </button>
+                  )}
                 </li>
               );
             })}
           </ul>
         )}
 
-        <div className="rounded-2xl bg-s0 p-4 ring-1 ring-hairline-strong sm:p-5" style={{ boxShadow: STRIP_SHADOW }}>
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <input
-              className={FIELD}
-              value={label}
-              onChange={(event) => setLabel(event.target.value)}
-              placeholder="Name the new drive (HD 2)"
-              maxLength={24}
-              aria-label="New drive name"
-            />
-            <button type="button" className={BUTTON_PRIMARY} disabled={busy} onClick={() => void create()}>
-              <AddRegular fontSize={14} aria-hidden="true" />
-              New HD
-            </button>
+        {capacity ? (
+          <div className="dtw-settings__meterzone">
+            <div
+              className="dtw-settings__meter"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(share)}
+              aria-label={copy("settings.drives.meter.aria")}
+            >
+              <div className="dtw-settings__meterfill" style={{ width: `${share}%` }} />
+            </div>
+            <p className="dtw-settings__base">
+              {fill("settings.drives.capacity", {
+                usage: formatbytes(capacity.usage),
+                quota: formatbytes(capacity.quota),
+              })}
+            </p>
+            {summary?.available ? (
+              <p className="dtw-settings__base">
+                {fill("settings.drives.records", {
+                  workspaces: String(summary.workspaces),
+                  sessions: String(summary.sessions),
+                  messages: String(summary.messages),
+                })}
+              </p>
+            ) : null}
           </div>
-          <p className="mt-3 text-xs leading-[1.55] text-ink-3">
-            A new HD is a new database partition: it starts empty and the previous drive stays on this machine — open it
-            again any time. The capacity bar reads the browser's allocation for the whole store, the one disk every
-            drive here shares. <DeleteRegular fontSize={11} aria-hidden="true" /> never deletes a drive.
-          </p>
-        </div>
+        ) : (
+          <p className="dtw-settings__base">{copy("settings.drives.capacity.none")}</p>
+        )}
+
+        <form
+          className="dtw-settings__newdrive"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void create();
+          }}
+        >
+          <input
+            className="dtw-settings__input"
+            value={label}
+            onChange={(event) => setLabel(event.target.value)}
+            placeholder={copy("settings.drives.new.ph")}
+            maxLength={24}
+            aria-label={copy("settings.drives.new.aria")}
+          />
+          <button type="submit" className="dtw-btn dtw-btn--primary" disabled={busy}>
+            <AddRegular fontSize={14} aria-hidden="true" />
+            {copy("settings.drives.new")}
+          </button>
+        </form>
+        <p className="dtw-settings__carddesc">{copy("settings.drives.new.note")}</p>
       </section>
 
-      <section aria-labelledby="dt-drives-platforms-heading" className="grid gap-4">
-        <header className="max-w-[56ch]">
-          <p className="font-mono text-[10px] tracking-[.08em] text-ink-3">the external drives · opt in</p>
-          <h2
-            id="dt-drives-platforms-heading"
-            className="mt-2 font-display text-2xl font-semibold tracking-[-0.02em] text-ink"
-          >
-            Connect a storage platform
-          </h2>
-          <p className="mt-2 text-sm leading-[1.55] text-ink-2">
-            The default system keeps every record on this machine — bringing your own storage is opt-in. Pair a platform
-            only if you want it in the os: nothing connects until you do, and no key leaves this panel.
-          </p>
-        </header>
+      <section className="dtw-card" aria-label={copy("settings.drives.external")}>
+        <h2 className="dtw-cardtitle">
+          <CloudRegular fontSize={15} aria-hidden="true" />
+          {copy("settings.drives.external")}
+        </h2>
+        <p className="dtw-settings__carddesc">{copy("settings.drives.external.desc")}</p>
 
-        <ul
-          className="rounded-2xl bg-s0 ring-1 ring-hairline-strong"
-          style={{ boxShadow: STRIP_SHADOW }}
-          aria-label="The external storage platforms"
-        >
-          {PLATFORMS.map((platform, index) => {
+        <ul className="dtw-rows" aria-label={copy("settings.drives.external.aria")}>
+          {PLATFORMS.map((platform) => {
             const draft = drafts[platform.id];
-            const formid = `dt-pair-${platform.id}`;
+            const name = copy(`settings.drives.platform.${platform.id}`);
             return (
-              <li key={platform.id} className={index === 0 ? "p-4 sm:p-5" : "border-t border-hairline p-4 sm:p-5"}>
-                <div className="flex items-center gap-4">
-                  <PlatformMark id={platform.id} />
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                      <h3 className="font-display text-sm font-semibold tracking-[-0.01em] text-ink">
-                        {platform.name}
-                      </h3>
-                      <span className="font-mono text-[10px] tracking-[.08em] text-ink-3">
-                        {draft ? "pairing drafted · not connected" : "not connected"}
-                      </span>
-                    </div>
-                    <p className="mt-1 text-xs leading-[1.55] text-ink-3">{platform.blurb}</p>
-                  </div>
+              <li key={platform.id} className="dtw-row">
+                <PlatformMark id={platform.id} />
+                <span className="dtw-settings__drivemeta">
+                  <strong>{name}</strong>
+                  <small>
+                    {draft
+                      ? `${draft.label}${draft.endpoint ? ` · ${draft.endpoint}` : ""} · ${copy("settings.drives.status.off")}`
+                      : copy("settings.drives.status.off")}
+                  </small>
+                </span>
+                <span className="dtw-settings__actions">
+                  {draft ? (
+                    <button
+                      type="button"
+                      className="dtw-btn"
+                      onClick={() => unpair(platform.id)}
+                      aria-label={fill("settings.drives.remove.aria", { name })}
+                    >
+                      {copy("settings.drives.remove")}
+                    </button>
+                  ) : null}
                   <button
                     type="button"
-                    className={BUTTON_QUIET}
-                    aria-expanded={pairing === platform.id}
-                    aria-controls={formid}
-                    aria-label={`Connect ${platform.name}`}
+                    className="dtw-btn"
+                    aria-expanded={pairing === platform.id ? "true" : "false"}
+                    aria-controls={pairing === platform.id ? "dt-pair-form" : undefined}
+                    aria-label={fill("settings.drives.connect.aria", { name })}
                     onClick={() => {
                       if (pairing === platform.id) {
                         setPairing(undefined);
@@ -472,90 +402,78 @@ export function HardDrives() {
                       }
                     }}
                   >
-                    Connect
+                    {copy("settings.drives.connect")}
                   </button>
-                </div>
-
-                {pairing === platform.id ? (
-                  <form
-                    id={formid}
-                    className="mt-4 grid gap-3 rounded-xl bg-s2 p-4 ring-1 ring-hairline"
-                    onSubmit={(event) => {
-                      event.preventDefault();
-                      pair(platform);
-                    }}
-                  >
-                    <input
-                      className={FIELD}
-                      value={pairlabel}
-                      maxLength={24}
-                      onChange={(event) => setPairlabel(event.target.value)}
-                      placeholder={`Name the drive (${platform.name} — work)`}
-                      aria-label="Drive label"
-                    />
-                    {platform.keyed ? (
-                      <>
-                        <input
-                          className={FIELD}
-                          type="url"
-                          required
-                          value={pairendpoint}
-                          onChange={(event) => setPairendpoint(event.target.value)}
-                          placeholder={platform.id === "s3" ? "https://s3.example.com" : "https://files.example.com"}
-                          aria-label="Endpoint url"
-                        />
-                        <input
-                          className={FIELD}
-                          type="password"
-                          required
-                          autoComplete="off"
-                          spellCheck={false}
-                          value={pairkey}
-                          onChange={(event) => setPairkey(event.target.value)}
-                          placeholder="access key or secret"
-                          aria-label="Access key"
-                        />
-                      </>
-                    ) : null}
-                    <div className="flex flex-wrap items-center gap-2">
-                      <button type="submit" className={BUTTON_PRIMARY}>
-                        Pair drive
-                      </button>
-                      <button type="button" className={BUTTON_QUIET} onClick={() => setPairing(undefined)}>
-                        Cancel
-                      </button>
-                    </div>
-                    <p className="m-0 font-mono text-[11px] leading-[1.55] text-ink-3">
-                      pairing lands with the database wave — the draft stays on this panel and nothing is sent.
-                    </p>
-                  </form>
-                ) : null}
-
-                {draft ? (
-                  <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
-                    <p className="m-0 min-w-0 flex-1 font-mono text-[11px] leading-[1.55] text-ink-3">
-                      "{draft.label}" drafted{draft.endpoint ? ` · ${draft.endpoint}` : ""} · not connected — pairing
-                      lands with the database wave.
-                    </p>
-                    <button
-                      type="button"
-                      className={BUTTON_QUIET}
-                      onClick={() => unpair(platform.id)}
-                      aria-label={`Remove the ${platform.name} pairing draft`}
-                    >
-                      Remove draft
-                    </button>
-                  </div>
-                ) : null}
+                </span>
               </li>
             );
           })}
         </ul>
 
-        <p className="m-0 max-w-[56ch] text-xs leading-[1.55] text-ink-3">
-          The store does not know external drives yet: the pairing drafts live in this panel's memory only — nothing is
-          written to the machine, nothing is sent anywhere, and no platform reports a quota it did not answer.
-        </p>
+        {pairingplatform ? (
+          <form
+            id="dt-pair-form"
+            className="dtw-settings__pairform"
+            onSubmit={(event) => {
+              event.preventDefault();
+              pair(pairingplatform);
+            }}
+          >
+            <label className="dtw-settings__pairfield">
+              <span>{copy("settings.drives.pair.label")}</span>
+              <input
+                className="dtw-settings__input"
+                value={pairlabel}
+                maxLength={24}
+                onChange={(event) => setPairlabel(event.target.value)}
+                placeholder={fill("settings.drives.pair.label.ph", {
+                  name: copy(`settings.drives.platform.${pairingplatform.id}`),
+                })}
+              />
+            </label>
+            {pairingplatform.keyed ? (
+              <>
+                <label className="dtw-settings__pairfield">
+                  <span>{copy("settings.drives.pair.endpoint")}</span>
+                  <input
+                    className="dtw-settings__input"
+                    type="url"
+                    required
+                    value={pairendpoint}
+                    onChange={(event) => setPairendpoint(event.target.value)}
+                    placeholder={copy(
+                      pairingplatform.id === "s3"
+                        ? "settings.drives.pair.endpoint.ph.s3"
+                        : "settings.drives.pair.endpoint.ph.host",
+                    )}
+                  />
+                </label>
+                <label className="dtw-settings__pairfield">
+                  <span>{copy("settings.drives.pair.key")}</span>
+                  <input
+                    className="dtw-settings__input"
+                    type="password"
+                    required
+                    autoComplete="off"
+                    spellCheck={false}
+                    value={pairkey}
+                    onChange={(event) => setPairkey(event.target.value)}
+                    placeholder={copy("settings.drives.pair.key.ph")}
+                  />
+                </label>
+              </>
+            ) : null}
+            <span className="dtw-settings__actions">
+              <button type="submit" className="dtw-btn dtw-btn--primary">
+                {copy("settings.drives.pair")}
+              </button>
+              <button type="button" className="dtw-btn" onClick={() => setPairing(undefined)}>
+                {copy("settings.drives.cancel")}
+              </button>
+            </span>
+            <p className="dtw-settings__carddesc">{copy("settings.drives.pair.note")}</p>
+          </form>
+        ) : null}
       </section>
     </>
   );

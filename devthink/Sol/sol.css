@@ -13580,10 +13580,6 @@ span[data-tile] {
   align-items: baseline;
   gap: 14px;
   min-height: 44px;
-  border-bottom: 1px solid var(--dtv3-hairline);
-}
-.dtw-settings__kv:last-of-type {
-  border-bottom: 0;
 }
 .dtw-settings__kvkey {
   flex: 0 0 130px;
@@ -13889,7 +13885,8 @@ span[data-tile] {
 }
 /* the drives shelf of the hard drives card: the rows carry the disk-shaped
  * fluent glyph (the hd icon law), read center-aligned at the 44px rhythm —
- * only the Open buttons are interactive, so the rows stay plain ledger. */
+ * only the Open, Connect and Remove buttons are interactive, so the rows
+ * stay plain ledger (separation by breath, never a hairline divider). */
 .dtw-settings .dtw-row {
   align-items: center;
   min-height: 44px;
@@ -13902,6 +13899,74 @@ span[data-tile] {
 }
 .dtw-settings__driveicon[data-mounted="true"] {
   color: var(--dtv3-ink-1);
+}
+.dtw-settings__drivemark {
+  flex: none;
+  color: var(--dtv3-ink-2);
+}
+.dtw-settings__drivemeta {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
+}
+.dtw-settings__drivemeta strong {
+  overflow: hidden;
+  color: var(--dtv3-ink-1);
+  font: 400 13px var(--font-sans, var(--dt-sans));
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dtw-settings__drivemeta small {
+  overflow: hidden;
+  color: var(--dtv3-ink-3);
+  font: 400 11px var(--dt-mono);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* the capacity meter of the drives card: the one honest allocation the
+ * browser answers, drawn as the windows storage bar — the well track with
+ * the single accent fill, never a ring, never a second hairline */
+.dtw-settings__meterzone {
+  display: grid;
+  gap: 6px;
+  margin-top: 4px;
+}
+.dtw-settings__meter {
+  display: block;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--dtw-well);
+  overflow: hidden;
+}
+.dtw-settings__meterfill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-win);
+}
+/* the inline forms of the drives card: the new-drive row and the pairing
+ * draft — the flat wells with the single affordance, the 44px rhythm */
+.dtw-settings__newdrive {
+  display: flex;
+  gap: 8px;
+}
+.dtw-settings__newdrive .dtw-settings__input {
+  flex: 1;
+  min-width: 0;
+}
+.dtw-settings__pairform {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+}
+.dtw-settings__pairfield {
+  display: grid;
+  gap: 4px;
+}
+.dtw-settings__pairfield > span {
+  color: var(--dtv3-ink-2);
+  font: 400 12px var(--font-sans, var(--dt-sans));
 }
 
 /* ==== the console.css skins — merged from the app folder, the folder carries tsx only ==== */
