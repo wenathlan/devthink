@@ -265,7 +265,17 @@ jobs:
             published=0
             until [ "$attempt" -ge 3 ]; do
               attempt=$((attempt + 1))
-              if npm publish "${tarball}" --access public --provenance; then
+              publish_output="$(npm publish "${tarball}" --access public --provenance 2>&1)" && { published=1; break; }
+              # the twin-409 doctrine (the idempotent win the family loop of
+              # the release ladder carries): the ladder's own npmjs job
+              # publishes the same tarball inside the same release event, and
+              # the registry answers the latecomer with "cannot publish over
+              # previously staged/published" while the read path still lags -
+              # the npm view check below cannot see a staged version, so the
+              # registry's own twin answer is the win (the 2.0.151 release
+              # burned three attempts on the lag and reddened the lane).
+              if printf '%s' "${publish_output}" | grep -qiE "cannot publish over previously (published|staged)"; then
+                echo "the twin lane already owns ${RELEASE_VERSION}; the publish race resolved with the registry's own answer."
                 published=1
                 break
               fi
@@ -274,6 +284,7 @@ jobs:
                 published=1
                 break
               fi
+              printf '%s\n' "${publish_output}"
               echo "npm publish attempt ${attempt}/3 failed; retrying with backoff."
               sleep "$((attempt * 5))"
             done
@@ -441,16 +452,26 @@ jobs:
               # publish lands, and the dist-tag step below pins latest to
               # the release version - the maene realignment doctrine the
               # lane already carries for the rungs of an older line.
+              publish_output=""
               if [ "$provenance" = "true" ]; then
-                if npm publish --access public --provenance --tag latest; then
-                  published=1
-                fi
+                publish_output="$(npm publish --access public --provenance --tag latest 2>&1)" && published=1
               else
-                if npm publish --access public --tag latest; then
-                  published=1
-                fi
+                publish_output="$(npm publish --access public --tag latest 2>&1)" && published=1
               fi
               if [ "$published" -eq 1 ]; then
+                break
+              fi
+              # the twin-409 doctrine (the idempotent win the family loop of
+              # the release ladder carries): the ladder's familynpmjs loop
+              # stages the same envelope inside the same release event and
+              # the registry answers the latecomer with the staged/published
+              # twin refusal while the read path lags - the npm view check
+              # below cannot see a staged version, so the registry's own
+              # twin answer is the win (the 2.0.151 release reddened the
+              # debonair and forge legs on the lag).
+              if printf '%s' "${publish_output}" | grep -qiE "cannot publish over previously (published|staged)"; then
+                echo "the twin lane already owns ${RELEASE_VERSION}; the publish race resolved with the registry's own answer."
+                published=1
                 break
               fi
               # the dual-trigger race tolerance: a sibling firing may have
@@ -461,6 +482,7 @@ jobs:
                 published=1
                 break
               fi
+              printf '%s\n' "${publish_output}"
               echo "npm publish attempt ${attempt}/3 failed; retrying with backoff."
               sleep "$((attempt * 5))"
             done
