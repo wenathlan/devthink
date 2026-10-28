@@ -2,8 +2,8 @@
  * signin.tsx — the sign-in face of the auth sequence, the second face
  * of the windows sequence: the dimmed, blurred mica wallpaper behind the
  * split sign-in card and NOTHING else — the akash grammar the owner
- * pointed to (the visual panel carrying the brand and the rotating value
- * slides, the form panel carrying the account contract) wearing the
+ * pointed to (the visual panel carrying the brand, the form panel
+ * carrying the account contract) wearing the
  * windows material of the house: the mica ring, the ever gradient, the
  * fluent glyphs, zero indigo, zero lucide, zero dots.
  *
@@ -14,24 +14,18 @@
  * inline. The password well keeps the windows grammar: one rounded cell
  * carrying the input, the reveal eye and the arrow submit riding inside
  * it. Below the well: the icon-only provider row (the google g, the
- * octocat, the tanuki and the cli pairing glyph riding alone, the
- * continue-with words living as the accessible names — zero manual
+ * octocat and the cli pairing glyph riding alone, the continue-with
+ * words living as the accessible names — zero manual
  * configuration). Every string rides the copy
  * catalog (the seed of copy.ts is the one place literals live). Loose
  * component of the auth page, riding the dtw-login kit of sol.css.
  */
 import { ArrowRightRegular, EyeOffRegular, EyeRegular, PersonRegular } from "@fluentui/react-icons";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import type { AccountState } from "../../account.ts";
 import { copy } from "../../copy.ts";
 import { ProviderRow, type ProviderRowProps } from "./AuthProviderrow.tsx";
 import { SolLogoMark, SolWordmark } from "./PanelLogo.tsx";
-
-/** the rotation law of the visual panel: one slide rides 7 seconds, the
- * crossfade walks the house micro curve, and reduced motion parks the
- * rotation on the first slide (the honest still). */
-const SLIDE_KEYS = ["auth.slide.1", "auth.slide.2", "auth.slide.3"] as const;
-const SLIDEMS = 7000;
 
 /** the entry bundle: the credential fields of the face, controlled by the
  * anchor — the stage machine owns the state, this is a controlled face,
@@ -68,15 +62,12 @@ export interface SignInFormProps {
 }
 
 /** SignInForm — the split sign-in card over the dimmed, blurred mica
- * wallpaper: the visual panel (the brand, the rotating value slides, the
- * slide rails) beside the form panel (the avatar, the welcome, the
- * windows password well, the provider row with the cli button). The
- * password field takes focus as the face reveals (the 320ms ride the
- * entrance curve of the card). */
+ * wallpaper: the visual panel (the brand) beside the form panel (the
+ * avatar, the welcome, the windows password well, the provider row with
+ * the cli button). The password field takes focus as the face reveals
+ * (the 320ms ride the entrance curve of the card). */
 export function SignInForm({ account, known, entry, oauth }: SignInFormProps) {
   const passwordRef = useRef<HTMLInputElement | null>(null);
-  const [slide, setSlide] = useState(0);
-  const [still, setStill] = useState(false);
 
   // the password field takes focus as the sign-in face reveals — the
   // component mounts exactly when the stage machine lifts the lock
@@ -85,51 +76,17 @@ export function SignInForm({ account, known, entry, oauth }: SignInFormProps) {
     return () => window.clearTimeout(timer);
   }, []);
 
-  // the slide rotation rides its own clock; the reduced-motion preference
-  // parks it on the first slide (the still face never animates)
-  useEffect(() => {
-    if (still) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = window.setInterval(() => setSlide((current) => (current + 1) % SLIDE_KEYS.length), SLIDEMS);
-    return () => window.clearInterval(timer);
-  }, [still]);
-
   const initials = (known || entry.name).trim().charAt(0).toUpperCase();
   const greeting = known ? copy("auth.signin.welcome.named").replace("{name}", known) : copy("auth.signin.welcome");
 
   return (
     <div className="dtw-login__dock">
       <section className="dtw-login__card" aria-label={copy("auth.signin.aria")}>
-        <div className="dtw-login__visual" aria-hidden="true" data-still={still ? "true" : "false"}>
+        <div className="dtw-login__visual" aria-hidden="true">
           <div className="dtw-login__visualbrand">
             <SolLogoMark size={30} />
             <SolWordmark height={18} />
           </div>
-          <div className="dtw-login__slides">
-            {SLIDE_KEYS.map((key, index) => (
-              <div key={key} className="dtw-login__slide" data-active={index === slide ? "true" : "false"}>
-                <h2 className="dtw-login__slidetitle">{copy([key, "title"].join("."))}</h2>
-                <p className="dtw-login__slidesub">{copy([key, "subtitle"].join("."))}</p>
-              </div>
-            ))}
-          </div>
-          <div className="dtw-login__sliderails" aria-hidden="true">
-            {SLIDE_KEYS.map((key, index) => (
-              <button
-                key={key}
-                type="button"
-                className="dtw-login__sliderail"
-                data-active={index === slide ? "true" : "false"}
-                tabIndex={-1}
-                aria-hidden="true"
-                onClick={() => {
-                  setSlide(index);
-                  setStill(true);
-                }}
-              />
-            ))}
-          </div>
-          <span className="dtw-login__visualtag">{copy("auth.brand.tagline")}</span>
         </div>
 
         <div className="dtw-login__pane">
@@ -137,7 +94,6 @@ export function SignInForm({ account, known, entry, oauth }: SignInFormProps) {
             {initials ? initials : <PersonRegular fontSize={44} aria-hidden="true" />}
           </span>
           <h1 className="dtw-login__welcome">{account === "ready" ? greeting : copy("auth.signin.create")}</h1>
-          {account === "ready" ? null : <p className="dtw-login__lede">{copy("auth.signin.create.lede")}</p>}
 
           {account === "ready" ? (
             <form

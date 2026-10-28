@@ -29,8 +29,8 @@ describe("the copy store", () => {
   });
 
   it("the provider row answers the icon law — the brand marks ride alone, the continue with words stay as the accessible names", () => {
-    const brandnames = { google: "Google", github: "GitHub", gitlab: "GitLab" } as Record<string, string>;
-    for (const provider of ["google", "github", "gitlab"]) {
+    const brandnames = { google: "Google", github: "GitHub" } as Record<string, string>;
+    for (const provider of ["google", "github"]) {
       const label = copy(`auth.oauth.${provider}`);
       assert.equal(
         label,
@@ -39,6 +39,10 @@ describe("the copy store", () => {
       );
       assert.ok(!label.includes("·"), `the ${provider} name never carries the separator ornament`);
     }
+    // the gitlab provider and the unconfigured hover phrase left the row by
+    // the owner order — only google, github and the cli glyph answer the face
+    assert.equal(copy("auth.oauth.gitlab"), "auth.oauth.gitlab");
+    assert.equal(copy("auth.oauth.unconfigured"), "auth.oauth.unconfigured");
     // the cli pairing row answers the same simple grammar the owner ordered
     assert.equal(copy("auth.cli"), "Continue with CLI");
     // the continue-with headline dies with the icon-only row — the words

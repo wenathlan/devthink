@@ -10,7 +10,7 @@
  */
 
 import { ArrowClockwiseRegular, WarningRegular } from "@fluentui/react-icons";
-import { Component, type ReactNode } from "react";
+import { Component, type ReactNode, useSyncExternalStore } from "react";
 import { createRoot } from "react-dom/client";
 import { Toaster } from "sonner";
 import { Router as WouterRouter } from "wouter";
@@ -87,6 +87,19 @@ function armdevtoolswall(): void {
   installdevtoolsguard(loadDevtoolsWall() ? undefined : { suspend: true });
 }
 
+/** The toaster follows the os theme ladder (the owner law: every surface,
+ * the toasts beside, wears the same light or dark the system wears). The
+ * data-theme attribute is the truth the personalization channel paints; the
+ * subscription watches its mutations so a theme flip re-skins the toasts of
+ * the live session without a reload. */
+const themesubscribe = (notify: () => void): (() => void) => {
+  const observer = new MutationObserver(notify);
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  return () => observer.disconnect();
+};
+const themetheme = (): "light" | "dark" => (document.documentElement.dataset.theme === "light" ? "light" : "dark");
+const themeserver = (): "light" | "dark" => "light";
+
 function App() {
   // the devtools wall answers the stored owner switch: the boot reads the
   // choice before the arm (default off — the interstitial only ever stands
@@ -95,9 +108,10 @@ function App() {
     if (banned) showdevtoolsinterstitial();
   });
   armdevtoolswall();
+  const toastertheme = useSyncExternalStore(themesubscribe, themetheme, themeserver);
   return (
     <WorkbenchErrorBoundary>
-      <Toaster richColors theme="dark" />
+      <Toaster richColors theme={toastertheme} />
       <WouterRouter base={routerBase()}>
         <Sol />
       </WouterRouter>

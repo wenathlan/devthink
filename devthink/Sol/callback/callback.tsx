@@ -6,7 +6,7 @@
  * consumes this file.
  *
  * The single callback page of the provider row — one page for all
- * providers: the person signs in with google, github or gitlab (the bots
+ * providers: the person signs in with google and github (the bots
  * are ready on the owner accounts) and the provider answers back here,
  * where the state marker names the origin (detectProviderFromState of the
  * root oauthrow.ts). The page COMPLETES the round trip: the code arrival

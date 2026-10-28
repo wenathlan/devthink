@@ -15,7 +15,7 @@
  * family session covers every device of the family deploy. The local
  * accountgate of the root accountgate.ts stays as the DECLARED offline
  * fallback only — the honest offline row names it when the lane never
- * answered. The provider row — continue with google, github and gitlab
+ * answered. The provider row — continue with google and github
  * wearing the official brand marks, plus the cli pairing button under
  * the same simple grammar (one button, zero manual configuration: the
  * invitation link consumes itself, the honest note answers a plain
@@ -120,10 +120,10 @@ export default function Auth() {
   const createEntry = useCallback(async () => {
     const display = name.trim();
     const owner = normalizeaccountowner(display);
-    if (!display) return setFailure("Choose the display name of this account.");
-    if (!owner) return setFailure("The display name needs 3 or more letters, digits or dashes to hold the account.");
-    if (password.length < 4) return setFailure("The password needs at least 4 characters.");
-    if (password !== confirm) return setFailure("The passwords don't match. Try again.");
+    if (!display) return setFailure(copy("auth.signin.failure.choose"));
+    if (!owner) return setFailure(copy("auth.signin.failure.name"));
+    if (password.length < 4) return setFailure(copy("auth.signin.failure.password"));
+    if (password !== confirm) return setFailure(copy("auth.signin.failure.confirm"));
     setBusy(true);
     setFailure("");
     try {
@@ -142,7 +142,7 @@ export default function Auth() {
           return;
         }
         if (signin.verdict === "refused") {
-          setFailure("The account owner is taken and that password does not match it.");
+          setFailure(copy("auth.signin.failure.taken"));
           return;
         }
       }
@@ -151,7 +151,7 @@ export default function Auth() {
       await createAccount(display, password);
       setFailure(copy("auth.account.offline"));
     } catch {
-      setFailure("The account could not be saved on this machine.");
+      setFailure(copy("auth.signin.failure.saved"));
     } finally {
       setBusy(false);
     }
@@ -164,7 +164,7 @@ export default function Auth() {
    * the local accountgate is the declared offline fallback.
    */
   const passwordEntry = useCallback(async () => {
-    if (!password) return setFailure("Enter the password of this account.");
+    if (!password) return setFailure(copy("auth.signin.failure.enter"));
     setBusy(true);
     setFailure("");
     try {
@@ -177,7 +177,7 @@ export default function Auth() {
           return;
         }
         if (verdict.verdict === "refused") {
-          setFailure("The password is incorrect. Try again.");
+          setFailure(copy("auth.signin.failure.incorrect"));
           return;
         }
       }
@@ -188,9 +188,9 @@ export default function Auth() {
         parklocalunlock();
         return finish();
       }
-      setFailure("The password is incorrect. Try again.");
+      setFailure(copy("auth.signin.failure.incorrect"));
     } catch {
-      setFailure("The sign in could not be completed on this machine.");
+      setFailure(copy("auth.signin.failure.incomplete"));
     } finally {
       setBusy(false);
     }
@@ -205,7 +205,9 @@ export default function Auth() {
       const readiness = pairingReadiness({ gatewayUrl, pairingId: pairingIdValue, code: pairingCode });
       if (!readiness.ready)
         return toast(
-          `Complete the sync up: ${readiness.missing.join(", ")} ${readiness.missing.length === 1 ? "is" : "are"} missing.`,
+          copy("auth.signin.failure.sync")
+            .replace("{missing}", readiness.missing.join(", "))
+            .replace("{verb}", readiness.missing.length === 1 ? "is" : "are"),
         );
       setBusy(true);
       try {
@@ -218,7 +220,7 @@ export default function Auth() {
           headers: { "content-type": "application/json" },
           body: JSON.stringify({ pairingId: pairingIdValue, code: pairingCode }),
         });
-        if (!response.ok) throw new Error("Pairing was rejected.");
+        if (!response.ok) throw new Error(copy("auth.cli.rejected"));
         const result = (await response.json()) as PairingResponse;
         // the exact keys the creation panel reads on boot
         window.sessionStorage.setItem("devthink.gateway", gateway);
