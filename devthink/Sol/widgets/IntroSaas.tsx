@@ -11,21 +11,21 @@
  * the reference class names.
  */
 
-import { useCallback, useEffect, useState, type ComponentType } from "react";
-import { useLocation } from "wouter";
 import {
-  AlertRegular as Bell,
-  ArrowImportRegular as Login,
   ArrowUpRightRegular as Arrowupright,
-  ChatRegular as Messagesquare,
+  AlertRegular as Bell,
   HeadphonesRegular as Headphones,
-  MaximizeRegular as Maximize,
-  PeopleRegular as Users,
-  SparkleRegular as Sparkle,
   StackRegular as Layers,
+  ArrowImportRegular as Login,
+  MaximizeRegular as Maximize,
+  ChatRegular as Messagesquare,
+  SparkleRegular as Sparkle,
   StarRegular as Star,
   TvRegular as Tv,
+  PeopleRegular as Users,
 } from "@fluentui/react-icons";
+import { type ComponentType, useCallback, useEffect, useState } from "react";
+import { useLocation } from "wouter";
 import { saaschrome, saasheadertabs, saasrailstops, saastoasts } from "../../saascontent.ts";
 import { SaddleTabBridge, Studiomark, VerticalSaddleBridge } from "./IntroSaaskit.tsx";
 import {
@@ -57,8 +57,6 @@ const SAAS_CSS = `
 .surface-card { background: #FFFFFF; border: 1px solid rgba(226,232,240,0.95); box-shadow: 0 16px 36px -14px rgba(15,23,42,0.10); }
 .stat-tile { background: #F4F6FB; border: 1px solid rgba(226,232,240,0.9); }
 .indigo-tactile-surface { background: linear-gradient(145deg, #4F46E5 0%, #3730A3 58%, #312E81 100%); box-shadow: 0 22px 44px -12px rgba(55,48,163,0.5), inset 0 2px 5px rgba(255,255,255,0.32), inset 0 -5px 10px rgba(15,23,42,0.4); }
-.hero-inline-switch { background: linear-gradient(125deg, #60A5FA 0%, #A855F7 48%, #EC4899 78%, #F97316 100%); box-shadow: 0 12px 26px -6px rgba(168,85,247,0.45), inset 0 2px 4px rgba(255,255,255,0.55); }
-.hero-switch-thumb { background: radial-gradient(circle at 30% 30%, #FFFFFF 0%, #F1F5F9 70%, #CBD5E1 100%); box-shadow: -3px 4px 10px rgba(15,23,42,0.35), inset 0 2px 3px rgba(255,255,255,1); }
 @keyframes shaderPulse { 0%,100% { transform: scale(1) translate(0,0); } 50% { transform: scale(1.05) translate(10px,-8px); } }
 .hero-gaussian-shader { background: radial-gradient(circle at 14% 70%, rgba(56,189,248,0.82) 0%, transparent 48%), radial-gradient(circle at 36% 80%, rgba(99,102,241,0.78) 0%, transparent 50%), radial-gradient(circle at 58% 65%, rgba(168,85,247,0.78) 0%, transparent 48%), radial-gradient(circle at 78% 75%, rgba(236,72,153,0.78) 0%, transparent 48%), radial-gradient(circle at 92% 65%, rgba(251,146,60,0.82) 0%, transparent 45%); filter: blur(56px) saturate(165%); animation: shaderPulse 9s ease-in-out infinite; }
 .conic-rainbow-ring { background: conic-gradient(from 180deg at 50% 50%, #EC4899 0deg, #8B5CF6 72deg, #3B82F6 144deg, #38BDF8 216deg, #F59E0B 288deg, #EC4899 360deg); padding: 2.5px; }
@@ -89,7 +87,7 @@ const SAAS_CSS = `
 .animate-float-card-delayed { animation: subtleFloat 6.6s ease-in-out 1.2s infinite; }
 @media (prefers-reduced-motion: reduce) {
   .hero-gaussian-shader, .spin-badge-slow, .swing-card-1, .swing-card-2, .swing-card-3, .animate-float-card, .animate-float-card-delayed, .fan-swap { animation: none; }
-  .btn-tactile-3d, .icon-frame-3d, .hero-switch-thumb { transition: none; }
+  .btn-tactile-3d, .icon-frame-3d { transition: none; }
 }
 `;
 
@@ -139,7 +137,9 @@ const RAILGLYPH: Record<string, glyphkind> = {
 
 /** The SaaS page: the approved landing, one scroll, every launch path
  * through the login face. The anchor hands the onDone callback — the
- * intro flag rises on the way out, wherever the visitor leaves. */
+ * intro flag rises on the way out, wherever the visitor leaves — and the
+ * explorer key of the corner dock and the footer row walk the entry
+ * chain through the free exploration face (/explore) on the way. */
 export default function Saas({ onDone }: { onDone: () => void }) {
   const [, navigate] = useLocation();
   const [active, setActive] = useState<string>("hero-os");
@@ -147,6 +147,10 @@ export default function Saas({ onDone }: { onDone: () => void }) {
   const enter = useCallback(() => {
     onDone();
     navigate("/auth");
+  }, [navigate, onDone]);
+  const explore = useCallback(() => {
+    onDone();
+    navigate("/explore");
   }, [navigate, onDone]);
   const scrollto = useCallback((id: string) => {
     setActive(id);
@@ -203,21 +207,22 @@ export default function Saas({ onDone }: { onDone: () => void }) {
         </VerticalSaddleBridge>
       </aside>
 
-      {/* the corner dock: the white card with the three tactile keys */}
+      {/* the corner dock: the white card with the three tactile keys — the
+          explorer key walks the entry chain to the free exploration face */}
       <div className="surface-card fixed right-4 bottom-8 z-40 hidden flex-col items-center gap-2 rounded-2xl p-2 text-slate-700 md:flex">
         <button
           type="button"
           onClick={() => showtoast(saastoasts.favorites)}
           className="icon-frame-3d flex h-9 w-9 items-center justify-center rounded-xl"
-          aria-label="Save"
+          aria-label={saaschrome.docksave}
         >
           <Star className="h-4 w-4" aria-hidden="true" />
         </button>
         <button
           type="button"
-          onClick={() => scrollto("workspace-subapps")}
+          onClick={explore}
           className="icon-frame-3d flex h-9 w-9 items-center justify-center rounded-xl"
-          aria-label="Explorer"
+          aria-label={saaschrome.dockexplore}
         >
           <Layers className="h-4 w-4" aria-hidden="true" />
         </button>
@@ -225,7 +230,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           className="icon-frame-3d flex h-9 w-9 items-center justify-center rounded-xl"
-          aria-label="Top"
+          aria-label={saaschrome.docktop}
         >
           <Maximize className="h-4 w-4" aria-hidden="true" />
         </button>
@@ -319,7 +324,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
         <SaasDebonair showtoast={showtoast} scrollto={scrollto} />
         <SaasDoo showtoast={showtoast} scrollto={scrollto} />
         <SaasRibbon />
-        <SaasFooter onenter={enter} scrollto={scrollto} showtoast={showtoast} />
+        <SaasFooter onenter={enter} onexplore={explore} scrollto={scrollto} showtoast={showtoast} />
       </main>
 
       {toastmessage ? (
