@@ -51,7 +51,7 @@ import { dirname, join } from "node:path";
 import { PrismaLibSql } from "@prisma/adapter-libsql";
 import type { PrismaClient } from "@prisma/client";
 import { ensurePaths, resolvePaths, type DevThinkConfig, type DevThinkPaths } from "./config.js";
-import { createCompactId } from "./ids.js";
+import { createCompactId } from "./queue.ts";
 import type { ChatMessage } from "./providers.js";
 import { getIdentity } from "./account.js";
 import { isSecureRemoteEndpoint } from "./gateway.js";

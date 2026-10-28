@@ -9,7 +9,7 @@ import {
   planCompact,
   SUMMARY_MARKER,
   triggerTokens,
-} from "../conversationcompact.js";
+} from "../queue.ts";
 
 const system: CompactMessage = { role: "system", content: "You are Sol, the DevThink gateway assistant." };
 const goal: CompactMessage = { role: "user", content: "FIRST GOAL: audit the auth flow end to end." };

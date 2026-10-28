@@ -23,7 +23,7 @@ import {
   setAuthCredential,
 } from "../config.js";
 import { createPairing, createPairingLink, getIdentity, setIdentityUserId } from "../account.js";
-import { isCompactId } from "../ids.js";
+import { isCompactId } from "../queue.ts";
 import { listModes } from "../modes.js";
 import { type ServerHandle, startServer } from "../server.js";
 import { type ChatEvent, parseEventStream } from "../streaming.js";

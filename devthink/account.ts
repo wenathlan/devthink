@@ -41,7 +41,7 @@ import { mkdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { type DevThinkPaths, ensurePaths, resolvePaths } from "./config.js";
 import { lanefetch } from "./gateway.ts";
-import { createCompactId } from "./ids.js";
+import { createCompactId } from "./queue.ts";
 import {
   browserIdentity,
   readBrowserCredential,

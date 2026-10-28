@@ -276,16 +276,10 @@
         "role": "the streaming parser: provider events decoded into one typed chunk flow."
       },
       {
-        "name": "retrybackoff",
+        "name": "queue",
         "source": "root",
-        "module": "retrybackoff.ts",
-        "role": "the retry discipline: exponential backoff with jitter and the Retry-After fast path."
-      },
-      {
-        "name": "conversationcompact",
-        "source": "root",
-        "module": "conversationcompact.ts",
-        "role": "the conversation compaction that keeps long contexts inside the token budget."
+        "module": "queue.ts",
+        "role": "the request queue family: the bounded queue, the retry backoff, the token estimation, the conversation compaction, the resilient sse parsing and the id minting."
       },
       {
         "name": "mcpregistry",
