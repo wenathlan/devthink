@@ -11,6 +11,11 @@ export default defineConfig({
        * same module the dev server serves. retires when saddle 2.1.7
        * publishes the export entry. */
       "@wenathlan/saddle/sandbox": path.resolve(import.meta.dirname, "../saddle/sandbox.ts"),
+      /** the modalities bridge of the same family: the sandbox lane reads
+       * the modality registry (the single source of the catalog) through
+       * the library specifier, and the bridge resolves it to the monorepo
+       * source until the published envelope carries the export */
+      "@wenathlan/saddle/modalities": path.resolve(import.meta.dirname, "../saddle/modalityregistry.ts"),
     },
   },
   test: {

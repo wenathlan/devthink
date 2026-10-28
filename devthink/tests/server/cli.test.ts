@@ -16,6 +16,17 @@ const exec = promisify(execFile);
 const tsxbin = join(import.meta.dirname, "..", "..", "node_modules", ".bin", "tsx");
 const clits = join(import.meta.dirname, "..", "..", "server.ts");
 
+/** the sandbox lane reads the sibling saddle registry through the library
+ * specifier, and tsx resolves the bridge through the tsconfig paths — the
+ * spawned cli runs from a foreign workdir, so the config path is pinned
+ * explicitly (the same pin the server e2e carries; the bridges retire when
+ * the published saddle envelope carries the ./modalities export) */
+const clienv = (workdir: string) => ({
+  ...process.env,
+  DEVTHINK_DATABASE_URL: `file:${join(workdir, "cli.db")}`,
+  TSX_TSCONFIG_PATH: join(import.meta.dirname, "..", "..", "tsconfig.json"),
+});
+
 /** run the cli in a workdir with optional piped stdin */
 async function runcli(
   workdir: string,
@@ -25,7 +36,7 @@ async function runcli(
   try {
     const { stdout, stderr } = await exec(tsxbin, [clits, ...args], {
       cwd: workdir,
-      env: { ...process.env, DEVTHINK_DATABASE_URL: `file:${join(workdir, "cli.db")}` },
+      env: clienv(workdir),
       maxBuffer: 10 * 1024 * 1024,
     });
     if (input) {
@@ -47,7 +58,7 @@ async function runcliwithinput(
   return new Promise((resolve) => {
     const child = execFile(tsxbin, [clits, ...args], {
       cwd: workdir,
-      env: { ...process.env, DEVTHINK_DATABASE_URL: `file:${join(workdir, "cli.db")}` },
+      env: clienv(workdir),
       maxBuffer: 10 * 1024 * 1024,
     });
     child.stdin?.write(input);

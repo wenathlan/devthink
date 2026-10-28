@@ -6,11 +6,16 @@
     "emitDeclarationOnly": true,
     "stripInternal": true,
     "isolatedModules": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "paths": {
+      "@/*": ["./Sol/*", "./*"],
+      "@wenathlan/devthink/server": ["./server.ts"]
+    }
   },
   "include": [
     "index.ts",
     "types.ts",
+    "modalities.d.ts",
     "policy.ts",
     "memory.ts",
     "protocol.ts",

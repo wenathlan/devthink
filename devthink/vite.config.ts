@@ -283,6 +283,12 @@ export default defineConfig({
        * publishes: its package.json exports map gained exactly the missing
        * "./sandbox": "./dist/sandbox.js" manifest piece. */
       "@wenathlan/saddle/sandbox": path.resolve(import.meta.dirname, "../saddle/sandbox.ts"),
+      /** the modalities bridge of the same family: the server lanes read
+       * the modality registry (the single source of the catalog) through
+       * the library specifier, and the bridge resolves it to the monorepo
+       * source until the published envelope carries the export entry (the
+       * same retirement the sandbox bridge above names) */
+      "@wenathlan/saddle/modalities": path.resolve(import.meta.dirname, "../saddle/modalityregistry.ts"),
       /** the sibling engine's own self-alias, armed for the family dev
        * bridge: the saddle pages import their isolation lane through the
        * "@saddle/isolation" specifier their own config declares, and the

@@ -13,6 +13,15 @@
 import { spawn } from "node:child_process";
 import { appendFile, copyFile, mkdir, readdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
+// the modality registry of the sibling saddle engine — the single source of
+// the catalog (this lane keeps no modality list of its own). The library
+// specifier answers every runner through the bridge family: the tsconfig
+// paths (the typechecker, bun, tsx and the library build), the vite and
+// vitest aliases (the dev server and the tests) and the declaration seam
+// (the declaration emit). The bridges retire when the published saddle
+// envelope carries the ./modalities export — the same retirement the
+// sandbox bridge of the vite config names
+import { MODALITIES, planreport } from "@wenathlan/saddle/modalities";
 
 /**
  * @section jail — the session root, the id gate and the path containment
@@ -501,8 +510,9 @@ export async function createsandboxsession(sessionid: string): Promise<string[]>
       "",
       "the tool surface: pwd, ls, dir, cat, type, write, append, echo, mkdir,",
       "rm, del, mv, cp, tree, stat, clear, curl, fetch, wget, run, help.",
-      "curl, fetch, wget and run are pending — their lanes answer through the",
-      "url gate of the gateway wave and the saddle vm modalities.",
+      "the run tool executes through the container modality when the host carries",
+      "the docker runtime and refuses honestly otherwise; curl, fetch and wget are",
+      "pending — the network lane answers through the url gate of the gateway wave.",
     ];
     await writeFile(welcome, welcomecontent.join("\n"), "utf8");
   }
@@ -523,17 +533,33 @@ export async function writesandboxfile(sessionid: string, target: string, conten
 
 /**
  * @section modalities — the honest host report
- * the report scans the host PATH for the runner binaries the run lane could
- * ride; the scan is a pure filesystem probe — it never starts anything.
+ * the modality registry of the saddle engine is the single source of the
+ * catalog (this lane keeps no modality list of its own — the corpus law:
+ * the modalities of the modalityregistry are the one source and the report
+ * never lies). The report walks every registry record and answers one row
+ * per record: the live lanes name the lane that drives them, the host
+ * records name their runtime binary and the probe verdict of this host,
+ * and the planned records declare themselves planned. The probe is a pure
+ * filesystem scan of the PATH — it never starts anything.
  */
 
-/** the runner modalities the run lane recognizes, per their binary */
-const MODALITYBINARIES = [
-  { id: "container-docker", binary: "docker" },
-  { id: "emulator-qemu", binary: "qemu-system-x86_64" },
-  { id: "microvm-firecracker", binary: "firecracker" },
-  { id: "container-runsc", binary: "runsc" },
-];
+/** the host probe table — the registry ids whose runtime binary the lane
+ * probes on the host PATH (the registry owns the catalog; this table only
+ * names the binary each probed record answers through) */
+const HOSTPROBES: Readonly<Record<string, string>> = Object.freeze({
+  "container-docker": "docker",
+  "emulator-qemu": "qemu-system-x86_64",
+  "microvm-firecracker": "firecracker",
+  "container-runsc": "runsc",
+});
+
+/** the live lane words — the honest sentence each live record of the
+ * registry answers with (the registry declares the state, the lane names
+ * the surface it drives) */
+const LIVELANES: Readonly<Record<string, string>> = Object.freeze({
+  "runner-node": "the node runtime the run lane executes inside the container",
+  "fs-vfs": "the session jail the storage lane drives",
+});
 
 /** binaryonpath — a pure PATH scan with stat (windows also probes the exe
  * and cmd suffixes); the probe answers existence only, nothing is started */
@@ -556,14 +582,53 @@ async function binaryonpath(binary: string): Promise<boolean> {
   return false;
 }
 
-/** hostmodalityreport — one honest row per runner modality of the host */
+/** hostmodalityreport — one honest row per record of the saddle modality
+ * registry (the single source), headed by the summary that names the forty
+ * plan and the state counts: every live record names the lane that drives
+ * it (and the probed live runtime answers its availability), every host
+ * record names its runtime binary and the probe verdict of this host, and
+ * every planned record declares itself planned — the report never lies */
 export async function hostmodalityreport(): Promise<string[]> {
+  const report = planreport();
   const rows: string[] = [];
-  for (const modality of MODALITYBINARIES) {
-    const available = await binaryonpath(modality.binary);
-    const state = available ? "available on this host" : "not installed";
-    rows.push([modality.id, ": ", state].join(""));
+  for (const modality of MODALITIES) {
+    const probe = HOSTPROBES[modality.id];
+    if (modality.state === "live") {
+      if (probe !== undefined) {
+        const available = await binaryonpath(probe);
+        rows.push(
+          [
+            modality.id,
+            ": live lane — ",
+            probe,
+            available ? " available on this host" : " not installed on this host, the run lane refuses honestly",
+          ].join(""),
+        );
+        continue;
+      }
+      rows.push([modality.id, ": live lane — ", LIVELANES[modality.id] ?? "the platform drives it"].join(""));
+      continue;
+    }
+    if (modality.state === "host") {
+      const binary = probe ?? modality.id;
+      const available = await binaryonpath(binary);
+      rows.push([modality.id, ": host runtime ", binary, available ? " available on this host" : " not installed"].join(""));
+      continue;
+    }
+    rows.push([modality.id, ": planned — the catalog promise, no lane wires it yet"].join(""));
   }
-  rows.push("runner-node: available on this host (the node runtime itself)");
+  rows.unshift(
+    [
+      "the modality registry answers the forty plan: ",
+      String(report.catalogcount),
+      " records — ",
+      String(report.live),
+      " live, ",
+      String(report.host),
+      " host, ",
+      String(report.planned),
+      " planned",
+    ].join(""),
+  );
   return rows;
 }

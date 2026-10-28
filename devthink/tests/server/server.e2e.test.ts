@@ -3,7 +3,11 @@
  * spawns the real gateway server as a child process with a temp config
  * directory, runs a real mock upstream, and exercises every route shape
  * over actual http: config info keys models chat completions streaming
- * cors preflight 404 handling and the unknown path fallback
+ * cors preflight 404 handling and the unknown path fallback — plus the
+ * engine lanes of the truth wave: the saddle modality report over the
+ * wire, the sandbox session and run round trip, and the storage quota
+ * composing by plan (the floor, the tier table and the enterprise custom
+ * definition under the terabyte ceiling)
  */
 
 import { type ChildProcess, spawn } from "node:child_process";
@@ -147,6 +151,12 @@ export default config
       ...process.env,
       PORT: String(serverport),
       DEVTHINK_DATABASE_URL: `file:${join(configdir, "test.db")}`,
+      // the sandbox lane reads the sibling saddle registry through the
+      // library specifier, and tsx resolves the bridge through the tsconfig
+      // paths — the spawn runs from this foreign config directory, so the
+      // config path is pinned explicitly (the bridges retire when the
+      // published saddle envelope carries the ./modalities export)
+      TSX_TSCONFIG_PATH: join(import.meta.dirname, "..", "..", "tsconfig.json"),
     },
     detached: true,
     stdio: ["ignore", "pipe", "pipe"],
@@ -342,5 +352,90 @@ describe("gateway server over real http", () => {
       ),
     );
     expect(results.every((c) => c === "wire reply")).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// the engine lanes over the wire — the sandbox routes live and the quota
+// answers by plan (the truth wave: the registry is the single source, the
+// report never lies, the quota composes from the plan row)
+// ---------------------------------------------------------------------------
+
+describe("the engine lanes over the wire", () => {
+  it("serves the saddle modality report from the registry (the single source)", async () => {
+    const res = await fetch(`http://127.0.0.1:${serverport}/api/v1/sandbox/modalities`);
+    expect(res.status).toBe(200);
+    const data = await res.json();
+    const rows = data["rows"] as string[];
+    // the summary row plus one honest row per record of the forty plan
+    expect(rows).toHaveLength(41);
+    expect(rows[0]).toBe("the modality registry answers the forty plan: 40 records — 3 live, 3 host, 34 planned");
+    // every record row declares its state — live lane, host runtime or planned
+    for (const row of rows.slice(1)) expect(row).toMatch(/: (live lane — |host runtime |planned — )/);
+  });
+
+  it("opens a sandbox session and runs the jailed fs tools over the wire", async () => {
+    const sessionid = "e2e-engine-lane";
+    const open = await fetch(`http://127.0.0.1:${serverport}/api/v1/sandbox/session`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ sessionId: sessionid }),
+    });
+    expect(open.status).toBe(200);
+    expect((await open.json())["rows"]).toContain("session ready");
+    const write = await fetch(`http://127.0.0.1:${serverport}/api/v1/sandbox/run`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ sessionId: sessionid, line: "write hello.txt hello from the wire" }),
+    });
+    expect(write.status).toBe(200);
+    const read = await fetch(`http://127.0.0.1:${serverport}/api/v1/sandbox/run`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ sessionId: sessionid, line: "cat hello.txt" }),
+    });
+    expect(read.status).toBe(200);
+    const answer = await read.json();
+    const text = (answer["rows"] as Array<{ line: string }>).map((row) => row.line).join("\n");
+    expect(text).toContain("hello from the wire");
+  });
+
+  it("answers the storage quota floor when no plan row answers", async () => {
+    const res = await fetch(`http://127.0.0.1:${serverport}/api/v1/storage/quota?owner=quotafloor`);
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ quotamb: 900, tier: null, source: "floor" });
+  });
+
+  it("composes the quota by plan over the wire — the pro stamp answers the pro quota", async () => {
+    const stamp = await fetch(`http://127.0.0.1:${serverport}/api/v1/plan`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ visitor: "quotapro", plan: { tier: "pro" } }),
+    });
+    expect(stamp.status).toBe(200);
+    const res = await fetch(`http://127.0.0.1:${serverport}/api/v1/storage/quota?owner=quotapro`);
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ quotamb: 10240, tier: "pro", source: "tier" });
+  });
+
+  it("composes the enterprise custom definition under the terabyte ceiling", async () => {
+    const stamp = await fetch(`http://127.0.0.1:${serverport}/api/v1/plan`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ visitor: "quotaent", plan: { tier: "enterprise", storagemb: 500000 } }),
+    });
+    expect(stamp.status).toBe(200);
+    const res = await fetch(`http://127.0.0.1:${serverport}/api/v1/storage/quota?owner=quotaent`);
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ quotamb: 500000, tier: "enterprise", source: "custom" });
+  });
+
+  it("refuses a custom definition outside the floor and the ceiling", async () => {
+    const res = await fetch(`http://127.0.0.1:${serverport}/api/v1/plan`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ visitor: "quotarefused", plan: { tier: "enterprise", storagemb: 9000000 } }),
+    });
+    expect(res.status).toBe(400);
   });
 });

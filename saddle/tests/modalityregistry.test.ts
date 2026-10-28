@@ -1,18 +1,45 @@
-// # modalityregistry.test — the catalog contract: every record complete,
-// the boot ladder consistent with the records, the join resolver answering
-// the nuclear law (the workload asks, the engine resolves), and the lite
-// base refusing the hardware images. runnable with vitest:
+// # modalityregistry.test — the catalog contract: the forty modality plan
+// answered (the count the owner charged), every record complete and
+// honestly stated, the boot ladder consistent with the records, the join
+// resolver answering the nuclear law (the workload asks, the engine
+// resolves), the lite base refusing the hardware images, and the plan
+// report counting exactly what the catalog holds. runnable with vitest:
 // pnpm vitest run tests/modalityregistry.test.ts
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { BOOTLADDER, MODALITIES, getmodality, resolvejoin } from "../modalityregistry.ts";
+import {
+  BOOTLADDER,
+  MODALITIES,
+  MODALITYPLANCOUNT,
+  getmodality,
+  planreport,
+  resolvejoin,
+} from "../modalityregistry.ts";
+
+/** the records the platform lanes drive today — the honest live set the
+ * report and the lanes agree on (the run lane executes node inside the
+ * container, the storage lane drives the session jail) */
+const LIVESET = ["container-docker", "runner-node", "fs-vfs"] as const;
+
+/** the records whose host runtime the sandbox lane probes on PATH */
+const HOSTSET = ["container-runsc", "emulator-qemu", "microvm-firecracker"] as const;
 
 describe("the modality registry", () => {
+  it("answers the forty modality plan the owner charged", () => {
+    assert.equal(MODALITYPLANCOUNT, 40);
+    assert.equal(MODALITIES.length, MODALITYPLANCOUNT, `the catalog holds ${MODALITIES.length}`);
+    const report = planreport();
+    assert.equal(report.plananswered, true);
+    assert.equal(report.plancount, 40);
+    assert.equal(report.catalogcount, MODALITIES.length);
+    assert.equal(report.live + report.host + report.planned, MODALITIES.length);
+  });
+
   it("carries a complete record for every modality", () => {
-    assert.ok(MODALITIES.length >= 20, `the catalog holds ${MODALITIES.length}`);
     for (const modality of MODALITIES) {
       assert.ok(modality.id.length > 0);
       assert.ok(modality.label.length > 0);
+      assert.ok(["live", "host", "planned"].includes(modality.state), `${modality.id} carries no honest state`);
       assert.ok(modality.mime.startsWith("application/") || modality.mime.startsWith("audio/") || modality.mime.startsWith("video/"));
       assert.ok(modality.bootms >= 0);
       // a record never claims a boot cost above its class ceiling
@@ -27,6 +54,18 @@ describe("the modality registry", () => {
     assert.equal(ids.size, MODALITIES.length);
     assert.equal(BOOTLADDER.hot < BOOTLADDER.warm, true);
     assert.equal(BOOTLADDER.warm < BOOTLADDER.cold, true);
+  });
+
+  it("declares the live set and the host set exactly as the lanes drive them", () => {
+    const live = MODALITIES.filter((m) => m.state === "live").map((m) => m.id).sort();
+    assert.deepEqual(live, [...LIVESET].sort());
+    const host = MODALITIES.filter((m) => m.state === "host").map((m) => m.id).sort();
+    assert.deepEqual(host, [...HOSTSET].sort());
+    // the plan report counts the same sets — it cannot drift from the catalog
+    const report = planreport();
+    assert.equal(report.live, LIVESET.length);
+    assert.equal(report.host, HOSTSET.length);
+    assert.equal(report.planned, MODALITIES.length - LIVESET.length - HOSTSET.length);
   });
 
   it("resolves the join without the caller naming a modality", () => {

@@ -2,18 +2,48 @@
  * The storage lane tests: every check rides the real functions against the
  * real sqlite file in the devthink data home — no mocks, no fixtures, no
  * images. Owners are unique per test so the shared store stays isolated.
+ * The plan quota composition rides the pure planquota law (the tier table,
+ * the custom definition under the terabyte ceiling, the 900 floor) and the
+ * plan store round-trips against an isolated temp database the boot ensure
+ * lays — the same law the server boot carries.
  */
-import { describe, expect, it } from "vitest";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { afterAll, describe, expect, it } from "vitest";
 import {
   DEFAULTQUOTAMB,
-  StorageError,
   deleteobject,
+  ensureplanstore,
   getobject,
+  getplan,
   keyvalid,
   listobjects,
+  planquota,
+  planquotamb,
   putobject,
+  QUOTACEILMB,
+  setplan,
+  StorageError,
+  TIERQUOTAMB,
   usagefor,
+  type planrow,
 } from "../../storage.js";
+
+/** the isolated plan store of this suite: the boot ensure lays the table on
+ * a temp database before the first prisma touch, so the plan round-trips
+ * never touch the shared workbench file */
+const plandir = mkdtempSync(join(tmpdir(), "storage-plan-"));
+process.env.DEVTHINK_DATABASE_URL = `file:${join(plandir, "plan.db")}`;
+
+afterAll(() => {
+  rmSync(plandir, { recursive: true, force: true });
+});
+
+/** one plan row of the composition tests (the shape getplan answers). */
+function planrowof(tier: string, storagemb: number | null): planrow {
+  return { tier, storagemb: storagemb === null ? null : BigInt(storagemb), rammib: null, since: new Date() };
+}
 
 let sequence = 0;
 function newowner(): string {
@@ -74,5 +104,84 @@ describe("the storage lane", () => {
 
   it("answers the default quota floor the owner asked for", () => {
     expect(DEFAULTQUOTAMB).toBe(900);
+  });
+});
+
+describe("the plan quota composition (the quota answers by plan)", () => {
+  it("answers the floor when no plan row answers", () => {
+    expect(planquotamb(null)).toBe(900);
+    const answer = planquota(null);
+    expect(answer.source).toBe("floor");
+    expect(answer.tier).toBeNull();
+  });
+
+  it("answers each tier through the declared quota table", () => {
+    expect(TIERQUOTAMB.free).toBe(900);
+    expect(TIERQUOTAMB.pro).toBe(10_240);
+    expect(TIERQUOTAMB.enterprise).toBe(QUOTACEILMB);
+    expect(planquota(planrowof("free", null))).toEqual({ quotamb: 900, tier: "free", source: "tier" });
+    expect(planquota(planrowof("pro", null))).toEqual({ quotamb: 10_240, tier: "pro", source: "tier" });
+    // the enterprise tier without a custom definition answers the ceiling
+    expect(planquota(planrowof("enterprise", null))).toEqual({
+      quotamb: QUOTACEILMB,
+      tier: "enterprise",
+      source: "tier",
+    });
+  });
+
+  it("honors the enterprise custom definition bounded to the floor and the ceiling", () => {
+    expect(planquota(planrowof("enterprise", 5_000))).toEqual({
+      quotamb: 5_000,
+      tier: "enterprise",
+      source: "custom",
+    });
+    // below the floor the floor answers (the platform never gives less)
+    expect(planquota(planrowof("enterprise", 100))).toEqual({
+      quotamb: 900,
+      tier: "enterprise",
+      source: "custom",
+    });
+    // above the ceiling the terabyte answers (the technology bound)
+    expect(planquota(planrowof("enterprise", 9_000_000))).toEqual({
+      quotamb: QUOTACEILMB,
+      tier: "enterprise",
+      source: "custom",
+    });
+    // the custom definition rides the enterprise tier only
+    expect(planquota(planrowof("pro", 5_000)).quotamb).toBe(10_240);
+  });
+
+  it("answers the floor for a tier the table never declared", () => {
+    expect(planquota(planrowof("unknown", null))).toEqual({
+      quotamb: 900,
+      tier: "unknown",
+      source: "floor",
+    });
+  });
+});
+
+describe("the plan store boots with its table", () => {
+  it("lays the plan table through the boot ensure (the account lane law)", () => {
+    expect(ensureplanstore()).toBe(true);
+    // the idempotent second call answers the same law
+    expect(ensureplanstore()).toBe(true);
+  });
+
+  it("stamps and reads a real plan row through the prisma lane — the unavailable refusal dies", async () => {
+    const visitor = "planstore-probe";
+    const stamped = await setplan(visitor, "pro");
+    expect(stamped).not.toBeNull();
+    expect(stamped?.tier).toBe("pro");
+    const row = await getplan(visitor);
+    expect(row?.tier).toBe("pro");
+    expect(planquotamb(row)).toBe(10_240);
+  });
+
+  it("stamps the enterprise custom definition and composes the bounded quota", async () => {
+    const visitor = "planstore-enterprise";
+    const stamped = await setplan(visitor, "enterprise", { storagemb: 500_000 });
+    expect(stamped?.storagemb).toBe(500_000n);
+    const row = await getplan(visitor);
+    expect(planquota(row)).toEqual({ quotamb: 500_000, tier: "enterprise", source: "custom" });
   });
 });

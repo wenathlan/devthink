@@ -129,13 +129,26 @@ describe("sandboxlane", () => {
     expect(contentafter).toBe(content);
   });
 
-  it("reports the host modalities honestly", async () => {
+  it("reports the host modalities honestly from the registry (the single source)", async () => {
     const rows = await hostmodalityreport();
+    // the summary row plus one honest row per registry record of the forty plan
+    expect(rows.length).toBe(41);
+    expect(rows[0]).toBe("the modality registry answers the forty plan: 40 records — 3 live, 3 host, 34 planned");
     const text = rows.join("\n");
-    expect(text).toContain("container-docker: ");
-    expect(text).toContain("emulator-qemu: ");
-    expect(text).toContain("microvm-firecracker: ");
-    expect(text).toContain("container-runsc: ");
-    expect(text).toContain("runner-node: available on this host (the node runtime itself)");
+    // the live lanes name the surfaces the platform drives
+    expect(text).toContain("container-docker: live lane — docker ");
+    expect(text).toContain("runner-node: live lane — the node runtime the run lane executes inside the container");
+    expect(text).toContain("fs-vfs: live lane — the session jail the storage lane drives");
+    // the host runtimes name their binary and the probe verdict of this host
+    expect(text).toContain("emulator-qemu: host runtime qemu-system-x86_64 ");
+    expect(text).toContain("microvm-firecracker: host runtime firecracker ");
+    expect(text).toContain("container-runsc: host runtime runsc ");
+    // the planned records declare themselves planned — no row pretends
+    expect(text).toContain("virtual-full: planned — the catalog promise, no lane wires it yet");
+    expect(text).toContain("pod-session: planned — the catalog promise, no lane wires it yet");
+    // every record row after the summary carries one of the three state words
+    for (const row of rows.slice(1)) {
+      expect(row).toMatch(/: (live lane — |host runtime |planned — )/);
+    }
   });
 });

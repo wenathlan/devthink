@@ -47,7 +47,7 @@
 
 import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { PrismaLibSql } from "@prisma/adapter-libsql";
 import type { PrismaClient } from "@prisma/client";
 import { ensurePaths, resolvePaths, type DevThinkConfig, type DevThinkPaths } from "./config.js";
@@ -687,10 +687,12 @@ export async function setplan(
   tier: string,
   custom?: { storagemb?: number; rammib?: number },
 ): Promise<planrow | null> {
+  // the wire answers plain numbers, the schema column rides 64-bit bigint —
+  // the floor before the coercion keeps the stamp whole on both sides
   const data = {
     tier,
-    storagemb: custom?.storagemb ?? null,
-    rammib: custom?.rammib ?? null,
+    storagemb: custom?.storagemb !== undefined ? BigInt(Math.floor(custom.storagemb)) : null,
+    rammib: custom?.rammib !== undefined ? BigInt(Math.floor(custom.rammib)) : null,
   };
   try {
     const row = await db.planState.upsert({
@@ -703,6 +705,97 @@ export async function setplan(
   } catch {
     return null;
   }
+}
+
+/** The ceiling the storage technology answers: one terabyte in megabytes —
+ * the scale the git objects lane walks under (the corpus law: the floor at
+ * nine hundred megabytes free, the ceiling at the terabyte the object store
+ * reaches on the paid plans). */
+export const QUOTACEILMB = 1_048_576;
+
+/** The tier quota table — the plan the person stamps answers its quota: the
+ * free tier rides the owner's nine hundred megabyte floor, the pro tier
+ * answers the broader ceiling the pro card declares, and the enterprise
+ * tier defines its own megabytes under the terabyte ceiling. The table is
+ * the declared contract the payment wave can retune; the engine never
+ * hardcodes a cap (the two gigabyte hardcode the corpus charged died with
+ * this law — the quota composes from the plan, never from a literal). */
+export const TIERQUOTAMB: Readonly<Record<string, number>> = Object.freeze({
+  free: DEFAULTQUOTAMB,
+  pro: 10_240,
+  enterprise: QUOTACEILMB,
+});
+
+/** The honest quota answer: the number the lane composes, the tier row it
+ * composed from and the source it read (the custom definition, the tier
+ * table or the floor when no plan answers). */
+export type quotaanswer = { quotamb: number; tier: string | null; source: "custom" | "tier" | "floor" };
+
+/**
+ * planquota — the honest composition of the storage quota from the plan row:
+ * the enterprise custom definition wins when it rides (bounded to the floor
+ * and the terabyte ceiling), the tier table answers for free and pro, and a
+ * visitor without a plan row answers the floor — the quota by plan, never a
+ * value the plan never stamped.
+ *
+ * @param row the plan row of the owner, or null when none answers.
+ * @returns the quota number, the tier it composed from and its source.
+ */
+export function planquota(row: planrow | null): quotaanswer {
+  if (!row) return { quotamb: DEFAULTQUOTAMB, tier: null, source: "floor" };
+  if (row.tier === "enterprise" && row.storagemb !== null) {
+    const defined = Number(row.storagemb);
+    if (Number.isFinite(defined) && defined > 0) {
+      const bounded = Math.min(QUOTACEILMB, Math.max(DEFAULTQUOTAMB, Math.floor(defined)));
+      return { quotamb: bounded, tier: row.tier, source: "custom" };
+    }
+  }
+  const tierquota = TIERQUOTAMB[row.tier];
+  if (tierquota !== undefined) return { quotamb: tierquota, tier: row.tier, source: "tier" };
+  return { quotamb: DEFAULTQUOTAMB, tier: row.tier, source: "floor" };
+}
+
+/**
+ * planquotamb — the quota number of the plan composition (the megabytes the
+ * storage lane bounds every write against).
+ *
+ * @param row the plan row of the owner, or null when none answers.
+ * @returns the quota in megabytes.
+ */
+export function planquotamb(row: planrow | null): number {
+  return planquota(row).quotamb;
+}
+
+/** The plan table DDL — the exact shape prisma pushes (the same columns and
+ * indexes the schema declares), laid with IF NOT EXISTS so a pushed
+ * deployment and the boot ensure agree on one table. */
+const PLANSCHEMASTATEMENTS = [
+  'CREATE TABLE IF NOT EXISTS "PlanState" ( "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "visitor" TEXT NOT NULL, "tier" TEXT NOT NULL DEFAULT \'free\', "storagemb" BIGINT, "rammib" BIGINT, "since" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, "updatedAt" DATETIME NOT NULL )',
+  'CREATE UNIQUE INDEX IF NOT EXISTS "PlanState_visitor_key" ON "PlanState"("visitor")',
+  'CREATE INDEX IF NOT EXISTS "PlanState_tier_idx" ON "PlanState"("tier")',
+];
+
+/**
+ * ensureplanstore — lay the plan table on the local database file before
+ * the first prisma touch: the boot law the account lane carries, closing
+ * the gap where an unpushed local database answered every plan stamp with
+ * the unavailable refusal (the quota then never composed by plan). Remote
+ * urls skip — their deployment owns the migrations.
+ *
+ * @returns true when the local store carries the table after the call.
+ */
+export function ensureplanstore(): boolean {
+  const { url, isremote } = resolvedburl();
+  if (isremote || !url.startsWith("file:")) return false;
+  const file = resolve(url.slice("file:".length));
+  mkdirSync(dirname(file), { recursive: true });
+  const database = new (databasedriver())(file);
+  try {
+    for (const statement of PLANSCHEMASTATEMENTS) database.exec(statement);
+  } finally {
+    database.close();
+  }
+  return true;
 }
 
 /* ============================================================================
