@@ -21,12 +21,18 @@
  * again: the census answers at the pull request gate, before a release
  * ever ships.
  */
+import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { parseDocument } from "yaml";
 
 const repoRoot = resolve(process.cwd(), "..");
+/* the container builder stages the app folder alone: the repo root lanes
+ * (the workflow files and the sibling manifests) answer only where the
+ * whole repository rides beside the suite, so the batteries skip
+ * honestly there instead of reading paths that never exist. */
+const inrepo = existsSync(join(repoRoot, ".github", "workflows", "publish.yml"));
 const workflowdir = join(repoRoot, ".github", "workflows");
 
 const readworkflow = async (file: string) => await readFile(join(workflowdir, file), "utf8");
@@ -64,7 +70,7 @@ const ALLAPPS = [
   "vault",
 ];
 
-describe("the npmjs registry freshness lane", () => {
+describe.skipIf(!inrepo)("the npmjs registry freshness lane", () => {
   it("the family envelope matrix of the publish mirror walks saddle last", async () => {
     const publish = await parseworkflow("publish.yml");
     const matrix = (publish.jobs?.["family-npmjs"]?.strategy as { matrix?: { package?: string[] } })?.matrix;
@@ -152,7 +158,7 @@ describe("the npmjs registry freshness lane", () => {
   });
 });
 
-describe("the container distributions lane", () => {
+describe.skipIf(!inrepo)("the container distributions lane", () => {
   it("the three vhe profiles answer the owner doctrine — max, light and palatial ride max, balanced and lite", async () => {
     const publish = await parseworkflow("publish.yml");
     const profiles = matrixof(publish, "saddle-vhe-publish");
@@ -277,7 +283,7 @@ describe("the container distributions lane", () => {
   });
 });
 
-describe("the release assets census (the 300 plus law)", () => {
+describe.skipIf(!inrepo)("the release assets census (the 300 plus law)", () => {
   /** the file-bundle kinds the desktop collect step ships: the -f guard of
    * the find walk skips the .app directory (it never rides as a file), so
    * the census counts the bundle kinds that land as files. */
@@ -434,7 +440,7 @@ describe("the release assets census (the 300 plus law)", () => {
   });
 });
 
-describe("the built envelope law (the exports promise)", () => {
+describe.skipIf(!inrepo)("the built envelope law (the exports promise)", () => {
   /** the dist entries the exports map, the bin and the main/types pair of
    * the saddle envelope declare — the set every publish lane must compile
    * and assert before the envelope touches a registry (the source and
