@@ -1,5 +1,5 @@
 {
-  "release": "2.0.150",
+  "release": "2.0.151",
   "matrix": {
     "browsers": [
       "chromium",
@@ -38,7 +38,7 @@
       "family": "cli",
       "name": "the cli surface answers the manifest and help commands in library mode",
       "outcome": "pass",
-      "detail": "manifest and help answered for 2.0.150"
+      "detail": "manifest and help answered for 2.0.151"
     },
     {
       "family": "mcp",
@@ -74,7 +74,7 @@
       "family": "gates",
       "name": "the pool audit gate runs green over the 626 item pool",
       "outcome": "pass",
-      "detail": "Pool audit of 626 items against 4449 shipped symbols: 623 implemented, 3 planned, 0 unknown."
+      "detail": "Pool audit of 626 items against 4468 shipped symbols: 623 implemented, 3 planned, 0 unknown."
     },
     {
       "family": "gates",
