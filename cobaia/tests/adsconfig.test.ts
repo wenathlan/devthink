@@ -7,7 +7,7 @@
 // aspect-ratio shapes the containers reserve so the page never shifts.
 import assert from "node:assert/strict";
 import { describe, expect, it } from "vitest";
-import { ADS_EMPTY, ADS_LABEL, ADSSLOTS, adsslotfor, adsslotlive } from "../ads.config.ts";
+import { ADS_EMPTY, ADS_LABEL, ADSSLOTS, adsslotfor, adsslotlive } from "../adsconfig.ts";
 
 describe("the ad slot registry", () => {
   it("reserves one slot per content page and nothing else", () => {

@@ -24,7 +24,7 @@ export default defineConfig({
     emptyOutDir: false,
     assetsDir: "",
   },
-  /** the theme (Sol/) and the root logics (checkoutlinks, posts, ads.config) share one app root, so the dev server allows the app root. */
+  /** the theme (Sol/) and the root logics (checkoutlinks, posts, adsconfig) share one app root, so the dev server allows the app root. */
   server: {
     fs: {
       allow: [import.meta.dirname],

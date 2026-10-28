@@ -11,11 +11,11 @@
  * site, injected through the deploy environment (an env-bound snippet
  * mounted inside the reserved box) — it is never committed here, and this
  * component makes zero network calls by design. While the slot id in
- * ads.config.ts stays empty, the visitor sees the honest placeholder. No
+ * adsconfig.ts stays empty, the visitor sees the honest placeholder. No
  * automated traffic ever touches an ad surface.
  */
 import type { CSSProperties } from "react";
-import { ADS_EMPTY, ADS_LABEL, adsslotfor, adsslotlive } from "../../ads.config.ts";
+import { ADS_EMPTY, ADS_LABEL, adsslotfor, adsslotlive } from "../../adsconfig.ts";
 import { labelfill } from "../../labels";
 
 type AdSlotProps = {
