@@ -16947,6 +16947,41 @@ body:has(.dt-nav[data-navbar="right"]) {
   display: none;
 }
 
+/* ---- 5. the navbar settings honesty: the apple face locks the edge
+        choice. the dock is the floating pad by law, so the position
+        segments ride the windows disabled grammar (the house .btn law:
+        the dimming carries the state, the pointer refuses, the selected
+        fill keeps the stored truth legible) and the hint line names the
+        law beside the control ---- */
+.dtw-settings__segment:disabled,
+.dtw-settings__segment[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+.dtw-settings__segment:disabled:hover,
+.dtw-settings__segment[aria-disabled="true"]:hover {
+  color: var(--dtv3-ink-2);
+}
+.dtw-settings__segment:disabled:active,
+.dtw-settings__segment[aria-disabled="true"]:active {
+  transform: none;
+}
+/* the control cell of a settings field: the segmented rides the row, the
+   hint note stacks under it (right-aligned with the control, the quiet
+   12px line of the card) */
+.dtw-settings__control {
+  display: grid;
+  justify-items: end;
+}
+.dtw-settings__hint {
+  margin: 6px 0 0;
+  max-width: 260px;
+  color: var(--dtv3-ink-3);
+  font: 400 12px / 1.45 var(--font-sans, var(--dt-sans));
+  text-align: right;
+}
+
 /* ==========================================================================
    the family motion law: the duty cycled loops, the reduced motion and the
    pause hook. the loops ride the stepped keyframes so the compositor draws

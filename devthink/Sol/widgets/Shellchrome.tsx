@@ -56,6 +56,7 @@ import {
   NAVBAR_STYLE_EVENT,
   type NavbarPosition,
   type NavbarStyle,
+  resolveNavbarDock,
 } from "../../desktopstate";
 import { osText } from "../../oslabels.ts";
 import { loadrecentapps, pushrecentapp } from "../../recentapps.ts";
@@ -214,7 +215,12 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
    * dock (the centered floating mica pad); the dt-navbar-style event
    * re-faces it the moment the choice lands */
   const [navbarStyle, setNavbarStyle] = useState<NavbarStyle>(() => loadNavbarStyle());
-  const rail = navbarPos !== "floating";
+  /** the effective dock position: the apple dock is the floating pad by
+   * law, so the style wins the edge fight — the rail grammar (the edge
+   * attributes, the side indicators, the body reservation) never pairs
+   * with the dock face */
+  const dockedPos = resolveNavbarDock(navbarStyle, navbarPos);
+  const rail = dockedPos !== "floating";
   const searchRef = useRef<HTMLInputElement | null>(null);
   const exitTimer = useRef<number | null>(null);
   const mountedKindRef = useRef<PanelState["kind"] | null>(null);
@@ -425,7 +431,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
           vertical rail of that screen edge */}
       <header
         className="dt-nav acrylic-bar fixed bottom-0 inset-x-0 z-50 flex h-12 min-w-0 items-center border-t border-black/55 px-2"
-        data-navbar={navbarPos}
+        data-navbar={dockedPos}
         data-navstyle={navbarStyle}
       >
         {/* the centered taskbar cluster: the mark-trigger and the pinned apps

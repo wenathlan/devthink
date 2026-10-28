@@ -303,3 +303,15 @@ export function saveNavbarStyle(style: NavbarStyle): void {
     /* storage unavailable: the face lives for the session */
   }
 }
+
+/**
+ * the effective dock position of the bar: the apple dock is the floating
+ * pad by law, so the style wins the edge fight — a stored edge choice
+ * never pairs the rail attributes with the dock face (the 48px rail
+ * grammar, the side indicator ladder and the body edge reservation all
+ * read this resolved value, never the raw choice). Pure: the settings
+ * lock and the shell chrome ride the same verdict.
+ */
+export function resolveNavbarDock(style: NavbarStyle, position: NavbarPosition): NavbarPosition {
+  return style === "apple" ? "floating" : position;
+}

@@ -148,6 +148,7 @@ const SEED: Readonly<Record<string, string>> = Object.freeze({
   "settings.personal.navbarstyle.desc": "The face the bar wears — the windows taskbar or the apple dock.",
   "settings.navbar.windows": "Windows taskbar",
   "settings.navbar.apple": "Apple dock",
+  "settings.navbar.docklocked": "The apple dock rides the floating pad — the edge choices answer the windows taskbar.",
   "settings.personal.components": "Component options",
   "settings.personal.components.desc": "The shell behaviors this machine plays.",
   "settings.toggle.alttab": "Alt-tab entrance",
