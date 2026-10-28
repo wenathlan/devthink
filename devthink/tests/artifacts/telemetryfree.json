@@ -1,5 +1,5 @@
 {
-  "release": "2.0.131",
+  "release": "2.0.151",
   "callsites": [
     {
       "bundle": "bun.js",
@@ -45,7 +45,7 @@
     },
     {
       "bundle": "server.js",
-      "fetch": 30,
+      "fetch": 31,
       "websocket": 0,
       "beacon": 0,
       "xmlhttprequest": 0
@@ -90,7 +90,7 @@
     {
       "name": "callsites",
       "ok": true,
-      "detail": "the bundle set carries its network call sites inventoried: 47 sites over 7 bundles — bun.js (fetch 3, websocket 0, beacon 0); cli.js (fetch 2, websocket 0, beacon 0); deno.js (fetch 3, websocket 0, beacon 0); devthink.umd.js (fetch 3, websocket 0, beacon 0); index.js (fetch 3, websocket 0, beacon 0); index.neutral.js (fetch 3, websocket 0, beacon 0); server.js (fetch 30, websocket 0, beacon 0)"
+      "detail": "the bundle set carries its network call sites inventoried: 48 sites over 7 bundles — bun.js (fetch 3, websocket 0, beacon 0); cli.js (fetch 2, websocket 0, beacon 0); deno.js (fetch 3, websocket 0, beacon 0); devthink.umd.js (fetch 3, websocket 0, beacon 0); index.js (fetch 3, websocket 0, beacon 0); index.neutral.js (fetch 3, websocket 0, beacon 0); server.js (fetch 31, websocket 0, beacon 0)"
     },
     {
       "name": "gates",

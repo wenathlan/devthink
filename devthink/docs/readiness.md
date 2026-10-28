@@ -7,7 +7,7 @@ The readiness gate of the 2.0.151 platform release walked every release gate of 
 | Gate | Verdict | Evidence |
 | --- | --- | --- |
 | the pool audit reports full disposition of every mined item | green | tests/artifacts/poolcoverage.json: 626 items, 623 implemented, 3 planned with written reasons, 0 unknown |
-| the api freeze schemas stayed hash stable since 1.1.91 | green | the 10 frozen schemas of the 1.1.91 freeze rehash identically to the recorded digests of tests/apifreeze.json |
+| the api freeze schemas stayed hash stable since 1.1.91 | green | the 10 frozen schemas of the 1.1.91 freeze rehash identically to the recorded digests of the freezebaseline module |
 | the deprecation window closed with no pending removal | green | version.ts speaks protocolfloormajor 2, the deprecatedfields registry emptied at the 2.0.0 sunset and docs/deprecation.md records the executed removal of both fields |
 | the migrateplan bridge converts every version one era fixture | green | the migrateplan command converts all five importer fixtures (v1, automa, selenium, ui vision and tabular) into plans the planlint command lints green |
 | the importers cover their documented source formats | green | docs/migrationguide.md documents the v1, automa, selenium, ui vision and tabular importers the cli migrateplan command carries, and dist/fixtures/importers ships the fixture of every format |
@@ -15,7 +15,7 @@ The readiness gate of the 2.0.151 platform release walked every release gate of 
 | the battery aware and network aware gates hold their tests | green | tests/resourceaware.test.ts carries the battery aware and network aware gate families the readiness review reads |
 | the pentest checklist holds zero failed entries | green | tests/artifacts/pentest.json: 21 entries, 0 failed |
 | the csp audit reports no wildcard policies | green | the manifest carries 1 strict content security policies with no wildcard source |
-| the permission diff reports no unjustified drift | green | tests/permdiff.json: clean over 2.0.150 to 2.0.151 with zero unjustified entries |
+| the permission diff reports no unjustified drift | green | the permbaseline module: clean over 2.0.150 to 2.0.151 with zero unjustified entries |
 | the transparency page lists every live permission | green | the frozen permission coverage of apifreeze.ts lists all 10 live permissions and transparencypage.ts renders every row through the permission section |
 | the agent certification covers every coordination scenario | green | tests/artifacts/agentcert.json: 30 scenarios, 0 failed |
 | the cost certification reconciles every recorded run | green | tests/artifacts/costcert.json: 9 reconciliations, 0 failed |

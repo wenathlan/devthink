@@ -1,10 +1,11 @@
-/** Verifies the protocolv2 api freeze of the 1.1.91 release: every frozen message type, schema, capmanifest and contract hash stays pinned to the release version, so a changed contract refuses the gate until a release bump resynchronizes the freeze artifact. */
+/** Verifies the protocolv2 api freeze of the 1.1.91 release: every frozen message type, schema, capmanifest and contract hash stays pinned to the release version, so a changed contract refuses the gate until a release bump resynchronizes the freeze baseline module. */
 import { createHash } from "node:crypto";
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { apifreezebaseline as storedbaseline, type apifreezebaseline } from "./freezebaseline.ts";
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
-const artifactpath = "tests/apifreeze.json";
+const baselinepath = "tests/freezebaseline.ts";
 const capsdirectory = "dist/caps";
 const schemadirectory = "dist/schemas";
 const schemalabel = "schemas";
@@ -631,32 +632,43 @@ async function writecaps(path: string, base: capmanifest, surface: string, sourc
   await writeFile(path, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
 }
 
-const artifact = { release, frozezat: freezedate, scope: freezescope, sizes, hashes };
-const artifacttext = `${JSON.stringify(artifact, null, 2)}\n`;
-const stored = await readFile(artifactpath, "utf8").catch(() => undefined);
-if (stored === undefined) {
-  if (mode === "sync") await writeFile(artifactpath, artifacttext, "utf8");
-  else refuse("The freeze artifact tests/apifreeze.json is missing; run pnpm apifreeze:sync.");
-} else {
-  const parsed = JSON.parse(stored);
-  const drift = [];
-  for (const [name, value] of Object.entries(hashes)) {
-    if (parsed.hashes?.[name] !== value) drift.push(name);
-  }
-  if (drift.length > 0 && parsed.release === release) {
-    refuse(
-      `The frozen contract hash of ${drift.join(", ")} changed without a release bump; restore the contract or bump the version and run pnpm apifreeze:sync.`,
-    );
-  }
-  if (parsed.release !== release || drift.length > 0 || JSON.stringify(parsed.sizes) !== JSON.stringify(sizes)) {
-    if (mode === "sync") await writeFile(artifactpath, artifacttext, "utf8");
-    else if (failures.length === 0)
-      refuse(
-        `The freeze artifact records the release ${parsed.release} while the package carries ${release}; run pnpm apifreeze:sync.`,
-      );
-  }
+/** Renders the freezebaseline module text of one recorded freeze: the header, the interface and the dense record the gate imports stay one reviewable unit the sync rewrites whole, so the checked-in baseline and the regenerated baseline never drift in shape. */
+function baselinemodule(freeze: apifreezebaseline) {
+  return `/** The versioned api freeze baseline as one dense typescript module: the release stamp, the freeze date, the seven frozen surfaces, their sizes and the sha256 digests of every frozen schema and contract list. The gate of tests/apifreeze.ts verifies every digest against the built tree and refuses an unversioned hash change; the sync mode rewrites this module after a release bump; the readiness review walks the schema digests for the freeze stability verdict and the freeze test re-stamps a stale release stamp before it asserts. */
+
+/** The freeze record the gate keeps: the release it stamps, the fixed freeze date, the seven surfaces of the scope, their frozen sizes and the digest table over the schemas and the contract lists. */
+export interface apifreezebaseline {
+  release: string;
+  frozezat: string;
+  scope: string[];
+  sizes: Record<string, number>;
+  hashes: Record<string, string>;
 }
-if (mode === "sync") await writeFile(artifactpath, artifacttext, "utf8");
+
+/** The recorded freeze of the ${freeze.release} release — the 1.1.91 freeze date, the seven surfaces and the digest table over the ten schemas and the fourteen contract lists. */
+export const apifreezebaseline: apifreezebaseline = ${JSON.stringify(freeze, null, 2)};
+`;
+}
+
+const artifact: apifreezebaseline = { release, frozezat: freezedate ?? "", scope: freezescope, sizes, hashes };
+const parsed = storedbaseline;
+const drift = [];
+for (const [name, value] of Object.entries(hashes)) {
+  if (parsed.hashes?.[name] !== value) drift.push(name);
+}
+if (drift.length > 0 && parsed.release === release) {
+  refuse(
+    `The frozen contract hash of ${drift.join(", ")} changed without a release bump; restore the contract or bump the version and run pnpm apifreeze:sync.`,
+  );
+}
+if (parsed.release !== release || drift.length > 0 || JSON.stringify(parsed.sizes) !== JSON.stringify(sizes)) {
+  if (mode === "sync") await writeFile(baselinepath, baselinemodule(artifact), "utf8");
+  else if (failures.length === 0)
+    refuse(
+      `The freeze baseline records the release ${parsed.release} while the package carries ${release}; run pnpm apifreeze:sync.`,
+    );
+}
+if (mode === "sync") await writeFile(baselinepath, baselinemodule(artifact), "utf8");
 
 if (failures.length > 0) {
   for (const failure of failures) console.error(`APIFREEZE ${failure}`);

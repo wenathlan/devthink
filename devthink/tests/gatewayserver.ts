@@ -1,13 +1,12 @@
-/** A localhost fixture server of the 1.1.83 gateway family: it serves the recorded provider response shapes of the tests fixture set over plain http on a random free port so the adapter suite and the container smoke run the full request cycle offline — no external network, no provider endpoint, no key. */
+/** A localhost fixture server of the 1.1.83 gateway family: it serves the recorded provider response shapes of the provider wire fixture module over plain http on a random free port so the adapter suite and the container smoke run the full request cycle offline — no external network, no provider endpoint, no key. */
 import { createServer, type IncomingMessage } from "node:http";
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
+import { providerfixtures } from "./providerfixtures.ts";
 
-const fixturesdir = join(process.cwd(), "tests");
-
-/** Reads one recorded fixture body. */
-async function fixture(name: string): Promise<string> {
-  return readFile(join(fixturesdir, name), "utf8");
+/** Reads one recorded fixture body by its original fixture file name. */
+function fixture(name: string): string {
+  const text = (providerfixtures as Record<string, string>)[name];
+  if (text === undefined) throw new Error(`the provider wire fixture ${name} sits absent from the fixture module`);
+  return text;
 }
 
 /** Reads the request body of one incoming request. */

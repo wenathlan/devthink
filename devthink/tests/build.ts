@@ -9,6 +9,18 @@ import { build } from "esbuild";
 import type { platformtarget } from "../types.ts";
 import { stripstrings, underscorednames } from "./bundlescan.ts";
 import { cjswrap } from "./cjswrap.ts";
+import {
+  changelogdigestworkflow,
+  cjssample,
+  exampleorgpagestate,
+  forminventoryplan,
+  formsurveyworkflow,
+  releasenotesplan,
+} from "./fixtureset.ts";
+import { importersamples } from "./importerfixtures.ts";
+import { fixturepages, umdexample } from "./pagefixtures.ts";
+import { gallery as gallerytext, recipeplans } from "./recipesfixtures.ts";
+import { frozenschemas } from "./schemafixtures.ts";
 import { umdwrap } from "./umdwrap.ts";
 
 /** The built bundles import by absolute path: the file URL keeps the import legal on every platform (the windows drive letter is not a URL scheme). */
@@ -377,7 +389,7 @@ console.log(
   `Companion built with plain node: dist/companion.js of build ${packagejson.version} with the sourcemap and the stamped host manifest template beside it.`,
 );
 
-/** The frozen contract artifacts of the 1.1.98 consolidation: the capability manifests of the seven frozen surfaces, the ten protocol schemas, the example fixture set and the umd example page are build artifacts the recipe derives from the repository sources — the caps come from the frozen lists the compiled library exports, the schemas and the fixtures copy verbatim from the tests/code sources, and the umd example rewrites its bundle reference to the dist root — so the packages ship them from dist while the repository root stays source only. The 2.0.0 example gallery extends the same fixture set: the 36 recipe plan files of tests/code/recipes copy into dist/fixtures/recipes as pure plan documents, the four self contained fixture pages of tests/code/pages copy into dist/fixtures/pages, and the gallery index (the metadata the recipes runner and the cli recipes command read) ships as dist/gallery.json beside the fixture set — outside the fixtures directory the headless fixture loader scans under schemastrict, so the recipes directory itself stays pure plans the planlint command walks while the index never answers a page state fixture probe. */
+/** The frozen contract artifacts of the 1.1.98 consolidation: the capability manifests of the seven frozen surfaces, the ten protocol schemas, the example fixture set and the umd example page are build artifacts the recipe derives from the repository sources — the caps come from the frozen lists the compiled library exports, the schemas and the fixtures copy verbatim from the typescript fixture modules of the tests sources (the schemafixtures, fixtureset, importerfixtures, recipesfixtures and pagefixtures modules carry the exact texts of the former tests/code corpus), and the umd example rewrites its bundle reference to the dist root — so the packages ship them from dist while the repository root stays source only. The 2.0.0 example gallery extends the same fixture set: the 36 recipe plan texts of the recipesfixtures module copy into dist/fixtures/recipes as pure plan documents, the four self contained fixture pages of the pagefixtures module copy into dist/fixtures/pages, and the gallery index (the metadata the recipes runner and the cli recipes command read) ships as dist/gallery.json beside the fixture set — outside the fixtures directory the headless fixture loader scans under schemastrict, so the recipes directory itself stays pure plans the planlint command walks while the index never answers a page state fixture probe. */
 const capsurfaces = ["background", "pagebridge", "sidepanel", "popup", "cli", "library", "mcp"];
 const librarymodule = await importbundle(join(root, "dist", "index.js"));
 await mkdir(join(root, "dist", "caps"), { recursive: true });
@@ -389,13 +401,30 @@ for (const surface of capsurfaces) {
     );
   await writeFile(record(`caps/${surface}.json`), `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
 }
-const schemadirectory = join(root, "tests", "code");
-const schemefiles = (await readdir(schemadirectory)).filter((file) => file.endsWith(".schema.json")).sort();
+const codefixturedirectory = join(root, "tests", "code");
+const frozenschematexts = frozenschemas as Record<string, string>;
+const schemefiles = Object.keys(frozenschematexts).sort();
 if (schemefiles.length !== 10)
-  throw new Error(`The protocol schema set of tests/code carries the ten frozen schemas, found ${schemefiles.length}.`);
+  throw new Error(
+    `The protocol schema set of the schemafixtures module carries the ten frozen schemas, found ${schemefiles.length}.`,
+  );
 await mkdir(join(root, "dist", "schemas"), { recursive: true });
-for (const file of schemefiles)
-  await writeFile(record(`schemas/${file}`), await readFile(join(schemadirectory, file)), "utf8");
+for (const name of schemefiles)
+  await writeFile(record(`schemas/${name}.schema.json`), frozenschematexts[name], "utf8");
+/** The fixture text table of the typescript fixture modules keyed by the original tests/code source names: every json, csv and html fixture of the former corpus answers from its family module (the example fixture set, the importer samples, the recipe plans with the gallery index, the fixture pages with the umd example), so the fixtureset rows below keep their source names while the texts come from the modules; the three typescript example fixtures (the mcp client, the bun shell and the deno shell) stay repository files of tests/code the loop reads from disk. */
+const modulefixtures: Record<string, string> = {
+  "example-org-pagestate.json": exampleorgpagestate,
+  "cjs.js": cjssample,
+  "form-inventory-plan.json": forminventoryplan,
+  "release-notes-plan.json": releasenotesplan,
+  "changelog-digest-workflow.json": changelogdigestworkflow,
+  "form-survey-workflow.json": formsurveyworkflow,
+  "umd.html": umdexample,
+  ...Object.fromEntries(Object.entries(importersamples).map(([name, text]) => [`importers/${name}`, text])),
+  "recipes/gallery.json": gallerytext,
+  ...Object.fromEntries(Object.entries(recipeplans).map(([id, text]) => [`recipes/${id}.json`, text])),
+  ...Object.fromEntries(Object.entries(fixturepages).map(([name, text]) => [`pages/${name}`, text])),
+};
 const fixtureset = [
   { source: "example-org-pagestate.json", target: "fixtures/example-org-pagestate.json" },
   { source: "mcp-client.ts", target: "fixtures/mcp-client.ts" },
@@ -458,11 +487,14 @@ await mkdir(join(root, "dist", "fixtures", "workflows"), { recursive: true });
 await mkdir(join(root, "dist", "fixtures", "importers"), { recursive: true });
 await mkdir(join(root, "dist", "fixtures", "recipes"), { recursive: true });
 await mkdir(join(root, "dist", "fixtures", "pages"), { recursive: true });
-for (const fixture of fixtureset)
-  await writeFile(record(fixture.target), await readFile(join(schemadirectory, fixture.source)), "utf8");
-const umdexample = await readFile(join(schemadirectory, "umd.html"), "utf8");
-const umdexamplestamped = `<!-- devthink ${packagejson.version} umd example page — GPL-3.0-only -->\n${umdexample.replace("../../dist/devthink.umd.js", "./devthink.umd.js")}`;
-if (!umdexamplestamped.endsWith(umdexample.replace("../../dist/devthink.umd.js", "./devthink.umd.js")))
+for (const fixture of fixtureset) {
+  const text = modulefixtures[fixture.source];
+  if (text !== undefined) await writeFile(record(fixture.target), text, "utf8");
+  else await writeFile(record(fixture.target), await readFile(join(codefixturedirectory, fixture.source)), "utf8");
+}
+const umdexampletext = umdexample;
+const umdexamplestamped = `<!-- devthink ${packagejson.version} umd example page — GPL-3.0-only -->\n${umdexampletext.replace("../../dist/devthink.umd.js", "./devthink.umd.js")}`;
+if (!umdexamplestamped.endsWith(umdexampletext.replace("../../dist/devthink.umd.js", "./devthink.umd.js")))
   throw new Error(
     "The umd example source carries the dist bundle reference the build rewrites; the reference stayed unchanged.",
   );
@@ -843,19 +875,12 @@ for (const file of await readdir(sitedist)) {
     );
 }
 
-/** The extension gallery copy of the 2.0.0 example gallery: the chromium extension archive carries the gallery index and its recipe plans under fixtures/ so the sidepanel one click import reads them through the runtime url of the packaged extension — the plans stay pure plan documents, the fixture pages stay package fixtures the recipes name, and no recipe grows a remote origin. */
+/** The extension gallery copy of the 2.0.0 example gallery: the chromium extension archive carries the gallery index and its recipe plans under fixtures/ so the sidepanel one click import reads them through the runtime url of the packaged extension — the plans stay pure plan documents, the fixture pages stay package fixtures the recipes name, and no recipe grows a remote origin; the texts come from the recipesfixtures module the dist fixture set ships. */
 const extensionfixtures = join(extensiondist, "fixtures", "recipes");
 await mkdir(extensionfixtures, { recursive: true });
-await writeFile(
-  join(extensiondist, "fixtures", "gallery.json"),
-  await readFile(join(root, "tests", "code", "recipes", "gallery.json")),
-  "utf8",
-);
-for (const file of (await readdir(join(root, "tests", "code", "recipes"))).filter(
-  (file) => file.endsWith(".json") && file !== "gallery.json",
-)) {
-  await writeFile(join(extensionfixtures, file), await readFile(join(root, "tests", "code", "recipes", file)), "utf8");
-}
+await writeFile(join(extensiondist, "fixtures", "gallery.json"), gallerytext, "utf8");
+for (const [id, text] of Object.entries(recipeplans))
+  await writeFile(join(extensionfixtures, `${id}.json`), text, "utf8");
 
 /** The chromium extension zip of the release: the build packs the extension dist directory into the version stamped archive the release workflow attaches beside every other artifact. */
 await rm(join(root, "dist", `devthink${packagejson.version}.zip`), { force: true });
