@@ -1,6 +1,6 @@
-# Devthink 2.0.150
+# Devthink 2.0.151
 
-This release is the family registry rung of the ladder: every family envelope answers the registry the flat application always answered. The getry and cobaia manifests drop the private mark that refused their envelopes (the registry error that stopped the alphabetical walk before it ever reached the saddle engine), and the family publish lane learns the family-first law: a refused envelope answers the honest skip and the walk continues to the next sibling, so one bad manifest never blocks the whole family again. The containers answer the same healing from the prior rung — the standalone family images push to the container index and the sibling-pinned pair waits for its dedicated context lane. The metadata family stamps 2.0.150 with the battery artifacts re-stamped and the registry lanes answer the publish of the rung.
+This release is the standalone and consolidation rung of the ladder: the family routes answer the fullscreen law (a direct url opens the app one hundred percent full screen with no shell and no window, the window chrome lives only inside the os where the arrive handoff keeps the windows grammar, the seven design contracts pin the law across the family), the landing wears the fluent era the owner pinned (the intro face rides the fluent set with the saddle rail curve tucked snug to the spine), the provider row answers the icon law (the brand marks ride alone without the continue with words), the shim family retires with the cascade law (the twenty eight delegate shims leave the tree with the workflow stamps riding the ts lane), the video studio answers the playback law (the player widget mounts the real element stage with the honest transport of the windows media grammar and the local file never uploads), the green ladder answers the honest update law (the dependency check never proposes a step backwards: an ahead manifest is satisfied, not drifted, because the saddle lane publishes its rung stamps off the latest tag), the strict annotations close over the certification suite with the typecheck gate at zero, and the branch consolidation answers the owner mandate (every branch of the repository joined the main line, the archive tags carry the history, only main remains). The version stamps 2.0.151 land across the metadata family with the apifreeze artifact re-frozen and the permission baseline recorded.
 
 ## Distribution channels
 
@@ -8,22 +8,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.150.tgz`
+- `wenathlan-devthink-2.0.151.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.150.nupkg`
+- `devthink.2.0.151.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.150.pom`
-- `devthink-2.0.150.jar`
-- `devthink2.0.150.zip`
-- `devthink-declarations-2.0.150.zip`
+- `devthink-2.0.151.pom`
+- `devthink-2.0.151.jar`
+- `devthink2.0.151.zip`
+- `devthink-declarations-2.0.151.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -37,77 +37,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.150.gem`
+- `devthink-2.0.151.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.150.vsix`
+- `devthink-vscode-2.0.151.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.150.xpi`
+- `devthink-firefox-2.0.151.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.150.zip`
+- `devthink-safari-2.0.151.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.150.zip`
-- `devthink-2.0.150-source.tar.xz`
-- `devthink-nativehost-2.0.150.template.json`
+- `devthink2.0.151.zip`
+- `devthink-2.0.151-source.tar.xz`
+- `devthink-nativehost-2.0.151.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.150.zip`
+- `devthink-site-2.0.151.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.150.zip`
+- `devthink-declarations-2.0.151.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.150.json`
-- `devthink-attestations-2.0.150.json`
-- `devthink-artifactmanifest-2.0.150.json`
+- `devthink-sbom-2.0.151.json`
+- `devthink-attestations-2.0.151.json`
+- `devthink-artifactmanifest-2.0.151.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.150.tgz`
-- `devthink.2.0.150.nupkg`
-- `devthink-2.0.150.pom`
-- `devthink-2.0.150.jar`
-- `devthink-2.0.150.gem`
+- `wenathlan-devthink-2.0.151.tgz`
+- `devthink.2.0.151.nupkg`
+- `devthink-2.0.151.pom`
+- `devthink-2.0.151.jar`
+- `devthink-2.0.151.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.150.vsix`
-- `devthink-firefox-2.0.150.xpi`
-- `devthink-safari-2.0.150.zip`
-- `devthink2.0.150.zip`
-- `devthink-2.0.150-source.tar.xz`
-- `devthink-nativehost-2.0.150.template.json`
-- `devthink-site-2.0.150.zip`
-- `devthink-declarations-2.0.150.zip`
-- `devthink-sbom-2.0.150.json`
-- `devthink-attestations-2.0.150.json`
-- `devthink-artifactmanifest-2.0.150.json`
+- `devthink-vscode-2.0.151.vsix`
+- `devthink-firefox-2.0.151.xpi`
+- `devthink-safari-2.0.151.zip`
+- `devthink2.0.151.zip`
+- `devthink-2.0.151-source.tar.xz`
+- `devthink-nativehost-2.0.151.template.json`
+- `devthink-site-2.0.151.zip`
+- `devthink-declarations-2.0.151.zip`
+- `devthink-sbom-2.0.151.json`
+- `devthink-attestations-2.0.151.json`
+- `devthink-artifactmanifest-2.0.151.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 
@@ -115,7 +115,7 @@ Every artifact above attaches to the release of the immutable tag beside the che
 
 ## The chain to this candidate
 
-Every release from the 1.1.31 base to this candidate, grouped by the phases the roadmap declared: 145 released versions the changelog records, 69 roadmap sections the phases draw their titles from.
+Every release from the 1.1.31 base to this candidate, grouped by the phases the roadmap declared: 146 released versions the changelog records, 69 roadmap sections the phases draw their titles from.
 
 ### The base (1.1.31)
 
