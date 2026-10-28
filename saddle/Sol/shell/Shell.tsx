@@ -1,17 +1,15 @@
 // the saddle shell of the theme.
-// Shell — the one chrome of the saddle Sol theme, converted from the OS
-// grammar to the APPLICATION grammar (the family window recipe): the routed
-// pages render inside one Windows 11 application window floating over the
-// trylle canvas — a title bar carrying the drawn saddle mark and the app
-// name (the drag handle, double-click toggles maximize), the theme flip and
-// the Fluent caption buttons at the right edge (minimize collapses the
-// window into a restore chip, maximize fills the backdrop, close relaunches
-// the app at /intro — the intro itself consults the seen flags, so a
-// finished visitor lands home), the EIGHT resize handles of the real window
-// (min 640×440, clamped to the viewport) and the Windows inactive law (the
-// window the document lost turns grayscale). The left rail of SECTIONS
-// (workspace / platform / library / account) switches the pages as the
-// window content. The file also exports every shared primitive the page
+// Shell — the app surface of the saddle, answering the FAMILY STANDALONE
+// LAW: an app accessed by its own url (wenathlan.github.io/devthink/
+// saddle/) is the normal application, one hundred percent — it renders
+// FULL-BLEED, the routed stage owning the whole viewport with the page
+// rail of SECTIONS as the app's own navigation (no window chrome of its
+// own: no title bar, no caption buttons, no resize handles, no inactive
+// grayscale, no entry scale). The WINDOW (the draggable frame with the
+// captions and the eight handles) exists ONLY when the app is embedded
+// inside the DevThink OS power clip — the framed contract below renders
+// the routed stage bare (shell--embedded) and the OS draws the window
+// around it. The file also exports every shared primitive the page
 // folders import from "./shell/Shell" (or "@/shell/Shell"): PageShell,
 // SaddleMark, SectionRail, ThemeProvider, useTheme, ErrorBoundary, Button,
 // buttonVariants, the Card family, the Tooltip family and the Toaster.
@@ -26,21 +24,17 @@ import {
         WindowAppsRegular as AppWindow,
         BookOpenRegular as BookOpen,
         BoxMultipleRegular as Boxes,
-        CopyRegular as Copy,
         BrainCircuitRegular as Cpu,
         BeakerRegular as FlaskConical,
         GaugeRegular as Gauge,
         TableRegular as LayoutDashboard,
         ArrowEnterLeftRegular as LogIn,
-        SubtractRegular as Minus,
         WeatherMoonRegular as Moon,
         PlugConnectedRegular as PlugZap,
         ArrowCounterclockwiseRegular as RotateCcw,
-        SquareRegular as Square,
         WeatherSunnyRegular as Sun,
         WindowConsoleRegular as TerminalSquare,
         PersonAddRegular as UserPlus,
-        DismissRegular as X,
 } from '@fluentui/react-icons';
 import { useTheme as useNextTheme } from 'next-themes';
 import type * as React from 'react';
@@ -48,12 +42,9 @@ import {
         Component,
         type CSSProperties,
         createContext,
-        type MouseEvent as ReactMouseEvent,
         type ReactNode,
-        type PointerEvent as ReactPointerEvent,
         useContext,
         useEffect,
-        useRef,
         useState,
 } from 'react';
 import { Toaster as Sonner, type ToasterProps } from 'sonner';
@@ -447,15 +438,15 @@ export function SectionRail({ number, label }: SectionRailProps) {
         );
 }
 
-/* ============================= window chrome =========================== */
+/* ============================= app surface ============================== */
 
-// the APPLICATION chrome (the family window recipe): the pages of the
-// theme render as the content of ONE application window — a 48px acrylic
-// title bar (the drag surface, double-click maximizes), the theme flip and
-// Fluent caption buttons 44px wide, the eight resize handles and a left
-// rail of SECTIONS whose active entry rides the sand accent ladder. The
-// retired OS chrome (the taskbar and the floating start menu) died with
-// the reform wave: the trylle foundation + the Windows hands own sol.css.
+// the APP SURFACE (the family standalone law): the pages of the theme
+// render as the content of the application itself — the left rail of
+// SECTIONS (workspace / platform / library / account) switches the pages
+// as the app's own navigation and the active entry rides the sand accent
+// ladder. The window chrome (the title bar, the captions, the eight
+// resize handles and the inactive law) retired with the standalone law:
+// the WINDOW exists only inside the DevThink OS power clip.
 /** one legacy nav entry (the prop shape the page anchors type against) */
 export type NavLink = { label: string; href: string };
 
@@ -474,7 +465,7 @@ export type RailSection = {
         apps: readonly StartApp[];
 };
 
-/** the rail of the window, SECTIONED: workspace, platform, library and
+/** the rail of the app, SECTIONED: workspace, platform, library and
  * account — one entry per page route, the apex home first. exported for
  * the onboarding copy beside this folder. */
 export const NAV_SECTIONS: readonly RailSection[] = [
@@ -543,33 +534,6 @@ export const NAV_SECTIONS: readonly RailSection[] = [
 /** the pages the window hosts, flattened (the onboarding facts read this). */
 export const START_APPS: readonly StartApp[] = NAV_SECTIONS.flatMap((section) => section.apps);
 
-/** the hand-over route of the close caption: closing the window restarts the
- * application at the intro (the relaunch metaphor). */
-const RESTART_ROUTE = '/intro';
-
-/** the role line of the title bar (the honest description of the app). */
-const APP_ROLE = 'the sandbox engine of the family';
-
-/** the eight resize edges of the window chrome (the Windows handles). */
-const RESIZE_EDGES = ['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'] as const;
-
-/** the edge set as a type. */
-type ResizeEdge = (typeof RESIZE_EDGES)[number];
-
-/** the smallest window the resize allows (px). */
-const MIN_SIZE = { w: 640, h: 440 } as const;
-
-/** one pointer session over a resize handle: the edge, where the press
- * started and the window size it carried when it did. */
-type ResizeTrack = {
-        pointerId: number;
-        edge: ResizeEdge;
-        originX: number;
-        originY: number;
-        baseW: number;
-        baseH: number;
-};
-
 /** one accent-dotted family link of the rail foot (spec §12): the sibling
  * deploy units beside saddle, each linked by the familyurl contract with the
  * accent dot riding the shared family.ts table — the same row the node:test
@@ -596,27 +560,9 @@ function FamilyRail() {
         );
 }
 
-/** one pointer session over the title bar: where the press started and the
- * offset the window carried when it did. */
-type DragTrack = {
-        pointerId: number;
-        originX: number;
-        originY: number;
-        baseX: number;
-        baseY: number;
-};
-
-/** keeps the dragged title bar reachable: the offset never slides the bar
- * fully off screen, so the window can always be grabbed back. */
-function clampDrag(x: number, y: number): { x: number; y: number } {
-        const spanX = Math.max(window.innerWidth / 2 - 80, 0);
-        const spanY = Math.max(window.innerHeight / 2 - 60, 0);
-        return { x: Math.min(spanX, Math.max(-spanX, x)), y: Math.min(spanY, Math.max(-spanY, y)) };
-}
-
 /**
- * the theme flip of the title bar caption: flips the document theme class,
- * stores nothing (the in-memory doctrine of the window chrome).
+ * the theme flip of the rail foot: flips the document theme class,
+ * stores nothing (the in-memory doctrine of the app surface).
  *
  * @returns the toggle element.
  */
@@ -644,9 +590,9 @@ function ThemeToggle() {
         );
 }
 
-/** the window props: the routed page plus the legacy page props the anchors
- * still pass (name, nav, cta, footer links, container width) — the window
- * grammar names itself, so only the theme toggle switch is consumed. */
+/** the app surface props: the routed page plus the legacy page props the
+ * anchors still pass (name, nav, cta, footer links, container width) — the
+ * app grammar names itself, so only the theme toggle switch is consumed. */
 type ShellProps = {
         children: ReactNode;
         name?: string;
@@ -659,12 +605,11 @@ type ShellProps = {
 };
 
 /**
- * the application window: title bar (brand, drag, caption buttons), the
- * SECTIONED page rail and the routed stage, floating over the Mica
- * backdrop.
+ * the app surface: the SECTIONED page rail and the routed stage beside it,
+ * owning the whole viewport.
  *
  * @param children the routed page.
- * @returns the window element.
+ * @returns the app surface element.
  */
 export function Shell({ children, themeButton = true }: ShellProps) {
         // the embedded contract: inside the os power clip the app rides the host
@@ -677,266 +622,58 @@ export function Shell({ children, themeButton = true }: ShellProps) {
                 }
         })();
 
-        const [location, navigate] = useLocation();
-        const [maximized, setMaximized] = useState(false);
-        const [minimized, setMinimized] = useState(false);
-        const [inactive, setInactive] = useState(false);
-        const [drag, setDrag] = useState({ x: 0, y: 0 });
-        const [size, setSize] = useState<{ w: number; h: number } | null>(null);
-        const trackRef = useRef<DragTrack | null>(null);
-        const resizeRef = useRef<ResizeTrack | null>(null);
-        const winRef = useRef<HTMLElement | null>(null);
-
-        // the Windows inactive law: the window the document lost turns grayscale
-        useEffect(() => {
-                const sync = (): void => setInactive(!document.hasFocus());
-                sync();
-                window.addEventListener('focus', sync);
-                window.addEventListener('blur', sync);
-                return () => {
-                        window.removeEventListener('focus', sync);
-                        window.removeEventListener('blur', sync);
-                };
-        }, []);
-
-        /** clamps a resize candidate to the viewport and the minimum window size. */
-        function clampSize(w: number, h: number): { w: number; h: number } {
-                const maxW = Math.max(MIN_SIZE.w, window.innerWidth - 24);
-                const maxH = Math.max(MIN_SIZE.h, window.innerHeight - 24);
-                return {
-                        w: Math.min(maxW, Math.max(MIN_SIZE.w, w)),
-                        h: Math.min(maxH, Math.max(MIN_SIZE.h, h)),
-                };
-        }
-
-        /** maximizes over the backdrop or restores the windowed frame (the drag
-         * offset resets, the resized frame gives way). */
-        function toggleMaximize() {
-                setDrag({ x: 0, y: 0 });
-                setSize(null);
-                setMaximized((value) => !value);
-        }
-
-        /** arms a drag when the pointer presses the empty bar (never the caption buttons). */
-        function onTitlePointerDown(event: ReactPointerEvent<HTMLElement>) {
-                if (maximized) return;
-                if ((event.target as HTMLElement).closest('button, a, input')) return;
-                trackRef.current = {
-                        pointerId: event.pointerId,
-                        originX: event.clientX,
-                        originY: event.clientY,
-                        baseX: drag.x,
-                        baseY: drag.y,
-                };
-                event.currentTarget.setPointerCapture(event.pointerId);
-        }
-
-        /** rides the pointer while a drag session is armed. */
-        function onTitlePointerMove(event: ReactPointerEvent<HTMLElement>) {
-                const track = trackRef.current;
-                if (!track || track.pointerId !== event.pointerId) return;
-                setDrag(
-                        clampDrag(
-                                track.baseX + event.clientX - track.originX,
-                                track.baseY + event.clientY - track.originY,
-                        ),
-                );
-        }
-
-        /** releases the drag session. */
-        function onTitlePointerUp(event: ReactPointerEvent<HTMLElement>) {
-                const track = trackRef.current;
-                if (!track || track.pointerId !== event.pointerId) return;
-                trackRef.current = null;
-                event.currentTarget.releasePointerCapture(event.pointerId);
-        }
-
-        /** the Windows affordance: a double click on the empty bar toggles maximize. */
-        function onTitleDoubleClick(event: ReactMouseEvent<HTMLElement>) {
-                if ((event.target as HTMLElement).closest('button, a, input')) return;
-                toggleMaximize();
-        }
-
-        /** arms a resize session from one of the eight handles. */
-        function onResizePointerDown(edge: ResizeEdge) {
-                return (event: ReactPointerEvent<HTMLSpanElement>) => {
-                        if (maximized) return;
-                        const rect = winRef.current?.getBoundingClientRect();
-                        if (!rect) return;
-                        resizeRef.current = {
-                                pointerId: event.pointerId,
-                                edge,
-                                originX: event.clientX,
-                                originY: event.clientY,
-                                baseW: rect.width,
-                                baseH: rect.height,
-                        };
-                        event.currentTarget.setPointerCapture(event.pointerId);
-                };
-        }
-
-        /** rides the pointer while a resize session is armed (the window owns the
-         * size — the drag offset resets so the bar stays reachable). */
-        function onResizePointerMove(event: ReactPointerEvent<HTMLSpanElement>) {
-                const track = resizeRef.current;
-                if (!track || track.pointerId !== event.pointerId) return;
-                const dx = event.clientX - track.originX;
-                const dy = event.clientY - track.originY;
-                const east = track.edge.includes('e');
-                const west = track.edge.includes('w');
-                const south = track.edge.includes('s');
-                const north = track.edge.includes('n');
-                const width = east ? track.baseW + dx : west ? track.baseW - dx : track.baseW;
-                const height = south ? track.baseH + dy : north ? track.baseH - dy : track.baseH;
-                setSize(clampSize(width, height));
-                if (west || north) setDrag({ x: 0, y: 0 });
-        }
-
-        /** releases the resize session. */
-        function onResizePointerUp(event: ReactPointerEvent<HTMLSpanElement>) {
-                const track = resizeRef.current;
-                if (!track || track.pointerId !== event.pointerId) return;
-                resizeRef.current = null;
-                event.currentTarget.releasePointerCapture(event.pointerId);
-        }
+        const [location] = useLocation();
 
         // the active rail entry: the bare path owns home, every other page owns its route
         const isActive = (href: string): boolean =>
                 href === '/' ? location === '/' : location === href || location.startsWith(`${href}/`);
 
-        // the embedded pass renders before the chrome: one window, one frame
+        // the embedded pass renders before the stage: one window, one frame
         if (framed) return <main className="shell shell--embedded">{children}</main>;
 
+        // the standalone pass: the direct url answers full-bleed — the window
+        // chrome exists only inside the os power clip, so the app owns the whole
+        // viewport; the SECTIONED page rail stays as the app's own navigation
+        // and the routed stage fills the rest of the screen
         return (
-                <div className="appframe" data-maximized={maximized ? 'true' : undefined}>
-                        <section
-                                ref={winRef}
-                                className="winapp grain"
-                                hidden={minimized}
-                                data-maximized={maximized ? 'true' : undefined}
-                                data-sized={size && !maximized ? 'true' : undefined}
-                                data-inactive={inactive ? 'true' : undefined}
-                                data-landing={location === '/' ? 'true' : undefined}
-                                aria-label="saddle"
-                                style={
-                                        {
-                                                '--winapp-x': `${drag.x}px`,
-                                                '--winapp-y': `${drag.y}px`,
-                                                ...(size && !maximized ? { width: size.w, height: size.h } : {}),
-                                        } as CSSProperties
-                                }
-                        >
-                                <header
-                                        className="winapp__title"
-                                        data-dragging={trackRef.current ? 'true' : undefined}
-                                        onPointerDown={onTitlePointerDown}
-                                        onPointerMove={onTitlePointerMove}
-                                        onPointerUp={onTitlePointerUp}
-                                        onPointerCancel={onTitlePointerUp}
-                                        onDoubleClick={onTitleDoubleClick}
-                                >
-                                        <div className="winapp__brand">
-                                                <SaddleMark size={20} hidden />
-                                                <span className="winapp__name">saddle</span>
-                                                <span className="winapp__role">{APP_ROLE}</span>
-                                        </div>
-                                        <div className="winapp__caption">
-                                                {themeButton ? <ThemeToggle /> : null}
-                                                <button
-                                                        type="button"
-                                                        className="winapp__cap"
-                                                        aria-label="Minimize"
-                                                        onClick={() => setMinimized(true)}
-                                                >
-                                                        <Minus fontSize={14} aria-hidden="true" />
-                                                </button>
-                                                <button
-                                                        type="button"
-                                                        className="winapp__cap"
-                                                        aria-label={maximized ? 'Restore' : 'Maximize'}
-                                                        onClick={toggleMaximize}
-                                                >
-                                                        {maximized ? (
-                                                                <Copy fontSize={12} aria-hidden="true" />
-                                                        ) : (
-                                                                <Square fontSize={11} aria-hidden="true" />
-                                                        )}
-                                                </button>
-                                                <button
-                                                        type="button"
-                                                        className="winapp__cap winapp__cap--close"
-                                                        aria-label="Close"
-                                                        onClick={() => navigate(RESTART_ROUTE)}
-                                                >
-                                                        <X fontSize={14} aria-hidden="true" />
-                                                </button>
-                                        </div>
-                                </header>
-
-                                <div className="winapp__body">
-                                        <nav className="winapp__rail" aria-label="Pages">
-                                                {NAV_SECTIONS.map((section) => (
-                                                        <div key={section.id} className="winapp__section">
-                                                                <p className="winapp__sectionlabel" aria-hidden="true">
-                                                                        {section.label}
-                                                                </p>
-                                                                {section.apps.map((app) => {
-                                                                        const Icon = app.icon;
-                                                                        return (
-                                                                                <Link
-                                                                                        key={app.href}
-                                                                                        href={app.href}
-                                                                                        className="winapp__raillink"
-                                                                                        title={app.detail}
-                                                                                        aria-label={app.label}
-                                                                                        aria-current={isActive(app.href) ? 'page' : undefined}
-                                                                                >
-                                                                                        <Icon fontSize={16} strokeWidth={1.7} aria-hidden="true" />
-                                                                                        <span className="winapp__raillabel">{app.label}</span>
-                                                                                </Link>
-                                                                        );
-                                                                })}
-                                                        </div>
-                                                ))}
-                                                <div className="winapp__railfoot">
-                                                        <p className="winapp__familyhead" aria-hidden="true">
-                                                                family
+                <div className="shell shell--standalone">
+                        <div className="winapp__body">
+                                <nav className="winapp__rail" aria-label="Pages">
+                                        {NAV_SECTIONS.map((section) => (
+                                                <div key={section.id} className="winapp__section">
+                                                        <p className="winapp__sectionlabel" aria-hidden="true">
+                                                                {section.label}
                                                         </p>
-                                                        <FamilyRail />
+                                                        {section.apps.map((app) => {
+                                                                const Icon = app.icon;
+                                                                return (
+                                                                        <Link
+                                                                                key={app.href}
+                                                                                href={app.href}
+                                                                                className="winapp__raillink"
+                                                                                title={app.detail}
+                                                                                aria-label={app.label}
+                                                                                aria-current={isActive(app.href) ? 'page' : undefined}
+                                                                        >
+                                                                                <Icon fontSize={16} strokeWidth={1.7} aria-hidden="true" />
+                                                                                <span className="winapp__raillabel">{app.label}</span>
+                                                                        </Link>
+                                                                );
+                                                        })}
                                                 </div>
-                                        </nav>
-                                        <div className="winapp__stage">
-                                                <main className="shell">{children}</main>
+                                        ))}
+                                        <div className="winapp__railfoot">
+                                                <p className="winapp__familyhead" aria-hidden="true">
+                                                        family
+                                                </p>
+                                                <FamilyRail />
+                                                {themeButton ? <ThemeToggle /> : null}
                                         </div>
+                                </nav>
+                                <div className="winapp__stage">
+                                        <main className="shell">{children}</main>
                                 </div>
-
-                                {/* the eight resize handles of the real window (the Windows chrome):
-                                 * laid inside the frame edge, hidden while maximized (the css gates
-                                 * them on data-maximized) */}
-                                {RESIZE_EDGES.map((edge) => (
-                                        <span
-                                                key={edge}
-                                                className="winapp__rz"
-                                                data-edge={edge}
-                                                onPointerDown={onResizePointerDown(edge)}
-                                                onPointerMove={onResizePointerMove}
-                                                onPointerUp={onResizePointerUp}
-                                                onPointerCancel={onResizePointerUp}
-                                        />
-                                ))}
-                        </section>
-
-                        {minimized && (
-                                <button
-                                        type="button"
-                                        className="winchip"
-                                        aria-label="Restore saddle"
-                                        onClick={() => setMinimized(false)}
-                                >
-                                        <SaddleMark size={16} hidden />
-                                        <span>saddle</span>
-                                </button>
-                        )}
+                        </div>
                 </div>
         );
 }

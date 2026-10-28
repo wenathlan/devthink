@@ -5,14 +5,14 @@
 // theme anchor, page anchors, prisma schema, db layer) and pins the reform:
 // the devthink foundation (mica #202020 over the 8-step ladder #242424→
 // #494949, Inter Variable + Geist Mono, the 13px/450 body, the trylle shadow
-// ladder), the windows hands (press .7 pins, dtPopIntro, the fluent window
-// curve, the red close, the inactive grayscale law, the eight resize
-// handles, the win11 scrollbar), the two-accent contract (the getry violet
-// identity beside the windows accent), the entry-flow law (intro →
-// onboarding → the platform over the catalogued seen state) and the banned
-// list (no pill, no all-properties transition, no scale(0) outside the pin
-// law, no banned hue, no build ghost). The stylesheet is read as text — no
-// browser, no DOM.
+// ladder), the windows hands (press .7 pins, dtPopIntro, the win11
+// scrollbar), the two-accent contract (the getry violet identity beside the
+// windows accent), the FAMILY STANDALONE LAW (the shell answers the direct
+// url full-bleed, the window chrome lives only inside the os embed), the
+// entry-flow law (intro → onboarding → the platform over the catalogued seen
+// state) and the banned list (no pill, no all-properties transition, no
+// scale(0) outside the pin law, no banned hue, no build ghost). The sources
+// are read as text — no browser, no DOM.
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
@@ -122,24 +122,22 @@ describe("design contract — the windows hands", () => {
     expect(CSS).toContain("--dur-press: 100ms");
   });
 
-  it("carries the fluent red close, the inactive law and the eight resize handles", () => {
-    expect(CSS).toContain("rgb(232 17 35)");
-    expect(CSS).toContain("rgb(139 10 20)");
-    expect(CSS).toContain("grayscale(80%)");
-    for (const edge of ["n", "s", "e", "w", "ne", "nw", "se", "sw"]) {
-      expect(CSS).toContain(`.winapp__rz[data-edge="${edge}"]`);
-    }
-    expect(SHELL).toContain('RESIZE_EDGES = ["n", "s", "e", "w", "ne", "nw", "se", "sw"]');
+  it("answers the direct url full-bleed — the window chrome lives only inside the os", () => {
+    /* the family standalone law: an app accessed by its own url is the
+    normal application, one hundred percent — the shell renders
+    shell--standalone with no window chrome of its own (no title bar, no
+    captions, no resize handles, no inactive law, no entry scale), while
+    the framed contract keeps the bare stage for the os power clip */
+    expect(SHELL).toContain("shell--standalone");
+    expect(SHELL).toContain("shell--embedded");
+    expect(SHELL).not.toMatch(
+      /className="appframe"|winapp__title|winapp__cap|winapp__rz|winchip|setPointerCapture|data-inactive|RESIZE_EDGES/,
+    );
+    expect(CSS).toMatch(/\.shell--standalone \{[^}]*height: 100vh/);
   });
 
-  it("opens the window on the fluent curve and rides the win11 scrollbar", () => {
-    expect(rules(CSS)).toMatch(/\.winapp \{[^}]*animation: winappOpen var\(--dur-2\) var\(--ease-window\)/);
+  it("rides the win11 scrollbar beside the standalone stage", () => {
     expect(CSS).toContain("*:hover::-webkit-scrollbar-thumb");
-    expect(rules(CSS)).toMatch(/\.winapp__rz \{[^}]*touch-action: none/);
-  });
-
-  it("rests the title-bar mark on the landing (logo discipline)", () => {
-    expect(CSS).toContain("data-landing");
   });
 
   it("pins the footer to the window floor (the sticky-footer law)", () => {

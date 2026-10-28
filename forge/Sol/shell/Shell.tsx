@@ -1,55 +1,35 @@
 /**
- * Shell.tsx — the ONE chrome of the theme, the chrome of an APPLICATION
- * WINDOW (the FAM-APPS reform, rebased on the trylle canvas with the Windows
- * hands): a floating window over the deep canvas — a 48px acrylic title bar
- * (noise grain + saturate(3) blur(20px), constant in both themes) carrying
- * the drawn forge mark, the name and the honest role on the left as the drag
- * surface (pointer capture, clamp, double-click = maximize) and the Fluent
- * caption buttons on the right (44px targets, the r4 faces: minimize
- * collapses the window into a restore chip, maximize fills the backdrop,
- * close relaunches the flow at /intro); a 48px pin rail at the left — 38×38
- * r4 icon pins with the Windows press hand (scale .7), the dtPopIntro bounce,
- * the state ladder under the active pin (0 closed → 6px open → 12px lime)
- * and the name in an acrylic tooltip — and, in the rail foot, the family
- * section (one identity dot per sibling, target blank) above the theme flip.
- * The eight real resize handles ring the frame (pointer capture, clamped to
- * the viewport); the window opens at 250ms scale(.95 → 1) on the window
- * curve cubic-bezier(.85,.14,.14,.85) with the focused-window shadow and 8px
- * corners; while dragging the offsets ride --win-x/--win-y and every
- * transition stops. The seen state of the flow never regresses — closing the
- * window is the explicit relaunch metaphor and replays the opening on
- * purpose. The window component is a copy-per-deploy (the consolidation
- * belongs to the future @wenathlan/* package). Campaign v3 mark discipline:
- * the title-bar mark is the ONE mark of the platform pages — it rests on the
- * landing (data-landing), where the hero lockup owns it.
+ * Shell.tsx — the app surface of the forge, answering the FAMILY
+ * STANDALONE LAW: an app accessed by its own url (wenathlan.github.io/
+ * devthink/forge/) is the normal application, one hundred percent — it
+ * renders FULL-BLEED, the routed stage owning the whole viewport with the
+ * page rail as the app's own navigation (no window chrome of its own: no
+ * title bar, no caption buttons, no resize handles, no inactive
+ * grayscale, no entry scale). The WINDOW (the draggable frame with the
+ * captions and the eight handles) exists ONLY when the app is embedded
+ * inside the DevThink OS power clip — the framed contract below renders
+ * the routed stage bare (shell--embedded) and the OS draws the window
+ * around it. The rail keeps the Windows 11 hands on the pages themselves
+ * (the 48px pins, the press at scale .7, the state ladder, the acrylic
+ * tooltips, the family foot with one identity dot per sibling resolved
+ * by familyurl, the theme flip) and the stage scrolls itself under the
+ * rail.
  */
 
 import {
-  CopyRegular,
-  DismissRegular,
   HomeRegular,
   ListRegular,
-  MaximizeRegular,
   PulseRegular,
-  SubtractRegular,
   WeatherMoonRegular,
   WeatherSunnyRegular,
   WindowConsoleRegular,
 } from "@fluentui/react-icons";
-import {
-  type CSSProperties,
-  type MouseEvent as ReactMouseEvent,
-  type ReactNode,
-  type PointerEvent as ReactPointerEvent,
-  useRef,
-  useState,
-} from "react";
+import { type ReactNode, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { FAMILY_SLUGS, familyAccentOf } from "../../family";
 import { familyurl } from "../../familyurl";
 import { labelfill, label } from "../../labels";
 import { currentTheme, type Theme, toggleTheme } from "../../theme";
-import { BrandMark } from "../widgets";
 
 /** one entry of the window rail: a page surface of the app with its glyph. */
 export type RailApp = {
@@ -59,7 +39,7 @@ export type RailApp = {
   icon: typeof HomeRegular;
 };
 
-/** the pages the application window hosts, one rail pin each — the real
+/** the pages the application hosts, one rail pin each — the real
  * surface set of the forge: the landing first, then the three platform
  * pages of the runner floor. exported for the flow components beside this
  * folder. */
@@ -69,58 +49,6 @@ export const RAIL_APPS: readonly RailApp[] = [
   { href: "/queue", label: label("nav.queue"), detail: label("nav.queueDetail"), icon: ListRegular },
   { href: "/logs", label: label("nav.logs"), detail: label("nav.logsDetail"), icon: WindowConsoleRegular },
 ];
-
-/** the hand-over route of the close caption: closing the window restarts
- * the application at the intro (the relaunch metaphor — the seen flags of
- * the flow never regress, the replay is the explicit choice). */
-const RESTART_ROUTE = "/intro";
-
-/** the clamp of the resizable window frame (the handle law) */
-const MIN_W = 520;
-const MIN_H = 400;
-
-/** one pointer session over the title bar: where the press started and the
- * offset the window carried when it did. */
-type DragTrack = {
-  pointerId: number;
-  originX: number;
-  originY: number;
-  baseX: number;
-  baseY: number;
-};
-
-/** one pointer session over a resize handle: the direction (n/s/e/w and the
- * corners) and the frame size the drag started from. */
-type ResizeTrack = {
-  pointerId: number;
-  dir: string;
-  originX: number;
-  originY: number;
-  baseW: number;
-  baseH: number;
-};
-
-/** keeps the dragged title bar reachable: the offset never slides the bar
- * fully off screen, so the window can always be grabbed back. */
-function clampDrag(x: number, y: number): { x: number; y: number } {
-  const spanX = Math.max(window.innerWidth / 2 - 80, 0);
-  const spanY = Math.max(window.innerHeight / 2 - 60, 0);
-  return { x: Math.min(spanX, Math.max(-spanX, x)), y: Math.min(spanY, Math.max(-spanY, y)) };
-}
-
-/**
- * Keeps a resized frame on screen: the width and height stay inside the
- * viewport (with a margin) and above the minimum usable window.
- *
- * @param width the drafted width.
- * @param height the drafted height.
- * @returns the clamped size.
- */
-function clampSize(width: number, height: number): { w: number; h: number } {
-  const w = Math.min(window.innerWidth - 24, Math.max(MIN_W, width));
-  const h = Math.min(window.innerHeight - 24, Math.max(MIN_H, height));
-  return { w, h };
-}
 
 /**
  * The theme flip of the rail foot: flips the in-memory theme, stores
@@ -147,8 +75,8 @@ function ThemeToggle() {
   );
 }
 
-/** the shared shell: the application window (title bar + pin rail + content
- * zone) over the deep canvas */
+/** the shared shell: the app surface — the page rail with the family foot
+ * and the content zone beside it — owning the whole viewport */
 export function Shell({ children }: { children: ReactNode }) {
   // the embedded contract: inside the os power clip the app rides the host
   // window chrome — the routed stage renders bare, full-bleed in the frame
@@ -160,267 +88,68 @@ export function Shell({ children }: { children: ReactNode }) {
     }
   })();
 
-  const [location, navigate] = useLocation();
-  const [maximized, setMaximized] = useState(false);
-  const [minimized, setMinimized] = useState(false);
-  const [drag, setDrag] = useState({ x: 0, y: 0 });
-  const [size, setSize] = useState<{ w: number; h: number } | null>(null);
-  const [dragging, setDragging] = useState(false);
-  const [resizing, setResizing] = useState(false);
-  const frameRef = useRef<HTMLElement | null>(null);
-  const trackRef = useRef<DragTrack | null>(null);
-  const resizeRef = useRef<ResizeTrack | null>(null);
-
-  /** maximizes over the backdrop or restores the windowed frame (the drag
-   * offset and the manual size reset, the window re-centers). */
-  function toggleMaximize() {
-    setDrag({ x: 0, y: 0 });
-    setSize(null);
-    setMaximized((value) => !value);
-  }
-
-  /** arms a drag when the pointer presses the empty bar (never the caption
-   * buttons or a link). */
-  function onTitlePointerDown(event: ReactPointerEvent<HTMLElement>) {
-    if (maximized) return;
-    if ((event.target as HTMLElement).closest("button, a, input")) return;
-    trackRef.current = {
-      pointerId: event.pointerId,
-      originX: event.clientX,
-      originY: event.clientY,
-      baseX: drag.x,
-      baseY: drag.y,
-    };
-    event.currentTarget.setPointerCapture(event.pointerId);
-    setDragging(true);
-  }
-
-  /** rides the pointer while a drag session is armed. */
-  function onTitlePointerMove(event: ReactPointerEvent<HTMLElement>) {
-    const track = trackRef.current;
-    if (!track || track.pointerId !== event.pointerId) return;
-    setDrag(clampDrag(track.baseX + event.clientX - track.originX, track.baseY + event.clientY - track.originY));
-  }
-
-  /** releases the drag session. */
-  function onTitlePointerUp(event: ReactPointerEvent<HTMLElement>) {
-    const track = trackRef.current;
-    if (!track || track.pointerId !== event.pointerId) return;
-    trackRef.current = null;
-    event.currentTarget.releasePointerCapture(event.pointerId);
-    setDragging(false);
-  }
-
-  /** the Windows affordance: a double click on the empty bar toggles
-   * maximize. */
-  function onTitleDoubleClick(event: ReactMouseEvent<HTMLElement>) {
-    if ((event.target as HTMLElement).closest("button, a, input")) return;
-    toggleMaximize();
-  }
-
-  /** arms a resize on the pressed handle (the direction rides data-dir). */
-  function onHandlePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
-    const handle = (event.target as HTMLElement).closest<HTMLElement>("[data-dir]");
-    if (!handle || maximized) return;
-    const rect = frameRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    resizeRef.current = {
-      pointerId: event.pointerId,
-      dir: handle.dataset.dir ?? "",
-      originX: event.clientX,
-      originY: event.clientY,
-      baseW: rect.width,
-      baseH: rect.height,
-    };
-    event.currentTarget.setPointerCapture(event.pointerId);
-    setResizing(true);
-  }
-
-  /** rides the pointer while a resize session is armed (the edges grow the
-   * frame, the west/north edges mirror the delta). */
-  function onHandlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
-    const track = resizeRef.current;
-    if (!track || track.pointerId !== event.pointerId) return;
-    const dx = event.clientX - track.originX;
-    const dy = event.clientY - track.originY;
-    let width = track.baseW;
-    let height = track.baseH;
-    if (track.dir.includes("e")) width = track.baseW + dx;
-    if (track.dir.includes("w")) width = track.baseW - dx;
-    if (track.dir.includes("s")) height = track.baseH + dy;
-    if (track.dir.includes("n")) height = track.baseH - dy;
-    setSize(clampSize(width, height));
-  }
-
-  /** releases the resize session. */
-  function onHandlePointerUp(event: ReactPointerEvent<HTMLDivElement>) {
-    const track = resizeRef.current;
-    if (!track || track.pointerId !== event.pointerId) return;
-    resizeRef.current = null;
-    event.currentTarget.releasePointerCapture(event.pointerId);
-    setResizing(false);
-  }
-
-  /** close = relaunch: the flow restarts at the intro on purpose (the seen
-   * flags never regress) */
-  const closeWindow = () => {
-    navigate(RESTART_ROUTE, { replace: true });
-  };
+  const [location] = useLocation();
 
   // the active rail entry: the bare path owns home, every other page owns its route
   const isActive = (href: string): boolean =>
     href === "/" ? location === "/" : location === href || location.startsWith(`${href}/`);
 
-  // the manual frame size applies while windowed; maximize owns the viewport
-  const frameStyle = {
-    "--win-x": `${drag.x}px`,
-    "--win-y": `${drag.y}px`,
-    ...(!maximized && size ? { width: `${size.w}px`, height: `${size.h}px` } : {}),
-  } as CSSProperties;
-
-  // the minimized window collapses into the restore chip over the deep canvas
-  if (minimized) {
-    return (
-      <div className="win-root">
-        <button
-          type="button"
-          className="win-chip"
-          aria-label={label("shell.chip.restoreAria")}
-          onClick={() => setMinimized(false)}
-        >
-          <BrandMark size={16} />
-          <span>{label("ShellBrand")}</span>
-        </button>
-      </div>
-    );
-  }
-
-  // the embedded pass renders before the chrome: one window, one frame
+  // the embedded pass renders before the stage: one window, one frame
   if (framed) return <main className="shell shell--embedded">{children}</main>;
 
+  // the standalone pass: the direct url answers full-bleed — the window
+  // chrome exists only inside the os power clip, so the app owns the whole
+  // viewport; the page rail stays as the app's own navigation and the
+  // routed stage fills the rest of the screen
   return (
-    <div className="win-root" data-max={maximized ? "true" : undefined}>
-      <section
-        ref={frameRef}
-        className="win-window"
-        data-landing={location === "/" ? "true" : undefined}
-        data-max={maximized ? "true" : undefined}
-        data-moving={dragging || resizing ? "true" : undefined}
-        aria-label={label("shell.window.aria")}
-        style={frameStyle}
-      >
-        {/* biome-ignore lint/a11y/noStaticElementInteractions: the title bar is the drag surface; the window controls inside it are real buttons */}
-        <header
-          className="win-titlebar"
-          data-dragging={dragging ? "true" : undefined}
-          onPointerDown={onTitlePointerDown}
-          onPointerMove={onTitlePointerMove}
-          onPointerUp={onTitlePointerUp}
-          onPointerCancel={onTitlePointerUp}
-          onDoubleClick={onTitleDoubleClick}
-        >
-          <span className="win-title">
-            <BrandMark size={18} />
-            <strong>{label("ShellBrand")}</strong>
-            <span className="win-title__role">{label("shell.title.role")}</span>
-          </span>
-          <div className="win-controls">
-            <button
-              type="button"
-              className="win-control"
-              aria-label={label("shell.controls.minimize")}
-              onClick={() => setMinimized(true)}
-            >
-              <SubtractRegular fontSize={14} aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-              className="win-control"
-              aria-label={maximized ? label("shell.controls.restore") : label("shell.controls.maximize")}
-              onClick={toggleMaximize}
-            >
-              {maximized ? (
-                <CopyRegular fontSize={12} aria-hidden="true" />
-              ) : (
-                <MaximizeRegular fontSize={11} aria-hidden="true" />
-              )}
-            </button>
-            <button
-              type="button"
-              className="win-control win-control--close"
-              aria-label={label("shell.controls.close")}
-              onClick={closeWindow}
-            >
-              <DismissRegular fontSize={14} aria-hidden="true" />
-            </button>
-          </div>
-        </header>
-        {/* the windows resize chrome: the eight handle zones of the real frame
-            (pointer capture on the ring, the size clamped to the viewport) */}
-        <div
-          className="win-handles"
-          onPointerDown={onHandlePointerDown}
-          onPointerMove={onHandlePointerMove}
-          onPointerUp={onHandlePointerUp}
-          onPointerCancel={onHandlePointerUp}
-        >
-          <span className="win-handle" data-dir="n" aria-hidden="true" />
-          <span className="win-handle" data-dir="s" aria-hidden="true" />
-          <span className="win-handle" data-dir="e" aria-hidden="true" />
-          <span className="win-handle" data-dir="w" aria-hidden="true" />
-          <span className="win-handle" data-dir="nw" aria-hidden="true" />
-          <span className="win-handle" data-dir="ne" aria-hidden="true" />
-          <span className="win-handle" data-dir="sw" aria-hidden="true" />
-          <span className="win-handle" data-dir="se" aria-hidden="true" />
-        </div>
-        <div className="win-body">
-          <nav className="win-rail" aria-label={label("shell.rail.aria")}>
-            {RAIL_APPS.map((app) => {
-              const Icon = app.icon;
-              return (
-                <Link
-                  key={app.href}
-                  href={app.href}
-                  className="win-raillink"
-                  data-tip={app.label}
-                  aria-label={app.label}
-                  aria-current={isActive(app.href) ? "page" : undefined}
-                >
-                  <Icon fontSize={18} aria-hidden="true" />
-                </Link>
-              );
-            })}
-            <div className="win-railfoot">
-              <div className="win-family">
-                {FAMILY_SLUGS.map((slug) => {
-                  const member = familyAccentOf(slug);
-                  return (
-                    <a
-                      key={slug}
-                      className="win-family__link"
-                      href={familyurl(slug)}
-                      target="_blank"
-                      rel="noreferrer"
-                      data-tip={slug}
-                      aria-label={labelfill("shell.family.openAria", { slug })}
-                    >
-                      <span
-                        className="win-family__dot"
-                        data-app={slug}
-                        style={member ? { background: member.accent } : undefined}
-                        aria-hidden="true"
-                      />
-                      <span className="win-sr">{slug}</span>
-                    </a>
-                  );
-                })}
-              </div>
-              <ThemeToggle />
+    <div className="shell shell--standalone">
+      <div className="win-body">
+        <nav className="win-rail" aria-label={label("shell.rail.aria")}>
+          {RAIL_APPS.map((app) => {
+            const Icon = app.icon;
+            return (
+              <Link
+                key={app.href}
+                href={app.href}
+                className="win-raillink"
+                data-tip={app.label}
+                aria-label={app.label}
+                aria-current={isActive(app.href) ? "page" : undefined}
+              >
+                <Icon fontSize={18} aria-hidden="true" />
+              </Link>
+            );
+          })}
+          <div className="win-railfoot">
+            <div className="win-family">
+              {FAMILY_SLUGS.map((slug) => {
+                const member = familyAccentOf(slug);
+                return (
+                  <a
+                    key={slug}
+                    className="win-family__link"
+                    href={familyurl(slug)}
+                    target="_blank"
+                    rel="noreferrer"
+                    data-tip={slug}
+                    aria-label={labelfill("shell.family.openAria", { slug })}
+                  >
+                    <span
+                      className="win-family__dot"
+                      data-app={slug}
+                      style={member ? { background: member.accent } : undefined}
+                      aria-hidden="true"
+                    />
+                    <span className="win-sr">{slug}</span>
+                  </a>
+                );
+              })}
             </div>
-          </nav>
-          <div className="win-content">{children}</div>
-        </div>
-      </section>
+            <ThemeToggle />
+          </div>
+        </nav>
+        <div className="win-content">{children}</div>
+      </div>
     </div>
   );
 }

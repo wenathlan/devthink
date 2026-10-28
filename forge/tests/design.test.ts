@@ -125,18 +125,25 @@ describe("design contract", () => {
     assert.match(CSS, /font-variant-numeric:\s*tabular-nums/);
   });
 
-  it("rests the title-bar mark on the landing (logo discipline)", () => {
-    assert.match(CSS, /data-landing/);
+  it("answers the direct url full-bleed — the window chrome lives only inside the os", () => {
+    /* the family standalone law: an app accessed by its own url is the
+    normal application, one hundred percent — the shell renders
+    shell--standalone with no window chrome of its own (no title bar, no
+    captions, no resize handles, no inactive law, no entry scale), while
+    the framed contract keeps the bare stage for the os power clip */
+    assert.match(SHELL, /shell--standalone/, "the standalone law must mount");
+    assert.match(SHELL, /shell--embedded/, "the framed contract stands");
+    assert.doesNotMatch(
+      SHELL,
+      /win-root|win-window|win-titlebar|win-control|win-handle|win-chip|setPointerCapture|data-dir/,
+      "the window chrome still rides the standalone shell",
+    );
+    assert.match(CSS, /\.shell--standalone \{[^}]*height: 100vh/, "the standalone block must fill the viewport");
   });
 
-  it("wears the windows hands (press scale .7, dtPopIntro, the state ladder, the red close)", () => {
+  it("wears the windows hands (press scale .7, dtPopIntro, the state ladder)", () => {
     assert.match(CSS, /@keyframes dtPopIntro/);
     assert.match(CSS, /transform: scale\(0\.7\)/);
-    assert.match(CSS, /--color-close: #e81123/);
-    assert.match(CSS, /--color-close-deep: #8b0a14/);
-    assert.match(CSS, /--win-close: var\(--color-close\)/);
-    assert.match(CSS, /--win-close-hot: var\(--color-close-deep\)/);
-    assert.match(CSS, /grayscale\(80%\)/);
   });
 
   it("declares the honest page set (home, runs, queue, logs, notfound)", () => {
@@ -188,7 +195,5 @@ describe("design contract", () => {
   it("reforms the navigation to the 48px pin rail with the windows hands", () => {
     assert.match(CSS, /--win-rail-w: 48px/);
     assert.match(SHELL, /data-tip=\{app\.label\}/);
-    assert.match(SHELL, /data-dir="se"/, "the eight resize handles ride the frame");
-    assert.match(SHELL, /setPointerCapture/);
   });
 });

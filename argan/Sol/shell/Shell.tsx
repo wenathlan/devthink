@@ -1,44 +1,33 @@
 // the argan shell of the theme.
 /**
- * Shell.tsx — the ONE chrome of the theme, converted from the OS grammar to
- * the APPLICATION grammar (F-argan): the routed pages render inside one
- * Windows 11 application window floating over the Mica backdrop — a title
- * bar carrying the drawn argan mark and the app name (the drag handle,
- * double-click toggles maximize), the Fluent caption buttons at the right
- * edge (minimize collapses the window into a restore chip, maximize fills
- * the backdrop, close relaunches the app at /intro) and a left rail that
- * switches the pages as the window content. The window rides the WINDOWS
- * IDENTITY PASS tokens (--win-mica, --win-shadow-window, --win-accent) and
- * opens with the 250ms scale .95→1 entry; there is no taskbar, no start
- * menu and no desktop navigation anymore. Campaign v3 · r3-argan adds the
- * logo-discipline hook: the landing carries data-landing on the window, so
- * the title-bar mark rests while the hero lockup owns the mark (CSS-enforced).
- * The chrome is a copy-per-deploy minimum: consolidation belongs to the
- * future @wenathlan/* package.
+ * Shell.tsx — the app surface of the argan, answering the FAMILY
+ * STANDALONE LAW: an app accessed by its own url (wenathlan.github.io/
+ * devthink/argan/) is the normal application, one hundred percent — it
+ * renders FULL-BLEED, the routed stage owning the whole viewport with the
+ * page rail as the app's own navigation (no window chrome of its own: no
+ * title bar, no caption buttons, no resize handles, no inactive
+ * grayscale, no entry scale). The WINDOW (the draggable frame with the
+ * captions and the eight handles) exists ONLY when the app is embedded
+ * inside the DevThink OS power clip — the framed contract below renders
+ * the routed stage bare (shell--embedded) and the OS draws the window
+ * around it. The rail keeps the Windows 11 hands on the pages themselves
+ * (the pins with the press ladder and the popintro bounce, the accent
+ * ladder on the active entry, the family foot with one spec §12 accent
+ * dot per sibling resolved by familyurl, the theme flip) and the stage
+ * scrolls itself under the rail. The mark stays the ONE premium drawn
+ * icon of the app (the hero lockup owns it on the landing).
  */
 
 import {
-  CopyRegular,
-  DismissRegular,
   GlobeRegular,
   HomeRegular,
-  MaximizeRegular,
   PlugConnectedRegular,
   SettingsRegular,
   ShieldRegular,
-  SquareMultipleRegular,
-  SubtractRegular,
   WeatherMoonRegular,
   WeatherSunnyRegular,
 } from "@fluentui/react-icons";
-import {
-  type CSSProperties,
-  type MouseEvent as ReactMouseEvent,
-  type ReactNode,
-  type PointerEvent as ReactPointerEvent,
-  useRef,
-  useState,
-} from "react";
+import { type ReactNode, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { familyrow } from "../../family";
 import { familyurl } from "../../familyurl";
@@ -77,10 +66,6 @@ export const START_APPS: readonly StartApp[] = [
     icon: SettingsRegular,
   },
 ];
-
-/** the hand-over route of the close caption: closing the window restarts the
- * application at the intro (the relaunch metaphor). */
-const RESTART_ROUTE = "/intro";
 
 /* ------------------------------ the drawn mark ---------------------------- */
 
@@ -279,25 +264,7 @@ export function ArganMark({ size, hidden, flow }: MarkProps) {
   );
 }
 
-/* ------------------------------ the window -------------------------------- */
-
-/** one pointer session over the title bar: where the press started and the
- * offset the window carried when it did. */
-type DragTrack = {
-  pointerId: number;
-  originX: number;
-  originY: number;
-  baseX: number;
-  baseY: number;
-};
-
-/** keeps the dragged title bar reachable: the offset never slides the bar
- * fully off screen, so the window can always be grabbed back. */
-function clampDrag(x: number, y: number): { x: number; y: number } {
-  const spanX = Math.max(window.innerWidth / 2 - 80, 0);
-  const spanY = Math.max(window.innerHeight / 2 - 60, 0);
-  return { x: Math.min(spanX, Math.max(-spanX, x)), y: Math.min(spanY, Math.max(-spanY, y)) };
-}
+/* ------------------------------ the app surface ---------------------------- */
 
 /**
  * the family row of the rail foot: the eight sibling deploy units of the
@@ -352,7 +319,7 @@ function ThemeToggle() {
 }
 
 /** the window props: the routed page plus the legacy page props the anchors
- * still pass (name, domain, cta, footer links, container width) — the window
+ * still pass (name, domain, cta, footer links, container width) — the app
  * grammar names itself, so only the theme toggle switch is consumed. */
 type ShellProps = {
   children: ReactNode;
@@ -366,11 +333,11 @@ type ShellProps = {
 };
 
 /**
- * the application window: title bar (brand, drag, caption buttons), page
- * rail and the routed stage, floating over the Mica backdrop.
+ * the app surface: the page rail with the family foot and the routed stage
+ * beside it, owning the whole viewport.
  *
  * @param children the routed page.
- * @returns the window element.
+ * @returns the app surface element.
  */
 export function Shell({ children, themeButton = true }: ShellProps) {
   // the embedded contract: inside the os power clip the app rides the host
@@ -383,174 +350,56 @@ export function Shell({ children, themeButton = true }: ShellProps) {
     }
   })();
 
-  const [location, navigate] = useLocation();
-  const [maximized, setMaximized] = useState(false);
-  const [minimized, setMinimized] = useState(false);
-  const [drag, setDrag] = useState({ x: 0, y: 0 });
-  const trackRef = useRef<DragTrack | null>(null);
-
-  /** maximizes over the backdrop or restores the windowed frame (the drag offset resets). */
-  function toggleMaximize() {
-    setDrag({ x: 0, y: 0 });
-    setMaximized((value) => !value);
-  }
-
-  /** arms a drag when the pointer presses the empty bar (never the caption buttons). */
-  function onTitlePointerDown(event: ReactPointerEvent<HTMLElement>) {
-    if (maximized) return;
-    if ((event.target as HTMLElement).closest("button, a, input")) return;
-    trackRef.current = {
-      pointerId: event.pointerId,
-      originX: event.clientX,
-      originY: event.clientY,
-      baseX: drag.x,
-      baseY: drag.y,
-    };
-    event.currentTarget.setPointerCapture(event.pointerId);
-  }
-
-  /** rides the pointer while a drag session is armed. */
-  function onTitlePointerMove(event: ReactPointerEvent<HTMLElement>) {
-    const track = trackRef.current;
-    if (!track || track.pointerId !== event.pointerId) return;
-    setDrag(clampDrag(track.baseX + event.clientX - track.originX, track.baseY + event.clientY - track.originY));
-  }
-
-  /** releases the drag session. */
-  function onTitlePointerUp(event: ReactPointerEvent<HTMLElement>) {
-    const track = trackRef.current;
-    if (!track || track.pointerId !== event.pointerId) return;
-    trackRef.current = null;
-    event.currentTarget.releasePointerCapture(event.pointerId);
-  }
-
-  /** the Windows affordance: a double click on the empty bar toggles maximize. */
-  function onTitleDoubleClick(event: ReactMouseEvent<HTMLElement>) {
-    if ((event.target as HTMLElement).closest("button, a, input")) return;
-    toggleMaximize();
-  }
+  const [location] = useLocation();
 
   // the active rail entry: the bare path owns home, every other page owns its route
   const isActive = (href: string): boolean =>
     href === "/" ? location === "/" : location === href || location.startsWith(`${href}/`);
 
-  // the landing flag: the hero lockup owns the mark there, the title bar rests
-  const landing = location === "/";
-
-  // the embedded pass renders before the chrome: one window, one frame
+  // the embedded pass renders before the stage: one window, one frame
   if (framed) return <main className="shell shell--embedded">{children}</main>;
 
+  // the standalone pass: the direct url answers full-bleed — the window
+  // chrome exists only inside the os power clip, so the app owns the whole
+  // viewport; the page rail stays as the app's own navigation and the
+  // routed stage fills the rest of the screen
   return (
-    <div className="appframe" data-maximized={maximized ? "true" : undefined}>
-      <section
-        className="winapp halftone grain"
-        data-landing={landing ? "true" : undefined}
-        hidden={minimized}
-        data-maximized={maximized ? "true" : undefined}
-        aria-label={label("shell.window.aria")}
-        style={{ "--winapp-x": `${drag.x}px`, "--winapp-y": `${drag.y}px` } as CSSProperties}
-      >
-        {/* biome-ignore lint/a11y/noStaticElementInteractions: the title bar is the drag surface; the window controls inside it are real buttons */}
-        <header
-          className="winapp__title"
-          data-dragging={trackRef.current ? "true" : undefined}
-          onPointerDown={onTitlePointerDown}
-          onPointerMove={onTitlePointerMove}
-          onPointerUp={onTitlePointerUp}
-          onPointerCancel={onTitlePointerUp}
-          onDoubleClick={onTitleDoubleClick}
-        >
-          <div className="winapp__brand">
-            <ArganMark size={20} hidden />
-            <span className="winapp__name">{label("ShellBrand")}</span>
-            <span className="winapp__role">{label("shell.role")}</span>
-          </div>
-          <div className="winapp__caption">
-            <button
-              type="button"
-              className="winapp__cap"
-              aria-label={label("shell.caption.minimize")}
-              onClick={() => setMinimized(true)}
-            >
-              <SubtractRegular fontSize={14} aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-              className="winapp__cap"
-              aria-label={maximized ? label("shell.caption.restore") : label("shell.caption.maximize")}
-              onClick={toggleMaximize}
-            >
-              {maximized ? (
-                <SquareMultipleRegular fontSize={12} aria-hidden="true" />
-              ) : (
-                <MaximizeRegular fontSize={11} aria-hidden="true" />
-              )}
-            </button>
-            <button
-              type="button"
-              className="winapp__cap winapp__cap--close"
-              aria-label={label("shell.caption.close")}
-              onClick={() => navigate(RESTART_ROUTE)}
-            >
-              <DismissRegular fontSize={14} aria-hidden="true" />
-            </button>
-          </div>
-        </header>
-
-        {/* the windows resize chrome: the eight handle zones of the real
-            frame (visual grips, CSS-drawn; the drag belongs to the title bar) */}
-        <span className="winapp__handle" data-handle="n" aria-hidden="true" />
-        <span className="winapp__handle" data-handle="s" aria-hidden="true" />
-        <span className="winapp__handle" data-handle="e" aria-hidden="true" />
-        <span className="winapp__handle" data-handle="w" aria-hidden="true" />
-        <span className="winapp__handle" data-handle="nw" aria-hidden="true" />
-        <span className="winapp__handle" data-handle="ne" aria-hidden="true" />
-        <span className="winapp__handle" data-handle="sw" aria-hidden="true" />
-        <span className="winapp__handle" data-handle="se" aria-hidden="true" />
-
-        <div className="winapp__body">
-          <nav className="winapp__rail" aria-label={label("shell.rail.aria")}>
-            <p className="winapp__railhead" aria-hidden="true">
-              {label("shell.rail.head")}
-            </p>
-            {START_APPS.map((app) => {
-              const Icon = app.icon;
-              return (
-                <Link
-                  key={app.href}
-                  href={app.href}
-                  className="winapp__raillink"
-                  data-tip={app.detail}
-                  aria-label={app.label}
-                  aria-current={isActive(app.href) ? "page" : undefined}
-                >
-                  <Icon fontSize={16} aria-hidden="true" />
-                  <span className="winapp__raillabel">{app.label}</span>
-                </Link>
-              );
-            })}
-            {themeButton ? (
-              <div className="winapp__railfoot">
-                <p className="winapp__familyhead" aria-hidden="true">
-                  {label("shell.family.head")}
-                </p>
-                <FamilyRow />
-                <ThemeToggle />
-              </div>
-            ) : null}
-          </nav>
-          <div className="winapp__stage">
-            <main className="shell">{children}</main>
-          </div>
+    <div className="shell shell--standalone">
+      <div className="winapp__body">
+        <nav className="winapp__rail" aria-label={label("shell.rail.aria")}>
+          <p className="winapp__railhead" aria-hidden="true">
+            {label("shell.rail.head")}
+          </p>
+          {START_APPS.map((app) => {
+            const Icon = app.icon;
+            return (
+              <Link
+                key={app.href}
+                href={app.href}
+                className="winapp__raillink"
+                data-tip={app.detail}
+                aria-label={app.label}
+                aria-current={isActive(app.href) ? "page" : undefined}
+              >
+                <Icon fontSize={16} aria-hidden="true" />
+                <span className="winapp__raillabel">{app.label}</span>
+              </Link>
+            );
+          })}
+          {themeButton ? (
+            <div className="winapp__railfoot">
+              <p className="winapp__familyhead" aria-hidden="true">
+                {label("shell.family.head")}
+              </p>
+              <FamilyRow />
+              <ThemeToggle />
+            </div>
+          ) : null}
+        </nav>
+        <div className="winapp__stage">
+          <main className="shell">{children}</main>
         </div>
-      </section>
-
-      {minimized && (
-        <button type="button" className="winchip" aria-label={label("shell.chip.restoreAria")} onClick={() => setMinimized(false)}>
-          <ArganMark size={16} hidden />
-          <span>{label("ShellBrand")}</span>
-        </button>
-      )}
+      </div>
     </div>
   );
 }
