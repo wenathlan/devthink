@@ -1,14 +1,18 @@
 // vault prisma schema — the self-hosted database of the supabase clone:
-// projects, accounts and storage objects, all served over https.
+// projects, accounts and the storage engine (ledger objects, the 256KB
+// chunk catalog, the ordered chunk references and the user-defined quotas),
+// all served over https by the drizzle executor.
 //
 // family sync contract (devthink master): a table of the same kind carries
 // the same columns and the same pointers in every application that holds
 // the kind — identity pointers are text, counts are 32-bit ints, time is
-// datetime or iso text, and byte-scale pointers (sizes, lengths, offsets)
-// are 64-bit BigInt, the pointer that holds terabytes. The sqlite
-// autoincrement rowid is 64-bit by the engine contract. This file is the
-// documentation of record: the runtime runs drizzle + better-sqlite3
-// beside it and mirrors the same columns in its boot DDL.
+// datetime or iso text, and byte-scale pointers (sizes, limits, chunk
+// lengths) are 64-bit BigInt, the pointer that holds terabytes. The sqlite
+// rowid is 64-bit by the engine contract. This file is the documentation of
+// record (prisma only declares): the runtime executes drizzle + better-
+// sqlite3 beside it and mirrors the same columns in its boot DDL — no .sql
+// lives in the repo, migrations stay gitignored and CI-only.
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -19,11 +23,14 @@ datasource db {
 }
 
 model Project {
-  id        String   @id @default(cuid())
+  id        String         @id @default(cuid())
   name      String
-  region    String   @default("local")
-  createdAt DateTime @default(now())
+  region    String         @default("local")
+  createdAt DateTime       @default(now())
   objects   StorageObject[]
+  quota     Quota?
+
+  @@map("projects")
 }
 
 model Account {
@@ -31,16 +38,73 @@ model Account {
   email     String   @unique
   role      String   @default("owner")
   createdAt DateTime @default(now())
+
+  @@map("accounts")
 }
 
+/// one ledger row per stored object — the path, the mime, the real sha-256
+/// digest, the json manifest (the ordered chunk truth) and the bigint size
+/// pointer. deleted_at is the soft-delete tombstone; the sweep collects the
+/// tombstones and the orphan chunks no one references anymore.
 model StorageObject {
-  id        String   @id @default(cuid())
+  id        String     @id @default(cuid())
   projectId String
-  project   Project  @relation(fields: [projectId], references: [id])
+  project   Project    @relation(fields: [projectId], references: [id])
   path      String
-  lfs       Boolean  @default(false)
-  size      BigInt   @default(0)
-  createdAt DateTime @default(now())
+  mime      String
+  size      BigInt     @default(0)
+  digest    String
+  /// the json manifest as text — the ordered chunk entries, the channel, the tier
+  manifest  String
+  channel   String     @default("blob")
+  createdAt DateTime   @default(now())
+  deletedAt DateTime?
+  chunkRefs ChunkRef[]
+
+  @@map("storage_objects")
+}
+
+/// the content-addressed chunk catalog — one row per unique 256KB window,
+/// keyed by its real sha-256, refcounted (refs = live chunk_refs rows).
+/// the bytes column is the bytea law: blobs never ride the db raw, only
+/// their packed 256KB windows do.
+model Chunk {
+  id        BigInt      @id @default(autoincrement())
+  digest    String      @unique
+  size      BigInt
+  stored    BigInt
+  encoding  String      @default("raw")
+  refs      Int         @default(0)
+  bytes     Bytes
+  createdAt DateTime    @default(now())
+  pointers  ChunkRef[]
+
+  @@map("chunks")
+}
+
+/// the ordered edge between an object and its chunks — position is the
+/// reassembly order inside the object.
+model ChunkRef {
+  objectId String       @map("object_id")
+  position Int
+  chunkId  BigInt       @map("chunk_id")
+  object   StorageObject @relation(fields: [objectId], references: [id])
+  chunk    Chunk        @relation(fields: [chunkId], references: [id])
+
+  @@id([objectId, position])
+  @@map("chunk_refs")
+}
+
+/// the user-defined quota of one project — limit_bytes is bigint and null
+/// means unlimited: no fixed cap exists anywhere in the vault, the 900MB
+/// floor only answers at project creation until the owner redefines it.
+model Quota {
+  projectId  String   @id @map("project_id")
+  project    Project  @relation(fields: [projectId], references: [id])
+  limitBytes BigInt?   @map("limit_bytes")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("quotas")
 }
 
 /// the onboarding state of one visitor — the entry-flow gates catalogued on
@@ -53,4 +117,6 @@ model OnboardingState {
   introseen      Boolean  @default(false)
   onboardingseen Boolean  @default(false)
   updatedAt      DateTime @updatedAt
+
+  @@map("onboarding_states")
 }
