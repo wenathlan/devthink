@@ -1,12 +1,12 @@
 /**
  * providerrow.tsx — the icon-only provider row of the sign-in face:
- * google, github and gitlab over the oauthrow.ts contract (the bots are
+ * google and github over the oauthrow.ts contract (the bots are
  * ready on the owner accounts, the client ids ride the env, the single
  * callback page detects the origin by state), plus the cli pairing row
  * under the same icon grammar — the owner order: the brand marks ride
  * alone, the continue-with words never print on the face. The official
- * svg glyphs of each provider (the four color google g, the octocat mark,
- * the three color tanuki) and the console glyph of the cli draw inline at
+ * svg glyphs of each provider (the four color google g, the octocat mark)
+ * and the console glyph of the cli draw inline at
  * 18px inside 44px square cells; the words survive as the accessible
  * names only (aria-label and title from the copy store, auth.oauth.*,
  * auth.cli.* — an icon without an accessible name is banned by the house
@@ -50,28 +50,11 @@ function GithubMark() {
   );
 }
 
-/** the official gitlab tanuki mark: the full silhouette in the orange base,
- * the center mask in red and the chin in yellow — the three color story of
- * the brand at button size. */
-function GitlabMark() {
-  return (
-    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
-      <path
-        fill="#FC6D26"
-        d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"
-      />
-      <path fill="#E24329" d="M7.5375 8.218h8.9347l-1.83 5.5H9.37z" />
-      <path fill="#FCA326" d="M9.37 13.718h5.26L12 22.976z" />
-    </svg>
-  );
-}
-
 /** the cli mark of the pairing row: the console glyph of the fluent set. */
 
 const PROVIDER_MARKS: Readonly<Record<OAuthProvider, () => React.JSX.Element>> = Object.freeze({
   google: GoogleMark,
   github: GithubMark,
-  gitlab: GitlabMark,
 });
 
 export interface ProviderRowProps {
@@ -80,16 +63,15 @@ export interface ProviderRowProps {
   /** the oauth round trip is starting: the row freezes while it lasts. */
   busy: boolean;
   /** the entry: a ready provider starts the round trip. Unconfigured
-   * providers never reach here (the row renders them disabled with the
-   * honest note). */
+   * providers never reach here (the row renders them disabled). */
   onBegin: (provider: OAuthProvider) => void;
   /** the cli pairing entry: the simple button answers the invitation link
-   * when one rides the url, the honest note otherwise. */
+   * when one rides the url. */
   onPair: () => void;
 }
 
 /** ProviderRow — the icon-only provider row under the password well: the
- * three provider buttons wearing the official brand marks alone in 44px
+ * provider buttons wearing the official brand marks alone in 44px
  * square cells, the cli pairing button under the same grammar. The
  * continue-with words never print — they ride the accessible names of the
  * buttons (an icon without a name is banned). Zero manual fields: the
@@ -107,7 +89,7 @@ export function ProviderRow({ row, busy, onBegin, onPair }: ProviderRowProps) {
               className="dt-oauthrow__btn"
               disabled={!entry.ready || busy}
               aria-label={copy(`auth.oauth.${entry.provider}`)}
-              title={entry.ready ? copy(`auth.oauth.${entry.provider}`) : copy("auth.oauth.unconfigured")}
+              title={copy(`auth.oauth.${entry.provider}`)}
               onClick={() => onBegin(entry.provider)}
             >
               <span className="dt-oauthrow__glyph" data-brand={entry.provider} aria-hidden="true">

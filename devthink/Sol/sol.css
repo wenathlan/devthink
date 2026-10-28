@@ -11815,10 +11815,9 @@ span[data-tile] {
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   gap: 18px;
   padding: 28px 26px 22px;
-  border-right: 1px solid color-mix(in oklab, var(--color-veil) 10%, transparent);
   background:
     radial-gradient(64% 48% at 10% 96%, color-mix(in oklab, var(--color-ever) 40%, transparent) 0%, transparent 66%),
     radial-gradient(54% 42% at 94% 100%, color-mix(in oklab, var(--color-ever-deep) 34%, transparent) 0%, transparent 60%),
@@ -12082,11 +12081,8 @@ span[data-tile] {
 }
 /* the provider row rides the dt-oauthrow kit inside the sign-in card: the
  * icon-only buttons carry their own 44px square touch floor in the kit,
- * and the page scope calms the lane hairline to the veil strength of the
- * card */
-.dtw-login .dt-oauthrow {
-  border-top-color: color-mix(in oklab, var(--color-veil) 10%, transparent);
-}
+ * and the lane answers the card without a divider (the owner order: the
+ * hairlines of the login face die) */
 .dtw-login__failure {
   margin: 0;
   color: #ff9aa2;
@@ -16630,7 +16626,6 @@ button.dtc-recents__row:focus-visible {
   display: grid;
   width: 100%;
   padding: 12px 0 0;
-  border-top: 1px solid var(--dtc-hairline, rgb(255 255 255 / 14%));
 }
 .dt-oauthrow__btns {
   display: flex;
@@ -20989,3 +20984,109 @@ button.dtc-recents__row {
 }
 
 /* ==== intro ever hero · end of section ==== */
+
+/* ==== @section login theme sync (light) · the auth face answers the os ladder ====
+ * the owner law: login and system wear the same theme, light or dark, with
+ * zero color difference. the night bed tokens the auth kit speaks
+ * (--color-night the card bed, --color-night-2 the visual bed, --color-veil
+ * the ink, --color-mask-ink the shadow) flip here so every color-mix
+ * consumer of the kit — the card ring, the acrylic washes, the hairlines,
+ * the elevation ladder — answers the light theme with the same geometry.
+ * the wallpaper walks the win11 light mica canon (#eef1f8 over #f3f3f3),
+ * the ink literals of the face walk the dark ink family, and the power
+ * menu wears the light flyout of the os. the passes append (order wins). */
+[data-theme="light"] {
+  --color-night: #f4f6fb;
+  --color-night-2: #ebeef6;
+  --color-veil: #171a23;
+  --color-mask-ink: #0b0e16;
+}
+[data-theme="light"] .dtw-login {
+  background: #f3f3f3;
+}
+[data-theme="light"] .dtw-login__stage::after {
+  background:
+    radial-gradient(52% 38% at 12% 88%, color-mix(in oklab, var(--color-ever) 20%, transparent) 0%, transparent 62%),
+    radial-gradient(46% 34% at 88% 96%, color-mix(in oklab, var(--color-ever-deep) 18%, transparent) 0%, transparent 58%),
+    radial-gradient(120% 90% at 50% 108%, rgb(233 237 247 / 65%) 0%, transparent 72%),
+    radial-gradient(140% 110% at 50% 0%, #eef1f8 0%, #f3f3f3 62%),
+    #f3f3f3;
+}
+[data-theme="light"] .dtw-login--signin .dtw-login__stage::after {
+  filter: saturate(1.02) blur(22px);
+}
+[data-theme="light"] .dtw-login__time {
+  color: rgb(16 20 30 / 92%);
+  text-shadow: 0 1px 2px rgb(255 255 255 / 45%), 0 10px 36px rgb(11 14 22 / 14%);
+}
+[data-theme="light"] .dtw-login__date {
+  color: rgb(16 20 30 / 68%);
+  text-shadow: 0 1px 2px rgb(255 255 255 / 40%);
+}
+[data-theme="light"] .dtw-login__hint {
+  color: rgb(16 20 30 / 55%);
+}
+[data-theme="light"] .dtw-login__welcome {
+  color: #171a23;
+  text-shadow: none;
+}
+[data-theme="light"] .dtw-login__name {
+  color: #171a23;
+}
+[data-theme="light"] .dtw-login__name::placeholder {
+  color: rgb(23 26 35 / 45%);
+}
+[data-theme="light"] .dtw-login__reveal,
+[data-theme="light"] .dtw-login__submit {
+  color: rgb(23 26 35 / 88%);
+}
+[data-theme="light"] .dtw-login__reveal:hover,
+[data-theme="light"] .dtw-login__submit:hover:not(:disabled) {
+  background: rgb(15 18 28 / 10%);
+}
+[data-theme="light"] .dtw-login__submit:disabled {
+  color: rgb(23 26 35 / 40%);
+}
+[data-theme="light"] .dtw-login__failure {
+  color: #b42318;
+}
+[data-theme="light"] .dtw-login--signin .dtw-login__net,
+[data-theme="light"] .dtw-login--signin .dtw-login__power {
+  color: rgb(23 26 35 / 88%);
+}
+[data-theme="light"] .dtw-login--signin .dtw-login__power:hover,
+[data-theme="light"] .dtw-login--signin .dtw-login__power:focus-visible {
+  background: rgb(15 18 28 / 10%);
+}
+[data-theme="light"] .dtw-login__powermenu {
+  border-color: rgb(11 14 22 / 10%);
+  background: rgb(249 250 252 / 92%);
+  box-shadow: 0 8px 24px rgb(11 14 22 / 14%), 0 0 2px rgb(11 14 22 / 8%);
+}
+[data-theme="light"] .dtw-login__powermenu button {
+  color: #171a23;
+}
+[data-theme="light"] .dtw-login__powermenu button:hover {
+  background: rgb(15 18 28 / 8%);
+}
+[data-theme="light"] .dtw-gate {
+  background:
+    radial-gradient(120% 90% at 50% 108%, rgb(233 237 247 / 65%) 0%, transparent 72%),
+    radial-gradient(140% 110% at 50% 0%, #eef1f8 0%, #f3f3f3 62%),
+    #f3f3f3;
+  color: rgb(23 26 35 / 92%);
+}
+[data-theme="light"] .dtw-gate__label {
+  color: rgb(23 26 35 / 68%);
+}
+[data-theme="light"] .dtw-gate__bar {
+  background: rgb(15 18 28 / 12%);
+}
+@media (prefers-reduced-transparency: reduce) {
+  [data-theme="light"] .dtw-login__card {
+    background-color: color-mix(in oklab, var(--color-night) 96%, transparent);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+/* ==== login theme sync (light) · end of section ==== */
