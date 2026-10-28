@@ -141,8 +141,8 @@ importers:
         specifier: ^7.10.1
         version: 7.10.1(prisma@7.10.1(@types/node@26.6.5)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
       '@wenathlan/saddle':
-        specifier: ^2.1.6
-        version: 2.1.6
+        specifier: ^2.0.151
+        version: 2.0.151
       hono:
         specifier: ^4.13.13
         version: 4.13.13
@@ -2526,9 +2526,9 @@ packages:
   '@vitest/spy@5.0.5':
     resolution: {integrity: sha512-lwJRExuH417257Q5wv9QYugN9IMJkoxcrKrYxGPQkBzl7wlNpTUxD/5yNX4ESKVUIShKPgkGchYPFMWOOk0wzw==}
 
-  '@wenathlan/saddle@2.1.6':
-    resolution: {integrity: sha512-P5t4blGys3LsCtzuPolf7AqZecn8t/AY0OUw2Umag3zyCMyndzX+sro5UcFi8o4b3iKItI1nbr6sue1b+e4G2w==}
-    engines: {node: '>=26.7.0', npm: '>=12.0.2'}
+  '@wenathlan/saddle@2.0.151':
+    resolution: {integrity: sha512-y1JnP/YvmPuDXf1manIVBPJ6B+BgwuLMEPdaNxpKFjb1/xM+8akcfio/uAD351OCNibGTvhwR5IJ9cCFq/NKLA==}
+    engines: {node: '>=26.12.1 <27', npm: '>=12.1.0'}
     hasBin: true
     peerDependencies:
       playwright: ^1.63.0
@@ -6837,7 +6837,7 @@ snapshots:
 
   '@vitest/spy@5.0.5': {}
 
-  '@wenathlan/saddle@2.1.6':
+  '@wenathlan/saddle@2.0.151':
     optionalDependencies:
       commander: 13.1.0
       dockerode: 5.0.1
