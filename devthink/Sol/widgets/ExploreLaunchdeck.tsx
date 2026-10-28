@@ -5,7 +5,7 @@
  * and the app constellation — the devthink native surfaces as the wide
  * feature rail of hairline rows and the nine external family apps as the
  * identity grid of trylle cards with ONE tile raised (the center-pop). Data
- * comes exclusively from the shared registry (Sol/shell/appregistry.ts) —
+ * comes exclusively from the shared registry (appregistry.ts) —
  * the same rows the desktop grid, the Start menu and the launcher page read;
  * nothing is hardcoded here.
  *

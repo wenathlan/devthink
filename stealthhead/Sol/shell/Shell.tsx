@@ -1,4 +1,3 @@
-// the stealthhead shell of the theme.
 /**
  * Shell.tsx — the app surface of the stealthhead, answering the FAMILY
  * STANDALONE LAW: an app accessed by its own url (wenathlan.github.io/

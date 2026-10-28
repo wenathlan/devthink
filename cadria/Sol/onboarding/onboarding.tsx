@@ -1,4 +1,3 @@
-// the cadria onboarding of the theme.
 /**
  * onboarding.tsx — the first-run frames of the APPLICATION (FAM-APPS-A):
  * four frames presented like a windows 11 first-run dialog over the mica

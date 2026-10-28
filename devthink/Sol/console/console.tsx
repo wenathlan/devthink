@@ -3,7 +3,7 @@
  * carrying the folder's own name is the path manager of the page: it imports
  * the loose components beside it, mounts the page and re-exports the public
  * component surface. Only the theme anchor (Sol/Sol.tsx) and the window
- * registry (Sol/panel/workspace.tsx) consume this file. TerminalUi.tsx stays
+ * registry (Sol/widgets/PanelWorkspace.tsx) consume this file. TerminalUi.tsx stays
  * outside the anchor surface: it is the ink terminal of the CLI runtime and
  * the CLI imports it directly.
  *

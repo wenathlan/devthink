@@ -1,4 +1,3 @@
-// labels.ts — the copy law of stealthhead.
 /**
  * labels.ts — every interface string lives in the label store, the widgets
  * and page anchors read through this typed accessor, and a hardcoded string

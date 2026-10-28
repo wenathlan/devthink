@@ -4,13 +4,13 @@
  * spread around it like a real desktop. The official two-path DevThink mark
  * sits at the middle of the screen as the hero of the composition (never
  * draggable, pointer-transparent like the wallpaper) and the shared catalog
- * (Sol/shell/appregistry.ts) lives around it as true Windows desktop icons:
+ * (appregistry.ts) lives around it as true Windows desktop icons:
  * every cell drags with pointer capture (positions persist in
  * localStorage "dt.desktop.icons.v1" as percentages of the desktop area,
  * clamped inside the taskbar/dock bands and snapped to the fine 2% × 3.33%
  * lattice — Sol/panel/desktopstate.ts), a single click selects, ctrl+click
  * toggles, a rubber-band marquee selects from the empty desktop, the right
- * button opens the Win11 context menus (Sol/panel/desktopmenu.tsx) and the
+ * button opens the Win11 context menus (Sol/widgets/PanelDesktopmenu.tsx) and the
  * keyboard nudges, opens and clears. The deterministic DESKTOP_SPOTS stay
  * the default layout; "reset layout" / "original spots" clears the storage,
  * "sort by name/kind" recomputes an ordered column-flow layout and

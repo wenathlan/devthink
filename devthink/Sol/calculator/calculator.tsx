@@ -3,7 +3,7 @@
  * carrying the folder's own name is the path manager of the page: it imports
  * the loose components beside it, mounts the page and re-exports the public
  * component surface. Only the theme anchor (Sol/Sol.tsx) and the window
- * registry (Sol/panel/workspace.tsx) consume this file.
+ * registry (Sol/widgets/PanelWorkspace.tsx) consume this file.
  *
  * Calculator — the native calculator in the Windows 11 grammar: the mode
  * pane beside the instrument, the display over the keypad and the history

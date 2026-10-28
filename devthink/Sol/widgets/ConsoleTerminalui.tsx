@@ -1,4 +1,3 @@
-// the devthink terminal ui of the console page.
 /** Design: DevThink v1.1.15 — Ink shares the compact local workspace grammar, identity, destinations, settings and command language with the paired React workbench. The plain ANSI renderer family of the former root ui.ts lives here too: the web design room owns the whole terminal design (CLI, pages, TV, Android), so the pure string renderers coexist with the Ink components. */
 import { Box, render, Text, useApp, useInput, useWindowSize } from "ink";
 import { useMemo, useState } from "react";
