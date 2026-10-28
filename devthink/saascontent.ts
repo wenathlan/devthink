@@ -52,14 +52,17 @@ export type saastrack = { title: string; artist: string; total: string; cover: s
 /** One nav row of the header tabs and the left rail stops. */
 export type saasnavrow = { id: string; label: string };
 
-/** The header chrome copy: the wordmark title, the right button labels and
- * the saddle cloud stop of the left rail. */
+/** The header chrome copy: the wordmark title, the right button labels,
+ * the saddle cloud stop of the left rail and the corner dock keys. */
 export const saaschrome = {
   title: "DevThink",
   alerts: "Alerts",
   signin: "Sign In",
   launch: "Launch",
   saddle: "Saddle Cloud",
+  docksave: "Save",
+  dockexplore: "Explorer",
+  docktop: "Top",
 };
 
 /** The five tabs of the header saddle bridge, one section each. */
@@ -100,15 +103,23 @@ export const saastoasts = {
   unfollowed: "Unfollowed",
 };
 
-/** The hero copy of the landing: the OS statement with the inline engine
- * switch, the sub line, the two key labels and the three scooped cards. */
+/** One mode row of the hero segmented control: the segment label and
+ * the mode words the statement wears while the mode rides. */
+export type saasheromode = { id: string; label: string; word: string };
+
+/** The hero copy of the landing: the OS statement with the mode words the
+ * ever sweep carries, the labeled segmented control that answers the
+ * agents and studios mode (never a switch inside the headline again), the
+ * sub line, the two key labels and the three scooped cards. */
 export const saashero = {
   leada: "An OS",
   leadb: "built for",
   leadc: "every AI",
-  togglelabel: "Toggle OS Mode",
-  modeagents: "and your agents",
-  modestudios: "and your studios",
+  modelabel: "Made for",
+  modes: [
+    { id: "agents", label: "Agents", word: "and your agents" },
+    { id: "studios", label: "Studios", word: "and your studios" },
+  ] as readonly saasheromode[],
   subtitle: "Create stream and run any studio or AI team in one unified OS",
   keyprimary: "Get Started",
   keysecondary: "Why DevThink?",
@@ -488,6 +499,11 @@ export const saasdoo = {
   placeholder: "Ask Doo anything",
 };
 
+/** One footer link row: an internal target scrolls the landing to its
+ * section, a route walks the entry chain to that page, no field answers
+ * the plain span. */
+export type saasfooterlink = { label: string; target?: string; route?: string };
+
 /** The footer copy: the tagline, the link columns and the base row. */
 export const saasfooter = {
   tagline: "The thinking OS for creating sharing and running creative studios and AI teams instantly",
@@ -497,9 +513,10 @@ export const saasfooter = {
       title: "Platform",
       links: [
         { label: "Overview", target: "hero-os" },
+        { label: "Explorer", route: "/explore" },
         { label: "Studios", target: "workspace-subapps" },
         { label: "Creators", target: "creators-doo" },
-      ],
+      ] satisfies readonly saasfooterlink[],
     },
     {
       title: "Studios",
@@ -507,7 +524,7 @@ export const saasfooter = {
         { label: "Cadria", target: "spatial-bento" },
         { label: "Debonair", target: "sonic-deck" },
         { label: "Saddle", target: "workspace-subapps" },
-      ],
+      ] satisfies readonly saasfooterlink[],
     },
     {
       title: "AI",
@@ -515,19 +532,15 @@ export const saasfooter = {
         { label: "Doo", target: "advisor-dark" },
         { label: "Getry", target: "advisor-dark" },
         { label: "Vault", target: "editorial-bio" },
-      ],
+      ] satisfies readonly saasfooterlink[],
     },
     {
       title: "Company",
-      links: [
-        { label: "Manifesto", target: "" },
-        { label: "Careers", target: "" },
-        { label: "Press", target: "" },
-      ],
+      links: [{ label: "Manifesto" }, { label: "Careers" }, { label: "Press" }] satisfies readonly saasfooterlink[],
     },
   ] as readonly {
     title: string;
-    links: readonly { label: string; target: string }[];
+    links: readonly saasfooterlink[];
   }[],
   base: "© 2026 DevThink on devthink.pro",
 };

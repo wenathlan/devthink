@@ -3,26 +3,28 @@
  * with its hero, the explorer reel wall, the Debonair track rail, the Doo
  * advisor demo and the footer. Loose components of the intro page. The
  * launch paths funnel to the enter callback — the login face is the next
- * page of the chain and the panel stays last — while the demo actions
- * speak the reference toasts through the page pill. All copy rides the
- * landing data layer (saascontent.ts) and the glyphs ride the fluent set.
+ * page of the chain and the panel stays last — while the footer Explorer
+ * row walks the entry chain through the free exploration face (/explore)
+ * and the demo actions speak the reference toasts through the page pill.
+ * All copy rides the landing data layer (saascontent.ts) and the glyphs
+ * ride the fluent set.
  */
 
-import { useState } from "react";
 import {
   ArrowLeftRegular as Arrowleft,
   ArrowRightRegular as Arrowright,
   ArrowUpRightRegular as Arrowupright,
-  ChatRegular as Messagesquare,
   ClockRegular as Clock,
   GlobeRegular as Globe,
   HeartRegular as Heart,
   MaximizeRegular as Maximize,
+  ChatRegular as Messagesquare,
   PlayRegular as Play,
   AddRegular as Plus,
   SendRegular as Send,
   ShareRegular as Share,
 } from "@fluentui/react-icons";
+import { useState } from "react";
 import {
   saascadria,
   saasdebonair,
@@ -43,6 +45,13 @@ type SectionProps = {
   onenter: () => void;
   /** the smooth scroll to a landing section id */
   scrollto: (id: string) => void;
+};
+
+/** The footer copy contract: the enter action, the explore walker of the
+ * entry chain, the internal scroll and the toast channel. */
+type FooterProps = SectionProps & {
+  onexplore: () => void;
+  showtoast: (message: string) => void;
 };
 
 /** The sawtooth ribbon divider with the whitewash center. */
@@ -627,8 +636,10 @@ export function SaasDoo({
   );
 }
 
-/** The footer: the mark, the link columns and the base row. */
-export function SaasFooter({ onenter, scrollto, showtoast }: SectionProps & { showtoast: (message: string) => void }) {
+/** The footer: the brand row with the launch key, the link columns (the
+ * internal rows scroll the landing, the Explorer row walks the entry
+ * chain to the free exploration face) and the base row. */
+export function SaasFooter({ onenter, onexplore, scrollto, showtoast }: FooterProps) {
   return (
     <section
       id="editorial-bio"
@@ -658,22 +669,36 @@ export function SaasFooter({ onenter, scrollto, showtoast }: SectionProps & { sh
               <div key={column.title}>
                 <h4 className="mb-4 text-xs font-extrabold tracking-wider text-slate-900 uppercase">{column.title}</h4>
                 <div className="space-y-2.5 text-sm font-normal tracking-[-0.005em] text-slate-500">
-                  {column.links.map((link) =>
-                    link.target ? (
-                      <button
-                        key={link.label}
-                        type="button"
-                        onClick={() => scrollto(link.target)}
-                        className="block transition hover:text-slate-900"
-                      >
-                        {link.label}
-                      </button>
-                    ) : (
+                  {column.links.map((link) => {
+                    const target = link.target;
+                    if (link.route)
+                      return (
+                        <button
+                          key={link.label}
+                          type="button"
+                          onClick={onexplore}
+                          className="block transition hover:text-slate-900"
+                        >
+                          {link.label}
+                        </button>
+                      );
+                    if (target)
+                      return (
+                        <button
+                          key={link.label}
+                          type="button"
+                          onClick={() => scrollto(target)}
+                          className="block transition hover:text-slate-900"
+                        >
+                          {link.label}
+                        </button>
+                      );
+                    return (
                       <span key={link.label} className="block">
                         {link.label}
                       </span>
-                    ),
-                  )}
+                    );
+                  })}
                 </div>
               </div>
             ))}

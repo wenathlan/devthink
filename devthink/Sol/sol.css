@@ -108,6 +108,13 @@
   --color-night-2: #1f2129;
   --color-veil: #eef0f6;
 
+  /* ---- the mask ink: the deep neutral the shadow ladder composes — every
+     elevation and field fill of the floating faces mixes it to transparency
+     (the fluent depth). the ladder seed, never a raw fill: a declaration
+     that references an unset ink dies whole at computed-value time, so the
+     token lives here for the sixteen mixes that compose off it. ---- */
+  --color-mask-ink: #000;
+
   /* ---- status: semantic accents for dots and labels, never big fills ---- */
   --color-ok: #7fd1a8;
   --color-warn: #e2c26a;
@@ -19428,27 +19435,7 @@ button.dtc-recents__row {
     radial-gradient(circle at 86% 70%, color-mix(in oklab, var(--color-warn) 24%, transparent) 0%, transparent 42%);
 }
 
-/* -- B4 the hero inline switch: the gradient re-derives from the same
-   family (accent core, one warm shoulder) — never a second palette -- */
-.saas-root .hero-inline-switch {
-  background: linear-gradient(
-    125deg,
-    color-mix(in oklab, var(--color-win) 72%, var(--color-ink)) 0%,
-    var(--color-win) 48%,
-    color-mix(in oklab, var(--color-warn) 55%, var(--color-win)) 100%
-  );
-  box-shadow:
-    0 12px 26px -6px color-mix(in oklab, var(--color-win) 38%, transparent),
-    inset 0 2px 4px color-mix(in oklab, var(--color-ink) 55%, transparent);
-}
-
-.saas-root .hero-switch-thumb {
-  box-shadow:
-    -3px 4px 10px color-mix(in oklab, var(--mask-ink) 35%, transparent),
-    inset 0 2px 3px color-mix(in oklab, var(--color-ink) 90%, transparent);
-}
-
-/* -- B5 the conic ring: the token conic (accent core, the doo counterpoint,
+/* -- B4 the conic ring: the token conic (accent core, the doo counterpoint,
    the warm shoulder) replacing the six-hue literal wheel -- */
 .saas-root .conic-rainbow-ring {
   background: conic-gradient(
@@ -19461,7 +19448,7 @@ button.dtc-recents__row {
   );
 }
 
-/* -- B6 the brand gradient word and the standing cards: the literals
+/* -- B5 the brand gradient word and the standing cards: the literals
    re-derive through the ink and mask tokens -- */
 .saas-root .text-gradient-brand {
   background: linear-gradient(92deg, var(--color-signal-ink) 0%, var(--color-win) 100%);
@@ -19478,7 +19465,7 @@ button.dtc-recents__row {
     inset 0 -5px 10px color-mix(in oklab, var(--mask-ink) 40%, transparent);
 }
 
-/* -- B7 the selection and the focus: the accent family carries both (the
+/* -- B6 the selection and the focus: the accent family carries both (the
    indigo selection dies) -- */
 .saas-root ::selection {
   background: color-mix(in oklab, var(--color-win) 78%, var(--color-ink));
@@ -20737,8 +20724,8 @@ button.dtc-recents__row {
 }
 
 .saas-root .saas-hero-mode__seg {
-  min-height: 36px;
-  padding: 0 20px;
+  min-height: 44px;
+  padding: 0 22px;
   border: 0;
   border-radius: var(--radius-sm);
   background: transparent;
@@ -20749,11 +20736,21 @@ button.dtc-recents__row {
   transition:
     background 150ms var(--ease-micro),
     color 150ms var(--ease-micro),
-    box-shadow 150ms var(--ease-micro);
+    box-shadow 150ms var(--ease-micro),
+    transform 100ms var(--ease-micro);
 }
 
 .saas-root .saas-hero-mode__seg:hover {
   background: color-mix(in oklab, var(--color-mask-ink) 6%, transparent);
+}
+
+.saas-root .saas-hero-mode__seg:active {
+  transform: scale(0.97);
+}
+
+.saas-root .saas-hero-mode__seg:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 1px;
 }
 
 .saas-root .saas-hero-mode__seg[data-active="true"] {
