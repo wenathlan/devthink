@@ -2,17 +2,21 @@
  * sandboxlane — the server-side sandbox of the run and storage lane
  * real filesystem round trips inside the session jail: write, list, read,
  * removal, the containment refusal, the invalid session gate, the honest
- * pending answers, the modalities report and the once-only welcome page.
- * every test drives a unique session id so the .sandboxrun root under the
- * package cwd stays isolated per run.
+ * pending answers, the modalities report and the once-only welcome page,
+ * and the vendored registry mirror pinned byte-identical to the engine
+ * source (the single-source law of the catalog). every test drives a
+ * unique session id so the .sandboxrun root under the package cwd stays
+ * isolated per run.
  */
 
 import { readFile, stat } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { createsandboxsession, hostmodalityreport, runsandboxline } from "../../sandboxlane.js";
 import type { SandboxAnswer } from "../../sandboxlane.js";
+import { MODALITIES, MODALITYPLANCOUNT, planreport } from "../../modalities.js";
 
 let counter = 0;
 
@@ -129,13 +133,65 @@ describe("sandboxlane", () => {
     expect(contentafter).toBe(content);
   });
 
-  it("reports the host modalities honestly", async () => {
+  it("reports the host modalities honestly from the registry (the single source)", async () => {
     const rows = await hostmodalityreport();
+    // the summary row plus one honest row per registry record of the forty plan
+    expect(rows.length).toBe(41);
+    expect(rows[0]).toBe("the modality registry answers the forty plan: 40 records — 3 live, 3 host, 34 planned");
     const text = rows.join("\n");
-    expect(text).toContain("container-docker: ");
-    expect(text).toContain("emulator-qemu: ");
-    expect(text).toContain("microvm-firecracker: ");
-    expect(text).toContain("container-runsc: ");
-    expect(text).toContain("runner-node: available on this host (the node runtime itself)");
+    // the live lanes name the surfaces the platform drives
+    expect(text).toContain("container-docker: live lane — docker ");
+    expect(text).toContain("runner-node: live lane — the node runtime the run lane executes inside the container");
+    expect(text).toContain("fs-vfs: live lane — the session jail the storage lane drives");
+    // the host runtimes name their binary and the probe verdict of this host
+    expect(text).toContain("emulator-qemu: host runtime qemu-system-x86_64 ");
+    expect(text).toContain("microvm-firecracker: host runtime firecracker ");
+    expect(text).toContain("container-runsc: host runtime runsc ");
+    // the planned records declare themselves planned — no row pretends
+    expect(text).toContain("virtual-full: planned — the catalog promise, no lane wires it yet");
+    expect(text).toContain("pod-session: planned — the catalog promise, no lane wires it yet");
+    // every record row after the summary carries one of the three state words
+    for (const row of rows.slice(1)) {
+      expect(row).toMatch(/: (live lane — |host runtime |planned — )/);
+    }
+  });
+});
+
+describe("the vendored registry mirror (the single-source law)", () => {
+  it("pins the devthink vendor byte-identical to the saddle engine source", async () => {
+    // the registry of record lives in the engine (saddle/modalityregistry.ts);
+    // the devthink tree carries the vendored mirror because the container
+    // build installs the published envelope (sources only, the stale
+    // catalog) and never sees the workspace — the byte pin is the law that
+    // keeps the vendor a mirror instead of a second author. the day the
+    // published envelope carries the built registry, the vendor retires and
+    // the lane returns to the library specifier
+    const enginepath = path.join(import.meta.dirname, "..", "..", "..", "saddle", "modalityregistry.ts");
+    if (!existsSync(enginepath)) {
+      // the container builder runs this suite from the devthink context
+      // alone (the saddle workspace never enters the image) — the byte pin
+      // answers everywhere the engine source rides (the workspace, the ci
+      // checkout) and the census below keeps pinning the vendor itself
+      return;
+    }
+    const engine = await readFile(enginepath, "utf8");
+    const vendor = await readFile(path.join(import.meta.dirname, "..", "..", "modalities.ts"), "utf8");
+    expect(vendor).toBe(engine);
+  });
+
+  it("answers the forty plan from the vendored registry the lane reads", () => {
+    // the vendor the lane imports answers the same census the engine
+    // battery pins — the two suites hold the same truth from both ends
+    expect(MODALITYPLANCOUNT).toBe(40);
+    expect(MODALITIES).toHaveLength(40);
+    const report = planreport();
+    expect(report).toEqual({
+      plancount: 40,
+      catalogcount: 40,
+      live: 3,
+      host: 3,
+      planned: 34,
+      plananswered: true,
+    });
   });
 });

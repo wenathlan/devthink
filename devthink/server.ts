@@ -921,6 +921,7 @@ import { loadconfig, validateconfig } from "./config.js";
 import { copyseed } from "./copy.ts";
 import {
   DEFAULTQUOTAMB,
+  ensureplanstore,
   StorageError,
   deleteobject,
   getobject,
@@ -929,7 +930,10 @@ import {
   keyvalid,
   listcopyrows,
   listobjects,
+  planquota,
+  planquotamb,
   putobject,
+  QUOTACEILMB,
   setonboardingstage,
   setplan,
   upsertcopyrows,
@@ -1042,8 +1046,12 @@ async function createserver(): Promise<Hono> {
   const seedcopyrows = Object.entries(copyseed()).map(([key, text]) => ({ key, text }));
   await upsertcopyrows(seedcopyrows);
   // the account lane boots with the store: the data home exists, the
-  // account schema lays down before the first route touches it
+  // account schema lays down before the first route touches it, and the
+  // plan store boots with its table the same way (an unpushed local
+  // database answered every plan stamp with the unavailable refusal, so
+  // the quota never composed by plan — the boot law closes it)
   await prepareaccounts();
+  ensureplanstore();
   app.get("/api/v1/copy", async (c) => {
     const rows = await listcopyrows();
     return c.json({ rows });
@@ -1080,6 +1088,9 @@ async function createserver(): Promise<Hono> {
       typeof body?.plan?.storagemb === "number" && body.plan.storagemb > 0
         ? Math.floor(body.plan.storagemb)
         : undefined;
+    if (storagemb !== undefined && (storagemb < DEFAULTQUOTAMB || storagemb > QUOTACEILMB)) {
+      return c.json({ error: "the custom storage definition rides outside the quota floor and the ceiling" }, 400);
+    }
     const rammib =
       typeof body?.plan?.rammib === "number" && body.plan.rammib > 0 ? Math.floor(body.plan.rammib) : undefined;
     const row = await setplan(visitor, tier, tier === "enterprise" ? { storagemb, rammib } : undefined);
@@ -1147,19 +1158,19 @@ async function createserver(): Promise<Hono> {
   });
 
   // the storage lane: the vault-shaped record surface the platform stores
-  // everything through. The quota composes from the plan the owner set (the
-  // 900 floor when no plan answers), the database file lives in the data
-  // home outside every served root, and this module is the only swap point
-  // when the vault service deploys with its own host.
-  const storagequotafor = async (visitor: string): Promise<number> => {
-    const row = await getplan(visitor);
-    if (!row || row.storagemb === null) return DEFAULTQUOTAMB;
-    return Number(row.storagemb);
+  // everything through. The quota composes from the plan row through
+  // planquotamb (the tier table, the enterprise custom definition under the
+  // terabyte ceiling, the 900 floor when no plan answers), the database file
+  // lives in the data home outside every served root, and this module is the
+  // only swap point when the vault service deploys with its own host.
+  const storagequotafor = async (owner: string): Promise<number> => {
+    return planquotamb(await getplan(owner));
   };
   app.get("/api/v1/storage/quota", async (c) => {
-    const visitor = c.req.query("visitor") ?? "";
-    if (!/^[a-z0-9][a-z0-9-]{5,63}$/i.test(visitor)) return c.json({ error: "invalid owner" }, 400);
-    return c.json({ quotamb: await storagequotafor(visitor) });
+    const owner = c.req.query("owner") ?? "";
+    if (!/^[a-z0-9][a-z0-9-]{5,63}$/i.test(owner)) return c.json({ error: "invalid owner" }, 400);
+    const answer = planquota(await getplan(owner));
+    return c.json({ quotamb: answer.quotamb, tier: answer.tier, source: answer.source });
   });
   app.post("/api/v1/storage/objects", async (c) => {
     const body = (await c.req.json().catch(() => null)) as {
