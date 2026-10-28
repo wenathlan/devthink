@@ -34,6 +34,10 @@ const standardSet = [
 /** the byte identical files across the family. */
 const identicalFiles = ["biome.jsonc"];
 
+/** the saddle vm pins the family overrides never inherit (the saddle
+ * exceptions the standardization law keeps). */
+const saddleExempt = ["@grpc/grpc-js", "xcode"];
+
 const appDirs = readdirSync(repoRoot, { withFileTypes: true })
   .filter((entry) => entry.isDirectory() && existsSync(join(repoRoot, entry.name, "package.json")))
   .map((entry) => entry.name)
@@ -69,8 +73,51 @@ for (const app of appDirs) {
   }
 }
 
+/* the standardization laws of the twelfth wave: the family devdependencies
+ * lockstep and the overrides union, both read from the manifests the walk
+ * already collects. */
+
+/** every app manifest keyed by name, for the lockstep and the union. */
+const manifests = new Map(
+  appDirs.map((app) => [
+    app,
+    JSON.parse(readFileSync(join(repoRoot, app, "package.json"), "utf8")) as {
+      devDependencies?: Record<string, string>;
+      overrides?: Record<string, unknown>;
+    },
+  ]),
+);
+
+/** law one: a devdependency two or more apps carry rides the identical
+ * version in every carrier (the family lockstep, additive only). */
+const depStamps = new Map<string, [string, string][]>();
+for (const app of appDirs)
+  for (const [name, version] of Object.entries(manifests.get(app)?.devDependencies ?? {}))
+    depStamps.set(name, [...(depStamps.get(name) ?? []), [app, version] as [string, string]]);
+for (const [name, stamps] of depStamps) {
+  const versions = new Set(stamps.map(([, version]) => version));
+  if (versions.size > 1) {
+    console.error(`DRIFT the devdependency ${name} rides different versions across the family: ${stamps.map(([app, version]) => `${app} ${version}`).join(" · ")}`);
+    failures += 1;
+  }
+}
+
+/** law two: the overrides union rides identical in every non saddle app and
+ * the saddle vm pins stay saddle (the family reference is the os app). */
+const sortedEntries = (overrides: Record<string, unknown>) =>
+  JSON.stringify(Object.entries(overrides).sort(([a], [b]) => a.localeCompare(b)));
+const familyOverrides = sortedEntries(manifests.get("devthink")?.overrides ?? {});
+for (const app of appDirs) {
+  const overrides = { ...(manifests.get(app)?.overrides ?? {}) };
+  for (const key of saddleExempt) delete overrides[key];
+  if (sortedEntries(overrides) !== familyOverrides) {
+    console.error(`DRIFT ${app}/package.json overrides differ from the family union`);
+    failures += 1;
+  }
+}
+
 if (failures > 0) {
   console.error(`config parity: ${failures} failure(s) across ${appDirs.length} apps`);
   process.exit(1);
 }
-console.log(`config parity: green across ${appDirs.length} apps (${appDirs.join(", ")})`);
+console.log(`config parity: green across ${appDirs.length} apps — the identical set, the lockstep and the union hold (${appDirs.join(", ")})`);

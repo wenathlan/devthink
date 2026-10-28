@@ -16,11 +16,7 @@
     "access": "public"
   },
   "overrides": {
-    "xcode": {
-      "uuid": "11.1.1"
-    },
     "uuid": "^11.1.1",
-    "@grpc/grpc-js": "1.14.5",
     "deepmerge-ts": "^8.0.0",
     "esbuild": "^0.28.2",
     "follow-redirects": "^1.16.1",
@@ -31,7 +27,13 @@
     "body-parser": "^2.4.0",
     "fast-uri": "^3.1.9",
     "zod": "^4.6.7",
-    "undici": "^7.30.1"
+    "undici": "^7.30.1",
+    "katex": "^0.18.2",
+    "shell-quote": "^1.11.0",
+    "xcode": {
+      "uuid": "11.1.1"
+    },
+    "@grpc/grpc-js": "1.14.5"
   },
   "repository": {
     "type": "git",
@@ -244,7 +246,7 @@
     "start:engine": "node --import tsx ./cli.ts plan"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.6.2",
+    "@biomejs/biome": "^2.6.3",
     "@capacitor/android": "^8.5.3",
     "@capacitor/cli": "^8.5.3",
     "@capacitor/core": "^8.5.3",
@@ -287,8 +289,8 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
     "add": "^2.0.9",
-    "autoprefixer": "^10.6.1",
-    "axios": "^1.20.0",
+    "autoprefixer": "^10.6.2",
+    "axios": "^1.21.0",
     "better-sqlite3": "^13.0.3",
     "cheerio": "^1.2.0",
     "class-variance-authority": "^0.7.1",
@@ -310,14 +312,14 @@
     "p-limit": "^7.3.3",
     "playwright": "^1.64.1",
     "p-retry": "^8.0.1",
-    "postcss": "^8.5.31",
+    "postcss": "^8.5.32",
     "prettier": "^3.9.10",
     "prisma": "^7.10.1",
     "react": "^19.3.1",
     "react-day-picker": "^10.0.2",
     "react-dom": "^19.3.1",
     "react-hook-form": "^7.91.0",
-    "react-resizable-panels": "^4.14.8",
+    "react-resizable-panels": "^4.15.0",
     "recharts": "^3.10.1",
     "sonner": "^2.0.8",
     "streamdown": "^2.7.1",
@@ -326,7 +328,7 @@
     "tailwindcss-animate": "^1.0.7",
     "tsx": "^4.23.15",
     "tw-animate-css": "^1.4.0",
-    "typescript": "7.0.2",
+    "typescript": "^7.0.2",
     "vaul": "^1.1.2",
     "vite": "^8.3.5",
     "vite-plugin-manus-runtime": "^0.0.59",
