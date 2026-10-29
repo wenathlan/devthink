@@ -234,7 +234,7 @@ describe("the sync (both faces stay one design)", () => {
     }
   });
 
-  it("the standalone apps boot with the zoom zero viewport every index declares", () => {
+  it.skipIf(!siblingspresent)("the standalone apps boot with the zoom zero viewport every index declares", () => {
     // the PR18 law from the index: the viewport meta pins the zoom at the
     // 100 percent baseline on every app of the family
     for (const app of ["devthink", ...FAMILY_SLUGS]) {
