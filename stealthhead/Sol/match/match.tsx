@@ -14,7 +14,7 @@
  */
 
 import { label } from "../../labels";
-import { Constructionface } from "../widgets";
+import { Constructionface } from "../wingets";
 
 /**
  * the match page: the in-construction face under the match eyebrow.

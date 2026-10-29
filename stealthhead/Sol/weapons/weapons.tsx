@@ -15,7 +15,7 @@
  */
 
 import { label } from "../../labels";
-import { Constructionface } from "../widgets";
+import { Constructionface } from "../wingets";
 
 /**
  * the weapons page: the in-construction face under the weapons eyebrow.
