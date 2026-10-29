@@ -196,13 +196,13 @@ export type GatewayStatus = "disconnected" | "connecting" | "connected" | "error
 export function gatewayStatusLabel(status: GatewayStatus): string {
   switch (status) {
     case "connected":
-      return "registered";
+      return "connected";
     case "connecting":
       return "testing";
     case "error":
       return "unreachable";
     default:
-      return "not registered";
+      return "not connected";
   }
 }
 

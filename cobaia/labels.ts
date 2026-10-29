@@ -24,7 +24,7 @@ import type { LabelRow } from "./db";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 2;
+export const LABEL_REVISION = 3;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the widgets and page anchors rendered
@@ -46,7 +46,7 @@ export const LABEL_MANIFEST = {
   "shell.nav.support": "support",
   "shell.foot.aboutHead": "cobaia",
   "shell.foot.aboutText":
-    "the front door of the devthink family: ten deployable applications built on one engine, shipped as static sites, tracked nowhere. pricing, support, the app directory and the update blog live here.",
+    "the front door of the devthink family: ten applications that run anywhere, tracked nowhere. pricing, support, the app directory and the update blog live here.",
   "shell.foot.siteHead": "site",
   "shell.foot.apps": "apps",
   "shell.foot.pricing": "pricing",
@@ -54,22 +54,22 @@ export const LABEL_MANIFEST = {
   "shell.foot.support": "support",
   "shell.foot.legal": "legal",
   "shell.foot.familyHead": "the family",
-  "shell.colophon": "cobaia — a provisional name. part of the devthink family · ten honest tools, one engine.",
+  "shell.colophon": "cobaia — a provisional name. part of the devthink family · ten honest tools under one roof.",
   // the home page anchor (the landing)
   "home.aria.hero": "cobaia — the devthink family site",
   "home.eyebrow": "the devthink family site",
   "home.title": "One family. Ten tools. Zero tracking.",
   "home.lede":
-    "devthink builds and ships a family of deployable web applications — sandbox engines, studios, gateways and a game platform — as static sites on shared free hosting. this site is the front door: the directory, the pricing, the support page and the update blog.",
+    "devthink builds and ships a family of web applications — sandboxes, studios, tools and a game platform — hosted free, tracked nowhere. this site is the front door: the directory, the pricing, the support page and the update blog.",
   "home.action.pricing": "see the pricing",
   "home.action.apps": "browse the ten apps",
   "home.section.stepsAria": "what the family is made of",
   "home.section.stepsTitle": "What the family is made of",
   "home.section.stepsLede": "the same three choices behind every member of the family.",
   "home.steps.engine.n": "01",
-  "home.steps.engine.title": "one engine",
+  "home.steps.engine.title": "one core",
   "home.steps.engine.text":
-    "the sandbox runner and the storage layer live as library-grade modules. every application assembles the parts it needs and ships as one folder of the same monorepo.",
+    "the sandbox and the storage are shared parts. every application assembles the parts it needs and ships beside the others.",
   "home.steps.static.n": "02",
   "home.steps.static.title": "static first",
   "home.steps.static.text":
@@ -81,7 +81,7 @@ export const LABEL_MANIFEST = {
   "home.section.previewAria": "a preview of the app directory",
   "home.section.previewTitle": "A few of the ten",
   "home.section.previewLede":
-    "every member is a folder beside this site on the same origin. the full directory lives on",
+    "every member lives beside this site, one link away. the full directory lives on",
   "home.section.previewLink": "/apps",
   "home.section.previewTail": ".",
   "home.appcard.open": "open {slug}",
@@ -93,9 +93,9 @@ export const LABEL_MANIFEST = {
   // the apps page anchor (the directory)
   "apps.aria.hero": "the devthink app directory",
   "apps.eyebrow": "the directory",
-  "apps.title": "Ten deploy units. One origin.",
+  "apps.title": "Ten apps. One family.",
   "apps.lede":
-    "every member of the family is a folder beside this site on the same origin, linked through the familyurl contract — and every member links back. the roles below are the honest ones each app declares for itself; the accents are the family's spec table.",
+    "every member of the family lives beside this site and links back to it. the roles below are the honest ones each app declares for itself; the accents are the family's spec table.",
   "apps.section.rosterAria": "the family roster",
   "apps.card.open": "open {slug}",
   // the pricing page anchor (the plans)
@@ -111,7 +111,7 @@ export const LABEL_MANIFEST = {
   "pricing.section.moneyAria": "what the money covers",
   "pricing.section.moneyTitle": "What the money covers",
   "pricing.section.moneyLede":
-    "the family runs on about us$15 a month of domains and free static hosting. the paid plans cover that floor first, then the gateway tiers. there are no ads inside the applications — the ad slots live only on this site's content pages, and they are labeled and reserved.",
+    "the family runs on about us$15 a month of domains and free static hosting. the paid plans cover that floor first, then the higher tiers. there are no ads inside the applications — the ad slots live only on this site's content pages, and they are labeled and reserved.",
   "pricing.section.moneyNote":
     "billing decision pending: stripe payment links or paddle (merchant of record). the checkout hrefs are configuration at the app root — never code, never a committed key.",
   // the support page anchor (the channels)
@@ -225,7 +225,7 @@ export const LABEL_MANIFEST = {
   "intro.doors.title": "Where the family lives.",
   "intro.doors.apps": "the app directory",
   "intro.doors.appsText":
-    "ten deploy units live beside this site on the same origin. the full directory, with the honest role each application declares for itself, is one door away.",
+    "ten apps live beside this site. the full directory, with the honest role each application declares for itself, is one door away.",
   "intro.doors.appsCta": "browse the ten apps",
   "intro.doors.legal": "privacy and terms",
   "intro.doors.legalText":

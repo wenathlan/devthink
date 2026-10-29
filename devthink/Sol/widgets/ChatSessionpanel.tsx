@@ -216,7 +216,7 @@ export function SessionPanel({
         <p className="dtc-session__label">Context</p>
         <div className="dtc-modelcard">
           <strong>{model}</strong>
-          <small>{gateway.base ? "gateway on" : "gateway off"}</small>
+          <small>{gateway.base ? "service on" : "service off"}</small>
         </div>
         <dl className="dtc-readouts">
           <div className="dtc-readout">
@@ -353,8 +353,8 @@ export function SessionPanel({
         </section>
       ) : null}
 
-      <section className="dtc-session__sec dtc-gw" aria-label="Gateway registration">
-        <p className="dtc-session__label">Gateway</p>
+      <section className="dtc-session__sec dtc-gw" aria-label="Assistant connection">
+        <p className="dtc-session__label">Connection</p>
         <p className="dtc-gw__pill" data-state={gateway.status} role="status">
           {gatewayStatusLabel(gateway.status)}
         </p>
@@ -373,8 +373,8 @@ export function SessionPanel({
                   setEndpointDraft(event.target.value);
                   if (gateway.formError) gateway.clearFormError();
                 }}
-                placeholder="https://gateway.example.com"
-                aria-label="Gateway endpoint base url"
+                placeholder="https://chat.example.com"
+                aria-label="Service address"
                 spellCheck={false}
                 autoComplete="off"
                 disabled={testing}
@@ -392,7 +392,7 @@ export function SessionPanel({
                     Testing
                   </>
                 ) : (
-                  "Register"
+                  "Connect"
                 )}
               </button>
             </form>
@@ -413,7 +413,7 @@ export function SessionPanel({
 
         {(gateway.status === "connected" || gateway.status === "error") && confirmArmed ? (
           <fieldset className="dtc-gw__confirm" aria-label="Confirm disconnect">
-            <p>Disconnect the gateway</p>
+            <p>Disconnect the service</p>
             <div className="dtc-gw__actions">
               <button
                 type="button"

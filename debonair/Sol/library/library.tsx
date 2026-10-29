@@ -243,7 +243,7 @@ export default function Library() {
         <h2 className="card-h">{label("library.formats.title")}</h2>
         <p className="flush">
           {label("library.formats.lead")}
-          <code>katexis</code>
+          <code>studio</code>
           {label("library.formats.tail")}
         </p>
       </section>

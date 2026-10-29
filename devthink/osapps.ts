@@ -104,7 +104,7 @@ export const APPS: AppMeta[] = [
     accent: "#f472b6",
     tag: "video, 3d",
     target: "os",
-    desc: "Player, editor and studio for video, image and 3D on the versawase engine. Like After Effects × Photoshop × Figma × Blender — framed by a single shell.",
+    desc: "Player, editor and studio for video, image and 3D in one window. Like After Effects × Photoshop × Figma × Blender — framed by a single shell.",
     icon: Clapperboard,
     pages: [
       { id: "player", label: "Player" },
@@ -121,7 +121,7 @@ export const APPS: AppMeta[] = [
     accent: "#d9962e",
     tag: "audio",
     target: "os",
-    desc: "The OS audio DAW — prompt-to-arrangement, multitrack editing and broadcast-ready mastering on the katexis engine. Like suno × FL Studio, on your own domain.",
+    desc: "The OS audio DAW — prompt-to-arrangement, multitrack editing and broadcast-ready mastering in the studio. Like suno × FL Studio, on your own domain.",
     icon: AudioLines,
     pages: [
       { id: "studio", label: "Studio" },
@@ -138,7 +138,7 @@ export const APPS: AppMeta[] = [
     accent: "#e8563f",
     tag: "fps",
     target: "os",
-    desc: "The OS FPS platform: 5v5 matchmaking, ranked ladders from Bronze to Solar, an arsenal balanced by Monte Carlo TTK and world logic on versawase.",
+    desc: "The OS FPS platform: 5v5 matchmaking, ranked ladders from Bronze to Solar, an arsenal balanced by Monte Carlo TTK and world logic from the family 3D studio.",
     icon: Crosshair,
     pages: [
       { id: "match", label: "Match" },
@@ -155,7 +155,7 @@ export const APPS: AppMeta[] = [
     accent: "#a2cb3a",
     tag: "ci, runners",
     target: "os",
-    desc: "The family forge: a sandbox runner surface that registers runners on the saddle engine boundary, records run logs and reports outcomes over https.",
+    desc: "The family forge: a sandbox runner surface that registers runners on the sandbox boundary, records run logs and reports outcomes.",
     icon: Hammer,
     pages: [
       { id: "runners", label: "Runners" },
@@ -172,7 +172,7 @@ export const APPS: AppMeta[] = [
     accent: "#2fb8b5",
     tag: "sandboxes, images",
     target: "os",
-    desc: "The family foundry: the e2b and docker clone interface whose engine lives in saddle, while foundry owns the surface records — sandboxes and images.",
+    desc: "The family foundry: the e2b and docker clone interface whose engine lives in the family sandbox, while foundry owns the surface records — sandboxes and images.",
     icon: Factory,
     pages: [
       { id: "sandboxes", label: "Sandboxes" },
@@ -189,7 +189,7 @@ export const APPS: AppMeta[] = [
     accent: "#a3d7e6",
     tag: "db, storage",
     target: "os",
-    desc: "The family vault: the self-hosted supabase clone holding every site database — projects, accounts and storage objects served over https, with the blob/lfs seal contract.",
+    desc: "The family vault: the self-hosted supabase clone holding every site database — projects, accounts and storage objects served securely, with the blob/lfs seal contract.",
     icon: Vault,
     pages: [
       { id: "projects", label: "Projects" },
@@ -264,7 +264,7 @@ export const PERSONAS: Record<AppId, Persona> = {
       "(debonair audio, cadria video/3D, stealthhead FPS, argan DNS). Current version v2.0.40, gateway model glm-5.3. " +
       BASE_STYLE,
     intro:
-      "I'm the gateway Aura. Ask about the platform, the engines or any app in the family — I'll answer through /v1/chat/completions.",
+      "I'm the Aura of the platform. Ask about the platform, the studios or any app in the family — I'll answer right here.",
     suggestions: [
       "What is the DevThink OS in three points?",
       "How does the gateway normalize providers?",
@@ -291,7 +291,7 @@ export const PERSONAS: Record<AppId, Persona> = {
   },
   debonair: {
     name: "Aura — debonair",
-    role: "audio daw — katexis",
+    role: "audio daw — studio",
     system:
       "You are the debonair Aura, the audio DAW of the DevThink OS running on the katexis engine. Domain: prompt-to-" +
       "arrangement generation (harmony, melody, rhythm, mix), 15 genres with their own BPM/scales, a step sequencer and piano roll " +
@@ -299,7 +299,7 @@ export const PERSONAS: Record<AppId, Persona> = {
       "(Spotify −14 LUFS, Apple −16, Beatport −9), WAV 48 kHz / MIDI / stems export. Seeded RNG: same prompt + seed = " +
       "same take. " +
       BASE_STYLE,
-    intro: "The debonair Aura. Talk generation, arrangement, mastering or export — katexis answers.",
+    intro: "The debonair Aura. Talk generation, arrangement, mastering or export — the studio answers.",
     suggestions: [
       "How does the prompt become an arrangement?",
       "What are the loudness targets per platform?",

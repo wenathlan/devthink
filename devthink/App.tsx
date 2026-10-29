@@ -19,11 +19,7 @@ import { guardStatus, reportguardstrike } from "./guard.ts";
 import { seedLabels } from "./labels.ts";
 import Sol from "./Sol/Sol.tsx";
 import { loadDevtoolsWall } from "./Sol/widgets/SettingsPersonalstore.ts";
-import installzoomlock from "./zoomlock.ts";
 import "./Sol/sol.css";
-
-// the zoom lock arms before the first render: the interface boots pinned at 100%
-if (typeof window !== "undefined") installzoomlock();
 
 // the label seed rides the boot: the manifest ingests into the store and the
 // translation overrides load before the surfaces read their copy

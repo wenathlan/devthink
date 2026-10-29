@@ -28,12 +28,12 @@ export const ROSTER: readonly familymember[] = [
   {
     slug: "saddle",
     accent: "#e86f2d",
-    role: "the virtualized sandbox engine: runs any sandbox, the modules stay library-grade.",
+    role: "the virtualized sandbox engine: runs any sandbox, anywhere, no setup.",
   },
   {
     slug: "forge",
     accent: "#a2cb3a",
-    role: "the execution clone: runs any binary with the saddle engine, stores nothing.",
+    role: "the execution clone: runs any binary in the family sandbox, stores nothing.",
   },
   {
     slug: "foundry",
@@ -48,17 +48,17 @@ export const ROSTER: readonly familymember[] = [
   {
     slug: "getry",
     accent: "#8b5cf6",
-    role: "the AI gateway: five provider gateways, thirty-five OpenAI-compatible routes, key rotation.",
+    role: "the AI workspace: five model pools, thirty-five ready endpoints, key rotation.",
   },
   {
     slug: "cadria",
     accent: "#f472b6",
-    role: "the video and image studio: player, editor and gallery on the versawase engine.",
+    role: "the video and image studio: player, editor and gallery in one window.",
   },
   {
     slug: "debonair",
     accent: "#d9962e",
-    role: "the audio app and DAW: studio, generate and library on the katexis engine.",
+    role: "the audio app and DAW: studio, generate and library in one console.",
   },
   {
     slug: "stealthhead",
@@ -68,6 +68,6 @@ export const ROSTER: readonly familymember[] = [
   {
     slug: "argan",
     accent: "#34d8a8",
-    role: "the DNS and gateway library: zones, records, dnssec and handshake.",
+    role: "the DNS toolkit: zones, records, dnssec and handshake.",
   },
 ];

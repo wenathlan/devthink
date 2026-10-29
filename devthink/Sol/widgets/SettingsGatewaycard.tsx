@@ -33,10 +33,10 @@ export function GatewayCard() {
   };
 
   return (
-    <section className="dtw-card" aria-label="Chat gateway registration">
+    <section className="dtw-card" aria-label="Chat service connection">
       <h2 className="dtw-cardtitle">
         <PlugConnectedRegular fontSize={15} aria-hidden="true" />
-        Chat gateway
+        Chat service
         <span className="dtw-settings__pill" data-state={gateway.status} role="status">
           {gatewayStatusLabel(gateway.status)}
         </span>
@@ -54,14 +54,14 @@ export function GatewayCard() {
               setDraft(event.target.value);
               if (gateway.formError) gateway.clearFormError();
             }}
-            placeholder="https://gateway.example.com"
-            aria-label="Gateway endpoint base url"
+            placeholder="https://chat.example.com"
+            aria-label="Service address"
             spellCheck={false}
             autoComplete="off"
             disabled={testing}
           />
           <button type="submit" className="dtw-btn dtw-btn--primary" disabled={testing || !draft.trim()}>
-            {testing ? "Testing" : "Register gateway"}
+            {testing ? "Testing" : "Connect service"}
           </button>
           {gateway.formError ? (
             <small className="dtw-settings__error" role="alert">
@@ -73,13 +73,13 @@ export function GatewayCard() {
 
       {gateway.status === "error" ? (
         <small className="dtw-settings__error" role="alert">
-          {gateway.probeError ?? "The registered gateway did not answer."}
+          {gateway.probeError ?? "The connected service did not answer."}
         </small>
       ) : null}
 
       {(gateway.status === "connected" || gateway.status === "error") && armed ? (
         <fieldset className="dtw-settings__confirm" aria-label="Confirm disconnect">
-          <p>Disconnect this gateway? The assistant stops answering until you register one again.</p>
+          <p>Disconnect this service? The assistant stops answering until you connect one again.</p>
           <div className="dtw-settings__actions">
             <button
               type="button"
@@ -117,7 +117,7 @@ export function GatewayCard() {
         </div>
       ) : null}
 
-      {!gateway.base && !testing ? <small>POST /v1/chat/completions once a gateway is registered.</small> : null}
+      {!gateway.base && !testing ? <small>The assistant answers through this service once it is connected.</small> : null}
     </section>
   );
 }

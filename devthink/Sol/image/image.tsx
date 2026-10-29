@@ -51,7 +51,7 @@ export default function ImageStudio({ embedded }: { embedded?: boolean }) {
     });
   }, []);
 
-  const engine = apps.find((app) => app.engine === "matiz" && app.owner === "cadria");
+  const engine = apps.find((app) => app.engine === "image studio" && app.owner === "cadria");
 
   return (
     <main className="dtw-app dtw-image" style={embedded ? { height: "100%", overflow: "auto" } : undefined}>

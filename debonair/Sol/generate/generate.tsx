@@ -136,7 +136,7 @@ export default function Generate() {
       <h1 className="reveal page-title">{label("generate.title")}</h1>
       <p className="reveal lede" style={{ maxWidth: 640 }}>
         {label("generate.ledeLead")}
-        <code>katexis</code>
+        <code>studio</code>
         {label("generate.ledeTail")}
       </p>
 

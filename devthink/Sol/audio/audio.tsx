@@ -52,7 +52,7 @@ export default function Audio({ embedded }: { embedded?: boolean }) {
     });
   }, []);
 
-  const engine = apps.find((app) => app.engine === "katexis" && app.owner === "debonair");
+  const engine = apps.find((app) => app.engine === "music studio" && app.owner === "debonair");
 
   return (
     <main className="dtw-app dtw-audio" style={embedded ? { height: "100%", overflow: "auto" } : undefined}>

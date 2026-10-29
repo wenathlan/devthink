@@ -17,11 +17,7 @@ import { createRoot } from "react-dom/client";
 import { Router as WouterRouter } from "wouter";
 import { label, seedLabels } from "./labels";
 import Sol from "./Sol/Sol";
-import installzoomlock from "./zoomlock";
 import "./Sol/sol.css";
-
-// the zoom lock arms before the first render: the interface boots pinned at 100%
-if (typeof window !== "undefined") installzoomlock();
 
 // the copy law rides the boot: the seed refreshes the label store rows
 // (translated rows protected) before the first paint answers

@@ -94,7 +94,7 @@ export const seedAnchors: readonly CreativeAnchor[] = [
     id: "code_ide",
     title: "Code IDE",
     detail:
-      "Edit scripts, shaders and expression graphs beside the frame. The IDE writes straight into the versawase runtime — no export loop.",
+      "Edit scripts, shaders and expression graphs beside the frame. The IDE writes straight into the studio runtime — no export loop.",
   },
   {
     id: "themes",
@@ -189,7 +189,7 @@ export const seedSeatCards: readonly FeatureCard[] = [
 ];
 
 export const seedHeroBadges: readonly SignalBadge[] = [
-  { group: "hero", label: "versawase engine", tone: "default", dot: true },
+  { group: "hero", label: "studio engine", tone: "default", dot: true },
   { group: "hero", label: "MP4 · WEBM", tone: "success" },
   { group: "hero", label: "14 formats", tone: "info" },
 ];

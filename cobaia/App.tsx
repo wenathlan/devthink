@@ -21,10 +21,6 @@ import { Router as WouterRouter } from "wouter";
 import Sol from "./Sol/Sol";
 import "./Sol/sol.css";
 import { seedLabels } from "./labels";
-import installzoomlock from "./zoomlock";
-
-// the zoom lock arms before the first render: the interface boots pinned at 100%
-if (typeof window !== "undefined") installzoomlock();
 
 // the copy law rides the boot: the seed refreshes the label store rows from
 // the manifest (the browser cache mirrors the site db rows) before the theme

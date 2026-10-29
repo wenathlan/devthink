@@ -62,8 +62,8 @@ export function LanguageCard() {
         </select>
       </div>
       <div className="dtw-settings__kv">
-        <span className="dtw-settings__kvkey">module</span>
-        <span className="dtw-settings__kvvalue">google gtx — translategtx</span>
+        <span className="dtw-settings__kvkey">translation</span>
+        <span className="dtw-settings__kvvalue">applied live to every surface</span>
       </div>
       <div className="dtw-settings__kv">
         <span className="dtw-settings__kvkey">surface</span>

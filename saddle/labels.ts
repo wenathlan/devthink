@@ -16,7 +16,7 @@ import type { LabelRow } from './db.ts';
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 1;
+export const LABEL_REVISION = 2;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the widgets and page anchors rendered
@@ -383,7 +383,7 @@ export const labelmanifest = {
   'register.confirm.match': 'passwords match.',
   'register.confirm.mismatch': 'passwords do not match.',
   // the home page anchor (the landing)
-  'home.hero.eyebrow': 'saddle · the sandbox runner of the family',
+  'home.hero.eyebrow': 'saddle · the instant sandbox of the family',
   'home.hero.titleLine1': 'Spin a',
   'home.hero.titleLine2': 'sandbox.',
   'home.hero.lede':

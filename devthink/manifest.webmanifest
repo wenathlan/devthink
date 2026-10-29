@@ -1,7 +1,7 @@
 {
   "name": "DevThink — AI Development Workbench",
   "short_name": "DevThink",
-  "description": "Browser-like workbench for embedded gateway sessions and normalized AI streams.",
+  "description": "The thinking OS: every app of the family in one workbench.",
   "start_url": "/",
   "id": "/",
   "display": "standalone",
@@ -38,7 +38,7 @@
     {
       "name": "Gateway",
       "short_name": "Gateway",
-      "description": "Open the gateway sessions view",
+      "description": "Open the chat sessions view",
       "url": "/gateway",
       "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
     },

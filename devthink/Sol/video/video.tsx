@@ -50,7 +50,7 @@ export default function Video({ embedded }: { embedded?: boolean }) {
     });
   }, []);
 
-  const engine = apps.find((app) => app.engine === "versawase" && app.owner === "cadria");
+  const engine = apps.find((app) => app.engine === "video studio" && app.owner === "cadria");
 
   return (
     <main className="dtw-app dtw-video" style={embedded ? { height: "100%", overflow: "auto" } : undefined}>

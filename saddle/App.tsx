@@ -14,10 +14,6 @@ import Sol from './Sol/Sol';
 import { ErrorBoundary, ThemeProvider, Toaster, TooltipProvider } from './Sol/shell/Shell.tsx';
 import './Sol/sol.css';
 import { seedlabels } from './labels';
-import installzoomlock from './zoomlock';
-
-// the zoom lock arms before the first render: the interface boots pinned at 100%
-if (typeof window !== 'undefined') installzoomlock();
 
 // the copy law rides the boot: the seed refreshes the label store rows
 // (translated rows protected) before the first paint answers
