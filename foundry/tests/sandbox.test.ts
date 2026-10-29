@@ -1,11 +1,11 @@
 // # sandbox.test — the sandbox state machine of the /sandboxes page,
-// runnable with the node built-in runner (no dependencies, no install):
-//   node --test tests/sandbox.test.ts
+// runnable with the house vitest suite:
+//   bunx vitest run tests/sandbox.test.ts
 // The machine never lies: the ladder is cold → warm → hot with the cooling
 // paths back, every refusal is an honest string, the herd replays from the
 // seed and the census counts exactly.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   canTransition,
   drive,

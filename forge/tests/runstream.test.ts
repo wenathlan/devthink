@@ -1,11 +1,11 @@
 // # runstream.test — the deterministic log replay of the /logs page,
-// runnable with the node built-in runner (no dependencies, no install):
-//   node --test tests/runstream.test.ts
+// runnable with the house vitest suite:
+//   bunx vitest run tests/runstream.test.ts
 // One seed unrolls the whole line stream: the same seed answers the same
 // lines forever, the outcome derives from the stream itself, the prefix
 // window and the census are pure.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import { formatLogTime, linesWithin, logCensus, logDuration, logOutcome, logText, runLogLines } from "../runstream.ts";
 
 describe("replay determinism", () => {

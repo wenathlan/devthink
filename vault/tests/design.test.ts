@@ -1,6 +1,6 @@
 // # design.test — the design contract of the vault surface, runnable with
-// the node built-in runner (no dependencies, no install):
-//   node --test tests/design.test.ts
+// the house vitest suite:
+//   bunx vitest run tests/design.test.ts
 // The file reads the shipped sources (css, entry face, brand mark, app
 // identity) and pins the family laws of the reform wave: no banned hue, no
 // pill, no transition:all, the trylle type triad, the source-face entry,
@@ -8,7 +8,7 @@
 // application identity.
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 
 function read(path: string): string {
   return readFileSync(new URL(path, import.meta.url), "utf8");

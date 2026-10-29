@@ -1,11 +1,11 @@
-// # retention.test — the clock engine of the vault, runnable with the node
-// built-in runner (no dependencies, no install):
-//   node --test tests/retention.test.ts
+// # retention.test — the clock engine of the vault, runnable with the
+// house vitest suite:
+//   bunx vitest run tests/retention.test.ts
 // The clock is rehearsal time: one tick is one day, the sweep is a PLAN
 // (pure — nothing is deleted), and the same ledger, rules and tick always
 // answer the same verdicts.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import { seedRules } from "../buckets.ts";
 import { sealObject, seedVault } from "../objects.ts";
 import {

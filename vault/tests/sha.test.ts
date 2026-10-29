@@ -1,11 +1,11 @@
-// # sha.test — the real digest engine of the vault, runnable with the node
-// built-in runner (no dependencies, no install):
-//   node --test tests/sha.test.ts
+// # sha.test — the real digest engine of the vault, runnable with the
+// house vitest suite:
+//   bunx vitest run tests/sha.test.ts
 // The digests answer the published NIST vectors verbatim, real binary bytes
 // digest deterministically, and one moved byte breaks the answer — the
 // tamper gate the whole storage stack trusts.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import { digestMatches, isSha1Hex, isSha256Hex, sha1Hex, sha256Hex } from "../sha.ts";
 import { mulberry32 } from "../objects.ts";
 

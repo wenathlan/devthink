@@ -1,11 +1,11 @@
 // # artifact.test — the checksum engine of the /artifacts page, runnable
-// with the node built-in runner (no dependencies, no install):
-//   node --test tests/artifact.test.ts
+// with the house vitest suite:
+//   bunx vitest run tests/artifact.test.ts
 // The seal is the proof: fnv-1a (32-bit) over the canonical identity string,
 // rendered as 8 hex, byte-stable in node and in the browser — pinned here
 // against the canonical FNV-1a vectors.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   type Artifact,
   artifactIdentity,

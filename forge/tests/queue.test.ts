@@ -1,11 +1,11 @@
 // # queue.test — the execution queue engine of the /queue page, runnable
-// with the node built-in runner (no dependencies, no install):
-//   node --test tests/queue.test.ts
+// with the house vitest suite:
+//   bunx vitest run tests/queue.test.ts
 // The queue never lies: storage is append-only, the serving order is
 // priority first and FIFO inside the lane, the depth counts exactly and
 // the rehearsal seed replays the same queue every time.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   cancel,
   depthByPriority,

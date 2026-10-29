@@ -1,10 +1,10 @@
 // # buckets.test — the bucket shelf engine of the vault, runnable with the
-// node built-in runner (no dependencies, no install):
-//   node --test tests/buckets.test.ts
+// house vitest suite:
+//   bunx vitest run tests/buckets.test.ts
 // The shelf rolls the rehearsal ledger up per bucket: policy, rows, bytes,
 // lfs share — deterministic from the seed, honest about unknowns.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   type BucketRule,
   bucketShelf,

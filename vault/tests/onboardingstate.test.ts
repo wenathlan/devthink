@@ -1,10 +1,10 @@
 // # onboardingstate.test — the pure contract of the seen flags: the host
 //   validation of the platform base (https only, public hosts only) and the
 //   seen-wins stage merge the accessor and the pages share. runnable with
-//   the node built-in runner (no dependencies, no install):
-//   node --test tests/onboardingstate.test.ts
+//   the house vitest suite:
+//   bunx vitest run tests/onboardingstate.test.ts
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import { hostallowed, mergeStage } from "../onboardingstate.ts";
 
 describe("onboarding state", () => {

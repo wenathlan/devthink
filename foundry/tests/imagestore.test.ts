@@ -1,10 +1,10 @@
 // # imagestore.test — the herd format engine of the /images page, runnable
-// with the node built-in runner (no dependencies, no install):
-//   node --test tests/imagestore.test.ts
+// with the house vitest suite:
+//   bunx vitest run tests/imagestore.test.ts
 // The three real clone formats (.tzst / .tar.gz / .tar.xz), the honest
 // conversion plans (always through the tar layer) and the size estimates.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   convertPlan,
   estimateSize,
