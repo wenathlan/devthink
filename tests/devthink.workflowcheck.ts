@@ -95,7 +95,7 @@ const checks = {
     "Run the nuget pack dry run",
     "Run the maven pack dry run",
     "Build the container image and run its smoke",
-    "docker build -f Dockerfile",
+    "docker build -f devthink/Dockerfile",
     "Assert the artifact manifest matches the built set",
     "dist/devthink-vscode-${VERSION}.vsix",
     "contentFiles/any/any/cli.js",
