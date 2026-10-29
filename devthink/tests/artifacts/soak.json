@@ -1,5 +1,5 @@
 {
-  "release": "2.0.131",
+  "release": "2.0.151",
   "checklist": "docs/soak.md",
   "soak": {
     "retentionwindow": 8,
@@ -79,7 +79,7 @@
       "id": 9,
       "title": "the soak report records every check and the exit answers the failures",
       "family": "report",
-      "module": "soak.mjs",
+      "module": "soak.ts",
       "outcome": "pass",
       "detail": "the soak report carries the eight executed checks with their outcomes and details, the summary computes 9 of 9 passed over the 24 row soak run of 3 retention window passes, and the gate sets its nonzero exit the moment any failed check lands in the artifact."
     }

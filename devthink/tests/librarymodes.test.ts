@@ -13,6 +13,7 @@ import { promisify } from "node:util";
 import { build } from "esbuild";
 import { parseheadlessfixture, resolvefixture } from "../cli.js";
 import { denoconfigread } from "../deno.js";
+import { exampleorgpagestate } from "./fixtureset.ts";
 import * as memorymodule from "../memory.js";
 import { sessionmemory } from "../memory.js";
 import * as policymodule from "../policy.js";
@@ -413,7 +414,7 @@ describe("the library modes of 1.1.81", () => {
     expect(stepped.updatedat).toBe(1_000);
     expect(stepped.outcomes).toHaveLength(1);
 
-    const fixturefile = JSON.parse(await readFile("tests/code/example-org-pagestate.json", "utf8")) as unknown;
+    const fixturefile = JSON.parse(exampleorgpagestate) as unknown;
     const fixture = parseheadlessfixture(fixturefile);
     expect(resolvefixture([fixture], fixture.origin)).toBe(fixture);
     if (!existsSync("deno.json"))

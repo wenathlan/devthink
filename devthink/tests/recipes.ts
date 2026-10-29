@@ -1,21 +1,20 @@
-/** Runs the example gallery of the 2.0.0 release: the gate loads the 36 recipes of tests/code/recipes through the same cli loader the planlint command uses (parseplanfile under schemastrict), validates every recipe against the frozen plan schema of tests/code/plan.schema.json (the origin, the steps and the step field vocabulary the plan authoring format shares with the frozen message schema, with the goal mapping onto the objective carrier, the label onto the summary carrier and the derived risk checked against the frozen risk enum), lints every recipe with the same portable rule set and capability set the cli planlint builds, verifies the gallery metadata of the index (the description, the difficulty, the fixture page, the declared capabilities, the consent classes, the agent topologies, the scraping export formats and the monitoring schedules), proves the consent gates hold by linting the consent recipes once with the fresh class consents the review flow would record and once without them (the refusal must name exactly the declared classes), verifies every sensitive step carries its gate declaration, verifies no step value, option or origin hardcodes a remote origin outside the reserved fixture family, resolves every step selector statically against the fixture page the entry names, dry runs every recipe through the runflow pipeline the extension runs (the grants gate, the workflow proposal validation, the per step consent gates routed to a recording provider and the dry run driver that touches no page), replays the cli planlint command over every consent free recipe copy of dist/fixtures/recipes so the gallery imports cleanly through the cli, records the outcome and duration of every executed entry in tests/artifacts/recipes.json and exits nonzero on any failure. The diff mode reruns the suite and compares the gallery against the previous report artifact: an entry added, removed, re-categorized, re-graded or drifted in its steps or kinds fails the diff so the gallery never drifts silently between releases. */
+/** Runs the example gallery of the 2.0.0 release: the gate loads the 36 recipes of the recipesfixtures module through the same cli loader the planlint command uses (parseplanfile under schemastrict), validates every recipe against the frozen plan schema of the schemafixtures module (the origin, the steps and the step field vocabulary the plan authoring format shares with the frozen message schema, with the goal mapping onto the objective carrier, the label onto the summary carrier and the derived risk checked against the frozen risk enum), lints every recipe with the same portable rule set and capability set the cli planlint builds, verifies the gallery metadata of the index (the description, the difficulty, the fixture page, the declared capabilities, the consent classes, the agent topologies, the scraping export formats and the monitoring schedules), proves the consent gates hold by linting the consent recipes once with the fresh class consents the review flow would record and once without them (the refusal must name exactly the declared classes), verifies every sensitive step carries its gate declaration, verifies no step value, option or origin hardcodes a remote origin outside the reserved fixture family, resolves every step selector statically against the fixture page the entry names, dry runs every recipe through the runflow pipeline the extension runs (the grants gate, the workflow proposal validation, the per step consent gates routed to a recording provider and the dry run driver that touches no page), replays the cli planlint command over every consent free recipe copy of dist/fixtures/recipes so the gallery imports cleanly through the cli, records the outcome and duration of every executed entry in tests/artifacts/recipes.json and exits nonzero on any failure. The diff mode reruns the suite and compares the gallery against the previous report artifact: an entry added, removed, re-categorized, re-graded or drifted in its steps or kinds fails the diff so the gallery never drifts silently between releases. */
 import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 import type { actionkind, classconsent, consentprovider, sensitiveclass } from "../types.ts";
+import { gallery as gallerytext, recipeplans } from "./recipesfixtures.ts";
+import { plan as planschematext } from "./schemafixtures.ts";
+import { fixturepages } from "./pagefixtures.ts";
 
 const execute = promisify(execFile);
 const mode = process.argv[2] ?? "check";
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
 const artifactpath = "tests/artifacts/recipes.json";
-const gallerypath = "tests/code/recipes/gallery.json";
-const recipesdirectory = "tests/code/recipes";
-const pagesdirectory = "tests/code/pages";
-const schemapath = "tests/code/plan.schema.json";
 const buildscript = "tests/build.ts";
 
 /** One gallery check with its name, its outcome and its detail line, in the shape the sweep and poolaudit gates record theirs; the fixtureset check records its own { ok, detail } verdict as the outcome, so the artifact preserves the nested verdict exactly as the run recorded it. */
@@ -104,7 +103,7 @@ interface schemasection {
   required?: string[];
 }
 
-/** The frozen plan schema of tests/code/plan.schema.json as the overlap validation reads it. */
+/** The frozen plan schema of the schemafixtures module as the overlap validation reads it. */
 interface planschema {
   plan?: schemasection;
   step?: schemasection;
@@ -345,23 +344,19 @@ export async function runrecipessuite(): Promise<recipereport> {
     "the gallery reads dist/index.js and dist/policy.js, the same compiled modules the cli planlint and flowrun commands read",
   );
 
-  /* the frozen schema, the gallery index and the fixture pages of the repository sources. */
-  const schema = JSON.parse(await readFile(schemapath, "utf8")) as planschema;
+  /* the frozen schema, the gallery index and the fixture pages of the module sources. */
+  const schema = JSON.parse(planschematext) as planschema;
   recordcheck(
     checks,
     "the frozen plan schema carries its plan, step, options and review sections",
     ["plan", "step", "options", "reviewsurface"].every((section) => schema[section] !== undefined),
-    `the frozen schema of ${schemapath} carries the plan, step, options and reviewsurface sections the gallery validates against`,
+    "the frozen schema of the schemafixtures module carries the plan, step, options and reviewsurface sections the gallery validates against",
   );
-  const gallery = JSON.parse(await readFile(gallerypath, "utf8")) as galleryindex;
+  const gallery = JSON.parse(gallerytext) as galleryindex;
   const recipesource = new Map<string, recipedocument>();
-  for (const file of (await readdir(recipesdirectory))
-    .filter((file) => file.endsWith(".json") && file !== "gallery.json")
-    .sort())
-    recipesource.set(file.replace(".json", ""), JSON.parse(await readFile(join(recipesdirectory, file), "utf8")));
-  const pagehtml = new Map<string, string>();
-  for (const file of (await readdir(pagesdirectory)).filter((file) => file.endsWith(".html")).sort())
-    pagehtml.set(file, await readFile(join(pagesdirectory, file), "utf8"));
+  for (const [id, text] of Object.entries(recipeplans))
+    recipesource.set(id, JSON.parse(text) as recipedocument);
+  const pagehtml = new Map<string, string>(Object.entries(fixturepages));
 
   /* 1. the gallery shape: 36 entries, five categories, four fixture pages, no unknown category, no duplicate id and every entry names a recipe file the directory carries. */
   const categories: Record<string, number> = {};
@@ -385,10 +380,10 @@ export async function runrecipessuite(): Promise<recipereport> {
     shapeproblems.push("the gallery carries a duplicated entry id");
   for (const entry of gallery.entries)
     if (!recipesource.has(entry.id))
-      shapeproblems.push(`the entry ${entry.id} names no recipe file of ${recipesdirectory}`);
+      shapeproblems.push(`the entry ${entry.id} names no recipe of the recipesfixtures module`);
   for (const [id] of recipesource)
     if (!gallery.entries.some((entry) => entry.id === id))
-      shapeproblems.push(`the recipe file ${id} joins the directory while the index names no entry`);
+      shapeproblems.push(`the recipe ${id} joins the module while the index names no entry`);
   recordcheck(
     checks,
     "the gallery index parses with the 36 promised entries in the five categories",
@@ -664,7 +659,7 @@ export async function runrecipessuite(): Promise<recipereport> {
         };
         const run = await library.runflow({
           request: {
-            planpath: join(recipesdirectory, `${entry.id}.json`),
+            planpath: `tests/recipesfixtures.ts#${entry.id}`,
             options: {
               format: "json",
               outputdir: "tests/artifacts",
@@ -807,7 +802,7 @@ export async function runrecipessuite(): Promise<recipereport> {
         return true;
       }) &&
       (await fixturesetshipped()),
-    "the four fixture pages of tests/code/pages copy into dist/fixtures/pages through the fixtureset rows of tests/build.ts, so every package channel ships them from dist",
+    "the four fixture pages of the pagefixtures module copy into dist/fixtures/pages through the fixtureset rows of tests/build.ts, so every package channel ships them from dist",
   );
   recordcheck(
     checks,
@@ -905,7 +900,7 @@ export async function runrecipessuite(): Promise<recipereport> {
 /** Reads whether the fixtureset of the build script carries the rows the gallery ships: the gallery index beside the 36 recipes and the four fixture pages, so the built packages carry the whole example set. */
 async function fixturesetshipped() {
   const text = await readFile(buildscript, "utf8");
-  const gallery = (await artifact(gallerypath)) as galleryindex;
+  const gallery = JSON.parse(gallerytext) as galleryindex;
   const rowsneeded = [
     "gallery.json",
     ...gallery.entries.map((entry) => `fixtures/recipes/${entry.id}.json`),

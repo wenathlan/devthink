@@ -2,72 +2,72 @@
 
 Last verified release: the 2.0.0 example gallery release; the recipes gate renews the verification on every run.
 
-The example gallery is the fastest way to start with the library: 36 runnable recipes grouped into the five families the roadmap promised — 8 scraping, 9 forms, 8 testing, 6 monitoring and 5 agent recipes — each one a pure plan file of `tests/code/recipes/` that the gate of `tests/recipes.ts` validates, lints and dry runs against the four fixture pages of `tests/code/pages/`. The metadata that grades every entry (its category, its difficulty, its fixture page, its consent classes and the category fields its family requires) lives in the gallery index of `tests/code/recipes/gallery.json`, because the frozen plan schema allows no metadata field inside a recipe document. The build copies the whole set into `dist/fixtures/recipes/`, `dist/fixtures/pages/` and `dist/gallery.json` so every package channel ships it, and the verify lane runs `node tests/recipes.ts` on every release — the recipes can never drift from the code.
+The example gallery is the fastest way to start with the library: 36 runnable recipes grouped into the five families the roadmap promised — 8 scraping, 9 forms, 8 testing, 6 monitoring and 5 agent recipes — each one a plan document export of the `tests/recipesfixtures.ts` module that the gate of `tests/recipes.ts` validates, lints and dry runs against the four fixture pages of the `tests/pagefixtures.ts` module. The metadata that grades every entry (its category, its difficulty, its fixture page, its consent classes and the category fields its family requires) lives in the gallery index export of `tests/recipesfixtures.ts`, because the frozen plan schema allows no metadata field inside a recipe document. The build copies the whole set into `dist/fixtures/recipes/`, `dist/fixtures/pages/` and `dist/gallery.json` so every package channel ships it, and the verify lane runs `node tests/recipes.ts` on every release — the recipes can never drift from the code.
 
 ## The gallery index
 
-Every entry below names its recipe file, its difficulty grade, its expected dry run duration, its fixture page and the action kinds it exercises. The recipe column links the plan document itself; the kinds column names the exact kind set the gate verifies against the recipe steps, including the child kinds nested in the control payloads.
+Every entry below names its recipe export, its difficulty grade, its expected dry run duration, its fixture page and the action kinds it exercises. The recipe column links the module that carries the plan text; the kinds column names the exact kind set the gate verifies against the recipe steps, including the child kinds nested in the control payloads.
 
 ### scraping recipes
 
 | Recipe | Difficulty | Expected duration | Fixture page | Kinds exercised |
 | --- | --- | --- | --- | --- |
-| [scrapeproductgrid](../tests/code/recipes/scrapeproductgrid.json) | starter | 1600 ms | product-grid.html | observe, countelements, readtext, exportjson |
-| [scrapetablepagination](../tests/code/recipes/scrapetablepagination.json) | starter | 1800 ms | product-grid.html | observe, scrapetable, countpages, exportcsv |
-| [scrapereviews](../tests/code/recipes/scrapereviews.json) | intermediate | 3200 ms | product-grid.html | observe, countelements, readtext, exportjson |
-| [scrapesearchresults](../tests/code/recipes/scrapesearchresults.json) | starter | 1700 ms | feed.html | observe, readlinks, readmeta, exportjson |
-| [scrapenestedlists](../tests/code/recipes/scrapenestedlists.json) | intermediate | 3400 ms | feed.html | observe, detectlists, readhtml, exportexcel |
-| [scrapeinfinitefeed](../tests/code/recipes/scrapeinfinitefeed.json) | advanced | 6500 ms | feed.html | observe, detectinfinitescroll, readscrollpos, readtext, exportjson |
-| [scrapedynamicprices](../tests/code/recipes/scrapedynamicprices.json) | intermediate | 3800 ms | dashboard.html | observe, waitelement, readtext, watchmutate, exportcsv |
-| [scrapeimagegallery](../tests/code/recipes/scrapeimagegallery.json) | intermediate | 3000 ms | product-grid.html | observe, readimages, verifyvisible, exportcsv |
+| [scrapeproductgrid](../tests/recipesfixtures.ts) | starter | 1600 ms | product-grid.html | observe, countelements, readtext, exportjson |
+| [scrapetablepagination](../tests/recipesfixtures.ts) | starter | 1800 ms | product-grid.html | observe, scrapetable, countpages, exportcsv |
+| [scrapereviews](../tests/recipesfixtures.ts) | intermediate | 3200 ms | product-grid.html | observe, countelements, readtext, exportjson |
+| [scrapesearchresults](../tests/recipesfixtures.ts) | starter | 1700 ms | feed.html | observe, readlinks, readmeta, exportjson |
+| [scrapenestedlists](../tests/recipesfixtures.ts) | intermediate | 3400 ms | feed.html | observe, detectlists, readhtml, exportexcel |
+| [scrapeinfinitefeed](../tests/recipesfixtures.ts) | advanced | 6500 ms | feed.html | observe, detectinfinitescroll, readscrollpos, readtext, exportjson |
+| [scrapedynamicprices](../tests/recipesfixtures.ts) | intermediate | 3800 ms | dashboard.html | observe, waitelement, readtext, watchmutate, exportcsv |
+| [scrapeimagegallery](../tests/recipesfixtures.ts) | intermediate | 3000 ms | product-grid.html | observe, readimages, verifyvisible, exportcsv |
 
 ### forms recipes
 
 | Recipe | Difficulty | Expected duration | Fixture page | Kinds exercised |
 | --- | --- | --- | --- | --- |
-| [fillloginform](../tests/code/recipes/fillloginform.json) | intermediate | 3600 ms | checkout.html | observe, readforms, fillform, submit |
-| [fillcheckout](../tests/code/recipes/fillcheckout.json) | advanced | 7000 ms | checkout.html | observe, readforms, runwizard, fillform, submit |
-| [fillregistration](../tests/code/recipes/fillregistration.json) | starter | 2000 ms | checkout.html | observe, readforms, fillform, submit |
-| [fillsearchfilters](../tests/code/recipes/fillsearchfilters.json) | starter | 2200 ms | product-grid.html | observe, detectfields, fillform, click |
-| [fillmultistepwizard](../tests/code/recipes/fillmultistepwizard.json) | advanced | 6200 ms | checkout.html | observe, readforms, runwizard, fillform, submit |
-| [filldependentdropdowns](../tests/code/recipes/filldependentdropdowns.json) | advanced | 5800 ms | checkout.html | observe, readforms, selectchain, submit |
-| [filltypeahead](../tests/code/recipes/filltypeahead.json) | intermediate | 3300 ms | product-grid.html | observe, waitelement, picktypeahead |
-| [fillcalendar](../tests/code/recipes/fillcalendar.json) | intermediate | 3100 ms | checkout.html | observe, readforms, pickdate, submit |
-| [fillfromcsv](../tests/code/recipes/fillfromcsv.json) | advanced | 6800 ms | checkout.html | importcsv, looprows, readforms, fillform, submit |
+| [fillloginform](../tests/recipesfixtures.ts) | intermediate | 3600 ms | checkout.html | observe, readforms, fillform, submit |
+| [fillcheckout](../tests/recipesfixtures.ts) | advanced | 7000 ms | checkout.html | observe, readforms, runwizard, fillform, submit |
+| [fillregistration](../tests/recipesfixtures.ts) | starter | 2000 ms | checkout.html | observe, readforms, fillform, submit |
+| [fillsearchfilters](../tests/recipesfixtures.ts) | starter | 2200 ms | product-grid.html | observe, detectfields, fillform, click |
+| [fillmultistepwizard](../tests/recipesfixtures.ts) | advanced | 6200 ms | checkout.html | observe, readforms, runwizard, fillform, submit |
+| [filldependentdropdowns](../tests/recipesfixtures.ts) | advanced | 5800 ms | checkout.html | observe, readforms, selectchain, submit |
+| [filltypeahead](../tests/recipesfixtures.ts) | intermediate | 3300 ms | product-grid.html | observe, waitelement, picktypeahead |
+| [fillcalendar](../tests/recipesfixtures.ts) | intermediate | 3100 ms | checkout.html | observe, readforms, pickdate, submit |
+| [fillfromcsv](../tests/recipesfixtures.ts) | advanced | 6800 ms | checkout.html | importcsv, looprows, readforms, fillform, submit |
 
 ### testing recipes
 
 | Recipe | Difficulty | Expected duration | Fixture page | Kinds exercised |
 | --- | --- | --- | --- | --- |
-| [testlinkcheck](../tests/code/recipes/testlinkcheck.json) | starter | 1800 ms | product-grid.html | observe, readlinks, countelements, detecthttp |
-| [testconsoleerrors](../tests/code/recipes/testconsoleerrors.json) | starter | 1900 ms | dashboard.html | observe, watchconsole, watcherrors, readerrors |
-| [testformvalidation](../tests/code/recipes/testformvalidation.json) | intermediate | 3500 ms | checkout.html | observe, readforms, detectfields, readerrors, verifyvisible |
-| [testlayoutshift](../tests/code/recipes/testlayoutshift.json) | advanced | 6400 ms | dashboard.html | observe, watchshifts, traceload, measureflow |
-| [testvisualdiff](../tests/code/recipes/testvisualdiff.json) | intermediate | 3700 ms | product-grid.html | observe, shotview, shotelement, diffsnapshots |
-| [testloadtiming](../tests/code/recipes/testloadtiming.json) | intermediate | 3900 ms | dashboard.html | observe, traceload, measureflow, watchrequests |
-| [testaccessibility](../tests/code/recipes/testaccessibility.json) | starter | 2100 ms | product-grid.html | readertree, readoutline, readmeta, verifyvisible |
-| [testdeeplinks](../tests/code/recipes/testdeeplinks.json) | intermediate | 3300 ms | dashboard.html | observe, readlinks, readfinalurl, countpages |
+| [testlinkcheck](../tests/recipesfixtures.ts) | starter | 1800 ms | product-grid.html | observe, readlinks, countelements, detecthttp |
+| [testconsoleerrors](../tests/recipesfixtures.ts) | starter | 1900 ms | dashboard.html | observe, watchconsole, watcherrors, readerrors |
+| [testformvalidation](../tests/recipesfixtures.ts) | intermediate | 3500 ms | checkout.html | observe, readforms, detectfields, readerrors, verifyvisible |
+| [testlayoutshift](../tests/recipesfixtures.ts) | advanced | 6400 ms | dashboard.html | observe, watchshifts, traceload, measureflow |
+| [testvisualdiff](../tests/recipesfixtures.ts) | intermediate | 3700 ms | product-grid.html | observe, shotview, shotelement, diffsnapshots |
+| [testloadtiming](../tests/recipesfixtures.ts) | intermediate | 3900 ms | dashboard.html | observe, traceload, measureflow, watchrequests |
+| [testaccessibility](../tests/recipesfixtures.ts) | starter | 2100 ms | product-grid.html | readertree, readoutline, readmeta, verifyvisible |
+| [testdeeplinks](../tests/recipesfixtures.ts) | intermediate | 3300 ms | dashboard.html | observe, readlinks, readfinalurl, countpages |
 
 ### monitoring recipes
 
 | Recipe | Difficulty | Expected duration | Fixture page | Kinds exercised | Schedule |
 | --- | --- | --- | --- | --- | --- |
-| [monitorpricechange](../tests/code/recipes/monitorpricechange.json) | intermediate | 3400 ms | dashboard.html | observe, readtext, watchmutate | */5 * * * * |
-| [monitoravailability](../tests/code/recipes/monitoravailability.json) | starter | 2000 ms | dashboard.html | observe, verifyvisible, watchbanner | */10 * * * * |
-| [monitornetworkquiet](../tests/code/recipes/monitornetworkquiet.json) | intermediate | 3800 ms | dashboard.html | observe, watchrequests, waitquiet, readerrors | */15 * * * * |
-| [monitorpagechanges](../tests/code/recipes/monitorpagechanges.json) | advanced | 6100 ms | feed.html | observe, watchmutate, diffsnapshots | 0 * * * * |
-| [monitorschedule](../tests/code/recipes/monitorschedule.json) | intermediate | 3600 ms | dashboard.html | observe, intervalrule, readtext, watchmutate | */5 * * * * |
-| [monitoralerts](../tests/code/recipes/monitoralerts.json) | advanced | 5900 ms | dashboard.html | observe, watchconsole, watchbanner, readerrors | */2 * * * * |
+| [monitorpricechange](../tests/recipesfixtures.ts) | intermediate | 3400 ms | dashboard.html | observe, readtext, watchmutate | */5 * * * * |
+| [monitoravailability](../tests/recipesfixtures.ts) | starter | 2000 ms | dashboard.html | observe, verifyvisible, watchbanner | */10 * * * * |
+| [monitornetworkquiet](../tests/recipesfixtures.ts) | intermediate | 3800 ms | dashboard.html | observe, watchrequests, waitquiet, readerrors | */15 * * * * |
+| [monitorpagechanges](../tests/recipesfixtures.ts) | advanced | 6100 ms | feed.html | observe, watchmutate, diffsnapshots | 0 * * * * |
+| [monitorschedule](../tests/recipesfixtures.ts) | intermediate | 3600 ms | dashboard.html | observe, intervalrule, readtext, watchmutate | */5 * * * * |
+| [monitoralerts](../tests/recipesfixtures.ts) | advanced | 5900 ms | dashboard.html | observe, watchconsole, watchbanner, readerrors | */2 * * * * |
 
 ### agent recipes
 
 | Recipe | Difficulty | Expected duration | Fixture page | Kinds exercised | Topology |
 | --- | --- | --- | --- | --- | --- |
-| [agentswarm](../tests/code/recipes/agentswarm.json) | advanced | 7200 ms | product-grid.html | observe, parallel, readtext, countelements, exportjson | swarm |
-| [agentsreview](../tests/code/recipes/agentsreview.json) | intermediate | 3500 ms | product-grid.html | observe, readtable, condition | review |
-| [agentsforms](../tests/code/recipes/agentsforms.json) | advanced | 7500 ms | checkout.html | observe, parallel, fillform, submit | parallel |
-| [agentsmonitor](../tests/code/recipes/agentsmonitor.json) | advanced | 6900 ms | feed.html | observe, watchmutate, parallel, readtext, readscrollpos | monitor |
-| [agentscompete](../tests/code/recipes/agentscompete.json) | advanced | 7800 ms | product-grid.html | observe, parallel, readtext, scrapetable, exportjson | compete |
+| [agentswarm](../tests/recipesfixtures.ts) | advanced | 7200 ms | product-grid.html | observe, parallel, readtext, countelements, exportjson | swarm |
+| [agentsreview](../tests/recipesfixtures.ts) | intermediate | 3500 ms | product-grid.html | observe, readtable, condition | review |
+| [agentsforms](../tests/recipesfixtures.ts) | advanced | 7500 ms | checkout.html | observe, parallel, fillform, submit | parallel |
+| [agentsmonitor](../tests/recipesfixtures.ts) | advanced | 6900 ms | feed.html | observe, watchmutate, parallel, readtext, readscrollpos | monitor |
+| [agentscompete](../tests/recipesfixtures.ts) | advanced | 7800 ms | product-grid.html | observe, parallel, readtext, scrapetable, exportjson | compete |
 
 The five agent recipes are the certified examples of the topologies the multi agent certification covers — the swarm, the review, the parallel, the monitor and the compete scenario of `docs/agentscenarios.md`; the certification doc of `docs/agentcert.md` links them as the plan-file half of that ledger.
 
@@ -102,11 +102,11 @@ The gallery index carries the metadata the frozen plan grammar cannot, one entry
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `id` | every entry | The unique recipe id; it must match the recipe file name of `tests/code/recipes/` (the id `scrapeproductgrid` names `scrapeproductgrid.json`) and no id may duplicate. |
+| `id` | every entry | The unique recipe id; it must match the recipe export of `tests/recipesfixtures.ts` (the id `scrapeproductgrid` names the `scrapeproductgrid` export) and no id may duplicate. |
 | `category` | every entry | One of the five families: `scraping`, `forms`, `testing`, `monitoring` or `agents`. |
 | `difficulty` | every entry | The grade `starter`, `intermediate` or `advanced`. |
 | `description` | every entry | The plain language description of at least twenty characters the index shows beside the recipe. |
-| `fixture` | every entry | One of the four fixture pages of `tests/code/pages/` the recipe runs against. |
+| `fixture` | every entry | One of the four fixture pages of `tests/pagefixtures.ts` the recipe runs against. |
 | `origin` | every entry | The local HTTPS origin the recipe and its fixture page share. |
 | `expecteddurationms` | every entry | The expected dry run duration in milliseconds, a positive integer the report compares against the measured one. |
 | `capabilities` | every entry | The manifest permissions the entry needs beyond the base set; every name must sit inside the required or optional permission set of `manifest.json` (the agent recipes declare `tabs`). |
@@ -118,8 +118,8 @@ The gallery index carries the metadata the frozen plan grammar cannot, one entry
 
 ## How to author and validate a new recipe
 
-1. Write the plan document as `tests/code/recipes/<id>.json` in the plan grammar above: a local fixture origin, the grants that cover every step kind, a selector that resolves inside the fixture page, and `"gate": true` on every sensitive step.
-2. Add the index entry to `tests/code/recipes/gallery.json` with every field of the reference table — the `id` must match the file name, the `kinds` set must equal the kinds the steps and their control payloads carry, and the category field of the family (`exportformat`, `schedule` or `topology`) must be present.
+1. Write the plan document as the `<id>` export of `tests/recipesfixtures.ts` in the plan grammar above: a local fixture origin, the grants that cover every step kind, a selector that resolves inside the fixture page, and `"gate": true` on every sensitive step.
+2. Add the index entry to the `gallery` export of `tests/recipesfixtures.ts` with every field of the reference table — the `id` must match the export name, the `kinds` set must equal the kinds the steps and their control payloads carry, and the category field of the family (`exportformat`, `schedule` or `topology`) must be present.
 3. Run the gate: `node tests/recipes.ts` validates the plan against the frozen schema, lints it under the portable rule set with the cli capability set, resolves every selector against the fixture page, dry runs the plan through the runflow pipeline and replays the cli planlint command over the built copy. The gate exits nonzero on any failure and writes the run report to `tests/artifacts/recipes.json`.
 4. Run the vitest file: `npx vitest run tests/recipes.test.ts` verifies the artifact covers every gallery entry, that every outcome is a pass, and re-runs the source grammar pass over the recipes and the index.
 5. Run the diff mode before a release: `node tests/recipes.ts diff` compares the fresh gallery against the previous report artifact — an entry added, removed, re-categorized, re-graded or drifted in its steps or kinds fails the diff, so the gallery never drifts silently between releases.
@@ -128,7 +128,7 @@ The selectors of a new recipe must resolve against the fixture page the entry na
 
 ## The fixture pages
 
-The four fixture pages of `tests/code/pages/` are self contained static documents — inline styles, inline scripts, no remote resource, no fetch, no storage, no cookie — each claiming its own local origin so the recipes bind to it exactly the way a live session binds to a real origin.
+The four fixture pages of `tests/pagefixtures.ts` are self contained static documents — inline styles, inline scripts, no remote resource, no fetch, no storage, no cookie — each claiming its own local origin so the recipes bind to it exactly the way a live session binds to a real origin.
 
 | Page | Origin | Features it covers |
 | --- | --- | --- |

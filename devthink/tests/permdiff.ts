@@ -1,17 +1,54 @@
-/** Compares the permission set of the manifest against the versioned baseline of the previous release so the permission set never grows silently: the gate extracts every required, optional and optional host permission of the current root manifest, diffs them against the checked-in permission baseline of tests/permdiff.json — the container builds and the fresh checkouts carry no git history, so the versioned baseline stays the source the gate trusts — cross-checks the baseline against the git tag of the release it records whenever a repository is present, reports every added, removed and reordered permission, requires a written justification row in the permdiff justification table of docs/01.extensionpermissions.md for every addition, blocks the release when an unjustified permission appears or the set drifts inside the release the baseline stamps, and rewrites the baseline in sync mode after the justification review. */
+/** Compares the permission set of the manifest against the versioned baseline of the previous release so the permission set never grows silently: the gate extracts every required, optional and optional host permission of the current root manifest, diffs them against the checked-in permission baseline of the permbaseline module — the container builds and the fresh checkouts carry no git history, so the versioned baseline stays the source the gate trusts — cross-checks the baseline against the git tag of the release it records whenever a repository is present, reports every added, removed and reordered permission, requires a written justification row in the permdiff justification table of docs/01.extensionpermissions.md for every addition, blocks the release when an unjustified permission appears or the set drifts inside the release the baseline stamps, and rewrites the baseline module in sync mode after the justification review. */
 import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { promisify } from "node:util";
+import { permdiffbaseline as recordedbaseline } from "./permbaseline.ts";
 
 const execute = promisify(execFile);
 const mode = process.argv[2] ?? "check";
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
-const artifactpath = "tests/permdiff.json";
+const baselinepath = "tests/permbaseline.ts";
 const justificationdoc = "docs/01.extensionpermissions.md";
 const tableheading = "## permdiff justification table";
 const failures: string[] = [];
+
+/** Renders the permbaseline module text of one recorded report: the header, the interface and the dense record the gate imports stay one reviewable unit the sync rewrites whole, so the checked-in baseline and the regenerated baseline never drift in shape. */
+function baselinemodule(report: {
+  release: string;
+  previous: string;
+  source: string;
+  added: string[];
+  removed: string[];
+  reordered: string[];
+  justified: Array<{ entry: string; row: string }>;
+  unjustified: string[];
+  clean: boolean;
+  permissionhash: string;
+  permissionset: { required: string[]; optional: string[]; optionalhost: string[] };
+}) {
+  return `/** The versioned permission baseline of the permdiff gate as one dense typescript module: the recorded permission set of the release it stamps, the diff it answered against, its justification rows and the permission set hash the audit trail records. The container builds and the fresh checkouts carry no git history, so this checked-in baseline stays the source the gate trusts; the sync mode of tests/permdiff.ts rewrites this module after the justification review, and the readiness review reads it for the permission diff verdict. */
+
+/** The permission baseline the gate records: the release it stamps, the previous release it diffed against, the source that resolved the comparison, the added, removed and reordered entries with their justification rows, the clean verdict and the permission set hash. */
+export interface permdiffbaseline {
+  release: string;
+  previous: string;
+  source: string;
+  added: string[];
+  removed: string[];
+  reordered: string[];
+  justified: Array<{ entry: string; row: string }>;
+  unjustified: string[];
+  clean: boolean;
+  permissionhash: string;
+  permissionset: { required: string[]; optional: string[]; optionalhost: string[] };
+}
+
+/** The recorded baseline of the ${report.release} release — ${report.clean ? `clean over ${report.previous}, zero added, zero removed, zero reordered` : `${report.added.length} added, ${report.removed.length} removed, ${report.reordered.length} reordered over ${report.previous}`}. */
+export const permdiffbaseline: permdiffbaseline = ${JSON.stringify(report, null, 2)};
+`;
+}
 
 /** Records one refusal of the permission diff gate. */
 function refuse(message: string) {
@@ -119,20 +156,9 @@ function baselinesetof(baseline: {
   });
 }
 
-/* the versioned permission baseline: the recorded permission set of the release it stamps. The container builds carry no git history, so the checked-in baseline stays the source the gate diffs against; the git tag of the recorded release cross-checks the baseline whenever a repository is present, and a missing baseline never verifies anything — the sync mode bootstraps the first baseline against the git resolved previous release. */
-const baselinetext = await readFile(artifactpath, "utf8").catch(() => undefined);
-const baseline = baselinetext === undefined ? undefined : JSON.parse(baselinetext);
-if (baseline === undefined && mode !== "sync")
-  refuse(
-    `The permission baseline lives in ${artifactpath}; a missing baseline never verifies the permission set. Run pnpm permdiff:sync to record it.`,
-  );
-const bootstrapped = baseline === undefined ? await releasemanifestof(previousof(release)) : undefined;
-const baselineset =
-  baseline !== undefined
-    ? baselinesetof(baseline)
-    : bootstrapped !== undefined
-      ? permissionsetof(bootstrapped.manifest)
-      : permissionsetof({});
+/* the versioned permission baseline: the recorded permission set of the release it stamps, carried by the permbaseline module the gate imports. The container builds carry no git history, so the checked-in baseline stays the source the gate diffs against, and the git tag of the recorded release cross-checks the baseline whenever a repository is present. */
+const baseline = recordedbaseline;
+const baselineset = baselinesetof(baseline);
 
 /* the added, removed and reordered permissions against the baseline. */
 const { added, removed, reordered } = diffpermissionsets(current, baselineset);
@@ -193,13 +219,13 @@ if (failures.length > 0) {
   for (const failure of failures) console.error(`PERMDIFF ${failure}`);
   process.exitCode = 1;
 } else if (mode === "sync") {
-  /* the sync writes the baseline of the current release after the justification review: the recorded set, the diff it answered against, the source that resolved the comparison and the permission set hash the audit trail records. */
-  const comparedrelease = baseline?.release ?? previousof(release);
+  /* the sync rewrites the permbaseline module of the current release after the justification review: the recorded set, the diff it answered against, the source that resolved the comparison and the permission set hash the audit trail records. */
+  const comparedrelease = baseline.release;
   const tagged = await releasemanifestof(comparedrelease);
   const report = {
     release,
     previous: comparedrelease,
-    source: tagged?.source ?? bootstrapped?.source ?? "the versioned baseline of the previous release",
+    source: tagged?.source ?? "the versioned baseline of the previous release",
     added,
     removed,
     reordered,
@@ -209,17 +235,16 @@ if (failures.length > 0) {
     permissionhash,
     permissionset: { required: current.required, optional: current.optional, optionalhost: current.optionalhost },
   };
-  await mkdir("tests", { recursive: true });
-  await writeFile(artifactpath, `${JSON.stringify(report, null, 2)}\n`, "utf8");
+  await writeFile(baselinepath, baselinemodule(report), "utf8");
   console.log(
     `Permission baseline of ${release} recorded against ${report.previous} (${report.source}): ${added.length} added, ${removed.length} removed, ${reordered.length === 0 ? "none" : reordered.join(", ")} reordered.`,
   );
   console.log(
-    `Permission set hash: ${permissionhash} over ${new Set(current.entries).size} permission entries; the baseline landed in ${artifactpath}.`,
+    `Permission set hash: ${permissionhash} over ${new Set(current.entries).size} permission entries; the baseline landed in ${baselinepath}.`,
   );
-} else if (baseline === undefined || baseline.release !== release) {
+} else if (baseline.release !== release) {
   console.error(
-    `PERMDIFF The permission baseline records the release ${baseline?.release ?? "nothing"} while the package carries ${release}; review the justification rows and run pnpm permdiff:sync after the release bump.`,
+    `PERMDIFF The permission baseline records the release ${baseline.release} while the package carries ${release}; review the justification rows and run pnpm permdiff:sync after the release bump.`,
   );
   process.exitCode = 1;
 } else {
@@ -227,6 +252,6 @@ if (failures.length > 0) {
     `Permission diff verified ${release} against the baseline of ${baseline.release}: ${added.length} added, ${removed.length} removed, ${reordered.length === 0 ? "none" : reordered.join(", ")} reordered.`,
   );
   console.log(
-    `Permission set hash: ${permissionhash} over ${new Set(current.entries).size} permission entries; the baseline of ${artifactpath} carries the recorded set of the release.`,
+    `Permission set hash: ${permissionhash} over ${new Set(current.entries).size} permission entries; the baseline of ${baselinepath} carries the recorded set of the release.`,
   );
 }

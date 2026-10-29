@@ -6,6 +6,9 @@ import { createHash } from "node:crypto";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
+import { apifreezebaseline } from "./freezebaseline.ts";
+import { permdiffbaseline } from "./permbaseline.ts";
+import { frozenschemas } from "./schemafixtures.ts";
 
 const execute = promisify(execFile);
 const repoRoot = resolve(process.cwd(), "..");
@@ -35,28 +38,24 @@ async function artifact(path: string) {
   }
 }
 
-/** Verifies the frozen schema set stayed hash stable since the 1.1.91 freeze: every recorded schema hash rehashes identically from the repository sources. */
+/** Verifies the frozen schema set stayed hash stable since the 1.1.91 freeze: every recorded schema hash rehashes identically from the schema texts the schemafixtures module carries. */
 async function schemastability() {
-  const record = await artifact("tests/apifreeze.json");
-  if (record === undefined)
-    return { ok: false, evidence: "tests/apifreeze.json sits absent; the api freeze gate has not recorded the chain" };
+  const record = apifreezebaseline;
   const hashes = Object.fromEntries(
     Object.entries(record.hashes ?? {}).filter(([name]) => name.startsWith("schemas/")),
   );
   const drifted = [];
   for (const [name, expected] of Object.entries(hashes)) {
-    try {
-      const bytes = await readFile(join("tests", "code", name.replace(/^schemas\//, "")));
-      if (createHash("sha256").update(bytes).digest("hex") !== expected) drifted.push(name);
-    } catch {
-      drifted.push(name);
-    }
+    const text = (frozenschemas as Record<string, string>)[
+      name.replace(/^schemas\//, "").replace(/\.schema\.json$/, "")
+    ];
+    if (text === undefined || createHash("sha256").update(text).digest("hex") !== expected) drifted.push(name);
   }
   return {
     ok: drifted.length === 0,
     evidence:
       drifted.length === 0
-        ? `the ${Object.keys(hashes).length} frozen schemas of the 1.1.91 freeze rehash identically to the recorded digests of tests/apifreeze.json`
+        ? `the ${Object.keys(hashes).length} frozen schemas of the 1.1.91 freeze rehash identically to the recorded digests of the freezebaseline module`
         : `the frozen schemas drifted since the freeze: ${drifted.join(", ")}`,
   };
 }
@@ -138,7 +137,7 @@ export async function runreadinesssuite() {
   const costcert = await artifact("tests/artifacts/costcert.json");
   const recipes = await artifact("tests/artifacts/recipes.json");
   const telemetry = await artifact("tests/artifacts/telemetryfree.json");
-  const permdiff = await artifact("tests/permdiff.json");
+  const permdiff = permdiffbaseline;
 
   gate(
     verdicts,
@@ -199,10 +198,8 @@ export async function runreadinesssuite() {
   gate(
     verdicts,
     "the permission diff reports no unjustified drift",
-    permdiff !== undefined && permdiff.clean === true && permdiff.unjustified?.length === 0,
-    permdiff === undefined
-      ? "tests/permdiff.json sits absent"
-      : `tests/permdiff.json: clean over ${permdiff.previous} to ${permdiff.release} with zero unjustified entries`,
+    permdiff.clean === true && permdiff.unjustified?.length === 0,
+    `the permbaseline module: clean over ${permdiff.previous} to ${permdiff.release} with zero unjustified entries`,
   );
   const transparencysource = await readFile("transparencypage.ts", "utf8");
   const livepermissions = [...(manifest.permissions ?? []), ...(manifest.optional_permissions ?? [])];
