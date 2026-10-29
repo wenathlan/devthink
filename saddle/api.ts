@@ -168,3 +168,87 @@ export function apistatustext(): string {
   const base = apibase();
   return base === "" ? "api: same origin" : `api: ${base} (cross-origin, credentials: include)`;
 }
+
+/** one modality record of the compute plan (the modalities endpoint). */
+export type ModalityRecord = {
+  id: string;
+  label: string;
+  family: string;
+  isolation: string;
+  state: "live" | "host" | "planned";
+  drivers: string[];
+  hardening: string[];
+  boot: "hot" | "warm" | "cold";
+  bootms: number;
+  gpu: boolean;
+  network: boolean;
+  mime: string;
+};
+
+/** the modality plan payload answered by the modalities endpoint. */
+export type ModalityPlan = {
+  plancount: number;
+  live: number;
+  host: number;
+  planned: number;
+  records: ModalityRecord[];
+};
+
+/** one edge lane of the sandbox modality surface (the edge lanes endpoint). */
+export type EdgeLane = {
+  modality: string;
+  kind: "live" | "host";
+  runtime: string;
+  probed: boolean;
+  present: boolean;
+};
+
+/**
+ * fetches the compute modality plan with a short timeout: the counts and
+ * the records the compute face renders. the surface never invents rows —
+ * when the engine does not answer the caller renders the honest line.
+ *
+ * @param base the api base to query ("" means same-origin).
+ * @param timeoutms abort budget in milliseconds.
+ * @returns the plan payload when the api answers ok, null otherwise.
+ */
+export async function fetchmodalities(base = apibase(), timeoutms = 3000): Promise<ModalityPlan | null> {
+  try {
+    const url = `${base ? base.replace(/\/+$/, "") : ""}/api/v1/modalities`;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutms);
+    const response = await fetch(url, { signal: controller.signal });
+    clearTimeout(timer);
+    if (!response.ok) return null;
+    const body = (await response.json()) as ModalityPlan | null;
+    if (body === null || !Array.isArray(body.records)) return null;
+    return body;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * fetches the edge lane table with a short timeout: one row per live or
+ * host modality with its runtime and probe outcome; null when the engine
+ * does not answer.
+ *
+ * @param base the api base to query ("" means same-origin).
+ * @param timeoutms abort budget in milliseconds.
+ * @returns the lane list when the api answers ok, null otherwise.
+ */
+export async function fetchedgelanes(base = apibase(), timeoutms = 3000): Promise<EdgeLane[]> {
+  try {
+    const url = `${base ? base.replace(/\/+$/, "") : ""}/api/v1/edge/lanes`;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutms);
+    const response = await fetch(url, { signal: controller.signal });
+    clearTimeout(timer);
+    if (!response.ok) return null;
+    const body = (await response.json()) as { lanes: EdgeLane[] } | null;
+    if (body === null || !Array.isArray(body.lanes)) return null;
+    return body.lanes;
+  } catch {
+    return null;
+  }
+}
