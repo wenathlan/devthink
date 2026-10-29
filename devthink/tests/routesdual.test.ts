@@ -43,6 +43,10 @@ const viteconfig = readFileSync(join(import.meta.dirname, "..", "vite.config.ts"
  * module load failure. */
 const pagesworkflowpath = join(import.meta.dirname, "..", "..", ".github", "workflows", "pages.yml");
 const pagesworkflow = existsSync(pagesworkflowpath) ? readFileSync(pagesworkflowpath, "utf8") : "";
+/* the repository law: a lane without the checkout (the container smoke
+ * carries only the application tree) has neither the workflows nor the
+ * sibling apps — every reporoot walk skips honestly there. */
+const repositorypresent = pagesworkflow !== "";
 
 /** the repository root of the monorepo (the sibling apps live beside the
  * devthink folder and the tests village sits two honest hops above them,
@@ -114,7 +118,7 @@ describe("the routing table (every app answers both doors)", () => {
     expect(registryFamily).toEqual(windowFamily);
   });
 
-  it("the vite dev bridge serves every family slug the window catalog declares", () => {
+  it.skipIf(!repositorypresent)("the vite dev bridge serves every family slug the window catalog declares", () => {
     // the dev server answers the same surface the pages workflow ships:
     // one site, every app under its own subpath
     for (const slug of FAMILY_SLUGS) {
@@ -201,7 +205,7 @@ describe("the sync (both faces stay one design)", () => {
     expect(mounts).toHaveLength(2);
   });
 
-  it("every sibling app carries the embedded contract in its own theme", () => {
+  it.skipIf(!repositorypresent)("every sibling app carries the embedded contract in its own theme", () => {
     // the frame detection: inside the os power clip the app rides the host
     // window chrome (the routed page renders bare); at the typed url the
     // app owns the whole viewport with its own voice
