@@ -75,3 +75,5 @@ minimumReleaseAgeExclude:
   - '@capacitor/core@8.6.0'
   - '@capacitor/ios@8.6.0'
   - '@types/node@26.6.6'
+  - '@types/google.maps@3.66.9'
+  - lucide-react@1.64.0
