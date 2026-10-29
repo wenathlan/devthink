@@ -3,9 +3,7 @@
  * layer).
  */
 import { describe, expect, it } from "vitest";
-import { decisionerror, gateverdict, validatedecision } from "../jsondecision.ts";
-import { createjsonmodel, defaultinstruction } from "../jsonengine.ts";
-import { extractjsonobject, validateverdict } from "../jsonparse.ts";
+import { createjsonmodel, decisionerror, defaultinstruction, extractjsonobject, gateverdict, validatedecision, validateverdict } from "../json.ts";
 
 /** Asserts the action throws and the error answers the checks. */
 function throwswith(action: () => void, checks: (error: unknown) => boolean): void {

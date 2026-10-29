@@ -1526,7 +1526,7 @@ export interface QuotaManagerOptions {
   hardThreshold?: number; // remaining fraction (default 0.02)
   projectId?: string;
   source?: QuotaSource; // default antigravity
-  enableDual?: boolean; // se true, busca ambos antigravity+gemini-cli e mescla
+  enableDual?: boolean; // when true, fetches both antigravity+gemini-cli and merges
 }
 
 export class QuotaManager {

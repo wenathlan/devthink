@@ -173,9 +173,9 @@ The release workflow builds Bun binaries for Linux x64, macOS arm64 and Windows 
 
 # The Sol theme
 
-**DevThink Web** é o workbench browser-like da plataforma DevThink. É uma interface estática deliberadamente separada da persistência de providers: credenciais e endpoints pertencem ao `~/.config/devthink/devthink.json` e ao gateway local embutido, nunca ao bundle do navegador.
+**DevThink Web** is the browser-like workbench of the DevThink platform. It is a static interface deliberately separated from the provider persistence: credentials and endpoints belong to the `~/.config/devthink/devthink.json` file and to the embedded local gateway, never to the browser bundle.
 
-## Topologia
+## Topology
 
 The theme root is the application root and the Sol/ folder carries the component folders (the theme stylesheet lives inside the theme as `Sol/sol.css`); no `src/` and no `client/src/` exists.
 
@@ -213,7 +213,7 @@ Still-true rules of the os surface:
 - Aura chat: the gateway answers `POST /v1/chat/completions` (`{model:"devthink", messages:[…]}`, OpenAI-compatible); `reasoning_content` feeds the collapsible Internal Cognition. One persona per app.
 - Family domains: gateway/OS devthink.pro, argan argan.devthink.pro, debonair debonair.devthink.pro, cadria cadria.devthink.pro, stealthhead stealthhead.devthink.pro.
 
-## Executar localmente
+## Run locally
 
 ```bash
 pnpm install
@@ -221,14 +221,14 @@ pnpm check
 pnpm dev
 ```
 
-Cada domínio de página contém sua âncora de rota, componentes visuais e lógica TypeScript local. `App.tsx` é a única entrada, responsável pela montagem React e pelo roteador universal. O workbench inclui tabs de navegador, seleção de provider, sessões, command palette, pareamento local, Settings e layouts responsivos. Mensagens ficam locais até que o navegador esteja pareado ao gateway DevThink.
+Every page domain carries its own route anchor, visual components and local TypeScript logic. `App.tsx` is the single entry, responsible for the React mount and the universal router. The workbench carries browser tabs, provider selection, sessions, a command palette, local pairing, Settings and responsive layouts. Messages stay local until the browser is paired with the DevThink gateway.
 
-## Fronteira do gateway
+## Gateway boundary
 
-O cliente web usa o gateway loopback de `devthink serve` para `/health`, `/identity`, `/settings`, `/providers`, `/models`, `/sessions`, `/workspaces`, `/usage`, `/preferences`, `/pairings/consume`, `/pairings/revoke`, `/chat` e eventos SSE. Settings é equivalente a `devthink config settings`, `devthink config set` e `devthink identity --id`: ele lê e altera a mesma identidade pública e as mesmas preferências pertencentes ao banco local da CLI.
+The web client uses the loopback gateway of `devthink serve` for `/health`, `/identity`, `/settings`, `/providers`, `/models`, `/sessions`, `/workspaces`, `/usage`, `/preferences`, `/pairings/consume`, `/pairings/revoke`, `/chat` and SSE events. Settings is equivalent to `devthink config settings`, `devthink config set` and `devthink identity --id`: it reads and changes the same public identity and the same preferences that belong to the local CLI database.
 
-O banco `devthink.db` continua pertencendo à CLI e a um único ID público local. A interface pareada é apenas um cliente temporário dessa mesma base através do gateway autenticado; não há cópia estática do banco, senha de banco no navegador, chave de API, refresh token, cookie de navegador, dado de CAPTCHA ou segredo de provider no bundle.
+The `devthink.db` database keeps belonging to the CLI and to a single local public id. The paired interface is only a temporary client of that same base through the authenticated gateway; there is no static copy of the database, no database password in the browser, no api key, no refresh token, no browser cookie, no CAPTCHA data and no provider secret in the bundle.
 
 ## Design system
 
-A direção visual está em [`../docs/ideas.md`](../docs/ideas.md), a implantação em [`../docs/deployment.ts.md`](../docs/deployment.ts.md) e a paridade entre CLI, Ink, gateway e web em [`../docs/v1.1.15.capability.matrix.md`](../docs/v1.1.15.capability.matrix.md). O workbench une a linguagem de tabs de um browser a superfícies de carvão, laranja de assinatura e azul de conexão. A marca é a composição ANSI canônica de [`../docs/logo.md`](../docs/logo.md), renderizada em forma compacta pela interface.
+The visual direction lives in [`../docs/ideas.md`](../docs/ideas.md), the deployment in [`../docs/deployment.ts.md`](../docs/deployment.ts.md) and the parity between CLI, Ink, gateway and web in [`../docs/v1.1.15.capability.matrix.md`](../docs/v1.1.15.capability.matrix.md). The workbench joins the tab language of a browser with charcoal surfaces, the signature orange and the connection blue. The brand is the canonical ANSI composition of [`../docs/logo.md`](../docs/logo.md), rendered in compact form by the interface.

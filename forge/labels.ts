@@ -17,7 +17,7 @@ import type { LabelRow } from "./db.ts";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 2;
+export const LABEL_REVISION = 3;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -104,17 +104,17 @@ export const LABEL_MANIFEST = {
   "home.side.aria": "the honest state of the floor",
   "home.side.head": "the honest state",
   "home.side.body":
-    "This surface rehearses the floor from one seed — the fleets, the queue and the log replay are the real engine logic, and no live build is claimed. The family reports its outcomes here.",
+    "This surface rehearses the floor from one seed — the fleets, the queue and the log replay are the real logic, and no live build is claimed. The family reports its outcomes here.",
   "home.side.link": "the family on github",
   // the footer meta-quad of the landing
   "home.quad.floorHead": "floor",
-  "home.quad.engineHead": "engine",
+  "home.quad.engineHead": "sandbox",
   "home.quad.identityHead": "identity",
   "home.quad.domainHead": "domain",
   "home.quad.fleetsLink": "the runner fleets",
   "home.quad.queueLink": "the execution queue",
   "home.quad.logsLink": "the run logs",
-  "home.quad.engineLine": "the family sandbox engine",
+  "home.quad.engineLine": "the family sandbox",
   "home.quad.identityLine1": "forge · lime-brasa #a2cb3a",
   "home.quad.identityLine2": "charcoal × lime — it just runs",
   "home.quad.domainLine1": "forge · the family forge",
@@ -194,7 +194,7 @@ export const LABEL_MANIFEST = {
   "queue.eyebrow": "queue · the serving order",
   "queue.title": "Execution queue",
   "queue.lede":
-    "Runs wait in three priority lanes — express cuts ahead, batch rides last, FIFO inside the lane. A seeded rehearsal (seed {seed}) fills the order; the engine under the buttons is the real queue logic.",
+    "Runs wait in three priority lanes — express cuts ahead, batch rides last, FIFO inside the lane. A seeded rehearsal (seed {seed}) fills the order; the queue logic under the buttons is real.",
   "queue.serve": "serve next",
   "queue.reseed": "reseed the rehearsal",
   // the queue summary and the serving order table
@@ -238,7 +238,7 @@ export const LABEL_MANIFEST = {
   "logs.censusValue": "{info} info · {warn} warn · {error} error",
   "logs.factOutcome": "outcome",
   "logs.empty.title": "no stream for this seed",
-  "logs.empty.line": "The replay engine answered nothing — pick one of the preset seeds to roll a run.",
+  "logs.empty.line": "The replay answered nothing — pick one of the preset seeds to roll a run.",
   // the log stream table
   "logs.stream.aria": "the log stream",
   "logs.head.clock": "clock",
@@ -246,7 +246,7 @@ export const LABEL_MANIFEST = {
   "logs.head.line": "line",
   "logs.cursorDone": "— end of stream — outcome reported",
   "logs.cursorTailing": "— tailing —",
-  "logs.footnote": "the copyable form of the stream rides the same engine: logText(seed) — {count} lines total for seed {seed}.",
+  "logs.footnote": "the copyable stream of the run — {count} lines total for seed {seed}.",
   // the notfound page anchor (the 404 dead address)
   "notfound.eyebrow": "404",
   "notfound.title": "This address runs nothing.",

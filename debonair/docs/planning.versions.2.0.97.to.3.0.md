@@ -33,7 +33,7 @@
 ### house 2.0.200 → 2.1.0 — the ai acoustics seam
 - [ ] onnxruntime-node seat for the foundation embeddings (clap/beats, int8)
 - [ ] fpcalc/olaf binary orchestration via the saddle contract (node executes, binaries in `tools/bin/`)
-- [ ] whisper.cpp transcription of the vocal stem → the lyricist reads, "A SONORIDADE É INTOCÁVEL"
+- [ ] whisper.cpp transcription of the vocal stem → the lyricist reads, "THE SONORITY IS UNTOUCHABLE"
 - [ ] fingerprint dedup on every render job before the library accepts it
 
 ### house 2.1.0 → 3.0 — the family contract

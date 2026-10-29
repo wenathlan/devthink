@@ -11,7 +11,7 @@ import { readAllLabels, saveLabel, type BrowserLabel } from "./storage.ts";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 4;
+export const LABEL_REVISION = 5;
 
 /** the english manifest: the page.widget.key path answers the surface text. */
 export const labelManifest = {
@@ -83,8 +83,8 @@ export const labelManifest = {
   "chat.body.sandboxCommands": "sandbox commands from this turn ({n})",
   "chat.body.sandboxChipOpen": "open the sandbox pane and show the {n} commands this turn ran",
   "chat.body.sandboxPaneTitle": "open the sandbox pane",
-  "chat.body.sandboxCommandAria": "sandbox command {command} — {verdict} — expand the engine output",
-  "chat.body.expandEngineOutput": "expand the engine output",
+  "chat.body.sandboxCommandAria": "sandbox command {command} — {verdict} — expand the output",
+  "chat.body.expandEngineOutput": "expand the output",
   "chat.body.verdictOk": "ok",
   "chat.body.verdictFail": "fail {code}",
   "chat.body.verdictFailedExit": "failed, exit {code}",
@@ -160,7 +160,7 @@ export const labelManifest = {
   "explore.sidebar.pending": "reading the catalog",
   "explore.sidebar.recentsEmpty": "nothing made yet — the studios answer the catalog first.",
   "explore.sidebar.recentsAct": "open a studio",
-  "explore.sidebar.familyEmpty": "the registry has not answered yet.",
+  "explore.sidebar.familyEmpty": "the family list is still loading.",
 
   /* ------------------------ explore · the section deck -------------------- */
   "explore.deck.waves": "03 · the section deck",

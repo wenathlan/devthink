@@ -17,7 +17,7 @@ import { BackgroundPicker } from "./SettingsBackgroundpicker";
 import { ComponentOptions } from "./SettingsComponentoptions";
 import { LanguageCard } from "./SettingsLanguagecard";
 import { NavbarPositionControl, NavbarStyleControl } from "./SettingsNavbarposition";
-import { saveThemeMirror } from "./SettingsPersonalstore";
+import { saveThemeMirror } from "../../personalstore.ts";
 import type { PreferenceKey, SettingsSnapshot } from "./Settingstypes";
 
 type PersonalizationProps = {

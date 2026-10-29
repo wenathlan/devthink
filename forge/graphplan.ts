@@ -132,7 +132,7 @@ export function plannext(plan: runplan, id: string): string[] {
 }
 
 /** Layers the plan into the stable topological stages (one wave per layer,
- * steps inside a wave in ride order) — the etapas the panel draws. */
+ * steps inside a wave in ride order) — the stages the panel draws. */
 export function planstages(plan: runplan): string[][] {
   const levels: Record<string, number> = {};
   let placed = true;

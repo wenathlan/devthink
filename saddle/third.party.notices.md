@@ -16,4 +16,4 @@ sources is acknowledged here so the lineage's license history stays
 recorded: every file, feature and document of e2ugh carries into saddle
 (readapted to the saddle product metadata) with the e2ugh release history
 preserved verbatim in the CHANGELOG.md lineage sections and the engine
-reference preserved at docs/e2ugh-engine.md.
+reference preserved at docs/e2ugh.engine.md.

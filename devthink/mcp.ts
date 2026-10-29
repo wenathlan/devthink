@@ -40,18 +40,11 @@ import type {
 /* ── The mcp entry section the family kept before the 1.1.88 merge. ── */
 /** The mcp server library entry of the 1.1.84 family: the full model context protocol server surface of devthink as one tree shakable entry — the serve mode with its frame router, session bindings, approval gates and dispatch composition, the json rpc message codec with its structured retry hints, the stdio and http transports with their injected seams, the served resources with their change subscriptions, the prompt exposure of the template library and the walkthroughs, and the tool catalog, call runtime, client auth, http stream and server contract families the serve mode composes; the 1.1.85 native host bridge family joins the entry so the nativehost and wsbridge surfaces — the native call events the subscribed mcp clients stream and the servercontract envelope translation the wsbridge frames reuse — ride the same tree shakable server surface. */
 export * from "./serve.js";
-export * from "./serve.js";
-export * from "./serve.js";
-export * from "./http.js";
 export * from "./http.js";
 export * from "./tools.js";
 export * from "./agent.js";
-export * from "./tools.js";
 export * from "./auth.js";
 export * from "./gates.js";
-export * from "./http.js";
-export * from "./bridge.js";
-export * from "./bridge.js";
 export * from "./bridge.js";
 export * from "./policy.js";
 

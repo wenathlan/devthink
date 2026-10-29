@@ -768,11 +768,11 @@ export class AntigravityPlugin {
   }
 
   /**
-   * handleFetch — intercepta fetch do opencode provider google.
-   * Observer third-person: faz exatamente como Gemini CLI:
-   * - se account.projectId ausente, chama resolveProjectId que faz loadCodeAssist SEM project, onboardUser se necessário, nunca exige project do usuário.
-   * - wrapping {model, project, request} direto cloudcode-pa, sem localhost v1 proxy.
-   * - cascade 403/404/5xx, strip x-goog-user-project, skip sandbox para gemini-3.6/3.5/preview.
+   * handleFetch — intercepts the fetch of the opencode google provider.
+   * Observer third-person: does exactly what the Gemini CLI does:
+   * - when account.projectId is absent, calls resolveProjectId which runs loadCodeAssist WITHOUT a project, onboardUser when needed, never demanding a project from the user.
+   * - wrapping {model, project, request} straight to cloudcode-pa, no localhost v1 proxy.
+   * - cascade 403/404/5xx, strip x-goog-user-project, skip sandbox for gemini-3.6/3.5/preview.
    * - dual quota + cli_first + pid_offset.
    */
   async handleFetch(originalFetch: typeof fetch, input: RequestInfo | URL, init?: RequestInit): Promise<Response> {

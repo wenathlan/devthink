@@ -7,7 +7,7 @@
 // is only a *display* of ticks. Every conversion is total: a zero or negative
 // rate answers the default rate instead of dividing by zero, and non-finite
 // numbers answer zero instead of throwing. The clean-room pattern is absorbed
-// from filmcraft (storytold/filmcraft, crates/time — a PROJETO-class
+// from filmcraft (storytold/filmcraft, crates/time — a project-class
 // clean-room of the exact-time model of professional editors), re-derived
 // natively in pure TypeScript: BigInt carry gives the exact rational
 // multiplications that plain floats cannot, and every result saturates inside

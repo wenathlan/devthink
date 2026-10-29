@@ -75,14 +75,14 @@ describe("design contract", () => {
   });
 
   it("never ships transition: all", () => {
-    assert.ok(!/transition:\s*all/.test(CSS), "transition: all is a reprovação");
+    assert.ok(!/transition:\s*all/.test(CSS), "transition: all is a rejection");
   });
 
   it("never enters from scale(0) outside the windows pin law", () => {
     // the ONE sanctioned scale(0) entrance is the dtPopIntro pin bounce —
     // the windows recipe (0 → 1.125 → 0.725 → 1); everything else floors
     assert.ok(/@keyframes dtPopIntro/.test(CSS), "the windows pin entrance stands");
-    assert.ok(!/scale\(0\)/.test(cssWithoutPinIntro(CSS)), "scale(0) outside dtPopIntro is a reprovação");
+    assert.ok(!/scale\(0\)/.test(cssWithoutPinIntro(CSS)), "scale(0) outside dtPopIntro is a rejection");
   });
 
   it("declares the trylle type triad (Inter Variable surfaces, Geist Mono numbers)", () => {

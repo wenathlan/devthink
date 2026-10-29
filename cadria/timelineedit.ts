@@ -7,7 +7,7 @@
 // the reference editor does. Semantics follow the Premiere model: insert
 // pushes right, trims never cross neighbours, and source time is media time,
 // so trims and splits never move keyframes. The clean-room pattern is
-// absorbed from filmcraft (storytold/filmcraft, crates/edit — a PROJETO-class
+// absorbed from filmcraft (storytold/filmcraft, crates/edit — a project-class
 // clean-room), re-derived natively in pure TypeScript: every function takes
 // the track as a parameter, validates first, answers the new track or an
 // EditIssue by return type (never a throw), and never mutates its input.

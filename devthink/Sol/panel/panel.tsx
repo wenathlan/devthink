@@ -40,12 +40,6 @@ import type { WorkspaceDestination } from "../../workspace.ts";
 import { BootScreen, CommandPalette, ShellWorkspace, SolLogoMark, shouldBoot } from "../wingets";
 
 export * from "../wingets";
-export * from "../wingets";
-export * from "../wingets";
-export * from "../wingets";
-export * from "../wingets";
-export * from "../wingets";
-export * from "../wingets";
 
 /** The old persisted shell stage ("identity" / "entry" / "shell") is no
  * longer a gate: every value lands on the desktop. The key is retired from

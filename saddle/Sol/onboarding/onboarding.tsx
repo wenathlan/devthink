@@ -27,7 +27,7 @@ import { SaddleMark, START_APPS } from '../shell/Shell.tsx';
 
 /** the honest statement of the opening frame (what the app is). */
 const WHAT_IT_IS =
-        'saddle is the sandbox engine of the wenathlan family — not an operating system: one application window holding the console, the internal api playground, the compute tiers and the agent browser, all riding the storage == compute engine.';
+        'saddle is the sandbox engine of the wenathlan family — not an operating system: one application window holding the console, the api playground, the compute tiers and the agent browser, all riding the storage == compute engine.';
 
 /** the honest statement of the closing frame (the hand-over). */
 const WHAT_ENTER =

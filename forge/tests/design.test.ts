@@ -80,14 +80,14 @@ describe("design contract", () => {
   });
 
   it("never ships transition: all", () => {
-    assert.ok(!/transition:\s*all/.test(CSS), "transition: all is a reprovação");
+    assert.ok(!/transition:\s*all/.test(CSS), "transition: all fails the design gate");
   });
 
   it("never enters an element from zero scale (the windows dtPopIntro bounce excepted)", () => {
     const sansPopIntro = CSS.replace(/@keyframes dtPopIntro \{[\s\S]*?\n\}/g, "");
     assert.ok(
       !/scale\(0\)/.test(sansPopIntro),
-      "scale(0) entries are a reprovação (the dtPopIntro bounce of the windows recipe excepted)",
+      "scale(0) entries fail the design gate (the dtPopIntro bounce of the windows recipe excepted)",
     );
   });
 

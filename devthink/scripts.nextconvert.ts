@@ -29,9 +29,9 @@ if (process.argv[2] && !/^\d+\.\d+\.\d+$/.test(version)) {
   process.exit(1);
 }
 
-// limite de raiz: todo caminho resolvido precisa ficar dentro do monorepo
-const DENTRO = (alvo: string): string => {
-  const r = path.resolve(alvo);
+// root limit: every resolved path must stay inside the monorepo
+const INSIDE = (target: string): string => {
+  const r = path.resolve(target);
   if (r !== ROOT && !r.startsWith(ROOT + path.sep)) throw new Error("path outside the monorepo root: " + r);
   return r;
 };
@@ -41,7 +41,7 @@ const DENTRO = (alvo: string): string => {
 const versionof = (app: string): string => {
   try {
     const answered = String(
-      JSON.parse(readFileSync(path.join(DENTRO(path.join(ROOT, app)), "package.json"), "utf8")).version,
+      JSON.parse(readFileSync(path.join(INSIDE(path.join(ROOT, app)), "package.json"), "utf8")).version,
     );
     if (/^\d+\.\d+\.\d+$/.test(answered)) return answered;
   } catch {
@@ -79,7 +79,7 @@ const SKIP = new Set([
 ]);
 
 const copytree = (from: string, to: string, comlock: boolean) =>
-  cpSync(DENTRO(from), DENTRO(to), {
+  cpSync(INSIDE(from), INSIDE(to), {
     recursive: true,
     filter: (src: string) => {
       const base = path.basename(src);
@@ -94,53 +94,53 @@ const copytree = (from: string, to: string, comlock: boolean) =>
   });
 
 const themefolder = (root: string): string => {
-  const base = path.join(DENTRO(root), "App.tsx");
+  const base = path.join(INSIDE(root), "App.tsx");
   if (existsSync(base)) return ".";
   return (
-    readdirSync(DENTRO(root)).filter((n: string) => {
+    readdirSync(INSIDE(root)).filter((n: string) => {
       if (!/^[A-Za-z0-9.]+$/.test(n)) return false;
-      const p = path.join(DENTRO(root), n);
+      const p = path.join(INSIDE(root), n);
       return statSync(p).isDirectory() && existsSync(path.join(p, "App.tsx"));
     })[0] || ""
   );
 };
 
 const packxz = (dir: string, outxz: string) => {
-  const de = DENTRO(dir);
-  const para = DENTRO(outxz);
-  const rel = path.relative(de, para).split(path.sep).join("/");
+  const srcdir = INSIDE(dir);
+  const dest = INSIDE(outxz);
+  const rel = path.relative(srcdir, dest).split(path.sep).join("/");
   // the maximum xz level rides inside the tar: level 9 with --extreme
-  execFileSync("tar", ["-cJf", rel, "."], { cwd: de, stdio: "pipe", env: { ...process.env, XZ_OPT: "-9e -T0" } });
-  if (!existsSync(para)) throw new Error("the archive was not generated: " + para);
-  const head = readFileSync(para).subarray(0, 6).toString("latin1");
-  if (!head.startsWith("\u00FD7zXZ\u0000")) throw new Error("the archive is not a valid xz: " + para);
+  execFileSync("tar", ["-cJf", rel, "."], { cwd: srcdir, stdio: "pipe", env: { ...process.env, XZ_OPT: "-9e -T0" } });
+  if (!existsSync(dest)) throw new Error("the archive was not generated: " + dest);
+  const head = readFileSync(dest).subarray(0, 6).toString("latin1");
+  if (!head.startsWith("\u00FD7zXZ\u0000")) throw new Error("the archive is not a valid xz: " + dest);
 };
 
 const overlay = (archive: string) => {
-  const para = DENTRO(archive);
+  const dest = INSIDE(archive);
   // the Brotli overlay rides on top of the compressed archive, quality 11 (the maximum)
   writeFileSync(
-    para + ".br",
-    brotliCompressSync(readFileSync(para), { params: { [zlibconstants.BROTLI_PARAM_QUALITY]: 11 } }),
+    dest + ".br",
+    brotliCompressSync(readFileSync(dest), { params: { [zlibconstants.BROTLI_PARAM_QUALITY]: 11 } }),
   );
 };
 
-const platformset = (de: string, appdir: string) => {
+const platformset = (dir: string, appdir: string) => {
   // the platform file set every next template carries at its root: the registry
   // and engine envelopes (npm, node), the house tooling (biome) and the deploy
   // platform copies (vercel, netlify, cloudflare/wrangler, the dev vars example)
-  const sourcenpmrc = path.join(DENTRO(path.join(ROOT, appdir)), ".npmrc");
-  if (existsSync(sourcenpmrc)) writeFileSync(path.join(de, ".npmrc"), readFileSync(sourcenpmrc));
+  const sourcenpmrc = path.join(INSIDE(path.join(ROOT, appdir)), ".npmrc");
+  if (existsSync(sourcenpmrc)) writeFileSync(path.join(dir, ".npmrc"), readFileSync(sourcenpmrc));
   else
     writeFileSync(
-      path.join(de, ".npmrc"),
+      path.join(dir, ".npmrc"),
       "# the family registry surface\n@wenathlan:registry=https://npm.pkg.github.com\n",
     );
-  const sourcenvmrc = path.join(DENTRO(path.join(ROOT, appdir)), ".nvmrc");
-  if (existsSync(sourcenvmrc)) writeFileSync(path.join(de, ".nvmrc"), readFileSync(sourcenvmrc));
-  else writeFileSync(path.join(de, ".nvmrc"), "26.10.0\n");
+  const sourcenvmrc = path.join(INSIDE(path.join(ROOT, appdir)), ".nvmrc");
+  if (existsSync(sourcenvmrc)) writeFileSync(path.join(dir, ".nvmrc"), readFileSync(sourcenvmrc));
+  else writeFileSync(path.join(dir, ".nvmrc"), "26.10.0\n");
   writeFileSync(
-    path.join(de, "biome.json"),
+    path.join(dir, "biome.json"),
     JSON.stringify(
       {
         $schema: "https://biomejs.dev/schemas/2.5.15/schema.json",
@@ -151,21 +151,21 @@ const platformset = (de: string, appdir: string) => {
       2,
     ),
   );
-  writeFileSync(path.join(de, "vercel.json"), '{\n  "cleanUrls": true\n}\n');
-  writeFileSync(path.join(de, "netlify.toml"), '[build]\n  command = "npm run build"\n  publish = "."\n');
+  writeFileSync(path.join(dir, "vercel.json"), '{\n  "cleanUrls": true\n}\n');
+  writeFileSync(path.join(dir, "netlify.toml"), '[build]\n  command = "npm run build"\n  publish = "."\n');
   writeFileSync(
-    path.join(de, "wrangler.toml"),
+    path.join(dir, "wrangler.toml"),
     `# Cloudflare/Workers config (deploy, bindings, domain routes)\nname = "${appdir}"\ncompatibility_date = "2026-09-01"\n\n[assets]\ndirectory = "."\n`,
   );
   writeFileSync(
-    path.join(de, ".dev.vars.example"),
+    path.join(dir, ".dev.vars.example"),
     "# local wrangler dev secrets (never committed; copy to .dev.vars)\nDEVTHINK_DB_URL=placeholder\nDEVTHINK_RUNNER_TOKEN=placeholder\n",
   );
   writeFileSync(
-    path.join(de, "manifest.json"),
+    path.join(dir, "manifest.json"),
     `{\n  "name": "${appdir}",\n  "short_name": "${appdir}",\n  "start_url": ".",\n  "display": "standalone"\n}\n`,
   );
-  writeFileSync(path.join(de, "robots.txt"), "User-agent: *\nAllow: /\n");
+  writeFileSync(path.join(dir, "robots.txt"), "User-agent: *\nAllow: /\n");
 };
 
 const scaffold = (
@@ -174,11 +174,11 @@ const scaffold = (
   theme: string,
   variant: "normal" | "zai" | "fifty" | "personalized",
 ) => {
-  const de = DENTRO(staging);
+  const dir = INSIDE(staging);
   const comsrc = variant !== "personalized";
-  const bloqueado = variant === "fifty" || variant === "personalized";
-  const pastaapp = comsrc ? DENTRO(path.join(de, "src", "app")) : DENTRO(path.join(de, "app"));
-  const espec = theme === "." ? (comsrc ? "../../App" : "../App") : comsrc ? `../../${theme}/App` : `../${theme}/App`;
+  const blocked = variant === "fifty" || variant === "personalized";
+  const appfolder = comsrc ? INSIDE(path.join(dir, "src", "app")) : INSIDE(path.join(dir, "app"));
+  const spec = theme === "." ? (comsrc ? "../../App" : "../App") : comsrc ? `../../${theme}/App` : `../${theme}/App`;
   const deps: Record<string, string> = { next: "^16.0.0", react: "^19.2.0", "react-dom": "^19.2.0" };
   if (variant === "zai") {
     // the zai shape rides the working gateway stack (the getry reference: the
@@ -188,7 +188,7 @@ const scaffold = (
     deps["@libsql/client"] = "^0.17.4";
   }
   writeFileSync(
-    path.join(de, "package.json"),
+    path.join(dir, "package.json"),
     JSON.stringify(
       {
         name: `@wenathlan/${appdir}.next.${variant}`,
@@ -207,23 +207,23 @@ const scaffold = (
       2,
     ),
   );
-  if (bloqueado) {
+  if (blocked) {
     // the blocked shapes answer the house doctrine: no public folder, no dist
     // folder, the build lands at the root and the deploy reads the root
     writeFileSync(
-      path.join(de, "next.config.ts"),
+      path.join(dir, "next.config.ts"),
       "import type { NextConfig } from 'next';\n\n// house customizations: no public folder, no dist folder, the build lands at the root\nconst config: NextConfig = {\n  distDir: 'build',\n};\n\nexport default config;\n",
     );
   } else {
     // the unblocked shapes answer the Next defaults: the standard template the
     // platforms accept with no folder blocking at all
     writeFileSync(
-      path.join(de, "next.config.ts"),
+      path.join(dir, "next.config.ts"),
       "import type { NextConfig } from 'next';\n\n// the standard template: the Next defaults answer every platform with no folder blocking\nconst config: NextConfig = {};\n\nexport default config;\n",
     );
   }
   writeFileSync(
-    path.join(de, "tsconfig.json"),
+    path.join(dir, "tsconfig.json"),
     JSON.stringify(
       {
         compilerOptions: {
@@ -251,51 +251,51 @@ const scaffold = (
     ),
   );
   writeFileSync(
-    path.join(de, "next-env.d.ts"),
+    path.join(dir, "next-env.d.ts"),
     '/// <reference types="next" />\n/// <reference types="next/image-types/global" />\n',
   );
-  writeFileSync(path.join(de, ".gitignore"), "node_modules/\n.next/\nbuild/\nout/\n.dev.vars\n");
-  mkdirSync(pastaapp, { recursive: true });
+  writeFileSync(path.join(dir, ".gitignore"), "node_modules/\n.next/\nbuild/\nout/\n.dev.vars\n");
+  mkdirSync(appfolder, { recursive: true });
   writeFileSync(
-    path.join(pastaapp, "layout.tsx"),
+    path.join(appfolder, "layout.tsx"),
     `import type { ReactNode } from 'react';\n\nexport const metadata = { title: '${appdir}', description: '${appdir} — DevThink family' };\n\nexport default function RootLayout({ children }: { children: ReactNode }) {\n  return (\n    <html lang="en">\n      <body>{children}</body>\n    </html>\n  );\n}\n`,
   );
-  const bridge = `import dynamic from 'next/dynamic';\n\n// the app global anchor (router) lives ${theme === "." ? "at the root" : `in the theme folder ${theme}`}; Next only mounts it\nconst App = dynamic(() => import('${espec}'), { ssr: false });\n\nexport default function Page() {\n  return <App />;\n}\n`;
-  writeFileSync(path.join(pastaapp, "page.tsx"), bridge);
+  const bridge = `import dynamic from 'next/dynamic';\n\n// the app global anchor (router) lives ${theme === "." ? "at the root" : `in the theme folder ${theme}`}; Next only mounts it\nconst App = dynamic(() => import('${spec}'), { ssr: false });\n\nexport default function Page() {\n  return <App />;\n}\n`;
+  writeFileSync(path.join(appfolder, "page.tsx"), bridge);
   const icon =
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c3aed"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#g)"/></svg>\n';
-  if (bloqueado) {
+  if (blocked) {
     // the blocked shapes keep the icons at the root: no public folder exists
-    writeFileSync(path.join(de, "icon.svg"), icon);
+    writeFileSync(path.join(dir, "icon.svg"), icon);
     writeFileSync(
-      path.join(de, "favicon.svg"),
+      path.join(dir, "favicon.svg"),
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#7c3aed"/></svg>\n',
     );
   } else {
     // the unblocked shapes carry the standard public folder the platforms expect
-    mkdirSync(DENTRO(path.join(de, "public")), { recursive: true });
-    writeFileSync(path.join(de, "public", "icon.svg"), icon);
+    mkdirSync(INSIDE(path.join(dir, "public")), { recursive: true });
+    writeFileSync(path.join(dir, "public", "icon.svg"), icon);
     writeFileSync(
-      path.join(de, "public", "favicon.svg"),
+      path.join(dir, "public", "favicon.svg"),
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#7c3aed"/></svg>\n',
     );
   }
   if (variant === "zai") {
     // the zai shape rides the working deploy kit: the gateway skill, the prisma
     // schema and the deploy map (the getry reference the platform already deploys)
-    const skilldir = DENTRO(path.join(de, "skills", "gateway"));
+    const skilldir = INSIDE(path.join(dir, "skills", "gateway"));
     mkdirSync(skilldir, { recursive: true });
     writeFileSync(
       path.join(skilldir, "SKILL.md"),
-      readFileSync(DENTRO(path.join(ROOT, "getry", "docs", "skills", "gateway.md"))),
+      readFileSync(INSIDE(path.join(ROOT, "getry", "docs", "skills", "gateway.md"))),
     );
-    mkdirSync(DENTRO(path.join(de, "prisma")), { recursive: true });
+    mkdirSync(INSIDE(path.join(dir, "prisma")), { recursive: true });
     writeFileSync(
-      path.join(de, "prisma", "schema.prisma"),
+      path.join(dir, "prisma", "schema.prisma"),
       'generator client {\n  provider = "prisma-client-js"\n}\n\ndatasource db {\n  provider = "libsql"\n  url      = env("DEVTHINK_DB_URL")\n}\n',
     );
     writeFileSync(
-      path.join(de, "DEPLOY.md"),
+      path.join(dir, "DEPLOY.md"),
       `# ${appdir} — the four next shapes and the deploy flow\n\nThe release assets carry four next archives of this application. Try them in this order: the next personalized first (the house tree one hundred percent personalized, already in the assets), then this next zai (the standard template the platform accepts with the gateway skill and the prisma kit), then the next fifty (the same shape with the forbidden folders blocked and the deploy at the root) and finally the next normal (the plain standard template). The flow inside the platform: download the archive, extract it with the package.json at the root, push the schema with prisma db push, run the build and press the publish button.\n`,
     );
   }
@@ -308,63 +308,63 @@ const scaffold = (
       "the house tree one hundred percent personalized: no src, the app/ bridge at the root beside the theme folder",
   };
   writeFileSync(
-    path.join(de, "README.md"),
+    path.join(dir, "README.md"),
     `# ${appdir} — next ${variant}\n\n${shapedesc[variant]}. The whole web surface ${comsrc ? "moves into src/" : "stays at the root"} (the theme folder ${theme === "." ? "at the root" : theme} with its pages and components stays untouched) and the Next scaffold (App Router) mounts the app global anchor. The complete site archive, in the house pattern, travels along in the release assets as ${appdir}.${versionof(appdir)}.tar.xz.\n`,
   );
-  platformset(de, appdir);
+  platformset(dir, appdir);
 };
 
-const out = DENTRO(path.join(ROOT, "release"));
+const out = INSIDE(path.join(ROOT, "release"));
 rmSync(out, { recursive: true, force: true });
 mkdirSync(out, { recursive: true });
-const workroot = DENTRO(path.join(ROOT, ".nextzips"));
+const workroot = INSIDE(path.join(ROOT, ".nextzips"));
 mkdirSync(workroot, { recursive: true });
 
 for (const app of CONVERT) {
-  const appdir = DENTRO(path.join(ROOT, app));
+  const appdir = INSIDE(path.join(ROOT, app));
   if (!existsSync(appdir)) {
     console.error("missing app: " + app);
     process.exit(1);
   }
-  const work = DENTRO(path.join(workroot, app));
+  const work = INSIDE(path.join(workroot, app));
   rmSync(work, { recursive: true, force: true });
 
   // 1. the complete site in the house pattern
-  const raw = DENTRO(path.join(work, "site"));
+  const raw = INSIDE(path.join(work, "site"));
   copytree(appdir, raw, false);
-  packxz(raw, DENTRO(path.join(out, `${app}.${versionof(app)}.tar.xz`)));
+  packxz(raw, INSIDE(path.join(out, `${app}.${versionof(app)}.tar.xz`)));
 
   // 2. the next normal: the plain standard template with no folder blocking
-  const themeof = (stage: string) => themefolder(DENTRO(path.join(stage, "src")));
-  const normal = DENTRO(path.join(work, "nextnormal"));
-  copytree(appdir, DENTRO(path.join(normal, "src")), false);
+  const themeof = (stage: string) => themefolder(INSIDE(path.join(stage, "src")));
+  const normal = INSIDE(path.join(work, "nextnormal"));
+  copytree(appdir, INSIDE(path.join(normal, "src")), false);
   scaffold(app, normal, themeof(normal), "normal");
-  packxz(normal, DENTRO(path.join(out, `${app}.next.normal.${versionof(app)}.tar.xz`)));
+  packxz(normal, INSIDE(path.join(out, `${app}.next.normal.${versionof(app)}.tar.xz`)));
 
   // 3. the next zai: the standard template the platform accepts + the deploy kit
-  const zai = DENTRO(path.join(work, "nextzai"));
-  copytree(appdir, DENTRO(path.join(zai, "src")), false);
+  const zai = INSIDE(path.join(work, "nextzai"));
+  copytree(appdir, INSIDE(path.join(zai, "src")), false);
   scaffold(app, zai, themeof(zai), "zai");
-  packxz(zai, DENTRO(path.join(out, `${app}.next.zai.${versionof(app)}.tar.xz`)));
+  packxz(zai, INSIDE(path.join(out, `${app}.next.zai.${versionof(app)}.tar.xz`)));
 
   // 4. the next fifty: the blocked shape with the deploy reading the root
-  const fifty = DENTRO(path.join(work, "nextfifty"));
-  copytree(appdir, DENTRO(path.join(fifty, "src")), false);
+  const fifty = INSIDE(path.join(work, "nextfifty"));
+  copytree(appdir, INSIDE(path.join(fifty, "src")), false);
   scaffold(app, fifty, themeof(fifty), "fifty");
-  packxz(fifty, DENTRO(path.join(out, `${app}.next.fifty.${versionof(app)}.tar.xz`)));
+  packxz(fifty, INSIDE(path.join(out, `${app}.next.fifty.${versionof(app)}.tar.xz`)));
 
   // 5. the next personalized: no src, app/ sits at the root next to the house tree
-  const personal = DENTRO(path.join(work, "personalized"));
+  const personal = INSIDE(path.join(work, "personalized"));
   copytree(appdir, personal, false);
   scaffold(app, personal, themefolder(personal), "personalized");
-  packxz(personal, DENTRO(path.join(out, `${app}.next.personalized.${versionof(app)}.tar.xz`)));
+  packxz(personal, INSIDE(path.join(out, `${app}.next.personalized.${versionof(app)}.tar.xz`)));
   console.log(
     `${app}: site + next.normal + next.zai + next.fifty + next.personalized (theme: ${themeof(normal) || "none"})`,
   );
 }
 
 // the Brotli overlay rides on top of every compressed archive
-for (const file of readdirSync(out)) if (file.endsWith(".tar.xz")) overlay(DENTRO(path.join(out, file)));
+for (const file of readdirSync(out)) if (file.endsWith(".tar.xz")) overlay(INSIDE(path.join(out, file)));
 
 rmSync(workroot, { recursive: true, force: true });
 console.log("conversion complete: " + readdirSync(out).join(", "));

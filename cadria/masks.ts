@@ -1,5 +1,5 @@
 // # masks — the selection masks of the cadria image/video studio, housed at
-// the cadria root beside matiz. A mask is a plane of opacities (0–1 floats)
+// the cadria root beside pixel. A mask is a plane of opacities (0–1 floats)
 // or a boolean grid; components combine with the local-adjustment algebra of
 // the reference raw editor: Add (max), Subtract (a · (1 − c)) and Intersect
 // (a · c). On top of the combination sit the operations the studio needs:
@@ -8,11 +8,11 @@
 // directions, bounds, cropping and the two base shape generators (rectangle,
 // ellipse) plus the linear gradient. The clean-room pattern is absorbed from
 // lightcraft (storytold/lightcraft, crates/pipeline/masks.rs — a
-// PROJETO-class clean-room of local adjustments), re-derived natively in pure
-// TypeScript over flat typed arrays shaped like the matiz engine: no guided
+// project-class clean-room of local adjustments), re-derived natively in pure
+// TypeScript over flat typed arrays shaped like the pixel engine: no guided
 // edge refine, no image-content awareness, no brush strokes, no GPU. Every
 // function is pure, validates by return type (null on mismatch) and never
-// mutates its input. Non-goals: no color adjustment application (matiz owns
+// mutates its input. Non-goals: no color adjustment application (pixel owns
 // pixels), no vector paths, no magic-wand/wandselect, no storage. Exports:
 // 18 functions, 4 types — the honest count for this theme.
 

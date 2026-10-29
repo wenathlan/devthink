@@ -8,7 +8,7 @@ from a three-platform Linux manifest index to the four-architecture family
 surface: `linux/amd64`, `linux/arm64`, `linux/ppc64le`, and `linux/s390x`.
 The selection unifies the container surfaces of the grand merge: the saddle
 lineage shipped amd64/arm64/ppc64le (the 1.8.17 decision, see
-[containerplatforms-1.8.17.md](containerplatforms-1.8.17.md)) and the e2ugh
+[containerplatforms.1.8.17.md](containerplatforms.1.8.17.md)) and the e2ugh
 lineage published all four architectures for the virtual-hardware engine
 (`publish ghcr vhe`). One product, one registry, one architecture surface:
 the s390x leg joins the node engine from the e2ugh side of the family.

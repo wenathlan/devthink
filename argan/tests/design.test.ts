@@ -52,14 +52,14 @@ describe("design contract", () => {
   });
 
   it("never ships an all-properties transition", () => {
-    expect(/transition:\s*all/.test(CSS), "transition: all is a reprovação").toBe(false);
+    expect(/transition:\s*all/.test(CSS), "transition: all is a rejection").toBe(false);
   });
 
   it("never enters an element from zero scale (the windows dtPopIntro bounce excepted)", () => {
     const sansPopIntro = CSS.replace(/@keyframes dtPopIntro \{[\s\S]*?\n\}/g, "");
     expect(
       /scale\(0\)/.test(sansPopIntro),
-      "scale(0) entries are a reprovação (the dtPopIntro bounce of the windows recipe excepted)",
+      "scale(0) entries are a rejection (the dtPopIntro bounce of the windows recipe excepted)",
     ).toBe(false);
   });
 

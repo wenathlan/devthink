@@ -141,7 +141,7 @@ The available metadata files are `manifest.android.1.8.15.json`, `manifest.conta
 
 ## 1.8.16 verified release matrix
 
-The published [v1.8.16 release](https://github.com/wenathlan/saddle/releases/tag/v1.8.16) contains 38 attached assets: six Linux desktop artifacts, six Windows desktop artifacts, four macOS desktop artifacts, two Android artifacts, one container archive, one browser extension, nine manifests, and nine checksum files. The asset names match the matrix in [releasenotes-1.8.16.md](releasenotes-1.8.16.md).
+The published [v1.8.16 release](https://github.com/wenathlan/saddle/releases/tag/v1.8.16) contains 38 attached assets: six Linux desktop artifacts, six Windows desktop artifacts, four macOS desktop artifacts, two Android artifacts, one container archive, one browser extension, nine manifests, and nine checksum files. The asset names match the matrix in [releasenotes.1.8.16.md](releasenotes.1.8.16.md).
 
 The release-event Android workflow stopped because production signing secrets were not configured. The separately successful manual Android run `31839378707` used the workflow's explicit `ci-test-key` option and attached the APK, AAB, checksum, and manifest. No iOS artifact is claimed because Apple signing, provisioning, and export credentials were not configured. Desktop artifacts remain `unsigned`, the container manifest remains `caller-owned`, and no result is represented as production signing, notarization, registry trust, SBOM validation, or vulnerability status without its own evidence.
 
@@ -151,7 +151,7 @@ The release-evidence API can normalize and evaluate results supplied by complete
 
 The 1.8.17 candidate keeps the established release asset contract while expanding the GHCR image index to `linux/amd64`, `linux/arm64`, and `linux/ppc64le`. The workflow must inspect the pushed index before this document treats those platform variants as available. The attached `saddle.container.1.8.17.tar.gz` remains one archive artifact and is not evidence of a Windows container variant.
 
-`windows/amd64`, `linux/arm/v7`, and `linux/386` are not claimed by this candidate. A Windows image requires its own versioned Windows base, Dockerfile, runner, and compatibility validation; the existing Debian Linux Dockerfile cannot produce it by adding a platform string. `unknown` descriptors are not runnable targets. The platform decision and evidence limits are detailed in [containerplatforms-1.8.17.md](containerplatforms-1.8.17.md).
+`windows/amd64`, `linux/arm/v7`, and `linux/386` are not claimed by this candidate. A Windows image requires its own versioned Windows base, Dockerfile, runner, and compatibility validation; the existing Debian Linux Dockerfile cannot produce it by adding a platform string. `unknown` descriptors are not runnable targets. The platform decision and evidence limits are detailed in [containerplatforms.1.8.17.md](containerplatforms.1.8.17.md).
 
 ## 1.8.17 verified container publication
 

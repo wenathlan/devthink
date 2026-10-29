@@ -10,7 +10,7 @@
 import { CheckmarkRegular } from "@fluentui/react-icons";
 import { useState } from "react";
 import { copy } from "../../copy";
-import { WALLPAPERS, loadWallpaper, saveWallpaper, type WallpaperId } from "./SettingsPersonalstore";
+import { WALLPAPERS, loadWallpaper, saveWallpaper, type WallpaperId } from "../../personalstore.ts";
 
 /** BackgroundPicker — the thumbnail grid of the Background card. */
 export function BackgroundPicker() {

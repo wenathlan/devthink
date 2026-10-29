@@ -23,7 +23,7 @@ import type { LabelRow } from "./db.ts";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABELREVISION = 2;
+export const LABELREVISION = 3;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -62,7 +62,7 @@ export const LABELMANIFEST = {
   "construction.aria": "stealthhead is in construction",
   "construction.title": "In construction",
   "construction.subtitle":
-    "The game is in development — this surface is being rebuilt with the family design system. The engine, the physics and the match logic stay under the hood.",
+    "The game is in development — this surface is being rebuilt with the family design system. The physics and the match logic stay under the hood.",
   "construction.action": "back to home",
   "construction.replay": "watch the opening again",
   // the intro page anchor (the splash)
@@ -97,8 +97,8 @@ export const LABELMANIFEST = {
   "home.data.toast": "the ladder answers live from the site — nothing is stored on your machine",
   "home.badge.versawase": "3d world — from cadria",
   "home.badge.audio": "audio — imported from debonair",
-  "home.badge.noEngine": "no engine of its own",
-  "home.badge.precompiled": "ships pre-compiled",
+  "home.badge.noEngine": "nothing to install",
+  "home.badge.precompiled": "loads instantly",
   "home.featured.aria": "featured match",
   "home.featured.wait": "reading the board from the site…",
   "home.featured.tip": "open the board of {title}",
@@ -123,7 +123,7 @@ export const LABELMANIFEST = {
   "home.domain.weaponsAbout": "The armory ledger with damage, handling and kind helpers from the root logic.",
   "home.domain.weaponsMeta": "damage · ttk · falloff",
   "home.domain.world": "world",
-  "home.domain.worldAbout": "Pre-compiled GLB world assets listed as hash-verified rows.",
+  "home.domain.worldAbout": "GLB world assets listed as hash-verified rows.",
   "home.domain.worldMeta": "glb rows · sha-256",
   "home.quad.aria": "platform index",
   "home.quad.platform": "platform",
@@ -131,7 +131,7 @@ export const LABELMANIFEST = {
   "home.quad.domains": "domains",
   "home.quad.engine": "engine",
   "home.quad.doctrine": "doctrine",
-  "home.quad.doctrineLine1": "pre-compiled on the family domains",
+  "home.quad.doctrineLine1": "ready to play on the family domains",
   "home.quad.doctrineLine2": "one home · zero client storage",
   "home.family.aria": "the family apps",
   "home.family.head": "the devthink family",
@@ -233,14 +233,14 @@ export const LABELMANIFEST = {
   "world.eyebrow": "stealthhead · world",
   "world.title": "world assets",
   "world.lede":
-    "The GLB catalog of the platform as rows: name, kind, path and the sha-256 the build verifies against the downloaded binary. Every asset ships pre-compiled on the family domains — the visitor VGPU/VCPU never compiles anything, and the interface renders rows, not scenes.",
+    "The GLB catalog of the platform as rows: name, kind, path and the sha-256 each file is checked against. Every asset arrives ready to play on the family domains — nothing compiles on your machine — and the interface renders rows, not scenes.",
   "world.kinds.aria": "asset kinds",
   "world.kind.all": "all",
   "world.kind.allTip": "every kind of the catalog",
   "world.kind.filterTip": "filter the catalog by {kind}",
-  "world.plate.precompiled": "pre-compiled",
+  "world.plate.precompiled": "ready to play",
   "world.plate.hash": "sha-256 {digest}",
-  "world.plate.verified": "hash shape verified — the binary is cataloged on the site and tracked by git lfs.",
+  "world.plate.verified": "hash verified — the file is cataloged on the site.",
   "world.plate.unverified": "the digest of this row is not a well formed sha-256.",
   // the notfound page anchor (the 404 panel)
   "notfound.badge": "404",

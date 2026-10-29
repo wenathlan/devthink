@@ -15,7 +15,7 @@
  * wears the discreet check; a failed one wears the close red
  * rgb(194 53 43) and a skipped one dims. The keyboard focus stroke stays
  * neutral ink — never blue. The stage ledger under the map
- * reads the progress per stage (the etapas) and the aggregated percentage.
+ * reads the progress per stage and the aggregated percentage.
  * The zoom stays with the page — the system viewport owns the 100% baseline,
  * so the map carries no wheel zoom and no pinch of its own; it scales with its
  * container like any other ink on the page. Motion rides transform/opacity
@@ -94,7 +94,7 @@ export interface GraphViewProps {
   positions: Readonly<Record<string, viewposition>>;
   /** The state of every node (the runner view carries it; pending when absent). */
   nodestates?: Readonly<Record<string, nodestate>>;
-  /** The stage waves (the etapas) the ledger reads. */
+  /** The stage waves the ledger reads. */
   stages?: readonly (readonly string[])[];
   /** The stage the run stands on (0-based). */
   stageindex?: number;

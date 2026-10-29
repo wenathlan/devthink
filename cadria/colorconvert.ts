@@ -1,12 +1,12 @@
 // # colorconvert — the color-space conversions of the cadria image/video
-// studio, housed at the cadria root beside matiz. It owns the pure math the
+// studio, housed at the cadria root beside pixel. It owns the pure math the
 // pixel engine calls: sRGB ↔ linear (the IEC 61966-2-1 piecewise curve,
 // precomputed as a 256-entry decode table), HSL and HSV round trips, OKLab
 // (Björn Ottosson's model, via the four declared 3×3 matrices), YCbCr in the
 // BT.601 and BT.709 families with the studio-swing (16–235 / 16–240) the
 // video domain expects, the relative luminance of BT.709, and the small hex
 // spellings the UI needs. The clean-room pattern is absorbed from lightcraft
-// and photocraft (storytold/*craft, color/convert modules — PROJETO-class
+// and photocraft (storytold/*craft, color/convert modules — project-class
 // clean-rooms), re-derived natively in pure TypeScript: every matrix is a
 // declared constant table, every conversion is a pure function, every result
 // is clamped, and invalid input answers a clamped or null value instead of

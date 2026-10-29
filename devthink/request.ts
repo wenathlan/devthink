@@ -31,13 +31,13 @@
  *  - google_search injection when enabled; cascade fetch with retry
  *
  *  Architecture governance:
- *  - Date: 25/08/2026 — Canto do Buriti, Piauí, Brasil
+ *  - Date: 25/08/2026 — Canto do Buriti, Piauí, Brazil
  *  - Library-first, root-first: file lives beside its siblings (no src/ nesting)
  *  - Only node:* builtins + global fetch (Node >=18) — zero external deps
  *  - Direct cloudcode-pa usage: https://cloudcode-pa.googleapis.com,
  *    https://daily-cloudcode-pa.googleapis.com,
  *    https://daily-cloudcode-pa.sandbox.googleapis.com
- *  - No localhost v1 base-url proxy (requisito explícito)
+ *  - No localhost v1 base-url proxy (explicit requirement)
  *  - Deterministic IDs via FNV-1a (32/64-bit) — reproducible per conversation
  *  - Strip x-goog-user-project header to avoid 403 IAM (issue pi-mono #1830)
  *  - Skip sandbox for gemini-cli models to avoid 404/403 cascade (#233)
@@ -569,18 +569,18 @@ const ANTIGRAVITY_ONLY_EXACT = new Set<string>([
 ]);
 
 /**
- * Detecta se modelo só funciona via endpoint Antigravity (cloudcode-pa v1internal)
- * e não via genai público. Heurística baseada em prefixos e sufixos.
+ * Detects whether a model only works through the Antigravity endpoint (cloudcode-pa
+ * v1internal) and not through public genai. Heuristic based on prefixes and suffixes.
  *
- * @param modelId - ID do modelo (ex: "antigravity-claude-opus-4-6-thinking")
- * @returns true se provavelmente só funciona em Antigravity
+ * @param modelId - model id (e.g. "antigravity-claude-opus-4-6-thinking")
+ * @returns true when the model most likely only works via Antigravity
  *
- * Regras:
- * - qualquer modelo começando com antigravity- => true
- * - contém "claude" => true (Claude só via bypass Antigravity)
- * - contém "customtools" => true (customtools é feature Antigravity 2026)
- * - está no set ANTIGRAVITY_ONLY_EXACT
- * - contém "rising-fact" ou "unwritten-orb" etc? Não, esses são projects, não modelos
+ * Rules:
+ * - any model starting with antigravity- => true
+ * - contains "claude" => true (Claude only via the Antigravity bypass)
+ * - contains "customtools" => true (customtools is an Antigravity 2026 feature)
+ * - is in the ANTIGRAVITY_ONLY_EXACT set
+ * - contains "rising-fact" or "unwritten-orb" etc? No — those are projects, not models
  */
 export function isLikelyAntigravityOnlyModel(modelId: string): boolean {
   if (!modelId || typeof modelId !== "string") return false;
@@ -592,14 +592,14 @@ export function isLikelyAntigravityOnlyModel(modelId: string): boolean {
   if (id.includes("claude")) return true;
   if (id.includes("customtools")) return true;
   if (id.includes("antigravity")) return true;
-  // modelos 3.1 preview com sufixo custom são Antigravity-only na prática
+  // 3.1 preview models with the custom suffix are Antigravity-only in practice
   if (id.includes("3.1") && id.includes("custom")) return true;
-  // modelos com thinking + antigravity family
+  // models with thinking + the antigravity family
   if (id.includes("-thinking") && id.includes("gemini-3")) {
-    // gemini-3 pro nativo não tem thinking nativo, só via antigravity
-    // mas mantém simples: se for preview thinking também é antigravity-only
+    // native gemini-3 pro has no native thinking, only via antigravity
+    // but keep it simple: a preview thinking model is antigravity-only too
     if (id.startsWith("antigravity-") || id.includes("preview")) {
-      // evita falso positivo para gemini-3-pro-preview que é nativo, então só true se tem thinking
+      // avoids a false positive for gemini-3-pro-preview which is native, so true only with thinking
       if (id.includes("thinking")) return true;
     }
   }
@@ -685,24 +685,24 @@ export function extractVariants(modelId: string): ExtractVariantsResult {
     }
   }
 
-  // base limpo ainda pode ter -preview no meio? Remove novamente
-  // family é base + heurística de família (ex: gemini-3-pro)
+  // the clean base may still carry -preview in the middle? strip it again
+  // the family is the base + the family heuristic (e.g. gemini-3-pro)
   const family = base;
 
-  // Gera variantes combinatórias
+  // generates the combinatorial variants
   const variantSet = new Set<string>();
 
   const prefixes = ["", "antigravity-"];
   const suffixCombos = ["", "-preview", "-preview-customtools", "-customtools", "-thinking", "-preview-thinking"];
 
-  // Gera todas combinações prefixo + base + sufixo
+  // generates every prefix + base + suffix combination
   for (const pre of prefixes) {
     for (const suf of suffixCombos) {
       variantSet.add(`${pre}${base}${suf}`);
     }
   }
 
-  // Adiciona também variações com base original + antigravity
+  // also adds variations with the original base + antigravity
   variantSet.add(original.toLowerCase());
   variantSet.add(`antigravity-${base}`);
   if (isThinking) {
@@ -715,7 +715,7 @@ export function extractVariants(modelId: string): ExtractVariantsResult {
     variantSet.add(`${base}-customtools`);
   }
 
-  // Variantes específicas Claude
+  // Claude-specific variants
   if (base.includes("claude")) {
     variantSet.add(`antigravity-${base}`);
     variantSet.add(`antigravity-${base}-thinking`);
@@ -1371,11 +1371,11 @@ export interface ThoughtLikePart {
 }
 
 /**
- * Remove blocos de thinking/reasoning de conteúdo.
- * Suporta:
- * - string: remove tags <thinking>...</thinking>, <thought>...</thought>, <think>...</think>
- * - array de parts Gemini (com thought:true) => filtra
- * - array de blocks OpenCode-like
+ * Strips thinking/reasoning blocks from content.
+ * Supports:
+ * - string: removes <thinking>...</thinking>, <thought>...</thought>, <think>...</think> tags
+ * - array of Gemini parts (with thought:true) => filtered out
+ * - array of OpenCode-like blocks
  */
 
 const THINKING_TAG_REGEX = /<(thinking|thought|think|reasoning|Thought|Thinking)[^>]*>[\s\S]*?<\/\1\s*>/gi;
@@ -1388,27 +1388,27 @@ export function filterThinkingBlocks(input: unknown): unknown;
 export function filterThinkingBlocks(input: unknown): unknown {
   if (typeof input === "string") {
     let out = input;
-    // remove blocos com tags
+    // strip the tagged blocks
     out = out.replace(THINKING_TAG_REGEX, "");
     out = out.replace(THINKING_SELF_CLOSED_REGEX, "");
-    // remove múltiplas linhas que são só prefixo Thinking:
-    // também limpa artefactos "<thinking>" soltos
+    // removes multiple lines that are only the Thinking: prefix
+    // also cleans the stray "<thinking>" artifacts
     out = out.replace(/<\/?thinking[^>]*>/gi, "");
     out = out.replace(/<\/?thought[^>]*>/gi, "");
     out = out.replace(/<\/?think[^>]*>/gi, "");
     out = out.replace(/<\/?reasoning[^>]*>/gi, "");
-    // remove linhas que começam com Thought:
+    // removes the lines starting with Thought:
     out = out
       .split("\n")
       .filter((line) => {
         const trimmed = line.trim();
         if (!trimmed) return true;
-        // se linha inteira é marcador de thinking, remove
+        // when the whole line is a thinking marker, remove it
         if (/^(Thought|Thinking|Reasoning):\s*$/i.test(trimmed)) return false;
         return true;
       })
       .join("\n");
-    // trim excesso de espaços em branco deixados
+    // trims the excess blank space left behind
     out = out.replace(/\n{3,}/g, "\n\n").trim();
     return out;
   }
@@ -1421,22 +1421,22 @@ export function filterThinkingBlocks(input: unknown): unknown {
       if ((part as any).thinking === true) return false;
       const t = (part as any).type?.toLowerCase?.();
       if (t === "thinking" || t === "thought" || t === "reasoning") return false;
-      // conteúdo textual que é apenas thinking tag
+      // textual content that is only a thinking tag
       const text = (part as any).text ?? (part as any).content ?? (part as any).reasoning;
       if (typeof text === "string") {
         const trimmed = text.trim();
         if (!trimmed) return true;
-        // se conteúdo inteiro está envolto em thinking tags, filtra bloco inteiro
+        // when the whole content is wrapped in thinking tags, filter the whole block
         if (/^<(thinking|thought|think|reasoning)[\s\S]*<\/(thinking|thought|think|reasoning)>$/i.test(trimmed))
           return false;
-        // se contém apenas tag, filtra
+        // when it contains only the tag, filter it
         if (/^<\/?(thinking|thought|think|reasoning)[^>]*>$/i.test(trimmed)) return false;
       }
       return true;
     });
   }
 
-  // se objeto único com parts
+  // when it is a single object with parts
   if (isPlainObject(input)) {
     const obj = input as Record<string, unknown>;
     if (Array.isArray(obj["parts"])) {
@@ -1654,7 +1654,7 @@ function safeJsonParse(str: string): Record<string, unknown> | null {
   try {
     const parsed = JSON.parse(str);
     if (isPlainObject(parsed)) return parsed as Record<string, unknown>;
-    // se não for objeto, encapsula
+    // when it is not an object, wrap it
     return { result: parsed } as Record<string, unknown>;
   } catch {
     return null;
@@ -1672,7 +1672,7 @@ function contentPartsToGeminiParts(content: string | OpenCodeContentPart[] | nul
     for (const part of content) {
       if (!part) continue;
       if (typeof part === "string") {
-        // fallback caso array contenha string
+        // fallback when the array carries a string
         if ((part as unknown as string).trim()) parts.push({ text: part as unknown as string });
         continue;
       }
@@ -1685,15 +1685,15 @@ function contentPartsToGeminiParts(content: string | OpenCodeContentPart[] | nul
         if (data) {
           parts.push({ inlineData: data });
         } else {
-          // se for https, Gemini prefere fileData, mas mantemos texto referência para evitar falha
-          // poderia baixar, mas zero-dep: mantém como fileUri
-          // detecta mime via extensão simples
+          // when it is https, Gemini prefers fileData, but keep the reference text to avoid failure
+          // it could download it, but zero-dep: keep it as fileUri
+          // detect the mime via the simple extension
           parts.push({ fileData: { mimeType: "image/jpeg", fileUri: url } });
         }
       } else if ((p.type === "image" || (p as any).inlineData) && (p as any).inlineData) {
         parts.push({ inlineData: (p as any).inlineData });
       } else if (p.text) {
-        // fallback generico com text
+        // generic fallback with text
         parts.push({ text: p.text });
       } else if ((p as any).content && typeof (p as any).content === "string") {
         parts.push({ text: (p as any).content });
@@ -1800,9 +1800,9 @@ export function normalizeMessages(
           if (typeof rawArgs === "string") {
             const parsed = safeJsonParse(rawArgs);
             args = parsed ?? { _raw: rawArgs };
-            // se raw era string pura, tenta manter objeto
+            // when raw was a pure string, try to keep an object
             if (!parsed) {
-              // tenta parse novamente como objeto genérico
+              // try parsing again as a generic object
               try {
                 args = JSON.parse(rawArgs) as Record<string, unknown>;
               } catch {
@@ -1812,7 +1812,7 @@ export function normalizeMessages(
           } else if (isPlainObject(rawArgs)) {
             args = rawArgs as Record<string, unknown>;
           }
-          // sanitize function name via nossa validação
+          // sanitize the function name via our validation
           const cleanName = sanitizeToolName(tc.function.name);
           parts.push({ functionCall: { name: cleanName, args } });
         }
@@ -2178,11 +2178,11 @@ function extractJsonFromText(text: string): Record<string, unknown> | null {
 }
 
 /**
- * Enriquece erro vindo do Agentic SDK / Cloud Code Assist.
- * Detecta auth, quota, model not found, thinking budget etc e sugere correção.
+ * Enriches an error coming from the Agentic SDK / Cloud Code Assist.
+ * Detects auth, quota, model not found, thinking budget etc and suggests a fix.
  *
- * @param error - erro bruto (Error, Response, objeto, string)
- * @param context - contexto opcional com modelId, requestId etc
+ * @param error - the raw error (Error, Response, object, string)
+ * @param context - optional context with modelId, requestId etc
  */
 export function enhanceAgySdkErrorResponse(
   error: unknown,
@@ -2196,7 +2196,7 @@ export function enhanceAgySdkErrorResponse(
   let requestId = context?.requestId;
   let modelId = context?.modelId;
 
-  // Normaliza entrada
+  // normalize the input
   if (typeof error === "string") {
     message = error;
     const parsed = extractJsonFromText(error);
@@ -2212,7 +2212,7 @@ export function enhanceAgySdkErrorResponse(
   } else if (error instanceof Error) {
     message = error.message || message;
     details = { name: error.name, stack: error.stack?.split("\n").slice(0, 5).join("\n") };
-    // tenta extrair status de propriedades comuns
+    // tries to extract the status from common properties
     const anyErr = error as any;
     if (typeof anyErr.status === "number") status = anyErr.status;
     if (typeof anyErr.statusCode === "number") status = anyErr.statusCode;
@@ -2298,22 +2298,22 @@ export function enhanceAgySdkErrorResponse(
     lowerCode.includes("deadline_exceeded") ||
     lowerCode.includes("aborted") ||
     lowerCode.includes("internal") ||
-    (isQuotaError && status === 429); // quota 429 retryable com backoff
+    (isQuotaError && status === 429); // quota 429 retryable with backoff
 
   let suggestion: string | undefined;
   if (isAuthError) {
-    suggestion = `Reautentique com OAuth: client ${GEMINI_CLI_OAUTH_CLIENT_ID}. Verifique token expirou, escopos ${"https://www.googleapis.com/auth/cloud-platform"}. Tente limpar cache em ~/.config/opencode/auth/ e rodar auth flow novamente. Headers: User-Agent=${GEMINI_CLI_USER_AGENT}, X-Goog-Api-Client=${X_GOOG_API_CLIENT}`;
+    suggestion = `Reauthenticate with OAuth: client ${GEMINI_CLI_OAUTH_CLIENT_ID}. Check whether the token expired, scopes ${"https://www.googleapis.com/auth/cloud-platform"}. Try clearing the cache at ~/.config/opencode/auth/ and running the auth flow again. Headers: User-Agent=${GEMINI_CLI_USER_AGENT}, X-Goog-Api-Client=${X_GOOG_API_CLIENT}`;
   } else if (isQuotaError) {
-    suggestion = `Quota excedida. Verifique retrieveUserQuotaSummary em ${CLOUDCODE_PA_BASE}/v1internal:retrieveUserQuotaSummary. Troque para modelo fallback ${PROJECT_FALLBACK} ou aguarde reset. Considere modelo alternativo: ${FETCH_AVAILABLE_MODELS_2026.filter((m) => !m.includes("claude")).join(", ")}`;
+    suggestion = `Quota exceeded. Check retrieveUserQuotaSummary at ${CLOUDCODE_PA_BASE}/v1internal:retrieveUserQuotaSummary. Switch to the fallback model ${PROJECT_FALLBACK} or wait for the reset. Consider an alternative model: ${FETCH_AVAILABLE_MODELS_2026.filter((m) => !m.includes("claude")).join(", ")}`;
   } else if (isModelError) {
-    suggestion = `Modelo ${modelId ?? "desconhecido"} não encontrado. Modelos válidos 2026: ${FETCH_AVAILABLE_MODELS_2026.join(", ")}. Verifique se precisa de prefixo antigravity- e endpoint ${CLOUDCODE_PA_BASE}/v1internal. Para Claude use isLikelyAntigravityOnlyModel() para decidir roteamento.`;
+    suggestion = `Model ${modelId ?? "unknown"} not found. Valid 2026 models: ${FETCH_AVAILABLE_MODELS_2026.join(", ")}. Check whether it needs the antigravity- prefix and the ${CLOUDCODE_PA_BASE}/v1internal endpoint. For Claude use isLikelyAntigravityOnlyModel() to decide the routing.`;
   } else if (isThinkingBudgetError) {
-    suggestion = `Thinking budget inválido. Use buildGenerationConfig() com thinkingLevel minimal/low/medium/high. Para Gemini: minimal=0, low=1024, medium=4096, high=8192. Para Claude: minimal=1024, low=2048, medium=8192, high=16384. Verifique modelo suporta thinking (claude-opus thinking ou gemini-3 com thinkingConfig).`;
+    suggestion = `Invalid thinking budget. Use buildGenerationConfig() with thinkingLevel minimal/low/medium/high. For Gemini: minimal=0, low=1024, medium=4096, high=8192. For Claude: minimal=1024, low=2048, medium=8192, high=16384. Check that the model supports thinking (claude-opus thinking or gemini-3 with thinkingConfig).`;
   } else if (isRetryable) {
-    suggestion = `Erro transitório (${status ?? code}). Tente novamente com backoff exponencial (500ms base, jitter). Endpoint: ${CLOUDCODE_PA_BASE}/v1internal. Project fallback: ${PROJECT_FALLBACK}.`;
+    suggestion = `Transient error (${status ?? code}). Try again with exponential backoff (500ms base, jitter). Endpoint: ${CLOUDCODE_PA_BASE}/v1internal. Project fallback: ${PROJECT_FALLBACK}.`;
   }
 
-  // Anonimiza secret em mensagem
+  // anonymizes the secret in the message
   const safeMessage = message.replace(/GOCSPX-[A-Za-z0-9\-_]+/g, "[REDACTED_SECRET]");
 
   return {
@@ -2906,16 +2906,16 @@ export interface BuildGenerationConfigOptions {
 }
 
 /**
- * Constrói GenerationConfig para cloudcode-pa v1internal.
- * Mapeia thinkingLevel (minimal/low/medium/high) para thinkingBudget.
+ * Builds the GenerationConfig for cloudcode-pa v1internal.
+ * Maps thinkingLevel (minimal/low/medium/high) to thinkingBudget.
  *
- * - Para modelos Gemini: minimal=0 (desativa), low=1024, medium=4096, high=8192
- * - Para modelos Claude (via Antigravity): budgets maiores
- * - Se thinkingBudget direto fornecido, usa direto
- * - Se thinkingLevel=none/minimal com includeThoughts=false, omite includeThoughts para economia
+ * - For Gemini models: minimal=0 (disables), low=1024, medium=4096, high=8192
+ * - For Claude models (via Antigravity): larger budgets
+ * - When a direct thinkingBudget is supplied, use it as is
+ * - When thinkingLevel=none/minimal with includeThoughts=false, omit includeThoughts to save tokens
  *
- * @param opts - opções de geração
- * @returns config compatível com v1internal:generateContent
+ * @param opts - generation options
+ * @returns config compatible with v1internal:generateContent
  */
 export function buildGenerationConfig(opts: BuildGenerationConfigOptions = {}): GeminiGenerationConfig {
   const config: GeminiGenerationConfig = {};
@@ -2945,7 +2945,7 @@ export function buildGenerationConfig(opts: BuildGenerationConfigOptions = {}): 
 
   if (opts.responseMimeType) config.responseMimeType = opts.responseMimeType;
 
-  // Pensamento / thinking
+  // thinking
   const modelId = (opts.modelId ?? "").toLowerCase();
   const isClaude = modelId.includes("claude") || modelId.includes("opus") || modelId.includes("sonnet");
   const budgetMap = isClaude ? THINKING_LEVEL_TO_BUDGET_CLAUDE : THINKING_LEVEL_TO_BUDGET_GEMINI;
@@ -2961,7 +2961,7 @@ export function buildGenerationConfig(opts: BuildGenerationConfigOptions = {}): 
     if (levelNorm in budgetMap) {
       budget = budgetMap[levelNorm];
     } else {
-      // fallback heurístico: tenta mapear sinônimos
+      // heuristic fallback: try to map synonyms
       if (["off", "disable", "disabled", "zero"].includes(levelNorm)) {
         budget = 0;
         levelNorm = "none";
@@ -2969,7 +2969,7 @@ export function buildGenerationConfig(opts: BuildGenerationConfigOptions = {}): 
         budget = budgetMap["minimal"];
         levelNorm = "minimal";
       } else {
-        // default medium se desconhecido
+        // default to medium when unknown
         budget = budgetMap["medium"];
       }
     }
@@ -2980,26 +2980,26 @@ export function buildGenerationConfig(opts: BuildGenerationConfigOptions = {}): 
     if (levelNorm) config.thinkingConfig.thinkingLevel = levelNorm;
     config.thinkingConfig.thinkingBudget = budget;
 
-    // includeThoughts: só true se budget >0 ou explicitamente pedido
-    // Para minimal/none com budget 0, força false para economizar
+    // includeThoughts: true only when budget > 0 or explicitly requested
+    // for minimal/none with budget 0, force false to save tokens
     let includeThoughts = opts.includeThoughts;
     if (includeThoughts === undefined) {
       includeThoughts = budget > 0;
     }
     config.thinkingConfig.includeThoughts = includeThoughts;
 
-    // Se for Gemini e budget 0 e includeThoughts false, podemos omitir thinkingConfig
-    // mas mantemos para clareza, exceto se for none
+    // for Gemini with budget 0 and includeThoughts false we could omit thinkingConfig
+    // but keep it for clarity, except when it is none
     if (budget === 0 && !includeThoughts && (levelNorm === "none" || levelNorm === "minimal")) {
-      // Para Gemini nativo, remover thinkingConfig quando desativa é válido, mas para Claude mantém 0
+      // for native Gemini, removing thinkingConfig on disable is valid, but Claude keeps 0
       if (!isClaude) {
-        // mantém mesmo assim com budget 0 para explicitar desativação
-        // não remove
+        // keep it anyway with budget 0 to make the disable explicit
+        // do not remove
       }
     }
   }
 
-  // presence/frequency - não são nativas Gemini, mas alguns proxies aceitam; mantemos se vierem
+  // presence/frequency — not native to Gemini, but some proxies accept them; keep them when they arrive
   if (typeof opts.presencePenalty === "number") config.presencePenalty = opts.presencePenalty;
   if (typeof opts.frequencyPenalty === "number") config.frequencyPenalty = opts.frequencyPenalty;
 
@@ -3107,15 +3107,15 @@ const DROP_KEYS = new Set<string>([
   "examples",
   "example",
   "deprecated",
-  "const", // Gemini não curte const em alguns ver, convertemos para enum
-  "format", // mantém? Gemini aceita alguns formatos, mas por segurança remove se for json-specific
+  "const", // Gemini dislikes const in some versions; convert to enum
+  "format", // keep? Gemini accepts some formats, but remove json-specific ones to be safe
 ]);
 
 const VALID_JSON_TYPES = new Set<string>(["string", "number", "integer", "boolean", "object", "array", "null"]);
 
 /**
- * Normaliza campo `type`: se for array com null, mantém tipo principal
- * Se for array com múltiplos tipos, escolhe primeiro não-null
+ * Normalizes the `type` field: when it is an array with null, keep the main type
+ * When it is an array with multiple types, pick the first non-null
  */
 function normalizeTypeField(typeVal: unknown): string | undefined {
   if (typeof typeVal === "string") {
@@ -3141,25 +3141,25 @@ export interface CleanToolSchemaOptions {
 }
 
 /**
- * Limpa e normaliza JSON Schema de tool para formato aceito por Gemini / Cloud Code Assist.
+ * Cleans and normalizes a tool's JSON Schema into the shape Gemini / Cloud Code Assist accepts.
  *
- * O que faz:
- * - remove $schema, $id, examples, etc
- * - remove chaves undefined / null vazias
- * - normaliza type para lowercase e singular
- * - converte `const: X` para `enum: [X]`
- * - limpa recursivamente properties, items, anyOf/oneOf/allOf
- * - garante que object com properties tenha type=object
- * - remove propriedades vazias
- * - impede profundidade infinita (>20)
+ * What it does:
+ * - removes $schema, $id, examples, etc
+ * - removes empty undefined / null keys
+ * - normalizes type to lowercase and singular
+ * - converts `const: X` to `enum: [X]`
+ * - recursively cleans properties, items, anyOf/oneOf/allOf
+ * - guarantees an object with properties carries type=object
+ * - removes empty properties
+ * - stops infinite depth (>20)
  *
  * v2.1.14 merge note: renamed from cleanToolSchema (request-helpers.ts) to
  * cleanToolSchemaTolerant; the strict allowlist cleaner from request.ts owns
  * the cleanToolSchema name.
  *
- * @param schema - schema bruto (any)
- * @param opts - opções
- * @returns schema limpo
+ * @param schema - the raw schema (any)
+ * @param opts - options
+ * @returns the cleaned schema
  */
 export function cleanToolSchemaTolerant(schema: unknown, opts?: CleanToolSchemaOptions, _depth = 0): unknown {
   const maxDepth = opts?.maxDepth ?? 20;
@@ -3184,24 +3184,24 @@ export function cleanToolSchemaTolerant(schema: unknown, opts?: CleanToolSchemaO
   for (const [rawKey, rawVal] of Object.entries(schema as Record<string, unknown>)) {
     if (rawVal === undefined) continue;
     if (DROP_KEYS.has(rawKey)) {
-      // exceção: se keepFormat e key é format, mantém
+      // exception: when keepFormat is set and the key is format, keep it
       if (rawKey === "format" && opts?.keepFormat) {
-        // mantém apenas formatos seguros para Gemini
+        // keep only the formats safe for Gemini
         const fmt = String(rawVal).toLowerCase();
         if (["date-time", "date", "enum", "int32", "int64", "double", "float"].includes(fmt)) {
           out[rawKey] = fmt;
         }
         continue;
       }
-      // exceção: description sempre mantém por padrão
+      // exception: description is always kept by default
       continue;
     }
 
     if (rawKey === "type") {
       const normalized = normalizeTypeField(rawVal);
       if (normalized) out[rawKey] = normalized;
-      // se type array incluía null, Gemini usa nullable via `nullable:true`? No Gemini mais novo usa type sem null, mas aceita null em array?
-      // Vamos omitir null e não setar nullable para compat. Se precisar, poderia setar out['nullable']=true.
+      // when the type array included null, Gemini uses nullable via `nullable:true`? Newer Gemini uses type without null but accepts null in an array?
+      // Omit null and do not set nullable for compatibility. If needed, one could set out['nullable']=true.
       continue;
     }
 
@@ -3244,7 +3244,7 @@ export function cleanToolSchemaTolerant(schema: unknown, opts?: CleanToolSchemaO
     }
 
     if (rawKey === "enum" && Array.isArray(rawVal)) {
-      // filtra enums válidos, remove duplicados
+      // filter valid enums, remove duplicates
       const uniq = Array.from(new Set((rawVal as unknown[]).filter((x) => x != null)));
       if (uniq.length > 0) out[rawKey] = uniq;
       continue;
@@ -3258,7 +3258,7 @@ export function cleanToolSchemaTolerant(schema: unknown, opts?: CleanToolSchemaO
       continue;
     }
 
-    // Recursivo genérico para objetos
+    // generic recursion for objects
     if (isPlainObject(rawVal)) {
       const cleaned = cleanToolSchemaTolerant(rawVal, opts, depth + 1);
       if (
@@ -3271,22 +3271,22 @@ export function cleanToolSchemaTolerant(schema: unknown, opts?: CleanToolSchemaO
     }
 
     if (Array.isArray(rawVal)) {
-      // para arrays genéricos (ex: enum já tratado, mas outros)
+      // for generic arrays (e.g. enum already handled, but the others)
       out[rawKey] = rawVal
         .map((v) => (isPlainObject(v) ? cleanToolSchemaTolerant(v, opts, depth + 1) : v))
         .filter((v) => v !== undefined);
       continue;
     }
 
-    // primitivos: string, number, boolean
+    // primitives: string, number, boolean
     out[rawKey] = rawVal;
   }
 
-  // heurística: se tem properties mas não type, assume object
+  // heuristic: when it has properties but no type, assume object
   if (out["properties"] && !out["type"]) {
     out["type"] = "object";
   }
-  // se é object mas properties vazio e não tem additionalProperties, remove properties para evitar schema vazio que Gemini rejeita
+  // when it is object with empty properties and no additionalProperties, remove properties to avoid the empty schema Gemini rejects
   if (
     out["type"] === "object" &&
     out["properties"] &&
@@ -3300,7 +3300,7 @@ export function cleanToolSchemaTolerant(schema: unknown, opts?: CleanToolSchemaO
 }
 
 /**
- * Versão plural que limpa mapa de tools ou array de function declarations
+ * Plural version that cleans a map of tools or an array of function declarations
  *
  * v2.1.14 merge note: canonical plural (superset of request.ts's array-only
  * variant; strict-array cleaning stays available via schemas.map(cleanToolSchema)).
@@ -3431,8 +3431,8 @@ export interface ValidateToolNamesDetailedResult {
  * the canonical TOOL_NAME_REGEX (letter start + 64 cap, from request.ts)
  * now backs this validator.
  *
- * @param tools - array de string, array de {name}, ou Record<string,any>
- * @returns resultado com valid/invalid/sanitized
+ * @param tools - array of strings, array of {name}, or Record<string,any>
+ * @returns the result with valid/invalid/sanitized
  */
 export function validateToolNamesDetailed(
   tools: Array<string | { name: string; [k: string]: unknown }> | Record<string, unknown>,
@@ -3445,11 +3445,11 @@ export function validateToolNamesDetailed(
       else if (isPlainObject(item) && typeof (item as any).name === "string") names.push((item as any).name);
     }
   } else if (isPlainObject(tools)) {
-    // se for Record de toolName -> schema, chaves são nomes
+    // when it is a Record of toolName -> schema, the keys are the names
     names = Object.keys(tools as Record<string, unknown>);
   }
 
-  // deduplica mantendo ordem para validação, mas mantém duplicatas para report? Vamos dedup para validNames
+  // deduplicate keeping order for validation, but keep duplicates for the report? Dedup for validNames
   const seen = new Set<string>();
   const uniqueNames: string[] = [];
   for (const n of names) {
@@ -3482,7 +3482,7 @@ export function validateToolNamesDetailed(
     }
 
     const s = sanitizeToolName(name);
-    // se original inválido, adiciona sanitizado
+    // when the original is invalid, add the sanitized one
     if (!TOOL_NAME_REGEX.test(name) || name.length > TOOL_NAME_MAX_LENGTH) {
       sanitized.push({ original: name, sanitized: s });
     }

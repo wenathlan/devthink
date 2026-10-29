@@ -16,7 +16,7 @@ import type { BrowserLabel } from "./db.ts";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 2;
+export const LABEL_REVISION = 3;
 
 /** the english manifest: the page.widget.key path answers the surface text. */
 export const labelManifest = {
@@ -113,7 +113,7 @@ export const labelManifest = {
   "intro.demo.analysis": "analysis",
   "intro.demo.statusIdle": "idle — pick a fixture; the chain answers in under a second.",
   "intro.demo.statusReading": "reading spectrum · rhythm · tonality · timbre · structure…",
-  "intro.demo.statusError": "the engine refused this slice.",
+  "intro.demo.statusError": "this clip could not be processed.",
   "intro.demo.statusReady": "rendered from the fused descriptor — run it again: same audio, same image.",
   "intro.demo.signature": "sig {signature} · {size}×{size} px · deterministic",
   "intro.demo.artAria": "deterministic artwork rendered from the {fixture} fixture",
@@ -180,7 +180,7 @@ export const labelManifest = {
   "onboarding.hear.read": "read {name} — the chain heard it.",
   "onboarding.hear.recording": "recording — play or speak, then stop.",
   "onboarding.hear.recordingName": "the recording",
-  "onboarding.hear.noMic": "this browser offers no microphone api — pick a file instead.",
+  "onboarding.hear.noMic": "this browser offers no microphone access — pick a file instead.",
   "onboarding.hear.micRefused": "the microphone is off limits — pick a file instead.",
   "onboarding.hear.refused": "the chain refused this slice — try a longer clip.",
   "onboarding.see.lead": "the picture of what it heard",
@@ -196,7 +196,7 @@ export const labelManifest = {
   "onboarding.see.signature": "{digest} · sig {signature}",
   "onboarding.see.nothingHeard": "nothing heard yet — give the hear frame a slice first.",
   "onboarding.see.noFixture": "no such fixture: {id}",
-  "onboarding.see.refused": "the engine refused this slice.",
+  "onboarding.see.refused": "this clip could not be processed.",
   "onboarding.enter.lead": "ready to enter",
   "onboarding.enter.lede":
     "the home is the desk: generate in the studio, play the renders in the player, keep them in the gallery. everything runs client-side and session-only — nothing is written to this machine.",
@@ -209,7 +209,7 @@ export const labelManifest = {
   "player.retry": "retry",
   "player.offlineError": "the gallery is offline — the stored frame can't be fetched.",
   "player.refusedError": "the gallery refused this render.",
-  "player.demoRefused": "the engine refused this slice.",
+  "player.demoRefused": "this clip could not be processed.",
   "player.decoderRefused": "the decoder refused “{name}” — {detail}",
   "player.noFrame": "no frame",
   "player.frameAriaNone": "no frame loaded",
@@ -239,7 +239,7 @@ export const labelManifest = {
   "player.rail.statePaused": "paused",
   "player.rail.stateStatic": "static frame",
   "player.rail.stateLoading": "loading",
-  "player.rail.engine": "engine",
+  "player.rail.engine": "playback",
   "player.rail.source": "source",
   "player.rail.rate": "rate",
   "player.rail.frames": "frames",
@@ -251,8 +251,8 @@ export const labelManifest = {
   "player.rail.seed": "seed",
   "player.rail.loop": "loop",
   "player.rail.style": "style",
-  "player.engine.videodecode": "local · videodecode",
-  "player.engine.demo": "local · in-session demo",
+  "player.engine.videodecode": "local video",
+  "player.engine.demo": "in-session demo",
   "player.engine.gateway": "gallery render",
   "player.engine.rateFps": "{rate} fps",
   "player.engine.loopLine": "{n} keyframes · {ms} ms / beat",
@@ -274,7 +274,7 @@ export const labelManifest = {
   "studio.analyzeReadingGeneric": "reading the source…",
   "studio.analyzeRefused": "the analysis refused this source.",
   "studio.analyzed": "analyzed — the descriptor is fused; tune the controls and generate.",
-  "studio.errorTooShort": "the slice is shorter than one second — the pipeline needs at least 1 s of audio.",
+  "studio.errorTooShort": "the slice is shorter than one second — generation needs at least 1 s of audio.",
   "studio.errorEmpty": "the source carries no readable samples.",
   "studio.errorRate": "the source's sample rate is not usable — try re-exporting the file.",
   "studio.fixtureError": "the fixture could not be built.",
@@ -287,7 +287,7 @@ export const labelManifest = {
   "studio.source.paneAria": "audio source",
   "studio.source.head": "source",
   "studio.source.drop": "drop audio here — or press to browse",
-  "studio.source.formats": "wav decodes natively · mp3/ogg/flac/m4a via web audio",
+  "studio.source.formats": "wav decodes natively · mp3/ogg/flac/m4a supported",
   "studio.source.fixturesAria": "built-in synthetic fixtures",
   "studio.source.metaName": "name",
   "studio.source.metaPath": "path",

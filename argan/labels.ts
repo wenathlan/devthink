@@ -22,7 +22,7 @@ import type { LabelRow } from "./db";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 1;
+export const LABEL_REVISION = 2;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -52,7 +52,7 @@ export const LABEL_MANIFEST = {
   "shell.rail.zones": "zones",
   "shell.rail.zonesDetail": "the zone table and the publication flow",
   "shell.rail.dnssec": "dnssec",
-  "shell.rail.dnssecDetail": "the signing pipeline and the rollover",
+  "shell.rail.dnssecDetail": "zone signing and key rollover",
   "shell.rail.gateway": "gateway",
   "shell.rail.gatewayDetail": "the dns transports, doh-first",
   "shell.rail.settings": "settings",
@@ -69,7 +69,7 @@ export const LABEL_MANIFEST = {
   "home.brand": "argan",
   "home.hero.role": "dns & gateway of the family",
   "home.hero.title": "Names that resolve.",
-  "home.hero.ledeLead": "Authoritative zones and a real DNSSEC pipeline on the ",
+  "home.hero.ledeLead": "Authoritative zones and real DNSSEC signing on the ",
   "home.hero.ledeTail": " apex — published to the world through ordinary DNS. No plugin, nothing on the visitor's side.",
   "home.dig.mark": "$",
   "home.hero.placeholder": "dig {apex} MX",
@@ -85,7 +85,7 @@ export const LABEL_MANIFEST = {
   "home.hero.meta": "{zones} zones · {transports} transports · {records} apex records · serials YYYYMMDDNN",
   "home.zones.title": "Zones under management",
   "home.zones.aside": "{count} zones · staging snapshot",
-  "home.zones.noteLead": "Masters written by the pipeline, secondaries pulled by authenticated transfer — serials follow ",
+  "home.zones.noteLead": "Masters written automatically, secondaries pulled by authenticated transfer — serials follow ",
   "home.zones.noteTail": ".",
   "home.zones.link": "open the zones console →",
   "home.library.title": "One library, four jobs",
@@ -97,7 +97,7 @@ export const LABEL_MANIFEST = {
   "home.cta.aria": "anchor a name on the apex",
   "home.cta.title": "Anchor a name on the apex",
   "home.cta.command": "npm install --global @devthink/argan && argan publish --label mysite --zone {apex}",
-  "home.cta.pipeline": "See the signing pipeline",
+  "home.cta.pipeline": "See zone signing",
   "home.foot.console": "console",
   "home.foot.apex": "the apex",
   "home.foot.nameservers": "ns1 · ns2.{apex}",
@@ -111,7 +111,7 @@ export const LABEL_MANIFEST = {
   // the zones page anchor (the working console)
   "zones.eyebrow": "argan · zones",
   "zones.title": "Every name lives in a zone.",
-  "zones.lede": "Masters written by the pipeline, secondaries pulled by authenticated transfer, serials bumped on every republication.",
+  "zones.lede": "Masters written automatically, secondaries pulled by authenticated transfer, serials bumped on every republication.",
   "zones.ledger.title": "Zones under management",
   "zones.ledger.count": "{count} zones",
   "zones.ledger.noteLead": "Snapshot of the staging cluster — serials follow ",
@@ -133,17 +133,17 @@ export const LABEL_MANIFEST = {
   // the dnssec page anchor (the signing console)
   "dnssec.eyebrow": "argan · dnssec",
   "dnssec.title": "Signed on day one.",
-  "dnssec.lede": "Real signatures, real validation, no opt-in — build, test and hash happen in CI, and the signed zone is what gets served.",
+  "dnssec.lede": "Real signatures, real validation, no opt-in — build, test and signing run automatically, and the signed zone is what gets served.",
   "dnssec.keys.title": "KSK signs keys, ZSK signs zones",
-  "dnssec.empty.keys": "the key ledger answered no rows — the signing pipeline has not published keys to this snapshot yet",
+  "dnssec.empty.keys": "the key ledger answered no rows — zone signing has not published keys to this snapshot yet",
   "dnssec.algorithms.aria": "signing algorithms",
   "dnssec.algorithms.title": "algorithms · new zones",
   "dnssec.digest.title": "denial & digest",
   "dnssec.digest.body": "NSEC3 with a fresh random salt on each republication; the DS handed to the parent uses the SHA-256 digest (algorithm 2).",
   "dnssec.pipeline.title": "Never hand-edit a production zone",
   "dnssec.pipeline.note":
-    "Rule nd-6002 · pipeline-only — the zone file is versioned, signed and published by the pipeline with a fresh serial; the previous version stays available for instant rollback. Nobody types changes into a live zone. The terminal below rides the staging snapshot — the output shape of one sign run, never a live capture.",
-  "dnssec.pipeline.empty": ";; the sign pipeline answered no output block for this snapshot",
+    "Rule nd-6002 · signed and published automatically — the zone file is versioned, signed and published with a fresh serial; the previous version stays available for instant rollback. Nobody types changes into a live zone. The terminal below rides the staging snapshot — the output shape of one sign run, never a live capture.",
+  "dnssec.pipeline.empty": ";; the signing run answered no output block for this snapshot",
   "dnssec.rollover.title": "Key rotation, four moves",
   "dnssec.rollover.note": "ZSK every 90 days, KSK every 360. CDS/CDNSKEY automation hands the new DS to the parent without a registrar ticket.",
   // the gateway page anchor (the transport console)
@@ -168,7 +168,7 @@ export const LABEL_MANIFEST = {
   // the settings page anchor (the preferences)
   "settings.eyebrow": "argan · settings",
   "settings.title": "Site preferences only.",
-  "settings.lede": "Zone credentials, TSIG keys and cluster secrets never live here — they belong to the argan database on the host that runs the pipeline.",
+  "settings.lede": "Zone credentials, TSIG keys and cluster secrets never live here — they stay on your own signing server.",
   "settings.nav.aria": "Settings sections",
   "settings.nav.appearance": "appearance",
   "settings.nav.urls": "clean urls",
@@ -220,7 +220,7 @@ export const LABEL_MANIFEST = {
   "onboarding.steps.enter": "enter",
   "onboarding.what.title": "one window, dns and zones",
   "onboarding.what.body":
-    "argan is the dns and zones home of the wenathlan family — not an operating system: one application window holding the zone table, the signing pipeline and the gateway transports, all anchored on the devthink.pro apex.",
+    "argan is the dns and zones home of the wenathlan family — not an operating system: one application window holding the zone table, zone signing and the gateway transports, all anchored on the devthink.pro apex.",
   "onboarding.hosts.title": "what the window hosts",
   "onboarding.enter.title": "ready to enter",
   "onboarding.enter.body":

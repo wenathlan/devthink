@@ -22,7 +22,7 @@ import type { LabelRow } from "./db";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 1;
+export const LABEL_REVISION = 2;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -92,7 +92,7 @@ export const LABEL_MANIFEST = {
   "home.steps.aria": "deploy steps",
   "home.steps.deploy.title": "deploy the mirror",
   "home.steps.deploy.phrase":
-    "the Next mirrors ship from the release assets — this Sol surface is one static deploy of the same gateway.",
+    "the same self-hosted gateway serves every deploy — this site runs the same routes.",
   "home.steps.route.title": "name a route",
   "home.steps.route.phrase": "35 OpenAI-compatible endpoints answer on the self-hosted lanes — the seven kinds ride every replica.",
   "home.steps.mask.title": "ride the mask",
@@ -115,8 +115,8 @@ export const LABEL_MANIFEST = {
   "sessions.lede":
     "One row per session and provider carries the rotation index, the thinking budget and the context window math. The key pools rotate in round robin; the meta model rotates every six messages.",
   "sessions.stamp.never": "never",
-  "sessions.toast.reload": "the store answers from the self-hosted DB — seeds on the static build; reload to ask again",
-  "sessions.toast.refresh": "the seeds refresh from the site DB on every load — nothing persists on your machine",
+  "sessions.toast.reload": "the store answers from the self-hosted database — reload to ask again",
+  "sessions.toast.refresh": "the rows refresh from the site database on every load — nothing persists on your machine",
   "sessions.registry.aria": "session registry",
   "sessions.registry.head": "session contexts — one row per session and provider",
   "sessions.table.session": "session",

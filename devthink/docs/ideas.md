@@ -1,74 +1,74 @@
-# Direção visual do DevThink
+# DevThink visual direction
 
-## Três abordagens possíveis
+## Three possible approaches
 
-| Nome | Introdução breve | Probabilidade |
+| Name | Brief introduction | Probability |
 | --- | --- | ---: |
-| Atelier de Cobre | Um navegador de trabalho editorial e quente, com superfícies grafite e detalhes em cobre. Ele privilegia foco, materialidade e rastreabilidade. | 0.08 |
-| Sala de Sinais Orbitais | Um workspace escuro e espacial, em que anéis azuis suaves e um laranja de alta energia indicam presença, rota e fluxo. Ele transforma a sessão em uma mesa de controle precisa. | 0.03 |
-| Terminal de Impressão | Um sistema monocromático de estética tipográfica, com bordas impressas, retícula e ritmo de editor. Ele reforça a sensação de ferramenta local e confiável. | 0.06 |
+| Copper Atelier | A warm editorial work browser, with graphite surfaces and copper details. It favors focus, materiality and traceability. | 0.08 |
+| Orbital Signal Room | A dark, spatial workspace in which soft blue rings and a high-energy orange indicate presence, route and flow. It turns the session into a precise control desk. | 0.03 |
+| Press Terminal | A monochrome system of typographic aesthetics, with printed borders, halftone and an editor's rhythm. It reinforces the feeling of a local, reliable tool. | 0.06 |
 
-## Direção selecionada: Sala de Sinais Orbitais
+## Selected direction: Orbital Signal Room
 
-### Movimento de design
+### Design movement
 
-O DevThink adota o **instrumentalismo espacial editorial**: a disciplina de uma estação de trabalho técnica encontra o brilho contido de uma navegação por órbita. A referência de navegador aparece na hierarquia de abas e barras de comando; não como imitação de Chrome ou Opera, mas como uma gramática reconhecível de continuidade e contexto.
+DevThink adopts **editorial spatial instrumentalism**: the discipline of a technical workstation meets the contained glow of orbit navigation. The browser reference appears in the hierarchy of tabs and command bars; not as an imitation of Chrome or Opera, but as a recognizable grammar of continuity and context.
 
-### Princípios centrais
+### Core principles
 
-1. **Cromado, não dashboard:** o produto é uma área de trabalho com bordas, abas, trilhos e contexto ativo; nunca uma coleção centralizada de cartões.
-2. **Sinal antes de ornamento:** laranja indica ação e foco, azul-orbe indica conexão ou fluxo e verde somente confirma estabilidade.
-3. **Profundidade discreta:** camadas pretas, recortes SVG e texturas de pontos explicam hierarquia sem gradientes genéricos ou excesso de vidro.
-4. **Paridade de comando:** a web e a CLI usam os mesmos nomes de estado, mesma marca ANSI, mesmas ações principais e o mesmo modelo mental de workspace.
+1. **Chrome, not dashboard:** the product is a work area with borders, tabs, rails and active context; never a centralized collection of cards.
+2. **Signal before ornament:** orange indicates action and focus, orb-blue indicates connection or flow and green only confirms stability.
+3. **Discreet depth:** black layers, SVG cutouts and dot textures explain hierarchy without generic gradients or excess glass.
+4. **Command parity:** the web and the CLI use the same state names, the same ANSI brand, the same main actions and the same mental model of a workspace.
 
-### Filosofia de cor
+### Color philosophy
 
-O preto mineral sustenta sessões longas e cria silêncio visual. O **laranja DevThink `#ff6a00`** é propriedade de ação, seleção e identidade; por isso nunca é usado para decoração passiva. O **azul-orbe `#78a9ff`** é uma luz fria de estado, reservada para gateway, streaming e relações de contexto. Marfim acinzentado e cinzas azulados sustentam leitura sem transformar a interface em puro branco.
+Mineral black sustains long sessions and creates visual silence. The **DevThink orange `#ff6a00`** is the property of action, selection and identity; that is why it is never used for passive decoration. The **orb-blue `#78a9ff`** is a cold state light, reserved for gateway, streaming and context relations. Grayish ivory and bluish grays sustain reading without turning the interface into pure white.
 
-### Paradigma de layout
+### Layout paradigm
 
-O layout é uma **mesa de trabalho orbital**: uma barra superior de contexto e abas passa sobre um trilho de navegação fino; o centro é um canvas de conversa e execução; uma coluna de inspeção é uma camada invocável, não uma terceira coluna permanente. A tela de entrada é uma bancada central contida por uma abertura SVG ampla, e não um hero de marketing.
+The layout is an **orbital workbench**: a top bar of context and tabs passes over a thin navigation rail; the center is a conversation and execution canvas; an inspection column is an invocable layer, not a permanent third column. The entry screen is a contained central bench framed by a wide SVG opening, not a marketing hero.
 
-### Elementos de assinatura
+### Signature elements
 
-1. Uma abertura SVG original, formada por blocos arredondados assimétricos, cria profundidade atrás da entrada e dos estados vazios.
-2. Anéis orbitais locais em SVG, do laranja ao azul-orbe, indicam pareamento, streaming e conexão sem depender de efeitos de terceiros.
-3. Uma faixa de abas compacta e uma barra de comando terminal unem a navegação do navegador ao ritmo da CLI.
+1. An original SVG opening, formed by asymmetric rounded blocks, creates depth behind the entry and the empty states.
+2. Local orbital rings in SVG, from orange to orb-blue, indicate pairing, streaming and connection without depending on third-party effects.
+3. A compact tab strip and a terminal command bar join the browser navigation to the CLI rhythm.
 
-### Filosofia de interação
+### Interaction philosophy
 
-Toda ação frequente é imediata e legível por teclado. O foco muda sem atraso; apenas o ingresso de uma sessão, a abertura do inspetor e a chegada de um stream recebem transição. Botões mantêm pressão física leve; estados de conexão usam forma, texto e cor, nunca só cor.
+Every frequent action is immediate and keyboard-readable. Focus changes without delay; only the entry of a session, the opening of the inspector and the arrival of a stream receive a transition. Buttons keep light physical pressure; connection states use shape, text and color, never color alone.
 
-### Animação
+### Animation
 
-As transições de painel usam 180–240 ms, `cubic-bezier(0.23, 1, 0.32, 1)` e somente `transform` e `opacity`. Anéis orbitais usam movimento lento, sem cursor obrigatório. A revelação de retícula é limitada a entradas e vazios; sob `prefers-reduced-motion`, todos os movimentos não essenciais são removidos e o conteúdo fica imediatamente visível.
+Panel transitions use 180–240 ms, `cubic-bezier(0.23, 1, 0.32, 1)` and only `transform` and `opacity`. Orbital rings use slow motion, with no mandatory cursor. The halftone reveal is limited to entries and empties; under `prefers-reduced-motion`, every non-essential movement is removed and the content is immediately visible.
 
-### Sistema tipográfico
+### Typographic system
 
-**Space Grotesk** conduz títulos, navegação e controles; **IBM Plex Mono** conduz rotas, prompts, estados e dados de execução. Títulos possuem massa compacta, com contraste alto. Metadados usam mono em caixa baixa e espaçamento moderado. A marca ANSI decorativa jamais substitui um rótulo acessível.
+**Space Grotesk** leads titles, navigation and controls; **IBM Plex Mono** leads routes, prompts, states and execution data. Titles carry compact mass, with high contrast. Metadata uses lowercase mono with moderate spacing. The decorative ANSI brand never replaces an accessible label.
 
-### Essência da marca
+### Brand essence
 
-**DevThink é o workspace local de desenvolvimento com IA para quem precisa rotear provedores, acompanhar streams e manter a execução sob seu controle.**
+**DevThink is the local AI development workspace for those who need to route providers, follow streams and keep execution under control.**
 
-Personalidade: **precisa, energética, composta**.
+Personality: **precise, energetic, composed**.
 
-### Voz da marca
+### Brand voice
 
-As mensagens são curtas, operacionais e verificáveis. CTAs descrevem a próxima ação real; nunca prometem autonomia fictícia.
+Messages are short, operational and verifiable. CTAs describe the next real action; they never promise fictional autonomy.
 
-> Abrir uma rota local e escolher o modelo de execução.
+> Open a local route and choose the execution model.
 
-> Parear o gateway. Manter as credenciais no seu computador.
+> Pair the gateway. Keep the credentials on your computer.
 
-### Wordmark e logo
+### Wordmark and logo
 
-A marca canônica é a composição ANSI `DEVTHINK` já renderizada pela CLI. Na web, ela aparece como texto acessível acompanhado por uma versão compacta do mesmo ritmo pixelado, sempre em laranja DevThink ou cinza de baixo contraste.
+The canonical brand is the ANSI composition `DEVTHINK` already rendered by the CLI. On the web, it appears as accessible text accompanied by a compact version of the same pixelated rhythm, always in DevThink orange or low-contrast gray.
 
-### Cor de assinatura
+### Signature color
 
-**Laranja DevThink — `#ff6a00`.**
+**DevThink Orange — `#ff6a00`.**
 
-## Decisões de implementação
+## Implementation decisions
 
-As referências de 21st.dev, UIverse e React Bits orientam hierarquia, ritmo e movimento, mas o DevThink usa componentes, SVGs e CSS locais. Nenhum código de terceiro é copiado. A interface não introduz uma dependência visual nova apenas para reproduzir um efeito de referência.
+The references of 21st.dev, UIverse and React Bits guide hierarchy, rhythm and movement, but DevThink uses local components, SVGs and CSS. No third-party code is copied. The interface does not introduce a new visual dependency just to reproduce a reference effect.

@@ -471,7 +471,7 @@ export function parseSSEBinaryChunk(
 }
 
 // ---------------------------------------------------------------------------
-// Payload normalization — heterogêneos
+// Payload normalization — heterogeneous shapes
 // ---------------------------------------------------------------------------
 
 /**
@@ -1579,7 +1579,7 @@ export function createAnthropicStreamingTransformer(
 }
 
 // ---------------------------------------------------------------------------
-// Auto-recovery — retry exponencial e injeção finish sintético
+// Auto-recovery — exponential retry and synthetic finish injection
 // ---------------------------------------------------------------------------
 
 export interface RetryOptions {

@@ -1,8 +1,8 @@
-// # matiz.test — the cadria pixel engine: the channel adjustments, the
+// # pixel.test — the cadria pixel engine: the channel adjustments, the
 // grayscale and sepia tints, the 3x3 convolution, the box blur, the bilinear
 // resize and the composed pipeline, runnable with vitest
 // (no canvas):
-//   pnpm vitest run tests/matiz.test.ts
+//   pnpm vitest run tests/pixel.test.ts
 // The fixture is a synthetic rgba buffer shaped like ImageData, and every
 // test also watches the one invariant the engine promises: the input never
 // mutates.
@@ -12,15 +12,15 @@ import {
   adjustimage,
   boxblurimage,
   convolveimage,
-  type MatizImage,
-  matizkernels,
+  type PixelImage,
+  pixelkernels,
   resizeimage,
-  runmatiz,
+  runpixel,
   tintimage,
-} from "../matiz.ts";
+} from "../pixel.ts";
 
 /** builds a w×h rgba buffer where every pixel carries the same color. */
-function solidImage(width: number, height: number, color: [number, number, number, number]): MatizImage {
+function solidImage(width: number, height: number, color: [number, number, number, number]): PixelImage {
   const data = new Uint8ClampedArray(width * height * 4);
   for (let at = 0; at < data.length; at += 4) {
     data[at] = color[0];
@@ -32,7 +32,7 @@ function solidImage(width: number, height: number, color: [number, number, numbe
 }
 
 /** builds a w×h grayscale horizontal ramp (left black, right white, alpha full). */
-function rampImage(width: number, height: number): MatizImage {
+function rampImage(width: number, height: number): PixelImage {
   const data = new Uint8ClampedArray(width * height * 4);
   for (let y = 0; y < height; y += 1) {
     for (let x = 0; x < width; x += 1) {
@@ -48,11 +48,11 @@ function rampImage(width: number, height: number): MatizImage {
 }
 
 /** the buffer snapshot used to prove no stage mutates its input. */
-function snapshot(image: MatizImage): Uint8ClampedArray {
+function snapshot(image: PixelImage): Uint8ClampedArray {
   return new Uint8ClampedArray(image.data);
 }
 
-describe("matiz adjustments", () => {
+describe("pixel adjustments", () => {
   it("keeps the image unchanged when every amount answers one", () => {
     const image = solidImage(3, 2, [40, 80, 160, 255]);
     const before = snapshot(image);
@@ -91,7 +91,7 @@ describe("matiz adjustments", () => {
   });
 });
 
-describe("matiz tints", () => {
+describe("pixel tints", () => {
   it("answers the rec 709 luma on every channel for grayscale", () => {
     const image = solidImage(2, 2, [90, 120, 30, 255]);
     const out = tintimage(image, "grayscale");
@@ -113,17 +113,17 @@ describe("matiz tints", () => {
   });
 });
 
-describe("matiz convolution", () => {
+describe("pixel convolution", () => {
   it("answers the input colors for the identity kernel", () => {
     const image = solidImage(3, 3, [30, 60, 90, 255]);
-    const out = convolveimage(image, matizkernels.identity);
+    const out = convolveimage(image, pixelkernels.identity);
     assert.deepEqual(new Uint8ClampedArray(out.data), image.data);
   });
 
   it("keeps the alpha untouched and the dimensions stable", () => {
     const image = rampImage(4, 4);
     const before = snapshot(image);
-    const out = convolveimage(image, matizkernels.sharpen);
+    const out = convolveimage(image, pixelkernels.sharpen);
     assert.equal(out.width, 4);
     assert.equal(out.height, 4);
     for (let at = 3; at < image.data.length; at += 4) assert.equal(out.data[at], image.data[at]);
@@ -132,20 +132,20 @@ describe("matiz convolution", () => {
 
   it("replicates the clamped edges instead of reading outside", () => {
     const image = solidImage(2, 2, [100, 100, 100, 255]);
-    const out = convolveimage(image, matizkernels.identity);
+    const out = convolveimage(image, pixelkernels.identity);
     assert.deepEqual(new Uint8ClampedArray(out.data), image.data);
   });
 
   it("refuses a kernel that is not nine finite weights", () => {
     const image = solidImage(2, 2, [1, 2, 3, 255]);
     assert.throws(
-      () => convolveimage(image, [1, 2, 3] as unknown as typeof matizkernels.identity),
+      () => convolveimage(image, [1, 2, 3] as unknown as typeof pixelkernels.identity),
       /nine finite weights/,
     );
   });
 });
 
-describe("matiz box blur", () => {
+describe("pixel box blur", () => {
   it("answers a solid image unchanged", () => {
     const image = solidImage(4, 4, [80, 120, 200, 255]);
     const out = boxblurimage(image, 1);
@@ -171,7 +171,7 @@ describe("matiz box blur", () => {
   });
 });
 
-describe("matiz resize", () => {
+describe("pixel resize", () => {
   it("answers the same color field for a solid image at any size", () => {
     const image = solidImage(3, 3, [10, 200, 30, 255]);
     const out = resizeimage(image, { width: 7, height: 5 });
@@ -194,14 +194,14 @@ describe("matiz resize", () => {
   });
 });
 
-describe("matiz pipeline", () => {
+describe("pixel pipeline", () => {
   it("runs the documented order: adjust, tint, convolve, blur, resize", () => {
     const image = rampImage(6, 4);
     const before = snapshot(image);
-    const out = runmatiz(image, {
+    const out = runpixel(image, {
       adjustments: { brightness: 1.2, contrast: 1.1, saturation: 0.8 },
       tint: "grayscale",
-      kernel: matizkernels.identity,
+      kernel: pixelkernels.identity,
       blurRadius: 1,
       resize: { width: 3, height: 2 },
     });
@@ -212,13 +212,13 @@ describe("matiz pipeline", () => {
 
   it("answers a copy with no options", () => {
     const image = solidImage(2, 2, [5, 6, 7, 255]);
-    const out = runmatiz(image);
+    const out = runpixel(image);
     assert.deepEqual(new Uint8ClampedArray(out.data), image.data);
     assert.notEqual(out.data, image.data);
   });
 
   it("refuses an image whose buffer does not answer for its size", () => {
-    assert.throws(() => runmatiz({ width: 2, height: 2, data: new Uint8ClampedArray(4) }), /needs 16/);
-    assert.throws(() => runmatiz({ width: 0, height: 2, data: new Uint8ClampedArray(0) }), /positive integer/);
+    assert.throws(() => runpixel({ width: 2, height: 2, data: new Uint8ClampedArray(4) }), /needs 16/);
+    assert.throws(() => runpixel({ width: 0, height: 2, data: new Uint8ClampedArray(0) }), /positive integer/);
   });
 });

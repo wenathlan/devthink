@@ -543,7 +543,7 @@ const seedOsStrings: OsStringRow[] = [
   { id: "explore.hero.title", text: "every surface of the os, one command away" },
   {
     id: "explore.hero.sub",
-    text: "the stage reads the whole registry: type, filter, open. the native surfaces and the nine family apps share one field.",
+    text: "the stage reads the whole catalog: type, filter, open. the native surfaces and the nine family apps share one field.",
   },
   { id: "explore.waves.sections", text: "02 · the sections" },
   { id: "explore.waves.sectionsMeta", text: "recent · pinned · all apps" },
@@ -576,7 +576,7 @@ const seedOsStrings: OsStringRow[] = [
   { id: "explore.sections.all.title", text: "every app, one field away" },
   {
     id: "explore.sections.all.sub",
-    text: "the full registry — native surfaces and family apps, in catalog order.",
+    text: "the full catalog — native surfaces and family apps, in order.",
   },
   { id: "explore.studio.video", text: "video studio" },
   { id: "explore.studio.image", text: "image studio" },

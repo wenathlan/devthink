@@ -55,15 +55,15 @@ export const ICON_GLYPHS: Readonly<Record<string, string>> = {
   dot: "●",
   sun: "◉",
   moon: "☾",
-  wrench: "🔧",
+  wrench: "⚒",
   home: "⌂",
   user: "☺",
   folder: "▤",
   file: "▫",
   cloud: "☁",
-  bolt: "⚡",
-  lock: "🔒",
-  key: "🔑",
+  bolt: "↯",
+  lock: "⊘",
+  key: "⚿",
 };
 
 /** the ASCII degrade of the glyph set (Windows conhost and NO_COLOR lanes) */

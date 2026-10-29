@@ -1,6 +1,6 @@
 # the devthink os scope
 
-what the os is, in one sentence: devthink is the os and the superplataforma
+what the os is, in one sentence: devthink is the os and the superplatform
 that absorbs devthinkos, cli-desktop, SoFlowX, akash, the extension, the
 gateway and maene, embeds the owni, imports the seven family engines from
 the published libraries and orchestrates everything through the node
@@ -15,12 +15,12 @@ imported or left to its own app.
 
 | belong | detail |
 | --- | --- |
-| the superplataforma | the os engloba tudo: a plataforma que os demais apps usam e a superfície onde tudo aparece. |
+| the superplatform | the os encompasses everything: the platform the other apps use and the surface where everything appears. |
 | the window manager | taskbar 48, pins 38x38, start 640, windowframes with drag, snap, alt-tab, menus — the shell chrome owns the windows. |
 | the orchestration | the maestro (devthink.ts) commands the 15 engines of the manifest; the graphrunner walks every flow stage by stage. |
 | the 35 native pages | the 26 page folders of the sol tree plus the 9 family views of the os registry, one design, responsivity only. |
 | the devthink browser | the browser surface of the os with its own chrome, consent gates and the policy module answering every ask. |
-| the news page | notícias as a native page of the os, live feed, both presentations. |
+| the news page | news as a native page of the os, live feed, both presentations. |
 | the absorptions | devthinkos, cli-desktop, SoFlowX, akash, the extension, the gateway and maene fused inside, no duplicate left. |
 | the owni embedded | the owni rides the os: page.ts, background.ts, providers.ts and policy.ts at the root with the providers surface of the sol tree. |
 | the family imports | versawaze, kathesis, saddle, getry, argan, vault and cobaia enter only as the published library packages, never a sibling path. |

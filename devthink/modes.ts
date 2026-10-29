@@ -1,3 +1,13 @@
+/**
+ * modes.ts — the mode catalog of the devthink engine (root layer): the fixed
+ * vocabulary of conversation modes the interface routes by (chat, code,
+ * review, debug and the siblings), each row one id, one label, one purpose
+ * and the memory flag, plus the resolvers and the prompt former that turn a
+ * mode id into the system line the model reads. Pure data and pure helpers —
+ * zero storage, zero DOM; the same catalog answers the browser and node.
+ */
+
+/** one conversation mode of the catalog: the id, the label, the purpose, the memory flag. */
 export type ModeDefinition = {
   id: string;
   label: string;

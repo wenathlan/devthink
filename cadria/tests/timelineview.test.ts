@@ -68,7 +68,7 @@ describe("timelineview mapping", () => {
 
 describe("timelineview ruler", () => {
   it("picks the smallest step whose majors clear 72 px", () => {
-    // 64 px/s: 0.5s = 32px (too tight), 1s = 64px (too tight), 2s = 128px ✓
+    // 64 px/s: 0.5s = 32px (too tight), 1s = 64px (too tight), 2s = 128px (ok)
     const ticks = rulerticks(0, 10 * TICKS_PER_SECOND, R24, 64);
     const majors = ticks.filter((entry) => entry.major);
     assert.equal(majors.length, 6); // 0,2,4,6,8,10 — inclusive window
@@ -77,7 +77,7 @@ describe("timelineview ruler", () => {
   });
 
   it("widens the step as the zoom drops and labels with exact timecode", () => {
-    // 8 px/s: even 60s = 480px, 0.5s = 4px… majors = 8s? no: 8*8=64 <72, 10s = 80 ✓
+    // 8 px/s: even 60s = 480px, 0.5s = 4px… majors = 8s? no: 8*8=64 <72, 10s = 80 (ok)
     const ticks = rulerticks(0, 30 * TICKS_PER_SECOND, R24, 8);
     const majors = ticks.filter((entry) => entry.major);
     assert.equal(majors[0].label, "00:00:00:00");

@@ -28,7 +28,7 @@ import IntroAnchor from "./intro/intro";
 import LegalAnchor from "./legal/legal";
 import NotFoundAnchor from "./notfound/notfound";
 import PricingAnchor from "./pricing/pricing";
-import { Shell } from "./shell/shell";
+import { Shell } from "./shell/Shell";
 import SupportAnchor from "./support/support";
 
 /** the content pages: the site chrome around one page anchor */

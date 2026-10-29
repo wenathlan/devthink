@@ -10,9 +10,7 @@
  * same call runs in the browser (the chat second layer) and in node (the
  * unit tests), with zero DOM and zero storage.
  */
-import { decisionerror, type DecisionRequest } from "./jsondecision.ts";
-import type { Completer, DecisionTrail } from "./jsonengine.ts";
-import { extractjsonobject } from "./jsonparse.ts";
+import { decisionerror, extractjsonobject, type Completer, type DecisionRequest, type DecisionTrail } from "./json.ts";
 
 /** the machine readable failure codes of the schema domain. */
 export type schemaerrorcode = "bad-schema";
