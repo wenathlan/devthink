@@ -361,9 +361,9 @@ describe("the engine lanes over the wire", () => {
     expect(res.status).toBe(200);
     const data = await res.json();
     const rows = data["rows"] as string[];
-    // the summary row plus one honest row per record of the forty plan
-    expect(rows).toHaveLength(41);
-    expect(rows[0]).toBe("the modality registry answers the forty plan: 40 records — 3 live, 3 host, 34 planned");
+    // the summary row plus one honest row per record of the ninety plan
+    expect(rows).toHaveLength(91);
+    expect(rows[0]).toBe("the modality registry answers the ninety plan: 90 records — 3 live, 3 host, 84 planned");
     // every record row declares its state — live lane, host runtime or planned
     for (const row of rows.slice(1)) expect(row).toMatch(/: (live lane — |host runtime |planned — )/);
   });

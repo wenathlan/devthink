@@ -1,4 +1,4 @@
-// # modalityregistry.test — the catalog contract: the forty modality plan
+// # modalityregistry.test — the catalog contract: the ninety modality plan
 // answered (the count the owner charged), every record complete and
 // honestly stated, the boot ladder consistent with the records, the join
 // resolver answering the nuclear law (the workload asks, the engine
@@ -25,12 +25,12 @@ const LIVESET = ["container-docker", "runner-node", "fs-vfs"] as const;
 const HOSTSET = ["container-runsc", "emulator-qemu", "microvm-firecracker"] as const;
 
 describe("the modality registry", () => {
-  it("answers the forty modality plan the owner charged", () => {
-    assert.equal(MODALITYPLANCOUNT, 40);
+  it("answers the ninety modality plan the owner charged", () => {
+    assert.equal(MODALITYPLANCOUNT, 90);
     assert.equal(MODALITIES.length, MODALITYPLANCOUNT, `the catalog holds ${MODALITIES.length}`);
     const report = planreport();
     assert.equal(report.plananswered, true);
-    assert.equal(report.plancount, 40);
+    assert.equal(report.plancount, 90);
     assert.equal(report.catalogcount, MODALITIES.length);
     assert.equal(report.live + report.host + report.planned, MODALITIES.length);
   });
