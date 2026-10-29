@@ -147,10 +147,14 @@ jobs:
       - name: Install and build the theme (npm leg)
         if: matrix.pm == 'npm'
         # the application pins npm: the install reads the committed
-        # package-lock.json and the build answers straight at the root.
+        # package-lock.json and the build answers straight at the root. the
+        # scripts stay off the install the way every family lane keeps them
+        # (the better-sqlite3 gyp lottery): no built surface of the pages
+        # leg rides the native binding, so the frozen install never answers
+        # the postinstall mirror or the gyp rebuild.
         run: |
           set -euo pipefail
-          npm --prefix saddle ci
+          npm --prefix saddle ci --ignore-scripts
           # the same subpath declaration of the pnpm leg: the base declares
           # the mount the router serves under
           VITE_BASE_PATH="/${{ github.event.repository.name }}/saddle/" npm --prefix saddle run web:build:pages

@@ -237,88 +237,102 @@
   },
   "description": "DevThink is the merged AI development workbench: the provider-owned gateway engine, the DevThink browser extension (the agent surface), the Antigravity engine and the workbench CLI — one product, one binary, one metadata.",
   "devthink": {
-    "maestro": "node.js is the orchestrator: every engine below answers to the maestro (devthink.ts) — family engines ride the published library packages, never a sibling-folder path; native engines ride the flat .ts files at the app root.",
+    "maestro": "node.js is the orchestrator: every engine below answers to the maestro (devthink.ts) — family engines ride the published library packages, never a sibling-folder path; native engines ride the flat .ts files at the app root. The ownership law (pr16) rides the owner field: one engine, one owner, the family consumes — the manifest of record is engines.ts at the app root.",
     "engines": [
       {
         "name": "versawaze",
+        "owner": "cadria",
         "source": "library",
         "library": "@wenathlan/versawaze",
         "role": "the video and 3d engine of cadria, imported for player, studio and render surfaces."
       },
       {
         "name": "kathesis",
+        "owner": "debonair",
         "source": "library",
         "library": "@wenathlan/kathesis",
         "role": "the audio engine of debonair, imported for sound, synthesis and music surfaces."
       },
       {
         "name": "saddle",
+        "owner": "saddle",
         "source": "library",
         "library": "@wenathlan/saddle",
         "role": "virtualization and sandboxes, imported to run isolated environments behind the os."
       },
       {
         "name": "getry",
+        "owner": "getry",
         "source": "library",
         "library": "@wenathlan/getry",
-        "role": "the gateway inference routes, imported to serve the meta-model over the real models."
+        "role": "the gateway inference routes, imported to serve the meta-model over the real models; the 7-level thinking ladder is consumed through @wenathlan/getry/thinking."
       },
       {
         "name": "argan",
+        "owner": "argan",
         "source": "library",
         "library": "@wenathlan/argan",
         "role": "the dns engine, imported for names, zones and records on the os surfaces."
       },
       {
         "name": "vault",
+        "owner": "vault",
         "source": "library",
         "library": "@wenathlan/vault",
         "role": "the storage engine, imported for projects, accounts and safe keeping."
       },
       {
         "name": "cobaia",
+        "owner": "cobaia",
         "source": "library",
         "library": "@wenathlan/cobaia",
         "role": "the monetization engine, imported for plans, quotas and billing surfaces."
       },
       {
         "name": "engine",
+        "owner": "devthink",
         "source": "root",
         "module": "engine.ts",
-        "role": "the universal gateway: one gatewayconfig produces the seven route handlers."
+        "role": "the universal gateway: one gatewayconfig produces the seven route handlers; the thinking budgets derive from the getry ladder, never a local copy."
       },
       {
         "name": "graphrunner",
+        "owner": "devthink",
         "source": "root",
         "module": "graphrunner.ts",
         "role": "the hierarchical graphs and nodes runner, stages walked in deterministic waves."
       },
       {
         "name": "streamparse",
+        "owner": "devthink",
         "source": "root",
         "module": "streaming.ts",
         "role": "the streaming parser: provider events decoded into one typed chunk flow."
       },
       {
         "name": "queue",
+        "owner": "devthink",
         "source": "root",
         "module": "queue.ts",
         "role": "the request queue family: the bounded queue, the retry backoff, the token estimation, the conversation compaction, the resilient sse parsing and the id minting."
       },
       {
         "name": "mcpregistry",
+        "owner": "devthink",
         "source": "root",
         "module": "mcpregistry.ts",
         "role": "the mcp server registry: configurations, states and health of the connected servers."
       },
       {
         "name": "calculator",
+        "owner": "devthink",
         "source": "root",
         "module": "calculator.ts",
         "role": "the pure calculator logic behind the calculator page."
       },
       {
         "name": "maestro",
+        "owner": "devthink",
         "source": "root",
         "module": "devthink.ts",
         "role": "the root orchestrator: the node maestro that commands every engine of this manifest."
@@ -356,6 +370,7 @@
     "apifreeze:sync": "node ../testes/devthink.apifreeze.ts sync",
     "build": "node ../testes/devthink.build.ts",
     "build:binary": "bun run build.ts",
+    "build:terminal": "node build.terminal.ts",
     "build:web": "vite build",
     "check": "bun run check:secrets && bun run test",
     "check:maintenance": "node ../testes/devthink.maintain.ts check",
@@ -386,6 +401,7 @@
     "start:web": "vite preview --host",
     "sync:maintenance": "node ../testes/devthink.maintain.ts sync",
     "sync:metadata": "node ../testes/devthink.release.ts sync",
+    "terminal": "node terminal/devthink.terminal.ts",
     "test": "vitest run",
     "test:runtime": "vitest run --exclude \"tests/{doccheck,matrixverify,package,readiness,releasenotes,publishingpipeline,librarymodes,nativebridge,sweep}.test.ts\"",
     "test:chromium": "node ../testes/devthink.chromiumsmoke.ts",

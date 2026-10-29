@@ -325,8 +325,13 @@ function pad(s: unknown, w: number): string {
   return str + ' '.repeat(w - str.length);
 }
 
+/**
+ * Escapes one value for a markdown table cell. backslashes escape first,
+ * then table pipes: an input backslash before a pipe would otherwise pair
+ * with the pipe escape and leave the pipe unescaped, splitting the cell.
+ */
 function esc(s: unknown): string {
-  return String(s).replace(/\|/g, '\\|').replace(/\s+/g, ' ').trim();
+  return String(s).replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/\s+/g, ' ').trim();
 }
 
 const cats = Object.keys(byCat).sort();

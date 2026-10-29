@@ -123,6 +123,17 @@ jobs:
         # the flaky lanes hit — the prisma client the validation reads
         # generates inside ../testes/devthink.build.ts itself.
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
+      - name: Bridge the flat testes gate scripts onto the application tree
+        # the flat typed folder law moved every gate script out of the
+        # application into testes/, and node resolves the bare specifiers
+        # the gates import (esbuild of the build gate) from the script's
+        # own directory upward — a walk that never reaches
+        # devthink/node_modules and answered ERR_MODULE_NOT_FOUND before
+        # the Monday window ever proposed a rung. the runtime link points
+        # the folder at the frozen application tree the install just
+        # materialized, so the validation steps resolve the exact locked
+        # rungs — never a floating auto-install.
+        run: ln -sfn ../devthink/node_modules testes/node_modules
       - name: Propose latest non-breaking direct npm dependency updates
         if: steps.window.outputs.active == 'true'
         run: cd devthink && bun run dependency:updates ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
@@ -285,8 +296,14 @@ jobs:
           # the staged set answers every file the metadata family stamps:
           # the application lockstep (release.mjs sync) and the 2.0.46
           # family envelopes beside it — a rung missing one stamped file
-          # would answer drift red in the verify pipeline below.
-          git add package.json devthink/CHANGELOG.md devthink/README.md devthink/package.json devthink/bun.lock devthink/.nvmrc devthink/Dockerfile devthink/deno.json devthink/version.ts devthink/devthink.gemspec devthink/devthink.java devthink/devthinkcli.cs devthink/manifest.json devthink/tauri.conf.json devthink/design.html devthink/index.html devthink/pom.xml devthink/devthink.csproj devthink/docs devthink/tests/apifreeze.json devthink/tests/permdiff.json devthink/docs/releasenotes.md .github/workflows argan/package.json argan/argan.csproj argan/argan.gemspec argan/argan.java argan/pom.xml argan/Dockerfile cadria/package.json cadria/cadria.csproj cadria/cadria.gemspec cadria/cadria.java cadria/pom.xml cadria/Dockerfile debonair/package.json debonair/debonair.csproj debonair/debonair.gemspec debonair/debonair.java debonair/pom.xml debonair/Dockerfile stealthhead/package.json stealthhead/stealthhead.csproj stealthhead/stealthhead.gemspec stealthhead/stealthhead.java stealthhead/pom.xml forge/package.json foundry/package.json vault/package.json
+          # would answer drift red in the verify pipeline below. the flat
+          # typed folder law (the tests → testes move) renamed the freeze
+          # and permission baselines from the retired devthink/tests/*.json
+          # artifacts into the dense typescript modules of the testes
+          # folder, so the staged set carries the modules the freeze steps
+          # above now rewrite — the dead json pathspecs answered "pathspec
+          # did not match" and the rung died at the landing.
+          git add package.json devthink/CHANGELOG.md devthink/README.md devthink/package.json devthink/bun.lock devthink/.nvmrc devthink/Dockerfile devthink/deno.json devthink/version.ts devthink/devthink.gemspec devthink/devthink.java devthink/devthinkcli.cs devthink/manifest.json devthink/tauri.conf.json devthink/design.html devthink/index.html devthink/pom.xml devthink/devthink.csproj devthink/docs testes/devthink.freezebaseline.ts testes/devthink.permbaseline.ts devthink/docs/releasenotes.md .github/workflows argan/package.json argan/argan.csproj argan/argan.gemspec argan/argan.java argan/pom.xml argan/Dockerfile cadria/package.json cadria/cadria.csproj cadria/cadria.gemspec cadria/cadria.java cadria/pom.xml cadria/Dockerfile debonair/package.json debonair/debonair.csproj debonair/debonair.gemspec debonair/debonair.java debonair/pom.xml debonair/Dockerfile stealthhead/package.json stealthhead/stealthhead.csproj stealthhead/stealthhead.gemspec stealthhead/stealthhead.java stealthhead/pom.xml forge/package.json foundry/package.json vault/package.json
           git commit -m "chore: land the automated maintenance rung v${NEXT}"
           # the archive tag preserves the automation branch verbatim before
           # the squash merge replaces it, so the ladder keeps its history

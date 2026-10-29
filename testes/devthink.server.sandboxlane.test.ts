@@ -135,9 +135,9 @@ describe("sandboxlane", () => {
 
   it("reports the host modalities honestly from the registry (the single source)", async () => {
     const rows = await hostmodalityreport();
-    // the summary row plus one honest row per registry record of the forty plan
-    expect(rows.length).toBe(41);
-    expect(rows[0]).toBe("the modality registry answers the forty plan: 40 records — 3 live, 3 host, 34 planned");
+    // the summary row plus one honest row per registry record of the ninety plan
+    expect(rows.length).toBe(91);
+    expect(rows[0]).toBe("the modality registry answers the ninety plan: 90 records — 3 live, 3 host, 84 planned");
     const text = rows.join("\n");
     // the live lanes name the surfaces the platform drives
     expect(text).toContain("container-docker: live lane — docker ");
@@ -179,18 +179,18 @@ describe("the vendored registry mirror (the single-source law)", () => {
     expect(vendor).toBe(engine);
   });
 
-  it("answers the forty plan from the vendored registry the lane reads", () => {
+  it("answers the ninety plan from the vendored registry the lane reads", () => {
     // the vendor the lane imports answers the same census the engine
     // battery pins — the two suites hold the same truth from both ends
-    expect(MODALITYPLANCOUNT).toBe(40);
-    expect(MODALITIES).toHaveLength(40);
+    expect(MODALITYPLANCOUNT).toBe(90);
+    expect(MODALITIES).toHaveLength(90);
     const report = planreport();
     expect(report).toEqual({
-      plancount: 40,
-      catalogcount: 40,
+      plancount: 90,
+      catalogcount: 90,
       live: 3,
       host: 3,
-      planned: 34,
+      planned: 84,
       plananswered: true,
     });
   });

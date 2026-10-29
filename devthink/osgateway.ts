@@ -14,6 +14,7 @@
  */
 
 import { parseRetryAfterMs, RetryableError, retryWithBackoff } from "./queue.ts";
+import type { ThinkingLevelName } from "@wenathlan/getry/thinking";
 
 /**
  * ChatStoppedError — the honest stop marker of the chat contract: the
@@ -172,9 +173,11 @@ export async function gatewayChat(
 
 /**
  * The thinking level header of the gateway — the pill maps here, the budget
- * rides server-side (none minimal low medium high xhigh max, default high).
+ * rides server-side. The union is consumed from the getry engine (pr16): the
+ * 7-level reasoning ladder has one owner and this client speaks the owner's
+ * ThinkingLevelName, never a second declaration of the rungs.
  */
-export type ThinkingLevel = "none" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max";
+export type ThinkingLevel = ThinkingLevelName;
 
 /** Progressive deltas of a streaming round — reasoning arrives first. */
 export type StreamHandlers = {

@@ -293,7 +293,8 @@ await build({
   minify: true,
   banner: { js: banner },
 });
-/** The server library entry of the grand merge consolidation: the gateway lineage library surface (the embedded gateway http transport, the request auth, the console cli and the library barrel) and the maene lineage barrel (the provider account console, the provider family namespaces and the opencode server plugin entry) interned in server.ts — one tree shakable entry answers the whole server surface contract, so the ./server subpath resolves from the flat package exactly like every other entry. The runtime dependencies the gateway persistence and the hono server pull (the prisma stack, libsql, hono, the node adapter, ink and react) ride the package.json dependencies of the published artifact — the entry marks them external so the bundled code stays the reviewed repository sources alone and the dependency tree the consumer installs answers the rest. */
+/** The server library entry of the grand merge consolidation: the gateway lineage library surface (the embedded gateway http transport, the request auth, the console cli and the library barrel) and the maene lineage barrel (the provider account console, the provider family namespaces and the opencode server plugin entry) interned in server.ts — one tree shakable entry answers the whole server surface contract, so the ./server subpath resolves from the flat package exactly like every other entry. The runtime dependencies the gateway persistence and the hono server pull (the prisma stack, libsql, hono, the node adapter, ink and react) ride the package.json dependencies of the published artifact — the entry marks them external so the bundled code stays the reviewed repository sources alone and the dependency tree the consumer installs answers the rest. The thinking ladder rides the ownership law instead (pr16): the 7-level ladder is owned by the getry engine and the os consumes it as a library, so the server builds resolve the @wenathlan/getry/thinking specifier to the sibling owner source through the getrybridge alias — the same bridge the vite, vitest and tsconfig resolutions carry — and the bundle inlines the owner's rungs at build time (the generated dist is a build artifact, never a second source of truth; the lockfile stays untouched because no registry dependency is declared). */
+const getrybridge = { "@wenathlan/getry/thinking": join(root, "..", "getry", "thinking.ts") };
 const libraryexternals = [
   "hono",
   "@hono/node-server",
@@ -314,6 +315,7 @@ await build({
   sourcemap: true,
   banner: { js: banner },
   external: libraryexternals,
+  alias: getrybridge,
 });
 await build({
   entryPoints: ["server.ts"],
@@ -326,6 +328,7 @@ await build({
   minify: true,
   banner: { js: banner },
   external: libraryexternals,
+  alias: getrybridge,
 });
 
 /** The publishing pipeline bundles of the 1.1.87 family: the 1.1.90 correlation wave folds the vsixpack assembler, the mavenpack descriptors, the nugetpack layout, the containerpack stages, the sbom inventory builder and the artifact manifest builder into the one pack family entry, and the relayserve state machine ships beside them with the minified variants beside them, so the release chain and any local tooling import the packaging surfaces from one artifact beside the cross browser bundles. */
