@@ -50,6 +50,12 @@ const pagesworkflow = existsSync(join(import.meta.dirname, "..", "..", ".github"
  * inside the app folder) */
 const reporoot = join(import.meta.dirname, "..", "..");
 
+/** true when the sibling app trees live beside the os — false inside the
+ * standalone container context (the container carries the application tree
+ * alone, never the sibling folders), where the sibling contract checks
+ * skip the same checkout-only way the pages workflow check skips. */
+const siblingspresent = existsSync(join(reporoot, "argan"));
+
 /** collects every .tsx file under one folder tree (the sibling theme scan) */
 function collectTsx(root: string): string[] {
   const out: string[] = [];
@@ -115,7 +121,11 @@ describe("the routing table (every app answers both doors)", () => {
     expect(registryFamily).toEqual(windowFamily);
   });
 
-  it("the vite dev bridge serves every family slug the window catalog declares", () => {
+  it("the vite dev bridge serves every family slug the window catalog declares", (t) => {
+    if (!siblingspresent) {
+      t.skip("the sibling app trees live in the repository checkout, not the standalone container context");
+      return;
+    }
     // the dev server answers the same surface the pages workflow ships:
     // one site, every app under its own subpath
     for (const slug of FAMILY_SLUGS) {
@@ -206,7 +216,11 @@ describe("the sync (both faces stay one design)", () => {
     expect(mounts).toHaveLength(2);
   });
 
-  it("every sibling app carries the embedded contract in its own theme", () => {
+  it("every sibling app carries the embedded contract in its own theme", (t) => {
+    if (!siblingspresent) {
+      t.skip("the sibling app trees live in the repository checkout, not the standalone container context");
+      return;
+    }
     // the frame detection: inside the os power clip the app rides the host
     // window chrome (the routed page renders bare); at the typed url the
     // app owns the whole viewport with its own voice
