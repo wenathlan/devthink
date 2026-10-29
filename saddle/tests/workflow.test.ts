@@ -203,13 +203,19 @@ describe("the workflow contract", () => {
         ["--yes", "@biomejs/biome@2.6.4", "lint", "--diagnostic-level=error", "."],
         180000,
         join(reporoot, "..", app),
-        { npm_config_registry: "https://registry.npmjs.org" },
+        {
+          npm_config_registry: "https://registry.npmjs.org",
+          /* the runner npmrc (a github packages token a publish job leaves)
+             answers the public registry with an unauthorized request, so the
+             tool gates carry no userconfig beside the public registry. */
+          npm_config_userconfig: "/dev/null",
+        },
       );
       assert.equal(lint.spawnerror, null, `the biome lint spawn must not fail in ${app}`);
       assert.equal(lint.timedout, false, `the biome lint gate must finish inside the step timeout in ${app}`);
       assert.equal(lint.code, 0, `biome lint errors in ${app}:\n${lint.stdout.slice(-2000)}`);
     }
-  });
+  }, 600000);
 
   it("ci gate lint: the two workflow simulation files pass a full biome check", async (t) => {
     if (!toolavailable("npx", ["--version"])) {
@@ -228,11 +234,14 @@ describe("the workflow contract", () => {
       ],
       180000,
       reporoot,
-      { npm_config_registry: "https://registry.npmjs.org" },
+      {
+        npm_config_registry: "https://registry.npmjs.org",
+        npm_config_userconfig: "/dev/null",
+      },
     );
     assert.equal(check.spawnerror, null, "the biome check spawn must not fail");
     assert.equal(check.code, 0, `biome check reported:\n${check.stdout.slice(-2000)}`);
-  });
+  }, 180000);
 
   /* ------------------------------------------------------------------ */
   /* gate 2: typecheck (module parsing plus the tsc no-emit build)       */
