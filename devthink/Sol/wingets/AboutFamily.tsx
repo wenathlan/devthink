@@ -13,29 +13,16 @@ import {OpenRegular as SquareArrowOutUpRight} from "@fluentui/react-icons";
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import { type FamilySite, familySites } from "../../catalog.ts";
+import { familyAccentOf } from "../../familyaccent.ts";
 
-/** the family identity accents of the design campaign identity table,
- * matched by host substring; an unknown host falls back to the platform
- * signal — presentation only, the roster itself stays the catalog's answer */
-const ACCENTS: ReadonlyArray<readonly [string, string]> = [
-  ["argan", "#1DCF64"],
-  ["cadria", "#f472b6"],
-  ["debonair", "#a78bfa"],
-  ["stealth", "#f87171"],
-  ["stealthhead", "#f87171"],
-  ["forge", "#fb923c"],
-  ["foundry", "#d97706"],
-  ["vault", "#eab308"],
-  ["getry", "#60a5fa"],
-  ["saddle", "#d6b483"],
-];
-
+/** the family identity accents resolve through the one spec-12 table the
+ * identity battery pins (familyAccentOf — the single source the family
+ * views answer to); the site slug of the host is the app id, an unknown
+ * host falls back to the platform signal — presentation only, the roster
+ * itself stays the catalog's answer */
 function accentFor(host: string): string {
-  const lower = host.toLowerCase();
-  for (const [needle, accent] of ACCENTS) {
-    if (lower.includes(needle)) return accent;
-  }
-  return "var(--dtv3-sig)";
+  const slug = host.replace(/^https?:\/\//, "").split("/")[0]?.split(".")[0] ?? "";
+  return familyAccentOf(slug, "var(--dtv3-sig)");
 }
 
 const MONO = "var(--font-mono, var(--dt-mono))";
