@@ -62,9 +62,9 @@ describe("the publishing pipeline", () => {
     checks answer at the repository surface only, the smoke boot skips them */
     if (!existsSync(join(repoRoot, ".github/workflows"))) return;
     /* the workflowcheck asserts the channel jobs, the gates and the new release steps; the npmgate asserts the new bundles stay allowed in the tarball */
-    const workflowcheck = await execute("node", ["../testes/devthink.workflowcheck.ts"]);
+    const workflowcheck = await execute("node", ["../tests/devthink.workflowcheck.ts"]);
     expect(workflowcheck.stdout).toContain("verified");
-    const npmgate = await execute("node", ["../testes/devthink.npmgate.ts"]);
+    const npmgate = await execute("node", ["../tests/devthink.npmgate.ts"]);
     expect(npmgate.stdout).toContain('"valid": true');
   });
 

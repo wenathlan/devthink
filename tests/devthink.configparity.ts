@@ -3,14 +3,14 @@
  * the standard set of framework configs rides identical in every app root
  * and the biome baseline is byte identical across the family, so the gate
  * walks the app folders and fails on the first drift. run it with node
- * from the os app: node ../testes/devthink.configparity.ts
+ * from the os app: node ../tests/devthink.configparity.ts
  */
 import { createHash } from "node:crypto";
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
-/* the flat typed folder law moved this gate into testes/ at the repository
+/* the flat typed folder law moved this gate into tests/ at the repository
  * root, so the repository root is one hop up — the two hops of the old
  * devthink/tests/ home pointed outside the tree and answered MISSING for
  * every app. */

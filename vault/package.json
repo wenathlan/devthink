@@ -44,8 +44,8 @@
     "preview": "vite preview --host",
     "check": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
-    "test": "node --test \"../testes/vault.*.test.ts\"",
-    "test:watch": "node --test --watch \"../testes/vault.*.test.ts\"",
+    "test": "node --test \"../tests/vault.*.test.ts\"",
+    "test:watch": "node --test --watch \"../tests/vault.*.test.ts\"",
     "lint": "biome check .",
     "restore:entry": "node -e \"const{readFileSync}=require('node:fs');const{execSync}=require('node:child_process');const script=/script[^>]*App\\.tsx/;const triad=/family=Inter[\\s\\S]*Geist\\+Mono/;const face=(h)=>script.test(h)&&triad.test(h);if(face(readFileSync('index.html','utf8'))){console.log('index.html already rides the source face');process.exit(0)}if(!face(execSync('git show HEAD:./index.html',{encoding:'utf8'}))){console.error('refusing: HEAD index.html is not the canonical source face yet (script App.tsx + the font triad) - land the source-face fix first; nothing was touched');process.exit(1)}execSync('git checkout -- index.html',{stdio:'inherit'});console.log('index.html restored from HEAD (the source face)')\""
   },

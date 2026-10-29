@@ -10,7 +10,7 @@ const execute = promisify(execFile);
 
 describe("the agentcert coordination artifact", () => {
   it("declares every automated entry of the release candidate coordination checklist with its family and module", async () => {
-    const source = await readFile("../testes/devthink.agentcert.ts", "utf8");
+    const source = await readFile("../tests/devthink.agentcert.ts", "utf8");
     const declarations = [
       ...source.matchAll(/await entry\(\s*\{\s*id: (\d+),\s*title: "([^"]+)",\s*family: "([^"]+)",\s*module: "([^"]+)"\s*,?\s*\}/g),
     ].map((match) => ({ id: Number(match[1]), title: match[2], family: match[3], module: match[4] }));
@@ -57,10 +57,10 @@ describe("the agentcert coordination artifact", () => {
     const built = existsSync("dist/extension/manifest.json");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
     /* a built tree runs the gate itself when no fresh artifact of this release exists, so every lane that builds before the suite — the bun lane, the deno lane, a local two-pass validate — verifies the coordination artifact without depending on the gate having run before the tests */
-    if (built && !existsSync(artifactpath)) await execute("node", ["../testes/devthink.agentcert.ts"]);
+    if (built && !existsSync(artifactpath)) await execute("node", ["../tests/devthink.agentcert.ts"]);
     if (built && existsSync(artifactpath)) {
       const stored = JSON.parse(await readFile(artifactpath, "utf8")) as { release: string };
-      if (stored.release !== packagejson.version) await execute("node", ["../testes/devthink.agentcert.ts"]);
+      if (stored.release !== packagejson.version) await execute("node", ["../tests/devthink.agentcert.ts"]);
     }
     const stored = existsSync(artifactpath);
     if (built) expect(stored).toBe(true);
@@ -103,7 +103,7 @@ describe("the agentcert coordination artifact", () => {
   });
 
   it("exercises the real compiled modules the checklist names and stays deterministic", async () => {
-    const source = await readFile("../testes/devthink.agentcert.ts", "utf8");
+    const source = await readFile("../tests/devthink.agentcert.ts", "utf8");
     expect(source).toContain('import("../devthink/dist/index.js")');
     expect(source).toContain('import("../devthink/dist/policy.js")');
     expect(source).toContain('import("../devthink/dist/dashdone.js")');
@@ -117,7 +117,7 @@ describe("the agentcert coordination artifact", () => {
   });
 
   it("exports the leader worker topology scenario the chromium smoke executes end to end", async () => {
-    const source = await readFile("../testes/devthink.agentcert.ts", "utf8");
+    const source = await readFile("../tests/devthink.agentcert.ts", "utf8");
     expect(source).toContain("export async function runleaderworkertopologyscenario");
     expect(source).toContain("faketabprovider.tabof");
     /* the scenario registers five fake agents across the fake tabs of every browser kind, so the smoke covers one coordination scenario against the shipped bundles */

@@ -3,7 +3,7 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     environment: "node",
-    include: ["../testes/saddle.*.test.ts", "../testes/saddle.*.test.ts"],
+    include: ["../tests/saddle.*.test.ts", "../tests/saddle.*.test.ts"],
     globals: true,
     testTimeout: 15000,
     coverage: {
@@ -11,7 +11,7 @@ export default defineConfig({
       reporter: ["text", "json", "html"],
       include: ["src/**/*.ts"],
       exclude: [
-        "../testes/saddle.*.test.ts",
+        "../tests/saddle.*.test.ts",
         "scripts/**",
         "web/**",
         "production/**",

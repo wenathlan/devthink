@@ -15,7 +15,7 @@ const mode = process.argv[2] ?? "check";
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
 const artifactpath = "artifacts/recipes.json";
-const buildscript = "../testes/devthink.build.ts";
+const buildscript = "../tests/devthink.build.ts";
 
 /** One gallery check with its name, its outcome and its detail line, in the shape the sweep and poolaudit gates record theirs; the fixtureset check records its own { ok, detail } verdict as the outcome, so the artifact preserves the nested verdict exactly as the run recorded it. */
 export interface recipecheck {

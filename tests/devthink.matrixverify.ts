@@ -254,16 +254,16 @@ export async function runmatrixverifysuite() {
 
   /* 7. the standing gates: the pool audit, the api freeze, the csp audit and the permission diff run as subprocess cells; the agent certification, the cost certification, the documentation check and the sweep report through their recorded artifacts. */
   await cell({ family: "gates", name: "the pool audit gate runs green over the 626 item pool" }, async () =>
-    runcells("../testes/devthink.poolaudit.ts"),
+    runcells("../tests/devthink.poolaudit.ts"),
   );
   await cell({ family: "gates", name: "the api freeze gate runs green over the frozen contract" }, async () =>
-    runcells("../testes/devthink.apifreeze.ts"),
+    runcells("../tests/devthink.apifreeze.ts"),
   );
   await cell({ family: "gates", name: "the csp audit gate runs green over the content security policy" }, async () =>
-    runcells("../testes/devthink.cspaudit.ts"),
+    runcells("../tests/devthink.cspaudit.ts"),
   );
   await cell({ family: "gates", name: "the permission diff gate runs green over the versioned baseline" }, async () =>
-    runcells("../testes/devthink.permdiff.ts"),
+    runcells("../tests/devthink.permdiff.ts"),
   );
   for (const [gate, artifact, field] of [
     ["agentcert", "artifacts/agentcert.json", (report) => report.summary.failed],

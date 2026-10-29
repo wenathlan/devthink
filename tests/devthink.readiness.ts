@@ -170,13 +170,13 @@ export async function runreadinesssuite() {
   gate(
     verdicts,
     "the cold start and budget gates hold their recorded budgets",
-    existsSync("docs/perfbudgets.md") && existsSync("../testes/devthink.stepmeter.test.ts") && existsSync("../testes/devthink.runbudget.test.ts"),
+    existsSync("docs/perfbudgets.md") && existsSync("../tests/devthink.stepmeter.test.ts") && existsSync("../tests/devthink.runbudget.test.ts"),
     "docs/perfbudgets.md carries the startup and memory budgets while tests/stepmeter.test.ts and tests/runbudget.test.ts verify the cold start and the memory budget enforcement gates",
   );
   gate(
     verdicts,
     "the battery aware and network aware gates hold their tests",
-    existsSync("../testes/devthink.resourceaware.test.ts"),
+    existsSync("../tests/devthink.resourceaware.test.ts"),
     "tests/resourceaware.test.ts carries the battery aware and network aware gate families the readiness review reads",
   );
   gate(
