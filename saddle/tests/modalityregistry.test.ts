@@ -18,8 +18,31 @@ import {
 
 /** the records the platform lanes drive today — the honest live set the
  * report and the lanes agree on (the run lane executes node inside the
- * container, the storage lane drives the session jail) */
-const LIVESET = ["container-docker", "runner-node", "fs-vfs"] as const;
+ * container, the storage lane drives the session jail, the exec lane
+ * drives every host runtime of the polyglot languages and the builds) */
+const LIVESET = [
+  "build-make",
+  "build-ninja",
+  "container-docker",
+  "fs-vfs",
+  "language-cargo",
+  "language-dotnet",
+  "language-go",
+  "language-java",
+  "language-lua",
+  "language-nim",
+  "language-php",
+  "language-python",
+  "language-ruby",
+  "language-rust",
+  "language-v",
+  "language-zig",
+  "runner-bun",
+  "runner-deno",
+  "runner-node",
+  "runner-serverless",
+  "runtime-jvm",
+] as const;
 
 /** the records whose host runtime the sandbox lane probes on PATH */
 const HOSTSET = ["container-runsc", "emulator-qemu", "microvm-firecracker"] as const;
