@@ -36,16 +36,16 @@ import {
   saveNavbarStyle,
 } from "../devthink/desktopstate.ts";
 
-const chrome = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "Shellchrome.tsx"), "utf8");
+const chrome = readFileSync(join(import.meta.dirname, "..", "devthink", "Sol", "wingets", "Shellchrome.tsx"), "utf8");
 const navbarcard = readFileSync(
-  join(import.meta.dirname, "..", "Sol", "wingets", "SettingsNavbarposition.tsx"),
+  join(import.meta.dirname, "..", "devthink", "Sol", "wingets", "SettingsNavbarposition.tsx"),
   "utf8",
 );
 const personalization = readFileSync(
-  join(import.meta.dirname, "..", "Sol", "wingets", "SettingsPersonalization.tsx"),
+  join(import.meta.dirname, "..", "devthink", "Sol", "wingets", "SettingsPersonalization.tsx"),
   "utf8",
 );
-const solcss = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
+const solcss = readFileSync(join(import.meta.dirname, "..", "devthink", "Sol", "sol.css"), "utf8");
 
 /** installs a minimal window.localStorage stub (the node battery has no
  * browser): the map-backed accessors the desktopstate helpers read */

@@ -20,9 +20,9 @@ import { describe, expect, it } from "vitest";
 import { afterAuthTarget } from "../devthink/gateway";
 import { panelgateverdict, resolveintrotarget } from "../devthink/introtarget";
 
-const anchor = readFileSync(join(import.meta.dirname, "..", "Sol", "panel", "panel.tsx"), "utf8");
-const family = readFileSync(join(import.meta.dirname, "..", "account.ts"), "utf8");
-const labels = readFileSync(join(import.meta.dirname, "..", "copy.ts"), "utf8");
+const anchor = readFileSync(join(import.meta.dirname, "..", "devthink", "Sol", "panel", "panel.tsx"), "utf8");
+const family = readFileSync(join(import.meta.dirname, "..", "devthink", "account.ts"), "utf8");
+const labels = readFileSync(join(import.meta.dirname, "..", "devthink", "copy.ts"), "utf8");
 
 const session = { owner: "nathlan", createdAt: "2026-10-27T00:00:00.000Z", expiresAt: 1_800_000_000_000 };
 

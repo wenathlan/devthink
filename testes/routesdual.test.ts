@@ -27,16 +27,16 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { DESKTOP_APPS, FAMILY_APP_IDS, isFamilyApp } from "../appregistry.ts";
-import { osAppLabels } from "../catalog.ts";
-import { familyurl } from "../gateway.ts";
-import { FAMILY_SLUGS, windowapp, windowcatalog } from "../window.ts";
-import { APP_ICONS } from "../Sol/wingets/ShellAppicons.tsx";
+import { DESKTOP_APPS, FAMILY_APP_IDS, isFamilyApp } from "../devthink/appregistry.ts";
+import { osAppLabels } from "../devthink/catalog.ts";
+import { familyurl } from "../devthink/gateway.ts";
+import { FAMILY_SLUGS, windowapp, windowcatalog } from "../devthink/window.ts";
+import { APP_ICONS } from "../devthink/Sol/wingets/ShellAppicons.tsx";
 
-const router = readFileSync(join(import.meta.dirname, "..", "Sol", "Sol.tsx"), "utf8");
-const workspace = readFileSync(join(import.meta.dirname, "..", "Sol", "widgets", "PanelWorkspace.tsx"), "utf8");
-const familyframe = readFileSync(join(import.meta.dirname, "..", "Sol", "widgets", "ShellFamilyframe.tsx"), "utf8");
-const viteconfig = readFileSync(join(import.meta.dirname, "..", "vite.config.ts"), "utf8");
+const router = readFileSync(join(import.meta.dirname, "..", "devthink", "Sol", "Sol.tsx"), "utf8");
+const workspace = readFileSync(join(import.meta.dirname, "..", "devthink", "Sol", "wingets", "PanelWorkspace.tsx"), "utf8");
+const familyframe = readFileSync(join(import.meta.dirname, "..", "devthink", "Sol", "wingets", "ShellFamilyframe.tsx"), "utf8");
+const viteconfig = readFileSync(join(import.meta.dirname, "..", "devthink", "vite.config.ts"), "utf8");
 const pagesworkflow = readFileSync(join(import.meta.dirname, "..", "..", ".github", "workflows", "pages.yml"), "utf8");
 
 /** the repository root of the monorepo (the sibling apps live beside the
