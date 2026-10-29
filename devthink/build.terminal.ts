@@ -3,7 +3,7 @@
  * design of the Sol theme rides the terminal through a BUILD conversion, not
  * a second design. This script reads the design tokens of Sol/sol.css and
  * the TSX widgets of Sol/wingets, walks the JSX and emits terminal modules
- * under terminal/ that the runtime (terminal/runtime.ts) renders into ANSI
+ * under Sol/terminal/ that the runtime (Sol/terminal/runtime.ts) renders into ANSI
  * rows — the OpenCode reference (a modern TUI in TSX-like trees): the IR is
  * ink-shaped (box = flexDirection/gap/border, text = color/bold/dim), so the
  * interactive ink/react pass mounts the same trees one-to-one while the
@@ -50,7 +50,7 @@
  * platforms differ ONLY in dpi — the design never forks.
  *
  * Usage (node ≥ 23.6 or bun, no install, no browser):
- *   node build.terminal.ts           convert + write terminal/*.terminal.ts
+ *   node build.terminal.ts           convert + write Sol/terminal/*.terminal.ts
  *   node build.terminal.ts --check   verify the committed output matches
  *
  * Pure TypeScript, node:fs only.
@@ -59,7 +59,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { pxToCellX, pxToCellY } from "./density.ts";
-import type { IrNode } from "./terminal/runtime.ts";
+import type { IrNode } from "./Sol/terminal/runtime.ts";
 
 /* ---------------------------------------------------------------------------
  * the design tokens (sol.css → the terminal palette)
@@ -369,9 +369,9 @@ export type ConvertContext = {
 /** the widgets the pipeline converts today (the shell + the two proof
  * widgets — the map generalizes to every winget) */
 export const TERMINAL_WIDGETS: ReadonlyArray<{ source: string; output: string; exportName: string }> = [
-  { source: "Sol/wingets/ShellControlshell.tsx", output: "terminal/shell.terminal.ts", exportName: "ControlShellTerminal" },
-  { source: "Sol/wingets/ShellChip.tsx", output: "terminal/chip.terminal.ts", exportName: "ChipTerminal" },
-  { source: "Sol/wingets/ShellKbd.tsx", output: "terminal/kbd.terminal.ts", exportName: "KbdTerminal" },
+  { source: "Sol/wingets/ShellControlshell.tsx", output: "Sol/terminal/shell.terminal.ts", exportName: "ControlShellTerminal" },
+  { source: "Sol/wingets/ShellChip.tsx", output: "Sol/terminal/chip.terminal.ts", exportName: "ChipTerminal" },
+  { source: "Sol/wingets/ShellKbd.tsx", output: "Sol/terminal/kbd.terminal.ts", exportName: "KbdTerminal" },
 ];
 
 function attrValue(element: JsxElement, name: string): JsxAttr | undefined {

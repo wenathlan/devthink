@@ -12,7 +12,7 @@
  * automatically.
  */
 
-import { DENSITY_PLATFORMS, ANDROID_DPI, densityTokens } from "../density.ts";
+import { DENSITY_PLATFORMS, ANDROID_DPI, densityTokens } from "../../density.ts";
 import { colorDepthFromEnv, render, type ColorDepth } from "./runtime.ts";
 import { ControlShellTerminal } from "./shell.terminal.ts";
 import { ChipTerminal } from "./chip.terminal.ts";

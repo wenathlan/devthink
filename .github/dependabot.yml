@@ -1,15 +1,89 @@
 version: 2
+
+# The Dependabot policy of the DevThink monorepo.
+#
+# The version-update pull requests stay closed (open-pull-requests-limit: 0):
+# the maintenance ladder of maintenance.yml owns the weekly non-breaking
+# update rung (npm dependencies through tests/devthink.dependencyupdates.ts
+# and the versioned action references through tests/devthink.workflowupdates.ts),
+# so Dependabot version-update PRs would collide with that ladder. Dependabot
+# security updates are not subject to the limit, so the vulnerable-dependency
+# fix PRs and the security-tab alerts keep answering for every manifest below.
+#
+# The npm entries cover every manifest of the monorepo: the pre-merge /web
+# entry pointed at a directory the grand merge retired (no web/ folder exists
+# in this tree - the static workbench lives in devthink/), so the coverage now
+# walks the eleven real application roots, each with its committed lockfile
+# (devthink pins bun, the nine family applications pin pnpm and saddle pins
+# npm; every lockfile of each root is read by the same npm ecosystem entry).
 updates:
+  # The monorepo envelope manifest (no runtime dependencies): a no-op entry
+  # kept so the root package.json stays tracked.
   - package-ecosystem: npm
     directory: /
     open-pull-requests-limit: 0
     schedule:
       interval: weekly
+  # The DevThink OS application (bun.lock and pnpm-lock.yaml committed).
   - package-ecosystem: npm
-    directory: /web
+    directory: /devthink
     open-pull-requests-limit: 0
     schedule:
       interval: weekly
+  # The nine family applications (pnpm-lock.yaml and bun.lock committed).
+  - package-ecosystem: npm
+    directory: /argan
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+  - package-ecosystem: npm
+    directory: /cadria
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+  - package-ecosystem: npm
+    directory: /debonair
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+  - package-ecosystem: npm
+    directory: /forge
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+  - package-ecosystem: npm
+    directory: /foundry
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+  - package-ecosystem: npm
+    directory: /stealthhead
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+  - package-ecosystem: npm
+    directory: /vault
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+  - package-ecosystem: npm
+    directory: /getry
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+  - package-ecosystem: npm
+    directory: /cobaia
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+  # The saddle engine (package-lock.json and bun.lock committed).
+  - package-ecosystem: npm
+    directory: /saddle
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+  # The workflow family of .github/workflows (version-tag references the
+  # maintenance ladder tracks through tests/devthink.workflowupdates.ts).
   - package-ecosystem: github-actions
     directory: /
     open-pull-requests-limit: 0

@@ -236,3 +236,157 @@ allan-md/
 neo-img/
 neo-temp-ref/
 official-mirror/
+
+# ─────────────────────────────────────────────────────────────────────────────
+# FAMILY APPLICATION CONTRACTS (consolidated from the eleven per-app
+# .gitignore files — the repository root is the only official ignore surface
+# and the application folders carry no ignore files of their own)
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Family-wide application outputs (the shared contract of all eleven apps,
+# ported from the identical block every app folder carried; verified: no
+# tracked file anywhere in the repository matches these names — the tracked
+# .dev.vars.example faces never match the exact .dev.vars name):
+# releasecheck/  the npm-pack verification scratch the CI release gates create
+# .dev.vars      the wrangler secret vars of the cloudflare lane
+# *.db / *.db-journal  the runtime sqlite stores of the local app databases
+# android/ ios/ capacitor.config.json  the generated capacitor shells of the
+#                mobile lane (npx cap add / cap sync materializes them beside
+#                the app; the tracked capacitor.config.ts stays the source)
+releasecheck/
+.dev.vars
+*.db
+*.db-journal
+android/
+ios/
+capacitor.config.json
+
+# The flat vite emit of the family apps (every app builds with outDir ".":
+# the content-hashed bundles land at the application root and the pages
+# workflow regenerates them at every deploy, so only the canonical unhashed
+# faces stay tracked). devthink deliberately tracks icon-192.png and
+# icon-512.png, so the devthink lane carries none of the icon patterns.
+argan/index-*.js
+argan/index-*.css
+argan/index-*.wasm
+argan/favicon-*.svg
+argan/favicon-*.png
+argan/favicon-*.ico
+argan/manifest-*.webmanifest
+argan/icon-*.png
+argan/apple-touch-icon*.png
+cadria/index-*.js
+cadria/index-*.css
+cadria/index-*.wasm
+cadria/favicon-*.svg
+cadria/favicon-*.png
+cadria/favicon-*.ico
+cadria/manifest-*.webmanifest
+cadria/icon-*.png
+cadria/apple-touch-icon*.png
+cobaia/index-*.js
+cobaia/index-*.css
+cobaia/favicon-*.svg
+cobaia/icon-*.svg
+cobaia/manifest-*.webmanifest
+debonair/index-*.js
+debonair/index-*.css
+debonair/favicon-*.svg
+debonair/favicon-*.png
+debonair/favicon-*.ico
+debonair/manifest-*.webmanifest
+debonair/icon-*.png
+debonair/apple-touch-icon*.png
+debonair/registerSW-*.js
+debonair/sw.js
+debonair/*.woff2
+devthink/index-*.js
+devthink/index-*.css
+# the server-side sandbox jails of the run and storage lane (session state
+# of the infrastructure, never committed)
+devthink/.sandboxrun
+forge/index-*.js
+forge/index-*.css
+forge/favicon-*.svg
+forge/favicon-*.png
+forge/favicon-*.ico
+forge/manifest-*.webmanifest
+forge/icon-*.png
+forge/apple-touch-icon*.png
+foundry/index-*.js
+foundry/index-*.css
+foundry/favicon-*.svg
+foundry/favicon-*.png
+foundry/favicon-*.ico
+foundry/manifest-*.webmanifest
+foundry/icon-*.png
+foundry/apple-touch-icon*.png
+getry/index-*.js
+getry/index-*.css
+getry/index-*.wasm
+getry/favicon-*.svg
+getry/favicon-*.png
+getry/favicon-*.ico
+getry/manifest-*.webmanifest
+getry/icon-*.png
+getry/apple-touch-icon*.png
+stealthhead/index-*.js
+stealthhead/index-*.css
+stealthhead/index-*.wasm
+stealthhead/favicon-*.svg
+stealthhead/favicon-*.png
+stealthhead/favicon-*.ico
+stealthhead/manifest-*.webmanifest
+stealthhead/icon-*.png
+stealthhead/apple-touch-icon*.png
+vault/index-*.js
+vault/index-*.css
+vault/favicon-*.svg
+vault/favicon-*.png
+vault/favicon-*.ico
+vault/manifest-*.webmanifest
+vault/icon-*.png
+vault/apple-touch-icon*.png
+
+# The saddle engine lanes (the virtualization sandbox builds the native
+# C/C++ shims, the gem and nuget packages, the python bridges and the vm
+# images runner-side — every toolchain byproduct stays out of the tree;
+# verified: no tracked file matches any of these names anywhere in the
+# repository):
+.DS_Store
+__pycache__/
+*.pyc
+*$py.class
+.venv/
+venv/
+*.gem
+*.nupkg
+*.snupkg
+*.o
+*.a
+*.so
+*.so.*
+compile_commands.json
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+*.qcow2
+*.img
+*.fd
+*.rom
+*.sqlite
+*.sqlite3
+# the local vite build artifacts of the saddle pages staging (outDir is the
+# app root for the pages staging)
+saddle/index-*.js
+saddle/index-*.css
+saddle/manifest-*.webmanifest
+saddle/icon-*.svg
+saddle/registerSW.js
+saddle/sw.js
+
+# the probe artifacts of the build scripts (tests/devthink.scripts.*probe.ts
+# write their screenshots and browser profiles into the repository-root
+# artifacts/ folder — anchored so the tracked devthink/artifacts/ evidence
+# and the foundry/Sol/artifacts/ theme folder stay untouched)
+/artifacts/

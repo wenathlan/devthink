@@ -12,7 +12,7 @@
  *   ladder (truecolor → 256 → 16 → plain), the flexbox folds to rows and
  *   columns, the gap counts cells, the hairlines and shadows become
  *   box-drawing rules and borders, the icons become glyphs;
- * - the committed proof (terminal/): the shell, the chip and the keycap
+ * - the committed proof (Sol/terminal/): the shell, the chip and the keycap
  *   render from the SAME prop slots the web widgets answer, and the checked
  *   in modules never drift from what the converter emits today.
  */
@@ -44,10 +44,10 @@ import {
   rgbToAnsi16,
   rgbToAnsi256,
   type IrNode,
-} from "../devthink/terminal/runtime.ts";
-import { ChipTerminal } from "../devthink/terminal/chip.terminal.ts";
-import { KbdTerminal } from "../devthink/terminal/kbd.terminal.ts";
-import { ControlShellTerminal } from "../devthink/terminal/shell.terminal.ts";
+} from "../devthink/Sol/terminal/runtime.ts";
+import { ChipTerminal } from "../devthink/Sol/terminal/chip.terminal.ts";
+import { KbdTerminal } from "../devthink/Sol/terminal/kbd.terminal.ts";
+import { ControlShellTerminal } from "../devthink/Sol/terminal/shell.terminal.ts";
 
 const approot = join(import.meta.dirname, "..", "devthink");
 const solcss = readFileSync(join(approot, "Sol", "sol.css"), "utf8");
