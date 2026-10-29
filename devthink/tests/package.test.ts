@@ -35,7 +35,7 @@ describe("package governance surface", () => {
     expect(contributing).toContain("sync:metadata");
     expect(contributing).toContain("GPL-3.0-only");
 
-    const conduct = await readFile("code-of-conduct.md", "utf8");
+    const conduct = await readFile("docs/code.of.conduct.md", "utf8");
     expect(conduct).toContain("DevThink code of conduct");
     expect(conduct).toContain("wenathlan and contributors");
     expect(conduct).toContain("SECURITY.md");
@@ -70,7 +70,7 @@ describe("package governance surface", () => {
   });
 
   it("documents the server and provider library surfaces of the merged package", async () => {
-    const serverdoc = await readFile("docs/server-library.md", "utf8");
+    const serverdoc = await readFile("docs/server.library.md", "utf8");
     expect(serverdoc).toContain("@wenathlan/devthink/server");
     for (const symbol of ["createversion", "createserver", "runserver", "loadconfig", "engineinternals"]) {
       expect(serverdoc).toContain(symbol);
@@ -80,7 +80,7 @@ describe("package governance surface", () => {
     expect(serverdoc).toContain("netlify.toml");
     expect(serverdoc).toContain("Dockerfile");
 
-    const providerdoc = await readFile("docs/provider-guide.md", "utf8");
+    const providerdoc = await readFile("docs/provider.guide.md", "utf8");
     expect(providerdoc).toContain("@wenathlan/devthink/server");
     expect(providerdoc).toContain("oauth.ts");
     expect(providerdoc).toContain("devthink.ts");

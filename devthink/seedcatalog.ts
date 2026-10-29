@@ -529,7 +529,7 @@ export const seedAppIcons: AppIcon[] = [
   },
   {
     id: "platform.icons.install.192",
-    file: "icon-192.png",
+    file: "icon192.png",
     format: "png",
     sizes: "192x192",
     purpose: "any",
@@ -537,7 +537,7 @@ export const seedAppIcons: AppIcon[] = [
   },
   {
     id: "platform.icons.install.512",
-    file: "icon-512.png",
+    file: "icon512.png",
     format: "png",
     sizes: "512x512",
     purpose: "any",

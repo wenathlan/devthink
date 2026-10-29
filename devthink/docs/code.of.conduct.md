@@ -16,4 +16,4 @@ Project maintainers may moderate discussions, remove harmful content, or
 restrict participation when necessary. Reports should be sent to the
 maintainers through GitHub (@wenathlan), with private disclosure used for
 security-sensitive matters — security reports follow the private process
-of [SECURITY.md](SECURITY.md) rather than a public issue.
+of [SECURITY.md](../SECURITY.md) rather than a public issue.
