@@ -197,8 +197,8 @@ const checks = {
     /* the consolidation pass: the cross-bundler verification the retired
        webpack.yml workflow carried rides the CI battery as its webpack job */
     "Pack the core bundle through webpack",
-    "npm install webpack-cli@6",
-    "npx webpack --entry ./dist/index.js",
+    "npx --yes -p webpack@5.112.2 -p webpack-cli@6.0.1 webpack",
+    "webpack --entry ./dist/index.js",
     "distpackage/webpack/devthink.webpack.js",
   ],
   "pages.yml": [
