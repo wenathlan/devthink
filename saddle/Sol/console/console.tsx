@@ -22,6 +22,7 @@ import { label, labelfill } from '../../labels.ts';
 import type { SandboxState } from '../../sandbox.ts';
 import { bootSequence, cpudata, createSandboxState, dispatch, gpudata } from '../../sandbox.ts';
 import { ApiBadge as ApiBadge } from '../wingets';
+import { ConsoleEdgelaw as ConsoleEdgelaw } from '../wingets';
 import { EventsTimeline as type, SandboxEvent, SandboxEventKind } from '../wingets';
 import { EventsTimeline as EventsTimeline } from '../wingets';
 import { SnapshotControls as SnapshotControls } from '../wingets';
@@ -327,6 +328,7 @@ export default function Console() {
                         title={label('console.shell.title')}
                         intro={label('console.shell.intro')}
                 >
+                        <ConsoleEdgelaw />
                         <section className="content-section console-section">
                                 <div className="content-section-heading">
                                         <p className="eyebrow">{label('console.eyebrow')}</p>
