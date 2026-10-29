@@ -18,10 +18,10 @@ import { describe, expect, it } from "vitest";
 import { copy, copyseed } from "../copy.ts";
 
 const settingsdir = join(import.meta.dirname, "..", "Sol", "settings");
-const widgetsdir = join(import.meta.dirname, "..", "Sol", "widgets");
+const wingetsdir = join(import.meta.dirname, "..", "Sol", "wingets");
 const anchor = readFileSync(join(settingsdir, "settings.tsx"), "utf8");
-const nav = readFileSync(join(widgetsdir, "SettingsNav.tsx"), "utf8");
-const drives = readFileSync(join(widgetsdir, "SettingsHarddrives.tsx"), "utf8");
+const nav = readFileSync(join(wingetsdir, "SettingsNav.tsx"), "utf8");
+const drives = readFileSync(join(wingetsdir, "SettingsHarddrives.tsx"), "utf8");
 const solcss = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
 
 /** the flat declarations of the settings scope, rule by rule (the naive
@@ -220,7 +220,7 @@ describe("the one rail owns the categories (the windows 11 settings look)", () =
     expect(nav).toContain("data-active={selected ?");
   });
 
-  it("the folder law holds — the settings page stays flat, the widgets stay loose", () => {
+  it("the folder law holds — the settings page stays flat, the wingets stay loose", () => {
     const entries = readdirSync(settingsdir);
     expect(entries).toContain("settings.tsx");
     for (const entry of entries) {

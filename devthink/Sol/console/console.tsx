@@ -3,7 +3,7 @@
  * carrying the folder's own name is the path manager of the page: it imports
  * the loose components beside it, mounts the page and re-exports the public
  * component surface. Only the theme anchor (Sol/Sol.tsx) and the window
- * registry (Sol/widgets/PanelWorkspace.tsx) consume this file. TerminalUi.tsx stays
+ * registry (Sol/wingets/PanelWorkspace.tsx) consume this file. TerminalUi.tsx stays
  * outside the anchor surface: it is the ink terminal of the CLI runtime and
  * the CLI imports it directly.
  *
@@ -17,7 +17,7 @@
 
 import { RocketRegular } from "@fluentui/react-icons";
 import { useEffect, useRef, useState } from "react";
-import { ShellChrome } from "@/widgets/Shellchrome";
+import { ShellChrome } from "@/wingets/Shellchrome";
 import { osAppLabels } from "../../catalog";
 import { completions, responseof } from "../../commandcatalog.ts";
 import { bootdelay, bootlines, consoleprompt, consoleversion } from "../../consoleboot.ts";
@@ -26,9 +26,9 @@ import { gatewayReady } from "../../gateway.js";
 import { createrunner, type runstageview } from "../../graphrunner.js";
 import { makeviewstate } from "../../graphviewstate.js";
 import { osText } from "../../oslabels.ts";
-import { ConsoleReference, GraphView, Terminal, type TerminalRow, type TerminalState } from "../widgets";
+import { ConsoleReference, GraphView, Terminal, type TerminalRow, type TerminalState } from "../wingets";
 
-export * from "../widgets";
+export * from "../wingets";
 
 /** the three real sections of the console deck. */
 type ConsoleSection = "terminal" | "boot" | "reference";

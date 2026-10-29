@@ -1,7 +1,7 @@
 /**
  * gateway page anchor — layer 3 of the anchor architecture. The file
  * carrying the folder's own name is the path manager of the page; only the
- * theme anchor (Sol/Sol.tsx) and the window binding (Sol/widgets/PanelWorkspace.tsx)
+ * theme anchor (Sol/Sol.tsx) and the window binding (Sol/wingets/PanelWorkspace.tsx)
  * consume this file.
  *
  * gatewayview — the embedded gateway console of the devthink workbench: the
@@ -42,7 +42,7 @@ import {
   osGatewayUsageBlock,
   osText,
 } from "../../oslabels.ts";
-import { ShellChrome } from "@/widgets/Shellchrome";
+import { ShellChrome } from "@/wingets/Shellchrome";
 import { config } from "../../gatewayviewconfig.ts";
 import type { gatewayconfig } from "../../gateway.ts";
 

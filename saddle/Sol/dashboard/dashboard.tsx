@@ -20,22 +20,22 @@ import { label, labelfill } from '../../labels.ts';
  * typed ES module that replaced the window-global localauth.js of the static edge (the original
  * beside the typed module - the same convention the Login page uses. */
 import { logout, probe, session as readlocalsession } from '../../localauth.ts';
-import { AccountPanel as type, LocalSessionView } from '../widgets';
-import { AccountPanel as AccountPanel } from '../widgets';
-import { AdminPanel as AdminPanel } from '../widgets';
-import { CreateSandboxForm as CreateSandboxForm } from '../widgets';
-import { DashboardEventstimeline as EventsTimeline } from '../widgets';
-import { SandboxList as SandboxList } from '../widgets';
+import { AccountPanel as type, LocalSessionView } from '../wingets';
+import { AccountPanel as AccountPanel } from '../wingets';
+import { AdminPanel as AdminPanel } from '../wingets';
+import { CreateSandboxForm as CreateSandboxForm } from '../wingets';
+import { DashboardEventstimeline as EventsTimeline } from '../wingets';
+import { SandboxList as SandboxList } from '../wingets';
 
-export * from '../widgets';
-export * from '../widgets';
-export * from '../widgets';
-export * from '../widgets';
-export * from '../widgets';
-export * from '../widgets';
-export * from '../widgets';
-export * from '../widgets';
-export * from '../widgets';
+export * from '../wingets';
+export * from '../wingets';
+export * from '../wingets';
+export * from '../wingets';
+export * from '../wingets';
+export * from '../wingets';
+export * from '../wingets';
+export * from '../wingets';
+export * from '../wingets';
 
 /** which surface answers: the node api or the static-edge local engine. */
 type Phase = 'booting' | 'api' | 'local';

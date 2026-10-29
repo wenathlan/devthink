@@ -52,7 +52,7 @@ describe("the copy store", () => {
     // the component renders the marks alone: zero visible label element,
     // zero headline element, and every icon button carries its accessible
     // name from the copy store (an icon without a name is banned)
-    const source = readFileSync(join(import.meta.dirname, "..", "Sol", "widgets", "AuthProviderrow.tsx"), "utf8");
+    const source = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "AuthProviderrow.tsx"), "utf8");
     assert.ok(!source.includes("dt-oauthrow__label"), "the visible label element is gone from the row");
     assert.ok(!source.includes("dt-oauthrow__headline"), "the headline element is gone from the row");
     assert.ok(

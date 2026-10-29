@@ -3,7 +3,7 @@
  * carrying the folder's own name is the path manager of the page: it imports
  * the loose components beside it, mounts the page and re-exports the public
  * component surface. Only the theme anchor (Sol/Sol.tsx) and the window
- * registry (Sol/widgets/PanelWorkspace.tsx) consume this file.
+ * registry (Sol/wingets/PanelWorkspace.tsx) consume this file.
  *
  * Calculator — the native calculator in the Windows 11 grammar: the mode
  * pane beside the instrument, the display over the keypad and the history
@@ -13,7 +13,7 @@
  * key actions the on-screen keys answer while the body holds focus.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ShellChrome } from "@/widgets/Shellchrome";
+import { ShellChrome } from "@/wingets/Shellchrome";
 import {
   applyKey,
   type CalculatorKeyAction,
@@ -26,9 +26,9 @@ import {
   memorySubtract } from "../../calculator";
 import { osAppLabels } from "../../catalog";
 import { osText } from "../../oslabels.ts";
-import { CalculatorDisplay } from "../widgets";
-import { CalculatorHistory, type CalculatorHistoryRow } from "../widgets";
-import { CalculatorKeypad, type CalculatorMemoryKey } from "../widgets";
+import { CalculatorDisplay } from "../wingets";
+import { CalculatorHistory, type CalculatorHistoryRow } from "../wingets";
+import { CalculatorKeypad, type CalculatorMemoryKey } from "../wingets";
 
 /** how many answers the history keeps before the oldest one leaves. */
 const HISTORY_LIMIT = 8;

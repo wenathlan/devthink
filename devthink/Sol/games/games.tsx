@@ -3,7 +3,7 @@
  * the folder's own name is the path manager of the page: it imports the
  * loose components beside it, mounts the page and re-exports the public
  * component surface. Only the theme anchor (Sol/Sol.tsx) and the window
- * registry (Sol/widgets/PanelWorkspace.tsx) consume this file.
+ * registry (Sol/wingets/PanelWorkspace.tsx) consume this file.
  *
  * Games — the runner app in the Windows 11 grammar: a nav pane beside the
  * content deck, the runner binaries as hairline rows and the launch queue
@@ -13,12 +13,12 @@
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "@/widgets/Shellchrome";
+import { ShellChrome } from "@/wingets/Shellchrome";
 import { osAppLabels, type RunnerBinary, runnerBinaries } from "../../catalog";
 import { osText } from "../../oslabels.ts";
 import { queuebinarylaunch } from "../../runner";
-import { GamesList } from "../widgets";
-import { type GamesFilter, GamesNav } from "../widgets";
+import { GamesList } from "../wingets";
+import { type GamesFilter, GamesNav } from "../wingets";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */

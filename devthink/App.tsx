@@ -18,7 +18,7 @@ import { installdevtoolsguard, ondevtoolstrip, showdevtoolsinterstitial } from "
 import { guardStatus, reportguardstrike } from "./guard.ts";
 import { seedLabels } from "./labels.ts";
 import Sol from "./Sol/Sol.tsx";
-import { loadDevtoolsWall } from "./Sol/widgets/SettingsPersonalstore.ts";
+import { loadDevtoolsWall } from "./Sol/wingets/SettingsPersonalstore.ts";
 import installzoomlock from "./zoomlock.ts";
 import "./Sol/sol.css";
 

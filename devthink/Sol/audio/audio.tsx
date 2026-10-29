@@ -3,7 +3,7 @@
  * the folder's own name is the path manager of the page: it imports the
  * loose components beside it, mounts the page and re-exports the public
  * component surface. Only the theme anchor (Sol/Sol.tsx) and the window
- * registry (Sol/widgets/PanelWorkspace.tsx) consume this file.
+ * registry (Sol/wingets/PanelWorkspace.tsx) consume this file.
  *
  * Audio — the music studio in the Windows 11 grammar: a nav pane beside the
  * content deck, the tracks as hairline rows and the render queue over the
@@ -15,12 +15,12 @@
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "@/widgets/Shellchrome";
+import { ShellChrome } from "@/wingets/Shellchrome";
 import { type NativeApp, nativeApps, osAppLabels, type StudioTrack, studioTracks } from "../../catalog";
 import { osText } from "../../oslabels.ts";
 import { queuestudiorender } from "../../runner";
-import { MusicEngine } from "../widgets";
-import { MusicTracks } from "../widgets";
+import { MusicEngine } from "../wingets";
+import { MusicTracks } from "../wingets";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */

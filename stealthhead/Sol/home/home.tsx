@@ -34,10 +34,10 @@ import { type LabelKey, labelfill, label } from "../../labels";
 import { currentround, listmatches, type MatchLobby, orderlobbies, roundcounts } from "../../match.ts";
 import { progressof } from "../../matchrules.ts";
 import { observeReveals } from "../../reveal";
-import { BrandMark } from "../widgets";
+import { BrandMark } from "../wingets";
 import { toast } from "../toast/Toast.tsx";
-import { EntryGate } from "../widgets";
-import { Scope } from "../widgets";
+import { EntryGate } from "../wingets";
+import { Scope } from "../wingets";
 
 /** the four game domains of the platform (navigation, not data) — the text
  * rides the label accessor, the href rides the route table. */

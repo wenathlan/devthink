@@ -3,7 +3,7 @@
  * carrying the folder's own name is the path manager of the page: it imports
  * the loose components beside it, mounts the page and re-exports the public
  * component surface. Only the theme anchor (Sol/Sol.tsx) and the window
- * registry (Sol/widgets/PanelWorkspace.tsx) consume this file.
+ * registry (Sol/wingets/PanelWorkspace.tsx) consume this file.
  *
  * Providers — the provider registry in the Windows 11 grammar: a nav pane
  * beside the content deck, the provider index as hairline rows with the
@@ -17,7 +17,7 @@
  */
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "@/widgets/Shellchrome";
+import { ShellChrome } from "@/wingets/Shellchrome";
 import { osAppLabels } from "../../catalog";
 import {
   browserCredentialProviders,
@@ -27,8 +27,8 @@ import {
   saveBrowserPreference } from "../../storage.ts";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { osProviders, osText } from "../../oslabels.ts";
-import { ProviderCard } from "../widgets";
-import { ProvidersList } from "../widgets";
+import { ProviderCard } from "../wingets";
+import { ProvidersList } from "../wingets";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */
