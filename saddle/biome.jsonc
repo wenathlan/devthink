@@ -4,7 +4,7 @@
   "vcs": {
     "enabled": true,
     "clientKind": "git",
-    "useIgnoreFile": true
+    "useIgnoreFile": false
   },
   "files": {
     "includes": [
@@ -23,7 +23,14 @@
       "!**/docs",
       "!**/tests/tmp",
       "!**/tests/code",
-      "!**/Sol/dist"
+      "!**/Sol/dist",
+      "!**/Sol/.vite",
+      "!**/Sol/node_modules",
+      "!**/coverage",
+      "!**/android",
+      "!**/releasecheck",
+      "!**/build",
+      "!**/release"
     ]
   },
   "formatter": {
