@@ -148,7 +148,7 @@ corpus carries them all:
 . execute: executeautomation/mcp-playwright.
 
 the standard they set (with the windows eleven grammar of
-`design-spec.win11.md` and the cloudflare, openai and web awards discipline
+`design.spec.win11.md` and the cloudflare, openai and web awards discipline
 the owner pinned) is the standard of the aura chat surface and, through it,
 of every family app: one design track, clean, minimal, premium,
 professional.
@@ -178,7 +178,7 @@ clean, the engines stay devthink.
 . `devthink/docs/corpus.all.links.txt` — the 24,350 links.
 . `devthink/docs/planning.operation.900.md` — the 950 steps that consume this
   catalogue, phase five carrying the engine waves.
-. `devthink/docs/design-spec.win11.md` — the windows grammar the redesign
+. `devthink/docs/design.spec.win11.md` — the windows grammar the redesign
   answers to.
 . `saddle/docs/repo-selected-1.8.21.json` — the structured metadata of the
   strongest automation and storage candidates.

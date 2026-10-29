@@ -113,7 +113,7 @@ default and the interface font setting moves only the driver: icons,
 spacing, radii and every rem-based geometry stay fixed.
 
 the devthink marriage: the house body type answers 13px/450 today (the
-design-spec.win11.md ladder); the chat surfaces adopt the driver scale with
+design.spec.win11.md ladder); the chat surfaces adopt the driver scale with
 the driver at 13px so the os body and the chat body stay one voice, and the
 markdown reading column keeps the h1 xl / h2 lg / body base ramp.
 
@@ -236,7 +236,7 @@ first, then the same standard extends to every family app. the mapping:
   canvas and the context panel with the composer hero; the mobile faces
   morph through the view-transition pattern t3code demonstrates.
 . the family extension: each app receives the same grammar in its wave (the
-  calendar waves 018 to 045 of the 900 plan), the design-spec.win11.md
+  calendar waves 018 to 045 of the 900 plan), the design.spec.win11.md
   grammar above it (the taskbar, the window chrome, the acrylic and mica)
   and this standard inside it.
 
@@ -247,7 +247,7 @@ first, then the same standard extends to every family app. the mapping:
   the apprail.
 . pingdotgg/t3code — apps/web/src/index.css (the geometry and glass tokens)
   and apps/web/src/components/chat.
-. devthink/docs/design-spec.win11.md — the windows grammar above this
+. devthink/docs/design.spec.win11.md — the windows grammar above this
   standard.
 . devthink/docs/planning.operation.900.md — the waves that consume this
   dossier (phase 4, the native pages, and phase 5, the engines).
