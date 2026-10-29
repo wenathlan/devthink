@@ -123,7 +123,6 @@ jobs:
         # the flaky lanes hit — the prisma client the validation reads
         # generates inside tests/build.ts itself.
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
-        if: steps.window.outputs.active == 'true'
       - name: Propose latest non-breaking direct npm dependency updates
         if: steps.window.outputs.active == 'true'
         run: cd devthink && bun run dependency:updates ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
