@@ -185,7 +185,7 @@ describe("the settings card (the personalization controls)", () => {
 
   it("the personalization page mounts both controls in the navbar card", () => {
     expect(personalization).toContain(
-      'import { NavbarPositionControl, NavbarStyleControl } from "../devthink/tests/SettingsNavbarposition";',
+      'import { NavbarPositionControl, NavbarStyleControl } from "./SettingsNavbarposition";',
     );
     expect(personalization).toContain("<NavbarPositionControl />");
     expect(personalization).toContain("<NavbarStyleControl />");
