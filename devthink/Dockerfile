@@ -239,6 +239,19 @@ COPY devthink/package.json devthink/bun.lock ./
 # application-scoped context of the pre-union era could never answer).
 COPY vault /vault
 
+# the standalone container answers the sibling-family law: the manifest
+# declares @wenathlan/vault as a file:../vault sibling dependency (the
+# dependency-union law) but the container context carries the application
+# tree alone, and no source of the os imports the vault package (the vault
+# entry is the declared library contract of the family manifest, never a
+# build input of this image), so the install strips the sibling entries the
+# context cannot resolve and the lockfile regeneration pins the same tree
+# the builder always installed — the strip and the regeneration answer both
+# install stages identically (the buildkit cache of the deps layers keeps
+# the shared chain).
+RUN node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));for(const section of ['dependencies','devDependencies','optionalDependencies']){for(const name of Object.keys(p[section]??{})){if(/^file:\\.\\//.test(p[section][name]))delete p[section][name];}}fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');" \
+    && bun install --ignore-scripts
+
 # the toolchain: zip and unzip for the packaging steps (the extension
 # archive and the pack verification), and the bun version the packageManager
 # field pins — installed through the npm the node base already carries and
@@ -295,6 +308,12 @@ COPY devthink/package.json devthink/bun.lock ./
 
 COPY vault /vault
 
+# the sibling strip of the deps stage repeated verbatim: the builder
+# re-copies the pristine manifest pair, so the standalone strip and the
+# lockfile regeneration answer here again.
+RUN node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));for(const section of ['dependencies','devDependencies','optionalDependencies']){for(const name of Object.keys(p[section]??{})){if(/^file:\\.\\//.test(p[section][name]))delete p[section][name];}}fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');" \
+    && bun install --ignore-scripts
+
 RUN set -eux; \
     apt_update_tries=5; \
     while [ "$apt_update_tries" -gt 0 ]; do \
@@ -348,9 +367,14 @@ RUN ln -sfn /devthink/node_modules /tests/node_modules
 # server, the relay, the extension surface with its manifest and icons, the
 # static site with content-hashed file names and the immutable cache header
 # configuration, the frozen schemas, the fixture set and the flat
+<<<<<<< HEAD
+# distpackage staging.
+RUN node tests/devthink.build.ts
+=======
 # distpackage staging. the build engine lives in the flat test village the
 # checkout root carries (tests/devthink.build.ts).
 RUN node ../tests/devthink.build.ts
+>>>>>>> origin/main
 
 # the build checks the builder runs before the runtime stage ships — an
 # image whose checks fail never ships:
@@ -366,7 +390,11 @@ RUN node dist/cli.js headless dist/fixtures/plans/release-notes-plan.json --fixt
 
 # the native smoke (the companion recipe and the wsbridge answer against a
 # fake host process).
+<<<<<<< HEAD
+RUN node tests/devthink.nativesmoke.ts
+=======
 RUN node ../tests/devthink.nativesmoke.ts
+>>>>>>> origin/main
 
 # the firefox prep check (the overlay of manifest.json layers
 # onto the source manifest through the crossbrowser adapter: the host
@@ -380,7 +408,11 @@ RUN bun run checksecrets.ts
 # THIS build: the readiness test the vitest suite carries walks the
 # recorded evidence, and the committed artifact predates the build (the
 # same build, sweep, suite order the ci and verify lanes keep).
+<<<<<<< HEAD
+RUN node tests/devthink.wcag.ts
+=======
 RUN node ../tests/devthink.wcag.ts
+>>>>>>> origin/main
 
 # the vitest suite. the whole suite runs on the native build platform of
 # the builder stage — the $BUILDPLATFORM pin keeps every leg native, so the
@@ -403,7 +435,11 @@ RUN export DEVTHINK_TEST_TIMEOUT_MS=900000 DEVTHINK_TEST_BUDGET_MS=10000; \
 # the pack verification (the reproducible extension archive answers with
 # every required artifact, the packaged manifest matches the package stamp,
 # the icon family and the page bundles ship complete).
+<<<<<<< HEAD
+RUN node tests/devthink.packageextension.ts
+=======
 RUN node ../tests/devthink.packageextension.ts
+>>>>>>> origin/main
 
 # ---------------------------------------------------------------------------
 # stages 3 and 4: the devthink single-binary image — the compiled cli of

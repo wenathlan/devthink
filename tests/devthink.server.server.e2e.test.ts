@@ -88,6 +88,13 @@ const serverport = 22000 + Math.floor(Math.random() * 8000);
 let gateway: ChildProcess | null = null;
 let configdir = "";
 
+<<<<<<< HEAD
+// the application tree owns the server entry and the tsx runner: the flat
+// typed folder law keeps this suite at the repository tests/ root, so both
+// resolve one level up into the devthink application directory.
+const tsxbin = join(import.meta.dirname, "..", "devthink", "node_modules", ".bin", "tsx");
+const httpts = join(import.meta.dirname, "..", "devthink", "server.ts");
+=======
 /** the flat tests village sits at the repository root beside the app folders,
  * so the gateway entry and its tsx binary resolve through the devthink app
  * folder one hop up (the old tests home inside the app walked two). */
@@ -97,6 +104,7 @@ const httpts = join(import.meta.dirname, "..", "devthink", "server.ts");
  * runner does (the config workdir cwd never reaches the app paths on its
  * own discovery walk). */
 const tsconfigpath = join(import.meta.dirname, "..", "devthink", "tsconfig.json");
+>>>>>>> origin/main
 
 async function waitforready(): Promise<void> {
   const deadline = Date.now() + 30000;

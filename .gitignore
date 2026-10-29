@@ -40,6 +40,9 @@ build/Release
 
 # Dependency directories
 node_modules/
+tests/node_modules
+devthink/tests/
+devthink/artifacts/
 jspm_packages/
 
 # Snowpack dependency directory (https://snowpack.dev/)

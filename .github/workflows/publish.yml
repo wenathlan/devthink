@@ -3829,6 +3829,16 @@ jobs:
           else
             echo "enabled=false" >> "$GITHUB_OUTPUT"
           fi
+      - name: Stage the flat gate tree into the build context
+        # the flat typed folder law keeps every gate script in the root
+        # tests/ tree while the container context stays the application
+        # folder alone; the builder stage runs the canonical gate names
+        # (tests/devthink.build.ts and siblings), so the ephemeral copy
+        # of the root tree lands beside the application before the image
+        # builds — the runner staging never answers a committed copy and
+        # the dockerignore keeps only the tests/tmp scratch out.
+        if: steps.selected.outputs.enabled == 'true'
+        run: cp -r tests devthink/tests
       - name: Resolve release version
         # the release-version resolver, inlined per the one-workflow-file
         # standard (the family pattern): the tag must match the package

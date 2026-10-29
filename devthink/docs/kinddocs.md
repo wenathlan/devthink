@@ -640,7 +640,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 
 ## Observation kinds
 
-The read-only surface: every kind that observes, inspects, extracts or waits without changing the page. 50 kinds; the family policy test lives in tests/pagebridge.test.ts.
+The read-only surface: every kind that observes, inspects, extracts or waits without changing the page. 50 kinds; the family policy test lives in ../tests/devthink.pagebridge.test.ts.
 
 ### `a11ytree`
 
@@ -1344,7 +1344,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 
 ## Navigation kinds
 
-The address bar surface: every kind that navigates, reloads, waits for or audits a reviewed origin. 21 kinds; the family policy test lives in tests/navigation.test.ts.
+The address bar surface: every kind that navigates, reloads, waits for or audits a reviewed origin. 21 kinds; the family policy test lives in ../tests/devthink.navigation.test.ts.
 
 ### `back`
 
@@ -1642,7 +1642,7 @@ The address bar surface: every kind that navigates, reloads, waits for or audits
 
 ## Tab and window kinds
 
-The tab strip and window surface: every kind that opens, focuses, groups, arranges or closes tabs and windows. 44 kinds; the family policy test lives in tests/torture.commands.test.ts.
+The tab strip and window surface: every kind that opens, focuses, groups, arranges or closes tabs and windows. 44 kinds; the family policy test lives in ../tests/devthink.torture.commands.test.ts.
 
 ### `attachmeta`
 
@@ -2262,7 +2262,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 
 ## Form and data kinds
 
-The form and table surface: every kind that fills, submits, scrapes, exports or quarantines reviewed data. 47 kinds; the family policy test lives in tests/torture.data.test.ts.
+The form and table surface: every kind that fills, submits, scrapes, exports or quarantines reviewed data. 47 kinds; the family policy test lives in ../tests/devthink.torture.data.test.ts.
 
 ### `asksubmit`
 
@@ -2924,7 +2924,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 
 ## Capture kinds
 
-The capture surface: every kind that shots, records, converts or names visual and media evidence. 20 kinds; the family policy test lives in tests/vision.test.ts.
+The capture surface: every kind that shots, records, converts or names visual and media evidence. 20 kinds; the family policy test lives in ../tests/devthink.vision.test.ts.
 
 ### `captureaudio`
 
@@ -3208,7 +3208,7 @@ The capture surface: every kind that shots, records, converts or names visual an
 
 ## Network kinds
 
-The network surface: every kind that fetches, calls, intercepts or watches reviewed traffic. 33 kinds; the family policy test lives in tests/torture.http.test.ts.
+The network surface: every kind that fetches, calls, intercepts or watches reviewed traffic. 33 kinds; the family policy test lives in ../tests/devthink.torture.http.test.ts.
 
 ### `authflow`
 
@@ -3674,7 +3674,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 
 ## Debugging kinds
 
-The devtools surface: every kind that attaches, steps, profiles, traces or emulates through the reviewed protocol bridge. 25 kinds; the family policy test lives in tests/runtimeadapters.test.ts.
+The devtools surface: every kind that attaches, steps, profiles, traces or emulates through the reviewed protocol bridge. 25 kinds; the family policy test lives in ../tests/devthink.runtimeadapters.test.ts.
 
 ### `annotatetrace`
 
@@ -4028,7 +4028,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 
 ## Memory kinds
 
-The session and storage surface: every kind that persists, captures, diffs, searches or moves session state. 15 kinds; the family policy test lives in tests/memory.test.ts.
+The session and storage surface: every kind that persists, captures, diffs, searches or moves session state. 15 kinds; the family policy test lives in ../tests/devthink.memory.test.ts.
 
 ### `capturesession`
 
@@ -4242,7 +4242,7 @@ The session and storage surface: every kind that persists, captures, diffs, sear
 
 ## Workflow kinds
 
-The engine surface: every control, composition, delay and trigger kind that structures a reviewed run. 27 kinds; the family policy test lives in tests/workflow.test.ts.
+The engine surface: every control, composition, delay and trigger kind that structures a reviewed run. 27 kinds; the family policy test lives in ../tests/devthink.workflow.test.ts.
 
 ### `branch`
 
@@ -4624,7 +4624,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 
 ## Protocol kinds
 
-The page protocol surface: every kind that evaluates, exchanges or drags through the reviewed page contract. 5 kinds; the family policy test lives in tests/protocol.test.ts.
+The page protocol surface: every kind that evaluates, exchanges or drags through the reviewed page contract. 5 kinds; the family policy test lives in ../tests/devthink.protocol.test.ts.
 
 ### `drag`
 
@@ -4698,7 +4698,7 @@ The page protocol surface: every kind that evaluates, exchanges or drags through
 
 ## Coordination kinds
 
-The multi agent surface: every kind that messages, waits on or watches the shared agent tasks. 3 kinds; the family policy test lives in tests/coordination.test.ts.
+The multi agent surface: every kind that messages, waits on or watches the shared agent tasks. 3 kinds; the family policy test lives in ../tests/devthink.coordination.test.ts.
 
 ### `sendmessage`
 

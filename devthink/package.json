@@ -397,6 +397,7 @@
     "permdiff:sync": "node ../tests/devthink.permdiff.ts sync",
     "records:sync": "node ../tests/devthink.agentcert.ts sync && node ../tests/devthink.costcert.ts sync && node ../tests/devthink.doccheck.ts sync && node ../tests/devthink.matrixverify.ts sync && node ../tests/devthink.pentest.ts sync && node ../tests/devthink.poolaudit.ts sync && node ../tests/devthink.readiness.ts sync && node ../tests/devthink.recipes.ts sync && node ../tests/devthink.soak.ts sync && node ../tests/devthink.sweep.ts sync && node ../tests/devthink.telemetryfree.ts sync && node ../tests/devthink.wcag.ts sync",
     "provider": "tsx devthink.ts provider",
+    "records:sync": "node ../tests/devthink.agentcert.ts sync && node ../tests/devthink.costcert.ts sync && node ../tests/devthink.doccheck.ts sync && node ../tests/devthink.pentest.ts sync && node ../tests/devthink.sweep.ts sync && node ../tests/devthink.poolaudit.ts sync && node ../tests/devthink.matrixverify.ts sync && node ../tests/devthink.telemetryfree.ts sync && node ../tests/devthink.soak.ts sync && node ../tests/devthink.wcag.ts sync && node ../tests/devthink.recipes.ts sync && node ../tests/devthink.readiness.ts sync",
     "release": "bun run check && bun run build",
     "server": "tsx server.ts",
     "start": "bun run devthink.ts",

@@ -125,6 +125,10 @@ describe.skipIf(!inrepo)("the npmjs registry freshness lane", () => {
   it("the resolvers read the application manifests, never a foreign tag", async () => {
     const publish = await readworkflow("publish.yml");
     expect(publish).toContain("require('./${{ matrix.package }}/package.json').version");
+<<<<<<< HEAD
+    expect(publish).toContain("require('./saddle/package.json').version");
+=======
+>>>>>>> origin/main
     /* the deleted saddle-v* tag resolver never runs again: the vhe lane
      * reads the saddle manifest of the checked out source. */
     expect(publish).toContain("saddle-v* tag resolver never runs again");
@@ -512,7 +516,11 @@ describe.skipIf(!inrepo)("the built envelope law (the exports promise)", () => {
     expect(scripts["pack:check"]).toContain("npm run check");
     expect(scripts.check).toContain("build:engine");
     expect(scripts.check).toContain("node --check dist/index.js");
+<<<<<<< HEAD
+    expect(scripts["build:engine"]).toContain("node ../tests/saddle.scripts.buildengine.ts");
+=======
     expect(scripts["build:engine"]).toContain("../tests/saddle.scripts.buildengine.ts");
+>>>>>>> origin/main
     expect(scripts.build).toBe("npm run build:engine");
   });
 
