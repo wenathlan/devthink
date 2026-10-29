@@ -6,9 +6,10 @@
  * opaque base64url session tokens stored only as sha256 hashes, the
  * saddlesession cookie builder, the in-memory ip rate limiter, and the
  * requireauth/requireadmin request guards. the bootstrap rule is part
- * of the contract: the first user registered on a node with zero users
- * is granted role admin (see createsession caller in server.ts), so a
- * fresh main or standalone node always has one operator.
+ * of the contract: the CODEOWNERS allowlist accounts are seeded as
+ * admins at boot (seedadmins below, with the env-pinned or generated
+ * bootstrap password), so a fresh main or standalone node always has
+ * operators and no other registration ever answers as admin.
  *
  * contexts (9): passwordhashing, sessiontokens, sessionstore, cookies,
  * ratelimiter, requestguards, usernamepolicy, timingequalizer,
@@ -528,14 +529,23 @@ export const ratelimits: { register: RateWindow; login: RateWindow } = {
  */
 export const adminusernames: string[] = ['iakadion', 'inathlan', 'aasblor', 'nasblor'];
 
+/** the env var the operator pins the bootstrap password through. */
+const seedpasswordenv = 'SADDLE_ADMIN_SEED_PASSWORD';
+
 /**
- * the shared bootstrap password of the seeded admin accounts. the value
- * ships in the source deliberately: the self-hosted node is deployed
- * behind the mesh (caddyfile + devthink.pro), only the CODEOWNERS
- * accounts carry the admin role, and the operator rotates the password
- * after the first sign-in through the normal register flow.
+ * the bootstrap password of the seeded admin accounts, resolved the
+ * same way the browser seed of localauth.ts resolves its build env:
+ * the operator supplies it through the SADDLE_ADMIN_SEED_PASSWORD
+ * environment variable (the pipeline secret contract), and when the
+ * env is absent a fresh random password is generated per boot and
+ * printed once to the server log, so no universal default credential
+ * ships in the public repository. only the CODEOWNERS accounts carry
+ * the admin role, and the operator rotates the password after the
+ * first sign-in through the normal register flow.
  */
-export const adminseedpassword = 'cdw782FG7pjxQVw';
+const envseedpassword = String(process.env[seedpasswordenv] ?? '');
+const generatedseedpassword = randomBytes(16).toString('base64url');
+export const adminseedpassword: string = envseedpassword || generatedseedpassword;
 
 /**
  * resolves the role for a new registration: only the CODEOWNERS
@@ -554,11 +564,12 @@ export function bootstraprole(username: string = ''): 'admin' | 'user' {
 }
 
 /**
- * creates the CODEOWNERS admin accounts with the documented bootstrap
- * password when the database does not carry them yet. idempotent: an
- * admin the operator re-registered with a rotated password is never
- * overwritten. runs on every node boot so a wiped database never locks
- * the admin surface out.
+ * creates the CODEOWNERS admin accounts with the bootstrap password
+ * (env-pinned through SADDLE_ADMIN_SEED_PASSWORD or generated at boot)
+ * when the database does not carry them yet. idempotent: an admin the
+ * operator re-registered with a rotated password is never overwritten.
+ * runs on every node boot so a wiped database never locks the admin
+ * surface out.
  *
  * @returns the admin usernames that were created.
  */
@@ -577,6 +588,14 @@ export function seedadmins(): string[] {
         store.addaudit({ userid: null, action: 'admin.seed', detail: `seeded ${name}`, ip: 'local' });
         created.push(name);
       }
+    }
+    if (created.length > 0 && envseedpassword.length === 0) {
+      /* the recovery path of the generated bootstrap password: the
+       * value prints once per boot that seeds a missing admin, and
+       * only to the server log the operator owns. */
+      process.stdout.write(
+        `admin seed: ${created.join(', ')} bootstrapped with the generated password ${generatedseedpassword} (pin it with ${seedpasswordenv}, rotate after first sign-in)\n`,
+      );
     }
   } catch {
     /* the store is not ready (tests with throwaway handles); skip */

@@ -38,6 +38,19 @@ GH = "/home/z/my-project/.local/bin/gh"
 LOG = "/tmp/gh-auth.log"
 ERR = "/tmp/gh-daemon.err"
 
+
+def open_private(path, mode="ab", buffering=0):
+    """Opens a log file readable by the owner only: the stream carries
+    the one-time device code (and GH_DEBUG api traffic), so the mode is
+    restricted to 0o600 right after creation."""
+    handle = open(path, mode, buffering=buffering)
+    try:
+        os.chmod(path, 0o600)
+    except OSError:
+        pass
+    return handle
+
+
 SCOPES = ",".join([
     "admin:enterprise", "admin:org", "admin:public_key", "admin:repo_hook",
     "admin:org_hook", "admin:gpg_key", "repo", "workflow", "write:packages",
@@ -90,7 +103,7 @@ def run_daemon():
     os.dup2(devnull_fd, 1)
     os.dup2(devnull_fd, 2)
 
-    errf = open(ERR, "ab", buffering=0)
+    errf = open_private(ERR)
     try:
         # A pipe held open by a writer subprocess: gh's stdin is the
         # read end; the writer writes nothing and just holds the write
@@ -107,7 +120,7 @@ def run_daemon():
             os._exit(0)
 
         os.close(w_fd)
-        logf = open(LOG, "wb", buffering=0)
+        logf = open_private(LOG, "wb")
         proc = subprocess.Popen(
             CMD,
             stdin=r_fd,
@@ -143,7 +156,7 @@ def run_pexpect():
         sys.stderr.write("pexpect mode requires the pexpect package\n")
         sys.exit(1)
 
-    logf = open(LOG, "wb", buffering=0)
+    logf = open_private(LOG, "wb")
     child = pexpect.spawn(
         " ".join(CMD),
         env=gh_env(),
@@ -213,7 +226,7 @@ def run_pty():
     import errno
     import pty
 
-    logf = open(LOG, "wb", buffering=0)
+    logf = open_private(LOG, "wb")
     pid, master_fd = pty.fork()
     if pid == 0:
         try:

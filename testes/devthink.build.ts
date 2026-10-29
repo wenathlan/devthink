@@ -401,7 +401,13 @@ for (const surface of capsurfaces) {
     );
   await writeFile(record(`caps/${surface}.json`), `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
 }
-const codefixturedirectory = join(root, "tests", "code");
+/** The flat testes village of the 2.0.151 fold: the three typescript example fixtures live as family modules (testes/devthink.code.*) after the tests/code tree retired, so the disk reads of the fixtureset loop resolve through the codefixtures map below while every row keeps its original source name. */
+const codefixturedirectory = join(root, "..", "testes");
+const codefixtures: Record<string, string> = {
+  "mcp.client.ts": "devthink.code.mcp.client.ts",
+  "bun.ts": "devthink.code.bun.ts",
+  "deno.ts": "devthink.code.deno.ts",
+};
 const frozenschematexts = frozenschemas as Record<string, string>;
 const schemefiles = Object.keys(frozenschematexts).sort();
 if (schemefiles.length !== 10)
@@ -411,7 +417,7 @@ if (schemefiles.length !== 10)
 await mkdir(join(root, "dist", "schemas"), { recursive: true });
 for (const name of schemefiles)
   await writeFile(record(`schemas/${name}.schema.json`), frozenschematexts[name], "utf8");
-/** The fixture text table of the typescript fixture modules keyed by the original tests/code source names: every json, csv and html fixture of the former corpus answers from its family module (the example fixture set, the importer samples, the recipe plans with the gallery index, the fixture pages with the umd example), so the fixtureset rows below keep their source names while the texts come from the modules; the three typescript example fixtures (the mcp client, the bun shell and the deno shell) stay repository files of tests/code the loop reads from disk. */
+/** The fixture text table of the typescript fixture modules keyed by the original tests/code source names: every json, csv and html fixture of the former corpus answers from its family module (the example fixture set, the importer samples, the recipe plans with the gallery index, the fixture pages with the umd example), so the fixtureset rows below keep their source names while the texts come from the modules; the three typescript example fixtures (the mcp client, the bun shell and the deno shell) answer from the flat testes village through the codefixtures map the loop resolves on disk. */
 const modulefixtures: Record<string, string> = {
   "example-org-pagestate.json": exampleorgpagestate,
   "cjs.js": cjssample,
@@ -490,7 +496,12 @@ await mkdir(join(root, "dist", "fixtures", "pages"), { recursive: true });
 for (const fixture of fixtureset) {
   const text = modulefixtures[fixture.source];
   if (text !== undefined) await writeFile(record(fixture.target), text, "utf8");
-  else await writeFile(record(fixture.target), await readFile(join(codefixturedirectory, fixture.source)), "utf8");
+  else {
+    const codesource = codefixtures[fixture.source];
+    if (codesource === undefined)
+      throw new Error(`The fixture ${fixture.source} answers neither a family module nor a code fixture of the flat testes village.`);
+    await writeFile(record(fixture.target), await readFile(join(codefixturedirectory, codesource)), "utf8");
+  }
 }
 const umdexampletext = umdexample;
 const umdexamplestamped = `<!-- devthink ${packagejson.version} umd example page — GPL-3.0-only -->\n${umdexampletext.replace("../../dist/devthink.umd.js", "./devthink.umd.js")}`;

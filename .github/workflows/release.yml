@@ -604,7 +604,7 @@ jobs:
 
   releaseassets:
     name: Collect the release assets, emit the artifact manifest and write the digests
-    needs: [assemble, vsix, firefox, site, sbom, attest, iso, wasm, family]
+    needs: [assemble, vsix, firefox, site, nextzips, sbom, attest, iso, wasm, family]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

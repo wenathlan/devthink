@@ -3,14 +3,17 @@
  * the standard set of framework configs rides identical in every app root
  * and the biome baseline is byte identical across the family, so the gate
  * walks the app folders and fails on the first drift. run it with node
- * from the os app: node tests/configparity.ts
+ * from the os app: node ../testes/devthink.configparity.ts
  */
 import { createHash } from "node:crypto";
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+/** the flat testes village sits one level above the app folders (the
+ * thirteenth-wave fold moved this gate from devthink/tests to testes), so
+ * a single parent hop resolves the repository root. */
+const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 /** the standard set every app root carries. */
 const standardSet = [

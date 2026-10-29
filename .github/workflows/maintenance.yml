@@ -283,10 +283,15 @@ jobs:
           git config user.name "iakadion"
           git config user.email "ogenhoanimation01@gmail.com"
           # the staged set answers every file the metadata family stamps:
-          # the application lockstep (release.mjs sync) and the 2.0.46
+          # the application lockstep (release.mjs sync), the freeze and
+          # permission baselines the root village carries as the typed
+          # modules of testes (the thirteenth wave folded the json
+          # artifacts of devthink/tests into the flat typed folder, and
+          # the apifreeze and permdiff syncs above rewrite exactly those
+          # two modules) and the 2.0.46
           # family envelopes beside it — a rung missing one stamped file
           # would answer drift red in the verify pipeline below.
-          git add package.json devthink/CHANGELOG.md devthink/README.md devthink/package.json devthink/bun.lock devthink/.nvmrc devthink/Dockerfile devthink/deno.json devthink/version.ts devthink/devthink.gemspec devthink/devthink.java devthink/devthinkcli.cs devthink/manifest.json devthink/tauri.conf.json devthink/design.html devthink/index.html devthink/pom.xml devthink/devthink.csproj devthink/docs devthink/tests/apifreeze.json devthink/tests/permdiff.json devthink/docs/releasenotes.md .github/workflows argan/package.json argan/argan.csproj argan/argan.gemspec argan/argan.java argan/pom.xml argan/Dockerfile cadria/package.json cadria/cadria.csproj cadria/cadria.gemspec cadria/cadria.java cadria/pom.xml cadria/Dockerfile debonair/package.json debonair/debonair.csproj debonair/debonair.gemspec debonair/debonair.java debonair/pom.xml debonair/Dockerfile stealthhead/package.json stealthhead/stealthhead.csproj stealthhead/stealthhead.gemspec stealthhead/stealthhead.java stealthhead/pom.xml forge/package.json foundry/package.json vault/package.json
+          git add package.json devthink/CHANGELOG.md devthink/README.md devthink/package.json devthink/bun.lock devthink/.nvmrc devthink/Dockerfile devthink/deno.json devthink/version.ts devthink/devthink.gemspec devthink/devthink.java devthink/devthinkcli.cs devthink/manifest.json devthink/tauri.conf.json devthink/design.html devthink/index.html devthink/pom.xml devthink/devthink.csproj devthink/docs testes/devthink.freezebaseline.ts testes/devthink.permbaseline.ts devthink/docs/releasenotes.md .github/workflows argan/package.json argan/argan.csproj argan/argan.gemspec argan/argan.java argan/pom.xml argan/Dockerfile cadria/package.json cadria/cadria.csproj cadria/cadria.gemspec cadria/cadria.java cadria/pom.xml cadria/Dockerfile debonair/package.json debonair/debonair.csproj debonair/debonair.gemspec debonair/debonair.java debonair/pom.xml debonair/Dockerfile stealthhead/package.json stealthhead/stealthhead.csproj stealthhead/stealthhead.gemspec stealthhead/stealthhead.java stealthhead/pom.xml forge/package.json foundry/package.json vault/package.json
           git commit -m "chore: land the automated maintenance rung v${NEXT}"
           # the archive tag preserves the automation branch verbatim before
           # the squash merge replaces it, so the ladder keeps its history

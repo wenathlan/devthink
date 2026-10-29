@@ -2369,9 +2369,10 @@ if (role === 'clone') {
 }
 
 /* seed the CODEOWNERS admin accounts (idempotent) so a fresh or wiped
- * database always carries the admin allowlist with the documented
- * bootstrap password; only the CODEOWNERS accounts (iakadion, inathlan,
- * aasblor, nasblor) are admins. */
+ * database always carries the admin allowlist with the bootstrap
+ * password (env-pinned through SADDLE_ADMIN_SEED_PASSWORD or generated
+ * at boot and printed once to this log); only the CODEOWNERS accounts
+ * (iakadion, inathlan, aasblor, nasblor) are admins. */
 const seededadmins = seedadmins();
 if (seededadmins.length > 0) {
   process.stdout.write(`admin seed: ${seededadmins.join(', ')} (CODEOWNERS allowlist)\n`);

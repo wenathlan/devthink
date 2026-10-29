@@ -4,7 +4,10 @@
 // the real sha-256 digests and the real quota verdicts; nothing is cached
 // or held in the person's browser. Objects travel as raw bodies with the
 // x-object-path / x-object-mime / x-project-id headers (multipart parsing
-// is a later rung — the raw body answers every byte today). Failures answer
+// is a later rung — the raw body answers every byte today). The surface is
+// open by default and locks behind an optional bearer token: set VAULT_TOKEN
+// and every route except the health probe requires `authorization: bearer
+// <token>` (the open posture stays the operator's choice). Failures answer
 // the standardized { error: { code, message } } shape, bigint pointers
 // travel as decimal strings, and every fallible path is guarded.
 //
@@ -92,6 +95,10 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
     const pathname = url.pathname;
     if (method === "GET" && pathname === routes.health) {
       sendJson(res, 200, { ok: true, service: "vault", storage: { driver: storageDriverKind() } });
+      return;
+    }
+    if (!authorized(req, pathname)) {
+      sendError(res, 401, "VAULT_AUTH", "a current vault bearer token is required (VAULT_TOKEN)");
       return;
     }
     if (pathname === routes.projects) {
@@ -444,7 +451,21 @@ function safeDecode(text: string): string {
 function applyCors(res: ServerResponse): void {
   res.setHeader("access-control-allow-origin", "*");
   res.setHeader("access-control-allow-methods", "GET, POST, DELETE, OPTIONS");
-  res.setHeader("access-control-allow-headers", "content-type, x-project-id, x-object-path, x-object-mime");
+  res.setHeader("access-control-allow-headers", "content-type, authorization, x-project-id, x-object-path, x-object-mime");
+}
+
+/** the optional bearer token that locks the storage surface: when
+ * VAULT_TOKEN is set, every route except the health probe requires
+ * `authorization: bearer <token>`; when the env is absent the surface
+ * answers exactly as before (the open posture stays the operator's
+ * choice, never a silent change). */
+const vaulttoken = String(process.env.VAULT_TOKEN ?? "");
+
+/** answers whether the request carries the vault bearer token — the
+ * gate answers open only when the operator set no token. */
+function authorized(req: IncomingMessage, pathname: string): boolean {
+  if (vaulttoken.length === 0 || pathname === routes.health) return true;
+  return (req.headers.authorization ?? "") === `bearer ${vaulttoken}`;
 }
 
 /** answers one json payload with the status. */

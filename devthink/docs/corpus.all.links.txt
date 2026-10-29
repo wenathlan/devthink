@@ -1095,7 +1095,7 @@ https://cranelift.dev/
 https://crawlee.dev/js/api/cheerio-crawler/interface/CheerioCrawlerOptions#requestHandler
 https://crbug.com/v8/11558
 https://crbug.com/v8/12421
-https://crcn:KQ3Lc6za@github.com/crcn/verify.js
+https://crcn:[REDACTED-BASIC-AUTH-PASSWORD]@github.com/crcn/verify.js
 https://csuite.so/blog/ai-coding-tool-landscape
 https://cursor.com/help/ai-features/coding-agents.md
 https://custom-icon-badges.demolab.com/badge/-Built%20By%20Speakeasy-212015?style=for-the-badge&logoColor=FBE331&logo=speakeasy&labelColor=
