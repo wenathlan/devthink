@@ -54,60 +54,61 @@ const adminlist = ['iakadion', 'inathlan', 'aasblor', 'nasblor'];
 
 /** bootstrap credentials for the seeded admins: the CODEOWNERS shared
  * password rides the build env as a pipeline secret (never hardcoded
- * in the public repository) and stays in lockstep with the
- * self-hosted node (auth.ts adminseedpassword) and the database seed.
- * when the env is absent the seed is skipped entirely. */
+ * in the public repository) and stays in lockstep with the self-hosted
+ * node (auth.ts resolves SADDLE_ADMIN_SEED_PASSWORD the same way this
+ * module resolves the build twin) and the database seed. when the env
+ * is absent the seed is skipped entirely. */
 const adminseedpassword: string =
-	(import.meta.env.VITE_SADDLE_ADMIN_SEED_PASSWORD as string | undefined) ?? '';
+        (import.meta.env.VITE_SADDLE_ADMIN_SEED_PASSWORD as string | undefined) ?? '';
 
 /** role of a local account: "admin" only for the CODEOWNERS names. */
 export type LocalAccountRole = 'admin' | 'user';
 
 /** one stored local account (salt + hash, never the plaintext). */
 export type LocalAccountRecord = {
-	salt: string;
-	hash: string;
-	iterations: number;
-	algorithm: 'pbkdf2-sha256';
-	createdat: string;
-	role: LocalAccountRole;
-	seeded?: boolean;
+        salt: string;
+        hash: string;
+        iterations: number;
+        algorithm: 'pbkdf2-sha256';
+        createdat: string;
+        role: LocalAccountRole;
+        seeded?: boolean;
 };
 
 /** the open local session (12h lifetime, localstorage only). */
 export type LocalSession = {
-	user: string;
-	mode: 'local';
-	role: LocalAccountRole;
-	issuedat: number;
-	expiresat: number;
+        user: string;
+        mode: 'local';
+        role: LocalAccountRole;
+        issuedat: number;
+        expiresat: number;
 };
 
 /** the backup keyfile payload produced by exportaccounts. */
 export type AccountsBackupPayload = {
-	format: 'saddle-local-accounts/1';
-	exportedat: string;
-	accounts: Record<string, LocalAccountRecord>;
+        format: 'saddle-local-accounts/1';
+        exportedat: string;
+        accounts: Record<string, LocalAccountRecord>;
 };
 
 /** the exported admin allowlist (a defensive copy). */
 export const adminusers: readonly string[] = adminlist.slice();
 
 function readusers(): Record<string, LocalAccountRecord> {
-	try {
-		const raw = window.localStorage.getItem(userskey);
-		const parsed = raw ? JSON.parse(raw) : {};
-		return parsed && typeof parsed === 'object'
-			? (parsed as Record<string, LocalAccountRecord>)
-			: {};
-	} catch {
-		return {};
-	}
+        try {
+                const raw = window.localStorage.getItem(userskey);
+                const parsed = raw ? JSON.parse(raw) : {};
+                return parsed && typeof parsed === 'object'
+                        ? (parsed as Record<string, LocalAccountRecord>)
+                        : {};
+        } catch {
+                return {};
+        }
 }
 
 function writeusers(map: Record<string, LocalAccountRecord>): void {
-	window.localStorage.setItem(userskey, JSON.stringify(map));
-	void mirrorusers(map);
+        window.localStorage.setItem(userskey, JSON.stringify(map));
+        void mirrorusers(map);
 }
 
 /**
@@ -118,26 +119,26 @@ function writeusers(map: Record<string, LocalAccountRecord>): void {
  * carries no seed password (the public repository never hardcodes one).
  */
 async function ensureadminseed(): Promise<void> {
-	if (!adminseedpassword) return;
-	const users = readusers();
-	let changed = false;
-	for (const name of adminlist) {
-		if (!Object.hasOwn(users, name)) {
-			const salt = randomsalt();
-			const password = adminseedpassword;
-			users[name] = {
-				salt,
-				hash: await derive(password, salt),
-				iterations,
-				algorithm: 'pbkdf2-sha256',
-				createdat: new Date().toISOString(),
-				role: 'admin',
-				seeded: true,
-			};
-			changed = true;
-		}
-	}
-	if (changed) writeusers(users);
+        if (!adminseedpassword) return;
+        const users = readusers();
+        let changed = false;
+        for (const name of adminlist) {
+                if (!Object.hasOwn(users, name)) {
+                        const salt = randomsalt();
+                        const password = adminseedpassword;
+                        users[name] = {
+                                salt,
+                                hash: await derive(password, salt),
+                                iterations,
+                                algorithm: 'pbkdf2-sha256',
+                                createdat: new Date().toISOString(),
+                                role: 'admin',
+                                seeded: true,
+                        };
+                        changed = true;
+                }
+        }
+        if (changed) writeusers(users);
 }
 
 /* ---------------- persistence: the IndexedDB mirror ----------------
@@ -149,86 +150,86 @@ async function ensureadminseed(): Promise<void> {
  * exported to a json keyfile and re-imported after a full wipe. */
 
 function openidb(): Promise<IDBDatabase | null> {
-	return new Promise((resolve) => {
-		try {
-			if (!window.indexedDB) {
-				resolve(null);
-				return;
-			}
-			const request = window.indexedDB.open(idbname, 1);
-			request.onupgradeneeded = () => {
-				request.result.createObjectStore(idbstore);
-			};
-			request.onsuccess = () => {
-				resolve(request.result);
-			};
-			request.onerror = () => {
-				resolve(null);
-			};
-		} catch {
-			resolve(null);
-		}
-	});
+        return new Promise((resolve) => {
+                try {
+                        if (!window.indexedDB) {
+                                resolve(null);
+                                return;
+                        }
+                        const request = window.indexedDB.open(idbname, 1);
+                        request.onupgradeneeded = () => {
+                                request.result.createObjectStore(idbstore);
+                        };
+                        request.onsuccess = () => {
+                                resolve(request.result);
+                        };
+                        request.onerror = () => {
+                                resolve(null);
+                        };
+                } catch {
+                        resolve(null);
+                }
+        });
 }
 
 function idbread(db: IDBDatabase): Promise<Record<string, LocalAccountRecord> | null> {
-	return new Promise((resolve) => {
-		try {
-			const tx = db.transaction(idbstore, 'readonly');
-			const get = tx.objectStore(idbstore).get('users');
-			get.onsuccess = () => {
-				const result = get.result as Record<string, LocalAccountRecord> | undefined;
-				resolve(result ?? null);
-			};
-			get.onerror = () => {
-				resolve(null);
-			};
-		} catch {
-			resolve(null);
-		}
-	});
+        return new Promise((resolve) => {
+                try {
+                        const tx = db.transaction(idbstore, 'readonly');
+                        const get = tx.objectStore(idbstore).get('users');
+                        get.onsuccess = () => {
+                                const result = get.result as Record<string, LocalAccountRecord> | undefined;
+                                resolve(result ?? null);
+                        };
+                        get.onerror = () => {
+                                resolve(null);
+                        };
+                } catch {
+                        resolve(null);
+                }
+        });
 }
 
 function idbwrite(db: IDBDatabase, map: Record<string, LocalAccountRecord>): Promise<boolean> {
-	return new Promise((resolve) => {
-		try {
-			const tx = db.transaction(idbstore, 'readwrite');
-			tx.objectStore(idbstore).put(map, 'users');
-			tx.oncomplete = () => {
-				resolve(true);
-			};
-			tx.onerror = () => {
-				resolve(false);
-			};
-		} catch {
-			resolve(false);
-		}
-	});
+        return new Promise((resolve) => {
+                try {
+                        const tx = db.transaction(idbstore, 'readwrite');
+                        tx.objectStore(idbstore).put(map, 'users');
+                        tx.oncomplete = () => {
+                                resolve(true);
+                        };
+                        tx.onerror = () => {
+                                resolve(false);
+                        };
+                } catch {
+                        resolve(false);
+                }
+        });
 }
 
 /** mirrors the account map into IndexedDB (fire and forget). */
 async function mirrorusers(map: Record<string, LocalAccountRecord>): Promise<void> {
-	const db = await openidb();
-	if (db) await idbwrite(db, map);
+        const db = await openidb();
+        if (db) await idbwrite(db, map);
 }
 
 /** restores localStorage from the IndexedDB mirror when the primary
  *  store lost the accounts (partial clear). */
 async function restorefrommirror(): Promise<void> {
-	try {
-		const raw = window.localStorage.getItem(userskey);
-		if (raw !== null && Object.keys(JSON.parse(raw)).length > 0) {
-			return; /* primary store still carries accounts */
-		}
-	} catch {
-		/* fall through to the mirror */
-	}
-	const db = await openidb();
-	if (!db) return;
-	const mirrored = await idbread(db);
-	if (mirrored && typeof mirrored === 'object' && Object.keys(mirrored).length > 0) {
-		window.localStorage.setItem(userskey, JSON.stringify(mirrored));
-	}
+        try {
+                const raw = window.localStorage.getItem(userskey);
+                if (raw !== null && Object.keys(JSON.parse(raw)).length > 0) {
+                        return; /* primary store still carries accounts */
+                }
+        } catch {
+                /* fall through to the mirror */
+        }
+        const db = await openidb();
+        if (!db) return;
+        const mirrored = await idbread(db);
+        if (mirrored && typeof mirrored === 'object' && Object.keys(mirrored).length > 0) {
+                window.localStorage.setItem(userskey, JSON.stringify(mirrored));
+        }
 }
 
 /**
@@ -238,22 +239,22 @@ async function restorefrommirror(): Promise<void> {
  * @returns the number of exported accounts.
  */
 export async function exportaccounts(): Promise<number> {
-	const map = readusers();
-	const payload: AccountsBackupPayload = {
-		format: 'saddle-local-accounts/1',
-		exportedat: new Date().toISOString(),
-		accounts: map,
-	};
-	const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-	const url = URL.createObjectURL(blob);
-	const link = document.createElement('a');
-	link.href = url;
-	link.download = 'saddle-accounts-backup.json';
-	document.body.append(link);
-	link.click();
-	link.remove();
-	setTimeout(() => URL.revokeObjectURL(url), 2000);
-	return Object.keys(map).length;
+        const map = readusers();
+        const payload: AccountsBackupPayload = {
+                format: 'saddle-local-accounts/1',
+                exportedat: new Date().toISOString(),
+                accounts: map,
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'saddle-accounts-backup.json';
+        document.body.append(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+        return Object.keys(map).length;
 }
 
 /**
@@ -265,59 +266,59 @@ export async function exportaccounts(): Promise<number> {
  * @throws when the file is not a saddle accounts backup.
  */
 export async function importaccounts(file: File): Promise<number> {
-	const text = await file.text();
-	const payload = JSON.parse(text) as Partial<AccountsBackupPayload> | null;
-	if (payload?.format !== 'saddle-local-accounts/1' || typeof payload.accounts !== 'object') {
-		throw new Error('not a saddle accounts backup file.');
-	}
-	const users = readusers();
-	let imported = 0;
-	for (const [name, record] of Object.entries(payload.accounts)) {
-		if (!/^[a-z0-9.-]{3,32}$/.test(name)) continue;
-		if (!record || typeof record.salt !== 'string' || typeof record.hash !== 'string') continue;
-		if (Object.hasOwn(users, name)) continue;
-		users[name] = record;
-		imported += 1;
-	}
-	writeusers(users);
-	return imported;
+        const text = await file.text();
+        const payload = JSON.parse(text) as Partial<AccountsBackupPayload> | null;
+        if (payload?.format !== 'saddle-local-accounts/1' || typeof payload.accounts !== 'object') {
+                throw new Error('not a saddle accounts backup file.');
+        }
+        const users = readusers();
+        let imported = 0;
+        for (const [name, record] of Object.entries(payload.accounts)) {
+                if (!/^[a-z0-9.-]{3,32}$/.test(name)) continue;
+                if (!record || typeof record.salt !== 'string' || typeof record.hash !== 'string') continue;
+                if (Object.hasOwn(users, name)) continue;
+                users[name] = record;
+                imported += 1;
+        }
+        writeusers(users);
+        return imported;
 }
 
 function randomsalt(): string {
-	const bytes = new Uint8Array(16);
-	crypto.getRandomValues(bytes);
-	return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+        const bytes = new Uint8Array(16);
+        crypto.getRandomValues(bytes);
+        return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
 }
 
 function tohex(buffer: ArrayBuffer): string {
-	return Array.from(new Uint8Array(buffer), (b) => b.toString(16).padStart(2, '0')).join('');
+        return Array.from(new Uint8Array(buffer), (b) => b.toString(16).padStart(2, '0')).join('');
 }
 
 /** pbkdf2-sha256 hash of the password with the account salt. */
 async function derive(password: string, salt: string): Promise<string> {
-	const encoder = new TextEncoder();
-	const key = await crypto.subtle.importKey('raw', encoder.encode(password), 'PBKDF2', false, [
-		'deriveBits',
-	]);
-	const bits = await crypto.subtle.deriveBits(
-		{
-			name: 'PBKDF2',
-			salt: encoder.encode(salt),
-			iterations,
-			hash: 'SHA-256',
-		},
-		key,
-		256,
-	);
-	return tohex(bits);
+        const encoder = new TextEncoder();
+        const key = await crypto.subtle.importKey('raw', encoder.encode(password), 'PBKDF2', false, [
+                'deriveBits',
+        ]);
+        const bits = await crypto.subtle.deriveBits(
+                {
+                        name: 'PBKDF2',
+                        salt: encoder.encode(salt),
+                        iterations,
+                        hash: 'SHA-256',
+                },
+                key,
+                256,
+        );
+        return tohex(bits);
 }
 
 /** constant-time-ish string compare (length-safe). */
 function safecompare(a: string, b: string): boolean {
-	if (typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length) return false;
-	let diff = 0;
-	for (let i = 0; i < a.length; i += 1) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-	return diff === 0;
+        if (typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length) return false;
+        let diff = 0;
+        for (let i = 0; i < a.length; i += 1) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+        return diff === 0;
 }
 
 /**
@@ -327,18 +328,18 @@ function safecompare(a: string, b: string): boolean {
  * @returns true when the api answers ok.
  */
 export async function probe(base: string): Promise<boolean> {
-	try {
-		const url = `${base ? base.replace(/\/+$/, '') : ''}/api/v1/health`;
-		const controller = new AbortController();
-		const timer = setTimeout(() => controller.abort(), 2500);
-		const response = await fetch(url, { signal: controller.signal });
-		clearTimeout(timer);
-		if (!response.ok) return false;
-		const body = (await response.json()) as { ok?: unknown } | null;
-		return Boolean(body && body.ok === true);
-	} catch {
-		return false;
-	}
+        try {
+                const url = `${base ? base.replace(/\/+$/, '') : ''}/api/v1/health`;
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 2500);
+                const response = await fetch(url, { signal: controller.signal });
+                clearTimeout(timer);
+                if (!response.ok) return false;
+                const body = (await response.json()) as { ok?: unknown } | null;
+                return Boolean(body && body.ok === true);
+        } catch {
+                return false;
+        }
 }
 
 /**
@@ -350,23 +351,23 @@ export async function probe(base: string): Promise<boolean> {
  * @throws when the username already exists on this browser.
  */
 export async function register(username: string, password: string): Promise<boolean> {
-	const users = readusers();
-	if (Object.hasOwn(users, username)) {
-		throw new Error('that username is already registered on this browser.');
-	}
-	const salt = randomsalt();
-	const hash = await derive(password, salt);
-	users[username] = {
-		salt,
-		hash,
-		iterations,
-		algorithm: 'pbkdf2-sha256',
-		createdat: new Date().toISOString(),
-		role: roleof(username),
-	};
-	writeusers(users);
-	opensession(username);
-	return true;
+        const users = readusers();
+        if (Object.hasOwn(users, username)) {
+                throw new Error('that username is already registered on this browser.');
+        }
+        const salt = randomsalt();
+        const hash = await derive(password, salt);
+        users[username] = {
+                salt,
+                hash,
+                iterations,
+                algorithm: 'pbkdf2-sha256',
+                createdat: new Date().toISOString(),
+                role: roleof(username),
+        };
+        writeusers(users);
+        opensession(username);
+        return true;
 }
 
 /**
@@ -379,24 +380,24 @@ export async function register(username: string, password: string): Promise<bool
  * @throws when the account is missing or the password is wrong.
  */
 export async function login(username: string, password: string): Promise<boolean> {
-	const users = readusers();
-	const account = users[username];
-	if (!account) throw new Error('no local account for that username on this browser.');
-	const hash = await derive(password, account.salt);
-	if (!safecompare(hash, account.hash)) throw new Error('wrong password.');
-	opensession(username);
-	return true;
+        const users = readusers();
+        const account = users[username];
+        if (!account) throw new Error('no local account for that username on this browser.');
+        const hash = await derive(password, account.salt);
+        if (!safecompare(hash, account.hash)) throw new Error('wrong password.');
+        opensession(username);
+        return true;
 }
 
 function opensession(username: string): void {
-	const session: LocalSession = {
-		user: username,
-		mode: 'local',
-		role: roleof(username),
-		issuedat: Date.now(),
-		expiresat: Date.now() + 12 * 60 * 60 * 1000,
-	};
-	window.localStorage.setItem(sessionkey, JSON.stringify(session));
+        const session: LocalSession = {
+                user: username,
+                mode: 'local',
+                role: roleof(username),
+                issuedat: Date.now(),
+                expiresat: Date.now() + 12 * 60 * 60 * 1000,
+        };
+        window.localStorage.setItem(sessionkey, JSON.stringify(session));
 }
 
 /**
@@ -405,24 +406,24 @@ function opensession(username: string): void {
  * @returns the session when valid and unexpired, null otherwise.
  */
 export function session(): LocalSession | null {
-	try {
-		const raw = window.localStorage.getItem(sessionkey);
-		if (!raw) return null;
-		const parsed = JSON.parse(raw) as Partial<LocalSession> | null;
-		if (parsed?.mode !== 'local' || typeof parsed.user !== 'string') return null;
-		if (typeof parsed.expiresat !== 'number' || parsed.expiresat < Date.now()) {
-			window.localStorage.removeItem(sessionkey);
-			return null;
-		}
-		return parsed as LocalSession;
-	} catch {
-		return null;
-	}
+        try {
+                const raw = window.localStorage.getItem(sessionkey);
+                if (!raw) return null;
+                const parsed = JSON.parse(raw) as Partial<LocalSession> | null;
+                if (parsed?.mode !== 'local' || typeof parsed.user !== 'string') return null;
+                if (typeof parsed.expiresat !== 'number' || parsed.expiresat < Date.now()) {
+                        window.localStorage.removeItem(sessionkey);
+                        return null;
+                }
+                return parsed as LocalSession;
+        } catch {
+                return null;
+        }
 }
 
 /** closes the local session. */
 export function logout(): void {
-	window.localStorage.removeItem(sessionkey);
+        window.localStorage.removeItem(sessionkey);
 }
 
 /**
@@ -431,7 +432,7 @@ export function logout(): void {
  * @returns true when at least one account is stored.
  */
 export function available(): boolean {
-	return Object.keys(readusers()).length > 0;
+        return Object.keys(readusers()).length > 0;
 }
 
 /**
@@ -441,7 +442,7 @@ export function available(): boolean {
  * @returns "admin" or "user".
  */
 export function roleof(username: string): LocalAccountRole {
-	return adminlist.includes(String(username).toLowerCase()) ? 'admin' : 'user';
+        return adminlist.includes(String(username).toLowerCase()) ? 'admin' : 'user';
 }
 
 /**
@@ -451,8 +452,8 @@ export function roleof(username: string): LocalAccountRole {
  * window-global original.
  */
 async function boot(): Promise<void> {
-	await restorefrommirror();
-	await ensureadminseed();
+        await restorefrommirror();
+        await ensureadminseed();
 }
 
 void boot();

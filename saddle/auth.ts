@@ -529,13 +529,31 @@ export const ratelimits: { register: RateWindow; login: RateWindow } = {
 export const adminusernames: string[] = ['iakadion', 'inathlan', 'aasblor', 'nasblor'];
 
 /**
- * the shared bootstrap password of the seeded admin accounts. the value
- * ships in the source deliberately: the self-hosted node is deployed
- * behind the mesh (caddyfile + devthink.pro), only the CODEOWNERS
- * accounts carry the admin role, and the operator rotates the password
- * after the first sign-in through the normal register flow.
+ * the env key the operator or the pipeline pins the admin seed password
+ * with - the server twin of the VITE_SADDLE_ADMIN_SEED_PASSWORD the static
+ * edge rides (localauth.ts): the public repository carries no credential.
  */
-export const adminseedpassword = 'cdw782FG7pjxQVw';
+const adminseedenv = 'SADDLE_ADMIN_SEED_PASSWORD';
+
+/**
+ * resolves the bootstrap password of the seeded admin accounts. the
+ * operator pins it through SADDLE_ADMIN_SEED_PASSWORD (the pipeline
+ * secret path); a bare boot without the env mints one strong random
+ * secret for the process - the public source never carries a credential
+ * (the hardcoded-seed hole closed), the seeded rows still exist before
+ * anyone registers (nobody can squat a CODEOWNERS name), and the minted
+ * secret is surfaced once on the operator console by seedadmins so the
+ * bootstrap account stays reachable.
+ *
+ * @returns the password to seed with and whether it was minted for this boot.
+ */
+function resolveadminseed(): { password: string; minted: boolean } {
+  const pinned = process.env[adminseedenv];
+  if (typeof pinned === 'string' && pinned.length > 0) {
+    return { password: pinned, minted: false };
+  }
+  return { password: randomBytes(18).toString('base64url'), minted: true };
+}
 
 /**
  * resolves the role for a new registration: only the CODEOWNERS
@@ -554,20 +572,23 @@ export function bootstraprole(username: string = ''): 'admin' | 'user' {
 }
 
 /**
- * creates the CODEOWNERS admin accounts with the documented bootstrap
- * password when the database does not carry them yet. idempotent: an
- * admin the operator re-registered with a rotated password is never
- * overwritten. runs on every node boot so a wiped database never locks
- * the admin surface out.
+ * creates the CODEOWNERS admin accounts with the resolved bootstrap
+ * password (the env pin, or the per-boot mint) when the database does not
+ * carry them yet. idempotent: an admin the operator re-registered with a
+ * rotated password is never overwritten. runs on every node boot so a
+ * wiped database never locks the admin surface out. when the password was
+ * minted for this boot, the one-time secret is written to the operator
+ * console exactly once - only for the rows that actually landed.
  *
  * @returns the admin usernames that were created.
  */
 export function seedadmins(): string[] {
   const created: string[] = [];
   try {
+    const seed = resolveadminseed();
     for (const name of adminusernames) {
       if (store.finduserbyname(name) === null) {
-        const { passwordhash, salt } = hashpassword(adminseedpassword);
+        const { passwordhash, salt } = hashpassword(seed.password);
         store.createuser({
           username: name,
           passwordhash,
@@ -577,6 +598,12 @@ export function seedadmins(): string[] {
         store.addaudit({ userid: null, action: 'admin.seed', detail: `seeded ${name}`, ip: 'local' });
         created.push(name);
       }
+    }
+    if (seed.minted && created.length > 0) {
+      process.stdout.write(
+        `admin seed: ${created.join(', ')} - one-time bootstrap password ${seed.password} ` +
+          `(pin it with ${adminseedenv}; rotate it after the first sign-in)\n`,
+      );
     }
   } catch {
     /* the store is not ready (tests with throwaway handles); skip */

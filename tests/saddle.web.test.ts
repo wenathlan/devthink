@@ -416,7 +416,13 @@ describe('the web contract', () => {
   });
 
   it('web auth: bootstrap admin, me, generic 401, weak register, login rate limit', async () => {
-    const { child, base, dbpath } = bootserver(randomInt(30000) + 30000);
+    /* the seed password rides the boot env the operator or the pipeline
+     * pins - the public source carries no credential, so the suite pins
+     * its own fixture secret through the same door. */
+    const seedpassword = 'saddle-seed-fixture-7f3k';
+    const { child, base, dbpath } = bootserver(randomInt(30000) + 30000, {
+      SADDLE_ADMIN_SEED_PASSWORD: seedpassword,
+    });
     try {
       assert.ok((await waitforhealth(base)) !== undefined, 'the server must boot');
 
@@ -440,14 +446,14 @@ describe('the web contract', () => {
         'only the CODEOWNERS allowlist bootstraps as admin; every other registration is a plain user',
       );
 
-      /* the CODEOWNERS admins are seeded at boot with the documented
+      /* the CODEOWNERS admins are seeded at boot with the env-pinned
        * bootstrap password - the admin surface exists before anyone
        * registers and survives a wiped database. */
       const adminlogin = await fetch(`${base}/api/v1/auth/login`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        // biome-ignore lint/security/noSecrets: the documented deterministic bootstrap password of the seeded test admin, not a real credential
-        body: JSON.stringify({ username: 'iakadion', password: 'cdw782FG7pjxQVw' }),
+        // biome-ignore lint/security/noSecrets: the test fixture the boot env pins as the seed password, not a real credential
+        body: JSON.stringify({ username: 'iakadion', password: seedpassword }),
       });
       assert.equal(
         adminlogin.status,
