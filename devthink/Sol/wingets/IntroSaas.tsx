@@ -12,18 +12,22 @@
  */
 
 import {
+  AlertRegular as Bell,
   ArrowUpRightRegular as Arrowupright,
+  DoorArrowRightRegular as Signin,
   HeadphonesRegular as Headphones,
   StackRegular as Layers,
   ChatRegular as Messagesquare,
+  MaximizeRegular as Maximize,
   SparkleRegular as Sparkle,
+  StarRegular as Star,
   TvRegular as Tv,
   PeopleRegular as Users,
 } from "@fluentui/react-icons";
 import { type ComponentType, useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { saaschrome, saasheadertabs, saasrailstops } from "../../saascontent.ts";
-import { SaddleTabBridge, VerticalSaddleBridge } from "./IntroSaaskit.tsx";
+import { SaddleTabBridge, Studiomark, VerticalSaddleBridge } from "./IntroSaaskit.tsx";
 import {
   SaasCadria,
   SaasDebonair,
@@ -53,6 +57,8 @@ const SAAS_CSS = `
 .surface-card { background: #FFFFFF; border: 1px solid rgba(226,232,240,0.95); box-shadow: 0 16px 36px -14px rgba(15,23,42,0.10); }
 .stat-tile { background: #F4F6FB; border: 1px solid rgba(226,232,240,0.9); }
 .indigo-tactile-surface { background: linear-gradient(145deg, #4F46E5 0%, #3730A3 58%, #312E81 100%); box-shadow: 0 22px 44px -12px rgba(55,48,163,0.5), inset 0 2px 5px rgba(255,255,255,0.32), inset 0 -5px 10px rgba(15,23,42,0.4); }
+.hero-inline-switch { background: linear-gradient(125deg, #60A5FA 0%, #A855F7 48%, #EC4899 78%, #F97316 100%); box-shadow: 0 12px 26px -6px rgba(168,85,247,0.45), inset 0 2px 4px rgba(255,255,255,0.55); }
+.hero-switch-thumb { background: radial-gradient(circle at 30% 30%, #FFFFFF 0%, #F1F5F9 70%, #CBD5E1 100%); box-shadow: -3px 4px 10px rgba(15,23,42,0.35), inset 0 2px 3px rgba(255,255,255,1); }
 @keyframes shaderPulse { 0%,100% { transform: scale(1) translate(0,0); } 50% { transform: scale(1.05) translate(10px,-8px); } }
 .hero-gaussian-shader { background: radial-gradient(circle at 14% 70%, rgba(56,189,248,0.82) 0%, transparent 48%), radial-gradient(circle at 36% 80%, rgba(99,102,241,0.78) 0%, transparent 50%), radial-gradient(circle at 58% 65%, rgba(168,85,247,0.78) 0%, transparent 48%), radial-gradient(circle at 78% 75%, rgba(236,72,153,0.78) 0%, transparent 48%), radial-gradient(circle at 92% 65%, rgba(251,146,60,0.82) 0%, transparent 45%); filter: blur(56px) saturate(165%); animation: shaderPulse 9s ease-in-out infinite; }
 .conic-rainbow-ring { background: conic-gradient(from 180deg at 50% 50%, #EC4899 0deg, #8B5CF6 72deg, #3B82F6 144deg, #38BDF8 216deg, #F59E0B 288deg, #EC4899 360deg); padding: 2.5px; }
@@ -83,7 +89,7 @@ const SAAS_CSS = `
 .animate-float-card-delayed { animation: subtleFloat 6.6s ease-in-out 1.2s infinite; }
 @media (prefers-reduced-motion: reduce) {
   .hero-gaussian-shader, .spin-badge-slow, .swing-card-1, .swing-card-2, .swing-card-3, .animate-float-card, .animate-float-card-delayed, .fan-swap { animation: none; }
-  .btn-tactile-3d, .icon-frame-3d { transition: none; }
+  .btn-tactile-3d, .icon-frame-3d, .hero-switch-thumb { transition: none; }
 }
 `;
 
@@ -163,8 +169,8 @@ export default function Saas({ onDone }: { onDone: () => void }) {
   return (
     <div className="saas-root min-h-screen w-full overflow-x-hidden p-[2.5px] text-slate-900 select-none sm:select-auto">
       {/* the left rail: the vertical saddle slab at the screen edge — the
-          hairline divider and the six mandate stops with the indigo active
-          pill, nothing under them */}
+          hairline divider, the six mandate stops with the indigo active
+          pill and the saddle cloud key under them */}
       <aside className="fixed top-1/2 left-0 z-50 hidden -translate-y-1/2 flex-col items-center lg:flex">
         <VerticalSaddleBridge fillColor="#0A0B0E" className="py-2">
           <div className="flex flex-col items-center gap-3 px-1">
@@ -188,13 +194,34 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                 </button>
               );
             })}
+            <button
+              type="button"
+              onClick={() => scrollto("workspace-subapps")}
+              className="group relative mt-1 flex h-10 w-10 items-center justify-center rounded-full transition hover:scale-110"
+              aria-label={saaschrome.railcloud}
+            >
+              <Studiomark app="saddle" className="h-10 w-10" />
+              <span className="pointer-events-none absolute left-14 rounded-lg border border-white/10 bg-slate-950 px-2.5 py-1 text-[11px] font-semibold tracking-[-0.018em] whitespace-nowrap text-white opacity-0 transition group-hover:opacity-100">
+                {saaschrome.railcloud}
+              </span>
+            </button>
           </div>
         </VerticalSaddleBridge>
       </aside>
 
-      {/* the corner dock: the white card with the one tactile key — the
-          explorer key walks the entry chain to the free exploration face */}
+      {/* the corner dock: the white card with the three tactile keys of the
+          original dock — the favorites key answers with the page pill, the
+          explorer key walks the entry chain to the free exploration face
+          and the top key walks the page home */}
       <div className="surface-card fixed right-4 bottom-8 z-40 hidden flex-col items-center gap-2 rounded-2xl p-2 text-slate-700 md:flex">
+        <button
+          type="button"
+          onClick={() => showtoast(saaschrome.savedtofavorites)}
+          className="icon-frame-3d flex h-9 w-9 items-center justify-center rounded-xl"
+          aria-label={saaschrome.dockstar}
+        >
+          <Star className="h-4 w-4" aria-hidden="true" />
+        </button>
         <button
           type="button"
           onClick={explore}
@@ -202,6 +229,14 @@ export default function Saas({ onDone }: { onDone: () => void }) {
           aria-label={saaschrome.dockexplore}
         >
           <Layers className="h-4 w-4" aria-hidden="true" />
+        </button>
+        <button
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="icon-frame-3d flex h-9 w-9 items-center justify-center rounded-xl"
+          aria-label={saaschrome.docktop}
+        >
+          <Maximize className="h-4 w-4" aria-hidden="true" />
         </button>
       </div>
 
@@ -245,6 +280,28 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                 </SaddleTabBridge>
               </div>
               <div className="flex shrink-0 items-center gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => showtoast(saaschrome.notificationssynced)}
+                  className="icon-frame-3d group flex items-center rounded-full p-2.5 text-slate-800"
+                  aria-label={saaschrome.alerts}
+                >
+                  <Bell className="h-4 w-4" aria-hidden="true" />
+                  <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-all group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
+                    {saaschrome.alerts}
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  onClick={enter}
+                  className="icon-frame-3d group hidden items-center rounded-full p-2.5 text-slate-800 sm:flex"
+                  aria-label={saaschrome.signin}
+                >
+                  <Signin className="h-4 w-4" aria-hidden="true" />
+                  <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-all group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
+                    {saaschrome.signin}
+                  </span>
+                </button>
                 <button
                   type="button"
                   onClick={enter}

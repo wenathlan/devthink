@@ -52,12 +52,20 @@ export type saastrack = { title: string; artist: string; total: string; cover: s
 /** One nav row of the header tabs and the left rail stops. */
 export type saasnavrow = { id: string; label: string };
 
-/** The header chrome copy: the wordmark title, the launch key of the
- * header and the explorer key of the corner dock. */
+/** The header chrome copy: the wordmark title, the alerts key and the
+ * sign-in key of the header, the launch key, the left rail cloud key and
+ * the three keys of the corner dock. */
 export const saaschrome = {
   title: "DevThink",
+  alerts: "Alerts",
+  notificationssynced: "Notifications synced",
+  signin: "Sign In",
   launch: "Launch",
+  railcloud: "Saddle Cloud",
+  dockstar: "Save to Favorites",
+  savedtofavorites: "Saved to Favorites",
   dockexplore: "Explorer",
+  docktop: "Top",
 };
 
 /** The five tabs of the header saddle bridge, one section each. */
@@ -95,22 +103,23 @@ export const saastoasts = {
   unfollowed: "Unfollowed",
 };
 
-/** One mode row of the hero segmented control: the segment label and
- * the mode words the statement wears while the mode rides. */
-export type saasheromode = { id: string; label: string; word: string };
+/** One mode row of the hero switch: the id the switch carries and the mode
+ * words the statement wears while the mode rides. */
+export type saasheromode = { id: string; word: string };
 
-/** The hero copy of the landing: the OS statement with the mode words the
- * ever sweep carries, the labeled segmented control that answers the
- * agents and studios mode (never a switch inside the headline again), the
- * sub line, the two key labels and the three scooped cards. */
+/** The hero copy of the landing: the OS statement with the inline engine
+ * switch the original reference carries inside the headline (the gradient
+ * track with the white thumb and the aria label), the mode words that
+ * answer the switch, the sub line, the two key labels and the three
+ * scooped cards. */
 export const saashero = {
   leada: "An OS",
   leadb: "built for",
   leadc: "every AI",
-  modelabel: "Made for",
+  modetoggle: "Toggle OS Mode",
   modes: [
-    { id: "agents", label: "Agents", word: "and your agents" },
-    { id: "studios", label: "Studios", word: "and your studios" },
+    { id: "agents", word: "and your agents" },
+    { id: "studios", word: "and your studios" },
   ] as readonly saasheromode[],
   subtitle: "Create stream and run any studio or AI team in one unified OS",
   keyprimary: "Get Started",

@@ -1,8 +1,8 @@
 /**
  * saassections.tsx — the opening sections of the SaaS face: the hero with
- * the OS statement, the ever gradient sweep on the mode words and the
- * labeled segmented control that carries the agents and studios mode (a
- * switch never rides inside the headline again), the creator cards and the
+ * the OS statement and the inline engine switch the original reference
+ * carries inside the headline (the gradient track, the white thumb and the
+ * mode words that answer with their color walk), the creator cards and the
  * studio fan deck. Loose components of the intro page — the anchor
  * (intro.tsx) mounts the page (saas.tsx) and the page composes these. All
  * copy rides the landing data layer (saascontent.ts) and the glyphs ride
@@ -40,14 +40,16 @@ type SectionProps = {
   scrollto: (id: string) => void;
 };
 
-/** The hero: the OS statement with the activity tile, the mode words the
- * ever gradient sweep carries at the tail, the gradient hairline under
- * the statement, the labeled segmented control that answers the agents
- * and studios mode (a switch never rides inside the headline again), the
- * sub line, the two keys and the three scooped stat cards. */
+/** The hero: the OS statement with the activity tile, the inline engine
+ * switch of the original reference riding inside the headline (the
+ * gradient track with the white thumb), the mode words that answer the
+ * switch with their color walk (slate ink for the agents mode, indigo for
+ * the studios mode), the sub line, the two keys and the three scooped
+ * stat cards. */
 export function SaasHero({ onenter, scrollto }: SectionProps) {
   const [modeid, setModeid] = useState("agents");
   const mode = saashero.modes.find((row) => row.id === modeid) ?? saashero.modes[0];
+  const agents = mode.id === "agents";
   return (
     <section id="hero-os" className="relative flex flex-col overflow-hidden bg-[#F2F5FC] pt-0 pb-32 sm:pb-40">
       <div className="hero-gaussian-shader pointer-events-none absolute inset-x-0 -bottom-20 z-0 h-[520px] opacity-90" />
@@ -59,28 +61,20 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
           </span>
           <span> {saashero.leadb}</span>
           <br />
-          <span className="text-slate-400">{saashero.leadc}</span> <span className="saas-hero-ever">{mode.word}</span>
+          <span className="text-slate-400">{saashero.leadc} </span>
+          <button
+            type="button"
+            onClick={() => setModeid(agents ? "studios" : "agents")}
+            aria-label={saashero.modetoggle}
+            className="hero-inline-switch mx-3 inline-flex h-12 w-24 cursor-pointer items-center rounded-full p-1.5 align-middle sm:h-14 sm:w-28"
+          >
+            <span
+              className={`hero-switch-thumb block h-9 w-9 rounded-full transition-transform duration-300 sm:h-11 sm:w-11 ${agents ? "translate-x-12 sm:translate-x-14" : "translate-x-0"}`}
+            />
+          </button>
+          <span className={agents ? "text-slate-950" : "text-indigo-600"}>{mode.word}</span>
         </h1>
-        <span className="saas-hero-rule mt-7" aria-hidden="true" />
-        <div className="saas-hero-mode mt-8" role="radiogroup" aria-label={saashero.modelabel}>
-          <span className="saas-hero-mode__label">{saashero.modelabel}</span>
-          <div className="saas-hero-mode__track">
-            {saashero.modes.map((row) => (
-              <button
-                key={row.id}
-                type="button"
-                role="radio"
-                aria-checked={mode.id === row.id}
-                data-active={mode.id === row.id ? "true" : "false"}
-                onClick={() => setModeid(row.id)}
-                className="saas-hero-mode__seg"
-              >
-                {row.label}
-              </button>
-            ))}
-          </div>
-        </div>
-        <p className="mt-6 max-w-xl text-[15px] font-normal tracking-[-0.005em] text-slate-600 sm:text-lg">
+        <p className="mt-8 max-w-xl text-[15px] font-normal tracking-[-0.005em] text-slate-600 sm:text-lg">
           {saashero.subtitle}
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
