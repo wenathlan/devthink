@@ -39,10 +39,12 @@ describe("design contract", () => {
     }
   });
 
-  it("keeps the gelo identity and the windows accent in their lanes", () => {
-    // the foundation rebuild carries the identity on the @theme signal and
-    // maps the gelo names onto it — the token, the alias and both stay pinned
-    assert.match(CSS, /--color-signal: #a3d7e6/, "the gelo identity token stands");
+  it("keeps the white sun signal and the windows accent in their lanes", () => {
+    // the single-theme law answers the white sun on the @theme signal and
+    // the gelo-de-cofre story survives in the drawn brand mark — the token,
+    // the alias and both stay pinned
+    assert.match(CSS, /--color-signal: #ffffff/, "the white sun token stands");
+    assert.match(CSS, /--gelo-signal: var\(--color-signal\)/, "the gelo alias rides the signal");
     assert.match(CSS, /--sol-primary: var\(--color-signal\)/, "the primary rides the signal slot");
     assert.match(CSS, /--win-accent: var\(--color-win\)/, "the windows accent rides its own slot");
     assert.match(CSS, /--color-win: #4cc2ff/, "the windows accent governs focus and the bar cta");
@@ -52,9 +54,8 @@ describe("design contract", () => {
 
   it("retires the gold lamplight and the green ghost from the identity", () => {
     assert.ok(!/3ecf8e/i.test(CSS + ENTRY), "the green ghost is gone");
-    const gold = CSS.lastIndexOf("#eab308");
-    const ice = CSS.lastIndexOf("#a3d7e6");
-    assert.ok(ice > gold, "the gelo retint must restate the identity after the gold era");
+    assert.ok(!/#eab308/i.test(CSS), "the gold lamplight left the stylesheet");
+    assert.match(MARK, /#a3d7e6/, "the gelo story survives in the drawn mark");
   });
 
   it("wears the gelo identity on the icons and the manifest", () => {

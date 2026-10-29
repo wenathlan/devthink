@@ -179,16 +179,36 @@ describe("the workflow contract", () => {
       t.skip("npx is unavailable in this environment; the biome gate cannot run locally");
       return;
     }
-    const lint = await rungate(
-      "npx",
-      ["--yes", "@biomejs/biome@2.5.11", "lint", "--diagnostic-level=error", "."],
-      180000,
-      reporoot,
-      { npm_config_registry: "https://registry.npmjs.org" },
-    );
-    assert.equal(lint.spawnerror, null, "the biome lint spawn must not fail");
-    assert.equal(lint.timedout, false, "the biome lint gate must finish inside the step timeout");
-    assert.equal(lint.code, 0, `biome lint errors:\n${lint.stdout.slice(-2000)}`);
+    /* the family lint law: each application owns its biome project root (the
+     identical baselines carry the eleven trees and a repository-root run has
+     no root config, so the nested project roots answer from their own
+     directories the way the ci lanes run them) and the pin law floor rides
+     the 2.6.4 baseline the eleven schemas declare. */
+    const apps = [
+      "argan",
+      "cadria",
+      "cobaia",
+      "debonair",
+      "devthink",
+      "forge",
+      "foundry",
+      "getry",
+      "saddle",
+      "stealthhead",
+      "vault",
+    ];
+    for (const app of apps) {
+      const lint = await rungate(
+        "npx",
+        ["--yes", "@biomejs/biome@2.6.4", "lint", "--diagnostic-level=error", "."],
+        180000,
+        join(reporoot, "..", app),
+        { npm_config_registry: "https://registry.npmjs.org" },
+      );
+      assert.equal(lint.spawnerror, null, `the biome lint spawn must not fail in ${app}`);
+      assert.equal(lint.timedout, false, `the biome lint gate must finish inside the step timeout in ${app}`);
+      assert.equal(lint.code, 0, `biome lint errors in ${app}:\n${lint.stdout.slice(-2000)}`);
+    }
   });
 
   it("ci gate lint: the two workflow simulation files pass a full biome check", async (t) => {
