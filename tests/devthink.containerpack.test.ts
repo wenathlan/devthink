@@ -61,13 +61,14 @@ describe("containerpack", () => {
 
   it("runs the library build and the deterministic build checks in the builder before the runtime ships", async () => {
     const dockerfile = await readFile("Dockerfile", "utf8");
-    expect(dockerfile).toContain("RUN node tests/build.ts");
+    expect(dockerfile).toContain("RUN node tests/devthink.build.ts");
     expect(dockerfile).toContain("RUN node dist/cli.js manifest");
     expect(dockerfile).toContain(
       "RUN node dist/cli.js headless dist/fixtures/plans/release-notes-plan.json --fixtures dist/fixtures",
     );
-    expect(dockerfile).toContain("RUN node tests/nativesmoke.ts");
-    expect(dockerfile).toContain("RUN node tests/packageextension.ts");
+    expect(dockerfile).toContain("RUN node tests/devthink.nativesmoke.ts");
+    expect(dockerfile).toContain("RUN node tests/devthink.wcag.ts");
+    expect(dockerfile).toContain("RUN node tests/devthink.packageextension.ts");
     expect(dockerfile).toContain("manifest.json");
   });
 

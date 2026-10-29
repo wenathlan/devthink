@@ -303,8 +303,8 @@ const packagesource = await text("package.json");
 const subpathexports = new Set([...packagesource.matchAll(/"\.\/([a-z0-9]+)":/g)].map((entry) => entry[1]));
 for (const module of new Set(cliimports)) {
   if (
-    !indexsource.includes(`export * from "../devthink/tests/${module}.js";`) &&
-    !indexsource.includes(`from "../devthink/tests/${module}.js"`) &&
+    !indexsource.includes(`export * from "./${module}.js";`) &&
+    !indexsource.includes(`from "./${module}.js"`) &&
     !subpathexports.has(module)
   )
     refuse(`The cli imports the module ${module} the library surface of index.ts does not export.`);

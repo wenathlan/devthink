@@ -17,6 +17,7 @@ import {
   formsurveyworkflow,
   releasenotesplan,
 } from "./devthink.fixtureset.ts";
+import { bunshellexample, denoshellexample, mcpclientexample } from "./devthink.codefixtures.ts";
 import { importersamples } from "./devthink.importerfixtures.ts";
 import { fixturepages, umdexample } from "./devthink.pagefixtures.ts";
 import { gallery as gallerytext, recipeplans } from "./devthink.recipesfixtures.ts";
@@ -404,7 +405,6 @@ for (const surface of capsurfaces) {
     );
   await writeFile(record(`caps/${surface}.json`), `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
 }
-const codefixturedirectory = join(root, "tests", "code");
 const frozenschematexts = frozenschemas as Record<string, string>;
 const schemefiles = Object.keys(frozenschematexts).sort();
 if (schemefiles.length !== 10)
@@ -414,9 +414,12 @@ if (schemefiles.length !== 10)
 await mkdir(join(root, "dist", "schemas"), { recursive: true });
 for (const name of schemefiles)
   await writeFile(record(`schemas/${name}.schema.json`), frozenschematexts[name], "utf8");
-/** The fixture text table of the typescript fixture modules keyed by the original tests/code source names: every json, csv and html fixture of the former corpus answers from its family module (the example fixture set, the importer samples, the recipe plans with the gallery index, the fixture pages with the umd example), so the fixtureset rows below keep their source names while the texts come from the modules; the three typescript example fixtures (the mcp client, the bun shell and the deno shell) stay repository files of tests/code the loop reads from disk. */
+/** The fixture text table of the typescript fixture modules keyed by the original tests/code source names: every fixture of the former corpus answers from its family module (the example fixture set, the importer samples, the recipe plans with the gallery index, the fixture pages with the umd example and the three typescript example scripts — the mcp client, the bun shell and the deno shell — of the code fixture module), so the fixtureset rows below keep their source names while every text comes from the modules; the flat typed folder law dissolved the tests/code directory, so a fixture the table misses answers an explicit error instead of a read from a retired path. */
 const modulefixtures: Record<string, string> = {
   "example-org-pagestate.json": exampleorgpagestate,
+  "mcp.client.ts": mcpclientexample,
+  "bun.ts": bunshellexample,
+  "deno.ts": denoshellexample,
   "cjs.js": cjssample,
   "form-inventory-plan.json": forminventoryplan,
   "release-notes-plan.json": releasenotesplan,
@@ -492,8 +495,11 @@ await mkdir(join(root, "dist", "fixtures", "recipes"), { recursive: true });
 await mkdir(join(root, "dist", "fixtures", "pages"), { recursive: true });
 for (const fixture of fixtureset) {
   const text = modulefixtures[fixture.source];
-  if (text !== undefined) await writeFile(record(fixture.target), text, "utf8");
-  else await writeFile(record(fixture.target), await readFile(join(codefixturedirectory, fixture.source)), "utf8");
+  if (text === undefined)
+    throw new Error(
+      `The fixture ${fixture.source} answers no module of the flat typed folder; every fixture text lives in a typescript fixture module, so the missing row fails the build instead of reading a retired tests/code path.`,
+    );
+  await writeFile(record(fixture.target), text, "utf8");
 }
 const umdexampletext = umdexample;
 const umdexamplestamped = `<!-- devthink ${packagejson.version} umd example page — GPL-3.0-only -->\n${umdexampletext.replace("../../dist/devthink.umd.js", "./devthink.umd.js")}`;

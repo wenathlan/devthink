@@ -1,6 +1,6 @@
 /**
- * routesdual.test.ts — the dual door law of the family routes (the PR10
- * contract, campaign wave 1-e). The owner order: the typed url owns the
+ * devthink.routesdual.test.ts — the dual door law of the family routes (the
+ * PR10 contract, campaign wave 1-e). The owner order: the typed url owns the
  * fullscreen stage, the double click owns the system window, and both faces
  * stay one design — the same app document serves both doors. This battery
  * walks the whole routing table so no app of the eleven ever answers one
@@ -37,11 +37,12 @@ const router = readFileSync(join(import.meta.dirname, "..", "devthink", "Sol", "
 const workspace = readFileSync(join(import.meta.dirname, "..", "devthink", "Sol", "wingets", "PanelWorkspace.tsx"), "utf8");
 const familyframe = readFileSync(join(import.meta.dirname, "..", "devthink", "Sol", "wingets", "ShellFamilyframe.tsx"), "utf8");
 const viteconfig = readFileSync(join(import.meta.dirname, "..", "devthink", "vite.config.ts"), "utf8");
-const pagesworkflow = readFileSync(join(import.meta.dirname, "..", "..", ".github", "workflows", "pages.yml"), "utf8");
+const pagesworkflow = readFileSync(join(import.meta.dirname, "..", ".github", "workflows", "pages.yml"), "utf8");
 
 /** the repository root of the monorepo (the sibling apps live beside the
- * devthink folder) */
-const reporoot = join(import.meta.dirname, "..", "..");
+ * devthink folder; the flat typed folder law keeps this suite at the
+ * repository tests/ root, so the root sits one level up) */
+const reporoot = join(import.meta.dirname, "..");
 
 /** collects every .tsx file under one folder tree (the sibling theme scan) */
 function collectTsx(root: string): string[] {

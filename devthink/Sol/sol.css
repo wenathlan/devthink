@@ -21111,6 +21111,16 @@ button.dtc-recents__row {
   outline-offset: 2px;
 }
 @keyframes dtConstructionIn {
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
 /* ==== @section chat wave 7-a · the flagship conversation grammar ====
  * the chat flagship wave — the campaign's #1 priority. the reference
  * corpus (z.ai chat, chatgpt.com, t3code, zcode, synara — the
@@ -21506,12 +21516,6 @@ button.dtc-recents__row {
   .dt-construction__glyph::before,
   .dt-construction__glyph::after {
     animation: none;
-  }
-}
-
-  to {
-    opacity: 1;
-    transform: none;
   }
 }
 
