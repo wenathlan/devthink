@@ -304,11 +304,40 @@ export async function runonedge(
     const lane = EDGELANES.find((entry) => entry.modality === modality);
     if (lane === undefined) {
       const record = getmodality(modality);
-      const message =
-        record === undefined
-          ? `the modality id ${modality} is unknown to the registry`
-          : `the modality ${modality} is ${record.state}: the edge plane wires no execution lane for it yet`;
-      return { runid, modality, lane: lanename, status: "failed", error: { code: "MODALITY_NOT_LIVE", message } };
+      if (record === undefined) {
+        return {
+          runid,
+          modality,
+          lane: lanename,
+          status: "failed",
+          error: { code: "MODALITY_NOT_LIVE", message: `the modality id ${modality} is unknown to the registry` },
+        };
+      }
+      // a record the registry already drives live through another engine
+      // surface (the envelope sandbox lane) is never lied about here: the
+      // modality is live, this plane simply wires no lane for it yet.
+      if (record.state === "planned") {
+        return {
+          runid,
+          modality,
+          lane: lanename,
+          status: "failed",
+          error: {
+            code: "MODALITY_NOT_LIVE",
+            message: `the modality ${modality} is planned: no engine surface drives it yet`,
+          },
+        };
+      }
+      return {
+        runid,
+        modality,
+        lane: lanename,
+        status: "failed",
+        error: {
+          code: "LANE_NOT_WIRED_IN_PLANE",
+          message: `the modality ${modality} is ${record.state} in the registry, but this edge plane wires no lane for it yet — the other engine surfaces drive it`,
+        },
+      };
     }
     lanename = lane.runtime;
     const executor = edgelaneexecutors[lane.modality];

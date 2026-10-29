@@ -14,6 +14,7 @@ import { join } from "node:path";
 import { describe, it } from "vitest";
 import { probemodule } from "../edgelandes.ts";
 import { assertvisitorfree, edgelandesreport, edgelanes, runonedge } from "../edgeplane.ts";
+import { getmodality } from "../modalityregistry.ts";
 import { localstorage } from "../virtual.ts";
 
 /** the ten live lane ids the pinned contract charges (parallel waves read these exactly). */
@@ -198,6 +199,20 @@ describe("the edge plane answers the visitor law", () => {
     const unknown = await runonedge({ modality: "not-a-modality", code: "1" });
     assert.equal(unknown.status, "failed");
     assert.equal(unknown.error?.code, "MODALITY_NOT_LIVE");
+  });
+
+  it("never lies about a live modality another engine surface drives", async () => {
+    // the registry drives modalities live through other engine surfaces
+    // (the envelope sandbox lane): this plane wires no lane for them and
+    // the refusal names the state honestly instead of claiming the
+    // modality is not live. runner-deno rides the live set of the
+    // registry while the edge plane table carries no lane for it.
+    const record = getmodality("runner-deno");
+    if (record?.state !== "live") return; // the registry census moved again — nothing to prove here
+    const refusal = await runonedge({ modality: "runner-deno", code: "1" });
+    assert.equal(refusal.status, "failed");
+    assert.equal(refusal.error?.code, "LANE_NOT_WIRED_IN_PLANE");
+    assert.ok(refusal.error?.message.includes("live"), "the message names the live state");
   });
 
   it("reports the absent host runtime of a host lane honestly", async () => {

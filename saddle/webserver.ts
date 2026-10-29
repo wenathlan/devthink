@@ -2078,6 +2078,13 @@ async function handleapi(req: IncomingMessage, res: ServerResponse, url: URL): P
         writeerror(res, 422, 'modality-not-live', result.error.message, headers);
         return;
       }
+      if (result.error?.code === 'LANE_NOT_WIRED_IN_PLANE') {
+        // the registry already drives the modality live through another
+        // engine surface: this plane answers not-implemented, never a lie
+        // about the modality's state.
+        writeerror(res, 501, 'lane-not-wired-in-plane', result.error.message, headers);
+        return;
+      }
       if (result.error?.code === 'HOST_RUNTIME_ABSENT') {
         writejson(
           res,
