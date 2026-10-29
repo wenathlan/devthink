@@ -1,10 +1,11 @@
-/** Runs the example gallery of the 2.0.0 release: the gate loads the 36 recipes of the recipesfixtures module through the same cli loader the planlint command uses (parseplanfile under schemastrict), validates every recipe against the frozen plan schema of the schemafixtures module (the origin, the steps and the step field vocabulary the plan authoring format shares with the frozen message schema, with the goal mapping onto the objective carrier, the label onto the summary carrier and the derived risk checked against the frozen risk enum), lints every recipe with the same portable rule set and capability set the cli planlint builds, verifies the gallery metadata of the index (the description, the difficulty, the fixture page, the declared capabilities, the consent classes, the agent topologies, the scraping export formats and the monitoring schedules), proves the consent gates hold by linting the consent recipes once with the fresh class consents the review flow would record and once without them (the refusal must name exactly the declared classes), verifies every sensitive step carries its gate declaration, verifies no step value, option or origin hardcodes a remote origin outside the reserved fixture family, resolves every step selector statically against the fixture page the entry names, dry runs every recipe through the runflow pipeline the extension runs (the grants gate, the workflow proposal validation, the per step consent gates routed to a recording provider and the dry run driver that touches no page), replays the cli planlint command over every consent free recipe copy of dist/fixtures/recipes so the gallery imports cleanly through the cli, records the outcome and duration of every executed entry in tests/artifacts/recipes.json and exits nonzero on any failure. The diff mode reruns the suite and compares the gallery against the previous report artifact: an entry added, removed, re-categorized, re-graded or drifted in its steps or kinds fails the diff so the gallery never drifts silently between releases. */
+/** Runs the example gallery of the 2.0.0 release: the gate loads the 36 recipes of the recipesfixtures module through the same cli loader the planlint command uses (parseplanfile under schemastrict), validates every recipe against the frozen plan schema of the schemafixtures module (the origin, the steps and the step field vocabulary the plan authoring format shares with the frozen message schema, with the goal mapping onto the objective carrier, the label onto the summary carrier and the derived risk checked against the frozen risk enum), lints every recipe with the same portable rule set and capability set the cli planlint builds, verifies the gallery metadata of the index (the description, the difficulty, the fixture page, the declared capabilities, the consent classes, the agent topologies, the scraping export formats and the monitoring schedules), proves the consent gates hold by linting the consent recipes once with the fresh class consents the review flow would record and once without them (the refusal must name exactly the declared classes), verifies every sensitive step carries its gate declaration, verifies no step value, option or origin hardcodes a remote origin outside the reserved fixture family, resolves every step selector statically against the fixture page the entry names, dry runs every recipe through the runflow pipeline the extension runs (the grants gate, the workflow proposal validation, the per step consent gates routed to a recording provider and the dry run driver that touches no page), replays the cli planlint command over every consent free recipe copy of dist/fixtures/recipes so the gallery imports cleanly through the cli, records the outcome and duration of every executed entry in the committed record tests/devthink.recipes.ts (the reciperecord const this module carries, migrated from devthink/artifacts/recipes.json when the flat folder law dissolved the artifacts folder) and exits nonzero on any failure. The diff mode reruns the suite and compares the gallery against the committed record: an entry added, removed, re-categorized, re-graded or drifted in its steps or kinds fails the diff so the gallery never drifts silently between releases. The sync mode (`node ../tests/devthink.recipes.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
 import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
+import { syncmode, syncrecord } from "./devthink.records.ts";
 import type { actionkind, classconsent, consentprovider, sensitiveclass } from "../devthink/types.ts";
 import { gallery as gallerytext, recipeplans } from "./devthink.recipesfixtures.ts";
 import { plan as planschematext } from "./devthink.schemafixtures.ts";
@@ -14,7 +15,6 @@ const execute = promisify(execFile);
 const mode = process.argv[2] ?? "check";
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
-const artifactpath = "artifacts/recipes.json";
 const buildscript = "../tests/devthink.build.ts";
 
 /** One gallery check with its name, its outcome and its detail line, in the shape the sweep and poolaudit gates record theirs; the fixtureset check records its own { ok, detail } verdict as the outcome, so the artifact preserves the nested verdict exactly as the run recorded it. */
@@ -138,12 +138,6 @@ const reservedoriginhosts = new Set([
 /** Records one gallery check with its outcome and its detail line, in the shape the sweep and poolaudit gates record theirs. */
 function recordcheck(checks: recipecheck[], name: string, ok: boolean | { ok: boolean; detail: string }, detail: string) {
   checks.push({ name, ok, detail });
-}
-
-/** Reads a json document or answers null when the file sits absent. */
-async function artifact(path: string) {
-  if (!existsSync(path)) return null;
-  return JSON.parse(await readFile(path, "utf8"));
 }
 
 /** Validates one recipe document against the frozen plan schema sections that bind the plan authoring format: the plan origin and steps, the step field vocabulary the plan file shares with the frozen step schema (id, kind, target, value and options as the schema types them, the label mapping onto the summary carrier the review reads), the derived risk checked against the frozen risk enum, and the authoring extensions (gate, bound and attempts) the schemastrict plan linter owns — the schema refuses unknown fields through parseplanfile, so this validation stays the overlap contract between the frozen message schema and the plan file grammar. Answers the problem list the caller records. */
@@ -941,28 +935,965 @@ export function gallerydriftof(previous: recipereport | null, current: reciperep
   return drift;
 }
 
+/** The committed gallery record of the 2.0.151 release — the evidence the
+ * readiness review reads, migrated from devthink/artifacts/recipes.json when
+ * the flat folder law dissolved the artifacts folder of the application first
+ * layer: every check and every executed entry in its fixed order with its
+ * outcome, no timestamps, so the record replays byte identical (the durations
+ * stay the live measurements the recorded run took; the gallery drift diff
+ * never reads them). */
+export const reciperecord: recipereport = {
+  "release": "2.0.151",
+  "mode": "check",
+  "gallery": {
+    "version": "2.0.0",
+    "entries": 36,
+    "categories": {
+      "scraping": 8,
+      "forms": 9,
+      "testing": 8,
+      "monitoring": 6,
+      "agents": 5
+    },
+    "fixtures": 4
+  },
+  "checks": [
+    {
+      "name": "the compiled bundles exist for the gallery runner",
+      "ok": true,
+      "detail": "the gallery reads dist/index.js and dist/policy.js, the same compiled modules the cli planlint and flowrun commands read"
+    },
+    {
+      "name": "the frozen plan schema carries its plan, step, options and review sections",
+      "ok": true,
+      "detail": "the frozen schema of the schemafixtures module carries the plan, step, options and reviewsurface sections the gallery validates against"
+    },
+    {
+      "name": "the gallery index parses with the 36 promised entries in the five categories",
+      "ok": true,
+      "detail": "36 entries: 8 scraping, 9 forms, 8 testing, 6 monitoring and 5 agents, every entry backed by its recipe file"
+    },
+    {
+      "name": "the gallery index records the four fixture pages with their local origins",
+      "ok": true,
+      "detail": "the index records 4 fixture pages: product-grid.html of https://productgrid.test, checkout.html of https://checkout.test, dashboard.html of https://dashboard.test, feed.html of https://feed.test"
+    },
+    {
+      "name": "every gallery entry validates against the frozen plan schema",
+      "ok": true,
+      "detail": "all 36 recipes passed the plan and step sections of the frozen schema"
+    },
+    {
+      "name": "every gallery entry passes the policy checks",
+      "ok": true,
+      "detail": "all 36 recipes lint green under the portable rule set with the cli capability set and their fresh class consents"
+    },
+    {
+      "name": "every gallery entry declares its required capabilities",
+      "ok": true,
+      "detail": "every declared capability sits inside the required and optional permission set of the manifest; the recipes carry no absent permission"
+    },
+    {
+      "name": "every gallery entry carries a description and a difficulty",
+      "ok": true,
+      "detail": "every entry of the index carries its plain language description and its starter, intermediate or advanced grade"
+    },
+    {
+      "name": "every gallery entry names its fixture page",
+      "ok": true,
+      "detail": "all 36 entries name one of the four fixture pages the pages directory ships"
+    },
+    {
+      "name": "every fixture page ships with the extension test bundle",
+      "ok": {
+        "ok": true,
+        "detail": "the fixtureset carries the gallery index, the 36 recipes and the 4 fixture pages"
+      },
+      "detail": "the four fixture pages of the pagefixtures module copy into dist/fixtures/pages through the fixtureset rows of tests/build.ts, so every package channel ships them from dist"
+    },
+    {
+      "name": "the gallery runner dry runs every gallery entry without side effects",
+      "ok": true,
+      "detail": "the dry run driver walked every recipe through the runflow pipeline with the recording consent provider and no page effect: 36 of 36 entries completed their steps"
+    },
+    {
+      "name": "the gallery run report records the outcome and duration of every executed entry",
+      "ok": true,
+      "detail": "the report carries the outcome, the step count, the gate count and the measured duration of all 36 executed entries"
+    },
+    {
+      "name": "no gallery entry hardcodes remote origins",
+      "ok": true,
+      "detail": "every origin the 36 recipes name stays inside the reserved fixture family: productgrid.test, checkout.test, dashboard.test, feed.test and the reserved example, invalid and loopback hosts"
+    },
+    {
+      "name": "no gallery entry bypasses the consent gates",
+      "ok": true,
+      "detail": "the two consent recipes refuse the lint without their declared class consents and pass with the fresh records the review flow writes; the other 34 recipes need no class consent and demand none"
+    },
+    {
+      "name": "every sensitive step in the gallery carries its approval flag",
+      "ok": true,
+      "detail": "all 31 sensitive steps across the gallery declare their gate flag explicitly"
+    },
+    {
+      "name": "every gallery entry imports cleanly through the cli",
+      "ok": true,
+      "detail": "the cli planlint command linted the built copy of every consent free recipe green, and the two consent recipes refuse the plain lint exactly as their review documents"
+    },
+    {
+      "name": "the agent recipes declare their topologies",
+      "ok": true,
+      "detail": "the five agent recipes declare the swarm, review, parallel, monitor and compete topologies of the certified scenario set"
+    },
+    {
+      "name": "the scraping recipes declare their export formats",
+      "ok": true,
+      "detail": "the eight scraping recipes declare their csv, json and excel export formats beside the export step kind each one carries"
+    },
+    {
+      "name": "the monitoring recipes declare their schedules",
+      "ok": true,
+      "detail": "the six monitoring recipes declare their five field cron schedules, from the two minute alert cadence to the hourly page diff"
+    }
+  ],
+  "entries": [
+    {
+      "id": "scrapeproductgrid",
+      "category": "scraping",
+      "difficulty": "starter",
+      "fixture": "product-grid.html",
+      "origin": "https://productgrid.test",
+      "steps": 4,
+      "kinds": [
+        "observe",
+        "countelements",
+        "readtext",
+        "exportjson"
+      ],
+      "gates": 1,
+      "consentclasses": [],
+      "exportformat": "json",
+      "expecteddurationms": 1600,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 7,
+      "detail": "the dry run walked 4 steps, waited at 1 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "scrapetablepagination",
+      "category": "scraping",
+      "difficulty": "starter",
+      "fixture": "product-grid.html",
+      "origin": "https://productgrid.test",
+      "steps": 4,
+      "kinds": [
+        "observe",
+        "scrapetable",
+        "countpages",
+        "exportcsv"
+      ],
+      "gates": 1,
+      "consentclasses": [],
+      "exportformat": "csv",
+      "expecteddurationms": 1800,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 4 steps, waited at 1 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "scrapereviews",
+      "category": "scraping",
+      "difficulty": "intermediate",
+      "fixture": "product-grid.html",
+      "origin": "https://productgrid.test",
+      "steps": 4,
+      "kinds": [
+        "observe",
+        "countelements",
+        "readtext",
+        "exportjson"
+      ],
+      "gates": 1,
+      "consentclasses": [],
+      "exportformat": "json",
+      "expecteddurationms": 3200,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 4 steps, waited at 1 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "scrapesearchresults",
+      "category": "scraping",
+      "difficulty": "starter",
+      "fixture": "feed.html",
+      "origin": "https://feed.test",
+      "steps": 4,
+      "kinds": [
+        "observe",
+        "readlinks",
+        "readmeta",
+        "exportjson"
+      ],
+      "gates": 1,
+      "consentclasses": [],
+      "exportformat": "json",
+      "expecteddurationms": 1700,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 0,
+      "detail": "the dry run walked 4 steps, waited at 1 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "scrapenestedlists",
+      "category": "scraping",
+      "difficulty": "intermediate",
+      "fixture": "feed.html",
+      "origin": "https://feed.test",
+      "steps": 4,
+      "kinds": [
+        "observe",
+        "detectlists",
+        "readhtml",
+        "exportexcel"
+      ],
+      "gates": 1,
+      "consentclasses": [],
+      "exportformat": "excel",
+      "expecteddurationms": 3400,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 4 steps, waited at 1 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "scrapeinfinitefeed",
+      "category": "scraping",
+      "difficulty": "advanced",
+      "fixture": "feed.html",
+      "origin": "https://feed.test",
+      "steps": 5,
+      "kinds": [
+        "observe",
+        "detectinfinitescroll",
+        "readscrollpos",
+        "readtext",
+        "exportjson"
+      ],
+      "gates": 1,
+      "consentclasses": [],
+      "exportformat": "json",
+      "expecteddurationms": 6500,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 5 steps, waited at 1 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "scrapedynamicprices",
+      "category": "scraping",
+      "difficulty": "intermediate",
+      "fixture": "dashboard.html",
+      "origin": "https://dashboard.test",
+      "steps": 5,
+      "kinds": [
+        "observe",
+        "waitelement",
+        "readtext",
+        "watchmutate",
+        "exportcsv"
+      ],
+      "gates": 1,
+      "consentclasses": [],
+      "exportformat": "csv",
+      "expecteddurationms": 3800,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 0,
+      "detail": "the dry run walked 5 steps, waited at 1 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "scrapeimagegallery",
+      "category": "scraping",
+      "difficulty": "intermediate",
+      "fixture": "product-grid.html",
+      "origin": "https://productgrid.test",
+      "steps": 4,
+      "kinds": [
+        "observe",
+        "readimages",
+        "verifyvisible",
+        "exportcsv"
+      ],
+      "gates": 1,
+      "consentclasses": [],
+      "exportformat": "csv",
+      "expecteddurationms": 3000,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 4 steps, waited at 1 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "fillloginform",
+      "category": "forms",
+      "difficulty": "intermediate",
+      "fixture": "checkout.html",
+      "origin": "https://checkout.test",
+      "steps": 4,
+      "kinds": [
+        "observe",
+        "readforms",
+        "fillform",
+        "submit"
+      ],
+      "gates": 2,
+      "consentclasses": [
+        "credential"
+      ],
+      "expecteddurationms": 3600,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 0,
+      "detail": "the dry run walked 4 steps, waited at 2 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "fillcheckout",
+      "category": "forms",
+      "difficulty": "advanced",
+      "fixture": "checkout.html",
+      "origin": "https://checkout.test",
+      "steps": 5,
+      "kinds": [
+        "observe",
+        "readforms",
+        "runwizard",
+        "fillform",
+        "submit"
+      ],
+      "gates": 3,
+      "consentclasses": [
+        "payment"
+      ],
+      "expecteddurationms": 7000,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 5 steps, waited at 3 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "fillregistration",
+      "category": "forms",
+      "difficulty": "starter",
+      "fixture": "checkout.html",
+      "origin": "https://checkout.test",
+      "steps": 4,
+      "kinds": [
+        "observe",
+        "readforms",
+        "fillform",
+        "submit"
+      ],
+      "gates": 2,
+      "consentclasses": [],
+      "expecteddurationms": 2000,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 4 steps, waited at 2 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "fillsearchfilters",
+      "category": "forms",
+      "difficulty": "starter",
+      "fixture": "product-grid.html",
+      "origin": "https://productgrid.test",
+      "steps": 4,
+      "kinds": [
+        "observe",
+        "detectfields",
+        "fillform",
+        "click"
+      ],
+      "gates": 2,
+      "consentclasses": [],
+      "expecteddurationms": 2200,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 0,
+      "detail": "the dry run walked 4 steps, waited at 2 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "fillmultistepwizard",
+      "category": "forms",
+      "difficulty": "advanced",
+      "fixture": "checkout.html",
+      "origin": "https://checkout.test",
+      "steps": 5,
+      "kinds": [
+        "observe",
+        "readforms",
+        "runwizard",
+        "fillform",
+        "submit"
+      ],
+      "gates": 3,
+      "consentclasses": [],
+      "expecteddurationms": 6200,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 5 steps, waited at 3 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "filldependentdropdowns",
+      "category": "forms",
+      "difficulty": "advanced",
+      "fixture": "checkout.html",
+      "origin": "https://checkout.test",
+      "steps": 4,
+      "kinds": [
+        "observe",
+        "readforms",
+        "selectchain",
+        "submit"
+      ],
+      "gates": 2,
+      "consentclasses": [],
+      "expecteddurationms": 5800,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 4 steps, waited at 2 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "filltypeahead",
+      "category": "forms",
+      "difficulty": "intermediate",
+      "fixture": "product-grid.html",
+      "origin": "https://productgrid.test",
+      "steps": 3,
+      "kinds": [
+        "observe",
+        "waitelement",
+        "picktypeahead"
+      ],
+      "gates": 1,
+      "consentclasses": [],
+      "expecteddurationms": 3300,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 0,
+      "detail": "the dry run walked 3 steps, waited at 1 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "fillcalendar",
+      "category": "forms",
+      "difficulty": "intermediate",
+      "fixture": "checkout.html",
+      "origin": "https://checkout.test",
+      "steps": 4,
+      "kinds": [
+        "observe",
+        "readforms",
+        "pickdate",
+        "submit"
+      ],
+      "gates": 2,
+      "consentclasses": [],
+      "expecteddurationms": 3100,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 4 steps, waited at 2 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "fillfromcsv",
+      "category": "forms",
+      "difficulty": "advanced",
+      "fixture": "checkout.html",
+      "origin": "https://checkout.test",
+      "steps": 5,
+      "kinds": [
+        "importcsv",
+        "looprows",
+        "readforms",
+        "fillform",
+        "submit"
+      ],
+      "gates": 2,
+      "consentclasses": [],
+      "expecteddurationms": 6800,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 5 steps, waited at 2 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "testlinkcheck",
+      "category": "testing",
+      "difficulty": "starter",
+      "fixture": "product-grid.html",
+      "origin": "https://productgrid.test",
+      "steps": 4,
+      "kinds": [
+        "observe",
+        "readlinks",
+        "countelements",
+        "detecthttp"
+      ],
+      "gates": 0,
+      "consentclasses": [],
+      "expecteddurationms": 1800,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 0,
+      "detail": "the dry run walked 4 steps, waited at 0 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "testconsoleerrors",
+      "category": "testing",
+      "difficulty": "starter",
+      "fixture": "dashboard.html",
+      "origin": "https://dashboard.test",
+      "steps": 4,
+      "kinds": [
+        "observe",
+        "watchconsole",
+        "watcherrors",
+        "readerrors"
+      ],
+      "gates": 0,
+      "consentclasses": [],
+      "expecteddurationms": 1900,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 4 steps, waited at 0 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "testformvalidation",
+      "category": "testing",
+      "difficulty": "intermediate",
+      "fixture": "checkout.html",
+      "origin": "https://checkout.test",
+      "steps": 5,
+      "kinds": [
+        "observe",
+        "readforms",
+        "detectfields",
+        "readerrors",
+        "verifyvisible"
+      ],
+      "gates": 0,
+      "consentclasses": [],
+      "expecteddurationms": 3500,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 0,
+      "detail": "the dry run walked 5 steps, waited at 0 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "testlayoutshift",
+      "category": "testing",
+      "difficulty": "advanced",
+      "fixture": "dashboard.html",
+      "origin": "https://dashboard.test",
+      "steps": 4,
+      "kinds": [
+        "observe",
+        "watchshifts",
+        "traceload",
+        "measureflow"
+      ],
+      "gates": 0,
+      "consentclasses": [],
+      "expecteddurationms": 6400,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 4 steps, waited at 0 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "testvisualdiff",
+      "category": "testing",
+      "difficulty": "intermediate",
+      "fixture": "product-grid.html",
+      "origin": "https://productgrid.test",
+      "steps": 4,
+      "kinds": [
+        "observe",
+        "shotview",
+        "shotelement",
+        "diffsnapshots"
+      ],
+      "gates": 0,
+      "consentclasses": [],
+      "expecteddurationms": 3700,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 4 steps, waited at 0 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "testloadtiming",
+      "category": "testing",
+      "difficulty": "intermediate",
+      "fixture": "dashboard.html",
+      "origin": "https://dashboard.test",
+      "steps": 4,
+      "kinds": [
+        "observe",
+        "traceload",
+        "measureflow",
+        "watchrequests"
+      ],
+      "gates": 0,
+      "consentclasses": [],
+      "expecteddurationms": 3900,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 4 steps, waited at 0 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "testaccessibility",
+      "category": "testing",
+      "difficulty": "starter",
+      "fixture": "product-grid.html",
+      "origin": "https://productgrid.test",
+      "steps": 4,
+      "kinds": [
+        "readertree",
+        "readoutline",
+        "readmeta",
+        "verifyvisible"
+      ],
+      "gates": 0,
+      "consentclasses": [],
+      "expecteddurationms": 2100,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 4 steps, waited at 0 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "testdeeplinks",
+      "category": "testing",
+      "difficulty": "intermediate",
+      "fixture": "dashboard.html",
+      "origin": "https://dashboard.test",
+      "steps": 4,
+      "kinds": [
+        "observe",
+        "readlinks",
+        "readfinalurl",
+        "countpages"
+      ],
+      "gates": 0,
+      "consentclasses": [],
+      "expecteddurationms": 3300,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 4 steps, waited at 0 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "monitorpricechange",
+      "category": "monitoring",
+      "difficulty": "intermediate",
+      "fixture": "dashboard.html",
+      "origin": "https://dashboard.test",
+      "steps": 3,
+      "kinds": [
+        "observe",
+        "readtext",
+        "watchmutate"
+      ],
+      "gates": 0,
+      "consentclasses": [],
+      "schedule": "*/5 * * * *",
+      "expecteddurationms": 3400,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 3 steps, waited at 0 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "monitoravailability",
+      "category": "monitoring",
+      "difficulty": "starter",
+      "fixture": "dashboard.html",
+      "origin": "https://dashboard.test",
+      "steps": 3,
+      "kinds": [
+        "observe",
+        "verifyvisible",
+        "watchbanner"
+      ],
+      "gates": 0,
+      "consentclasses": [],
+      "schedule": "*/10 * * * *",
+      "expecteddurationms": 2000,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 2,
+      "detail": "the dry run walked 3 steps, waited at 0 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "monitornetworkquiet",
+      "category": "monitoring",
+      "difficulty": "intermediate",
+      "fixture": "dashboard.html",
+      "origin": "https://dashboard.test",
+      "steps": 4,
+      "kinds": [
+        "observe",
+        "watchrequests",
+        "waitquiet",
+        "readerrors"
+      ],
+      "gates": 0,
+      "consentclasses": [],
+      "schedule": "*/15 * * * *",
+      "expecteddurationms": 3800,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 4 steps, waited at 0 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "monitorpagechanges",
+      "category": "monitoring",
+      "difficulty": "advanced",
+      "fixture": "feed.html",
+      "origin": "https://feed.test",
+      "steps": 3,
+      "kinds": [
+        "observe",
+        "watchmutate",
+        "diffsnapshots"
+      ],
+      "gates": 0,
+      "consentclasses": [],
+      "schedule": "0 * * * *",
+      "expecteddurationms": 6100,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 3 steps, waited at 0 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "monitorschedule",
+      "category": "monitoring",
+      "difficulty": "intermediate",
+      "fixture": "dashboard.html",
+      "origin": "https://dashboard.test",
+      "steps": 4,
+      "kinds": [
+        "observe",
+        "intervalrule",
+        "readtext",
+        "watchmutate"
+      ],
+      "gates": 1,
+      "consentclasses": [],
+      "schedule": "*/5 * * * *",
+      "expecteddurationms": 3600,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 4 steps, waited at 1 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "monitoralerts",
+      "category": "monitoring",
+      "difficulty": "advanced",
+      "fixture": "dashboard.html",
+      "origin": "https://dashboard.test",
+      "steps": 4,
+      "kinds": [
+        "observe",
+        "watchconsole",
+        "watchbanner",
+        "readerrors"
+      ],
+      "gates": 0,
+      "consentclasses": [],
+      "schedule": "*/2 * * * *",
+      "expecteddurationms": 5900,
+      "capabilities": [],
+      "outcome": "pass",
+      "durationms": 0,
+      "detail": "the dry run walked 4 steps, waited at 0 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "agentswarm",
+      "category": "agents",
+      "difficulty": "advanced",
+      "fixture": "product-grid.html",
+      "origin": "https://productgrid.test",
+      "steps": 3,
+      "kinds": [
+        "observe",
+        "parallel",
+        "readtext",
+        "countelements",
+        "exportjson"
+      ],
+      "gates": 1,
+      "consentclasses": [],
+      "topology": "swarm",
+      "expecteddurationms": 7200,
+      "capabilities": [
+        "tabs"
+      ],
+      "outcome": "pass",
+      "durationms": 2,
+      "detail": "the dry run walked 3 steps, waited at 1 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "agentsreview",
+      "category": "agents",
+      "difficulty": "intermediate",
+      "fixture": "product-grid.html",
+      "origin": "https://productgrid.test",
+      "steps": 3,
+      "kinds": [
+        "observe",
+        "readtable",
+        "condition"
+      ],
+      "gates": 0,
+      "consentclasses": [],
+      "topology": "review",
+      "expecteddurationms": 3500,
+      "capabilities": [
+        "tabs"
+      ],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 3 steps, waited at 0 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "agentsforms",
+      "category": "agents",
+      "difficulty": "advanced",
+      "fixture": "checkout.html",
+      "origin": "https://checkout.test",
+      "steps": 3,
+      "kinds": [
+        "observe",
+        "parallel",
+        "fillform",
+        "submit"
+      ],
+      "gates": 1,
+      "consentclasses": [],
+      "topology": "parallel",
+      "expecteddurationms": 7500,
+      "capabilities": [
+        "tabs"
+      ],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 3 steps, waited at 1 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "agentsmonitor",
+      "category": "agents",
+      "difficulty": "advanced",
+      "fixture": "feed.html",
+      "origin": "https://feed.test",
+      "steps": 3,
+      "kinds": [
+        "observe",
+        "watchmutate",
+        "parallel",
+        "readtext",
+        "readscrollpos"
+      ],
+      "gates": 0,
+      "consentclasses": [],
+      "topology": "monitor",
+      "expecteddurationms": 6900,
+      "capabilities": [
+        "tabs"
+      ],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 3 steps, waited at 0 consent gates and sealed its chain with exit code 0"
+    },
+    {
+      "id": "agentscompete",
+      "category": "agents",
+      "difficulty": "advanced",
+      "fixture": "product-grid.html",
+      "origin": "https://productgrid.test",
+      "steps": 3,
+      "kinds": [
+        "observe",
+        "parallel",
+        "readtext",
+        "scrapetable",
+        "exportjson"
+      ],
+      "gates": 1,
+      "consentclasses": [],
+      "topology": "compete",
+      "expecteddurationms": 7800,
+      "capabilities": [
+        "tabs"
+      ],
+      "outcome": "pass",
+      "durationms": 1,
+      "detail": "the dry run walked 3 steps, waited at 1 consent gates and sealed its chain with exit code 0"
+    }
+  ],
+  "summary": {
+    "entries": 36,
+    "passed": 36,
+    "failed": 0,
+    "checks": 19,
+    "checksok": 19,
+    "durationms": 2033
+  }
+};
+
 const invokeddirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (invokeddirectly) {
   const report = await runrecipessuite();
-  if (mode === "diff") {
-    const previous = await artifact(artifactpath);
-    if (previous === null) {
-      console.error("RECIPES The diff mode needs the previous report artifact; run the gate once before diffing.");
+  if (syncmode()) {
+    /* the sync rewrites the committed record this run produced, so the release refresh rides one reviewable commit */
+    console.log(await syncrecord({ moduleurl: import.meta.url, recordname: "reciperecord", recordtype: "recipereport", record: report }));
+  } else if (mode === "diff") {
+    /* the diff compares the fresh run against the committed record: an entry added, removed, re-categorized, re-graded or drifted in its steps or kinds fails the diff so the gallery never drifts silently between releases */
+    const drift = gallerydriftof(reciperecord, report);
+    if (drift.length > 0) {
+      for (const line of drift) console.error(`RECIPES ${line}`);
       process.exitCode = 1;
     } else {
-      const drift = gallerydriftof(previous, report);
-      if (drift.length > 0) {
-        for (const line of drift) console.error(`RECIPES ${line}`);
-        process.exitCode = 1;
-      } else {
-        console.log(
-          `RECIPES The gallery diff found no drift against the previous report: ${report.summary.entries} entries, every outcome held.`,
-        );
-      }
+      console.log(
+        `RECIPES The gallery diff found no drift against the committed record: ${report.summary.entries} entries, every outcome held.`,
+      );
     }
   } else {
-    await mkdir("artifacts", { recursive: true });
-    await writeFile(artifactpath, `${JSON.stringify(report, null, 2)}\n`, "utf8");
+    /* the record verification: the committed evidence stays internally consistent (the summary math and the outcome counts), so a hand-edited record never passes as a recorded run */
+    const passing = reciperecord.entries.filter((entry) => entry.outcome === "pass").length;
+    const greenchecks = reciperecord.checks.filter(
+      (check) => check.ok === true || (typeof check.ok === "object" && check.ok !== null && (check.ok as { ok: boolean }).ok === true),
+    ).length;
+    const problems = [
+      ...(reciperecord.summary.entries !== reciperecord.entries.length ? ["the recorded entry count disagrees with the recorded entries"] : []),
+      ...(reciperecord.summary.passed !== passing ? ["the recorded passing entries disagree with the recorded passed count"] : []),
+      ...(reciperecord.summary.failed !== reciperecord.entries.length - passing ? ["the recorded failed entries disagree with the recorded failed count"] : []),
+      ...(reciperecord.summary.checks !== reciperecord.checks.length ? ["the recorded check count disagrees with the recorded checks"] : []),
+      ...(reciperecord.summary.checksok !== greenchecks ? ["the recorded green checks disagree with the recorded checksok count"] : []),
+      ...(reciperecord.summary.passed !== reciperecord.summary.entries || reciperecord.summary.failed !== 0 ? ["the record carries failures a green run never records"] : []),
+    ];
+    for (const problem of problems) console.error(`RECIPES record: ${problem}`);
   }
   for (const entry of report.entries) {
     const line = `RECIPES [${entry.outcome === "pass" ? "ok" : "FAIL"}] ${entry.category}/${entry.id} (${entry.difficulty}, ${entry.steps} steps, ${entry.gates} gates, ${entry.durationms}ms) — ${entry.detail}`;
@@ -976,7 +1907,7 @@ if (invokeddirectly) {
   }
   console.log(
     JSON.stringify(
-      { release: report.release, artifact: artifactpath, mode, gallery: report.gallery, summary: report.summary },
+      { release: report.release, record: "tests/devthink.recipes.ts", mode, gallery: report.gallery, summary: report.summary },
       null,
       2,
     ),

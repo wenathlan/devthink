@@ -1,6 +1,6 @@
 # Accessibility sweep walkthrough
 
-This walkthrough drives the accessibility sweep of the 2.0.0 roadmap item 55: every ui surface audits against the WCAG checklist. The gate of `tests/wcag.ts` reads the one design file `web/index.html`, extracts every surface template the build splits into the extension pages — the site, the popup, the sidepanel, the dashboardpage, the optionspage, the transparencypage, the sandbox host and the offscreen host — and audits each surface statically: the images, the button names, the field labels, the heading hierarchy, the computed contrast of the default theme tokens, the focus visible outlines, the tabindex order, the html lang stamp and the decorative markers. The evidence lands in `tests/artifacts/wcag.json` with no timestamps so reruns stay byte identical, and the gate exits nonzero on any failed check.
+This walkthrough drives the accessibility sweep of the 2.0.0 roadmap item 55: every ui surface audits against the WCAG checklist. The gate of `tests/wcag.ts` reads the one design file `web/index.html`, extracts every surface template the build splits into the extension pages — the site, the popup, the sidepanel, the dashboardpage, the optionspage, the transparencypage, the sandbox host and the offscreen host — and audits each surface statically: the images, the button names, the field labels, the heading hierarchy, the computed contrast of the default theme tokens, the focus visible outlines, the tabindex order, the html lang stamp and the decorative markers. The evidence lands in the committed `wcagrecord` const of `tests/devthink.wcag.ts` with no timestamps so reruns stay byte identical, and the gate exits nonzero on any failed check.
 
 ## 1. Run the sweep after the build
 
@@ -9,7 +9,7 @@ pnpm build
 node tests/wcag.ts
 ```
 
-The sweep reads the design file, the embedded stylesheet, the view sources and the built surface pages of `dist/extension`, so the build runs first. The gate prints one line per executed check with its outcome and answers the final JSON summary; any failed check prints to stderr, sets the exit code nonzero and lands in the artifact with its failure detail. The artifact is `tests/artifacts/wcag.json`.
+The sweep reads the design file, the embedded stylesheet, the view sources and the built surface pages of `dist/extension`, so the build runs first. The gate prints one line per executed check with its outcome and answers the final JSON summary; any failed check prints to stderr, sets the exit code nonzero and lands in the record with its failure detail. The record is the committed `wcagrecord` const of `tests/devthink.wcag.ts`.
 
 ## 2. The checklist and its success criteria
 

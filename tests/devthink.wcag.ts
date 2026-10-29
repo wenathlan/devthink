@@ -1,13 +1,12 @@
-/** Executes the accessibility sweep gate of the 2.0.0 roadmap item 55 ("an accessibility sweep audits every ui surface against the wcag checklist") over the surface templates and the generated view markup: the gate reads the one design file design.html, extracts every surface template the build splits into the extension pages (the site, the popup, the sidepanel, the dashboardpage, the optionspage, the transparencypage, the sandbox host and the offscreen host) and audits each surface against the checklist — every image carries its alt text, every button carries an accessible name, every input, textarea and select carries its label, the heading hierarchy starts at the h1 with no skipped level, the default theme tokens meet the computed contrast ratios, the stylesheet carries its focus visible outlines, no positive tabindex reorders the focus, the built surface pages stamp their html lang and no template overrides it, and the decorative markers stay off the interactive elements. The contrast math recomputes the WCAG relative luminance ratio from the token values parsed out of the stylesheet so a token change re-audits, the high contrast variants another lane owns stay outside this sweep, and the generated markup cross-check proves every class the templates reference, every state class the view scripts toggle and every class of the shared template vocabulary resolves to a real stylesheet rule. The audit is honest about its limits: it is static analysis of the templates, the stylesheet and the view sources with no screen reader emulation and no runtime focus walk. The artifact tests/artifacts/wcag.json records every executed check with its outcome in a fixed order with no timestamps so reruns stay byte identical, and the gate exits nonzero on any failed check. The checklist with its success criterion references and the invocation walkthrough live in docs/wcag.md. */
-import { mkdir, writeFile } from "node:fs/promises";
+/** Executes the accessibility sweep gate of the 2.0.0 roadmap item 55 ("an accessibility sweep audits every ui surface against the wcag checklist") over the surface templates and the generated view markup: the gate reads the one design file design.html, extracts every surface template the build splits into the extension pages (the site, the popup, the sidepanel, the dashboardpage, the optionspage, the transparencypage, the sandbox host and the offscreen host) and audits each surface against the checklist — every image carries its alt text, every button carries an accessible name, every input, textarea and select carries its label, the heading hierarchy starts at the h1 with no skipped level, the default theme tokens meet the computed contrast ratios, the stylesheet carries its focus visible outlines, no positive tabindex reorders the focus, the built surface pages stamp their html lang and no template overrides it, and the decorative markers stay off the interactive elements. The contrast math recomputes the WCAG relative luminance ratio from the token values parsed out of the stylesheet so a token change re-audits, the high contrast variants another lane owns stay outside this sweep, and the generated markup cross-check proves every class the templates reference, every state class the view scripts toggle and every class of the shared template vocabulary resolves to a real stylesheet rule. The audit is honest about its limits: it is static analysis of the templates, the stylesheet and the view sources with no screen reader emulation and no runtime focus walk. The committed record tests/devthink.wcag.ts (the wcagrecord const this module carries, migrated from devthink/artifacts/wcag.json when the flat folder law dissolved the artifacts folder) records every executed check with its outcome in a fixed order with no timestamps so reruns stay byte identical, and the gate exits nonzero on any failed check. The checklist with its success criterion references and the invocation walkthrough live in docs/wcag.md. The sync mode (`node ../tests/devthink.wcag.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
 import { readFile, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
+import { summaryproblemsof, syncmode, syncrecord } from "./devthink.records.ts";
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
-const artifactpath = "artifacts/wcag.json";
 const designpath = "design.html";
 
 /** Collects one executed sweep check with its outcome; the detail names what the check audited and what it answered. */
@@ -603,16 +602,202 @@ export async function runwcagsuite() {
   };
 }
 
+/* ── the committed record (the sync pass rewrites this block) ── */
+
+/** The accessibility sweep report the committed record carries: the release
+ * it stamps, the checklist document, the audited surfaces, the computed
+ * contrast pairs with their minimums, every executed check in its fixed
+ * order with its success criterion and outcome, and the summary the gate
+ * exits on. */
+export interface wcagreport {
+  release: string;
+  checklist: string;
+  surfaces: string[];
+  contrast: Array<{ pair: string; ratio: number; minimum: number }>;
+  entries: Array<{ id: number; title: string; criterion: string; family: string; module: string; outcome: string; detail: string }>;
+  summary: { total: number; passed: number; failed: number };
+}
+
+/** The committed accessibility record of the 2.0.151 release — the evidence
+ * the readiness review reads, migrated from devthink/artifacts/wcag.json
+ * when the flat folder law dissolved the artifacts folder of the application
+ * first layer: every check in its fixed order with its outcome, no
+ * timestamps, so the record replays byte identical. */
+export const wcagrecord: wcagreport = {
+  "release": "2.0.151",
+  "checklist": "docs/wcag.md",
+  "surfaces": [
+    "site",
+    "popup",
+    "sidepanel",
+    "dashboardpage",
+    "optionspage",
+    "transparencypage",
+    "sandbox",
+    "offscreen"
+  ],
+  "contrast": [
+    {
+      "pair": "text on surface",
+      "ratio": 17.85,
+      "minimum": 4.5
+    },
+    {
+      "pair": "text on elevated",
+      "ratio": 16.13,
+      "minimum": 4.5
+    },
+    {
+      "pair": "muted on surface",
+      "ratio": 8.06,
+      "minimum": 4.5
+    },
+    {
+      "pair": "muted on elevated",
+      "ratio": 7.28,
+      "minimum": 4.5
+    },
+    {
+      "pair": "accent on surface",
+      "ratio": 13,
+      "minimum": 3
+    },
+    {
+      "pair": "accent on elevated",
+      "ratio": 11.75,
+      "minimum": 3
+    },
+    {
+      "pair": "button ink #06120f on accent",
+      "ratio": 12.76,
+      "minimum": 4.5
+    },
+    {
+      "pair": "focus outline on surface",
+      "ratio": 15.34,
+      "minimum": 3
+    }
+  ],
+  "entries": [
+    {
+      "id": 1,
+      "title": "every ui surface template the build splits is present and named",
+      "criterion": "2.4.3",
+      "family": "surfaces",
+      "module": "design.html",
+      "outcome": "pass",
+      "detail": "the design file carries all 8 surface templates (site, popup, sidepanel, dashboardpage, optionspage, transparencypage, sandbox, offscreen) beside the shell navigation landmark with its aria-label and the switcher that names every nav button it creates."
+    },
+    {
+      "id": 2,
+      "title": "every image carries its alt text and the decorative markers stay off the interactive elements",
+      "criterion": "1.1.1",
+      "family": "non-text content",
+      "module": "design.html",
+      "outcome": "pass",
+      "detail": "0 image elements audited with every alt attribute present and 1 decorative marker audited (the hidden sandbox frame among them) with none sitting on an interactive element, carrying a tabindex or staying visible."
+    },
+    {
+      "id": 3,
+      "title": "every button carries an accessible name and every field carries its label",
+      "criterion": "1.3.1",
+      "family": "names and labels",
+      "module": "design.html",
+      "outcome": "pass",
+      "detail": "66 button elements audited with every accessible name present (its text content or its aria-label) and 94 input, textarea and select fields audited with every label present (its label element or its aria-label)."
+    },
+    {
+      "id": 4,
+      "title": "every surface heading hierarchy starts at the h1 with no skipped level",
+      "criterion": "1.3.1",
+      "family": "structure",
+      "module": "design.html",
+      "outcome": "pass",
+      "detail": "every surface heading hierarchy audited: site: h1h2h2h2h2h3h3h3h3h3; popup: h1h2h2h2h2h2; sidepanel: h1h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2; dashboardpage: h1h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2; optionspage: h1h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2; transparencypage: h1h2h2h2h2h2h2h2h2h2h2h2h2h2; sandbox: no headings; offscreen: no headings."
+    },
+    {
+      "id": 5,
+      "title": "the default theme tokens meet the computed contrast ratios",
+      "criterion": "1.4.3",
+      "family": "contrast",
+      "module": "design.html",
+      "outcome": "pass",
+      "detail": "the default theme tokens parsed from the stylesheet answer: text on surface 17.85:1 (min 4.5:1), text on elevated 16.13:1 (min 4.5:1), muted on surface 8.06:1 (min 4.5:1), muted on elevated 7.28:1 (min 4.5:1), accent on surface 13:1 (min 3:1), accent on elevated 11.75:1 (min 3:1), button ink #06120f on accent 12.76:1 (min 4.5:1), focus outline on surface 15.34:1 (min 3:1); the fallback tokens mirror the theme tokens and the high contrast variants stay outside this sweep."
+    },
+    {
+      "id": 6,
+      "title": "the stylesheet carries the focus visible outlines",
+      "criterion": "2.4.7",
+      "family": "focus visible",
+      "module": "design.html",
+      "outcome": "pass",
+      "detail": "the stylesheet carries the shared focus visible rule for the button, input and textarea selectors with its 2px solid #dfe5ee and its outline offset, so keyboard focus stays visible on every control surface."
+    },
+    {
+      "id": 7,
+      "title": "no positive tabindex reorders the focus order of any surface",
+      "criterion": "2.4.3",
+      "family": "focus order",
+      "module": "index.html and dist/extension",
+      "outcome": "pass",
+      "detail": "3 tabindex attributes scanned across the 8 surface templates, the shell and the 7 built pages with zero positive values, so the focus order stays the document order."
+    },
+    {
+      "id": 8,
+      "title": "every built surface page stamps its html lang and no template overrides it",
+      "criterion": "3.1.1",
+      "family": "language",
+      "module": "index.html, tests/build.ts and dist/extension",
+      "outcome": "pass",
+      "detail": "the design document stamps lang=\"en\", no template body carries its own html element (the script strings of the hidden sandbox frame stay excluded from the markup scan) and every built page keeps the stamp the build writes: dashboardpage.html: en, offscreen.html: en, optionspage.html: en, popup.html: en, sandbox.html: en, sidepanel.html: en, transparencypage.html: en."
+    },
+    {
+      "id": 9,
+      "title": "the generated markup classes resolve to real stylesheet rules",
+      "criterion": "1.3.1",
+      "family": "generated markup",
+      "module": "views.ts, sidepanel.ts, popup.ts, dashboardpage.ts and optionspage.ts",
+      "outcome": "pass",
+      "detail": "every one of the 13 template classes resolves to a real stylesheet rule, every one of the 1 runtime state class the view scripts toggle (selected) resolves and every one of the 7 shared vocabulary classes the view scripts assign resolves, so the generated markup renders with the rules the one design ships."
+    },
+    {
+      "id": 10,
+      "title": "the sweep report records every check and the exit answers the failures",
+      "criterion": "2.4.3",
+      "family": "report",
+      "module": "wcag.ts",
+      "outcome": "pass",
+      "detail": "the sweep report carries the nine executed checks with their outcomes, details and success criterion references, the summary computes 10 of 10 passed over the 8 surface templates, and the gate sets its nonzero exit the moment any failed check lands in the artifact while the static analysis stays honest: no screen reader emulation and no runtime focus walk."
+    }
+  ],
+  "summary": {
+    "total": 10,
+    "passed": 10,
+    "failed": 0
+  }
+};
+
 const invokeddirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (invokeddirectly) {
   const report = await runwcagsuite();
-  await mkdir("artifacts", { recursive: true });
-  await writeFile(artifactpath, `${JSON.stringify(report, null, 2)}\n`);
   for (const candidate of report.entries) {
     const line = `[${candidate.outcome === "pass" ? "ok" : "FAIL"}] ${candidate.id}. ${candidate.title} (wcag ${candidate.criterion}, ${candidate.module}) — ${candidate.detail}`;
     if (candidate.outcome === "pass") console.log(line);
     else console.error(line);
   }
-  console.log(JSON.stringify({ release: report.release, artifact: artifactpath, ...report.summary }, null, 2));
+  if (syncmode()) {
+    /* the sync rewrites the committed record this run produced, so the release refresh rides one reviewable commit */
+    console.log(await syncrecord({ moduleurl: import.meta.url, recordname: "wcagrecord", recordtype: "wcagreport", record: report }));
+  } else {
+    /* the record verification: the committed evidence stays internally consistent (the summary math and the outcome counts), so a hand-edited record never passes as a recorded run */
+    const passing = wcagrecord.entries.filter((candidate) => candidate.outcome === "pass").length;
+    const problems = [
+      ...summaryproblemsof(wcagrecord.summary),
+      ...(passing !== wcagrecord.summary.passed ? ["the recorded passing entries disagree with the recorded passed count"] : []),
+    ];
+    for (const problem of problems) console.error(`WCAG record: ${problem}`);
+    console.log(JSON.stringify({ release: report.release, record: "tests/devthink.wcag.ts", ...report.summary }, null, 2));
+    if (problems.length > 0) process.exitCode = 1;
+  }
   if (report.summary.failed > 0) process.exitCode = 1;
 }

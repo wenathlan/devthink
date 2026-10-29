@@ -868,9 +868,17 @@ describe("hardcoded provider url scan of the source tree", () => {
     /* the flat tests village: the gate sources of the os answer from the
      * repository-root tests folder under the devthink. prefix (the suites
      * with their example fixtures stay outside the scan the corpus law kept
-     * them in). */
+     * them in, and so does the reviewed origins catalog module — the typed
+     * data rows the sweep allowlist reads, the one module whose provider
+     * endpoint literals are the reviewed catalog itself, never a call
+     * target the gateway would dial). */
     for (const entry of await readdir(join(root, "..", "tests")))
-      if (entry.startsWith("devthink.") && entry.endsWith(".ts") && !entry.endsWith(".test.ts"))
+      if (
+        entry.startsWith("devthink.") &&
+        entry.endsWith(".ts") &&
+        !entry.endsWith(".test.ts") &&
+        entry !== "devthink.reviewedorigins.ts"
+      )
         files.push(join(root, "..", "tests", entry));
     expect(files.length).toBeGreaterThan(50);
     const providerhosts = [
