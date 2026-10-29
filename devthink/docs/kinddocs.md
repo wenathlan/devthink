@@ -6,7 +6,7 @@ Every action kind of the immutable 335 kind vocabulary documents its family, its
 
 ## Interaction kinds
 
-The pointer, keyboard and element surface: every kind that moves, clicks, types or toggles a reviewed element. 45 kinds; the family policy test lives in tests/policy.test.ts.
+The pointer, keyboard and element surface: every kind that moves, clicks, types or toggles a reviewed element. 45 kinds; the family policy test lives in ../tests/devthink.policy.test.ts.
 
 ### `appendtext`
 
@@ -15,7 +15,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -29,7 +29,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -43,7 +43,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -57,7 +57,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -71,7 +71,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -85,7 +85,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -99,7 +99,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -113,7 +113,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -127,7 +127,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -141,7 +141,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -155,7 +155,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -169,7 +169,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -183,7 +183,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -197,7 +197,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -211,7 +211,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -225,7 +225,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -239,7 +239,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -253,7 +253,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -267,7 +267,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -281,7 +281,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -295,7 +295,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -309,7 +309,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -323,7 +323,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -337,7 +337,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -351,7 +351,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -365,7 +365,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -379,7 +379,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -393,7 +393,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -407,7 +407,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -421,7 +421,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -435,7 +435,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -449,7 +449,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -463,7 +463,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -477,7 +477,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -491,7 +491,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -505,7 +505,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -519,7 +519,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -533,7 +533,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -547,7 +547,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -561,7 +561,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -575,7 +575,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -589,7 +589,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -603,7 +603,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -617,7 +617,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -631,7 +631,7 @@ The pointer, keyboard and element surface: every kind that moves, clicks, types 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/policy.test.ts
+- policy test: ../tests/devthink.policy.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -649,7 +649,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -663,7 +663,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -677,7 +677,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -691,7 +691,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -705,7 +705,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -719,7 +719,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -733,7 +733,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -747,7 +747,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -761,7 +761,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -775,7 +775,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -789,7 +789,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -803,7 +803,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -817,7 +817,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -831,7 +831,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -845,7 +845,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -859,7 +859,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -873,7 +873,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -887,7 +887,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -901,7 +901,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -915,7 +915,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -929,7 +929,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -943,7 +943,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -957,7 +957,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -971,7 +971,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -985,7 +985,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -999,7 +999,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1013,7 +1013,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1027,7 +1027,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1041,7 +1041,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1055,7 +1055,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1069,7 +1069,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1083,7 +1083,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1097,7 +1097,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1111,7 +1111,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1125,7 +1125,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1139,7 +1139,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1153,7 +1153,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1167,7 +1167,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1181,7 +1181,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1195,7 +1195,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1209,7 +1209,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1223,7 +1223,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1237,7 +1237,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1251,7 +1251,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1265,7 +1265,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1279,7 +1279,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1293,7 +1293,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1307,7 +1307,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1321,7 +1321,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1335,7 +1335,7 @@ The read-only surface: every kind that observes, inspects, extracts or waits wit
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/pagebridge.test.ts
+- policy test: ../tests/devthink.pagebridge.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1353,7 +1353,7 @@ The address bar surface: every kind that navigates, reloads, waits for or audits
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/navigation.test.ts
+- policy test: ../tests/devthink.navigation.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1367,7 +1367,7 @@ The address bar surface: every kind that navigates, reloads, waits for or audits
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/navigation.test.ts
+- policy test: ../tests/devthink.navigation.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1381,7 +1381,7 @@ The address bar surface: every kind that navigates, reloads, waits for or audits
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/navigation.test.ts
+- policy test: ../tests/devthink.navigation.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1395,7 +1395,7 @@ The address bar surface: every kind that navigates, reloads, waits for or audits
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/navigation.test.ts
+- policy test: ../tests/devthink.navigation.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1409,7 +1409,7 @@ The address bar surface: every kind that navigates, reloads, waits for or audits
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/navigation.test.ts
+- policy test: ../tests/devthink.navigation.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1423,7 +1423,7 @@ The address bar surface: every kind that navigates, reloads, waits for or audits
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/navigation.test.ts
+- policy test: ../tests/devthink.navigation.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1437,7 +1437,7 @@ The address bar surface: every kind that navigates, reloads, waits for or audits
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/navigation.test.ts
+- policy test: ../tests/devthink.navigation.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1451,7 +1451,7 @@ The address bar surface: every kind that navigates, reloads, waits for or audits
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/navigation.test.ts
+- policy test: ../tests/devthink.navigation.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1465,7 +1465,7 @@ The address bar surface: every kind that navigates, reloads, waits for or audits
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/navigation.test.ts
+- policy test: ../tests/devthink.navigation.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1479,7 +1479,7 @@ The address bar surface: every kind that navigates, reloads, waits for or audits
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/navigation.test.ts
+- policy test: ../tests/devthink.navigation.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1493,7 +1493,7 @@ The address bar surface: every kind that navigates, reloads, waits for or audits
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/navigation.test.ts
+- policy test: ../tests/devthink.navigation.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1507,7 +1507,7 @@ The address bar surface: every kind that navigates, reloads, waits for or audits
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/navigation.test.ts
+- policy test: ../tests/devthink.navigation.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1521,7 +1521,7 @@ The address bar surface: every kind that navigates, reloads, waits for or audits
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/navigation.test.ts
+- policy test: ../tests/devthink.navigation.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1535,7 +1535,7 @@ The address bar surface: every kind that navigates, reloads, waits for or audits
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/navigation.test.ts
+- policy test: ../tests/devthink.navigation.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1549,7 +1549,7 @@ The address bar surface: every kind that navigates, reloads, waits for or audits
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/navigation.test.ts
+- policy test: ../tests/devthink.navigation.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1563,7 +1563,7 @@ The address bar surface: every kind that navigates, reloads, waits for or audits
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/navigation.test.ts
+- policy test: ../tests/devthink.navigation.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1577,7 +1577,7 @@ The address bar surface: every kind that navigates, reloads, waits for or audits
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/navigation.test.ts
+- policy test: ../tests/devthink.navigation.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1591,7 +1591,7 @@ The address bar surface: every kind that navigates, reloads, waits for or audits
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/navigation.test.ts
+- policy test: ../tests/devthink.navigation.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1605,7 +1605,7 @@ The address bar surface: every kind that navigates, reloads, waits for or audits
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/navigation.test.ts
+- policy test: ../tests/devthink.navigation.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1619,7 +1619,7 @@ The address bar surface: every kind that navigates, reloads, waits for or audits
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/navigation.test.ts
+- policy test: ../tests/devthink.navigation.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1633,7 +1633,7 @@ The address bar surface: every kind that navigates, reloads, waits for or audits
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/navigation.test.ts
+- policy test: ../tests/devthink.navigation.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1651,7 +1651,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1665,7 +1665,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1679,7 +1679,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1693,7 +1693,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1707,7 +1707,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1721,7 +1721,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1735,7 +1735,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1749,7 +1749,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1763,7 +1763,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1777,7 +1777,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1791,7 +1791,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1805,7 +1805,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1819,7 +1819,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1833,7 +1833,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1847,7 +1847,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1861,7 +1861,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1875,7 +1875,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1889,7 +1889,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1903,7 +1903,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1917,7 +1917,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1931,7 +1931,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1945,7 +1945,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1959,7 +1959,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1973,7 +1973,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -1987,7 +1987,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2001,7 +2001,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2015,7 +2015,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2029,7 +2029,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2043,7 +2043,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2057,7 +2057,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2071,7 +2071,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2085,7 +2085,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2099,7 +2099,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2113,7 +2113,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2127,7 +2127,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2141,7 +2141,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2155,7 +2155,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2169,7 +2169,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2183,7 +2183,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2197,7 +2197,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2211,7 +2211,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2225,7 +2225,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2239,7 +2239,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2253,7 +2253,7 @@ The tab strip and window surface: every kind that opens, focuses, groups, arrang
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.commands.test.ts
+- policy test: ../tests/devthink.torture.commands.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2271,7 +2271,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2285,7 +2285,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2299,7 +2299,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2313,7 +2313,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2327,7 +2327,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2341,7 +2341,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2355,7 +2355,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2369,7 +2369,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2383,7 +2383,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2397,7 +2397,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2411,7 +2411,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2425,7 +2425,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2439,7 +2439,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2453,7 +2453,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2467,7 +2467,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2481,7 +2481,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2495,7 +2495,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2509,7 +2509,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2523,7 +2523,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2537,7 +2537,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2551,7 +2551,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2565,7 +2565,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2579,7 +2579,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2593,7 +2593,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2607,7 +2607,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2621,7 +2621,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2635,7 +2635,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2649,7 +2649,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2663,7 +2663,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2677,7 +2677,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2691,7 +2691,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2705,7 +2705,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2719,7 +2719,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2733,7 +2733,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2747,7 +2747,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2761,7 +2761,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2775,7 +2775,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2789,7 +2789,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2803,7 +2803,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2817,7 +2817,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2831,7 +2831,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2845,7 +2845,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2859,7 +2859,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2873,7 +2873,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2887,7 +2887,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2901,7 +2901,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2915,7 +2915,7 @@ The form and table surface: every kind that fills, submits, scrapes, exports or 
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.data.test.ts
+- policy test: ../tests/devthink.torture.data.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2933,7 +2933,7 @@ The capture surface: every kind that shots, records, converts or names visual an
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/vision.test.ts
+- policy test: ../tests/devthink.vision.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2947,7 +2947,7 @@ The capture surface: every kind that shots, records, converts or names visual an
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/vision.test.ts
+- policy test: ../tests/devthink.vision.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2961,7 +2961,7 @@ The capture surface: every kind that shots, records, converts or names visual an
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/vision.test.ts
+- policy test: ../tests/devthink.vision.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2975,7 +2975,7 @@ The capture surface: every kind that shots, records, converts or names visual an
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/vision.test.ts
+- policy test: ../tests/devthink.vision.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -2989,7 +2989,7 @@ The capture surface: every kind that shots, records, converts or names visual an
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/vision.test.ts
+- policy test: ../tests/devthink.vision.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3003,7 +3003,7 @@ The capture surface: every kind that shots, records, converts or names visual an
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/vision.test.ts
+- policy test: ../tests/devthink.vision.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3017,7 +3017,7 @@ The capture surface: every kind that shots, records, converts or names visual an
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/vision.test.ts
+- policy test: ../tests/devthink.vision.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3031,7 +3031,7 @@ The capture surface: every kind that shots, records, converts or names visual an
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/vision.test.ts
+- policy test: ../tests/devthink.vision.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3045,7 +3045,7 @@ The capture surface: every kind that shots, records, converts or names visual an
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/vision.test.ts
+- policy test: ../tests/devthink.vision.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3059,7 +3059,7 @@ The capture surface: every kind that shots, records, converts or names visual an
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/vision.test.ts
+- policy test: ../tests/devthink.vision.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3073,7 +3073,7 @@ The capture surface: every kind that shots, records, converts or names visual an
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/vision.test.ts
+- policy test: ../tests/devthink.vision.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3087,7 +3087,7 @@ The capture surface: every kind that shots, records, converts or names visual an
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/vision.test.ts
+- policy test: ../tests/devthink.vision.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3101,7 +3101,7 @@ The capture surface: every kind that shots, records, converts or names visual an
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/vision.test.ts
+- policy test: ../tests/devthink.vision.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3115,7 +3115,7 @@ The capture surface: every kind that shots, records, converts or names visual an
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/vision.test.ts
+- policy test: ../tests/devthink.vision.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3129,7 +3129,7 @@ The capture surface: every kind that shots, records, converts or names visual an
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/vision.test.ts
+- policy test: ../tests/devthink.vision.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3143,7 +3143,7 @@ The capture surface: every kind that shots, records, converts or names visual an
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/vision.test.ts
+- policy test: ../tests/devthink.vision.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3157,7 +3157,7 @@ The capture surface: every kind that shots, records, converts or names visual an
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/vision.test.ts
+- policy test: ../tests/devthink.vision.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3171,7 +3171,7 @@ The capture surface: every kind that shots, records, converts or names visual an
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/vision.test.ts
+- policy test: ../tests/devthink.vision.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3185,7 +3185,7 @@ The capture surface: every kind that shots, records, converts or names visual an
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/vision.test.ts
+- policy test: ../tests/devthink.vision.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3199,7 +3199,7 @@ The capture surface: every kind that shots, records, converts or names visual an
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/vision.test.ts
+- policy test: ../tests/devthink.vision.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3217,7 +3217,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3231,7 +3231,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3245,7 +3245,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3259,7 +3259,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3273,7 +3273,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3287,7 +3287,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3301,7 +3301,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3315,7 +3315,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3329,7 +3329,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3343,7 +3343,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3357,7 +3357,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3371,7 +3371,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3385,7 +3385,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3399,7 +3399,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3413,7 +3413,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3427,7 +3427,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3441,7 +3441,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3455,7 +3455,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3469,7 +3469,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3483,7 +3483,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3497,7 +3497,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3511,7 +3511,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3525,7 +3525,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3539,7 +3539,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3553,7 +3553,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3567,7 +3567,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3581,7 +3581,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3595,7 +3595,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3609,7 +3609,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3623,7 +3623,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3637,7 +3637,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3651,7 +3651,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3665,7 +3665,7 @@ The network surface: every kind that fetches, calls, intercepts or watches revie
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/torture.http.test.ts
+- policy test: ../tests/devthink.torture.http.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3683,7 +3683,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3697,7 +3697,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3711,7 +3711,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3725,7 +3725,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3739,7 +3739,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3753,7 +3753,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3767,7 +3767,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3781,7 +3781,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3795,7 +3795,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3809,7 +3809,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3823,7 +3823,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3837,7 +3837,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3851,7 +3851,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3865,7 +3865,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3879,7 +3879,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3893,7 +3893,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3907,7 +3907,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3921,7 +3921,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3935,7 +3935,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3949,7 +3949,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3963,7 +3963,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3977,7 +3977,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -3991,7 +3991,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4005,7 +4005,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4019,7 +4019,7 @@ The devtools surface: every kind that attaches, steps, profiles, traces or emula
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/runtimeadapters.test.ts
+- policy test: ../tests/devthink.runtimeadapters.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4037,7 +4037,7 @@ The session and storage surface: every kind that persists, captures, diffs, sear
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/memory.test.ts
+- policy test: ../tests/devthink.memory.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4051,7 +4051,7 @@ The session and storage surface: every kind that persists, captures, diffs, sear
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/memory.test.ts
+- policy test: ../tests/devthink.memory.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4065,7 +4065,7 @@ The session and storage surface: every kind that persists, captures, diffs, sear
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/memory.test.ts
+- policy test: ../tests/devthink.memory.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4079,7 +4079,7 @@ The session and storage surface: every kind that persists, captures, diffs, sear
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/memory.test.ts
+- policy test: ../tests/devthink.memory.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4093,7 +4093,7 @@ The session and storage surface: every kind that persists, captures, diffs, sear
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/memory.test.ts
+- policy test: ../tests/devthink.memory.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4107,7 +4107,7 @@ The session and storage surface: every kind that persists, captures, diffs, sear
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/memory.test.ts
+- policy test: ../tests/devthink.memory.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4121,7 +4121,7 @@ The session and storage surface: every kind that persists, captures, diffs, sear
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/memory.test.ts
+- policy test: ../tests/devthink.memory.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4135,7 +4135,7 @@ The session and storage surface: every kind that persists, captures, diffs, sear
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/memory.test.ts
+- policy test: ../tests/devthink.memory.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4149,7 +4149,7 @@ The session and storage surface: every kind that persists, captures, diffs, sear
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/memory.test.ts
+- policy test: ../tests/devthink.memory.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4163,7 +4163,7 @@ The session and storage surface: every kind that persists, captures, diffs, sear
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/memory.test.ts
+- policy test: ../tests/devthink.memory.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4177,7 +4177,7 @@ The session and storage surface: every kind that persists, captures, diffs, sear
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/memory.test.ts
+- policy test: ../tests/devthink.memory.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4191,7 +4191,7 @@ The session and storage surface: every kind that persists, captures, diffs, sear
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/memory.test.ts
+- policy test: ../tests/devthink.memory.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4205,7 +4205,7 @@ The session and storage surface: every kind that persists, captures, diffs, sear
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/memory.test.ts
+- policy test: ../tests/devthink.memory.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4219,7 +4219,7 @@ The session and storage surface: every kind that persists, captures, diffs, sear
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/memory.test.ts
+- policy test: ../tests/devthink.memory.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4233,7 +4233,7 @@ The session and storage surface: every kind that persists, captures, diffs, sear
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/memory.test.ts
+- policy test: ../tests/devthink.memory.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4251,7 +4251,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4265,7 +4265,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4279,7 +4279,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4293,7 +4293,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4307,7 +4307,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4321,7 +4321,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4335,7 +4335,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4349,7 +4349,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4363,7 +4363,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4377,7 +4377,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4391,7 +4391,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4405,7 +4405,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4419,7 +4419,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4433,7 +4433,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4447,7 +4447,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4461,7 +4461,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4475,7 +4475,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4489,7 +4489,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4503,7 +4503,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4517,7 +4517,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4531,7 +4531,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4545,7 +4545,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4559,7 +4559,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4573,7 +4573,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4587,7 +4587,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4601,7 +4601,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4615,7 +4615,7 @@ The engine surface: every control, composition, delay and trigger kind that stru
 - capability: the scripting grant the review panel requests at runtime on the active tab
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/workflow.test.ts
+- policy test: ../tests/devthink.workflow.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4633,7 +4633,7 @@ The page protocol surface: every kind that evaluates, exchanges or drags through
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/protocol.test.ts
+- policy test: ../tests/devthink.protocol.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4647,7 +4647,7 @@ The page protocol surface: every kind that evaluates, exchanges or drags through
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/protocol.test.ts
+- policy test: ../tests/devthink.protocol.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4661,7 +4661,7 @@ The page protocol surface: every kind that evaluates, exchanges or drags through
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/protocol.test.ts
+- policy test: ../tests/devthink.protocol.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4675,7 +4675,7 @@ The page protocol surface: every kind that evaluates, exchanges or drags through
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/protocol.test.ts
+- policy test: ../tests/devthink.protocol.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4689,7 +4689,7 @@ The page protocol surface: every kind that evaluates, exchanges or drags through
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: required — the reviewed css selector the step addresses
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/protocol.test.ts
+- policy test: ../tests/devthink.protocol.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4707,7 +4707,7 @@ The multi agent surface: every kind that messages, waits on or watches the share
 - capability: the consent window beside the scripting grant — the kind belongs to the sensitive class and never runs without the explicit user approval
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/coordination.test.ts
+- policy test: ../tests/devthink.coordination.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4721,7 +4721,7 @@ The multi agent surface: every kind that messages, waits on or watches the share
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/coordination.test.ts
+- policy test: ../tests/devthink.coordination.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
@@ -4735,7 +4735,7 @@ The multi agent surface: every kind that messages, waits on or watches the share
 - capability: the activeTab grant of the reviewed session with the scripting grant the review panel requests at runtime
 - target: optional — the kind reads the page or the session without a selector
 - options grammar: the reviewed json options of the kind — parseoptions validates the payload, the plan schema freezes the carrier, and the review surface approves every key before execution
-- policy test: tests/coordination.test.ts
+- policy test: ../tests/devthink.coordination.test.ts
 - schema anchor: schemas/plan.schema.json step fields (id, kind, target, value, options, summary, risk, idempotencykey, environment, agentid, intenthint)
 
 ```json
