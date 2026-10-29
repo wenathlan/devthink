@@ -20,6 +20,7 @@
       "!**/node_modules",
       "!**/bun.lock",
       "!**/*.min.js",
+      "!index-*.js",
       "!**/docs",
       "!**/tests/tmp",
       "!**/tests/code",

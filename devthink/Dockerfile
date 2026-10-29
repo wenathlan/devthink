@@ -323,7 +323,7 @@ RUN bun install --frozen-lockfile --ignore-scripts
 # getrybridge alias and the direct village imports, the saddle sandbox
 # and isolation surfaces of the vite/vitest/tsconfig bridges). the
 # application lands at /devthink and the siblings beside it, so every
-# ../devthink, ../tests, ../getry and ../saddle reference of the village
+# the sibling getry and saddle owners beside the application tree
 # answers inside the image exactly the way it answers in the checkout
 # (the root .dockerignore keeps the context to exactly these inputs — no
 # prebuilt dist, no packaged artifacts, no caches).
@@ -348,9 +348,9 @@ RUN ln -sfn /devthink/node_modules /tests/node_modules
 # server, the relay, the extension surface with its manifest and icons, the
 # static site with content-hashed file names and the immutable cache header
 # configuration, the frozen schemas, the fixture set and the flat
-# distpackage staging. the build engine lives in the flat test village the
-# checkout root carries (tests/devthink.build.ts).
-RUN node ../tests/devthink.build.ts
+# distpackage staging. the build engine lives in the application test
+# village the checkout carries beside the sources (tests/build.ts).
+RUN node tests/build.ts
 
 # the build checks the builder runs before the runtime stage ships — an
 # image whose checks fail never ships:
@@ -366,7 +366,7 @@ RUN node dist/cli.js headless dist/fixtures/plans/release-notes-plan.json --fixt
 
 # the native smoke (the companion recipe and the wsbridge answer against a
 # fake host process).
-RUN node ../tests/devthink.nativesmoke.ts
+RUN node tests/nativesmoke.ts
 
 # the firefox prep check (the overlay of manifest.json layers
 # onto the source manifest through the crossbrowser adapter: the host
@@ -380,7 +380,7 @@ RUN bun run checksecrets.ts
 # THIS build: the readiness test the vitest suite carries walks the
 # recorded evidence, and the committed artifact predates the build (the
 # same build, sweep, suite order the ci and verify lanes keep).
-RUN node ../tests/devthink.wcag.ts
+RUN node tests/wcag.ts
 
 # the vitest suite. the whole suite runs on the native build platform of
 # the builder stage — the $BUILDPLATFORM pin keeps every leg native, so the
@@ -403,7 +403,7 @@ RUN export DEVTHINK_TEST_TIMEOUT_MS=900000 DEVTHINK_TEST_BUDGET_MS=10000; \
 # the pack verification (the reproducible extension archive answers with
 # every required artifact, the packaged manifest matches the package stamp,
 # the icon family and the page bundles ship complete).
-RUN node ../tests/devthink.packageextension.ts
+RUN node tests/packageextension.ts
 
 # ---------------------------------------------------------------------------
 # stages 3 and 4: the devthink single-binary image — the compiled cli of

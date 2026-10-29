@@ -75,7 +75,8 @@
   /* ---- the signal: THE WHITE SUN — one Sol, one light; the name is Sol
      but the sun is WHITE, never yellow. Pure #ffffff on the dark ladder
      (it glows); the quiet poles carry the penumbra ---- */
-  --color-signal: #ffffff;
+  --arg-jade: #34d8a8;
+  --color-signal: var(--arg-jade);
   --color-signal-strong: #ffffff;
   --color-signal-2: #c9cdd6;
   --color-signal-3: #8b909b;

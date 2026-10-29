@@ -378,7 +378,6 @@ cmake_install.cmake
 *.sqlite3
 # the local vite build artifacts of the saddle pages staging (outDir is the
 # app root for the pages staging)
-saddle/index-*.js
 saddle/index-*.css
 saddle/manifest-*.webmanifest
 saddle/icon-*.svg

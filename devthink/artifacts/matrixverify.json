@@ -1,0 +1,128 @@
+{
+  "release": "2.0.151",
+  "matrix": {
+    "browsers": [
+      "chromium",
+      "firefox",
+      "safari"
+    ],
+    "kinds": 335,
+    "cells": 18
+  },
+  "cells": [
+    {
+      "family": "kinds",
+      "name": "every action kind answers the step policy on the chromium fake tab",
+      "outcome": "pass",
+      "detail": "all 335 kinds answered the policy on tab 101: 145 read, 29 interaction, 161 sensitive"
+    },
+    {
+      "family": "kinds",
+      "name": "every action kind answers the step policy on the firefox fake tab",
+      "outcome": "pass",
+      "detail": "all 335 kinds answered the policy on tab 201: 145 read, 29 interaction, 161 sensitive"
+    },
+    {
+      "family": "kinds",
+      "name": "every action kind answers the step policy on the safari fake tab",
+      "outcome": "pass",
+      "detail": "all 335 kinds answered the policy on tab 301: 145 read, 29 interaction, 161 sensitive"
+    },
+    {
+      "family": "surfaces",
+      "name": "every browser surface page opens with its script and style",
+      "outcome": "pass",
+      "detail": "5 interface pages with script and style beside 2 host pages with their inline logic"
+    },
+    {
+      "family": "cli",
+      "name": "the cli surface answers the manifest and help commands in library mode",
+      "outcome": "pass",
+      "detail": "manifest and help answered for 2.0.151"
+    },
+    {
+      "family": "mcp",
+      "name": "the mcp surface handshakes through the serve initialization and the stdio bridge contract",
+      "outcome": "pass",
+      "detail": "the handshake initialized with 35 tools"
+    },
+    {
+      "family": "migration",
+      "name": "the migration paths from version one plans answer the protocol negotiation",
+      "outcome": "pass",
+      "detail": "negotiation agreed on major two, refused version one below the 2.0.0 sunset floor with the migration guide and refused the future client"
+    },
+    {
+      "family": "importers",
+      "name": "the plan importer parses every fixture of the dist set",
+      "outcome": "pass",
+      "detail": "2 plan fixtures parsed"
+    },
+    {
+      "family": "importers",
+      "name": "the workflow importer dry runs every workflow fixture of the dist set",
+      "outcome": "pass",
+      "detail": "2 workflow fixtures dry ran"
+    },
+    {
+      "family": "importers",
+      "name": "the session importer round trips one session file",
+      "outcome": "pass",
+      "detail": "the session file and the export payload round tripped"
+    },
+    {
+      "family": "gates",
+      "name": "the pool audit gate runs green over the 626 item pool",
+      "outcome": "pass",
+      "detail": "Pool audit of 626 items against 4468 shipped symbols: 623 implemented, 3 planned, 0 unknown."
+    },
+    {
+      "family": "gates",
+      "name": "the api freeze gate runs green over the frozen contract",
+      "outcome": "pass",
+      "detail": "}"
+    },
+    {
+      "family": "gates",
+      "name": "the csp audit gate runs green over the content security policy",
+      "outcome": "pass",
+      "detail": "}"
+    },
+    {
+      "family": "gates",
+      "name": "the permission diff gate runs green over the versioned baseline",
+      "outcome": "pass",
+      "detail": "Permission set hash: 1d6e1579114bf176eba45a159e9f166c9c4a2587a53644bd2a63f880506a6262 over 11 permission entries; the baseline of tests/permbaseline.ts carries the recorded set of the release."
+    },
+    {
+      "family": "gates",
+      "name": "the agentcert artifact records a green run",
+      "outcome": "pass",
+      "detail": "the agentcert artifact records zero failures"
+    },
+    {
+      "family": "gates",
+      "name": "the costcert artifact records a green run",
+      "outcome": "pass",
+      "detail": "the costcert artifact records zero failures"
+    },
+    {
+      "family": "gates",
+      "name": "the doccheck artifact records a green run",
+      "outcome": "pass",
+      "detail": "the doccheck artifact records zero failures"
+    },
+    {
+      "family": "gates",
+      "name": "the sweep artifact records a green run",
+      "outcome": "pass",
+      "detail": "the sweep artifact records zero failures"
+    }
+  ],
+  "coverage": 100,
+  "summary": {
+    "total": 18,
+    "passed": 18,
+    "failed": 0
+  }
+}

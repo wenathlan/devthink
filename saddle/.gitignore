@@ -1,0 +1,16 @@
+# the saddle standalone clone: the deployable engine carries its own ignore
+# law (the package ships the source, the generated wrappers and the build
+# output never ride the tree)
+node_modules/
+dist/
+distpackage/
+target/
+coverage/
+*.db
+*.db-journal
+android/
+ios/
+capacitor.config.json
+index-*.js
+*.log
+.DS_Store

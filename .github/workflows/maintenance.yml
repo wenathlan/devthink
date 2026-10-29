@@ -121,7 +121,7 @@ jobs:
         # built surface): the scripts stay off so the frozen install never
         # rides the prebuild mirror or the broken bunx node-gyp fallback
         # the flaky lanes hit — the prisma client the validation reads
-        # generates inside ../tests/devthink.build.ts itself.
+        # generates inside tests/build.ts itself.
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: Bridge the flat testes gate scripts onto the application tree
         # the flat typed folder law moved every gate script out of the
@@ -137,7 +137,6 @@ jobs:
         # out-of-window firing checks out nothing, and the link step must
         # never touch the empty workspace it would fail on.
         if: steps.window.outputs.active == 'true'
-        run: ln -sfn ../devthink/node_modules tests/node_modules
       - name: Propose latest non-breaking direct npm dependency updates
         if: steps.window.outputs.active == 'true'
         run: cd devthink && bun run dependency:updates ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
@@ -232,7 +231,7 @@ jobs:
         run: |
           set -euo pipefail
           cd devthink
-          node ../tests/devthink.build.ts
+          node tests/build.ts
           bun run apifreeze:sync
           bun run permdiff:sync
       - name: Validate with the proposed Node version
@@ -262,7 +261,7 @@ jobs:
           bun install --ignore-scripts
       - name: Validate the complete proposed update
         if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
-        # every artifact the validation walks (../tests/devthink.build.ts, the
+        # every artifact the validation walks (tests/build.ts, the
         # distpackage the pack reads, the dist/cli.js the manifest prints)
         # lives inside the devthink application — the block answers from
         # the application root while git diff --check still sees the whole
@@ -270,11 +269,11 @@ jobs:
         run: |
           set -euo pipefail
           cd devthink
-          node ../tests/devthink.build.ts
+          node tests/build.ts
           bun run check
-          node ../tests/devthink.apifreeze.ts
-          node ../tests/devthink.permdiff.ts
-          node ../tests/devthink.release.ts check
+          node tests/apifreeze.ts
+          node tests/permdiff.ts
+          node tests/release.ts check
           npm pack ./distpackage --dry-run
           bun dist/cli.js manifest
           git diff --check

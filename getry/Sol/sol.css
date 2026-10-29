@@ -71,7 +71,8 @@
 
   /* ---- the signal: THE WHITE SUN — one Sol, one light; the name is Sol
      but the sun is WHITE, never yellow ---- */
-  --color-signal: #ffffff;
+  --violet-500: #8b5cf6;
+  --color-signal: var(--violet-500);
   --color-signal-strong: #ffffff;
   --color-signal-2: #c9cdd6;
   --color-signal-3: #8b909b;
