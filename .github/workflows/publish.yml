@@ -182,7 +182,7 @@ jobs:
           git checkout -- .npmrc
           bun install --frozen-lockfile --ignore-scripts
       - name: build the distribution set
-        run: cd devthink && node tests/build.ts
+        run: cd devthink && node ../testes/devthink.build.ts
       - name: package dry-run
         run: cd devthink && npm run pack:check
       - name: Verify release package versions
@@ -618,7 +618,7 @@ jobs:
           NPM_CONFIG_USERCONFIG: ""
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: build the distribution set
-        run: cd devthink && node tests/build.ts
+        run: cd devthink && node ../testes/devthink.build.ts
       - name: package dry-run
         run: cd devthink && npm run pack:check
       - name: align the github package scope on the staged manifest
@@ -922,7 +922,7 @@ jobs:
       - name: install locked dependencies
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: assemble the rich dist set the jar embeds
-        run: cd devthink && node tests/build.ts
+        run: cd devthink && node ../testes/devthink.build.ts
       - name: setup java
         uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
@@ -969,7 +969,7 @@ jobs:
           mkdir -p mavenrelease
           # the pom the maven deploy uploads to the registry is this pom.xml
           # (the extension lineage mold); the catalog asset name is
-          # devthink-<version>.pom (tests/release.ts).
+          # devthink-<version>.pom (../testes/devthink.release.ts).
           cp pom.xml "mavenrelease/devthink-${VERSION}.pom"
           cp "target/devthink-${VERSION}.jar" "mavenrelease/"
           cp "dist/devthink${VERSION}.zip" "dist/devthink-declarations-${VERSION}.zip" "mavenrelease/"
@@ -1192,7 +1192,7 @@ jobs:
       - name: install locked dependencies
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: assemble the rich dist set the content package carries
-        run: cd devthink && node tests/build.ts
+        run: cd devthink && node ../testes/devthink.build.ts
       - name: setup dotnet
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
@@ -3607,9 +3607,9 @@ jobs:
     # folder - the manifest the
     # lane gates on is web/manifest.json, never a root
     # manifest.json), and the archive the lane ships is the reproducible
-    # dist/devthink<version>.zip the build engine (tests/build.ts)
+    # dist/devthink<version>.zip the build engine (../testes/devthink.build.ts)
     # assembles from that tree - the same artifact the pack verification
-    # (tests/packageextension.ts) and the artifact manifest consume, so no
+    # (../testes/devthink.packageextension.ts) and the artifact manifest consume, so no
     # second packaging path exists.
     #
     # releases the lane releases carry version tags; a failed or foreign
@@ -3718,7 +3718,7 @@ jobs:
       # stamp, the icon family and the page bundles ship complete.
       - name: verify the packaged extension
         shell: bash
-        run: cd devthink && node tests/packageextension.ts
+        run: cd devthink && node ../testes/devthink.packageextension.ts
 
       - name: collect release assets
         shell: bash
@@ -3866,7 +3866,7 @@ jobs:
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: Build the release set the plans derive from
         if: steps.selected.outputs.enabled == 'true'
-        run: cd devthink && node tests/build.ts
+        run: cd devthink && node ../testes/devthink.build.ts
       - name: Write DevThink target plan
         if: steps.selected.outputs.enabled == 'true'
         shell: bash
