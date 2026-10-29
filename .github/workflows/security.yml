@@ -431,9 +431,18 @@ jobs:
         # crosses runs, nothing is published beside the product image; the
         # cross-run gha cache proved fragile when the service evicts
         # blobs and the next build reads orphan references).
+        # the context is THE REPOSITORY ROOT (the family-context law the
+        # Dockerfile header records): the dependency union pins the vault
+        # sibling as file:../vault, the flat test village owns the build
+        # engine and the suite, and the config bridges resolve the getry
+        # and saddle engines onto their sibling owners — an
+        # application-scoped context cannot answer any of them (the
+        # frozen bun install died on the missing ../vault folder exactly
+        # there), so the build answers the checkout geometry the image
+        # mirrors.
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
-          context: ./devthink
+          context: .
           file: ./devthink/Dockerfile
           target: runtime
           platforms: linux/amd64
