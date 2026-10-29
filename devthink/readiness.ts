@@ -474,7 +474,7 @@ The readiness gate answers **${report.godecision === "go" ? "go" : "no-go"}** fo
  * recorded run took). */
 export const readinessrecord: readinessreport = {
   "release": "2.0.151",
-  "mode": "check",
+  "mode": "sync",
   "generatedat": 1800000000000,
   "verdicts": [
     {
@@ -617,7 +617,7 @@ export const readinessrecord: readinessreport = {
     "gates": 27,
     "ok": 27,
     "blocked": 0,
-    "durationms": 568
+    "durationms": 0
   },
   "godecision": "go"
 };
