@@ -7,7 +7,7 @@
  * pure and multi-mode: browser and node, zero DOM and zero storage — the
  * log lives in memory and serializes to JSONL.
  */
-import type { DecisionPolicy } from "./jsondecision.ts";
+import type { DecisionPolicy } from "./json.ts";
 
 /** the machine readable failure codes of the policy domain. */
 export type policyerrorcode = "bad-table" | "bad-band" | "bad-record" | "bad-router" | "bad-rollout";

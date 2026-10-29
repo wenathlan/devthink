@@ -16,7 +16,7 @@
  * (the single wall module the akash study lands).
  */
 
-import { suspenddevtoolsguard } from "../../devtoolsguard.ts";
+import { suspenddevtoolsguard } from "./devtoolsguard.ts";
 
 /** one wallpaper of the picker: an id plus the layered css recipe the
  * --wall-fallback variable serves. */
