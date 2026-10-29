@@ -88,8 +88,11 @@ const serverport = 22000 + Math.floor(Math.random() * 8000);
 let gateway: ChildProcess | null = null;
 let configdir = "";
 
-const tsxbin = join(import.meta.dirname, "..", "..", "node_modules", ".bin", "tsx");
-const httpts = join(import.meta.dirname, "..", "..", "server.ts");
+/** the flat tests village sits at the repository root beside the app folders,
+ * so the gateway entry and its tsx binary resolve through the devthink app
+ * folder one hop up (the old tests home inside the app walked two). */
+const tsxbin = join(import.meta.dirname, "..", "devthink", "node_modules", ".bin", "tsx");
+const httpts = join(import.meta.dirname, "..", "devthink", "server.ts");
 
 async function waitforready(): Promise<void> {
   const deadline = Date.now() + 30000;

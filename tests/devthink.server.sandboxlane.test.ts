@@ -166,7 +166,7 @@ describe("the vendored registry mirror (the single-source law)", () => {
     // keeps the vendor a mirror instead of a second author. the day the
     // published envelope carries the built registry, the vendor retires and
     // the lane returns to the library specifier
-    const enginepath = path.join(import.meta.dirname, "..", "..", "..", "saddle", "modalityregistry.ts");
+    const enginepath = path.join(import.meta.dirname, "..", "saddle", "modalityregistry.ts");
     if (!existsSync(enginepath)) {
       // the container builder runs this suite from the devthink context
       // alone (the saddle workspace never enters the image) — the byte pin
@@ -175,7 +175,7 @@ describe("the vendored registry mirror (the single-source law)", () => {
       return;
     }
     const engine = await readFile(enginepath, "utf8");
-    const vendor = await readFile(path.join(import.meta.dirname, "..", "..", "modalities.ts"), "utf8");
+    const vendor = await readFile(path.join(import.meta.dirname, "..", "devthink", "modalities.ts"), "utf8");
     expect(vendor).toBe(engine);
   });
 

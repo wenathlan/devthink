@@ -13,8 +13,11 @@ import { afterAll, describe, expect, it } from "vitest";
 
 const exec = promisify(execFile);
 
-const tsxbin = join(import.meta.dirname, "..", "..", "node_modules", ".bin", "tsx");
-const clits = join(import.meta.dirname, "..", "..", "server.ts");
+/** the flat tests village sits at the repository root beside the app folders,
+ * so the cli runner and its tsx binary resolve through the devthink app
+ * folder one hop up (the old tests home inside the app walked two). */
+const tsxbin = join(import.meta.dirname, "..", "devthink", "node_modules", ".bin", "tsx");
+const clits = join(import.meta.dirname, "..", "devthink", "server.ts");
 
 /** run the cli in a workdir with optional piped stdin */
 async function runcli(

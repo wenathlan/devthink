@@ -98,7 +98,10 @@ async function fakehost(...args: string[]): Promise<{
   read: () => Promise<Record<string, unknown>>;
   close: () => Promise<void>;
 }> {
-  const child = spawn(process.execPath, [join(import.meta.dirname, "fakehost.ts"), ...args], {
+  /* the flat tests village names every suite after its family, so the fake
+   * host helper rides the devthink prefix (the old unprefixed name died with
+   * the tests/code home; the module resolution answers the village root). */
+  const child = spawn(process.execPath, [join(import.meta.dirname, "devthink.fakehost.ts"), ...args], {
     stdio: ["pipe", "pipe", "inherit"],
   });
   const chunks: Buffer[] = [];
