@@ -7,9 +7,11 @@
  *
  * Games — the runner app in the Windows 11 grammar: a nav pane beside the
  * content deck, the runner binaries as hairline rows and the launch queue
- * over the gateway. The old editorial pass (the shader stage, the film
- * grain, the atmosphere light) is retired — this body rides the dtw kit
- * with the runner boundary as one quiet card.
+ * over the gateway. The honest shelf law rides the body: while the catalog
+ * answers no binaries (the seed state of today) the whole body — the filter
+ * rail included, three filters over zero rows are noise — hands the deck to
+ * the in-construction face, and the runner table returns the day the
+ * catalog serves real rows.
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -17,8 +19,7 @@ import { ShellChrome } from "@/widgets/Shellchrome";
 import { osAppLabels, type RunnerBinary, runnerBinaries } from "../../catalog";
 import { osText } from "../../oslabels.ts";
 import { queuebinarylaunch } from "../../runner";
-import { GamesList } from "../widgets";
-import { type GamesFilter, GamesNav } from "../widgets";
+import { Constructionface, type GamesFilter, GamesList, GamesNav } from "../widgets";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */
@@ -42,6 +43,11 @@ export default function Games({ embedded }: { embedded?: boolean }) {
   const applications = binaries.length - games;
   const rows = binaries.filter((binary) => filter === "all" || binary.kind === filter);
 
+  /* the honest shelf: once the catalog has answered and holds no rows, the
+   * construction face owns the whole body — the filter rail and the boundary
+   * card would only dress an empty deck, and the face says the truth instead */
+  const empty = loaded && binaries.length === 0;
+
   const launch = (binary: RunnerBinary) => {
     void queuebinarylaunch(binary).then((answer) => {
       if (answer.queued) toast.success(`${binary.title} ${answer.reason}`);
@@ -52,23 +58,33 @@ export default function Games({ embedded }: { embedded?: boolean }) {
   return (
     <main className="dtw-app dtw-games" style={embedded ? { height: "100%", overflow: "auto" } : undefined}>
       {!embedded && <ShellChrome />}
-      <div className="dtw-pane">
-        <GamesNav
-          all={binaries.length}
-          games={games}
-          applications={applications}
-          active={filter}
-          onSelect={setFilter}
-        />
+      {empty ? (
         <div className="dtw-content">
           <h1 className="dtw-title">{GAMES_LABEL?.name ?? "Games"}</h1>
-          <GamesList rows={rows} loaded={loaded} onLaunch={launch} />
-          <section className="dtw-card">
-            <h2 className="dtw-cardtitle">{osText("games.boundary.title")}</h2>
-            <p className="dtw-copy">{osText("games.boundary.copy")}</p>
-          </section>
+          <Constructionface
+            accent="#e8563f"
+            title={GAMES_LABEL?.name ?? "Games"}
+          />
         </div>
-      </div>
+      ) : (
+        <div className="dtw-pane">
+          <GamesNav
+            all={binaries.length}
+            games={games}
+            applications={applications}
+            active={filter}
+            onSelect={setFilter}
+          />
+          <div className="dtw-content">
+            <h1 className="dtw-title">{GAMES_LABEL?.name ?? "Games"}</h1>
+            <GamesList rows={rows} loaded={loaded} onLaunch={launch} />
+            <section className="dtw-card">
+              <h2 className="dtw-cardtitle">{osText("games.boundary.title")}</h2>
+              <p className="dtw-copy">{osText("games.boundary.copy")}</p>
+            </section>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

@@ -3117,3 +3117,160 @@ code {
   overflow: hidden;
   background-color: var(--sol-canvas);
 }
+
+/* ---- 18. THE CONSTRUCTION FACE — the honest page of the in-development game
+   (this block stays after the guards by design: it carries no media query of
+   its own, so the reduced-motion hard stop above remains the closing rule
+   the design contract pins — every pass of the face is stilled by it) ---- */
+/* the face every game page wears while the game is in development: one
+   coral scope light over the deep canvas, the glass panel centered in the
+   stage (it eats the slack of the stage column, so the face never floats in
+   a dead ledger), the breathing wrench glyph on its tinted tile, the mono
+   eyebrow of the route, the display title, one honest line and the two ways
+   on. the coral answers --sh-accent (never a second hue), the radius and
+   shadow steps answer the sol ladders, and the reveal stagger rides the
+   shared observer of the design engine. */
+.shconstr {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: 1;
+  padding: clamp(16px, 3vw, 32px) 0;
+}
+/* the ONE light of the face: the coral bloom high over the panel */
+.shconstr__light {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    560px 420px at 50% 0%,
+    color-mix(in srgb, var(--sh-accent) 12%, transparent),
+    transparent 70%
+  );
+}
+.shconstr__panel {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  width: min(620px, 100%);
+  padding: clamp(26px, 5vw, 44px);
+}
+.shconstr__glyph {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  border: 1px solid color-mix(in srgb, var(--sh-accent) 32%, transparent);
+  border-radius: var(--sol-radius-2xl);
+  background:
+    radial-gradient(
+      130% 130% at 18% 8%,
+      color-mix(in srgb, var(--sh-accent) 18%, transparent),
+      transparent 62%
+    ),
+    color-mix(in oklab, var(--sol-ink) 5%, transparent);
+  color: var(--sh-accent);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 12%),
+    0 18px 34px -18px color-mix(in srgb, var(--sh-accent) 45%, transparent);
+  overflow: hidden;
+}
+/* the icon seats above the two decorative passes of the tile */
+.shconstr__glyph svg {
+  position: relative;
+  z-index: 1;
+}
+/* the one sheen pass: a soft light band crosses the tile once when the
+   reveal settles, then stays out of the frame (fill both, no loop) */
+.shconstr__glyph::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -45%;
+  width: 45%;
+  background: linear-gradient(105deg, transparent, rgb(255 255 255 / 18%), transparent);
+  transform: translateX(0);
+  animation: shconstrSheen 1100ms var(--win-ease-window) 620ms both;
+  pointer-events: none;
+}
+/* the quiet halo breathe: the coral ring fades between two low tints —
+   subtle by design, never a full-intensity loop, and the hard stop above
+   stills it for the visitors who ask for stillness */
+.shconstr__glyph::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 1px solid color-mix(in srgb, var(--sh-accent) 48%, transparent);
+  opacity: 0.18;
+  animation: shconstrBreathe 4.4s var(--sol-ease-out) 1.4s infinite alternate;
+  pointer-events: none;
+}
+.shconstr__title {
+  margin: 0;
+  color: var(--sol-text);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: var(--sol-track-display);
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.shconstr__lede {
+  max-width: 52ch;
+  margin: 0;
+  color: var(--sol-muted);
+  font-size: clamp(0.92rem, 1.4vw, 1rem);
+  text-wrap: pretty;
+}
+.shconstr__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  margin-top: 8px;
+}
+/* the quiet second way on: the mono cue of the stage grammar (the primary
+   way rides the machined .btn key above it) */
+.shconstr__cue {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 2px;
+  color: var(--sol-muted);
+  font: 600 12px var(--sol-mono);
+  letter-spacing: 0.08em;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, var(--sh-accent) 42%, transparent);
+  text-underline-offset: 5px;
+  transition:
+    color var(--sol-micro) var(--sol-ease-out),
+    text-decoration-color var(--sol-micro) var(--sol-ease-out);
+}
+.shconstr__cue:hover {
+  color: var(--sol-text);
+  text-decoration-color: var(--sh-accent);
+}
+.shconstr__cue:focus-visible {
+  outline: 2px solid var(--win-accent);
+  outline-offset: 3px;
+}
+@keyframes shconstrSheen {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(340%);
+  }
+}
+@keyframes shconstrBreathe {
+  from {
+    opacity: 0.18;
+  }
+  to {
+    opacity: 0.45;
+  }
+}

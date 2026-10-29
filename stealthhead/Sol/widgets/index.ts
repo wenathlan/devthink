@@ -5,6 +5,8 @@
  * lives exactly once (here) instead of repeating across every page —
  * the components stay complete independent files beside this surface.
  */
+export { default as Constructionface } from "./Constructionface.tsx";
+export * from "./Constructionface.tsx";
 export { default as HomeEntrygate } from "./HomeEntrygate.tsx";
 export * from "./HomeEntrygate.tsx";
 export { default as HomeScope } from "./HomeScope.tsx";

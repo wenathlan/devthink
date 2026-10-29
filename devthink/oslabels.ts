@@ -510,6 +510,15 @@ const seedOsStrings: OsStringRow[] = [
   { id: "video.windowedAria", text: "Exit full screen" },
   { id: "video.engineTail", text: ", the cadria engine." },
 
+  /* ---------------------------- construction face -------------------------- */
+  { id: "construction.aria", text: "In construction notice" },
+  { id: "construction.title", text: "In construction" },
+  {
+    id: "construction.subtitle",
+    text: "This surface is being built with the family design system. Come back soon.",
+  },
+  { id: "construction.action", text: "Back to Explore" },
+
   /* ------------------------------- onboarding ----------------------------- */
   { id: "onboarding.aria", text: "devthink onboarding" },
   { id: "onboarding.brand", text: "devthink" },

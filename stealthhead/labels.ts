@@ -58,6 +58,13 @@ export const LABELMANIFEST = {
   "shell.theme.aria": "toggle theme",
   "shell.chip.restoreAria": "Restore stealthhead",
   "shell.chip.name": "stealthhead",
+  // the construction face (the in-development notice every game page wears)
+  "construction.aria": "stealthhead is in construction",
+  "construction.title": "In construction",
+  "construction.subtitle":
+    "The game is in development — this surface is being rebuilt with the family design system. The engine, the physics and the match logic stay under the hood.",
+  "construction.action": "back to home",
+  "construction.replay": "watch the opening again",
   // the intro page anchor (the splash)
   "intro.aria": "stealthhead is opening",
   "intro.name": "stealthhead",
