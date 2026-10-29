@@ -30,7 +30,8 @@
       "!**/android",
       "!**/releasecheck",
       "!**/build",
-      "!**/release"
+      "!**/release",
+      "!index-*.js"
     ]
   },
   "formatter": {
