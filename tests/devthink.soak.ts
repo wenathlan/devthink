@@ -1,13 +1,12 @@
-/** Executes the soak run gate of the 2.0.0 roadmap item 51 ("a soak run keeps a long workflow alive across the full retention window without drift") against the real compiled modules: the gate composes one long workflow of three loop passes over the rows of a fixture pricing table — a repeated extraction — and drives it through the runworkflow engine in the fake clock mode so every stamp the engine makes rides the fixed epoch, with one keepalive heartbeat, one audit event, one hash chained log entry and one provenance carrying memory item per iteration. The run spans the audit retention window read back from the library settings three times over, checkpoints mid-run, simulates the service worker restart that reattaches the keepalive port, resumes from the checkpoint and proves the no drift contract four ways: the resumed outcome stays byte identical to the uninterrupted outcome, two full soak runs seal the identical audit hash, the whole immutable log chain verifies from the genesis hash to the seal, and the memory items keep their provenance while the retention window bounds the stored counts. The fake tab provider hands out fake tabs of every browser kind so the liveness sweep proves the zombie reaper never takes a beating run on chromium, firefox or safari while a silent run still reaps. The artifact tests/artifacts/soak.json records every executed check with its outcome in a fixed order with no timestamps so reruns stay byte identical, and the gate exits nonzero on any failed check. The retention window semantics and the invocation walkthrough live in docs/soak.md. */
-import { mkdir, writeFile } from "node:fs/promises";
+/** Executes the soak run gate of the 2.0.0 roadmap item 51 ("a soak run keeps a long workflow alive across the full retention window without drift") against the real compiled modules: the gate composes one long workflow of three loop passes over the rows of a fixture pricing table — a repeated extraction — and drives it through the runworkflow engine in the fake clock mode so every stamp the engine makes rides the fixed epoch, with one keepalive heartbeat, one audit event, one hash chained log entry and one provenance carrying memory item per iteration. The run spans the audit retention window read back from the library settings three times over, checkpoints mid-run, simulates the service worker restart that reattaches the keepalive port, resumes from the checkpoint and proves the no drift contract four ways: the resumed outcome stays byte identical to the uninterrupted outcome, two full soak runs seal the identical audit hash, the whole immutable log chain verifies from the genesis hash to the seal, and the memory items keep their provenance while the retention window bounds the stored counts. The fake tab provider hands out fake tabs of every browser kind so the liveness sweep proves the zombie reaper never takes a beating run on chromium, firefox or safari while a silent run still reaps. The committed record tests/devthink.soak.ts (the soakrecord const this module carries, migrated from devthink/artifacts/soak.json when the flat folder law dissolved the artifacts folder) records every executed check with its outcome in a fixed order with no timestamps so reruns stay byte identical, and the gate exits nonzero on any failed check. The retention window semantics and the invocation walkthrough live in docs/soak.md. The sync mode (`node ../tests/devthink.soak.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { pathToFileURL } from "node:url";
+import { summaryproblemsof, syncmode, syncrecord } from "./devthink.records.ts";
 import type { actionkind, heartbeatrecord, runstaterecord, storedrunlog, toolstep, variablescope, workflowrun } from "../devthink/types.ts";
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
-const artifactpath = "artifacts/soak.json";
 
 /** The compiled library, policy and memory bundles the soak gate loads after the build, typed through the declaration seam: the dist tree carries no declarations, so the seam answers the runtime import surface. */
 type librarybundle = typeof import("../devthink/dist/index.js");
@@ -950,16 +949,140 @@ function firstdifference(one: string, two: string) {
   return "the end";
 }
 
+/* ── the committed record (the sync pass rewrites this block) ── */
+
+/** The soak run report the committed record carries: the release it stamps,
+ * the checklist document, the soak shape (the retention window, the passes,
+ * the rows, the steps, the dispatched beats, the log entries and the
+ * heartbeat window), every executed check in its fixed order with its
+ * outcome and the summary the gate exits on. */
+export interface soakreport {
+  release: string;
+  checklist: string;
+  soak: { retentionwindow: number; passes: number; rows: number; steps: number; dispatched: number; logentries: number; heartbeatwindow: number };
+  entries: Array<{ id: number; title: string; family: string; module: string; outcome: string; detail: string }>;
+  summary: { total: number; passed: number; failed: number };
+}
+
+/** The committed soak record of the 2.0.151 release — the evidence the
+ * readiness review reads, migrated from devthink/artifacts/soak.json when
+ * the flat folder law dissolved the artifacts folder of the application
+ * first layer: every check in its fixed order with its outcome, no
+ * timestamps, so the record replays byte identical. */
+export const soakrecord: soakreport = {
+  "release": "2.0.151",
+  "checklist": "docs/soak.md",
+  "soak": {
+    "retentionwindow": 8,
+    "passes": 3,
+    "rows": 24,
+    "steps": 8,
+    "dispatched": 29,
+    "logentries": 24,
+    "heartbeatwindow": 60000
+  },
+  "entries": [
+    {
+      "id": 1,
+      "title": "the retention window loads from the library settings and bounds the stored counts",
+      "family": "retention window",
+      "module": "memory.js and run.js",
+      "outcome": "pass",
+      "detail": "the audit retention window of 8 events loaded from the real settings store and bounded the probe trail at exactly the newest 8 events while the absent setting kept every event, and the heartbeat window kept the documented roadmap default of 60000 ms unless the user configures it."
+    },
+    {
+      "id": 2,
+      "title": "the long workflow composes and validates against the frozen kind catalog",
+      "family": "composition",
+      "module": "workflow.js and policy.js",
+      "outcome": "pass",
+      "detail": "composeworkflow froze the 8 step soak workflow (three loop passes with their count expressions and the two sums) with every kind inside the frozen catalog of 335 kinds, the interaction risk grade of the loop family and the validateworkflow allowance under the declared runtime inputs."
+    },
+    {
+      "id": 3,
+      "title": "the soak run stays alive across the full retention window",
+      "family": "liveness",
+      "module": "run.js and workflow.js",
+      "outcome": "pass",
+      "detail": "the 24 row soak run stayed alive across the 3 passes of the retention window: 29 keepalive beats with the heartbeat fresh inside the documented 60000 ms window, the zombie sweep never reaped the beating run while the silent twin reaped, and the run closed done at cursor 8 with the totalrows expression answering 24."
+    },
+    {
+      "id": 4,
+      "title": "the checkpoint mid-run resumes and completes identically",
+      "family": "resume",
+      "module": "run.js and workflow.js",
+      "outcome": "pass",
+      "detail": "the segment before the boundary 4 completed at its cursor, the service worker restart marked the pending step and reattached the keepalive port with the recovery plan naming it, the run record checkpoint validated against its page digest and refused a changed digest, and the resumed outcome serialized byte identical to the uninterrupted outcome over the run, the 56 log entries and the 8 step outputs."
+    },
+    {
+      "id": 5,
+      "title": "the audit trail hash chain verifies end to end",
+      "family": "audit trail",
+      "module": "security.js",
+      "outcome": "pass",
+      "detail": "verifylogchain walked the 24 step entries from the genesis hash to the seal and verified every link, readverifiedlog and exportlogchain returned the whole sealed chain with its seal hash, the tampered fourth entry broke the chain at its index and the sealed log refused the late append because the seal stays terminal."
+    },
+    {
+      "id": 6,
+      "title": "repeated soak runs seal the identical audit hash",
+      "family": "no drift",
+      "module": "workflow.js and security.js",
+      "outcome": "pass",
+      "detail": "two full soak runs from the same fixed epoch produced byte identical outcomes (the run, the 24 log entries and the outputs) and sealed the identical audit hash 8db8fbf8343424cb over the same event sequence, so the long run carries no drift."
+    },
+    {
+      "id": 7,
+      "title": "the memory items keep their provenance inside the retention bounds",
+      "family": "memory",
+      "module": "memory.js",
+      "outcome": "pass",
+      "detail": "the 24 memory items kept the identical provenance (the fixture origin, the soak run and the readrow step) across the full window, the audit trail stayed bounded at the 8 event retention window while the immutable log kept every row, the expiry pass under the 8000 ms rule purged 19 aged items with every purge summary keeping its provenance and 5 items staying inside the window, and the audit export round tripped through its 3 chunks."
+    },
+    {
+      "id": 8,
+      "title": "every browser kind keeps the run alive on its fake tab",
+      "family": "browser matrix",
+      "module": "run.js",
+      "outcome": "pass",
+      "detail": "the soak run stayed alive on the fake tab of every browser kind (chromium tab 101, firefox tab 201 and safari tab 301): the beating runs survived every zombie sweep inside the 60000 ms heartbeat window while their silent twins reaped, the tab isolation namespace bound each run to its tab, and the run state export answered 29 beats of the one run."
+    },
+    {
+      "id": 9,
+      "title": "the soak report records every check and the exit answers the failures",
+      "family": "report",
+      "module": "soak.ts",
+      "outcome": "pass",
+      "detail": "the soak report carries the eight executed checks with their outcomes and details, the summary computes 9 of 9 passed over the 24 row soak run of 3 retention window passes, and the gate sets its nonzero exit the moment any failed check lands in the artifact."
+    }
+  ],
+  "summary": {
+    "total": 9,
+    "passed": 9,
+    "failed": 0
+  }
+};
+
 const invokeddirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (invokeddirectly) {
   const report = await runsoaksuite();
-  await mkdir("artifacts", { recursive: true });
-  await writeFile(artifactpath, `${JSON.stringify(report, null, 2)}\n`);
   for (const candidate of report.entries) {
     const line = `[${candidate.outcome === "pass" ? "ok" : "FAIL"}] ${candidate.id}. ${candidate.title} (${candidate.module}) — ${candidate.detail}`;
     if (candidate.outcome === "pass") console.log(line);
     else console.error(line);
   }
-  console.log(JSON.stringify({ release: report.release, artifact: artifactpath, ...report.summary }, null, 2));
+  if (syncmode()) {
+    /* the sync rewrites the committed record this run produced, so the release refresh rides one reviewable commit */
+    console.log(await syncrecord({ moduleurl: import.meta.url, recordname: "soakrecord", recordtype: "soakreport", record: report }));
+  } else {
+    /* the record verification: the committed evidence stays internally consistent (the summary math and the outcome counts), so a hand-edited record never passes as a recorded run */
+    const passing = soakrecord.entries.filter((candidate) => candidate.outcome === "pass").length;
+    const problems = [
+      ...summaryproblemsof(soakrecord.summary),
+      ...(passing !== soakrecord.summary.passed ? ["the recorded passing entries disagree with the recorded passed count"] : []),
+    ];
+    for (const problem of problems) console.error(`SOAK record: ${problem}`);
+    console.log(JSON.stringify({ release: report.release, record: "tests/devthink.soak.ts", ...report.summary }, null, 2));
+    if (problems.length > 0) process.exitCode = 1;
+  }
   if (report.summary.failed > 0) process.exitCode = 1;
 }

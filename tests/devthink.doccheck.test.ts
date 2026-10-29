@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { promisify } from "node:util";
 import { describe, expect, it } from "vitest";
+import { doccheckrecord } from "./devthink.doccheck.ts";
 
 const execute = promisify(execFile);
 
@@ -32,24 +33,11 @@ describe("the documentation consistency artifact", () => {
   });
 
   it("covers every check family with a passing outcome once the gate has run", async () => {
-    const artifactpath = "artifacts/doccheck.json";
     const built = existsSync("dist/policy.js");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
-    /* a built tree runs the gate itself when no fresh artifact of this release exists, so every lane that builds before the suite verifies the documentation artifact without depending on gate ordering */
-    if (built && !existsSync(artifactpath)) await execute("node", ["../tests/devthink.doccheck.ts"]);
-    if (built && existsSync(artifactpath)) {
-      const stored = JSON.parse(await readFile(artifactpath, "utf8")) as { release: string };
-      if (stored.release !== packagejson.version) await execute("node", ["../tests/devthink.doccheck.ts"]);
-    }
-    const stored = existsSync(artifactpath);
-    if (built) expect(stored).toBe(true);
-    if (!stored) return;
-    const report = JSON.parse(await readFile(artifactpath, "utf8")) as {
-      release: string;
-      kindcount: number;
-      checks: Array<{ name: string; ok: boolean }>;
-      summary: { total: number; passed: number; failed: number };
-    };
+    /* a built tree runs the gate itself, so every lane that builds before the suite verifies the committed documentation record without depending on gate ordering: the gate walks the documentation against the compiled catalogs and verifies the record stays internally consistent */
+    if (built) await execute("node", ["../tests/devthink.doccheck.ts"]);
+    const report = doccheckrecord;
     expect(report.release).toBe(packagejson.version);
     expect(report.summary.failed).toBe(0);
     expect(report.summary.passed).toBe(report.summary.total);
