@@ -10,6 +10,7 @@
     "paths": {
       "@/*": ["./Sol/*", "./*"],
       "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"],
+      "@wenathlan/getry/thinking": ["../getry/thinking.d.ts"],
       "@wenathlan/devthink/server": ["./server.ts"]
     }
   },

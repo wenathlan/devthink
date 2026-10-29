@@ -1,8 +1,9 @@
 /** Builds browser and library targets with no remote runtime dependencies. */
 import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdir, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { mkdir, readdir, readFile, rm, stat, symlink, writeFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
+import { join, relative } from "node:path";
 import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 import { build } from "esbuild";
@@ -182,6 +183,24 @@ for (const modulename of ["policy", "protocol", "memory", "progress", "hardening
    PrismaClient the generated .prisma/client tree declares, and a fresh install carries the
    stub until the generate step runs (the gateway lineage's build always generated first). */
 await execute(process.execPath, [join(root, "node_modules", "prisma", "build", "index.js"), "generate"], { cwd: root });
+
+/* the ownership bridge of the thinking ladder: the getry engine owns the 7-level ladder and
+   the os consumes it as a library — the declaration emit reads the owner's committed public
+   types (getry/thinking.d.ts, the declaration surface the path table of the build config
+   carries, so the owner source never enters the program and the emit stays flat), while the
+   runtime resolves the specifier through this node_modules link the same way the ci bridge
+   links the flat gate tree (tests/node_modules): the dev servers the suites spawn and every
+   tsx entry import the owner source directly, and the esbuild lanes keep inlining the ladder
+   through the getrybridge alias — the link is the dev-time answer alone, never a committed
+   dependency, so the lockfile never changes. */
+{
+  const ownerlink = join(root, "node_modules", "@wenathlan", "getry");
+  if (!existsSync(ownerlink)) {
+    await mkdir(join(root, "node_modules", "@wenathlan"), { recursive: true });
+    const ownerpath = relative(join(root, "node_modules", "@wenathlan"), join(root, "..", "getry"));
+    await symlink(ownerpath, ownerlink, "dir");
+  }
+}
 await execute(process.execPath, [await resolveTsc(), "-p", "tsconfig.build.json"]);
 
 /** The terminal and headless entries of the 1.1.80 family keep their own dist targets beside the library modes, with the minified variants and the version banner riding the same accounting; the mcp server bundle of the 1.1.84 family serves the model context protocol surface of the serve mode as its own tree shakable entry, and the native bundles of the 1.1.85 family ship beside them: the wsbridge module bundle and the companion script the plain node recipe stamps from the companion sources. */

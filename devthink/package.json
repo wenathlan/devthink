@@ -32,7 +32,6 @@
     "@prisma/client": "^7.10.1",
     "@wenathlan/saddle": "^2.1.6",
     "@wenathlan/vault": "file:../vault",
-    "@wenathlan/getry": "file:../getry",
     "hono": "^4.13.14",
     "ink": "^7.1.1",
     "lucide-react": "^1.61.0",
