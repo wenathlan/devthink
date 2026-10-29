@@ -205,10 +205,23 @@ describe("the edge plane answers the visitor law", () => {
     assert.equal(runsc.status, "failed");
     assert.equal(runsc.error?.code, "HOST_RUNTIME_ABSENT");
     assert.ok(runsc.error?.message.includes("runsc"), "the message names the runtime");
+    // docker rides the host: the ci runner carries it, the engine host
+    // here does not — the lane answers the truth of whichever host it
+    // met (a present docker probes and succeeds, a present-but-failing
+    // docker answers run-exited-nonzero, an absent docker refuses with
+    // host-runtime-absent), so the assertion follows the probe instead
+    // of pinning a host the lane never saw
     const docker = await runonedge({ modality: "container-docker", code: "" });
-    assert.equal(docker.status, "failed");
-    assert.equal(docker.error?.code, "HOST_RUNTIME_ABSENT");
-    assert.ok(docker.error?.message.includes("docker"));
+    if (docker.status === "failed") {
+      assert.ok(
+        docker.error?.code === "HOST_RUNTIME_ABSENT" || docker.error?.code === "RUN_EXITED_NONZERO",
+        `the docker refusal stays honest: ${docker.error?.code}`,
+      );
+      assert.ok(docker.error?.message.includes("docker"), "the message names the runtime");
+    } else {
+      assert.equal(docker.status, "succeeded");
+      assert.equal(docker.artifact?.mime, "application/json");
+    }
   });
 
   it("runs every lane executor server side only", () => {
