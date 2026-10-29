@@ -12,14 +12,15 @@
  */
 import { useState } from "react";
 import { copy } from "../../copy";
-import type { PreferenceKey, SettingsSnapshot } from "./Settingstypes";
 import {
   loadAltTabMotion,
   loadDevtoolsWall,
   loadTaskbarTips,
   saveAltTabMotion,
   saveDevtoolsWall,
-  saveTaskbarTips } from "./SettingsPersonalstore";
+  saveTaskbarTips,
+} from "./SettingsPersonalstore";
+import type { PreferenceKey, SettingsSnapshot } from "./Settingstypes";
 
 type ComponentOptionsProps = {
   /** the preference machine rows the rail mode and the zoom ride */
@@ -46,7 +47,7 @@ function ToggleRow({
         <strong>{label}</strong>
         <small>{description}</small>
       </span>
-      <label className="dtw-settings__switchrow">
+      <label className="dtw-settings__switchrow" data-checked={checked ? "true" : undefined}>
         <input
           type="checkbox"
           className="dtw-settings__switch"

@@ -20,14 +20,6 @@
  */
 import { useEffect, useState } from "react";
 import { ShellChrome } from "@/widgets/Shellchrome";
-import { copy } from "../../copy";
-import {
-  type BrowserStoreSummary,
-  browserIdentity,
-  browserStoreSummary,
-  readBrowserPreferences,
-  saveBrowserPreference } from "../../storage.ts";
-import { gatewayJson, gatewayReady } from "../../gateway.js";
 import {
   type AccountSessionState,
   accountbearer,
@@ -36,15 +28,28 @@ import {
   restoreonce,
   revokeaccountsessionbearer,
 } from "../../account.ts";
-import { AboutSettings } from "../widgets";
-import { AccountsCategory } from "../widgets";
-import { AutomationMcp } from "../widgets";
-import { GatewayPairing } from "../widgets";
-import { HardDrives } from "../widgets";
-import { initPersonalization, loadThemeMirror, syncThemeFromPreference } from "../widgets";
-import { Personalization } from "../widgets";
-import { SettingsNav } from "../widgets";
+import { copy } from "../../copy";
+import { gatewayJson, gatewayReady } from "../../gateway.js";
+import {
+  type BrowserStoreSummary,
+  browserIdentity,
+  browserStoreSummary,
+  readBrowserPreferences,
+  saveBrowserPreference,
+} from "../../storage.ts";
 import type { PreferenceKey, SettingsCategoryId, SettingsSnapshot } from "../widgets";
+import {
+  AboutSettings,
+  AccountsCategory,
+  AutomationMcp,
+  GatewayPairing,
+  HardDrives,
+  initPersonalization,
+  loadThemeMirror,
+  Personalization,
+  SettingsNav,
+  syncThemeFromPreference,
+} from "../widgets";
 
 export * from "../widgets";
 export * from "../widgets";
@@ -78,7 +83,8 @@ export default function Settings({ embedded }: { embedded?: boolean }) {
     // machine heals it on its first read)
     theme: loadThemeMirror() ?? "dark",
     railMode: "auto",
-    interfaceZoom: "100" }));
+    interfaceZoom: "100",
+  }));
   const [publicId, setPublicId] = useState("");
   const [category, setCategory] = useState<SettingsCategoryId>("personalization");
   const paired = gatewayReady();
@@ -121,13 +127,15 @@ export default function Settings({ embedded }: { embedded?: boolean }) {
   async function saveIdentity() {
     const response = await gatewayJson<{ identity: SettingsSnapshot["identity"] }>("/identity", {
       method: "PUT",
-      body: JSON.stringify({ userId: publicId }) });
+      body: JSON.stringify({ userId: publicId }),
+    });
     setSnapshot((current) =>
       current
         ? {
             ...current,
             identity: response.identity,
-            database: { ...current.database, ownerUserId: response.identity.userId } }
+            database: { ...current.database, ownerUserId: response.identity.userId },
+          }
         : current,
     );
   }
@@ -177,8 +185,12 @@ export default function Settings({ embedded }: { embedded?: boolean }) {
       {!embedded && <ShellChrome />}
       <div className="dtw-pane">
         <SettingsNav active={category} onSelect={setCategory} paired={paired} accountId={accountId} />
-        <div className="dtw-content">
-          <h1 className="dtw-title">{copy(`settings.nav.${category}`)}</h1>
+        <div className="dtw-content" data-category={category}>
+          {/* the title remounts with its key so every turn of the rail
+              answers with the rise entrance of the content wave */}
+          <h1 className="dtw-title" key={category}>
+            {copy(`settings.nav.${category}`)}
+          </h1>
 
           {category === "personalization" ? (
             <Personalization preferences={preferences} save={(key, value) => void savePreference(key, value)} />

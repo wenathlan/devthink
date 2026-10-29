@@ -268,7 +268,7 @@ export function HardDrives() {
             {shelf.map((drive) => {
               const mounted = drive.id === active?.id;
               return (
-                <li key={drive.id} className="dtw-row">
+                <li key={drive.id} className="dtw-row" data-mounted={mounted ? "true" : "false"}>
                   <span
                     className="dtw-settings__driveicon"
                     data-mounted={mounted ? "true" : undefined}
