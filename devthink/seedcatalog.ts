@@ -297,6 +297,12 @@ export const seedOsAppLabels: OsAppLabel[] = [
     detail: "The sandbox engine",
     pinned: true,
   },
+  {
+    id: "cobaia",
+    name: "Cobaia",
+    detail: "The family store and content site",
+    pinned: true,
+  },
 ];
 
 /** the os app windows: the reviewed seed rows of the spawn geometry (the

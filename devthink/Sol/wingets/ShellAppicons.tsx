@@ -946,6 +946,33 @@ export const SaddleIcon: ComponentType<AppIconProps> = (props: AppIconProps) => 
   <FluentIconFace {...props} uid="dti-saddle" plate={SaddleIcon_PLATE} />
 );
 
+/** Cobaia — the family storefront: a teal plate carrying the shop front —
+ *  the scalloped canopy filled solid over the stroked facade, its entrance
+ *  cut back to the plate tone. The front door of the ten deployable apps
+ *  (pricing, support, the app directory and the blog) wears the windows
+ *  accent family the site itself rides. */
+const CobaiaIcon_PLATE: AppIconPlate = {
+  top: "#8ed6e3",
+  bottom: "#3f9db3",
+  glyph: (tone) => (
+    <>
+      <path
+        d="M12.4 13.4 H35.6 V18.9 Q34.15 21.3 32.7 18.9 Q31.25 21.3 29.8 18.9 Q28.35 21.3 26.9 18.9 Q25.45 21.3 24 18.9 Q22.55 21.3 21.1 18.9 Q19.65 21.3 18.2 18.9 Q16.75 21.3 15.3 18.9 Q13.85 21.3 12.4 18.9 Z"
+        fill={GLYPH_INK}
+        stroke="none"
+      />
+      <path d="M14.8 23.4 H33.2 V36.6 H14.8 Z" fill="none" strokeWidth={STROKE_SOFT} />
+      <path d="M21 36.6 V28.4 Q24 26.6 27 28.4 V36.6 Z" fill={tone} stroke="none" />
+    </>
+  ),
+};
+
+/** The bound icon component of "cobaia": a module-level arrow over the shared
+ *  fluent face, the plate frozen in the closure at load. */
+export const CobaiaIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <FluentIconFace {...props} uid="dti-cobaia" plate={CobaiaIcon_PLATE} />
+);
+
 /**
  * The fluent icon set of the shell, keyed by the registry `iconset` field:
  * the desktop grid, the taskbar and the Start menu all reach their icons here.
@@ -978,4 +1005,5 @@ export const APP_ICONS: Record<string, ComponentType<AppIconProps>> = {
   vault: VaultIcon,
   getry: GetryIcon,
   saddle: SaddleIcon,
+  cobaia: CobaiaIcon,
 };

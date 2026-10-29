@@ -54,6 +54,7 @@ const FIELD_SHADOW = "0 1px 2px rgb(0 0 0 / 26%), 0 3px 12px rgb(0 0 0 / 12%), i
 const FAMILY_TINT: Record<string, string> = {
   argan: "#1DCF64",
   cadria: "#f472b6",
+  cobaia: "#4fb3c6",
   debonair: "#d9962e",
   stealthhead: "#f87171",
   forge: "#fb923c",
@@ -204,6 +205,19 @@ const MARKS: Record<string, (tint: string) => ReactNode> = {
     <g className="ldk-m ldk-m-bob">
       <path d="M16 6.2 23.4 10.4v8.9L16 23.5l-7.4-4.2v-8.9z" stroke={tint} strokeWidth="1.4" strokeLinejoin="round" />
       <path d="M8.6 10.4 16 14.6l7.4-4.2M16 14.6v8.9" stroke={tint} strokeWidth="1.2" opacity=".55" />
+    </g>
+  ),
+  cobaia: (tint) => (
+    <g className="ldk-m ldk-m-bob">
+      {/* the storefront: the scalloped canopy over the facade and its door */}
+      <path
+        d="M7.2 8.6 H24.8 V13.3 a2.2 2.2 0 0 1 -4.4 0 a2.2 2.2 0 0 1 -4.4 0 a2.2 2.2 0 0 1 -4.4 0 a2.2 2.2 0 0 1 -4.4 0 Z"
+        stroke={tint}
+        strokeWidth="1.4"
+        strokeLinejoin="round"
+      />
+      <path d="M10.6 16.6 h10.8 v8.9 h-10.8 z" stroke={tint} strokeWidth="1.2" opacity=".55" />
+      <path d="M14.2 25.5 v-4.6 a1.8 1.8 0 0 1 3.6 0 v4.6" stroke={tint} strokeWidth="1.2" />
     </g>
   ) };
 

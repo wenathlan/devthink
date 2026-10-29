@@ -122,6 +122,7 @@ const DESKTOP_SPOTS: ReadonlyArray<{ x: number; y: number }> = [
   { x: 72, y: 74 }, // the lower right cluster, mirroring the left one
   { x: 26, y: 74 }, // the lower left companion
   { x: 92, y: 18 }, // the far corner accent, closing the right arc
+  { x: 56, y: 74 }, // the storefront beside the lower cluster — the family front door
 ];
 
 /** true when the OS-level reduced-motion preference is on (motion opt-out) */

@@ -60,6 +60,7 @@ const REVIEWED_NAMES: Record<string, string> = {
   settings: "Settings",
   argan: "Argan",
   cadria: "Cadria",
+  cobaia: "Cobaia",
   debonair: "Debonair",
   stealthhead: "Stealthhead",
   forge: "Forge",
@@ -78,7 +79,7 @@ function renderIcon(key: string): string {
 
 describe("the drawn set answers the registry", () => {
   it("resolves every desktop app to a drawn asset — zero fallback tiles on the grid", () => {
-    expect(DESKTOP_APPS.length).toBeGreaterThanOrEqual(24);
+    expect(DESKTOP_APPS.length).toBeGreaterThanOrEqual(25);
     for (const app of DESKTOP_APPS) {
       expect(app.iconset, `${app.id} declares its iconset key`).toBeTruthy();
       expect(APP_ICONS[app.iconset ?? ""], `${app.id} resolves in the drawn set`).toBeTruthy();
@@ -90,6 +91,7 @@ describe("the drawn set answers the registry", () => {
       [
         "calculator",
         "chat",
+        "cobaia",
         "console",
         "docs",
         "explore",
