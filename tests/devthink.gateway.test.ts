@@ -865,6 +865,7 @@ describe("hardcoded provider url scan of the source tree", () => {
     const files: string[] = gatewaysources.map((name) => join(root, name));
     for (const path of files) await access(path);
 
+<<<<<<< HEAD
     /* the evidence records document the origins the migration reviewed —
        the reviewed-origins module carries the provider hostnames as data
        (the audit trail of the supply-chain review), never as an endpoint
@@ -874,6 +875,23 @@ describe("hardcoded provider url scan of the source tree", () => {
     for (const entry of await readdir(join(root, "..", "tests"))) {
       if (entry.endsWith(".ts") && !evidencerecords.has(entry)) files.push(join(root, "..", "tests", entry));
     }
+=======
+    /* the flat tests village: the gate sources of the os answer from the
+     * repository-root tests folder under the devthink. prefix (the suites
+     * with their example fixtures stay outside the scan the corpus law kept
+     * them in, and so does the reviewed origins catalog module — the typed
+     * data rows the sweep allowlist reads, the one module whose provider
+     * endpoint literals are the reviewed catalog itself, never a call
+     * target the gateway would dial). */
+    for (const entry of await readdir(join(root, "..", "tests")))
+      if (
+        entry.startsWith("devthink.") &&
+        entry.endsWith(".ts") &&
+        !entry.endsWith(".test.ts") &&
+        entry !== "devthink.reviewedorigins.ts"
+      )
+        files.push(join(root, "..", "tests", entry));
+>>>>>>> origin/main
     expect(files.length).toBeGreaterThan(50);
     const providerhosts = [
       /api\.openai\.com/,

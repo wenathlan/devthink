@@ -1814,9 +1814,15 @@ jobs:
           } >> "${GITHUB_OUTPUT}"
       - name: build image for security scan
         if: steps.published.outputs.skip != 'true'
+        # the context is THE REPOSITORY ROOT (the family-context law the
+        # Dockerfile header records): the dependency union pins the vault
+        # sibling as file:../vault, the flat test village owns the build
+        # engine and the suite, and the config bridges resolve the getry
+        # and saddle engines onto their sibling owners, so the image
+        # builds from the checkout geometry it mirrors.
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
-          context: ./devthink
+          context: .
           file: ./devthink/Dockerfile
           # the runner stage is the explicit target: the single-binary
           # stages of the same file stay behind their own --target
@@ -1895,9 +1901,15 @@ jobs:
           accept-key: NODE_ENV,DEVTHINK_HTTP_BIND,DEVTHINK_HTTP_PORT,DEVTHINK_RELAY_PATH,DEVTHINK_MCP_BIND,DEVTHINK_MCP_PORT,DEVTHINK_MCP_PATH,DEVTHINK_MEMORY_ENGINE,DEVTHINK_PLATFORM,DEVTHINK_CDN_URL,NODE_IMAGE,DEVTHINK_VERSION,DEVTHINK_REVISION,PATH,NODE_VERSION,runnerpid,waited,smokebudget,apt_update_tries,dpkgArch,ARCH,OPENSSL_ARCH,GNUPGHOME,--strip-components,--chown,/,APT::AutoRemove::RecommendsImportant,org.opencontainers.image.title,org.opencontainers.image.description,org.opencontainers.image.documentation,org.opencontainers.image.version,org.opencontainers.image.licenses,org.opencontainers.image.source,org.opencontainers.image.revision
       - name: build and push image with attestations
         if: steps.published.outputs.skip != 'true'
+        # the context is THE REPOSITORY ROOT (the family-context law the
+        # Dockerfile header records): the dependency union pins the vault
+        # sibling as file:../vault, the flat test village owns the build
+        # engine and the suite, and the config bridges resolve the getry
+        # and saddle engines onto their sibling owners, so the image
+        # builds from the checkout geometry it mirrors.
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
-          context: ./devthink
+          context: .
           file: ./devthink/Dockerfile
           target: runtime
           push: true
@@ -3564,13 +3576,19 @@ jobs:
       - name: build container
         env:
           IMAGE: ghcr.io/${{ github.repository }}:${{ steps.releaseversion.outputs.version }}
+        # the context is THE REPOSITORY ROOT (the family-context law the
+        # Dockerfile header records): the dependency union pins the vault
+        # sibling as file:../vault, the flat test village owns the build
+        # engine and the suite, and the config bridges resolve the getry
+        # and saddle engines onto their sibling owners, so the image
+        # builds from the checkout geometry it mirrors.
         run: |
           archive="devthink.container.${{ steps.releaseversion.outputs.version }}.tar.gz"
           docker build \
             --target runtime \
             --build-arg DEVTHINK_VERSION="${{ steps.releaseversion.outputs.version }}" \
             --build-arg DEVTHINK_REVISION="${{ steps.releaseversion.outputs.revision }}" \
-            --tag "$IMAGE" devthink
+            --tag "$IMAGE" -f devthink/Dockerfile .
           docker save "$IMAGE" | gzip -9 > "$archive"
       - name: checksum and manifest
         shell: bash

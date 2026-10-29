@@ -1,5 +1,5 @@
 /**
- * runtime.ts — the terminal side of the one design (wave 2-c / PR11): the
+ * runtime.terminal.ts — the terminal side of the one design (wave 2-c / PR11): the
  * render primitives the converted Sol widgets ride. build.terminal.ts turns
  * the TSX widgets into IR trees (JSON) and this module interprets them into
  * ANSI rows — the same design, the same tokens, the cell as the unit (the
@@ -9,6 +9,12 @@
  * the OpenCode reference — while this runtime stays dependency-free so the
  * published face runs headless on Linux, Windows 10/11 and Android (termux)
  * with plain node or bun, no browser, no install.
+ *
+ * The module rides the application root beside its emitter (the flat folder
+ * law dissolved the terminal/ folder of the first layer): the name carries
+ * the .terminal family infix because the root already owns a runtime.ts —
+ * the platform adapter runtime of the 1.1.90 consolidation — so the terminal
+ * render runtime answers as runtime.terminal.ts, the one name of its family.
  *
  * The conversion map this runtime owns (the full map lives documented on
  * build.terminal.ts):

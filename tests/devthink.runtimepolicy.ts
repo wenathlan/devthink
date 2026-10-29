@@ -25,7 +25,7 @@ if (!typesource.includes("export const pinnedprotocolversion"))
   throw new Error("The library surface must export the pinned protocol version import.");
 if (!mcpsource.includes("negotiateprotocol"))
   throw new Error("The mcp negotiation must route through the protocolv2 negotiation family.");
-if (!verifyworkflow.includes("node tests/apifreeze.ts"))
+if (!verifyworkflow.includes("node ../tests/devthink.apifreeze.ts"))
   throw new Error("The verify workflow must gate the api freeze after the validation chain.");
 
 /* the 1.1.95 transparency surface acceptance: the one web design file declares the transparencypage surface with its completed sections, the options surface embeds it as its own page, the surface carries no remote resource, and the compiled page module ships beside the design */
@@ -67,15 +67,15 @@ const transparencymodule = await readFile("transparencypage.ts", "utf8");
 if (!transparencymodule.includes("request<{ transparencyview }") && !transparencymodule.includes("transparencyview"))
   throw new Error("The transparencypage module must render through the transparency view the background serves.");
 for (const gate of ["runtimepolicy", "pentest", "cspaudit", "permdiff"]) {
-  if (!(await readFile(`tests/${gate}.ts`, "utf8").catch(() => undefined)))
-    throw new Error(`The ${gate} gate script must exist under tests/ beside the runtime policy.`);
+  if (!(await readFile(`../tests/devthink.${gate}.ts`, "utf8").catch(() => undefined)))
+    throw new Error(`The ${gate} gate script must exist under the tests root beside the runtime policy.`);
 }
 
 /* the 1.1.96 multi agent certification acceptance: the coordination and accounting gate scripts exist beside the runtime policy, the verify workflow runs them after the security gates, the dashdone family module ships with its own declaration entry outside the frozen index surface, and the dashboardpage surface of the one web design file carries every multi agent panel with no remote resource */
 for (const gate of ["agentcert", "costcert"]) {
-  if (!(await readFile(`tests/${gate}.ts`, "utf8").catch(() => undefined)))
-    throw new Error(`The ${gate} gate script must exist under tests/ beside the runtime policy.`);
-  if (!verifyworkflow.includes(`node tests/${gate}.ts`))
+  if (!(await readFile(`../tests/devthink.${gate}.ts`, "utf8").catch(() => undefined)))
+    throw new Error(`The ${gate} gate script must exist under the tests root beside the runtime policy.`);
+  if (!verifyworkflow.includes(`node ../tests/devthink.${gate}.ts`))
     throw new Error(`The verify workflow must run the ${gate} gate of the multi agent certification.`);
 }
 if (!(await readFile("dashdone.ts", "utf8").catch(() => undefined)))
@@ -146,8 +146,8 @@ if (nvmversion !== nodeversion)
    tag stays readable for the human, the digest pins the build the scanner
    gate demands, and the maintenance rung restamps both — the sbom and
    attest records the release lane publishes still ride the build). */
-if (!new RegExp(`^ARG NODE_IMAGE="node:${nodeversion}-bookworm-slim"$`, "m").test(containerfile))
-  throw new Error("the Dockerfile NODE_IMAGE arg must pin the exact declared Node baseline by its registry tag.");
+if (!new RegExp(`^ARG NODE_IMAGE="node:${nodeversion}-bookworm-slim@sha256:[0-9a-f]{64}"$`, "m").test(containerfile))
+  throw new Error("the Dockerfile NODE_IMAGE arg must pin the exact declared Node baseline by its registry tag and the ladder-stamped digest the scanner gate demands.");
 if (!new RegExp(`^ARG NODE_RUNTIME_VERSION="${nodeversion}"$`, "m").test(containerfile))
   throw new Error(
     "the Dockerfile NODE_RUNTIME_VERSION arg must pin the exact declared Node baseline of the runtime tarball.",
@@ -179,7 +179,7 @@ if (digestlines.length !== 2)
   );
 if (containerfile.includes("corepack"))
   throw new Error("Node 26 container builds must not depend on the removed Corepack binary.");
-if (!containerfile.includes("node -p \"require('../devthink/tests/package.json')"))
+if (!containerfile.includes("node -p \"require('./package.json')"))
   throw new Error("the Dockerfile must evaluate package metadata with Node rather than pass it as a quoted literal.");
 if (!containerfile.includes('npm install --global "bun@${bunversion}"'))
   throw new Error("the Dockerfile must install the root package manager from the canonical packageManager field.");

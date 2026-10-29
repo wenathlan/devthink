@@ -304,7 +304,10 @@ const subpathexports = new Set([...packagesource.matchAll(/"\.\/([a-z0-9]+)":/g)
 for (const module of new Set(cliimports)) {
   if (
     !indexsource.includes(`export * from "./${module}.js";`) &&
+<<<<<<< HEAD
     !indexsource.includes(`from "./${module}.js"`) &&
+=======
+>>>>>>> origin/main
     !subpathexports.has(module)
   )
     refuse(`The cli imports the module ${module} the library surface of index.ts does not export.`);

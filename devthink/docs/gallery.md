@@ -2,7 +2,11 @@
 
 Last verified release: the 2.0.0 example gallery release; the recipes gate renews the verification on every run.
 
+<<<<<<< HEAD
 The example gallery is the fastest way to start with the library: 36 runnable recipes grouped into the five families the roadmap promised — 8 scraping, 9 forms, 8 testing, 6 monitoring and 5 agent recipes — each one a plan document export of the `tests/devthink.recipesfixtures.ts` module that the gate of `tests/devthink.recipes.ts` validates, lints and dry runs against the four fixture pages of the `tests/devthink.pagefixtures.ts` module. The metadata that grades every entry (its category, its difficulty, its fixture page, its consent classes and the category fields its family requires) lives in the gallery index export of `tests/devthink.recipesfixtures.ts`, because the frozen plan schema allows no metadata field inside a recipe document. The build copies the whole set into `dist/fixtures/recipes/`, `dist/fixtures/pages/` and `dist/gallery.json` so every package channel ships it, and the verify lane runs `node ../tests/devthink.recipes.ts` on every release — the recipes can never drift from the code.
+=======
+The example gallery is the fastest way to start with the library: 36 runnable recipes grouped into the five families the roadmap promised — 8 scraping, 9 forms, 8 testing, 6 monitoring and 5 agent recipes — each one a plan document export of the `../../tests/devthink.recipesfixtures.ts` module that the gate of `../../tests/devthink.recipes.ts` validates, lints and dry runs against the four fixture pages of the `../../tests/devthink.pagefixtures.ts` module. The metadata that grades every entry (its category, its difficulty, its fixture page, its consent classes and the category fields its family requires) lives in the gallery index export of `../../tests/devthink.recipesfixtures.ts`, because the frozen plan schema allows no metadata field inside a recipe document. The build copies the whole set into `dist/fixtures/recipes/`, `dist/fixtures/pages/` and `dist/gallery.json` so every package channel ships it, and the verify lane runs `node ../../tests/devthink.recipes.ts` on every release — the recipes can never drift from the code.
+>>>>>>> origin/main
 
 ## The gallery index
 
@@ -102,11 +106,19 @@ The gallery index carries the metadata the frozen plan grammar cannot, one entry
 
 | Field | Required | Meaning |
 | --- | --- | --- |
+<<<<<<< HEAD
 | `id` | every entry | The unique recipe id; it must match the recipe export of `tests/devthink.recipesfixtures.ts` (the id `scrapeproductgrid` names the `scrapeproductgrid` export) and no id may duplicate. |
 | `category` | every entry | One of the five families: `scraping`, `forms`, `testing`, `monitoring` or `agents`. |
 | `difficulty` | every entry | The grade `starter`, `intermediate` or `advanced`. |
 | `description` | every entry | The plain language description of at least twenty characters the index shows beside the recipe. |
 | `fixture` | every entry | One of the four fixture pages of `tests/devthink.pagefixtures.ts` the recipe runs against. |
+=======
+| `id` | every entry | The unique recipe id; it must match the recipe export of `../../tests/devthink.recipesfixtures.ts` (the id `scrapeproductgrid` names the `scrapeproductgrid` export) and no id may duplicate. |
+| `category` | every entry | One of the five families: `scraping`, `forms`, `testing`, `monitoring` or `agents`. |
+| `difficulty` | every entry | The grade `starter`, `intermediate` or `advanced`. |
+| `description` | every entry | The plain language description of at least twenty characters the index shows beside the recipe. |
+| `fixture` | every entry | One of the four fixture pages of `../../tests/devthink.pagefixtures.ts` the recipe runs against. |
+>>>>>>> origin/main
 | `origin` | every entry | The local HTTPS origin the recipe and its fixture page share. |
 | `expecteddurationms` | every entry | The expected dry run duration in milliseconds, a positive integer the report compares against the measured one. |
 | `capabilities` | every entry | The manifest permissions the entry needs beyond the base set; every name must sit inside the required or optional permission set of `manifest.json` (the agent recipes declare `tabs`). |
@@ -118,17 +130,29 @@ The gallery index carries the metadata the frozen plan grammar cannot, one entry
 
 ## How to author and validate a new recipe
 
+<<<<<<< HEAD
 1. Write the plan document as the `<id>` export of `tests/devthink.recipesfixtures.ts` in the plan grammar above: a local fixture origin, the grants that cover every step kind, a selector that resolves inside the fixture page, and `"gate": true` on every sensitive step.
 2. Add the index entry to the `gallery` export of `tests/devthink.recipesfixtures.ts` with every field of the reference table — the `id` must match the export name, the `kinds` set must equal the kinds the steps and their control payloads carry, and the category field of the family (`exportformat`, `schedule` or `topology`) must be present.
 3. Run the gate: `node ../tests/devthink.recipes.ts` validates the plan against the frozen schema, lints it under the portable rule set with the cli capability set, resolves every selector against the fixture page, dry runs the plan through the runflow pipeline and replays the cli planlint command over the built copy. The gate exits nonzero on any failure and records the run report in the committed record of `tests/devthink.recipes.ts` (the `reciperecord` const).
 4. Run the vitest file: `npx vitest run ../tests/devthink.recipes.test.ts` verifies the record covers every gallery entry, that every outcome is a pass, and re-runs the source grammar pass over the recipes and the index.
 5. Run the diff mode before a release: `node ../tests/devthink.recipes.ts diff` compares the fresh gallery against the committed record — an entry added, removed, re-categorized, re-graded or drifted in its steps or kinds fails the diff, so the gallery never drifts silently between releases.
+=======
+1. Write the plan document as the `<id>` export of `../../tests/devthink.recipesfixtures.ts` in the plan grammar above: a local fixture origin, the grants that cover every step kind, a selector that resolves inside the fixture page, and `"gate": true` on every sensitive step.
+2. Add the index entry to the `gallery` export of `../../tests/devthink.recipesfixtures.ts` with every field of the reference table — the `id` must match the export name, the `kinds` set must equal the kinds the steps and their control payloads carry, and the category field of the family (`exportformat`, `schedule` or `topology`) must be present.
+3. Run the gate: `node ../../tests/devthink.recipes.ts` validates the plan against the frozen schema, lints it under the portable rule set with the cli capability set, resolves every selector against the fixture page, dry runs the plan through the runflow pipeline and replays the cli planlint command over the built copy. The gate exits nonzero on any failure and writes the run report to `tests/artifacts/recipes.json`.
+4. Run the vitest file: `npx vitest run ../../tests/devthink.recipes.test.ts` verifies the artifact covers every gallery entry, that every outcome is a pass, and re-runs the source grammar pass over the recipes and the index.
+5. Run the diff mode before a release: `node ../../tests/devthink.recipes.ts diff` compares the fresh gallery against the previous report artifact — an entry added, removed, re-categorized, re-graded or drifted in its steps or kinds fails the diff, so the gallery never drifts silently between releases.
+>>>>>>> origin/main
 
 The selectors of a new recipe must resolve against the fixture page the entry names (the gate walks every compound of every selector), and the kinds must stay inside the portable capability set the `planlint` command builds.
 
 ## The fixture pages
 
+<<<<<<< HEAD
 The four fixture pages of `tests/devthink.pagefixtures.ts` are self contained static documents — inline styles, inline scripts, no remote resource, no fetch, no storage, no cookie — each claiming its own local origin so the recipes bind to it exactly the way a live session binds to a real origin.
+=======
+The four fixture pages of `../../tests/devthink.pagefixtures.ts` are self contained static documents — inline styles, inline scripts, no remote resource, no fetch, no storage, no cookie — each claiming its own local origin so the recipes bind to it exactly the way a live session binds to a real origin.
+>>>>>>> origin/main
 
 | Page | Origin | Features it covers |
 | --- | --- | --- |
@@ -177,4 +201,8 @@ The index `exportformat` field of each entry must agree with the export kind its
 
 ## The recipes run in ci
 
+<<<<<<< HEAD
 The verify lane runs `node ../tests/devthink.recipes.ts` after the build, so every release candidate validates the whole gallery against the compiled bundles it is about to ship: the schema validation, the lint, the consent proofs, the fixture resolution, the dry runs and the cli import cells all re-run on every push. The vitest file of `tests/devthink.recipes.test.ts` verifies the recorded artifact covers every gallery entry with passing outcomes, and the diff mode refuses a silent gallery drift between releases — the example set is standing release evidence, not a snapshot.
+=======
+The verify lane runs `node ../../tests/devthink.recipes.ts` after the build, so every release candidate validates the whole gallery against the compiled bundles it is about to ship: the schema validation, the lint, the consent proofs, the fixture resolution, the dry runs and the cli import cells all re-run on every push. The vitest file of `../../tests/devthink.recipes.test.ts` verifies the recorded artifact covers every gallery entry with passing outcomes, and the diff mode refuses a silent gallery drift between releases — the example set is standing release evidence, not a snapshot.
+>>>>>>> origin/main

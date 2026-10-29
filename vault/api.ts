@@ -8,10 +8,20 @@
 // the standardized { error: { code, message } } shape, bigint pointers
 // travel as decimal strings, and every fallible path is guarded.
 //
+// The faun lesson owns the door: the storage truth is the network database
+// of the family, and no request reaches it without the bearer the operator
+// pinned (VAULT_TOKEN). The health probe stays open so the platform can
+// watch the service; every data route — the deposits, the listings, the
+// verified reads, the removals, the quotas, the usage and the sweep —
+// answers 401 without an honest bearer and 503 while the token never
+// landed in the environment (fail closed, never fail open).
+//
+// @section auth — the token gate (the faun lesson)
 // @section routes — the route catalog
 // @section server — the node:http server and its boot
 // @section handlers — the storage surface
 
+import { createHash, timingSafeEqual } from "node:crypto";
 import type { IncomingMessage, Server, ServerResponse } from "node:http";
 import { createServer } from "node:http";
 import process from "node:process";
@@ -29,6 +39,78 @@ import {
   usageOf,
 } from "./objectsledger.ts";
 import { type QuotaVerdict, quotaLimitFrom, quotaVerdict, readQuota, setQuota } from "./quota.ts";
+
+/** @section auth */
+
+/** the digest of the configured vault token — resolved once at boot, never the raw value in a closure. */
+const vaultTokenDigest: Buffer | undefined = vaultTokenDigestOf();
+
+/**
+ * Resolves the sha-256 digest of the configured VAULT_TOKEN — the gate
+ * compares digests, never the raw bearers, so a presented token never
+ * rides a comparison that could leak its length or its bytes.
+ *
+ * @returns the digest, or undefined when the environment carries no token.
+ */
+function vaultTokenDigestOf(): Buffer | undefined {
+  const token = process.env.VAULT_TOKEN;
+  if (typeof token !== "string" || token.length === 0) {
+    return undefined;
+  }
+  return createHash("sha256").update(token, "utf8").digest();
+}
+
+/**
+ * Answers whether the operator pinned the vault token — the honest
+ * readiness the health probe reports and the sealed refusal reads.
+ *
+ * @returns true when VAULT_TOKEN answered at boot.
+ */
+export function vaultTokenConfigured(): boolean {
+  return vaultTokenDigest !== undefined;
+}
+
+/**
+ * Reads the presented bearer of one request — the Authorization: Bearer
+ * header first, then the x-vault-token header the platform gateway rides.
+ *
+ * @param req the incoming request.
+ * @returns the raw presented token, or an empty string.
+ */
+function presentedToken(req: IncomingMessage): string {
+  const authorization = headerOf(req, "authorization");
+  if (authorization.toLowerCase().startsWith("bearer ")) {
+    const bearer = authorization.slice("bearer ".length).trim();
+    if (bearer.length > 0) {
+      return bearer;
+    }
+  }
+  return headerOf(req, "x-vault-token").trim();
+}
+
+/**
+ * The token gate of every data route — the faun lesson as code: the
+ * request passes only when the environment pinned a token and the
+ * presented bearer digests to exactly it (timing safe). An unpinned
+ * environment seals the whole storage surface (fail closed).
+ *
+ * @param req the incoming request.
+ * @returns the verdict the route answers: "open", "refused" (a wrong or
+ *   missing bearer) or "sealed" (no token configured).
+ */
+export function tokenVerdict(req: IncomingMessage): "open" | "refused" | "sealed" {
+  if (vaultTokenDigest === undefined) {
+    return "sealed";
+  }
+  const presented = presentedToken(req);
+  if (presented.length === 0) {
+    return "refused";
+  }
+  const digest = createHash("sha256").update(presented, "utf8").digest();
+  return digest.length === vaultTokenDigest.length && timingSafeEqual(digest, vaultTokenDigest)
+    ? "open"
+    : "refused";
+}
 
 /** @section routes */
 
@@ -91,7 +173,34 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
     const method = req.method ?? "GET";
     const pathname = url.pathname;
     if (method === "GET" && pathname === routes.health) {
-      sendJson(res, 200, { ok: true, service: "vault", storage: { driver: storageDriverKind() } });
+      sendJson(res, 200, {
+        ok: true,
+        service: "vault",
+        storage: { driver: storageDriverKind() },
+        auth: { required: true, configured: vaultTokenConfigured() },
+      });
+      return;
+    }
+    /* the faun lesson door: every route past the health probe demands the
+     * honest bearer — the sealed and the refused answers ride the same
+     * standardized error shape the rest of the surface speaks. */
+    const verdict = tokenVerdict(req);
+    if (verdict === "sealed") {
+      sendError(
+        res,
+        503,
+        "VAULT_AUTH",
+        "the vault token is not configured — set VAULT_TOKEN before the storage truth answers",
+      );
+      return;
+    }
+    if (verdict === "refused") {
+      sendError(
+        res,
+        401,
+        "VAULT_AUTH",
+        "the storage truth demands the vault token (Authorization: Bearer or x-vault-token)",
+      );
       return;
     }
     if (pathname === routes.projects) {
@@ -440,11 +549,14 @@ function safeDecode(text: string): string {
   }
 }
 
-/** the permissive cors headers the platform gateway and the sol pages call through. */
+/** the cors headers the platform gateway and the sol pages call through — the token headers ride the allow list so an honest caller may present the bearer. */
 function applyCors(res: ServerResponse): void {
   res.setHeader("access-control-allow-origin", "*");
   res.setHeader("access-control-allow-methods", "GET, POST, DELETE, OPTIONS");
-  res.setHeader("access-control-allow-headers", "content-type, x-project-id, x-object-path, x-object-mime");
+  res.setHeader(
+    "access-control-allow-headers",
+    "content-type, authorization, x-vault-token, x-project-id, x-object-path, x-object-mime",
+  );
 }
 
 /** answers one json payload with the status. */
@@ -464,7 +576,8 @@ const invokedDirectly = process.argv[1] !== undefined && import.meta.url === pat
 if (invokedDirectly) {
   const server = createVaultServer();
   const port = await listenVault(server);
-  console.log(`vault api listening on port ${port} (storage driver: ${storageDriverKind()})`);
+  const authState = vaultTokenConfigured() ? "token gate armed" : "SEALED — set VAULT_TOKEN to open the storage routes";
+  console.log(`vault api listening on port ${port} (storage driver: ${storageDriverKind()}, auth: ${authState})`);
   process.once("SIGINT", () => {
     server.close();
   });

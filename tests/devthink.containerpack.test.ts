@@ -22,7 +22,7 @@ describe("containerpack", () => {
     emulation of the emulated legs) while the runtime stages stay per leg. */
     expect(dockerfile).toContain("FROM --platform=$BUILDPLATFORM ${NODE_IMAGE} AS deps");
     expect(dockerfile).toContain("FROM --platform=$BUILDPLATFORM ${NODE_IMAGE} AS builder");
-    expect(dockerfile).toContain("COPY --from=builder /work /work");
+    expect(dockerfile).toContain("COPY --from=builder /devthink /devthink");
     expect(dockerfile).toContain("FROM --platform=$BUILDPLATFORM ${NODE_IMAGE} AS binary-builder");
     /* the base images answer by their registry digests the ladder stamps
     (the family doctrine evolved with the scanner gate: the tag stays
@@ -41,7 +41,7 @@ describe("containerpack", () => {
     way the runtime policy gate does). */
     const nodebaseline = (await readFile(".nvmrc", "utf8")).trim();
     expect(dockerfile).toContain(`ARG NODE_RUNTIME_VERSION="${nodebaseline}"`);
-    expect(dockerfile).toMatch(new RegExp(`^ARG NODE_IMAGE="node:${nodebaseline}-bookworm-slim"$`, "m"));
+    expect(dockerfile).toMatch(new RegExp(`^ARG NODE_IMAGE="node:${nodebaseline}-bookworm-slim@sha256:[0-9a-f]{64}"$`, "m"));
     expect(dockerfile).toMatch(/^FROM debian:trixie-slim@sha256:[0-9a-f]{64} AS runtime$/m);
     expect(dockerfile).toContain("COPY --from=nodefetch /out /usr/local");
     /* the runner stage closes the file: it stays the default build target
@@ -61,15 +61,45 @@ describe("containerpack", () => {
 
   it("runs the library build and the deterministic build checks in the builder before the runtime ships", async () => {
     const dockerfile = await readFile("Dockerfile", "utf8");
+<<<<<<< HEAD
     expect(dockerfile).toContain("RUN node tests/devthink.build.ts");
+=======
+    expect(dockerfile).toContain("RUN node ../tests/devthink.build.ts");
+>>>>>>> origin/main
     expect(dockerfile).toContain("RUN node dist/cli.js manifest");
     expect(dockerfile).toContain(
       "RUN node dist/cli.js headless dist/fixtures/plans/release-notes-plan.json --fixtures dist/fixtures",
     );
+<<<<<<< HEAD
     expect(dockerfile).toContain("RUN node tests/devthink.nativesmoke.ts");
     expect(dockerfile).toContain("RUN node tests/devthink.wcag.ts");
     expect(dockerfile).toContain("RUN node tests/devthink.packageextension.ts");
+=======
+    expect(dockerfile).toContain("RUN node ../tests/devthink.nativesmoke.ts");
+    expect(dockerfile).toContain("RUN node ../tests/devthink.packageextension.ts");
+>>>>>>> origin/main
     expect(dockerfile).toContain("manifest.json");
+  });
+
+  it("builds from the family context the checkout geometry answers — the vault sibling pin, the flat test village and the bridged engines ride beside the application", async () => {
+    /* the dependency union pins "@wenathlan/vault": "file:../vault" in the
+    manifest, the flat test village (tests/) owns the build engine and the
+    vitest suite the builder runs, and the vite/vitest/tsconfig bridges
+    resolve the getry ladder and the saddle sandbox onto their sibling
+    owners — an application-scoped context cannot answer any of them (the
+    frozen bun install of the security container lane died on the missing
+    ../vault folder exactly there), so the image mirrors the checkout:
+    the application at /devthink with the village and the siblings beside
+    it, and the node_modules bridge the ci and verify lanes carry. */
+    const dockerfile = await readFile("Dockerfile", "utf8");
+    expect(dockerfile).toContain("WORKDIR /devthink");
+    expect(dockerfile).toContain("COPY devthink/package.json devthink/bun.lock ./");
+    expect(dockerfile).toContain("COPY vault /vault");
+    expect(dockerfile).toContain("COPY devthink .");
+    expect(dockerfile).toContain("COPY tests /tests");
+    expect(dockerfile).toContain("COPY getry /getry");
+    expect(dockerfile).toContain("COPY saddle /saddle");
+    expect(dockerfile).toContain("RUN ln -sfn /devthink/node_modules /tests/node_modules");
   });
 
   it("runs the vitest suite in the builder with the qemu scaled timeouts before the runtime ships", async () => {
@@ -105,9 +135,9 @@ describe("containerpack", () => {
     expect(dockerfile).toContain("DEVTHINK_MCP_BIND=127.0.0.1");
     expect(dockerfile).toContain("EXPOSE 8080 7436");
     expect(dockerfile).toContain('ENTRYPOINT ["node", "container.mjs"]');
-    expect(dockerfile).toContain("COPY --from=builder --chown=10000:10000 /work/dist/site /app/dist/site");
-    expect(dockerfile).toContain("COPY --from=builder --chown=10000:10000 /work/dist/cli.js /app/dist/cli.js");
-    expect(dockerfile).toContain("COPY --from=builder --chown=10000:10000 /work/dist/http.js /app/dist/http.js");
+    expect(dockerfile).toContain("COPY --from=builder --chown=10000:10000 /devthink/dist/site /app/dist/site");
+    expect(dockerfile).toContain("COPY --from=builder --chown=10000:10000 /devthink/dist/cli.js /app/dist/cli.js");
+    expect(dockerfile).toContain("COPY --from=builder --chown=10000:10000 /devthink/dist/http.js /app/dist/http.js");
   });
 
   it("absorbs the retired compose behaviors into the one container file", async () => {

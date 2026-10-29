@@ -3,6 +3,7 @@
  * The file carrying the folder's own name is the path manager of the page:
  * it imports the loose components beside it, mounts the page and re-exports
  * the public component surface. Only the theme anchor (Sol/Sol.tsx) consumes
+<<<<<<< HEAD
  * this file. This anchor carries the former main component of the folder,
  * which now lives here as the page mount itself.
  * which now lives here as the page mount itself. Since the reform the mount
@@ -75,6 +76,9 @@ const domains: { href: string; labelKey: LabelKey; aboutKey: LabelKey; metaKey: 
  * the landing content of the home: the cinematic stage, the featured match
  * tile, the domain ledger and the footer meta-quad — rendered by the anchor
  * only behind a finished first-run flow.
+=======
+ * this file.
+>>>>>>> origin/main
  *
  * home — the in-construction pass: the game is in development, so the
  * cinematic landing of the old face (the scope stage, the featured board,
@@ -85,6 +89,12 @@ const domains: { href: string; labelKey: LabelKey; aboutKey: LabelKey; metaKey: 
  * page's face changed.
  */
 
+<<<<<<< HEAD
+=======
+import { label } from "../../labels";
+import { Constructionface, EntryGate } from "../wingets";
+
+>>>>>>> origin/main
 /**
  * the home anchor: the entry gate decides first (intro unseen hands to
  * /intro, onboarding unseen hands to /onboarding, null renders while the

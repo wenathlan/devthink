@@ -60,6 +60,8 @@ minimumReleaseAgeExclude:
   - '@capacitor/core@8.6.0'
   - '@capacitor/ios@8.6.0'
   - '@types/node@26.6.6'
+  - '@types/google.maps@3.66.9'
+  - lucide-react@1.64.0
 # the pnpm settings live here since pnpm 12 (the package.json pnpm field is
 # no longer read): the build scripts the dependency tree may run, every
 # other script stays ignored.

@@ -31,6 +31,25 @@
 #      non-root base. build it explicitly:
 #        docker build --target binary-runtime -t devthink:single-binary .
 #
+#   BUILD CONTEXT (the family-context law of the flat village era): the
+#   context is THE REPOSITORY ROOT, never the application folder. the
+#   application tree alone stopped carrying everything the build needs
+#   when the family grew into the shared geometry the checkout holds:
+#   the dependency union pins the vault sibling in the manifest
+#   ("@wenathlan/vault": "file:../vault" — unresolvable inside an
+#   application-scoped context, the exact failure that reddened the
+#   container-scan lane of the security workflow), the flat test village
+#   (tests/) owns the build engine and the vitest suite the builder runs,
+#   and the config bridges resolve the getry thinking ladder and the
+#   saddle sandbox onto their sibling owner sources. the image therefore
+#   mirrors the checkout geometry — the application at /devthink with the
+#   test village at /tests and the sibling engines at /vault, /getry and
+#   /saddle beside it — so every ../ reference, every file: dependency
+#   and every tsconfig/vite/vitest bridge answers inside the build exactly
+#   the way it answers in the checkout. the root .dockerignore keeps the
+#   junk (the git history, the local installs, the built trees, the
+#   release scratch) out of the context tarball.
+#
 # the stage chain (multi-stage, cache-optimized):
 #   deps      node:26.12.0-bookworm-slim carrying the pinned toolchain: the
 #             bun version the packageManager field of package.json pins
@@ -144,7 +163,9 @@
 #   -p 31081:7436 is an operator choice the recipe documents, never a
 #   default the image assumes.
 #
-#   devthink single-binary (the compiled cli, the explicit target):
+#   devthink single-binary (the compiled cli, the explicit target — the
+#   recipe runs from THE REPOSITORY ROOT, the family context every build
+#   of this file answers):
 #   docker build --target binary-runtime -t devthink:single-binary .
 #   docker run --rm --read-only \
 #     --cap-drop ALL --security-opt no-new-privileges:true \
@@ -160,7 +181,11 @@
 # text, and the container-scan heuristics parse any token containing '='
 # as a candidate credential pair.
 
-ARG NODE_IMAGE="node:26.13.0-bookworm-slim"
+# the node base answers the pin law the distroless and debian legs already
+# carry: the digest rides the tag so every pull of the image family lands
+# the exact bytes the ladder audited (the scorecard pin rule the code
+# scanning alerts 1965-1967 asked for).
+ARG NODE_IMAGE="node:26.13.0-bookworm-slim@sha256:bc0a2afd3b74ce12222fc8bab99271e66257f021078f5f4a5d687a77d280c1d9"
 
 # the runtime node version of the five-architecture surface (the 2.0.16
 # pass): the nodejs.org distribution answers official linux tarballs for
@@ -188,7 +213,7 @@ ARG NODE_RUNTIME_VERSION="26.13.0"
 # bases (the node runtime and the distroless binary runtime carry no
 # --platform override, so buildx resolves them per leg).
 FROM --platform=$BUILDPLATFORM ${NODE_IMAGE} AS deps
-WORKDIR /work
+WORKDIR /devthink
 
 # TARGETARCH names the platform axis buildx builds this stage for (amd64 or
 # arm64): bun resolves its platform binaries through the per-leg optional
@@ -202,8 +227,17 @@ ARG TARGETARCH
 # reads the pinned bun version from the manifest it will install (a
 # packageManager bump re-runs the toolchain layer by design). bun.lock pins
 # the entire tree including the dev toolchain the build needs (esbuild,
-# typescript, vitest).
-COPY package.json bun.lock ./
+# typescript, vitest). the paths ride the family context (the repository
+# root), so the manifests arrive from the devthink subtree of the context.
+COPY devthink/package.json devthink/bun.lock ./
+
+# the vault sibling the dependency union pins: the manifest declares
+# "@wenathlan/vault": "file:../vault", so the frozen install resolves the
+# sibling tree the checkout carries beside the application — the family
+# context provides it, and the COPY lands it at /vault where the file:
+# dependency of /devthink/package.json resolves (the exact resolution the
+# application-scoped context of the pre-union era could never answer).
+COPY vault /vault
 
 # the standalone container answers the sibling-family law: the manifest
 # declares @wenathlan/vault as a file:../vault sibling dependency (the
@@ -261,15 +295,18 @@ RUN bun install --frozen-lockfile --ignore-scripts
 # checks answer the native runner, and the arch only becomes a target
 # where the binary stage cross-compiles below.
 FROM --platform=$BUILDPLATFORM ${NODE_IMAGE} AS builder
-WORKDIR /work
+WORKDIR /devthink
 
 ARG TARGETARCH
 
 # the frozen dependency layer: the same chain the deps stage carries — the
 # identical command sequence (the saddle apt retry included) over the
 # identical base image answers the buildkit cache of the deps layers, so
-# the builder adds no install cost.
-COPY package.json bun.lock ./
+# the builder adds no install cost. the manifests and the vault sibling
+# ride the same family-context paths the deps stage copies.
+COPY devthink/package.json devthink/bun.lock ./
+
+COPY vault /vault
 
 # the sibling strip of the deps stage repeated verbatim: the builder
 # re-copies the pristine manifest pair, so the standalone strip and the
@@ -295,21 +332,49 @@ RUN set -eux; \
 
 RUN bun install --frozen-lockfile --ignore-scripts
 
-# the rest of the tree: the library sources, the web root interface
-# files (the static site design and the extension surfaces, flat at the
-# application root beside the Sol component folders), the tests
-# (the build engine, the fixtures and the smoke scripts) and the docs the
-# deterministic checks read (.dockerignore keeps the context to exactly
-# these inputs — no prebuilt dist, no packaged artifacts, no caches).
-COPY . .
+# the rest of the tree, in the checkout geometry: the application sources
+# (the library sources, the web root interface files — the static site
+# design and the extension surfaces, flat at the application root beside
+# the Sol component folders — and the docs the deterministic checks read),
+# the flat test village (tests/ — the build engine, the fixtures, the
+# smoke scripts and the vitest suite the builder runs), and the sibling
+# engines the config bridges resolve (the getry thinking ladder of the
+# getrybridge alias and the direct village imports, the saddle sandbox
+# and isolation surfaces of the vite/vitest/tsconfig bridges). the
+# application lands at /devthink and the siblings beside it, so every
+# ../devthink, ../tests, ../getry and ../saddle reference of the village
+# answers inside the image exactly the way it answers in the checkout
+# (the root .dockerignore keeps the context to exactly these inputs — no
+# prebuilt dist, no packaged artifacts, no caches).
+COPY devthink .
+COPY tests /tests
+COPY getry /getry
+COPY saddle /saddle
+# the root manifest the engines gate counts rides beside the application:
+# the engines suite opens ../package.json from the workdir, and the
+# container answers the checkout geometry the same way (the count law
+# of the fifteen engines reads the field that grows without limit).
+COPY package.json /package.json
+
+# the flat village bridge the ci and verify lanes carry: the village
+# scripts import bare specifiers (esbuild, vitest) from their own folder,
+# so the installed tree answers them through the same node_modules symlink
+# the checkout lanes bridge onto tests/.
+RUN ln -sfn /devthink/node_modules /tests/node_modules
 
 # the library build: every dist target the publishing pipeline ships — the
 # esm/cjs/neutral library bundles, the cli, the headless entry, the mcp
 # server, the relay, the extension surface with its manifest and icons, the
 # static site with content-hashed file names and the immutable cache header
 # configuration, the frozen schemas, the fixture set and the flat
+<<<<<<< HEAD
 # distpackage staging.
 RUN node tests/devthink.build.ts
+=======
+# distpackage staging. the build engine lives in the flat test village the
+# checkout root carries (tests/devthink.build.ts).
+RUN node ../tests/devthink.build.ts
+>>>>>>> origin/main
 
 # the build checks the builder runs before the runtime stage ships — an
 # image whose checks fail never ships:
@@ -325,7 +390,11 @@ RUN node dist/cli.js headless dist/fixtures/plans/release-notes-plan.json --fixt
 
 # the native smoke (the companion recipe and the wsbridge answer against a
 # fake host process).
+<<<<<<< HEAD
 RUN node tests/devthink.nativesmoke.ts
+=======
+RUN node ../tests/devthink.nativesmoke.ts
+>>>>>>> origin/main
 
 # the firefox prep check (the overlay of manifest.json layers
 # onto the source manifest through the crossbrowser adapter: the host
@@ -339,7 +408,11 @@ RUN bun run checksecrets.ts
 # THIS build: the readiness test the vitest suite carries walks the
 # recorded evidence, and the committed artifact predates the build (the
 # same build, sweep, suite order the ci and verify lanes keep).
+<<<<<<< HEAD
 RUN node tests/devthink.wcag.ts
+=======
+RUN node ../tests/devthink.wcag.ts
+>>>>>>> origin/main
 
 # the vitest suite. the whole suite runs on the native build platform of
 # the builder stage — the $BUILDPLATFORM pin keeps every leg native, so the
@@ -362,7 +435,11 @@ RUN export DEVTHINK_TEST_TIMEOUT_MS=900000 DEVTHINK_TEST_BUDGET_MS=10000; \
 # the pack verification (the reproducible extension archive answers with
 # every required artifact, the packaged manifest matches the package stamp,
 # the icon family and the page bundles ship complete).
+<<<<<<< HEAD
 RUN node tests/devthink.packageextension.ts
+=======
+RUN node ../tests/devthink.packageextension.ts
+>>>>>>> origin/main
 
 # ---------------------------------------------------------------------------
 # stages 3 and 4: the devthink single-binary image — the compiled cli of
@@ -381,9 +458,16 @@ RUN node tests/devthink.packageextension.ts
 # below, never through an emulated toolchain).
 FROM --platform=$BUILDPLATFORM ${NODE_IMAGE} AS binary-builder
 ARG TARGETARCH
-COPY --from=builder /work /work
+COPY --from=builder /devthink /devthink
+# the sibling engines the compile resolves through the tsconfig bridges
+# (the getry ladder and the saddle sandbox/isolation sources the bun
+# bundler inlines from their owners): they ride beside the application in
+# the same geometry the builder carries, so the compiled entry answers the
+# same bridges the esbuild legs do.
+COPY --from=builder /getry /getry
+COPY --from=builder /saddle /saddle
 COPY --from=builder /usr/local/bin/bun /usr/local/bin/bun
-WORKDIR /work
+WORKDIR /devthink
 
 # the compiled binary: bun build --compile of devthink.ts (the workbench
 # cli entry) through the build.ts recipe the release lane uses, aimed at
@@ -522,10 +606,10 @@ ENV NODE_ENV=production \
 
 WORKDIR /app
 
-COPY --from=builder --chown=10000:10000 /work/package.json /app/package.json
-COPY --from=builder --chown=10000:10000 /work/dist/site /app/dist/site
-COPY --from=builder --chown=10000:10000 /work/dist/cli.js /app/dist/cli.js
-COPY --from=builder --chown=10000:10000 /work/dist/http.js /app/dist/http.js
+COPY --from=builder --chown=10000:10000 /devthink/package.json /app/package.json
+COPY --from=builder --chown=10000:10000 /devthink/dist/site /app/dist/site
+COPY --from=builder --chown=10000:10000 /devthink/dist/cli.js /app/dist/cli.js
+COPY --from=builder --chown=10000:10000 /devthink/dist/http.js /app/dist/http.js
 
 # The devthink self hosting runner of the 1.1.87 publishing pipeline family
 # (the 2.0.0 consolidation restores it as the runtime entry of THE Dockerfile).

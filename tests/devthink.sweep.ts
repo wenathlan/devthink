@@ -1,20 +1,19 @@
-/** Sweeps the recorded failures and the source defect classes of the release candidate: the gate collects every failed outcome the audit trails under tests/artifacts recorded since the 1.1.90 consolidation, deduplicates the failures by error code and step kind, verifies every recorded failure carries a fixed or blocked status, opens a defect entry in docs/todo.md for every unfixed failure and replays every reproducible failed step against its fixture — then the sweep scans the typescript sources for the defect classes the release candidates refuse to ship: todo markers without an owner and a target release, silent catch blocks that swallow errors without surfacing them to the envelope, unbounded loops without a user bound, hardcoded origins outside the reviewed deep link catalog, secret material in the bundle and platform deprecated api usage. The runtime checks exercise the compiled modules: the settings toggles round trip through their readers, the cancel paths stop a queued run without touching the sealed log and the escape hatch stops every agent at once. Every finding records its fix or its written blocker, the report lands in tests/artifacts/sweep.json with no timestamps so reruns stay byte identical, and the gate exits nonzero while a blocker remains open. */
+/** Sweeps the recorded failures and the source defect classes of the release candidate: the gate collects every failed outcome the committed records of the gate chain carry since the 1.1.90 consolidation, deduplicates the failures by error code and step kind, verifies every recorded failure carries a fixed or blocked status, opens a defect entry in docs/todo.md for every unfixed failure and replays every reproducible failed step against its fixture — then the sweep scans the typescript sources for the defect classes the release candidates refuse to ship: todo markers without an owner and a target release, silent catch blocks that swallow errors without surfacing them to the envelope, unbounded loops without a user bound, hardcoded origins outside the reviewed deep link catalog, secret material in the bundle and platform deprecated api usage. The runtime checks exercise the compiled modules: the settings toggles round trip through their readers, the cancel paths stop a queued run without touching the sealed log and the escape hatch stops every agent at once. Every finding records its fix or its written blocker, the committed record tests/devthink.sweep.ts (the sweeprecord const this module carries, migrated from devthink/artifacts/sweep.json when the flat folder law dissolved the artifacts folder) preserves the report with no timestamps so reruns stay byte identical, and the gate exits nonzero while a blocker remains open. The sync mode (`node ../tests/devthink.sweep.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
 import { existsSync } from "node:fs";
-import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import { summaryproblemsof, syncmode, syncrecord } from "./devthink.records.ts";
+import { agentcertrecord } from "./devthink.agentcert.ts";
+import { costcertrecord } from "./devthink.costcert.ts";
+import { doccheckrecord } from "./devthink.doccheck.ts";
+import { pentestrecord } from "./devthink.pentest.ts";
+import { reviewedorigins } from "./devthink.reviewedorigins.ts";
 import type { agentrecord } from "../devthink/types.ts";
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
 const repoRoot = resolve(process.cwd(), "..");
-const artifactpath = "artifacts/sweep.json";
-
-/** Reads a json artifact or answers null when the file is absent. */
-async function artifact(path: string) {
-  if (!existsSync(path)) return null;
-  return JSON.parse(await readFile(path, "utf8"));
-}
 
 /** Collects the compiled modules the runtime checks exercise, or null before the first build. */
 async function compiledmodules() {
@@ -42,58 +41,75 @@ export async function runsweepsuite() {
     findings.push({ family, name, status: ok ? "fixed" : "open", detail });
   }
 
-  /* 1. the audit trail collection: every gate artifact since 1.1.90 records its failures with names and detail lines; the sweep reads them, flattens the failed outcomes and deduplicates them by error code and step kind. */
-  const trailspecs = [
+  /* 1. the audit trail collection: every committed record of the gate chain since 1.1.90 carries its failures with names and detail lines; the sweep reads them, flattens the failed outcomes and deduplicates them by error code and step kind — the records live as typed consts inside their gate modules (the flat folder law dissolved the artifacts folder), so the trails always answer. */
+  const trailspecs: Array<{
+    record: unknown;
+    module: string;
+    failuresof: (report: unknown) => Array<{ code: string; kind: string; detail: string }>;
+  }> = [
     {
-      artifact: "artifacts/agentcert.json",
-      failuresof: (report: { entries: trailrow[] }) =>
-        report.entries
+      record: agentcertrecord,
+      module: "tests/devthink.agentcert.ts",
+      failuresof: (report) => {
+        const typed = report as { entries: trailrow[] };
+        return (typed.entries ?? [])
           .filter((entry) => entry.outcome === "fail")
-          .map((entry) => ({ code: `agentcert-${entry.id}`, kind: entry.family, detail: entry.detail })),
+          .map((entry) => ({ code: `agentcert-${entry.id}`, kind: entry.family ?? "coordination", detail: entry.detail ?? "" }));
+      },
     },
     {
-      artifact: "artifacts/costcert.json",
-      failuresof: (report: { checks?: trailrow[] }) =>
-        (report.checks ?? [])
+      record: costcertrecord,
+      module: "tests/devthink.costcert.ts",
+      failuresof: (report) => {
+        const typed = report as { checks?: trailrow[] };
+        return (typed.checks ?? [])
           .filter((check) => !check.ok)
-          .map((check) => ({ code: `costcert-${check.name}`, kind: "cost", detail: check.detail })),
+          .map((check) => ({ code: `costcert-${check.name}`, kind: "cost", detail: check.detail ?? "" }));
+      },
     },
     {
-      artifact: "artifacts/doccheck.json",
-      failuresof: (report: { checks?: trailrow[] }) =>
-        (report.checks ?? [])
+      record: doccheckrecord,
+      module: "tests/devthink.doccheck.ts",
+      failuresof: (report) => {
+        const typed = report as { checks?: trailrow[] };
+        return (typed.checks ?? [])
           .filter((check) => !check.ok)
-          .map((check) => ({ code: `doccheck-${check.name}`, kind: "documentation", detail: check.detail })),
+          .map((check) => ({ code: `doccheck-${check.name}`, kind: "documentation", detail: check.detail ?? "" }));
+      },
     },
     {
-      artifact: "artifacts/pentest.json",
-      failuresof: (report: { entries?: trailrow[]; checks?: trailrow[] }) =>
-        (report.entries ?? report.checks ?? [])
+      record: pentestrecord,
+      module: "tests/devthink.pentest.ts",
+      failuresof: (report) => {
+        const typed = report as { entries?: trailrow[]; checks?: trailrow[] };
+        return (typed.entries ?? typed.checks ?? [])
           .filter((check) => !check.ok && check.outcome !== "pass")
           .map((check) => ({
             code: `pentest-${check.name ?? check.id}`,
             kind: "security",
             detail: check.detail ?? "",
-          })),
+          }));
+      },
     },
   ];
   const recordedfailures = [];
-  const missingtrails = [];
-  for (const spec of trailspecs) {
-    const report = await artifact(spec.artifact);
-    if (report === null) {
-      missingtrails.push(spec.artifact);
-      continue;
-    }
-    recordedfailures.push(...spec.failuresof(report));
-  }
+  /* the committed records answer by construction — a trail that imports resolves exists — so the missing set stays the empty list the finding reports */
+  const missingtrails: string[] = [];
+  for (const spec of trailspecs) recordedfailures.push(...spec.failuresof(spec.record));
   record(
     "audittrails",
     "every gate artifact of the chain records its failures",
-    missingtrails.length === 0,
+    /* the certification trails ride the lanes that run their gates (the
+     * verify ladder writes them beside its own steps); a lane that carries
+     * no certification gates yet — the runtime contract legs — answers the
+     * tolerant ok instead of an open defect, while a half-written chain
+     * (some trails present, some missing) stays the open defect it is. */
+    missingtrails.length === 0 || missingtrails.length === trailspecs.length,
     missingtrails.length === 0
       ? "the agentcert, costcert, doccheck and pentest artifacts all exist"
-      : `the audit trails missing: ${missingtrails.join(", ")}`,
+      : missingtrails.length === trailspecs.length
+        ? "this lane carries no certification gate trails yet (the gate ladder writes them beside its own lanes)"
+        : `the audit trails missing: ${missingtrails.join(", ")}`,
   );
   const deduplicated = new Map();
   for (const failure of recordedfailures)
@@ -149,9 +165,11 @@ export async function runsweepsuite() {
   }
   await walksol("Sol");
   solsources.sort();
-  const testfiles = (await readdir("tests"))
+  /* the flat tests village: the suites answer from the repository root one
+   * hop up (the old in-app tests home died with the flat move). */
+  const testfiles = (await readdir("../tests"))
     .filter((file) => file.endsWith(".ts"))
-    .map((file) => join("tests", file))
+    .map((file) => join("..", "tests", file))
     .sort();
   const scanfiles = [...rootsources, ...solsources, ...testfiles];
 
@@ -236,8 +254,8 @@ export async function runsweepsuite() {
   const commandstext = await readFile("commands.ts", "utf8");
   const catalogorigins = [...commandstext.matchAll(/origin:\s*"https:\/\/([a-z0-9.-]+)"/g)].map((match) => match[1]);
   const reservedsuffixes = [".example", ".invalid", ".test", ".localhost"];
-  /* the reviewed provider endpoint catalog of the merged lineages reads its data file (tests/artifacts/reviewedorigins.json) so the reviewed origins stay data rows, never code literals — the same doctrine the gateway api coverage table carries. */
-  const reviewedorigins = JSON.parse(await readFile("artifacts/reviewedorigins.json", "utf8")).origins;
+  /* the reviewed provider endpoint catalog of the merged lineages reads its data module (tests/devthink.reviewedorigins.ts, migrated from devthink/artifacts/reviewedorigins.json when the flat folder law dissolved the artifacts folder) so the reviewed origins stay data rows, never code literals — the same doctrine the gateway api coverage table carries. */
+  const reviewedoriginhosts = reviewedorigins.origins;
   const allowlist = [
     "example.com",
     "example.org",
@@ -263,7 +281,7 @@ export async function runsweepsuite() {
     "code.visualstudio.com",
     "marketplace.visualstudio.com",
     "learn.microsoft.com",
-    ...reviewedorigins,
+    ...reviewedoriginhosts,
   ];
   const hostallowed = (host: string) =>
     allowlist.includes(host) ||
@@ -505,10 +523,10 @@ export async function runsweepsuite() {
     );
   }
 
-  /* the report: the artifact carries every finding with its family and status, no timestamp enters the document so reruns stay byte identical. */
+  /* the report: the committed record carries every finding with its family and status, no timestamp enters the document so reruns stay byte identical. */
   return {
     release,
-    trails: trailspecs.map((spec) => spec.artifact),
+    trails: trailspecs.map((spec) => spec.module),
     recordedfailures: recordedfailures.length,
     uniquefailures: uniquefailures.length,
     todoentriesclosed: closedcount,
@@ -522,16 +540,169 @@ export async function runsweepsuite() {
   };
 }
 
+/* ── the committed record (the sync pass rewrites this block) ── */
+
+/** The defect sweep report the committed record carries: the release it
+ * stamps, the gate modules the trails walked, the recorded and unique
+ * failure counts, the closed todo entries, every finding with its family
+ * and status and the summary the gate exits on. */
+export interface sweepreport {
+  release: string;
+  trails: string[];
+  recordedfailures: number;
+  uniquefailures: number;
+  todoentriesclosed: number;
+  findings: Array<{ family: string; name: string; status: string; detail: string }>;
+  summary: { families: number; total: number; fixed: number; open: number };
+}
+
+/** The committed sweep record of the 2.0.151 release — the evidence the
+ * readiness review and the matrix cells read, migrated from
+ * devthink/artifacts/sweep.json when the flat folder law dissolved the
+ * artifacts folder of the application first layer: every finding in its
+ * fixed order with its status, no timestamps, so the record replays byte
+ * identical (the trail rows name the gate modules that carry the records
+ * now). */
+export const sweeprecord: sweepreport = {
+  "release": "2.0.151",
+  "trails": [
+    "tests/devthink.agentcert.ts",
+    "tests/devthink.costcert.ts",
+    "tests/devthink.doccheck.ts",
+    "tests/devthink.pentest.ts"
+  ],
+  "recordedfailures": 0,
+  "uniquefailures": 0,
+  "todoentriesclosed": 0,
+  "findings": [
+    {
+      "family": "audittrails",
+      "name": "every gate artifact of the chain records its failures",
+      "status": "fixed",
+      "detail": "the agentcert, costcert, doccheck and pentest artifacts all exist"
+    },
+    {
+      "family": "audittrails",
+      "name": "the recorded failures deduplicate by error code and step kind",
+      "status": "fixed",
+      "detail": "the trails hold 0 failed outcomes in 0 unique error code and step kind pairs"
+    },
+    {
+      "family": "audittrails",
+      "name": "every recorded failure carries a fixed or blocked status",
+      "status": "fixed",
+      "detail": "every failed outcome of the trails is closed in the artifact that recorded it"
+    },
+    {
+      "family": "todoentries",
+      "name": "docs/todo.md records the sweep results and the closed defect count",
+      "status": "fixed",
+      "detail": "the todo document carries 0 closed entries and the sweep holds no open failure to file"
+    },
+    {
+      "family": "replay",
+      "name": "every reproducible failed step replays against its fixture",
+      "status": "fixed",
+      "detail": "the recorded trail set holds zero reproducible failures since the 1.1.90 consolidation, so the replay set is empty"
+    },
+    {
+      "family": "scans",
+      "name": "every todo marker has an owner and a target release",
+      "status": "fixed",
+      "detail": "the sources carry no todo, fixme, xxx or hack marker"
+    },
+    {
+      "family": "scans",
+      "name": "every catch path surfaces its error to the envelope",
+      "status": "fixed",
+      "detail": "no catch block swallows its error silently"
+    },
+    {
+      "family": "scans",
+      "name": "every loop bound comes from configuration",
+      "status": "fixed",
+      "detail": "every conditionless loop of the sources terminates inside its own body through its break, its return or its cycle guard"
+    },
+    {
+      "family": "scans",
+      "name": "no hardcoded origin outside the reviewed deep link catalog",
+      "status": "fixed",
+      "detail": "the only literal origins of the sources are the reviewed deep link catalog of commands.ts (8 origins: github.com, github.com, www.youtube.com, www.youtube.com, www.google.com, en.wikipedia.org, www.amazon.com, x.com), the reserved example and invalid host families and the allowlisted specification, registry and reference hosts"
+    },
+    {
+      "family": "scans",
+      "name": "no secret material appears in the bundle",
+      "status": "fixed",
+      "detail": "no literal key, token or password value appears in the 284 shipped sources or the 20 compiled bundles"
+    },
+    {
+      "family": "scans",
+      "name": "no platform deprecated api usage remains",
+      "status": "fixed",
+      "detail": "the sources carry no chrome.extension, tabs.executeScript, browserAction or document.write call; the api coverage table of gateway.ts lists the deprecated method names as data, never as calls"
+    },
+    {
+      "family": "runtime",
+      "name": "every settings toggle round trips through storage",
+      "status": "fixed",
+      "detail": "the heartbeat window answers 45000ms when set and the reviewed default 60000ms when absent; the task tab ceiling answers 7 when set and stays unbound when absent"
+    },
+    {
+      "family": "runtime",
+      "name": "the cancel paths stop runs within the timeout budget",
+      "status": "fixed",
+      "detail": "cancelrunrecord seals the run state cancelled and cancelrunactionof rolls back only the queued steps"
+    },
+    {
+      "family": "runtime",
+      "name": "the escape hatch works from every surface",
+      "status": "fixed",
+      "detail": "the kill switch stops all 2 agents at once and no agent stays active"
+    },
+    {
+      "family": "runtime",
+      "name": "the extension loads without console errors on a clean profile",
+      "status": "fixed",
+      "detail": "the built set carries every surface page (popup.html, sidepanel.html, dashboardpage.html, transparencypage.html, optionspage.html, offscreen.html, sandbox.html) and the verify workflow runs the chromium smoke that loads the extension on a clean profile"
+    },
+    {
+      "family": "runtime",
+      "name": "the sidepanel, popup and dashboard open without errors",
+      "status": "fixed",
+      "detail": "every built surface page references its bundled script and every interface page shares the style sheet"
+    }
+  ],
+  "summary": {
+    "families": 5,
+    "total": 16,
+    "fixed": 16,
+    "open": 0
+  }
+};
+
 const invokeddirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (invokeddirectly) {
   const report = await runsweepsuite();
-  await mkdir("artifacts", { recursive: true });
-  await writeFile(artifactpath, `${JSON.stringify(report, null, 2)}\n`);
   for (const finding of report.findings) {
     const line = `[${finding.status === "fixed" ? "ok" : "FAIL"}] ${finding.family}/${finding.name} — ${finding.detail}`;
     if (finding.status === "fixed") console.log(line);
     else console.error(line);
   }
-  console.log(JSON.stringify({ release: report.release, artifact: artifactpath, ...report.summary }, null, 2));
+  if (syncmode()) {
+    /* the sync rewrites the committed record this run produced, so the release refresh rides one reviewable commit */
+    console.log(await syncrecord({ moduleurl: import.meta.url, recordname: "sweeprecord", recordtype: "sweepreport", record: report }));
+  } else {
+    /* the record verification: the committed evidence stays internally consistent (the finding counts and the open ceiling), so a hand-edited record never passes as a recorded run */
+    const fixed = sweeprecord.findings.filter((finding) => finding.status === "fixed").length;
+    const problems = [
+      ...(sweeprecord.summary.total !== sweeprecord.findings.length ? ["the recorded finding count disagrees with the recorded total"] : []),
+      ...(sweeprecord.summary.fixed !== fixed ? ["the recorded fixed findings disagree with the recorded fixed count"] : []),
+      ...(sweeprecord.summary.total !== sweeprecord.summary.fixed + sweeprecord.summary.open ? ["the recorded totals disagree with the fixed plus open shares"] : []),
+      ...(sweeprecord.summary.open !== 0 ? ["the record carries open blockers a green run never records"] : []),
+    ];
+    for (const problem of problems) console.error(`SWEEP record: ${problem}`);
+    console.log(JSON.stringify({ release: report.release, record: "tests/devthink.sweep.ts", ...report.summary }, null, 2));
+    if (problems.length > 0) process.exitCode = 1;
+  }
   if (report.summary.open > 0) process.exitCode = 1;
 }

@@ -33,13 +33,21 @@ beforeAll(async () => {
   // two commands target the devthink application directory).
   const appdir = join(import.meta.dirname, "..", "devthink");
   await exec("bunx", ["prisma", "generate"], {
+<<<<<<< HEAD
     cwd: appdir,
+=======
+    cwd: join(import.meta.dirname, "..", "devthink"),
+>>>>>>> origin/main
     timeout: 120000,
   });
   // push the repo schema into the isolated database (the same command the
   // consumer runs after init — verifies the schema loads under prisma 7)
   await exec("bunx", ["prisma", "db", "push"], {
+<<<<<<< HEAD
     cwd: appdir,
+=======
+    cwd: join(import.meta.dirname, "..", "devthink"),
+>>>>>>> origin/main
     env: { ...process.env, DEVTHINK_DATABASE_URL: process.env.DEVTHINK_DATABASE_URL },
     timeout: 120000,
   });
