@@ -5,8 +5,10 @@
  * control bar UNDER the input, INSIDE the shell — the zcode stacked
  * layout. the surface is the frosted glass layer: an aria-hidden overlay
  * pinned under the content (blur 40px, saturate 150 percent, the canvas
- * fill at 55 percent) so the timeline reads through the dock while the
- * shell keeps its border and the 1.2rem radius. unfocused with one line
+ * fill at 55 percent — the chat wave 7-a dock tokens) so the timeline
+ * reads through the dock while the shell keeps its border and the hero
+ * radius (the --chat-r-hero token, 24px — the one content surface
+ * earning the largest radius of the chat ladder). unfocused with one line
  * of draft the well rests as the round pill — the 9999px radius, the
  * compact paddings, the control bar joining the pill row by display
  * contents — and the block returns on focus, on a multiline draft or
@@ -44,23 +46,23 @@ import {
   CheckmarkRegular as Checkmark,
   ChevronDownRegular as ChevronDown,
   CubeRegular as Cube,
-  type FluentIcon as LucideIcon,
   LightbulbRegular as Lightbulb,
+  type FluentIcon as LucideIcon,
   StopFilled as Stop,
 } from "@fluentui/react-icons";
 import { type CSSProperties, type KeyboardEvent, type RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { chatLimit, chatText } from "../../chatlabels.ts";
 import {
   CHAT_THINKING_LEVELS,
-  type ChatThinking,
   CHAT_TOOLS,
-  type GatewayModel,
+  type ChatThinking,
   GATEWAY_MODEL,
+  type GatewayModel,
   type ToolId,
 } from "../../chatstate.ts";
+import { label } from "../../labels.ts";
 import { estimateTokens, formatCompactTokenCount } from "../../queue.ts";
 import { useStoredFlag } from "../../usestoredstate.ts";
-import { label } from "../../labels.ts";
 
 const TOOL_ICONS: Record<ToolId, LucideIcon> = {
   thinking: Lightbulb,
@@ -422,21 +424,26 @@ export function Composer({
   const wellStyle: CSSProperties = {
     position: "relative",
     isolation: "isolate",
-    borderRadius: resting ? "9999px" : "1.2rem",
+    /* the hero law (chat wave 7-a): the block well earns the 24px hero
+     * radius via the stylesheet token — the resting pill keeps its own
+     * round morph; the focus-within elevation walk joins the morph on
+     * the same curve */
+    borderRadius: resting ? "9999px" : "var(--chat-r-hero, 24px)",
     padding: resting ? "6px 12px" : "12px",
     ...(resting ? wellResting : null),
     transition:
-      "border-color 150ms ease, background-color 150ms ease, border-radius 200ms var(--ease-fluent, ease), padding 200ms var(--ease-fluent, ease)",
+      "border-color 150ms ease, background-color 150ms ease, border-radius 200ms var(--ease-fluent, ease), padding 200ms var(--ease-fluent, ease), box-shadow 150ms var(--ease-standard, ease)",
   };
 
   /* the frosted surface (the ::before equivalent): the blur 40px with the
    * saturation lift over the canvas fill at 55 percent — solid canvas
-   * under the reduced-transparency floor. */
+   * under the reduced-transparency floor. the values read the chat wave
+   * 7-a dock tokens so the css law and this layer stay one grammar. */
   const glassFill: CSSProperties = solidGlass
     ? { background: "var(--sol-canvas)" }
     : {
-        backdropFilter: "blur(40px) saturate(150%)",
-        WebkitBackdropFilter: "blur(40px) saturate(150%)",
+        backdropFilter: "blur(var(--chat-dock-blur, 40px)) saturate(var(--chat-dock-sat, 150%))",
+        WebkitBackdropFilter: "blur(var(--chat-dock-blur, 40px)) saturate(var(--chat-dock-sat, 150%))",
         background: "color-mix(in oklab, var(--sol-canvas) 55%, transparent)",
       };
   const glassStyle: CSSProperties = {
@@ -648,7 +655,10 @@ export function Composer({
                   className="dtc-wctrl__btn"
                   aria-haspopup="listbox"
                   aria-expanded={thinkOpen}
-                  aria-label={label("chat.composer.effortAria").replace("{level}", autoEffort ? label("chat.composer.auto") : activeThinking)}
+                  aria-label={label("chat.composer.effortAria").replace(
+                    "{level}",
+                    autoEffort ? label("chat.composer.auto") : activeThinking,
+                  )}
                   onClick={openThink}
                   title={
                     autoEffort
@@ -657,7 +667,11 @@ export function Composer({
                   }
                 >
                   <BrainCircuit fontSize={15} aria-hidden="true" />
-                  {compact ? null : <span className="dtc-wctrl__label">{autoEffort ? label("chat.composer.auto") : activeThinking}</span>}
+                  {compact ? null : (
+                    <span className="dtc-wctrl__label">
+                      {autoEffort ? label("chat.composer.auto") : activeThinking}
+                    </span>
+                  )}
                   <ChevronDown fontSize={11} aria-hidden="true" className="dtc-wctrl__chev" />
                 </button>
                 {thinkOpen ? (
@@ -747,10 +761,7 @@ export function Composer({
             ) : null}
 
             {typeof tokenEstimate === "number" && !compact ? (
-              <span
-                className="dtc-meter"
-                title={label("chat.composer.meterHint")}
-              >
+              <span className="dtc-meter" title={label("chat.composer.meterHint")}>
                 {meterText}
               </span>
             ) : null}
