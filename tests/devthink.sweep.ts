@@ -149,9 +149,11 @@ export async function runsweepsuite() {
   }
   await walksol("Sol");
   solsources.sort();
-  const testfiles = (await readdir("tests"))
+  /* the flat tests village: the suites answer from the repository root one
+   * hop up (the old in-app tests home died with the flat move). */
+  const testfiles = (await readdir("../tests"))
     .filter((file) => file.endsWith(".ts"))
-    .map((file) => join("tests", file))
+    .map((file) => join("..", "tests", file))
     .sort();
   const scanfiles = [...rootsources, ...solsources, ...testfiles];
 
