@@ -37,6 +37,8 @@ minimumReleaseAgeExclude:
   - '@capacitor/ios@8.6.0'
   - '@opencode-ai/sdk@1.19.5'
   - react-resizable-panels@4.15.1
+  - '@types/google.maps@3.66.9'
+  - lucide-react@1.64.0
 
 # the pnpm settings live here since pnpm 12 (the package.json pnpm field is
 # no longer read, and onlyBuiltDependencies died in pnpm 11 — the map below
