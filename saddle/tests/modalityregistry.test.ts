@@ -19,7 +19,9 @@ import {
 /** the records the platform lanes drive today — the honest live set the
  * report and the lanes agree on (the run lane executes node inside the
  * container, the storage lane drives the session jail, the exec lane
- * drives every host runtime of the polyglot languages and the builds) */
+ * drives every host runtime of the polyglot languages and the builds, and
+ * the edge plane lanes of wave sv2 drive the babel, webpack and universal
+ * sh lanes server-side) */
 const LIVESET = [
   "build-make",
   "build-ninja",
@@ -40,10 +42,15 @@ const LIVESET = [
   "language-zig",
   "network-dns",
   "network-doh",
+  "runner-babel",
   "runner-bun",
   "runner-deno",
   "runner-node",
   "runner-serverless",
+  "runner-universal",
+  "runner-wasi",
+  "runner-webpack",
+  "runner-wasm",
   "runtime-jvm",
   "storage-sqlite",
 ] as const;

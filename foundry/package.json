@@ -47,8 +47,7 @@
   "files": [
     "docs",
     "tests",
-    "README.md",
-    "LICENSE"
+    "README.md"
   ],
   "engines": {
     "bare": "^1.18.0",

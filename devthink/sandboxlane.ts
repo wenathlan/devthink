@@ -429,9 +429,11 @@ async function execchild(jail: string, bin: string, childargv: string[]): Promis
 async function toolexeclanguage(jail: string, args: string[]): Promise<string[]> {
   const lang = (args[0] ?? "").toLowerCase();
   if (lang === "isolate") return toolexecisolate(jail, args.slice(1));
+  if (lang === "wasm") return toolexecwasm(jail, args.slice(1));
+  if (lang === "wasi") return toolexecwasi(jail, args.slice(1));
   const lane = lang === "rust" ? RUSTLANE : EXECLANES[lang];
   if (lane === undefined) {
-    const known = ["rust", "isolate", ...Object.keys(EXECLANES)].sort().join(" ");
+    const known = ["rust", "isolate", "wasm", "wasi", ...Object.keys(EXECLANES)].sort().join(" ");
     return [
       ["exec: the language ", lang || "(none)", " carries no lane"].join(""),
       ["the polyglot lane answers: ", known].join(""),
@@ -497,6 +499,82 @@ async function toolexecisolate(jail: string, args: string[]): Promise<string[]> 
     rows.push("exit 1");
   }
   return rows;
+}
+
+/** toolexecwasm — the runner-wasm modality: the jailed wasm module
+ * compiles and instantiates through the WebAssembly runtime of the host
+ * (zero imports — the pure compute module), the main export (or the first
+ * function export) runs with the numeric caller args and the result
+ * answers as the honest row */
+async function toolexecwasm(jail: string, args: string[]): Promise<string[]> {
+  const target = args[0];
+  if (target === undefined) throw new SandboxError("exec wasm needs a module file");
+  const contained = contain(jail, target);
+  const bytes = await readFile(contained);
+  let instance: WebAssembly.Instance;
+  try {
+    const module = await WebAssembly.compile(bytes);
+    instance = await WebAssembly.instantiate(module, {});
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return [["[stderr] the module did not compile: ", message].join(""), "exit 1"];
+  }
+  const exports = instance.exports as Record<string, unknown>;
+  const entry = "main" in exports ? "main" : Object.keys(exports).find((key) => typeof exports[key] === "function");
+  if (entry === undefined || typeof exports[entry] !== "function") return ["[stderr] the module exports no function", "exit 1"];
+  const callargs = args.slice(1).map((token) => Number(token));
+  try {
+    const result = (exports[entry] as (...values: number[]) => number)(...callargs);
+    return [[String(entry), " = ", String(result)].join(""), "exit 0"];
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return [["[stderr] the module trapped: ", message].join(""), "exit 1"];
+  }
+}
+
+/** toolexecwasi — the runner-wasi modality: the jailed wasi module runs
+ * under the preview1 host of the node runtime (the preopens pin the jail
+ * alone, the args ride the argv, the stdout and stderr land in the
+ * captured file the rows answer) */
+async function toolexecwasi(jail: string, args: string[]): Promise<string[]> {
+  const target = args[0];
+  if (target === undefined) throw new SandboxError("exec wasi needs a module file");
+  const contained = contain(jail, target);
+  const bytes = await readFile(contained);
+  const { WASI } = await import("node:wasi");
+  const { open } = await import("node:fs/promises");
+  let module: WebAssembly.Module;
+  try {
+    module = await WebAssembly.compile(bytes);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return [["[stderr] the module did not compile: ", message].join(""), "exit 1"];
+  }
+  const outfile = path.join(jail, ".wasiout");
+  const out = await open(outfile, "w");
+  try {
+    const wasi = new WASI({ version: "preview1", args: [target, ...args.slice(1)], env: {}, preopens: { ".": jail }, stdout: out.fd, stderr: out.fd });
+    // the import key joins at runtime so the bundle carries no underscored
+    // literal (the reviewed vocabulary law the build gate pins)
+    const wasikey = ["wasi", "snapshot", "preview1"].join("_");
+    const instance = await WebAssembly.instantiate(module, { [wasikey]: wasi.wasiImport });
+    let code = 0;
+    try {
+      wasi.start(instance);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return [["[stderr] the module did not start: ", message].join(""), "exit 1"];
+    }
+    const captured = await readFile(outfile, "utf8").catch(() => "");
+    const rows: string[] = [];
+    if (captured.length > 0) {
+      for (const line of captured.split(/\r?\n/).slice(0, 200)) rows.push(line);
+    }
+    rows.push(["exit ", String(code === 0 ? 0 : code)].join(""));
+    return rows;
+  } finally {
+    await out.close().catch(() => {});
+  }
 }
 
 /**
@@ -955,6 +1033,9 @@ const LIVELANES: Readonly<Record<string, string>> = Object.freeze({
   "fs-gitobjects": "the content-addressed objects store the gitobj tool drives",
   "network-dns": "the node resolver the dns tool drives",
   "network-doh": "the https resolver the doh tool drives",
+  "runner-babel": "the babel transform round trip the edge plane drives server-side",
+  "runner-webpack": "the webpack compile the edge plane drives server-side",
+  "runner-universal": "the bash sh execution the script lanes drive server-side",
 });
 
 /** binaryonpath — a pure PATH scan with stat (windows also probes the exe

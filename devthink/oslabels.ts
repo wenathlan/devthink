@@ -900,3 +900,13 @@ export function osDocsQuickstartCommands(): string[] {
 export function osDocsEndpoints(): string[] {
   return ["GET /health", "GET /models", "POST /chat"];
 }
+
+/* --------------------------- the paired endpoint -------------------------- */
+
+/** osStringRows — the paired answer of the paired database endpoint: the
+ * endpoint of the server lane (GET /api/v1/oslabels) serves exactly these
+ * rows, so the static build's seeds and the served catalog answer the same
+ * truth from both ends (the pair the file header promises). */
+export function osStringRows(): OsStringRow[] {
+  return seedOsStrings.map((row) => ({ id: row.id, text: row.text }));
+}

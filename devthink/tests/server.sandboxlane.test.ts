@@ -9,7 +9,7 @@
  * isolated per run.
  */
 
-import { readFile, stat } from "node:fs/promises";
+import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
@@ -137,7 +137,7 @@ describe("sandboxlane", () => {
     const rows = await hostmodalityreport();
     // the summary row plus one honest row per registry record of the ninety plan
     expect(rows.length).toBe(91);
-    expect(rows[0]).toBe("the modality registry answers the ninety plan: 90 records — 25 live, 3 host, 62 planned");
+    expect(rows[0]).toBe("the modality registry answers the ninety plan: 90 records — 30 live, 3 host, 57 planned");
     const text = rows.join("\n");
     // the live lanes name the surfaces the platform drives
     expect(text).toContain("container-docker: live lane — docker ");
@@ -215,6 +215,37 @@ describe("sandboxlane", () => {
       expect(text).toContain("exit 0");
     }
   }, 120_000);
+
+  it("executes a jailed wasm module through the webassembly runtime of the host", async () => {
+    const sessionid = newsessionid();
+    // the minimal add module: two i32 params, the add body, the export row —
+    // forty one honest bytes the webassembly runtime compiles in the jail
+    const modulebytes = Buffer.from([
+      0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00,
+      0x01, 0x07, 0x01, 0x60, 0x02, 0x7f, 0x7f, 0x01, 0x7f,
+      0x03, 0x02, 0x01, 0x00,
+      0x07, 0x07, 0x01, 0x03, 0x61, 0x64, 0x64, 0x00, 0x00,
+      0x0a, 0x09, 0x01, 0x07, 0x00, 0x20, 0x00, 0x20, 0x01, 0x6a, 0x0b,
+    ]);
+    await mkdir(path.join(jailpath(sessionid)), { recursive: true });
+    await writeFile(path.join(jailpath(sessionid), "add.wasm"), modulebytes);
+    const answer = await runsandboxline(sessionid, "exec wasm add.wasm 40 2");
+    expect(answer.exitcode).toBe(0);
+    const text = joinedrows(answer);
+    expect(text).toContain("add = 42");
+    expect(text).toContain("exit 0");
+  });
+
+  it("answers the honest wasi refusal when the module carries no wasi start", async () => {
+    const sessionid = newsessionid();
+    await runsandboxline(sessionid, "write plain.txt not a module");
+    const answer = await runsandboxline(sessionid, "exec wasi plain.txt");
+    expect(answer.exitcode).toBe(0);
+    const text = joinedrows(answer);
+    // the honest error: the preview1 host refuses the non-module, nothing
+    // was invented — every row answers the compile or the start failure
+    expect(text).toMatch(/(did not (compile|start)|magic word)/);
+  });
 
   it("drives a real sqlite database inside the jail through the sql lane", async () => {
     const sessionid = newsessionid();
@@ -319,9 +350,9 @@ describe("the vendored registry mirror (the single-source law)", () => {
     expect(report).toEqual({
       plancount: 90,
       catalogcount: 90,
-      live: 25,
+      live: 30,
       host: 3,
-      planned: 62,
+      planned: 57,
       plananswered: true,
     });
   });

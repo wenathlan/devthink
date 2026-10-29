@@ -191,6 +191,21 @@ describe("gateway server over real http", () => {
     expect(data["problems"]).toEqual([]);
   });
 
+  it("serves the paired oslabels catalog the static seeds carry (the pair law)", async () => {
+    const res = await fetch(`http://127.0.0.1:${serverport}/api/v1/oslabels`);
+    expect(res.status).toBe(200);
+    const data = await res.json();
+    const rows = data["rows"] as { id: string; text: string }[];
+    // the served catalog answers the same rows the static seeds carry —
+    // one truth from both ends (the pair the label file documents)
+    expect(rows.length).toBeGreaterThan(100);
+    const first = rows[0];
+    expect(typeof first.id).toBe("string");
+    expect(typeof first.text).toBe("string");
+    const ids = rows.map((row) => row.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
   it("serves the version info on the get route", async () => {
     const res = await fetch(`http://127.0.0.1:${serverport}/api/vt/models`);
     expect(res.status).toBe(200);
@@ -370,7 +385,7 @@ describe("the engine lanes over the wire", () => {
     const rows = data["rows"] as string[];
     // the summary row plus one honest row per record of the ninety plan
     expect(rows).toHaveLength(91);
-    expect(rows[0]).toBe("the modality registry answers the ninety plan: 90 records — 25 live, 3 host, 62 planned");
+    expect(rows[0]).toBe("the modality registry answers the ninety plan: 90 records — 30 live, 3 host, 57 planned");
     // every record row declares its state — live lane, host runtime or planned
     for (const row of rows.slice(1)) expect(row).toMatch(/: (live lane — |host runtime |planned — )/);
   });

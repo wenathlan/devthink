@@ -14,7 +14,9 @@
  * per-sandbox workspace filesystem (sandboxfiles table, quota capped,
  * data stays with the sandbox id across restarts), the auth surface
  * (register/login/logout/me backed by scrypt and sessions in db.ts),
- * the signed mesh surface (register/heartbeat/nodes verified by
+ * the edge execution plane (the modality catalog census, the probed
+ * lane report and the server-side edge runs riding the modality
+ * lanes), the signed mesh surface (register/heartbeat/nodes verified by
  * mesh.ts), the admin surface (overview/users/nodes/sandboxes/audit)
  * and the events poll for the dashboard. per the project rules there
  * is no serverless function anywhere: this file is the whole backend
@@ -23,12 +25,12 @@
  * stay at the app root beside the served root, so the extension denylist
  * keeps them unreachable by the static resolver.
  *
- * contexts (27): types, httpserver, portselection, noderole,
+ * contexts (28): types, httpserver, portselection, noderole,
  * staticfiles, mimetypes, contenttypes, cacheheaders, securityheaders,
- * cors, jsonio, apierrors, health, speccatalogs, specscache, authroutes,
- * sandboxes, sandboxfs, statemachine, ttlreaper, execendpoint,
- * filesroutes, meshroutes, adminroutes, eventsroute, requestlogging,
- * gracefulshutdown.
+ * cors, jsonio, apierrors, health, speccatalogs, specscache, edgeplane,
+ * authroutes, sandboxes, sandboxfs, statemachine, ttlreaper,
+ * execendpoint, filesroutes, meshroutes, adminroutes, eventsroute,
+ * requestlogging, gracefulshutdown.
  *
  * rules: lowercase identifiers, english jsdoc in third person, no emoji,
  * try/catch on every fallible path, standardized {error:{code,message}}
@@ -88,6 +90,10 @@ import {
 import type { SessionUser } from './auth.ts';
 import { forwardauth, mainurl, meshsecret, role, startheartbeat, verifymesh } from './mesh.ts';
 import type { MainResponse } from './mesh.ts';
+import { MODALITIES, MODALITYPLANCOUNT, planreport } from './modalityregistry.ts';
+import { edgelandesreport, runonedge } from './edgeplane.ts';
+import type { EdgeStorageAdapter } from './edgeplane.ts';
+import { tmpdir } from 'node:os';
 
 /* ------------------------------------------------------------------ */
 /* context: types — the api surface contracts                          */
@@ -1877,6 +1883,35 @@ function execcommand(
   );
 }
 
+/* ------------------------------------------------------------------ */
+/* context: edgeplane — the artifact vault of the edge execution lane  */
+/* ------------------------------------------------------------------ */
+
+/** the edge artifact vault: the virtual.ts localstorage adapter rooted
+ * in a private directory under the os tmpdir (outside the served spa
+ * root, so no artifact is ever statically served). the module loads
+ * lazily because the plain node type-stripping host cannot resolve the
+ * root domain graph (virtual.ts imports ./foundation.js), so on that
+ * host the run answers without artifact persistence while the audit
+ * and events rows still record it; on bundler hosts (bun, vite,
+ * vitest) the vault loads and every artifact lands on disk. wiring the
+ * sqlite artifact tables instead would need db.ts schema changes
+ * outside this wave's allowed files - noted honestly here. */
+let edgevault: EdgeStorageAdapter | null | undefined;
+
+async function edgestorage(): Promise<EdgeStorageAdapter | null> {
+  if (edgevault !== undefined) {
+    return edgevault;
+  }
+  try {
+    const { localstorage } = await import('./virtual.ts');
+    edgevault = localstorage(join(tmpdir(), 'saddle-edgeartifacts'));
+  } catch {
+    edgevault = null;
+  }
+  return edgevault;
+}
+
 /**
  * handles one /api/v1 request.
  *
@@ -1927,6 +1962,147 @@ async function handleapi(req: IncomingMessage, res: ServerResponse, url: URL): P
       writejson(res, 200, document, headers);
     } catch (error) {
       writeerror(res, 404, 'unknown-catalog', safemsg(error), headers);
+    }
+    return;
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* context: edgeplane — the edge execution law made executable:      */
+  /* GET /modalities  the ninety modality plan, honestly counted      */
+  /* GET /edge/lanes  the probed lane table of the edge plane         */
+  /* POST /edge/run   ride one modality lane server-side (auth)       */
+  /* ---------------------------------------------------------------- */
+
+  /* GET /modalities — public: the registry census of the ninety plan */
+  if (req.method === 'GET' && path === '/modalities') {
+    const headers = respondheaders(req, 'public');
+    try {
+      const report = planreport();
+      writejson(
+        res,
+        200,
+        {
+          plancount: MODALITYPLANCOUNT,
+          live: report.live,
+          host: report.host,
+          planned: report.planned,
+          records: MODALITIES,
+        },
+        headers,
+      );
+    } catch (error) {
+      writeerror(res, 500, 'modalities-failed', safemsg(error), headers);
+    }
+    return;
+  }
+
+  /* GET /edge/lanes — public: the probed lane table of the edge plane */
+  if (req.method === 'GET' && path === '/edge/lanes') {
+    const headers = respondheaders(req, 'public');
+    try {
+      writejson(res, 200, { lanes: edgelandesreport() }, headers);
+    } catch (error) {
+      writeerror(res, 500, 'lanes-failed', safemsg(error), headers);
+    }
+    return;
+  }
+
+  /* POST /edge/run — auth: ride one modality lane of the engine, the
+     visitor browser executes nothing (the edge execution law). the
+     artifact commits through the lazy edge vault (see edgestorage) and
+     every run records an audit row plus an events row the same way the
+     sandbox surface does. 422 answers a planned or unknown modality,
+     503 answers a lane whose host runtime is absent — that body keeps
+     the runtime name because the absence is the honest lane report,
+     not an internal secret the 5xx guard exists to hide. */
+  if (req.method === 'POST' && path === '/edge/run') {
+    const headers = respondheaders(req, 'credentials');
+    const user = requireauth(req);
+    if (user === null) {
+      writeerror(res, 401, 'unauthorized', 'authentication required', headers);
+      return;
+    }
+    try {
+      const body = await readbody(req);
+      if (body === null || typeof body !== 'object') {
+        writeerror(res, 400, 'invalid-body', 'request body must be a json object', headers);
+        return;
+      }
+      const spec = body as { modality?: unknown; code?: unknown; inputs?: unknown; deadlinems?: unknown };
+      if (typeof spec.modality !== 'string' || spec.modality.length === 0 || typeof spec.code !== 'string') {
+        writeerror(
+          res,
+          400,
+          'invalid-edge-request',
+          'the edge run requires a modality id and a code payload',
+          headers,
+        );
+        return;
+      }
+      const result = await runonedge(
+        {
+          modality: spec.modality,
+          code: spec.code,
+          inputs: spec.inputs,
+          deadlinems:
+            typeof spec.deadlinems === 'number' && Number.isFinite(spec.deadlinems) ? spec.deadlinems : undefined,
+        },
+        { storage: (await edgestorage()) ?? undefined },
+      );
+      try {
+        store.addaudit({
+          userid: user.id,
+          action: 'edge-run',
+          detail: `${result.modality}:${result.status}`,
+          ip: clientip(req),
+        });
+        store.addevent({
+          topic: 'edge.run',
+          payload: {
+            userid: user.id,
+            runid: result.runid,
+            modality: result.modality,
+            lane: result.lane,
+            status: result.status,
+            error: result.error?.code ?? null,
+          },
+        });
+      } catch {
+        /* the run already answered; the bookkeeping is best effort */
+      }
+      if (result.status === 'succeeded') {
+        writejson(res, 200, result, headers);
+        return;
+      }
+      if (result.error?.code === 'MODALITY_NOT_LIVE') {
+        writeerror(res, 422, 'modality-not-live', result.error.message, headers);
+        return;
+      }
+      if (result.error?.code === 'LANE_NOT_WIRED_IN_PLANE') {
+        // the registry already drives the modality live through another
+        // engine surface: this plane answers not-implemented, never a lie
+        // about the modality's state.
+        writeerror(res, 501, 'lane-not-wired-in-plane', result.error.message, headers);
+        return;
+      }
+      if (result.error?.code === 'HOST_RUNTIME_ABSENT') {
+        writejson(
+          res,
+          503,
+          { error: { code: 'host-runtime-absent', message: result.error.message } },
+          headers,
+        );
+        return;
+      }
+      writeerror(res, 500, 'edge-run-failed', result.error?.message ?? 'the edge run failed', headers);
+    } catch (error) {
+      writeerror(
+        res,
+        (error as RouteError)?.status ?? 400,
+        (error as RouteError)?.code ?? 'edge-run-failed',
+        safemsg(error),
+        headers,
+      );
     }
     return;
   }
@@ -2392,6 +2568,7 @@ server.listen(port, host, () => {
       '  GET /api/v1/auth/me | POST /api/v1/sandboxes (auth) | GET /api/v1/sandboxes/:id |',
       '  POST /api/v1/sandboxes/:id/exec | DELETE /api/v1/sandboxes/:id | GET /api/v1/events?since=',
       '  GET /api/v1/sandboxes/:id/files | GET/DELETE /api/v1/sandboxes/:id/files/<path> |',
+      '  GET /api/v1/modalities | GET /api/v1/edge/lanes | POST /api/v1/edge/run (auth) |',
       '  POST /api/v1/mesh/register | POST /api/v1/mesh/heartbeat | GET /api/v1/mesh/nodes (signed) |',
       '  GET /api/v1/admin/{overview,users,nodes,sandboxes,audit} (admin)',
       `sandbox ttl: ${ttlms / 60000} min, sweep every ${sweepperiodms / 1000} s`,
