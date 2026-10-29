@@ -141,7 +141,7 @@ describe("the dedup contract — the 7-level thinking ladder", () => {
 
 describe("the package.json engine manifest agrees with the manifest of record", () => {
   const packagejson = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
-  const manifest = packagejson.devthink?.engines ?? [];
+  const manifest: Array<{ name?: string; owner?: string; source?: string }> = packagejson.devthink?.engines ?? [];
 
   it("declares an owner on every engine row", () => {
     assert.ok(manifest.length > 0, "the devthink.engines manifest must exist");
