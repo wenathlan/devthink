@@ -132,7 +132,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.12.1
+          node-version: 26.13.0
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
       - name: resolve release version
@@ -354,7 +354,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.12.1
+          node-version: 26.13.0
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
       - name: resolve release version
@@ -568,7 +568,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.12.1
+          node-version: 26.13.0
           registry-url: https://npm.pkg.github.com
           package-manager-cache: false
       - name: resolve release version
@@ -747,7 +747,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.12.1
+          node-version: 26.13.0
           registry-url: https://npm.pkg.github.com
           package-manager-cache: false
       - name: resolve release version
@@ -881,7 +881,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.12.1
+          node-version: 26.13.0
       - name: resolve release version
         id: release
         env:
@@ -1025,7 +1025,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.12.1
+          node-version: 26.13.0
       - name: resolve release version
         id: release
         env:
@@ -1151,7 +1151,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.12.1
+          node-version: 26.13.0
       - name: resolve release version
         id: release
         env:
@@ -1277,7 +1277,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.12.1
+          node-version: 26.13.0
       - name: resolve release version
         id: release
         env:
@@ -1562,7 +1562,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.12.1
+          node-version: 26.13.0
       - name: resolve release version
         id: release
         env:
@@ -1715,7 +1715,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.12.1
+          node-version: 26.13.0
       - name: resolve release version
         id: release
         env:
@@ -2033,7 +2033,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.12.1
+          node-version: 26.13.0
       - name: resolve release version
         id: release
         env:
@@ -2829,7 +2829,7 @@ jobs:
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.12.1
+          node-version: 26.13.0
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           version: 12.3.4
@@ -3192,7 +3192,7 @@ jobs:
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.12.1
+          node-version: 26.13.0
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           version: 12.3.4
@@ -3349,7 +3349,7 @@ jobs:
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.12.1
+          node-version: 26.13.0
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           version: 12.3.4
@@ -3667,7 +3667,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.12.1
+          node-version: 26.13.0
 
       - name: setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
@@ -4100,7 +4100,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.12.1
+          node-version: 26.13.0
 
       - name: install dependencies
         run: npm --prefix saddle ci
@@ -4197,7 +4197,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.12.1
+          node-version: 26.13.0
           package-manager-cache: false
       - name: resolve the saddle version and the family release tag
         if: github.event_name == 'release'
@@ -4465,7 +4465,7 @@ jobs:
       - name: Set up Node (reproducible version-resolution step)
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.12.1
+          node-version: 26.13.0
 
       - id: resolve
         name: Resolve and verify the saddle release

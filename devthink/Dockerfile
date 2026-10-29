@@ -160,7 +160,7 @@
 # text, and the container-scan heuristics parse any token containing '='
 # as a candidate credential pair.
 
-ARG NODE_IMAGE="node:26.12.1-bookworm-slim"
+ARG NODE_IMAGE="node:26.13.0-bookworm-slim"
 
 # the runtime node version of the five-architecture surface (the 2.0.16
 # pass): the nodejs.org distribution answers official linux tarballs for
@@ -174,7 +174,7 @@ ARG NODE_IMAGE="node:26.12.1-bookworm-slim"
 # Dockerfile always anticipated in its nodesource case arm. the version
 # pins to the .nvmrc/engines floor the toolchain stages carry: the
 # toolchain only builds, the runtime serves the same line.
-ARG NODE_RUNTIME_VERSION="26.12.1"
+ARG NODE_RUNTIME_VERSION="26.13.0"
 
 # ---------------------------------------------------------------------------
 # stage 1: deps (the pinned toolchain and the frozen dependency layer)

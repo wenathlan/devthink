@@ -92,7 +92,7 @@
       "family": "gates",
       "name": "the permission diff gate runs green over the versioned baseline",
       "outcome": "pass",
-      "detail": "Permission set hash: 1d6e1579114bf176eba45a159e9f166c9c4a2587a53644bd2a63f880506a6262 over 11 permission entries; the baseline of tests/permdiff.json carries the recorded set of the release."
+      "detail": "Permission set hash: 1d6e1579114bf176eba45a159e9f166c9c4a2587a53644bd2a63f880506a6262 over 11 permission entries; the baseline of tests/permbaseline.ts carries the recorded set of the release."
     },
     {
       "family": "gates",

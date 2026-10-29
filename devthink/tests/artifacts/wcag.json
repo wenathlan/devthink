@@ -1,5 +1,5 @@
 {
-  "release": "2.0.131",
+  "release": "2.0.151",
   "checklist": "docs/wcag.md",
   "surfaces": [
     "site",
@@ -122,7 +122,7 @@
       "title": "every built surface page stamps its html lang and no template overrides it",
       "criterion": "3.1.1",
       "family": "language",
-      "module": "index.html, tests/build.mjs and dist/extension",
+      "module": "index.html, tests/build.ts and dist/extension",
       "outcome": "pass",
       "detail": "the design document stamps lang=\"en\", no template body carries its own html element (the script strings of the hidden sandbox frame stay excluded from the markup scan) and every built page keeps the stamp the build writes: dashboardpage.html: en, offscreen.html: en, optionspage.html: en, popup.html: en, sandbox.html: en, sidepanel.html: en, transparencypage.html: en."
     },
@@ -140,7 +140,7 @@
       "title": "the sweep report records every check and the exit answers the failures",
       "criterion": "2.4.3",
       "family": "report",
-      "module": "wcag.mjs",
+      "module": "wcag.ts",
       "outcome": "pass",
       "detail": "the sweep report carries the nine executed checks with their outcomes, details and success criterion references, the summary computes 10 of 10 passed over the 8 surface templates, and the gate sets its nonzero exit the moment any failed check lands in the artifact while the static analysis stays honest: no screen reader emulation and no runtime focus walk."
     }

@@ -1,5 +1,5 @@
-import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
+import { importersamples } from "./importerfixtures.ts";
 import {
   importautoma,
   importselenium,
@@ -20,9 +20,11 @@ const now = 1_800_000_000_000;
 const ruleset: portableruleset = portablerulesetof(now);
 const capabilities = actionkindcatalog();
 
-/** Reads one importer fixture of the tests/code/importers source set the build copies into dist/fixtures/importers. */
+/** Reads one importer fixture of the module source set by its original file name — the same texts the build copies into dist/fixtures/importers. */
 async function fixture(name: string): Promise<string> {
-  return readFile(`tests/code/importers/${name}`, "utf8");
+  const text = (importersamples as Record<string, string>)[name];
+  if (text === undefined) throw new Error(`the importer fixture ${name} sits absent from the module source set`);
+  return text;
 }
 
 /** Reads one json importer fixture as the parsed source object its importer reads. */

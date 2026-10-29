@@ -11,7 +11,7 @@
     {
       "gate": "the api freeze schemas stayed hash stable since 1.1.91",
       "ok": true,
-      "evidence": "the 10 frozen schemas of the 1.1.91 freeze rehash identically to the recorded digests of tests/apifreeze.json"
+      "evidence": "the 10 frozen schemas of the 1.1.91 freeze rehash identically to the recorded digests of the freezebaseline module"
     },
     {
       "gate": "the deprecation window closed with no pending removal",
@@ -51,7 +51,7 @@
     {
       "gate": "the permission diff reports no unjustified drift",
       "ok": true,
-      "evidence": "tests/permdiff.json: clean over 2.0.150 to 2.0.151 with zero unjustified entries"
+      "evidence": "the permbaseline module: clean over 2.0.150 to 2.0.151 with zero unjustified entries"
     },
     {
       "gate": "the transparency page lists every live permission",
@@ -143,7 +143,7 @@
     "gates": 27,
     "ok": 27,
     "blocked": 0,
-    "durationms": 598
+    "durationms": 610
   },
   "godecision": "go"
 }

@@ -94,7 +94,7 @@ const stackcatalog = {
   /* walks with the .nvmrc pin the maintenance rung stamps — the 2.0.133
      publish regression answered the engine advertising a node the repository
      retired, so the anchor rides the pin lane now (never ahead of it) */
-  nodecurrent: '26.12.1',
+  nodecurrent: '26.13.0',
   nodelts: '24.19.0',
   typescript: '7.0.2',
   qemu: runtimecatalog.qemu,

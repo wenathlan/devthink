@@ -1,12 +1,18 @@
 /**
- * Builds the public research catalog from GitHub search result exports.
- * The script records source metadata only; it never downloads or executes repository code.
+ * Builds the public research catalog from the GitHub search result exports the
+ * researchfixtures module carries. The script records source metadata only; it
+ * never downloads or executes repository code, and the two derived markdown
+ * documents (the public project catalog and the comparative feature and flow
+ * matrix) land back inside the researchfixtures module the corpus ships.
  */
-import { readdir, readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import { reposources } from "./researchfixtures.ts";
 
-const sourcedirectory = join(process.cwd(), "tests", "code");
-const sourcefiles = (await readdir(sourcedirectory)).filter((name) => /^repos.*\.json$/i.test(name));
+const modulepath = join(process.cwd(), "tests", "researchfixtures.ts");
+const sourcefiles = Object.keys(reposources)
+  .filter((name) => /^repos.*\.json$/i.test(name))
+  .sort();
 const entries = [];
 
 /** One repository record of the public GitHub search exports the catalog reads. */
@@ -19,7 +25,7 @@ interface repositoryentry {
 }
 
 for (const file of sourcefiles) {
-  const content = await readFile(join(sourcedirectory, file), "utf8");
+  const content = (reposources as Record<string, string>)[file];
   const values = JSON.parse(content.replace(new RegExp(String.fromCharCode(27) + "\\[?[0-?]*[ -/]*[@-~]", "g"), ""));
   if (Array.isArray(values)) entries.push(...values);
 }
@@ -87,7 +93,27 @@ const matrixrows = selected.map((item, index) => {
 
 const markdown = `# Public Open Source Project Catalog\n\nThis catalog is derived from GitHub public-search metadata collected on 2026-08-27. It is an intake list, not an endorsement and not proof that every repository is safe, maintained, or legally reusable. The implementation review phase must confirm the license and inspect only the files needed for interoperability, security and behavior mapping.\n\n## Licensed project sample\n\n| No. | Repository | Declared license | Stars at collection | Public description |\n| --- | --- | --- | ---: | --- |\n${rows.join("\n")}\n\nThe collection contained ${ordered.length} distinct repositories. ${licensed.length} declared a recognized license in GitHub metadata. The first ${selected.length} licensed repositories are retained as the comparative sample; unlicensed or ambiguous repositories are not a code-reuse source.\n\n## Method and limitations\n\nThe catalog combines public GitHub searches for browser automation extensions, browser agents, Firefox automation, Playwright extensions, browser MCP connectors and browser-use agents. Search metadata is useful to establish a public landscape, but it cannot establish implementation quality, exact functionality, browser-store availability or security posture. Those questions are handled in the separate artifact and source review.\n\n## References\n\n[1]: https://github.com/topics/browser-automation "GitHub Topic — browser automation"\n[2]: https://github.com/topics/ai-browser-agent "GitHub Topic — AI browser agent"\n`;
 
-await writeFile(join(sourcedirectory, "04.publicprojectcatalog.md"), markdown);
 const matrix = `# Comparative Feature and Flow Matrix\n\nThis matrix is intentionally evidence-scoped. Each row represents a public GitHub repository result with a declared license. Feature labels are extracted from public names and descriptions; they are discovery signals, not verified implementation claims. Flow entries are explicit hypotheses to validate in a source or artifact review. No third-party code, branding or private behavior is copied into Devthink.\n\n| No. | Source | Public feature signals | Flow to validate | Evidence class | License and confidence note |\n| --- | --- | --- | --- | --- |\n${matrixrows.join("\n")}\n\n## Reading the matrix\n\nA public listing or repository description can establish only a public claim. A later row in the artifact review will be marked manifest verified only after the downloaded package's manifest is read, and source verified only after an openly licensed source file is inspected. The matrix will retain unverified where neither form of evidence is available.\n\n## References\n\n[1]: https://github.com/topics/browser-automation "GitHub Topic — browser automation"\n[2]: https://github.com/topics/ai-browser-agent "GitHub Topic — AI browser agent"\n`;
-await writeFile(join(sourcedirectory, "07.featureflowmatrix.md"), matrix);
+
+/** Escapes one derived markdown document into the template literal body the researchfixtures module carries, so a repository description can never break the module the corpus ships. */
+function templatetext(text: string) {
+  return text.replace(/\\/g, "\\\\").replace(/`/g, "\\`").replace(/\$\{/g, "\\${");
+}
+
+const moduletext = await readFile(modulepath, "utf8");
+let rewrites = 0;
+const rewritten = moduletext
+  .replace(/export const publicprojectcatalog = `[\s\S]*?`;/, () => {
+    rewrites += 1;
+    return `export const publicprojectcatalog = \`${templatetext(markdown)}\`;`;
+  })
+  .replace(/export const featureflowmatrix = `[\s\S]*?`;/, () => {
+    rewrites += 1;
+    return `export const featureflowmatrix = \`${templatetext(matrix)}\`;`;
+  });
+if (rewrites !== 2)
+  throw new Error(
+    `The researchfixtures module carries ${rewrites} of the two catalog template literals the research catalog build rewrites; the module lost a derived document export.`,
+  );
+await writeFile(modulepath, rewritten, "utf8");
 console.log(JSON.stringify({ total: ordered.length, licensed: licensed.length, selected: selected.length }, null, 2));

@@ -197,6 +197,17 @@ const edits = [
       `nodecurrent: '${nodepin}'`,
     ),
   ],
+  /* the saddle ledger twin: index.ts exports the same engineversions map
+     the orchestrator cites (every module reads the one ledger), so the
+     nodecurrent anchor walks both carriers — a rung that stamps only one
+     leaves the suite's strict-equality assertion red on the twin */
+  [
+    join(repoRoot, "saddle", "index.ts"),
+    (await readFile(join(repoRoot, "saddle", "index.ts"), "utf8")).replace(
+      /nodecurrent: '\d+(?:\.\d+){0,2}'/,
+      `nodecurrent: '${nodepin}'`,
+    ),
+  ],
   [
     "Dockerfile",
     (await readFile("Dockerfile", "utf8"))

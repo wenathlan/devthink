@@ -37,6 +37,17 @@ import {
 } from "../protocol.js";
 import { alltools, buildtoolcatalog } from "../tools.js";
 import { actionkindids, pinnedprotocolversion, protocolmajorversion, protocolversion } from "../types.js";
+import { apifreezebaseline as storedbaseline, type apifreezebaseline } from "./freezebaseline.ts";
+
+/** Reads the freeze baseline: the imported record answers, or — after a sync the test triggered because the stamp sat stale — the freshly rewritten freezebaseline module answers from disk, because the already imported module never reloads inside one worker. */
+async function readbaseline(): Promise<apifreezebaseline> {
+  if (storedbaseline.release === (JSON.parse(await readFile("package.json", "utf8")) as { version: string }).version)
+    return storedbaseline;
+  const text = await readFile("tests/freezebaseline.ts", "utf8");
+  const match = /export const apifreezebaseline: apifreezebaseline = ([\s\S]+);\n?$/.exec(text);
+  if (match === null) throw new Error("the freezebaseline module carries no baseline record the test can read");
+  return JSON.parse(match[1]) as apifreezebaseline;
+}
 
 describe("the protocolv2 api freeze of 1.1.91", () => {
   it("pins the protocol major two across the version constants", () => {
@@ -260,24 +271,17 @@ describe("the protocolv2 api freeze of 1.1.91", () => {
     expect(librarysurfaceexports).toContain("parseproposal");
   });
 
-  it("verifies the schema hash artifact stays stable", async () => {
+  it("verifies the schema hash baseline stays stable", async () => {
     if (!existsSync("dist/schemas"))
       return; /* the schema artifacts ride the build: the pass runs after pnpm build in the validate chain and the ci lanes */
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
-    let artifact = JSON.parse(await readFile("tests/apifreeze.json", "utf8")) as {
-      release: string;
-      frozezat: string;
-      scope: string[];
-      sizes: Record<string, number>;
-      hashes: Record<string, string>;
-    };
-    /* the freeze artifact stamps the release: a stale stamp regenerates from the built tree before the assertions read it */
-    if (artifact.release !== packagejson.version) {
+    /* the freeze baseline stamps the release: a stale stamp regenerates from the built tree before the assertions read it */
+    if (storedbaseline.release !== packagejson.version) {
       await new Promise<void>((resolve, reject) => {
         execFile(process.execPath, ["tests/apifreeze.ts", "sync"], (error) => (error ? reject(error) : resolve()));
       });
-      artifact = JSON.parse(await readFile("tests/apifreeze.json", "utf8")) as typeof artifact;
     }
+    const artifact = await readbaseline();
     expect(artifact.release).toBe(packagejson.version);
     expect(artifact.frozezat).toBe("2026-08-31");
     expect(artifact.scope).toEqual(["background", "pagebridge", "sidepanel", "popup", "cli", "library", "mcp"]);

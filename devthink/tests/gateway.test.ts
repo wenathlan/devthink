@@ -2,6 +2,7 @@ import { access, readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import type { fetchtransport, transportresponse } from "../http.js";
+import { providerfixtures } from "./providerfixtures.ts";
 import {
   adapterof,
   anthropicgatewayadapter,
@@ -79,9 +80,11 @@ function stub(body: string, status = 200, seen: string[] = [], headers: Record<s
   };
 }
 
-/** Reads one recorded fixture body of the gateway family. */
+/** Reads one recorded fixture body of the gateway family by its original fixture file name from the provider wire fixture module. */
 async function fixture(name: string): Promise<string> {
-  return readFile(join(process.cwd(), "tests", name), "utf8");
+  const text = (providerfixtures as Record<string, string>)[name];
+  if (text === undefined) throw new Error(`the provider wire fixture ${name} sits absent from the fixture module`);
+  return text;
 }
 
 /** The first tools of the real catalog for the capabilityad and request composition cases. */

@@ -1,16 +1,15 @@
 import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
-import { readdir, readFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { promisify } from "node:util";
 import { describe, expect, it } from "vitest";
+import { fixturepages } from "./pagefixtures.ts";
 import type { recipereport } from "./recipes.ts";
 import { runrecipessuite } from "./recipes.ts";
+import { gallery as gallerytext, recipeplans } from "./recipesfixtures.ts";
 
 const execute = promisify(execFile);
-const gallerypath = "tests/code/recipes/gallery.json";
-const recipesdirectory = "tests/code/recipes";
-const pagesdirectory = "tests/code/pages";
 const artifactpath = "tests/artifacts/recipes.json";
 const expectedcategories = { scraping: 8, forms: 9, testing: 8, monitoring: 6, agents: 5 };
 
@@ -75,20 +74,16 @@ function kindswithin(recipe: recipedocument): string[] {
 
 describe("the example gallery of the 2.0.0 release", () => {
   it("parses every recipe with the lowercase kind grammar and the category metadata the index declares", async () => {
-    const gallery = JSON.parse(await readFile(gallerypath, "utf8")) as galleryindex;
+    const gallery = JSON.parse(gallerytext) as galleryindex;
     expect(gallery.entries.length).toBe(36);
     /* no gallery entry id duplicates: the index names every recipe exactly once */
     expect(new Set(gallery.entries.map((entry) => entry.id)).size).toBe(36);
-    /* every recipe file of the directory other than the index joins the index, and every index entry names its file */
-    const recipefiles = (await readdir(recipesdirectory))
-      .filter((file) => file.endsWith(".json") && file !== "gallery.json")
-      .sort();
-    expect(recipefiles.length).toBe(36);
+    /* every recipe of the module source set joins the index, and every index entry names its recipe */
+    const recipeids = Object.keys(recipeplans).sort();
+    expect(recipeids.length).toBe(36);
     const recipes = new Map<string, recipedocument>();
-    for (const file of recipefiles) {
-      const parsed = JSON.parse(await readFile(join(recipesdirectory, file), "utf8")) as recipedocument;
-      recipes.set(file.replace(".json", ""), parsed);
-    }
+    const moduleplans = recipeplans as Record<string, string>;
+    for (const id of recipeids) recipes.set(id, JSON.parse(moduleplans[id]) as recipedocument);
     expect(new Set([...recipes.keys(), ...gallery.entries.map((entry) => entry.id)]).size).toBe(36);
     /* every step kind stays lowercase letter only: the workflow step grammar rejects digits (the a11ytree incident), so the gallery ships no kind the compose engine would refuse */
     const digitkinds = [...recipes].flatMap(([id, recipe]) =>
@@ -142,7 +137,7 @@ describe("the example gallery of the 2.0.0 release", () => {
     const stored = existsSync(artifactpath);
     if (built) expect(stored).toBe(true);
     if (!stored) return;
-    const gallery = JSON.parse(await readFile(gallerypath, "utf8")) as galleryindex;
+    const gallery = JSON.parse(gallerytext) as galleryindex;
     const report = JSON.parse(await readFile(artifactpath, "utf8")) as recipereport;
     /* the artifact answers the current release with every entry passing and every check ok */
     expect(report.release).toBe(packagejson.version);
@@ -155,8 +150,8 @@ describe("the example gallery of the 2.0.0 release", () => {
     expect(report.entries.map((entry) => entry.id).sort()).toEqual(gallery.entries.map((entry) => entry.id).sort());
     expect(report.entries.every((entry) => entry.outcome === "pass")).toBe(true);
     expect(report.entries.every((entry) => entry.durationms >= 0)).toBe(true);
-    /* the four fixture pages ship beside the recipes in the sources and in the built fixture set the packages carry */
-    const sourcepages = new Set((await readdir(pagesdirectory)).filter((file) => file.endsWith(".html")));
+    /* the four fixture pages ship beside the recipes in the module sources and in the built fixture set the packages carry */
+    const sourcepages = new Set(Object.keys(fixturepages));
     for (const page of gallery.fixturepages) {
       expect(sourcepages.has(page.name)).toBe(true);
       if (built) expect(existsSync(join("dist", "fixtures", "pages", page.name))).toBe(true);
