@@ -37,7 +37,12 @@ const router = readFileSync(join(import.meta.dirname, "..", "Sol", "Sol.tsx"), "
 const workspace = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelWorkspace.tsx"), "utf8");
 const familyframe = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "ShellFamilyframe.tsx"), "utf8");
 const viteconfig = readFileSync(join(import.meta.dirname, "..", "vite.config.ts"), "utf8");
-const pagesworkflow = readFileSync(join(import.meta.dirname, "..", "..", ".github", "workflows", "pages.yml"), "utf8");
+/* the container lane law: the workflow face reads the pages workflow of the
+ * repository checkout — a lane without the repository (the container smoke
+ * carries only the application tree) answers the honest skip instead of the
+ * module load failure. */
+const pagesworkflowpath = join(import.meta.dirname, "..", "..", ".github", "workflows", "pages.yml");
+const pagesworkflow = existsSync(pagesworkflowpath) ? readFileSync(pagesworkflowpath, "utf8") : "";
 
 /** the repository root of the monorepo (the sibling apps live beside the
  * devthink folder and the tests village sits two honest hops above them,
@@ -134,7 +139,7 @@ describe("the typed url owns the fullscreen stage (door A)", () => {
     }
   });
 
-  it("the pages workflow builds every deploy unit under its own subpath", () => {
+  it.skipIf(pagesworkflow === "")("the pages workflow builds every deploy unit under its own subpath", () => {
     for (const slug of FAMILY_SLUGS) {
       expect(pagesworkflow, `${slug} rides the pages matrix`).toContain(`{ app: ${slug},`);
     }

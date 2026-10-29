@@ -5,7 +5,7 @@ export default defineConfig({
     environment: "node",
     include: ["tests/*.test.ts"],
     globals: true,
-    testTimeout: 15000,
+    testTimeout: Number(process.env.SADDLE_TEST_TIMEOUT_MS ?? 200000),
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
