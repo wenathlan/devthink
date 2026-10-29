@@ -6,7 +6,7 @@
 // root manifest counting them all, and the honest dispatch (in-process
 // for the maestro, spawn with the flag mapping for the wired engines,
 // the resolution path for the rungs that do not answer yet). runnable
-// with vitest: pnpm vitest run ../testes/devthink.engines.test.ts
+// with vitest: pnpm vitest run ../tests/devthink.engines.test.ts
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { describe, it } from "vitest";

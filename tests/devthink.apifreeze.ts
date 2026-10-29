@@ -5,7 +5,7 @@ import { apifreezebaseline as storedbaseline, type apifreezebaseline } from "./d
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
-const baselinepath = "../testes/devthink.freezebaseline.ts";
+const baselinepath = "../tests/devthink.freezebaseline.ts";
 const capsdirectory = "dist/caps";
 const schemadirectory = "dist/schemas";
 const schemalabel = "schemas";

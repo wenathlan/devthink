@@ -129,10 +129,10 @@ describe("the example gallery of the 2.0.0 release", () => {
     const built = existsSync("dist/gallery.json");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
     /* a built tree runs the gate itself when no fresh artifact of this release exists, so every lane that builds before the suite verifies the gallery artifact without depending on gate ordering */
-    if (built && !existsSync(artifactpath)) await execute("node", ["../testes/devthink.recipes.ts"]);
+    if (built && !existsSync(artifactpath)) await execute("node", ["../tests/devthink.recipes.ts"]);
     if (built && existsSync(artifactpath)) {
       const stored = JSON.parse(await readFile(artifactpath, "utf8")) as { release: string };
-      if (stored.release !== packagejson.version) await execute("node", ["../testes/devthink.recipes.ts"]);
+      if (stored.release !== packagejson.version) await execute("node", ["../tests/devthink.recipes.ts"]);
     }
     const stored = existsSync(artifactpath);
     if (built) expect(stored).toBe(true);

@@ -121,11 +121,11 @@ jobs:
         # built surface): the scripts stay off so the frozen install never
         # rides the prebuild mirror or the broken bunx node-gyp fallback
         # the flaky lanes hit — the prisma client the validation reads
-        # generates inside ../testes/devthink.build.ts itself.
+        # generates inside ../tests/devthink.build.ts itself.
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: Bridge the flat testes gate scripts onto the application tree
         # the flat typed folder law moved every gate script out of the
-        # application into testes/, and node resolves the bare specifiers
+        # application into tests/, and node resolves the bare specifiers
         # the gates import (esbuild of the build gate) from the script's
         # own directory upward — a walk that never reaches
         # devthink/node_modules and answered ERR_MODULE_NOT_FOUND before
@@ -137,7 +137,7 @@ jobs:
         # out-of-window firing checks out nothing, and the link step must
         # never touch the empty workspace it would fail on.
         if: steps.window.outputs.active == 'true'
-        run: ln -sfn ../devthink/node_modules testes/node_modules
+        run: ln -sfn ../devthink/node_modules tests/node_modules
       - name: Propose latest non-breaking direct npm dependency updates
         if: steps.window.outputs.active == 'true'
         run: cd devthink && bun run dependency:updates ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
@@ -232,7 +232,7 @@ jobs:
         run: |
           set -euo pipefail
           cd devthink
-          node ../testes/devthink.build.ts
+          node ../tests/devthink.build.ts
           bun run apifreeze:sync
           bun run permdiff:sync
       - name: Validate with the proposed Node version
@@ -262,7 +262,7 @@ jobs:
           bun install --ignore-scripts
       - name: Validate the complete proposed update
         if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
-        # every artifact the validation walks (../testes/devthink.build.ts, the
+        # every artifact the validation walks (../tests/devthink.build.ts, the
         # distpackage the pack reads, the dist/cli.js the manifest prints)
         # lives inside the devthink application — the block answers from
         # the application root while git diff --check still sees the whole
@@ -270,11 +270,11 @@ jobs:
         run: |
           set -euo pipefail
           cd devthink
-          node ../testes/devthink.build.ts
+          node ../tests/devthink.build.ts
           bun run check
-          node ../testes/devthink.apifreeze.ts
-          node ../testes/devthink.permdiff.ts
-          node ../testes/devthink.release.ts check
+          node ../tests/devthink.apifreeze.ts
+          node ../tests/devthink.permdiff.ts
+          node ../tests/devthink.release.ts check
           npm pack ./distpackage --dry-run
           bun dist/cli.js manifest
           git diff --check
@@ -307,7 +307,7 @@ jobs:
           # folder, so the staged set carries the modules the freeze steps
           # above now rewrite — the dead json pathspecs answered "pathspec
           # did not match" and the rung died at the landing.
-          git add package.json devthink/CHANGELOG.md devthink/README.md devthink/package.json devthink/bun.lock devthink/.nvmrc devthink/Dockerfile devthink/deno.json devthink/version.ts devthink/devthink.gemspec devthink/devthink.java devthink/devthinkcli.cs devthink/manifest.json devthink/tauri.conf.json devthink/design.html devthink/index.html devthink/pom.xml devthink/devthink.csproj devthink/docs testes/devthink.freezebaseline.ts testes/devthink.permbaseline.ts devthink/docs/releasenotes.md .github/workflows argan/package.json argan/argan.csproj argan/argan.gemspec argan/argan.java argan/pom.xml argan/Dockerfile cadria/package.json cadria/cadria.csproj cadria/cadria.gemspec cadria/cadria.java cadria/pom.xml cadria/Dockerfile debonair/package.json debonair/debonair.csproj debonair/debonair.gemspec debonair/debonair.java debonair/pom.xml debonair/Dockerfile stealthhead/package.json stealthhead/stealthhead.csproj stealthhead/stealthhead.gemspec stealthhead/stealthhead.java stealthhead/pom.xml forge/package.json foundry/package.json vault/package.json
+          git add package.json devthink/CHANGELOG.md devthink/README.md devthink/package.json devthink/bun.lock devthink/.nvmrc devthink/Dockerfile devthink/deno.json devthink/version.ts devthink/devthink.gemspec devthink/devthink.java devthink/devthinkcli.cs devthink/manifest.json devthink/tauri.conf.json devthink/design.html devthink/index.html devthink/pom.xml devthink/devthink.csproj devthink/docs tests/devthink.freezebaseline.ts tests/devthink.permbaseline.ts devthink/docs/releasenotes.md .github/workflows argan/package.json argan/argan.csproj argan/argan.gemspec argan/argan.java argan/pom.xml argan/Dockerfile cadria/package.json cadria/cadria.csproj cadria/cadria.gemspec cadria/cadria.java cadria/pom.xml cadria/Dockerfile debonair/package.json debonair/debonair.csproj debonair/debonair.gemspec debonair/debonair.java debonair/pom.xml debonair/Dockerfile stealthhead/package.json stealthhead/stealthhead.csproj stealthhead/stealthhead.gemspec stealthhead/stealthhead.java stealthhead/pom.xml forge/package.json foundry/package.json vault/package.json
           git commit -m "chore: land the automated maintenance rung v${NEXT}"
           # the archive tag preserves the automation branch verbatim before
           # the squash merge replaces it, so the ladder keeps its history

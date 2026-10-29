@@ -111,7 +111,7 @@ async function symbolcorpus() {
 
 /** Parses the consolidated feature pool of the harvest generator: the corpus the removed mining report carried survives as the featurepool constant inside tests/crxharvest.ts, so the pool parses from its surviving source with the same normalization dedupe and the same running numbering the report builder applied when it rendered the numbered pool sections. */
 async function parsepool() {
-  const text = await readFile("../testes/devthink.crxharvest.ts", "utf8");
+  const text = await readFile("../tests/devthink.crxharvest.ts", "utf8");
   const poolstart = text.indexOf("const featurepool = [");
   if (poolstart === -1)
     throw new Error("The featurepool corpus of tests/crxharvest.ts is absent; the harvest generator carries the consolidated pool.");

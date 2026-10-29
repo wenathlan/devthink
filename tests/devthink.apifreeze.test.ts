@@ -43,7 +43,7 @@ import { apifreezebaseline as storedbaseline, type apifreezebaseline } from "./d
 async function readbaseline(): Promise<apifreezebaseline> {
   if (storedbaseline.release === (JSON.parse(await readFile("package.json", "utf8")) as { version: string }).version)
     return storedbaseline;
-  const text = await readFile("../testes/devthink.freezebaseline.ts", "utf8");
+  const text = await readFile("../tests/devthink.freezebaseline.ts", "utf8");
   const match = /export const apifreezebaseline: apifreezebaseline = ([\s\S]+);\n?$/.exec(text);
   if (match === null) throw new Error("the freezebaseline module carries no baseline record the test can read");
   return JSON.parse(match[1]) as apifreezebaseline;
@@ -278,7 +278,7 @@ describe("the protocolv2 api freeze of 1.1.91", () => {
     /* the freeze baseline stamps the release: a stale stamp regenerates from the built tree before the assertions read it */
     if (storedbaseline.release !== packagejson.version) {
       await new Promise<void>((resolve, reject) => {
-        execFile(process.execPath, ["../testes/devthink.apifreeze.ts", "sync"], (error) => (error ? reject(error) : resolve()));
+        execFile(process.execPath, ["../tests/devthink.apifreeze.ts", "sync"], (error) => (error ? reject(error) : resolve()));
       });
     }
     const artifact = await readbaseline();

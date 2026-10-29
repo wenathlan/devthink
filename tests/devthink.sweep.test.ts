@@ -10,7 +10,7 @@ const execute = promisify(execFile);
 
 describe("the release candidate defect sweep artifact", () => {
   it("declares every check family the gate runs over the trails, the sources and the runtime", async () => {
-    const source = await readFile("../testes/devthink.sweep.ts", "utf8");
+    const source = await readFile("../tests/devthink.sweep.ts", "utf8");
     /* the record calls may wrap across lines (the formatter owns the wrap),
        so the family assertion reads the quoted family name itself */
     for (const family of ["audittrails", "todoentries", "replay", "scans", "runtime"])
@@ -34,10 +34,10 @@ describe("the release candidate defect sweep artifact", () => {
       "artifacts/pentest.json",
     ];
     const trailsready = trails.every((trail) => existsSync(trail));
-    if (built && trailsready && !existsSync(artifactpath)) await execute("node", ["../testes/devthink.sweep.ts"]);
+    if (built && trailsready && !existsSync(artifactpath)) await execute("node", ["../tests/devthink.sweep.ts"]);
     if (built && trailsready && existsSync(artifactpath)) {
       const stored = JSON.parse(await readFile(artifactpath, "utf8")) as { release: string };
-      if (stored.release !== packagejson.version) await execute("node", ["../testes/devthink.sweep.ts"]);
+      if (stored.release !== packagejson.version) await execute("node", ["../tests/devthink.sweep.ts"]);
     }
     const stored = existsSync(artifactpath);
     if (built && trailsready) expect(stored).toBe(true);

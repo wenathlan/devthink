@@ -10,7 +10,7 @@ const execute = promisify(execFile);
 
 describe("the costcert reconciliation artifact", () => {
   it("declares every accounting check of the release candidate reconciliation with its family and module", async () => {
-    const source = await readFile("../testes/devthink.costcert.ts", "utf8");
+    const source = await readFile("../tests/devthink.costcert.ts", "utf8");
     const declarations = [
       ...source.matchAll(/await entry\(\s*\{\s*id: (\d+),\s*title: "([^"]+)",\s*family: "([^"]+)",\s*module: "([^"]+)"\s*,?\s*\}/g),
     ].map((match) => ({ id: Number(match[1]), title: match[2], family: match[3], module: match[4] }));
@@ -37,10 +37,10 @@ describe("the costcert reconciliation artifact", () => {
     const built = existsSync("dist/extension/manifest.json");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
     /* a built tree runs the gate itself when no fresh artifact of this release exists, so every lane that builds before the suite — the bun lane, the deno lane, a local two-pass validate — verifies the reconciliation artifact without depending on the gate having run before the tests */
-    if (built && !existsSync(artifactpath)) await execute("node", ["../testes/devthink.costcert.ts"]);
+    if (built && !existsSync(artifactpath)) await execute("node", ["../tests/devthink.costcert.ts"]);
     if (built && existsSync(artifactpath)) {
       const stored = JSON.parse(await readFile(artifactpath, "utf8")) as { release: string };
-      if (stored.release !== packagejson.version) await execute("node", ["../testes/devthink.costcert.ts"]);
+      if (stored.release !== packagejson.version) await execute("node", ["../tests/devthink.costcert.ts"]);
     }
     const stored = existsSync(artifactpath);
     if (built) expect(stored).toBe(true);
@@ -80,7 +80,7 @@ describe("the costcert reconciliation artifact", () => {
   });
 
   it("exercises the real compiled accounting modules and recomputes the cost lines from recorded evidence", async () => {
-    const source = await readFile("../testes/devthink.costcert.ts", "utf8");
+    const source = await readFile("../tests/devthink.costcert.ts", "utf8");
     expect(source).toContain('import("../devthink/dist/index.js")');
     expect(source).toContain('import("../devthink/dist/memory.js")');
     expect(source).toContain("usagetotals");

@@ -10,7 +10,7 @@ const execute = promisify(execFile);
 
 describe("the release candidate verification matrix artifact", () => {
   it("declares every cell family the gate enumerates over the candidate surface", async () => {
-    const source = await readFile("../testes/devthink.matrixverify.ts", "utf8");
+    const source = await readFile("../tests/devthink.matrixverify.ts", "utf8");
     for (const family of ["kinds", "surfaces", "cli", "mcp", "migration", "importers", "gates"])
       expect(source).toContain(`family: "${family}"`);
     /* the gate covers the fake tab provider of every browser kind, the full kind catalog and the standing gates */
@@ -36,10 +36,10 @@ describe("the release candidate verification matrix artifact", () => {
       "artifacts/sweep.json",
     ];
     const inputsready = inputs.every((input) => existsSync(input));
-    if (built && inputsready && !existsSync(artifactpath)) await execute("node", ["../testes/devthink.matrixverify.ts"]);
+    if (built && inputsready && !existsSync(artifactpath)) await execute("node", ["../tests/devthink.matrixverify.ts"]);
     if (built && inputsready && existsSync(artifactpath)) {
       const stored = JSON.parse(await readFile(artifactpath, "utf8")) as { release: string };
-      if (stored.release !== packagejson.version) await execute("node", ["../testes/devthink.matrixverify.ts"]);
+      if (stored.release !== packagejson.version) await execute("node", ["../tests/devthink.matrixverify.ts"]);
     }
     const stored = existsSync(artifactpath);
     if (!built || !inputsready)
@@ -87,10 +87,10 @@ describe("the release candidate pool audit artifact", () => {
     const artifactpath = "artifacts/poolcoverage.json";
     const built = existsSync("dist/index.js");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
-    if (built && !existsSync(artifactpath)) await execute("node", ["../testes/devthink.poolaudit.ts"]);
+    if (built && !existsSync(artifactpath)) await execute("node", ["../tests/devthink.poolaudit.ts"]);
     if (built && existsSync(artifactpath)) {
       const stored = JSON.parse(await readFile(artifactpath, "utf8")) as { release: string };
-      if (stored.release !== packagejson.version) await execute("node", ["../testes/devthink.poolaudit.ts"]);
+      if (stored.release !== packagejson.version) await execute("node", ["../tests/devthink.poolaudit.ts"]);
     }
     const stored = existsSync(artifactpath);
     if (built) expect(stored).toBe(true);

@@ -17,7 +17,7 @@ describe("the cspaudit policy set", () => {
     expect(manifest.browsers?.firefox?.content_security_policy?.extension_pages).toBe(rootpolicy);
     expect(manifest.browsers?.safari?.content_security_policy?.extension_pages).toBe(rootpolicy);
     /* the gate script reads the same three policies the manifest declares */
-    const gate = await readFile("../testes/devthink.cspaudit.ts", "utf8");
+    const gate = await readFile("../tests/devthink.cspaudit.ts", "utf8");
     expect(gate).toContain("manifest.content_security_policy?.extension_pages");
     expect(gate).toContain("browsers?.[browser]?.content_security_policy?.extension_pages");
     for (const browser of ["firefox", "safari"]) expect(gate).toContain(`"${browser}"`);
