@@ -1,21 +1,17 @@
 /** Design: DevThink v1.1.15 — Ink shares the compact local workspace grammar, identity, destinations, settings and command language with the paired React workbench. The plain ANSI renderer family of the former root ui.ts lives here too: the web design room owns the whole terminal design (CLI, pages, TV, Android), so the pure string renderers coexist with the Ink components. */
 import { Box, render, Text, useApp, useInput, useWindowSize } from "ink";
 import { useMemo, useState } from "react";
-import type { DevThinkConfig, DevThinkPaths } from "../../config.js";
 import { getIdentity, pairingStatus } from "../../account.js";
+import type { DevThinkConfig, DevThinkPaths } from "../../config.js";
 import { listProviders } from "../../providers.js";
-import {
-  listSessions,
-  readPreferences,
-  savePreference,
-  type Session,
-} from "../../storage.js";
+import { listSessions, readPreferences, type Session, savePreference } from "../../storage.js";
 import type { ChatEvent } from "../../streaming.js";
 import {
   isWorkspaceDestination,
   type WorkspaceDestination,
   workspaceDestination,
-  workspaceDestinations } from "../../workspace.js";
+  workspaceDestinations,
+} from "../../workspace.js";
 
 const categories = ["features", "bugs", "refactor", "snippets", "tasks", "notes", "all"] as const;
 const entryArt = [
@@ -46,7 +42,8 @@ function TerminalEntry({
   draft,
   provider,
   userId,
-  width }: {
+  width,
+}: {
   draft: string;
   provider: string;
   userId: string;
@@ -106,7 +103,8 @@ function projectRows(runtime: Runtime): string[] {
   for (const session of listSessions(runtime.paths))
     projects.set(session.workspaceId, {
       title: session.title,
-      sessions: (projects.get(session.workspaceId)?.sessions || 0) + 1 });
+      sessions: (projects.get(session.workspaceId)?.sessions || 0) + 1,
+    });
   return [...projects.entries()].map(
     ([id, project]) =>
       `${id}  ${project.sessions} ${project.sessions === 1 ? "session" : "sessions"}  ${project.title}`,
@@ -214,7 +212,8 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
         {
           role: "devthink",
           title: "local workspace ready",
-          body: "The first command opened a local DevThink session. Use arrows or /view to inspect local history, projects, providers, usage, routes and settings." },
+          body: "The first command opened a local DevThink session. Use arrows or /view to inspect local history, projects, providers, usage, routes and settings.",
+        },
       ]);
       setDraft("");
       setEntered(true);
@@ -256,7 +255,8 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
           {
             role: "error",
             title: "settings",
-            body: "Use theme dark|light, railMode always|auto|off, or interfaceZoom 80-150." },
+            body: "Use theme dark|light, railMode always|auto|off, or interfaceZoom 80-150.",
+          },
         ]);
       else {
         savePreference(runtime.paths, key, value);
@@ -276,7 +276,8 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
         {
           role: "devthink",
           title: "command reference",
-          body: "/view chat|history|projects|providers|usage|routes|settings  /settings set <key> <value>  /new  /clear  /models  /modes  /sessions  /exit" },
+          body: "/view chat|history|projects|providers|usage|routes|settings  /settings set <key> <value>  /new  /clear  /models  /modes  /sessions  /exit",
+        },
       ]);
       setDraft("");
       return;
@@ -299,7 +300,8 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
               ? {
                   ...entry,
                   title: event.type === "start" ? "streaming" : "devthink",
-                  body: partial || "connecting to local provider..." }
+                  body: partial || "connecting to local provider...",
+                }
               : entry,
           ),
         );
@@ -311,7 +313,8 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
             ? {
                 ...entry,
                 title: "devthink",
-                body: partial || next?.messages.at(-1)?.content || "the provider returned no text." }
+                body: partial || next?.messages.at(-1)?.content || "the provider returned no text.",
+              }
             : entry,
         ),
       );
@@ -322,7 +325,8 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
             ? {
                 role: "error",
                 title: "gateway error",
-                body: error instanceof Error ? error.message : "request could not be completed" }
+                body: error instanceof Error ? error.message : "request could not be completed",
+              }
             : entry,
         ),
       );
@@ -440,7 +444,8 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
 
 export async function startTerminalWorkspace(runtime: Runtime, version: string, execute: Execute): Promise<void> {
   const app = render(<TerminalWorkspace runtime={runtime} version={version} execute={execute} />, {
-    exitOnCtrlC: false });
+    exitOnCtrlC: false,
+  });
   await app.waitUntilExit();
 }
 
@@ -464,7 +469,8 @@ export const colors = {
   red: "\u001b[38;5;167m",
   yellow: "\u001b[38;5;222m",
   reset: "\u001b[0m",
-  bold: "\u001b[1m" };
+  bold: "\u001b[1m",
+};
 
 /** Canonical DevThink ANSI mark transcribed from docs/logo.md. */
 const canonicalMark = `

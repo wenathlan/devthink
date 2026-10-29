@@ -7,7 +7,10 @@
  * browsing the command history, tab completion over the catalog and the
  * focus-on-click output pane. the terminal stays keyboard first: the input
  * autofocuses once the console runs, every touch target clears 44px and the
- * focus-visible ring stays strong for the tv d-pad.
+ * focus-visible ring stays strong for the tv d-pad. the console wave 6-b
+ * pass rides the modern token ladder over this tree: the acrylic night bed,
+ * the elevation story (resting s, focus m) and the running state chip read
+ * the data-state hook the section below emits.
  */
 import { useEffect, useRef, useState } from "react";
 import { completions } from "../../commandcatalog.ts";
@@ -87,7 +90,7 @@ export default function Terminal({ rows, prompt, state, enabled, oncommand }: Te
   };
 
   return (
-    <section className="dt-term" aria-labelledby="dttermtitle">
+    <section className="dt-term" data-state={state} aria-labelledby="dttermtitle">
       <div className="dt-term__bar">
         <span id="dttermtitle">{osText("terminal.title")}</span>
         <span className="dt-term__state" aria-live="polite">

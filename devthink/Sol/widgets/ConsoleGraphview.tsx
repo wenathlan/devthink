@@ -5,12 +5,16 @@
  * The component draws the view state the root logic answers
  * (graphviewstate.ts lays the cards on the topological layers,
  * graphrunner.ts walks the stages): it renders inside the light window
- * body of the console, so every node is a light trylle card — the white
- * ramp #ffffff→#edf1f8 inside a 1px slate ring, the .625rem radius — and
- * every edge is one bezier hairline riding slate 14%. A node the runner
- * holds running pulses the windows light accent #0067c0 on opacity alone;
- * a done node wears the discreet check; a failed one wears the close red
- * rgb(194 53 43) and a skipped one dims. The stage ledger under the map
+ * body of the console, so every node is a light trylle card — the near-white
+ * ramp #fdfeff→#edf1f8 inside a 1px slate ring, the 8px menu-tier radius — and
+ * every edge is one bezier hairline riding slate 14%. The accent split of the
+ * console wave 6-b: the identity ever owns the person-intent surfaces (the
+ * hover glow and the selection stroke, both from the appended sol.css pass)
+ * while the windows light accent #0067c0 stays sparing and machine-live (a
+ * node the runner holds running pulses it on opacity alone); a done node
+ * wears the discreet check; a failed one wears the close red
+ * rgb(194 53 43) and a skipped one dims. The keyboard focus stroke stays
+ * neutral ink — never blue. The stage ledger under the map
  * reads the progress per stage (the etapas) and the aggregated percentage.
  * The zoom stays with the page — the zoomlock owns the 100% baseline, so
  * the map carries no wheel zoom and no pinch of its own; it scales with its
@@ -161,14 +165,16 @@ export function GraphView({
   progress = 0,
   selected,
   onselect,
-  label }: GraphViewProps) {
+  label,
+}: GraphViewProps) {
   const gradientid = `gview-${useId().replace(/[^a-zA-Z0-9-]/g, "")}`;
   const waves = stages ?? [];
   const drawn = graph.nodes.filter((node) => node.id in positions);
   const bounds = viewbounds(positions, {
     cardwidth: GRAPHVIEW_CARD_WIDTH,
     cardheight: GRAPHVIEW_CARD_HEIGHT,
-    padding: 20 });
+    padding: 20,
+  });
   const maplabel =
     label ?? `node graph: ${drawn.length} nodes on ${waves.length || 1} stages, ${Math.round(progress)} percent done`;
   const picknode = (id: string) => () => onselect?.(id);
@@ -189,7 +195,7 @@ export function GraphView({
       >
         <defs>
           <linearGradient id={gradientid} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="0%" stopColor="#fdfeff" />
             <stop offset="100%" stopColor="#edf1f8" />
           </linearGradient>
         </defs>
@@ -221,6 +227,7 @@ export function GraphView({
           if (!position) return null;
           const state = stateof(nodestates, node.id);
           return (
+            /* biome-ignore lint/a11y/useSemanticElements: an svg g cannot host a semantic button element; the keyboard contract stays on tabindex, aria-label and onKeyDown */
             <g
               key={node.id}
               className="gview__card"
@@ -229,7 +236,6 @@ export function GraphView({
               /* the presentation index of the staged entry (the craft pass
                  reads --gview-i for the stagger delay) */
               style={{ "--gview-i": index } as React.CSSProperties}
-              /* biome-ignore lint/a11y/useSemanticElements: an svg g cannot host a semantic button element; the keyboard contract stays on tabindex, aria-label and onKeyDown */
               role="button"
               tabIndex={0}
               aria-label={`${node.label}: ${state}`}
@@ -241,8 +247,8 @@ export function GraphView({
                 className="gview__surface"
                 width={GRAPHVIEW_CARD_WIDTH}
                 height={GRAPHVIEW_CARD_HEIGHT}
-                rx={10}
-                ry={10}
+                rx={8}
+                ry={8}
                 fill={`url(#${gradientid})`}
               />
               {state === "running" && (
@@ -250,8 +256,8 @@ export function GraphView({
                   className="gview__pulse"
                   width={GRAPHVIEW_CARD_WIDTH}
                   height={GRAPHVIEW_CARD_HEIGHT}
-                  rx={10}
-                  ry={10}
+                  rx={8}
+                  ry={8}
                   fill="none"
                   stroke="#0067c0"
                   strokeWidth={1}

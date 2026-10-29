@@ -21012,3 +21012,899 @@ button.dtc-recents__row {
   }
 }
 /* ==== login theme sync (light) · end of section ==== */
+
+/* ==== @section icon wave 5-a · the fluent token ladder of the drawn set ====
+ * the owner mandate of the icon redesign wave: curves, rounded borders,
+ * shadows and modern css tokens — webflow/awwwards grade micro-interactions
+ * on the fluent/win11 canon (the seelen-ui + fluent-svelte + winui gallery
+ * corpus this wave studied). the pass refines the drawn set — the 27 plates
+ * of shellappicons.tsx and the tile that carries them — onto the
+ * competitor-derived token ladder without deleting one rule above it: the
+ * passes append, order wins. what this section adds:
+ * - the tokens: a duration ladder (--dur-faster 83ms / --dur-fast 150ms /
+ *   --dur-normal 250ms / --dur-slow 333ms), the standard control curve
+ *   (--ease-standard, the winui cubic-bezier(.4,0,.2,1)) and the
+ *   icon-fluent curve (--ease-icon-fluent, the aggressive decelerate
+ *   cubic-bezier(0,0,0,1) of the corpus — namespaced because --ease-fluent
+ *   already serves the window curve of the foundation and the append-only
+ *   law keeps its meaning frozen), plus an hsl elevation ladder
+ *   (--shadow-s / --shadow-m / --shadow-l) keyed on --shadow-color so every
+ *   tier re-tints per theme — the dark bed grounds in graphite, the light
+ *   bed in slate;
+ * - the concentric law: the plate corner of the drawn set moved to the
+ *   ~23% fluent shoulder (11/48 of the viewBox) and the set tile rounds to
+ *   the same fraction — the glint band, the focus ring and the plate edge
+ *   agree at every mount size, inner radius = outer − padding;
+ * - the elevation ladder: the raised mounts (the desktop cells, the
+ *   standalone tiles of the alt-tab, the launch deck, the files rows, the
+ *   onboarding steps) rest on --shadow-s behind a 1px neutral contour, lift
+ *   to --shadow-m on the live flag at the 150ms curve, ride --shadow-l
+ *   while dragged and seat flat under the press — while the flat rails (the
+ *   taskbar pins, the start cells) keep their own flat composition, the
+ *   parents-win law of the tile contract restated so the ladder never
+ *   leaks into the flat mounts;
+ * - the motion re-ride: the tilt answers the whole hit area of the three
+ *   walls (hover and keyboard focus alike) over the 320px perspective bed
+ *   on the icon-fluent curve with a 5px z-lift, the press seats at
+ *   scale(.94) inside the 100ms house press physics, the sheen sweep and
+ *   the glint band ride the 250ms normal curve, and the glyph lift (inline
+ *   in the component) reads the same tokens;
+ * - the entrance: the set tiles rise from scale .92 + opacity on mount at
+ *   the 250ms normal curve — never from zero — staggering with the
+ *   --stagger-i counter of the start grid wherever it exists;
+ * - the focus ring: a neutral double ring (a 1px inner stroke plus a 3px
+ *   outer halo over --color-focus) on the keyboard focus of the three
+ *   walls — never blue, never the accent, the chrome stays neutral.
+ * guards: prefers-reduced-motion and the [data-motion="reduced"] runtime
+ *   flag flatten every move this pass adds — re-stated after the additions
+ *   because the zeroing of wave 5 no longer wins once these rules append —
+ *   and prefers-reduced-transparency floors the veils (the glint drops, the
+ *   ring halo goes solid; the elevation tiers stay, a drop shadow is depth,
+ *   not veil) at the very end of the section.
+ * @depends-on tokens --color-focus --ease-micro --dur-1 (the foundation and
+ *   the runtime token block)
+ * @consumed-by AppTile ShellAppicons — the .dt-tile / .dt-appicon-anim /
+ *   data-live hooks the components already emit; zero new markup */
+
+/* -- 1. the token ladder: the durations, the curves and the hsl elevation
+        tiers the icon surfaces compose (the corpus values; --ease-fluent
+        stays the window curve of the foundation — the icon wave keeps its
+        own namespaced fluent curve) -- */
+:root {
+  --dur-faster: 83ms;
+  --dur-fast: 150ms;
+  --dur-normal: 250ms;
+  --dur-slow: 333ms;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-icon-fluent: cubic-bezier(0, 0, 0, 1);
+  --shadow-color: 230 24% 6%;
+  --shadow-s: 1px 1px 2px hsl(var(--shadow-color) / 0.08);
+  --shadow-m: 2px 2px 8px hsl(var(--shadow-color) / 0.16);
+  --shadow-l: 8px 8px 24px hsl(var(--shadow-color) / 0.24);
+}
+
+/* the light flip: the elevation re-tints — the graphite ground of the dark
+   bed becomes the soft slate of the light one (hsl, so every tier moves
+   with the theme ladder) */
+[data-theme="light"] {
+  --shadow-color: 230 16% 40%;
+}
+
+/* -- 2. the concentric law: the plate corners at 11/48 (~23%) and the set
+        tile rounds to the same fraction — the glint band (border-radius:
+        inherit), the focus ring and the plate edge agree at every mount
+        size, at the 26px pin and the 72px onboarding card alike -- */
+.dt-tile[data-tile="set"] {
+  border-radius: 23%;
+}
+
+/* -- 3. the elevation ladder of the raised mounts: the resting tier behind
+        a 1px neutral contour (the crisp silhouette edge against any
+        wallpaper), the box-shadow moving on the 150ms standard curve while
+        the transform keeps the 100ms press snap of the house physics -- */
+.dt-tile[data-tile="set"] {
+  box-shadow:
+    0 0 0 1px hsl(var(--shadow-color) / 0.16),
+    var(--shadow-s);
+  transition:
+    box-shadow var(--dur-fast, 150ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1)),
+    transform var(--dur-1, 100ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+/* the lift: the live flag of the tile (its own pointer) or the whole hit
+   area of the desktop cell (hover and focus) raises the m tier — the
+   neutral ladder replaces the tinted hover glow the campaign bans */
+.dt-tile[data-tile="set"][data-live="true"],
+.dsk-cell:hover .dt-tile[data-tile="set"],
+.dsk-cell:focus .dt-tile[data-tile="set"] {
+  box-shadow:
+    0 0 0 1px hsl(var(--shadow-color) / 0.2),
+    var(--shadow-m);
+}
+
+/* the carried icon: the drag lift rides the l tier — the tile reads as
+   lifted off the desktop while the cell carries it */
+.dsk-cell[data-dragging="true"] .dt-tile[data-tile="set"] {
+  box-shadow:
+    0 0 0 1px hsl(var(--shadow-color) / 0.22),
+    var(--shadow-l);
+}
+
+/* the press: the drop collapses — the tile seats flat behind its contour
+   under the active hand of any interactive host */
+:is(button, a):active .dt-tile[data-tile="set"] {
+  box-shadow: 0 0 0 1px hsl(var(--shadow-color) / 0.24);
+}
+
+/* the flat rails: the taskbar pins and the start cells keep their flat
+   composition — the parents-win law of the tile contract, restated after
+   the ladder so the elevation never leaks into the flat mounts (win11
+   keeps its rails flat; the desktop and the standalone cards elevate) */
+.dt-nav__app .dt-tile[data-tile="set"],
+.dt-start__app .dt-tile[data-tile="set"] {
+  box-shadow: none;
+}
+
+/* -- 4. the entrance: the set tiles rise from scale .92 + opacity — never
+        from zero — on the 250ms normal curve, staggering with the
+        --stagger-i counter of the start grid wherever it exists (the
+        existing 60ms cadence, capped at the 12th) -- */
+.dt-tile[data-tile="set"] {
+  animation: dtAppiconRise var(--dur-normal, 250ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1)) backwards;
+  animation-delay: calc(min(var(--stagger-i, 0), 12) * 60ms);
+}
+
+@keyframes dtAppiconRise {
+  from {
+    opacity: 0;
+    scale: 0.92;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+/* -- 5. the motion re-ride: the sharper physics seat — the tilt settles on
+        the icon-fluent curve (the aggressive decelerate of the corpus) and
+        answers the whole hit area of the three walls, the press seats at
+        scale(.94) inside the 100ms, the ring brighten tightens to the 83ms
+        tick, and the sheen sweep and the glint band join the 250ms normal
+        curve -- */
+.dt-appicon-anim {
+  transition: transform var(--dur-fast, 150ms) var(--ease-icon-fluent, cubic-bezier(0, 0, 0, 1));
+}
+
+.dt-appicon-anim[data-live="true"],
+:is(.dsk-cell, .dt-start__app, .dt-nav__app):hover .dt-appicon-anim,
+:is(.dsk-cell, .dt-start__app, .dt-nav__app):focus-visible .dt-appicon-anim {
+  transform: rotateX(2.6deg) rotateY(-2.2deg) translateZ(5px);
+}
+
+/* the press seat: scale .94 in the 100ms of the house press physics (the
+   release settles back on the base curve of the rule above) */
+:is(button, a):active .dt-appicon-anim {
+  transform: scale(0.94);
+  transition-duration: var(--dur-1, 100ms);
+}
+
+/* the ring brighten: the chamfer answers at the faster tick */
+.dt-appicon-anim [data-layer="ring"] {
+  transition: stroke var(--dur-faster, 83ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+/* the sheen sweep: one pass at the 250ms normal curve — the sharper read */
+.dtIcon[data-live="true"] .dtIconSheen {
+  animation-duration: var(--dur-normal, 250ms);
+  animation-timing-function: var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+/* the glint band: the slide joins the 250ms normal curve (the seat keeps
+   the 150ms fade) */
+.dt-tile[data-tile="set"]::after {
+  transition:
+    opacity var(--dur-fast, 150ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1)),
+    transform var(--dur-normal, 250ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+/* -- 6. the focus ring: the keyboard affordance of the three walls — a
+        neutral double ring over --color-focus (the 1px inner stroke plus
+        the 3px outer halo), never blue, never the accent; the pseudo rides
+        above the plate (an absolutely positioned child paints over the
+        in-flow drawing) and composes with the underline indicators the
+        walls already carry -- */
+.dt-tile {
+  position: relative;
+}
+
+.dt-tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-faster, 83ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-focus) 62%, transparent),
+    0 0 0 3px color-mix(in srgb, var(--color-focus) 28%, transparent);
+}
+
+:is(.dsk-cell, .dt-start__app, .dt-nav__app):focus-visible .dt-tile::before {
+  opacity: 1;
+}
+
+/* -- 7. the guards, last in the section: the reduced-motion zeroing and
+        the reduced-transparency floor. the zeroing is re-stated here
+        because the passes append — the guards of wave 5 sit above and no
+        longer win against the re-rides of §5 -- */
+@media (prefers-reduced-motion: reduce) {
+  .dt-tile[data-tile="set"] {
+    animation: none;
+    transition: none;
+  }
+
+  .dt-appicon-anim {
+    transition: none;
+  }
+
+  .dt-appicon-anim[data-live="true"],
+  :is(.dsk-cell, .dt-start__app, .dt-nav__app):hover .dt-appicon-anim,
+  :is(.dsk-cell, .dt-start__app, .dt-nav__app):focus-visible .dt-appicon-anim {
+    transform: none;
+  }
+
+  :is(button, a):active .dt-appicon-anim {
+    transform: scale(0.94);
+  }
+
+  .dt-tile[data-tile="set"]::after {
+    transform: none;
+    transition: opacity var(--dur-fast, 150ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1));
+  }
+
+  .dt-tile::before {
+    transition: none;
+  }
+}
+
+[data-motion="reduced"] .dt-tile[data-tile="set"] {
+  animation: none;
+  transition: none;
+}
+
+[data-motion="reduced"] .dt-appicon-anim {
+  transition: none;
+}
+
+[data-motion="reduced"] .dt-appicon-anim[data-live="true"],
+[data-motion="reduced"] :is(.dsk-cell, .dt-start__app, .dt-nav__app):hover .dt-appicon-anim,
+[data-motion="reduced"] :is(.dsk-cell, .dt-start__app, .dt-nav__app):focus-visible .dt-appicon-anim {
+  transform: none;
+}
+
+[data-motion="reduced"] :is(button, a):active .dt-appicon-anim {
+  transform: scale(0.94);
+}
+
+[data-motion="reduced"] .dt-tile[data-tile="set"]::after {
+  transform: none;
+  transition: opacity var(--dur-fast, 150ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+[data-motion="reduced"] .dt-tile::before {
+  transition: none;
+}
+
+/* the transparency floor: the glint is veil — it drops; the ring halo
+   seats solid behind its stroke; the elevation tiers stay (a drop shadow
+   is depth, not veil) */
+@media (prefers-reduced-transparency: reduce) {
+  .dt-tile[data-tile="set"]::after {
+    display: none;
+  }
+
+  .dt-tile::before {
+    box-shadow:
+      inset 0 0 0 1px var(--color-focus),
+      0 0 0 2px var(--color-focus);
+  }
+}
+/* ==== icon wave 5-a · end of section ==== */
+
+/* ==== @section console wave 6-b · the console surface on the modern token ladder ====
+ * the retry of the console redesign wave (the first pass was lost to a sandbox
+ * reset before it landed): the cli design app re-skinned onto the
+ * competitor-derived ladder the icon wave 5-a installed — webflow/awwwards
+ * polish on the fluent/win11 canon, micro animações e micro interações
+ * reais. the pass appends after the icon wave section and deletes nothing
+ * above it; the passes append, order wins. what this section adds:
+ * - the accent law of the deck: the identity accent (--color-ever) owns
+ *   every person-intent surface — the terminal prompt, the running state
+ *   chip, the paired gateway lamp, the nav pill, the reference hover and
+ *   the graph selection/hover glow — while the windows accent (--color-win)
+ *   stays sparing and machine-live only (the running node, the live port,
+ *   the stage pips, the progress bar); the keyboard focus stays neutral
+ *   ink, never blue;
+ * - the terminal acrylic: the log pane becomes the hero surface of the
+ *   deck — the theme-stable night bed at 88% over a real backdrop blur
+ *   (the fluent acrylic material, not a painted gradient: the one gradient
+ *   of the page stays the node-card ramp the graph already carries), the
+ *   veil hairlines via color-mix(in oklab,...), the light-catching top
+ *   inset and the elevation story — resting --shadow-s, lifting to
+ *   --shadow-m on :focus-within while the caret focuses;
+ * - the micro-interactions: the command input wears the neutral double
+ *   stroke (the 1px inner ring plus the 4px outer halo over the veil ink),
+ *   the reference rows lift on translateZ over a per-row perspective bed
+ *   at the 150ms standard curve with the press seating inside the 100ms
+ *   house physics, and the graph cards answer the whole hit area with the
+ *   ever hover glow (a filter drop-shadow — svg is flat, so the translateZ
+ *   of the html rows reads as the scale + glow lift here) and the press
+ *   seat at the same curve;
+ * - the entrances: the deck panels rise from scale .92 + opacity — never
+ *   from zero — on the 250ms normal curve, staggering on the 60ms
+ *   cadence; the graph nodes ride the --gview-i counter the component
+ *   already emits (the 33ms cadence, capped at the 12th); every printed
+ *   line of the log rises at the 150ms ink cadence; the paired lamp
+ *   breathes on opacity alone;
+ * - the radius ladder: the controls (the nav rows, the reference rows,
+ *   the command input, the stage pips) round to the 4px tier, the menus
+ *   (the cards, the node cards, the graph map) to the 8px tier and the
+ *   terminal pane — the hero surface — to the 16px tier.
+ * guards: prefers-reduced-motion and the [data-motion="reduced"] runtime
+ *   flag flatten every move this pass adds (the press seat survives — the
+ *   icon wave precedent), and prefers-reduced-transparency floors the
+ *   acrylic to the solid bed and drops the glows and the lamp halo while
+ *   the elevation tiers stay (a drop shadow is depth, not veil) — the
+ *   guards close the section, the zeroing re-stated because the passes
+ *   append.
+ * @depends-on tokens --dur-faster/--dur-fast/--dur-normal/--ease-standard/
+ *   --ease-icon-fluent/--shadow-s/--shadow-m (icon wave 5-a) · --color-ever
+ *   family · --color-win · --color-night-2 · --color-veil · --radius-xs/
+ *   --radius-md/--radius-2xl · --dur-1 (the foundation) · --gview-i
+ *   (ConsoleGraphview.tsx)
+ * @consumed-by Console (console.tsx) · Terminal (ConsoleTerminal.tsx — the
+ *   data-state hook this pass wires) · GraphView (ConsoleGraphview.tsx) ·
+ *   ConsoleReference (ConsoleReference.tsx) — the .dt-term / .gview /
+ *   .dtw-console hooks the components already emit
+ */
+
+/* -- 1. the terminal acrylic: the hero surface of the deck. the night bed
+        at 88% over the real backdrop blur (saturate rides the fluent
+        material read), the veil hairline edge, the light-catching top
+        inset and the elevation story — the pane rests on --shadow-s behind
+        its contour and lifts to --shadow-m once the caret focuses
+        (:focus-within answers the input, the log keydown and the click
+        alike — the terminal is one keyboard-first control) -- */
+.dtw-console .dt-term {
+  border: 1px solid color-mix(in oklab, var(--color-veil) 14%, transparent);
+  border-radius: var(--radius-2xl, 16px);
+  background: color-mix(in oklab, var(--color-night-2) 88%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  backdrop-filter: blur(18px) saturate(1.2);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, var(--color-veil) 10%, transparent),
+    var(--shadow-s);
+  transition: box-shadow var(--dur-fast, 150ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+/* the focus tier: the m elevation while the session owns the caret */
+.dtw-console .dt-term:focus-within {
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, var(--color-veil) 16%, transparent),
+    var(--shadow-m);
+}
+
+/* -- 2. the terminal chrome: the bar, the state chip, the log rows, the
+        prompt and the command input — the veil ink ladder over the night
+        bed, the identity accent where the person acts -- */
+.dtw-console .dt-term__bar {
+  border-bottom: 1px solid color-mix(in oklab, var(--color-veil) 9%, transparent);
+  background: color-mix(in oklab, var(--color-veil) 4%, transparent);
+  color: color-mix(in oklab, var(--color-veil) 58%, transparent);
+}
+
+/* the state chip: the live dot answers the data-state hook the terminal
+   component emits — the identity accent only once the console runs */
+.dtw-console .dt-term__state {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: color-mix(in oklab, var(--color-veil) 62%, transparent);
+}
+
+.dtw-console .dt-term[data-state="running"] .dt-term__state {
+  color: var(--color-ever);
+}
+
+.dtw-console .dt-term[data-state="running"] .dt-term__state::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-ever);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-ever) 25%, transparent);
+}
+
+/* the log pane: the honest thin scrollbar over the hidden one (a log the
+   person scrolls deserves the rail), the rows on the veil ink ladder */
+.dtw-console .dt-term__out {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--color-veil) 16%, transparent) transparent;
+  cursor: text;
+}
+
+.dtw-console .dt-term__out > span {
+  border-bottom-color: color-mix(in oklab, var(--color-veil) 7%, transparent);
+}
+
+.dtw-console .dt-term__out .boot {
+  color: color-mix(in oklab, var(--color-veil) 52%, transparent);
+}
+
+.dtw-console .dt-term__out .cmdline {
+  color: var(--color-veil);
+}
+
+.dtw-console .dt-term__out .ok {
+  color: color-mix(in oklab, var(--color-veil) 74%, transparent);
+}
+
+.dtw-console .dt-term__out .err {
+  color: var(--color-err);
+}
+
+/* every printed line rises at the ink cadence — the spans mount one by one
+   (the boot stream and every command response), so only the new row moves */
+.dtw-console .dt-term__out > span {
+  animation: dtConsoleRowIn var(--dur-fast, 150ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1)) backwards;
+}
+
+@keyframes dtConsoleRowIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* the command band: the veil hairline, the enable fade on opacity + filter
+   (the only legal motion pair) and the prompt in the identity accent */
+.dtw-console .dt-term__in {
+  border-top: 1px solid color-mix(in oklab, var(--color-veil) 9%, transparent);
+  transition:
+    opacity var(--dur-normal, 250ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1)),
+    filter var(--dur-normal, 250ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+.dtw-console .dt-term__in.off {
+  opacity: 0.55;
+  filter: saturate(0.6);
+}
+
+.dtw-console .dt-term__prompt {
+  color: var(--color-ever);
+}
+
+.dtw-console .dt-term__input {
+  padding: 6px 12px;
+  border-radius: var(--radius-xs, 4px);
+  color: var(--color-veil);
+  caret-color: var(--color-ever);
+  transition: box-shadow var(--dur-fast, 150ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+/* the neutral double stroke of the focused field: the 1px inner ring plus
+   the 4px outer halo over the veil ink — never the accent, never blue (a
+   text input matches :focus-visible on click focus too, so the ring rides
+   every real focus, mouse and keyboard alike) */
+.dtw-console .dt-term__input:focus-visible {
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--color-veil) 42%, transparent),
+    0 0 0 4px color-mix(in oklab, var(--color-veil) 12%, transparent);
+}
+
+/* -- 3. the nav pane: the control tier of the radius ladder (4px), the
+        neutral slate hover wash in oklab, the identity pill of the active
+        row with its soft halo, and the entrance stagger below (§6) -- */
+.dtw-console .dtw-navrow {
+  border-radius: var(--radius-xs, 4px);
+}
+
+.dtw-console .dtw-navrow:hover:not([data-active="true"]) {
+  background: color-mix(in oklab, var(--dtv3-ink-1) 5%, transparent);
+}
+
+.dtw-console .dtw-navrow[data-active="true"] {
+  background: color-mix(in oklab, var(--color-ever) 7%, transparent);
+  color: var(--dtv3-ink-1);
+}
+
+.dtw-console .dtw-navrow[data-active="true"]::before {
+  background: var(--color-ever);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-ever) 22%, transparent);
+}
+
+/* the section glyphs and the count chips ride the identity accent /
+   the neutral ink (the old green sig of the console skin is retired) */
+.dtw-console .dtw-cardtitle svg {
+  color: var(--color-ever);
+}
+
+/* the gateway lamp: the paired loopback answers the identity accent with
+   the breathing halo — opacity alone, the 2.4s breath of a live circuit */
+.dtw-console .dtw-console__note > span:first-child.is-paired {
+  color: var(--color-ever-deep);
+}
+
+.dtw-console .dtw-console__note > span:first-child.is-paired .dtw-console__lamp {
+  position: relative;
+  background: var(--color-ever);
+  box-shadow: none;
+}
+
+.dtw-console .dtw-console__note > span:first-child.is-paired .dtw-console__lamp::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--color-ever) 32%, transparent);
+  animation: dtConsoleLampBreath 2.4s var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1)) infinite;
+}
+
+@keyframes dtConsoleLampBreath {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* the cards of the deck (the boot map, the reference registry): the menu
+   tier of the radius ladder and the resting s elevation behind the
+   oklab-retoned hairline */
+.dtw-console .dtw-card {
+  border-color: color-mix(in oklab, var(--dtv3-ink-1) 10%, transparent);
+  border-radius: var(--radius-md, 8px);
+  box-shadow: var(--shadow-s);
+}
+
+/* -- 4. the reference rows: the registry reads as hairline rows, but the
+        interactive run row answers the whole entry — the per-row
+        perspective bed (each li owns its 800px stage so the button lift
+        never flattens inside the scrolling content column), the 150ms
+        standard curve, the identity wash + the translateZ lift + the s
+        elevation selling it, and the press seating back inside the 100ms
+        house physics -- */
+.dtw-console .dtw-console__refs > li {
+  perspective: 800px;
+}
+
+.dtw-console .dtw-console__refrun {
+  border-radius: var(--radius-xs, 4px);
+  border-bottom-color: color-mix(in oklab, var(--dtv3-ink-1) 8%, transparent);
+  transition:
+    background-color var(--dur-fast, 150ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1)),
+    border-color var(--dur-fast, 150ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1)),
+    box-shadow var(--dur-fast, 150ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1)),
+    transform var(--dur-fast, 150ms) var(--ease-icon-fluent, cubic-bezier(0, 0, 0, 1));
+}
+
+.dtw-console .dtw-console__refrun:hover:not(:disabled) {
+  background: color-mix(in oklab, var(--color-ever) 7%, transparent);
+  box-shadow: var(--shadow-s);
+  transform: translateZ(10px);
+}
+
+.dtw-console .dtw-console__refrun:active:not(:disabled) {
+  background: color-mix(in oklab, var(--color-ever) 12%, transparent);
+  box-shadow: none;
+  transform: translateZ(2px) scale(0.98);
+  transition-duration: var(--dur-1, 100ms);
+}
+
+/* -- 5. the graph retune: the node cards on the token ladder — the focus
+        stroke neutral (never the blue the injected pass carried), the
+        selection and the hover glow in the identity accent, the running
+        signal and the stage ledger in the sparing windows accent, every
+        hairline via color-mix(in oklab,...) and the radius at the menu
+        tier. the lift: svg is flat, no translateZ exists on a 2d canvas —
+        the hover reads as the scale + the ever drop-shadow (a filter, one
+        of the three legal motion channels) while the html rows above ride
+        the real z -- */
+.dtw-console .gview__map {
+  border-radius: var(--radius-md, 8px);
+}
+
+.dtw-console .gview__card {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  transition:
+    scale var(--dur-fast, 150ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1)),
+    filter var(--dur-fast, 150ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+.dtw-console .gview__card rect.gview__surface {
+  stroke: color-mix(in oklab, var(--dtv3-ink-1) 14%, transparent);
+  transition:
+    stroke var(--dur-fast, 150ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1)),
+    stroke-width var(--dur-faster, 83ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1)),
+    opacity var(--sol-micro, 150ms) var(--sol-ease-out, ease-out);
+}
+
+.dtw-console .gview__wire {
+  stroke: color-mix(in oklab, var(--dtv3-ink-1) 14%, transparent);
+}
+
+.dtw-console .gview__port {
+  fill: color-mix(in oklab, var(--dtv3-ink-1) 32%, transparent);
+}
+
+.dtw-console .gview__label {
+  fill: var(--dtv3-ink-1);
+}
+
+.dtw-console .gview__kind {
+  fill: var(--dtv3-ink-3);
+}
+
+.dtw-console .gview__mark-done {
+  stroke: var(--dtv3-ink-2);
+}
+
+.dtw-console .gview__mark-pending {
+  stroke: color-mix(in oklab, var(--dtv3-ink-1) 30%, transparent);
+}
+
+.dtw-console .gview__mark-skip {
+  stroke: var(--dtv3-ink-2);
+}
+
+/* the whole hit area of the card answers: the hover lift (scale 1.02, the
+   svg translation of the translateZ bed) with the identity glow */
+.dtw-console .gview__card:hover {
+  scale: 1.02;
+  filter: drop-shadow(0 4px 10px color-mix(in oklab, var(--color-ever) 34%, transparent));
+}
+
+.dtw-console .gview__card:hover rect.gview__surface {
+  stroke: color-mix(in oklab, var(--color-ever) 64%, var(--dtv3-ink-1));
+  stroke-width: 1.25;
+}
+
+/* the press seat: the card sits back down under the active hand */
+.dtw-console .gview__card:active {
+  scale: 0.98;
+  transition-duration: var(--dur-1, 100ms);
+}
+
+/* the selection: the person's pick wears the identity accent — the deep
+   ever for the stroke (it must read on the white card), the glow soft */
+.dtw-console .gview__card[data-selected="true"] {
+  filter: drop-shadow(0 2px 8px color-mix(in oklab, var(--color-ever) 30%, transparent));
+}
+
+.dtw-console .gview__card[data-selected="true"] rect.gview__surface {
+  stroke: var(--color-ever-deep);
+  stroke-width: 1.5;
+}
+
+/* the machine-live family: the running stroke, the pulse ring, the live
+   dot and the live port keep the windows accent — sparing, the thin live
+   wires of the runner only */
+.dtw-console .gview__card[data-state="running"] rect.gview__surface {
+  stroke: var(--color-win);
+}
+
+.dtw-console rect.gview__pulse {
+  stroke: var(--color-win);
+}
+
+.dtw-console circle.gview__pulse {
+  fill: var(--color-win);
+}
+
+.dtw-console .gview__port--live {
+  fill: var(--color-win);
+}
+
+/* the keyboard focus of a card: the neutral ink stroke (never the blue of
+   the injected pass) with the same lift the hover carries */
+.dtw-console .gview__card:focus-visible {
+  scale: 1.02;
+  filter: drop-shadow(0 4px 10px color-mix(in oklab, var(--dtv3-ink-1) 26%, transparent));
+}
+
+.dtw-console .gview__card:focus-visible rect.gview__surface {
+  stroke: var(--dtv3-ink-1);
+  stroke-width: 1.5;
+}
+
+/* the stage ledger: the pips at the control tier, the tokens for the
+   hairlines and the sparing windows accent for the active wave and the
+   aggregated bar */
+.dtw-console .gview__rail {
+  color: var(--dtv3-ink-2);
+}
+
+.dtw-console .gview__pip {
+  border: 1px solid color-mix(in oklab, var(--dtv3-ink-1) 14%, transparent);
+  border-radius: var(--radius-xs, 4px);
+  color: var(--dtv3-ink-3);
+}
+
+.dtw-console .gview__pip[data-state="active"] {
+  border-color: color-mix(in srgb, var(--color-win) 55%, transparent);
+  color: var(--color-win);
+}
+
+.dtw-console .gview__pip[data-state="done"] {
+  border-color: color-mix(in oklab, var(--dtv3-ink-1) 8%, transparent);
+  color: var(--dtv3-ink-1);
+}
+
+.dtw-console .gview__stagebar {
+  background: color-mix(in oklab, var(--dtv3-ink-1) 10%, transparent);
+}
+
+.dtw-console .gview__stagebar > i {
+  background: var(--color-win);
+}
+
+.dtw-console .gview__stagenote {
+  color: var(--dtv3-ink-3);
+}
+
+/* -- 6. the entrances: the deck panels rise from scale .92 + opacity —
+        never from zero — on the 250ms normal curve (the section switch
+        remounts the deck children, so every turn of the nav answers with
+        the entrance), the nav rows stagger on the 60ms cadence of the
+        house and the graph nodes ride the --gview-i counter the component
+        emits (the 33ms cadence, capped at the 12th like the icon wave) -- */
+.dtw-console .dtw-content > * {
+  animation: dtConsoleRise var(--dur-normal, 250ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1)) backwards;
+}
+
+.dtw-console .dtw-content > :nth-child(2) {
+  animation-delay: 60ms;
+}
+
+.dtw-console .dtw-content > :nth-child(3) {
+  animation-delay: 120ms;
+}
+
+.dtw-console .dtw-navrow {
+  animation: dtConsoleRise var(--dur-normal, 250ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1)) backwards;
+}
+
+.dtw-console .dtw-nav > :nth-child(1) {
+  animation-delay: 40ms;
+}
+
+.dtw-console .dtw-nav > :nth-child(2) {
+  animation-delay: 100ms;
+}
+
+.dtw-console .dtw-nav > :nth-child(3) {
+  animation-delay: 160ms;
+}
+
+.dtw-console .gview__card {
+  animation: dtConsoleRise var(--dur-normal, 250ms) var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1)) backwards;
+  animation-delay: calc(min(var(--gview-i, 0), 12) * 33ms);
+}
+
+/* the shared rise of the pass: scale .92 + opacity (the independent scale
+   property composes with the svg translate attribute of the graph cards —
+   the attribute keeps feeding the transform channel while scale rides its
+   own, so the node never loses its layered position) */
+@keyframes dtConsoleRise {
+  from {
+    opacity: 0;
+    scale: 0.92;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+/* -- 7. the guards, last in the section: the reduced-motion hard stop and
+        the reduced-transparency floor. the zeroing is re-stated here
+        because the passes append — the guards of the waves above no longer
+        win against the re-rides of §1–§6; the press seats survive (the
+        icon wave precedent: the seat is state, not travel) -- */
+@media (prefers-reduced-motion: reduce) {
+  .dtw-console .dtw-content > *,
+  .dtw-console .dtw-navrow,
+  .dtw-console .gview__card,
+  .dtw-console .dt-term__out > span,
+  .dtw-console .dtw-console__note > span:first-child.is-paired .dtw-console__lamp::after {
+    animation: none;
+  }
+
+  .dtw-console .dt-term,
+  .dtw-console .dt-term__in,
+  .dtw-console .dt-term__input,
+  .dtw-console .dtw-navrow,
+  .dtw-console .dtw-console__refrun,
+  .dtw-console .gview__card,
+  .dtw-console .gview__card rect.gview__surface {
+    transition: none;
+  }
+
+  .dtw-console .gview__card:hover,
+  .dtw-console .gview__card:focus-visible {
+    scale: none;
+    filter: none;
+  }
+
+  .dtw-console .dtw-console__refrun:hover:not(:disabled) {
+    box-shadow: none;
+    transform: none;
+  }
+}
+
+[data-motion="reduced"] .dtw-console .dtw-content > *,
+[data-motion="reduced"] .dtw-console .dtw-navrow,
+[data-motion="reduced"] .dtw-console .gview__card,
+[data-motion="reduced"] .dtw-console .dt-term__out > span,
+[data-motion="reduced"] .dtw-console .dtw-console__note > span:first-child.is-paired .dtw-console__lamp::after {
+  animation: none;
+}
+
+[data-motion="reduced"] .dtw-console .dt-term,
+[data-motion="reduced"] .dtw-console .dt-term__in,
+[data-motion="reduced"] .dtw-console .dt-term__input,
+[data-motion="reduced"] .dtw-console .dtw-navrow,
+[data-motion="reduced"] .dtw-console .dtw-console__refrun,
+[data-motion="reduced"] .dtw-console .gview__card,
+[data-motion="reduced"] .dtw-console .gview__card rect.gview__surface {
+  transition: none;
+}
+
+[data-motion="reduced"] .dtw-console .gview__card:hover,
+[data-motion="reduced"] .dtw-console .gview__card:focus-visible {
+  scale: none;
+  filter: none;
+}
+
+[data-motion="reduced"] .dtw-console .dtw-console__refrun:hover:not(:disabled) {
+  box-shadow: none;
+  transform: none;
+}
+
+/* the transparency floor: the acrylic is veil — the bed goes solid, the
+   blur drops; the glows and the lamp halo are veil — they drop; the
+   elevation tiers stay (a drop shadow is depth, not veil) */
+@media (prefers-reduced-transparency: reduce) {
+  .dtw-console .dt-term {
+    background: color-mix(in oklab, var(--color-night-2) 97%, transparent);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .dtw-console .gview__card:hover,
+  .dtw-console .gview__card[data-selected="true"],
+  .dtw-console .gview__card:focus-visible {
+    filter: none;
+  }
+
+  .dtw-console .dtw-console__note > span:first-child.is-paired .dtw-console__lamp::after {
+    display: none;
+  }
+
+  .dtw-console .dtw-navrow[data-active="true"]::before {
+    box-shadow: none;
+  }
+
+  .dtw-console .dt-term[data-state="running"] .dt-term__state::before {
+    box-shadow: none;
+  }
+}
+/* ==== console wave 6-b · end of section ==== */
