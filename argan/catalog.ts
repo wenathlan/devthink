@@ -14,6 +14,8 @@ import type {
   SignalBadge,
   ZoneSnapshot,
 } from "./argan";
+import { MIMETYPES, type MimeTypeRow } from "./mimetypes";
+import { PROTOCOLS, type ProtocolSpec } from "./protocols";
 import {
   seedConfigBlocks,
   seedDnssecAlgorithms,
@@ -100,4 +102,20 @@ export function listRolloverSteps(): Promise<RolloverStep[]> {
 export function listOptionChoices(group: "resolver" | "locale"): Promise<OptionChoice[]> {
   const seeds = group === "resolver" ? seedResolverChoices : seedLocaleChoices;
   return table(`choices.${group}`, seeds);
+}
+
+/**
+ * Serves the protocol mesh of the gateway: the api over HTTPS when configured, the
+ * registry rows offline (the table carries every wire the gateway speaks).
+ */
+export function listProtocols(): Promise<ProtocolSpec[]> {
+  return table("protocols", PROTOCOLS);
+}
+
+/**
+ * Serves the mimetype catalog: the api over HTTPS when configured, the registry rows
+ * offline (the table carries every media type family the gateway answers for).
+ */
+export function listMimetypes(): Promise<MimeTypeRow[]> {
+  return table("mimetypes", MIMETYPES);
 }
