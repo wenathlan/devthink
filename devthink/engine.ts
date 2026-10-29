@@ -19,10 +19,10 @@
  *   8 response building — chat completion anthropic message response formats
  */
 
-import { buildauthheaders, extractrequestid, extractsessionid, resolvekeys } from "./server.js";
+import { buildauthheaders, extractrequestid, extractsessionid, resolvekeys } from "./server.ts";
 import { getsessionmessages, savemsg } from "./storage.ts";
 import { THINKINGLEVELS } from "@wenathlan/getry/thinking";
-import { makechunk, makefinalchunk, makestreamresponse } from "./server.js";
+import { makechunk, makefinalchunk, makestreamresponse } from "./server.ts";
 import type {
   gatewayconfig,
   modeldef,

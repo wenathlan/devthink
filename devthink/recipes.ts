@@ -1,33 +1,21 @@
-/** Runs the example gallery of the 2.0.0 release: the gate loads the 36 recipes of the recipesfixtures module through the same cli loader the planlint command uses (parseplanfile under schemastrict), validates every recipe against the frozen plan schema of the schemafixtures module (the origin, the steps and the step field vocabulary the plan authoring format shares with the frozen message schema, with the goal mapping onto the objective carrier, the label onto the summary carrier and the derived risk checked against the frozen risk enum), lints every recipe with the same portable rule set and capability set the cli planlint builds, verifies the gallery metadata of the index (the description, the difficulty, the fixture page, the declared capabilities, the consent classes, the agent topologies, the scraping export formats and the monitoring schedules), proves the consent gates hold by linting the consent recipes once with the fresh class consents the review flow would record and once without them (the refusal must name exactly the declared classes), verifies every sensitive step carries its gate declaration, verifies no step value, option or origin hardcodes a remote origin outside the reserved fixture family, resolves every step selector statically against the fixture page the entry names, dry runs every recipe through the runflow pipeline the extension runs (the grants gate, the workflow proposal validation, the per step consent gates routed to a recording provider and the dry run driver that touches no page), replays the cli planlint command over every consent free recipe copy of dist/fixtures/recipes so the gallery imports cleanly through the cli, records the outcome and duration of every executed entry in the committed record tests/devthink.recipes.ts (the reciperecord const this module carries, migrated from devthink/artifacts/recipes.json when the flat folder law dissolved the artifacts folder) and exits nonzero on any failure. The diff mode reruns the suite and compares the gallery against the committed record: an entry added, removed, re-categorized, re-graded or drifted in its steps or kinds fails the diff so the gallery never drifts silently between releases. The sync mode (`node ../tests/devthink.recipes.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
+/** Runs the example gallery of the 2.0.0 release: the gate loads the 36 recipes of the recipesfixtures module through the same cli loader the planlint command uses (parseplanfile under schemastrict), validates every recipe against the frozen plan schema of the schemafixtures module (the origin, the steps and the step field vocabulary the plan authoring format shares with the frozen message schema, with the goal mapping onto the objective carrier, the label onto the summary carrier and the derived risk checked against the frozen risk enum), lints every recipe with the same portable rule set and capability set the cli planlint builds, verifies the gallery metadata of the index (the description, the difficulty, the fixture page, the declared capabilities, the consent classes, the agent topologies, the scraping export formats and the monitoring schedules), proves the consent gates hold by linting the consent recipes once with the fresh class consents the review flow would record and once without them (the refusal must name exactly the declared classes), verifies every sensitive step carries its gate declaration, verifies no step value, option or origin hardcodes a remote origin outside the reserved fixture family, resolves every step selector statically against the fixture page the entry names, dry runs every recipe through the runflow pipeline the extension runs (the grants gate, the workflow proposal validation, the per step consent gates routed to a recording provider and the dry run driver that touches no page), replays the cli planlint command over every consent free recipe copy of dist/fixtures/recipes so the gallery imports cleanly through the cli, records the outcome and duration of every executed entry in the committed record devthink/recipes.ts (the reciperecord const this module carries, migrated from devthink/artifacts/recipes.json when the flat folder law dissolved the artifacts folder) and exits nonzero on any failure. The diff mode reruns the suite and compares the gallery against the committed record: an entry added, removed, re-categorized, re-graded or drifted in its steps or kinds fails the diff so the gallery never drifts silently between releases. The sync mode (`node recipes.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
 import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
-<<<<<<< HEAD:tests/devthink.recipes.ts
-import { syncmode, syncrecord } from "./devthink.records.ts";
-import type { actionkind, classconsent, consentprovider, sensitiveclass } from "../devthink/types.ts";
-import { gallery as gallerytext, recipeplans } from "./devthink.recipesfixtures.ts";
-import { plan as planschematext } from "./devthink.schemafixtures.ts";
-import { fixturepages } from "./devthink.pagefixtures.ts";
-=======
+import { syncmode, syncrecord } from "./records.ts";
 import type { actionkind, classconsent, consentprovider, sensitiveclass } from "./types.ts";
 import { gallery as gallerytext, recipeplans } from "./tests/recipesfixtures.ts";
 import { plan as planschematext } from "./tests/schemafixtures.ts";
 import { fixturepages } from "./tests/pagefixtures.ts";
->>>>>>> cfc383ca (fix(family): the tests village answers the application law — every suite folds into its own app home, the gates ride the app roots unprefixed, the workflows drop the symlink bridges, and the one root envelope keeps only the eleven villages (#171)):devthink/recipes.ts
 
 const execute = promisify(execFile);
 const mode = process.argv[2] ?? "check";
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
-<<<<<<< HEAD:tests/devthink.recipes.ts
-const buildscript = "../tests/devthink.build.ts";
-=======
-const artifactpath = "artifacts/recipes.json";
-const buildscript = "build.ts";
->>>>>>> cfc383ca (fix(family): the tests village answers the application law — every suite folds into its own app home, the gates ride the app roots unprefixed, the workflows drop the symlink bridges, and the one root envelope keeps only the eleven villages (#171)):devthink/recipes.ts
+const buildscript = "./build.ts";
 
 /** One gallery check with its name, its outcome and its detail line, in the shape the sweep and poolaudit gates record theirs; the fixtureset check records its own { ok, detail } verdict as the outcome, so the artifact preserves the nested verdict exactly as the run recorded it. */
 export interface recipecheck {
@@ -808,7 +796,7 @@ export async function runrecipessuite(): Promise<recipereport> {
         return true;
       }) &&
       (await fixturesetshipped()),
-    "the four fixture pages of the pagefixtures module copy into dist/fixtures/pages through the fixtureset rows of build.ts, so every package channel ships them from dist",
+    "the four fixture pages of the pagefixtures module copy into dist/fixtures/pages through the fixtureset rows of tests/build.ts, so every package channel ships them from dist",
   );
   recordcheck(
     checks,
@@ -1919,7 +1907,7 @@ if (invokeddirectly) {
   }
   console.log(
     JSON.stringify(
-      { release: report.release, record: "tests/devthink.recipes.ts", mode, gallery: report.gallery, summary: report.summary },
+      { release: report.release, record: "devthink/recipes.ts", mode, gallery: report.gallery, summary: report.summary },
       null,
       2,
     ),

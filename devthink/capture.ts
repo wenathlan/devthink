@@ -14,7 +14,7 @@ import type {
   shotpair,
   shotrecord,
   stitchplan,
-} from "./types.js";
+} from "./types.ts";
 
 /**
  * Media capture logics for the 1.1.40 family.
@@ -433,7 +433,7 @@ import type {
   recordingrecord,
   streamrecord,
   thumbdirective,
-} from "./types.js";
+} from "./types.ts";
 
 /**
  * Media capture part two logics for the 1.1.41 family.
@@ -899,10 +899,10 @@ import type {
   streamcursor,
   visioncacheentry,
   visiondescription,
-} from "./types.js";
-import { maskingfield } from "./security.js";
-import { randomid } from "./memory.js";
-import { bodyhashof } from "./http.js";
+} from "./types.ts";
+import { maskingfield } from "./security.ts";
+import { randomid } from "./memory.ts";
+import { bodyhashof } from "./http.ts";
 
 /**
  * Vision and ocr logic of the 1.1.77 family.
@@ -1454,7 +1454,7 @@ export function visioncacheserve(input: {
 
 /* ── Merged from redactshots.ts ── */
 
-import type { capturesurface, redactregion, toolstep } from "./types.js";
+import type { capturesurface, redactregion, toolstep } from "./types.ts";
 
 /**
  * Redactshots logic of the 1.1.62 family.

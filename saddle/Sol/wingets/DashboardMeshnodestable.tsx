@@ -86,7 +86,7 @@ export default function MeshNodesTable({ mode, reloadkey }: MeshNodesTableProps)
 		return () => {
 			stopped = true;
 		};
-	}, [mode, reloadkey]);
+	}, [mode]);
 
 	/** runs one ping and paints the result cell beside the button. */
 	function runping(url: string) {

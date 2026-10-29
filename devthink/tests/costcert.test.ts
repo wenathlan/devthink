@@ -11,7 +11,7 @@ const execute = promisify(execFile);
 
 describe("the costcert reconciliation artifact", () => {
   it("declares every accounting check of the release candidate reconciliation with its family and module", async () => {
-    const source = await readFile("costcert.ts", "utf8");
+    const source = await readFile("./costcert.ts", "utf8");
     const declarations = [
       ...source.matchAll(/await entry\(\s*\{\s*id: (\d+),\s*title: "([^"]+)",\s*family: "([^"]+)",\s*module: "([^"]+)"\s*,?\s*\}/g),
     ].map((match) => ({ id: Number(match[1]), title: match[2], family: match[3], module: match[4] }));
@@ -37,7 +37,7 @@ describe("the costcert reconciliation artifact", () => {
     const built = existsSync("dist/extension/manifest.json");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
     /* a built tree runs the gate itself, so every lane that builds before the suite — the bun lane, the deno lane, a local two-pass validate — verifies the committed reconciliation record without depending on gate ordering: the gate replays the accounting families against the compiled modules and verifies the record stays internally consistent */
-    if (built) await execute("node", ["costcert.ts"]);
+    if (built) await execute("node", ["./costcert.ts"]);
     const report = costcertrecord;
     expect(report.release).toBe(packagejson.version);
     expect(report.summary.total).toBe(9);
@@ -63,7 +63,7 @@ describe("the costcert reconciliation artifact", () => {
   });
 
   it("exercises the real compiled accounting modules and recomputes the cost lines from recorded evidence", async () => {
-    const source = await readFile("costcert.ts", "utf8");
+    const source = await readFile("./costcert.ts", "utf8");
     expect(source).toContain('import("./dist/index.js")');
     expect(source).toContain('import("./dist/memory.js")');
     expect(source).toContain("usagetotals");

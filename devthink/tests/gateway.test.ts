@@ -865,25 +865,22 @@ describe("hardcoded provider url scan of the source tree", () => {
     const files: string[] = gatewaysources.map((name) => join(root, name));
     for (const path of files) await access(path);
 
-    /* the flattened tests village: the gate sources of the os moved from
-     * the repository-root tests folder in beside the modules they gate at
-     * the app root, and the suites with their example fixtures stay
-     * outside the scan the corpus law kept them in (the tests-village
-     * helpers ride in without their suites, and so does the reviewed
-     * origins catalog module — the typed data rows the sweep allowlist
-     * reads, the one module whose provider endpoint literals are the
-     * reviewed catalog itself, never a call target the gateway would
-     * dial), so the walk covers every root source and every
-     * tests-village helper outside the provider catalog exceptions — the
-     * workbench catalog (providers.ts, gatewayviewconfig.ts) and the
-     * shared types carry their documentation examples by design, while
-     * the gateway family stays default empty. */
-    const outsidescan = new Set([...gatewaysources, "providers.ts", "gatewayviewconfig.ts", "types.ts"]);
+    /* the app root: the gate sources of the os answer from the application
+     * tree beside the logic modules (the suites with their example fixtures
+     * stay outside the scan the corpus law kept them in, and so does the
+     * reviewed origins catalog module — the typed data rows the sweep
+     * allowlist reads, the one module whose provider endpoint literals are
+     * the reviewed catalog itself, never a call target the gateway would
+     * dial). */
+    const gatewaynames = new Set(gatewaysources);
     for (const entry of await readdir(root))
-      if (entry.endsWith(".ts") && !outsidescan.has(entry)) files.push(join(root, entry));
-    for (const entry of await readdir(join(root, "tests")))
-      if (entry.endsWith(".ts") && !entry.endsWith(".test.ts") && entry !== "reviewedorigins.ts")
-        files.push(join(root, "tests", entry));
+      if (
+        entry.endsWith(".ts") &&
+        !entry.endsWith(".test.ts") &&
+        entry !== "reviewedorigins.ts" &&
+        !gatewaynames.has(entry)
+      )
+        files.push(join(root, entry));
     expect(files.length).toBeGreaterThan(50);
     const providerhosts = [
       /api\.openai\.com/,

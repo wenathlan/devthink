@@ -14,8 +14,8 @@ import type {
   exchangerecord,
   headerfilter,
   responseentry,
-} from "./types.js";
-import { readpath } from "./http.js";
+} from "./types.ts";
+import { readpath } from "./http.ts";
 
 /**
  * Network observation part two watch logics for the 1.1.43 family.
@@ -432,7 +432,7 @@ import type {
   messagefilter,
   pollcursor,
   socketoptions,
-} from "./types.js";
+} from "./types.ts";
 
 /**
  * Network observation part two socket logics for the 1.1.43 family.
@@ -844,7 +844,7 @@ export function polldecision(input: {
 /* ── Merged from netcontrol.ts ── */
 
 /** Correlated network control logics of the 1.1.44 family: request blocking, response mocking, header rewriting, cookie scoping, proxy routing and the rate limiter, all run scoped and reverted the moment a run ends, fails or is cancelled. */
-import type { blockrule, cookierecord, headerule, mockspec, proxyroute, ratelimitread } from "./types.js";
+import type { blockrule, cookierecord, headerule, mockspec, proxyroute, ratelimitread } from "./types.ts";
 
 /** Every reviewed network control kind of the 1.1.44 family. */
 export const controlkinds: string[] = [

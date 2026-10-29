@@ -38,11 +38,10 @@ describe("design contract", () => {
     }
   });
 
-  it("keeps the white sun signal and the windows accent in their lanes", () => {
-    // the single-theme law answers the white sun on the @theme signal and
-    // the têmpera story survives in the drawn mark — the token, the alias
-    // and both stay pinned
-    assert.match(CSS, /--color-signal: #ffffff/, "the white sun token stands");
+  it("keeps the azul identity and the windows accent in their lanes", () => {
+    // the foundation rebuild carries the identity on the @theme signal and
+    // maps the azules onto it — the token, the alias and both stay pinned
+    assert.match(CSS, /--color-signal: #ffffff/, "the signal rides the white sun (the single-theme law) and the azul names it through the aliases");
     assert.match(CSS, /--sol-primary: var\(--color-signal\)/, "the primary rides the signal slot");
     assert.match(CSS, /--win-accent: var\(--color-win\)/, "the windows accent rides its own slot");
     assert.match(CSS, /--color-win: #4cc2ff/, "the windows accent governs focus and the bar cta");

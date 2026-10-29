@@ -3,10 +3,10 @@
  * The shared core for bun consumers: the build emits this entry as the esm bundle of the bun platform target, with the filesystem storage adapter and the platform clock, logger and fetch primitives wired through the platform adapter contract.
  */
 
-export * from "./index.js";
+export * from "./index.ts";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { nodeplatformadapter, stampbundle } from "./runtime.js";
+import { nodeplatformadapter, stampbundle } from "./runtime.ts";
 
 stampbundle("esm", "bun.js");
 

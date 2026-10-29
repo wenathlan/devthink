@@ -17,9 +17,9 @@ import type {
   revocationrule,
   bridgepairingrecord,
   relaytokenrecord,
-} from "./types.js";
-import { randomid } from "./memory.js";
-import { toolnamespaces } from "./tools.js";
+} from "./types.ts";
+import { randomid } from "./memory.ts";
+import { toolnamespaces } from "./tools.ts";
 
 /**
  * Client auth of the 1.1.55 agent protocol part two.

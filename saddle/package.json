@@ -191,7 +191,7 @@
     "quantum.ts"
   ],
   "scripts": {
-    "build:engine": "node scripts.buildengine.ts",
+    "build:engine": "node buildengine.ts",
     "check": "npm run build:engine && node --check dist/index.js && node --check dist/execution.js && node --check dist/cli.js && node --check dist/browser.js && node --check dist/distribution.js",
     "formatcheck": "node --import tsx format.ts",
     "test": "vitest run",
@@ -221,9 +221,9 @@
     "dev:tsx": "node --import tsx --watch ./cli.ts",
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch",
-    "lint": "biome lint .",
+    "lint": "biome lint --diagnostic-level=error --max-diagnostics=3000 .",
     "lint:biome": "biome lint --write .",
-    "lint:fix": "biome lint --write . && biome check --write .",
+    "lint:fix": "biome lint --write --diagnostic-level=error .",
     "format": "biome format --write .",
     "format:biome": "biome format --write .",
     "format:check": "biome check .",
@@ -243,7 +243,8 @@
     "py:test": "python3 -m pytest -q || python3 qemubridge.py",
     "clean": "rm -rf dist coverage .biome __pycache__",
     "prepare": "echo 'saddle grand-merge toolchain 2026-08-23: Node 26.12.0 Current / 24.19.0 LTS, npm 12.0.2, TS 7.0.2, Python 3.14.7, Docker 29.7.2, QEMU 11.1.0, Mesa 26.2.1, LLVM 22.1.8, Firecracker 1.16.1'",
-    "start:engine": "node --import tsx ./cli.ts plan"
+    "start:engine": "node --import tsx ./cli.ts plan",
+    "lint:check:workflow": "biome check --diagnostic-level=error tests/workflow.test.ts tests/simulation.test.ts"
   },
   "dependencies": {
     "@fluentui/react-icons": "^2.0.344",

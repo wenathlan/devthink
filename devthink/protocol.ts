@@ -1,4 +1,4 @@
-import { defaultmaskshapes } from "./security.js";
+import { defaultmaskshapes } from "./security.ts";
 import {
   actionrisk,
   environmentrequirements,
@@ -15,10 +15,10 @@ import {
   submitreviewgranted,
   triggerorigins,
   validatestep,
-} from "./policy.js";
-import { blockinvocationof, composeworkflow, validateworkflow, workflowblockof, workflowstepof } from "./workflow.js";
-import { controlsummary } from "./workflow.js";
-import { importsessionfile } from "./session.js";
+} from "./policy.ts";
+import { blockinvocationof, composeworkflow, validateworkflow, workflowblockof, workflowstepof } from "./workflow.ts";
+import { controlsummary } from "./workflow.ts";
+import { importsessionfile } from "./session.ts";
 import type {
   classconsent,
   consentwindow,
@@ -46,12 +46,12 @@ import type {
   workflowrun,
   workflowversion,
   versiondiff,
-} from "./types.js";
-import { blockruleof, patternorigin, proxyrouteof } from "./net.js";
-import { allowlistcovers, cdpallowlistof, cdpdomains, methoddomain, teardownplanof } from "./debug.js";
-import { annotationof, attachtargetof, tracecategories } from "./debug.js";
-import { loglevels } from "./run.js";
-import { locationpresetof, permissiongrantof, revertplanof } from "./environments.js";
+} from "./types.ts";
+import { blockruleof, patternorigin, proxyrouteof } from "./net.ts";
+import { allowlistcovers, cdpallowlistof, cdpdomains, methoddomain, teardownplanof } from "./debug.ts";
+import { annotationof, attachtargetof, tracecategories } from "./debug.ts";
+import { loglevels } from "./run.ts";
+import { locationpresetof, permissiongrantof, revertplanof } from "./environments.ts";
 import {
   protocolversion,
   servercontractversion,
@@ -172,12 +172,12 @@ import {
   type runtimelineevent,
   type urlvisit,
   type servereventtype,
-} from "./types.js";
-import { authrefusedmessage } from "./auth.js";
-import { bridgepayload } from "./bridge.js";
-import { defaultheartbeatms, defaultidlewindowms } from "./http.js";
-import { redactparams } from "./gates.js";
-import { rpcerrorof } from "./mcp.js";
+} from "./types.ts";
+import { authrefusedmessage } from "./auth.ts";
+import { bridgepayload } from "./bridge.ts";
+import { defaultheartbeatms, defaultidlewindowms } from "./http.ts";
+import { redactparams } from "./gates.ts";
+import { rpcerrorof } from "./mcp.ts";
 import type {
   agentevent,
   batchcall,
@@ -205,7 +205,7 @@ import type {
   toolcallrecord,
   toolmock,
   tooldryrun,
-} from "./types.js";
+} from "./types.ts";
 
 function record(value: unknown): Record<string, unknown> {
   if (!value || typeof value !== "object" || Array.isArray(value))
@@ -886,7 +886,7 @@ export function parseworkflowproposal(
   if (steps.length === 0) throw new Error("A workflow proposal needs at least one step or block invocation.");
   const blocks = Array.isArray(candidate.blocks)
     ? candidate.blocks.flatMap((block) =>
-        workflowblockof(block) !== undefined ? [workflowblockof(block) as import("./types.js").workflowblock] : [],
+        workflowblockof(block) !== undefined ? [workflowblockof(block) as import("./types.ts").workflowblock] : [],
       )
     : [];
   if (Array.isArray(candidate.blocks) && blocks.length !== (candidate.blocks as unknown[]).length)
@@ -906,13 +906,13 @@ export function parseworkflowproposal(
     now: Date.now(),
     kindallowed: (kind) => {
       try {
-        actionrisk(kind as import("./types.js").actionkind);
+        actionrisk(kind as import("./types.ts").actionkind);
         return true;
       } catch {
         return false;
       }
     },
-    riskof: (kind) => actionrisk(kind as import("./types.js").actionkind),
+    riskof: (kind) => actionrisk(kind as import("./types.ts").actionkind),
   });
   const inputs = Array.isArray(candidate.inputs)
     ? candidate.inputs.flatMap((inputname) => (typeof inputname === "string" ? [inputname] : []))
@@ -920,7 +920,7 @@ export function parseworkflowproposal(
   const checked = validateworkflow(composed, {
     kindallowed: (kind) => {
       try {
-        actionrisk(kind as import("./types.js").actionkind);
+        actionrisk(kind as import("./types.ts").actionkind);
         return true;
       } catch {
         return false;

@@ -6,9 +6,9 @@
 
 /* ── Merged from jsonrpc.ts ── */
 
-import { parseframe, respond, rpcerrornumbers, rpcerrorof, serializeframe } from "./mcp.js";
-import { structurederrorof } from "./tools.js";
-import type { jsonrpcframe, rpcerror, rpcerrorcode, retryhint, structurederror, toolresult } from "./types.js";
+import { parseframe, respond, rpcerrornumbers, rpcerrorof, serializeframe } from "./mcp.ts";
+import { structurederrorof } from "./tools.ts";
+import type { jsonrpcframe, rpcerror, rpcerrorcode, retryhint, structurederror, toolresult } from "./types.ts";
 
 /**
  * Json rpc framing layer of the 1.1.84 mcp server mode.
@@ -156,9 +156,9 @@ export function toolresultof(result: unknown): toolresult | undefined {
 
 /* ── Merged from resourceexpose.ts ── */
 
-import { notifyresource, watchresource } from "./agent.js";
-import { randomid } from "./memory.js";
-import type { agentplan, agentsession, auditevent, resourcewatch, servedresource, servehealth } from "./types.js";
+import { notifyresource, watchresource } from "./agent.ts";
+import { randomid } from "./memory.ts";
+import type { agentplan, agentsession, auditevent, resourcewatch, servedresource, servehealth } from "./types.ts";
 
 /**
  * Resource exposure of the 1.1.84 mcp server mode.
@@ -320,9 +320,9 @@ export function resourceslist(): { resources: servedresource[] } {
 
 /* ── Merged from promptexpose.ts ── */
 
-import { listprompts as agentprompts, renderprompt } from "./agent.js";
-import { rendertemplate } from "./llm.js";
-import type { promptdef, prompttemplate } from "./types.js";
+import { listprompts as agentprompts, renderprompt } from "./agent.ts";
+import { rendertemplate } from "./llm.ts";
+import type { promptdef, prompttemplate } from "./types.ts";
 
 /**
  * Prompt exposure of the 1.1.84 mcp server mode.

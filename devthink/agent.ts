@@ -66,7 +66,7 @@ import type {
   resultreport,
   swarmaction,
   swarmcost,
-} from "./types.js";
+} from "./types.ts";
 
 /**
  * Agent fleet logic of the 1.1.72 family.
@@ -720,7 +720,7 @@ export function consensusrecordof(input: {
 }
 
 /* ── Merged from agentstream.ts: the 1.1.88 consolidation interns the correlated agentstream logic here, so no variation of the same file lives beside another. ── */
-import { randomid } from "./memory.js";
+import { randomid } from "./memory.ts";
 
 /**
  * Agent stream of the 1.1.56 agent protocol part three.
@@ -1633,7 +1633,7 @@ export function sharedcostsplit(input: {
 }
 
 /* ── Merged from multiagent.ts: the 1.1.88 consolidation interns the correlated multiagent logic here, so no variation of the same file lives beside another. ── */
-import { newworkflowrun } from "./workflow.js";
+import { newworkflowrun } from "./workflow.ts";
 
 /**
  * Multi agent lifecycle logic of the 1.1.58 family.
@@ -1972,7 +1972,7 @@ export function swarmstateof(input: {
 }
 
 /* ── Merged from coordination.ts: the 1.1.88 consolidation interns the correlated coordination logic here, so no variation of the same file lives beside another. ── */
-import { postentry } from "./swarm.js";
+import { postentry } from "./swarm.ts";
 
 /**
  * Multi agent coordination logic of the 1.1.59 family.

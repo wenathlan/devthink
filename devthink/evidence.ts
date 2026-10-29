@@ -16,8 +16,8 @@ import type {
   timelapseconfig,
   timelapseframe,
   thumbnailrecord,
-} from "./types.js";
-import { randomid } from "./memory.js";
+} from "./types.ts";
+import { randomid } from "./memory.ts";
 
 /**
  * Capture forensics logic of the 1.1.78 family.

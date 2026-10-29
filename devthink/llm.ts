@@ -36,7 +36,7 @@ import type {
   toolbrief,
   tooldef,
   usagerecord,
-} from "./types.js";
+} from "./types.ts";
 import {
   planlint,
   egressconsentgate,
@@ -46,10 +46,10 @@ import {
   gatewaykeyconsentgate,
   gatewayprefixgate,
   gatewayretrycapvalid,
-} from "./policy.js";
-import { sendfetch, type fetchtransport, type transportresponse } from "./http.js";
-import { randomid } from "./memory.js";
-import { secretleakscan, vaultdelete, vaultstore, vaultvaluefor } from "./security.js";
+} from "./policy.ts";
+import { sendfetch, type fetchtransport, type transportresponse } from "./http.ts";
+import { randomid } from "./memory.ts";
+import { secretleakscan, vaultdelete, vaultstore, vaultvaluefor } from "./security.ts";
 
 /**
  * Llm integration logics of the 1.1.57 family.

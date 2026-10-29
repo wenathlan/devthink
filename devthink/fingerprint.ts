@@ -71,8 +71,8 @@ import {
   PLATFORM_POOL,
   PROJECT_FALLBACK,
   VERSION_FETCH_TIMEOUT_MS,
-} from "./constants.js";
-import type { AntigravityVersion, SupportedArch, SupportedPlatform } from "./constants.js";
+} from "./constants.ts";
+import type { AntigravityVersion, SupportedArch, SupportedPlatform } from "./constants.ts";
 export { ANTIGRAVITY_VERSION_FALLBACK, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET, PROJECT_FALLBACK };
 
 // local variant: diverges from constants (constants.GEMINI_CLI_SCOPES is the 9-scope antigravity set with openid/email/profile/cclog; this is the 3-scope Gemini CLI set — value equals constants.GEMINI_CLI_SCOPES)
@@ -100,8 +100,8 @@ const FINGERPRINT_API_PATHS = {
 // ModelId2026 union moved to models.ts (MODELS_2026_LEGACY / ModelId2026) —
 // imported under the historical name and re-exported so the public surface
 // is unchanged.
-import { MODELS_2026_LEGACY as MODELS_2026, UA_DEFAULT_MODEL } from "./models.js";
-import type { ModelId2026 } from "./models.js";
+import { MODELS_2026_LEGACY as MODELS_2026, UA_DEFAULT_MODEL } from "./models.ts";
+import type { ModelId2026 } from "./models.ts";
 export { MODELS_2026 };
 export type { ModelId2026 };
 
@@ -255,7 +255,7 @@ export const GAX_VERSION_POOL = ["5.0.4", "5.0.3", "4.3.6"] as const;
 // re-exports the canonical bindings.)
 // ============================================================================
 
-import { fnv1a32, fnv1a32Hex, fnv1a64, getJitterMs, pickRandom } from "./core.js";
+import { fnv1a32, fnv1a32Hex, fnv1a64, getJitterMs, pickRandom } from "./core.ts";
 
 export { fnv1a32, fnv1a32Hex, fnv1a64, getJitterMs, pickRandom };
 

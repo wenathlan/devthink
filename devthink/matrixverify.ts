@@ -1,24 +1,16 @@
-<<<<<<< HEAD:tests/devthink.matrixverify.ts
-/** Verifies the full candidate matrix of the release candidate: the gate enumerates every cell the candidate must cover and records its outcome — every action kind of the frozen catalog against the fake tab provider of every browser kind (chromium, firefox and safari) through the step policy, every browser surface page across the popup, the sidepanel, the dashboard, the transparency and the options templates beside the offscreen and sandbox hosts, the cli surface in library mode through the manifest and help commands, the mcp surface through the server handshake and the protocol negotiation, the importers on the plan fixtures and the workflow dry runs and the session file round trip, the migration paths from version one plans through the closed 2.0.0 sunset negotiation, and the standing gates (poolaudit, apifreeze, cspaudit and permdiff as subprocess cells; agentcert, costcert, doccheck and sweep through their committed records). Every cell records its outcome in the committed record tests/devthink.matrixverify.ts (the matrixverifyrecord const this module carries, migrated from devthink/artifacts/matrixverify.json when the flat folder law dissolved the artifacts folder), the matrix reports its coverage percentage of the candidate, and the gate exits nonzero when any cell fails. The sync mode (`node ../tests/devthink.matrixverify.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
-=======
-/** Verifies the full candidate matrix of the release candidate: the gate enumerates every cell the candidate must cover and records its outcome — every action kind of the frozen catalog against the fake tab provider of every browser kind (chromium, firefox and safari) through the step policy, every browser surface page across the popup, the sidepanel, the dashboard, the transparency and the options templates beside the offscreen and sandbox hosts, the cli surface in library mode through the manifest and help commands, the mcp surface through the server handshake and the protocol negotiation, the importers on the plan fixtures and the workflow dry runs and the session file round trip, the migration paths from version one plans through the closed 2.0.0 sunset negotiation, and the standing gates (poolaudit, apifreeze, cspaudit and permdiff as subprocess cells; agentcert, costcert, doccheck and sweep through their recorded artifacts). Every cell records its outcome in artifacts/matrixverify.json, the matrix reports its coverage percentage of the candidate, and the gate exits nonzero when any cell fails. */
->>>>>>> cfc383ca (fix(family): the tests village answers the application law — every suite folds into its own app home, the gates ride the app roots unprefixed, the workflows drop the symlink bridges, and the one root envelope keeps only the eleven villages (#171)):devthink/matrixverify.ts
+/** Verifies the full candidate matrix of the release candidate: the gate enumerates every cell the candidate must cover and records its outcome — every action kind of the frozen catalog against the fake tab provider of every browser kind (chromium, firefox and safari) through the step policy, every browser surface page across the popup, the sidepanel, the dashboard, the transparency and the options templates beside the offscreen and sandbox hosts, the cli surface in library mode through the manifest and help commands, the mcp surface through the server handshake and the protocol negotiation, the importers on the plan fixtures and the workflow dry runs and the session file round trip, the migration paths from version one plans through the closed 2.0.0 sunset negotiation, and the standing gates (poolaudit, apifreeze, cspaudit and permdiff as subprocess cells; agentcert, costcert, doccheck and sweep through their committed records). Every cell records its outcome in the committed record devthink/matrixverify.ts (the matrixverifyrecord const this module carries, migrated from devthink/artifacts/matrixverify.json when the flat folder law dissolved the artifacts folder), the matrix reports its coverage percentage of the candidate, and the gate exits nonzero when any cell fails. The sync mode (`node matrixverify.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
 import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
 import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { promisify } from "node:util";
 import { pathToFileURL } from "node:url";
-<<<<<<< HEAD:tests/devthink.matrixverify.ts
-import { summaryproblemsof, syncmode, syncrecord } from "./devthink.records.ts";
-import { agentcertrecord } from "./devthink.agentcert.ts";
-import { costcertrecord } from "./devthink.costcert.ts";
-import { doccheckrecord } from "./devthink.doccheck.ts";
-import { sweeprecord } from "./devthink.sweep.ts";
-import type { actionkind, toolstep } from "../devthink/types.ts";
-=======
+import { summaryproblemsof, syncmode, syncrecord } from "./records.ts";
+import { agentcertrecord } from "./agentcert.ts";
+import { costcertrecord } from "./costcert.ts";
+import { doccheckrecord } from "./doccheck.ts";
+import { sweeprecord } from "./sweep.ts";
 import type { actionkind, toolstep } from "./types.ts";
->>>>>>> cfc383ca (fix(family): the tests village answers the application law — every suite folds into its own app home, the gates ride the app roots unprefixed, the workflows drop the symlink bridges, and the one root envelope keeps only the eleven villages (#171)):devthink/matrixverify.ts
 
 const execute = promisify(execFile);
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
@@ -267,16 +259,16 @@ export async function runmatrixverifysuite() {
 
   /* 7. the standing gates: the pool audit, the api freeze, the csp audit and the permission diff run as subprocess cells; the agent certification, the cost certification, the documentation check and the sweep answer through their committed records. */
   await cell({ family: "gates", name: "the pool audit gate runs green over the 626 item pool" }, async () =>
-    runcells("poolaudit.ts"),
+    runcells("./poolaudit.ts"),
   );
   await cell({ family: "gates", name: "the api freeze gate runs green over the frozen contract" }, async () =>
-    runcells("apifreeze.gate.ts"),
+    runcells("./apifreeze.ts"),
   );
   await cell({ family: "gates", name: "the csp audit gate runs green over the content security policy" }, async () =>
-    runcells("cspaudit.ts"),
+    runcells("./cspaudit.ts"),
   );
   await cell({ family: "gates", name: "the permission diff gate runs green over the versioned baseline" }, async () =>
-    runcells("permdiff.ts"),
+    runcells("./permdiff.ts"),
   );
   for (const [gate, record, field] of [
     ["agentcert", agentcertrecord, (report: gatereport) => report.summary.failed ?? 0],
@@ -478,7 +470,7 @@ if (invokeddirectly) {
     ];
     for (const problem of problems) console.error(`MATRIXVERIFY record: ${problem}`);
     console.log(
-      `Matrix verified for ${release}: ${report.summary.passed} of ${report.summary.total} cells green, ${report.coverage}% coverage of the candidate matrix, the record in tests/devthink.matrixverify.ts.`,
+      `Matrix verified for ${release}: ${report.summary.passed} of ${report.summary.total} cells green, ${report.coverage}% coverage of the candidate matrix, the record in devthink/matrixverify.ts.`,
     );
     if (problems.length > 0) process.exitCode = 1;
   }

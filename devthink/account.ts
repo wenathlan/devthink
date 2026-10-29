@@ -39,7 +39,7 @@ import { lookup } from "node:dns/promises";
 import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
-import { type DevThinkPaths, ensurePaths, resolvePaths } from "./config.js";
+import { type DevThinkPaths, ensurePaths, resolvePaths } from "./config.ts";
 import { lanefetch } from "./gateway.ts";
 import { createCompactId } from "./queue.ts";
 import {

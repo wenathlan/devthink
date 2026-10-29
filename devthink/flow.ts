@@ -15,7 +15,7 @@ import type {
   workflowrecord,
   schemaerror,
   actionkind,
-} from "./types.js";
+} from "./types.ts";
 import {
   actionrisk,
   librarycapabilitygate,
@@ -23,7 +23,7 @@ import {
   libraryquarantinegate,
   librarysensitivegate,
   libraryimportgate,
-} from "./policy.js";
+} from "./policy.ts";
 
 /**
  * Flowlibrary logic of the 1.1.66 family.
@@ -630,12 +630,12 @@ import type {
   planfilestep,
   storedrunlog,
   toolstep,
-} from "./types.js";
-import { protocolversion } from "./types.js";
-import { appendlogentry, openrunlog, sealrunlog } from "./security.js";
-import { flowrungrantgate, headlessconsentgate, resolvedrisk } from "./policy.js";
-import { sensitiveclassesof } from "./security.js";
-import { parseworkflowproposal } from "./protocol.js";
+} from "./types.ts";
+import { protocolversion } from "./types.ts";
+import { appendlogentry, openrunlog, sealrunlog } from "./security.ts";
+import { flowrungrantgate, headlessconsentgate, resolvedrisk } from "./policy.ts";
+import { sensitiveclassesof } from "./security.ts";
+import { parseworkflowproposal } from "./protocol.ts";
 
 /**
  * Flowrun logic of the 1.1.67 family.
@@ -973,8 +973,8 @@ export function flowrunreport(input: { outcome: flowrunoutcome; events: flowrune
 
 /* ── Merged from syncbridge.ts ── */
 
-import type { syncbridgeconflict, syncbridgehook } from "./types.js";
-import { syncbridgeoptingate, syncbridgescopegate } from "./policy.js";
+import type { syncbridgeconflict, syncbridgehook } from "./types.ts";
+import { syncbridgeoptingate, syncbridgescopegate } from "./policy.ts";
 
 /**
  * Syncbridge logic of the 1.1.66 family.

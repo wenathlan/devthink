@@ -10,8 +10,8 @@ import type {
   snapshotchange,
   stepoutcome,
   wizardstate,
-} from "./types.js";
-import { packageversion, protocolmajor } from "./version.js";
+} from "./types.ts";
+import { packageversion, protocolmajor } from "./version.ts";
 
 /**
  * Execution-progress logics for reviewed plans.

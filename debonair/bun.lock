@@ -17,7 +17,7 @@
         "@wenathlan/vault": "^2.0.151",
         "hono": "^4.13.14",
         "ink": "^7.1.1",
-        "lucide-react": "^1.61.0",
+        "lucide-react": "^1.64.0",
         "motion": "^12.43.0",
         "react": "^19.3.1",
         "react-devtools-core": "^8.0.0",
@@ -69,7 +69,7 @@
         "@types/better-sqlite3": "^9.6.0",
         "@types/chrome": "^0.3.7",
         "@types/express": "^5.0.6",
-        "@types/google.maps": "^3.66.7",
+        "@types/google.maps": "^3.66.9",
         "@types/node": "^26.6.6",
         "@types/react": "^19.3.0",
         "@types/react-dom": "^19.3.0",
@@ -94,7 +94,7 @@
         "hono": "^4.13.14",
         "input-otp": "^1.5.0",
         "jsdom": "26.1.0",
-        "lucide-react": "^1.61.0",
+        "lucide-react": "^1.64.0",
         "mysql2": "^3.24.6",
         "nanoid": "^6.0.2",
         "next-themes": "^0.4.6",
@@ -1365,7 +1365,7 @@
 
     "lru.min": ["lru.min@1.1.5", "", {}, "sha512-5J9ysMYUpYIg9RF2vJpy9SinEmSviFSe0GyPpCQ4L5QSkLAgeLXlTAOu2ZwWUU5m+0SBl6gUU1R1ZQB3aKypfA=="],
 
-    "lucide-react": ["lucide-react@1.61.0", "", { "peerDependencies": { "@types/react": "*", "react": "^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0" }, "optionalPeers": ["@types/react"] }, "sha512-v2SQPPPNjnr+BlhL9Spuzmo5yR+hLkftfuE4E3jaxdNPgSH0hJKPcLJBP7yAta87jQNPsSERS59PJjCJ/CorBA=="],
+    "lucide-react": ["lucide-react@1.64.0", "", { "peerDependencies": { "@types/react": "*", "react": "^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0" }, "optionalPeers": ["@types/react"] }, "sha512-v626F/bcLNvFom6vzztHILtG9tUgXXbgA5AGkd82YkV401+Ko/NHyrWafbPwGofa+6p/EgDJcvEkIwsMH9098w=="],
 
     "magic-string": ["magic-string@1.4.3", "", { "dependencies": { "@jridgewell/sourcemap-codec": "^1.6.0" } }, "sha512-z12OxmaPGE0F4xlpGdjuAUckipLpQlTAuAmyGhNoD7ODpYUzvDfvtxUbjM/jwznyP178oju/KDdyi220wNJ0RQ=="],
 

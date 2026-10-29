@@ -107,7 +107,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync, chmodSync, renameSy
 import {
   ANTIGRAVITY_CLI_OAUTH_CLIENT_ID as AGY_OAUTH_CLIENT_ID,
   ANTIGRAVITY_CLI_OAUTH_CLIENT_SECRET as AGY_OAUTH_CLIENT_SECRET,
-} from "./constants.js";
+} from "./constants.ts";
 export const CLIENT_ID: string = AGY_OAUTH_CLIENT_ID;
 export const CLIENT_SECRET: string = AGY_OAUTH_CLIENT_SECRET;
 
@@ -357,7 +357,7 @@ export function identityFromAccountType(accountType?: string | null): MaeneOAuth
 import {
   GEMINI_CLI_OAUTH_CLIENT_ID as GEMINI_CLIENT_ID_RAW,
   GEMINI_CLI_OAUTH_CLIENT_SECRET as GEMINI_CLIENT_SECRET_RAW,
-} from "./constants.js";
+} from "./constants.ts";
 
 export const GEMINI_OAUTH_CLIENT_ID: string = GEMINI_CLIENT_ID_RAW;
 
@@ -487,12 +487,12 @@ export function getAvailablePort(): Promise<number> {
 // and the SupportedModel2026 union moved to models.ts
 // (SUPPORTED_MODELS_2026 / SupportedModel2026) — imported and re-exported
 // under the historical names so both entry points stay valid.
-import { SUPPORTED_MODELS_2026 } from "./models.js";
+import { SUPPORTED_MODELS_2026 } from "./models.ts";
 // v2.1.15 Phase B: generic retry predicate from core.js; identity UA builders
 // from fingerprint.js; raw shared values from constants.js.
-import { isRetryable, fetchWithTimeout } from "./core.js";
-import { atomicWrite, cfgDir } from "./config.js";
-import { apiClient, buildGeminiUserAgent, ua, X_GOOG_API_CLIENT_GEMINI_CLI } from "./fingerprint.js";
+import { isRetryable, fetchWithTimeout } from "./core.ts";
+import { atomicWrite, cfgDir } from "./config.ts";
+import { apiClient, buildGeminiUserAgent, ua, X_GOOG_API_CLIENT_GEMINI_CLI } from "./fingerprint.ts";
 import {
   ANTIGRAVITY_CLI_VERSION_POOL,
   ANTIGRAVITY_USER_AGENT,
@@ -505,8 +505,8 @@ import {
   OAUTH_TOKEN_URL,
   OAUTH_USERINFO_URL as USERINFO_URL,
   PROJECT_FALLBACK,
-} from "./constants.js";
-import type { SupportedModel2026 } from "./models.js";
+} from "./constants.ts";
+import type { SupportedModel2026 } from "./models.ts";
 export { SUPPORTED_MODELS_2026 };
 export { SUPPORTED_MODELS_2026 as OAUTH_MODELS_2026 };
 export type { SupportedModel2026 };
@@ -526,7 +526,7 @@ export type { SupportedModel2026 };
  * client-metadata string from constants.js and the gl-node snapshot from
  * fingerprint.js (identity masquerade owner).
  */
-import { UA_DEFAULT_MODEL } from "./models.js";
+import { UA_DEFAULT_MODEL } from "./models.ts";
 export const GEMINI_UA_BASE = {
   cliVersion: "0.57.0",
   defaultModel: UA_DEFAULT_MODEL,
@@ -1775,7 +1775,7 @@ export const retrieveQuota = async (
  */
 // v2.1.15 Phase A: mapModelToGroup moved to models.ts (canonical merged
 // implementation of the auth.ts and plugin.ts variants) — re-exported here.
-export { mapModelToGroup } from "./models.js";
+export { mapModelToGroup } from "./models.ts";
 // v2.1.16 dead-code cleanup: the Section D startOAuth orchestrator (dead twin
 // of the live authenticate/startOAuthFlow Section E flow) was deleted here.
 

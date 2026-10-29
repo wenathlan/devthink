@@ -59,9 +59,9 @@ import {
   CLIENT_METADATA_RAW,
   CLOUDCODE_PA_BASE,
   RETRYABLE_STATUS_CODES,
-} from "./constants.js";
-import { fnv1a32, getJitter, thinkingCache } from "./core.js";
-import { X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.js";
+} from "./constants.ts";
+import { fnv1a32, getJitter, thinkingCache } from "./core.ts";
+import { X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.ts";
 
 // ---------------------------------------------------------------------------
 // Constants — frozen, deterministic
@@ -2025,8 +2025,8 @@ export async function* streamToAnthropic(
 // ModelId2026 union moved to models.ts (MODELS_2026_LEGACY / ModelId2026) —
 // imported under the historical name and re-exported so the public surface
 // is unchanged.
-import { MODELS_2026_LEGACY as MODELS_2026, UA_DEFAULT_MODEL } from "./models.js";
-import type { ModelId2026 } from "./models.js";
+import { MODELS_2026_LEGACY as MODELS_2026, UA_DEFAULT_MODEL } from "./models.ts";
+import type { ModelId2026 } from "./models.ts";
 export { MODELS_2026 };
 export type { ModelId2026 };
 

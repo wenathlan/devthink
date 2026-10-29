@@ -101,7 +101,7 @@ export default function AdminPanel({ mode }: AdminPanelProps) {
 		return () => {
 			stopped = true;
 		};
-	}, [mode, reloadkey]);
+	}, [mode]);
 
 	return (
 		<div>

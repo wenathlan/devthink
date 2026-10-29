@@ -11,7 +11,7 @@ const execute = promisify(execFile);
 
 describe("the documentation consistency artifact", () => {
   it("declares every check family the gate runs over the documentation", async () => {
-    const source = await readFile("doccheck.ts", "utf8");
+    const source = await readFile("./doccheck.ts", "utf8");
     for (const family of [
       "kindcoverage",
       "kindfields",
@@ -36,7 +36,7 @@ describe("the documentation consistency artifact", () => {
     const built = existsSync("dist/policy.js");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
     /* a built tree runs the gate itself, so every lane that builds before the suite verifies the committed documentation record without depending on gate ordering: the gate walks the documentation against the compiled catalogs and verifies the record stays internally consistent */
-    if (built) await execute("node", ["doccheck.ts"]);
+    if (built) await execute("node", ["./doccheck.ts"]);
     const report = doccheckrecord;
     expect(report.release).toBe(packagejson.version);
     expect(report.summary.failed).toBe(0);

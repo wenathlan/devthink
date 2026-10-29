@@ -11,8 +11,8 @@ The readiness gate of the 2.0.151 platform release walked every release gate of 
 | the deprecation window closed with no pending removal | green | version.ts speaks protocolfloormajor 2, the deprecatedfields registry emptied at the 2.0.0 sunset and docs/deprecation.md records the executed removal of both fields |
 | the migrateplan bridge converts every version one era fixture | green | the migrateplan command converts all five importer fixtures (v1, automa, selenium, ui vision and tabular) into plans the planlint command lints green and the committed conversion records verify |
 | the importers cover their documented source formats | green | docs/migrationguide.md documents the v1, automa, selenium, ui vision and tabular importers the cli migrateplan command carries, and dist/fixtures/importers ships the fixture of every format |
-| the cold start and budget gates hold their recorded budgets | green | docs/perfbudgets.md carries the startup and memory budgets while tests/devthink.stepmeter.test.ts and tests/devthink.runbudget.test.ts verify the cold start and the memory budget enforcement gates |
-| the battery aware and network aware gates hold their tests | green | tests/devthink.resourceaware.test.ts carries the battery aware and network aware gate families the readiness review reads |
+| the cold start and budget gates hold their recorded budgets | green | docs/perfbudgets.md carries the startup and memory budgets while devthink/stepmeter.test.ts and devthink/runbudget.test.ts verify the cold start and the memory budget enforcement gates |
+| the battery aware and network aware gates hold their tests | green | devthink/resourceaware.test.ts carries the battery aware and network aware gate families the readiness review reads |
 | the pentest checklist holds zero failed entries | green | devthink/pentest.ts: 21 entries, 0 failed |
 | the csp audit reports no wildcard policies | green | the manifest carries 1 strict content security policies with no wildcard source |
 | the permission diff reports no unjustified drift | green | the permbaseline module: clean over 2.0.150 to 2.0.151 with zero unjustified entries |

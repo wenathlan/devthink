@@ -1,9 +1,9 @@
-/** Executes the accessibility sweep gate of the 2.0.0 roadmap item 55 ("an accessibility sweep audits every ui surface against the wcag checklist") over the surface templates and the generated view markup: the gate reads the one design file design.html, extracts every surface template the build splits into the extension pages (the site, the popup, the sidepanel, the dashboardpage, the optionspage, the transparencypage, the sandbox host and the offscreen host) and audits each surface against the checklist — every image carries its alt text, every button carries an accessible name, every input, textarea and select carries its label, the heading hierarchy starts at the h1 with no skipped level, the default theme tokens meet the computed contrast ratios, the stylesheet carries its focus visible outlines, no positive tabindex reorders the focus, the built surface pages stamp their html lang and no template overrides it, and the decorative markers stay off the interactive elements. The contrast math recomputes the WCAG relative luminance ratio from the token values parsed out of the stylesheet so a token change re-audits, the high contrast variants another lane owns stay outside this sweep, and the generated markup cross-check proves every class the templates reference, every state class the view scripts toggle and every class of the shared template vocabulary resolves to a real stylesheet rule. The audit is honest about its limits: it is static analysis of the templates, the stylesheet and the view sources with no screen reader emulation and no runtime focus walk. The committed record tests/devthink.wcag.ts (the wcagrecord const this module carries, migrated from devthink/artifacts/wcag.json when the flat folder law dissolved the artifacts folder) records every executed check with its outcome in a fixed order with no timestamps so reruns stay byte identical, and the gate exits nonzero on any failed check. The checklist with its success criterion references and the invocation walkthrough live in docs/wcag.md. The sync mode (`node ../tests/devthink.wcag.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
+/** Executes the accessibility sweep gate of the 2.0.0 roadmap item 55 ("an accessibility sweep audits every ui surface against the wcag checklist") over the surface templates and the generated view markup: the gate reads the one design file design.html, extracts every surface template the build splits into the extension pages (the site, the popup, the sidepanel, the dashboardpage, the optionspage, the transparencypage, the sandbox host and the offscreen host) and audits each surface against the checklist — every image carries its alt text, every button carries an accessible name, every input, textarea and select carries its label, the heading hierarchy starts at the h1 with no skipped level, the default theme tokens meet the computed contrast ratios, the stylesheet carries its focus visible outlines, no positive tabindex reorders the focus, the built surface pages stamp their html lang and no template overrides it, and the decorative markers stay off the interactive elements. The contrast math recomputes the WCAG relative luminance ratio from the token values parsed out of the stylesheet so a token change re-audits, the high contrast variants another lane owns stay outside this sweep, and the generated markup cross-check proves every class the templates reference, every state class the view scripts toggle and every class of the shared template vocabulary resolves to a real stylesheet rule. The audit is honest about its limits: it is static analysis of the templates, the stylesheet and the view sources with no screen reader emulation and no runtime focus walk. The committed record devthink/wcag.ts (the wcagrecord const this module carries, migrated from devthink/artifacts/wcag.json when the flat folder law dissolved the artifacts folder) records every executed check with its outcome in a fixed order with no timestamps so reruns stay byte identical, and the gate exits nonzero on any failed check. The checklist with its success criterion references and the invocation walkthrough live in docs/wcag.md. The sync mode (`node wcag.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
 import { readFile, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
-import { summaryproblemsof, syncmode, syncrecord } from "./devthink.records.ts";
+import { summaryproblemsof, syncmode, syncrecord } from "./records.ts";
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
@@ -462,7 +462,7 @@ export async function runwcagsuite() {
       const built = await readdir("dist/extension").catch(() => []);
       check(
         built.filter((name) => name.endsWith(".html")).length >= required.length - 1,
-        `the built surface pages are absent; run node build.ts before the accessibility sweep`,
+        `the built surface pages are absent; run node tests/build.ts before the accessibility sweep`,
       );
       for (const page of built.filter((name) => name.endsWith(".html"))) {
         const html = await readFile(join("dist/extension", page), "utf8");
@@ -505,7 +505,7 @@ export async function runwcagsuite() {
       }
       check(
         stamped.length >= required.length - 1,
-        `the built surface pages are absent; run node build.ts before the accessibility sweep`,
+        `the built surface pages are absent; run node tests/build.ts before the accessibility sweep`,
       );
       return `the design document stamps lang="en", no template body carries its own html element (the script strings of the hidden sandbox frame stay excluded from the markup scan) and every built page keeps the stamp the build writes: ${stamped.join(", ")}.`;
     },
@@ -796,7 +796,7 @@ if (invokeddirectly) {
       ...(passing !== wcagrecord.summary.passed ? ["the recorded passing entries disagree with the recorded passed count"] : []),
     ];
     for (const problem of problems) console.error(`WCAG record: ${problem}`);
-    console.log(JSON.stringify({ release: report.release, record: "tests/devthink.wcag.ts", ...report.summary }, null, 2));
+    console.log(JSON.stringify({ release: report.release, record: "devthink/wcag.ts", ...report.summary }, null, 2));
     if (problems.length > 0) process.exitCode = 1;
   }
   if (report.summary.failed > 0) process.exitCode = 1;

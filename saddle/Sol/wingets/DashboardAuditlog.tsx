@@ -42,7 +42,7 @@ export default function AuditLog({ mode, reloadkey }: AuditLogProps) {
 		return () => {
 			stopped = true;
 		};
-	}, [mode, reloadkey]);
+	}, [mode]);
 
 	if (mode === 'local') {
 		return <p className="dash-empty">{label('dashboard.audit.localNote')}</p>;

@@ -132,17 +132,17 @@ import type {
   localrule,
   scanverdict,
   syncsettings,
-} from "./types.js";
-import { allowlistcheck, missingclassconsents, profilegrade, sensitiveclassesof, windowgatesstep } from "./security.js";
-import { sensitivememoryclasses } from "./memory.js";
-import { reservedagentnames } from "./agent.js";
-import { defaultenvironment, environmentrequirementsof, environmentsof } from "./environments.js";
-import { domainkinds, toolnamespaces } from "./tools.js";
-import { channeloptionsof, channelorigin, pollcursorof, subscriptionoptionsof } from "./net.js";
-import { pagecontentkeys } from "./bridge.js";
-import { protocolfloormajor, protocolmajor } from "./version.js";
-import { graphqlsubscriptionof, longpollrequestof } from "./http.js";
-import { apireplayspecof, privatemime } from "./net.js";
+} from "./types.ts";
+import { allowlistcheck, missingclassconsents, profilegrade, sensitiveclassesof, windowgatesstep } from "./security.ts";
+import { sensitivememoryclasses } from "./memory.ts";
+import { reservedagentnames } from "./agent.ts";
+import { defaultenvironment, environmentrequirementsof, environmentsof } from "./environments.ts";
+import { domainkinds, toolnamespaces } from "./tools.ts";
+import { channeloptionsof, channelorigin, pollcursorof, subscriptionoptionsof } from "./net.ts";
+import { pagecontentkeys } from "./bridge.ts";
+import { protocolfloormajor, protocolmajor } from "./version.ts";
+import { graphqlsubscriptionof, longpollrequestof } from "./http.ts";
+import { apireplayspecof, privatemime } from "./net.ts";
 import {
   blockruleof,
   cookiedomaingranted,
@@ -151,7 +151,7 @@ import {
   patternorigin,
   proxyrouteof,
   headeruleof,
-} from "./net.js";
+} from "./net.ts";
 import {
   allowlistcovers,
   breakpointinputof,
@@ -163,8 +163,8 @@ import {
   stepmodeof,
   teardownplanof,
   watchexpressionof,
-} from "./debug.js";
-import { annotationof, attachtargetof, flowspecof, tracecategories } from "./debug.js";
+} from "./debug.ts";
+import { annotationof, attachtargetof, flowspecof, tracecategories } from "./debug.ts";
 import {
   agentgrammarvalid,
   agentpresetof,
@@ -180,7 +180,7 @@ import {
   permissiongrade,
   permissionstates,
   revertplanof,
-} from "./environments.js";
+} from "./environments.ts";
 import {
   autointervalof,
   importsessionfile,
@@ -188,7 +188,7 @@ import {
   searchqueryof,
   sessionkinds,
   snapshotplanof,
-} from "./session.js";
+} from "./session.ts";
 import {
   composeworkflow,
   expressionof,
@@ -198,7 +198,7 @@ import {
   validateworkflow,
   workflowblockof,
   workflowstepof,
-} from "./workflow.js";
+} from "./workflow.ts";
 import {
   branchof,
   conditionof,
@@ -210,7 +210,7 @@ import {
   repeatuntilof,
   tryof,
   whileof,
-} from "./workflow.js";
+} from "./workflow.ts";
 import {
   armrule,
   cronparse,
@@ -218,13 +218,13 @@ import {
   triggerpayloadof,
   triggereventcatalog,
   webhooksecretok,
-} from "./workflow.js";
-import { formpayloadof, multipartpayloadof, oauthflowof } from "./auth.js";
-import { loglevels, timelinesources } from "./run.js";
-import { bucketboundsvalid, origincheckof } from "./security.js";
-import { gatekindfor } from "./gates.js";
-import { phishthresholdvalid } from "./security.js";
-import { packageversion } from "./version.js";
+} from "./workflow.ts";
+import { formpayloadof, multipartpayloadof, oauthflowof } from "./auth.ts";
+import { loglevels, timelinesources } from "./run.ts";
+import { bucketboundsvalid, origincheckof } from "./security.ts";
+import { gatekindfor } from "./gates.ts";
+import { phishthresholdvalid } from "./security.ts";
+import { packageversion } from "./version.ts";
 
 const sensitiveactions = new Set<actionkind>([
   "click",
@@ -4807,7 +4807,7 @@ function unboundedgrouprepeat(pattern: string): boolean {
 }
 
 /** Validates the reviewed expression operators against the operand kinds and the result kind: arithmetic needs numbers and returns numbers, logic needs booleans and returns booleans, comparison needs numbers and returns booleans, text operators return strings or booleans and length returns a number. */
-function validatexpressionoperators(expression: import("./types.js").expressiontype): policyevaluation {
+function validatexpressionoperators(expression: import("./types.ts").expressiontype): policyevaluation {
   const numeric = new Set(["add", "subtract", "multiply", "divide", "modulo"]);
   const logic = new Set(["and", "or", "not"]);
   const comparison = new Set(["less", "greater", "lessequal", "greaterequal"]);

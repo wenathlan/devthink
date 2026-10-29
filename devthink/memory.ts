@@ -386,13 +386,13 @@ import type {
   toolstep,
   selcacheentry,
   selcacheinvalidation,
-} from "./types.js";
-import { expireprofilerecords } from "./debug.js";
-import { expirelayers } from "./environments.js";
-import { expiresessions, filteredsessions, searchsessionrecords } from "./session.js";
-import { swarmoverview as swarmoverviewof } from "./agent.js";
-import { exportrunstate, openseal, sealrunstate } from "./run.js";
-import { exportlogchain } from "./security.js";
+} from "./types.ts";
+import { expireprofilerecords } from "./debug.ts";
+import { expirelayers } from "./environments.ts";
+import { expiresessions, filteredsessions, searchsessionrecords } from "./session.ts";
+import { swarmoverview as swarmoverviewof } from "./agent.ts";
+import { exportrunstate, openseal, sealrunstate } from "./run.ts";
+import { exportlogchain } from "./security.ts";
 
 /** Provides a small storage seam that works in browser, tests and future adapters. */
 export interface memoryadapter {

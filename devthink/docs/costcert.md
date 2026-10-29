@@ -1,6 +1,6 @@
 # Cost certification
 
-The costcert gate of `tests/costcert.ts` proves the shared accounting of the multi agent layer reconciles: every check replays one recorded run or one live accounting family and recomputes the cost lines from the recorded evidence. The gate records every executed check with its outcome in the committed `costcertrecord` const of `tests/devthink.costcert.ts` in a fixed order with no timestamps so reruns stay byte identical, and exits nonzero on any accounting mismatch. The coordination scenarios whose costs the accounting covers live in `docs/agentscenarios.md`.
+The costcert gate of `tests/costcert.ts` proves the shared accounting of the multi agent layer reconciles: every check replays one recorded run or one live accounting family and recomputes the cost lines from the recorded evidence. The gate records every executed check with its outcome in the committed `costcertrecord` const of `devthink/costcert.ts` in a fixed order with no timestamps so reruns stay byte identical, and exits nonzero on any accounting mismatch. The coordination scenarios whose costs the accounting covers live in `docs/agentscenarios.md`.
 
 ## The accounting verification method
 
@@ -36,4 +36,4 @@ Run one command from the repository root after a build:
 pnpm build && node tests/costcert.ts
 ```text
 
-The gate prints one line per check with its outcome, prints the summary json, records every executed check with its family, its module and its detail in the committed record of `tests/devthink.costcert.ts` (the `costcertrecord` const the flat folder law migrated from the former artifact, refreshed by `pnpm records:sync`), and exits nonzero on any accounting mismatch. The gate runs beside the coordination gate through `pnpm validate:agents` inside `pnpm validate` and inside the verify workflow, and the record test runs the gate itself over a built tree, so every lane that builds before the vitest suite verifies the reconciliation without depending on gate ordering.
+The gate prints one line per check with its outcome, prints the summary json, records every executed check with its family, its module and its detail in the committed record of `devthink/costcert.ts` (the `costcertrecord` const the flat folder law migrated from the former artifact, refreshed by `pnpm records:sync`), and exits nonzero on any accounting mismatch. The gate runs beside the coordination gate through `pnpm validate:agents` inside `pnpm validate` and inside the verify workflow, and the record test runs the gate itself over a built tree, so every lane that builds before the vitest suite verifies the reconciliation without depending on gate ordering.

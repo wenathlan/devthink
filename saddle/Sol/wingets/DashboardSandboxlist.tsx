@@ -81,7 +81,7 @@ export default function SandboxList({ mode, reloadkey, ready }: SandboxListProps
                         return;
                 }
                 void load(true);
-        }, [mode, reloadkey, ready, load]);
+        }, [mode, ready, load]);
 
         /* the 30 s shelf poll: only while the tab is visible (api mode). */
         useEffect(() => {

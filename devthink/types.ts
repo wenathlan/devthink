@@ -1,6 +1,6 @@
 /** Shared contracts for every Devthink target. */
-import { packageversion, protocolmajor } from "./version.js";
-import type { memoryadapter } from "./memory.js";
+import { packageversion, protocolmajor } from "./version.ts";
+import type { memoryadapter } from "./memory.ts";
 import type { ThinkingLevelName } from "@wenathlan/getry/thinking";
 
 export const protocolversion = packageversion;
@@ -9513,7 +9513,7 @@ export interface authconfig {
   required?: boolean;
   /** minimum key length to be considered valid — default 10 */
   minkeylength?: number;
-  /** signup url shown in 401 responses — e.g. https://openrouter.ai */
+  /** signup url shown in 401 responses — the operator's console url, configured through the gateway config (no shipped literal). */
   signupurl?: string;
   /** ephemeral key endpoint for ephemeralurl source — e.g. babel get_api_key */
   keyurl?: string;

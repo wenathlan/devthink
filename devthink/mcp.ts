@@ -1,5 +1,5 @@
-import { protocolmajorversion, protocolversion } from "./types.js";
-import { negotiateprotocol, protocolmajorof } from "./apifreeze.js";
+import { protocolmajorversion, protocolversion } from "./types.ts";
+import { negotiateprotocol, protocolmajorof } from "./apifreeze.ts";
 import type {
   agentplan,
   agentsession,
@@ -36,31 +36,31 @@ import type {
   streamchunk,
   structurederror,
   toolmock,
-} from "./types.js";
+} from "./types.ts";
 /* ── The mcp entry section the family kept before the 1.1.88 merge. ── */
 /** The mcp server library entry of the 1.1.84 family: the full model context protocol server surface of devthink as one tree shakable entry — the serve mode with its frame router, session bindings, approval gates and dispatch composition, the json rpc message codec with its structured retry hints, the stdio and http transports with their injected seams, the served resources with their change subscriptions, the prompt exposure of the template library and the walkthroughs, and the tool catalog, call runtime, client auth, http stream and server contract families the serve mode composes; the 1.1.85 native host bridge family joins the entry so the nativehost and wsbridge surfaces — the native call events the subscribed mcp clients stream and the servercontract envelope translation the wsbridge frames reuse — ride the same tree shakable server surface. */
-export * from "./serve.js";
-export * from "./serve.js";
-export * from "./serve.js";
-export * from "./http.js";
-export * from "./http.js";
-export * from "./tools.js";
-export * from "./agent.js";
-export * from "./tools.js";
-export * from "./auth.js";
-export * from "./gates.js";
-export * from "./http.js";
-export * from "./bridge.js";
-export * from "./bridge.js";
-export * from "./bridge.js";
-export * from "./policy.js";
+export * from "./serve.ts";
+export * from "./serve.ts";
+export * from "./serve.ts";
+export * from "./http.ts";
+export * from "./http.ts";
+export * from "./tools.ts";
+export * from "./agent.ts";
+export * from "./tools.ts";
+export * from "./auth.ts";
+export * from "./gates.ts";
+export * from "./http.ts";
+export * from "./bridge.ts";
+export * from "./bridge.ts";
+export * from "./bridge.ts";
+export * from "./policy.ts";
 
 /* ── Merged from mcpmode.ts: the 1.1.88 consolidation interns the correlated mcpmode logic here, so no variation of the same file lives beside another. ── */
-import { notifyprogress, requestsampling, streamchunkof, canceltool, callprompt, listprompts } from "./agent.js";
-import { requireapproval } from "./gates.js";
-import { checkallowlist } from "./auth.js";
-import { notificationframe } from "./serve.js";
-import { randomid } from "./memory.js";
+import { notifyprogress, requestsampling, streamchunkof, canceltool, callprompt, listprompts } from "./agent.ts";
+import { requireapproval } from "./gates.ts";
+import { checkallowlist } from "./auth.ts";
+import { notificationframe } from "./serve.ts";
+import { randomid } from "./memory.ts";
 import {
   degradationgate,
   mcpmodegate,
@@ -68,9 +68,9 @@ import {
   resourceexposuregate,
   tooldispatchgate,
   unknownfieldsgate,
-} from "./policy.js";
-import { listmcpprompts, rendermcpprompt } from "./serve.js";
-import { publishchange, readresource, resourceof, resourceslist, servedresources, subscriberesource } from "./serve.js";
+} from "./policy.ts";
+import { listmcpprompts, rendermcpprompt } from "./serve.ts";
+import { publishchange, readresource, resourceof, resourceslist, servedresources, subscriberesource } from "./serve.ts";
 import {
   composeenvelope,
   eventpostbody,
@@ -78,9 +78,9 @@ import {
   progresseventpayload,
   servercontractversion,
   stableopid,
-} from "./bridge.js";
-import { packageversion } from "./version.js";
-import { alltools, buildtoolcatalog, namespaceof, resolvetool, toolnamespaces } from "./tools.js";
+} from "./bridge.ts";
+import { packageversion } from "./version.ts";
+import { alltools, buildtoolcatalog, namespaceof, resolvetool, toolnamespaces } from "./tools.ts";
 import {
   applymock,
   applyratelimit,
@@ -90,7 +90,7 @@ import {
   endcall,
   recordidempotency,
   runbatch,
-} from "./tools.js";
+} from "./tools.ts";
 
 /**
  * Mcp server mode of the 1.1.84 family.

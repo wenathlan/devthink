@@ -38,16 +38,16 @@ import {
   getGlobalPreservationStore,
   isValidThinkingSignature,
   stripInvalidSignatures,
-} from "./recovery.js";
-import * as oauthMod from "./oauth.js";
-import * as accountsMod from "./accounts.js";
+} from "./recovery.ts";
+import * as oauthMod from "./oauth.ts";
+import * as accountsMod from "./accounts.ts";
 import {
   resolveOAuthIdentity,
   identityFromAccountType,
   getAntigravityCliHeaders,
   ANTIGRAVITY_CLI_OAUTH_SCOPES,
-} from "./oauth.js";
-import { getVersion } from "./versionregistry.js";
+} from "./oauth.ts";
+import { getVersion } from "./versionregistry.ts";
 // v2.1.14 dedupe: stateless constants imported from their single owners
 // (constants.ts / models.ts) instead of local copies. Runtime functions and
 // stateful caches stay local to this Layer-1 entry by design.
@@ -64,7 +64,7 @@ import {
   FALLBACK_PROJECT_ID,
   GEMINI_CLI_USER_AGENT_PLAIN,
   PLUGIN_VERSION,
-} from "./constants.js";
+} from "./constants.ts";
 // v2.1.16 cleanup: FORBIDDEN_HEADERS / FETCH_TIMEOUT_MS / GEMINI_CLI_SCOPES
 // were imported but never used in the file body — they stay reachable through
 // the re-export block below, so the dead import bindings are gone.
@@ -94,9 +94,9 @@ export type PluginOptions = {
 // v2.1.15 Phase B: generic utilities (fnv hash family, jitter) come from
 // core.js — THE owner; identity masquerade (dynamic UA, antigravity headers)
 // comes from fingerprint.js — THE owner.
-import { fnv1a32, fnv1a32Hex, getJitter } from "./core.js";
-import { buildAntagravityHeaders, getDynamicUserAgent } from "./fingerprint.js";
-import { X_GOOG_API_CLIENT_GEMINI_CLI } from "./fingerprint.js";
+import { fnv1a32, fnv1a32Hex, getJitter } from "./core.ts";
+import { buildAntagravityHeaders, getDynamicUserAgent } from "./fingerprint.ts";
+import { X_GOOG_API_CLIENT_GEMINI_CLI } from "./fingerprint.ts";
 import {
   ALL_MODELS_2026,
   ANTIGRAVITY_VERSION_MIN,
@@ -116,9 +116,9 @@ import {
   isGeminiCLIOnlyModel,
   isImageGenModel,
   mapModelToGroup,
-} from "./models.js";
-import type { ThinkingLevel } from "./models.js";
-import { resolveProjectId } from "./project.js";
+} from "./models.ts";
+import type { ThinkingLevel } from "./models.ts";
+import { resolveProjectId } from "./project.ts";
 // v2.1.15 Phase D: the live request pipeline (transformRequest, the Cloud Code
 // builders, fetchWithCascade and the method paths) lives ONLY in request.ts;
 // the fetch-cascade recovery helpers live ONLY in recovery.ts.
@@ -131,15 +131,15 @@ import {
   GENERATE_METHOD,
   LOAD_METHOD,
   ONBOARD_METHOD,
-} from "./request.js";
-import type { BuildOptions, BuildResult } from "./request.js";
-import { detectFetchErrorType, fetchSessionRecovery, preserveValidatedSignature } from "./recovery.js";
-import { shouldSkipSandbox } from "./models.js";
-import { QUOTA_METHOD } from "./quota.js";
+} from "./request.ts";
+import type { BuildOptions, BuildResult } from "./request.ts";
+import { detectFetchErrorType, fetchSessionRecovery, preserveValidatedSignature } from "./recovery.ts";
+import { shouldSkipSandbox } from "./models.ts";
+import { QUOTA_METHOD } from "./quota.ts";
 
-import type { Account } from "./accounts.js";
+import type { Account } from "./accounts.ts";
 export type { Account };
-import type { ResolveProjectIdOptions, ResolveResult } from "./project.js";
+import type { ResolveProjectIdOptions, ResolveResult } from "./project.ts";
 
 // v2.1.14 dedupe: re-export the consolidated constants so this module's
 // public surface is unchanged.
@@ -151,9 +151,9 @@ export {
   FETCH_TIMEOUT_MS,
   GEMINI_CLI_SCOPES,
   PLUGIN_VERSION,
-} from "./constants.js";
-export { fnv1a32, fnv1a32Hex, getJitter } from "./core.js";
-export { buildAntagravityHeaders, getDynamicUserAgent } from "./fingerprint.js";
+} from "./constants.ts";
+export { fnv1a32, fnv1a32Hex, getJitter } from "./core.ts";
+export { buildAntagravityHeaders, getDynamicUserAgent } from "./fingerprint.ts";
 export {
   ALL_MODELS_2026,
   ANTIGRAVITY_VERSION_MIN,
@@ -170,11 +170,11 @@ export {
   isGeminiCLIOnlyModel,
   isImageGenModel,
   mapModelToGroup,
-} from "./models.js";
-export { MODELS_2026_PROVIDER as MODELS_2026 } from "./models.js";
-export type { ModelId2026, ThinkingLevel } from "./models.js";
-export { resolveProjectId } from "./project.js";
-export type { ResolveProjectIdOptions, ResolveResult } from "./project.js";
+} from "./models.ts";
+export { MODELS_2026_PROVIDER as MODELS_2026 } from "./models.ts";
+export type { ModelId2026, ThinkingLevel } from "./models.ts";
+export { resolveProjectId } from "./project.ts";
+export type { ResolveProjectIdOptions, ResolveResult } from "./project.ts";
 
 // Node types (no DOM lib) do not expose the RequestInfo name globally; derive it from fetch itself.
 type RequestInfo = Parameters<typeof fetch>[0];

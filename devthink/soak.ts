@@ -1,13 +1,9 @@
-/** Executes the soak run gate of the 2.0.0 roadmap item 51 ("a soak run keeps a long workflow alive across the full retention window without drift") against the real compiled modules: the gate composes one long workflow of three loop passes over the rows of a fixture pricing table — a repeated extraction — and drives it through the runworkflow engine in the fake clock mode so every stamp the engine makes rides the fixed epoch, with one keepalive heartbeat, one audit event, one hash chained log entry and one provenance carrying memory item per iteration. The run spans the audit retention window read back from the library settings three times over, checkpoints mid-run, simulates the service worker restart that reattaches the keepalive port, resumes from the checkpoint and proves the no drift contract four ways: the resumed outcome stays byte identical to the uninterrupted outcome, two full soak runs seal the identical audit hash, the whole immutable log chain verifies from the genesis hash to the seal, and the memory items keep their provenance while the retention window bounds the stored counts. The fake tab provider hands out fake tabs of every browser kind so the liveness sweep proves the zombie reaper never takes a beating run on chromium, firefox or safari while a silent run still reaps. The committed record tests/devthink.soak.ts (the soakrecord const this module carries, migrated from devthink/artifacts/soak.json when the flat folder law dissolved the artifacts folder) records every executed check with its outcome in a fixed order with no timestamps so reruns stay byte identical, and the gate exits nonzero on any failed check. The retention window semantics and the invocation walkthrough live in docs/soak.md. The sync mode (`node ../tests/devthink.soak.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
+/** Executes the soak run gate of the 2.0.0 roadmap item 51 ("a soak run keeps a long workflow alive across the full retention window without drift") against the real compiled modules: the gate composes one long workflow of three loop passes over the rows of a fixture pricing table — a repeated extraction — and drives it through the runworkflow engine in the fake clock mode so every stamp the engine makes rides the fixed epoch, with one keepalive heartbeat, one audit event, one hash chained log entry and one provenance carrying memory item per iteration. The run spans the audit retention window read back from the library settings three times over, checkpoints mid-run, simulates the service worker restart that reattaches the keepalive port, resumes from the checkpoint and proves the no drift contract four ways: the resumed outcome stays byte identical to the uninterrupted outcome, two full soak runs seal the identical audit hash, the whole immutable log chain verifies from the genesis hash to the seal, and the memory items keep their provenance while the retention window bounds the stored counts. The fake tab provider hands out fake tabs of every browser kind so the liveness sweep proves the zombie reaper never takes a beating run on chromium, firefox or safari while a silent run still reaps. The committed record devthink/soak.ts (the soakrecord const this module carries, migrated from devthink/artifacts/soak.json when the flat folder law dissolved the artifacts folder) records every executed check with its outcome in a fixed order with no timestamps so reruns stay byte identical, and the gate exits nonzero on any failed check. The retention window semantics and the invocation walkthrough live in docs/soak.md. The sync mode (`node soak.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { pathToFileURL } from "node:url";
-<<<<<<< HEAD:tests/devthink.soak.ts
-import { summaryproblemsof, syncmode, syncrecord } from "./devthink.records.ts";
-import type { actionkind, heartbeatrecord, runstaterecord, storedrunlog, toolstep, variablescope, workflowrun } from "../devthink/types.ts";
-=======
+import { summaryproblemsof, syncmode, syncrecord } from "./records.ts";
 import type { actionkind, heartbeatrecord, runstaterecord, storedrunlog, toolstep, variablescope, workflowrun } from "./types.ts";
->>>>>>> cfc383ca (fix(family): the tests village answers the application law — every suite folds into its own app home, the gates ride the app roots unprefixed, the workflows drop the symlink bridges, and the one root envelope keeps only the eleven villages (#171)):devthink/soak.ts
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
@@ -355,7 +351,7 @@ async function runsoaksegmented(library: librarybundle, policy: policybundle, me
 export async function runsoaksuite() {
   if (!existsSync("dist/index.js") || !existsSync("dist/policy.js") || !existsSync("dist/memory.js")) {
     console.error(
-      "SOAK The gate reads the compiled library, policy and memory bundles; run node build.ts before the soak run.",
+      "SOAK The gate reads the compiled library, policy and memory bundles; run node tests/build.ts before the soak run.",
     );
     return {
       release,
@@ -1085,7 +1081,7 @@ if (invokeddirectly) {
       ...(passing !== soakrecord.summary.passed ? ["the recorded passing entries disagree with the recorded passed count"] : []),
     ];
     for (const problem of problems) console.error(`SOAK record: ${problem}`);
-    console.log(JSON.stringify({ release: report.release, record: "tests/devthink.soak.ts", ...report.summary }, null, 2));
+    console.log(JSON.stringify({ release: report.release, record: "devthink/soak.ts", ...report.summary }, null, 2));
     if (problems.length > 0) process.exitCode = 1;
   }
   if (report.summary.failed > 0) process.exitCode = 1;

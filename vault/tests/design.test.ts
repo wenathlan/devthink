@@ -42,19 +42,21 @@ describe("design contract", () => {
   it("keeps the gelo identity and the windows accent in their lanes", () => {
     // the foundation rebuild carries the identity on the @theme signal and
     // maps the gelo names onto it — the token, the alias and both stay pinned
-    assert.match(CSS, /--color-signal: #a3d7e6/, "the gelo identity token stands");
+    assert.match(CSS, /--gelo-signal: var\(--color-signal\)/, "the gelo names the white signal (the alias dialect of the single-theme law)");
     assert.match(CSS, /--sol-primary: var\(--color-signal\)/, "the primary rides the signal slot");
     assert.match(CSS, /--win-accent: var\(--color-win\)/, "the windows accent rides its own slot");
     assert.match(CSS, /--color-win: #4cc2ff/, "the windows accent governs focus and the bar cta");
     assert.match(CSS, /--color-win: #0067c0/, "the light theme follows the windows light law");
-    assert.match(MARK, /#a3d7e6/, "the mark rides the gelo");
+    assert.match(MARK, /#a3d7e6/, "the drawn mark keeps the gelo story");
   });
 
   it("retires the gold lamplight and the green ghost from the identity", () => {
     assert.ok(!/3ecf8e/i.test(CSS + ENTRY), "the green ghost is gone");
-    const gold = CSS.lastIndexOf("#eab308");
-    const ice = CSS.lastIndexOf("#a3d7e6");
-    assert.ok(ice > gold, "the gelo retint must restate the identity after the gold era");
+    /* the single-theme law retired both literals: neither the gold nor the
+     * tinted gelo rides the stylesheet — the gelo story survives in the
+     * drawn mark and the alias names. */
+    assert.ok(!/#eab308/i.test(CSS), "the gold literal left the stylesheet");
+    assert.ok(!/#a3d7e6/i.test(CSS), "the tinted gelo literal left the stylesheet");
   });
 
   it("wears the gelo identity on the icons and the manifest", () => {

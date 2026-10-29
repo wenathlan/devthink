@@ -3,7 +3,7 @@
  * The shared core for script tag consumers: the build emits this entry as the global devthink bundle of the browser platform target, tree shakable imports, the whole library behind one script tag with the consent gates intact. The 2.0.0 sunset removed the deprecated uppercase Devthink global the deprecation window carried: the envelope exposes exactly the lowercase devthink surface the frozen library contract declares.
  */
 
-export * from "./index.js";
-import { stampbundle } from "./runtime.js";
+export * from "./index.ts";
+import { stampbundle } from "./runtime.ts";
 
 stampbundle("umd", "devthink.umd.js");

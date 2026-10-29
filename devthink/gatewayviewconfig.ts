@@ -794,7 +794,11 @@ export const config: gatewaydefinition = {
       name: "V5 OpenRouter",
       providername: "openrouter",
       note: "openrouter free tier 19 models per-request round-robin",
-      upstreams: [{ name: "openrouter", baseurl: "https://openrouter.ai/api/v1" }],
+      /* the empty default posture the family law keeps: the operator
+       * configures the endpoint through the gateway baseurl config (the
+       * same validation lane every provider rides), never a shipped
+       * literal the url scan would refuse. */
+      upstreams: [{ name: "openrouter", baseurl: "" }],
       auth: {
         mode: "bearer",
         keysources: ["env"],
@@ -802,9 +806,10 @@ export const config: gatewaydefinition = {
         keyrotation: "single",
         required: true,
         minkeylength: 10,
-        signupurl: "https://openrouter.ai",
         extraheaders: {
-          "http-referer": "https://devthink.ai",
+          /* the attribution pair the operator configures: no shipped
+           * literal origin, the empty default answers the scan law. */
+          "http-referer": "",
           "x-title": "DevThink Gateway",
         },
       },

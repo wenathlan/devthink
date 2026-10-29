@@ -30,7 +30,7 @@
  * eval time before the Math.random fallbacks could answer), matching the
  * multi-mode engine doctrine the compact ids already ride. */
 import * as nodecrypto from "node:crypto";
-import { FETCH_TIMEOUT_MS, JITTER_MAX_MS, JITTER_MIN_MS } from "./constants.js";
+import { FETCH_TIMEOUT_MS, JITTER_MAX_MS, JITTER_MIN_MS } from "./constants.ts";
 
 /**
  * FNV-1a 32-bit hash over a UTF-16 string (per code unit), unsigned.
@@ -232,8 +232,8 @@ import * as path from "node:path";
 // Governance constants — identical values owned by constants.ts
 // ---------------------------------------------------------------------------
 
-import { DEBUG_BUFFER_TUI_LINES, DEBUG_LOG_MAX_BYTES, DEBUG_LOG_RETENTION_DAYS } from "./constants.js";
-import { cfgDir } from "./config.js";
+import { DEBUG_BUFFER_TUI_LINES, DEBUG_LOG_MAX_BYTES, DEBUG_LOG_RETENTION_DAYS } from "./constants.ts";
+import { cfgDir } from "./config.ts";
 export { DEBUG_BUFFER_TUI_LINES, DEBUG_LOG_MAX_BYTES, DEBUG_LOG_RETENTION_DAYS };
 
 // ---------------------------------------------------------------------------

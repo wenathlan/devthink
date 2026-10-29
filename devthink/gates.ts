@@ -6,8 +6,8 @@
 
 /* ── Merged from confirmgates.ts ── */
 
-import type { confirmgate, gatekind, gateresolution, sensitiveclass, toolstep } from "./types.js";
-import { randomid } from "./memory.js";
+import type { confirmgate, gatekind, gateresolution, sensitiveclass, toolstep } from "./types.ts";
+import { randomid } from "./memory.ts";
 
 /**
  * Confirm gates of the 1.1.62 family.
@@ -219,7 +219,7 @@ export function gateforstep(input: {
 
 /* ── Merged from approvalgate.ts ── */
 
-import type { allowlistentry, approvalrequest, approvalstate, approvalexec, clientidentity } from "./types.js";
+import type { allowlistentry, approvalrequest, approvalstate, approvalexec, clientidentity } from "./types.ts";
 
 /**
  * Approval gates of the 1.1.55 agent protocol part two.

@@ -18,7 +18,7 @@ import {
   setAuthCredential,
   setConfigValue,
   type DevThinkConfig,
-} from "./config.js";
+} from "./config.ts";
 import {
   appendMessage,
   createMemoryStore,
@@ -32,9 +32,9 @@ import {
   remoteSyncStatus,
   savePreference,
   type Session,
-} from "./storage.js";
-import { listModes, modePrompt, resolveMode } from "./modes.js";
-import { listModels, listProviders, streamChat } from "./providers.js";
+} from "./storage.ts";
+import { listModes, modePrompt, resolveMode } from "./modes.ts";
+import { listModels, listProviders, streamChat } from "./providers.ts";
 import {
   createPairing,
   createPairingLink,
@@ -42,10 +42,10 @@ import {
   pairingStatus,
   revokeBrowserSessions,
   setIdentityUserId,
-} from "./account.js";
-import type { ChatEvent } from "./streaming.js";
+} from "./account.ts";
+import type { ChatEvent } from "./streaming.ts";
 import { banner, box, colors, formatConfig, formatEvent, statusBar } from "./Sol/wingets/ConsoleTerminalui.js";
-import { startServer } from "./server.js";
+import { startServer } from "./server.ts";
 
 export type ParsedArgs = { flags: Record<string, string | boolean>; positional: string[] };
 
@@ -625,13 +625,13 @@ export async function main(argv = process.argv.slice(2)): Promise<void> {
      one bin, one router, zero duplicated parsers (the saddle standard). */
   if (command === "ext") {
     const family = argv.slice(argv.indexOf("ext") + 1);
-    const cli = await import("./cli.js");
+    const cli = await import("./cli.ts");
     return void (await cli.runclifamily(family));
   }
   if (command === "provider") {
     const family = argv.slice(argv.indexOf("provider") + 1);
     if (family.length === 0) return printHelp();
-    const consolemodule = await import("./server.js");
+    const consolemodule = await import("./server.ts");
     return void (await consolemodule.runproviderfamily(family));
   }
   if (
@@ -647,7 +647,7 @@ export async function main(argv = process.argv.slice(2)): Promise<void> {
       parsed.positional[1] === "models")
   ) {
     const family = argv.slice(argv.indexOf("gateway") + 1);
-    const consolemodule = await import("./server.js");
+    const consolemodule = await import("./server.ts");
     return void (await consolemodule.runclifamily(family));
   }
   const runtime = loadRuntime();

@@ -103,9 +103,9 @@ describe("sol.css — the trylle foundation", () => {
     assert.ok(css.includes("--sol-track-label: 0.14em"), "the label tracking left the tokens");
   });
 
-  it("keeps the two-accent contract (the white sun beside the windows accent)", () => {
-    assert.ok(css.includes("--accent: var(--color-signal)"), "the identity left the identity slot");
-    assert.ok(css.includes("--color-signal: #ffffff"), "the white sun left the tokens");
+  it("keeps the two-accent contract (the brass identity beside the windows accent)", () => {
+    assert.ok(css.includes("--accent: var(--color-signal)"), "the brass identity left the identity slot");
+    assert.ok(css.includes("--brass-300: var(--color-signal-strong)"), "the brass tokens left the aliases"); /* the single-theme law: the signal rides the white sun */
     assert.ok(css.includes("--color-win: #4cc2ff"), "the windows accent left the chrome slot");
     assert.ok(css.includes("--color-focus: #4cc2ff"), "focus no longer answers the windows accent");
   });

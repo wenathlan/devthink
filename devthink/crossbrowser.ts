@@ -5,7 +5,7 @@
  */
 
 /* ── Merged from browserpolyfills.ts ── */
-import type { webextensionbrowser } from "./types.js";
+import type { webextensionbrowser } from "./types.ts";
 
 /**
  * Browserpolyfills of the 1.1.86 browser coverage family.
@@ -424,7 +424,7 @@ export function browserpolyfillstructerrorof(input: {
 }
 
 /* ── Merged from firefoxprep.ts ── */
-import type { browsermanifestsource, browsermanifestoverlay, browsermanifestadapted } from "./types.js";
+import type { browsermanifestsource, browsermanifestoverlay, browsermanifestadapted } from "./types.ts";
 
 /**
  * Firefoxprep of the 1.1.86 browser coverage family.
@@ -602,7 +602,7 @@ export function firefoxactionmap(): Record<string, string> {
 }
 
 /* ── Merged from xpipack.ts ── */
-import type { xpipackinput, xpipackoutput } from "./types.js";
+import type { xpipackinput, xpipackoutput } from "./types.ts";
 
 /**
  * Xpipack of the 1.1.86 browser coverage family.
@@ -756,7 +756,7 @@ export function xpipackentriesof(output: xpipackoutput): string[] {
 }
 
 /* ── Merged from safariskeleton.ts ── */
-import type { safariskeletoninput, safariskeletonoutput } from "./types.js";
+import type { safariskeletoninput, safariskeletonoutput } from "./types.ts";
 
 /**
  * Safariskeleton of the 1.1.86 browser coverage family.
@@ -920,7 +920,7 @@ import type {
   apimapstructerror,
   webextensionapientry,
   webextensionapikind,
-} from "./types.js";
+} from "./types.ts";
 /* ── Merged from apimap.ts: the 1.1.88 consolidation interns the correlated apimap logic here, so no variation of the same file lives beside another. ── */
 
 /**

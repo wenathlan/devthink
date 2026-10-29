@@ -525,13 +525,13 @@ export const GEMINI_CLI_DEFAULT_MODEL = "gemini-3-pro-preview" as const;
 // Model2026 union moved to models.ts (MODELS_2026_LEGACY / Model2026) —
 // imported under the historical name and re-exported so the public surface
 // is unchanged.
-import { MODELS_2026_LEGACY as MODELS_2026 } from "./models.js";
-import type { RotationStrategy } from "./accounts.js";
+import { MODELS_2026_LEGACY as MODELS_2026 } from "./models.ts";
+import type { RotationStrategy } from "./accounts.ts";
 export type { RotationStrategy };
 // v2.1.15 Phase B: identity masquerade (gemini UA builder, gl-node api-client
 // snapshot) comes from fingerprint.js; raw shared values (client metadata,
 // project fallback, cloudcode endpoints) come from constants.js.
-import { buildGeminiUserAgent, X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.js";
+import { buildGeminiUserAgent, X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.ts";
 import {
   CLIENT_METADATA,
   CLIENT_METADATA_STRING,
@@ -542,8 +542,8 @@ import {
   GEMINI_CLI_SCOPES as OAUTH_SCOPES,
   GEMINI_CLI_USER_AGENT,
   PROJECT_FALLBACK,
-} from "./constants.js";
-import type { Model2026 } from "./models.js";
+} from "./constants.ts";
+import type { Model2026 } from "./models.ts";
 export { MODELS_2026 };
 export type { Model2026 };
 

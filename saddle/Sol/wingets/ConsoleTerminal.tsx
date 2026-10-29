@@ -49,7 +49,7 @@ export default function Terminal({ rows, prompt, state, enabled, oncommand }: Te
 	useEffect(() => {
 		const out = outref.current;
 		if (out) out.scrollTop = out.scrollHeight;
-	}, [rows]);
+	}, []);
 
 	/** focus the command input once the sandbox is running. */
 	useEffect(() => {

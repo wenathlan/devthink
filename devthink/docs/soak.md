@@ -1,6 +1,6 @@
 # Soak run walkthrough
 
-This walkthrough drives the soak run of the 2.0.0 roadmap item 51: a long workflow stays alive across the full retention window without drift. The gate of `tests/soak.ts` composes one long workflow of three loop passes over the rows of a fixture pricing table — a repeated extraction — and runs it through the real compiled engine with one keepalive heartbeat, one audit event, one hash chained log entry and one provenance carrying memory item per iteration, in the fake clock mode so the whole run replays byte identical. The run spans the audit retention window read back from the library settings three times over, checkpoints mid-run, resumes from the checkpoint after a simulated service worker restart, and proves the no drift contract four ways. The evidence lands in the committed `soakrecord` const of `tests/devthink.soak.ts` with no timestamps so reruns stay byte identical, and the gate exits nonzero on any failed check.
+This walkthrough drives the soak run of the 2.0.0 roadmap item 51: a long workflow stays alive across the full retention window without drift. The gate of `tests/soak.ts` composes one long workflow of three loop passes over the rows of a fixture pricing table — a repeated extraction — and runs it through the real compiled engine with one keepalive heartbeat, one audit event, one hash chained log entry and one provenance carrying memory item per iteration, in the fake clock mode so the whole run replays byte identical. The run spans the audit retention window read back from the library settings three times over, checkpoints mid-run, resumes from the checkpoint after a simulated service worker restart, and proves the no drift contract four ways. The evidence lands in the committed `soakrecord` const of `devthink/soak.ts` with no timestamps so reruns stay byte identical, and the gate exits nonzero on any failed check.
 
 ## 1. Build the compiled modules
 
@@ -16,7 +16,7 @@ The soak gate drives the compiled library, policy and memory bundles (`dist/inde
 node tests/soak.ts
 ```
 
-The gate prints one line per executed check with its outcome and answers the final JSON summary (`release`, `record`, `total`, `passed`, `failed`); any failed check prints to stderr, sets the exit code nonzero and lands in the record with its failure detail. The record is the committed `soakrecord` const of `tests/devthink.soak.ts`.
+The gate prints one line per executed check with its outcome and answers the final JSON summary (`release`, `record`, `total`, `passed`, `failed`); any failed check prints to stderr, sets the exit code nonzero and lands in the record with its failure detail. The record is the committed `soakrecord` const of `devthink/soak.ts`.
 
 ## 3. The retention window semantics
 

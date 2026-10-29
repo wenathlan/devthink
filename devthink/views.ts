@@ -43,9 +43,9 @@ import type {
   quickaction,
   attentionentry,
   attentioncause,
-} from "./types.js";
-import { paletteactiongate, planreviewgate, taskinputproposalgate } from "./policy.js";
-import { randomid } from "./memory.js";
+} from "./types.ts";
+import { paletteactiongate, planreviewgate, taskinputproposalgate } from "./policy.ts";
+import { randomid } from "./memory.ts";
 
 /**
  * Interface surface logic of the 1.1.64 family, part one.
@@ -636,7 +636,7 @@ export function focusorderof(controls: readonly string[] = reviewdialogorder): {
 }
 
 /* ── Merged from statusviews.ts ── */
-import { notificationcontentgate } from "./policy.js";
+import { notificationcontentgate } from "./policy.ts";
 
 /**
  * Statusbadge, notification, recenttray and stetoast logic of the 1.1.65 family.
@@ -837,7 +837,7 @@ export function stetoasthistory(toasts: stetoast[]): stetoast[] {
 }
 
 /* ── Merged from pickerviews.ts ── */
-import { pickeroverlaygate } from "./policy.js";
+import { pickeroverlaygate } from "./policy.ts";
 
 /**
  * Pickeroverlay, targethalo, guidedtips and pagechips logic of the 1.1.65 family.
@@ -1166,7 +1166,7 @@ export function a11ylabelslocalizedfor(surface: uisurface, bundles: localebundle
 }
 
 /* ── Merged from evidenceviews.ts ── */
-import { shotpanelgate } from "./policy.js";
+import { shotpanelgate } from "./policy.ts";
 
 /**
  * Shotpanel and compareviewer logic of the 1.1.65 family.
@@ -1541,7 +1541,7 @@ function range(start: number, end: number): number[] {
 }
 
 /* ── Merged from siteprefs.ts ── */
-import { siteprofilegate } from "./policy.js";
+import { siteprofilegate } from "./policy.ts";
 
 /**
  * Siteprofiles, darklight themes and locale logic of the 1.1.65 family.
@@ -1836,7 +1836,7 @@ export function localeformat(input: { language: string; value: number; kind: "da
 }
 
 /* ── Merged from quickactions.ts ── */
-import { quickactiongate } from "./policy.js";
+import { quickactiongate } from "./policy.ts";
 
 /**
  * Quickactions, shortcutkeys and omniboxtask logic of the 1.1.65 family.

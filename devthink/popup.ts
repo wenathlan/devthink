@@ -1,5 +1,5 @@
-import { hostpattern, normalizeendpoint } from "./policy.js";
-import { bridgestatuslabel } from "./bridge.js";
+import { hostpattern, normalizeendpoint } from "./policy.ts";
+import { bridgestatuslabel } from "./bridge.ts";
 import type {
   capabilityreport,
   captchahandoff,
@@ -15,8 +15,8 @@ import type {
   streamstate,
   tabbadge,
   waitprofilerecord,
-} from "./types.js";
-import type { windowshape } from "./commands.js";
+} from "./types.ts";
+import type { windowshape } from "./commands.ts";
 
 type pagesignallike = { language?: string; template?: string; scrolllocked?: boolean; banner?: string };
 

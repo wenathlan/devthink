@@ -54,7 +54,7 @@ import type {
   waitoverride,
   waitprofile,
   wizardstate,
-} from "./types.js";
+} from "./types.ts";
 
 /**
  * Browser-level command surface for reviewed steps.
@@ -225,7 +225,7 @@ export async function runbrowseraction(step: toolstep, sessiontabid: number, win
 }
 
 /* ── Merged from pageactions.ts: the 1.1.88 consolidation interns the correlated pageactions logic here, so no variation of the same file lives beside another. ── */
-import { parseoptions, resolutionverdict } from "./policy.js";
+import { parseoptions, resolutionverdict } from "./policy.ts";
 
 /**
  * Mutating page interactions for reviewed steps.
@@ -1322,7 +1322,7 @@ export function pagepagination(root: Document = document): Array<{ text: string;
   return paginationentries(root, undefined);
 }
 
-import { breakpointinputof, overrideinputof, stepmodeof, watchexpressionof } from "./debug.js";
+import { breakpointinputof, overrideinputof, stepmodeof, watchexpressionof } from "./debug.ts";
 import {
   agentpresetof,
   blackboxmatches,
@@ -1332,7 +1332,7 @@ import {
   locationpresetof,
   networkpresetof,
   permissiongrantof,
-} from "./environments.js";
+} from "./environments.ts";
 /* ── Merged from pagedebug.ts: the 1.1.88 consolidation interns the correlated pagedebug logic here, so no variation of the same file lives beside another. ── */
 import {
   consolecapture,
@@ -1343,7 +1343,7 @@ import {
   rejectioncapture,
   serializearg,
   stackframes,
-} from "./run.js";
+} from "./run.ts";
 
 /**
  * Page-side debugging capture for reviewed watch steps.

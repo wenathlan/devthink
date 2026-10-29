@@ -25,7 +25,7 @@ import type {
   taskqueue,
   verifiercheck,
   workerassignment,
-} from "./types.js";
+} from "./types.ts";
 
 /**
  * Multi agent orchestration logic of the 1.1.59 family.
@@ -509,7 +509,7 @@ export function consensusstate(round: consensusround): {
 
 /* ── Merged from taskqueue.ts ── */
 
-import type { claimrecord } from "./types.js";
+import type { claimrecord } from "./types.ts";
 
 /**
  * Shared task queue logic of the 1.1.58 multi agent family.
@@ -748,7 +748,7 @@ export function taskcounts(queue: taskqueue): { queued: number; claimed: number;
 
 /* ── Merged from blackboard.ts ── */
 
-import type { actionrisk, blackboard, blackboardentry, blackboardsection } from "./types.js";
+import type { actionrisk, blackboard, blackboardentry, blackboardsection } from "./types.ts";
 
 /**
  * Blackboard shared memory logic of the 1.1.58 multi agent family.

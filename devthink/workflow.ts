@@ -60,7 +60,7 @@ import type {
   steplibraryentry,
   versiondiff,
   workflowfile,
-} from "./types.js";
+} from "./types.ts";
 
 /**
  * Workflow engine for the 1.1.50 family.
@@ -3304,7 +3304,7 @@ export function ruleoriginsgranted(rule: triggerule, workfloworigins: string[]):
 }
 
 /* ── Merged from workfloweditor.ts ── */
-import { workflowfileversion } from "./protocol.js";
+import { workflowfileversion } from "./protocol.ts";
 
 /**
  * Workflow editor of the 1.1.53 family.

@@ -26,7 +26,7 @@ import type {
   relayserverstate,
   relayserversession,
   serverenvelope,
-} from "./types.js";
+} from "./types.ts";
 
 /**
  * Network observation part one logics for the 1.1.42 family.
@@ -611,8 +611,8 @@ export async function callgraphql(input: {
 }
 
 /* ── Merged from httpserve.ts: the 1.1.88 consolidation interns the correlated httpserve logic here, so no variation of the same file lives beside another. ── */
-import { bindlocalhost, localhostbind, parseframe, rpcerrorof } from "./mcp.js";
-import { encodemessage, decodemessage, framesof, isnotification } from "./serve.js";
+import { bindlocalhost, localhostbind, parseframe, rpcerrorof } from "./mcp.ts";
+import { encodemessage, decodemessage, framesof, isnotification } from "./serve.ts";
 
 /**
  * Http transport of the 1.1.84 mcp server mode.
@@ -750,8 +750,8 @@ export function routepath(config: mcpserverconfig, path: string): "endpoint" | "
 export const documentedbind = localhostbind;
 
 /* ── Merged from httpstream.ts: the 1.1.88 consolidation interns the correlated httpstream logic here, so no variation of the same file lives beside another. ── */
-import { namespaceof } from "./tools.js";
-import { authrefusedmessage, checkallowlist, scopecheck, tlsstateof, verifytoken } from "./auth.js";
+import { namespaceof } from "./tools.ts";
+import { authrefusedmessage, checkallowlist, scopecheck, tlsstateof, verifytoken } from "./auth.ts";
 
 /**
  * Http stream transport of the 1.1.55 agent protocol part two.
@@ -940,7 +940,7 @@ export async function httpframepipeline(input: {
 }
 
 /* ── Merged from relayserve.ts: the 1.1.88 consolidation interns the correlated relayserve logic here, so no variation of the same file lives beside another. ── */
-import { composeenvelope, contractcapabilities, parsewireframe, servercontractversion } from "./bridge.js";
+import { composeenvelope, contractcapabilities, parsewireframe, servercontractversion } from "./bridge.ts";
 
 /**
  * Relayserve of the 1.1.87 self hosting family.
@@ -1413,7 +1413,7 @@ import type {
   multipartpayload,
   pollcursor,
   ratelimitdirective,
-} from "./types.js";
+} from "./types.ts";
 /* ── Merged from webapi.ts: the 1.1.88 consolidation interns the correlated webapi logic here, so no variation of the same file lives beside another. ── */
 /**
  * Web api transport logics of the 1.1.76 family.
@@ -1421,9 +1421,9 @@ import type {
  * The module reuses the socketbus parsing of the 1.1.43 family for the event stream grammar and the poll cursor decisions, and the netauth encodings of the 1.1.44 family for the urlencoded and multipart wire shapes, so the transport widening extends the reviewed families instead of duplicating them.
  * Message payloads and field values are opaque reviewed text; no payload value enters any audit summary built from these results, and every timeout, backoff, retention and bound stays a user choice with no code default — an absent value never hides a hardcoded ceiling.
  */
-import { parsessetext, polldecision, pollurl, sserequestheaders, type sseevent } from "./net.js";
-import { urlencodeform } from "./auth.js";
-import { retryafterof } from "./net.js";
+import { parsessetext, polldecision, pollurl, sserequestheaders, type sseevent } from "./net.ts";
+import { urlencodeform } from "./auth.ts";
+import { retryafterof } from "./net.ts";
 
 /** Stream open seam: one reviewed url with its request headers resolves to a reader of text chunks or an error class; the extension executor wires the fetch stream, tests wire plain fixtures. */
 export type streamopen = (

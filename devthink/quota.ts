@@ -63,12 +63,12 @@ import {
   QUOTA_ENDPOINT,
   PROJECT_ID_FALLBACK,
   PROJECT_NAME_FALLBACK,
-} from "./constants.js";
-import { fnv1a32, isRetryableStatus } from "./core.js";
-import { getXGoogApiClient } from "./fingerprint.js";
-import type { QuotaGroup } from "./constants.js";
-import { ANTIGRAVITY_VERSION_MIN, isGeminiCLIOnlyModel, MODELS_2026_LEGACY, UA_DEFAULT_MODEL } from "./models.js";
-import { API_PATHS, API_PATHS_DAILY } from "./request.js";
+} from "./constants.ts";
+import { fnv1a32, isRetryableStatus } from "./core.ts";
+import { getXGoogApiClient } from "./fingerprint.ts";
+import type { QuotaGroup } from "./constants.ts";
+import { ANTIGRAVITY_VERSION_MIN, isGeminiCLIOnlyModel, MODELS_2026_LEGACY, UA_DEFAULT_MODEL } from "./models.ts";
+import { API_PATHS, API_PATHS_DAILY } from "./request.ts";
 import {
   QUOTA_CACHE_TTL_MAX_MS,
   QUOTA_HARD_THRESHOLD,
@@ -76,8 +76,8 @@ import {
   GEMINI_CLI_OAUTH_CLIENT_ID,
   GEMINI_CLI_OAUTH_CLIENT_SECRET,
   GEMINI_CLI_USER_AGENT,
-} from "./constants.js";
-import { X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.js";
+} from "./constants.ts";
+import { X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.ts";
 
 // Re-exports preserve this module's public surface after the dedupe.
 export {
@@ -108,7 +108,7 @@ export {
 export {
   GEMINI_CLI_OAUTH_CLIENT_ID as OAUTH_CLIENT_ID,
   GEMINI_CLI_OAUTH_CLIENT_SECRET as OAUTH_CLIENT_SECRET,
-} from "./constants.js";
+} from "./constants.ts";
 export type { QuotaGroup };
 
 // =============================================================================

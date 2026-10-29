@@ -347,7 +347,7 @@ RUN bun install --frozen-lockfile --ignore-scripts
 # application lands at /devthink and the siblings beside it, so every
 # ../devthink, ../getry and ../saddle reference of the village
 # answers inside the image exactly the way it answers in the checkout
-# (the root .dockerignore keeps the context to exactly these inputs — no
+# (the explicit COPY list keeps the context to exactly these inputs — no
 # prebuilt dist, no packaged artifacts, no caches).
 COPY devthink .
 COPY getry /getry

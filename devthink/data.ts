@@ -25,8 +25,8 @@ import type {
   streamparsetoken,
   toolstep,
   transformrule,
-} from "./types.js";
-import { tocsv, toexcel, tojson } from "./page.js";
+} from "./types.ts";
+import { tocsv, toexcel, tojson } from "./page.ts";
 
 /**
  * Dataset command logics for the background executors.

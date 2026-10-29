@@ -42,7 +42,7 @@ export default function GlobalSandboxesTable({ mode, reloadkey }: GlobalSandboxe
 		return () => {
 			stopped = true;
 		};
-	}, [mode, reloadkey]);
+	}, [mode]);
 
 	if (mode === 'local') {
 		return <p className="dash-empty">{label('dashboard.global.localNote')}</p>;

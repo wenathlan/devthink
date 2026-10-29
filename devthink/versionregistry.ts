@@ -65,13 +65,13 @@ import {
   CLOUDCODE_BASE_URL,
   CODE_ASSIST_PATH_MAP,
   PROJECT_FALLBACK,
-} from "./constants.js";
+} from "./constants.ts";
 // v2.1.16 single-owner fix: the MODELS_2026 reference list comes from
 // models.js (model identification owner — the 11-id legacy list).
-import { MODELS_2026_LEGACY as MODELS_2026_REFERENCE } from "./models.js";
-import { X_GOOG_API_CLIENT_GEMINI_CLI } from "./fingerprint.js";
-import { fetchWithTimeout } from "./core.js";
-import { isValidSemver } from "./config.js";
+import { MODELS_2026_LEGACY as MODELS_2026_REFERENCE } from "./models.ts";
+import { X_GOOG_API_CLIENT_GEMINI_CLI } from "./fingerprint.ts";
+import { fetchWithTimeout } from "./core.ts";
+import { isValidSemver } from "./config.ts";
 export { isValidSemver };
 
 // Re-exports preserve this module's public surface after the dedupe.

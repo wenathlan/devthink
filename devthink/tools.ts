@@ -26,7 +26,7 @@ import type {
   tooldryrun,
   toolmock,
   toolresult,
-} from "./types.js";
+} from "./types.ts";
 
 /**
  * Tool catalog of the 1.1.54 and 1.1.55 agent protocol family, widened by the 1.1.84 mcp server mode.
@@ -441,8 +441,8 @@ export function toolsbynamespace(
 }
 
 /* ── Merged from toolcalls.ts ── */
-import { tooldispatchgate } from "./policy.js";
-import { randomid } from "./memory.js";
+import { tooldispatchgate } from "./policy.ts";
+import { randomid } from "./memory.ts";
 
 /**
  * Tool call runtime of the 1.1.56 agent protocol part three.

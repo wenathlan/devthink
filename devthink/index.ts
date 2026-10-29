@@ -1,39 +1,39 @@
-import { stampbundle } from "./runtime.js";
+import { stampbundle } from "./runtime.ts";
 
 stampbundle("esm", "index.js");
-export * from "./agent.js";
-export * from "./gates.js";
-export * from "./swarm.js";
-export * from "./capture.js";
-export * from "./debug.js";
-export * from "./auth.js";
-export * from "./workflow.js";
-export * from "./environments.js";
-export * from "./http.js";
-export * from "./security.js";
-export * from "./llm.js";
-export * from "./memory.js";
-export * from "./mcp.js";
-export * from "./serve.js";
-export * from "./bridge.js";
-export * from "./crossbrowser.js";
-export * from "./pack.js";
-export * from "./commands.js";
-export * from "./data.js";
-export * from "./net.js";
-export * from "./run.js";
-export * from "./session.js";
-export * from "./plan.js";
-export * from "./views.js";
-export * from "./export.js";
-export * from "./flow.js";
-export * from "./evidence.js";
-export * from "./headless.js";
-export * from "./runtime.js";
-export * from "./version.js";
-export * from "./perf.js";
-export * from "./tools.js";
-export * from "./apifreeze.js";
+export * from "./agent.ts";
+export * from "./gates.ts";
+export * from "./swarm.ts";
+export * from "./capture.ts";
+export * from "./debug.ts";
+export * from "./auth.ts";
+export * from "./workflow.ts";
+export * from "./environments.ts";
+export * from "./http.ts";
+export * from "./security.ts";
+export * from "./llm.ts";
+export * from "./memory.ts";
+export * from "./mcp.ts";
+export * from "./serve.ts";
+export * from "./bridge.ts";
+export * from "./crossbrowser.ts";
+export * from "./pack.ts";
+export * from "./commands.ts";
+export * from "./data.ts";
+export * from "./net.ts";
+export * from "./run.ts";
+export * from "./session.ts";
+export * from "./plan.ts";
+export * from "./views.ts";
+export * from "./export.ts";
+export * from "./flow.ts";
+export * from "./evidence.ts";
+export * from "./headless.ts";
+export * from "./runtime.ts";
+export * from "./version.ts";
+export * from "./perf.ts";
+export * from "./tools.ts";
+export * from "./apifreeze.ts";
 export {
   argkind,
   attachtimeline,
@@ -57,7 +57,7 @@ export {
   timelinesources,
   watcherdetached,
   type timeline,
-} from "./run.js";
+} from "./run.ts";
 export {
   actionrisk as deriveactionrisk,
   agentbudgetvalid,
@@ -362,8 +362,8 @@ export {
   nativeidlewindowvalid,
   nativeheartbeatintervalvalid,
   nativeratecapvalid,
-} from "./policy.js";
-export * from "./protocol.js";
-export * from "./types.js";
-export type { actionrisk, loopstep } from "./types.js";
-export { retryhintof } from "./session.js";
+} from "./policy.ts";
+export * from "./protocol.ts";
+export * from "./types.ts";
+export type { actionrisk, loopstep } from "./types.ts";
+export { retryhintof } from "./session.ts";

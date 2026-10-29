@@ -12,7 +12,7 @@ import {
   planlintsummary,
   rulesetcachekey,
   plansteprisk,
-} from "./plan.js";
+} from "./plan.ts";
 import {
   dryflowdriver,
   flowrunreport,
@@ -21,8 +21,8 @@ import {
   renderflowevents,
   renderflowtimeline,
   runflow,
-} from "./flow.js";
-import type { flowdriver } from "./flow.js";
+} from "./flow.ts";
+import type { flowdriver } from "./flow.ts";
 import {
   exportchain,
   exportdescriptorof,
@@ -30,8 +30,8 @@ import {
   exportnotes,
   exportrecords,
   secretfieldshapes,
-} from "./export.js";
-import { openheadlesssession, openlibraryrun, remoteattachframes } from "./headless.js";
+} from "./export.ts";
+import { openheadlesssession, openlibraryrun, remoteattachframes } from "./headless.ts";
 import {
   dryrunworkflow,
   newworkflowrun,
@@ -39,14 +39,14 @@ import {
   composeworkflow,
   workflowblockof,
   workflowstepof,
-} from "./workflow.js";
-import { platformtargets } from "./runtime.js";
+} from "./workflow.ts";
+import { platformtargets } from "./runtime.ts";
 import {
   adapterdeclarationsof,
   capabilityprobeof,
   filesystemstorageadapter,
   portablecapabilityset,
-} from "./runtime.js";
+} from "./runtime.ts";
 import {
   actionkindcatalog,
   actionrisk,
@@ -58,8 +58,8 @@ import {
   fixtureconsentgate,
   kindoptionfields,
   validatetargetref,
-} from "./policy.js";
-import { clicommands, surfacepalette } from "./views.js";
+} from "./policy.ts";
+import { clicommands, surfacepalette } from "./views.ts";
 import {
   apifreezedate,
   apifreezerelease,
@@ -68,13 +68,13 @@ import {
   protocolsupported,
   sharedprotocolversion,
   type capmanifestsurface,
-} from "./apifreeze.js";
-import { toolcallframe } from "./protocol.js";
-import { defaultmaskshapes, maskmarker } from "./security.js";
-import { sessionmemory } from "./memory.js";
-import { acquirerunlock, releaserunlock } from "./run.js";
-import { exportlogchain } from "./security.js";
-import { packageversion } from "./version.js";
+} from "./apifreeze.ts";
+import { toolcallframe } from "./protocol.ts";
+import { defaultmaskshapes, maskmarker } from "./security.ts";
+import { sessionmemory } from "./memory.ts";
+import { acquirerunlock, releaserunlock } from "./run.ts";
+import { exportlogchain } from "./security.ts";
+import { packageversion } from "./version.ts";
 import {
   createservesession,
   routeserveframe,
@@ -83,8 +83,8 @@ import {
   transportendpoints,
   defaultmcpport,
   localhostbind,
-} from "./mcp.js";
-import { createlinepump, httpanswer, httpendpoint, parsepost, routepath } from "./http.js";
+} from "./mcp.ts";
+import { createlinepump, httpanswer, httpendpoint, parsepost, routepath } from "./http.ts";
 import {
   hostmanifestdestination,
   installnativehost,
@@ -92,7 +92,7 @@ import {
   nativediagnostics,
   nativehostmanifesttemplate,
   uninstallnativehost,
-} from "./bridge.js";
+} from "./bridge.ts";
 import type {
   auditevent,
   cliconfiguration,
@@ -123,7 +123,7 @@ import type {
   workflowdocument,
   workflowrecord,
   workflowrun,
-} from "./types.js";
+} from "./types.ts";
 
 const forbidden = new Set([
   "debugger",
@@ -1093,8 +1093,8 @@ async function cmdserve(args: string[]): Promise<void> {
     );
   };
   const handle = async (
-    frame: import("./types.js").jsonrpcframe,
-  ): Promise<import("./types.js").jsonrpcframe | undefined> => {
+    frame: import("./types.ts").jsonrpcframe,
+  ): Promise<import("./types.ts").jsonrpcframe | undefined> => {
     const outcome = await routeserveframe({ frame, state: holder.session, now: Date.now(), execute: execute as never });
     holder.session = outcome.state;
     return outcome.response;
@@ -1185,7 +1185,7 @@ async function cmdserve(args: string[]): Promise<void> {
         return;
       }
       const frames = Array.isArray(parsed.message) ? parsed.message : [parsed.message];
-      const answers: import("./types.js").jsonrpcframe[] = [];
+      const answers: import("./types.ts").jsonrpcframe[] = [];
       for (const frame of frames) {
         if (frame.id === undefined) continue;
         const answer = await handle(frame);
@@ -1194,7 +1194,7 @@ async function cmdserve(args: string[]): Promise<void> {
       response.writeHead(200, { "content-type": "application/json" });
       response.end(
         answers.length === 1
-          ? httpanswer(answers[0] as import("./types.js").jsonrpcframe)
+          ? httpanswer(answers[0] as import("./types.ts").jsonrpcframe)
           : httpanswer({
               jsonrpc: "2.0",
               id: null,
@@ -1798,7 +1798,7 @@ if (cliDirectEntry || cliBunEntry)
   });
 
 /* ── Merged from clitools.ts: the cli tool surface. ── */
-import { recordoutcome, recordstep } from "./progress.js";
+import { recordoutcome, recordstep } from "./progress.ts";
 
 /**
  * Cli tools logic of the 1.1.80 family.

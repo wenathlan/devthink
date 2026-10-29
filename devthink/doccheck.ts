@@ -1,16 +1,12 @@
-/** Verifies the documentation stays consistent with the code: the kind documentation covers every action kind of the catalog with its fields and a schema valid example, the reference tables mirror the cli commands, the protocol messages, the error codes, the audit kinds, the configuration keys, the mcp tools and the capability manifests, the doc links resolve, the code blocks state their language, the flow diagrams follow the shared style, the changelog covers every released version and the readme claims match the surfaces — every gap is a failing check, the committed record tests/devthink.doccheck.ts (the doccheckrecord const this module carries, migrated from devthink/artifacts/doccheck.json when the flat folder law dissolved the artifacts folder) preserves the report, and the gate exits nonzero on any gap. The sync mode (`node ../tests/devthink.doccheck.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
+/** Verifies the documentation stays consistent with the code: the kind documentation covers every action kind of the catalog with its fields and a schema valid example, the reference tables mirror the cli commands, the protocol messages, the error codes, the audit kinds, the configuration keys, the mcp tools and the capability manifests, the doc links resolve, the code blocks state their language, the flow diagrams follow the shared style, the changelog covers every released version and the readme claims match the surfaces — every gap is a failing check, the committed record devthink/doccheck.ts (the doccheckrecord const this module carries, migrated from devthink/artifacts/doccheck.json when the flat folder law dissolved the artifacts folder) preserves the report, and the gate exits nonzero on any gap. The sync mode (`node doccheck.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
 import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { promisify } from "node:util";
-<<<<<<< HEAD:tests/devthink.doccheck.ts
 import { pathToFileURL } from "node:url";
-import { summaryproblemsof, syncmode, syncrecord } from "./devthink.records.ts";
-import type { actionkind } from "../devthink/types.ts";
-=======
+import { summaryproblemsof, syncmode, syncrecord } from "./records.ts";
 import type { actionkind } from "./types.ts";
->>>>>>> cfc383ca (fix(family): the tests village answers the application law — every suite folds into its own app home, the gates ride the app roots unprefixed, the workflows drop the symlink bridges, and the one root envelope keeps only the eleven villages (#171)):devthink/doccheck.ts
 
 const execute = promisify(execFile);
 const checks: Array<{ name: string; ok: boolean; detail: string }> = [];
@@ -28,7 +24,6 @@ async function text(path: string) {
 const packagejson = JSON.parse(await text("package.json"));
 const release = String(packagejson.version);
 
-<<<<<<< HEAD:tests/devthink.doccheck.ts
 /** Runs the documentation consistency suite and answers the report the committed record carries: the module stays import safe (the sweep and the matrix read its record), so the checks run only under the direct invocation. */
 export async function rundocchecksuite(): Promise<doccheckreport> {
   /* the gate runs after the build: the kind catalog, the tool catalog and the message catalog live in the compiled modules. */
@@ -51,22 +46,9 @@ export async function rundocchecksuite(): Promise<doccheckreport> {
       summary: { total: checks.length, passed: checks.filter((check) => check.ok).length, failed: checks.filter((check) => !check.ok).length },
     };
   }
-  const { actionkindcatalog, actionrisk, needstarget } = await import("../devthink/dist/policy.js");
-  const { alltools, buildtoolcatalog } = await import("../devthink/dist/index.js");
-  const { frozenmessagecatalog } = await import("../devthink/dist/protocol.js");
-=======
-/* the gate runs after the build: the kind catalog, the tool catalog and the message catalog live in the compiled modules. */
-if (!existsSync("dist/policy.js") || !existsSync("dist/index.js") || !existsSync("dist/protocol.js")) {
-  console.error(
-    "DOCCHECK The gate reads the compiled kind, tool and message catalogs; run pnpm build before the documentation check.",
-  );
-  process.exitCode = 1;
-}
-if (process.exitCode !== 1) {
   const { actionkindcatalog, actionrisk, needstarget } = await import("./dist/policy.js");
   const { alltools, buildtoolcatalog } = await import("./dist/index.js");
   const { frozenmessagecatalog } = await import("./dist/protocol.js");
->>>>>>> cfc383ca (fix(family): the tests village answers the application law — every suite folds into its own app home, the gates ride the app roots unprefixed, the workflows drop the symlink bridges, and the one root envelope keeps only the eleven villages (#171)):devthink/doccheck.ts
   const catalog: string[] = actionkindcatalog();
   const riskof = Object.fromEntries(catalog.map((kind) => [kind, actionrisk(kind as actionkind)]));
   const targetof = Object.fromEntries(catalog.map((kind) => [kind, needstarget(kind as actionkind)]));
@@ -311,7 +293,7 @@ if (process.exitCode !== 1) {
     process.exitCode = 1;
   } else {
     console.log(
-      `Documentation verified for ${release}: ${catalog.length} kinds, ${auditkinds.length} audit kinds, ${tools.length} mcp tools, ${frozenmessagecatalog.length} protocol messages, ${uniquecommands.length} cli commands, ${mermaidblocks} flow diagrams; ${report.summary.passed} check families green, the record in tests/devthink.doccheck.ts.`,
+      `Documentation verified for ${release}: ${catalog.length} kinds, ${auditkinds.length} audit kinds, ${tools.length} mcp tools, ${frozenmessagecatalog.length} protocol messages, ${uniquecommands.length} cli commands, ${mermaidblocks} flow diagrams; ${report.summary.passed} check families green, the record in devthink/doccheck.ts.`,
     );
   }
   return report;

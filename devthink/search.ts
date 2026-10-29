@@ -64,15 +64,15 @@ import {
   PLUGIN_VERSION,
   STREAM_GENERATE_ENDPOINT,
   FETCH_TIMEOUT_MS,
-} from "./constants.js";
-import { fnv1a32, getJitter, isRetryableStatus } from "./core.js";
+} from "./constants.ts";
+import { fnv1a32, getJitter, isRetryableStatus } from "./core.ts";
 import {
   buildAntagravityHeaders,
   getDynamicUserAgent,
   getXGoogApiClient,
   normalizeArch,
   normalizePlatform,
-} from "./fingerprint.js";
+} from "./fingerprint.ts";
 // v2.1.15 Phase A: model-identification families (search/default model ids,
 // thinking tables, image-gen helpers) are imported from models.ts — THE
 // single owner — instead of the former constants.js re-exports.
@@ -87,8 +87,8 @@ import {
   THINKING_LEVELS,
   buildImageGenConfig,
   isImageGenModel,
-} from "./models.js";
-import type { ThinkingLevel } from "./models.js";
+} from "./models.ts";
+import type { ThinkingLevel } from "./models.ts";
 // v2.1.15 Phase A: parseGrounding moved from core.ts — web-citation
 // extraction is search-grounding domain logic.
 function parseGrounding(meta: any): { uri: string; title?: string }[] {

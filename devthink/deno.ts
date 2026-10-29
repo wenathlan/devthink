@@ -3,9 +3,9 @@
  * The shared core for deno consumers: the build emits this entry as the esm bundle of the deno platform target, with the deno kv storage adapter and the platform clock, logger and fetch primitives wired through the platform adapter contract, and the configuration read behind the adapter seam so the entry never imports the deno file api directly.
  */
 
-export * from "./index.js";
-import { denoplatformadapter, stampbundle } from "./runtime.js";
-import type { denokvprimitives } from "./runtime.js";
+export * from "./index.ts";
+import { denoplatformadapter, stampbundle } from "./runtime.ts";
+import type { denokvprimitives } from "./runtime.ts";
 
 stampbundle("esm", "deno.js");
 

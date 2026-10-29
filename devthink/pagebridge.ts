@@ -1,23 +1,23 @@
-import type { observation, regionrect, resolvedtarget, toolstep } from "./types.js";
-import { maskformstate, maskobservation, masktypedvalues } from "./security.js";
-import { runpageaction, type stepresult } from "./page.js";
-import { runpageread } from "./page.js";
-import { runpagecontrol } from "./page.js";
-import { runinteractstep } from "./page.js";
-import { runpointerstep } from "./page.js";
-import { runpagenav } from "./page.js";
-import { harvestdialoglog, type observeddialog } from "./page.js";
-import { builda11ytree, buildpagetree, buildreader, runpageobservation } from "./page.js";
-import { collecttables, detectlistpatterns, collectsiblings, normalizetable, runpagedetection } from "./page.js";
-import { runpagewatch } from "./page.js";
-import { runcdpstep, rundebugwatch, flushconsole } from "./page.js";
-import { runprofilestep } from "./page.js";
-import { runemulationstep, revertemulationlayer } from "./page.js";
-import { runpageform } from "./page.js";
-import { runpagewizard } from "./page.js";
-import { runpagedata } from "./page.js";
-import { checksum } from "./data.js";
-import { clean, elementlabel as label, elementselector as selector, resolvestep } from "./page.js";
+import type { observation, regionrect, resolvedtarget, toolstep } from "./types.ts";
+import { maskformstate, maskobservation, masktypedvalues } from "./security.ts";
+import { runpageaction, type stepresult } from "./page.ts";
+import { runpageread } from "./page.ts";
+import { runpagecontrol } from "./page.ts";
+import { runinteractstep } from "./page.ts";
+import { runpointerstep } from "./page.ts";
+import { runpagenav } from "./page.ts";
+import { harvestdialoglog, type observeddialog } from "./page.ts";
+import { builda11ytree, buildpagetree, buildreader, runpageobservation } from "./page.ts";
+import { collecttables, detectlistpatterns, collectsiblings, normalizetable, runpagedetection } from "./page.ts";
+import { runpagewatch } from "./page.ts";
+import { runcdpstep, rundebugwatch, flushconsole } from "./page.ts";
+import { runprofilestep } from "./page.ts";
+import { runemulationstep, revertemulationlayer } from "./page.ts";
+import { runpageform } from "./page.ts";
+import { runpagewizard } from "./page.ts";
+import { runpagedata } from "./page.ts";
+import { checksum } from "./data.ts";
+import { clean, elementlabel as label, elementselector as selector, resolvestep } from "./page.ts";
 
 /**
  * Page bridge for reviewed steps.

@@ -97,8 +97,8 @@ import {
   HEADERS_TO_STRIP,
   PLUGIN_VERSION,
   PROJECT_FALLBACK,
-} from "./constants.js";
-import { fnv1a32, fnv1a32Hex, getJitter, isRetryableStatus } from "./core.js";
+} from "./constants.ts";
+import { fnv1a32, fnv1a32Hex, getJitter, isRetryableStatus } from "./core.ts";
 
 const MODELS_2026_SET = new Set<string>(FETCH_AVAILABLE_MODELS_2026 as readonly string[]);
 export const TOOL_NAME_MAX_LENGTH = 64 as const;
@@ -139,7 +139,7 @@ export const THINKING_BUDGET_MIN = 1024 as const;
 export {
   GEMINI_CLI_OAUTH_CLIENT_ID as GEMINI_CLI_CLIENT_ID,
   GEMINI_CLI_OAUTH_CLIENT_SECRET as GEMINI_CLI_CLIENT_SECRET,
-} from "./constants.js";
+} from "./constants.ts";
 
 import {
   buildClientMetadata,
@@ -148,8 +148,8 @@ import {
   normalizeArch,
   normalizePlatform,
   X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT,
-} from "./fingerprint.js";
-import type { FetchAvailableModel2026, ThinkingLevel } from "./models.js";
+} from "./fingerprint.ts";
+import type { FetchAvailableModel2026, ThinkingLevel } from "./models.ts";
 // v2.1.15 Phase A: model-identification families (the observed 2026-08-25
 // fetchAvailableModels list, the Gemini-CLI-only routing list, search model
 // ids, thinking tables and the endpoint routing orders/classifiers) are
@@ -169,9 +169,9 @@ import {
   THINKING_BUDGET_MAX_CLAUDE,
   THINKING_BUDGET_MAX_GEMINI,
   THINKING_LEVELS,
-} from "./models.js";
+} from "./models.ts";
 
-export type { ThinkingLevel } from "./models.js";
+export type { ThinkingLevel } from "./models.ts";
 /** Historical request-module alias of the models.ts owner list. */
 export {
   ENDPOINT_ORDER_ANTIGRAVITY,
@@ -186,7 +186,7 @@ export {
   THINKING_BUDGET_MAX_CLAUDE,
   THINKING_BUDGET_MAX_GEMINI,
   THINKING_LEVELS,
-} from "./models.js";
+} from "./models.ts";
 
 // v2.1.15 Phase A: the ModelId2026 alias re-export was deleted — the name
 // is owned by models.ts (import it from there when needed).
@@ -2404,7 +2404,7 @@ export const CODE_ASSIST_METHOD_PATHS = {
 
 /** Cloud Code Assist HOST map (canonical owner: models.ts).
  * @deprecated legacy alias kept for the historical request-module surface. */
-export { CODE_ASSIST_ENDPOINTS } from "./models.js";
+export { CODE_ASSIST_ENDPOINTS } from "./models.ts";
 
 /**
  * Union of model ids listed in {@link FETCH_AVAILABLE_MODELS_2026}.

@@ -19,10 +19,10 @@ import type {
   syncsettings,
   syncrecord,
   telemetrypolicy,
-} from "./types.js";
-import { defaultmaskshapes, maskexport, maskmarker } from "./security.js";
-import { exportchaingate, exportmaskgate, importexportgate } from "./policy.js";
-import { verifylogchain } from "./security.js";
+} from "./types.ts";
+import { defaultmaskshapes, maskexport, maskmarker } from "./security.ts";
+import { exportchaingate, exportmaskgate, importexportgate } from "./policy.ts";
+import { verifylogchain } from "./security.ts";
 
 /**
  * Exporttools logic of the 1.1.67 family.
@@ -280,7 +280,7 @@ export function exportextractions(input: {
 }
 
 /* ── Merged from minimization.ts: the 1.1.90 consolidation interns the correlated minimization logic here, so no variation of the same file lives beside another. ── */
-import { randomid } from "./memory.js";
+import { randomid } from "./memory.ts";
 
 /**
  * Data minimization logic of the 1.1.79 family.

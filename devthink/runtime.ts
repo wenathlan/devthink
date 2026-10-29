@@ -17,9 +17,9 @@ import type {
   runtimeadapterdeclaration,
   featuredowngrade,
   platformmatrix,
-} from "./types.js";
-import type { memoryadapter } from "./memory.js";
-import { packageversion } from "./version.js";
+} from "./types.ts";
+import type { memoryadapter } from "./memory.ts";
+import { packageversion } from "./version.ts";
 
 /**
  * Platform adapter logic of the 1.1.81 family.

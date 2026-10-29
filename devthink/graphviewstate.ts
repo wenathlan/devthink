@@ -13,7 +13,7 @@
  * surface never improvises geometry.
  */
 
-import { type nodegraph, descendants, stagewaves } from "./graphnodes.js";
+import { type nodegraph, descendants, stagewaves } from "./graphnodes.ts";
 
 /** One drawn position: the x/y on the view canvas plus the layer and the row that produced them. */
 export interface viewposition {

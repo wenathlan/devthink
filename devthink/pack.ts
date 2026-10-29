@@ -14,7 +14,7 @@ import type {
   vsixmanifestfields,
   vsixpackinput,
   vsixpackoutput,
-} from "./types.js";
+} from "./types.ts";
 
 /**
  * Artifactmanifest of the 1.1.87 publishing pipeline family.
@@ -324,7 +324,7 @@ export function vsixpackmanifestfields(version: string): vsixmanifestfields {
       "Consent-first browser agent bridge: the chatbridge surface and the library inside a vs code webview panel.",
     engines: { vscode: "^1.85.0" },
     categories: ["Other"],
-    main: "./extensionhost.js",
+    main: "./extensionhost.ts",
     commands: [
       { command: "devthink.openbridge", title: "Devthink: open the bridge panel" },
       { command: "devthink.settings", title: "Devthink: open the relay settings" },
@@ -431,7 +431,7 @@ export function vsixwebviewpage(relaypath: string): string {
 <p class="status" id="status">offline: no relay url configured</p>
 <script type="module">
   const status = document.getElementById("status") ?? { textContent: "" };
-  const libraryurl = window.devthinklibraryurl ?? "./index.js";
+  const libraryurl = window.devthinklibraryurl ?? "./index.ts";
   const library = await import(libraryurl);
   document.getElementById("pair")?.addEventListener("click", () => {
     const url = (document.getElementById("relayurl")?.value ?? "").trim();

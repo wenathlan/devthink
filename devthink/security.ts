@@ -17,8 +17,8 @@ import type {
   revokerunevent,
   sensitiveclass,
   toolstep,
-} from "./types.js";
-import { randomid } from "./memory.js";
+} from "./types.ts";
+import { randomid } from "./memory.ts";
 
 /**
  * Origin consent policy logic of the 1.1.61 family.
@@ -547,7 +547,7 @@ export function safedefaultnotice(origin: string): string {
 
 /* ── Merged from inboundguard.ts ── */
 
-import type { connectallowentry, deferredevent, origincheckverdict, ratelimitbucket, schemaerror } from "./types.js";
+import type { connectallowentry, deferredevent, origincheckverdict, ratelimitbucket, schemaerror } from "./types.ts";
 
 /**
  * Inbound guard logic of the 1.1.62 family.
@@ -836,7 +836,7 @@ export function deferredready(deferred: deferredevent, now: number): boolean {
 
 /* ── Merged from maskinputs.ts ── */
 
-import type { maskrule, observation, runsettings } from "./types.js";
+import type { maskrule, observation, runsettings } from "./types.ts";
 
 /**
  * Mask inputs logic of the 1.1.61 family.
@@ -985,7 +985,7 @@ export function maskexport(record: Record<string, unknown>, shapes: string[]): R
 
 /* ── Merged from immutablelog.ts ── */
 
-import type { immutablelogentry, logeventkind, loghash, sealedlog, storedrunlog } from "./types.js";
+import type { immutablelogentry, logeventkind, loghash, sealedlog, storedrunlog } from "./types.ts";
 
 /**
  * Immutable run log logic of the 1.1.61 family.
@@ -1215,7 +1215,7 @@ export async function exportlogchain(
 
 /* ── Merged from phishguard.ts ── */
 
-import type { phishverdict } from "./types.js";
+import type { phishverdict } from "./types.ts";
 
 /**
  * Phishguard logic of the 1.1.62 family.
@@ -1378,7 +1378,7 @@ export function phishnotetext(verdict: phishverdict): string {
 
 /* ── Merged from secretvault.ts ── */
 
-import type { secretvaultentry } from "./types.js";
+import type { secretvaultentry } from "./types.ts";
 
 /**
  * Secret vault logic of the 1.1.62 family.
@@ -1582,7 +1582,7 @@ export function vaultprompttext(entry: secretvaultentry, origin: string): string
 
 /* ── Merged from transparency.ts ── */
 
-import type { permdiffrecord, transparencygrant } from "./types.js";
+import type { permdiffrecord, transparencygrant } from "./types.ts";
 
 /**
  * Transparency logic of the 1.1.62 family.

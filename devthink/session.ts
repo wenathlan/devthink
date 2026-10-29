@@ -22,7 +22,7 @@ import type {
   snapshotplan,
   stepoutcome,
   taskstate,
-} from "./types.js";
+} from "./types.ts";
 
 /** The session kinds of the 1.1.49 memory family: task state persistence, session capture, restore, naming, diffing, search, export and import. */
 export const sessionkinds: string[] = [
@@ -466,8 +466,8 @@ import type {
   sitenote,
   storedrunlog,
   tabsessionref,
-} from "./types.js";
-import { randomid } from "./memory.js";
+} from "./types.ts";
+import { randomid } from "./memory.ts";
 
 /**
  * Session interface logic of the 1.1.63 family.

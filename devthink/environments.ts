@@ -12,7 +12,7 @@ import type {
   toolstep,
   workerrequest,
   workerresponse,
-} from "./types.js";
+} from "./types.ts";
 
 /**
  * Execution environment logic of the 1.1.60 family.
@@ -399,7 +399,7 @@ import type {
   permissionstate,
   presetlibrary,
   stackframe,
-} from "./types.js";
+} from "./types.ts";
 
 /**
  * Emulation layer engine for the 1.1.48 family.
@@ -764,7 +764,7 @@ export function locationconsentcovers(
 }
 
 /* ── Merged from sandboxframe.ts ── */
-import type { environmentprovenance, sandboxrender, sandboxrenderresult } from "./types.js";
+import type { environmentprovenance, sandboxrender, sandboxrenderresult } from "./types.ts";
 
 /**
  * Sandbox frame logic of the 1.1.60 family.

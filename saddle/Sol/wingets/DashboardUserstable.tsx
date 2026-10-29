@@ -60,7 +60,7 @@ export default function UsersTable({ mode, reloadkey }: UsersTableProps) {
 		return () => {
 			stopped = true;
 		};
-	}, [mode, reloadkey]);
+	}, [mode]);
 
 	const needle = query.trim().toLowerCase();
 	const rows = users.filter((user) => {

@@ -24,7 +24,7 @@ import type {
   traceannotation,
   tracerecord,
   watchexpression,
-} from "./types.js";
+} from "./types.ts";
 
 /**
  * Devtools protocol bus for the 1.1.46 debugging family.

@@ -509,8 +509,8 @@ for (const fixture of fixtureset) {
   else await writeFile(record(fixture.target), await readFile(join(codefixturedirectory, fixturesetsource(fixture.source))), "utf8");
 }
 const umdexampletext = umdexample;
-const umdexamplestamped = `<!-- devthink ${packagejson.version} umd example page — GPL-3.0-only -->\n${umdexampletext.replace("../../dist/devthink.umd.js", "./devthink.umd.js")}`;
-if (!umdexamplestamped.endsWith(umdexampletext.replace("../../dist/devthink.umd.js", "./devthink.umd.js")))
+const umdexamplestamped = `<!-- devthink ${packagejson.version} umd example page — GPL-3.0-only -->\n${umdexampletext.replace("../../dist/devthink.umd.js", "./devthink.umd.ts")}`;
+if (!umdexamplestamped.endsWith(umdexampletext.replace("../../dist/devthink.umd.js", "./devthink.umd.ts")))
   throw new Error(
     "The umd example source carries the dist bundle reference the build rewrites; the reference stayed unchanged.",
   );
@@ -1245,9 +1245,9 @@ const stagedpackage = {
   engines: packagejson.engines,
   sideEffects: false,
   publishConfig: packagejson.publishConfig,
-  main: "./index.js",
+  main: "./index.ts",
   types: "./index.d.ts",
-  bin: { devthink: "./cli.js" },
+  bin: { devthink: "./cli.ts" },
   exports: remappaths(packagejson.exports),
 };
 await writeFile(join(stage, "package.json"), `${JSON.stringify(stagedpackage, null, 2)}\n`, "utf8");
@@ -1297,7 +1297,7 @@ for (const target of [...new Set(exporttargets)]) {
     );
   }
 }
-if (stagedpackage.bin.devthink !== "./cli.js")
+if (stagedpackage.bin.devthink !== "./cli.ts")
   throw new Error("The staged bin entry resolves the cli at the package root.");
 console.log(
   `Flat npm package staged: distpackage of ${stagedfiles.length + 1} files (${stagerootfiles.length} root surface files, ${stagedeclarations.length * 2} declaration files, ${stagedfiles.filter((file) => file.startsWith("caps/") || file.startsWith("schemas/") || file.startsWith("fixtures/")).length} grouped data files) with the package scoped checksums and the root manifest — pack it with npm pack ./distpackage.`,

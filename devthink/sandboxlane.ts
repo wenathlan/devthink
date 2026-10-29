@@ -25,7 +25,7 @@ import path from "node:path";
 // engine source, so the vendor can never drift from the registry in
 // silence — and the vendor retires the day the published envelope carries
 // the built registry (the import returns to the library specifier)
-import { MODALITIES, planreport } from "./modalities.js";
+import { MODALITIES, planreport } from "./modalities.ts";
 
 /**
  * @section jail — the session root, the id gate and the path containment

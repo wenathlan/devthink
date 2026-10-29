@@ -12,7 +12,7 @@ const execute = promisify(execFile);
 
 describe("the release candidate verification matrix record", () => {
   it("declares every cell family the gate enumerates over the candidate surface", async () => {
-    const source = await readFile("matrixverify.ts", "utf8");
+    const source = await readFile("./matrixverify.ts", "utf8");
     for (const family of ["kinds", "surfaces", "cli", "mcp", "migration", "importers", "gates"])
       expect(source).toContain(`family: "${family}"`);
     /* the gate covers the fake tab provider of every browser kind, the full kind catalog, the standing gates and its committed record */
@@ -31,7 +31,7 @@ describe("the release candidate verification matrix record", () => {
     const built = existsSync("dist/index.js");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
     /* the matrix joins the committed records of the agent, cost, documentation and sweep gates beside its self contained subprocess cells, so a built tree runs the gate itself (the gate walks every cell and verifies the record stays internally consistent), while a lane that skipped the build asserts the committed record only and leaves the live cell walk to the gate chain that joins the matrix in order */
-    if (built) await execute("node", ["matrixverify.ts"]);
+    if (built) await execute("node", ["./matrixverify.ts"]);
     const report = matrixverifyrecord;
     expect(report.release).toBe(packagejson.version);
     expect(report.summary.failed).toBe(0);
@@ -68,7 +68,7 @@ describe("the release candidate pool audit record", () => {
     const built = existsSync("dist/index.js");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
     /* a built tree runs the gate itself (the gate re-audits the pool against the shipped symbol corpus and verifies the record stays internally consistent), while a lane that skipped the build asserts the committed record only */
-    if (built) await execute("node", ["poolaudit.ts"]);
+    if (built) await execute("node", ["./poolaudit.ts"]);
     const report = poolcoveragerecord;
     expect(report.release).toBe(packagejson.version);
     expect(report.summary.failed).toBe(0);

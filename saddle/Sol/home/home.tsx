@@ -52,8 +52,8 @@ import {
         type sandboxosid,
 } from '../../sandboxprofile.ts';
 import { HomeEntrygate as EntryGate } from '../wingets';
-import { MetricStrip as MetricStrip } from '../wingets';
-import { RuntimeDiagram as RuntimeDiagram } from '../wingets';
+import { MetricStrip } from '../wingets';
+import { RuntimeDiagram } from '../wingets';
 
 export * from '../wingets';
 export * from '../wingets';

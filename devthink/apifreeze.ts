@@ -4,8 +4,8 @@
  * No new capability enters the library through this family: the module carries frozen data and pure guarantees only — the message schemas stay in protocol.ts and types.ts, the gates stay in policy.ts, and every surface list here mirrors the code it freezes so the apifreeze gate can verify the mirror never drifts.
  */
 
-import { actionkindids, protocolmajorversion, protocolversion } from "./types.js";
-import { packageversion, protocolfloormajor } from "./version.js";
+import { actionkindids, protocolmajorversion, protocolversion } from "./types.ts";
+import { packageversion, protocolfloormajor } from "./version.ts";
 
 /* ── The protocolv2 negotiation of the 1.1.91 api freeze. ── */
 

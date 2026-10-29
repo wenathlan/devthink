@@ -28,9 +28,9 @@ import type {
   tabwatchevent,
   toolstep,
   urlvisit,
-} from "./types.js";
-import { parseoptions } from "./policy.js";
-import { assigntasktab, tasktabs } from "./progress.js";
+} from "./types.ts";
+import { parseoptions } from "./policy.ts";
+import { assigntasktab, tasktabs } from "./progress.ts";
 
 /**
  * Tabs and windows command logics for reviewed steps.
@@ -345,7 +345,7 @@ export function trackedtasktabs(progress: planprogress | undefined, planid: stri
 }
 
 /* ── Merged from filescommand.ts: the 1.1.90 consolidation interns the correlated filescommand logic here, so no variation of the same file lives beside another. ── */
-import { checksum } from "./data.js";
+import { checksum } from "./data.ts";
 
 /**
  * Files, clipboard and downloads command logics for the background executors.

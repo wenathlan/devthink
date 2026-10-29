@@ -50,11 +50,11 @@ import { mkdir } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { PrismaLibSql } from "@prisma/adapter-libsql";
 import type { PrismaClient } from "@prisma/client";
-import { ensurePaths, resolvePaths, type DevThinkConfig, type DevThinkPaths } from "./config.js";
+import { ensurePaths, resolvePaths, type DevThinkConfig, type DevThinkPaths } from "./config.ts";
 import { createCompactId } from "./queue.ts";
-import type { ChatMessage } from "./providers.js";
-import { getIdentity } from "./account.js";
-import { isSecureRemoteEndpoint } from "./gateway.js";
+import type { ChatMessage } from "./providers.ts";
+import { getIdentity } from "./account.ts";
+import { isSecureRemoteEndpoint } from "./gateway.ts";
 
 /* ============================================================================
  * @section 1 — storage: the local sqlite mirror of the workbench records.

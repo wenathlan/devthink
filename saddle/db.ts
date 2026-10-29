@@ -468,7 +468,7 @@ function migrateusagecolumns(target: DatabaseSync): void {
 /* ------------------------------------------------------------------ */
 
 /** the single database connection owned by this module. */
-let database = opendatabase(dbpath);
+const database = opendatabase(dbpath);
 
 /** memoized prepared statements keyed by their sql text. */
 const statements = new Map<string, StatementSync>();

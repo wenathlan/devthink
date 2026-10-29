@@ -16,9 +16,9 @@ import type {
   portableruleset,
   sensitiveclass,
   toolstep,
-} from "./types.js";
-import { missingclassconsents, originprofileof, profilegrade, sensitiveclassesof } from "./security.js";
-import { portablecapabilitygate, resolvedrisk } from "./policy.js";
+} from "./types.ts";
+import { missingclassconsents, originprofileof, profilegrade, sensitiveclassesof } from "./security.ts";
+import { portablecapabilitygate, resolvedrisk } from "./policy.ts";
 
 /**
  * Planlint logic of the 1.1.67 family.
@@ -349,11 +349,11 @@ import type {
   stepoutcome,
   stepstimelinenode,
   uisurface,
-} from "./types.js";
-import { defaultenvironment } from "./environments.js";
-import { matchingcorrections } from "./session.js";
-import { entryhashof } from "./security.js";
-import { randomid } from "./memory.js";
+} from "./types.ts";
+import { defaultenvironment } from "./environments.ts";
+import { matchingcorrections } from "./session.ts";
+import { entryhashof } from "./security.ts";
+import { randomid } from "./memory.ts";
 
 /**
  * Plan review surface logic of the 1.1.64 family, part one.

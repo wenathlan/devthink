@@ -13,7 +13,7 @@ import type {
   runstaterecord,
   sealedrunstate,
   urlhistoryentry,
-} from "./types.js";
+} from "./types.ts";
 
 /**
  * Run state logic of the 1.1.60 family.
@@ -432,7 +432,7 @@ export function exportrunstate(
 
 /* ── Merged from resilience.ts ── */
 
-import { iscomplete } from "./progress.js";
+import { iscomplete } from "./progress.ts";
 import type {
   agentplan,
   auditevent,
@@ -446,7 +446,7 @@ import type {
   runtransition,
   queuedtask,
   toolstep,
-} from "./types.js";
+} from "./types.ts";
 
 /**
  * Run lifecycle logic of the 1.1.70 family.
@@ -817,7 +817,7 @@ export function runsummaryof(input: {
 
 /* ── Merged from runhistory.ts ── */
 
-import type { agentsession, lockrecord, runtimelineevent, tabstate, urlvisit } from "./types.js";
+import type { agentsession, lockrecord, runtimelineevent, tabstate, urlvisit } from "./types.ts";
 
 /**
  * Run history logic of the 1.1.71 state depth family.
@@ -1098,7 +1098,7 @@ import type {
   stackframe,
   timelineentry,
   timelinesource,
-} from "./types.js";
+} from "./types.ts";
 
 /**
  * Run timeline logics for the 1.1.45 debugging family.
@@ -1445,8 +1445,8 @@ export function consolediff(input: {
 
 /* ── Merged from runbudget.ts ── */
 
-import type { budgetalert, runbudgetrecord, timeoutcancelevent, timeoutcancelpolicy } from "./types.js";
-import { randomid } from "./memory.js";
+import type { budgetalert, runbudgetrecord, timeoutcancelevent, timeoutcancelpolicy } from "./types.ts";
+import { randomid } from "./memory.ts";
 
 /**
  * Runbudget logic of the 1.1.69 family.
@@ -1583,7 +1583,7 @@ export function timeoutcancelpolicies(input: { steps: string[]; bound?: number }
 
 /* ── Merged from runresume.ts ── */
 
-import type { navdedupeentry, resumepoint, runcacheentry, stepprefetchhint } from "./types.js";
+import type { navdedupeentry, resumepoint, runcacheentry, stepprefetchhint } from "./types.ts";
 
 /**
  * Runresume logic of the 1.1.69 family.
@@ -1719,7 +1719,7 @@ export function stepprefetchhints(plan: {
 
 /* ── Merged from runreplay.ts ── */
 
-import type { immutablelogentry, runreplaysession, runreplaystep } from "./types.js";
+import type { immutablelogentry, runreplaysession, runreplaystep } from "./types.ts";
 
 /**
  * Runreplay logic of the 1.1.66 family.
@@ -1857,7 +1857,7 @@ export function replaycursorof(session: runreplaysession): { runid: string; curs
 
 /* ── Merged from runparallel.ts ── */
 
-import type { readparallelgroup, sessionreusegrant, warmselectorrecord } from "./types.js";
+import type { readparallelgroup, sessionreusegrant, warmselectorrecord } from "./types.ts";
 
 /**
  * Runparallel logic of the 1.1.69 family.
@@ -1953,8 +1953,8 @@ export function sessioncontainerof(input: { profile: string; taskid: string }): 
 
 /* ── Merged from backgroundruns.ts ── */
 
-import type { backgroundqueueentry } from "./types.js";
-import { backgroundrungate } from "./policy.js";
+import type { backgroundqueueentry } from "./types.ts";
+import { backgroundrungate } from "./policy.ts";
 
 /**
  * Background run queue logic of the 1.1.66 family.

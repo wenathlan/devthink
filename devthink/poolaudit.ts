@@ -1,4 +1,4 @@
-/** Audits the consolidated feature pool of the crx feature mining evidence against the shipped symbol surface: the gate parses the 626 candidate items of the featurepool corpus that lives inside devthink/crxharvest.ts (the harvest generator embedded the consolidated pool when it wrote the removed docs/12.crxfeaturemining.md report, so the generator source carries the corpus now), matches every item's vocabulary against the real exported symbol corpus (the 335 action kinds, the 35 mcp tools, the audit kinds, the cli commands, the 23 protocol messages and every declared export of the compiled declaration set), and records the per item disposition — implemented for the items whose vocabulary the shipped surface covers, planned for the partial matches the roadmap carried, and no item stays unknown. The committed record devthink/poolaudit.ts (the poolcoveragerecord const this module carries, migrated from devthink/artifacts/poolcoverage.json when the flat folder law dissolved the artifacts folder) preserves the report with no timestamps so reruns stay byte identical, and the gate exits nonzero when the pool parses to a different count, when an item stays unknown or when the implemented count regresses below the recorded floor. The sync mode (`node poolaudit.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
+/** Audits the consolidated feature pool of the crx feature mining evidence against the shipped symbol surface: the gate parses the 626 candidate items of the featurepool corpus that lives inside tests/crxharvest.ts (the harvest generator embedded the consolidated pool when it wrote the removed docs/12.crxfeaturemining.md report, so the generator source carries the corpus now), matches every item's vocabulary against the real exported symbol corpus (the 335 action kinds, the 35 mcp tools, the audit kinds, the cli commands, the 23 protocol messages and every declared export of the compiled declaration set), and records the per item disposition — implemented for the items whose vocabulary the shipped surface covers, planned for the partial matches the roadmap carried, and no item stays unknown. The committed record devthink/poolaudit.ts (the poolcoveragerecord const this module carries, migrated from devthink/artifacts/poolcoverage.json when the flat folder law dissolved the artifacts folder) preserves the report with no timestamps so reruns stay byte identical, and the gate exits nonzero when the pool parses to a different count, when an item stays unknown or when the implemented count regresses below the recorded floor. The sync mode (`node poolaudit.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
 import { existsSync } from "node:fs";
 import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
@@ -109,12 +109,12 @@ async function symbolcorpus() {
   return corpus;
 }
 
-/** Parses the consolidated feature pool of the harvest generator: the corpus the removed mining report carried survives as the featurepool constant inside crxharvest.ts, so the pool parses from its surviving source with the same normalization dedupe and the same running numbering the report builder applied when it rendered the numbered pool sections. */
+/** Parses the consolidated feature pool of the harvest generator: the corpus the removed mining report carried survives as the featurepool constant inside tests/crxharvest.ts, so the pool parses from its surviving source with the same normalization dedupe and the same running numbering the report builder applied when it rendered the numbered pool sections. */
 async function parsepool() {
-  const text = await readFile("crxharvest.ts", "utf8");
+  const text = await readFile("./crxharvest.ts", "utf8");
   const poolstart = text.indexOf("const featurepool = [");
   if (poolstart === -1)
-    throw new Error("The featurepool corpus of crxharvest.ts is absent; the harvest generator carries the consolidated pool.");
+    throw new Error("The featurepool corpus of tests/crxharvest.ts is absent; the harvest generator carries the consolidated pool.");
   const pooltext = text.slice(poolstart, text.indexOf("\n];", poolstart));
   const items = [];
   const seen = new Set();

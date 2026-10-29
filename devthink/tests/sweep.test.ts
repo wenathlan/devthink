@@ -11,7 +11,7 @@ const execute = promisify(execFile);
 
 describe("the release candidate defect sweep record", () => {
   it("declares every check family the gate runs over the trails, the sources and the runtime", async () => {
-    const source = await readFile("sweep.ts", "utf8");
+    const source = await readFile("./sweep.ts", "utf8");
     /* the record calls may wrap across lines (the formatter owns the wrap),
        so the family assertion reads the quoted family name itself */
     for (const family of ["audittrails", "todoentries", "replay", "scans", "runtime"])
@@ -28,7 +28,7 @@ describe("the release candidate defect sweep record", () => {
     const built = existsSync("dist/index.js");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
     /* the sweep aggregates the committed records the earlier gates carry, so the lane independence holds over the built tree: a built tree runs the gate itself (the gate walks the trails, the source scans and the runtime checks and verifies the record stays internally consistent), while a lane that skipped the build asserts the committed record only and leaves the live walk to the gate chain that joins the sweep in order */
-    if (built) await execute("node", ["sweep.ts"]);
+    if (built) await execute("node", ["./sweep.ts"]);
     const report = sweeprecord;
     expect(report.release).toBe(packagejson.version);
     expect(report.summary.open).toBe(0);

@@ -13,7 +13,7 @@ import type {
   swarmaction,
   swarmcost,
   taskqueue,
-} from "./types.js";
+} from "./types.ts";
 
 /** One per agent status card of the multi agent dashboard: the agent identity with its role, state, depth and tab binding, the live progress of its claimed task, the usage counters against its budget, the unread mailbox count and the handoff arrows it took part in. */
 export interface agentstatuscard {
@@ -345,7 +345,7 @@ export function costperagentof(input: { usage: agentusage[]; totals?: swarmcost 
       steps,
       ...(input.totals?.currency !== undefined ? { currency: input.totals.currency } : {}),
     },
-    source: "the per agent usage the costcert reconciliation of tests/devthink.costcert.ts recomputes",
+    source: "the per agent usage the costcert reconciliation of devthink/costcert.ts recomputes",
   };
 }
 

@@ -128,7 +128,7 @@ describe("the example gallery of the 2.0.0 release", () => {
     const built = existsSync("dist/gallery.json");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
     /* a built tree runs the gate itself, so every lane that builds before the suite verifies the committed gallery record without depending on gate ordering: the gate reruns the gallery over the built fixture set and verifies the record stays internally consistent */
-    if (built) await execute("node", ["recipes.ts"]);
+    if (built) await execute("node", ["./recipes.ts"]);
     const gallery = JSON.parse(gallerytext) as galleryindex;
     const report: recipereport = reciperecord;
     /* the record answers the current release with every entry passing and every check ok */

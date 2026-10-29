@@ -41,15 +41,15 @@ import {
   OAUTH_TOKEN_URL,
   PROJECT_FALLBACK,
   resolveOpenCodeBaseDir,
-} from "./constants.js";
+} from "./constants.ts";
 // v2.1.15 Phase B: the minimal Gemini CLI UA and the gl-node api-client
 // snapshot come from the owners (constants.js / fingerprint.js).
 import {
   GEMINI_CLI_USER_AGENT_MINIMAL as GEMINI_CLI_USER_AGENT,
   GEMINI_CLI_USER_AGENT as GEMINI_CLI_USER_AGENT_FULL,
-} from "./constants.js";
-import { X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.js";
-import { resolveConfigDir as configResolveConfigDir } from "./config.js";
+} from "./constants.ts";
+import { X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.ts";
+import { resolveConfigDir as configResolveConfigDir } from "./config.ts";
 // v2.1.16 single-owner fix + the grand merge consolidation: the real
 // antigravity-cli client pair is imported from constants.js (the layer-0
 // raw-value owner — env-overridable, live-validated); the former local
@@ -59,15 +59,15 @@ import { resolveConfigDir as configResolveConfigDir } from "./config.js";
 import {
   ANTIGRAVITY_CLI_OAUTH_CLIENT_ID as AGCLI_CLIENT_ID_OWNER,
   ANTIGRAVITY_CLI_OAUTH_CLIENT_SECRET as AGCLI_CLIENT_SECRET_OWNER,
-} from "./constants.js";
+} from "./constants.ts";
 import {
   CLOUDCODE_BASE_URL,
   CLOUDCODE_ENDPOINTS,
   CLIENT_METADATA_STRING as CLIENT_METADATA,
   GEMINI_CLI_SCOPES,
   OAUTH_USERINFO_URL_V3,
-} from "./constants.js";
-import { GEMINI_CLI_SCOPES as OAUTH_SCOPES } from "./constants.js";
+} from "./constants.ts";
+import { GEMINI_CLI_SCOPES as OAUTH_SCOPES } from "./constants.ts";
 
 // Re-exports preserve this module's public surface after the dedupe.
 export {
@@ -127,8 +127,8 @@ export const ANTIGRAVITY_CLI_OAUTH_CLIENT_SECRET: string = AGCLI_CLIENT_SECRET_O
 // Model2026 union moved to models.ts (MODELS_2026_LEGACY / Model2026) —
 // imported under the historical name and re-exported so the public surface
 // is unchanged.
-import { MODELS_2026_LEGACY as MODELS_2026 } from "./models.js";
-import type { Model2026 } from "./models.js";
+import { MODELS_2026_LEGACY as MODELS_2026 } from "./models.ts";
+import type { Model2026 } from "./models.ts";
 export { MODELS_2026 };
 export type { Model2026 };
 
@@ -330,7 +330,7 @@ export interface QuotaExhaustedOptions {
  */
 // v2.1.15 Phase C: resolveConfigDir moved to config.js (configuration
 // management owner) — re-exported below for the module surface.
-import { resolveConfigDir } from "./config.js";
+import { resolveConfigDir } from "./config.ts";
 export { resolveConfigDir };
 
 export function resolveAccountsFilePath(customDir?: string): string {

@@ -14,8 +14,8 @@ import type {
   serverenvelope,
   servereventtype,
   serveroperation,
-} from "./types.js";
-import { servercontractversion } from "./types.js";
+} from "./types.ts";
+import { servercontractversion } from "./types.ts";
 
 /** Re-exports the servercontract version of the types module so the contract surface reads from one module. */
 export { servercontractversion };
@@ -393,8 +393,8 @@ export function sitemanifestof(version: number = servercontractversion): {
 
 /* ── Merged from socketrelay.ts ── */
 
-import type { bridgeeventrecord, bridgequeuerecord } from "./types.js";
-import { reconnectwaits } from "./net.js";
+import type { bridgeeventrecord, bridgequeuerecord } from "./types.ts";
+import { reconnectwaits } from "./net.ts";
 
 /**
  * Socket relay client of the 1.1.82 site integration family.
@@ -936,7 +936,7 @@ export async function connectrelay(input: {
 
 /* ── Merged from chatbridge.ts ── */
 
-import { pairingcountdown } from "./auth.js";
+import { pairingcountdown } from "./auth.ts";
 
 /**
  * Chatbridge of the 1.1.82 site integration family.
@@ -1096,7 +1096,7 @@ export function bridgestatuslabel(view: { status: string; paired: boolean; queue
 
 /* ── Merged from wsbridge.ts ── */
 
-import type { nativeframe, wsbridgesession } from "./types.js";
+import type { nativeframe, wsbridgesession } from "./types.ts";
 
 /**
  * Wsbridge of the 1.1.85 native host bridge family.
@@ -1356,9 +1356,9 @@ import {
   type nativehoststate,
   type nativesurfacekind,
   type runsettings,
-} from "./types.js";
-import { notificationframe } from "./serve.js";
-import type { jsonrpcframe } from "./types.js";
+} from "./types.ts";
+import { notificationframe } from "./serve.ts";
+import type { jsonrpcframe } from "./types.ts";
 
 /**
  * Nativehost of the 1.1.85 native host bridge family.

@@ -89,7 +89,7 @@ describe("design contract — the devthink foundation", () => {
   });
 
   it("keeps the two-accent contract (the getry violet identity beside the windows accent)", () => {
-    expect(CSS).toContain("--violet-500: #8b5cf6");
+    expect(CSS).toContain("--violet-500: var(--color-signal)"); /* the alias dialect of the single-theme law */
     expect(CSS).toContain("--accent: var(--violet-500)");
     expect(CSS).toContain("--win-accent: var(--color-win)");
     expect(CSS).toContain("--color-win: #4cc2ff");

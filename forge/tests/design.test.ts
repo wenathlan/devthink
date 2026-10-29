@@ -56,7 +56,9 @@ describe("design contract", () => {
     assert.match(CSS, /--sol-surface-8: var\(--color-s7\)/);
   });
 
-  it("carries the white sun as the one identity signal with the lime story in the mark (#a2cb3a)", () => {
+  it("carries the forge lime #a2cb3a as the one identity signal (brand, CTAs, active ladder)", () => {
+    /* the single-theme law (#132): the signal rides the white sun and the
+     * lime names it — the drawn mark keeps the lime story. */
     assert.match(CSS, /--color-signal: #ffffff/);
     assert.match(CSS, /--fg-lime: var\(--color-signal\)/);
     assert.match(CSS, /--sol-primary: var\(--color-signal\)/);

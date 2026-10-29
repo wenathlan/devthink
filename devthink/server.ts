@@ -7,8 +7,8 @@
 
 import { randomInt } from "node:crypto";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
-import { isAllowedOrigin } from "./gateway.js";
-import { type DevThinkConfig, type DevThinkPaths, ensurePaths, resolvePaths, saveConfig } from "./config.js";
+import { isAllowedOrigin } from "./gateway.ts";
+import { type DevThinkConfig, type DevThinkPaths, ensurePaths, resolvePaths, saveConfig } from "./config.ts";
 import {
   AccountError,
   accountsessiontokenvalid,
@@ -28,8 +28,8 @@ import {
   verifyBrowserSession,
   verifyaccount,
   verifyaccountsession,
-} from "./account.js";
-import { type ChatMessage, listModels, listProviders, streamChat } from "./providers.js";
+} from "./account.ts";
+import { type ChatMessage, listModels, listProviders, streamChat } from "./providers.ts";
 import {
   appendMessage,
   createSession,
@@ -41,7 +41,7 @@ import {
   savePreference,
   type SessionSection,
   updateTab,
-} from "./storage.js";
+} from "./storage.ts";
 
 export type ServerOptions = {
   port?: number | undefined;
@@ -917,7 +917,7 @@ import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { Hono, type Context } from "hono";
 import { cors } from "hono/cors";
-import { loadconfig, validateconfig } from "./config.js";
+import { loadconfig, validateconfig } from "./config.ts";
 import { copyseed } from "./copy.ts";
 import {
   DEFAULTQUOTAMB,
@@ -946,7 +946,7 @@ import {
   listsandboxtree,
   runsandboxline,
   writesandboxfile,
-} from "./sandboxlane.js";
+} from "./sandboxlane.ts";
 
 /** route resources per version — the canonical 7 */
 const resources = ["keys", "models", "chat/completions", "completions", "messages", "responses", "embeddings"] as const;
@@ -2555,11 +2555,11 @@ async function consolemain(): Promise<void> {
    utils re-export beside the auth, transport and console exports this file already declares, so
    the server surface answers the whole library contract from one module. */
 // config loading — bridge to the user customization layer
-export { getversion, listversions, loadconfig, reloadconfig, validateconfig } from "./config.js";
+export { getversion, listversions, loadconfig, reloadconfig, validateconfig } from "./config.ts";
 // database — prisma persistence (the storage family)
-export { db, getsession, getsessionmessages, savemsg } from "./storage.js";
+export { db, getsession, getsessionmessages, savemsg } from "./storage.ts";
 // engine — the universal request pipeline
-export { createversion, engineinternals } from "./engine.js";
+export { createversion, engineinternals } from "./engine.ts";
 // types — the configuration surface
 export type {
   authconfig,
@@ -2587,7 +2587,7 @@ export type {
   transporttype,
   upstreamdef,
   versionhandlers,
-} from "./types.js";
+} from "./types.ts";
 
 // utils — shared helpers
 export {
@@ -2614,7 +2614,7 @@ export {
   safestringify,
   thinkingbudget,
   truncatemessages,
-} from "./utils.js";
+} from "./utils.ts";
 
 /* the grand-merge guard: when this module is imported as a library surface by
    the devthink router (dynamic import), the module-load main must not fire —
@@ -2692,9 +2692,9 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { stdin as input, stdout as output } from "node:process";
 import * as readline from "node:readline/promises";
-import * as accountsMod from "./accounts.js";
-import * as configMod from "./config.js";
-import * as constantsMod from "./constants.js";
+import * as accountsMod from "./accounts.ts";
+import * as configMod from "./config.ts";
+import * as constantsMod from "./constants.ts";
 // v2.1.16 single-owner fix: raw values come from constants.js, identity
 // snapshots from fingerprint.js and model identification from models.js via
 // static named imports (the namespace interop wrappers below stay for the
@@ -2713,11 +2713,11 @@ import {
   OAUTH_REVOKE_URL,
   OAUTH_TOKEN_URL,
   PROJECT_FALLBACK,
-} from "./constants.js";
-import * as systemMod from "./core.js";
-import { X_GOOG_API_CLIENT_GEMINI_CLI } from "./fingerprint.js";
-import type { ModelCatalogEntry } from "./models.js";
-import * as modelsMod from "./models.js";
+} from "./constants.ts";
+import * as systemMod from "./core.ts";
+import { X_GOOG_API_CLIENT_GEMINI_CLI } from "./fingerprint.ts";
+import type { ModelCatalogEntry } from "./models.ts";
+import * as modelsMod from "./models.ts";
 import {
   ENDPOINT_ORDER,
   MODEL_BY_ID,
@@ -2725,15 +2725,15 @@ import {
   DEFAULT_MODEL as MODELS_DEFAULT_MODEL,
   DEFAULT_MODEL_ID as MODELS_DEFAULT_MODEL_ID,
   SEARCH_MODEL_PREVIEW,
-} from "./models.js";
+} from "./models.ts";
 // ---------------------------------------------------------------------------
 // Local module imports (ESM .js extension for Node resolver, source is .ts).
 // Import from deduplicated base modules ONLY - never from "(N)" copies.
 // ---------------------------------------------------------------------------
-import * as oauthMod from "./oauth.js";
-import * as authMod from "./oauth.js";
-import * as quotaMod from "./quota.js";
-import * as versionMod from "./versionregistry.js";
+import * as oauthMod from "./oauth.ts";
+import * as authMod from "./oauth.ts";
+import * as quotaMod from "./quota.ts";
+import * as versionMod from "./versionregistry.ts";
 
 // Resolve interop (CJS/ESM dual): pick default if exists or namespace
 const oauth: any = (oauthMod as any).default ?? oauthMod;
@@ -2747,7 +2747,7 @@ const modelsPkg: any = (modelsMod as any).default ?? modelsMod;
 const systemPkg: any = (systemMod as any).default ?? systemMod;
 
 // Destructure needed APIs with fallback to namespace exports
-const authenticate = oauth.authenticate as typeof import("./oauth.js").authenticate;
+const authenticate = oauth.authenticate as typeof import("./oauth.ts").authenticate;
 const GEMINI_OAUTH_CLIENT_ID = (oauth.CLIENT_ID as string) ?? (constantsMod.GEMINI_CLI_OAUTH_CLIENT_ID as string);
 const GEMINI_OAUTH_CLIENT_SECRET =
   (oauth.CLIENT_SECRET as string) ?? (constantsMod.GEMINI_CLI_OAUTH_CLIENT_SECRET as string);
@@ -5715,17 +5715,17 @@ export const providercli = {
  * so every historical import path keeps resolving.
  */
 
-export * as Accounts from "./accounts.js";
-export * as Constants from "./constants.js";
-export * as Core from "./core.js";
-export * as Fingerprint from "./fingerprint.js";
+export * as Accounts from "./accounts.ts";
+export * as Constants from "./constants.ts";
+export * as Core from "./core.ts";
+export * as Fingerprint from "./fingerprint.ts";
 // the provider oauth family answers the OAuth namespace (the grand merge
 // consolidation interned the family in oauth.ts — node surface).
-export * as OAuth from "./oauth.js";
+export * as OAuth from "./oauth.ts";
 // the provider oauth family answers the AntigravityCli compat namespace.
-export * as AntigravityCli from "./oauth.js";
+export * as AntigravityCli from "./oauth.ts";
 // merged group additions: auth/core/system/models namespaces
-export * as Auth from "./oauth.js";
+export * as Auth from "./oauth.ts";
 
 /** System — the v2.1.14 system utilities surface: config.ts absorbed the
  * system module (cfgDir, the version fallback chain, atomic writes, the
@@ -5745,8 +5745,8 @@ import {
   validateModelIdCharset,
   validateProjectId,
   validateSemver,
-} from "./config.js";
-import { debugLogger, logsDir, redactSecrets } from "./core.js";
+} from "./config.ts";
+import { debugLogger, logsDir, redactSecrets } from "./core.ts";
 export const System = {
   atomicWrite,
   cfgDir,
@@ -5763,28 +5763,28 @@ export const System = {
   logsDir,
   redactSecrets,
 };
-export * as PluginModule from "./antigravity.js";
+export * as PluginModule from "./antigravity.ts";
 // default plugin export for opencode compatibility (the antigravity plugin family)
-export { default as opencodePluginModule, getPlugin, plugin } from "./antigravity.js";
-export * as Config from "./config.js";
-export * as Debug from "./core.js";
-export * as Models from "./models.js";
-export * as Models2026 from "./models.js";
-export * as Project from "./project.js";
-export * as Quota from "./quota.js";
-export * as Recovery from "./recovery.js";
+export { default as opencodePluginModule, getPlugin, plugin } from "./antigravity.ts";
+export * as Config from "./config.ts";
+export * as Debug from "./core.ts";
+export * as Models from "./models.ts";
+export * as Models2026 from "./models.ts";
+export * as Project from "./project.ts";
+export * as Quota from "./quota.ts";
+export * as Recovery from "./recovery.ts";
 // v2.1.14: request-helpers.ts was consolidated into request.ts; namespace kept for compat.
-export * as RequestHelpers from "./request.js";
-export * as Request from "./request.js";
-export * as Search from "./search.js";
-export * as CLI from "./server.js";
-export * as Streaming from "./streaming.js";
-export * as Version from "./versionregistry.js";
+export * as RequestHelpers from "./request.ts";
+export * as Request from "./request.ts";
+export * as Search from "./search.ts";
+export * as CLI from "./server.ts";
+export * as Streaming from "./streaming.ts";
+export * as Version from "./versionregistry.ts";
 
 // v2.1.16 single-owner doctrine: VERSION derives from constants.js
 // PLUGIN_VERSION (raw value owner) and the two bypass aggregates assemble
 // every value from its owner module instead of locally-reassembled literals.
-import { GEMINI_CLI_OAUTH_CLIENT_ID, GEMINI_CLI_OAUTH_CLIENT_SECRET, PLUGIN_VERSION } from "./constants.js";
+import { GEMINI_CLI_OAUTH_CLIENT_ID, GEMINI_CLI_OAUTH_CLIENT_SECRET, PLUGIN_VERSION } from "./constants.ts";
 import {
   CLIENT_ID as ANTIGRAVITY_CLI_CLIENT_ID,
   CLIENT_SECRET as ANTIGRAVITY_CLI_CLIENT_SECRET,
@@ -5792,7 +5792,7 @@ import {
   ANTIGRAVITY_CLI_OAUTH_SCOPES,
   ANTIGRAVITY_CLI_REDIRECT_OFFICIAL,
   ANTIGRAVITY_CLI_VERSION_LATEST,
-} from "./oauth.js";
+} from "./oauth.ts";
 /* the identity snapshot import rides the account console cli section above — one declaration per binding */
 
 // version / identity
@@ -5800,7 +5800,7 @@ export const VERSION: string = PLUGIN_VERSION;
 export const PLUGIN_ID = "devthink" as const;
 
 // headline model catalog re-exports
-export { ALL_MODELS_2026, MODEL_BY_ID, MODEL_ROUTING } from "./models.js";
+export { ALL_MODELS_2026, MODEL_BY_ID, MODEL_ROUTING } from "./models.ts";
 
 /**
  * Gemini CLI bypass aggregate: exact identification the official Gemini CLI
@@ -5873,7 +5873,7 @@ export const ANTIGRAVITY_CLI_BYPASS = {
  * library consumers keep importing from the package root (plugin.ts).
  */
 
-import { buildOpencodeAuthHook, opencodeServer } from "./antigravity.js";
+import { buildOpencodeAuthHook, opencodeServer } from "./antigravity.ts";
 
 /**
  * The main provider plugin instance: chat.headers identification spoof,

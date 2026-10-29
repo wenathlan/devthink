@@ -17,7 +17,7 @@
  * event and a view callback on every transition.
  */
 
-import { type graphnode, type nodegraph, type nodestate, nodebyid, resetnodestates, stagewaves } from "./graphnodes.js";
+import { type graphnode, type nodegraph, type nodestate, nodebyid, resetnodestates, stagewaves } from "./graphnodes.ts";
 
 /** The status of the whole run: idle before it starts, running on the waves, done or failed at the end. */
 export type runstatus = "idle" | "running" | "done" | "failed";

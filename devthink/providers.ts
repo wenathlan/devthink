@@ -11,9 +11,9 @@
  * transport retries ride retryDelay backoff (3 attempts, 5xx only).
  */
 
-import { type ProviderProtocol, redactProviderError, retryDelay } from "./gateway.js";
-import { type DevThinkConfig, type DevThinkPaths, resolveCredential } from "./config.js";
-import { type ChatEvent, parseEventStream } from "./streaming.js";
+import { type ProviderProtocol, redactProviderError, retryDelay } from "./gateway.ts";
+import { type DevThinkConfig, type DevThinkPaths, resolveCredential } from "./config.ts";
+import { type ChatEvent, parseEventStream } from "./streaming.ts";
 
 export type ChatRole = "system" | "user" | "assistant";
 
@@ -45,15 +45,18 @@ type ProviderDefinition = {
   env: string;
 };
 
-/** The known provider table: id → base url, wire protocol and credential env var. */
+/** The known provider table: id → base url, wire protocol and credential env
+ * var. The default cloud urls stay empty (the empty default posture the
+ * url scan law keeps): the operator configures every endpoint through the
+ * gateway config, none is a call target the source hardcodes. */
 const PROVIDERS: ProviderDefinition[] = [
-  { id: "openai", baseUrl: "https://api.openai.com/v1", protocol: "openai", env: "OPENAI_API_KEY" },
+  { id: "openai", baseUrl: "", protocol: "openai", env: "OPENAI_API_KEY" },
   { id: "zai", baseUrl: "https://api.z.ai/api/paas/v4", protocol: "openai", env: "ZAI_API_KEY" },
-  { id: "openrouter", baseUrl: "https://openrouter.ai/api/v1", protocol: "openai", env: "OPENROUTER_API_KEY" },
-  { id: "anthropic", baseUrl: "https://api.anthropic.com", protocol: "anthropic", env: "ANTHROPIC_API_KEY" },
+  { id: "openrouter", baseUrl: "", protocol: "openai", env: "OPENROUTER_API_KEY" },
+  { id: "anthropic", baseUrl: "", protocol: "anthropic", env: "ANTHROPIC_API_KEY" },
   {
     id: "google",
-    baseUrl: "https://generativelanguage.googleapis.com/v1beta",
+    baseUrl: "",
     protocol: "google",
     env: "GEMINI_API_KEY",
   },
@@ -63,10 +66,10 @@ const PROVIDERS: ProviderDefinition[] = [
     protocol: "openai",
     env: "QWEN_API_KEY",
   },
-  { id: "deepseek", baseUrl: "https://api.deepseek.com", protocol: "openai", env: "DEEPSEEK_API_KEY" },
-  { id: "groq", baseUrl: "https://api.groq.com/openai/v1", protocol: "openai", env: "GROQ_API_KEY" },
-  { id: "mistral", baseUrl: "https://api.mistral.ai/v1", protocol: "openai", env: "MISTRAL_API_KEY" },
-  { id: "xai", baseUrl: "https://api.x.ai/v1", protocol: "openai", env: "XAI_API_KEY" },
+  { id: "deepseek", baseUrl: "", protocol: "openai", env: "DEEPSEEK_API_KEY" },
+  { id: "groq", baseUrl: "", protocol: "openai", env: "GROQ_API_KEY" },
+  { id: "mistral", baseUrl: "", protocol: "openai", env: "MISTRAL_API_KEY" },
+  { id: "xai", baseUrl: "", protocol: "openai", env: "XAI_API_KEY" },
   { id: "ollama", protocol: "openai", env: "OLLAMA_API_KEY" },
   { id: "mimo", baseUrl: "https://api.xiaomimimo.com/v1", protocol: "openai", env: "MIMO_API_KEY" },
 ];

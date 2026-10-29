@@ -3,10 +3,10 @@
  * The shared core for require based consumers: the build emits this entry as the cjs bundle of the node platform target, with the filesystem storage adapter, the platform clock, logger and fetch primitives wired through the platform adapter contract.
  */
 
-export * from "./index.js";
+export * from "./index.ts";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { nodeplatformadapter, stampbundle } from "./runtime.js";
+import { nodeplatformadapter, stampbundle } from "./runtime.ts";
 
 stampbundle("cjs", "node.cjs");
 

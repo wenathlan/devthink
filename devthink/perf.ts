@@ -31,8 +31,8 @@ import type {
   lazyloadrecord,
   lazymoddescriptor,
   startupbudget,
-} from "./types.js";
-import { randomid } from "./memory.js";
+} from "./types.ts";
+import { randomid } from "./memory.ts";
 
 /**
  * Perfrecords logic of the 1.1.68 family.

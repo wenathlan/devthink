@@ -73,13 +73,13 @@ import {
   GEMINI_CLI_OAUTH_CLIENT_ID as OAUTH_CLIENT_ID,
   GEMINI_CLI_OAUTH_CLIENT_SECRET as OAUTH_CLIENT_SECRET,
   GEMINI_CLI_USER_AGENT_MINIMAL as GEMINI_CLI_USER_AGENT,
-} from "./constants.js";
+} from "./constants.ts";
 // v2.1.15 Phase B: generic utilities (fnv hash, fetch timeout wrapper, retry
 // predicate) come from core.js; identity masquerade (gl-node api-client
 // snapshot, antigravity header builder) comes from fingerprint.js.
-import { fetchWithTimeout, fnv1a32, isRetryable } from "./core.js";
-import { buildAntagravityHeaders, X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.js";
-import type { AntigravityHeadersOptions } from "./fingerprint.js";
+import { fetchWithTimeout, fnv1a32, isRetryable } from "./core.ts";
+import { buildAntagravityHeaders, X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.ts";
+import type { AntigravityHeadersOptions } from "./fingerprint.ts";
 // v2.1.15 Phase A: project.ts is THE single owner of project discovery. All
 // model-identification families it consumes (endpoint routing orders + the
 // flat catalog lists) are imported from models.ts (layer 1, legal direction);
@@ -94,9 +94,9 @@ import {
   MODELS_2026_ANTIGRAVITY,
   MODELS_2026_BASE,
   MODELS_2026_LEGACY,
-} from "./models.js";
-import type { Model2026 } from "./models.js";
-import type { Account } from "./accounts.js";
+} from "./models.ts";
+import type { Model2026 } from "./models.ts";
+import type { Account } from "./accounts.ts";
 export type { Account };
 
 // ---------------------------------------------------------------------------
