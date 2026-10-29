@@ -615,7 +615,11 @@ jobs:
 
   releaseassets:
     name: Collect the release assets, emit the artifact manifest and write the digests
-    needs: [assemble, vsix, firefox, site, sbom, attest, iso, wasm, family]
+    # the asset collection waits for every producing lane: the nextzips job
+    # builds the per-platform zip set of the family envelopes and the
+    # release notes carry them beside the npm tarballs — a missing needs row
+    # raced the collection ahead of the lane and the assets landed short.
+    needs: [assemble, vsix, firefox, site, nextzips, sbom, attest, iso, wasm, family]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
