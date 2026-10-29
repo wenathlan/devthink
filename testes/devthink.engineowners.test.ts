@@ -16,7 +16,7 @@ import {
   ENGINEOWNERS,
   OFFICIALAPPS,
   ownersbyengine,
-} from "../devthink/engines.ts";
+} from "../devthink/engineowners.ts";
 import { THINKINGLEVELS } from "../getry/thinking.ts";
 
 describe("the ownership manifest", () => {
