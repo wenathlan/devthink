@@ -869,17 +869,21 @@ describe("hardcoded provider url scan of the source tree", () => {
      * the repository-root tests folder in beside the modules they gate at
      * the app root, and the suites with their example fixtures stay
      * outside the scan the corpus law kept them in (the tests-village
-     * helpers ride in without their suites), so the walk covers every
-     * root source and every tests-village helper outside the provider
-     * catalog exceptions — the workbench catalog (providers.ts,
-     * gatewayviewconfig.ts) and the shared types carry their
-     * documentation examples by design, while the gateway family stays
-     * default empty. */
+     * helpers ride in without their suites, and so does the reviewed
+     * origins catalog module — the typed data rows the sweep allowlist
+     * reads, the one module whose provider endpoint literals are the
+     * reviewed catalog itself, never a call target the gateway would
+     * dial), so the walk covers every root source and every
+     * tests-village helper outside the provider catalog exceptions — the
+     * workbench catalog (providers.ts, gatewayviewconfig.ts) and the
+     * shared types carry their documentation examples by design, while
+     * the gateway family stays default empty. */
     const outsidescan = new Set([...gatewaysources, "providers.ts", "gatewayviewconfig.ts", "types.ts"]);
     for (const entry of await readdir(root))
       if (entry.endsWith(".ts") && !outsidescan.has(entry)) files.push(join(root, entry));
     for (const entry of await readdir(join(root, "tests")))
-      if (entry.endsWith(".ts") && !entry.endsWith(".test.ts")) files.push(join(root, "tests", entry));
+      if (entry.endsWith(".ts") && !entry.endsWith(".test.ts") && entry !== "reviewedorigins.ts")
+        files.push(join(root, "tests", entry));
     expect(files.length).toBeGreaterThan(50);
     const providerhosts = [
       /api\.openai\.com/,

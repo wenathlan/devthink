@@ -31,6 +31,12 @@ const skippedmajors = [];
 const next = structuredClone(packagejson);
 for (const section of ["dependencies", "devDependencies", "optionalDependencies"]) {
   for (const [name, declared] of Object.entries(packagejson[section] ?? {})) {
+    /* the local sibling packages the ownership law links (file:, link: and
+     * workspace: specs the family monorepo carries — @wenathlan/vault,
+     * @wenathlan/getry) never answer the registry ladder: their version is
+     * the monorepo itself, so the update pass skips them instead of
+     * parsing a path as a semver. */
+    if (/^(file|link|workspace):/.test(declared)) continue;
     const response = await fetch(`https://registry.npmjs.org/${encodeURIComponent(name)}`);
     if (!response.ok) throw new Error(`npm registry returned ${response.status} for ${name}`);
     const registry = await response.json();

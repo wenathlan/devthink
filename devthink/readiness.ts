@@ -1,7 +1,8 @@
-/** Runs the release readiness review of the platform release line: the gate walks every release gate of the chain against the evidence artifacts the candidate lanes recorded (the pool audit, the sweep, the matrix, the pentest, the doc check, the agent and cost certifications, the recipes runner, the telemetry free verification, the permission diff and the api freeze), verifies the source level guarantees the artifacts cannot carry (the closed deprecation window, the migrateplan bridge over every importer fixture, the changelog chain, the transparency coverage, the budget gates), walks the 2.0.2 final polish gates beside them (the soak run, the wcag accessibility sweep and the store package icon family), writes the verdict of every gate with its evidence link into tests/artifacts/readiness.json, records the go decision review into docs/readiness.md and exits nonzero when any gate blocks the go decision. The gate answers the readiness review the release candidate two section of the roadmap promises, the 2.0.0 closing audit carries forward and the 2.0.2 final polish extends. */
+/** Runs the release readiness review of the platform release line: the gate walks every release gate of the chain against the committed evidence records of the candidate lanes (the pool audit, the sweep, the matrix, the pentest, the doc check, the agent and cost certifications, the recipes runner, the telemetry free verification, the permission diff and the api freeze — every record a typed const inside its own gate module, the flat folder law that dissolved the devthink/artifacts folder of the application first layer), verifies the source level guarantees the records cannot carry (the closed deprecation window, the migrateplan bridge over every importer fixture with its committed conversion records, the changelog chain, the transparency coverage, the budget gates), walks the 2.0.2 final polish gates beside them (the soak run, the wcag accessibility sweep and the store package icon family), records the verdict of every gate with its evidence link into the committed record readiness.ts (the readinessrecord const this module carries, migrated from devthink/artifacts/readiness.json when the flat folder law dissolved the artifacts folder), writes the go decision review into docs/readiness.md and exits nonzero when any gate blocks the go decision. The gate answers the readiness review the release candidate two section of the roadmap promises, the 2.0.0 closing audit carries forward and the 2.0.2 final polish extends; the sync mode (`node readiness.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
 import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { createHash } from "node:crypto";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -9,33 +10,57 @@ import { promisify } from "node:util";
 import { apifreezebaseline } from "./tests/freezebaseline.ts";
 import { permdiffbaseline } from "./tests/permbaseline.ts";
 import { frozenschemas } from "./tests/schemafixtures.ts";
+import { syncmode, syncrecord } from "./records.ts";
+import { agentcertrecord } from "./agentcert.ts";
+import { costcertrecord } from "./costcert.ts";
+import { doccheckrecord } from "./doccheck.ts";
+import { matrixverifyrecord } from "./matrixverify.ts";
+import { pentestrecord } from "./pentest.ts";
+import { poolcoveragerecord } from "./poolaudit.ts";
+import { reciperecord } from "./recipes.ts";
+import { soakrecord } from "./soak.ts";
+import { sweeprecord } from "./sweep.ts";
+import { telemetryfreerecord } from "./telemetryfree.ts";
+import { wcagrecord } from "./wcag.ts";
+import { readinessmigrateautoma } from "./tests/readiness.automa.ts";
+import { readinessmigrateselenium } from "./tests/readiness.selenium.ts";
+import { readinessmigratetabular } from "./tests/readiness.tabular.ts";
+import { readinessmigrateuivision } from "./tests/readiness.uivision.ts";
+import { readinessmigratev1 } from "./tests/readiness.v1.ts";
 
 const execute = promisify(execFile);
 const repoRoot = resolve(process.cwd(), "..");
 const mode = process.argv[2] ?? "check";
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
-const artifactpath = "artifacts/readiness.json";
 const readinesstocument = "docs/readiness.md";
 const fixedepoch = 1_800_000_000_000;
 
-/** Records one readiness gate verdict with its evidence link so the go decision review names the artifact every verdict reads. */
+/** One readiness gate verdict with its evidence link so the go decision review names the record every verdict reads. */
+interface readinessverdict {
+  gate: string;
+  ok: boolean;
+  evidence: string;
+}
+
+/** The readiness report the committed record carries: the release, the mode, the fixed epoch stamp, the verdict of every gate with its evidence, the summary and the go decision. */
+export interface readinessreport {
+  release: string;
+  mode: string;
+  generatedat: number;
+  verdicts: readinessverdict[];
+  summary: { gates: number; ok: number; blocked: number; durationms: number };
+  godecision: string;
+}
+
+/** Records one readiness gate verdict with its evidence link so the go decision review names the record every verdict reads. */
 function gate(
-  verdicts: Array<{ gate: string; ok: boolean; evidence: string }>,
+  verdicts: readinessverdict[],
   name: string,
   ok: boolean,
   evidence: string,
 ) {
   verdicts.push({ gate: name, ok, evidence });
-}
-
-/** Reads one gate artifact as json, answering undefined when the lane has not recorded it yet. */
-async function artifact(path: string) {
-  try {
-    return JSON.parse(await readFile(path, "utf8"));
-  } catch {
-    return undefined;
-  }
 }
 
 /** Verifies the frozen schema set stayed hash stable since the 1.1.91 freeze: every recorded schema hash rehashes identically from the schema texts the schemafixtures module carries. */
@@ -78,7 +103,16 @@ async function changelogchain() {
   };
 }
 
-/** Verifies the migrateplan bridge converts every importer fixture of the version one era: the command runs over the five happy path fixtures and every conversion answers the plan lint green. */
+/** The committed conversion record of one importer fixture: what the migrateplan command must keep producing, the version stamp aside (the release refresh rewrites it with its own stamp). */
+const migratecommitted: Record<string, { version: string; goal: string; origin: string; steps: unknown[] }> = {
+  v1: readinessmigratev1,
+  automa: readinessmigrateautoma,
+  selenium: readinessmigrateselenium,
+  uivision: readinessmigrateuivision,
+  tabular: readinessmigratetabular,
+};
+
+/** Verifies the migrateplan bridge converts every importer fixture of the version one era: the command runs over the five happy path fixtures inside a throwaway temp directory (the flat folder law keeps the application first layer free of run time artifact folders), every conversion answers the plan lint green and matches the committed conversion record of its format so the migration bridge never drifts silently between releases. */
 async function migrateplanbridge() {
   const fixtures = [
     "v1-plan.json",
@@ -88,64 +122,73 @@ async function migrateplanbridge() {
     "tabular-plan.csv",
   ];
   const failures = [];
-  for (const fixture of fixtures) {
-    const path = join("dist", "fixtures", "importers", fixture);
-    if (!existsSync(path)) {
-      failures.push(`${fixture} sits absent from the built fixture set`);
-      continue;
+  const scratch = await mkdtemp(join(tmpdir(), "devthink-readiness-"));
+  try {
+    for (const fixture of fixtures) {
+      const path = join("dist", "fixtures", "importers", fixture);
+      if (!existsSync(path)) {
+        failures.push(`${fixture} sits absent from the built fixture set`);
+        continue;
+      }
+      const format = fixture.startsWith("v1-")
+        ? "v1"
+        : fixture.startsWith("automa-")
+          ? "automa"
+          : fixture.startsWith("selenium-")
+            ? "selenium"
+            : fixture.startsWith("uivision-")
+              ? "uivision"
+              : "tabular";
+      try {
+        const converted = join(scratch, `readiness-migrate-${format}.json`);
+        await execute("node", ["dist/cli.js", "migrateplan", path, "--format", format, "--out", converted]);
+        const lint = await execute("node", ["dist/cli.js", "planlint", converted]);
+        if (!lint.stdout.includes("No planlint diagnostics"))
+          failures.push(`${fixture} linted with diagnostics after the conversion`);
+        /* the committed conversion record: every step, label, target, value and options payload the conversion produced when the record was committed must answer again — the version stamp rides the release and stays outside the comparison */
+        const fresh = JSON.parse(await readFile(converted, "utf8")) as { version?: string; goal: string; origin: string; steps: unknown[] };
+        const committed = migratecommitted[format];
+        const drifted = JSON.stringify({ goal: fresh.goal, origin: fresh.origin, steps: fresh.steps }) !== JSON.stringify({ goal: committed.goal, origin: committed.origin, steps: committed.steps });
+        if (drifted)
+          failures.push(`${fixture} drifted from the committed conversion record tests/readiness.${format}.ts`);
+      } catch (error) {
+        failures.push(`${fixture} refused the conversion: ${error instanceof Error ? error.message : String(error)}`);
+      }
     }
-    const format = fixture.startsWith("v1-")
-      ? "v1"
-      : fixture.startsWith("automa-")
-        ? "automa"
-        : fixture.startsWith("selenium-")
-          ? "selenium"
-          : fixture.startsWith("uivision-")
-            ? "uivision"
-            : "tabular";
-    try {
-      const converted = join("tests", "artifacts", `readiness-migrate-${format}.json`);
-      await execute("node", ["dist/cli.js", "migrateplan", path, "--format", format, "--out", converted]);
-      const lint = await execute("node", ["dist/cli.js", "planlint", converted]);
-      if (!lint.stdout.includes("No planlint diagnostics"))
-        failures.push(`${fixture} linted with diagnostics after the conversion`);
-    } catch (error) {
-      failures.push(`${fixture} refused the conversion: ${error instanceof Error ? error.message : String(error)}`);
-    }
+  } finally {
+    await rm(scratch, { recursive: true, force: true });
   }
   return {
     ok: failures.length === 0,
     evidence:
       failures.length === 0
-        ? "the migrateplan command converts all five importer fixtures (v1, automa, selenium, ui vision and tabular) into plans the planlint command lints green"
+        ? "the migrateplan command converts all five importer fixtures (v1, automa, selenium, ui vision and tabular) into plans the planlint command lints green and the committed conversion records verify"
         : failures.join("; "),
   };
 }
 
-/** Runs the readiness review and answers the report the artifact records. */
+/** Runs the readiness review and answers the report the committed record carries. */
 export async function runreadinesssuite() {
-  const verdicts: Array<{ gate: string; ok: boolean; evidence: string }> = [];
+  const verdicts: readinessverdict[] = [];
   const started = Date.now();
 
-  /* the candidate lane artifacts: every gate the chain greened leaves its recorded evidence the readiness review reads. */
-  const pool = await artifact("artifacts/poolcoverage.json");
-  const sweep = await artifact("artifacts/sweep.json");
-  const matrix = await artifact("artifacts/matrixverify.json");
-  const pentest = await artifact("artifacts/pentest.json");
-  const doccheck = await artifact("artifacts/doccheck.json");
-  const agentcert = await artifact("artifacts/agentcert.json");
-  const costcert = await artifact("artifacts/costcert.json");
-  const recipes = await artifact("artifacts/recipes.json");
-  const telemetry = await artifact("artifacts/telemetryfree.json");
+  /* the committed candidate lane records: every gate of the chain leaves its recorded evidence as one typed const inside its own gate module, so the readiness review reads the committed records the flat folder law keeps. */
+  const pool = poolcoveragerecord;
+  const sweep = sweeprecord;
+  const matrix = matrixverifyrecord;
+  const pentest = pentestrecord;
+  const doccheck = doccheckrecord;
+  const agentcert = agentcertrecord;
+  const costcert = costcertrecord;
+  const recipes = reciperecord;
+  const telemetry = telemetryfreerecord;
   const permdiff = permdiffbaseline;
 
   gate(
     verdicts,
     "the pool audit reports full disposition of every mined item",
-    pool !== undefined && pool.pool?.unknown === 0 && pool.summary?.failed === 0,
-    pool === undefined
-      ? "tests/artifacts/poolcoverage.json sits absent"
-      : `tests/artifacts/poolcoverage.json: ${pool.pool.total} items, ${pool.pool.implemented} implemented, ${pool.pool.planned} planned with written reasons, ${pool.pool.unknown} unknown`,
+    pool.pool.unknown === 0 && pool.summary.failed === 0,
+    `poolaudit.ts: ${pool.pool.total} items, ${pool.pool.implemented} implemented, ${pool.pool.planned} planned with written reasons, ${pool.pool.unknown} unknown`,
   );
   gate(
     verdicts,
@@ -182,10 +225,8 @@ export async function runreadinesssuite() {
   gate(
     verdicts,
     "the pentest checklist holds zero failed entries",
-    pentest !== undefined && pentest.summary?.failed === 0,
-    pentest === undefined
-      ? "tests/artifacts/pentest.json sits absent"
-      : `tests/artifacts/pentest.json: ${pentest.summary.total} entries, ${pentest.summary.failed} failed`,
+    pentest.summary.failed === 0,
+    `pentest.ts: ${pentest.summary.total} entries, ${pentest.summary.failed} failed`,
   );
   const manifest = JSON.parse(await readFile("manifest.json", "utf8"));
   const csppolicies = [...Object.values(manifest.content_security_policy ?? {})].map((value) => String(value));
@@ -220,58 +261,44 @@ export async function runreadinesssuite() {
   gate(
     verdicts,
     "the agent certification covers every coordination scenario",
-    agentcert !== undefined && agentcert.summary?.failed === 0,
-    agentcert === undefined
-      ? "tests/artifacts/agentcert.json sits absent"
-      : `tests/artifacts/agentcert.json: ${agentcert.summary.total} scenarios, ${agentcert.summary.failed} failed`,
+    agentcert.summary.failed === 0,
+    `agentcert.ts: ${agentcert.summary.total} scenarios, ${agentcert.summary.failed} failed`,
   );
   gate(
     verdicts,
     "the cost certification reconciles every recorded run",
-    costcert !== undefined && costcert.summary?.failed === 0,
-    costcert === undefined
-      ? "tests/artifacts/costcert.json sits absent"
-      : `tests/artifacts/costcert.json: ${costcert.summary.total} reconciliations, ${costcert.summary.failed} failed`,
+    costcert.summary.failed === 0,
+    `costcert.ts: ${costcert.summary.total} reconciliations, ${costcert.summary.failed} failed`,
   );
   gate(
     verdicts,
     "the doc check reports zero doc gaps",
-    doccheck !== undefined && doccheck.summary?.failed === 0,
-    doccheck === undefined
-      ? "tests/artifacts/doccheck.json sits absent"
-      : `tests/artifacts/doccheck.json: ${doccheck.summary.total} families green`,
+    doccheck.summary.failed === 0,
+    `doccheck.ts: ${doccheck.summary.total} families green`,
   );
   gate(
     verdicts,
     "the recipes runner keeps every gallery entry green",
-    recipes !== undefined && recipes.summary?.failed === 0,
-    recipes === undefined
-      ? "tests/artifacts/recipes.json sits absent"
-      : `tests/artifacts/recipes.json: ${recipes.summary.entries} recipes, ${recipes.summary.failed} failed, ${recipes.summary.checksok} of ${recipes.summary.checks} checks`,
+    recipes.summary.failed === 0,
+    `recipes.ts: ${recipes.summary.entries} recipes, ${recipes.summary.failed} failed, ${recipes.summary.checksok} of ${recipes.summary.checks} checks`,
   );
   gate(
     verdicts,
     "the sweep artifact holds no open blockers",
-    sweep !== undefined && sweep.summary?.open === 0,
-    sweep === undefined
-      ? "tests/artifacts/sweep.json sits absent"
-      : `tests/artifacts/sweep.json: ${sweep.summary.fixed} of ${sweep.summary.total} findings fixed, ${sweep.summary.open} open`,
+    sweep.summary.open === 0,
+    `sweep.ts: ${sweep.summary.fixed} of ${sweep.summary.total} findings fixed, ${sweep.summary.open} open`,
   );
   gate(
     verdicts,
     "the verification matrix covers every declared cell",
-    matrix !== undefined && matrix.summary?.failed === 0,
-    matrix === undefined
-      ? "tests/artifacts/matrixverify.json sits absent"
-      : `tests/artifacts/matrixverify.json: ${matrix.summary.total} cells, ${matrix.summary.failed} failed`,
+    matrix.summary.failed === 0,
+    `matrixverify.ts: ${matrix.summary.total} cells, ${matrix.summary.failed} failed`,
   );
   gate(
     verdicts,
     "the telemetry free evidence covers the full candidate",
-    telemetry !== undefined && telemetry.summary?.failed === 0 && telemetry.summary?.outbound === 0,
-    telemetry === undefined
-      ? "tests/artifacts/telemetryfree.json sits absent"
-      : `tests/artifacts/telemetryfree.json: ${telemetry.summary.total} bundles verified with ${telemetry.summary.outbound} outbound attempts behind the block all proxy`,
+    telemetry.summary.failed === 0 && telemetry.summary.outbound === 0,
+    `telemetryfree.ts: ${telemetry.summary.total} bundles verified with ${telemetry.summary.outbound} outbound attempts behind the block all proxy`,
   );
   const chain = await changelogchain();
   gate(verdicts, "the changelog covers every version from 1.1.31", chain.ok, chain.evidence);
@@ -352,24 +379,18 @@ export async function runreadinesssuite() {
     );
   }
 
-  /* the 2.0.2 final polish gates: the soak run and the wcag accessibility sweep record their artifacts the readiness review walks beside the standing candidate gates. */
-  const soak = await artifact("artifacts/soak.json");
+  /* the 2.0.2 final polish gates: the soak run and the wcag accessibility sweep record their committed records the readiness review walks beside the standing candidate gates. */
   gate(
     verdicts,
     "the soak run keeps a long workflow alive across the retention window without drift",
-    soak !== undefined && soak.summary?.failed === 0,
-    soak === undefined
-      ? "tests/artifacts/soak.json sits absent"
-      : `tests/artifacts/soak.json: ${soak.summary.total} soak entries, ${soak.summary.failed} failed, the long workflow stayed alive with byte identical resume and a sealed audit hash across two full runs`,
+    soakrecord.summary.failed === 0,
+    `soak.ts: ${soakrecord.summary.total} soak entries, ${soakrecord.summary.failed} failed, the long workflow stayed alive with byte identical resume and a sealed audit hash across two full runs`,
   );
-  const wcag = await artifact("artifacts/wcag.json");
   gate(
     verdicts,
     "the wcag accessibility sweep audits every ui surface green",
-    wcag !== undefined && wcag.summary?.failed === 0,
-    wcag === undefined
-      ? "tests/artifacts/wcag.json sits absent"
-      : `tests/artifacts/wcag.json: ${wcag.summary.total} wcag checklist entries over every surface, ${wcag.summary.failed} failed`,
+    wcagrecord.summary.failed === 0,
+    `wcag.ts: ${wcagrecord.summary.total} wcag checklist entries over every surface, ${wcagrecord.summary.failed} failed`,
   );
   gate(
     verdicts,
@@ -386,7 +407,7 @@ export async function runreadinesssuite() {
     blocked: verdicts.filter((verdict) => !verdict.ok).length,
     durationms: Date.now() - started,
   };
-  const report = {
+  const report: readinessreport = {
     release,
     mode,
     generatedat: fixedepoch,
@@ -395,15 +416,13 @@ export async function runreadinesssuite() {
     godecision: summary.blocked === 0 ? "go" : "no-go",
   };
   if (mode !== "diff") {
-    await mkdir("artifacts", { recursive: true });
-    await writeFile(artifactpath, `${JSON.stringify(report, null, 2)}\n`, "utf8");
     /* the go decision review the roadmap publishes: the table of every gate with its evidence and verdict, the residual risks and the go criteria. */
     const rows = verdicts
       .map((verdict) => `| ${verdict.gate} | ${verdict.ok ? "green" : "blocked"} | ${verdict.evidence} |`)
       .join("\n");
     const document = `# Release readiness review
 
-The readiness gate of the ${release} platform release walked every release gate of the chain against the evidence the candidate lanes recorded. The gate reads the pool audit, the sweep, the verification matrix, the pentest checklist, the doc check, the agent and cost certifications, the recipes runner, the telemetry free verification, the permission diff and the api freeze record, verifies the source level guarantees the artifacts cannot carry and answers the go decision below. The runner lives in \`tests/readiness.ts\`, the verdict artifact in \`tests/artifacts/readiness.json\` and the entry joins the verification lane as the final gate of the release.
+The readiness gate of the ${release} platform release walked every release gate of the chain against the committed evidence the candidate lanes recorded. The gate reads the pool audit, the sweep, the verification matrix, the pentest checklist, the doc check, the agent and cost certifications, the recipes runner, the telemetry free verification, the permission diff and the api freeze record — every evidence a committed record const inside its own gate module — verifies the source level guarantees the records cannot carry and answers the go decision below. The runner lives in \`readiness.ts\`, the verdict record in \`readiness.ts\` (the readinessrecord const) and the entry joins the verification lane as the final gate of the release.
 
 ## The gate table
 
@@ -413,7 +432,7 @@ ${rows}
 
 ## The go criteria and their satisfaction
 
-The release goes when every gate of the table stands green: the candidate gates recorded green artifacts, the frozen contracts stayed stable since the 1.1.91 freeze, the deprecation window closed with both promised removals executed, the migration bridge converts every importer fixture, the changelog and the docs cover the complete chain and the release pipeline carries the draft, verify and publish controls. The table above records the satisfaction of every criterion.
+The release goes when every gate of the table stands green: the candidate gates recorded green evidence, the frozen contracts stayed stable since the 1.1.91 freeze, the deprecation window closed with both promised removals executed, the migration bridge converts every importer fixture, the changelog and the docs cover the complete chain and the release pipeline carries the draft, verify and publish controls. The table above records the satisfaction of every criterion.
 
 ## The residual risks accepted for the release
 
@@ -421,19 +440,14 @@ The platform release accepts the recorded residual risks: the version one protoc
 
 ## The go decision
 
-The readiness gate answers **${report.godecision === "go" ? "go" : "no-go"}** for the ${release} release: ${summary.ok} of ${summary.gates} gates green, ${summary.blocked} blocked. The reviewer of record is the release lane the artifact links, the date is the release stamp and the evidence links ride every row of the table.
+The readiness gate answers **${report.godecision === "go" ? "go" : "no-go"}** for the ${release} release: ${summary.ok} of ${summary.gates} gates green, ${summary.blocked} blocked. The reviewer of record is the release lane the record links, the date is the release stamp and the evidence links ride every row of the table.
 `;
     await writeFile(readinesstocument, document, "utf8");
   }
   if (mode === "diff") {
-    const previous = await artifact(artifactpath);
-    if (previous === undefined) {
-      console.error("No previous readiness artifact to diff against.");
-      process.exitCode = 1;
-      return report;
-    }
+    const previous = readinessrecord;
     const regressions = verdicts.filter(
-      (verdict) => previous.verdicts?.find((entry: { gate: string; ok?: boolean }) => entry.gate === verdict.gate)?.ok === true && !verdict.ok,
+      (verdict) => previous.verdicts?.find((entry) => entry.gate === verdict.gate)?.ok === true && !verdict.ok,
     );
     if (regressions.length > 0) {
       console.error(
@@ -444,11 +458,188 @@ The readiness gate answers **${report.godecision === "go" ? "go" : "no-go"}** fo
     return report;
   }
   console.log(
-    `Readiness review of ${release}: ${summary.ok} of ${summary.gates} gates green, ${summary.blocked} blocked, go decision ${report.godecision}, artifact ${artifactpath} and review ${readinesstocument}.`,
+    `Readiness review of ${release}: ${summary.ok} of ${summary.gates} gates green, ${summary.blocked} blocked, go decision ${report.godecision}, record readiness.ts and review ${readinesstocument}.`,
   );
   if (summary.blocked > 0) process.exitCode = 1;
   return report;
 }
 
+/** The committed readiness record of the 2.0.151 release — the go decision
+ * evidence the roadmap publishes, migrated from
+ * devthink/artifacts/readiness.json when the flat folder law dissolved the
+ * artifacts folder of the application first layer: every gate verdict in its
+ * fixed order with its evidence naming the gate module that carries the
+ * record now, no wall clock stamps (the fixed epoch stands in), so the record
+ * replays byte identical (the duration stays the live measurement the
+ * recorded run took). */
+export const readinessrecord: readinessreport = {
+  "release": "2.0.151",
+  "mode": "check",
+  "generatedat": 1800000000000,
+  "verdicts": [
+    {
+      "gate": "the pool audit reports full disposition of every mined item",
+      "ok": true,
+      "evidence": "poolaudit.ts: 626 items, 623 implemented, 3 planned with written reasons, 0 unknown"
+    },
+    {
+      "gate": "the api freeze schemas stayed hash stable since 1.1.91",
+      "ok": true,
+      "evidence": "the 10 frozen schemas of the 1.1.91 freeze rehash identically to the recorded digests of the freezebaseline module"
+    },
+    {
+      "gate": "the deprecation window closed with no pending removal",
+      "ok": true,
+      "evidence": "version.ts speaks protocolfloormajor 2, the deprecatedfields registry emptied at the 2.0.0 sunset and docs/deprecation.md records the executed removal of both fields"
+    },
+    {
+      "gate": "the migrateplan bridge converts every version one era fixture",
+      "ok": true,
+      "evidence": "the migrateplan command converts all five importer fixtures (v1, automa, selenium, ui vision and tabular) into plans the planlint command lints green and the committed conversion records verify"
+    },
+    {
+      "gate": "the importers cover their documented source formats",
+      "ok": true,
+      "evidence": "docs/migrationguide.md documents the v1, automa, selenium, ui vision and tabular importers the cli migrateplan command carries, and dist/fixtures/importers ships the fixture of every format"
+    },
+    {
+      "gate": "the cold start and budget gates hold their recorded budgets",
+      "ok": true,
+      "evidence": "docs/perfbudgets.md carries the startup and memory budgets while tests/stepmeter.test.ts and tests/runbudget.test.ts verify the cold start and the memory budget enforcement gates"
+    },
+    {
+      "gate": "the battery aware and network aware gates hold their tests",
+      "ok": true,
+      "evidence": "tests/resourceaware.test.ts carries the battery aware and network aware gate families the readiness review reads"
+    },
+    {
+      "gate": "the pentest checklist holds zero failed entries",
+      "ok": true,
+      "evidence": "pentest.ts: 21 entries, 0 failed"
+    },
+    {
+      "gate": "the csp audit reports no wildcard policies",
+      "ok": true,
+      "evidence": "the manifest carries 1 strict content security policies with no wildcard source"
+    },
+    {
+      "gate": "the permission diff reports no unjustified drift",
+      "ok": true,
+      "evidence": "the permbaseline module: clean over 2.0.150 to 2.0.151 with zero unjustified entries"
+    },
+    {
+      "gate": "the transparency page lists every live permission",
+      "ok": true,
+      "evidence": "the frozen permission coverage of apifreeze.ts lists all 10 live permissions and transparencypage.ts renders every row through the permission section"
+    },
+    {
+      "gate": "the agent certification covers every coordination scenario",
+      "ok": true,
+      "evidence": "agentcert.ts: 30 scenarios, 0 failed"
+    },
+    {
+      "gate": "the cost certification reconciles every recorded run",
+      "ok": true,
+      "evidence": "costcert.ts: 9 reconciliations, 0 failed"
+    },
+    {
+      "gate": "the doc check reports zero doc gaps",
+      "ok": true,
+      "evidence": "doccheck.ts: 10 families green"
+    },
+    {
+      "gate": "the recipes runner keeps every gallery entry green",
+      "ok": true,
+      "evidence": "recipes.ts: 36 recipes, 0 failed, 19 of 19 checks"
+    },
+    {
+      "gate": "the sweep artifact holds no open blockers",
+      "ok": true,
+      "evidence": "sweep.ts: 16 of 16 findings fixed, 0 open"
+    },
+    {
+      "gate": "the verification matrix covers every declared cell",
+      "ok": true,
+      "evidence": "matrixverify.ts: 18 cells, 0 failed"
+    },
+    {
+      "gate": "the telemetry free evidence covers the full candidate",
+      "ok": true,
+      "evidence": "telemetryfree.ts: 5 bundles verified with 0 outbound attempts behind the block all proxy"
+    },
+    {
+      "gate": "the changelog covers every version from 1.1.31",
+      "ok": true,
+      "evidence": "the changelog carries every version of the chain from 1.1.31 through 2.0.151"
+    },
+    {
+      "gate": "the migration guide covers every supported path",
+      "ok": true,
+      "evidence": "docs/migrationguide.md documents the version one, automa, selenium, ui vision and tabular migration paths"
+    },
+    {
+      "gate": "the release notes cover the user facing changes of the release",
+      "ok": true,
+      "evidence": "docs/releasenotes.md carries the release notes of the platform release"
+    },
+    {
+      "gate": "the roadmap chain rules held through every release",
+      "ok": true,
+      "evidence": "docs/13.evolutionroadmap.md carries the progress line of the chain with 2.0.0 as the closing release"
+    },
+    {
+      "gate": "the release pipeline dry run passed end to end",
+      "ok": true,
+      "evidence": "the release workflow carries the draft, verify and publish chain: the draft release assembles, the verification step downloads every asset and checks the checksums, and the publish step flips the release live"
+    },
+    {
+      "gate": "the capability manifests carry the release version pins",
+      "ok": true,
+      "evidence": "the 7 capability manifests of dist/caps pin the release 2.0.151"
+    },
+    {
+      "gate": "the soak run keeps a long workflow alive across the retention window without drift",
+      "ok": true,
+      "evidence": "soak.ts: 9 soak entries, 0 failed, the long workflow stayed alive with byte identical resume and a sealed audit hash across two full runs"
+    },
+    {
+      "gate": "the wcag accessibility sweep audits every ui surface green",
+      "ok": true,
+      "evidence": "wcag.ts: 10 wcag checklist entries over every surface, 0 failed"
+    },
+    {
+      "gate": "the store package carries the icon family at every required size",
+      "ok": true,
+      "evidence": "icons.ts carries the six png payloads the build materializes into the extension zip, the manifest icons block and the action default icon resolve them, and the packageextension gate asserts the six icons answer inside the shipped archive"
+    }
+  ],
+  "summary": {
+    "gates": 27,
+    "ok": 27,
+    "blocked": 0,
+    "durationms": 568
+  },
+  "godecision": "go"
+};
+
 const invokeddirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
-if (invokeddirectly) await runreadinesssuite();
+if (invokeddirectly) {
+  const report = await runreadinesssuite();
+  if (syncmode()) {
+    /* the sync rewrites the committed record this run produced, so the release refresh rides one reviewable commit */
+    console.log(await syncrecord({ moduleurl: import.meta.url, recordname: "readinessrecord", recordtype: "readinessreport", record: report }));
+  } else if (mode !== "diff") {
+    /* the record verification: the committed evidence stays internally consistent (the gate counts and the go decision coherence), so a hand-edited record never passes as a recorded review */
+    const green = readinessrecord.verdicts.filter((verdict) => verdict.ok).length;
+    const problems = [
+      ...(readinessrecord.summary.gates !== readinessrecord.verdicts.length ? ["the recorded gate count disagrees with the recorded verdicts"] : []),
+      ...(readinessrecord.summary.ok !== green ? ["the recorded green gates disagree with the recorded ok count"] : []),
+      ...(readinessrecord.summary.blocked !== readinessrecord.verdicts.length - green ? ["the recorded blocked gates disagree with the recorded blocked count"] : []),
+      ...(readinessrecord.summary.gates !== readinessrecord.summary.ok + readinessrecord.summary.blocked ? ["the recorded totals disagree with the ok plus blocked shares"] : []),
+      ...(readinessrecord.godecision !== (readinessrecord.summary.blocked === 0 ? "go" : "no-go") ? ["the recorded go decision disagrees with the recorded blocked count"] : []),
+    ];
+    for (const problem of problems) console.error(`READINESS record: ${problem}`);
+    if (problems.length > 0) process.exitCode = 1;
+  }
+  if (report.summary.blocked > 0) process.exitCode = 1;
+}

@@ -5,12 +5,11 @@ import { join } from "node:path";
 import { promisify } from "node:util";
 import { describe, expect, it } from "vitest";
 import { fixturepages } from "./pagefixtures.ts";
-import type { recipereport } from "../recipes.ts";
+import { reciperecord, type recipereport } from "../recipes.ts";
 import { runrecipessuite } from "../recipes.ts";
 import { gallery as gallerytext, recipeplans } from "./recipesfixtures.ts";
 
 const execute = promisify(execFile);
-const artifactpath = "artifacts/recipes.json";
 const expectedcategories = { scraping: 8, forms: 9, testing: 8, monitoring: 6, agents: 5 };
 
 /** One gallery index entry with the metadata the runner validates. */
@@ -123,23 +122,16 @@ describe("the example gallery of the 2.0.0 release", () => {
     expect(report.entries.every((entry) => entry.durationms >= 0)).toBe(true);
   });
 
-  it("covers every gallery entry of the index in the recorded artifact", {
+  it("covers every gallery entry of the index in the recorded record", {
     timeout: Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 120000),
   }, async () => {
     const built = existsSync("dist/gallery.json");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
-    /* a built tree runs the gate itself when no fresh artifact of this release exists, so every lane that builds before the suite verifies the gallery artifact without depending on gate ordering */
-    if (built && !existsSync(artifactpath)) await execute("node", ["recipes.ts"]);
-    if (built && existsSync(artifactpath)) {
-      const stored = JSON.parse(await readFile(artifactpath, "utf8")) as { release: string };
-      if (stored.release !== packagejson.version) await execute("node", ["recipes.ts"]);
-    }
-    const stored = existsSync(artifactpath);
-    if (built) expect(stored).toBe(true);
-    if (!stored) return;
+    /* a built tree runs the gate itself, so every lane that builds before the suite verifies the committed gallery record without depending on gate ordering: the gate reruns the gallery over the built fixture set and verifies the record stays internally consistent */
+    if (built) await execute("node", ["recipes.ts"]);
     const gallery = JSON.parse(gallerytext) as galleryindex;
-    const report = JSON.parse(await readFile(artifactpath, "utf8")) as recipereport;
-    /* the artifact answers the current release with every entry passing and every check ok */
+    const report: recipereport = reciperecord;
+    /* the record answers the current release with every entry passing and every check ok */
     expect(report.release).toBe(packagejson.version);
     expect(report.gallery.entries).toBe(36);
     expect(report.gallery.categories).toEqual(expectedcategories);

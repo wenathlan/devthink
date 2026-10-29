@@ -146,8 +146,8 @@ if (nvmversion !== nodeversion)
    tag stays readable for the human, the digest pins the build the scanner
    gate demands, and the maintenance rung restamps both — the sbom and
    attest records the release lane publishes still ride the build). */
-if (!new RegExp(`^ARG NODE_IMAGE="node:${nodeversion}-bookworm-slim"$`, "m").test(containerfile))
-  throw new Error("the Dockerfile NODE_IMAGE arg must pin the exact declared Node baseline by its registry tag.");
+if (!new RegExp(`^ARG NODE_IMAGE="node:${nodeversion}-bookworm-slim@sha256:[0-9a-f]{64}"$`, "m").test(containerfile))
+  throw new Error("the Dockerfile NODE_IMAGE arg must pin the exact declared Node baseline by its registry tag and the ladder-stamped digest the scanner gate demands.");
 if (!new RegExp(`^ARG NODE_RUNTIME_VERSION="${nodeversion}"$`, "m").test(containerfile))
   throw new Error(
     "the Dockerfile NODE_RUNTIME_VERSION arg must pin the exact declared Node baseline of the runtime tarball.",

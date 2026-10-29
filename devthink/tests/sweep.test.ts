@@ -3,51 +3,33 @@ import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { promisify } from "node:util";
 import { describe, expect, it } from "vitest";
+import { sweeprecord } from "../sweep.ts";
 
 const execute = promisify(execFile);
 
 /* ── The release candidate defect sweep coverage. ── */
 
-describe("the release candidate defect sweep artifact", () => {
+describe("the release candidate defect sweep record", () => {
   it("declares every check family the gate runs over the trails, the sources and the runtime", async () => {
     const source = await readFile("sweep.ts", "utf8");
     /* the record calls may wrap across lines (the formatter owns the wrap),
        so the family assertion reads the quoted family name itself */
     for (const family of ["audittrails", "todoentries", "replay", "scans", "runtime"])
       expect(source).toContain(`"${family}"`);
-    /* the gate reads the compiled library and joins the validate chain after the build */
+    /* the gate reads the compiled library, joins the validate chain after the build and carries its committed record inside its own module */
     expect(source).toContain("dist/index.js");
     expect(source).toContain("dist/policy.js");
-    expect(source).toContain("artifacts/sweep.json");
+    expect(source).toContain("export const sweeprecord: sweepreport");
+    expect(source).toContain("syncrecord");
     expect(source).toContain("process.exitCode = 1");
   });
 
   it("covers every check family with a passing outcome once the gate has run", async () => {
-    const artifactpath = "artifacts/sweep.json";
     const built = existsSync("dist/index.js");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
-    /* the sweep aggregates the audit trails the earlier gates record, so the lane independence holds only where those trails exist: a built tree with its trails present runs the gate itself, while a lane that skipped the earlier gates asserts the source declarations only and leaves the artifact verification to the gate chain that joins the sweep in order */
-    const trails = [
-      "artifacts/agentcert.json",
-      "artifacts/costcert.json",
-      "artifacts/doccheck.json",
-      "artifacts/pentest.json",
-    ];
-    const trailsready = trails.every((trail) => existsSync(trail));
-    if (built && trailsready && !existsSync(artifactpath)) await execute("node", ["sweep.ts"]);
-    if (built && trailsready && existsSync(artifactpath)) {
-      const stored = JSON.parse(await readFile(artifactpath, "utf8")) as { release: string };
-      if (stored.release !== packagejson.version) await execute("node", ["sweep.ts"]);
-    }
-    const stored = existsSync(artifactpath);
-    if (built && trailsready) expect(stored).toBe(true);
-    if (!stored) return;
-    const report = JSON.parse(await readFile(artifactpath, "utf8")) as {
-      release: string;
-      recordedfailures: number;
-      findings: Array<{ family: string; name: string; status: string }>;
-      summary: { families: number; total: number; fixed: number; open: number };
-    };
+    /* the sweep aggregates the committed records the earlier gates carry, so the lane independence holds over the built tree: a built tree runs the gate itself (the gate walks the trails, the source scans and the runtime checks and verifies the record stays internally consistent), while a lane that skipped the build asserts the committed record only and leaves the live walk to the gate chain that joins the sweep in order */
+    if (built) await execute("node", ["sweep.ts"]);
+    const report = sweeprecord;
     expect(report.release).toBe(packagejson.version);
     expect(report.summary.open).toBe(0);
     expect(report.summary.fixed).toBe(report.summary.total);

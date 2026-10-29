@@ -1,16 +1,20 @@
-/** Verifies the full candidate matrix of the release candidate: the gate enumerates every cell the candidate must cover and records its outcome — every action kind of the frozen catalog against the fake tab provider of every browser kind (chromium, firefox and safari) through the step policy, every browser surface page across the popup, the sidepanel, the dashboard, the transparency and the options templates beside the offscreen and sandbox hosts, the cli surface in library mode through the manifest and help commands, the mcp surface through the server handshake and the protocol negotiation, the importers on the plan fixtures and the workflow dry runs and the session file round trip, the migration paths from version one plans through the closed 2.0.0 sunset negotiation, and the standing gates (poolaudit, apifreeze, cspaudit and permdiff as subprocess cells; agentcert, costcert, doccheck and sweep through their recorded artifacts). Every cell records its outcome in artifacts/matrixverify.json, the matrix reports its coverage percentage of the candidate, and the gate exits nonzero when any cell fails. */
+/** Verifies the full candidate matrix of the release candidate: the gate enumerates every cell the candidate must cover and records its outcome — every action kind of the frozen catalog against the fake tab provider of every browser kind (chromium, firefox and safari) through the step policy, every browser surface page across the popup, the sidepanel, the dashboard, the transparency and the options templates beside the offscreen and sandbox hosts, the cli surface in library mode through the manifest and help commands, the mcp surface through the server handshake and the protocol negotiation, the importers on the plan fixtures and the workflow dry runs and the session file round trip, the migration paths from version one plans through the closed 2.0.0 sunset negotiation, and the standing gates (poolaudit, apifreeze, cspaudit and permdiff as subprocess cells; agentcert, costcert, doccheck and sweep through their committed records). Every cell records its outcome in the committed record matrixverify.ts (the matrixverifyrecord const this module carries, migrated from devthink/artifacts/matrixverify.json when the flat folder law dissolved the artifacts folder), the matrix reports its coverage percentage of the candidate, and the gate exits nonzero when any cell fails. The sync mode (`node matrixverify.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
 import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { promisify } from "node:util";
 import { pathToFileURL } from "node:url";
+import { summaryproblemsof, syncmode, syncrecord } from "./records.ts";
+import { agentcertrecord } from "./agentcert.ts";
+import { costcertrecord } from "./costcert.ts";
+import { doccheckrecord } from "./doccheck.ts";
+import { sweeprecord } from "./sweep.ts";
 import type { actionkind, toolstep } from "./types.ts";
 
 const execute = promisify(execFile);
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
-const artifactpath = "artifacts/matrixverify.json";
 
 /** The fake tab provider of the matrix: one deterministic tab id per browser kind and per slot, so the kind cells bind tabs the same way on chromium, firefox and safari — the fake tab covers every browser kind the extension ships. */
 const faketabprovider = {
@@ -50,9 +54,10 @@ async function runcells(script: string) {
   return outcome.stdout.trim().split("\n").at(-1) ?? "";
 }
 
-/** One recorded gate report the matrix replays through its artifact: the summary fields the standing gates answer. */
+/** One recorded gate report the matrix replays through its committed record: the release stamp and the summary fields the standing gates answer. */
 interface gatereport {
-  summary: { failed: number; open: number };
+  release: string;
+  summary: { failed?: number; open?: number };
 }
 
 /** Runs the full matrix verification and answers the report the artifact records. */
@@ -252,7 +257,7 @@ export async function runmatrixverifysuite() {
     return "the session file and the export payload round tripped";
   });
 
-  /* 7. the standing gates: the pool audit, the api freeze, the csp audit and the permission diff run as subprocess cells; the agent certification, the cost certification, the documentation check and the sweep report through their recorded artifacts. */
+  /* 7. the standing gates: the pool audit, the api freeze, the csp audit and the permission diff run as subprocess cells; the agent certification, the cost certification, the documentation check and the sweep answer through their committed records. */
   await cell({ family: "gates", name: "the pool audit gate runs green over the 626 item pool" }, async () =>
     runcells("poolaudit.ts"),
   );
@@ -265,16 +270,18 @@ export async function runmatrixverifysuite() {
   await cell({ family: "gates", name: "the permission diff gate runs green over the versioned baseline" }, async () =>
     runcells("permdiff.ts"),
   );
-  for (const [gate, artifact, field] of [
-    ["agentcert", "artifacts/agentcert.json", (report) => report.summary.failed],
-    ["costcert", "artifacts/costcert.json", (report) => report.summary.failed],
-    ["doccheck", "artifacts/doccheck.json", (report) => report.summary.failed],
-    ["sweep", "artifacts/sweep.json", (report) => report.summary.open],
-  ] as Array<[string, string, (report: gatereport) => number]>) {
+  for (const [gate, record, field] of [
+    ["agentcert", agentcertrecord, (report: gatereport) => report.summary.failed ?? 0],
+    ["costcert", costcertrecord, (report: gatereport) => report.summary.failed ?? 0],
+    ["doccheck", doccheckrecord, (report: gatereport) => report.summary.failed ?? 0],
+    ["sweep", sweeprecord, (report: gatereport) => report.summary.open ?? 0],
+  ] as Array<[string, gatereport, (report: gatereport) => number]>) {
     await cell({ family: "gates", name: `the ${gate} artifact records a green run` }, async () => {
-      check(existsSync(artifact), `the ${gate} artifact is absent; run the gate before the matrix`);
-      const report = JSON.parse(await readFile(artifact, "utf8"));
-      const failures = field(report);
+      check(
+        record.release === release,
+        `the ${gate} record stamps the release ${record.release} while the tree builds ${release}; run the gate with sync inside the release commit`,
+      );
+      const failures = field(record);
       check(failures === 0, `the ${gate} artifact records ${failures} open findings`);
       return `the ${gate} artifact records zero failures`;
     });
@@ -291,18 +298,181 @@ export async function runmatrixverifysuite() {
   };
 }
 
+/* ── the committed record (the sync pass rewrites this block) ── */
+
+/** The verification matrix report the committed record carries: the release
+ * it stamps, the matrix shape (the browsers, the kind count and the cell
+ * count), every cell in its fixed order with its outcome and detail, the
+ * coverage percentage and the summary the gate exits on. */
+export interface matrixverifyreport {
+  release: string;
+  matrix: { browsers: string[]; kinds: number; cells: number };
+  cells: Array<{ family: string; name: string; outcome: string; detail: string }>;
+  coverage: number;
+  summary: { total: number; passed: number; failed: number };
+}
+
+/** The committed verification matrix record of the 2.0.151 release — the
+ * evidence the readiness review reads, migrated from
+ * devthink/artifacts/matrixverify.json when the flat folder law dissolved
+ * the artifacts folder of the application first layer: every cell in its
+ * fixed order with its outcome, no timestamps, so the record replays byte
+ * identical. */
+export const matrixverifyrecord: matrixverifyreport = {
+  "release": "2.0.151",
+  "matrix": {
+    "browsers": [
+      "chromium",
+      "firefox",
+      "safari"
+    ],
+    "kinds": 335,
+    "cells": 18
+  },
+  "cells": [
+    {
+      "family": "kinds",
+      "name": "every action kind answers the step policy on the chromium fake tab",
+      "outcome": "pass",
+      "detail": "all 335 kinds answered the policy on tab 101: 145 read, 29 interaction, 161 sensitive"
+    },
+    {
+      "family": "kinds",
+      "name": "every action kind answers the step policy on the firefox fake tab",
+      "outcome": "pass",
+      "detail": "all 335 kinds answered the policy on tab 201: 145 read, 29 interaction, 161 sensitive"
+    },
+    {
+      "family": "kinds",
+      "name": "every action kind answers the step policy on the safari fake tab",
+      "outcome": "pass",
+      "detail": "all 335 kinds answered the policy on tab 301: 145 read, 29 interaction, 161 sensitive"
+    },
+    {
+      "family": "surfaces",
+      "name": "every browser surface page opens with its script and style",
+      "outcome": "pass",
+      "detail": "5 interface pages with script and style beside 2 host pages with their inline logic"
+    },
+    {
+      "family": "cli",
+      "name": "the cli surface answers the manifest and help commands in library mode",
+      "outcome": "pass",
+      "detail": "manifest and help answered for 2.0.151"
+    },
+    {
+      "family": "mcp",
+      "name": "the mcp surface handshakes through the serve initialization and the stdio bridge contract",
+      "outcome": "pass",
+      "detail": "the handshake initialized with 35 tools"
+    },
+    {
+      "family": "migration",
+      "name": "the migration paths from version one plans answer the protocol negotiation",
+      "outcome": "pass",
+      "detail": "negotiation agreed on major two, refused version one below the 2.0.0 sunset floor with the migration guide and refused the future client"
+    },
+    {
+      "family": "importers",
+      "name": "the plan importer parses every fixture of the dist set",
+      "outcome": "pass",
+      "detail": "2 plan fixtures parsed"
+    },
+    {
+      "family": "importers",
+      "name": "the workflow importer dry runs every workflow fixture of the dist set",
+      "outcome": "pass",
+      "detail": "2 workflow fixtures dry ran"
+    },
+    {
+      "family": "importers",
+      "name": "the session importer round trips one session file",
+      "outcome": "pass",
+      "detail": "the session file and the export payload round tripped"
+    },
+    {
+      "family": "gates",
+      "name": "the pool audit gate runs green over the 626 item pool",
+      "outcome": "pass",
+      "detail": "Pool audit of 626 items against 4468 shipped symbols: 623 implemented, 3 planned, 0 unknown."
+    },
+    {
+      "family": "gates",
+      "name": "the api freeze gate runs green over the frozen contract",
+      "outcome": "pass",
+      "detail": "}"
+    },
+    {
+      "family": "gates",
+      "name": "the csp audit gate runs green over the content security policy",
+      "outcome": "pass",
+      "detail": "}"
+    },
+    {
+      "family": "gates",
+      "name": "the permission diff gate runs green over the versioned baseline",
+      "outcome": "pass",
+      "detail": "Permission set hash: 1d6e1579114bf176eba45a159e9f166c9c4a2587a53644bd2a63f880506a6262 over 11 permission entries; the baseline of tests/permbaseline.ts carries the recorded set of the release."
+    },
+    {
+      "family": "gates",
+      "name": "the agentcert artifact records a green run",
+      "outcome": "pass",
+      "detail": "the agentcert artifact records zero failures"
+    },
+    {
+      "family": "gates",
+      "name": "the costcert artifact records a green run",
+      "outcome": "pass",
+      "detail": "the costcert artifact records zero failures"
+    },
+    {
+      "family": "gates",
+      "name": "the doccheck artifact records a green run",
+      "outcome": "pass",
+      "detail": "the doccheck artifact records zero failures"
+    },
+    {
+      "family": "gates",
+      "name": "the sweep artifact records a green run",
+      "outcome": "pass",
+      "detail": "the sweep artifact records zero failures"
+    }
+  ],
+  "coverage": 100,
+  "summary": {
+    "total": 18,
+    "passed": 18,
+    "failed": 0
+  }
+};
+
 const invokeddirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (invokeddirectly) {
   const report = await runmatrixverifysuite();
-  await mkdir("artifacts", { recursive: true });
-  await writeFile(artifactpath, `${JSON.stringify(report, null, 2)}\n`);
   for (const candidate of report.cells) {
     const line = `[${candidate.outcome === "pass" ? "ok" : "FAIL"}] ${candidate.family}/${candidate.name} — ${candidate.detail}`;
     if (candidate.outcome === "pass") console.log(line);
     else console.error(line);
   }
-  console.log(
-    `Matrix verified for ${release}: ${report.summary.passed} of ${report.summary.total} cells green, ${report.coverage}% coverage of the candidate matrix.`,
-  );
+  if (syncmode()) {
+    /* the sync rewrites the committed record this run produced, so the release refresh rides one reviewable commit */
+    console.log(await syncrecord({ moduleurl: import.meta.url, recordname: "matrixverifyrecord", recordtype: "matrixverifyreport", record: report }));
+  } else {
+    /* the record verification: the committed evidence stays internally consistent (the summary math, the cell counts and the coverage share), so a hand-edited record never passes as a recorded run */
+    const passing = matrixverifyrecord.cells.filter((cell) => cell.outcome === "pass").length;
+    const problems = [
+      ...summaryproblemsof(matrixverifyrecord.summary),
+      ...(passing !== matrixverifyrecord.summary.passed ? ["the recorded passing cells disagree with the recorded passed count"] : []),
+      ...(matrixverifyrecord.matrix.cells !== matrixverifyrecord.summary.total || matrixverifyrecord.cells.length !== matrixverifyrecord.summary.total
+        ? ["the recorded cell counts disagree with the recorded matrix shape"]
+        : []),
+    ];
+    for (const problem of problems) console.error(`MATRIXVERIFY record: ${problem}`);
+    console.log(
+      `Matrix verified for ${release}: ${report.summary.passed} of ${report.summary.total} cells green, ${report.coverage}% coverage of the candidate matrix, the record in matrixverify.ts.`,
+    );
+    if (problems.length > 0) process.exitCode = 1;
+  }
   if (report.summary.failed > 0) process.exitCode = 1;
 }

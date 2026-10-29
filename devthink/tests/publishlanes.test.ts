@@ -125,6 +125,7 @@ describe.skipIf(!inrepo)("the npmjs registry freshness lane", () => {
   it("the resolvers read the application manifests, never a foreign tag", async () => {
     const publish = await readworkflow("publish.yml");
     expect(publish).toContain("require('./${{ matrix.package }}/package.json').version");
+    expect(publish).toContain("require('./saddle/package.json').version");
     /* the deleted saddle-v* tag resolver never runs again: the vhe lane
      * reads the saddle manifest of the checked out source. */
     expect(publish).toContain("saddle-v* tag resolver never runs again");

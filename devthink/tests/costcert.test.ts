@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { promisify } from "node:util";
 import { describe, expect, it } from "vitest";
+import { costcertrecord } from "../costcert.ts";
 
 const execute = promisify(execFile);
 
@@ -33,23 +34,11 @@ describe("the costcert reconciliation artifact", () => {
   });
 
   it("covers every accounting check with a passing outcome once the gate has run", async () => {
-    const artifactpath = "artifacts/costcert.json";
     const built = existsSync("dist/extension/manifest.json");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
-    /* a built tree runs the gate itself when no fresh artifact of this release exists, so every lane that builds before the suite — the bun lane, the deno lane, a local two-pass validate — verifies the reconciliation artifact without depending on the gate having run before the tests */
-    if (built && !existsSync(artifactpath)) await execute("node", ["costcert.ts"]);
-    if (built && existsSync(artifactpath)) {
-      const stored = JSON.parse(await readFile(artifactpath, "utf8")) as { release: string };
-      if (stored.release !== packagejson.version) await execute("node", ["costcert.ts"]);
-    }
-    const stored = existsSync(artifactpath);
-    if (built) expect(stored).toBe(true);
-    if (!stored) return;
-    const report = JSON.parse(await readFile(artifactpath, "utf8")) as {
-      release: string;
-      entries: Array<{ id: number; title: string; outcome: string; detail: string }>;
-      summary: { total: number; passed: number; failed: number };
-    };
+    /* a built tree runs the gate itself, so every lane that builds before the suite — the bun lane, the deno lane, a local two-pass validate — verifies the committed reconciliation record without depending on gate ordering: the gate replays the accounting families against the compiled modules and verifies the record stays internally consistent */
+    if (built) await execute("node", ["costcert.ts"]);
+    const report = costcertrecord;
     expect(report.release).toBe(packagejson.version);
     expect(report.summary.total).toBe(9);
     expect(report.summary.failed).toBe(0);
@@ -61,14 +50,8 @@ describe("the costcert reconciliation artifact", () => {
     }
   });
 
-  it("keeps the reconciliation invariants of the artifact summary and the recorded checks", async () => {
-    const artifactpath = "artifacts/costcert.json";
-    if (!existsSync(artifactpath)) return;
-    const report = JSON.parse(await readFile(artifactpath, "utf8")) as {
-      release: string;
-      entries: Array<{ id: number; outcome: string }>;
-      summary: { total: number; passed: number; failed: number };
-    };
+  it("keeps the reconciliation invariants of the record summary and the recorded checks", async () => {
+    const report = costcertrecord;
     /* the reconciliation invariants: the summary total equals the recorded check count, the passed count equals the passing outcomes, the failed count equals the failing outcomes and the totals sum back to the whole */
     const passing = report.entries.filter((entry) => entry.outcome === "pass").length;
     const failing = report.entries.filter((entry) => entry.outcome === "fail").length;

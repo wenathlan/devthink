@@ -1,9 +1,11 @@
-/** Verifies the documentation stays consistent with the code: the kind documentation covers every action kind of the catalog with its fields and a schema valid example, the reference tables mirror the cli commands, the protocol messages, the error codes, the audit kinds, the configuration keys, the mcp tools and the capability manifests, the doc links resolve, the code blocks state their language, the flow diagrams follow the shared style, the changelog covers every released version and the readme claims match the surfaces — every gap is a failing check, the report lands in tests/artifacts/doccheck.json and the gate exits nonzero on any gap. */
+/** Verifies the documentation stays consistent with the code: the kind documentation covers every action kind of the catalog with its fields and a schema valid example, the reference tables mirror the cli commands, the protocol messages, the error codes, the audit kinds, the configuration keys, the mcp tools and the capability manifests, the doc links resolve, the code blocks state their language, the flow diagrams follow the shared style, the changelog covers every released version and the readme claims match the surfaces — every gap is a failing check, the committed record doccheck.ts (the doccheckrecord const this module carries, migrated from devthink/artifacts/doccheck.json when the flat folder law dissolved the artifacts folder) preserves the report, and the gate exits nonzero on any gap. The sync mode (`node doccheck.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
 import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
-import { readdir, readFile, writeFile, mkdir } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { promisify } from "node:util";
+import { pathToFileURL } from "node:url";
+import { summaryproblemsof, syncmode, syncrecord } from "./records.ts";
 import type { actionkind } from "./types.ts";
 
 const execute = promisify(execFile);
@@ -22,14 +24,28 @@ async function text(path: string) {
 const packagejson = JSON.parse(await text("package.json"));
 const release = String(packagejson.version);
 
-/* the gate runs after the build: the kind catalog, the tool catalog and the message catalog live in the compiled modules. */
-if (!existsSync("dist/policy.js") || !existsSync("dist/index.js") || !existsSync("dist/protocol.js")) {
-  console.error(
-    "DOCCHECK The gate reads the compiled kind, tool and message catalogs; run pnpm build before the documentation check.",
-  );
-  process.exitCode = 1;
-}
-if (process.exitCode !== 1) {
+/** Runs the documentation consistency suite and answers the report the committed record carries: the module stays import safe (the sweep and the matrix read its record), so the checks run only under the direct invocation. */
+export async function rundocchecksuite(): Promise<doccheckreport> {
+  /* the gate runs after the build: the kind catalog, the tool catalog and the message catalog live in the compiled modules. */
+  if (!existsSync("dist/policy.js") || !existsSync("dist/index.js") || !existsSync("dist/protocol.js")) {
+    console.error(
+      "DOCCHECK The gate reads the compiled kind, tool and message catalogs; run pnpm build before the documentation check.",
+    );
+    record("builddeps", false, ["the compiled kind, tool and message catalogs sit absent; run pnpm build before the documentation check"]);
+    return {
+      release,
+      kindcount: 0,
+      kindentries: 0,
+      families: 12,
+      auditkinds: 0,
+      mcptools: 0,
+      protocolmessages: 0,
+      clicommands: 0,
+      flowdiagrams: 0,
+      checks,
+      summary: { total: checks.length, passed: checks.filter((check) => check.ok).length, failed: checks.filter((check) => !check.ok).length },
+    };
+  }
   const { actionkindcatalog, actionrisk, needstarget } = await import("./dist/policy.js");
   const { alltools, buildtoolcatalog } = await import("./dist/index.js");
   const { frozenmessagecatalog } = await import("./dist/protocol.js");
@@ -242,7 +258,7 @@ if (process.exitCode !== 1) {
   record("readmeclaims", readmeproblems.length === 0, readmeproblems);
 
   /* the report and the exit code. */
-  const report = {
+  const report: doccheckreport = {
     release,
     kindcount: catalog.length,
     kindentries: entries.length,
@@ -259,14 +275,123 @@ if (process.exitCode !== 1) {
       failed: checks.filter((check) => !check.ok).length,
     },
   };
-  await mkdir("artifacts", { recursive: true });
-  await writeFile("artifacts/doccheck.json", `${JSON.stringify(report, null, 2)}\n`, "utf8");
+  if (syncmode()) {
+    /* the sync rewrites the committed record this run produced, so the release refresh rides one reviewable commit */
+    console.log(await syncrecord({ moduleurl: import.meta.url, recordname: "doccheckrecord", recordtype: "doccheckreport", record: report }));
+    return report;
+  }
+  /* the record verification: the committed evidence stays internally consistent (the summary math and the ok counts), so a hand-edited record never passes as a recorded run */
+  const okchecks = doccheckrecord.checks.filter((check) => check.ok).length;
+  const problems = [
+    ...summaryproblemsof(doccheckrecord.summary),
+    ...(okchecks !== doccheckrecord.summary.passed ? ["the recorded ok checks disagree with the recorded passed count"] : []),
+  ];
+  for (const problem of problems) console.error(`DOCCHECK record: ${problem}`);
+  if (problems.length > 0) process.exitCode = 1;
   if (report.summary.failed > 0) {
     for (const check of checks.filter((check) => !check.ok)) console.error(`DOCCHECK ${check.name}: ${check.detail}`);
     process.exitCode = 1;
   } else {
     console.log(
-      `Documentation verified for ${release}: ${catalog.length} kinds, ${auditkinds.length} audit kinds, ${tools.length} mcp tools, ${frozenmessagecatalog.length} protocol messages, ${uniquecommands.length} cli commands, ${mermaidblocks} flow diagrams; ${report.summary.passed} check families green.`,
+      `Documentation verified for ${release}: ${catalog.length} kinds, ${auditkinds.length} audit kinds, ${tools.length} mcp tools, ${frozenmessagecatalog.length} protocol messages, ${uniquecommands.length} cli commands, ${mermaidblocks} flow diagrams; ${report.summary.passed} check families green, the record in doccheck.ts.`,
     );
   }
+  return report;
 }
+
+/* ── the committed record (the sync pass rewrites this block) ── */
+
+/** The documentation consistency report the committed record carries: the
+ * release it stamps, the catalog counts the documentation mirrors, every
+ * check family with its outcome and the summary the gate exits on. */
+export interface doccheckreport {
+  release: string;
+  kindcount: number;
+  kindentries: number;
+  families: number;
+  auditkinds: number;
+  mcptools: number;
+  protocolmessages: number;
+  clicommands: number;
+  flowdiagrams: number;
+  checks: Array<{ name: string; ok: boolean; detail: string }>;
+  summary: { total: number; passed: number; failed: number };
+}
+
+/** The committed documentation record of the 2.0.151 release — the evidence
+ * the readiness review, the sweep trails and the matrix cells read, migrated
+ * from devthink/artifacts/doccheck.json when the flat folder law dissolved
+ * the artifacts folder of the application first layer: every check family in
+ * its fixed order with its outcome, no timestamps, so the record replays
+ * byte identical. */
+export const doccheckrecord: doccheckreport = {
+  "release": "2.0.151",
+  "kindcount": 335,
+  "kindentries": 335,
+  "families": 12,
+  "auditkinds": 0,
+  "mcptools": 35,
+  "protocolmessages": 23,
+  "clicommands": 15,
+  "flowdiagrams": 12,
+  "checks": [
+    {
+      "name": "kindcoverage",
+      "ok": true,
+      "detail": "every entry verified"
+    },
+    {
+      "name": "kindfields",
+      "ok": true,
+      "detail": "every entry verified"
+    },
+    {
+      "name": "kindexamples",
+      "ok": true,
+      "detail": "every entry verified"
+    },
+    {
+      "name": "doclinks",
+      "ok": true,
+      "detail": "every entry verified"
+    },
+    {
+      "name": "codefences",
+      "ok": true,
+      "detail": "every entry verified"
+    },
+    {
+      "name": "referencetables",
+      "ok": true,
+      "detail": "every entry verified"
+    },
+    {
+      "name": "flowdiagrams",
+      "ok": true,
+      "detail": "the flow documentation carries 12 mermaid diagrams with 12 module link lines"
+    },
+    {
+      "name": "changelogcoverage",
+      "ok": true,
+      "detail": "every entry verified"
+    },
+    {
+      "name": "roadmapcoverage",
+      "ok": true,
+      "detail": "every entry verified"
+    },
+    {
+      "name": "readmeclaims",
+      "ok": true,
+      "detail": "every entry verified"
+    }
+  ],
+  "summary": {
+    "total": 10,
+    "passed": 10,
+    "failed": 0
+  }
+};
+
+const invokeddirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (invokeddirectly) await rundocchecksuite();

@@ -27,15 +27,19 @@ beforeAll(async () => {
   // rides the repository devdependency tree, so the suite generates it the
   // same command the repo scripts and the consumer init flow run (idempotent
   // when the client is already present) — a fresh checkout or ci lane that
-  // skipped db:generate still lands the client before the first write
+  // skipped db:generate still lands the client before the first write.
+  // the schema and the prisma config live at the application root (the tests
+  // village keeps this suite inside the devthink app folder, so the two
+  // commands target the application directory one hop up).
+  const appdir = join(import.meta.dirname, "..");
   await exec("bunx", ["prisma", "generate"], {
-    cwd: join(import.meta.dirname, ".."),
+    cwd: appdir,
     timeout: 120000,
   });
   // push the repo schema into the isolated database (the same command the
   // consumer runs after init — verifies the schema loads under prisma 7)
   await exec("bunx", ["prisma", "db", "push"], {
-    cwd: join(import.meta.dirname, ".."),
+    cwd: appdir,
     env: { ...process.env, DEVTHINK_DATABASE_URL: process.env.DEVTHINK_DATABASE_URL },
     timeout: 120000,
   });

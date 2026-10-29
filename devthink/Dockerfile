@@ -183,7 +183,11 @@
 # text, and the container-scan heuristics parse any token containing '='
 # as a candidate credential pair.
 
-ARG NODE_IMAGE="node:26.13.0-bookworm-slim"
+# the node base answers the pin law the distroless and debian legs already
+# carry: the digest rides the tag so every pull of the image family lands
+# the exact bytes the ladder audited (the scorecard pin rule the code
+# scanning alerts 1965-1967 asked for).
+ARG NODE_IMAGE="node:26.13.0-bookworm-slim@sha256:bc0a2afd3b74ce12222fc8bab99271e66257f021078f5f4a5d687a77d280c1d9"
 
 # the runtime node version of the five-architecture surface (the 2.0.16
 # pass): the nodejs.org distribution answers official linux tarballs for
@@ -236,6 +240,19 @@ COPY devthink/package.json devthink/bun.lock ./
 # dependency of /devthink/package.json resolves (the exact resolution the
 # application-scoped context of the pre-union era could never answer).
 COPY vault /vault
+
+# the standalone container answers the sibling-family law: the manifest
+# declares @wenathlan/vault as a file:../vault sibling dependency (the
+# dependency-union law) but the container context carries the application
+# tree alone, and no source of the os imports the vault package (the vault
+# entry is the declared library contract of the family manifest, never a
+# build input of this image), so the install strips the sibling entries the
+# context cannot resolve and the lockfile regeneration pins the same tree
+# the builder always installed — the strip and the regeneration answer both
+# install stages identically (the buildkit cache of the deps layers keeps
+# the shared chain).
+RUN node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));for(const section of ['dependencies','devDependencies','optionalDependencies']){for(const name of Object.keys(p[section]??{})){if(/^file:\\.\\//.test(p[section][name]))delete p[section][name];}}fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');" \
+    && bun install --ignore-scripts
 
 # the toolchain: zip and unzip for the packaging steps (the extension
 # archive and the pack verification), and the bun version the packageManager
@@ -293,6 +310,12 @@ COPY devthink/package.json devthink/bun.lock ./
 
 COPY vault /vault
 
+# the sibling strip of the deps stage repeated verbatim: the builder
+# re-copies the pristine manifest pair, so the standalone strip and the
+# lockfile regeneration answer here again.
+RUN node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));for(const section of ['dependencies','devDependencies','optionalDependencies']){for(const name of Object.keys(p[section]??{})){if(/^file:\\.\\//.test(p[section][name]))delete p[section][name];}}fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');" \
+    && bun install --ignore-scripts
+
 RUN set -eux; \
     apt_update_tries=5; \
     while [ "$apt_update_tries" -gt 0 ]; do \
@@ -329,6 +352,11 @@ RUN bun install --frozen-lockfile --ignore-scripts
 COPY devthink .
 COPY getry /getry
 COPY saddle /saddle
+# the root manifest the engines gate counts rides beside the application:
+# the engines suite opens ../package.json from the workdir, and the
+# container answers the checkout geometry the same way (the count law
+# of the fifteen engines reads the field that grows without limit).
+COPY package.json /package.json
 
 # the library build: every dist target the publishing pipeline ships — the
 # esm/cjs/neutral library bundles, the cli, the headless entry, the mcp

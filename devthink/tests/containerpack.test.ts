@@ -41,7 +41,7 @@ describe("containerpack", () => {
     way the runtime policy gate does). */
     const nodebaseline = (await readFile(".nvmrc", "utf8")).trim();
     expect(dockerfile).toContain(`ARG NODE_RUNTIME_VERSION="${nodebaseline}"`);
-    expect(dockerfile).toMatch(new RegExp(`^ARG NODE_IMAGE="node:${nodebaseline}-bookworm-slim"$`, "m"));
+    expect(dockerfile).toMatch(new RegExp(`^ARG NODE_IMAGE="node:${nodebaseline}-bookworm-slim@sha256:[0-9a-f]{64}"$`, "m"));
     expect(dockerfile).toMatch(/^FROM debian:trixie-slim@sha256:[0-9a-f]{64} AS runtime$/m);
     expect(dockerfile).toContain("COPY --from=nodefetch /out /usr/local");
     /* the runner stage closes the file: it stays the default build target

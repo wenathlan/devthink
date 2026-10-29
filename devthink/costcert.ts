@@ -1,11 +1,11 @@
-/** Executes the shared accounting certification of the 1.1.96 multi agent certification release against the real compiled modules: every check replays one recorded run or one live accounting family and recomputes the cost lines from the recorded evidence — the per agent token accounting against the step logs, the shared cost accounting against the agent totals, the budget alerts at their thresholds, the refunds of cancelled steps under the provider rule that bills only the chunks that left the wire, the model routing attribution, the exported cost report reconciliation and the audit trail completeness. The artifact tests/artifacts/costcert.json records every executed check with its outcome in a fixed order with no timestamps so reruns stay byte identical, and the gate exits nonzero on any accounting mismatch. The verification method lives in docs/costcert.md. */
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+/** Executes the shared accounting certification of the 1.1.96 multi agent certification release against the real compiled modules: every check replays one recorded run or one live accounting family and recomputes the cost lines from the recorded evidence — the per agent token accounting against the step logs, the shared cost accounting against the agent totals, the budget alerts at their thresholds, the refunds of cancelled steps under the provider rule that bills only the chunks that left the wire, the model routing attribution, the exported cost report reconciliation and the audit trail completeness. The committed record costcert.ts (the costcertrecord const this module carries, migrated from devthink/artifacts/costcert.json when the flat folder law dissolved the artifacts folder) records every executed check with its outcome in a fixed order with no timestamps so reruns stay byte identical, and the gate exits nonzero on any accounting mismatch. The verification method lives in docs/costcert.md. The sync mode (`node costcert.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
+import { readFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
+import { summaryproblemsof, syncmode, syncrecord } from "./records.ts";
 import type { callcontext, providerconfig } from "./types.ts";
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
-const artifactpath = "artifacts/costcert.json";
 const now = 1_800_000_000_000;
 
 /** Collects one executed accounting check with its outcome; the detail names the functions the check exercised and what they answered. */
@@ -705,16 +705,129 @@ export async function runcostcertsuite() {
   };
 }
 
+/* ── the committed record (the sync pass rewrites this block) ── */
+
+/** The shared accounting certification report the committed record carries:
+ * the release it stamps, the checklist document, every executed check in its
+ * fixed order with its outcome and the summary the gate exits on. */
+export interface costcertreport {
+  release: string;
+  checklist: string;
+  entries: Array<{ id: number; title: string; family: string; module: string; outcome: string; detail: string }>;
+  summary: { total: number; passed: number; failed: number };
+}
+
+/** The committed reconciliation record of the 2.0.151 release — the evidence
+ * the readiness review and the matrix cells read, migrated from
+ * devthink/artifacts/costcert.json when the flat folder law dissolved the
+ * artifacts folder of the application first layer: every check in its fixed
+ * order with its outcome, no timestamps, so the record replays byte
+ * identical. */
+export const costcertrecord: costcertreport = {
+  "release": "2.0.151",
+  "checklist": "docs/costcert.md",
+  "entries": [
+    {
+      "id": 1,
+      "title": "the recorded run replays and every cost line recomputes",
+      "family": "replay",
+      "module": "llm.js and memory.js",
+      "outcome": "pass",
+      "detail": "the recorded run of three steps replayed from the memory store with every cost line recomputing (prompt plus completion equals total, the per step filter matching the stored line) and the run totals of 430 tokens, 0.043 cost and 3 calls reconciling with the per line recompute."
+    },
+    {
+      "id": 2,
+      "title": "the token accounting per agent matches the step logs",
+      "family": "token accounting",
+      "module": "agent.js and llm.js",
+      "outcome": "pass",
+      "detail": "the per agent token accounting of w1 (280 tokens, 0.028 cost, 2 steps) and w2 (90 tokens, 0.009 cost, 1 step) matches their step logs filtered by run exactly, with every call counted once."
+    },
+    {
+      "id": 3,
+      "title": "the shared cost accounting sums the agent totals",
+      "family": "shared accounting",
+      "module": "agent.js",
+      "outcome": "pass",
+      "detail": "swarmcosts summed the two agent totals into 150 tokens, 0.75 usd cost and 5 steps with the empty swarm answering zero, and the shared cost ledger split its entries with w1 carrying 6 units (3 solo and 3 shared with w2) and every ledger unit attributed once."
+    },
+    {
+      "id": 4,
+      "title": "the budget alerts fire at the configured thresholds",
+      "family": "budgets",
+      "module": "run.js and llm.js",
+      "outcome": "pass",
+      "detail": "the budgetalerts stayed quiet below the thresholds, fired the informational warning at 60 percent of the step budget, fired the pausing critical alert at the ceiling with runpausesforanswers pausing only for the critical level, and the cost budget check halted at the token ceiling to ask the user while the in-budget and the unbounded runs kept running."
+    },
+    {
+      "id": 5,
+      "title": "the refunds on cancelled steps match the provider rules",
+      "family": "refunds",
+      "module": "agent.js",
+      "outcome": "pass",
+      "detail": "the cancelled call preserved its partial result with 4 chunks on the wire, the provider rule bills only the streamed chunks so the refund of 496 completion tokens never billed and the recomputed line totals 124 tokens (120 prompt plus the streamed completion)."
+    },
+    {
+      "id": 6,
+      "title": "the model routing costs land on the right agent",
+      "family": "routing",
+      "module": "llm.js",
+      "outcome": "pass",
+      "detail": "the draftplan kind of the agent w1 routed onto the planner gateway p1 with model-a and the extract kind of the agent w2 onto the extraction gateway p2 with model-b, every cost line carrying its routed provider and model with the unrouted kind reporting why nothing routed."
+    },
+    {
+      "id": 7,
+      "title": "the exported cost report reconciles to the total",
+      "family": "export",
+      "module": "llm.js and agent.js",
+      "outcome": "pass",
+      "detail": "the exported cost report carries both agent rows and its totals row, the totals reconcile three ways (the swarm accounting, the run usage totals of 370 tokens and 0.037 cost, and the sum of the exported rows) and the serialized payload reparses with the same numbers."
+    },
+    {
+      "id": 8,
+      "title": "no cost event is missing from the audit trail",
+      "family": "audit trail",
+      "module": "memory.js",
+      "outcome": "pass",
+      "detail": "every cost event kept its audit event: both usage lines carry their model audit entries naming their token counts, the ledger entry carries its budget audit entry, and the trail recompute answers 230 tokens over the three recorded events."
+    },
+    {
+      "id": 9,
+      "title": "the reconciliation report records every check and the exit answers the mismatches",
+      "family": "report",
+      "module": "costcert.ts",
+      "outcome": "pass",
+      "detail": "the reconciliation report carries the eight executed checks with their outcomes and details, the summary computes 9 of 9 passed, and the gate sets its nonzero exit the moment any accounting mismatch lands in the artifact."
+    }
+  ],
+  "summary": {
+    "total": 9,
+    "passed": 9,
+    "failed": 0
+  }
+};
+
 const invokeddirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (invokeddirectly) {
   const report = await runcostcertsuite();
-  await mkdir("artifacts", { recursive: true });
-  await writeFile(artifactpath, `${JSON.stringify(report, null, 2)}\n`);
   for (const candidate of report.entries) {
     const line = `[${candidate.outcome === "pass" ? "ok" : "FAIL"}] ${candidate.id}. ${candidate.title} (${candidate.module}) — ${candidate.detail}`;
     if (candidate.outcome === "pass") console.log(line);
     else console.error(line);
   }
-  console.log(JSON.stringify({ release: report.release, artifact: artifactpath, ...report.summary }, null, 2));
+  if (syncmode()) {
+    /* the sync rewrites the committed record this run produced, so the release refresh rides one reviewable commit */
+    console.log(await syncrecord({ moduleurl: import.meta.url, recordname: "costcertrecord", recordtype: "costcertreport", record: report }));
+  } else {
+    /* the record verification: the committed evidence stays internally consistent (the summary math and the outcome counts), so a hand-edited record never passes as a recorded run */
+    const passing = costcertrecord.entries.filter((candidate) => candidate.outcome === "pass").length;
+    const problems = [
+      ...summaryproblemsof(costcertrecord.summary),
+      ...(passing !== costcertrecord.summary.passed ? ["the recorded passing entries disagree with the recorded passed count"] : []),
+    ];
+    for (const problem of problems) console.error(`COSTCERT record: ${problem}`);
+    console.log(JSON.stringify({ release: report.release, record: "costcert.ts", ...report.summary }, null, 2));
+    if (problems.length > 0) process.exitCode = 1;
+  }
   if (report.summary.failed > 0) process.exitCode = 1;
 }

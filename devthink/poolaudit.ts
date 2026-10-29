@@ -1,12 +1,12 @@
-/** Audits the consolidated feature pool of the crx feature mining evidence against the shipped symbol surface: the gate parses the 626 candidate items of the featurepool corpus that lives inside tests/crxharvest.ts (the harvest generator embedded the consolidated pool when it wrote the removed docs/12.crxfeaturemining.md report, so the generator source carries the corpus now), matches every item's vocabulary against the real exported symbol corpus (the 335 action kinds, the 35 mcp tools, the audit kinds, the cli commands, the 23 protocol messages and every declared export of the compiled declaration set), and records the per item disposition — implemented for the items whose vocabulary the shipped surface covers, planned for the partial matches the roadmap carried, and no item stays unknown. The report lands in tests/artifacts/poolcoverage.json with no timestamps so reruns stay byte identical, and the gate exits nonzero when the pool parses to a different count, when an item stays unknown or when the implemented count regresses below the recorded floor. */
+/** Audits the consolidated feature pool of the crx feature mining evidence against the shipped symbol surface: the gate parses the 626 candidate items of the featurepool corpus that lives inside devthink/crxharvest.ts (the harvest generator embedded the consolidated pool when it wrote the removed docs/12.crxfeaturemining.md report, so the generator source carries the corpus now), matches every item's vocabulary against the real exported symbol corpus (the 335 action kinds, the 35 mcp tools, the audit kinds, the cli commands, the 23 protocol messages and every declared export of the compiled declaration set), and records the per item disposition — implemented for the items whose vocabulary the shipped surface covers, planned for the partial matches the roadmap carried, and no item stays unknown. The committed record devthink/poolaudit.ts (the poolcoveragerecord const this module carries, migrated from devthink/artifacts/poolcoverage.json when the flat folder law dissolved the artifacts folder) preserves the report with no timestamps so reruns stay byte identical, and the gate exits nonzero when the pool parses to a different count, when an item stays unknown or when the implemented count regresses below the recorded floor. The sync mode (`node poolaudit.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
 import { existsSync } from "node:fs";
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
+import { summaryproblemsof, syncmode, syncrecord } from "./records.ts";
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
-const artifactpath = "artifacts/poolcoverage.json";
 
 /** The stop words the matcher never counts: the grammar words every item carries, never the vocabulary of a feature. */
 const stopwords = new Set([
@@ -180,14 +180,6 @@ function dispositionof(item: poolitem, corpus: Set<string>): disposition {
   return { status: "unknown", tokens: tokens.length, matched: matched.length };
 }
 
-/** One context group of the pool report: the total and per disposition counts of its items. */
-interface groupcounts {
-  total: number;
-  implemented: number;
-  planned: number;
-  unknown: number;
-}
-
 /** Runs the pool audit suite and answers the report the artifact records. */
 export async function runpoolauditsuite() {
   const expectedcount = 626;
@@ -254,18 +246,190 @@ export async function runpoolauditsuite() {
   };
 }
 
+/* ── the committed record (the sync pass rewrites this block) ── */
+
+/** The per group disposition counts of the pool audit: the total items of
+ * the group beside its implemented, planned and unknown shares. */
+export interface groupcounts {
+  total: number;
+  implemented: number;
+  planned: number;
+  unknown: number;
+}
+
+/** The pool coverage report the committed record carries: the release it
+ * stamps, the shipped symbol corpus size, the pool disposition, the per
+ * group counts, the recorded checks and the summary the gate exits on. */
+export interface poolcoveragereport {
+  release: string;
+  corpus: number;
+  pool: { total: number; implemented: number; planned: number; unknown: number };
+  groups: Record<string, groupcounts>;
+  checks: Array<{ name: string; ok: boolean; detail: string }>;
+  summary: { total: number; passed: number; failed: number };
+}
+
+/** The committed pool coverage record of the 2.0.151 release — the evidence
+ * the readiness review and the matrix cells read, migrated from
+ * devthink/artifacts/poolcoverage.json when the flat folder law dissolved
+ * the artifacts folder of the application first layer: the full disposition
+ * of the 626 item pool, no timestamps, so the record replays byte
+ * identical. */
+export const poolcoveragerecord: poolcoveragereport = {
+  "release": "2.0.151",
+  "corpus": 4468,
+  "pool": {
+    "total": 626,
+    "implemented": 623,
+    "planned": 3,
+    "unknown": 0
+  },
+  "groups": {
+    "Interaction": {
+      "total": 46,
+      "implemented": 45,
+      "planned": 1,
+      "unknown": 0
+    },
+    "Observation": {
+      "total": 46,
+      "implemented": 46,
+      "planned": 0,
+      "unknown": 0
+    },
+    "Navigation": {
+      "total": 38,
+      "implemented": 38,
+      "planned": 0,
+      "unknown": 0
+    },
+    "Tabs and windows": {
+      "total": 46,
+      "implemented": 46,
+      "planned": 0,
+      "unknown": 0
+    },
+    "Forms and data": {
+      "total": 46,
+      "implemented": 46,
+      "planned": 0,
+      "unknown": 0
+    },
+    "Media capture": {
+      "total": 40,
+      "implemented": 40,
+      "planned": 0,
+      "unknown": 0
+    },
+    "Network and transport": {
+      "total": 38,
+      "implemented": 38,
+      "planned": 0,
+      "unknown": 0
+    },
+    "Debugging": {
+      "total": 38,
+      "implemented": 38,
+      "planned": 0,
+      "unknown": 0
+    },
+    "Memory and sessions": {
+      "total": 38,
+      "implemented": 37,
+      "planned": 1,
+      "unknown": 0
+    },
+    "Workflow and automation": {
+      "total": 48,
+      "implemented": 48,
+      "planned": 0,
+      "unknown": 0
+    },
+    "Agent protocol": {
+      "total": 44,
+      "implemented": 44,
+      "planned": 0,
+      "unknown": 0
+    },
+    "Multi agent coordination": {
+      "total": 34,
+      "implemented": 34,
+      "planned": 0,
+      "unknown": 0
+    },
+    "Ui surfaces": {
+      "total": 42,
+      "implemented": 42,
+      "planned": 0,
+      "unknown": 0
+    },
+    "Security and consent": {
+      "total": 44,
+      "implemented": 43,
+      "planned": 1,
+      "unknown": 0
+    },
+    "Performance": {
+      "total": 38,
+      "implemented": 38,
+      "planned": 0,
+      "unknown": 0
+    }
+  },
+  "checks": [
+    {
+      "name": "the consolidated pool parses to the 626 items",
+      "ok": true,
+      "detail": "the pool parsed 626 items of 626 expected under the context sections"
+    },
+    {
+      "name": "every pool item carries its disposition",
+      "ok": true,
+      "detail": "every item matched the shipped symbol corpus of 4468 symbols: 623 implemented, 3 planned"
+    },
+    {
+      "name": "the implemented count holds the recorded floor",
+      "ok": true,
+      "detail": "623 implemented of the floor 590; a regression below the floor fails the release"
+    }
+  ],
+  "summary": {
+    "total": 3,
+    "passed": 3,
+    "failed": 0
+  }
+};
+
 const invokeddirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (invokeddirectly) {
   const report = await runpoolauditsuite();
-  await mkdir("artifacts", { recursive: true });
-  await writeFile(artifactpath, `${JSON.stringify(report, null, 2)}\n`);
   for (const check of report.checks) {
     const line = `[${check.ok ? "ok" : "FAIL"}] ${check.name} — ${check.detail}`;
     if (check.ok) console.log(line);
     else console.error(line);
   }
-  console.log(
-    `Pool audit of ${report.pool.total} items against ${report.corpus} shipped symbols: ${report.pool.implemented} implemented, ${report.pool.planned} planned, ${report.pool.unknown} unknown.`,
-  );
+  if (syncmode()) {
+    /* the sync rewrites the committed record this run produced, so the release refresh rides one reviewable commit */
+    console.log(await syncrecord({ moduleurl: import.meta.url, recordname: "poolcoveragerecord", recordtype: "poolcoveragereport", record: report }));
+  } else {
+    /* the record verification: the committed evidence stays internally consistent (the summary math, the ok counts and the disposition sums), so a hand-edited record never passes as a recorded run */
+    const okchecks = poolcoveragerecord.checks.filter((check) => check.ok).length;
+    const groupsums = Object.values(poolcoveragerecord.groups).reduce(
+      (sums, group) => ({ total: sums.total + group.total, implemented: sums.implemented + group.implemented, planned: sums.planned + group.planned, unknown: sums.unknown + group.unknown }),
+      { total: 0, implemented: 0, planned: 0, unknown: 0 },
+    );
+    const problems = [
+      ...summaryproblemsof(poolcoveragerecord.summary),
+      ...(okchecks !== poolcoveragerecord.summary.passed ? ["the recorded ok checks disagree with the recorded passed count"] : []),
+      ...(groupsums.total !== poolcoveragerecord.pool.total || groupsums.implemented !== poolcoveragerecord.pool.implemented || groupsums.planned !== poolcoveragerecord.pool.planned || groupsums.unknown !== poolcoveragerecord.pool.unknown
+        ? ["the recorded group counts disagree with the recorded pool disposition"]
+        : []),
+    ];
+    for (const problem of problems) console.error(`POOLAUDIT record: ${problem}`);
+    console.log(
+      `Pool audit of ${report.pool.total} items against ${report.corpus} shipped symbols: ${report.pool.implemented} implemented, ${report.pool.planned} planned, ${report.pool.unknown} unknown, the record in devthink/poolaudit.ts.`,
+    );
+    if (problems.length > 0) process.exitCode = 1;
+  }
   if (report.summary.failed > 0) process.exitCode = 1;
 }

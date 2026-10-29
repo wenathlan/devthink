@@ -7,13 +7,18 @@
  * of density.ts — the law made visible: one design, the platforms differ
  * only in dpi.
  *
+ * The entry rides the application root beside its emitter and its runtime
+ * (the flat folder law dissolved the terminal/ folder of the first layer),
+ * so the imports stay sibling-flat: density, the render runtime and the
+ * three converted faces all answer from the same layer.
+ *
  * Flags: --plain (ASCII glyphs, no color — the NO_COLOR lane), and the
  * environment ladder (COLORTERM/TERM/WT_SESSION) picks truecolor / 256 / 16
  * automatically.
  */
 
-import { DENSITY_PLATFORMS, ANDROID_DPI, densityTokens } from "../../density.ts";
-import { colorDepthFromEnv, render, type ColorDepth } from "./runtime.ts";
+import { DENSITY_PLATFORMS, ANDROID_DPI, densityTokens } from "./density.ts";
+import { colorDepthFromEnv, render, type ColorDepth } from "./runtime.terminal.ts";
 import { ControlShellTerminal } from "./shell.terminal.ts";
 import { ChipTerminal } from "./chip.terminal.ts";
 import { KbdTerminal } from "./kbd.terminal.ts";
