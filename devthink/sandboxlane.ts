@@ -1033,6 +1033,9 @@ const LIVELANES: Readonly<Record<string, string>> = Object.freeze({
   "fs-gitobjects": "the content-addressed objects store the gitobj tool drives",
   "network-dns": "the node resolver the dns tool drives",
   "network-doh": "the https resolver the doh tool drives",
+  "runner-babel": "the babel transform round trip the edge plane drives server-side",
+  "runner-webpack": "the webpack compile the edge plane drives server-side",
+  "runner-universal": "the bash sh execution the script lanes drive server-side",
 });
 
 /** binaryonpath — a pure PATH scan with stat (windows also probes the exe
