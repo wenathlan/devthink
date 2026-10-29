@@ -52,39 +52,53 @@ export function hostIsAllowed(host: string): boolean {
 
 /** Queues one competitor binary launch over the gateway. The answer is always a
  * plain object, so the calling page can surface the reason with a toast and the
- * interface keeps working when the gateway is missing or unreachable. */
+ * interface keeps working when the gateway is missing or unreachable — the
+ * reason speaks user language, the status and network detail stay in the
+ * console. */
 export async function queuebinarylaunch(binary: RunnerBinary): Promise<{ queued: boolean; reason: string }> {
   const base = catalogbase();
-  if (!base) return { queued: false, reason: "No catalog base is paired, so the launch queue stays closed." };
+  if (!base) return { queued: false, reason: "The launch queue is not connected." };
   try {
     const answer = await fetch(`${base}/runner/queue`, {
       method: "POST",
       headers: { "content-type": "application/json", accept: "application/json" },
       body: JSON.stringify({ binary: binary.id, kind: binary.kind, runner: binary.runner }),
     });
-    if (!answer.ok)
-      return { queued: false, reason: `The gateway refused the launch of ${binary.title} (status ${answer.status}).` };
-    return { queued: true, reason: "queued over the gateway" };
-  } catch {
-    return { queued: false, reason: `The gateway could not be reached to queue the launch of ${binary.title}.` };
+    if (!answer.ok) {
+      // the status code stays in the console — the toast speaks plain
+      console.error(`the launch queue refused ${binary.title} (status ${answer.status})`);
+      return { queued: false, reason: `${binary.title} could not start.` };
+    }
+    return { queued: true, reason: "Added to the queue." };
+  } catch (error) {
+    // the network detail stays in the console — the toast speaks plain
+    console.error("the launch queue could not be reached", error);
+    return { queued: false, reason: "We could not reach the service. Check your connection and try again." };
   }
 }
 
 /** Queues one studio render over the gateway with the same pattern as the launch
- * queue: the note travels with the asset, and the answer stays a plain object. */
+ * queue: the note travels with the asset, and the answer stays a plain object —
+ * the reason speaks user language, the status and network detail stay in the
+ * console. */
 export async function queuestudiorender(asset: StudioAsset, note: string): Promise<{ queued: boolean; reason: string }> {
   const base = catalogbase();
-  if (!base) return { queued: false, reason: "No catalog base is paired, so the render queue stays closed." };
+  if (!base) return { queued: false, reason: "The render queue is not connected." };
   try {
     const answer = await fetch(`${base}/studio/render`, {
       method: "POST",
       headers: { "content-type": "application/json", accept: "application/json" },
       body: JSON.stringify({ asset: asset.id, engine: asset.engine, note }),
     });
-    if (!answer.ok)
-      return { queued: false, reason: `The gateway refused the render of ${asset.title} (status ${answer.status}).` };
-    return { queued: true, reason: "queued over the gateway" };
-  } catch {
-    return { queued: false, reason: `The gateway could not be reached to queue the render of ${asset.title}.` };
+    if (!answer.ok) {
+      // the status code stays in the console — the toast speaks plain
+      console.error(`the render queue refused ${asset.title} (status ${answer.status})`);
+      return { queued: false, reason: `${asset.title} could not render.` };
+    }
+    return { queued: true, reason: "Added to the queue." };
+  } catch (error) {
+    // the network detail stays in the console — the toast speaks plain
+    console.error("the render queue could not be reached", error);
+    return { queued: false, reason: "We could not reach the service. Check your connection and try again." };
   }
 }

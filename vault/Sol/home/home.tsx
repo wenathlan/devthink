@@ -27,12 +27,12 @@ import { familyurl } from "../../familyurl";
 import { label, labelfill } from "../../labels";
 import type { HomeProps } from "../../hometypes.ts";
 import { lfsPointerFrom, storageModeFor } from "../../storage";
-import { Entry } from "../widgets";
-import { HomeEntrygate as EntryGate } from "../widgets";
-import { Tabs } from "../widgets";
+import { Entry } from "../wingets";
+import { HomeEntrygate as EntryGate } from "../wingets";
+import { Tabs } from "../wingets";
 
-export * from "../widgets";
-export * from "../widgets";
+export * from "../wingets";
+export * from "../wingets";
 
 /** the capability ledger of the staging vault — every row comes from the
  * real storage contract (storage.ts): the lfs/blob channels of

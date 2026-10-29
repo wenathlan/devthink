@@ -28,11 +28,11 @@ import { familyurl } from "../../familyurl";
 import type { HomeProps } from "../../hometypes.ts";
 import { labelfill, label } from "../../labels";
 import { modes } from "../../runner.ts";
-import { BrandMark } from "../widgets";
-import { Entry } from "../widgets";
+import { BrandMark } from "../wingets";
+import { Entry } from "../wingets";
 
-export * from "../widgets";
-export * from "../widgets";
+export * from "../wingets";
+export * from "../wingets";
 
 /** the honest flow of a run, end to end — the floor's own doctrine */
 const FLOW_STEPS = [

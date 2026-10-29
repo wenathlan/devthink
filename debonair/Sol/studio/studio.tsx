@@ -38,12 +38,12 @@ import {
 import type { TimelineClip } from "../../timelinemodel.ts";
 import { label, labelfill } from "../../labels.ts";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
-import { Fader } from "../widgets";
-import { PianoRoll } from "../widgets";
-import { StageStepper } from "../widgets";
-import { Spectrum } from "../widgets";
-import { Timeline } from "../widgets";
-import { VuMeter } from "../widgets";
+import { Fader } from "../wingets";
+import { PianoRoll } from "../wingets";
+import { StageStepper } from "../wingets";
+import { Spectrum } from "../wingets";
+import { Timeline } from "../wingets";
+import { VuMeter } from "../wingets";
 
 /** the demo take: a real engine plan over a fixed prompt and seed */
 const DEMO_PROMPT = "midnight studio take, warm sub bass, dusty keys, brass light";

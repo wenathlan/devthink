@@ -23,7 +23,7 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { labelfill, label } from "../../labels";
 import { markOnboardingSeen } from "../../onboardingstate";
-import { BrandMark } from "../widgets";
+import { BrandMark } from "../wingets";
 import { RAIL_APPS } from "../shell/Shell";
 
 /** the three frames of the first run, in order (the label keys of the steps). */

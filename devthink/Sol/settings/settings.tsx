@@ -3,7 +3,7 @@
  * carrying the folder's own name is the path manager of the page: it
  * imports the loose components beside it, mounts the page and re-exports
  * the public component surface. Only the theme anchor (Sol/Sol.tsx) and
- * the window registry (Sol/widgets/PanelWorkspace.tsx) consume this file. The
+ * the window registry (Sol/wingets/PanelWorkspace.tsx) consume this file. The
  * home anchor consumes the pairing panel through this surface.
  *
  * Settings — the Windows 11 Settings app: the left navigation rail (the
@@ -13,21 +13,13 @@
  * Drives, Automation & MCP, About — routed by internal state. The anchor
  * owns only the data machine (the gateway snapshot, the browser-local
  * identity and preference stores, the save / revoke actions) and the
- * category routing; every card lives in Sol/widgets. The
+ * category routing; every card lives in Sol/wingets. The
  * personalization pass paints its stored choices onto the document root
  * once at module load, so the wallpaper, the theme ladder, the accent and
  * the behavior flags hold before the lock screen or the desktop mount.
  */
 import { useEffect, useState } from "react";
-import { ShellChrome } from "@/widgets/Shellchrome";
-import { copy } from "../../copy";
-import {
-  type BrowserStoreSummary,
-  browserIdentity,
-  browserStoreSummary,
-  readBrowserPreferences,
-  saveBrowserPreference } from "../../storage.ts";
-import { gatewayJson, gatewayReady } from "../../gateway.js";
+import { ShellChrome } from "@/wingets/Shellchrome";
 import {
   type AccountSessionState,
   accountbearer,
@@ -36,30 +28,43 @@ import {
   restoreonce,
   revokeaccountsessionbearer,
 } from "../../account.ts";
-import { AboutSettings } from "../widgets";
-import { AccountsCategory } from "../widgets";
-import { AutomationMcp } from "../widgets";
-import { GatewayPairing } from "../widgets";
-import { HardDrives } from "../widgets";
-import { initPersonalization, loadThemeMirror, syncThemeFromPreference } from "../widgets";
-import { Personalization } from "../widgets";
-import { SettingsNav } from "../widgets";
-import type { PreferenceKey, SettingsCategoryId, SettingsSnapshot } from "../widgets";
+import { copy } from "../../copy";
+import { gatewayJson, gatewayReady } from "../../gateway.js";
+import {
+  type BrowserStoreSummary,
+  browserIdentity,
+  browserStoreSummary,
+  readBrowserPreferences,
+  saveBrowserPreference,
+} from "../../storage.ts";
+import type { PreferenceKey, SettingsCategoryId, SettingsSnapshot } from "../wingets";
+import {
+  AboutSettings,
+  AccountsCategory,
+  AutomationMcp,
+  GatewayPairing,
+  HardDrives,
+  initPersonalization,
+  loadThemeMirror,
+  Personalization,
+  SettingsNav,
+  syncThemeFromPreference,
+} from "../wingets";
 
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
 
 /** paints the stored personalization choices before any route mounts (the
  * same law initautotranslate rides at the theme anchor). */
@@ -78,7 +83,8 @@ export default function Settings({ embedded }: { embedded?: boolean }) {
     // machine heals it on its first read)
     theme: loadThemeMirror() ?? "dark",
     railMode: "auto",
-    interfaceZoom: "100" }));
+    interfaceZoom: "100",
+  }));
   const [publicId, setPublicId] = useState("");
   const [category, setCategory] = useState<SettingsCategoryId>("personalization");
   const paired = gatewayReady();
@@ -121,13 +127,15 @@ export default function Settings({ embedded }: { embedded?: boolean }) {
   async function saveIdentity() {
     const response = await gatewayJson<{ identity: SettingsSnapshot["identity"] }>("/identity", {
       method: "PUT",
-      body: JSON.stringify({ userId: publicId }) });
+      body: JSON.stringify({ userId: publicId }),
+    });
     setSnapshot((current) =>
       current
         ? {
             ...current,
             identity: response.identity,
-            database: { ...current.database, ownerUserId: response.identity.userId } }
+            database: { ...current.database, ownerUserId: response.identity.userId },
+          }
         : current,
     );
   }
@@ -177,8 +185,12 @@ export default function Settings({ embedded }: { embedded?: boolean }) {
       {!embedded && <ShellChrome />}
       <div className="dtw-pane">
         <SettingsNav active={category} onSelect={setCategory} paired={paired} accountId={accountId} />
-        <div className="dtw-content">
-          <h1 className="dtw-title">{copy(`settings.nav.${category}`)}</h1>
+        <div className="dtw-content" data-category={category}>
+          {/* the title remounts with its key so every turn of the rail
+              answers with the rise entrance of the content wave */}
+          <h1 className="dtw-title" key={category}>
+            {copy(`settings.nav.${category}`)}
+          </h1>
 
           {category === "personalization" ? (
             <Personalization preferences={preferences} save={(key, value) => void savePreference(key, value)} />

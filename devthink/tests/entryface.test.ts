@@ -24,11 +24,11 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { saaschrome, saasfooter, saashero } from "../saascontent.ts";
+import { saaschrome, saasfooter, saashero, saasrailstops } from "../saascontent.ts";
 
-const sections = readFileSync(join(import.meta.dirname, "..", "Sol", "widgets", "IntroSaassections.tsx"), "utf8");
-const saas = readFileSync(join(import.meta.dirname, "..", "Sol", "widgets", "IntroSaas.tsx"), "utf8");
-const rails = readFileSync(join(import.meta.dirname, "..", "Sol", "widgets", "IntroSaasrails.tsx"), "utf8");
+const sections = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "IntroSaassections.tsx"), "utf8");
+const saas = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "IntroSaas.tsx"), "utf8");
+const rails = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "IntroSaasrails.tsx"), "utf8");
 const intro = readFileSync(join(import.meta.dirname, "..", "Sol", "intro", "intro.tsx"), "utf8");
 const explore = readFileSync(join(import.meta.dirname, "..", "Sol", "explore", "explore.tsx"), "utf8");
 const auth = readFileSync(join(import.meta.dirname, "..", "Sol", "auth", "auth.tsx"), "utf8");
@@ -294,13 +294,32 @@ describe("the intro to explore to auth chain", () => {
   });
 
   it("the dock keys speak through the landing data layer (no hardcoded labels)", () => {
-    expect(saaschrome.docksave).toBe("Save");
     expect(saaschrome.dockexplore).toBe("Explorer");
-    expect(saaschrome.docktop).toBe("Top");
-    const dock = saas.slice(saas.indexOf("the corner dock"), saas.indexOf("</div>", saas.indexOf("docktop")));
-    expect(dock).toContain("aria-label={saaschrome.docksave}");
+    const dock = saas.slice(saas.indexOf("the corner dock"), saas.indexOf("</div>", saas.indexOf("dockexplore")));
     expect(dock).toContain("aria-label={saaschrome.dockexplore}");
-    expect(dock).toContain("aria-label={saaschrome.docktop}");
     expect(dock).not.toMatch(/aria-label="(Save|Explorer|Top)"/);
+  });
+
+  it("the pruned dock carries only the explorer key — the save and top keys left the data layer", () => {
+    expect(Object.keys(saaschrome)).toEqual(["title", "launch", "dockexplore"]);
+    expect(saascontent).not.toContain("docksave");
+    expect(saascontent).not.toContain("docktop");
+  });
+
+  it("the left rail carries exactly the six stops — the saddle tile under them is gone", () => {
+    expect(saasrailstops).toHaveLength(6);
+    expect(saasrailstops.map((row) => row.id)).toEqual([
+      "hero-os",
+      "creators-doo",
+      "workspace-subapps",
+      "spatial-bento",
+      "sonic-deck",
+      "advisor-dark",
+    ]);
+    const rail = saas.slice(saas.indexOf("the left rail"), saas.indexOf("</aside>"));
+    expect(rail).toContain("saasrailstops.map");
+    // only the mapped stop buttons ride the rail — an extra tile under the
+    // stops would add a second button template to the slice
+    expect(rail.match(/<button/g)?.length ?? 0).toBe(1);
   });
 });

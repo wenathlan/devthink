@@ -1,8 +1,8 @@
 /**
- * labels.ts — every interface string lives in the label store, the widgets
+ * labels.ts — every interface string lives in the label store, the wingets
  * and page anchors read through this typed accessor, and a hardcoded string
  * inside a widget is a defect. the manifest below is the english source of
- * truth extracted from the real strings of the Sol widgets and the page
+ * truth extracted from the real strings of the Sol wingets and the page
  * anchors; the seed ingests it into the labels store (the site db through
  * db.ts on the server, the browser rows cache in the visitor machine) and
  * the seed never overwrites a translated row.
@@ -12,7 +12,7 @@
  * into the local cache the way onboardingstate.ts mirrors the seen flags.
  *
  * the design is frozen: the manifest carries the verbatim strings the
- * widgets rendered before the copy wave — the exact same text renders,
+ * wingets rendered before the copy wave — the exact same text renders,
  * only its source becomes the accessor. data stays data: lobby rows, seat
  * handles, weapon kinds, world asset paths, digests, the theme token and
  * the route hrefs keep flowing from the root logics; the prose and the
@@ -26,7 +26,7 @@ import type { LabelRow } from "./db.ts";
 export const LABELREVISION = 1;
 
 /** the english manifest: the page.widget.key path answers the surface text.
- * every entry is the verbatim string the widgets and page anchors rendered
+ * every entry is the verbatim string the wingets and page anchors rendered
  * before the copy wave — zero invented copy. */
 export const LABELMANIFEST = {
   // the app boundary (App.tsx, the boot anchor)

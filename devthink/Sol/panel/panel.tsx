@@ -37,15 +37,15 @@ import {
   readBrowserPreferences,
 } from "../../storage.ts";
 import type { WorkspaceDestination } from "../../workspace.ts";
-import { BootScreen, CommandPalette, ShellWorkspace, SolLogoMark, shouldBoot } from "../widgets";
+import { BootScreen, CommandPalette, ShellWorkspace, SolLogoMark, shouldBoot } from "../wingets";
 
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
 
 /** The old persisted shell stage ("identity" / "entry" / "shell") is no
  * longer a gate: every value lands on the desktop. The key is retired from

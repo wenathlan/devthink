@@ -1,9 +1,9 @@
 /**
  * labels.ts — the copy law of forge: every interface string lives in the
- * label store, the widgets and page anchors read through this typed
+ * label store, the wingets and page anchors read through this typed
  * accessor, and a hardcoded string inside a widget is a defect. the
  * manifest below is the english source of truth extracted from the real
- * strings of the Sol widgets and the page anchors; the seed ingests it into
+ * strings of the Sol wingets and the page anchors; the seed ingests it into
  * the labels store (the app db through db.ts on the server, the browser rows
  * cache in the visitor machine) and the seed never overwrites a translated
  * row.
@@ -20,7 +20,7 @@ import type { LabelRow } from "./db.ts";
 export const LABEL_REVISION = 1;
 
 /** the english manifest: the page.widget.key path answers the surface text.
- * every entry is the verbatim string the widgets and page anchors rendered
+ * every entry is the verbatim string the wingets and page anchors rendered
  * before the copy wave — zero invented copy. data stays data: runner names
  * and modes, queue lanes and depths, seeds, run clocks and log lines keep
  * flowing from the engine tables; the prose around them rides here. */

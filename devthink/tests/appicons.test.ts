@@ -22,9 +22,9 @@ import { renderToString } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { DESKTOP_APPS } from "../appregistry.ts";
 import type { ShellFolderId } from "../fileexplorer.ts";
-import { DriveIcon, PlatformMark, ShellFolderIcon } from "../Sol/widgets/FilesFoldericons.tsx";
-import { SolLogoMark } from "../Sol/widgets/PanelLogo.tsx";
-import { APP_ICONS } from "../Sol/widgets/ShellAppicons.tsx";
+import { DriveIcon, PlatformMark, ShellFolderIcon } from "../Sol/wingets/FilesFoldericons.tsx";
+import { SolLogoMark } from "../Sol/wingets/PanelLogo.tsx";
+import { APP_ICONS } from "../Sol/wingets/ShellAppicons.tsx";
 
 /** the emoji pictograph class — one emoji glyph anywhere in a rendered icon
  * or a catalog label fails the zero-emoji law */
@@ -60,6 +60,7 @@ const REVIEWED_NAMES: Record<string, string> = {
   settings: "Settings",
   argan: "Argan",
   cadria: "Cadria",
+  cobaia: "Cobaia",
   debonair: "Debonair",
   stealthhead: "Stealthhead",
   forge: "Forge",
@@ -78,7 +79,7 @@ function renderIcon(key: string): string {
 
 describe("the drawn set answers the registry", () => {
   it("resolves every desktop app to a drawn asset — zero fallback tiles on the grid", () => {
-    expect(DESKTOP_APPS.length).toBeGreaterThanOrEqual(24);
+    expect(DESKTOP_APPS.length).toBeGreaterThanOrEqual(25);
     for (const app of DESKTOP_APPS) {
       expect(app.iconset, `${app.id} declares its iconset key`).toBeTruthy();
       expect(APP_ICONS[app.iconset ?? ""], `${app.id} resolves in the drawn set`).toBeTruthy();
@@ -90,6 +91,7 @@ describe("the drawn set answers the registry", () => {
       [
         "calculator",
         "chat",
+        "cobaia",
         "console",
         "docs",
         "explore",
@@ -298,7 +300,7 @@ describe("the css ladder of the animated grammar", () => {
 });
 
 describe("the desktop label rides the legibility token", () => {
-  const desktop = readFileSync(join(import.meta.dirname, "..", "Sol", "widgets", "PanelDesktop.tsx"), "utf8");
+  const desktop = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelDesktop.tsx"), "utf8");
 
   it("answers the label shadow from the token ladder, never a raw halo", () => {
     expect(desktop).toContain("dt-appicon__label");
@@ -308,7 +310,7 @@ describe("the desktop label rides the legibility token", () => {
 });
 
 describe("the tile contract of the shared apptile", () => {
-  const tile = readFileSync(join(import.meta.dirname, "..", "Sol", "widgets", "ShellApptile.tsx"), "utf8");
+  const tile = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "ShellApptile.tsx"), "utf8");
 
   it("raises the live flag from the pointer and drops it on leave", () => {
     expect(tile).toContain("setLive(true)");

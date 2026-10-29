@@ -8,7 +8,7 @@
  * one), the anchor wiring (the panel mount asks the same session source
  * the auth face rides — restoreonce plus the declared offline unlock
  * marker of the account family — and walks the chain back to /auth with
- * the arrival riding ?next=), and the render honesty (the desktop widgets
+ * the arrival riding ?next=), and the render honesty (the desktop wingets
  * never mount before the gate answers open, so not one frame of the os
  * leaks to a visitor without a session). the wiring rides source pins on
  * the anchor and the family file because the gate only exists in the

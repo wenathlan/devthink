@@ -1,6 +1,6 @@
 /**
  * labels.ts — the copy law of the os app: every interface string lives in
- * the label store, the widgets read through this typed accessor, and a
+ * the label store, the wingets read through this typed accessor, and a
  * hardcoded string inside a widget is a defect. the manifest below is the
  * english source of truth the seed ingests into the labels store of the
  * database; the runtime translation replaces the overrides at boot and the

@@ -1,9 +1,9 @@
 /**
  * labels.ts — the copy law of debonair: every interface string lives in the
- * label store, the widgets and page anchors read through this typed accessor,
+ * label store, the wingets and page anchors read through this typed accessor,
  * and a hardcoded string inside a widget is a defect. the manifest below is
  * the english source of truth extracted from the real strings of the Sol
- * widgets and the page anchors; the seed ingests it into the labels store
+ * wingets and the page anchors; the seed ingests it into the labels store
  * (the site db through db.ts on the server, the browser rows cache in the
  * visitor machine) and the seed never overwrites a translated row.
  *
@@ -19,7 +19,7 @@ import type { LabelRow } from "./db.ts";
 export const LABEL_REVISION = 1;
 
 /** the english manifest: the page.widget.key path answers the surface text.
- * every entry is the verbatim string the widgets and page anchors rendered
+ * every entry is the verbatim string the wingets and page anchors rendered
  * before the copy wave — zero invented copy. data stays data: bpm values,
  * timecodes, instrument and genre names, channel ids and module identifiers
  * keep flowing from the engine tables; the prose around them rides here. */
@@ -87,7 +87,7 @@ export const LABEL_MANIFEST = {
   "shell.playerbar.pauseTitle": "Pause the take",
   "shell.playerbar.playTitle": "Play the take",
   "shell.playerbar.next": "Next take",
-  // the studio page anchor and its widgets
+  // the studio page anchor and its wingets
   "studio.cta": "Generate a track",
   "studio.eyebrow": "debonair · studio",
   "studio.title": "Studio",
@@ -172,7 +172,7 @@ export const LABEL_MANIFEST = {
   "studio.notice.deskReset": "the desk reset — the seeded take answers again",
   "studio.notice.exported": "exported {files}",
   "studio.notice.exportRefused": "the export refused this take",
-  // the fader, vu meter and spectrum widgets of the mixer desk
+  // the fader, vu meter and spectrum wingets of the mixer desk
   "studio.fader.aria": "{name} fader",
   "studio.fader.valueText": "{value} decibels",
   "studio.vu.aria": "{name} level",

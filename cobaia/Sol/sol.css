@@ -14,9 +14,11 @@
    intro · guards (reduced-motion hard-stop last).
    doctrine: the trylle canvas #0a0a0b flat (deep #060607) · the 8-step
    trylle surface ladder #171717→#484848 · ink #fafafa · hairlines ink
-   5%/10% · the DARK AMBER identity only in the brand mark — focus, CTA and
-   every interactive accent answer the windows accent #4cc2ff (light
-   #0067c0) · body 13px weight 450 · Inter Variable everywhere, Geist Mono
+   5%/10% · the ONE Sol accent is the WHITE SUN (pure #ffffff on the dark
+   ladder — the name is Sol but the sun is white, never the amber it once
+   was; the light face carries the graphite contrast pole of the same
+   semantic token) · focus, CTA and every interactive accent answer it ·
+   body 13px weight 450 · Inter Variable everywhere, Geist Mono
    on labels and numbers · H1 clamp(2.25rem,5vw,3.75rem) tracking -0.02em ·
    radii .625rem law (inner controls 4) · micro 150ms cubic-bezier(0.22,1,
    0.36,1) · popintro 800ms · press scale(.7) on the icon button · linear
@@ -62,10 +64,13 @@
   --color-hairline: color-mix(in oklab, #fafafa 5%, transparent);
   --color-hairline-strong: color-mix(in oklab, #fafafa 10%, transparent);
 
-  /* ---- the cobaia identity: the DARK AMBER rides the brand mark only —
-     never focus, never the chrome, never the CTA ---- */
-  --color-signal: #d97706;
-  --color-signal-ink: #201200;
+  /* ---- the signal: THE WHITE SUN — one Sol, one light; the name is Sol
+     but the sun is WHITE, never the yellow of the retired identities ---- */
+  --color-signal: #ffffff;
+  --color-signal-strong: #ffffff;
+  --color-signal-2: #c9cdd6;
+  --color-signal-3: #8b909b;
+  --color-signal-ink: #14161a;
 
   /* ---- the WINDOWS accent: focus, CTA and the interactive voices ---- */
   --color-win: #4cc2ff;
@@ -112,8 +117,11 @@
   --color-ink-3: #999999;
   --color-hairline: color-mix(in oklab, #fafafa 5%, transparent);
   --color-hairline-strong: color-mix(in oklab, #fafafa 10%, transparent);
-  --color-signal: #d97706;
-  --color-signal-ink: #201200;
+  --color-signal: #ffffff;
+  --color-signal-strong: #ffffff;
+  --color-signal-2: #c9cdd6;
+  --color-signal-3: #8b909b;
+  --color-signal-ink: #14161a;
   --color-win: #4cc2ff;
   --color-win-ink: #0a0a0a;
   --color-focus: var(--color-win);
@@ -189,12 +197,12 @@
   --win-ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
   --ease-silk: cubic-bezier(0.2, 0.8, 0.2, 1);
 
-  /* the interactive accent: the WINDOWS accent governs the focus, the CTA
-     and every interactive voice of the site; the dark amber of the identity
-     lives only in the brand mark (brand.tsx) */
-  --sol-accent: var(--color-win);
-  --sol-accent-deep: #0078d4;
-  --sol-accent-ink: var(--color-win-ink);
+  /* the interactive accent: the WHITE SUN (the one Sol) governs the focus,
+     the CTA and every interactive voice of the site; the windows accent
+     stays the system voice of the chrome hands */
+  --sol-accent: var(--color-signal);
+  --sol-accent-deep: var(--color-signal-2);
+  --sol-accent-ink: var(--color-signal-ink);
   --win-accent: var(--color-win);
   --win-accent-ink: var(--color-win-ink);
   --sol-focus: var(--color-win);
@@ -269,13 +277,16 @@
   --color-ink-3: #555555;
   --color-hairline: color-mix(in oklab, #1a1a1a 8%, transparent);
   --color-hairline-strong: color-mix(in oklab, #1a1a1a 16%, transparent);
-  --color-signal: #92400e;
-  --color-signal-ink: #fff8ec;
+  --color-signal: #3f434b;
+  --color-signal-strong: #18181b;
+  --color-signal-2: #52565e;
+  --color-signal-3: #8b909b;
+  --color-signal-ink: #fefefe;
   --color-win: #0067c0;
   --color-win-ink: #fefefe;
-  --sol-accent: var(--color-win);
-  --sol-accent-deep: #005a9e;
-  --sol-accent-ink: var(--color-win-ink);
+  --sol-accent: var(--color-signal);
+  --sol-accent-deep: var(--color-signal-2);
+  --sol-accent-ink: var(--color-signal-ink);
   --wash: rgb(0 0 0 / 8%);
   --wash-soft: rgb(0 0 0 / 4%);
   --bar-acrylic: rgb(244 244 245 / 85%);
