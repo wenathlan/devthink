@@ -72,8 +72,9 @@ describe("the panel anchor asks the family session", () => {
   });
 
   it("walks the locked chain back to the auth face with the arrival riding next", () => {
-    expect(anchor).toContain("const arrival = window.location.pathname + window.location.search;");
+    expect(anchor).toContain("const arrival = routeFromPathname(window.location.pathname) + window.location.search;");
     expect(anchor).toContain('setLocation(["/auth?next=", encodeURIComponent(arrival)].join(""));');
+    expect(anchor).toContain('import { historypath, routeFromPathname, safegatewayurl } from "../../gateway.ts";');
   });
 
   it("locks honestly when the session question itself fails (never a desktop on an unasked question)", () => {

@@ -26,7 +26,7 @@ import { PairingPanel } from "@/settings/settings";
 import { islocalunlocked, restoreonce } from "../../account.ts";
 import { writeChatHandoff } from "../../chatstate.ts";
 import { copy } from "../../copy.ts";
-import { historypath, safegatewayurl } from "../../gateway.ts";
+import { historypath, routeFromPathname, safegatewayurl } from "../../gateway.ts";
 import { panelgateverdict, resolveintrotarget } from "../../introtarget.ts";
 import type { DevThinkTab } from "../../paneltypes.ts";
 import {
@@ -397,7 +397,11 @@ export default function Panel() {
           return;
         }
         setGate("locked");
-        const arrival = window.location.pathname + window.location.search;
+        // the arrival answers the router route space (the base-relative
+        // form the post-session navigation walks): a full pathname would
+        // double the deploy base the router joins itself, so the cleaner
+        // strips the folder prefix before the address rides ?next=.
+        const arrival = routeFromPathname(window.location.pathname) + window.location.search;
         setLocation(["/auth?next=", encodeURIComponent(arrival)].join(""));
       })
       .catch(() => {

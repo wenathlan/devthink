@@ -3,11 +3,18 @@
  * page-app (Sol/auth/auth.tsx) rides them on the owner entry chain intro →
  * explore → auth → panel: the post-session redirect (default /panel, a safe
  * ?next= override honored), the invitation passthrough (the pairing fields
- * carried untouched), the gateway normalization and the pairing readiness
- * verdict.
+ * carried untouched), the gateway normalization, the base-relative route
+ * cleaner and the pairing readiness verdict.
  */
-import { describe, expect, it } from "vitest";
-import { afterAuthTarget, handoverPath, normalizeGateway, pairingReadiness, safegatewayurl } from "../gateway";
+import { describe, expect, it, vi } from "vitest";
+import {
+  afterAuthTarget,
+  handoverPath,
+  normalizeGateway,
+  pairingReadiness,
+  routeFromPathname,
+  safegatewayurl,
+} from "../gateway";
 
 describe("the post-auth redirect guard", () => {
   it("lands on the creation panel by default", () => {
@@ -27,6 +34,40 @@ describe("the post-auth redirect guard", () => {
     expect(afterAuthTarget("?next=/\\evil.example")).toBe("/panel");
     expect(afterAuthTarget("?next=%2F%2Fevil.example")).toBe("/panel");
     expect(afterAuthTarget("?next=/panel%20?x=1")).toBe("/panel");
+  });
+
+  it("strips the deploy base a legacy ?next= arrival carries", () => {
+    vi.stubEnv("BASE_URL", "/devthink/");
+    try {
+      expect(afterAuthTarget("?next=%2Fdevthink%2Fpanel")).toBe("/panel");
+      expect(afterAuthTarget("?next=%2Fdevthink%2Fw%2Fabc%2Fs%2Fdef%2Ft%2Ftab%2Fchat")).toBe(
+        "/w/abc/s/def/t/tab/chat",
+      );
+      // the base address itself answers the site root
+      expect(afterAuthTarget("?next=/devthink")).toBe("/");
+    } finally {
+      vi.unstubAllEnvs();
+    }
+  });
+});
+
+describe("the base-relative route cleaner", () => {
+  it("answers a route unchanged under the root and relative bases", () => {
+    expect(routeFromPathname("/panel", "/")).toBe("/panel");
+    expect(routeFromPathname("/panel", "./")).toBe("/panel");
+    expect(routeFromPathname("/panel")).toBe("/panel");
+  });
+
+  it("strips the deploy folder prefix a full pathname carries", () => {
+    expect(routeFromPathname("/devthink/panel", "/devthink/")).toBe("/panel");
+    expect(routeFromPathname("/devthink/panel", "/devthink")).toBe("/panel");
+    expect(routeFromPathname("/devthink", "/devthink/")).toBe("/");
+    expect(routeFromPathname("/devthink/w/abc/s/def/t/tab/chat", "/devthink/")).toBe("/w/abc/s/def/t/tab/chat");
+  });
+
+  it("never strips a prefix the path does not actually carry", () => {
+    expect(routeFromPathname("/panel", "/devthink/")).toBe("/panel");
+    expect(routeFromPathname("/devthinker/panel", "/devthink/")).toBe("/devthinker/panel");
   });
 });
 
