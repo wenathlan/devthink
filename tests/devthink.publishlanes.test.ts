@@ -124,8 +124,10 @@ describe.skipIf(!inrepo)("the npmjs registry freshness lane", () => {
 
   it("the resolvers read the application manifests, never a foreign tag", async () => {
     const publish = await readworkflow("publish.yml");
-    expect(publish).toContain("require('../devthink/tests/${{ matrix.package }}/package.json').version");
-    expect(publish).toContain("require('../devthink/tests/saddle/package.json').version");
+    /* the resolvers walk the repository-root application folders since the
+     * english-law fold retired the devthink/tests fixture home. */
+    expect(publish).toContain("require('./${{ matrix.package }}/package.json').version");
+    expect(publish).toContain("require('./saddle/package.json').version");
     /* the deleted saddle-v* tag resolver never runs again: the vhe lane
      * reads the saddle manifest of the checked out source. */
     expect(publish).toContain("saddle-v* tag resolver never runs again");
@@ -360,7 +362,7 @@ describe.skipIf(!inrepo)("the release assets census (the 300 plus law)", () => {
   });
 
   it("the next conversion walks the ten applications with the ten-asset grammar", async () => {
-    const convert = await readFile(join(repoRoot, "devthink", "tests", "scripts", "nextconvert.ts"), "utf8");
+    const convert = await readFile(join(repoRoot, "tests", "devthink.scripts.nextconvert.ts"), "utf8");
     /* the CONVERT list: every site application of the monorepo, the os
      * included. */
     const list = /const CONVERT = \[([^\]]+)\]/.exec(convert)?.[1] ?? "";
@@ -404,7 +406,7 @@ describe.skipIf(!inrepo)("the release assets census (the 300 plus law)", () => {
   it("every family lane resolves the version from the application manifest", async () => {
     for (const file of ["family-desktop.yml", "family-mobile.yml"]) {
       const source = await readworkflow(file);
-      expect(source).toContain("require('../devthink/tests/${{ matrix.app }}/package.json').version");
+      expect(source).toContain("require('./${{ matrix.app }}/package.json').version");
     }
   });
 
@@ -513,7 +515,9 @@ describe.skipIf(!inrepo)("the built envelope law (the exports promise)", () => {
     expect(scripts["pack:check"]).toContain("npm run check");
     expect(scripts.check).toContain("build:engine");
     expect(scripts.check).toContain("node --check dist/index.js");
-    expect(scripts["build:engine"]).toContain("tests/scripts/buildengine.ts");
+    /* the flat tests village carries the saddle build engine under the family
+     * prefix since the english-law fold renamed the old tests/scripts home. */
+    expect(scripts["build:engine"]).toContain("tests/saddle.scripts.buildengine.ts");
     expect(scripts.build).toBe("npm run build:engine");
   });
 

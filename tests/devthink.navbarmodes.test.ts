@@ -184,8 +184,11 @@ describe("the settings card (the personalization controls)", () => {
   });
 
   it("the personalization page mounts both controls in the navbar card", () => {
+    /* the wingets village owns the navbar controls under the family folder —
+     * the personalization card imports the sibling by its flat name since
+     * the english-law fold retired the devthink/tests home. */
     expect(personalization).toContain(
-      'import { NavbarPositionControl, NavbarStyleControl } from "../devthink/tests/SettingsNavbarposition";',
+      'import { NavbarPositionControl, NavbarStyleControl } from "./SettingsNavbarposition";',
     );
     expect(personalization).toContain("<NavbarPositionControl />");
     expect(personalization).toContain("<NavbarStyleControl />");

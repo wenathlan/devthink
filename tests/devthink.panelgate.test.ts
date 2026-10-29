@@ -56,8 +56,10 @@ describe("the gate decision (the pure verdict of the panel)", () => {
 
 describe("the panel anchor asks the family session", () => {
   it("rides the same session source the auth face rides (restoreonce plus the offline marker)", () => {
-    expect(anchor).toContain('import { islocalunlocked, restoreonce } from "../account.ts";');
-    expect(anchor).toContain('import { panelgateverdict, resolveintrotarget } from "../introtarget.ts";');
+    /* the panel anchor rides its own subfolder under Sol (the panel face),
+     * so the app-root session and gate sources answer two hops up. */
+    expect(anchor).toContain('import { islocalunlocked, restoreonce } from "../../account.ts";');
+    expect(anchor).toContain('import { panelgateverdict, resolveintrotarget } from "../../introtarget.ts";');
   });
 
   it("carries the three poses of the gate and starts pending on the web target", () => {

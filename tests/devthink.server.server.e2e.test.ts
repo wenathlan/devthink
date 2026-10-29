@@ -90,9 +90,13 @@ let configdir = "";
 
 /** the flat tests village sits at the repository root beside the app folders,
  * so the gateway entry and its tsx binary resolve through the devthink app
- * folder one hop up (the old tests home inside the app walked two). */
+ * folder one hop up (the old tests home inside the app walked two). the
+ * spawn rides an explicit --tsconfig because the config dir of the suite
+ * has no tsconfig of its own, and tsx discovers the paths bridge (the
+ * sibling engines of the ownership law) from the app tsconfig alone. */
 const tsxbin = join(import.meta.dirname, "..", "devthink", "node_modules", ".bin", "tsx");
 const httpts = join(import.meta.dirname, "..", "devthink", "server.ts");
+const tsconfig = join(import.meta.dirname, "..", "devthink", "tsconfig.json");
 
 async function waitforready(): Promise<void> {
   const deadline = Date.now() + 30000;
@@ -148,7 +152,7 @@ export default config
   // detached: true puts the child in its own process group — tsx execs into
   // a nested node process, so killing only the tsx pid left the real server
   // orphaned on the port (the next run silently talked to the stale orphan)
-  gateway = spawn(tsxbin, [httpts, "serve"], {
+  gateway = spawn(tsxbin, ["--tsconfig", tsconfig, httpts, "serve"], {
     cwd: configdir,
     env: {
       ...process.env,

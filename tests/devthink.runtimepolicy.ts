@@ -25,7 +25,10 @@ if (!typesource.includes("export const pinnedprotocolversion"))
   throw new Error("The library surface must export the pinned protocol version import.");
 if (!mcpsource.includes("negotiateprotocol"))
   throw new Error("The mcp negotiation must route through the protocolv2 negotiation family.");
-if (!verifyworkflow.includes("node tests/apifreeze.ts"))
+/* the api freeze gate rides the flat tests village since the english-law
+ * fold renamed the old tests home (verify.yml walks ../tests from the app
+ * root), and the gate still closes after the validation chain. */
+if (!verifyworkflow.includes("node ../tests/devthink.apifreeze.ts"))
   throw new Error("The verify workflow must gate the api freeze after the validation chain.");
 
 /* the 1.1.95 transparency surface acceptance: the one web design file declares the transparencypage surface with its completed sections, the options surface embeds it as its own page, the surface carries no remote resource, and the compiled page module ships beside the design */
@@ -179,7 +182,11 @@ if (digestlines.length !== 2)
   );
 if (containerfile.includes("corepack"))
   throw new Error("Node 26 container builds must not depend on the removed Corepack binary.");
-if (!containerfile.includes("node -p \"require('../devthink/tests/package.json')"))
+/* the frozen dependency layer reads the application manifest at the image
+ * root (the ./package.json form the english-law fold left behind when the
+ * devthink/tests fixture home retired) — the check keeps its intent: the
+ * metadata is evaluated with Node, never passed as a quoted literal. */
+if (!containerfile.includes("node -p \"require('./package.json')"))
   throw new Error("the Dockerfile must evaluate package metadata with Node rather than pass it as a quoted literal.");
 if (!containerfile.includes('npm install --global "bun@${bunversion}"'))
   throw new Error("the Dockerfile must install the root package manager from the canonical packageManager field.");

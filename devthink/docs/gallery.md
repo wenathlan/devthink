@@ -12,62 +12,62 @@ Every entry below names its recipe export, its difficulty grade, its expected dr
 
 | Recipe | Difficulty | Expected duration | Fixture page | Kinds exercised |
 | --- | --- | --- | --- | --- |
-| [scrapeproductgrid](../tests/recipesfixtures.ts) | starter | 1600 ms | product-grid.html | observe, countelements, readtext, exportjson |
-| [scrapetablepagination](../tests/recipesfixtures.ts) | starter | 1800 ms | product-grid.html | observe, scrapetable, countpages, exportcsv |
-| [scrapereviews](../tests/recipesfixtures.ts) | intermediate | 3200 ms | product-grid.html | observe, countelements, readtext, exportjson |
-| [scrapesearchresults](../tests/recipesfixtures.ts) | starter | 1700 ms | feed.html | observe, readlinks, readmeta, exportjson |
-| [scrapenestedlists](../tests/recipesfixtures.ts) | intermediate | 3400 ms | feed.html | observe, detectlists, readhtml, exportexcel |
-| [scrapeinfinitefeed](../tests/recipesfixtures.ts) | advanced | 6500 ms | feed.html | observe, detectinfinitescroll, readscrollpos, readtext, exportjson |
-| [scrapedynamicprices](../tests/recipesfixtures.ts) | intermediate | 3800 ms | dashboard.html | observe, waitelement, readtext, watchmutate, exportcsv |
-| [scrapeimagegallery](../tests/recipesfixtures.ts) | intermediate | 3000 ms | product-grid.html | observe, readimages, verifyvisible, exportcsv |
+| [scrapeproductgrid](../../tests/devthink.recipesfixtures.ts) | starter | 1600 ms | product-grid.html | observe, countelements, readtext, exportjson |
+| [scrapetablepagination](../../tests/devthink.recipesfixtures.ts) | starter | 1800 ms | product-grid.html | observe, scrapetable, countpages, exportcsv |
+| [scrapereviews](../../tests/devthink.recipesfixtures.ts) | intermediate | 3200 ms | product-grid.html | observe, countelements, readtext, exportjson |
+| [scrapesearchresults](../../tests/devthink.recipesfixtures.ts) | starter | 1700 ms | feed.html | observe, readlinks, readmeta, exportjson |
+| [scrapenestedlists](../../tests/devthink.recipesfixtures.ts) | intermediate | 3400 ms | feed.html | observe, detectlists, readhtml, exportexcel |
+| [scrapeinfinitefeed](../../tests/devthink.recipesfixtures.ts) | advanced | 6500 ms | feed.html | observe, detectinfinitescroll, readscrollpos, readtext, exportjson |
+| [scrapedynamicprices](../../tests/devthink.recipesfixtures.ts) | intermediate | 3800 ms | dashboard.html | observe, waitelement, readtext, watchmutate, exportcsv |
+| [scrapeimagegallery](../../tests/devthink.recipesfixtures.ts) | intermediate | 3000 ms | product-grid.html | observe, readimages, verifyvisible, exportcsv |
 
 ### forms recipes
 
 | Recipe | Difficulty | Expected duration | Fixture page | Kinds exercised |
 | --- | --- | --- | --- | --- |
-| [fillloginform](../tests/recipesfixtures.ts) | intermediate | 3600 ms | checkout.html | observe, readforms, fillform, submit |
-| [fillcheckout](../tests/recipesfixtures.ts) | advanced | 7000 ms | checkout.html | observe, readforms, runwizard, fillform, submit |
-| [fillregistration](../tests/recipesfixtures.ts) | starter | 2000 ms | checkout.html | observe, readforms, fillform, submit |
-| [fillsearchfilters](../tests/recipesfixtures.ts) | starter | 2200 ms | product-grid.html | observe, detectfields, fillform, click |
-| [fillmultistepwizard](../tests/recipesfixtures.ts) | advanced | 6200 ms | checkout.html | observe, readforms, runwizard, fillform, submit |
-| [filldependentdropdowns](../tests/recipesfixtures.ts) | advanced | 5800 ms | checkout.html | observe, readforms, selectchain, submit |
-| [filltypeahead](../tests/recipesfixtures.ts) | intermediate | 3300 ms | product-grid.html | observe, waitelement, picktypeahead |
-| [fillcalendar](../tests/recipesfixtures.ts) | intermediate | 3100 ms | checkout.html | observe, readforms, pickdate, submit |
-| [fillfromcsv](../tests/recipesfixtures.ts) | advanced | 6800 ms | checkout.html | importcsv, looprows, readforms, fillform, submit |
+| [fillloginform](../../tests/devthink.recipesfixtures.ts) | intermediate | 3600 ms | checkout.html | observe, readforms, fillform, submit |
+| [fillcheckout](../../tests/devthink.recipesfixtures.ts) | advanced | 7000 ms | checkout.html | observe, readforms, runwizard, fillform, submit |
+| [fillregistration](../../tests/devthink.recipesfixtures.ts) | starter | 2000 ms | checkout.html | observe, readforms, fillform, submit |
+| [fillsearchfilters](../../tests/devthink.recipesfixtures.ts) | starter | 2200 ms | product-grid.html | observe, detectfields, fillform, click |
+| [fillmultistepwizard](../../tests/devthink.recipesfixtures.ts) | advanced | 6200 ms | checkout.html | observe, readforms, runwizard, fillform, submit |
+| [filldependentdropdowns](../../tests/devthink.recipesfixtures.ts) | advanced | 5800 ms | checkout.html | observe, readforms, selectchain, submit |
+| [filltypeahead](../../tests/devthink.recipesfixtures.ts) | intermediate | 3300 ms | product-grid.html | observe, waitelement, picktypeahead |
+| [fillcalendar](../../tests/devthink.recipesfixtures.ts) | intermediate | 3100 ms | checkout.html | observe, readforms, pickdate, submit |
+| [fillfromcsv](../../tests/devthink.recipesfixtures.ts) | advanced | 6800 ms | checkout.html | importcsv, looprows, readforms, fillform, submit |
 
 ### testing recipes
 
 | Recipe | Difficulty | Expected duration | Fixture page | Kinds exercised |
 | --- | --- | --- | --- | --- |
-| [testlinkcheck](../tests/recipesfixtures.ts) | starter | 1800 ms | product-grid.html | observe, readlinks, countelements, detecthttp |
-| [testconsoleerrors](../tests/recipesfixtures.ts) | starter | 1900 ms | dashboard.html | observe, watchconsole, watcherrors, readerrors |
-| [testformvalidation](../tests/recipesfixtures.ts) | intermediate | 3500 ms | checkout.html | observe, readforms, detectfields, readerrors, verifyvisible |
-| [testlayoutshift](../tests/recipesfixtures.ts) | advanced | 6400 ms | dashboard.html | observe, watchshifts, traceload, measureflow |
-| [testvisualdiff](../tests/recipesfixtures.ts) | intermediate | 3700 ms | product-grid.html | observe, shotview, shotelement, diffsnapshots |
-| [testloadtiming](../tests/recipesfixtures.ts) | intermediate | 3900 ms | dashboard.html | observe, traceload, measureflow, watchrequests |
-| [testaccessibility](../tests/recipesfixtures.ts) | starter | 2100 ms | product-grid.html | readertree, readoutline, readmeta, verifyvisible |
-| [testdeeplinks](../tests/recipesfixtures.ts) | intermediate | 3300 ms | dashboard.html | observe, readlinks, readfinalurl, countpages |
+| [testlinkcheck](../../tests/devthink.recipesfixtures.ts) | starter | 1800 ms | product-grid.html | observe, readlinks, countelements, detecthttp |
+| [testconsoleerrors](../../tests/devthink.recipesfixtures.ts) | starter | 1900 ms | dashboard.html | observe, watchconsole, watcherrors, readerrors |
+| [testformvalidation](../../tests/devthink.recipesfixtures.ts) | intermediate | 3500 ms | checkout.html | observe, readforms, detectfields, readerrors, verifyvisible |
+| [testlayoutshift](../../tests/devthink.recipesfixtures.ts) | advanced | 6400 ms | dashboard.html | observe, watchshifts, traceload, measureflow |
+| [testvisualdiff](../../tests/devthink.recipesfixtures.ts) | intermediate | 3700 ms | product-grid.html | observe, shotview, shotelement, diffsnapshots |
+| [testloadtiming](../../tests/devthink.recipesfixtures.ts) | intermediate | 3900 ms | dashboard.html | observe, traceload, measureflow, watchrequests |
+| [testaccessibility](../../tests/devthink.recipesfixtures.ts) | starter | 2100 ms | product-grid.html | readertree, readoutline, readmeta, verifyvisible |
+| [testdeeplinks](../../tests/devthink.recipesfixtures.ts) | intermediate | 3300 ms | dashboard.html | observe, readlinks, readfinalurl, countpages |
 
 ### monitoring recipes
 
 | Recipe | Difficulty | Expected duration | Fixture page | Kinds exercised | Schedule |
 | --- | --- | --- | --- | --- | --- |
-| [monitorpricechange](../tests/recipesfixtures.ts) | intermediate | 3400 ms | dashboard.html | observe, readtext, watchmutate | */5 * * * * |
-| [monitoravailability](../tests/recipesfixtures.ts) | starter | 2000 ms | dashboard.html | observe, verifyvisible, watchbanner | */10 * * * * |
-| [monitornetworkquiet](../tests/recipesfixtures.ts) | intermediate | 3800 ms | dashboard.html | observe, watchrequests, waitquiet, readerrors | */15 * * * * |
-| [monitorpagechanges](../tests/recipesfixtures.ts) | advanced | 6100 ms | feed.html | observe, watchmutate, diffsnapshots | 0 * * * * |
-| [monitorschedule](../tests/recipesfixtures.ts) | intermediate | 3600 ms | dashboard.html | observe, intervalrule, readtext, watchmutate | */5 * * * * |
-| [monitoralerts](../tests/recipesfixtures.ts) | advanced | 5900 ms | dashboard.html | observe, watchconsole, watchbanner, readerrors | */2 * * * * |
+| [monitorpricechange](../../tests/devthink.recipesfixtures.ts) | intermediate | 3400 ms | dashboard.html | observe, readtext, watchmutate | */5 * * * * |
+| [monitoravailability](../../tests/devthink.recipesfixtures.ts) | starter | 2000 ms | dashboard.html | observe, verifyvisible, watchbanner | */10 * * * * |
+| [monitornetworkquiet](../../tests/devthink.recipesfixtures.ts) | intermediate | 3800 ms | dashboard.html | observe, watchrequests, waitquiet, readerrors | */15 * * * * |
+| [monitorpagechanges](../../tests/devthink.recipesfixtures.ts) | advanced | 6100 ms | feed.html | observe, watchmutate, diffsnapshots | 0 * * * * |
+| [monitorschedule](../../tests/devthink.recipesfixtures.ts) | intermediate | 3600 ms | dashboard.html | observe, intervalrule, readtext, watchmutate | */5 * * * * |
+| [monitoralerts](../../tests/devthink.recipesfixtures.ts) | advanced | 5900 ms | dashboard.html | observe, watchconsole, watchbanner, readerrors | */2 * * * * |
 
 ### agent recipes
 
 | Recipe | Difficulty | Expected duration | Fixture page | Kinds exercised | Topology |
 | --- | --- | --- | --- | --- | --- |
-| [agentswarm](../tests/recipesfixtures.ts) | advanced | 7200 ms | product-grid.html | observe, parallel, readtext, countelements, exportjson | swarm |
-| [agentsreview](../tests/recipesfixtures.ts) | intermediate | 3500 ms | product-grid.html | observe, readtable, condition | review |
-| [agentsforms](../tests/recipesfixtures.ts) | advanced | 7500 ms | checkout.html | observe, parallel, fillform, submit | parallel |
-| [agentsmonitor](../tests/recipesfixtures.ts) | advanced | 6900 ms | feed.html | observe, watchmutate, parallel, readtext, readscrollpos | monitor |
-| [agentscompete](../tests/recipesfixtures.ts) | advanced | 7800 ms | product-grid.html | observe, parallel, readtext, scrapetable, exportjson | compete |
+| [agentswarm](../../tests/devthink.recipesfixtures.ts) | advanced | 7200 ms | product-grid.html | observe, parallel, readtext, countelements, exportjson | swarm |
+| [agentsreview](../../tests/devthink.recipesfixtures.ts) | intermediate | 3500 ms | product-grid.html | observe, readtable, condition | review |
+| [agentsforms](../../tests/devthink.recipesfixtures.ts) | advanced | 7500 ms | checkout.html | observe, parallel, fillform, submit | parallel |
+| [agentsmonitor](../../tests/devthink.recipesfixtures.ts) | advanced | 6900 ms | feed.html | observe, watchmutate, parallel, readtext, readscrollpos | monitor |
+| [agentscompete](../../tests/devthink.recipesfixtures.ts) | advanced | 7800 ms | product-grid.html | observe, parallel, readtext, scrapetable, exportjson | compete |
 
 The five agent recipes are the certified examples of the topologies the multi agent certification covers — the swarm, the review, the parallel, the monitor and the compete scenario of `docs/agentscenarios.md`; the certification doc of `docs/agentcert.md` links them as the plan-file half of that ledger.
 
