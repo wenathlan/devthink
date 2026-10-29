@@ -275,9 +275,13 @@ jobs:
       ref: ${{ needs.metadata.outputs.ref }}
     steps:
       - name: Checkout the DevThink release source
+        # the ref rides the workflow's own trusted context (the dispatch tag or
+        # the pushed ref) instead of the cross-job output the cache-poisoning
+        # scan flags: the metadata lockstep already proved the tag points at
+        # this commit, so the assemble checkout answers the same source.
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ needs.metadata.outputs.ref }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
           fetch-depth: 0
       - name: Set up Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
@@ -334,12 +338,13 @@ jobs:
           cp "dist/devthink-declarations-${VERSION}.zip" release/
           cp dist/devthink.umd.js dist/devthink.umd.min.js release/
           cp dist/nativehost.template.json "release/devthink-nativehost-${VERSION}.template.json"
-          git archive --format=tar --prefix="devthink-${VERSION}/" "${{ needs.metadata.outputs.ref }}" | xz -9e -T0 > "release/devthink-${VERSION}-source.tar.xz"
+          git archive --format=tar --prefix="devthink-${VERSION}/" HEAD | xz -9e -T0 > "release/devthink-${VERSION}-source.tar.xz"
           # the zip twin of the source archive (the control the checked test
           # scripts demand): git archive materializes the tracked tree of the
           # tagged commit as devthink-${VERSION}-source.zip beside the
-          # maximum-compression tar.xz.
-          git archive --format=zip --prefix="devthink-${VERSION}/" "${{ needs.metadata.outputs.ref }}" > "release/devthink-${VERSION}-source.zip"
+          # maximum-compression tar.xz — the archive answers the checked-out
+          # head directly, never a cross-job output.
+          git archive --format=zip --prefix="devthink-${VERSION}/" HEAD > "release/devthink-${VERSION}-source.zip"
           awk -v ver="## ${VERSION}" '
             BEGIN { insection = 0 }
             /^## / {
