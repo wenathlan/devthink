@@ -18,6 +18,11 @@ const exec = promisify(execFile);
  * folder one hop up (the old tests home inside the app walked two). */
 const tsxbin = join(import.meta.dirname, "..", "devthink", "node_modules", ".bin", "tsx");
 const clits = join(import.meta.dirname, "..", "devthink", "server.ts");
+/** the tsx subprocess resolves the library specifiers through the explicit
+ * application tsconfig (the runner cwd sits in a scaffold workdir, and the
+ * tsconfig discovery that walks from the cwd would never find the app
+ * paths — the flag pins the resolution to the owner tree). */
+const tsconfigpath = join(import.meta.dirname, "..", "devthink", "tsconfig.json");
 
 /** run the cli in a workdir with optional piped stdin */
 async function runcli(
@@ -26,7 +31,7 @@ async function runcli(
   input = "",
 ): Promise<{ stdout: string; stderr: string; code: number }> {
   try {
-    const { stdout, stderr } = await exec(tsxbin, [clits, ...args], {
+    const { stdout, stderr } = await exec(tsxbin, ["--tsconfig", tsconfigpath, clits, ...args], {
       cwd: workdir,
       env: { ...process.env, DEVTHINK_DATABASE_URL: `file:${join(workdir, "cli.db")}` },
       maxBuffer: 10 * 1024 * 1024,
@@ -48,7 +53,7 @@ async function runcliwithinput(
   input: string,
 ): Promise<{ stdout: string; stderr: string; code: number }> {
   return new Promise((resolve) => {
-    const child = execFile(tsxbin, [clits, ...args], {
+    const child = execFile(tsxbin, ["--tsconfig", tsconfigpath, clits, ...args], {
       cwd: workdir,
       env: { ...process.env, DEVTHINK_DATABASE_URL: `file:${join(workdir, "cli.db")}` },
       maxBuffer: 10 * 1024 * 1024,
