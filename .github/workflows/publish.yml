@@ -4218,7 +4218,16 @@ jobs:
           node-version: 26.13.0
           package-manager-cache: false
       - name: resolve the saddle version and the family release tag
-        if: github.event_name == 'release'
+        # the resolver answers every firing the saddle-extension mold carries:
+        # the release-only gate left the workflow_run lane on the main head
+        # the checkout answered (the trigger carries no release context), so
+        # the plan legs built the saddle surface from main instead of the
+        # release tag and inherited the main tree lockfile state - the 2.0.151
+        # wave reddened the whole saddle plan matrix at the install step on
+        # the saddle lockfile drift main carried that day. the unconditional
+        # resolver detaches onto the release tag first, the same way the
+        # extension lane above resolves, so the plans derive from the release
+        # source alone.
         id: release
         env:
           GH_TOKEN: ${{ github.token }}
