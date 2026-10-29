@@ -88,7 +88,7 @@ const domains: { href: string; labelKey: LabelKey; aboutKey: LabelKey; metaKey: 
  */
 
 import { label } from "../../labels";
-import { Constructionface, EntryGate } from "../widgets";
+import { Constructionface, EntryGate } from "../wingets";
 
 /**
  * the home anchor: the entry gate decides first (intro unseen hands to

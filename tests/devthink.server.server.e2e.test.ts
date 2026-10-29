@@ -88,8 +88,8 @@ const serverport = 22000 + Math.floor(Math.random() * 8000);
 let gateway: ChildProcess | null = null;
 let configdir = "";
 
-const tsxbin = join(import.meta.dirname, "..", "..", "node_modules", ".bin", "tsx");
-const httpts = join(import.meta.dirname, "..", "..", "server.ts");
+const tsxbin = join(import.meta.dirname, "..", "devthink", "node_modules", ".bin", "tsx");
+const httpts = join(import.meta.dirname, "..", "devthink", "server.ts");
 
 async function waitforready(): Promise<void> {
   const deadline = Date.now() + 30000;

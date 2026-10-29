@@ -29,13 +29,13 @@ beforeAll(async () => {
   // when the client is already present) — a fresh checkout or ci lane that
   // skipped db:generate still lands the client before the first write
   await exec("bunx", ["prisma", "generate"], {
-    cwd: join(import.meta.dirname, "..", ".."),
+    cwd: join(import.meta.dirname, "..", "devthink"),
     timeout: 120000,
   });
   // push the repo schema into the isolated database (the same command the
   // consumer runs after init — verifies the schema loads under prisma 7)
   await exec("bunx", ["prisma", "db", "push"], {
-    cwd: join(import.meta.dirname, "..", ".."),
+    cwd: join(import.meta.dirname, "..", "devthink"),
     env: { ...process.env, DEVTHINK_DATABASE_URL: process.env.DEVTHINK_DATABASE_URL },
     timeout: 120000,
   });

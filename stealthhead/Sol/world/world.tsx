@@ -14,7 +14,7 @@
  */
 
 import { label } from "../../labels";
-import { Constructionface } from "../widgets";
+import { Constructionface } from "../wingets";
 
 /**
  * the world page: the in-construction face under the world eyebrow.
