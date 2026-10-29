@@ -28,6 +28,7 @@
     "@libsql/client": "^0.18.0",
     "@prisma/adapter-libsql": "^7.10.1",
     "@prisma/client": "^7.10.1",
+    "@wenathlan/getry": "^2.0.151",
     "@wenathlan/saddle": "^2.1.6",
     "@wenathlan/vault": "^2.0.151",
     "hono": "^4.13.14",
