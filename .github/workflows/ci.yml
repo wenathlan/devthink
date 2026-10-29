@@ -337,14 +337,17 @@ jobs:
           bun-version: 1.4.4
           cache: false
 
-      - name: Install the locked toolchain and webpack
+      - name: Install the locked toolchain
         # the core package answers bun as its package manager (the
         # packageManager field), so the locked install rides bun and the
-        # pnpm refusal never fires.
+        # pnpm refusal never fires. the webpack rung rides no npm install:
+        # the scorecard pin doctrine the family lanes follow demands the
+        # npm command line can never carry, so the bundler answers the
+        # exact-pinned npx fetch of the pack step below instead of a
+        # floating --no-save entry in the frozen tree.
         run: |
           cd devthink
           bun install --frozen-lockfile --ignore-scripts
-          npm install webpack-cli@6 --no-save --no-fund --no-audit
 
       - name: Bridge the flat testes gate scripts onto the application tree
         # the same resolution bridge the CLI matrix carries: the webpack
@@ -359,7 +362,12 @@ jobs:
         run: |
           cd devthink
           node ../tests/devthink.build.ts
-          npx webpack --entry ./dist/index.js --output-path ./distpackage/webpack --output-filename devthink.webpack.js --mode production --target node
+          # the cross-bundler rung rides exact-pinned registry fetches (the
+          # same pin law every lane of the battery answers): npx resolves
+          # the two immutable webpack rungs the lane verified — webpack-cli
+          # 6.0.1 (the webpack bin) with its webpack 5.112.2 peer — instead
+          # of a floating npm install the dependency scan flags unpinned.
+          npx --yes -p webpack@5.112.2 -p webpack-cli@6.0.1 webpack --entry ./dist/index.js --output-path ./distpackage/webpack --output-filename devthink.webpack.js --mode production --target node
           test -s ./distpackage/webpack/devthink.webpack.js
           du -h ./distpackage/webpack/devthink.webpack.js
 

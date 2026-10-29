@@ -886,9 +886,15 @@ jobs:
     # sandbox mounts at run time.
     steps:
       - name: Checkout the release source for the engine cores
+        # the ref rides the workflow's own trusted context (the dispatch tag
+        # or the pushed ref) instead of the cross-job output the
+        # cache-poisoning scan flags — the same trusted-context law the
+        # assemble lane adopted: the metadata lockstep already proved the
+        # tag points at this commit, so this checkout answers the same
+        # source without an untrusted ref flowing into the lane.
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ needs.assemble.outputs.ref }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
           sparse-checkout: |
             cadria/versawase.ts
             debonair/katexis.ts
@@ -907,13 +913,16 @@ jobs:
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: 1.4.4
-      - name: Install the locked toolchain and the javy quickjs-wasm compiler
+      - name: Install the locked toolchain for the wasm lane
         # the scripts stay off the frozen install the way every family lane
         # keeps them (the better-sqlite3 gyp lottery): the wasm lane compiles
-        # pure engine cores no native binding ever rides.
-        run: |
-          npm install -g javy-cli@3.0.1
-          bun install --cwd devthink --frozen-lockfile --ignore-scripts
+        # pure engine cores no native binding ever rides. the javy compiler
+        # answers the exact-pinned bunx fetch of the compile step below —
+        # the global npm install the dependency scan flags unpinned (and
+        # whose npm cache write fed the cache-poisoning finding) retires;
+        # bunx resolves javy-cli 3.0.1 from the registry the same locked way
+        # the lane resolves esbuild.
+        run: bun install --cwd devthink --frozen-lockfile --ignore-scripts
       - name: Bundle the pure engine cores and compile them to wasm
         run: |
           set -euo pipefail
@@ -921,8 +930,8 @@ jobs:
           mkdir -p wasmwork release
           (cd devthink && bunx esbuild ../cadria/versawase.ts --bundle --format=esm --platform=neutral --outfile=../wasmwork/versawase.js)
           (cd devthink && bunx esbuild ../debonair/katexis.ts --bundle --format=esm --platform=neutral --outfile=../wasmwork/katexis.js)
-          javy compile wasmwork/versawase.js -o wasmwork/versawase.wasm
-          javy compile wasmwork/katexis.js -o wasmwork/katexis.wasm
+          bunx javy-cli@3.0.1 compile wasmwork/versawase.js -o wasmwork/versawase.wasm
+          bunx javy-cli@3.0.1 compile wasmwork/katexis.js -o wasmwork/katexis.wasm
           {
             echo "{"
             echo "  \"version\": \"${VERSION}\","
