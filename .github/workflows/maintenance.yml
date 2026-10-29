@@ -123,19 +123,6 @@ jobs:
         # the flaky lanes hit — the prisma client the validation reads
         # generates inside tests/build.ts itself.
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
-      - name: Bridge the flat testes gate scripts onto the application tree
-        # the flat typed folder law moved every gate script out of the
-        # application into tests/, and node resolves the bare specifiers
-        # the gates import (esbuild of the build gate) from the script's
-        # own directory upward — a walk that never reaches
-        # devthink/node_modules and answered ERR_MODULE_NOT_FOUND before
-        # the Monday window ever proposed a rung. the runtime link points
-        # the folder at the frozen application tree the install just
-        # materialized, so the validation steps resolve the exact locked
-        # rungs — never a floating auto-install. the bridge rides the
-        # window gate the checkout and the install already carry: an
-        # out-of-window firing checks out nothing, and the link step must
-        # never touch the empty workspace it would fail on.
         if: steps.window.outputs.active == 'true'
       - name: Propose latest non-breaking direct npm dependency updates
         if: steps.window.outputs.active == 'true'

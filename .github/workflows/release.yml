@@ -294,16 +294,6 @@ jobs:
           node-version-file: devthink/.nvmrc
       - name: Install the locked dependencies
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
-      - name: Bridge the flat testes gate scripts onto the application tree
-        # the flat typed folder law moved every gate script out of the
-        # application into tests/, and node resolves the bare specifiers
-        # the gates import (esbuild of the build gate) from the script's
-        # own directory upward — a walk that never reaches
-        # devthink/node_modules and answered ERR_MODULE_NOT_FOUND on the
-        # assembly lane of the release approval chain. the runtime link
-        # points the folder at the frozen application tree the install just
-        # materialized, so the gates resolve the exact locked rungs — never
-        # a floating auto-install.
       - name: Build the publishing pipeline artifacts
         # the repo's own generator: every dist target (the library bundles,
         # the extension surface, the static site, the flat distpackage

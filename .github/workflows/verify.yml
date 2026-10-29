@@ -91,16 +91,6 @@ jobs:
           test "$(npm --version)" = "$npm_version"
       - name: Install root dependencies
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
-      - name: Bridge the flat testes gate scripts onto the application tree
-        # the flat typed folder law moved every gate script out of the
-        # application into tests/, and node resolves the bare specifiers
-        # the gates import (esbuild of the build gate, yaml of the workflow
-        # gate) from the script's own directory upward — a walk that never
-        # reaches devthink/node_modules and answered ERR_MODULE_NOT_FOUND on
-        # every lane of the release approval chain. the runtime link points
-        # the folder at the frozen application tree the install just
-        # materialized, so the gates resolve the exact locked rungs — never
-        # a floating auto-install.
       - name: Build the root distribution before the deterministic suite
         run: cd devthink && node tests/build.ts
       - name: Run the accessibility sweep over the built tree
@@ -358,13 +348,6 @@ jobs:
           node-version-file: devthink/.nvmrc
       - name: Install root dependencies
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
-      - name: Bridge the flat testes gate scripts onto the application tree
-        # the same resolution bridge the gate ladder carries: the modes
-        # matrix builds the distribution through tests/build.ts
-        # whose esbuild import resolves from the script's own folder — the
-        # runtime link to the frozen application tree keeps the matrix on
-        # the locked rungs instead of the ERR_MODULE_NOT_FOUND the flat
-        # folder law left behind.
       - name: Build the root distribution
         run: cd devthink && node tests/build.ts
       - name: Run the accessibility sweep over the built tree
@@ -471,13 +454,6 @@ jobs:
           node-version-file: devthink/.nvmrc
       - name: Install root dependencies
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
-      - name: Bridge the flat testes gate scripts onto the application tree
-        # the same resolution bridge the gate ladder carries: the consumer
-        # smoke builds the distribution through tests/build.ts
-        # whose esbuild import resolves from the script's own folder — the
-        # runtime link to the frozen application tree keeps the lane on the
-        # locked rungs instead of the ERR_MODULE_NOT_FOUND the flat folder
-        # law left behind.
       - name: Build the root distribution
         run: cd devthink && node tests/build.ts
       - name: Pack the distribution tarball into a temporary directory
