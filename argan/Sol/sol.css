@@ -22,9 +22,12 @@
    - the grain is feTurbulence .86 / 2 octaves / 6% / soft-light on the
      140px tile; the win11 scrollbar hides until hover; the selection rides
      rgb(76 194 255/38%).
-   The argan jade #34d8a8 survives ONLY in the brand mark, the content CTAs
-   and the active indicators — focus and control accents ride the Windows
-   #4cc2ff. The @theme block mirrors the canonical :root tokens for the
+   The argan jade story survives ONLY in the drawn brand mark — the theme
+   itself answers the single-theme law: the ONE Sol accent is the WHITE SUN
+   (pure #ffffff on the dark ladder, the graphite contrast pole on the light
+   face), so every CTA, indicator and accent voice across the family speaks
+   the same white light. Focus and control accents ride the Windows #4cc2ff.
+   The @theme block mirrors the canonical :root tokens for the
    Tailwind utility layer; the plain :root literals keep the zero-build
    static face rendering without the plugin.
    Sections: 0 foundation · 1 tokens · 2 base · 3 layout · 4 components ·
@@ -69,10 +72,14 @@
   --color-hairline: color-mix(in oklab, #fefefe 5%, transparent);
   --color-hairline-strong: color-mix(in oklab, #fefefe 10%, transparent);
 
-  /* ---- the argan signal: jade rides brand, content CTAs and active
-     indicators only — never focus, never the chrome ---- */
-  --color-signal: #34d8a8;
-  --color-signal-ink: #04231a;
+  /* ---- the signal: THE WHITE SUN — one Sol, one light; the name is Sol
+     but the sun is WHITE, never yellow. Pure #ffffff on the dark ladder
+     (it glows); the quiet poles carry the penumbra ---- */
+  --color-signal: #ffffff;
+  --color-signal-strong: #ffffff;
+  --color-signal-2: #c9cdd6;
+  --color-signal-3: #8b909b;
+  --color-signal-ink: #14161a;
 
   /* ---- the WINDOWS accents ---- */
   --color-win: #4cc2ff;
@@ -148,8 +155,11 @@
   --color-ink-3: #999999;
   --color-hairline: color-mix(in oklab, #fefefe 5%, transparent);
   --color-hairline-strong: color-mix(in oklab, #fefefe 10%, transparent);
-  --color-signal: #34d8a8;
-  --color-signal-ink: #04231a;
+  --color-signal: #ffffff;
+  --color-signal-strong: #ffffff;
+  --color-signal-2: #c9cdd6;
+  --color-signal-3: #8b909b;
+  --color-signal-ink: #14161a;
   --color-win: #4cc2ff;
   --color-win-ink: #0a0a0a;
   --color-close: #e81123;
@@ -278,10 +288,10 @@
   --win-shadow-window: var(--shadow-window);
   --win-shadow-flyout: var(--shadow-flyout);
 
-  /* the argan identity — jade rides brand, content CTAs and active
-     indicators; the CTA pole deepens on the light face */
-  --arg-jade: #34d8a8;
-  --arg-jade-deep: #0b7d5e;
+  /* the argan identity — the jade story survives only in the drawn brand
+     mark; the accent poles answer the white sun (the one Sol) */
+  --arg-jade: var(--color-signal);
+  --arg-jade-deep: var(--color-signal-2);
   --sol-primary: var(--arg-jade);
   --sol-btn-accent-bg: var(--color-signal);
   --sol-btn-accent-ink: var(--color-signal-ink);
@@ -308,7 +318,8 @@
 }
 
 /* the light face: the devthink daylight ladder, the win10 accent #0067c0,
-   the jade CTA pole stepping down to the deep jade */
+   the white sun stepping down to its graphite contrast pole (the light
+   value of the SAME semantic token — one Sol, two honest variations) */
 [data-theme="light"] {
   color-scheme: light;
   --color-canvas: #f3f3f3;
@@ -326,7 +337,10 @@
   --color-ink-3: #555555;
   --color-hairline: color-mix(in oklab, #1a1a1a 8%, transparent);
   --color-hairline-strong: color-mix(in oklab, #1a1a1a 16%, transparent);
-  --color-signal: #0b7d5e;
+  --color-signal: #3f434b;
+  --color-signal-strong: #18181b;
+  --color-signal-2: #52565e;
+  --color-signal-3: #8b909b;
   --color-signal-ink: #fefefe;
   --color-win: #0067c0;
   --color-win-ink: #fefefe;
