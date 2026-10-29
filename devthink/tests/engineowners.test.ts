@@ -155,7 +155,7 @@ describe("the package.json engine manifest agrees with the manifest of record", 
     const byengine = ownersbyengine();
     for (const entry of manifest) {
       if (entry.source === "library") {
-        const declared = byengine.get(entry.name);
+        const declared = byengine.get(entry.name ?? "");
         assert.equal(
           entry.owner,
           declared,

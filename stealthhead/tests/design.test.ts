@@ -39,8 +39,9 @@ describe("design contract", () => {
     }
   });
 
-  it("carries the stealthhead coral #f4694f as the identity accent and the windows accent on the chrome", () => {
-    expect(CSS).toMatch(/--sh-accent: #f4694f/);
+  it("carries the white sun as the identity accent with the coral story in the mark (#f4694f) and the windows accent on the chrome", () => {
+    expect(CSS).toMatch(/--color-signal: #ffffff/);
+    expect(CSS).toMatch(/--sh-accent: var\(--color-signal\)/);
     expect(MARK).toMatch(/#f4694f/);
     // the windows hands: focus and the chrome speak the windows accent
     expect(CSS).toMatch(/--win-accent: #4cc2ff/);
