@@ -85,7 +85,7 @@ export function summaryproblemsof(summary: recordsummary): string[] {
 }
 
 /** Reads the sync argument off the command line: the gates answer `sync` as
- * their second positional so `node agentcert.ts sync`
+ * their second positional so `node ../tests/devthink.agentcert.ts sync`
  * refreshes the committed record the same run produces. */
 export function syncmode(): boolean {
   return process.argv[2] === "sync";
