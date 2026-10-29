@@ -59,7 +59,6 @@
     "@prisma/adapter-libsql": "^7.10.1",
     "@prisma/client": "^7.10.1",
     "@wenathlan/saddle": "^2.1.6",
-    "@wenathlan/vault": "file:../vault",
     "hono": "^4.13.14",
     "ink": "^7.1.1",
     "lucide-react": "^1.61.0",
