@@ -36,7 +36,7 @@ minimumReleaseAgeExclude:
   - '@capacitor/core@8.6.0'
   - '@capacitor/ios@8.6.0'
   - '@opencode-ai/sdk@1.19.5'
-  - react-resizable-panels@4.15.1
+  - react-resizable-panels@4.15.1 || 4.15.2
   - '@types/google.maps@3.66.9'
   - lucide-react@1.64.0
 
