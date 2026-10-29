@@ -236,8 +236,3 @@ allan-md/
 neo-img/
 neo-temp-ref/
 official-mirror/
-
-# the unified polar state directory - every auth artifact (token, code,
-# status, log, account) lives in this single folder so the realtime capture
-# never loses its own state again
-polar/
