@@ -88,8 +88,9 @@ describe("design contract — the devthink foundation", () => {
     expect(CSS).toContain("inset 0 8px 14px -6px rgb(255 255 255 / 22%)");
   });
 
-  it("keeps the two-accent contract (the getry violet identity beside the windows accent)", () => {
-    expect(CSS).toContain("--violet-500: #8b5cf6");
+  it("keeps the two-accent contract (the white sun beside the windows accent)", () => {
+    expect(CSS).toContain("--color-signal: #ffffff");
+    expect(CSS).toContain("--violet-500: var(--color-signal)");
     expect(CSS).toContain("--accent: var(--violet-500)");
     expect(CSS).toContain("--win-accent: var(--color-win)");
     expect(CSS).toContain("--color-win: #4cc2ff");
