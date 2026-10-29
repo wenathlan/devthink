@@ -159,8 +159,8 @@ describe("the package.json engine manifest agrees with the manifest of record", 
         assert.ok(declared !== undefined, `the engine ${entry.name} declares no owner row`);
         assert.equal(
           entry.owner,
-          declared,
-          `the engine ${entry.name} answers to ${declared} in the manifest of record`,
+          declared ?? "",
+          `the engine ${entry.name} answers to ${declared ?? "(none)"} in the manifest of record`,
         );
       }
     }
