@@ -31,6 +31,12 @@ minimumReleaseAgeExclude:
   - '@biomejs/cli-win32-arm64@2.6.3 || 2.6.4'
   - '@biomejs/cli-win32-x64@2.6.3 || 2.6.4'
   - '@types/node@26.6.6'
+  - '@capacitor/android@8.6.0'
+  - '@capacitor/cli@8.6.0'
+  - '@capacitor/core@8.6.0'
+  - '@capacitor/ios@8.6.0'
+  - '@opencode-ai/sdk@1.19.5'
+  - react-resizable-panels@4.15.1
 
 # the pnpm settings live here since pnpm 12 (the package.json pnpm field is
 # no longer read, and onlyBuiltDependencies died in pnpm 11 — the map below
