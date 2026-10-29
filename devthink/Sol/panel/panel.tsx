@@ -171,6 +171,14 @@ function toShellTab(tab: {
   };
 }
 
+/** The redirect the panel gate last wrote, module scoped: the transition
+ * stage of the theme anchor parks a twin of the page tree for its exit
+ * pass and the twin re-asks the session question with the same arrival,
+ * so the first twin's decision stands and the twin never writes the
+ * redirect (or a nested variant of it) a second time. Every fresh gate
+ * run clears the decision before it asks. */
+let gatedecision: string | null = null;
+
 export default function Panel() {
   const [_location, setLocation] = useLocation();
   const [, params] = useRoute("/w/:workspaceId/s/:sessionId/t/:tabId/:sectionId");
@@ -383,6 +391,16 @@ export default function Panel() {
    * here. The owned targets never ask — they opened at the state init. */
   useEffect(() => {
     if (gate !== "pending") return;
+    // the arrival answers the router route space (the base-relative form
+    // the post-session navigation walks) and is captured the moment the
+    // gate starts, never when the session answer lands: the transition
+    // stage parks a twin of this tree for its exit pass and both twins
+    // ask the same question, so a twin that reads the address later
+    // would store the redirect the first twin already wrote.
+    const arrival = routeFromPathname(window.location.pathname) + window.location.search;
+    // one decision per gate run: each fresh run may write once, a twin of
+    // the same run never writes the same redirect twice
+    gatedecision = null;
     let alive = true;
     void restoreonce()
       .then((session) => {
@@ -397,12 +415,10 @@ export default function Panel() {
           return;
         }
         setGate("locked");
-        // the arrival answers the router route space (the base-relative
-        // form the post-session navigation walks): a full pathname would
-        // double the deploy base the router joins itself, so the cleaner
-        // strips the folder prefix before the address rides ?next=.
-        const arrival = routeFromPathname(window.location.pathname) + window.location.search;
-        setLocation(["/auth?next=", encodeURIComponent(arrival)].join(""));
+        const target = ["/auth?next=", encodeURIComponent(arrival)].join("");
+        if (gatedecision === target) return;
+        gatedecision = target;
+        setLocation(target);
       })
       .catch(() => {
         if (!alive) return;

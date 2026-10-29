@@ -149,7 +149,13 @@ export default function Auth() {
       // the lane never answered — the declared offline fallback carries
       // the account on this machine's HD only, and the row says so
       await createAccount(display, password);
-      setFailure(copy("auth.account.offline"));
+      // the offline account is a signed-in account on this machine: the
+      // unlock marker parks the same way the returning entry parks it and
+      // the chain walks to the arrival, so the create never strands the
+      // visitor on the sign-in face the copy already said welcomed them
+      parklocalunlock();
+      toast(copy("auth.account.offline"));
+      return finish();
     } catch {
       setFailure(copy("auth.signin.failure.saved"));
     } finally {

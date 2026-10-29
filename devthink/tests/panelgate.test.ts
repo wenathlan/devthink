@@ -73,8 +73,27 @@ describe("the panel anchor asks the family session", () => {
 
   it("walks the locked chain back to the auth face with the arrival riding next", () => {
     expect(anchor).toContain("const arrival = routeFromPathname(window.location.pathname) + window.location.search;");
-    expect(anchor).toContain('setLocation(["/auth?next=", encodeURIComponent(arrival)].join(""));');
+    expect(anchor).toContain('const target = ["/auth?next=", encodeURIComponent(arrival)].join("");');
+    expect(anchor).toContain("if (gatedecision === target) return;");
+    expect(anchor).toContain("setLocation(target);");
     expect(anchor).toContain('import { historypath, routeFromPathname, safegatewayurl } from "../../gateway.ts";');
+  });
+
+  it("captures the arrival when the gate starts and decides once per run (the twin of the exit pass never rewrites the redirect)", () => {
+    // the arrival is read before the session question, never after: the
+    // transition stage parks a twin of the tree for its exit pass and the
+    // twin's callback would otherwise store the redirect the first twin
+    // already wrote
+    const effect = anchor.indexOf('if (gate !== "pending") return;');
+    const arrival = anchor.indexOf("const arrival = routeFromPathname(window.location.pathname)");
+    const question = anchor.indexOf("void restoreonce()");
+    expect(effect).toBeGreaterThan(-1);
+    expect(arrival).toBeGreaterThan(effect);
+    expect(arrival).toBeLessThan(question);
+    // one decision per gate run: every fresh run clears, a twin of the
+    // same run never writes the same redirect twice
+    expect(anchor).toContain("gatedecision = null;");
+    expect(anchor).toContain("gatedecision = target;");
   });
 
   it("locks honestly when the session question itself fails (never a desktop on an unasked question)", () => {
