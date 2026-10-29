@@ -12,9 +12,12 @@
    tokens · light face · base · primitives · window chrome · pages ·
    motion · guards.
    doctrine: mica #202020 radial-gradient(#1a1f35 25%, #202020 100%) fixed ·
-   the 8-step surface ladder #242424→#494949 · hairlines ink 5%/10% · the
-   steel×lime tension #0F1212×#D4FF80 as the app identity ONLY (brand mark,
-   content cta, active indicator) — focus and the chrome answer the windows
+   the 8-step surface ladder #242424→#494949 · hairlines ink 5%/10% · THE
+   WHITE SUN as the one signal (the single-theme law: the name is Sol but
+   the sun is WHITE, never the yellow of the retired lime — pure #ffffff on
+   the dark ladder, the graphite contrast pole on the light face, the same
+   white light every app of the family wears; the tan-couro story survives
+   only in the drawn brand mark) — focus and the chrome answer the windows
    accent #4cc2ff (light #0067c0) · close rgb(232 17 35) · body 13px weight
    450 · Inter Variable everywhere, Geist Mono on labels and numbers · H1
    clamp(2.25rem,5vw,3.75rem) tracking -0.02em · radii .625rem law (window
@@ -86,8 +89,13 @@
         --color-ink-3: #999999;
         --color-hairline: color-mix(in oklab, #fefefe 5%, transparent);
         --color-hairline-strong: color-mix(in oklab, #fefefe 10%, transparent);
-        --color-signal: #d4ff80;
-        --color-signal-ink: #0f1212;
+        /* ---- the signal: THE WHITE SUN — one Sol, one light; the name is Sol
+           but the sun is WHITE, never the yellow of the retired lime ---- */
+        --color-signal: #ffffff;
+        --color-signal-strong: #ffffff;
+        --color-signal-2: #c9cdd6;
+        --color-signal-3: #8b909b;
+        --color-signal-ink: #14161a;
         --color-win: #4cc2ff;
         --color-win-ink: #0a0a0a;
         --color-close: #e81123;
@@ -117,14 +125,16 @@
         /* hairlines (they re-mix on the light face) */
         --line: var(--color-hairline);
         --line-strong: var(--color-hairline-strong);
-        /* the tan-couro ramp — the saddle identity, 90/10: brand mark, content
-           cta, active indicator; focus and the chrome answer the windows accent */
-        --lime-300: #e8d3ae; /* the light tint */
-        --lime-500: #d6b483; /* the signal — the tan-couro of the family table */
-        --lime-600: #b08a52; /* the deep pole */
-        --lime-ink: #241a0c; /* the ink that rides ON tan fills */
-        /* the accents: the app identity rides the tan; the WINDOWS accent
-           governs focus, the caption chrome and the bar cta */
+        /* the white sun ramp — the one Sol accent the whole family wears; the
+           tan-couro names keep resolving so every section tracks the semantic
+           poles (the tan story survives only in the drawn brand mark) */
+        --lime-300: var(--color-signal-strong); /* the light tint — the bright pole */
+        --lime-500: var(--color-signal); /* the signal — the white sun */
+        --lime-600: var(--color-signal-2); /* the deep pole — the penumbra */
+        --lime-ink: var(--color-signal-ink); /* the ink that rides ON sun fills */
+        /* the accents: the white sun (the one Sol) rides the accent slot;
+           the WINDOWS accent governs focus, the caption chrome and the bar
+           cta */
         --accent: var(--lime-500);
         --accent-ink: var(--lime-ink);
         --win-accent: #4cc2ff;
@@ -132,8 +142,8 @@
         --focus: var(--win-accent);
         --ok: #86efac;
         --err: #ff8f9a;
-        --warn: #ffd166;
-        --info: #d9c9a1;
+        --warn: #e2c26a;
+        --info: #b9c2d0;
         --destructive: #ff8f9a;
         /* washes + the scrollbar thumb (themed, never the native blue) */
         --wash: rgb(255 255 255 / 10%);
@@ -313,9 +323,11 @@
 }
 
 /* the light theme: the SAME trylle ladder inverted (the site's own light
-   rungs), the tan steps down to the deep pole, the windows accent follows.
-   the .dark class rides the html root (the boot default) — its absence is
-   the light theme, the toggle flips it in memory only */
+   rungs), the white sun stepping down to its graphite contrast pole (the
+   light value of the SAME semantic token — one Sol, two honest variations),
+   the windows accent follows. the .dark class rides the html root (the boot
+   default) — its absence is the light theme, the toggle flips it in memory
+   only */
 html:not(.dark) {
         --deep: #e4e4e7;
         --bg: #f4f4f5;
@@ -330,17 +342,17 @@ html:not(.dark) {
         --ink: #131316;
         --ink-2: #52525b;
         --ink-3: #71717a;
-        --accent: #8a6a3c;
-        --accent-ink: #ffffff;
-        --lime-300: #7c5c30;
-        --lime-500: #8a6a3c;
-        --lime-600: #5c421e;
+        --color-signal: #3f434b;
+        --color-signal-strong: #18181b;
+        --color-signal-2: #52565e;
+        --color-signal-3: #8b909b;
+        --color-signal-ink: #fefefe;
         --win-accent: #0067c0;
         --win-accent-ink: #ffffff;
         --ok: #15803d;
         --err: #be123c;
-        --warn: #a16207;
-        --info: #6b5d3f;
+        --warn: #9a6b00;
+        --info: #565e6e;
         --destructive: #be123c;
         --wash: rgb(0 0 0 / 8%);
         --wash-soft: rgb(0 0 0 / 4%);
@@ -1058,7 +1070,7 @@ select.spec-select {
         align-items: stretch;
         justify-content: center;
         min-height: 100dvh;
-	max-height: 100dvh;
+        max-height: 100dvh;
         padding: clamp(12px, 3vh, 40px) clamp(12px, 2.5vw, 48px);
 }
 .appframe::before {
@@ -1449,7 +1461,7 @@ select.spec-select {
         transform: scale(1.3);
 }
 .winapp__stage {
-	min-height: 0;
+        min-height: 0;
         flex: 1;
         min-width: 0;
         overflow-y: auto;
@@ -1512,7 +1524,7 @@ select.spec-select {
         z-index: 0;
         border-radius: 50%;
         pointer-events: none;
-        background: radial-gradient(52% 60% at 50% 62%, rgb(214 180 131 / 40%), transparent 76%);
+        background: radial-gradient(52% 60% at 50% 62%, rgb(255 255 255 / 40%), transparent 76%);
         filter: blur(9px);
         -webkit-filter: blur(9px);
         opacity: 0.3;
@@ -4906,15 +4918,15 @@ html:not(.dark) [data-tip]::before {
    routed stage fills the rest of the screen (no title bar, no captions,
    no resize handles, no inactive law, no entry scale) */
 .shell--standalone {
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-	height: 100vh;
-	max-width: none;
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
-	background-color: var(--bg);
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100vh;
+        max-width: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: var(--bg);
 }
 
 /* ==========================================================================
