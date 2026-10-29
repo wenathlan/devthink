@@ -61,14 +61,6 @@ export function LanguageCard() {
           ))}
         </select>
       </div>
-      <div className="dtw-settings__kv">
-        <span className="dtw-settings__kvkey">translation</span>
-        <span className="dtw-settings__kvvalue">applied live to every surface</span>
-      </div>
-      <div className="dtw-settings__kv">
-        <span className="dtw-settings__kvkey">surface</span>
-        <span className="dtw-settings__kvvalue">authored english, translated live</span>
-      </div>
     </section>
   );
 }

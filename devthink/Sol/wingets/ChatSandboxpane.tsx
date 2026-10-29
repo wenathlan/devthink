@@ -39,7 +39,6 @@ import { bootSequence, commands, cpudata, createSandboxState, dispatch, gpudata 
 import { type FormEvent, type KeyboardEvent, useEffect, useId, useRef, useState } from "react";
 import { chatLimit, chatText } from "../../chatlabels.ts";
 import { boot as sandboxboot, modalities as sandboxmodalities, run as sandboxrun } from "../../gateway.ts";
-import { osAppLabels } from "../../catalog.ts";
 import { compactToken } from "../../queue.ts";
 
 /** one rendered log row; cls mirrors the boot, ok, err and cmdline row
@@ -74,7 +73,7 @@ export type SandboxRunner = (command: string) => SandboxRunResult | null | Promi
 /** the honest offline row — the one declaration a fallen lane makes: the
  * pane answers locally from here on and the deployed copy carries the
  * server lane. It prints once per pane session, never per command. */
-const OFFLINE_ROW = "offline: the lane answers locally — the deployed copy carries the server lane.";
+const OFFLINE_ROW = "offline — running locally. connect to enable the full suite.";
 
 /** newsessionid — the ephemeral per-pane session id of the server lane:
  * the route gate form (letters, digits and dashes, four to sixty four
@@ -84,11 +83,6 @@ const newsessionid = (): string => {
   const draw = [Date.now().toString(36), compactToken().slice(0, 10)].join("");
   return ["sb", draw].join("-");
 };
-
-/** the engine family identity of the pane (the catalog label row, never a
- * hardcoded literal — the bare id keeps the mark honest when the row is
- * missing). */
-const SADDLE_LABEL = osAppLabels().saddle;
 
 /** the default spec mirrors the saddle console page: the first cpu and the
  * first gpu of the engine catalogs, the table's default vcpus and ram, mig
@@ -246,7 +240,7 @@ export function SandboxPane({
     setStatus("booting");
     setBooted(true);
     setRows([]);
-    printrow(`saddle sandbox booting (${DEFAULT_SPEC.model}, ${DEFAULT_SPEC.vcpus} vcpus, ${DEFAULT_SPEC.ramgb} gb, ${DEFAULT_SPEC.gpu})`, "boot");
+    printrow(`sandbox booting — ${DEFAULT_SPEC.vcpus} vCPUs · ${DEFAULT_SPEC.ramgb} GB · ${DEFAULT_SPEC.gpu}`, "boot");
     const sessionrows = await sandboxboot(sessionref.current);
     if (cancelref.current) return;
     if (sessionrows !== null) {
@@ -261,7 +255,7 @@ export function SandboxPane({
     declarelane();
     const state = createSandboxState(DEFAULT_SPEC);
     engineref.current = state;
-    const banner = `root@${state.hostname}:~#`;
+    const banner = chatText("sb.prompt");
     setPrompt(banner);
     promptref.current = banner;
     const lines = bootSequence(DEFAULT_SPEC.model, state.vcpus, DEFAULT_SPEC.ramgb, DEFAULT_SPEC.gpu);
@@ -417,7 +411,7 @@ export function SandboxPane({
     >
       <div className="dtc-sb__head">
         <h2>Sandbox</h2>
-        <span className="dtc-sb__engine">{SADDLE_LABEL?.name?.toLowerCase() ?? "saddle"}</span>
+        <span className="dtc-sb__engine">sandbox</span>
         <p className="dtc-sb__lamp" data-state={status} role="status">
           <i className="dtc-sb__dot" aria-hidden="true" />
           {status}

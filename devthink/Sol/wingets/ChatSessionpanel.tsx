@@ -256,7 +256,7 @@ export function SessionPanel({
             </dd>
           </dl>
         ) : (
-          <p className="dtc-gw__hint">ids mint at the first message</p>
+          <p className="dtc-gw__hint">session ids are created with the first message</p>
         )}
       </section>
 
@@ -348,7 +348,7 @@ export function SessionPanel({
               <p className="dtc-gw__hint">{tagsCap} tags is the cap</p>
             ) : null
           ) : (
-            <p className="dtc-gw__hint">editing lands with the panel seam</p>
+            <p className="dtc-gw__hint">editing opens in the panel</p>
           )}
         </section>
       ) : null}

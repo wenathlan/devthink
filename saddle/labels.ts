@@ -174,8 +174,7 @@ export const labelmanifest = {
   // the dashboard audit log widget
   'dashboard.audit.unavailable': 'audit log unavailable (status {status}).',
   'dashboard.audit.unreachable': 'the audit log is unreachable.',
-  'dashboard.audit.localNote':
-    'the audit trail lives on the main server; the static site keeps no audit records.',
+  'dashboard.audit.localNote': 'audit records live on the main server.',
   'dashboard.audit.tableAria': 'audit log table',
   'dashboard.audit.empty': 'no audit entries yet.',
   'dashboard.audit.colAction': 'action',
@@ -201,8 +200,7 @@ export const labelmanifest = {
   'dashboard.create.refresh': 'refresh',
   'dashboard.create.refreshAria': 'reload the sandbox list',
   // the dashboard events timeline widget
-  'dashboard.events.localNote':
-    'events stream from the main server; the static site has nothing to poll.',
+  'dashboard.events.localNote': 'the timeline is live on the main server.',
   'dashboard.events.aria': 'mesh bus event timeline',
   'dashboard.events.empty': 'waiting for events...',
   'dashboard.events.pollNote': 'checks for new events every 10 s while the tab is visible.',
@@ -232,7 +230,7 @@ export const labelmanifest = {
   'dashboard.mesh.colHeartbeat': 'last heartbeat',
   'dashboard.mesh.colPing': 'ping',
   'dashboard.mesh.localNode': 'this browser',
-  'dashboard.mesh.localRegion': 'static site',
+  'dashboard.mesh.localRegion': 'local',
   'dashboard.mesh.localStatus': 'local',
   'dashboard.mesh.na': 'n/a',
   'dashboard.mesh.ping': 'ping',
@@ -280,7 +278,7 @@ export const labelmanifest = {
   'dashboard.users.colRole': 'role',
   'dashboard.users.colLastLogin': 'last login',
   'dashboard.users.colCreated': 'created',
-  'dashboard.users.localCell': 'browser-local',
+  'dashboard.users.localCell': 'local',
   'dashboard.users.hashesNote':
     'password hashes never leave the server; this table renders account fields only.',
   'dashboard.users.unavailable': 'user table unavailable (status {status}).',
