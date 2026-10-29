@@ -359,7 +359,7 @@ describe.skipIf(!inrepo)("the release assets census (the 300 plus law)", () => {
   });
 
   it("the next conversion walks the ten applications with the ten-asset grammar", async () => {
-    const convert = await readFile(join(repoRoot, "devthink", "tests", "scripts", "nextconvert.ts"), "utf8");
+    const convert = await readFile(join(repoRoot, "tests", "devthink.scripts.nextconvert.ts"), "utf8");
     /* the CONVERT list: every site application of the monorepo, the os
      * included. */
     const list = /const CONVERT = \[([^\]]+)\]/.exec(convert)?.[1] ?? "";

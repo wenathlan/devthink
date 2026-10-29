@@ -865,8 +865,13 @@ describe("hardcoded provider url scan of the source tree", () => {
     const files: string[] = gatewaysources.map((name) => join(root, name));
     for (const path of files) await access(path);
 
-    for (const entry of await readdir(join(root, "tests")))
-      if (entry.endsWith(".ts")) files.push(join(root, "tests", entry));
+    /* the flat tests village: the gate sources of the os answer from the
+     * repository-root tests folder under the devthink. prefix (the suites
+     * with their example fixtures stay outside the scan the corpus law kept
+     * them in). */
+    for (const entry of await readdir(join(root, "..", "tests")))
+      if (entry.startsWith("devthink.") && entry.endsWith(".ts") && !entry.endsWith(".test.ts"))
+        files.push(join(root, "..", "tests", entry));
     expect(files.length).toBeGreaterThan(50);
     const providerhosts = [
       /api\.openai\.com/,
