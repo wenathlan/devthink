@@ -1057,6 +1057,15 @@ async function createserver(): Promise<Hono> {
     return c.json({ rows });
   });
 
+  // the paired oslabels endpoint — the database lane the label file
+  // promises: the served rows answer the same truth the static seeds
+  // carry (the pair the file header documents), so the os surfaces read
+  // one catalog from both ends
+  app.get("/api/v1/oslabels", (c) => {
+    const rows = osStringRows();
+    return c.json({ rows });
+  });
+
   // plan endpoint — the visual gate: the tier the visitor selected and the
   // enterprise custom megabytes stamp the badge the identity wears; the
   // engines carry no limits, this row only draws what the plan answers
@@ -5746,6 +5755,7 @@ import {
   validateProjectId,
   validateSemver,
 } from "./config.js";
+import { osStringRows } from "./oslabels.js";
 import { debugLogger, logsDir, redactSecrets } from "./core.js";
 export const System = {
   atomicWrite,
