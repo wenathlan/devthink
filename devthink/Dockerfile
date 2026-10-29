@@ -331,6 +331,11 @@ COPY devthink .
 COPY tests /tests
 COPY getry /getry
 COPY saddle /saddle
+# the root manifest the engines gate counts rides beside the application:
+# the engines suite opens ../package.json from the workdir, and the
+# container answers the checkout geometry the same way (the count law
+# of the fifteen engines reads the field that grows without limit).
+COPY package.json /package.json
 
 # the flat village bridge the ci and verify lanes carry: the village
 # scripts import bare specifiers (esbuild, vitest) from their own folder,
