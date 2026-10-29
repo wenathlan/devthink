@@ -17,7 +17,7 @@ import type { LabelRow } from "./db.ts";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 1;
+export const LABEL_REVISION = 2;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -62,11 +62,11 @@ export const LABEL_MANIFEST = {
   "home.hero.name": "forge",
   "home.hero.title": "Builds that run themselves.",
   "home.hero.lede":
-    "The runner floor of the DevThink family — runners muster, work queues by priority and every run leaves its log behind, on the saddle sandbox engine.",
+    "The runner floor of the DevThink family — runners muster, work queues by priority and every run leaves its log behind, on the family sandbox cloud.",
   "home.hero.placeholder": "npm run build · full-virtual sandbox",
   "home.hero.inputAria": "Describe the build to run",
   "home.hero.cta": "step onto the floor",
-  "home.hero.hint": "enter walks down to the runner floor · the targets ride the runner modes of the saddle engine",
+  "home.hero.hint": "enter walks down to the runner floor · the targets ride the runner modes of the sandbox",
   "home.hero.chipsAria": "Runtime targets",
   // the family row of the landing footer
   "home.family.aria": "the DevThink family",
@@ -95,11 +95,11 @@ export const LABEL_MANIFEST = {
   "home.flow.eyebrow": "the run, end to end",
   "home.flow.title": "Mount, run, report",
   "home.flow.mount": "Mount",
-  "home.flow.mountBody": "The floor mounts a full-virtual sandbox on the saddle engine and hands the build to a runner.",
+  "home.flow.mountBody": "The floor mounts a full-virtual sandbox and hands the build to a runner.",
   "home.flow.run": "Run",
   "home.flow.runBody": "The build executes in the sandbox and its log lines land beside the runner that produced them.",
   "home.flow.report": "Report",
-  "home.flow.reportBody": "The outcome travels over https — success, failure and the log reference — back to the family.",
+  "home.flow.reportBody": "The outcome travels back to the family — success, failure and the log reference.",
   // the honest-state rail of the landing
   "home.side.aria": "the honest state of the floor",
   "home.side.head": "the honest state",
@@ -114,7 +114,7 @@ export const LABEL_MANIFEST = {
   "home.quad.fleetsLink": "the runner fleets",
   "home.quad.queueLink": "the execution queue",
   "home.quad.logsLink": "the run logs",
-  "home.quad.engineLine": "saddle · the sandbox engine",
+  "home.quad.engineLine": "the family sandbox engine",
   "home.quad.identityLine1": "forge · lime-brasa #a2cb3a",
   "home.quad.identityLine2": "charcoal × lime — it just runs",
   "home.quad.domainLine1": "forge · the family forge",
@@ -123,7 +123,7 @@ export const LABEL_MANIFEST = {
   "runs.eyebrow": "runs · the runner floor",
   "runs.title": "Runner fleets",
   "runs.lede":
-    "A seeded rehearsal of the runner floor — seed {seed}, {count} runners on the saddle engine boundary. The tick advances the floor by its own rules; nothing here claims a live build. The run plan draws its own stage graph from the same seed and tick.",
+    "A seeded rehearsal of the runner floor — seed {seed}, {count} runners on the sandbox boundary. The tick advances the floor by its own rules; nothing here claims a live build. The run plan draws its own stage graph from the same seed and tick.",
   "runs.advance": "advance the floor",
   "runs.reseed": "reseed the rehearsal",
   // the runner states of the fleet rows
@@ -244,7 +244,7 @@ export const LABEL_MANIFEST = {
   "logs.head.clock": "clock",
   "logs.head.level": "level",
   "logs.head.line": "line",
-  "logs.cursorDone": "— end of stream — outcome reported over https",
+  "logs.cursorDone": "— end of stream — outcome reported",
   "logs.cursorTailing": "— tailing —",
   "logs.footnote": "the copyable form of the stream rides the same engine: logText(seed) — {count} lines total for seed {seed}.",
   // the notfound page anchor (the 404 dead address)
@@ -266,7 +266,7 @@ export const LABEL_MANIFEST = {
   "onboarding.steps.enter": "enter",
   "onboarding.what.lead": "the runner floor of the family",
   "onboarding.what.body":
-    "forge is the execution application of the wenathlan family — the build floor of the clones: any build runs through the saddle sandbox engine, and the outcomes travel back over https.",
+    "forge is the execution application of the wenathlan family — the build floor of the clones: any build runs through the family sandbox, and the outcomes travel back to the family.",
   "onboarding.hosts.lead": "what the window hosts",
   "onboarding.enter.lead": "ready to enter",
   "onboarding.enter.body":

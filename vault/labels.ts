@@ -22,7 +22,7 @@ import type { LabelRow } from "./db";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 1;
+export const LABEL_REVISION = 2;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -82,7 +82,7 @@ export const LABEL_MANIFEST = {
   "home.channel.pointers.name": "lfs pointers",
   "home.channel.pointers.note": "version · oid sha-256 · size — the three-line pointer, cataloged beside the bytes.",
   "home.channel.records.name": "storage records",
-  "home.channel.records.note": "id · path · mime · size · digest — five checks before a record is served over https.",
+  "home.channel.records.note": "id · path · mime · size · digest — five checks before a record is served.",
   "home.ledger.eyebrow": "the vault ledger",
   "home.ledger.title": "what the safe keeps",
   "home.ledger.lede":
@@ -97,7 +97,7 @@ export const LABEL_MANIFEST = {
   "home.steps.store.title": "store",
   "home.steps.store.text": "the row rides its channel — lfs for the masters, the in-db git objects for the small.",
   "home.steps.attest.title": "attest",
-  "home.steps.attest.text": "the record answers for itself over https: path, mime, size and digest.",
+  "home.steps.attest.text": "the record answers for itself: path, mime, size and digest.",
   "home.jobs.eyebrow": "the three jobs",
   "home.jobs.db.title": "every site database",
   "home.jobs.db.text": "vault keeps the databases of the whole family: one deployable clone of storage where every site state lives.",
@@ -131,7 +131,7 @@ export const LABEL_MANIFEST = {
   "objects.eyebrow": "objects · the sealed inventory",
   "objects.title": "Objects",
   "objects.lede":
-    "A seeded rehearsal of the safe — seed {seed}, {count} rows sealed under the real storage contract. The deposit line rides the same rules the family serves over https; nothing here claims live bytes.",
+    "A seeded rehearsal of the safe — seed {seed}, {count} rows sealed under the real storage contract. The deposit line rides the same rules the family serves; nothing here claims live bytes.",
   "objects.action.reseed": "reseed the rehearsal",
   "objects.action.restore": "restore the ledger",
   "objects.census.aria": "the census of the safe",

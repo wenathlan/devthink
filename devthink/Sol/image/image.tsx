@@ -55,7 +55,7 @@ export default function ImageStudio({ embedded }: { embedded?: boolean }) {
     });
   }, []);
 
-  const engine = apps.find((app) => app.engine === "matiz" && app.owner === "cadria");
+  const engine = apps.find((app) => app.engine === "image studio" && app.owner === "cadria");
 
   /* the honest shelf: once the catalog has answered and holds no stills, the
    * list card hands its seat to the construction face — the engine card above

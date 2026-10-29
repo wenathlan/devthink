@@ -130,11 +130,11 @@ const seedOsStrings: OsStringRow[] = [
   },
   {
     id: "panel.toast.pairingFailed",
-    text: "The local pairing could not be completed. Confirm the CLI gateway is running, the page origin is allowed, and the code has not expired.",
+    text: "The local pairing could not be completed. Confirm the CLI is running on your machine, the page is allowed, and the code has not expired.",
   },
   { id: "panel.toast.revoked", text: "Local browser pairing revoked." },
   { id: "panel.toast.pairFirstPrefs", text: "Pair the local CLI before saving shared workbench preferences." },
-  { id: "panel.toast.prefRejected", text: "The local gateway could not save that preference." },
+  { id: "panel.toast.prefRejected", text: "The local connection could not save that preference." },
   { id: "panel.toast.pairFirstId", text: "Pair the local CLI before changing the shared public ID." },
   { id: "panel.toast.publicIdUpdated", text: "Shared public ID updated in the local DevThink identity." },
   {
@@ -143,7 +143,7 @@ const seedOsStrings: OsStringRow[] = [
   },
   {
     id: "panel.toast.routeOpened",
-    text: "Local route opened. Add a gateway URL to persist it through DevThink CLI.",
+    text: "Local route opened. Add the CLI address to persist it through DevThink CLI.",
   },
   { id: "panel.toast.commandUnavailable", text: "Command is not available in this local workspace." },
 
@@ -162,10 +162,10 @@ const seedOsStrings: OsStringRow[] = [
   { id: "explorer.sortBy", text: "Sort by {mode}" },
   { id: "explorer.view", text: "View" },
   { id: "explorer.viewAs", text: "View as {mode}" },
-  { id: "explorer.disabled.clipboard", text: "The clipboard rides the database wave" },
-  { id: "explorer.disabled.share", text: "Sharing rides the pairing wave" },
-  { id: "explorer.disabled.recycle", text: "The recycle bin rides the database wave" },
-  { id: "explorer.disabled.more", text: "More rides the database wave" },
+  { id: "explorer.disabled.clipboard", text: "The clipboard arrives with a future update" },
+  { id: "explorer.disabled.share", text: "Sharing arrives with a future update" },
+  { id: "explorer.disabled.recycle", text: "The recycle bin arrives with a future update" },
+  { id: "explorer.disabled.more", text: "More arrives with a future update" },
   { id: "explorer.quickAccess", text: "Quick access" },
   { id: "explorer.thisPc", text: "This PC" },
   { id: "explorer.storagePlatforms", text: "Storage platforms" },
@@ -207,18 +207,18 @@ const seedOsStrings: OsStringRow[] = [
   /* the capacity bar sources: the paired lane answers the real usage and
      the plan quota, the offline surface answers the browser estimate —
      every bar labels its own source honestly */
-  { id: "explorer.storage.lane", text: "Infrastructure storage" },
+  { id: "explorer.storage.lane", text: "Cloud storage" },
   { id: "explorer.storage.lane.line", text: "{used} used of {quota} plan quota" },
   { id: "explorer.storage.lane.objects", text: "{count} objects on the plan" },
   {
     id: "explorer.storage.lane.aria",
-    text: "Infrastructure storage — the usage the server lane answers against the plan quota",
+    text: "Cloud storage — the usage the server reports against the plan quota",
   },
   { id: "explorer.storage.browser", text: "Browser storage" },
   { id: "explorer.storage.browser.line", text: "{line} — this device's honest estimate" },
   {
     id: "explorer.storage.browser.aria",
-    text: "Browser storage — the allocation this browser answers for the origin store",
+    text: "Browser storage — the space this browser sets aside for the app",
   },
   /* the plan folders lane: the folders this account creates on the
      infrastructure storage — every write rides the real storage lane and
@@ -233,7 +233,7 @@ const seedOsStrings: OsStringRow[] = [
   { id: "explorer.planCreate", text: "Create folder" },
   { id: "explorer.planCreating", text: "Creating folder" },
   { id: "explorer.planCancel", text: "Cancel" },
-  { id: "explorer.planOffline", text: "The storage lane is offline" },
+  { id: "explorer.planOffline", text: "Cloud storage is offline" },
   { id: "explorer.planEmpty", text: "No folders yet" },
   { id: "explorer.planExists", text: "That folder name exists" },
   { id: "explorer.toast.folderCreated", text: "Folder created on the plan: {name}" },
@@ -671,7 +671,7 @@ const seedOsStrings: OsStringRow[] = [
   },
   {
     id: "guard.wall.note",
-    text: "Nothing was closed and nothing was erased — the session stays intact and one strike report rides to the site api.",
+    text: "Nothing was closed and nothing was erased — the session stays intact and a notice goes to the site.",
   },
 ];
 
@@ -786,7 +786,7 @@ const seedOsOnboardingSteps: OsOnboardingStep[] = [
     id: "mcp",
     eyebrow: "mcp",
     title: "MCP is opt-in",
-    body: "register an mcp endpoint only when you want one — nothing connects without its probe.",
+    body: "register an mcp server only when you want one — nothing connects on its own.",
     app: "settings",
   },
 ];

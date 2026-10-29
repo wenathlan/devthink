@@ -56,7 +56,7 @@ export default function Audio({ embedded }: { embedded?: boolean }) {
     });
   }, []);
 
-  const engine = apps.find((app) => app.engine === "katexis" && app.owner === "debonair");
+  const engine = apps.find((app) => app.engine === "music studio" && app.owner === "debonair");
 
   /* the honest shelf: once the catalog has answered and holds no tracks, the
    * list card hands its seat to the construction face — the engine card above

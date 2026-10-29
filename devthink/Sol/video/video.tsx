@@ -55,7 +55,7 @@ export default function Video({ embedded }: { embedded?: boolean }) {
     });
   }, []);
 
-  const engine = apps.find((app) => app.engine === "versawase" && app.owner === "cadria");
+  const engine = apps.find((app) => app.engine === "video studio" && app.owner === "cadria");
 
   /* the honest shelf: once the catalog has answered and holds no assets, the
    * list card hands its seat to the construction face — the local playback

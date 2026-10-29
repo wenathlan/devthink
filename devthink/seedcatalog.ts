@@ -24,8 +24,8 @@ import type {
 export const seedFamilySites: FamilySite[] = [
   {
     host: "https://argan.devthink.pro",
-    name: "argan — dns & gateway",
-    blurb: "Zones, records, DNSSEC, handshake and the unified database every site shares.",
+    name: "argan — dns tools",
+    blurb: "Zones, records, DNSSEC, handshake and the shared toolkit every site rides.",
   },
   {
     host: "https://debonair.devthink.pro",
@@ -44,13 +44,13 @@ export const seedFamilySites: FamilySite[] = [
   },
   {
     host: "https://forge.devthink.pro",
-    name: "forge — sandbox runners",
-    blurb: "Runner fleets, execution queues and live logs of the sandbox cloud.",
+    name: "forge — sandbox cloud",
+    blurb: "Sandbox fleets, work queues and live logs of the build floor.",
   },
   {
     host: "https://foundry.devthink.pro",
     name: "foundry — sandboxes & images",
-    blurb: "Sandbox builds, image conversion and the packaged artifact line of the family.",
+    blurb: "Sandbox builds, image conversion and the packaged exports of the family.",
   },
   {
     host: "https://vault.devthink.pro",
@@ -59,8 +59,8 @@ export const seedFamilySites: FamilySite[] = [
   },
   {
     host: "https://getry.devthink.pro",
-    name: "getry — the ai gateway",
-    blurb: "Versions, thinking sessions and the gateway routing of the family models.",
+    name: "getry — ai teams",
+    blurb: "Versions, thinking sessions and the model choices of the family.",
   },
 ];
 
@@ -73,13 +73,13 @@ export const seedRungs: Rung[] = [
   {
     version: "2.0.40",
     stamp: "the envelope family",
-    note: "The envelope family stamps the rung together — workbench sessions, gateway streaming and extension gates ship in one envelope.",
+    note: "The envelope family stamps the rung together — workbench sessions, streaming and extension gates ship in one envelope.",
     latest: true,
   },
   {
     version: "2.0.39",
     stamp: "the container tests",
-    note: "Container tests know the forge rides outside: sandbox runners validate against the embedded saddle engine boundary.",
+    note: "Container tests know the forge rides outside: sandbox tests validate against the embedded sandbox boundary.",
   },
   {
     version: "2.0.0",
@@ -118,7 +118,7 @@ export const seedPlatformApps: NativeApp[] = [
   {
     id: "video",
     title: "Video",
-    engine: "versawase",
+    engine: "video studio",
     owner: "cadria",
     route: "/video",
     blurb: "The video studio, with every asset served from the same catalog.",
@@ -126,7 +126,7 @@ export const seedPlatformApps: NativeApp[] = [
   {
     id: "music",
     title: "Music",
-    engine: "katexis",
+    engine: "music studio",
     owner: "debonair",
     route: "/audio",
     blurb: "The music studio, with every track served from the same catalog.",
@@ -134,7 +134,7 @@ export const seedPlatformApps: NativeApp[] = [
   {
     id: "image",
     title: "Image",
-    engine: "matiz",
+    engine: "image studio",
     owner: "cadria",
     route: "/image",
     blurb: "The image studio, with every still served from the same catalog.",
@@ -142,10 +142,10 @@ export const seedPlatformApps: NativeApp[] = [
   {
     id: "games",
     title: "Games",
-    engine: "saddle runner",
+    engine: "sandbox cloud",
     owner: "saddle",
     route: "/games",
-    blurb: "The games shelf — the runner that boots every game and app by itself.",
+    blurb: "The games shelf — every game and app boots by itself.",
   },
 ];
 
@@ -246,7 +246,7 @@ export const seedOsAppLabels: OsAppLabel[] = [
   {
     id: "argan",
     name: "Argan",
-    detail: "DNS and gateway library of the OS",
+    detail: "DNS tools of the OS",
     pinned: true,
   },
   {
@@ -270,7 +270,7 @@ export const seedOsAppLabels: OsAppLabel[] = [
   {
     id: "forge",
     name: "Forge",
-    detail: "The sandbox runners",
+    detail: "The sandbox cloud",
     pinned: true,
   },
   {
@@ -288,13 +288,13 @@ export const seedOsAppLabels: OsAppLabel[] = [
   {
     id: "getry",
     name: "Getry",
-    detail: "The family AI gateway",
+    detail: "The family AI teams",
     pinned: true,
   },
   {
     id: "saddle",
     name: "Saddle",
-    detail: "The sandbox engine",
+    detail: "The instant sandbox cloud",
     pinned: true,
   },
   {
@@ -373,7 +373,7 @@ export const seedAboutBlocks: AboutBlock[] = [
     id: "about.identity",
     heading: "What DevThink is",
     body: [
-      "DevThink is a self-hosted development platform that behaves like an operating system. A command line interface, a local gateway and a browser surface share one configuration, one catalog and one local store, so the same session, workspace and credential set serve every entry point.",
+      "DevThink is a self-hosted development platform that behaves like an operating system. A command line interface, a local service and a browser surface share one configuration, one catalog and one local store, so the same session, workspace and credential set serve every entry point.",
       "The platform is provider-neutral: model providers are registry entries the configuration names, never hard dependencies. Credentials stay in the local auth file of the operator machine and are read only to sign the requests the user starts.",
     ],
   },
@@ -381,7 +381,7 @@ export const seedAboutBlocks: AboutBlock[] = [
     id: "about.subapps",
     heading: "One system, many subapps",
     body: [
-      "The browser surface mounts one subapp per area: console, gateway, providers, projects, routes, usage, apps, docs, explore, history and settings. Each subapp reads the same data layer over HTTPS; when the paired database is offline, reviewed seeds answer the static build so no page renders empty.",
+      "The browser surface mounts one subapp per area: console, gateway, providers, projects, routes, usage, apps, docs, explore, history and settings. Each subapp reads the same data layer; when the paired database is offline, reviewed seeds answer the static build so no page renders empty.",
       "The theme layer ships the surfaces beside the data layer. A page never hardcodes its content: structured rows live in the catalog and reach the interface the same way this page receives its text.",
     ],
   },
@@ -392,13 +392,13 @@ export const seedPrinciples: Principle[] = [
     id: "principle.self-hosted",
     name: "Self-hosted",
     detail:
-      "The platform runs on machines the operator controls. The gateway binds to the loopback, the database mirrors the repository content and no third party sits between the operator and the data.",
+      "The platform runs on machines the operator controls. The service binds to the local machine, the database mirrors the repository content and no third party sits between the operator and the data.",
   },
   {
     id: "principle.provider-neutral",
     name: "Provider-neutral",
     detail:
-      "Providers are registry entries, not dependencies. The request router reads the configured catalog and every credential stays in the local auth file the user supplies explicitly.",
+      "Providers are registry entries, not dependencies. The app reads the configured catalog and every credential stays in the local auth file the user supplies explicitly.",
   },
   {
     id: "principle.local-first",
@@ -419,13 +419,13 @@ export const seedMediaSlots: MediaSlot[] = [
     id: "media.family.sites",
     label: "family sites",
     ratio: "3 / 2",
-    caption: "The family subdomains sharing the engines behind one gateway.",
+    caption: "The family sites under one roof.",
   },
   {
     id: "media.studio.surface",
     label: "native studios",
     ratio: "16 / 9",
-    caption: "The video and music studios riding the shared engine layer.",
+    caption: "The video and music studios side by side.",
   },
 ];
 
@@ -434,7 +434,7 @@ export const seedTermsSections: LegalSection[] = [
     id: "terms.scope",
     title: "Scope of use",
     paragraphs: [
-      "The platform serves the operator and the visitors the operator invites. Every surface of this site — the pages, the subapps and the gateway — is provided for development, documentation and studio work.",
+      "The platform serves the operator and the visitors the operator invites. Every surface of this site — the pages, the subapps and the service — is provided for development, documentation and studio work.",
       "Access to a surface does not transfer ownership of it. The operator keeps the right to change, restrict or close any surface at any time.",
     ],
   },
@@ -442,8 +442,8 @@ export const seedTermsSections: LegalSection[] = [
     id: "terms.acceptable",
     title: "Acceptable use",
     paragraphs: [
-      "Use the platform for work you are allowed to do. Automated traffic must identify itself and respect the rate limits the gateway enforces.",
-      "Do not attempt to bypass authentication, extract credentials, overload the gateway or interfere with another visitor session.",
+      "Use the platform for work you are allowed to do. Automated traffic must identify itself and respect the rate limits the service enforces.",
+      "Do not attempt to bypass authentication, extract credentials, overload the service or interfere with another visitor session.",
     ],
   },
   {
@@ -477,14 +477,14 @@ export const seedPolicySections: LegalSection[] = [
     title: "What the platform collects",
     paragraphs: [
       "The interface keeps no analytics, no advertising identifiers and no tracking pixels. A visit to these pages writes nothing to the visitor device: no cookies, no IndexedDB, no local storage.",
-      "The gateway records the technical logs the operator configures: request path, status and timestamp. The logs stay on the machine the operator controls.",
+      "The service records the technical logs the operator configures: request path, status and timestamp. The logs stay on the machine the operator controls.",
     ],
   },
   {
     id: "policy.local",
     title: "Local storage of work",
     paragraphs: [
-      "Sessions, workspaces and memory records are stored in the local database of the operator machine. The browser routes read those records through the paired gateway and never mirror them to a remote service.",
+      "Sessions, workspaces and memory records are stored in the local database of the operator machine. The browser routes read those records through the paired service and never mirror them to a remote service.",
       "Clearing a workspace in the interface removes its records from the local store the same way a CLI removal does.",
     ],
   },

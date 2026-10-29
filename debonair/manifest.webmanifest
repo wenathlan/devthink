@@ -1,7 +1,7 @@
 {
   "name": "debonair",
   "short_name": "debonair",
-  "description": "The audio DAW of the DevThink OS on the katexis engine: prompt-to-arrangement generation, multitrack editing and broadcast-ready mastering.",
+  "description": "The audio DAW of the DevThink OS: prompt-to-arrangement generation, multitrack editing and broadcast-ready mastering in the studio.",
   "start_url": "/",
   "id": "/",
   "display": "standalone",
@@ -43,7 +43,7 @@
     {
       "name": "Generate",
       "short_name": "Generate",
-      "description": "Turn a text prompt into a new arrangement on the katexis engine.",
+      "description": "Turn a text prompt into a new arrangement in the studio.",
       "url": "/generate"
     },
     {

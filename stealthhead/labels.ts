@@ -23,7 +23,7 @@ import type { LabelRow } from "./db.ts";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABELREVISION = 1;
+export const LABELREVISION = 2;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -91,16 +91,16 @@ export const LABELMANIFEST = {
   "home.eyebrow": "stealthhead · fps platform",
   "home.title": "Sights on. Stage set.",
   "home.lede":
-    "The first-person shooter platform of the family — it imports versawase from cadria and audio from debonair, carries no engine file of its own, and serves match, ranking, weapons and world from one DB layer.",
+    "The first-person shooter platform of the family — its world comes from cadria and its audio from debonair, and it serves match, ranking, weapons and world from one place.",
   "home.cta.match": "enter a match",
   "home.cta.dataCue": "how data reaches you",
-  "home.data.toast": "the ladder answers from the site DB over HTTPS — nothing is stored on your machine",
-  "home.badge.versawase": "versawase — imported from cadria",
+  "home.data.toast": "the ladder answers live from the site — nothing is stored on your machine",
+  "home.badge.versawase": "3d world — from cadria",
   "home.badge.audio": "audio — imported from debonair",
-  "home.badge.noEngine": "no engine file of its own",
+  "home.badge.noEngine": "no engine of its own",
   "home.badge.precompiled": "ships pre-compiled",
   "home.featured.aria": "featured match",
-  "home.featured.wait": "reading the board from the site db…",
+  "home.featured.wait": "reading the board from the site…",
   "home.featured.tip": "open the board of {title}",
   "home.featured.eyebrow": "featured match",
   "home.featured.meta": "{region} · capacity {capacity} · rounds {scored} scored / {live} live / {pending} pending",
@@ -117,13 +117,13 @@ export const LABELMANIFEST = {
   "home.domain.matchAbout": "Lobbies, rounds and the live seat table of every running match.",
   "home.domain.matchMeta": "lobbies · rounds · seats",
   "home.domain.ranking": "ranking",
-  "home.domain.rankingAbout": "The competitive ladder of the season, seeded and served by the site DB.",
+  "home.domain.rankingAbout": "The competitive ladder of the season, seeded and served by the site.",
   "home.domain.rankingMeta": "ladder · elo deltas",
   "home.domain.weapons": "weapons",
   "home.domain.weaponsAbout": "The armory ledger with damage, handling and kind helpers from the root logic.",
   "home.domain.weaponsMeta": "damage · ttk · falloff",
   "home.domain.world": "world",
-  "home.domain.worldAbout": "Pre-compiled GLB world assets listed as hash-verified DB rows.",
+  "home.domain.worldAbout": "Pre-compiled GLB world assets listed as hash-verified rows.",
   "home.domain.worldMeta": "glb rows · sha-256",
   "home.quad.aria": "platform index",
   "home.quad.platform": "platform",
@@ -132,7 +132,7 @@ export const LABELMANIFEST = {
   "home.quad.engine": "engine",
   "home.quad.doctrine": "doctrine",
   "home.quad.doctrineLine1": "pre-compiled on the family domains",
-  "home.quad.doctrineLine2": "one db layer · zero client storage",
+  "home.quad.doctrineLine2": "one home · zero client storage",
   "home.family.aria": "the family apps",
   "home.family.head": "the devthink family",
   "home.family.tip": "open {slug} in its own deploy",
@@ -141,12 +141,12 @@ export const LABELMANIFEST = {
   "match.eyebrow": "stealthhead · match",
   "match.title": "match lobby and round table",
   "match.lede":
-    "Every running match of the platform: lobbies with their round tables and the live seat leaderboard. Rows are served by the site DB over HTTPS — the interface stores nothing on your machine.",
-  "match.refresh.tip": "refetch the lobby rows from the site db over https",
+    "Every running match of the platform: lobbies with their round tables and the live seat leaderboard. Rows come live from the site — the interface stores nothing on your machine.",
+  "match.refresh.tip": "refetch the lobby rows from the site",
   "match.refresh": "refresh the board",
-  "match.toast.refreshed": "lobby board refreshed from the site DB",
-  "match.toast.failed": "the site DB did not answer; the seed stays on",
-  "match.empty": "No match is seated right now. The board answers as soon as the DB serves one.",
+  "match.toast.refreshed": "lobby board refreshed from the site",
+  "match.toast.failed": "the site did not answer; the seed stays on",
+  "match.empty": "No match is seated right now. The board answers as soon as the site serves one.",
   "match.state.tipLive": "the match is running now",
   "match.state.tipOpen": "seats are open",
   "match.state.tipClosed": "the lobby is closed",
@@ -177,7 +177,7 @@ export const LABELMANIFEST = {
   "ranking.eyebrow": "stealthhead · ranking",
   "ranking.title": "the competitive ladder",
   "ranking.lede":
-    "The season ladder of the platform, sorted and positioned by the root ranking logic. The rows live in the site DB and reach this table over HTTPS — your machine stores nothing.",
+    "The season ladder of the platform, sorted and positioned by the root ranking logic. The rows live on the site and reach this table live — your machine stores nothing.",
   "ranking.card.squad": "squad {squad} · {region}",
   "ranking.card.scoreLabel": "season score",
   "ranking.preview": "season preview: a win over {player} lifts the leader by +{delta} pts",
@@ -202,12 +202,12 @@ export const LABELMANIFEST = {
   "ranking.rail.leader": "leader",
   "ranking.rail.answers": "the ladder answers",
   "ranking.rail.note":
-    "The rows live in the site DB and reach this table over HTTPS — your machine stores nothing. Positions are stamped by the root ranking logic, deltas ride the season k bands.",
+    "The rows live on the site and reach this table live — your machine stores nothing. Positions are stamped by the root ranking logic, deltas ride the season k bands.",
   // the weapons page anchor (the armory ledger)
   "weapons.eyebrow": "stealthhead · weapons",
   "weapons.title": "the armory",
   "weapons.lede":
-    "Every weapon of the platform with the damage and kind helpers of the root armory logic. The catalog lives in the site DB and answers over HTTPS — the interface is read-only by doctrine.",
+    "Every weapon of the platform with the damage and kind helpers of the root armory logic. The catalog lives on the site and answers live — the interface is read-only by doctrine.",
   "weapons.kinds.aria": "weapon kinds",
   "weapons.kind.all": "all",
   "weapons.kind.allTip": "every kind of the armory",
@@ -233,14 +233,14 @@ export const LABELMANIFEST = {
   "world.eyebrow": "stealthhead · world",
   "world.title": "world assets",
   "world.lede":
-    "The GLB catalog of the platform as DB rows: name, kind, path and the sha-256 the build verifies against the downloaded binary. Every asset ships pre-compiled on the family domains — the visitor VGPU/VCPU never compiles anything, and the interface renders rows, not scenes.",
+    "The GLB catalog of the platform as rows: name, kind, path and the sha-256 the build verifies against the downloaded binary. Every asset ships pre-compiled on the family domains — the visitor VGPU/VCPU never compiles anything, and the interface renders rows, not scenes.",
   "world.kinds.aria": "asset kinds",
   "world.kind.all": "all",
   "world.kind.allTip": "every kind of the catalog",
   "world.kind.filterTip": "filter the catalog by {kind}",
   "world.plate.precompiled": "pre-compiled",
   "world.plate.hash": "sha-256 {digest}",
-  "world.plate.verified": "hash shape verified — the binary is cataloged in the site DB and tracked by git lfs.",
+  "world.plate.verified": "hash shape verified — the binary is cataloged on the site and tracked by git lfs.",
   "world.plate.unverified": "the digest of this row is not a well formed sha-256.",
   // the notfound page anchor (the 404 panel)
   "notfound.badge": "404",

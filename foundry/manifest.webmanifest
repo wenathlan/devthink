@@ -1,7 +1,7 @@
 {
   "name": "foundry",
   "short_name": "foundry",
-  "description": "The pipeline application of the DevThink OS: the e2b and docker clone interface driving sandboxes and images while the engine lives in saddle.",
+  "description": "The pipeline application of the DevThink OS: the e2b and docker clone interface driving sandboxes and images while the engine lives in the family sandbox.",
   "id": "/",
   "start_url": "/",
   "scope": "/",

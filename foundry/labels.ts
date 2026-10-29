@@ -17,7 +17,7 @@ import type { LabelRow } from "./db.ts";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 1;
+export const LABEL_REVISION = 2;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -107,7 +107,7 @@ export const LABEL_MANIFEST = {
   "home.quad.floorHead": "the floor",
   "home.quad.floorText": "the platform answers on /sandboxes · /images · /artifacts.",
   "home.quad.familyHead": "the family",
-  "home.quad.familyText": "nine deploy units share the engine — foundry keeps their working set.",
+  "home.quad.familyText": "nine apps share the engine — foundry keeps their working set.",
   // the sandboxes page anchor (the machine room)
   "sand.eyebrow": "sandboxes · the machine room",
   "sand.title": "Sandboxes",
@@ -263,7 +263,7 @@ export const LABEL_MANIFEST = {
     "foundry is the pipeline application of the devthink family — the working set stored and executed together, the vault layer beside the forge layer in one unit.",
   "onboarding.steps.does": "what it does",
   "onboarding.steps.doesText":
-    "it drives the sandboxes and shapes the images while keeping the records of both. the engine lives in saddle: foundry runs and stores at once.",
+    "it drives the sandboxes and shapes the images while keeping the records of both. the engine lives in the family sandbox: foundry runs and stores at once.",
   "onboarding.steps.enter": "enter",
   "onboarding.steps.enterText":
     "the window ahead is the herd floor — the forge console, the shelf and the records of the family. the enter button opens the pipeline.",

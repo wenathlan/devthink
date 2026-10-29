@@ -34,7 +34,7 @@ export function GatewayPairing({ paired, snapshot, local }: GatewayPairingProps)
             <ArrowSyncRegular fontSize={15} aria-hidden="true" />
             {copy("settings.gateway.sync")}
           </h2>
-          <SettingsRow label="state" value="paired-gateway" />
+          <SettingsRow label="state" value="paired" />
           <SettingsRow label="cli" value={snapshot.database.persistence} />
           <SettingsRow
             label="browser"

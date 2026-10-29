@@ -16,7 +16,7 @@ import type { LabelRow } from "./db.ts";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 1;
+export const LABEL_REVISION = 2;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -57,7 +57,7 @@ export const LABEL_MANIFEST = {
   "home.flow.describe": "Describe",
   "home.flow.describeBody": "One line is enough — a genre, a mood, a key.",
   "home.flow.arrange": "Arrange",
-  "home.flow.arrangeBody": "The katexis engine drafts the full multitrack take.",
+  "home.flow.arrangeBody": "The studio engine drafts the full multitrack take.",
   "home.flow.master": "Master",
   "home.flow.masterBody": "Genre-aware mix, true-peak limiter, WAV out.",
   "home.engine.eyebrow": "what it does",
@@ -74,7 +74,7 @@ export const LABEL_MANIFEST = {
   "home.quad.browse": "browse",
   "home.quad.engine": "engine",
   "home.quad.family": "family",
-  "home.quad.engineLine1": "katexis · {khz} kHz WAV",
+  "home.quad.engineLine1": "studio · {khz} kHz WAV",
   "home.quad.engineLine2": "{standard} · {dbtp} dBTP",
   "home.songcard.playAria": "Play {name}",
   "home.songcard.playTitle": "Play {name} — {genre} · {duration}",
@@ -253,7 +253,7 @@ export const LABEL_MANIFEST = {
   "generate.genre.legend": "Genre — the engine matrix, all {count}",
   "generate.genre.auto": "match from prompt",
   "generate.genre.chipTitle": "{min}–{max} bpm · {pattern} · {lufs} LUFS",
-  "generate.compose.submit": "Compose with katexis",
+  "generate.compose.submit": "Compose the take",
   "generate.shelf.title": "session shelf — {count} take{s}",
   "generate.shelf.empty":
     "Nothing composed yet. Describe a track above — the arrangement plan (key, chords, drum grid, clips, desk) appears here with its seed and lands in the studio and the library.",
@@ -262,7 +262,7 @@ export const LABEL_MANIFEST = {
   "generate.row.open": "Open in studio",
   "generate.explain.title": "What the engine just did",
   "generate.explain.lead": "The prompt scored every genre of ",
-  "generate.explain.mid1": ", the seed fed the engine's mulberry rng, and ",
+  "generate.explain.mid1": ", the seed fed the engine's random generator, and ",
   "generate.explain.mid2": " wrote the chord timeline over the picked key. ",
   "generate.explain.mid3": " laid the drum grid with accents, swing and fills, ",
   "generate.explain.mid4": " placed the section clips and ",
@@ -392,7 +392,7 @@ export const LABEL_MANIFEST = {
   "onboarding.steps.enter": "enter",
   "onboarding.what.title": "one window, the audio home",
   "onboarding.what.body":
-    "debonair is the audio home of the wenathlan family — not an operating system: one application window holding the text-to-music queue, the studio timeline and the library of the craft, all riding the katexis engine.",
+    "debonair is the audio home of the wenathlan family — not an operating system: one application window holding the text-to-music queue, the studio timeline and the library of the craft, all riding the studio engine.",
   "onboarding.hosts.title": "what the window hosts",
   "onboarding.enter.title": "ready to enter",
   "onboarding.enter.body":

@@ -21,19 +21,19 @@ export const seedChatSuggestions: ChatSuggestion[] = [
     id: "engineering",
     label: "Trace a failure",
     prompt:
-      "pressure-test a provider-neutral gateway: where does the architecture break first, and what hardens it?",
+      "pressure-test a distributed system: where does the architecture break first, and what hardens it?",
   },
   {
     id: "reasoning",
     label: "Reason step by step",
     prompt:
-      "reason step by step: should a provider-neutral workbench cache provider responses locally? weigh latency, cost, staleness.",
+      "reason step by step: should a smart workbench cache answers locally? weigh latency, cost, staleness.",
   },
   {
     id: "decisions",
     label: "Weigh the trade offs",
     prompt:
-      "self-hosting an inference gateway versus provider apis: commit to one call and name the three facts that drive it.",
+      "running your own model service versus provider apis: commit to one call and name the three facts that drive it.",
   },
 ];
 
@@ -85,8 +85,8 @@ const seedChatStrings: ChatStringRow[] = [
   { id: "composer.placeholderIdle", text: "ask anything" },
   { id: "composer.placeholderFollowUp", text: "send a follow up while it works" },
   { id: "composer.sandboxChip", text: "Sandbox" },
-  { id: "composer.sandboxNote", text: "open the saddle sandbox lane" },
-  { id: "gw.notRegistered", text: "No gateway registered" },
+  { id: "composer.sandboxNote", text: "open the sandbox" },
+  { id: "gw.notRegistered", text: "No assistant service connected" },
   { id: "toast.stopped", text: "Generation stopped" },
   {
     id: "toast.stoppedDescription",
@@ -114,7 +114,7 @@ const seedChatStrings: ChatStringRow[] = [
   { id: "panel.instructionsSaved", text: "saved on this device" },
   { id: "panel.instructionsDraft", text: "a local draft for now" },
   { id: "panel.memoryEmpty", text: "nothing saved on this device" },
-  { id: "panel.probing", text: "Probing the endpoint" },
+  { id: "panel.probing", text: "Checking the connection" },
   { id: "panel.gatewayError", text: "The service did not answer" },
   { id: "panel.exportFallback", text: "chat-session" },
   { id: "canvas.defaultTitle", text: "canvas" },
@@ -224,7 +224,7 @@ export function chatThinkingLevels(): ChatThinkingRow[] {
  * wears on every call (the build of the prompt lives in chatstate, the
  * sentence is information and rides the table). */
 export const seedChatPersona =
-  "You are Sol, the DevThink gateway assistant: precise, warm and technical. Answer in the user's language, prefer concrete detail over filler, and use markdown when structure helps.";
+  "You are Sol, the DevThink assistant: precise, warm and technical. Answer in the user's language, prefer concrete detail over filler, and use markdown when structure helps.";
 
 /** the persona sentence of the round. */
 export function chatPersona(): string {

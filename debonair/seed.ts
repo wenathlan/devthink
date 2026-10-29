@@ -133,7 +133,7 @@ export const seedStageCards: readonly FeatureCard[] = [
 ];
 
 export const seedHeroBadges: readonly SignalBadge[] = [
-  { group: "hero", label: "katexis engine", tone: "default" },
+  { group: "hero", label: "studio engine", tone: "default" },
   { group: "hero", label: "48 kHz", tone: "success" },
   { group: "hero", label: "multitrack", tone: "info" },
 ];

@@ -11,7 +11,7 @@ import { readAllLabels, saveLabel, type BrowserLabel } from "./storage.ts";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 3;
+export const LABEL_REVISION = 4;
 
 /** the english manifest: the page.widget.key path answers the surface text. */
 export const labelManifest = {
@@ -27,7 +27,7 @@ export const labelManifest = {
   "chat.composer.tools": "Tools",
   "chat.composer.toolModes": "Tool modes",
   "chat.composer.moreTools": "More tools",
-  "chat.composer.sandboxLane": "Open the saddle sandbox lane",
+  "chat.composer.sandboxLane": "Open the sandbox",
   // the chat timeline
   "chat.body.assistantReply": "Assistant reply",
   "chat.body.yourMessage": "Your message",
@@ -55,14 +55,14 @@ export const labelManifest = {
   "chat.composer.keyEscape": "Escape",
   // the chat composer surface (the copy wave: the hardcoded literals leave)
   "chat.composer.auto": "auto",
-  "chat.composer.autoRoutes": "routes by prompt weight",
-  "chat.composer.effortAutoRow": "routes by prompt weight — resolves {level} for this draft",
-  "chat.composer.effortAutoTitle": "Reasoning effort — auto routes by prompt weight ({level} now)",
+  "chat.composer.autoRoutes": "chosen by the prompt",
+  "chat.composer.effortAutoRow": "chosen by the prompt — {level} for this draft",
+  "chat.composer.effortAutoTitle": "Reasoning effort — auto picks by the prompt ({level} now)",
   "chat.composer.effortAria": "Reasoning effort: {level}",
   "chat.composer.modelAria": "Model: {model}",
   "chat.composer.compact": "compact",
   "chat.composer.compactHint":
-    "the next round's estimate overflows the context window — the send path carries no compact parameter yet, so the key marks the intent only",
+    "the next message may overflow the context window — compaction is not wired yet, so the key marks the intent only",
   "chat.composer.meterHint": "Estimated with the house chars-per-token approximation — never an exact count",
   "chat.composer.ctxSuffix": "k ctx",
   // the chat body surface (the conversation frame and the sandbox cards)
@@ -90,7 +90,7 @@ export const labelManifest = {
   "chat.body.verdictFailedExit": "failed, exit {code}",
   "chat.body.noOutput": "no output",
   "chat.body.deletedSuffix": "(deleted)",
-  "chat.body.noGateway": "No gateway registered",
+  "chat.body.noGateway": "No assistant service connected",
   // the chat turn surface (the cognition head, the edit form, the meta marks)
   "chat.turn.thoughtFor": "Thought for {n}s",
   "chat.turn.save": "Save",
@@ -104,8 +104,8 @@ export const labelManifest = {
   "chat.welcome.minutesAgo": "{n}m ago",
   "chat.welcome.hoursAgo": "{n}h ago",
   "chat.welcome.daysAgo": "{n}d ago",
-  "chat.welcome.gatewayOn": "gateway on",
-  "chat.welcome.gatewayOff": "gateway off",
+  "chat.welcome.gatewayOn": "CLI on",
+  "chat.welcome.gatewayOff": "CLI off",
   "chat.welcome.suggestedPrompts": "suggested prompts",
   "chat.welcome.startWith": "Start with {prompt}",
   "chat.welcome.temporaryTitle": "nothing saves on this device",
@@ -116,27 +116,27 @@ export const labelManifest = {
   // family (the registry rows, the studios, the console, the library, the
   // runner shelf, the family sites), never an invented one.
   "explore.cat.video": "video",
-  "explore.cat.video.sub": "the native editor on the versawase engine, owned by cadria",
+  "explore.cat.video.sub": "the native video editor of cadria",
   "explore.cat.image": "image",
-  "explore.cat.image.sub": "the native studio on the matiz pixel engine, owned by cadria",
+  "explore.cat.image.sub": "the native image studio of cadria",
   "explore.cat.audio": "audio",
-  "explore.cat.audio.sub": "the native studio on the katexis engine, owned by debonair",
+  "explore.cat.audio.sub": "the native music studio of debonair",
   "explore.cat.model3d": "three dee",
-  "explore.cat.model3d.sub": "the cadria studio carries the 3d lane of the family",
+  "explore.cat.model3d.sub": "the cadria studio carries the 3d worlds of the family",
   "explore.cat.code": "code",
   "explore.cat.code.sub": "the core modules of the cli — the same rows the console serves",
   "explore.cat.documents": "documents",
   "explore.cat.documents.sub": "the documents the platform publishes — about, terms and policy",
   "explore.cat.sandbox": "sandbox runs",
-  "explore.cat.sandbox.sub": "the runner shelf over the saddle engine boundary — forge and foundry execute",
+  "explore.cat.sandbox.sub": "the sandbox shelf — forge and foundry run the work",
   "explore.cat.shares": "community shares",
-  "explore.cat.shares.sub": "the family sites — every row a real deploy the platform serves",
+  "explore.cat.shares.sub": "the family sites — every row a live site of the platform",
   "explore.nav.categories": "categories",
   "explore.categories.aria": "the category gallery",
   "explore.categories.cap": "the category rail",
   "explore.categories.title": "browse by category",
   "explore.categories.sub":
-    "every category answers a real surface of the family — the studios, the console, the library, the runner shelf and the community sites.",
+    "every category answers a real surface of the family — the studios, the console, the library, the app shelf and the community sites.",
   "explore.categories.pick": "browse {name}",
   "explore.categories.waves": "02 · the categories",
   "explore.categories.wavesMeta":
@@ -169,7 +169,7 @@ export const labelManifest = {
   "explore.deck.idle": "pick a category — its real entries open here.",
   "explore.deck.empty": "the {name} catalog answers empty — nothing invented in its place.",
   "explore.deck.act.studio": "open the studio",
-  "explore.deck.act.runner": "open the runner shelf",
+  "explore.deck.act.runner": "open the app shelf",
   "explore.deck.detail": "open the detail of {name}",
   "explore.deck.back": "back to the categories",
 
@@ -194,7 +194,7 @@ export const labelManifest = {
   "explore.state.loading": "reading the catalog",
   "explore.state.error": "the catalog could not be read",
   "explore.state.errorLine":
-    "the reviewed seeds answer when the database is absent — retry to ask the paired endpoint again.",
+    "the built-in answers serve when the service is away — retry to ask it again.",
   "explore.state.retry": "retry the catalog",
   "explore.state.paragraphs": "{count} paragraphs",
   "explore.state.kind.asset": "studio asset",
@@ -202,7 +202,7 @@ export const labelManifest = {
   "explore.state.kind.module": "core module",
   "explore.state.kind.document": "document",
   "explore.state.kind.site": "family site",
-  "explore.state.kind.binary": "runner binary",
+  "explore.state.kind.binary": "app",
   "explore.modules.waves": "04 · the modules",
   "explore.download.waves": "05 · the builds",
 } as const;

@@ -238,7 +238,7 @@ function IngestSurface() {
         </h1>
         <p className="hero-lede reveal">
           {label("ingest.hero.ledeLead")}
-          <code>katexis</code>
+          <code>studio</code>
           {label("ingest.hero.ledeTail")}
         </p>
         <button

@@ -202,7 +202,7 @@ const REHEARSAL_OBJECTS: readonly { path: string; mime: string; weight: number }
   { path: "/sites/getry/rotations.json", mime: "application/json", weight: 96_440 },
   { path: "/media/cover-art.png", mime: "image/png", weight: 2_244_880 },
   { path: "/runs/forge/421337.log", mime: "text/plain", weight: 12_800 },
-  { path: "/models/versawase.onnx", mime: "model/onnx", weight: 148_002_816 },
+  { path: "/models/worldmodel.onnx", mime: "model/onnx", weight: 148_002_816 },
   { path: "/sites/argan/zones.db", mime: "application/x-sqlite3", weight: 8_882_176 },
 ] as const;
 

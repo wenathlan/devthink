@@ -18,8 +18,8 @@ import type {
 export const seedZones: readonly ZoneSnapshot[] = [
   { origin: "devthink.pro", kind: "master", serial: "2026011203", state: "signed" },
   { origin: "wenathlan.net", kind: "master", serial: "2026011210", state: "signed" },
-  { origin: "katexis.audio", kind: "slave", serial: "2026011117", state: "signed" },
-  { origin: "versawase.studio", kind: "slave", serial: "2026011201", state: "unsigned" },
+  { origin: "debonair.audio", kind: "slave", serial: "2026011117", state: "signed" },
+  { origin: "cadria.studio", kind: "slave", serial: "2026011201", state: "unsigned" },
   { origin: "allan.internal", kind: "master", serial: "2026011022", state: "unsigned" },
 ];
 

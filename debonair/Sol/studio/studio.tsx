@@ -328,7 +328,7 @@ export default function Studio() {
       <h1 className="reveal page-title">{label("studio.title")}</h1>
       <p className="reveal lede" style={{ maxWidth: 640 }}>
         {label("studio.ledeLead")}
-        <code>katexis</code>
+        <code>studio</code>
         {label("studio.ledeTail")}
       </p>
 

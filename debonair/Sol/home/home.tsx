@@ -63,7 +63,7 @@ function HomeSurface() {
 
   /** the spec proof of the hero ledger: the engine's own configuration — no invented numbers */
   const SPEC_ROWS: readonly { label: string; value: string }[] = [
-    { label: label("home.spec.engine"), value: "katexis" },
+    { label: label("home.spec.engine"), value: "studio" },
     {
       label: label("home.spec.render"),
       value: labelfill("home.spec.renderValue", { khz: String(MASTERING.sampleRateHz / 1000) }),
@@ -173,7 +173,7 @@ function HomeSurface() {
         </h1>
         <p className="hero-lede reveal">
           {label("home.hero.ledeLead")}
-          <code>katexis</code>
+          <code>studio</code>
           {label("home.hero.ledeTail")}
           <strong className="ink-strong">{label("home.hero.ledeStrong")}</strong>
           {label("home.hero.ledeTail2")}
