@@ -10,7 +10,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-const css = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
+const css = readFileSync(join(import.meta.dirname, "..", "devthink", "Sol", "sol.css"), "utf8");
 
 const bands = [
   "--z-atmosphere",

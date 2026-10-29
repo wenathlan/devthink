@@ -54,6 +54,7 @@ const SEED: Readonly<Record<string, string>> = Object.freeze({
   "auth.oauth.row": "Sign-in providers",
   "auth.oauth.google": "Continue with Google",
   "auth.oauth.github": "Continue with GitHub",
+  "auth.oauth.gitlab": "Continue with GitLab",
   "auth.oauth.failed": "Sign-in could not start on this machine.",
   "callback.title": "The sign-in callback",
   "callback.received": "devthink received the {provider} sign in",

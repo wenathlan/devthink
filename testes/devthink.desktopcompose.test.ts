@@ -45,10 +45,10 @@ import {
 } from "../devthink/desktopstate.ts";
 import { osText } from "../devthink/oslabels.ts";
 
-const desktop = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelDesktop.tsx"), "utf8");
-const workspace = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelWorkspace.tsx"), "utf8");
-const panel = readFileSync(join(import.meta.dirname, "..", "Sol", "panel", "panel.tsx"), "utf8");
-const solcss = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
+const desktop = readFileSync(join(import.meta.dirname, "..", "devthink", "Sol", "wingets", "PanelDesktop.tsx"), "utf8");
+const workspace = readFileSync(join(import.meta.dirname, "..", "devthink", "Sol", "wingets", "PanelWorkspace.tsx"), "utf8");
+const panel = readFileSync(join(import.meta.dirname, "..", "devthink", "Sol", "panel", "panel.tsx"), "utf8");
+const solcss = readFileSync(join(import.meta.dirname, "..", "devthink", "Sol", "sol.css"), "utf8");
 
 /** parses the DESKTOP_SPOTS table out of the desktop source — the
  * constellation is component-owned data, so the battery reads it the way

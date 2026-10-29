@@ -259,7 +259,7 @@ describe("the label catalog law — the reviewed names, pinned", () => {
 });
 
 describe("the css ladder of the animated grammar", () => {
-  const css = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
+  const css = readFileSync(join(import.meta.dirname, "..", "devthink", "Sol", "sol.css"), "utf8");
 
   it("carries the live tilt of the drawn set on the three wrappers", () => {
     expect(css).toContain('.dt-appicon-anim[data-live="true"]');
@@ -300,7 +300,7 @@ describe("the css ladder of the animated grammar", () => {
 });
 
 describe("the desktop label rides the legibility token", () => {
-  const desktop = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelDesktop.tsx"), "utf8");
+  const desktop = readFileSync(join(import.meta.dirname, "..", "devthink", "Sol", "wingets", "PanelDesktop.tsx"), "utf8");
 
   it("answers the label shadow from the token ladder, never a raw halo", () => {
     expect(desktop).toContain("dt-appicon__label");
@@ -310,7 +310,7 @@ describe("the desktop label rides the legibility token", () => {
 });
 
 describe("the tile contract of the shared apptile", () => {
-  const tile = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "ShellApptile.tsx"), "utf8");
+  const tile = readFileSync(join(import.meta.dirname, "..", "devthink", "Sol", "wingets", "ShellApptile.tsx"), "utf8");
 
   it("raises the live flag from the pointer and drops it on leave", () => {
     expect(tile).toContain("setLive(true)");
