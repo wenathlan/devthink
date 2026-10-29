@@ -44,6 +44,8 @@ const LIVESET = [
   "runner-deno",
   "runner-node",
   "runner-serverless",
+  "runner-wasi",
+  "runner-wasm",
   "runtime-jvm",
   "storage-sqlite",
 ] as const;
