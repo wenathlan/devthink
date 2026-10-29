@@ -318,10 +318,16 @@ jobs:
         env:
           VITE_BASE_PATH: /
         run: cd devthink && npm run build:web
+      - name: Resolve the artifact suffix
+        # the artifact name law: a dispatched ref may carry branch slashes the
+        # artifact namespace refuses, so the suffix rides the sanitized form.
+        id: artifactsuffix
+        shell: bash
+        run: echo "name=$(echo '${{ inputs.ref || github.sha }}' | tr '/' '-')" >> "$GITHUB_OUTPUT"
       - name: Upload the built DevThink artifacts
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: devthink-verify-${{ inputs.ref || github.sha }}
+          name: devthink-verify-${{ steps.artifactsuffix.outputs.name }}
           path: devthink/dist/devthink*.zip
           if-no-files-found: error
           retention-days: 14
@@ -413,10 +419,16 @@ jobs:
       - name: Deno import smoke over the deno entry
         if: matrix.runtime == 'deno'
         run: cd devthink && deno eval "const library = await import('./dist/deno.js'); if (typeof library.denoadapter !== 'function') throw new Error('The deno mode lost its adapter.'); if (typeof library.surfacepalette !== 'function') throw new Error('The deno mode lost its surface.');"
+      - name: Resolve the artifact suffix
+        # the artifact name law: a dispatched ref may carry branch slashes the
+        # artifact namespace refuses, so the suffix rides the sanitized form.
+        id: artifactsuffix
+        shell: bash
+        run: echo "name=$(echo '${{ inputs.ref || github.sha }}' | tr '/' '-')" >> "$GITHUB_OUTPUT"
       - name: Upload the mode bundles
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: mode-bundles-${{ matrix.runtime }}-${{ inputs.ref || github.sha }}
+          name: mode-bundles-${{ matrix.runtime }}-${{ steps.artifactsuffix.outputs.name }}
           path: |
             devthink/dist/index.cjs
             devthink/dist/index.js

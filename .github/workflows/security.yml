@@ -424,15 +424,6 @@ jobs:
     steps:
       - name: Checkout DevThink source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Stage the flat gate tree into the build context
-        # the flat typed folder law keeps every gate script in the root
-        # tests/ tree, while the container context stays the application
-        # folder alone; the builder stage runs the canonical gate names
-        # (tests/devthink.build.ts and siblings), so the ephemeral copy
-        # of the root tree lands beside the application before the image
-        # builds — the runner staging never answers a committed copy and
-        # the dockerignore keeps only the tests/tmp scratch out.
-        run: cp -r tests devthink/tests
       - name: Setup docker buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
       - name: Build image for scanning
