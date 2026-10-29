@@ -304,10 +304,15 @@ jobs:
           test -f dist/artifactmanifest.json
           node -e "const { createHash } = require('node:crypto'); const { readFile } = require('node:fs/promises'); (async () => { const manifest = JSON.parse(await readFile('dist/artifactmanifest.json', 'utf8')); const module = await import('./dist/pack.js'); const files = []; for (const entry of manifest.artifacts) { const bytes = await readFile(entry.name); files.push({ name: entry.name, checksum: createHash('sha256').update(bytes).digest('hex') }); } const check = module.artifactmanifestcheck({ manifest, files }); if (!check.ok) throw new Error('The built set drifted from the artifact manifest: ' + JSON.stringify(check)); const names = manifest.artifacts.map(entry => entry.name); const version = '${VERSION}'; for (const required of ['dist/devthink' + version + '.zip', 'dist/devthink-firefox-' + version + '.xpi', 'dist/devthink-safari-' + version + '.zip', 'dist/devthink-vscode-' + version + '.vsix', 'dist/devthink-site-' + version + '.zip', 'dist/devthink-declarations-' + version + '.zip']) { if (!names.includes(required)) throw new Error('The artifact manifest misses the built artifact ' + required); } console.log(JSON.stringify({ artifacts: manifest.artifacts.length, ok: true })); })();"
       - name: Build the container image and run its smoke
+        # the context is THE REPOSITORY ROOT (the family-context law the
+        # Dockerfile header records): the dependency union pins the vault
+        # sibling as file:../vault, the flat test village owns the build
+        # engine and the suite, and the config bridges resolve the getry
+        # and saddle engines onto their sibling owners, so the image
+        # builds from the checkout geometry it mirrors.
         run: |
           set -euo pipefail
-          cd devthink
-          docker build -f Dockerfile -t devthink-verify:local .
+          docker build -f devthink/Dockerfile -t devthink-verify:local .
           docker run --rm devthink-verify:local --check
       # The root typecheck lane runs the package script the build bypasses
       # (../tests/devthink.build.ts typechecks tsconfig.build.json only, so the sources

@@ -152,8 +152,8 @@ importers:
         specifier: ^2.1.6
         version: 2.1.6(playwright@1.64.1)
       '@wenathlan/vault':
-        specifier: file:../vault
-        version: file:../vault(@types/react@19.3.0)(playwright@1.64.1)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
+        specifier: ^2.0.151
+        version: 2.0.151(@types/react@19.3.0)(react@19.3.1)
       hono:
         specifier: ^4.13.14
         version: 4.13.14
@@ -2600,9 +2600,9 @@ packages:
       playwright:
         optional: true
 
-  '@wenathlan/vault@file:../vault':
-    resolution: {directory: ../vault, type: directory}
-    engines: {bare: ^1.18.0, bun: ^1.4.2, chrome: ^16.0.912, cnpm: ^9.4.0, corepack: ^0.35.0, deno: ^2.9.5, ecmascript: ^5.0.0, firefox: '>=0.8.0', iojs: ^1.0.0, node: '>=26.13.0 <27', npm: ^12.1.0, pnpm: ^12.6.0, teleport: '>=0.2.0', typescript: ^5.8.0, vscode: ^1.118.0, yarn: ^4.17.1}
+  '@wenathlan/vault@2.0.151':
+    resolution: {integrity: sha512-Y7wkeNB7qg9WkMjSWd/7rWgX5IpFk/CbFreNMVW5WlL/bOBAojxLD/+VMgCEXIqbE9cncrs9+NRunHiUXXQzaA==}
+    engines: {bare: ^1.18.0, bun: ^1.4.2, chrome: ^16.0.912, cnpm: ^9.4.0, corepack: ^0.35.0, deno: ^2.9.5, ecmascript: ^5.0.0, firefox: '>=0.8.0', iojs: ^1.0.0, node: '>=26.12.1 <27', npm: ^12.1.0, pnpm: ^12.6.0, teleport: '>=0.2.0', typescript: ^5.8.0, vscode: ^1.118.0, yarn: ^4.17.1}
 
   '@xmldom/xmldom@0.9.12':
     resolution: {integrity: sha512-5AXjrcMClTryPe9LgZrygpB1lj7s0S9E0+W+AHaVKAVyHanafK86iPSvG5xHVSp/jC+VH1UXu0TAEmY279xH7A==}
@@ -7254,34 +7254,18 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@wenathlan/vault@file:../vault(@types/react@19.3.0)(playwright@1.64.1)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)':
+  '@wenathlan/vault@2.0.151(@types/react@19.3.0)(react@19.3.1)':
     dependencies:
-      '@fluentui/react-icons': 2.0.344(react@19.3.1)
-      '@fontsource-variable/bricolage-grotesque': 5.3.0
-      '@fontsource-variable/jetbrains-mono': 5.3.0
-      '@fontsource-variable/outfit': 5.3.0
       '@hono/node-server': 2.1.5(hono@4.13.14)
-      '@libsql/client': 0.18.0
       '@prisma/adapter-libsql': 7.10.1
-      '@prisma/client': 7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-      '@wenathlan/saddle': 2.1.6(playwright@1.64.1)
       hono: 4.13.14
       ink: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
-      lucide-react: 1.61.0(@types/react@19.3.0)(react@19.3.1)
-      motion: 12.43.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      react: 19.3.1
       react-devtools-core: 8.0.0
-      react-dom: 19.3.1(react@19.3.1)
-      wouter: 3.13.0(react@19.3.1)
       z-ai-web-dev-sdk: 0.0.18
     transitivePeerDependencies:
-      - '@emotion/is-prop-valid'
       - '@types/react'
       - bufferutil
-      - playwright
-      - prisma
-      - supports-color
-      - typescript
+      - react
       - utf-8-validate
 
   '@xmldom/xmldom@0.9.12': {}

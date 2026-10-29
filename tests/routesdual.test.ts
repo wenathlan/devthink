@@ -40,7 +40,7 @@ const viteconfig = readFileSync(join(import.meta.dirname, "..", "devthink", "vit
 const pagesworkflow = readFileSync(join(import.meta.dirname, "..", ".github", "workflows", "pages.yml"), "utf8");
 
 /** the repository root of the monorepo (the sibling apps live beside the
- * devthink folder) */
+ * devthink folder and the tests village sits one honest hop above them) */
 const reporoot = join(import.meta.dirname, "..");
 
 /** collects every .tsx file under one folder tree (the sibling theme scan) */
