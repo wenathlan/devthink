@@ -143,6 +143,9 @@ importers:
       '@prisma/client':
         specifier: ^7.10.1
         version: 7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
+      '@wenathlan/getry':
+        specifier: ^2.0.151
+        version: 2.0.151(@types/react@19.3.0)(react@19.3.1)
       '@wenathlan/saddle':
         specifier: ^2.1.6
         version: 2.1.6(playwright@1.64.1)
@@ -2581,6 +2584,10 @@ packages:
 
   '@vitest/spy@5.0.5':
     resolution: {integrity: sha512-lwJRExuH417257Q5wv9QYugN9IMJkoxcrKrYxGPQkBzl7wlNpTUxD/5yNX4ESKVUIShKPgkGchYPFMWOOk0wzw==}
+
+  '@wenathlan/getry@2.0.151':
+    resolution: {integrity: sha512-IF3ZyHNzzm3s/3PdIFV5AiMXQJ+0caQhaIr7mNX+6s1LNEhKCje1WAJeYk9cM4gtJxGtPdcr6p+Q53DmTrMBzA==}
+    engines: {bare: ^1.18.0, bun: ^1.4.2, chrome: ^16.0.912, cnpm: ^9.4.0, corepack: ^0.35.0, deno: ^2.9.5, ecmascript: ^5.0.0, firefox: '>=0.8.0', iojs: ^1.0.0, node: '>=26.12.1 <27', npm: ^12.1.0, pnpm: ^12.6.0, teleport: '>=0.2.0', typescript: ^5.8.0, vscode: ^1.118.0, yarn: ^4.17.1}
 
   '@wenathlan/saddle@2.1.6':
     resolution: {integrity: sha512-P5t4blGys3LsCtzuPolf7AqZecn8t/AY0OUw2Umag3zyCMyndzX+sro5UcFi8o4b3iKItI1nbr6sue1b+e4G2w==}
@@ -7232,6 +7239,20 @@ snapshots:
       vite: 8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)
 
   '@vitest/spy@5.0.5': {}
+
+  '@wenathlan/getry@2.0.151(@types/react@19.3.0)(react@19.3.1)':
+    dependencies:
+      '@hono/node-server': 2.1.5(hono@4.13.14)
+      '@prisma/adapter-libsql': 7.10.1
+      hono: 4.13.14
+      ink: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
+      react-devtools-core: 8.0.0
+      z-ai-web-dev-sdk: 0.0.18
+    transitivePeerDependencies:
+      - '@types/react'
+      - bufferutil
+      - react
+      - utf-8-validate
 
   '@wenathlan/saddle@2.1.6(playwright@1.64.1)':
     optionalDependencies:
