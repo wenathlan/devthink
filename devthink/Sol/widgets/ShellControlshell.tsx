@@ -9,8 +9,8 @@
  * solar light source and the C1 atmosphere hooks (atmos / grain);
  * the body rises once, staggered behind the hero, then holds still. */
 
-import {WindowConsoleRegular as TerminalSquare} from "@fluentui/react-icons";
 import type { CSSProperties, ReactNode } from "react";
+import { ShellChrome } from "./Shellchrome.tsx";
 import {
   pagecontainerStyle,
   pageheadActionsStyle,
@@ -19,9 +19,8 @@ import {
   pageheadStyle,
   pageheadTitleStyle,
   pagestageStyle,
-  stagedEntrance } from "./ShellInstitutionalchrome.tsx";
-import { ShellChrome } from "./Shellchrome.tsx";
-import { osText } from "../../oslabels.ts";
+  stagedEntrance,
+} from "./ShellInstitutionalchrome.tsx";
 import { useReducedMotion } from "./ShellTrayflyouts.tsx";
 
 type ControlShellProps = {
@@ -45,7 +44,8 @@ export const controlStripStyle: CSSProperties = {
   border: 0,
   borderBottom: "1px solid var(--dt-edge)",
   borderRadius: 0,
-  padding: "0 0 12px" };
+  padding: "0 0 12px",
+};
 
 export function ControlShell({ eyebrow, title, summary, actions, children }: ControlShellProps) {
   const reduced = useReducedMotion();
@@ -73,11 +73,6 @@ export function ControlShell({ eyebrow, title, summary, actions, children }: Con
           {children}
         </section>
       </div>
-      <footer className="control-page__footer">
-        <TerminalSquare fontSize={14} />
-        {osText("shell.control.footer")}
-        <code>~/.config/devthink/auth.json</code>
-      </footer>
     </main>
   );
 }

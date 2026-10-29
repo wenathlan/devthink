@@ -1,6 +1,6 @@
 /**
  * musictracks.tsx — the tracks card of the audio app: hairline rows with
- * the real catalog fields (title, engine, minutes) and the queue action.
+ * the real catalog fields (title, minutes) and the queue action.
  * Loose component of the audio page.
  */
 import {MusicNote2PlayFilled} from "@fluentui/react-icons";
@@ -30,7 +30,6 @@ export function MusicTracks({
               <div className="dtw-music__body">
                 <h3>{track.title}</h3>
                 <p className="dtw-music__meta">
-                  <span>{track.engine}</span>
                   <span>{osText("audio.tracks.minutes").replace("{value}", track.minutes)}</span>
                 </p>
               </div>

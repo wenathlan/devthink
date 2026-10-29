@@ -52,17 +52,12 @@ export type saastrack = { title: string; artist: string; total: string; cover: s
 /** One nav row of the header tabs and the left rail stops. */
 export type saasnavrow = { id: string; label: string };
 
-/** The header chrome copy: the wordmark title, the right button labels,
- * the saddle cloud stop of the left rail and the corner dock keys. */
+/** The header chrome copy: the wordmark title, the launch key of the
+ * header and the explorer key of the corner dock. */
 export const saaschrome = {
   title: "DevThink",
-  alerts: "Alerts",
-  signin: "Sign In",
   launch: "Launch",
-  saddle: "Saddle Cloud",
-  docksave: "Save",
   dockexplore: "Explorer",
-  docktop: "Top",
 };
 
 /** The five tabs of the header saddle bridge, one section each. */
@@ -87,9 +82,6 @@ export const saasrailstops: readonly saasnavrow[] = [
 /** The toast copy of the face: the fixed pills and the composing prefixes
  * the rows join their titles onto. */
 export const saastoasts = {
-  favorites: "Saved to Favorites",
-  notifications: "Notifications synced",
-  signedin: "Signed in",
   community: "Exploring Community Creations",
   dooroo: "Doo replied",
   shared: "Shared",
