@@ -56,8 +56,8 @@ describe("design contract", () => {
     assert.match(CSS, /--sol-surface-8: var\(--color-s7\)/);
   });
 
-  it("carries the forge lime #a2cb3a as the one identity signal (brand, CTAs, active ladder)", () => {
-    assert.match(CSS, /--color-signal: #a2cb3a/);
+  it("carries the white sun as the one identity signal with the lime story in the mark (#a2cb3a)", () => {
+    assert.match(CSS, /--color-signal: #ffffff/);
     assert.match(CSS, /--fg-lime: var\(--color-signal\)/);
     assert.match(CSS, /--sol-primary: var\(--color-signal\)/);
     assert.match(MARK, /#a2cb3a/);
