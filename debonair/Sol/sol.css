@@ -2,9 +2,12 @@
 
 /* debonair Sol — the audio DAW theme (the 8-h FAMILY-FOUNDATION-2 pass).
    The foundation is the devthink doctrine foundation, carried with the exact
-   campaign values and wearing the debonair brass as the app signal (brand
-   mark, content cta and the content voice ONLY — focus and the chrome answer
-   the windows accent #4cc2ff). Tailwind-first: the @theme block below is the
+   campaign values and wearing THE WHITE SUN as the one signal (the
+   single-theme law: the name is Sol but the sun is WHITE, never yellow —
+   pure #ffffff on the dark ladder, the graphite contrast pole on the light
+   face, the same white light every app of the family wears; the brass story
+   survives only in the drawn brand mark) — focus and the chrome answer
+   the windows accent #4cc2ff. Tailwind-first: the @theme block below is the
    one source of truth and Tailwind 4 generates the utilities the pages can
    compose (bg-s0..s7, text-ink/muted/faint, border-hairline, shadow-window/
    flyout, ease-window/micro, animate-window-in/popintro); the hand-written
@@ -75,12 +78,12 @@
   --color-hairline: color-mix(in oklab, #fefefe 5%, transparent);
   --color-hairline-strong: color-mix(in oklab, #fefefe 10%, transparent);
 
-  /* ---- the signal: the debonair brass (latão #d9962e) — the app identity,
-     brand mark / content cta / content voice only; the chrome never wears it ---- */
-  --color-signal: #d9962e;
-  --color-signal-strong: #f0c976;
-  --color-signal-deep: #c47f1a;
-  --color-signal-ink: #241703;
+  /* ---- the signal: THE WHITE SUN — one Sol, one light; the name is Sol
+     but the sun is WHITE, never the yellow of the retired brass ---- */
+  --color-signal: #ffffff;
+  --color-signal-strong: #ffffff;
+  --color-signal-deep: #c9cdd6;
+  --color-signal-ink: #14161a;
 
   /* ---- accents: the WINDOWS system accent governs focus/chrome (the win10
      blend carries the light theme #0067c0); the fluent close red ---- */
@@ -93,7 +96,7 @@
   --color-ok: #7fd1a8;
   --color-warn: #e2c26a;
   --color-err: #f08a7a;
-  --color-info: #d9c9a1;
+  --color-info: #b9c2d0;
 
   /* ---- focus: the chrome focus ink — the family law answers the windows accent ---- */
   --color-focus: #4cc2ff;
@@ -282,7 +285,7 @@
   --dbn-line: var(--color-hairline);
   --dbn-line-strong: var(--color-hairline-strong);
 
-  /* the brass aliases: the app identity rides the signal slot */
+  /* the white sun aliases: the one Sol accent every voice reads */
   --brass-300: var(--color-signal-strong);
   --brass-500: var(--color-signal);
   --brass-600: var(--color-signal-deep);
@@ -368,8 +371,9 @@
 }
 
 /* the light theme: one flip on the same ladder — the devthink daylight
-   values, the brass steps down to the deep pole, the windows accent follows
-   the win10 blend #0067c0 */
+   values, the white sun stepping down to its graphite contrast pole (the
+   light value of the SAME semantic token — one Sol, two honest variations),
+   the windows accent follows the win10 blend #0067c0 */
 [data-theme="light"] {
   --color-canvas: #f3f3f3;
   --color-deep: #ebebeb;
@@ -392,10 +396,10 @@
   --color-ok: #1e7f4f;
   --color-warn: #9a6b00;
   --color-err: #c23b2c;
-  --color-info: #6b5d3f;
-  --color-signal: #9a6410;
-  --color-signal-strong: #7c4c0a;
-  --color-signal-deep: #5c3a08;
+  --color-info: #565e6e;
+  --color-signal: #3f434b;
+  --color-signal-strong: #18181b;
+  --color-signal-deep: #52565e;
   --color-signal-ink: #fefefe;
   --shadow-window: 0 32px 64px rgb(0 0 0 / 14%), 0 0 8px rgb(0 0 0 / 8%);
   --shadow-flyout: 0 4px 8px rgb(0 0 0 / 10%), 0 0 2px rgb(0 0 0 / 8%);
@@ -1229,8 +1233,8 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
    5.7 THE SUNO PASS — the canvas sings (task 2-b): the real suno.com tokens
    (the dumbo neutrals, the enter/exit curves, the card geometry, the aura
    flash, the shimmer sweep) riding the trylle foundation with the windows
-   hands. The identity stays brass (#bd7a1a, content only); focus and the
-   bar CTA answer the windows accent. Motion = transform/opacity, the
+   hands. The identity answers the white sun (the one Sol — content only);
+   focus and the bar CTA answer the windows accent. Motion = transform/opacity, the
    hard stops below stay the last word.
    ========================================================================== */
 :root {
@@ -1256,8 +1260,9 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   --suno-play: 3rem;
   --suno-aura-blur: 4rem;
 
-  /* the suno aura: the warm/cool pair the prompt box breathes (captured) */
-  --suno-aura-warm: rgb(255 176 3 / 5%);
+  /* the suno aura: the warm/cool pair the prompt box breathes — the warm
+     pole rides the white sun now, never the amber of the retired brass */
+  --suno-aura-warm: rgb(255 255 255 / 5%);
   --suno-aura-cool: rgb(254 60 125 / 5%);
 
   /* the trylle card surfaces the pass pins (the ladder foot → the raise) */
@@ -1265,8 +1270,8 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   --suno-card-b: #1e1e1e;
   --suno-card-hover: #252525;
 
-  /* the debonair brass deep tone (the brand mark's own story) */
-  --dbn-brass: #bd7a1a;
+  /* the white sun deep pole (the brand mark's own story rides the mark itself) */
+  --dbn-brass: var(--color-signal-deep);
 
   /* the suno field: the dark well the prompt sits on */
   --suno-field: rgb(16 16 18 / 55%);
@@ -1276,7 +1281,7 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   --suno-card-b: #f4f4f5;
   --suno-card-hover: #fafafa;
   --suno-field: rgb(255 255 255 / 72%);
-  --suno-aura-warm: rgb(189 122 26 / 8%);
+  --suno-aura-warm: rgb(63 67 75 / 8%);
   --suno-aura-cool: rgb(0 103 192 / 6%);
 }
 

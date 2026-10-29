@@ -3,7 +3,7 @@
  * the folder's own name is the path manager of the page: it imports the
  * loose components beside it, mounts the page and re-exports the public
  * component surface. Only the theme anchor (Sol/Sol.tsx) and the window
- * registry (Sol/widgets/PanelWorkspace.tsx) consume this file.
+ * registry (Sol/wingets/PanelWorkspace.tsx) consume this file.
  *
  * Audio — the music studio in the Windows 11 grammar: a nav pane beside the
  * content deck, the tracks as hairline rows and the render queue over the
@@ -11,16 +11,20 @@
  * rides the catalog over https from the debonair app. This body rides the
  * dtw kit with the brass identity (#d9962e, the registry tint) on the
  * engine mark, the active-indicator pill and the queue content CTA — the
- * chrome washes stay neutral slate and the windows light accent.
+ * chrome washes stay neutral slate and the windows light accent. The
+ * honest shelf law rides the track list: while the catalog answers no
+ * tracks (the seed state of today) the list card hands its seat to the
+ * in-construction face — the engine card keeps answering the real studio
+ * queue state — and the track rows return the day the catalog serves them.
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "@/widgets/Shellchrome";
+import { ShellChrome } from "@/wingets/Shellchrome";
 import { type NativeApp, nativeApps, osAppLabels, type StudioTrack, studioTracks } from "../../catalog";
 import { osText } from "../../oslabels.ts";
 import { queuestudiorender } from "../../runner";
-import { MusicEngine } from "../widgets";
-import { MusicTracks } from "../widgets";
+import { Constructionface, MusicEngine } from "../wingets";
+import { MusicTracks } from "../wingets";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */
@@ -54,6 +58,11 @@ export default function Audio({ embedded }: { embedded?: boolean }) {
 
   const engine = apps.find((app) => app.engine === "katexis" && app.owner === "debonair");
 
+  /* the honest shelf: once the catalog has answered and holds no tracks, the
+   * list card hands its seat to the construction face — the engine card above
+   * stays, it answers the real queue state of the studio */
+  const empty = loaded && tracks.length === 0;
+
   return (
     <main className="dtw-app dtw-audio" style={embedded ? { height: "100%", overflow: "auto" } : undefined}>
       {!embedded && <ShellChrome />}
@@ -66,7 +75,14 @@ export default function Audio({ embedded }: { embedded?: boolean }) {
         <div className="dtw-content">
           <h1 className="dtw-title">{AUDIO_LABEL?.name ?? "Audio"}</h1>
           <MusicEngine app={engine} />
-          <MusicTracks rows={tracks} loaded={loaded} onQueue={queueTrack} />
+          {empty ? (
+            <Constructionface
+              accent="#d9962e"
+              title={AUDIO_LABEL?.name ?? "Audio"}
+            />
+          ) : (
+            <MusicTracks rows={tracks} loaded={loaded} onQueue={queueTrack} />
+          )}
         </div>
       </div>
     </main>

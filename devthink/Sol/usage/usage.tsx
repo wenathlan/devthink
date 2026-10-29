@@ -3,7 +3,7 @@
  * the folder's own name is the path manager of the page: it imports the
  * loose components beside it, mounts the page and re-exports the public
  * component surface. Only the theme anchor (Sol/Sol.tsx) and the window
- * registry (Sol/widgets/PanelWorkspace.tsx) consume this file.
+ * registry (Sol/wingets/PanelWorkspace.tsx) consume this file.
  *
  * Usage — the activity ledger in the Windows 11 grammar: a nav pane beside
  * the content deck, the message count as the one dominant figure and the
@@ -17,12 +17,12 @@
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "@/widgets/Shellchrome";
+import { ShellChrome } from "@/wingets/Shellchrome";
 import { osAppLabels } from "../../catalog";
 import { browserStoreSummary } from "../../storage.ts";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { osText } from "../../oslabels.ts";
-import { type Usage as UsageData, UsageMeasures } from "../widgets";
+import { type Usage as UsageData, UsageMeasures } from "../wingets";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */

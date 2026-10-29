@@ -120,7 +120,7 @@ describe("design contract", () => {
   });
 
   it("carries the flow contract sources (the entry gate behind the home anchor, the shared state module)", () => {
-    const GATE = read("../argan/Sol/widgets/HomeEntrygate.tsx");
+    const GATE = read("../argan/Sol/wingets/HomeEntrygate.tsx");
     const STATE = read("../argan/onboardingstate.ts");
     const HOME = read("../argan/Sol/home/home.tsx");
     const ONBOARDING = read("../argan/Sol/onboarding/onboarding.tsx");

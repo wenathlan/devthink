@@ -427,7 +427,7 @@ const modulefixtures: Record<string, string> = {
 };
 const fixtureset = [
   { source: "example-org-pagestate.json", target: "fixtures/example-org-pagestate.json" },
-  { source: "mcp-client.ts", target: "fixtures/mcp-client.ts" },
+  { source: "mcp.client.ts", target: "fixtures/mcp.client.ts" },
   { source: "cjs.js", target: "fixtures/cjs.js" },
   { source: "bun.ts", target: "fixtures/bun.ts" },
   { source: "deno.ts", target: "fixtures/deno.ts" },

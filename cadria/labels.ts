@@ -1,8 +1,8 @@
 /**
  * labels.ts — the copy law of cadria: every interface string lives in the
- * label store, the widgets read through this typed accessor, and a
+ * label store, the wingets read through this typed accessor, and a
  * hardcoded string inside a widget is a defect. the manifest below is the
- * english source of truth extracted from the real strings of the Sol widgets
+ * english source of truth extracted from the real strings of the Sol wingets
  * and the page anchors; the seed ingests it into the labels store (the site
  * db through db.ts on the server, the browser rows cache in the visitor
  * machine) and the seed never overwrites a translated row.

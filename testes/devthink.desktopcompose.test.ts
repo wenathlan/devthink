@@ -45,8 +45,8 @@ import {
 } from "../devthink/desktopstate.ts";
 import { osText } from "../devthink/oslabels.ts";
 
-const desktop = readFileSync(join(import.meta.dirname, "..", "Sol", "widgets", "PanelDesktop.tsx"), "utf8");
-const workspace = readFileSync(join(import.meta.dirname, "..", "Sol", "widgets", "PanelWorkspace.tsx"), "utf8");
+const desktop = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelDesktop.tsx"), "utf8");
+const workspace = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelWorkspace.tsx"), "utf8");
 const panel = readFileSync(join(import.meta.dirname, "..", "Sol", "panel", "panel.tsx"), "utf8");
 const solcss = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
 

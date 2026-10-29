@@ -16,7 +16,7 @@ function read(path: string): string {
 
 const CSS = read("../vault/Sol/sol.css");
 const ENTRY = read("../vault/index.html");
-const MARK = read("../vault/Sol/widgets/ShellBrandmark.tsx");
+const MARK = read("../vault/Sol/wingets/ShellBrandmark.tsx");
 const SHELL = read("../vault/Sol/shell/Shell.tsx");
 const TOML = read("../vault/devthink.toml");
 const SOL = read("../vault/Sol/Sol.tsx");
@@ -131,7 +131,7 @@ describe("design contract", () => {
   });
 
   it("mounts the flow law (the entry gate on /, intro and onboarding in the chain)", () => {
-    const GATE = read("../vault/Sol/widgets/HomeEntrygate.tsx");
+    const GATE = read("../vault/Sol/wingets/HomeEntrygate.tsx");
     const HOME = read("../vault/Sol/home/home.tsx");
     const INTRO = read("../vault/Sol/intro/intro.tsx");
     const ONBOARDING = read("../vault/Sol/onboarding/onboarding.tsx");

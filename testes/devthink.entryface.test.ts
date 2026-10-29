@@ -26,9 +26,9 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { saaschrome, saasfooter, saashero, saasrailstops } from "../devthink/saascontent.ts";
 
-const sections = readFileSync(join(import.meta.dirname, "..", "Sol", "widgets", "IntroSaassections.tsx"), "utf8");
-const saas = readFileSync(join(import.meta.dirname, "..", "Sol", "widgets", "IntroSaas.tsx"), "utf8");
-const rails = readFileSync(join(import.meta.dirname, "..", "Sol", "widgets", "IntroSaasrails.tsx"), "utf8");
+const sections = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "IntroSaassections.tsx"), "utf8");
+const saas = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "IntroSaas.tsx"), "utf8");
+const rails = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "IntroSaasrails.tsx"), "utf8");
 const intro = readFileSync(join(import.meta.dirname, "..", "Sol", "intro", "intro.tsx"), "utf8");
 const explore = readFileSync(join(import.meta.dirname, "..", "Sol", "explore", "explore.tsx"), "utf8");
 const auth = readFileSync(join(import.meta.dirname, "..", "Sol", "auth", "auth.tsx"), "utf8");

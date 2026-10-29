@@ -3,7 +3,7 @@
  * the folder's own name is the path manager of the page: it imports the
  * loose components beside it, mounts the page and re-exports the public
  * component surface. Only the theme anchor (Sol/Sol.tsx) and the window
- * registry (Sol/widgets/PanelWorkspace.tsx) consume this file.
+ * registry (Sol/wingets/PanelWorkspace.tsx) consume this file.
  *
  * Video — the video studio in the Windows 11 grammar: a nav pane beside the
  * content deck, the assets as hairline rows and the render queue over the
@@ -11,15 +11,20 @@
  * rides the catalog over https from the cadria app. This body rides the
  * dtw kit with the magenta identity (#f472b6, the registry tint) on the
  * engine mark, the active-indicator pill and the render content CTA — the
- * chrome washes stay neutral slate and the windows light accent.
+ * chrome washes stay neutral slate and the windows light accent. The
+ * honest shelf law rides the asset list: while the catalog answers no
+ * assets (the seed state of today) the list card hands its seat to the
+ * in-construction face — the local playback stage and the engine card keep
+ * answering their real work — and the asset rows return the day the
+ * catalog serves them.
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "@/widgets/Shellchrome";
+import { ShellChrome } from "@/wingets/Shellchrome";
 import { type NativeApp, nativeApps, osAppLabels, type StudioAsset, studioAssets } from "../../catalog";
 import { osText } from "../../oslabels.ts";
 import { queuestudiorender } from "../../runner";
-import { VideoAssets, VideoEngine, VideoPlayer } from "../widgets";
+import { Constructionface, VideoAssets, VideoEngine, VideoPlayer } from "../wingets";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */
@@ -52,6 +57,11 @@ export default function Video({ embedded }: { embedded?: boolean }) {
 
   const engine = apps.find((app) => app.engine === "versawase" && app.owner === "cadria");
 
+  /* the honest shelf: once the catalog has answered and holds no assets, the
+   * list card hands its seat to the construction face — the local playback
+   * stage and the engine card above stay, they answer their real work */
+  const empty = loaded && assets.length === 0;
+
   return (
     <main className="dtw-app dtw-video" style={embedded ? { height: "100%", overflow: "auto" } : undefined}>
       {!embedded && <ShellChrome />}
@@ -65,7 +75,14 @@ export default function Video({ embedded }: { embedded?: boolean }) {
           <h1 className="dtw-title">{VIDEO_LABEL?.name ?? "Video"}</h1>
           <VideoPlayer />
           <VideoEngine app={engine} />
-          <VideoAssets rows={assets} loaded={loaded} onRender={queueRender} />
+          {empty ? (
+            <Constructionface
+              accent="#e858c7"
+              title={VIDEO_LABEL?.name ?? "Video"}
+            />
+          ) : (
+            <VideoAssets rows={assets} loaded={loaded} onRender={queueRender} />
+          )}
         </div>
       </div>
     </main>

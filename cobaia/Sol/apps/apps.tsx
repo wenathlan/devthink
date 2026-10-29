@@ -15,8 +15,8 @@
 import type { CSSProperties } from "react";
 import { familyurl } from "../../familyurl";
 import { labelfill, label } from "../../labels";
-import { AdSlot } from "../widgets";
-import { ROSTER } from "../widgets";
+import { AdSlot } from "../wingets";
+import { ROSTER } from "../wingets";
 
 export function Apps() {
   return (

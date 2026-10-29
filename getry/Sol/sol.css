@@ -12,8 +12,11 @@
    entries · motion · guards.
    doctrine: mica #202020 radial-gradient(#1a1f35 25%, #202020 100%) fixed ·
    the 8-step surface ladder #242424→#494949 · hairlines ink 5%/10% · the
-   getry violet #8b5cf6 as the app identity ONLY (brand mark, content cta,
-   active indicator) — focus and the chrome answer the windows accent
+   ONE Sol accent is the WHITE SUN (the single-theme law: the name is Sol
+   but the sun is WHITE, never yellow — pure #ffffff on the dark ladder, the
+   graphite contrast pole on the light face, the same white light every app
+   of the family wears; the violet story survives only in the drawn brand
+   mark) · focus and the chrome answer the windows accent
    #4cc2ff (light #0067c0) · close rgb(232 17 35) · body 13px weight 450 ·
    Inter Variable everywhere, Geist Mono on labels and numbers · H1
    clamp(2.25rem,5vw,3.75rem) tracking -0.02em · radii .625rem law (window
@@ -66,10 +69,13 @@
   --color-hairline: color-mix(in oklab, #fefefe 5%, transparent);
   --color-hairline-strong: color-mix(in oklab, #fefefe 10%, transparent);
 
-  /* ---- the getry signal: the violet rides brand, content CTAs and active
-     indicators only — never focus, never the chrome ---- */
-  --color-signal: #8b5cf6;
-  --color-signal-ink: #150b26;
+  /* ---- the signal: THE WHITE SUN — one Sol, one light; the name is Sol
+     but the sun is WHITE, never yellow ---- */
+  --color-signal: #ffffff;
+  --color-signal-strong: #ffffff;
+  --color-signal-2: #c9cdd6;
+  --color-signal-3: #8b909b;
+  --color-signal-ink: #14161a;
 
   /* ---- the WINDOWS accents (focus + chrome; the close red) ---- */
   --color-win: #4cc2ff;
@@ -141,8 +147,11 @@
   --color-ink-3: #999999;
   --color-hairline: color-mix(in oklab, #fefefe 5%, transparent);
   --color-hairline-strong: color-mix(in oklab, #fefefe 10%, transparent);
-  --color-signal: #8b5cf6;
-  --color-signal-ink: #150b26;
+  --color-signal: #ffffff;
+  --color-signal-strong: #ffffff;
+  --color-signal-2: #c9cdd6;
+  --color-signal-3: #8b909b;
+  --color-signal-ink: #14161a;
   --color-win: #4cc2ff;
   --color-win-ink: #0a0a0a;
   --color-close: #e81123;
@@ -164,13 +173,13 @@
   /* hairlines (they re-mix per theme via the light block) */
   --line: var(--color-hairline);
   --line-strong: var(--color-hairline-strong);
-  /* the violet ramp anchored on the campaign signal #8b5cf6; the app
-     identity, 90/10: brand mark, content cta, active indicator */
-  --violet-300: #c4b5fd; /* the light tint */
-  --violet-500: #8b5cf6; /* the signal — the getry violet */
-  --violet-600: #7c3aed; /* the deep pole */
-  /* the accents: the app identity rides the violet; the WINDOWS accent
-     governs focus, the chrome states and the bar */
+  /* the white sun ramp — the one Sol accent the whole family wears; the
+     violet names keep resolving so every section tracks the semantic poles */
+  --violet-300: var(--color-signal-strong); /* the light tint — the bright pole */
+  --violet-500: var(--color-signal); /* the signal — the white sun */
+  --violet-600: var(--color-signal-2); /* the deep pole — the penumbra */
+  /* the accents: the white sun (the one Sol) rides the accent slot; the
+     WINDOWS accent governs focus, the chrome states and the bar */
   --accent: var(--violet-500); --accent-ink: var(--color-signal-ink);
   --win-accent: var(--color-win);
   --focus: var(--color-win);
@@ -271,8 +280,9 @@
   color-scheme: dark;
 }
 
-/* the light face: the devthink daylight ladder, the violet stepping down to
-   the deep pole, the windows accent follows #0067c0 */
+/* the light face: the devthink daylight ladder, the white sun stepping down
+   to its graphite contrast pole (the light value of the SAME semantic token
+   — one Sol, two honest variations), the windows accent follows #0067c0 */
 [data-theme="light"] {
   --color-canvas: #f3f3f3;
   --color-deep: #ebebeb;
@@ -289,7 +299,10 @@
   --color-ink-3: #555555;
   --color-hairline: color-mix(in oklab, #1a1a1a 8%, transparent);
   --color-hairline-strong: color-mix(in oklab, #1a1a1a 16%, transparent);
-  --color-signal: #6d28d9;
+  --color-signal: #3f434b;
+  --color-signal-strong: #18181b;
+  --color-signal-2: #52565e;
+  --color-signal-3: #8b909b;
   --color-signal-ink: #fefefe;
   --color-win: #0067c0;
   --color-win-ink: #fefefe;
@@ -298,7 +311,6 @@
   --color-err: #c23b2c;
   --color-info: #565e6e;
   --bg: #f3f3f3;
-  --violet-300: #5b21b6; --violet-500: #6d28d9; --violet-600: #4c1d95;
   --accent-ink: #fefefe;
   --wash: rgb(0 0 0 / 8%); --wash-soft: rgb(0 0 0 / 4%); --scroll: rgb(0 0 0 / 35%);
   --sol-drop: rgb(0 0 0 / 10%);

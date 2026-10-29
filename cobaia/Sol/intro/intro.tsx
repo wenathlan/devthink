@@ -26,10 +26,10 @@ import type { CSSProperties } from "react";
 import { Link } from "wouter";
 import { useCallback, useEffect, useState } from "react";
 import { label } from "../../labels";
-import { IntroFooter as IntroFooter } from "../widgets";
-import { IntroPlans as IntroPlans } from "../widgets";
-import { IntroSplash as IntroSplash } from "../widgets";
-import { BrandMark } from "../widgets";
+import { IntroFooter as IntroFooter } from "../wingets";
+import { IntroPlans as IntroPlans } from "../wingets";
+import { IntroSplash as IntroSplash } from "../wingets";
+import { BrandMark } from "../wingets";
 
 /** the lifecycle of the opening act: resolving (the motion preference
  * decides) → playing (the akash floor over the landing) → done (the

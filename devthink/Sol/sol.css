@@ -70,21 +70,25 @@
   --color-hairline: color-mix(in oklab, #fefefe 5%, transparent);
   --color-hairline-strong: color-mix(in oklab, #fefefe 10%, transparent);
 
-  /* ---- the signal: neutral silver/graphite — the chrome identity ---- */
-  --color-signal: #e7e9ee;
-  --color-signal-strong: #f4f5f7;
+  /* ---- the signal: THE WHITE SUN — one Sol, one light. The name is Sol
+     but the sun is WHITE, never the yellow of the retired theme. The dark
+     face carries the pure white body (it glows on the graphite ladder);
+     the quiet poles beneath (the silver 2, the faint 3) are the penumbra ---- */
+  --color-signal: #ffffff;
+  --color-signal-strong: #ffffff;
   --color-signal-2: #c9cdd6;
   --color-signal-3: #8b909b;
   --color-signal-ink: #14161a;
 
   /* ---- accents: the WINDOWS system accent governs focus/chrome/CTA (the
-     win10 blend carries the light theme #0067c0); the retired amber slot of
-     the old Sol theme resolves to the accent — the amber is dead; the Doo
-     cyan keeps the IA identity in content marks; the close red ---- */
+     win10 blend carries the light theme #0067c0); the sun slot of the one
+     Sol theme answers its own law — the sun is WHITE, pure #ffffff, never
+     the amber of the retired theme; the Doo cyan keeps the IA identity in
+     content marks; the close red ---- */
   --color-win: #4cc2ff;
   --color-win-ink: #0a0a0a;
-  --color-sun: var(--color-win);
-  --color-sun-ink: var(--color-win-ink);
+  --color-sun: #ffffff;
+  --color-sun-ink: #14161a;
   --color-doo: #56cce0;
   --color-close: #e81123;
   --color-close-deep: #8b0a14;
@@ -321,7 +325,7 @@
   --signal-strong: var(--color-signal-strong);
   --signal-2: var(--color-signal-2);
   --signal-ink: var(--color-signal-ink);
-  --signal-wash: rgb(231 233 238 / 10%);
+  --signal-wash: rgb(255 255 255 / 10%);
   --focus: var(--color-focus);
   --ok: var(--color-ok);
   --warn: var(--color-warn);
@@ -429,6 +433,10 @@
   --r-pill: 100px;
   --sol-sun: var(--color-sun);
   --sol-sun-ink: var(--color-sun-ink);
+  /* the sol accent rides the signal slot (the white sun) so the stray
+     fallback hexes of the out-of-pass sections never answer again */
+  --sol-accent: var(--color-signal);
+  --sol-accent-ink: var(--color-signal-ink);
   --sol-close: var(--color-close);
   --sol-focus: var(--color-win);
   --shell-bottom: 48px;
@@ -457,7 +465,7 @@
   --win-shadow-window: var(--shadow-window);
   --win-shadow-flyout: var(--shadow-flyout);
   --win-signal: var(--color-signal);
-  --win-signal-wash: rgb(231 233 238 / 10%);
+  --win-signal-wash: rgb(255 255 255 / 10%);
   --win-ease: var(--ease-window);
   --os-acrylic: var(--acrylic-strong);
 
@@ -533,14 +541,25 @@
   --win-accent-ink: #fefefe;
   --color-win: #0067c0;
   --color-win-ink: #fefefe;
-  /* the retired amber resolves to the light system accent (the win10 blend) */
-  --color-sun: var(--color-win);
-  --color-sun-ink: #fefefe;
+  /* the white sun keeps shining on the light face — the same pure body;
+     the contrast it needs rides the hairline ring and the shadow ladder
+     (the repo's own semantic tokens), never a second color */
+  --color-sun: #ffffff;
+  --color-sun-ink: #14161a;
   --scrollbar-thumb: rgb(0 0 0 / 35%);
   --sol-panel: rgb(24 24 27 / 4%);
   --sol-panel-strong: rgb(24 24 27 / 8%);
   --dt-tab-joint: rgb(244 244 245);
   --os-acrylic: var(--acrylic-strong);
+}
+
+/* the white sun on the light face: the command rail's active bar keeps its
+   pure white body and borrows the contrast from the hairline-strong ring
+   (the repo's own semantic token) — white with a border, never a color */
+[data-theme="light"] .cmd-item.active {
+  box-shadow:
+    inset 3px 0 0 var(--sol-sun),
+    0 0 0 1px var(--color-hairline-strong);
 }
 
 * {
@@ -4168,12 +4187,12 @@ legend.cmd-group {
 .chat-orb {
   border-radius: 9px;
   background:
-    radial-gradient(90% 62% at 32% 10%, rgb(255 251 235 / 55%), transparent 54%),
-    linear-gradient(160deg, var(--sol-tangerine), var(--sol-primary) 58%, #b33e00);
+    radial-gradient(90% 62% at 32% 10%, rgb(255 255 255 / 55%), transparent 54%),
+    linear-gradient(160deg, var(--sol-tangerine), var(--sol-primary) 58%, var(--color-signal-3));
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 35%),
     var(--dt-elev-1),
-    0 0 14px rgb(231 233 238 / 22%);
+    0 0 14px rgb(255 255 255 / 22%);
   animation: none;
 }
 
@@ -6637,7 +6656,7 @@ legend.cmd-group {
   -webkit-mask-image: radial-gradient(120% 72% at 50% 0%, black 20%, transparent 76%);
 }
 /* ---- institutional top bar: retired — the institutional pages carry the
-        ONE chrome of the theme (Sol/widgets/Shellchrome.tsx, the .dt-nav
+        ONE chrome of the theme (Sol/wingets/Shellchrome.tsx, the .dt-nav
         navbar) like every other page; no second topbar is mounted ---- */
 
 .inst-section {
@@ -6828,7 +6847,7 @@ legend.cmd-group {
    SHELL CHROME HOOKS — the semantic remainder of the one chrome (task 3-a):
    the taskbar, start menu, tray, flyouts, the app tile material and the
    desktop composition all moved INTO the components as Tailwind composition
-   (Sol/widgets/Shellchrome.tsx, apptile.tsx, panel/desktop.tsx). What stays
+   (Sol/wingets/Shellchrome.tsx, apptile.tsx, panel/desktop.tsx). What stays
    here is the grammar utilities cannot own: the atmosphere light bed of the
    desktop (the C1/C2 grain textures read this hook) and the
    start-mark draw (the stroke-dashoffset choreography).
@@ -10454,7 +10473,7 @@ span[data-tile] {
 
 /* sol.css.shelldelta — the named classes born in the task 1-b shell
    eradication wave (the tailwind exit of Sol/panel/windowframe.tsx and the
-   menu marks of Sol/widgets/PanelDesktopmenu.tsx). One file, one namespace block
+   menu marks of Sol/wingets/PanelDesktopmenu.tsx). One file, one namespace block
    per consumer: .dsk-menu-* rides the desktop context menus, .shell-window*
    rides the floating window chrome, .snap-flyout / .snap-ghost ride the snap
    layouts. Every rule speaks pure hand css over the --color-* token ladder
@@ -17101,7 +17120,7 @@ body:has(.dt-nav[data-navbar="right"]) {
 }
 
 /* ==========================================================================
-   the universal widgets: the shared primitives every page anchor consumes.
+   the universal wingets: the shared primitives every page anchor consumes.
    the kbd keycap, the status dot, the avatar, the banner, the segmented
    control, the chip and the connection dot, each with the eight states and
    the declared tokens only.
@@ -18171,7 +18190,7 @@ button.dtc-recents__row {
 }
 
 /* ==========================================================================
-   THE PREMIUM APPICON SKIN — the drawn icon set (Sol/widgets/ShellAppicons.tsx)
+   THE PREMIUM APPICON SKIN — the drawn icon set (Sol/wingets/ShellAppicons.tsx)
    The drawn plates carry their own paint (the identity gradient, the rim
    light, the grounded shade ride the SVG defs); what stays here is the one
    gesture the stylesheet owns: the specular sheen sweep the live flag of
@@ -19215,7 +19234,7 @@ button.dtc-recents__row {
  * projects/history/usage/plans · calculator/games/audio/video/image)
  * The wave-2 completion pass: every internal surface that had not yet
  * received the craft grammar now wears the same material. The composition
- * of each surface stays (the anchors and widgets keep their structure, their
+ * of each surface stays (the anchors and wingets keep their structure, their
  * copy and their contracts); the finish is rebuilt: the shaders-grade
  * layered material (inset hairline + inset gloss + fluent depth) on every
  * standing panel, ONE hero light per page, and micro-interactions that
@@ -21312,6 +21331,141 @@ button.dtc-recents__row {
 }
 /* ==== icon wave 5-a · end of section ==== */
 
+/* ==== the construction face — the honest empty-shelf surface of the os ==== */
+/* the in-construction face — the surface every not-yet-built shelf of the os
+ * renders (the games runner shelf, the studio asset lists) in place of an
+ * empty list. the face rides the dtw kit grammar — the white hairline card,
+ * the owning app's accent band on the top edge, the breathing wrench glyph
+ * (one spring entry, one sheen pass, then a quiet halo breathe that never
+ * runs at full intensity), the mono eyebrow, the display title, one honest
+ * line and the way back to explore. the accent arrives as a custom property
+ * from the page (never a second hardcoded hue), the radius and shadow steps
+ * answer the tokens, and the reduced-motion guard stills every pass. */
+.dt-construction {
+  --dt-construction-accent: var(--color-win);
+  position: relative;
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  max-width: 620px;
+  padding: 34px 34px 30px;
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: var(--radius-xl);
+  background: #ffffff;
+  box-shadow:
+    0 1px 2px rgb(15 23 42 / 6%),
+    0 16px 36px -22px rgb(15 23 42 / 22%);
+  overflow: hidden;
+  animation: dtConstructionIn 420ms var(--ease-entry) backwards;
+}
+/* the accent band: the 3px top edge of the owning app family */
+.dt-construction::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: var(--dt-construction-accent);
+}
+.dt-construction__glyph {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border: 1px solid color-mix(in srgb, var(--dt-construction-accent) 30%, transparent);
+  border-radius: var(--radius-2xl);
+  background:
+    radial-gradient(
+      130% 130% at 18% 8%,
+      color-mix(in srgb, var(--dt-construction-accent) 16%, transparent),
+      transparent 62%
+    ),
+    color-mix(in srgb, var(--dt-construction-accent) 7%, transparent);
+  color: var(--dt-construction-accent);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 65%),
+    0 12px 26px -16px color-mix(in srgb, var(--dt-construction-accent) 55%, transparent);
+  overflow: hidden;
+  animation: dtConstructionGlyph 560ms var(--ease-spring) 90ms backwards;
+}
+/* the icon seats above the two decorative passes of the tile */
+.dt-construction__glyph svg {
+  position: relative;
+  z-index: 1;
+}
+/* the one sheen pass: a soft light band crosses the tile once after the
+   entry settles, then stays out of the frame (fill both, no loop) */
+.dt-construction__glyph::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -45%;
+  width: 45%;
+  background: linear-gradient(105deg, transparent, rgb(255 255 255 / 55%), transparent);
+  transform: translateX(0);
+  animation: dtConstructionSheen 1100ms var(--ease-window) 480ms both;
+  pointer-events: none;
+}
+/* the quiet halo breathe: the accent ring fades between two low tints —
+   subtle by design, never a full-intensity loop */
+.dt-construction__glyph::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 1px solid color-mix(in srgb, var(--dt-construction-accent) 45%, transparent);
+  opacity: 0.2;
+  animation: dtConstructionBreathe 4.4s var(--ease-micro) 1.2s infinite alternate;
+  pointer-events: none;
+}
+.dt-construction__eyebrow {
+  margin: 0;
+  color: var(--dtv3-ink-3);
+  font: 500 11px var(--dt-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.dt-construction__title {
+  margin: 0;
+  color: var(--dtv3-ink-1);
+  font: 600 22px / 1.25 var(--font-sans, var(--dt-sans));
+  letter-spacing: -0.01em;
+}
+.dt-construction__copy {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--dtv3-ink-2);
+  font: 400 13px / 1.6 var(--font-sans, var(--dt-sans));
+}
+.dt-construction__action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  margin-top: 6px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: var(--dt-construction-accent);
+  color: #0f172a;
+  font: 600 12.5px var(--font-sans, var(--dt-sans));
+  cursor: pointer;
+  transition:
+    background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 100ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dt-construction__action:hover {
+  background: color-mix(in srgb, var(--dt-construction-accent) 88%, #fff);
+}
+.dt-construction__action:active {
+  transform: scale(0.97);
+}
+.dt-construction__action:focus-visible {
+  outline: 2px solid var(--dtv3-ink-1);
+  outline-offset: 2px;
+}
+@keyframes dtConstructionIn {
 /* ==== @section chat wave 7-a · the flagship conversation grammar ====
  * the chat flagship wave — the campaign's #1 priority. the reference
  * corpus (z.ai chat, chatgpt.com, t3code, zcode, synara — the
@@ -21668,6 +21822,47 @@ button.dtc-recents__row {
     opacity: 0;
     transform: translateY(8px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes dtConstructionGlyph {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes dtConstructionSheen {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(340%);
+  }
+}
+@keyframes dtConstructionBreathe {
+  from {
+    opacity: 0.18;
+  }
+  to {
+    opacity: 0.45;
+  }
+}
+/* the reduced-motion guard: every pass of the face stills — the card, the
+   glyph, the sheen and the breathe land at their resting state at once */
+@media (prefers-reduced-motion: reduce) {
+  .dt-construction,
+  .dt-construction__glyph,
+  .dt-construction__glyph::before,
+  .dt-construction__glyph::after {
+    animation: none;
+  }
+}
 
   to {
     opacity: 1;

@@ -36,13 +36,13 @@ import {
   saveNavbarStyle,
 } from "../devthink/desktopstate.ts";
 
-const chrome = readFileSync(join(import.meta.dirname, "..", "Sol", "widgets", "Shellchrome.tsx"), "utf8");
+const chrome = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "Shellchrome.tsx"), "utf8");
 const navbarcard = readFileSync(
-  join(import.meta.dirname, "..", "Sol", "widgets", "SettingsNavbarposition.tsx"),
+  join(import.meta.dirname, "..", "Sol", "wingets", "SettingsNavbarposition.tsx"),
   "utf8",
 );
 const personalization = readFileSync(
-  join(import.meta.dirname, "..", "Sol", "widgets", "SettingsPersonalization.tsx"),
+  join(import.meta.dirname, "..", "Sol", "wingets", "SettingsPersonalization.tsx"),
   "utf8",
 );
 const solcss = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");

@@ -21,7 +21,7 @@ function read(path: string): string {
 const CSS = read("../stealthhead/Sol/sol.css");
 const ENTRY = read("../stealthhead/index.html");
 const SHELL = read("../stealthhead/Sol/shell/Shell.tsx");
-const MARK = read("../stealthhead/Sol/widgets/ShellBrandmark.tsx");
+const MARK = read("../stealthhead/Sol/wingets/ShellBrandmark.tsx");
 const TOML = read("../stealthhead/devthink.toml");
 const SOL = read("../stealthhead/Sol/Sol.tsx");
 const FAVICON = read("../stealthhead/favicon.svg");
@@ -125,7 +125,7 @@ describe("design contract", () => {
   });
 
   it("carries the flow contract sources (the entry gate behind the home anchor, the shared state module)", () => {
-    const GATE = read("../stealthhead/Sol/widgets/HomeEntrygate.tsx");
+    const GATE = read("../stealthhead/Sol/wingets/HomeEntrygate.tsx");
     const STATE = read("../stealthhead/onboardingstate.ts");
     const HOME = read("../stealthhead/Sol/home/home.tsx");
     const ONBOARDING = read("../stealthhead/Sol/onboarding/onboarding.tsx");
