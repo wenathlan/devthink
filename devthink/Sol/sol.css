@@ -21331,6 +21331,141 @@ button.dtc-recents__row {
 }
 /* ==== icon wave 5-a · end of section ==== */
 
+/* ==== the construction face — the honest empty-shelf surface of the os ==== */
+/* the in-construction face — the surface every not-yet-built shelf of the os
+ * renders (the games runner shelf, the studio asset lists) in place of an
+ * empty list. the face rides the dtw kit grammar — the white hairline card,
+ * the owning app's accent band on the top edge, the breathing wrench glyph
+ * (one spring entry, one sheen pass, then a quiet halo breathe that never
+ * runs at full intensity), the mono eyebrow, the display title, one honest
+ * line and the way back to explore. the accent arrives as a custom property
+ * from the page (never a second hardcoded hue), the radius and shadow steps
+ * answer the tokens, and the reduced-motion guard stills every pass. */
+.dt-construction {
+  --dt-construction-accent: var(--color-win);
+  position: relative;
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  max-width: 620px;
+  padding: 34px 34px 30px;
+  border: 1px solid var(--dtv3-hairline);
+  border-radius: var(--radius-xl);
+  background: #ffffff;
+  box-shadow:
+    0 1px 2px rgb(15 23 42 / 6%),
+    0 16px 36px -22px rgb(15 23 42 / 22%);
+  overflow: hidden;
+  animation: dtConstructionIn 420ms var(--ease-entry) backwards;
+}
+/* the accent band: the 3px top edge of the owning app family */
+.dt-construction::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: var(--dt-construction-accent);
+}
+.dt-construction__glyph {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border: 1px solid color-mix(in srgb, var(--dt-construction-accent) 30%, transparent);
+  border-radius: var(--radius-2xl);
+  background:
+    radial-gradient(
+      130% 130% at 18% 8%,
+      color-mix(in srgb, var(--dt-construction-accent) 16%, transparent),
+      transparent 62%
+    ),
+    color-mix(in srgb, var(--dt-construction-accent) 7%, transparent);
+  color: var(--dt-construction-accent);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 65%),
+    0 12px 26px -16px color-mix(in srgb, var(--dt-construction-accent) 55%, transparent);
+  overflow: hidden;
+  animation: dtConstructionGlyph 560ms var(--ease-spring) 90ms backwards;
+}
+/* the icon seats above the two decorative passes of the tile */
+.dt-construction__glyph svg {
+  position: relative;
+  z-index: 1;
+}
+/* the one sheen pass: a soft light band crosses the tile once after the
+   entry settles, then stays out of the frame (fill both, no loop) */
+.dt-construction__glyph::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -45%;
+  width: 45%;
+  background: linear-gradient(105deg, transparent, rgb(255 255 255 / 55%), transparent);
+  transform: translateX(0);
+  animation: dtConstructionSheen 1100ms var(--ease-window) 480ms both;
+  pointer-events: none;
+}
+/* the quiet halo breathe: the accent ring fades between two low tints —
+   subtle by design, never a full-intensity loop */
+.dt-construction__glyph::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 1px solid color-mix(in srgb, var(--dt-construction-accent) 45%, transparent);
+  opacity: 0.2;
+  animation: dtConstructionBreathe 4.4s var(--ease-micro) 1.2s infinite alternate;
+  pointer-events: none;
+}
+.dt-construction__eyebrow {
+  margin: 0;
+  color: var(--dtv3-ink-3);
+  font: 500 11px var(--dt-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.dt-construction__title {
+  margin: 0;
+  color: var(--dtv3-ink-1);
+  font: 600 22px / 1.25 var(--font-sans, var(--dt-sans));
+  letter-spacing: -0.01em;
+}
+.dt-construction__copy {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--dtv3-ink-2);
+  font: 400 13px / 1.6 var(--font-sans, var(--dt-sans));
+}
+.dt-construction__action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  margin-top: 6px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: var(--dt-construction-accent);
+  color: #0f172a;
+  font: 600 12.5px var(--font-sans, var(--dt-sans));
+  cursor: pointer;
+  transition:
+    background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 100ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.dt-construction__action:hover {
+  background: color-mix(in srgb, var(--dt-construction-accent) 88%, #fff);
+}
+.dt-construction__action:active {
+  transform: scale(0.97);
+}
+.dt-construction__action:focus-visible {
+  outline: 2px solid var(--dtv3-ink-1);
+  outline-offset: 2px;
+}
+@keyframes dtConstructionIn {
 /* ==== @section chat wave 7-a · the flagship conversation grammar ====
  * the chat flagship wave — the campaign's #1 priority. the reference
  * corpus (z.ai chat, chatgpt.com, t3code, zcode, synara — the
@@ -21687,6 +21822,47 @@ button.dtc-recents__row {
     opacity: 0;
     transform: translateY(8px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes dtConstructionGlyph {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes dtConstructionSheen {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(340%);
+  }
+}
+@keyframes dtConstructionBreathe {
+  from {
+    opacity: 0.18;
+  }
+  to {
+    opacity: 0.45;
+  }
+}
+/* the reduced-motion guard: every pass of the face stills — the card, the
+   glyph, the sheen and the breathe land at their resting state at once */
+@media (prefers-reduced-motion: reduce) {
+  .dt-construction,
+  .dt-construction__glyph,
+  .dt-construction__glyph::before,
+  .dt-construction__glyph::after {
+    animation: none;
+  }
+}
 
   to {
     opacity: 1;

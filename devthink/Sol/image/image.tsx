@@ -10,7 +10,11 @@
  * gateway. The engine itself is never bundled: it rides the catalog over
  * https from the cadria app. The old editorial pass (the shader stage, the
  * film grain, the atmosphere light) is retired — this body rides the dtw
- * kit with the engine as one quiet card.
+ * kit with the engine as one quiet card. The honest shelf law rides the
+ * stills list: while the catalog answers no assets (the seed state of
+ * today) the list card hands its seat to the in-construction face — the
+ * engine card keeps answering the real studio queue state — and the still
+ * rows return the day the catalog serves them.
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -18,7 +22,7 @@ import { ShellChrome } from "@/wingets/Shellchrome";
 import { type NativeApp, nativeApps, osAppLabels, type StudioAsset, studioAssets } from "../../catalog";
 import { osText } from "../../oslabels.ts";
 import { queuestudiorender } from "../../runner";
-import { ImageEngine } from "../wingets";
+import { Constructionface, ImageEngine } from "../wingets";
 import { ImageStills } from "../wingets";
 
 /** the window title rides the catalog label row, never a hardcoded literal
@@ -53,6 +57,11 @@ export default function ImageStudio({ embedded }: { embedded?: boolean }) {
 
   const engine = apps.find((app) => app.engine === "matiz" && app.owner === "cadria");
 
+  /* the honest shelf: once the catalog has answered and holds no stills, the
+   * list card hands its seat to the construction face — the engine card above
+   * stays, it answers the real queue state of the studio */
+  const empty = loaded && assets.length === 0;
+
   return (
     <main className="dtw-app dtw-image" style={embedded ? { height: "100%", overflow: "auto" } : undefined}>
       {!embedded && <ShellChrome />}
@@ -65,7 +74,14 @@ export default function ImageStudio({ embedded }: { embedded?: boolean }) {
         <div className="dtw-content">
           <h1 className="dtw-title">{IMAGE_LABEL?.name ?? "Image"}</h1>
           <ImageEngine app={engine} />
-          <ImageStills rows={assets} loaded={loaded} onRender={queueRender} />
+          {empty ? (
+            <Constructionface
+              accent="#e858c7"
+              title={IMAGE_LABEL?.name ?? "Image"}
+            />
+          ) : (
+            <ImageStills rows={assets} loaded={loaded} onRender={queueRender} />
+          )}
         </div>
       </div>
     </main>

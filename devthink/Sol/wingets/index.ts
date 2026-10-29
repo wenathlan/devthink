@@ -28,6 +28,7 @@ export * from "./ChatSidebar.tsx";
 export * from "./ChatSolboticon.tsx";
 export * from "./ChatTurn.tsx";
 export * from "./ChatWelcome.tsx";
+export * from "./Constructionface.tsx";
 export { default as ConsoleGraphview } from "./ConsoleGraphview.tsx";
 export * from "./ConsoleGraphview.tsx";
 export * from "./ConsoleReference.tsx";
