@@ -345,7 +345,7 @@ export function costperagentof(input: { usage: agentusage[]; totals?: swarmcost 
       steps,
       ...(input.totals?.currency !== undefined ? { currency: input.totals.currency } : {}),
     },
-    source: "the per agent usage the costcert reconciliation of tests/artifacts/costcert.json recomputes",
+    source: "the per agent usage the costcert reconciliation of tests/devthink.costcert.ts recomputes",
   };
 }
 
