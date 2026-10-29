@@ -137,12 +137,16 @@ describe("sandboxlane", () => {
     const rows = await hostmodalityreport();
     // the summary row plus one honest row per registry record of the ninety plan
     expect(rows.length).toBe(91);
-    expect(rows[0]).toBe("the modality registry answers the ninety plan: 90 records — 3 live, 3 host, 84 planned");
+    expect(rows[0]).toBe("the modality registry answers the ninety plan: 90 records — 21 live, 3 host, 66 planned");
     const text = rows.join("\n");
     // the live lanes name the surfaces the platform drives
     expect(text).toContain("container-docker: live lane — docker ");
     expect(text).toContain("runner-node: live lane — the node runtime the run lane executes inside the container");
     expect(text).toContain("fs-vfs: live lane — the session jail the storage lane drives");
+    expect(text).toContain("runner-serverless: live lane — the v8 isolate the exec lane drives in process");
+    // the polyglot live lanes probe their host runtime (python names the binary)
+    expect(text).toContain("language-python: live lane — python3 ");
+    expect(text).toContain("build-make: live lane — make ");
     // the host runtimes name their binary and the probe verdict of this host
     expect(text).toContain("emulator-qemu: host runtime qemu-system-x86_64 ");
     expect(text).toContain("microvm-firecracker: host runtime firecracker ");
@@ -154,6 +158,70 @@ describe("sandboxlane", () => {
     for (const row of rows.slice(1)) {
       expect(row).toMatch(/: (live lane — |host runtime |planned — )/);
     }
+  });
+
+  it("executes a jailed python script through the polyglot lane when the host carries python", async () => {
+    const sessionid = newsessionid();
+    const placed = await runsandboxline(
+      sessionid,
+      "write hello.py print(40 + 2)",
+    );
+    expect(placed.exitcode).toBe(0);
+    const answer = await runsandboxline(sessionid, "exec python hello.py");
+    expect(answer.exitcode).toBe(0);
+    const text = joinedrows(answer);
+    if (text.includes("no python3 runtime")) {
+      // the honest refusal: this host carries no cpython, nothing executed
+      expect(text).toContain("nothing executed");
+      expect(text).toContain("language-python");
+    } else {
+      expect(text).toContain("42");
+      expect(text).toContain("exit 0");
+    }
+  }, 120_000);
+
+  it("executes a jailed script inside the v8 isolate of the serverless modality", async () => {
+    const sessionid = newsessionid();
+    await runsandboxline(
+      sessionid,
+      "write iso.js console.log(6 * 7)",
+    );
+    const answer = await runsandboxline(sessionid, "exec isolate iso.js");
+    expect(answer.exitcode).toBe(0);
+    const text = joinedrows(answer);
+    expect(text).toContain("42");
+    expect(text).toContain("exit 0");
+  });
+
+  it("answers the honest refusal with the modality report when the host carries no runtime of the language", async () => {
+    const sessionid = newsessionid();
+    await runsandboxline(
+      sessionid,
+      "write hello.lua print(42)",
+    );
+    const answer = await runsandboxline(sessionid, "exec lua hello.lua");
+    expect(answer.exitcode).toBe(0);
+    const text = joinedrows(answer);
+    if (text.includes("no lua runtime")) {
+      expect(text).toContain("nothing executed");
+      expect(text).toContain("language-lua");
+      expect(text).toContain("the modality registry answers the ninety plan");
+    } else {
+      expect(text).toContain("42");
+      expect(text).toContain("exit 0");
+    }
+  }, 120_000);
+
+  it("refuses an exec line whose arguments carry a rejected character and answers the known languages for an unknown word", async () => {
+    const sessionid = newsessionid();
+    const refused = await runsandboxline(sessionid, "exec python hello.py a;rm");
+    expect(refused.exitcode).toBe(1);
+    expect(joinedrows(refused)).toContain("rejected character");
+    const unknown = await runsandboxline(sessionid, "exec klingon hello.k");
+    expect(unknown.exitcode).toBe(0);
+    const text = joinedrows(unknown);
+    expect(text).toContain("carries no lane");
+    expect(text).toContain("the polyglot lane answers:");
   });
 });
 
@@ -191,9 +259,9 @@ describe("the vendored registry mirror (the single-source law)", () => {
     expect(report).toEqual({
       plancount: 90,
       catalogcount: 90,
-      live: 3,
+      live: 21,
       host: 3,
-      planned: 84,
+      planned: 66,
       plananswered: true,
     });
   });

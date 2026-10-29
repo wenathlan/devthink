@@ -11,6 +11,7 @@
  */
 
 import { spawn } from "node:child_process";
+import { runInNewContext } from "node:vm";
 import { appendFile, copyFile, mkdir, readdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 // the modality registry of the saddle engine — the single source of the
@@ -339,6 +340,165 @@ async function toolruncontainer(jail: string, args: string[]): Promise<string[]>
   return rows;
 }
 
+/**
+ * @section exec — the polyglot exec lane of the language modalities
+ * the exec tool drives the live language and build modalities of the
+ * registry through the real host runtime: the script (or the build
+ * recipe) executes inside the session jail, the working directory is the
+ * jail, the wall clock is bounded and the argument list stays the only
+ * transport — no shell ever parses an exec line. A host without the
+ * runtime answers the honest refusal with the modality report, never a
+ * simulated execution (the same law the container run lane answers).
+ */
+
+/** one exec lane — the host binary, the modality the lane drives and the
+ * argv the script joins (the build steps carry the recipe flags) */
+interface ExecLane {
+  /** the modality id of the registry this lane drives */
+  modality: string;
+  /** the host binary the lane probes on PATH */
+  bin: string;
+  /** builds the argv of the execution: the script target and the caller args */
+  argv: (target: string, args: string[]) => string[];
+  /** the language word the help and the refusal answer */
+  word: string;
+}
+
+/** the exec lanes — every live language and build modality the registry
+ * declares, each wired to its real host runtime (the registry owns the
+ * catalog, this table owns the invocation grammar) */
+const EXECLANES: Readonly<Record<string, ExecLane>> = Object.freeze({
+  bun: { modality: "runner-bun", bin: "bun", argv: (t, a) => [t, ...a], word: "the bun runtime" },
+  deno: { modality: "runner-deno", bin: "deno", argv: (t, a) => ["run", "--allow-read=.", "--allow-write=.", "--allow-env", t, ...a], word: "the deno runtime" },
+  python: { modality: "language-python", bin: "python3", argv: (t, a) => ["-I", t, ...a], word: "the cpython runtime" },
+  python3: { modality: "language-python", bin: "python3", argv: (t, a) => ["-I", t, ...a], word: "the cpython runtime" },
+  ruby: { modality: "language-ruby", bin: "ruby", argv: (t, a) => [t, ...a], word: "the ruby interpreter" },
+  lua: { modality: "language-lua", bin: "lua", argv: (t, a) => [t, ...a], word: "the lua interpreter" },
+  php: { modality: "language-php", bin: "php", argv: (t, a) => [t, ...a], word: "the php interpreter" },
+  go: { modality: "language-go", bin: "go", argv: (t, a) => ["run", t, ...a], word: "the golang toolchain" },
+  v: { modality: "language-v", bin: "v", argv: (t, a) => ["run", t, ...a], word: "the v compiler" },
+  zig: { modality: "language-zig", bin: "zig", argv: (t, a) => ["run", t, ...a], word: "the zig toolchain" },
+  nim: { modality: "language-nim", bin: "nim", argv: (t, a) => ["r", t, ...a], word: "the nim compiler" },
+  java: { modality: "language-java", bin: "java", argv: (t, a) => [t, ...a], word: "the jdk runtime" },
+  jvm: { modality: "runtime-jvm", bin: "java", argv: (t, a) => ["-jar", t, ...a], word: "the jvm hotspot" },
+  dotnet: { modality: "language-dotnet", bin: "dotnet", argv: (t, a) => ["run", "--project", t, ...a], word: "the dotnet runtime" },
+  make: { modality: "build-make", bin: "make", argv: (t, a) => ["-f", t, ...a], word: "the make builds" },
+  ninja: { modality: "build-ninja", bin: "ninja", argv: (t, a) => ["-f", t, ...a], word: "the ninja builds" },
+  cargo: { modality: "language-cargo", bin: "cargo", argv: (t, a) => ["run", "--manifest-path", t, ...a], word: "the cargo builds" },
+});
+
+/** the exec word of the rust lane — the two phase grammar the tool drives
+ * (rustc compiles the source to the jail, the binary executes after) */
+const RUSTLANE: ExecLane = { modality: "language-rust", bin: "rustc", argv: (t, a) => [t, ...a], word: "the rustc toolchain" };
+
+/** exechelprows — the language words the help lists (sorted, one row) */
+function exechelprows(): string[] {
+  const words = ["rust", ...Object.keys(EXECLANES)].sort();
+  return [["  exec <lang> <script|recipe> [args]  the polyglot lane — ", words.join(" ")].join("")];
+}
+
+/** runs one child argv inside the jail and answers the output rows and the
+ * exit code — the one spawn helper every exec lane shares (argv only, no
+ * shell, capped output, bounded wall clock) */
+async function execchild(jail: string, bin: string, childargv: string[]): Promise<{ rows: string[]; code: number }> {
+  const child = spawn(bin, childargv, { cwd: jail, shell: false, timeout: CAPS.timeoutms * 3 });
+  const outchunks: string[] = [];
+  const errchunks: string[] = [];
+  child.stdout.setEncoding("utf8");
+  child.stderr.setEncoding("utf8");
+  child.stdout.on("data", (chunk: string) => outchunks.push(chunk));
+  child.stderr.on("data", (chunk: string) => errchunks.push(chunk));
+  const code = await new Promise<number>((resolve) => {
+    child.on("close", (exitcode) => resolve(exitcode ?? 0));
+    child.on("error", () => resolve(127));
+  });
+  const rows: string[] = [];
+  for (const line of outchunks.join("").split(/\r?\n/).slice(0, 200)) rows.push(line);
+  const errtext = errchunks.join("");
+  if (errtext.length > 0) {
+    for (const line of errtext.split(/\r?\n/).slice(0, 60)) rows.push(["[stderr] ", line].join(""));
+  }
+  rows.push(["exit ", String(code)].join(""));
+  return { rows, code };
+}
+
+/** toolexeclanguage — the polyglot exec lane: the jailed script executes
+ * through the host runtime of its language modality (the registry is the
+ * catalog, the probe answers per host). A missing runtime answers the
+ * honest refusal with the modality report — nothing is simulated. */
+async function toolexeclanguage(jail: string, args: string[]): Promise<string[]> {
+  const lang = (args[0] ?? "").toLowerCase();
+  if (lang === "isolate") return toolexecisolate(jail, args.slice(1));
+  const lane = lang === "rust" ? RUSTLANE : EXECLANES[lang];
+  if (lane === undefined) {
+    const known = ["rust", "isolate", ...Object.keys(EXECLANES)].sort().join(" ");
+    return [
+      ["exec: the language ", lang || "(none)", " carries no lane"].join(""),
+      ["the polyglot lane answers: ", known].join(""),
+    ];
+  }
+  for (const token of args.slice(1)) {
+    if (!RUNTOKENPATTERN.test(token)) throw new SandboxError("the exec arguments carry a rejected character");
+  }
+  if (!(await binaryonpath(lane.bin))) {
+    const report = await hostmodalityreport();
+    return [
+      ["the exec lane drives ", lane.word, " (", lane.modality, ")"].join(""),
+      ["this host carries no ", lane.bin, " runtime, so nothing executed"].join(""),
+      ...report.map((row) => ["  ", row].join("")),
+    ];
+  }
+  const target = args[1];
+  if (target === undefined) throw new SandboxError("exec needs a script or recipe file");
+  const contained = contain(jail, target);
+  const relative = path.relative(jail, contained).split(path.sep).join("/");
+  const callargs = args.slice(2);
+  if (lang === "rust") {
+    // the two phase rust grammar: rustc compiles the source inside the
+    // jail, the produced binary executes with the caller args
+    const compile = await execchild(jail, RUSTLANE.bin, [relative]);
+    if (compile.code !== 0) return compile.rows;
+    const binary = relative.replace(/\.rs$/, "");
+    const run = await execchild(jail, path.join(".", binary), callargs);
+    return run.rows;
+  }
+  const execution = await execchild(jail, lane.bin, lane.argv(relative, callargs));
+  return execution.rows;
+}
+
+/** toolexecisolate — the v8 isolate lane of the runner-serverless
+ * modality: the script executes inside a fresh vm context of this very
+ * process (no child, no filesystem of the host outside the jail read) —
+ * the isolate answers console output through the sandboxed console */
+async function toolexecisolate(jail: string, args: string[]): Promise<string[]> {
+  const target = args[0];
+  if (target === undefined) throw new SandboxError("exec isolate needs a script file");
+  for (const token of args) {
+    if (!RUNTOKENPATTERN.test(token)) throw new SandboxError("the exec arguments carry a rejected character");
+  }
+  const contained = contain(jail, target);
+  let source = "";
+  try {
+    source = await readFile(contained, "utf8");
+  } catch {
+    throw new SandboxError("the isolate script does not exist in the jail");
+  }
+  const rows: string[] = [];
+  const sandboxconsole = {
+    log: (...parts: unknown[]) => rows.push(parts.map((part) => String(part)).join(" ")),
+    error: (...parts: unknown[]) => rows.push(["[stderr] ", parts.map((part) => String(part)).join(" ")].join("")),
+  };
+  try {
+    runInNewContext(source, { console: sandboxconsole }, { timeout: CAPS.timeoutms });
+    rows.push("exit 0");
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    rows.push(["[stderr] ", message].join(""));
+    rows.push("exit 1");
+  }
+  return rows;
+}
+
 /** helpsurface — the honest tool list of the sandbox */
 function helpsurface(): string[] {
   return [
@@ -360,6 +520,7 @@ function helpsurface(): string[] {
     "  clear                              empty the answer",
     "  curl | fetch | wget                pending — the network lane owns this",
     "  run <script.js> [args]            execute in the container modality",
+    ...exechelprows(),
     "  help                               this list",
   ];
 }
@@ -469,6 +630,14 @@ export async function runsandboxline(sessionid: string, line: string): Promise<S
         rows.push(...(await toolruncontainer(jail, args)));
         break;
       }
+      case "exec": {
+        // the polyglot lane: the jailed script or recipe executes through
+        // the host runtime of its language modality (the registry owns the
+        // catalog, the probe answers per host, nothing is simulated)
+        if (!args[0]) throw new SandboxError("exec needs a language and a script");
+        rows.push(...(await toolexeclanguage(jail, args)));
+        break;
+      }
       case "help":
         rows.push(...helpsurface());
         break;
@@ -513,10 +682,14 @@ export async function createsandboxsession(sessionid: string): Promise<string[]>
       "every file below this directory is stored by the server the run lane drives.",
       "",
       "the tool surface: pwd, ls, dir, cat, type, write, append, echo, mkdir,",
-      "rm, del, mv, cp, tree, stat, clear, curl, fetch, wget, run, help.",
+      "rm, del, mv, cp, tree, stat, clear, curl, fetch, wget, run, exec, help.",
       "the run tool executes through the container modality when the host carries",
-      "the docker runtime and refuses honestly otherwise; curl, fetch and wget are",
-      "pending — the network lane answers through the url gate of the gateway wave.",
+      "the docker runtime and refuses honestly otherwise; the exec tool drives the",
+      "polyglot lane — bun, deno, python, ruby, lua, php, go, rust, cargo, java,",
+      "jvm, dotnet, zig, v, nim, make, ninja and the isolate of the serverless",
+      "modality — through the host runtime each language declares; curl, fetch",
+      "and wget are pending — the network lane answers through the url gate of",
+      "the gateway wave.",
     ];
     await writeFile(welcome, welcomecontent.join("\n"), "utf8");
   }
@@ -555,6 +728,23 @@ const HOSTPROBES: Readonly<Record<string, string>> = Object.freeze({
   "emulator-qemu": "qemu-system-x86_64",
   "microvm-firecracker": "firecracker",
   "container-runsc": "runsc",
+  "runner-bun": "bun",
+  "runner-deno": "deno",
+  "language-python": "python3",
+  "language-ruby": "ruby",
+  "language-lua": "lua",
+  "language-php": "php",
+  "language-go": "go",
+  "language-rust": "rustc",
+  "language-cargo": "cargo",
+  "language-java": "java",
+  "runtime-jvm": "java",
+  "language-zig": "zig",
+  "language-v": "v",
+  "language-nim": "nim",
+  "language-dotnet": "dotnet",
+  "build-make": "make",
+  "build-ninja": "ninja",
 });
 
 /** the live lane words — the honest sentence each live record of the
@@ -563,6 +753,7 @@ const HOSTPROBES: Readonly<Record<string, string>> = Object.freeze({
 const LIVELANES: Readonly<Record<string, string>> = Object.freeze({
   "runner-node": "the node runtime the run lane executes inside the container",
   "fs-vfs": "the session jail the storage lane drives",
+  "runner-serverless": "the v8 isolate the exec lane drives in process",
 });
 
 /** binaryonpath — a pure PATH scan with stat (windows also probes the exe
