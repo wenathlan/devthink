@@ -251,9 +251,6 @@ COPY vault /vault
 # the builder always installed — the strip and the regeneration answer both
 # install stages identically (the buildkit cache of the deps layers keeps
 # the shared chain).
-RUN node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));for(const section of ['dependencies','devDependencies','optionalDependencies']){for(const name of Object.keys(p[section]??{})){if(/^file:\\.\\//.test(p[section][name]))delete p[section][name];}}fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');" \
-    && bun install --ignore-scripts
-
 # the toolchain: zip and unzip for the packaging steps (the extension
 # archive and the pack verification), and the bun version the packageManager
 # field pins — installed through the npm the node base already carries and
@@ -281,6 +278,9 @@ RUN set -eux; \
     test "${bunversion}" != ""; \
     npm install --global "bun@${bunversion}"; \
     test "$(bun --version)" = "${bunversion}"
+
+RUN node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));for(const section of ['dependencies','devDependencies','optionalDependencies']){for(const name of Object.keys(p[section]??{})){if(/^file:\\.\\//.test(p[section][name]))delete p[section][name];}}fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');" \
+    && bun install --ignore-scripts
 
 RUN bun install --frozen-lockfile --ignore-scripts
 
@@ -313,9 +313,6 @@ COPY vault /vault
 # the sibling strip of the deps stage repeated verbatim: the builder
 # re-copies the pristine manifest pair, so the standalone strip and the
 # lockfile regeneration answer here again.
-RUN node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));for(const section of ['dependencies','devDependencies','optionalDependencies']){for(const name of Object.keys(p[section]??{})){if(/^file:\\.\\//.test(p[section][name]))delete p[section][name];}}fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');" \
-    && bun install --ignore-scripts
-
 RUN set -eux; \
     apt_update_tries=5; \
     while [ "$apt_update_tries" -gt 0 ]; do \
@@ -331,6 +328,9 @@ RUN set -eux; \
     test "${bunversion}" != ""; \
     npm install --global "bun@${bunversion}"; \
     test "$(bun --version)" = "${bunversion}"
+
+RUN node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));for(const section of ['dependencies','devDependencies','optionalDependencies']){for(const name of Object.keys(p[section]??{})){if(/^file:\\.\\//.test(p[section][name]))delete p[section][name];}}fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');" \
+    && bun install --ignore-scripts
 
 RUN bun install --frozen-lockfile --ignore-scripts
 
