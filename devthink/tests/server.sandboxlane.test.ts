@@ -137,7 +137,7 @@ describe("sandboxlane", () => {
     const rows = await hostmodalityreport();
     // the summary row plus one honest row per registry record of the ninety plan
     expect(rows.length).toBe(91);
-    expect(rows[0]).toBe("the modality registry answers the ninety plan: 90 records — 27 live, 3 host, 60 planned");
+    expect(rows[0]).toBe("the modality registry answers the ninety plan: 90 records — 30 live, 3 host, 57 planned");
     const text = rows.join("\n");
     // the live lanes name the surfaces the platform drives
     expect(text).toContain("container-docker: live lane — docker ");
@@ -350,9 +350,9 @@ describe("the vendored registry mirror (the single-source law)", () => {
     expect(report).toEqual({
       plancount: 90,
       catalogcount: 90,
-      live: 27,
+      live: 30,
       host: 3,
-      planned: 60,
+      planned: 57,
       plananswered: true,
     });
   });
