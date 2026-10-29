@@ -499,6 +499,173 @@ async function toolexecisolate(jail: string, args: string[]): Promise<string[]> 
   return rows;
 }
 
+/**
+ * @section storage — the sqlite lane, the git objects vfs and the resolver
+ * lanes (the storage and network modalities the registry declares live):
+ * the sql tool drives a real sqlite database through better-sqlite3 inside
+ * the jail (the vault precedent — prepared statements, no string surgery),
+ * the gitobj tool drives the content-addressed git objects store (the sha1
+ * catalog of the fs-gitobjects modality), the dns tool drives the node
+ * resolver and the doh tool drives the https resolver. A lane without its
+ * network path answers the honest error, never a simulated record.
+ */
+
+/** the row cap of one sql answer (the honest window of one select) */
+const SQLROWCAP = 100;
+
+/** the kinds of the dns resolver the dns tool answers */
+type DnsKind = "a" | "aaaa" | "cname" | "mx" | "txt" | "ns";
+
+/** toolsql — the storage-sqlite modality: one sqlite database file inside
+ * the session jail, one statement per line, prepared and bound by the
+ * better-sqlite3 runtime (select and pragma answer their rows, the write
+ * statements answer the change count — the vault lane precedent). The
+ * native addon loads through createRequire so the bundle never embeds the
+ * addon identifiers — the runtime resolves it from the installed tree. */
+async function toolsql(jail: string, args: string[]): Promise<string[]> {
+  const dbfile = args[0];
+  if (dbfile === undefined) throw new SandboxError("sql needs a database file and a statement");
+  const statement = args.slice(1).join(" ");
+  if (statement.length === 0) throw new SandboxError("sql needs a statement");
+  const contained = contain(jail, dbfile);
+  const { createRequire } = await import("node:module");
+  const runtime = createRequire(import.meta.url);
+  const loaded = runtime("better-sqlite3") as unknown;
+  const Database = (typeof loaded === "function" ? loaded : (loaded as { default?: unknown }).default) as
+    | (new (file: string) => DatabaseLike)
+    | undefined;
+  if (typeof Database !== "function") throw new SandboxError("the sqlite runtime did not load on this host");
+  const db = new Database(contained);
+  try {
+    const trimmed = statement.trimStart().toLowerCase();
+    const reads = trimmed.startsWith("select") || trimmed.startsWith("pragma") || trimmed.startsWith("with") || trimmed.startsWith("explain");
+    if (reads) {
+      const rows = db.prepare(statement).all() as Record<string, unknown>[];
+      if (rows.length === 0) return ["(no rows)"];
+      return rows.slice(0, SQLROWCAP).map((row) =>
+        Object.entries(row)
+          .map(([key, value]) => [key, "=", String(value)].join(""))
+          .join(" "),
+      );
+    }
+    const run = db.prepare(statement).run();
+    return [["changes ", String(run.changes), " lastid ", String(Number(run.lastInsertRowid))].join("")];
+  } finally {
+    db.close();
+  }
+}
+
+/** the narrow surface the sql lane drives of one sqlite database of the
+ * jail (the prepared statement surface of the better-sqlite3 runtime) */
+interface DatabaseLike {
+  prepare(statement: string): {
+    all(): unknown[];
+    run(): { changes: number; lastInsertRowid: number | bigint };
+  };
+  close(): void;
+}
+
+/** toolgitobj — the fs-gitobjects modality: the content-addressed objects
+ * store of the jail (write hashes one file into the store with the git
+ * blob header and the zlib deflate, read answers the content back — the
+ * sha1 catalog the vfs family declares) */
+async function toolgitobj(jail: string, args: string[]): Promise<string[]> {
+  const action = (args[0] ?? "").toLowerCase();
+  const store = path.join(jail, ".gitobjects");
+  if (action === "write") {
+    const file = args[1];
+    if (file === undefined) throw new SandboxError("gitobj write needs a file");
+    const { createHash } = await import("node:crypto");
+    const { deflateSync } = await import("node:zlib");
+    const content = await readFile(contain(jail, file));
+    const header = Buffer.from(["blob ", String(content.length), "\0"].join(""), "utf8");
+    const storedblob = deflateSync(Buffer.concat([header, content]));
+    const hash = createHash("sha1").update(Buffer.concat([header, content])).digest("hex");
+    await mkdir(store, { recursive: true });
+    await writeFile(path.join(store, hash), storedblob);
+    return [["blob ", hash].join("")];
+  }
+  if (action === "read") {
+    const hash = args[1];
+    if (hash === undefined || !/^[0-9a-f]{40}$/.test(hash)) throw new SandboxError("gitobj read needs a sha1 hash");
+    const { inflateSync } = await import("node:zlib");
+    let storedblob: Buffer;
+    try {
+      storedblob = await readFile(path.join(store, hash));
+    } catch {
+      throw new SandboxError("the object does not exist in the store");
+    }
+    const full = inflateSync(storedblob);
+    const zeropos = full.indexOf(0);
+    const header = full.subarray(0, zeropos).toString("utf8");
+    const content = full.subarray(zeropos + 1);
+    return [["type ", header.split(" ")[0] ?? "blob", " bytes ", String(content.length)].join(""), content.toString("utf8")];
+  }
+  return ["gitobj: give write <file> or read <hash>"];
+}
+
+/** tooldns — the network-dns modality: the node resolver answers the
+ * records of one name (the local names answer offline, the public names
+ * need the resolver path of this host — the honest error answers when the
+ * lane has no path) */
+async function tooldns(args: string[]): Promise<string[]> {
+  const name = args[0];
+  if (name === undefined) throw new SandboxError("dns needs a name");
+  const kind = (args[1] ?? "a").toLowerCase() as DnsKind;
+  const dns = await import("node:dns/promises");
+  try {
+    if (kind === "a" || kind === "aaaa") {
+      const records = kind === "a" ? await dns.resolve4(name) : await dns.resolve6(name);
+      return records.map((record) => [name, " ", kind, " ", record].join(""));
+    }
+    if (kind === "cname") {
+      const records = await dns.resolveCname(name);
+      return records.map((record) => [name, " cname ", record].join(""));
+    }
+    if (kind === "mx") {
+      const records = await dns.resolveMx(name);
+      return records.map((record) => [name, " mx ", String(record.priority), " ", record.exchange].join(""));
+    }
+    if (kind === "txt") {
+      const records = await dns.resolveTxt(name);
+      return records.map((chunks) => [name, " txt ", chunks.join("")].join(""));
+    }
+    if (kind === "ns") {
+      const records = await dns.resolveNs(name);
+      return records.map((record) => [name, " ns ", record].join(""));
+    }
+    return [["dns: the kind ", kind, " carries no lane — a, aaaa, cname, mx, txt, ns"].join("")];
+  } catch (error) {
+    const code = (error as NodeJS.ErrnoException).code ?? "";
+    const message = error instanceof Error ? error.message : String(error);
+    return [["the resolver refused ", name, " (", code || message, ") — nothing was invented"].join("")];
+  }
+}
+
+/** tooldoh — the network-doh modality: the https resolver answers the a
+ * records of one name through the dns-over-https json lane (the public
+ * resolver of the family; a host without the network path answers the
+ * honest error, never a simulated record) */
+async function tooldoh(args: string[]): Promise<string[]> {
+  const name = args[0];
+  if (name === undefined) throw new SandboxError("doh needs a name");
+  const kind = (args[1] ?? "a").toLowerCase();
+  try {
+    const url = ["https://cloudflare-dns.com/dns-query?name=", encodeURIComponent(name), "&type=", kind.toUpperCase()].join("");
+    const res = await fetch(url, { headers: { accept: "application/dns-json" }, signal: AbortSignal.timeout(8000) });
+    if (!res.ok) return [["the https resolver answered ", String(res.status), " — nothing was invented"].join("")];
+    const data = (await res.json()) as { Answer?: { name: string; type: number; data: string }[] };
+    const answers = data.Answer ?? [];
+    if (answers.length === 0) return [["the https resolver answered no records for ", name].join("")];
+    return answers.map((answer) => [answer.name, " ", String(answer.type), " ", answer.data].join(""));
+  } catch {
+    return [
+      ["the doh lane could not reach the https resolver for ", name].join(""),
+      "this host carries no network path, so nothing was resolved",
+    ];
+  }
+}
+
 /** helpsurface — the honest tool list of the sandbox */
 function helpsurface(): string[] {
   return [
@@ -521,6 +688,10 @@ function helpsurface(): string[] {
     "  curl | fetch | wget                pending — the network lane owns this",
     "  run <script.js> [args]            execute in the container modality",
     ...exechelprows(),
+    "  sql <file.db> <statement>          the sqlite lane of the vault family",
+    "  gitobj write <file> | read <hash>  the git objects store of the jail",
+    "  dns <name> [a|aaaa|cname|mx|txt|ns] the resolver lane of the network",
+    "  doh <name> [a]                     the https resolver lane",
     "  help                               this list",
   ];
 }
@@ -638,6 +809,29 @@ export async function runsandboxline(sessionid: string, line: string): Promise<S
         rows.push(...(await toolexeclanguage(jail, args)));
         break;
       }
+      case "sql": {
+        // the sqlite lane: the real database of the vault family answers
+        // inside the jail (prepared statements, no string surgery)
+        rows.push(...(await toolsql(jail, args)));
+        break;
+      }
+      case "gitobj": {
+        // the git objects vfs: the content-addressed store of the jail
+        rows.push(...(await toolgitobj(jail, args)));
+        break;
+      }
+      case "dns": {
+        // the resolver lane: the node resolver answers the records of the
+        // name (the honest refusal answers when the lane has no path)
+        rows.push(...(await tooldns(args)));
+        break;
+      }
+      case "doh": {
+        // the https resolver lane: dns over https through the public
+        // resolver (the honest error answers without a network path)
+        rows.push(...(await tooldoh(args)));
+        break;
+      }
       case "help":
         rows.push(...helpsurface());
         break;
@@ -682,14 +876,17 @@ export async function createsandboxsession(sessionid: string): Promise<string[]>
       "every file below this directory is stored by the server the run lane drives.",
       "",
       "the tool surface: pwd, ls, dir, cat, type, write, append, echo, mkdir,",
-      "rm, del, mv, cp, tree, stat, clear, curl, fetch, wget, run, exec, help.",
-      "the run tool executes through the container modality when the host carries",
-      "the docker runtime and refuses honestly otherwise; the exec tool drives the",
-      "polyglot lane — bun, deno, python, ruby, lua, php, go, rust, cargo, java,",
-      "jvm, dotnet, zig, v, nim, make, ninja and the isolate of the serverless",
-      "modality — through the host runtime each language declares; curl, fetch",
-      "and wget are pending — the network lane answers through the url gate of",
-      "the gateway wave.",
+      "rm, del, mv, cp, tree, stat, clear, curl, fetch, wget, run, exec, sql,",
+      "gitobj, dns, doh, help. the run tool executes through the container",
+      "modality when the host carries the docker runtime and refuses honestly",
+      "otherwise; the exec tool drives the polyglot lane — bun, deno, python,",
+      "ruby, lua, php, go, rust, cargo, java, jvm, dotnet, zig, v, nim, make,",
+      "ninja and the isolate of the serverless modality — through the host",
+      "runtime each language declares; the sql tool drives a real sqlite",
+      "database, the gitobj tool drives the content-addressed objects store,",
+      "the dns and doh tools drive the resolver lanes; curl, fetch and wget",
+      "are pending — the network lane answers through the url gate of the",
+      "gateway wave.",
     ];
     await writeFile(welcome, welcomecontent.join("\n"), "utf8");
   }
@@ -754,6 +951,10 @@ const LIVELANES: Readonly<Record<string, string>> = Object.freeze({
   "runner-node": "the node runtime the run lane executes inside the container",
   "fs-vfs": "the session jail the storage lane drives",
   "runner-serverless": "the v8 isolate the exec lane drives in process",
+  "storage-sqlite": "the sqlite database the sql tool drives through better-sqlite3",
+  "fs-gitobjects": "the content-addressed objects store the gitobj tool drives",
+  "network-dns": "the node resolver the dns tool drives",
+  "network-doh": "the https resolver the doh tool drives",
 });
 
 /** binaryonpath — a pure PATH scan with stat (windows also probes the exe

@@ -176,7 +176,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
   { id: "mobile-postmarketos", label: "postmarketos", family: "mobile", isolation: "vm", state: "planned", drivers: ["qemu"], hardening: ["emulated-device"], boot: "cold", bootms: 1000, gpu: false, network: true, mime: "application/vnd.devthink.mobile+json" },
   // the fs and delivery families: the vfs, the git objects and the cdn lane
   { id: "fs-vfs", label: "vfs", family: "fs", isolation: "process", state: "live", drivers: ["vfs"], hardening: ["chunk-catalog"], boot: "hot", bootms: 5, gpu: false, network: false, mime: "application/vnd.devthink.vfs+json" },
-  { id: "fs-gitobjects", label: "git objects vfs", family: "fs", isolation: "process", state: "planned", drivers: ["git", "vfs"], hardening: ["content-hash", "chunk-catalog"], boot: "hot", bootms: 10, gpu: false, network: true, mime: "application/vnd.devthink.vfs+json" },
+  { id: "fs-gitobjects", label: "git objects vfs", family: "fs", isolation: "process", state: "live", drivers: ["git", "vfs"], hardening: ["content-hash", "chunk-catalog"], boot: "hot", bootms: 10, gpu: false, network: true, mime: "application/vnd.devthink.vfs+json" },
   { id: "delivery-cdn", label: "cdn mirror", family: "delivery", isolation: "process", state: "planned", drivers: ["vfs", "cdn"], hardening: ["inside-sandbox-fetch"], boot: "hot", bootms: 5, gpu: false, network: true, mime: "application/vnd.devthink.cdn+json" },
   // the delivery protocol extensions: the wire lanes the streamed answer
   // rides (the socket surface the self-hosted engine speaks)
@@ -187,7 +187,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
   // the storage family: the self-hosted vault backends (the competitor
   // recipe of the hosted buckets — sqlite and the wire protocols and the
   // s3-compatible daemons, every one a lane may mount behind the vault)
-  { id: "storage-sqlite", label: "sqlite vault", family: "storage", isolation: "process", state: "planned", drivers: ["sqlite"], hardening: ["file-quota"], boot: "hot", bootms: 8, gpu: false, network: false, mime: "application/vnd.devthink.storage+json" },
+  { id: "storage-sqlite", label: "sqlite vault", family: "storage", isolation: "process", state: "live", drivers: ["sqlite"], hardening: ["file-quota"], boot: "hot", bootms: 8, gpu: false, network: false, mime: "application/vnd.devthink.storage+json" },
   { id: "storage-libsql", label: "libsql vault", family: "storage", isolation: "process", state: "planned", drivers: ["libsql"], hardening: ["file-quota"], boot: "hot", bootms: 10, gpu: false, network: true, mime: "application/vnd.devthink.storage+json" },
   { id: "storage-mysql", label: "mysql wire vault", family: "storage", isolation: "process", state: "planned", drivers: ["mysql-wire"], hardening: ["auth-token", "row-quota"], boot: "warm", bootms: 200, gpu: false, network: true, mime: "application/vnd.devthink.storage+json" },
   { id: "storage-postgres", label: "postgres wire vault", family: "storage", isolation: "process", state: "planned", drivers: ["postgres-wire"], hardening: ["auth-token", "row-quota"], boot: "warm", bootms: 200, gpu: false, network: true, mime: "application/vnd.devthink.storage+json" },
@@ -197,8 +197,8 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
   // the network family: the resolution and the private tunnels the engine
   // opens for the sandbox (the hardened default stays off until a lane
   // asks)
-  { id: "network-dns", label: "dns resolver", family: "network", isolation: "process", state: "planned", drivers: ["dns"], hardening: ["resolver-allowlist"], boot: "hot", bootms: 5, gpu: false, network: true, mime: "application/vnd.devthink.net+json" },
-  { id: "network-doh", label: "dns over https", family: "network", isolation: "process", state: "planned", drivers: ["doh"], hardening: ["resolver-allowlist"], boot: "hot", bootms: 8, gpu: false, network: true, mime: "application/vnd.devthink.net+json" },
+  { id: "network-dns", label: "dns resolver", family: "network", isolation: "process", state: "live", drivers: ["dns"], hardening: ["resolver-allowlist"], boot: "hot", bootms: 5, gpu: false, network: true, mime: "application/vnd.devthink.net+json" },
+  { id: "network-doh", label: "dns over https", family: "network", isolation: "process", state: "live", drivers: ["doh"], hardening: ["resolver-allowlist"], boot: "hot", bootms: 8, gpu: false, network: true, mime: "application/vnd.devthink.net+json" },
   { id: "network-tor", label: "tor onion lane", family: "network", isolation: "process", state: "planned", drivers: ["tor"], hardening: ["circuit-limit"], boot: "warm", bootms: 800, gpu: false, network: true, mime: "application/vnd.devthink.net+json" },
   { id: "network-i2p", label: "i2p tunnel", family: "network", isolation: "process", state: "planned", drivers: ["i2p"], hardening: ["tunnel-limit"], boot: "warm", bootms: 700, gpu: false, network: true, mime: "application/vnd.devthink.net+json" },
   { id: "network-wireguard", label: "wireguard tunnel", family: "network", isolation: "process", state: "planned", drivers: ["wireguard"], hardening: ["peer-allowlist"], boot: "warm", bootms: 100, gpu: false, network: true, mime: "application/vnd.devthink.net+json" },
