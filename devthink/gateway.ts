@@ -323,12 +323,36 @@ export type GatewayRegistration = ReturnType<typeof useGatewayRegistration>;
  */
 
 /**
+ * Strips the deploy base prefix a full path may carry so an address answers
+ * the router route space the shell navigates. The wouter router of the
+ * theme runs under the deploy base (the repository folder of the Pages
+ * host, the root of a domain host), and its navigate() joins the base with
+ * the route it receives — a full path stored or replayed as a route would
+ * double the base segment and land on the not-found page, so every address
+ * the guards pass to a navigation walks through this cleaner first.
+ *
+ * @param path the address to clean: a router route or a full pathname.
+ * @param base the deploy base the build answers under, with or without the
+ * trailing slash; the root and relative builds (/, ./) strip nothing.
+ * @returns the base-relative router route the path always was.
+ */
+export function routeFromPathname(path: string, base: string = import.meta.env.BASE_URL ?? "/"): string {
+  const prefix = base !== "/" && base !== "./" ? base.replace(/\/$/, "") : "";
+  if (prefix && path === prefix) return "/";
+  if (prefix && path.startsWith(`${prefix}/`)) return path.slice(prefix.length);
+  return path;
+}
+
+/**
  * Resolves the post-session redirect of the retired auth entry pass. The
  * default lands on the creation panel; a ?next= override is honored ONLY
  * for same-origin absolute paths (a single leading slash, no
  * protocol-relative form, no backslash or whitespace trickery) — anything
  * else falls back, so a crafted link can never bounce the visitor off the
- * site.
+ * site. A safe override that carries the deploy base prefix (the arrival a
+ * panel gate of a folder-hosted build once wrote from the full pathname)
+ * answers the base-relative route, so the post-session navigation never
+ * doubles the base segment the router joins itself.
  *
  * @param search the raw query string the auth page booted with.
  * @returns the internal route to navigate to after a successful session.
@@ -338,7 +362,7 @@ export function afterAuthTarget(search: string): string {
   if (!next) return "/panel";
   const safe =
     next.startsWith("/") && !next.startsWith("//") && !next.includes("\\") && !/\s/.test(next) && !next.includes("://");
-  return safe ? next : "/panel";
+  return safe ? routeFromPathname(next) : "/panel";
 }
 
 /** The invitation fields the compat handover passes through to the panel —
