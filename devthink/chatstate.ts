@@ -308,7 +308,7 @@ export function buildSystemPrompt(active: ToolId[]): string {
 /**
  * The json model tripwire — the muse-jev ask_human rule wired to the chat
  * prompt. The caller may inject a `guard` channel (a json-model decision
- * built on ../../jsonengine with the gateway completer): one decision asks
+ * built on json.ts with the gateway completer): one decision asks
  * whether the turn asks for an irreversible action (send, publish, pay,
  * delete or a permission change). A high-confidence yes appends one honest
  * line to the system prompt; low confidence, an outage or an absent channel

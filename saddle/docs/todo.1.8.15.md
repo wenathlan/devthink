@@ -470,7 +470,7 @@
 - [ ] Verify all active version manifests remain at 1.8.14 until implementation and release notes are ready.
 - [ ] Bump all active version manifests to 1.8.15 only after the release candidate is validated.
 - [ ] Update the iOS build number to 1008015 only as part of the validated version bump.
-- [ ] Create docs/releasenotes-1.8.15.md from verified claims and the real generated artifact inventory.
+- [ ] Create docs/releasenotes.1.8.15.md from verified claims and the real generated artifact inventory.
 - [ ] Update changelog.md with concise, evidence-backed 1.8.15 entries.
 - [ ] Update docs/artifactavailability.md using only post-build and post-release evidence.
 - [ ] Create a commit authored as iakadion after the full local gate passes.

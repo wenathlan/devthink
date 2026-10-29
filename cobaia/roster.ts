@@ -28,7 +28,7 @@ export const ROSTER: readonly familymember[] = [
   {
     slug: "saddle",
     accent: "#e86f2d",
-    role: "the virtualized sandbox engine: runs any sandbox, anywhere, no setup.",
+    role: "the sandbox: runs any sandbox, anywhere, no setup.",
   },
   {
     slug: "forge",
@@ -48,7 +48,7 @@ export const ROSTER: readonly familymember[] = [
   {
     slug: "getry",
     accent: "#8b5cf6",
-    role: "the AI workspace: five model pools, thirty-five ready endpoints, key rotation.",
+    role: "the AI workspace: five model pools, thirty-five routes, rotating keys.",
   },
   {
     slug: "cadria",
@@ -63,7 +63,7 @@ export const ROSTER: readonly familymember[] = [
   {
     slug: "stealthhead",
     accent: "#e8563f",
-    role: "the FPS game platform: match, ranking, weapons and world — ships pre-compiled.",
+    role: "the FPS game platform: match, ranking, weapons and world — loads instantly.",
   },
   {
     slug: "argan",

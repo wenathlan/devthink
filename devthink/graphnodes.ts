@@ -304,7 +304,7 @@ export function degreeof(graph: nodegraph, id: string): { incoming: number; outg
 }
 
 /* --------------------------------------------------------------------------
- * layers — the stages (the etapas the owner asked the logics to run on)
+ * layers — the stages (the owner asked the logics to run on them)
  * ------------------------------------------------------------------------ */
 
 /**

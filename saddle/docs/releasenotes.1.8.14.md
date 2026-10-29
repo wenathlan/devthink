@@ -64,4 +64,4 @@ Local gates passed before the tag was created. Desktop run `31806235468` complet
 
 [1]: https://github.com/wenathlan/saddle "Saddle source repository"
 [2]: https://github.com/wenathlan/saddle/releases "Saddle release archive"
-[3]: https://github.com/wenathlan/saddle/blob/main/docs/releasenotes-1.8.13.md "Saddle 1.8.13 release notes"
+[3]: https://github.com/wenathlan/saddle/blob/main/docs/releasenotes.1.8.13.md "Saddle 1.8.13 release notes"

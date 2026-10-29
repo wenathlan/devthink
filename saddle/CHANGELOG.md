@@ -166,7 +166,7 @@
 | --- | --- |
 | The one container file (complete) | The compose.yml that survived the grand merge is absorbed into the Dockerfile and deleted: the saddle-node service recipe (read_only, cap_drop ALL, pids_limit 512, tmpfs /tmp, network none, the ENV surface SADDLE_MEMORY_ENGINE/SBOT_PLATFORM/SBOT_CDN_URL) rides the header recipes and the service ENV block — exactly the gateway 582f3ec doctrine (one file owns the whole container context). The one-container gate now forbids every compose spelling (docker-compose.yml, compose.yml, compose.yaml, docker-compose.yaml) and entrypoint.sh. |
 | The conversion config at the root | capacitor.config.ts moves from web/ to the repository root (the conversion-config doctrine: the config files that convert the universal web build to Android/iOS/desktop live at the root, next to vite/vitest/biome; the build computers of GitHub do the conversion and the APK/IPA/App artifacts land in the release assets, never in the repository). The android.path/ios.path values point at web/android and web/ios — verified against @capacitor/cli 8.5.1 loadConfig (config lookup and every path resolve from the working directory). The mobile workflow gradle step repairs its path (cd web/android after chmod web/android/gradlew — the mismatch that broke the android build). |
-| The env surface (rebrand completion) | The web console node envs complete the saddle rename: the Dockerfile ENV bakes SADDLE_DB="/data/web/saddle.db" (web/db.js reads SADDLE_DB), SECURITY.md documents SADDLE_MESH_KEY/SADDLE_DB, and the auth cookie contract aligns (saddlesession, x-saddle-timestamp, x-saddle-signature — the web test battery asserts the rebranded names). The e2ugh metadata block of package.json folds under the saddle key (the toolchain/githubActions/merge contract, nothing lost; the trivyPin note restates the family tag-pin doctrine: actions pin by version tag, never by commit sha). The docker scripts, the firecracker socket, the prepare banner, the catalog titles (boards/cores/gpus/processors/mttg/passage/qemu/docker configs) and the image labels carry the saddle identity; the e2ugh lineage mentions stay where they document history (CHANGELOG lineage sections, docs/e2ugh-engine.md, the carrier comments). |
+| The env surface (rebrand completion) | The web console node envs complete the saddle rename: the Dockerfile ENV bakes SADDLE_DB="/data/web/saddle.db" (web/db.js reads SADDLE_DB), SECURITY.md documents SADDLE_MESH_KEY/SADDLE_DB, and the auth cookie contract aligns (saddlesession, x-saddle-timestamp, x-saddle-signature — the web test battery asserts the rebranded names). The e2ugh metadata block of package.json folds under the saddle key (the toolchain/githubActions/merge contract, nothing lost; the trivyPin note restates the family tag-pin doctrine: actions pin by version tag, never by commit sha). The docker scripts, the firecracker socket, the prepare banner, the catalog titles (boards/cores/gpus/processors/mttg/passage/qemu/docker configs) and the image labels carry the saddle identity; the e2ugh lineage mentions stay where they document history (CHANGELOG lineage sections, docs/e2ugh.engine.md, the carrier comments). |
 | Workflows (one battery, real names, paired pins) | The uka-tests.yml battery merges into ci.yml (the same push/PR verification responsibility — formatcheck joins the ci battery; nothing lost, one lane instead of three). The publish ghcr vhe workflow_run trigger points at the real workflow name (release validation — the "Release" reference never fired). The main publish ghcr workflow drops the :latest tag (one tag per version, the doctrine the vhe workflow already documented). The codeql workflow sheds the GitHub template boilerplate and gains the family style (lowercase name, real matrix comment, concurrency group, timeout) — CodeQL owns its lane, the other scanners stay in security.yml. Every release-triggered workflow listens to the same action (types: published — the created listeners never fired from a non-draft release, the dead half of the publish pipeline), and the release lane gains the auto-tag step (the bump push tags v<version> and creates the release that fires the whole pipeline). The action pins pair across the whole set (checkout v7.0.1 everywhere — including the v7.0.1. typo repair, setup-node v7.0.0, upload-artifact v7.0.1, setup-java v6.0.0, configure-pages v6.0.0, deploy-pages v5.0.1, upload-pages-artifact v5.0.0; one version per action, verified against the registry). |
 | Housekeeping | The orphan wouter patch (web/patches) retires: nothing reads __WOUTER_ROUTES__ and npm ci never applied it. The //grand-merge metadata note and web/DEPLOYMENT.md track the real artifact names (the console at the web root, the pages artifact versions). |
 
@@ -180,7 +180,7 @@
 | The flat consolidation | Twenty-two nested logic folders fold into seventeen root-level domain files (the e2ugh family standard: one optimized TypeScript file per correlated domain, ordinal sections, JSDoc on every block, intra-domain imports dissolved, cross-domain imports rewritten). The package.json exports/bin remap to the flat dist surface. |
 | The one container file | The merged Dockerfile carries both container surfaces of the one repository: the five vhe stages of e2ugh (builder, python-bridge, qemu, qemu-runtime, runtime — published through the publish ghcr vhe workflow across three profiles and four architectures) and the saddle node-engine stages (saddle-build, saddle-runtime — the publish ghcr and compose pipelines build `--target saddle-runtime`). The GHCR tag families split cleanly: the node engine publishes `saddle:<version>`, the vhe engine publishes `saddle:<version>-vhe`, `-vhe-balanced` and `-vhe-lite` (no collision, one package, one product); the mesa-cache-26.2.1 release mirrors the e2ugh tarball cache so the build-time digest resolution works in this repository (same tarball, same GitHub-computed sha256, the value never enters the sources). |
 | The interface tree | The multiplatform interface consolidates inside web/ with every console file at the web root (the merged e2ugh console readapted): the self-hosted node api (server.js), the browser-pure engine dispatcher (sandbox.js), the sqlite store (db.js + init.sql + schema.prisma + drizzle.config.ts), the auth surface (auth.js + localauth.js), the mesh communication (mesh.js), the console page (console.html + console.js), the account pages (login/register/dashboard) and the static-edge deploy manifests (caddyfile, netlify.toml, vercel.json, mime.types, package.json). The React app, the capacitor shells (web/android, web/ios), the tauri shell (web/desktop) and the browser-extension assets (web/extension) share the same root; the self-hosted api serves the console page at `/` and the static pages beside it. All logic files stay at the repository root. |
-| Registry envelopes (the single metadata) | Every registry carrier of the merged repository becomes saddle metadata (the one-product rule): the Maven carrier is one artifact (io.wenathlan:saddle — the former library envelope and the former io.github.wenathlan:e2ugh Java adapter merge into one pom that compiles Saddle.java); the NuGet envelope is one saddle.csproj carrying the C# process adapter (SaddleCli.cs, the former E2ughCli.cs); the Ruby envelope is one saddle.gemspec shipping the new SaddleCli.rb runner (completing the former e2ugh carrier, whose runner path never existed) with the real repository files in its list; the Java adapter class itself is Saddle.java (the former E2ugh.java, io.wenathlan.saddle). The maven publish pipeline deploys the single merged artifact. The e2ugh MIT lineage is acknowledged in third-party-notices.md. |
+| Registry envelopes (the single metadata) | Every registry carrier of the merged repository becomes saddle metadata (the one-product rule): the Maven carrier is one artifact (io.wenathlan:saddle — the former library envelope and the former io.github.wenathlan:e2ugh Java adapter merge into one pom that compiles Saddle.java); the NuGet envelope is one saddle.csproj carrying the C# process adapter (SaddleCli.cs, the former E2ughCli.cs); the Ruby envelope is one saddle.gemspec shipping the new SaddleCli.rb runner (completing the former e2ugh carrier, whose runner path never existed) with the real repository files in its list; the Java adapter class itself is Saddle.java (the former E2ugh.java, io.wenathlan.saddle). The maven publish pipeline deploys the single merged artifact. The e2ugh MIT lineage is acknowledged in third.party.notices.md. |
 | The single binary | The package bin is one entry — `saddle` -> `dist/cli.js` (the former `e2ugh` bin and its CLI entry absorb into the saddle CLI): the `plan` command carries the absorbed architect CLI (the machine-plan renderer with the MTTG multiplex header, the vm.config.toml regex overrides, the qemu/docker/toml formats and the planlint notes). The start scripts readapt (`start` and `start:engine` run the plan renderer; the `web` script serves the self-hosted console at web/server.js). |
 | Workflows (one workflow file per responsibility) | The .github/actions composite folder no longer exists: the release-version resolver and the package validator steps inline into every workflow that used them (release, container, mobile, desktop, targets, buildextension, publishghcr, publishnpmjs, publishgithubnpm, publishmaven, publishnuget, publishrubygems — eleven workflows, each self-contained). The workflow lint gains a push trigger (every direct push that touches workflows gets linted) and rides version-tag action pins (the SHA pins retire — the family supply-chain contract). Cache-mirror releases (the mesa-cache pattern) skip the release-triggered jobs gracefully instead of failing the version resolver. The publish ghcr vhe workflow repairs the truncated ios export command of the mobile pipeline, the pre-merge branch-filter corruptions and the profile matrix. The dependabot configuration covers all eight ecosystems of the merged repository. The alternate-forge pipeline folders (.forgejo, .gitea, .gitlab, .woodpecker) retire: their deploy knowledge lives in web/DEPLOYMENT.md and their pipeline responsibilities are covered by the GitHub workflow set (one CI authority). |
 | Security (zero alerts, all workflows green) | All 35 open code-scanning alerts close: the polynomial-redos family (19 acquisition regexes hardened with disjoint character classes, the readabletext selector loop rewritten as linear indexOf extraction, the chunkmarkdown heading regex), the double-escaping family (one single-pass entity decoder replaces the four duplicated decoders — acquisition decode/clean, virtual decodexml, webscrape plainText), the bad-tag-filter and incomplete-sanitization family (one linear stripblocks helper — case-insensitive, whitespace-tolerant, unterminated-safe — replaces every script/style strip regex), the stack-trace exposure (communication.ts forwards only repo-coded error messages; raw diagnostics log server-side), the test sanitization flags, the uka-tests permissions block, and the Dockerfile DS-0013 (the pack-destination rewrite removes both cd instructions). The security workflow's cargo audit job audits web/desktop (the grand-merge path). |
@@ -198,7 +198,7 @@
 | package | Added an architecture organization record and rendered dependency-flow diagram, with compatibility rules for package exports, native metadata and workflows. |
 | web | Verified 140 active tests, 69 legacy tests, web type checking and build, flat-native validation, formatting, npm packaging and a production dependency audit with no reported vulnerabilities. |
 | package | Aligned active npm, lockfile, Maven, NuGet, RubyGems, desktop, Capacitor, iOS, extension and crawler metadata to `1.8.19`, with iOS build number `1008019`. |
-| docs | Added the canonical [1.8.19 release notes](docs/releasenotes-1.8.19.md). |
+| docs | Added the canonical [1.8.19 release notes](docs/releasenotes.1.8.19.md). |
 
 ## 1.8.18 — internal API contracts with explicit default denial and the isolation export
 
@@ -211,7 +211,7 @@
 | package | Added the `@wenathlan/saddle/isolation` package export and deterministic tests that cover missing adapters, local targets, provider targets, browser targets and ignored undeclared URLs. |
 | web | Added the unified `web/` playground route that visualizes typed internal API boundaries and the difference between a denied request and a non-executing caller handoff. |
 | package | Aligned active package, registry, native, extension, crawler, Capacitor and iOS metadata to `1.8.18`, with iOS build number `1008018`. |
-| docs | Added the canonical [1.8.18 release notes](docs/releasenotes-1.8.18.md). |
+| docs | Added the canonical [1.8.18 release notes](docs/releasenotes.1.8.18.md). |
 
 ## 1.8.17 — the three-architecture GHCR OCI manifest with QEMU Buildx
 
@@ -224,7 +224,7 @@
 | workflows | Added a post-push manifest-index assertion that verifies the published Linux architectures before reporting container availability. |
 | workflows | Documented the deferred Windows container boundary and rejected non-runnable `unknown` descriptors. |
 | package | Aligned active package, native, extension, crawler, iOS build, and Capacitor metadata to `1.8.17`. |
-| docs | Added the canonical [1.8.17 release notes](docs/releasenotes-1.8.17.md). |
+| docs | Added the canonical [1.8.17 release notes](docs/releasenotes.1.8.17.md). |
 
 ## 1.8.16 — release evidence and readiness contracts
 
@@ -237,7 +237,7 @@
 | engine | Exported the feature from the root entry and `@wenathlan/saddle/release-evidence`, with documented consumer boundaries. |
 | package | Expanded deterministic release coverage to 136 active tests while preserving the 69 legacy tests and passing package, web, audit, and flat-native gates. |
 | package | Aligned active package, native, extension, crawler and iOS build metadata to `1.8.16`. |
-| docs | Added the canonical [1.8.16 release notes](docs/releasenotes-1.8.16.md). |
+| docs | Added the canonical [1.8.16 release notes](docs/releasenotes.1.8.16.md). |
 
 ## 1.8.15 — verified storage pools, working-set admission and delivery manifests
 
@@ -250,7 +250,7 @@
 | engine | Added WASM and binary transformation contracts, isolated execution adapters, archive inspection limits and sensitive-cache eligibility controls. |
 | engine | Added declarative provider selection, capability evidence, cancellation and dispatch rendering, immutable delivery manifests, PWA/CDN plans, and Mini App/DNS surface requirements. |
 | package | Aligned all active package, native, extension, crawler and iOS build metadata to `1.8.15`. |
-| docs | Added the canonical [1.8.15 release notes](docs/releasenotes-1.8.15.md). |
+| docs | Added the canonical [1.8.15 release notes](docs/releasenotes.1.8.15.md). |
 
 ## 1.8.14 — container-first ordering and GHCR build-stage validation
 
@@ -261,7 +261,7 @@
 | package | Bumped active npm, lockfile, Maven, NuGet, RubyGems, desktop, mobile, extension and crawler metadata to `1.8.14`. |
 | package | Restored container-first package ordering in the canonical documentation and release matrix. |
 | workflows | Added OCI version labels, build-stage engine compilation and post-push pull/label/CLI smoke validation for GHCR images. |
-| docs | Added the canonical [1.8.14 release notes](docs/releasenotes-1.8.14.md) while preserving the historical 1.8.13 record. |
+| docs | Added the canonical [1.8.14 release notes](docs/releasenotes.1.8.14.md) while preserving the historical 1.8.13 record. |
 
 ## 1.8.13 — queue leases, structured extraction and artifact retention
 
@@ -276,7 +276,7 @@
 | tests | Added deterministic artifact retention policies and keep/prune decisions without implicit deletion. |
 | docs | Expanded the 1.8.21 comparative research matrix to 60 public repositories and documented the selected implementation boundaries. |
 | package | Aligned active package, native, extension and crawler metadata to `1.8.13`. |
-| docs | Added the canonical [1.8.13 release notes](docs/releasenotes-1.8.13.md) while preserving the historical 1.8.12 record. |
+| docs | Added the canonical [1.8.13 release notes](docs/releasenotes.1.8.13.md) while preserving the historical 1.8.12 record. |
 
 ## 1.8.12 — the GPL-3.0-only license standardization and the release artifact matrix
 
@@ -284,7 +284,7 @@
 
 | Area | Change |
 | --- | --- |
-| legal | Added the canonical [1.8.12 release notes](docs/releasenotes-1.8.12.md) with the artifact matrix and explicit signing-state policy. |
+| legal | Added the canonical [1.8.12 release notes](docs/releasenotes.1.8.12.md) with the artifact matrix and explicit signing-state policy. |
 | legal | Standardized the project license and root legal documents on GPL-3.0-only, preserving one canonical `LICENSE` file and removing byte-identical Markdown/Text duplicates. |
 | tests | Added the public SignPath Foundation code-signing policy, GitHub Actions integration path and explicit unsigned, caller-owned, test-key and notarized status vocabulary. |
 | desktop | Expanded the desktop matrix to Linux x64/arm64, Windows x86/x64/arm64 and macOS x64/arm64, with dotted lowercase artifact names and per-runner manifests and checksums. |

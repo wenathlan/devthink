@@ -85,7 +85,7 @@ export * from "./SettingsNav.tsx";
 export * from "./SettingsNavbarposition.tsx";
 export * from "./SettingsPairing.tsx";
 export * from "./SettingsPersonalization.tsx";
-export * from "./SettingsPersonalstore.ts";
+export * from "../../personalstore.ts";
 export * from "./SettingsRow.tsx";
 export * from "./Settingstypes.ts";
 export * from "./ShellAlttabswitcher.tsx";

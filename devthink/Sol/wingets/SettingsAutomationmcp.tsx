@@ -42,7 +42,7 @@ export function AutomationMcp() {
       refresh();
       return true;
     }
-    setReason(answer.reason ?? "The registry refused the change.");
+    setReason(answer.reason ?? "The change was not accepted.");
     return false;
   }
 
@@ -89,10 +89,10 @@ export function AutomationMcp() {
 
   return (
     <section className="dtw-card" aria-label="Automation and MCP">
-      <h2 className="dtw-cardtitle">Automation registry</h2>
+      <h2 className="dtw-cardtitle">Automation</h2>
       <p className="dtw-copy">
-        Off by default. Any llm connected here controls the apps that opt in, and requests go out only to non-local
-        http/https hosts. The registry stores the name of a credential, never the secret itself.
+        Off by default. Any connected assistant controls the apps that opt in, and requests go out only to public
+        internet addresses. Only the credential name is kept — never the secret itself.
       </p>
       {reason ? (
         <small className="dtw-settings__error" role="alert">
@@ -100,7 +100,7 @@ export function AutomationMcp() {
         </small>
       ) : null}
 
-      <h3 className="dtw-console__subhead">Mcp endpoints</h3>
+      <h3 className="dtw-console__subhead">MCP endpoints</h3>
       <table className="dtw-settings__table">
         <thead>
           <tr>
@@ -182,7 +182,7 @@ export function AutomationMcp() {
             )
           ) : (
             <tr>
-              <td colSpan={4}>No mcp endpoint is registered yet, so the llm surface stays closed.</td>
+              <td colSpan={4}>No MCP endpoint is connected yet, so tools stay off for assistants.</td>
             </tr>
           )}
         </tbody>
@@ -308,7 +308,7 @@ export function AutomationMcp() {
             )
           ) : (
             <tr>
-              <td colSpan={5}>No custom provider is registered yet, so no personal api or llm rides the apps.</td>
+              <td colSpan={5}>No custom provider is connected yet, so no personal model serves the apps.</td>
             </tr>
           )}
         </tbody>

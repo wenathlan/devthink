@@ -1,6 +1,6 @@
 # Saddle 1.8.13
 
-Saddle 1.8.13 carries the active code and release-facing manifests forward from 1.8.12. The previous [1.8.12 release notes](releasenotes-1.8.12.md) remain the canonical record for the licensing and artifact baseline. The comparative 1.8.21 research is planning material and is not presented as a shipped feature.
+Saddle 1.8.13 carries the active code and release-facing manifests forward from 1.8.12. The previous [1.8.12 release notes](releasenotes.1.8.12.md) remain the canonical record for the licensing and artifact baseline. The comparative 1.8.21 research is planning material and is not presented as a shipped feature.
 
 ## Changes
 
@@ -67,4 +67,4 @@ The queue, structured extraction, browser context, workflow compensation and ret
 
 [1]: https://github.com/wenathlan/saddle "Saddle source repository"
 [2]: https://github.com/wenathlan/saddle/releases "Saddle release archive"
-[3]: https://github.com/wenathlan/saddle/blob/main/docs/releasenotes-1.8.12.md "Saddle 1.8.12 release notes"
+[3]: https://github.com/wenathlan/saddle/blob/main/docs/releasenotes.1.8.12.md "Saddle 1.8.12 release notes"

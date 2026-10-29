@@ -157,7 +157,7 @@ describe("design contract — the banned list", () => {
   });
 
   it("never ships an all-properties transition", () => {
-    expect(/transition:\s*all/.test(rules(CSS)), "transition: all is a reprovação").toBe(false);
+    expect(/transition:\s*all/.test(rules(CSS)), "transition: all fails the design gate").toBe(false);
   });
 });
 

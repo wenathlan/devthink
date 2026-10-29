@@ -56,7 +56,6 @@ import { MetricStrip as MetricStrip } from '../wingets';
 import { RuntimeDiagram as RuntimeDiagram } from '../wingets';
 
 export * from '../wingets';
-export * from '../wingets';
 
 /** the session key the boot key writes and the console reads (once, then spent). */
 const DECLARED_KEY = 'saddle.declared';

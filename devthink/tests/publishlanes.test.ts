@@ -380,14 +380,14 @@ describe.skipIf(!inrepo)("the release assets census (the 300 plus law)", () => {
     /* the complete site archive plus the four next shapes (normal, zai,
      * fifty, personalized), every archive carrying the brotli overlay: ten
      * assets per application. */
-    expect(convert).toContain("packxz(raw, DENTRO(path.join(out, `${app}.${versionof(app)}.tar.xz`)))");
-    expect(convert).toContain("packxz(normal, DENTRO(path.join(out, `${app}.next.normal.${versionof(app)}.tar.xz`)))");
-    expect(convert).toContain("packxz(zai, DENTRO(path.join(out, `${app}.next.zai.${versionof(app)}.tar.xz`)))");
-    expect(convert).toContain("packxz(fifty, DENTRO(path.join(out, `${app}.next.fifty.${versionof(app)}.tar.xz`)))");
+    expect(convert).toContain("packxz(raw, INSIDE(path.join(out, `${app}.${versionof(app)}.tar.xz`)))");
+    expect(convert).toContain("packxz(normal, INSIDE(path.join(out, `${app}.next.normal.${versionof(app)}.tar.xz`)))");
+    expect(convert).toContain("packxz(zai, INSIDE(path.join(out, `${app}.next.zai.${versionof(app)}.tar.xz`)))");
+    expect(convert).toContain("packxz(fifty, INSIDE(path.join(out, `${app}.next.fifty.${versionof(app)}.tar.xz`)))");
     expect(convert).toContain(
-      "packxz(personal, DENTRO(path.join(out, `${app}.next.personalized.${versionof(app)}.tar.xz`)))",
+      "packxz(personal, INSIDE(path.join(out, `${app}.next.personalized.${versionof(app)}.tar.xz`)))",
     );
-    expect(convert).toContain('if (file.endsWith(".tar.xz")) overlay(DENTRO(path.join(out, file)))');
+    expect(convert).toContain('if (file.endsWith(".tar.xz")) overlay(INSIDE(path.join(out, file)))');
   });
 
   it("the release ladder packs the nine family envelopes with saddle last", async () => {

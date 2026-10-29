@@ -36,7 +36,6 @@ import { EntryGate } from "../wingets";
 import { Tabs } from "../wingets";
 
 export * from "../wingets";
-export * from "../wingets";
 
 /** one clone format of the herd shelf — the real archives the family
  * clones and ships (the release archives travel as tar.xz). the ext is the

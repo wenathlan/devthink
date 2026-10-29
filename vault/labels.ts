@@ -22,7 +22,7 @@ import type { LabelRow } from "./db";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 2;
+export const LABEL_REVISION = 3;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -189,7 +189,7 @@ export const LABEL_MANIFEST = {
   "retention.eyebrow": "retention · the clock of the safe",
   "retention.title": "Retention",
   "retention.lede":
-    "One tick of the vault is one day of rehearsal time — the clock now rides {tick}. The engine answers the verdicts and the sweep PLAN; the rehearsal never deletes a byte.",
+    "One tick of the vault is one day of rehearsal time — the clock now rides {tick}. The vault answers the verdicts and the sweep PLAN; the rehearsal never deletes a byte.",
   "retention.action.roll": "roll the clock +{step}d",
   "retention.action.restore": "restore the rehearsal",
   "retention.action.reseed": "reseed seed {seed}",

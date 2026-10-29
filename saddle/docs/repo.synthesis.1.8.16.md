@@ -2,7 +2,7 @@
 
 ## Scope and evidence boundary
 
-This synthesis evaluates the 100 primary repository sources recorded in [repo-research-1.8.16.md](./repo-research-1.8.16.md). It does not copy source code, vendor dependencies, credentials, workflow configuration, service setup, operating assumptions, or claims of the reviewed projects. A candidate that lacked successful primary extraction is retained only as a pending source and is not used as implementation evidence.
+This synthesis evaluates the 100 primary repository sources recorded in [repo.research.1.8.16.md](./repo.research.1.8.16.md). It does not copy source code, vendor dependencies, credentials, workflow configuration, service setup, operating assumptions, or claims of the reviewed projects. A candidate that lacked successful primary extraction is retained only as a pending source and is not used as implementation evidence.
 
 The current baseline is Saddle 1.8.15. It already has deterministic storage pools and budgets, working-set planning, archive inspection, transform cache eligibility, provider-chain selection and cancellation plans, declarative delivery/PWA/surface requirements, release asset generation and local checksum verification. The selected 1.8.16 additions must remain additive, TypeScript-first, root-first, dependency-free, serializable and adapter-owned for all privileged or remote effects.
 

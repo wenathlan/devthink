@@ -11693,7 +11693,7 @@ span[data-tile] {
 }
 /* the lock face: the gesture surface itself — the whole screen lifts the
  * lock (the swipe up, the wheel, the click, the keys). the clock column
- * rides the LEFT edge (the owner's law: o horário fica do lado esquerdo),
+ * rides the LEFT edge (the owner's law: the clock stays on the left side),
  * vertically centered like the windows 11 lock; the hint breathes at the
  * bottom center where the system keeps it */
 .dtw-login__clock {

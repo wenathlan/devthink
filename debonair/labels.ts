@@ -16,7 +16,7 @@ import type { LabelRow } from "./db.ts";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 2;
+export const LABEL_REVISION = 3;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -300,24 +300,24 @@ export const LABEL_MANIFEST = {
   "ingest.card.onsets": "onsets",
   "ingest.card.frames": "frames",
   "ingest.card.hash": "pcm hash",
-  "ingest.action.store": "store in the library db",
+  "ingest.action.store": "store in the library",
   "ingest.action.storing": "storing",
   "ingest.action.copy": "copy json",
   "ingest.action.download": "download json",
-  "ingest.saved.db": "in the db",
+  "ingest.saved.db": "in the library",
   "ingest.saved.offline": "offline mirror",
   "ingest.json.truncated": "… {size} kB total — copy or download for the whole document",
   "ingest.shelf.eyebrow": "the reference shelf",
   "ingest.shelf.title": "Ingested documents",
   "ingest.shelf.empty": "The shelf is empty — ingest the first real track above.",
   "ingest.row.meta": "{clock} · {frames} frames · {roles} · {date}",
-  "ingest.row.badgeDb": "db",
+  "ingest.row.badgeDb": "library",
   "ingest.row.badgeMirror": "mirror",
   "ingest.row.dropAria": "Drop {name}",
   "ingest.toast.decomposed": "{seconds}s decomposed into {frames} vector frames",
   "ingest.toast.clipboard": "the clipboard refused the document",
   "ingest.toast.storeRefused": "the store refused the document",
-  "ingest.toast.storedDb": "stored in the library db",
+  "ingest.toast.storedDb": "stored in the library",
   "ingest.toast.storedOffline": "stored in the offline mirror",
   "ingest.toast.dropped": "record dropped",
   // the intro page anchor (the akash-floor splash)

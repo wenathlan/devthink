@@ -1,4 +1,4 @@
-# planning.v2.28-completo — the ladder to the complete debonair app
+# planning.v2.28-complete — the ladder to the complete debonair app
 
 > owner directive: make the app COMPLETE (suno.com generation x FL studio desk),
 > house tree, no src/, no ui/ folder, doctrine of #oficial 4 + DESIGN_MAP v2.
@@ -25,7 +25,7 @@
 | no wav / midi / stems writers | K4 | wavwriter.ts (16/24/32f encoder, riff-correct), midiwriter.ts (smf format 1, vlq, tempo meta), stems.ts (per-role stem plans + manifest schema v1); export actions in the studio desk |
 | no live visualization (analyser to canvas) | K5 | spectrum scope + waveform overview wired to the real analyser tap; playhead clock; reduced-motion guard |
 | no server persistence (RenderJob idle) | K6 | gateway api projects (list/upsert/delete) on sqlite via prisma; cloudsync.ts engine (seam: fetch first, sessionStorage fallback, 2.5s timeout like onboardingstate); settings page shows sync state honestly |
-| competitors dissected but not written down | K1 | docs/competitor-dissection.md from the five clones in allan/temp (libsonare, pulsegridstudio, magenta-js, acestep.cpp, heartlib) |
+| competitors dissected but not written down | K1 | docs/competitor.dissection.md from the five clones in allan/temp (libsonare, pulsegridstudio, magenta-js, acestep.cpp, heartlib) |
 | planning ladder + version ladder | K2 | this file + docs/planning.ladder.md (900+ steps from the live inventory) |
 
 ## waves (task ids continue the worklog ladder)

@@ -2,7 +2,7 @@
  * graphrunner — the stage engine of the devthink graphs (root layer, pure
  * typescript).
  *
- * The owner law: "as lógicas tem que correr por etapas". The runner walks the
+ * The owner law: "the logics must run stage by stage". The runner walks the
  * graph exactly the way graphnodes.ts layers it: one wave per stage, the
  * nodes of a stage in the stable insertion order of the model, never a
  * nondeterministic promise pool — the run is one straight await chain, so the
@@ -45,7 +45,7 @@ export interface runstageview {
   status: runstatus;
   /** The stage the run stands on (0-based; equals stagecount when settled). */
   stageindex: number;
-  /** The stage waves of the graph (the etapas, stable order). */
+  /** The stage waves of the graph (the stages, stable order). */
   stages: readonly (readonly string[])[];
   /** The state of every node of the graph. */
   nodestates: Readonly<Record<string, nodestate>>;

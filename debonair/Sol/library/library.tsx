@@ -213,7 +213,7 @@ export default function Library() {
           {sampleRows.map((row) => (
             <article key={row.name} className="lib-row" data-status={row.status}>
               <span className="lib-index" aria-hidden="true">
-                ♪
+                note
               </span>
               <span className="lib-cover" aria-hidden="true">
                 <CoverArt name={row.name} />

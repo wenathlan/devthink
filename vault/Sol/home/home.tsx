@@ -32,7 +32,6 @@ import { HomeEntrygate as EntryGate } from "../wingets";
 import { Tabs } from "../wingets";
 
 export * from "../wingets";
-export * from "../wingets";
 
 /** the capability ledger of the staging vault — every row comes from the
  * real storage contract (storage.ts): the lfs/blob channels of

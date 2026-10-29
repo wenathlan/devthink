@@ -70,11 +70,6 @@ import { HeroWaves } from "../wingets";
 import { WindowEdgeChrome } from "../wingets";
 
 export * from "../wingets";
-export * from "../wingets";
-export * from "../wingets";
-export * from "../wingets";
-export * from "../wingets";
-export * from "../wingets";
 
 type LandingState = "open" | "minimized";
 type FrameState = "windowed" | "maximized";

@@ -8,7 +8,7 @@
 > every heavy stage runs SERVER SIDE (the gateway jobs, the saddle AVM
 > modalities) — the visitor's browser, cpu and gpu never run the pipeline.
 > companion of docs/planning.ladder.md (the kathesis verification ladder)
-> and docs/planning.v2.28-completo.md.
+> and docs/planning.v2.28-complete.md.
 >
 > ## the code synthesis of outros.debonair (the reference verdict)
 >

@@ -541,7 +541,7 @@
 - [x] Derive the 1.8.16 verification check for release evidence only after comparative evidence identifies a concrete gap that does not duplicate an existing Saddle capability. Completed by deterministic acceptance, insufficiency, mismatch, and readiness tests in `tests/engine.test.ts`.
 - [ ] Derive the 1.8.16 workflow test for release evidence only after comparative evidence identifies a concrete gap that does not duplicate an existing Saddle capability.
 - [x] Derive the 1.8.16 failure policy for release evidence only after comparative evidence identifies a concrete gap that does not duplicate an existing Saddle capability. Completed by ordered `rejected` and `insufficient` reason codes without positive assurance claims.
-- [x] Derive the 1.8.16 documentation for release evidence only after comparative evidence identifies a concrete gap that does not duplicate an existing Saddle capability. Completed in `docs/enginearchitecture.md` and `docs/repo-synthesis-1.8.16.md`.
+- [x] Derive the 1.8.16 documentation for release evidence only after comparative evidence identifies a concrete gap that does not duplicate an existing Saddle capability. Completed in `docs/enginearchitecture.md` and `docs/repo.synthesis.1.8.16.md`.
 - [ ] Derive the 1.8.16 contract for cross-runtime compatibility only after comparative evidence identifies a concrete gap that does not duplicate an existing Saddle capability.
 - [ ] Derive the 1.8.16 capability matrix for cross-runtime compatibility only after comparative evidence identifies a concrete gap that does not duplicate an existing Saddle capability.
 - [ ] Derive the 1.8.16 import graph audit for cross-runtime compatibility only after comparative evidence identifies a concrete gap that does not duplicate an existing Saddle capability.
@@ -626,15 +626,15 @@
 
 ## 8. Documentation, compatibility, and release execution
 
-- [ ] Update docs/repo-research-1.8.16.md with the complete selected repository inventory and source evidence.
+- [ ] Update docs/repo.research.1.8.16.md with the complete selected repository inventory and source evidence.
 - [ ] Update docs/repo-analysis-1.8.16.json with structured metadata, classification, source paths, and implementation disposition for every analyzed repository.
-- [ ] Update docs/repo-synthesis-1.8.16.md with feature-gap rankings, accepted patterns, rejected patterns, and implementation rationale.
+- [ ] Update docs/repo.synthesis.1.8.16.md with feature-gap rankings, accepted patterns, rejected patterns, and implementation rationale.
 - [ ] Update docs/gapmatrix.md only after comparing the implemented result against the final 1.8.16 code and tests.
 - [ ] Update README claims only when a corresponding capability is public, tested, documented, and not caller-owned or speculative.
 - [ ] Update package exports only for stable, explicitly documented additive contracts.
 - [ ] Update type declarations and package-import tests for every export-map change.
 - [ ] Update changelog.md from verified completed work rather than the original research hypothesis.
-- [x] Create docs/releasenotes-1.8.16.md only after artifact inventory, signing status, workflows, and registry results are known. The final release record lists 38 attached assets and the manual Android fallback state.
+- [x] Create docs/releasenotes.1.8.16.md only after artifact inventory, signing status, workflows, and registry results are known. The final release record lists 38 attached assets and the manual Android fallback state.
 - [x] Update docs/artifactavailability.md only from generated and remotely verified release evidence. The 1.8.15 and 1.8.16 matrices use published release inventories.
 - [x] Run npm test, legacy tests, web typecheck, web build, formatcheck, package dry-run, high-severity audit, and flat-native validation on the final candidate. The candidate passed 136 active and 69 legacy tests with all required gates.
 - [x] Review CI workflows for tag-derived versioning, no hardcoded release version, no exposed secrets, and no unverified publish claim. Tag-triggered registry and asset workflows completed with explicit signing-state boundaries.
@@ -670,7 +670,7 @@
 - [x] Compare requested operating-system and architecture combinations against Docker Buildx, OCI image-index, Node runtime, and runner support.
 - [x] Distinguish publishable Linux OCI variants from Windows container variants that require a compatible Windows base image and Windows runner.
 - [x] Avoid claiming an `unknown` platform as a runnable operating-system or architecture target.
-- [x] Select a supported 1.8.17 Linux multi-architecture matrix and record rejected or deferred combinations with their technical reason in `docs/containerplatforms-1.8.17.md`.
+- [x] Select a supported 1.8.17 Linux multi-architecture matrix and record rejected or deferred combinations with their technical reason in `docs/containerplatforms.1.8.17.md`.
 - [x] Review the current container workflow, image base, tags, OCI labels, post-push pull, label verification, and smoke test before modifying it.
 - [x] Extend the container workflow only for platform combinations that can build and execute the packaged Saddle runtime: `linux/amd64`, `linux/arm64`, and `linux/ppc64le`.
 - [x] Keep release-tag version derivation, registry credentials, permissions, and the container-first documentation order intact.

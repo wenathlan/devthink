@@ -1,87 +1,87 @@
-# regras.md — regras do dono, hierárquicas
+# regras.md — the owner rules, hierarchical
 
-Fonte: C:\allan2\devthink\StealHead\docs\StealHead\md\session7-so-user.txt (seção USER, linhas 1–1106, 28 Set → 18 Out 2026), lida por segmentos via sed. O mapa bruto por segmento está em regras.mapa.md. As regras ficam acima; exemplos e estados entram como "por exemplo" separado.
+Source: C:\allan2\devthink\StealHead\docs\StealHead\md\session7-so-user.txt (USER section, lines 1–1106, Sep 28 → Oct 18 2026), read in segments via sed. The raw map per segment lives in regras.mapa.md. The rules stay above; examples and states enter as a separate "for example".
 
-## 1. Regras gerais
+## 1. General rules
 
-A plataforma é uma super plataforma, concorrente direta de Windows 10, Windows 11, Brave, Chrome, Codex, ChatGPT, OpenAI, Anthropic, ZAI, Google, Grok, T3, OpenCode, Supabase, Cloudflare, E2B e de todo harness de agente. O DevThink é o OS completo que abriga aplicativos, e os outros aplicativos da família são aplicativos, nunca OS. Toda feature dos concorrentes entra como feature nossa, traduzida em aplicativos dentro do tema. A comunicação toda é via HTTPS e mimetypes, nada toca em hardware físico do usuário (GPU, CPU, vGPU, vCPU, IndexedDB, localStorage, armazenamento), a única coisa que carrega na máquina dele é a interface, e todo processamento e armazenamento acontecem nos nossos domínios e engines.
+The platform is a super platform, a direct competitor of Windows 10, Windows 11, Brave, Chrome, Codex, ChatGPT, OpenAI, Anthropic, ZAI, Google, Grok, T3, OpenCode, Supabase, Cloudflare, E2B and of every agent harness. DevThink is the complete os that hosts applications, and the other applications of the family are applications, never an os. Every feature of the competitors enters as our own feature, translated into applications inside the theme. All communication rides HTTPS and mimetypes, nothing touches the user's physical hardware (GPU, CPU, vGPU, vCPU, IndexedDB, localStorage, storage), the only thing that loads on their machine is the interface, and all processing and storage happen on our domains and engines.
 
-| Regra | Conteúdo |
+| Rule | Content |
 | --- | --- |
-| Identidade | Continue com DevThink; login único em todos os sites da família; DBs compartilhados |
-| Fallback de domínio | devthink.pro cai → redireciona para os clones (Netlify, Vercel vitalícios); template universal serve qualquer deploy |
-| Sem captcha | A plataforma é livre, sem captcha |
-| Permissões de usuário | Criar times, grupos, usuários, IAs virtuais, MCPs, APIs, sites, componentes; IA do sistema é universal; hierarquia free, pro, enterprise (sponsor) + doações |
-| Opt-in | Tudo configurável: LLM, sandbox, memória, GPU, CPU, threads, cores, temas (criar, misturar, importar, exportar), chaves, hostings; defaults hardcoded mas personalizáveis |
-| Biblioteca universal | Lógica na raiz sem hardcodagem, distribuída em npm, maven, containers, com módulo Spring Boot; qualquer um usa e adapta |
+| Identity | Continue with DevThink; one single login on every site of the family; shared DBs |
+| Domain fallback | devthink.pro down → redirects to the clones (Netlify, lifetime Vercel); the universal template serves any deploy |
+| No captcha | The platform is free, no captcha |
+| User permissions | Create teams, groups, users, virtual AIs, MCPs, APIs, sites, components; the system AI is universal; free, pro, enterprise (sponsor) hierarchy + donations |
+| Opt-in | Everything configurable: LLM, sandbox, memory, GPU, CPU, threads, cores, themes (create, mix, import, export), keys, hostings; defaults hardcoded but customizable |
+| Universal library | Logic at the root without hardcoding, distributed on npm, maven, containers, with a Spring Boot module; anyone uses and adapts it |
 
 ## 2. Design
 
-O design do DevThink é a fusão do Windows 10 e do Windows 11 com trylle.com, e é o único app com design de OS. Os outros aplicativos têm o design de aplicativo, padrão Apple Silicon, Awards Design, Webflow, trylle.com puro, no nível do index.html de web. O design é universal para web, TV, desktop, CLI, binário, extensão e APK: muda só aspect ratio (tablet, notebook e PC são horizontais, celular vertical), DPI, responsividade e o método de build. O design atual do DevThink está reprovado: refazer e reescrever do zero, sem reciclar, com ícones bonitos e animados, mesmas interações, animações e posições do Windows, bordas arredondadas (nada de pílula), start menu flutuante, elementos flutuantes, sem dots, sem hífens, sem verbosidade, sem fontes amadoras, sem roxo ou azul genérico de vibe code, sem neon, sem cinza marrom, sem grade rígida no desktop, com sombras, efeitos de vidro e curvas profissionais, texturas e receitas de tokens profissionais, dark e light definidos, scroll cuidado e micro e macro animações em tudo, incluindo a animação da logo no estilo de cline.bot e a fusão de ícones das dezenove bibliotecas (Iconic, Phosphor, Hero, Feather, Meteor, Material, Basicons, Flowbite, Nonicons, Sargam, Lucide, Mage, Fluent UI, Tabler, Iconoir, Hugeicons, MynaUI, Remix Icon, Radix Icons).
+The DevThink design is the fusion of Windows 10 and Windows 11 with trylle.com, and it is the only app with an os design. The other applications carry the application design, Apple Silicon standard, Awards Design, Webflow, pure trylle.com, at the level of the web index.html. The design is universal for web, TV, desktop, CLI, binary, extension and APK: only the aspect ratio changes (tablet, notebook and PC are horizontal, phone vertical), DPI, responsiveness and the build method. The current DevThink design is rejected: redo and rewrite from zero, without recycling, with beautiful animated icons, the same Windows interactions, animations and positions, rounded borders (no pill), floating start menu, floating elements, no dots, no hyphens, no verbosity, no amateur fonts, no generic purple or blue of vibe code, no neon, no brown gray, no rigid grid on the desktop, with shadows, glass effects and professional curves, professional textures and token recipes, defined dark and light, careful scroll and micro and macro animations everywhere, including the logo animation in the style of cline.bot and the icon fusion of the nineteen libraries (Iconic, Phosphor, Hero, Feather, Meteor, Material, Basicons, Flowbite, Nonicons, Sargam, Lucide, Mage, Fluent UI, Tabler, Iconoir, Hugeicons, MynaUI, Remix Icon, Radix Icons).
 
-| Regra | Conteúdo |
+| Rule | Content |
 | --- | --- |
-| Referências | C:\allan\docs\neodevthink, neodocs\lookup.exdevthink, neodocs\outros.akash, neoskills, neoimg, index.html de web, exemplo.txt, repositories.md, designeer.md, concorrentes clonados em C:\allan\docs\temp |
-| Top bar | Estilo Windows: aplicativos fixados por ícone, nome só no hover |
-| Start menu | Abre ao clicar no ícone do DevThink (logo na frente, sem nome), flutuante, sem botão start |
-| Ícones | Animados, três camadas (caminhos, contorno, fundo interno com gradiente se movendo), fundo externo opcional |
-| Janelas | Todo aplicativo abre em uma janela igual do Windows, minimizar, maximizar, fechar; hover no topo da tela mostra os controles |
-| Sem Lucide React | Proibido; design próprio e moderno |
-| Taskbar | Clique na logo abre a caixa de pinados com interação de Windows, sem highlight indevido na caixa de pesquisa |
-| Textos | Curtos, diretos, claros; sem dots, sem "passe o mouse para", sem "clique na engrenagem", sem emojis |
-| Tudo em inglês | Tradução só quando a pessoa muda o idioma nas configurações, via API Google GTX (translate.js) |
+| References | C:\allan\docs\neodevthink, neodocs\lookup.exdevthink, neodocs\outros.akash, neoskills, neoimg, web index.html, exemplo.txt, repositories.md, designeer.md, competitors cloned in C:\allan\docs\temp |
+| Top bar | Windows style: applications pinned by icon, name only on hover |
+| Start menu | Opens on the DevThink icon click (logo in front, no name), floating, no start button |
+| Icons | Animated, three layers (paths, outline, inner background with a moving gradient), optional outer background |
+| Windows | Every application opens in a Windows-like window, minimize, maximize, close; hover at the top of the screen shows the controls |
+| No Lucide React | Forbidden; own, modern design |
+| Taskbar | Clicking the logo opens the pinned box with Windows interaction, no undue highlight in the search box |
+| Texts | Short, direct, clear; no dots, no "hover over", no "click the gear", no emojis |
+| All in english | Translation only when the person changes the language in the settings, via the Google GTX API (translate.js) |
 
-## 3. Fluxo de telas
+## 3. Screen flow
 
-Existem duas intros e uma sequência única. A intro da web é a página de apresentação do index.html, cara de SaaS institucional, e a intro do binário, da extensão e da distribuição é a mesma da web. Depois da intro vem a tela de horário com paisagem, a tela de bloqueio estilo Android onde a pessoa puxa para cima, a tela de login estilo Windows moderno (perfil, nome, senha), e por último o painel. No build compilado para binário ou ISO a sequência é a do Windows: logo carregando, paisagem, bloqueio, login, tela inicial de aplicativos. O usuário salva credencial e senha no DB no primeiro uso, sem dados falsos.
+There are two intros and one single sequence. The web intro is the presentation page of the index.html, an institutional SaaS face, and the intro of the binary, the extension and the distribution is the same as the web. After the intro comes the clock screen with landscape, the Android-style lock screen where the person swipes up, the modern Windows-style login screen (profile, name, password), and last the panel. In the build compiled for binary or ISO the sequence is the Windows one: animated logo loading, landscape, lock, login, application start screen. The user saves credential and password in the DB on first use, no fake data.
 
-| Etapa | Web | Binário, ISO, extensão, APK |
+| Stage | Web | Binary, ISO, extension, APK |
 | --- | --- | --- |
-| 1 | Intro SaaS do index.html | Logo carregando animada |
-| 2 | Clique no sininho → tela de login do OS | Tela de horário com paisagem |
-| 3 | Painel | Bloqueio (puxar para cima), login Windows |
-| 4 | — | Tela inicial de aplicativos |
+| 1 | SaaS intro of the index.html | Animated logo loading |
+| 2 | Click the bell → os login screen | Clock screen with landscape |
+| 3 | Panel | Lock (swipe up), Windows login |
+| 4 | — | Application start screen |
 
-## 4. Arquitetura
+## 4. Architecture
 
-A pasta do aplicativo tem a pasta do tema (Sol, nome alterável), docs e tests, e mais nada: sem src (exceção do template Next), sem public, dist, assets, ui, build, deploy, db, data, prisma. O build acontece na raiz, por cima de si mesmo, nos computadores do GitHub. A âncora geral é o App.tsx na raiz, que importa a âncora do tema, o sol.tsx dentro do tema junto do sol.css; o sol.tsx importa as subâncoras de cada pasta; a subâncora recebe o nome da pasta (settings.tsx dentro de settings) e importa os componentes da própria pasta; sempre com export no final. Dentro de sol cada pasta é um aplicativo ou página, sem subpasta dentro de subpasta, sem pasta apps, sem pasta components: o componente vive na pasta da página a que pertence, ou vem importado de outra pasta ajustado ao contexto. O único TSX fora do tema é o App.tsx. As lógicas gerais ficam na raiz do aplicativo, antes do tema, escritas em TypeScript puro, trêscentas ou novecentas lógicas correlatas agrupadas por arquivo por responsabilidade, em blocos hierárquicos, lineares, progressivos e sincronizados, comentados com hashtag, JSDoc 2026, tudo minúsculo, nomes com ponto em vez de hífen (auth.ts, clean.url.ts), palavras chave únicas e curtas, e as lógicas específicas de interface ficam dentro do tema. Um CSS só por tema, o sol.css, dentro do tema; index.html é o único HTML da raiz; 404, terms e policies são componentes TSX compilados pelo workflow.
+The application folder carries the theme folder (Sol, name changeable), docs and tests, and nothing else: no src (Next template exception), no public, dist, assets, ui, build, deploy, db, data, prisma. The build happens at the root, over itself, on the GitHub machines. The general anchor is the App.tsx at the root, which imports the theme anchor, the sol.tsx inside the theme beside the sol.css; the sol.tsx imports the sub-anchors of each folder; the sub-anchor carries the folder's own name (settings.tsx inside settings) and imports the components of its own folder; always with an export at the end. Inside sol each folder is an application or page, no subfolder inside subfolder, no apps folder, no components folder: the component lives in the folder of the page it belongs to, or arrives imported from another folder adjusted to the context. The only TSX outside the theme is the App.tsx. The general logics live at the application root, before the theme, written in pure TypeScript, three hundred or nine hundred correlated logics grouped per file by responsibility, in hierarchical, linear, progressive and synchronized blocks, commented with hashtag, JSDoc 2026, everything lowercase, names with a dot instead of a hyphen (auth.ts, clean.url.ts), unique and short keywords, and the interface-specific logics live inside the theme. One CSS per theme, the sol.css, inside the theme; the index.html is the only HTML of the root; 404, terms and policies are TSX components compiled by the workflow.
 
-| Regra | Conteúdo |
+| Rule | Content |
 | --- | --- |
-| Arquivos de raiz obrigatórios | redirects, robots.txt, keywords.txt, manifest.json, manifest.webmanifest, .npmrc, .nvmrc, .gitignore, .gitattributes, .dockerignore, biome.json, tsconfig, vercel.json, netlify.toml, wrangler, devthink.toml, schema prisma na raiz, package.json idêntico em todos |
-| Pastas proibidas | src (exceto Next), public, dist, assets, ui, build, deploy, db, data, prisma, components, apps, os |
-| Workflows | YML dentro de .github/workflows, agrupados por função (publicação, manutenção, conversão next), etapas aplicadas app por app, Saddle por último; sem sha256 hardcoded; sem workflows pagos; release imutável com checksum |
-| Releases | Uma tag e uma release do DevThink com ~200 assets (iso, vsix, exe, dmg, deb, rpm, AppImage, ipa, apk, zip, next), tar.xz máximo + Brotli; excluir tags, releases e pacotes npm dos outros apps; versões next em <app>.next personalized, 50, zai, normal |
-| Conversão next | Workflow converte o padrão sem src para os formatos next e sobe compactado nos assets, sem pasta duplicada |
-| Configs 2026 | Toda dependência, devDependency e arquivo de configuração na última versão latest, patterns e sintaxe 2026, bumpar até tudo verde |
-| Domain | Nunca hardcodar domínio em sitemap, robots ou código |
+| Mandatory root files | redirects, robots.txt, keywords.txt, manifest.json, manifest.webmanifest, .npmrc, .nvmrc, .gitignore, .gitattributes, .dockerignore, biome.json, tsconfig, vercel.json, netlify.toml, wrangler, devthink.toml, prisma schema at the root, identical package.json in all |
+| Forbidden folders | src (except Next), public, dist, assets, ui, build, deploy, db, data, prisma, components, apps, os |
+| Workflows | YML inside .github/workflows, grouped by function (publishing, maintenance, next conversion), stages applied app by app, Saddle last; no hardcoded sha256; no paid workflows; immutable release with checksum |
+| Releases | One DevThink tag and release with ~200 assets (iso, vsix, exe, dmg, deb, rpm, AppImage, ipa, apk, zip, next), maximum tar.xz + Brotli; delete tags, releases and npm packages of the other apps; next versions in <app>.next personalized, 50, zai, normal |
+| Next conversion | The workflow converts the no-src pattern into the next formats and uploads it compressed in the assets, no duplicated folder |
+| 2026 configs | Every dependency, devDependency and configuration file on the latest version, 2026 patterns and syntax, bump until all green |
+| Domain | Never hardcode a domain in a sitemap, robots or code |
 
-## 5. Dados e armazenamento
+## 5. Data and storage
 
-O DB é o repo virtual: guarda código, assets e informações exatamente como o repositório, e é nele que toda hardcodagem acontece. Nenhum componente, engine ou workflow hardcoda informação; texto, informação, emoji, imagens e links são ingeridos no DB e puxados por fetch, com marcadores no componente apontando a tabela e o item, e a build estática responde de um módulo seed em memória, sem escrever storage do navegador. A stack de armazenamento é Git LFS com objetos git e blobs dentro dos DBs, libgit2, Drizzle ORM, Prisma Schema, MySQL2, Better SQLite3 e JSON, tudo numa lógica unificada, no padrão dos arquivos db.ts, sandbox.ts, compiler.ts e ingest.ts da referência StealHead. O schema prisma fica na raiz, sem pasta prisma, e as tabelas SQL são sincronizadas entre todos os aplicativos, com os mesmos campos e ponteiros, BigInt para terabytes. Cada usuário tem o seu DB, os DBs são considerados HDs dentro do sistema, e o usuário cria novos HDs nas configurações. Os DBs são criptografados, as APIs só respondem para sites autorizados cadastrados pelo dono, e acessar DevTools registra o IP e bloqueia a pessoa em todos os sites, sites em branco, mesmo com VPN.
+The DB is the virtual repo: it stores code, assets and information exactly like the repository, and it is where every hardcode happens. No component, engine or workflow hardcodes information; text, information, emoji, images and links are ingested into the DB and pulled by fetch, with markers in the component pointing to the table and the item, and the static build answers from an in-memory seed module, without writing browser storage. The storage stack is Git LFS with git objects and blobs inside the DBs, libgit2, Drizzle ORM, Prisma Schema, MySQL2, Better SQLite3 and JSON, everything in one unified logic, in the pattern of the db.ts, sandbox.ts, compiler.ts and ingest.ts files of the StealHead reference. The prisma schema stays at the root, no prisma folder, and the SQL tables are synchronized across all applications, with the same fields and pointers, BigInt for terabytes. Every user has their own DB, the DBs are treated as HDs inside the system, and the user creates new HDs in the settings. The DBs are encrypted, the APIs only answer to authorized sites registered by the owner, and accessing DevTools logs the IP and blocks the person on every site, blank sites, even with a VPN.
 
-| Regra | Conteúdo |
+| Rule | Content |
 | --- | --- |
-| Sem Supabase | Infra self-hosted própria, sem limites |
-| Sandbox | Vinte a trinta modalidades: runtime via Wasm, Babel, Node, Bun, Deno e as engines; completa via Saddle com drivers e CPU, GPU virtuais, perfis light, max, balanceado; VFS sustentado por Prisma e Git; via CDN (esm.sh e as quarenta e cinco CDNs) |
-| Saddle | É o projeto de sandboxes tipo E2B, a engine do Rune, roda qualquer binário e sandbox, containers Docker e GHCR; Foundry é clone de E2B e Docker (interface e configurações, engine no Saddle); Vault é clone do Supabase e a biblioteca de armazenamento que todos importam; Getry é o gateway (adaptação Next para deploy da Z.ai e next normal, versões bypass e da Z.ai) |
-| Cadria | Engine VersaWaze, motor de 3D, imagem, vídeo e animação, referências Blender, Remotion, DaVinci, After Effects, Gemini image, Veo |
-| Debonair | Engine de áudio e música tipo Suno, estúdio de música |
-| Imports | Sem lógica duplicada: o app que precisa de imagem importa Cadria, de áudio importa Debonair, de sandbox importa Saddle, de armazenamento importa Vault; DevThink junta todos importando deles |
-| Stealthhead | Jogo FPS pré-compilado (shaders e assets prontos, hash verificado), nunca compila na máquina do visitante, só navegação a mexer |
-| Cobaia | Site clone de monetização (Google Ads, MRR, conversão, planos): cliques dos sites principais redirecionam invisivelmente para ele, que fecha anúncios; sites principais limpos; também roda bot de automação para sustentar os domínios |
+| No Supabase | Own self-hosted infra, no limits |
+| Sandbox | Twenty to thirty modalities: runtime via Wasm, Babel, Node, Bun, Deno and the engines; complete via Saddle with drivers and virtual CPU, GPU, light, max, balanced profiles; VFS sustained by Prisma and Git; via CDN (esm.sh and the forty-five CDNs) |
+| Saddle | It is the E2B-like sandbox project, the Rune engine, runs any binary and sandbox, Docker containers and GHCR; Foundry is the E2B and Docker clone (interface and settings, engine in Saddle); Vault is the Supabase clone and the storage library everyone imports; Getry is the gateway (Next adaptation for the Z.ai deploy and plain next, bypass and Z.ai versions) |
+| Cadria | VersaWaze engine, the 3D, image, video and animation motor, Blender, Remotion, DaVinci, After Effects, Gemini image, Veo references |
+| Debonair | Suno-like audio and music engine, music studio |
+| Imports | No duplicated logic: the app that needs image imports Cadria, audio imports Debonair, sandbox imports Saddle, storage imports Vault; DevThink joins all importing from them |
+| Stealthhead | Pre-compiled FPS game (shaders and assets ready, verified hash), never compiles on the visitor's machine, only navigation to move |
+| Cobaia | Monetization clone site (Google Ads, MRR, conversion, plans): clicks from the main sites redirect invisibly to it, which closes ads; main sites clean; it also runs an automation bot to sustain the domains |
 
-## 6. Rotas e interação (estado do GitHub Pages)
+## 6. Routes and interaction (GitHub Pages state)
 
-As rotas do DevThink publicadas estão bugadas e seguem a regra do /nome do app. A rota do painel troca entre a caixa de aplicativos e o painel, alternando sozinha; rotas estranhas do tipo w/l_id/s/l_id/t/l_id/chat aparecem quando devia ser /chat, porque aquilo pertence ao aplicativo de chat; clicar em Cadria, Debonair, Argan, Forge, Vault ou Saddle deve ir para devthink/nome do app e abrir DENTRO da janela do DevThink, com a mesma interface, e hoje sai para o design errado; a pasta os existe dentro de devthink e não deveria existir, tudo nela vai para sol adaptado e ela é deletada; o painel existe mas não aparece na grade de aplicativos; a tela do painel fica preta e psicodélica; a caixa de login está ruim; os aplicativos nativos (vídeo, imagem, áudio, calculadora, docs, chat, sobre, intro, onboarding, exploring) precisam ser refeitos do zero e iguais entre si; o texto logo original da intro de web voltou no lugar do texto grosso.
+The published DevThink routes are broken and follow the /app name rule. The panel route switches between the application box and the panel, alternating on its own; strange routes like w/l_id/s/l_id/t/l_id/chat appear where it should be /chat, because that belongs to the chat application; clicking Cadria, Debonair, Argan, Forge, Vault or Saddle must go to devthink/app name and open INSIDE the DevThink window, with the same interface, and today it exits to the wrong design; the os folder exists inside devthink and should not exist, everything in it goes into adapted sol and it is deleted; the panel exists but does not appear in the application grid; the panel screen goes black and psychedelic; the login box is bad; the native applications (video, image, audio, calculator, docs, chat, about, intro, onboarding, exploring) need to be redone from zero and equal to each other; the original logo text of the web intro returned in place of the thick text.
 
-## 7. Operação
+## 7. Operation
 
-A operação é por segmentos de leitura com sed de linha X a Y no terminal, nunca com a ferramenta de leitura de arquivo, até seis mil linhas por corte conforme o tamanho, e subagentes de dois ou três por vez, lançando o próximo assim que um termina, com o dono autorizando por pull auth via comandos git quando preciso. Tudo é lido de forma hierárquica, linear, de cima para baixo, com início, meio e fim, to-do list por tema com subderivações até cem passos cada, e os verificadores de teste rodam primeiro: tsc noEmit, biome, seguranças, tudo verde antes de seguir. Nada é instalado dentro das pastas: a execução puxa do node_modules global em C:\Users\nathalan\node_modules, os scripts de teste ficam na pasta tests de cada aplicativo, escritos em TypeScript (cjs permitido), e os builds pesados acontecem nos computadores do GitHub. Escrita de documento é parágrafo seguido de tabela, sempre terminando em tabela, sem citação de documento ou linha lida, sem emoji, desduplicando conceito, contexto e sinônimo iguais, com ortografia e gramática corretas, tom profissional em terceira pessoa, e o que foge do modelo atual entra como plano anterior, nunca riscado.
+The operation is by reading segments with sed from line X to Y in the terminal, never with the file reading tool, up to six thousand lines per cut depending on the size, and subagents two or three at a time, launching the next one as soon as one ends, with the owner authorizing via pull auth with git commands when needed. Everything is read hierarchically, linearly, top to bottom, with beginning, middle and end, a to-do list per theme with subderivations up to one hundred steps each, and the test verifiers run first: tsc noEmit, biome, securities, all green before moving on. Nothing is installed inside the folders: the execution pulls from the global node_modules at C:\Users\nathalan\node_modules, the test scripts live in the tests folder of each application, written in TypeScript (cjs allowed), and the heavy builds happen on the GitHub machines. Document writing is paragraph followed by table, always ending in a table, without quoting a document or read line, without emoji, deduplicating equal concept, context and synonym, with correct spelling and grammar, professional tone in third person, and what departs from the current model enters as a previous plan, never struck through.
 
-| Regra | Conteúdo |
+| Rule | Content |
 | --- | --- |
-| Verificação | Code Security do GitHub zerado; páginas publicadas testadas de verdade (sandbox abre, chat responde, gateway funciona) |
-| Simulação | Controlar o Brave do dono em nova janela, uma aba por vez, abrir, capturar, interagir e fechar; mapear site via DevTools antes de automatizar |
-| Documento por tela | tela.<site>.md com design, telas e fluxo de interação, depois consolidado em telas-design.md |
-| Segurança de código | Repositório público: nada hardcodado no código, gerado nas pipelines; sem chave hardcoded |
+| Verification | GitHub Code Security at zero; published pages truly tested (sandbox opens, chat answers, gateway works) |
+| Simulation | Drive the owner's Brave in a new window, one tab at a time, open, capture, interact and close; map a site via DevTools before automating |
+| Document per screen | screen.<site>.md with design, screens and interaction flow, later consolidated into screens-design.md |
+| Code security | Public repository: nothing hardcoded in the code, generated in the pipelines; no hardcoded key |

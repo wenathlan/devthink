@@ -17,7 +17,7 @@ export function ConsoleReference({ running, onrun }: { running: boolean; onrun: 
         <span className="dtw-navrow__count">{catalogcommands.length}</span>
       </h2>
       <p className="dtw-copy">
-        The registry the cli and the command palette share. Enter runs one entry in the terminal.
+        Every command with its usage and flags. Enter runs one entry in the terminal.
       </p>
       <ul className="dtw-console__refs">
         {catalogcommands.map((command) => (

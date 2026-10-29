@@ -2,7 +2,7 @@
 
 ## Canonical root documents
 
-Project policies, notices and contribution guidance remain at the repository root so package consumers and forge interfaces can discover them without entering `docs`. The canonical license is the extensionless `LICENSE` file containing the official unmodified GNU GPL v3.0 text. Human-readable project policies use one Markdown file per context: `acceptable-use-policy.md`, `authors.md`, `bug-report.md`, `cla.md`, `code-of-conduct.md`, `contributing.md`, `copyright.md`, `disclaimer.md`, `eula.md`, `export-control.md`, `governance.md`, `notice.md`, `privacy-policy.md`, `pull-request-template.md`, `security.md`, `support.md`, `terms-and-conditions.md`, `terms-of-use.md`, `third-party-notices.md` and `trademark-policy.md`.
+Project policies, notices and contribution guidance remain at the repository root so package consumers and forge interfaces can discover them without entering `docs`. The canonical license is the extensionless `LICENSE` file containing the official unmodified GNU GPL v3.0 text. Human-readable project policies use one Markdown file per context: `acceptable.use.policy.md`, `authors.md`, `bug.report.md`, `cla.md`, `code.of.conduct.md`, `contributing.md`, `copyright.md`, `disclaimer.md`, `eula.md`, `export.control.md`, `governance.md`, `notice.md`, `privacy.policy.md`, `pull.request.template.md`, `security.md`, `support.md`, `terms.and.conditions.md`, `terms.of.use.md`, `third.party.notices.md` and `trademark.policy.md`.
 
 The public scope README remains `/home/ubuntu/upload/README.md` and was not modified. The repository's own `README.md` remains a public project document and can receive release or signing-policy updates separately from the immutable scope reference.
 

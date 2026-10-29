@@ -10,7 +10,7 @@
 // deterministic: one Newton pass with a fixed bisection fallback, no
 // randomness, no time-based iteration. The clean-room pattern is absorbed
 // from effectcraft (storytold/effectcraft, crates/keyframe/ease_curve.rs — a
-// PROJETO-class clean-room), re-derived natively in pure TypeScript: no
+// project-class clean-room), re-derived natively in pure TypeScript: no
 // keyframe value unions (scalar numbers only), no spatial/motion-path
 // dimension scaling, no auto-bezier bookkeeping. Errors answer null by
 // return type; nothing throws. Non-goals: no DOM/CSS timing functions, no

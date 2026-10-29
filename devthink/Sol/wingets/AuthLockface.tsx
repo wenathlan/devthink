@@ -2,7 +2,7 @@
  * lockface.tsx — the lock face of the auth sequence, the first face the
  * os answers with. The Windows 11 lock law rides first: the wallpaper
  * paints the place and NOTHING else rides the face — the clock on the
- * LEFT side (the owner's law: o horário fica do lado esquerdo), a big
+ * LEFT side (the owner's law: the clock stays on the left side), a big
  * time over the date in one left-aligned, vertically centered column,
  * and the unlock hint breathing at the bottom center where the system
  * keeps it. The whole face is the gesture surface of the windows family:

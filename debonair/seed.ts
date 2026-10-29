@@ -140,5 +140,5 @@ export const seedHeroBadges: readonly SignalBadge[] = [
 
 export const seedLocaleChoices: readonly OptionChoice[] = [
   { group: "locale", value: "en", label: "English", selected: true },
-  { group: "locale", value: "pt", label: "Português (BR)" },
+  { group: "locale", value: "pt", label: "Portuguese (BR)" },
 ];

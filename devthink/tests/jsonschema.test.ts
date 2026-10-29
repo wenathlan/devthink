@@ -4,7 +4,7 @@
  * layer over the declared shape and the bridge from the fixed kinds.
  */
 import { describe, expect, it } from "vitest";
-import { decisionerror } from "../jsondecision.ts";
+import { decisionerror } from "../json.ts";
 import {
   compilejsonschema,
   createschemamodel,

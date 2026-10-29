@@ -1,49 +1,49 @@
-// # matiz — the pixel engine of the cadria image studio, housed at the cadria
+// # pixel — the pixel engine of the cadria image studio, housed at the cadria
 // root beside versawase. Pure TypeScript over the ImageData shape ({width,
 // height, data: Uint8ClampedArray}): brightness, contrast and saturation
 // adjustments, the grayscale and sepia tints, the 3x3 convolution, the box
 // blur and the bilinear resize. Every stage answers a NEW buffer — the input
-// is never mutated — and every stage validates honestly through MatizError.
+// is never mutated — and every stage validates honestly through PixelError.
 // The engine never leaves cadria: the DevThink native image studio pulls it
-// by the catalog row (engine "matiz", owner "cadria") over HTTPS and never
+// by the catalog row (engine "pixel", owner "cadria") over HTTPS and never
 // bundles it, the same way the video studio rides versawase. In the browser
 // a canvas ImageData rides in directly; in the tests the synthetic buffers
 // ride in. Zero dependencies, no canvas, no worker.
-export class MatizError extends Error {
+export class PixelError extends Error {
   constructor(message: string, options?: { cause?: unknown }) {
     super(message, options);
-    this.name = "MatizError";
+    this.name = "PixelError";
   }
 }
 
 /** one raster image: the dimensions and the rgba byte buffer the canvas
  * calls ImageData. The length must answer for width × height × 4. */
-export type MatizImage = { width: number; height: number; data: Uint8ClampedArray };
+export type PixelImage = { width: number; height: number; data: Uint8ClampedArray };
 
 /** the three channel adjustments: brightness multiplies, contrast swings
  * around the 128 midpoint and saturation interpolates toward the luma. */
-export type MatizAdjustments = { brightness?: number; contrast?: number; saturation?: number };
+export type PixelAdjustments = { brightness?: number; contrast?: number; saturation?: number };
 
 /** the color tints: grayscale rides the rec 709 luma, sepia the classic
  * warm matrix. "none" keeps the adjusted colors. */
-export type MatizTint = "none" | "grayscale" | "sepia";
+export type PixelTint = "none" | "grayscale" | "sepia";
 
 /** one 3x3 convolution kernel, row by row, the center at index 4. */
-export type MatizKernel = [number, number, number, number, number, number, number, number, number];
+export type PixelKernel = [number, number, number, number, number, number, number, number, number];
 
 /** the composed pipeline options: every stage is optional and the stages run
  * in the documented order — adjust, tint, convolve, blur, resize. */
-export type MatizOptions = {
-  adjustments?: MatizAdjustments;
-  tint?: MatizTint;
-  kernel?: MatizKernel;
+export type PixelOptions = {
+  adjustments?: PixelAdjustments;
+  tint?: PixelTint;
+  kernel?: PixelKernel;
   blurRadius?: number;
   resize?: { width: number; height: number };
 };
 
 /** the kernel presets: identity answers the input, sharpen recovers edges
  * and outline answers the inverse of the blur. */
-export const matizkernels: Record<"identity" | "sharpen" | "outline", MatizKernel> = {
+export const pixelkernels: Record<"identity" | "sharpen" | "outline", PixelKernel> = {
   identity: [0, 0, 0, 0, 1, 0, 0, 0, 0],
   sharpen: [0, -1, 0, -1, 5, -1, 0, -1, 0],
   outline: [0, 1, 0, 1, -4, 1, 0, 1, 0],
@@ -51,15 +51,15 @@ export const matizkernels: Record<"identity" | "sharpen" | "outline", MatizKerne
 
 /** Validates one image honestly: finite positive dimensions and a buffer
  * that answers for width × height × 4 bytes. */
-function guardimage(image: MatizImage): void {
+function guardimage(image: PixelImage): void {
   if (!Number.isInteger(image.width) || image.width <= 0)
-    throw new MatizError(`matiz: width must be a positive integer, got ${image.width}`);
+    throw new PixelError(`pixel: width must be a positive integer, got ${image.width}`);
   if (!Number.isInteger(image.height) || image.height <= 0)
-    throw new MatizError(`matiz: height must be a positive integer, got ${image.height}`);
-  if (!(image.data instanceof Uint8ClampedArray)) throw new MatizError("matiz: data must be a Uint8ClampedArray");
+    throw new PixelError(`pixel: height must be a positive integer, got ${image.height}`);
+  if (!(image.data instanceof Uint8ClampedArray)) throw new PixelError("pixel: data must be a Uint8ClampedArray");
   if (image.data.length !== image.width * image.height * 4)
-    throw new MatizError(
-      `matiz: data carries ${image.data.length} bytes but ${image.width}×${image.height} needs ${image.width * image.height * 4}`,
+    throw new PixelError(
+      `pixel: data carries ${image.data.length} bytes but ${image.width}×${image.height} needs ${image.width * image.height * 4}`,
     );
 }
 
@@ -69,21 +69,21 @@ function luma(r: number, g: number, b: number): number {
 }
 
 /** Builds a copy of the buffer so no stage ever mutates the input. */
-function copybuffer(image: MatizImage): Uint8ClampedArray {
+function copybuffer(image: PixelImage): Uint8ClampedArray {
   return new Uint8ClampedArray(image.data);
 }
 
 /** Applies the three channel adjustments: brightness multiplies the value,
  * contrast swings it around the 128 midpoint and saturation interpolates it
  * toward the luma of the adjusted pixel. One (default 1) answers unchanged. */
-export function adjustimage(image: MatizImage, adjustments: MatizAdjustments = {}): MatizImage {
+export function adjustimage(image: PixelImage, adjustments: PixelAdjustments = {}): PixelImage {
   guardimage(image);
   const brightness = adjustments.brightness ?? 1;
   const contrast = adjustments.contrast ?? 1;
   const saturation = adjustments.saturation ?? 1;
   for (const amount of [brightness, contrast, saturation]) {
     if (!Number.isFinite(amount) || amount < 0)
-      throw new MatizError(`matiz: adjustments must be finite numbers >= 0, got ${amount}`);
+      throw new PixelError(`pixel: adjustments must be finite numbers >= 0, got ${amount}`);
   }
   const data = copybuffer(image);
   for (let at = 0; at < data.length; at += 4) {
@@ -103,10 +103,10 @@ export function adjustimage(image: MatizImage, adjustments: MatizAdjustments = {
 
 /** Tints the image: grayscale answers the rec 709 luma on every channel and
  * sepia answers the classic warm matrix. The alpha rides untouched. */
-export function tintimage(image: MatizImage, tint: MatizTint): MatizImage {
+export function tintimage(image: PixelImage, tint: PixelTint): PixelImage {
   guardimage(image);
   if (tint === "none") return { width: image.width, height: image.height, data: copybuffer(image) };
-  if (tint !== "grayscale" && tint !== "sepia") throw new MatizError(`matiz: unknown tint "${tint}"`);
+  if (tint !== "grayscale" && tint !== "sepia") throw new PixelError(`pixel: unknown tint "${tint}"`);
   const data = copybuffer(image);
   for (let at = 0; at < data.length; at += 4) {
     const r = data[at];
@@ -129,10 +129,10 @@ export function tintimage(image: MatizImage, tint: MatizTint): MatizImage {
 /** Convolves the image with one 3x3 kernel: every channel samples the clamped
  * neighborhood (edges replicate), the kernel multiplies row by row and the
  * alpha rides untouched. The identity kernel answers the input colors. */
-export function convolveimage(image: MatizImage, kernel: MatizKernel): MatizImage {
+export function convolveimage(image: PixelImage, kernel: PixelKernel): PixelImage {
   guardimage(image);
   if (kernel.length !== 9 || kernel.some((weight) => !Number.isFinite(weight)))
-    throw new MatizError("matiz: a kernel carries exactly nine finite weights");
+    throw new PixelError("pixel: a kernel carries exactly nine finite weights");
   const { width, height } = image;
   const source = image.data;
   const data = new Uint8ClampedArray(source.length);
@@ -159,10 +159,10 @@ export function convolveimage(image: MatizImage, kernel: MatizKernel): MatizImag
 /** Box-blurs the image with one separable horizontal pass and one vertical
  * pass over a (2·radius+1) window with clamped edges: the rgb channels ride
  * the box average and the alpha rides untouched. Radius 0 answers a copy. */
-export function boxblurimage(image: MatizImage, radius: number): MatizImage {
+export function boxblurimage(image: PixelImage, radius: number): PixelImage {
   guardimage(image);
   if (!Number.isInteger(radius) || radius < 0)
-    throw new MatizError(`matiz: blurRadius must be an integer >= 0, got ${radius}`);
+    throw new PixelError(`pixel: blurRadius must be an integer >= 0, got ${radius}`);
   if (radius === 0) return { width: image.width, height: image.height, data: copybuffer(image) };
   const { width, height } = image;
   const span = radius * 2 + 1;
@@ -202,12 +202,12 @@ export function boxblurimage(image: MatizImage, radius: number): MatizImage {
 /** Resizes the image with bilinear sampling over pixel centers: every dest
  * pixel maps back to the source, the four neighbors blend by weight and the
  * edges clamp, so nothing reads outside the buffer. */
-export function resizeimage(image: MatizImage, target: { width: number; height: number }): MatizImage {
+export function resizeimage(image: PixelImage, target: { width: number; height: number }): PixelImage {
   guardimage(image);
   if (!Number.isInteger(target.width) || target.width <= 0)
-    throw new MatizError(`matiz: resize width must be a positive integer, got ${target.width}`);
+    throw new PixelError(`pixel: resize width must be a positive integer, got ${target.width}`);
   if (!Number.isInteger(target.height) || target.height <= 0)
-    throw new MatizError(`matiz: resize height must be a positive integer, got ${target.height}`);
+    throw new PixelError(`pixel: resize height must be a positive integer, got ${target.height}`);
   const { width: sw, height: sh } = image;
   const { width: dw, height: dh } = target;
   const data = new Uint8ClampedArray(dw * dh * 4);
@@ -235,14 +235,14 @@ export function resizeimage(image: MatizImage, target: { width: number; height: 
   return { width: dw, height: dh, data };
 }
 
-/** Runs the whole matiz pipeline in the documented order: the channel
+/** Runs the whole pixel pipeline in the documented order: the channel
  * adjustments first, the tint second, the 3x3 convolution third, the box
  * blur fourth and the bilinear resize last. With no options the pipeline
  * answers a copy. DevThink never calls this directly — the studio page
  * queues the work over the gateway and the cadria engine answers there. */
-export function runmatiz(image: MatizImage, options: MatizOptions = {}): MatizImage {
+export function runpixel(image: PixelImage, options: PixelOptions = {}): PixelImage {
   guardimage(image);
-  let current: MatizImage = { width: image.width, height: image.height, data: copybuffer(image) };
+  let current: PixelImage = { width: image.width, height: image.height, data: copybuffer(image) };
   if (options.adjustments) current = adjustimage(current, options.adjustments);
   if (options.tint) current = tintimage(current, options.tint);
   if (options.kernel) current = convolveimage(current, options.kernel);

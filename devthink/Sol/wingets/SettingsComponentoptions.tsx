@@ -19,7 +19,7 @@ import {
   saveAltTabMotion,
   saveDevtoolsWall,
   saveTaskbarTips,
-} from "./SettingsPersonalstore";
+} from "../../personalstore.ts";
 import type { PreferenceKey, SettingsSnapshot } from "./Settingstypes";
 
 type ComponentOptionsProps = {

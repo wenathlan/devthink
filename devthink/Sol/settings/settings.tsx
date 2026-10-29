@@ -52,19 +52,6 @@ import {
 } from "../wingets";
 
 export * from "../wingets";
-export * from "../wingets";
-export * from "../wingets";
-export * from "../wingets";
-export * from "../wingets";
-export * from "../wingets";
-export * from "../wingets";
-export * from "../wingets";
-export * from "../wingets";
-export * from "../wingets";
-export * from "../wingets";
-export * from "../wingets";
-export * from "../wingets";
-export * from "../wingets";
 
 /** paints the stored personalization choices before any route mounts (the
  * same law initautotranslate rides at the theme anchor). */

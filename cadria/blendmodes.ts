@@ -1,12 +1,12 @@
 // # blendmodes — the layer blend formulas of the cadria image studio, housed
-// at the cadria root beside matiz. Every mode answers as a scalar per-channel
+// at the cadria root beside pixel. Every mode answers as a scalar per-channel
 // function over pixels in the 0–255 byte domain (the ISO 32000-2 / W3C
 // Compositing definitions), with the classic photo-editor variants where the
 // editor diverges from the standard (Photoshop's Soft Light; Overlay as
 // Hard-Light with the operands swapped). The four non-separable modes (hue,
 // saturation, color, luminosity) ride the luminance/saturation decomposition
 // of the standard. The clean-room pattern is absorbed from photocraft
-// (storytold/photocraft, crates/color/blend.rs — a PROJETO-class clean-room
+// (storytold/photocraft, crates/color/blend.rs — a project-class clean-room
 // scalar reference), re-derived natively in pure TypeScript: no PSD keys, no
 // serde enums, no dissolve/hardmix noise modes, no float-pipeline coupling.
 // Every function is pure, validates by return type (null on shape mismatch)

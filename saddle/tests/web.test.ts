@@ -24,11 +24,11 @@
 import assert from 'node:assert/strict';
 import { fork, spawnSync } from 'node:child_process';
 import { createHash, createHmac, randomInt, randomUUID } from 'node:crypto';
-import { existsSync, readFileSync, unlinkSync } from 'node:fs';
+import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { describe, it } from 'vitest';
+import { afterAll, beforeAll, describe, it } from 'vitest';
 import {
   bootSequence,
   clinfoSummary,
@@ -81,6 +81,17 @@ function buildspa(): { code: number | null; error: string; stderr: string } {
 /* ------------------------------------------------------------------ */
 
 describe('the web contract', () => {
+  /* the source-face guard (the 40367f3a and #181 lesson): the root-build
+   * doctrine writes the hashed bundles at the app root and the vite build
+   * rewrites the tracked index.html with the hashed references — the suite
+   * captures the source face before the first build and restores it after
+   * the last test, so a local run never leaves a build artifact inside the
+   * tracked tree. */
+  const approot = join(dirname(fileURLToPath(import.meta.url)), '..');
+  const sourceindex = readFileSync(join(approot, 'index.html'), 'utf8');
+  afterAll(() => {
+    writeFileSync(join(approot, 'index.html'), sourceindex);
+  });
   it('web bank: eight cpu models and seven gpus mirror the catalogs', () => {
     assert.equal(cpudata.length, 8);
     const epyc = cpudata.find((cpu) => cpu.model === 'AMD EPYC 9965');
