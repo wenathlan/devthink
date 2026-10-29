@@ -6,7 +6,7 @@ Every action kind of the immutable 335 kind vocabulary documents its family, its
 
 ## Interaction kinds
 
-The pointer, keyboard and element surface: every kind that moves, clicks, types or toggles a reviewed element. 45 kinds; the family policy test lives in ../tests/policy.test.ts.
+The pointer, keyboard and element surface: every kind that moves, clicks, types or toggles a reviewed element. 45 kinds; the family policy test lives in tests/policy.test.ts.
 
 ### `appendtext`
 
