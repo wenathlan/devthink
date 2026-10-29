@@ -19,5 +19,5 @@
     }
   },
   "include": ["*.ts", "tests/**/*.ts", "Sol/**/*.ts", "Sol/**/*.tsx"],
-  "exclude": ["tests/code", "dist", "node_modules"]
+  "exclude": ["tests/code", "dist", "node_modules", "tests/code.bun.ts", "tests/code.deno.ts", "tests/code.mcp.client.ts"]
 }

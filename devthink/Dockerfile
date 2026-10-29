@@ -316,19 +316,17 @@ RUN bun install --frozen-lockfile --ignore-scripts
 # the rest of the tree, in the checkout geometry: the application sources
 # (the library sources, the web root interface files — the static site
 # design and the extension surfaces, flat at the application root beside
-# the Sol component folders — and the docs the deterministic checks read),
-# the flat test village (tests/ — the build engine, the fixtures, the
-# smoke scripts and the vitest suite the builder runs), and the sibling
-# engines the config bridges resolve (the getry thinking ladder of the
-# getrybridge alias and the direct village imports, the saddle sandbox
-# and isolation surfaces of the vite/vitest/tsconfig bridges). the
-# application lands at /devthink and the siblings beside it, so every
+# the Sol component folders — the docs the deterministic checks read and
+# the application tests tree the builder runs), and the sibling engines
+# the config bridges resolve (the getry thinking ladder of the
+# getrybridge alias, the saddle sandbox and isolation surfaces of the
+# vite/vitest/tsconfig bridges). the application lands at /devthink with
+# its own tests/ inside and the siblings beside it, so every
 # the sibling getry and saddle owners beside the application tree
 # answers inside the image exactly the way it answers in the checkout
 # (the root .dockerignore keeps the context to exactly these inputs — no
 # prebuilt dist, no packaged artifacts, no caches).
 COPY devthink .
-COPY tests /tests
 COPY getry /getry
 COPY saddle /saddle
 # the root manifest the engines gate counts rides beside the application:
@@ -336,12 +334,6 @@ COPY saddle /saddle
 # container answers the checkout geometry the same way (the count law
 # of the fifteen engines reads the field that grows without limit).
 COPY package.json /package.json
-
-# the flat village bridge the ci and verify lanes carry: the village
-# scripts import bare specifiers (esbuild, vitest) from their own folder,
-# so the installed tree answers them through the same node_modules symlink
-# the checkout lanes bridge onto tests/.
-RUN ln -sfn /devthink/node_modules /tests/node_modules
 
 # the library build: every dist target the publishing pipeline ships — the
 # esm/cjs/neutral library bundles, the cli, the headless entry, the mcp
