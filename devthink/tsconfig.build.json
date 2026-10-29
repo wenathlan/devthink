@@ -9,11 +9,8 @@
     "outDir": "dist",
     "paths": {
       "@/*": ["./Sol/*", "./*"],
-<<<<<<< HEAD
       "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"],
       "@wenathlan/getry/thinking": ["../getry/thinking.d.ts"],
-=======
->>>>>>> origin/main
       "@wenathlan/devthink/server": ["./server.ts"]
     }
   },

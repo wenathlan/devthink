@@ -10,7 +10,7 @@ name: DevThink Release
 # without its CHANGELOG section (the saddle release body contract), the
 # verify workflow runs the 22-gate ladder over the tagged source, the
 # assemble job builds the complete artifact chain through the repo's own
-# generator (node ../tests/devthink.build.ts + node ../tests/devthink.packageextension.ts: the flat
+# generator (node build.ts + node packageextension.ts: the flat
 # npm tarball, the chromium zip, the firefox xpi, the safari zip, the vsix,
 # the static site, the declarations, the umd pair, the native host template,
 # the source archive and the artifact manifest), the channel jobs verify the
@@ -28,7 +28,7 @@ name: DevThink Release
 # and the container/desktop/buildextension asset lanes), exactly as R1 and R2
 # restored them — this workflow carries the assembly, the verification and
 # the github release chain plus the npmjs publication job the release npm
-# gate (../tests/devthink.npmgate.ts) demands: the flat distpackage tarball publish with
+# gate (npmgate.ts) demands: the flat distpackage tarball publish with
 # provenance, the bounded retry and the pre-publish existence check. The two
 # npm lanes stay idempotent against each other (the first publish wins, the
 # latecomer answers "already exists; skipping"), and every other registry
@@ -294,17 +294,6 @@ jobs:
           node-version-file: devthink/.nvmrc
       - name: Install the locked dependencies
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
-      - name: Bridge the flat testes gate scripts onto the application tree
-        # the flat typed folder law moved every gate script out of the
-        # application into tests/, and node resolves the bare specifiers
-        # the gates import (esbuild of the build gate) from the script's
-        # own directory upward — a walk that never reaches
-        # devthink/node_modules and answered ERR_MODULE_NOT_FOUND on the
-        # assembly lane of the release approval chain. the runtime link
-        # points the folder at the frozen application tree the install just
-        # materialized, so the gates resolve the exact locked rungs — never
-        # a floating auto-install.
-        run: ln -sfn ../devthink/node_modules tests/node_modules
       - name: Build the publishing pipeline artifacts
         # the repo's own generator: every dist target (the library bundles,
         # the extension surface, the static site, the flat distpackage
@@ -313,13 +302,13 @@ jobs:
         run: |
           set -euo pipefail
           cd devthink
-          node ../tests/devthink.build.ts
-          node ../tests/devthink.packageextension.ts
+          node build.ts
+          node packageextension.ts
       - name: Run the accessibility sweep over the built tree
         # the readiness test the suite carries walks the committed evidence:
         # the sweep reruns here so the recorded wcag artifact reflects the
         # built surfaces (the committed artifact predates this build).
-        run: cd devthink && node ../tests/devthink.wcag.ts
+        run: cd devthink && node wcag.ts
       - name: Assemble the complete base release assets
         run: |
           set -euo pipefail
@@ -409,7 +398,7 @@ jobs:
         # next zip for the application that is born Next (getry) - the
         # bypass flavor of the gateway rides this conversion, not a second
         # folder. The build stays on the GitHub machines.
-        run: node devthink/../tests/devthink.scripts.nextconvert.ts "${{ needs.assemble.outputs.version }}"
+        run: node devthink/scripts.nextconvert.ts "${{ needs.assemble.outputs.version }}"
       - name: Upload the nextzips release assets
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:

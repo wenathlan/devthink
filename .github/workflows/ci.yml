@@ -69,29 +69,18 @@ jobs:
           deno-version: v2.x
       - name: Install root dependencies
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
-      - name: Bridge the flat testes gate scripts onto the application tree
-        # the flat typed folder law moved every gate script out of the
-        # application into tests/, and node resolves the bare specifiers
-        # the gates import (esbuild of the build gate) from the script's
-        # own directory upward — a walk that never reaches
-        # devthink/node_modules and answered ERR_MODULE_NOT_FOUND on every
-        # lane of the release approval chain. the runtime link points the
-        # folder at the frozen application tree the install just
-        # materialized, so the gates resolve the exact locked rungs — never
-        # a floating auto-install.
-        run: ln -sfn ../devthink/node_modules tests/node_modules
       - name: Validate the CLI help contract of the built artifacts
         shell: bash
         run: |
           set -euo pipefail
           cd devthink
           if [ "${{ matrix.runtime }}" = "node" ]; then
-            node ../tests/devthink.build.ts
+            node build.ts
             node dist/cli.js --help
           elif [ "${{ matrix.runtime }}" = "deno" ]; then
-            node ../tests/devthink.build.ts
+            node build.ts
           else
-            node ../tests/devthink.build.ts
+            node build.ts
             bun devthink.ts --help
           fi
       - name: Deno check over the deno entry
@@ -112,7 +101,7 @@ jobs:
         # the readiness test the suite carries walks the committed evidence:
         # the sweep reruns here so the recorded wcag artifact reflects the
         # built surfaces (the committed artifact predates this build).
-        run: cd devthink && node ../tests/devthink.wcag.ts
+        run: cd devthink && node wcag.ts
       - name: Run deterministic test suite
         shell: bash
         run: |
@@ -182,7 +171,7 @@ jobs:
         # the database module imports the PrismaClient the generated
         # .prisma/client tree declares — a fresh install carries the stub
         # alone, so the client generates before the declaration walk (the
-        # same ordering the root build carries through ../tests/devthink.build.ts).
+        # same ordering the root build carries through build.ts).
         run: cd devthink && npm run db:generate
       - name: Typecheck the merged tree on the LTS line
         run: cd devthink && npm run typecheck
@@ -349,19 +338,10 @@ jobs:
           cd devthink
           bun install --frozen-lockfile --ignore-scripts
 
-      - name: Bridge the flat testes gate scripts onto the application tree
-        # the same resolution bridge the CLI matrix carries: the webpack
-        # lane builds the core bundle through ../tests/devthink.build.ts
-        # whose esbuild import resolves from the script's own folder — the
-        # runtime link to the frozen application tree keeps the lane on the
-        # locked rungs instead of the ERR_MODULE_NOT_FOUND the flat folder
-        # law left behind.
-        run: ln -sfn ../devthink/node_modules tests/node_modules
-
       - name: Build the core bundle and pack it through webpack
         run: |
           cd devthink
-          node ../tests/devthink.build.ts
+          node build.ts
           # the cross-bundler rung rides exact-pinned registry fetches (the
           # same pin law every lane of the battery answers): npx resolves
           # the two immutable webpack rungs the lane verified — webpack-cli
@@ -387,7 +367,7 @@ jobs:
 
       - name: Run the config parity gate
         working-directory: devthink
-        run: node ../tests/devthink.configparity.ts
+        run: node configparity.ts
 
   family-tests:
     # the family test lane: the ten family apps carry their own vitest

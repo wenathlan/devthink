@@ -1,0 +1,152 @@
+import { execFile } from "node:child_process";
+import { existsSync } from "node:fs";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
+import { promisify } from "node:util";
+import { describe, expect, it } from "vitest";
+import { fixturepages } from "./pagefixtures.ts";
+import { reciperecord, type recipereport } from "../recipes.ts";
+import { runrecipessuite } from "../recipes.ts";
+import { gallery as gallerytext, recipeplans } from "./recipesfixtures.ts";
+
+const execute = promisify(execFile);
+const expectedcategories = { scraping: 8, forms: 9, testing: 8, monitoring: 6, agents: 5 };
+
+/** One gallery index entry with the metadata the runner validates. */
+interface galleryentry {
+  id: string;
+  category: string;
+  difficulty: string;
+  description: string;
+  fixture: string;
+  origin: string;
+  expecteddurationms: number;
+  capabilities: string[];
+  consentclasses: string[];
+  kinds: string[];
+  exportformat?: string;
+  schedule?: string;
+  topology?: string;
+}
+
+/** The gallery index of the 36 recipes: the index metadata beside the fixture page declarations. */
+interface galleryindex {
+  version: string;
+  fixturepages: Array<{ name: string; origin: string; features: string[] }>;
+  entries: galleryentry[];
+}
+
+/** One recipe plan document the directory carries: the origin and the steps the grammar and lint checks read. */
+interface recipedocument {
+  origin: string;
+  grants?: string[];
+  steps: Array<{ id: string; kind: string; options?: string }>;
+}
+
+/** Collects every action kind one recipe names: the top level step kinds beside the child kinds nested in the control payloads of the options (the parallel branches, the loop bodies and the branch paths), so the grammar check reads the same surface the runner reads. */
+function kindswithin(recipe: recipedocument): string[] {
+  const kinds: string[] = [];
+  const walk = (value: unknown) => {
+    if (Array.isArray(value)) {
+      for (const item of value) walk(item);
+      return;
+    }
+    if (value === null || typeof value !== "object") return;
+    const candidate = value as Record<string, unknown>;
+    if (typeof candidate.kind === "string") kinds.push(candidate.kind);
+    for (const child of Object.values(candidate)) walk(child);
+  };
+  for (const step of recipe.steps) {
+    kinds.push(step.kind);
+    if (step.options !== undefined) {
+      try {
+        walk(JSON.parse(step.options));
+      } catch {
+        /* the option grammar check of the runner reports the malformed payload */
+      }
+    }
+  }
+  return [...new Set(kinds)];
+}
+
+/* ── The 2.0.0 example gallery coverage: the source grammar pass, the suite run over the built tree and the recorded artifact. ── */
+
+describe("the example gallery of the 2.0.0 release", () => {
+  it("parses every recipe with the lowercase kind grammar and the category metadata the index declares", async () => {
+    const gallery = JSON.parse(gallerytext) as galleryindex;
+    expect(gallery.entries.length).toBe(36);
+    /* no gallery entry id duplicates: the index names every recipe exactly once */
+    expect(new Set(gallery.entries.map((entry) => entry.id)).size).toBe(36);
+    /* every recipe of the module source set joins the index, and every index entry names its recipe */
+    const recipeids = Object.keys(recipeplans).sort();
+    expect(recipeids.length).toBe(36);
+    const recipes = new Map<string, recipedocument>();
+    const moduleplans = recipeplans as Record<string, string>;
+    for (const id of recipeids) recipes.set(id, JSON.parse(moduleplans[id]) as recipedocument);
+    expect(new Set([...recipes.keys(), ...gallery.entries.map((entry) => entry.id)]).size).toBe(36);
+    /* every step kind stays lowercase letter only: the workflow step grammar rejects digits (the a11ytree incident), so the gallery ships no kind the compose engine would refuse */
+    const digitkinds = [...recipes].flatMap(([id, recipe]) =>
+      kindswithin(recipe)
+        .filter((kind) => !/^[a-z]+$/.test(kind))
+        .map((kind) => `${id} carries ${kind}`),
+    );
+    expect(digitkinds).toEqual([]);
+    /* the monitoring entries declare their five field cron schedules, the agent entries their topologies and the scraping entries their export formats */
+    for (const entry of gallery.entries) {
+      if (entry.category === "monitoring")
+        expect(entry.schedule).toMatch(/^(\*|\d+)(\/\d+)? (\*|\d+) (\*|\d+) (\*|\d+) (\*|\d+)$/);
+      if (entry.category !== "monitoring") expect(entry.schedule).toBeUndefined();
+      if (entry.category === "agents")
+        expect(["swarm", "review", "parallel", "monitor", "compete"]).toContain(entry.topology);
+      if (entry.category !== "agents") expect(entry.topology).toBeUndefined();
+      if (entry.category === "scraping") expect(["csv", "json", "excel"]).toContain(entry.exportformat);
+      if (entry.category !== "scraping") expect(entry.exportformat).toBeUndefined();
+    }
+  });
+
+  it("runs the gallery suite green over the built tree", { timeout: 120_000 }, async () => {
+    const built = existsSync("dist/gallery.json");
+    /* the suite needs the built fixture copies the packages ship, so a lane without a build asserts the source pass only */
+    if (!built) return;
+    const report = await runrecipessuite();
+    expect(report.gallery.entries).toBe(36);
+    expect(report.gallery.fixtures).toBe(4);
+    expect(report.gallery.categories).toEqual(expectedcategories);
+    expect(report.summary.entries).toBe(36);
+    expect(report.summary.passed).toBe(36);
+    expect(report.summary.failed).toBe(0);
+    expect(report.summary.checksok).toBe(report.summary.checks);
+    expect(report.checks.every((check) => check.ok)).toBe(true);
+    expect(report.entries.length).toBe(36);
+    expect(report.entries.every((entry) => entry.outcome === "pass")).toBe(true);
+    expect(report.entries.every((entry) => entry.durationms >= 0)).toBe(true);
+  });
+
+  it("covers every gallery entry of the index in the recorded record", {
+    timeout: Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 120000),
+  }, async () => {
+    const built = existsSync("dist/gallery.json");
+    const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
+    /* a built tree runs the gate itself, so every lane that builds before the suite verifies the committed gallery record without depending on gate ordering: the gate reruns the gallery over the built fixture set and verifies the record stays internally consistent */
+    if (built) await execute("node", ["recipes.ts"]);
+    const gallery = JSON.parse(gallerytext) as galleryindex;
+    const report: recipereport = reciperecord;
+    /* the record answers the current release with every entry passing and every check ok */
+    expect(report.release).toBe(packagejson.version);
+    expect(report.gallery.entries).toBe(36);
+    expect(report.gallery.categories).toEqual(expectedcategories);
+    expect(report.summary.failed).toBe(0);
+    expect(report.summary.passed).toBe(report.summary.entries);
+    expect(report.summary.checksok).toBe(report.summary.checks);
+    /* the recorded entries cover every entry of the gallery index exactly, each with a passing outcome and a recorded duration */
+    expect(report.entries.map((entry) => entry.id).sort()).toEqual(gallery.entries.map((entry) => entry.id).sort());
+    expect(report.entries.every((entry) => entry.outcome === "pass")).toBe(true);
+    expect(report.entries.every((entry) => entry.durationms >= 0)).toBe(true);
+    /* the four fixture pages ship beside the recipes in the module sources and in the built fixture set the packages carry */
+    const sourcepages = new Set(Object.keys(fixturepages));
+    for (const page of gallery.fixturepages) {
+      expect(sourcepages.has(page.name)).toBe(true);
+      if (built) expect(existsSync(join("dist", "fixtures", "pages", page.name))).toBe(true);
+    }
+  });
+});

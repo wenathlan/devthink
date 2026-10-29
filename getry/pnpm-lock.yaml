@@ -152,13 +152,8 @@ importers:
         specifier: ^2.1.6
         version: 2.1.6(playwright@1.64.1)
       '@wenathlan/vault':
-<<<<<<< HEAD
-        specifier: file:../vault
-        version: file:../vault(@types/react@19.3.0)(playwright@1.64.1)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-=======
         specifier: ^2.0.151
         version: 2.0.151(@types/react@19.3.0)(react@19.3.1)
->>>>>>> origin/main
       hono:
         specifier: ^4.13.14
         version: 4.13.14
@@ -166,13 +161,8 @@ importers:
         specifier: ^7.1.1
         version: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
       lucide-react:
-<<<<<<< HEAD
-        specifier: ^1.61.0
-        version: 1.61.0(@types/react@19.3.0)(react@19.3.1)
-=======
         specifier: ^1.64.0
         version: 1.64.0(@types/react@19.3.0)(react@19.3.1)
->>>>>>> origin/main
       motion:
         specifier: ^12.43.0
         version: 12.43.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -313,13 +303,8 @@ importers:
         specifier: ^5.0.6
         version: 5.0.6
       '@types/google.maps':
-<<<<<<< HEAD
-        specifier: ^3.66.7
-        version: 3.66.8
-=======
         specifier: ^3.66.9
         version: 3.66.9
->>>>>>> origin/main
       '@types/node':
         specifier: ^26.6.6
         version: 26.6.6
@@ -2395,13 +2380,8 @@ packages:
   '@types/geojson@7946.0.16':
     resolution: {integrity: sha512-6C8nqWur3j98U6+lXDfTUWIfgvZU+EumvpHKcYjujKH7woYyLj2sUmff0tRhrqM7BohUw7Pz3ZB1jj2gW9Fvmg==}
 
-<<<<<<< HEAD
-  '@types/google.maps@3.66.8':
-    resolution: {integrity: sha512-79smuL2cQ28Uqo01YlPCcHNCq96iyZQhvXinCBl9NvxsVP8kEel1cLsKtImNcwv0x4stX3QGgEUsE1ObXyCs5A==}
-=======
   '@types/google.maps@3.66.9':
     resolution: {integrity: sha512-6OmfZjuSMDG5oTzW6f2JM1by1rUrdCMBxtru2OJXfX44N3DqQSh8lEgwZbrHjoswYiapRf30vUCHjTs9sKDJdQ==}
->>>>>>> origin/main
 
   '@types/har-format@1.2.16':
     resolution: {integrity: sha512-fluxdy7ryD3MV6h8pTfTYpy/xQzCFC7m89nOH9y94cNqJ1mDIDPut7MnRHI3F6qRmh/cT2fUjG1MLdCNb4hE9A==}
@@ -2660,15 +2640,9 @@ packages:
       playwright:
         optional: true
 
-<<<<<<< HEAD
-  '@wenathlan/vault@file:../vault':
-    resolution: {directory: ../vault, type: directory}
-    engines: {bare: ^1.18.0, bun: ^1.4.2, chrome: ^16.0.912, cnpm: ^9.4.0, corepack: ^0.35.0, deno: ^2.9.5, ecmascript: ^5.0.0, firefox: '>=0.8.0', iojs: ^1.0.0, node: '>=26.13.0 <27', npm: ^12.1.0, pnpm: ^12.6.0, teleport: '>=0.2.0', typescript: ^5.8.0, vscode: ^1.118.0, yarn: ^4.17.1}
-=======
   '@wenathlan/vault@2.0.151':
     resolution: {integrity: sha512-Y7wkeNB7qg9WkMjSWd/7rWgX5IpFk/CbFreNMVW5WlL/bOBAojxLD/+VMgCEXIqbE9cncrs9+NRunHiUXXQzaA==}
     engines: {bare: ^1.18.0, bun: ^1.4.2, chrome: ^16.0.912, cnpm: ^9.4.0, corepack: ^0.35.0, deno: ^2.9.5, ecmascript: ^5.0.0, firefox: '>=0.8.0', iojs: ^1.0.0, node: '>=26.12.1 <27', npm: ^12.1.0, pnpm: ^12.6.0, teleport: '>=0.2.0', typescript: ^5.8.0, vscode: ^1.118.0, yarn: ^4.17.1}
->>>>>>> origin/main
 
   '@xmldom/xmldom@0.9.12':
     resolution: {integrity: sha512-5AXjrcMClTryPe9LgZrygpB1lj7s0S9E0+W+AHaVKAVyHanafK86iPSvG5xHVSp/jC+VH1UXu0TAEmY279xH7A==}
@@ -7135,11 +7109,7 @@ snapshots:
 
   '@types/geojson@7946.0.16': {}
 
-<<<<<<< HEAD
-  '@types/google.maps@3.66.8': {}
-=======
   '@types/google.maps@3.66.9': {}
->>>>>>> origin/main
 
   '@types/har-format@1.2.16': {}
 
@@ -7362,36 +7332,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-<<<<<<< HEAD
-  '@wenathlan/vault@file:../vault(@types/react@19.3.0)(playwright@1.64.1)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)':
-    dependencies:
-      '@fluentui/react-icons': 2.0.344(react@19.3.1)
-      '@fontsource-variable/bricolage-grotesque': 5.3.0
-      '@fontsource-variable/jetbrains-mono': 5.3.0
-      '@fontsource-variable/outfit': 5.3.0
-      '@hono/node-server': 2.1.5(hono@4.13.14)
-      '@libsql/client': 0.18.0
-      '@prisma/adapter-libsql': 7.10.1
-      '@prisma/client': 7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-      '@wenathlan/saddle': 2.1.6(playwright@1.64.1)
-      hono: 4.13.14
-      ink: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
-      lucide-react: 1.61.0(@types/react@19.3.0)(react@19.3.1)
-      motion: 12.43.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      react: 19.3.1
-      react-devtools-core: 8.0.0
-      react-dom: 19.3.1(react@19.3.1)
-      wouter: 3.13.0(react@19.3.1)
-      z-ai-web-dev-sdk: 0.0.18
-    transitivePeerDependencies:
-      - '@emotion/is-prop-valid'
-      - '@types/react'
-      - bufferutil
-      - playwright
-      - prisma
-      - supports-color
-      - typescript
-=======
   '@wenathlan/vault@2.0.151(@types/react@19.3.0)(react@19.3.1)':
     dependencies:
       '@hono/node-server': 2.1.5(hono@4.13.14)
@@ -7404,7 +7344,6 @@ snapshots:
       - '@types/react'
       - bufferutil
       - react
->>>>>>> origin/main
       - utf-8-validate
 
   '@xmldom/xmldom@0.9.12': {}

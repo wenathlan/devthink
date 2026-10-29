@@ -3,7 +3,7 @@
  * ladder for the declaration build. The os consumes the 7-level ladder as
  * a library (the pr16 ownership law: getry owns the reasoning rungs), and
  * the runtime bundle inlines the owner's source through the esbuild alias
- * (tests/devthink.build.ts) — the declaration build resolves the specifier
+ * (build.ts) — the declaration build resolves the specifier
  * here so the tsc program never leaves the application root and the
  * emitted declarations keep referencing the owner library specifier.
  * Retires the day the published getry envelope carries the ./thinking
