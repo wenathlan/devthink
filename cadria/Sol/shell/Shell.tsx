@@ -45,7 +45,7 @@ import { familyurl } from "../../familyurl.ts";
 import { type LabelKey, label } from "../../labels.ts";
 import { currentTheme, type Theme, toggleTheme } from "../../theme.ts";
 
-export { CadriaMark } from "../widgets";
+export { CadriaMark } from "../wingets";
 
 /** one entry of the shell navigation (the legacy page prop shape, kept for
  * the anchors that type against the shell beside this folder) */

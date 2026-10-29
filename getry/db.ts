@@ -575,6 +575,6 @@ export async function seedLabelRows(): Promise<{ seeded: number; protected: numb
  * manifest of labels.ts when the gateway runtime opens the store (the
  * interface strings land in the labels table, the translated rows protected
  * from the overwrite). best effort: a sealed store never blocks the boot,
- * the manifest always answers the widgets; the browser never runs this —
+ * the manifest always answers the wingets; the browser never runs this —
  * the visitor machine mirrors the rows through seedLabels in labels.ts. */
 if (isnode()) void seedLabelRows().catch(() => {});

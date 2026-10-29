@@ -10,7 +10,7 @@
  * clamped inside the taskbar/dock bands and snapped to the fine 2% × 3.33%
  * lattice — Sol/panel/desktopstate.ts), a single click selects, ctrl+click
  * toggles, a rubber-band marquee selects from the empty desktop, the right
- * button opens the Win11 context menus (Sol/widgets/PanelDesktopmenu.tsx) and the
+ * button opens the Win11 context menus (Sol/wingets/PanelDesktopmenu.tsx) and the
  * keyboard nudges, opens and clears. The deterministic DESKTOP_SPOTS stay
  * the default layout — the owner's composition law: the apps scatter around
  * the centered mark as arcs and clusters, NEVER a uniform grid (the ordered

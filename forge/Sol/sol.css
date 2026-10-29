@@ -2,9 +2,12 @@
 
 /* FORGE — SOL STYLESHEET (the 8-h FAMILY-FOUNDATION-2 pass).
    One stylesheet, ordered sections, written on the devthink doctrine
-   foundation carried with the exact campaign values, wearing the forge lime
-   as the app signal (brand mark, content cta and the content voice ONLY —
-   focus and the chrome answer the WINDOWS accent #4cc2ff). Tailwind-first:
+   foundation carried with the exact campaign values, wearing THE WHITE SUN
+   as the one signal (the single-theme law: the name is Sol but the sun is
+   WHITE, never yellow — pure #ffffff on the dark ladder, the graphite
+   contrast pole on the light face, the same white light every app of the
+   family wears; the lime story survives only in the drawn brand mark) —
+   focus and the chrome answer the WINDOWS accent #4cc2ff. Tailwind-first:
    the @theme block below is the one source of truth and Tailwind 4 generates
    the utilities the pages can compose (bg-s0..s7, text-ink/muted/faint,
    border-hairline, shadow-window/flyout, ease-window/micro,
@@ -78,12 +81,12 @@
   --color-hairline: color-mix(in oklab, #fefefe 5%, transparent);
   --color-hairline-strong: color-mix(in oklab, #fefefe 10%, transparent);
 
-  /* ---- the signal: the forge lime #a2cb3a — the app identity, brand mark /
-     content cta / content voice only; the chrome never wears it ---- */
-  --color-signal: #a2cb3a;
-  --color-signal-strong: #e9ffa1;
-  --color-signal-deep: #7e9e1c;
-  --color-signal-ink: #161d03;
+  /* ---- the signal: THE WHITE SUN — one Sol, one light; the name is Sol
+     but the sun is WHITE, never the yellow of the retired lime ---- */
+  --color-signal: #ffffff;
+  --color-signal-strong: #ffffff;
+  --color-signal-deep: #c9cdd6;
+  --color-signal-ink: #14161a;
 
   /* ---- accents: the WINDOWS system accent governs focus/chrome (the win10
      blend carries the light theme #0067c0); the fluent close red ---- */
@@ -255,7 +258,8 @@
   --sol-surface-7: var(--color-s6);
   --sol-surface-8: var(--color-s7);
 
-  /* the lime aliases: the app identity rides the signal slot */
+  /* the white sun aliases: the one Sol accent every voice reads (the lime
+     names keep resolving so the sections track the semantic poles) */
   --fg-lime: var(--color-signal);
   --fg-lime-deep: var(--color-signal-deep);
   --fg-lime-soft: var(--color-signal-strong);
@@ -264,7 +268,7 @@
   --sol-primary-ink: var(--color-signal-ink);
   --sol-btn-accent-bg: var(--color-signal);
   --sol-btn-accent-ink: var(--color-signal-ink);
-  --sol-signal: 162 203 58;
+  --sol-signal: 255 255 255;
   --sol-focus: var(--color-focus);
   --sol-success: var(--color-ok);
   --sol-warning: var(--color-warn);
@@ -332,8 +336,9 @@
 }
 
 /* the light face: one flip on the same ladder — the devthink daylight values,
-   the lime steps down to the deep pole, the windows accent follows the win10
-   blend #0067c0 */
+   the white sun stepping down to its graphite contrast pole (the light value
+   of the SAME semantic token — one Sol, two honest variations), the windows
+   accent follows the win10 blend #0067c0 */
 [data-theme="light"] {
   color-scheme: light;
   --color-canvas: #f3f3f3;
@@ -358,9 +363,9 @@
   --color-warn: #9a6b00;
   --color-err: #c23b2c;
   --color-info: #565e6e;
-  --color-signal: #5c7a12;
-  --color-signal-strong: #4a5c12;
-  --color-signal-deep: #4a5c12;
+  --color-signal: #3f434b;
+  --color-signal-strong: #18181b;
+  --color-signal-deep: #52565e;
   --color-signal-ink: #fefefe;
   --mica: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat fixed;
   --mica-local: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat;
@@ -371,7 +376,7 @@
   --sol-panel-strong: rgb(24 24 27 / 8%);
   --sol-drop: rgb(0 0 0 / 10%);
   --sol-hi: rgb(255 255 255 / 60%);
-  --sol-signal: 92 122 18;
+  --sol-signal: 63 67 75;
   --sol-btn-tone: inset 0 1.2px 0 0 rgb(255 255 255 / 55%), inset 0 8px 14px -6px rgb(255 255 255 / 25%);
   --sol-btn-tone-hover: inset 0 1.2px 0 0 rgb(255 255 255 / 75%), inset 0 8px 14px -6px rgb(255 255 255 / 35%);
   --win-shadow-window: 0 32px 64px rgb(0 0 0 / 14%), 0 0 8px rgb(0 0 0 / 8%);

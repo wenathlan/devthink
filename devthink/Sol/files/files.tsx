@@ -3,7 +3,7 @@
  * carrying the folder's own name is the path manager of the page: it
  * mounts the explorer and re-exports the public component surface. Only
  * the theme anchor (Sol/Sol.tsx) and the window registry
- * (Sol/widgets/PanelWorkspace.tsx) consume this file.
+ * (Sol/wingets/PanelWorkspace.tsx) consume this file.
  *
  * My Files — the Windows 11 File Explorer of the os, drawn after the
  * owner's reference shot of "Este Computador": the toolbar with the
@@ -100,9 +100,9 @@ import {
   storageusage,
   type StorageLaneUsage,
 } from "../../gateway.ts";
-import { ShellChrome } from "@/widgets/Shellchrome";
-import { AppTile } from "@/widgets";
-import { DriveIcon, PlanFolderIcon, PlatformMark, ShellFolderIcon, ThisPcMark } from "../widgets";
+import { ShellChrome } from "@/wingets/Shellchrome";
+import { AppTile } from "@/wingets";
+import { DriveIcon, PlanFolderIcon, PlatformMark, ShellFolderIcon, ThisPcMark } from "../wingets";
 
 /** the window title answers the catalog label row (bare-id fallback). */
 const FILES_LABEL = osAppLabels().files ?? { name: "My Files", detail: "", pinned: true };

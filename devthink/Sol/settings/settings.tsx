@@ -3,7 +3,7 @@
  * carrying the folder's own name is the path manager of the page: it
  * imports the loose components beside it, mounts the page and re-exports
  * the public component surface. Only the theme anchor (Sol/Sol.tsx) and
- * the window registry (Sol/widgets/PanelWorkspace.tsx) consume this file. The
+ * the window registry (Sol/wingets/PanelWorkspace.tsx) consume this file. The
  * home anchor consumes the pairing panel through this surface.
  *
  * Settings — the Windows 11 Settings app: the left navigation rail (the
@@ -13,13 +13,13 @@
  * Drives, Automation & MCP, About — routed by internal state. The anchor
  * owns only the data machine (the gateway snapshot, the browser-local
  * identity and preference stores, the save / revoke actions) and the
- * category routing; every card lives in Sol/widgets. The
+ * category routing; every card lives in Sol/wingets. The
  * personalization pass paints its stored choices onto the document root
  * once at module load, so the wallpaper, the theme ladder, the accent and
  * the behavior flags hold before the lock screen or the desktop mount.
  */
 import { useEffect, useState } from "react";
-import { ShellChrome } from "@/widgets/Shellchrome";
+import { ShellChrome } from "@/wingets/Shellchrome";
 import {
   type AccountSessionState,
   accountbearer,
@@ -37,7 +37,7 @@ import {
   readBrowserPreferences,
   saveBrowserPreference,
 } from "../../storage.ts";
-import type { PreferenceKey, SettingsCategoryId, SettingsSnapshot } from "../widgets";
+import type { PreferenceKey, SettingsCategoryId, SettingsSnapshot } from "../wingets";
 import {
   AboutSettings,
   AccountsCategory,
@@ -49,22 +49,22 @@ import {
   Personalization,
   SettingsNav,
   syncThemeFromPreference,
-} from "../widgets";
+} from "../wingets";
 
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
 
 /** paints the stored personalization choices before any route mounts (the
  * same law initautotranslate rides at the theme anchor). */

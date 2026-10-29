@@ -22,9 +22,9 @@ import { renderToString } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { DESKTOP_APPS } from "../appregistry.ts";
 import type { ShellFolderId } from "../fileexplorer.ts";
-import { DriveIcon, PlatformMark, ShellFolderIcon } from "../Sol/widgets/FilesFoldericons.tsx";
-import { SolLogoMark } from "../Sol/widgets/PanelLogo.tsx";
-import { APP_ICONS } from "../Sol/widgets/ShellAppicons.tsx";
+import { DriveIcon, PlatformMark, ShellFolderIcon } from "../Sol/wingets/FilesFoldericons.tsx";
+import { SolLogoMark } from "../Sol/wingets/PanelLogo.tsx";
+import { APP_ICONS } from "../Sol/wingets/ShellAppicons.tsx";
 
 /** the emoji pictograph class — one emoji glyph anywhere in a rendered icon
  * or a catalog label fails the zero-emoji law */
@@ -300,7 +300,7 @@ describe("the css ladder of the animated grammar", () => {
 });
 
 describe("the desktop label rides the legibility token", () => {
-  const desktop = readFileSync(join(import.meta.dirname, "..", "Sol", "widgets", "PanelDesktop.tsx"), "utf8");
+  const desktop = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelDesktop.tsx"), "utf8");
 
   it("answers the label shadow from the token ladder, never a raw halo", () => {
     expect(desktop).toContain("dt-appicon__label");
@@ -310,7 +310,7 @@ describe("the desktop label rides the legibility token", () => {
 });
 
 describe("the tile contract of the shared apptile", () => {
-  const tile = readFileSync(join(import.meta.dirname, "..", "Sol", "widgets", "ShellApptile.tsx"), "utf8");
+  const tile = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "ShellApptile.tsx"), "utf8");
 
   it("raises the live flag from the pointer and drops it on leave", () => {
     expect(tile).toContain("setLive(true)");

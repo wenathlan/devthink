@@ -54,27 +54,27 @@ import { DESKTOP_APPS, isFamilyApp } from "../../appregistry.ts";
 import { label } from "../../labels.ts";
 import { peekonboardingstate } from "../../onboardingstate";
 import { osText } from "../../oslabels.ts";
-import { SolLogoMark } from "../widgets";
-import { ShellChrome } from "../widgets";
-import { DownloadRail } from "../widgets";
-import { ExploreSidebar } from "../widgets";
+import { SolLogoMark } from "../wingets";
+import { ShellChrome } from "../wingets";
+import { DownloadRail } from "../wingets";
+import { ExploreSidebar } from "../wingets";
 import {
   CategoryDeck,
   CategorySectionDeck,
   exploreCategories,
   exploreRecents,
   type ExploreCategoryId,
-  type ExploreData } from "../widgets";
-import { LaunchDeck, OsSigil, TRYLLE_PRIMARY_STACK } from "../widgets";
-import { HeroWaves } from "../widgets";
-import { WindowEdgeChrome } from "../widgets";
+  type ExploreData } from "../wingets";
+import { LaunchDeck, OsSigil, TRYLLE_PRIMARY_STACK } from "../wingets";
+import { HeroWaves } from "../wingets";
+import { WindowEdgeChrome } from "../wingets";
 
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
-export * from "../widgets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
+export * from "../wingets";
 
 type LandingState = "open" | "minimized";
 type FrameState = "windowed" | "maximized";

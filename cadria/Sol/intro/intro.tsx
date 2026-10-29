@@ -26,10 +26,10 @@ import { Link } from "wouter";
 import { type LabelKey, label } from "../../labels.ts";
 import { markOnboardingStage, readOnboardingState } from "../../onboardingstate.ts";
 import { CadriaMark } from "../shell/Shell.tsx";
-import { IntroCapabilities as CapabilityRow } from "../widgets";
-import { IntroDemo as DemoStrip, type DemoCue } from "../widgets";
-import { IntroFooter as IntroFooter } from "../widgets";
-import { IntroSplash as IntroSplash } from "../widgets";
+import { IntroCapabilities as CapabilityRow } from "../wingets";
+import { IntroDemo as DemoStrip, type DemoCue } from "../wingets";
+import { IntroFooter as IntroFooter } from "../wingets";
+import { IntroSplash as IntroSplash } from "../wingets";
 
 /** the lifecycle of the opening act: pending (the state read resolves) →
  * playing (the akash floor over the landing) → done (the landing alone). */
