@@ -1,6 +1,7 @@
 /** Shared contracts for every Devthink target. */
 import { packageversion, protocolmajor } from "./version.js";
 import type { memoryadapter } from "./memory.js";
+import type { ThinkingLevelName } from "@wenathlan/getry/thinking";
 
 export const protocolversion = packageversion;
 
@@ -9436,8 +9437,11 @@ export interface relayserverstate {
 // thinking levels
 // ---------------------------------------------------------------------------
 
-/** thinking levels ordered by budget ascending */
-export type thinkinglevel = "none" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max";
+/** thinking levels ordered by budget ascending — the union is consumed from
+ * the getry engine (the one owner of the 7-level reasoning ladder, pr16):
+ * the os speaks the owner's ThinkingLevelName and never redeclares the rung
+ * names, so the ladder can only ever drift in one place. */
+export type thinkinglevel = ThinkingLevelName;
 
 // ---------------------------------------------------------------------------
 // auth — 12 methods covering the whole llm api market

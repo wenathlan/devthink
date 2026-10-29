@@ -5,6 +5,7 @@
  */
 
 import { randomInt } from "node:crypto";
+import { DEFAULTTHINKINGLEVEL, THINKINGLEVELS, type ThinkingLevelName } from "@wenathlan/getry/thinking";
 
 /** cors headers — open cors for all gateway routes */
 export const corsheaders: Record<string, string> = {
@@ -140,29 +141,28 @@ export function autoseed(n: unknown, fallback = 0): number {
   return clamp(Math.floor(Math.abs(v)), 0, 2147483647, fallback);
 }
 
-/** autothinking — normalize thinking level string to canonical 7 level */
-export function autothinking(level?: unknown): "none" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max" {
-  if (!level || typeof level !== "string") return "high";
+/** autothinking — normalize thinking level string to the canonical 7 level
+ * ladder owned by the getry engine (pr16): the rung vocabulary answers the
+ * owner's ThinkingLevelName and the default rung answers the owner's
+ * DEFAULTTHINKINGLEVEL — never a second declaration. */
+export function autothinking(level?: unknown): ThinkingLevelName {
+  if (!level || typeof level !== "string") return DEFAULTTHINKINGLEVEL;
   const l = String(level).toLowerCase().trim();
-  if (l in thinkingbudgets) return l as "none" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max";
+  if (l in thinkingbudgets) return l as ThinkingLevelName;
   if (l === "disabled" || l === "off" || l === "false") return "none";
   if (l === "minimum") return "minimal";
   if (l === "med" || l === "mid") return "medium";
   if (l === "extra" || l === "ultra") return "xhigh";
   if (l === "maximum" || l === "full" || l === "all") return "max";
-  return "high";
+  return DEFAULTTHINKINGLEVEL;
 }
 
-/** thinking budgets — 7 level thinking token budgets */
-export const thinkingbudgets: Record<string, number> = {
-  none: 0,
-  minimal: 1400,
-  low: 5500,
-  medium: 17000,
-  high: 68000,
-  xhigh: 68000,
-  max: 68000,
-};
+/** thinking budgets — the 7 level token budgets derived from the getry
+ * engine's THINKINGLEVELS (the one owner of the reasoning ladder, pr16):
+ * never a local copy, the map answers the owner's rungs at load time. */
+export const thinkingbudgets: Record<string, number> = Object.fromEntries(
+  THINKINGLEVELS.map((rung) => [rung.level, rung.budget]),
+);
 
 /** thinkingbudget — get token budget for a level */
 export function thinkingbudget(level?: string): number {
