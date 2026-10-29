@@ -587,7 +587,7 @@ async function binaryonpath(binary: string): Promise<boolean> {
 }
 
 /** hostmodalityreport — one honest row per record of the saddle modality
- * registry (the single source), headed by the summary that names the forty
+ * registry (the single source), headed by the summary that names the ninety
  * plan and the state counts: every live record names the lane that drives
  * it (and the probed live runtime answers its availability), every host
  * record names its runtime binary and the probe verdict of this host, and
@@ -623,7 +623,7 @@ export async function hostmodalityreport(): Promise<string[]> {
   }
   rows.unshift(
     [
-      "the modality registry answers the forty plan: ",
+      "the modality registry answers the ninety plan: ",
       String(report.catalogcount),
       " records — ",
       String(report.live),

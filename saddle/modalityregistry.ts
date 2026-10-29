@@ -2,8 +2,8 @@
 // engine opens (root layer, wave SV1). One record per modality: the
 // isolation family, the driver requirements it mounts, the boot cost class,
 // the hardening gates it carries, the mime contract it answers and the
-// honest state of its wiring. The registry is the spine of the forty
-// modality plan (the owner's law: the forty modalities of saddle act for
+// honest state of its wiring. The registry is the spine of the ninety
+// modality plan (the owner's law: the ninety modalities of saddle act for
 // the system, nothing touches the visitor machine): the workload never
 // chooses by name — the join resolver reads the request (isolation, gpu,
 // network, boot budget) and answers the modality set that satisfies it, so
@@ -34,7 +34,14 @@ export type ModalityFamily =
   | "wasm"
   | "fs"
   | "ram"
-  | "delivery";
+  | "delivery"
+  | "language"
+  | "sandbox"
+  | "storage"
+  | "network"
+  | "build"
+  | "ci"
+  | "gpu";
 
 /**
  * The honest wiring state of one modality — the truth ladder every record
@@ -85,11 +92,11 @@ export const BOOTLADDER: Readonly<Record<BootClass, number>> = Object.freeze({
   cold: 1500,
 });
 
-/** The forty modality plan: the count the owner charged (the forty
+/** The ninety modality plan: the count the owner charged (the ninety
  * modalities of saddle acting for the system) and the registry answers —
- * the catalog walks from twenty through forty toward the full count plus
- * the nuclear join, and this constant is the line the plan pins. */
-export const MODALITYPLANCOUNT = 40;
+ * the catalog walked from twenty through forty to the ninety law, and
+ * this constant is the line the plan pins. */
+export const MODALITYPLANCOUNT = 90;
 
 /** The modality records: the catalog the join resolver reads. */
 export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
@@ -98,6 +105,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
   { id: "virtual-vgpu", label: "vgpu slice", family: "virtual", isolation: "hardware", state: "planned", drivers: ["virtualgpu", "nvml-shim", "vfio"], hardening: ["mig-profile"], boot: "warm", bootms: 600, gpu: true, network: true, mime: "application/vnd.devthink.sandbox+json" },
   { id: "virtual-screen", label: "vm plus vnc", family: "screen", isolation: "vm", state: "planned", drivers: ["virtualcpu", "virtualgpu", "xvfb", "looking-glass"], hardening: ["session-otp"], boot: "warm", bootms: 700, gpu: true, network: true, mime: "application/vnd.devthink.screen+json" },
   { id: "virtual-drivers", label: "virtual drivers", family: "virtual", isolation: "vm", state: "planned", drivers: ["virtualcpu", "virtualgpu", "virtualmemory", "nvml-shim"], hardening: ["driver-quota"], boot: "warm", bootms: 250, gpu: true, network: false, mime: "application/vnd.devthink.sandbox+json" },
+  { id: "virtual-kvm", label: "kvm machine", family: "virtual", isolation: "hardware", state: "planned", drivers: ["kvm", "virtualcpu"], hardening: ["clean-rootfs"], boot: "warm", bootms: 150, gpu: false, network: true, mime: "application/vnd.devthink.sandbox+json" },
   // the runner family: the universal binary runner
   { id: "runner-universal", label: "universal runner", family: "runner", isolation: "namespace", state: "planned", drivers: ["binfmt"], hardening: ["read-only-root", "dropped-caps"], boot: "warm", bootms: BOOTLADDER.warm, gpu: false, network: true, mime: "application/vnd.devthink.run+json" },
   { id: "runner-node", label: "node packages", family: "packages", isolation: "process", state: "live", drivers: ["node", "babel", "swc"], hardening: ["package-allowlist"], boot: "hot", bootms: BOOTLADDER.hot, gpu: false, network: true, mime: "application/vnd.devthink.run+json" },
@@ -107,12 +115,44 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
   { id: "runner-babel", label: "babel transpile", family: "packages", isolation: "process", state: "planned", drivers: ["babel"], hardening: ["plugin-allowlist"], boot: "hot", bootms: 15, gpu: false, network: false, mime: "application/vnd.devthink.run+json" },
   { id: "runner-wasm", label: "wasm and wasi", family: "wasm", isolation: "process", state: "planned", drivers: ["wasmer", "wasmedge"], hardening: ["capability-imports"], boot: "hot", bootms: 15, gpu: false, network: false, mime: "application/wasm" },
   { id: "runner-serverless", label: "v8 isolates", family: "runner", isolation: "process", state: "planned", drivers: ["v8"], hardening: ["no-fs", "cpu-quota"], boot: "hot", bootms: 8, gpu: false, network: true, mime: "application/vnd.devthink.run+json" },
+  // the language family: the polyglot toolchains the engine mounts inside
+  // the sandbox (every runner documented by its driver set — the languages
+  // the ninety law charges, each declared planned until a lane wires it)
+  { id: "language-python", label: "cpython runtime", family: "language", isolation: "process", state: "planned", drivers: ["python3"], hardening: ["package-allowlist"], boot: "hot", bootms: 12, gpu: false, network: true, mime: "application/vnd.devthink.run+json" },
+  { id: "language-go", label: "golang toolchain", family: "language", isolation: "process", state: "planned", drivers: ["go"], hardening: ["gopath-jail"], boot: "hot", bootms: 15, gpu: false, network: true, mime: "application/vnd.devthink.run+json" },
+  { id: "language-rust", label: "rustc toolchain", family: "language", isolation: "process", state: "planned", drivers: ["rustc"], hardening: ["crate-allowlist"], boot: "hot", bootms: 18, gpu: false, network: true, mime: "application/vnd.devthink.run+json" },
+  { id: "language-cargo", label: "cargo builds", family: "language", isolation: "process", state: "planned", drivers: ["cargo"], hardening: ["crate-allowlist"], boot: "hot", bootms: 20, gpu: false, network: true, mime: "application/vnd.devthink.run+json" },
+  { id: "language-v", label: "v compiler", family: "language", isolation: "process", state: "planned", drivers: ["v"], hardening: ["package-allowlist"], boot: "hot", bootms: 15, gpu: false, network: true, mime: "application/vnd.devthink.run+json" },
+  { id: "language-java", label: "jdk runtime", family: "language", isolation: "process", state: "planned", drivers: ["java", "javac"], hardening: ["security-manager"], boot: "warm", bootms: 200, gpu: false, network: true, mime: "application/vnd.devthink.run+json" },
+  { id: "language-dotnet", label: "dotnet runtime", family: "language", isolation: "process", state: "planned", drivers: ["dotnet"], hardening: ["assembly-allowlist"], boot: "warm", bootms: 150, gpu: false, network: true, mime: "application/vnd.devthink.run+json" },
+  { id: "language-ruby", label: "ruby interpreter", family: "language", isolation: "process", state: "planned", drivers: ["ruby"], hardening: ["gem-allowlist"], boot: "hot", bootms: 12, gpu: false, network: true, mime: "application/vnd.devthink.run+json" },
+  { id: "language-php", label: "php interpreter", family: "language", isolation: "process", state: "planned", drivers: ["php"], hardening: ["ini-lockdown"], boot: "hot", bootms: 12, gpu: false, network: true, mime: "application/vnd.devthink.run+json" },
+  { id: "language-lua", label: "lua interpreter", family: "language", isolation: "process", state: "planned", drivers: ["lua"], hardening: ["sandbox-env"], boot: "hot", bootms: 8, gpu: false, network: false, mime: "application/vnd.devthink.run+json" },
+  { id: "language-zig", label: "zig toolchain", family: "language", isolation: "process", state: "planned", drivers: ["zig"], hardening: ["package-allowlist"], boot: "hot", bootms: 15, gpu: false, network: true, mime: "application/vnd.devthink.run+json" },
+  { id: "language-nim", label: "nim compiler", family: "language", isolation: "process", state: "planned", drivers: ["nim"], hardening: ["package-allowlist"], boot: "hot", bootms: 15, gpu: false, network: true, mime: "application/vnd.devthink.run+json" },
+  // the runtime extensions of the runner family: the heavyweight virtual
+  // machines and the edge runtimes the join resolves beside the v8 isolate
+  { id: "runtime-jvm", label: "jvm hotspot", family: "runner", isolation: "process", state: "planned", drivers: ["jvm", "jlink"], hardening: ["security-manager"], boot: "warm", bootms: 250, gpu: false, network: true, mime: "application/vnd.devthink.run+json" },
+  { id: "runtime-clr", label: "clr runtime", family: "runner", isolation: "process", state: "planned", drivers: ["clr"], hardening: ["assembly-allowlist"], boot: "warm", bootms: 200, gpu: false, network: true, mime: "application/vnd.devthink.run+json" },
+  { id: "runtime-workerd", label: "workerd runtime", family: "runner", isolation: "process", state: "planned", drivers: ["workerd"], hardening: ["no-fs", "cpu-quota"], boot: "hot", bootms: 10, gpu: false, network: true, mime: "application/vnd.devthink.run+json" },
+  { id: "runner-wasi", label: "wasi preview", family: "wasm", isolation: "process", state: "planned", drivers: ["wasmtime"], hardening: ["capability-imports"], boot: "hot", bootms: 15, gpu: false, network: false, mime: "application/wasm" },
   // the container family: docker hardened, the profile pair and ghcr immutable
   { id: "container-docker", label: "docker hardened", family: "container", isolation: "namespace", state: "live", drivers: ["docker"], hardening: ["no-network", "dropped-caps", "read-only-root", "pid-limit"], boot: "warm", bootms: 400, gpu: false, network: false, mime: "application/vnd.devthink.container+json" },
   { id: "container-max", label: "docker max profile", family: "container", isolation: "namespace", state: "planned", drivers: ["docker"], hardening: ["no-network", "dropped-caps", "read-only-root"], boot: "warm", bootms: 600, gpu: false, network: false, mime: "application/vnd.devthink.container+json" },
   { id: "container-lite", label: "docker lite profile", family: "container", isolation: "namespace", state: "planned", drivers: ["docker"], hardening: ["no-network", "dropped-caps", "read-only-root", "pid-limit", "memory-cap"], boot: "warm", bootms: 300, gpu: false, network: false, mime: "application/vnd.devthink.container+json" },
   { id: "container-ghcr", label: "ghcr immutable", family: "container", isolation: "namespace", state: "planned", drivers: ["docker", "ghcr"], hardening: ["immutable-root", "uuid-instance"], boot: "warm", bootms: 450, gpu: false, network: true, mime: "application/vnd.devthink.container+json" },
   { id: "container-runsc", label: "gvisor sandboxed", family: "container", isolation: "namespace", state: "host", drivers: ["runsc"], hardening: ["user-kernel"], boot: "warm", bootms: BOOTLADDER.warm, gpu: false, network: true, mime: "application/vnd.devthink.container+json" },
+  // the sandbox family: the os jails short of a container daemon (the
+  // isolation ladder the engine walks below the microvm)
+  { id: "sandbox-bubblewrap", label: "bubblewrap jail", family: "sandbox", isolation: "namespace", state: "planned", drivers: ["bwrap"], hardening: ["user-namespace"], boot: "warm", bootms: 40, gpu: false, network: false, mime: "application/vnd.devthink.sandbox+json" },
+  { id: "sandbox-nsjail", label: "nsjail cell", family: "sandbox", isolation: "namespace", state: "planned", drivers: ["nsjail"], hardening: ["cgroup-limit", "seccomp"], boot: "warm", bootms: 60, gpu: false, network: false, mime: "application/vnd.devthink.sandbox+json" },
+  { id: "sandbox-chroot", label: "chroot root", family: "sandbox", isolation: "process", state: "planned", drivers: ["chroot"], hardening: ["read-only-root"], boot: "hot", bootms: 10, gpu: false, network: false, mime: "application/vnd.devthink.sandbox+json" },
+  // the container extensions: the rootless and the oci runtimes the lane
+  // can drive beside the docker daemon
+  { id: "container-podman", label: "podman rootless", family: "container", isolation: "namespace", state: "planned", drivers: ["podman"], hardening: ["rootless", "no-network", "dropped-caps"], boot: "warm", bootms: 350, gpu: false, network: false, mime: "application/vnd.devthink.container+json" },
+  { id: "container-containerd", label: "containerd supervisor", family: "container", isolation: "namespace", state: "planned", drivers: ["containerd"], hardening: ["no-network", "dropped-caps"], boot: "warm", bootms: 300, gpu: false, network: false, mime: "application/vnd.devthink.container+json" },
+  { id: "container-runc", label: "runc process", family: "container", isolation: "namespace", state: "planned", drivers: ["runc"], hardening: ["no-network", "dropped-caps", "read-only-root"], boot: "warm", bootms: 100, gpu: false, network: false, mime: "application/vnd.devthink.container+json" },
+  { id: "container-crun", label: "crun process", family: "container", isolation: "namespace", state: "planned", drivers: ["crun"], hardening: ["no-network", "dropped-caps", "read-only-root"], boot: "warm", bootms: 90, gpu: false, network: false, mime: "application/vnd.devthink.container+json" },
   // the microvm family: per workflow, the e2b form
   { id: "microvm-firecracker", label: "firecracker microvm", family: "microvm", isolation: "vm", state: "host", drivers: ["firecracker", "virtualcpu"], hardening: ["clean-rootfs", "injected-vcpu"], boot: "warm", bootms: 125, gpu: false, network: true, mime: "application/vnd.devthink.microvm+json" },
   { id: "microvm-gpuless", label: "gpuless render", family: "microvm", isolation: "vm", state: "planned", drivers: ["mesa-llvmpipe", "lavapipe", "rusticl", "xvfb"], hardening: ["clean-rootfs"], boot: "warm", bootms: 500, gpu: true, network: true, mime: "application/vnd.devthink.microvm+json" },
@@ -126,6 +166,10 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
   // the browser family: the sandbox-side browser (never the person's)
   { id: "browser-server", label: "virtual browser", family: "browser", isolation: "namespace", state: "planned", drivers: ["chromium-headless", "playwright"], hardening: ["sandboxed-tabs"], boot: "warm", bootms: 300, gpu: false, network: true, mime: "application/vnd.devthink.browser+json" },
   { id: "browser-webcontainer", label: "webcontainer server side", family: "browser", isolation: "namespace", state: "planned", drivers: ["node", "wasm"], hardening: ["opt-in"], boot: "warm", bootms: 350, gpu: false, network: true, mime: "application/vnd.devthink.browser+json" },
+  // the screen family extensions: the virtual displays the sandboxed ui
+  // renders through (never the visitor display)
+  { id: "screen-xvfb", label: "xvfb display", family: "screen", isolation: "process", state: "planned", drivers: ["xvfb"], hardening: ["headless-only"], boot: "hot", bootms: 20, gpu: false, network: false, mime: "application/vnd.devthink.screen+json" },
+  { id: "screen-wayland", label: "wayland compositor", family: "screen", isolation: "process", state: "planned", drivers: ["wayland", "wlroots"], hardening: ["headless-only"], boot: "warm", bootms: 150, gpu: false, network: false, mime: "application/vnd.devthink.screen+json" },
   // the mobile family: the os images of the mobile lane
   { id: "mobile-capacitor", label: "capacitor", family: "mobile", isolation: "namespace", state: "planned", drivers: ["capacitor"], hardening: ["emulated-device"], boot: "warm", bootms: 600, gpu: false, network: true, mime: "application/vnd.devthink.mobile+json" },
   { id: "mobile-termux", label: "termux", family: "mobile", isolation: "namespace", state: "planned", drivers: ["termux"], hardening: ["emulated-device"], boot: "warm", bootms: 550, gpu: false, network: true, mime: "application/vnd.devthink.mobile+json" },
@@ -134,6 +178,30 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
   { id: "fs-vfs", label: "vfs", family: "fs", isolation: "process", state: "live", drivers: ["vfs"], hardening: ["chunk-catalog"], boot: "hot", bootms: 5, gpu: false, network: false, mime: "application/vnd.devthink.vfs+json" },
   { id: "fs-gitobjects", label: "git objects vfs", family: "fs", isolation: "process", state: "planned", drivers: ["git", "vfs"], hardening: ["content-hash", "chunk-catalog"], boot: "hot", bootms: 10, gpu: false, network: true, mime: "application/vnd.devthink.vfs+json" },
   { id: "delivery-cdn", label: "cdn mirror", family: "delivery", isolation: "process", state: "planned", drivers: ["vfs", "cdn"], hardening: ["inside-sandbox-fetch"], boot: "hot", bootms: 5, gpu: false, network: true, mime: "application/vnd.devthink.cdn+json" },
+  // the delivery protocol extensions: the wire lanes the streamed answer
+  // rides (the socket surface the self-hosted engine speaks)
+  { id: "delivery-wss", label: "websocket streams", family: "delivery", isolation: "process", state: "planned", drivers: ["wss"], hardening: ["origin-pin"], boot: "hot", bootms: 5, gpu: false, network: true, mime: "application/vnd.devthink.cdn+json" },
+  { id: "delivery-webtransport", label: "webtransport lane", family: "delivery", isolation: "process", state: "planned", drivers: ["webtransport", "http3"], hardening: ["origin-pin"], boot: "hot", bootms: 8, gpu: false, network: true, mime: "application/vnd.devthink.cdn+json" },
+  { id: "delivery-grpc", label: "grpc lane", family: "delivery", isolation: "process", state: "planned", drivers: ["grpc"], hardening: ["auth-token"], boot: "hot", bootms: 8, gpu: false, network: true, mime: "application/vnd.devthink.cdn+json" },
+  { id: "delivery-capnproto", label: "capnproto lane", family: "delivery", isolation: "process", state: "planned", drivers: ["capnproto"], hardening: ["auth-token"], boot: "hot", bootms: 6, gpu: false, network: true, mime: "application/vnd.devthink.cdn+json" },
+  // the storage family: the self-hosted vault backends (the competitor
+  // recipe of the hosted buckets — sqlite and the wire protocols and the
+  // s3-compatible daemons, every one a lane may mount behind the vault)
+  { id: "storage-sqlite", label: "sqlite vault", family: "storage", isolation: "process", state: "planned", drivers: ["sqlite"], hardening: ["file-quota"], boot: "hot", bootms: 8, gpu: false, network: false, mime: "application/vnd.devthink.storage+json" },
+  { id: "storage-libsql", label: "libsql vault", family: "storage", isolation: "process", state: "planned", drivers: ["libsql"], hardening: ["file-quota"], boot: "hot", bootms: 10, gpu: false, network: true, mime: "application/vnd.devthink.storage+json" },
+  { id: "storage-mysql", label: "mysql wire vault", family: "storage", isolation: "process", state: "planned", drivers: ["mysql-wire"], hardening: ["auth-token", "row-quota"], boot: "warm", bootms: 200, gpu: false, network: true, mime: "application/vnd.devthink.storage+json" },
+  { id: "storage-postgres", label: "postgres wire vault", family: "storage", isolation: "process", state: "planned", drivers: ["postgres-wire"], hardening: ["auth-token", "row-quota"], boot: "warm", bootms: 200, gpu: false, network: true, mime: "application/vnd.devthink.storage+json" },
+  { id: "storage-s3", label: "s3 compatible vault", family: "storage", isolation: "process", state: "planned", drivers: ["s3-api"], hardening: ["bucket-quota"], boot: "warm", bootms: 100, gpu: false, network: true, mime: "application/vnd.devthink.storage+json" },
+  { id: "storage-minio", label: "minio vault", family: "storage", isolation: "process", state: "planned", drivers: ["minio"], hardening: ["bucket-quota"], boot: "warm", bootms: 300, gpu: false, network: true, mime: "application/vnd.devthink.storage+json" },
+  { id: "storage-garage", label: "garage vault", family: "storage", isolation: "process", state: "planned", drivers: ["garage"], hardening: ["bucket-quota"], boot: "warm", bootms: 300, gpu: false, network: true, mime: "application/vnd.devthink.storage+json" },
+  // the network family: the resolution and the private tunnels the engine
+  // opens for the sandbox (the hardened default stays off until a lane
+  // asks)
+  { id: "network-dns", label: "dns resolver", family: "network", isolation: "process", state: "planned", drivers: ["dns"], hardening: ["resolver-allowlist"], boot: "hot", bootms: 5, gpu: false, network: true, mime: "application/vnd.devthink.net+json" },
+  { id: "network-doh", label: "dns over https", family: "network", isolation: "process", state: "planned", drivers: ["doh"], hardening: ["resolver-allowlist"], boot: "hot", bootms: 8, gpu: false, network: true, mime: "application/vnd.devthink.net+json" },
+  { id: "network-tor", label: "tor onion lane", family: "network", isolation: "process", state: "planned", drivers: ["tor"], hardening: ["circuit-limit"], boot: "warm", bootms: 800, gpu: false, network: true, mime: "application/vnd.devthink.net+json" },
+  { id: "network-i2p", label: "i2p tunnel", family: "network", isolation: "process", state: "planned", drivers: ["i2p"], hardening: ["tunnel-limit"], boot: "warm", bootms: 700, gpu: false, network: true, mime: "application/vnd.devthink.net+json" },
+  { id: "network-wireguard", label: "wireguard tunnel", family: "network", isolation: "process", state: "planned", drivers: ["wireguard"], hardening: ["peer-allowlist"], boot: "warm", bootms: 100, gpu: false, network: true, mime: "application/vnd.devthink.net+json" },
   // the ram family: the storage-to-ram bridge, the kernel recipes that swap,
   // map and overlay the same bytes between use flags (the memory ladder the
   // corpus records: the tmpfs at the microsecond, the memory map at five,
@@ -146,17 +214,33 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
   { id: "ram-zram", label: "zram zstd", family: "ram", isolation: "process", state: "planned", drivers: ["zram", "zstd"], hardening: ["oom-guard"], boot: "hot", bootms: 25, gpu: false, network: false, mime: "application/vnd.devthink.ram+json" },
   { id: "ram-zswap", label: "zswap", family: "ram", isolation: "process", state: "planned", drivers: ["zswap"], hardening: ["oom-guard"], boot: "hot", bootms: 25, gpu: false, network: false, mime: "application/vnd.devthink.ram+json" },
   { id: "ram-swapfile", label: "swapfile", family: "ram", isolation: "process", state: "planned", drivers: ["swapfile"], hardening: ["oom-guard"], boot: "hot", bootms: 25, gpu: false, network: false, mime: "application/vnd.devthink.ram+json" },
+  // the build family: the build graphs the engine runs inside the sandbox
+  // (the artifact lane the repositories compile through)
+  { id: "build-make", label: "make builds", family: "build", isolation: "process", state: "planned", drivers: ["make"], hardening: ["recipe-allowlist"], boot: "hot", bootms: 10, gpu: false, network: false, mime: "application/vnd.devthink.build+json" },
+  { id: "build-bazel", label: "bazel builds", family: "build", isolation: "process", state: "planned", drivers: ["bazel"], hardening: ["remote-cache-pin"], boot: "warm", bootms: 500, gpu: false, network: true, mime: "application/vnd.devthink.build+json" },
+  { id: "build-buck", label: "buck builds", family: "build", isolation: "process", state: "planned", drivers: ["buck"], hardening: ["remote-cache-pin"], boot: "warm", bootms: 400, gpu: false, network: true, mime: "application/vnd.devthink.build+json" },
+  { id: "build-ninja", label: "ninja builds", family: "build", isolation: "process", state: "planned", drivers: ["ninja"], hardening: ["recipe-allowlist"], boot: "hot", bootms: 15, gpu: false, network: false, mime: "application/vnd.devthink.build+json" },
+  { id: "build-turborepo", label: "turborepo builds", family: "build", isolation: "process", state: "planned", drivers: ["turbo"], hardening: ["remote-cache-pin"], boot: "warm", bootms: 300, gpu: false, network: true, mime: "application/vnd.devthink.build+json" },
+  // the ci family: the self-hosted runners the engine drives for the
+  // repository pipelines (no hosted ci dependency — the runner rides the
+  // same self-hosted law)
+  { id: "ci-actions", label: "actions runner", family: "ci", isolation: "process", state: "planned", drivers: ["actions-runner"], hardening: ["workflow-allowlist"], boot: "warm", bootms: 400, gpu: false, network: true, mime: "application/vnd.devthink.ci+json" },
+  { id: "ci-gitlab", label: "gitlab runner", family: "ci", isolation: "process", state: "planned", drivers: ["gitlab-runner"], hardening: ["workflow-allowlist"], boot: "warm", bootms: 400, gpu: false, network: true, mime: "application/vnd.devthink.ci+json" },
+  // the gpu family: the virtual graphics the machine may present (the
+  // declared slice — the record never claims a host gpu it does not mount)
+  { id: "gpu-virgl", label: "virgl render", family: "gpu", isolation: "vm", state: "planned", drivers: ["virgl", "virtio-gpu"], hardening: ["context-quota"], boot: "warm", bootms: 400, gpu: true, network: true, mime: "application/vnd.devthink.gpu+json" },
   // the local family: the explicit opt-in (the only lane that may touch the
   // visitor machine, and only under declared consent)
   { id: "local-optin", label: "local opt in", family: "local", isolation: "process", state: "planned", drivers: [], hardening: ["explicit-consent"], boot: "hot", bootms: 10, gpu: false, network: false, mime: "application/vnd.devthink.local+json" },
 ]);
 
-/** The honest plan report: what the catalog holds against the forty plan —
+/** The honest plan report: what the catalog holds against the ninety
+ * plan —
  * the counts per state and whether the plan is answered. The report is the
  * truth surface the lanes and the tests read; it never counts a record as
  * more than its state declares. */
 export interface ModalityPlanReport {
-  /** The plan line the owner charged (the forty modalities). */
+  /** The plan line the owner charged (the ninety modalities). */
   plancount: number;
   /** The records the catalog holds. */
   catalogcount: number;
@@ -170,7 +254,7 @@ export interface ModalityPlanReport {
   plananswered: boolean;
 }
 
-/** planreport — the honest census of the registry against the forty plan:
+/** planreport — the honest census of the registry against the ninety plan:
  * the counts per state and the plan verdict, computed from the records
  * (never hardcoded, so the report cannot drift from the catalog). */
 export function planreport(): ModalityPlanReport {
