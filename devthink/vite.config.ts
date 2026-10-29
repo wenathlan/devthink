@@ -284,6 +284,13 @@ export default defineConfig({
        * publishes: its package.json exports map gained exactly the missing
        * "./sandbox": "./dist/sandbox.js" manifest piece. */
       "@wenathlan/saddle/sandbox": path.resolve(import.meta.dirname, "../saddle/sandbox.ts"),
+      /** the getry engine bridge of the ownership law (pr16): the os gateway
+       * imports the 7-level reasoning ladder through the published library
+       * specifier ("@wenathlan/getry/thinking"), and this bridge resolves the
+       * specifier to the monorepo source the sibling app carries — the ladder
+       * is never duplicated inside devthink, the engine answers from its one
+       * owner (see engines.ts, the ownership manifest). */
+      "@wenathlan/getry/thinking": path.resolve(import.meta.dirname, "../getry/thinking.ts"),
       /** the sibling engine's own self-alias, armed for the family dev
        * bridge: the saddle pages import their isolation lane through the
        * "@saddle/isolation" specifier their own config declares, and the

@@ -29,6 +29,12 @@
  */
 
 import type { gatewaydefinition } from "./gateway.ts";
+import { THINKINGLEVELS } from "@wenathlan/getry/thinking";
+
+/** the 7-level thinking budgets consumed from the getry engine (pr16): the
+ * ladder is owned by getry and every budget map of this catalog derives
+ * from the owner's THINKINGLEVELS — never a second literal copy. */
+const ladderbudgets = Object.fromEntries(THINKINGLEVELS.map((rung) => [rung.level, rung.budget]));
 
 export const config: gatewaydefinition = {
   name: "DevThink Gateway",
@@ -128,15 +134,7 @@ export const config: gatewaydefinition = {
       },
       thinking: {
         defaultlevel: "high",
-        budgets: {
-          none: 0,
-          minimal: 1400,
-          low: 5500,
-          medium: 17000,
-          high: 68000,
-          xhigh: 68000,
-          max: 68000,
-        },
+        budgets: ladderbudgets,
         twocalls: {
           threshold: 98304,
           freshresponseguarantee: true,

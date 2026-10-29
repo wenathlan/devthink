@@ -36,6 +36,12 @@
     "yarn": "^4.17.1"
   },
   "type": "module",
+  "exports": {
+    "./thinking": {
+      "types": "./thinking.ts",
+      "default": "./thinking.ts"
+    }
+  },
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",

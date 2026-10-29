@@ -11,6 +11,12 @@ export default defineConfig({
        * same module the dev server serves. retires when saddle 2.1.7
        * publishes the export entry. */
       "@wenathlan/saddle/sandbox": path.resolve(import.meta.dirname, "../saddle/sandbox.ts"),
+      /** the getry engine bridge of the ownership law (pr16): the os imports
+       * the 7-level reasoning ladder through the published library specifier
+       * ("@wenathlan/getry/thinking"), and the bridge resolves the specifier
+       * to the monorepo source the sibling app carries — the ladder is never
+       * duplicated inside devthink, the engine answers from its one owner. */
+      "@wenathlan/getry/thinking": path.resolve(import.meta.dirname, "../getry/thinking.ts"),
     },
   },
   test: {
