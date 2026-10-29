@@ -13,8 +13,8 @@
     {
       "family": "audittrails",
       "name": "every gate artifact of the chain records its failures",
-      "status": "open",
-      "detail": "the audit trails missing: artifacts/agentcert.json, artifacts/costcert.json, artifacts/pentest.json"
+      "status": "fixed",
+      "detail": "the agentcert, costcert, doccheck and pentest artifacts all exist"
     },
     {
       "family": "audittrails",
@@ -68,7 +68,7 @@
       "family": "scans",
       "name": "no secret material appears in the bundle",
       "status": "fixed",
-      "detail": "no literal key, token or password value appears in the 279 shipped sources or the 20 compiled bundles"
+      "detail": "no literal key, token or password value appears in the 342 shipped sources or the 20 compiled bundles"
     },
     {
       "family": "scans",
@@ -110,7 +110,7 @@
   "summary": {
     "families": 5,
     "total": 16,
-    "fixed": 15,
-    "open": 1
+    "fixed": 16,
+    "open": 0
   }
 }

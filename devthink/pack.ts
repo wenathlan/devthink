@@ -852,7 +852,7 @@ export function nugetpacklayout(version: string): {
 /* ── Merged from containerpack.ts: the 1.1.90 consolidation interns the correlated containerpack logic here, so no variation of the same file lives beside another. ── */
 /**
  * Containerpack of the 1.1.87 publishing pipeline family, restamped for the DevThink 2.0.0 container story.
- * Every container packaging concern of the publishing pipeline lives in this one pure module: the multi stage build of THE Dockerfile (the one container file of the merged repository: a deps stage that installs the pinned node base with the bun version the packageManager field pins and the frozen dependency tree as a cacheable layer, a builder stage that runs the whole validation chain over node tests/build.ts, a binary-builder and a binary-runtime pair that compile the single binary aimed at the bun target resolved from TARGETARCH, and the runtime stage that copies the lean output onto the plain node base and starts the self hosting runner — the last stage of the file, so it is the default build target), the exposed surfaces the runtime image serves (the static site, the mcp server and the socket relay speaking the servercontract for self hosting), the image tags the release stamps (the version tag only — the immutable coordinate an operator pins, never a channel alias) and the digest file the release publishes with the image hash. The module stays pure: the descriptors are plain data the build, the tests and the docs read, the checked-in Dockerfile mirrors them and the containerpack tests assert the mirror never drifts, no vendor endpoint and no download url ever appears here — the operator pulls the image from the registry they choose.
+ * Every container packaging concern of the publishing pipeline lives in this one pure module: the multi stage build of THE Dockerfile (the one container file of the merged repository: a deps stage that installs the pinned node base with the bun version the packageManager field pins and the frozen dependency tree as a cacheable layer, a builder stage that runs the whole validation chain over node build.ts, a binary-builder and a binary-runtime pair that compile the single binary aimed at the bun target resolved from TARGETARCH, and the runtime stage that copies the lean output onto the plain node base and starts the self hosting runner — the last stage of the file, so it is the default build target), the exposed surfaces the runtime image serves (the static site, the mcp server and the socket relay speaking the servercontract for self hosting), the image tags the release stamps (the version tag only — the immutable coordinate an operator pins, never a channel alias) and the digest file the release publishes with the image hash. The module stays pure: the descriptors are plain data the build, the tests and the docs read, the checked-in Dockerfile mirrors them and the containerpack tests assert the mirror never drifts, no vendor endpoint and no download url ever appears here — the operator pulls the image from the registry they choose.
  * Example: `const stages = containerbuildstages(); const surfaces = containerexposedsurfaces();`
  */
 
@@ -868,22 +868,22 @@ export function containerbuildstages(): containerbuildstage[] {
     {
       name: "builder",
       purpose:
-        "builds every dist target through node tests/build.ts and runs the deterministic build checks, the vitest suite (native on both legs through the build platform pin, with the timeout guard a native arm64 build node reads) and the packageextension verification",
+        "builds every dist target through node build.ts and runs the deterministic build checks, the vitest suite (native on both legs through the build platform pin, with the timeout guard a native arm64 build node reads) and the packageextension verification",
       checks: [
-        "node tests/build.ts",
+        "node build.ts",
         "node dist/cli.js manifest",
         "the cjs require check",
         "the headless smoke over the example fixture",
-        "node tests/nativesmoke.ts",
+        "node nativesmoke.ts",
         "the firefox prep check",
-        "node tests/packageextension.ts",
+        "node packageextension.ts",
       ],
     },
     {
       name: "binary-builder",
       purpose:
         "compiles devthink.ts with bun build --compile aimed at the bun target resolved from TARGETARCH (bun-linux-x64 on amd64, bun-linux-arm64 on arm64)",
-      checks: ["bun run build.ts --target <bun-target>"],
+      checks: ["bun run buildbinary.ts --target <bun-target>"],
     },
     {
       name: "binary-runtime",

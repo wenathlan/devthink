@@ -6,7 +6,7 @@ The readiness gate of the 2.0.151 platform release walked every release gate of 
 
 | Gate | Verdict | Evidence |
 | --- | --- | --- |
-| the pool audit reports full disposition of every mined item | green | tests/artifacts/poolcoverage.json: 626 items, 623 implemented, 3 planned with written reasons, 0 unknown |
+| the pool audit reports full disposition of every mined item | blocked | tests/artifacts/poolcoverage.json sits absent |
 | the api freeze schemas stayed hash stable since 1.1.91 | green | the 10 frozen schemas of the 1.1.91 freeze rehash identically to the recorded digests of the freezebaseline module |
 | the deprecation window closed with no pending removal | green | version.ts speaks protocolfloormajor 2, the deprecatedfields registry emptied at the 2.0.0 sunset and docs/deprecation.md records the executed removal of both fields |
 | the migrateplan bridge converts every version one era fixture | green | the migrateplan command converts all five importer fixtures (v1, automa, selenium, ui vision and tabular) into plans the planlint command lints green |
@@ -20,18 +20,18 @@ The readiness gate of the 2.0.151 platform release walked every release gate of 
 | the agent certification covers every coordination scenario | green | tests/artifacts/agentcert.json: 30 scenarios, 0 failed |
 | the cost certification reconciles every recorded run | green | tests/artifacts/costcert.json: 9 reconciliations, 0 failed |
 | the doc check reports zero doc gaps | green | tests/artifacts/doccheck.json: 10 families green |
-| the recipes runner keeps every gallery entry green | green | tests/artifacts/recipes.json: 36 recipes, 0 failed, 19 of 19 checks |
+| the recipes runner keeps every gallery entry green | blocked | tests/artifacts/recipes.json sits absent |
 | the sweep artifact holds no open blockers | green | tests/artifacts/sweep.json: 16 of 16 findings fixed, 0 open |
-| the verification matrix covers every declared cell | green | tests/artifacts/matrixverify.json: 18 cells, 0 failed |
-| the telemetry free evidence covers the full candidate | green | tests/artifacts/telemetryfree.json: 5 bundles verified with 0 outbound attempts behind the block all proxy |
+| the verification matrix covers every declared cell | blocked | tests/artifacts/matrixverify.json sits absent |
+| the telemetry free evidence covers the full candidate | blocked | tests/artifacts/telemetryfree.json sits absent |
 | the changelog covers every version from 1.1.31 | green | the changelog carries every version of the chain from 1.1.31 through 2.0.151 |
 | the migration guide covers every supported path | green | docs/migrationguide.md documents the version one, automa, selenium, ui vision and tabular migration paths |
 | the release notes cover the user facing changes of the release | green | docs/releasenotes.md carries the release notes of the platform release |
 | the roadmap chain rules held through every release | green | docs/13.evolutionroadmap.md carries the progress line of the chain with 2.0.0 as the closing release |
 | the release pipeline dry run passed end to end | green | the release workflow carries the draft, verify and publish chain: the draft release assembles, the verification step downloads every asset and checks the checksums, and the publish step flips the release live |
 | the capability manifests carry the release version pins | green | the 7 capability manifests of dist/caps pin the release 2.0.151 |
-| the soak run keeps a long workflow alive across the retention window without drift | green | tests/artifacts/soak.json: 9 soak entries, 0 failed, the long workflow stayed alive with byte identical resume and a sealed audit hash across two full runs |
-| the wcag accessibility sweep audits every ui surface green | green | tests/artifacts/wcag.json: 10 wcag checklist entries over every surface, 0 failed |
+| the soak run keeps a long workflow alive across the retention window without drift | blocked | tests/artifacts/soak.json sits absent |
+| the wcag accessibility sweep audits every ui surface green | blocked | tests/artifacts/wcag.json sits absent |
 | the store package carries the icon family at every required size | green | icons.ts carries the six png payloads the build materializes into the extension zip, the manifest icons block and the action default icon resolve them, and the packageextension gate asserts the six icons answer inside the shipped archive |
 
 ## The go criteria and their satisfaction
@@ -44,4 +44,4 @@ The platform release accepts the recorded residual risks: the version one protoc
 
 ## The go decision
 
-The readiness gate answers **go** for the 2.0.151 release: 27 of 27 gates green, 0 blocked. The reviewer of record is the release lane the artifact links, the date is the release stamp and the evidence links ride every row of the table.
+The readiness gate answers **no-go** for the 2.0.151 release: 21 of 27 gates green, 6 blocked. The reviewer of record is the release lane the artifact links, the date is the release stamp and the evidence links ride every row of the table.

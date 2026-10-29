@@ -2,7 +2,7 @@
 
 DevThink welcomes contributions that improve the merged workbench — the universal gateway library, the browser extension surfaces, the Antigravity engine, the terminal CLI, the documentation, the tests and the security posture. Contributions are licensed under the repository GPL-3.0-only license unless a different compatible arrangement is agreed in writing before acceptance.
 
-A pull request should explain the change, include focused verification, preserve the layout conventions below and avoid credentials, private data or generated artifacts — `dist/` and `distpackage/` are build outputs of `node tests/build.ts`, never hand-edited sources. Security vulnerabilities must use the private process in `SECURITY.md` rather than a public issue.
+A pull request should explain the change, include focused verification, preserve the layout conventions below and avoid credentials, private data or generated artifacts — `dist/` and `distpackage/` are build outputs of `node build.ts`, never hand-edited sources. Security vulnerabilities must use the private process in `SECURITY.md` rather than a public issue.
 
 Keep the package library-first and dependency-light. New browser capabilities need a typed contract, a local policy gate, a user-visible consent state, a deterministic test and an audit event. A capability that needs a new permission must include a written least-privilege justification and manifest validation.
 
@@ -24,7 +24,7 @@ Every change must pass the gates that continuous integration runs:
 - `bun run check` — the secret scan plus the deterministic vitest suite (`check:secrets` + `vitest run`)
 - `bun run lint` — biome lint
 - `bun run typecheck` — `tsc --noEmit`, run after `db:generate` so the Prisma client types exist
-- `node tests/build.ts` — the root build: every dist target, the extension surface, the static site, the frozen schemas, the flat `distpackage/` staging and the checksums
+- `node build.ts` — the root build: every dist target, the extension surface, the static site, the frozen schemas, the flat `distpackage/` staging and the checksums
 - `npm run pack:check` — `npm pack --dry-run` over the staged flat package
 - `pnpm validate` — the full candidate chain (`check:metadata`, `validate:runtime`, `check`, `build`, `validate:security`, `validate:agents`, `validate:workflow`, `validate:apifreeze`, `validate:docs`, `validate:candidate`, the recipes runner, the suite, the cli smoke and the packageextension verification)
 
@@ -36,7 +36,7 @@ Before opening a pull request, run the validate chain and the package check; `bu
 - `web/` is organized as pages in folders; there is no `main.tsx` — the entry and app surfaces own React mounting.
 - `web/gatewayview/` holds the embedded gateway console page (`Gateway.tsx`) with the shipped version catalog (`config.ts`) and its view-side structural contract (`definition.ts`); `web/schema.prisma` at the web root is the database schema, and `web/console/` draws the canonical design of the cli.
 - `web/` carries the extension surfaces (popup, sidepanel, options, dashboard, transparency) built from the one design file `web/index.html`.
-- `docs/` holds the numbered reference documentation; `tests/` holds the flat suite with the `tests/server/` and `tests/provider/` family suites.
+- `docs/` holds the numbered reference documentation; `tests/` holds the flat suite of the application village (the `tests/provider/` lineage of the merged family rides the core).
 
 ## Commit messages
 
@@ -48,7 +48,7 @@ A new cli command lives behind the same contract as the existing surface: the pu
 
 ## Adding a build target
 
-A new build target lives behind the same contract as the existing modes: the target registers in the build orchestrator (`tests/build.ts`) with its output name, its format, its platform and its size budget line, the exports map of `package.json` carries its condition when it is a consumption entry, the tarball content check asserts it ships, the checksums file covers it, the naming check keeps it free of underscored identifiers, the sourcemap and the minified variant emit beside it, the bundlestamp reports its mode and target, the api surface snapshot compares its exports with the esm core, and the multi runtime matrix of the verify workflow exercises it when its runtime applies.
+A new build target lives behind the same contract as the existing modes: the target registers in the build orchestrator (`build.ts`) with its output name, its format, its platform and its size budget line, the exports map of `package.json` carries its condition when it is a consumption entry, the tarball content check asserts it ships, the checksums file covers it, the naming check keeps it free of underscored identifiers, the sourcemap and the minified variant emit beside it, the bundlestamp reports its mode and target, the api surface snapshot compares its exports with the esm core, and the multi runtime matrix of the verify workflow exercises it when its runtime applies.
 
 ## Running the site locally from static files
 
@@ -68,7 +68,7 @@ A new release channel lives behind the same contract as the existing ones: the p
 
 ## Documentation requirements
 
-Every documentation change runs through the doccheck gate (`node tests/doccheck.ts` after the root build): the kind documentation must cover every action kind of the catalog exactly, every reference table must mirror the code it documents, every doc link must resolve, every code block must state its language, and the changelog must cover every released version. New action kinds, cli commands, mcp tools, protocol messages, audit kinds or configuration keys document in `docs/kinddocs.md` and `docs/refdocs.md` in the same change that introduces them — the gate refuses the release otherwise.
+Every documentation change runs through the doccheck gate (`node doccheck.ts` after the root build): the kind documentation must cover every action kind of the catalog exactly, every reference table must mirror the code it documents, every doc link must resolve, every code block must state its language, and the changelog must cover every released version. New action kinds, cli commands, mcp tools, protocol messages, audit kinds or configuration keys document in `docs/kinddocs.md` and `docs/refdocs.md` in the same change that introduces them — the gate refuses the release otherwise.
 
 ## Release process
 
