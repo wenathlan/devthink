@@ -1,7 +1,7 @@
 /**
- * engine.tsx — the engine card of the video app: the real versawase
- * engine row the catalog serves, with the honest empty state while the
- * catalog has not answered. Loose component of the video page.
+ * engine.tsx — the studio queue card of the video app: the render status
+ * line of the studio queue, with the honest empty state while the catalog
+ * has not answered. Loose component of the video page.
  */
 import {MoviesAndTvRegular} from "@fluentui/react-icons";
 import type { NativeApp } from "../../catalog";
@@ -15,11 +15,7 @@ export function VideoEngine({ app }: { app: NativeApp | undefined }) {
         {osText("studios.engine")}
       </h2>
       {app ? (
-        <p className="dtw-copy">
-          {osText("studios.engineLede")}
-          <code>{app.engine}</code>
-          {osText("video.engineTail")}
-        </p>
+        <p className="dtw-copy">{osText("video.engineTail")}</p>
       ) : (
         <p className="dtw-copy">{osText("studios.enginePending")}</p>
       )}

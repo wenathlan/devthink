@@ -11750,15 +11750,17 @@ span[data-tile] {
  * grain, the fluent blur+saturate bed, the 1px hairline ring and the
  * 4/8/12/20 spacing rhythm; it enters on the 150ms micro curve */
 /* the split sign-in card (the akash grammar the owner pointed to): the
- * visual panel carrying the brand and the rotating value slides beside
- * the form panel carrying the account contract — one mica card, the
- * hairline outline, the light-catching top inset and the three-step
- * elevation (contact, lift, ambient) the windows material carries. the
- * card never reads as a flat slab, it floats as layered material over
- * the dimmed wallpaper. */
+ * visual panel carrying the brand beside the form panel carrying the
+ * account contract — one mica card, the hairline outline, the
+ * light-catching top inset and the three-step elevation (contact, lift,
+ * ambient) the windows material carries. the card never reads as a flat
+ * slab, it floats as layered material over the dimmed wallpaper. the
+ * card isolates its own stacking context so the backdrop bed stays
+ * inside the radius on safari and the older chromium (the clip law). */
 .dtw-login__card {
   position: relative;
   z-index: calc(var(--z-float) + 10);
+  isolation: isolate;
   display: grid;
   grid-template-columns: minmax(280px, 37%) 1fr;
   width: min(880px, 94vw);
@@ -11808,9 +11810,8 @@ span[data-tile] {
 }
 /* the visual panel: the ever gradient bed — the good era identity the
  * intro hero wears, deep ink at rest with the ever gaussians breathing in
- * the low corners, the brand row on top, the value slides crossfading in
- * the middle, the slide rails and the tagline closing the panel. the
- * right edge carries the veil hairline that separates it from the form. */
+ * the low corners, the brand row on top. the right edge carries the veil
+ * hairline that separates it from the form. */
 .dtw-login__visual {
   position: relative;
   display: flex;
@@ -11831,71 +11832,6 @@ span[data-tile] {
   align-items: center;
   gap: 10px;
 }
-.dtw-login__slides {
-  position: relative;
-  display: grid;
-  min-height: 200px;
-}
-.dtw-login__slide {
-  grid-area: 1 / 1;
-  display: grid;
-  gap: 10px;
-  align-content: center;
-  opacity: 0;
-  transform: translateY(8px);
-  transition:
-    opacity 300ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
-    transform 300ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
-  pointer-events: none;
-}
-.dtw-login__slide[data-active="true"] {
-  opacity: 1;
-  transform: none;
-}
-.dtw-login__slidetitle {
-  margin: 0;
-  color: #fff;
-  font: 600 clamp(22px, 2.6vw, 30px) / 1.14 var(--font-sans, var(--dt-sans));
-  letter-spacing: -0.02em;
-  text-wrap: balance;
-}
-.dtw-login__slidetitle::selection,
-.dtw-login__slidesub::selection {
-  background: var(--color-ever-deep);
-  color: #fff5fa;
-}
-.dtw-login__slidesub {
-  margin: 0;
-  max-width: 34ch;
-  color: rgb(255 255 255 / 72%);
-  font: 400 13px / 1.55 var(--font-sans, var(--dt-sans));
-  text-wrap: pretty;
-}
-/* the slide rails: the thin bars of the rotation state (never dots, never
- * pills — a 3px bar that grows to 26px when its slide rides) */
-.dtw-login__sliderails {
-  display: flex;
-  gap: 8px;
-}
-.dtw-login__sliderail {
-  width: 12px;
-  height: 3px;
-  padding: 0;
-  border: 0;
-  border-radius: 2px;
-  background: rgb(255 255 255 / 26%);
-  cursor: pointer;
-  transition:
-    width 300ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
-    background 300ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
-}
-.dtw-login__sliderail[data-active="true"] {
-  width: 26px;
-  background: var(--color-ever);
-}
-.dtw-login__sliderail:hover {
-  background: rgb(255 255 255 / 44%);
-}
 .dtw-login__visualtag {
   color: rgb(255 255 255 / 62%);
   font: 400 11px / 1.5 var(--dt-mono);
@@ -11911,8 +11847,7 @@ span[data-tile] {
   padding: 34px 32px 28px;
 }
 /* the narrow band: the card folds to one column under 880px — the visual
- * panel becomes the compact brand band (the slides keep riding, the rails
- * keep answering), the form follows beneath it */
+ * panel becomes the compact brand band, the form follows beneath it */
 @media (max-width: 880px) {
   .dtw-login__card {
     grid-template-columns: 1fr;
@@ -11923,15 +11858,6 @@ span[data-tile] {
     padding: 20px 22px 16px;
     border-right: 0;
     border-bottom: 1px solid color-mix(in oklab, var(--color-veil) 10%, transparent);
-  }
-  .dtw-login__slides {
-    min-height: 84px;
-  }
-  .dtw-login__slidetitle {
-    font-size: 19px;
-  }
-  .dtw-login__slidesub {
-    font-size: 12px;
   }
   .dtw-login__visualtag {
     display: none;
@@ -11966,14 +11892,6 @@ span[data-tile] {
   font: 600 26px / 1.2 var(--font-sans, var(--dt-sans));
   text-align: center;
   text-shadow: 0 1px 8px rgb(0 0 0 / 45%);
-}
-.dtw-login__lede {
-  margin: -6px 0 0;
-  max-width: 36ch;
-  color: rgb(255 255 255 / 66%);
-  font: 400 13px / 1.55 var(--font-sans, var(--dt-sans));
-  text-align: center;
-  text-wrap: pretty;
 }
 .dtw-login__fields {
   display: flex;
@@ -12211,6 +12129,9 @@ span[data-tile] {
 .dtw-login--signin .dtw-login__power:focus-visible {
   background: rgb(255 255 255 / 12%);
 }
+/* the power menu: the mica popover over the corner key — the isolation
+ * clips its backdrop bed inside the 8px radius on safari and the older
+ * chromium (the clip law) */
 .dtw-login__powermenu {
   position: absolute;
   right: 0;
@@ -12222,6 +12143,7 @@ span[data-tile] {
   background: rgb(43 43 43 / 88%);
   backdrop-filter: blur(24px) saturate(1.4);
   -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  isolation: isolate;
   box-shadow: 0 8px 24px rgb(0 0 0 / 24%), 0 0 2px rgb(0 0 0 / 12%);
   animation: dtwloginpower 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
 }

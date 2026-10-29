@@ -1,6 +1,6 @@
 /**
- * list.tsx — the runner binaries card: hairline rows with the monogram
- * cover, the real catalog fields and the launch action. Loose component of
+ * list.tsx — the games card: hairline rows with the monogram cover,
+ * the real catalog fields and the launch action. Loose component of
  * the games page.
  */
 import {PlayFilled} from "@fluentui/react-icons";
@@ -46,7 +46,6 @@ export function GamesList({
                     {binary.kind}
                   </span>
                   <span>{binary.formats}</span>
-                  <span>{binary.runner}</span>
                 </p>
               </div>
               <button

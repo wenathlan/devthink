@@ -1,6 +1,6 @@
 /**
- * imageengine.tsx — the engine card of the image studio: the real matiz
- * engine row the catalog serves, with the honest empty state while the
+ * imageengine.tsx — the studio queue card of the image studio: the render
+ * status line of the studio queue, with the honest empty state while the
  * catalog has not answered. Loose component of the image page.
  */
 import {ImageRegular} from "@fluentui/react-icons";
@@ -15,11 +15,7 @@ export function ImageEngine({ app }: { app: NativeApp | undefined }) {
         {osText("studios.engine")}
       </h2>
       {app ? (
-        <p className="dtw-copy">
-          {osText("studios.engineLede")}
-          <code>{app.engine}</code>
-          {osText("image.engineTail")}
-        </p>
+        <p className="dtw-copy">{osText("image.engineTail")}</p>
       ) : (
         <p className="dtw-copy">{osText("studios.enginePending")}</p>
       )}

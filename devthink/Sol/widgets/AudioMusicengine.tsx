@@ -1,6 +1,6 @@
 /**
- * musicengine.tsx — the engine card of the audio app: the real katexis
- * engine row the catalog serves, with the honest empty state while the
+ * musicengine.tsx — the studio queue card of the audio app: the render
+ * status line of the studio queue, with the honest empty state while the
  * catalog has not answered. Loose component of the audio page.
  */
 import {MusicNote2Regular} from "@fluentui/react-icons";
@@ -15,11 +15,7 @@ export function MusicEngine({ app }: { app: NativeApp | undefined }) {
         {osText("studios.engine")}
       </h2>
       {app ? (
-        <p className="dtw-copy">
-          {osText("studios.engineLede")}
-          <code>{app.engine}</code>
-          {osText("audio.engineTail")}
-        </p>
+        <p className="dtw-copy">{osText("audio.engineTail")}</p>
       ) : (
         <p className="dtw-copy">{osText("studios.enginePending")}</p>
       )}

@@ -30,22 +30,22 @@ export const seedFamilySites: FamilySite[] = [
   {
     host: "https://debonair.devthink.pro",
     name: "debonair — audio daw",
-    blurb: "Generate, edit and master audio with the katexis engine. Isolated branding app of the OS.",
+    blurb: "Generate, edit and master audio in the music studio. Isolated branding app of the OS.",
   },
   {
     host: "https://cadria.devthink.pro",
     name: "cadria — video & image studio",
-    blurb: "Player for every format, editor and creative anchors on the versawase engine.",
+    blurb: "Player for every format, editor and creative anchors of the video and image studio.",
   },
   {
     host: "https://stealthhead.devthink.pro",
     name: "stealthhead — fps platform",
-    blurb: "Match, ranking, weapons and world logic. The engine rides from versawase.",
+    blurb: "Match, ranking, weapons and world logic — the game runs in the family 3D studio.",
   },
   {
     host: "https://forge.devthink.pro",
     name: "forge — sandbox runners",
-    blurb: "Runner fleets, execution queues and live logs over the saddle engine boundary.",
+    blurb: "Runner fleets, execution queues and live logs of the sandbox cloud.",
   },
   {
     host: "https://foundry.devthink.pro",
@@ -121,7 +121,7 @@ export const seedPlatformApps: NativeApp[] = [
     engine: "versawase",
     owner: "cadria",
     route: "/video",
-    blurb: "The native video editor pulling the cadria versawase engine through the catalog.",
+    blurb: "The video studio, with every asset served from the same catalog.",
   },
   {
     id: "music",
@@ -129,7 +129,7 @@ export const seedPlatformApps: NativeApp[] = [
     engine: "katexis",
     owner: "debonair",
     route: "/audio",
-    blurb: "The native music studio riding the debonair katexis engine, with every track served from the same catalog.",
+    blurb: "The music studio, with every track served from the same catalog.",
   },
   {
     id: "image",
@@ -137,8 +137,7 @@ export const seedPlatformApps: NativeApp[] = [
     engine: "matiz",
     owner: "cadria",
     route: "/image",
-    blurb:
-      "The native image studio riding the cadria matiz pixel engine, with every still served from the same catalog.",
+    blurb: "The image studio, with every still served from the same catalog.",
   },
   {
     id: "games",
@@ -146,7 +145,7 @@ export const seedPlatformApps: NativeApp[] = [
     engine: "saddle runner",
     owner: "saddle",
     route: "/games",
-    blurb: "The native runner that boots the competitor executables by itself through the saddle engine boundary.",
+    blurb: "The games shelf — the runner that boots every game and app by itself.",
   },
 ];
 
@@ -193,19 +192,19 @@ export const seedOsAppLabels: OsAppLabel[] = [
   {
     id: "image",
     name: "Image",
-    detail: "The native image studio on the cadria engine",
+    detail: "The native image studio of the OS",
     pinned: true,
   },
   {
     id: "video",
     name: "Video",
-    detail: "The native video editor on the versawase engine",
+    detail: "The native video editor of the OS",
     pinned: true,
   },
   {
     id: "audio",
     name: "Audio",
-    detail: "The native audio studio on the debonair engine",
+    detail: "The native audio studio of the OS",
     pinned: true,
   },
   {

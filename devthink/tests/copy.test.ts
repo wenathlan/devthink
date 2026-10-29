@@ -70,6 +70,6 @@ describe("the copy store", () => {
 
   it("the callback receiving face names the provider through the slot", () => {
     assert.ok(copy("callback.received").includes("{provider}"), "the receiving face carries the provider slot");
-    assert.ok(copy("callback.received.note").includes("gateway"), "the receiving face keeps the exchange honest");
+    assert.ok(copy("callback.received.note").includes("Completing sign-in"), "the receiving face keeps the exchange honest");
   });
 });

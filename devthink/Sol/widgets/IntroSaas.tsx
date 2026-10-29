@@ -13,21 +13,17 @@
 
 import {
   ArrowUpRightRegular as Arrowupright,
-  AlertRegular as Bell,
   HeadphonesRegular as Headphones,
   StackRegular as Layers,
-  ArrowImportRegular as Login,
-  MaximizeRegular as Maximize,
   ChatRegular as Messagesquare,
   SparkleRegular as Sparkle,
-  StarRegular as Star,
   TvRegular as Tv,
   PeopleRegular as Users,
 } from "@fluentui/react-icons";
 import { type ComponentType, useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { saaschrome, saasheadertabs, saasrailstops, saastoasts } from "../../saascontent.ts";
-import { SaddleTabBridge, Studiomark, VerticalSaddleBridge } from "./IntroSaaskit.tsx";
+import { saaschrome, saasheadertabs, saasrailstops } from "../../saascontent.ts";
+import { SaddleTabBridge, VerticalSaddleBridge } from "./IntroSaaskit.tsx";
 import {
   SaasCadria,
   SaasDebonair,
@@ -167,8 +163,8 @@ export default function Saas({ onDone }: { onDone: () => void }) {
   return (
     <div className="saas-root min-h-screen w-full overflow-x-hidden p-[2.5px] text-slate-900 select-none sm:select-auto">
       {/* the left rail: the vertical saddle slab at the screen edge — the
-          hairline divider, the six dark stops with the indigo active pill
-          and the saddle cloud tile under them */}
+          hairline divider and the six mandate stops with the indigo active
+          pill, nothing under them */}
       <aside className="fixed top-1/2 left-0 z-50 hidden -translate-y-1/2 flex-col items-center lg:flex">
         <VerticalSaddleBridge fillColor="#0A0B0E" className="py-2">
           <div className="flex flex-col items-center gap-3 px-1">
@@ -192,32 +188,13 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                 </button>
               );
             })}
-            <button
-              type="button"
-              onClick={() => scrollto("workspace-subapps")}
-              aria-label={saaschrome.saddle}
-              className="group relative mt-1 flex h-10 w-10 items-center justify-center rounded-full transition hover:scale-110"
-            >
-              <Studiomark app="saddle" className="h-10 w-10" />
-              <span className="pointer-events-none absolute left-14 rounded-lg border border-white/10 bg-slate-950 px-2.5 py-1 text-[11px] font-semibold tracking-[-0.018em] whitespace-nowrap text-white opacity-0 transition group-hover:opacity-100">
-                {saaschrome.saddle}
-              </span>
-            </button>
           </div>
         </VerticalSaddleBridge>
       </aside>
 
-      {/* the corner dock: the white card with the three tactile keys — the
+      {/* the corner dock: the white card with the one tactile key — the
           explorer key walks the entry chain to the free exploration face */}
       <div className="surface-card fixed right-4 bottom-8 z-40 hidden flex-col items-center gap-2 rounded-2xl p-2 text-slate-700 md:flex">
-        <button
-          type="button"
-          onClick={() => showtoast(saastoasts.favorites)}
-          className="icon-frame-3d flex h-9 w-9 items-center justify-center rounded-xl"
-          aria-label={saaschrome.docksave}
-        >
-          <Star className="h-4 w-4" aria-hidden="true" />
-        </button>
         <button
           type="button"
           onClick={explore}
@@ -225,14 +202,6 @@ export default function Saas({ onDone }: { onDone: () => void }) {
           aria-label={saaschrome.dockexplore}
         >
           <Layers className="h-4 w-4" aria-hidden="true" />
-        </button>
-        <button
-          type="button"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="icon-frame-3d flex h-9 w-9 items-center justify-center rounded-xl"
-          aria-label={saaschrome.docktop}
-        >
-          <Maximize className="h-4 w-4" aria-hidden="true" />
         </button>
       </div>
 
@@ -276,28 +245,6 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                 </SaddleTabBridge>
               </div>
               <div className="flex shrink-0 items-center gap-2 pt-1">
-                <button
-                  type="button"
-                  onClick={() => showtoast(saastoasts.notifications)}
-                  className="icon-frame-3d group flex items-center rounded-full p-2.5 text-slate-800"
-                  aria-label={saaschrome.alerts}
-                >
-                  <Bell className="h-4 w-4" aria-hidden="true" />
-                  <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-all group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
-                    {saaschrome.alerts}
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => showtoast(saastoasts.signedin)}
-                  className="icon-frame-3d group hidden items-center rounded-full p-2.5 text-slate-800 sm:flex"
-                  aria-label={saaschrome.signin}
-                >
-                  <Login className="h-4 w-4" aria-hidden="true" />
-                  <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-all group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
-                    {saaschrome.signin}
-                  </span>
-                </button>
                 <button
                   type="button"
                   onClick={enter}
