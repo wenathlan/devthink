@@ -156,6 +156,7 @@ describe("the package.json engine manifest agrees with the manifest of record", 
     for (const entry of manifest) {
       if (entry.source === "library") {
         const declared = byengine.get(entry.name);
+        assert.ok(declared !== undefined, `the engine ${entry.name} declares no owner row`);
         assert.equal(
           entry.owner,
           declared,
