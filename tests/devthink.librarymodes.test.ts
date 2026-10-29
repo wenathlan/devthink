@@ -147,7 +147,7 @@ describe("the library on every runtime", () => {
       return; /* the deno binary stays optional in the local matrix; the neutral bundle above still proves the entry */
     await writeFile(
       join(outbase, "deno-entry.test.ts"),
-      'import { surfacepalette } from "../devthink/tests/deno-check.mjs";\nDeno.test("loads the deno entry", () => { if (surfacepalette().length === 0) throw new Error("The deno entry loaded an empty palette."); });\n',
+      'import { surfacepalette } from "./deno-check.mjs";\nDeno.test("loads the deno entry", () => { if (surfacepalette().length === 0) throw new Error("The deno entry loaded an empty palette."); });\n',
       "utf8",
     );
     await execute("deno", ["test", "--allow-read", "deno-entry.test.ts"], { cwd: outbase });
