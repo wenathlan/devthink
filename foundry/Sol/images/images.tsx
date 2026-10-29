@@ -25,7 +25,7 @@ import {
   seedImages,
 } from "../../imagestore.ts";
 import { labelfill, label } from "../../labels.ts";
-import { EmptyState } from "../widgets";
+import { EmptyState } from "../wingets";
 
 /** the seed of the rehearsal shelf (shown on the page, pinned by the tests) */
 export const SHELF_SEED = 314159;

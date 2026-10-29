@@ -1,4 +1,4 @@
-/** One minimal mcp client script that lists the devthink tools over stdio: run `node dist/fixtures/mcp-client.ts` with the serve command of the extension cli in your path. */
+/** One minimal mcp client script that lists the devthink tools over stdio: run `node dist/fixtures/mcp.client.ts` with the serve command of the extension cli in your path. */
 import { spawn } from "node:child_process";
 
 const child = spawn("node", ["dist/cli.js", "serve", "--stdio"], { stdio: ["pipe", "pipe", "inherit"] });

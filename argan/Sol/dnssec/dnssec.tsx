@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import type { ConfigBlock, FeatureCard, RolloverStep, SignalBadge } from "../../argan.ts";
 import { listConfigBlocks, listDnssecAlgorithms, listDnssecKeyCards, listRolloverSteps } from "../../catalog.ts";
 import { label } from "../../labels";
-import { ShellEmptystate as EmptyState } from "../widgets";
+import { ShellEmptystate as EmptyState } from "../wingets";
 import { type NavLink, Shell } from "../shell/Shell";
 
 const FOOTER_LINKS: readonly NavLink[] = [

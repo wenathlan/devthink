@@ -807,7 +807,7 @@ export function nugetfixtureentries(): nugetcontententry[] {
       source: "dist/fixtures/plans/form-inventory-plan.json",
       contentpath: "contentFiles/any/any/fixtures/plans/form-inventory-plan.json",
     },
-    { source: "dist/fixtures/mcp-client.ts", contentpath: "contentFiles/any/any/fixtures/mcp-client.ts" },
+    { source: "dist/fixtures/mcp.client.ts", contentpath: "contentFiles/any/any/fixtures/mcp.client.ts" },
   ];
 }
 

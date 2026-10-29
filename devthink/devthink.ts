@@ -44,7 +44,7 @@ import {
   setIdentityUserId,
 } from "./account.js";
 import type { ChatEvent } from "./streaming.js";
-import { banner, box, colors, formatConfig, formatEvent, statusBar } from "./Sol/widgets/ConsoleTerminalui.js";
+import { banner, box, colors, formatConfig, formatEvent, statusBar } from "./Sol/wingets/ConsoleTerminalui.js";
 import { startServer } from "./server.js";
 
 export type ParsedArgs = { flags: Record<string, string | boolean>; positional: string[] };
@@ -530,7 +530,7 @@ function handleRoutes(): void {
 async function interactive(runtime: ReturnType<typeof loadRuntime>): Promise<void> {
   if (process.stdin.isTTY && process.stdout.isTTY && process.env.DEVTHINK_PLAIN !== "1") {
     try {
-      const { startTerminalWorkspace } = await import("./Sol/widgets/ConsoleTerminalui.js");
+      const { startTerminalWorkspace } = await import("./Sol/wingets/ConsoleTerminalui.js");
       return await startTerminalWorkspace(runtime, version(), (prompt, current, onEvent) =>
         runChat(prompt, { flags: { mode: runtime.config.mode || "chat" }, positional: [] }, runtime, current, {
           onEvent,

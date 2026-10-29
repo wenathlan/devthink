@@ -20,7 +20,7 @@ import { useCallback, useState } from "react";
 import { useLocation } from "wouter";
 import { label, labelfill } from "../../labels";
 import { markOnboardingStage } from "../../onboardingstate.ts";
-import { BrandMark } from "../widgets";
+import { BrandMark } from "../wingets";
 
 /** the three beats of the walk: what it is, what it does, enter (the copy law) */
 const STEPS = [

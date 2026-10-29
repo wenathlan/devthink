@@ -21,7 +21,7 @@
  */
 
 // the legacy anchor visuals stay public beside the page (nothing is turned off)
-export * from "../widgets";
+export * from "../wingets";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { type AnalysisReport, PipelineError } from "../../audiopipeline.ts";
@@ -32,11 +32,11 @@ import type { DemoFixtureId } from "../../introfixtures.ts";
 import { label } from "../../labels.ts";
 import { generateStudioProject, reseededSeed, type SessionSave, type StudioGeneration } from "../../studiogenerate.ts";
 import { analyzeSource, fileSource, fixtureSource, type StudioSource } from "../../studiosource.ts";
-import { StudioControls as ControlsPane } from "../widgets";
-import { StudioExportrow as ExportRow } from "../widgets";
-import { StudioReadout as Readout } from "../widgets";
-import { StudioSourcerail as SourceRail } from "../widgets";
-import { StudioStageart as StageArt } from "../widgets";
+import { StudioControls as ControlsPane } from "../wingets";
+import { StudioExportrow as ExportRow } from "../wingets";
+import { StudioReadout as Readout } from "../wingets";
+import { StudioSourcerail as SourceRail } from "../wingets";
+import { StudioStageart as StageArt } from "../wingets";
 
 /** the staged beat before the synchronous compute lands — skipped under reduced motion. */
 const STAGE_MS = 240;

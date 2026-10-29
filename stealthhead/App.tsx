@@ -25,7 +25,7 @@ if (typeof window !== "undefined") installzoomlock();
 
 // the copy law rides the boot: the seed refreshes the label store rows from
 // the manifest (the browser cache mirrors the site db rows) before the theme
-// renders — best effort, the manifest always answers the widgets.
+// renders — best effort, the manifest always answers the wingets.
 if (typeof window !== "undefined") void seedlabels().catch(() => {});
 
 /** the error boundary of the theme: one panel, one reload action. */

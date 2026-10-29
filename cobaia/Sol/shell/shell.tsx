@@ -22,8 +22,8 @@ import type { CSSProperties, ReactNode } from "react";
 import { useLocation, Link } from "wouter";
 import { familyurl } from "../../familyurl";
 import { type LabelKey, label } from "../../labels";
-import { ROSTER } from "../widgets";
-import { BrandMark } from "../widgets";
+import { ROSTER } from "../wingets";
+import { BrandMark } from "../wingets";
 
 /** the section links of the top bar, in reading order (home is the mark).
  * the href rides the route table, the text rides the label accessor. */

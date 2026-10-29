@@ -31,7 +31,7 @@ import {
   step,
 } from "../../sandbox.ts";
 import { labelfill, label } from "../../labels.ts";
-import { EmptyState } from "../widgets";
+import { EmptyState } from "../wingets";
 
 /** the seed of the rehearsal herd (shown on the page, pinned by the tests) */
 export const HERD_SEED = 620221;

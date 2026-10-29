@@ -29,6 +29,6 @@
     <None Include="dist/fixtures/example-org-pagestate.json" Pack="true" PackagePath="contentFiles/any/any/fixtures/example-org-pagestate.json" />
     <None Include="dist/fixtures/plans/release-notes-plan.json" Pack="true" PackagePath="contentFiles/any/any/fixtures/plans/release-notes-plan.json" />
     <None Include="dist/fixtures/plans/form-inventory-plan.json" Pack="true" PackagePath="contentFiles/any/any/fixtures/plans/form-inventory-plan.json" />
-    <None Include="dist/fixtures/mcp-client.ts" Pack="true" PackagePath="contentFiles/any/any/fixtures/mcp-client.ts" />
+    <None Include="dist/fixtures/mcp.client.ts" Pack="true" PackagePath="contentFiles/any/any/fixtures/mcp.client.ts" />
   </ItemGroup>
 </Project>

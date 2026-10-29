@@ -19,10 +19,10 @@ function read(path: string): string {
 
 const CSS = read("../Sol/sol.css");
 const ENTRY = read("../index.html");
-const MARK = read("../Sol/widgets/ShellBrandmark.tsx");
+const MARK = read("../Sol/wingets/ShellBrandmark.tsx");
 const TOML = read("../devthink.toml");
 const SOL = read("../Sol/Sol.tsx");
-const GATE = read("../Sol/widgets/HomeEntrygate.tsx");
+const GATE = read("../Sol/wingets/HomeEntrygate.tsx");
 const STATE = read("../onboardingstate.ts");
 const ONBOARDING = read("../Sol/onboarding/onboarding.tsx");
 const INTRO = read("../Sol/intro/intro.tsx");

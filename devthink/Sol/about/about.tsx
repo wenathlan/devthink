@@ -30,10 +30,10 @@ import {
   mediaSlots,
   type Principle,
   principleTable } from "../../catalog";
-import { InstitutionalChrome, InstitutionalFooter } from "../widgets";
-import { AboutFamily } from "../widgets";
-import { AboutHero } from "../widgets";
-import { AboutTimeline } from "../widgets";
+import { InstitutionalChrome, InstitutionalFooter } from "../wingets";
+import { AboutFamily } from "../wingets";
+import { AboutHero } from "../wingets";
+import { AboutTimeline } from "../wingets";
 
 /* --------------------------------------------------------------------------
  * the about page-app stylesheet — the r2-a editorial pass of this folder:

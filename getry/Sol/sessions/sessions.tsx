@@ -21,7 +21,7 @@ import { type ApiKeyRow, type ChatMessageRow, listkeys, listmessages, maskkey, r
 import { label, labelfill } from "../../labels";
 import { observeReveals } from "../../reveal";
 import { contextshare, freshestfirst, listsessions, rotationindex, type SessionContextRow } from "../../sessions";
-import { ShellEmptystate as EmptyState } from "../widgets";
+import { ShellEmptystate as EmptyState } from "../wingets";
 import { toast } from "../toast/Toast.tsx";
 
 /** the rungs of the rotation ladder the dots walk (one per rotation step). */

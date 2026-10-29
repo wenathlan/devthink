@@ -1,6 +1,6 @@
 /**
- * index.ts — the universal widget surface of devthink: every widget of the
- * Sol/widgets folder answers from this one module, so the pages import
+ * index.ts — the universal winget surface of devthink: every winget of the
+ * Sol/wingets folder answers from this one module, so the pages import
  * their components from a single place and every component file carries a
  * dot-free PascalCase name that says exactly what it renders —
  * the components stay complete independent files beside this surface.
