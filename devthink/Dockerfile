@@ -205,6 +205,19 @@ ARG TARGETARCH
 # typescript, vitest).
 COPY package.json bun.lock ./
 
+# the standalone container answers the sibling-family law: the manifest
+# declares @wenathlan/vault as a file:../vault sibling dependency (the
+# dependency-union law) but the container context carries the application
+# tree alone, and no source of the os imports the vault package (the vault
+# entry is the declared library contract of the family manifest, never a
+# build input of this image), so the install strips the sibling entries the
+# context cannot resolve and the lockfile regeneration pins the same tree
+# the builder always installed — the strip and the regeneration answer both
+# install stages identically (the buildkit cache of the deps layers keeps
+# the shared chain).
+RUN node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));for(const section of ['dependencies','devDependencies','optionalDependencies']){for(const name of Object.keys(p[section]??{})){if(/^file:\\.\\//.test(p[section][name]))delete p[section][name];}}fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');" \
+    && bun install --ignore-scripts
+
 # the toolchain: zip and unzip for the packaging steps (the extension
 # archive and the pack verification), and the bun version the packageManager
 # field pins — installed through the npm the node base already carries and
@@ -257,6 +270,12 @@ ARG TARGETARCH
 # identical base image answers the buildkit cache of the deps layers, so
 # the builder adds no install cost.
 COPY package.json bun.lock ./
+
+# the sibling strip of the deps stage repeated verbatim: the builder
+# re-copies the pristine manifest pair, so the standalone strip and the
+# lockfile regeneration answer here again.
+RUN node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));for(const section of ['dependencies','devDependencies','optionalDependencies']){for(const name of Object.keys(p[section]??{})){if(/^file:\\.\\//.test(p[section][name]))delete p[section][name];}}fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');" \
+    && bun install --ignore-scripts
 
 RUN set -eux; \
     apt_update_tries=5; \

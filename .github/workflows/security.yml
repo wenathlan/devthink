@@ -614,8 +614,11 @@ jobs:
   scorecard:
     # scorecard runs on the default branch only (the weekly schedule and
     # main pushes); pull-request scans would distort the branch-protection
-    # signals the scorecard measures.
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    # signals the scorecard measures, and a dispatch firing over a feature
+    # branch answers the same refusal the action carries (only the default
+    # branch is supported), so the guard keeps every lane the action can
+    # honestly serve.
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     name: OSSF scorecard analysis
     runs-on: ubuntu-24.04
     timeout-minutes: 10
