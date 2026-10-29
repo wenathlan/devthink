@@ -86,7 +86,7 @@ const APP_BINDINGS: AppBinding[] = [
   },
   {
     id: "files",
-    tint: "#eab308",
+    tint: "#a3d7e6",
     icon: FolderArrowUpRegular,
     iconset: "files",
     // My Files opens as a floating window of the desktop — the Windows
@@ -236,14 +236,14 @@ const APP_BINDINGS: AppBinding[] = [
   },
   {
     id: "getry",
-    tint: "#6fae8f",
+    tint: "#8b5cf6",
     icon: Boxes,
     iconset: "getry",
     target: { kind: "external", slug: "getry" },
   },
   {
     id: "saddle",
-    tint: "#d6b483",
+    tint: "#e86f2d",
     icon: Box,
     iconset: "saddle",
     target: { kind: "external", slug: "saddle" },

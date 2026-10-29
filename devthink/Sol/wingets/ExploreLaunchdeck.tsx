@@ -28,6 +28,7 @@ import {ArrowUpRightRegular as ArrowUpRight} from "@fluentui/react-icons";
 import { type CSSProperties, type FormEvent, type ReactNode, useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { DESKTOP_APPS, type DesktopApp, isFamilyApp } from "../../appregistry.ts";
+import { familyAccentOf } from "../../familyaccent.ts";
 import { osText } from "../../oslabels.ts";
 import { AppTile } from "./ShellApptile.tsx";
 import { HeroWaves } from "./ExploreWaves.tsx";
@@ -49,23 +50,27 @@ export const TRYLLE_CARD_SHADOW_RAISED = "0 2px 3px rgb(0 0 0 / 26%), 0 6px 20px
  * light, ring, one drop) */
 const FIELD_SHADOW = "0 1px 2px rgb(0 0 0 / 26%), 0 3px 12px rgb(0 0 0 / 12%), inset 0 1px 0 0 rgb(255 255 255 / 4%)";
 
-/** the identity signal of each family app (one color per tile, the tile
- * chrome itself stays neutral graphite — the campaign doctrine) */
-const FAMILY_TINT: Record<string, string> = {
-  argan: "#1DCF64",
-  cadria: "#f472b6",
-  cobaia: "#4fb3c6",
-  debonair: "#d9962e",
-  stealthhead: "#f87171",
-  forge: "#fb923c",
-  foundry: "#d97706",
-  vault: "#eab308",
-  getry: "#8b5cf6",
-  saddle: "#d6b483" };
-
 /** the neutral tint a family mark falls back to when the registry grows a
  * row the identity map does not know yet (never a blank tile) */
 const FALLBACK_TINT = "#9aa3b5";
+
+/** the identity signal of each family app (one color per tile, the tile
+ * chrome itself stays neutral graphite — the campaign doctrine). Every
+ * family row resolves through the one spec-12 accent table the identity
+ * battery pins (familyAccentOf), so the launch deck can never drift from
+ * the family accents; the os-only row (cobaia) keeps its local tint through
+ * the fallback. */
+const FAMILY_TINT: Record<string, string> = {
+  argan: familyAccentOf("argan", FALLBACK_TINT),
+  cadria: familyAccentOf("cadria", FALLBACK_TINT),
+  cobaia: familyAccentOf("cobaia", "#4fb3c6"),
+  debonair: familyAccentOf("debonair", FALLBACK_TINT),
+  stealthhead: familyAccentOf("stealthhead", FALLBACK_TINT),
+  forge: familyAccentOf("forge", FALLBACK_TINT),
+  foundry: familyAccentOf("foundry", FALLBACK_TINT),
+  vault: familyAccentOf("vault", FALLBACK_TINT),
+  getry: familyAccentOf("getry", FALLBACK_TINT),
+  saddle: familyAccentOf("saddle", FALLBACK_TINT) };
 
 /** the inline animation-delay of one repeating mark part (negative, the
  * ambient loops start mid-story so the constellation never pulses in sync) */
