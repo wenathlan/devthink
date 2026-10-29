@@ -1,9 +1,8 @@
 /** Builds browser and library targets with no remote runtime dependencies. */
 import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdir, readdir, readFile, rm, stat, symlink, writeFile } from "node:fs/promises";
-import { existsSync } from "node:fs";
-import { join, relative } from "node:path";
+import { mkdir, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
+import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 import { build } from "esbuild";
@@ -18,7 +17,6 @@ import {
   formsurveyworkflow,
   releasenotesplan,
 } from "./tests/fixtureset.ts";
-import { bunshellexample, denoshellexample, mcpclientexample } from "./tests/codefixtures.ts";
 import { importersamples } from "./tests/importerfixtures.ts";
 import { fixturepages, umdexample } from "./tests/pagefixtures.ts";
 import { gallery as gallerytext, recipeplans } from "./tests/recipesfixtures.ts";
@@ -183,26 +181,6 @@ for (const modulename of ["policy", "protocol", "memory", "progress", "hardening
    PrismaClient the generated .prisma/client tree declares, and a fresh install carries the
    stub until the generate step runs (the gateway lineage's build always generated first). */
 await execute(process.execPath, [join(root, "node_modules", "prisma", "build", "index.js"), "generate"], { cwd: root });
-
-/* the ownership bridge of the thinking ladder: the getry engine owns the 7-level ladder and
-   the os consumes it as a library — the declaration emit reads the owner's committed public
-   types (getry/thinking.d.ts, the declaration surface the path table of the build config
-   carries, so the owner source never enters the program and the emit stays flat), while the
-   runtime resolves the specifier through this node_modules link the same way the flat gate
-   tree resolves its packages through the application node_modules (the tests village folded
-   the gates and the suite into the application tree, so the ci link the former root tests
-   folder carried retired with it): the dev servers the suites spawn and every tsx entry
-   import the owner source directly, and the esbuild lanes keep inlining the ladder through
-   the getrybridge alias — the link is the dev-time answer alone, never a committed
-   dependency, so the lockfile never changes. */
-{
-  const ownerlink = join(root, "node_modules", "@wenathlan", "getry");
-  if (!existsSync(ownerlink)) {
-    await mkdir(join(root, "node_modules", "@wenathlan"), { recursive: true });
-    const ownerpath = relative(join(root, "node_modules", "@wenathlan"), join(root, "..", "getry"));
-    await symlink(ownerpath, ownerlink, "dir");
-  }
-}
 await execute(process.execPath, [await resolveTsc(), "-p", "tsconfig.build.json"]);
 
 /** The terminal and headless entries of the 1.1.80 family keep their own dist targets beside the library modes, with the minified variants and the version banner riding the same accounting; the mcp server bundle of the 1.1.84 family serves the model context protocol surface of the serve mode as its own tree shakable entry, and the native bundles of the 1.1.85 family ship beside them: the wsbridge module bundle and the companion script the plain node recipe stamps from the companion sources. */
@@ -426,6 +404,20 @@ for (const surface of capsurfaces) {
     );
   await writeFile(record(`caps/${surface}.json`), `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
 }
+/* the flat typed folder law keeps the corpus fixtures out of the application
+ * sources in the app tests/ folder (the code.* rows), so the
+ * three typescript example fixtures answer from the tests folder through
+ * the same disk-read loop — the fixture names map to their flat rows and
+ * the published targets never change. */
+const codefixturedirectory = join(root, "tests");
+/** the flat source name of one disk-read fixture (the code. prefix
+ * the tests village gave the former corpus files). */
+const flatfixturesource = {
+  "mcp.client.ts": "code.mcp.client.ts",
+  "bun.ts": "code.bun.ts",
+  "deno.ts": "code.deno.ts",
+} as const;
+const fixturesetsource = (source: string) => flatfixturesource[source as keyof typeof flatfixturesource] ?? source;
 const frozenschematexts = frozenschemas as Record<string, string>;
 const schemefiles = Object.keys(frozenschematexts).sort();
 if (schemefiles.length !== 10)
@@ -435,12 +427,9 @@ if (schemefiles.length !== 10)
 await mkdir(join(root, "dist", "schemas"), { recursive: true });
 for (const name of schemefiles)
   await writeFile(record(`schemas/${name}.schema.json`), frozenschematexts[name], "utf8");
-/** The fixture text table of the typescript fixture modules keyed by the original tests/code source names: every fixture of the former corpus answers from its family module (the example fixture set, the importer samples, the recipe plans with the gallery index, the fixture pages with the umd example and the three typescript example scripts — the mcp client, the bun shell and the deno shell — of the code fixture module), so the fixtureset rows below keep their source names while every text comes from the modules; the flat typed folder law dissolved the tests/code directory, so a fixture the table misses answers an explicit error instead of a read from a retired path. */
+/** The fixture text table of the typescript fixture modules keyed by the original tests/code source names: every json, csv and html fixture of the former corpus answers from its family module (the example fixture set, the importer samples, the recipe plans with the gallery index, the fixture pages with the umd example), so the fixtureset rows below keep their source names while the texts come from the modules; the three typescript example fixtures (the mcp client, the bun shell and the deno shell) ride the flat tests folder of the application (the code. prefix rows) — the loop reads them from disk through the fixturesetsource map. */
 const modulefixtures: Record<string, string> = {
   "example-org-pagestate.json": exampleorgpagestate,
-  "mcp.client.ts": mcpclientexample,
-  "bun.ts": bunshellexample,
-  "deno.ts": denoshellexample,
   "cjs.js": cjssample,
   "form-inventory-plan.json": forminventoryplan,
   "release-notes-plan.json": releasenotesplan,
@@ -516,11 +505,8 @@ await mkdir(join(root, "dist", "fixtures", "recipes"), { recursive: true });
 await mkdir(join(root, "dist", "fixtures", "pages"), { recursive: true });
 for (const fixture of fixtureset) {
   const text = modulefixtures[fixture.source];
-  if (text === undefined)
-    throw new Error(
-      `The fixture ${fixture.source} answers no module of the flat typed folder; every fixture text lives in a typescript fixture module, so the missing row fails the build instead of reading a retired tests/code path.`,
-    );
-  await writeFile(record(fixture.target), text, "utf8");
+  if (text !== undefined) await writeFile(record(fixture.target), text, "utf8");
+  else await writeFile(record(fixture.target), await readFile(join(codefixturedirectory, fixturesetsource(fixture.source))), "utf8");
 }
 const umdexampletext = umdexample;
 const umdexamplestamped = `<!-- devthink ${packagejson.version} umd example page — GPL-3.0-only -->\n${umdexampletext.replace("../../dist/devthink.umd.js", "./devthink.umd.js")}`;

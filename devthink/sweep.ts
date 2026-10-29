@@ -1,15 +1,23 @@
-/** Sweeps the recorded failures and the source defect classes of the release candidate: the gate collects every failed outcome the committed records of the gate chain carry since the 1.1.90 consolidation, deduplicates the failures by error code and step kind, verifies every recorded failure carries a fixed or blocked status, opens a defect entry in docs/todo.md for every unfixed failure and replays every reproducible failed step against its fixture — then the sweep scans the typescript sources for the defect classes the release candidates refuse to ship: todo markers without an owner and a target release, silent catch blocks that swallow errors without surfacing them to the envelope, unbounded loops without a user bound, hardcoded origins outside the reviewed deep link catalog, secret material in the bundle and platform deprecated api usage. The runtime checks exercise the compiled modules: the settings toggles round trip through their readers, the cancel paths stop a queued run without touching the sealed log and the escape hatch stops every agent at once. Every finding records its fix or its written blocker, the committed record devthink/sweep.ts (the sweeprecord const this module carries, migrated from devthink/artifacts/sweep.json when the flat folder law dissolved the artifacts folder) preserves the report with no timestamps so reruns stay byte identical, and the gate exits nonzero while a blocker remains open. The sync mode (`node sweep.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
+<<<<<<< HEAD:tests/devthink.sweep.ts
+/** Sweeps the recorded failures and the source defect classes of the release candidate: the gate collects every failed outcome the committed records of the gate chain carry since the 1.1.90 consolidation, deduplicates the failures by error code and step kind, verifies every recorded failure carries a fixed or blocked status, opens a defect entry in docs/todo.md for every unfixed failure and replays every reproducible failed step against its fixture — then the sweep scans the typescript sources for the defect classes the release candidates refuse to ship: todo markers without an owner and a target release, silent catch blocks that swallow errors without surfacing them to the envelope, unbounded loops without a user bound, hardcoded origins outside the reviewed deep link catalog, secret material in the bundle and platform deprecated api usage. The runtime checks exercise the compiled modules: the settings toggles round trip through their readers, the cancel paths stop a queued run without touching the sealed log and the escape hatch stops every agent at once. Every finding records its fix or its written blocker, the committed record tests/devthink.sweep.ts (the sweeprecord const this module carries, migrated from devthink/artifacts/sweep.json when the flat folder law dissolved the artifacts folder) preserves the report with no timestamps so reruns stay byte identical, and the gate exits nonzero while a blocker remains open. The sync mode (`node ../tests/devthink.sweep.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
+=======
+/** Sweeps the recorded failures and the source defect classes of the release candidate: the gate collects every failed outcome the audit trails under tests/artifacts recorded since the 1.1.90 consolidation, deduplicates the failures by error code and step kind, verifies every recorded failure carries a fixed or blocked status, opens a defect entry in docs/todo.md for every unfixed failure and replays every reproducible failed step against its fixture — then the sweep scans the typescript sources for the defect classes the release candidates refuse to ship: todo markers without an owner and a target release, silent catch blocks that swallow errors without surfacing them to the envelope, unbounded loops without a user bound, hardcoded origins outside the reviewed deep link catalog, secret material in the bundle and platform deprecated api usage. The runtime checks exercise the compiled modules: the settings toggles round trip through their readers, the cancel paths stop a queued run without touching the sealed log and the escape hatch stops every agent at once. Every finding records its fix or its written blocker, the report lands in artifacts/sweep.json with no timestamps so reruns stay byte identical, and the gate exits nonzero while a blocker remains open. */
+>>>>>>> cfc383ca (fix(family): the tests village answers the application law — every suite folds into its own app home, the gates ride the app roots unprefixed, the workflows drop the symlink bridges, and the one root envelope keeps only the eleven villages (#171)):devthink/sweep.ts
 import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
-import { summaryproblemsof, syncmode, syncrecord } from "./records.ts";
-import { agentcertrecord } from "./agentcert.ts";
-import { costcertrecord } from "./costcert.ts";
-import { doccheckrecord } from "./doccheck.ts";
-import { pentestrecord } from "./pentest.ts";
-import { reviewedorigins } from "./tests/reviewedorigins.ts";
+<<<<<<< HEAD:tests/devthink.sweep.ts
+import { summaryproblemsof, syncmode, syncrecord } from "./devthink.records.ts";
+import { agentcertrecord } from "./devthink.agentcert.ts";
+import { costcertrecord } from "./devthink.costcert.ts";
+import { doccheckrecord } from "./devthink.doccheck.ts";
+import { pentestrecord } from "./devthink.pentest.ts";
+import { reviewedorigins } from "./devthink.reviewedorigins.ts";
+import type { agentrecord } from "../devthink/types.ts";
+=======
 import type { agentrecord } from "./types.ts";
+>>>>>>> cfc383ca (fix(family): the tests village answers the application law — every suite folds into its own app home, the gates ride the app roots unprefixed, the workflows drop the symlink bridges, and the one root envelope keeps only the eleven villages (#171)):devthink/sweep.ts
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
@@ -49,7 +57,7 @@ export async function runsweepsuite() {
   }> = [
     {
       record: agentcertrecord,
-      module: "devthink/agentcert.ts",
+      module: "tests/devthink.agentcert.ts",
       failuresof: (report) => {
         const typed = report as { entries: trailrow[] };
         return (typed.entries ?? [])
@@ -59,7 +67,7 @@ export async function runsweepsuite() {
     },
     {
       record: costcertrecord,
-      module: "devthink/costcert.ts",
+      module: "tests/devthink.costcert.ts",
       failuresof: (report) => {
         const typed = report as { checks?: trailrow[] };
         return (typed.checks ?? [])
@@ -69,7 +77,7 @@ export async function runsweepsuite() {
     },
     {
       record: doccheckrecord,
-      module: "devthink/doccheck.ts",
+      module: "tests/devthink.doccheck.ts",
       failuresof: (report) => {
         const typed = report as { checks?: trailrow[] };
         return (typed.checks ?? [])
@@ -79,7 +87,7 @@ export async function runsweepsuite() {
     },
     {
       record: pentestrecord,
-      module: "devthink/pentest.ts",
+      module: "tests/devthink.pentest.ts",
       failuresof: (report) => {
         const typed = report as { entries?: trailrow[]; checks?: trailrow[] };
         return (typed.entries ?? typed.checks ?? [])
@@ -255,7 +263,7 @@ export async function runsweepsuite() {
   const commandstext = await readFile("commands.ts", "utf8");
   const catalogorigins = [...commandstext.matchAll(/origin:\s*"https:\/\/([a-z0-9.-]+)"/g)].map((match) => match[1]);
   const reservedsuffixes = [".example", ".invalid", ".test", ".localhost"];
-  /* the reviewed provider endpoint catalog of the merged lineages reads its data module (devthink/tests/reviewedorigins.ts, migrated from devthink/artifacts/reviewedorigins.json when the flat folder law dissolved the artifacts folder) so the reviewed origins stay data rows, never code literals — the same doctrine the gateway api coverage table carries. */
+  /* the reviewed provider endpoint catalog of the merged lineages reads its data module (tests/devthink.reviewedorigins.ts, migrated from devthink/artifacts/reviewedorigins.json when the flat folder law dissolved the artifacts folder) so the reviewed origins stay data rows, never code literals — the same doctrine the gateway api coverage table carries. */
   const reviewedoriginhosts = reviewedorigins.origins;
   const allowlist = [
     "example.com",
@@ -567,10 +575,10 @@ export interface sweepreport {
 export const sweeprecord: sweepreport = {
   "release": "2.0.151",
   "trails": [
-    "devthink/agentcert.ts",
-    "devthink/costcert.ts",
-    "devthink/doccheck.ts",
-    "devthink/pentest.ts"
+    "tests/devthink.agentcert.ts",
+    "tests/devthink.costcert.ts",
+    "tests/devthink.doccheck.ts",
+    "tests/devthink.pentest.ts"
   ],
   "recordedfailures": 0,
   "uniquefailures": 0,
@@ -702,7 +710,7 @@ if (invokeddirectly) {
       ...(sweeprecord.summary.open !== 0 ? ["the record carries open blockers a green run never records"] : []),
     ];
     for (const problem of problems) console.error(`SWEEP record: ${problem}`);
-    console.log(JSON.stringify({ release: report.release, record: "devthink/sweep.ts", ...report.summary }, null, 2));
+    console.log(JSON.stringify({ release: report.release, record: "tests/devthink.sweep.ts", ...report.summary }, null, 2));
     if (problems.length > 0) process.exitCode = 1;
   }
   if (report.summary.open > 0) process.exitCode = 1;

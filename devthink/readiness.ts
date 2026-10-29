@@ -1,4 +1,4 @@
-/** Runs the release readiness review of the platform release line: the gate walks every release gate of the chain against the committed evidence records of the candidate lanes (the pool audit, the sweep, the matrix, the pentest, the doc check, the agent and cost certifications, the recipes runner, the telemetry free verification, the permission diff and the api freeze — every record a typed const inside its own gate module, the flat folder law that dissolved the devthink/artifacts folder of the application first layer), verifies the source level guarantees the records cannot carry (the closed deprecation window, the migrateplan bridge over every importer fixture with its committed conversion records, the changelog chain, the transparency coverage, the budget gates), walks the 2.0.2 final polish gates beside them (the soak run, the wcag accessibility sweep and the store package icon family), records the verdict of every gate with its evidence link into the committed record readiness.ts (the readinessrecord const this module carries, migrated from devthink/artifacts/readiness.json when the flat folder law dissolved the artifacts folder), writes the go decision review into docs/readiness.md and exits nonzero when any gate blocks the go decision. The gate answers the readiness review the release candidate two section of the roadmap promises, the 2.0.0 closing audit carries forward and the 2.0.2 final polish extends; the sync mode (`node readiness.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
+/** Runs the release readiness review of the platform release line: the gate walks every release gate of the chain against the committed evidence records of the candidate lanes (the pool audit, the sweep, the matrix, the pentest, the doc check, the agent and cost certifications, the recipes runner, the telemetry free verification, the permission diff and the api freeze — every record a typed const inside its own gate module, the flat folder law that dissolved the devthink/artifacts folder of the application first layer), verifies the source level guarantees the records cannot carry (the closed deprecation window, the migrateplan bridge over every importer fixture with its committed conversion records, the changelog chain, the transparency coverage, the budget gates), walks the 2.0.2 final polish gates beside them (the soak run, the wcag accessibility sweep and the store package icon family), records the verdict of every gate with its evidence link into the committed record tests/devthink.readiness.ts (the readinessrecord const this module carries, migrated from devthink/artifacts/readiness.json when the flat folder law dissolved the artifacts folder), writes the go decision review into docs/readiness.md and exits nonzero when any gate blocks the go decision. The gate answers the readiness review the release candidate two section of the roadmap promises, the 2.0.0 closing audit carries forward and the 2.0.2 final polish extends; the sync mode (`node ../tests/devthink.readiness.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
 import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
@@ -7,26 +7,32 @@ import { createHash } from "node:crypto";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
+<<<<<<< HEAD:tests/devthink.readiness.ts
+import { apifreezebaseline } from "./devthink.freezebaseline.ts";
+import { permdiffbaseline } from "./devthink.permbaseline.ts";
+import { frozenschemas } from "./devthink.schemafixtures.ts";
+import { syncmode, syncrecord } from "./devthink.records.ts";
+import { agentcertrecord } from "./devthink.agentcert.ts";
+import { costcertrecord } from "./devthink.costcert.ts";
+import { doccheckrecord } from "./devthink.doccheck.ts";
+import { matrixverifyrecord } from "./devthink.matrixverify.ts";
+import { pentestrecord } from "./devthink.pentest.ts";
+import { poolcoveragerecord } from "./devthink.poolaudit.ts";
+import { reciperecord } from "./devthink.recipes.ts";
+import { soakrecord } from "./devthink.soak.ts";
+import { sweeprecord } from "./devthink.sweep.ts";
+import { telemetryfreerecord } from "./devthink.telemetryfree.ts";
+import { wcagrecord } from "./devthink.wcag.ts";
+import { readinessmigrateautoma } from "./devthink.readiness.automa.ts";
+import { readinessmigrateselenium } from "./devthink.readiness.selenium.ts";
+import { readinessmigratetabular } from "./devthink.readiness.tabular.ts";
+import { readinessmigrateuivision } from "./devthink.readiness.uivision.ts";
+import { readinessmigratev1 } from "./devthink.readiness.v1.ts";
+=======
 import { apifreezebaseline } from "./tests/freezebaseline.ts";
 import { permdiffbaseline } from "./tests/permbaseline.ts";
 import { frozenschemas } from "./tests/schemafixtures.ts";
-import { syncmode, syncrecord } from "./records.ts";
-import { agentcertrecord } from "./agentcert.ts";
-import { costcertrecord } from "./costcert.ts";
-import { doccheckrecord } from "./doccheck.ts";
-import { matrixverifyrecord } from "./matrixverify.ts";
-import { pentestrecord } from "./pentest.ts";
-import { poolcoveragerecord } from "./poolaudit.ts";
-import { reciperecord } from "./recipes.ts";
-import { soakrecord } from "./soak.ts";
-import { sweeprecord } from "./sweep.ts";
-import { telemetryfreerecord } from "./telemetryfree.ts";
-import { wcagrecord } from "./wcag.ts";
-import { readinessmigrateautoma } from "./tests/readiness.automa.ts";
-import { readinessmigrateselenium } from "./tests/readiness.selenium.ts";
-import { readinessmigratetabular } from "./tests/readiness.tabular.ts";
-import { readinessmigrateuivision } from "./tests/readiness.uivision.ts";
-import { readinessmigratev1 } from "./tests/readiness.v1.ts";
+>>>>>>> cfc383ca (fix(family): the tests village answers the application law — every suite folds into its own app home, the gates ride the app roots unprefixed, the workflows drop the symlink bridges, and the one root envelope keeps only the eleven villages (#171)):devthink/readiness.ts
 
 const execute = promisify(execFile);
 const repoRoot = resolve(process.cwd(), "..");
@@ -150,7 +156,7 @@ async function migrateplanbridge() {
         const committed = migratecommitted[format];
         const drifted = JSON.stringify({ goal: fresh.goal, origin: fresh.origin, steps: fresh.steps }) !== JSON.stringify({ goal: committed.goal, origin: committed.origin, steps: committed.steps });
         if (drifted)
-          failures.push(`${fixture} drifted from the committed conversion record tests/readiness.${format}.ts`);
+          failures.push(`${fixture} drifted from the committed conversion record tests/devthink.readiness.${format}.ts`);
       } catch (error) {
         failures.push(`${fixture} refused the conversion: ${error instanceof Error ? error.message : String(error)}`);
       }
@@ -188,7 +194,7 @@ export async function runreadinesssuite() {
     verdicts,
     "the pool audit reports full disposition of every mined item",
     pool.pool.unknown === 0 && pool.summary.failed === 0,
-    `poolaudit.ts: ${pool.pool.total} items, ${pool.pool.implemented} implemented, ${pool.pool.planned} planned with written reasons, ${pool.pool.unknown} unknown`,
+    `tests/devthink.poolaudit.ts: ${pool.pool.total} items, ${pool.pool.implemented} implemented, ${pool.pool.planned} planned with written reasons, ${pool.pool.unknown} unknown`,
   );
   gate(
     verdicts,
@@ -213,20 +219,30 @@ export async function runreadinesssuite() {
   gate(
     verdicts,
     "the cold start and budget gates hold their recorded budgets",
+<<<<<<< HEAD:tests/devthink.readiness.ts
+    existsSync("docs/perfbudgets.md") && existsSync("../tests/devthink.stepmeter.test.ts") && existsSync("../tests/devthink.runbudget.test.ts"),
+    "docs/perfbudgets.md carries the startup and memory budgets while tests/devthink.stepmeter.test.ts and tests/devthink.runbudget.test.ts verify the cold start and the memory budget enforcement gates",
+=======
     existsSync("docs/perfbudgets.md") && existsSync("tests/stepmeter.test.ts") && existsSync("tests/runbudget.test.ts"),
     "docs/perfbudgets.md carries the startup and memory budgets while tests/stepmeter.test.ts and tests/runbudget.test.ts verify the cold start and the memory budget enforcement gates",
+>>>>>>> cfc383ca (fix(family): the tests village answers the application law — every suite folds into its own app home, the gates ride the app roots unprefixed, the workflows drop the symlink bridges, and the one root envelope keeps only the eleven villages (#171)):devthink/readiness.ts
   );
   gate(
     verdicts,
     "the battery aware and network aware gates hold their tests",
+<<<<<<< HEAD:tests/devthink.readiness.ts
+    existsSync("../tests/devthink.resourceaware.test.ts"),
+    "tests/devthink.resourceaware.test.ts carries the battery aware and network aware gate families the readiness review reads",
+=======
     existsSync("tests/resourceaware.test.ts"),
     "tests/resourceaware.test.ts carries the battery aware and network aware gate families the readiness review reads",
+>>>>>>> cfc383ca (fix(family): the tests village answers the application law — every suite folds into its own app home, the gates ride the app roots unprefixed, the workflows drop the symlink bridges, and the one root envelope keeps only the eleven villages (#171)):devthink/readiness.ts
   );
   gate(
     verdicts,
     "the pentest checklist holds zero failed entries",
     pentest.summary.failed === 0,
-    `pentest.ts: ${pentest.summary.total} entries, ${pentest.summary.failed} failed`,
+    `tests/devthink.pentest.ts: ${pentest.summary.total} entries, ${pentest.summary.failed} failed`,
   );
   const manifest = JSON.parse(await readFile("manifest.json", "utf8"));
   const csppolicies = [...Object.values(manifest.content_security_policy ?? {})].map((value) => String(value));
@@ -262,43 +278,43 @@ export async function runreadinesssuite() {
     verdicts,
     "the agent certification covers every coordination scenario",
     agentcert.summary.failed === 0,
-    `agentcert.ts: ${agentcert.summary.total} scenarios, ${agentcert.summary.failed} failed`,
+    `tests/devthink.agentcert.ts: ${agentcert.summary.total} scenarios, ${agentcert.summary.failed} failed`,
   );
   gate(
     verdicts,
     "the cost certification reconciles every recorded run",
     costcert.summary.failed === 0,
-    `costcert.ts: ${costcert.summary.total} reconciliations, ${costcert.summary.failed} failed`,
+    `tests/devthink.costcert.ts: ${costcert.summary.total} reconciliations, ${costcert.summary.failed} failed`,
   );
   gate(
     verdicts,
     "the doc check reports zero doc gaps",
     doccheck.summary.failed === 0,
-    `doccheck.ts: ${doccheck.summary.total} families green`,
+    `tests/devthink.doccheck.ts: ${doccheck.summary.total} families green`,
   );
   gate(
     verdicts,
     "the recipes runner keeps every gallery entry green",
     recipes.summary.failed === 0,
-    `recipes.ts: ${recipes.summary.entries} recipes, ${recipes.summary.failed} failed, ${recipes.summary.checksok} of ${recipes.summary.checks} checks`,
+    `tests/devthink.recipes.ts: ${recipes.summary.entries} recipes, ${recipes.summary.failed} failed, ${recipes.summary.checksok} of ${recipes.summary.checks} checks`,
   );
   gate(
     verdicts,
     "the sweep artifact holds no open blockers",
     sweep.summary.open === 0,
-    `sweep.ts: ${sweep.summary.fixed} of ${sweep.summary.total} findings fixed, ${sweep.summary.open} open`,
+    `tests/devthink.sweep.ts: ${sweep.summary.fixed} of ${sweep.summary.total} findings fixed, ${sweep.summary.open} open`,
   );
   gate(
     verdicts,
     "the verification matrix covers every declared cell",
     matrix.summary.failed === 0,
-    `matrixverify.ts: ${matrix.summary.total} cells, ${matrix.summary.failed} failed`,
+    `tests/devthink.matrixverify.ts: ${matrix.summary.total} cells, ${matrix.summary.failed} failed`,
   );
   gate(
     verdicts,
     "the telemetry free evidence covers the full candidate",
     telemetry.summary.failed === 0 && telemetry.summary.outbound === 0,
-    `telemetryfree.ts: ${telemetry.summary.total} bundles verified with ${telemetry.summary.outbound} outbound attempts behind the block all proxy`,
+    `tests/devthink.telemetryfree.ts: ${telemetry.summary.total} bundles verified with ${telemetry.summary.outbound} outbound attempts behind the block all proxy`,
   );
   const chain = await changelogchain();
   gate(verdicts, "the changelog covers every version from 1.1.31", chain.ok, chain.evidence);
@@ -384,13 +400,13 @@ export async function runreadinesssuite() {
     verdicts,
     "the soak run keeps a long workflow alive across the retention window without drift",
     soakrecord.summary.failed === 0,
-    `soak.ts: ${soakrecord.summary.total} soak entries, ${soakrecord.summary.failed} failed, the long workflow stayed alive with byte identical resume and a sealed audit hash across two full runs`,
+    `tests/devthink.soak.ts: ${soakrecord.summary.total} soak entries, ${soakrecord.summary.failed} failed, the long workflow stayed alive with byte identical resume and a sealed audit hash across two full runs`,
   );
   gate(
     verdicts,
     "the wcag accessibility sweep audits every ui surface green",
     wcagrecord.summary.failed === 0,
-    `wcag.ts: ${wcagrecord.summary.total} wcag checklist entries over every surface, ${wcagrecord.summary.failed} failed`,
+    `tests/devthink.wcag.ts: ${wcagrecord.summary.total} wcag checklist entries over every surface, ${wcagrecord.summary.failed} failed`,
   );
   gate(
     verdicts,
@@ -422,7 +438,7 @@ export async function runreadinesssuite() {
       .join("\n");
     const document = `# Release readiness review
 
-The readiness gate of the ${release} platform release walked every release gate of the chain against the committed evidence the candidate lanes recorded. The gate reads the pool audit, the sweep, the verification matrix, the pentest checklist, the doc check, the agent and cost certifications, the recipes runner, the telemetry free verification, the permission diff and the api freeze record — every evidence a committed record const inside its own gate module — verifies the source level guarantees the records cannot carry and answers the go decision below. The runner lives in \`readiness.ts\`, the verdict record in \`readiness.ts\` (the readinessrecord const) and the entry joins the verification lane as the final gate of the release.
+The readiness gate of the ${release} platform release walked every release gate of the chain against the committed evidence the candidate lanes recorded. The gate reads the pool audit, the sweep, the verification matrix, the pentest checklist, the doc check, the agent and cost certifications, the recipes runner, the telemetry free verification, the permission diff and the api freeze record — every evidence a committed record const inside its own gate module of the tests folder — verifies the source level guarantees the records cannot carry and answers the go decision below. The runner lives in \`tests/devthink.readiness.ts\`, the verdict record in \`tests/devthink.readiness.ts\` (the readinessrecord const) and the entry joins the verification lane as the final gate of the release.
 
 ## The gate table
 
@@ -458,7 +474,7 @@ The readiness gate answers **${report.godecision === "go" ? "go" : "no-go"}** fo
     return report;
   }
   console.log(
-    `Readiness review of ${release}: ${summary.ok} of ${summary.gates} gates green, ${summary.blocked} blocked, go decision ${report.godecision}, record readiness.ts and review ${readinesstocument}.`,
+    `Readiness review of ${release}: ${summary.ok} of ${summary.gates} gates green, ${summary.blocked} blocked, go decision ${report.godecision}, record tests/devthink.readiness.ts and review ${readinesstocument}.`,
   );
   if (summary.blocked > 0) process.exitCode = 1;
   return report;
@@ -480,7 +496,7 @@ export const readinessrecord: readinessreport = {
     {
       "gate": "the pool audit reports full disposition of every mined item",
       "ok": true,
-      "evidence": "poolaudit.ts: 626 items, 623 implemented, 3 planned with written reasons, 0 unknown"
+      "evidence": "tests/devthink.poolaudit.ts: 626 items, 623 implemented, 3 planned with written reasons, 0 unknown"
     },
     {
       "gate": "the api freeze schemas stayed hash stable since 1.1.91",
@@ -505,17 +521,17 @@ export const readinessrecord: readinessreport = {
     {
       "gate": "the cold start and budget gates hold their recorded budgets",
       "ok": true,
-      "evidence": "docs/perfbudgets.md carries the startup and memory budgets while tests/stepmeter.test.ts and tests/runbudget.test.ts verify the cold start and the memory budget enforcement gates"
+      "evidence": "docs/perfbudgets.md carries the startup and memory budgets while tests/devthink.stepmeter.test.ts and tests/devthink.runbudget.test.ts verify the cold start and the memory budget enforcement gates"
     },
     {
       "gate": "the battery aware and network aware gates hold their tests",
       "ok": true,
-      "evidence": "tests/resourceaware.test.ts carries the battery aware and network aware gate families the readiness review reads"
+      "evidence": "tests/devthink.resourceaware.test.ts carries the battery aware and network aware gate families the readiness review reads"
     },
     {
       "gate": "the pentest checklist holds zero failed entries",
       "ok": true,
-      "evidence": "pentest.ts: 21 entries, 0 failed"
+      "evidence": "tests/devthink.pentest.ts: 21 entries, 0 failed"
     },
     {
       "gate": "the csp audit reports no wildcard policies",
@@ -535,37 +551,37 @@ export const readinessrecord: readinessreport = {
     {
       "gate": "the agent certification covers every coordination scenario",
       "ok": true,
-      "evidence": "agentcert.ts: 30 scenarios, 0 failed"
+      "evidence": "tests/devthink.agentcert.ts: 30 scenarios, 0 failed"
     },
     {
       "gate": "the cost certification reconciles every recorded run",
       "ok": true,
-      "evidence": "costcert.ts: 9 reconciliations, 0 failed"
+      "evidence": "tests/devthink.costcert.ts: 9 reconciliations, 0 failed"
     },
     {
       "gate": "the doc check reports zero doc gaps",
       "ok": true,
-      "evidence": "doccheck.ts: 10 families green"
+      "evidence": "tests/devthink.doccheck.ts: 10 families green"
     },
     {
       "gate": "the recipes runner keeps every gallery entry green",
       "ok": true,
-      "evidence": "recipes.ts: 36 recipes, 0 failed, 19 of 19 checks"
+      "evidence": "tests/devthink.recipes.ts: 36 recipes, 0 failed, 19 of 19 checks"
     },
     {
       "gate": "the sweep artifact holds no open blockers",
       "ok": true,
-      "evidence": "sweep.ts: 16 of 16 findings fixed, 0 open"
+      "evidence": "tests/devthink.sweep.ts: 16 of 16 findings fixed, 0 open"
     },
     {
       "gate": "the verification matrix covers every declared cell",
       "ok": true,
-      "evidence": "matrixverify.ts: 18 cells, 0 failed"
+      "evidence": "tests/devthink.matrixverify.ts: 18 cells, 0 failed"
     },
     {
       "gate": "the telemetry free evidence covers the full candidate",
       "ok": true,
-      "evidence": "telemetryfree.ts: 5 bundles verified with 0 outbound attempts behind the block all proxy"
+      "evidence": "tests/devthink.telemetryfree.ts: 5 bundles verified with 0 outbound attempts behind the block all proxy"
     },
     {
       "gate": "the changelog covers every version from 1.1.31",
@@ -600,12 +616,12 @@ export const readinessrecord: readinessreport = {
     {
       "gate": "the soak run keeps a long workflow alive across the retention window without drift",
       "ok": true,
-      "evidence": "soak.ts: 9 soak entries, 0 failed, the long workflow stayed alive with byte identical resume and a sealed audit hash across two full runs"
+      "evidence": "tests/devthink.soak.ts: 9 soak entries, 0 failed, the long workflow stayed alive with byte identical resume and a sealed audit hash across two full runs"
     },
     {
       "gate": "the wcag accessibility sweep audits every ui surface green",
       "ok": true,
-      "evidence": "wcag.ts: 10 wcag checklist entries over every surface, 0 failed"
+      "evidence": "tests/devthink.wcag.ts: 10 wcag checklist entries over every surface, 0 failed"
     },
     {
       "gate": "the store package carries the icon family at every required size",

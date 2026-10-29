@@ -1,8 +1,12 @@
-/** Executes the shared accounting certification of the 1.1.96 multi agent certification release against the real compiled modules: every check replays one recorded run or one live accounting family and recomputes the cost lines from the recorded evidence — the per agent token accounting against the step logs, the shared cost accounting against the agent totals, the budget alerts at their thresholds, the refunds of cancelled steps under the provider rule that bills only the chunks that left the wire, the model routing attribution, the exported cost report reconciliation and the audit trail completeness. The committed record costcert.ts (the costcertrecord const this module carries, migrated from devthink/artifacts/costcert.json when the flat folder law dissolved the artifacts folder) records every executed check with its outcome in a fixed order with no timestamps so reruns stay byte identical, and the gate exits nonzero on any accounting mismatch. The verification method lives in docs/costcert.md. The sync mode (`node costcert.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
+/** Executes the shared accounting certification of the 1.1.96 multi agent certification release against the real compiled modules: every check replays one recorded run or one live accounting family and recomputes the cost lines from the recorded evidence — the per agent token accounting against the step logs, the shared cost accounting against the agent totals, the budget alerts at their thresholds, the refunds of cancelled steps under the provider rule that bills only the chunks that left the wire, the model routing attribution, the exported cost report reconciliation and the audit trail completeness. The committed record tests/devthink.costcert.ts (the costcertrecord const this module carries, migrated from devthink/artifacts/costcert.json when the flat folder law dissolved the artifacts folder) records every executed check with its outcome in a fixed order with no timestamps so reruns stay byte identical, and the gate exits nonzero on any accounting mismatch. The verification method lives in docs/costcert.md. The sync mode (`node ../tests/devthink.costcert.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
 import { readFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
-import { summaryproblemsof, syncmode, syncrecord } from "./records.ts";
+<<<<<<< HEAD:tests/devthink.costcert.ts
+import { summaryproblemsof, syncmode, syncrecord } from "./devthink.records.ts";
+import type { callcontext, providerconfig } from "../devthink/types.ts";
+=======
 import type { callcontext, providerconfig } from "./types.ts";
+>>>>>>> cfc383ca (fix(family): the tests village answers the application law — every suite folds into its own app home, the gates ride the app roots unprefixed, the workflows drop the symlink bridges, and the one root envelope keeps only the eleven villages (#171)):devthink/costcert.ts
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
@@ -826,7 +830,7 @@ if (invokeddirectly) {
       ...(passing !== costcertrecord.summary.passed ? ["the recorded passing entries disagree with the recorded passed count"] : []),
     ];
     for (const problem of problems) console.error(`COSTCERT record: ${problem}`);
-    console.log(JSON.stringify({ release: report.release, record: "costcert.ts", ...report.summary }, null, 2));
+    console.log(JSON.stringify({ release: report.release, record: "tests/devthink.costcert.ts", ...report.summary }, null, 2));
     if (problems.length > 0) process.exitCode = 1;
   }
   if (report.summary.failed > 0) process.exitCode = 1;
