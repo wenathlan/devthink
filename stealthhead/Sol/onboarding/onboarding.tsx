@@ -23,7 +23,7 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { type LabelKey, label } from "../../labels";
 import { markOnboardingStage } from "../../onboardingstate.ts";
-import { BrandMark } from "../widgets";
+import { BrandMark } from "../wingets";
 import { START_APPS } from "../shell/Shell.tsx";
 
 /** the three frames of the first run, in order — the copy rides the store

@@ -121,7 +121,7 @@ jobs:
         # built surface): the scripts stay off so the frozen install never
         # rides the prebuild mirror or the broken bunx node-gyp fallback
         # the flaky lanes hit — the prisma client the validation reads
-        # generates inside tests/build.ts itself.
+        # generates inside ../testes/devthink.build.ts itself.
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: Propose latest non-breaking direct npm dependency updates
         if: steps.window.outputs.active == 'true'
@@ -217,7 +217,7 @@ jobs:
         run: |
           set -euo pipefail
           cd devthink
-          node tests/build.ts
+          node ../testes/devthink.build.ts
           bun run apifreeze:sync
           bun run permdiff:sync
       - name: Validate with the proposed Node version
@@ -247,7 +247,7 @@ jobs:
           bun install --ignore-scripts
       - name: Validate the complete proposed update
         if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
-        # every artifact the validation walks (tests/build.ts, the
+        # every artifact the validation walks (../testes/devthink.build.ts, the
         # distpackage the pack reads, the dist/cli.js the manifest prints)
         # lives inside the devthink application — the block answers from
         # the application root while git diff --check still sees the whole
@@ -255,11 +255,11 @@ jobs:
         run: |
           set -euo pipefail
           cd devthink
-          node tests/build.ts
+          node ../testes/devthink.build.ts
           bun run check
-          node tests/apifreeze.ts
-          node tests/permdiff.ts
-          node tests/release.ts check
+          node ../testes/devthink.apifreeze.ts
+          node ../testes/devthink.permdiff.ts
+          node ../testes/devthink.release.ts check
           npm pack ./distpackage --dry-run
           bun dist/cli.js manifest
           git diff --check

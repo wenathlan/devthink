@@ -77,7 +77,7 @@ The `bridge-pairing.md` file walks through the site pairing: the relay url in th
 
 ## Mcp examples
 
-The `mcp-client.ts` script lists the devthink tools over stdio against the serve command, and the `toolcatalog-walkthrough.md` text walks a client through the catalog namespaces, the consent metadata, the approval gate and the progress subscriptions.
+The `mcp.client.ts` script lists the devthink tools over stdio against the serve command, and the `toolcatalog-walkthrough.md` text walks a client through the catalog namespaces, the consent metadata, the approval gate and the progress subscriptions.
 
 ## Native install walkthrough
 

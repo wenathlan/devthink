@@ -18,7 +18,7 @@ import { useCallback, useState } from "react";
 import { useLocation } from "wouter";
 import { label, labelfill } from "../../labels";
 import { markOnboardingSeen } from "../../onboardingstate.ts";
-import { BrandMark } from "../widgets";
+import { BrandMark } from "../wingets";
 import { START_APPS } from "../shell/Shell.tsx";
 
 /** the honest statements of the frames, riding the copy law (labels.ts). */

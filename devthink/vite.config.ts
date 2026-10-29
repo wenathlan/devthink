@@ -31,6 +31,7 @@ const manifestversion = (
 const FAMILY_SLUGS = [
   "argan",
   "cadria",
+  "cobaia",
   "debonair",
   "stealthhead",
   "forge",

@@ -24,8 +24,8 @@ import {
 } from "../../fleet.ts";
 import { planrehearsal, type planstate, RUNPLAN } from "../../graphplan.ts";
 import { labelfill, label } from "../../labels";
-import { EmptyState } from "../widgets";
-import { GraphPanel as GraphPanel } from "../widgets";
+import { EmptyState } from "../wingets";
+import { GraphPanel as GraphPanel } from "../wingets";
 
 /** the seed of the rehearsal floor (shown on the page, pinned by the tests) */
 export const FLOOR_SEED = 20260214;

@@ -26,7 +26,7 @@ import {
   TAKE_SELECT_KEY,
   type TakeRecord,
 } from "../../takestore.ts";
-import { CoverArt } from "../widgets";
+import { CoverArt } from "../wingets";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
 import { useToast } from "../toast/Toast.tsx";
 

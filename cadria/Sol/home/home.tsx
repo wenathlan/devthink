@@ -29,8 +29,8 @@ import { type ReactElement, useCallback, useEffect, useState } from "react";
 import { Link } from "wouter";
 import { type GatewayProject, listGatewayProjects } from "../../gatewayclient.ts";
 import { label } from "../../labels.ts";
-import { HomeEntrygate as EntryGate } from "../widgets";
-import { EmptyState } from "../widgets";
+import { HomeEntrygate as EntryGate } from "../wingets";
+import { EmptyState } from "../wingets";
 
 /** the abort window the recent-generations fetch rides (ms). */
 const RECENT_TIMEOUT_MS = 800;

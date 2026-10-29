@@ -2,9 +2,13 @@
 
 /* vault theme sol — the single stylesheet of the theme (the 8-h
    FAMILY-FOUNDATION-2 pass). The foundation is the devthink doctrine
-   foundation carried with the exact campaign values, wearing the vault
-   gelo-de-cofre #a3d7e6 as the app signal (brand mark, content cta and the
-   content voice ONLY — focus and the chrome answer the windows accent #4cc2ff).
+   foundation carried with the exact campaign values, wearing THE WHITE SUN
+   as the one signal (the single-theme law: the name is Sol but the sun is
+   WHITE, never the tinted gelo of the retired identity — pure #ffffff on
+   the dark ladder, the graphite contrast pole on the light face, the same
+   white light every app of the family wears; the gelo-de-cofre story
+   survives only in the drawn brand mark — focus and the chrome answer the
+   windows accent #4cc2ff).
    Tailwind-first: the @theme block below is the one source of truth and
    Tailwind 4 generates the utilities the pages can compose (bg-s0..s7,
    text-ink/muted/faint, border-hairline, shadow-window/flyout,
@@ -76,13 +80,14 @@
   --color-hairline: color-mix(in oklab, #fefefe 5%, transparent);
   --color-hairline-strong: color-mix(in oklab, #fefefe 10%, transparent);
 
-  /* ---- the signal: the vault gelo-de-cofre #a3d7e6 (ink #072330) — the app
-     identity, brand mark / content cta / content voice only; the chrome never
-     wears it ---- */
-  --color-signal: #a3d7e6;
-  --color-signal-strong: #b3e7ff;
-  --color-signal-deep: #3f97bd;
-  --color-signal-ink: #072330;
+  /* ---- the signal: THE WHITE SUN — one Sol, one light; the name is Sol
+     but the sun is WHITE, never yellow. Pure #ffffff on the dark ladder
+     (it glows); the quiet poles carry the penumbra (the gelo story
+     survives only in the drawn brand mark) ---- */
+  --color-signal: #ffffff;
+  --color-signal-strong: #ffffff;
+  --color-signal-deep: #c9cdd6;
+  --color-signal-ink: #14161a;
 
   /* ---- accents: the WINDOWS system accent governs focus/chrome (the win10
      blend carries the light theme #0067c0); the fluent close red ---- */
@@ -282,10 +287,11 @@
   --sol-hairline: var(--color-hairline);
   --sol-hairline-strong: var(--color-hairline-strong);
 
-  /* the gelo aliases: the app identity rides the signal slot */
+  /* the white sun aliases: the one Sol accent every voice reads (the gelo
+     names keep resolving so the sections track the semantic poles) */
   --gelo-signal: var(--color-signal);
   --gelo-tint: var(--color-signal-strong);
-  --gelo-soft: #e3f6ff;
+  --gelo-soft: var(--color-signal-strong);
   --gelo-deep: var(--color-signal-deep);
   --sol-primary: var(--color-signal);
   --sol-primary-ink: var(--color-signal-ink);
@@ -293,10 +299,10 @@
   --accent-ink: var(--color-signal-ink);
   --sol-accent: var(--color-signal);
   --sol-accent-ink: var(--color-signal-ink);
-  --sol-signal: 163 215 230;
-  --sol-ember: #6cc4e4;
+  --sol-signal: 255 255 255;
+  --sol-ember: var(--color-signal-deep);
   --sol-tangerine: var(--color-signal-strong);
-  --sol-gold: #e3f6ff;
+  --sol-gold: var(--color-signal-deep);
   --sol-success: var(--color-ok);
   --sol-error: var(--color-err);
   --sol-warning: var(--color-warn);
@@ -375,8 +381,9 @@
 }
 
 /* the light theme: one flip on the same ladder — the devthink daylight
-   values, the gelo steps down to the deep pole, the windows accent follows
-   the windows light law (#0067c0) */
+   values, the white sun steps down to its graphite contrast pole (the
+   light value of the SAME semantic token — one Sol, two honest
+   variations), the windows accent follows the windows light law (#0067c0) */
 [data-theme="light"] {
   --color-canvas: #f3f3f3;
   --color-deep: #ebebeb;
@@ -400,10 +407,10 @@
   --color-warn: #9a6b00;
   --color-err: #c23b2c;
   --color-info: #565e6e;
-  --color-signal: #2f6b7e;
-  --color-signal-strong: #8fc9dd;
-  --color-signal-deep: #275968;
-  --color-signal-ink: #f7fcfd;
+  --color-signal: #3f434b;
+  --color-signal-strong: #18181b;
+  --color-signal-deep: #52565e;
+  --color-signal-ink: #fefefe;
   --shadow-window: 0 32px 64px rgb(0 0 0 / 14%), 0 0 8px rgb(0 0 0 / 8%);
   --shadow-flyout: 0 4px 8px rgb(0 0 0 / 10%), 0 0 2px rgb(0 0 0 / 8%);
   --shadow-lt: 0 1px 1px rgb(0 0 0 / 12%);
@@ -416,10 +423,7 @@
   --win-active: rgb(0 0 0 / 8%);
   --win-accent: #0067c0;
   --win-accent-ink: #f4faff;
-  --sol-signal: 47 107 126;
-  --sol-ember: #28606f;
-  --sol-tangerine: #1f505c;
-  --sol-gold: #17414c;
+  --sol-signal: 63 67 75;
   --sol-drop: rgb(0 0 0 / 10%);
   --sol-hi: rgb(255 255 255 / 60%);
   --panel: rgb(242 242 242 / 90%);

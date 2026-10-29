@@ -2,9 +2,12 @@
 
 /* FOUNDRY THEME SOL — the single stylesheet of the theme (the 8-h
    FAMILY-FOUNDATION-2 pass). The foundation is the devthink doctrine
-   foundation carried with the exact campaign values, wearing the foundry
-   azul as the app signal (brand mark, content cta and the content voice
-   ONLY — focus and the chrome answer the windows accent #4cc2ff).
+   foundation carried with the exact campaign values, wearing THE WHITE SUN
+   as the one signal (the single-theme law: the name is Sol but the sun is
+   WHITE, never yellow — pure #ffffff on the dark ladder, the graphite
+   contrast pole on the light face, the same white light every app of the
+   family wears; the azul story survives only in the drawn brand mark) —
+   focus and the chrome answer the windows accent #4cc2ff).
    Tailwind-first: the @theme block below is the one source of truth and
    Tailwind 4 generates the utilities the pages can compose (bg-s0..s7,
    text-ink/muted/faint, border-hairline, shadow-window/flyout,
@@ -77,12 +80,12 @@
   --color-hairline: color-mix(in oklab, #fefefe 5%, transparent);
   --color-hairline-strong: color-mix(in oklab, #fefefe 10%, transparent);
 
-  /* ---- the signal: the foundry azul #4d8edd — the app identity, brand mark /
-     content cta / content voice only; the chrome never wears it ---- */
-  --color-signal: #4d8edd;
-  --color-signal-strong: #9dc2f7;
-  --color-signal-deep: #12459e;
-  --color-signal-ink: #061224;
+  /* ---- the signal: THE WHITE SUN — one Sol, one light; the name is Sol
+     but the sun is WHITE, never yellow ---- */
+  --color-signal: #ffffff;
+  --color-signal-strong: #ffffff;
+  --color-signal-deep: #c9cdd6;
+  --color-signal-ink: #14161a;
 
   /* ---- accents: the WINDOWS system accent governs focus/chrome (the win10
      blend carries the light theme #0067c0); the fluent close red ---- */
@@ -267,21 +270,22 @@
   --sol-hairline: var(--color-hairline);
   --sol-hairline-strong: var(--color-hairline-strong);
 
-  /* the azul aliases: the app identity rides the signal slot */
+  /* the white sun aliases: the one Sol accent every voice reads (the azul
+     names keep resolving so the sections track the semantic poles) */
   --sol-primary: var(--color-signal);
   --sol-primary-ink: var(--color-signal-ink);
   --accent: var(--color-signal);
   --accent-ink: var(--color-signal-ink);
   --sol-accent: var(--color-signal);
   --sol-accent-ink: var(--color-signal-ink);
-  --sol-ember: #3d7bc9;
+  --sol-ember: var(--color-signal-deep);
   --sol-tangerine: var(--color-signal-strong);
-  --sol-gold: #d3e2fb;
+  --sol-gold: var(--color-signal-deep);
   --sol-success: var(--color-ok);
   --sol-error: var(--color-err);
   --sol-warning: var(--color-warn);
   --sol-info: var(--color-info);
-  --sol-signal: 77 142 221;
+  --sol-signal: 255 255 255;
   --fd-molten: var(--color-signal);
   --fd-molten-deep: var(--color-signal-deep);
   --app-tint: var(--color-signal);
@@ -363,8 +367,9 @@
 }
 
 /* the light theme: one flip on the same ladder — the devthink daylight
-   values, the azul steps down to the deep pole for the same weight, the
-   windows accent follows the windows light law (#0067c0) */
+   values, the white sun stepping down to its graphite contrast pole (the
+   light value of the SAME semantic token — one Sol, two honest variations),
+   the windows accent follows the windows light law (#0067c0) */
 [data-theme="light"] {
   color-scheme: light;
   --color-canvas: #f3f3f3;
@@ -389,10 +394,10 @@
   --color-warn: #9a6b00;
   --color-err: #c23b2c;
   --color-info: #565e6e;
-  --color-signal: #12459e;
-  --color-signal-strong: #7fa8e8;
-  --color-signal-deep: #12459e;
-  --color-signal-ink: #f7fbff;
+  --color-signal: #3f434b;
+  --color-signal-strong: #18181b;
+  --color-signal-deep: #52565e;
+  --color-signal-ink: #fefefe;
   --shadow-window: 0 32px 64px rgb(0 0 0 / 14%), 0 0 8px rgb(0 0 0 / 8%);
   --shadow-flyout: 0 4px 8px rgb(0 0 0 / 10%), 0 0 2px rgb(0 0 0 / 8%);
   --shadow-lt: 0 1px 1px rgb(0 0 0 / 12%);
@@ -405,10 +410,7 @@
   --win-active: rgb(0 0 0 / 8%);
   --win-accent: #0067c0;
   --win-accent-ink: #f4faff;
-  --sol-signal: 18 69 158;
-  --sol-ember: #12459e;
-  --sol-tangerine: #1a54bd;
-  --sol-gold: #12459e;
+  --sol-signal: 63 67 75;
   --sol-drop: rgb(0 0 0 / 10%);
   --sol-hi: rgb(255 255 255 / 60%);
   --panel: rgb(242 242 242 / 90%);

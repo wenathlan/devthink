@@ -30,6 +30,7 @@ import {
   SettingsRegular as Settings2,
   ShieldRegular as Shield,
   WindowConsoleRegular as TerminalSquare,
+  WindowAppsRegular as WindowApps,
   VaultRegular as Vault,
   FlowchartRegular as Waypoints,
 } from "@fluentui/react-icons";
@@ -247,6 +248,17 @@ const APP_BINDINGS: AppBinding[] = [
     iconset: "saddle",
     target: { kind: "external", slug: "saddle" },
   },
+  {
+    id: "cobaia",
+    tint: "#4fb3c6",
+    icon: WindowApps,
+    iconset: "cobaia",
+    // the family front door — the storefront of the catalog (pricing,
+    // support, the app directory and the blog) — answers the same dual door
+    // every family app answers: the typed url owns the fullscreen stage and
+    // the double click owns the power clip window inside the os
+    target: { kind: "external", slug: "cobaia" },
+  },
 ];
 
 /** The desktop apps: the bindings with the catalog labels merged — the
@@ -271,7 +283,9 @@ export const PINNED_APPS: DesktopApp[] = DESKTOP_APPS.filter((app) => app.pinned
 
 /** The family identity set: every app of the DevThink family — each opens
  * as a window of the os riding its repository subpath inside (the power
- * clip), and the app id IS the deploy unit slug. */
+ * clip), and the app id IS the deploy unit slug. The ten deploy units
+ * answer the set: the nine product apps plus the cobaia storefront (the
+ * family front door the pages site mounts beside the os). */
 export const FAMILY_APP_IDS: ReadonlySet<string> = new Set([
   "argan",
   "cadria",
@@ -282,6 +296,7 @@ export const FAMILY_APP_IDS: ReadonlySet<string> = new Set([
   "getry",
   "stealthhead",
   "saddle",
+  "cobaia",
 ]);
 
 /**

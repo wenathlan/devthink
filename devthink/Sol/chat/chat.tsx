@@ -16,11 +16,11 @@
  * handoff slot.
  */
 
-import { ChatBody, ShellChrome } from "../widgets";
+import { ChatBody, ShellChrome } from "../wingets";
 
 export * from "../../chatstate.ts";
 export * from "../../useismobile.ts";
-export * from "../widgets";
+export * from "../wingets";
 
 export default function Chat() {
   return (

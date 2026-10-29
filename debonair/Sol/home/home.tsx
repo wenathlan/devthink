@@ -31,8 +31,8 @@ import { MASTERING, PROMPT_MAX_LENGTH } from "../../katexis.ts";
 import { busFeature, busPlay, busSubscribe } from "../../playerbus.ts";
 import { PROMPT_DRAFT_KEY, type PromptDraft } from "../generate/generate.tsx";
 import { DebonairMark, type NavLink, Shell } from "../shell/Shell.tsx";
-import { HomeEntrygate as EntryGate } from "../widgets";
-import { SongCard, SongCardSkeleton } from "../widgets";
+import { HomeEntrygate as EntryGate } from "../wingets";
+import { SongCard, SongCardSkeleton } from "../wingets";
 
 /** the deterministic amplitudes of the hero waveform strip (the engine floor
  * — a fixed 48-bar walk, decorative only, the same value every render) */

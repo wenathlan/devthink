@@ -1,9 +1,9 @@
 /**
  * labels.ts — the copy law of cobaia: every interface string lives in the
- * label store, the widgets and page anchors read through this typed
+ * label store, the wingets and page anchors read through this typed
  * accessor, and a hardcoded string inside a widget is a defect. the
  * manifest below is the english source of truth extracted from the real
- * strings of the Sol widgets and the page anchors; the seed ingests it
+ * strings of the Sol wingets and the page anchors; the seed ingests it
  * into the labels store (the site db through db.ts on the server, the
  * browser rows cache in the visitor machine) and the seed never overwrites
  * a translated row.
@@ -27,7 +27,7 @@ import type { LabelRow } from "./db";
 export const LABEL_REVISION = 3;
 
 /** the english manifest: the page.widget.key path answers the surface text.
- * every entry is the verbatim string the widgets and page anchors rendered
+ * every entry is the verbatim string the wingets and page anchors rendered
  * before the copy wave — zero invented copy. */
 export const LABEL_MANIFEST = {
   // the window shell widget (the one chrome of the content site)
