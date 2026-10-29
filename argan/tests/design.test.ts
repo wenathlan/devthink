@@ -37,9 +37,11 @@ describe("design contract", () => {
     }
   });
 
-  it("carries the argan jade #34d8a8 as the one signal (mark story #14b98c)", () => {
-    // the jade token stands literal and the primary rides it — both stay pinned
-    expect(CSS).toMatch(/--arg-jade: #34d8a8/);
+  it("carries the white sun as the one signal with the jade story in the mark (#14b98c)", () => {
+    // the white sun answers the single-theme law: the jade rides the signal
+    // alias and the story survives in the drawn brand mark
+    expect(CSS).toMatch(/--color-signal: #ffffff/);
+    expect(CSS).toMatch(/--arg-jade: var\(--color-signal\)/);
     expect(CSS).toMatch(/--sol-primary: var\(--arg-jade\)/);
     expect(MARK).toMatch(/#14b98c/);
   });
