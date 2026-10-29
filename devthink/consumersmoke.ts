@@ -95,12 +95,12 @@ try {
   };
   const handlers = createversion(cfg);
 
-  const info = await handlers.handleinfo(new Request("http://x/api/vt"));
+  const info = await handlers.handleinfo(new Request("http://x.invalid/api/vt"));
   const infodata = await info.json();
   check("handleinfo answers the 7 routes", infodata.routes?.length === 7);
 
   const res = await handlers.handlechatcompletions(
-    new Request("http://x/api/vt/chat/completions", {
+    new Request("http://x.invalid/api/vt/chat/completions", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ model: "m1", messages: [{ role: "user", content: "hi" }] }),
@@ -111,7 +111,7 @@ try {
   check("model masked to the meta id", data.model === "meta", `got ${data.model}`);
 
   const streamres = await handlers.handlechatcompletions(
-    new Request("http://x/api/vt/chat/completions", {
+    new Request("http://x.invalid/api/vt/chat/completions", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ stream: true, messages: [{ role: "user", content: "hi" }] }),
@@ -124,7 +124,7 @@ try {
   check("stream masking", streamtext.includes('"model":"meta"') && !streamtext.includes("hidden/model"));
 
   const bad = await handlers.handlechatcompletions(
-    new Request("http://x/api/vt/chat/completions", {
+    new Request("http://x.invalid/api/vt/chat/completions", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: "not json {{{",
@@ -133,7 +133,7 @@ try {
   check("malformed bodies answer 400", bad.status === 400, `got ${bad.status}`);
 
   const empty = await handlers.handlechatcompletions(
-    new Request("http://x/api/vt/chat/completions", {
+    new Request("http://x.invalid/api/vt/chat/completions", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ messages: [] }),
