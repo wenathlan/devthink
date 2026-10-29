@@ -1,13 +1,13 @@
-// # quota.test — the user-defined quota of the vault, runnable with the node
-// built-in runner (no dependencies, no install):
-//   node --test tests/quota.test.ts
+// # quota.test — the user-defined quota of the vault, runnable with the
+// house vitest suite:
+//   bunx vitest run tests/quota.test.ts
 // The verdicts are pure (boundary, unlimited, terabyte scale), the parse is
 // honest (decimal bytes or the unlimited words), and the rows land on an
 // isolated database through the real drizzle executor — the floor answers
 // at creation, the owner redefines or removes it, and no ceiling exists
 // anywhere.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import "./quotaisolation.ts";
 import { QUOTA_FLOOR_BYTES, quotaLimitFrom, quotaVerdict } from "../quota.ts";
 

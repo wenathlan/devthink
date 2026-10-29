@@ -1,12 +1,12 @@
 // # objects.test — the object ledger engine of the vault, runnable with the
-// node built-in runner (no dependencies, no install):
-//   node --test tests/objects.test.ts
+// house vitest suite:
+//   bunx vitest run tests/objects.test.ts
 // The engine rides the REAL storage contract (storage.ts): the channel
 // comes from storageModeFor, the digest validates through digestValid, the
 // record passes storageRecordValid — and the rehearsal is deterministic
 // from the seed (the same seed always seals the same vault).
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   VAULT_BUCKETS,
   type VaultObject,

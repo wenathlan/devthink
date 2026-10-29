@@ -1,11 +1,11 @@
 // # fleet.test — the runner fleet engine of the /runs page, runnable with
-// the node built-in runner (no dependencies, no install):
-//   node --test tests/fleet.test.ts
+// the house vitest suite:
+//   bunx vitest run tests/fleet.test.ts
 // The fleet is a seeded rehearsal: the same seed musters the same runners,
 // the health ladder is pure thresholds, the tick advances the floor
 // deterministically and never heals an offline runner by hiding its record.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   fleetSummary,
   fleetTick,

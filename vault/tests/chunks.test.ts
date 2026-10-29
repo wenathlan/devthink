@@ -1,12 +1,12 @@
 // # chunks.test — the 256KB chunk pipeline of the vault, runnable with the
-// node built-in runner (no dependencies, no install):
-//   node --test tests/chunks.test.ts
+// house vitest suite:
+//   bunx vitest run tests/chunks.test.ts
 // Real bytes ride the whole pipeline: the split answers the exact window
 // counts, every window digests through the real sha-256, reassembly is
 // byte-equal, identical windows reuse one digest, brotli only packs when it
 // wins, and a tampered stored chunk answers broken.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import {
   type ChunkSlice,
   CHUNK_BYTES,

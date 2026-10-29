@@ -1,12 +1,12 @@
-// # family.test — the family table the chrome rides, runnable with the node
-// built-in runner (no dependencies, no install):
-//   node --test tests/family.test.ts
+// # family.test — the family table the chrome rides, runnable with the
+// house vitest suite:
+//   bunx vitest run tests/family.test.ts
 // Every test watches the promise the row makes: the nine siblings beside
 // vault are listed once, every slug resolves through the familyurl contract
 // into a climb-one-level url, every member carries the spec §12 accent with
 // its own dot ink, and no accent ever collides with the banned palette.
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, it } from "vitest";
 import { FAMILY_ACCENTS, FAMILY_SLUGS, familyAccentOf, familyrow } from "../family.ts";
 import { familyurl } from "../familyurl.ts";
 
