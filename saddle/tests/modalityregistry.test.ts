@@ -24,6 +24,7 @@ const LIVESET = [
   "build-make",
   "build-ninja",
   "container-docker",
+  "fs-gitobjects",
   "fs-vfs",
   "language-cargo",
   "language-dotnet",
@@ -37,11 +38,14 @@ const LIVESET = [
   "language-rust",
   "language-v",
   "language-zig",
+  "network-dns",
+  "network-doh",
   "runner-bun",
   "runner-deno",
   "runner-node",
   "runner-serverless",
   "runtime-jvm",
+  "storage-sqlite",
 ] as const;
 
 /** the records whose host runtime the sandbox lane probes on PATH */

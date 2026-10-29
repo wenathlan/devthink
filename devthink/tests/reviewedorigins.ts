@@ -46,6 +46,7 @@ export const reviewedorigins: reviewedoriginscatalog = {
     "bitbucket.org",
     "clients2.google.com",
     "cloud.google.com",
+    "cloudflare-dns.com",
     "cloudcode-pa.googleapis.com",
     "crates.io",
     "dashscope-intl.aliyuncs.com",

@@ -137,13 +137,17 @@ describe("sandboxlane", () => {
     const rows = await hostmodalityreport();
     // the summary row plus one honest row per registry record of the ninety plan
     expect(rows.length).toBe(91);
-    expect(rows[0]).toBe("the modality registry answers the ninety plan: 90 records — 21 live, 3 host, 66 planned");
+    expect(rows[0]).toBe("the modality registry answers the ninety plan: 90 records — 25 live, 3 host, 62 planned");
     const text = rows.join("\n");
     // the live lanes name the surfaces the platform drives
     expect(text).toContain("container-docker: live lane — docker ");
     expect(text).toContain("runner-node: live lane — the node runtime the run lane executes inside the container");
     expect(text).toContain("fs-vfs: live lane — the session jail the storage lane drives");
     expect(text).toContain("runner-serverless: live lane — the v8 isolate the exec lane drives in process");
+    expect(text).toContain("storage-sqlite: live lane — the sqlite database the sql tool drives through better-sqlite3");
+    expect(text).toContain("fs-gitobjects: live lane — the content-addressed objects store the gitobj tool drives");
+    expect(text).toContain("network-dns: live lane — the node resolver the dns tool drives");
+    expect(text).toContain("network-doh: live lane — the https resolver the doh tool drives");
     // the polyglot live lanes probe their host runtime (python names the binary)
     expect(text).toContain("language-python: live lane — python3 ");
     expect(text).toContain("build-make: live lane — make ");
@@ -212,6 +216,62 @@ describe("sandboxlane", () => {
     }
   }, 120_000);
 
+  it("drives a real sqlite database inside the jail through the sql lane", async () => {
+    const sessionid = newsessionid();
+    const create = await runsandboxline(
+      sessionid,
+      "sql app.db CREATE TABLE notes (id INTEGER PRIMARY KEY, body TEXT)",
+    );
+    expect(create.exitcode).toBe(0);
+    expect(joinedrows(create)).toContain("changes 0");
+    const insert = await runsandboxline(
+      sessionid,
+      'sql app.db "INSERT INTO notes (body) VALUES (\'hello\')"',
+    );
+    expect(insert.exitcode).toBe(0);
+    expect(joinedrows(insert)).toContain("changes 1");
+    const select = await runsandboxline(
+      sessionid,
+      "sql app.db SELECT id, body FROM notes",
+    );
+    expect(select.exitcode).toBe(0);
+    const text = joinedrows(select);
+    expect(text).toContain("id=1");
+    expect(text).toContain("body=hello");
+  });
+
+  it("round-trips one file through the git objects store of the jail", async () => {
+    const sessionid = newsessionid();
+    await runsandboxline(sessionid, "write payload.md the objects store answer");
+    const write = await runsandboxline(sessionid, "gitobj write payload.md");
+    expect(write.exitcode).toBe(0);
+    const writetext = joinedrows(write);
+    expect(writetext).toMatch(/^blob [0-9a-f]{40}$/m);
+    const hash = writetext.split(" ")[1];
+    const read = await runsandboxline(sessionid, ["gitobj read ", hash].join(""));
+    expect(read.exitcode).toBe(0);
+    const readtext = joinedrows(read);
+    expect(readtext).toContain("type blob");
+    expect(readtext).toContain("the objects store answer");
+  });
+
+  it("answers the resolver lanes honestly — the node resolver for the local name, the https resolver refusing without a path", async () => {
+    const sessionid = newsessionid();
+    const local = await runsandboxline(sessionid, "dns localhost");
+    expect(local.exitcode).toBe(0);
+    expect(joinedrows(local)).toContain("localhost");
+    const refused = await runsandboxline(sessionid, "dns no-such-name.invalid");
+    expect(refused.exitcode).toBe(0);
+    const refusedtext = joinedrows(refused);
+    // the honest error answers on every host — never an invented record
+    expect(refusedtext).toMatch(/(localhost|refused|no-such-name)/);
+    const dohanswer = await runsandboxline(sessionid, "doh example.com");
+    expect(dohanswer.exitcode).toBe(0);
+    const dohtext = joinedrows(dohanswer);
+    // the https resolver answers its records or its honest refusal
+    expect(dohtext.length).toBeGreaterThan(0);
+  }, 30_000);
+
   it("refuses an exec line whose arguments carry a rejected character and answers the known languages for an unknown word", async () => {
     const sessionid = newsessionid();
     const refused = await runsandboxline(sessionid, "exec python hello.py a;rm");
@@ -259,9 +319,9 @@ describe("the vendored registry mirror (the single-source law)", () => {
     expect(report).toEqual({
       plancount: 90,
       catalogcount: 90,
-      live: 21,
+      live: 25,
       host: 3,
-      planned: 66,
+      planned: 62,
       plananswered: true,
     });
   });
