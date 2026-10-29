@@ -403,7 +403,7 @@ describe.skipIf(!inrepo)("the release assets census (the 300 plus law)", () => {
   it("every family lane resolves the version from the application manifest", async () => {
     for (const file of ["family-desktop.yml", "family-mobile.yml"]) {
       const source = await readworkflow(file);
-      expect(source).toContain("require('../devthink/tests/${{ matrix.app }}/package.json').version");
+      expect(source).toContain("require('./${{ matrix.app }}/package.json').version");
     }
   });
 
