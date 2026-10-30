@@ -16,7 +16,7 @@ import type { LabelRow } from "./db.ts";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 4;
+export const LABEL_REVISION = 5;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -78,6 +78,16 @@ export const LABEL_MANIFEST = {
   "home.quad.engineLine2": "{standard} · {dbtp} dBTP",
   "home.songcard.playAria": "Play {name}",
   "home.songcard.playTitle": "Play {name} — {genre} · {duration}",
+  // the vitrine genre cards of the home (the trained profile rows the
+  // catalog seam serves; the untrained card wears the honest empty face)
+  "home.vitrine.eyebrow": "the vitrine",
+  "home.vitrine.title": "Genre profiles from the reference shelf",
+  "home.vitrine.foot": "Every number reads the trained profile rows — mine a genre and the card fills.",
+  "home.vitrine.meta": "{min}–{max} bpm · {key}",
+  "home.vitrine.awaiting": "awaiting references",
+  "home.vitrine.trainedOn": "trained on {count} reference{s}",
+  "home.vitrine.untrained": "the profile trains once references land",
+  "home.vitrine.bandsAria": "band balance — low {low}, mid {mid}, high {high}",
   // the shell player bar widget (the suno bar of the application window)
   "shell.playerbar.aria": "Player bar",
   "shell.playerbar.openTitle": "{name} — open in the studio",
@@ -136,12 +146,14 @@ export const LABEL_MANIFEST = {
   "studio.rack.stepVel": "vel {vel}%",
   "studio.export.aria": "Export desk",
   "studio.export.title": "export",
-  "studio.export.body": "The bounce rides the same graph the desk plays — the plan's faders, the glue and this take's seeded noise.",
+  "studio.export.body":
+    "The bounce rides the same graph the desk plays — the plan's faders, the glue and this take's seeded noise.",
   "studio.export.keyAria": "Export {label}",
   "studio.export.rendering": "rendering…",
   "studio.export.resetAria": "Reset the desk to the seeded take",
   "studio.export.reset": "reset desk",
-  "studio.export.rollNote": "the roll owns the schedule this desk session — reset the desk to hear the seeded take again.",
+  "studio.export.rollNote":
+    "the roll owns the schedule this desk session — reset the desk to hear the seeded take again.",
   "studio.ledger.aria": "Take ledger",
   "studio.ledger.title": "Take ledger",
   "studio.ledger.bodyLead":
@@ -221,7 +233,8 @@ export const LABEL_MANIFEST = {
   // the timeline (arrangement editor) widget of the studio
   "studio.timeline.aria": "Arrangement editor",
   "studio.timeline.title": "arrangement editor",
-  "studio.timeline.meta": "{clock} · snap {snap} s · drag moves, edges trim, arrows walk · delete deletes, d duplicates",
+  "studio.timeline.meta":
+    "{clock} · snap {snap} s · drag moves, edges trim, arrows walk · delete deletes, d duplicates",
   "studio.timeline.splitAria": "Split the selected clip at the playhead",
   "studio.timeline.split": "Split",
   "studio.timeline.dupAria": "Duplicate the selected clip",
@@ -370,7 +383,8 @@ export const LABEL_MANIFEST = {
   // the notfound page anchor (the 404 dead air)
   "notfound.eyebrow": "debonair · 404",
   "notfound.title": "Dead air",
-  "notfound.lede": "This page never made it to tape. The fader was up, the mic was hot — and the URL bar stayed clean, by the way.",
+  "notfound.lede":
+    "This page never made it to tape. The fader was up, the mic was hot — and the URL bar stayed clean, by the way.",
   "notfound.backHome": "Back home",
   "notfound.openStudio": "Open the studio",
   // the settings page anchor (the preferences)
@@ -478,7 +492,7 @@ export async function seedLabels(): Promise<{ seeded: number; protected: number 
   let saved = 0;
   for (const [id, text] of Object.entries(LABEL_MANIFEST)) {
     const row = rows.get(id);
-    overrides.set(id, row && row.translated ? row.text : text);
+    overrides.set(id, row?.translated ? row.text : text);
     if (!row || (!row.translated && row.text !== text)) {
       rows.set(id, {
         id,

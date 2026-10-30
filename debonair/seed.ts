@@ -3,9 +3,11 @@
 // nothing here touches the visitor machine; the same rows ship in the site database and
 // reach the pages over HTTPS when a catalog endpoint is configured.
 
+import { GENRES } from "./genrematrix.ts";
 import type {
   FeatureCard,
   GenreConfig,
+  GenreProfileCard,
   LibraryTrackRow,
   MixerStripRow,
   OptionChoice,
@@ -137,6 +139,27 @@ export const seedHeroBadges: readonly SignalBadge[] = [
   { group: "hero", label: "48 kHz", tone: "success" },
   { group: "hero", label: "multitrack", tone: "info" },
 ];
+
+/** The offline face of the vitrine: the fifteen genres the pattern miner
+ * can profile, each untrained — trainedOn 0, the bpm range flat, the key
+ * pool empty — until real profiles land through the gateway mine lane
+ * (the db rows reach the home over the catalog seam; the seed never
+ * fakes a number an untrained genre never answered). Derived from the
+ * engine's own style dictionary so the genre list never drifts from the
+ * miner's vocabulary. */
+export const seedGenreProfileCards: readonly GenreProfileCard[] = GENRES.map((genre) => ({
+  group: "genre-profiles",
+  genre: genre.id,
+  label: genre.label,
+  trainedOn: 0,
+  bpmMin: 0,
+  bpmMax: 0,
+  keyTop: "",
+  bandsLow: 0,
+  bandsMid: 0,
+  bandsHigh: 0,
+  updatedAt: "",
+}));
 
 export const seedLocaleChoices: readonly OptionChoice[] = [
   { group: "locale", value: "en", label: "English", selected: true },

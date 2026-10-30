@@ -6,6 +6,7 @@
 import type {
   FeatureCard,
   GenreConfig,
+  GenreProfileCard,
   LibraryTrackRow,
   MixerStripRow,
   OptionChoice,
@@ -14,6 +15,7 @@ import type {
   TimelineTrack,
 } from "./katexis.ts";
 import {
+  seedGenreProfileCards,
   seedGenres,
   seedHeroBadges,
   seedLibraryTracks,
@@ -72,6 +74,14 @@ export function listStageCards(): Promise<FeatureCard[]> {
 
 export function listHeroBadges(): Promise<SignalBadge[]> {
   return table("badges.hero", seedHeroBadges);
+}
+
+/** The vitrine lane: the genre profile cards the home surfaces — the
+ * trained profile rows (bpm range, key pool top, band balance, the
+ * trained-on count) the miner lane lands in the db; the seed answers the
+ * fifteen untrained genres offline. */
+export function listGenreProfileCards(): Promise<GenreProfileCard[]> {
+  return table("cards.genre-profiles", seedGenreProfileCards);
 }
 
 /** Reads one group of the settings selects (parameterized by group). */

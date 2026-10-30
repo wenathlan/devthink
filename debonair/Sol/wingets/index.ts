@@ -6,20 +6,21 @@
  * the components stay complete independent files beside this surface.
  */
 export * from "./HomeCoverart.tsx";
-export { default as HomeEntrygate } from "./HomeEntrygate.tsx";
 export * from "./HomeEntrygate.tsx";
+export { default as HomeEntrygate } from "./HomeEntrygate.tsx";
+export * from "./HomeGenrecard.tsx";
 export * from "./HomeSongcard.tsx";
-export { default as ShellPlayerbar } from "./ShellPlayerbar.tsx";
 export * from "./ShellPlayerbar.tsx";
-export { default as StudioFader } from "./StudioFader.tsx";
+export { default as ShellPlayerbar } from "./ShellPlayerbar.tsx";
 export * from "./StudioFader.tsx";
-export { default as StudioPianoroll } from "./StudioPianoroll.tsx";
+export { default as StudioFader } from "./StudioFader.tsx";
 export * from "./StudioPianoroll.tsx";
-export { default as StudioSpectrum } from "./StudioSpectrum.tsx";
+export { default as StudioPianoroll } from "./StudioPianoroll.tsx";
 export * from "./StudioSpectrum.tsx";
-export { default as StudioStagestepper } from "./StudioStagestepper.tsx";
+export { default as StudioSpectrum } from "./StudioSpectrum.tsx";
 export * from "./StudioStagestepper.tsx";
-export { default as StudioTimeline } from "./StudioTimeline.tsx";
+export { default as StudioStagestepper } from "./StudioStagestepper.tsx";
 export * from "./StudioTimeline.tsx";
-export { default as StudioVumeter } from "./StudioVumeter.tsx";
+export { default as StudioTimeline } from "./StudioTimeline.tsx";
 export * from "./StudioVumeter.tsx";
+export { default as StudioVumeter } from "./StudioVumeter.tsx";

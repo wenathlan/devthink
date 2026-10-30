@@ -84,6 +84,36 @@ export interface SignalBadge {
   tone: BadgeTone;
 }
 
+/** One genre profile card of the vitrine: the trained profile numbers the
+ * home surfaces — the rows come from the db (the genre_profiles seat the
+ * miner lane fills over the catalog seam), the offline seed answers the
+ * fifteen genres with empty trainedOn until real profiles land (never
+ * fake numbers: an untrained card carries zeros and the empty key). */
+export interface GenreProfileCard {
+  /** the group literal ("genre-profiles") */
+  group: string;
+  /** the genre id (one of the style dictionary keys) */
+  genre: string;
+  /** the genre label */
+  label: string;
+  /** the count of the references that fed the profile */
+  trainedOn: number;
+  /** the bpm floor of the references */
+  bpmMin: number;
+  /** the bpm ceiling of the references */
+  bpmMax: number;
+  /** the top key of the key pool ("" until real profiles land) */
+  keyTop: string;
+  /** the low band mean (0..1) */
+  bandsLow: number;
+  /** the mid band mean (0..1) */
+  bandsMid: number;
+  /** the high band mean (0..1) */
+  bandsHigh: number;
+  /** the freshest reference instant that fed the profile */
+  updatedAt: string;
+}
+
 /** One option of the settings selects. */
 export interface OptionChoice {
   group: string;
