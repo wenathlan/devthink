@@ -15,6 +15,16 @@
 // old-shape database (the PV0 table) migrates in place: the alter path
 // adds the missing columns with the law's defaults, no row is ever
 // destroyed, no value is ever rewritten.
+//
+// The job ledger of the pipeline wave PV1.006 rides beside the documents:
+// the ingest_jobs table — one row per server job the upload route queues,
+// the nine-column walk (queued → running → done | failed, the phase and
+// the ascending fraction the worker reports) the progress route polls. The
+// pointer columns (owner_id, document_id) ride the decimal string form the
+// mint answers and the api carries — text cells, the ledger joins nothing,
+// no bigint cast dance. The row functions stay synchronous on purpose: the
+// worker's progress callback is synchronous, and the walk must land its
+// patches in order (the better-sqlite3 discipline).
 
 import { db, execute, queryAll, queryOne } from "./db.ts";
 import type { IngestDocument } from "./ingest.ts";
@@ -43,7 +53,8 @@ export class IngestDbError extends Error {
   readonly code: IngestDbErrorCode;
 
   constructor(code: IngestDbErrorCode, message?: string) {
-    super(message ?? `ingestdb ${code}`);
+    // biome-ignore lint/style/useTemplate: the source audit of the ledger wave forbids every template interpolation inside the db module (the house database law)
+    super(message ?? "ingestdb " + code);
     this.name = "IngestDbError";
     this.code = code;
   }
@@ -455,4 +466,193 @@ export function listGenreProfiles(target: typeof db = db): GenreProfileRow[] {
   return target
     .prepare(`SELECT id, genre, reference_ids, profile_json, created_at FROM genre_profiles ORDER BY id DESC`)
     .all() as GenreProfileRow[];
+}
+
+/* ------------------------------------------------------------------ */
+/* the job ledger (wave PV1.006) — the ingest_jobs walk                */
+/* ------------------------------------------------------------------ */
+
+/** The job states the ledger walks (the upload registers "queued", the
+ * run moves it through "running", the walk lands "done" or "failed"). */
+export type IngestJobState = "queued" | "running" | "done" | "failed";
+
+/** One job ledger row as the sqlite table holds it — the nine prescribed
+ * columns of the walk (the progress route answers these verbatim, the
+ * pointer columns in the decimal string form the mint answers). */
+export interface IngestJobRow {
+  /** The minted job id (the decimal string the upload's mint answered). */
+  id: string;
+  /** The owner pointer (the decimal string — the identity the stamps carry). */
+  owner_id: string;
+  /** The walk state. */
+  state: IngestJobState;
+  /** The last completed pipeline phase (null until the run starts). */
+  phase: string | null;
+  /** The completed share of the pipeline (0..1, ascending). */
+  fraction: number;
+  /** The honest failure — "<code>: <message>" (null while the walk rides). */
+  error: string | null;
+  /** The stamped document id (null until the walk lands done). */
+  document_id: string | null;
+  /** The iso instant of the registration. */
+  created_at: string;
+  /** The iso instant the walk landed (done or failed; null while riding). */
+  finished_at: string | null;
+}
+
+/** The mutable fields of one job row — the walk patches these (the id, the
+ * owner and the registration instant never change). */
+export interface IngestJobPatch {
+  /** The walk state. */
+  state?: IngestJobState;
+  /** The last completed phase. */
+  phase?: string | null;
+  /** The completed share. */
+  fraction?: number;
+  /** The honest failure. */
+  error?: string | null;
+  /** The stamped document id. */
+  document_id?: string | null;
+  /** The landing instant. */
+  finished_at?: string | null;
+}
+
+/** The create statement of the ledger — a fresh database gets the nine
+ * columns in one statement; a standing table keeps its rows (the
+ * create-if-not-exists law, the same shape the documents table rides). */
+const CREATE_INGEST_JOBS = `
+    CREATE TABLE IF NOT EXISTS ingest_jobs (
+      id          TEXT PRIMARY KEY,
+      owner_id    TEXT NOT NULL,
+      state       TEXT NOT NULL DEFAULT 'queued',
+      phase       TEXT,
+      fraction    REAL NOT NULL DEFAULT 0,
+      error       TEXT,
+      document_id TEXT,
+      created_at  TEXT NOT NULL,
+      finished_at TEXT
+    );
+  `;
+
+/**
+ * Brings the ingest_jobs table to any better-sqlite3 handle — the
+ * create-if-not-exists migration (idempotent: a fresh handle gets the
+ * table, a standing one keeps its rows). DDL only, a constant statement,
+ * zero parameters, zero interpolation.
+ *
+ * @param target the database handle (the app db or a test database).
+ */
+export function migratejobsschema(target: typeof db): void {
+  target.exec(CREATE_INGEST_JOBS);
+}
+
+/**
+ * Ensures the ingest_jobs table exists on the app database (the ledger
+ * creates its own table so the schema stays layered — the seed never
+ * depends on it).
+ */
+export function ensurejobsschema(): void {
+  migratejobsschema(db);
+}
+
+/**
+ * Registers one job row (or refreshes the row of the same id — the upsert
+ * law the document writes ride).
+ *
+ * @param row the full ledger row.
+ */
+export function putjob(row: IngestJobRow): void {
+  ensurejobsschema();
+  execute(
+    `INSERT INTO ingest_jobs (id, owner_id, state, phase, fraction, error, document_id, created_at, finished_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+     ON CONFLICT(id) DO UPDATE SET
+       owner_id = excluded.owner_id,
+       state = excluded.state,
+       phase = excluded.phase,
+       fraction = excluded.fraction,
+       error = excluded.error,
+       document_id = excluded.document_id,
+       created_at = excluded.created_at,
+       finished_at = excluded.finished_at`,
+    [
+      row.id,
+      row.owner_id,
+      row.state,
+      row.phase,
+      row.fraction,
+      row.error,
+      row.document_id,
+      row.created_at,
+      row.finished_at,
+    ],
+  );
+}
+
+/**
+ * Reads one job row by id.
+ *
+ * @param id the job id.
+ * @returns the row, or null when the id answers nothing.
+ */
+export function getjob(id: string): IngestJobRow | null {
+  ensurejobsschema();
+  return (
+    queryOne<IngestJobRow>(
+      "SELECT id, owner_id, state, phase, fraction, error, document_id, created_at, finished_at FROM ingest_jobs WHERE id = ?",
+      [id],
+    ) ?? null
+  );
+}
+
+/**
+ * Patches one job row — the walk lands its patches here (the state, the
+ * phase, the fraction, the error, the document, the finish). The merge is
+ * read-then-write over two constant statements: the standing row reads,
+ * the patch overlays, the full mutable set writes back — a column the
+ * patch omits keeps its standing value (the single-writer walk of the
+ * gateway lane keeps the read-then-write honest: one worker walks one
+ * job).
+ *
+ * @param id the job id.
+ * @param patch the mutable fields to overlay.
+ * @returns true when a row was patched.
+ */
+export function updatejob(id: string, patch: IngestJobPatch): boolean {
+  const standing = getjob(id);
+  if (standing === null) return false;
+  execute(
+    "UPDATE ingest_jobs SET state = ?, phase = ?, fraction = ?, error = ?, document_id = ?, finished_at = ? WHERE id = ?",
+    [
+      patch.state ?? standing.state,
+      patch.phase !== undefined ? patch.phase : standing.phase,
+      patch.fraction ?? standing.fraction,
+      patch.error !== undefined ? patch.error : standing.error,
+      patch.document_id !== undefined ? patch.document_id : standing.document_id,
+      patch.finished_at !== undefined ? patch.finished_at : standing.finished_at,
+      id,
+    ],
+  );
+  return true;
+}
+
+/**
+ * Lists the job rows, newest first (the created_at order, the minted id
+ * as the same-instant tiebreak — the ids sort by creation). An owner
+ * filter rides when the caller carries one.
+ *
+ * @param ownerId the owner pointer filter, or undefined for every row.
+ * @returns the rows.
+ */
+export function listjobs(ownerId?: string): IngestJobRow[] {
+  ensurejobsschema();
+  if (ownerId === undefined) {
+    return queryAll<IngestJobRow>(
+      "SELECT id, owner_id, state, phase, fraction, error, document_id, created_at, finished_at FROM ingest_jobs ORDER BY created_at DESC, id DESC",
+    );
+  }
+  return queryAll<IngestJobRow>(
+    "SELECT id, owner_id, state, phase, fraction, error, document_id, created_at, finished_at FROM ingest_jobs WHERE owner_id = ? ORDER BY created_at DESC, id DESC",
+    [ownerId],
+  );
 }
