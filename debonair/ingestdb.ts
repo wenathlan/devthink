@@ -19,6 +19,8 @@
 import { db, execute, queryAll, queryOne } from "./db.ts";
 import type { IngestDocument } from "./ingest.ts";
 import { INGEST_SCHEMA_VERSION } from "./ingest.ts";
+import type { GenreProfile } from "./patternminer.ts";
+import { serializeProfile } from "./patternminer.ts";
 
 /** The document kinds the reference law names: the references the pattern
  * miner reads, the renders the composer stores, the uploads the bench
@@ -363,4 +365,94 @@ export function docvalid(doc: IngestDocument): boolean {
     doc.stems.length > 0 &&
     Array.isArray(doc.segments)
   );
+}
+
+// ---------------------------------------------------------------------------
+// the genre profile seat (the pattern miner wave PV3.002)
+// ---------------------------------------------------------------------------
+
+/** One genre_profiles row as the sqlite table holds it: the profile rides
+ * its column as canonical json, the reference ids ride theirs as json text
+ * (the audit chain), the created_at stamps the storage instant — the
+ * profile's own updatedAt stays deterministic (the freshest reference
+ * ingestedAt), the row never rewrites the document's law. */
+export interface GenreProfileRow {
+  /** The autoincrement row id. */
+  id: number;
+  /** The genre key of the profile (one of the fifteen). */
+  genre: string;
+  /** The reference ids as json text (the audit chain). */
+  reference_ids: string;
+  /** The canonical profile json (serializeProfile bytes). */
+  profile_json: string;
+  /** The storage instant (datetime('now') at the write). */
+  created_at: string;
+}
+
+/** The create statement of the genre profile seat — create-if-not-exists,
+ * the same migration law as ingest_documents minus the alter path: the
+ * seat is new, no old shape exists to upgrade. DDL only, a constant
+ * statement, zero parameters, zero interpolation. */
+const CREATE_GENRE_PROFILES = `
+    CREATE TABLE IF NOT EXISTS genre_profiles (
+      id            INTEGER PRIMARY KEY AUTOINCREMENT,
+      genre         TEXT NOT NULL,
+      reference_ids TEXT NOT NULL,
+      profile_json  TEXT NOT NULL,
+      created_at    TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+  `;
+
+/**
+ * Brings the genre_profiles table of any better-sqlite3 handle to the
+ * miner's law shape: the create statement lands the table when absent,
+ * idempotent on every call.
+ *
+ * @param target the database handle (the app db or a test database).
+ */
+export function migrategenreschema(target: typeof db): void {
+  target.exec(CREATE_GENRE_PROFILES);
+}
+
+/**
+ * Ensures the genre_profiles table exists at the app db (the store
+ * creates its own table so the schema stays layered).
+ */
+export function ensuregenreschema(): void {
+  migrategenreschema(db);
+}
+
+/**
+ * Stores one genre profile: the document serializes through the canonical
+ * law first (a broken profile throws the typed error honestly — no row
+ * ever lands for a document that fails the contract), then the row lands
+ * with the genre, the reference ids as json text and the canonical json —
+ * prepared and parameterized, never concatenated sql.
+ *
+ * @param profile the genre profile (schema debonair.profile/1).
+ * @param target the database handle (defaults to the app db).
+ * @returns the row id the storage assigned.
+ * @throws ProfileError when the profile fails the contract.
+ */
+export function saveGenreProfile(profile: GenreProfile, target: typeof db = db): number {
+  const json = serializeProfile(profile);
+  migrategenreschema(target);
+  const result = target
+    .prepare(`INSERT INTO genre_profiles (genre, reference_ids, profile_json) VALUES (?, ?, ?)`)
+    .run(profile.genre, JSON.stringify(profile.referenceIds), json);
+  return Number(result.lastInsertRowid);
+}
+
+/**
+ * Lists every genre profile row newest first (the vitrine order — the
+ * latest training of each genre surfaces first).
+ *
+ * @param target the database handle (defaults to the app db).
+ * @returns the rows.
+ */
+export function listGenreProfiles(target: typeof db = db): GenreProfileRow[] {
+  migrategenreschema(target);
+  return target
+    .prepare(`SELECT id, genre, reference_ids, profile_json, created_at FROM genre_profiles ORDER BY id DESC`)
+    .all() as GenreProfileRow[];
 }
