@@ -14,19 +14,27 @@
 // reshapes a public seat goes red before the release.
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
-import * as analyzemodule from "@wenathlan/debonair/analyze";
-import * as audioenginemodule from "@wenathlan/debonair/audioengine";
-import * as blobstoremodule from "@wenathlan/debonair/blobstore";
-import * as composermodule from "@wenathlan/debonair/composer";
-import * as gatewayapimodule from "@wenathlan/debonair/gatewayapi";
-import * as hpssmodule from "@wenathlan/debonair/hpss";
-import * as ingestmodule from "@wenathlan/debonair/ingest";
-import * as ingestworkermodule from "@wenathlan/debonair/ingestworker";
-import * as patternenumsmodule from "@wenathlan/debonair/patternenums";
-import * as patternminermodule from "@wenathlan/debonair/patternminer";
-import * as renderworkermodule from "@wenathlan/debonair/renderworker";
-import * as wavwritermodule from "@wenathlan/debonair/wavwriter";
 import { describe, it } from "vitest";
+
+// the db seat isolation law: the package walk pulls every engine module,
+// and the db-carrying seats open their database at import time — pointing
+// this suite's seat at its own file keeps the parallel vitest workers off
+// the shared local.db the other suites ride (the SQLITE_BUSY lesson of the
+// first CI run: one writer per wal file, every suite its own seat).
+process.env.DATABASE_URL = "file:./local.libraryface.test.db";
+
+const analyzemodule = await import("@wenathlan/debonair/analyze");
+const audioenginemodule = await import("@wenathlan/debonair/audioengine");
+const blobstoremodule = await import("@wenathlan/debonair/blobstore");
+const composermodule = await import("@wenathlan/debonair/composer");
+const gatewayapimodule = await import("@wenathlan/debonair/gatewayapi");
+const hpssmodule = await import("@wenathlan/debonair/hpss");
+const ingestmodule = await import("@wenathlan/debonair/ingest");
+const ingestworkermodule = await import("@wenathlan/debonair/ingestworker");
+const patternenumsmodule = await import("@wenathlan/debonair/patternenums");
+const patternminermodule = await import("@wenathlan/debonair/patternminer");
+const renderworkermodule = await import("@wenathlan/debonair/renderworker");
+const wavwritermodule = await import("@wenathlan/debonair/wavwriter");
 
 /** The engine subpaths the library publishes, in the map's own order: the
  * nine pure pipeline seats first, the three server lanes last. */
