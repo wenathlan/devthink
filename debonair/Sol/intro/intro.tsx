@@ -15,13 +15,13 @@
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
+import { label } from "../../labels.ts";
 import {
   loadOnboardingState,
   markIntroSeen,
   readOnboardingState,
   type VisitorOnboarding,
 } from "../../onboardingstate.ts";
-import { label } from "../../labels.ts";
 import { DebonairMark } from "../shell/Shell.tsx";
 
 /** how long the brand holds before the exit (ms) — the doctrine asks ~1.6s */

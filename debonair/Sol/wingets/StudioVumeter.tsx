@@ -24,22 +24,27 @@ type VuMeterProps = {
  * The VU column of one strip.
  *
  * @param props the strip name, the level and the resting percent.
- * @returns the meter element.
+ * @returns the meter element (the painted column plus the native reading).
  */
 export function VuMeter({ name, level, live = false, rest = 0 }: VuMeterProps) {
   const percent = live ? levelToPercent(level) : rest;
   return (
-    <div
-      className="vu"
-      role="meter"
-      aria-label={labelfill("studio.vu.aria", { name })}
-      aria-valuemin={0}
-      aria-valuemax={100}
-      aria-valuenow={Math.round(percent)}
-      data-idle={live ? undefined : "true"}
-    >
-      <i style={{ "--m": `${percent.toFixed(1)}%` } as CSSProperties} />
-    </div>
+    <>
+      {/* the painted column: presentational only — the native <meter> below
+          carries the live reading, so the visual never answers the a11y tree
+          twice (the meter widget paints no children of its own, so the
+          gradient rides this layer, the semantics ride the real element) */}
+      <div className="vu" aria-hidden="true" data-idle={live ? undefined : "true"}>
+        <i style={{ "--m": `${percent.toFixed(1)}%` } as CSSProperties} />
+      </div>
+      <meter
+        className="sr-only"
+        min={0}
+        max={100}
+        value={Math.round(percent)}
+        aria-label={labelfill("studio.vu.aria", { name })}
+      />
+    </>
   );
 }
 

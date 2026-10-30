@@ -1160,6 +1160,14 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .sparkbar path { fill: color-mix(in srgb, var(--accent) 38%, var(--surface-4)); }
 .lib-row[data-status="ready"] .sparkbar path { fill: color-mix(in srgb, var(--accent) 52%, var(--surface-4)); }
 .lib-row[data-status="draft"] .sparkbar path { fill: var(--surface-6); }
+/* the light face: the pale ladder washes the quiet mixes out (38% of the
+   dark signal over near-white reads as a ghost, and the draft surface step
+   disappears outright), so the sparkbar carries more of the signal and the
+   draft rides the quiet ink — the waveform keeps the presence it owns on
+   the dark floor */
+[data-theme="light"] .sparkbar path { fill: color-mix(in srgb, var(--accent) 68%, var(--surface-4)); }
+[data-theme="light"] .lib-row[data-status="ready"] .sparkbar path { fill: color-mix(in srgb, var(--accent) 84%, var(--surface-4)); }
+[data-theme="light"] .lib-row[data-status="draft"] .sparkbar path { fill: color-mix(in srgb, var(--ink) 26%, var(--surface-2)); }
 @media (max-width: 760px) {
   .lib-row { grid-template-columns: 26px 46px minmax(0, 1fr) auto; }
   .sparkbar { grid-column: 3 / -1; grid-row: 2; }

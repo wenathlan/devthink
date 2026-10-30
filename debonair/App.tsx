@@ -9,7 +9,7 @@
  * the theme is ever imported here.
  */
 
-import { ArrowCounterclockwiseRegular as RotateCcw, WarningRegular as AlertTriangle } from "@fluentui/react-icons";
+import { WarningRegular as AlertTriangle, ArrowCounterclockwiseRegular as RotateCcw } from "@fluentui/react-icons";
 import { Component, type ReactNode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { Router as WouterRouter } from "wouter";

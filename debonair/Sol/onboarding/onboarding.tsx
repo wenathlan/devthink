@@ -36,13 +36,6 @@ const STEP_KEYS = {
   enter: "onboarding.steps.enter",
 } as const;
 
-/** the lead key of one step. */
-const STEP_LEADS = {
-  app: "onboarding.what.title",
-  surfaces: "onboarding.hosts.title",
-  enter: "onboarding.enter.title",
-} as const;
-
 /**
  * The onboarding page: a three-step first-run dialog that hands the
  * surface to the home of the window.

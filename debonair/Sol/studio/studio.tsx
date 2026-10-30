@@ -21,6 +21,7 @@ import { rebaseSchedule } from "../../arrangement.ts";
 import { type ArrangerRole, beatSecondsOf, planTake, RACK_LANES, type TakePlan, validatePlan } from "../../arranger.ts";
 import { TakeEngine } from "../../audioengine.ts";
 import { formatClock, formatGain } from "../../dawview.ts";
+import { label, labelfill } from "../../labels.ts";
 import { effectiveGainDb, graphFromStrips, type MixerGraph, patchChannel } from "../../mixergraph.ts";
 import { reduceMotionApplied } from "../../motionpref.ts";
 import { type EditableNote, notesToSchedule, scheduleToNotes } from "../../pianoroll.ts";
@@ -36,14 +37,8 @@ import {
   TAKE_SELECT_KEY,
 } from "../../takestore.ts";
 import type { TimelineClip } from "../../timelinemodel.ts";
-import { label, labelfill } from "../../labels.ts";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
-import { Fader } from "../wingets";
-import { PianoRoll } from "../wingets";
-import { StageStepper } from "../wingets";
-import { Spectrum } from "../wingets";
-import { Timeline } from "../wingets";
-import { VuMeter } from "../wingets";
+import { Fader, PianoRoll, Spectrum, StageStepper, Timeline, VuMeter } from "../wingets";
 
 /** the demo take: a real engine plan over a fixed prompt and seed */
 const DEMO_PROMPT = "midnight studio take, warm sub bass, dusty keys, brass light";
@@ -551,7 +546,9 @@ export default function Studio() {
               </div>
               <div className="readout">
                 <span className="lbl">{label("studio.transport.target")}</span>
-                <span className="val">{labelfill("studio.transport.targetValue", { lufs: String(plan.lufsTarget) })}</span>
+                <span className="val">
+                  {labelfill("studio.transport.targetValue", { lufs: String(plan.lufsTarget) })}
+                </span>
               </div>
             </div>
           </section>
@@ -604,7 +601,11 @@ export default function Studio() {
                           data-beat={step % 4 === 0 ? "true" : undefined}
                           data-current={current ? "true" : undefined}
                           style={velocity > 0 ? { opacity: (0.42 + velocity * 0.58).toFixed(2) } : undefined}
-                          title={velocity > 0 ? labelfill("studio.rack.stepVel", { vel: (velocity * 100).toFixed(0) }) : undefined}
+                          title={
+                            velocity > 0
+                              ? labelfill("studio.rack.stepVel", { vel: (velocity * 100).toFixed(0) })
+                              : undefined
+                          }
                         />
                       );
                     })}
@@ -644,12 +645,7 @@ export default function Studio() {
                   {busyExport === kind ? label("studio.export.rendering") : EXPORT_LABELS[kind]}
                 </button>
               ))}
-              <button
-                className="tkey"
-                type="button"
-                aria-label={label("studio.export.resetAria")}
-                onClick={resetDesk}
-              >
+              <button className="tkey" type="button" aria-label={label("studio.export.resetAria")} onClick={resetDesk}>
                 {label("studio.export.reset")}
               </button>
             </div>

@@ -13,8 +13,8 @@
 import { useEffect, useState } from "react";
 import { listOptionChoices } from "../../catalog.ts";
 import { applyNow } from "../../cleanurl.ts";
-import { label } from "../../labels.ts";
 import type { OptionChoice } from "../../katexis.ts";
+import { label } from "../../labels.ts";
 import { reduceMotionApplied, setReduceMotion } from "../../motionpref.ts";
 import { currentTheme, toggleTheme } from "../../theme.ts";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
