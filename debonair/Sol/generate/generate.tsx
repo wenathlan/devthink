@@ -19,8 +19,8 @@ import { useLocation } from "wouter";
 import { planTake, type TakePlan, TOTAL_BARS } from "../../arranger.ts";
 import { formatClock } from "../../dawview.ts";
 import { GENRES, type GenreStyle, matchGenre } from "../../genrematrix.ts";
-import { label, labelfill } from "../../labels.ts";
 import { PROMPT_MAX_LENGTH } from "../../katexis.ts";
+import { label, labelfill } from "../../labels.ts";
 import { scheduleTake } from "../../takeevents.ts";
 import {
   loadTakeRecords,
@@ -188,7 +188,9 @@ export default function Generate() {
             </p>
           </div>
           <fieldset className="cell-field">
-            <legend className="field-label">{labelfill("generate.genre.legend", { count: String(GENRES.length) })}</legend>
+            <legend className="field-label">
+              {labelfill("generate.genre.legend", { count: String(GENRES.length) })}
+            </legend>
             <div className="cell-lane">
               <button
                 type="button"

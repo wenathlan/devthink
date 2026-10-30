@@ -249,21 +249,11 @@ export function Timeline({ plan, clips, playhead, selectedId, onSelect, onEdit, 
           })}
         </span>
         <div className="tled-keys">
-          <button
-            className="tled-key"
-            type="button"
-            aria-label={label("studio.timeline.splitAria")}
-            onClick={split}
-          >
+          <button className="tled-key" type="button" aria-label={label("studio.timeline.splitAria")} onClick={split}>
             <CutRegular className="tled-icon" fontSize={14} aria-hidden="true" />
             {label("studio.timeline.split")}
           </button>
-          <button
-            className="tled-key"
-            type="button"
-            aria-label={label("studio.timeline.dupAria")}
-            onClick={duplicate}
-          >
+          <button className="tled-key" type="button" aria-label={label("studio.timeline.dupAria")} onClick={duplicate}>
             <CopyRegular className="tled-icon" fontSize={14} aria-hidden="true" />
             {label("studio.timeline.dup")}
           </button>

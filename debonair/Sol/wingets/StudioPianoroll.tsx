@@ -314,7 +314,12 @@ export function PianoRoll({ plan, schedule, notes, onChange, onNotice }: RollPro
             >
               <AddRegular className="svg" fontSize={12} aria-hidden="true" />
             </button>
-            <button className="tkey" type="button" aria-label={label("studio.roll.rowUpAria")} onClick={() => transpose(1)}>
+            <button
+              className="tkey"
+              type="button"
+              aria-label={label("studio.roll.rowUpAria")}
+              onClick={() => transpose(1)}
+            >
               <AddRegular className="svg" fontSize={12} aria-hidden="true" />
               {label("studio.roll.rowKey")}
             </button>

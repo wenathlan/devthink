@@ -7,10 +7,10 @@
  * which now lives here as the page mount itself.
  */
 
+import { Link } from "wouter";
 // # NotFound — sub-anchor of the 404: dead air. The only 404 of the theme; there is
 // no 404.html anywhere.
 import { label } from "../../labels.ts";
-import { Link } from "wouter";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
 
 export default function NotFound() {
