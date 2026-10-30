@@ -1,6 +1,12 @@
 @import "tailwindcss";
 
-/* debonair Sol — the audio DAW theme (the 8-h FAMILY-FOUNDATION-2 pass).
+/* debonair Sol — the audio DAW theme (the 8-h FAMILY-FOUNDATION-2 pass,
+   re-tuned to the os design grammar by the design reform waves PV5.002 /
+   PV5.003: the shell chrome — the window glass of the os embed lane, the
+   pin rail and the player bar — wears the trylle acrylic surfaces, the
+   dark structural hairlines and the fluent shadows of the devthink os app,
+   while the home keeps the prompt-first streaming grammar over the noir
+   stage with every card riding the theme ladder — no drift tokens).
    The foundation is the devthink doctrine foundation, carried with the exact
    campaign values and wearing THE WHITE SUN as the one signal (the
    single-theme law: the name is Sol but the sun is WHITE, never yellow —
@@ -138,6 +144,7 @@
   --animate-window-out: windowOut 250ms var(--ease-window) forwards;
   --animate-menu-in: dskMenuIn 150ms var(--ease-micro) backwards;
   --animate-flyout-in: snapFlyoutIn 250ms var(--ease-fluent) backwards;
+  --animate-hero: heroIn 0.9s var(--ease-micro) backwards;
 
   /* ---- the acrylic blur bed (chrome-only glass; work surfaces stay solid) ---- */
   --blur-chrome: 20px;
@@ -166,6 +173,13 @@
   from { opacity: 0; transform: translateY(-6px); }
   to { opacity: 1; transform: translateY(0); }
 }
+/* the os hero entrance: one rise-in (opacity + the transform scale — the
+   centering translate rides the separate `translate` property, so the two
+   compose) — the desktop hero grammar of the os app */
+@keyframes heroIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
 
 /* ---- runtime tokens (not utilities): the materials, the motion durations
      and the z bands the hand-written css composes ---- */
@@ -179,6 +193,24 @@
   --ease-silk: cubic-bezier(0.2, 0.8, 0.2, 1);
 
   --focus-ring: 2px solid var(--color-focus);
+
+  /* the os chrome hairlines (the design reform PV5.002): the structural
+     seams of the shell wear the dark hairline law of the os chrome — the
+     taskbar/navbar seams read rgb(0 0 0 / 55%) on the dark face, the light
+     flip rides the block below; the white mixes stay for the content
+     hairlines of the pages */
+  --chrome-line: rgb(0 0 0 / 55%);
+  --chrome-line-soft: rgb(0 0 0 / 40%);
+
+  /* the os window glass (the embed lane): the obsidian face gradient, the
+     ring pair and the outline halo of the os shell-window recipe — the
+     tokens the .winapp frame of the os power clip wears */
+  --win-ring: rgb(255 255 255 / 8%);
+  --win-ring-strong: rgb(255 255 255 / 14%);
+  --win-outline: rgb(255 255 255 / 5%);
+  --win-face:
+    radial-gradient(120% 42% at 50% -12%, rgb(231 233 238 / 5%) 0%, transparent 62%),
+    linear-gradient(180deg, rgb(28 32 42 / 88%), rgb(20 22 29 / 94%));
 
   /* window-level material: the mica wall, the acrylic beds and the
      feTurbulence grain (.86, 2 octaves, 6%, soft-light, 140px — zero files) */
@@ -367,7 +399,7 @@
   --win-wash: var(--win-hover);
   --win-page-wash: var(--wash-soft);
   --win-scroll: var(--scrollbar-thumb);
-  --win-titlebar-h: 48px;
+  --win-titlebar-h: 30px;
 }
 
 /* the light theme: one flip on the same ladder — the devthink daylight
@@ -418,6 +450,13 @@
   --bar: rgb(243 243 243 / 85%);
   --panel: rgb(242 242 242 / 90%);
   --win-tip: rgb(249 249 249 / 92%);
+  /* the os chrome hairlines and the window glass on the light face */
+  --chrome-line: rgb(0 0 0 / 12%);
+  --chrome-line-soft: rgb(0 0 0 / 9%);
+  --win-ring: rgb(0 0 0 / 12%);
+  --win-ring-strong: rgb(0 0 0 / 18%);
+  --win-outline: rgb(255 255 255 / 65%);
+  --win-face: linear-gradient(180deg, rgb(252 252 254 / 94%), rgb(238 241 247 / 97%));
   color-scheme: light;
 }
 
@@ -495,7 +534,10 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
    window chrome exists only inside the os power clip, so the app renders
    full-bleed; the page rail rides as the app's own navigation and the
    routed stage fills the rest of the screen (no title bar, no captions,
-   no resize handles, no inactive law, no entry scale) */
+   no resize handles, no inactive law, no entry scale). The os reform
+   (PV5.002): the app surface rides the mica wall the body paints — the
+   chrome bars keep their own acrylic beds over it, the work floor stays
+   the canvas the pages own */
 .shell--standalone {
   display: flex;
   flex-direction: column;
@@ -505,7 +547,6 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: var(--bg);
 }
 .section { padding: clamp(38px, 8vw, 104px) 0; }
 .section-head { max-width: 640px; margin-bottom: 38px; }
@@ -616,8 +657,11 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .appframe[data-maximized="true"] { padding: 0; }
 .winapp {
   position: relative; z-index: var(--z-content); display: flex; flex-direction: column; flex: 1;
-  width: min(1200px, 100%); min-height: 0; border: 1px solid var(--line-strong); border-radius: var(--win-radius);
-  background: var(--bg); box-shadow: var(--shadow-window); overflow: hidden;
+  width: min(1200px, 100%); min-height: 0; border: 1px solid var(--win-ring); border-radius: var(--win-radius);
+  background: var(--win-face); outline: 1px solid var(--win-outline); outline-offset: 0;
+  box-shadow: var(--shadow-window), inset 0 1px 0 rgb(255 255 255 / 6%);
+  -webkit-backdrop-filter: blur(26px) saturate(130%); backdrop-filter: blur(26px) saturate(130%);
+  overflow: hidden;
   transform: translate(var(--winapp-x, 0px), var(--winapp-y, 0px));
   animation: winappOpen var(--dur-2) var(--ease-window) backwards;
 }
@@ -626,29 +670,35 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .winapp[data-sized="true"] { flex: none; }
 /* the windows inactive law: a window the document is not focused on turns grayscale */
 .winapp[data-inactive="true"] { filter: grayscale(80%); }
-/* the title bar: brand at the left (the ONE logo slot), the theme flip and
-   the caption zone flush at the right edge; the acrylic rides the grain */
+/* the title bar (the embed-lane window): the os titlebar law — the 30px
+   acrylic strip (blur 20px saturate 140%), the dark hairline seam, the
+   caption zones as the fluent 46px hover strips with the left separators;
+   state colors switch instantly, never a shadow transition */
 .winapp__title {
-  display: flex; align-items: center; flex: none; height: 44px; padding-left: 12px;
+  display: flex; align-items: center; flex: none; height: var(--win-titlebar-h); padding-left: 14px;
   background-color: var(--bar); background-image: var(--noise); background-blend-mode: soft-light;
-  border-bottom: 1px solid var(--line);
-  backdrop-filter: saturate(3) blur(20px); -webkit-backdrop-filter: saturate(3) blur(20px);
+  border-bottom: 1px solid var(--chrome-line);
+  -webkit-backdrop-filter: blur(20px) saturate(140%); backdrop-filter: blur(20px) saturate(140%);
   cursor: default; touch-action: none; user-select: none; -webkit-user-select: none;
 }
+[data-theme="light"] .winapp__title { background-color: rgb(0 0 0 / 3%); }
 .winapp__title[data-dragging="true"] { cursor: grabbing; }
 .winapp__brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
-.winapp__name { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); white-space: nowrap; }
-.winapp__role { overflow: hidden; font-size: 12px; color: var(--ink-2); text-overflow: ellipsis; white-space: nowrap; }
+.winapp__name { font-size: 12px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); white-space: nowrap; }
+.winapp__role { overflow: hidden; font-size: 9px; line-height: 1.4; letter-spacing: 0.06em; text-transform: lowercase; color: var(--ink-2); font-family: var(--font-mono); text-overflow: ellipsis; white-space: nowrap; }
 .winapp__caption { display: flex; align-self: stretch; margin-left: auto; align-items: center; }
 .winapp__cap {
-  display: grid; place-items: center; width: 44px; border: 0; border-radius: var(--win-radius-ctl); background: transparent; color: var(--ink-2);
-  transition: background-color var(--sol-micro) var(--sol-ease-out), color var(--sol-micro) var(--sol-ease-out);
+  display: grid; place-items: center; width: 46px; border: 0; border-left: 1px solid rgb(255 255 255 / 5%);
+  border-radius: var(--win-radius-ctl); background: transparent; color: var(--ink-2);
 }
-.winapp__cap:hover { background-color: var(--wash); color: var(--ink); }
-.winapp__cap:active { background-color: var(--wash-soft); }
-/* the fluent red close (the caption law): rgb(232,17,35), hover deepens */
-.winapp__cap--close:hover { background-color: rgb(232 17 35); color: var(--win-caption-ink); }
-.winapp__cap--close:active { background-color: rgb(139 10 20); }
+[data-theme="light"] .winapp__cap { border-left-color: rgb(0 0 0 / 10%); }
+.winapp__cap:hover { background-color: rgb(255 255 255 / 8%); color: var(--ink); }
+[data-theme="light"] .winapp__cap:hover { background-color: rgb(0 0 0 / 6%); }
+.winapp__cap:active { background-color: rgb(255 255 255 / 12%); }
+[data-theme="light"] .winapp__cap:active { background-color: rgb(0 0 0 / 9%); }
+/* the fluent red close (the caption law): the close tokens, the fixed glyph ink */
+.winapp__cap--close:hover { background-color: var(--win-close); color: var(--win-caption-ink); }
+.winapp__cap--close:active { background-color: var(--win-close-hot); color: var(--win-caption-ink); }
 .winapp__cap:focus-visible { outline-offset: -4px; }
 /* the eight resize handles of the window chrome (n/s/e/w + the corners) —
    laid inside the edge (the window clips its overflow, the border is still
@@ -667,49 +717,74 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .winapp__stage { flex: 1; min-height: 0; min-width: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; }
 .winapp__stage > main.shell { display: flex; flex-direction: column; flex: 1 0 auto; width: 100%; }
 
-/* railnav — the 48px vertical icon rail riding the windows pin law: 38×38
-   r4 pins (the 10 control corners on the 11 rail), the hover wash on 0.2s
-   ease, the press at scale .7 on 100ms, the mount pops the pins in
-   (dtPopIntro), the ladder indicator marks hover/active and the acrylic
-   tooltip names the page */
-.railnav { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 48px; flex: none; padding: var(--space-2) 0; border-right: 1px solid var(--line); }
-.railnav__item {
-  position: relative; display: grid; place-items: center; width: 38px; height: 38px; flex: none;
-  border: 0; border-radius: var(--win-radius-ctl); background: transparent; color: var(--ink-2);
-  transition: background-color 0.2s ease, color 0.2s ease, transform var(--dur-press) ease-in-out;
+/* railnav — the 48px vertical icon rail of the os grammar (the navbar rail
+   law): the acrylic bar bed with the dark structural hairline on the
+   content edge, the 44px hit cells carrying the 38×38 r4 pin faces (the
+   face is the Windows button, the cell is the touch target — the ≥44px
+   rule), the hover wash on the face in 0.2s, the press at scale .7 on
+   100ms, the mount pops the faces in (dtPopIntro, staggered), the open/
+   active ladder rides the screen-edge side (3px wide, 0 closed → 6px
+   hover neutral → 12px the current page on the windows accent) and the
+   acrylic tooltip names the page beside the pin */
+.railnav {
+  display: flex; flex-direction: column; align-items: center; gap: 2px; width: 48px; flex: none; padding: var(--space-2) 0;
+  border-right: 1px solid var(--chrome-line);
+  background-color: var(--bar); background-image: var(--noise); background-blend-mode: soft-light;
+  -webkit-backdrop-filter: saturate(3) blur(20px); backdrop-filter: saturate(3) blur(20px);
 }
-.railnav__item:hover { background: var(--wash); color: var(--ink); text-decoration: none; }
+.railnav__item {
+  position: relative; display: grid; place-items: center; width: 44px; height: 44px; flex: none;
+  border: 0; background: transparent; color: var(--ink-2);
+  transition: color 0.2s ease, transform var(--dur-press) ease-in-out;
+}
+.railnav__item:hover { color: var(--ink); text-decoration: none; }
 .railnav__item:active { transform: scale(0.7); }
 .railnav__item:focus-visible { outline: 2px solid var(--win-accent); outline-offset: -2px; }
-/* the ladder indicator: 12px track, scaleX 0 closed → 0.5 hover (#858585) →
-   1 active on the windows accent — the ladder is chrome, the signal never
-   wears it; transform only */
-.railnav__item::after { content: ""; position: absolute; bottom: 2px; left: 50%; width: 12px; height: 3px; border-radius: 4px; background: #858585; opacity: 0; transform: translateX(-50%) scaleX(0); transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out, background-color 0.2s ease-in-out; }
-.railnav__item:hover::after, .railnav__item:focus-visible::after { opacity: 1; transform: translateX(-50%) scaleX(0.5); }
-.railnav__item[aria-current="page"]::after { opacity: 1; transform: translateX(-50%) scaleX(1); background: var(--color-win); }
-/* the acrylic tooltip: the pin's name, fade + slide on 0.2s, also by focus */
+/* the pin face: the 38×38 r4 Windows button inside the hit cell — the wash
+   rides the face, the glyph rides the face, the cell stays the target */
+.railnav__face {
+  display: grid; place-items: center; width: 38px; height: 38px; border-radius: var(--win-radius-ctl);
+  background: transparent; transition: background-color 0.2s ease;
+}
+.railnav__item:hover .railnav__face, .railnav__item:focus-visible .railnav__face { background: var(--win-hover); }
+.railnav__item:active .railnav__face { background: var(--win-active); }
+/* the open/active ladder (the os rail law): the 3px bar on the screen-edge
+   side of the cell — height 0 closed → 6px hover on the neutral → 12px the
+   current page on the windows accent; height only, never a fade */
+.railnav__item::after {
+  content: ""; position: absolute; left: 0; top: 50%; width: 3px; height: 0; border-radius: 2px;
+  background: var(--win-open); translate: 0 -50%;
+  transition: height 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+.railnav__item:hover::after, .railnav__item:focus-visible::after { height: 6px; }
+.railnav__item[aria-current="page"]::after { height: 12px; background: var(--color-win); }
+/* the acrylic tooltip: the pin's name (the os tip recipe — the grain, the
+   blur bed, the hairline ring), fade + slide on 0.2s, also by focus */
 .railnav__item::before {
   content: attr(data-tip); position: absolute; left: calc(100% + 10px); top: 50%; z-index: var(--z-bar);
   padding: 5px 9px; border-radius: var(--win-radius-ctl); background-color: var(--win-tip); background-image: var(--noise);
+  border: 1px solid var(--win-ring);
   box-shadow: var(--shadow-flyout); color: var(--ink); font-size: 12px; font-weight: 500; line-height: 1.3; white-space: nowrap;
+  -webkit-backdrop-filter: saturate(3) blur(20px); backdrop-filter: saturate(3) blur(20px);
   opacity: 0; transform: translateY(-50%) translateX(-4px); pointer-events: none;
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
+[data-theme="light"] .railnav__item::before { border-color: rgb(0 0 0 / 12%); color: #1a1a1a; }
 .railnav__item:hover::before, .railnav__item:focus-visible::before { opacity: 1; transform: translateY(-50%) translateX(0); }
 @media (prefers-reduced-motion: no-preference) {
-  .railnav--enter .railnav__item { animation: dtPopIntro 800ms ease-in-out backwards; }
-  .railnav--enter .railnav__item:nth-child(2) { animation-delay: 60ms; }
-  .railnav--enter .railnav__item:nth-child(3) { animation-delay: 120ms; }
-  .railnav--enter .railnav__item:nth-child(4) { animation-delay: 180ms; }
-  .railnav--enter .railnav__item:nth-child(5) { animation-delay: 240ms; }
-  .railnav--enter .railnav__item:nth-child(6) { animation-delay: 300ms; }
+  .railnav--enter .railnav__face { animation: dtPopIntro 800ms ease-in-out backwards; }
+  .railnav--enter .railnav__item:nth-child(2) .railnav__face { animation-delay: 60ms; }
+  .railnav--enter .railnav__item:nth-child(3) .railnav__face { animation-delay: 120ms; }
+  .railnav--enter .railnav__item:nth-child(4) .railnav__face { animation-delay: 180ms; }
+  .railnav--enter .railnav__item:nth-child(5) .railnav__face { animation-delay: 240ms; }
+  .railnav--enter .railnav__item:nth-child(6) .railnav__face { animation-delay: 300ms; }
 }
 /* dtPopIntro now rides the foundation keyframe (the @theme physics block) */
 
 /* the rail foot — the family row of the window chrome: one accent dot per
    sibling (a true dot, never a pill), hover wash + dot lift, press on the
    family pin law; the fieldset reset keeps the row chromeless */
-.railnav__foot { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; margin: auto 0 0; padding: 8px 0 2px; border: 0; border-top: 1px solid var(--line); min-inline-size: 0; }
+.railnav__foot { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; margin: auto 0 0; padding: 8px 0 2px; border: 0; border-top: 1px solid var(--chrome-line); min-inline-size: 0; }
 .railnav__fam { display: grid; place-items: center; width: 36px; height: 20px; border-radius: var(--win-radius-ctl); transition: background-color var(--sol-micro) var(--sol-ease-out), transform var(--dur-press) ease-in-out; }
 .railnav__fam:hover { background: var(--wash); }
 .railnav__fam:active { transform: scale(0.7); }
@@ -850,7 +925,15 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   background:
     radial-gradient(920px 560px at 50% -12%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 70%),
     radial-gradient(1200px 520px at 50% 122%, color-mix(in srgb, var(--color-win) 7%, transparent), transparent 74%),
+    radial-gradient(900px 620px at 6% 108%, rgb(201 205 214 / 5%), transparent 58%),
     var(--hero-floor);
+}
+/* the os hero entrance (PV5.003): one macro rise of the whole stage — the
+   scale .94 → 1 breath on the micro curve — while the reveal children play
+   their staggered rises (the macro + micro composition of the os desktop:
+   heroIn over the cell entrances); the hard stops below own the guard */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-stage { animation: heroIn 0.9s var(--ease-micro) backwards; }
 }
 .hero-light { position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(680px 520px at 50% 2%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 72%), radial-gradient(160px 120px at 50% 6%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 82%); }
 .hero-lockup { display: flex; align-items: center; gap: 14px; margin-bottom: 36px; }
@@ -1238,14 +1321,18 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
    hard stops below stay the last word.
    ========================================================================== */
 :root {
-  /* the suno neutrals (the dumbo ladder, captured from the site css) */
-  --suno-base: #101012;
-  --suno-panel: #1c1c1f;
-  --suno-raise: #252529;
-  --suno-ink: #f7f4ef;
-  --suno-ink-2: #c2c2c1;
-  --suno-ink-3: #7d7c83;
-  --suno-edge: rgb(255 255 255 / 10%);
+  /* the suno neutrals — the os reform (PV5.003) retires the captured dumbo
+     ladder: every streaming surface now rides the theme's own 8-step ladder
+     and the hairline ring, so the cards answer the trylle grammar on both
+     faces; only the true materials (the prompt well, the aura pair, the
+     shimmer shine) stay the streaming pass's own recipe */
+  --suno-base: var(--color-deep);
+  --suno-panel: var(--color-s0);
+  --suno-raise: var(--color-s1);
+  --suno-ink: var(--color-ink);
+  --suno-ink-2: var(--color-ink-2);
+  --suno-ink-3: var(--color-ink-3);
+  --suno-edge: var(--color-hairline-strong);
   --suno-edge-strong: rgb(255 255 255 / 15%);
   --suno-shine: rgb(255 255 255 / 6%);
 
@@ -1265,10 +1352,12 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   --suno-aura-warm: rgb(255 255 255 / 5%);
   --suno-aura-cool: rgb(254 60 125 / 5%);
 
-  /* the trylle card surfaces the pass pins (the ladder foot → the raise) */
-  --suno-card-a: #171717;
-  --suno-card-b: #1e1e1e;
-  --suno-card-hover: #252525;
+  /* the streaming card surfaces on the theme ladder (the trylle rise: the
+     foot at the crown, one step lighter at the base, the hover lifts one
+     more — depth by surface step, the ladder flips both themes alone) */
+  --suno-card-a: var(--color-s0);
+  --suno-card-b: var(--color-s1);
+  --suno-card-hover: var(--color-s2);
 
   /* the white sun deep pole (the brand mark's own story rides the mark itself) */
   --dbn-brass: var(--color-signal-deep);
@@ -1277,9 +1366,8 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   --suno-field: rgb(16 16 18 / 55%);
 }
 [data-theme="light"] {
-  --suno-card-a: #fcfcfc;
-  --suno-card-b: #f4f4f5;
-  --suno-card-hover: #fafafa;
+  --suno-edge-strong: rgb(0 0 0 / 18%);
+  --suno-shine: rgb(0 0 0 / 5%);
   --suno-field: rgb(255 255 255 / 72%);
   --suno-aura-warm: rgb(63 67 75 / 8%);
   --suno-aura-cool: rgb(0 103 192 / 6%);
@@ -1569,7 +1657,9 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   transform-origin: 0 50%;
 }
 
-/* ---- the player bar: the suno bar on the windows acrylic ---- */
+/* ---- the player bar: the suno bar on the windows acrylic (the os taskbar
+   law: the bar bed rgb(32 32 32 / 75%) + saturate(3) blur(20px) + grain
+   over the one dark structural hairline at its crown) ---- */
 .playerbar {
   position: relative;
   z-index: var(--z-bar);
@@ -1579,7 +1669,7 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   min-height: 64px;
   margin: 0;
   padding: 10px 14px;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--chrome-line);
   background-color: var(--bar);
   background-image: var(--noise);
   background-blend-mode: soft-light;
@@ -1587,6 +1677,12 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   -webkit-backdrop-filter: saturate(3) blur(20px);
   /* the silk bar: the inset highlight closes the acrylic from the top */
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), 0 -8px 24px -16px rgb(0 0 0 / 45%);
+}
+/* the live state: the cover of the running take wears the accent ring —
+   the state color switches instantly (the os e18 law, never a transition) */
+.playerbar[data-playing="true"] .pbar-cover {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-win) 55%, transparent),
+    0 0 0 3px color-mix(in srgb, var(--color-win) 16%, transparent);
 }
 .pbar-identity {
   display: flex;
@@ -1733,6 +1829,8 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 /* ---- the floors: the new acrylic surfaces land solid, the blur dies ---- */
 @media (prefers-reduced-transparency: reduce) {
   .playerbar,
+  .railnav,
+  .railnav__item::before,
   .prompt-giga,
   .song-play {
     background-color: var(--surface-2);
@@ -1830,8 +1928,10 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 [data-motion="reduced"] .sol-mark__bar,
 [data-motion="reduced"] .cellrun span::after,
 [data-motion="reduced"] .railnav__item,
+[data-motion="reduced"] .railnav__face,
 [data-motion="reduced"] .railnav__item::before,
 [data-motion="reduced"] .railnav__item::after,
+[data-motion="reduced"] .hero-stage,
 [data-motion="reduced"] .icon-anim,
 [data-motion="reduced"] .winapp,
 [data-motion="reduced"] .winintro,
@@ -1850,7 +1950,7 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 [data-motion="reduced"] .reveal { opacity: 1; transform: none; }
 @media (prefers-reduced-transparency: reduce) {
   /* the solid floors: every acrylic surface lands on a rung, the blur dies */
-  .winapp__title, .winonboard__head, .winonboard__card, .winchip, .toast {
+  .winapp__title, .winonboard__head, .winonboard__card, .winchip, .toast, .railnav {
     background-color: var(--surface-2);
     background-image: none;
     backdrop-filter: none;

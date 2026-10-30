@@ -4,14 +4,16 @@
  * slot, the engine duration, the play key that rides the player bus) and the
  * loading skeleton that stands in while the catalog table answers. The
  * stagger (60ms a card) and the shimmer sweep ride the suno pass of
- * Sol/sol.css and stay transform/opacity only.
+ * Sol/sol.css and stay transform/opacity only; the os reform (PV5.003)
+ * lands the card surfaces on the theme ladder — the streaming grammar over
+ * the trylle recipe, presentation only, the same catalog data.
  */
 
 import { PlayFilled } from "@fluentui/react-icons";
 import type { CSSProperties } from "react";
 import type { TakePlan } from "../../arranger.ts";
-import { labelfill } from "../../labels.ts";
 import type { LibraryTrackRow } from "../../katexis.ts";
+import { labelfill } from "../../labels.ts";
 import { CoverArt } from "./HomeCoverart.tsx";
 
 /** The props of one song card. */
