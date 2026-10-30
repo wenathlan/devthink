@@ -16,7 +16,7 @@ import type { LabelRow } from "./db.ts";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 3;
+export const LABEL_REVISION = 4;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -87,6 +87,8 @@ export const LABEL_MANIFEST = {
   "shell.playerbar.pauseTitle": "Pause the take",
   "shell.playerbar.playTitle": "Play the take",
   "shell.playerbar.next": "Next take",
+  "shell.playerbar.referenceLine": "reference · {mime} · {clock}",
+  "shell.playerbar.openBenchTitle": "{name} — open the ingest bench",
   // the studio page anchor and its wingets
   "studio.cta": "Generate a track",
   "studio.eyebrow": "debonair · studio",
@@ -320,6 +322,18 @@ export const LABEL_MANIFEST = {
   "ingest.toast.storedDb": "stored in the library",
   "ingest.toast.storedOffline": "stored in the offline mirror",
   "ingest.toast.dropped": "record dropped",
+  // the playback proof of the bench (wave PV2.003/004): the stored mix and
+  // the stems play through the shared bus
+  "ingest.action.play": "play the mix",
+  "ingest.action.pause": "pause the mix",
+  "ingest.action.playAria": "Play the stored mix of {name}",
+  "ingest.audition.eyebrow": "the stem audition",
+  "ingest.audition.hint": "one bus lane — solo a stem, the other rides muted; the pair conserves the mix",
+  "ingest.audition.solo": "solo",
+  "ingest.audition.soloAria": "Solo the {stem} stem",
+  "ingest.audition.mute": "mute",
+  "ingest.audition.muteAria": "Mute the {stem} stem",
+  "ingest.audition.muted": "muted",
   // the intro page anchor (the akash-floor splash)
   "intro.aria": "debonair is opening",
   "intro.name": "debonair",
@@ -338,6 +352,12 @@ export const LABEL_MANIFEST = {
   "library.row.open": "Studio",
   "library.row.drop": "Drop",
   "library.row.meta": "{genre} · {bpm} bpm · {key} · {clock} · seed {seed}",
+  "library.row.playAria": "Play {name}",
+  "library.row.pauseAria": "Pause {name}",
+  "library.row.referenceMeta": "reference · {clock} · {mime}",
+  "library.references.aria": "Ingested references",
+  "library.references.head": "ingested references — {count}",
+  "library.references.empty": "No references yet — ingest a real track on the bench.",
   "library.empty.match": "No takes match “{needle}”.",
   "library.empty.shelf": "The shelf is empty — compose a take in the composer.",
   "library.toast.dropped": "{name} left the shelf",

@@ -11,7 +11,7 @@
 
 import type { AudioReport } from "./analyze.ts";
 import { analyze } from "./analyze.ts";
-import { separate } from "./hpss.ts";
+import { type StemPair, separate } from "./hpss.ts";
 import { chromaOf, FFT_SIZE, fftInPlace, HANN_TABLE } from "./spectrum.ts";
 
 /** The ingest document schema this pipeline writes (the only one). */
@@ -288,6 +288,45 @@ export interface IngestOptions {
   at?: string;
 }
 
+/** The decomposition the bench plays back: the ingest document plus the
+ * stem pcm the wav lane stores (one hpss pass, the analysis and the stored
+ * bytes share the same separation — the conservation the audition proves
+ * is the one the document pins). */
+export interface IngestDecomposition {
+  /** The parametrized document (schema debonair.ingest/1). */
+  doc: IngestDocument;
+  /** The harmonic stem pcm the wav lane encodes. */
+  harmonic: Float32Array;
+  /** The percussive stem pcm the wav lane encodes. */
+  percussive: Float32Array;
+}
+
+/**
+ * Decomposes one mono pcm into the document AND the stems in hand — the
+ * playback-proof lane: the bench separates once, hands every stem to this
+ * call, and receives the same document ingestPcm answers beside the stem
+ * pcm the mix and stem wavs encode (the deterministic document stays
+ * byte-identical to the ingestPcm path).
+ *
+ * @param mono the decoded pcm (any sample rate; the document records it).
+ * @param stems the hpss pair the caller separated (separate(mono)).
+ * @param sampleRate the sample rate of the pcm.
+ * @param options the name and optional instant.
+ * @returns the document plus the stem pcm.
+ */
+export function decompose(
+  mono: Float32Array,
+  stems: StemPair,
+  sampleRate: number,
+  options: IngestOptions,
+): IngestDecomposition {
+  return {
+    doc: documentOf(mono, stems.harmonic, stems.percussive, sampleRate, options),
+    harmonic: stems.harmonic,
+    percussive: stems.percussive,
+  };
+}
+
 /**
  * Decomposes one mono pcm into the ingest document: hpss stems, per-stem
  * reports, onset lists and the mix report — the pre-training data one real
@@ -300,6 +339,27 @@ export interface IngestOptions {
  */
 export function ingestPcm(mono: Float32Array, sampleRate: number, options: IngestOptions): IngestDocument {
   const { harmonic, percussive } = separate(mono);
+  return documentOf(mono, harmonic, percussive, sampleRate, options);
+}
+
+/**
+ * Builds the ingest document over a separation the caller owns (the one
+ * constructor the decompose and ingestPcm lanes share).
+ *
+ * @param mono the mix pcm.
+ * @param harmonic the harmonic stem pcm.
+ * @param percussive the percussive stem pcm.
+ * @param sampleRate the sample rate of the pcm.
+ * @param options the name and optional instant.
+ * @returns the ingest document (schema debonair.ingest/1).
+ */
+function documentOf(
+  mono: Float32Array,
+  harmonic: Float32Array,
+  percussive: Float32Array,
+  sampleRate: number,
+  options: IngestOptions,
+): IngestDocument {
   const reportOf = (pcm: Float32Array): AudioReport => analyze(Array.from(pcm), sampleRate, { fingerprint: false });
   const harmonicOnsets = onsetSecondsOf(harmonic, sampleRate);
   const percussiveOnsets = onsetSecondsOf(percussive, sampleRate);

@@ -16,8 +16,11 @@
 // second — centroid, flatness, chroma, bands, onsets), store (the gateway
 // first, the offline mirror when the platform is away). Every stage yields
 // to the paint between steps, so the bench shows the engine working instead
-// of freezing. The shelf below lists what the library already holds and
-// drops what it must not keep.
+// of freezing. The playback proof rides the same decomposition: the mix and
+// the stems encode to wavs under blob pointers (the session mirror), the
+// reference takes ride the shared playerbus, and the play keys below press
+// them through the same bar the generated takes ride. The shelf lists what
+// the library already holds and drops what it must not keep.
 
 import {
   ArrowDownloadRegular,
@@ -27,12 +30,27 @@ import {
   DataUsageRegular,
   DeleteRegular,
   MusicNote2Regular,
+  PauseRegular,
+  PlayFilled,
+  SpeakerMuteRegular,
 } from "@fluentui/react-icons";
 import { type ChangeEvent, type DragEvent, useEffect, useRef, useState } from "react";
+import { type BlobPointer, sessionblobstore } from "../../blobstore.ts";
 import { formatClock } from "../../dawview.ts";
-import { type IngestDocument, ingestPcm } from "../../ingest.ts";
+import { separate } from "../../hpss.ts";
+import { decompose, type IngestDocument } from "../../ingest.ts";
 import { droppingest, type IngestRecord, listingests, saveingest } from "../../ingeststore.ts";
-import { label, labelfill, type LabelKey } from "../../labels.ts";
+import { type LabelKey, label, labelfill } from "../../labels.ts";
+import {
+  busFeature,
+  busPause,
+  busPlay,
+  busSubscribe,
+  type PlayerSnapshot,
+  type ReferenceTake,
+  saveReferenceTake,
+} from "../../playerbus.ts";
+import { writeWav16 } from "../../wavwriter.ts";
 import { Shell } from "../shell/Shell.tsx";
 import { useToast } from "../toast/Toast.tsx";
 
@@ -66,6 +84,69 @@ async function decodeMono(file: File): Promise<{ mono: Float32Array; sampleRate:
     for (let i = 0; i < data.length; i++) mono[i] += data[i] / channels;
   }
   return { mono, sampleRate: buffer.sampleRate };
+}
+
+/** The session blob lane the bench's wavs ride: the offline seat the playerbus
+ * seam reads before the gateway (the same law the ingest mirror answers). */
+const blobs = sessionblobstore();
+
+/** Encodes one pcm lane to a wav and stores it under a fresh blob pointer
+ * (null when the lane refused the bytes — the play keys stay absent). */
+async function storeWav(pcm: Float32Array, sampleRate: number): Promise<BlobPointer | null> {
+  try {
+    const answer = await blobs.put(writeWav16([pcm], sampleRate), "audio/wav");
+    return answer.ok ? answer.pointer : null;
+  } catch {
+    return null;
+  }
+}
+
+/** One audition row: the stem label and its reference take. */
+interface StemAudition {
+  stem: "harmonic" | "percussive";
+  take: ReferenceTake;
+}
+
+/** The reference takes of one decomposition: the stored mix the bar plays
+ * and the stem takes the audition solos (each a blob pointer). */
+interface ReferenceAudio {
+  mix: ReferenceTake;
+  stems: StemAudition[];
+}
+
+/** Builds the reference takes: the mix and both stems encode to wavs and
+ * land in the session blob lane, each pointer becoming one reference take
+ * the shared bus plays. Null answers when any lane refused its bytes. */
+async function buildReferenceAudio(
+  name: string,
+  mono: Float32Array,
+  harmonic: Float32Array,
+  percussive: Float32Array,
+  sampleRate: number,
+): Promise<ReferenceAudio | null> {
+  const [mix, harmonicPointer, percussivePointer] = await Promise.all([
+    storeWav(mono, sampleRate),
+    storeWav(harmonic, sampleRate),
+    storeWav(percussive, sampleRate),
+  ]);
+  if (!mix || !harmonicPointer || !percussivePointer) return null;
+  const durationSeconds = mono.length / sampleRate;
+  const takeOf = (pointer: BlobPointer, display: string, takeId: string): ReferenceTake => ({
+    kind: "reference",
+    id: takeId,
+    name: display,
+    source: { blobId: pointer.id, mime: "audio/wav", name: display, durationSeconds },
+  });
+  return {
+    mix: takeOf(mix, name, `reference-${mix.id}`),
+    stems: [
+      { stem: "harmonic", take: takeOf(harmonicPointer, `${name} harmonic`, `reference-${harmonicPointer.id}`) },
+      {
+        stem: "percussive",
+        take: takeOf(percussivePointer, `${name} percussive`, `reference-${percussivePointer.id}`),
+      },
+    ],
+  };
 }
 
 /** The stem card the bench shows one analyzed stem in. */
@@ -126,22 +207,30 @@ function IngestSurface() {
   const [phase, setPhase] = useState<BenchPhase>("idle");
   const [fileName, setFileName] = useState("");
   const [doc, setDoc] = useState<IngestDocument | null>(null);
+  const [audio, setAudio] = useState<ReferenceAudio | null>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState<"db" | "offline" | null>(null);
   const [drag, setDrag] = useState(false);
   const [records, setRecords] = useState<readonly IngestRecord[]>([]);
   const [copied, setCopied] = useState(false);
+  const [view, setView] = useState<PlayerSnapshot | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const loadShelf = (): void => {
     listingests().then((rows) => setRecords(rows));
   };
   useEffect(loadShelf, []);
+  // the shared bus answers the live transport state: the play keys wear the
+  // sounding take, exactly the snapshot the shell bar renders
+  useEffect(() => busSubscribe(setView), []);
+  const soundingId = view?.playing ? (view.takes[view.index]?.id ?? "") : "";
 
   /** The bench flow: each phase yields to the paint, the document assembles
-   * once and the shelf reloads after a save. */
+   * once, the wavs land in the blob lane and the shelf reloads after a
+   * save. The one hpss pass feeds the analysis and the stored bytes both. */
   const ingest = async (file: File): Promise<void> => {
     setDoc(null);
+    setAudio(null);
     setSaved(null);
     setFileName(file.name.replace(/\.[^.]+$/, ""));
     try {
@@ -150,12 +239,17 @@ function IngestSurface() {
       const { mono, sampleRate } = await decodeMono(file);
       setPhase("separate");
       await tick();
+      const stems = separate(mono);
       setPhase("analyze");
       await tick();
       setPhase("segment");
       await tick();
-      const document = ingestPcm(mono, sampleRate, { name: file.name.replace(/\.[^.]+$/, "") });
+      const name = file.name.replace(/\.[^.]+$/, "");
+      const { doc: document, harmonic, percussive } = decompose(mono, stems, sampleRate, { name });
+      const takes = await buildReferenceAudio(name, mono, harmonic, percussive, sampleRate);
       setDoc(document);
+      setAudio(takes);
+      if (takes) saveReferenceTake(takes.mix);
       setPhase("ready");
       toast.show(
         labelfill("ingest.toast.decomposed", {
@@ -222,6 +316,16 @@ function IngestSurface() {
     await droppingest(id);
     toast.show(label("ingest.toast.dropped"));
     loadShelf();
+  };
+
+  /** Presses one reference take through the shared bus: the bar carries it
+   * (the same transport the generated takes ride), the key toggles in place. */
+  const playTake = (take: ReferenceTake): void => {
+    if (soundingId === take.id) busPause();
+    else {
+      busFeature(take);
+      busPlay(0);
+    }
   };
 
   const phaseRow = PHASES.find((p) => p.id === phase) ?? PHASES[0];
@@ -319,7 +423,75 @@ function IngestSurface() {
               />
             ))}
           </div>
+          {/* THE AUDITION — the stems the bench stored, soloed one bus lane at a
+              time: the solo key presses a stem through the shared playerbus, the
+              other rides muted (the honest one-lane law — nothing fakes
+              layering), and the mix key above answers the conserved sum */}
+          {audio ? (
+            <div className="ing-audition">
+              <p className="ing-audition-head">
+                <MusicNote2Regular fontSize={14} aria-hidden="true" />
+                {label("ingest.audition.eyebrow")}
+              </p>
+              <p className="ing-audition-hint">{label("ingest.audition.hint")}</p>
+              <ul className="ing-audition-list">
+                {audio.stems.map(({ stem, take }) => {
+                  const soloed = soundingId === take.id;
+                  return (
+                    <li key={take.id} className="ing-audition-row" data-soloed={soloed || undefined}>
+                      <span className="ing-audition-name">{stem}</span>
+                      <span className={`ing-audition-state${soloed ? " is-solo" : ""}`}>
+                        {soloed ? label("ingest.audition.solo") : label("ingest.audition.muted")}
+                      </span>
+                      <button
+                        className="ing-audition-key"
+                        type="button"
+                        aria-pressed={soloed}
+                        aria-label={labelfill("ingest.audition.soloAria", { stem })}
+                        title={labelfill("ingest.audition.soloAria", { stem })}
+                        onClick={() => playTake(take)}
+                      >
+                        {soloed ? (
+                          <PauseRegular fontSize={14} aria-hidden="true" />
+                        ) : (
+                          <PlayFilled fontSize={14} aria-hidden="true" />
+                        )}
+                      </button>
+                      <button
+                        className="ing-audition-key"
+                        type="button"
+                        aria-pressed={!soloed}
+                        aria-label={labelfill("ingest.audition.muteAria", { stem })}
+                        title={labelfill("ingest.audition.muteAria", { stem })}
+                        onClick={() => {
+                          if (soloed) busPause();
+                        }}
+                      >
+                        <SpeakerMuteRegular fontSize={14} aria-hidden="true" />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ) : null}
           <div className="ing-actions">
+            {audio ? (
+              <button
+                className="btn primary"
+                type="button"
+                aria-pressed={soundingId === audio.mix.id}
+                aria-label={labelfill("ingest.action.playAria", { name: doc.name })}
+                onClick={() => playTake(audio.mix)}
+              >
+                {soundingId === audio.mix.id ? (
+                  <PauseRegular fontSize={15} aria-hidden="true" />
+                ) : (
+                  <PlayFilled fontSize={15} aria-hidden="true" />
+                )}
+                {soundingId === audio.mix.id ? label("ingest.action.pause") : label("ingest.action.play")}
+              </button>
+            ) : null}
             <button className="btn primary" type="button" onClick={() => void save()} disabled={saving}>
               <DataUsageRegular fontSize={15} aria-hidden="true" />
               {saving ? label("ingest.action.storing") : label("ingest.action.store")}
