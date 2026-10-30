@@ -8,8 +8,11 @@
 // grayscale, no entry scale). The WINDOW (the draggable frame with the
 // captions and the eight handles) exists ONLY when the app is embedded
 // inside the DevThink OS power clip — the framed contract below renders
-// the routed stage bare (shell--embedded) and the OS draws the window
-// around it. The file also exports every shared primitive the page
+// the SAME surface tree under the shell--embedded seat: the sectioned
+// rail and the routed stage answer in both seats so the design is
+// IDENTICAL at the direct url and inside the os window (the window-era
+// law), and the OS draws the window chrome around it. The file also
+// exports every shared primitive the page
 // folders import from "./shell/Shell" (or "@/shell/Shell"): PageShell,
 // SaddleMark, SectionRail, ThemeProvider, useTheme, ErrorBoundary, Button,
 // buttonVariants, the Card family, the Tooltip family and the Toaster.
@@ -613,7 +616,8 @@ type ShellProps = {
  */
 export function Shell({ children, themeButton = true }: ShellProps) {
         // the embedded contract: inside the os power clip the app rides the host
-        // window chrome — the routed stage renders bare, full-bleed in the frame
+        // window chrome — the seat class answers the mount, the surface tree
+        // never changes between the two doors (the window-era law: one design)
         const framed = (() => {
                 try {
                         return window.self !== window.top;
@@ -628,15 +632,19 @@ export function Shell({ children, themeButton = true }: ShellProps) {
         const isActive = (href: string): boolean =>
                 href === '/' ? location === '/' : location === href || location.startsWith(`${href}/`);
 
-        // the embedded pass renders before the stage: one window, one frame
-        if (framed) return <main className="shell shell--embedded">{children}</main>;
+        // the embedded seat: inside the os power clip the app rides the host
+        // window chrome, but the SURFACE stays the same — the seat class
+        // answers the mount so differential styles (if any) can find it, the
+        // tree never changes between the two doors (the window-era law: one
+        // design)
+        const seat = framed ? 'shell--embedded' : 'shell--standalone';
 
-        // the standalone pass: the direct url answers full-bleed — the window
+        // the surface pass: the direct url answers full-bleed — the window
         // chrome exists only inside the os power clip, so the app owns the whole
         // viewport; the SECTIONED page rail stays as the app's own navigation
         // and the routed stage fills the rest of the screen
         return (
-                <div className="shell shell--standalone">
+                <div className={`shell ${seat}`}>
                         <div className="winapp__body">
                                 <nav className="winapp__rail" aria-label="Pages">
                                         {NAV_SECTIONS.map((section) => (

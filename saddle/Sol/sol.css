@@ -4904,12 +4904,21 @@ html:not(.dark) [data-tip]::before {
         }
 }
 
-/* the embedded contract: the power clip frame hosts the stage bare — the
-   stage fills the frame and scrolls itself, no window chrome of its own */
+/* the embedded contract: inside the os power clip the app rides the SAME
+   surface tree as the direct url (the window-era law: one design) — the
+   seat fills the window body (the iframe viewport is the 100vh there)
+   with the sectioned rail and the routed stage intact; the window chrome
+   belongs to the os frame drawn around it */
 .shell--embedded {
-        max-width: none;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
         height: 100vh;
-        overflow-y: auto;
+        max-width: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: var(--bg);
 }
 
 /* the standalone contract: the direct url owns the whole viewport — the

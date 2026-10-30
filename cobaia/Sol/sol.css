@@ -665,12 +665,20 @@ code {
   background-color: var(--sol-canvas);
 }
 
-/* the embedded contract: the power clip frame hosts the page bare — the
-   stage fills the frame and scrolls itself, no window chrome of its own */
+/* the embedded contract: inside the os power clip the app rides the SAME
+   site surface as the direct url (the window-era law: one design) — the
+   seat fills the window body (the iframe viewport is the 100dvh there)
+   with the sticky section bar, the page surface and the worked footer
+   intact; the window chrome belongs to the os frame drawn around it */
 .shell--embedded {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100dvh;
   max-width: none;
-  height: 100vh;
-  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  background-color: var(--sol-canvas);
 }
 
 /* ---------- 4. PAGE SCAFFOLDING — hero, sections, entrance ---------- */

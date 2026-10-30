@@ -8,8 +8,11 @@
  * grayscale, no entry scale). The WINDOW (the draggable frame with the
  * captions and the eight handles) exists ONLY when the app is embedded
  * inside the DevThink OS power clip — the framed contract below renders
- * the routed stage bare (shell--embedded) and the OS draws the window
- * around it. The rail keeps the Windows 11 hands on the pages themselves
+ * the SAME surface tree under the shell--embedded seat: the rail, the
+ * stage and the family foot answer in both seats so the design is
+ * IDENTICAL at the direct url and inside the os window (the window-era
+ * law), and the OS draws the window chrome around it. The rail keeps the
+ * Windows 11 hands on the pages themselves
  * (the pins with their labels, the accent ladder on the active entry, the
  * family foot with one spec §12 accent dot per sibling resolved by
  * familyurl, the theme flip) and the stage scrolls itself under the rail.
@@ -129,7 +132,8 @@ function ThemeToggle() {
  */
 export function Shell({ children }: { children: ReactNode }) {
   // the embedded contract: inside the os power clip the app rides the host
-  // window chrome — the routed stage renders bare, full-bleed in the frame
+  // window chrome — the seat class answers the mount, the surface tree
+  // never changes between the two doors (the window-era law: one design)
   const framed = (() => {
     try {
       return window.self !== window.top;
@@ -145,15 +149,18 @@ export function Shell({ children }: { children: ReactNode }) {
   const isActive = (href: string): boolean =>
     href === "/" ? location === "/" : location === href || location.startsWith(`${href}/`);
 
-  // the embedded pass renders before the stage: one window, one frame
-  if (framed) return <main className="shell shell--embedded">{children}</main>;
+  // the embedded seat: inside the os power clip the app rides the host
+  // window chrome, but the SURFACE stays the same — the seat class answers
+  // the mount so differential styles (if any) can find it, the tree never
+  // changes between the two doors (the window-era law: one design)
+  const seat = framed ? "shell--embedded" : "shell--standalone";
 
-  // the standalone pass: the direct url answers full-bleed — the window
+  // the surface pass: the direct url answers full-bleed — the window
   // chrome exists only inside the os power clip, so the app owns the whole
   // viewport; the page rail stays as the app's own navigation and the
   // routed stage fills the rest of the screen
   return (
-    <div className="shell shell--standalone">
+    <div className={`shell ${seat}`}>
       <div className="win-body">
         <nav className="win-rail" aria-label={label("shell.rail.aria")}>
           <p className="win-railhead" aria-hidden="true">

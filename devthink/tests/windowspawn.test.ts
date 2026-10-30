@@ -3,7 +3,7 @@
 // the honest number pair every windowed anchor of the os answers.
 import { describe, expect, it } from "vitest";
 import { osAppWindows } from "../catalog.js";
-import { WINDOW_ANCHORS, windowspawn } from "../window.js";
+import { FAMILY_SLUGS, WINDOW_ANCHORS, windowspawn } from "../window.js";
 
 describe("the os app window table", () => {
   it("serves the reviewed spawn rows by app id", () => {
@@ -17,10 +17,25 @@ describe("the os app window table", () => {
     expect(rows.gateway).toEqual({ app: "gateway", width: 980, height: 680 });
   });
 
-  it("carries only the windowed anchors of the os", () => {
+  it("serves the family deploy units at the 1280x800 desktop band — the window answers the standalone design", () => {
+    // the window-era law: the app inside the power clip answers the SAME
+    // design the direct url answers, so the family windows open at the
+    // 1280x800 band where the 961px+ breakpoints of the standalone tree
+    // fire inside the frame (only the screen space may clamp it at spawn)
+    const rows = osAppWindows();
+    for (const slug of FAMILY_SLUGS) {
+      expect(rows[slug], `${slug} carries the family spawn row`).toEqual({
+        app: slug,
+        width: 1280,
+        height: 800,
+      });
+    }
+  });
+
+  it("carries only the windowed apps of the os — the anchors and the family deploy units", () => {
     const rows = osAppWindows();
     for (const app of Object.keys(rows)) {
-      expect(WINDOW_ANCHORS).toContain(app);
+      expect([...WINDOW_ANCHORS, ...FAMILY_SLUGS], `${app} must be a windowed app of the os`).toContain(app);
     }
   });
 });
@@ -31,8 +46,14 @@ describe("windowspawn", () => {
     expect(windowspawn("calculator")).toEqual({ width: 520, height: 660 });
   });
 
-  it("answers the 900x640 default for an unknown id", () => {
-    expect(windowspawn("not-an-app")).toEqual({ width: 900, height: 640 });
+  it("answers the 1280x800 default for an unknown id — the desktop band of the os", () => {
+    expect(windowspawn("not-an-app")).toEqual({ width: 1280, height: 800 });
+  });
+
+  it("answers the 1280x800 family geometry for every family deploy unit", () => {
+    for (const slug of FAMILY_SLUGS) {
+      expect(windowspawn(slug), `${slug} opens at the desktop band`).toEqual({ width: 1280, height: 800 });
+    }
   });
 
   it("answers a finite number pair for every windowed anchor of the os", () => {

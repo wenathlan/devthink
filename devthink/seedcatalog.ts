@@ -307,7 +307,11 @@ export const seedOsAppLabels: OsAppLabel[] = [
 
 /** the os app windows: the reviewed seed rows of the spawn geometry (the
  * offline answer of the database; the paired endpoint serves the same
- * shape over HTTPS when it lands) */
+ * shape over HTTPS when it lands). the family deploy units ride the
+ * 1280x800 desktop band — the window-era law: the app inside the power
+ * clip answers the SAME design the direct url answers, so the window
+ * opens wide enough for the 961px+ breakpoints of the standalone tree
+ * (the screen space may still clamp it at spawn time) */
 export const seedOsAppWindows: OsAppWindow[] = [
   {
     app: "calculator",
@@ -348,6 +352,56 @@ export const seedOsAppWindows: OsAppWindow[] = [
     app: "gateway",
     width: 980,
     height: 680,
+  },
+  {
+    app: "saddle",
+    width: 1280,
+    height: 800,
+  },
+  {
+    app: "argan",
+    width: 1280,
+    height: 800,
+  },
+  {
+    app: "cadria",
+    width: 1280,
+    height: 800,
+  },
+  {
+    app: "debonair",
+    width: 1280,
+    height: 800,
+  },
+  {
+    app: "stealthhead",
+    width: 1280,
+    height: 800,
+  },
+  {
+    app: "forge",
+    width: 1280,
+    height: 800,
+  },
+  {
+    app: "foundry",
+    width: 1280,
+    height: 800,
+  },
+  {
+    app: "vault",
+    width: 1280,
+    height: 800,
+  },
+  {
+    app: "getry",
+    width: 1280,
+    height: 800,
+  },
+  {
+    app: "cobaia",
+    width: 1280,
+    height: 800,
   },
 ];
 

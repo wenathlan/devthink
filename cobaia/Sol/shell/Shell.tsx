@@ -14,8 +14,11 @@
  * answer the Windows accent — the identity amber lives only in the brand
  * mark. The active section link reads the location so the visitor always
  * knows where they stand. Inside the OS power clip the embedded contract
- * renders the routed page bare (shell--embedded) — the host window owns
- * the chrome there. Styled entirely by Sol/sol.css (the fullscreen law
+ * renders the SAME site surface under the shell--embedded seat: the
+ * sticky section bar, the page surface and the worked footer answer in
+ * both seats so the design is IDENTICAL at the direct url and inside the
+ * os window (the window-era law) — the host window owns the chrome
+ * there. Styled entirely by Sol/sol.css (the fullscreen law
  * block carries the two contracts).
  */
 import type { CSSProperties, ReactNode } from "react";
@@ -36,14 +39,15 @@ const NAVLINKS: readonly { href: string; key: LabelKey }[] = [
 
 /** the shared chrome: the full-bleed site surface — the sticky section bar
  * (with the ONE logo slot as the home mark), the page surface and the
- * footer row; the embedded pass renders the routed page bare inside the os
- * power clip. */
+ * footer row; the embedded pass renders the SAME site surface inside the
+ * os power clip (the window-era law: one design in both seats). */
 export function Shell({ children }: { children: ReactNode }) {
   const [location] = useLocation();
 
   // the embedded contract of the family fullscreen law: inside the os
-  // power clip the app rides the host window chrome — the routed page
-  // renders bare, full-bleed in the frame, no window of its own
+  // power clip the app rides the host window chrome — the seat class
+  // answers the mount, the tree never changes between the two doors
+  // (the window-era law: one design in both seats)
   const framed = (() => {
     try {
       return window.self !== window.top;
@@ -55,15 +59,18 @@ export function Shell({ children }: { children: ReactNode }) {
   const isActive = (href: string): boolean =>
     href === "/" ? location === "/" : location === href || location.startsWith(`${href}/`);
 
-  // the embedded pass renders before the surface: one window, one frame
-  if (framed) return <main className="shell shell--embedded">{children}</main>;
+  // the embedded seat: inside the os power clip the app rides the host
+  // window chrome, but the SURFACE stays the same — the seat class answers
+  // the mount so differential styles (if any) can find it, the tree never
+  // changes between the two doors (the window-era law: one design)
+  const seat = framed ? "shell--embedded" : "shell--standalone";
 
-  // the standalone pass: the direct url answers full-bleed — the window
+  // the surface pass: the direct url answers full-bleed — the window
   // chrome exists only inside the os power clip, so the site owns the whole
   // viewport; the sticky section bar stays as the site's own navigation,
   // the page surface fills the middle and the worked footer closes it
   return (
-    <div className="shell shell--standalone">
+    <div className={`shell ${seat}`}>
       {/* the skip link answers the viewport: the surface owns the whole
        * document, the skip jumps straight to the content anchor */}
       <a className="cb-skip" href="#content">
