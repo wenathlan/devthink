@@ -34,7 +34,92 @@ export class TransportError extends Error {
 }
 
 /** The per-role synth trim (the recipes leave different headroom). */
-const ROLE_TRIM: Record<ArrangerRole, number> = { drums: 0.9, bass: 0.85, keys: 0.5, lead: 0.4 };
+export const ROLE_TRIM: Record<ArrangerRole, number> = { drums: 0.9, bass: 0.85, keys: 0.5, lead: 0.4 };
+
+/** The desk's default mix law — the faders the transport opens with, the
+ * master db and the master trim; the offline render lane rides the same
+ * numbers so the bounce answers what the desk plays. */
+export const DEFAULT_MIX_LAW = {
+  /** The role faders in db (the strip the desk opens with). */
+  faders: { drums: -4, bass: -5, keys: -9, lead: -7 },
+  /** The master fader in db. */
+  masterDb: -2,
+  /** The linear trim the master gain carries beside the fader. */
+  masterTrim: 0.9,
+} as const;
+
+/** The wave-b2 voice recipe table — the one source of every synthesis
+ * number the engine answers: the browser VoiceBank schedules these seats
+ * onto the WebAudio graph and the offline render lane (renderworker.ts,
+ * the server bounce) drives the same table sample-accurately in pure
+ * typescript, so the desk and the bounce can never drift apart — the
+ * recipes are never re-implemented, both lanes read them here. Every seat
+ * carries the envelope, the filter and the stop law its voice rides. */
+export const VOICE_RECIPES = {
+  /** The 808 kick: the pitch envelope dives 135→42 hz, the gain decays to
+   * silence over the tail, the source stops at stopSeconds. */
+  kick: { pitchFromHz: 135, pitchToHz: 42, pitchSeconds: 0.09, gainSeconds: 0.34, stopSeconds: 0.36 },
+  /** The noise snare: the bandpass burst beside the triangle body, each
+   * branch with its own envelope and stop. */
+  snare: {
+    bandHz: 1850,
+    bandQ: 0.9,
+    noiseGain: 0.8,
+    noiseSeconds: 0.2,
+    noiseStopSeconds: 0.22,
+    bodyHz: 186,
+    bodyGain: 0.5,
+    bodySeconds: 0.11,
+    bodyStopSeconds: 0.13,
+  },
+  /** The clap: the tighter bandpass burst. */
+  clap: { bandHz: 1150, bandQ: 1.4, noiseGain: 0.9, noiseSeconds: 0.18, stopSeconds: 0.2 },
+  /** The closed hat: the highpass tick, the stop a hair past the decay. */
+  hat: { highHz: 7600, gain: 0.5, decaySeconds: 0.05, stopPadSeconds: 0.02 },
+  /** The open hat: the same seat with the longer decay. */
+  openhat: { highHz: 7600, gain: 0.5, decaySeconds: 0.3, stopPadSeconds: 0.02 },
+  /** The ride: the lower hiss. */
+  ride: { highHz: 6200, gain: 0.3, decaySeconds: 0.55, stopPadSeconds: 0.03 },
+  /** The perc blip. */
+  perc: { hz: 820, gain: 0.32, seconds: 0.09, stopPadSeconds: 0.02 },
+  /** The tom dive. */
+  tom: { pitchFromHz: 172, pitchToHz: 96, pitchSeconds: 0.2, gain: 0.6, gainSeconds: 0.26, stopSeconds: 0.28 },
+  /** The bass: the sub sine under the triangle an octave up, the
+   * attack-sustain-release gate closing after the note's seconds. */
+  bass: {
+    midSemitones: 12,
+    lowpassHz: 640,
+    attackPeak: 0.9,
+    attackSeconds: 0.012,
+    sustainLevel: 0.5,
+    sustainTcSeconds: 0.12,
+    releaseTcSeconds: 0.05,
+    stopPadSeconds: 0.3,
+  },
+  /** The detuned pad: the two saws around the pitch, the slow swell, the
+   * slow release after the note's seconds. */
+  pad: {
+    detuneCents: 6,
+    lowpassHz: 960,
+    gain: 0.5,
+    attackSeconds: 0.28,
+    releaseTcSeconds: 0.18,
+    stopPadSeconds: 0.9,
+  },
+  /** The vibrato lead: the square voice, the fast attack, the exponential
+   * decay over at least minSeconds. */
+  lead: {
+    vibratoHz: 5.5,
+    vibratoCents: 7,
+    lowpassHz: 2400,
+    gain: 0.34,
+    attackSeconds: 0.015,
+    minSeconds: 0.2,
+    stopPadSeconds: 0.1,
+  },
+  /** The unmapped-lane fallback: the hat seat at the shorter decay. */
+  fallback: { highHz: 7600, gain: 0.5, decaySeconds: 0.06, stopPadSeconds: 0.02 },
+} as const;
 
 /** The scheduler horizon (seconds scheduled ahead of the playhead). */
 const LOOKAHEAD = 0.35;
@@ -43,9 +128,9 @@ const TICK_MS = 80;
 /** The analyser fft size of the VU taps. */
 const FFT_SIZE = 512;
 /** The release tail the offline bounce adds after the last gate (s). */
-const RENDER_TAIL_S = 1.2;
+export const RENDER_TAIL_S = 1.2;
 /** The shared noise buffer length (s) — one second seeds every noise voice. */
-const NOISE_SECONDS = 1;
+export const NOISE_SECONDS = 1;
 
 /** The sinks one voice rides: the audio context, the noise take and the stop registry. */
 export interface VoiceSink {
@@ -60,6 +145,23 @@ export interface VoiceSink {
 }
 
 /**
+ * Builds the seeded white-noise channel — the one source every noise
+ * voice reads: the mulberry32 stream over the identity string, the same
+ * bytes the browser bank and the offline render lane answer for the same
+ * seed (a bounce is byte-stable).
+ *
+ * @param seedSource the identity string the rng rides.
+ * @param length the sample count to fill.
+ * @returns the seeded white-noise channel, -1..1.
+ */
+export function seededNoiseChannel(seedSource: string, length: number): Float32Array {
+  const channel = new Float32Array(length);
+  const rng = mulberry32(hashSeed(seedSource));
+  for (let index = 0; index < length; index++) channel[index] = rng() * 2 - 1;
+  return channel;
+}
+
+/**
  * Builds the shared white-noise take, seeded by the take's own identity —
  * the same prompt and seed rebuild the same noise, so a bounce is byte-stable.
  *
@@ -69,9 +171,7 @@ export interface VoiceSink {
  */
 function makeNoiseBuffer(ac: BaseAudioContext, seedSource: string): AudioBuffer {
   const buffer = ac.createBuffer(1, Math.ceil(ac.sampleRate * NOISE_SECONDS), ac.sampleRate);
-  const channel = buffer.getChannelData(0);
-  const rng = mulberry32(hashSeed(seedSource));
-  for (let index = 0; index < channel.length; index++) channel[index] = rng() * 2 - 1;
+  buffer.getChannelData(0).set(seededNoiseChannel(seedSource, buffer.length));
   return buffer;
 }
 
@@ -102,10 +202,10 @@ export class VoiceBank {
         this.clap(bus, event, when);
         break;
       case "hat":
-        this.hat(bus, event, when, 0.05);
+        this.hat(bus, event, when, VOICE_RECIPES.hat.decaySeconds);
         break;
       case "openhat":
-        this.hat(bus, event, when, 0.3);
+        this.hat(bus, event, when, VOICE_RECIPES.openhat.decaySeconds);
         break;
       case "ride":
         this.ride(bus, event, when);
@@ -126,7 +226,7 @@ export class VoiceBank {
         this.lead(bus, event, when);
         break;
       default:
-        this.hat(bus, event, when, 0.06);
+        this.hat(bus, event, when, VOICE_RECIPES.fallback.decaySeconds);
     }
   }
 
@@ -137,189 +237,203 @@ export class VoiceBank {
 
   private kick(out: AudioNode, event: NoteEvent, when: number): void {
     const ac = this.sink.ac;
+    const recipe = VOICE_RECIPES.kick;
     const osc = ac.createOscillator();
     osc.type = "sine";
     const gain = ac.createGain();
-    osc.frequency.setValueAtTime(135, when);
-    osc.frequency.exponentialRampToValueAtTime(42, when + 0.09);
+    osc.frequency.setValueAtTime(recipe.pitchFromHz, when);
+    osc.frequency.exponentialRampToValueAtTime(recipe.pitchToHz, when + recipe.pitchSeconds);
     gain.gain.setValueAtTime(event.velocity, when);
-    gain.gain.exponentialRampToValueAtTime(0.0001, when + 0.34);
+    gain.gain.exponentialRampToValueAtTime(0.0001, when + recipe.gainSeconds);
     osc.connect(gain).connect(out);
     osc.start(when);
-    this.track(osc, when + 0.36);
+    this.track(osc, when + recipe.stopSeconds);
   }
 
   private snare(out: AudioNode, event: NoteEvent, when: number): void {
     const ac = this.sink.ac;
+    const recipe = VOICE_RECIPES.snare;
     const noise = ac.createBufferSource();
     noise.buffer = this.sink.noise;
     const band = ac.createBiquadFilter();
     band.type = "bandpass";
-    band.frequency.value = 1850;
-    band.Q.value = 0.9;
+    band.frequency.value = recipe.bandHz;
+    band.Q.value = recipe.bandQ;
     const gain = ac.createGain();
-    gain.gain.setValueAtTime(event.velocity * 0.8, when);
-    gain.gain.exponentialRampToValueAtTime(0.0001, when + 0.2);
+    gain.gain.setValueAtTime(event.velocity * recipe.noiseGain, when);
+    gain.gain.exponentialRampToValueAtTime(0.0001, when + recipe.noiseSeconds);
     noise.connect(band).connect(gain).connect(out);
     const body = ac.createOscillator();
     body.type = "triangle";
-    body.frequency.value = 186;
+    body.frequency.value = recipe.bodyHz;
     const bodyGain = ac.createGain();
-    bodyGain.gain.setValueAtTime(event.velocity * 0.5, when);
-    bodyGain.gain.exponentialRampToValueAtTime(0.0001, when + 0.11);
+    bodyGain.gain.setValueAtTime(event.velocity * recipe.bodyGain, when);
+    bodyGain.gain.exponentialRampToValueAtTime(0.0001, when + recipe.bodySeconds);
     body.connect(bodyGain).connect(out);
     noise.start(when);
     body.start(when);
-    this.track(noise, when + 0.22);
-    this.track(body, when + 0.13);
+    this.track(noise, when + recipe.noiseStopSeconds);
+    this.track(body, when + recipe.bodyStopSeconds);
   }
 
   private clap(out: AudioNode, event: NoteEvent, when: number): void {
     const ac = this.sink.ac;
+    const recipe = VOICE_RECIPES.clap;
     const noise = ac.createBufferSource();
     noise.buffer = this.sink.noise;
     const band = ac.createBiquadFilter();
     band.type = "bandpass";
-    band.frequency.value = 1150;
-    band.Q.value = 1.4;
+    band.frequency.value = recipe.bandHz;
+    band.Q.value = recipe.bandQ;
     const gain = ac.createGain();
-    gain.gain.setValueAtTime(event.velocity * 0.9, when);
-    gain.gain.exponentialRampToValueAtTime(0.0001, when + 0.18);
+    gain.gain.setValueAtTime(event.velocity * recipe.noiseGain, when);
+    gain.gain.exponentialRampToValueAtTime(0.0001, when + recipe.noiseSeconds);
     noise.connect(band).connect(gain).connect(out);
     noise.start(when);
-    this.track(noise, when + 0.2);
+    this.track(noise, when + recipe.stopSeconds);
   }
 
   private hat(out: AudioNode, event: NoteEvent, when: number, decay: number): void {
     const ac = this.sink.ac;
+    const recipe = VOICE_RECIPES.hat;
     const noise = ac.createBufferSource();
     noise.buffer = this.sink.noise;
     const high = ac.createBiquadFilter();
     high.type = "highpass";
-    high.frequency.value = 7600;
+    high.frequency.value = recipe.highHz;
     const gain = ac.createGain();
-    gain.gain.setValueAtTime(event.velocity * 0.5, when);
+    gain.gain.setValueAtTime(event.velocity * recipe.gain, when);
     gain.gain.exponentialRampToValueAtTime(0.0001, when + decay);
     noise.connect(high).connect(gain).connect(out);
     noise.start(when);
-    this.track(noise, when + decay + 0.02);
+    this.track(noise, when + decay + recipe.stopPadSeconds);
   }
 
   private ride(out: AudioNode, event: NoteEvent, when: number): void {
     const ac = this.sink.ac;
+    const recipe = VOICE_RECIPES.ride;
     const noise = ac.createBufferSource();
     noise.buffer = this.sink.noise;
     const high = ac.createBiquadFilter();
     high.type = "highpass";
-    high.frequency.value = 6200;
+    high.frequency.value = recipe.highHz;
     const gain = ac.createGain();
-    gain.gain.setValueAtTime(event.velocity * 0.3, when);
-    gain.gain.exponentialRampToValueAtTime(0.0001, when + 0.55);
+    gain.gain.setValueAtTime(event.velocity * recipe.gain, when);
+    gain.gain.exponentialRampToValueAtTime(0.0001, when + recipe.decaySeconds);
     noise.connect(high).connect(gain).connect(out);
     noise.start(when);
-    this.track(noise, when + 0.58);
+    this.track(noise, when + recipe.decaySeconds + recipe.stopPadSeconds);
   }
 
   private perc(out: AudioNode, event: NoteEvent, when: number): void {
     const ac = this.sink.ac;
+    const recipe = VOICE_RECIPES.perc;
     const osc = ac.createOscillator();
     osc.type = "sine";
-    osc.frequency.value = 820;
+    osc.frequency.value = recipe.hz;
     const gain = ac.createGain();
-    gain.gain.setValueAtTime(event.velocity * 0.32, when);
-    gain.gain.exponentialRampToValueAtTime(0.0001, when + 0.09);
+    gain.gain.setValueAtTime(event.velocity * recipe.gain, when);
+    gain.gain.exponentialRampToValueAtTime(0.0001, when + recipe.seconds);
     osc.connect(gain).connect(out);
     osc.start(when);
-    this.track(osc, when + 0.11);
+    this.track(osc, when + recipe.seconds + recipe.stopPadSeconds);
   }
 
   private tom(out: AudioNode, event: NoteEvent, when: number): void {
     const ac = this.sink.ac;
+    const recipe = VOICE_RECIPES.tom;
     const osc = ac.createOscillator();
     osc.type = "sine";
-    osc.frequency.setValueAtTime(172, when);
-    osc.frequency.exponentialRampToValueAtTime(96, when + 0.2);
+    osc.frequency.setValueAtTime(recipe.pitchFromHz, when);
+    osc.frequency.exponentialRampToValueAtTime(recipe.pitchToHz, when + recipe.pitchSeconds);
     const gain = ac.createGain();
-    gain.gain.setValueAtTime(event.velocity * 0.6, when);
-    gain.gain.exponentialRampToValueAtTime(0.0001, when + 0.26);
+    gain.gain.setValueAtTime(event.velocity * recipe.gain, when);
+    gain.gain.exponentialRampToValueAtTime(0.0001, when + recipe.gainSeconds);
     osc.connect(gain).connect(out);
     osc.start(when);
-    this.track(osc, when + 0.28);
+    this.track(osc, when + recipe.stopSeconds);
   }
 
   private bass(out: AudioNode, event: NoteEvent, when: number): void {
     const ac = this.sink.ac;
+    const recipe = VOICE_RECIPES.bass;
     const sub = ac.createOscillator();
     sub.type = "sine";
     sub.frequency.value = midiToHz(event.midi);
     const mid = ac.createOscillator();
     mid.type = "triangle";
-    mid.frequency.value = midiToHz(event.midi + 12);
+    mid.frequency.value = midiToHz(event.midi + recipe.midSemitones);
     const lowpass = ac.createBiquadFilter();
     lowpass.type = "lowpass";
-    lowpass.frequency.value = 640;
+    lowpass.frequency.value = recipe.lowpassHz;
     const gain = ac.createGain();
     gain.gain.setValueAtTime(0.0001, when);
-    gain.gain.exponentialRampToValueAtTime(event.velocity * 0.9, when + 0.012);
-    gain.gain.setTargetAtTime(event.velocity * 0.5, when + 0.012, 0.12);
-    gain.gain.setTargetAtTime(0.0001, when + event.seconds, 0.05);
+    gain.gain.exponentialRampToValueAtTime(event.velocity * recipe.attackPeak, when + recipe.attackSeconds);
+    gain.gain.setTargetAtTime(
+      event.velocity * recipe.sustainLevel,
+      when + recipe.attackSeconds,
+      recipe.sustainTcSeconds,
+    );
+    gain.gain.setTargetAtTime(0.0001, when + event.seconds, recipe.releaseTcSeconds);
     sub.connect(lowpass);
     mid.connect(lowpass);
     lowpass.connect(gain).connect(out);
     sub.start(when);
     mid.start(when);
-    this.track(sub, when + event.seconds + 0.3);
-    this.track(mid, when + event.seconds + 0.3);
+    this.track(sub, when + event.seconds + recipe.stopPadSeconds);
+    this.track(mid, when + event.seconds + recipe.stopPadSeconds);
   }
 
   private pad(out: AudioNode, event: NoteEvent, when: number): void {
     const ac = this.sink.ac;
+    const recipe = VOICE_RECIPES.pad;
     const left = ac.createOscillator();
     const right = ac.createOscillator();
     left.type = "sawtooth";
     right.type = "sawtooth";
     left.frequency.value = midiToHz(event.midi);
     right.frequency.value = midiToHz(event.midi);
-    left.detune.value = -6;
-    right.detune.value = 6;
+    left.detune.value = -recipe.detuneCents;
+    right.detune.value = recipe.detuneCents;
     const lowpass = ac.createBiquadFilter();
     lowpass.type = "lowpass";
-    lowpass.frequency.value = 960;
+    lowpass.frequency.value = recipe.lowpassHz;
     const gain = ac.createGain();
     gain.gain.setValueAtTime(0.0001, when);
-    gain.gain.linearRampToValueAtTime(event.velocity * 0.5, when + 0.28);
-    gain.gain.setTargetAtTime(0.0001, when + event.seconds, 0.18);
+    gain.gain.linearRampToValueAtTime(event.velocity * recipe.gain, when + recipe.attackSeconds);
+    gain.gain.setTargetAtTime(0.0001, when + event.seconds, recipe.releaseTcSeconds);
     left.connect(lowpass);
     right.connect(lowpass);
     lowpass.connect(gain).connect(out);
     left.start(when);
     right.start(when);
-    this.track(left, when + event.seconds + 0.9);
-    this.track(right, when + event.seconds + 0.9);
+    this.track(left, when + event.seconds + recipe.stopPadSeconds);
+    this.track(right, when + event.seconds + recipe.stopPadSeconds);
   }
 
   private lead(out: AudioNode, event: NoteEvent, when: number): void {
     const ac = this.sink.ac;
+    const recipe = VOICE_RECIPES.lead;
     const osc = ac.createOscillator();
     osc.type = "square";
     osc.frequency.value = midiToHz(event.midi);
     const vibrato = ac.createOscillator();
-    vibrato.frequency.value = 5.5;
+    vibrato.frequency.value = recipe.vibratoHz;
     const depth = ac.createGain();
-    depth.gain.value = 7;
+    depth.gain.value = recipe.vibratoCents;
     vibrato.connect(depth).connect(osc.detune);
     const lowpass = ac.createBiquadFilter();
     lowpass.type = "lowpass";
-    lowpass.frequency.value = 2400;
+    lowpass.frequency.value = recipe.lowpassHz;
     const gain = ac.createGain();
     gain.gain.setValueAtTime(0.0001, when);
-    gain.gain.linearRampToValueAtTime(event.velocity * 0.34, when + 0.015);
-    gain.gain.exponentialRampToValueAtTime(0.0001, when + Math.max(0.2, event.seconds));
+    gain.gain.linearRampToValueAtTime(event.velocity * recipe.gain, when + recipe.attackSeconds);
+    gain.gain.exponentialRampToValueAtTime(0.0001, when + Math.max(recipe.minSeconds, event.seconds));
     osc.connect(lowpass).connect(gain).connect(out);
     osc.start(when);
     vibrato.start(when);
-    this.track(osc, when + event.seconds + 0.1);
-    this.track(vibrato, when + event.seconds + 0.1);
+    this.track(osc, when + event.seconds + recipe.stopPadSeconds);
+    this.track(vibrato, when + event.seconds + recipe.stopPadSeconds);
   }
 }
 
@@ -338,7 +452,7 @@ function buildRoleGraph(
 ): { buses: Map<ArrangerRole, GainNode>; master: GainNode } {
   const masterStrip = plan.strips.find((strip) => strip.master);
   const master = ac.createGain();
-  master.gain.value = dbToLinear(masterStrip?.faderDb ?? -2) * 0.9;
+  master.gain.value = dbToLinear(masterStrip?.faderDb ?? -2) * DEFAULT_MIX_LAW.masterTrim;
   const glue = ac.createDynamicsCompressor();
   glue.threshold.value = -10;
   glue.knee.value = 12;
@@ -376,8 +490,8 @@ export class TakeEngine {
   private nextIndex = 0;
   private baseTime = 0;
   private baseOffset = 0;
-  private faders: Record<ArrangerRole, number> = { drums: -4, bass: -5, keys: -9, lead: -7 };
-  private masterDb = -2;
+  private faders: Record<ArrangerRole, number> = { ...DEFAULT_MIX_LAW.faders };
+  private masterDb: number = DEFAULT_MIX_LAW.masterDb;
   private looping = false;
   private running = false;
 
@@ -538,7 +652,7 @@ export class TakeEngine {
     const plan = this.plan;
     if (!context || !plan) return;
     this.master = context.createGain();
-    this.master.gain.value = dbToLinear(this.masterDb) * 0.9;
+    this.master.gain.value = dbToLinear(this.masterDb) * DEFAULT_MIX_LAW.masterTrim;
     const glue = context.createDynamicsCompressor();
     glue.threshold.value = -10;
     glue.knee.value = 12;
