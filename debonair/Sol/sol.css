@@ -1144,6 +1144,17 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .lib-meta { margin: 2px 0 0; font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--ink-2); font-variant-numeric: tabular-nums; }
 .lib-actions { display: flex; gap: 8px; justify-self: end; }
 .lib-status { justify-self: end; }
+/* the play key of the shelf rows — one grammar for both kinds: the circle the
+   song cards wear, the live row carrying the brass signal (the same key the
+   studio bar presses through the shared bus) */
+.lib-play { display: grid; place-items: center; width: 32px; height: 32px; flex: none; border: 1px solid var(--line-strong);
+  border-radius: 50%; background: transparent; color: var(--ink-2); cursor: pointer;
+  transition: background var(--micro) var(--ease-micro), color var(--micro) var(--ease-micro), border-color var(--micro) var(--ease-micro); }
+.lib-play:hover { background: var(--surface-4); color: var(--ink); }
+.lib-play:active { transform: scale(0.7); transition-duration: var(--dur-press); }
+.lib-play:focus-visible { outline: 2px solid var(--win-accent); outline-offset: 2px; }
+.lib-play.is-live { border-color: color-mix(in srgb, var(--signal) 55%, transparent); color: var(--signal-strong); }
+.lib-play[aria-pressed="true"] { border-color: color-mix(in srgb, var(--signal) 55%, transparent); color: var(--signal-strong); }
 .lib-empty { margin: 0; padding: 20px 4px; color: var(--ink-2); }
 .sparkbar { display: block; width: 100%; height: 36px; }
 .sparkbar path { fill: color-mix(in srgb, var(--accent) 38%, var(--surface-4)); }
@@ -1930,6 +1941,29 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .ing-row-key { display: grid; place-items: center; width: 32px; height: 32px; flex: none; border: 0; border-radius: 7px;
   background: transparent; color: var(--ink-3); cursor: pointer; transition: background var(--micro) var(--ease-micro), color var(--micro) var(--ease-micro); }
 .ing-row-key:hover { background: color-mix(in srgb, var(--err) 14%, transparent); color: var(--err); }
+/* the stem audition: the stored stems solo through the shared bus — one
+   lane at a time, the muted state honest, the soloed row carrying the
+   brass signal (the streaming grammar of the cards above) */
+.ing-audition { margin-top: 18px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px;
+  background: linear-gradient(180deg, var(--surface-1), color-mix(in srgb, var(--surface-0) 88%, transparent)); }
+.ing-audition-head { display: flex; align-items: center; gap: 8px; margin: 0; font-family: var(--font-mono); font-size: 12px;
+  font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--signal-strong); }
+.ing-audition-hint { margin: 6px 0 0; font-size: 0.78rem; color: var(--ink-3); }
+.ing-audition-list { display: grid; gap: 8px; margin: 12px 0 0; padding: 0; list-style: none; }
+.ing-audition-row { display: flex; align-items: center; gap: 12px; padding: 9px 12px; border: 1px solid var(--line);
+  border-radius: 9px; background: color-mix(in srgb, var(--surface-0) 82%, transparent);
+  transition: border-color var(--micro) var(--ease-micro); }
+.ing-audition-row[data-soloed] { border-color: color-mix(in srgb, var(--signal) 55%, transparent); }
+.ing-audition-name { flex: 1; font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--ink-2); }
+.ing-audition-state { flex: none; font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); }
+.ing-audition-state.is-solo { color: var(--signal-strong); }
+.ing-audition-key { display: grid; place-items: center; width: 32px; height: 32px; flex: none; border: 1px solid var(--line-strong);
+  border-radius: 7px; background: transparent; color: var(--ink-2); cursor: pointer;
+  transition: background var(--micro) var(--ease-micro), color var(--micro) var(--ease-micro), border-color var(--micro) var(--ease-micro); }
+.ing-audition-key:hover { background: var(--surface-4); color: var(--ink); }
+.ing-audition-key:focus-visible { outline: 2px solid var(--win-accent); outline-offset: 2px; }
+.ing-audition-key[aria-pressed="true"] { border-color: color-mix(in srgb, var(--signal) 55%, transparent); color: var(--signal-strong); }
 @media (max-width: 720px) { .ing-meter { grid-template-columns: 1fr 1fr; } }
 
 /* ---------- 7. guards — the hard stops, last so nothing overrides them ------ */

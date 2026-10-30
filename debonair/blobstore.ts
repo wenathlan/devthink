@@ -437,6 +437,25 @@ export function memoryblobstore(options: MemoryBlobOptions = {}): MemoryBlobStor
   return new MemoryBlobStore(options);
 }
 
+/** The process-wide session mirror (the playback proof's offline seat): the
+ * browser bench stores the mix and stem wavs here when it decomposes a real
+ * track on the visitor's device, and the playerbus reference lane resolves
+ * its bytes through this mirror before the gateway seam. One instance per
+ * process, never closed — the oldest-evicted cap keeps the memory bounded. */
+let sessionsingleton: MemoryBlobStore | null = null;
+
+/**
+ * The session mirror singleton (the bytes the bench stored this tab answers
+ * from module memory, byte-capped, oldest evicted — a hard reload honestly
+ * empties it and the lane answers not-found).
+ *
+ * @returns the process-wide memory blob store.
+ */
+export function sessionblobstore(): MemoryBlobStore {
+  sessionsingleton ??= new MemoryBlobStore();
+  return sessionsingleton;
+}
+
 /** The file lane options. */
 export interface FileBlobOptions {
   /** The byte ceiling of the lane (default 512 mb — generous). */
