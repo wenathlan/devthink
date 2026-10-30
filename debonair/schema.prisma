@@ -93,3 +93,30 @@ model OnboardingState {
   onboardingseen Boolean  @default(false)
   updatedAt      DateTime @updatedAt
 }
+
+/// one ingested document of the reference library — the row the pattern
+/// miner reads (the parametrized debonair.ingest/1 json rides docjson)
+/// with the reference-law pointers of the pipeline wave PV1.001: the owner
+/// pointer (a bigintids mint — the user ingest and the system ia ingest
+/// stamp the same column), the kind, the visibility, the blob addresses of
+/// the mix and the stems, the size and the content hash. The fields mirror
+/// the sqlite table ingestdb.ts boots (ingest_documents) column for
+/// column; the 64-bit pointers ride BigInt (the decimal law bigintids.ts
+/// names — the pre-law rows carry the zero epoch marker the migration
+/// fills, never a fresh write).
+model IngestDocument {
+  id              String   @id
+  name            String
+  durationseconds Float    @default(0)
+  samplerate      Int      @default(0)
+  pcmhash         Int      @default(0)
+  ingestedat      String
+  docjson         String
+  owner_id        BigInt   @default(0)
+  kind            String   @default("upload") // reference | render | upload
+  visibility      String   @default("private") // private | vitrine
+  mix_pointer     BigInt? // the blob store id of the mix wav, null until stored
+  stems_pointer   BigInt? // the blob store id of the stems bundle
+  size_bytes      Int      @default(0)
+  sha256          String   @default("") // hex, empty until the blob wave
+}
