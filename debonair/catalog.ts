@@ -3,6 +3,8 @@
 // the rows arrive over HTTPS; otherwise the static build answers from the in-memory seed
 // module. Nothing is written anywhere: the memo below is plain memory, the visitor
 // machine only loads the interface.
+
+import type { VitrineTrackValue } from "./gatewayapi.ts";
 import type {
   FeatureCard,
   GenreConfig,
@@ -13,6 +15,7 @@ import type {
   ReadoutRow,
   SignalBadge,
   TimelineTrack,
+  VitrineTrackRow,
 } from "./katexis.ts";
 import {
   seedGenreProfileCards,
@@ -24,6 +27,7 @@ import {
   seedReadouts,
   seedStageCards,
   seedTimelineTracks,
+  seedVitrineTracks,
 } from "./seed.ts";
 
 /** base url of the site catalog api (self-hosted db over HTTPS); empty answers from the seed */
@@ -82,6 +86,37 @@ export function listHeroBadges(): Promise<SignalBadge[]> {
  * fifteen untrained genres offline. */
 export function listGenreProfileCards(): Promise<GenreProfileCard[]> {
   return table("cards.genre-profiles", seedGenreProfileCards);
+}
+
+/** The vitrine lane: the streaming shelf rows the home song grid reads —
+ * the published generated takes beside the ingested references (the
+ * publish lane moves a rendered track row onto the vitrine, the site api
+ * answers the db rows over this seam); the seed answers the honest empty
+ * shelf offline — the genre profile cards' own law, mirrored. */
+export function listVitrineTracks(): Promise<VitrineTrackRow[]> {
+  return table("tracks.vitrine", seedVitrineTracks);
+}
+
+/**
+ * Folds one vitrine wire row (the gateway's GET /api/v1/tracks answer)
+ * onto the catalog row the home grid reads — the one law both shapes
+ * ride, so the site api and the tests answer the same fold.
+ *
+ * @param value the vitrine wire row.
+ * @returns the catalog row.
+ */
+export function vitrineRowOf(value: VitrineTrackValue): VitrineTrackRow {
+  return {
+    group: "vitrine",
+    kind: value.kind,
+    id: value.id,
+    name: value.name,
+    genre: value.genre,
+    seconds: value.seconds,
+    blobId: value.wavPointer,
+    mime: "audio/wav",
+    publishedAt: value.publishedAt,
+  };
 }
 
 /** Reads one group of the settings selects (parameterized by group). */

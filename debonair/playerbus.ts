@@ -58,9 +58,20 @@ export interface ReferenceTake {
   id: string;
   /** The display name (the ingested track name). */
   name: string;
+  /** The shelf origin — "bench" (an ingested reference) or "render" (a
+   * generated take whose landed wav rides the same blob lane); the
+   * display decides the identity line. Absent reads "bench" — the
+   * standing rows the playback wave stored keep their face. */
+  origin?: ReferenceOrigin;
   /** The blob pointer the bytes resolve through. */
   source: ReferenceSource;
 }
+
+/** The shelf origins the blob lane carries: the ingested references the
+ * bench stored and the rendered takes the generation lane landed (the
+ * same transport, the same grammar — the row says which lane it came
+ * from). */
+export type ReferenceOrigin = "bench" | "render";
 
 /** Every take the bus shelf carries: the generated plans and the ingested
  * references — one grammar, the row decides by kind. */
@@ -291,6 +302,7 @@ function referenceTakeValid(candidate: unknown): candidate is ReferenceTake {
     typeof take.id === "string" &&
     take.id.length > 0 &&
     typeof take.name === "string" &&
+    (take.origin === undefined || take.origin === "bench" || take.origin === "render") &&
     !!source &&
     typeof source === "object" &&
     typeof source.blobId === "string" &&

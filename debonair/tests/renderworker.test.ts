@@ -254,6 +254,7 @@ function queuedRow(planJson: string, owner = mintid()): RenderJobRow {
     error: null,
     plan_json: planJson,
     wav_pointer: null,
+    track_pointer: null,
     created_at: "2026-06-01T00:00:00.000Z",
     finished_at: null,
   };
@@ -538,6 +539,7 @@ describe("the render_jobs ledger", () => {
       "error",
       "plan_json",
       "wav_pointer",
+      "track_pointer",
       "created_at",
       "finished_at",
     ]);
@@ -559,6 +561,7 @@ describe("the tracks pointer chain", () => {
       seconds: 9,
       status: "ready",
       wavPointer: mintid(),
+      visibility: "private" as const,
       createdAt: "2026-06-01T00:00:00.000Z",
     };
     const answer = putrendertrack(row, temp);
@@ -576,6 +579,7 @@ describe("the tracks pointer chain", () => {
       seconds: 8,
       status: "ready",
       wavPointer: "9007199254740993",
+      visibility: "private" as const,
       createdAt: "2026-06-01T00:00:00.000Z",
     };
     assert.ok(putrendertrack(row, temp).ok);
@@ -594,6 +598,7 @@ describe("the tracks pointer chain", () => {
       seconds: 8,
       status: "ready",
       wavPointer: mintid(),
+      visibility: "private" as const,
       createdAt: "2026-06-01T00:00:00.000Z",
     };
     const refusalOf = (patch: Partial<typeof good>): string => {
@@ -606,6 +611,7 @@ describe("the tracks pointer chain", () => {
     assert.equal(refusalOf({ wavPointer: "12.5" }), "bad-pointer");
     assert.equal(refusalOf({ wavPointer: "18446744073709551616" }), "bad-pointer");
     assert.equal(refusalOf({ id: "nope" }), "bad-pointer");
+    assert.equal(refusalOf({ visibility: "public" }), "bad-visibility");
   });
 
   it("upgrades the site's own tracks table in place without losing a row", () => {

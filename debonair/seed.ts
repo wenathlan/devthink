@@ -14,6 +14,7 @@ import type {
   ReadoutRow,
   SignalBadge,
   TimelineTrack,
+  VitrineTrackRow,
 } from "./katexis.ts";
 
 export const seedGenres: readonly GenreConfig[] = [
@@ -102,6 +103,14 @@ export const seedLibraryTracks: readonly LibraryTrackRow[] = [
   { name: "Velvet Static", genre: "R&B", duration: "3:21", status: "draft" },
   { name: "Drill Sermon", genre: "Drill", duration: "2:47", status: "ready" },
 ];
+
+/** The offline face of the vitrine — the honest empty shelf: nothing is
+ * published until a real row lands (the publish lane moves a rendered
+ * track onto the vitrine, the gateway's tracks list serves it, the site
+ * api answers it over the catalog seam). The seed never fakes a
+ * published take: the genre profile cards' own law, mirrored — zeros and
+ * empty markers until the truth answers. */
+export const seedVitrineTracks: readonly VitrineTrackRow[] = [];
 
 export const seedStageCards: readonly FeatureCard[] = [
   {

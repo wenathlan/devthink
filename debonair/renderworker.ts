@@ -696,7 +696,8 @@ export type RenderJobState = "queued" | "rendering" | "done" | "failed";
 
 /** One render job ledger row — the render_jobs table shape: the same walk
  * law the ingest_jobs table rides with the render lane's own payload
- * columns (the queued plan json, the landed wav pointer). */
+ * columns (the queued plan json, the landed wav pointer and the track row
+ * the walk stamped — the pointer chain the publish lane follows). */
 export interface RenderJobRow {
   /** The minted job id (the decimal string). */
   id: string;
@@ -714,6 +715,8 @@ export interface RenderJobRow {
   plan_json: string;
   /** The landed wav blob id (null until the walk lands done). */
   wav_pointer: string | null;
+  /** The track row the walk stamped (null until the track lane lands). */
+  track_pointer: string | null;
   /** The iso instant of the registration. */
   created_at: string;
   /** The iso instant the walk landed (done or failed; null while riding). */
@@ -723,7 +726,7 @@ export interface RenderJobRow {
 /** The mutable fields of one ledger row — the walk patches these (the id,
  * the owner, the plan and the registration instant never change). */
 export type RenderJobPatch = Partial<
-  Pick<RenderJobRow, "state" | "phase" | "fraction" | "error" | "wav_pointer" | "finished_at">
+  Pick<RenderJobRow, "state" | "phase" | "fraction" | "error" | "wav_pointer" | "track_pointer" | "finished_at">
 >;
 
 /** The job ledger seat — the render_jobs row functions behind one seam
@@ -745,7 +748,9 @@ export interface RenderJobSeat {
 
 /** One rendered track row the walk stamps — the tracks table's own columns
  * grown with the pointer chain (the reference law of PV1.001 mirrored:
- * every row carries the owner pointer and the blob address of the wav). */
+ * every row carries the owner pointer and the blob address of the wav, and
+ * the visibility lane the publish wave rides: a fresh render lands private,
+ * the owner's publish moves it to the vitrine). */
 export interface RenderTrackRow {
   /** The minted track id (the decimal string). */
   id: string;
@@ -761,9 +766,17 @@ export interface RenderTrackRow {
   status: string;
   /** The blob id of the landed wav (the decimal string). */
   wavPointer: string;
+  /** The visibility lane: the private shelf until the owner publishes. */
+  visibility: RenderTrackVisibility;
   /** The iso instant of the stamp. */
   createdAt: string;
 }
+
+/** The visibility lanes a rendered track row walks — the same law the
+ * ingest documents ride (private | vitrine): a fresh render lands private,
+ * the owner's publish moves it onto the vitrine where the public list
+ * serves it. */
+export type RenderTrackVisibility = "private" | "vitrine";
 
 /** The typed answer of one db lane insert — never a throw (a throwing
  * seat answers through the walk's guard). */
@@ -901,6 +914,7 @@ export async function startRenderJob(env: RenderEnv, jobId: string): Promise<Ren
     seconds: Math.round(result.durationSeconds),
     status: "ready",
     wavPointer: result.wavPointer.id,
+    visibility: "private",
     createdAt: env.now(),
   };
   if (env.tracks !== null) {
@@ -917,6 +931,7 @@ export async function startRenderJob(env: RenderEnv, jobId: string): Promise<Ren
       state: "done",
       fraction: 1,
       wav_pointer: result.wavPointer.id,
+      track_pointer: env.tracks === null ? null : track.id,
       finished_at: env.now(),
     });
   } catch (error) {

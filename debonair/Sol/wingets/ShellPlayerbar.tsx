@@ -44,9 +44,10 @@ export function Playerbar() {
   if (!current) return null;
   const progress = view.duration > 0 ? Math.min(100, (view.position / view.duration) * 100) : 0;
   // the row shape decides by kind: a generated take answers the genre line,
-  // an ingested reference answers the blob line — the same bar either way
+  // a rendered wav answers the render line, an ingested reference answers
+  // the blob line — the same bar either way
   const artist = isReferenceTake(current)
-    ? labelfill("shell.playerbar.referenceLine", {
+    ? labelfill(current.origin === "render" ? "shell.playerbar.renderLine" : "shell.playerbar.referenceLine", {
         mime: current.source.mime.replace("audio/", ""),
         clock: formatClock(view.duration),
       })

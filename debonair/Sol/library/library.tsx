@@ -272,15 +272,17 @@ export default function Library() {
         )}
       </section>
 
-      {/* the ingested references — the playback proof beside the takes, one
-          grammar: the row shape decides the meta line, the play key is the
-          same button pressing the same shared bus */}
+      {/* the ingested references and the rendered takes — the audio shelf,
+          one grammar: the row shape decides the meta line, the play key is
+          the same button pressing the same shared bus (the rendered wavs
+          ride the blob lane the references ride, the origin field says
+          which lane the row came from) */}
       <section className="lib-list reveal" aria-label={label("library.references.aria")}>
         <p className="lib-shelfhead">{labelfill("library.references.head", { count: String(referenceRows.length) })}</p>
         {referenceRows.map(({ take }) => (
           <article key={take.id} className="lib-row" data-status="ready">
             <span className="lib-index" aria-hidden="true">
-              ref
+              {take.origin === "render" ? "gen" : "ref"}
             </span>
             <span className="lib-cover" aria-hidden="true">
               <CoverArt name={take.name} />
@@ -288,7 +290,7 @@ export default function Library() {
             <div className="lib-main">
               <h2 className="lib-name">{take.name}</h2>
               <p className="lib-meta">
-                {labelfill("library.row.referenceMeta", {
+                {labelfill(take.origin === "render" ? "library.row.renderMeta" : "library.row.referenceMeta", {
                   clock: formatClock(take.source.durationSeconds),
                   mime: take.source.mime.replace("audio/", ""),
                 })}
