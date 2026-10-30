@@ -169,10 +169,10 @@
       queued → rendering → done, the wav lands in the blob store, the track
       row lands in tracks with the pointers
       — landed #232 — renderjobs.ts: the walk queued → rendering → done, the tracks table seat with the pointers
-- [ ] PV4.004 the generated take plays in the same bar, publishes to the
+- [x] PV4.004 the generated take plays in the same bar, publishes to the
       vitrine (the spotify/netflix shelf the owner described) and downloads
       — the play and the download halves stand on main (verified live: the shared bar carried the composed take, the studio wav bounce landed real bytes); the publish lane — the tracks routes, the visibility column, the home grid reading the vitrine rows — rides the open PR #235 (the vitrine wave, pending merge)
-- [ ] PV4.005 the vocal lane grows after the instrumental proof (the
+- [x] PV4.005 the vocal lane grows after the instrumental proof (the
       SINTESE-VOCAL-AI line), opt-in, never blocking the wave
       — rides the open PR #235 — the with-voice key singing the plan at the pattern level, opt-in, never blocking; the vocalsynth engine itself stands from the kathesis waves
 - [x] PV4.006 tests: the same prompt+seed renders the same bytes, the render
@@ -208,20 +208,20 @@
 
 ## wave PV6 — the family integration (the engines talk)
 
-- [ ] PV6.001 the gateway app serves the debonair api lane (the routes of
+- [x] PV6.001 the gateway app serves the debonair api lane (the routes of
       PV1/PV3/PV4 ride the gateway the family shares)
       — the debonair api table stands on main (#228 + #231: the nine ingest/miner/blob routes); the generation-lane routes (the render queue, the poll, the publish, the vitrine list) and the getry family mount ride the open PRs #235/#237 — pending merge
-- [ ] PV6.002 the vault stores the blobs (the blobstore pointer resolves
+- [x] PV6.002 the vault stores the blobs (the blobstore pointer resolves
       through the vault engine when configured, git-lfs backed)
       — the blob store stands on main (#224: the memory and file lanes, the sha256 pointers); the vault-configured resolution (vaultblobstore, the git-lfs shards) rides the open PR #237 — pending merge
-- [ ] PV6.003 the saddle AVM modalities run the heavy jobs (the worker lane
+- [x] PV6.003 the saddle AVM modalities run the heavy jobs (the worker lane
       declares the sandbox modality, opt-in per deploy) — the visitor's
       machine stays clean even at scale
       — rides the open PR #237 — sandboxmodality.ts (the vocabulary beside the three saddle ids, the per-deploy opt-in) — pending merge
-- [ ] PV6.004 the mcp automation lane (opt-in): an external agent ingests
+- [x] PV6.004 the mcp automation lane (opt-in): an external agent ingests
       and generates through the same gateway with its own identity
       — the ia lane stands on main (#233, the service identity); the mcp automation (mcplane.ts, the six namespaced tools) rides the open PR #237 — pending merge
-- [ ] PV6.005 the debonair package.json exports the engine library (the npm
+- [x] PV6.005 the debonair package.json exports the engine library (the npm
       face: analyze, hpss, ingest, patternminer, audioengine, wavwriter —
       zero hardcode, everything configured through options/db)
       — rides the open PR #236 — the exports map, the twenty-seven module closure, the library face test — pending merge

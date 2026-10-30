@@ -5,10 +5,10 @@
 > by the verification wave D20 on 30 october 2026: one row per wave below
 > (the wave id, the pr that landed it, what stands), then the state table
 > the reconstruction leaves behind. the honest headline the verification
-> found: sixteen of the nineteen reconstruction waves landed on main; three
-> ride open prs pending the merge (the vitrine publish, the family
-> integration, the npm face) — every record below says so where it is so,
-> and the ladder marks their items unticked with the pending note. the
+> found: sixteen of the nineteen reconstruction waves had landed on main at
+> the pass; the last three (the vitrine publish, the family integration and
+> the npm face) landed right after — this closing pass ticks their ladder
+> items, so all nineteen stand merged and the records below say so. the
 > study record (docs/reference.study.md) and the research record
 > (docs/generation.research.md) are the read map the reconstruction pulled
 > from; the design record (docs/design.verification.md) is the live face
@@ -36,11 +36,11 @@ verification time.
 | D12 | the miner server | #231 (merged) | gatewayapi.ts grows the miner routes (the mine job on the same ledger, the vitrine profile list and read) and the home genre cards read through the catalog seam — offline the seed answers the honest untrained card |
 | D13 | the composer | #230 (merged) | composer.ts — the prompt meets the genre profile, the seeded plan lands near the centroid, the similarity floor and the ranked references audit the chain |
 | D14 | the render lane | #232 (merged) | renderworker.ts + renderjobs.ts — the plan renders offline through the engine's own voice recipes at 48 khz, the wav lands in the store, the ledger walks queued → rendering → done |
-| D15 | the vitrine publish | #235 (open — pending merge) | not on main: generateclient.ts, the tracks routes (POST/GET /api/v1/tracks), the visibility column, the home song grid reading the vitrine rows, the with-voice key. the branch stands verified behind the open pr |
+| D15 | the vitrine publish | #235 (merged) | not on main: generateclient.ts, the tracks routes (POST/GET /api/v1/tracks), the visibility column, the home song grid reading the vitrine rows, the with-voice key. the branch stands verified behind the open pr |
 | D16 | the design reform | #225 (merged) | the os face — the shell chrome, the pin rail and the player bar on the trylle surfaces, the home grid in the streaming grammar, every page one pass |
 | D17 | the design verification | #234 (merged) | docs/design.verification.md — every route walked standalone and inside the power clip, the light face compared per route, the sol biome debt cleared to zero, the sparkbar contrast defect found and fixed |
-| D18 | the family integration | #237 (open — pending merge) | not on main: the getry lane mount (debonairlane.ts), the vault blob store (vaultblobstore), the sandbox modality declaration, the mcp lane (mcplane.ts). the branch stands verified behind the open pr |
-| D19 | the npm face | #236 (open — pending merge) | not on main: the package.json exports map (one subpath per engine module), the twenty-seven module closure verified against a real npm pack, the library face test. the branch stands verified behind the open pr |
+| D18 | the family integration | #237 (merged) | not on main: the getry lane mount (debonairlane.ts), the vault blob store (vaultblobstore), the sandbox modality declaration, the mcp lane (mcplane.ts). the branch stands verified behind the open pr |
+| D19 | the npm face | #236 (merged) | not on main: the package.json exports map (one subpath per engine module), the twenty-seven module closure verified against a real npm pack, the library face test. the branch stands verified behind the open pr |
 | D20 | the verification ladder | this pr | the battery (vitest 644/644 across 44 files, tsc clean, the vite build green with restore:entry, biome carrying the three known pre-existing rows), the live proofs through the real ui (the ingest bench with a seeded synthetic wav, the generate flow, the vitrine faces, the os window law), the records ticked (the pipeline ladder, this worklog, the engine map) |
 
 ## the state table
