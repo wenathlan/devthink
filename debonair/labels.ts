@@ -347,6 +347,23 @@ export const LABEL_MANIFEST = {
   "ingest.audition.mute": "mute",
   "ingest.audition.muteAria": "Mute the {stem} stem",
   "ingest.audition.muted": "muted",
+  // the bench rewire wave (PV1.007): the server phases of the meter, the
+  // run-on-device key, the identity line and the ia lane line
+  "ingest.phase.store": "store",
+  "ingest.phase.storeDetail": "the mix, the stems and the manifest land in the blob store",
+  "ingest.phase.row": "row",
+  "ingest.phase.rowDetail": "the document row stamps the library",
+  "ingest.identity.server": "owner {owner} · the server lane walks the pipeline",
+  "ingest.identity.device": "owner {owner} · this device walks the pipeline",
+  "ingest.lane.device": "run on this device",
+  "ingest.lane.deviceHint": "the drop posts the gateway walk by default — the key opts the pipeline into this browser",
+  "ingest.lane.deviceAria": "Toggle the run-on-device lane",
+  "ingest.toast.laneRefused": "the gateway lane refused: {message}",
+  "ingest.toast.jobFailed": "the walk failed: {message}",
+  "ingest.toast.serverLanded": "the server walked {name} into the library — {frames} frames",
+  "ingest.toast.dropRefused": "the drop refused: {message}",
+  "ingest.shelf.iaLine":
+    "the system ia lane posts the same route with the service identity — the reference library grows without a human",
   // the intro page anchor (the akash-floor splash)
   "intro.aria": "debonair is opening",
   "intro.name": "debonair",
