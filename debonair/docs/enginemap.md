@@ -4,7 +4,7 @@ the engine of the family's audio app lives at the debonair root (the app houses 
 
 rule of the map: one domain per file, pure functions first, tables at the top, orchestrator last, ~300 lines, errors by typed result or machine-coded error, zero consumer data in the engine, seeded determinism in everything generated.
 
-## the tree (current, verified 2026-10-10 after the 5-b closure pass · tsc exit 0 · vitest 223 green / bun test 223 green)
+## the tree (current, verified 2026-10-30 after the D20 verification pass · tsc exit 0 · vitest 644 green / 44 files)
 
 ```text
 debonair/
@@ -35,8 +35,38 @@ debonair/
 ├─ theme.ts                # sol dark/light on the document only — session scope, zero storage
 ├─ reveal.ts               # riseIn on scroll — one shared intersection observer at 12% visibility, mutation-watched, rescanned per route
 ├─ cleanurl.ts             # clean url bar — hash routes to paths, index.html and duplicate slashes out, campaign trackers stripped with replaceState, canonical + og:url in sync
-├─ Sol/studio/audioengine.ts # the browser transport (Sol layer) — WebAudio 48 kHz graph per take: role buses wired as mixergraph resolves them, the wave-b2 synth recipes (kick 808, noise snare/hats, detuned pad, vibrato lead), lookahead scheduler with loop pass, analyser VU taps (5-b)
-└─ tests/                  # vitest — beatgrid 9 · loudness 11 · mixergraph 15 · remixplan 9 · speechalign 12 · timelinemodel 20 · ducking 9 · familyurl 4 · musictheory 15 · harmonyengine 14 · rhythmgrammar 19 · genrematrix 13 · arranger 15 · takeevents 12 · takestore 7 · dawview 12 · family 8 · motionpref 4 · tuning 3 · solcss 12 (223 total)
+├─ labels.ts               # the copy law — every interface string lives in the label store, the typed accessor the wingets and the anchors read (the family template law)
+├─ family.ts               # the family table — the sibling rows the surfaces render, beside familyurl.ts
+├─ stages.ts               # the studio stage table — the six stages the desk stepper walks
+├─ motionpref.ts           # the motion preference — reduced motion on the document, the family unit
+├─ onboardingstate.ts      # the ONE writer of the first-run flags — the entry-flow contract (intro → onboarding → the platform) and the hostallowed https gate every lane rides
+├─ tuning.ts               # the midi-to-hertz helper of the transport — the frequency law every voice reads
+├─ arrangement.ts          # the clip binding — the edited clips re-slice the take's material by duration share, one law, fully deterministic (kathesis b3)
+├─ pianoroll.ts            # the note editor — flat events to editable notes and back, the overlap policy, snap/quantize, validate with machine codes (kathesis b3)
+├─ midiwriter.ts           # the standard midi file writer — ppq-quantized tracks, the gm drum map, validate-then-write (kathesis b3)
+├─ wavwriter.ts            # the riff writer — 16/24/32f headers by hand, the parse-back law every bounce test rides (kathesis b3)
+├─ stems.ts                # the stem planner — per-role stems from the schedule, the bounce manifest schema v1 (kathesis b3)
+├─ cloudsync.ts            # the gateway persistence seam — /api/projects, the typed errors (offline/timeout/refused), the local shelf fallback (kathesis b3)
+├─ takeexporter.ts         # the bounce desk of the studio — wav 16/24, midi, stems: every export a real render, no fake progress (5-b, moved to root)
+├─ audioengine.ts          # the browser transport (root logic, moved from Sol/studio) — the WebAudio graph per take, the wave-b2 recipes, the lookahead scheduler, the offline render mirror (5-b · v2.28)
+├─ hpss.ts                 # the tier-1 separator — median-filter hpss, centered framing, conjugate ifft, f64 ola, conservation 2.3e-7 over the whole signal (pv0)
+├─ ingest.ts               # the decomposition pipeline — the debonair.ingest/1 document: mix + harmonic/percussive stems, per-second vector frames, the fnv-1a pcm hash (pv0)
+├─ ingeststore.ts          # the ONE writer of the ingest records (browser) — the gateway first under the https house law, the byte-capped offline mirror the honest fallback (pv0)
+├─ playerbus.ts            # the shared playback host — ONE take engine for the whole app: the generated plans and the ingested references ride the same bus (pv2 · #229)
+├─ bigintids.ts            # the id mint — time-ordered 64-bit decimal ids (clock in the high bits), the owner/service stamp every row rides (pv1 · the pointer mint)
+├─ patternenums.ts         # the llm payload contract — the debonair.pattern/1 + timeline documents over the enum tables (48 scales, 8 voices, the lane keys), the validators that clamp, the instruction builder (pv d4 · #222)
+├─ blobstore.ts            # the content-addressed blob store — put/get streams, the hand-rolled sha256, the minted ids, the shard layout the vault serves (pv1 · #224)
+├─ ingestdb.ts             # the node/sqlite half — the reference columns (owner, kind, visibility, blob addresses), the job ledger, parameter binding only (pv1 · #221/#228)
+├─ ingestworker.ts         # the server ingest worker — decode → separate → analyze → segment → store, the wavs per stem + mix: the pipeline outside the visitor machine (pv1 · #226)
+├─ ingestclient.ts         # the typed client of the ingest lane — ok/err with machine codes, the https house law before any byte leaves, the owner identity seat (pv1 · #233)
+├─ ialane.ts               # the system ia ingest lane — the service identity, the reference kind, the vitrine visibility: the library grows without a human (pv1 · #233)
+├─ gatewayapi.ts           # the http route table — the nine routes (the ingest upload/jobs/shelf/read/delete, the blob stream, the miner mine/list/read), the nine-column ledger, the visibility law (pv1/pv3 · #228/#231)
+├─ patternminer.ts         # the pattern miner — the genre profile document (debonair.profile/1), the cosine rank over the normalized segment vectors, the key pool and onset curves (pv3 · #227)
+├─ composer.ts             # the composer — the prompt meets the genre profile, the seeded plan lands near the centroid, the similarity floor and the ranked references audit the chain (pv4 · #230)
+├─ renderworker.ts         # the server render job — the engine's own voice recipes sample-accurate at 48 khz, mono pcm 16, determinism total (pv4 · #232)
+├─ renderjobs.ts           # the render ledger + the tracks table seat — the walk queued → rendering → done, the pointer chain (pv4 · #232)
+├─ Sol/                    # the surface tree — the shell (the rail, the footer, the shared player bar), the pages (home, generate, ingest, library, studio, settings, intro, onboarding, 404), the wingets (the cover art, the entry gate, the genre card, the song card, the player bar, the studio fader/piano roll/spectrum/stage stepper/timeline/vu meter) and sol.css — the os face of the design reform, the embedded/standalone seat law (pv5 · #225)
+└─ tests/                  # vitest — 44 files, 644 tests green: the battery the D20 verification pass recorded (the suite inventory in debonair/tests/ — the pattern enums 49 rows, the blob store, the gateway contract, the miner, the composer, the render lane, the player bus, the sol css pin, the family battery)
 ```
 
 ## the seam (imported, never forked)
@@ -57,38 +87,19 @@ the official rule: the engine lives in one app and the others import the publish
 
 kept in debonair on purpose (no cadria counterpart exists): loudness, ducking, mixergraph, timelinemodel, remixplan, speechalign, beatgrid's dp tracking + tempo curves. kept apart: cadria's timelineedit/timeticks solve video time in bigint ticks — the daw stays in float seconds until a wave decides otherwise.
 
-## the waves (planned — contracts to honor)
+## the waves (the landed record — refreshed 2026-10-30 by the D20 pass)
 
 ```text
-wave b1 (in flight — parallel agent 10-1-a, katexis theory core)
-├─ musictheory.ts        # scales, chords, keys, intervals, modes + seeded rng — the deterministic vocabulary every generator reads; > 95% valid notes/chords
-├─ harmonyengine.ts      # progressions, voice leading, inversions, substitutions — chord plans per genre and per bar
-├─ rhythmgrammar.ts      # drum patterns per genre, swing, humanize, fills — 16th-grid events with velocity, seed-reproducible
-└─ genrematrix.ts        # the 15-genre table (bpm, scales, drum feel, mix recipe pointers) — the single place a genre is named
-
-wave b2 (synthesis + assembly + export)
-├─ assembler.ts          # pattern db → markov order-n + csp with compatibility rules — an arrangement plan the synthesizer can run
-├─ synthesis.ts          # sample-accurate recipe voices (kick808 pitch env, snare noise+body, hihat decay, pad saw harmonics, lead square+vibrato, bass sine+sub) — float32 stems out
-├─ vocal.ts              # formant synthesizer (f1/f2/f3 per vowel) + pitch envelope + vibrato — a honest synthetic voice, not an sv claim
-├─ layering.ts           # 10–15 sub-layers per genre with eq carving and panning plans — the mix bus the renderer applies
-├─ patternstore.ts       # sqlite tables for features/patterns/fingerprints ("pre-chewed data") beside db.ts — prepared statements only
-└─ export/               # midi writer (midi-file), wav writer (48khz float→pcm), the bounces the library rows promise — deterministic bytes for a given plan+seed
-
-wave b3 (fingerprint + loudness completion)
-├─ fingerprint/constellation.ts   # stft → landmark peaks → hash pairs (f1:f2:Δt) — pure js, indexed lookups (no o(n×m) scan)
-├─ fingerprint/chromaprint.ts     # fpcalc wrapper under tools/bin (execFileSync, stderr, timeout) — the industry format when a binary is allowed
-├─ loudness/limiter.ts            # true-peak limiter with a certified polyphase oversampler replacing the 4x linear estimate — tp < −1 dbtp actually guaranteed
-└─ separation/hpss.ts             # tier-1 stem split (mid/side + centered moving average + rbj bandpasses) with cross-correlation quality report — dsp before any ml
-
-wave b4 (realtime + viz)
-├─ viz/waveform.ts       # min/max per bucket for canvas draw — the honest waveform under the playhead
-├─ viz/spectrogram.ts    # stft frames → grayscale/color bitmap (cadria's decimator reused) — the waterfall the studio lacks
-├─ viz/realtime.ts       # analysernode/worklet adapters over the same feature calls — the meters go live
-└─ ml/onnx.ts            # onnxruntime wrapper (session cache, quantized models) — the tier-2 upgrade path for separation/classification, gated behind wave b3 quality targets
+kathesis b1 (landed)       # musictheory, harmonyengine, rhythmgrammar, genrematrix — the theory core, every table the generators read
+kathesis b2 + 5-b (landed) # spectrum, fingerprint, analyze, vocalsynth, arranger, takeevents, the sol surfaces, the studio desk and the session shelf
+kathesis b3 (landed)       # pianoroll, arrangement, timelinemodel edits, wavwriter, midiwriter, stems, cloudsync, db — the daw editing desk, the writers, the live viz, the gateway persistence
+pv0 (landed)               # hpss, ingest, ingeststore, the /ingest bench — the decomposition pipeline and the debonair.ingest/1 document
+pv1-pv4 (landed)           # bigintids, patternenums, blobstore, ingestdb, ingeststore, ingestworker, ingestclient, ialane, gatewayapi, patternminer, composer, renderworker, renderjobs, playerbus — the reconstruction's fourteen (the ingest lane, the miner, the composer, the render lane)
+pv5 (landed)               # the design reform (the os face) + the design verification (docs/design.verification.md — every route walked, the sol debt cleared)
+b4 backlog (open)          # viz/waveform, viz/spectrogram, viz/realtime, ml/onnx — the realtime and tier-2 upgrade path, gated behind the quality targets
+pv tail (open prs)         # #235 the vitrine publish (generateclient, the tracks routes, the visibility column, the with-voice key), #236 the npm face (the exports map, the module closure), #237 the family integration (the getry lane mount, vaultblobstore, sandboxmodality, mcplane) — pending merge, the state docs/worklog.md records
 ```
 
-quality targets inherited from the digest: import < 5s per 3min · features < 10s · pattern generation < 10ms · wav export 3min < 5s · theory > 95% valid · lufs target −14 / tp < −1 dbtp · core bundle < 300kb.
+## the honest gaps (refreshed 2026-10-30 by the D20 pass)
 
-## the honest gaps (top of the b2 backlog)
-
-wave 5-b closed the wire gap: /generate composes real plans (arranger over musictheory/harmonyengine/rhythmgrammar/genrematrix), /studio plays them on the WebAudio clock (audioengine's in-browser transport with the wave-b2 voice recipes, mixergraph-driven desk, live VU) and /library lists the session takes (takestore). the 5-b closure pass audited every piece: the studio playlist gained the keyboard/click scrub over the ruler (the native range the dawview math backs), the theme contract is pinned in CI (tests/solcss.test.ts — banned palette, pills, transition:all, scale(0), the reduced-motion/transparency guards, the tabular-nums discipline and the hairline aliases) and the lint debt of the suite is at zero. what stays open: the seam above is still specified, not imported (no @wenathlan/cadria call in the tree yet); the offline export (midi/wav writers), fingerprint, the certified tp limiter and the realtime worklet path remain the b2/b3 backlog.
+the reconstruction closed the pipeline loop the planning ladder drew: ingest (the bench, the worker, the store), separate (hpss conserved), analyze (the vector document), mine (the profile), compose (the seeded plan), render (the offline wav), play (the shared bus) — the D20 live proofs walked it through the real ui and the battery pins it at 644 green. what stays open, honestly: the seam above is still specified, not imported (no @wenathlan/cadria call in the tree yet — @wenathlan/saddle and @wenathlan/vault sit in the manifest waiting for the family integration, which rides the open pr #237); the server lanes need the deployed gateway — on a dev server the app answers through the honest offline seams (the store falls to the session mirror, the typed clients refuse the empty origin under the https house law, the vitrine cards answer the honest untrained seed), the state the D20 session verified and recorded; the b4 backlog (the realtime worklet, the certified tp limiter, the tier-2 onnx separation) waits behind the quality targets; and the vitrine publish, the npm face and the family mount ride the open prs #235/#236/#237 — merge them and the reconstruction closes.
