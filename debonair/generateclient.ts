@@ -1,40 +1,52 @@
 // # generateclient — the typed client of the generation lane (root layer,
-// waves PV4.004 + PV4.005): the browser-side seat that speaks the render
-// and the tracks routes the gateway table serves — the plan queue that
-// starts the server render, the job poll the generate page's meter reads,
-// the publish that moves the rendered track row onto the vitrine, the
-// vitrine list the streaming shelf reads, and the wav download the take
-// rows answer. every call answers a typed result, never a throw: the
-// machine codes are offline (the host law refused the origin, or the
-// network never answered), timeout (the call kept silent past its
-// window), refused (the gateway answered a status outside the 2xx lane
-// beyond the 400 law), bad-response (the gateway answered 2xx but the
-// body failed the shape guard) and bad-request (the gateway refused the
+// waves PV4.003 + PV4.004 + PV4.005 + PV6.001): the browser-side and the
+// automation seat that speaks the render and the tracks routes the
+// gateway table serves — the plan queue that starts the server render,
+// the job poll the generate page's meter reads, the publish that moves
+// the rendered track row onto the vitrine, the vitrine list the
+// streaming shelf reads, and the wav download the take rows answer —
+// beside the generate lane's own seats the automation rides (the
+// profile mine, the vitrine profile list, the profile read and the
+// generate-spelled render/publish/vitrine calls the mcplane agent
+// speaks). every call answers a typed result, never a throw: the machine
+// codes are offline (the host law refused the origin, or the network
+// never answered), timeout (the call kept silent past its window),
+// refused (the gateway answered a status outside the 2xx lane beyond
+// the 400 law), bad-response (the gateway answered 2xx but the body
+// failed the shape guard) and bad-request (the gateway refused the
 // caller's facts with a 400). the https law is the house one: the origin
 // passes hostallowed before any call leaves the host (https only, public
 // hosts only — the same law onboardingstate carries), every call rides
 // an abort window, and the fetch seam is injected (the tests hand
-// doubles, the browser hands the default). the wire types ride the
-// gateway's own projections (RenderJobValue, VitrineTrackValue —
-// imported, never re-typed). beside the http seats the module owns the
-// pure composition lane the generate page rides: the reference fold (the
-// documents the session holds feed the miner's own profile builder — the
-// same grouping law the miner lane rides, the genre matrix's matcher
-// over the document name), the composer over the profile (the seeded
-// plan, the fresh-take salt law), and the opt-in vocal lane (singPattern
-// — the plan with voice differs from without, never blocking the wave).
+// doubles, the browser hands the default). the render job poll walks the
+// two spellings of the same lane (the render route first, the generate
+// lane's path as the fallback — one walk, two vocabularies, exactly the
+// merged route table). the wire types ride the gateway's own projections
+// (RenderJobValue, VitrineTrackValue, VitrineValue, GatewayProfileRow —
+// imported, never re-typed) and the profile document answers through
+// the pattern miner's own validator (validateGenreProfile — a foreign
+// profile never reaches the composer). beside the http seats the module
+// owns the pure composition lane the generate page rides: the reference
+// fold (the documents the session holds feed the miner's own profile
+// builder — the same grouping law the miner lane rides, the genre
+// matrix's matcher over the document name), the composer over the
+// profile (the seeded plan, the fresh-take salt law), and the opt-in
+// vocal lane (singPattern — the plan with voice differs from without,
+// never blocking the wave).
 // zero dependencies, zero consumer data.
 
 import { mintid } from "./bigintids.ts";
 import { type BlobResult, blobidvalid, gatewayblobstore } from "./blobstore.ts";
 import { composeSimilar } from "./composer.ts";
-import type { RenderJobValue, VitrineTrackValue } from "./gatewayapi.ts";
+import type { GatewayProfileRow, RenderJobValue, VitrineTrackValue, VitrineValue } from "./gatewayapi.ts";
 import { matchGenre } from "./genrematrix.ts";
+import { gatewaylane, INGEST_CALL_TIMEOUT_MS, type IngestClientDeps, type IngestClientResult } from "./ingestclient.ts";
 import { hostallowed } from "./onboardingstate.ts";
 import type { PatternProject } from "./patternenums.ts";
-import { serializePattern } from "./patternenums.ts";
+import { serializePattern, validatePatternProject } from "./patternenums.ts";
 import type { GenreProfile, IngestDocumentWithId } from "./patternminer.ts";
-import { mineGenre, ProfileError } from "./patternminer.ts";
+import { mineGenre, PROFILE_GENRE_KEYS, ProfileError, validateGenreProfile } from "./patternminer.ts";
+import type { RenderTrackRow } from "./renderworker.ts";
 import { singPattern } from "./vocalsynth.ts";
 
 /** @section codes — the typed failure branch */
@@ -196,9 +208,11 @@ const RENDER_STATES: readonly string[] = ["queued", "rendering", "done", "failed
 const VITRINE_KINDS: readonly string[] = ["render", "reference"];
 
 /**
- * Guards one render job row — the walk the generate page polls: the state
- * off the enum, the fraction outside 0..1 or a missing pointer answers
- * null.
+ * Guards one render job row — the walk the generate page polls: the
+ * state off the enum, the fraction outside 0..1 or a missing pointer
+ * answers null (the track pointer may be absent — the generate lane's
+ * own spelling of the row carries no trackPointer, the guard accepts
+ * the missing key and refuses only a foreign value).
  *
  * @param parsed the json the route answered.
  * @returns the job row, or null when the shape is foreign.
@@ -214,7 +228,7 @@ function renderjobvalid(parsed: unknown): RenderJobValue | null {
   if (row.phase !== null && typeof row.phase !== "string") return null;
   if (row.error !== null && typeof row.error !== "string") return null;
   if (row.wavPointer !== null && typeof row.wavPointer !== "string") return null;
-  if (row.trackPointer !== null && typeof row.trackPointer !== "string") return null;
+  if (row.trackPointer !== null && row.trackPointer !== undefined && typeof row.trackPointer !== "string") return null;
   if (typeof row.createdAt !== "string") return null;
   if (row.finishedAt !== null && typeof row.finishedAt !== "string") return null;
   return parsed as RenderJobValue;
@@ -240,6 +254,88 @@ function vitrinerowvalid(parsed: unknown): VitrineTrackValue | null {
   if (typeof row.ownerId !== "string" || row.ownerId.length === 0) return null;
   if (typeof row.publishedAt !== "string") return null;
   return parsed as VitrineTrackValue;
+}
+
+/**
+ * Guards one profile row — the row id, the genre key of the fifteen, the
+ * audit chain and the profile document itself (the miner's own validator
+ * answers the document, so a foreign profile never reaches the composer).
+ *
+ * @param parsed the json the route answered.
+ * @returns the profile row, or null when the shape is foreign.
+ */
+function profilevalid(parsed: unknown): GatewayProfileRow | null {
+  if (typeof parsed !== "object" || parsed === null) return null;
+  const row = parsed as Record<string, unknown>;
+  if (typeof row.id !== "number" || !Number.isInteger(row.id) || row.id < 0) return null;
+  if (typeof row.genre !== "string" || !PROFILE_GENRE_KEYS.includes(row.genre)) return null;
+  if (!Array.isArray(row.referenceIds) || row.referenceIds.some((id) => typeof id !== "string")) return null;
+  if (typeof row.createdAt !== "string" || row.createdAt.length === 0) return null;
+  const profile = validateGenreProfile(row.profile);
+  if (!profile.ok || profile.doc.genre !== row.genre) return null;
+  return {
+    id: row.id,
+    genre: row.genre,
+    referenceIds: row.referenceIds,
+    profile: profile.doc,
+    createdAt: row.createdAt,
+  };
+}
+
+/**
+ * Guards one track row — the pointer chain the walk stamps (the owner
+ * pointer and the wav address beside the display facts — the generate
+ * lane's own row shape).
+ *
+ * @param parsed the json the route answered.
+ * @returns the track row, or null when the shape is foreign.
+ */
+function trackvalid(parsed: unknown): RenderTrackRow | null {
+  if (typeof parsed !== "object" || parsed === null) return null;
+  const row = parsed as Record<string, unknown>;
+  if (typeof row.id !== "string" || row.id.length === 0) return null;
+  if (typeof row.ownerId !== "string" || row.ownerId.length === 0) return null;
+  if (typeof row.name !== "string" || row.name.length === 0) return null;
+  if (typeof row.genre !== "string") return null;
+  if (typeof row.seconds !== "number" || !Number.isFinite(row.seconds)) return null;
+  if (typeof row.status !== "string" || row.status.length === 0) return null;
+  if (typeof row.wavPointer !== "string" || row.wavPointer.length === 0) return null;
+  if (typeof row.createdAt !== "string") return null;
+  return parsed as RenderTrackRow;
+}
+
+/**
+ * Guards the vitrine surface of the generate lane — the published track
+ * rows beside the freshest profile rows (a foreign row never blocks the
+ * list, the valid rows ride and the guard skips the rest — the shelf
+ * law).
+ *
+ * @param parsed the json the route answered.
+ * @returns the vitrine value, or null when the shape is foreign.
+ */
+function vitrinevalid(parsed: unknown): VitrineValue | null {
+  if (typeof parsed !== "object" || parsed === null) return null;
+  const value = parsed as Record<string, unknown>;
+  if (!Array.isArray(value.tracks) || !Array.isArray(value.profiles)) return null;
+  const tracks: RenderTrackRow[] = [];
+  for (const entry of value.tracks) {
+    const guarded = trackvalid(entry);
+    if (guarded !== null) tracks.push(guarded);
+  }
+  const profiles: GatewayProfileRow[] = [];
+  for (const entry of value.profiles) {
+    const guarded = profilevalid(entry);
+    if (guarded !== null) profiles.push(guarded);
+  }
+  return { tracks, profiles };
+}
+
+/** The job id guard the queue seats share (both spellings answer the
+ * same mint shape). */
+function jobidvalid(parsed: unknown): { jobId: string } | null {
+  if (typeof parsed !== "object" || parsed === null) return null;
+  const jobId = (parsed as Record<string, unknown>).jobId;
+  return typeof jobId === "string" && jobId.length > 0 ? { jobId } : null;
 }
 
 /** @section compose — the pure lane the page rides */
@@ -387,30 +483,188 @@ export function composeTake(input: {
   }
 }
 
-/** @section calls — the http seats of the lane */
+/** @section automation — the generate lane seats (the automation vocabulary) */
 
 /**
- * POST /api/v1/render — queues one render job: the composed plan rides
- * the body as the canonical pattern json (serializePattern — the same
- * bytes the ledger stores; a plan that refuses its serialization answers
- * the typed bad-request, never a throw), the gateway's contract gate
- * parses it and the mint answers the job id. The run itself starts
- * through the gateway worker loop (startRenderLaneJob) — the walk lands
- * through pollRenderJob.
+ * POST /api/v1/profiles/mine — queues one miner job: the genre key of the
+ * fifteen and the owner pointer register the queued row on the shared
+ * ingest_jobs ledger; the walk lands through pollJob (the ingest client's
+ * own seat — the ledgers share the nine columns).
  *
- * @param input the plan, the owner stamp and the gateway origin.
+ * @param genre the genre key to profile.
+ * @param ownerId the owner pointer the row stamps.
+ * @param origin the gateway origin (https, a public host).
  * @param deps the injected seams.
  * @returns the job id, or the typed err of the refusing lane.
  */
-export async function queueRender(
+export function mineProfile(
+  genre: string,
+  ownerId: string,
+  origin: string,
+  deps: IngestClientDeps = {},
+): Promise<IngestClientResult<{ jobId: string }>> {
+  return gatewaylane(
+    origin,
+    "POST",
+    "/api/v1/profiles/mine",
+    { genre, ownerId },
+    INGEST_CALL_TIMEOUT_MS,
+    jobidvalid,
+    deps,
+  );
+}
+
+/**
+ * GET /api/v1/profiles — the vitrine rows: the freshest profile row per
+ * genre (a retrain lands a fresh row, the vitrine shows the freshest).
+ *
+ * @param origin the gateway origin.
+ * @param deps the injected seams.
+ * @returns the freshest profile rows, or the typed err of the refusing lane.
+ */
+export function fetchProfiles(
+  origin: string,
+  deps: IngestClientDeps = {},
+): Promise<IngestClientResult<GatewayProfileRow[]>> {
+  return gatewaylane(
+    origin,
+    "GET",
+    "/api/v1/profiles",
+    undefined,
+    INGEST_CALL_TIMEOUT_MS,
+    (parsed) => {
+      if (typeof parsed !== "object" || parsed === null) return null;
+      const records = (parsed as Record<string, unknown>).records;
+      if (!Array.isArray(records)) return null;
+      const rows: GatewayProfileRow[] = [];
+      for (const record of records) {
+        const guarded = profilevalid(record);
+        if (guarded !== null) rows.push(guarded);
+      }
+      return rows;
+    },
+    deps,
+  );
+}
+
+/**
+ * GET /api/v1/profiles/:genre — the freshest profile row of one genre
+ * (the document the composer reads — a genre with no row yet answers
+ * not-found through the refused lane).
+ *
+ * @param genre the genre key of the fifteen.
+ * @param origin the gateway origin.
+ * @param deps the injected seams.
+ * @returns the profile row, or the typed err of the refusing lane.
+ */
+export function fetchProfile(
+  genre: string,
+  origin: string,
+  deps: IngestClientDeps = {},
+): Promise<IngestClientResult<GatewayProfileRow>> {
+  return gatewaylane(
+    origin,
+    "GET",
+    `/api/v1/profiles/${encodeURIComponent(genre)}`,
+    undefined,
+    INGEST_CALL_TIMEOUT_MS,
+    profilevalid,
+    deps,
+  );
+}
+
+/**
+ * GET /api/v1/vitrine — the generate lane's public surface under the
+ * visibility law: the published track rows beside the freshest genre
+ * profiles; the owner's own rows ride beside them when the ownerId query
+ * carries their pointer (the owner reads the track ids the render walk
+ * stamped).
+ *
+ * @param origin the gateway origin.
+ * @param ownerId the owner pointer the own rows ride for (optional).
+ * @param deps the injected seams.
+ * @returns the vitrine surface, or the typed err of the refusing lane.
+ */
+export function listVitrine(
+  origin: string,
+  ownerId?: string,
+  deps: IngestClientDeps = {},
+): Promise<IngestClientResult<VitrineValue>> {
+  const query = ownerId === undefined ? "" : `?ownerId=${encodeURIComponent(ownerId)}`;
+  return gatewaylane(origin, "GET", `/api/v1/vitrine${query}`, undefined, INGEST_CALL_TIMEOUT_MS, vitrinevalid, deps);
+}
+
+/** @section calls — the http seats of the lane */
+
+/**
+ * POST /api/v1/generate/render — the automation seat (the mcplane agent,
+ * the getry lane): the pattern plan (a debonair.pattern/1 project) rides
+ * the json lane as an object, the gateway validates the contract,
+ * serializes the canonical form and registers the queued render_jobs row.
+ * The run itself starts through the gateway worker loop — the walk lands
+ * through pollRenderJob.
+ *
+ * POST /api/v1/render — the browser seat (the generate page): the
+ * composed plan rides the body as the canonical pattern json
+ * (serializePattern — the same bytes the ledger stores; a plan that
+ * refuses its serialization answers the typed bad-request, never a
+ * throw), the gateway's contract gate parses it and the mint answers the
+ * job id. The run itself starts through the gateway worker loop
+ * (startRenderLaneJob) — the walk lands through pollRenderJob.
+ *
+ * @param plan the composed pattern project (the automation spelling).
+ * @param ownerId the owner pointer the row stamps (the automation spelling).
+ * @param origin the gateway origin (the automation spelling).
+ * @param deps the injected seams (either spelling).
+ * @returns the job id, or the typed err of the refusing lane.
+ */
+export function queueRender(
+  plan: PatternProject,
+  ownerId: string,
+  origin: string,
+  deps?: IngestClientDeps,
+): Promise<IngestClientResult<{ jobId: string }>>;
+export function queueRender(
   input: { plan: PatternProject; ownerId: string; origin: string },
-  deps: GenerateClientDeps = {},
-): Promise<GenerateClientResult<{ jobId: string }>> {
+  deps?: GenerateClientDeps,
+): Promise<GenerateClientResult<{ jobId: string }>>;
+export function queueRender(
+  planOrInput: PatternProject | { plan: PatternProject; ownerId: string; origin: string },
+  ownerIdOrDeps?: string | GenerateClientDeps,
+  origin?: string,
+  deps?: IngestClientDeps,
+): Promise<IngestClientResult<{ jobId: string }> | GenerateClientResult<{ jobId: string }>> {
+  if (typeof ownerIdOrDeps === "string" && typeof planOrInput === "object" && origin !== undefined) {
+    // the automation seat — the generate spelling
+    const plan = planOrInput;
+    const checked = validatePatternProject(plan);
+    if (!checked.ok) {
+      return Promise.resolve({
+        ok: false,
+        error: {
+          code: "bad-request",
+          message: `the plan failed the pattern contract (${checked.code}): ${checked.message}`,
+          status: null,
+        },
+      });
+    }
+    return gatewaylane(
+      origin,
+      "POST",
+      "/api/v1/generate/render",
+      { ownerId: ownerIdOrDeps, plan },
+      INGEST_CALL_TIMEOUT_MS,
+      jobidvalid,
+      deps,
+    );
+  }
+  // the browser seat — the render spelling
+  const input = planOrInput as { plan: PatternProject; ownerId: string; origin: string };
   let serialize: string;
   try {
     serialize = serializePattern(input.plan);
   } catch (error) {
-    return fail("bad-request", `the plan refused its canonical serialization: ${errmsg(error)}`);
+    return Promise.resolve(fail("bad-request", `the plan refused its canonical serialization: ${errmsg(error)}`));
   }
   return lane(
     input.origin,
@@ -418,20 +672,21 @@ export async function queueRender(
     "/api/v1/render",
     { plan: serialize, ownerId: input.ownerId },
     GENERATE_RENDER_TIMEOUT_MS,
-    (parsed) => {
-      if (typeof parsed !== "object" || parsed === null) return null;
-      const jobId = (parsed as Record<string, unknown>).jobId;
-      return typeof jobId === "string" && jobId.length > 0 ? { jobId } : null;
-    },
-    deps,
+    jobidvalid,
+    (ownerIdOrDeps as GenerateClientDeps | undefined) ?? {},
   );
 }
 
 /**
- * GET /api/v1/render/jobs/:id — the render job row the generate page
- * polls: the walk state, the last completed phase, the ascending
- * fraction, the honest failure, the landed wav and track pointers, the
- * instants.
+ * GET /api/v1/render/jobs/:id (and the generate lane's own spelling
+ * GET /api/v1/generate/jobs/:id) — the render job row the generate page
+ * and the automation seats poll: the walk state, the last completed
+ * phase, the ascending fraction, the honest failure, the landed wav and
+ * track pointers, the instants. The poll walks the two spellings of the
+ * one lane — the render route first, and when that path answers nothing
+ * (the 404 of a deploy that speaks only the generate vocabulary) the
+ * generate spelling rides; a walk that answers on either path is the
+ * same walk (the merged route table serves both).
  *
  * @param jobId the queued job the post answered.
  * @param origin the gateway origin.
@@ -441,9 +696,9 @@ export async function queueRender(
 export async function pollRenderJob(
   jobId: string,
   origin: string,
-  deps: GenerateClientDeps = {},
+  deps: GenerateClientDeps & IngestClientDeps = {},
 ): Promise<GenerateClientResult<RenderJobValue>> {
-  return lane(
+  const first = await lane(
     origin,
     "GET",
     `/api/v1/render/jobs/${encodeURIComponent(jobId)}`,
@@ -452,21 +707,75 @@ export async function pollRenderJob(
     renderjobvalid,
     deps,
   );
+  if (first.ok) return first;
+  if (first.error.code === "refused" && first.error.status === 404) {
+    const second = await gatewaylane(
+      origin,
+      "GET",
+      `/api/v1/generate/jobs/${encodeURIComponent(jobId)}`,
+      undefined,
+      INGEST_CALL_TIMEOUT_MS,
+      renderjobvalid,
+      deps,
+    );
+    if (second.ok) return second;
+    if (second.error.code === "refused" && second.error.status === 404) {
+      // both spellings answer nothing — the honest refusal is the
+      // canonical route's own
+      return first;
+    }
+    return second;
+  }
+  return first;
 }
 
 /**
- * POST /api/v1/tracks — the publish lane: the owner's move that puts the
- * rendered track row onto the vitrine (the caller's owner pointer must
- * match the row's owner — the private stays private).
+ * POST /api/v1/tracks/:id/publish — the automation seat: flips one track
+ * row onto the vitrine under the owner law (the owner pointer must match
+ * the row's own — a foreign pointer answers the refused lane, never
+ * someone else's shelf).
  *
- * @param input the track id, the owner stamp and the gateway origin.
- * @param deps the injected seams.
- * @returns the published vitrine row, or the typed err of the refusing lane.
+ * POST /api/v1/tracks — the browser seat (the generate page): the
+ * publish lane, the owner's move that puts the rendered track row onto
+ * the vitrine (the caller's owner pointer must match the row's owner —
+ * the private stays private).
+ *
+ * @param trackId the track row id (the automation spelling).
+ * @param ownerId the owner pointer the row carries (the automation spelling).
+ * @param origin the gateway origin (the automation spelling).
+ * @param deps the injected seams (either spelling).
+ * @returns the published row, or the typed err of the refusing lane.
  */
-export async function publishTrack(
+export function publishTrack(
+  trackId: string,
+  ownerId: string,
+  origin: string,
+  deps?: IngestClientDeps,
+): Promise<IngestClientResult<RenderTrackRow>>;
+export function publishTrack(
   input: { trackId: string; ownerId: string; origin: string },
-  deps: GenerateClientDeps = {},
-): Promise<GenerateClientResult<VitrineTrackValue>> {
+  deps?: GenerateClientDeps,
+): Promise<GenerateClientResult<VitrineTrackValue>>;
+export function publishTrack(
+  trackIdOrInput: string | { trackId: string; ownerId: string; origin: string },
+  ownerIdOrDeps?: string | GenerateClientDeps,
+  origin?: string,
+  deps?: IngestClientDeps,
+): Promise<IngestClientResult<RenderTrackRow> | GenerateClientResult<VitrineTrackValue>> {
+  if (typeof trackIdOrInput === "string" && typeof ownerIdOrDeps === "string" && origin !== undefined) {
+    // the automation seat — the generate spelling
+    return gatewaylane(
+      origin,
+      "POST",
+      `/api/v1/tracks/${encodeURIComponent(trackIdOrInput)}/publish`,
+      { ownerId: ownerIdOrDeps },
+      INGEST_CALL_TIMEOUT_MS,
+      trackvalid,
+      deps,
+    );
+  }
+  // the browser seat — the render spelling
+  const input = trackIdOrInput as { trackId: string; ownerId: string; origin: string };
   return lane(
     input.origin,
     "POST",
@@ -474,7 +783,7 @@ export async function publishTrack(
     { trackId: input.trackId, ownerId: input.ownerId },
     GENERATE_CALL_TIMEOUT_MS,
     vitrinerowvalid,
-    deps,
+    (ownerIdOrDeps as GenerateClientDeps | undefined) ?? {},
   );
 }
 

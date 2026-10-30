@@ -62,6 +62,7 @@
     "musictheory.ts",
     "onboardingstate.ts",
     "rhythmgrammar.ts",
+    "sandboxmodality.ts",
     "spectrum.ts",
     "takeevents.ts",
     "timelinemodel.ts",

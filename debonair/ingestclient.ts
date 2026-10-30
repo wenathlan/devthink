@@ -113,10 +113,12 @@ function encodebase64(bytes: Uint8Array): string {
   return out;
 }
 
-/** @section lane — the one call every function rides */
+/** @section lane — the one call every client of this app rides */
 
 /**
- * One gateway call under the house https law: the origin passes
+ * One gateway call under the house https law (exported for the sibling
+ * client lanes of this app — the generate lane rides the same discipline,
+ * one lane helper per app, never duplicated): the origin passes
  * hostallowed before any byte leaves the host (a refusal answers offline
  * and never fetches), the abort window guards the wait (a silent gateway
  * answers timeout), the non-2xx answers translate by status (400 the
@@ -133,7 +135,7 @@ function encodebase64(bytes: Uint8Array): string {
  * @param deps the injected seams.
  * @returns the typed result.
  */
-async function lane<T>(
+export async function gatewaylane<T>(
   origin: string,
   method: string,
   path: string,
@@ -288,7 +290,7 @@ export async function uploadIngest(
   input: UploadIngestInput,
   deps: IngestClientDeps = {},
 ): Promise<IngestClientResult<{ jobId: string }>> {
-  return lane(
+  return gatewaylane(
     input.origin,
     "POST",
     "/api/v1/ingest/upload",
@@ -324,7 +326,7 @@ export async function pollJob(
   origin: string,
   deps: IngestClientDeps = {},
 ): Promise<IngestClientResult<IngestJobValue>> {
-  return lane(
+  return gatewaylane(
     origin,
     "GET",
     `/api/v1/ingest/jobs/${encodeURIComponent(jobId)}`,
@@ -352,7 +354,7 @@ export async function fetchShelf(
   deps: IngestClientDeps = {},
 ): Promise<IngestClientResult<IngestStampRow[]>> {
   const query = ownerId === undefined ? "" : `?ownerId=${encodeURIComponent(ownerId)}`;
-  return lane(
+  return gatewaylane(
     origin,
     "GET",
     `/api/v1/ingest${query}`,
@@ -387,7 +389,7 @@ export async function fetchDocument(
   origin: string,
   deps: IngestClientDeps = {},
 ): Promise<IngestClientResult<IngestStampRow>> {
-  return lane(
+  return gatewaylane(
     origin,
     "GET",
     `/api/v1/ingest/${encodeURIComponent(id)}`,
@@ -412,7 +414,7 @@ export async function deleteDocument(
   origin: string,
   deps: IngestClientDeps = {},
 ): Promise<IngestClientResult<{ removed: boolean; id: string }>> {
-  return lane(
+  return gatewaylane(
     origin,
     "DELETE",
     `/api/v1/ingest/${encodeURIComponent(id)}`,

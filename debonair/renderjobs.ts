@@ -1,6 +1,6 @@
 // # renderjobs — the node/sqlite half of the render lane (root layer, the
-// pipeline waves PV4.003 + PV4.004): the render_jobs ledger the pipeline
-// names — the same walk law the ingest_jobs table rides (create-if-not-
+// pipeline waves PV4.003 + PV4.004 + PV6.001): the render_jobs ledger the
+// pipeline names — the same walk law the ingest_jobs table rides (create-if-not-
 // exists, the in-place alter path for a standing site-shape table, prepared
 // and parameterized statements only — no sql is ever assembled by string
 // concatenation, the house database law) — plus the tracks pointer chain:
@@ -10,7 +10,12 @@
 // standing table lacks, no row ever destroyed, no value ever rewritten — a
 // fresh render lands private, the publish lane moves it onto the vitrine
 // and the vitrine list serves the published rows beside the ingested
-// references). the worker lane stays
+// references). the publish move answers the two vocabularies the family
+// waves ride (the vitrine wave's visibility climb and the generate lane's
+// status flip — one move, both flags, so a row published through either
+// route lists on both surfaces), and the track list carries both filter
+// shapes (the visibility lane of the tracks route, the published status
+// and the owner shelf of the generate lane's vitrine). the worker lane stays
 // pure of any database import (the injectable discipline the ingest
 // worker and the takestore storage seams ride): this module implements the
 // seats renderworker.ts names, and the tests bind a temp sqlite through
@@ -368,33 +373,65 @@ export function getrendertrack(id: string, target: typeof db = db): RenderTrackR
   return row ?? null;
 }
 
+/** The filter shapes the track list answers — the vitrine wave's
+ * visibility lane (a bare "private" | "vitrine" string) or the generate
+ * lane's own filter (the published status and the owner shelf), one seat
+ * for both vocabularies the family waves ride. */
+export type RenderTrackFilter =
+  | RenderTrackVisibility
+  | {
+      /** The status filter (the generate lane's published flag). */
+      status?: string;
+      /** The owner pointer filter (the owner's own shelf). */
+      ownerId?: string;
+    };
+
 /**
  * Lists the rendered track rows, newest first (the createdAt order, the
- * minted id as the same-instant tiebreak). A visibility filter rides when
- * the caller carries one — the vitrine list asks the published rows, the
- * private stays private until its owner publishes.
+ * minted id as the same-instant tiebreak). The filter rides when the
+ * caller carries one, either vocabulary: a bare visibility string (the
+ * tracks route's vitrine list — the private stays private until its
+ * owner publishes) or the generate lane's own shape (the published
+ * status, the owner's whole shelf).
  *
- * @param visibility the visibility filter, or undefined for every row.
+ * @param filter the visibility lane, the status/owner filter, or undefined
+ *   for every row.
  * @param target the database handle (defaults to the app db).
  * @returns the rows.
  */
-export function listrendertracks(visibility?: RenderTrackVisibility, target: typeof db = db): RenderTrackRow[] {
+export function listrendertracks(filter?: RenderTrackFilter, target: typeof db = db): RenderTrackRow[] {
   migratetrackschema(target);
-  if (visibility === undefined) {
-    return target
-      .prepare(`SELECT ${RENDER_TRACK_COLUMNS} FROM tracks ORDER BY createdAt DESC, id DESC`)
-      .all() as RenderTrackRow[];
+  const clauses: string[] = [];
+  const params: (string | bigint)[] = [];
+  if (typeof filter === "string") {
+    clauses.push("visibility = ?");
+    params.push(filter);
+  } else if (filter !== undefined) {
+    if (filter.status !== undefined) {
+      clauses.push("status = ?");
+      params.push(filter.status);
+    }
+    if (filter.ownerId !== undefined) {
+      const owner = pointerof(filter.ownerId);
+      if (owner === null) return [];
+      clauses.push("owner_id = ?");
+      params.push(owner);
+    }
   }
+  const where = clauses.length > 0 ? ` WHERE ${clauses.join(" AND ")}` : "";
   return target
-    .prepare(`SELECT ${RENDER_TRACK_COLUMNS} FROM tracks WHERE visibility = ? ORDER BY createdAt DESC, id DESC`)
-    .all(visibility) as RenderTrackRow[];
+    .prepare(`SELECT ${RENDER_TRACK_COLUMNS} FROM tracks${where} ORDER BY createdAt DESC, id DESC`)
+    .all(...(params as never[])) as RenderTrackRow[];
 }
 
 /**
  * Publishes one rendered track row — the owner's move of the publish
- * lane: the visibility climbs onto the vitrine (idempotent — a standing
- * vitrine row answers itself, the upsert law the ledgers ride), the row
- * reading back with every column.
+ * lane: the row climbs onto the vitrine under both flags the family
+ * waves read (the visibility lane the tracks route lists and the
+ * published status the generate lane's vitrine answers — one move, both
+ * vocabularies, so a row published through either route lists on both
+ * surfaces; idempotent — a standing published row answers itself, the
+ * upsert law the ledgers ride), the row reading back with every column.
  *
  * @param id the track id.
  * @param target the database handle (defaults to the app db).
@@ -404,7 +441,7 @@ export function publishrendertrack(id: string, target: typeof db = db): RenderTr
   migratetrackschema(target);
   const parsed = pointerof(id);
   if (parsed === null) return null;
-  target.prepare("UPDATE tracks SET visibility = 'vitrine' WHERE id = ?").run(parsed);
+  target.prepare("UPDATE tracks SET status = 'published', visibility = 'vitrine' WHERE id = ?").run(parsed);
   return getrendertrack(id, target);
 }
 
@@ -435,9 +472,10 @@ export function renderjobseat(target: typeof db = db): RenderJobSeat {
  * Binds the track row seat onto a database handle — the walk's
  * puttrackrow call lands on the parameterized function above (the
  * ingest handle's own async answer law), and the gateway's vitrine
- * surface rides the same binding: the row read, the visibility list and
- * the publish move (the gateway track seat satisfies this shape
- * structurally — one binding, both lanes).
+ * surfaces ride the same binding: the row read, the visibility list, the
+ * publish move, the published list and the owner shelf (the gateway
+ * track seat satisfies this shape structurally — one binding, both
+ * lanes, both vocabularies).
  *
  * @param target the database handle (defaults to the app db).
  * @returns the track seat.
@@ -446,11 +484,15 @@ export function rendertrackseat(target: typeof db = db): RenderTrackSeat & {
   gettrackrow(id: string): Promise<RenderTrackRow | null>;
   listtrackrows(visibility?: RenderTrackVisibility): Promise<RenderTrackRow[]>;
   publishtrackrow(id: string): Promise<RenderTrackRow | null>;
+  listpublishedrows(): Promise<RenderTrackRow[]>;
+  listownerrows(ownerId: string): Promise<RenderTrackRow[]>;
 } {
   return {
     puttrackrow: async (row) => putrendertrack(row, target),
     gettrackrow: async (id) => getrendertrack(id, target),
     listtrackrows: async (visibility) => listrendertracks(visibility, target),
     publishtrackrow: async (id) => publishrendertrack(id, target),
+    listpublishedrows: async () => listrendertracks({ status: "published" }, target),
+    listownerrows: async (ownerId) => listrendertracks({ ownerId }, target),
   };
 }
