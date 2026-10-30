@@ -11,23 +11,36 @@
 
 import { PlayFilled } from "@fluentui/react-icons";
 import type { CSSProperties } from "react";
-import type { TakePlan } from "../../arranger.ts";
-import type { LibraryTrackRow } from "../../katexis.ts";
 import { labelfill } from "../../labels.ts";
+import type { BusTake } from "../../playerbus.ts";
 import { CoverArt } from "./HomeCoverart.tsx";
+
+/** The minimal row face one song card draws — the streaming grammar's own
+ * fields (cover, title, the genre line, the duration); the sample rows and
+ * the vitrine rows (the published takes beside the ingested references)
+ * both satisfy it structurally. */
+export interface SongCardRow {
+  /** The display name. */
+  name: string;
+  /** The genre line (the artist slot). */
+  genre: string;
+  /** The duration line. */
+  duration: string;
+}
 
 /** The props of one song card. */
 type SongCardProps = {
   /** The catalog row the card draws. */
-  track: LibraryTrackRow;
-  /** The take the play key renders on demand (the engine's real plan). */
-  take: TakePlan;
+  track: SongCardRow;
+  /** The take the play key renders on demand (the engine's real plan or
+   * the blob take a vitrine row carries — the bus grammar decides). */
+  take: BusTake;
   /** The stagger slot of the card (60ms a step, presentation only). */
   slot: number;
   /** Whether the bus is currently playing this card's take. */
   live: boolean;
   /** The play handler (the card never owns audio). */
-  onPlay: (take: TakePlan) => void;
+  onPlay: (take: BusTake) => void;
 };
 
 /**

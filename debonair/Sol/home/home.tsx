@@ -24,14 +24,21 @@ import { ArrowRightRegular } from "@fluentui/react-icons";
 import { type CSSProperties, type FormEvent, useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { planTake, type TakePlan } from "../../arranger.ts";
-import { listGenreProfileCards, listHeroBadges, listLibraryTracks, listStageCards } from "../../catalog.ts";
+import {
+  listGenreProfileCards,
+  listHeroBadges,
+  listLibraryTracks,
+  listStageCards,
+  listVitrineTracks,
+} from "../../catalog.ts";
+import { formatClock } from "../../dawview.ts";
 import { familyrow } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
 import { GENRES } from "../../genrematrix.ts";
-import type { FeatureCard, GenreProfileCard, LibraryTrackRow, SignalBadge } from "../../katexis.ts";
+import type { FeatureCard, GenreProfileCard, LibraryTrackRow, SignalBadge, VitrineTrackRow } from "../../katexis.ts";
 import { MASTERING, PROMPT_MAX_LENGTH } from "../../katexis.ts";
 import { label, labelfill } from "../../labels.ts";
-import { busFeature, busPlay, busSubscribe } from "../../playerbus.ts";
+import { type BusTake, busFeature, busPlay, busSubscribe, type ReferenceTake } from "../../playerbus.ts";
 import { PROMPT_DRAFT_KEY, type PromptDraft } from "../generate/generate.tsx";
 import { DebonairMark, type NavLink, Shell } from "../shell/Shell.tsx";
 import { HomeEntrygate as EntryGate, GenreCard, SongCard, SongCardSkeleton } from "../wingets";
@@ -96,6 +103,7 @@ function HomeSurface() {
   const [badges, setBadges] = useState<readonly SignalBadge[]>([]);
   const [tracks, setTracks] = useState<readonly LibraryTrackRow[]>([]);
   const [profileCards, setProfileCards] = useState<readonly GenreProfileCard[]>([]);
+  const [vitrine, setVitrine] = useState<readonly VitrineTrackRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [liveId, setLiveId] = useState("");
   const [mood, setMood] = useState("techno");
@@ -112,6 +120,9 @@ function HomeSurface() {
     listGenreProfileCards().then((rows) => {
       if (live) setProfileCards(rows);
     });
+    listVitrineTracks().then((rows) => {
+      if (live) setVitrine(rows);
+    });
     listLibraryTracks().then((rows) => {
       if (live) {
         setTracks(rows);
@@ -127,8 +138,29 @@ function HomeSurface() {
   // marks the take the bar is playing so the card key can wear the live ring
   useEffect(() => busSubscribe((view) => setLiveId(view.playing ? (view.takes[view.index]?.id ?? "") : "")), []);
 
-  /** the engine take a row renders on demand: the row name IS the prompt and
-   * the seed, so the same card always plays the same real take */
+  /** the grid rows the vitrine answers — the published generated takes
+   * beside the ingested references (one grammar, the catalog seam serving
+   * the db rows the publish lane fills): a row with a blob id plays its
+   * wav through the shared bar (the blob lane), a row without keeps the
+   * plan-take lane the sample shelf always rode (the browser synth renders
+   * the very plan the row names). */
+  const vitrineTakes = useMemo(() => {
+    const map = new Map<string, ReferenceTake>();
+    for (const row of vitrine) {
+      if (row.blobId.length === 0 || row.seconds <= 0) continue;
+      map.set(`${row.kind}-${row.id}`, {
+        kind: "reference",
+        id: `${row.kind}-${row.id}`,
+        name: row.name,
+        origin: row.kind === "render" ? "render" : "bench",
+        source: { blobId: row.blobId, mime: row.mime, name: row.name, durationSeconds: row.seconds },
+      });
+    }
+    return map;
+  }, [vitrine]);
+
+  /** the engine take a sample row renders on demand: the row name IS the
+   * prompt and the seed, so the same card always plays the same real take */
   const rowTakes = useMemo(() => {
     const map = new Map<string, TakePlan>();
     for (const track of tracks) {
@@ -157,7 +189,7 @@ function HomeSurface() {
 
   /** hands a card row to the shared transport: the take lands on the bus and
    * the bar (and this card) wear the live state */
-  const playRow = (take: TakePlan): void => {
+  const playRow = (take: BusTake): void => {
     busFeature(take);
     busPlay(0);
   };
@@ -258,20 +290,36 @@ function HomeSurface() {
         <div className="song-grid">
           {loading
             ? [0, 1, 2, 3, 4, 5].map((slot) => <SongCardSkeleton key={`sk-${slot}`} slot={slot} />)
-            : tracks.map((track, index) => {
-                const take = rowTakes.get(track.name);
-                if (!take) return null;
-                return (
-                  <SongCard
-                    key={track.name}
-                    track={track}
-                    take={take}
-                    slot={index}
-                    live={liveId === take.id}
-                    onPlay={playRow}
-                  />
-                );
-              })}
+            : [
+                ...vitrine.map((row) => {
+                  const take = vitrineTakes.get(`${row.kind}-${row.id}`);
+                  if (!take) return null;
+                  return (
+                    <SongCard
+                      key={`${row.kind}-${row.id}`}
+                      track={{ name: row.name, genre: row.genre, duration: formatClock(row.seconds) }}
+                      take={take}
+                      slot={0}
+                      live={liveId === take.id}
+                      onPlay={playRow}
+                    />
+                  );
+                }),
+                ...tracks.map((track, index) => {
+                  const take = rowTakes.get(track.name);
+                  if (!take) return null;
+                  return (
+                    <SongCard
+                      key={track.name}
+                      track={track}
+                      take={take}
+                      slot={index}
+                      live={liveId === take.id}
+                      onPlay={playRow}
+                    />
+                  );
+                }),
+              ]}
         </div>
         <p className="rail-foot reveal">
           {label("home.rail.footLead")}

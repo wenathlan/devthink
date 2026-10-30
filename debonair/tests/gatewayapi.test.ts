@@ -11,9 +11,14 @@
 // bytes with the audio/wav mime, the delete removes the row and every
 // blob), the failure lane (garbage bytes land failed with the honest
 // error code), the visibility law (the vitrine rows list for everyone,
-// the private rows only for the owner query) and the ledger row functions
-// round trip with the parameterization audit (no interpolated sql ever
-// rides the db module). runnable with vitest:
+// the private rows only for the owner query), the render and the publish
+// lane (the composed plan queues through the contract gate, the walk
+// lands the track row private with the wav in the store, the publish
+// moves it onto the vitrine under the owner law — the private stays
+// private, the vitrine list serves the published takes beside the
+// vitrine references, the blob route streams the landed wav) and the
+// ledger row functions round trip with the parameterization audit (no
+// interpolated sql ever rides the db module). runnable with vitest:
 // pnpm vitest run tests/gatewayapi.test.ts
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
@@ -39,8 +44,11 @@ import type {
   GatewayRequest,
   IngestJobValue,
   IngestRunValue,
+  RenderJobValue,
+  RenderRunValue,
+  VitrineTrackValue,
 } from "../gatewayapi.ts";
-import { dispatch, matchpath, matchroute, routes, startJob } from "../gatewayapi.ts";
+import { dispatch, matchpath, matchroute, routes, startJob, startRenderLaneJob } from "../gatewayapi.ts";
 import { INGEST_SCHEMA_VERSION, ingestPcm } from "../ingest.ts";
 import {
   getjob,
@@ -54,8 +62,10 @@ import {
 } from "../ingestdb.ts";
 import type { IngestStampRow } from "../ingestworker.ts";
 import { parseWav } from "../ingestworker.ts";
+import { serializePattern } from "../patternenums.ts";
 import type { GenreProfile } from "../patternminer.ts";
-import { encodeWav } from "../wavwriter.ts";
+import { renderjobseat, rendertrackseat } from "../renderjobs.ts";
+import { encodeWav, wavInfo } from "../wavwriter.ts";
 
 /** The source rate of the synthetic take (a rate the writer's band carries). */
 const SAMPLE_RATE = 44100;
@@ -385,6 +395,8 @@ function gatewayenv(database: Database): { env: GatewayEnv; walk: GatewayJobPatc
     db: documentseat(database),
     jobs: jobseat(database, walk),
     profiles: profileseat(database),
+    renderJobs: renderjobseat(database),
+    tracks: rendertrackseat(database),
     now: () => new Date(BASE_TICK + clock++ * 1000).toISOString(),
     mint: () => mintid(BASE_TICK + minted++),
   };
@@ -436,6 +448,37 @@ function stamprow(id: string, ownerId: string, visibility: "private" | "vitrine"
   };
 }
 
+/** The canonical pattern json the queue lane rides — a hand-built two-bar
+ * plan (the contract gate parses it, the canonical bytes register, the
+ * walk renders it fast): the kick on the bar heads, the snare on the
+ * backbeats, the odd-step hats, a bass note under each kick and a short
+ * lead line over the top. */
+function queuePlan(): string {
+  return serializePattern({
+    schema: "debonair.pattern/1" as const,
+    bpm: 120,
+    root: 9,
+    scale: "natural-minor" as const,
+    bars: 2,
+    mood: "dark trap",
+    prompt: "gateway lane take",
+    drums: {
+      kick: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+      snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+      hat: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+      clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    },
+    notes: [
+      { step: 0, pitch: 45, vel: 0.8, dur: 4, voice: "bass" },
+      { step: 8, pitch: 45, vel: 0.8, dur: 4, voice: "bass" },
+      { step: 0, pitch: 69, vel: 0.7, dur: 2, voice: "lead" },
+      { step: 4, pitch: 72, vel: 0.6, dur: 2, voice: "lead" },
+      { step: 12, pitch: 71, vel: 0.6, dur: 2, voice: "lead" },
+    ],
+    embedding: new Array<number>(32).fill(0),
+  });
+}
+
 describe("the route table and the matcher", () => {
   let env: GatewayEnv;
   let database: Database;
@@ -446,7 +489,7 @@ describe("the route table and the matcher", () => {
   });
   afterAll(() => database.close());
 
-  it("carries the nine routes of the law in the family shape", () => {
+  it("carries the thirteen routes of the law in the family shape", () => {
     assert.deepEqual(routes, [
       { method: "POST", path: "/api/v1/ingest/upload", handler: "uploadIngest" },
       { method: "GET", path: "/api/v1/ingest/jobs/:id", handler: "getIngestJob" },
@@ -457,6 +500,10 @@ describe("the route table and the matcher", () => {
       { method: "POST", path: "/api/v1/profiles/mine", handler: "mineProfile" },
       { method: "GET", path: "/api/v1/profiles", handler: "listProfiles" },
       { method: "GET", path: "/api/v1/profiles/:genre", handler: "getProfile" },
+      { method: "POST", path: "/api/v1/render", handler: "queueRender" },
+      { method: "GET", path: "/api/v1/render/jobs/:id", handler: "getRenderJob" },
+      { method: "POST", path: "/api/v1/tracks", handler: "publishTrack" },
+      { method: "GET", path: "/api/v1/tracks", handler: "listTracks" },
     ]);
   });
 
@@ -471,6 +518,10 @@ describe("the route table and the matcher", () => {
       ["POST", "/api/v1/profiles/mine", "mineProfile"],
       ["GET", "/api/v1/profiles", "listProfiles"],
       ["GET", "/api/v1/profiles/techno", "getProfile"],
+      ["POST", "/api/v1/render", "queueRender"],
+      ["GET", "/api/v1/render/jobs/9", "getRenderJob"],
+      ["POST", "/api/v1/tracks", "publishTrack"],
+      ["GET", "/api/v1/tracks", "listTracks"],
     ];
     for (const [method, pathname, handler] of exact) {
       const verdict = matchroute(method, pathname);
@@ -877,6 +928,171 @@ describe("the visibility law — the vitrine shelf and the owner's private lane"
     const answer = errof(await dispatch(env, request("GET", "/api/v1/ingest", { ownerId: "nope" })));
     assert.equal(answer.status, 400);
     assert.equal(answer.error.code, "bad-owner");
+  });
+});
+
+describe("the render and the publish lane (the vitrine answers)", () => {
+  const OWNER_C = mintid();
+  const OWNER_D = mintid();
+  let database: Database;
+  let env: GatewayEnv;
+  let store: MemoryBlobStore;
+  let jobId = "";
+  let trackId = "";
+  let wavPointer = "";
+  let run: RenderRunValue;
+
+  beforeAll(async () => {
+    database = await newdatabase();
+    ({ env, store } = gatewayenv(database));
+    // the shelf the vitrine list serves beside the published take: one
+    // vitrine reference, one private reference (the private never lists)
+    await env.db.puttingestrow(stamprow("pub-a-vitrine", OWNER_D, "vitrine"));
+    await env.db.puttingestrow(stamprow("pub-b-private", OWNER_D, "private"));
+    // the loop closes: the plan queues, the walk renders, the take lands
+    const queued = valueof<{ jobId: string }>(
+      await dispatch(env, request("POST", "/api/v1/render", {}, { plan: queuePlan(), ownerId: OWNER_C })),
+    );
+    jobId = queued.jobId;
+    run = valueof(await startRenderLaneJob(env, jobId));
+    trackId = run.trackId ?? "";
+    wavPointer = run.wavPointer;
+  });
+  afterAll(() => database.close());
+
+  it("queues the plan under the contract gate and lands the take private", async () => {
+    assert.match(jobId, /^[1-9]\d{0,19}$/);
+    assert.equal(run.state, "done");
+    assert.ok(run.bytes > 44, "the wav carries frames past the header");
+    assert.ok(run.durationSeconds > 0);
+    assert.match(trackId, /^[1-9]\d{0,19}$/);
+    const row = database
+      .prepare(
+        "SELECT name, genre, seconds, status, CAST(owner_id AS TEXT) AS owner_id, CAST(wav_pointer AS TEXT) AS wav_pointer, visibility FROM tracks WHERE id = ?",
+      )
+      .get(trackId) as
+      | {
+          name: string;
+          genre: string;
+          seconds: number;
+          status: string;
+          owner_id: string;
+          wav_pointer: string;
+          visibility: string;
+        }
+      | undefined;
+    assert.ok(row, "the walk stamped the track row");
+    assert.equal(row.name, "Gateway lane take");
+    assert.equal(row.genre, "dark trap");
+    assert.equal(row.status, "ready");
+    assert.equal(row.owner_id, OWNER_C);
+    assert.equal(row.wav_pointer, wavPointer);
+    assert.equal(row.visibility, "private", "a fresh render lands private — the publish lane moves it");
+  });
+
+  it("answers the walk through the render job route (the poll lane)", async () => {
+    const row = valueof<RenderJobValue>(await dispatch(env, request("GET", `/api/v1/render/jobs/${jobId}`)));
+    assert.equal(row.id, jobId);
+    assert.equal(row.state, "done");
+    assert.equal(row.phase, "store");
+    assert.equal(row.fraction, 1);
+    assert.equal(row.error, null);
+    assert.equal(row.wavPointer, wavPointer);
+    assert.equal(row.trackPointer, trackId);
+    assert.ok(row.finishedAt !== null);
+    const missing = errof(await dispatch(env, request("GET", "/api/v1/render/jobs/999")));
+    assert.equal(missing.status, 404);
+    assert.equal(missing.error.code, "not-found");
+  });
+
+  it("streams the landed wav through the blob route (the download lane)", async () => {
+    const stream = valueof<BlobStreamValue>(await dispatch(env, request("GET", `/api/v1/blob/${wavPointer}`)));
+    assert.equal(stream.mime, "audio/wav");
+    const held = await store.get(wavPointer);
+    assert.ok(held.ok && held.data !== null, "the store holds the landed wav");
+    assert.deepEqual(
+      Array.from(stream.bytes),
+      Array.from(held.data as Uint8Array),
+      "the round trip answers the store bytes",
+    );
+    assert.equal(stream.pointer.bytes, run.bytes);
+    assert.equal(wavInfo(stream.bytes).sampleRate, 48000);
+  });
+
+  it("publishes the take onto the vitrine under the owner law", async () => {
+    const published = valueof<VitrineTrackValue>(
+      await dispatch(env, request("POST", "/api/v1/tracks", {}, { trackId, ownerId: OWNER_C })),
+    );
+    assert.equal(published.kind, "render");
+    assert.equal(published.id, trackId);
+    assert.equal(published.name, "Gateway lane take");
+    assert.equal(published.wavPointer, wavPointer);
+    assert.equal(published.ownerId, OWNER_C);
+  });
+
+  it("refuses the publish of another owner — the private stays private", async () => {
+    const answer = errof(await dispatch(env, request("POST", "/api/v1/tracks", {}, { trackId, ownerId: OWNER_D })));
+    assert.equal(answer.status, 409);
+    assert.equal(answer.error.code, "conflict");
+  });
+
+  it("refuses the publish of a missing track and a malformed id", async () => {
+    const missing = errof(
+      await dispatch(env, request("POST", "/api/v1/tracks", {}, { trackId: "88888888888888888888", ownerId: OWNER_C })),
+    );
+    assert.equal(missing.status, 404);
+    assert.equal(missing.error.code, "not-found");
+    const malformed = errof(
+      await dispatch(env, request("POST", "/api/v1/tracks", {}, { trackId: "nope", ownerId: OWNER_C })),
+    );
+    assert.equal(malformed.status, 400);
+    assert.equal(malformed.error.code, "bad-request");
+  });
+
+  it("answers the standing vitrine row on a re-publish (idempotent)", async () => {
+    const again = valueof<VitrineTrackValue>(
+      await dispatch(env, request("POST", "/api/v1/tracks", {}, { trackId, ownerId: OWNER_C })),
+    );
+    assert.equal(again.id, trackId);
+    assert.equal(again.wavPointer, wavPointer);
+  });
+
+  it("lists the vitrine rows beside the vitrine references — the private never lists", async () => {
+    const shelf = valueof<{ records: VitrineTrackValue[] }>(await dispatch(env, request("GET", "/api/v1/tracks")));
+    const ids = shelf.records.map((row) => `${row.kind}:${row.id}`);
+    assert.ok(ids.includes(`render:${trackId}`), "the published take lists");
+    assert.ok(ids.includes("reference:pub-a-vitrine"), "the vitrine reference lists beside it");
+    assert.ok(!ids.includes("reference:pub-b-private"), "the private reference never lists");
+    const render = shelf.records.find((row) => row.id === trackId);
+    assert.ok(render);
+    assert.equal(render.kind, "render");
+    assert.equal(render.genre, "dark trap");
+    // the published law: the vitrine reference (2026-01-01) rides ahead of
+    // the render stamp (the ticking clock of this suite) — newest first
+    assert.equal(shelf.records[0]?.kind, "reference");
+    assert.equal(shelf.records[shelf.records.length - 1]?.id, trackId);
+  });
+
+  it("refuses a second walk of the landed job (the one-shot law)", async () => {
+    const answer = errof(await startRenderLaneJob(env, jobId));
+    assert.equal(answer.status, 409);
+    assert.equal(answer.error.code, "conflict");
+  });
+
+  it("refuses a foreign plan at the queue (the contract gate)", async () => {
+    const answer = errof(
+      await dispatch(
+        env,
+        request(
+          "POST",
+          "/api/v1/render",
+          {},
+          { plan: JSON.stringify({ schema: "debonair.pattern/2" }), ownerId: OWNER_C },
+        ),
+      ),
+    );
+    assert.equal(answer.status, 400);
+    assert.equal(answer.error.code, "bad-request");
   });
 });
 

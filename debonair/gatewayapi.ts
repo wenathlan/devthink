@@ -1,10 +1,14 @@
 // # gatewayapi — the http route table of the debonair gateway lane (root
-// layer, waves PV1.003 + PV1.006 + PV2.001 + PV3.004): the nine routes the
-// family gateway serves — the ingest upload that queues a job, the job
-// progress query the bench polls, the document shelf, the document read,
-// the document removal, the blob stream and the miner lane (the genre
-// profile mine that queues a job, the vitrine profile list, the profile
-// read) — pure typescript over an injected
+// layer, waves PV1.003 + PV1.006 + PV2.001 + PV3.004 + PV4.004): the
+// thirteen routes the family gateway serves — the ingest job lane (the
+// upload that queues a job, the progress query the bench polls, the
+// document shelf, the document read, the document removal), the blob
+// stream, the miner lane (the genre profile mine that queues a job, the
+// vitrine profile list, the profile read), the render lane (the plan
+// queue the generate page posts, the render job the meter polls) and the
+// tracks lane (the publish that moves a rendered track row onto the
+// vitrine, the vitrine list that serves the generated takes beside the
+// ingested references, one grammar) — pure typescript over an injected
 // environment, the same framework-agnostic discipline vault/api.ts rides:
 // the route table sits at the top (method + path pattern + handler name),
 // the handlers stay pure over the seats, and every answer is the typed
@@ -28,15 +32,27 @@
 // progress record the job route answers. the walk patches the row through
 // the sync ledger seat (running, then every completed phase with its
 // ascending fraction, then done with the document id, or failed with the
-// honest error code). the shelf serves the visibility law: the vitrine
-// rows list for everyone, the private rows ride only for their owner. the
+// honest error code). the render lane mirrors the upload law exactly: the
+// generate page posts the composed plan (the canonical debonair.pattern/1
+// json — the contract gate parses before any row lands), the queued row
+// registers on the render ledger, and startRenderLaneJob walks the render
+// worker end to end (schedule, render, encode, store — the wav lands in
+// the blob store, the track row lands with the pointers, the job row
+// carries the wav and the track pointer). the publish lane answers the
+// owner's move: the track row the walk stamped climbs onto the vitrine
+// (the owner pointer must match — the private stays private), and the
+// vitrine list serves the published rows beside the vitrine references
+// (the ingest documents at visibility vitrine — one grammar, the kind
+// field decides). the shelf serves the visibility law: the vitrine rows
+// list for everyone, the private rows ride only for their owner. the
 // blob stream answers the stored bytes with the pointer's kind as the
-// mime. the db lane rides the injected-handle seam the worker already
-// defines (IngestDbHandle): this stack's ingest_documents table predates
-// the reference-law columns, so the document seat is the seam and the
-// wiring lane binds the real table behind it once the schema wave lands
-// on the stack — this module never learns the difference (the injectable
-// discipline the takestore storage and the blobstore fetch seams ride).
+// mime — the same lane the wav download rides. the db lane rides the
+// injected-handle seam the worker already defines (IngestDbHandle): this
+// stack's ingest_documents table predates the reference-law columns, so
+// the document seat is the seam and the wiring lane binds the real table
+// behind it once the schema wave lands on the stack — this module never
+// learns the difference (the injectable discipline the takestore storage
+// and the blobstore fetch seams ride).
 //
 // the miner lane (wave PV3.004) mirrors the ingest discipline end to end:
 // the mine route validates the ask (the genre key of the fifteen, the
@@ -79,8 +95,19 @@ import type {
   IngestStemsManifest,
 } from "./ingestworker.ts";
 import { INGEST_STEMS_SCHEMA_VERSION, runIngestJob } from "./ingestworker.ts";
+import { PATTERN_SCHEMA_VERSION, parsePattern, serializePattern } from "./patternenums.ts";
 import type { GenreProfile, IngestDocumentWithId, ProfileErrorCode } from "./patternminer.ts";
 import { mineGenre, PROFILE_GENRE_KEYS, ProfileError } from "./patternminer.ts";
+import {
+  type RenderJobRow,
+  type RenderJobSeat,
+  type RenderJobState,
+  type RenderRunErrorCode,
+  type RenderTrackRow,
+  type RenderTrackSeat,
+  type RenderTrackVisibility,
+  startRenderJob,
+} from "./renderworker.ts";
 
 /** @section table — the route catalog */
 
@@ -96,7 +123,11 @@ export type GatewayHandlerName =
   | "getBlob"
   | "mineProfile"
   | "listProfiles"
-  | "getProfile";
+  | "getProfile"
+  | "queueRender"
+  | "getRenderJob"
+  | "publishTrack"
+  | "listTracks";
 
 /** One row of the route catalog — the method, the path pattern and the
  * handler name (the family route shape vault/api.ts rides, grown with the
@@ -110,13 +141,15 @@ export interface RouteSpec {
   handler: GatewayHandlerName;
 }
 
-/** The route catalog of the debonair gateway lane — the nine routes the
- * family gateway serves: the ingest job lane (the upload, the progress
- * query, the shelf, the read, the removal), the blob stream and the
- * miner lane (the profile mine, the vitrine list, the profile read). The
- * more specific rows ride first (the jobs route before the document :id
- * route, the mine route before the profile :genre route) — the first
- * match wins and the table order is the law. */
+/** The route catalog of the debonair gateway lane — the thirteen routes
+ * the family gateway serves: the ingest job lane (the upload, the
+ * progress query, the shelf, the read, the removal), the blob stream,
+ * the miner lane (the profile mine, the vitrine list, the profile read),
+ * the render lane (the plan queue the generate page posts, the render
+ * job the meter polls) and the tracks lane (the publish, the vitrine
+ * list). The more specific rows ride first (the jobs route before the
+ * document :id route, the mine route before the profile :genre route) —
+ * the first match wins and the table order is the law. */
 export const routes: readonly RouteSpec[] = [
   { method: "POST", path: "/api/v1/ingest/upload", handler: "uploadIngest" },
   { method: "GET", path: "/api/v1/ingest/jobs/:id", handler: "getIngestJob" },
@@ -127,6 +160,10 @@ export const routes: readonly RouteSpec[] = [
   { method: "POST", path: "/api/v1/profiles/mine", handler: "mineProfile" },
   { method: "GET", path: "/api/v1/profiles", handler: "listProfiles" },
   { method: "GET", path: "/api/v1/profiles/:genre", handler: "getProfile" },
+  { method: "POST", path: "/api/v1/render", handler: "queueRender" },
+  { method: "GET", path: "/api/v1/render/jobs/:id", handler: "getRenderJob" },
+  { method: "POST", path: "/api/v1/tracks", handler: "publishTrack" },
+  { method: "GET", path: "/api/v1/tracks", handler: "listTracks" },
 ];
 
 /** @section match — the path matcher and the dispatch verdict */
@@ -306,6 +343,22 @@ export interface GatewayProfileSeat {
   listprofiles(): Promise<GatewayProfileRow[]>;
 }
 
+/** The rendered track seat — the tracks table's pointer-chain rows behind
+ * one seam (renderjobs.ts binds the sqlite functions; the tests bind a
+ * temp database through the same adapter). The seat carries the walk's
+ * own puttrackrow (the render lane stamps the row after the wav lands)
+ * beside the vitrine surface the routes serve — one table, both lanes. */
+export interface GatewayTrackSeat extends RenderTrackSeat {
+  /** Reads one rendered track row (null when the id answers nothing). */
+  gettrackrow(id: string): Promise<RenderTrackRow | null>;
+  /** Lists the rendered track rows, newest first (the visibility filter
+   * rides when the caller carries one). */
+  listtrackrows(visibility?: RenderTrackVisibility): Promise<RenderTrackRow[]>;
+  /** Publishes one row onto the vitrine, answering the moved row (null
+   * when the id answers nothing — idempotent, the vitrine law). */
+  publishtrackrow(id: string): Promise<RenderTrackRow | null>;
+}
+
 /** The environment every handler rides — all injected, the handlers pure
  * over it (the vault law: the surface owns no state, the seats own it). */
 export interface GatewayEnv {
@@ -317,6 +370,10 @@ export interface GatewayEnv {
   jobs: GatewayJobSeat;
   /** The genre profile seat (the genre_profiles seam). */
   profiles: GatewayProfileSeat;
+  /** The render job ledger seat (the render lane's own table). */
+  renderJobs: RenderJobSeat;
+  /** The rendered track seat (the tracks pointer chain). */
+  tracks: GatewayTrackSeat;
   /** The iso clock the registrations and the finishes stamp. */
   now: () => string;
   /** The id mint — the decimal string seat the job ids ride. */
@@ -494,6 +551,78 @@ export interface MinerRunValue {
   profileId: string;
   /** The genre profile document (schema debonair.profile/1). */
   profile: GenreProfile;
+}
+
+/** The wire projection of one render ledger row — the camelCase face the
+ * render job route answers (the table columns stay snake, the wire owns
+ * its names). The generate page polls this: the phase and the ascending
+ * fraction drive the meter, the wav and the track pointer land with the
+ * done state (the pointers the publish and the download lanes ride). */
+export interface RenderJobValue {
+  /** The job id. */
+  id: string;
+  /** The owner pointer. */
+  ownerId: string;
+  /** The walk state (queued, rendering, done, failed). */
+  state: RenderJobState;
+  /** The last completed phase (null until the run starts). */
+  phase: string | null;
+  /** The completed share of the walk (0..1). */
+  fraction: number;
+  /** The honest failure (null while the walk rides). */
+  error: string | null;
+  /** The landed wav blob id (null until the walk lands done). */
+  wavPointer: string | null;
+  /** The track row the walk stamped (null until the track lane lands). */
+  trackPointer: string | null;
+  /** The iso instant of the registration. */
+  createdAt: string;
+  /** The iso instant the walk landed. */
+  finishedAt: string | null;
+}
+
+/** The value one landed render run answers — the take facts the caller
+ * lane hands the page: the wav pointer (the download and the play lanes),
+ * the byte count, the duration and the track row id (the publish key). */
+export interface RenderRunValue {
+  /** The job that ran. */
+  jobId: string;
+  /** The landed state (a failed run answers the typed err instead). */
+  state: "done";
+  /** The blob id of the landed wav. */
+  wavPointer: string;
+  /** The byte count of the wav. */
+  bytes: number;
+  /** The rendered duration in seconds. */
+  durationSeconds: number;
+  /** The track row the walk stamped (null when the lane ran store-only). */
+  trackId: string | null;
+}
+
+/** One row of the vitrine list — the streaming shelf the owner described:
+ * the published generated takes beside the ingested references, one
+ * grammar (the kind field decides which lane the row points at, the wav
+ * pointer the play and the download lanes resolve through the blob
+ * route). */
+export interface VitrineTrackValue {
+  /** The row kind: a rendered take or an ingested reference. */
+  kind: "render" | "reference";
+  /** The row id (the track row id, or the ingest document id). */
+  id: string;
+  /** The display name. */
+  name: string;
+  /** The genre line (the plan's mood label, or the document's genre match). */
+  genre: string;
+  /** The duration in seconds. */
+  seconds: number;
+  /** The row status ("ready" once the bytes landed). */
+  status: string;
+  /** The blob id of the wav (the rendered take, or the stored mix). */
+  wavPointer: string;
+  /** The owner pointer. */
+  ownerId: string;
+  /** The instant the row landed (the render stamp, or the ingest stamp). */
+  publishedAt: string;
 }
 
 /** @section base64 — the body decode lane */
@@ -915,6 +1044,201 @@ async function getProfile(
   return ok(row);
 }
 
+/** @section handlers — the render and the tracks surface (the vitrine) */
+
+/**
+ * POST /api/v1/render — queues one render job: the composed plan rides
+ * the json body (the serialized debonair.pattern/1 document), the
+ * contract gate parses it before any row lands, the canonical bytes
+ * register on the render ledger and the mint answers the job id. The run
+ * itself starts through startRenderLaneJob — the caller lane's queue
+ * owns the walk, exactly the upload law the ingest lane rides.
+ */
+async function queueRender(env: GatewayEnv, request: GatewayRequest): Promise<GatewayAnswer<{ jobId: string }>> {
+  if (request.json === null) {
+    return err("bad-request", 400, "the render needs the json body (the serialized plan and the owner pointer)");
+  }
+  if (typeof request.json.plan !== "string" || request.json.plan.length === 0) {
+    return err("bad-request", 400, "the render needs the serialized plan (the debonair.pattern/1 json)");
+  }
+  if (typeof request.json.ownerId !== "string" || !blobidvalid(request.json.ownerId)) {
+    return err("bad-owner", 400, "the render needs the owner pointer in the minted decimal form");
+  }
+  const parsed = parsePattern(request.json.plan);
+  if (!parsed.ok) {
+    return err("bad-request", 400, `the plan failed the pattern contract (${parsed.code}): ${parsed.message}`);
+  }
+  if (parsed.doc.schema !== PATTERN_SCHEMA_VERSION) {
+    return err("bad-request", 400, "the plan is not a debonair.pattern/1 project");
+  }
+  let canonical: string;
+  try {
+    canonical = serializePattern(parsed.doc);
+  } catch (error) {
+    return err("bad-request", 400, `the plan refused its canonical serialization: ${errmsgof(error)}`);
+  }
+  const jobId = env.mint();
+  const row: RenderJobRow = {
+    id: jobId,
+    owner_id: request.json.ownerId,
+    state: "queued",
+    phase: null,
+    fraction: 0,
+    error: null,
+    plan_json: canonical,
+    wav_pointer: null,
+    track_pointer: null,
+    created_at: env.now(),
+    finished_at: null,
+  };
+  try {
+    env.renderJobs.putjob(row);
+  } catch (error) {
+    return err("db-failed", 500, `the render ledger refused the registration: ${errmsgof(error)}`);
+  }
+  return ok({ jobId }, 201);
+}
+
+/** The wire projection of one render ledger row (the camelCase face). */
+function renderjobwire(row: RenderJobRow): RenderJobValue {
+  return {
+    id: row.id,
+    ownerId: row.owner_id,
+    state: row.state,
+    phase: row.phase,
+    fraction: row.fraction,
+    error: row.error,
+    wavPointer: row.wav_pointer,
+    trackPointer: row.track_pointer,
+    createdAt: row.created_at,
+    finishedAt: row.finished_at,
+  };
+}
+
+/**
+ * GET /api/v1/render/jobs/:id — the render job row (the walk the
+ * generate page polls: the state, the phase, the fraction, the honest
+ * failure, the landed wav and track pointers, the instants).
+ */
+async function getRenderJob(
+  env: GatewayEnv,
+  _request: GatewayRequest,
+  params: Record<string, string>,
+): Promise<GatewayAnswer<RenderJobValue>> {
+  let row: RenderJobRow | null;
+  try {
+    row = env.renderJobs.getjob(params.id);
+  } catch (error) {
+    return err("db-failed", 500, `the render ledger refused the read: ${errmsgof(error)}`);
+  }
+  if (row === null) return err("not-found", 404, `no render job answers ${params.id}`);
+  return ok(renderjobwire(row));
+}
+
+/** The vitrine row of one rendered track — the generated take's face. */
+function renderwire(row: RenderTrackRow): VitrineTrackValue {
+  return {
+    kind: "render",
+    id: row.id,
+    name: row.name,
+    genre: row.genre,
+    seconds: row.seconds,
+    status: row.status,
+    wavPointer: row.wavPointer,
+    ownerId: row.ownerId,
+    publishedAt: row.createdAt,
+  };
+}
+
+/** The vitrine row of one ingested reference — the stored mix's face
+ * (the genre line rides the matrix's own matcher over the document name,
+ * the grouping law the miner lane rides: the documents carry no genre
+ * column, the name is the honest carrier). */
+function referencewire(row: IngestStampRow): VitrineTrackValue {
+  return {
+    kind: "reference",
+    id: row.id,
+    name: row.name,
+    genre: matchGenre(row.name)?.label ?? "",
+    seconds: Math.round(row.durationSeconds),
+    status: "ready",
+    wavPointer: row.mixPointer,
+    ownerId: row.ownerId,
+    publishedAt: row.ingestedAt,
+  };
+}
+
+/**
+ * POST /api/v1/tracks — the publish lane: the owner's move that puts a
+ * rendered track row onto the vitrine. The laws: the track row must
+ * answer the id (a render the walk stamped), the caller's owner pointer
+ * must match the row's owner (the private stays private — nobody
+ * publishes another owner's take) and the row must carry its wav (never
+ * a vitrine row that points at missing bytes). The move is idempotent —
+ * a standing vitrine row answers itself.
+ */
+async function publishTrack(env: GatewayEnv, request: GatewayRequest): Promise<GatewayAnswer<VitrineTrackValue>> {
+  if (request.json === null) {
+    return err("bad-request", 400, "the publish needs the json body (the track id and the owner pointer)");
+  }
+  if (typeof request.json.trackId !== "string" || !blobidvalid(request.json.trackId)) {
+    return err("bad-request", 400, "the publish needs the track id in the minted decimal form");
+  }
+  if (typeof request.json.ownerId !== "string" || !blobidvalid(request.json.ownerId)) {
+    return err("bad-owner", 400, "the publish needs the owner pointer in the minted decimal form");
+  }
+  let row: RenderTrackRow | null;
+  try {
+    row = await env.tracks.gettrackrow(request.json.trackId);
+  } catch (error) {
+    return err("db-failed", 500, `the track seat refused the read: ${errmsgof(error)}`);
+  }
+  if (row === null) return err("not-found", 404, `no track answers ${request.json.trackId}`);
+  if (row.ownerId !== request.json.ownerId) {
+    return err("conflict", 409, "the owner pointer does not match the track's owner — the private stays private");
+  }
+  if (row.visibility === "vitrine") return ok(renderwire(row));
+  let published: RenderTrackRow | null;
+  try {
+    published = await env.tracks.publishtrackrow(request.json.trackId);
+  } catch (error) {
+    return err("db-failed", 500, `the track seat refused the publish: ${errmsgof(error)}`);
+  }
+  if (published === null) return err("not-found", 404, `no track answers ${request.json.trackId}`);
+  return ok(renderwire(published));
+}
+
+/**
+ * GET /api/v1/tracks — the vitrine list, the streaming shelf the owner
+ * described: the published generated takes beside the ingested
+ * references, one grammar. The private rows never list — the vitrine is
+ * the public shelf (the owner's own takes ride the render job answers
+ * and the session shelf, not this lane).
+ */
+async function listTracks(
+  env: GatewayEnv,
+  _request: GatewayRequest,
+): Promise<GatewayAnswer<{ records: VitrineTrackValue[] }>> {
+  let renders: RenderTrackRow[];
+  try {
+    renders = await env.tracks.listtrackrows("vitrine");
+  } catch (error) {
+    return err("db-failed", 500, `the track seat refused the list: ${errmsgof(error)}`);
+  }
+  let references: IngestStampRow[];
+  try {
+    references = await env.db.liststampedrows();
+  } catch (error) {
+    return err("db-failed", 500, `the shelf refused the list: ${errmsgof(error)}`);
+  }
+  const rows = [
+    ...renders.map(renderwire),
+    ...references.filter((row) => row.visibility === "vitrine").map(referencewire),
+  ];
+  rows.sort((left, right) => (left.publishedAt < right.publishedAt ? 1 : -1));
+  return ok({ records: rows });
+}
+
 /** @section dispatch — the one entry the transport calls */
 
 /** The handler seat one route table row names — pure over the
@@ -938,6 +1262,10 @@ const handlers: Record<GatewayHandlerName, GatewayHandler> = {
   mineProfile,
   listProfiles,
   getProfile,
+  queueRender,
+  getRenderJob,
+  publishTrack,
+  listTracks,
 };
 
 /**
@@ -1192,4 +1520,61 @@ export async function startMinerJob(
     );
   }
   return ok({ jobId, state: "done", profileId: String(profileId), profile });
+}
+
+/** @section startrenderlanejob — the render run the caller loop drives */
+
+/** Maps a render walk failure code onto the gateway code of its lane —
+ * the ledger codes ride their own lanes (not-found the 404 shape,
+ * conflict the 409 shape, ledger-failed the db lane), the store code the
+ * store lane, and the plan codes (bad-plan, empty-plan, render-failed)
+ * the bad-request lane: the plan was the caller's, exactly the mapcode
+ * law the ingest lane rides. */
+function rendermapcode(code: RenderRunErrorCode): { code: GatewayErrorCode; status: number } {
+  if (code === "not-found") return { code: "not-found", status: 404 };
+  if (code === "conflict") return { code: "conflict", status: 409 };
+  if (code === "store-failed") return { code: "store-failed", status: 500 };
+  if (code === "ledger-failed" || code === "track-failed") return { code: "db-failed", status: 500 };
+  return { code: "bad-request", status: 400 };
+}
+
+/**
+ * Starts one queued render job — the render lane's mirror of startJob:
+ * the caller lane (the gateway worker loop) hands the queued job id and
+ * this function walks the render worker end to end (schedule → render →
+ * encode → store — the wav lands in the blob store, the track row lands
+ * with the pointers, the ledger row rides along through the walk's own
+ * seats). The environment's blob store satisfies the worker's store seam
+ * structurally (the same put law), the render ledger and the track seat
+ * ride the gateway's own bindings. Never a throw; every refusal answers
+ * the typed err; a re-run of a landed job answers conflict (the walk is
+ * one-shot — a fresh take queues a fresh job).
+ *
+ * @param env the injected environment.
+ * @param jobId the queued render job the generate page's post registered.
+ * @returns the landed take (the wav pointer, the bytes, the duration, the
+ *   track id), or the typed err of the refusing lane.
+ */
+export async function startRenderLaneJob(env: GatewayEnv, jobId: string): Promise<GatewayAnswer<RenderRunValue>> {
+  const result = await startRenderJob(
+    {
+      store: env.store,
+      jobs: env.renderJobs,
+      tracks: env.tracks,
+      now: env.now,
+    },
+    jobId,
+  );
+  if (!result.ok) {
+    const mapped = rendermapcode(result.code);
+    return err(mapped.code, mapped.status, `${result.code}: ${result.message}`);
+  }
+  return ok({
+    jobId: result.jobId,
+    state: "done",
+    wavPointer: result.wavPointer,
+    bytes: result.bytes,
+    durationSeconds: result.durationSeconds,
+    trackId: result.trackId,
+  });
 }

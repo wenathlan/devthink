@@ -122,6 +122,33 @@ export interface OptionChoice {
   selected?: boolean;
 }
 
+/** One row of the vitrine — the streaming shelf the home song grid
+ * reads through the catalog seam: the published generated takes beside
+ * the ingested references, one grammar (the kind field decides which
+ * lane the row points at). the rows come from the db the publish lane
+ * fills; the offline seed answers the honest empty shelf — never a fake
+ * published row (blobId "" until real bytes answer the pointer). */
+export interface VitrineTrackRow {
+  /** the group literal ("vitrine") */
+  group: string;
+  /** the row kind: a rendered take or an ingested reference */
+  kind: "render" | "reference";
+  /** the row id (the track row id, or the ingest document id) */
+  id: string;
+  /** the display name */
+  name: string;
+  /** the genre line */
+  genre: string;
+  /** the duration in seconds */
+  seconds: number;
+  /** the blob id of the wav ("" until a real row lands — the seed face) */
+  blobId: string;
+  /** the bare mime of the stored bytes ("audio/wav") */
+  mime: string;
+  /** the instant the row landed ("" until a real row lands) */
+  publishedAt: string;
+}
+
 /** Resolves the css class suffix of a badge tone (empty for the default tone). */
 export function toneClass(tone: BadgeTone): string {
   return tone === "default" ? "" : ` ${tone}`;

@@ -3,6 +3,23 @@
 // outros.debonair). A glottal saw source rides a three-formant bandpass bank
 // (the vowel table), syllables land on the grid, vibrato is seeded so the
 // same take answers the same voice. Pure math — the transport renders it.
+//
+// the vocal lane of the generation pipeline (wave PV4.005, opt-in, never
+// blocking): singPattern is the FIRST RUNG — the seeded voice over the
+// plan's melody computed at the pattern level, so the sung notes ride the
+// ordinary plan grammar and the renderworker's pattern bridge schedules
+// them through the existing recipes (the airy lead seat — the vibrato
+// recipe the singing modulation lives in). the melody is the plan's own
+// top line (the highest note at every step, the bass sitting out — every
+// pattern note is a melodic note of the score), and the phrase breathing
+// is seeded (a phrase sings, a breath rests — the same plan and seed
+// answer the same sung line). the SECOND RUNG — the formant render itself
+// (renderVoice's vowel bank mixed into the offline bounce under its own
+// voice bus) — is the deeper integration the next wave rides; this rung
+// keeps the loop closing without it.
+
+import { hashSeed, mulberry32 } from "./harmonyengine.ts";
+import { type PatternNoteEvent, type PatternProject, validatePatternProject } from "./patternenums.ts";
 
 /** The five-vowel formant table (hz), F1/F2/F3 per vowel. */
 export const VOWEL_FORMANTS: Readonly<Record<Vowel, readonly [number, number, number]>> = {
@@ -201,6 +218,85 @@ export function syllablesOfLine(
   return Array.from({ length: count }, (_, i) => {
     const found = glyphs[i] as Vowel | undefined;
     const vowel = found && vowels.includes(found) ? found : vowels[Math.floor(options.random() * vowels.length)];
-    return { vowel, midi, start: start + i * per, duration: per * 0.92, velocity: 0.8, consonant: i === 0 };
+    return { vowel, midi, start: start + i * per, duration: per * 0.92, velocity: SING_VELOCITY, consonant: i === 0 };
   });
+}
+
+// ---------------------------------------------------------------------------
+// the pattern lane (the vocal lane's first rung, wave PV4.005)
+// ---------------------------------------------------------------------------
+
+/** The syllable velocity the sung notes ride — the same 0.8 law
+ * syllablesOfLine stamps, named for the pattern lane. */
+export const SING_VELOCITY = 0.8 as const;
+
+/** The register lift of the sung line (semitones) — the voice sits an
+ * octave above the instrumental melody, the classic vocal register. */
+export const SING_LIFT_SEMITONES = 12 as const;
+
+/**
+ * Reads the melodic line of one composed plan — the voice's own seat: the
+ * top note at every step, the bass sitting the line out (the foundation
+ * is not the melody). Every pattern note is a melodic note of the score,
+ * and the highest voice at each onset is the line the ear follows — the
+ * line a singer sings over the arrangement.
+ *
+ * @param plan the composed plan.
+ * @returns the melody notes, time-ascending.
+ */
+function melodyOf(plan: PatternProject): PatternNoteEvent[] {
+  const top = new Map<number, PatternNoteEvent>();
+  for (const note of plan.notes) {
+    if (note.voice === "bass") continue;
+    const standing = top.get(note.step);
+    if (standing === undefined || note.pitch > standing.pitch) top.set(note.step, note);
+  }
+  return [...top.values()].sort((left, right) => left.step - right.step || left.pitch - right.pitch);
+}
+
+/**
+ * Sings one composed plan — the opt-in vocal lane of the generation flow
+ * (the first rung): the plan's melodic line (the top note at every step,
+ * the bass sitting out) answers the sung line, computed at the pattern
+ * level so the ordinary render recipes carry them (the airy lead seat —
+ * the vibrato recipe the singing modulation lives in). the law: one
+ * melody note answers one sung note, lifted an octave into the vocal
+ * register (a unison note when the lift would leave the midi window),
+ * the syllable velocity law riding the velocity, and the seeded phrase
+ * breathing deciding which notes sing — a phrase of one to three notes,
+ * a breath of one to two, so the same plan and seed always answer the
+ * same sung line. the instrumental notes ride untouched (the voice lands
+ * on top, never in place of), and a plan with no melody answers itself
+ * (nothing to sing — the honest empty lane). never blocking: a sung plan
+ * that somehow fails its contract answers the instrumental plan
+ * unchanged.
+ *
+ * @param plan the composed plan (the composer's PatternProject).
+ * @param seed the take identity the phrase breathing rides.
+ * @returns the sung plan (validatePatternProject ok).
+ */
+export function singPattern(plan: PatternProject, seed: string): PatternProject {
+  const melody = melodyOf(plan);
+  if (melody.length === 0) return plan;
+  const rng = mulberry32(hashSeed(`voice:${seed}`));
+  const sung: PatternNoteEvent[] = [];
+  let at = 0;
+  while (at < melody.length) {
+    const phrase = 1 + Math.floor(rng() * 3); // a phrase sings one to three notes
+    for (let index = 0; index < phrase && at < melody.length; index++, at++) {
+      const note = melody[at] as PatternNoteEvent;
+      const lift = note.pitch + SING_LIFT_SEMITONES <= 127 ? SING_LIFT_SEMITONES : 0;
+      sung.push({
+        step: note.step,
+        pitch: note.pitch + lift,
+        vel: note.vel * SING_VELOCITY,
+        dur: note.dur,
+        voice: "flute",
+      });
+    }
+    at += 1 + Math.floor(rng() * 2); // a breath rests one to two notes
+  }
+  const sungdoc: PatternProject = { ...plan, notes: [...plan.notes, ...sung] };
+  const checked = validatePatternProject(sungdoc);
+  return checked.ok ? checked.doc : plan;
 }

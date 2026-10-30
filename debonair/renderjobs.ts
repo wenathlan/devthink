@@ -1,13 +1,16 @@
 // # renderjobs — the node/sqlite half of the render lane (root layer, the
-// pipeline wave PV4.003): the render_jobs ledger the pipeline names — the
-// same walk law the ingest_jobs table rides (create-if-not-exists, the
-// in-place alter path for a standing site-shape table, prepared and
-// parameterized statements only — no sql is ever assembled by string
+// pipeline waves PV4.003 + PV4.004): the render_jobs ledger the pipeline
+// names — the same walk law the ingest_jobs table rides (create-if-not-
+// exists, the in-place alter path for a standing site-shape table, prepared
+// and parameterized statements only — no sql is ever assembled by string
 // concatenation, the house database law) — plus the tracks pointer chain:
-// every rendered track row carries the owner pointer and the blob address
-// of the wav (the reference law of PV1.001 mirrored onto the site's own
-// tracks table, the alter path adding the columns a standing table lacks,
-// no row ever destroyed, no value ever rewritten). the worker lane stays
+// every rendered track row carries the owner pointer, the blob address of
+// the wav and the visibility lane (the reference law of PV1.001 mirrored
+// onto the site's own tracks table, the alter path adding the columns a
+// standing table lacks, no row ever destroyed, no value ever rewritten — a
+// fresh render lands private, the publish lane moves it onto the vitrine
+// and the vitrine list serves the published rows beside the ingested
+// references). the worker lane stays
 // pure of any database import (the injectable discipline the ingest
 // worker and the takestore storage seams ride): this module implements the
 // seats renderworker.ts names, and the tests bind a temp sqlite through
@@ -21,6 +24,7 @@ import type {
   RenderJobSeat,
   RenderTrackRow,
   RenderTrackSeat,
+  RenderTrackVisibility,
 } from "./renderworker.ts";
 
 /** The mint ceiling — a 64-bit pointer never reaches the signed rail of
@@ -54,21 +58,22 @@ function pointerof(value: string): bigint | null {
 // the render_jobs ledger (the ingest_jobs walk law, render's own columns)
 // ---------------------------------------------------------------------------
 
-/** The create statement of the ledger — a fresh database gets the nine
+/** The create statement of the ledger — a fresh database gets the ten
  * walk columns in one statement; a standing table keeps its rows (the
  * create-if-not-exists law). */
 const CREATE_RENDER_JOBS = `
     CREATE TABLE IF NOT EXISTS render_jobs (
-      id          TEXT PRIMARY KEY,
-      owner_id    TEXT NOT NULL,
-      state       TEXT NOT NULL DEFAULT 'queued',
-      phase       TEXT,
-      fraction    REAL NOT NULL DEFAULT 0,
-      error       TEXT,
-      plan_json   TEXT NOT NULL DEFAULT '',
-      wav_pointer TEXT,
-      created_at  TEXT NOT NULL,
-      finished_at TEXT
+      id            TEXT PRIMARY KEY,
+      owner_id      TEXT NOT NULL,
+      state         TEXT NOT NULL DEFAULT 'queued',
+      phase         TEXT,
+      fraction      REAL NOT NULL DEFAULT 0,
+      error         TEXT,
+      plan_json     TEXT NOT NULL DEFAULT '',
+      wav_pointer   TEXT,
+      track_pointer TEXT,
+      created_at    TEXT NOT NULL,
+      finished_at   TEXT
     );
   `;
 
@@ -88,6 +93,7 @@ const RENDER_JOB_UPGRADES: readonly { column: string; ddl: string }[] = [
   { column: "error", ddl: "ALTER TABLE render_jobs ADD COLUMN error TEXT" },
   { column: "plan_json", ddl: "ALTER TABLE render_jobs ADD COLUMN plan_json TEXT NOT NULL DEFAULT ''" },
   { column: "wav_pointer", ddl: "ALTER TABLE render_jobs ADD COLUMN wav_pointer TEXT" },
+  { column: "track_pointer", ddl: "ALTER TABLE render_jobs ADD COLUMN track_pointer TEXT" },
   { column: "created_at", ddl: "ALTER TABLE render_jobs ADD COLUMN created_at TEXT NOT NULL DEFAULT ''" },
   { column: "finished_at", ddl: "ALTER TABLE render_jobs ADD COLUMN finished_at TEXT" },
 ];
@@ -121,7 +127,7 @@ export function ensurerenderjobsschema(): void {
 /** The ledger column list every read carries — the id in the decimal
  * string form (a standing site table holds it in an integer column, the
  * cast keeps the minted pointer exact beyond the js number floor). */
-const RENDER_JOB_COLUMNS = `CAST(id AS TEXT) AS id, owner_id, state, phase, fraction, error, plan_json, wav_pointer, created_at, finished_at`;
+const RENDER_JOB_COLUMNS = `CAST(id AS TEXT) AS id, owner_id, state, phase, fraction, error, plan_json, wav_pointer, track_pointer, created_at, finished_at`;
 
 /**
  * Registers one render job row (or refreshes the row of the same id — the
@@ -134,8 +140,8 @@ export function putrenderjob(row: RenderJobRow, target: typeof db = db): void {
   migraterenderjobsschema(target);
   target
     .prepare(
-      `INSERT INTO render_jobs (id, owner_id, state, phase, fraction, error, plan_json, wav_pointer, created_at, finished_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `INSERT INTO render_jobs (id, owner_id, state, phase, fraction, error, plan_json, wav_pointer, track_pointer, created_at, finished_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
        ON CONFLICT(id) DO UPDATE SET
          owner_id = excluded.owner_id,
          state = excluded.state,
@@ -144,6 +150,7 @@ export function putrenderjob(row: RenderJobRow, target: typeof db = db): void {
          error = excluded.error,
          plan_json = excluded.plan_json,
          wav_pointer = excluded.wav_pointer,
+         track_pointer = excluded.track_pointer,
          created_at = excluded.created_at,
          finished_at = excluded.finished_at`,
     )
@@ -156,6 +163,7 @@ export function putrenderjob(row: RenderJobRow, target: typeof db = db): void {
       row.error,
       row.plan_json,
       row.wav_pointer,
+      row.track_pointer,
       row.created_at,
       row.finished_at,
     );
@@ -196,7 +204,7 @@ export function updaterenderjob(id: string, patch: RenderJobPatch, target: typeo
   if (standing === null) return false;
   target
     .prepare(
-      "UPDATE render_jobs SET state = ?, phase = ?, fraction = ?, error = ?, wav_pointer = ?, finished_at = ? WHERE id = ?",
+      "UPDATE render_jobs SET state = ?, phase = ?, fraction = ?, error = ?, wav_pointer = ?, track_pointer = ?, finished_at = ? WHERE id = ?",
     )
     .run(
       patch.state ?? standing.state,
@@ -204,6 +212,7 @@ export function updaterenderjob(id: string, patch: RenderJobPatch, target: typeo
       patch.fraction ?? standing.fraction,
       patch.error !== undefined ? patch.error : standing.error,
       patch.wav_pointer !== undefined ? patch.wav_pointer : standing.wav_pointer,
+      patch.track_pointer !== undefined ? patch.track_pointer : standing.track_pointer,
       patch.finished_at !== undefined ? patch.finished_at : standing.finished_at,
       id,
     );
@@ -249,17 +258,21 @@ const CREATE_RENDER_TRACKS = `
       status      TEXT NOT NULL DEFAULT 'draft',
       createdAt   TEXT NOT NULL DEFAULT (datetime('now')),
       owner_id    BIGINT NOT NULL DEFAULT 0,
-      wav_pointer BIGINT
+      wav_pointer BIGINT,
+      visibility  TEXT NOT NULL DEFAULT 'private'
     );
   `;
 
 /** The pointer columns the migration adds to a standing tracks table —
  * the site table keeps every row and gains the reference law's columns
  * with its fills (owner 0, the pre-identity epoch marker the migration
- * never fabricates an identity for; a null wav address). */
+ * never fabricates an identity for; a null wav address; the private
+ * visibility — a standing row never rides the vitrine until its owner
+ * publishes it). */
 const RENDER_TRACK_UPGRADES: readonly { column: string; ddl: string }[] = [
   { column: "owner_id", ddl: "ALTER TABLE tracks ADD COLUMN owner_id BIGINT NOT NULL DEFAULT 0" },
   { column: "wav_pointer", ddl: "ALTER TABLE tracks ADD COLUMN wav_pointer BIGINT" },
+  { column: "visibility", ddl: "ALTER TABLE tracks ADD COLUMN visibility TEXT NOT NULL DEFAULT 'private'" },
 ];
 
 /**
@@ -287,13 +300,19 @@ export function ensuretrackschema(): void {
   migratetrackschema(db);
 }
 
+/** The visibility lanes the tracks table carries (the ingest documents'
+ * own law — a fresh row lands private, the owner's publish moves it to
+ * the vitrine). */
+const TRACK_VISIBILITIES: readonly string[] = ["private", "vitrine"];
+
 /**
  * Stamps one rendered track row — the walk's done stamp beside the wav:
  * the name, the genre line, the seconds, the ready status, the owner
- * pointer and the blob address of the wav (the reference law's chain,
- * never a row that points at missing bytes — the walk calls this after
- * the store answered). The pointers bind as exact bigints and read back
- * through the text cast.
+ * pointer, the blob address of the wav and the visibility lane (a fresh
+ * render lands private — the reference law's chain, never a row that
+ * points at missing bytes — the walk calls this after the store
+ * answered). The pointers bind as exact bigints and read back through
+ * the text cast.
  *
  * @param row the rendered track row.
  * @param target the database handle (defaults to the app db).
@@ -310,15 +329,26 @@ export function putrendertrack(row: RenderTrackRow, target: typeof db = db): Ren
     return { ok: false, code: "bad-pointer", message: `the wav pointer "${row.wavPointer}" is not a minted decimal` };
   if (id === null)
     return { ok: false, code: "bad-pointer", message: `the track id "${row.id}" is not a minted decimal` };
+  if (!TRACK_VISIBILITIES.includes(row.visibility))
+    return {
+      ok: false,
+      code: "bad-visibility",
+      message: `the visibility "${row.visibility}" is not one of the lanes (private | vitrine)`,
+    };
   migratetrackschema(target);
   target
     .prepare(
-      `INSERT INTO tracks (id, name, genre, seconds, status, createdAt, owner_id, wav_pointer)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO tracks (id, name, genre, seconds, status, createdAt, owner_id, wav_pointer, visibility)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
-    .run(id, row.name, row.genre, Math.round(row.seconds), row.status, row.createdAt, owner, wav);
+    .run(id, row.name, row.genre, Math.round(row.seconds), row.status, row.createdAt, owner, wav, row.visibility);
   return { ok: true };
 }
+
+/** The track column list every read carries — the pointers in the decimal
+ * string form, the visibility lane riding along. */
+const RENDER_TRACK_COLUMNS = `CAST(id AS TEXT) AS id, name, genre, seconds, status, createdAt,
+        CAST(owner_id AS TEXT) AS ownerId, CAST(wav_pointer AS TEXT) AS wavPointer, visibility`;
 
 /**
  * Reads one rendered track row by id — every column of the pointer law,
@@ -332,14 +362,50 @@ export function getrendertrack(id: string, target: typeof db = db): RenderTrackR
   migratetrackschema(target);
   const parsed = pointerof(id);
   if (parsed === null) return null;
-  const row = target
-    .prepare(
-      `SELECT CAST(id AS TEXT) AS id, name, genre, seconds, status, createdAt,
-              CAST(owner_id AS TEXT) AS ownerId, CAST(wav_pointer AS TEXT) AS wavPointer
-       FROM tracks WHERE id = ?`,
-    )
-    .get(parsed) as RenderTrackRow | undefined;
+  const row = target.prepare(`SELECT ${RENDER_TRACK_COLUMNS} FROM tracks WHERE id = ?`).get(parsed) as
+    | RenderTrackRow
+    | undefined;
   return row ?? null;
+}
+
+/**
+ * Lists the rendered track rows, newest first (the createdAt order, the
+ * minted id as the same-instant tiebreak). A visibility filter rides when
+ * the caller carries one — the vitrine list asks the published rows, the
+ * private stays private until its owner publishes.
+ *
+ * @param visibility the visibility filter, or undefined for every row.
+ * @param target the database handle (defaults to the app db).
+ * @returns the rows.
+ */
+export function listrendertracks(visibility?: RenderTrackVisibility, target: typeof db = db): RenderTrackRow[] {
+  migratetrackschema(target);
+  if (visibility === undefined) {
+    return target
+      .prepare(`SELECT ${RENDER_TRACK_COLUMNS} FROM tracks ORDER BY createdAt DESC, id DESC`)
+      .all() as RenderTrackRow[];
+  }
+  return target
+    .prepare(`SELECT ${RENDER_TRACK_COLUMNS} FROM tracks WHERE visibility = ? ORDER BY createdAt DESC, id DESC`)
+    .all(visibility) as RenderTrackRow[];
+}
+
+/**
+ * Publishes one rendered track row — the owner's move of the publish
+ * lane: the visibility climbs onto the vitrine (idempotent — a standing
+ * vitrine row answers itself, the upsert law the ledgers ride), the row
+ * reading back with every column.
+ *
+ * @param id the track id.
+ * @param target the database handle (defaults to the app db).
+ * @returns the published row, or null when the id answers nothing.
+ */
+export function publishrendertrack(id: string, target: typeof db = db): RenderTrackRow | null {
+  migratetrackschema(target);
+  const parsed = pointerof(id);
+  if (parsed === null) return null;
+  target.prepare("UPDATE tracks SET visibility = 'vitrine' WHERE id = ?").run(parsed);
+  return getrendertrack(id, target);
 }
 
 // ---------------------------------------------------------------------------
@@ -368,13 +434,23 @@ export function renderjobseat(target: typeof db = db): RenderJobSeat {
 /**
  * Binds the track row seat onto a database handle — the walk's
  * puttrackrow call lands on the parameterized function above (the
- * ingest handle's own async answer law).
+ * ingest handle's own async answer law), and the gateway's vitrine
+ * surface rides the same binding: the row read, the visibility list and
+ * the publish move (the gateway track seat satisfies this shape
+ * structurally — one binding, both lanes).
  *
  * @param target the database handle (defaults to the app db).
  * @returns the track seat.
  */
-export function rendertrackseat(target: typeof db = db): RenderTrackSeat {
+export function rendertrackseat(target: typeof db = db): RenderTrackSeat & {
+  gettrackrow(id: string): Promise<RenderTrackRow | null>;
+  listtrackrows(visibility?: RenderTrackVisibility): Promise<RenderTrackRow[]>;
+  publishtrackrow(id: string): Promise<RenderTrackRow | null>;
+} {
   return {
     puttrackrow: async (row) => putrendertrack(row, target),
+    gettrackrow: async (id) => getrendertrack(id, target),
+    listtrackrows: async (visibility) => listrendertracks(visibility, target),
+    publishtrackrow: async (id) => publishrendertrack(id, target),
   };
 }

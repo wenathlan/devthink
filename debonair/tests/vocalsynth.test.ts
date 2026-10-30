@@ -1,10 +1,15 @@
 // # vocalsynth.test — the formant voice: the render is deterministic under
 // the same seed, the syllables stay finite and clamped, the vowel table
 // answers the documented formants and the line splitter lands syllables
-// inside the span.
+// inside the span. the pattern lane (the vocal lane's first rung, wave
+// PV4.005): singPattern answers a plan with voice that differs from the
+// plan without — the sung line rides the melody seats on the airy lead
+// seat, lifted an octave when the window holds, the seeded phrase
+// breathing deciding which notes sing, the instrumental untouched.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { renderVoice, syllablesOfLine, VOWEL_FORMANTS } from "../vocalsynth.ts";
+import { validatePatternProject } from "../patternenums.ts";
+import { renderVoice, singPattern, syllablesOfLine, VOWEL_FORMANTS } from "../vocalsynth.ts";
 
 /** The deterministic rng the tests ride (mulberry32, the engine's law). */
 function seeded(seed: number): () => number {
@@ -87,5 +92,120 @@ describe("vocalsynth — syllablesOfLine", () => {
     const syllables = syllablesOfLine("123 456", 60, 0, 1, options);
     assert.equal(syllables.length, 1);
     assert.ok(["a", "e", "i", "o", "u"].includes(syllables[0].vowel));
+  });
+});
+
+// ---------------------------------------------------------------------------
+// the pattern lane (the vocal lane's first rung, wave PV4.005)
+// ---------------------------------------------------------------------------
+
+/** One melody note of a plan (the pattern grammar's own shape). */
+function melodyNote(
+  step: number,
+  pitch: number,
+  voice: string,
+): {
+  step: number;
+  pitch: number;
+  vel: number;
+  dur: number;
+  voice: string;
+} {
+  return { step, pitch, vel: 0.9, dur: 2, voice };
+}
+
+/** A minimal plan carrying a lead melody, a bass line and the drum grid. */
+function melodyPlan(notes: readonly ReturnType<typeof melodyNote>[]): {
+  schema: "debonair.pattern/1";
+  bpm: number;
+  root: number;
+  scale: string;
+  bars: number;
+  mood: string;
+  prompt: string;
+  drums: { kick: number[]; snare: number[]; hat: number[]; clap: number[] };
+  notes: readonly ReturnType<typeof melodyNote>[];
+  embedding: number[];
+} {
+  // the embedding law: 32 numbers (zeros are legal — the miner recomputes)
+  return {
+    schema: "debonair.pattern/1",
+    bpm: 140,
+    root: 9,
+    scale: "natural-minor",
+    bars: 2,
+    mood: "dark trap",
+    prompt: "dark trap take",
+    drums: {
+      kick: [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+      hat: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+    },
+    notes,
+    embedding: new Array<number>(32).fill(0),
+  };
+}
+
+describe("vocalsynth — singPattern (the pattern lane's first rung)", () => {
+  const melody = [
+    melodyNote(0, 69, "lead"),
+    melodyNote(2, 72, "lead"),
+    melodyNote(4, 71, "pluck"),
+    melodyNote(6, 67, "flute"),
+    melodyNote(8, 69, "bass"),
+    melodyNote(10, 45, "bass"),
+  ];
+  const plan = melodyPlan(melody);
+
+  it("answers a plan with voice that differs from the plan without", () => {
+    const sung = singPattern(plan, "voice-seed");
+    assert.ok(sung !== plan, "the sung plan is a fresh document");
+    assert.ok(sung.notes.length > plan.notes.length, "the sung line lands on top of the instrumental");
+    for (const note of plan.notes) {
+      const rides = sung.notes.some(
+        (candidate) =>
+          candidate.step === note.step &&
+          candidate.pitch === note.pitch &&
+          candidate.voice === note.voice &&
+          candidate.dur === note.dur,
+      );
+      assert.ok(rides, `the instrumental note at step ${note.step} rides untouched`);
+    }
+  });
+
+  it("sings only the melody seats, on the airy lead seat, lifted an octave", () => {
+    const sung = singPattern(plan, "voice-seed");
+    const melodyCount = melody.filter((note) => ["lead", "pluck", "bell", "arp", "flute"].includes(note.voice)).length;
+    const sungNotes = sung.notes.slice(plan.notes.length);
+    assert.ok(sungNotes.length > 0, "the voice sang at least one note");
+    assert.ok(sungNotes.length <= melodyCount, "the phrase breathing never sings more than the melody");
+    for (const note of sungNotes) {
+      assert.equal(note.voice, "flute");
+      const source = melody.find((candidate) => candidate.step === note.step);
+      assert.ok(source, "each sung note sits on a melody note");
+      const lift = source.pitch + 12 <= 127 ? 12 : 0;
+      assert.equal(note.pitch, source.pitch + lift, "the register law: the lift when the window holds, unison else");
+      assert.ok(note.vel <= source.vel, "the syllable velocity law rides under the melody");
+    }
+  });
+
+  it("is deterministic under the same seed (the phrase breathing law)", () => {
+    const first = singPattern(plan, "voice-seed");
+    const again = singPattern(plan, "voice-seed");
+    assert.deepEqual(first.notes, again.notes, "the same plan and seed answer the same sung line");
+    const other = singPattern(plan, "voice-seed-two");
+    assert.notDeepEqual(first.notes, other.notes, "a fresh seed answers a fresh sung line");
+  });
+
+  it("answers the plan itself when the melody is silent", () => {
+    const silent = melodyPlan([melodyNote(0, 45, "bass")]);
+    assert.equal(singPattern(silent, "voice-seed"), silent, "nothing to sing — the honest empty lane");
+  });
+
+  it("answers a plan that passes its own contract (the validator law)", () => {
+    const sung = singPattern(plan, "voice-seed");
+    const checked = validatePatternProject(sung);
+    assert.ok(checked.ok, `the sung plan failed its contract: ${checked.ok ? "" : checked.message}`);
   });
 });
