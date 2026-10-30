@@ -16,7 +16,7 @@ import type { LabelRow } from "./db.ts";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 4;
+export const LABEL_REVISION = 5;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -136,12 +136,14 @@ export const LABEL_MANIFEST = {
   "studio.rack.stepVel": "vel {vel}%",
   "studio.export.aria": "Export desk",
   "studio.export.title": "export",
-  "studio.export.body": "The bounce rides the same graph the desk plays — the plan's faders, the glue and this take's seeded noise.",
+  "studio.export.body":
+    "The bounce rides the same graph the desk plays — the plan's faders, the glue and this take's seeded noise.",
   "studio.export.keyAria": "Export {label}",
   "studio.export.rendering": "rendering…",
   "studio.export.resetAria": "Reset the desk to the seeded take",
   "studio.export.reset": "reset desk",
-  "studio.export.rollNote": "the roll owns the schedule this desk session — reset the desk to hear the seeded take again.",
+  "studio.export.rollNote":
+    "the roll owns the schedule this desk session — reset the desk to hear the seeded take again.",
   "studio.ledger.aria": "Take ledger",
   "studio.ledger.title": "Take ledger",
   "studio.ledger.bodyLead":
@@ -221,7 +223,8 @@ export const LABEL_MANIFEST = {
   // the timeline (arrangement editor) widget of the studio
   "studio.timeline.aria": "Arrangement editor",
   "studio.timeline.title": "arrangement editor",
-  "studio.timeline.meta": "{clock} · snap {snap} s · drag moves, edges trim, arrows walk · delete deletes, d duplicates",
+  "studio.timeline.meta":
+    "{clock} · snap {snap} s · drag moves, edges trim, arrows walk · delete deletes, d duplicates",
   "studio.timeline.splitAria": "Split the selected clip at the playhead",
   "studio.timeline.split": "Split",
   "studio.timeline.dupAria": "Duplicate the selected clip",
@@ -334,6 +337,23 @@ export const LABEL_MANIFEST = {
   "ingest.audition.mute": "mute",
   "ingest.audition.muteAria": "Mute the {stem} stem",
   "ingest.audition.muted": "muted",
+  // the bench rewire wave (PV1.007): the server phases of the meter, the
+  // run-on-device key, the identity line and the ia lane line
+  "ingest.phase.store": "store",
+  "ingest.phase.storeDetail": "the mix, the stems and the manifest land in the blob store",
+  "ingest.phase.row": "row",
+  "ingest.phase.rowDetail": "the document row stamps the library",
+  "ingest.identity.server": "owner {owner} · the server lane walks the pipeline",
+  "ingest.identity.device": "owner {owner} · this device walks the pipeline",
+  "ingest.lane.device": "run on this device",
+  "ingest.lane.deviceHint": "the drop posts the gateway walk by default — the key opts the pipeline into this browser",
+  "ingest.lane.deviceAria": "Toggle the run-on-device lane",
+  "ingest.toast.laneRefused": "the gateway lane refused: {message}",
+  "ingest.toast.jobFailed": "the walk failed: {message}",
+  "ingest.toast.serverLanded": "the server walked {name} into the library — {frames} frames",
+  "ingest.toast.dropRefused": "the drop refused: {message}",
+  "ingest.shelf.iaLine":
+    "the system ia lane posts the same route with the service identity — the reference library grows without a human",
   // the intro page anchor (the akash-floor splash)
   "intro.aria": "debonair is opening",
   "intro.name": "debonair",
@@ -370,7 +390,8 @@ export const LABEL_MANIFEST = {
   // the notfound page anchor (the 404 dead air)
   "notfound.eyebrow": "debonair · 404",
   "notfound.title": "Dead air",
-  "notfound.lede": "This page never made it to tape. The fader was up, the mic was hot — and the URL bar stayed clean, by the way.",
+  "notfound.lede":
+    "This page never made it to tape. The fader was up, the mic was hot — and the URL bar stayed clean, by the way.",
   "notfound.backHome": "Back home",
   "notfound.openStudio": "Open the studio",
   // the settings page anchor (the preferences)
@@ -478,7 +499,7 @@ export async function seedLabels(): Promise<{ seeded: number; protected: number 
   let saved = 0;
   for (const [id, text] of Object.entries(LABEL_MANIFEST)) {
     const row = rows.get(id);
-    overrides.set(id, row && row.translated ? row.text : text);
+    overrides.set(id, row?.translated ? row.text : text);
     if (!row || (!row.translated && row.text !== text)) {
       rows.set(id, {
         id,

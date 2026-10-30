@@ -9,18 +9,21 @@
 // # Ingest — the decomposition bench of the katexis engine (the owner's first
 // demonstrative step): one real track goes in, the parametrized ingest
 // document goes out and lands in the library db for the pattern miner to
-// pre-train the composer. The flow reads exactly like the engine speaks:
-// decode (file → mono pcm over decodeAudioData), separate (the hpss pass
-// splits harmonic and percussive stems, mix-conserving), analyze (the shared
-// chain reports the mix and each stem), segment (one vector frame per
-// second — centroid, flatness, chroma, bands, onsets), store (the gateway
-// first, the offline mirror when the platform is away). Every stage yields
-// to the paint between steps, so the bench shows the engine working instead
-// of freezing. The playback proof rides the same decomposition: the mix and
-// the stems encode to wavs under blob pointers (the session mirror), the
-// reference takes ride the shared playerbus, and the play keys below press
-// them through the same bar the generated takes ride. The shelf lists what
-// the library already holds and drops what it must not keep.
+// pre-train the composer. The bench answers the server law (the pipeline
+// waves PV1.007 + PV1.008): the drop posts the upload route, the meter
+// reads the polled job row — the same six phases the worker walks, decode,
+// separate, analyze, segment, store, row — and the document renders from
+// the shelf when the walk lands done, so the visitor's machine never runs
+// the pipeline (zero dsp on the default path; the play keys stream the
+// stored wavs through the shared bus, the manifest names the stems). The
+// local pipeline stays behind the explicit "run on this device" key — the
+// honest opt-in the pipeline law demands: decode (file → mono pcm over
+// decodeAudioData), separate (the hpss pass), analyze, segment, the wavs
+// land in the session blob lane and the document saves to the library
+// store. Every upload carries the owner stamp of the identity seat (the
+// same law the onboarding flags ride), the shelf merges the gateway rows
+// with the offline mirror, and the system ia lane grows the reference
+// library with the service identity — the same route, no human.
 
 import {
   ArrowDownloadRegular,
@@ -35,11 +38,28 @@ import {
   SpeakerMuteRegular,
 } from "@fluentui/react-icons";
 import { type ChangeEvent, type DragEvent, useEffect, useRef, useState } from "react";
-import { type BlobPointer, sessionblobstore } from "../../blobstore.ts";
+import { type BlobPointer, gatewayblobstore, sessionblobstore } from "../../blobstore.ts";
 import { formatClock } from "../../dawview.ts";
+import type { IngestJobValue } from "../../gatewayapi.ts";
 import { separate } from "../../hpss.ts";
 import { decompose, type IngestDocument } from "../../ingest.ts";
+import {
+  deleteDocument,
+  fetchDocument,
+  fetchShelf,
+  ingestorigin,
+  ownerid,
+  pollJob,
+  uploadIngest,
+} from "../../ingestclient.ts";
 import { droppingest, type IngestRecord, listingests, saveingest } from "../../ingeststore.ts";
+import {
+  INGEST_STEMS_SCHEMA_VERSION,
+  type IngestJobPhase,
+  type IngestStampRow,
+  type IngestStemsManifest,
+  PIPELINE_PHASES,
+} from "../../ingestworker.ts";
 import { type LabelKey, label, labelfill } from "../../labels.ts";
 import {
   busFeature,
@@ -54,8 +74,9 @@ import { writeWav16 } from "../../wavwriter.ts";
 import { Shell } from "../shell/Shell.tsx";
 import { useToast } from "../toast/Toast.tsx";
 
-/** The decode/analysis phases the bench walks through, in order (the ids
- * ride the state machine; the label and detail keys answer the label store). */
+/** The decode/analysis phases the device walk steps through, in order (the
+ * ids ride the state machine; the label and detail keys answer the label
+ * store). */
 const PHASES: readonly { id: BenchPhase; labelKey: LabelKey; detailKey: LabelKey }[] = [
   { id: "idle", labelKey: "ingest.phase.waiting", detailKey: "ingest.phase.waitingDetail" },
   { id: "decode", labelKey: "ingest.phase.decode", detailKey: "ingest.phase.decodeDetail" },
@@ -68,9 +89,48 @@ const PHASES: readonly { id: BenchPhase; labelKey: LabelKey; detailKey: LabelKey
 
 type BenchPhase = "idle" | "decode" | "separate" | "analyze" | "segment" | "ready" | "error";
 
+/** The server phases the meter mirrors — the worker's own law order (the
+ * bench, the job route and the worker speak the same names). */
+const SERVER_STEP_KEYS: Record<IngestJobPhase, { labelKey: LabelKey; detailKey: LabelKey }> = {
+  decode: { labelKey: "ingest.phase.decode", detailKey: "ingest.phase.decodeDetail" },
+  separate: { labelKey: "ingest.phase.separate", detailKey: "ingest.phase.separateDetail" },
+  analyze: { labelKey: "ingest.phase.analyze", detailKey: "ingest.phase.analyzeDetail" },
+  segment: { labelKey: "ingest.phase.segment", detailKey: "ingest.phase.segmentDetail" },
+  store: { labelKey: "ingest.phase.store", detailKey: "ingest.phase.storeDetail" },
+  row: { labelKey: "ingest.phase.row", detailKey: "ingest.phase.rowDetail" },
+};
+
+/** One rendered meter step: the phase id, the copy keys and the walk state. */
+interface MeterStep {
+  id: string;
+  labelKey: LabelKey;
+  detailKey: LabelKey;
+  state: "idle" | "live" | "done";
+}
+
+/** The poll interval of the server walk (ms) — a sane window between the
+ * job row reads (the phases land in order, the meter follows). */
+const POLL_MS = 700;
+
 /** Yields to the paint loop so a phase label lands on screen before the
  * heavy synchronous work of the next one blocks the main thread. */
 const tick = (): Promise<void> => new Promise((resolve) => setTimeout(resolve, 30));
+
+/** One pause of the poll loop that an abort ends early (a fresh drop or
+ * the unmount retires the walk without another row read). */
+function sleep(ms: number, signal: AbortSignal): Promise<void> {
+  return new Promise((resolve) => {
+    const timer = setTimeout(resolve, ms);
+    signal.addEventListener(
+      "abort",
+      () => {
+        clearTimeout(timer);
+        resolve();
+      },
+      { once: true },
+    );
+  });
+}
 
 /** Reads one audio file into mono float pcm (all channels averaged). */
 async function decodeMono(file: File): Promise<{ mono: Float32Array; sampleRate: number }> {
@@ -86,8 +146,9 @@ async function decodeMono(file: File): Promise<{ mono: Float32Array; sampleRate:
   return { mono, sampleRate: buffer.sampleRate };
 }
 
-/** The session blob lane the bench's wavs ride: the offline seat the playerbus
- * seam reads before the gateway (the same law the ingest mirror answers). */
+/** The session blob lane the device walk's wavs ride: the offline seat the
+ * playerbus seam reads before the gateway (the same law the ingest mirror
+ * answers). */
 const blobs = sessionblobstore();
 
 /** Encodes one pcm lane to a wav and stores it under a fresh blob pointer
@@ -114,9 +175,10 @@ interface ReferenceAudio {
   stems: StemAudition[];
 }
 
-/** Builds the reference takes: the mix and both stems encode to wavs and
- * land in the session blob lane, each pointer becoming one reference take
- * the shared bus plays. Null answers when any lane refused its bytes. */
+/** Builds the reference takes of the device walk: the mix and both stems
+ * encode to wavs and land in the session blob lane, each pointer becoming
+ * one reference take the shared bus plays. Null answers when any lane
+ * refused its bytes. */
 async function buildReferenceAudio(
   name: string,
   mono: Float32Array,
@@ -147,6 +209,48 @@ async function buildReferenceAudio(
       },
     ],
   };
+}
+
+/**
+ * Builds the reference takes of one landed server walk: the mix streams
+ * from the row's own mix pointer and the stems ride the manifest the walk
+ * stored — the shared bus resolves them through the session mirror first,
+ * the gateway blob lane after (the same law the device wavs ride). a
+ * manifest that refuses answers the mix alone (the audition stays hidden,
+ * the play key still answers) — never a throw, the walk already landed.
+ *
+ * @param origin the gateway origin.
+ * @param row the stamped row the document read answered.
+ * @returns the mix take and the stem takes (empty when the manifest refused).
+ */
+async function serverAudio(origin: string, row: IngestStampRow): Promise<ReferenceAudio> {
+  const durationSeconds = row.durationSeconds;
+  const takeOf = (blobId: string, display: string): ReferenceTake => ({
+    kind: "reference",
+    id: `reference-${blobId}`,
+    name: display,
+    source: { blobId, mime: "audio/wav", name: display, durationSeconds },
+  });
+  const mix = takeOf(row.mixPointer, row.name);
+  const lane = gatewayblobstore(origin);
+  const got = await lane.get(row.stemsPointer);
+  if (!got.ok || got.data === null) return { mix, stems: [] };
+  let parsed: Partial<IngestStemsManifest>;
+  try {
+    parsed = JSON.parse(new TextDecoder().decode(got.data)) as Partial<IngestStemsManifest>;
+  } catch {
+    return { mix, stems: [] };
+  }
+  if (parsed.schema !== INGEST_STEMS_SCHEMA_VERSION || !Array.isArray(parsed.stems)) {
+    return { mix, stems: [] };
+  }
+  const stems: StemAudition[] = [];
+  for (const stem of parsed.stems) {
+    if (stem && typeof stem.pointer?.id === "string" && (stem.role === "harmonic" || stem.role === "percussive")) {
+      stems.push({ stem: stem.role, take: takeOf(stem.pointer.id, `${row.name} ${stem.role}`) });
+    }
+  }
+  return { mix, stems };
 }
 
 /** The stem card the bench shows one analyzed stem in. */
@@ -201,13 +305,66 @@ function StemCard({
   );
 }
 
+/**
+ * The server meter steps of one job row: the last completed phase marks
+ * the done steps, the phase after it rides live, a queued job stays idle
+ * and a landed walk closes every step (a failed walk answers the error
+ * row — the steps fold to idle, the honest reading of a walk that stopped).
+ *
+ * @param job the polled row (null before the first answer).
+ * @param failure the lane failure line (null while the walk rides).
+ * @returns the six steps in the law order.
+ */
+function serverMeter(job: IngestJobValue | null, failure: string | null): MeterStep[] {
+  if (job === null || failure !== null || job.state === "failed") {
+    return PIPELINE_PHASES.map((id) => ({ id, ...SERVER_STEP_KEYS[id], state: "idle" as const }));
+  }
+  if (job.state === "done") {
+    return PIPELINE_PHASES.map((id) => ({ id, ...SERVER_STEP_KEYS[id], state: "done" as const }));
+  }
+  // the wire phase rides the worker's own vocabulary (the lockstep law);
+  // an unknown name answers no completed step — the meter stays honest
+  const completed = job.phase === null ? 0 : PIPELINE_PHASES.indexOf(job.phase as IngestJobPhase) + 1;
+  const live = job.state === "queued" ? null : completed;
+  return PIPELINE_PHASES.map((id, index) => ({
+    id,
+    ...SERVER_STEP_KEYS[id],
+    state: index < completed ? ("done" as const) : index === live ? ("live" as const) : ("idle" as const),
+  }));
+}
+
+/**
+ * The device meter steps of the local walk (the PV0 bench law, unchanged).
+ *
+ * @param phase the device walk phase.
+ * @returns the five steps in the law order.
+ */
+function deviceMeter(phase: BenchPhase): MeterStep[] {
+  const order = PHASES.findIndex((x) => x.id === phase);
+  return PHASES.filter((p) => p.id !== "idle" && p.id !== "error").map((p, index) => ({
+    id: p.id,
+    labelKey: p.labelKey,
+    detailKey: p.detailKey,
+    state: phase === "error" ? "idle" : p.id === phase ? "live" : index < order ? "done" : "idle",
+  }));
+}
+
 /** The ingest surface: the bench, the document preview and the shelf. */
 function IngestSurface() {
   const toast = useToast();
+  /** The lane key: the server walk by default, the device walk behind the
+   * explicit opt-in (the pipeline law — the visitor machine never runs the
+   * pipeline unless it asks). */
+  const [lane, setLane] = useState<"server" | "device">("server");
   const [phase, setPhase] = useState<BenchPhase>("idle");
+  const [job, setJob] = useState<IngestJobValue | null>(null);
+  const [laneFailure, setLaneFailure] = useState<string | null>(null);
   const [fileName, setFileName] = useState("");
   const [doc, setDoc] = useState<IngestDocument | null>(null);
   const [audio, setAudio] = useState<ReferenceAudio | null>(null);
+  /** Which lane produced the rendered document (the store key is the device
+   * lane's own — the server row lands through the walk). */
+  const [sourceLane, setSourceLane] = useState<"server" | "device" | null>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState<"db" | "offline" | null>(null);
   const [drag, setDrag] = useState(false);
@@ -215,23 +372,43 @@ function IngestSurface() {
   const [copied, setCopied] = useState(false);
   const [view, setView] = useState<PlayerSnapshot | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  /** The abort key of the riding server walk — a fresh drop or the unmount
+   * retires it (the poll loop and the pause both answer it). */
+  const walkRef = useRef<AbortController | null>(null);
 
+  /** The shelf merges the gateway rows (the owner's private lane plus the
+   * vitrine) with the offline mirror — db wins by id, so a row that landed
+   * while offline resurfaces when the gateway answers again. */
   const loadShelf = (): void => {
-    listingests().then((rows) => setRecords(rows));
+    const origin = ingestorigin();
+    const server = origin ? fetchShelf(origin, ownerid()) : Promise.resolve(null);
+    void Promise.all([listingests(), server]).then(([mirror, answer]) => {
+      const merged = new Map<string, IngestRecord>();
+      for (const record of mirror) merged.set(record.id, record);
+      if (answer?.ok) {
+        for (const row of answer.data) merged.set(row.id, { id: row.id, where: "db", doc: row.document });
+      }
+      setRecords([...merged.values()]);
+    });
   };
   useEffect(loadShelf, []);
   // the shared bus answers the live transport state: the play keys wear the
   // sounding take, exactly the snapshot the shell bar renders
   useEffect(() => busSubscribe(setView), []);
+  // the riding walk retires with the surface (a poll never outlives the page)
+  useEffect(() => () => walkRef.current?.abort(), []);
   const soundingId = view?.playing ? (view.takes[view.index]?.id ?? "") : "";
 
-  /** The bench flow: each phase yields to the paint, the document assembles
+  /** The device walk: each phase yields to the paint, the document assembles
    * once, the wavs land in the blob lane and the shelf reloads after a
    * save. The one hpss pass feeds the analysis and the stored bytes both. */
-  const ingest = async (file: File): Promise<void> => {
+  const ingestDevice = async (file: File): Promise<void> => {
     setDoc(null);
     setAudio(null);
     setSaved(null);
+    setJob(null);
+    setLaneFailure(null);
+    setSourceLane("device");
     setFileName(file.name.replace(/\.[^.]+$/, ""));
     try {
       setPhase("decode");
@@ -263,6 +440,97 @@ function IngestSurface() {
     }
   };
 
+  /** The server walk landed: the stamped row renders (the same cards), the
+   * play keys stream the stored wavs through the shared bus and the shelf
+   * reloads — zero dsp on this machine, the walk did it all. */
+  const land = async (row: IngestJobValue, origin: string): Promise<void> => {
+    if (row.documentId === null) {
+      const message = "the job landed done without a document id";
+      setLaneFailure(message);
+      toast.show(labelfill("ingest.toast.laneRefused", { message }), "error");
+      return;
+    }
+    const answer = await fetchDocument(row.documentId, origin);
+    if (!answer.ok) {
+      setLaneFailure(answer.error.message);
+      toast.show(labelfill("ingest.toast.laneRefused", { message: answer.error.message }), "error");
+      return;
+    }
+    const stamped = answer.data;
+    setDoc(stamped.document);
+    setSaved("db");
+    const takes = await serverAudio(origin, stamped);
+    setAudio(takes);
+    saveReferenceTake(takes.mix);
+    toast.show(
+      labelfill("ingest.toast.serverLanded", {
+        name: stamped.name,
+        frames: String(stamped.document.segments.length),
+      }),
+      "success",
+    );
+    loadShelf();
+  };
+
+  /** The server walk: the drop posts the upload (the owner stamp of the
+   * identity seat rides the body), then the poll reads the job row until
+   * the walk lands done — the meter mirrors the server phases, the abort
+   * key retires the walk on a fresh drop or the unmount. */
+  const ingestServer = async (file: File): Promise<void> => {
+    const origin = ingestorigin();
+    setDoc(null);
+    setAudio(null);
+    setSaved(null);
+    setJob(null);
+    setPhase("idle");
+    setLaneFailure(null);
+    setSourceLane("server");
+    setFileName(file.name.replace(/\.[^.]+$/, ""));
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    const upload = await uploadIngest({
+      bytes,
+      name: file.name,
+      ownerId: ownerid(),
+      kind: "upload",
+      visibility: "private",
+      origin,
+    });
+    if (!upload.ok) {
+      setLaneFailure(upload.error.message);
+      toast.show(labelfill("ingest.toast.laneRefused", { message: upload.error.message }), "error");
+      return;
+    }
+    const controller = new AbortController();
+    walkRef.current?.abort();
+    walkRef.current = controller;
+    for (;;) {
+      if (controller.signal.aborted) return;
+      const answer = await pollJob(upload.data.jobId, origin);
+      if (!answer.ok) {
+        if (!controller.signal.aborted) {
+          setLaneFailure(answer.error.message);
+          toast.show(labelfill("ingest.toast.laneRefused", { message: answer.error.message }), "error");
+        }
+        return;
+      }
+      setJob(answer.data);
+      if (answer.data.state === "done") {
+        await land(answer.data, origin);
+        return;
+      }
+      if (answer.data.state === "failed") {
+        const message = answer.data.error ?? "the walk failed";
+        setLaneFailure(message);
+        toast.show(labelfill("ingest.toast.jobFailed", { message }), "error");
+        return;
+      }
+      await sleep(POLL_MS, controller.signal);
+    }
+  };
+
+  /** The bench dispatch: the lane key decides which walk rides. */
+  const ingest = async (file: File): Promise<void> => (lane === "device" ? ingestDevice(file) : ingestServer(file));
+
   const onInput = (event: ChangeEvent<HTMLInputElement>): void => {
     const file = event.target.files?.[0];
     if (file) void ingest(file);
@@ -274,6 +542,20 @@ function IngestSurface() {
     setDrag(false);
     const file = event.dataTransfer.files?.[0];
     if (file) void ingest(file);
+  };
+
+  /** The lane key retires the riding walk and resets the bench — the next
+   * drop rides the new lane. */
+  const onLaneToggle = (): void => {
+    walkRef.current?.abort();
+    setLane((current) => (current === "server" ? "device" : "server"));
+    setDoc(null);
+    setAudio(null);
+    setSaved(null);
+    setJob(null);
+    setPhase("idle");
+    setLaneFailure(null);
+    setFileName("");
   };
 
   const copyJson = async (): Promise<void> => {
@@ -313,8 +595,15 @@ function IngestSurface() {
   };
 
   const drop = async (id: string): Promise<void> => {
+    const origin = ingestorigin();
+    let refused: string | null = null;
+    if (origin) {
+      const answer = await deleteDocument(id, origin);
+      if (!answer.ok) refused = answer.error.message;
+    }
     await droppingest(id);
-    toast.show(label("ingest.toast.dropped"));
+    if (refused !== null) toast.show(labelfill("ingest.toast.dropRefused", { message: refused }), "error");
+    else toast.show(label("ingest.toast.dropped"));
     loadShelf();
   };
 
@@ -328,13 +617,21 @@ function IngestSurface() {
     }
   };
 
-  const phaseRow = PHASES.find((p) => p.id === phase) ?? PHASES[0];
+  const steps = lane === "server" ? serverMeter(job, laneFailure) : deviceMeter(phase);
+  const failureText =
+    job !== null && job.state === "failed"
+      ? (job.error ?? label("ingest.phase.errorDetail"))
+      : laneFailure !== null
+        ? laneFailure
+        : phase === "error"
+          ? label("ingest.phase.errorDetail")
+          : null;
   const jsonPreview = doc ? JSON.stringify(doc, null, 2) : "";
 
   return (
     <Shell>
       {/* BENCH — the dropzone stage: the noir floor, the brass light, the
-          five-phase meter the engine walks while the file decomposes */}
+          meter walks the phases of the riding lane */}
       <section className="ing-hero halftone grain" aria-labelledby="ing-h">
         <div className="hero-light breathe" aria-hidden="true" />
         <h1 id="ing-h" className="hero-h reveal">
@@ -362,23 +659,42 @@ function IngestSurface() {
           <p className="ing-drop-sub">{fileName ? fileName : label("ingest.drop.sub")}</p>
           <input ref={inputRef} type="file" accept="audio/*" hidden onChange={onInput} />
         </button>
+        {/* THE LANE ROW — the identity line (the owner stamp every upload
+            carries) beside the explicit run-on-device key: the server walk
+            is the default, the local pipeline only on the honest opt-in */}
+        <div className="ing-lane">
+          <p className="ing-lane-identity">
+            {labelfill(lane === "device" ? "ingest.identity.device" : "ingest.identity.server", {
+              owner: ownerid(),
+            })}
+          </p>
+          <span className="ing-lane-device">
+            <span className="ing-lane-device-text">{label("ingest.lane.device")}</span>
+            <label className="toggle">
+              <input
+                type="checkbox"
+                checked={lane === "device"}
+                onChange={onLaneToggle}
+                aria-label={label("ingest.lane.deviceAria")}
+              />
+              <span className="track" />
+            </label>
+          </span>
+        </div>
+        <p className="ing-lane-hint">{label("ingest.lane.deviceHint")}</p>
         <ol className="ing-meter" aria-label={label("ingest.meter.aria")}>
-          {PHASES.filter((p) => p.id !== "idle" && p.id !== "error").map((p, index) => {
-            const order = PHASES.findIndex((x) => x.id === phase);
-            const state = phase === "error" ? "idle" : p.id === phase ? "live" : index < order ? "done" : "idle";
-            return (
-              <li key={p.id} className={`ing-step is-${state}`} data-label={label(p.labelKey)}>
-                <span className="ing-step-dot" aria-hidden="true" />
-                <span className="ing-step-label">{label(p.labelKey)}</span>
-                <span className="ing-step-detail">{label(p.detailKey)}</span>
-              </li>
-            );
-          })}
-          {phase === "error" ? (
+          {steps.map((step) => (
+            <li key={step.id} className={`ing-step is-${step.state}`} data-label={label(step.labelKey)}>
+              <span className="ing-step-dot" aria-hidden="true" />
+              <span className="ing-step-label">{label(step.labelKey)}</span>
+              <span className="ing-step-detail">{label(step.detailKey)}</span>
+            </li>
+          ))}
+          {failureText !== null ? (
             <li className="ing-step is-live">
               <span className="ing-step-dot" aria-hidden="true" />
-              <span className="ing-step-label">{label(phaseRow.labelKey)}</span>
-              <span className="ing-step-detail">{label(phaseRow.detailKey)}</span>
+              <span className="ing-step-label">{label("ingest.phase.error")}</span>
+              <span className="ing-step-detail">{failureText}</span>
             </li>
           ) : null}
         </ol>
@@ -423,11 +739,11 @@ function IngestSurface() {
               />
             ))}
           </div>
-          {/* THE AUDITION — the stems the bench stored, soloed one bus lane at a
+          {/* THE AUDITION — the stems the walk stored, soloed one bus lane at a
               time: the solo key presses a stem through the shared playerbus, the
               other rides muted (the honest one-lane law — nothing fakes
               layering), and the mix key above answers the conserved sum */}
-          {audio ? (
+          {audio && audio.stems.length > 0 ? (
             <div className="ing-audition">
               <p className="ing-audition-head">
                 <MusicNote2Regular fontSize={14} aria-hidden="true" />
@@ -492,10 +808,12 @@ function IngestSurface() {
                 {soundingId === audio.mix.id ? label("ingest.action.pause") : label("ingest.action.play")}
               </button>
             ) : null}
-            <button className="btn primary" type="button" onClick={() => void save()} disabled={saving}>
-              <DataUsageRegular fontSize={15} aria-hidden="true" />
-              {saving ? label("ingest.action.storing") : label("ingest.action.store")}
-            </button>
+            {sourceLane === "device" ? (
+              <button className="btn primary" type="button" onClick={() => void save()} disabled={saving}>
+                <DataUsageRegular fontSize={15} aria-hidden="true" />
+                {saving ? label("ingest.action.storing") : label("ingest.action.store")}
+              </button>
+            ) : null}
             <button className="btn secondary" type="button" onClick={() => void copyJson()}>
               {copied ? (
                 <CheckmarkRegular fontSize={15} aria-hidden="true" />
@@ -563,6 +881,9 @@ function IngestSurface() {
             ))}
           </div>
         )}
+        {/* THE IA LANE LINE — the system reference library grows through the
+            same route with the service identity, no human in the loop */}
+        <p className="rail-foot ing-ialine">{label("ingest.shelf.iaLine")}</p>
       </section>
     </Shell>
   );
