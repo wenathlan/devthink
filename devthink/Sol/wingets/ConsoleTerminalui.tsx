@@ -148,7 +148,7 @@ function viewRows(view: WorkspaceDestination, runtime: Runtime, session: Session
       `userId ${identity.userId}`,
       `deviceId ${identity.deviceId}`,
       `browser sessions ${pairing.activeSessions}`,
-      `database cli-owned-sqlite; ${new Set(sessions.map((session) => session.workspaceId)).size} workspaces; ${sessions.length} sessions`,
+      `database ready — ${new Set(sessions.map((session) => session.workspaceId)).size} workspaces · ${sessions.length} sessions`,
       `provider ${runtime.config.activeProvider || runtime.config.provider || "not configured"}`,
       `theme ${preferences.theme || "dark"}`,
       `railMode ${preferences.railMode || "auto"}`,
@@ -158,7 +158,7 @@ function viewRows(view: WorkspaceDestination, runtime: Runtime, session: Session
       "edit: /settings set theme dark|light",
       "edit: /settings set railMode always|auto|off",
       "edit: /settings set interfaceZoom 80-150",
-      "credentials remain in ~/.config/devthink/auth.json",
+      "credentials stay on this device",
     ];
   }
   if (session) return [`workspace ${session.workspaceId}`, `session ${session.id}`, `tab ${session.activeTabId}`];
@@ -286,7 +286,7 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
     setEntries((current) => [
       ...current,
       { role: "user", title: active, body: prompt },
-      { role: "devthink", title: "connecting", body: "waiting for local gateway events..." },
+      { role: "devthink", title: "connecting", body: "listening for events..." },
     ]);
     setDraft("");
     setPending(true);
