@@ -45,6 +45,7 @@ import {
   parsePattern,
   validatePatternProject,
 } from "./patternenums.ts";
+import type { WorkerModality } from "./sandboxmodality.ts";
 import type { NoteEvent } from "./takeevents.ts";
 import { midiToHz } from "./tuning.ts";
 import { encodeWav } from "./wavwriter.ts";
@@ -73,6 +74,16 @@ export const RENDER_PHASES: readonly RenderPhase[] = ["schedule", "render", "enc
 
 /** One phase of the render pipeline. */
 export type RenderPhase = "schedule" | "render" | "encode" | "store";
+
+/** The sandbox modality this worker's walk declares (wave PV6.003): the
+ * honest default is "local" — the offline render runs in the deploy's own
+ * process and this module never spawns anything itself. the declaration
+ * is the contract the deploy reads: a deploy that opts the heavy render
+ * onto a saddle modality pins DEBONAIR_WORKER_MODALITY (one of the
+ * sandboxmodality vocabulary's saddle ids) and the platform resolves the
+ * sandbox — this file only names the lane's truth (opt-in per deploy,
+ * never a silent switch). */
+export const RENDER_WORKER_MODALITY: WorkerModality = "local";
 
 // ---------------------------------------------------------------------------
 // the blob store seam (the store wave's contract, structural)

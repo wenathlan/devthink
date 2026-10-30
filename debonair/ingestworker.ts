@@ -27,6 +27,7 @@ import { sha256hex } from "./blobstore.ts";
 import { separate } from "./hpss.ts";
 import type { IngestDocument } from "./ingest.ts";
 import { ingestPcm } from "./ingest.ts";
+import type { WorkerModality } from "./sandboxmodality.ts";
 import type { WavBitDepth, WavFormatRow } from "./wavwriter.ts";
 import {
   CHANNELS_MAX,
@@ -44,6 +45,16 @@ export const INGEST_STEMS_SCHEMA_VERSION = "debonair.ingeststems/1";
 /** The pipeline phases in the law order (the bench, the job route and the
  * worker speak the same names); the row phase rides only the db lane. */
 export const PIPELINE_PHASES: readonly IngestJobPhase[] = ["decode", "separate", "analyze", "segment", "store", "row"];
+
+/** The sandbox modality this worker's walk declares (wave PV6.003): the
+ * honest default is "local" — the walk runs in the deploy's own process
+ * and this module never spawns anything itself. the declaration is the
+ * contract the deploy reads: a deploy that opts the heavy jobs onto a
+ * saddle modality pins DEBONAIR_WORKER_MODALITY (one of the
+ * sandboxmodality vocabulary's saddle ids) and the platform resolves the
+ * sandbox — this file only names the lane's truth (opt-in per deploy,
+ * never a silent switch). */
+export const INGEST_WORKER_MODALITY: WorkerModality = "local";
 
 /** The blob kind of the encoded wavs (the mime the playback lane streams). */
 const WAV_KIND = "audio/wav";

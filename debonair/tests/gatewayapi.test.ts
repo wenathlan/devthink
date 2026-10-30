@@ -16,7 +16,10 @@
 // lands the track row private with the wav in the store, the publish
 // moves it onto the vitrine under the owner law — the private stays
 // private, the vitrine list serves the published takes beside the
-// vitrine references, the blob route streams the landed wav) and the
+// vitrine references, the blob route streams the landed wav) — beside
+// the generate lane's own four spellings the automation seats ride (the
+// render queue, the job poll, the publish by id and the vitrine surface
+// under the merged seventeen-route table) — and the
 // ledger row functions round trip with the parameterization audit (no
 // interpolated sql ever rides the db module). runnable with vitest:
 // pnpm vitest run tests/gatewayapi.test.ts
@@ -489,7 +492,7 @@ describe("the route table and the matcher", () => {
   });
   afterAll(() => database.close());
 
-  it("carries the thirteen routes of the law in the family shape", () => {
+  it("carries the seventeen routes of the law in the family shape (the thirteen + the generate lane's four spellings)", () => {
     assert.deepEqual(routes, [
       { method: "POST", path: "/api/v1/ingest/upload", handler: "uploadIngest" },
       { method: "GET", path: "/api/v1/ingest/jobs/:id", handler: "getIngestJob" },
@@ -504,6 +507,10 @@ describe("the route table and the matcher", () => {
       { method: "GET", path: "/api/v1/render/jobs/:id", handler: "getRenderJob" },
       { method: "POST", path: "/api/v1/tracks", handler: "publishTrack" },
       { method: "GET", path: "/api/v1/tracks", handler: "listTracks" },
+      { method: "POST", path: "/api/v1/generate/render", handler: "queueGenerateRender" },
+      { method: "GET", path: "/api/v1/generate/jobs/:id", handler: "getGenerateJob" },
+      { method: "POST", path: "/api/v1/tracks/:id/publish", handler: "publishTrackById" },
+      { method: "GET", path: "/api/v1/vitrine", handler: "listVitrine" },
     ]);
   });
 
@@ -522,6 +529,10 @@ describe("the route table and the matcher", () => {
       ["GET", "/api/v1/render/jobs/9", "getRenderJob"],
       ["POST", "/api/v1/tracks", "publishTrack"],
       ["GET", "/api/v1/tracks", "listTracks"],
+      ["POST", "/api/v1/generate/render", "queueGenerateRender"],
+      ["GET", "/api/v1/generate/jobs/9", "getGenerateJob"],
+      ["POST", "/api/v1/tracks/9/publish", "publishTrackById"],
+      ["GET", "/api/v1/vitrine", "listVitrine"],
     ];
     for (const [method, pathname, handler] of exact) {
       const verdict = matchroute(method, pathname);

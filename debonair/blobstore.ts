@@ -8,18 +8,25 @@
 // bytes — never trusted from the outside — through the fips 180-4 rounds
 // hand-rolled in pure typescript the same discipline the fnv-1a pcmhash
 // rides (deterministic, synchronous, zero dependencies), and the kind is
-// the bare mime the caller declares ("audio/wav"). three backends answer
+// the bare mime the caller declares ("audio/wav"). four backends answer
 // the one interface: the memory mirror (byte-capped, oldest evicted, the
 // offline seat and the test lane), the file lane (a root directory, the
 // git-lfs object shard layout — the first two hex of the digest name the
 // subdirectory — one json manifest row per blob, atomic temp+rename
 // writes, node:fs through dynamic import so the browser bundle never
-// loads it) and the gateway seam (an injected fetch talking
+// loads it), the gateway seam (an injected fetch talking
 // GET/PUT/DELETE /api/v1/blob/:id to a configured origin under the house
-// https law, typed errors, never a throw). every backend answers the same
-// manifest row shape (schema "debonair.blob/1") so the ingest db rows and
-// the git-lfs pointers stay interchangeable — the vault law: the storage
-// app owns the engine, the gateway serves it. zero consumer data.
+// https law, typed errors, never a throw) and the vault lane (wave
+// PV6.002 — the family storage engine behind one injectable seam: the
+// bytes land content-addressed at the git-lfs shard paths the vault owns,
+// the manifest rows land beside them, and the pointers resolve through
+// the vault object store when the engine is configured). the backend
+// decision seat (resolveblobstore + blobseatfromenv) answers which lane
+// holds the blobs — memory, file, gateway or vault, the deploy decides,
+// zero hardcode. every backend answers the same manifest row shape
+// (schema "debonair.blob/1") so the ingest db rows and the git-lfs
+// pointers stay interchangeable — the vault law: the storage app owns
+// the engine, the gateway serves it. zero consumer data.
 
 import { mintid } from "./bigintids.ts";
 import { hostallowed } from "./onboardingstate.ts";
@@ -853,4 +860,718 @@ export class GatewayBlobStore implements BlobStore {
  */
 export function gatewayblobstore(origin: string, options: GatewayBlobOptions = {}): GatewayBlobStore {
   return new GatewayBlobStore(origin, options);
+}
+
+/** @section vault — the vault engine lane (wave PV6.002) */
+
+/** The route paths of the vault storage surface (the family storage app's
+ * own catalog — the debonair pointers resolve through these routes when
+ * the vault engine is configured). */
+const VAULT_OBJECTS_PATH = "/api/v1/storage/objects";
+
+/** The header the vault project scope rides on the deposit. */
+const VAULT_PROJECT_HEADER = "x-project-id";
+
+/** The header the object path rides on the deposit (url-encoded — the
+ * vault side decodes it back through its own safe decode). */
+const VAULT_PATH_HEADER = "x-object-path";
+
+/** The header the object mime rides on the deposit. */
+const VAULT_MIME_HEADER = "x-object-mime";
+
+/** The headers the verified read answers (the digest, the size, the path,
+ * the verified flag — the vault's own surface contract). */
+const VAULT_DIGEST_HEADER = "x-object-digest";
+const VAULT_SIZE_HEADER = "x-object-size";
+const VAULT_PATH_ANSWER_HEADER = "x-object-path";
+const VAULT_VERIFIED_HEADER = "x-object-verified";
+
+/** The vault bearer headers the lane sends (the faun lesson: the storage
+ * truth demands the token the operator pinned). */
+const VAULT_TOKEN_HEADER = "x-vault-token";
+
+/** The namespace prefix every debonair blob rides inside the vault project
+ * (the git-lfs shard layout underneath: objects/<first two hex>/<remaining
+ * 62> — the same law the file lane rides on disk). */
+const VAULT_BLOB_PREFIX = "debonair";
+
+/** The default project scope of the vault lane (the owner scope the vault
+ * quota gates — the deploy overrides it through the options). */
+const VAULT_BLOB_PROJECT = "debonair";
+
+/** One vault object row — the json projection the vault list route answers
+ * (bigint pointers ride decimal strings on the wire, the same law the
+ * family storage speaks). */
+export interface VaultObjectRow {
+  /** The ledger-issued identity of the object (the vault's own id). */
+  id: string;
+  /** The owning project scope. */
+  projectId: string;
+  /** The absolute path the object answers at. */
+  path: string;
+  /** The content type the object serves as. */
+  mime: string;
+  /** The byte size (the decimal string form). */
+  size: string;
+  /** The whole-object sha-256 hex digest. */
+  digest: string;
+  /** The channel the object rode (lfs for the binary masters — the audio
+   * wavs always ride lfs, the storage contract decides). */
+  channel: "lfs" | "blob";
+  /** The storage tier the object rides. */
+  tier: string;
+  /** The creation datetime of the row. */
+  createdAt: string;
+}
+
+/** One verified read of the vault lane — the bytes beside the facts the
+ * vault's own read route answers (the digest, the size, the path, the
+ * verified flag). */
+export interface VaultReadFacts {
+  /** The absolute path the bytes answered at. */
+  path: string;
+  /** The content type the bytes answered as. */
+  mime: string;
+  /** The byte count (the header form, -1 when silent). */
+  size: number;
+  /** The digest the vault answered (empty when silent). */
+  digest: string;
+  /** Whether the vault re-digested the bytes and they matched. */
+  verified: boolean;
+}
+
+/** The typed answer of one vault seam call — never a throw (the machine
+ * code rides the vault's own catalog: VAULT_QUOTA, VAULT_ABSENT,
+ * VAULT_CORRUPT, VAULT_AUTH, the wire codes of the lane). */
+export type VaultSeamAnswer<T> =
+  | { ok: true; value: T }
+  | { ok: false; code: string; message: string; status: number | null };
+
+/** The vault storage seam — the vault engine's object api behind one
+ * injectable interface (the http binding below rides fetch against the
+ * vault surface; the tests bind a double — the same injectable discipline
+ * every backend seam of this store rides). The shapes mirror the vault
+ * routes verbatim: the deposit (the raw bytes with the path and the mime),
+ * the verified read, the soft delete and the project listing. */
+export interface VaultStorageSeam {
+  /** Deposits bytes at one path of one project (content reuse by path —
+   * the vault answers the sealed row and whether it reused the chunks). */
+  putObject(input: {
+    projectId: string;
+    path: string;
+    mime: string;
+    bytes: Uint8Array<ArrayBuffer>;
+  }): Promise<VaultSeamAnswer<{ object: VaultObjectRow; reused: boolean }>>;
+  /** Answers the verified bytes of one object id (the vault re-digests on
+   * the read — one moved byte answers corrupt, never a shrug). */
+  getObject(id: string): Promise<VaultSeamAnswer<{ id: string; facts: VaultReadFacts; bytes: Uint8Array }>>;
+  /** Soft-deletes one object row (the refcount detach rides the vault's
+   * own sweep law). */
+  deleteObject(id: string): Promise<VaultSeamAnswer<{ removed: boolean; id: string }>>;
+  /** Lists every object row of one project, newest first. */
+  listObjects(projectId: string): Promise<VaultSeamAnswer<VaultObjectRow[]>>;
+}
+
+/** The options of the http vault seam binding. */
+export interface VaultSeamOptions {
+  /** The vault token the operator pinned (the faun lesson — the storage
+   * truth demands the bearer; an absent token rides the lane unsealed and
+   * the vault refuses honestly). */
+  token?: string;
+  /** The fetch seam (the tests inject a double; the default is the host fetch). */
+  fetchImpl?: typeof fetch;
+  /** The abort window of every lane call (default the blob law's 30 s). */
+  timeoutMs?: number;
+}
+
+/** The readable message of any thrown failure. */
+function vaultmsg(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+/** Parses the json body of one vault answer, translating the standardized
+ * { error: { code, message } } shape the vault surface speaks. */
+async function vaultbody(response: Response): Promise<{ code: string; message: string }> {
+  try {
+    const parsed: unknown = await response.json();
+    if (typeof parsed === "object" && parsed !== null) {
+      const error = (parsed as Record<string, unknown>).error;
+      if (typeof error === "object" && error !== null) {
+        const record = error as Record<string, unknown>;
+        const code = typeof record.code === "string" ? record.code : "VAULT_FAULT";
+        const message = typeof record.message === "string" ? record.message : "the vault refused the call";
+        return { code, message };
+      }
+    }
+  } catch {
+    // a body that fails the parse keeps the status lane
+  }
+  return { code: "VAULT_FAULT", message: `the vault answered ${response.status}` };
+}
+
+/**
+ * The http binding of the vault storage seam — an injected fetch talking
+ * the vault object surface of a configured origin under the house https
+ * law: the deposit posts the raw bytes with the project, path and mime
+ * headers, the read answers the verified bytes with the digest headers,
+ * the delete soft-drops the row and the list answers the project rows.
+ * Every failure answers the typed branch — never a throw.
+ *
+ * @param origin the configured vault origin (https, a public host).
+ * @param options the token, the fetch seam and the abort window.
+ * @returns the vault storage seam.
+ */
+export function vaultclientseam(origin: string, options: VaultSeamOptions = {}): VaultStorageSeam {
+  const base = origin.trim().replace(/\/+$/, "");
+  const fetchImpl = options.fetchImpl ?? globalThis.fetch;
+  const token = options.token ?? "";
+  const timeoutMs = options.timeoutMs ?? BLOB_GATEWAY_TIMEOUT_MS;
+  const headers: Record<string, string> = { [VAULT_TOKEN_HEADER]: token };
+  if (token.length > 0) headers.authorization = `Bearer ${token}`;
+
+  /** One lane call: the https law, the abort window, the typed translation. */
+  async function call(
+    method: string,
+    path: string,
+    init: { headers?: Record<string, string>; body?: Uint8Array<ArrayBuffer> } = {},
+  ): Promise<{ ok: true; response: Response } | { ok: false; code: string; message: string; status: number | null }> {
+    if (!hostallowed(base)) {
+      return {
+        ok: false,
+        code: "VAULT_LANE",
+        message: "the configured vault origin refuses the house https law",
+        status: null,
+      };
+    }
+    if (typeof fetchImpl !== "function") {
+      return { ok: false, code: "VAULT_LANE", message: "no fetch seam on this host", status: null };
+    }
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const response = await fetchImpl(`${base}${path}`, {
+        method,
+        headers: { ...headers, ...init.headers },
+        body: init.body,
+        signal: controller.signal,
+      });
+      return { ok: true, response };
+    } catch (error) {
+      const aborted = error instanceof DOMException && error.name === "AbortError";
+      return {
+        ok: false,
+        code: aborted ? "VAULT_TIMEOUT" : "VAULT_LANE",
+        message: aborted
+          ? `the vault kept silent past ${timeoutMs} ms`
+          : `the vault is unreachable: ${vaultmsg(error)}`,
+        status: null,
+      };
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  /** The typed refusal of a non-2xx answer (the standardized vault shape). */
+  async function refused(
+    response: Response,
+  ): Promise<{ ok: false; code: string; message: string; status: number | null }> {
+    const body = await vaultbody(response);
+    return { ok: false, code: body.code, message: body.message, status: response.status };
+  }
+
+  /** Parses one vault object row off the list wire. */
+  function rowof(parsed: unknown): VaultObjectRow | null {
+    if (typeof parsed !== "object" || parsed === null) return null;
+    const row = parsed as Record<string, unknown>;
+    if (typeof row.id !== "string" || row.id.length === 0) return null;
+    if (typeof row.projectId !== "string" || typeof row.path !== "string") return null;
+    if (typeof row.mime !== "string" || typeof row.size !== "string") return null;
+    if (typeof row.digest !== "string" || typeof row.createdAt !== "string") return null;
+    const channel = row.channel === "lfs" || row.channel === "blob" ? row.channel : "blob";
+    return {
+      id: row.id,
+      projectId: row.projectId,
+      path: row.path,
+      mime: row.mime,
+      size: row.size,
+      digest: row.digest,
+      channel,
+      tier: typeof row.tier === "string" ? row.tier : "",
+      createdAt: row.createdAt,
+    };
+  }
+
+  return {
+    async putObject(input) {
+      const callanswer = await call("POST", VAULT_OBJECTS_PATH, {
+        headers: {
+          [VAULT_PROJECT_HEADER]: input.projectId,
+          [VAULT_PATH_HEADER]: encodeURIComponent(input.path),
+          [VAULT_MIME_HEADER]: input.mime,
+        },
+        body: input.bytes,
+      });
+      if (!callanswer.ok) return callanswer;
+      const response = callanswer.response;
+      if (!response.ok) return refused(response);
+      try {
+        const parsed: unknown = await response.json();
+        if (typeof parsed !== "object" || parsed === null) throw new Error("no json");
+        const record = parsed as Record<string, unknown>;
+        const row = rowof(record.object);
+        if (row === null) throw new Error("no object row");
+        return { ok: true, value: { object: row, reused: record.reused === true } };
+      } catch (error) {
+        return {
+          ok: false,
+          code: "VAULT_FAULT",
+          message: `the vault deposit answered a foreign shape: ${vaultmsg(error)}`,
+          status: response.status,
+        };
+      }
+    },
+    async getObject(id) {
+      const callanswer = await call("GET", `${VAULT_OBJECTS_PATH}/${encodeURIComponent(id)}`);
+      if (!callanswer.ok) return callanswer;
+      const response = callanswer.response;
+      if (!response.ok) return refused(response);
+      try {
+        const bytes = new Uint8Array(await response.arrayBuffer());
+        const rawsize = response.headers.get(VAULT_SIZE_HEADER);
+        const facts: VaultReadFacts = {
+          path: response.headers.get(VAULT_PATH_ANSWER_HEADER) ?? "",
+          mime: (response.headers.get("content-type") ?? "").split(";")[0].trim(),
+          size: rawsize !== null && /^\d+$/.test(rawsize) ? Number(rawsize) : bytes.byteLength,
+          digest: response.headers.get(VAULT_DIGEST_HEADER) ?? "",
+          verified: response.headers.get(VAULT_VERIFIED_HEADER) === "true",
+        };
+        return { ok: true, value: { id, facts, bytes } };
+      } catch (error) {
+        return {
+          ok: false,
+          code: "VAULT_FAULT",
+          message: `the vault body failed to arrive: ${vaultmsg(error)}`,
+          status: response.status,
+        };
+      }
+    },
+    async deleteObject(id) {
+      const callanswer = await call("DELETE", `${VAULT_OBJECTS_PATH}/${encodeURIComponent(id)}`);
+      if (!callanswer.ok) return callanswer;
+      const response = callanswer.response;
+      if (!response.ok) return refused(response);
+      try {
+        const parsed: unknown = await response.json();
+        if (typeof parsed === "object" && parsed !== null) {
+          const record = parsed as Record<string, unknown>;
+          if (record.removed === true && typeof record.id === "string") {
+            return { ok: true, value: { removed: true, id: record.id } };
+          }
+        }
+      } catch {
+        // a 204 carries no body — the ack stands on the status alone
+      }
+      return { ok: true, value: { removed: true, id } };
+    },
+    async listObjects(projectId) {
+      const callanswer = await call("GET", `${VAULT_OBJECTS_PATH}?project=${encodeURIComponent(projectId)}`);
+      if (!callanswer.ok) return callanswer;
+      const response = callanswer.response;
+      if (!response.ok) return refused(response);
+      try {
+        const parsed: unknown = await response.json();
+        if (typeof parsed !== "object" || parsed === null) throw new Error("no json");
+        const objects = (parsed as Record<string, unknown>).objects;
+        if (!Array.isArray(objects)) throw new Error("no objects array");
+        const rows: VaultObjectRow[] = [];
+        for (const entry of objects) {
+          const row = rowof(entry);
+          if (row !== null) rows.push(row);
+        }
+        return { ok: true, value: rows };
+      } catch (error) {
+        return {
+          ok: false,
+          code: "VAULT_FAULT",
+          message: `the vault list answered a foreign shape: ${vaultmsg(error)}`,
+          status: response.status,
+        };
+      }
+    },
+  };
+}
+
+/** The vault lane options. */
+export interface VaultBlobOptions {
+  /** The project scope every deposit rides (default "debonair" — the
+   * vault quota gates the scope). */
+  projectId?: string;
+  /** The byte ceiling of the lane (default 512 mb — generous). */
+  capBytes?: number;
+  /** The clock the client-side mint rides. */
+  now?: () => number;
+}
+
+/** The resolved vault ids of one stored blob — the manifest row id and the
+ * bytes object id the vault minted (cached in the store instance so the
+ * reads skip the path resolution round trip; a fresh process resolves
+ * them again through the project listing — the paths are the truth). */
+interface VaultIds {
+  rowId: string;
+  bytesId: string;
+}
+
+/** Parses one manifest row off the vault bytes (null when the json fails
+ * the parse or the shape guard — a foreign row never blocks the lane). */
+function parsemanifest(bytes: Uint8Array): BlobManifestRow | null {
+  try {
+    const parsed: unknown = JSON.parse(new TextDecoder().decode(bytes));
+    return blobrowvalid(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The vault lane — the family storage backend (wave PV6.002): the pointers
+ * resolve through the vault object store when the engine is configured.
+ * The bytes land content-addressed at /debonair/objects/<first two
+ * hex>/<remaining 62> (the git-lfs shard law, the same layout the file
+ * lane rides on disk and the lfs pointer text names) and the manifest row
+ * (schema debonair.blob/1 — the minted id, the digest, the byte count,
+ * the kind) lands at /debonair/manifests/<id>.json, so a debonair
+ * pointer exports to a git-lfs pointer file verbatim and the vault owns
+ * the bytes (the sha-256 the vault computes is the digest the pointer
+ * carries — the store never trusts a digest it did not verify). every
+ * call answers the typed result — never a throw.
+ */
+export class VaultBlobStore implements BlobStore {
+  private readonly seam: VaultStorageSeam;
+  private readonly project: string;
+  private readonly cap: number;
+  private readonly now: () => number;
+  private readonly ids = new Map<string, VaultIds>();
+  private closed = false;
+
+  constructor(seam: VaultStorageSeam, options: VaultBlobOptions = {}) {
+    this.seam = seam;
+    this.project = options.projectId ?? VAULT_BLOB_PROJECT;
+    this.cap = options.capBytes ?? BLOB_DEFAULT_CAP_BYTES;
+    this.now = options.now ?? Date.now;
+  }
+
+  /** The git-lfs shard path of one digest (the first two hex name the
+   * shard — the same law the file lane rides). */
+  private objectpath(sha256: string): string {
+    return `/${VAULT_BLOB_PREFIX}/objects/${sha256.slice(0, BLOB_SHARD_CHARS)}/${sha256.slice(BLOB_SHARD_CHARS)}`;
+  }
+
+  /** The manifest path of one minted pointer id. */
+  private manifestpath(id: string): string {
+    return `/${VAULT_BLOB_PREFIX}/manifests/${id}.json`;
+  }
+
+  /** Maps a seam refusal onto the store's machine codes (the vault's own
+   * catalog rides the message — the code lane stays ours). */
+  private seamerr(answer: { code: string; message: string; status: number | null }): BlobResult {
+    if (answer.code === "VAULT_ABSENT") return storeerr("not-found", answer.message, answer.status);
+    if (answer.code === "VAULT_QUOTA") return storeerr("too-large", answer.message, answer.status);
+    if (answer.code === "VAULT_TIMEOUT") return storeerr("timeout", answer.message, answer.status);
+    if (answer.code === "VAULT_LANE") return storeerr("offline", answer.message, answer.status);
+    if (answer.code === "VAULT_AUTH") return storeerr("refused", answer.message, answer.status);
+    return storeerr("refused", `${answer.code}: ${answer.message}`, answer.status);
+  }
+
+  /** Resolves the vault ids of one stored blob through the project
+   * listing (the paths are the truth — the manifest path names the
+   * pointer id, the object path names the digest). a cached entry with
+   * the bytes id already resolved answers without a listing; a cache
+   * miss (or a digest the cache does not carry) walks the listing. */
+  private async resolve(id: string, sha256: string | null): Promise<VaultIds | null> {
+    const cached = this.ids.get(id);
+    if (cached !== undefined && (sha256 === null || cached.bytesId.length > 0)) return cached;
+    const list = await this.seam.listObjects(this.project);
+    if (!list.ok) throw new Error(`${list.code}: ${list.message}`);
+    let rowId: string | null = cached?.rowId ?? null;
+    let bytesId: string | null = cached?.bytesId ?? null;
+    for (const row of list.value) {
+      if (row.path === this.manifestpath(id)) rowId = row.id;
+      else if (sha256 !== null && row.path === this.objectpath(sha256)) bytesId = row.id;
+    }
+    if (rowId === null) return null;
+    const resolved: VaultIds = { rowId, bytesId: bytesId ?? "" };
+    this.ids.set(id, resolved);
+    return resolved;
+  }
+
+  async put(data: Uint8Array, kind: string): Promise<BlobResult> {
+    if (this.closed) return storeerr("store-closed", "the vault lane is closed");
+    if (!blobkindvalid(kind)) return storeerr("bad-kind", "the declared kind is not a bare mime");
+    if (data.length > this.cap) {
+      return storeerr("too-large", `the ${data.length} bytes exceed the ${this.cap} byte lane cap`);
+    }
+    const owned = new Uint8Array(data);
+    const sha256 = sha256hex(owned);
+    const pointer = mintpointer(this.now(), owned.length, sha256, kind);
+    // the bytes land first, the manifest row second — a crash between the
+    // two leaves an invisible orphan, never a row that points at missing
+    // bytes (the same law the file lane rides)
+    const deposit = await this.seam.putObject({
+      projectId: this.project,
+      path: this.objectpath(sha256),
+      mime: kind,
+      bytes: owned,
+    });
+    if (!deposit.ok) return this.seamerr(deposit);
+    if (deposit.value.object.digest !== sha256) {
+      return storeerr(
+        "bad-response",
+        "the vault answered a digest this store did not compute — the pointer refuses to ride it",
+        null,
+      );
+    }
+    const row: BlobManifestRow = { schema: BLOB_SCHEMA_VERSION, pointer };
+    const manifest = await this.seam.putObject({
+      projectId: this.project,
+      path: this.manifestpath(pointer.id),
+      mime: "application/json",
+      bytes: manifestencoder.encode(JSON.stringify(row)),
+    });
+    if (!manifest.ok) return this.seamerr(manifest);
+    this.ids.set(pointer.id, { rowId: manifest.value.object.id, bytesId: deposit.value.object.id });
+    return storeok(pointer, null);
+  }
+
+  async get(id: string): Promise<BlobResult> {
+    if (this.closed) return storeerr("store-closed", "the vault lane is closed");
+    if (!blobidvalid(id)) return storeerr("bad-id", "the id is not a minted pointer");
+    let ids: VaultIds | null;
+    try {
+      ids = await this.resolve(id, null);
+    } catch {
+      return storeerr("offline", "the vault listing refused the resolution");
+    }
+    if (ids === null) return storeerr("not-found", `no blob answers ${id}`);
+    const manifestread = await this.seam.getObject(ids.rowId);
+    if (!manifestread.ok) return this.seamerr(manifestread);
+    const row = parsemanifest(manifestread.value.bytes);
+    if (row === null || row.pointer.id !== id) {
+      return storeerr("bad-response", `the vault answered a foreign manifest for ${id}`);
+    }
+    // the digest the pointer carries is the truth — the bytes must answer it
+    const bytesId =
+      ids.bytesId.length > 0 ? ids.bytesId : ((await this.resolve(id, row.pointer.sha256))?.bytesId ?? "");
+    if (bytesId.length === 0) return storeerr("not-found", `the bytes of ${id} are missing from the vault`);
+    const read = await this.seam.getObject(bytesId);
+    if (!read.ok) return this.seamerr(read);
+    if (sha256hex(read.value.bytes) !== row.pointer.sha256 || read.value.bytes.byteLength !== row.pointer.bytes) {
+      return storeerr("bad-response", `the bytes of ${id} fail the pointer digest`);
+    }
+    const resolved: VaultIds = { rowId: ids.rowId, bytesId };
+    this.ids.set(id, resolved);
+    return storeok(row.pointer, read.value.bytes);
+  }
+
+  async remove(id: string): Promise<BlobResult> {
+    if (this.closed) return storeerr("store-closed", "the vault lane is closed");
+    if (!blobidvalid(id)) return storeerr("bad-id", "the id is not a minted pointer");
+    let ids: VaultIds | null;
+    try {
+      ids = await this.resolve(id, null);
+    } catch {
+      return storeerr("offline", "the vault listing refused the resolution");
+    }
+    if (ids === null) return storeerr("not-found", `no blob answers ${id}`);
+    const manifestread = await this.seam.getObject(ids.rowId);
+    if (!manifestread.ok) return this.seamerr(manifestread);
+    const row = parsemanifest(manifestread.value.bytes);
+    if (row === null || row.pointer.id !== id) {
+      return storeerr("bad-response", `the vault answered a foreign manifest for ${id}`);
+    }
+    const pointer = row.pointer;
+    // the manifest drops first, the bytes second — a hostile vault never
+    // blocks the removal (the row is already gone on the debonair side)
+    const rowdrop = await this.seam.deleteObject(ids.rowId);
+    if (!rowdrop.ok) return this.seamerr(rowdrop);
+    if (ids.bytesId.length > 0) {
+      await this.seam.deleteObject(ids.bytesId).catch(() => {
+        // the orphan bytes fold away with the vault's own sweep
+      });
+    }
+    this.ids.delete(id);
+    return storeok(pointer, null);
+  }
+
+  async list(): Promise<BlobPointer[]> {
+    if (this.closed) return [];
+    const list = await this.seam.listObjects(this.project);
+    if (!list.ok) return [];
+    const prefixes = `/${VAULT_BLOB_PREFIX}/manifests/`;
+    const pointers: BlobPointer[] = [];
+    for (const standing of list.value) {
+      if (!standing.path.startsWith(prefixes) || !standing.path.endsWith(".json")) continue;
+      const id = standing.path.slice(prefixes.length, -".json".length);
+      if (!blobidvalid(id)) continue;
+      // a row that fails the resolution or the parse never blocks the shelf
+      const resolved = await this.resolve(id, null).catch(() => null);
+      if (resolved === null) continue;
+      const held = await this.seam.getObject(resolved.rowId);
+      if (!held.ok) continue;
+      const row = parsemanifest(held.value.bytes);
+      if (row !== null) pointers.push(row.pointer);
+    }
+    return sortnewest(pointers);
+  }
+
+  close(): void {
+    this.closed = true;
+    this.ids.clear();
+  }
+}
+
+/**
+ * The vault lane factory (the lowercase seam the family law names).
+ *
+ * @param seam the vault storage seam (the http binding or a test double).
+ * @param options the project scope, the cap and the clock.
+ * @returns the vault blob store.
+ */
+export function vaultblobstore(seam: VaultStorageSeam, options: VaultBlobOptions = {}): VaultBlobStore {
+  return new VaultBlobStore(seam, options);
+}
+
+/** @section seat — the backend decision seat (memory, file, gateway, vault) */
+
+/** The backend names the config seat answers — the deploy decides which
+ * one holds the blobs (zero hardcode: the option/db seat carries the
+ * name, the resolver answers the backend). */
+export type BlobBackendName = "memory" | "file" | "gateway" | "vault";
+
+/** The option seat — the configured backend and the facts each lane needs
+ * (the file lane's root, the gateway lane's origin, the vault lane's
+ * seam and project scope). Every field is optional; the resolver names
+ * the honest refusal when a lane's fact is missing. */
+export interface BlobSeatOptions {
+  /** The backend the deploy pins (the memory mirror answers when the seat
+   * carries none — the offline default, never a silent lie). */
+  backend?: string;
+  /** The root directory of the file lane. */
+  root?: string;
+  /** The gateway origin of the gateway lane (https, a public host). */
+  origin?: string;
+  /** The vault storage seam of the vault lane (the http binding or a
+   * bespoke double the deploy wires). */
+  vault?: VaultStorageSeam;
+  /** The project scope of the vault lane. */
+  projectId?: string;
+  /** The byte ceiling every lane shares. */
+  capBytes?: number;
+  /** The clock the client-side mints ride. */
+  now?: () => number;
+  /** The fetch seam the wire lanes share. */
+  fetchImpl?: typeof fetch;
+  /** The abort window of the wire lanes. */
+  timeoutMs?: number;
+}
+
+/** The typed answer of the seat resolver — the store beside the backend
+ * name that answered, or the honest refusal of a lane whose fact is
+ * missing (never a silent fallback: a deploy that names the file lane
+ * without a root learns it, it does not land in memory). */
+export type BlobSeatResult =
+  | { ok: true; store: BlobStore; backend: BlobBackendName }
+  | { ok: false; code: "bad-backend" | "missing-root" | "missing-origin" | "missing-vault"; message: string };
+
+/** The backend names the seat knows (the vocabulary of the decision). */
+export const BLOB_BACKEND_NAMES: readonly BlobBackendName[] = ["memory", "file", "gateway", "vault"];
+
+/**
+ * Resolves the blob store the configuration names — the deploy decides
+ * which backend answers: the memory mirror (the offline seat and the
+ * test lane), the file lane (a root directory, the git-lfs shard
+ * layout), the gateway seam (an origin under the house https law) or
+ * the vault lane (the family storage engine, the git-lfs friendly
+ * shapes). A backend name off the vocabulary answers the typed refusal;
+ * a lane whose fact is missing answers its own refusal — never a silent
+ * fallback, never a hardcode.
+ *
+ * @param options the option seat (the backend name and the lane facts).
+ * @returns the store beside its backend name, or the typed refusal.
+ */
+export function resolveblobstore(options: BlobSeatOptions = {}): BlobSeatResult {
+  const name = (options.backend ?? "memory").trim().toLowerCase();
+  if (!BLOB_BACKEND_NAMES.includes(name as BlobBackendName)) {
+    return {
+      ok: false,
+      code: "bad-backend",
+      message: `the backend "${options.backend}" is off the vocabulary (${BLOB_BACKEND_NAMES.join(", ")})`,
+    };
+  }
+  const shared = { capBytes: options.capBytes, now: options.now };
+  if (name === "memory") return { ok: true, store: memoryblobstore(shared), backend: "memory" };
+  if (name === "file") {
+    const root = (options.root ?? "").trim();
+    if (root.length === 0) {
+      return { ok: false, code: "missing-root", message: "the file lane needs the root directory in the seat" };
+    }
+    return { ok: true, store: fileblobstore(root, shared), backend: "file" };
+  }
+  if (name === "gateway") {
+    const origin = (options.origin ?? "").trim();
+    if (origin.length === 0) {
+      return { ok: false, code: "missing-origin", message: "the gateway lane needs the origin in the seat" };
+    }
+    return {
+      ok: true,
+      store: gatewayblobstore(origin, { ...shared, fetchImpl: options.fetchImpl, timeoutMs: options.timeoutMs }),
+      backend: "gateway",
+    };
+  }
+  if (options.vault === undefined) {
+    return { ok: false, code: "missing-vault", message: "the vault lane needs the storage seam in the seat" };
+  }
+  return {
+    ok: true,
+    store: vaultblobstore(options.vault, { projectId: options.projectId, ...shared }),
+    backend: "vault",
+  };
+}
+
+/** The environment names the option seat reads (the deploy law — every
+ * name documented in the env example, zero hardcode). */
+export const BLOB_BACKEND_ENV = "DEBONAIR_BLOB_BACKEND";
+export const BLOB_ROOT_ENV = "DEBONAIR_BLOB_ROOT";
+export const BLOB_ORIGIN_ENV = "DEBONAIR_URL";
+export const VAULT_ORIGIN_ENV = "DEBONAIR_VAULT_URL";
+export const VAULT_TOKEN_ENV = "VAULT_TOKEN";
+export const VAULT_PROJECT_ENV = "DEBONAIR_VAULT_PROJECT";
+
+/**
+ * Reads the option seat off one environment lookup (the deploy pins the
+ * backend through DEBONAIR_BLOB_BACKEND; the file lane root through
+ * DEBONAIR_BLOB_ROOT; the gateway origin through DEBONAIR_URL; the vault
+ * lane through DEBONAIR_VAULT_URL with the VAULT_TOKEN bearer and the
+ * DEBONAIR_VAULT_PROJECT scope). The lookup is injected so the server
+ * lane hands process.env and the browser lane hands import.meta.env —
+ * this module never learns the difference. The answer feeds
+ * resolveblobstore; nothing here fetches or mints.
+ *
+ * @param getenv the environment lookup.
+ * @returns the option seat.
+ */
+export function blobseatfromenv(getenv: (name: string) => string | undefined): BlobSeatOptions {
+  const options: BlobSeatOptions = {};
+  const backend = getenv(BLOB_BACKEND_ENV);
+  if (backend !== undefined && backend.trim().length > 0) options.backend = backend.trim();
+  const root = getenv(BLOB_ROOT_ENV);
+  if (root !== undefined && root.trim().length > 0) options.root = root.trim();
+  const origin = getenv(BLOB_ORIGIN_ENV);
+  if (origin !== undefined && origin.trim().length > 0) options.origin = origin.trim();
+  const vaultorigin = getenv(VAULT_ORIGIN_ENV);
+  if (vaultorigin !== undefined && vaultorigin.trim().length > 0) {
+    options.vault = vaultclientseam(vaultorigin.trim(), { token: getenv(VAULT_TOKEN_ENV) ?? "" });
+  }
+  const project = getenv(VAULT_PROJECT_ENV);
+  if (project !== undefined && project.trim().length > 0) options.projectId = project.trim();
+  return options;
 }

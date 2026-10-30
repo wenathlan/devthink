@@ -1,14 +1,19 @@
 // # gatewayapi — the http route table of the debonair gateway lane (root
-// layer, waves PV1.003 + PV1.006 + PV2.001 + PV3.004 + PV4.004): the
-// thirteen routes the family gateway serves — the ingest job lane (the
-// upload that queues a job, the progress query the bench polls, the
+// layer, waves PV1.003 + PV1.006 + PV2.001 + PV3.004 + PV4.004 + PV6.001):
+// the seventeen routes the family gateway serves — the ingest job lane
+// (the upload that queues a job, the progress query the bench polls, the
 // document shelf, the document read, the document removal), the blob
 // stream, the miner lane (the genre profile mine that queues a job, the
 // vitrine profile list, the profile read), the render lane (the plan
-// queue the generate page posts, the render job the meter polls) and the
+// queue the generate page posts, the render job the meter polls), the
 // tracks lane (the publish that moves a rendered track row onto the
 // vitrine, the vitrine list that serves the generated takes beside the
-// ingested references, one grammar) — pure typescript over an injected
+// ingested references, one grammar) and the generate lane's own four
+// spellings (the render queue, the render job poll, the track publish
+// and the vitrine surface the automation seats ride — the mcplane agent
+// and the getry lane speak this vocabulary; the same lanes under their
+// generate-spelled paths, zero duplication of the walk law) — pure
+// typescript over an injected
 // environment, the same framework-agnostic discipline vault/api.ts rides:
 // the route table sits at the top (method + path pattern + handler name),
 // the handlers stay pure over the seats, and every answer is the typed
@@ -95,7 +100,7 @@ import type {
   IngestStemsManifest,
 } from "./ingestworker.ts";
 import { INGEST_STEMS_SCHEMA_VERSION, runIngestJob } from "./ingestworker.ts";
-import { PATTERN_SCHEMA_VERSION, parsePattern, serializePattern } from "./patternenums.ts";
+import { PATTERN_SCHEMA_VERSION, parsePattern, serializePattern, validatePatternProject } from "./patternenums.ts";
 import type { GenreProfile, IngestDocumentWithId, ProfileErrorCode } from "./patternminer.ts";
 import { mineGenre, PROFILE_GENRE_KEYS, ProfileError } from "./patternminer.ts";
 import {
@@ -106,7 +111,7 @@ import {
   type RenderTrackRow,
   type RenderTrackSeat,
   type RenderTrackVisibility,
-  startRenderJob,
+  startRenderJob as runRenderWalk,
 } from "./renderworker.ts";
 
 /** @section table — the route catalog */
@@ -127,7 +132,11 @@ export type GatewayHandlerName =
   | "queueRender"
   | "getRenderJob"
   | "publishTrack"
-  | "listTracks";
+  | "listTracks"
+  | "queueGenerateRender"
+  | "getGenerateJob"
+  | "publishTrackById"
+  | "listVitrine";
 
 /** One row of the route catalog — the method, the path pattern and the
  * handler name (the family route shape vault/api.ts rides, grown with the
@@ -141,15 +150,18 @@ export interface RouteSpec {
   handler: GatewayHandlerName;
 }
 
-/** The route catalog of the debonair gateway lane — the thirteen routes
+/** The route catalog of the debonair gateway lane — the seventeen routes
  * the family gateway serves: the ingest job lane (the upload, the
  * progress query, the shelf, the read, the removal), the blob stream,
  * the miner lane (the profile mine, the vitrine list, the profile read),
  * the render lane (the plan queue the generate page posts, the render
- * job the meter polls) and the tracks lane (the publish, the vitrine
- * list). The more specific rows ride first (the jobs route before the
- * document :id route, the mine route before the profile :genre route) —
- * the first match wins and the table order is the law. */
+ * job the meter polls), the tracks lane (the publish, the vitrine list)
+ * and the generate lane's own four spellings (the render queue, the job
+ * poll, the track publish by id and the vitrine surface the automation
+ * seats — the mcplane agent, the getry lane — ride). The more specific
+ * rows ride first (the jobs route before the document :id route, the
+ * mine route before the profile :genre route) — the first match wins and
+ * the table order is the law. */
 export const routes: readonly RouteSpec[] = [
   { method: "POST", path: "/api/v1/ingest/upload", handler: "uploadIngest" },
   { method: "GET", path: "/api/v1/ingest/jobs/:id", handler: "getIngestJob" },
@@ -164,6 +176,10 @@ export const routes: readonly RouteSpec[] = [
   { method: "GET", path: "/api/v1/render/jobs/:id", handler: "getRenderJob" },
   { method: "POST", path: "/api/v1/tracks", handler: "publishTrack" },
   { method: "GET", path: "/api/v1/tracks", handler: "listTracks" },
+  { method: "POST", path: "/api/v1/generate/render", handler: "queueGenerateRender" },
+  { method: "GET", path: "/api/v1/generate/jobs/:id", handler: "getGenerateJob" },
+  { method: "POST", path: "/api/v1/tracks/:id/publish", handler: "publishTrackById" },
+  { method: "GET", path: "/api/v1/vitrine", handler: "listVitrine" },
 ];
 
 /** @section match — the path matcher and the dispatch verdict */
@@ -347,7 +363,9 @@ export interface GatewayProfileSeat {
  * one seam (renderjobs.ts binds the sqlite functions; the tests bind a
  * temp database through the same adapter). The seat carries the walk's
  * own puttrackrow (the render lane stamps the row after the wav lands)
- * beside the vitrine surface the routes serve — one table, both lanes. */
+ * beside the vitrine surfaces the routes serve — one table, both lanes,
+ * both vocabularies (the visibility list of the tracks route and the
+ * published list and the owner shelf of the generate lane's vitrine). */
 export interface GatewayTrackSeat extends RenderTrackSeat {
   /** Reads one rendered track row (null when the id answers nothing). */
   gettrackrow(id: string): Promise<RenderTrackRow | null>;
@@ -357,6 +375,12 @@ export interface GatewayTrackSeat extends RenderTrackSeat {
   /** Publishes one row onto the vitrine, answering the moved row (null
    * when the id answers nothing — idempotent, the vitrine law). */
   publishtrackrow(id: string): Promise<RenderTrackRow | null>;
+  /** Lists every published track row, newest first (the generate lane's
+   * vitrine order — the status flag its publish route flips). */
+  listpublishedrows(): Promise<RenderTrackRow[]>;
+  /** Lists every track row of one owner, newest first (the owner's shelf —
+   * the same visibility law the ingest shelf rides). */
+  listownerrows(ownerId: string): Promise<RenderTrackRow[]>;
 }
 
 /** The environment every handler rides — all injected, the handlers pure
@@ -389,6 +413,7 @@ export type GatewayErrorCode =
   | "bad-owner" // 400 — the owner pointer is not a minted decimal
   | "not-found" // 404 — no row or no route answers the id or the path
   | "method-not-allowed" // 405 — the path matches, the method does not
+  | "forbidden" // 403 — the owner pointer does not own the row (the generate lane's publish law)
   | "conflict" // 409 — the row's state refuses the move
   | "store-failed" // 500 — the blob store refused or threw
   | "db-failed"; // 500 — a seat refused or threw
@@ -623,6 +648,21 @@ export interface VitrineTrackValue {
   ownerId: string;
   /** The instant the row landed (the render stamp, or the ingest stamp). */
   publishedAt: string;
+}
+
+/** The vitrine surface the generate lane's vitrine route answers — the
+ * automation vocabulary's public face: the published track rows beside
+ * the freshest genre profiles (the vitrine documents ride the shelf
+ * route under the visibility law — this surface is the generate lane's
+ * own). */
+export interface VitrineValue {
+  /** The track rows under the visibility law: the published rows list for
+   * everyone, the owner's own rows ride beside them when the ownerId query
+   * carries their pointer (the same law the ingest shelf rides). */
+  tracks: RenderTrackRow[];
+  /** The freshest profile row per genre (the same fold the profile list
+   * route rides). */
+  profiles: GatewayProfileRow[];
 }
 
 /** @section base64 — the body decode lane */
@@ -1239,6 +1279,163 @@ async function listTracks(
   return ok({ records: rows });
 }
 
+/** @section handlers — the generate lane surface (the automation vocabulary) */
+
+/**
+ * POST /api/v1/generate/render — the generate lane's own spelling of the
+ * render queue (the automation seats — the mcplane agent, the getry lane
+ * — ride this vocabulary): the pattern plan rides the json lane as an
+ * object (the debonair.pattern/1 contract gate validates before any row
+ * lands), the canonical serialized form registers on the render ledger —
+ * the plan rides the row's own plan_json column, so the queue carries no
+ * payload beside it — and the mint answers the job id. the run itself
+ * starts through startRenderJob — the caller lane's queue hands the job
+ * id.
+ */
+async function queueGenerateRender(
+  env: GatewayEnv,
+  request: GatewayRequest,
+): Promise<GatewayAnswer<{ jobId: string }>> {
+  if (request.json === null) {
+    return err("bad-request", 400, "the render needs the json body (the owner pointer and the pattern plan)");
+  }
+  if (typeof request.json.ownerId !== "string" || !blobidvalid(request.json.ownerId)) {
+    return err("bad-owner", 400, "the render needs the owner pointer in the minted decimal form");
+  }
+  const planfield = request.json.plan;
+  if (typeof planfield !== "object" || planfield === null || Array.isArray(planfield)) {
+    return err("bad-request", 400, "the render needs the plan field (a debonair.pattern/1 project)");
+  }
+  const checked = validatePatternProject(planfield);
+  if (!checked.ok) {
+    return err("bad-request", 400, `the plan failed the pattern contract (${checked.code}): ${checked.message}`);
+  }
+  let planJson: string;
+  try {
+    planJson = serializePattern(checked.doc);
+  } catch (error) {
+    return err("bad-request", 400, `the plan refused the canonical serialize: ${errmsgof(error)}`);
+  }
+  const jobId = env.mint();
+  const row: RenderJobRow = {
+    id: jobId,
+    owner_id: request.json.ownerId,
+    state: "queued",
+    phase: null,
+    fraction: 0,
+    error: null,
+    plan_json: planJson,
+    wav_pointer: null,
+    track_pointer: null,
+    created_at: env.now(),
+    finished_at: null,
+  };
+  try {
+    env.renderJobs.putjob(row);
+  } catch (error) {
+    return err("db-failed", 500, `the render ledger refused the registration: ${errmsgof(error)}`);
+  }
+  return ok({ jobId }, 201);
+}
+
+/**
+ * GET /api/v1/generate/jobs/:id — the generate lane's own spelling of the
+ * render job row (the walk the automation seats poll: the state, the
+ * phase, the fraction, the error, the wav pointer, the instants).
+ */
+async function getGenerateJob(
+  env: GatewayEnv,
+  _request: GatewayRequest,
+  params: Record<string, string>,
+): Promise<GatewayAnswer<RenderJobValue>> {
+  let row: RenderJobRow | null;
+  try {
+    row = env.renderJobs.getjob(params.id);
+  } catch (error) {
+    return err("db-failed", 500, `the render ledger refused the read: ${errmsgof(error)}`);
+  }
+  if (row === null) return err("not-found", 404, `no render job answers ${params.id}`);
+  return ok(renderjobwire(row));
+}
+
+/**
+ * POST /api/v1/tracks/:id/publish — the generate lane's own publish
+ * spelling: flips one track row onto the vitrine under the owner law (the
+ * body's owner pointer must match the row's own — a foreign pointer
+ * answers forbidden, never someone else's shelf).
+ */
+async function publishTrackById(
+  env: GatewayEnv,
+  request: GatewayRequest,
+  params: Record<string, string>,
+): Promise<GatewayAnswer<RenderTrackRow>> {
+  if (request.json === null || typeof request.json.ownerId !== "string" || !blobidvalid(request.json.ownerId)) {
+    return err("bad-owner", 400, "the publish needs the owner pointer in the minted decimal form");
+  }
+  const ownerId = request.json.ownerId;
+  let row: RenderTrackRow | null;
+  try {
+    row = await env.tracks.gettrackrow(params.id);
+  } catch (error) {
+    return err("db-failed", 500, `the track seat refused the read: ${errmsgof(error)}`);
+  }
+  if (row === null) return err("not-found", 404, `no track answers ${params.id}`);
+  if (row.ownerId !== ownerId) {
+    return err("forbidden", 403, `the track ${params.id} answers to another owner — the vitrine is the owner's move`);
+  }
+  try {
+    const published = await env.tracks.publishtrackrow(params.id);
+    if (published === null) return err("not-found", 404, `no track answers ${params.id}`);
+    return ok(published);
+  } catch (error) {
+    return err("db-failed", 500, `the track seat refused the publish: ${errmsgof(error)}`);
+  }
+}
+
+/**
+ * GET /api/v1/vitrine — the generate lane's public surface under the
+ * visibility law: the published track rows list for everyone and the
+ * owner's own rows ride beside them when the ownerId query carries their
+ * pointer (the same law the ingest shelf rides — an owner reads the track
+ * ids the render walk stamped, everyone reads the vitrine). the freshest
+ * genre profiles ride beside the tracks (the vitrine documents ride the
+ * shelf route — this route answers the generate lane's own face).
+ */
+async function listVitrine(env: GatewayEnv, request: GatewayRequest): Promise<GatewayAnswer<VitrineValue>> {
+  const owner = request.query.ownerId;
+  if (owner !== undefined && !blobidvalid(owner)) {
+    return err("bad-owner", 400, "the ownerId query must ride the minted decimal form");
+  }
+  let tracks: RenderTrackRow[];
+  try {
+    tracks = await env.tracks.listpublishedrows();
+  } catch (error) {
+    return err("db-failed", 500, `the track seat refused the list: ${errmsgof(error)}`);
+  }
+  if (owner !== undefined) {
+    try {
+      const own = await env.tracks.listownerrows(owner);
+      const seen = new Set(tracks.map((row) => row.id));
+      for (const row of own) {
+        if (!seen.has(row.id)) tracks.push(row);
+      }
+    } catch (error) {
+      return err("db-failed", 500, `the track seat refused the owner shelf: ${errmsgof(error)}`);
+    }
+  }
+  let rows: GatewayProfileRow[];
+  try {
+    rows = await env.profiles.listprofiles();
+  } catch (error) {
+    return err("db-failed", 500, `the profile seat refused the list: ${errmsgof(error)}`);
+  }
+  const newest = new Map<string, GatewayProfileRow>();
+  for (const standing of rows) {
+    if (!newest.has(standing.genre)) newest.set(standing.genre, standing);
+  }
+  return ok({ tracks, profiles: [...newest.values()] });
+}
+
 /** @section dispatch — the one entry the transport calls */
 
 /** The handler seat one route table row names — pure over the
@@ -1266,6 +1463,10 @@ const handlers: Record<GatewayHandlerName, GatewayHandler> = {
   getRenderJob,
   publishTrack,
   listTracks,
+  queueGenerateRender,
+  getGenerateJob,
+  publishTrackById,
+  listVitrine,
 };
 
 /**
@@ -1556,7 +1757,7 @@ function rendermapcode(code: RenderRunErrorCode): { code: GatewayErrorCode; stat
  *   track id), or the typed err of the refusing lane.
  */
 export async function startRenderLaneJob(env: GatewayEnv, jobId: string): Promise<GatewayAnswer<RenderRunValue>> {
-  const result = await startRenderJob(
+  const result = await runRenderWalk(
     {
       store: env.store,
       jobs: env.renderJobs,
@@ -1578,3 +1779,11 @@ export async function startRenderLaneJob(env: GatewayEnv, jobId: string): Promis
     trackId: result.trackId,
   });
 }
+
+/** The generate lane's own spelling of the same walk (wave PV6.001's
+ * name — the automation seats and the generate server tests import this
+ * seat): the vitrine wave's startRenderLaneJob and the generate lane's
+ * startRenderJob are one walk under two names, exactly the two
+ * vocabularies the merged route table serves. */
+export const startRenderJob: (env: GatewayEnv, jobId: string) => Promise<GatewayAnswer<RenderRunValue>> =
+  startRenderLaneJob;
