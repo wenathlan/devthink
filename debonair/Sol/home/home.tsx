@@ -25,21 +25,26 @@ import { listHeroBadges, listLibraryTracks, listStageCards } from "../../catalog
 import { familyrow } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
 import { GENRES } from "../../genrematrix.ts";
-import { label, labelfill } from "../../labels.ts";
 import type { FeatureCard, LibraryTrackRow, SignalBadge } from "../../katexis.ts";
 import { MASTERING, PROMPT_MAX_LENGTH } from "../../katexis.ts";
+import { label, labelfill } from "../../labels.ts";
 import { busFeature, busPlay, busSubscribe } from "../../playerbus.ts";
 import { PROMPT_DRAFT_KEY, type PromptDraft } from "../generate/generate.tsx";
 import { DebonairMark, type NavLink, Shell } from "../shell/Shell.tsx";
-import { HomeEntrygate as EntryGate } from "../wingets";
-import { SongCard, SongCardSkeleton } from "../wingets";
+import { HomeEntrygate as EntryGate, SongCard, SongCardSkeleton } from "../wingets";
+
+/** one deterministic bar of the hero waveform strip: the stable id the list
+ * keys read plus the fixed amplitude (the same walk every render) */
+type HeroBar = { id: string; amp: number };
 
 /** the deterministic amplitudes of the hero waveform strip (the engine floor
- * — a fixed 48-bar walk, decorative only, the same value every render) */
-const HERO_WAVE: readonly number[] = Array.from({ length: 48 }, (_, index) => {
+ * — a fixed 48-bar walk, decorative only, the same value every render; the
+ * baked id keys the row, never the array index) */
+const HERO_WAVE: readonly HeroBar[] = Array.from({ length: 48 }, (_, index) => {
   const envelope = Math.sin((index / 47) * Math.PI) ** 1.5;
   const carrier = 0.45 + 0.35 * Math.sin(index * 0.55) + 0.2 * Math.sin(index * 0.13 + 1.2);
-  return Math.min(1, Math.max(0.08, envelope * carrier + 0.06));
+  const amp = Math.min(1, Math.max(0.08, envelope * carrier + 0.06));
+  return { id: `hw-${index}`, amp };
 });
 
 /** the home surface the gate reveals (the landing hero, rails and ledgers). */
@@ -68,7 +73,10 @@ function HomeSurface() {
       label: label("home.spec.render"),
       value: labelfill("home.spec.renderValue", { khz: String(MASTERING.sampleRateHz / 1000) }),
     },
-    { label: label("home.spec.peak"), value: labelfill("home.spec.peakValue", { dbtp: String(MASTERING.truePeakDbtp) }) },
+    {
+      label: label("home.spec.peak"),
+      value: labelfill("home.spec.peakValue", { dbtp: String(MASTERING.truePeakDbtp) }),
+    },
     { label: label("home.spec.loudness"), value: MASTERING.loudnessStandard },
     {
       label: label("home.spec.targets"),
@@ -224,8 +232,8 @@ function HomeSurface() {
             (decorative only: a fixed 48-bar amplitude walk, aria-hidden — the
             page never claims it is live data) */}
         <div className="hero-wave" aria-hidden="true">
-          {HERO_WAVE.map((amplitude, index) => (
-            <span key={`hw-${index}`} style={{ "--amp": amplitude } as CSSProperties} />
+          {HERO_WAVE.map((bar) => (
+            <span key={bar.id} style={{ "--amp": bar.amp } as CSSProperties} />
           ))}
         </div>
       </section>

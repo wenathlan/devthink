@@ -340,11 +340,13 @@ export function Shell({ children, themeButton = true }: ShellProps) {
   return (
     <div className={`shell ${seat}`}>
       <div className="winapp__body">
-        {/* the Windows pin rail — the mount pops the pins in (dtPopIntro,
+        {/* the Windows pin rail — the mount pops the faces in (dtPopIntro,
             staggered), the ladder indicator marks hover and the active page,
             the acrylic tooltip names it and the rail foot carries the family
             row (one accent dot per sibling, resolved through the familyurl
-            contract so every link survives any mount point) */}
+            contract so every link survives any mount point). The os pin law:
+            the 44px hit cell carries the 38×38 r4 face — the face is the
+            Windows button, the cell is the touch target */}
         <nav className="railnav railnav--enter" aria-label="primary">
           {START_APPS.map((app) => {
             const Icon = app.icon;
@@ -357,7 +359,9 @@ export function Shell({ children, themeButton = true }: ShellProps) {
                 aria-label={app.label}
                 aria-current={isActive(app.href) ? "page" : undefined}
               >
-                <Icon fontSize={20} aria-hidden="true" />
+                <span className="railnav__face" aria-hidden="true">
+                  <Icon fontSize={20} />
+                </span>
               </Link>
             );
           })}

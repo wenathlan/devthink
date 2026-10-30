@@ -34,8 +34,16 @@ export function Playerbar() {
   const progress = view.duration > 0 ? Math.min(100, (view.position / view.duration) * 100) : 0;
 
   return (
-    <aside className="playerbar" aria-label={label("shell.playerbar.aria")}>
-      <Link className="pbar-identity" href="/studio" title={labelfill("shell.playerbar.openTitle", { name: current.name })}>
+    <aside
+      className="playerbar"
+      aria-label={label("shell.playerbar.aria")}
+      data-playing={view.playing ? "true" : undefined}
+    >
+      <Link
+        className="pbar-identity"
+        href="/studio"
+        title={labelfill("shell.playerbar.openTitle", { name: current.name })}
+      >
         <span className="pbar-cover" aria-hidden="true">
           <CoverArt name={current.name} />
         </span>
@@ -69,8 +77,7 @@ export function Playerbar() {
           aria-label={view.playing ? label("shell.playerbar.pause") : label("shell.playerbar.play")}
           aria-pressed={view.playing}
           title={
-            view.notice ||
-            (view.playing ? label("shell.playerbar.pauseTitle") : label("shell.playerbar.playTitle"))
+            view.notice || (view.playing ? label("shell.playerbar.pauseTitle") : label("shell.playerbar.playTitle"))
           }
           onClick={() => {
             if (view.playing) busPause();
