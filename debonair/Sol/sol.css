@@ -1576,6 +1576,82 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   to { transform: translateX(100%); }
 }
 
+/* ---- the vitrine: the genre profile cards over the same suno grammar ---- */
+/* the trained profile rows the catalog seam serves (the db rows the mine
+   lane lands; the offline seed answers the fifteen untrained genres) —
+   the card surfaces the bpm range, the key pool top, the band balance
+   bar and the trained-on count; an untrained card wears the flat bar */
+.genre-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr));
+  gap: 14px;
+  margin-top: 6px;
+}
+.genre-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 14px 14px 15px;
+  border-radius: var(--radius-xl);
+  background: linear-gradient(180deg, var(--suno-card-a), var(--suno-card-b));
+  box-shadow: 0 0 0 1px var(--suno-edge), inset 0 1px 0 rgb(255 255 255 / 5%), 0 1px 2px rgb(0 0 0 / 28%),
+    0 10px 28px -18px rgb(0 0 0 / 55%);
+  transition: box-shadow var(--sol-micro) var(--ease-silk), transform var(--dur-2) var(--ease-window),
+    background-color var(--sol-micro) var(--ease-silk);
+}
+.genre-card:hover {
+  background: linear-gradient(180deg, var(--suno-card-b), var(--suno-card-hover));
+  transform: translateY(-4px);
+  box-shadow: 0 0 0 1px var(--suno-edge-strong), inset 0 1px 0 rgb(255 255 255 / 5%), 0 2px 4px rgb(0 0 0 / 28%),
+    0 10px 20px -8px rgb(0 0 0 / 55%), 0 24px 48px -24px rgb(0 0 0 / 45%);
+}
+.genre-card:active { transform: scale(0.99); }
+.genre-name {
+  margin: 2px 2px 0;
+  font-size: 0.98rem;
+  font-weight: 650;
+  letter-spacing: var(--sol-track-display);
+  color: var(--ink);
+}
+.genre-meta {
+  margin: 0 2px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+/* the band balance bar: the three means as one proportional track (the
+   trained card carries the shares; an untrained card answers the flat
+   track — honest zeros, never invented widths) */
+.band-bar {
+  display: flex;
+  gap: 2px;
+  height: 6px;
+  margin: 2px 2px 0;
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  background: var(--wash-soft);
+  box-shadow: inset 0 0 0 1px var(--suno-edge);
+}
+.band-seg { height: 100%; }
+.band-seg--low { background: color-mix(in srgb, var(--brass-500) 38%, transparent); }
+.band-seg--mid { background: color-mix(in srgb, var(--brass-500) 62%, transparent); }
+.band-seg--high { background: color-mix(in srgb, var(--brass-500) 88%, transparent); }
+.genre-foot {
+  margin: 0 2px;
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .genre-card {
+    animation: sunoRise 0.4s var(--suno-ease-enter) backwards;
+    animation-delay: calc(var(--i, 0) * 60ms);
+  }
+}
+
 /* ---- the studio stages: the bar on top, the sections answering ---- */
 .stagebar {
   display: flex;

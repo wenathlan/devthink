@@ -35,15 +35,26 @@ import type {
   GatewayJobPatch,
   GatewayJobRow,
   GatewayJobSeat,
+  GatewayProfileSeat,
   GatewayRequest,
   IngestJobValue,
   IngestRunValue,
 } from "../gatewayapi.ts";
 import { dispatch, matchpath, matchroute, routes, startJob } from "../gatewayapi.ts";
 import { INGEST_SCHEMA_VERSION, ingestPcm } from "../ingest.ts";
-import { getjob, listjobs, migratejobsschema, putjob, updatejob } from "../ingestdb.ts";
+import {
+  getjob,
+  listGenreProfiles,
+  listjobs,
+  migrategenreschema,
+  migratejobsschema,
+  putjob,
+  saveGenreProfile,
+  updatejob,
+} from "../ingestdb.ts";
 import type { IngestStampRow } from "../ingestworker.ts";
 import { parseWav } from "../ingestworker.ts";
+import type { GenreProfile } from "../patternminer.ts";
 import { encodeWav } from "../wavwriter.ts";
 
 /** The source rate of the synthetic take (a rate the writer's band carries). */
@@ -330,6 +341,32 @@ function jobseat(database: Database, walk: GatewayJobPatch[]): GatewayJobSeat {
 }
 
 /**
+ * The genre profile seat over a sqlite handle — the genre_profiles row
+ * functions the miner lane wires (the same binding the minerserver suite
+ * rides, keeping the shared gatewayenv honest for every walk).
+ *
+ * @param database the temp sqlite handle.
+ * @returns the profile seat.
+ */
+function profileseat(database: Database): GatewayProfileSeat {
+  migrategenreschema(database);
+  return {
+    async saveprofile(profile: GenreProfile) {
+      return saveGenreProfile(profile, database);
+    },
+    async listprofiles() {
+      return listGenreProfiles(database).map((row) => ({
+        id: row.id,
+        genre: row.genre,
+        referenceIds: JSON.parse(row.reference_ids) as string[],
+        profile: JSON.parse(row.profile_json) as GenreProfile,
+        createdAt: row.created_at,
+      }));
+    },
+  };
+}
+
+/**
  * Builds one full gateway environment over a sqlite handle and the memory
  * store — the same seats the gateway worker lane wires against the real
  * database, with a ticking clock and a ticking mint so the orders stay
@@ -347,6 +384,7 @@ function gatewayenv(database: Database): { env: GatewayEnv; walk: GatewayJobPatc
     store,
     db: documentseat(database),
     jobs: jobseat(database, walk),
+    profiles: profileseat(database),
     now: () => new Date(BASE_TICK + clock++ * 1000).toISOString(),
     mint: () => mintid(BASE_TICK + minted++),
   };
@@ -408,7 +446,7 @@ describe("the route table and the matcher", () => {
   });
   afterAll(() => database.close());
 
-  it("carries the six routes of the law in the family shape", () => {
+  it("carries the nine routes of the law in the family shape", () => {
     assert.deepEqual(routes, [
       { method: "POST", path: "/api/v1/ingest/upload", handler: "uploadIngest" },
       { method: "GET", path: "/api/v1/ingest/jobs/:id", handler: "getIngestJob" },
@@ -416,6 +454,9 @@ describe("the route table and the matcher", () => {
       { method: "GET", path: "/api/v1/ingest/:id", handler: "getIngest" },
       { method: "DELETE", path: "/api/v1/ingest/:id", handler: "deleteIngest" },
       { method: "GET", path: "/api/v1/blob/:id", handler: "getBlob" },
+      { method: "POST", path: "/api/v1/profiles/mine", handler: "mineProfile" },
+      { method: "GET", path: "/api/v1/profiles", handler: "listProfiles" },
+      { method: "GET", path: "/api/v1/profiles/:genre", handler: "getProfile" },
     ]);
   });
 
@@ -427,6 +468,9 @@ describe("the route table and the matcher", () => {
       ["GET", "/api/v1/ingest/1", "getIngest"],
       ["DELETE", "/api/v1/ingest/1", "deleteIngest"],
       ["GET", "/api/v1/blob/1", "getBlob"],
+      ["POST", "/api/v1/profiles/mine", "mineProfile"],
+      ["GET", "/api/v1/profiles", "listProfiles"],
+      ["GET", "/api/v1/profiles/techno", "getProfile"],
     ];
     for (const [method, pathname, handler] of exact) {
       const verdict = matchroute(method, pathname);

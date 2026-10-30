@@ -12,7 +12,10 @@ import { ArrowRightRegular } from "@fluentui/react-icons";
 // the noir stage with the brass light — one giant mono field with the single
 // create key and the engine's own genre matrix as chips — then the song grid
 // (cover, title, genre line, duration, the play key on hover, the shimmer
-// skeleton while the catalog answers, the 60ms stagger on entry), the 01–03
+// skeleton while the catalog answers, the 60ms stagger on entry), the genre
+// vitrine (the trained profile cards the catalog seam serves from the db —
+// the bpm range, the key pool top, the band balance bar, the trained-on
+// count; the offline seed answers the fifteen untrained genres), the 01–03
 // create flow, the engine ledger with the spec proof and the footer
 // meta-quad carrying the family row (the familyurl contract over the
 // family.ts table — the same table the rail foot and the tests read).
@@ -21,17 +24,17 @@ import { ArrowRightRegular } from "@fluentui/react-icons";
 import { type CSSProperties, type FormEvent, useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { planTake, type TakePlan } from "../../arranger.ts";
-import { listHeroBadges, listLibraryTracks, listStageCards } from "../../catalog.ts";
+import { listGenreProfileCards, listHeroBadges, listLibraryTracks, listStageCards } from "../../catalog.ts";
 import { familyrow } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
 import { GENRES } from "../../genrematrix.ts";
-import type { FeatureCard, LibraryTrackRow, SignalBadge } from "../../katexis.ts";
+import type { FeatureCard, GenreProfileCard, LibraryTrackRow, SignalBadge } from "../../katexis.ts";
 import { MASTERING, PROMPT_MAX_LENGTH } from "../../katexis.ts";
 import { label, labelfill } from "../../labels.ts";
 import { busFeature, busPlay, busSubscribe } from "../../playerbus.ts";
 import { PROMPT_DRAFT_KEY, type PromptDraft } from "../generate/generate.tsx";
 import { DebonairMark, type NavLink, Shell } from "../shell/Shell.tsx";
-import { HomeEntrygate as EntryGate, SongCard, SongCardSkeleton } from "../wingets";
+import { HomeEntrygate as EntryGate, GenreCard, SongCard, SongCardSkeleton } from "../wingets";
 
 /** one deterministic bar of the hero waveform strip: the stable id the list
  * keys read plus the fixed amplitude (the same walk every render) */
@@ -92,6 +95,7 @@ function HomeSurface() {
   const [cards, setCards] = useState<readonly FeatureCard[]>([]);
   const [badges, setBadges] = useState<readonly SignalBadge[]>([]);
   const [tracks, setTracks] = useState<readonly LibraryTrackRow[]>([]);
+  const [profileCards, setProfileCards] = useState<readonly GenreProfileCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [liveId, setLiveId] = useState("");
   const [mood, setMood] = useState("techno");
@@ -104,6 +108,9 @@ function HomeSurface() {
     });
     listHeroBadges().then((rows) => {
       if (live) setBadges(rows);
+    });
+    listGenreProfileCards().then((rows) => {
+      if (live) setProfileCards(rows);
     });
     listLibraryTracks().then((rows) => {
       if (live) {
@@ -273,6 +280,27 @@ function HomeSurface() {
           </Link>
           {label("home.rail.footTail")}
         </p>
+      </section>
+
+      {/* THE VITRINE — the genre profile cards: the trained profile rows
+          the gateway mine job lands in the db (the catalog seam serves
+          them; the offline seed answers the fifteen untrained genres —
+          presentation only, the numbers never hardcode). The card carries
+          the bpm range, the key pool top, the band balance bar and the
+          trained-on count */}
+      <section className="shell section" aria-labelledby="vitrine-h">
+        <div className="section-head">
+          <p className="eyebrow reveal">{label("home.vitrine.eyebrow")}</p>
+          <h2 id="vitrine-h" className="h2-xl reveal">
+            {label("home.vitrine.title")}
+          </h2>
+        </div>
+        <div className="genre-grid">
+          {profileCards.map((card, index) => (
+            <GenreCard key={card.genre} card={card} slot={index} />
+          ))}
+        </div>
+        <p className="rail-foot reveal">{label("home.vitrine.foot")}</p>
       </section>
 
       {/* FLOW — the create steps 01–03 */}

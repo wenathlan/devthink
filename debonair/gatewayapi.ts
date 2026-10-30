@@ -1,8 +1,10 @@
 // # gatewayapi — the http route table of the debonair gateway lane (root
-// layer, waves PV1.003 + PV1.006 + PV2.001): the six routes the family
-// gateway serves — the ingest upload that queues a job, the job progress
-// query the bench polls, the document shelf, the document read, the
-// document removal and the blob stream — pure typescript over an injected
+// layer, waves PV1.003 + PV1.006 + PV2.001 + PV3.004): the nine routes the
+// family gateway serves — the ingest upload that queues a job, the job
+// progress query the bench polls, the document shelf, the document read,
+// the document removal, the blob stream and the miner lane (the genre
+// profile mine that queues a job, the vitrine profile list, the profile
+// read) — pure typescript over an injected
 // environment, the same framework-agnostic discipline vault/api.ts rides:
 // the route table sits at the top (method + path pattern + handler name),
 // the handlers stay pure over the seats, and every answer is the typed
@@ -35,10 +37,37 @@
 // wiring lane binds the real table behind it once the schema wave lands
 // on the stack — this module never learns the difference (the injectable
 // discipline the takestore storage and the blobstore fetch seams ride).
+//
+// the miner lane (wave PV3.004) mirrors the ingest discipline end to end:
+// the mine route validates the ask (the genre key of the fifteen, the
+// owner pointer), mints the job id and registers the queued row on the
+// same ingest_jobs ledger — the honest reuse, no second table: the nine
+// columns carry every walk the gateway owns, the phase column carries
+// the miner's own vocabulary (collect, mine, store) and the document_id
+// column stamps the genre_profiles row id the walk lands (the pointer of
+// the lane's own artifact — the ingest walk stamps a document id, the
+// mine walk stamps a profile row id, the phase vocabulary tells the
+// lanes apart). the run starts through startMinerJob: the caller lane
+// (the gateway worker loop) hands the genre payload (the nine ledger
+// columns carry no genre — the queue owns the ask the way it owns the
+// upload bytes), the collect phase reads the genre's reference documents
+// off the shelf (kind "reference" only — the visitor uploads never feed
+// a genre profile — grouped by the genre matrix's own matcher over the
+// document name, the grouping law the pattern miner names: the documents
+// carry no genre column, the name is the reference lane's honest carrier
+// and matchGenre is the same seat the composer's prompt rides), the mine
+// phase answers the profile document (a genre with no references fails
+// honestly — never a zero profile), the store phase lands the row in the
+// genre_profiles seat. the vitrine routes read the same seat (wave
+// PV3.005): the list answers the newest row per genre (a retrain lands a
+// fresh row, the vitrine shows the freshest), the profile read answers
+// the freshest document of one genre. the browser never runs the miner —
+// it asks, the server jobs.
 // zero dependencies, zero consumer data.
 
 import type { BlobPointer, BlobResult, BlobStore } from "./blobstore.ts";
 import { blobidvalid } from "./blobstore.ts";
+import { matchGenre } from "./genrematrix.ts";
 import type { IngestDocument } from "./ingest.ts";
 import type {
   IngestDbHandle,
@@ -50,6 +79,8 @@ import type {
   IngestStemsManifest,
 } from "./ingestworker.ts";
 import { INGEST_STEMS_SCHEMA_VERSION, runIngestJob } from "./ingestworker.ts";
+import type { GenreProfile, IngestDocumentWithId, ProfileErrorCode } from "./patternminer.ts";
+import { mineGenre, PROFILE_GENRE_KEYS, ProfileError } from "./patternminer.ts";
 
 /** @section table — the route catalog */
 
@@ -62,7 +93,10 @@ export type GatewayHandlerName =
   | "listIngestShelf"
   | "getIngest"
   | "deleteIngest"
-  | "getBlob";
+  | "getBlob"
+  | "mineProfile"
+  | "listProfiles"
+  | "getProfile";
 
 /** One row of the route catalog — the method, the path pattern and the
  * handler name (the family route shape vault/api.ts rides, grown with the
@@ -76,11 +110,13 @@ export interface RouteSpec {
   handler: GatewayHandlerName;
 }
 
-/** The route catalog of the debonair gateway lane — the six routes the
+/** The route catalog of the debonair gateway lane — the nine routes the
  * family gateway serves: the ingest job lane (the upload, the progress
- * query, the shelf, the read, the removal) and the blob stream. The more
- * specific rows ride first (the jobs route before the document :id route)
- * — the first match wins and the table order is the law. */
+ * query, the shelf, the read, the removal), the blob stream and the
+ * miner lane (the profile mine, the vitrine list, the profile read). The
+ * more specific rows ride first (the jobs route before the document :id
+ * route, the mine route before the profile :genre route) — the first
+ * match wins and the table order is the law. */
 export const routes: readonly RouteSpec[] = [
   { method: "POST", path: "/api/v1/ingest/upload", handler: "uploadIngest" },
   { method: "GET", path: "/api/v1/ingest/jobs/:id", handler: "getIngestJob" },
@@ -88,6 +124,9 @@ export const routes: readonly RouteSpec[] = [
   { method: "GET", path: "/api/v1/ingest/:id", handler: "getIngest" },
   { method: "DELETE", path: "/api/v1/ingest/:id", handler: "deleteIngest" },
   { method: "GET", path: "/api/v1/blob/:id", handler: "getBlob" },
+  { method: "POST", path: "/api/v1/profiles/mine", handler: "mineProfile" },
+  { method: "GET", path: "/api/v1/profiles", handler: "listProfiles" },
+  { method: "GET", path: "/api/v1/profiles/:genre", handler: "getProfile" },
 ];
 
 /** @section match — the path matcher and the dispatch verdict */
@@ -234,6 +273,39 @@ export interface GatewayDocumentSeat extends IngestDbHandle {
   dropstampedrow(id: string): Promise<IngestStampRow | null>;
 }
 
+/** One genre profile row the profile seat answers — the parsed profile
+ * document beside the row facts (the profile_json and the reference_ids
+ * columns parsed at the seat binding, the same law the document seat
+ * rides). The vitrine routes serve this row verbatim: the list and the
+ * profile read answer it, the mine walk's ledger document_id column
+ * stamps its id. */
+export interface GatewayProfileRow {
+  /** The autoincrement row id (the genre_profiles table's own pointer). */
+  id: number;
+  /** The genre key of the profile (one of the fifteen). */
+  genre: string;
+  /** The reference ids that fed the profile (the audit chain, parsed). */
+  referenceIds: string[];
+  /** The profile document (schema debonair.profile/1). */
+  profile: GenreProfile;
+  /** The storage instant of the row. */
+  createdAt: string;
+}
+
+/** The genre profile seat — the genre_profiles row functions behind one
+ * seam (the wiring lane binds the real ingestdb functions; the tests bind
+ * a temp sqlite — the injectable discipline the document and ledger
+ * seats ride). */
+export interface GatewayProfileSeat {
+  /** Saves one profile document, answering the row id the storage
+   * assigned (the seat serializes through the canonical law — a broken
+   * profile refuses honestly). */
+  saveprofile(profile: GenreProfile): Promise<number>;
+  /** Lists every profile row, newest first (the vitrine order — the
+   * routes fold the newest row per genre). */
+  listprofiles(): Promise<GatewayProfileRow[]>;
+}
+
 /** The environment every handler rides — all injected, the handlers pure
  * over it (the vault law: the surface owns no state, the seats own it). */
 export interface GatewayEnv {
@@ -243,6 +315,8 @@ export interface GatewayEnv {
   db: GatewayDocumentSeat;
   /** The job ledger seat. */
   jobs: GatewayJobSeat;
+  /** The genre profile seat (the genre_profiles seam). */
+  profiles: GatewayProfileSeat;
   /** The iso clock the registrations and the finishes stamp. */
   now: () => string;
   /** The id mint — the decimal string seat the job ids ride. */
@@ -385,6 +459,41 @@ export interface IngestRunValue {
   document: IngestDocument;
   /** The pointer chain — the mix, the stems, the manifest. */
   pointers: IngestJobPointers;
+}
+
+/** The miner walk phases — the ledger's phase column vocabulary of the
+ * mine lane: collect (the genre's reference documents read off the
+ * shelf), mine (the profile document answered), store (the row lands in
+ * the genre_profiles seat). The ingest walk owns its own vocabulary on
+ * the same column; the lanes tell their walks apart by the phases they
+ * walk. */
+export type MinerJobPhase = "collect" | "mine" | "store";
+
+/** The miner phase table in the walk order (the fractions ride the
+ * index — every completed phase reports its ascending share). */
+export const MINER_PHASES: readonly MinerJobPhase[] = ["collect", "mine", "store"];
+
+/** The queued payload the miner caller lane hands the run — the genre the
+ * job profiles. The queue owns the ask the way it owns the upload bytes:
+ * the nine ledger columns carry no genre (the honest reuse keeps the
+ * ledger one table for every walk the gateway owns). */
+export interface MinerJobPayload {
+  /** The genre key of the group (one of the fifteen). */
+  genre: string;
+}
+
+/** The value one landed mine run answers — the profile row and the
+ * document the walk landed. */
+export interface MinerRunValue {
+  /** The job that ran. */
+  jobId: string;
+  /** The landed state (a failed run answers the typed err instead). */
+  state: "done";
+  /** The profile row id (the decimal string the ledger's document_id
+   * column stamps). */
+  profileId: string;
+  /** The genre profile document (schema debonair.profile/1). */
+  profile: GenreProfile;
 }
 
 /** @section base64 — the body decode lane */
@@ -715,6 +824,97 @@ async function getBlob(
   return ok({ bytes: got.data, mime: got.pointer.kind, pointer: got.pointer });
 }
 
+/** @section handlers — the miner lane and the vitrine surface */
+
+/** The readable genre key list the genre lanes name in their refusals. */
+const GENRE_KEYS_TEXT = PROFILE_GENRE_KEYS.join(", ");
+
+/**
+ * POST /api/v1/profiles/mine — validates the ask (the genre key of the
+ * fifteen, the owner pointer in the minted decimal form), mints the job
+ * id and registers the queued ledger row on the shared ingest_jobs
+ * ledger (the honest reuse — no second table); the run itself starts
+ * through startMinerJob, the caller lane's queue carrying the genre
+ * payload.
+ */
+async function mineProfile(env: GatewayEnv, request: GatewayRequest): Promise<GatewayAnswer<{ jobId: string }>> {
+  if (request.json === null) {
+    return err("bad-request", 400, "the mine needs the json body (the genre and the owner pointer)");
+  }
+  if (typeof request.json.genre !== "string" || !PROFILE_GENRE_KEYS.includes(request.json.genre)) {
+    return err("bad-request", 400, `the genre must be one of the fifteen keys (${GENRE_KEYS_TEXT})`);
+  }
+  if (typeof request.json.ownerId !== "string" || !blobidvalid(request.json.ownerId)) {
+    return err("bad-owner", 400, "the mine needs the owner pointer in the minted decimal form");
+  }
+  const jobId = env.mint();
+  const row: GatewayJobRow = {
+    id: jobId,
+    owner_id: request.json.ownerId,
+    state: "queued",
+    phase: null,
+    fraction: 0,
+    error: null,
+    document_id: null,
+    created_at: env.now(),
+    finished_at: null,
+  };
+  try {
+    env.jobs.putjob(row);
+  } catch (error) {
+    return err("db-failed", 500, `the ledger refused the registration: ${errmsgof(error)}`);
+  }
+  return ok({ jobId }, 201);
+}
+
+/**
+ * GET /api/v1/profiles — the vitrine rows: the newest profile row per
+ * genre (a retrain lands a fresh row, the vitrine shows the freshest —
+ * the seat lists newest first, the fold keeps the first row of each
+ * genre it meets).
+ */
+async function listProfiles(
+  env: GatewayEnv,
+  _request: GatewayRequest,
+): Promise<GatewayAnswer<{ records: GatewayProfileRow[] }>> {
+  let rows: GatewayProfileRow[];
+  try {
+    rows = await env.profiles.listprofiles();
+  } catch (error) {
+    return err("db-failed", 500, `the profile seat refused the list: ${errmsgof(error)}`);
+  }
+  const newest = new Map<string, GatewayProfileRow>();
+  for (const row of rows) {
+    if (!newest.has(row.genre)) newest.set(row.genre, row);
+  }
+  return ok({ records: [...newest.values()] });
+}
+
+/**
+ * GET /api/v1/profiles/:genre — the freshest profile row of one genre
+ * (the document, the audit chain and the storage instant). A genre key
+ * outside the fifteen answers bad-request (the vocabulary is the
+ * published contract); a genre with no row yet answers not-found.
+ */
+async function getProfile(
+  env: GatewayEnv,
+  _request: GatewayRequest,
+  params: Record<string, string>,
+): Promise<GatewayAnswer<GatewayProfileRow>> {
+  if (!PROFILE_GENRE_KEYS.includes(params.genre)) {
+    return err("bad-request", 400, `the genre "${params.genre}" is not one of the fifteen keys (${GENRE_KEYS_TEXT})`);
+  }
+  let rows: GatewayProfileRow[];
+  try {
+    rows = await env.profiles.listprofiles();
+  } catch (error) {
+    return err("db-failed", 500, `the profile seat refused the list: ${errmsgof(error)}`);
+  }
+  const row = rows.find((standing) => standing.genre === params.genre) ?? null;
+  if (row === null) return err("not-found", 404, `no profile answers ${params.genre}`);
+  return ok(row);
+}
+
 /** @section dispatch — the one entry the transport calls */
 
 /** The handler seat one route table row names — pure over the
@@ -735,6 +935,9 @@ const handlers: Record<GatewayHandlerName, GatewayHandler> = {
   getIngest,
   deleteIngest,
   getBlob,
+  mineProfile,
+  listProfiles,
+  getProfile,
 };
 
 /**
@@ -866,4 +1069,127 @@ export async function startJob(
     document: result.document,
     pointers: result.pointers,
   });
+}
+
+/**
+ * Maps a miner failure code onto the gateway code of its lane — the
+ * caller's ask answers bad-request (a genre off the fifteen, a genre with
+ * no references), the rest answer db-failed (a fault the seats own).
+ *
+ * @param code the pattern miner's machine code.
+ * @returns the gateway code and status of its lane.
+ */
+function mapminercode(code: ProfileErrorCode): { code: GatewayErrorCode; status: number } {
+  if (code === "bad-genre" || code === "empty-set") return { code: "bad-request", status: 400 };
+  return { code: "db-failed", status: 500 };
+}
+
+/**
+ * Starts one queued miner job — the caller lane (the gateway worker loop)
+ * hands the genre payload and this function walks the miner end to end
+ * with the ledger row riding along, the same law startJob walks: the
+ * state moves queued → running, every completed phase patches the phase
+ * and the ascending fraction (the miner's own vocabulary — collect, mine,
+ * store), and the walk lands done with the genre_profiles row id in the
+ * document_id column (the pointer of the lane's own artifact) or failed
+ * with the honest error code ("<code>: <message>" — a genre with no
+ * references fails empty-set, never a zero profile). Never a throw; every
+ * refusal answers the typed err; a re-run of a landed job answers
+ * conflict (the walk is one-shot — a fresh mine mints a fresh job).
+ *
+ * @param env the injected environment.
+ * @param jobId the queued job the mine route registered.
+ * @param payload the genre the queue carries (one of the fifteen keys).
+ * @returns the landed run (the profile row id, the document), or the
+ *   typed err of the refusing lane.
+ */
+export async function startMinerJob(
+  env: GatewayEnv,
+  jobId: string,
+  payload: MinerJobPayload,
+): Promise<GatewayAnswer<MinerRunValue>> {
+  let row: GatewayJobRow | null;
+  try {
+    row = env.jobs.getjob(jobId);
+  } catch (error) {
+    return err("db-failed", 500, `the ledger refused the read: ${errmsgof(error)}`);
+  }
+  if (row === null) return err("not-found", 404, `no job answers ${jobId}`);
+  if (row.state !== "queued") {
+    return err("conflict", 409, `the job ${jobId} is ${row.state} — only a queued job starts`);
+  }
+  if (!PROFILE_GENRE_KEYS.includes(payload.genre)) {
+    return err("bad-request", 400, `the genre "${payload.genre}" is not one of the fifteen keys (${GENRE_KEYS_TEXT})`);
+  }
+  try {
+    env.jobs.updatejob(jobId, { state: "running", fraction: 0 });
+  } catch (error) {
+    return err("db-failed", 500, `the ledger refused the running patch: ${errmsgof(error)}`);
+  }
+  const failwalk = (code: GatewayErrorCode, status: number, failure: string): GatewayErr => {
+    try {
+      env.jobs.updatejob(jobId, { state: "failed", error: failure, finished_at: env.now() });
+    } catch {
+      // a hostile ledger never hides the honest failure — the answer rides
+    }
+    return err(code, status, failure);
+  };
+  const report = (phase: MinerJobPhase): void => {
+    try {
+      env.jobs.updatejob(jobId, { phase, fraction: (MINER_PHASES.indexOf(phase) + 1) / MINER_PHASES.length });
+    } catch {
+      // a hostile ledger never breaks the run — the answer matters more
+    }
+  };
+  // phase: collect — the genre's reference documents read off the shelf:
+  // kind "reference" only (the visitor uploads never feed a genre
+  // profile), grouped by the genre matrix's own matcher over the document
+  // name (the grouping law the pattern miner names — the documents carry
+  // no genre column, the name is the reference lane's honest carrier)
+  let shelf: IngestStampRow[];
+  try {
+    shelf = await env.db.liststampedrows();
+  } catch (error) {
+    return failwalk("db-failed", 500, `the shelf refused the list: ${errmsgof(error)}`);
+  }
+  const references: IngestDocumentWithId[] = shelf
+    .filter((standing) => standing.kind === "reference" && matchGenre(standing.name)?.id === payload.genre)
+    .map((standing) => ({ ...standing.document, id: standing.id }));
+  report("collect");
+  // phase: mine — the profile document (a genre with no references fails
+  // honestly — the empty set answers no profile)
+  let profile: GenreProfile;
+  try {
+    profile = mineGenre(references, payload.genre);
+  } catch (error) {
+    if (error instanceof ProfileError) {
+      const mapped = mapminercode(error.code);
+      return failwalk(mapped.code, mapped.status, `${error.code}: ${error.message}`);
+    }
+    return failwalk("db-failed", 500, `the miner faulted: ${errmsgof(error)}`);
+  }
+  report("mine");
+  // phase: store — the profile row lands in the genre_profiles seat
+  let profileId: number;
+  try {
+    profileId = await env.profiles.saveprofile(profile);
+  } catch (error) {
+    return failwalk("db-failed", 500, `the profile seat refused the row: ${errmsgof(error)}`);
+  }
+  report("store");
+  try {
+    env.jobs.updatejob(jobId, {
+      state: "done",
+      fraction: 1,
+      document_id: String(profileId),
+      finished_at: env.now(),
+    });
+  } catch (error) {
+    return err(
+      "db-failed",
+      500,
+      `the ledger refused the done stamp (the profile row ${profileId} landed): ${errmsgof(error)}`,
+    );
+  }
+  return ok({ jobId, state: "done", profileId: String(profileId), profile });
 }
