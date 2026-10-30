@@ -78,8 +78,11 @@ export function windowcatalog(): Record<string, WindowEntry> {
 export type WindowSpawn = { width: number; height: number };
 
 /** the spawn every windowed app answers when the catalog carries no row
- * for it (the default frame of the os) */
-const DEFAULT_SPAWN: WindowSpawn = { width: 900, height: 640 };
+ * for it (the default frame of the os) — the 1280x800 desktop band so
+ * the family windows open wide enough for the 961px+ breakpoints their
+ * standalone design answers at the direct url (the window-era law: the
+ * same design inside the window, only the screen space may clamp it) */
+const DEFAULT_SPAWN: WindowSpawn = { width: 1280, height: 800 };
 
 /** the spawn of one windowed app: the geometry row the catalog serves when
  * one answers, the default otherwise */

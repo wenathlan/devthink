@@ -147,12 +147,17 @@ function appById(id: string): DesktopApp {
 function defaultSnapshot(id: string, title: string, openCount: number): WindowSnapshot {
   const cascade = (openCount % 4) * 26;
   const spawn = windowspawn(id);
-  /* the width answers the portrait law: the 460px floor never exceeds the
-     viewport minus the gutter — on a 390px phone the window spawns 374px
-     wide and stays on the surface instead of spawning off-screen */
+  /* the width answers the declared geometry first, the screen space second:
+     the window opens at its catalog width — the family rows ride the 1280
+     desktop band so the 961px+ breakpoints of the standalone tree fire
+     inside the frame exactly like at the direct url (the window-era law:
+     one design) — and only the screen clamps it. the portrait law keeps
+     the 460px floor under the viewport minus the gutter — on a 390px phone
+     the window spawns 374px wide and stays on the surface instead of
+     spawning off-screen */
   const width = Math.min(
     spawn?.width ?? 760,
-    Math.max(460, Math.round(window.innerWidth * 0.52)),
+    Math.max(460, Math.round(window.innerWidth) - 16),
     Math.max(WINDOW_MIN_WIDTH, Math.round(window.innerWidth) - 16),
   );
   const height = Math.max(
