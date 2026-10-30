@@ -38,7 +38,34 @@
   "files": [
     "README.md",
     "docs",
-    "tests"
+    "tests",
+    "analyze.ts",
+    "hpss.ts",
+    "ingest.ts",
+    "patternminer.ts",
+    "patternenums.ts",
+    "composer.ts",
+    "audioengine.ts",
+    "wavwriter.ts",
+    "blobstore.ts",
+    "ingestworker.ts",
+    "renderworker.ts",
+    "gatewayapi.ts",
+    "arranger.ts",
+    "bigintids.ts",
+    "fingerprint.ts",
+    "genrematrix.ts",
+    "harmonyengine.ts",
+    "katexis.ts",
+    "loudness.ts",
+    "mixergraph.ts",
+    "musictheory.ts",
+    "onboardingstate.ts",
+    "rhythmgrammar.ts",
+    "spectrum.ts",
+    "takeevents.ts",
+    "timelinemodel.ts",
+    "tuning.ts"
   ],
   "homepage": "https://github.com/wenathlan/devthink/tree/main/debonair",
   "bugs": {
@@ -49,6 +76,68 @@
     "registry": "https://registry.npmjs.org/"
   },
   "type": "module",
+  "exports": {
+    "./analyze": {
+      "types": "./analyze.ts",
+      "import": "./analyze.ts",
+      "default": "./analyze.ts"
+    },
+    "./hpss": {
+      "types": "./hpss.ts",
+      "import": "./hpss.ts",
+      "default": "./hpss.ts"
+    },
+    "./ingest": {
+      "types": "./ingest.ts",
+      "import": "./ingest.ts",
+      "default": "./ingest.ts"
+    },
+    "./patternminer": {
+      "types": "./patternminer.ts",
+      "import": "./patternminer.ts",
+      "default": "./patternminer.ts"
+    },
+    "./patternenums": {
+      "types": "./patternenums.ts",
+      "import": "./patternenums.ts",
+      "default": "./patternenums.ts"
+    },
+    "./composer": {
+      "types": "./composer.ts",
+      "import": "./composer.ts",
+      "default": "./composer.ts"
+    },
+    "./audioengine": {
+      "types": "./audioengine.ts",
+      "import": "./audioengine.ts",
+      "default": "./audioengine.ts"
+    },
+    "./wavwriter": {
+      "types": "./wavwriter.ts",
+      "import": "./wavwriter.ts",
+      "default": "./wavwriter.ts"
+    },
+    "./blobstore": {
+      "types": "./blobstore.ts",
+      "import": "./blobstore.ts",
+      "default": "./blobstore.ts"
+    },
+    "./ingestworker": {
+      "types": "./ingestworker.ts",
+      "import": "./ingestworker.ts",
+      "default": "./ingestworker.ts"
+    },
+    "./renderworker": {
+      "types": "./renderworker.ts",
+      "import": "./renderworker.ts",
+      "default": "./renderworker.ts"
+    },
+    "./gatewayapi": {
+      "types": "./gatewayapi.ts",
+      "import": "./gatewayapi.ts",
+      "default": "./gatewayapi.ts"
+    }
+  },
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
