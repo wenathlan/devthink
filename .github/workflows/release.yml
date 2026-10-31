@@ -992,6 +992,7 @@ jobs:
           test -f saddle/dist/sandbox.js
           test -f saddle/dist/server.js
           test -f saddle/dist/virtual.js
+          test -f saddle/dist/workloadlaw.js
       - name: Pack every family envelope beside the application tarball
         run: |
           set -euo pipefail

@@ -459,6 +459,7 @@ describe.skipIf(!inrepo)("the built envelope law (the exports promise)", () => {
     "dist/sandbox.js",
     "dist/server.js",
     "dist/virtual.js",
+    "dist/workloadlaw.js",
   ];
   const LANEASSERTIONS = [
     ...EXPORTDISTTARGETS,

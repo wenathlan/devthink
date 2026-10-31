@@ -4,6 +4,14 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   resolve: {
     alias: {
+      /** the workload law bridge of the family: the app battery pins the
+       * lane mirror against the engine catalog through the published
+       * library specifier ("@wenathlan/saddle/workloadlaw"), and this
+       * bridge resolves the specifier to the monorepo source the sibling
+       * engine carries — the catalog is never duplicated inside devthink.
+       * the entry retires when the published envelope carries the built
+       * workload law. */
+      "@wenathlan/saddle/workloadlaw": path.resolve(import.meta.dirname, "../saddle/workloadlaw.ts"),
       /** the exact-subpath bridge mirrored from vite.config.ts: the saddle
        * engine specifier resolves to the monorepo source (the installed
        * 2.1.6 envelope lacks the ./sandbox export surface), so any node-side
