@@ -17,7 +17,7 @@
 
 import { ArrowDownloadRegular, CheckmarkRegular, ImageRegular, SaveRegular } from "@fluentui/react-icons";
 import { useCallback, useState } from "react";
-import { type AnalysisReport, reportDigest } from "../../audiopipeline.ts";
+import { type AnalysisReport, reportDigest } from "@wenathlan/debonair/audiopipeline";
 import type { ImageProject } from "../../imageproject.ts";
 import { label } from "../../labels.ts";
 import {

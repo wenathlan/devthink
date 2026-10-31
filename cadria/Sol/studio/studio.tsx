@@ -24,7 +24,7 @@
 export * from "../wingets";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { type AnalysisReport, PipelineError } from "../../audiopipeline.ts";
+import { type AnalysisReport, PipelineError } from "@wenathlan/debonair/audiopipeline";
 import { type ImageProject, ProjectError } from "../../imageproject.ts";
 import { renderSvg, renderThumbnailSignature } from "../../imagerender.ts";
 import { imageStyles, type StyleSpec, styleForDescriptor } from "../../imagestyles.ts";

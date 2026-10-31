@@ -11,7 +11,7 @@
 // "project-range" non-finite or out-of-bounds numbers · "project-version"
 // unreadable bundle/descriptor version. Fresh deep-frozen replicas only —
 // caller inputs are never mutated, in memory or across JSON.
-import type { AudioDescriptor } from "./audioattributes.ts";
+import type { AudioDescriptor } from "@wenathlan/debonair/audioattributes";
 import type { Block, BlockRole } from "./synthcomposition.ts";
 import { KEYFRAME_CAP, type MotionEasing, type MotionKeyframeKind, type MotionSpec } from "./synthmotion.ts";
 import { type OklchTriple, oklchToSrgbHex, type Palette, wrapHue } from "./synthpalette.ts";

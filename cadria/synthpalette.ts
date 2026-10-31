@@ -29,8 +29,8 @@
 // hueDistance, tonicHue, relativeLuminance, contrastRatio, synthPalette,
 // paletteVariants.
 
-import type { AudioDescriptor } from "./audioattributes.ts";
-import { DESCRIPTOR_DIMS } from "./audiofeatures.ts";
+import type { AudioDescriptor } from "@wenathlan/debonair/audioattributes";
+import { DESCRIPTOR_DIMS } from "@wenathlan/debonair/audiofeatures";
 import { hexfromrgb, oklchfromrgb, relativeluma709, rgbfromhex, rgbfromoklch } from "./colorconvert.ts";
 
 /** one OKLCH color: l 0–1, c 0–0.33, h degrees wrapped into [0, 360). */

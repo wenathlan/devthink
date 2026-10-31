@@ -12,7 +12,7 @@
 // is deterministic: no randomness, no clock, same inputs → same digests.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import type { AudioDescriptor } from "../audioattributes.ts";
+import type { AudioDescriptor } from "@wenathlan/debonair/audioattributes";
 import type { ExportProject } from "../imageexport.ts";
 import {
   ANIMATION_FPS,

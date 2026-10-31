@@ -17,8 +17,8 @@
  * named, so the studio status line can show a traceable message.
  */
 
-import { fromAudioBufferLike, wavinfo } from "./audiodecode.ts";
-import { type AnalysisReport, analyzePcm, analyzeWavBytes } from "./audiopipeline.ts";
+import { fromAudioBufferLike, wavinfo } from "@wenathlan/debonair/audiodecode";
+import { type AnalysisReport, analyzePcm, analyzeWavBytes } from "@wenathlan/debonair/audiopipeline";
 import type { DemoFixture, DemoFixtureId } from "./introfixtures.ts";
 import { demoFixtures } from "./introfixtures.ts";
 

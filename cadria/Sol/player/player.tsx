@@ -21,7 +21,7 @@ import { ArrowLeftRegular } from "@fluentui/react-icons";
 // the anchor renders BARE: the one Shell chrome lives in Sol/Sol.tsx.
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useSearch } from "wouter";
-import { type AnalysisReport, analyzePcm, reportDigest } from "../../audiopipeline.ts";
+import { type AnalysisReport, analyzePcm, reportDigest } from "@wenathlan/debonair/audiopipeline";
 import {
   fetchGatewayRender,
   GatewayClientError,

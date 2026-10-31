@@ -9,8 +9,8 @@
 // (no NaN) and deterministic (deep-equal on repeat).
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import type { AudioDescriptor, DescriptorStats } from "../audioattributes.ts";
-import { fuseDescriptor } from "../audiofeatures.ts";
+import type { AudioDescriptor, DescriptorStats } from "@wenathlan/debonair/audioattributes";
+import { fuseDescriptor } from "@wenathlan/debonair/audiofeatures";
 import { bezierprogress } from "../easecurves.ts";
 import type { MotionKeyframe, MotionSpec } from "../synthmotion.ts";
 import {

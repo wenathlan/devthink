@@ -25,7 +25,7 @@
 // functions texturePresets, jitterField, sanitizeTexture, synthTexture,
 // textureDistance, synthTextureFromPreset.
 
-import type { AudioDescriptor } from "./audioattributes.ts";
+import type { AudioDescriptor } from "@wenathlan/debonair/audioattributes";
 
 /** one surface texture the renderer paints with — px where noted, else 0-1. */
 export interface TextureSpec {

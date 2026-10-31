@@ -13,8 +13,8 @@
 // doctrine constants, evaluateEase, synthMotion, motionTimeline,
 // motionReduced.
 
-import type { AudioDescriptor } from "./audioattributes.ts";
-import { clamp01, DIM_ORDER } from "./audiofeatures.ts";
+import type { AudioDescriptor } from "@wenathlan/debonair/audioattributes";
+import { clamp01, DIM_ORDER } from "@wenathlan/debonair/audiofeatures";
 import { bezierprogress } from "./easecurves.ts";
 
 /** spec-level easing names — pure evaluators, never CSS timing strings

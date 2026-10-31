@@ -11,7 +11,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { type AnalysisReport, analyzePcm, reportDigest } from "../../audiopipeline.ts";
+import { type AnalysisReport, analyzePcm, reportDigest } from "@wenathlan/debonair/audiopipeline";
 import { renderCommands, renderSvg, renderThumbnailSignature } from "../../imagerender.ts";
 import { type DemoFixtureId, demoFixtures } from "../../introfixtures.ts";
 import { label } from "../../labels.ts";

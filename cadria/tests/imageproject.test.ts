@@ -8,7 +8,7 @@
 // anchor hue. Every damage path answers ProjectError with its taxonomy code.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import type { AudioDescriptor } from "../audioattributes.ts";
+import type { AudioDescriptor } from "@wenathlan/debonair/audioattributes";
 import type { ImageProject } from "../imageproject.ts";
 import {
   buildImageProject,

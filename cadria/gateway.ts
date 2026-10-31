@@ -30,9 +30,9 @@
 
 import { serve } from "@hono/node-server";
 import { type Context, Hono } from "hono";
-import type { AudioDescriptor } from "./audioattributes.ts";
-import { AudioDecodeError } from "./audiodecode.ts";
-import { type AnalysisReport, analyzePcm, analyzeWavBytes, PipelineError } from "./audiopipeline.ts";
+import type { AudioDescriptor } from "@wenathlan/debonair/audioattributes";
+import { AudioDecodeError } from "@wenathlan/debonair/audiodecode";
+import { type AnalysisReport, analyzePcm, analyzeWavBytes, PipelineError } from "@wenathlan/debonair/audiopipeline";
 import { buildImageProject, type ImageProject, ProjectError, parseProject, serializeProject } from "./imageproject.ts";
 import { renderCommands, renderSvg } from "./imagerender.ts";
 import { styleByName, styleForDescriptor } from "./imagestyles.ts";

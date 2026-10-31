@@ -20,6 +20,18 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
+      /** the engine ownership bridges of the audio family: the analysis
+       * seats the studio pages ride (the descriptor contract and the
+       * orchestrated analysis report) live in the katexis engine of the
+       * debonair sibling — the audio domain has one owner and cadria
+       * consumes it through the published library specifiers, never
+       * through a local duplicate. the long family keys ride before the
+       * "@" theme alias; each entry retires when the published envelope
+       * carries the built module. */
+      "@wenathlan/debonair/audioattributes": path.resolve(import.meta.dirname, "../debonair/audioattributes.ts"),
+      "@wenathlan/debonair/audiodecode": path.resolve(import.meta.dirname, "../debonair/audiodecode.ts"),
+      "@wenathlan/debonair/audiofeatures": path.resolve(import.meta.dirname, "../debonair/audiofeatures.ts"),
+      "@wenathlan/debonair/audiopipeline": path.resolve(import.meta.dirname, "../debonair/audiopipeline.ts"),
       "@": path.resolve(import.meta.dirname, "Sol"),
     },
   },
@@ -31,10 +43,12 @@ export default defineConfig({
   },
   /** the theme sources live in the Sol folder of this app root: the pages import
    * the engine files (versawase.ts and the data layer) across the theme boundary
-   * from the same project root, so the dev server allows this single root. */
+   * from the same project root, and the audio analysis family answers from the
+   * debonair sibling root (the engine ownership law), so the dev server allows
+   * both roots. */
   server: {
     fs: {
-      allow: [import.meta.dirname],
+      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../debonair")],
     },
     host: true,
     strictPort: false,
