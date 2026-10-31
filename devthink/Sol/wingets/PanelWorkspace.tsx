@@ -24,11 +24,12 @@
 
 import { ClockRegular as Clock } from "@fluentui/react-icons";
 import type { ComponentType } from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { alttabkeydown } from "../../alttab.ts";
 import { DESKTOP_APPS, type DesktopApp } from "../../appregistry.ts";
 import { pushrecentapp } from "../../recentapps.ts";
-import { type WindowEntry, windowcatalog, windowspawn } from "../../window.ts";
+import { type WindowEntry, spawnfit, SPAWN_TOP_OFFSET, windowcatalog, windowspawn } from "../../window.ts";
+import { WindowBodySurface } from "../../useismobile.ts";
 import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspace.ts";
 import AudioAnchor from "../audio/audio.tsx";
 import CalculatorAnchor from "../calculator/calculator.tsx";
@@ -45,7 +46,7 @@ import UsageAnchor from "../usage/usage.tsx";
 import VideoAnchor from "../video/video.tsx";
 import ChatBody from "./ChatBody.tsx";
 import { DesktopSurface } from "./PanelDesktop.tsx";
-import { WINDOW_MIN_HEIGHT, WINDOW_MIN_WIDTH, WindowFrame, type WindowSnapshot } from "./PanelWindowframe.tsx";
+import { frameScale, WindowFrame, type WindowSnapshot } from "./PanelWindowframe.tsx";
 import { type AltTabCard, AltTabSwitcher } from "./ShellAlttabswitcher.tsx";
 import { ShellChrome } from "./Shellchrome.tsx";
 import { FamilyFrame } from "./ShellFamilyframe.tsx";
@@ -129,11 +130,11 @@ type ShellWorkspaceProps = {
 
 /** the float band base — windows stack upward from here, below the bar band */
 const Z_BASE = 20;
-/** the fixed chrome bands of the desktop, in px: no top chrome — the desktop
+/** the fixed chrome band of the desktop, in px: no top chrome — the desktop
  * starts at the viewport top (the win11 law: the taskbar is the bottom edge)
- * and the 48px taskbar rides Sol/sol.css --shell-bottom */
+ * and the 48px taskbar rides the root window logic (DESKTOP_TASKBAR — the
+ * same measure the .shell-desktop height derives from) */
 const SHELL_TOP = 0;
-const SHELL_BOTTOM = 48;
 
 /** resolves one registry app by id (the dock and the desktop share it) */
 function appById(id: string): DesktopApp {
@@ -146,35 +147,35 @@ function appById(id: string): DesktopApp {
  * one) */
 function defaultSnapshot(id: string, title: string, openCount: number): WindowSnapshot {
   const cascade = (openCount % 4) * 26;
-  const spawn = windowspawn(id);
-  /* the width answers the declared geometry first, the screen space second:
-     the window opens at its catalog width — the family rows ride the 1280
-     desktop band so the 961px+ breakpoints of the standalone tree fire
-     inside the frame exactly like at the direct url (the window-era law:
-     one design) — and only the screen clamps it. the portrait law keeps
-     the 460px floor under the viewport minus the gutter — on a 390px phone
-     the window spawns 374px wide and stays on the surface instead of
-     spawning off-screen */
-  const width = Math.min(
-    spawn?.width ?? 760,
-    Math.max(460, Math.round(window.innerWidth) - 16),
-    Math.max(WINDOW_MIN_WIDTH, Math.round(window.innerWidth) - 16),
-  );
-  const height = Math.max(
-    WINDOW_MIN_HEIGHT,
-    Math.min(
-      spawn?.height ?? Number.POSITIVE_INFINITY,
-      Math.round(window.innerHeight - SHELL_TOP - SHELL_BOTTOM - 130),
-    ),
-  );
+  /* the geometry answers css pixels: the interface zoom renders each one
+     wider, so the spawn measures the viewport divided by the live scale —
+     the clamp the visitor SEES is the clamp the screen applies (a 1280px
+     band opens 1600 rendered pixels on a 125% os and lands cut otherwise) */
+  const scale = frameScale(document.querySelector("main.shell-os"));
+  /* the opening verdict of the root window logic: the floating bounds
+     clamped to the real desktop band (the .shell-desktop measure — the
+     viewport over the height minus the taskbar), or the full snap when
+     the family band the app answers cannot fit the screen — the window
+     opens already maximized so the app answers the viewport the direct
+     url answers instead of a cut of it (the PR12 bug: apps opened cut
+     inside the windows while the direct url answered them whole) */
+  const fit = spawnfit(id, {
+    width: Math.round(window.innerWidth / scale),
+    height: Math.round(window.innerHeight / scale),
+  });
   return {
     id,
     title,
-    x: Math.min(Math.max(28, Math.round(window.innerWidth * 0.2) + cascade), Math.max(28, window.innerWidth - width)),
-    y: SHELL_TOP + 26 + cascade,
-    width,
-    height,
-    state: "normal",
+    x: Math.min(
+      Math.max(28, Math.round(fit.desktopWidth * 0.2) + cascade),
+      Math.max(28, fit.desktopWidth - fit.width),
+    ),
+    // the cascade gives way when the window fills the band — the bottom
+    // edge never crosses the taskbar
+    y: SHELL_TOP + Math.min(SPAWN_TOP_OFFSET + cascade, Math.max(SHELL_TOP, fit.desktopHeight - fit.height)),
+    width: fit.width,
+    height: fit.height,
+    state: fit.maximized ? "maximized" : "normal",
     z: Z_BASE,
   };
 }
@@ -450,14 +451,21 @@ export function ShellWorkspace({
 }
 
 /** WindowHost — the sandbox body of a registry window: the app anchor with
- * the embedded contract (no shell, no hero inside the frame). */
+ * the embedded contract (no shell, no hero inside the frame). the host
+ * element registers on the WindowBodySurface context so the in-window
+ * bodies measure the window they ride in — the container the @container
+ * mirrors of sol.css and the useIsMobile hook answer — instead of the
+ * browser viewport (the cut-window bug of the window era). */
 function WindowHost({ id }: { id: string }) {
   const app = windowApp(id);
+  const hostRef = useRef<HTMLDivElement | null>(null);
   if (!app) return null;
   const Body = app.component;
   return (
-    <div className="shell-window__host">
-      <Body embedded />
-    </div>
+    <WindowBodySurface.Provider value={hostRef}>
+      <div className="shell-window__host" ref={hostRef}>
+        <Body embedded />
+      </div>
+    </WindowBodySurface.Provider>
   );
 }

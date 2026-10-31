@@ -385,9 +385,15 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout the DevThink release source
+        # the ref rides the workflow's own trusted context (the dispatch tag
+        # or the pushed ref) instead of the cross-job output the
+        # cache-poisoning scan flags — the same trusted-context law the
+        # assemble lane adopted: the metadata lockstep already proved the
+        # tag points at this commit, so this checkout answers the same
+        # source without an untrusted ref flowing into the lane.
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ needs.assemble.outputs.ref }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
           fetch-depth: 0
       - name: Convert the sites and emit the web and next zips
         # the smart conversion of the family: no application duplicates a
@@ -674,9 +680,15 @@ jobs:
       - name: Checkout the release source for the node baseline file
         # the npmjs lane publishes from the downloaded artifact set alone, so
         # the node-version-file the setup reads needs its sparse checkout.
+        # the ref rides the workflow's own trusted context (the dispatch tag
+        # or the pushed ref) instead of the cross-job output the
+        # cache-poisoning scan flags — the same trusted-context law the
+        # assemble lane adopted: the metadata lockstep already proved the
+        # tag points at this commit, so this checkout answers the same
+        # source without an untrusted ref flowing into the lane.
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ needs.assemble.outputs.ref }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
           sparse-checkout: |
             devthink/.nvmrc
           fetch-depth: 1
@@ -962,9 +974,15 @@ jobs:
     # registry envelope carried no dist at all).
     steps:
       - name: Checkout the release source for the family envelopes
+        # the ref rides the workflow's own trusted context (the dispatch tag
+        # or the pushed ref) instead of the cross-job output the
+        # cache-poisoning scan flags — the same trusted-context law the
+        # assemble lane adopted: the metadata lockstep already proved the
+        # tag points at this commit, so this checkout answers the same
+        # source without an untrusted ref flowing into the lane.
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ needs.assemble.outputs.ref }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
           fetch-depth: 1
       - name: Build the saddle engine envelope (the exports promise)
         # the saddle manifest gates publish on the built dist through
@@ -1120,9 +1138,15 @@ jobs:
     # stays with the registry conventions, never this lane).
     steps:
       - name: Checkout the release source
+        # the ref rides the workflow's own trusted context (the dispatch tag
+        # or the pushed ref) instead of the cross-job output the
+        # cache-poisoning scan flags — the same trusted-context law the
+        # assemble lane adopted: the metadata lockstep already proved the
+        # tag points at this commit, so this checkout answers the same
+        # source without an untrusted ref flowing into the lane.
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ needs.assemble.outputs.ref }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
           fetch-depth: 1
       - name: Log in to the github container registry
         run: echo "${{ github.token }}" | docker login ghcr.io -u "${{ github.repository_owner }}" --password-stdin

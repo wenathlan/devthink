@@ -18,73 +18,40 @@ import {
 	PlayCircleRegular as PlayCircle,
 } from '@fluentui/react-icons';
 import { PageShell } from '../shell/Shell.tsx';
+import { label, labelfill } from '../../labels.ts';
 
+/** the operations index: the glyph and the two-digit index are presentation
+ * code, every word rides the store under the docs.note.* family. */
 const docs = [
-	{
-		icon: BookOpen,
-		index: '00',
-		title: 'Start with the thesis',
-		body: 'Storage, memory and the usage flag.',
-		meta: 'FOUNDATION',
-	},
-	{
-		icon: Braces,
-		index: '01',
-		title: 'Session JSON',
-		body: 'The reproducible artifact behind a browser run.',
-		meta: 'AGENT BROWSER',
-	},
-	{
-		icon: GitCommitHorizontal,
-		index: '02',
-		title: 'Repo-as-CPU',
-		body: 'Dispatch, runners, Pages and the shared surface.',
-		meta: 'ENGINE',
-	},
-	{
-		icon: FileCode2,
-		index: '03',
-		title: 'Provider chain',
-		body: 'First free runner wins, with limits exposed.',
-		meta: 'ENGINE',
-	},
-	{
-		icon: Flag,
-		index: '04',
-		title: 'Build gates',
-		body: 'Planning before platform implementation.',
-		meta: 'PRODUCTIZATION',
-	},
-];
+	{ icon: BookOpen, index: '00', key: 'thesis' },
+	{ icon: Braces, index: '01', key: 'session' },
+	{ icon: GitCommitHorizontal, index: '02', key: 'repo' },
+	{ icon: FileCode2, index: '03', key: 'chain' },
+	{ icon: Flag, index: '04', key: 'gates' },
+] as const;
 
 export default function Docs() {
 	return (
 		<PageShell
-			section="05 / 06"
-			label="Docs"
-			title="Notes for operating the chain."
-			intro="Progressive documentation: first the thesis, then the engine, then the surfaces that make the idea usable."
+			section={label('docs.shell.section')}
+			label={label('docs.shell.label')}
+			title={label('docs.shell.title')}
+			intro={label('docs.shell.intro')}
 		>
 			<section className="content-section split-content">
 				<div>
-					<p className="eyebrow">PROGRESSIVE ARC</p>
-					<h2 className="section-title">Read how a system gets built.</h2>
+					<p className="eyebrow">{label('docs.split.eyebrow')}</p>
+					<h2 className="section-title">{label('docs.split.title')}</h2>
 				</div>
 				<div className="prose-copy">
-					<p>
-						The Saddle README works as the source of truth. This surface organizes the concepts into
-						smaller steps, so the architecture can be understood before it is triggered.
-					</p>
-					<p>
-						The guides below are the first editorial layer and point to the upcoming implementation
-						pages.
-					</p>
+					<p>{label('docs.split.body1')}</p>
+					<p>{label('docs.split.body2')}</p>
 				</div>
 			</section>
 			<section className="content-section docs-list">
 				<div className="content-section-heading">
-					<p className="eyebrow">INDEX / FOUNDATION → PRODUCTIZATION</p>
-					<span className="mono-label">5 notes</span>
+					<p className="eyebrow">{label('docs.index.eyebrow')}</p>
+					<span className="mono-label">{labelfill('docs.index.mono', { n: String(docs.length) })}</span>
 				</div>
 				{docs.map((doc) => {
 					const Icon = doc.icon;
@@ -92,15 +59,15 @@ export default function Docs() {
 						<button
 							type="button"
 							className="doc-row"
-							key={doc.title}
+							key={doc.key}
 							onClick={(event) => event.preventDefault()}
 						>
 							<span className="doc-index">{doc.index}</span>
 							<Icon fontSize={20} strokeWidth={1.5} />
 							<div className="doc-copy">
-								<span>{doc.meta}</span>
-								<strong>{doc.title}</strong>
-								<p>{doc.body}</p>
+								<span>{label(`docs.note.${doc.key}.meta`)}</span>
+								<strong>{label(`docs.note.${doc.key}.title`)}</strong>
+								<p>{label(`docs.note.${doc.key}.body`)}</p>
 							</div>
 							<ArrowUpRight fontSize={17} />
 						</button>
@@ -110,9 +77,9 @@ export default function Docs() {
 			<section className="content-section docs-cta">
 				<PlayCircle fontSize={22} />
 				<div>
-					<p className="eyebrow">NEXT / BUILD GATE</p>
-					<h3>Planning first. Platform next.</h3>
-					<p>The implementation path starts once the chain is clear enough to be operated.</p>
+					<p className="eyebrow">{label('docs.cta.eyebrow')}</p>
+					<h3>{label('docs.cta.title')}</h3>
+					<p>{label('docs.cta.body')}</p>
 				</div>
 				<a
 					href="https://github.com/wenathlan/saddle"
@@ -120,7 +87,8 @@ export default function Docs() {
 					rel="noreferrer"
 					className="button button-dark"
 				>
-					Open repository <ArrowUpRight fontSize={15} />
+					{label('docs.cta.link')}
+					<ArrowUpRight fontSize={15} />
 				</a>
 			</section>
 		</PageShell>

@@ -55,6 +55,7 @@ import { Link, useLocation } from 'wouter';
 import type { MediaSlot } from '../../catalog.ts';
 import { familyrow } from '../../family.ts';
 import { familyurl } from '../../familyurl.ts';
+import { label } from '../../labels.ts';
 import { cn } from '../../utils.ts';
 
 /* ============================ theme context ============================ */
@@ -703,16 +704,19 @@ type PageShellProps = {
         media?: MediaSlot;
 };
 
-export function PageShell({ section, label, title, intro, children, media }: PageShellProps) {
+// the prop keeps its public name `label` for every caller; the local
+// binding answers `pagelabel` so the label store accessor the footer
+// reads stays in scope (the copy law — no shadow, no hardcoded string).
+export function PageShell({ section, label: pagelabel, title, intro, children, media }: PageShellProps) {
         return (
                 <div className="site-frame">
                         <main>
                                 {/* logo discipline: the window title bar carries the ONE mark;
                                  * the page hero speaks the eyebrow instead */}
                                 <section className="page-intro halftone container">
-                                        <SectionRail number={section} label={label} />
+                                        <SectionRail number={section} label={pagelabel} />
                                         <div className="page-intro-copy">
-                                                <p className="eyebrow">saddle · {label}</p>
+                                                <p className="eyebrow">saddle · {pagelabel}</p>
                                                 <h1 className="page-title">{title}</h1>
                                                 <p className="page-intro-text">{intro}</p>
                                         </div>
@@ -732,8 +736,8 @@ export function PageShell({ section, label, title, intro, children, media }: Pag
                                 <div className="page-content container">{children}</div>
                         </main>
                         <footer className="site-footer container">
-                                <span>© 2026 Saddle / distributed by design</span>
-                                <span className="mono-label">storage == compute</span>
+                                <span>{label('home.footer.copyright')}</span>
+                                <span className="mono-label">{label('home.footer.mono')}</span>
                         </footer>
                 </div>
         );

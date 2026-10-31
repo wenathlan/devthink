@@ -130,15 +130,16 @@ jobs:
         run: cd devthink && node matrixverify.ts
       - name: Prove the telemetry free guarantees of the release candidate behind the block all proxy
         run: cd devthink && node telemetryfree.ts
-      # The soak and wcag sweeps closed the validate:candidate family of the
-      # extension lane; the merge kept the scripts but left them off the
-      # ladder. Both read the built dist — the soak drives the compiled
-      # engine and the wcag cross-checks the generated extension pages —
-      # so they ride after the root build like every gate above them.
+      # The soak sweep closed the validate:candidate family of the extension
+      # lane; the merge kept the script but left it off the ladder. It reads
+      # the built dist — the soak drives the compiled engine — so it rides
+      # after the root build like every gate above it. The wcag sweep of the
+      # same family already ran right after that root build (the suite's
+      # readiness test reads the recorded evidence, and nothing between the
+      # two points rebuilds the tree), so the lane answers the sweep once,
+      # at its first use — never twice over the same built dist.
       - name: Run the soak sweep of the retention window without drift
         run: cd devthink && node soak.ts
-      - name: Run the wcag accessibility sweep over every ui surface
-        run: cd devthink && node wcag.ts
       - name: Run the example gallery recipes runner of the platform release
         run: cd devthink && node recipes.ts
       - name: Run the release readiness review of the platform release
@@ -222,10 +223,15 @@ jobs:
       - name: Run the package extension pack verification
         run: cd devthink && node packageextension.ts
       - name: Dry-run the flat package of the single distribution
+        # the root build already ran before the deterministic suite (the
+        # lane's single compile: the frozen schema the suite reads, every
+        # gate below and this staging all derive from it), and nothing
+        # between the two steps rebuilds or removes the staged distpackage
+        # — the dry-run packs the tree that build emitted, so the lane
+        # never compiles the same distribution twice.
         run: |
           set -euo pipefail
           cd devthink
-          node build.ts
           npm pack ./distpackage --dry-run
       - uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # v2.2.0
         id: chrome-for-testing

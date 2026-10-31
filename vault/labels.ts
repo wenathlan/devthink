@@ -18,7 +18,7 @@
  * the prose and the affordances around them ride here.
  */
 
-import type { LabelRow } from "./db";
+import type { LabelRow } from "./db.ts";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */

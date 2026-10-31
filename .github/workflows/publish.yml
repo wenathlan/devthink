@@ -2183,6 +2183,10 @@ jobs:
             extension: ".exe"
             runnable: false
     runs-on: ubuntu-24.04
+    # every job carries its own ceiling (the family contract): the
+    # compiled-binary leg rides the same bun build --compile recipe the
+    # release assemble lane carries its 30-minute ceiling for.
+    timeout-minutes: 30
     # least-privilege: the job's own write (the e2ugh job-permission doctrine)
     permissions:
       contents: write
@@ -2392,6 +2396,10 @@ jobs:
             target: aarch64-apple-darwin
             bundles: app,dmg
     runs-on: ${{ matrix.runner }}
+    # every job carries its own ceiling (the family contract): the rust
+    # compile lane rides the family desktop lane's own 60-minute value
+    # (the same tauri matrix family-desktop.yml gates).
+    timeout-minutes: 60
     # least-privilege: the job's own write (the e2ugh job-permission doctrine)
     permissions:
       contents: write
@@ -2785,6 +2793,10 @@ jobs:
         (github.event.workflow_run.conclusion == 'success' &&
           (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
     runs-on: ubuntu-24.04
+    # every job carries its own ceiling (the family contract): the mobile
+    # shell lane rides the family mobile lane's own 45-minute value
+    # (family-mobile.yml gates the android leg the same).
+    timeout-minutes: 45
     # least-privilege: the job's own write (the e2ugh job-permission doctrine)
     permissions:
       contents: write
@@ -3151,6 +3163,10 @@ jobs:
         (github.event.workflow_run.conclusion == 'success' &&
           (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
     runs-on: macos-15
+    # every job carries its own ceiling (the family contract): the
+    # simulator leg rides the family mobile lane's own 45-minute value
+    # (the ios legs of family-mobile.yml answer the same ceiling).
+    timeout-minutes: 45
     # least-privilege: the job's own write (the e2ugh job-permission doctrine)
     permissions:
       contents: write
@@ -3311,6 +3327,10 @@ jobs:
     # no-secrets iOS surface of the repository.
     if: ${{ (github.event_name == 'workflow_dispatch' && inputs.build_ios == true) || vars.DEVTHINK_IOS_ENABLED == 'true' }}
     runs-on: macos-15
+    # every job carries its own ceiling (the family contract): the signed
+    # ipa lane rides the family mobile lane's own 45-minute value (the
+    # no-secrets simulator leg above answers the same ceiling).
+    timeout-minutes: 45
     # least-privilege: the job's own write (the e2ugh job-permission doctrine)
     permissions:
       contents: write
@@ -3529,6 +3549,10 @@ jobs:
         (github.event.workflow_run.conclusion == 'success' &&
           (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
     runs-on: ubuntu-24.04
+    # every job carries its own ceiling (the family contract): the archive
+    # lane builds the same runtime target the security battery scans under
+    # its own 30-minute container ceiling.
+    timeout-minutes: 30
     # least-privilege: the job's own write (the e2ugh job-permission doctrine)
     permissions:
       contents: write
@@ -3640,6 +3664,10 @@ jobs:
         (github.event.workflow_run.conclusion == 'success' &&
           (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
     runs-on: ubuntu-latest
+    # every job carries its own ceiling (the family contract): the
+    # packaging lane rides the artifact lanes' own 20-minute value (the
+    # maven and nuget legs answer the same ceiling).
+    timeout-minutes: 20
     # least-privilege: the job's own write (the e2ugh job-permission doctrine)
     permissions:
       contents: write
@@ -4465,6 +4493,10 @@ jobs:
     # rides the same GitHub-computed source the validation lane carries.
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-24.04
+    # every job carries its own ceiling (the family contract): the
+    # resolver leg rides the rubygems resolver's own 15-minute value
+    # (the same resolve role this workflow already gates).
+    timeout-minutes: 15
     defaults:
       run:
         shell: bash

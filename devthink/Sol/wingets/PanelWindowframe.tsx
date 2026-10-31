@@ -214,6 +214,21 @@ function desktopAreaOf(el: HTMLElement): { left: number; top: number; width: num
   return { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
 }
 
+/** the rendered scale of one element (the interfaceZoom preference paints
+ * the panel root through the css zoom property): getBoundingClientRect
+ * answers the zoomed render while offsetWidth stays in css pixels, so the
+ * ratio is the live factor. the window bounds answer css pixels while the
+ * pointer events arrive in viewport pixels — every gesture, clamp and
+ * spawn divides by this scale, or the windows measure in rendered pixels
+ * and land off the screen the visitor sees (the zoom divergence of the
+ * window era: the direct url never scales, the os window must not either). */
+export function frameScale(el: Element | null): number {
+  if (!(el instanceof HTMLElement)) return 1;
+  const rendered = el.getBoundingClientRect().width;
+  const layout = el.offsetWidth;
+  return rendered > 0 && layout > 0 ? rendered / layout : 1;
+}
+
 export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, children }: WindowFrameProps) {
   const frameRef = useRef<HTMLElement | null>(null);
   /** a minimize/restore glide is in flight — blocks a second launch */
@@ -378,6 +393,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
     closeFlyout();
     const el = frameRef.current;
     if (!el) return;
+    const scale = frameScale(el);
     const floating = win.state !== "normal";
     const rect = el.getBoundingClientRect();
     const grabRatio = rect.width > 0 ? Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width)) : 0.5;
@@ -415,17 +431,22 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
           state: "normal",
           width: dims.width,
           height: dims.height,
-          x: Math.round(move.clientX - dims.width * grabRatio),
-          y: Math.max(0, Math.round(move.clientY - grabOffsetY)) });
+          x: Math.round(move.clientX / scale - dims.width * grabRatio),
+          y: Math.max(0, Math.round((move.clientY - grabOffsetY) / scale)) });
         showGhost(zoneAt(move));
         return;
       }
+      // the pointer deltas arrive in viewport pixels — the bounds answer
+      // css pixels, so the zoom scale divides the motion and the clamps
+      // (the visible floors stay rendered pixels, the honest unit)
       const patch: Partial<Omit<WindowSnapshot, "id">> = {
         x: Math.min(
-          Math.max(origin.x + move.clientX - startX, DRAG_VISIBLE - origin.width),
-          window.innerWidth - DRAG_VISIBLE,
+          Math.max(origin.x + (move.clientX - startX) / scale, DRAG_VISIBLE / scale - origin.width),
+          (window.innerWidth - DRAG_VISIBLE) / scale,
         ),
-        y: Math.min(Math.max(origin.y + move.clientY - startY, 0), window.innerHeight - DRAG_VISIBLE) };
+        y: Math.min(
+          Math.max(origin.y + (move.clientY - startY) / scale, 0),
+          (window.innerHeight - DRAG_VISIBLE) / scale) };
       if (floatRestore && !consumed) {
         consumed = true;
         patch.width = floatRestore.width;
@@ -515,6 +536,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
     closeFlyout();
     const el = frameRef.current;
     const handle = event.currentTarget;
+    const scale = frameScale(el);
     el?.setAttribute("data-moving", "true");
     try {
       handle.setPointerCapture(event.pointerId);
@@ -530,16 +552,18 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
     const north = direction.includes("n");
 
     const applyMove = (move: PointerEvent) => {
+      // the resize deltas divide by the zoom scale — the bounds answer
+      // css pixels, the pointer arrives in viewport pixels
       const patch: Partial<Omit<WindowSnapshot, "id">> = {};
-      if (east) patch.width = Math.max(WINDOW_MIN_WIDTH, origin.width + (move.clientX - startX));
+      if (east) patch.width = Math.max(WINDOW_MIN_WIDTH, origin.width + (move.clientX - startX) / scale);
       if (west) {
-        const width = Math.max(WINDOW_MIN_WIDTH, origin.width - (move.clientX - startX));
+        const width = Math.max(WINDOW_MIN_WIDTH, origin.width - (move.clientX - startX) / scale);
         patch.width = width;
         patch.x = origin.x + (origin.width - width);
       }
-      if (south) patch.height = Math.max(WINDOW_MIN_HEIGHT, origin.height + (move.clientY - startY));
+      if (south) patch.height = Math.max(WINDOW_MIN_HEIGHT, origin.height + (move.clientY - startY) / scale);
       if (north) {
-        const height = Math.max(WINDOW_MIN_HEIGHT, origin.height - (move.clientY - startY));
+        const height = Math.max(WINDOW_MIN_HEIGHT, origin.height - (move.clientY - startY) / scale);
         patch.height = height;
         patch.y = origin.y + (origin.height - height);
       }
@@ -682,15 +706,19 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
       return;
     }
     const area = desktopAreaOf(el);
-    const width = Math.max(WINDOW_MIN_WIDTH, Math.round((cell.cols / template.cols) * area.width));
-    const height = Math.max(WINDOW_MIN_HEIGHT, Math.round((cell.rows / template.rows) * area.height));
+    // the snap zones measure the rendered desktop (getBoundingClientRect
+    // answers the zoomed render) — the free bounds land in css pixels, so
+    // the area divides by the zoom scale before the grid math
+    const scale = frameScale(el);
+    const width = Math.max(WINDOW_MIN_WIDTH, Math.round(((cell.cols / template.cols) * area.width) / scale));
+    const height = Math.max(WINDOW_MIN_HEIGHT, Math.round(((cell.rows / template.rows) * area.height) / scale));
     const x = Math.min(
-      Math.round(area.left + ((cell.col - 1) / template.cols) * area.width),
-      Math.round(area.left + area.width) - width,
+      Math.round((area.left + ((cell.col - 1) / template.cols) * area.width) / scale),
+      Math.round((area.left + area.width) / scale) - width,
     );
     const y = Math.min(
-      Math.round(area.top + ((cell.row - 1) / template.rows) * area.height),
-      Math.round(area.top + area.height) - height,
+      Math.round((area.top + ((cell.row - 1) / template.rows) * area.height) / scale),
+      Math.round((area.top + area.height) / scale) - height,
     );
     onUpdate(win.id, { ...keep, state: "normal", x, y, width, height });
   }

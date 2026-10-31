@@ -11,7 +11,7 @@
 import { mkdirSync } from "node:fs";
 import path from "node:path";
 import Database from "better-sqlite3";
-import { LABEL_MANIFEST, LABEL_REVISION } from "./labels";
+import { LABEL_MANIFEST, LABEL_REVISION } from "./labels.ts";
 
 /** the correlated tables the runtime keeps (the family sync contract names). */
 export const tables = ["keys", "payloads", "onboarding_states", "labels"] as const;

@@ -20,7 +20,7 @@ import { label, labelfill } from '../../labels.ts';
  * typed ES module that replaced the window-global localauth.js of the static edge (the original
  * beside the typed module - the same convention the Login page uses. */
 import { logout, probe, session as readlocalsession } from '../../localauth.ts';
-import { AccountPanel as type, LocalSessionView } from '../wingets';
+import type { LocalSessionView } from '../wingets';
 import { AccountPanel as AccountPanel } from '../wingets';
 import { AdminPanel as AdminPanel } from '../wingets';
 import { CreateSandboxForm as CreateSandboxForm } from '../wingets';

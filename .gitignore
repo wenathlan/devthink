@@ -347,6 +347,10 @@ vault/favicon-*.ico
 vault/manifest-*.webmanifest
 vault/icon-*.png
 vault/apple-touch-icon*.png
+# the vault engine build staging (the tsc experiment copy with the .js
+# import rewrites — the published library form is the source itself, the
+# debonair/getry doctrine, so the staging never enters the tree):
+vault/.enginebuild/
 
 # The saddle engine lanes (the virtualization sandbox builds the native
 # C/C++ shims, the gem and nuget packages, the python bridges and the vm

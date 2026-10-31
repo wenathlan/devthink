@@ -7,7 +7,9 @@
  * which now lives here as the page mount itself.
  */
 
-// Signal & Ledger: integrations as surfaces of the same engine, not disconnected products.
+// Signal & Ledger: integrations as surfaces of the same engine, not
+// disconnected products. The glyphs are presentation code; every word rides
+// the label store (labels.ts — the copy law).
 import {
         FoodAppleRegular as Apple,
         BotRegular as Bot,
@@ -19,30 +21,68 @@ import {
         WindowConsoleRegular as Terminal,
 } from '@fluentui/react-icons';
 import { PageShell } from '../shell/Shell.tsx';
+import { label, labelfill, type LabelKey } from '../../labels.ts';
 
-const integrationGroups = [
+/** the surface groups: the glyph is presentation code, the group and item
+ * words ride the store (integrations.group.* / integrations.item.*). */
+const integrationGroups: readonly {
+        labelkey: LabelKey;
+        items: readonly { icon: typeof Box; namekey: LabelKey; bodykey: LabelKey }[];
+}[] = [
         {
-                label: 'Package surfaces',
+                labelkey: 'integrations.group.package.label',
                 items: [
-                        { icon: Box, name: 'npm package', body: '@wenathlan/saddle' },
-                        { icon: Terminal, name: 'CLI / binary', body: 'one command, remote run' },
-                        { icon: Container, name: 'GitHub Container', body: 'runner-ready image' },
+                        {
+                                icon: Box,
+                                namekey: 'integrations.item.npm.name',
+                                bodykey: 'integrations.item.npm.body',
+                        },
+                        {
+                                icon: Terminal,
+                                namekey: 'integrations.item.cli.name',
+                                bodykey: 'integrations.item.cli.body',
+                        },
+                        {
+                                icon: Container,
+                                namekey: 'integrations.item.container.name',
+                                bodykey: 'integrations.item.container.body',
+                        },
                 ],
         },
         {
-                label: 'Client surfaces',
+                labelkey: 'integrations.group.client.label',
                 items: [
-                        { icon: Globe, name: 'CRX extension', body: 'capture from the browser' },
-                        { icon: Smartphone, name: 'Android / iOS', body: 'native shell' },
-                        { icon: Apple, name: 'Desktop app', body: 'local shell, remote engine' },
+                        {
+                                icon: Globe,
+                                namekey: 'integrations.item.crx.name',
+                                bodykey: 'integrations.item.crx.body',
+                        },
+                        {
+                                icon: Smartphone,
+                                namekey: 'integrations.item.mobile.name',
+                                bodykey: 'integrations.item.mobile.body',
+                        },
+                        {
+                                icon: Apple,
+                                namekey: 'integrations.item.desktop.name',
+                                bodykey: 'integrations.item.desktop.body',
+                        },
                 ],
         },
         {
-                label: 'Bot surfaces',
+                labelkey: 'integrations.group.bot.label',
                 items: [
-                        { icon: GitBranch, name: 'Forge adapters', body: 'GitHub / GitLab / Forgejo' },
-                        { icon: Bot, name: 'n8n node', body: 'workflow as trigger' },
-                        { icon: Terminal, name: 'Webhook server', body: 'event in, run out' },
+                        {
+                                icon: GitBranch,
+                                namekey: 'integrations.item.forge.name',
+                                bodykey: 'integrations.item.forge.body',
+                        },
+                        { icon: Bot, namekey: 'integrations.item.n8n.name', bodykey: 'integrations.item.n8n.body' },
+                        {
+                                icon: Terminal,
+                                namekey: 'integrations.item.webhook.name',
+                                bodykey: 'integrations.item.webhook.body',
+                        },
                 ],
         },
 ];
@@ -50,41 +90,43 @@ const integrationGroups = [
 export default function Integrations() {
         return (
                 <PageShell
-                        section="04 / 06"
-                        label="Integrations"
-                        title="One machine. Many entry points."
-                        intro="The surface changes to fit the operator's flow; the engine stays the same, with storage, runner, events and results at the center."
+                        section={label('integrations.shell.section')}
+                        label={label('integrations.shell.label')}
+                        title={label('integrations.shell.title')}
+                        intro={label('integrations.shell.intro')}
                 >
                         <section className="content-section split-content">
                                 <div>
-                                        <p className="eyebrow">SURFACE AREA</p>
-                                        <h2 className="section-title">
-                                                Do not choose between package, app or workflow. Chain them.
-                                        </h2>
+                                        <p className="eyebrow">{label('integrations.split.eyebrow')}</p>
+                                        <h2 className="section-title">{label('integrations.split.title')}</h2>
                                 </div>
                                 <div className="prose-copy">
-                                        <p>
-                                                Saddle can be imported, triggered, packaged or embedded. The architecture keeps a useful
-                                                split: interfaces handle input and observation; the remote chain does the work.
-                                        </p>
-                                        <p>That is the detail that lets you swap the shell without rewriting the machine.</p>
+                                        <p>{label('integrations.split.body1')}</p>
+                                        <p>{label('integrations.split.body2')}</p>
                                 </div>
                         </section>
                         <section className="content-section integration-groups">
                                 {integrationGroups.map((group) => (
-                                        <div className="integration-group" key={group.label}>
+                                        <div className="integration-group" key={group.labelkey}>
                                                 <div className="content-section-heading">
-                                                        <p className="eyebrow">{group.label}</p>
-                                                        <span className="mono-label">3 surfaces</span>
+                                                        <p className="eyebrow">{label(group.labelkey)}</p>
+                                                        <span className="mono-label">
+                                                                {labelfill('integrations.group.mono', {
+                                                                        n: String(group.items.length),
+                                                                })}
+                                                        </span>
                                                 </div>
                                                 <div className="integration-grid">
                                                         {group.items.map((item) => {
                                                                 const Icon = item.icon;
                                                                 return (
-                                                                        <div className="integration-card" key={item.name}>
+                                                                        <div
+                                                                                className="integration-card"
+                                                                                key={item.namekey}
+                                                                        >
                                                                                 <Icon fontSize={20} strokeWidth={1.5} />
-                                                                                <strong>{item.name}</strong>
-                                                                                <span>{item.body}</span>
+                                                                                <strong>{label(item.namekey)}</strong>
+                                                                                <span>{label(item.bodykey)}</span>
                                                                         </div>
                                                                 );
                                                         })}
@@ -93,8 +135,8 @@ export default function Integrations() {
                                 ))}
                         </section>
                         <section className="content-section integration-quote">
-                                <p>“The same engine is sometimes each of the other three.”</p>
-                                <span className="mono-label">SADDLE / PRINCIPLE 04</span>
+                                <p>{label('integrations.quote.body')}</p>
+                                <span className="mono-label">{label('integrations.quote.mono')}</span>
                         </section>
                 </PageShell>
         );

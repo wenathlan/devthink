@@ -6,20 +6,23 @@
    pass) rebuilt on the DEVTHINK FOUNDATION: the 8-d rewrite is the family
    source of truth and this file carries the SAME exact values, wearing the
    windows hands on top — the press .7 on the icon buttons, the dtPopIntro
-   pin entrance, the fluent window curve, the caption buttons with the
-   fluent red close, the inactive grayscale law, the eight resize handles,
-   the win11 scrollbar, the focus underlines. sections: tailwind layer ·
-   tokens · light face · base · primitives · window chrome · pages ·
-   motion · guards.
+   pin entrance, the fluent window curve, the win11 scrollbar, the focus
+   underlines. the window-era hands (the caption buttons with the fluent
+   red close, the inactive grayscale law, the eight resize handles, the
+   restore chip) died with the FAMILY STANDALONE LAW — the direct url
+   answers full-bleed and the os power clip draws its own chrome. sections:
+   tailwind layer · tokens · light face · base · primitives · the app
+   surface · pages · motion · guards.
    doctrine: mica #202020 radial-gradient(#1a1f35 25%, #202020 100%) fixed ·
    the 8-step surface ladder #242424→#494949 · hairlines ink 5%/10% · THE
    WHITE SUN as the one signal (the single-theme law: the name is Sol but
    the sun is WHITE, never the yellow of the retired lime — pure #ffffff on
    the dark ladder, the graphite contrast pole on the light face, the same
    white light every app of the family wears; the tan-couro story survives
-   only in the drawn brand mark) — focus and the chrome answer the windows
-   accent #4cc2ff (light #0067c0) · close rgb(232 17 35) · body 13px weight
-   450 · Inter Variable everywhere, Geist Mono on labels and numbers · H1
+   only in the drawn brand mark) — focus answers the windows accent #4cc2ff
+   (light #0067c0); the content states (the onboarding ladder, the meter
+   top, the diagram tones, the link hovers) ride the one accent · body 13px
+   weight 450 · Inter Variable everywhere, Geist Mono on labels and numbers · H1
    clamp(2.25rem,5vw,3.75rem) tracking -0.02em · radii .625rem law (window
    8, controls 4 — the 11+10 blend) · micro 150ms cubic-bezier(0.22,1,0.36,1)
    · windows 250ms cubic-bezier(0.85,0.14,0.14,0.85) · popintro 800ms ·
@@ -132,9 +135,10 @@
         --lime-500: var(--color-signal); /* the signal — the white sun */
         --lime-600: var(--color-signal-2); /* the deep pole — the penumbra */
         --lime-ink: var(--color-signal-ink); /* the ink that rides ON sun fills */
-        /* the accents: the white sun (the one Sol) rides the accent slot;
-           the WINDOWS accent governs focus, the caption chrome and the bar
-           cta */
+        /* the accents: the white sun (the one Sol) rides the accent slot —
+           every content state answers it; the WINDOWS accent governs focus
+           alone (the window chrome it once ruled died with the standalone
+           law) */
         --accent: var(--lime-500);
         --accent-ink: var(--lime-ink);
         --win-accent: #4cc2ff;
@@ -316,8 +320,6 @@
         --win-shadow-window: var(--shadow-window);
         --win-shadow-flyout: var(--shadow-flyout);
         --win-ease-window: var(--ease-window);
-        /* the fixed glyph ink of the red close hover (fluent: white over red) */
-        --win-caption-ink: #f7f3ee;
         font-size: 16px;
         color-scheme: dark;
 }
@@ -397,7 +399,7 @@ a {
         text-decoration: none;
 }
 a:hover {
-        color: var(--win-accent);
+        color: var(--accent);
 }
 h1,
 h2,
@@ -935,7 +937,7 @@ button.primary:disabled {
         transition: color var(--sol-micro) var(--sol-ease-out);
 }
 .small-arrow-link:hover {
-        color: var(--win-accent);
+        color: var(--accent);
 }
 
 /* fields — the flat well with the hairline bottom and the 2px windows-accent
@@ -1060,140 +1062,16 @@ select.spec-select {
         opacity: 0.5;
         cursor: not-allowed;
 }
-
-/* ---------- 4. window chrome — the app window over the trylle canvas ---- */
-.appframe {
-        position: relative;
-        isolation: isolate;
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        justify-content: center;
-        min-height: 100dvh;
-        max-height: 100dvh;
-        padding: clamp(12px, 3vh, 40px) clamp(12px, 2.5vw, 48px);
-}
-.appframe::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        z-index: 0;
-        background-image: var(--noise);
-        pointer-events: none;
-}
-.appframe[data-maximized="true"] {
-        padding: 0;
-}
-.winapp {
-        position: relative;
-        z-index: var(--z-content);
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        width: min(1280px, 100%);
-        min-height: 0;
-        border: 1px solid var(--line-strong);
-        border-radius: var(--win-radius);
-        background: var(--bg);
-        box-shadow: var(--shadow-window);
-        overflow: hidden;
-        transform: translate(var(--winapp-x, 0px), var(--winapp-y, 0px));
-        animation: winappOpen var(--dur-2) var(--ease-window) backwards;
-}
-.winapp[hidden] {
-        display: none;
-}
-.winapp[data-maximized="true"] {
-        width: 100%;
-        border-radius: 0;
-        transform: none;
-}
-.winapp[data-sized="true"] {
-        flex: none;
-}
-/* the windows inactive law: a window the document is not focused on turns grayscale */
-.winapp[data-inactive="true"] {
-        filter: grayscale(80%);
-}
-/* the title bar: brand at the left (the ONE logo slot), the theme flip and
-   the caption zone flush at the right edge; the acrylic rides the grain */
-.winapp__title {
-        display: flex;
-        align-items: center;
-        flex: none;
-        height: 44px;
-        padding-left: 12px;
-        background-color: var(--bar);
-        background-image: var(--noise);
-        border-bottom: 1px solid var(--line);
-        backdrop-filter: saturate(3) blur(20px);
-        -webkit-backdrop-filter: saturate(3) blur(20px);
-        cursor: default;
-        touch-action: none;
-        user-select: none;
-        -webkit-user-select: none;
-}
-.winapp__title[data-dragging="true"] {
-        cursor: grabbing;
-}
-.winapp__brand {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        min-width: 0;
-}
-.winapp__name {
-        font-size: 13px;
-        font-weight: 600;
-        letter-spacing: -0.01em;
-        color: var(--ink);
-        white-space: nowrap;
-}
-.winapp__role {
-        overflow: hidden;
-        font-size: 12px;
-        color: var(--ink-2);
-        text-overflow: ellipsis;
-        white-space: nowrap;
-}
-.winapp__caption {
-        display: flex;
-        align-self: stretch;
-        margin-left: auto;
-        align-items: center;
-}
-/* the caption buttons: 44px targets, the windows r4 control corners, the
-   fluent red close (rgb(232,17,35), hover deepens to rgb(139,10,20)) */
-.winapp__cap {
-        display: grid;
-        place-items: center;
-        width: 44px;
-        border: 0;
-        border-radius: var(--win-radius-ctl);
-        background: transparent;
-        color: var(--ink-2);
-        transition:
-                background-color var(--sol-micro) var(--sol-ease-out),
-                color var(--sol-micro) var(--sol-ease-out);
-}
-.winapp__cap:hover {
-        background-color: var(--wash);
-        color: var(--ink);
-}
-.winapp__cap:active {
-        background-color: var(--wash-soft);
-}
-.winapp__cap--close:hover {
-        background-color: rgb(232 17 35);
-        color: var(--win-caption-ink);
-}
-.winapp__cap--close:active {
-        background-color: rgb(139 10 20);
-}
-.winapp__cap:focus-visible {
-        outline-offset: -4px;
-}
-/* the theme flip rides the caption as the fourth key (the same grammar) */
+/* ---------- 4. the app surface — the sectioned rail and the stage --------
+   the window-era chrome (the .appframe canvas, the .winapp frame, the title
+   bar, the caption buttons, the eight resize handles, the restore chip)
+   died with the FAMILY STANDALONE LAW: the direct url answers full-bleed and
+   the os power clip draws its own chrome around the embedded seat. what
+   survives under the winapp__* names is the app surface itself — the
+   sectioned page rail (the app's own navigation), the routed stage and the
+   rail foot — plus the drawn mark. */
+/* the theme flip rides the rail foot beside the family row (the same
+   press grammar as the family pins) */
 .winapp__theme {
         display: inline-flex;
         align-items: center;
@@ -1222,73 +1100,6 @@ select.spec-select {
 }
 .winapp__theme:active {
         transform: scale(0.7);
-}
-/* the eight resize handles of the window chrome (n/s/e/w + the corners) —
-   laid inside the edge (the window clips its overflow, the border is still
-   the first px of the frame, exactly where the resize cursor belongs) */
-.winapp__rz {
-        position: absolute;
-        z-index: var(--z-float);
-        touch-action: none;
-}
-.winapp__rz[data-edge="n"] {
-        top: 0;
-        left: 10px;
-        right: 10px;
-        height: 6px;
-        cursor: ns-resize;
-}
-.winapp__rz[data-edge="s"] {
-        bottom: 0;
-        left: 10px;
-        right: 10px;
-        height: 6px;
-        cursor: ns-resize;
-}
-.winapp__rz[data-edge="e"] {
-        right: 0;
-        top: 10px;
-        bottom: 10px;
-        width: 6px;
-        cursor: ew-resize;
-}
-.winapp__rz[data-edge="w"] {
-        left: 0;
-        top: 10px;
-        bottom: 10px;
-        width: 6px;
-        cursor: ew-resize;
-}
-.winapp__rz[data-edge="ne"] {
-        top: 0;
-        right: 0;
-        width: 13px;
-        height: 13px;
-        cursor: nesw-resize;
-}
-.winapp__rz[data-edge="nw"] {
-        top: 0;
-        left: 0;
-        width: 13px;
-        height: 13px;
-        cursor: nwse-resize;
-}
-.winapp__rz[data-edge="se"] {
-        bottom: 0;
-        right: 0;
-        width: 13px;
-        height: 13px;
-        cursor: nwse-resize;
-}
-.winapp__rz[data-edge="sw"] {
-        bottom: 0;
-        left: 0;
-        width: 13px;
-        height: 13px;
-        cursor: nesw-resize;
-}
-.winapp[data-maximized="true"] .winapp__rz {
-        display: none;
 }
 .winapp__body {
         display: flex;
@@ -1475,36 +1286,6 @@ select.spec-select {
         flex: 1 0 auto;
         width: 100%;
 }
-/* the restore chip: the minimized window collapses here (the acrylic, the
-   window radius, the fluent entry) */
-.winchip {
-        position: fixed;
-        bottom: 20px;
-        left: 20px;
-        z-index: var(--z-float);
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        min-height: 44px;
-        padding: 0 16px 0 12px;
-        border: 1px solid var(--line-strong);
-        border-radius: var(--win-radius);
-        background-color: var(--panel);
-        background-image: var(--noise);
-        box-shadow: var(--shadow-flyout);
-        color: var(--ink);
-        font-size: 13px;
-        backdrop-filter: saturate(3) blur(20px);
-        -webkit-backdrop-filter: saturate(3) blur(20px);
-        animation: winchipIn var(--dur-2) var(--ease-window) backwards;
-        transition: border-color var(--sol-micro) var(--sol-ease-out);
-}
-.winchip:hover {
-        border-color: var(--ink-3);
-}
-.winchip:active {
-        transform: scale(0.97);
-}
 
 /* the drawn mark (sol-mark): the premium icon of the chrome — the glow
    breathes on hover only (never an idle loop), the glyph lifts, the sheen
@@ -1570,10 +1351,6 @@ select.spec-select {
 .sol-mark__flow {
         stroke-dasharray: 6 128;
         opacity: 0;
-}
-/* mark discipline: the title-bar mark rests while the landing owns it */
-.winapp[data-landing="true"] .winapp__brand .sol-mark {
-        display: none;
 }
 
 /* ---------- 5. pages ---------- */
@@ -1801,7 +1578,7 @@ html:not(.dark) .winonboard__eyebrow {
         transition: background-color var(--dur-2) var(--ease-window);
 }
 .winonboard__segrun[data-active="true"] {
-        background: var(--win-accent);
+        background: var(--accent);
 }
 .winonboard__actions {
         display: flex;
@@ -2328,7 +2105,7 @@ html:not(.dark) .diagram-node-wrap.tone-ember svg {
         color: var(--lime-600);
 }
 .diagram-node-wrap.tone-blue svg {
-        color: var(--win-accent);
+        color: var(--accent);
 }
 .diagram-node-wrap.tone-sage svg {
         color: var(--ok);
@@ -2386,7 +2163,7 @@ html:not(.dark) .diagram-node-wrap.tone-ember svg {
         color: var(--ink-2);
 }
 .surface-row:hover svg {
-        color: var(--win-accent);
+        color: var(--accent);
 }
 .surface-number {
         font-family: var(--font-mono);
@@ -2415,7 +2192,7 @@ html:not(.dark) .diagram-node-wrap.tone-ember svg {
 }
 .surface-row:hover .surface-arrow {
         transform: translate(2px, -2px);
-        color: var(--win-accent);
+        color: var(--accent);
 }
 /* the 01–03 steps */
 .r3-steps {
@@ -2474,7 +2251,7 @@ html:not(.dark) .r3-step-index {
         transition: color var(--sol-micro) var(--sol-ease-out);
 }
 .r3-step-link:hover {
-        color: var(--win-accent);
+        color: var(--accent);
 }
 /* the footer meta-quad: the four moves glued to the stage floor */
 .r3-quad {
@@ -2540,7 +2317,7 @@ html:not(.dark) .r3-quad-index {
         transition: color var(--sol-micro) var(--sol-ease-out);
 }
 .console-signin:hover {
-        color: var(--win-accent);
+        color: var(--accent);
 }
 .api-badge {
         display: inline-flex;
@@ -2837,7 +2614,7 @@ html:not(.dark) .term-prompt {
         color: var(--ink);
 }
 .dash-topbar h1 a:hover {
-        color: var(--win-accent);
+        color: var(--accent);
 }
 .dash-tagline {
         color: var(--ink-3);
@@ -3940,7 +3717,7 @@ html:not(.dark) .principle-card svg {
         color: var(--ink-2);
 }
 .doc-row:hover > svg {
-        color: var(--win-accent);
+        color: var(--accent);
 }
 .doc-index {
         font-family: var(--font-mono);
@@ -4248,7 +4025,7 @@ html:not(.dark) .r3-trustlabel {
         background: var(--ok);
 }
 .auth-meter span.on-4 {
-        background: var(--win-accent);
+        background: var(--accent);
 }
 .auth-meterlabel {
         font-family: var(--font-mono);
@@ -4286,7 +4063,7 @@ html:not(.dark) .r3-trustlabel {
         padding-bottom: 12px;
 }
 .auth-statusline a {
-        color: var(--win-accent);
+        color: var(--accent);
 }
 .auth-foot {
         display: flex;
@@ -4334,26 +4111,15 @@ html:not(.dark) .r3-trustlabel {
         border-radius: var(--win-radius);
         font-size: 13px;
 }
-
 /* ---------- 6. motion — the entrances, the loops, the keyframes ---------- */
-@keyframes winappOpen {
-        from {
-                opacity: 0;
-                transform: scale(0.95);
-        }
-}
-@keyframes winchipIn {
-        from {
-                opacity: 0;
-                transform: translateY(8px);
-        }
-}
 @keyframes winonboardIn {
         from {
                 opacity: 0;
                 transform: translateY(10px);
         }
 }
+/* (the winappOpen / winchipIn entrances of the window era were retired
+   together with the chrome they animated) */
 @keyframes winintroSpring {
         from {
                 opacity: 0;
@@ -4406,8 +4172,8 @@ html:not(.dark) .r3-trustlabel {
         }
 }
 /* dtPopIntro — the pin entrance of the windows recipe: 0 → 1.125 (40%) →
-   0.725 (70%) → 1 (the bounce); the rail entries and the caption keys pop in
-   on mount, staggered */
+   0.725 (70%) → 1 (the bounce); the rail entries and the theme flip pop
+   in on mount, staggered */
 @media (prefers-reduced-motion: no-preference) {
         .winapp__raillink {
                 animation: dtPopIntro 800ms ease-in-out backwards;
@@ -4421,21 +4187,9 @@ html:not(.dark) .r3-trustlabel {
         .winapp__section:nth-child(4) .winapp__raillink {
                 animation-delay: 150ms;
         }
-        .winapp__cap,
         .winapp__theme {
                 animation: dtPopIntro 800ms ease-in-out backwards;
-        }
-        .winapp__theme {
                 animation-delay: 60ms;
-        }
-        .winapp__caption .winapp__cap:nth-child(2) {
-                animation-delay: 120ms;
-        }
-        .winapp__caption .winapp__cap:nth-child(3) {
-                animation-delay: 180ms;
-        }
-        .winapp__caption .winapp__cap:nth-child(4) {
-                animation-delay: 240ms;
         }
 }
 @keyframes dtPopIntro {
@@ -4493,11 +4247,8 @@ button.primary[aria-busy="true"]::after {
         animation: solSpin 700ms linear infinite;
 }
 
-/* narrow windows: the rail tightens, the role line steps aside */
+/* narrow windows: the rail tightens, the labels step aside */
 @media (max-width: 720px) {
-        .winapp__role {
-                display: none;
-        }
         .winapp__rail {
                 width: 148px;
         }
@@ -4552,9 +4303,7 @@ button.primary[aria-busy="true"]::after {
 .r3-prompt-key:disabled,
 .spec-select:disabled,
 .spec-range:disabled,
-.winapp__cap:disabled,
-.winapp__theme:disabled,
-.winchip:disabled {
+.winapp__theme:disabled {
         opacity: 0.5;
         pointer-events: none;
 }
@@ -4844,10 +4593,8 @@ html:not(.dark) [data-tip]::before {
 /* ---------- 7. guards — the hard stops, last so nothing overrides them --- */
 @media (prefers-reduced-transparency: reduce) {
         /* the solid floors: every acrylic surface lands on a rung, the blur dies */
-        .winapp__title,
         .winonboard__head,
         .winonboard__card,
-        .winchip,
         .dash-topbar,
         .r3-authcard {
                 background-color: var(--surface-2);
@@ -4864,7 +4611,6 @@ html:not(.dark) [data-tip]::before {
         }
         .winintro::before,
         .winonboard::before,
-        .appframe::before,
         .halftone::after,
         .grain::before {
                 display: none;
@@ -4887,7 +4633,6 @@ html:not(.dark) [data-tip]::before {
         .winapp__raillink:active,
         .winapp__famlink:active,
         .winapp__theme:active,
-        .winapp__cap:active,
         .button:active,
         button.primary:active,
         .r3-chip:active,
