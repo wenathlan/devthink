@@ -428,9 +428,13 @@ jobs:
           # the design surface ships (bricolage grotesque, jetbrains mono
           # and outfit — the SIL Open Font License, permissive and OSI
           # approved, the standard label every @fontsource package carries).
+          # The gsap token rides the Webflow-era standard no-charge license
+          # (free to use, no copyleft, no field-of-use restriction) — the
+          # animation layer the design doctrine calls for, accepted by its
+          # exact license-checker label.
           bun install --frozen-lockfile --production --ignore-scripts
           npx --yes license-checker@25.0.1 --production \
-            --onlyAllow="MIT;Apache-2.0;ISC;BSD-2-Clause;BSD-3-Clause;0BSD;Unlicense;CC0-1.0;CC-BY-4.0;Zlib;Python-2.0;BlueOak-1.0.0;MPL-2.0;GPL-3.0-only;EPL-2.0;OFL-1.1;(MIT OR CC0-1.0);ISC*" \
+            --onlyAllow="MIT;Apache-2.0;ISC;BSD-2-Clause;BSD-3-Clause;0BSD;Unlicense;CC0-1.0;CC-BY-4.0;Zlib;Python-2.0;BlueOak-1.0.0;MPL-2.0;GPL-3.0-only;EPL-2.0;OFL-1.1;(MIT OR CC0-1.0);ISC*;Custom: https://gsap.com/GSAP-share-image.png" \
             --summary
 
   container-scan:
