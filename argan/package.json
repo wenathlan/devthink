@@ -195,7 +195,9 @@
     "proxy-addr": "2.0.8",
     "body-parser": "^2.4.0",
     "fast-uri": "^3.1.9",
-    "follow-redirects": "^1.16.1",
+    "follow-redirects": "^1.16.2",
+    "glob": "^14.0.2",
+    "minimatch": "^11.0.1",
     "zod": "^4.6.7",
     "undici": "^7.30.1",
     "shell-quote": "^1.11.0"
