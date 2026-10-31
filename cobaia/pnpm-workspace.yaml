@@ -42,6 +42,7 @@ minimumReleaseAgeExclude:
   - '@types/google.maps@3.66.9'
   - lucide-react@1.64.0 || 1.65.0 || 1.66.0
   - '@fluentui/react-icons@2.0.345'
+  - '@wenathlan/vault@2.0.152'
 # the pnpm settings live here since pnpm 12 (the package.json pnpm field is
 # no longer read, and onlyBuiltDependencies died in pnpm 11 — the map below
 # is allowBuilds). the honest-site surface builds exactly the engines its db

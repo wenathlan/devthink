@@ -69,7 +69,8 @@
     "@prisma/adapter-libsql": "^7.10.1",
     "@prisma/client": "^7.10.1",
     "@wenathlan/saddle": "^2.1.6",
-    "@wenathlan/vault": "^2.0.151",
+    "@wenathlan/vault": "^2.0.152",
+    "gsap": "^3.15.0",
     "hono": "^4.13.14",
     "ink": "^7.1.1",
     "lucide-react": "^1.66.0",
@@ -77,6 +78,7 @@
     "react": "^19.3.1",
     "react-devtools-core": "^8.0.0",
     "react-dom": "^19.3.1",
+    "three": "^0.187.0",
     "wouter": "^3.13.0",
     "z-ai-web-dev-sdk": "^0.0.18"
   },

@@ -65,6 +65,7 @@ minimumReleaseAgeExclude:
   - '@types/google.maps@3.66.9'
   - lucide-react@1.64.0 || 1.65.0 || 1.66.0
   - '@fluentui/react-icons@2.0.345'
+  - '@wenathlan/vault@2.0.152'
 # the pnpm settings live here since pnpm 12 (the package.json pnpm field is
 # no longer read): the build scripts the dependency tree may run, every
 # other script stays ignored.
