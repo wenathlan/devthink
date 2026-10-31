@@ -19,6 +19,8 @@ import { initReveal } from "./reveal.ts";
 import Sol from "./Sol/Sol.tsx";
 import { ToastProvider } from "./Sol/toast/Toast.tsx";
 import { initTheme } from "./theme.ts";
+import "@fontsource-variable/geist-mono";
+import "@fontsource-variable/inter";
 import "./Sol/sol.css";
 
 // the copy law rides the boot: the seed refreshes the label store rows

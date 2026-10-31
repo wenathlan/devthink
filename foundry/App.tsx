@@ -17,6 +17,8 @@ import { createRoot } from "react-dom/client";
 import { Router as WouterRouter } from "wouter";
 import { label, seedLabels } from "./labels";
 import Sol from "./Sol/Sol";
+import "@fontsource-variable/geist-mono";
+import "@fontsource-variable/inter";
 import "./Sol/sol.css";
 
 // the copy law rides the boot: the seed refreshes the label store rows

@@ -19,6 +19,8 @@
 import { createRoot } from "react-dom/client";
 import { Router as WouterRouter } from "wouter";
 import Sol from "./Sol/Sol";
+import "@fontsource-variable/geist-mono";
+import "@fontsource-variable/inter";
 import "./Sol/sol.css";
 import { seedLabels } from "./labels";
 
