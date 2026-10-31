@@ -38,7 +38,7 @@ minimumReleaseAgeExclude:
   - '@biomejs/cli-linux-x64@2.6.3 || 2.6.4'
   - '@biomejs/cli-win32-arm64@2.6.3 || 2.6.4'
   - '@biomejs/cli-win32-x64@2.6.3 || 2.6.4'
-  - react-resizable-panels@4.15.0 || 4.15.1 || 4.15.2
+  - react-resizable-panels@4.15.0 || 4.15.1 || 4.15.2 || 4.15.3
   - '@pnpm/exe.android-arm64@12.16.1'
   - '@pnpm/exe.android-x64@12.16.1'
   - '@pnpm/exe.darwin-arm64@12.16.1'
@@ -61,7 +61,8 @@ minimumReleaseAgeExclude:
   - '@capacitor/ios@8.6.0'
   - '@types/node@26.6.6'
   - '@types/google.maps@3.66.9'
-  - lucide-react@1.64.0
+  - lucide-react@1.64.0 || 1.65.0
+  - '@fluentui/react-icons@2.0.345'
 # the pnpm settings live here since pnpm 12 (the package.json pnpm field is
 # no longer read): the build scripts the dependency tree may run, every
 # other script stays ignored.
