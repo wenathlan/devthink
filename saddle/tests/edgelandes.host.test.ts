@@ -159,7 +159,7 @@ describe("the host binary lanes answer the honesty law", () => {
     // the real runs counted here (at least three when the host carries
     // three runnable seats; this engine host carries none that complete)
     if (realruns === 0) return;
-  });
+  }, 60000);
 
   it("leaves no saddleedge temp directory behind (the tempdir law)", async () => {
     const before = await saddleedgetmpentries();

@@ -72,10 +72,16 @@ function runhostprocess(
   options: { cwd: string; deadline: number; env?: Record<string, string>; stdin?: string },
 ): Promise<ProcessRun> {
   return new Promise((resolve, reject) => {
+    // detached makes the child a process group leader: the deadline kill
+    // takes the whole group down (podman spawns conmon and the container
+    // shims that would otherwise outlive the cli and hold the pipes open —
+    // the close event would never fire and the lane would hang past its
+    // own budget)
     const child = spawn(command, args, {
       cwd: options.cwd,
       env: options.env === undefined ? process.env : { ...process.env, ...options.env },
       stdio: [options.stdin === undefined ? "ignore" : "pipe", "pipe", "pipe"],
+      detached: true,
     });
     if (options.stdin !== undefined && child.stdin !== null) {
       // a payload through /dev/stdin: an early exit must not crash the
@@ -101,7 +107,11 @@ function runhostprocess(
     child.stderr?.on("data", makecollector(errchunks));
     const timer = setTimeout(() => {
       timedout = true;
-      child.kill("SIGKILL");
+      try {
+        process.kill(-child.pid, "SIGKILL");
+      } catch {
+        child.kill("SIGKILL");
+      }
     }, options.deadline);
     child.on("error", (error) => {
       clearTimeout(timer);

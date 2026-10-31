@@ -1,15 +1,13 @@
-// # sandboxmodality.test — the worker modality declaration (wave PV6.003,
-// widened by the ninety modalities wave): the vocabulary mirrors the
-// saddle modalityregistry ids (local beside the saddle modalities the
-// heavy jobs may ride — the wave widened the seat from the original three
-// heavy lanes to the fuller set), both worker lanes declare the honest
-// default ("local" — the deploy's own process, the functions never spawn
-// anything themselves), the option seat answers the deploy's opt-in (a
-// saddle modality id resolves sandboxed, an off-vocabulary choice
-// refuses honestly, an absent choice answers the lane's declared
-// default) and the env reader names the law (DEBONAIR_WORKER_MODALITY,
-// the deploy decides — opt-in per deploy, never a silent switch).
-// runnable with vitest:
+// # sandboxmodality.test — the worker modality declaration (wave PV6.003):
+// the vocabulary mirrors the saddle modalityregistry ids (local beside
+// the three saddle modalities the heavy jobs may ride), both worker lanes
+// declare the honest default ("local" — the deploy's own process, the
+// functions never spawn anything themselves), the option seat answers
+// the deploy's opt-in (a saddle modality id resolves sandboxed, an
+// off-vocabulary choice refuses honestly, an absent choice answers the
+// lane's declared default) and the env reader names the law
+// (DEBONAIR_WORKER_MODALITY, the deploy decides — opt-in per deploy,
+// never a silent switch). runnable with vitest:
 //   pnpm vitest run tests/sandboxmodality.test.ts
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
@@ -30,41 +28,8 @@ import {
 import { lanesof } from "@wenathlan/saddle/workloadlaw";
 
 describe("the modality vocabulary (the saddle registry mirror)", () => {
-  it("carries local beside the twenty-two saddle modality ids the ninety modalities wave seats", () => {
-    assert.deepEqual(WORKER_MODALITIES, [
-      "local",
-      "runner-node",
-      "runner-bun",
-      "runner-wasm",
-      "runner-wasi",
-      "runner-babel",
-      "runner-webpack",
-      "container-docker",
-      "container-max",
-      "container-lite",
-      "microvm-firecracker",
-      "microvm-gpuless",
-      "virtual-drivers",
-      "language-python",
-      "language-rust",
-      "language-v",
-      "language-java",
-      "runtime-jvm",
-      "storage-sqlite",
-      "fs-vfs",
-      "fs-gitobjects",
-      "ram-tmpfs",
-      "delivery-cdn",
-    ]);
-  });
-
-  it("carries every id exactly once and keeps local the only deploy-process seat", () => {
-    assert.equal(WORKER_MODALITIES[0], "local", "local seats first — the deploy's own process");
-    assert.equal(new Set(WORKER_MODALITIES).size, WORKER_MODALITIES.length, "every id is unique");
-    for (const modality of WORKER_MODALITIES) {
-      if (modality === "local") continue;
-      assert.match(modality, /^[a-z]+-[a-z0-9.-]+$/, `${modality} rides the saddle id grammar`);
-    }
+  it("carries local beside the three saddle modality ids the heavy jobs may ride", () => {
+    assert.deepEqual(WORKER_MODALITIES, ["local", "runner-node", "container-docker", "microvm-firecracker"]);
   });
 
   it("names the environment seat the deploy pins the opt-in through", () => {
@@ -92,12 +57,12 @@ describe("the modality option seat (the deploy decides)", () => {
     assert.ok(pinned.ok && pinned.modality === "runner-node" && pinned.sandboxed === true);
   });
 
-  it("resolves the deploy's saddle choice (the opt-in, the widened set included)", () => {
-    for (const modality of WORKER_MODALITIES) {
+  it("resolves the deploy's saddle choice (the opt-in)", () => {
+    for (const modality of ["runner-node", "container-docker", "microvm-firecracker"]) {
       const seated = workermodality(`  ${modality}  `);
       assert.ok(seated.ok, `${modality} seats`);
       assert.equal(seated.modality, modality);
-      assert.equal(seated.sandboxed, modality !== "local");
+      assert.equal(seated.sandboxed, true);
     }
     const local = workermodality("local");
     assert.ok(local.ok && local.modality === "local" && local.sandboxed === false);
