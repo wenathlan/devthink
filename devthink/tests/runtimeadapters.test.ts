@@ -1,4 +1,5 @@
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { sessionmemory } from "../memory.js";
@@ -140,7 +141,7 @@ describe("capability probes", () => {
 
 describe("runtime shells", () => {
   it("maps the filesystem onto the storage seam for node and bun runtimes", async () => {
-    const base = join("tests", "artifacts", "librarymodes", "storage");
+    const base = join(await mkdtemp(join(tmpdir(), "devthink-adapters-")), "storage");
     await rm(base, { recursive: true, force: true });
     const adapter = filesystemstorageadapter(
       {
