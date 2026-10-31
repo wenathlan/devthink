@@ -55,7 +55,7 @@ minimumReleaseAgeExclude:
   - '@biomejs/cli-linux-x64@2.6.3 || 2.6.4'
   - '@biomejs/cli-win32-arm64@2.6.3 || 2.6.4'
   - '@biomejs/cli-win32-x64@2.6.3 || 2.6.4'
-  - react-resizable-panels@4.15.0 || 4.15.1 || 4.15.2 || 4.15.3
+  - react-resizable-panels@4.15.0 || 4.15.1 || 4.15.2 || 4.15.3 || 4.16.0
   - '@pnpm/exe.android-arm64@12.16.1'
   - '@pnpm/exe.android-x64@12.16.1'
   - '@pnpm/exe.darwin-arm64@12.16.1'
