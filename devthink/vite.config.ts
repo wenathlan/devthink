@@ -283,6 +283,16 @@ export default defineConfig({
        * duplicated inside devthink. the entry retires when saddle 2.1.7
        * publishes: its package.json exports map gained exactly the missing
        * "./sandbox": "./dist/sandbox.js" manifest piece. */
+      /** the modality registry bridge of the ownership law (the saddle
+       * container law sibling): the sandbox lane reads the ninety-modality
+       * catalog through the published library specifier
+       * ("@wenathlan/saddle/modalityregistry"), and this bridge resolves
+       * the specifier to the monorepo source the sibling engine carries —
+       * the vendored mirror the lane used to keep (the byte-identical
+       * modalities.ts copy) retires, the catalog is never duplicated
+       * inside devthink. the entry retires when the registry pin resolves
+       * the published envelope that carries the built registry. */
+      "@wenathlan/saddle/modalityregistry": path.resolve(import.meta.dirname, "../saddle/modalityregistry.ts"),
       /** the workload law bridge of the family (wave WL1): the os surface
        * reads the family lane catalog through the published library
        * specifier ("@wenathlan/saddle/workloadlaw"), and this bridge

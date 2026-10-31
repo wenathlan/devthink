@@ -4,6 +4,15 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   resolve: {
     alias: {
+      /** the modality registry bridge of the ownership law, mirrored from
+       * vite.config.ts: the sandbox lane tests read the ninety-modality
+       * catalog through the published library specifier
+       * ("@wenathlan/saddle/modalityregistry"), and this bridge resolves
+       * the specifier to the monorepo source the sibling engine carries —
+       * the vendored modalities.ts mirror retires with the lane import, so
+       * the node-side tests answer the same module the dev server serves
+       * and the catalog keeps one owner. */
+      "@wenathlan/saddle/modalityregistry": path.resolve(import.meta.dirname, "../saddle/modalityregistry.ts"),
       /** the workload law bridge of the family: the app battery pins the
        * lane mirror against the engine catalog through the published
        * library specifier ("@wenathlan/saddle/workloadlaw"), and this

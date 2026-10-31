@@ -13,6 +13,7 @@
     "types": ["chrome", "node", "vite/client"],
     "paths": {
       "@/*": ["./Sol/*", "./*"],
+      "@wenathlan/saddle/modalityregistry": ["../saddle/modalityregistry.ts"],
       "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"],
       "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"],
       "@wenathlan/getry/thinking": ["../getry/thinking.ts"],
