@@ -103,32 +103,11 @@ export const saastoasts = {
   unfollowed: "Unfollowed",
 };
 
-/** One mode row of the hero switch: the id the switch carries and the mode
- * words the statement wears while the mode rides. */
-export type saasheromode = { id: string; word: string };
-
-/** The hero copy of the landing: the OS statement with the inline engine
- * switch the original reference carries inside the headline (the gradient
- * track with the white thumb and the aria label), the mode words that
- * answer the switch, the sub line, the two key labels and the three
- * scooped cards. */
-export const saashero = {
-  leada: "An OS",
-  leadb: "built for",
-  leadc: "every AI",
-  modetoggle: "Toggle OS Mode",
-  modes: [
-    { id: "agents", word: "and your agents" },
-    { id: "studios", word: "and your studios" },
-  ] as readonly saasheromode[],
-  subtitle: "Create stream and run any studio or AI team in one unified OS",
-  keyprimary: "Get Started",
-  keysecondary: "Why DevThink?",
-  rating: "4,9",
-  organizer: "The perfect organizer and team builder",
-  timetitle: "Use time to your advantage every day",
-  timebody: "Studios agents and streams in sync",
-  shader: "Neural Shader Core",
+/** The hero pure data of the landing: the chart bars and the avatar faces
+ * are visual data, not copy — the hero words moved to the ui store (the
+ * intro.hero.* rows of uistore.ts ride the db over /api/v1/ui/copy and
+ * the seed answers the offline build). */
+export const saasherodata = {
   chart: [42, 70, 55, 88, 100, 76, 92, 64] as readonly number[],
   faces: [
     "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80",

@@ -20,6 +20,7 @@ import { MoreHorizontalRegular as More, type FluentIcon } from "@fluentui/react-
 import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
 import { label } from "../../labels.ts";
+import { uicopy, useUicopy } from "../../uistore.ts";
 import type { DesktopApp } from "../../appregistry.ts";
 import type { FamilySite } from "../../catalog";
 import { FamilyMark } from "./ExploreLaunchdeck.tsx";
@@ -300,6 +301,10 @@ export function ExploreSidebar(props: {
   onPick: (id: ExploreCategoryId) => void;
   onRetry: () => void;
 }) {
+  // the store ride: the live db rows land once per mount and the rail
+  // re-renders on them (the seed answers the first paint with the same
+  // words the db serves, so the swap never flashes)
+  useUicopy();
   return (
     <aside
       aria-label={label("explore.sidebar.aria")}
@@ -338,7 +343,7 @@ export function ExploreSidebar(props: {
             <StackSkeleton />
           ) : props.recents.length === 0 ? (
             <div className="px-2.5 py-1">
-              <p className="text-xs leading-[1.5] text-ink-3">{label("explore.sidebar.recentsEmpty")}</p>
+              <p className="text-xs leading-[1.5] text-ink-3">{uicopy("explore.sidebar.recentsEmpty")}</p>
               <Link
                 href="/video"
                 className="mt-2 inline-flex min-h-9 items-center rounded-md px-0 text-xs font-medium text-ink-2 underline decoration-hairline-strong underline-offset-4 transition-colors duration-150 ease-micro hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
@@ -355,7 +360,7 @@ export function ExploreSidebar(props: {
           <StackCaption text={label("explore.sidebar.family")} />
           {props.family.length === 0 ? (
             <p className="px-2.5 py-1 text-xs leading-[1.5] text-ink-3">
-              {label("explore.sidebar.familyEmpty")}
+              {uicopy("explore.sidebar.familyEmpty")}
             </p>
           ) : (
             props.family.map((app) => <FamilyRow key={app.id} app={app} sites={props.sites} />)

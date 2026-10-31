@@ -200,7 +200,9 @@ const seedOsStrings: OsStringRow[] = [
   { id: "explorer.gridView.aria", text: "Grid view" },
   { id: "explorer.detailsView.aria", text: "Details view" },
   { id: "explorer.filtered", text: "· filtered" },
-  { id: "explorer.empty", text: "This folder is empty." },
+  /* the folder empty-state row (explorer.empty) moved to the ui store —
+     the explorer rows of uistore.ts ride the db over /api/v1/ui/copy (the
+     single-home law of the copy) */
   { id: "explorer.toast.mountFailed", text: "The drive could not be mounted." },
   { id: "explorer.toast.newDrive", text: "New drive mounted: {label}. It starts empty." },
   { id: "explorer.toast.newDriveFailed", text: "The new drive could not be created on this machine." },
@@ -234,7 +236,8 @@ const seedOsStrings: OsStringRow[] = [
   { id: "explorer.planCreating", text: "Creating folder" },
   { id: "explorer.planCancel", text: "Cancel" },
   { id: "explorer.planOffline", text: "Cloud storage is offline" },
-  { id: "explorer.planEmpty", text: "No folders yet" },
+  /* the plan empty-state row (explorer.planEmpty) moved to the ui store
+     together with explorer.empty (the single-home law of the copy) */
   { id: "explorer.planExists", text: "That folder name exists" },
   { id: "explorer.toast.folderCreated", text: "Folder created on the plan: {name}" },
 

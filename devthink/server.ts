@@ -947,6 +947,7 @@ import {
   runsandboxline,
   writesandboxfile,
 } from "./sandboxlane.js";
+import { uistoreget, uistoreingest, uistorelist } from "./uistore.ts";
 
 /** route resources per version — the canonical 7 */
 const resources = ["keys", "models", "chat/completions", "completions", "messages", "responses", "embeddings"] as const;
@@ -976,7 +977,9 @@ function handlermap(
   }
 }
 
-/** createserver — build the hono app from the loaded config */
+/** createserver — build the hono app from the loaded config (exported at
+ * the library surface below, so the battery drives the real routes
+ * through app.request without a socket) */
 async function createserver(): Promise<Hono> {
   const app = new Hono();
 
@@ -1055,6 +1058,24 @@ async function createserver(): Promise<Hono> {
   app.get("/api/v1/copy", async (c) => {
     const rows = await listcopyrows();
     return c.json({ rows });
+  });
+
+  // ui store lane — the winget copy of the os: the uicopy table of the
+  // app's better-sqlite3 store answers the components over this
+  // same-origin lane (the stubs law: no winget hardcodes text — the
+  // strings live in the db, the seed of uistore.ts fills the table at
+  // boot and the offline build answers from that same seed). One lane
+  // lists the rows for the mount loader, one lane answers a single key,
+  // and an unknown key refuses honestly instead of inventing a word.
+  await uistoreingest();
+  app.get("/api/v1/ui/copy", async (c) => {
+    const rows = await uistorelist(String(c.req.query("locale") || "en"));
+    return c.json({ rows });
+  });
+  app.get("/api/v1/ui/copy/:key", async (c) => {
+    const row = await uistoreget(c.req.param("key"), String(c.req.query("locale") || "en"));
+    if (!row) return c.json({ error: "unknown key" }, 404);
+    return c.json(row);
   });
 
   // the paired oslabels endpoint — the database lane the label file

@@ -11,7 +11,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { saaschrome, saasfooter, saashero, saasrailstops } from "../saascontent.ts";
+import { saaschrome, saasfooter, saasrailstops } from "../saascontent.ts";
+import { uistoreseedrows } from "../uistore.ts";
 
 const sections = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "IntroSaassections.tsx"), "utf8");
 const saas = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "IntroSaas.tsx"), "utf8");
@@ -45,14 +46,14 @@ describe("the inline hero switch (the original headline law)", () => {
     expect(headline).toContain("{mode.word}");
   });
 
-  it("the verified reading stays — an OS built for every AI and your agents", () => {
-    expect(saashero.leada).toBe("An OS");
-    expect(saashero.leadb).toBe("built for");
-    expect(saashero.leadc).toBe("every AI");
-    expect(saashero.modes).toHaveLength(2);
-    expect(saashero.modes[0]).toEqual({ id: "agents", word: "and your agents" });
-    expect(saashero.modes[1]).toEqual({ id: "studios", word: "and your studios" });
-    expect(saashero.modetoggle).toBe("Toggle OS Mode");
+  it("the verified reading stays — an OS built for every AI and your agents (the ui store rows)", () => {
+    const seed = uistoreseedrows();
+    expect(seed["intro.hero.leada"]).toBe("An OS");
+    expect(seed["intro.hero.leadb"]).toBe("built for");
+    expect(seed["intro.hero.leadc"]).toBe("every AI");
+    expect(seed["intro.hero.mode.agents"]).toBe("and your agents");
+    expect(seed["intro.hero.mode.studios"]).toBe("and your studios");
+    expect(seed["intro.hero.modetoggle"]).toBe("Toggle OS Mode");
   });
 
   it("the drift vocabulary died — the segmented control never answers the face", () => {
@@ -67,8 +68,9 @@ describe("the inline hero switch (the original headline law)", () => {
 
   it("the primary CTA rides the tactile key — no blue button, no blue glow on the statement", () => {
     expect(sections).toContain('className="btn-tactile-3d flex items-center gap-2.5 rounded-full');
-    expect(saashero.keyprimary).toBe("Get Started");
-    expect(saashero.keysecondary).toBe("Why DevThink?");
+    const seed = uistoreseedrows();
+    expect(seed["intro.hero.keyprimary"]).toBe("Get Started");
+    expect(seed["intro.hero.keysecondary"]).toBe("Why DevThink?");
     expect(saas).toContain(".btn-tactile-3d");
   });
 });
