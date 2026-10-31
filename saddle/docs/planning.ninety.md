@@ -376,15 +376,16 @@ the per-app seats live on only in the wave history.)
 - [x] 4.1 the commit with the family identity
 - [x] 4.2 the branch push
 - [x] 4.3 the pull request body (the law voice)
-- [ ] 4.4 the ci watch
-- [ ] 4.5 the flake law (rerun or admin when a check flakes)
-- [ ] 4.6 the squash merge keeping only main
-- [ ] 4.7 the branch delete
-- [ ] 4.8 the worklog and the ladder close
+- [x] 4.4 the ci watch
+- [x] 4.5 the flake law (rerun or admin when a check flakes)
+- [x] 4.6 the squash merge keeping only main
+- [x] 4.7 the branch delete
+- [x] 4.8 the worklog and the ladder close
 
-## the honest state map (the wave answers)
+## the honest state map (the wave answered)
 
 - planned 57 → 0
 - live 30 → 81 (30 + 51 wired)
 - host 3 → 9 (3 + 6 heavyweight probes)
 - total stays 90 (the plan count the owner charged)
+- merged: pr #241 squashed as 538683c3, the branch deleted, only main
