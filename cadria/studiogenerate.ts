@@ -24,8 +24,8 @@
  * else the caller records an in-memory session save — never browser storage).
  */
 
-import type { AudioDescriptor } from "./audioattributes.ts";
-import type { AnalysisReport } from "./audiopipeline.ts";
+import type { AudioDescriptor } from "@wenathlan/debonair/audioattributes";
+import type { AnalysisReport } from "@wenathlan/debonair/audiopipeline";
 import { buildImageProject, type ImageProject } from "./imageproject.ts";
 import { type RenderFrame, renderCommands } from "./imagerender.ts";
 import { applyStyleBias, type StyleSpec, styleByName } from "./imagestyles.ts";

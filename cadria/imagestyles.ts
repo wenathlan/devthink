@@ -25,8 +25,8 @@
 // functions imageStyles, styleByName, styleForDescriptor, styleFingerprint,
 // applyStyleBias.
 
-import type { AudioDescriptor } from "./audioattributes.ts";
-import { DIM_ORDER } from "./audiofeatures.ts";
+import type { AudioDescriptor } from "@wenathlan/debonair/audioattributes";
+import { DIM_ORDER } from "@wenathlan/debonair/audiofeatures";
 import { GRAIN_COUPLING, TEXTURE_RANGES, type TextureSpec } from "./synthtexture.ts";
 
 /** symmetry grammar a style asks of the composition layer. */

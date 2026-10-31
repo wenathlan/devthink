@@ -20,8 +20,8 @@
 // NaN, never thrown. Non-goals: no rendering, no palette, no animation (wave 2
 // module b7 consumes these blocks). Exports: 4 functions, 5 types, 3 constants.
 
-import type { AudioDescriptor, NarrativeShape } from "./audioattributes.ts";
-import { NARRATIVE_CONTOUR } from "./audiofeatures.ts";
+import type { AudioDescriptor, NarrativeShape } from "@wenathlan/debonair/audioattributes";
+import { NARRATIVE_CONTOUR } from "@wenathlan/debonair/audiofeatures";
 
 /** one rectangle on the normalized canvas: x/y top-left corner, w/h extents, all 0-1. */
 export type Rect = { x: number; y: number; w: number; h: number };

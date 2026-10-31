@@ -1,11 +1,14 @@
 // # libraryface.test — the npm library face of the katexis engine (the
 // pipeline wave PV6.005): the package contract any consumer imports. the
 // exports map answers one subpath per engine module — the nine pure
-// pipeline seats and the three server lanes — with the family publish
-// shape (the types/import/default conditions over the root sources, the
-// same source doctrine @wenathlan/getry/thinking rides); every target is a
-// repository file that ships inside the npm files array, because an export
-// the envelope never packs is a broken promise; the local import closure of
+// pipeline seats, the four audio analysis seats the engine ownership wave
+// seated (the cadria analysis family the katexis engine now owns) with the
+// three gap seats the same wave completed (beatgrid, speechalign, stems),
+// and the three server lanes last — with the family publish shape (the
+// types/import/default conditions over the root sources, the same source
+// doctrine @wenathlan/getry/thinking rides); every target is a repository
+// file that ships inside the npm files array, because an export the
+// envelope never packs is a broken promise; the local import closure of
 // every exported module packs with it, so the module graph never breaks at
 // install time; and the honest surface pin walks every named export of
 // every subpath through the package specifier itself — the embedder's own
@@ -24,7 +27,12 @@ import { describe, it } from "vitest";
 process.env.DATABASE_URL = "file:./local.libraryface.test.db";
 
 const analyzemodule = await import("@wenathlan/debonair/analyze");
+const audioattributesmodule = await import("@wenathlan/debonair/audioattributes");
+const audiodecodemodule = await import("@wenathlan/debonair/audiodecode");
+const audiofeaturesmodule = await import("@wenathlan/debonair/audiofeatures");
+const audiopipelinemodule = await import("@wenathlan/debonair/audiopipeline");
 const audioenginemodule = await import("@wenathlan/debonair/audioengine");
+const beatgridmodule = await import("@wenathlan/debonair/beatgrid");
 const blobstoremodule = await import("@wenathlan/debonair/blobstore");
 const composermodule = await import("@wenathlan/debonair/composer");
 const gatewayapimodule = await import("@wenathlan/debonair/gatewayapi");
@@ -34,10 +42,14 @@ const ingestworkermodule = await import("@wenathlan/debonair/ingestworker");
 const patternenumsmodule = await import("@wenathlan/debonair/patternenums");
 const patternminermodule = await import("@wenathlan/debonair/patternminer");
 const renderworkermodule = await import("@wenathlan/debonair/renderworker");
+const speechalignmodule = await import("@wenathlan/debonair/speechalign");
+const stemsmodule = await import("@wenathlan/debonair/stems");
 const wavwritermodule = await import("@wenathlan/debonair/wavwriter");
 
 /** The engine subpaths the library publishes, in the map's own order: the
- * nine pure pipeline seats first, the three server lanes last. */
+ * nine pure pipeline seats first, the four audio analysis seats and the
+ * three gap seats the engine ownership wave seated next, the three server
+ * lanes last. */
 const SUBPATHS = [
   "analyze",
   "hpss",
@@ -48,6 +60,13 @@ const SUBPATHS = [
   "audioengine",
   "wavwriter",
   "blobstore",
+  "audioattributes",
+  "audiodecode",
+  "audiofeatures",
+  "audiopipeline",
+  "beatgrid",
+  "speechalign",
+  "stems",
   "ingestworker",
   "renderworker",
   "gatewayapi",
@@ -76,6 +95,13 @@ const MODULES: Record<Subpath, Record<string, unknown>> = {
   audioengine: audioenginemodule,
   wavwriter: wavwritermodule,
   blobstore: blobstoremodule,
+  audioattributes: audioattributesmodule,
+  audiodecode: audiodecodemodule,
+  audiofeatures: audiofeaturesmodule,
+  audiopipeline: audiopipelinemodule,
+  beatgrid: beatgridmodule,
+  speechalign: speechalignmodule,
+  stems: stemsmodule,
   ingestworker: ingestworkermodule,
   renderworker: renderworkermodule,
   gatewayapi: gatewayapimodule,
@@ -239,6 +265,87 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
     VAULT_ORIGIN_ENV: "string",
     VAULT_PROJECT_ENV: "string",
     VAULT_TOKEN_ENV: "string",
+  },
+  audioattributes: {
+    /* the analysis contract seat: every export is a declaration (the five
+     * summaries and the fused descriptor interface), so the runtime surface
+     * is honestly empty — the types condition of the subpath carries the
+     * contract the embedder's declarations read. */
+  },
+  audiodecode: {
+    decodeWav: "function",
+    downmix: "function",
+    resample: "function",
+    normalizePeak: "function",
+    fromAudioBufferLike: "function",
+    AudioDecodeError: "function",
+    wavinfo: "function",
+  },
+  audiofeatures: {
+    audioSeed: "function",
+    audioSeedFromStats: "function",
+    clamp01: "function",
+    descriptorSummary: "function",
+    fuseDescriptor: "function",
+    normalize01: "function",
+    zcurve: "function",
+    DESCRIPTOR_DIMS: "number",
+    DIM_ORDER: "object",
+    NARRATIVE_CONTOUR: "object",
+  },
+  audiopipeline: {
+    analyzePcm: "function",
+    analyzeWavBytes: "function",
+    reportDigest: "function",
+    PipelineError: "function",
+  },
+  beatgrid: {
+    onsetEnvelope: "function",
+    detectTempo: "function",
+    trackBeats: "function",
+    gridFromBeats: "function",
+    identityGrid: "function",
+    beatCount: "function",
+    isDownbeat: "function",
+    beatTime: "function",
+    nearestBeat: "function",
+    quantizeToGrid: "function",
+    swingOffset: "function",
+    subdivideBeat: "function",
+    tempoMapFromAnchors: "function",
+    gridToTempoMap: "function",
+    tempoAtTime: "function",
+    beatsElapsed: "function",
+    timeAtBeat: "function",
+  },
+  speechalign: {
+    frameRms: "function",
+    rmsToDb: "function",
+    noiseFloorDb: "function",
+    speechThresholdDb: "function",
+    voicedFlags: "function",
+    flagsToSegments: "function",
+    mergeSegments: "function",
+    trimSegments: "function",
+    segmentAt: "function",
+    totalSpeechSeconds: "function",
+    stretchRatio: "function",
+    clampStretch: "function",
+    beatGridTimes: "function",
+    fitPlan: "function",
+    planOffsets: "function",
+    maxStretchRatio: "function",
+    alignSpeech: "function",
+    defaultSpeechParams: "object",
+  },
+  stems: {
+    planStems: "function",
+    stemsManifest: "function",
+    validateStems: "function",
+    stemFile: "function",
+    StemsError: "function",
+    STEM_ROLES: "object",
+    STEMS_SCHEMA_VERSION: "string",
   },
   ingestworker: {
     downmixmono: "function",

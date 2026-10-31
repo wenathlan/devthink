@@ -51,6 +51,23 @@
     "ingestworker.ts",
     "renderworker.ts",
     "gatewayapi.ts",
+    "audioattributes.ts",
+    "audiodecode.ts",
+    "audiofeatures.ts",
+    "audiofft.ts",
+    "audioformat.ts",
+    "audiopipeline.ts",
+    "audiorhythm.ts",
+    "audiorhythmbeat.ts",
+    "audiospectrum.ts",
+    "audiostructure.ts",
+    "audiotimbre.ts",
+    "audiotimbreenv.ts",
+    "audiotonality.ts",
+    "audiotonalitychords.ts",
+    "beatgrid.ts",
+    "speechalign.ts",
+    "stems.ts",
     "arranger.ts",
     "bigintids.ts",
     "fingerprint.ts",
@@ -122,6 +139,41 @@
       "types": "./blobstore.ts",
       "import": "./blobstore.ts",
       "default": "./blobstore.ts"
+    },
+    "./audioattributes": {
+      "types": "./audioattributes.ts",
+      "import": "./audioattributes.ts",
+      "default": "./audioattributes.ts"
+    },
+    "./audiodecode": {
+      "types": "./audiodecode.ts",
+      "import": "./audiodecode.ts",
+      "default": "./audiodecode.ts"
+    },
+    "./audiofeatures": {
+      "types": "./audiofeatures.ts",
+      "import": "./audiofeatures.ts",
+      "default": "./audiofeatures.ts"
+    },
+    "./audiopipeline": {
+      "types": "./audiopipeline.ts",
+      "import": "./audiopipeline.ts",
+      "default": "./audiopipeline.ts"
+    },
+    "./beatgrid": {
+      "types": "./beatgrid.ts",
+      "import": "./beatgrid.ts",
+      "default": "./beatgrid.ts"
+    },
+    "./speechalign": {
+      "types": "./speechalign.ts",
+      "import": "./speechalign.ts",
+      "default": "./speechalign.ts"
+    },
+    "./stems": {
+      "types": "./stems.ts",
+      "import": "./stems.ts",
+      "default": "./stems.ts"
     },
     "./ingestworker": {
       "types": "./ingestworker.ts",
