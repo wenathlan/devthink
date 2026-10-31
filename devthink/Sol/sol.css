@@ -155,7 +155,9 @@
   --ease-entry: cubic-bezier(0.1, 0.9, 0.2, 1);
   --ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
   --ease-fluent: cubic-bezier(0.79, 0.14, 0.15, 0.86);
-  --ease-spring: cubic-bezier(0.2, 1.2, 0.4, 1);
+  /* the doctrine spring: the elástico 0.34,1.56,0.64,1 (the cue signature)
+     — the one overshoot curve the shell and the content waves compose */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* ---- the scale floors: nothing ever grows from zero — the window opens
         from the Windows .95 pose ---- */
@@ -430,7 +432,7 @@
   --sol-radius: 0.625rem;
   --sol-radius-2xl: 16px;
   --sol-radius-3xl: 24px;
-  --r-pill: 100px;
+  --r-pill: 999px;
   --sol-sun: var(--color-sun);
   --sol-sun-ink: var(--color-sun-ink);
   /* the sol accent rides the signal slot (the white sun) so the stray
@@ -448,7 +450,11 @@
   --sol-ease-win: var(--ease-window);
 
   /* ---- legacy aliases · win generation: the REAL system accent — chrome/
-     focus states only, never a content brand ---- */
+     focus states only, never a content brand. The doctrine pair rides the
+     theme flip: accent #0067c0 light / #4cc2ff dark; the brand pink
+     #f0509e (--color-ever) stays the content identity accent of the hero
+     faces only — the chrome never answers to it, the two accents never
+     trade slots (the pair documented here is the contract). ---- */
   --win-accent: var(--color-win);
   --win-accent-ink: var(--color-win-ink);
   --win-hover: rgb(255 255 255 / 10%);
@@ -460,7 +466,7 @@
   --win-shad-flyout: var(--shadow-flyout);
   --win-ease-decel: var(--ease-entry);
   --win-ease-accel: var(--ease-exit);
-  --win-ease-entry: var(--ease-entry);
+  --win-ease-entry: var(--ease-micro);
   --win-ease-exit: var(--ease-exit);
   --win-shadow-window: var(--shadow-window);
   --win-shadow-flyout: var(--shadow-flyout);
@@ -468,6 +474,36 @@
   --win-signal-wash: rgb(255 255 255 / 10%);
   --win-ease: var(--ease-window);
   --os-acrylic: var(--acrylic-strong);
+
+  /* ---- the win shell doctrine layer: the exact Windows 11 shell numbers
+     the gate walks (the .acrylic-bar/.shell-window__bar recipes compose
+     these; the components read the tokens, never raw literals):
+     · taskbar: height 48px, the acrylic bed saturate(3) blur(20px) over
+       the tint rgba(32,32,32,0.75) dark / rgba(243,243,243,0.85) light;
+     · mica: #202020 radial-gradient(#1a1f35 25%, #202020 100%) fixed
+       dark / #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) light
+       (the --win-mica bed above carries it);
+     · titlebar: the 28–30px band (the live chrome rides 30px), the close
+       control rgb(232,17,35), 8 resize handles of 8px offset −8px
+       (borders and corners), minimum 320x320;
+     · focus ring #4cc2ff dark / #0067c0 light, pill 999px;
+     · curves: start menu 200ms cubic-bezier(0.79,0.14,0.15,0.86), side
+       panels 250ms cubic-bezier(0.62,0,0.32,1), default entry
+       0.22,1,0.36,1, spring 0.34,1.56,0.64,1 — and transition:all is
+       banned everywhere: the components name every property. ---- */
+  --win-taskbar-h: 48px;
+  --win-taskbar-tint: rgb(32 32 32 / 75%);
+  --win-taskbar-filter: saturate(3) blur(20px);
+  --win-titlebar-h: 30px;
+  --win-close: rgb(232 17 35);
+  --win-handles: 8;
+  --win-handle-size: 8px;
+  --win-handle-offset: -8px;
+  --win-focus: #4cc2ff;
+  --win-pill: 999px;
+  --win-ease-start: cubic-bezier(0.79, 0.14, 0.15, 0.86);
+  --win-ease-panel: cubic-bezier(0.62, 0, 0.32, 1);
+  --win-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* ---- legacy aliases · campaign generations ---- */
   --atmos-accent: var(--color-signal);
@@ -539,6 +575,8 @@
   --win-active: rgb(0 0 0 / 8%);
   --win-accent: #0067c0;
   --win-accent-ink: #fefefe;
+  --win-taskbar-tint: rgb(243 243 243 / 85%);
+  --win-focus: #0067c0;
   --color-win: #0067c0;
   --color-win-ink: #fefefe;
   /* the white sun keeps shining on the light face — the same pure body;
