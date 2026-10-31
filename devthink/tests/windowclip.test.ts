@@ -14,6 +14,7 @@ const solcss = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "
 const ismobile = readFileSync(join(import.meta.dirname, "..", "useismobile.ts"), "utf8");
 const workspace = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelWorkspace.tsx"), "utf8");
 const windowframe = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelWindowframe.tsx"), "utf8");
+const spawnsource = readFileSync(join(import.meta.dirname, "..", "window.ts"), "utf8");
 
 describe("the window body container (the app answers the window, never the viewport)", () => {
   it("the host of the window body is a size container", () => {
@@ -78,5 +79,62 @@ describe("the honesty laws of the window body", () => {
 
   it("the app roots answer the window body height — the 100dvh of the pages never leaks in", () => {
     expect(solcss).toContain(".shell-window__host .dtw-app,\n.shell-window__host .dtfx-app {\n  height: 100%;\n}");
+  });
+});
+
+describe("the doctrine handles of the window manager (wave 3)", () => {
+  it("eight resize handles ride the doctrine tokens — 8px offset −8px, every direction", () => {
+    expect(solcss).toContain("--win-handles: 8;");
+    expect(solcss).toContain("--win-handle-size: 8px;");
+    expect(solcss).toContain("--win-handle-offset: -8px;");
+    for (const direction of ["n", "s", "e", "w", "ne", "nw", "se", "sw"]) {
+      const block = solcss.match(new RegExp(`\\.shell-window__rz\\[data-direction="${direction}"\\] \\{[^}]*\\}`));
+      expect(block, `the ${direction} handle lives in the stylesheet`).toBeTruthy();
+      expect(block?.[0], `the ${direction} handle rides the size token`).toContain("var(--win-handle-size)");
+      expect(block?.[0], `the ${direction} handle rides the offset token`).toContain("var(--win-handle-offset)");
+    }
+  });
+
+  it("the frame minimum is the doctrine 320x320 — the stylesheet, the resize logic and the spawn floor agree", () => {
+    expect(solcss).toContain("min-width: 320px;");
+    expect(solcss).toContain("min-height: 320px;");
+    expect(windowframe).toContain("WINDOW_MIN_WIDTH = 320");
+    expect(windowframe).toContain("WINDOW_MIN_HEIGHT = 320");
+    expect(spawnsource).toContain("SPAWN_FLOOR_WIDTH = 320");
+    expect(spawnsource).toContain("SPAWN_FLOOR_HEIGHT = 320");
+  });
+
+  it("the frame surface paints the doctrine tokens — the mica bed, the taskbar titlebar, no fixed values", () => {
+    const frame = solcss.match(/^\.shell-window \{[^}]*\}/m);
+    expect(frame?.[0], "the frame rides the mica bed").toContain("background: var(--win-mica-local);");
+    const bar = solcss.match(/^\.shell-window__bar \{[^}]*\}/m);
+    expect(bar?.[0], "the titlebar rides the doctrine band").toContain("var(--win-titlebar-h)");
+    expect(bar?.[0], "the titlebar rides the taskbar tint").toContain("var(--win-taskbar-tint)");
+    expect(bar?.[0], "the titlebar rides the taskbar acrylic").toContain("var(--win-taskbar-filter)");
+  });
+
+  it("the titlebar controls ride the doctrine pair — the close red, the focus ring, the pill, no white border", () => {
+    const close = solcss.match(/\.shell-window__close:hover \{[^}]*\}/);
+    expect(close?.[0], "the close hover rides the doctrine red").toContain("var(--win-close)");
+    const focus = solcss.match(/\.shell-window__snapbtn:focus-visible,[\s\S]*?outline: 2px solid var\(--win-focus\);/);
+    expect(focus, "the controls carry the doctrine focus ring").toBeTruthy();
+    expect(solcss).toContain("border-radius: var(--win-pill);");
+    const captions = solcss.match(/\.shell-window__caption,\n\.shell-window__close \{[^}]*\}/);
+    expect(captions?.[0], "the caption pair carries no white separator").not.toContain("255 255 255");
+  });
+
+  it("the floatTab states ride the doctrine poses — the minimized .6 from the bottom, the hidden .8", () => {
+    expect(solcss).toContain("--win-minimized: 0.6;");
+    expect(solcss).toContain("--win-hidden: 0.8;");
+    expect(solcss).toContain("scale(var(--win-minimized, 0.6))");
+    expect(solcss).toContain("scale(var(--win-hidden, 0.8))");
+    expect(solcss).toContain("transform-origin: bottom;");
+  });
+
+  it("the gestures paint on the compositor — will-change on the moving band, the rAF flush stays", () => {
+    const moving = solcss.match(/\[data-moving="true"\] \{[^}]*\}/);
+    expect(moving?.[0]).toContain("will-change: transform");
+    expect(windowframe).toContain('setAttribute("data-moving", "true")');
+    expect(windowframe).toContain("requestAnimationFrame");
   });
 });

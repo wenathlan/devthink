@@ -54,3 +54,29 @@ describe("zindex layer discipline", () => {
     expect(css).toContain("--ease-silk");
   });
 });
+
+describe("the window manager doctrine bands (wave 3)", () => {
+  it("declares the drag raise of the doctrine layer — the win11React 9900 band", () => {
+    expect(css).toContain("--win-drag-z: 9900;");
+  });
+
+  it("the live gestures stand the motion down — the moving band paints on the compositor", () => {
+    const moving = css.match(/\[data-moving="true"\] \{[^}]*\}/);
+    expect(moving, "the moving band rule lives").toBeTruthy();
+    expect(moving?.[0]).toContain("will-change: transform");
+    expect(moving?.[0]).toContain("transition: none");
+  });
+
+  it("the doctrine notrans class exists for the drag band", () => {
+    expect(css).toContain(".shell-window.notrans {");
+  });
+
+  it("the surfaces never carry a transition all — every rule names its properties", () => {
+    // the doctrine ban: comments first out, then every transition value
+    // must speak named properties, never the all keyword
+    const stripped = css.replace(/\/\*[\s\S]*?\*\//g, "");
+    const rules = [...stripped.matchAll(/transition:[^;]+;/g)].map((match) => match[0]);
+    expect(rules.length).toBeGreaterThan(0);
+    for (const rule of rules) expect(rule, `${rule} must name its properties`).not.toMatch(/(^|[\s:,])all([\s,;]|$)/);
+  });
+});

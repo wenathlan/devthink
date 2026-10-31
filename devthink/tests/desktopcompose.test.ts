@@ -44,9 +44,11 @@ import {
   sortAppsByKind,
 } from "../desktopstate.ts";
 import { osText } from "../oslabels.ts";
+import { uistoreseedrows } from "../uistore.ts";
 
 const desktop = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelDesktop.tsx"), "utf8");
 const workspace = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelWorkspace.tsx"), "utf8");
+const windowframe = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelWindowframe.tsx"), "utf8");
 const panel = readFileSync(join(import.meta.dirname, "..", "Sol", "panel", "panel.tsx"), "utf8");
 const solcss = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
 
@@ -461,5 +463,38 @@ describe("the labels law (every desktop string rides the os label table)", () =>
     expect(osText("desktop.menu.display")).toBe("Display settings");
     expect(osText("desktop.menu.open")).toBe("Open");
     expect(osText("desktop.menu.openWindow")).toBe("Open in new window");
+  });
+});
+
+describe("the window manager doctrine (wave 3 — hz counter, drag band, labels)", () => {
+  it("the z order rides the focus counter — the win11React hz pattern", () => {
+    expect(workspace).toContain("hzRef.current += 1");
+    expect(workspace).toContain("WINDOW_MIN_Z = -1");
+    // the mutation mapper never renumbers — the mutations own the stamps
+    const apply = workspace.match(/const applyWindows = [\s\S]*?\}, \[\]\);/);
+    expect(apply, "the applyWindows mapper lives").toBeTruthy();
+    expect(apply?.[0]).not.toContain("z:");
+  });
+
+  it("a minimized window drops under the field and a restore takes the next stamp", () => {
+    expect(workspace).toContain('state: "minimized", restoredState: target.state, z: WINDOW_MIN_Z');
+    expect(workspace).toContain("restoredState: undefined, z: nextz()");
+  });
+
+  it("the drag raises the window onto the doctrine band with the notrans class", () => {
+    expect(windowframe).toContain("WINDOW_DRAG_Z = 9900");
+    expect(windowframe).toContain("dragging ? WINDOW_DRAG_Z : win.z");
+    expect(windowframe).toContain('dragging ? "notrans" : ""');
+  });
+
+  it("the aero ghost paints above the drag band — the preview never hides under its own window", () => {
+    expect(windowframe).toContain('zIndex: "calc(var(--win-drag-z) + 1)"');
+  });
+
+  it("no string is hardcoded — the workspace history line rides the ui store", () => {
+    expect(workspace).toContain("useUicopy();");
+    expect(workspace).toContain('uicopy("workspace.history.localTabs")');
+    expect(workspace).not.toContain("Open session tabs remain local to this workspace.");
+    expect(uistoreseedrows()["workspace.history.localTabs"]).toBe("Open session tabs remain local to this workspace.");
   });
 });

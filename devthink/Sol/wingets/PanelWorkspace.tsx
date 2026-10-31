@@ -7,11 +7,13 @@
  * acrylic titlebar carries the single DevThink lockup (windowframe.tsx),
  * the snap layouts flyout and the aero edge gesture live on the
  * WindowFrame, and a minimized window keeps its dock entry lit with the
- * data-minimized dimmer until a click glides it back out. While any window
- * is open the wallpaper hero recedes (logo discipline: one brand voice per
- * zone). The shared chrome (Sol/wingets/Shellchrome.tsx) carries the thin
- * taskbar with the Start button; the dock keeps the session and the family
- * apps one click away.
+ * data-minimized dimmer until a click glides it back out. The z order
+ * rides the focus counter of the win11React hz pattern (every open and
+ * every focus stamps the next value, minimized windows drop to −1). While
+ * any window is open the wallpaper hero recedes (logo discipline: one
+ * brand voice per zone). The shared chrome (Sol/wingets/Shellchrome.tsx)
+ * carries the thin taskbar with the Start button; the dock keeps the
+ * session and the family apps one click away.
  *
  * The window bodies come from the root window catalog (window.ts) bound
  * right here — the workspace is the single react-aware edge of the window
@@ -28,6 +30,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { alttabkeydown } from "../../alttab.ts";
 import { DESKTOP_APPS, type DesktopApp } from "../../appregistry.ts";
 import { pushrecentapp } from "../../recentapps.ts";
+import { uicopy, useUicopy } from "../../uistore.ts";
 import { type WindowEntry, spawnfit, SPAWN_TOP_OFFSET, windowcatalog, windowspawn } from "../../window.ts";
 import { WindowBodySurface } from "../../useismobile.ts";
 import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspace.ts";
@@ -130,6 +133,11 @@ type ShellWorkspaceProps = {
 
 /** the float band base — windows stack upward from here, below the bar band */
 const Z_BASE = 20;
+/** the z band a minimized window drops to — under the whole field (the
+ * win11React law: minimize writes z = −1, restore re-stamps from the focus
+ * counter); the pose is display:none, the value keeps the order honest for
+ * anything that reads the snapshot */
+const WINDOW_MIN_Z = -1;
 /** the fixed chrome band of the desktop, in px: no top chrome — the desktop
  * starts at the viewport top (the win11 law: the taskbar is the bottom edge)
  * and the 48px taskbar rides the root window logic (DESKTOP_TASKBAR — the
@@ -181,7 +189,9 @@ function defaultSnapshot(id: string, title: string, openCount: number): WindowSn
 }
 
 /** The persisted window layout (the desktopstate pattern): the snapshots
- * ride localStorage and hydrate once, ids without a catalog app drop out. */
+ * ride localStorage and hydrate once, ids without a catalog app drop out.
+ * The stored z values re-stamp in array order on hydrate — stored z pairs
+ * may collide after a restore, the focus counter re-stamps from here on. */
 const WINDOWS_STORAGE_KEY = "dt.windows.v1";
 
 function loadWindows(): WindowSnapshot[] {
@@ -189,7 +199,9 @@ function loadWindows(): WindowSnapshot[] {
     const raw = window.localStorage.getItem(WINDOWS_STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw) as WindowSnapshot[];
-    return parsed.filter((win) => typeof win.id === "string" && win.id !== "" && windowApp(win.id) !== undefined);
+    return parsed
+      .filter((win) => typeof win.id === "string" && win.id !== "" && windowApp(win.id) !== undefined)
+      .map((win, index) => ({ ...win, z: Z_BASE + index }));
   } catch {
     return [];
   }
@@ -209,17 +221,34 @@ export function ShellWorkspace({
   onNavigate,
 }: ShellWorkspaceProps) {
   const destination: WorkspaceDestination = isWorkspaceDestination(sectionId) ? sectionId : "chat";
+  /** the focus counter of the window z order — the win11React hz pattern:
+   * every open and every focus increments the counter and stamps the one
+   * window (minimized windows drop to WINDOW_MIN_Z); the array keeps its
+   * MRU order for the switcher and the top scan */
+  const hzRef = useRef(Z_BASE);
+  /** the next stamp of the counter (the one write surface of the z order) */
+  const nextz = useCallback(() => {
+    hzRef.current += 1;
+    return hzRef.current;
+  }, []);
   /** the desktop boots with the persisted layout (empty on a fresh device) —
    * windows open on demand and the layout rides localStorage */
-  const [windows, setWindows] = useState<WindowSnapshot[]>(() => loadWindows());
+  const [windows, setWindows] = useState<WindowSnapshot[]>(() => {
+    const loaded = loadWindows();
+    hzRef.current = Z_BASE + loaded.length;
+    return loaded;
+  });
   /** the alt-tab gesture: the acrylic task switcher rides above the shell
    * while the chord is held (the first alt+tab mounts it on the window
    * behind the topmost one) */
   const [switching, setSwitching] = useState(false);
+  /** the live ui copy rows (the labels the workspace renders ride the db) */
+  useUicopy();
 
-  /** single mutation entry: normalizes the z order from the array order */
+  /** single mutation entry: the mutations own the z stamping (the focus
+   * counter pattern) — the mapper never renumbers behind their back */
   const applyWindows = useCallback((next: (current: WindowSnapshot[]) => WindowSnapshot[]) => {
-    setWindows((current) => next(current).map((win, index) => ({ ...win, z: Z_BASE + index })));
+    setWindows((current) => next(current));
   }, []);
 
   // the layout persists: every window change rides localStorage so the
@@ -237,10 +266,12 @@ export function ShellWorkspace({
       applyWindows((current) => {
         const target = current.find((win) => win.id === id);
         if (!target || current[current.length - 1]?.id === id) return current;
-        return [...current.filter((win) => win.id !== id), target];
+        // the focus stamps the counter — the hz pattern (already-top windows
+        // keep their stamp: they hold the maximum)
+        return [...current.filter((win) => win.id !== id), { ...target, z: nextz() }];
       });
     },
-    [applyWindows],
+    [applyWindows, nextz],
   );
 
   const updateWindow = useCallback(
@@ -257,25 +288,30 @@ export function ShellWorkspace({
     [applyWindows],
   );
 
-  /** dock and desktop behavior: open, restore, focus or minimize — like a taskbar button */
+  /** dock and desktop behavior: open, restore, focus or minimize — like a taskbar button.
+   * The z stamps ride the focus counter: an opening or a restored window
+   * takes the next stamp, a minimized one drops to WINDOW_MIN_Z. */
   const toggleWindow = useCallback(
     (id: string, title: string) => {
       applyWindows((current) => {
         const target = current.find((win) => win.id === id);
-        if (!target) return [...current, defaultSnapshot(id, title, current.length)];
+        if (!target) return [...current, { ...defaultSnapshot(id, title, current.length), z: nextz() }];
         if (target.state === "minimized") {
           const restored =
             target.restoredState && target.restoredState !== "minimized" ? target.restoredState : "normal";
-          return [...current.filter((win) => win.id !== id), { ...target, state: restored, restoredState: undefined }];
+          return [
+            ...current.filter((win) => win.id !== id),
+            { ...target, state: restored, restoredState: undefined, z: nextz() },
+          ];
         }
         if (current[current.length - 1]?.id === id)
           return current.map((win) =>
-            win.id === id ? { ...win, state: "minimized", restoredState: target.state } : win,
+            win.id === id ? { ...win, state: "minimized", restoredState: target.state, z: WINDOW_MIN_Z } : win,
           );
-        return [...current.filter((win) => win.id !== id), target];
+        return [...current.filter((win) => win.id !== id), { ...target, z: nextz() }];
       });
     },
-    [applyWindows],
+    [applyWindows, nextz],
   );
 
   /** the arrival handoffs: a /<slug> family route opens its app window, a
@@ -288,23 +324,24 @@ export function ShellWorkspace({
     else if (chatHandoff) toggleWindow("chat", appById("chat").name);
   }, [chatHandoff, familySlug, toggleWindow]);
 
-  /** destination windows: history opens its own floating window */
+  /** destination windows: history opens its own floating window (the z
+   * stamps ride the focus counter, like every open of the shell) */
   useEffect(() => {
     if (destination !== "history") return;
     applyWindows((current) => {
       const target = current.find((win) => win.id === "history");
-      if (!target) return [...current, defaultSnapshot("history", "session history", current.length)];
+      if (!target) return [...current, { ...defaultSnapshot("history", "session history", current.length), z: nextz() }];
       if (target.state === "minimized") {
         const restored = target.restoredState && target.restoredState !== "minimized" ? target.restoredState : "normal";
         return [
           ...current.filter((win) => win.id !== "history"),
-          { ...target, state: restored, restoredState: undefined },
+          { ...target, state: restored, restoredState: undefined, z: nextz() },
         ];
       }
       if (current[current.length - 1]?.id === "history") return current;
-      return [...current.filter((win) => win.id !== "history"), target];
+      return [...current.filter((win) => win.id !== "history"), { ...target, z: nextz() }];
     });
-  }, [applyWindows, destination]);
+  }, [applyWindows, destination, nextz]);
 
   const topId = useMemo(() => {
     for (let index = windows.length - 1; index >= 0; index -= 1) {
@@ -421,7 +458,7 @@ export function ShellWorkspace({
           >
             {win.id === "history" ? (
               <div className="terminal-history shell-history-window">
-                <p>Open session tabs remain local to this workspace.</p>
+                <p>{uicopy("workspace.history.localTabs")}</p>
                 {tabs.map((tab) => (
                   <button
                     key={tab.id}

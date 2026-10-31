@@ -65,6 +65,8 @@ const SEED: Readonly<Record<string, string>> = Object.freeze({
   /* --------------------- files explorer empty states ---------------- */
   "explorer.planEmpty": "No folders yet",
   "explorer.empty": "This folder is empty.",
+  /* --------------------- workspace history window -------------------- */
+  "workspace.history.localTabs": "Open session tabs remain local to this workspace.",
 });
 
 /**
