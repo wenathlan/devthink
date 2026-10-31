@@ -128,7 +128,13 @@ function runhostprocess(
           }),
         );
       } else {
-        resolve({ stdout, stderr });
+        // the hard cap law: the collector admits chunks under the ceiling
+        // but one large chunk may ride past the line — the joined buffer
+        // truncates to the ceiling so the capture never exceeds it
+        resolve({
+          stdout: stdout.length > OUTPUTCAPBYTES ? stdout.slice(0, OUTPUTCAPBYTES) : stdout,
+          stderr: stderr.length > OUTPUTCAPBYTES ? stderr.slice(0, OUTPUTCAPBYTES) : stderr,
+        });
       }
     });
   });
