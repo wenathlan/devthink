@@ -25,9 +25,11 @@
  * into the inline `--fly-x`/`--fly-y` custom properties and flips the
  * `data-flying` class, and the stylesheet paints the translate+scale flight
  * from those properties (restore glides back out of the pin the same way).
- * Drag/resize keep the null-transition grammar (data-moving) and the eight
- * os.js resize directions; windows stack inside the float band — z-index
- * values come from the parent shell, never above the bar band (50).
+ * Drag/resize keep the null-transition grammar (data-moving, and the
+ * doctrine notrans class while a drag is live) and the eight doctrine
+ * resize handles (8px, offset −8px, minimum 320x320); a live title-bar drag
+ * paints the window on the win11React drag band (9900) while the resting
+ * z-index values come from the parent shell's focus counter.
  *
  * Snap layouts: dwelling ~350ms on the maximize caption opens the win11
  * .snap-flyout — six layout templates as mini-glyphs; hovering a zone marks
@@ -146,8 +148,15 @@ const ZONE_WORDS: Record<SnapZone, string> = {
   br: osText("win.zone.br"),
   free: osText("win.zone.free") };
 
+/** the doctrine minimum of the window frame: 320x320 (the resize handles
+ * and the spawn floor of the root window logic enforce the same pair) */
 export const WINDOW_MIN_WIDTH = 320;
-export const WINDOW_MIN_HEIGHT = 300;
+export const WINDOW_MIN_HEIGHT = 320;
+/** the drag raise of the win11React doctrine: while a title-bar drag is
+ * live the moved window paints above every sibling on the 9900 band (the
+ * aero ghost rides one step above it on calc(var(--win-drag-z) + 1)), and
+ * the pose drops back to the focus-counter z the shell stamped on release */
+export const WINDOW_DRAG_Z = 9900;
 /** the top strip (px) that turns a drag into a maximize */
 const MAXIMIZE_EDGE = 10;
 /** the side strips (px) that turn a drag into an aero half snap */
@@ -251,6 +260,9 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
   /** the first press on an inactive window focuses it without click-through
    * (the Windows rule: the click activates the window, never the control) */
   const [swallowed, setSwallowed] = useState(false);
+  /** a title-bar drag is live: the frame rides the doctrine drag band
+   * (z 9900 + the notrans class) until the pointer is up */
+  const [dragging, setDragging] = useState(false);
 
   /** restore physics: the window re-appears collapsed on its taskbar pin
    * (the `data-flying="glide"` pose reads the measured `--fly-x`/`--fly-y`)
@@ -405,6 +417,9 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
     const floatRestore = floating ? null : (win.float ?? null);
     let consumed = false;
     el.setAttribute("data-moving", "true");
+    // the doctrine drag band: the moved window paints above every sibling
+    // (z 9900) with every named motion stood down (the notrans class)
+    setDragging(true);
     try {
       el.setPointerCapture(event.pointerId);
     } catch {
@@ -486,6 +501,9 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
         /* the capture may already be gone — the listeners are detached anyway */
       }
       el.removeAttribute("data-moving");
+      // the drag band leaves with the gesture — the focus-counter z the
+      // shell stamped takes the window back
+      setDragging(false);
     };
 
     const flush = () => {
@@ -726,14 +744,19 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
   const minimized = win.state === "minimized";
   const style =
     win.state === "normal"
-      ? { left: win.x, top: win.y, width: win.width, height: win.height, zIndex: win.z }
-      : { zIndex: win.z };
+      ? {
+          left: win.x,
+          top: win.y,
+          width: win.width,
+          height: win.height,
+          zIndex: dragging ? WINDOW_DRAG_Z : win.z }
+      : { zIndex: dragging ? WINDOW_DRAG_Z : win.z };
   const ghostRect = ghost ? ghostRectRef.current : null;
 
   return (
     <section
       ref={frameRef}
-      className={`shell-window ${active ? "is-active" : ""}`}
+      className={`shell-window ${active ? "is-active" : ""} ${dragging ? "notrans" : ""}`}
       data-state={win.state}
       data-min={minimized ? "true" : undefined}
       data-closing={closing ? "true" : undefined}
@@ -904,7 +927,9 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
           )
         : null}
       {/* the aero edge ghost: the half the drag would snap into (fixed,
-          inert, the zone wash — never a button) */}
+          inert, the zone wash — never a button). The ghost paints one step
+          above the drag band so the moved window never covers its own
+          preview. */}
       {ghost && ghostRect
         ? createPortal(
             <div
@@ -917,7 +942,7 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
                 top: ghostRect.top,
                 width: `${ghostRect.width}px`,
                 height: `${ghostRect.height}px`,
-                zIndex: "var(--z-float)",
+                zIndex: "calc(var(--win-drag-z) + 1)",
                 pointerEvents: "none" }}
             />,
             document.body,

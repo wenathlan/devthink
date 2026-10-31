@@ -195,7 +195,8 @@
 @keyframes windowOut {
   to {
     opacity: 0;
-    transform: scale(var(--floor-modal, 0.96));
+    /* the floatTab hidden pose: the window shrinks to .8 as it leaves */
+    transform: scale(var(--win-hidden, 0.8));
   }
 }
 @keyframes dtPopIntro {
@@ -504,6 +505,14 @@
   --win-ease-start: cubic-bezier(0.79, 0.14, 0.15, 0.86);
   --win-ease-panel: cubic-bezier(0.62, 0, 0.32, 1);
   --win-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* the window manager states and the drag band (wave 3): the floatTab
+     poses ride named tokens — the minimize flight lands at scale(.6) from
+     the bottom origin, the hidden close pose shrinks to .8, and a live
+     title-bar drag paints the moved window on the win11React 9900 band
+     (the aero ghost rides one step above it) */
+  --win-minimized: 0.6;
+  --win-hidden: 0.8;
+  --win-drag-z: 9900;
 
   /* ---- legacy aliases · campaign generations ---- */
   --atmos-accent: var(--color-signal);
@@ -1093,6 +1102,7 @@ a[href] {
 }
 
 .shell-window[data-flying="press"] {
+  transform-origin: bottom;
   transform: translateY(8px) scale(0.94);
   transition:
     transform 200ms var(--ease-spring),
@@ -1101,7 +1111,8 @@ a[href] {
 }
 
 .shell-window[data-flying="glide"] {
-  transform: translate(var(--fly-x, 0px), var(--fly-y, 0px)) scale(0.7);
+  transform-origin: bottom;
+  transform: translate(var(--fly-x, 0px), var(--fly-y, 0px)) scale(var(--win-minimized, 0.6));
   opacity: 0;
   transition:
     transform 250ms var(--ease-window),
@@ -8501,7 +8512,11 @@ tint, the grain and the fluent shadows keep their exact values */
   font: 500 12px / 1.5 var(--dt-sans);
 }
 
+/* the live gesture band (the window frame drag/resize): the motion paints
+   on the compositor — the frame never thrashes layout while it moves */
 [data-moving="true"] {
+  will-change: transform;
+  transition: none;
 }
 
 span[data-tile] {
@@ -10553,43 +10568,33 @@ span[data-tile] {
 /* ---------------------------------------------------------------- */
 
 /* the frame: layout stays on the element, the paint (border, wash, shadow,
-   outline, blur, entrance animation) lives here. Inactive is the base pose;
-   .is-active lifts border, wash, shadow and the signal outline. State
-   colors switch instantly (no shadow/outline transition — e18). */
+   outline, entrance animation) lives here. The surface rides the doctrine
+   tokens — the mica bed (--win-mica-local) carries the frame and the hair
+   ladder carries the separation, so the theme flip repaints the window with
+   zero fixed values. Inactive is the base pose; .is-active lifts border,
+   shadow and outline to the focused window pair. State colors switch
+   instantly (no shadow/outline transition — e18).
+   No overflow clip here: the eight doctrine handles ride OUTSIDE the frame
+   (--win-handle-offset −8px, the windows-native grab zone) — the inner rows
+   (bar, body) clip their own corners instead. */
 .shell-window {
   position: absolute;
   display: flex;
   flex-direction: column;
   min-width: 320px;
-  min-height: 300px;
-  overflow: hidden;
-  border: 1px solid rgb(255 255 255 / 8%);
+  min-height: 320px;
+  border: 1px solid var(--color-hairline);
   border-radius: var(--radius-md);
-  background: linear-gradient(180deg, rgb(27 30 39 / 78%), rgb(18 20 26 / 90%));
-  box-shadow: 0 8px 24px rgb(0 0 0 / 35%);
-  outline: 1px solid rgb(255 255 255 / 5%);
+  background: var(--win-mica-local);
+  box-shadow: var(--win-shadow-flyout);
+  outline: 1px solid var(--color-hairline);
   outline-offset: 0;
-  -webkit-backdrop-filter: blur(26px) saturate(130%);
-  backdrop-filter: blur(26px) saturate(130%);
   animation: var(--animate-window-in);
 }
 .shell-window.is-active {
-  border-color: rgb(255 255 255 / 14%);
-  background:
-    radial-gradient(120% 42% at 50% -12%, rgb(231 233 238 / 5%) 0%, transparent 62%),
-    linear-gradient(180deg, rgb(28 32 42 / 88%), rgb(20 22 29 / 94%));
-  box-shadow:
-    0 16px 48px rgb(0 0 0 / 55%),
-    inset 0 1px 0 rgb(255 255 255 / 6%);
-  outline-color: color-mix(in srgb, var(--color-signal) 45%, transparent);
-}
-[data-theme="light"] .shell-window {
-  border-color: rgb(0 0 0 / 12%);
-  background: linear-gradient(180deg, rgb(252 252 254 / 94%), rgb(238 241 247 / 97%));
-  box-shadow:
-    0 8px 24px rgb(15 23 42 / 16%),
-    0 1px 0 rgb(255 255 255 / 70%) inset;
-  outline-color: rgb(255 255 255 / 65%);
+  border-color: var(--color-hairline-strong);
+  box-shadow: var(--win-shadow-window);
+  outline-color: var(--color-hairline-strong);
 }
 
 /* the state poses the tailwind data-variants used to carry */
@@ -10628,6 +10633,22 @@ span[data-tile] {
   border-radius: 0;
   outline-width: 0;
 }
+/* the full-band poses square the inner corners too (the rows carry their
+   own radius since the frame no longer clips them) */
+.shell-window[data-state="maximized"] .shell-window__bar,
+.shell-window[data-state="maximized"] .shell-window__body,
+.shell-window[data-state="snapped-left"] .shell-window__bar,
+.shell-window[data-state="snapped-left"] .shell-window__body,
+.shell-window[data-state="snapped-right"] .shell-window__bar,
+.shell-window[data-state="snapped-right"] .shell-window__body {
+  border-radius: 0;
+}
+/* the live drag band rides the doctrine class beside the moving state: the
+   win11React notrans stands every named motion of the frame down */
+.shell-window.notrans {
+  transition: none;
+  animation: none;
+}
 @media (max-width: 859px) {
   .shell-window {
     min-width: 0;
@@ -10650,23 +10671,24 @@ span[data-tile] {
   }
 }
 
-/* the titlebar: 30px acrylic (owner law 28-30px), hairline bottom, the
-   inactive window grayscales instantly (no filter transition — e18) */
+/* the titlebar: the doctrine band (--win-titlebar-h, owner law 28-30px)
+   on the taskbar acrylic bed (the --win-taskbar-tint tint under the
+   --win-taskbar-filter saturate(3) blur(20px)), hairline bottom, the top
+   corners squared to the frame radius (the row clips itself now). The
+   inactive window grayscales instantly (no filter transition — e18). */
 .shell-window__bar {
   display: flex;
   flex: none;
-  min-height: 30px;
+  min-height: var(--win-titlebar-h);
   align-items: stretch;
   padding-left: 14px;
-  border-bottom: 1px solid rgb(255 255 255 / 7%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-  backdrop-filter: blur(20px) saturate(140%);
+  border-bottom: 1px solid var(--color-hairline);
+  border-radius: calc(var(--radius-md) - 1px) calc(var(--radius-md) - 1px) 0 0;
+  background: var(--win-taskbar-tint);
+  -webkit-backdrop-filter: var(--win-taskbar-filter);
+  backdrop-filter: var(--win-taskbar-filter);
   user-select: none;
   touch-action: none;
-}
-[data-theme="light"] .shell-window__bar {
-  border-bottom-color: rgb(0 0 0 / 10%);
-  background: rgb(0 0 0 / 3%);
 }
 .shell-window:not(.is-active) .shell-window__bar {
   filter: grayscale(0.8);
@@ -10728,7 +10750,10 @@ span[data-tile] {
 }
 
 /* the caption controls: the snap pair inside the bar, the fluent 46px
-   min/max pair and the close button on the classic red tokens */
+   min/max pair and the close button on the doctrine tokens — hover washes
+   ride --win-hover/--win-active (the theme flips them), every shape is the
+   pill (--win-pill 999px), the close rides --win-close rgb(232 17 35) and
+   saturates it on hover, and no control carries a white separator border */
 .shell-window__controls {
   display: flex;
   align-items: stretch;
@@ -10746,14 +10771,17 @@ span[data-tile] {
   place-items: center;
   align-self: center;
   border: 0;
-  border-radius: var(--radius-xs);
+  border-radius: var(--win-pill);
   background: transparent;
   color: var(--color-ink-3);
   cursor: pointer;
-  transition: transform 100ms var(--ease-micro);
+  transition:
+    transform 100ms var(--ease-micro),
+    background-color 100ms var(--ease-micro),
+    color 100ms var(--ease-micro);
 }
 .shell-window__snapbtn:hover {
-  background: rgb(255 255 255 / 10%);
+  background: var(--win-hover);
   color: var(--color-ink);
 }
 .shell-window__snapbtn:active {
@@ -10766,41 +10794,50 @@ span[data-tile] {
   place-items: center;
   align-self: stretch;
   border: 0;
-  border-left: 1px solid rgb(255 255 255 / 5%);
-  border-radius: var(--radius-xs);
+  border-radius: var(--win-pill);
   background: transparent;
   color: var(--color-ink-2);
   cursor: pointer;
+  transition:
+    background-color 100ms var(--ease-micro),
+    color 100ms var(--ease-micro),
+    filter 100ms var(--ease-micro);
 }
 .shell-window__caption:hover {
-  background: rgb(255 255 255 / 8%);
+  background: var(--win-hover);
   color: var(--color-ink);
 }
 .shell-window__caption:active {
-  background: rgb(255 255 255 / 12%);
+  background: var(--win-active);
   color: var(--color-ink);
 }
 .shell-window__close:hover {
-  background: var(--color-close);
+  background: var(--win-close);
   color: rgb(255 255 255);
+  filter: saturate(1.4);
 }
 .shell-window__close:active {
   background: var(--color-close-deep);
   color: rgb(255 255 255);
+  filter: none;
 }
 .shell-window__snapbtn:focus-visible,
 .shell-window__caption:focus-visible,
 .shell-window__close:focus-visible {
-  outline: 2px solid var(--color-focus);
+  outline: 2px solid var(--win-focus);
   outline-offset: 2px;
 }
 
-/* the body rows: tab strip, context, canvas, rail, footer */
+/* the body rows: tab strip, context, canvas, rail, footer — the row clips
+   its own bottom corners (the frame carries no overflow clip: the handles
+   ride outside) */
 .shell-window__body {
   display: grid;
   min-height: 0;
   flex: 1;
+  overflow: hidden;
   grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+  border-radius: 0 0 calc(var(--radius-md) - 1px) calc(var(--radius-md) - 1px);
 }
 
 /* the window host: the app stage owns the canvas row — the family power
@@ -10954,67 +10991,70 @@ span[data-tile] {
   }
 }
 
-/* the os.js resize strips: 8px edges inset 14px (the rounded clipping
-   survives) and the 14px corner grips, one rule per direction */
+/* the doctrine resize handles: eight grips of 8px offset −8px (the tokens
+   --win-handles/--win-handle-size/--win-handle-offset) — four edges and
+   four corners, every box riding outside the frame border (the windows
+   native grab zone; the frame carries no overflow clip), one rule per
+   direction */
 .shell-window__rz {
   position: absolute;
   z-index: 3;
   touch-action: none;
 }
 .shell-window__rz[data-direction="n"] {
-  top: 0;
-  right: 14px;
-  left: 14px;
-  height: 8px;
+  top: var(--win-handle-offset);
+  right: 0;
+  left: 0;
+  height: var(--win-handle-size);
   cursor: ns-resize;
 }
 .shell-window__rz[data-direction="s"] {
-  right: 14px;
-  bottom: 0;
-  left: 14px;
-  height: 8px;
+  right: 0;
+  bottom: var(--win-handle-offset);
+  left: 0;
+  height: var(--win-handle-size);
   cursor: ns-resize;
 }
 .shell-window__rz[data-direction="e"] {
-  top: 14px;
-  right: 0;
-  bottom: 14px;
-  width: 8px;
+  top: 0;
+  right: var(--win-handle-offset);
+  bottom: 0;
+  width: var(--win-handle-size);
   cursor: ew-resize;
 }
 .shell-window__rz[data-direction="w"] {
-  top: 14px;
-  bottom: 14px;
-  left: 0;
-  width: 8px;
+  top: 0;
+  bottom: 0;
+  left: var(--win-handle-offset);
+  width: var(--win-handle-size);
   cursor: ew-resize;
 }
 .shell-window__rz[data-direction="ne"] {
-  top: 0;
-  right: 0;
-  width: 14px;
-  height: 14px;
+  top: var(--win-handle-offset);
+  right: var(--win-handle-offset);
+  width: var(--win-handle-size);
+  height: var(--win-handle-size);
   cursor: nesw-resize;
 }
 .shell-window__rz[data-direction="nw"] {
-  top: 0;
-  left: 0;
-  width: 14px;
-  height: 14px;
+  top: var(--win-handle-offset);
+  left: var(--win-handle-offset);
+  width: var(--win-handle-size);
+  height: var(--win-handle-size);
   cursor: nwse-resize;
 }
 .shell-window__rz[data-direction="se"] {
-  right: 0;
-  bottom: 0;
-  width: 14px;
-  height: 14px;
+  right: var(--win-handle-offset);
+  bottom: var(--win-handle-offset);
+  width: var(--win-handle-size);
+  height: var(--win-handle-size);
   cursor: nwse-resize;
 }
 .shell-window__rz[data-direction="sw"] {
-  bottom: 0;
-  left: 0;
-  width: 14px;
-  height: 14px;
+  bottom: var(--win-handle-offset);
+  left: var(--win-handle-offset);
+  width: var(--win-handle-size);
+  height: var(--win-handle-size);
   cursor: nesw-resize;
 }
 

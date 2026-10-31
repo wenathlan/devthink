@@ -138,9 +138,9 @@ const SPAWN_GUTTER = 16;
 /** the breathing the band fit asks under the spawn */
 const SPAWN_BREATH = 6;
 /** the portrait floor — a floating window never opens under the frame
- * minimum the resize handles enforce */
+ * minimum the resize handles enforce (the doctrine pair 320x320) */
 const SPAWN_FLOOR_WIDTH = 320;
-const SPAWN_FLOOR_HEIGHT = 300;
+const SPAWN_FLOOR_HEIGHT = 320;
 
 /** the opening verdict of one windowed app against the screen: the
  * floating bounds clamped to the desktop band (the width by the gutter,
