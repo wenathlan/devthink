@@ -277,6 +277,11 @@ const edits: Array<[string, (content: string) => string]> = [
      the monorepo root beside devthink/). */
   ["../argan/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
   ["../cadria/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+  [
+    "../cadria/version.ts",
+    () =>
+      `/** Canonical package version synchronized from package.json. */\nexport const packageversion = "${version}" as const;\n`,
+  ],
   ["../debonair/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
   [
     "../stealthhead/package.json",
