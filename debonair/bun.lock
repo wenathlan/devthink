@@ -5,7 +5,7 @@
     "": {
       "name": "@wenathlan/debonair",
       "dependencies": {
-        "@fluentui/react-icons": "^2.0.344",
+        "@fluentui/react-icons": "^2.0.345",
         "@fontsource-variable/bricolage-grotesque": "^5.3.0",
         "@fontsource-variable/jetbrains-mono": "^5.3.0",
         "@fontsource-variable/outfit": "^5.3.0",
@@ -17,7 +17,7 @@
         "@wenathlan/vault": "^2.0.151",
         "hono": "^4.13.14",
         "ink": "^7.1.1",
-        "lucide-react": "^1.64.0",
+        "lucide-react": "^1.65.0",
         "motion": "^12.43.0",
         "react": "^19.3.1",
         "react-devtools-core": "^8.0.0",
@@ -31,7 +31,7 @@
         "@capacitor/cli": "^8.6.0",
         "@capacitor/core": "^8.6.0",
         "@capacitor/ios": "^8.6.0",
-        "@fluentui/react-icons": "^2.0.344",
+        "@fluentui/react-icons": "^2.0.345",
         "@hookform/resolvers": "^5.9.2",
         "@libsql/client": "^0.18.0",
         "@opencode-ai/sdk": "^1.19.5",
@@ -94,7 +94,7 @@
         "hono": "^4.13.14",
         "input-otp": "^1.5.0",
         "jsdom": "26.1.0",
-        "lucide-react": "^1.64.0",
+        "lucide-react": "^1.65.0",
         "mysql2": "^3.24.6",
         "nanoid": "^6.0.2",
         "next-themes": "^0.4.6",
@@ -275,7 +275,7 @@
 
     "@floating-ui/utils": ["@floating-ui/utils@0.2.12", "", {}, "sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww=="],
 
-    "@fluentui/react-icons": ["@fluentui/react-icons@2.0.344", "", { "dependencies": { "@griffel/react": "^1.6.1", "tslib": "^2.1.0" }, "peerDependencies": { "react": ">=16.8.0 <20.0.0" } }, "sha512-pvEVFOUrrtmIglqdfhDVX6XT80a5z9kX+Tso6NAzgmkko8nlURhOzNwvZZlsCK4yQseH/4NQdYoN8ijO7IHdNw=="],
+    "@fluentui/react-icons": ["@fluentui/react-icons@2.0.345", "", { "dependencies": { "@griffel/react": "^1.6.1", "tslib": "^2.1.0" }, "peerDependencies": { "react": ">=16.8.0 <20.0.0" } }, "sha512-lU3TXTAknzs0n4luCR1dlir10ZJQkqSUPsfwCErEenZufZQp8P3Nj+agYVx7Dk2v76JSAPweA9CpQD/0AzeVFQ=="],
 
     "@fontsource-variable/bricolage-grotesque": ["@fontsource-variable/bricolage-grotesque@5.3.0", "", {}, "sha512-TLi9Q4hJjS2UvoTMRSS2nHu6c4R56lAw60NR9QYtVRCHn0XtsFpiEhNffZ8Glsoxu6wEEwLKBP8lb94J52PNBA=="],
 
