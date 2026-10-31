@@ -31,7 +31,7 @@ import {
   saasstudiosintro,
   saastoasts,
 } from "../../saascontent.ts";
-import { uicopy, useuicopy } from "../../uistore.ts";
+import { uicopy, useUicopy } from "../../uistore.ts";
 import { SaddleTabBridge, SaddleTabBridgeUp, ScoopedCard, Studiomark, type studiomarkid } from "./IntroSaaskit.tsx";
 
 type SectionProps = {
@@ -79,7 +79,7 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
   // the store ride: the live db rows land once per mount and the face
   // re-renders on them — the seed answers the first paint with the same
   // words the db serves, so the swap never flashes
-  useuicopy();
+  useUicopy();
   const [modeid, setModeid] = useState("agents");
   const saashero = herocopy();
   const mode = saashero.modes.find((row) => row.id === modeid) ?? saashero.modes[0];

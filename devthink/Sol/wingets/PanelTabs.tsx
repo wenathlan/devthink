@@ -1,7 +1,7 @@
 /** Style: DevThink Terminal Atelier — browser-tab chrome is a core navigation gesture, not decorative header clutter. The active tab carries data-active="true" beside .workspace-tab--active so the R1-a CSS grades hover/active on one attribute grammar; data-provider exposes the session provider for accent hooks. No tab ever carries a brand mark — the titlebar lockup is the zone's single one (logo discipline). Every string rides the ui store (the uicopy accessor of uistore.ts — the db rows over the same-origin /api/v1/ui/copy lane, the build seed answering offline; the tab label and provider are the session's own data, never copy). */
 import {AddRegular as Plus, DismissRegular as X} from "@fluentui/react-icons";
 import type { DevThinkTab } from "../../paneltypes.ts";
-import { uicopy, useuicopy } from "../../uistore.ts";
+import { uicopy, useUicopy } from "../../uistore.ts";
 
 type WorkspaceTabsProps = {
   tabs: DevThinkTab[];
@@ -15,7 +15,7 @@ export function WorkspaceTabs({ tabs, activeTab, onSelect, onClose, onNew }: Wor
   // the store ride: the live db rows land once per mount and the strip
   // re-renders on them (the seed answers the first paint with the same
   // words the db serves, so the swap never flashes)
-  useuicopy();
+  useUicopy();
   return (
     <div className="workspace-tabs" role="tablist" aria-label={uicopy("panel.nav.tabs.aria")}>
       <div className="workspace-tabs__scroller">

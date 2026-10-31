@@ -20,7 +20,7 @@ import { MoreHorizontalRegular as More, type FluentIcon } from "@fluentui/react-
 import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
 import { label } from "../../labels.ts";
-import { uicopy, useuicopy } from "../../uistore.ts";
+import { uicopy, useUicopy } from "../../uistore.ts";
 import type { DesktopApp } from "../../appregistry.ts";
 import type { FamilySite } from "../../catalog";
 import { FamilyMark } from "./ExploreLaunchdeck.tsx";
@@ -304,7 +304,7 @@ export function ExploreSidebar(props: {
   // the store ride: the live db rows land once per mount and the rail
   // re-renders on them (the seed answers the first paint with the same
   // words the db serves, so the swap never flashes)
-  useuicopy();
+  useUicopy();
   return (
     <aside
       aria-label={label("explore.sidebar.aria")}

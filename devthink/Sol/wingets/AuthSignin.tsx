@@ -24,7 +24,7 @@
 import { ArrowRightRegular, EyeOffRegular, EyeRegular, PersonRegular } from "@fluentui/react-icons";
 import { useEffect, useRef } from "react";
 import type { AccountState } from "../../account.ts";
-import { uicopy, useuicopy } from "../../uistore.ts";
+import { uicopy, useUicopy } from "../../uistore.ts";
 import { ProviderRow, type ProviderRowProps } from "./AuthProviderrow.tsx";
 import { SolLogoMark, SolWordmark } from "./PanelLogo.tsx";
 
@@ -71,7 +71,7 @@ export function SignInForm({ account, known, entry, oauth }: SignInFormProps) {
   // the store ride: the live db rows land once per mount and the face
   // re-renders on them (the seeds answer the first paint with the same
   // words the db serves, so the swap never flashes)
-  useuicopy();
+  useUicopy();
   const passwordRef = useRef<HTMLInputElement | null>(null);
 
   // the password field takes focus as the sign-in face reveals — the

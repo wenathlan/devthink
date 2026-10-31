@@ -139,12 +139,12 @@ export function uicopy(key: string): string {
 }
 
 /**
- * useuicopy — the mount hook of the store-riding winget: it loads the
+ * useUicopy — the mount hook of the store-riding winget: it loads the
  * live rows once per mount and re-renders the face when they land. The
  * seed answers the first paint with the same words the db serves, so the
  * swap never flashes.
  */
-export function useuicopy(): void {
+export function useUicopy(): void {
   const [, bump] = useState(0);
   useEffect(() => {
     let alive = true;

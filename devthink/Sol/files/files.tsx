@@ -75,7 +75,7 @@ import { toast } from "sonner";
 import { DESKTOP_APPS, type DesktopApp } from "../../appregistry.ts";
 import { coreModuleTable, osAppLabels, runnerBinaries, studioAssets, studioTracks } from "../../catalog.ts";
 import { osText } from "../../oslabels.ts";
-import { uicopy, useuicopy } from "../../uistore.ts";
+import { uicopy, useUicopy } from "../../uistore.ts";
 import {
   breadcrumbs as crumbtrail,
   capacityline,
@@ -1126,7 +1126,7 @@ function ThisPcView({
   // the store ride: the live db rows land once per mount and the view
   // re-renders on them (the seed answers the first paint with the same
   // words the db serves, so the swap never flashes)
-  useuicopy();
+  useUicopy();
   const folderRows = rows.filter((row) => row.id.startsWith("folder:"));
   const driveRows = rows.filter((row) => row.id.startsWith("drive:"));
   const planRows = rows.filter((row) => row.id.startsWith("plan:"));
@@ -1408,7 +1408,7 @@ function FolderView({ rows, view, selected, onSelect, onOpen, query, location }:
   // the store ride: the live db rows land once per mount and the view
   // re-renders on them (the seed answers the first paint with the same
   // words the db serves, so the swap never flashes)
-  useuicopy();
+  useUicopy();
   const heading = location.kind === "folder" ? FOLDER_NAMES[location.folder] : osText("explorer.drive");
   return (
     <div className="dtfx-scroll">
