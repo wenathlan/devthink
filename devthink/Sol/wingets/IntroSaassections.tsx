@@ -26,11 +26,12 @@ import { useEffect, useState } from "react";
 import {
   saascreators,
   saascreatorsintro,
-  saashero,
+  saasherodata,
   saasstudios,
   saasstudiosintro,
   saastoasts,
 } from "../../saascontent.ts";
+import { uicopy, useuicopy } from "../../uistore.ts";
 import { SaddleTabBridge, SaddleTabBridgeUp, ScoopedCard, Studiomark, type studiomarkid } from "./IntroSaaskit.tsx";
 
 type SectionProps = {
@@ -40,6 +41,34 @@ type SectionProps = {
   scrollto: (id: string) => void;
 };
 
+/** herocopy — the hero copy the ui store serves: every string rides the
+ * db row (the intro.hero.* keys of uistore.ts — the seed there is the one
+ * place the literals live), the faces and the chart ride the pure data
+ * export of saascontent.ts, and no literal lives in this component. The
+ * mode ids stay structural: the words behind them ride the rows. */
+function herocopy() {
+  return {
+    leada: uicopy("intro.hero.leada"),
+    leadb: uicopy("intro.hero.leadb"),
+    leadc: uicopy("intro.hero.leadc"),
+    modetoggle: uicopy("intro.hero.modetoggle"),
+    modes: [
+      { id: "agents", word: uicopy("intro.hero.mode.agents") },
+      { id: "studios", word: uicopy("intro.hero.mode.studios") },
+    ],
+    subtitle: uicopy("intro.hero.subtitle"),
+    keyprimary: uicopy("intro.hero.keyprimary"),
+    keysecondary: uicopy("intro.hero.keysecondary"),
+    rating: uicopy("intro.hero.rating"),
+    organizer: uicopy("intro.hero.organizer"),
+    timetitle: uicopy("intro.hero.timetitle"),
+    timebody: uicopy("intro.hero.timebody"),
+    shader: uicopy("intro.hero.shader"),
+    faces: saasherodata.faces,
+    chart: saasherodata.chart,
+  };
+}
+
 /** The hero: the OS statement with the activity tile, the inline engine
  * switch of the original reference riding inside the headline (the
  * gradient track with the white thumb), the mode words that answer the
@@ -47,7 +76,12 @@ type SectionProps = {
  * the studios mode), the sub line, the two keys and the three scooped
  * stat cards. */
 export function SaasHero({ onenter, scrollto }: SectionProps) {
+  // the store ride: the live db rows land once per mount and the face
+  // re-renders on them — the seed answers the first paint with the same
+  // words the db serves, so the swap never flashes
+  useuicopy();
   const [modeid, setModeid] = useState("agents");
+  const saashero = herocopy();
   const mode = saashero.modes.find((row) => row.id === modeid) ?? saashero.modes[0];
   const agents = mode.id === "agents";
   return (
@@ -107,7 +141,7 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
                 type="button"
                 onClick={() => scrollto("workspace-subapps")}
                 className="icon-frame-3d flex h-10 w-10 items-center justify-center rounded-full text-slate-950"
-                aria-label="Explorer"
+                aria-label={uicopy("intro.hero.exploreraria")}
               >
                 <Arrowupright className="h-4 w-4" aria-hidden="true" />
               </button>
@@ -143,7 +177,7 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
                 type="button"
                 onClick={() => scrollto("spatial-bento")}
                 className="btn-tactile-3d flex h-10 w-10 items-center justify-center rounded-full text-white"
-                aria-label="Open Cadria"
+                aria-label={uicopy("intro.hero.cadriaaria")}
               >
                 <Activity className="h-4 w-4 text-sky-400" aria-hidden="true" />
               </button>
@@ -180,7 +214,7 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
                 type="button"
                 onClick={() => scrollto("sonic-deck")}
                 className="icon-frame-3d flex h-10 w-10 items-center justify-center rounded-full text-slate-950"
-                aria-label="Open Debonair"
+                aria-label={uicopy("intro.hero.debonairaria")}
               >
                 <Wave className="h-4 w-4 text-indigo-600" aria-hidden="true" />
               </button>

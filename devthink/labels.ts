@@ -158,9 +158,10 @@ export const labelManifest = {
   "explore.sidebar.count": "{count} entries",
   "explore.sidebar.none": "no entries yet",
   "explore.sidebar.pending": "reading the catalog",
-  "explore.sidebar.recentsEmpty": "nothing made yet — the studios answer the catalog first.",
+  /* the two empty-state rows of this stack (recentsEmpty, familyEmpty) moved
+     to the ui store — the intro.hero/panel/explorer rows of uistore.ts ride
+     the db over /api/v1/ui/copy (the single-home law of the copy) */
   "explore.sidebar.recentsAct": "open a studio",
-  "explore.sidebar.familyEmpty": "the family list is still loading.",
 
   /* ------------------------ explore · the section deck -------------------- */
   "explore.deck.waves": "03 · the section deck",

@@ -75,6 +75,7 @@ import { toast } from "sonner";
 import { DESKTOP_APPS, type DesktopApp } from "../../appregistry.ts";
 import { coreModuleTable, osAppLabels, runnerBinaries, studioAssets, studioTracks } from "../../catalog.ts";
 import { osText } from "../../oslabels.ts";
+import { uicopy, useuicopy } from "../../uistore.ts";
 import {
   breadcrumbs as crumbtrail,
   capacityline,
@@ -1122,6 +1123,10 @@ function ThisPcView({
   onFolderSubmit,
   onFolderCancel,
 }: ThisPcProps) {
+  // the store ride: the live db rows land once per mount and the view
+  // re-renders on them (the seed answers the first paint with the same
+  // words the db serves, so the swap never flashes)
+  useuicopy();
   const folderRows = rows.filter((row) => row.id.startsWith("folder:"));
   const driveRows = rows.filter((row) => row.id.startsWith("drive:"));
   const planRows = rows.filter((row) => row.id.startsWith("plan:"));
@@ -1245,7 +1250,7 @@ function ThisPcView({
             {planfailure ?? osText("explorer.planOffline")}
           </p>
         ) : planRows.length === 0 && !query ? (
-          <p className="dtfx-empty">{osText("explorer.planEmpty")}</p>
+          <p className="dtfx-empty">{uicopy("explorer.planEmpty")}</p>
         ) : view === "grid" ? (
           <ul className="dtfx-grid">
             {planRows.map((row, index) => (
@@ -1400,6 +1405,10 @@ type FolderProps = ViewProps & {
  * binaries, the studio rows — each opening its real surface. An empty
  * category answers the honest "empty folder". */
 function FolderView({ rows, view, selected, onSelect, onOpen, query, location }: FolderProps) {
+  // the store ride: the live db rows land once per mount and the view
+  // re-renders on them (the seed answers the first paint with the same
+  // words the db serves, so the swap never flashes)
+  useuicopy();
   const heading = location.kind === "folder" ? FOLDER_NAMES[location.folder] : osText("explorer.drive");
   return (
     <div className="dtfx-scroll">
@@ -1408,7 +1417,7 @@ function FolderView({ rows, view, selected, onSelect, onOpen, query, location }:
           {heading} {query ? osText("explorer.filtered") : ""}
         </h2>
         {rows.length === 0 ? (
-          <p className="dtfx-empty">{osText("explorer.empty")}</p>
+          <p className="dtfx-empty">{uicopy("explorer.empty")}</p>
         ) : view === "grid" ? (
           <ul className="dtfx-grid dtfx-grid--records">
             {rows.map((row, index) => (
