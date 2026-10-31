@@ -10,10 +10,123 @@
   "license": "GPL-3.0-only",
   "author": "Wenathlan",
   "sideEffects": false,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": {
+      "types": "./index.ts",
+      "import": "./index.ts",
+      "default": "./index.ts"
+    },
+    "./api": {
+      "types": "./api.ts",
+      "import": "./api.ts",
+      "default": "./api.ts"
+    },
+    "./buckets": {
+      "types": "./buckets.ts",
+      "import": "./buckets.ts",
+      "default": "./buckets.ts"
+    },
+    "./chunks": {
+      "types": "./chunks.ts",
+      "import": "./chunks.ts",
+      "default": "./chunks.ts"
+    },
+    "./db": {
+      "types": "./db.ts",
+      "import": "./db.ts",
+      "default": "./db.ts"
+    },
+    "./drizzle": {
+      "types": "./drizzle.ts",
+      "import": "./drizzle.ts",
+      "default": "./drizzle.ts"
+    },
+    "./family": {
+      "types": "./family.ts",
+      "import": "./family.ts",
+      "default": "./family.ts"
+    },
+    "./familyurl": {
+      "types": "./familyurl.ts",
+      "import": "./familyurl.ts",
+      "default": "./familyurl.ts"
+    },
+    "./hometypes": {
+      "types": "./hometypes.ts",
+      "import": "./hometypes.ts",
+      "default": "./hometypes.ts"
+    },
+    "./labels": {
+      "types": "./labels.ts",
+      "import": "./labels.ts",
+      "default": "./labels.ts"
+    },
+    "./objects": {
+      "types": "./objects.ts",
+      "import": "./objects.ts",
+      "default": "./objects.ts"
+    },
+    "./objectsledger": {
+      "types": "./objectsledger.ts",
+      "import": "./objectsledger.ts",
+      "default": "./objectsledger.ts"
+    },
+    "./onboardingstate": {
+      "types": "./onboardingstate.ts",
+      "import": "./onboardingstate.ts",
+      "default": "./onboardingstate.ts"
+    },
+    "./quota": {
+      "types": "./quota.ts",
+      "import": "./quota.ts",
+      "default": "./quota.ts"
+    },
+    "./retention": {
+      "types": "./retention.ts",
+      "import": "./retention.ts",
+      "default": "./retention.ts"
+    },
+    "./sha": {
+      "types": "./sha.ts",
+      "import": "./sha.ts",
+      "default": "./sha.ts"
+    },
+    "./storage": {
+      "types": "./storage.ts",
+      "import": "./storage.ts",
+      "default": "./storage.ts"
+    },
+    "./utils": {
+      "types": "./utils.ts",
+      "import": "./utils.ts",
+      "default": "./utils.ts"
+    }
+  },
   "files": [
     "docs",
     "tests",
-    "README.md"
+    "README.md",
+    "index.ts",
+    "api.ts",
+    "buckets.ts",
+    "chunks.ts",
+    "db.ts",
+    "drizzle.ts",
+    "family.ts",
+    "familyurl.ts",
+    "hometypes.ts",
+    "labels.ts",
+    "objects.ts",
+    "objectsledger.ts",
+    "onboardingstate.ts",
+    "quota.ts",
+    "retention.ts",
+    "sha.ts",
+    "storage.ts",
+    "utils.ts",
+    "!tests/tmp"
   ],
   "engines": {
     "bare": "^1.18.0",
@@ -58,6 +171,8 @@
     "@prisma/adapter-libsql": "^7.10.1",
     "@prisma/client": "^7.10.1",
     "@wenathlan/saddle": "^2.1.6",
+    "better-sqlite3": "^13.0.3",
+    "drizzle-orm": "^0.45.4",
     "hono": "^4.13.14",
     "ink": "^7.1.1",
     "lucide-react": "^1.66.0",
@@ -120,14 +235,12 @@
     "add": "^2.0.9",
     "autoprefixer": "^10.6.2",
     "axios": "^1.21.0",
-    "better-sqlite3": "^13.0.3",
     "bun-types": "^1.4.4",
     "cheerio": "^1.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "drizzle-kit": "^0.31.11",
-    "drizzle-orm": "^0.45.4",
     "embla-carousel-react": "^8.6.0",
     "emittery": "^2.2.0",
     "esbuild": "^0.28.2",

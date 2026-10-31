@@ -11,34 +11,29 @@
 // The page mounts the two api surfaces (the boot ladder and the modality
 // catalog) and carries no provider table of its own: every row the visitor
 // reads is served by the saddle engine through the internal api — the
-// fixed provider and state arrays died with the old page.
+// fixed provider and state arrays died with the old page. Every word the
+// page itself speaks rides the label store (labels.ts — the copy law).
 import { BoxRegular as Box } from "@fluentui/react-icons";
 import { PageShell } from "../shell/Shell.tsx";
+import { label } from "../../labels.ts";
 import { ComputeBootladder, ComputeModalitycatalog } from "../wingets";
 
 export default function Compute() {
   return (
     <PageShell
-      section="03 / 06"
-      label="Compute"
-      title="The engine states its plan."
-      intro="The compute face presents the modality catalog the saddle engine serves: the plan counts and every record ride the internal api on mount — nothing ships fixed inside the interface."
+      section={label("compute.shell.section")}
+      label={label("compute.shell.label")}
+      title={label("compute.shell.title")}
+      intro={label("compute.shell.intro")}
     >
       <section className="content-section split-content">
         <div>
-          <p className="eyebrow">THE COMPUTE FACE</p>
-          <h2 className="section-title">Ninety modalities, one honest table.</h2>
+          <p className="eyebrow">{label("compute.split.eyebrow")}</p>
+          <h2 className="section-title">{label("compute.split.title")}</h2>
         </div>
         <div className="prose-copy">
-          <p>
-            The engine keeps the catalog; the interface only reads it. The plan counts, the boot ceilings and every
-            record arrive through the saddle api — when the engine sleeps, the page says so instead of painting rows it
-            does not have.
-          </p>
-          <p>
-            The interface never touches the visitor browser, gpu or cpu: the sandbox and the saddle modalities act for
-            the system over the internet.
-          </p>
+          <p>{label("compute.split.body1")}</p>
+          <p>{label("compute.split.body2")}</p>
         </div>
       </section>
       <ComputeBootladder />
@@ -46,11 +41,8 @@ export default function Compute() {
       <section className="content-section note-band">
         <Box fontSize={21} aria-hidden="true" />
         <div>
-          <p className="eyebrow">SERVED / NEVER SHIPPED</p>
-          <p>
-            The catalog dies with the engine, not with the page: the wingets consume the db through the internal apis,
-            so a row changes when the engine changes it — never when the bundle ships.
-          </p>
+          <p className="eyebrow">{label("compute.note.eyebrow")}</p>
+          <p>{label("compute.note.body")}</p>
         </div>
       </section>
     </PageShell>

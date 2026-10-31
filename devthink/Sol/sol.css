@@ -10779,6 +10779,143 @@ span[data-tile] {
   height: 100%;
 }
 
+/* the window body is a size container: the apps the windows mount answer
+   the window, never the browser viewport — the @media breakpoints of the
+   standalone pages lie inside a 1040px window on a 1920px screen (the
+   cut-window bug of PR12: the app rendered the wide layout squeezed into
+   the frame), so the critical collapses of the windowed kits ride their
+   @container mirrors below, measured against this box */
+.shell-window__host {
+  container-type: inline-size;
+}
+
+/* the height law of the window bodies: the app roots that answer the
+   whole viewport on the pages (the 100dvh of the standalone mounts)
+   answer the window body inside the os — the inline overrides the
+   anchors carry stay as the belt, this rule is the law */
+.shell-window__host .dtw-app,
+.shell-window__host .dtfx-app {
+  height: 100%;
+}
+
+/* the @container mirrors of the windowed kits — the same collapses the
+   @media blocks answer at the viewport, measured on the window host so
+   the design inside the window answers the window (one design, the space
+   clamps). minimal by law: only the collapses the windowed bodies hit;
+   every other viewport band keeps its @media answer */
+
+/* the chat kit at 860px: the rail becomes the drawer (86cqw — the
+   container width, never the viewport) */
+@container (max-width: 860px) {
+  .dtc-rail {
+    position: absolute;
+    z-index: calc(var(--z-overlay) + 1);
+    inset: 0 auto 0 0;
+    width: min(300px, 86cqw);
+    transform: translateX(-104%);
+    transition: transform 0.2s var(--ease-fluent);
+  }
+  .dtc-rail[data-collapsed="false"] {
+    transform: none;
+    box-shadow:
+      0 2px 8px rgb(0 0 0 / 30%),
+      0 16px 48px rgb(0 0 0 / 45%);
+  }
+  .dtc-scroll {
+    padding: 18px 14px 8px;
+  }
+  .dtc-scroll__inner {
+    gap: 20px;
+  }
+  .dtc-dock {
+    padding: 10px 14px 14px;
+  }
+  .dtc-turn {
+    gap: 10px;
+  }
+  .dtc-turn__stack {
+    max-width: 100%;
+  }
+  .dtc-turn.user .dtc-turn__stack {
+    max-width: 100%;
+  }
+  .dtc-session {
+    top: 8px;
+    right: 8px;
+    bottom: 8px;
+  }
+}
+
+/* the shared windows kit (dtw — docs, console, games, image, video,
+   audio, settings, projects, providers, usage, calculator) at 760px:
+   the nav pane folds into the horizontal chip rail */
+@container (max-width: 760px) {
+  .dtw-pane {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .dtw-nav {
+    display: flex;
+    overflow-x: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--dtv3-hairline);
+    padding: 8px;
+  }
+}
+
+/* the calculator at 760px: the layout folds to the single column (the
+   calculator window opens 520px wide by design — the wide layout of the
+   page never fit it) */
+@container (max-width: 760px) {
+  .calculator-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* the files explorer (dtfx) at 720px: the nav pane collapses to the
+   icon rail */
+@container (max-width: 720px) {
+  .dtfx-body {
+    grid-template-columns: 56px minmax(0, 1fr);
+  }
+  .dtfx-nav {
+    padding: 10px 6px 16px;
+  }
+  .dtfx-nav__heading {
+    justify-content: center;
+    padding: 0 4px;
+    font-size: 9px;
+  }
+  .dtfx-nav__item {
+    justify-content: center;
+    padding: 0;
+  }
+  .dtfx-nav__item--active::before {
+    left: 2px;
+  }
+  .dtfx-nav__label {
+    display: none;
+  }
+  .dtfx-nav__group {
+    justify-content: center;
+    padding: 2px;
+  }
+}
+
+/* the games rows at 560px: the compact row */
+@container (max-width: 560px) {
+  .dtw-games__row {
+    grid-template-columns: 36px minmax(0, 1fr);
+  }
+  .dtw-games__cover {
+    width: 36px;
+    height: 36px;
+  }
+  .dtw-games__row .dtw-action {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
+
 /* the os.js resize strips: 8px edges inset 14px (the rounded clipping
    survives) and the 14px corner grips, one rule per direction */
 .shell-window__rz {
@@ -11604,7 +11741,12 @@ span[data-tile] {
   min-height: 0;
 }
 
-/* the invisible scroll: every surface keeps scrolling, no bar ever shows */
+/* the invisible scroll: every surface keeps scrolling, no bar ever shows —
+   except inside the window bodies: a window body that overflows shows its
+   bar, so a cut is discoverable instead of invisible (the PR12 honesty
+   law — the global silence never hides what the window clips). the
+   iframes of the family windows answer their own document, so their bars
+   ride their own stylesheets, never this one */
 * {
   scrollbar-width: none;
 }
@@ -11612,6 +11754,22 @@ span[data-tile] {
   width: 0;
   height: 0;
   display: none;
+}
+.shell-window__host,
+.shell-window__host * {
+  scrollbar-width: auto;
+}
+.shell-window__host *::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  display: block;
+}
+.shell-window__host *::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background: rgb(127 137 155 / 35%);
+}
+.shell-window__host *::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 /* ==== the login.css skins — merged from the app folder, the folder carries tsx only ==== */

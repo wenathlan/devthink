@@ -17,11 +17,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'wouter';
 import {
-	loadOnboardingState,
-	markIntroSeen,
-	readOnboardingState,
-	type VisitorOnboarding,
+        loadOnboardingState,
+        markIntroSeen,
+        readOnboardingState,
+        type VisitorOnboarding,
 } from '../../onboardingstate.ts';
+import { label } from '../../labels.ts';
 import { SaddleMark } from '../shell/Shell.tsx';
 
 /** how long the brand holds before the exit (ms) — the doctrine asks ~1.6s */
@@ -40,90 +41,90 @@ type SplashPhase = 'pending' | 'playing' | 'leaving';
  * @returns the intro element (null while the seen state resolves).
  */
 export default function Intro() {
-	const [, navigate] = useLocation();
-	const [phase, setPhase] = useState<SplashPhase>('pending');
-	const seenRef = useRef<VisitorOnboarding>({ introseen: false, onboardingseen: false });
-	const leftRef = useRef(false);
+        const [, navigate] = useLocation();
+        const [phase, setPhase] = useState<SplashPhase>('pending');
+        const seenRef = useRef<VisitorOnboarding>({ introseen: false, onboardingseen: false });
+        const leftRef = useRef(false);
 
-	/** the hand-over route: the onboarding, unless the flow already finished. */
-	const handover = useCallback(
-		(): string => (seenRef.current.onboardingseen ? '/' : '/onboarding'),
-		[],
-	);
+        /** the hand-over route: the onboarding, unless the flow already finished. */
+        const handover = useCallback(
+                (): string => (seenRef.current.onboardingseen ? '/' : '/onboarding'),
+                [],
+        );
 
-	/** the leave: the intro counts as seen (leaving counts — the visitor
-	 * answered the stage), the stage slides, the hand-over follows. One
-	 * guarded run — the skip listeners and the hold timer share it. */
-	const leave = useCallback(() => {
-		if (leftRef.current) return;
-		leftRef.current = true;
-		markIntroSeen();
-		setPhase('leaving');
-		window.setTimeout(() => navigate(handover()), LEAVE_MS);
-	}, [handover, navigate]);
+        /** the leave: the intro counts as seen (leaving counts — the visitor
+         * answered the stage), the stage slides, the hand-over follows. One
+         * guarded run — the skip listeners and the hold timer share it. */
+        const leave = useCallback(() => {
+                if (leftRef.current) return;
+                leftRef.current = true;
+                markIntroSeen();
+                setPhase('leaving');
+                window.setTimeout(() => navigate(handover()), LEAVE_MS);
+        }, [handover, navigate]);
 
-	useEffect(() => {
-		let live = true;
-		const known = readOnboardingState();
-		if (known) seenRef.current = known;
-		loadOnboardingState().then((state) => {
-			if (!live) return;
-			seenRef.current = state;
-			// the flow law: a finished visitor never replays the opening (the
-			// close-caption relaunch lands home); a mid-flow one resumes ahead
-			if (state.onboardingseen) navigate('/', { replace: true });
-			else if (state.introseen) navigate('/onboarding', { replace: true });
-			else setPhase('playing');
-		});
-		return () => {
-			live = false;
-		};
-	}, [navigate]);
+        useEffect(() => {
+                let live = true;
+                const known = readOnboardingState();
+                if (known) seenRef.current = known;
+                loadOnboardingState().then((state) => {
+                        if (!live) return;
+                        seenRef.current = state;
+                        // the flow law: a finished visitor never replays the opening (the
+                        // close-caption relaunch lands home); a mid-flow one resumes ahead
+                        if (state.onboardingseen) navigate('/', { replace: true });
+                        else if (state.introseen) navigate('/onboarding', { replace: true });
+                        else setPhase('playing');
+                });
+                return () => {
+                        live = false;
+                };
+        }, [navigate]);
 
-	useEffect(() => {
-		if (phase !== 'playing') return;
-		// reduced motion skips the choreography and hands over at once
-		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-			if (!leftRef.current) {
-				leftRef.current = true;
-				markIntroSeen();
-				navigate(handover());
-			}
-			return;
-		}
-		const hold = window.setTimeout(leave, HOLD_MS);
-		const skip = (event: KeyboardEvent | MouseEvent): void => {
-			if (event.type === 'keydown' || (event as MouseEvent).button === 0) leave();
-		};
-		window.addEventListener('keydown', skip);
-		window.addEventListener('pointerdown', skip);
-		return () => {
-			window.clearTimeout(hold);
-			window.removeEventListener('keydown', skip);
-			window.removeEventListener('pointerdown', skip);
-		};
-	}, [handover, leave, navigate, phase]);
+        useEffect(() => {
+                if (phase !== 'playing') return;
+                // reduced motion skips the choreography and hands over at once
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                        if (!leftRef.current) {
+                                leftRef.current = true;
+                                markIntroSeen();
+                                navigate(handover());
+                        }
+                        return;
+                }
+                const hold = window.setTimeout(leave, HOLD_MS);
+                const skip = (event: KeyboardEvent | MouseEvent): void => {
+                        if (event.type === 'keydown' || (event as MouseEvent).button === 0) leave();
+                };
+                window.addEventListener('keydown', skip);
+                window.addEventListener('pointerdown', skip);
+                return () => {
+                        window.clearTimeout(hold);
+                        window.removeEventListener('keydown', skip);
+                        window.removeEventListener('pointerdown', skip);
+                };
+        }, [handover, leave, navigate, phase]);
 
-	// the state read holds the page: nothing renders, the canvas alone shows — no flash
-	if (phase === 'pending') return null;
+        // the state read holds the page: nothing renders, the canvas alone shows — no flash
+        if (phase === 'pending') return null;
 
-	return (
-		<div
-			className="winintro"
-			data-leaving={phase === 'leaving' ? 'true' : undefined}
-			role="status"
-			aria-label="saddle is opening"
-		>
-			<div className="winintro__stage">
-				<span className="winintro__mark" aria-hidden="true">
-					<SaddleMark size={96} />
-				</span>
-				<h1 className="winintro__name">saddle</h1>
-				<p className="winintro__role">the sandbox engine of the family</p>
-			</div>
-			<p className="winintro__skip" aria-hidden="true">
-				click or press any key to skip
-			</p>
-		</div>
-	);
+        return (
+                <div
+                        className="winintro"
+                        data-leaving={phase === 'leaving' ? 'true' : undefined}
+                        role="status"
+                        aria-label={label('intro.status')}
+                >
+                        <div className="winintro__stage">
+                                <span className="winintro__mark" aria-hidden="true">
+                                        <SaddleMark size={96} />
+                                </span>
+                                <h1 className="winintro__name">{label('intro.name')}</h1>
+                                <p className="winintro__role">{label('intro.role')}</p>
+                        </div>
+                        <p className="winintro__skip" aria-hidden="true">
+                                {label('intro.skip')}
+                        </p>
+                </div>
+        );
 }

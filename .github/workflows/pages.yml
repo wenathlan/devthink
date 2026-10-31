@@ -41,7 +41,12 @@ permissions:
   id-token: write
 
 concurrency:
-  group: family-pages
+  # the event-scoped group (the family concurrency doctrine, Regra 52):
+  # the push and the dispatch firings are distinct lanes that run side by
+  # side — a manual dispatch never cancels a push build mid-deploy — while
+  # a superseded push of the same lane still dies to save runner minutes
+  # (the cancel-in-progress the pages deploy always carried).
+  group: family-pages-${{ github.event_name }}
   cancel-in-progress: true
 
 jobs:

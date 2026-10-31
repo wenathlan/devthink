@@ -145,19 +145,31 @@ jobs:
   detect-desktop-source:
     name: Detect optional desktop source
     runs-on: ubuntu-24.04
-    # the existence probe is a fast lane (checkout plus a file test).
+    # the existence probe is a fast lane (checkout plus a manifest search).
     timeout-minutes: 10
     outputs:
       present: ${{ steps.desktop.outputs.present }}
+      manifest: ${{ steps.desktop.outputs.manifest }}
     steps:
       - name: Checkout DevThink source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Detect Cargo desktop manifest
+      - name: Detect the tracked rust manifest
+        # the gate answers the merged tree's reality: the pre-merge lane
+        # probed desktop/Cargo.toml, a folder the merge does not carry
+        # (the retired publish desktop lane documents the same dead gate
+        # that never ran), and the rust surface the family tracks today is
+        # runner-side scaffold, never a committed manifest — the old probe
+        # searched a path that never existed. the search now walks the
+        # whole tracked tree: the audit lane below stays honestly dormant
+        # while no cargo manifest exists and wakes the moment one returns
+        # (the desktop folder included), wherever it lands.
         id: desktop
         shell: bash
         run: |
-          if test -f desktop/Cargo.toml; then
+          manifest="$(find . -name Cargo.toml -not -path './.git/*' -not -path '*/node_modules/*' | sort | head -n 1)"
+          if test -n "$manifest"; then
             echo "present=true" >> "$GITHUB_OUTPUT"
+            echo "manifest=${manifest#./}" >> "$GITHUB_OUTPUT"
           else
             echo "present=false" >> "$GITHUB_OUTPUT"
           fi
@@ -184,11 +196,18 @@ jobs:
           toolchain: "1.120"
       - name: Install cargo audit
         run: cargo install cargo-audit --locked
-      - name: Resolve and audit desktop graph
+      - name: Resolve and audit the tracked rust graph
+        # the audit walks the manifest the probe resolved (the detect job
+        # above carries the dormant-lane law: no tracked cargo manifest,
+        # no audit leg) — the lockfile resolves and the audit answers in
+        # the manifest's own directory, wherever the desktop surface
+        # returns to the tree.
         shell: bash
+        env:
+          CARGO_MANIFEST: ${{ needs.detect-desktop-source.outputs.manifest }}
         run: |
           mkdir -p build/security
-          (cd desktop && cargo generate-lockfile && cargo audit --json) > build/security/cargo-audit.json
+          (cd "$(dirname "$CARGO_MANIFEST")" && cargo generate-lockfile && cargo audit --json) > build/security/cargo-audit.json
       - name: Upload cargo audit evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -199,6 +218,16 @@ jobs:
 
   osv:
     name: OSV scanner
+    # the exact-version pin (Regra 56a/125: one version per action in every
+    # workflow, never the bare moving major tag) — the same pin doctrine
+    # the codeql lanes of this battery carry. the family ceiling contract
+    # stops at the reusable-call shape: a job that calls a reusable workflow
+    # accepts only the name, uses, with, secrets, needs, if and permissions
+    # keys, so no timeout-minutes can ride the caller (the workflowlint
+    # gate refuses the key on a reusable call) — the ceiling would have to
+    # live in the upstream osv-scan job, which the v2.5.1 lane does not
+    # carry either, and the platform's own per-job default stays the only
+    # backstop the lane keeps.
     uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@v2.5.1
     with:
       fail-on-vuln: true

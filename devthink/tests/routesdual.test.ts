@@ -211,9 +211,25 @@ describe("the sync (both faces stay one design)", () => {
   it("the window and the stage mount the same app document", () => {
     // the one url law: the FamilyFrame and the FamilyStage both ask
     // familyurl for the slug — the same build serves the window and the
-    // typed url, so the design can never drift between the faces
-    const mounts = familyframe.match(/src=\{familyurl\(slug\)\}/g) ?? [];
-    expect(mounts).toHaveLength(2);
+    // typed url, so the design can never drift between the faces. the
+    // window face appends the opt-in clip flag on the same document (the
+    // in-window compact the siblings may adopt — never a second design)
+    expect(familyframe).toContain("src={familyurl(slug)}");
+    expect(familyframe).toContain("src={`${familyurl(slug)}?clip=1`}");
+  });
+
+  it("the power clip carries the opt-in clip flag — the stage never does", () => {
+    // the PR12 law: same design, the space clamps — the ?clip=1 param is
+    // the only signal the in-window document gets; a sibling that reads
+    // it may compact its chrome to the window band, one that does not
+    // keeps answering exactly as before, and the fullscreen stage (the
+    // typed url) never carries it
+    const windowStart = familyframe.indexOf("export function FamilyFrame");
+    const stageStart = familyframe.indexOf("export function FamilyStage");
+    expect(windowStart, "the FamilyFrame lives in the familyframe source").toBeGreaterThan(-1);
+    expect(stageStart, "the FamilyStage lives in the familyframe source").toBeGreaterThan(windowStart);
+    expect(familyframe.slice(windowStart, stageStart)).toContain("?clip=1");
+    expect(familyframe.slice(stageStart)).not.toContain("clip=1");
   });
 
   it("every sibling app carries the embedded contract in its own theme", (t) => {

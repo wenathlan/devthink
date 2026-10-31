@@ -23,12 +23,12 @@ import type { SandboxState } from '../../sandbox.ts';
 import { bootSequence, cpudata, createSandboxState, dispatch, gpudata } from '../../sandbox.ts';
 import { ApiBadge as ApiBadge } from '../wingets';
 import { ConsoleEdgelaw as ConsoleEdgelaw } from '../wingets';
-import { EventsTimeline as type, SandboxEvent, SandboxEventKind } from '../wingets';
+import type { SandboxEvent, SandboxEventKind } from '../wingets';
 import { EventsTimeline as EventsTimeline } from '../wingets';
 import { SnapshotControls as SnapshotControls } from '../wingets';
-import { SpecPanel as type, SandboxSpecSelection } from '../wingets';
+import type { SandboxSpecSelection } from '../wingets';
 import { SpecPanel as SpecPanel } from '../wingets';
-import { Terminal as type, TerminalRow, TerminalState } from '../wingets';
+import type { TerminalRow, TerminalState } from '../wingets';
 import { Terminal as Terminal } from '../wingets';
 
 export * from '../wingets';

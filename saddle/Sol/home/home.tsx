@@ -355,7 +355,7 @@ function HomeSurface() {
                                         <MetricStrip
                                                 metrics={[
                                                         {
-                                                                value: label('home.metric.bases.value'),
+                                                                value: String(SANDBOXBASES.length).padStart(2, '0'),
                                                                 label: label('home.metric.bases.label'),
                                                                 detail: label('home.metric.bases.detail'),
                                                         },

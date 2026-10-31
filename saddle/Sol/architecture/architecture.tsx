@@ -19,30 +19,76 @@ import {
 // rows (the runtime forms of sandboxprofile: runtime/packages, full/docker,
 // published/registries) with mono annotations and connector dashes, then the
 // four layers, the provider chain and the physical limit band. No floating
-// boxes: every layer is a ruled row on the same spine.
+// boxes: every layer is a ruled row on the same spine. The page ships zero
+// fixed data of its own: the runtime forms ride the declared vocabulary of
+// sandboxprofile, the provider chain and the layer words ride the label
+// store (labels.ts — the seed mirrors the rows into the labels table), and
+// every word reads through the typed accessor — the copy law.
 import { useEffect, useState } from 'react';
 import { PageShell } from '../shell/Shell.tsx';
 import { type MediaSlot, mediaSlots } from '../../catalog';
+import { label } from '../../labels.ts';
 import { SANDBOXFORMS, type sandboxformid } from '../../sandboxprofile.ts';
 
-/** the ledger annotations of the three runtime forms (docs-backed copy). */
+/** the ledger annotations of the three runtime forms: the copy rides the
+ * store under the architecture.form.* family, keyed by the declared form
+ * ids of sandboxprofile (the ids are data, the words are copy). */
 const formlabels: Record<sandboxformid, { name: string; pkg: string; note: string }> = {
 	'runtime-node': {
-		name: 'runtime / packages',
-		pkg: 'npm',
-		note: 'the engine as an importable library — the declared spec resolves, the working set mounts, nothing ships but the result.',
+		name: label('architecture.form.runtimeNode.name'),
+		pkg: label('architecture.form.runtimeNode.pkg'),
+		note: label('architecture.form.runtimeNode.note'),
 	},
 	'full-docker': {
-		name: 'full / docker',
-		pkg: 'ghcr.io',
-		note: 'the whole machine as a container image — the runner-ready form the forges and the family clones consume.',
+		name: label('architecture.form.fullDocker.name'),
+		pkg: label('architecture.form.fullDocker.pkg'),
+		note: label('architecture.form.fullDocker.note'),
 	},
 	published: {
-		name: 'published / registries',
-		pkg: 'npm · ghcr · maven · nuget · rubygems',
-		note: 'the release train — six registry publishers share the release-tag and validation gates of one workflow.',
+		name: label('architecture.form.published.name'),
+		pkg: label('architecture.form.published.pkg'),
+		note: label('architecture.form.published.note'),
 	},
 };
+
+/** the four layers of the map: the glyph is presentation code, every word
+ * rides the store (the home surfaces() precedent). */
+function layers(): readonly { icon: typeof GitBranch; name: string; sub: string; body: string }[] {
+	return [
+		{
+			icon: GitBranch,
+			name: label('architecture.layer.repository.name'),
+			sub: label('architecture.layer.repository.sub'),
+			body: label('architecture.layer.repository.body'),
+		},
+		{
+			icon: Cpu,
+			name: label('architecture.layer.runner.name'),
+			sub: label('architecture.layer.runner.sub'),
+			body: label('architecture.layer.runner.body'),
+		},
+		{
+			icon: Database,
+			name: label('architecture.layer.memory.name'),
+			sub: label('architecture.layer.memory.sub'),
+			body: label('architecture.layer.memory.body'),
+		},
+		{
+			icon: Globe2,
+			name: label('architecture.layer.surface.name'),
+			sub: label('architecture.layer.surface.sub'),
+			body: label('architecture.layer.surface.body'),
+		},
+	];
+}
+
+/** the provider chain as config: the ordered ids ride the label store
+ * (architecture.chain.providers — the seed ingests the row into the labels
+ * table like every other string) and the page only splits the row; no fixed
+ * provider array survives inside the component. */
+function providerchain(): readonly string[] {
+	return label('architecture.chain.providers').split(' · ');
+}
 
 export default function Architecture() {
 	const [media, setMedia] = useState<MediaSlot | undefined>(undefined);
@@ -55,33 +101,26 @@ export default function Architecture() {
 
 	return (
 		<PageShell
-			section="01 / 06"
-			label="Architecture"
-			title="The machine is the chain."
-			intro="Saddle treats repo, CI, pages and buckets as parts of one publishable machine — with every boundary exposed."
+			section={label('architecture.shell.section')}
+			label={label('architecture.shell.label')}
+			title={label('architecture.shell.title')}
+			intro={label('architecture.shell.intro')}
 			media={media}
 		>
 			<section className="content-section split-content">
 				<div>
-					<p className="eyebrow">THE OPERATING MODEL</p>
-					<h2 className="section-title">Everything is a file until the flag says otherwise.</h2>
+					<p className="eyebrow">{label('architecture.model.eyebrow')}</p>
+					<h2 className="section-title">{label('architecture.model.title')}</h2>
 				</div>
 				<div className="prose-copy">
-					<p>
-						A repo holds persistent state. A runner takes the processor role. Pages exposes the
-						result as a bus and CDN. The architecture does not try to erase the boundaries between
-						these places; it turns the boundaries into an operational API.
-					</p>
-					<p>
-						The result is a VM that can be published as a package, triggered by a workflow and
-						rehydrated from artifacts.
-					</p>
+					<p>{label('architecture.model.body1')}</p>
+					<p>{label('architecture.model.body2')}</p>
 				</div>
 			</section>
-			<section className="content-section" aria-label="the runtime forms ledger">
+			<section className="content-section" aria-label={label('architecture.forms.aria')}>
 				<div className="content-section-heading">
-					<p className="eyebrow">DIAGRAM AS LEDGER / THE THREE FORMS</p>
-					<span className="mono-label">runtime → full → published</span>
+					<p className="eyebrow">{label('architecture.forms.eyebrow')}</p>
+					<span className="mono-label">{label('architecture.forms.mono')}</span>
 				</div>
 				<ol className="r3-forms">
 					{SANDBOXFORMS.map((form, index) => (
@@ -96,36 +135,11 @@ export default function Architecture() {
 			</section>
 			<section className="content-section">
 				<div className="content-section-heading">
-					<p className="eyebrow">LAYER MAP / 04 LAYERS</p>
-					<span className="mono-label">PATH /repo → /runner → /pages</span>
+					<p className="eyebrow">{label('architecture.layers.eyebrow')}</p>
+					<span className="mono-label">{label('architecture.layers.mono')}</span>
 				</div>
 				<div className="layer-stack">
-					{[
-						{
-							icon: GitBranch,
-							name: 'Repository',
-							sub: 'persistent state',
-							body: 'docs/results/ and versioned artifacts that survive the execution cycle.',
-						},
-						{
-							icon: Cpu,
-							name: 'CI runner',
-							sub: 'virtual processor',
-							body: 'workflow_dispatch and repository_dispatch turn the forge into a function.',
-						},
-						{
-							icon: Database,
-							name: 'Memory bridge',
-							sub: 'storage as working set',
-							body: 'Buckets mount as VHD/FUSE or sync into tmpfs; VRAM stays VRAM.',
-						},
-						{
-							icon: Globe2,
-							name: 'Pages / CDN',
-							sub: 'shared surface',
-							body: 'The static surface observes, triggers and delivers results without living on the local machine.',
-						},
-					].map((layer, index) => {
+					{layers().map((layer, index) => {
 						const Icon = layer.icon;
 						return (
 							<div className="layer-row" key={layer.name}>
@@ -144,29 +158,30 @@ export default function Architecture() {
 			</section>
 			<section className="content-section">
 				<div className="content-section-heading">
-					<p className="eyebrow">PROVIDER CHAIN / FIRST FREE RUNNER WINS</p>
-					<span className="mono-label">fallback / explicit</span>
+					<p className="eyebrow">{label('architecture.chain.eyebrow')}</p>
+					<span className="mono-label">{label('architecture.chain.mono')}</span>
 				</div>
 				<div className="provider-grid">
-					{['oracle-cloud', 'github-actions', 'huggingface', 'gitlab-ci', 'kaggle'].map(
-						(name, index) => (
-							<div className={`provider-cell ${index === 0 ? 'is-active' : ''}`} key={name}>
-								<span className="provider-index">0{index + 1}</span>
-								<strong>{name}</strong>
-								<small>{index === 0 ? 'preferred' : 'fallback'}</small>
-							</div>
-						),
-					)}
+					{providerchain().map((name, index) => (
+						<div className={`provider-cell ${index === 0 ? 'is-active' : ''}`} key={name}>
+							<span className="provider-index">0{index + 1}</span>
+							<strong>{name}</strong>
+							<small>
+								{label(
+									index === 0
+										? 'architecture.chain.preferred'
+										: 'architecture.chain.fallback',
+								)}
+							</small>
+						</div>
+					))}
 				</div>
 			</section>
 			<section className="content-section architecture-note">
 				<ShieldCheck fontSize={21} aria-hidden="true" />
 				<div>
-					<p className="eyebrow">PHYSICAL LIMIT / DO NOT HIDE</p>
-					<p>
-						Remote storage is not VRAM. The bridge is valid as VHD, cache or working set; physical
-						bandwidth still governs the system.
-					</p>
+					<p className="eyebrow">{label('architecture.limit.eyebrow')}</p>
+					<p>{label('architecture.limit.body')}</p>
 				</div>
 			</section>
 		</PageShell>

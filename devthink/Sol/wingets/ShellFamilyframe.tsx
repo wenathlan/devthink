@@ -16,11 +16,17 @@ function familytitle(slug: string): string {
   return osAppLabels()[slug]?.name ?? slug;
 }
 
-/** FamilyFrame — one family app inside the window. */
+/** FamilyFrame — one family app inside the window. the src asks the same
+ * document the direct url answers and appends the opt-in clip flag
+ * (?clip=1): the flag only tells the app it rides the power clip — a
+ * sibling that reads it may compact its chrome to the window band, a
+ * sibling that does not keeps answering exactly as before. the window-era
+ * law: same design, the space clamps — the flag never changes the design,
+ * only the window frame around it. */
 export function FamilyFrame({ slug, title }: { slug: string; title?: string }) {
   return (
     <iframe
-      src={familyurl(slug)}
+      src={`${familyurl(slug)}?clip=1`}
       title={title ?? familytitle(slug)}
       style={{
         display: "block",
