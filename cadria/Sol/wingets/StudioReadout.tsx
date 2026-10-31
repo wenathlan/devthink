@@ -133,8 +133,7 @@ export function Readout({ report }: { report: AnalysisReport }) {
       <p className="mono-label" style={{ margin: "12px 0 0" }}>
         {label("studio.readout.timings")
           .replace("{decode}", String(Math.round(report.timings.decodeMs)))
-          .replace("{analysis}", String(Math.round(report.timings.analysisMs)))
-          .replace("{version}", String(report.schemaVersion))}
+          .replace("{analysis}", String(Math.round(report.timings.analysisMs)))}
       </p>
     </section>
   );
