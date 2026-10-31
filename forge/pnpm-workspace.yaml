@@ -40,7 +40,7 @@ minimumReleaseAgeExclude:
   - '@biomejs/cli-linux-x64@2.6.3 || 2.6.4'
   - '@biomejs/cli-win32-arm64@2.6.3 || 2.6.4'
   - '@biomejs/cli-win32-x64@2.6.3 || 2.6.4'
-  - react-resizable-panels@4.15.0 || 4.15.1 || 4.15.2 || 4.15.3
+  - react-resizable-panels@4.15.0 || 4.15.1 || 4.15.2 || 4.15.3 || 4.16.0
   - '@pnpm/exe.android-arm64@12.16.1'
   - '@pnpm/exe.android-x64@12.16.1'
   - '@pnpm/exe.darwin-arm64@12.16.1'
@@ -65,6 +65,7 @@ minimumReleaseAgeExclude:
   - '@types/google.maps@3.66.9'
   - lucide-react@1.64.0 || 1.65.0 || 1.66.0
   - '@fluentui/react-icons@2.0.345'
+  - '@wenathlan/vault@2.0.152'
 # the pnpm settings live here since pnpm 12 (the package.json pnpm field is
 # no longer read, and onlyBuiltDependencies died in pnpm 11 — the map below
 # is allowBuilds). ssh2 answers false on purpose: the native accelerator
