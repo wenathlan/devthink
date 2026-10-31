@@ -89,17 +89,17 @@ describe("the family workload law", () => {
     }
   });
 
-  it("answers the gpu wait honestly — the planned-only lanes say so", () => {
-    const report = workloadreport();
-    // the world bake lane of stealthhead demands a gpu: every gpu record
-    // of the registry is planned today, so the join answers planned-only
-    // and the report counts it — the lane never pretends dispatchability
+  it("answers the gpu wait honestly — the ninety wave made the gpu lanes live", () => {
+    // the world bake lane of stealthhead demands a gpu: the ninety
+    // modalities wave wired the gpu records live (the virtual hardware
+    // composition lanes), so the join the workload law charged as
+    // planned-only before the wave now answers dispatchable with live
+    // candidates — the census follows the registry, never a hand pin
     const bake = familyjoin("stealthhead", "world-bake");
     assert.ok(bake !== undefined);
-    assert.equal(bake.verdict, "planned-only");
-    assert.equal(bake.livecount, 0);
-    assert.ok(bake.candidates.every((candidate) => candidate.state === "planned"));
-    assert.ok(report.plannedonly >= 1);
+    assert.equal(bake.verdict, "dispatchable");
+    assert.ok(bake.livecount >= 1);
+    assert.ok(bake.candidates.some((candidate) => candidate.state === "live" && candidate.gpu));
   });
 
   it("answers the engine's own dispatch lane as dispatchable", () => {

@@ -137,7 +137,7 @@ describe("sandboxlane", () => {
     const rows = await hostmodalityreport();
     // the summary row plus one honest row per registry record of the ninety plan
     expect(rows.length).toBe(91);
-    expect(rows[0]).toBe("the modality registry answers the ninety plan: 90 records — 30 live, 3 host, 57 planned");
+    expect(rows[0]).toBe("the modality registry answers the ninety plan: 90 records — 81 live, 9 host, 0 planned");
     const text = rows.join("\n");
     // the live lanes name the surfaces the platform drives
     expect(text).toContain("container-docker: live lane — docker ");
@@ -155,9 +155,10 @@ describe("sandboxlane", () => {
     expect(text).toContain("emulator-qemu: host runtime qemu-system-x86_64 ");
     expect(text).toContain("microvm-firecracker: host runtime firecracker ");
     expect(text).toContain("container-runsc: host runtime runsc ");
-    // the planned records declare themselves planned — no row pretends
-    expect(text).toContain("virtual-full: planned — the catalog promise, no lane wires it yet");
-    expect(text).toContain("pod-session: planned — the catalog promise, no lane wires it yet");
+    // the ninety modalities wave wired the planned set: virtual-full is a
+    // live composition lane the edge plane drives, pod-session a host probe
+    expect(text).toContain("virtual-full: live lane — the platform drives it");
+    expect(text).toContain("pod-session: host runtime pod-session ");
     // every record row after the summary carries one of the three state words
     for (const row of rows.slice(1)) {
       expect(row).toMatch(/: (live lane — |host runtime |planned — )/);
@@ -350,9 +351,9 @@ describe("the vendored registry mirror (the single-source law)", () => {
     expect(report).toEqual({
       plancount: 90,
       catalogcount: 90,
-      live: 30,
-      host: 3,
-      planned: 57,
+      live: 81,
+      host: 9,
+      planned: 0,
       plananswered: true,
     });
   });

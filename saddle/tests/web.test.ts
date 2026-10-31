@@ -458,7 +458,10 @@ describe('the web contract', () => {
       assert.equal(censusbody.report.apps, 11);
       assert.equal(censusbody.report.unresolved, 0, 'no lane of the catalog resolves nothing');
       assert.ok(censusbody.report.dispatchable >= 20, 'the family joins a live modality for most lanes');
-      assert.ok(censusbody.report.plannedonly >= 1, 'the gpu wait answers planned-only honestly');
+      // the ninety modalities wave wired the gpu records live: the family
+      // census the workload law charged with a planned-only gpu wait now
+      // answers every lane dispatchable — the census follows the registry
+      assert.equal(censusbody.report.plannedonly, 0, 'the ninety wave left no planned-only lane behind');
       assert.ok(
         Object.keys(censusbody.lanes).length >= 10,
         'the census reads the probed lane table beside the report',
@@ -475,8 +478,8 @@ describe('the web contract', () => {
       };
       assert.equal(bakebody.app, 'stealthhead');
       assert.equal(bakebody.lane, 'world-bake');
-      assert.equal(bakebody.verdict, 'planned-only', 'the gpu bake answers the honest wait');
-      assert.equal(bakebody.livecount, 0);
+      assert.equal(bakebody.verdict, 'dispatchable', 'the ninety wave wired the gpu lanes the bake waited on');
+      assert.ok(bakebody.livecount >= 1);
       assert.ok(bakebody.candidates.every((candidate) => candidate.gpu === true));
 
       const chat = await fetch(`${base}/api/v1/edge/join?app=devthink&lane=chat-sandbox`);

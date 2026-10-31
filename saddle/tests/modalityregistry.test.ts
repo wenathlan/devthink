@@ -9,9 +9,9 @@ import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import {
   BOOTLADDER,
+  getmodality,
   MODALITIES,
   MODALITYPLANCOUNT,
-  getmodality,
   planreport,
   resolvejoin,
 } from "../modalityregistry.ts";
@@ -53,10 +53,71 @@ const LIVESET = [
   "runner-wasm",
   "runtime-jvm",
   "storage-sqlite",
+  "sandbox-bubblewrap",
+  "sandbox-nsjail",
+  "sandbox-chroot",
+  "container-podman",
+  "container-containerd",
+  "container-runc",
+  "container-crun",
+  "container-max",
+  "container-lite",
+  "container-ghcr",
+  "runtime-clr",
+  "runtime-workerd",
+  "screen-xvfb",
+  "screen-wayland",
+  "mobile-termux",
+  "build-bazel",
+  "build-buck",
+  "build-turborepo",
+  "ci-actions",
+  "ci-gitlab",
+  "network-tor",
+  "network-i2p",
+  "network-wireguard",
+  "storage-minio",
+  "storage-garage",
+  "ram-tmpfs",
+  "ram-mmap",
+  "ram-overlayfs",
+  "ram-loopram",
+  "ram-gitram",
+  "ram-zram",
+  "ram-zswap",
+  "ram-swapfile",
+  "delivery-cdn",
+  "delivery-wss",
+  "delivery-webtransport",
+  "delivery-grpc",
+  "delivery-capnproto",
+  "storage-libsql",
+  "storage-mysql",
+  "storage-postgres",
+  "storage-s3",
+  "browser-webcontainer",
+  "local-optin",
+  "virtual-full",
+  "virtual-vgpu",
+  "virtual-screen",
+  "virtual-drivers",
+  "virtual-kvm",
+  "microvm-gpuless",
+  "gpu-virgl",
 ] as const;
 
 /** the records whose host runtime the sandbox lane probes on PATH */
-const HOSTSET = ["container-runsc", "emulator-qemu", "microvm-firecracker"] as const;
+const HOSTSET = [
+  "confidential-sevsnp",
+  "confidential-tdx",
+  "container-runsc",
+  "emulator-qemu",
+  "microvm-firecracker",
+  "browser-server",
+  "mobile-capacitor",
+  "mobile-postmarketos",
+  "pod-session",
+] as const;
 
 describe("the modality registry", () => {
   it("answers the ninety modality plan the owner charged", () => {
@@ -74,7 +135,11 @@ describe("the modality registry", () => {
       assert.ok(modality.id.length > 0);
       assert.ok(modality.label.length > 0);
       assert.ok(["live", "host", "planned"].includes(modality.state), `${modality.id} carries no honest state`);
-      assert.ok(modality.mime.startsWith("application/") || modality.mime.startsWith("audio/") || modality.mime.startsWith("video/"));
+      assert.ok(
+        modality.mime.startsWith("application/") ||
+          modality.mime.startsWith("audio/") ||
+          modality.mime.startsWith("video/"),
+      );
       assert.ok(modality.bootms >= 0);
       // a record never claims a boot cost above its class ceiling
       assert.ok(modality.bootms <= BOOTLADDER[modality.boot], `${modality.id} exceeds its class`);
@@ -91,9 +156,13 @@ describe("the modality registry", () => {
   });
 
   it("declares the live set and the host set exactly as the lanes drive them", () => {
-    const live = MODALITIES.filter((m) => m.state === "live").map((m) => m.id).sort();
+    const live = MODALITIES.filter((m) => m.state === "live")
+      .map((m) => m.id)
+      .sort();
     assert.deepEqual(live, [...LIVESET].sort());
-    const host = MODALITIES.filter((m) => m.state === "host").map((m) => m.id).sort();
+    const host = MODALITIES.filter((m) => m.state === "host")
+      .map((m) => m.id)
+      .sort();
     assert.deepEqual(host, [...HOSTSET].sort());
     // the plan report counts the same sets — it cannot drift from the catalog
     const report = planreport();
