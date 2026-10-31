@@ -448,6 +448,7 @@ jobs:
           test -f saddle/dist/sandbox.js
           test -f saddle/dist/server.js
           test -f saddle/dist/virtual.js
+          test -f saddle/dist/workloadlaw.js
       - name: publish the family envelope when absent
         if: steps.token.outputs.available == 'true'
         shell: bash

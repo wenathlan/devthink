@@ -426,6 +426,85 @@ describe('the web contract', () => {
     }
   });
 
+  it('web workloads: the family census and the join lookup answer the law', async () => {
+    /* the workload law surface rides the same standalone server the other
+     * api tests boot: the census route answers the whole family picture
+     * (the report, the probed lanes, the app list) and the join lookup
+     * answers the nuclear law over real http — the workload names the app
+     * and the lane, the resolver answers the modality set, and the honest
+     * refusals (400 without params, 404 for an unknown app or lane) never
+     * answer a silent empty join. */
+    const { child, base, dbpath } = bootserver(randomInt(30000) + 30000);
+    try {
+      const health = await waitforhealth(base);
+      assert.ok(health?.ok, 'the server must answer /api/v1/health');
+
+      const census = await fetch(`${base}/api/v1/edge/workloads`);
+      assert.equal(census.status, 200);
+      const censusbody = (await census.json()) as {
+        report: {
+          apps: number;
+          lanes: number;
+          dispatchable: number;
+          plannedonly: number;
+          unresolved: number;
+          applanemigration: number;
+          perapp: { app: string; lanes: number }[];
+        };
+        lanes: Record<string, { modality: string; kind: string }>;
+        apps: string[];
+      };
+      assert.equal(censusbody.apps.length, 11, 'the census serves the eleven official apps');
+      assert.equal(censusbody.report.apps, 11);
+      assert.equal(censusbody.report.unresolved, 0, 'no lane of the catalog resolves nothing');
+      assert.ok(censusbody.report.dispatchable >= 20, 'the family joins a live modality for most lanes');
+      assert.ok(censusbody.report.plannedonly >= 1, 'the gpu wait answers planned-only honestly');
+      assert.ok(
+        Object.keys(censusbody.lanes).length >= 10,
+        'the census reads the probed lane table beside the report',
+      );
+
+      const bake = await fetch(`${base}/api/v1/edge/join?app=stealthhead&lane=world-bake`);
+      assert.equal(bake.status, 200);
+      const bakebody = (await bake.json()) as {
+        app: string;
+        lane: string;
+        verdict: string;
+        livecount: number;
+        candidates: { id: string; state: string; gpu: boolean }[];
+      };
+      assert.equal(bakebody.app, 'stealthhead');
+      assert.equal(bakebody.lane, 'world-bake');
+      assert.equal(bakebody.verdict, 'planned-only', 'the gpu bake answers the honest wait');
+      assert.equal(bakebody.livecount, 0);
+      assert.ok(bakebody.candidates.every((candidate) => candidate.gpu === true));
+
+      const chat = await fetch(`${base}/api/v1/edge/join?app=devthink&lane=chat-sandbox`);
+      assert.equal(chat.status, 200);
+      const chatbody = (await chat.json()) as {
+        verdict: string;
+        livecount: number;
+        today: string;
+        candidates: { id: string; bootms: number; state: string }[];
+      };
+      assert.equal(chatbody.verdict, 'dispatchable');
+      assert.ok(chatbody.livecount >= 1, 'the os chat sandbox joins a live modality');
+      assert.equal(chatbody.today, 'engine-lane');
+      const boots = chatbody.candidates.map((candidate) => candidate.bootms);
+      assert.deepEqual(boots, [...boots].sort((a, b) => a - b), 'the join answers best candidate first');
+
+      const missing = await fetch(`${base}/api/v1/edge/join`);
+      assert.equal(missing.status, 400, 'a join without params answers the honest 400');
+      const unknownapp = await fetch(`${base}/api/v1/edge/join?app=nope&lane=x`);
+      assert.equal(unknownapp.status, 404, 'an unknown app answers the honest 404');
+      const unknownlane = await fetch(`${base}/api/v1/edge/join?app=devthink&lane=nope`);
+      assert.equal(unknownlane.status, 404, 'an unknown lane answers the honest 404');
+    } finally {
+      child.kill('SIGTERM');
+      cleanupdb(dbpath);
+    }
+  });
+
   it('web auth: bootstrap admin, me, generic 401, weak register, login rate limit', async () => {
     /* the seed password rides the boot env the operator or the pipeline
      * pins - the public source carries no credential, so the suite pins

@@ -283,6 +283,14 @@ export default defineConfig({
        * duplicated inside devthink. the entry retires when saddle 2.1.7
        * publishes: its package.json exports map gained exactly the missing
        * "./sandbox": "./dist/sandbox.js" manifest piece. */
+      /** the workload law bridge of the family (wave WL1): the os surface
+       * reads the family lane catalog through the published library
+       * specifier ("@wenathlan/saddle/workloadlaw"), and this bridge
+       * resolves the specifier to the monorepo source the sibling engine
+       * carries — the catalog is never duplicated inside devthink. the
+       * entry retires when the published envelope carries the built
+       * workload law. */
+      "@wenathlan/saddle/workloadlaw": path.resolve(import.meta.dirname, "../saddle/workloadlaw.ts"),
       "@wenathlan/saddle/sandbox": path.resolve(import.meta.dirname, "../saddle/sandbox.ts"),
       /** the getry engine bridge of the ownership law (pr16): the os gateway
        * imports the 7-level reasoning ladder through the published library
