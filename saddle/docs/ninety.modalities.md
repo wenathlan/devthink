@@ -74,6 +74,23 @@ sandbox seat only through the debonair precedent (4 ids).
   {plancount: 90, live: 81, host: 9, planned: 0} and /api/v1/edge/lanes
   with the 73 probed lanes (61 live, 12 host)
 
+## the reconciliation with the parallel waves
+
+the rebase onto main met two waves that landed while this one worked:
+#239 (the tests home — the tests folders pure inside every app) and
+#240 (the workload law — every app declares its lanes through
+sandboxmodality.ts, the family seat with the join resolver and the
+api routes). the reconciliation honored the no-duplication law: this
+wave dropped its own app declaration seats (the modality.ts files of
+group e) in favor of the #240 family seat the main branch pinned, and
+kept everything the parallel waves did not touch — the fifty-seven
+lane wirings, the registry flips, the vendor mirror sync and the
+census pins. the two census rows #240 charged against the planned-only
+gpu wait (the workload battery and the web workloads lane) now answer
+the post-wave truth: the gpu records this wave wired live make the
+stealthhead world-bake dispatchable, the family census carries zero
+planned-only lanes, and the batteries say so.
+
 ## the honest notes
 
 - the host binary lanes of group a name runtimes this host does not

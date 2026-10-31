@@ -322,7 +322,14 @@ the ladder below — every rung checked before the merge.
 - [x] 2d.29 the self review of the integration
 - [x] 2d.30 the integration checkpoint
 
-### phase 2e — the app declarations (50)
+### phase 2e — the app declarations (50, reconciled)
+
+(the rebase onto main dropped the group e files: the parallel wave
+#240 landed the family declaration seat — sandboxmodality.ts with the
+join resolver — while this wave worked, and the no-duplication law
+keeps the main branch's seat. the fifty rows below record the work
+this wave did before the reconciliation; the debonair widening and
+the per-app seats live on only in the wave history.)
 
 - [x] 2e.01 argan: the modality declaration surface
 - [x] 2e.02 argan: the declaration test
