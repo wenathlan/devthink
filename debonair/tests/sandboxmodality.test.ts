@@ -13,7 +13,19 @@ import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import { INGEST_WORKER_MODALITY } from "../ingestworker.ts";
 import { RENDER_WORKER_MODALITY } from "../renderworker.ts";
-import { WORKER_MODALITIES, WORKER_MODALITY_ENV, workermodality, workermodalityfromenv } from "../sandboxmodality.ts";
+import {
+  APPSLUG,
+  SANDBOXLANEENV,
+  WORKLOADLANES,
+  WORKER_MODALITIES,
+  WORKER_MODALITY_ENV,
+  laneof,
+  lanesandbox,
+  lanesandboxfromenv,
+  workermodality,
+  workermodalityfromenv,
+} from "../sandboxmodality.ts";
+import { lanesof } from "@wenathlan/saddle/workloadlaw";
 
 describe("the modality vocabulary (the saddle registry mirror)", () => {
   it("carries local beside the three saddle modality ids the heavy jobs may ride", () => {
@@ -74,5 +86,78 @@ describe("the env seat (the deploy's opt-in through the environment)", () => {
     assert.ok(silent.ok && silent.modality === "local" && silent.sandboxed === false);
     const refused = workermodalityfromenv((name) => (name === WORKER_MODALITY_ENV ? "quantum" : undefined));
     assert.ok(!refused.ok);
+  });
+});
+
+
+describe("the workload lane mirror (wave WL1 — the engine catalog lockstep)", () => {
+  it("answers the engine catalog rows for debonair — the byte pin", () => {
+    const engine = lanesof("debonair");
+    assert.equal(engine.length, WORKLOADLANES.length, "the mirror carries every debonair lane");
+    for (let index = 0; index < engine.length; index += 1) {
+      const row = engine[index];
+      const mirror = WORKLOADLANES[index];
+      assert.equal(mirror.app, row.app);
+      assert.equal(mirror.lane, row.lane, `lane ${index} id drifts from the engine`);
+      assert.equal(mirror.role, row.role, `lane ${row.lane} role drifts from the engine`);
+      assert.deepEqual(mirror.demand, row.demand, `lane ${row.lane} demand drifts from the engine`);
+      assert.equal(mirror.today, row.today, `lane ${row.lane} today drifts from the engine`);
+    }
+  });
+
+  it("carries the app slug on every row and answers the lane lookup", () => {
+    for (const row of WORKLOADLANES) {
+      assert.equal(row.app, APPSLUG);
+    }
+    const ingest = laneof("ingest-audio");
+    assert.ok(ingest !== undefined);
+    assert.equal(ingest.today, "engine-lane");
+    assert.equal(laneof("no-such-lane"), undefined);
+  });
+});
+
+describe("the sandbox lane seat (wave WL1 — the deploy decides)", () => {
+  it("answers the declared local default when the deploy carries no choice", () => {
+    const absent = lanesandbox(undefined);
+    assert.deepEqual(absent, { ok: true, seat: "local", sandboxed: false });
+    const blank = lanesandbox("   ");
+    assert.deepEqual(blank, { ok: true, seat: "local", sandboxed: false });
+    const explicit = lanesandbox("local");
+    assert.deepEqual(explicit, { ok: true, seat: "local", sandboxed: false });
+  });
+
+  it("opts the lanes onto the platform join when the deploy chooses join", () => {
+    const joined = lanesandbox("join");
+    assert.deepEqual(joined, { ok: true, seat: "join", sandboxed: true, pinned: false });
+    const padded = lanesandbox("  join  ");
+    assert.deepEqual(padded, { ok: true, seat: "join", sandboxed: true, pinned: false });
+  });
+
+  it("pins the named modality for the platform join to validate", () => {
+    const pinned = lanesandbox("runner-node");
+    assert.deepEqual(pinned, { ok: true, seat: "runner-node", sandboxed: true, pinned: true });
+    // the module never judges engine vocabulary: the platform's join
+    // validates the pinned id at dispatch, the mirror only names it
+    const unusual = lanesandbox("microvm-firecracker");
+    assert.deepEqual(unusual, { ok: true, seat: "microvm-firecracker", sandboxed: true, pinned: true });
+  });
+
+  it("reads the seat off the environment lookup the deploy pins", () => {
+    assert.equal(SANDBOXLANEENV, "DEBONAIR_SANDBOX_LANE");
+    const unset = lanesandboxfromenv(() => undefined);
+    assert.deepEqual(unset, { ok: true, seat: "local", sandboxed: false });
+    const set = lanesandboxfromenv((key) => (key === SANDBOXLANEENV ? "join" : undefined));
+    assert.deepEqual(set, { ok: true, seat: "join", sandboxed: true, pinned: false });
+  });
+
+  it("keeps the worker seat and the lane seat beside each other — no silent switch", () => {
+    // the two seats coexist honestly: the worker seat (workermodality)
+    // pins the worker process; the lane seat (lanesandbox) declares the
+    // app's lanes to the platform join — neither replaces the other
+    const workerseat = workermodality(undefined);
+    assert.ok(workerseat.ok && workerseat.modality === "local" && workerseat.sandboxed === false);
+    const laneseat = lanesandbox(undefined);
+    assert.deepEqual(laneseat, { ok: true, seat: "local", sandboxed: false });
+    assert.notEqual(SANDBOXLANEENV, WORKER_MODALITY_ENV);
   });
 });

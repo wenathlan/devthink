@@ -93,6 +93,7 @@ import type { MainResponse } from './mesh.ts';
 import { MODALITIES, MODALITYPLANCOUNT, planreport } from './modalityregistry.ts';
 import { edgelandesreport, runonedge } from './edgeplane.ts';
 import type { EdgeStorageAdapter } from './edgeplane.ts';
+import { CATALOGAPPS, familyjoin, workloadreport } from './workloadlaw.ts';
 import { tmpdir } from 'node:os';
 
 /* ------------------------------------------------------------------ */
@@ -2007,6 +2008,82 @@ async function handleapi(req: IncomingMessage, res: ServerResponse, url: URL): P
     return;
   }
 
+  /* GET /edge/workloads — public: the family workload census of the
+     workload law — every official app's lanes joined against the registry
+     of record, the honest verdicts (dispatchable, planned-only, the
+     app-lane migration list) and the probed lane table of the plane read
+     beside it, so the ops surface answers the whole picture in one round
+     trip: what the family asks, what the registry answers, what the plane
+     probes today. */
+  if (req.method === 'GET' && path === '/edge/workloads') {
+    const headers = respondheaders(req, 'public');
+    try {
+      writejson(
+        res,
+        200,
+        { report: workloadreport(), lanes: edgelandesreport(), apps: CATALOGAPPS },
+        headers,
+      );
+    } catch (error) {
+      writeerror(res, 500, 'workloads-failed', safemsg(error), headers);
+    }
+    return;
+  }
+
+  /* GET /edge/join?app=&lane= — public: the nuclear modality law as a
+     lookup — the workload names its app and lane, the resolver reads the
+     demand the catalog carries and answers the modality set that satisfies
+     it (best candidate first, the honest verdict beside it). the person
+     never names a modality: the platform resolves the join. 404 answers an
+     app or lane the catalog does not carry (the honest refusal, never a
+     silent empty join). */
+  if (req.method === 'GET' && path === '/edge/join') {
+    const headers = respondheaders(req, 'public');
+    const app = url.searchParams.get('app') ?? '';
+    const lane = url.searchParams.get('lane') ?? '';
+    if (app.length === 0 || lane.length === 0) {
+      writeerror(res, 400, 'invalid-join-request', 'the join lookup requires an app and a lane', headers);
+      return;
+    }
+    if (!CATALOGAPPS.includes(app)) {
+      writeerror(res, 404, 'unknown-app', `the app ${app} is not one the workload catalog carries`, headers);
+      return;
+    }
+    const join = familyjoin(app, lane);
+    if (join === undefined) {
+      writeerror(res, 404, 'unknown-lane', `the app ${app} carries no lane ${lane}`, headers);
+      return;
+    }
+    try {
+      writejson(
+        res,
+        200,
+        {
+          app: join.lane.app,
+          lane: join.lane.lane,
+          role: join.lane.role,
+          demand: join.lane.demand,
+          today: join.lane.today,
+          verdict: join.verdict,
+          livecount: join.livecount,
+          candidates: join.candidates.map((candidate) => ({
+            id: candidate.id,
+            label: candidate.label,
+            state: candidate.state,
+            isolation: candidate.isolation,
+            bootms: candidate.bootms,
+            gpu: candidate.gpu,
+            network: candidate.network,
+          })),
+        },
+        headers,
+      );
+    } catch (error) {
+      writeerror(res, 500, 'join-failed', safemsg(error), headers);
+    }
+    return;
+  }
+
   /* POST /edge/run — auth: ride one modality lane of the engine, the
      visitor browser executes nothing (the edge execution law). the
      artifact commits through the lazy edge vault (see edgestorage) and
@@ -2569,6 +2646,7 @@ server.listen(port, host, () => {
       '  POST /api/v1/sandboxes/:id/exec | DELETE /api/v1/sandboxes/:id | GET /api/v1/events?since=',
       '  GET /api/v1/sandboxes/:id/files | GET/DELETE /api/v1/sandboxes/:id/files/<path> |',
       '  GET /api/v1/modalities | GET /api/v1/edge/lanes | POST /api/v1/edge/run (auth) |',
+      '  GET /api/v1/edge/workloads | GET /api/v1/edge/join?app=&lane= |',
       '  POST /api/v1/mesh/register | POST /api/v1/mesh/heartbeat | GET /api/v1/mesh/nodes (signed) |',
       '  GET /api/v1/admin/{overview,users,nodes,sandboxes,audit} (admin)',
       `sandbox ttl: ${ttlms / 60000} min, sweep every ${sweepperiodms / 1000} s`,
