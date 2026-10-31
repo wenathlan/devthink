@@ -253,7 +253,7 @@ export interface telemetryfreereport {
  * first layer: the inventory, the gates, the entries and the zero outbound
  * attempts, no timestamps, so the record replays byte identical. */
 export const telemetryfreerecord: telemetryfreereport = {
-  "release": "2.0.151",
+  "release": "2.0.152",
   "callsites": [
     {
       "bundle": "bun.js",
@@ -299,7 +299,7 @@ export const telemetryfreerecord: telemetryfreereport = {
     },
     {
       "bundle": "server.js",
-      "fetch": 31,
+      "fetch": 32,
       "websocket": 0,
       "beacon": 0,
       "xmlhttprequest": 0
@@ -344,7 +344,7 @@ export const telemetryfreerecord: telemetryfreereport = {
     {
       "name": "callsites",
       "ok": true,
-      "detail": "the bundle set carries its network call sites inventoried: 48 sites over 7 bundles — bun.js (fetch 3, websocket 0, beacon 0); cli.js (fetch 2, websocket 0, beacon 0); deno.js (fetch 3, websocket 0, beacon 0); devthink.umd.js (fetch 3, websocket 0, beacon 0); index.js (fetch 3, websocket 0, beacon 0); index.neutral.js (fetch 3, websocket 0, beacon 0); server.js (fetch 31, websocket 0, beacon 0)"
+      "detail": "the bundle set carries its network call sites inventoried: 49 sites over 7 bundles — bun.js (fetch 3, websocket 0, beacon 0); cli.js (fetch 2, websocket 0, beacon 0); deno.js (fetch 3, websocket 0, beacon 0); devthink.umd.js (fetch 3, websocket 0, beacon 0); index.js (fetch 3, websocket 0, beacon 0); index.neutral.js (fetch 3, websocket 0, beacon 0); server.js (fetch 32, websocket 0, beacon 0)"
     },
     {
       "name": "gates",

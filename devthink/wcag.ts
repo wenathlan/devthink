@@ -624,7 +624,7 @@ export interface wcagreport {
  * first layer: every check in its fixed order with its outcome, no
  * timestamps, so the record replays byte identical. */
 export const wcagrecord: wcagreport = {
-  "release": "2.0.151",
+  "release": "2.0.152",
   "checklist": "docs/wcag.md",
   "surfaces": [
     "site",
@@ -713,7 +713,7 @@ export const wcagrecord: wcagreport = {
       "family": "structure",
       "module": "design.html",
       "outcome": "pass",
-      "detail": "every surface heading hierarchy audited: site: h1h2h2h2h2h3h3h3h3h3; popup: h1h2h2h2h2h2; sidepanel: h1h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2; dashboardpage: h1h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2; optionspage: h1h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2; transparencypage: h1h2h2h2h2h2h2h2h2h2h2h2h2h2; sandbox: no headings; offscreen: no headings."
+      "detail": "every surface heading hierarchy audited: site: h1h2h2h2h2h3h3h3h3h3; popup: h1h2h2h2h2h2; sidepanel: h1h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2; dashboardpage: h1h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2; optionspage: h1h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2h2; transparencypage: h1h2h2h2h2h2h2h2h2h2h2h2h2h2; sandbox: no headings; offscreen: no headings."
     },
     {
       "id": 5,
