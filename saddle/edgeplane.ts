@@ -17,15 +17,8 @@
 // foundation modules directly and leaves the root domain graph
 // (virtual.ts and its .js specifiers) to the lazy lane loads.
 
-import {
-  edgelaneexecutors,
-  probedocker,
-  probehostbinary,
-  probemodule,
-  probenodevm,
-  probevirtualmodule,
-  probewasm,
-} from "./edgelandes.ts";
+import { edgelaneexecutorsall, edgelanespecsall } from "./edgelandes.ninety.ts";
+import { probedocker, probehostbinary, probemodule, probenodevm, probevirtualmodule, probewasm } from "./edgelandes.ts";
 import { idfactory } from "./foundation.ts";
 import { getmodality } from "./modalityregistry.ts";
 
@@ -123,9 +116,14 @@ interface LaneSpec {
 
 /** the lane table of the edge plane: the ten live lanes (the execution
  * lanes the engine drives today) and the six host lanes (the runtimes
- * the engine probes, the execution wiring the next rung). The ids are
- * pinned — parallel waves and the api routes read them exactly. */
+ * the engine probes, the execution wiring the next rung) of the base
+ * contract, then the sixty-three lanes of the ninety modalities wave
+ * merged in through edgelandes.ninety.ts (the twenty-five host binary
+ * lanes, the nineteen in-process lanes, the seven virtual hardware
+ * lanes and the six heavyweight probes). The ids are pinned — parallel
+ * waves and the api routes read them exactly. */
 const EDGELANES: readonly LaneSpec[] = Object.freeze([
+  ...edgelanespecsall,
   // the live lanes: the engine executes through these today
   { modality: "container-docker", kind: "live", runtime: "docker", present: probedocker },
   { modality: "fs-vfs", kind: "live", runtime: "virtual-vfs", present: probevirtualmodule },
@@ -340,7 +338,7 @@ export async function runonedge(
       };
     }
     lanename = lane.runtime;
-    const executor = edgelaneexecutors[lane.modality];
+    const executor = edgelaneexecutorsall[lane.modality];
     if (executor === undefined) {
       return {
         runid,
@@ -410,7 +408,7 @@ export async function runonedge(
  * cannot wire (a table entry without an executor is a miswired plane,
  * and miswiring must fail loud at boot, never silently at run time). */
 for (const lane of EDGELANES) {
-  if (edgelaneexecutors[lane.modality] === undefined) {
+  if (edgelaneexecutorsall[lane.modality] === undefined) {
     throw new Error(`the edge plane is miswired: no executor for the lane ${lane.modality}`);
   }
 }

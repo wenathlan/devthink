@@ -19,6 +19,57 @@ import { localstorage } from "../virtual.ts";
 
 /** the ten live lane ids the pinned contract charges (parallel waves read these exactly). */
 const LIVELANES = [
+  "sandbox-bubblewrap",
+  "sandbox-nsjail",
+  "sandbox-chroot",
+  "container-podman",
+  "container-containerd",
+  "container-runc",
+  "container-crun",
+  "container-max",
+  "container-lite",
+  "container-ghcr",
+  "runtime-clr",
+  "runtime-workerd",
+  "screen-xvfb",
+  "screen-wayland",
+  "mobile-termux",
+  "build-bazel",
+  "build-buck",
+  "build-turborepo",
+  "ci-actions",
+  "ci-gitlab",
+  "network-tor",
+  "network-i2p",
+  "network-wireguard",
+  "storage-minio",
+  "storage-garage",
+  "ram-tmpfs",
+  "ram-mmap",
+  "ram-overlayfs",
+  "ram-loopram",
+  "ram-gitram",
+  "ram-zram",
+  "ram-zswap",
+  "ram-swapfile",
+  "delivery-cdn",
+  "delivery-wss",
+  "delivery-webtransport",
+  "delivery-grpc",
+  "delivery-capnproto",
+  "storage-libsql",
+  "storage-mysql",
+  "storage-postgres",
+  "storage-s3",
+  "browser-webcontainer",
+  "local-optin",
+  "virtual-full",
+  "virtual-vgpu",
+  "virtual-screen",
+  "virtual-drivers",
+  "virtual-kvm",
+  "microvm-gpuless",
+  "gpu-virgl",
   "container-docker",
   "fs-vfs",
   "runner-node",
@@ -33,6 +84,12 @@ const LIVELANES = [
 
 /** the six host lane ids the pinned contract charges. */
 const HOSTLANES = [
+  "browser-server",
+  "mobile-capacitor",
+  "mobile-postmarketos",
+  "pod-session",
+  "confidential-sevsnp",
+  "confidential-tdx",
   "container-runsc",
   "emulator-qemu",
   "microvm-firecracker",
@@ -191,14 +248,37 @@ describe("the edge plane answers the visitor law", () => {
     }
   });
 
-  it("refuses a planned or unknown modality with modality not live", async () => {
-    const planned = await runonedge({ modality: "virtual-full", code: "1" });
-    assert.equal(planned.status, "failed");
-    assert.equal(planned.error?.code, "MODALITY_NOT_LIVE");
-    assert.ok(planned.error?.message.includes("virtual-full"));
+  it("refuses an unknown modality with modality not live", async () => {
     const unknown = await runonedge({ modality: "not-a-modality", code: "1" });
     assert.equal(unknown.status, "failed");
     assert.equal(unknown.error?.code, "MODALITY_NOT_LIVE");
+  });
+
+  it("dispatches the ninety wave lanes through the plane honestly", async () => {
+    // the in-process lanes ride the plane server-side: ram-tmpfs composes
+    // the in-memory tree from its manifest and answers the report
+    const ramrun = await runonedge({
+      modality: "ram-tmpfs",
+      code: '{"mount":"tmpfs","files":{"lane.txt":"68656c6c6f"}}',
+    });
+    assert.equal(ramrun.status, "succeeded", JSON.stringify(ramrun.error));
+    assert.ok(ramrun.stdout.includes("tmpfs"));
+    // the consent gate refuses without the declared consent — the visitor
+    // machine law the local-optin lane guards
+    const refused = await runonedge({ modality: "local-optin", code: "{}" });
+    assert.equal(refused.status, "failed");
+    assert.equal(refused.error?.code, "LOCAL_CONSENT_REQUIRED");
+    // the virtual hardware lanes compose the machine payloads: the full
+    // machine answers its report composed, never booted
+    const machinerun = await runonedge({ modality: "virtual-drivers", code: "{}" });
+    assert.equal(machinerun.status, "succeeded", JSON.stringify(machinerun.error));
+    // the heavyweight lanes answer their probe honestly (present or
+    // absent, never a faked boot)
+    const heavy = await runonedge({ modality: "pod-session", code: "" });
+    assert.ok(heavy.status === "succeeded" || heavy.error?.code === "HOST_RUNTIME_ABSENT");
+    // the host binary lanes name their runtime when absent
+    const jail = await runonedge({ modality: "sandbox-bubblewrap", code: "echo hi" });
+    assert.ok(jail.status === "succeeded" || jail.error?.code === "HOST_RUNTIME_ABSENT", JSON.stringify(jail.error));
   });
 
   it("never lies about a live modality another engine surface drives", async () => {
