@@ -248,17 +248,73 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
     expect(publish).toContain('startswith(\\"${version}-vhe\\")');
   });
 
-  it("the vhe lanes keep the dispatch-only contract with the reason stated", async () => {
+  it("the vhe lanes answer the release law — the saddle container publishes with the family", async () => {
     const workflow = await parseworkflow("publish.yml");
-    for (const job of ["saddle-vhe-validate", "saddle-vhe-resolve"]) {
-      expect(workflow.jobs?.[job]?.if).toBe("github.event_name == 'workflow_dispatch'");
-    }
+    /* the saddle container law: the resolve lane carries the same release
+     * guard every application lane carries, so the release published
+     * firing, the successful workflow_run completion of the release
+     * ladder and the maintenance dispatch all reach the chain (the
+     * standalone era kept the lane dispatch-only and the container never
+     * published with the family — the gap the owner's law closes). */
+    const guard = String(workflow.jobs?.["saddle-vhe-resolve"]?.if ?? "");
+    expect(guard).toContain("github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')");
+    expect(guard).toContain("github.event.workflow_run.conclusion == 'success'");
+    expect(guard).toContain("github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch'");
+    /* the deep validation lane keeps its dispatch-only shape: the
+     * twelve-leg firecracker matrix answers the maintenance dispatch
+     * alone, where its cost belongs. */
+    expect(workflow.jobs?.["saddle-vhe-validate"]?.if).toBe("github.event_name == 'workflow_dispatch'");
     const publish = await readworkflow("publish.yml");
-    expect(publish).toContain("awaits its per-application adaptation pass");
+    expect(publish).toContain("the saddle container law");
+    /* the race the workflow_run firing carries: the moving head may
+     * already answer the next rung, so the resolver detaches the release
+     * tag and reads the saddle manifest of the tagged source (the ghcr
+     * lane mold), never the moving head. */
+    expect(publish).toContain('tag="$(gh release view --json tagName --jq .tagName)"');
+    expect(publish).toContain('git checkout --detach "$tag"');
     /* the security gate the publish rides behind: the trivy scan over the
      * same runtime target the publish legs build. */
     expect(publish).toContain("Saddle vhe security gate");
     expect(publish).toContain("scanners: vuln,secret,misconfig");
+  });
+
+  it("the saddle container archive lane answers the asset parity law", async () => {
+    const workflow = await parseworkflow("publish.yml");
+    /* the saddle vhe image ships the same portable release asset the
+     * devthink container archive ships: the lane rides behind the
+     * resolver and the security gate (a FAILED trivy scan never ships an
+     * archive), saves the max profile image the registry lane publishes
+     * and attaches the tar.gz beside the devthink one. */
+    const archive = workflow.jobs?.["saddle-container"] as
+      | { needs?: string[]; if?: string; permissions?: Record<string, string> }
+      | undefined;
+    expect(archive?.needs).toEqual(["saddle-vhe-resolve", "saddle-vhe-scan"]);
+    expect(archive?.if).toBe("needs.saddle-vhe-resolve.outputs.proceed == 'true'");
+    expect(archive?.permissions?.contents).toBe("write");
+    const publish = await readworkflow("publish.yml");
+    expect(publish).toContain('archive="saddle.container.${{ needs.saddle-vhe-resolve.outputs.version }}.tar.gz"');
+    expect(publish).toContain('-f saddle/Dockerfile saddle');
+    /* the sums umbrella walks the archive lane: the SHA256SUMS rebuild
+     * answers only after every lane attached its assets. */
+    const sums = workflow.jobs?.sums as { needs?: string[] } | undefined;
+    expect(sums?.needs).toContain("saddle-container");
+  });
+
+  it("the mesa resolver heals the mirror gap that killed the standalone-fold container", async () => {
+    const publish = await readworkflow("publish.yml");
+    /* the root cause the saddle container law closes: a MESA_VERSION bump
+     * nobody mirrored left the resolver dying on the absent mesa-cache
+     * release (set -euo pipefail on the download) and the container never
+     * published after the fold. The resolver now resolves the digest in
+     * tiers — the GitHub-computed digest of the cache asset, the cache
+     * tarball downloaded and hashed on the runner, and the upstream
+     * tarball that HEALS the mirror by creating the cache release — so
+     * the value never enters the repository and the lane survives every
+     * future bump. */
+    expect(publish).toContain('release_json="$(gh api "repos/${GH_REPO}/releases/tags/${release}" 2>/dev/null || true)"');
+    expect(publish).toContain("the ${release} mirror is absent; healing from upstream and publishing the cache.");
+    expect(publish).toContain('gh release create "${release}" "/tmp/${tarball}"');
+    expect(publish).toContain('sha="$(sha256sum "/tmp/${tarball}" | awk \'{print $1}\')"');
   });
 
   it("the family ghcr loop walks past the legacy saddle package honestly", async () => {

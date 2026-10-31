@@ -39,10 +39,13 @@ name: DevThink Publish
 # lane of the family, because the saddle surface is the heaviest pass of
 # the house (the docker builds). The extension package and the target
 # plans answer the same release and workflow_run triggers the lanes above
-# carry; the vhe registry lane keeps its dispatch-only contract (the deep
-# validation it carries awaits its per-application adaptation pass). The
-# saddle lanes read the saddle application folder and stamp the version
-# their own manifest declares - the family release tag carries the assets.
+# carry; the vhe lanes answer the same release law (the saddle container
+# law): the resolver, the security gate, the multi-arch registry push, the
+# published-image verify and the container archive lane fire with the
+# family publish wave, while the deep validation lane (the twelve-leg
+# firecracker matrix) keeps its dispatch-only shape. The saddle lanes read
+# the saddle application folder and stamp the version their own manifest
+# declares - the family release tag carries the assets.
 
 on:
   release:
@@ -4295,9 +4298,11 @@ jobs:
     name: Validate saddle vhe image (${{ matrix.profile }}, ${{ matrix.platform }})
     # the saddle vhe validation lane of the standalone board, folded in
     # dispatch-only: the deep validation it carries (the multi-architecture
-    # firecracker matrix and the saddle docker contexts) awaits its
-    # per-application adaptation pass, so a release- or push-shaped firing
-    # of the publish wave never reaches it.
+    # firecracker matrix and the saddle docker contexts) stays a
+    # dispatch-shaped probe (the saddle container law opens the publish
+    # chain - the resolver, the scan, the registry push, the verify and
+    # the archive - to the release wave; the twelve-leg validation matrix
+    # answers the maintenance dispatch alone, where its cost belongs).
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     defaults:
@@ -4486,12 +4491,23 @@ jobs:
 
   saddle-vhe-resolve:
     name: Resolve saddle vhe release version
-    # the release resolver of the vhe lane, folded in dispatch-only: the
-    # version answers the saddle manifest of the checked out source (the
-    # deleted saddle-v* tag resolver never runs again), the proceed gate
-    # keeps duplicate dispatches no-op, and the mesa digest resolution
-    # rides the same GitHub-computed source the validation lane carries.
-    if: github.event_name == 'workflow_dispatch'
+    # the release resolver of the vhe lane answering the release law (the
+    # saddle container law): the version answers the saddle manifest of the
+    # checked out source (the deleted saddle-v* tag resolver never runs
+    # again), the proceed gate keeps duplicate firings no-op, and the mesa
+    # digest resolution rides the same GitHub-computed source the
+    # validation lane carries. The lane fires beside every application
+    # lane of the publish wave - the release published firing, the
+    # successful workflow_run completion of the release ladder and the
+    # maintenance dispatch - so the saddle container answers the same
+    # release every sibling lane answers (the standalone era kept the
+    # lane dispatch-only and the container never published with the
+    # family: the gap the owner's law closes).
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
     runs-on: ubuntu-24.04
     # every job carries its own ceiling (the family contract): the
     # resolver leg rides the rubygems resolver's own 15-minute value
@@ -4520,6 +4536,10 @@ jobs:
       - name: Check out release source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          # the release firings resolve the tagged source (the ghcr
+          # resolver mold): the saddle manifest the version reads must
+          # answer the tag the release carries, not the moving head.
+          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
           fetch-depth: 0
 
       - name: Set up Node (reproducible version-resolution step)
@@ -4533,25 +4553,35 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           OWNER: ${{ github.repository_owner }}
-          REQUESTED_TAG: ${{ inputs.release_tag }}
+          REQUESTED_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
         run: |
           set -euo pipefail
+          # the release-law resolver (the ghcr lane mold): the release and
+          # dispatch firings carry their tag; the workflow_run completion
+          # resolves the LATEST release (the firing main may already carry
+          # the next rung's manifest, and the vhe lane must answer the
+          # release the ladder just cut, not the moving head).
+          tag="${REQUESTED_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A semantic release tag such as v1.2.14 is required." >&2
+            exit 1
+          fi
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          git checkout --detach "$tag"
           version=$(node -p "JSON.parse(require('fs').readFileSync('saddle/package.json','utf8')).version")
-          tag="v${version}"
+          if [[ "v${version}" != "$tag" ]]; then
+            echo "Release tag ${tag} does not match the saddle manifest version ${version}." >&2
+            exit 1
+          fi
           {
             echo "version=${version}"
             echo "tag=${tag}"
             echo "proceed=false"
           } >> "$GITHUB_OUTPUT"
 
-          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            echo "A semantic release tag such as v1.2.14 is required." >&2
-            exit 1
-          fi
-          if ! git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
-            echo "Tag ${tag} does not exist." >&2
-            exit 1
-          fi
           if ! gh api "repos/${GH_REPO}/releases/tags/${tag}" >/dev/null 2>&1; then
             echo "No published GitHub release for ${tag}." >&2
             exit 0
@@ -4603,28 +4633,58 @@ jobs:
           test -n "${mesa_version}"
           tarball="mesa-${mesa_version}.tar.xz"
           release="mesa-cache-${mesa_version}"
-          digest="$(gh api "repos/${GH_REPO}/releases/tags/${release}" --jq ".assets[] | select(.name == \"${tarball}\") | .digest" 2>/dev/null || true)"
+          release_json="$(gh api "repos/${GH_REPO}/releases/tags/${release}" 2>/dev/null || true)"
+          digest=""
+          if [ -n "${release_json}" ]; then
+            digest="$(printf '%s' "${release_json}" | jq -r ".assets[]? | select(.name == \"${tarball}\") | .digest // empty" 2>/dev/null || true)"
+          fi
           case "${digest}" in
             sha256:*) sha="${digest#sha256:}" ;;
             *) sha="" ;;
           esac
           if [ -z "${sha}" ] || [ "${#sha}" -ne 64 ]; then
-            # legacy asset without a GitHub-computed digest: the checksum
-            # is computed on this GitHub runner (still GitHub computers,
-            # the value never enters the repository)
-            gh release download "${release}" --repo "${GH_REPO}" --pattern "${tarball}" --output "/tmp/${tarball}"
-            sha="$(sha256sum "/tmp/${tarball}" | awk '{print $1}')"
-            rm -f "/tmp/${tarball}"
+            if [ -n "${release_json}" ]; then
+              # legacy asset without a GitHub-computed digest: the checksum
+              # is computed on this GitHub runner (still GitHub computers,
+              # the value never enters the repository)
+              gh release download "${release}" --repo "${GH_REPO}" --pattern "${tarball}" --output "/tmp/${tarball}"
+              sha="$(sha256sum "/tmp/${tarball}" | awk '{print $1}')"
+              rm -f "/tmp/${tarball}"
+            else
+              # the mirror gap the saddle container law heals: a MESA_VERSION
+              # bump nobody mirrored kills the whole vhe chain (the resolver
+              # died on the absent release and the container never published
+              # - the standalone fold gap). The resolver downloads the
+              # upstream tarball, computes the digest on this GitHub runner
+              # (the value never enters the repository) and heals the mirror
+              # by creating the cache release with the tarball, so every
+              # future run reads the GitHub-computed digest of tier one.
+              echo "the ${release} mirror is absent; healing from upstream and publishing the cache."
+              curl -fL --retry 5 --retry-all-errors --retry-delay 5 \
+                --connect-timeout 30 --max-time 900 \
+                -o "/tmp/${tarball}" "https://mesa.freedesktop.org/archive/${tarball}" \
+                || curl -fL --retry 5 --retry-all-errors --retry-delay 5 \
+                  --connect-timeout 30 --max-time 900 \
+                  -o "/tmp/${tarball}" "https://archive.mesa3d.org/${tarball}"
+              sha="$(sha256sum "/tmp/${tarball}" | awk '{print $1}')"
+              gh release create "${release}" "/tmp/${tarball}" \
+                --repo "${GH_REPO}" --title "${release}" \
+                --notes "The mirrored upstream ${tarball} the saddle vhe builds verify against (the self-healing mirror of the saddle container law)." \
+                --target "$(git rev-parse HEAD)"
+              rm -f "/tmp/${tarball}"
+            fi
           fi
           test "${#sha}" -eq 64
           # Keep the SHA256SUMS asset of the mesa-cache release in place so
           # local builds (and any build without the build-arg) verify the
           # tarball too: the checksum is GitHub-generated and published as
-          # a release asset, never hardcoded in the sources.
+          # a release asset, never hardcoded in the sources. An absent
+          # cache release carries nothing to patch (the healing tier
+          # already published the sums beside the tarball it created).
           sums_count="$(gh api "repos/${GH_REPO}/releases/tags/${release}" --jq "[.assets[] | select(.name == \"SHA256SUMS\")] | length" 2>/dev/null || true)"
           if [ "${sums_count}" != "1" ]; then
             printf '%s  %s\n' "${sha}" "${tarball}" > SHA256SUMS
-            gh release upload "${release}" SHA256SUMS --repo "${GH_REPO}"
+            gh release upload "${release}" SHA256SUMS --repo "${GH_REPO}" --clobber
             rm -f SHA256SUMS
             echo "SHA256SUMS published to ${release}"
           fi
@@ -4895,8 +4955,12 @@ jobs:
     name: Clean the saddle vhe run caches
     needs: [saddle-vhe-validate]
     # the cache sweeper of the validation lane: the dispatch is the only
-    # event the validate legs answer in the consolidated house, so the
-    # push-shaped gate the standalone file carried narrows to it.
+    # event the validate legs answer. The vhe lanes cache in the registry
+    # buildcache image (cache-to: type=registry on every build leg), so
+    # the buildkit-prefixed gha caches this sweeper walks are the
+    # standalone-era stragglers - the sweep stays the honest hygiene the
+    # consolidated house keeps beside the dispatch probe, never a gate
+    # the publish chain depends on.
     if: always() && github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     defaults:
@@ -4922,6 +4986,88 @@ jobs:
             fi
           done < <(gh api --paginate "repos/${GH_REPO}/actions/caches?per_page=100" --jq '.actions_caches[] | select(.key | startswith("buildkit")) | [.id, .key] | @tsv')
           echo "cleanup: deleted ${deleted} buildkit gha caches."
+
+  saddle-container:
+    name: saddle container release archive
+    # THE SADDLE CONTAINER LAW (the asset parity the owner demands): the
+    # saddle vhe image answers the same release the devthink container
+    # archive answers - the standalone era left the saddle container
+    # without a release asset (the registry push alone, and dispatch-only
+    # at that), so the person who downloads the release could load every
+    # sibling container except the saddle one. The lane builds the max
+    # profile vhe image the registry lane publishes (the same runtime
+    # target, the same mesa digest the resolver answered), saves the
+    # portable tar.gz an operator loads with `docker load`, and rides
+    # behind the security gate the registry push answers (a FAILED trivy
+    # scan never ships an archive).
+    needs: [saddle-vhe-resolve, saddle-vhe-scan]
+    if: needs.saddle-vhe-resolve.outputs.proceed == 'true'
+    runs-on: ubuntu-24.04
+    # the native amd64 leg answers the heaviest pass of the house after
+    # the QEMU builds: the mesa compile is native here, riding the same
+    # 90-minute ceiling the family container archive carries scaled to
+    # the mesa build the vhe runtime bakes.
+    timeout-minutes: 90
+    permissions:
+      contents: write
+    steps:
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.saddle-vhe-resolve.outputs.tag }}
+      - name: build the saddle vhe container
+        env:
+          IMAGE: ghcr.io/${{ github.repository }}:${{ needs.saddle-vhe-resolve.outputs.version }}-vhe
+        # the max profile the registry lane publishes (the Dockerfile
+        # defaults bake the same constants; the args stay explicit the
+        # saddle family way) and the same context the vhe lanes build
+        # (the saddle application folder - the vhe Dockerfile carries
+        # its own tree).
+        run: |
+          set -euo pipefail
+          archive="saddle.container.${{ needs.saddle-vhe-resolve.outputs.version }}.tar.gz"
+          docker build \
+            --target runtime \
+            --build-arg VHE_PROFILE_CPU="epyc9965" \
+            --build-arg VHE_PROFILE_VCPUS="192" \
+            --build-arg VHE_PROFILE_THREADS="384" \
+            --build-arg VHE_PROFILE_RAM_GB="1024" \
+            --build-arg VHE_PROFILE_GPU="b200" \
+            --build-arg VHE_PROFILE_GPUS="8" \
+            --build-arg MESA_SHA256="${{ needs.saddle-vhe-resolve.outputs.mesasha256 }}" \
+            --tag "$IMAGE" -f saddle/Dockerfile saddle
+          docker save "$IMAGE" | gzip -9 > "$archive"
+      - name: checksum and manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${{ needs.saddle-vhe-resolve.outputs.version }}"
+          archive="saddle.container.${version}.tar.gz"
+          checksums="sha256.saddle.container.${version}"
+          manifest="manifest.saddle.container.${version}.json"
+          sha256sum "$archive" > "$checksums"
+          printf '{\n  "version": "%s",\n  "platform": "container",\n  "image": "ghcr.io/%s:%s-vhe",\n  "archive": "%s",\n  "signing": "caller-owned"\n}\n' \
+            "$version" "${{ github.repository }}" "$version" "$archive" > "$manifest"
+      - name: upload workflow artifact
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: saddle.container.${{ needs.saddle-vhe-resolve.outputs.version }}
+          path: |
+            saddle.container.${{ needs.saddle-vhe-resolve.outputs.version }}.tar.gz
+            sha256.saddle.container.${{ needs.saddle-vhe-resolve.outputs.version }}
+            manifest.saddle.container.${{ needs.saddle-vhe-resolve.outputs.version }}.json
+          if-no-files-found: error
+      - name: attach release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ needs.saddle-vhe-resolve.outputs.tag }}
+        run: |
+          set -euo pipefail
+          version="${{ needs.saddle-vhe-resolve.outputs.version }}"
+          gh release upload "$RELEASE_TAG" \
+            "saddle.container.${version}.tar.gz" \
+            "sha256.saddle.container.${version}" \
+            "manifest.saddle.container.${version}.json" --clobber
 
   sums:
     name: Rebuild the release SHA256SUMS umbrella
@@ -4954,10 +5100,13 @@ jobs:
       - target-plans
       # the saddle block attaches its assets before the umbrella answers:
       # the extension zip rides the release, the target plans ride the
-      # workflow artifacts, and the dispatch-only vhe lane attaches
-      # nothing (the registry image carries its own digests).
+      # workflow artifacts, and the vhe lanes answer the release law (the
+      # saddle container law) - the registry image carries its own digests
+      # and the container archive lane attaches the saddle tar.gz beside
+      # the devthink one.
       - saddle-extension
       - saddle-target-plans
+      - saddle-container
     if: >-
       !cancelled() &&
       (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
