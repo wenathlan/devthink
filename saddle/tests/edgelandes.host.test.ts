@@ -162,6 +162,14 @@ describe("the host binary lanes answer the honesty law", () => {
   }, 60000);
 
   it("leaves no saddleedge temp directory behind (the tempdir law)", async () => {
+    /* the tempdir walk rides the same long-gate convention the smoke
+       seat just took (60000 above): every lane walks with its own 4000 ms
+       deadline and a rich host (a ci runner carrying docker beside node,
+       python, runc and containerd) answers several seats in sequence —
+       the deadline law lives inside each executor (the group kill holds
+       every lane to its budget), never in the suite timer, so the walk
+       carries the family's third-arg timeout instead of the 15 s
+       default. */
     const before = await saddleedgetmpentries();
     for (const spec of hostlanespecs) {
       const executor = edgelaneexecutorshost[spec.modality];
@@ -178,7 +186,7 @@ describe("the host binary lanes answer the honesty law", () => {
       leftovers = (await saddleedgetmpentries()).filter((entry) => !before.includes(entry));
     }
     assert.deepStrictEqual(leftovers, [], "no saddleedge temp directory survives the lane runs");
-  });
+  }, 90000);
 
   it("kills a sleeping program at the deadline (the deadline law, when a present runtime really runs)", async () => {
     const present = hostlanespecs.filter((lane) => lane.present());
