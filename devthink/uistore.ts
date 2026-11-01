@@ -83,6 +83,24 @@ const SEED: Readonly<Record<string, string>> = Object.freeze({
   "navbar.edge.locked": "The edge answers the docked mode — dock the bar first.",
   "navbar.drag.hint":
     "Drag the bar — pull it up to float it, sideways to dock it, off the wall to float it again.",
+  /* ------------------ taskbar + start menu (win11 face) ----------------- */
+  "shell.widgets.aria": "Widgets",
+  "shell.search.aria": "Search",
+  "shell.start.header.pinned": "Pinned",
+  "shell.start.header.allapps": "All apps",
+  "shell.start.header.recommended": "Recommended",
+  "shell.start.more": "More",
+  "shell.start.back": "Back",
+  "shell.start.user.fallback": "user",
+  "shell.start.power.aria": "Power",
+  "shell.start.powermenu.aria": "Power options",
+  "shell.start.power.lock": "Lock",
+  "shell.start.power.shutdown": "Shut down",
+  "shell.start.power.restart": "Restart",
+  "shell.start.recent.now": "Just now",
+  "shell.start.recent.minutes": "{n}m ago",
+  "shell.start.recent.hours": "{n}h ago",
+  "shell.start.alpha.aria": "Alphabet index",
 });
 
 /**

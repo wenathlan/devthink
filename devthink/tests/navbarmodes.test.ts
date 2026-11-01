@@ -27,7 +27,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { copy } from "../copy.ts";
+import { copy, copyseed } from "../copy.ts";
 import {
   isNavbarEdge,
   isNavbarMode,
@@ -45,7 +45,6 @@ import {
   saveNavbarMode,
 } from "../desktopstate.ts";
 import { DOCK_MAGNIFY_MAX, DOCK_MAGNIFY_SPREAD, magnifyscale } from "../dockmagnify.ts";
-import { copyseed } from "../copy.ts";
 import { uicopy } from "../uistore.ts";
 
 /** the in-memory account store the mocked preference lane answers (the
@@ -473,8 +472,7 @@ describe("the css ladder of the two modes (the sol.css pins)", () => {
   });
 });
 
-describe("the login shadow law (the --win-shad-* tokens, clipped by the login face)", () => {
-  it("the sign-in card rides the house window shadow token — no hand-built drop leaks", () => {
+describe("the login shadow law (the --win-shad-* tokens, clipped by the login face)", () => {  it("the sign-in card rides the house window shadow token — no hand-built drop leaks", () => {
     const card = solcss.indexOf(".dtw-login__card {");
     expect(card).toBeGreaterThan(-1);
     const cardblock = solcss.slice(card, card + 2400);
@@ -496,5 +494,27 @@ describe("the login shadow law (the --win-shad-* tokens, clipped by the login fa
     // the tokens the shadows ride exist on the root ladder
     expect(solcss).toContain("--win-shad-window: var(--shadow-window);");
     expect(solcss).toContain("--win-shad-flyout: var(--shadow-flyout);");
+  });
+});
+
+describe("the win11 face of the two modes (the fidelity wave rides the grammar)", () => {
+  it("the widgets trigger only mounts on the docked bottom bar — the floating pad and the rail keep their fit", () => {
+    expect(chrome).toContain('navbarMode === "docked" && navbarEdge === "bottom" && (');
+    expect(chrome).toContain("dt-nav__widget absolute top-1/2 left-2 z-[1] -translate-y-1/2");
+  });
+
+  it("the search trigger rides beside the mark as one more cell of the same grammar", () => {
+    const cluster = chrome.indexOf("dt-nav__cluster");
+    const head = chrome.slice(cluster, cluster + 3200);
+    expect(head).toContain('aria-label={uicopy("shell.search.aria")}');
+    expect(head).toContain("onClick={openStartSearch}");
+  });
+
+  it("the mode attributes keep driving the flyout anchors: the menu sits 12px over --shell-bottom", () => {
+    expect(chrome).toContain("bottom-[calc(var(--shell-bottom)+12px)]");
+    expect(solcss).toContain("body:has(.dt-nav[data-navmode=\"docked\"][data-navedge=\"left\"]),");
+    // the docked rail re-bands the shell: the menu and the flyouts sit 12px off the foot
+    expect(solcss).toContain("body:has(.dt-nav[data-navmode=\"docked\"][data-navedge=\"left\"]) {");
+    expect(solcss).toContain("--shell-bottom: 0px;");
   });
 });

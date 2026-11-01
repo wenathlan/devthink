@@ -8,13 +8,25 @@
  * stored ids in most-recent-first order; the caller maps them onto the
  * shared app catalog (Sol/shell/appregistry.ts) — this module never imports
  * the catalog and never hardcodes app data.
+ *
+ * The v2 lane adds the open timestamp each entry carries (the
+ * "timeUsed" line the win11 recommended row shows): entries read back as
+ * {id, at} pairs, the v1 ids answer with at = 0 (no time known) and the
+ * push writes both keys, so the v1 readers never lose the list.
  */
 
 /** The localStorage key of the recent app id list. */
 const RECENTS_KEY = "dt.start.recents.v1";
 
+/** The v2 key: the same list as {id, at} pairs (the open epoch ms). */
+const RECENTS_AT_KEY = "dt.start.recents.v2";
+
 /** The list cap: six slots, the Windows recommended rail rhythm. */
 const RECENTS_CAP = 6;
+
+/** One recommended entry the Start menu renders: the app id and the open
+ * epoch (0 when the entry predates the timestamp lane). */
+export type RecentEntry = { id: string; at: number };
 
 /**
  * Reads the recent app ids, most recently opened first.
@@ -34,17 +46,53 @@ export function loadrecentapps(): string[] {
 }
 
 /**
+ * Reads the recent entries as {id, at} pairs, most recently opened first.
+ * The v2 lane answers the stored timestamps; the v1 fallback maps its bare
+ * ids with at = 0 (no time known — the row hides its timeUsed line).
+ *
+ * @returns up to six entries; a malformed or unavailable store answers [].
+ */
+export function loadrecententries(): RecentEntry[] {
+  try {
+    const raw = window.localStorage.getItem(RECENTS_AT_KEY);
+    if (raw) {
+      const parsed: unknown = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        const entries: RecentEntry[] = [];
+        for (const item of parsed) {
+          if (!item || typeof item !== "object" || Array.isArray(item)) continue;
+          const record = item as Record<string, unknown>;
+          if (typeof record.id !== "string" || typeof record.at !== "number") continue;
+          if (!Number.isFinite(record.at)) continue;
+          entries.push({ id: record.id, at: record.at });
+        }
+        if (entries.length > 0) return entries.slice(0, RECENTS_CAP);
+      }
+    }
+  } catch {
+    /* v2 corrupt or unavailable: the v1 lane answers below */
+  }
+  return loadrecentapps().map((id) => ({ id, at: 0 }));
+}
+
+/**
  * Promotes one app to the head of the recent list and persists it
  * (best effort: storage may be unavailable, the list then stays
- * session-only in the returned value).
+ * session-only in the returned value). The id list rides the v1 key the
+ * original readers know; the timestamped pairs ride v2 beside it.
  *
  * @param id the app id the visitor just opened.
  * @returns the fresh id list, most recent first, capped at six.
  */
 export function pushrecentapp(id: string): string[] {
   const next = [id, ...loadrecentapps().filter((candidate) => candidate !== id)].slice(0, RECENTS_CAP);
+  const entries: RecentEntry[] = [
+    { id, at: Date.now() },
+    ...loadrecententries().filter((candidate) => candidate.id !== id),
+  ].slice(0, RECENTS_CAP);
   try {
     window.localStorage.setItem(RECENTS_KEY, JSON.stringify(next));
+    window.localStorage.setItem(RECENTS_AT_KEY, JSON.stringify(entries));
   } catch {
     /* storage unavailable: the list stays session-only */
   }

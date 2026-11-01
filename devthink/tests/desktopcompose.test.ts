@@ -411,6 +411,19 @@ describe("the family window law (the double click never leaves the os)", () => {
     expect(workspace).toContain("toggleWindow(app.target.slug, app.name);");
     expect(workspace).not.toContain("onNavigate(`/${app.target.slug}`)");
   });
+
+  it("the desktop opens feed the shell: the live window ids light the taskbar ladder and the opens promote the recommended entries", () => {
+    // the workspace hands the live window state to the chrome (the open
+    // ladder reads data-open off the pin cells) and every open lands in the
+    // recent-entries store the start menu recommended rail renders
+    expect(workspace).toContain("openApps={windows.map((win) => win.id)}");
+    expect(workspace).toContain("pushrecentapp(app.id);");
+    const chrome = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "Shellchrome.tsx"), "utf8");
+    expect(chrome).toContain("openApps = []");
+    expect(chrome).toContain("const open = active || openApps.includes(app.id);");
+    expect(chrome).toContain("pushrecentapp(app.id);");
+    expect(chrome).toContain("setRecents(loadrecententries());");
+  });
 });
 
 describe("the chat bar out of the panel (the conversation lives in the window)", () => {
