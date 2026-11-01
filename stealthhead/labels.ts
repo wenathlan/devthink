@@ -19,7 +19,8 @@
  * affordances around them ride here.
  */
 
-import type { LabelRow } from "./db.ts";
+import { createLabelStore } from "@wenathlan/vault/labelstore";
+
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
@@ -255,73 +256,30 @@ export const LABELMANIFEST = {
 
 export type LabelKey = keyof typeof LABELMANIFEST & string;
 
-/** the translation overrides the runtime loads from the store at boot: the
- * key answers the translated text when the person changed the language. */
-const overrides = new Map<string, string>();
-
-/** the browser cache of the labels table: the rows mirror the site db (the
- * db is the source of truth; the cache carries the translated rows offline —
- * the onboardingstate.ts precedent for the visitor machine). */
-const CACHE_KEY = "stealthhead.labels.rows";
-
-function readcache(): LabelRow[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = window.localStorage.getItem(CACHE_KEY);
-    if (!raw) return [];
-    const parsed: unknown = JSON.parse(raw);
-    return Array.isArray(parsed)
-      ? (parsed.filter((row): row is LabelRow => !!row && typeof row === "object") as LabelRow[])
-      : [];
-  } catch {
-    return [];
-  }
-}
-
-function writecache(rows: readonly LabelRow[]): void {
-  if (typeof window === "undefined") return;
-  try {
-    window.localStorage.setItem(CACHE_KEY, JSON.stringify(rows));
-  } catch {
-    // the cache is best effort: the manifest always answers
-  }
-}
+/** the store mechanism rides the vault factory (the storage law of the
+ * family: the vault owns the store, the app owns the manifest — the
+ * mechanism is imported, never duplicated). the cache key keeps the browser mirror the wingets already read. */
+const store = createLabelStore({
+  manifest: LABELMANIFEST,
+  revision: LABELREVISION,
+  cacheKey: "stealthhead.labels.rows",
+});
 
 /** the typed accessor of the copy: the only door a widget or page anchor uses. */
 export function label(key: LabelKey): string {
-  return overrides.get(key) ?? LABELMANIFEST[key];
+  return store.label(key);
 }
 
 /** the placeholder door: fills the {token} slots of one format key with the
  * runtime values (the store keeps the sentence, the widget passes the data). */
 export function labelfill(key: LabelKey, values: Record<string, string>): string {
-  return label(key).replace(/\{(\w+)\}/g, (match, token: string) => values[token] ?? match);
+  return store.labelfill(key, values);
 }
 
 /** the seed ingests the manifest into the labels store, idempotent, and the
  * translated rows stay protected from the overwrite. in the browser the rows
  * ride the local cache of the site db; on the server db.ts seeds the same
- * manifest into the labels table through seedlabelrows. */
-export async function seedlabels(): Promise<{ seeded: number; protected: number }> {
-  const stored = readcache();
-  const rows = new Map<string, LabelRow>(stored.map((row) => [row.id, row]));
-  let seeded = 0;
-  let saved = 0;
-  for (const [id, text] of Object.entries(LABELMANIFEST)) {
-    const row = rows.get(id);
-    overrides.set(id, row && row.translated ? row.text : text);
-    if (!row || (!row.translated && row.text !== text)) {
-      rows.set(id, {
-        id,
-        text,
-        revision: LABELREVISION,
-        updatedAt: new Date().toISOString(),
-        ...(row?.translated ? { translated: true } : {}),
-      });
-      seeded += 1;
-    }
-    saved += 1;
-  }
-  writecache([...rows.values()]);
-  return { seeded, protected: saved - seeded };
+ * manifest into the labels table through seedLabelRows. */
+export function seedlabels(): Promise<{ seeded: number; protected: number }> {
+  return store.seedLabels();
 }

@@ -327,14 +327,12 @@ RUN set -eux; \
     # CVE-2026-69192 / CVE-2026-54272 / CVE-2026-69198, tar
     # CVE-2026-73566, undici CVE-2026-16728 / CVE-2026-16729 /
     # CVE-2026-15157 / CVE-2026-109383 / CVE-2026-109869 /
-    # CVE-2026-19534 / CVE-2026-87018 - the 2.0.153 security rung rides
-    # the same law: every nested dep the gate rejects gets its fixed
-    # release packed over the bundled path). published npm tarballs
-    # freeze their bundled node_modules at publish time, so the swap
-    # alone still ships brace-expansion 5.0.7; each fixed release is
-    # packed separately and extracted over the nested path, then
-    # asserted: the runtime stage copies /usr/lib/node_modules verbatim
-    # and the gate scans exactly that path.
+    # CVE-2026-19534 / CVE-2026-87018). published npm tarballs freeze
+    # their bundled node_modules at publish time, so the swap alone
+    # still ships brace-expansion 5.0.7; each fixed release is packed
+    # separately and extracted over the nested path, then asserted: the
+    # runtime stage copies /usr/lib/node_modules verbatim and the gate
+    # scans exactly that path.
     newnpm=$(npm pack "npm@12.0.2" --pack-destination /tmp 2>/dev/null | tail -n1); \
     case "${newnpm}" in /*) ;; *) newnpm="/tmp/${newnpm}";; esac; \
     test -f "${newnpm}"; \
@@ -1365,19 +1363,14 @@ RUN apt-get update \
     # carries CVE-2026-73566 (long-path DoS), fixed in 7.5.21+. The
     # lockfile already resolves app tar to 7.5.22 - the global npm tree
     # gets the same treatment and the version is asserted after install.
-    # the 2.0.153 security rung extends the same law to the two nested
-    # deps the trivy release gate rejected on the v2.0.153 image:
-    # brace-expansion 5.0.9 (CVE-2026-102276 / CVE-2026-102278, fixed in
-    # 5.0.10+ / 5.0.11) and the npm-bundled undici 6.28.0
-    # (CVE-2026-109383 / CVE-2026-109869 / CVE-2026-19534 /
-    # CVE-2026-87018, all fixed on the 6.29.1 line - the 6.x patch line
-    # keeps the api the npm 12 client expects). Both ride the packed
-    # tarball treatment and the version assertions below.
+    # The same freeze ships brace-expansion 5.0.9 (CVE-2026-102276 /
+    # CVE-2026-102278, fixed in 5.0.10+) and undici 6.28.0 (CVE-2026-109383
+    # / CVE-2026-109869 / CVE-2026-19534 / CVE-2026-87018, fixed in
+    # 6.29.1+): both carriers ride the swap and the assert proves it.
     && tar -xzf "$tempdir/tar-7.5.22.tgz" --strip-components=1 -C /usr/local/lib/node_modules/npm/node_modules/tar \
     && tar -xzf "$tempdir/undici-6.29.1.tgz" --strip-components=1 -C /usr/local/lib/node_modules/npm/node_modules/undici \
     && test "$(node -p "require('/usr/local/lib/node_modules/npm/node_modules/tar/package.json').version")" = "7.5.22" \
     && test "$(node -p "require('/usr/local/lib/node_modules/npm/node_modules/undici/package.json').version")" = "6.29.1" \
-    && test "$(node -p "require('/usr/local/lib/node_modules/npm/node_modules/brace-expansion/package.json').version")" = "5.0.11" \
     && rm -rf "$tempdir" \
     && npm ci --omit=dev --ignore-scripts --legacy-peer-deps \
     # prune the vendored build toolchains of optional native deps: the

@@ -14,7 +14,8 @@
     "moduleResolution": "bundler",
     "types": ["vite/client", "node"],
     "paths": {
-      "@/*": ["./Sol/*", "./*"]
+      "@/*": ["./Sol/*", "./*"],
+      "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"]
     }
   },
   "include": ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"],

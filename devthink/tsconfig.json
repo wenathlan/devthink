@@ -17,7 +17,8 @@
       "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"],
       "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"],
       "@wenathlan/getry/thinking": ["../getry/thinking.ts"],
-      "@wenathlan/devthink/server": ["./server.ts"]
+      "@wenathlan/devthink/server": ["./server.ts"],
+      "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"]
     }
   },
   "include": ["*.ts", "tests/**/*.ts", "Sol/**/*.ts", "Sol/**/*.tsx"],

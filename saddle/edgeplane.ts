@@ -180,27 +180,45 @@ export function edgelandesreport(): Record<string, EdgeLaneReport> {
 /* Section 3: the visitor law guard — the engine refuses browser scopes. */
 /* ════════════════════════════════════════════════════════════════════ */
 
-/** the browser shells that mark a visitor scope on their own (window,
- * document, indexedDB): any scope carrying one of them is a browser,
- * and the engine refuses to execute as one. navigator alone is not a
- * marker — node itself ships a vestigial navigator since v21 — the
- * shells are the primary law. */
-const VISITORSHELLS: readonly string[] = Object.freeze([
+/** the browser shells and storage surfaces that mark a visitor scope
+ * (window, document, localStorage, sessionStorage, indexedDB): a scope
+ * carrying any of them is a browser, and the engine refuses to execute
+ * as one. navigator alone is not a marker — node itself ships a
+ * vestigial navigator since v21 — the shells and the storages are the
+ * law. the node runtime may also define the experimental webstorage
+ * globals (node 26 ships localStorage and sessionStorage without
+ * --localstorage-file): the storages the server process defines on its
+ * own globalThis never mark the visitor machine — the engine executes
+ * server-side, and the node process carrying its own storage surface is
+ * the server, never the visitor browser. */
+const VISITORMARKERS: readonly string[] = Object.freeze([
   "window",
   "document",
+  "localStorage",
+  "sessionStorage",
   "indexedDB",
 ]);
 
-/** the storage surfaces that only mark a visitor scope when a browser
- * shell rides beside them (localStorage, sessionStorage): node itself
- * ships the two webstorage globals natively since the 22/26 lines (the
- * experimental webstorage apis), so a storage global alone is the
- * node-engine shape, never a browser. In a real browser the shells
- * always ride first, and then the storages count with them. */
-const VISITORSTORAGES: readonly string[] = Object.freeze([
+/** the storage markers the law refuses on any scope: the two webstorage
+ * seats (localStorage and sessionStorage) are the ones a node runtime
+ * defines on its own globalThis, so the exemption below is scoped to
+ * exactly them. */
+const STORAGEMARKERS: readonly string[] = Object.freeze([
   "localStorage",
   "sessionStorage",
 ]);
+
+/** whether the inspected scope is the globalThis of a live node server
+ * process: the runtime identity the exemption rides on (the versions
+ * table only exists inside node, and the scope identity is the global
+ * object itself, so a browser carrying a node-shaped shim never
+ * qualifies). */
+function isnodeprocess(scope: unknown): boolean {
+  if (scope !== globalThis) return false;
+  if (typeof process !== "object" || process === null) return false;
+  const versions = (process as { versions?: { node?: unknown } }).versions;
+  return typeof versions?.node === "string";
+}
 
 /** assertvisitorfree — the law guard of the edge plane: throws
  * {code: "VISITOR_CONTEXT_REFUSED"} when the scope carries
@@ -208,13 +226,12 @@ const VISITORSTORAGES: readonly string[] = Object.freeze([
  * and never as the visitor browser. Every runonedge entry calls it on
  * globalThis before a single instruction rides a lane.
  *
- * The 2.0.153 extension rung refines the law the release gates proved:
- * a scope carrying a browser shell (window, document or indexedDB) is
- * refused outright — and once a shell is present every storage global
- * rides the same refusal — while the node-native webstorage globals
- * alone (localStorage/sessionStorage without any shell) are the
- * node-engine scope the guard passes, the same exemption the vestigial
- * navigator already carries.
+ * the node server process exemption: when the scope is the globalThis
+ * of a live node process, the webstorage globals the runtime defines
+ * itself (the experimental webstorage surface of node 26) never mark
+ * the scope — the server defining its own storage is the server, while
+ * any storage riding a scope the runtime did not define (a browser
+ * realm, an arbitrary object) stays refused.
  *
  * @param scope the scope to inspect (duck-typed, works in node).
  * @throws the coded refusal when the scope is browser-shaped.
@@ -222,16 +239,17 @@ const VISITORSTORAGES: readonly string[] = Object.freeze([
 export function assertvisitorfree(scope: unknown): void {
   if (scope === null || typeof scope !== "object") return;
   const record = scope as Record<string, unknown>;
-  const shell = VISITORSHELLS.find((marker) => record[marker] !== undefined);
-  if (shell === undefined) return;
-  const marker =
-    VISITORSTORAGES.find((storage) => record[storage] !== undefined) ?? shell;
-  const error = new Error(
-    `the visitor context is refused: the scope carries the browser global ${marker} and the edge plane executes server-side only`,
-  ) as Error & { code: string };
-  error.name = "edgeplaneerror";
-  error.code = "VISITOR_CONTEXT_REFUSED";
-  throw error;
+  const serverprocess = isnodeprocess(scope);
+  for (const marker of VISITORMARKERS) {
+    if (record[marker] === undefined) continue;
+    if (serverprocess && STORAGEMARKERS.includes(marker)) continue;
+    const error = new Error(
+      `the visitor context is refused: the scope carries the browser global ${marker} and the edge plane executes server-side only`,
+    ) as Error & { code: string };
+    error.name = "edgeplaneerror";
+    error.code = "VISITOR_CONTEXT_REFUSED";
+    throw error;
+  }
 }
 
 /* ════════════════════════════════════════════════════════════════════ */
