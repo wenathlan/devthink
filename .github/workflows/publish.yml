@@ -4314,7 +4314,12 @@ jobs:
     # matters on cold-cache rebuilds after Dockerfile/lockfile churn.
     timeout-minutes: 240
     permissions:
-      contents: read
+      # contents escalates to write for the mesa mirror healing (the
+      # resolver the mesa error body law carries: when a cache release
+      # lacks the tarball, the lane heals the mirror by creating the
+      # release and uploading the upstream tarball, so the lane needs
+      # the write the read-only doctrine denied it).
+      contents: write
       packages: write
     strategy:
       fail-fast: false
