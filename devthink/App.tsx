@@ -19,6 +19,8 @@ import { guardStatus, reportguardstrike } from "./guard.ts";
 import { seedLabels } from "./labels.ts";
 import Sol from "./Sol/Sol.tsx";
 import { loadDevtoolsWall } from "./personalstore.ts";
+import "@fontsource-variable/geist-mono";
+import "@fontsource-variable/inter";
 import "./Sol/sol.css";
 
 // the label seed rides the boot: the manifest ingests into the store and the

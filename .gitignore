@@ -275,6 +275,7 @@ argan/favicon-*.ico
 argan/manifest-*.webmanifest
 argan/icon-*.png
 argan/apple-touch-icon*.png
+argan/*.woff2
 cadria/index-*.js
 cadria/index-*.css
 cadria/index-*.wasm
@@ -284,11 +285,13 @@ cadria/favicon-*.ico
 cadria/manifest-*.webmanifest
 cadria/icon-*.png
 cadria/apple-touch-icon*.png
+cadria/*.woff2
 cobaia/index-*.js
 cobaia/index-*.css
 cobaia/favicon-*.svg
 cobaia/icon-*.svg
 cobaia/manifest-*.webmanifest
+cobaia/*.woff2
 debonair/index-*.js
 debonair/index-*.css
 debonair/favicon-*.svg
@@ -305,6 +308,7 @@ devthink/index-*.css
 # the server-side sandbox jails of the run and storage lane (session state
 # of the infrastructure, never committed)
 devthink/.sandboxrun
+devthink/*.woff2
 forge/index-*.js
 forge/index-*.css
 forge/favicon-*.svg
@@ -313,6 +317,7 @@ forge/favicon-*.ico
 forge/manifest-*.webmanifest
 forge/icon-*.png
 forge/apple-touch-icon*.png
+forge/*.woff2
 foundry/index-*.js
 foundry/index-*.css
 foundry/favicon-*.svg
@@ -321,6 +326,7 @@ foundry/favicon-*.ico
 foundry/manifest-*.webmanifest
 foundry/icon-*.png
 foundry/apple-touch-icon*.png
+foundry/*.woff2
 getry/index-*.js
 getry/index-*.css
 getry/index-*.wasm
@@ -330,6 +336,7 @@ getry/favicon-*.ico
 getry/manifest-*.webmanifest
 getry/icon-*.png
 getry/apple-touch-icon*.png
+getry/*.woff2
 stealthhead/index-*.js
 stealthhead/index-*.css
 stealthhead/index-*.wasm
@@ -339,6 +346,7 @@ stealthhead/favicon-*.ico
 stealthhead/manifest-*.webmanifest
 stealthhead/icon-*.png
 stealthhead/apple-touch-icon*.png
+stealthhead/*.woff2
 vault/index-*.js
 vault/index-*.css
 vault/favicon-*.svg
@@ -351,6 +359,7 @@ vault/apple-touch-icon*.png
 # import rewrites — the published library form is the source itself, the
 # debonair/getry doctrine, so the staging never enters the tree):
 vault/.enginebuild/
+vault/*.woff2
 
 # The saddle engine lanes (the virtualization sandbox builds the native
 # C/C++ shims, the gem and nuget packages, the python bridges and the vm
@@ -388,6 +397,7 @@ saddle/manifest-*.webmanifest
 saddle/icon-*.svg
 saddle/registerSW.js
 saddle/sw.js
+saddle/*.woff2
 
 # the probe artifacts of the build scripts (tests/devthink.scripts.*probe.ts
 # write their screenshots and browser profiles into the repository-root

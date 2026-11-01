@@ -17,6 +17,8 @@ import Sol from "./Sol/Sol";
 import { Toaster } from "./Sol/toast/Toast.tsx";
 import { applyTheme } from "./theme";
 import { label, seedlabels } from "./labels";
+import "@fontsource-variable/geist-mono";
+import "@fontsource-variable/inter";
 import "./Sol/sol.css";
 
 // the copy law rides the boot: the seed refreshes the label store rows from
