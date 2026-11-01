@@ -456,7 +456,7 @@ RUN set -eux; \
 # without one). virtualizationcore.cpp additionally builds its selftest
 # binary and runs it: the stage fails if a single assert trips.
 WORKDIR /src
-COPY virtualhardware.c gpumonitor.cpp virtualizationcore.cpp /src/libs/
+COPY saddle/virtualhardware.c saddle/gpumonitor.cpp saddle/virtualizationcore.cpp /src/libs/
 RUN set -eux; \
     # portable baseline per architecture, with the ARCH FLAG the compiler
     # family actually accepts: x86 and arm speak -march; the ppc64le gcc
@@ -538,7 +538,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # (qemu-bridge/cffi wheels) because the bridge talks raw QMP over a unix
 # socket without any native binding. the py_compile run is the syntax gate
 # (error catcher: a bridge that does not compile fails the image build).
-COPY qemubridge.py /bridge/qemubridge.py
+COPY saddle/qemubridge.py /bridge/qemubridge.py
 RUN set -eux; \
     python3 -m py_compile /bridge/qemubridge.py; \
     python3 /bridge/qemubridge.py --help >/dev/null; \
@@ -663,9 +663,14 @@ WORKDIR /app
 
 ENV NPM_CONFIG_LEGACY_PEER_DEPS=true
 
-COPY package.json package-lock.json ./
+COPY saddle/package.json saddle/package-lock.json ./
 RUN npm ci --ignore-scripts --legacy-peer-deps
-COPY . .
+COPY saddle/ .
+# the engine-ownership sibling: the saddle labels resolve
+# ../vault/labelstore.ts (the node-side fork reads the source file raw),
+# so the vault sources ride the context beside the saddle and land at
+# /vault where the import resolves (the family context fix).
+COPY vault/ /vault
 RUN npm run build:engine \
     && node --check dist/cli.js \
     && npm run web:build:pages \
@@ -909,9 +914,9 @@ COPY --from=python-bridge /bridge/qemubridge.py /engine/qemubridge.py
 # the engine sources and the specification files consumed at runtime
 # (docker.config "final" stage copies the whole tree; the flat layout
 # keeps that a single COPY layer).
-COPY *.ts package.json tsconfig.json biome.jsonc jsdom.d.ts /engine/
-COPY processors.json gpus.json cores.json boards.json vm.config.json virtualhardware.json /engine/
-COPY qemu.config mttg.config passage.config docker.config mime.types /engine/
+COPY saddle/*.ts saddle/package.json saddle/tsconfig.json saddle/biome.jsonc saddle/jsdom.d.ts /engine/
+COPY saddle/processors.json saddle/gpus.json saddle/cores.json saddle/boards.json saddle/vm.config.json saddle/virtualhardware.json /engine/
+COPY saddle/qemu.config saddle/mttg.config saddle/passage.config saddle/docker.config saddle/mime.types /engine/
 
 # the web node ships inside the main container: the mesh edition (auth,
 # sqlite database, dashboard and the browser sandbox pages) runs from the
