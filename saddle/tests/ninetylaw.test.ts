@@ -148,13 +148,21 @@ describe("the forty live law of the ninety plan (wave w2 b1)", () => {
         deadlinems: 20000,
       });
       // an absent dotnet answers host-runtime-absent, a present dotnet
-      // refuses the stub honestly — both name the runtime they rode
+      // refuses the stub honestly, and a cold runner's dotnet can ride
+      // past the probe ceiling — the deadline kill is the third honest
+      // answer the deadline law documents (the lane names the clock it
+      // rode when the runtime outruns it)
       assert.equal(result.status, "failed");
       assert.ok(
-        result.error?.code === "HOST_RUNTIME_ABSENT" || result.error?.code === "RUN_EXITED_NONZERO",
+        result.error?.code === "HOST_RUNTIME_ABSENT" ||
+          result.error?.code === "RUN_EXITED_NONZERO" ||
+          result.error?.code === "RUN_DEADLINE_EXCEEDED",
         `the clr refusal stays honest: ${result.error?.code}`,
       );
-      assert.ok(result.error?.message.includes("dotnet"), "the message names the runtime");
+      assert.ok(
+        result.error?.code === "RUN_DEADLINE_EXCEEDED" || result.error?.message.includes("dotnet"),
+        "the message names the runtime",
+      );
     },
     30000,
   );

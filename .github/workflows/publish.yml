@@ -4374,16 +4374,38 @@ jobs:
           tarball="mesa-${mesa_version}.tar.xz"
           release="mesa-cache-${mesa_version}"
           digest="$(gh api "repos/${GH_REPO}/releases/tags/${release}" --jq ".assets[] | select(.name == \"${tarball}\") | .digest" 2>/dev/null || true)"
+          # the gh api error body rides stdout on 401/403/404 (the robustness
+          # note the resolve step carries): a jq error string or a Not Found
+          # body is not a digest — only the sha256: prefix counts, so the
+          # absent mirror walks the healing tier below instead of dying in
+          # the legacy download branch (the 2.0.153 ladder lesson).
           case "${digest}" in
             sha256:*) sha="${digest#sha256:}" ;;
             *) sha="" ;;
           esac
           if [ -z "${sha}" ] || [ "${#sha}" -ne 64 ]; then
-            # legacy asset without a GitHub-computed digest: the checksum
-            # is computed on this GitHub runner (still GitHub computers,
-            # the value never enters the repository)
-            gh release download "${release}" --repo "${GH_REPO}" --pattern "${tarball}" --output "/tmp/${tarball}"
+            # the mirror gap the saddle container law heals: the resolver
+            # downloads the upstream tarball, computes the digest on this
+            # GitHub runner (the value never enters the repository) and
+            # heals the mirror by creating the cache release with the
+            # tarball, so every future run reads the GitHub-computed digest
+            # of tier one.
+            echo "the ${release} mirror lacks the ${tarball}; healing from upstream and publishing the cache."
+            curl -fL --retry 5 --retry-all-errors --retry-delay 5 \
+              --connect-timeout 30 --max-time 900 \
+              -o "/tmp/${tarball}" "https://mesa.freedesktop.org/archive/${tarball}" \
+              || curl -fL --retry 5 --retry-all-errors --retry-delay 5 \
+                --connect-timeout 30 --max-time 900 \
+                -o "/tmp/${tarball}" "https://archive.mesa3d.org/${tarball}"
             sha="$(sha256sum "/tmp/${tarball}" | awk '{print $1}')"
+            if gh api "repos/${GH_REPO}/releases/tags/${release}" --jq '.assets' >/dev/null 2>&1; then
+              gh release upload "${release}" "/tmp/${tarball}" --repo "${GH_REPO}" --clobber
+            else
+              gh release create "${release}" "/tmp/${tarball}" \
+                --repo "${GH_REPO}" --title "${release}" \
+                --notes "The mirrored upstream ${tarball} the container builds verify against (the self-healing mirror of the saddle container law)." \
+                --target "$(git rev-parse HEAD)"
+            fi
             rm -f "/tmp/${tarball}"
           fi
           test "${#sha}" -eq 64
@@ -4634,6 +4656,14 @@ jobs:
           tarball="mesa-${mesa_version}.tar.xz"
           release="mesa-cache-${mesa_version}"
           release_json="$(gh api "repos/${GH_REPO}/releases/tags/${release}" 2>/dev/null || true)"
+          # the gh api error body rides stdout on 401/403/404 (the same
+          # robustness note the resolve step carries): a Not Found body is
+          # not a release — only a json carrying the assets array counts,
+          # so the absent mirror walks the healing tier instead of dying
+          # in the legacy download branch (the 2.0.153 ladder lesson).
+          if ! printf '%s' "${release_json}" | jq -e 'has("assets")' >/dev/null 2>&1; then
+            release_json=""
+          fi
           digest=""
           if [ -n "${release_json}" ]; then
             digest="$(printf '%s' "${release_json}" | jq -r ".assets[]? | select(.name == \"${tarball}\") | .digest // empty" 2>/dev/null || true)"
