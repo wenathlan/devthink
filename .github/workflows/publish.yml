@@ -4457,11 +4457,31 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Stage the saddle build context (the engine-ownership sibling)
+        # the label store law rides the sibling import: the saddle labels
+        # resolve ../vault/labelstore.ts (the node-side fork reads the
+        # source file raw), so the vault rides the context beside the
+        # saddle the way the cadria container stages the debonair engine
+        # (the family context fix). sources only - the build never
+        # installs the sibling, the vite step reads the .ts file directly.
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf saddlebuildctx
+          mkdir -p saddlebuildctx/saddle saddlebuildctx/vault
+          cp -a saddle/. saddlebuildctx/saddle/
+          cp -a vault/. saddlebuildctx/vault/
+          rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git \
+                 saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules \
+                 saddlebuildctx/saddle/dist saddlebuildctx/vault/dist \
+                 saddlebuildctx/vault/tests
+          printf '%s\n' 'saddle/.git' 'vault/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
+
       - name: Build image (dry run, loaded locally)
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
-          context: ./saddle
-          file: ./saddle/Dockerfile
+          context: ./saddlebuildctx
+          file: ./saddlebuildctx/saddle/Dockerfile
           target: runtime
           platforms: ${{ matrix.platform }}
           push: false
@@ -4784,11 +4804,31 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Stage the saddle build context (the engine-ownership sibling)
+        # the label store law rides the sibling import: the saddle labels
+        # resolve ../vault/labelstore.ts (the node-side fork reads the
+        # source file raw), so the vault rides the context beside the
+        # saddle the way the cadria container stages the debonair engine
+        # (the family context fix). sources only - the build never
+        # installs the sibling, the vite step reads the .ts file directly.
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf saddlebuildctx
+          mkdir -p saddlebuildctx/saddle saddlebuildctx/vault
+          cp -a saddle/. saddlebuildctx/saddle/
+          cp -a vault/. saddlebuildctx/vault/
+          rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git \
+                 saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules \
+                 saddlebuildctx/saddle/dist saddlebuildctx/vault/dist \
+                 saddlebuildctx/vault/tests
+          printf '%s\n' 'saddle/.git' 'vault/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
+
       - name: Build image for the security scan
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
-          context: ./saddle
-          file: ./saddle/Dockerfile
+          context: ./saddlebuildctx
+          file: ./saddlebuildctx/saddle/Dockerfile
           # the scan must cover the image this pipeline publishes: the
           # vhe runtime stage (the same target: runtime the publish legs
           # build). Without it the last stage of the Dockerfile - the
@@ -4914,11 +4954,31 @@ jobs:
           echo "tag=${img}:${ver}${suffix}" >> "$GITHUB_OUTPUT"
           echo "resolved tag: ${img}:${ver}${suffix}"
 
+      - name: Stage the saddle build context (the engine-ownership sibling)
+        # the label store law rides the sibling import: the saddle labels
+        # resolve ../vault/labelstore.ts (the node-side fork reads the
+        # source file raw), so the vault rides the context beside the
+        # saddle the way the cadria container stages the debonair engine
+        # (the family context fix). sources only - the build never
+        # installs the sibling, the vite step reads the .ts file directly.
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf saddlebuildctx
+          mkdir -p saddlebuildctx/saddle saddlebuildctx/vault
+          cp -a saddle/. saddlebuildctx/saddle/
+          cp -a vault/. saddlebuildctx/vault/
+          rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git \
+                 saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules \
+                 saddlebuildctx/saddle/dist saddlebuildctx/vault/dist \
+                 saddlebuildctx/vault/tests
+          printf '%s\n' 'saddle/.git' 'vault/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
+
       - name: Build and push the multi-arch image
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
-          context: ./saddle
-          file: ./saddle/Dockerfile
+          context: ./saddlebuildctx
+          file: ./saddlebuildctx/saddle/Dockerfile
           target: runtime
           platforms: ${{ matrix.platforms }}
           push: true
