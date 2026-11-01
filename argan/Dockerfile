@@ -1,4 +1,4 @@
-# argan 2.0.153 — THE SITE CONTAINER FILE
+# argan 2.0.154 — THE SITE CONTAINER FILE
 #
 # The family container doctrine in the sol shape: one versioned static
 # container per site. The sol theme builds inside the container — stage one
@@ -10,7 +10,7 @@
 
 FROM node:26-alpine@sha256:c6ad9e9c1d80f6eb607c26b4b0a132ff7a2344fad1c78ea3baa2a7d4c8de6d94 AS solbuild
 
-ARG ARGAN_VERSION=2.0.153
+ARG ARGAN_VERSION=2.0.154
 
 # The 2.0.153 family context fix: the application rides the context
 # nested under app/ (the uniform shape the three site containers read).
