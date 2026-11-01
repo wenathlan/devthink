@@ -83,10 +83,59 @@ function resolveStorageUrl(options: StorageLaneOptions = {}): string {
   return rawUrl.startsWith("file:") ? rawUrl.slice("file:".length) : rawUrl;
 }
 
+/** the busy codes the stampede answers — the retry law covers them all
+ * (the plain lock, the snapshot deadlock and the recovery branch). */
+const BUSYCODES: ReadonlySet<string> = new Set(["SQLITE_BUSY", "SQLITE_BUSY_SNAPSHOT", "SQLITE_BUSY_RECOVERY"]);
+
+/** the bounded attempts the open walks before the honest throw (eight
+ * jittered waves drain a sixty-worker fleet — the stampede empties in
+ * the first three on every lane the suite pinned). */
+const OPENATTEMPTS = 8;
+
+/** sleeps the current thread synchronously (the lane opens on the module
+ * load of the node side — no event loop to await on). */
+const sleepsync = (ms: number): void => {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+};
+
+/**
+ * Opens one connection and walks the pragma ladder under the stampede
+ * law: a busy answer closes the connection, waits one jittered backoff
+ * wave and opens again — the deadlock branches that never invoke the
+ * busy handler drain across the waves instead of failing the boot.
+ *
+ * @param file the database file the lane owns.
+ * @returns the open connection with the ladder walked.
+ */
+const openWithLadder = (file: string): Database => {
+  let lastError: unknown = null;
+  for (let attempt = 0; attempt < OPENATTEMPTS; attempt += 1) {
+    const db = new Database(file);
+    try {
+      for (const pragma of PRAGMA_BOOTSTRAP) {
+        db.pragma(pragma);
+      }
+      return db;
+    } catch (error) {
+      db.close();
+      const code = (error as { code?: string }).code ?? "";
+      if (!BUSYCODES.has(code)) throw error;
+      lastError = error;
+      sleepsync(25 * (attempt + 1) + Math.floor(Math.random() * 40));
+    }
+  }
+  throw lastError ?? new Error("the storage lane open exhausted its attempts");
+};
+
 /**
  * Opens the storage lane of one app: the parent directory is created, the
  * connection opens, the pragma ladder walks (busy_timeout before WAL,
  * foreign keys armed) and the helpers bind through the statement cache.
+ * the open walks the stampede law: a vitest isolate fleet imports the
+ * same runtime module in the same breath and the wal handshake of the
+ * fleet can answer SQLITE_BUSY past the busy timeout (the immediate
+ * deadlock branches never invoke the busy handler) — a bounded retry
+ * with jittered backoff drains the stampede and the ladder lands.
  *
  * @param options the lane options (url, envName, defaultFile).
  * @returns the open lane (the connection, the helpers, the seats).
@@ -94,10 +143,7 @@ function resolveStorageUrl(options: StorageLaneOptions = {}): string {
 export function openStorageLane(options: StorageLaneOptions = {}): StorageLane {
   const file = resolveStorageUrl(options);
   mkdirSync(path.dirname(path.resolve(file)), { recursive: true });
-  const db = new Database(file);
-  for (const pragma of PRAGMA_BOOTSTRAP) {
-    db.pragma(pragma);
-  }
+  const db = openWithLadder(file);
   const cache = new Map<string, Database.Statement>();
   const prepare = (sql: string): Database.Statement => {
     const cached = cache.get(sql);
