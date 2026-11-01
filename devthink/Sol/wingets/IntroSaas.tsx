@@ -129,7 +129,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                   onClick={() => scrollto(item.id)}
                   aria-label={item.label}
                   aria-pressed={current}
-                  className={`group relative flex h-10 w-10 items-center justify-center rounded-full transition-all duration-300 ${current ? "scale-105 bg-gradient-to-tr from-ever to-ever-deep text-white" : "bg-white/10 text-slate-300 hover:bg-white/20 hover:text-white"}`}
+                  className={`group relative flex h-10 w-10 items-center justify-center rounded-full transition-[transform,background-color,color] duration-300 ${current ? "scale-105 bg-gradient-to-tr from-ever to-ever-deep text-white" : "bg-white/10 text-slate-300 hover:bg-white/20 hover:text-white"}`}
                 >
                   <Glyph className="h-4 w-4" aria-hidden="true" />
                   <span className="pointer-events-none absolute left-14 rounded-lg border border-white/10 bg-slate-950 px-2.5 py-1 text-[11px] font-semibold tracking-[-0.018em] whitespace-nowrap text-white opacity-0 transition group-hover:opacity-100">
@@ -168,14 +168,14 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                           key={tab.id}
                           type="button"
                           onClick={() => scrollto(tab.id)}
-                          className={`group flex items-center rounded-xl px-3 py-2 transition-all ${current ? "icon-frame-3d-active text-slate-950" : "icon-frame-3d text-slate-800"}`}
+                          className={`group flex items-center rounded-xl px-3 py-2 transition-[transform,box-shadow,border-color] ${current ? "icon-frame-3d-active text-slate-950" : "icon-frame-3d text-slate-800"}`}
                           aria-label={tab.label}
                         >
                           <Glyph
                             className={`h-4 w-4 ${current ? "text-ever-deep" : "text-slate-600"}`}
                             aria-hidden="true"
                           />
-                          <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-all group-hover:ml-2 group-hover:max-w-[90px] group-hover:opacity-100">
+                          <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-[margin,max-width,opacity] group-hover:ml-2 group-hover:max-w-[90px] group-hover:opacity-100">
                             {tab.label}
                           </span>
                         </button>
@@ -192,7 +192,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                   aria-label={saaschrome.signin}
                 >
                   <Signin className="h-4 w-4" aria-hidden="true" />
-                  <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-all group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
+                  <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-[margin,max-width,opacity] group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
                     {saaschrome.signin}
                   </span>
                 </button>
@@ -203,7 +203,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                   aria-label={saaschrome.launch}
                 >
                   <Arrowupright className="h-4 w-4 text-ever-soft" aria-hidden="true" />
-                  <span className="max-w-0 overflow-hidden text-xs font-extrabold tracking-[-0.035em] whitespace-nowrap opacity-0 transition-all group-hover:mr-1 group-hover:ml-2 group-hover:max-w-[80px] group-hover:opacity-100">
+                  <span className="max-w-0 overflow-hidden text-xs font-extrabold tracking-[-0.035em] whitespace-nowrap opacity-0 transition-[margin,max-width,opacity] group-hover:mr-1 group-hover:ml-2 group-hover:max-w-[80px] group-hover:opacity-100">
                     {saaschrome.launch}
                   </span>
                 </button>
