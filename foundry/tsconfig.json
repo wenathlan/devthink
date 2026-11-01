@@ -6,7 +6,8 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "paths": {
-      "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"]
+      "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
+      "@wenathlan/vault/storagelane": ["../vault/storagelane.ts"]
     },
     "strict": true,
     "lib": ["esnext", "dom", "dom.iterable"],

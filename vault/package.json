@@ -68,6 +68,11 @@
       "import": "./labelstore.ts",
       "default": "./labelstore.ts"
     },
+    "./storagelane": {
+      "types": "./storagelane.ts",
+      "import": "./storagelane.ts",
+      "default": "./storagelane.ts"
+    },
     "./objects": {
       "types": "./objects.ts",
       "import": "./objects.ts",
@@ -124,6 +129,7 @@
     "hometypes.ts",
     "labels.ts",
     "labelstore.ts",
+    "storagelane.ts",
     "objects.ts",
     "objectsledger.ts",
     "onboardingstate.ts",

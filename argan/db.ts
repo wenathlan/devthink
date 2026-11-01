@@ -4,10 +4,8 @@
 // prisma/schema.prisma and the seed module provides the first-run rows; the site api
 // serves the same tables to the Sol pages over HTTPS (see catalog.ts).
 
-import { mkdirSync } from "node:fs";
-import path from "node:path";
-import Database from "better-sqlite3";
-import { LABEL_MANIFEST, LABEL_REVISION } from "./labels";
+import { openStorageLane } from "@wenathlan/vault/storagelane";
+import { LABEL_MANIFEST, LABEL_REVISION } from "./labels.ts";
 import {
   seedConfigBlocks,
   seedDnssecAlgorithms,
@@ -22,37 +20,19 @@ import {
   seedRolloverSteps,
   seedTransports,
   seedZones,
-} from "./seed";
+} from "./seed.ts";
 
-const rawUrl = process.env.DATABASE_URL ?? "file:./local.db";
-const file = rawUrl.startsWith("file:") ? rawUrl.slice("file:".length) : rawUrl;
-mkdirSync(path.dirname(path.resolve(file)), { recursive: true });
+const lane = openStorageLane({ defaultFile: "./local.db" });
 
-export const db = new Database(file);
-db.pragma("busy_timeout = 5000");
-db.pragma("journal_mode = WAL");
-db.pragma("foreign_keys = ON");
+/** the one sqlite connection of the runtime (re-exported seat of the lane). */
+export const db = lane.db;
 
-export type SqlParam = string | number | bigint | boolean | null;
+/** the parameterized helpers of the site store (re-exported seats of the lane). */
+export const { execute, queryAll, queryOne } = lane;
 
-/** Runs a parameterized statement and returns the change counters. */
-export function execute(
-  sql: string,
-  params: readonly SqlParam[] = [],
-): { changes: number; lastInsertRowid: number | bigint } {
-  const statement = db.prepare(sql);
-  return statement.run(...(params as never[])) as { changes: number; lastInsertRowid: number | bigint };
-}
+/** the parameter types the helpers bind (re-exported seat of the lane). */
+export type { SqlParam } from "@wenathlan/vault/storagelane";
 
-/** Runs a parameterized query and returns every row. */
-export function queryAll<T>(sql: string, params: readonly SqlParam[] = []): T[] {
-  return db.prepare(sql).all(...(params as never[])) as T[];
-}
-
-/** Runs a parameterized query and returns the first row. */
-export function queryOne<T>(sql: string, params: readonly SqlParam[] = []): T | undefined {
-  return db.prepare(sql).get(...(params as never[])) as T | undefined;
-}
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS zones (
@@ -111,7 +91,7 @@ CREATE TABLE IF NOT EXISTS labels (
 
 /** Creates the tables when they do not exist (idempotent, mirrors the prisma schema). */
 export function ensureSchema(): void {
-  db.exec(SCHEMA);
+  lane.exec(SCHEMA);
 }
 
 /** Inserts the seed tables of the site when the content rows are still empty. */
