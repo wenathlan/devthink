@@ -282,12 +282,14 @@ const scaffold = (
   }
   if (variant === "zai") {
     // the zai shape rides the working deploy kit: the gateway skill, the prisma
-    // schema and the deploy map (the getry reference the platform already deploys)
+    // schema and the deploy map (the getry reference the platform already deploys);
+    // the skill text rides the consolidated docs home since the skills folder
+    // left getry docs (the structure law)
     const skilldir = INSIDE(path.join(dir, "skills", "gateway"));
     mkdirSync(skilldir, { recursive: true });
     writeFileSync(
       path.join(skilldir, "SKILL.md"),
-      readFileSync(INSIDE(path.join(ROOT, "getry", "docs", "skills", "gateway.md"))),
+      readFileSync(INSIDE(path.join(ROOT, "devthink", "docs", "gateway.md"))),
     );
     mkdirSync(INSIDE(path.join(dir, "prisma")), { recursive: true });
     writeFileSync(
