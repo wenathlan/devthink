@@ -11,7 +11,6 @@
  */
 import { useEffect } from "react";
 import { Route, Switch, useLocation } from "wouter";
-import { initautotranslate } from "../translatedom.ts";
 import { FAMILY_SLUGS } from "../window.ts";
 import AboutAnchor from "./about/about.tsx";
 import AudioAnchor from "./audio/audio.tsx";
@@ -42,8 +41,11 @@ import TermsAnchor from "./terms/terms.tsx";
 import UsageAnchor from "./usage/usage.tsx";
 import VideoAnchor from "./video/video.tsx";
 
-// the gtx translation arms beside the shield: the theme language rides the visitor choice
-initautotranslate();
+/*
+ * The display language preference rides the machine profile: the authored
+ * surface is english and the settings card owns the choice — zero external
+ * translation lanes (the gtx module retired with the owner law).
+ */
 
 /**
  * DeepRouteReplay — the family Pages dispatcher parks the deep path of a

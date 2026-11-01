@@ -353,7 +353,8 @@ export function saveDevtoolsWall(on: boolean): void {
  * paints every stored personalization choice onto the document root — the
  * settings anchor calls this once at module load, so the wallpaper, the
  * theme ladder, the accent and the behavior flags hold before the lock
- * screen or the desktop ever mount (the same law initautotranslate rides).
+ * screen or the desktop ever mount (the same law the display preference
+ * rides at the settings card).
  */
 export function initPersonalization(): void {
   if (typeof window === "undefined" || typeof document === "undefined") return;
