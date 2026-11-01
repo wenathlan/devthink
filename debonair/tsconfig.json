@@ -12,7 +12,10 @@
     "allowImportingTsExtensions": true,
     "moduleResolution": "bundler",
     "paths": {
-      "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"]
+      "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
+      "@wenathlan/cadria/synthpalette": ["../cadria/synthpalette.ts"],
+      "@wenathlan/debonair/audioattributes": ["./audioattributes.ts"],
+      "@wenathlan/debonair/audiofeatures": ["./audiofeatures.ts"]
     },
     "types": ["vite/client", "node"]
   },

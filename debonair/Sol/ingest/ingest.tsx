@@ -43,6 +43,7 @@ import { formatClock } from "../../dawview.ts";
 import type { IngestJobValue } from "../../gatewayapi.ts";
 import { separate } from "../../hpss.ts";
 import { decompose, type IngestDocument } from "../../ingest.ts";
+import { coverPaletteFromPcm, plateAccents } from "../../coverpalette.ts";
 import {
   deleteDocument,
   fetchDocument,
@@ -361,6 +362,11 @@ function IngestSurface() {
   const [laneFailure, setLaneFailure] = useState<string | null>(null);
   const [fileName, setFileName] = useState("");
   const [doc, setDoc] = useState<IngestDocument | null>(null);
+  /** The accent hexes the cadria engine folded from the very bytes the
+   * device walk ingested (the ownership law — the palette law is cadria's,
+   * the descriptor is this app's own); the server walk answers none (the
+   * bytes never ride this machine, the honest lane declaration). */
+  const [palette, setPalette] = useState<readonly string[] | null>(null);
   const [audio, setAudio] = useState<ReferenceAudio | null>(null);
   /** Which lane produced the rendered document (the store key is the device
    * lane's own — the server row lands through the walk). */
@@ -404,6 +410,7 @@ function IngestSurface() {
    * save. The one hpss pass feeds the analysis and the stored bytes both. */
   const ingestDevice = async (file: File): Promise<void> => {
     setDoc(null);
+    setPalette(null);
     setAudio(null);
     setSaved(null);
     setJob(null);
@@ -425,6 +432,7 @@ function IngestSurface() {
       const { doc: document, harmonic, percussive } = decompose(mono, stems, sampleRate, { name });
       const takes = await buildReferenceAudio(name, mono, harmonic, percussive, sampleRate);
       setDoc(document);
+      setPalette(plateAccents(coverPaletteFromPcm(mono, sampleRate)));
       setAudio(takes);
       if (takes) saveReferenceTake(takes.mix);
       setPhase("ready");
@@ -550,6 +558,7 @@ function IngestSurface() {
     walkRef.current?.abort();
     setLane((current) => (current === "server" ? "device" : "server"));
     setDoc(null);
+    setPalette(null);
     setAudio(null);
     setSaved(null);
     setJob(null);
@@ -716,6 +725,16 @@ function IngestSurface() {
               </span>
             </h2>
           </div>
+          {palette ? (
+            <div className="ing-palette" aria-label={label("ingest.doc.palette")}>
+              <span className="ing-palette-label">{label("ingest.doc.palette")}</span>
+              <span className="ing-palette-strip">
+                {palette.map((hex) => (
+                  <span key={hex} className="ing-palette-swatch" style={{ background: hex }} title={hex} />
+                ))}
+              </span>
+            </div>
+          ) : null}
           <div className="ing-cards">
             <StemCard
               title="mix"

@@ -20,6 +20,24 @@ export default defineConfig({
        * the entry retires when the published envelope carries the built
        * workload law. */
       "@wenathlan/saddle/workloadlaw": path.resolve(import.meta.dirname, "../saddle/workloadlaw.ts"),
+
+      /** the cadria engine bridge of the ownership law: the cover palette
+       * derivation rides the visual engine through the published library
+       * specifier ("@wenathlan/cadria/synthpalette"), and this bridge
+       * resolves the specifier to the monorepo source the sibling engine
+       * carries — the palette mapping is never duplicated inside debonair
+       * (the audio descriptor is debonair's own contract, the palette law
+       * is cadria's). the entry retires when the published envelope carries
+       * the built palette engine. */
+      "@wenathlan/cadria/synthpalette": path.resolve(import.meta.dirname, "../cadria/synthpalette.ts"),
+
+      /** the self bridge the transitive specifier rides: the cadria palette
+       * engine imports the audio contract through debonair's own published
+       * specifiers ("@wenathlan/debonair/audiofeatures" carries the dim
+       * order the palette folds), so the app resolves its own published
+       * surface to its own source — the graph the registry resolves for the
+       * embedder, resolved to the monorepo root inside the app. */
+      "@wenathlan/debonair/audiofeatures": path.resolve(import.meta.dirname, "audiofeatures.ts"),
     },
   },
   test: {

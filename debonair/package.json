@@ -45,6 +45,7 @@
     "patternminer.ts",
     "patternenums.ts",
     "composer.ts",
+    "coverpalette.ts",
     "audioengine.ts",
     "wavwriter.ts",
     "blobstore.ts",
@@ -125,6 +126,11 @@
       "types": "./composer.ts",
       "import": "./composer.ts",
       "default": "./composer.ts"
+    },
+    "./coverpalette": {
+      "types": "./coverpalette.ts",
+      "import": "./coverpalette.ts",
+      "default": "./coverpalette.ts"
     },
     "./audioengine": {
       "types": "./audioengine.ts",
@@ -213,6 +219,7 @@
     "@libsql/client": "^0.18.0",
     "@prisma/adapter-libsql": "^7.10.1",
     "@prisma/client": "^7.10.1",
+    "@wenathlan/cadria": "^2.0.153",
     "@wenathlan/saddle": "^2.1.6",
     "@wenathlan/vault": "^2.0.153",
     "gsap": "^3.15.0",

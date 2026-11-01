@@ -23,6 +23,22 @@ export default defineConfig({
        * the mechanism is never duplicated inside debonair. the entry retires
        * when the published envelope carries the built label store. */
       "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
+      /** the cadria engine bridge of the ownership law: the cover palette
+       * derivation rides the visual engine through the published library
+       * specifier ("@wenathlan/cadria/synthpalette"), and this bridge
+       * resolves the specifier to the monorepo source the sibling engine
+       * carries — the palette mapping is never duplicated inside debonair
+       * (the audio descriptor is debonair's own contract, the palette law
+       * is cadria's). the entry retires when the published envelope carries
+       * the built palette engine. */
+      "@wenathlan/cadria/synthpalette": path.resolve(import.meta.dirname, "../cadria/synthpalette.ts"),
+      /** the self bridge the transitive specifier rides: the cadria palette
+       * engine imports the audio contract through debonair's own published
+       * specifiers ("@wenathlan/debonair/audiofeatures" carries the dim
+       * order the palette folds), so the app resolves its own published
+       * surface to its own source — the graph the registry resolves for the
+       * embedder, resolved to the monorepo root inside the app. */
+      "@wenathlan/debonair/audiofeatures": path.resolve(import.meta.dirname, "audiofeatures.ts"),
       "@": path.resolve(import.meta.dirname, "Sol"),
     },
   },
@@ -37,7 +53,7 @@ export default defineConfig({
    * the Sol folder of this same root, so the dev server allows this single root. */
   server: {
     fs: {
-      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../vault")],
+      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../vault"), path.resolve(import.meta.dirname, "../cadria")],
     },
     host: true,
     strictPort: false,

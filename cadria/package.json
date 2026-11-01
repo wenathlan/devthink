@@ -38,8 +38,220 @@
   "files": [
     "README.md",
     "docs",
-    "tests"
+    "tests",
+    "versawase.ts",
+    "versawase3d.ts",
+    "versawaseanimate.ts",
+    "versawaserender.ts",
+    "versawasescheduler.ts",
+    "versawaseslices.ts",
+    "shadercomp.ts",
+    "visualize.ts",
+    "visualizemesh.ts",
+    "visualizematerial.ts",
+    "visualizenormals.ts",
+    "visualizeexport.ts",
+    "timelineedit.ts",
+    "timelineview.ts",
+    "timeticks.ts",
+    "videodecode.ts",
+    "mediaprobe.ts",
+    "mediaprobemp4.ts",
+    "mediaprobewebm.ts",
+    "transcodeplan.ts",
+    "pixel.ts",
+    "masks.ts",
+    "blendmodes.ts",
+    "colorconvert.ts",
+    "easecurves.ts",
+    "synthpalette.ts",
+    "synthcomposition.ts",
+    "synthtexture.ts",
+    "synthmotion.ts",
+    "imagerender.ts",
+    "imagerenderpaint.ts",
+    "imageproject.ts",
+    "imagestyles.ts",
+    "imageexport.ts",
+    "labels.ts"
   ],
+  "exports": {
+    "./versawase": {
+      "types": "./versawase.ts",
+      "import": "./versawase.ts",
+      "default": "./versawase.ts"
+    },
+    "./versawase3d": {
+      "types": "./versawase3d.ts",
+      "import": "./versawase3d.ts",
+      "default": "./versawase3d.ts"
+    },
+    "./versawaseanimate": {
+      "types": "./versawaseanimate.ts",
+      "import": "./versawaseanimate.ts",
+      "default": "./versawaseanimate.ts"
+    },
+    "./versawaserender": {
+      "types": "./versawaserender.ts",
+      "import": "./versawaserender.ts",
+      "default": "./versawaserender.ts"
+    },
+    "./versawasescheduler": {
+      "types": "./versawasescheduler.ts",
+      "import": "./versawasescheduler.ts",
+      "default": "./versawasescheduler.ts"
+    },
+    "./versawaseslices": {
+      "types": "./versawaseslices.ts",
+      "import": "./versawaseslices.ts",
+      "default": "./versawaseslices.ts"
+    },
+    "./shadercomp": {
+      "types": "./shadercomp.ts",
+      "import": "./shadercomp.ts",
+      "default": "./shadercomp.ts"
+    },
+    "./visualize": {
+      "types": "./visualize.ts",
+      "import": "./visualize.ts",
+      "default": "./visualize.ts"
+    },
+    "./visualizemesh": {
+      "types": "./visualizemesh.ts",
+      "import": "./visualizemesh.ts",
+      "default": "./visualizemesh.ts"
+    },
+    "./visualizematerial": {
+      "types": "./visualizematerial.ts",
+      "import": "./visualizematerial.ts",
+      "default": "./visualizematerial.ts"
+    },
+    "./visualizenormals": {
+      "types": "./visualizenormals.ts",
+      "import": "./visualizenormals.ts",
+      "default": "./visualizenormals.ts"
+    },
+    "./visualizeexport": {
+      "types": "./visualizeexport.ts",
+      "import": "./visualizeexport.ts",
+      "default": "./visualizeexport.ts"
+    },
+    "./timelineedit": {
+      "types": "./timelineedit.ts",
+      "import": "./timelineedit.ts",
+      "default": "./timelineedit.ts"
+    },
+    "./timelineview": {
+      "types": "./timelineview.ts",
+      "import": "./timelineview.ts",
+      "default": "./timelineview.ts"
+    },
+    "./timeticks": {
+      "types": "./timeticks.ts",
+      "import": "./timeticks.ts",
+      "default": "./timeticks.ts"
+    },
+    "./videodecode": {
+      "types": "./videodecode.ts",
+      "import": "./videodecode.ts",
+      "default": "./videodecode.ts"
+    },
+    "./mediaprobe": {
+      "types": "./mediaprobe.ts",
+      "import": "./mediaprobe.ts",
+      "default": "./mediaprobe.ts"
+    },
+    "./mediaprobemp4": {
+      "types": "./mediaprobemp4.ts",
+      "import": "./mediaprobemp4.ts",
+      "default": "./mediaprobemp4.ts"
+    },
+    "./mediaprobewebm": {
+      "types": "./mediaprobewebm.ts",
+      "import": "./mediaprobewebm.ts",
+      "default": "./mediaprobewebm.ts"
+    },
+    "./transcodeplan": {
+      "types": "./transcodeplan.ts",
+      "import": "./transcodeplan.ts",
+      "default": "./transcodeplan.ts"
+    },
+    "./pixel": {
+      "types": "./pixel.ts",
+      "import": "./pixel.ts",
+      "default": "./pixel.ts"
+    },
+    "./masks": {
+      "types": "./masks.ts",
+      "import": "./masks.ts",
+      "default": "./masks.ts"
+    },
+    "./blendmodes": {
+      "types": "./blendmodes.ts",
+      "import": "./blendmodes.ts",
+      "default": "./blendmodes.ts"
+    },
+    "./colorconvert": {
+      "types": "./colorconvert.ts",
+      "import": "./colorconvert.ts",
+      "default": "./colorconvert.ts"
+    },
+    "./easecurves": {
+      "types": "./easecurves.ts",
+      "import": "./easecurves.ts",
+      "default": "./easecurves.ts"
+    },
+    "./synthpalette": {
+      "types": "./synthpalette.ts",
+      "import": "./synthpalette.ts",
+      "default": "./synthpalette.ts"
+    },
+    "./synthcomposition": {
+      "types": "./synthcomposition.ts",
+      "import": "./synthcomposition.ts",
+      "default": "./synthcomposition.ts"
+    },
+    "./synthtexture": {
+      "types": "./synthtexture.ts",
+      "import": "./synthtexture.ts",
+      "default": "./synthtexture.ts"
+    },
+    "./synthmotion": {
+      "types": "./synthmotion.ts",
+      "import": "./synthmotion.ts",
+      "default": "./synthmotion.ts"
+    },
+    "./imagerender": {
+      "types": "./imagerender.ts",
+      "import": "./imagerender.ts",
+      "default": "./imagerender.ts"
+    },
+    "./imagerenderpaint": {
+      "types": "./imagerenderpaint.ts",
+      "import": "./imagerenderpaint.ts",
+      "default": "./imagerenderpaint.ts"
+    },
+    "./imageproject": {
+      "types": "./imageproject.ts",
+      "import": "./imageproject.ts",
+      "default": "./imageproject.ts"
+    },
+    "./imagestyles": {
+      "types": "./imagestyles.ts",
+      "import": "./imagestyles.ts",
+      "default": "./imagestyles.ts"
+    },
+    "./imageexport": {
+      "types": "./imageexport.ts",
+      "import": "./imageexport.ts",
+      "default": "./imageexport.ts"
+    },
+    "./labels": {
+      "types": "./labels.ts",
+      "import": "./labels.ts",
+      "default": "./labels.ts"
+    }
+  },
   "homepage": "https://github.com/wenathlan/devthink/tree/main/cadria",
   "bugs": {
     "url": "https://github.com/wenathlan/devthink/issues"
