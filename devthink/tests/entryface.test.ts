@@ -94,9 +94,7 @@ describe("the chrome keys (the original header, dock and rail)", () => {
     expect(saas).toContain("aria-label={saaschrome.docktop}");
   });
 
-  it("the left rail carries the saddle cloud tile under the six stops", () => {
-    expect(saaschrome.railcloud).toBe("Saddle Cloud");
-    expect(saas).toContain("aria-label={saaschrome.railcloud}");
+  it("the left rail carries exactly the six mandate stops — no cloud tile (the pr8 law)", () => {
     expect(saasrailstops).toHaveLength(6);
     expect(saasrailstops.map((row) => row.id)).toEqual([
       "hero-os",
@@ -106,6 +104,12 @@ describe("the chrome keys (the original header, dock and rail)", () => {
       "sonic-deck",
       "advisor-dark",
     ]);
+    // the pr8 law: the saddle cloud tile the original reference carried
+    // under the stops rides no more — the chrome copy carries no rail key
+    // and the face renders no cloud tile on the sidebar
+    expect("railcloud" in saaschrome).toBe(false);
+    expect(saas).not.toContain("railcloud");
+    expect(saas).not.toContain('app="saddle"');
   });
 });
 
