@@ -177,4 +177,12 @@ describe("the intro to explore to auth chain", () => {
     expect(dock).toContain("aria-label={saaschrome.dockexplore}");
     expect(dock).not.toMatch(/aria-label="(Save|Explorer|Top)"/);
   });
+
+  it("the taskbar widgets trigger walks the same chain — the os dock hands the explore face", () => {
+    const chrome = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "Shellchrome.tsx"), "utf8");
+    expect(chrome).toContain('onClick={() => navigate("/explore")}');
+    expect(chrome).toContain('aria-label={uicopy("shell.widgets.aria")}');
+    // the route the trigger lands on is the explore face of this chain
+    expect(routes).toContain('<Route path="/explore" component={ExploreAnchor} />');
+  });
 });
