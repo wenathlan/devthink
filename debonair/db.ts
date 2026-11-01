@@ -24,10 +24,6 @@ const file = rawUrl.startsWith("file:") ? rawUrl.slice("file:".length) : rawUrl;
 mkdirSync(path.dirname(path.resolve(file)), { recursive: true });
 
 export const db = new Database(file);
-// the busy seat answers first: the wait pragma rides before the wal flip so
-// a concurrent writer never turns the journal negotiation into SQLITE_BUSY
-// (the parallel vitest workers lesson — the timeout holds the door, the wal
-// pragma waits its turn, the foreign keys ladder follows).
 db.pragma("busy_timeout = 5000");
 db.pragma("journal_mode = WAL");
 db.pragma("foreign_keys = ON");

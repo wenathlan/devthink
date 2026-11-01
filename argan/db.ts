@@ -29,9 +29,9 @@ const file = rawUrl.startsWith("file:") ? rawUrl.slice("file:".length) : rawUrl;
 mkdirSync(path.dirname(path.resolve(file)), { recursive: true });
 
 export const db = new Database(file);
+db.pragma("busy_timeout = 5000");
 db.pragma("journal_mode = WAL");
 db.pragma("foreign_keys = ON");
-db.pragma("busy_timeout = 5000");
 
 export type SqlParam = string | number | bigint | boolean | null;
 
