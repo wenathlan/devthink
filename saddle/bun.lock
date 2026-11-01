@@ -1,5 +1,5 @@
 {
-  "lockfileVersion": 1,
+  "lockfileVersion": 3,
   "configVersion": 1,
   "workspaces": {
     "": {
@@ -164,6 +164,9 @@
     "source-map-js": "1.2.2",
     "undici": "^7.30.1",
     "uuid": "^11.1.1",
+    "xcode": {
+      "uuid": "11.1.1",
+    },
     "zod": "^4.6.7",
   },
   "packages": {
