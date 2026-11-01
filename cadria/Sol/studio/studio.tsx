@@ -14,17 +14,20 @@
  * session record — nothing touches browser storage. The anchor renders BARE:
  * the one Shell chrome lives in Sol/Sol.tsx.
  *
- * The previous anchor-ledger page (parts.tsx, visualizepanel.tsx beside
- * this file) is retired from the route but NOT deleted — the house rule
- * "nada se apaga" keeps those code paths on disk and exported; the
- * generation studio simply no longer mounts them.
+ * The visualize panel is back on the route: the generation grid above,
+ * the image→mesh block below — the panel runs the root pipeline
+ * client-side and mounts the real 3d viewport (versawase3d.ts) in the
+ * page canvas, the way a daw touches webaudio to play. The legacy
+ * anchor-visual page (parts.tsx beside this file) stays retired but NOT
+ * deleted — the house rule "nada se apaga" keeps those code paths on
+ * disk and exported.
  */
 
 // the legacy anchor visuals stay public beside the page (nothing is turned off)
 export * from "../wingets";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { type AnalysisReport, PipelineError } from "@wenathlan/debonair/audiopipeline";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { type ImageProject, ProjectError } from "../../imageproject.ts";
 import { renderSvg, renderThumbnailSignature } from "../../imagerender.ts";
 import { imageStyles, type StyleSpec, styleForDescriptor } from "../../imagestyles.ts";
@@ -32,11 +35,14 @@ import type { DemoFixtureId } from "../../introfixtures.ts";
 import { label } from "../../labels.ts";
 import { generateStudioProject, reseededSeed, type SessionSave, type StudioGeneration } from "../../studiogenerate.ts";
 import { analyzeSource, fileSource, fixtureSource, type StudioSource } from "../../studiosource.ts";
-import { StudioControls as ControlsPane } from "../wingets";
-import { StudioExportrow as ExportRow } from "../wingets";
-import { StudioReadout as Readout } from "../wingets";
-import { StudioSourcerail as SourceRail } from "../wingets";
-import { StudioStageart as StageArt } from "../wingets";
+import {
+  StudioControls as ControlsPane,
+  StudioExportrow as ExportRow,
+  StudioReadout as Readout,
+  StudioSourcerail as SourceRail,
+  StudioStageart as StageArt,
+  VisualizePanel,
+} from "../wingets";
 
 /** the staged beat before the synchronous compute lands — skipped under reduced motion. */
 const STAGE_MS = 240;
@@ -334,6 +340,12 @@ export default function Studio() {
           status={genStatus}
           error={genError}
         />
+      </div>
+
+      {/* the visualize block back on the route: the image→mesh pipeline
+          plus the real 3d viewport, rendering locally in the page canvas */}
+      <div style={{ marginTop: 26 }}>
+        <VisualizePanel />
       </div>
     </>
   );

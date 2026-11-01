@@ -31,10 +31,11 @@ import { ispublichttpsbase, onboardingapibase } from "./onboardingstate.ts";
 /**
  * The build-time seed of the winget copy: the one place the moved
  * literals live. Every row was extracted verbatim from the winget that
- * renders it (the intro hero statement and keys, the workspace tab strip
- * of the panel, the empty states of the explore sidebar and the files
- * explorer) — nothing invented, nothing dropped. Keys use the dotted
- * surface.path address.
+ * renders it (the intro hero statement and keys, the os statement and the
+ * real-studio rows of the landing sections, the workspace tab strip of the
+ * panel, the empty states of the explore sidebar and the files explorer)
+ * — nothing invented, nothing dropped. Keys use the dotted surface.path
+ * address.
  */
 const SEED: Readonly<Record<string, string>> = Object.freeze({
   /* --------------------------- intro hero --------------------------- */
@@ -47,14 +48,28 @@ const SEED: Readonly<Record<string, string>> = Object.freeze({
   "intro.hero.subtitle": "Create stream and run any studio or AI team in one unified OS",
   "intro.hero.keyprimary": "Get Started",
   "intro.hero.keysecondary": "Why DevThink?",
-  "intro.hero.rating": "4,9",
-  "intro.hero.organizer": "The perfect organizer and team builder",
-  "intro.hero.timetitle": "Use time to your advantage every day",
-  "intro.hero.timebody": "Studios agents and streams in sync",
-  "intro.hero.shader": "Neural Shader Core",
-  "intro.hero.exploreraria": "Explorer",
-  "intro.hero.cadriaaria": "Open Cadria",
-  "intro.hero.debonairaria": "Open Debonair",
+  /* ------------- the os statement + the real studios ----------------
+   * the redesign order: the mock decks died and the landing presents the
+   * real studios of the monorepo — one name and one line each, the words
+   * ride these rows and the wingets never hardcode them. */
+  "intro.os.bridge": "Native Studios",
+  "intro.os.titlea": "Six real studios,",
+  "intro.os.titleb": "one OS",
+  "intro.os.copy":
+    "Every studio below ships as a real app of the monorepo and opens inside the same OS — no exports, no handoffs.",
+  "intro.studios.bridge": "Native Studio",
+  "intro.studios.cadria.name": "Cadria",
+  "intro.studios.cadria.copy": "The cinema and 3D world engine — scenes, timelines and renders in the browser.",
+  "intro.studios.debonair.name": "Debonair",
+  "intro.studios.debonair.copy": "The music studio — a full DAW with AI vocals, harmony and arrangement.",
+  "intro.studios.getry.name": "Getry",
+  "intro.studios.getry.copy": "The agent gateway — autonomous teams working one session in sync.",
+  "intro.studios.saddle.name": "Saddle",
+  "intro.studios.saddle.copy": "The sandbox engine — heavy studios and games running in the cloud.",
+  "intro.studios.vault.name": "Vault",
+  "intro.studios.vault.copy": "The edge object storage — buckets, chunks and retention beside the studios.",
+  "intro.studios.doo.name": "Doo",
+  "intro.studios.doo.copy": "The resident AI advisor that drafts, reviews and ships with you inside every studio.",
   /* --------------------- panel nav (workspace tabs) ----------------- */
   "panel.nav.tabs.aria": "Open sessions",
   "panel.nav.tabs.new": "Open a new session",
@@ -81,8 +96,7 @@ const SEED: Readonly<Record<string, string>> = Object.freeze({
   "navbar.edge.left": "Left edge",
   "navbar.edge.right": "Right edge",
   "navbar.edge.locked": "The edge answers the docked mode — dock the bar first.",
-  "navbar.drag.hint":
-    "Drag the bar — pull it up to float it, sideways to dock it, off the wall to float it again.",
+  "navbar.drag.hint": "Drag the bar — pull it up to float it, sideways to dock it, off the wall to float it again.",
   /* ------------------ taskbar + start menu (win11 face) ----------------- */
   "shell.widgets.aria": "Widgets",
   "shell.search.aria": "Search",

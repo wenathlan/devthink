@@ -74,6 +74,7 @@
     "genrematrix.ts",
     "harmonyengine.ts",
     "katexis.ts",
+    "limiter.ts",
     "loudness.ts",
     "mixergraph.ts",
     "musictheory.ts",

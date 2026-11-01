@@ -1,10 +1,9 @@
 /**
- * saaskit.tsx — the surface kit of the SaaS face: the studio tile marks,
- * the scooped card with its real clip path cutout and the saddle bridges
- * that stitch the section headers into the palco. Presentation only — every
- * shape here is the approved look of the landing, no state, no fetch.
+ * saaskit.tsx — the surface kit of the SaaS face: the studio tile marks
+ * and the saddle bridges that stitch the header, the rail and the section
+ * heads into the palco. Presentation only — every shape here is the
+ * approved look of the landing, no state, no fetch.
  */
-import { useEffect, useRef, useState } from "react";
 
 /** The studio ids the tile marks draw. */
 export type studiomarkid = "cadria" | "debonair" | "saddle" | "getry" | "vault" | "doo";
@@ -234,109 +233,6 @@ export function Studiomark({ app, className = "w-11 h-11" }: { app: studiomarkid
   );
 }
 
-/** Builds the true scooped clip path of the card: real transparent cutouts
- * at the top right and the bottom right, radii from the reference geometry. */
-function buildscoopedclip(width: number, height: number, top: boolean, topwide: boolean, bottom: boolean): string {
-  if (width <= 0 || height <= 0) return "none";
-  const radius = 32;
-  const frame = 20;
-  const inner = 26;
-  const topwidth = topwide ? 108 : 68;
-  const topheight = 60;
-  const bottomwidth = 68;
-  const bottomheight = 64;
-  const path = [`M ${radius} 0`];
-  if (top && width > topwidth + frame + radius) {
-    path.push(`L ${width - topwidth - frame} 0`);
-    path.push(`A ${frame} ${frame} 0 0 1 ${width - topwidth} ${frame}`);
-    path.push(`L ${width - topwidth} ${topheight - inner}`);
-    path.push(`A ${inner} ${inner} 0 0 0 ${width - topwidth + inner} ${topheight}`);
-    path.push(`L ${width - frame} ${topheight}`);
-    path.push(`A ${frame} ${frame} 0 0 1 ${width} ${topheight + frame}`);
-  } else {
-    path.push(`L ${width - radius} 0`);
-    path.push(`A ${radius} ${radius} 0 0 1 ${width} ${radius}`);
-  }
-  if (bottom && width > bottomwidth + frame + radius) {
-    path.push(`L ${width} ${height - bottomheight - frame}`);
-    path.push(`A ${frame} ${frame} 0 0 1 ${width - frame} ${height - bottomheight}`);
-    path.push(`L ${width - bottomwidth + inner} ${height - bottomheight}`);
-    path.push(`A ${inner} ${inner} 0 0 0 ${width - bottomwidth} ${height - bottomheight + inner}`);
-    path.push(`L ${width - bottomwidth} ${height - frame}`);
-    path.push(`A ${frame} ${frame} 0 0 1 ${width - bottomwidth - frame} ${height}`);
-  } else {
-    path.push(`L ${width} ${height - radius}`);
-    path.push(`A ${radius} ${radius} 0 0 1 ${width - radius} ${height}`);
-  }
-  path.push(`L ${radius} ${height}`);
-  path.push(`A ${radius} ${radius} 0 0 1 0 ${height - radius}`);
-  path.push(`L 0 ${radius}`);
-  path.push(`A ${radius} ${radius} 0 0 1 ${radius} 0`);
-  path.push("Z");
-  return `path('${path.join(" ")}')`;
-}
-
-type ScoopedCardProps = {
-  children: React.ReactNode;
-  topRight?: React.ReactNode;
-  topRightWide?: boolean;
-  bottomRight?: React.ReactNode;
-  surface?: string;
-  className?: string;
-};
-
-/** The scooped card: the surface the cutouts are carved from, the corner
- * slots riding above the clip. */
-export function ScoopedCard({
-  children,
-  topRight,
-  topRightWide = false,
-  bottomRight,
-  surface = "bg-[#fafafa]",
-  className = "" }: ScoopedCardProps) {
-  const root = useRef<HTMLDivElement | null>(null);
-  const [size, setSize] = useState({ width: 0, height: 0 });
-  useEffect(() => {
-    const element = root.current;
-    if (!element) return undefined;
-    const measure = () => {
-      const rect = element.getBoundingClientRect();
-      setSize({ width: Math.round(rect.width), height: Math.round(rect.height) });
-    };
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(element);
-    window.addEventListener("resize", measure);
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", measure);
-    };
-  }, []);
-  const clip = buildscoopedclip(size.width, size.height, Boolean(topRight), topRightWide, Boolean(bottomRight));
-  return (
-    <div ref={root} className={`relative drop-shadow-[0_20px_40px_rgba(15,23,42,0.10)] ${className}`}>
-      <div
-        style={{ clipPath: size.width > 0 ? clip : undefined, WebkitClipPath: size.width > 0 ? clip : undefined }}
-        className={`h-full w-full rounded-[32px] ${surface}`}
-      >
-        {children}
-      </div>
-      {topRight && (
-        <div
-          className={`absolute top-0 right-0 z-20 flex h-[52px] items-center justify-end gap-2 pt-1 pr-1.5 ${topRightWide ? "w-[100px]" : "w-[60px]"}`}
-        >
-          {topRight}
-        </div>
-      )}
-      {bottomRight && (
-        <div className="absolute right-0 bottom-0 z-20 flex h-[56px] w-[60px] items-end justify-end pr-1.5 pb-1">
-          {bottomRight}
-        </div>
-      )}
-    </div>
-  );
-}
-
 type BridgeProps = { fillColor: string; children: React.ReactNode; className?: string };
 
 /** The horizontal saddle bridge: the tab header stitched into the section
@@ -367,35 +263,6 @@ export function SaddleTabBridge({ fillColor, children, className = "" }: BridgeP
         aria-hidden="true"
       >
         <path d="M76 0 H0 V60 C40 60 36 0 76 0 Z" fill={fillColor} />
-      </svg>
-    </div>
-  );
-}
-
-/** The saddle bridge facing up: the icon row that closes a dark section. */
-export function SaddleTabBridgeUp({ fillColor, children, className = "" }: BridgeProps) {
-  return (
-    <div className={`relative inline-flex items-center justify-center ${className}`}>
-      <svg
-        className="pointer-events-none h-full w-[56px] -mr-[1px] shrink-0 select-none sm:w-[76px]"
-        viewBox="0 0 76 60"
-        preserveAspectRatio="none"
-        fill="none"
-        aria-hidden="true"
-      >
-        <path d="M0 60 H76 V0 C36 0 40 60 0 60 Z" fill={fillColor} />
-      </svg>
-      <div style={{ backgroundColor: fillColor }} className="flex h-full items-center justify-center">
-        {children}
-      </div>
-      <svg
-        className="pointer-events-none h-full w-[56px] -ml-[1px] shrink-0 select-none sm:w-[76px]"
-        viewBox="0 0 76 60"
-        preserveAspectRatio="none"
-        fill="none"
-        aria-hidden="true"
-      >
-        <path d="M76 60 H0 V0 C40 0 36 60 76 60 Z" fill={fillColor} />
       </svg>
     </div>
   );

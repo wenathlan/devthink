@@ -8,9 +8,15 @@
  * action, working rides aria-busy with the inputs stood down, ready shows
  * the real mesh stats, error offers the retry in place. The DOM work stays
  * here; the root library stays multi-mode (browser + node, no canvas).
+ * The ready state also mounts the real 3d viewport (cadria/versawase3d.ts)
+ * in the page canvas — drag to orbit, wheel or pinch to zoom, a png
+ * screenshot of the same frame — rendering locally the way a daw touches
+ * webaudio to play, and answering the typed refusal honestly when the
+ * browser exposes no webgl context.
  */
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { label } from "../../labels.ts";
+import { mountThreeScene, type Viewport } from "../../versawase3d.ts";
 import {
   type ImageInput,
   VisualizeError,
@@ -62,6 +68,14 @@ function download(name: string, payload: BlobPart, type: string): void {
   URL.revokeObjectURL(url);
 }
 
+/** triggers a client-side download of one viewport screenshot (no url to revoke). */
+function downloadDataUrl(name: string, dataUrl: string): void {
+  const anchor = document.createElement("a");
+  anchor.href = dataUrl;
+  anchor.download = name;
+  anchor.click();
+}
+
 /** the visualize panel mounted on the studio page. */
 export function VisualizePanel() {
   const [depth, setDepth] = useState(32);
@@ -72,16 +86,24 @@ export function VisualizePanel() {
   const [message, setMessage] = useState<string | null>(null);
   const imageRef = useRef<ImageInput | null>(null);
   const resultRef = useRef<VisualizeResult | null>(null);
+  /** the latest successful pipeline result — the viewport remounts on it. */
+  const [mesh, setMesh] = useState<VisualizeResult | null>(null);
+  const [viewportReady, setViewportReady] = useState(false);
+  const [viewportRefused, setViewportRefused] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const viewportRef = useRef<Viewport | null>(null);
 
   const run = useCallback((image: ImageInput, nextDepth: number, nextStep: number, nextBlur: number) => {
     try {
       const result = visualize(image, { depth: nextDepth, step: nextStep, blurRadius: nextBlur });
       resultRef.current = result;
+      setMesh(result);
       setStats(result.stats());
       setStatus("ready");
       setMessage(null);
     } catch (error) {
       resultRef.current = null;
+      setMesh(null);
       setStats(null);
       setStatus("error");
       setMessage(error instanceof VisualizeError ? error.message : label("studio.visualize.failed"));
@@ -98,6 +120,7 @@ export function VisualizePanel() {
         run(image, depth, step, blurRadius);
       } catch {
         resultRef.current = null;
+        setMesh(null);
         setStats(null);
         setStatus("error");
         setMessage(label("studio.visualize.decodeFailed"));
@@ -129,6 +152,43 @@ export function VisualizePanel() {
   const onStl = () => {
     const result = resultRef.current;
     if (result) download("cadria-visualize.stl", result.toStlBinary() as BlobPart, "model/stl");
+  };
+
+  // the 3d viewport mounts when a ready mesh exists and disposes cleanly on
+  // every re-run (a new mesh) and on unmount. A canvas without a webgl
+  // context answers the typed refusal — never a pretend render.
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !mesh) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const mounted = mountThreeScene(
+      canvas,
+      { mesh: mesh.mesh, colors: mesh.colors, normals: mesh.normals },
+      { reducedMotion: reduced },
+    );
+    if (!mounted.ok) {
+      viewportRef.current = null;
+      setViewportReady(false);
+      setViewportRefused(true);
+      return;
+    }
+    viewportRef.current = mounted.viewport;
+    setViewportReady(true);
+    setViewportRefused(false);
+    return () => {
+      mounted.viewport.dispose();
+      viewportRef.current = null;
+      setViewportReady(false);
+    };
+  }, [mesh]);
+
+  const onReset = () => {
+    viewportRef.current?.reset();
+  };
+
+  const onPng = () => {
+    const viewport = viewportRef.current;
+    if (viewport) downloadDataUrl("cadria-visualize.png", viewport.screenshot());
   };
 
   const working = status === "working";
@@ -208,6 +268,40 @@ export function VisualizePanel() {
           </span>
         </p>
       )}
+      {status === "ready" && stats && (
+        <div
+          className="panel-silk"
+          style={{ marginTop: 14, position: "relative", width: "100%", aspectRatio: "4 / 3", overflow: "hidden" }}
+        >
+          <p className="mono-label" style={{ position: "absolute", top: 10, left: 12, margin: 0, zIndex: 1 }}>
+            {label("studio.visualize.view3d")}
+          </p>
+          <canvas
+            ref={canvasRef}
+            role="img"
+            aria-label={label("studio.visualize.view3dAria")}
+            style={{ width: "100%", height: "100%", display: "block" }}
+          />
+          {viewportRefused && (
+            <p
+              className="p-sm"
+              role="alert"
+              style={{
+                position: "absolute",
+                inset: 0,
+                display: "grid",
+                placeItems: "center",
+                margin: 0,
+                padding: 24,
+                textAlign: "center",
+                color: "var(--ink-2)",
+              }}
+            >
+              {label("studio.visualize.view3dRefused")}
+            </p>
+          )}
+        </div>
+      )}
       <p role="status" aria-live="polite" style={{ margin: "12px 0 0", fontSize: "0.82rem", color: "var(--ink-2)" }}>
         {statusLine(status)}
       </p>
@@ -234,6 +328,24 @@ export function VisualizePanel() {
           onClick={onStl}
         >
           {label("studio.visualize.stl")}
+        </button>
+        <button
+          type="button"
+          className="silk-btn"
+          disabled={!viewportReady}
+          data-tip={label("studio.visualize.resetTip")}
+          onClick={onReset}
+        >
+          {label("studio.visualize.reset")}
+        </button>
+        <button
+          type="button"
+          className="silk-btn"
+          disabled={!viewportReady}
+          data-tip={label("studio.visualize.pngTip")}
+          onClick={onPng}
+        >
+          {label("studio.visualize.png")}
         </button>
       </div>
     </section>
