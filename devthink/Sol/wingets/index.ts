@@ -62,6 +62,7 @@ export * from "./IntroShaderhero.tsx";
 export * from "./OnboardingSteps.tsx";
 export * from "./PanelBoot.tsx";
 export * from "./PanelDesktop.tsx";
+export * from "./PanelDesktoplock.tsx";
 export * from "./PanelDesktopmenu.tsx";
 export * from "./PanelLogo.tsx";
 export * from "./PanelPalette.tsx";

@@ -1,29 +1,34 @@
-/** Design: the opening animation of the desktop — one orchestrated entrance
- * (70ms steps: the real DevThink mark with the two official paths lands with
- * a discreet fade+scale and then breathes in the idle loop, the wordmark and
- * role line rise behind it and the progress meter fills once with its
- * tabular-nums mono readout counting in sync); no sheens, no dissolving
- * text. The surface then hands over straight to the desktop. Every timing
- * constant below mirrors the sol.css boot grammar exactly: bootMarkIn 700ms
- * on the mark, riseIn 800ms on the wordmark, bootFill 1.6s on the bar (so
- * the fill completes exactly when the leave starts) and bootOut .45s
- * carrying the handover. Plays once per browser session and skips instantly
- * under reduced motion. When the intro page already carried the
- * session-opening animation (the catalogued intro flag of
- * onboardingstate.ts), the desktop never replays a second boot on top of it. */
+/** Design: the opening animation of the desktop, in the real Windows boot
+ * face (win11React BootScreen): a near-black fullscreen canvas (the doctrine
+ * #010001 recipe on the --win-boot token), the white brand mark centered
+ * and the Fluent progress ring under it (48px, stroke 2px round caps, the
+ * spin-infinite dasharray/rotate loop of designdoctrine.md — the indetermi-
+ * nate boot indicator the real system keeps). The screen is REAL: it holds
+ * until the panel's own boot work settles (the `ready` prop — the local
+ * identity and the preference resolution of the panel anchor) AND the
+ * orchestrated minimum window elapsed, then bootOut carries the handover
+ * and the desktop fades in on the slowfadein of the doctrine. No fake
+ * percentage meter — an indeterminate ring over a genuinely gated leave.
+ * Every timing constant below mirrors the sol.css boot grammar exactly:
+ * bootMarkIn 700ms on the mark, riseIn 800ms on the wordmark, the 1.6s
+ * minimum window (the old bootFill span, kept as the orchestrated floor)
+ * and bootOut .45s carrying the handover. Plays once per browser session
+ * and skips instantly under reduced motion. When the intro page already
+ * carried the session-opening animation (the catalogued intro flag of
+ * onboardingstate.ts), the desktop never replays a second boot on top of
+ * it. */
 import { useEffect, useRef, useState } from "react";
 import { peekonboardingstate } from "../../onboardingstate.ts";
-import { uicopy, useUicopy } from "../../uistore.ts";
+import { osText } from "../../oslabels.ts";
 import { SolLogoMark } from "./PanelLogo.tsx";
 
 const BOOT_KEY = "devthink.boot.done";
-/** bootMarkIn / riseIn settle inside this window; bootFill runs 0→1600ms */
+/** bootMarkIn / riseIn settle inside this window; the minimum visual floor */
 const FILL_MS = 1600;
 /** bootOut duration in sol.css — the leaving animation of the whole screen */
 const BOOT_OUT_MS = 450;
-/** the leave starts the instant the bar completes; the handover lands when
- * bootOut finishes (1600 + 450), never truncating the keyframe mid-flight */
-const LEAVE_MS = FILL_MS;
+/** the leave fires at max(FILL_MS, the real boot settle); the handover
+ * lands when bootOut finishes (fill + out), never truncating mid-flight */
 const BOOT_MS = FILL_MS + BOOT_OUT_MS;
 
 function prefersReducedMotion(): boolean {
@@ -42,65 +47,62 @@ export function shouldBoot(): boolean {
   }
 }
 
-export function BootScreen({ onDone }: { onDone: () => void }) {
-  // the store ride: the boot words answer the ui store rows (the
-  // panel.boot.* keys of uistore.ts — no literal lives in the face)
-  useUicopy();
+/** BootScreen — the boot face. `ready` is the REAL boot verdict: the
+ * panel anchor flips it once its own boot work (identity, preferences,
+ * session resolution) settled; the screen never leaves before it. */
+export function BootScreen({ ready = true, onDone }: { ready?: boolean; onDone: () => void }) {
   const [leaving, setLeaving] = useState(false);
-  /** the meter readout, 0→100 in lockstep with the 1.6s bar fill */
-  const [pct, setPct] = useState(0);
   // the play runs once per mount: the callback rides a ref so a parent
   // re-render (a new inline identity every time) never restarts the timers
   const doneRef = useRef(onDone);
   doneRef.current = onDone;
+  const startRef = useRef(0);
 
   useEffect(() => {
+    startRef.current = performance.now();
     try {
       window.sessionStorage.setItem(BOOT_KEY, "1");
     } catch {
       // storage may be unavailable; the boot still plays once for this mount
     }
     if (prefersReducedMotion()) {
-      setPct(100);
       doneRef.current();
       return;
     }
-    const leave = window.setTimeout(() => setLeaving(true), LEAVE_MS);
-    const finish = window.setTimeout(() => doneRef.current(), BOOT_MS);
+  }, []);
+
+  // the REAL gate: the leave waits for the boot work (`ready`) past the
+  // orchestrated floor, then bootOut carries the handover to the desktop
+  useEffect(() => {
+    if (prefersReducedMotion()) return undefined;
+    if (!ready) return undefined;
+    const elapsed = performance.now() - startRef.current;
+    const leave = window.setTimeout(() => setLeaving(true), Math.max(0, FILL_MS - elapsed));
+    const finish = window.setTimeout(() => doneRef.current(), Math.max(0, BOOT_MS - elapsed));
     return () => {
       window.clearTimeout(leave);
       window.clearTimeout(finish);
     };
-  }, []);
-
-  // the tabular meter: one rAF tracks the fill window, stopping at 100
-  useEffect(() => {
-    if (prefersReducedMotion()) return undefined;
-    let frame = 0;
-    const start = performance.now();
-    const tick = (now: number) => {
-      const value = Math.min(100, Math.round(((now - start) / FILL_MS) * 100));
-      setPct(value);
-      if (value < 100) frame = window.requestAnimationFrame(tick);
-    };
-    frame = window.requestAnimationFrame(tick);
-    return () => window.cancelAnimationFrame(frame);
-  }, []);
+  }, [ready]);
 
   return (
-    <div className={`boot-screen${leaving ? " leaving" : ""}`} role="status" aria-label={uicopy("panel.boot.aria")}>
-      {/* the one mark of the boot zone: mark + name + role line as the single opening lockup */}
+    <div className={`boot-screen${leaving ? " leaving" : ""}`} role="status" aria-label={osText("boot.aria")}>
+      {/* the one mark of the boot zone: the white brand mark centered (the
+          mark recolors through currentColor — the boot canvas paints it
+          white like the real system logo) */}
       <div className="boot-screen__mark" aria-hidden="true">
         <SolLogoMark size={92} />
       </div>
-      <p className="boot-screen__name">{uicopy("panel.boot.name")}</p>
-      <p className="boot-screen__state">{uicopy("panel.boot.state")}</p>
-      <div className="boot-screen__bar" aria-hidden="true">
-        <i />
+      <p className="boot-screen__name">{osText("boot.wordmark")}</p>
+      <p className="boot-screen__state">{osText("boot.state")}</p>
+      {/* the Fluent progress ring (designdoctrine.md boot section): 48px,
+          stroke 2px round caps, the spin-infinite dasharray loop — the
+          indeterminate indicator of a boot that is genuinely running */}
+      <div className="boot-screen__loader" aria-hidden="true">
+        <svg className="boot-progress-ring" height={48} width={48} viewBox="0 0 16 16" aria-hidden="true">
+          <circle cx="8px" cy="8px" r="7px" />
+        </svg>
       </div>
-      <p className="boot-screen__readout" aria-hidden="true">
-        {String(pct).padStart(3, "0")}%
-      </p>
     </div>
   );
 }

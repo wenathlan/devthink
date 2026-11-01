@@ -224,6 +224,13 @@ export default function Panel() {
   );
   const [pairedIdentity, setPairedIdentity] = useState<PairedIdentity>();
   const [booting, setBooting] = useState(() => shouldBoot());
+  /** the REAL boot verdict: the local identity and the preference
+   * resolution of the mount effects settled — the BootScreen never leaves
+   * before it (the progress indicator is genuinely tied to the boot work) */
+  const [bootReady, setBootReady] = useState(false);
+  /** whether this mount actually played the boot screen — the desktop
+   * reveal rides the doctrine slowfadein only on the session-opening boot */
+  const [bootedFrom, setBootedFrom] = useState(false);
   /** the auth gate of the entry chain: "pending" while the family session
    * question rides, "open" when a door answered, "locked" when the chain
    * walks back to the auth face (the panel is the LAST page — the owner's
@@ -438,7 +445,8 @@ export default function Panel() {
         setPairingUserId((current) => current || identity.userId);
         setPreferences((current) => ({ ...current, ...stored }));
       })
-      .catch(() => undefined);
+      .catch(() => undefined)
+      .finally(() => setBootReady(true));
   }, []);
 
   useEffect(() => {
@@ -588,17 +596,21 @@ export default function Panel() {
   if (booting)
     return (
       <BootScreen
+        ready={bootReady}
         onDone={() => {
+          setBootedFrom(true);
           setBooting(false);
         }}
       />
     );
 
   // the desktop opens directly: no identity lock, no tour — the local
-  // identity resolved silently through browserIdentity() on mount
+  // identity resolved silently through browserIdentity() on mount. The
+  // mount that came through the boot screen carries the doctrine
+  // slowfadein reveal (the boot → desktop handover of the win11 law)
   return (
     <div
-      className="devthink-app devthink-app--terminal"
+      className={`devthink-app devthink-app--terminal${bootedFrom ? " devthink-app--booted" : ""}`}
       data-theme={preferences.theme}
       style={{ zoom: Number(preferences.interfaceZoom) / 100 }}
     >

@@ -234,6 +234,28 @@ export function syncThemeFromPreference(value: string | undefined): void {
   saveThemeMirror(value);
 }
 
+/** the theme ladder the shell currently wears: the panel root copy of the
+ * attribute first (the .devthink-app root carries it), then the document
+ * root, then the persisted mirror, then the dark default. The tray quick
+ * settings tile and the desktop Personalize menu read the face through it
+ * so their radio states answer the real system, never a local guess. */
+export function currentThemeLadder(): ThemeChoice {
+  if (typeof document === "undefined") return "dark";
+  const themed = document.querySelector<HTMLElement>(".devthink-app")?.dataset.theme;
+  if (themed === "light" || themed === "dark") return themed;
+  if (document.documentElement.dataset.theme === "light") return "light";
+  return loadThemeMirror() ?? "dark";
+}
+
+/** flips the theme ladder to the other face: the choice persists on the
+ * mirror and paints on both roots (the same path the Personalize menu and
+ * the tray tile ride). Returns the face that landed. */
+export function flipThemeLadder(): ThemeChoice {
+  const next: ThemeChoice = currentThemeLadder() === "dark" ? "light" : "dark";
+  saveThemeMirror(next);
+  return next;
+}
+
 /** the on/off flags of the component behaviors. */
 export type FlagChoice = "on" | "off";
 

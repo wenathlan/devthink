@@ -384,8 +384,8 @@ async function openMirror(): Promise<{
   const file = DATABASE_URL.startsWith("file:") ? DATABASE_URL.slice("file:".length) : DATABASE_URL;
   nodefs.mkdirSync(nodepath.dirname(nodepath.resolve(file)), { recursive: true });
   const db = new Database(file);
-  db.pragma("journal_mode = WAL");
   db.pragma("busy_timeout = 5000");
+  db.pragma("journal_mode = WAL");
   db.exec(ONBOARDING_SCHEMA);
   db.exec(LABELS_SCHEMA);
   mirror = {

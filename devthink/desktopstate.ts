@@ -1,10 +1,10 @@
 /**
  * desktopstate.ts — the pure state layer of the desktop icon field
  * (Sol/panel/desktop.tsx): persistence, clamping, snapping, sorting and the
- * ordered flow layout as free functions with no react — the desktop
- * component owns the pointer work, this module owns the math and the
- * storage. Positions are percentages of the desktop area (the center of the
- * icon cell), persisted under one localStorage key as a map of
+ * Windows left-aligned column grid as free functions with no react — the
+ * desktop component owns the pointer work, this module owns the math and
+ * the storage. Positions are percentages of the desktop area (the center of
+ * the icon cell), persisted under one localStorage key as a map of
  * appId → {x, y}. Every helper here is deterministic and unit-testable.
  */
 
@@ -15,10 +15,10 @@ export type IconBounds = { minX: number; maxX: number; minY: number; maxY: numbe
 export type IconSpotMap = Record<string, IconSpot>;
 
 /** the localStorage key of the moved desktop icons (appId → spot in %) —
- * v3: the scattered constellation around the hero returns as the default
- * (the owner's law — never the uniform grid), so every visitor starts
- * from the composition */
-export const ICONS_STORAGE_KEY = "dt.desktop.icons.v3";
+ * v4: the Windows desktop face — the left-aligned column grid is the
+ * default layout (the real windows desktop law), so every visitor starts
+ * from the ordered grid and moved icons persist on top of it */
+export const ICONS_STORAGE_KEY = "dt.desktop.icons.v4";
 
 /** the fine snap lattice of the field: multiples of 2% x and 3.33% y —
  * smooth to drag, orderly to rest (every icon lands on the same grid) */
@@ -185,50 +185,60 @@ export function sortAppsByKind<T extends SortableApp>(apps: readonly T[]): T[] {
 }
 
 /**
- * the deterministic default layout passthrough: every catalog index takes
- * its spot from the hand-tuned table in order; a catalog longer than the
- * table wraps in laps with a small diagonal offset, so nothing ever lands
- * exactly on top of another icon. Pure mapping — the table itself stays
- * owned by the desktop component.
+ * the Windows desktop grid — the default layout of the icon field: the
+ * left-aligned column grid the real desktop keeps, filled top-to-bottom
+ * then wrapped to the next column (the win11React .desktopCont column
+ * flow). The pitch is the icon cell plus the 8px grid gutter, measured
+ * against the live area, and the row count derives from the usable height
+ * between the top band and the dock strip, so every viewport keeps the
+ * same tidy columns.
  *
  * @param count the number of icons to lay out.
- * @param table the tuned default spots, in catalog order.
- * @returns one default spot per icon (shorter when the table is empty).
+ * @param widthPx the pixel width of the desktop area.
+ * @param heightPx the pixel height of the desktop area.
+ * @param cell the pixel box of one icon cell (the medium cell by default).
+ * @returns one grid spot per icon, clamped inside the reference bounds.
  */
-export function defaultSpots(count: number, table: readonly IconSpot[]): IconSpot[] {
-  const spots: IconSpot[] = [];
-  for (let index = 0; index < count; index += 1) {
-    const spot = table[index % table.length];
-    if (!spot) continue;
-    const lap = Math.floor(index / table.length);
-    spots.push({
-      x: clampNumber(spot.x + lap * 4, 8, 92),
-      y: clampNumber(spot.y - lap * 5, 16, 74),
-    });
-  }
-  return spots;
-}
-
-/** the ordered column-flow slots: fills top-to-bottom, then wraps to the
- * next column — the Windows "arrange icons" flow on the same lattice */
-export function flowSpots(count: number): IconSpot[] {
-  const rows = 6;
+export function gridSpots(
+  count: number,
+  widthPx: number,
+  heightPx: number,
+  cell: { width: number; height: number } = CELL_MEDIUM,
+): IconSpot[] {
+  const width = Math.max(widthPx, 1);
+  const height = Math.max(heightPx, 1);
+  const bounds = boundsForArea(width, height, cell.width, cell.height);
+  const pitchX = ((cell.width + GRID_GAP_PX) / width) * 100;
+  const pitchY = ((cell.height + GRID_GAP_PX) / height) * 100;
+  const usable = bounds.maxY - bounds.minY;
+  const rows = Math.max(1, Math.floor(usable / pitchY) + 1);
   const spots: IconSpot[] = [];
   for (let index = 0; index < count; index += 1) {
     const column = Math.floor(index / rows);
     const row = index % rows;
-    spots.push({ x: 6 + column * 8, y: 18 + row * 11 });
+    spots.push(clampSpot({ x: bounds.minX + column * pitchX, y: bounds.minY + row * pitchY }, bounds));
   }
   return spots;
 }
 
-/** the flow layout of one sorted catalog as a spot map (clamped + snapped) */
-export function flowLayoutSpots<T extends SortableApp>(apps: readonly T[], bounds: IconBounds): IconSpotMap {
-  const slots = flowSpots(apps.length);
+/** the gap between two grid cells, in px (the win11React margin law) */
+export const GRID_GAP_PX = 8;
+
+/** the grid layout of one app list (catalog order, or a pre-sorted list)
+ * as a spot map — the default layout AND the "sort by" reflow share it.
+ * The row shape is the minimal one the mapping needs (an id), so the
+ * catalog rows and the sorter rows ride the same function. */
+export function gridLayoutSpots<T extends { id: string }>(
+  apps: readonly T[],
+  widthPx: number,
+  heightPx: number,
+  cell: { width: number; height: number } = CELL_MEDIUM,
+): IconSpotMap {
+  const slots = gridSpots(apps.length, widthPx, heightPx, cell);
   const spots: IconSpotMap = {};
   apps.forEach((app, index) => {
     const slot = slots[index];
-    if (slot) spots[app.id] = fitSpot(slot, bounds);
+    if (slot) spots[app.id] = slot;
   });
   return spots;
 }
@@ -405,4 +415,62 @@ export function navbarDragVerdict(stance: NavbarStance, dx: number, dy: number):
     if (dx >= NAVBAR_DOCK_PULL_PX) return { mode: "docked", edge: "right" };
   }
   return null;
+}
+
+/* ------------------------------------------------------------------ */
+/* the desktop lock — the lock state of the desktop surface. The win11 */
+/* chain: boot → desktop, and the lock rides ON the desktop (the lock  */
+/* overlay of Sol/wingets/PanelDesktoplock.tsx) instead of gating the  */
+/* entry: no screen ever blocks the desktop. The state persists on the */
+/* session (a reload of a locked tab stays locked, a fresh tab does    */
+/* not inherit it) and the dt-desktop-lock event re-faces the shell    */
+/* the moment a lock or an unlock lands. Pure helpers, no react.       */
+/* ------------------------------------------------------------------ */
+
+/** the lock posture of the desktop surface */
+export type DesktopLockState = "locked" | "unlocked";
+
+/** the sessionStorage key of the desktop lock posture */
+export const DESKTOP_LOCK_STORAGE_KEY = "dt.desktop.lock";
+
+/** the window event a lock or an unlock dispatches (detail: the state) —
+ * the workspace and the lock overlay listen, so the face flips the
+ * moment the posture changes */
+export const DESKTOP_LOCK_EVENT = "dt-desktop-lock";
+
+/** validates an untrusted stored posture (storage answers as text) */
+export function isDesktopLockState(value: unknown): value is DesktopLockState {
+  return value === "locked" || value === "unlocked";
+}
+
+/** reads the stored lock posture (unlocked when storage is absent or
+ * stale — the honest default: the desktop never blocks the entry) */
+export function loadDesktopLock(): DesktopLockState {
+  try {
+    const raw = window.sessionStorage.getItem(DESKTOP_LOCK_STORAGE_KEY);
+    if (isDesktopLockState(raw)) return raw;
+  } catch {
+    /* storage unavailable: the unlocked posture carries the shell */
+  }
+  return "unlocked";
+}
+
+/** persists the lock posture (a no-op when storage is unavailable) */
+export function saveDesktopLock(state: DesktopLockState): void {
+  try {
+    window.sessionStorage.setItem(DESKTOP_LOCK_STORAGE_KEY, state);
+  } catch {
+    /* storage unavailable: the posture lives for the mount only */
+  }
+}
+
+/** one lock/unlock side effect bundle: the posture persists and the
+ * dt-desktop-lock event tells the shell (the callers keep one line) */
+export function commitDesktopLock(state: DesktopLockState): void {
+  saveDesktopLock(state);
+  try {
+    window.dispatchEvent(new CustomEvent<DesktopLockState>(DESKTOP_LOCK_EVENT, { detail: state }));
+  } catch {
+    /* no window: nothing to tell */
+  }
 }

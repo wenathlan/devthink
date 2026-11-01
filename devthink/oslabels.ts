@@ -57,6 +57,7 @@ const seedOsStrings: OsStringRow[] = [
   { id: "tray.tile.data", text: "cellular data" },
   { id: "tray.tile.night", text: "night light" },
   { id: "tray.tile.theme", text: "theme" },
+  { id: "tray.tile.docked", text: "docked bar" },
   { id: "tray.volume.aria", text: "Volume" },
   { id: "tray.brightness.aria", text: "Brightness" },
   { id: "tray.calendar.prev", text: "Previous month" },
@@ -101,8 +102,12 @@ const seedOsStrings: OsStringRow[] = [
   { id: "desktop.menu.sort.original", text: "original spots" },
   { id: "desktop.menu.refresh", text: "Refresh" },
   { id: "desktop.menu.display", text: "Display settings" },
+  { id: "desktop.menu.personalize", text: "Personalize" },
+  { id: "desktop.menu.personalize.light", text: "light theme" },
+  { id: "desktop.menu.personalize.dark", text: "dark theme" },
   { id: "desktop.menu.open", text: "Open" },
   { id: "desktop.menu.openWindow", text: "Open in new window" },
+  { id: "desktop.lock.aria", text: "DevThink lock screen" },
 
   /* ---------------------------- command palette --------------------------- */
   { id: "palette.dialog.aria", text: "Command palette" },
@@ -121,6 +126,9 @@ const seedOsStrings: OsStringRow[] = [
   { id: "boot.name.aria", text: "Display name" },
   { id: "boot.signin", text: "Sign in" },
   { id: "boot.localIdentity", text: "Local identity" },
+  { id: "boot.aria", text: "DevThink is starting" },
+  { id: "boot.wordmark", text: "DevThink" },
+  { id: "boot.state", text: "opening the local os" },
 
   /* ---------------------------- workspace toasts --------------------------- */
   { id: "panel.toast.paired", text: "Local DevThink workspace paired." },
@@ -307,7 +315,10 @@ const seedOsStrings: OsStringRow[] = [
   { id: "console.status.paired", text: "Gateway paired" },
   { id: "console.status.static", text: "Static catalog" },
   { id: "console.keys", text: "tab completes, arrows browse, enter runs" },
-  { id: "console.boot.copy", text: "Banner, config and the tools arm stage by stage, the surfaces arm together, and ready closes the walk." },
+  {
+    id: "console.boot.copy",
+    text: "Banner, config and the tools arm stage by stage, the surfaces arm together, and ready closes the walk.",
+  },
   {
     id: "console.boot.graphLabel",
     text: "The boot stages of the terminal.",
