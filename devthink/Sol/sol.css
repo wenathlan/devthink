@@ -22028,8 +22028,8 @@ button.dtc-recents__row {
 }
 /* ==== chat wave 7-a · end of section ==== */
 
-/* ==========================================================================
 /* ════════ campaign wave 4 · panel face (main line — kept first, the later block wins the cascade) ════════ */
+/* ==========================================================================
    campaign wave 4 · panel face — the desktop texture, the grounded vignette
    and the loading shimmer. The doctrine recipes on the panel's own face:
    the acrylic noise (camada 2 of the mica recipe, the --win-noise tile)
@@ -22132,6 +22132,7 @@ button.dtc-recents__row {
 }
 
 /* ════════ design/desktopface · win11-fidelity wave B (appended last — wins by cascade order alone) ════════ */
+/* ==========================================================================
    design/desktopface · the Windows desktop surface (win11-fidelity wave B)
    The owner order: the desktop must read as the real Windows 11 clone — the
    doctrine mica wallpaper under the whole surface, the --win-noise grain

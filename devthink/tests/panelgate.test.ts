@@ -20,6 +20,7 @@ import { describe, expect, it } from "vitest";
 import { afterAuthTarget } from "../gateway";
 import { panelgateverdict, resolveintrotarget } from "../introtarget";
 import { uistoreseedrows } from "../uistore.ts";
+import { osText } from "../oslabels.ts";
 
 const anchor = readFileSync(join(import.meta.dirname, "..", "Sol", "panel", "panel.tsx"), "utf8");
 const family = readFileSync(join(import.meta.dirname, "..", "account.ts"), "utf8");
@@ -175,12 +176,19 @@ describe("the panel face wave (the texture, the boot copy and the tile lift)", (
     return wave.slice(open + 1, close);
   }
 
-  it("the boot words ride the ui store rows — no literal stays on the boot face", () => {
-    expect(panelboot).toContain('uicopy("panel.boot.aria")');
-    expect(panelboot).toContain('uicopy("panel.boot.name")');
-    expect(panelboot).toContain('uicopy("panel.boot.state")');
+  it("the boot words ride the os table rows — no literal stays on the boot face", () => {
+    /* the win11-fidelity wave B migrated the boot face words from the ui
+     * store copy to the os label table (oslabels.ts — the os table law the
+     * desktop face answers); the uistore rows stay seeded for the surfaces
+     * that still read them, the boot face never quotes them again. */
+    expect(panelboot).toContain('osText("boot.aria")');
+    expect(panelboot).toContain('osText("boot.wordmark")');
+    expect(panelboot).toContain('osText("boot.state")');
     expect(panelboot).not.toContain('"DevThink is starting"');
     expect(panelboot).not.toContain('"opening the local os"');
+    expect(osText("boot.aria")).toBe("DevThink is starting");
+    expect(osText("boot.wordmark")).toBe("DevThink");
+    expect(osText("boot.state")).toBe("opening the local os");
     const seed = uistoreseedrows();
     expect(seed["panel.boot.aria"]).toBe("DevThink is starting");
     expect(seed["panel.boot.name"]).toBe("DevThink");
