@@ -83,10 +83,12 @@ function tablesFor(size: number): FftTables {
 /**
  * fft — in-place iterative radix-2 Cooley–Tukey transform of the complex
  * signal (re, im), forward convention e^(−i2πkn/N). Both buffers must share
- * one power-of-two length in [256, 16384]; contents are permuted and
- * overwritten (the in-place contract).
+ * one power-of-two length in [256, 16384] and one element domain (both
+ * float32 or both float64 — the engine's one kernel serves the float32 stft
+ * lanes and the float64 analysis lanes alike, precision follows the
+ * buffers); contents are permuted and overwritten (the in-place contract).
  */
-export function fft(re: Float32Array, im: Float32Array): void {
+export function fft(re: Float32Array | Float64Array, im: Float32Array | Float64Array): void {
   if (re.length !== im.length) {
     throw new FftError(`audiofft: real and imaginary buffers differ (${re.length} vs ${im.length})`);
   }

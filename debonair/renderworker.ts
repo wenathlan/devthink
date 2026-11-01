@@ -18,7 +18,15 @@
 // faders and master trim (DEFAULT_MIX_LAW); the glue compressor stays the
 // browser desk's — the webaudio compressor is deliberately ua-tailored, so
 // the offline bounce pins the linear master mix that stays byte-stable on
-// every machine. the job lane mirrors the ingest worker's discipline: the
+// every machine — closed by the engine's own deterministic true-peak
+// limiter (limiter.ts, the −1 dBTP ceiling the MASTERING spec pins, the
+// promise the stage card makes), the one mastering stage the published
+// bounce must honour on every machine alike. the honest WYSIWYG gap,
+// documented never hidden: the desk the visitor hears rides the
+// ua-tailored glue compressor without a true-peak ceiling (a deterministic
+// browser limiter needs an audio worklet — its own wave), the bounce adds
+// the ceiling; the difference is the render lane's law, not a pretence.
+// the job lane mirrors the ingest worker's discipline: the
 // db never imports here — the ledger and the track row ride injected seats
 // (renderjobs.ts binds them to sqlite; the gateway stack binds the routes),
 // every call answers a typed result with a machine code, never a throw.
@@ -35,6 +43,7 @@ import {
 } from "./audioengine.ts";
 import { mintid } from "./bigintids.ts";
 import { MASTERING, trackNameFromPrompt } from "./katexis.ts";
+import { limitTruePeak } from "./limiter.ts";
 import { dbToLinear } from "./mixergraph.ts";
 import {
   DRUM_LANE_KEYS,
@@ -588,8 +597,11 @@ function addVoice(mix: Float32Array, event: NoteEvent, noise: Float32Array): voi
  * role trims folding each bus, the master fader and trim closing the mix
  * (the glue compressor stays the browser desk's: the webaudio compressor
  * is ua-tailored, the offline bounce pins the linear master law that stays
- * byte-stable on every machine). The noise take is the engine's own seeded
- * channel over the take identity — the same stream the browser bank reads.
+ * byte-stable on every machine — the true-peak ceiling is the render
+ * orchestrator's close, limitTruePeak after this mix, never baked in here:
+ * this function stays the pure linear mix the tests pin). The noise take
+ * is the engine's own seeded channel over the take identity — the same
+ * stream the browser bank reads.
  *
  * @param schedule the flat event list with its span.
  * @param seedSource the take identity the noise rng rides.
@@ -624,8 +636,9 @@ function planerr(code: RenderErrorCode, message: string): RenderPlanResult {
  * contract gate (a plan off the debonair.pattern/1 law answers
  * render-failed with the validator's reason), the schedule (the flat
  * event list; a plan with no drum hits and no notes answers empty-plan),
- * the offline render through the engine's recipes at the mastering rate,
- * the wav encode (mono pcm 16), the blob store put under audio/wav. every
+ * the offline render through the engine's recipes at the mastering rate
+ * closed by the true-peak limiter (the −1 dBTP mastering law), the wav
+ * encode (mono pcm 16), the blob store put under audio/wav. every
  * failure answers the typed result with a machine code — never a throw.
  * deterministic: the same plan and seed answer the same bytes on every
  * machine (the seeded noise rides the take identity, the dsp is pure).
@@ -661,10 +674,13 @@ export async function renderPlan(
     return planerr("empty-plan", "the plan carries no drum hits and no notes — nothing to render");
   report("schedule");
 
-  // phase: render — the engine's recipes, sample-accurate at the house rate
+  // phase: render — the engine's recipes, sample-accurate at the house
+  // rate, then the mastering close: the linear master mix rides the
+  // deterministic true-peak limiter (the −1 dBTP law the stage card
+  // promises) before the wav writer ever sees a sample
   let pcm: Float32Array;
   try {
-    pcm = renderPatternMix(schedule, `noise:${seed}:${checked.doc.prompt}`);
+    pcm = limitTruePeak(renderPatternMix(schedule, `noise:${seed}:${checked.doc.prompt}`), RENDER_SAMPLE_RATE);
   } catch (error) {
     return planerr("render-failed", `the render lane faulted: ${errmsgof(error)}`);
   }

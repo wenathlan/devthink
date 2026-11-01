@@ -1,14 +1,24 @@
-// # spectrum — the spectral kernel of the katexis engine (root layer): the
-// radix-2 FFT and the frame projections every analysis domain rides. The
-// fingerprint builder, the analyzer and any future b-wave module project
-// frames through here so the window, the magnitude math and the chroma law
-// stay in one place. Pure math — zero storage, zero audio context.
+// # spectrum — the spectral frame law of the katexis engine (root layer):
+// the shared window, the magnitude math and the chroma projection every
+// analysis domain rides. the transform itself is the engine's one kernel —
+// audiofft's radix-2 cooley–tukey with its precomputed bit-reversal and
+// twiddle tables — imported here, never re-implemented: before the
+// unification this file carried a second fft kernel of its own, and two
+// kernels in one engine is the duplication the house law forbids. the
+// fingerprint builder, the analyzer, hpss and any future b-wave module
+// project frames through here so the window, the magnitude math and the
+// chroma law stay in one place. Pure math — zero storage, zero audio context.
+
+import { fft } from "./audiofft.ts";
 
 /** The FFT window length the analysis domains share (4096 = ~93ms at 44.1k). */
 export const FFT_SIZE = 4096;
 /** The hop between frames, in samples (1024 = 4x overlap). */
 export const HOP_SIZE = 1024;
-/** The Hann window table, precomputed once for FFT_SIZE. */
+/** The Hann window table, precomputed once for FFT_SIZE (the symmetric
+ * law — denominator size − 1 — every analysis caller's numbers ride; the
+ * periodic windows audiofft serves belong to its own stft lane, a
+ * different contract, never silently swapped). */
 export const HANN_TABLE: readonly number[] = buildHann(FFT_SIZE);
 
 /** Builds one Hann window of the given length. */
@@ -30,43 +40,30 @@ export interface SpectrumFrame {
 
 /**
  * Computes the in-place radix-2 FFT of a complex signal (re, im arrays of
- * the same power-of-two length). Pure Cooley-Tukey with bit reversal.
+ * the same power-of-two length) — the audiofft kernel under the frame-law
+ * signature the analysis callers ride. Plain number[] lanes keep their
+ * float64 precision through a scratch pair (the kernel's float64 seat);
+ * typed-array lanes ride the kernel directly, precision following the
+ * buffer. the kernel's own domain is the power-of-two range [256, 16384]
+ * (audiofft's law — the house frames all ride 4096); a size off the domain
+ * or a mismatched pair throws the kernel's FftError, honestly, never
+ * silent garbage.
  *
  * @param re the real part, mutated in place (number[] or Float32Array).
  * @param im the imaginary part, mutated in place (number[] or Float32Array).
  */
 export function fftInPlace(re: number[] | Float32Array, im: number[] | Float32Array): void {
-  const n = re.length;
-  for (let i = 1, j = 0; i < n; i++) {
-    let bit = n >> 1;
-    for (; j & bit; bit >>= 1) j ^= bit;
-    j ^= bit;
-    if (i < j) {
-      [re[i], re[j]] = [re[j], re[i]];
-      [im[i], im[j]] = [im[j], im[i]];
-    }
+  if (re instanceof Float32Array && im instanceof Float32Array) {
+    fft(re, im);
+    return;
   }
-  for (let len = 2; len <= n; len <<= 1) {
-    const ang = (-2 * Math.PI) / len;
-    const wRe = Math.cos(ang);
-    const wIm = Math.sin(ang);
-    for (let i = 0; i < n; i += len) {
-      let curRe = 1;
-      let curIm = 0;
-      for (let k = 0; k < len / 2; k++) {
-        const uRe = re[i + k];
-        const uIm = im[i + k];
-        const vRe = re[i + k + len / 2] * curRe - im[i + k + len / 2] * curIm;
-        const vIm = re[i + k + len / 2] * curIm + im[i + k + len / 2] * curRe;
-        re[i + k] = uRe + vRe;
-        im[i + k] = uIm + vIm;
-        re[i + k + len / 2] = uRe - vRe;
-        im[i + k + len / 2] = uIm - vIm;
-        const nextRe = curRe * wRe - curIm * wIm;
-        curIm = curRe * wIm + curIm * wRe;
-        curRe = nextRe;
-      }
-    }
+  const size = re.length;
+  const scratchRe = Float64Array.from(re);
+  const scratchIm = Float64Array.from(im);
+  fft(scratchRe, scratchIm);
+  for (let i = 0; i < size; i++) {
+    re[i] = scratchRe[i];
+    im[i] = scratchIm[i];
   }
 }
 

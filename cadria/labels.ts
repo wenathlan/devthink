@@ -392,6 +392,15 @@ export const labelManifest = {
   "studio.visualize.stlTip": "binary stl — the same mesh for the slicers",
   "studio.visualize.obj": "download .obj",
   "studio.visualize.stl": "download .stl",
+  // the studio visualize 3d viewport (the versawase engine rendering locally)
+  "studio.visualize.view3d": "3d viewport",
+  "studio.visualize.view3dAria": "interactive 3d viewport of the mesh — drag to orbit, wheel or pinch to zoom",
+  "studio.visualize.view3dRefused":
+    "the 3d viewport refused to start — this browser exposes no webgl context for the canvas.",
+  "studio.visualize.reset": "reset view",
+  "studio.visualize.resetTip": "the camera back at the framed start",
+  "studio.visualize.png": "download .png",
+  "studio.visualize.pngTip": "viewport screenshot — the same frame the canvas shows",
   // the gallery (the render wall)
   "gallery.eyebrow": "cadria · gallery",
   "gallery.title": "the render wall",

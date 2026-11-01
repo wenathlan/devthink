@@ -2,12 +2,13 @@
  * shaderhero.tsx — the living shader hero of the intro SaaS face (the winget
  * the hero section composes behind the statement): one full-bleed WebGL
  * canvas painting the doctrine hero — a grade derivando (the drifting
- * perspective grid) and a particle field answering it — in the indigo/sky
- * brand family of the landing. The engine loads LAZY: three.js rides a
- * dynamic import inside the mount effect, so the landing bundle never
- * carries the 3d engine and the face paints from the CSS gaussian alone
- * while the module travels. The motion law: the whole surface never arms
- * under prefers-reduced-motion (the canvas stays empty, the static CSS
+ * perspective grid) and a particle field answering it — in the ever rose
+ * family of the landing (the --color-ever walk of sol.css the owner
+ * ordered back). The engine loads LAZY: three.js rides a dynamic import
+ * inside the mount effect, so the landing bundle never carries the 3d
+ * engine and the face paints from the CSS gaussian alone while the module
+ * travels. The motion law: the whole surface never arms under
+ * prefers-reduced-motion (the canvas stays empty, the static CSS
  * atmosphere owns the face) and the loop pauses on a hidden tab. The
  * cleanup is total: the rAF dies, the listeners and the observer detach,
  * the geometry, the material and the renderer dispose on unmount. Purely
@@ -62,10 +63,11 @@ void main() {
   float twinkle = 0.5 + 0.5 * sin(uTime * (0.6 + seed) + seed * 6.2831);
   float dotm = smoothstep(0.10, 0.0, pd) * step(0.72, seed) * (0.35 + 0.65 * twinkle);
 
-  // the composition: indigo body, sky crest, the ever pink on the few
-  // largest particles — the brand walk of the landing
-  vec3 ink = mix(vec3(0.388, 0.400, 0.945), vec3(0.220, 0.741, 0.973), uv.y);
-  vec3 ever = vec3(0.941, 0.314, 0.620);
+  // the composition: the ever rose walk — ever body, ever-deep crest and
+  // the ever ink on the few largest particles — the brand walk of the
+  // landing (the --color-ever family of sol.css)
+  vec3 ink = mix(vec3(0.941, 0.314, 0.620), vec3(0.788, 0.169, 0.525), uv.y);
+  vec3 ever = vec3(0.345, 0.075, 0.259);
   vec3 pcol = mix(ink, ever, step(0.94, seed));
 
   // the mask: the field fades at the very top (the header stays clean),

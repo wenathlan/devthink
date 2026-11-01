@@ -7,7 +7,9 @@
 // energy at the kick steps against the resting steps, the surgical plans
 // answering the strong law: the gaps between the hits are true silence),
 // and the determinism holds (the same plan and seed answer the same
-// bytes, a fresh seed answers a fresh take). the render_jobs ledger walks
+// bytes, a fresh seed answers a fresh take) and the bounce lands under
+// the −1 dBTP mastering ceiling (the true-peak limiter's law, measured
+// with the limiter's own 4× yard). the render_jobs ledger walks
 // the ingest_jobs law (the row round trip, the patch merge, the owner
 // filter, the in-place migration of the site's own queue shape, the
 // minted pointers exact beyond the js number floor), the tracks table
@@ -24,6 +26,7 @@ import { RENDER_TAIL_S } from "../audioengine.ts";
 import { mintid } from "../bigintids.ts";
 import { composeFromProfile } from "../composer.ts";
 import { MASTERING, trackNameFromPrompt } from "../katexis.ts";
+import { truePeakLinear } from "../limiter.ts";
 import { LANE_STEPS, serializePattern, validatePatternProject } from "../patternenums.ts";
 import { type GenreProfile, segmentVector } from "../patternminer.ts";
 import {
@@ -341,6 +344,21 @@ describe("the composed plan renders through the engine recipes", () => {
     const second = await renderPlan(PLAN, "seed-two", new MemoryStore());
     assert.ok(first.ok && second.ok);
     assert.notDeepEqual(second.bytes, first.bytes, "the seeded noise rides the take identity");
+  });
+
+  it("lands the bounce under the −1 dBTP mastering ceiling (the limiter law)", async () => {
+    // the render's mastering close: the linear mix rides the true-peak
+    // limiter before the wav writer — the promise the stage card makes,
+    // measured with the limiter's own 4× yard over the decoded pcm (the
+    // pcm16 quantization seat rides the epsilon)
+    const result = await renderPlan(PLAN, "seed-one", new MemoryStore());
+    assert.ok(result.ok);
+    const pcm = pcmOf(result.bytes);
+    const tp = truePeakLinear(pcm);
+    assert.ok(
+      tp <= 10 ** (MASTERING.truePeakDbtp / 20) + 1e-4,
+      `the bounce's true peak ${(20 * Math.log10(tp)).toFixed(4)} dBTP must sit at or under the −1 promise`,
+    );
   });
 });
 

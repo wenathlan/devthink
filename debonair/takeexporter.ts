@@ -7,8 +7,11 @@
 // progress, no placeholder downloads: a button answers with the bytes it
 // names, or with the refusal line.
 // NON-GOALS: no state, no storage, no zip archives (one download per file —
-// the browser owns the save dialog), no limiting (the mastering chain stays
-// the desk's, the loudness engine judges the bounce afterwards).
+// the browser owns the save dialog), no limiting (the studio bounce rides
+// the desk's own graph so what the visitor hears is what exports; the
+// −1 dBTP true-peak ceiling is the server render lane's close —
+// renderworker.ts rides limiter.ts — the honest split the desk's own
+// header documents; the loudness engine judges the bounce afterwards).
 
 import type { TakePlan } from "./arranger.ts";
 import { buildTracksFromSchedule, validateMidi, writeMidi } from "./midiwriter.ts";

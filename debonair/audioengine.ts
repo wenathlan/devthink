@@ -440,7 +440,14 @@ export class VoiceBank {
 /**
  * The glue bus the desk and the bounce share: role faders (the plan's own
  * strips), the master fader and the same compressor settings — the export
- * answers what the desk plays.
+ * answers what the desk plays. the honest mastering gap, documented here
+ * never hidden: this browser graph carries no true-peak limiter (webaudio
+ * owns no deterministic limiter node; a real lookahead limiter needs an
+ * audio worklet — its own wave), so the desk and the studio bounce ride
+ * the glue's ua-tailored ceiling while the server render lane closes its
+ * bounces with the engine's own deterministic −1 dBTP limiter (limiter.ts,
+ * the number the MASTERING spec pins) — the published take honours the
+ * ceiling on every machine alike, the desk honestly does not promise it.
  *
  * @param ac the context the graph builds on.
  * @param plan the plan whose strips ride the faders.

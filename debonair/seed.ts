@@ -3,6 +3,8 @@
 // nothing here touches the visitor machine; the same rows ship in the site database and
 // reach the pages over HTTPS when a catalog endpoint is configured.
 
+import { planTake } from "./arranger.ts";
+import { formatClock } from "./dawview.ts";
 import { GENRES } from "./genrematrix.ts";
 import type {
   FeatureCard,
@@ -95,13 +97,36 @@ export const seedReadouts: readonly ReadoutRow[] = [
   { label: "Swing", value: "12%" },
 ];
 
+/** One sample row's honest face: the duration is the real span of the take
+ * the row names — the arranger's own planTake over the row's genre and
+ * name (the exact law the home rail renders on demand: prompt
+ * "<genre> <name>", seed "<name>"), never an invented clock; the status is
+ * "draft" — the take is planned, no render has landed (a "ready" or
+ * "rendering" the seed never earned would fake a number, and the seed
+ * never fakes a number: the vitrine's empty shelf and the genre cards'
+ * untrained zeros ride the same law).
+ *
+ * @param name the row's display name (the seed the planned take rides).
+ * @param genreLabel the row's genre label (matched against the matrix; an
+ *   unknown label resolves through the prompt, the home rail's own law).
+ * @returns the honest library row. */
+function sampleTrackRow(name: string, genreLabel: string): LibraryTrackRow {
+  const genre = GENRES.find((entry) => entry.label.toLowerCase() === genreLabel.toLowerCase());
+  const plan = planTake({ prompt: `${genreLabel} ${name}`, seed: name, genreId: genre?.id });
+  return { name, genre: genreLabel, duration: formatClock(plan.durationSeconds), status: "draft" };
+}
+
+/** The library's sample rows — the site's own shelf content, never engine
+ * takes: every duration is the composer's planned span for the take the
+ * row names (deterministic — the same row always answers the same span),
+ * every status the draft an unrendered row honestly owns. */
 export const seedLibraryTracks: readonly LibraryTrackRow[] = [
-  { name: "Midnight Tide", genre: "House", duration: "3:42", status: "ready" },
-  { name: "Paper Lanterns", genre: "Pop", duration: "3:05", status: "ready" },
-  { name: "Static Bloom", genre: "Techno", duration: "4:18", status: "rendering" },
-  { name: "Copper Sky", genre: "Cinematic", duration: "2:56", status: "ready" },
-  { name: "Velvet Static", genre: "R&B", duration: "3:21", status: "draft" },
-  { name: "Drill Sermon", genre: "Drill", duration: "2:47", status: "ready" },
+  sampleTrackRow("Midnight Tide", "House"),
+  sampleTrackRow("Paper Lanterns", "Pop"),
+  sampleTrackRow("Static Bloom", "Techno"),
+  sampleTrackRow("Copper Sky", "Cinematic"),
+  sampleTrackRow("Velvet Static", "R&B"),
+  sampleTrackRow("Drill Sermon", "Drill"),
 ];
 
 /** The offline face of the vitrine — the honest empty shelf: nothing is

@@ -19495,9 +19495,9 @@ button.dtc-recents__row {
  * @depends-on keyframes dtkLampTick dtsDotSettle (defined earlier in this
  *   file — reused, never duplicated; the lamp keeps the family duty-cycle
  *   cadence, the dot settle keeps the spring)
- * @consumed-by IntroBoot IntroSaas SaasHero SaasCreators SaasStudios
- *   SaasCadria SaasExplorerWall SaasDebonair SaasDoo SaasFooter
- *   IntroSaasrails ExploreDownloadrail Explore Onboarding OnboardingSteps
+ * @consumed-by IntroBoot IntroSaas SaasHero SaasStudios SaasStudioSpotlight
+ *   SaasFooter IntroSaasrails ExploreDownloadrail Explore Onboarding
+ *   OnboardingSteps
  *   Auth AuthLockface AuthSignin AuthPairing AuthStatusline AuthPowermenu
  *   AuthProviderrow AboutFamily AboutHero AboutTimeline DocsNav DocsCard
  *   DocsModules TermsLegalkit InstitutionalChrome Notfound Gateway Plans
@@ -19625,13 +19625,13 @@ button.dtc-recents__row {
 /* ==========================================================================
    §B — the intro saas (the web face)
    The landing materials live in the injected saas sheet (saas.tsx) at the
-   exact values of the approved original: the tactile keys, the icon
-   frames, the five-hue gaussian shader of the hero, the conic rainbow
-   ring, the brand gradient word, the selection and the focus ring. This
-   sheet re-derives nothing on top of them — the color-lock pass that
-   re-tinted the hero shader, the tactile hover and the icon frames to
-   the accent family (the blue glows on the hero phrase) retired with the
-   owner order that restored the original design.
+   values of the redesign order: the tactile keys and the icon frames on
+   the neutral ink ladder (never a blue glow), the ever rose hero — the
+   inline switch track, the gaussian field and the shader walk all ride
+   the --color-ever family of the tokens above — and the brand gradient
+   word. This sheet re-derives nothing on top of them (the retired decks —
+   the rainbow ring, the sawtooth ribbon, the fan deck and the swing
+   cards — died with the mock sections, so their guards died too).
    ========================================================================== */
 
 /* ==========================================================================
@@ -20447,13 +20447,6 @@ button.dtc-recents__row {
   }
 
   & .saas-root .hero-gaussian-shader,
-  & .saas-root .spin-badge-slow,
-  & .saas-root .swing-card-1,
-  & .saas-root .swing-card-2,
-  & .saas-root .swing-card-3,
-  & .saas-root .animate-float-card,
-  & .saas-root .animate-float-card-delayed,
-  & .saas-root .fan-swap,
   & .boot-root .boot-ring {
     animation: none;
   }
@@ -20538,13 +20531,6 @@ button.dtc-recents__row {
    duty-cycled lamp park mid-frame — the duty cycle keeps the frame, the
    pause keeps the paint */
 [data-anim-paused] .saas-root .hero-gaussian-shader,
-[data-anim-paused] .saas-root .spin-badge-slow,
-[data-anim-paused] .saas-root .swing-card-1,
-[data-anim-paused] .saas-root .swing-card-2,
-[data-anim-paused] .saas-root .swing-card-3,
-[data-anim-paused] .saas-root .animate-float-card,
-[data-anim-paused] .saas-root .animate-float-card-delayed,
-[data-anim-paused] .saas-root .fan-swap,
 [data-anim-paused] .boot-root .boot-ring,
 [data-anim-paused] .dtw-providers__dot[data-on="true"] {
   animation-play-state: paused;
@@ -20573,13 +20559,6 @@ button.dtc-recents__row {
   .dtw-calc__flag,
   .dtw-calc__error,
   .saas-root .hero-gaussian-shader,
-  .saas-root .spin-badge-slow,
-  .saas-root .swing-card-1,
-  .saas-root .swing-card-2,
-  .saas-root .swing-card-3,
-  .saas-root .animate-float-card,
-  .saas-root .animate-float-card-delayed,
-  .saas-root .fan-swap,
   .boot-root .boot-ring {
     animation: none;
   }
