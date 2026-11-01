@@ -20,7 +20,8 @@
  * modules; the prose and the affordances around them ride here.
  */
 
-import type { LabelRow } from "./db";
+import { createLabelStore } from "@wenathlan/vault/labelstore";
+
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
@@ -241,35 +242,29 @@ export const LABEL_MANIFEST = {
 
 export type LabelKey = keyof typeof LABEL_MANIFEST & string;
 
-/** the translation overrides the runtime loads from the store at boot: the
- * key answers the translated text when the person changed the language. */
-const overrides = new Map<string, string>();
-
-/** the monetization surface carries the no storage law of its own legal copy:
- * the visitor browser never writes, so the overrides ride the runtime api of
- * the site db alone and the manifest answers the english source of truth. */
+/** the store mechanism rides the vault factory (the storage law of the
+ * family: the vault owns the store, the app owns the manifest — the
+ * mechanism is imported, never duplicated). the surface answers its own no-storage law: the visitor browser never writes. */
+const store = createLabelStore({
+  manifest: LABEL_MANIFEST,
+  revision: LABEL_REVISION,
+});
 
 /** the typed accessor of the copy: the only door a widget or page anchor uses. */
 export function label(key: LabelKey): string {
-  return overrides.get(key) ?? LABEL_MANIFEST[key];
+  return store.label(key);
 }
 
 /** the placeholder door: fills the {token} slots of one format key with the
  * runtime values (the store keeps the sentence, the widget passes the data). */
 export function labelfill(key: LabelKey, values: Record<string, string>): string {
-  return label(key).replace(/\{(\w+)\}/g, (match, token: string) => values[token] ?? match);
+  return store.labelfill(key, values);
 }
 
 /** the seed ingests the manifest into the labels store, idempotent, and the
  * translated rows stay protected from the overwrite. in the browser the rows
  * ride the local cache of the site db; on the server db.ts seeds the same
  * manifest into the labels table through seedLabelRows. */
-export async function seedLabels(): Promise<{ seeded: number; protected: number }> {
-  const seeded = 0;
-  let saved = 0;
-  for (const [id, text] of Object.entries(LABEL_MANIFEST)) {
-    overrides.set(id, text);
-    saved += 1;
-  }
-  return { seeded, protected: saved - seeded };
+export function seedLabels(): Promise<{ seeded: number; protected: number }> {
+  return store.seedLabels();
 }

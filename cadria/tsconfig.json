@@ -16,7 +16,8 @@
       "@wenathlan/debonair/audioattributes": ["../debonair/audioattributes.ts"],
       "@wenathlan/debonair/audiodecode": ["../debonair/audiodecode.ts"],
       "@wenathlan/debonair/audiofeatures": ["../debonair/audiofeatures.ts"],
-      "@wenathlan/debonair/audiopipeline": ["../debonair/audiopipeline.ts"]
+      "@wenathlan/debonair/audiopipeline": ["../debonair/audiopipeline.ts"],
+      "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"]
     }
   },
   "include": ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"],

@@ -13,6 +13,14 @@ export default defineConfig({
        * the node-side tests answer the same module the dev server serves
        * and the catalog keeps one owner. */
       "@wenathlan/saddle/modalityregistry": path.resolve(import.meta.dirname, "../saddle/modalityregistry.ts"),
+      /** the label store bridge of the ownership law: the app's copy
+       * mechanism rides the vault factory through the published library
+       * specifier ("@wenathlan/vault/labelstore"), and this bridge resolves
+       * the specifier to the monorepo source the sibling engine carries —
+       * the mechanism is never duplicated inside devthink. the entry retires
+       * when the published envelope carries the built label store. */
+      "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
+
       /** the workload law bridge of the family: the app battery pins the
        * lane mirror against the engine catalog through the published
        * library specifier ("@wenathlan/saddle/workloadlaw"), and this

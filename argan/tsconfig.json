@@ -11,6 +11,9 @@
     "skipLibCheck": true,
     "allowImportingTsExtensions": true,
     "moduleResolution": "bundler",
+    "paths": {
+      "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"]
+    },
     "types": ["vite/client", "node"]
   },
   "include": ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"],

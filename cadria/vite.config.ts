@@ -32,6 +32,13 @@ export default defineConfig({
       "@wenathlan/debonair/audiodecode": path.resolve(import.meta.dirname, "../debonair/audiodecode.ts"),
       "@wenathlan/debonair/audiofeatures": path.resolve(import.meta.dirname, "../debonair/audiofeatures.ts"),
       "@wenathlan/debonair/audiopipeline": path.resolve(import.meta.dirname, "../debonair/audiopipeline.ts"),
+      /** the label store bridge of the ownership law: the app's copy
+       * mechanism rides the vault factory through the published library
+       * specifier ("@wenathlan/vault/labelstore"), and this bridge resolves
+       * the specifier to the monorepo source the sibling engine carries —
+       * the mechanism is never duplicated inside cadria. the entry retires
+       * when the published envelope carries the built label store. */
+      "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
       "@": path.resolve(import.meta.dirname, "Sol"),
     },
   },
@@ -48,7 +55,7 @@ export default defineConfig({
    * both roots. */
   server: {
     fs: {
-      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../debonair")],
+      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../debonair"), path.resolve(import.meta.dirname, "../vault")],
     },
     host: true,
     strictPort: false,

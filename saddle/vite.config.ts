@@ -18,6 +18,11 @@ export default defineConfig({
 		alias: {
 			// the theme sources live in the Sol folder of this app root.
 			'@': path.resolve(import.meta.dirname, 'Sol'),
+			// The label store bridge of the ownership law: the app's copy mechanism
+			// rides the vault factory through the relative sibling source (the
+			// owner is the vault engine — the mechanism is never duplicated inside
+			// saddle), and the raw-node lanes (the forked webserver) resolve the
+			// same relative path without any registry envelope.
 			// The playground consumes the engine source here so the build never
 			// depends on a prebuilt dist directory.
 			'@saddle/isolation': path.resolve(import.meta.dirname, 'isolation.ts'),
@@ -36,7 +41,7 @@ export default defineConfig({
 	 * dev server allows this single root. */
 	server: {
 		fs: {
-			allow: [import.meta.dirname],
+			allow: [import.meta.dirname, path.resolve(import.meta.dirname, '../vault')],
 		},
 		host: true,
 		strictPort: false,
