@@ -7,11 +7,13 @@
 // tool maps its inputs to a json schema of typed properties with the
 // required list, carries its version, its risk class and its consent
 // requirement in the metadata, and every call answers a typed result —
-// never a throw. the six tools walk the whole pipeline: ingest_reference
+// never a throw. the seven tools walk the whole pipeline: ingest_reference
 // (the ialane post — the reference library grows without a human),
 // mine_profile (the genre profile job), compose_plan (the composer over
 // the freshest profile — the same pure library call the generate page
-// rides), render_track (the render job queue and its walk), publish_track
+// rides), compose_plan_ai (the family ai gateway seat — the model answer
+// parses onto the same pattern document), render_track (the render job
+// queue and its walk), publish_track
 // (the vitrine flip under the owner law) and list_vitrine (the public
 // surface). the agent identity rides the caller's agentId when the
 // automation carries its own; absent one, the lane mints one per lane
@@ -30,6 +32,7 @@ import { fetchProfile, listVitrine, mineProfile, pollRenderJob, publishTrack, qu
 import { GENRES, matchGenre } from "./genrematrix.ts";
 import type { IngestClientCode, IngestClientDeps, IngestClientResult } from "./ingestclient.ts";
 import { pollJob, uploadIngest } from "./ingestclient.ts";
+import { composeWithLlm, type LlmLaneCode } from "./llmlane.ts";
 import { hostallowed } from "./onboardingstate.ts";
 import type { PatternProject } from "./patternenums.ts";
 import { validatePatternProject } from "./patternenums.ts";
@@ -42,11 +45,12 @@ import type { RenderTrackRow } from "./renderworker.ts";
  * catalog carries it). */
 export const MCP_DOMAIN = "debonair";
 
-/** The six tool names of the lane (the namespaced catalog). */
+/** The seven tool names of the lane (the namespaced catalog). */
 export const MCP_TOOL_NAMES: readonly string[] = [
   "debonair.ingest_reference",
   "debonair.mine_profile",
   "debonair.compose_plan",
+  "debonair.compose_plan_ai",
   "debonair.render_track",
   "debonair.publish_track",
   "debonair.list_vitrine",
@@ -141,6 +145,22 @@ export function toolcatalog(): readonly McpToolDef[] {
             description: "the genre key to compose against (defaults to the prompt's own match)",
           },
           salt: { type: "string", description: "the fresh-take salt (empty answers the canonical take)" },
+        },
+        required: ["prompt"],
+      },
+    },
+    {
+      name: "debonair.compose_plan_ai",
+      version: 1,
+      description:
+        "composes one pattern plan through the family ai gateway: the free-text prompt and the enum-table instruction walk the chat completions lane and the model answer parses onto the same debonair.pattern/1 document the deterministic composer answers (no side effects, no job — the plan answers in the call; a model that answers no parsable pattern fails honestly with the bad-model refusal, never a silent fallback).",
+      risk: "read",
+      consent: "none — the composition is a pure read over the family gateway seat",
+      inputs: {
+        type: "object",
+        properties: {
+          prompt: { type: "string", description: "the free-text prompt of the request (the model reads it beside the instruction)" },
+          model: { type: "string", description: "the model name to ask for (defaults to the family meta model)" },
         },
         required: ["prompt"],
       },
@@ -295,7 +315,7 @@ function toolfail<T>(
 /** Translates one client refusal onto the lane-refused branch. */
 function lanefail<T>(
   tool: string,
-  refused: { error: { code: IngestClientCode; message: string; status: number | null } },
+  refused: { error: { code: IngestClientCode | LlmLaneCode; message: string; status: number | null } },
 ): McpToolResult<T> {
   return toolfail(tool, "lane-refused", refused.error.message, {
     code: refused.error.code,
@@ -581,6 +601,52 @@ export async function mcpComposePlan(
   };
 }
 
+/** The compose_plan_ai answer — the ai plan beside the seat facts. */
+export interface ComposePlanAiResult {
+  plan: PatternProject;
+  model: string;
+  origin: string;
+}
+
+/**
+ * debonair.compose_plan_ai — composes one pattern plan through the family
+ * ai gateway: the free-text prompt and the enum-table instruction
+ * (patternPromptHint) walk the chat completions lane of the configured
+ * origin and the model answer parses through patternFromLlm onto the
+ * same debonair.pattern/1 document the deterministic composer answers
+ * (no side effects, no job — the plan answers in the call). a model that
+ * answers no parsable pattern fails honestly with the bad-model refusal
+ * — never a silent fallback to the deterministic lane.
+ *
+ * @param lane the built lane.
+ * @param args the tool arguments (prompt, model?).
+ * @returns the ai plan with the seat facts, or the typed refusal.
+ */
+export async function mcpComposePlanAi(
+  lane: McpAgentLane | null,
+  args: Record<string, unknown>,
+): Promise<McpToolResult<ComposePlanAiResult>> {
+  const tool = "debonair.compose_plan_ai";
+  if (lane === null)
+    return toolfail(
+      tool,
+      "not-configured",
+      "the mcp lane answers nothing until the deploy configures the gateway origin",
+    );
+  const prompt = argstring(args, "prompt");
+  if (prompt === null) return toolfail(tool, "bad-args", "the tool needs the free-text prompt");
+  const model = argoptstring(args, "model");
+  if (model === undefined) return toolfail(tool, "bad-args", "the model, when it rides, must be a string");
+  const answer = await composeWithLlm({
+    prompt,
+    model: model ?? undefined,
+    origin: lane.origin,
+    deps: lane.deps,
+  });
+  if (!answer.ok) return lanefail(tool, answer);
+  return { ok: true, tool, result: { plan: answer.data.plan, model: answer.data.model, origin: answer.data.origin } };
+}
+
 /** The render_track answer — the landed take. */
 export interface RenderTrackResult {
   jobId: string;
@@ -710,7 +776,7 @@ export async function mcpListVitrine(
 /** @section dispatch — the tools/call seat */
 
 /** The per-tool call seats the dispatch routes to (the name-keyed catalog
- * of the six tools — the lockstep with MCP_TOOL_NAMES). */
+ * of the seven tools — the lockstep with MCP_TOOL_NAMES). */
 const TOOLCALLS: Record<
   string,
   (lane: McpAgentLane | null, args: Record<string, unknown>) => Promise<McpToolResult<unknown>>
@@ -718,6 +784,7 @@ const TOOLCALLS: Record<
   "debonair.ingest_reference": mcpIngestReference,
   "debonair.mine_profile": mcpMineProfile,
   "debonair.compose_plan": mcpComposePlan,
+  "debonair.compose_plan_ai": mcpComposePlanAi,
   "debonair.render_track": mcpRenderTrack,
   "debonair.publish_track": mcpPublishTrack,
   "debonair.list_vitrine": mcpListVitrine,
