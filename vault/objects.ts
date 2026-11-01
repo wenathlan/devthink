@@ -10,13 +10,7 @@
 // clocks at seal time — the same seed always seals the same vault.
 // This module is the testable core of the /objects page.
 
-import {
-  type StorageRecord,
-  digestValid,
-  lfsPointerText,
-  storageModeFor,
-  storageRecordValid,
-} from "./storage.ts";
+import { digestValid, lfsPointerText, type StorageRecord, storageModeFor, storageRecordValid } from "./storage.ts";
 
 /** the two channels of the safe (the storage.ts contract, mirrored). */
 export type VaultChannel = "lfs" | "blob";
@@ -43,12 +37,7 @@ export interface VaultObject {
 
 /** the rehearsal buckets of the vault (the retention page reads the same
  * names — one table, zero drift). */
-export const VAULT_BUCKETS: readonly string[] = [
-  "family-state",
-  "site-assets",
-  "run-evidence",
-  "backups",
-] as const;
+export const VAULT_BUCKETS: readonly string[] = ["family-state", "site-assets", "run-evidence", "backups"] as const;
 
 /** fnv-1a (32-bit) over the utf-8 bytes of a string — the deterministic
  * identity hash of the family (the same engine the cadria gateway rides). */
@@ -263,12 +252,17 @@ export function digestShort(digest: string): string {
 
 /** the channel answer of the deposit draft, before anything is sealed —
  * the same contract the seal uses, surfaced for the live readout. */
-export function channelPreview(mime: string, size: number): { channel: VaultChannel; why: string; digestShape: string } {
+export function channelPreview(
+  mime: string,
+  size: number,
+): { channel: VaultChannel; why: string; digestShape: string } {
   const channel = storageModeFor(size, mime);
   return {
     channel,
     why:
-      channel === "lfs" ? "binary master or over the 1,000,000-byte threshold" : "small text-like row under the threshold",
+      channel === "lfs"
+        ? "binary master or over the 1,000,000-byte threshold"
+        : "small text-like row under the threshold",
     digestShape: channel === "lfs" ? "sha-256 (64 hex)" : "sha-1 (40 hex)",
   };
 }

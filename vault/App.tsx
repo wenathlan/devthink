@@ -10,7 +10,7 @@
  * component lives behind the anchor chain (App → Sol → the page anchors →
  * the loose components); nothing is imported directly.
  */
-import { ArrowCounterclockwiseRegular as RotateCcw, WarningRegular as AlertTriangle } from "@fluentui/react-icons";
+import { WarningRegular as AlertTriangle, ArrowCounterclockwiseRegular as RotateCcw } from "@fluentui/react-icons";
 import { Component, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { Router as WouterRouter } from "wouter";

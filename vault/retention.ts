@@ -8,7 +8,7 @@
 // clock, no network: the same ledger, rules and tick always answer the
 // same plan. This module is the testable core of the /retention page.
 
-import { ruleFor, retentionLabel, type BucketRule } from "./buckets.ts";
+import { type BucketRule, retentionLabel, ruleFor } from "./buckets.ts";
 import type { VaultObject } from "./objects.ts";
 
 /** the retention state of one object at the current tick of the vault. */
@@ -42,7 +42,8 @@ export function verdictOf(object: VaultObject, rules: readonly BucketRule[], now
       object,
       ageDays,
       state: "sealed",
-      why: left === 0 ? "rides the last day of its window" : `${left} ${left === 1 ? "day" : "days"} left in the window`,
+      why:
+        left === 0 ? "rides the last day of its window" : `${left} ${left === 1 ? "day" : "days"} left in the window`,
     };
   }
   return {

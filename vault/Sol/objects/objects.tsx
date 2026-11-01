@@ -19,6 +19,7 @@ import {
   ShieldCheckmarkRegular,
 } from "@fluentui/react-icons";
 import { type FormEvent, useMemo, useState } from "react";
+import { label, labelfill } from "../../labels";
 import {
   channelPreview,
   digestShort,
@@ -30,8 +31,8 @@ import {
   vaultCensus,
   verifyObject,
 } from "../../objects.ts";
-import { label, labelfill } from "../../labels";
-import { EmptyState } from "../wingets";
+import { uicopy, uicopyfill, useUicopy } from "../../uistore.ts";
+import { EmptyState, toast } from "../wingets";
 
 /** the seed of the rehearsal vault (shown on the page, pinned by the tests) */
 export const VAULT_SEED = 20260314;
@@ -52,11 +53,7 @@ function ObjectRow({ object }: { object: VaultObject }) {
         {object.lfs ? "lfs" : "blob"}
       </span>
       <span className="vo-row__size">{formatBytes(object.size)}</span>
-      <span
-        className="vo-row__digest"
-        data-tip={object.digest}
-        aria-label={labelfill("objects.row.digestAria", { digest: object.digest })}
-      >
+      <span className="vo-row__digest" data-tip={object.digest} title={object.digest}>
         {digestShort(object.digest)}
       </span>
       <span className="vo-row__seal" data-intact={intact ? "true" : "false"}>
@@ -69,6 +66,9 @@ function ObjectRow({ object }: { object: VaultObject }) {
 
 /** The objects page: the sealed inventory of the safe. */
 export default function Objects() {
+  // the store mount: the live rows land once and the page re-renders
+  useUicopy();
+
   const [seed, setSeed] = useState(VAULT_SEED);
   const [objects, setObjects] = useState<VaultObject[]>(() => seedVault(VAULT_SEED));
   const [bucket, setBucket] = useState<string>("all");
@@ -86,7 +86,8 @@ export default function Objects() {
     [draft.mime, draft.size],
   );
 
-  /** seals the draft through the real contract and rides it onto the ledger */
+  /** seals the draft through the real contract and rides it onto the ledger
+   * (the verdict answers a toast — the sonner voice of the product face) */
   function deposit(event: FormEvent) {
     event.preventDefault();
     const size = Number(draft.size.replaceAll("_", "")) || 0;
@@ -95,6 +96,17 @@ export default function Objects() {
     if (!sealed.refusal) {
       setObjects((current) => [...current, sealed.object]);
       setDraft({ path: "", mime: draft.mime, size: "" });
+      toast(
+        uicopy("face.toast.sealedTitle"),
+        uicopyfill("face.toast.sealedBody", {
+          path: sealed.object.path,
+          channel: sealed.object.lfs ? "lfs" : "blob",
+          digest: sealed.object.lfs ? "sha-256" : "sha-1",
+        }),
+        "ok",
+      );
+    } else {
+      toast(uicopy("face.toast.refusedTitle"), sealed.refusal, "err");
     }
   }
 
@@ -103,7 +115,9 @@ export default function Objects() {
       <header className="pagehead">
         <p className="pagehead__eyebrow">{label("objects.eyebrow")}</p>
         <h1 className="pagehead__title">{label("objects.title")}</h1>
-        <p className="pagehead__lede">{labelfill("objects.lede", { seed: String(seed), count: String(census.total) })}</p>
+        <p className="pagehead__lede">
+          {labelfill("objects.lede", { seed: String(seed), count: String(census.total) })}
+        </p>
         <div className="pagehead__actions">
           <button
             type="button"
@@ -114,6 +128,11 @@ export default function Objects() {
               setObjects(seedVault(next));
               setBucket("all");
               setRefusal(undefined);
+              toast(
+                uicopy("face.toast.reseedTitle"),
+                uicopyfill("face.toast.reseedBody", { seed: String(next) }),
+                "info",
+              );
             }}
           >
             <PlayFilled fontSize={14} aria-hidden="true" />
@@ -127,6 +146,7 @@ export default function Objects() {
               setObjects(seedVault(VAULT_SEED));
               setBucket("all");
               setRefusal(undefined);
+              toast(uicopy("face.toast.restoreTitle"), uicopy("face.toast.restoreBody"), "info");
             }}
           >
             <ArrowRotateCounterclockwiseRegular fontSize={14} aria-hidden="true" />
@@ -159,7 +179,10 @@ export default function Objects() {
             </span>
             <span className="vo-lanecount" data-channel="blob">
               <i aria-hidden="true" />
-              {labelfill("objects.census.blob", { rows: String(census.blobRows), bytes: formatBytes(census.blobBytes) })}
+              {labelfill("objects.census.blob", {
+                rows: String(census.blobRows),
+                bytes: formatBytes(census.blobBytes),
+              })}
             </span>
           </p>
         </div>
@@ -237,11 +260,7 @@ export default function Objects() {
         <EmptyState
           icon={BoxMultipleRegular}
           title={label("objects.empty.title")}
-          line={
-            bucket === "all"
-              ? label("objects.empty.all")
-              : labelfill("objects.empty.bucket", { bucket })
-          }
+          line={bucket === "all" ? label("objects.empty.all") : labelfill("objects.empty.bucket", { bucket })}
           action={
             <button
               type="button"

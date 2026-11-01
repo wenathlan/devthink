@@ -56,6 +56,8 @@ export * from "./db.ts";
 export * from "./labels.ts";
 /** the entry-flow accessor: the seen flags of the visitor, one writer only. */
 export * from "./onboardingstate.ts";
+/** the ui store: the uicopy seed, the accessor chain and the sqlite lane. */
+export * from "./uistore.ts";
 
 /* ── the family chrome — the shared identity of the deploy units ── */
 

@@ -166,7 +166,11 @@ describe("design contract", () => {
   it("runs the family flow signature inside the mark strokes", () => {
     assert.match(MARK, /vtMarkFlow/, "the flow layer exists on the vault mark");
     assert.match(MARK, /vtm-flow/, "the flow gradient is declared");
-    assert.match(MARK, /prefers-reduced-motion: reduce[\s\S]*\.vtMarkFlow \{ opacity: 0/, "the flow hard-stops on reduced motion");
+    assert.match(
+      MARK,
+      /prefers-reduced-motion: reduce[\s\S]*\.vtMarkFlow \{ opacity: 0/,
+      "the flow hard-stops on reduced motion",
+    );
   });
 
   it("links the family row from the one table (zero drift between rail and landing)", () => {

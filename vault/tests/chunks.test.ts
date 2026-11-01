@@ -8,8 +8,8 @@
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import {
-  type ChunkSlice,
   CHUNK_BYTES,
+  type ChunkSlice,
   chunkIntact,
   decodeChunk,
   encodeChunk,
@@ -18,8 +18,8 @@ import {
   split,
   tierFor,
 } from "../chunks.ts";
-import { sha256Hex } from "../sha.ts";
 import { mulberry32 } from "../objects.ts";
+import { sha256Hex } from "../sha.ts";
 
 /** deterministic pseudo-random bytes from the family prng — the same seed always answers the same bytes. */
 function seededBytes(seed: number, length: number): Uint8Array {
