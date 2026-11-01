@@ -19,6 +19,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { afterAuthTarget } from "../gateway";
 import { panelgateverdict, resolveintrotarget } from "../introtarget";
+import { uistoreseedrows } from "../uistore.ts";
 
 const anchor = readFileSync(join(import.meta.dirname, "..", "Sol", "panel", "panel.tsx"), "utf8");
 const family = readFileSync(join(import.meta.dirname, "..", "account.ts"), "utf8");
@@ -152,5 +153,81 @@ describe("the session source of the gate (the account family contract)", () => {
     );
     expect(save).toContain("restorepromise = null;");
     expect(clear).toContain("restorepromise = null;");
+  });
+});
+
+describe("the panel face wave (the texture, the boot copy and the tile lift)", () => {
+  const shellchrome = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "Shellchrome.tsx"), "utf8");
+  const panelboot = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelBoot.tsx"), "utf8");
+  const solcss = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
+
+  /** the appended wave block of the panel face (the cascade-order tail of
+   * sol.css — the reading scopes to it so the earlier sections stay out) */
+  const wave = solcss.slice(solcss.indexOf("campaign wave 4 · panel face"));
+  expect(wave.length).toBeGreaterThan(0);
+
+  /** extracts the first rule body of one selector inside the wave slice */
+  function waveRule(selector: string): string {
+    const at = wave.indexOf(selector);
+    expect(at, `the selector ${selector} lives in the wave block`).toBeGreaterThan(-1);
+    const open = wave.indexOf("{", at);
+    const close = wave.indexOf("}", open);
+    return wave.slice(open + 1, close);
+  }
+
+  it("the boot words ride the ui store rows — no literal stays on the boot face", () => {
+    expect(panelboot).toContain('uicopy("panel.boot.aria")');
+    expect(panelboot).toContain('uicopy("panel.boot.name")');
+    expect(panelboot).toContain('uicopy("panel.boot.state")');
+    expect(panelboot).not.toContain('"DevThink is starting"');
+    expect(panelboot).not.toContain('"opening the local os"');
+    const seed = uistoreseedrows();
+    expect(seed["panel.boot.aria"]).toBe("DevThink is starting");
+    expect(seed["panel.boot.name"]).toBe("DevThink");
+    expect(seed["panel.boot.state"]).toBe("opening the local os");
+  });
+
+  it("the desktop carries the doctrine texture — the noise tile rides the --win-noise token", () => {
+    const texture = waveRule(".shell-os__atmosphere::after");
+    expect(texture).toContain("content:");
+    expect(texture).toContain("background-image: var(--win-noise)");
+    expect(texture).not.toMatch(/url\(/);
+  });
+
+  it("the desktop floor sinks under the taskbar — the vignette composes off the mask ink token", () => {
+    const vignette = waveRule(".shell-os__atmosphere::before");
+    expect(vignette).toContain("box-shadow:");
+    expect(vignette).toContain("color-mix(in oklab, var(--color-mask-ink)");
+    expect(vignette).not.toMatch(/#[0-9a-f]{3,8}\b/i);
+  });
+
+  it("the texture respects the reduced transparency guard", () => {
+    const guardAt = wave.indexOf("@media (prefers-reduced-transparency: reduce)");
+    expect(guardAt).toBeGreaterThan(wave.indexOf(".shell-os__atmosphere::before"));
+    expect(wave.slice(guardAt, guardAt + 220)).toContain(".shell-os__atmosphere::after");
+  });
+
+  it("the gate reading bar carries the shimmer sweep with the reduced-motion guard", () => {
+    const shimmer = waveRule(".dtw-gate__bar::before");
+    expect(shimmer).toContain("animation: dtwgateshimmer");
+    expect(shimmer).toContain("background-size");
+    expect(wave).toContain("@keyframes dtwgateshimmer");
+    const motionAt = wave.indexOf("@media (prefers-reduced-motion: reduce)");
+    expect(motionAt).toBeGreaterThan(wave.indexOf("@keyframes dtwgateshimmer"));
+    expect(wave.slice(motionAt, motionAt + 200)).toContain(".dtw-gate__bar::before");
+  });
+
+  it("the light gate rides the doctrine mica token (no fixed paint on the flip)", () => {
+    const lightRule = waveRule('[data-theme="light"] .dtw-gate');
+    expect(lightRule).toContain("background: var(--mica);");
+  });
+
+  it("the start tiles answer with the doctrine lift — translateY up and a growing shadow in 150ms", () => {
+    expect(shellchrome).toContain("hover:-translate-y-px");
+    expect(shellchrome).toContain("hover:[&_.dt-tile]:shadow-");
+    expect(shellchrome).toContain("transition-[background-color,transform] duration-150 ease-micro");
+    // the lift never plays under the reduced-motion preference
+    expect(shellchrome).toContain("motion-reduce:transition-none");
+    expect(shellchrome).toContain("motion-reduce:hover:translate-y-0");
   });
 });

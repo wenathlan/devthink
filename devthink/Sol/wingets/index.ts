@@ -58,6 +58,7 @@ export { default as Saas } from "./IntroSaas.tsx";
 export * from "./IntroSaaskit.tsx";
 export * from "./IntroSaasrails.tsx";
 export * from "./IntroSaassections.tsx";
+export * from "./IntroShaderhero.tsx";
 export * from "./OnboardingSteps.tsx";
 export * from "./PanelBoot.tsx";
 export * from "./PanelDesktop.tsx";
