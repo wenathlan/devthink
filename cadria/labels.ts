@@ -171,7 +171,7 @@ export const labelManifest = {
     "cadria is the video and image home of the wenathlan family — the studio listens to audio and renders the artwork it implies, the player shows the frames, the gallery keeps them. not an operating system: one honest application window.",
   "onboarding.hear.lead": "give it something to hear",
   "onboarding.hear.lede":
-    "pick an audio file or record a slice — the genuine wave-1 chain reads it right here: spectrum, rhythm, tonality, timbre, structure. nothing is uploaded, nothing is stored.",
+    "pick an audio file or record a slice — the genuine analysis reads it right here: spectrum, rhythm, tonality, timbre, structure. nothing is uploaded, nothing is stored.",
   "onboarding.hear.pick": "pick audio",
   "onboarding.hear.record": "record a slice",
   "onboarding.hear.stop": "stop recording",
@@ -185,7 +185,7 @@ export const labelManifest = {
   "onboarding.hear.refused": "the chain refused this slice — try a longer clip.",
   "onboarding.see.lead": "the picture of what it heard",
   "onboarding.see.lede":
-    "the genuine wave-2 render layer draws the frame the descriptor describes — palette from key, composition from sections, texture from timbre, motion from bpm. same audio, same image, always.",
+    "the genuine render layer draws the frame the descriptor describes — palette from key, composition from sections, texture from timbre, motion from bpm. same audio, same image, always.",
   "onboarding.see.sourceAria": "what the frame renders from",
   "onboarding.see.yours": "your audio",
   "onboarding.see.frameAria": "rendered artwork from {source}",
@@ -231,7 +231,7 @@ export const labelManifest = {
   "player.readingMedia": "reading media…",
   "player.beat": "{ms} ms / beat",
   "player.gatewayCount": "{n} in the gallery list",
-  "player.staticNote": "static — the gallery serves the frame, not the project file",
+  "player.staticNote": "static — the frame plays straight from the gallery",
   "player.rail.analysis": "analysis",
   "player.rail.digest": "digest",
   "player.rail.state": "state",
@@ -328,7 +328,7 @@ export const labelManifest = {
   "studio.readout.shape": "shape",
   "studio.readout.swung": "swung",
   "studio.readout.straight": "straight",
-  "studio.readout.timings": "decode {decode} ms · analysis {analysis} ms · schema v{version} · deterministic",
+  "studio.readout.timings": "decode {decode} ms · analysis {analysis} ms · deterministic",
   // the studio controls (the right pane)
   "studio.controls.paneAria": "generation controls",
   "studio.controls.head": "controls",
@@ -373,9 +373,9 @@ export const labelManifest = {
   "studio.visualize.paneAria": "visualize: image to mesh",
   "studio.visualize.head": "visualize",
   "studio.visualize.lede":
-    "image to 3d mesh, decoded and triangulated client-side — heightmap from luminance, step decimation and blur on the controls. downloads run through the root",
-  "studio.visualize.ledeCode": "visualize",
-  "studio.visualize.ledeTail": "library.",
+    "image to 3d mesh, decoded and triangulated client-side — heightmap from luminance, step decimation and blur on the controls. the mesh exports answer the",
+  "studio.visualize.ledeCode": "engine",
+  "studio.visualize.ledeTail": "the studio carries.",
   "studio.visualize.image": "image",
   "studio.visualize.depth": "depth",
   "studio.visualize.step": "step",
