@@ -347,6 +347,214 @@ export function documentVector(doc: IngestDocument): number[] {
   return sums.map((sum) => round4(sum / segments.length));
 }
 
+/* ============================================================ *
+ * the genre verdict — the style-law classifier the ingest lane
+ * rides: one document measured against the fifteen style seats of
+ * the dictionary, every score derived from the report the analysis
+ * measured (the bpm, the key mode, the loudness and the band
+ * balance), never from the name. the seats:
+ *   bpm      — inside the genre's inclusive range the score is one,
+ *              outside it decays by the gaussian of the distance (the
+ *              sigma of eight beats answers the neighboring-genre
+ *              overlap the dictionary carries);
+ *   mode     — the share of the genre's scales that match the
+ *              document's measured key mode (minor scales against a
+ *              minor key, major scales against a major key);
+ *   loudness — the gaussian of the distance to the genre's mastered
+ *              target (the three-decibel sigma the corpus documents);
+ *   timbre   — the band-balance distance to the expectation the
+ *              genre's timbre hints carry (the sub-heavy hints pull
+ *              low, the hat hints pull high, the pad hints hold the
+ *              mids).
+ * the weighted sum answers the verdict score; the fifteen rank
+ * descending, the confidence normalizes against the winning score so
+ * a decisive document answers near one and an even field answers the
+ * honest split. deterministic: the same document always answers the
+ * same ranking bit-for-bit.
+ * ============================================================ */
+
+/** the weight each style seat carries in the verdict (the sum is one). */
+export const GENRE_SEAT_WEIGHTS: Readonly<Record<"bpm" | "mode" | "loudness" | "timbre", number>> = {
+  bpm: 0.35,
+  mode: 0.2,
+  loudness: 0.2,
+  timbre: 0.25,
+};
+
+/** the gaussian sigma of the bpm seat (beats per minute). */
+const BPM_SIGMA = 8;
+/** the gaussian sigma of the loudness seat (LUFS). */
+const LUFS_SIGMA = 3;
+
+/** the minor-family scale names (the mode affinity the scales carry). */
+const MINOR_SCALES: ReadonlySet<string> = new Set([
+  "natural-minor",
+  "harmonic-minor",
+  "phrygian",
+  "dorian",
+  "locrian",
+  "minor-pentatonic",
+  "blues",
+]);
+
+/** the timbre hints that pull the expected band balance toward the lows,
+ * the mids and the highs (the sub and kick hints ride low, the pad and
+ * bell hints hold the mids, the hat and shimmer hints ride high). */
+const TIMBRE_LOW: ReadonlySet<string> = new Set([
+  "808-sub",
+  "sliding-808",
+  "punchy-kick",
+  "sub-bass",
+  "rumble",
+  "vinyl-crackle",
+  "sample-chops",
+  "warm-keys",
+]);
+const TIMBRE_MID: ReadonlySet<string> = new Set([
+  "dark-bells",
+  "orchestral-stabs",
+  "dark-pads",
+  "warm-pads",
+  "organ-chords",
+  "ep-keys",
+  "guitar-chops",
+  "brass-stabs",
+]);
+const TIMBRE_HIGH: ReadonlySet<string> = new Set([
+  "distorted-hats",
+  "uk-hats",
+  "shimmer",
+  "bright-leads",
+  "air-pads",
+  "sizzle",
+  "white-noise-sweeps",
+  "plucks",
+]);
+
+/** one ranked verdict of the style-law classifier. */
+export interface GenreVerdict {
+  /** the stable genre id of the style dictionary ("trap"). */
+  genreId: string;
+  /** the human label of the genre ("Trap"). */
+  label: string;
+  /** the weighted style-law score, zero to one (four decimals). */
+  score: number;
+  /** the winner's share of the field (the confidence the ranking carries). */
+  confidence: number;
+}
+
+/** the gaussian of a distance (the seat kernel the bpm and loudness ride).
+ *
+ * @param distance the absolute distance from the target.
+ * @param sigma the width of the kernel.
+ * @returns the decayed score in zero to one.
+ */
+function gaussian(distance: number, sigma: number): number {
+  return Math.exp(-(distance * distance) / (2 * sigma * sigma));
+}
+
+/** the expected band balance one genre's timbre hints carry: every hint
+ * votes its band, the normalized votes answer the [low, mid, high]
+ * expectation (a genre with no mapped hints answers the even split).
+ *
+ * @param genre one style of the dictionary.
+ * @returns the expected [low, mid, high] shares (summing to one).
+ */
+function timbreExpectation(genre: (typeof GENRES)[number]): [number, number, number] {
+  let low = 0;
+  let mid = 0;
+  let high = 0;
+  for (const hint of genre.timbre) {
+    if (TIMBRE_LOW.has(hint)) low += 1;
+    else if (TIMBRE_MID.has(hint)) mid += 1;
+    else if (TIMBRE_HIGH.has(hint)) high += 1;
+  }
+  const total = low + mid + high;
+  if (total === 0) return [1 / 3, 1 / 3, 1 / 3];
+  return [low / total, mid / total, high / total];
+}
+
+/** the mode affinity one genre's scales carry for the measured mode.
+ *
+ * @param genre one style of the dictionary.
+ * @param mode the document's measured key mode.
+ * @returns the share of the genre's scales matching the mode (the even
+ * split when the genre declares no scales).
+ */
+function modeAffinity(genre: (typeof GENRES)[number], mode: "major" | "minor"): number {
+  if (genre.scales.length === 0) return 0.5;
+  let matching = 0;
+  for (const scale of genre.scales) {
+    const minorish = MINOR_SCALES.has(scale);
+    if (minorish === (mode === "minor")) matching += 1;
+  }
+  return matching / genre.scales.length;
+}
+
+/**
+ * classifyDocument — the style-law verdict of one ingest document: the
+ * fifteen genres of the dictionary ranked by the weighted style seats the
+ * report measured, the winner first with its share of the field as the
+ * confidence. Every score derives from the document's measured numbers
+ * (the bpm, the key mode, the loudness and the mean band balance) — never
+ * from the name. Deterministic: the same document answers the same
+ * ranking bit-for-bit; a damaged report coerces through the analysis
+ * layer's own total law.
+ *
+ * @param doc one ingest document (the mix lane is the read).
+ * @returns the fifteen verdicts ranked descending by score.
+ */
+export function classifyDocument(doc: IngestDocument): GenreVerdict[] {
+  const bpm = fin(doc.mix.rhythm.bpm);
+  const mode: "major" | "minor" = doc.mix.key.mode === "minor" ? "minor" : "major";
+  const lufs = fin(doc.mix.loudness.integrated);
+  const segments = Array.isArray(doc.segments) ? doc.segments : [];
+  let low = 0;
+  let mid = 0;
+  let high = 0;
+  let owners = 0;
+  for (const segment of segments) {
+    const bands = Array.isArray(segment.bands) ? segment.bands : [];
+    const a = fin(bands[0] ?? 0);
+    const b = fin(bands[1] ?? 0);
+    const c = fin(bands[2] ?? 0);
+    const sum = a + b + c;
+    if (sum <= 0) continue;
+    owners += 1;
+    low += a / sum;
+    mid += b / sum;
+    high += c / sum;
+  }
+  const balance: [number, number, number] =
+    owners > 0 ? [low / owners, mid / owners, high / owners] : [1 / 3, 1 / 3, 1 / 3];
+  const scored = GENRES.map((genre) => {
+    const bpmDistance = bpm < genre.bpmin ? genre.bpmin - bpm : bpm > genre.bpmax ? bpm - genre.bpmax : 0;
+    const bpmSeat = gaussian(bpmDistance, BPM_SIGMA);
+    const modeSeat = modeAffinity(genre, mode);
+    const loudnessSeat = gaussian(Math.abs(lufs - genre.lufs), LUFS_SIGMA);
+    const expectation = timbreExpectation(genre);
+    const timbreSeat =
+      1 -
+      (Math.abs(balance[0] - expectation[0]) +
+        Math.abs(balance[1] - expectation[1]) +
+        Math.abs(balance[2] - expectation[2])) /
+        2;
+    const score =
+      GENRE_SEAT_WEIGHTS.bpm * bpmSeat +
+      GENRE_SEAT_WEIGHTS.mode * modeSeat +
+      GENRE_SEAT_WEIGHTS.loudness * loudnessSeat +
+      GENRE_SEAT_WEIGHTS.timbre * Math.max(0, timbreSeat);
+    return { genreId: genre.id, label: genre.label, score: round4(Math.max(0, score)) };
+  });
+  const total = scored.reduce((sum, verdict) => sum + verdict.score, 0);
+  return scored
+    .map((verdict) => ({
+      ...verdict,
+      confidence: total > 0 ? round4(verdict.score / total) : 0,
+    }))
+    .sort((a, b) => b.score - a.score || (a.genreId < b.genreId ? -1 : a.genreId > b.genreId ? 1 : 0));
+}
+
 /** The cosine of two equal-length vectors; zero when either norm is zero
  * (the honest floor the reference similarity carries). */
 function cosine(a: readonly number[], b: readonly number[]): number {

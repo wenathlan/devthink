@@ -102,7 +102,7 @@ import type {
 import { INGEST_STEMS_SCHEMA_VERSION, runIngestJob } from "./ingestworker.ts";
 import { PATTERN_SCHEMA_VERSION, parsePattern, serializePattern, validatePatternProject } from "./patternenums.ts";
 import type { GenreProfile, IngestDocumentWithId, ProfileErrorCode } from "./patternminer.ts";
-import { mineGenre, PROFILE_GENRE_KEYS, ProfileError } from "./patternminer.ts";
+import { classifyDocument, mineGenre, PROFILE_GENRE_KEYS, ProfileError } from "./patternminer.ts";
 import {
   type RenderJobRow,
   type RenderJobSeat,
@@ -1191,15 +1191,17 @@ function renderwire(row: RenderTrackRow): VitrineTrackValue {
 }
 
 /** The vitrine row of one ingested reference — the stored mix's face
- * (the genre line rides the matrix's own matcher over the document name,
- * the grouping law the miner lane rides: the documents carry no genre
- * column, the name is the honest carrier). */
+ * (the genre line rides the matrix's own matcher over the document name
+ * first — the declared label the reference lane carries — and the style-law
+ * classifier answers when the name declares nothing: the measured verdict
+ * of the report the analysis walked, the grouping law the miner lane
+ * rides). */
 function referencewire(row: IngestStampRow): VitrineTrackValue {
   return {
     kind: "reference",
     id: row.id,
     name: row.name,
-    genre: matchGenre(row.name)?.label ?? "",
+    genre: matchGenre(row.name)?.label ?? classifyDocument(row.document)[0]?.label ?? "",
     seconds: Math.round(row.durationSeconds),
     status: "ready",
     wavPointer: row.mixPointer,
@@ -1673,8 +1675,10 @@ export async function startMinerJob(
   // phase: collect — the genre's reference documents read off the shelf:
   // kind "reference" only (the visitor uploads never feed a genre
   // profile), grouped by the genre matrix's own matcher over the document
-  // name (the grouping law the pattern miner names — the documents carry
-  // no genre column, the name is the reference lane's honest carrier)
+  // name first (the declared label the reference lane carries) and the
+  // style-law classifier second — the measured verdict of the report the
+  // analysis walked collects the documents whose names declare nothing,
+  // the grouping law the pattern miner carries
   let shelf: IngestStampRow[];
   try {
     shelf = await env.db.liststampedrows();
@@ -1682,7 +1686,11 @@ export async function startMinerJob(
     return failwalk("db-failed", 500, `the shelf refused the list: ${errmsgof(error)}`);
   }
   const references: IngestDocumentWithId[] = shelf
-    .filter((standing) => standing.kind === "reference" && matchGenre(standing.name)?.id === payload.genre)
+    .filter(
+      (standing) =>
+        standing.kind === "reference" &&
+        (matchGenre(standing.name)?.id ?? classifyDocument(standing.document)[0]?.genreId) === payload.genre,
+    )
     .map((standing) => ({ ...standing.document, id: standing.id }));
   report("collect");
   // phase: mine — the profile document (a genre with no references fails
