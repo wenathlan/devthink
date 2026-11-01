@@ -1,11 +1,17 @@
 /**
  * ShellChrome.tsx — the ONE chrome of the Sol shell, shared by every page of
- * the theme (the desktop workspace and the control pages alike): a 48px bar
- * pinned to the BOTTOM edge of the screen in the exact Windows 11 taskbar
- * grammar (the win11 law: the taskbar is the bottom edge of the screen) over
- * the .acrylic-bar surface (rgba(32,32,32,.75) + saturate(3) blur(20px) +
- * grain) and a dark top hairline. The official DevThink mark opens the
- * centered cluster and IS the
+ * the theme (the desktop workspace and the control pages alike): the shell
+ * bar of the two modes the owner ordered — FLOATING (the detached rounded
+ * pad, the magnifying dock the GSAP gaussian bump rides) and DOCKED (the
+ * bar pinned to one screen edge: the bottom taskbar or the 48px side rail)
+ * over the .acrylic-bar surface (rgba(32,32,32,.75) + saturate(3) blur(20px)
+ * + grain) and a dark top hairline. The mode rides the account store (the
+ * system preference lane of storage.ts — never a browser localStorage key of
+ * this build) and the drag gestures move it live: pulling the bar up floats
+ * it, pulling it sideways docks it to that edge, and pulling a docked bar
+ * off its wall (~1mm) floats it again with the rounded corners back
+ * (desktopstate.ts owns the pure verdict). The official DevThink mark opens
+ * the centered cluster and IS the
  * Start trigger (no labeled start button, no brand text); the pinned apps
  * follow as 38×38 r4 icon FACES inside 44px hit cells — the face is the
  * Windows button, the cell is the touch target (the ≥44px rule): hover wash
@@ -23,7 +29,9 @@
  * 250ms Fluent window curve). The tray cluster opens QuickSettings and the
  * clock opens the Calendar (Sol/shell/trayflyouts.tsx — the .dt-flyout 360px
  * r8 panels entering on the 250ms cubic-bezier(.62,0,.32,1) tray curve); the
- * clock reads two 11px tabular-nums lines. Clicking the mark opens the Start
+ * clock reads two 11px tabular-nums lines, and the calendar accompanies the
+ * dock — while the pad floats the flyout rides the measured clock anchor.
+ * Clicking the mark opens the Start
  * menu: a 640px centered acrylic panel rising from the bottom taskbar with
  * 8px corners carrying the search
  * box and the pinned grid of the desktop app catalog (Sol/shell/
@@ -50,19 +58,25 @@ import { type CSSProperties, type RefObject, useCallback, useEffect, useLayoutEf
 import { useLocation } from "wouter";
 import { DESKTOP_APPS, type DesktopApp, searchDesktopApps } from "../../appregistry.ts";
 import {
-  loadNavbarPosition,
-  loadNavbarStyle,
-  NAVBAR_POS_EVENT,
-  NAVBAR_STYLE_EVENT,
-  type NavbarPosition,
-  type NavbarStyle,
-  resolveNavbarDock,
+  isNavbarEdge,
+  isNavbarMode,
+  loadNavbarEdge,
+  loadNavbarMode,
+  NAVBAR_EDGE_EVENT,
+  NAVBAR_MODE_EVENT,
+  navbarDragVerdict,
+  type NavbarEdge,
+  type NavbarMode,
+  saveNavbarEdge,
+  saveNavbarMode,
 } from "../../desktopstate";
 import { osText } from "../../oslabels.ts";
 import { loadrecentapps, pushrecentapp } from "../../recentapps.ts";
+import { uicopy, useUicopy } from "../../uistore.ts";
 import { SolLogoMark } from "./PanelLogo.tsx";
 import { AppTile } from "./ShellApptile.tsx";
 import { JumpList, loadTaskbarPins, saveTaskbarPins } from "./ShellJumpmenu.tsx";
+import { useDockMagnification } from "./ShellDockmagnify.tsx";
 import {
   CalendarFlyout,
   DEFAULT_TRAY_SETTINGS,
@@ -196,6 +210,9 @@ function useStartMarkDraw(reduced: boolean): RefObject<HTMLButtonElement | null>
 export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellChromeProps) {
   const [location, navigate] = useLocation();
   const reduced = useReducedMotion();
+  // the store ride: the live ui rows land once per mount (the drag hint and
+  // the other shell words answer the db when the platform answered)
+  useUicopy();
   /** the flyout kept in the DOM (through its exit transition) */
   const [mountedPanel, setMountedPanel] = useState<PanelState | null>(null);
   /** the flyout currently visible (null while exiting) */
@@ -205,27 +222,93 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
   /** the recently opened apps behind the Start menu recommended rail */
   const [recents, setRecents] = useState<string[]>(() => loadrecentapps());
   const [tray, setTray] = useState<TraySettings>(DEFAULT_TRAY_SETTINGS);
-  /** the navbar position the settings personalization pass persisted — the
-   * floating bottom bar (the default) or the vertical rail docked to one
-   * screen edge; the dt-navbar-pos event re-docks it the moment the choice
-   * lands (the stylesheet pass owns the rail layout itself) */
-  const [navbarPos, setNavbarPos] = useState<NavbarPosition>(() => loadNavbarPosition());
-  /** the navbar style the settings personalization pass persisted — the
-   * face the bar wears: the windows taskbar (the default) or the apple
-   * dock (the centered floating mica pad); the dt-navbar-style event
-   * re-faces it the moment the choice lands */
-  const [navbarStyle, setNavbarStyle] = useState<NavbarStyle>(() => loadNavbarStyle());
-  /** the effective dock position: the apple dock is the floating pad by
-   * law, so the style wins the edge fight — the rail grammar (the edge
-   * attributes, the side indicators, the body reservation) never pairs
-   * with the dock face */
-  const dockedPos = resolveNavbarDock(navbarStyle, navbarPos);
-  const rail = dockedPos !== "floating";
+  /** the navbar mode the account store persisted — floating (the detached
+   * rounded pad, the magnifying dock) or docked (the bar pinned to one
+   * screen edge); the store answers async after mount, the dt-navbar-mode
+   * event re-faces the bar the moment a choice or a drag lands */
+  const [navbarMode, setNavbarMode] = useState<NavbarMode>("floating");
+  /** the screen edge the docked bar hugs (bottom, the full-width taskbar
+   * edge, by default; left and right fold the 48px rail) */
+  const [navbarEdge, setNavbarEdge] = useState<NavbarEdge>("bottom");
+  const rail = navbarMode === "docked" && navbarEdge !== "bottom";
   const searchRef = useRef<HTMLInputElement | null>(null);
   const exitTimer = useRef<number | null>(null);
   const mountedKindRef = useRef<PanelState["kind"] | null>(null);
   const startRef = useStartMarkDraw(reduced);
   const { time, date } = useTrayClock();
+  /** the bar cluster: the magnification surface and the drag stage */
+  const clusterRef = useRef<HTMLDivElement | null>(null);
+  /** the clock trigger of the tray: the calendar anchor measures it at open */
+  const clockRef = useRef<HTMLButtonElement | null>(null);
+  /** the horizontal anchor (px) the calendar flyout rides when the pad is
+   * floating — measured once at open (the calendar accompanies the dock) */
+  const [calendarAnchorX, setCalendarAnchorX] = useState<number | null>(null);
+  /** the drag of the bar between its two modes (in flight state) */
+  const [barDragging, setBarDragging] = useState(false);
+  const dragref = useRef<{ x: number; y: number; done: boolean } | null>(null);
+  const swallowClick = useRef(false);
+
+  // the account store answers after mount: the persisted mode and edge
+  // land on the bar (the events cover the live choices meanwhile)
+  useEffect(() => {
+    let alive = true;
+    void loadNavbarMode().then((mode) => {
+      if (alive) setNavbarMode(mode);
+    });
+    void loadNavbarEdge().then((edge) => {
+      if (alive) setNavbarEdge(edge);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  // the dock magnification: the gaussian bump rides the floating pad only
+  // (the docked bar keeps the flat windows grammar) and dies under reduced
+  // motion — the hook owns the gsap tweens and their cleanup
+  useDockMagnification({ surfaceRef: clusterRef, enabled: navbarMode === "floating" && !reduced });
+
+  /** applies a drag or settings verdict: the state flips, the choice
+   * persists on the account store and the events tell the settings card —
+   * the side effects ride the changed values only (the updater stays pure) */
+  const applyNavbar = useCallback(
+    (next: { mode: NavbarMode; edge: NavbarEdge }) => {
+      if (next.mode !== navbarMode) {
+        setNavbarMode(next.mode);
+        saveNavbarMode(next.mode);
+        window.dispatchEvent(new CustomEvent<NavbarMode>(NAVBAR_MODE_EVENT, { detail: next.mode }));
+      }
+      if (next.edge !== navbarEdge) {
+        setNavbarEdge(next.edge);
+        saveNavbarEdge(next.edge);
+        window.dispatchEvent(new CustomEvent<NavbarEdge>(NAVBAR_EDGE_EVENT, { detail: next.edge }));
+      }
+    },
+    [navbarEdge, navbarMode],
+  );
+
+  /** the drag verdicts of the bar: pull up floats it, pull sideways docks
+   * the edge, pull a docked bar off its wall (~1mm) floats it again — the
+   * drag starts anywhere on the bar and only answers past the thresholds,
+   * so the triggers keep their clicks */
+  function onBarPointerDown(event: React.PointerEvent<HTMLElement>) {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    dragref.current = { x: event.clientX, y: event.clientY, done: false };
+    setBarDragging(true);
+  }
+  function onBarPointerMove(event: React.PointerEvent<HTMLElement>) {
+    const drag = dragref.current;
+    if (!drag || drag.done) return;
+    const verdict = navbarDragVerdict({ mode: navbarMode, edge: navbarEdge }, event.clientX - drag.x, event.clientY - drag.y);
+    if (!verdict) return;
+    drag.done = true;
+    swallowClick.current = true;
+    applyNavbar(verdict);
+  }
+  function endBarDrag() {
+    dragref.current = null;
+    setBarDragging(false);
+  }
 
   /** opens one flyout: mounts the panel first and the effect flips the
    * visible state on the next frame, so the enter transition plays; a reopen
@@ -316,26 +399,25 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
     [],
   );
 
-  // the settings app re-docks the taskbar live through the navbar position
-  // event (the choice itself persists under "dt.navbar.pos.v1")
+  // the settings app re-faces the bar live through the navbar mode event
+  // (the choice itself persists on the account store)
   useEffect(() => {
-    const onNavbarPos = (event: Event) => {
-      const detail = (event as CustomEvent<NavbarPosition>).detail;
-      if (detail === "floating" || detail === "left" || detail === "right") setNavbarPos(detail);
+    const onNavbarMode = (event: Event) => {
+      const detail = (event as CustomEvent<NavbarMode>).detail;
+      if (isNavbarMode(detail)) setNavbarMode(detail);
     };
-    window.addEventListener(NAVBAR_POS_EVENT, onNavbarPos);
-    return () => window.removeEventListener(NAVBAR_POS_EVENT, onNavbarPos);
+    window.addEventListener(NAVBAR_MODE_EVENT, onNavbarMode);
+    return () => window.removeEventListener(NAVBAR_MODE_EVENT, onNavbarMode);
   }, []);
 
-  // the settings app re-faces the bar live through the navbar style event
-  // (the choice itself persists under "dt.navbar.style.v1")
+  // the settings app re-docks the bar live through the navbar edge event
   useEffect(() => {
-    const onNavbarStyle = (event: Event) => {
-      const detail = (event as CustomEvent<NavbarStyle>).detail;
-      if (detail === "windows" || detail === "apple") setNavbarStyle(detail);
+    const onNavbarEdge = (event: Event) => {
+      const detail = (event as CustomEvent<NavbarEdge>).detail;
+      if (isNavbarEdge(detail)) setNavbarEdge(detail);
     };
-    window.addEventListener(NAVBAR_STYLE_EVENT, onNavbarStyle);
-    return () => window.removeEventListener(NAVBAR_STYLE_EVENT, onNavbarStyle);
+    window.addEventListener(NAVBAR_EDGE_EVENT, onNavbarEdge);
+    return () => window.removeEventListener(NAVBAR_EDGE_EVENT, onNavbarEdge);
   }, []);
 
   // the night light token lives on the document root while on, gone when off
@@ -423,20 +505,37 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
 
   return (
     <>
-      {/* the ONE chrome: a 48px bottom taskbar — the authentic dark acrylic
-          (.acrylic-bar: rgba(32,32,32,.75) + saturate(3) blur(20px) + grain,
-          light theme rides the class) over a dark top hairline; the
-          centered cluster, the omnibox and the tray split the row — the
-          data-navbar position the settings pass chose re-docks it as the
-          vertical rail of that screen edge */}
+      {/* the ONE chrome: the shell bar of the two modes — the floating pad
+          (the detached rounded dock the magnification rides) and the docked
+          bar pinned to the edge the account store keeps (the bottom taskbar
+          or the 48px side rail); the bar is the drag stage of the smart
+          gestures: pull it up and it floats, pull it sideways and it docks,
+          pull a docked bar off its wall and it floats again */}
       <header
         className="dt-nav acrylic-bar fixed bottom-0 inset-x-0 z-50 flex h-12 min-w-0 items-center border-t border-black/55 px-2"
-        data-navbar={dockedPos}
-        data-navstyle={navbarStyle}
+        data-navmode={navbarMode}
+        data-navedge={navbarEdge}
+        data-dragging={barDragging ? "true" : undefined}
+        aria-description={uicopy("navbar.drag.hint")}
+        onPointerDown={onBarPointerDown}
+        onPointerMove={onBarPointerMove}
+        onPointerUp={endBarDrag}
+        onPointerCancel={endBarDrag}
+        onPointerLeave={endBarDrag}
+        onClickCapture={(event) => {
+          // a drag that crossed a threshold swallows the click it ends on —
+          // the mode switch is the gesture, the trigger never fires twice
+          if (!swallowClick.current) return;
+          swallowClick.current = false;
+          event.preventDefault();
+          event.stopPropagation();
+        }}
       >
         {/* the centered taskbar cluster: the mark-trigger and the pinned apps
-            ride one Windows-11 centered group (pure presentation wrapper) */}
+            ride one Windows-11 centered group (pure presentation wrapper) —
+            the magnification surface of the floating pad */}
         <div
+          ref={clusterRef}
           className="dt-nav__cluster absolute top-0 left-1/2 flex h-12 -translate-x-1/2 items-center max-[760px]:static max-[760px]:h-auto max-[760px]:translate-x-0"
           data-flyout-keep="true"
         >
@@ -552,6 +651,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
             )}
           </button>
           <button
+            ref={clockRef}
             type="button"
             className="dt-nav__clock mx-0.5 flex h-11 cursor-pointer flex-col items-center justify-center rounded-xs border-0 bg-transparent px-2 text-center text-[11px] leading-[1.35] font-[inherit] text-[inherit] tabular-nums transition-[box-shadow] duration-200 focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none hover:bg-white/6 light:hover:bg-black/6"
             aria-label={osText("shell.tray.calendar.aria")}
@@ -559,7 +659,14 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
             aria-expanded={openPanel?.kind === "calendar"}
             aria-controls={mountedPanel?.kind === "calendar" ? "dt-calendar" : undefined}
             data-flyout-keep="true"
-            onClick={() => togglePanel({ kind: "calendar" })}
+            onClick={() => {
+              // the calendar accompanies the dock: the pad's clock center is
+              // measured at open, the flyout rides the measured anchor while
+              // the bar floats (the docked edges keep their placement law)
+              const clock = clockRef.current;
+              if (clock) setCalendarAnchorX(clock.getBoundingClientRect().left + clock.getBoundingClientRect().width / 2);
+              togglePanel({ kind: "calendar" });
+            }}
           >
             <span>{time}</span>
             <span>{date}</span>
@@ -683,7 +790,14 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
         <QuickSettings open={openPanel?.kind === "quick"} reduced={reduced} settings={tray} onChange={patchTray} />
       )}
 
-      {mountedPanel?.kind === "calendar" && <CalendarFlyout open={openPanel?.kind === "calendar"} reduced={reduced} />}
+      {mountedPanel?.kind === "calendar" && (
+        <CalendarFlyout
+          open={openPanel?.kind === "calendar"}
+          reduced={reduced}
+          floating={navbarMode === "floating"}
+          anchorX={calendarAnchorX}
+        />
+      )}
 
       {jumpPanel && (
         <JumpList

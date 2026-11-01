@@ -36,6 +36,7 @@ import { APP_ICONS } from "../Sol/wingets/ShellAppicons.tsx";
 const router = readFileSync(join(import.meta.dirname, "..", "Sol", "Sol.tsx"), "utf8");
 const workspace = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelWorkspace.tsx"), "utf8");
 const familyframe = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "ShellFamilyframe.tsx"), "utf8");
+const solcss = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
 const viteconfig = readFileSync(join(import.meta.dirname, "..", "vite.config.ts"), "utf8");
 /** the pages workflow of the monorepo checkout — null inside the standalone
  * container context (the container carries the application tree alone, never
@@ -204,6 +205,97 @@ describe("the double click owns the system window (door B — zero redirect)", (
       if (app.target.kind !== "external") continue;
       expect(windowapp(app.target.slug), `${app.id} opens the power clip window`).toBeDefined();
     }
+  });
+});
+
+describe("the native anchors answer both doors with one design (the shared surface)", () => {
+  /** the windowed anchor bodies and the page files that carry them — the
+   * dual door walk of the native catalog: the typed url mounts the page
+   * (door A), the double click mounts the same body inside the os window
+   * (door B), and the two faces stay one design through the embedded
+   * contract (the body answers the window it rides in, never the browser
+   * viewport — the cut-window bug of PR12). The chat body IS the window
+   * body and the page (the page mounts the same body unembedded beside
+   * the shell). */
+  const ANCHOR_PAGES: Record<string, string> = {
+    files: "Sol/files/files.tsx",
+    calculator: "Sol/calculator/calculator.tsx",
+    docs: "Sol/docs/docs.tsx",
+    image: "Sol/image/image.tsx",
+    games: "Sol/games/games.tsx",
+    console: "Sol/console/console.tsx",
+    usage: "Sol/usage/usage.tsx",
+    settings: "Sol/settings/settings.tsx",
+    projects: "Sol/projects/projects.tsx",
+    audio: "Sol/audio/audio.tsx",
+    video: "Sol/video/video.tsx",
+    providers: "Sol/providers/providers.tsx",
+    gateway: "Sol/gateway/gateway.tsx",
+  };
+  const CHATPAGE = "Sol/chat/chat.tsx";
+
+  it("every windowed anchor answers a page file with the embedded contract", () => {
+    for (const [id, page] of Object.entries(ANCHOR_PAGES)) {
+      const source = readFileSync(join(import.meta.dirname, "..", page), "utf8");
+      expect(source.includes("embedded?: boolean"), `${page} carries the embedded prop`).toBe(true);
+      if (id === "gateway") {
+        // the gateway writes the same law in the ternary shape: the shell
+        // rides the page branch only, the window body fills the frame and
+        // the embedded height lives in the component stylesheet
+        expect(source.includes("<ShellChrome />"), `${page} owns the shell on the page branch`).toBe(true);
+        expect(source.includes("gv-embedded"), `${page} carries the embedded surface class`).toBe(true);
+        expect(source.includes(".control-page.gv-embedded { min-height: 0; height: 100%;"), `${page} answers the window body height`).toBe(true);
+        continue;
+      }
+      expect(source.includes("{!embedded && <ShellChrome />}"), `${page} retires the shell inside the window`).toBe(
+        true,
+      );
+      expect(source.includes('height: "100%"'), `${page} answers the window body height`).toBe(true);
+    }
+    // the chat body carries the same contract (the window body and the
+    // page body are one component, the embedded flag flips the surface)
+    const chatbody = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "ChatBody.tsx"), "utf8");
+    expect(chatbody.includes("embedded?: boolean"), "the chat body carries the embedded prop").toBe(true);
+    const chatpage = readFileSync(join(import.meta.dirname, "..", CHATPAGE), "utf8");
+    expect(chatpage.includes("<ShellChrome />"), "the chat page owns the shell").toBe(true);
+    expect(chatpage.includes("<ChatBody />"), "the chat page mounts the same body unembedded").toBe(true);
+  });
+
+  it("every windowed anchor answers the typed url route (door A — standalone fullscreen)", () => {
+    for (const id of [...Object.keys(ANCHOR_PAGES), "chat"]) {
+      expect(router, `/${id} mounts its page anchor at the address bar`).toContain(`path="/${id}"`);
+    }
+  });
+
+  it("every windowed anchor binds the window body of the workspace (door B — zero redirect)", () => {
+    const bindings: Record<string, string> = {
+      chat: "chat: ChatBody,",
+      files: "files: FilesAnchor,",
+      calculator: "calculator: CalculatorAnchor,",
+      docs: "docs: DocsAnchor,",
+      image: "image: ImageAnchor,",
+      games: "games: GamesAnchor,",
+      console: "console: ConsoleAnchor,",
+      usage: "usage: UsageAnchor,",
+      settings: "settings: SettingsAnchor,",
+      projects: "projects: ProjectsAnchor,",
+      audio: "audio: AudioAnchor,",
+      video: "video: VideoAnchor,",
+      providers: "providers: ProvidersAnchor,",
+      gateway: "gateway: GatewayView,",
+    };
+    for (const [id, binding] of Object.entries(bindings)) {
+      expect(windowapp(id), `${id} opens as a window`).toEqual({ kind: "anchor" });
+      expect(workspace, `${id} binds its anchor in the workspace map`).toContain(binding);
+    }
+  });
+
+  it("the shared surface answers both doors — the window body is a size container the host registers", () => {
+    // the container law the windowclip battery pins stays wired in the
+    // workspace source: the host element rides the WindowBodySurface so
+    // the embedded bodies measure the window they ride in
+    expect(workspace).toContain("<WindowBodySurface.Provider value={hostRef}>");
+    expect(solcss).toContain("container-type: inline-size;");
   });
 });
 

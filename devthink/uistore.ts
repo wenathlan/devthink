@@ -67,6 +67,18 @@ const SEED: Readonly<Record<string, string>> = Object.freeze({
   "explorer.empty": "This folder is empty.",
   /* --------------------- workspace history window -------------------- */
   "workspace.history.localTabs": "Open session tabs remain local to this workspace.",
+  /* --------------------- shell navbar (the two modes) --------------- */
+  "navbar.mode.aria": "Navbar mode",
+  "navbar.mode.desc": "Floating lets the bar loose from the walls; docked pins it to one edge.",
+  "navbar.mode.floating": "Floating",
+  "navbar.mode.docked": "Docked",
+  "navbar.edge.aria": "Dock edge",
+  "navbar.edge.bottom": "Bottom edge",
+  "navbar.edge.left": "Left edge",
+  "navbar.edge.right": "Right edge",
+  "navbar.edge.locked": "The edge answers the docked mode — dock the bar first.",
+  "navbar.drag.hint":
+    "Drag the bar — pull it up to float it, sideways to dock it, off the wall to float it again.",
 });
 
 /**

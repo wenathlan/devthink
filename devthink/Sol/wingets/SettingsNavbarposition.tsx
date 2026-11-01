@@ -1,71 +1,140 @@
 /**
- * navbarposition.tsx — the navbar card of the Personalization page: the
- * two axes of the bar as windows segmented controls — the POSITION (the
- * floating bottom bar — the default, a vertical rail docked to the left
- * edge or one docked to the right edge) and the STYLE (the face the bar
- * wears: the windows taskbar — the full-width acrylic bar — or the apple
- * dock — the centered floating mica pad with the magnifying pins). Both
- * choices persist through the house localStorage pattern (desktopstate.ts
- * owns the accessors) and the component dispatches the NAVBAR_POS_EVENT
- * and NAVBAR_STYLE_EVENT the shell chrome listens for, so the bar
- * re-docks and re-faces the moment a choice lands — every button and
- * flyout keeps working. The apple face locks the position control (the
- * dock is the floating pad by law, so the edge choices answer the windows
- * taskbar only): the segments ride the windows disabled grammar with the
- * hint line naming the law, and the lock follows the style choice live
- * through the same event. Loose component of the settings page, riding the
- * dtw kit.
+ * navbarposition.tsx — the navbar card of the Personalization page: the two
+ * modes of the bar as windows segmented controls — the MODE (floating: the
+ * detached rounded pad the magnifying dock rides; docked: the bar pinned to
+ * one screen edge) and the EDGE the docked bar hugs (the bottom taskbar, a
+ * left rail or a right rail). Both choices persist on the system store —
+ * the account-scoped preference lane of desktopstate.ts (never a browser
+ * localStorage key of this build) — and the component dispatches the
+ * NAVBAR_MODE_EVENT and NAVBAR_EDGE_EVENT the shell chrome listens for, so
+ * the bar re-faces and re-docks the moment a choice lands — every button
+ * and flyout keeps working. The edge control locks while the bar floats
+ * (the edge answers the docked mode): the segments ride the windows
+ * disabled grammar with the hint naming the law, and the lock follows the
+ * mode choice live through the same event. Every string rides the ui store
+ * (the uicopy accessor of uistore.ts — no literal lives here). Loose
+ * component of the settings page, riding the dtw kit.
  */
 import { useEffect, useState } from "react";
-import { copy } from "../../copy";
 import {
-  loadNavbarPosition,
-  loadNavbarStyle,
-  NAVBAR_POS_EVENT,
-  NAVBAR_STYLE_EVENT,
-  type NavbarPosition,
-  type NavbarStyle,
-  saveNavbarPosition,
-  saveNavbarStyle,
+  loadNavbarEdge,
+  loadNavbarMode,
+  NAVBAR_EDGE_EVENT,
+  NAVBAR_MODE_EVENT,
+  type NavbarEdge,
+  type NavbarMode,
+  saveNavbarEdge,
+  saveNavbarMode,
 } from "../../desktopstate";
+import { uicopy, useUicopy } from "../../uistore.ts";
 
-/** the three dock positions the segmented control offers. */
-const POSITIONS: readonly NavbarPosition[] = ["floating", "left", "right"];
+/** the two modes the mode control offers. */
+const MODES: readonly NavbarMode[] = ["floating", "docked"];
 
-/** the two faces the style control offers. */
-const STYLES: readonly NavbarStyle[] = ["windows", "apple"];
+/** the three edges the edge control offers. */
+const EDGES: readonly NavbarEdge[] = ["bottom", "left", "right"];
 
-/** NavbarPositionControl — the segmented control of the Navbar position card.
- * Under the apple face the control locks: the dock is the floating pad by
- * law, so the segments ride the disabled grammar with the hint naming it
- * (the stored choice survives — the windows taskbar answers it the moment
- * the style returns). */
-export function NavbarPositionControl() {
-  const [position, setPosition] = useState<NavbarPosition>(() => loadNavbarPosition());
-  const [locked, setLocked] = useState<boolean>(() => loadNavbarStyle() === "apple");
+/** NavbarModeControl — the segmented control of the navbar mode card:
+ * floating or docked, the two faces of the shell bar. */
+export function NavbarModeControl() {
+  // the store ride: the live db rows land once per mount and the card
+  // re-renders on them (the seeds answer the first paint with the same
+  // words the db serves, so the swap never flashes)
+  useUicopy();
+  const [mode, setMode] = useState<NavbarMode>(() => "floating");
 
-  // the lock follows the style choice live (the same event the shell
-  // chrome re-faces on — the card answers the apple choice instantly)
+  // the store answers after mount (the account preference lane is async)
   useEffect(() => {
-    const onNavbarStyle = (event: Event) => {
-      const detail = (event as CustomEvent<NavbarStyle>).detail;
-      if (detail === "windows" || detail === "apple") setLocked(detail === "apple");
+    let alive = true;
+    void loadNavbarMode().then((stored) => {
+      if (alive) setMode(stored);
+    });
+    return () => {
+      alive = false;
     };
-    window.addEventListener(NAVBAR_STYLE_EVENT, onNavbarStyle);
-    return () => window.removeEventListener(NAVBAR_STYLE_EVENT, onNavbarStyle);
   }, []);
 
-  function choose(next: NavbarPosition) {
-    setPosition(next);
-    saveNavbarPosition(next);
-    window.dispatchEvent(new CustomEvent<NavbarPosition>(NAVBAR_POS_EVENT, { detail: next }));
+  // the drag gestures of the bar land live through the same event the
+  // chrome plays — the card mirrors the bar the moment a drag moves it
+  useEffect(() => {
+    const onNavbarMode = (event: Event) => {
+      const detail = (event as CustomEvent<NavbarMode>).detail;
+      if (detail === "floating" || detail === "docked") setMode(detail);
+    };
+    window.addEventListener(NAVBAR_MODE_EVENT, onNavbarMode);
+    return () => window.removeEventListener(NAVBAR_MODE_EVENT, onNavbarMode);
+  }, []);
+
+  function choose(next: NavbarMode) {
+    setMode(next);
+    saveNavbarMode(next);
+    window.dispatchEvent(new CustomEvent<NavbarMode>(NAVBAR_MODE_EVENT, { detail: next }));
+  }
+
+  return (
+    <div className="dtw-settings__segmented" role="radiogroup" aria-label={uicopy("navbar.mode.aria")}>
+      {MODES.map((option) => {
+        const selected = option === mode;
+        return (
+          <button
+            key={option}
+            type="button"
+            role="radio"
+            aria-checked={selected}
+            className="dtw-settings__segment"
+            data-selected={selected ? "true" : undefined}
+            onClick={() => choose(option)}
+          >
+            {uicopy(`navbar.mode.${option}`)}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/** NavbarEdgeControl — the segmented control of the dock edge card: the
+ * bottom taskbar, a left rail or a right rail. The control locks while the
+ * bar floats — the edge answers the docked mode — and the stored choice
+ * survives (the dock answers it the moment the bar docks again). */
+export function NavbarEdgeControl() {
+  const [edge, setEdge] = useState<NavbarEdge>(() => "bottom");
+  const [locked, setLocked] = useState<boolean>(() => true);
+
+  // the store answers after mount, and the lock follows the mode choice
+  // live (the same event the shell chrome re-faces on)
+  useEffect(() => {
+    let alive = true;
+    void loadNavbarEdge().then((stored) => {
+      if (alive) setEdge(stored);
+    });
+    void loadNavbarMode().then((stored) => {
+      if (alive) setLocked(stored !== "docked");
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+  useEffect(() => {
+    const onNavbarMode = (event: Event) => {
+      const detail = (event as CustomEvent<NavbarMode>).detail;
+      if (detail === "floating" || detail === "docked") setLocked(detail !== "docked");
+    };
+    window.addEventListener(NAVBAR_MODE_EVENT, onNavbarMode);
+    return () => window.removeEventListener(NAVBAR_MODE_EVENT, onNavbarMode);
+  }, []);
+
+  function choose(next: NavbarEdge) {
+    setEdge(next);
+    saveNavbarEdge(next);
+    window.dispatchEvent(new CustomEvent<NavbarEdge>(NAVBAR_EDGE_EVENT, { detail: next }));
   }
 
   return (
     <div className="dtw-settings__control">
-      <div className="dtw-settings__segmented" role="radiogroup" aria-label={copy("settings.personal.navbar")}>
-        {POSITIONS.map((option) => {
-          const selected = option === position;
+      <div className="dtw-settings__segmented" role="radiogroup" aria-label={uicopy("navbar.edge.aria")}>
+        {EDGES.map((option) => {
+          const selected = option === edge;
           return (
             <button
               key={option}
@@ -78,45 +147,12 @@ export function NavbarPositionControl() {
               aria-disabled={locked ? "true" : undefined}
               onClick={() => choose(option)}
             >
-              {copy(`settings.navbar.${option}`)}
+              {uicopy(`navbar.edge.${option}`)}
             </button>
           );
         })}
       </div>
-      {locked ? <p className="dtw-settings__hint">{copy("settings.navbar.docklocked")}</p> : null}
-    </div>
-  );
-}
-
-/** NavbarStyleControl — the segmented control of the Navbar style card:
- * the windows taskbar or the apple dock, the face the bar wears. */
-export function NavbarStyleControl() {
-  const [style, setStyle] = useState<NavbarStyle>(() => loadNavbarStyle());
-
-  function choose(next: NavbarStyle) {
-    setStyle(next);
-    saveNavbarStyle(next);
-    window.dispatchEvent(new CustomEvent<NavbarStyle>(NAVBAR_STYLE_EVENT, { detail: next }));
-  }
-
-  return (
-    <div className="dtw-settings__segmented" role="radiogroup" aria-label={copy("settings.personal.navbarstyle")}>
-      {STYLES.map((option) => {
-        const selected = option === style;
-        return (
-          <button
-            key={option}
-            type="button"
-            role="radio"
-            aria-checked={selected}
-            className="dtw-settings__segment"
-            data-selected={selected ? "true" : undefined}
-            onClick={() => choose(option)}
-          >
-            {copy(`settings.navbar.${option}`)}
-          </button>
-        );
-      })}
+      {locked ? <p className="dtw-settings__hint">{uicopy("navbar.edge.locked")}</p> : null}
     </div>
   );
 }

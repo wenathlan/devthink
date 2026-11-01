@@ -102,6 +102,7 @@ export * from "./Shellchrome.tsx";
 export { default as ShellConn } from "./ShellConn.tsx";
 export * from "./ShellConn.tsx";
 export * from "./ShellControlshell.tsx";
+export * from "./ShellDockmagnify.tsx";
 export { default as ShellDot } from "./ShellDot.tsx";
 export * from "./ShellDot.tsx";
 export * from "./ShellFamilyframe.tsx";

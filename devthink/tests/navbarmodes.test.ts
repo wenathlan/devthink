@@ -1,42 +1,71 @@
 /**
- * navbarmodes.test.ts — the navbar modes contract of the personalization
- * pass: the bar answers the two faces the owner ordered (the windows
- * taskbar and the apple dock) switchable from the settings app, the three
- * dock positions (floating, left edge, right edge), and the start menu
- * opens from the logo mark — no labeled start button, no brand text.
+ * navbarmodes.test.ts — the navbar contract of the two modes the owner
+ * ordered: the shell bar answers FLOATING (the detached rounded pad, the
+ * magnifying dock) and DOCKED (the bar pinned to one screen edge — the
+ * bottom taskbar or the 48px side rail), named in plain english, never
+ * citing a competitor. The four layers of the law:
  *
- * this file pins the four layers of that law: the pure state layer of
- * desktopstate.ts (the doctrine keys, the honest defaults, the stale-value
- * refusal, the persistence roundtrip and the resolveNavbarDock verdict —
- * the apple dock is the floating pad by law, so the style wins the edge
- * fight and a stored edge choice never pairs the rail grammar with the
- * dock face), the shell chrome wiring (the source pins: the bar carries
- * both axes, re-docks and re-faces live on the two events, and the mark is
- * the start trigger), the settings card (the segmented controls dispatch
- * the events, the position control locks under the apple face with the
- * hint naming the law), and the css ladder of sol.css (the windows taskbar
- * canon — the 48px acrylic bar, the 38×38 pins, the 3px indicator ladder —
- * beside the apple dock face and its reduced-motion guard). source pins
- * ride the same reading discipline the panelgate and appicons batteries
- * carry: the chrome only exists in the browser mount.
+ * - the pure state layer of desktopstate.ts: the account-store keys, the
+ *   honest defaults, the stale-value refusal, the persistence roundtrip
+ *   over the system store (the account-scoped browser preference lane of
+ *   storage.ts — never a browser localStorage key of this build) and the
+ *   drag verdict — pull up floats, pull sideways docks the edge, pull a
+ *   docked bar off its wall (~1mm) floats it again;
+ * - the magnification law of dockmagnify.ts beside the GSAP wiring of
+ *   ShellDockmagnify.tsx: the gaussian falloff, one quickTo per face, the
+ *   elastic.out return, the bottom transform origin and the total cleanup —
+ *   never armed under reduced motion;
+ * - the shell chrome wiring (the source pins: the bar carries both mode
+ *   attributes, the drag handlers and the swallowed click, the calendar
+ *   accompanies the floating dock, the settings card rides the ui store) —
+ *   the chrome only exists in the browser mount;
+ * - the css ladder of sol.css (the floating pad with the rounded corners,
+ *   the docked rails with the side indicator ladder and the body
+ *   reservation, the gsap handover, the reduced-motion guard) beside the
+ *   login shadow law (the --win-shad-* tokens, clipped by the login face).
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { copy } from "../copy.ts";
 import {
-  loadNavbarPosition,
-  loadNavbarStyle,
-  NAVBAR_POS_EVENT,
-  NAVBAR_POS_KEY,
-  NAVBAR_STYLE_EVENT,
-  NAVBAR_STYLE_KEY,
-  resolveNavbarDock,
-  saveNavbarPosition,
-  saveNavbarStyle,
+  isNavbarEdge,
+  isNavbarMode,
+  loadNavbarEdge,
+  loadNavbarMode,
+  NAVBAR_DOCK_PULL_PX,
+  NAVBAR_EDGE_EVENT,
+  NAVBAR_EDGE_PREF,
+  NAVBAR_FLOAT_LIFT_PX,
+  NAVBAR_MODE_EVENT,
+  NAVBAR_MODE_PREF,
+  NAVBAR_RELEASE_PX,
+  navbarDragVerdict,
+  saveNavbarEdge,
+  saveNavbarMode,
 } from "../desktopstate.ts";
+import { DOCK_MAGNIFY_MAX, DOCK_MAGNIFY_SPREAD, magnifyscale } from "../dockmagnify.ts";
+import { copyseed } from "../copy.ts";
+import { uicopy } from "../uistore.ts";
+
+/** the in-memory account store the mocked preference lane answers (the
+ * system store of storage.ts — the browser IndexedDB lane the os HD runs) */
+const preferencerows = vi.hoisted(() => new Map<string, string>());
+
+vi.mock("../storage.ts", () => ({
+  readBrowserPreferences: async () => Object.fromEntries(preferencerows),
+  saveBrowserPreference: async (key: string, value: string) => {
+    preferencerows.set(key, value);
+    return { key, value };
+  },
+}));
 
 const chrome = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "Shellchrome.tsx"), "utf8");
+const dockmagnifyhook = readFileSync(
+  join(import.meta.dirname, "..", "Sol", "wingets", "ShellDockmagnify.tsx"),
+  "utf8",
+);
+const trayflyouts = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "ShellTrayflyouts.tsx"), "utf8");
 const navbarcard = readFileSync(
   join(import.meta.dirname, "..", "Sol", "wingets", "SettingsNavbarposition.tsx"),
   "utf8",
@@ -45,87 +74,209 @@ const personalization = readFileSync(
   join(import.meta.dirname, "..", "Sol", "wingets", "SettingsPersonalization.tsx"),
   "utf8",
 );
+const workspace = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelWorkspace.tsx"), "utf8");
 const solcss = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
 
-/** installs a minimal window.localStorage stub (the node battery has no
- * browser): the map-backed accessors the desktopstate helpers read */
-function installStorage(initial: Record<string, string> = {}): void {
-  const store = new Map(Object.entries(initial));
-  (globalThis as Record<string, unknown>).window = {
-    localStorage: {
-      getItem: (key: string) => (store.has(key) ? (store.get(key) as string) : null),
-      setItem: (key: string, value: string) => void store.set(key, value),
-      removeItem: (key: string) => void store.delete(key),
-    },
-  };
-}
+beforeEach(() => {
+  preferencerows.clear();
+});
 
 afterEach(() => {
-  delete (globalThis as Record<string, unknown>).window;
+  vi.restoreAllMocks();
 });
 
-describe("the navbar state layer (the personalization pass of desktopstate)", () => {
-  it("keeps the two axes under the doctrine keys with the house event names", () => {
-    expect(NAVBAR_POS_KEY).toBe("dt.navbar.pos.v1");
-    expect(NAVBAR_STYLE_KEY).toBe("dt.navbar.style.v1");
-    expect(NAVBAR_POS_EVENT).toBe("dt-navbar-pos");
-    expect(NAVBAR_STYLE_EVENT).toBe("dt-navbar-style");
+describe("the navbar state layer (the two modes of desktopstate)", () => {
+  it("keeps the mode and the edge under the account-store keys with the house event names", () => {
+    expect(NAVBAR_MODE_PREF).toBe("navbarMode");
+    expect(NAVBAR_EDGE_PREF).toBe("navbarEdge");
+    expect(NAVBAR_MODE_EVENT).toBe("dt-navbar-mode");
+    expect(NAVBAR_EDGE_EVENT).toBe("dt-navbar-edge");
   });
 
-  it("answers the honest defaults when storage is unavailable (the windows taskbar, floating)", () => {
-    expect(loadNavbarPosition()).toBe("floating");
-    expect(loadNavbarStyle()).toBe("windows");
+  it("answers the honest defaults when the account store is away (floating, bottom edge)", async () => {
+    await expect(loadNavbarMode()).resolves.toBe("floating");
+    await expect(loadNavbarEdge()).resolves.toBe("bottom");
   });
 
-  it("refuses stale values — an unknown position or face falls back to the default", () => {
-    installStorage({ [NAVBAR_POS_KEY]: "diagonal", [NAVBAR_STYLE_KEY]: "mac" });
-    expect(loadNavbarPosition()).toBe("floating");
-    expect(loadNavbarStyle()).toBe("windows");
+  it("refuses stale values — an unknown mode or edge falls back to the default", async () => {
+    preferencerows.set(NAVBAR_MODE_PREF, "diagonal");
+    preferencerows.set(NAVBAR_EDGE_PREF, "ceiling");
+    await expect(loadNavbarMode()).resolves.toBe("floating");
+    await expect(loadNavbarEdge()).resolves.toBe("bottom");
   });
 
-  it("persists and restores every position and every face (the roundtrip)", () => {
-    for (const position of ["floating", "left", "right"] as const) {
-      installStorage();
-      saveNavbarPosition(position);
-      expect(loadNavbarPosition()).toBe(position);
+  it("validates the untrusted store answers with the type guards", () => {
+    expect(isNavbarMode("docked")).toBe(true);
+    expect(isNavbarMode("windows")).toBe(false);
+    expect(isNavbarMode("apple")).toBe(false);
+    expect(isNavbarEdge("left")).toBe(true);
+    expect(isNavbarEdge("bottom")).toBe(true);
+    expect(isNavbarEdge("floating")).toBe(false);
+  });
+
+  it("persists and restores every mode and every edge on the system store (the roundtrip)", async () => {
+    for (const mode of ["floating", "docked"] as const) {
+      preferencerows.clear();
+      saveNavbarMode(mode);
+      await vi.waitFor(() => expect(preferencerows.get(NAVBAR_MODE_PREF)).toBe(mode));
+      await expect(loadNavbarMode()).resolves.toBe(mode);
     }
-    for (const style of ["windows", "apple"] as const) {
-      installStorage();
-      saveNavbarStyle(style);
-      expect(loadNavbarStyle()).toBe(style);
+    for (const edge of ["bottom", "left", "right"] as const) {
+      preferencerows.clear();
+      saveNavbarEdge(edge);
+      await vi.waitFor(() => expect(preferencerows.get(NAVBAR_EDGE_PREF)).toBe(edge));
+      await expect(loadNavbarEdge()).resolves.toBe(edge);
     }
   });
 });
 
-describe("the dock verdict (the apple face is the floating pad by law)", () => {
-  it("the full choice matrix: the style wins the edge fight, the windows face answers the stored edge", () => {
-    expect(resolveNavbarDock("apple", "floating")).toBe("floating");
-    expect(resolveNavbarDock("apple", "left")).toBe("floating");
-    expect(resolveNavbarDock("apple", "right")).toBe("floating");
-    expect(resolveNavbarDock("windows", "floating")).toBe("floating");
-    expect(resolveNavbarDock("windows", "left")).toBe("left");
-    expect(resolveNavbarDock("windows", "right")).toBe("right");
+describe("the drag verdict (the three laws of the bar)", () => {
+  it("pulling the bottom-docked bar up floats it", () => {
+    expect(navbarDragVerdict({ mode: "docked", edge: "bottom" }, 0, -NAVBAR_FLOAT_LIFT_PX)).toEqual({
+      mode: "floating",
+      edge: "bottom",
+    });
+    expect(navbarDragVerdict({ mode: "docked", edge: "bottom" }, 0, -1)).toBeNull();
+  });
+
+  it("pulling the bar sideways docks it to that edge", () => {
+    expect(navbarDragVerdict({ mode: "docked", edge: "bottom" }, -NAVBAR_DOCK_PULL_PX, 0)).toEqual({
+      mode: "docked",
+      edge: "left",
+    });
+    expect(navbarDragVerdict({ mode: "docked", edge: "bottom" }, NAVBAR_DOCK_PULL_PX, 0)).toEqual({
+      mode: "docked",
+      edge: "right",
+    });
+    expect(navbarDragVerdict({ mode: "floating", edge: "bottom" }, -NAVBAR_DOCK_PULL_PX, 0)).toEqual({
+      mode: "docked",
+      edge: "left",
+    });
+  });
+
+  it("pulling a docked bar off its wall — about a millimeter — floats it again", () => {
+    expect(NAVBAR_RELEASE_PX).toBeLessThanOrEqual(8);
+    expect(navbarDragVerdict({ mode: "docked", edge: "left" }, NAVBAR_RELEASE_PX, 0)).toEqual({
+      mode: "floating",
+      edge: "bottom",
+    });
+    expect(navbarDragVerdict({ mode: "docked", edge: "right" }, -NAVBAR_RELEASE_PX, 0)).toEqual({
+      mode: "floating",
+      edge: "bottom",
+    });
+    expect(navbarDragVerdict({ mode: "docked", edge: "left" }, 1, 0)).toBeNull();
+  });
+
+  it("pushing the floating pad back down re-docks it on the bottom edge", () => {
+    expect(navbarDragVerdict({ mode: "floating", edge: "bottom" }, 0, NAVBAR_DOCK_PULL_PX)).toEqual({
+      mode: "docked",
+      edge: "bottom",
+    });
+  });
+
+  it("the diagonal drag never lands on the wrong wall (the sideways pull must outrun the vertical)", () => {
+    // the up pull answers first from the bottom edge — sideways travel
+    // beside it never lands on a wall instead
+    expect(navbarDragVerdict({ mode: "docked", edge: "bottom" }, -NAVBAR_DOCK_PULL_PX, -NAVBAR_FLOAT_LIFT_PX)).toEqual({
+      mode: "floating",
+      edge: "bottom",
+    });
+    // the sideways dock answers only when it outruns the vertical travel —
+    // a stronger vertical rides the up law, never the wrong wall
+    expect(navbarDragVerdict({ mode: "docked", edge: "bottom" }, -NAVBAR_DOCK_PULL_PX, -20)).toEqual({
+      mode: "docked",
+      edge: "left",
+    });
+    expect(navbarDragVerdict({ mode: "docked", edge: "bottom" }, -NAVBAR_DOCK_PULL_PX, -60)).toEqual({
+      mode: "floating",
+      edge: "bottom",
+    });
+    expect(navbarDragVerdict({ mode: "floating", edge: "bottom" }, NAVBAR_DOCK_PULL_PX - 1, NAVBAR_DOCK_PULL_PX - 1)).toBeNull();
+  });
+
+  it("an undecided gesture answers null — the triggers keep their clicks", () => {
+    expect(navbarDragVerdict({ mode: "docked", edge: "bottom" }, 3, -2)).toBeNull();
+    expect(navbarDragVerdict({ mode: "floating", edge: "bottom" }, 0, 0)).toBeNull();
   });
 });
 
-describe("the shell chrome wears both axes and re-faces live (the source pins)", () => {
-  it("carries the resolved dock and the face on the one bar", () => {
-    expect(chrome).toContain("data-navbar={dockedPos}");
-    expect(chrome).toContain("data-navstyle={navbarStyle}");
+describe("the magnification law (the gaussian falloff of the floating pad)", () => {
+  it("the pointer icon rides the peak, the tail answers exactly one", () => {
+    expect(magnifyscale(0)).toBeCloseTo(1 + DOCK_MAGNIFY_MAX, 12);
+    expect(magnifyscale(DOCK_MAGNIFY_SPREAD * 6)).toBeCloseTo(1, 7);
   });
 
-  it("derives the dock from the resolveNavbarDock verdict (never the raw stored edge)", () => {
-    expect(chrome).toContain("resolveNavbarDock,");
-    expect(chrome).toContain("const dockedPos = resolveNavbarDock(navbarStyle, navbarPos);");
-    expect(chrome).toContain('const rail = dockedPos !== "floating";');
+  it("the falloff is gaussian: half spread loses the factor the curve orders", () => {
+    const atSpread = magnifyscale(DOCK_MAGNIFY_SPREAD);
+    expect(atSpread).toBeGreaterThan(1 + DOCK_MAGNIFY_MAX / 2);
+    expect(atSpread).toBeLessThan(1 + DOCK_MAGNIFY_MAX);
+    expect(magnifyscale(10)).toBeGreaterThan(magnifyscale(40));
+    expect(magnifyscale(-25)).toBe(magnifyscale(25));
   });
 
-  it("listens for both personalization events so the settings choice lands live", () => {
-    expect(chrome).toContain("window.addEventListener(NAVBAR_POS_EVENT, onNavbarPos);");
-    expect(chrome).toContain("window.addEventListener(NAVBAR_STYLE_EVENT, onNavbarStyle);");
+  it("the constants stay honest: a visible third at the peak, one wave of spread", () => {
+    expect(DOCK_MAGNIFY_MAX).toBeGreaterThan(0.2);
+    expect(DOCK_MAGNIFY_MAX).toBeLessThan(0.5);
+    expect(DOCK_MAGNIFY_SPREAD).toBeGreaterThan(60);
+    expect(DOCK_MAGNIFY_SPREAD).toBeLessThan(140);
   });
 
-  it("answers the windows taskbar canon: the 48px acrylic bar, the 38×38 pins, the tooltip pause, the press, the indicator", () => {
+  it("the hook wires quickTo per face, the elastic return, the bottom origin and the total cleanup", () => {
+    // the gsap drive: one quickTo setter per face answers the move, no
+    // tween is ever created per frame
+    expect(dockmagnifyhook).toContain('import { gsap } from "gsap"');
+    expect(dockmagnifyhook).toContain("gsap.quickTo(face, \"scale\"");
+    // the leave springs the whole field back on the elastic curve
+    expect(dockmagnifyhook).toContain('const RETURN_EASE = "elastic.out(1, 0.45)"');
+    expect(dockmagnifyhook).toContain("gsap.to(faces, { scale: 1, duration: RETURN_SECONDS, ease: RETURN_EASE, overwrite: \"auto\" })");
+    // the faces grow from their bottom edge — the magnifying dock reads up
+    expect(dockmagnifyhook).toContain('gsap.set(faces, { transformOrigin: "50% 100%" })');
+    // the cleanup is total: listeners die, tweens die, inline transforms die
+    expect(dockmagnifyhook).toContain("gsap.killTweensOf(faces)");
+    expect(dockmagnifyhook).toContain('gsap.set(faces, { clearProps: "scale,transformOrigin" })');
+    expect(dockmagnifyhook).toContain("surface.removeEventListener(\"pointermove\", onMove)");
+    expect(dockmagnifyhook).toContain("surface.removeEventListener(\"pointerleave\", onLeave)");
+    // the math rides the shared module (never a private copy of the curve)
+    expect(dockmagnifyhook).toContain("magnifyscale(event.clientX - face.x, DOCK_MAGNIFY_MAX, DOCK_MAGNIFY_SPREAD)");
+  });
+
+  it("the chrome arms the magnification on the floating pad only and refuses reduced motion", () => {
+    expect(chrome).toContain("useDockMagnification({ surfaceRef: clusterRef, enabled: navbarMode === \"floating\" && !reduced })");
+    expect(chrome).toContain('import { useDockMagnification } from "./ShellDockmagnify.tsx"');
+  });
+});
+
+describe("the shell chrome wears the two modes and drags between them (the source pins)", () => {
+  it("carries the mode and the edge on the one bar", () => {
+    expect(chrome).toContain("data-navmode={navbarMode}");
+    expect(chrome).toContain("data-navedge={navbarEdge}");
+  });
+
+  it("loads the mode and the edge from the account store after mount (never a browser localStorage key)", () => {
+    expect(chrome).toContain("void loadNavbarMode().then((mode) => {");
+    expect(chrome).toContain("void loadNavbarEdge().then((edge) => {");
+    expect(chrome).not.toContain("loadNavbarPosition");
+    expect(chrome).not.toContain("loadNavbarStyle");
+    expect(chrome).not.toContain("dt.navbar.pos.v1");
+    expect(chrome).not.toContain("dt.navbar.style.v1");
+  });
+
+  it("listens for both personalization events so a choice or a drag lands live", () => {
+    expect(chrome).toContain("window.addEventListener(NAVBAR_MODE_EVENT, onNavbarMode);");
+    expect(chrome).toContain("window.addEventListener(NAVBAR_EDGE_EVENT, onNavbarEdge);");
+  });
+
+  it("the bar is the drag stage: the handlers ride the header, the verdict fires once, the click of a drag dies", () => {
+    expect(chrome).toContain("onPointerDown={onBarPointerDown}");
+    expect(chrome).toContain("onPointerMove={onBarPointerMove}");
+    expect(chrome).toContain("onPointerUp={endBarDrag}");
+    expect(chrome).toContain("navbarDragVerdict({ mode: navbarMode, edge: navbarEdge }, event.clientX - drag.x, event.clientY - drag.y)");
+    expect(chrome).toContain("swallowClick.current = true;");
+    expect(chrome).toContain("onClickCapture={(event) => {");
+    expect(chrome).toContain("data-dragging={barDragging ? \"true\" : undefined}");
+  });
+
+  it("answers the windows taskbar canon on the docked bar: the 48px acrylic bar, the 38×38 pins, the tooltip pause, the press, the indicator", () => {
     // the 48px bar over the authentic acrylic surface (.acrylic-bar carries
     // rgb(32 32 32 / 75%) + saturate(3) blur(20px) — pinned in the css ladder)
     expect(chrome).toContain("dt-nav acrylic-bar fixed bottom-0 inset-x-0 z-50 flex h-12");
@@ -133,7 +284,7 @@ describe("the shell chrome wears both axes and re-faces live (the source pins)",
     expect(chrome).toContain("after:h-[3px]");
     expect(chrome).toContain("data-[open=true]:after:w-1.5");
     expect(chrome).toContain("data-[active=true]:after:w-3");
-    // the 38×38 r4 windows face inside the cell
+    // the 38×38 r4 face inside the cell
     expect(chrome).toContain("h-[38px] w-[38px]");
     // the app name surfaces on hover with the 1000ms windows tooltip pause
     expect(chrome).toContain("group-hcf:delay-[1000ms]");
@@ -158,61 +309,109 @@ describe("the shell chrome wears both axes and re-faces live (the source pins)",
     expect(chrome).toContain("w-[640px]");
     expect(chrome).toContain("acrylic-panel");
   });
+
+  it("the shell strings ride the ui store (no literal lives in the chrome)", () => {
+    expect(chrome).toContain('import { uicopy, useUicopy } from "../../uistore.ts"');
+    expect(chrome).toContain("useUicopy();");
+    expect(chrome).toContain('aria-description={uicopy("navbar.drag.hint")}');
+  });
 });
 
-describe("the settings card (the personalization controls)", () => {
-  it("offers the three dock positions and the two faces as segmented radios", () => {
-    expect(navbarcard).toContain('const POSITIONS: readonly NavbarPosition[] = ["floating", "left", "right"];');
-    expect(navbarcard).toContain('const STYLES: readonly NavbarStyle[] = ["windows", "apple"];');
+describe("the calendar accompanies the floating dock (the anchor law)", () => {
+  it("the chrome measures the dock clock at open and hands the anchor to the flyout", () => {
+    expect(chrome).toContain("ref={clockRef}");
+    expect(chrome).toContain("setCalendarAnchorX(clock.getBoundingClientRect().left + clock.getBoundingClientRect().width / 2)");
+    expect(chrome).toContain("floating={navbarMode === \"floating\"}");
+    expect(chrome).toContain("anchorX={calendarAnchorX}");
+  });
+
+  it("the flyout rides the measured anchor while floating and keeps the corner law docked", () => {
+    expect(trayflyouts).toContain("floating?: boolean;");
+    expect(trayflyouts).toContain("anchorX?: number | null;");
+    expect(trayflyouts).toContain("data-floating={rides !== null ? \"true\" : undefined}");
+    // the clamp keeps the 360px box inside the viewport gutters
+    expect(trayflyouts).toContain("const CALENDAR_GUTTER = 12 + 180;");
+    expect(trayflyouts).toContain('right: "auto", left: `${Math.round(rides)}px`, transform: "translateX(-50%)"');
+  });
+});
+
+describe("the settings card (the mode and the edge controls)", () => {
+  it("offers the two modes and the three edges as segmented radios", () => {
+    expect(navbarcard).toContain('const MODES: readonly NavbarMode[] = ["floating", "docked"];');
+    expect(navbarcard).toContain('const EDGES: readonly NavbarEdge[] = ["bottom", "left", "right"];');
     expect(navbarcard).toContain('role="radiogroup"');
     expect(navbarcard).toContain('role="radio"');
   });
 
-  it("persists the choices and dispatches the events the chrome listens for", () => {
-    expect(navbarcard).toContain("saveNavbarPosition(next);");
-    expect(navbarcard).toContain("new CustomEvent<NavbarPosition>(NAVBAR_POS_EVENT, { detail: next })");
-    expect(navbarcard).toContain("saveNavbarStyle(next);");
-    expect(navbarcard).toContain("new CustomEvent<NavbarStyle>(NAVBAR_STYLE_EVENT, { detail: next })");
+  it("persists on the system store and dispatches the events the chrome listens for", () => {
+    expect(navbarcard).toContain("saveNavbarMode(next);");
+    expect(navbarcard).toContain("new CustomEvent<NavbarMode>(NAVBAR_MODE_EVENT, { detail: next })");
+    expect(navbarcard).toContain("saveNavbarEdge(next);");
+    expect(navbarcard).toContain("new CustomEvent<NavbarEdge>(NAVBAR_EDGE_EVENT, { detail: next })");
+    expect(navbarcard).not.toContain("window.localStorage");
   });
 
-  it("locks the position control under the apple face — the disabled grammar with the hint naming the law", () => {
-    expect(navbarcard).toContain('useState<boolean>(() => loadNavbarStyle() === "apple")');
-    expect(navbarcard).toContain("window.addEventListener(NAVBAR_STYLE_EVENT, onNavbarStyle);");
+  it("locks the edge control while the bar floats — the disabled grammar with the hint naming the law", () => {
     expect(navbarcard).toContain("disabled={locked}");
     expect(navbarcard).toContain('aria-disabled={locked ? "true" : undefined}');
-    expect(navbarcard).toContain('copy("settings.navbar.docklocked")');
+    expect(navbarcard).toContain('uicopy("navbar.edge.locked")');
+    expect(navbarcard).toContain("window.addEventListener(NAVBAR_MODE_EVENT, onNavbarMode);");
   });
 
   it("the personalization page mounts both controls in the navbar card", () => {
-    expect(personalization).toContain(
-      'import { NavbarPositionControl, NavbarStyleControl } from "./SettingsNavbarposition";',
-    );
-    expect(personalization).toContain("<NavbarPositionControl />");
-    expect(personalization).toContain("<NavbarStyleControl />");
-    expect(personalization).toContain('copy("settings.personal.navbarstyle")');
+    expect(personalization).toContain('import { NavbarEdgeControl, NavbarModeControl } from "./SettingsNavbarposition";');
+    expect(personalization).toContain("<NavbarModeControl />");
+    expect(personalization).toContain("<NavbarEdgeControl />");
+    expect(personalization).toContain('uicopy("navbar.mode.aria")');
   });
 });
 
-describe("the labels catalog carries the navbar grammar (no hardcoded strings)", () => {
-  it("answers every position and face label through the copy store", () => {
-    expect(copy("settings.navbar.floating")).toBe("Floating");
-    expect(copy("settings.navbar.left")).toBe("Left edge");
-    expect(copy("settings.navbar.right")).toBe("Right edge");
-    expect(copy("settings.navbar.windows")).toBe("Windows taskbar");
-    expect(copy("settings.navbar.apple")).toBe("Apple dock");
-    expect(copy("settings.personal.navbar")).toBe("Navbar position");
-    expect(copy("settings.personal.navbarstyle")).toBe("Navbar style");
+describe("the labels catalog carries the navbar grammar (no hardcoded strings, no competitor names)", () => {
+  it("answers every mode and edge label through the ui store", () => {
+    expect(uicopy("navbar.mode.aria")).toBe("Navbar mode");
+    expect(uicopy("navbar.mode.floating")).toBe("Floating");
+    expect(uicopy("navbar.mode.docked")).toBe("Docked");
+    expect(uicopy("navbar.edge.aria")).toBe("Dock edge");
+    expect(uicopy("navbar.edge.bottom")).toBe("Bottom edge");
+    expect(uicopy("navbar.edge.left")).toBe("Left edge");
+    expect(uicopy("navbar.edge.right")).toBe("Right edge");
+    expect(uicopy("navbar.mode.desc").length).toBeGreaterThan(0);
   });
 
-  it("carries the dock lock hint (the apple law named beside the control)", () => {
-    const hint = copy("settings.navbar.docklocked");
-    expect(hint.length).toBeGreaterThan(0);
-    expect(hint).not.toBe("settings.navbar.docklocked");
+  it("carries the drag hint and the lock hint (the laws named beside the surfaces)", () => {
+    for (const key of ["navbar.drag.hint", "navbar.edge.locked"]) {
+      const hint = uicopy(key);
+      expect(hint.length).toBeGreaterThan(0);
+      expect(hint).not.toBe(key);
+    }
+  });
+
+  it("the competitor names died everywhere — the modes are floating and docked, in plain english", () => {
+    const seeds = JSON.stringify(copyseed());
+    expect(seeds).not.toContain("Windows taskbar");
+    expect(seeds).not.toContain("Apple dock");
+    expect(seeds).not.toContain("settings.navbar.windows");
+    expect(seeds).not.toContain("settings.navbar.apple");
+    expect(chrome).not.toContain('data-navstyle');
+    expect(solcss).not.toContain("data-navstyle");
+    expect(solcss).not.toContain("data-navbar=");
+    expect(solcss).not.toContain('data-navbar="');
+  });
+
+  it("the history window body rides the ui store too (no literal in the workspace)", () => {
+    expect(workspace).toContain('uicopy("workspace.history.localTabs")');
+    expect(workspace).not.toContain(">Open session tabs remain local to this workspace.<");
+    expect(uicopy("workspace.history.localTabs")).toBe("Open session tabs remain local to this workspace.");
+  });
+
+  it("the copy store keeps answering the settings rows the other cards ride", () => {
+    expect(copy("settings.personal.background")).toBe("Background");
+    expect(copy("settings.personal.components")).toBe("Component options");
   });
 });
 
-describe("the css ladder of the two faces (the sol.css pins)", () => {
-  it("the windows taskbar canon: the 48px acrylic bar with the -webkit- prefix law", () => {
+describe("the css ladder of the two modes (the sol.css pins)", () => {
+  it("the docked bar canon: the 48px acrylic bar with the -webkit- prefix law", () => {
     expect(solcss).toContain(".acrylic-bar {");
     expect(solcss).toContain("background-color: rgb(32 32 32 / 75%);");
     expect(solcss).toContain("-webkit-backdrop-filter: saturate(3) blur(20px);");
@@ -222,38 +421,47 @@ describe("the css ladder of the two faces (the sol.css pins)", () => {
     expect(solcss).toContain("background-color: rgb(36 36 36 / 80%);");
   });
 
-  it("the rail: the 48px vertical dock with the side indicator ladder and the body reservation", () => {
-    expect(solcss).toContain('.dt-nav[data-navbar="left"],');
-    expect(solcss).toContain('.dt-nav[data-navbar="right"] {');
+  it("the docked rail: the 48px vertical dock with the side indicator ladder and the body reservation", () => {
+    expect(solcss).toContain('.dt-nav[data-navmode="docked"][data-navedge="left"],');
+    expect(solcss).toContain('.dt-nav[data-navmode="docked"][data-navedge="right"] {');
     expect(solcss).toContain("width: 48px;");
     // the open/active ladder turns to the screen-edge side (3px wide, 6/12px tall)
-    expect(solcss).toContain('.dt-nav[data-navbar="left"] .dt-nav__app[data-open="true"]::after,');
+    expect(solcss).toContain(
+      '.dt-nav[data-navmode="docked"][data-navedge="left"] .dt-nav__app[data-open="true"]::after,',
+    );
     expect(solcss).toContain("width: 3px;");
     // the document flow insets from the docked edge and the bottom band retires
-    expect(solcss).toContain('body:has(.dt-nav[data-navbar="left"]),');
+    expect(solcss).toContain('body:has(.dt-nav[data-navmode="docked"][data-navedge="left"]),');
     expect(solcss).toContain("padding-left: 48px;");
   });
 
-  it("the apple dock: the centered floating mica pad on the token ladder with the magnifying pins", () => {
-    expect(solcss).toContain('.dt-nav[data-navstyle="apple"] {');
+  it("the floating pad: the centered rounded dock on the token ladder with the gsap handover", () => {
+    expect(solcss).toContain('.dt-nav[data-navmode="floating"] {');
     expect(solcss).toContain("left: 50%;");
     expect(solcss).toContain("translate: -50% 0;");
     expect(solcss).toContain("height: 56px;");
-    // the token ladder: the radius, the ring and the hairline ride the house tokens
+    // the rounded corners are the face of the floating law
     expect(solcss).toContain("border-radius: var(--radius-2xl);");
     expect(solcss).toContain("color-mix(in oklab, var(--color-veil) 14%, transparent)");
-    // the dock magnification on the micro curve of the house (≤200ms, transform only)
-    expect(solcss).toContain('.dt-nav[data-navstyle="apple"] .dt-nav__app:hover,');
-    expect(solcss).toContain("transform: translateY(-3px) scale(1.12);");
-    expect(solcss).toContain("transition: transform 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));");
-    // the omnibox retires on the dock face
-    expect(solcss).toContain('.dt-nav[data-navstyle="apple"] .dt-nav__omnibox {');
+    // the magnification handover: gsap owns the transform, the css retires
+    expect(solcss).toContain(".dt-nav[data-navmode=\"floating\"] .dt-nav__app-face {");
+    expect(solcss).toContain("transform-origin: 50% 100%;");
+    expect(solcss).toContain("transition-property: background-color;");
+    // the omnibox retires on the pad face
+    expect(solcss).toContain('.dt-nav[data-navmode="floating"] .dt-nav__omnibox {');
   });
 
-  it("the dock magnification flattens under reduced motion (the motion law)", () => {
-    const guard = solcss.indexOf('@media (prefers-reduced-motion: reduce) {\n  .dt-nav[data-navstyle="apple"]');
+  it("the drag stage answers the grabbed cursor and the selection kill", () => {
+    expect(solcss).toContain('.dt-nav[data-dragging="true"] {');
+    expect(solcss).toContain("cursor: grabbing;");
+    expect(solcss).toContain("user-select: none;");
+    expect(solcss).toContain("touch-action: none;");
+  });
+
+  it("the magnification flattens under reduced motion (the motion law)", () => {
+    const guard = solcss.indexOf('@media (prefers-reduced-motion: reduce) {\n  .dt-nav[data-navmode="floating"]');
     expect(guard).toBeGreaterThan(-1);
-    expect(solcss.slice(guard, guard + 400)).toContain("transform: none;");
+    expect(solcss.slice(guard, guard + 300)).toContain("transform: none;");
   });
 
   it("the settings disabled grammar: the locked segments dim, refuse the pointer and keep the quiet hint", () => {
@@ -262,5 +470,31 @@ describe("the css ladder of the two faces (the sol.css pins)", () => {
     expect(solcss).toContain("cursor: not-allowed;");
     expect(solcss).toContain(".dtw-settings__hint {");
     expect(solcss).toContain("color: var(--dtv3-ink-3);");
+  });
+});
+
+describe("the login shadow law (the --win-shad-* tokens, clipped by the login face)", () => {
+  it("the sign-in card rides the house window shadow token — no hand-built drop leaks", () => {
+    const card = solcss.indexOf(".dtw-login__card {");
+    expect(card).toBeGreaterThan(-1);
+    const cardblock = solcss.slice(card, card + 2400);
+    expect(cardblock).toContain("box-shadow:");
+    expect(cardblock).toContain("var(--win-shad-window)");
+    expect(cardblock).not.toContain("0 16px 40px -18px");
+  });
+
+  it("the power flyout rides the house flyout shadow token", () => {
+    const menu = solcss.indexOf(".dtw-login__powermenu {");
+    expect(menu).toBeGreaterThan(-1);
+    expect(solcss.slice(menu, menu + 900)).toContain("box-shadow: var(--win-shad-flyout);");
+  });
+
+  it("the login face clips every layer — the stage and the card can never paint beyond it", () => {
+    const face = solcss.indexOf(".dtw-login {");
+    expect(face).toBeGreaterThan(-1);
+    expect(solcss.slice(face, face + 400)).toContain("overflow: hidden;");
+    // the tokens the shadows ride exist on the root ladder
+    expect(solcss).toContain("--win-shad-window: var(--shadow-window);");
+    expect(solcss).toContain("--win-shad-flyout: var(--shadow-flyout);");
   });
 });
