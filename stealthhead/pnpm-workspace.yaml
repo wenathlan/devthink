@@ -55,7 +55,7 @@ minimumReleaseAgeExclude:
   - '@biomejs/cli-linux-x64@2.6.3 || 2.6.4'
   - '@biomejs/cli-win32-arm64@2.6.3 || 2.6.4'
   - '@biomejs/cli-win32-x64@2.6.3 || 2.6.4'
-  - react-resizable-panels@4.15.0 || 4.15.1 || 4.15.2 || 4.15.3 || 4.16.0
+  - react-resizable-panels@4.15.0 || 4.15.1 || 4.15.2 || 4.15.3 || 4.16.0 || 4.16.1
   - '@pnpm/exe.android-arm64@12.16.1'
   - '@pnpm/exe.android-x64@12.16.1'
   - '@pnpm/exe.darwin-arm64@12.16.1'
@@ -80,5 +80,5 @@ minimumReleaseAgeExclude:
   - '@types/google.maps@3.66.9'
   - lucide-react@1.64.0 || 1.65.0 || 1.66.0
   - '@fluentui/react-icons@2.0.345'
-  - '@wenathlan/vault@2.0.152'
+  - '@wenathlan/vault@2.0.152 || 2.0.153'
   - hono@4.13.16
