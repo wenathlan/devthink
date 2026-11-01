@@ -26,8 +26,13 @@ export type SqlParam = string | number | bigint | boolean | null;
 
 /** the pragma ladder every lane walks, in order — busy_timeout BEFORE WAL
  * (the pragma itself waits when the file is contended, the boot never
- * races) and foreign keys always armed (the family schemas declare them). */
-export const PRAGMA_BOOTSTRAP = ["busy_timeout = 5000", "journal_mode = WAL", "foreign_keys = ON"] as const;
+ * races) and foreign keys always armed (the family schemas declare them).
+ * the timeout rides at thirty seconds: a vitest isolate fleet (sixty
+ * workers importing the same runtime module in the same breath) can
+ * stampede the WAL handshake for longer than five seconds ever covered —
+ * the lock the debonair family suite answered on the #281 merge ref
+ * taught the ladder the wider window. */
+export const PRAGMA_BOOTSTRAP = ["busy_timeout = 30000", "journal_mode = WAL", "foreign_keys = ON"] as const;
 
 /** the lane options: the url wins over the environment, the environment
  * name defaults to the family DATABASE_URL, and the default file answers

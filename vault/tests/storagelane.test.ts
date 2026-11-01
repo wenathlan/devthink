@@ -29,15 +29,15 @@ afterEach(() => {
 
 describe("the storage lane contract", () => {
   it("walks the pragma ladder in the family order — busy_timeout before WAL, foreign keys armed", () => {
-    expect(PRAGMA_BOOTSTRAP).toEqual(["busy_timeout = 5000", "journal_mode = WAL", "foreign_keys = ON"]);
+    expect(PRAGMA_BOOTSTRAP).toEqual(["busy_timeout = 30000", "journal_mode = WAL", "foreign_keys = ON"]);
     const dir = tempdir();
     const lane = openStorageLane({ url: path.join(dir, "pragma.db") });
-    expect(lane.db.pragma("busy_timeout", { simple: true })).toBe(5000);
+    expect(lane.db.pragma("busy_timeout", { simple: true })).toBe(30000);
     expect(lane.db.pragma("journal_mode", { simple: true })).toBe("wal");
     expect(lane.db.pragma("foreign_keys", { simple: true })).toBe(1);
     lane.close();
     const memory = openStorageLane({ url: ":memory:" });
-    expect(memory.db.pragma("busy_timeout", { simple: true })).toBe(5000);
+    expect(memory.db.pragma("busy_timeout", { simple: true })).toBe(30000);
     expect(memory.db.pragma("foreign_keys", { simple: true })).toBe(1);
     memory.close();
   });
