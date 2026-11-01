@@ -32,4 +32,5 @@ minimumReleaseAgeExclude:
   - react-hook-form@7.91.0
   - '@fluentui/react-icons@2.0.345'
   - lucide-react@1.65.0
-  - react-resizable-panels@4.15.3
+  - react-resizable-panels@4.15.3 || 4.16.0 || 4.16.1
+  - '@wenathlan/vault@2.0.153'
