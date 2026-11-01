@@ -319,7 +319,7 @@ export interface matrixverifyreport {
  * fixed order with its outcome, no timestamps, so the record replays byte
  * identical. */
 export const matrixverifyrecord: matrixverifyreport = {
-  "release": "2.0.152",
+  "release": "2.0.153",
   "matrix": {
     "browsers": [
       "chromium",
@@ -358,7 +358,7 @@ export const matrixverifyrecord: matrixverifyreport = {
       "family": "cli",
       "name": "the cli surface answers the manifest and help commands in library mode",
       "outcome": "pass",
-      "detail": "manifest and help answered for 2.0.152"
+      "detail": "manifest and help answered for 2.0.153"
     },
     {
       "family": "mcp",
@@ -394,7 +394,7 @@ export const matrixverifyrecord: matrixverifyreport = {
       "family": "gates",
       "name": "the pool audit gate runs green over the 626 item pool",
       "outcome": "pass",
-      "detail": "Pool audit of 626 items against 4468 shipped symbols: 623 implemented, 3 planned, 0 unknown, the record in tests/devthink.poolaudit.ts."
+      "detail": "Pool audit of 626 items against 4473 shipped symbols: 623 implemented, 3 planned, 0 unknown, the record in tests/devthink.poolaudit.ts."
     },
     {
       "family": "gates",
