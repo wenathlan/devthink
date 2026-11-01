@@ -12,7 +12,13 @@ import { mintid } from "../bigintids.ts";
 import type { IngestDocument } from "../ingest.ts";
 import { ingestPcm } from "../ingest.ts";
 import type { IngestRow } from "../ingestdb.ts";
-import { getingestrow, IngestDbError, listingestrows, migrateingestschema, puttingest } from "../ingestdb.ts";
+// the seat answers before the module load: this suite rides its own
+// database file so the parallel vitest workers never share one wal
+// writer (the SQLITE_BUSY lesson — every suite its own seat).
+process.env.DATABASE_URL = "file:./local.ingestschema.db";
+
+const ingestdbmodule = await import("../ingestdb.ts");
+const { getingestrow, IngestDbError, listingestrows, migrateingestschema, puttingest } = ingestdbmodule;
 
 /** A deterministic synthetic take: a 110 hz sawtooth bass (harmonic) over
  * an 8 hz amplitude-gated click train (percussive), 3 seconds at 8 khz —
