@@ -1,20 +1,36 @@
 /**
  * languagecard.tsx — the Language card of the Personalization page: the
- * GTX language ladder exactly as the old deck played it. The authored
- * surface is english and every other row rides the google gtx module
- * (translategtx.ts) with the reveal effect — the names stay native per the
- * windows grammar, so the picker itself rides the notranslate wall and
- * never becomes its own translation subject. The switch rides setlanguage:
- * the module persists, rewalks the body and arms the observer itself.
+ * display preference of the machine, native names per the windows grammar.
+ * The authored surface is english and the picker persists the choice on
+ * the machine profile — zero external lanes, zero infra copy (the gtx
+ * module retired with the owner law). The picker itself rides the
+ * notranslate wall and never becomes its own subject.
  * Loose component of the settings page, riding the dtw kit.
  */
 import { LocalLanguageRegular } from "@fluentui/react-icons";
 import { useState } from "react";
 import { copy } from "../../copy";
-import { currentlang } from "../../translategtx.ts";
-import { setlanguage } from "../../translatedom.ts";
 
-/** the GTX language ladder, native names per the windows grammar. */
+/** the machine profile key the preference persists under. */
+const LANGPREF = "app-lang";
+
+const readpref = (): string => {
+  try {
+    return localStorage.getItem(LANGPREF) ?? "en";
+  } catch {
+    return "en";
+  }
+};
+
+const writepref = (lang: string): void => {
+  try {
+    localStorage.setItem(LANGPREF, lang);
+  } catch {
+    /* the choice stays session only */
+  }
+};
+
+/** the language ladder, native names per the windows grammar. */
 const LANGUAGES: readonly { code: string; native: string }[] = [
   { code: "en", native: "English (United States)" },
   { code: "pt", native: "Português (Brasil)" },
@@ -32,7 +48,7 @@ const LANGUAGES: readonly { code: string; native: string }[] = [
 
 /** LanguageCard — the display language card. */
 export function LanguageCard() {
-  const [lang, setLang] = useState(() => currentlang());
+  const [lang, setLang] = useState(() => readpref());
 
   return (
     <section className="dtw-card notranslate" aria-label={copy("settings.language.title")}>
@@ -50,7 +66,7 @@ export function LanguageCard() {
           onChange={(event) => {
             const next = event.target.value;
             setLang(next);
-            void setlanguage(next);
+            writepref(next);
           }}
           aria-label={copy("settings.language.display")}
         >

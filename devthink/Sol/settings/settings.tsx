@@ -54,7 +54,7 @@ import {
 export * from "../wingets";
 
 /** paints the stored personalization choices before any route mounts (the
- * same law initautotranslate rides at the theme anchor). */
+ * same law the display preference rides at the settings card). */
 initPersonalization();
 
 /** The settings app: the Windows body when embedded (the desktop window
