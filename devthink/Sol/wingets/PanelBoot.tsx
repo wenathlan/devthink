@@ -13,6 +13,7 @@
  * onboardingstate.ts), the desktop never replays a second boot on top of it. */
 import { useEffect, useRef, useState } from "react";
 import { peekonboardingstate } from "../../onboardingstate.ts";
+import { uicopy, useUicopy } from "../../uistore.ts";
 import { SolLogoMark } from "./PanelLogo.tsx";
 
 const BOOT_KEY = "devthink.boot.done";
@@ -42,6 +43,9 @@ export function shouldBoot(): boolean {
 }
 
 export function BootScreen({ onDone }: { onDone: () => void }) {
+  // the store ride: the boot words answer the ui store rows (the
+  // panel.boot.* keys of uistore.ts — no literal lives in the face)
+  useUicopy();
   const [leaving, setLeaving] = useState(false);
   /** the meter readout, 0→100 in lockstep with the 1.6s bar fill */
   const [pct, setPct] = useState(0);
@@ -84,13 +88,13 @@ export function BootScreen({ onDone }: { onDone: () => void }) {
   }, []);
 
   return (
-    <div className={`boot-screen${leaving ? " leaving" : ""}`} role="status" aria-label="DevThink is starting">
+    <div className={`boot-screen${leaving ? " leaving" : ""}`} role="status" aria-label={uicopy("panel.boot.aria")}>
       {/* the one mark of the boot zone: mark + name + role line as the single opening lockup */}
       <div className="boot-screen__mark" aria-hidden="true">
         <SolLogoMark size={92} />
       </div>
-      <p className="boot-screen__name">DevThink</p>
-      <p className="boot-screen__state">opening the local os</p>
+      <p className="boot-screen__name">{uicopy("panel.boot.name")}</p>
+      <p className="boot-screen__state">{uicopy("panel.boot.state")}</p>
       <div className="boot-screen__bar" aria-hidden="true">
         <i />
       </div>

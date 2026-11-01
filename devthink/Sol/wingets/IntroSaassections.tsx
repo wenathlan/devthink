@@ -33,6 +33,7 @@ import {
 } from "../../saascontent.ts";
 import { uicopy, useUicopy } from "../../uistore.ts";
 import { SaddleTabBridge, SaddleTabBridgeUp, ScoopedCard, Studiomark, type studiomarkid } from "./IntroSaaskit.tsx";
+import { Shaderhero } from "./IntroShaderhero.tsx";
 
 type SectionProps = {
   /** the enter action: every launch path of the landing funnels to the login face */
@@ -86,6 +87,10 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
   const agents = mode.id === "agents";
   return (
     <section id="hero-os" className="relative flex flex-col overflow-hidden bg-[#F2F5FC] pt-0 pb-32 sm:pb-40">
+      {/* the living shader hero: the drifting grid and the particle sky —
+          three.js rides the lazy lane (never the landing bundle), the field
+          never arms under reduced motion, the CSS gaussian stays the base */}
+      <Shaderhero />
       <div className="hero-gaussian-shader pointer-events-none absolute inset-x-0 -bottom-20 z-0 h-[520px] opacity-90" />
       <div className="relative z-20 mx-auto flex w-full max-w-[1360px] flex-col items-center px-6 pt-16 text-center sm:px-10 sm:pt-24 lg:px-16">
         <h1 className="max-w-5xl text-[44px] leading-[1.02] font-extrabold tracking-[-0.035em] text-slate-950 sm:text-7xl lg:text-[84px]">
