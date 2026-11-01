@@ -63,8 +63,8 @@ importers:
         specifier: ^2.1.6
         version: 2.1.6(playwright@1.64.1)
       '@wenathlan/vault':
-        specifier: ^2.0.151
-        version: 2.0.151(@types/react@19.3.0)(react@19.3.1)
+        specifier: ^2.0.153
+        version: 2.0.153(@electric-sql/pglite@0.4.3)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.64.1)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
       hono:
         specifier: ^4.13.16
         version: 4.13.16
@@ -322,8 +322,8 @@ importers:
         specifier: ^7.91.0
         version: 7.91.0(@types/react@19.3.0)(react@19.3.1)
       react-resizable-panels:
-        specifier: ^4.15.3
-        version: 4.15.3(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        specifier: ^4.16.1
+        version: 4.16.1(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       recharts:
         specifier: ^3.10.1
         version: 3.10.1(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react-is@19.3.1)(react@19.3.1)(redux@5.0.1)
@@ -2542,9 +2542,9 @@ packages:
       playwright:
         optional: true
 
-  '@wenathlan/vault@2.0.151':
-    resolution: {integrity: sha512-Y7wkeNB7qg9WkMjSWd/7rWgX5IpFk/CbFreNMVW5WlL/bOBAojxLD/+VMgCEXIqbE9cncrs9+NRunHiUXXQzaA==}
-    engines: {bare: ^1.18.0, bun: ^1.4.2, chrome: ^16.0.912, cnpm: ^9.4.0, corepack: ^0.35.0, deno: ^2.9.5, ecmascript: ^5.0.0, firefox: '>=0.8.0', iojs: ^1.0.0, node: '>=26.12.1 <27', npm: ^12.1.0, pnpm: ^12.6.0, teleport: '>=0.2.0', typescript: ^5.8.0, vscode: ^1.118.0, yarn: ^4.17.1}
+  '@wenathlan/vault@2.0.153':
+    resolution: {integrity: sha512-N7KlZlP/sqkD+pxqz/0cr+EwPPjTL/FTVEpJ4evQQeYkRKcNZD8Yrin8MVKwgFwE04eCZu+4fUCliOt+G1rFSQ==}
+    engines: {bare: ^1.18.0, bun: ^1.4.2, chrome: ^16.0.912, cnpm: ^9.4.0, corepack: ^0.35.0, deno: ^2.9.5, ecmascript: ^5.0.0, firefox: '>=0.8.0', iojs: ^1.0.0, node: '>=26.13.0 <27', npm: ^12.1.0, pnpm: ^12.6.0, teleport: '>=0.2.0', typescript: ^5.8.0, vscode: ^1.118.0, yarn: ^4.17.1}
 
   '@xmldom/xmldom@0.9.12':
     resolution: {integrity: sha512-5AXjrcMClTryPe9LgZrygpB1lj7s0S9E0+W+AHaVKAVyHanafK86iPSvG5xHVSp/jC+VH1UXu0TAEmY279xH7A==}
@@ -4468,8 +4468,8 @@ packages:
       '@types/react':
         optional: true
 
-  react-resizable-panels@4.15.3:
-    resolution: {integrity: sha512-zPRd9jEon38yqRRYKTk8IbkyeKzgXAQbX/JnUdkGfupTuYHQNJ6jx4hTXtN+kFTgnVgOGXFP5Yxq4SCV1pnniQ==}
+  react-resizable-panels@4.16.1:
+    resolution: {integrity: sha512-XI02YTQxqwVAzSJCvaQ6Ze7ubwyjVRCyihu835q7wx5a1NAJXt0rnvv3TdWxGklrQD1G+IrLJMMjlFUmbCLABg==}
     peerDependencies:
       '@types/react': ^18.2.6 || ^19.0.0
       react: ^18.0.0 || ^19.0.0
@@ -7235,18 +7235,66 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@wenathlan/vault@2.0.151(@types/react@19.3.0)(react@19.3.1)':
+  '@wenathlan/vault@2.0.153(@electric-sql/pglite@0.4.3)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.64.1)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)':
     dependencies:
+      '@fluentui/react-icons': 2.0.345(react@19.3.1)
+      '@fontsource-variable/bricolage-grotesque': 5.3.0
+      '@fontsource-variable/geist-mono': 5.3.0
+      '@fontsource-variable/inter': 5.3.0
+      '@fontsource-variable/jetbrains-mono': 5.3.0
+      '@fontsource-variable/outfit': 5.3.0
       '@hono/node-server': 2.1.5(hono@4.13.16)
+      '@libsql/client': 0.18.0
       '@prisma/adapter-libsql': 7.10.1
+      '@prisma/client': 7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
+      '@wenathlan/saddle': 2.1.6(playwright@1.64.1)
+      better-sqlite3: 13.0.3
+      drizzle-orm: 0.45.4(@electric-sql/pglite@0.4.3)(@libsql/client@0.18.0)(@prisma/client@7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2))(@types/better-sqlite3@9.6.0)(better-sqlite3@13.0.3)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))
+      gsap: 3.15.0
       hono: 4.13.16
       ink: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
+      lucide-react: 1.66.0(@types/react@19.3.0)(react@19.3.1)
+      motion: 12.43.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      react: 19.3.1
       react-devtools-core: 8.0.0
+      react-dom: 19.3.1(react@19.3.1)
+      three: 0.187.0
+      wouter: 3.13.0(react@19.3.1)
       z-ai-web-dev-sdk: 0.0.18
     transitivePeerDependencies:
+      - '@aws-sdk/client-rds-data'
+      - '@cloudflare/workers-types'
+      - '@electric-sql/pglite'
+      - '@emotion/is-prop-valid'
+      - '@libsql/client-wasm'
+      - '@neondatabase/serverless'
+      - '@netlify/db'
+      - '@op-engineering/op-sqlite'
+      - '@opentelemetry/api'
+      - '@planetscale/database'
+      - '@tidbcloud/serverless'
+      - '@types/better-sqlite3'
+      - '@types/pg'
       - '@types/react'
+      - '@types/sql.js'
+      - '@upstash/redis'
+      - '@vercel/postgres'
+      - '@xata.io/client'
       - bufferutil
-      - react
+      - bun-types
+      - expo-sqlite
+      - gel
+      - knex
+      - kysely
+      - mysql2
+      - pg
+      - playwright
+      - postgres
+      - prisma
+      - sql.js
+      - sqlite3
+      - supports-color
+      - typescript
       - utf-8-validate
 
   '@xmldom/xmldom@0.9.12': {}
@@ -9328,7 +9376,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.3.0
 
-  react-resizable-panels@4.15.3(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
+  react-resizable-panels@4.16.1(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
     dependencies:
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)

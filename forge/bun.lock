@@ -16,7 +16,7 @@
         "@prisma/adapter-libsql": "^7.10.1",
         "@prisma/client": "^7.10.1",
         "@wenathlan/saddle": "^2.1.6",
-        "@wenathlan/vault": "^2.0.152",
+        "@wenathlan/vault": "^2.0.153",
         "gsap": "^3.15.0",
         "hono": "^4.13.16",
         "ink": "^7.1.1",
@@ -114,7 +114,7 @@
         "react-day-picker": "^10.0.2",
         "react-dom": "^19.3.1",
         "react-hook-form": "^7.91.0",
-        "react-resizable-panels": "^4.16.0",
+        "react-resizable-panels": "^4.16.1",
         "recharts": "^3.10.1",
         "sonner": "^2.0.8",
         "streamdown": "^2.7.1",
@@ -844,7 +844,7 @@
 
     "@wenathlan/saddle": ["@wenathlan/saddle@2.1.6", "", { "optionalDependencies": { "commander": "^13.1.0", "dockerode": "^5.0.1", "express": "^5.1.0" }, "peerDependencies": { "playwright": "^1.63.0" }, "optionalPeers": ["playwright"], "bin": { "saddle": "dist/cli.js" } }, "sha512-P5t4blGys3LsCtzuPolf7AqZecn8t/AY0OUw2Umag3zyCMyndzX+sro5UcFi8o4b3iKItI1nbr6sue1b+e4G2w=="],
 
-    "@wenathlan/vault": ["@wenathlan/vault@2.0.152", "", { "dependencies": { "@fluentui/react-icons": "^2.0.345", "@fontsource-variable/bricolage-grotesque": "^5.3.0", "@fontsource-variable/jetbrains-mono": "^5.3.0", "@fontsource-variable/outfit": "^5.3.0", "@hono/node-server": "^2.1.5", "@libsql/client": "^0.18.0", "@prisma/adapter-libsql": "^7.10.1", "@prisma/client": "^7.10.1", "@wenathlan/saddle": "^2.1.6", "better-sqlite3": "^13.0.3", "drizzle-orm": "^0.45.4", "hono": "^4.13.14", "ink": "^7.1.1", "lucide-react": "^1.66.0", "motion": "^12.43.0", "react": "^19.3.1", "react-devtools-core": "^8.0.0", "react-dom": "^19.3.1", "wouter": "^3.13.0", "z-ai-web-dev-sdk": "^0.0.18" } }, "sha512-myhiInqPbys3YqAFdxDrhE42EOqog4HXnpypqmdFrKw4GB/v+BICXPaN4lzWRifeQc9R3NwcqJZhfYdqkUehVg=="],
+    "@wenathlan/vault": ["@wenathlan/vault@2.0.153", "", { "dependencies": { "@fluentui/react-icons": "^2.0.345", "@fontsource-variable/bricolage-grotesque": "^5.3.0", "@fontsource-variable/geist-mono": "^5.3.0", "@fontsource-variable/inter": "^5.3.0", "@fontsource-variable/jetbrains-mono": "^5.3.0", "@fontsource-variable/outfit": "^5.3.0", "@hono/node-server": "^2.1.5", "@libsql/client": "^0.18.0", "@prisma/adapter-libsql": "^7.10.1", "@prisma/client": "^7.10.1", "@wenathlan/saddle": "^2.1.6", "better-sqlite3": "^13.0.3", "drizzle-orm": "^0.45.4", "gsap": "^3.15.0", "hono": "^4.13.16", "ink": "^7.1.1", "lucide-react": "^1.66.0", "motion": "^12.43.0", "react": "^19.3.1", "react-devtools-core": "^8.0.0", "react-dom": "^19.3.1", "three": "^0.187.0", "wouter": "^3.13.0", "z-ai-web-dev-sdk": "^0.0.18" } }, "sha512-N7KlZlP/sqkD+pxqz/0cr+EwPPjTL/FTVEpJ4evQQeYkRKcNZD8Yrin8MVKwgFwE04eCZu+4fUCliOt+G1rFSQ=="],
 
     "@xmldom/xmldom": ["@xmldom/xmldom@0.9.12", "", {}, "sha512-5AXjrcMClTryPe9LgZrygpB1lj7s0S9E0+W+AHaVKAVyHanafK86iPSvG5xHVSp/jC+VH1UXu0TAEmY279xH7A=="],
 
@@ -1670,7 +1670,7 @@
 
     "react-remove-scroll-bar": ["react-remove-scroll-bar@2.3.8", "", { "dependencies": { "react-style-singleton": "^2.2.2", "tslib": "^2.0.0" }, "peerDependencies": { "@types/react": "*", "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0" }, "optionalPeers": ["@types/react"] }, "sha512-9r+yi9+mgU33AKcj6IbT9oRCO78WriSj6t/cF8DWBZJ9aOGPOTEDvdUDz1FwKim7QXWwmHqtdHnRJfhAxEG46Q=="],
 
-    "react-resizable-panels": ["react-resizable-panels@4.16.0", "", { "peerDependencies": { "@types/react": "^18.2.6 || ^19.0.0", "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0" }, "optionalPeers": ["@types/react"] }, "sha512-uJGVWXv1vsoP1sGRembWjtfHLSQwlacVHN8/7jWj8OUVva0XiQeJ9eTCMcPqhG9CC6YesvUtI43FJEnDzBcqFw=="],
+    "react-resizable-panels": ["react-resizable-panels@4.16.1", "", { "peerDependencies": { "@types/react": "^18.2.6 || ^19.0.0", "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0" }, "optionalPeers": ["@types/react"] }, "sha512-XI02YTQxqwVAzSJCvaQ6Ze7ubwyjVRCyihu835q7wx5a1NAJXt0rnvv3TdWxGklrQD1G+IrLJMMjlFUmbCLABg=="],
 
     "react-style-singleton": ["react-style-singleton@2.2.3", "", { "dependencies": { "get-nonce": "^1.0.0", "tslib": "^2.0.0" }, "peerDependencies": { "@types/react": "*", "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc" }, "optionalPeers": ["@types/react"] }, "sha512-b6jSvxvVnyptAiLjbkWLE/lOnR4lfTtDAl+eUC7RZy+QQWc6wRzIV2CE6xBuMmDxc2qIihtDCZD5NPOFl7fRBQ=="],
 
