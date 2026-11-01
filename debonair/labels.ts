@@ -17,7 +17,7 @@ import { createLabelStore } from "@wenathlan/vault/labelstore";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 5;
+export const LABEL_REVISION = 6;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -346,6 +346,7 @@ export const LABEL_MANIFEST = {
   "ingest.phase.errorDetail": "the file did not survive the bench",
   "ingest.doc.eyebrow": "the document",
   "ingest.doc.meta": "· {clock} · {khz} kHz · schema {schema}",
+  "ingest.doc.palette": "the palette the audio answered",
   "ingest.card.rms": "rms",
   "ingest.card.peak": "peak",
   "ingest.card.onsets": "onsets",

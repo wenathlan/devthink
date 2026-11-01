@@ -2009,6 +2009,10 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .ing-step.is-live .ing-step-dot { background: var(--signal); opacity: 1; box-shadow: 0 0 0 4px color-mix(in srgb, var(--signal) 22%, transparent); }
 .ing-step.is-live .ing-step-label { color: var(--signal-strong); }
 .ing-dim { font-weight: 450; color: var(--ink-3); font-size: 0.62em; letter-spacing: 0; }
+.ing-palette { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
+.ing-palette-label { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.72; }
+.ing-palette-strip { display: inline-flex; gap: 6px; }
+.ing-palette-swatch { width: 26px; height: 26px; border-radius: 8px; border: 1px solid rgb(255 255 255 / 0.16); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22); }
 .ing-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin-top: 22px; }
 .ing-card { padding: 16px 18px 14px; border: 1px solid var(--line); border-radius: 12px;
   background: linear-gradient(180deg, var(--surface-1), color-mix(in srgb, var(--surface-0) 88%, transparent)); }

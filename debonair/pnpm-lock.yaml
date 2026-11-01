@@ -156,6 +156,9 @@ importers:
       '@prisma/client':
         specifier: ^7.10.1
         version: 7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
+      '@wenathlan/cadria':
+        specifier: ^2.0.153
+        version: 2.0.153(@electric-sql/pglite@0.4.3)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.5(@types/node@26.6.6))(playwright@1.64.1)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
       '@wenathlan/saddle':
         specifier: ^2.1.6
         version: 2.1.6(playwright@1.64.1)
@@ -2627,6 +2630,14 @@ packages:
 
   '@vitest/spy@5.0.5':
     resolution: {integrity: sha512-lwJRExuH417257Q5wv9QYugN9IMJkoxcrKrYxGPQkBzl7wlNpTUxD/5yNX4ESKVUIShKPgkGchYPFMWOOk0wzw==}
+
+  '@wenathlan/cadria@2.0.153':
+    resolution: {integrity: sha512-WiUL9Vkr0ZfxkuWU6NHBRrPFJ/lxP+sa5jNiWtYmfnBOzi9vzZB3kPMePPkikTzekC8sJu78GKr5f/Vt0YnTrw==}
+    engines: {bare: ^1.18.0, bun: ^1.4.2, chrome: ^16.0.912, cnpm: ^9.4.0, corepack: ^0.35.0, deno: ^2.9.5, ecmascript: ^5.0.0, firefox: '>=0.8.0', iojs: ^1.0.0, node: '>=26.13.0 <27', npm: ^12.1.0, pnpm: ^12.6.0, teleport: '>=0.2.0', typescript: ^5.8.0, vscode: ^1.118.0, yarn: ^4.17.1}
+
+  '@wenathlan/debonair@2.0.152':
+    resolution: {integrity: sha512-Vt0Y2D5OXrOIABG8UopSSBFnvyysfwevisJjY2W2m8OoPUF0qBIdz78MuaSWSyk4VamM8GdhisOCD9J58zPCIg==}
+    engines: {bare: ^1.18.0, bun: ^1.4.2, chrome: ^16.0.912, cnpm: ^9.4.0, corepack: ^0.35.0, deno: ^2.9.5, ecmascript: ^5.0.0, firefox: '>=0.8.0', iojs: ^1.0.0, node: '>=26.13.0 <27', npm: ^12.1.0, pnpm: ^12.6.0, teleport: '>=0.2.0', typescript: ^5.8.0, vscode: ^1.118.0, yarn: ^4.17.1}
 
   '@wenathlan/saddle@2.1.6':
     resolution: {integrity: sha512-P5t4blGys3LsCtzuPolf7AqZecn8t/AY0OUw2Umag3zyCMyndzX+sro5UcFi8o4b3iKItI1nbr6sue1b+e4G2w==}
@@ -7313,6 +7324,125 @@ snapshots:
       vite: 8.3.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)
 
   '@vitest/spy@5.0.5': {}
+
+  '@wenathlan/cadria@2.0.153(@electric-sql/pglite@0.4.3)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.5(@types/node@26.6.6))(playwright@1.64.1)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)':
+    dependencies:
+      '@fluentui/react-icons': 2.0.345(react@19.3.1)
+      '@fontsource-variable/bricolage-grotesque': 5.3.0
+      '@fontsource-variable/geist-mono': 5.3.0
+      '@fontsource-variable/inter': 5.3.0
+      '@fontsource-variable/jetbrains-mono': 5.3.0
+      '@fontsource-variable/outfit': 5.3.0
+      '@hono/node-server': 2.1.5(hono@4.13.16)
+      '@libsql/client': 0.18.0
+      '@prisma/adapter-libsql': 7.10.1
+      '@prisma/client': 7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
+      '@wenathlan/debonair': 2.0.152(@electric-sql/pglite@0.4.3)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.5(@types/node@26.6.6))(playwright@1.64.1)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
+      '@wenathlan/saddle': 2.1.6(playwright@1.64.1)
+      '@wenathlan/vault': 2.0.153(@electric-sql/pglite@0.4.3)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.5(@types/node@26.6.6))(playwright@1.64.1)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
+      gsap: 3.15.0
+      hono: 4.13.16
+      ink: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
+      lucide-react: 1.66.0(@types/react@19.3.0)(react@19.3.1)
+      motion: 12.43.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      react: 19.3.1
+      react-devtools-core: 8.0.0
+      react-dom: 19.3.1(react@19.3.1)
+      three: 0.187.0
+      wouter: 3.13.0(react@19.3.1)
+      z-ai-web-dev-sdk: 0.0.18
+    transitivePeerDependencies:
+      - '@aws-sdk/client-rds-data'
+      - '@cloudflare/workers-types'
+      - '@electric-sql/pglite'
+      - '@emotion/is-prop-valid'
+      - '@libsql/client-wasm'
+      - '@neondatabase/serverless'
+      - '@netlify/db'
+      - '@op-engineering/op-sqlite'
+      - '@opentelemetry/api'
+      - '@planetscale/database'
+      - '@tidbcloud/serverless'
+      - '@types/better-sqlite3'
+      - '@types/pg'
+      - '@types/react'
+      - '@types/sql.js'
+      - '@upstash/redis'
+      - '@vercel/postgres'
+      - '@xata.io/client'
+      - bufferutil
+      - bun-types
+      - expo-sqlite
+      - gel
+      - knex
+      - kysely
+      - mysql2
+      - pg
+      - playwright
+      - postgres
+      - prisma
+      - sql.js
+      - sqlite3
+      - supports-color
+      - typescript
+      - utf-8-validate
+
+  '@wenathlan/debonair@2.0.152(@electric-sql/pglite@0.4.3)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.5(@types/node@26.6.6))(playwright@1.64.1)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)':
+    dependencies:
+      '@fluentui/react-icons': 2.0.345(react@19.3.1)
+      '@fontsource-variable/bricolage-grotesque': 5.3.0
+      '@fontsource-variable/jetbrains-mono': 5.3.0
+      '@fontsource-variable/outfit': 5.3.0
+      '@hono/node-server': 2.1.5(hono@4.13.16)
+      '@libsql/client': 0.18.0
+      '@prisma/adapter-libsql': 7.10.1
+      '@prisma/client': 7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
+      '@wenathlan/saddle': 2.1.6(playwright@1.64.1)
+      '@wenathlan/vault': 2.0.153(@electric-sql/pglite@0.4.3)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.5(@types/node@26.6.6))(playwright@1.64.1)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
+      hono: 4.13.16
+      ink: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
+      lucide-react: 1.66.0(@types/react@19.3.0)(react@19.3.1)
+      motion: 12.43.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      react: 19.3.1
+      react-devtools-core: 8.0.0
+      react-dom: 19.3.1(react@19.3.1)
+      wouter: 3.13.0(react@19.3.1)
+      z-ai-web-dev-sdk: 0.0.18
+    transitivePeerDependencies:
+      - '@aws-sdk/client-rds-data'
+      - '@cloudflare/workers-types'
+      - '@electric-sql/pglite'
+      - '@emotion/is-prop-valid'
+      - '@libsql/client-wasm'
+      - '@neondatabase/serverless'
+      - '@netlify/db'
+      - '@op-engineering/op-sqlite'
+      - '@opentelemetry/api'
+      - '@planetscale/database'
+      - '@tidbcloud/serverless'
+      - '@types/better-sqlite3'
+      - '@types/pg'
+      - '@types/react'
+      - '@types/sql.js'
+      - '@upstash/redis'
+      - '@vercel/postgres'
+      - '@xata.io/client'
+      - bufferutil
+      - bun-types
+      - expo-sqlite
+      - gel
+      - knex
+      - kysely
+      - mysql2
+      - pg
+      - playwright
+      - postgres
+      - prisma
+      - sql.js
+      - sqlite3
+      - supports-color
+      - typescript
+      - utf-8-validate
 
   '@wenathlan/saddle@2.1.6(playwright@1.64.1)':
     optionalDependencies:

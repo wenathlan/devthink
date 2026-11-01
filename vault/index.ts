@@ -52,6 +52,8 @@ export * from "./retention.ts";
 
 /** the self-hosted site store: the better-sqlite3 bootstrap and the parameterized helpers (boots at import). */
 export * from "./db.ts";
+/** the storage lane: the shared sqlite mechanism of the family — the factory the siblings open (no boot; SqlParam keeps flowing through the db star, the deep specifier carries it for the bridged siblings). */
+export { openStorageLane, PRAGMA_BOOTSTRAP, type StorageLane, type StorageLaneOptions } from "./storagelane.ts";
 /** the copy law: the label manifest, the typed accessor and the seed. */
 export * from "./labels.ts";
 /** the entry-flow accessor: the seen flags of the visitor, one writer only. */

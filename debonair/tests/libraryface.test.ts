@@ -35,6 +35,7 @@ const audioenginemodule = await import("@wenathlan/debonair/audioengine");
 const beatgridmodule = await import("@wenathlan/debonair/beatgrid");
 const blobstoremodule = await import("@wenathlan/debonair/blobstore");
 const composermodule = await import("@wenathlan/debonair/composer");
+const coverpalettemodule = await import("@wenathlan/debonair/coverpalette");
 const gatewayapimodule = await import("@wenathlan/debonair/gatewayapi");
 const hpssmodule = await import("@wenathlan/debonair/hpss");
 const ingestmodule = await import("@wenathlan/debonair/ingest");
@@ -57,6 +58,7 @@ const SUBPATHS = [
   "patternminer",
   "patternenums",
   "composer",
+  "coverpalette",
   "audioengine",
   "wavwriter",
   "blobstore",
@@ -92,6 +94,7 @@ const MODULES: Record<Subpath, Record<string, unknown>> = {
   patternminer: patternminermodule,
   patternenums: patternenumsmodule,
   composer: composermodule,
+  coverpalette: coverpalettemodule,
   audioengine: audioenginemodule,
   wavwriter: wavwritermodule,
   blobstore: blobstoremodule,
@@ -205,6 +208,11 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
     DEFAULT_BARS: "number",
     SIMILARITY_FLOOR: "number",
     COMPOSER_ERROR_CODES: "object",
+  },
+  coverpalette: {
+    coverPaletteFromStats: "function",
+    coverPaletteFromPcm: "function",
+    plateAccents: "function",
   },
   audioengine: {
     renderTakeOffline: "function",
