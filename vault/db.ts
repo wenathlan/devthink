@@ -1,52 +1,33 @@
 /**
- * db.ts — the self-hosted sqlite runtime of the vault: the better-sqlite3
- * bootstrap and the parameterized query helpers of the storage clone. Every
- * statement is prepared and bound — no sql is ever assembled by string
- * concatenation. The schema mirrors prisma/schema.prisma (the documentation
- * of record) and the boot DDL is the idempotent seed-on-first-run: the
- * tables exist after the first open, always. The platform gateway serves
- * the same tables to the Sol pages over HTTPS (GET/POST /api/v1/onboarding —
- * the browser accessor is onboardingstate.ts); no server route lives here.
+ * db.ts — the self-hosted site store of the vault: the app database over
+ * the shared storage lane (the storage law of the family — the mechanism
+ * lives in storagelane.ts and only there; this file keeps the vault's own
+ * tables, schema and accessors, the app data). Every statement is prepared
+ * and bound — no sql is ever assembled by string concatenation. The schema
+ * mirrors prisma/schema.prisma (the documentation of record) and the boot
+ * DDL is the idempotent seed-on-first-run: the tables exist after the first
+ * open, always. The platform gateway serves the same tables to the Sol
+ * pages over HTTPS (GET/POST /api/v1/onboarding — the browser accessor is
+ * onboardingstate.ts); no server route lives here.
  */
-import { mkdirSync } from "node:fs";
-import path from "node:path";
-import Database from "better-sqlite3";
+
 import { LABEL_MANIFEST, LABEL_REVISION } from "./labels.ts";
+import { openStorageLane } from "./storagelane.ts";
 
 /** the correlated tables the runtime keeps (the family sync contract names). */
 export const tables = ["keys", "payloads", "onboarding_states", "labels"] as const;
 
-const rawUrl = process.env.DATABASE_URL ?? "file:./vault.db";
-const file = rawUrl.startsWith("file:") ? rawUrl.slice("file:".length) : rawUrl;
-mkdirSync(path.dirname(path.resolve(file)), { recursive: true });
+/** the one storage lane of the site store (WAL, foreign keys, patient locks — the vault's own file). */
+const lane = openStorageLane({ defaultFile: "./vault.db" });
 
-/** the one sqlite connection of the runtime (WAL, foreign keys, patient locks). */
-export const db = new Database(file);
-db.pragma("busy_timeout = 5000");
-db.pragma("journal_mode = WAL");
-db.pragma("foreign_keys = ON");
+/** the one sqlite connection of the runtime (re-exported seat of the lane). */
+export const db = lane.db;
 
-/** the parameter types the helpers bind (sqlite stores them narrow). */
-export type SqlParam = string | number | bigint | boolean | null;
+/** the parameterized helpers of the site store (re-exported seats of the lane). */
+export const { execute, queryAll, queryOne } = lane;
 
-/** Runs a parameterized statement and returns the change counters. */
-export function execute(
-  sql: string,
-  params: readonly SqlParam[] = [],
-): { changes: number; lastInsertRowid: number | bigint } {
-  const statement = db.prepare(sql);
-  return statement.run(...(params as never[])) as { changes: number; lastInsertRowid: number | bigint };
-}
-
-/** Runs a parameterized query and returns every row. */
-export function queryAll<T>(sql: string, params: readonly SqlParam[] = []): T[] {
-  return db.prepare(sql).all(...(params as never[])) as T[];
-}
-
-/** Runs a parameterized query and returns the first row. */
-export function queryOne<T>(sql: string, params: readonly SqlParam[] = []): T | undefined {
-  return db.prepare(sql).get(...(params as never[])) as T | undefined;
-}
+/** the parameter types the helpers bind (sqlite stores them narrow — re-exported seat of the lane). */
+export type { SqlParam } from "./storagelane.ts";
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS keys (
@@ -80,7 +61,7 @@ CREATE TABLE IF NOT EXISTS labels (
 
 /** Creates the tables when they do not exist (idempotent, mirrors the prisma schema). */
 export function ensureSchema(): void {
-  db.exec(SCHEMA);
+  lane.exec(SCHEMA);
 }
 
 // the boot seed: the tables exist from the first open, always (idempotent).

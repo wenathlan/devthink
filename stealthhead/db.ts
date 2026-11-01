@@ -19,7 +19,7 @@
  */
 
 import process from "node:process";
-import Database from "better-sqlite3";
+import { openStorageLane } from "@wenathlan/vault/storagelane";
 import { LABELMANIFEST, LABELREVISION } from "./labels.ts";
 import { MATCHPLAYERSEED, MATCHSEED, type MatchLobby, type MatchPlayer, type MatchRound } from "./match.ts";
 import { RANKINGSEED, type RankingEntry } from "./ranking.ts";
@@ -35,11 +35,11 @@ function resolvedatabaseurl(): string {
   return process.env.DATABASE_URL?.trim() || "file:./stealthhead.db";
 }
 
-/** the sqlite connection (synchronous, wal by pragma below). */
-const sqlite = new Database(resolvedatabaseurl().replace(/^file:/, ""));
+/** the one storage lane of the game store (the shared mechanism of the vault — the pragma ladder, the patient locks and the foreign keys ride the lane; the game tables stay app data). */
+const lane = openStorageLane({ url: resolvedatabaseurl() });
 
-sqlite.pragma("busy_timeout = 5000");
-sqlite.pragma("journal_mode = wal");
+/** the sqlite connection (seat of the lane — the module statements keep preparing on it). */
+const sqlite = lane.db;
 
 /** the schema ddl: static strings only, safe to run on every boot. */
 sqlite.exec(`
