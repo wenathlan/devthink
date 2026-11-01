@@ -323,9 +323,11 @@ RUN set -eux; \
     # (nodesource node 26.7.0 ships npm 11.19.0) and surgically refresh
     # the four nested dependencies whose bundled versions carry the CVEs
     # the trivy release gate rejects (brace-expansion CVE-2026-14257 /
-    # CVE-2026-69152, ip-address CVE-2026-69192 / CVE-2026-54272 /
-    # CVE-2026-69198, tar CVE-2026-73566, undici CVE-2026-16728 /
-    # CVE-2026-16729 / CVE-2026-15157). published npm tarballs freeze
+    # CVE-2026-69152 / CVE-2026-102276 / CVE-2026-102278, ip-address
+    # CVE-2026-69192 / CVE-2026-54272 / CVE-2026-69198, tar
+    # CVE-2026-73566, undici CVE-2026-16728 / CVE-2026-16729 /
+    # CVE-2026-15157 / CVE-2026-109383 / CVE-2026-109869 /
+    # CVE-2026-19534 / CVE-2026-87018). published npm tarballs freeze
     # their bundled node_modules at publish time, so the swap alone
     # still ships brace-expansion 5.0.7; each fixed release is packed
     # separately and extracted over the nested path, then asserted: the
@@ -358,10 +360,10 @@ RUN set -eux; \
         fi; \
         echo "npm tree $fname $fgot"; \
     }; \
-    fixdep brace-expansion 5.0.9; \
+    fixdep brace-expansion 5.0.11; \
     fixdep ip-address 10.3.1; \
     fixdep tar 7.5.21; \
-    fixdep undici 6.28.0; \
+    fixdep undici 6.29.1; \
     rm -rf /root/.npm 2>/dev/null || true
 
 # mesa 26.2.1 from source (the "build" arm of the PPA-or-build policy):
@@ -1352,17 +1354,23 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && npm install --global npm@12.0.2 \
     && tempdir="$(mktemp -d)" \
-    && npm pack brace-expansion@5.0.9 ip-address@10.3.1 tar@7.5.22 --pack-destination "$tempdir" \
-    && mkdir -p /usr/local/lib/node_modules/npm/node_modules/brace-expansion /usr/local/lib/node_modules/npm/node_modules/ip-address /usr/local/lib/node_modules/npm/node_modules/tar \
-    && tar -xzf "$tempdir/brace-expansion-5.0.9.tgz" --strip-components=1 -C /usr/local/lib/node_modules/npm/node_modules/brace-expansion \
+    && npm pack brace-expansion@5.0.11 ip-address@10.3.1 tar@7.5.22 undici@6.29.1 --pack-destination "$tempdir" \
+    && mkdir -p /usr/local/lib/node_modules/npm/node_modules/brace-expansion /usr/local/lib/node_modules/npm/node_modules/ip-address /usr/local/lib/node_modules/npm/node_modules/tar /usr/local/lib/node_modules/npm/node_modules/undici \
+    && tar -xzf "$tempdir/brace-expansion-5.0.11.tgz" --strip-components=1 -C /usr/local/lib/node_modules/npm/node_modules/brace-expansion \
     && tar -xzf "$tempdir/ip-address-10.3.1.tgz" --strip-components=1 -C /usr/local/lib/node_modules/npm/node_modules/ip-address \
     # the npm@12.0.2 tarball freezes its bundled node_modules at publish
     # time (the same lesson as the vhe builder's fixdep): its tar@7.5.19
     # carries CVE-2026-73566 (long-path DoS), fixed in 7.5.21+. The
     # lockfile already resolves app tar to 7.5.22 - the global npm tree
     # gets the same treatment and the version is asserted after install.
+    # The same freeze ships brace-expansion 5.0.9 (CVE-2026-102276 /
+    # CVE-2026-102278, fixed in 5.0.10+) and undici 6.28.0 (CVE-2026-109383
+    # / CVE-2026-109869 / CVE-2026-19534 / CVE-2026-87018, fixed in
+    # 6.29.1+): both carriers ride the swap and the assert proves it.
     && tar -xzf "$tempdir/tar-7.5.22.tgz" --strip-components=1 -C /usr/local/lib/node_modules/npm/node_modules/tar \
+    && tar -xzf "$tempdir/undici-6.29.1.tgz" --strip-components=1 -C /usr/local/lib/node_modules/npm/node_modules/undici \
     && test "$(node -p "require('/usr/local/lib/node_modules/npm/node_modules/tar/package.json').version")" = "7.5.22" \
+    && test "$(node -p "require('/usr/local/lib/node_modules/npm/node_modules/undici/package.json').version")" = "6.29.1" \
     && rm -rf "$tempdir" \
     && npm ci --omit=dev --ignore-scripts --legacy-peer-deps \
     # prune the vendored build toolchains of optional native deps: the
