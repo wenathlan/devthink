@@ -334,7 +334,7 @@ export function SaasExplorerWall({ showtoast }: { showtoast: (message: string) =
                 key={reel.title}
                 onMouseEnter={() => setActive(index)}
                 onClick={() => showtoast(`${saastoasts.playing} ${reel.title}`)}
-                className={`group relative cursor-pointer overflow-hidden rounded-[24px] border-0 bg-transparent p-0 transition-all duration-300 ${height} ${selected ? "z-20 scale-105 ring-4 ring-slate-950 shadow-2xl" : "opacity-90 shadow-lg hover:opacity-100"} ${index >= 4 ? "hidden sm:block" : ""} ${index === 6 ? "hidden lg:block" : ""}`}
+                className={`group relative cursor-pointer overflow-hidden rounded-[24px] border-0 bg-transparent p-0 transition-[transform,box-shadow,opacity] duration-300 ${height} ${selected ? "z-20 scale-105 ring-4 ring-slate-950 shadow-2xl" : "opacity-90 shadow-lg hover:opacity-100"} ${index >= 4 ? "hidden sm:block" : ""} ${index === 6 ? "hidden lg:block" : ""}`}
               >
                 <img
                   src={reel.image}
@@ -556,7 +556,7 @@ export function SaasDoo({
       <div className="mx-auto grid max-w-[1360px] grid-cols-1 items-center gap-12 lg:grid-cols-12">
         <div className="lg:col-span-6">
           <div className="stat-tile mb-6 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] font-semibold tracking-[-0.018em] text-slate-600">
-            <Messagesquare className="h-3.5 w-3.5 text-indigo-600" aria-hidden="true" />
+            <Messagesquare className="h-3.5 w-3.5 text-violet-600" aria-hidden="true" />
             <span>{saasdoo.badge}</span>
           </div>
           <h2 className="text-4xl leading-[1.02] font-extrabold tracking-[-0.035em] text-slate-950 sm:text-[56px]">
@@ -604,7 +604,7 @@ export function SaasDoo({
                 <div className="max-w-[85%] rounded-2xl rounded-tl-md border border-white/10 bg-white/10 p-4 text-sm font-normal tracking-[-0.005em]">
                   {saasdoo.question}
                 </div>
-                <div className="ml-auto max-w-[85%] rounded-2xl rounded-tr-md bg-indigo-600 p-4 text-sm font-semibold tracking-[-0.018em]">
+                <div className="ml-auto max-w-[85%] rounded-2xl rounded-tr-md bg-violet-600 p-4 text-sm font-semibold tracking-[-0.018em]">
                   {reply}
                 </div>
               </div>
@@ -660,7 +660,7 @@ export function SaasFooter({ onenter, onexplore, scrollto, showtoast }: FooterPr
                 className="btn-tactile-3d flex items-center gap-2 rounded-full px-6 py-3 text-[13px] font-extrabold tracking-[-0.035em] text-white"
               >
                 {saasfooter.launch}
-                <Arrowupright className="h-4 w-4 text-sky-400" aria-hidden="true" />
+                <Arrowupright className="h-4 w-4 text-fuchsia-400" aria-hidden="true" />
               </button>
             </div>
           </div>

@@ -2278,7 +2278,7 @@ a[href] {
 }
 
 .os-root :focus-visible {
-  outline: 2px solid #dfe5ee;
+  outline: 2px solid var(--win-focus);
   outline-offset: 2px;
 }
 
@@ -4076,10 +4076,10 @@ legend.cmd-group {
 .doc-btn:focus-visible,
 .app-card:focus-visible,
 .family-card:focus-visible {
-  outline: 2px solid #dfe5ee;
+  outline: 2px solid var(--win-focus);
   outline-offset: 2px;
   border-radius: var(--r-pill);
-  box-shadow: 0 0 0 5px rgb(223 229 238 / 12%);
+  box-shadow: 0 0 0 5px color-mix(in oklab, var(--win-focus) 16%, transparent);
 }
 
 .app-card:focus-visible,

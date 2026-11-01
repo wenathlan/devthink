@@ -137,20 +137,20 @@ export const saascreatorsintro = {
       title: "AI Teams",
       body: "Cocreate with autonomous agents in sync",
       tag: "Getry & Doo",
-      surface: "indigo-tactile-surface p-6 text-white",
+      surface: "violet-tactile-surface p-6 text-white",
       titletone: "text-white",
-      bodytone: "text-indigo-100",
+      bodytone: "text-violet-100",
       tagtone: "text-white",
     },
     {
       app: "saddle",
-      title: "Saddle Cloud",
+      title: "Saddle Studio",
       body: "Run heavy studios and games in your browser",
       tag: "Saddle",
       surface: "surface-card p-6",
       titletone: "text-slate-950",
       bodytone: "text-slate-500",
-      tagtone: "text-sky-600",
+      tagtone: "text-orange-600",
     },
   ] as readonly {
     app: string;
@@ -182,7 +182,7 @@ export const saasstudios: readonly saasstudio[] = [
     subtitle: "Multi Agent Studio",
     rating: "4,9",
     badge: "35 AI Models",
-    gradient: "from-[#C4B5FD] via-[#8B5CF6] to-[#22D3EE]",
+    gradient: "from-[#C4B5FD] via-[#8B5CF6] to-[#6D28D9]",
     glow: "shadow-[0_28px_70px_-12px_rgba(139,92,246,0.55)]",
   },
   {
@@ -200,8 +200,8 @@ export const saasstudios: readonly saasstudio[] = [
     subtitle: "Cinema & 3D World Engine",
     rating: "4,9",
     badge: "Realtime 3D",
-    gradient: "from-[#7DD3FC] via-[#38BDF8] to-[#0284C7]",
-    glow: "shadow-[0_32px_80px_-12px_rgba(56,189,248,0.6)]",
+    gradient: "from-[#FBCFE8] via-[#F472B6] to-[#DB2777]",
+    glow: "shadow-[0_32px_80px_-12px_rgba(244,114,182,0.6)]",
   },
   {
     id: "saddle",
@@ -209,8 +209,8 @@ export const saasstudios: readonly saasstudio[] = [
     subtitle: "Instant Cloud Play",
     rating: "4,9",
     badge: "Zero Local GPU",
-    gradient: "from-[#6EE7B7] via-[#34D399] to-[#0EA5E9]",
-    glow: "shadow-[0_28px_70px_-12px_rgba(16,185,129,0.55)]",
+    gradient: "from-[#FCD9BD] via-[#E86F2D] to-[#C2410C]",
+    glow: "shadow-[0_28px_70px_-12px_rgba(232,111,45,0.55)]",
   },
   {
     id: "vault",
@@ -219,7 +219,7 @@ export const saasstudios: readonly saasstudio[] = [
     rating: "4,7",
     badge: "Instant Sync",
     gradient: "from-[#FDE68A] via-[#FBBF24] to-[#FB923C]",
-    glow: "shadow-[0_28px_70px_-12px_rgba(59,130,246,0.55)]",
+    glow: "shadow-[0_28px_70px_-12px_rgba(94,168,199,0.55)]",
   },
 ];
 
@@ -533,7 +533,7 @@ export const saascreators: readonly saascreator[] = [
     role: "3D World Creator",
     avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80",
     cover: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80",
-    covergradient: "from-sky-200 via-indigo-100 to-pink-100",
+    covergradient: "from-rose-200 via-violet-100 to-pink-100",
     studio: "cadria",
     stats: [
       ["2,1K", "Likes"],
@@ -547,7 +547,7 @@ export const saascreators: readonly saascreator[] = [
     role: "Spatial Audio Director",
     avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80",
     cover: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80",
-    covergradient: "from-indigo-200 via-purple-100 to-sky-100",
+    covergradient: "from-violet-200 via-purple-100 to-rose-100",
     studio: "debonair",
     stats: [
       ["2,4K", "Likes"],

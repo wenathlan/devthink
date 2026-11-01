@@ -111,7 +111,7 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
               className={`hero-switch-thumb block h-9 w-9 rounded-full transition-transform duration-300 sm:h-11 sm:w-11 ${agents ? "translate-x-12 sm:translate-x-14" : "translate-x-0"}`}
             />
           </button>
-          <span className={agents ? "text-slate-950" : "text-indigo-600"}>{mode.word}</span>
+          <span className={agents ? "text-slate-950" : "text-violet-600"}>{mode.word}</span>
         </h1>
         <p className="mt-8 max-w-xl text-[15px] font-normal tracking-[-0.005em] text-slate-600 sm:text-lg">
           {saashero.subtitle}
@@ -123,12 +123,12 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
             className="btn-tactile-3d flex items-center gap-2.5 rounded-full px-10 py-4 text-sm font-extrabold tracking-[-0.035em] text-white"
           >
             <span>{saashero.keyprimary}</span>
-            <Arrowupright className="h-4 w-4 text-sky-400" aria-hidden="true" />
+            <Arrowupright className="h-4 w-4 text-fuchsia-400" aria-hidden="true" />
           </button>
           <button
             type="button"
             onClick={() => scrollto("creators-doo")}
-            className="surface-card flex items-center gap-2.5 rounded-full px-7 py-4 text-sm font-semibold tracking-[-0.018em] text-slate-900 transition hover:border-indigo-300"
+            className="surface-card flex items-center gap-2.5 rounded-full px-7 py-4 text-sm font-semibold tracking-[-0.018em] text-slate-900 transition hover:border-violet-300"
           >
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-950 text-white">
               <Play className="ml-0.5 h-3 w-3 fill-current" aria-hidden="true" />
@@ -140,7 +140,7 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
         <div className="mt-20 grid w-full grid-cols-1 items-stretch gap-6 text-left lg:grid-cols-12">
           <ScoopedCard
             className="animate-float-card lg:col-span-4"
-            surface="indigo-tactile-surface flex min-h-[300px] flex-col justify-between p-8 text-white"
+            surface="violet-tactile-surface flex min-h-[300px] flex-col justify-between p-8 text-white"
             topRight={
               <button
                 type="button"
@@ -163,12 +163,12 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
               <div className="flex shrink-0 -space-x-2">
                 <img
                   src={saashero.faces[0]}
-                  className="h-7 w-7 rounded-full object-cover ring-2 ring-indigo-500"
+                  className="h-7 w-7 rounded-full object-cover ring-2 ring-violet-500"
                   alt=""
                 />
                 <img
                   src={saashero.faces[1]}
-                  className="h-7 w-7 rounded-full object-cover ring-2 ring-indigo-500"
+                  className="h-7 w-7 rounded-full object-cover ring-2 ring-violet-500"
                   alt=""
                 />
               </div>
@@ -184,7 +184,7 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
                 className="btn-tactile-3d flex h-10 w-10 items-center justify-center rounded-full text-white"
                 aria-label={uicopy("intro.hero.cadriaaria")}
               >
-                <Activity className="h-4 w-4 text-sky-400" aria-hidden="true" />
+                <Activity className="h-4 w-4 text-fuchsia-400" aria-hidden="true" />
               </button>
             }
           >
@@ -205,7 +205,7 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
                   <span
                     key={height}
                     style={{ height: `${height}%` }}
-                    className={`w-1.5 rounded-full ${index === 4 || index === 6 ? "bg-indigo-600" : "bg-slate-300"}`}
+                    className={`w-1.5 rounded-full ${index === 4 || index === 6 ? "bg-violet-600" : "bg-slate-300"}`}
                   />
                 ))}
               </div>
@@ -221,14 +221,14 @@ export function SaasHero({ onenter, scrollto }: SectionProps) {
                 className="icon-frame-3d flex h-10 w-10 items-center justify-center rounded-full text-slate-950"
                 aria-label={uicopy("intro.hero.debonairaria")}
               >
-                <Wave className="h-4 w-4 text-indigo-600" aria-hidden="true" />
+                <Wave className="h-4 w-4 text-violet-600" aria-hidden="true" />
               </button>
             }
           >
             <div
               className="pointer-events-none absolute top-10 right-6 h-16 w-16 rounded-full opacity-90"
               style={{
-                background: "radial-gradient(circle at 30% 30%, #FFFFFF, #C084FC 55%, #4F46E5)",
+                background: "radial-gradient(circle at 30% 30%, #FFFFFF, #C084FC 55%, #6D28D9)",
                 boxShadow: "inset 0 3px 6px rgba(255,255,255,0.85), 0 10px 20px rgba(0,0,0,0.45)",
               }}
             />
@@ -317,9 +317,9 @@ export function SaasCreators({ onenter, showtoast }: SectionProps & { showtoast:
                     >
                       {followed[creator.id] ? "Following" : "Follow"}
                       {followed[creator.id] ? (
-                        <Check className="h-3 w-3 text-indigo-600" aria-hidden="true" />
+                        <Check className="h-3 w-3 text-violet-600" aria-hidden="true" />
                       ) : (
-                        <Plus className="h-3 w-3 text-indigo-600" aria-hidden="true" />
+                        <Plus className="h-3 w-3 text-violet-600" aria-hidden="true" />
                       )}
                     </button>
                   </div>
@@ -397,11 +397,11 @@ export function SaasStudios({ onenter }: SectionProps) {
   }, []);
   return (
     <section id="workspace-subapps" className="obsidian-grid-bg relative overflow-hidden pt-0 pb-0 text-white">
-      <div className="urbanist-frosted-blur pointer-events-none absolute inset-0 z-0" />
+      <div className="frosted-blur pointer-events-none absolute inset-0 z-0" />
       <div
-        className="pointer-events-none absolute top-1/3 left-1/2 h-[320px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-20 transition-all duration-500"
+        className="pointer-events-none absolute top-1/3 left-1/2 h-[320px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-20"
         style={{
-          background: `radial-gradient(closest-side, ${["#8B5CF6", "#FB7185", "#38BDF8", "#10B981", "#3B82F6"][active]}, transparent)`,
+          background: `radial-gradient(closest-side, ${["#8B5CF6", "#FB7185", "#2fb8b5", "#10B981", "#EC4899"][active]}, transparent)`,
         }}
       />
       <div className="relative z-20 mb-8 w-full inset-x-0 top-0">
@@ -437,7 +437,7 @@ export function SaasStudios({ onenter }: SectionProps) {
                     zIndex: 30 - Math.abs(offset) * 5,
                     transform: `translateY(${Math.abs(offset) * 18}px) rotate(${offset * 5.5}deg) scale(${center ? 1.08 : 1 - Math.abs(offset) * 0.05})`,
                   }}
-                  className={`fan-clay group relative flex h-[270px] cursor-pointer flex-col justify-between overflow-hidden rounded-[20px] border bg-gradient-to-b p-5 text-left transition-all duration-500 ease-out sm:-mx-4 sm:h-[300px] ${card.gradient} ${card.glow} ${center ? "border-white/60" : "border-white/30 opacity-85 hover:opacity-100"}`}
+                  className={`fan-clay group relative flex h-[270px] cursor-pointer flex-col justify-between overflow-hidden rounded-[20px] border bg-gradient-to-b p-5 text-left transition-[transform,opacity] duration-500 ease-out sm:-mx-4 sm:h-[300px] ${card.gradient} ${card.glow} ${center ? "border-white/60" : "border-white/30 opacity-85 hover:opacity-100"}`}
                 >
                   <div className="fan-sheen pointer-events-none absolute inset-0" />
                   <div key={card.id} className="fan-swap relative z-10 flex h-full flex-col justify-between">
@@ -488,7 +488,7 @@ export function SaasStudios({ onenter }: SectionProps) {
             <span>
               {saasstudiosintro.openprefix} {saasstudios[active].name} {saasstudiosintro.opensuffix}
             </span>
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-white transition group-hover:bg-indigo-600">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-white transition group-hover:bg-violet-600">
               <Arrowright className="h-4 w-4" aria-hidden="true" />
             </span>
           </button>
@@ -503,7 +503,7 @@ export function SaasStudios({ onenter }: SectionProps) {
                   onMouseEnter={() => setActive(index)}
                   onClick={onenter}
                   aria-label={studio.name}
-                  className={`transition-all duration-300 hover:scale-110 ${active === index ? "scale-110 opacity-100" : "opacity-60 hover:opacity-100"}`}
+                  className={`transition-[transform,opacity] duration-300 hover:scale-110 ${active === index ? "scale-110 opacity-100" : "opacity-60 hover:opacity-100"}`}
                 >
                   <Studiomark app={studio.id as studiomarkid} className="h-11 w-11 sm:h-12 sm:w-12" />
                 </button>

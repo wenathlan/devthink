@@ -2,7 +2,7 @@
  * saas.tsx — the SaaS face of the intro (layer 3, page body): the approved
  * landing restored at full parity — the pale canvas (#DCE2EE) with the
  * palco (#F2F5FC) at radius 30, the saddle rail at the left edge with its
- * snug fitted curve, the Urbanist tiers, the gaussian shader hero with the
+ * snug fitted curve, the Inter tiers, the gaussian shader hero with the
  * inline engine switch, the studio fan deck, the Cadria top ten, the
  * explorer reel wall, the Debonair rail, the Doo demo and the footer. The
  * glyphs ride the fluent set the owner pinned for this face. Every launch
@@ -41,43 +41,43 @@ import { SaasCreators, SaasHero, SaasStudios } from "./IntroSaassections.tsx";
 import { SolLogoMark, SolWordmark } from "./PanelLogo.tsx";
 
 const SAAS_CSS = `
-.saas-root { font-family: 'Urbanist', sans-serif; letter-spacing: -0.015em; background: #DCE2EE; }
-.saas-root ::selection { background: #4F46E5; color: #FFFFFF; }
-.saas-root button:focus-visible, .saas-root input:focus-visible { outline: 2px solid rgba(99,102,241,0.65); outline-offset: 2px; }
+.saas-root { font-family: 'Inter Variable', 'Inter', sans-serif; letter-spacing: -0.015em; background: #DCE2EE; }
+.saas-root ::selection { background: #EC4899; color: #FFFFFF; }
+.saas-root button:focus-visible, .saas-root input:focus-visible { outline: 2px solid rgba(0,103,192,0.75); outline-offset: 2px; }
 .saas-root button, .saas-root input { outline: none; }
 .saas-root img { -webkit-user-drag: none; user-select: none; }
 
 .btn-tactile-3d { background: linear-gradient(180deg, #243047 0%, #090D16 100%); box-shadow: 0 14px 28px -8px rgba(9,13,22,0.55), 0 4px 10px -2px rgba(9,13,22,0.35), inset 0 1.5px 2px rgba(255,255,255,0.42), inset 0 -3px 6px rgba(0,0,0,0.65); border: 1px solid rgba(255,255,255,0.16); transition: transform 0.25s cubic-bezier(0.16,1,0.3,1), box-shadow 0.25s ease; }
-.btn-tactile-3d:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 20px 34px -8px rgba(79,70,229,0.45), inset 0 2px 3px rgba(255,255,255,0.55), inset 0 -3px 6px rgba(0,0,0,0.75); }
+.btn-tactile-3d:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 20px 34px -8px rgba(9,13,22,0.5), inset 0 2px 3px rgba(255,255,255,0.55), inset 0 -3px 6px rgba(0,0,0,0.75); }
 .btn-tactile-3d:active { transform: translateY(0) scale(0.96); transition-duration: 0.08s; box-shadow: 0 8px 18px -8px rgba(9,13,22,0.55), inset 0 1.5px 2px rgba(255,255,255,0.32), inset 0 -2px 5px rgba(0,0,0,0.55); }
 .icon-frame-3d { background: rgba(255,255,255,0.92); border: 1px solid rgba(203,213,225,0.85); box-shadow: 0 8px 18px -6px rgba(15,23,42,0.10), inset 0 1px 2px rgba(255,255,255,1); transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease; }
-.icon-frame-3d:hover { transform: translateY(-1.5px); border-color: rgba(99,102,241,0.5); box-shadow: 0 12px 22px -6px rgba(79,70,229,0.18), inset 0 1px 2px rgba(255,255,255,1); }
+.icon-frame-3d:hover { transform: translateY(-1.5px); border-color: rgba(0,103,192,0.45); box-shadow: 0 12px 22px -6px rgba(0,103,192,0.18), inset 0 1px 2px rgba(255,255,255,1); }
 .icon-frame-3d:active { transform: translateY(0) scale(0.94); transition-duration: 0.08s; }
-.icon-frame-3d-active { background: #FFFFFF; border: 1px solid rgba(99,102,241,0.6); box-shadow: 0 10px 22px -6px rgba(79,70,229,0.24), inset 0 1px 2px rgba(255,255,255,1); }
+.icon-frame-3d-active { background: #FFFFFF; border: 1px solid rgba(0,103,192,0.55); box-shadow: 0 10px 22px -6px rgba(0,103,192,0.22), inset 0 1px 2px rgba(255,255,255,1); }
 .surface-card { background: #FFFFFF; border: 1px solid rgba(226,232,240,0.95); box-shadow: 0 16px 36px -14px rgba(15,23,42,0.10); }
 .stat-tile { background: #F4F6FB; border: 1px solid rgba(226,232,240,0.9); }
-.indigo-tactile-surface { background: linear-gradient(145deg, #4F46E5 0%, #3730A3 58%, #312E81 100%); box-shadow: 0 22px 44px -12px rgba(55,48,163,0.5), inset 0 2px 5px rgba(255,255,255,0.32), inset 0 -5px 10px rgba(15,23,42,0.4); }
+.violet-tactile-surface { background: linear-gradient(145deg, #8B5CF6 0%, #6D28D9 58%, #4C1D95 100%); box-shadow: 0 22px 44px -12px rgba(109,40,217,0.5), inset 0 2px 5px rgba(255,255,255,0.32), inset 0 -5px 10px rgba(15,23,42,0.4); }
 .hero-inline-switch { background: linear-gradient(125deg, #A855F7 0%, #EC4899 55%, #F97316 100%); box-shadow: inset 0 2px 4px rgba(255,255,255,0.55); }
 .hero-switch-thumb { background: radial-gradient(circle at 30% 30%, #FFFFFF 0%, #F1F5F9 70%, #CBD5E1 100%); box-shadow: -3px 4px 10px rgba(15,23,42,0.35), inset 0 2px 3px rgba(255,255,255,1); }
 @keyframes shaderPulse { 0%,100% { transform: scale(1) translate(0,0); } 50% { transform: scale(1.05) translate(10px,-8px); } }
-.hero-gaussian-shader { background: radial-gradient(circle at 14% 70%, rgba(56,189,248,0.82) 0%, transparent 48%), radial-gradient(circle at 36% 80%, rgba(99,102,241,0.78) 0%, transparent 50%), radial-gradient(circle at 58% 65%, rgba(168,85,247,0.78) 0%, transparent 48%), radial-gradient(circle at 78% 75%, rgba(236,72,153,0.78) 0%, transparent 48%), radial-gradient(circle at 92% 65%, rgba(251,146,60,0.82) 0%, transparent 45%); filter: blur(56px) saturate(165%); animation: shaderPulse 9s ease-in-out infinite; }
-.conic-rainbow-ring { background: conic-gradient(from 180deg at 50% 50%, #EC4899 0deg, #8B5CF6 72deg, #3B82F6 144deg, #38BDF8 216deg, #F59E0B 288deg, #EC4899 360deg); padding: 2.5px; }
+.hero-gaussian-shader { background: radial-gradient(circle at 14% 70%, rgba(236,72,153,0.82) 0%, transparent 48%), radial-gradient(circle at 36% 80%, rgba(168,85,247,0.78) 0%, transparent 50%), radial-gradient(circle at 58% 65%, rgba(217,70,239,0.78) 0%, transparent 48%), radial-gradient(circle at 78% 75%, rgba(236,72,153,0.78) 0%, transparent 48%), radial-gradient(circle at 92% 65%, rgba(251,146,60,0.82) 0%, transparent 45%); filter: blur(56px) saturate(165%); animation: shaderPulse 9s ease-in-out infinite; }
+.conic-rainbow-ring { background: conic-gradient(from 180deg at 50% 50%, #EC4899 0deg, #8B5CF6 72deg, #2fb8b5 144deg, #34d8a8 216deg, #F59E0B 288deg, #EC4899 360deg); padding: 2.5px; }
 .obsidian-grid-bg { background-color: #08080C; background-image: linear-gradient(to right, rgba(255,255,255,0.032) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.032) 1px, transparent 1px); background-size: 60px 60px; }
 .netflix-rank-num { -webkit-text-stroke: 2px rgba(255,255,255,0.35); color: rgba(15,23,42,0.75); }
 @keyframes spinBadgeSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 .spin-badge-slow { animation: spinBadgeSlow 18s linear infinite; }
-.ribbon-sawtooth-divider { height: 30px; width: 100%; background-image: linear-gradient(135deg, rgba(15,23,42,0.92) 25%, transparent 25%), linear-gradient(225deg, rgba(99,102,241,0.75) 25%, transparent 25%), linear-gradient(45deg, rgba(56,189,248,0.45) 25%, transparent 25%), linear-gradient(315deg, rgba(200,75,17,0.75) 25%, #F9F6F0 25%); background-position: 15px 0, 15px 0, 0 0, 0 0; background-size: 30px 30px; background-repeat: repeat-x; }
+.ribbon-sawtooth-divider { height: 30px; width: 100%; background-image: linear-gradient(135deg, rgba(15,23,42,0.92) 25%, transparent 25%), linear-gradient(225deg, rgba(139,92,246,0.75) 25%, transparent 25%), linear-gradient(45deg, rgba(52,216,168,0.45) 25%, transparent 25%), linear-gradient(315deg, rgba(200,75,17,0.75) 25%, #F9F6F0 25%); background-position: 15px 0, 15px 0, 0 0, 0 0; background-size: 30px 30px; background-repeat: repeat-x; }
 .ribbon-whitewash-center { width: min(320px, 80vw); height: 100%; background: #F9F6F0; -webkit-mask-image: linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%); mask-image: linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%); }
 @media (min-width: 640px) { .ribbon-whitewash-center { width: min(392px, 84vw); -webkit-mask-image: linear-gradient(to right, transparent 0, #000 42px, #000 calc(100% - 42px), transparent 100%); mask-image: linear-gradient(to right, transparent 0, #000 42px, #000 calc(100% - 42px), transparent 100%); } }
 @keyframes fanSwap { from { opacity: 0; transform: translateY(3px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
 .fan-swap { animation: fanSwap 0.42s cubic-bezier(0.16,1,0.3,1); }
-.urbanist-frosted-blur { background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(100,116,139,0.12) 65%, rgba(15,23,42,0.35) 100%); border-top: 1px solid rgba(255,255,255,0.14); }
+.frosted-blur { background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(100,116,139,0.12) 65%, rgba(15,23,42,0.35) 100%); border-top: 1px solid rgba(255,255,255,0.14); }
 .fan-clay { box-shadow: inset 0 1.5px 3px rgba(255,255,255,0.65), inset 0 -10px 18px rgba(15,23,42,0.1), 0 12px 24px -12px rgba(15,23,42,0.28); }
 .fan-sheen { background: linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.06) 32%, transparent 55%, rgba(15,23,42,0.08) 100%); }
 .mask-fade-x { -webkit-mask-image: linear-gradient(to right, transparent, #000 52px, #000 calc(100% - 52px), transparent); mask-image: linear-gradient(to right, transparent, #000 52px, #000 calc(100% - 52px), transparent); }
 .rail-scroll::-webkit-scrollbar { display: none; }
 .rail-scroll { scrollbar-width: none; -ms-overflow-style: none; }
-.text-gradient-brand { background: linear-gradient(92deg, #6366F1 0%, #38BDF8 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.text-gradient-brand { background: linear-gradient(92deg, #EC4899 0%, #A855F7 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
 @keyframes cardSwingLeft { 0%,100% { transform: translateY(0) rotate(-0.7deg); } 50% { transform: translateY(-8px) rotate(0.5deg); } }
 @keyframes cardSwingCenter { 0%,100% { transform: translateY(10px) rotate(0.5deg); } 50% { transform: translateY(0) rotate(-0.5deg); } }
 @keyframes cardSwingRight { 0%,100% { transform: translateY(0) rotate(0.7deg); } 50% { transform: translateY(-9px) rotate(-0.5deg); } }
@@ -120,11 +120,11 @@ const TABGLYPH: Record<string, glyphkind> = {
 
 /** The tone each header tab glyph rides. */
 const TABTONE: Record<string, string> = {
-  "hero-os": "text-indigo-600",
-  "workspace-subapps": "text-sky-600",
+  "hero-os": "text-violet-600",
+  "workspace-subapps": "text-orange-600",
   "creators-doo": "text-purple-600",
   "spatial-bento": "text-pink-600",
-  "sonic-deck": "text-blue-600",
+  "sonic-deck": "text-violet-600",
 };
 
 /** The glyph each left rail stop wears. */
@@ -185,7 +185,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                   onClick={() => scrollto(item.id)}
                   aria-label={item.label}
                   aria-pressed={current}
-                  className={`group relative flex h-10 w-10 items-center justify-center rounded-full transition-all duration-300 ${current ? "scale-105 bg-gradient-to-tr from-indigo-600 to-sky-500 text-white" : "bg-white/10 text-slate-300 hover:bg-white/20 hover:text-white"}`}
+                  className={`group relative flex h-10 w-10 items-center justify-center rounded-full transition-[transform,background-color,color] duration-300 ${current ? "scale-105 bg-gradient-to-tr from-violet-600 to-fuchsia-500 text-white" : "bg-white/10 text-slate-300 hover:bg-white/20 hover:text-white"}`}
                 >
                   <Glyph className="h-4 w-4" aria-hidden="true" />
                   <span className="pointer-events-none absolute left-14 rounded-lg border border-white/10 bg-slate-950 px-2.5 py-1 text-[11px] font-semibold tracking-[-0.018em] whitespace-nowrap text-white opacity-0 transition group-hover:opacity-100">
@@ -260,11 +260,11 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                           key={tab.id}
                           type="button"
                           onClick={() => scrollto(tab.id)}
-                          className={`group flex items-center rounded-xl px-3 py-2 transition-all ${current ? "icon-frame-3d-active text-slate-950" : "icon-frame-3d text-slate-800"}`}
+                          className={`group flex items-center rounded-xl px-3 py-2 transition-[transform,box-shadow,border-color] ${current ? "icon-frame-3d-active text-slate-950" : "icon-frame-3d text-slate-800"}`}
                           aria-label={tab.label}
                         >
                           <Glyph className={`h-4 w-4 ${TABTONE[tab.id]}`} aria-hidden="true" />
-                          <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-all group-hover:ml-2 group-hover:max-w-[90px] group-hover:opacity-100">
+                          <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-[margin,max-width,opacity] group-hover:ml-2 group-hover:max-w-[90px] group-hover:opacity-100">
                             {tab.label}
                           </span>
                         </button>
@@ -281,7 +281,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                   aria-label={saaschrome.alerts}
                 >
                   <Bell className="h-4 w-4" aria-hidden="true" />
-                  <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-all group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
+                  <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-[margin,max-width,opacity] group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
                     {saaschrome.alerts}
                   </span>
                 </button>
@@ -292,7 +292,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                   aria-label={saaschrome.signin}
                 >
                   <Signin className="h-4 w-4" aria-hidden="true" />
-                  <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-all group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
+                  <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-[margin,max-width,opacity] group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
                     {saaschrome.signin}
                   </span>
                 </button>
@@ -302,8 +302,8 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                   className="btn-tactile-3d group flex items-center rounded-full p-2.5 text-white"
                   aria-label={saaschrome.launch}
                 >
-                  <Arrowupright className="h-4 w-4 text-sky-400" aria-hidden="true" />
-                  <span className="max-w-0 overflow-hidden text-xs font-extrabold tracking-[-0.035em] whitespace-nowrap opacity-0 transition-all group-hover:mr-1 group-hover:ml-2 group-hover:max-w-[80px] group-hover:opacity-100">
+                  <Arrowupright className="h-4 w-4 text-fuchsia-400" aria-hidden="true" />
+                  <span className="max-w-0 overflow-hidden text-xs font-extrabold tracking-[-0.035em] whitespace-nowrap opacity-0 transition-[margin,max-width,opacity] group-hover:mr-1 group-hover:ml-2 group-hover:max-w-[80px] group-hover:opacity-100">
                     {saaschrome.launch}
                   </span>
                 </button>
