@@ -234,85 +234,175 @@ export function flowLayoutSpots<T extends SortableApp>(apps: readonly T[], bound
 }
 
 /* ------------------------------------------------------------------ */
-/* the navbar position — the personalization pass of the settings app  */
+/* the navbar mode — floating and docked, the two faces of the shell   */
+/* bar: the floating pad (centered, rounded, the magnifying dock) and  */
+/* the docked bar pinned to one screen edge (the bottom taskbar or the */
+/* 48px side rail). The choice persists on the system store — the      */
+/* account-scoped browser preference lane of storage.ts (the same      */
+/* machine the theme and the display name ride), never a raw browser   */
+/* localStorage key of this build.                                     */
 /* ------------------------------------------------------------------ */
 
-/** where the shell taskbar docks: the floating bottom bar (the windows 11
- * default) or a vertical rail on one screen edge */
-export type NavbarPosition = "floating" | "left" | "right";
+/** the mode the shell bar wears: floating (the detached rounded pad — the
+ * magnifying dock) or docked (the bar pinned to one screen edge) */
+export type NavbarMode = "floating" | "docked";
 
-/** the localStorage key of the navbar position choice */
-export const NAVBAR_POS_KEY = "dt.navbar.pos.v1";
+/** the screen edge the docked bar hugs (the floating pad ignores it) */
+export type NavbarEdge = "bottom" | "left" | "right";
 
-/** the window event a position change dispatches — the shell chrome listens
- * for it so the taskbar re-docks the moment the settings app chooses */
-export const NAVBAR_POS_EVENT = "dt-navbar-pos";
+/** the account preference keys the mode and the edge ride (the system
+ * store of storage.ts — one preference per concern, account-scoped) */
+export const NAVBAR_MODE_PREF = "navbarMode";
+export const NAVBAR_EDGE_PREF = "navbarEdge";
 
-/** reads the stored navbar position (floating when absent or stale) */
-export function loadNavbarPosition(): NavbarPosition {
-  try {
-    const raw = window.localStorage.getItem(NAVBAR_POS_KEY);
-    if (raw === "floating" || raw === "left" || raw === "right") return raw;
-  } catch {
-    /* storage unavailable: the floating bar carries the shell */
-  }
-  return "floating";
+/** the window events a mode or edge change dispatches — the shell chrome
+ * and the settings card listen, so the bar re-docks the moment a choice
+ * or a drag lands */
+export const NAVBAR_MODE_EVENT = "dt-navbar-mode";
+export const NAVBAR_EDGE_EVENT = "dt-navbar-edge";
+
+/** validates an untrusted stored mode (the store answers as text) */
+export function isNavbarMode(value: unknown): value is NavbarMode {
+  return value === "floating" || value === "docked";
 }
 
-/** persists the navbar position (a no-op when storage is unavailable) */
-export function saveNavbarPosition(position: NavbarPosition): void {
-  try {
-    window.localStorage.setItem(NAVBAR_POS_KEY, position);
-  } catch {
-    /* storage unavailable: the dock lives for the session */
-  }
+/** validates an untrusted stored edge */
+export function isNavbarEdge(value: unknown): value is NavbarEdge {
+  return value === "bottom" || value === "left" || value === "right";
 }
 
-/* ------------------------------------------------------------------ */
-/* the navbar style — the face the bar wears (windows taskbar or the   */
-/* apple dock), the second personalization axis of the settings app    */
-/* ------------------------------------------------------------------ */
-
-/** the face the shell bar wears: the windows taskbar (the full-width
- * acrylic bar — the default) or the apple dock (the centered floating
- * mica pad with the magnifying pins) */
-export type NavbarStyle = "windows" | "apple";
-
-/** the localStorage key of the navbar style choice */
-export const NAVBAR_STYLE_KEY = "dt.navbar.style.v1";
-
-/** the window event a style change dispatches — the shell chrome listens
- * for it so the bar re-faces the moment the settings app chooses */
-export const NAVBAR_STYLE_EVENT = "dt-navbar-style";
-
-/** reads the stored navbar style (the windows taskbar when absent or stale) */
-export function loadNavbarStyle(): NavbarStyle {
-  try {
-    const raw = window.localStorage.getItem(NAVBAR_STYLE_KEY);
-    if (raw === "windows" || raw === "apple") return raw;
-  } catch {
-    /* storage unavailable: the taskbar carries the shell */
-  }
-  return "windows";
+/** the account preference lane: the browser preference store of the os
+ * (storage.ts), imported lazily so the pure layer stays loadable
+ * everywhere the chrome is (the browser bundle already carries the
+ * module — the auth and the gateway faces ride it) */
+interface Preferencelane {
+  readBrowserPreferences(): Promise<Record<string, string>>;
+  saveBrowserPreference(key: string, value: string): Promise<unknown>;
 }
 
-/** persists the navbar style (a no-op when storage is unavailable) */
-export function saveNavbarStyle(style: NavbarStyle): void {
+async function preferencelane(): Promise<Preferencelane | null> {
   try {
-    window.localStorage.setItem(NAVBAR_STYLE_KEY, style);
+    const lane = (await import("./storage.ts")) as Preferencelane;
+    if (typeof lane.readBrowserPreferences !== "function" || typeof lane.saveBrowserPreference !== "function")
+      return null;
+    return lane;
   } catch {
-    /* storage unavailable: the face lives for the session */
+    return null;
   }
 }
 
 /**
- * the effective dock position of the bar: the apple dock is the floating
- * pad by law, so the style wins the edge fight — a stored edge choice
- * never pairs the rail attributes with the dock face (the 48px rail
- * grammar, the side indicator ladder and the body edge reservation all
- * read this resolved value, never the raw choice). Pure: the settings
- * lock and the shell chrome ride the same verdict.
+ * reads the stored navbar mode from the account store (floating when the
+ * store is away, empty or stale — the honest default).
  */
-export function resolveNavbarDock(style: NavbarStyle, position: NavbarPosition): NavbarPosition {
-  return style === "apple" ? "floating" : position;
+export async function loadNavbarMode(): Promise<NavbarMode> {
+  try {
+    const lane = await preferencelane();
+    if (!lane) return "floating";
+    const preferences = await lane.readBrowserPreferences();
+    if (isNavbarMode(preferences[NAVBAR_MODE_PREF])) return preferences[NAVBAR_MODE_PREF];
+  } catch {
+    /* the store is unavailable: the floating pad carries the shell */
+  }
+  return "floating";
+}
+
+/**
+ * reads the stored dock edge from the account store (bottom when absent
+ * or stale — the full-width taskbar edge).
+ */
+export async function loadNavbarEdge(): Promise<NavbarEdge> {
+  try {
+    const lane = await preferencelane();
+    if (!lane) return "bottom";
+    const preferences = await lane.readBrowserPreferences();
+    if (isNavbarEdge(preferences[NAVBAR_EDGE_PREF])) return preferences[NAVBAR_EDGE_PREF];
+  } catch {
+    /* the store is unavailable: the bottom edge carries the bar */
+  }
+  return "bottom";
+}
+
+/**
+ * persists the navbar mode on the account store (best effort: the store
+ * may be away, the mode then lives for the session through the event).
+ */
+export function saveNavbarMode(mode: NavbarMode): void {
+  void preferencelane()
+    .then((lane) => (lane ? lane.saveBrowserPreference(NAVBAR_MODE_PREF, mode) : undefined))
+    .catch(() => undefined);
+}
+
+/**
+ * persists the navbar edge on the account store (best effort, the same
+ * session-only honesty the mode rides).
+ */
+export function saveNavbarEdge(edge: NavbarEdge): void {
+  void preferencelane()
+    .then((lane) => (lane ? lane.saveBrowserPreference(NAVBAR_EDGE_PREF, edge) : undefined))
+    .catch(() => undefined);
+}
+
+/* ------------------------------------------------------------------ */
+/* the drag verdict — the smart gestures that move the bar between its */
+/* two modes: pull the bar up and it floats; pull it sideways and it   */
+/* docks to that edge; pull a docked bar off its wall and it floats    */
+/* again with the rounded corners back. Pure math, no DOM.             */
+/* ------------------------------------------------------------------ */
+
+/** the lift (px) a bottom-docked bar answers before it floats */
+export const NAVBAR_FLOAT_LIFT_PX = 32;
+/** the sideways pull (px) before the bar docks to the dragged edge */
+export const NAVBAR_DOCK_PULL_PX = 48;
+/** the release (px, about a millimeter of travel) a docked bar answers
+ * before it leaves its wall and floats again */
+export const NAVBAR_RELEASE_PX = 6;
+
+/** the stance a drag starts from (the bar's current mode and edge) */
+export type NavbarStance = { mode: NavbarMode; edge: NavbarEdge };
+
+/** the verdict a completed drag lands (the new stance), or null while the
+ * gesture has not crossed any threshold yet */
+export type NavbarDragVerdict = { mode: NavbarMode; edge: NavbarEdge } | null;
+
+/**
+ * the drag verdict of one pointer gesture: the pointer travel (dx, dy)
+ * against the stance the bar rests in. The three laws the owner ordered:
+ * pulling up floats the bar, pulling sideways docks it to that edge, and
+ * pulling a docked bar off its wall floats it again. The sideways pulls
+ * answer only when they outrun the vertical travel, so a diagonal drag
+ * never lands on the wrong wall; the reverse of every law rides too (a
+ * floating pad pushed back down re-docks on the bottom edge).
+ *
+ * @param stance the mode and edge the bar rests in.
+ * @param dx the horizontal pointer travel (px, right positive).
+ * @param dy the vertical pointer travel (px, down positive).
+ * @returns the new stance once a threshold crossed, null before that.
+ */
+export function navbarDragVerdict(stance: NavbarStance, dx: number, dy: number): NavbarDragVerdict {
+  const { mode, edge } = stance;
+  const horizontalWins = Math.abs(dx) > Math.abs(dy);
+  if (mode === "docked") {
+    // a docked bar leaves its wall on the ~1mm pull — the rounded corners
+    // come back with the floating pad
+    if (edge === "left" && dx >= NAVBAR_RELEASE_PX) return { mode: "floating", edge: "bottom" };
+    if (edge === "right" && dx <= -NAVBAR_RELEASE_PX) return { mode: "floating", edge: "bottom" };
+    if (edge === "bottom") {
+      // the bottom edge answers every direction: up floats, sideways docks
+      if (dy <= -NAVBAR_FLOAT_LIFT_PX) return { mode: "floating", edge: "bottom" };
+      if (horizontalWins) {
+        if (dx <= -NAVBAR_DOCK_PULL_PX) return { mode: "docked", edge: "left" };
+        if (dx >= NAVBAR_DOCK_PULL_PX) return { mode: "docked", edge: "right" };
+      }
+    }
+    return null;
+  }
+  // the floating pad: push it down to re-dock on the bottom edge, pull it
+  // sideways to dock on that wall
+  if (dy >= NAVBAR_DOCK_PULL_PX && !horizontalWins) return { mode: "docked", edge: "bottom" };
+  if (horizontalWins) {
+    if (dx <= -NAVBAR_DOCK_PULL_PX) return { mode: "docked", edge: "left" };
+    if (dx >= NAVBAR_DOCK_PULL_PX) return { mode: "docked", edge: "right" };
+  }
+  return null;
 }

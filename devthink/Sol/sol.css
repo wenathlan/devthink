@@ -12031,8 +12031,7 @@ span[data-tile] {
   background-blend-mode: normal, soft-light;
   box-shadow:
     inset 0 1px 0 color-mix(in oklab, var(--color-veil) 24%, transparent),
-    0 1px 2px color-mix(in oklab, var(--color-mask-ink) 32%, transparent),
-    0 16px 40px -18px color-mix(in oklab, var(--color-mask-ink) 45%, transparent);
+    var(--win-shad-window);
   -webkit-backdrop-filter: blur(30px) saturate(1.35);
   backdrop-filter: blur(30px) saturate(1.35);
   animation: dtwloginpane 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
@@ -12399,7 +12398,7 @@ span[data-tile] {
   backdrop-filter: blur(24px) saturate(1.4);
   -webkit-backdrop-filter: blur(24px) saturate(1.4);
   isolation: isolate;
-  box-shadow: 0 8px 24px rgb(0 0 0 / 24%), 0 0 2px rgb(0 0 0 / 12%);
+  box-shadow: var(--win-shad-flyout);
   animation: dtwloginpower 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
 }
 @keyframes dtwloginpower {
@@ -16940,12 +16939,14 @@ button.dtc-recents__row:focus-visible {
    with the data-wall flag beside it), the accent token (--personal-accent
    and its bright dark-mode sibling feeding the windows accent variable
    --color-win at the root ladder and the light theme block — the app skins
-   keep their own pinned identities), the navbar rail (the data-navbar
-   position the shell chrome answers: floating = the bottom bar, left and
-   right = the 48px vertical rail docked to that edge with the side
-   indicator ladder, the side tooltips and the tray pressed to its foot,
-   plus the re-banded work area — the bottom reservation retires and the
-   document flow insets from the docked edge), and the behavior flags
+   keep their own pinned identities), the navbar of the two modes (the
+   data-navmode and data-navedge pair the shell chrome answers: floating =
+   the detached rounded pad the magnifying dock rides, docked = the bar
+   pinned to the chosen edge — the bottom taskbar, or the 48px vertical
+   rail docked left or right with the side indicator ladder, the side
+   tooltips and the tray pressed to its foot, plus the re-banded work area
+   — the bottom reservation retires and the document flow insets from the
+   docked edge), and the behavior flags
    (data-alttab-motion and data-taskbar-tips, the
    on/off switches the component options card arms). Appended block only —
    every earlier section is untouched; these rules win by cascade order.
@@ -16969,13 +16970,16 @@ button.dtc-recents__row:focus-visible {
   --color-win: var(--personal-accent, #0067c0);
 }
 
-/* ---- 3. the navbar rail: the vertical dock of the shell chrome. The 48px
-        rail carries the mark, the pins and the tray in a column; the
-        omnibox and the tray words ride only the floating bar; the open /
-        active ladder turns to the screen-edge side, the tooltips to the
-        side of the icon, the clock keeps its time line ---- */
-.dt-nav[data-navbar="left"],
-.dt-nav[data-navbar="right"] {
+/* ---- 3. the navbar of the two modes: the FLOATING pad (the detached
+        rounded dock the magnification rides) and the DOCKED bar pinned to
+        one screen edge (the bottom taskbar — the base class itself — or
+        the 48px side rail). The docked rail carries the mark, the pins and
+        the tray in a column; the omnibox and the tray words ride only the
+        floating faces; the open / active ladder turns to the screen-edge
+        side, the tooltips to the side of the icon, the clock keeps its
+        time line ---- */
+.dt-nav[data-navmode="docked"][data-navedge="left"],
+.dt-nav[data-navmode="docked"][data-navedge="right"] {
   top: 0;
   bottom: 0;
   height: auto;
@@ -16984,20 +16988,20 @@ button.dtc-recents__row:focus-visible {
   align-items: center;
   padding: 4px 2px;
 }
-.dt-nav[data-navbar="left"] {
+.dt-nav[data-navmode="docked"][data-navedge="left"] {
   left: 0;
   right: auto;
   border-top: 0;
   border-right: 1px solid rgb(0 0 0 / 55%);
 }
-.dt-nav[data-navbar="right"] {
+.dt-nav[data-navmode="docked"][data-navedge="right"] {
   left: auto;
   right: 0;
   border-top: 0;
   border-left: 1px solid rgb(0 0 0 / 55%);
 }
-.dt-nav[data-navbar="left"] .dt-nav__cluster,
-.dt-nav[data-navbar="right"] .dt-nav__cluster {
+.dt-nav[data-navmode="docked"][data-navedge="left"] .dt-nav__cluster,
+.dt-nav[data-navmode="docked"][data-navedge="right"] .dt-nav__cluster {
   position: static;
   top: auto;
   left: auto;
@@ -17005,23 +17009,23 @@ button.dtc-recents__row:focus-visible {
   translate: none;
   flex-direction: column;
 }
-.dt-nav[data-navbar="left"] .dt-nav__pins,
-.dt-nav[data-navbar="right"] .dt-nav__pins {
+.dt-nav[data-navmode="docked"][data-navedge="left"] .dt-nav__pins,
+.dt-nav[data-navmode="docked"][data-navedge="right"] .dt-nav__pins {
   flex-direction: column;
   min-width: 0;
 }
-.dt-nav[data-navbar="left"] .dt-nav__tray,
-.dt-nav[data-navbar="right"] .dt-nav__tray {
+.dt-nav[data-navmode="docked"][data-navedge="left"] .dt-nav__tray,
+.dt-nav[data-navmode="docked"][data-navedge="right"] .dt-nav__tray {
   flex-direction: column;
   margin: auto 0 0;
 }
-.dt-nav[data-navbar="left"] .dt-nav__clock span:last-child,
-.dt-nav[data-navbar="right"] .dt-nav__clock span:last-child {
+.dt-nav[data-navmode="docked"][data-navedge="left"] .dt-nav__clock span:last-child,
+.dt-nav[data-navmode="docked"][data-navedge="right"] .dt-nav__clock span:last-child {
   display: none;
 }
 /* the open/active indicator ladder rides the screen-edge side of the cell */
-.dt-nav[data-navbar="left"] .dt-nav__app::after,
-.dt-nav[data-navbar="left"] .dt-nav__start::after {
+.dt-nav[data-navmode="docked"][data-navedge="left"] .dt-nav__app::after,
+.dt-nav[data-navmode="docked"][data-navedge="left"] .dt-nav__start::after {
   bottom: auto;
   top: 50%;
   left: 0;
@@ -17029,8 +17033,8 @@ button.dtc-recents__row:focus-visible {
   width: 3px;
   height: 0;
 }
-.dt-nav[data-navbar="right"] .dt-nav__app::after,
-.dt-nav[data-navbar="right"] .dt-nav__start::after {
+.dt-nav[data-navmode="docked"][data-navedge="right"] .dt-nav__app::after,
+.dt-nav[data-navmode="docked"][data-navedge="right"] .dt-nav__start::after {
   bottom: auto;
   top: 50%;
   right: 0;
@@ -17039,29 +17043,29 @@ button.dtc-recents__row:focus-visible {
   width: 3px;
   height: 0;
 }
-.dt-nav[data-navbar="left"] .dt-nav__app[data-open="true"]::after,
-.dt-nav[data-navbar="left"] .dt-nav__start[data-open="true"]::after,
-.dt-nav[data-navbar="right"] .dt-nav__app[data-open="true"]::after,
-.dt-nav[data-navbar="right"] .dt-nav__start[data-open="true"]::after {
+.dt-nav[data-navmode="docked"][data-navedge="left"] .dt-nav__app[data-open="true"]::after,
+.dt-nav[data-navmode="docked"][data-navedge="left"] .dt-nav__start[data-open="true"]::after,
+.dt-nav[data-navmode="docked"][data-navedge="right"] .dt-nav__app[data-open="true"]::after,
+.dt-nav[data-navmode="docked"][data-navedge="right"] .dt-nav__start[data-open="true"]::after {
   width: 3px;
   height: 6px;
 }
-.dt-nav[data-navbar="left"] .dt-nav__app[data-active="true"]::after,
-.dt-nav[data-navbar="left"] .dt-nav__start[data-active="true"]::after,
-.dt-nav[data-navbar="right"] .dt-nav__app[data-active="true"]::after,
-.dt-nav[data-navbar="right"] .dt-nav__start[data-active="true"]::after {
+.dt-nav[data-navmode="docked"][data-navedge="left"] .dt-nav__app[data-active="true"]::after,
+.dt-nav[data-navmode="docked"][data-navedge="left"] .dt-nav__start[data-active="true"]::after,
+.dt-nav[data-navmode="docked"][data-navedge="right"] .dt-nav__app[data-active="true"]::after,
+.dt-nav[data-navmode="docked"][data-navedge="right"] .dt-nav__start[data-active="true"]::after {
   width: 3px;
   height: 12px;
 }
 /* the app-name peek rides beside the icon (the fade reveal stays the
    hover utility's — only the placement moves) */
-.dt-nav[data-navbar="left"] .dt-nav__tip {
+.dt-nav[data-navmode="docked"][data-navedge="left"] .dt-nav__tip {
   bottom: auto;
   top: 50%;
   left: calc(100% + 6px);
   translate: 0 -50%;
 }
-.dt-nav[data-navbar="right"] .dt-nav__tip {
+.dt-nav[data-navmode="docked"][data-navedge="right"] .dt-nav__tip {
   bottom: auto;
   top: 50%;
   left: auto;
@@ -17069,26 +17073,25 @@ button.dtc-recents__row:focus-visible {
   translate: 0 -50%;
 }
 /* the flyouts clear the rail they share the edge with */
-.dt-nav[data-navbar="left"] ~ .dt-start {
+.dt-nav[data-navmode="docked"][data-navedge="left"] ~ .dt-start {
   left: calc(50% + 24px);
 }
-.dt-nav[data-navbar="right"] ~ .dt-start {
+.dt-nav[data-navmode="docked"][data-navedge="right"] ~ .dt-start {
   left: calc(50% - 24px);
 }
-.dt-nav[data-navbar="right"] ~ .dt-flyout {
+.dt-nav[data-navmode="docked"][data-navedge="right"] ~ .dt-flyout {
   right: calc(48px + 12px);
 }
-/* the apple style — the dock face of the same chrome: the bar folds into
- * the centered floating mica pad (the 16px panel corner law, the hairline
- * ring, the three-step elevation), the cluster rides in flow at the pad's
- * center, the omnibox retires (the search stays in the start menu and the
- * palette), the tray follows the pins behind a veil hairline, and the
- * pins answer the dock grammar — the magnified lift on hover, the
- * underline indicator bar (never a dot), the 150ms micro curve of the
- * house. the rail positions never ride the dock: the apple face is the
- * floating pad by law, so the style wins the edge fight (the rail rules
- * above scope to the edge attributes the dock never pairs with). */
-.dt-nav[data-navstyle="apple"] {
+/* the floating mode — the detached rounded pad of the same chrome: the
+ * bar folds into the centered floating mica pad (the 16px panel corner
+ * law, the hairline ring, the three-step elevation), the cluster rides in
+ * flow at the pad's center, the omnibox retires (the search stays in the
+ * start menu and the palette) and the tray follows the pins behind a veil
+ * hairline. The rounded corners are the face of the floating law — the
+ * docked bar keeps the square wall edges. The drag gestures own the mode
+ * switches (the component plays them); the stylesheet only dresses the
+ * two faces and the drag stage. */
+.dt-nav[data-navmode="floating"] {
   inset-inline: auto;
   left: 50%;
   right: auto;
@@ -17107,78 +17110,76 @@ button.dtc-recents__row:focus-visible {
 }
 /* the dock cluster rides in flow — the absolute centering of the taskbar
  * row retires inside the fit-content pad */
-.dt-nav[data-navstyle="apple"] .dt-nav__cluster {
+.dt-nav[data-navmode="floating"] .dt-nav__cluster {
   position: static;
   top: auto;
   left: auto;
   height: auto;
   translate: none;
 }
-.dt-nav[data-navstyle="apple"] .dt-nav__omnibox {
+.dt-nav[data-navmode="floating"] .dt-nav__omnibox {
   display: none;
 }
-.dt-nav[data-navstyle="apple"] .dt-nav__tray {
+.dt-nav[data-navmode="floating"] .dt-nav__tray {
   margin-left: 8px;
   padding-left: 10px;
   border-left: 1px solid color-mix(in oklab, var(--color-veil) 12%, transparent);
 }
-/* the dock magnification: the hovered pin lifts and grows (the honest
- * one-icon magnification — the neighbor fisheye of the real dock needs
- * the pointer geometry the component does not carry), the press keeps
- * the house scale, the reduced-motion law flattens the travel */
-.dt-nav[data-navstyle="apple"] .dt-nav__app,
-.dt-nav[data-navstyle="apple"] .dt-nav__start {
-  transition: transform 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
+/* the dock magnification: GSAP owns the transforms (the gaussian bump of
+ * dockmagnify.ts rides gsap.quickTo per face, the elastic.out return on
+ * the leave, the faces grow from their bottom edge) — the stylesheet only
+ * hands the faces over: the transform transition retires in the floating
+ * mode (the inline tweens must never fight the css curve) and the origin
+ * pins the growth upward */
+.dt-nav[data-navmode="floating"] .dt-nav__app-face {
+  transform-origin: 50% 100%;
+  transition-property: background-color;
 }
-.dt-nav[data-navstyle="apple"] .dt-nav__app:hover,
-.dt-nav[data-navstyle="apple"] .dt-nav__start:hover {
-  transform: translateY(-3px) scale(1.12);
+/* the drag stage: the grabbed cursor and the selection kill while a drag
+ * moves the bar between its two modes (the triggers keep their clicks —
+ * the verdict only fires past the thresholds) */
+.dt-nav[data-dragging="true"] {
+  cursor: grabbing;
+  user-select: none;
+  touch-action: none;
 }
-.dt-nav[data-navstyle="apple"] .dt-nav__app:active,
-.dt-nav[data-navstyle="apple"] .dt-nav__start:active {
-  transform: scale(0.96);
-}
-/* the dock keeps the underline indicator ladder of the floating bar (the
- * ::after grammar the cells already carry answers untouched) */
+/* the reduced-motion law: the magnification never arms (the hook refuses),
+ * the faces stay at rest and the transition property hands back whole */
 @media (prefers-reduced-motion: reduce) {
-  .dt-nav[data-navstyle="apple"] .dt-nav__app,
-  .dt-nav[data-navstyle="apple"] .dt-nav__start {
-    transition: none;
-  }
-  .dt-nav[data-navstyle="apple"] .dt-nav__app:hover,
-  .dt-nav[data-navstyle="apple"] .dt-nav__start:hover {
+  .dt-nav[data-navmode="floating"] .dt-nav__app-face {
     transform: none;
+    transition: none;
   }
 }
 /* the narrow band: the dock keeps the centered pad face, the tray folds
  * behind the pins, the clock keeps its date line */
 @media (max-width: 760px) {
-  .dt-nav[data-navstyle="apple"] {
+  .dt-nav[data-navmode="floating"] {
     bottom: 8px;
     max-width: calc(100vw - 16px);
   }
-  .dt-nav[data-navstyle="apple"] .dt-nav__tray {
+  .dt-nav[data-navmode="floating"] .dt-nav__tray {
     margin-left: 4px;
     padding-left: 8px;
   }
 }
-/* the rail dock re-bands the whole shell: the bottom band the floating
-   bar reserved retires (--shell-bottom folds to zero on the body, so every
-   surface measuring calc(100dvh - var(--shell-bottom)) breathes full
+/* the docked rail re-bands the whole shell: the bottom band the floating
+   faces reserved retires (--shell-bottom folds to zero on the body, so
+   every surface measuring calc(100dvh - var(--shell-bottom)) breathes full
    height and the start menu and the flyouts sit 12px off the screen
    foot), and the document flow insets from the docked edge — the same
    :has() reservation law the floating bar rides, turned on its side; the
    fixed rail itself ignores the body box and keeps hugging the screen
    edge, and the desktop workspace it overlaps measures its icon grid and
    its windows inside the inset flow */
-body:has(.dt-nav[data-navbar="left"]),
-body:has(.dt-nav[data-navbar="right"]) {
+body:has(.dt-nav[data-navmode="docked"][data-navedge="left"]),
+body:has(.dt-nav[data-navmode="docked"][data-navedge="right"]) {
   --shell-bottom: 0px;
 }
-body:has(.dt-nav[data-navbar="left"]) {
+body:has(.dt-nav[data-navmode="docked"][data-navedge="left"]) {
   padding-left: 48px;
 }
-body:has(.dt-nav[data-navbar="right"]) {
+body:has(.dt-nav[data-navmode="docked"][data-navedge="right"]) {
   padding-right: 48px;
 }
 

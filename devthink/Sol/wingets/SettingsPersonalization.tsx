@@ -12,11 +12,12 @@
  */
 import { ColorRegular, ImageRegular, PersonRegular, WindowRegular } from "@fluentui/react-icons";
 import { copy } from "../../copy";
+import { uicopy } from "../../uistore.ts";
 import { AccentRow } from "./SettingsAccentrow";
 import { BackgroundPicker } from "./SettingsBackgroundpicker";
 import { ComponentOptions } from "./SettingsComponentoptions";
 import { LanguageCard } from "./SettingsLanguagecard";
-import { NavbarPositionControl, NavbarStyleControl } from "./SettingsNavbarposition";
+import { NavbarEdgeControl, NavbarModeControl } from "./SettingsNavbarposition";
 import { saveThemeMirror } from "../../personalstore.ts";
 import type { PreferenceKey, SettingsSnapshot } from "./Settingstypes";
 
@@ -89,23 +90,23 @@ export function Personalization({ preferences, save }: PersonalizationProps) {
         </div>
       </section>
 
-      <section className="dtw-card" aria-label={copy("settings.personal.navbar")}>
+      <section className="dtw-card" aria-label={uicopy("navbar.mode.aria")}>
         <h2 className="dtw-cardtitle">
           <WindowRegular fontSize={15} aria-hidden="true" />
-          {copy("settings.personal.navbar")}
+          {uicopy("navbar.mode.aria")}
         </h2>
-        <p className="dtw-settings__carddesc">{copy("settings.personal.navbar.desc")}</p>
+        <p className="dtw-settings__carddesc">{uicopy("navbar.mode.desc")}</p>
         <div className="dtw-settings__field">
           <span className="dtw-settings__fieldlabel">
-            <strong>{copy("settings.personal.navbar")}</strong>
+            <strong>{uicopy("navbar.mode.aria")}</strong>
           </span>
-          <NavbarPositionControl />
+          <NavbarModeControl />
         </div>
         <div className="dtw-settings__field">
           <span className="dtw-settings__fieldlabel">
-            <strong>{copy("settings.personal.navbarstyle")}</strong>
+            <strong>{uicopy("navbar.edge.aria")}</strong>
           </span>
-          <NavbarStyleControl />
+          <NavbarEdgeControl />
         </div>
       </section>
 

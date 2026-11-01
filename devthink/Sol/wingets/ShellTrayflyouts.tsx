@@ -167,11 +167,24 @@ type CalendarFlyoutProps = {
   open: boolean;
   /** reduced motion: no transition styles at all */
   reduced: boolean;
+  /** the dock is floating: the box accompanies the pad (the anchor law)
+   * instead of resting on the screen corner */
+  floating?: boolean;
+  /** the measured horizontal anchor (px) of the dock clock — the center the
+   * floating flyout rides, clamped to the viewport gutters */
+  anchorX?: number | null;
 };
 
+/** the floating placement law: the 360px box keeps a 12px gutter of the
+ * viewport on each side while it rides the dock anchor */
+const CALENDAR_GUTTER = 12 + 180;
+
 /** the calendar flyout: month head with prev/next, weekday row and the real
- * date grid of the viewed month — pure state, no storage */
-export function CalendarFlyout({ open }: CalendarFlyoutProps) {
+ * date grid of the viewed month — pure state, no storage. While the dock
+ * floats, the box accompanies the pad: it opens over the measured clock
+ * anchor (the calendar law of the floating dock), clamped to the viewport
+ * gutters; docked, it keeps the screen-corner placement the tray owns. */
+export function CalendarFlyout({ open, floating = false, anchorX = null }: CalendarFlyoutProps) {
   const [view, setView] = useState(() => new Date());
 
   // reopening always lands back on the current month
@@ -188,6 +201,17 @@ export function CalendarFlyout({ open }: CalendarFlyoutProps) {
   const now = new Date();
   const shift = (delta: number) => setView(new Date(year, month + delta, 1));
 
+  /** the anchor the box rides while floating: the clock center clamped so
+   * the 360px box never leaves the viewport (the server render and the
+   * anchorless rides answer null and keep the corner law) */
+  const rides =
+    floating && anchorX !== null && typeof window !== "undefined"
+      ? Math.min(
+          Math.max(anchorX, CALENDAR_GUTTER),
+          Math.max(window.innerWidth - CALENDAR_GUTTER, CALENDAR_GUTTER),
+        )
+      : null;
+
   return (
     <section
       className={TRAY_FLYOUT_CLASS}
@@ -196,6 +220,12 @@ export function CalendarFlyout({ open }: CalendarFlyoutProps) {
       aria-label={osText("shell.tray.calendar.aria")}
       data-hide={open ? undefined : "true"}
       data-flyout-keep="true"
+      data-floating={rides !== null ? "true" : undefined}
+      style={
+        rides === null
+          ? undefined
+          : { right: "auto", left: `${Math.round(rides)}px`, transform: "translateX(-50%)" }
+      }
     >
       <div className="mb-2.5 flex items-center justify-between gap-2">
         <strong className="font-display text-sm font-semibold tracking-[-0.01em]">

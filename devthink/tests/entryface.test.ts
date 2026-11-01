@@ -108,12 +108,14 @@ describe("the chrome keys (the original header, dock and rail)", () => {
 });
 
 describe("the login face (the contained shadow law)", () => {
-  it("the sign-in card keeps the hairline outline, the mica blur and the contained elevation", () => {
+  it("the sign-in card keeps the hairline outline, the mica blur and the house token elevation", () => {
     const card = rule(".dtw-login__card");
     expect(card).toContain("border: 1px solid color-mix(in oklab, var(--color-veil) 16%, transparent)");
     expect(card).toContain("-webkit-backdrop-filter: blur(30px) saturate(1.35)");
     expect(card).toContain("backdrop-filter: blur(30px) saturate(1.35)");
-    expect(card).toContain("0 16px 40px -18px");
+    // the drop rides the house token (--win-shad-window) — the hand-built
+    // drop that could leak past the face retired with the token law
+    expect(card).toContain("var(--win-shad-window)");
     expect(card).not.toContain("0 12px 32px");
     expect(card).not.toContain("0 32px 80px");
   });
