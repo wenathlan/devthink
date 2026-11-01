@@ -53,15 +53,15 @@ export type saastrack = { title: string; artist: string; total: string; cover: s
 export type saasnavrow = { id: string; label: string };
 
 /** The header chrome copy: the wordmark title, the alerts key and the
- * sign-in key of the header, the launch key, the left rail cloud key and
- * the three keys of the corner dock. */
+ * sign-in key of the header, the launch key and the three keys of the
+ * corner dock (the left rail cloud key rides no more — the pr8 law
+ * retired the saddle cloud tile from the sidebar). */
 export const saaschrome = {
   title: "DevThink",
   alerts: "Alerts",
   notificationssynced: "Notifications synced",
   signin: "Sign In",
   launch: "Launch",
-  railcloud: "Saddle Cloud",
   dockstar: "Save to Favorites",
   savedtofavorites: "Saved to Favorites",
   dockexplore: "Explorer",
