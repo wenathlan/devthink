@@ -18,5 +18,5 @@
  */
 export function familyurl(slug: string): string {
   // biome-ignore lint/style/useTemplate: the verbatim family form of the recipe
-  return "../" + slug.replace(/^\/+|\/+$/g, "") + "/";
+  return "../" + slug.replace(/^\/{1,64}|\/{1,64}$/g, "") + "/";
 }

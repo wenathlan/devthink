@@ -256,7 +256,7 @@ const slug = (text: string): string =>
   text
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "") || "x";
+    .replace(/^-{1,64}|-{1,64}$/g, "") || "x";
 
 function deepFreeze<T>(v: T): T {
   if (Array.isArray(v)) {

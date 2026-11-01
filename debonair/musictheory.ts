@@ -266,7 +266,7 @@ export function qualityFromIntervals(intervals: readonly number[]): ChordQuality
 
 /** Parses a lead-sheet token ("Cmaj7", "Am7/G", "F#m7b5", "Db9"); null when malformed. */
 export function parseChord(token: string): Chord | null {
-  const match = /^([A-G])([#b]*)([^/]*)(?:\/([A-G][#b]*))?$/.exec(token.trim());
+  const match = /^([A-G])([#b]{0,8})([^/]{0,64})(?:\/([A-G][#b]{0,8}))?$/.exec(token.trim());
   if (!match) return null;
   const root = noteToPc(`${match[1]}${match[2]}`);
   if (root === null) return null;
@@ -312,7 +312,7 @@ export function diatonicTriad(key: Key, degree: number): Chord | null {
  * root, the suffix picks from the roman quality table. Null when malformed.
  */
 export function parseRoman(token: string, key: Key): Chord | null {
-  const match = /^([b#]*)([ivIV]+)(.*)$/.exec(token.trim());
+  const match = /^([b#]{0,8})([ivIV]{1,32})(.{0,256})$/.exec(token.trim());
   if (!match) return null;
   const degree = ROMAN_DEGREES[match[2].toLowerCase()];
   const entry = ROMAN_QUALITY[match[3]];
