@@ -46,7 +46,7 @@ importers:
         version: 5.3.0
       '@hono/node-server':
         specifier: ^2.1.5
-        version: 2.1.5(hono@4.13.14)
+        version: 2.1.5(hono@4.13.16)
       '@libsql/client':
         specifier: ^0.18.0
         version: 0.18.0
@@ -66,8 +66,8 @@ importers:
         specifier: ^2.0.151
         version: 2.0.151(@types/react@19.3.0)(react@19.3.1)
       hono:
-        specifier: ^4.13.14
-        version: 4.13.14
+        specifier: ^4.13.16
+        version: 4.13.16
       ink:
         specifier: ^7.1.1
         version: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
@@ -3518,8 +3518,8 @@ packages:
   hastscript@9.0.2:
     resolution: {integrity: sha512-ghcIWJlrROwOddvAvbt0AAnLTyt/Xt02Ucc6VfXejSPESai+q24iROd0MjOYUEhJiI/b4vokkm9ZHb4MNOOizA==}
 
-  hono@4.13.14:
-    resolution: {integrity: sha512-yhRLQ21U6qa9Hsu2N7Qcbh8tE+WKEcoErjIo56LeSGiGXGp9sA7UpE86Ui9uexb61KakiGwuHMn2QdV7w6i6kQ==}
+  hono@4.13.16:
+    resolution: {integrity: sha512-AOLOEhvrV+iH92xXCnFr/5+3KjPKcI3xP63XJtX5spAnkznPdHijlIsUTpi7/9EhWqrTCekw5c5zh1K+YsVw7A==}
     engines: {node: '>=16.9.0'}
 
   html-encoding-sniffer@4.0.0:
@@ -5585,9 +5585,9 @@ snapshots:
       yargs: 17.7.3
     optional: true
 
-  '@hono/node-server@2.1.5(hono@4.13.14)':
+  '@hono/node-server@2.1.5(hono@4.13.16)':
     dependencies:
-      hono: 4.13.14
+      hono: 4.13.16
 
   '@hookform/resolvers@5.9.2(@standard-schema/spec@1.1.0)(ajv@8.20.0)(effect@3.20.0)(react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.1))(valibot@1.4.2(typescript@7.0.2))(zod@4.6.7)':
     dependencies:
@@ -7214,9 +7214,9 @@ snapshots:
 
   '@wenathlan/getry@2.0.151(@types/react@19.3.0)(react@19.3.1)':
     dependencies:
-      '@hono/node-server': 2.1.5(hono@4.13.14)
+      '@hono/node-server': 2.1.5(hono@4.13.16)
       '@prisma/adapter-libsql': 7.10.1
-      hono: 4.13.14
+      hono: 4.13.16
       ink: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
       react-devtools-core: 8.0.0
       z-ai-web-dev-sdk: 0.0.18
@@ -7237,9 +7237,9 @@ snapshots:
 
   '@wenathlan/vault@2.0.151(@types/react@19.3.0)(react@19.3.1)':
     dependencies:
-      '@hono/node-server': 2.1.5(hono@4.13.14)
+      '@hono/node-server': 2.1.5(hono@4.13.16)
       '@prisma/adapter-libsql': 7.10.1
-      hono: 4.13.14
+      hono: 4.13.16
       ink: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
       react-devtools-core: 8.0.0
       z-ai-web-dev-sdk: 0.0.18
@@ -8201,7 +8201,7 @@ snapshots:
       property-information: 7.2.0
       space-separated-tokens: 2.0.2
 
-  hono@4.13.14: {}
+  hono@4.13.16: {}
 
   html-encoding-sniffer@4.0.0:
     dependencies:
