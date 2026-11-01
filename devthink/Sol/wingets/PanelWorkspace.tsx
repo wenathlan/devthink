@@ -29,10 +29,17 @@ import type { ComponentType } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { alttabkeydown } from "../../alttab.ts";
 import { DESKTOP_APPS, type DesktopApp } from "../../appregistry.ts";
+import {
+  commitDesktopLock,
+  DESKTOP_LOCK_EVENT,
+  type DesktopLockState,
+  isDesktopLockState,
+  loadDesktopLock,
+} from "../../desktopstate.ts";
 import { pushrecentapp } from "../../recentapps.ts";
 import { uicopy, useUicopy } from "../../uistore.ts";
-import { type WindowEntry, spawnfit, SPAWN_TOP_OFFSET, windowcatalog, windowspawn } from "../../window.ts";
 import { WindowBodySurface } from "../../useismobile.ts";
+import { SPAWN_TOP_OFFSET, spawnfit, type WindowEntry, windowcatalog, windowspawn } from "../../window.ts";
 import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspace.ts";
 import AudioAnchor from "../audio/audio.tsx";
 import CalculatorAnchor from "../calculator/calculator.tsx";
@@ -49,6 +56,7 @@ import UsageAnchor from "../usage/usage.tsx";
 import VideoAnchor from "../video/video.tsx";
 import ChatBody from "./ChatBody.tsx";
 import { DesktopSurface } from "./PanelDesktop.tsx";
+import { DesktopLock } from "./PanelDesktoplock.tsx";
 import { frameScale, WindowFrame, type WindowSnapshot } from "./PanelWindowframe.tsx";
 import { type AltTabCard, AltTabSwitcher } from "./ShellAlttabswitcher.tsx";
 import { ShellChrome } from "./Shellchrome.tsx";
@@ -174,10 +182,7 @@ function defaultSnapshot(id: string, title: string, openCount: number): WindowSn
   return {
     id,
     title,
-    x: Math.min(
-      Math.max(28, Math.round(fit.desktopWidth * 0.2) + cascade),
-      Math.max(28, fit.desktopWidth - fit.width),
-    ),
+    x: Math.min(Math.max(28, Math.round(fit.desktopWidth * 0.2) + cascade), Math.max(28, fit.desktopWidth - fit.width)),
     // the cascade gives way when the window fills the band — the bottom
     // edge never crosses the taskbar
     y: SHELL_TOP + Math.min(SPAWN_TOP_OFFSET + cascade, Math.max(SHELL_TOP, fit.desktopHeight - fit.height)),
@@ -242,8 +247,38 @@ export function ShellWorkspace({
    * while the chord is held (the first alt+tab mounts it on the window
    * behind the topmost one) */
   const [switching, setSwitching] = useState(false);
+  /** the lock posture of the desktop (desktopstate.ts): the Windows lock
+   * face rides ON the running desktop — restored from the session posture,
+   * flipped by the Win+L / Ctrl+Alt+L chord and by the dt-desktop-lock
+   * event (the overlay unlock and any future caller ride it too) */
+  const [locked, setLocked] = useState(() => loadDesktopLock() === "locked");
   /** the live ui copy rows (the labels the workspace renders ride the db) */
   useUicopy();
+
+  // the lock posture: the event re-faces the shell the moment a lock or an
+  // unlock lands (the chord, the overlay unlock and any future caller)
+  useEffect(() => {
+    const onLock = (event: Event) => {
+      const detail = (event as CustomEvent<DesktopLockState>).detail;
+      if (isDesktopLockState(detail)) setLocked(detail === "locked");
+    };
+    window.addEventListener(DESKTOP_LOCK_EVENT, onLock);
+    return () => window.removeEventListener(DESKTOP_LOCK_EVENT, onLock);
+  }, []);
+
+  // the Windows lock chord: Win+L (meta+L) or Ctrl+Alt+L lifts the lock
+  // face over the running desktop
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key.toLowerCase() !== "l") return;
+      if (event.metaKey || (event.ctrlKey && event.altKey)) {
+        event.preventDefault();
+        commitDesktopLock("locked");
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   /** single mutation entry: the mutations own the z stamping (the focus
    * counter pattern) — the mapper never renumbers behind their back */
@@ -330,7 +365,8 @@ export function ShellWorkspace({
     if (destination !== "history") return;
     applyWindows((current) => {
       const target = current.find((win) => win.id === "history");
-      if (!target) return [...current, { ...defaultSnapshot("history", "session history", current.length), z: nextz() }];
+      if (!target)
+        return [...current, { ...defaultSnapshot("history", "session history", current.length), z: nextz() }];
       if (target.state === "minimized") {
         const restored = target.restoredState && target.restoredState !== "minimized" ? target.restoredState : "normal";
         return [
@@ -482,6 +518,18 @@ export function ShellWorkspace({
       {/* the acrylic alt-tab task switcher while the chord is held */}
       {switching && (
         <AltTabSwitcher cards={switcherCards} onCommit={commitSwitch} onClose={() => setSwitching(false)} />
+      )}
+
+      {/* the Windows lock face riding ON the running desktop: the mica
+          backdrop, the big time/date and the gesture unlock of the auth
+          faces — the posture lives in desktopstate.ts, the unlock drops
+          the overlay straight back into the session */}
+      {locked && (
+        <DesktopLock
+          onUnlock={() => {
+            commitDesktopLock("unlocked");
+          }}
+        />
       )}
     </main>
   );

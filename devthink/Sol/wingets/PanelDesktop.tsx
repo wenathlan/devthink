@@ -1,41 +1,45 @@
 /**
- * desktop.tsx — the desktop surface of the Sol shell: a premium dark
- * wallpaper with one large radial light behind the hero and the app icons
- * spread around it like a real desktop. The official two-path DevThink mark
- * sits at the middle of the screen as the hero of the composition (never
- * draggable, pointer-transparent like the wallpaper) and the shared catalog
- * (appregistry.ts) lives around it as true Windows desktop icons:
- * every cell drags with pointer capture (positions persist in
- * localStorage "dt.desktop.icons.v3" as percentages of the desktop area,
- * clamped inside the taskbar/dock bands and snapped to the fine 2% × 3.33%
- * lattice — Sol/panel/desktopstate.ts), a single click selects, ctrl+click
- * toggles, a rubber-band marquee selects from the empty desktop, the right
- * button opens the Win11 context menus (Sol/wingets/PanelDesktopmenu.tsx) and the
- * keyboard nudges, opens and clears. The deterministic DESKTOP_SPOTS stay
- * the default layout — the owner's composition law: the apps scatter around
- * the centered mark as arcs and clusters, NEVER a uniform grid (the ordered
- * column flow answers the explicit "sort by" arrange action only); "reset
- * layout" / "original spots" clears the storage so the constellation
- * returns, "sort by name/kind" recomputes an ordered column-flow layout and
- * "refresh" re-clamps the field and replays the stagger. The field staggers
+ * desktop.tsx — the desktop surface of the Sol shell, in the real Windows
+ * 11 face: the doctrine mica wallpaper (the fixed radial-gradient recipe of
+ * designdoctrine.md, light and dark on the theme ladder, the --win-noise
+ * grain over it) and the shared catalog (appregistry.ts) as true Windows
+ * desktop icons on the LEFT-ALIGNED COLUMN GRID — the default layout the
+ * real desktop keeps (Sol/desktopstate.ts gridSpots), every cell dragging
+ * with pointer capture (moved positions persist in localStorage
+ * "dt.desktop.icons.v4" as percentages of the desktop area, clamped inside
+ * the taskbar/dock bands and snapped to the fine 2% × 3.33% lattice), a
+ * single click selects, ctrl+click toggles, a rubber-band marquee selects
+ * from the empty desktop, the double click opens the app window inside the
+ * system (the window manager of PanelWorkspace.tsx) and the keyboard
+ * nudges, opens and clears. The right button opens the Win11 context menus
+ * (Sol/wingets/PanelDesktopmenu.tsx): View, Sort by (name/kind reflow the
+ * same grid; "original spots" resets to the catalog-order grid), Refresh,
+ * Display settings and the new Personalize submenu (the real theme ladder
+ * flip — light/dark through the system theme mirror of personalstore.ts).
+ * The official two-path DevThink mark stays at the middle of the screen as
+ * the hero of the composition (never draggable, pointer-transparent like
+ * the wallpaper) and recedes while any window is open. The field staggers
  * in at 70ms steps (skipped under prefers-reduced-motion) and sits under
  * the floating windows.
  */
 
 import {
+  AppsListRegular,
   WindowAppsRegular as AppWindow,
   ArrowSortDownRegular as ArrowDownAZ,
   ArrowSortRegular as ArrowDownUp,
   EyeRegular as Eye,
   InfoRegular as Info,
-  AppsListRegular as LayoutGrid,
   MaximizeRegular as Maximize2,
   DesktopRegular as Monitor,
+  WeatherMoonRegular as Moon,
+  PaintBrushRegular as Paintbrush,
   ArrowCounterclockwiseRegular as RotateCcw,
   ArrowClockwiseRegular as RotateCw,
   ShapesRegular as Shapes,
   StopRegular as Square,
   OpenRegular as SquareArrowOutUpRight,
+  WeatherSunnyRegular as Sun,
 } from "@fluentui/react-icons";
 import {
   type CSSProperties,
@@ -58,9 +62,8 @@ import {
   clampNumber,
   clampSpot,
   clearIconSpots,
-  defaultSpots,
   fitSpot,
-  flowLayoutSpots,
+  gridLayoutSpots,
   type IconBounds,
   type IconSize,
   type IconSpotMap,
@@ -74,6 +77,7 @@ import {
 } from "../../desktopstate.ts";
 import { familyurl } from "../../gateway.ts";
 import { osText } from "../../oslabels.ts";
+import { currentThemeLadder, saveThemeMirror } from "../../personalstore.ts";
 import { useIsMobile } from "../../useismobile.ts";
 import { DesktopMenu, type MenuEntry } from "./PanelDesktopmenu.tsx";
 import { SolLogoMark } from "./PanelLogo.tsx";
@@ -85,45 +89,14 @@ const DRAG_THRESHOLD = 4;
 const MARQUEE_THRESHOLD = 4;
 
 /**
- * The spread composition — the owner's law: "the apps were supposed to be
- * scattered on the screen, the logo in the middle, not this grid". One
- * hand-tuned spot per catalog slot, laid out as arcs around the hero: the
- * right arc opens at eye level (the first app of the catalog, Chat, lands
- * there), a looser left arc mirrors it, a pair of anchors sits above the
- * mark, loose clusters fill the lower corners and the far corner carries
- * the closing accent of the constellation. All spots are percentages of
- * the desktop area, clear of the navbar band, the hero zone (the mark
- * lives at the center) and the dock strip. Pure data — the same apps
- * always land on the same spots, on every machine, on every load; the
- * ordered column flow never answers a fresh boot.
+ * the composition law of the Windows desktop face: the LEFT-ALIGNED COLUMN
+ * GRID is the default layout (the real desktop keeps its icons in tidy
+ * columns hugging the left edge) and the hero mark stays at the middle of
+ * the surface. The grid is computed, never hand-tuned — the same apps land
+ * on the same columns on every machine, on every load; the "sort by"
+ * actions reflow the SAME grid over a sorted catalog and "reset layout"
+ * returns the catalog-order grid.
  */
-const DESKTOP_SPOTS: ReadonlyArray<{ x: number; y: number }> = [
-  { x: 72, y: 42 }, // right arc, eye level — the first catalog app
-  { x: 86, y: 30 },
-  { x: 78, y: 58 },
-  { x: 91, y: 46 },
-  { x: 67, y: 22 },
-  { x: 64, y: 32 },
-  { x: 85, y: 66 },
-  { x: 63, y: 66 },
-  { x: 92, y: 60 },
-  { x: 28, y: 40 }, // left arc, mirroring the right one
-  { x: 14, y: 30 },
-  { x: 22, y: 58 },
-  { x: 9, y: 48 },
-  { x: 33, y: 22 },
-  { x: 36, y: 32 },
-  { x: 17, y: 70 },
-  { x: 8, y: 22 },
-  { x: 46, y: 16 }, // anchors above the hero
-  { x: 57, y: 16 },
-  { x: 50, y: 74 }, // the lower clusters
-  { x: 37, y: 66 },
-  { x: 72, y: 74 }, // the lower right cluster, mirroring the left one
-  { x: 26, y: 74 }, // the lower left companion
-  { x: 92, y: 18 }, // the far corner accent, closing the right arc
-  { x: 56, y: 74 }, // the storefront beside the lower cluster — the family front door
-];
 
 /** true when the OS-level reduced-motion preference is on (motion opt-out) */
 function prefersReducedMotion(): boolean {
@@ -266,19 +239,15 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
   };
 
   /** the deterministic default layout of the catalog (never persisted):
-   * every app takes its hand-tuned DESKTOP_SPOTS spot — the scattered
-   * constellation around the centered hero (the owner's law: never the
-   * uniform grid; the ordered flow answers the explicit "sort by" action
-   * only). The clamp at merge time keeps every spot inside the live bounds */
+   * the Windows left-aligned column grid over the live desktop area —
+   * the real desktop law. The clamp at merge time keeps every spot
+   * inside the live bounds */
   const defaults = useMemo<IconSpotMap>(() => {
-    const laid = defaultSpots(apps.length, DESKTOP_SPOTS);
-    const spots: IconSpotMap = {};
-    apps.forEach((app, index) => {
-      const spot = laid[index];
-      if (spot) spots[app.id] = spot;
-    });
-    return spots;
-  }, [apps]);
+    const cell = cellSize(iconSize);
+    const width = measured?.width ?? window.innerWidth;
+    const height = measured?.height ?? Math.max(window.innerHeight - BAND_TOP_PX - BAND_BOTTOM_PX, 240);
+    return gridLayoutSpots(apps, width, height, cell);
+  }, [apps, iconSize, measured]);
 
   /** the resolved layout: defaults with the stored overrides on top */
   const spots = useMemo(() => mergedSpots(defaults, overrides, bounds), [bounds, defaults, overrides]);
@@ -537,7 +506,9 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
     setOverrides({});
   };
 
-  /** recomputes an ordered column-flow layout over the sorted catalog */
+  /** reflows the SAME windows grid over a sorted catalog: "sort by name"
+   * and "sort by kind" land the sorted order on the left-aligned column
+   * grid ("original" resets to the catalog-order grid) */
   const applySort = (order: "name" | "kind" | "original") => {
     if (order === "original") {
       resetLayout();
@@ -549,7 +520,10 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
       kind: app.target.kind,
     }));
     const sorted = order === "name" ? sortAppsByName(sortable) : sortAppsByKind(sortable);
-    commitOverrides(flowLayoutSpots(sorted, currentBounds()));
+    const rect = desktopRef.current?.getBoundingClientRect();
+    commitOverrides(
+      gridLayoutSpots(sorted, rect?.width ?? window.innerWidth, rect?.height ?? window.innerHeight, cellSize(iconSize)),
+    );
   };
 
   /** refresh: every stored spot re-clamps into the current desktop bounds
@@ -627,7 +601,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
           kind: "item",
           id: "sort-original",
           label: osText("desktop.menu.sort.original"),
-          icon: LayoutGrid,
+          icon: AppsListRegular,
           onSelect: () => applySort("original"),
         },
       ],
@@ -647,6 +621,30 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
       label: osText("desktop.menu.display"),
       icon: Monitor,
       onSelect: openDisplaySettings,
+    },
+    {
+      kind: "submenu",
+      id: "personalize",
+      label: osText("desktop.menu.personalize"),
+      icon: Paintbrush,
+      items: [
+        {
+          kind: "item",
+          id: "theme-light",
+          label: osText("desktop.menu.personalize.light"),
+          icon: Sun,
+          shortcut: currentThemeLadder() === "light" ? "radio" : undefined,
+          onSelect: () => saveThemeMirror("light"),
+        },
+        {
+          kind: "item",
+          id: "theme-dark",
+          label: osText("desktop.menu.personalize.dark"),
+          icon: Moon,
+          shortcut: currentThemeLadder() === "dark" ? "radio" : undefined,
+          onSelect: () => saveThemeMirror("dark"),
+        },
+      ],
     },
   ];
 

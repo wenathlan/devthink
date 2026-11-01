@@ -1,24 +1,23 @@
 /**
  * desktopcompose.test.ts — the desktop composition contract (campaign
- * wave 8). The charged defect this battery pins closed: "the apps were
- * supposed to be scattered on the screen, the logo in the middle, not
- * this grid" — the hand-tuned DESKTOP_SPOTS constellation (arcs around
- * the centered hero, anchors above, clusters below) stays the default
- * layout of the icon field and the ordered column flow answers ONLY the
- * explicit "sort by" arrange action, never a fresh boot. The battery
- * walks the four layers of the row: the composition law (the table
- * parsed verbatim from the desktop source, the geometry invariants — the
- * hero zone stays clear, the tiles never collide, both sides of the mark
- * carry the constellation, the raw spots live inside the reference
- * bounds, and the defaults never equal the uniform lattice), the drag
- * contract with selection and double click (pointer capture, the snap
- * lattice, the honest persistence under the doctrine key, the marquee
- * and the keyboard), the hero lockup at the middle of the surface (the
- * two-path mark, the wordmark and the tagline riding the os label table,
- * the radial light bed, the recede under open windows), and the chat bar
- * out of the panel (the panel anchor carries no conversation surface —
- * the chat body binds as a window app and the deep link hands its
- * session to the chat window).
+ * wave 8, re-faced by the win11-fidelity order: the desktop must read as
+ * the real Windows clone). The charged defect this battery now pins
+ * closed: the desktop surface wore a scattered constellation and a brand
+ * hero instead of the system face — the LEFT-ALIGNED COLUMN GRID (the
+ * real desktop law, Sol/desktopstate.ts gridSpots) is the default layout
+ * of the icon field, the "sort by" actions reflow the SAME grid over a
+ * sorted catalog and "reset layout" returns the catalog-order grid. The
+ * battery walks the four layers of the row: the composition law (the
+ * grid geometry — left edge, column/row pitch, the pitch derived from
+ * the cell, every spot inside the reference bounds, the source riding
+ * the grid helpers), the drag contract with selection and double click
+ * (pointer capture, the snap lattice, the honest persistence under the
+ * doctrine key, the marquee and the keyboard), the hero lockup at the
+ * middle of the surface (the two-path mark, the wordmark and the tagline
+ * riding the os label table, the radial light bed, the recede under open
+ * windows), and the chat bar out of the panel (the panel anchor carries
+ * no conversation surface — the chat body binds as a window app and the
+ * deep link hands its session to the chat window).
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -28,10 +27,10 @@ import {
   boundsForArea,
   CELL_MEDIUM,
   clearIconSpots,
-  defaultSpots,
   fitSpot,
-  flowLayoutSpots,
-  flowSpots,
+  GRID_GAP_PX,
+  gridLayoutSpots,
+  gridSpots,
   ICONS_STORAGE_KEY,
   type IconSpotMap,
   loadIconSpots,
@@ -52,27 +51,13 @@ const windowframe = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets
 const panel = readFileSync(join(import.meta.dirname, "..", "Sol", "panel", "panel.tsx"), "utf8");
 const solcss = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
 
-/** parses the DESKTOP_SPOTS table out of the desktop source — the
- * constellation is component-owned data, so the battery reads it the way
- * the tree carries it: verbatim, every pair, in catalog order */
-function parseSpots(source: string): Array<{ x: number; y: number }> {
-  const block = source.match(/const DESKTOP_SPOTS: ReadonlyArray<\{ x: number; y: number \}> = \[([\s\S]*?)\];/);
-  expect(block, "the DESKTOP_SPOTS table lives in the desktop source").toBeTruthy();
-  const body = block ? block[1] : "";
-  const pairs = [...body.matchAll(/\{ x: ([\d.]+), y: ([\d.]+) \}/g)].map((match) => ({
-    x: Number(match[1]),
-    y: Number(match[2]),
-  }));
-  expect(pairs.length, "the table carries real spots").toBeGreaterThan(0);
-  return pairs;
-}
-
-const SPOTS = parseSpots(desktop);
-
 /** the reference viewport of the geometry laws (the live audit viewport):
- * the desktop area of a 1280×720 screen */
-const REF = { width: 1280, height: 720 };
+ * the desktop AREA of a 1280×720 screen — the viewport minus the 48px top
+ * band and the 84px dock strip the area sits between */
+const REF = { width: 1280, height: 720 - 48 - 84 };
 const REF_BOUNDS = boundsForArea(REF.width, REF.height, CELL_MEDIUM.width, CELL_MEDIUM.height);
+/** the default layout over the reference area: the Windows left grid */
+const REF_GRID = gridSpots(DESKTOP_APPS.length, REF.width, REF.height, CELL_MEDIUM);
 
 /** the visual face of one icon cell — the 46px squircle tile inside the
  * 74×84 win11 cell (the plate the appicons battery pins) */
@@ -95,35 +80,36 @@ afterEach(() => {
   delete (globalThis as Record<string, unknown>).window;
 });
 
-describe("the scattered composition (the owner's law — never the uniform grid)", () => {
-  it("the table covers the whole catalog — every app a hand-tuned spot, no lap drift", () => {
-    expect(SPOTS.length).toBeGreaterThanOrEqual(DESKTOP_APPS.length);
-    const laid = defaultSpots(DESKTOP_APPS.length, SPOTS);
-    expect(laid).toHaveLength(DESKTOP_APPS.length);
-    // the table is the render: every spot sits inside the lap window, so the
-    // current catalog lands verbatim (what the hand tuned is what paints)
-    expect(laid).toEqual(SPOTS.slice(0, DESKTOP_APPS.length));
-    for (const spot of SPOTS) {
-      expect(spot.x).toBeGreaterThanOrEqual(8);
-      expect(spot.x).toBeLessThanOrEqual(92);
-      expect(spot.y).toBeGreaterThanOrEqual(16);
-      expect(spot.y).toBeLessThanOrEqual(74);
-    }
-  });
-
-  it("every spot is a finite percentage inside the field", () => {
-    for (const spot of SPOTS) {
+describe("the windows grid composition (the left-aligned column law — the real desktop face)", () => {
+  it("the grid covers the whole catalog — one spot per app, no lap drift", () => {
+    expect(REF_GRID).toHaveLength(DESKTOP_APPS.length);
+    for (const spot of REF_GRID) {
       expect(Number.isFinite(spot.x)).toBe(true);
       expect(Number.isFinite(spot.y)).toBe(true);
-      expect(spot.x).toBeGreaterThanOrEqual(0);
-      expect(spot.x).toBeLessThanOrEqual(100);
-      expect(spot.y).toBeGreaterThanOrEqual(0);
-      expect(spot.y).toBeLessThanOrEqual(100);
     }
   });
 
-  it("the raw spots live inside the reference bounds — the hand tuning needs no clamp", () => {
-    for (const spot of SPOTS) {
+  it("the grid hugs the LEFT edge — the first column sits on the bounds minX (the win11React .desktopCont law)", () => {
+    const first = REF_GRID[0];
+    expect(first?.x).toBe(REF_BOUNDS.minX);
+    // the column step is the cell + the grid gutter, measured on the area
+    const pitchX = ((CELL_MEDIUM.width + GRID_GAP_PX) / REF.width) * 100;
+    const secondColumn = REF_GRID[Math.floor(DESKTOP_APPS.length / 2) + 1];
+    expect(secondColumn).toBeTruthy();
+    const firstOfColumn = REF_GRID.findIndex((spot) => spot.x !== first?.x);
+    expect(firstOfColumn).toBeGreaterThan(0);
+    expect(REF_GRID[firstOfColumn]?.x).toBeCloseTo((first?.x ?? 0) + pitchX, 1);
+  });
+
+  it("the grid fills top-to-bottom, then wraps to the next column — the column flow", () => {
+    const pitchY = ((CELL_MEDIUM.height + GRID_GAP_PX) / REF.height) * 100;
+    const first = REF_GRID[0];
+    expect(REF_GRID[1]?.y ?? 0).toBeCloseTo((first?.y ?? 0) + pitchY, 1);
+    expect(REF_GRID[2]?.y ?? 0).toBeCloseTo((first?.y ?? 0) + 2 * pitchY, 1);
+  });
+
+  it("every grid spot lives inside the reference bounds", () => {
+    for (const spot of REF_GRID) {
       expect(spot.x).toBeGreaterThanOrEqual(REF_BOUNDS.minX);
       expect(spot.x).toBeLessThanOrEqual(REF_BOUNDS.maxX);
       expect(spot.y).toBeGreaterThanOrEqual(REF_BOUNDS.minY);
@@ -131,32 +117,12 @@ describe("the scattered composition (the owner's law — never the uniform grid)
     }
   });
 
-  it("the hero zone stays clear — no icon lands on the centered mark", () => {
-    // the lockup box around the hero center (50, 45): the mark, the
-    // wordmark and the tagline own the middle band
-    for (const spot of SPOTS) {
-      const insideHeroZone = spot.x > 40 && spot.x < 60 && spot.y > 28 && spot.y < 62;
-      expect(insideHeroZone, `spot ${JSON.stringify(spot)} lands on the hero zone`).toBe(false);
-    }
-  });
-
-  it("the constellation spans both sides of the mark — the balance law", () => {
-    const right = SPOTS.filter((spot) => spot.x >= 63);
-    const left = SPOTS.filter((spot) => spot.x <= 36);
-    const top = SPOTS.filter((spot) => spot.y <= 22);
-    const bottom = SPOTS.filter((spot) => spot.y >= 66);
-    expect(right.length).toBeGreaterThanOrEqual(10);
-    expect(left.length).toBeGreaterThanOrEqual(9);
-    expect(top.length).toBeGreaterThanOrEqual(4);
-    expect(bottom.length).toBeGreaterThanOrEqual(6);
-  });
-
-  it("the tiles never collide — every pair keeps the 46px faces apart on the reference viewport", () => {
-    for (let i = 0; i < SPOTS.length; i += 1) {
-      for (let j = i + 1; j < SPOTS.length; j += 1) {
-        const a = SPOTS[i];
-        const b = SPOTS[j];
-        if (!a || !b) throw new Error("the parse guarantees every pair");
+  it("the tiles never collide — the pitch always clears the 46px faces", () => {
+    for (let i = 0; i < REF_GRID.length; i += 1) {
+      for (let j = i + 1; j < REF_GRID.length; j += 1) {
+        const a = REF_GRID[i];
+        const b = REF_GRID[j];
+        if (!a || !b) throw new Error("the grid guarantees every pair");
         const dx = Math.abs(a.x - b.x) * (REF.width / 100);
         const dy = Math.abs(a.y - b.y) * (REF.height / 100);
         const collides = dx < TILE_PX && dy < TILE_PX;
@@ -165,69 +131,34 @@ describe("the scattered composition (the owner's law — never the uniform grid)
     }
   });
 
-  it("the first catalog app lands the eye-level right arc (chat opens the composition)", () => {
-    expect(DESKTOP_APPS[0]?.id).toBe("chat");
-    expect(SPOTS[0]).toEqual({ x: 72, y: 42 });
-  });
-
-  it("the defaults come from the table — the source pins the wiring", () => {
-    expect(desktop).toContain("const DESKTOP_SPOTS: ReadonlyArray<{ x: number; y: number }> = [");
-    expect(desktop).toContain("const laid = defaultSpots(apps.length, DESKTOP_SPOTS);");
-    expect(desktop).toContain("NEVER a uniform grid");
-  });
-
-  it("the ordered flow answers ONLY the sort action — the defaults never build a grid", () => {
-    // exactly one flowLayoutSpots call in the source: the applySort commit
-    const flowCalls = desktop.match(/flowLayoutSpots\(/g) ?? [];
-    expect(flowCalls).toHaveLength(1);
-    expect(desktop).toContain("commitOverrides(flowLayoutSpots(sorted, currentBounds()));");
-    // the sorters feed that one call only
-    const kindCalls = desktop.match(/sortAppsByKind\(/g) ?? [];
-    const nameCalls = desktop.match(/sortAppsByName\(/g) ?? [];
-    expect(kindCalls).toHaveLength(1);
-    expect(nameCalls).toHaveLength(1);
-  });
-
-  it("the default layout never equals the uniform lattice for the real catalog", () => {
-    const defaults: IconSpotMap = {};
-    DESKTOP_APPS.forEach((app, index) => {
-      const spot = SPOTS[index];
-      if (spot) defaults[app.id] = spot;
-    });
+  it("the gridLayoutSpots maps the list onto the grid — the default AND the sort reflow share it", () => {
+    const laid = gridLayoutSpots(DESKTOP_APPS, REF.width, REF.height, CELL_MEDIUM);
+    expect(Object.keys(laid)).toHaveLength(DESKTOP_APPS.length);
+    for (const app of DESKTOP_APPS) expect(laid[app.id]).toEqual(REF_GRID[DESKTOP_APPS.indexOf(app)]);
+    // the sorted catalog lands on the same slots, in the sorted order
     const sortable = DESKTOP_APPS.map((app) => ({ id: app.id, name: app.name, kind: app.target.kind }));
-    const flow = flowLayoutSpots(sortAppsByKind(sortable), REF_BOUNDS);
-    let differing = 0;
-    for (const [id, spot] of Object.entries(defaults)) {
-      const gridSpot = flow[id];
-      if (!gridSpot || Math.abs(gridSpot.x - spot.x) > 1 || Math.abs(gridSpot.y - spot.y) > 1) differing += 1;
-    }
-    // the grid lives in the left band; the constellation covers the field
-    expect(differing).toBeGreaterThanOrEqual(20);
+    const sorted = gridLayoutSpots(sortAppsByKind(sortable), REF.width, REF.height, CELL_MEDIUM);
+    const orderedIds = sortAppsByKind(sortable).map((app) => app.id);
+    for (const [index, id] of orderedIds.entries()) expect(sorted[id]).toEqual(REF_GRID[index]);
   });
 
-  it("the ordered lattice is the arrange math only: 6 rows, the column step, the row step", () => {
-    const slots = flowSpots(24);
-    expect(slots).toHaveLength(24);
-    expect(slots[0]).toEqual({ x: 6, y: 18 });
-    expect((slots[1]?.y ?? 0) - (slots[0]?.y ?? 0)).toBeCloseTo(11, 5);
-    expect((slots[6]?.x ?? 0) - (slots[0]?.x ?? 0)).toBeCloseTo(8, 5);
+  it("the defaults come from the grid — the source pins the wiring", () => {
+    expect(desktop).toContain("return gridLayoutSpots(apps, width, height, cell);");
+    expect(desktop).toContain("the Windows left-aligned column grid");
+    expect(desktop).not.toContain("DESKTOP_SPOTS");
+    // the sort reflow reuses the same grid over the sorted catalog
+    expect(desktop).toContain(
+      "gridLayoutSpots(sorted, rect?.width ?? window.innerWidth, rect?.height ?? window.innerHeight, cellSize(iconSize))",
+    );
   });
 
-  it("the storage rides the v3 doctrine key — the scatter era, every visitor starts from the constellation", () => {
-    expect(ICONS_STORAGE_KEY).toBe("dt.desktop.icons.v3");
+  it("the storage rides the v4 doctrine key — the windows-grid era, every visitor starts from the grid", () => {
+    expect(ICONS_STORAGE_KEY).toBe("dt.desktop.icons.v4");
   });
 
-  it("a catalog longer than the table wraps in laps with the diagonal offset — nothing stacks", () => {
-    const table = [
-      { x: 10, y: 20 },
-      { x: 30, y: 40 },
-    ];
-    const laid = defaultSpots(3, table);
-    expect(laid).toEqual([
-      { x: 10, y: 20 },
-      { x: 30, y: 40 },
-      { x: 14, y: 16 }, // the lap drift clamps inside the window
-    ]);
+  it("the field staggers in and the cells stay the win11 canon — the surface pins survive the reface", () => {
+    expect(desktop).toContain("w-[74px] min-h-[84px]");
+    expect(desktop).toContain("Math.min(index * 70, 630)");
   });
 });
 
@@ -289,13 +220,13 @@ describe("the drag contract (pointer capture, the snap lattice, honest persisten
     expect(snapSpot({ x: 50, y: 45 })).toEqual({ x: 50, y: 46.67 });
   });
 
-  it("the bounds math of the reference viewport (the bands stay clear)", () => {
-    expect(REF_BOUNDS).toEqual({ minX: 3.52, maxX: 96.48, minY: 13.61, maxY: 81.39 });
+  it("the bounds math of the reference area (the bands stay clear)", () => {
+    expect(REF_BOUNDS).toEqual({ minX: 3.52, maxX: 96.48, minY: 16.67, maxY: 77.21 });
     // fit = clamp then snap: the stray spot lands on the lattice inside the bounds
-    expect(fitSpot({ x: 2, y: 2 }, REF_BOUNDS)).toEqual({ x: 4, y: 13.33 });
+    expect(fitSpot({ x: 2, y: 2 }, REF_BOUNDS)).toEqual({ x: 4, y: 16.67 });
   });
 
-  it("mergedSpots: defaults clamp (never snap — the organic composition), overrides fit, stale ids drop", () => {
+  it("mergedSpots: defaults clamp (the grid never snaps off its pitch), overrides fit, stale ids drop", () => {
     const bounds = { minX: 5, maxX: 95, minY: 15, maxY: 81 };
     const defaults: IconSpotMap = { a: { x: 50.5, y: 45.5 }, b: { x: 99, y: 99 } };
     const overrides: IconSpotMap = { a: { x: 5.1, y: 5.2 }, ghost: { x: 1, y: 1 } };
@@ -334,7 +265,7 @@ describe("the drag contract (pointer capture, the snap lattice, honest persisten
     expect(loadIconSpots()).toEqual({});
   });
 
-  it("reset returns the constellation — the original spots action clears the storage", () => {
+  it("reset returns the catalog-order grid — the original spots action clears the storage", () => {
     expect(desktop).toContain("const resetLayout = () => {");
     expect(desktop).toContain("clearIconSpots();");
     expect(desktop).toContain("setOverrides({});");
@@ -463,6 +394,10 @@ describe("the labels law (every desktop string rides the os label table)", () =>
     expect(osText("desktop.menu.display")).toBe("Display settings");
     expect(osText("desktop.menu.open")).toBe("Open");
     expect(osText("desktop.menu.openWindow")).toBe("Open in new window");
+    expect(osText("desktop.menu.personalize")).toBe("Personalize");
+    expect(osText("desktop.menu.personalize.light")).toBe("light theme");
+    expect(osText("desktop.menu.personalize.dark")).toBe("dark theme");
+    expect(osText("desktop.lock.aria")).toBe("DevThink lock screen");
   });
 });
 

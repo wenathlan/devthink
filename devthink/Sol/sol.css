@@ -22027,3 +22027,210 @@ button.dtc-recents__row {
   }
 }
 /* ==== chat wave 7-a · end of section ==== */
+
+/* ==========================================================================
+   design/desktopface · the Windows desktop surface (win11-fidelity wave B)
+   The owner order: the desktop must read as the real Windows 11 clone — the
+   doctrine mica wallpaper under the whole surface, the --win-noise grain
+   over it, the near-black boot canvas with the white mark and the Fluent
+   progress ring, the slowfadein boot → desktop handover and the mica lock
+   face riding ON the running desktop. Appended block only — every earlier
+   section is untouched; these rules win by cascade order alone. Tokens only
+   (the --win-mica / --win-noise doctrine pair and the one new --win-boot
+   token from the doctrine boot spec #010001); no new fixed hex in the
+   wallpaper channel.
+   ========================================================================== */
+
+/* ---- 1. the wallpaper channel: the doctrine mica IS the desktop wall ---- */
+
+/* the fake mica of designdoctrine.md paints the desktop: #202020
+   radial-gradient(#1a1f35 25%, #202020 100%) no-repeat fixed dark /
+   #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat fixed
+   light — the theme ladder carries the pair, the surface carries the
+   token. The clear-trident campaign gradient and the 44px grid wash
+   leave the desktop zone with it. */
+.shell-os__atmosphere {
+  background: var(--win-mica);
+}
+
+.shell-os__atmosphere::after {
+  content: none;
+}
+
+/* the acrylic layer-2 recipe: the noise texture in repeat (the tile the
+   --win-noise token carries), grayscale, at the doctrine 0.035 opacity */
+.shell-os__atmosphere::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--win-noise);
+  background-repeat: repeat;
+  opacity: 0.035;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .shell-os__atmosphere::before {
+    opacity: 0.02;
+  }
+}
+
+/* ---- 2. the boot face: the near-black canvas, the white mark, the ring -- */
+
+:root {
+  /* the doctrine boot spec: the fullscreen #010001 canvas (win11React
+     .bootscreen) — the one fixed value the boot face carries, as a token */
+  --win-boot: #010001;
+}
+
+.boot-screen {
+  background-color: var(--win-boot);
+  background-image: none;
+  /* the boot canvas is theme-independent: the mark and the words read
+     white over the near-black, like the real system logo */
+  color: rgb(255 255 255 / 96%);
+}
+
+/* the Fluent progress ring (win11React #loader + docs.microsoft progress
+   ring): 48px, stroke 2px round caps, the spin-infinite dasharray loop —
+   the indeterminate indicator of a genuinely running boot */
+.boot-screen__loader {
+  position: relative;
+  display: grid;
+  place-items: center;
+  margin-top: 28px;
+}
+
+.boot-progress-ring circle {
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2px;
+  stroke-linecap: round;
+  transform-origin: 50% 50%;
+  animation: 2s linear 0s infinite normal none running spin-infinite;
+}
+
+@keyframes spin-infinite {
+  0% {
+    stroke-dasharray: 0.01px, 43.97px;
+    transform: rotate(0deg);
+  }
+
+  50% {
+    stroke-dasharray: 21.99px, 21.99px;
+    transform: rotate(450deg);
+  }
+
+  100% {
+    stroke-dasharray: 0.01px, 43.97px;
+    transform: rotate(1080deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boot-progress-ring circle {
+    animation: none;
+  }
+}
+
+/* ---- 3. the boot → desktop handover: the doctrine slowfadein ---- */
+
+/* the doctrine keyframes (win11React index.css): fadein holds the opacity
+   until 99% and jumps; slowfadein holds until 25% then rises — the boot
+   handover rides the slow one */
+@keyframes fadein {
+  0% {
+    opacity: 0;
+  }
+
+  99% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slowfadein {
+  0% {
+    opacity: 0;
+  }
+
+  25% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+/* the session-opening boot hands the desktop over on the slow fade (the
+   win11React .slowfadein law); navigation mounts skip it */
+.devthink-app--booted .shell-os {
+  animation: slowfadein 1s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .devthink-app--booted .shell-os {
+    animation: none;
+  }
+}
+
+/* ---- 4. the context menu face: the doctrine panel curve ---- */
+
+/* the win11 context menus are shell panels: the entrance rides the doctrine
+   side-panel curve — 250ms on cubic-bezier(0.62, 0, 0.32, 1) — instead of
+   the old 150ms micro ease; the exit recipe and the reduced-motion drops
+   stay the component's */
+.dsk-menu {
+  animation-duration: 250ms;
+  animation-timing-function: cubic-bezier(0.62, 0, 0.32, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dsk-menu {
+    animation: none;
+  }
+}
+
+/* ---- 5. the desktop lock face: the mica wall riding ON the desktop ---- */
+
+/* the lock state of the desktop surface (PanelDesktoplock.tsx): the
+   doctrine mica under the whole viewport, the auth lock faces unchanged
+   on top — the big left clock column, the gesture family, the power
+   corner. The boot never blocks the entry; this face rides above the
+   running desktop on the modal band. */
+.dt-desklock {
+  position: fixed;
+  z-index: var(--z-modal);
+  inset: 0;
+  overflow: hidden;
+  background: var(--win-mica);
+}
+
+/* the acrylic grain rides the lock wall too (the same layer-2 recipe the
+   desktop carries — the lock is the desktop wearing the lock face) */
+.dt-desklock::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--win-noise);
+  background-repeat: repeat;
+  opacity: 0.035;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .dt-desklock::before {
+    opacity: 0.02;
+  }
+}
+
+/* the auth faces position against the lock face (the clock column is
+   absolute inset-0, the power corner absolute bottom-right) */
+.dt-desklock .dtw-login__clock {
+  z-index: 1;
+}
+

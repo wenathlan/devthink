@@ -1,10 +1,16 @@
 /**
  * trayflyouts.tsx — the two tray flyouts of the Sol shell, in the exact
  * Windows 11 grammar: QuickSettings (the 360px r8 acrylic panel under the
- * tray with a 2×2 tile grid — wifi, bluetooth, night light, theme — plus the
+ * tray with the 2-column tile grid — wifi, bluetooth, cellular data, night
+ * light, the REAL theme ladder tile and the REAL dock-mode tile — plus the
  * volume and brightness slider rows) and the Calendar (the 360px r8 acrylic
  * panel under the clock, real Date math, sunday-first grid, 44px day cells).
- * Both are dialogs painted as Tailwind composition on the design tokens
+ * The theme tile flips the real system theme ladder (personalstore.ts — the
+ * mirror persists and both roots paint) and the dock tile flips the real
+ * navbar mode (desktopstate.ts — the account store saves and the
+ * dt-navbar-mode event re-docks the bar live); both read the live system
+ * state at open, so the switches answer the machine, never a local guess.
+ * Both dialogs are painted as Tailwind composition on the design tokens
  * (task 3-a) — the .acrylic-panel Fluent surface (rgb(36 36 36 / 80%) +
  * saturate(3) blur(20px) + grain, 8px corners, the hairline ring and the
  * flyout shadow) — and both carry the .dt-flyout hook: the tray entrance is
@@ -18,10 +24,23 @@
  * focus rule: a 2px accent underline (inset box-shadow), never a halo.
  */
 
-import type {FluentIcon as LucideIcon} from "@fluentui/react-icons";
-import { BluetoothRegular as Bluetooth, ChevronLeftRegular as ChevronLeft, ChevronRightRegular as ChevronRight, ColorRegular as Contrast, DarkThemeRegular as MoonStar, Cellular5GRegular as Signal, WeatherSunnyRegular as Sun, Speaker1Regular as Volume2, Wifi1Regular as Wifi } from "@fluentui/react-icons";
+import type { FluentIcon as LucideIcon } from "@fluentui/react-icons";
+import {
+  BluetoothRegular as Bluetooth,
+  ChevronLeftRegular as ChevronLeft,
+  ChevronRightRegular as ChevronRight,
+  ColorRegular as Contrast,
+  PanelBottomRegular as Dock,
+  DarkThemeRegular as MoonStar,
+  Cellular5GRegular as Signal,
+  WeatherSunnyRegular as Sun,
+  Speaker1Regular as Volume2,
+  Wifi1Regular as Wifi,
+} from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
+import { isNavbarMode, NAVBAR_MODE_EVENT, type NavbarMode, saveNavbarMode } from "../../desktopstate.ts";
 import { osCalendarWeekdays, osText } from "../../oslabels.ts";
+import { currentThemeLadder, flipThemeLadder } from "../../personalstore.ts";
 
 /** tracks the os reduced-motion preference */
 export function useReducedMotion(): boolean {
@@ -39,12 +58,14 @@ export function useReducedMotion(): boolean {
 
 /** the session tray state behind the quick settings panel: the toggles stay
  * accent-lit while on, the sliders only shape the two screen overlays the
- * chrome renders (night light wash, brightness dim) — every bit reversible */
+ * chrome renders (night light wash, brightness dim) — every bit reversible.
+ * The theme and the dock mode live OUT of this bag: they are REAL system
+ * states (the theme ladder of personalstore.ts, the navbar mode of
+ * desktopstate.ts) and their tiles are self-contained below. */
 export type TraySettings = {
   wifi: boolean;
   bluetooth: boolean;
   night: boolean;
-  theme: boolean;
   /** the simulated cellular data of the OS tray (win11 quick settings) */
   data: boolean;
   volume: number;
@@ -55,19 +76,18 @@ export const DEFAULT_TRAY_SETTINGS: TraySettings = {
   wifi: true,
   bluetooth: false,
   night: false,
-  theme: true,
   data: true,
   volume: 70,
-  brightness: 100 };
+  brightness: 100,
+};
 
-type TileKey = "wifi" | "bluetooth" | "night" | "theme" | "data";
+type TileKey = "wifi" | "bluetooth" | "night" | "data";
 
 const TILES: Array<{ key: TileKey; label: string; icon: LucideIcon }> = [
   { key: "wifi", label: osText("tray.tile.wifi"), icon: Wifi },
   { key: "bluetooth", label: osText("tray.tile.bluetooth"), icon: Bluetooth },
   { key: "data", label: osText("tray.tile.data"), icon: Signal },
   { key: "night", label: osText("tray.tile.night"), icon: MoonStar },
-  { key: "theme", label: osText("tray.tile.theme"), icon: Contrast },
 ];
 
 /** the shared tray flyout motion: the .dt-flyout hook carries the 250ms
@@ -79,6 +99,68 @@ const TRAY_FLYOUT_CLASS =
 
 /** the focus rule of the tray controls: the 2px accent underline, no halo */
 const TRAY_FOCUS_CLASS = "focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none";
+
+/** the shared tile face of the quick settings grid (the session tiles and
+ * the two real system tiles wear the exact same wash/ladder/press) */
+const TILE_BUTTON_CLASS = `flex min-h-11 cursor-pointer items-center gap-2.5 rounded-xs border border-white/9 bg-white/4 px-3 text-left font-sans text-xs font-medium text-ink transition-colors duration-150 ease-entry hover:bg-white/9 data-[on=true]:border-white/25 data-[on=true]:bg-white/15 data-[on=true]:text-signal-strong active:scale-[0.97] active:duration-100 light:border-black/10 light:bg-black/3 light:hover:bg-black/8 light:data-[on=true]:bg-black/12 light:data-[on=true]:text-[#1a1a1a] ${TRAY_FOCUS_CLASS}`;
+
+/** the REAL theme tile: reads the live theme ladder at open and flips the
+ * system (personalstore.ts flipThemeLadder — the mirror persists and both
+ * roots paint) on the press. Self-contained like the dock tile: the state
+ * it shows is the machine's, never a local guess. */
+function ThemeTile() {
+  const [dark, setDark] = useState(() => currentThemeLadder() === "dark");
+  return (
+    <button
+      type="button"
+      data-on={dark ? "true" : undefined}
+      aria-pressed={dark}
+      aria-label={osText("tray.tile.theme")}
+      onClick={() => setDark(flipThemeLadder() === "dark")}
+      className={TILE_BUTTON_CLASS}
+    >
+      <Contrast fontSize={16} aria-hidden="true" />
+      <span>{osText("tray.tile.theme")}</span>
+    </button>
+  );
+}
+
+/** the REAL dock-mode tile: reads the live bar posture at open, flips the
+ * navbar mode on the press (desktopstate.ts saveNavbarMode + the
+ * dt-navbar-mode event the bar listens to — the pad re-docks live) and
+ * follows the bar's own verdicts through the same event. */
+function DockModeTile() {
+  const [docked, setDocked] = useState(
+    () => document.querySelector(".dt-nav")?.getAttribute("data-navmode") === "docked",
+  );
+  useEffect(() => {
+    const onMode = (event: Event) => {
+      const detail = (event as CustomEvent<NavbarMode>).detail;
+      if (isNavbarMode(detail)) setDocked(detail === "docked");
+    };
+    window.addEventListener(NAVBAR_MODE_EVENT, onMode);
+    return () => window.removeEventListener(NAVBAR_MODE_EVENT, onMode);
+  }, []);
+  const flip = () => {
+    const next: NavbarMode = docked ? "floating" : "docked";
+    saveNavbarMode(next);
+    window.dispatchEvent(new CustomEvent<NavbarMode>(NAVBAR_MODE_EVENT, { detail: next }));
+    setDocked(next === "docked");
+  };
+  return (
+    <button
+      type="button"
+      data-on={docked ? "true" : undefined}
+      aria-pressed={docked}
+      aria-label={osText("tray.tile.docked")}
+      onClick={flip}
+      className={TILE_BUTTON_CLASS}
+    >
+      <Dock fontSize={16} aria-hidden="true" />
+      <span>{osText("tray.tile.docked")}</span>
+    </button>
+  );
+}
 
 type QuickSettingsProps = {
   /** visible state of the mount pattern (false renders the exit pose) */
@@ -106,7 +188,9 @@ export function QuickSettings({ open, settings, onChange }: QuickSettingsProps) 
       data-hide={open ? undefined : "true"}
       data-flyout-keep="true"
     >
-      <p className="mb-3 font-mono text-[9px] font-semibold tracking-[0.08em] lowercase text-ink-3">{osText("tray.quick.heading")}</p>
+      <p className="mb-3 font-mono text-[9px] font-semibold tracking-[0.08em] lowercase text-ink-3">
+        {osText("tray.quick.heading")}
+      </p>
       <div className="grid grid-cols-2 gap-2">
         {TILES.map((tile) => {
           const on = settings[tile.key];
@@ -117,13 +201,15 @@ export function QuickSettings({ open, settings, onChange }: QuickSettingsProps) 
               data-on={on ? "true" : undefined}
               aria-pressed={on}
               onClick={() => toggleTile(tile.key)}
-              className={`flex min-h-11 cursor-pointer items-center gap-2.5 rounded-xs border border-white/9 bg-white/4 px-3 text-left font-sans text-xs font-medium text-ink transition-colors duration-150 ease-entry hover:bg-white/9 data-[on=true]:border-white/25 data-[on=true]:bg-white/15 data-[on=true]:text-signal-strong active:scale-[0.97] active:duration-100 light:border-black/10 light:bg-black/3 light:hover:bg-black/8 light:data-[on=true]:bg-black/12 light:data-[on=true]:text-[#1a1a1a] ${TRAY_FOCUS_CLASS}`}
+              className={TILE_BUTTON_CLASS}
             >
               <tile.icon fontSize={16} aria-hidden="true" />
               <span>{tile.label}</span>
             </button>
           );
         })}
+        <ThemeTile />
+        <DockModeTile />
       </div>
       <div className="mt-3.5 grid gap-1">
         <label className="flex min-h-11 items-center gap-2.5 text-ink-2">
@@ -206,10 +292,7 @@ export function CalendarFlyout({ open, floating = false, anchorX = null }: Calen
    * anchorless rides answer null and keep the corner law) */
   const rides =
     floating && anchorX !== null && typeof window !== "undefined"
-      ? Math.min(
-          Math.max(anchorX, CALENDAR_GUTTER),
-          Math.max(window.innerWidth - CALENDAR_GUTTER, CALENDAR_GUTTER),
-        )
+      ? Math.min(Math.max(anchorX, CALENDAR_GUTTER), Math.max(window.innerWidth - CALENDAR_GUTTER, CALENDAR_GUTTER))
       : null;
 
   return (
@@ -222,9 +305,7 @@ export function CalendarFlyout({ open, floating = false, anchorX = null }: Calen
       data-flyout-keep="true"
       data-floating={rides !== null ? "true" : undefined}
       style={
-        rides === null
-          ? undefined
-          : { right: "auto", left: `${Math.round(rides)}px`, transform: "translateX(-50%)" }
+        rides === null ? undefined : { right: "auto", left: `${Math.round(rides)}px`, transform: "translateX(-50%)" }
       }
     >
       <div className="mb-2.5 flex items-center justify-between gap-2">
