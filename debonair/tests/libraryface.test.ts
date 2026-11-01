@@ -147,6 +147,7 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
     NOTE_NAMES: "object",
   },
   patternminer: {
+    classifyDocument: "function",
     documentVector: "function",
     mineGenre: "function",
     segmentVector: "function",
@@ -156,6 +157,7 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
     ProfileError: "function",
     BPM_BUCKETS: "number",
     CHROMA_BINS: "number",
+    GENRE_SEAT_WEIGHTS: "object",
     ONSET_CURVE_BINS: "number",
     SEGMENT_DIM: "number",
     KEY_MODES: "object",
