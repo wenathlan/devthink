@@ -4177,6 +4177,18 @@ jobs:
         with:
           node-version: 26.13.0
 
+      # the 2.0.154 extension rung: the deterministic gates run the saddle
+      # suite, and the runner-bun lane of the edge plane spawns the real
+      # bun runtime the family suite job of the ci ladder installs (the
+      # same pinned rung) - without it the release runner answers no bun
+      # and the lane the suite demands fails on the honest host absence
+      # the release lanes cannot accept.
+      - name: setup bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
+          cache: false
+
       - name: install dependencies
         run: npm --prefix saddle ci
       - name: run full deterministic gates
