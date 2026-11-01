@@ -293,7 +293,7 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
     expect(archive?.permissions?.contents).toBe("write");
     const publish = await readworkflow("publish.yml");
     expect(publish).toContain('archive="saddle.container.${{ needs.saddle-vhe-resolve.outputs.version }}.tar.gz"');
-    expect(publish).toContain('-f saddle/Dockerfile saddle');
+    expect(publish).toContain('-f saddlebuildctx/saddle/Dockerfile saddlebuildctx');
     /* the sums umbrella walks the archive lane: the SHA256SUMS rebuild
      * answers only after every lane attached its assets. */
     const sums = workflow.jobs?.sums as { needs?: string[] } | undefined;

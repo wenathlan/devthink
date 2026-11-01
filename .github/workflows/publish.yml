@@ -5147,6 +5147,23 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ needs.saddle-vhe-resolve.outputs.tag }}
+      - name: Stage the saddle build context (the engine-ownership sibling)
+        # the same staged tree the vhe lanes build: the saddle nested under
+        # saddle/ with the vault sources beside it (the node-side label
+        # import resolves ../vault/labelstore.ts inside the build).
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf saddlebuildctx
+          mkdir -p saddlebuildctx/saddle saddlebuildctx/vault
+          cp -a saddle/. saddlebuildctx/saddle/
+          cp -a vault/. saddlebuildctx/vault/
+          rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git \
+                 saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules \
+                 saddlebuildctx/saddle/dist saddlebuildctx/vault/dist \
+                 saddlebuildctx/vault/tests
+          printf '%s\n' 'saddle/.git' 'vault/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
+
       - name: build the saddle vhe container
         env:
           IMAGE: ghcr.io/${{ github.repository }}:${{ needs.saddle-vhe-resolve.outputs.version }}-vhe
@@ -5167,7 +5184,7 @@ jobs:
             --build-arg VHE_PROFILE_GPU="b200" \
             --build-arg VHE_PROFILE_GPUS="8" \
             --build-arg MESA_SHA256="${{ needs.saddle-vhe-resolve.outputs.mesasha256 }}" \
-            --tag "$IMAGE" -f saddle/Dockerfile saddle
+            --tag "$IMAGE" -f saddlebuildctx/saddle/Dockerfile saddlebuildctx
           docker save "$IMAGE" | gzip -9 > "$archive"
       - name: checksum and manifest
         shell: bash
