@@ -133,24 +133,31 @@ describe("the forty live law of the ninety plan (wave w2 b1)", () => {
     assert.ok(invalid.error?.message.includes("assembly"), "the message names the assembly law");
   });
 
-  it("names the dotnet runtime when the clr lane carries honest pe bytes", async () => {
-    // the mz signature the runtime demands, over bytes that are no real
-    // assembly: the lane rides exactly as far as the host runtime answers
-    const bytes = Buffer.concat([Buffer.from([0x4d, 0x5a]), Buffer.alloc(64, 0)]);
-    const result = await runonedge({
-      modality: "runtime-clr",
-      code: bytes.toString("base64"),
-      deadlinems: 20000,
-    });
-    // an absent dotnet answers host-runtime-absent, a present dotnet
-    // refuses the stub honestly — both name the runtime they rode
-    assert.equal(result.status, "failed");
-    assert.ok(
-      result.error?.code === "HOST_RUNTIME_ABSENT" || result.error?.code === "RUN_EXITED_NONZERO",
-      `the clr refusal stays honest: ${result.error?.code}`,
-    );
-    assert.ok(result.error?.message.includes("dotnet"), "the message names the runtime");
-  });
+  it(
+    "names the dotnet runtime when the clr lane carries honest pe bytes",
+    async () => {
+      // the mz signature the runtime demands, over bytes that are no real
+      // assembly: the lane rides exactly as far as the host runtime answers
+      // (the probe deadline below exceeds the suite default, so the test
+      // carries its own ceiling that covers the honest deadline a cold
+      // runner needs — the lane answers before either clock dies)
+      const bytes = Buffer.concat([Buffer.from([0x4d, 0x5a]), Buffer.alloc(64, 0)]);
+      const result = await runonedge({
+        modality: "runtime-clr",
+        code: bytes.toString("base64"),
+        deadlinems: 20000,
+      });
+      // an absent dotnet answers host-runtime-absent, a present dotnet
+      // refuses the stub honestly — both name the runtime they rode
+      assert.equal(result.status, "failed");
+      assert.ok(
+        result.error?.code === "HOST_RUNTIME_ABSENT" || result.error?.code === "RUN_EXITED_NONZERO",
+        `the clr refusal stays honest: ${result.error?.code}`,
+      );
+      assert.ok(result.error?.message.includes("dotnet"), "the message names the runtime");
+    },
+    30000,
+  );
 
   it("names docker when the profile lanes meet an absent daemon", async () => {
     for (const profile of ["max", "lite"] as const) {
