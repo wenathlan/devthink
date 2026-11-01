@@ -970,7 +970,7 @@ export interface soakreport {
  * first layer: every check in its fixed order with its outcome, no
  * timestamps, so the record replays byte identical. */
 export const soakrecord: soakreport = {
-  "release": "2.0.152",
+  "release": "2.0.153",
   "checklist": "docs/soak.md",
   "soak": {
     "retentionwindow": 8,
