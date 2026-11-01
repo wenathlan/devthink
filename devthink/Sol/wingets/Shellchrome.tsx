@@ -191,8 +191,20 @@ const START_GPBTN_CLASS =
 const START_ROW_HOVER =
   "transition-colors duration-100 ease-in-out hover:bg-white/10 light:hover:bg-white/90 focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none";
 /** the 96×84 tile of the pinned grid and the results grid (the pnApp cell:
- * the 32px tile, the 12px name, the 4px corners) */
-const START_TILE_CLASS = `dt-start__app flex h-[84px] cursor-pointer flex-col items-center justify-center rounded-xs border-0 bg-transparent pt-2 text-ink [&_.dt-tile]:h-8 [&_.dt-tile]:w-8 [&_.dt-tile]:rounded-sm [&_.dt-tile]:shadow-none ${START_ROW_HOVER}`;
+ * the 32px tile, the 12px name, the 4px corners).
+ *
+ * merge of design/taskbarstart × #254 — the shared tile-hover rule, both
+ * waves touched it, the doctrine tie-break (the most win11React-faithful
+ * value wins, documented): the hover WASH answers the win11React pnApp
+ * `--bg2` pair — white/10 dark, white/90 light (the wave carried black/8
+ * light; that value lost the tie-break). The #254 tile LIFT stays (the
+ * translateY-up and the growing tile shadow are that wave's feature, and
+ * the panelgate battery pins them verbatim), riding its own
+ * background-color,transform lane at the 150ms micro curve; the win11React
+ * 100ms ease-in-out stays on every lift-free row (the recommended rows, the
+ * All apps rows, the letter rail). The lift never plays under
+ * reduced motion (the wave's motion-reduce guards kept whole). */
+const START_TILE_CLASS = `dt-start__app flex h-[84px] cursor-pointer flex-col items-center justify-center rounded-xs border-0 bg-transparent pt-2 text-ink transition-[background-color,transform] duration-150 ease-micro hover:-translate-y-px hover:bg-white/10 focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none light:hover:bg-white/90 motion-reduce:transition-none motion-reduce:hover:translate-y-0 hover:[&_.dt-tile]:shadow-[0_2px_4px_rgb(0_0_0/24%),0_10px_22px_-8px_rgb(0_0_0/45%)] [&_.dt-tile]:transition-[box-shadow] [&_.dt-tile]:duration-150 [&_.dt-tile]:ease-micro [&_.dt-tile]:h-8 [&_.dt-tile]:w-8 [&_.dt-tile]:rounded-sm [&_.dt-tile]:shadow-none`;
 /** the 56px recommended row (the rnApp cell: icon + name + time used) */
 const START_RECENT_CLASS = `flex h-14 w-[calc(50%-10px)] cursor-pointer items-center rounded-xs border-0 bg-transparent p-0 text-left text-ink ${START_ROW_HOVER}`;
 /** the 42px row of the All apps page (the allApp cell: 24px icon + 12px

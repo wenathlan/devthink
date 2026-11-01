@@ -22029,9 +22029,113 @@ button.dtc-recents__row {
 /* ==== chat wave 7-a · end of section ==== */
 
 /* ==========================================================================
+   campaign wave 4 · panel face — the desktop texture, the grounded vignette
+   and the loading shimmer. The doctrine recipes on the panel's own face:
+   the acrylic noise (camada 2 of the mica recipe, the --win-noise tile)
+   sits over the wall so the desktop carries real texture, the grounded
+   vignette (the shadow ladder composed off the mask ink token) anchors the
+   bottom edge under the taskbar, and the gate reading bar gains the shimmer
+   sweep (the shimmer-slide pattern of the interactions catalog) while the
+   entry chain waits. Every paint rides a token — no fixed hex, the light
+   flip and the reduced guards ride the same ladders the shell already
+   answers. Appended block only — every earlier section is untouched; these
+   rules win by cascade order alone.
+   ========================================================================== */
+
+/* the desktop texture: the noise tile over the wall (the atmosphere owns
+   the surface paint — the component renders it, the stylesheet answers) */
+.shell-os__atmosphere::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: var(--win-noise);
+  background-repeat: repeat;
+  opacity: 0.55;
+}
+
+/* the grounded vignette: the desktop floor sinks under the taskbar band —
+   the inset shadow ladder composed off the mask ink, never a fixed paint */
+.shell-os__atmosphere::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow:
+    inset 0 -28px 52px -20px color-mix(in oklab, var(--color-mask-ink) 28%, transparent),
+    inset 0 2px 0 color-mix(in oklab, var(--color-mask-ink) 8%, transparent);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .shell-os__atmosphere::after {
+    opacity: 0.25;
+  }
+}
+
+/* the gate shimmer: the reading bar of the honest wait gains the diagonal
+   highlight sweeping over the walking band (shimmer-slide), duty-cycled on
+   the same window and zeroed under reduced motion */
+.dtw-gate__bar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image: linear-gradient(
+    100deg,
+    transparent 0%,
+    color-mix(in oklab, var(--color-signal-strong) 38%, transparent) 50%,
+    transparent 100%
+  );
+  background-size: 220% 100%;
+  animation: dtwgateshimmer 1.4s var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)) infinite;
+  pointer-events: none;
+}
+
+@keyframes dtwgateshimmer {
+  from {
+    background-position: 180% 0;
+  }
+  to {
+    background-position: -80% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dtw-gate__bar::before {
+    animation: none;
+    background-image: none;
+  }
+}
+
+/* the light theme: the gate paints the doctrine mica light recipe (the
+   --mica token — no fixed paint) and the composition follows the flip */
+[data-theme="light"] .dtw-gate {
+  background: var(--mica);
+  color: rgb(0 0 0 / 88%);
+}
+
+[data-theme="light"] .dtw-gate::after {
+  opacity: 0.45;
+}
+
+[data-theme="light"] .dtw-gate__label {
+  color: rgb(0 0 0 / 72%);
+}
+
+[data-theme="light"] .dtw-gate__bar {
+  background: rgb(0 0 0 / 12%);
+}
+
+[data-theme="light"] .dtw-gate__bar::after {
+  background: var(--color-win);
+}
+
+/* ==========================================================================
    the taskbar + start menu fidelity wave (design/taskbarstart): the win11
    shell numbers the chrome composes. Appended block only — every earlier
-   section is untouched; these rules win by cascade order.
+   section is untouched; these rules win by cascade order. (merge of
+   design/taskbarstart × #254: both tails kept — the panel-face block above
+   reads first, this one closes the file.)
    ========================================================================== */
 
 /* the start-face token: the 640px panel width that doubles as the distance

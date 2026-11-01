@@ -15,6 +15,8 @@ import { saaschrome, saasfooter, saasrailstops } from "../saascontent.ts";
 import { uistoreseedrows } from "../uistore.ts";
 
 const sections = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "IntroSaassections.tsx"), "utf8");
+const shaderhero = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "IntroShaderhero.tsx"), "utf8");
+const barrel = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "index.ts"), "utf8");
 const saas = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "IntroSaas.tsx"), "utf8");
 const rails = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "IntroSaasrails.tsx"), "utf8");
 const intro = readFileSync(join(import.meta.dirname, "..", "Sol", "intro", "intro.tsx"), "utf8");
@@ -42,7 +44,7 @@ describe("the inline hero switch (the original headline law)", () => {
     const headline = sections.slice(open, close);
     expect(headline).toContain("hero-inline-switch");
     expect(headline).toContain("hero-switch-thumb");
-    expect(headline).toContain('aria-label={saashero.modetoggle}');
+    expect(headline).toContain("aria-label={saashero.modetoggle}");
     expect(headline).toContain("{mode.word}");
   });
 
@@ -184,5 +186,43 @@ describe("the intro to explore to auth chain", () => {
     expect(chrome).toContain('aria-label={uicopy("shell.widgets.aria")}');
     // the route the trigger lands on is the explore face of this chain
     expect(routes).toContain('<Route path="/explore" component={ExploreAnchor} />');
+  });
+});
+
+describe("the living shader hero (the lazy WebGL face of the intro)", () => {
+  it("the winget exists on the barrel and rides the section — the hero composes it before the gaussian", () => {
+    expect(barrel).toContain('export * from "./IntroShaderhero.tsx";');
+    expect(sections).toContain("<Shaderhero />");
+    const heroOpen = sections.indexOf("<Shaderhero />");
+    const gaussian = sections.indexOf("hero-gaussian-shader", heroOpen);
+    expect(gaussian).toBeGreaterThan(heroOpen);
+  });
+
+  it("three.js rides the lazy lane — no static three import ever lands on the landing bundle", () => {
+    expect(shaderhero).toContain('import("three")');
+    expect(shaderhero).not.toMatch(/from "three"/);
+    expect(shaderhero).not.toMatch(/require\("three"\)/);
+  });
+
+  it("the field never arms under reduced motion (the motion law on the shader too)", () => {
+    expect(shaderhero).toContain("(prefers-reduced-motion: reduce)");
+  });
+
+  it("the cleanup is total — the scene resources die with the component", () => {
+    expect(shaderhero).toContain("geometry.dispose()");
+    expect(shaderhero).toContain("material.dispose()");
+    expect(shaderhero).toContain("renderer.dispose()");
+    expect(shaderhero).toContain("window.cancelAnimationFrame(frame)");
+    expect(shaderhero).toContain('document.addEventListener("visibilitychange", onHidden)');
+    expect(shaderhero).toContain('document.removeEventListener("visibilitychange", onHidden)');
+    expect(shaderhero).toContain("observer.disconnect()");
+    expect(shaderhero).toContain("canvas.remove()");
+  });
+
+  it("the field stays presentational — pointer transparent, aria hidden, no copy inside the canvas winget", () => {
+    expect(shaderhero).toContain("pointer-events-none");
+    expect(shaderhero).toContain('aria-hidden="true"');
+    expect(shaderhero).not.toMatch(/\buicopy\(/);
+    expect(shaderhero).not.toMatch(/\bcopy\(/);
   });
 });

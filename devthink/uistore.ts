@@ -67,6 +67,10 @@ const SEED: Readonly<Record<string, string>> = Object.freeze({
   "explorer.empty": "This folder is empty.",
   /* --------------------- workspace history window -------------------- */
   "workspace.history.localTabs": "Open session tabs remain local to this workspace.",
+  /* ------------------------ panel boot face ------------------------- */
+  "panel.boot.aria": "DevThink is starting",
+  "panel.boot.name": "DevThink",
+  "panel.boot.state": "opening the local os",
   /* --------------------- shell navbar (the two modes) --------------- */
   "navbar.mode.aria": "Navbar mode",
   "navbar.mode.desc": "Floating lets the bar loose from the walls; docked pins it to one edge.",

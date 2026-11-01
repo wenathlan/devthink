@@ -195,6 +195,18 @@ describe("the start menu panel (the 640px acrylic doctrine numbers)", () => {
     expect(chrome).toContain("duration-100 ease-in-out hover:bg-white/10 light:hover:bg-white/90");
   });
 
+  it("the tile hover is the merged rule: the win11 --bg2 wash wins the tie-break, the #254 lift rides beside it", () => {
+    // the merge of design/taskbarstart × #254 — both waves touched the tile
+    // hover; the doctrine tie-break keeps the win11React --bg2 pair on the
+    // wash (white/10 dark, white/90 light — never black/8 light) while the
+    // panel-face wave keeps its lift whole with its reduced-motion guards
+    expect(chrome).toContain("light:hover:bg-white/90 motion-reduce:transition-none");
+    expect(chrome).toContain("hover:[&_.dt-tile]:shadow-");
+    expect(chrome).not.toContain("light:hover:bg-black/8");
+    // the win11 100ms ease-in-out stays on every lift-free row
+    expect(chrome).toContain("transition-colors duration-100 ease-in-out hover:bg-white/10");
+  });
+
   it("the recommended rows are the 56px rnApp cell fed by the recent-entries store", () => {
     expect(chrome).toContain("flex h-14 w-[calc(50%-10px)]");
     expect(chrome).toContain("w-[100px] min-w-0");
