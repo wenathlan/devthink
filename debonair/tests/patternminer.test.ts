@@ -18,7 +18,13 @@ import { describe, it } from "vitest";
 import type { AudioReport } from "../analyze.ts";
 import { GENRES } from "../genrematrix.ts";
 import type { IngestDocument, IngestSegment } from "../ingest.ts";
-import { listGenreProfiles, migrategenreschema, saveGenreProfile } from "../ingestdb.ts";
+// the seat answers before the module load: this suite rides its own
+// database file so the parallel vitest workers never share one wal
+// writer (the SQLITE_BUSY lesson — every suite its own seat).
+process.env.DATABASE_URL = "file:./local.patternminer.db";
+
+const ingestdbmodule = await import("../ingestdb.ts");
+const { listGenreProfiles, migrategenreschema, saveGenreProfile } = ingestdbmodule;
 import {
   BPM_BUCKETS,
   CHROMA_BINS,

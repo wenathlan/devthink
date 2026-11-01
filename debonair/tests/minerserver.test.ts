@@ -47,7 +47,13 @@ import { dispatch, matchroute, startMinerJob } from "../gatewayapi.ts";
 import { GENRES } from "../genrematrix.ts";
 import type { IngestDocument, IngestSegment } from "../ingest.ts";
 import { INGEST_SCHEMA_VERSION } from "../ingest.ts";
-import { listGenreProfiles, migrategenreschema, migratejobsschema } from "../ingestdb.ts";
+// the seat answers before the module load: this suite rides its own
+// database file so the parallel vitest workers never share one wal
+// writer (the SQLITE_BUSY lesson — every suite its own seat).
+process.env.DATABASE_URL = "file:./local.minerserver.db";
+
+const ingestdbmodule = await import("../ingestdb.ts");
+const { listGenreProfiles, migrategenreschema, migratejobsschema } = ingestdbmodule;
 import type { IngestStampRow } from "../ingestworker.ts";
 import { PROFILE_GENRE_KEYS, validateGenreProfile } from "../patternminer.ts";
 import { seedGenreProfileCards } from "../seed.ts";
