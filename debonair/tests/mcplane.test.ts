@@ -1,6 +1,6 @@
 // # mcplane.test — the mcp automation lane of the debonair engine (wave
 // PV6.004) over a fake gateway fetch: the tool catalog answers the family
-// mcp contract (the six namespaced debonair.* names, the version, the
+// mcp contract (the seven namespaced debonair.* names, the version, the
 // risk class, the consent text, the json schema inputs with the required
 // list), the lane is opt-in (an absent config, an empty origin or an
 // origin that refuses the house https law answers null and every tool
@@ -240,7 +240,7 @@ function happygateway(): { fetchImpl: typeof fetch; calls: WireCall[] } {
 }
 
 describe("the tool catalog (the family mcp contract)", () => {
-  it("carries the six namespaced tools with the metadata law", () => {
+  it("carries the seven namespaced tools with the metadata law", () => {
     assert.equal(MCP_DOMAIN, "debonair");
     const catalog = toolcatalog();
     assert.deepEqual(
@@ -249,6 +249,7 @@ describe("the tool catalog (the family mcp contract)", () => {
         "debonair.ingest_reference",
         "debonair.mine_profile",
         "debonair.compose_plan",
+        "debonair.compose_plan_ai",
         "debonair.render_track",
         "debonair.publish_track",
         "debonair.list_vitrine",
@@ -277,7 +278,7 @@ describe("the tool catalog (the family mcp contract)", () => {
     );
     assert.deepEqual(
       catalog.filter((tool) => tool.risk === "read").map((tool) => tool.name),
-      ["debonair.compose_plan", "debonair.list_vitrine"],
+      ["debonair.compose_plan", "debonair.compose_plan_ai", "debonair.list_vitrine"],
     );
   });
 });
