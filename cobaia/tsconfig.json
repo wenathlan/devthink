@@ -5,6 +5,9 @@
     "noEmit": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "paths": {
+      "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"]
+    },
     "strict": true,
     "lib": ["esnext", "dom", "dom.iterable"],
     "jsx": "react-jsx",

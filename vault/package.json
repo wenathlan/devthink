@@ -63,6 +63,11 @@
       "import": "./labels.ts",
       "default": "./labels.ts"
     },
+    "./labelstore": {
+      "types": "./labelstore.ts",
+      "import": "./labelstore.ts",
+      "default": "./labelstore.ts"
+    },
     "./objects": {
       "types": "./objects.ts",
       "import": "./objects.ts",
@@ -118,6 +123,7 @@
     "familyurl.ts",
     "hometypes.ts",
     "labels.ts",
+    "labelstore.ts",
     "objects.ts",
     "objectsledger.ts",
     "onboardingstate.ts",

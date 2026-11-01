@@ -7,7 +7,8 @@
  * seed never overwrites a translated row.
  */
 
-import { readAllLabels, saveLabel, type BrowserLabel } from "./storage.ts";
+import { createLabelStore, type LabelRowStore } from "@wenathlan/vault/labelstore";
+import { readAllLabels, saveLabel } from "./storage.ts";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
@@ -194,8 +195,7 @@ export const labelManifest = {
   // error with the retry — never a fake row, never an invented number.
   "explore.state.loading": "reading the catalog",
   "explore.state.error": "the catalog could not be read",
-  "explore.state.errorLine":
-    "the built-in answers serve when the service is away — retry to ask it again.",
+  "explore.state.errorLine": "the built-in answers serve when the service is away — retry to ask it again.",
   "explore.state.retry": "retry the catalog",
   "explore.state.paragraphs": "{count} paragraphs",
   "explore.state.kind.asset": "studio asset",
@@ -210,30 +210,33 @@ export const labelManifest = {
 
 export type LabelKey = keyof typeof labelManifest & string;
 
-/** the translation overrides the runtime loads from the store at boot: the
- * key answers the translated text when the person changed the language. */
-const overrides = new Map<string, string>();
+/** the row-store door of the os app: the labels ride the IndexedDB lane of
+ * the storage module (the browser-safe service door — never better-sqlite3
+ * inside the static bundle). the adapter maps the door onto the factory's
+ * row store contract. */
+const rowStore: LabelRowStore = {
+  readAll: () => readAllLabels(),
+  save: async (row) => {
+    await saveLabel(row.id, row.text, row.revision, row.translated ?? false);
+  },
+};
+
+/** the store mechanism rides the vault factory (the storage law of the
+ * family: the vault owns the store, the app owns the manifest — the
+ * mechanism is imported, never duplicated). */
+const store = createLabelStore({
+  manifest: labelManifest,
+  revision: LABEL_REVISION,
+  rowStore,
+});
 
 /** the typed accessor of the copy: the only door a widget uses. */
 export function label(key: LabelKey): string {
-  return overrides.get(key) ?? labelManifest[key];
+  return store.label(key);
 }
 
 /** the seed ingests the manifest into the labels store, idempotent, and the
  * translated rows stay protected from the overwrite. */
-export async function seedLabels(): Promise<{ seeded: number; protected: number }> {
-  const stored = await readAllLabels();
-  const rows = new Map<string, BrowserLabel>(stored.map((row) => [row.id, row]));
-  let seeded = 0;
-  let saved = 0;
-  for (const [id, text] of Object.entries(labelManifest)) {
-    const row = rows.get(id);
-    overrides.set(id, row && row.translated ? row.text : text);
-    if (!row || (!row.translated && row.text !== text)) {
-      await saveLabel(id, text, LABEL_REVISION, row?.translated ?? false);
-      seeded += 1;
-    }
-    saved += 1;
-  }
-  return { seeded, protected: saved - seeded };
+export function seedLabels(): Promise<{ seeded: number; protected: number }> {
+  return store.seedLabels();
 }
