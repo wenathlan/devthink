@@ -1,13 +1,17 @@
 /** forge root database logic: the self-hosted store of the sandbox runners.
  * better-sqlite3 with prepared statements only — every external input rides a
  * bound parameter, never a concatenated string (the parameterized query rule). */
-import Database from "better-sqlite3";
+import { openStorageLane } from "@wenathlan/vault/storagelane";
 import { LABEL_MANIFEST, LABEL_REVISION } from "./labels.ts";
 
 export type Runner = { id: string; name: string; kind: string; boundary: string; status: string };
 export type RunEntry = { id: string; runnerId: string; outcome: string; detail: string; createdAt: string };
 
-const database = new Database(process.env.FORGE_DB_PATH ?? "forge.db");
+/** the one storage lane of the forge store (the shared mechanism of the vault — the forge names its own env and file, the pragma ladder and the patient locks ride the lane). */
+const lane = openStorageLane({ envName: "FORGE_DB_PATH", defaultFile: "./forge.db" });
+
+/** the one sqlite connection of the store (seat of the lane — the module statements keep preparing on it). */
+const database = lane.db;
 
 database.exec(`
   CREATE TABLE IF NOT EXISTS runners (

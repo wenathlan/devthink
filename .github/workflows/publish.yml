@@ -2118,14 +2118,39 @@ jobs:
         # container install: the tracked application file stays untouched
         # and the frozen lockfile keeps answering the same
         # integrity-checked versions.
+        #
+        # The 2.0.153 family context fix: the application rides the context
+        # nested under app/ (the uniform shape the three site Dockerfiles
+        # read), and the engine-ownership law carries its price - cadria
+        # consumes the debonair audio engine as a source-level sibling (the
+        # vite aliases resolve ../debonair/*), so the cadria context stages
+        # the sibling whole beside it. The flat context the lane staged
+        # before left the ../debonair imports unreachable inside the
+        # container and the cadria container build died on the vite step
+        # (the only cross-app consumption the family ships today; the map
+        # below is the single place a new sibling registers).
         if: steps.published.outputs.skip != 'true'
         shell: bash
         run: |
           set -euo pipefail
           rm -rf familybuildctx
-          mkdir -p familybuildctx
-          cp -a "${{ matrix.package }}/." familybuildctx/
-          printf '\nminimumReleaseAge: 0\n' >> familybuildctx/pnpm-workspace.yaml
+          mkdir -p familybuildctx/app
+          cp -a "${{ matrix.package }}/." familybuildctx/app/
+          printf '\nminimumReleaseAge: 0\n' >> familybuildctx/app/pnpm-workspace.yaml
+          case "${{ matrix.package }}" in
+            cadria)
+              # the engine-ownership sibling map: cadria resolves the
+              # debonair audio engine through the ../debonair vite
+              # aliases, so the sibling rides the context whole (sources
+              # only - the build never installs it, the aliases read
+              # the .ts files directly)
+              mkdir -p familybuildctx/debonair
+              cp -a debonair/. familybuildctx/debonair/
+              rm -rf familybuildctx/debonair/node_modules \
+                     familybuildctx/debonair/dist \
+                     familybuildctx/debonair/build
+              ;;
+          esac
       - name: build and push the site container
         if: steps.published.outputs.skip != 'true'
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0

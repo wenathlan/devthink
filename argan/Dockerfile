@@ -12,12 +12,14 @@ FROM node:26-alpine@sha256:c6ad9e9c1d80f6eb607c26b4b0a132ff7a2344fad1c78ea3baa2a
 
 ARG ARGAN_VERSION=2.0.153
 
-WORKDIR /src
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+# The 2.0.153 family context fix: the application rides the context
+# nested under app/ (the uniform shape the three site containers read).
+WORKDIR /src/app
+COPY app/package.json app/pnpm-lock.yaml app/pnpm-workspace.yaml ./
 RUN apk add --no-cache python3 make g++ \
  && npm install -g --no-fund --no-audit "$(node -p 'require("./package.json").packageManager')" \
  && pnpm install --frozen-lockfile
-COPY . .
+COPY app/ .
 RUN pnpm build
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6
@@ -31,7 +33,7 @@ LABEL org.opencontainers.image.title="argan" \
       org.opencontainers.image.source="https://github.com/wenathlan/devthink" \
       org.opencontainers.image.documentation="https://github.com/wenathlan/devthink/tree/main/argan"
 
-COPY --from=solbuild /src/ /usr/share/nginx/html/
+COPY --from=solbuild /src/app/ /usr/share/nginx/html/
 
 # the explicit non-root runtime user (uid 101 is the nginx-unprivileged
 # default): the scan gate refuses an image without a pinned unprivileged

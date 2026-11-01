@@ -29,6 +29,7 @@ The boot law of the map: `./db` and `./drizzle` open their self-hosted sqlite co
 | `@wenathlan/vault/retention` | the retention clock — `retentionVerdicts`, the `sweepPlan` and the timeline ticks |
 | `@wenathlan/vault/sha` | the real digest engine — `sha256Hex`, `sha1Hex` and the hex shape gates |
 | `@wenathlan/vault/storage` | the storage contracts — the LFS pointer law, the record gate and the channel chooser |
+| `@wenathlan/vault/storagelane` | the shared sqlite mechanism — `openStorageLane`, the pragma ladder and the cached helpers (no boot) |
 | `@wenathlan/vault/utils` | the shared word splitter — `splitwords` |
 
 A sibling app consumes the engine the way it consumes saddle for sandboxes and getry for thinking:

@@ -12,6 +12,15 @@ export default defineConfig({
        * when the published envelope carries the built label store. */
       "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
 
+      /** the storage lane bridge of the ownership law: the app's sqlite
+       * mechanism rides the vault factory through the published library
+       * specifier ("@wenathlan/vault/storagelane"), and this bridge resolves
+       * the specifier to the monorepo source the sibling engine carries —
+       * the bootstrap and the helpers are never duplicated inside debonair.
+       * the entry retires when the published envelope carries the built
+       * storage lane. */
+      "@wenathlan/vault/storagelane": path.resolve(import.meta.dirname, "../vault/storagelane.ts"),
+
       /** the workload law bridge of the family: the app battery pins the
        * lane mirror against the engine catalog through the published
        * library specifier ("@wenathlan/saddle/workloadlaw"), and this
