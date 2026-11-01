@@ -22343,3 +22343,95 @@ button.dtc-recents__row {
   z-index: 1;
 }
 
+/* ==========================================================================
+   the taskbar + start menu fidelity wave (design/taskbarstart): the win11
+   shell numbers the chrome composes. Appended block only — every earlier
+   section is untouched; these rules win by cascade order. (merge of
+   design/taskbarstart × #254: both tails kept — the panel-face block above
+   reads first, this one closes the file.)
+   ========================================================================== */
+
+/* the start-face token: the 640px panel width that doubles as the distance
+   the All apps page slides (the win11React 640px page curve) */
+:root {
+  --win-start-w: 640px;
+}
+
+/* the start menu acrylic: the doctrine blur(20px) WITHOUT the saturate —
+   the taskbar keeps saturate(3) blur(20px), the menu does not (the panel
+   recipe above stays untouched; the menu face re-rides its own filter) */
+.acrylic-panel.dt-start {
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+}
+
+/* the two faces of the pages stage: the home fades while the All apps page
+   slides in from the right edge over the panel width — the win11React 300ms
+   cubic-bezier(0,.58,.42,1) page curve on both properties */
+.dt-start__home,
+.dt-start__allpage {
+  transition:
+    transform 300ms cubic-bezier(0, 0.58, 0.42, 1),
+    opacity 300ms cubic-bezier(0, 0.58, 0.42, 1);
+}
+.dt-start__allpage {
+  top: 0;
+  bottom: 0;
+  left: 100%;
+  width: 100%;
+}
+.dt-start__allpage[data-allapps="false"] {
+  opacity: 0;
+  pointer-events: none;
+}
+.dt-start__allpage[data-allapps="true"] {
+  transform: translateX(calc(-1 * var(--win-start-w, 640px)));
+}
+.dt-start__home[data-allapps="true"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* the narrow band: the panel shrinks below 700px, so the page slide rides
+   the panel box itself (the 640px token stays the desktop law) */
+@media (max-width: 700px) {
+  .dt-start__allpage[data-allapps="true"] {
+    transform: translateX(-100%);
+  }
+}
+
+/* the transparency floor: the menu face answers the same solid answer the
+   panel recipe takes (the blur override above must never resurrect it) */
+@media (prefers-reduced-transparency: reduce) {
+  .acrylic-panel.dt-start {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* the reduced-motion hard stop: the popintro bounce and the tile stagger
+   die, the page slide flattens (the feedback stays, the movement goes) */
+@media (prefers-reduced-motion: reduce) {
+  .animate-popintro,
+  .dt-start__grid > .dt-start__app {
+    animation: none;
+  }
+  .dt-start__home,
+  .dt-start__allpage {
+    transition: none;
+  }
+  .dt-start__allpage[data-allapps="true"] {
+    transform: none;
+  }
+}
+[data-motion="reduced"] .animate-popintro,
+[data-motion="reduced"] .dt-start__grid > .dt-start__app {
+  animation: none;
+}
+[data-motion="reduced"] .dt-start__home,
+[data-motion="reduced"] .dt-start__allpage {
+  transition: none;
+}
+[data-motion="reduced"] .dt-start__allpage[data-allapps="true"] {
+  transform: none;
+}

@@ -19,10 +19,16 @@ import { useCallback, useState } from "react";
 import { gatewayHealth, gatewayUrl, setGatewayUrl } from "../../gatewayclient.ts";
 import { label } from "../../labels.ts";
 import { applyTheme, currentTheme, type Theme } from "../../theme";
+import { packageversion } from "../../version.ts";
 import { useToast } from "../toast/Toast.tsx";
 
-/** synced by hand with cadria/package.json "version" — package.json is forbidden to import at runtime. */
-const VERSION = "2.0.97";
+/** the about row reads the canonical version module the root carries — the
+ * hand-synced literal the settings page once kept drifted fifty five rungs
+ * behind the manifest (2.0.97 against 2.0.152) because package.json is
+ * forbidden to import at runtime; the version module is the root constant
+ * the release sync stamps every rung, so the about row answers the family
+ * lockstep without ever reading the manifest. */
+const VERSION = packageversion;
 
 /** the lifecycle of the gateway health readout. */
 type Health = "unknown" | "checking" | "online" | "offline";

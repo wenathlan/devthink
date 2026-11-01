@@ -37,7 +37,18 @@
  * box and the pinned grid of the desktop app catalog (Sol/shell/
  * appregistry.ts) — the entrance rises translateY(100px)→0 in 200ms on
  * cubic-bezier(.79,.14,.15,.86) and the exit is REAL: the mount state keeps
- * the open panel in the DOM through a 220ms timer before it unmounts. Every
+ * the open panel in the DOM through a 220ms timer before it unmounts. The
+ * menu carries the win11 face in full: the Pinned bar with the All apps
+ * chip, the 96×84 six-column tile grid, the Recommended rows (56px, icon +
+ * name + the relative open time pulled from the recent-entries store —
+ * never a fixed word), the All apps page sliding in on the 300ms
+ * cubic-bezier(0,.58,.42,1) page curve with the alphabet jump rail, and the
+ * 64px footer with the account profile (the display name of the account
+ * store) and the power corner (lock, shut down, restart). The docked
+ * bottom taskbar carries the widgets trigger at its left edge (the
+ * doctrine maps the widgets board onto the explore surface) and the search
+ * trigger beside the mark (it opens the menu and seats the caret in the
+ * search box). Every
  * flyout — start, quick settings, calendar, jump list — shares ONE mount
  * state (at most one is in the DOM), closes on Escape and on any press
  * outside a flyout or trigger, and skips its transitions entirely under
@@ -49,14 +60,18 @@
  */
 
 import {
+  ChevronLeftRegular as ChevronLeft,
+  ChevronRightRegular as ChevronRight,
   LockClosedRegular as Lock,
+  PowerRegular as Power,
+  ArrowClockwiseRegular as Restart,
   SearchRegular as Search,
   Wifi1Regular as Wifi,
   DismissRegular as X,
 } from "@fluentui/react-icons";
 import { type CSSProperties, type RefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
-import { DESKTOP_APPS, type DesktopApp, searchDesktopApps } from "../../appregistry.ts";
+import { DESKTOP_APPS, type DesktopApp, PINNED_APPS, searchDesktopApps } from "../../appregistry.ts";
 import {
   isNavbarEdge,
   isNavbarMode,
@@ -64,19 +79,20 @@ import {
   loadNavbarMode,
   NAVBAR_EDGE_EVENT,
   NAVBAR_MODE_EVENT,
-  navbarDragVerdict,
   type NavbarEdge,
   type NavbarMode,
+  navbarDragVerdict,
   saveNavbarEdge,
   saveNavbarMode,
 } from "../../desktopstate";
 import { osText } from "../../oslabels.ts";
-import { loadrecentapps, pushrecentapp } from "../../recentapps.ts";
+import { loadrecententries, pushrecentapp, type RecentEntry } from "../../recentapps.ts";
+import { readBrowserPreferences } from "../../storage.ts";
 import { uicopy, useUicopy } from "../../uistore.ts";
 import { SolLogoMark } from "./PanelLogo.tsx";
 import { AppTile } from "./ShellApptile.tsx";
-import { JumpList, loadTaskbarPins, saveTaskbarPins } from "./ShellJumpmenu.tsx";
 import { useDockMagnification } from "./ShellDockmagnify.tsx";
+import { JumpList, loadTaskbarPins, saveTaskbarPins } from "./ShellJumpmenu.tsx";
 import {
   CalendarFlyout,
   DEFAULT_TRAY_SETTINGS,
@@ -91,6 +107,54 @@ import {
  * indirect apps — intro, auth, explore — are never pins) */
 const TASKBAR_PIN_IDS = ["panel", "chat", "console", "gateway", "docs"];
 
+/** the 27 buckets of the All apps page: the "#" slot for the non-letter
+ * names, then A–Z — the win11React contApps ladder */
+const ALPHA_SLOTS: readonly string[] = ["#", ..."ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")];
+
+/** the stable keys of the pinned-grid padding faces (six is the most a
+ * six-wide row ever needs) */
+const BLANK_SLOTS: readonly string[] = ["blank-0", "blank-1", "blank-2", "blank-3", "blank-4", "blank-5"];
+
+/** groups the catalog by the first letter of the display name (A–Z, the
+ * non-letter names ride "#"): the All apps page renders one section per
+ * bucket under its letter header */
+const ALPHA_GROUPS: ReadonlyMap<string, DesktopApp[]> = (() => {
+  const groups = new Map<string, DesktopApp[]>();
+  for (const app of [...DESKTOP_APPS].sort((a, b) => a.name.localeCompare(b.name) || a.id.localeCompare(b.id))) {
+    const code = app.name.trim().toUpperCase().charCodeAt(0);
+    const letter = code > 64 && code < 91 ? String.fromCharCode(code) : "#";
+    const bucket = groups.get(letter);
+    if (bucket) bucket.push(app);
+    else groups.set(letter, [app]);
+  }
+  return groups;
+})();
+
+/** the widgets glyph: the three-pane board the widgets button rides (a
+ * fluent-style inline path, fill currentColor — the system icon law) */
+function WidgetsGlyph() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M3.75 3h6.5A1.75 1.75 0 0 1 12 4.75v14.5A1.75 1.75 0 0 1 10.25 21h-6.5A1.75 1.75 0 0 1 2 19.25V4.75A1.75 1.75 0 0 1 3.75 3Z" />
+      <path d="M15.25 3h5A1.75 1.75 0 0 1 22 4.75v4.5A1.75 1.75 0 0 1 20.25 11h-5A1.75 1.75 0 0 1 14 9.25v-4.5A1.75 1.75 0 0 1 15.75 3Z" />
+      <path d="M15.25 13h5A1.75 1.75 0 0 1 22 14.75v4.5A1.75 1.75 0 0 1 20.25 21h-5A1.75 1.75 0 0 1 14 19.25v-4.5A1.75 1.75 0 0 1 15.75 13Z" />
+    </svg>
+  );
+}
+
+/** the relative open time of one recommended row — the win11 ladder (under
+ * ten minutes reads "just now", then minutes, then hours; past six hours
+ * or before the timestamp lane the line hides) */
+function recentagelabel(at: number): string {
+  if (!at) return "";
+  const minutes = Math.floor((Date.now() - at) / 60_000);
+  if (minutes < 10) return uicopy("shell.start.recent.now");
+  if (minutes < 60) return uicopy("shell.start.recent.minutes").replace("{n}", String(minutes));
+  const hours = Math.floor(minutes / 60);
+  if (hours < 6) return uicopy("shell.start.recent.hours").replace("{n}", String(hours));
+  return "";
+}
+
 /** the 44px hit cell of one taskbar button: the cell is the touch target and
  * the ::after open/active ladder anchor (the component owns the ladder — the
  * 3px bar reads data-open/data-active off the cell, 6px open, 12px accent);
@@ -98,13 +162,14 @@ const TASKBAR_PIN_IDS = ["panel", "chat", "console", "gateway", "docs"];
 const BAR_CELL_CLASS =
   "group relative flex h-11 w-11 flex-none cursor-pointer items-center justify-center rounded-xs border-0 bg-transparent p-0 focus-visible:outline-none after:absolute after:bottom-0 after:content-[''] after:block after:h-[3px] after:w-0 after:rounded-xs after:bg-[#858585] after:transition-[width,background-color] after:duration-200 data-[open=true]:after:w-1.5 data-[active=true]:after:w-3 data-[active=true]:after:bg-(--color-win)";
 
-/** the 38×38 r4 Windows face: hover wash rgba(255,255,255,.1) in 200ms, the
- * popintro spawn bounce, press scale(.7) in 100ms and the 2px accent focus
- * underline (the campaign focus rule — an inset box-shadow, never a halo);
- * the app tile rides as the proven 26px r5 face fill (no second shadow — the
- * face owns the shadow grammar of the bar) */
+/** the 38×38 r4 Windows face: hover wash rgba(255,255,255,.1) dark /
+ * rgba(255,255,255,.67) light (the --bg2 pair of the taskbar doctrine) in
+ * 200ms, the popintro spawn bounce, press scale(.7) in 100ms and the 2px
+ * accent focus underline (the campaign focus rule — an inset box-shadow,
+ * never a halo); the app tile rides as the proven 26px r5 face fill (no
+ * second shadow — the face owns the shadow grammar of the bar) */
 const BAR_FACE_CLASS =
-  "dt-nav__app-face grid h-[38px] w-[38px] place-items-center rounded-xs transition-[background-color,transform] duration-200 animate-popintro group-hcf:bg-white/10 light:group-hcf:bg-black/8 group-active:scale-[0.7] group-active:duration-100 group-focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] [&_.dt-tile]:h-[26px] [&_.dt-tile]:w-[26px] [&_.dt-tile]:rounded-sm [&_.dt-tile]:shadow-none";
+  "dt-nav__app-face grid h-[38px] w-[38px] place-items-center rounded-xs transition-[background-color,transform] duration-200 animate-popintro group-hcf:bg-white/10 light:group-hcf:bg-white/67 group-active:scale-[0.7] group-active:duration-100 group-focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] [&_.dt-tile]:h-[26px] [&_.dt-tile]:w-[26px] [&_.dt-tile]:rounded-sm [&_.dt-tile]:shadow-none";
 
 /** the app-name peek: acrylic above the cell, cleared of the bar (Windows
  * tooltip semantics, name only — the aria-label already carries the name);
@@ -113,6 +178,38 @@ const BAR_FACE_CLASS =
  * leave hides instantly) */
 const BAR_TIP_CLASS =
   "dt-nav__tip acrylic-tip pointer-events-none absolute bottom-[calc(100%+6px)] left-1/2 z-[1] -translate-x-1/2 translate-y-[4px] rounded-xs px-[9px] py-[5px] font-sans text-xs font-medium whitespace-nowrap text-[#fafafa] opacity-0 transition-[opacity,transform] duration-200 group-hcf:translate-y-0 group-hcf:opacity-100 group-hcf:delay-[1000ms] light:border-black/12 light:text-[#1a1a1a]";
+
+/** the win11 start-menu section bar: the Pinned/Recommended header with its
+ * chip button (the stAcbar grammar — 14px medium name, the 10px chip with
+ * the 4px corners and the 1px-ish drop) */
+const START_ACBAR_CLASS = "mx-8 flex flex-none items-center justify-between";
+const START_GPNAME_CLASS = "m-0 text-sm font-medium text-ink";
+const START_GPBTN_CLASS =
+  "inline-flex cursor-pointer items-center gap-1 rounded-xs bg-white/10 px-2 py-0.5 text-[10px] font-medium text-ink-2 shadow-[1px_1px_2px_rgb(34_34_34/25%)] transition-colors duration-100 hover:bg-white/16 hover:text-ink light:bg-white/90 light:text-[#1a1a1a] light:shadow-[1px_1px_2px_rgb(34_34_34/15%)] light:hover:bg-white light:hover:text-[#1a1a1a]";
+/** the shared hover/focus wash of the menu rows: 100ms ease-in-out, the
+ * --bg2 pair of the doctrine (white/10 dark, white/90 light) */
+const START_ROW_HOVER =
+  "transition-colors duration-100 ease-in-out hover:bg-white/10 light:hover:bg-white/90 focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none";
+/** the 96×84 tile of the pinned grid and the results grid (the pnApp cell:
+ * the 32px tile, the 12px name, the 4px corners).
+ *
+ * merge of design/taskbarstart × #254 — the shared tile-hover rule, both
+ * waves touched it, the doctrine tie-break (the most win11React-faithful
+ * value wins, documented): the hover WASH answers the win11React pnApp
+ * `--bg2` pair — white/10 dark, white/90 light (the wave carried black/8
+ * light; that value lost the tie-break). The #254 tile LIFT stays (the
+ * translateY-up and the growing tile shadow are that wave's feature, and
+ * the panelgate battery pins them verbatim), riding its own
+ * background-color,transform lane at the 150ms micro curve; the win11React
+ * 100ms ease-in-out stays on every lift-free row (the recommended rows, the
+ * All apps rows, the letter rail). The lift never plays under
+ * reduced motion (the wave's motion-reduce guards kept whole). */
+const START_TILE_CLASS = `dt-start__app flex h-[84px] cursor-pointer flex-col items-center justify-center rounded-xs border-0 bg-transparent pt-2 text-ink transition-[background-color,transform] duration-150 ease-micro hover:-translate-y-px hover:bg-white/10 focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none light:hover:bg-white/90 motion-reduce:transition-none motion-reduce:hover:translate-y-0 hover:[&_.dt-tile]:shadow-[0_2px_4px_rgb(0_0_0/24%),0_10px_22px_-8px_rgb(0_0_0/45%)] [&_.dt-tile]:transition-[box-shadow] [&_.dt-tile]:duration-150 [&_.dt-tile]:ease-micro [&_.dt-tile]:h-8 [&_.dt-tile]:w-8 [&_.dt-tile]:rounded-sm [&_.dt-tile]:shadow-none`;
+/** the 56px recommended row (the rnApp cell: icon + name + time used) */
+const START_RECENT_CLASS = `flex h-14 w-[calc(50%-10px)] cursor-pointer items-center rounded-xs border-0 bg-transparent p-0 text-left text-ink ${START_ROW_HOVER}`;
+/** the 42px row of the All apps page (the allApp cell: 24px icon + 12px
+ * name, the letter headers share the height) */
+const START_ALLROW_CLASS = `flex h-[42px] w-full cursor-pointer items-center rounded-xs border-0 bg-transparent pl-3 text-left text-ink ${START_ROW_HOVER}`;
 
 /** the one shell flyout surface: at most one of these is open (and mounted) */
 type PanelState =
@@ -219,8 +316,17 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
   const [openPanel, setOpenPanel] = useState<PanelState | null>(null);
   const [query, setQuery] = useState("");
   const [pins, setPins] = useState<string[]>(() => loadTaskbarPins(TASKBAR_PIN_IDS));
-  /** the recently opened apps behind the Start menu recommended rail */
-  const [recents, setRecents] = useState<string[]>(() => loadrecentapps());
+  /** the recently opened apps behind the Start menu recommended rail (the
+   * entries carry the open epoch the timeUsed line formats) */
+  const [recents, setRecents] = useState<RecentEntry[]>(() => loadrecententries());
+  /** the All apps page of the start menu (the win11 showAll face) */
+  const [showAll, setShowAll] = useState(false);
+  /** the power corner flyout of the start menu footer */
+  const [powerOpen, setPowerOpen] = useState(false);
+  /** the display name of the account (the start menu profile cell) */
+  const [userName, setUserName] = useState("");
+  /** a search-trigger press waits for the menu mount, then seats the caret */
+  const pendingSearch = useRef(false);
   const [tray, setTray] = useState<TraySettings>(DEFAULT_TRAY_SETTINGS);
   /** the navbar mode the account store persisted — floating (the detached
    * rounded pad, the magnifying dock) or docked (the bar pinned to one
@@ -232,6 +338,8 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
   const [navbarEdge, setNavbarEdge] = useState<NavbarEdge>("bottom");
   const rail = navbarMode === "docked" && navbarEdge !== "bottom";
   const searchRef = useRef<HTMLInputElement | null>(null);
+  /** the scrolling list of the All apps page (the alphabet jump rail target) */
+  const allListRef = useRef<HTMLDivElement | null>(null);
   const exitTimer = useRef<number | null>(null);
   const mountedKindRef = useRef<PanelState["kind"] | null>(null);
   const startRef = useStartMarkDraw(reduced);
@@ -399,6 +507,56 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
     [],
   );
 
+  // the start search trigger seats the caret once the menu is mounted (the
+  // rAF effect above flips the visible state first)
+  useEffect(() => {
+    if (!pendingSearch.current || openPanel?.kind !== "start") return;
+    pendingSearch.current = false;
+    setShowAll(false);
+    searchRef.current?.focus();
+  }, [openPanel]);
+
+  // the account display name feeds the start menu profile cell (the same
+  // preference lane the boot face saved — read-only here, never a literal)
+  useEffect(() => {
+    let alive = true;
+    void readBrowserPreferences()
+      .then((preferences) => {
+        const saved = preferences.displayName?.trim();
+        if (alive && saved) setUserName(saved);
+      })
+      .catch(() => undefined);
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  // the power corner dies with the menu (a reopened menu opens closed)
+  useEffect(() => {
+    if (openPanel?.kind !== "start") setPowerOpen(false);
+  }, [openPanel]);
+
+  /** the search trigger of the taskbar: the open menu jumps to its search
+   * box, a closed one mounts with the caret seated in it */
+  function openStartSearch() {
+    if (openPanel?.kind === "start") {
+      setShowAll(false);
+      searchRef.current?.focus();
+      return;
+    }
+    pendingSearch.current = true;
+    showPanel({ kind: "start" });
+  }
+
+  /** the alphabet jump of the All apps page: the letter button scrolls the
+   * list to its section (the win11 STARTALPHA verdict) */
+  function jumpToLetter(letter: string) {
+    const list = allListRef.current;
+    if (!list) return;
+    const target = list.querySelector<HTMLElement>(`[data-alpha-letter="${letter === "#" ? "hash" : letter}"]`);
+    if (target) list.scrollTop = target.offsetTop;
+  }
+
   // the settings app re-faces the bar live through the navbar mode event
   // (the choice itself persists on the account store)
   useEffect(() => {
@@ -446,14 +604,22 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
 
   const results = searchDesktopApps(query);
 
-  /** the recommended rail: the recent ids mapped onto the catalog, capped
-   * at six and only shown while the search box is empty */
+  /** the recommended rail: the recent entries mapped onto the catalog (the
+   * open epoch rides along for the timeUsed line), only shown while the
+   * search box is empty — never a fixed row */
   const recommended = query
     ? []
     : recents
-        .map((id) => DESKTOP_APPS.find((app) => app.id === id))
-        .filter((app): app is DesktopApp => Boolean(app))
+        .map((entry) => {
+          const app = DESKTOP_APPS.find((candidate) => candidate.id === entry.id);
+          return app ? { app, at: entry.at } : null;
+        })
+        .filter((row): row is { app: DesktopApp; at: number } => row !== null)
         .slice(0, 6);
+
+  /** the empty cells that pad the pinned grid to full six-wide rows (the
+   * win11 pnEmpty faces) */
+  const pinnedBlanks = (6 - (PINNED_APPS.length % 6)) % 6;
 
   /** the taskbar pins in the persisted order (unknown ids drop out) */
   const taskbarPins = pins
@@ -472,8 +638,10 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
   function openApp(app: DesktopApp) {
     closePanel();
     setQuery("");
-    // the open promotes the app to the head of the Start menu recommended rail
-    setRecents(pushrecentapp(app.id));
+    // the open promotes the app to the head of the Start menu recommended
+    // rail (both lanes: the id list and the timestamped entries)
+    pushrecentapp(app.id);
+    setRecents(loadrecententries());
     if (onOpenApp) {
       onOpenApp(app);
       return;
@@ -531,6 +699,23 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
           event.stopPropagation();
         }}
       >
+        {/* the widgets trigger: the win11 left edge of the center-aligned
+            taskbar (the .widget cell at left 8px) — the docked bottom bar
+            only (the floating pad and the 48px rail keep their fit), the
+            doctrine maps the widgets board onto the explore surface */}
+        {navbarMode === "docked" && navbarEdge === "bottom" && (
+          <button
+            type="button"
+            className={`dt-nav__widget absolute top-1/2 left-2 z-[1] -translate-y-1/2 ${BAR_CELL_CLASS}`}
+            aria-label={uicopy("shell.widgets.aria")}
+            data-flyout-keep="true"
+            onClick={() => navigate("/explore")}
+          >
+            <span className={`${BAR_FACE_CLASS} text-[#eef1f7] light:text-[#1a1a1a]`}>
+              <WidgetsGlyph />
+            </span>
+          </button>
+        )}
         {/* the centered taskbar cluster: the mark-trigger and the pinned apps
             ride one Windows-11 centered group (pure presentation wrapper) —
             the magnification surface of the floating pad */}
@@ -555,6 +740,21 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
           >
             <span className={`${BAR_FACE_CLASS} text-[#eef1f7] light:text-[#1a1a1a]`}>
               <SolLogoMark size={20} />
+            </span>
+          </button>
+          {/* the search trigger beside the mark (the win11 taskSearch cell):
+              opens the menu and seats the caret in the search box */}
+          <button
+            type="button"
+            className={BAR_CELL_CLASS}
+            aria-label={uicopy("shell.search.aria")}
+            aria-haspopup="dialog"
+            aria-expanded={openPanel?.kind === "start"}
+            data-flyout-keep="true"
+            onClick={openStartSearch}
+          >
+            <span className={`${BAR_FACE_CLASS} text-[#eef1f7] light:text-[#1a1a1a]`}>
+              <Search fontSize={20} aria-hidden="true" />
             </span>
           </button>
           {/* the pinned apps: icons only — the name shows in the hover tooltip,
@@ -685,17 +885,23 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
           {/* the start menu: 640px centered acrylic panel, 8px corners — the
               200ms translateY(100px)→0 entrance on the Windows start curve
               (cubic-bezier(.79,.14,.15,.86)) and the same slide-cum-fade exit
-              through data-hide (the mount state keeps it in the DOM) */}
+              through data-hide (the mount state keeps it in the DOM). The
+              face is the win11 menu in full: search well, the pinned page
+              (header chip, 96×84 six-column grid, recommended rows), the All
+              apps page sliding on the 300ms page curve, the 64px footer with
+              the account profile and the power corner. */}
           <section
-            className="dt-start acrylic-panel fixed bottom-[calc(var(--shell-bottom)+12px)] left-1/2 z-[60] -ml-[320px] flex h-[min(calc(100dvh-var(--shell-bottom)-24px),720px)] w-[640px] flex-col overflow-y-auto overscroll-contain rounded-md text-ink transition-[transform,opacity] duration-200 ease-fluent max-[700px]:left-2 max-[700px]:ml-0 max-[700px]:w-[calc(100vw-16px)] data-[hide=true]:pointer-events-none data-[hide=true]:translate-y-[100px] data-[hide=true]:opacity-0 light:bg-[rgb(242_242_242_/_90%)]"
+            className="dt-start acrylic-panel fixed bottom-[calc(var(--shell-bottom)+12px)] left-1/2 z-[60] -ml-[320px] flex h-[min(calc(100dvh-var(--shell-bottom)-24px),720px)] w-[640px] flex-col overflow-hidden overscroll-contain rounded-md text-ink transition-[transform,opacity] duration-200 ease-fluent max-[700px]:left-2 max-[700px]:ml-0 max-[700px]:w-[calc(100vw-16px)] data-[hide=true]:pointer-events-none data-[hide=true]:translate-y-[100px] data-[hide=true]:opacity-0 light:bg-[rgb(242_242_242_/_90%)]"
             id="dt-start-menu"
             role="dialog"
             aria-modal="true"
             aria-label={osText("shell.start.dialog.aria")}
+            data-flyout-keep="true"
             data-hide={openPanel?.kind === "start" ? undefined : "true"}
           >
             {/* the search well: 40px, flat white 5%, hairline bottom, the
-                2px accent underline on focus (the win11 input recipe) */}
+                2px accent underline on focus (the win11 input recipe) — the
+                live filter of the app registry while the visitor types */}
             <div className="dt-start__search mx-8 mt-6 flex h-10 flex-none items-center gap-[9px] rounded-xs border border-white/6 border-b-(--color-hairline) bg-white/5 px-3 text-ink-2 transition-colors duration-200 focus-within:border-white/20 focus-within:shadow-[inset_0_-2px_0_var(--color-win)] light:border-black/12 light:bg-white/78 light:text-[#3c3c3c]">
               <Search fontSize={15} aria-hidden="true" />
               <input
@@ -717,70 +923,241 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
                 </button>
               )}
             </div>
-            <p className="dt-start__label mx-8 mt-5 mb-2.5 text-sm font-medium text-ink">
-              {query ? osText("shell.start.label.results") : osText("shell.start.label.pinned")}
-            </p>
-            {/* the pinned tiles: the exact win11 pnApp cell — 96×84px, 4px
-                corners, the hover wash in 100ms ease-in-out, 12px label; the
-                entrance staggers 60ms per tile (the start pop, capped so the
-                tail never lags) */}
-            <div className="dt-start__grid grid grid-cols-[repeat(auto-fill,96px)] px-8 pb-6">
-              {results.map((app, index) => (
-                <button
-                  key={app.id}
-                  type="button"
-                  className="dt-start__app flex h-[84px] w-24 cursor-pointer flex-col items-center justify-center rounded-xs border-0 bg-transparent pt-2 text-ink transition-[background-color,transform] duration-150 ease-micro hover:-translate-y-px hover:bg-white/10 focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none light:hover:bg-black/8 motion-reduce:transition-none motion-reduce:hover:translate-y-0 hover:[&_.dt-tile]:shadow-[0_2px_4px_rgb(0_0_0/24%),0_10px_22px_-8px_rgb(0_0_0/45%)] [&_.dt-tile]:transition-[box-shadow] [&_.dt-tile]:duration-150 [&_.dt-tile]:ease-micro [&_.dt-tile]:h-8 [&_.dt-tile]:w-8 [&_.dt-tile]:rounded-sm [&_.dt-tile]:shadow-none"
-                  style={{ "--stagger-i": index } as CSSProperties}
-                  title={app.detail}
-                  onClick={() => openApp(app)}
-                >
-                  <AppTile app={app} size={20} />
-                  <strong className="mt-1.5 max-w-[88px] overflow-hidden font-sans text-xs font-normal text-ellipsis whitespace-nowrap">
-                    {app.name}
-                  </strong>
-                </button>
-              ))}
-              {!results.length && (
-                <p className="dt-start__empty m-0 px-8 pb-8 pt-6 text-center font-sans text-xs text-ink-3">
-                  {osText("shell.start.empty").replace("{query}", query)}
-                </p>
+            {/* the pages stage: the pinned home and the All apps page share
+                the slot — the page slide is the win11 300ms
+                cubic-bezier(0,.58,.42,1) curve, the distance the panel width
+                token carries (--win-start-w) */}
+            <div className="dt-start__pages relative min-h-0 flex-1">
+              {query ? (
+                <div className="absolute inset-0 overflow-y-auto overscroll-contain">
+                  {/* the live results: the registry filter renders as the
+                      same 96×84 six-column tile grid */}
+                  <div className="dt-start__grid grid grid-cols-6 px-8 pt-4 pb-6">
+                    {results.map((app, index) => (
+                      <button
+                        key={app.id}
+                        type="button"
+                        className={START_TILE_CLASS}
+                        style={{ "--stagger-i": index } as CSSProperties}
+                        title={app.detail}
+                        onClick={() => openApp(app)}
+                      >
+                        <AppTile app={app} size={20} />
+                        <strong className="mt-1.5 max-w-[88px] overflow-hidden font-sans text-xs font-normal text-ellipsis whitespace-nowrap">
+                          {app.name}
+                        </strong>
+                      </button>
+                    ))}
+                    {!results.length && (
+                      <p className="dt-start__empty col-span-6 m-0 px-8 pt-6 pb-8 text-center font-sans text-xs text-ink-3">
+                        {osText("shell.start.empty").replace("{query}", query)}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <>
+                  {/* the home face: the Pinned bar with the All apps chip,
+                      the six-column tile grid with its empty padding faces,
+                      then the Recommended rows pulled from the recent
+                      entries store */}
+                  <div
+                    className="dt-start__home absolute inset-0 overflow-y-auto overscroll-contain pb-2"
+                    data-allapps={showAll ? "true" : "false"}
+                  >
+                    <div className={`${START_ACBAR_CLASS} mt-5`}>
+                      <p className={START_GPNAME_CLASS}>{uicopy("shell.start.header.pinned")}</p>
+                      <button type="button" className={START_GPBTN_CLASS} onClick={() => setShowAll(true)}>
+                        <span>{uicopy("shell.start.header.allapps")}</span>
+                        <ChevronRight fontSize={9} aria-hidden="true" />
+                      </button>
+                    </div>
+                    <div className="dt-start__grid grid grid-cols-6 px-8 pt-4 pb-5">
+                      {PINNED_APPS.map((app, index) => (
+                        <button
+                          key={app.id}
+                          type="button"
+                          className={START_TILE_CLASS}
+                          style={{ "--stagger-i": index } as CSSProperties}
+                          title={app.detail}
+                          onClick={() => openApp(app)}
+                        >
+                          <AppTile app={app} size={20} />
+                          <strong className="mt-1.5 max-w-[88px] overflow-hidden font-sans text-xs font-normal text-ellipsis whitespace-nowrap">
+                            {app.name}
+                          </strong>
+                        </button>
+                      ))}
+                      {BLANK_SLOTS.slice(0, pinnedBlanks).map((slot) => (
+                        <span key={slot} aria-hidden="true" className="pointer-events-none h-[84px]" />
+                      ))}
+                    </div>
+                    {recommended.length > 0 && (
+                      <>
+                        <div className={START_ACBAR_CLASS}>
+                          <p className={START_GPNAME_CLASS}>{uicopy("shell.start.header.recommended")}</p>
+                          <span className={`${START_GPBTN_CLASS} pointer-events-none`}>
+                            <span>{uicopy("shell.start.more")}</span>
+                            <ChevronRight fontSize={9} aria-hidden="true" />
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap justify-between px-5 pt-3 pb-6">
+                          {recommended.map((row) => {
+                            const age = recentagelabel(row.at);
+                            return (
+                              <button
+                                key={row.app.id}
+                                type="button"
+                                className={START_RECENT_CLASS}
+                                title={row.app.detail}
+                                onClick={() => openApp(row.app)}
+                              >
+                                <span className="mx-3 flex-none [&_.dt-tile]:h-8 [&_.dt-tile]:w-8 [&_.dt-tile]:rounded-sm [&_.dt-tile]:shadow-none">
+                                  <AppTile app={row.app} size={20} />
+                                </span>
+                                <span className="w-[100px] min-w-0">
+                                  <span className="block truncate text-xs text-ink">{row.app.name}</span>
+                                  {age && (
+                                    <span className="block truncate text-[10px] font-medium text-ink-3">{age}</span>
+                                  )}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  {/* the All apps page: slides in from the right edge on the
+                      page curve — the alphabetical sections under their
+                      letter headers, the jump rail on the right edge */}
+                  <div
+                    className="dt-start__allpage absolute flex flex-col overflow-hidden"
+                    data-allapps={showAll ? "true" : "false"}
+                  >
+                    <div className={`${START_ACBAR_CLASS} mt-5 pr-16`}>
+                      <p className={START_GPNAME_CLASS}>{uicopy("shell.start.header.allapps")}</p>
+                      <button type="button" className={START_GPBTN_CLASS} onClick={() => setShowAll(false)}>
+                        <ChevronLeft fontSize={9} aria-hidden="true" />
+                        <span>{uicopy("shell.start.back")}</span>
+                      </button>
+                    </div>
+                    <div ref={allListRef} className="relative mt-4 min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-6">
+                      {[...ALPHA_GROUPS.entries()].map(([letter, apps]) => (
+                        <div key={letter} data-alpha-letter={letter === "#" ? "hash" : letter}>
+                          <div className="flex h-[42px] items-center pl-3">
+                            <span className="w-[22px] text-center text-sm text-ink">{letter}</span>
+                          </div>
+                          {apps.map((app) => (
+                            <button
+                              key={app.id}
+                              type="button"
+                              className={START_ALLROW_CLASS}
+                              title={app.detail}
+                              onClick={() => openApp(app)}
+                            >
+                              <span className="flex-none [&_.dt-tile]:h-6 [&_.dt-tile]:w-6 [&_.dt-tile]:rounded-sm [&_.dt-tile]:shadow-none">
+                                <AppTile app={app} size={20} />
+                              </span>
+                              <span className="truncate pl-4 text-xs text-ink">{app.name}</span>
+                            </button>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                    <nav
+                      aria-label={uicopy("shell.start.alpha.aria")}
+                      className="absolute top-1/2 right-2 z-[1] -translate-y-1/2"
+                    >
+                      <div className="grid grid-cols-4 gap-x-1 gap-y-0.5">
+                        {ALPHA_SLOTS.map((letter) => {
+                          const present = ALPHA_GROUPS.has(letter);
+                          return present ? (
+                            <button
+                              key={letter}
+                              type="button"
+                              className="grid h-5 w-6 cursor-pointer place-items-center rounded-xs border-0 bg-transparent text-[10px] text-ink transition-colors duration-100 hover:bg-white/10 light:hover:bg-white/90 focus-visible:outline-none"
+                              onClick={() => jumpToLetter(letter)}
+                            >
+                              {letter}
+                            </button>
+                          ) : (
+                            <span
+                              key={letter}
+                              aria-hidden="true"
+                              className="grid h-5 w-6 place-items-center text-[10px] text-ink-3"
+                            >
+                              {letter}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </nav>
+                  </div>
+                </>
               )}
             </div>
-            {recommended.length > 0 && (
-              <>
-                <p className="dt-start__label mx-8 mb-2.5 text-sm font-medium text-ink">
-                  {osText("shell.start.label.recommended")}
-                </p>
-                <div className="dt-start__grid grid grid-cols-[repeat(auto-fill,96px)] px-8 pb-6">
-                  {recommended.map((app, index) => (
-                    <button
-                      key={app.id}
-                      type="button"
-                      className="dt-start__app flex h-[84px] w-24 cursor-pointer flex-col items-center justify-center rounded-xs border-0 bg-transparent pt-2 text-ink transition-[background-color,transform] duration-150 ease-micro hover:-translate-y-px hover:bg-white/10 focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none light:hover:bg-black/8 motion-reduce:transition-none motion-reduce:hover:translate-y-0 hover:[&_.dt-tile]:shadow-[0_2px_4px_rgb(0_0_0/24%),0_10px_22px_-8px_rgb(0_0_0/45%)] [&_.dt-tile]:transition-[box-shadow] [&_.dt-tile]:duration-150 [&_.dt-tile]:ease-micro [&_.dt-tile]:h-8 [&_.dt-tile]:w-8 [&_.dt-tile]:rounded-sm [&_.dt-tile]:shadow-none"
-                      style={{ "--stagger-i": index } as CSSProperties}
-                      title={app.detail}
-                      onClick={() => openApp(app)}
-                    >
-                      <AppTile app={app} size={20} />
-                      <strong className="mt-1.5 max-w-[88px] overflow-hidden font-sans text-xs font-normal text-ellipsis whitespace-nowrap">
-                        {app.name}
-                      </strong>
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-            {/* the menu footer: the win11 menuBar — 64px, hairline top, the
-                mono wordmark instead of a second mark (logo discipline: the
-                taskbar owns the mark) */}
-            <footer className="dt-start__foot mt-auto flex h-16 flex-none items-center gap-[9px] border-t border-white/7 bg-black/15 px-12 text-[11px] font-medium text-ink-2 light:border-t-black/10 light:bg-black/3">
-              <span
-                className="dt-start__wordmark font-mono text-[10px] font-semibold tracking-[0.08em] text-ink"
-                aria-hidden="true"
+            {/* the menu footer: the win11 menuBar — 64px, the 1px #444/#aaa
+                top border over the bg3 veil, the account profile at the left
+                and the power corner (lock, shut down, restart) at the right */}
+            <footer className="dt-start__foot mt-auto flex h-16 flex-none items-center justify-between border-t border-[#444444] bg-black/15 px-12 light:border-[#aaaaaa] light:bg-black/[0.033]">
+              <button
+                type="button"
+                className={`flex cursor-pointer items-center gap-3 rounded-xs border-0 bg-transparent p-2 text-left font-[inherit] ${START_ROW_HOVER}`}
+                onClick={() => {
+                  const settings = DESKTOP_APPS.find((candidate) => candidate.id === "settings");
+                  if (settings) openApp(settings);
+                }}
               >
-                {osText("shell.start.wordmark")}
-              </span>
-              <span>{osText("shell.start.localos")}</span>
+                <span
+                  className="grid h-[26px] w-[26px] flex-none place-items-center rounded-full bg-(--color-win) text-[11px] font-semibold text-(--color-win-ink)"
+                  aria-hidden="true"
+                >
+                  {(userName || uicopy("shell.start.user.fallback")).trim().charAt(0).toUpperCase()}
+                </span>
+                <span className="max-w-[220px] truncate text-xs font-medium text-ink">
+                  {userName || uicopy("shell.start.user.fallback")}
+                </span>
+              </button>
+              <div className="relative flex h-10 w-10 flex-none items-center justify-center rounded-xs">
+                {powerOpen && (
+                  <div
+                    role="menu"
+                    aria-label={uicopy("shell.start.powermenu.aria")}
+                    data-flyout-keep="true"
+                    className="acrylic-menu absolute right-0 bottom-full z-[1] mb-2 flex min-w-[168px] flex-col rounded-xs p-1"
+                  >
+                    {(
+                      [
+                        { key: "shell.start.power.lock", glyph: Lock, run: () => { closePanel(); navigate("/auth"); } },
+                        { key: "shell.start.power.shutdown", glyph: Power, run: () => { closePanel(); navigate("/"); } },
+                        { key: "shell.start.power.restart", glyph: Restart, run: () => window.location.reload() },
+                      ] as const
+                    ).map((action) => (
+                      <button
+                        key={action.key}
+                        type="button"
+                        role="menuitem"
+                        className={`flex cursor-pointer items-center gap-2 rounded-xs border-0 bg-transparent px-3 py-2 text-left text-xs font-normal text-ink ${START_ROW_HOVER}`}
+                        onClick={action.run}
+                      >
+                        <action.glyph fontSize={16} aria-hidden="true" />
+                        <span>{uicopy(action.key)}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+                <button
+                  type="button"
+                  aria-label={uicopy("shell.start.power.aria")}
+                  aria-haspopup="menu"
+                  aria-expanded={powerOpen}
+                  className={`grid h-10 w-10 cursor-pointer place-items-center rounded-xs border-0 bg-transparent text-ink ${START_ROW_HOVER}`}
+                  onClick={() => setPowerOpen((value) => !value)}
+                >
+                  <Power fontSize={18} aria-hidden="true" />
+                </button>
+              </div>
             </footer>
           </section>
         </>
