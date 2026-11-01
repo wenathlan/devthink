@@ -42,7 +42,7 @@ minimumReleaseAgeExclude:
   - '@types/google.maps@3.66.9'
   - lucide-react@1.64.0 || 1.65.0 || 1.66.0
   - '@fluentui/react-icons@2.0.345'
-  - '@wenathlan/vault@2.0.152 || 2.0.153'
+  - '@wenathlan/vault@2.0.152 || 2.0.153 || 2.0.154'
   - hono@4.13.16
 # the pnpm settings live here since pnpm 12 (the package.json pnpm field is
 # no longer read, and onlyBuiltDependencies died in pnpm 11 — the map below
