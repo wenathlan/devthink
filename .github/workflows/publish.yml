@@ -4460,7 +4460,7 @@ jobs:
       - name: Build image (dry run, loaded locally)
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
-          context: ./saddle
+          context: .
           file: ./saddle/Dockerfile
           target: runtime
           platforms: ${{ matrix.platform }}
@@ -4787,7 +4787,7 @@ jobs:
       - name: Build image for the security scan
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
-          context: ./saddle
+          context: .
           file: ./saddle/Dockerfile
           # the scan must cover the image this pipeline publishes: the
           # vhe runtime stage (the same target: runtime the publish legs
@@ -4917,7 +4917,7 @@ jobs:
       - name: Build and push the multi-arch image
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
-          context: ./saddle
+          context: .
           file: ./saddle/Dockerfile
           target: runtime
           platforms: ${{ matrix.platforms }}
