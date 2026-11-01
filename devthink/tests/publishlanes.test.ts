@@ -310,11 +310,17 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
      * tarball downloaded and hashed on the runner, and the upstream
      * tarball that HEALS the mirror by creating the cache release — so
      * the value never enters the repository and the lane survives every
-     * future bump. */
+     * future bump. The 2.0.153 ladder lesson rides beside: the gh api
+     * error body rides stdout on 404, so the release capture validates
+     * the assets array before the legacy branch trusts it, and the
+     * devthink lane walks the same healing tier (create or upload). */
     expect(publish).toContain('release_json="$(gh api "repos/${GH_REPO}/releases/tags/${release}" 2>/dev/null || true)"');
     expect(publish).toContain("the ${release} mirror is absent; healing from upstream and publishing the cache.");
     expect(publish).toContain('gh release create "${release}" "/tmp/${tarball}"');
     expect(publish).toContain('sha="$(sha256sum "/tmp/${tarball}" | awk \'{print $1}\')"');
+    expect(publish).toContain("jq -e 'has(\"assets\")'");
+    expect(publish).toContain("the ${release} mirror lacks the ${tarball}; healing from upstream and publishing the cache.");
+    expect(publish).toContain('gh release upload "${release}" "/tmp/${tarball}" --repo "${GH_REPO}" --clobber');
   });
 
   it("the family ghcr loop walks past the legacy saddle package honestly", async () => {
