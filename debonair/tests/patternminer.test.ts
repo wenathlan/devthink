@@ -18,6 +18,7 @@ import { describe, it } from "vitest";
 import type { AudioReport } from "../analyze.ts";
 import { GENRES } from "../genrematrix.ts";
 import type { IngestDocument, IngestSegment } from "../ingest.ts";
+
 // the seat answers before the module load: this suite rides its own
 // database file so the parallel vitest workers never share one wal
 // writer (the SQLITE_BUSY lesson — every suite its own seat).
@@ -25,9 +26,12 @@ process.env.DATABASE_URL = "file:./local.patternminer.db";
 
 const ingestdbmodule = await import("../ingestdb.ts");
 const { listGenreProfiles, migrategenreschema, saveGenreProfile } = ingestdbmodule;
+
 import {
   BPM_BUCKETS,
   CHROMA_BINS,
+  classifyDocument,
+  GENRE_SEAT_WEIGHTS,
   type GenreProfile,
   type IngestDocumentWithId,
   KEY_POOL_NAMES,
@@ -648,5 +652,64 @@ describe("the genre profile db seat", () => {
     assert.equal(saveGenreProfile(trapProfile(), temp), 1);
     assert.equal(listGenreProfiles(temp).length, 1);
     temp.close();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// the genre verdict — the style-law classifier (the measured lane)
+// ---------------------------------------------------------------------------
+
+describe("the genre verdict", () => {
+  it("answers the fifteen ranked verdicts, the winner first, deterministic", () => {
+    const doc = docOf("verdict-1", { bpm: 140, tonic: 9, mode: "minor", integrated: -9 });
+    const first = classifyDocument(doc);
+    const second = classifyDocument(doc);
+    assert.equal(first.length, 15, "every genre of the dictionary answers a verdict");
+    assert.deepEqual(first, second, "the same document answers the same ranking bit-for-bit");
+    for (let index = 1; index < first.length; index += 1) {
+      assert.ok(first[index - 1].score >= first[index].score, "the ranking descends by score");
+    }
+    const confidenceSum = first.reduce((sum, verdict) => sum + verdict.confidence, 0);
+    assert.ok(Math.abs(confidenceSum - 1) < 0.02, "the confidences share the field (the normalized sum)");
+    assert.ok(first[0].confidence > 1 / 15, "the winner carries more than the even share");
+  });
+
+  it("measures the report, never the name", () => {
+    const named = docOf("trap-beat-01", { bpm: 90, tonic: 0, mode: "major", integrated: -10 });
+    const incognito = docOf("untitled reference", { bpm: 90, tonic: 0, mode: "major", integrated: -10 });
+    assert.deepEqual(classifyDocument(named), classifyDocument(incognito), "the verdict follows the features alone");
+    // and the measured law: 90 bpm major at -10 LUFS ranks the mid-tempo
+    // major genres above the trap family the name declares
+    const verdicts = classifyDocument(named);
+    const hiphop = verdicts.find((verdict) => verdict.genreId === "hiphop");
+    const trap = verdicts.find((verdict) => verdict.genreId === "trap");
+    assert.ok(
+      hiphop && trap && hiphop.score > trap.score,
+      "the bpm seat ranks the 90 bpm document over the trap range",
+    );
+  });
+
+  it("the bpm seat decays outside the genre range and one rules inside it", () => {
+    const inside = classifyDocument(docOf("bpm-in", { bpm: 140, tonic: 9, mode: "minor", integrated: -9 }));
+    const outside = classifyDocument(docOf("bpm-out", { bpm: 60, tonic: 9, mode: "minor", integrated: -9 }));
+    const trapIn = inside.find((verdict) => verdict.genreId === "trap");
+    const trapOut = outside.find((verdict) => verdict.genreId === "trap");
+    assert.ok(trapIn && trapOut && trapIn.score > trapOut.score, "the gaussian decays the far tempo");
+    const ambientOut = outside.find((verdict) => verdict.genreId === "ambient");
+    assert.ok(ambientOut && ambientOut.score > trapOut.score, "the 60 bpm document favors the ambient range");
+  });
+
+  it("the seats carry the documented weights", () => {
+    const sum =
+      GENRE_SEAT_WEIGHTS.bpm + GENRE_SEAT_WEIGHTS.mode + GENRE_SEAT_WEIGHTS.loudness + GENRE_SEAT_WEIGHTS.timbre;
+    assert.ok(Math.abs(sum - 1) < 1e-9, "the seat weights sum to one");
+    assert.ok(GENRE_SEAT_WEIGHTS.bpm > GENRE_SEAT_WEIGHTS.timbre, "the bpm seat leads the verdict");
+  });
+
+  it("a document with no segments answers the even-split fallback, still fifteen verdicts", () => {
+    const doc = docOf("silent", { bpm: 120, tonic: 0, mode: "major", integrated: -14, seconds: 0 });
+    const verdicts = classifyDocument(doc);
+    assert.equal(verdicts.length, 15);
+    assert.ok(verdicts.every((verdict) => Number.isFinite(verdict.score) && verdict.score >= 0));
   });
 });

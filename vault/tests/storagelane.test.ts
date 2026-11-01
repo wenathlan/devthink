@@ -6,7 +6,7 @@
  * family: every assertion here protects the eleven apps riding it.
  */
 
-import { mkdtempSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -76,6 +76,30 @@ describe("the storage lane contract", () => {
     const reopened = openStorageLane({ url: nested });
     expect(reopened.queryOne<{ id: string }>("SELECT id FROM t WHERE id = ?", ["x"])?.id).toBe("x");
     reopened.close();
+  });
+
+  it("isolates the default file per worker under the vitest banner", () => {
+    const before = process.env.VITEST;
+    const hadDatabaseUrl = process.env.DATABASE_URL;
+    delete process.env.DATABASE_URL;
+    process.env.VITEST = "true";
+    try {
+      const lane = openStorageLane({ defaultFile: "./local.db" });
+      const workerfile = `./local-${process.pid}.db`;
+      expect(existsSync(workerfile)).toBe(true);
+      lane.close();
+      rmSync(workerfile, { force: true });
+    } finally {
+      if (before === undefined) delete process.env.VITEST; else process.env.VITEST = before;
+      if (hadDatabaseUrl !== undefined) process.env.DATABASE_URL = hadDatabaseUrl;
+    }
+    delete process.env.VITEST;
+    try {
+      const outside = openStorageLane({ url: ":memory:" });
+      outside.close();
+    } finally {
+      if (before !== undefined) process.env.VITEST = before;
+    }
   });
 
   it("reads the named environment before the default file", () => {

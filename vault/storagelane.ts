@@ -79,8 +79,27 @@ export type StorageLane = {
  */
 function resolveStorageUrl(options: StorageLaneOptions = {}): string {
   const envName = options.envName ?? "DATABASE_URL";
-  const rawUrl = options.url ?? process.env[envName] ?? `file:${options.defaultFile ?? "./local.db"}`;
-  return rawUrl.startsWith("file:") ? rawUrl.slice("file:".length) : rawUrl;
+  const fromEnv = process.env[envName];
+  const rawUrl = options.url ?? fromEnv ?? `file:${options.defaultFile ?? "./local.db"}`;
+  const resolved = rawUrl.startsWith("file:") ? rawUrl.slice("file:".length) : rawUrl;
+  /* the worker isolation seat: a vitest isolate fleet imports the same
+   * runtime module in the same breath (sixty workers, one shared default
+   * file, one working directory) and the WAL handshake answers the
+   * stampede with a locked database no busy window ever covers — the
+   * deadlock is structural (every process holds a read while the journal
+   * flip wants the exclusive write), never a matter of patience. under
+   * the vitest banner (and only there — the env the runner sets on every
+   * worker), a lane that answered no explicit url and no environment
+   * seed opens its own file per worker instead: the default name carries
+   * the pid, the fleet stops sharing, and the lock dies at the root. */
+  if (resolved === (options.defaultFile ?? "./local.db") && !options.url && !fromEnv &&
+      typeof process !== "undefined" && typeof (process as { env?: Record<string, string | undefined> }).env?.VITEST === "string" && process.pid) {
+    const marker = resolved.lastIndexOf(".");
+    const stem = marker > 0 ? resolved.slice(0, marker) : resolved;
+    const ext = marker > 0 ? resolved.slice(marker) : "";
+    return `${stem}-${process.pid}${ext}`;
+  }
+  return resolved;
 }
 
 /**
