@@ -2046,3 +2046,570 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
     -webkit-backdrop-filter: none;
   }
 }
+
+/* ==========================================================================
+   wave 4b — vaultface pass: the SaaS product face. The hero halo (lazy
+   three.js), the face grid (plans table · object browser · database
+   console), the skeleton shimmer, the sonner-style toaster. Every value
+   rides the token vocabulary (--color-*, --radius-*, --dur-*, --ease-*,
+   --floor-*, --z-*) — no raw hue, no transition-all shorthand, never the
+   scale-zero entrance outside the windows pin law, no pill radius (the
+   design contract keeps it retired — chips answer the 4px control law).
+   The pass rides last before its own hard stops.
+   ========================================================================== */
+
+/* ---- the hero halo: the lazy three.js field behind the copy and the door ---- */
+.vc-halo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.55;
+  -webkit-mask-image: radial-gradient(ellipse 62% 58% at 68% 44%, var(--color-ink) 30%, transparent 78%);
+  mask-image: radial-gradient(ellipse 62% 58% at 68% 44%, var(--color-ink) 30%, transparent 78%);
+}
+
+.vc-halo__canvas {
+  position: absolute;
+  top: 50%;
+  left: 66%;
+  width: min(52vw, 640px);
+  height: min(52vw, 640px);
+  transform: translate(-50%, -50%);
+}
+
+/* the hero stacks its children above the halo (the isolation the hero
+   already carries keeps the field inside) */
+.vt-hero > .vt-hero__grid,
+.vt-hero > .vt-hero__foot { position: relative; z-index: 1; }
+
+/* ---- the face grid: the plans table and the console beside, the browse
+   spanning below ---- */
+.vt-zone--face { padding-top: clamp(24px, 4vh, 48px); }
+
+.vc-facegrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.vc-cell { min-width: 0; }
+.vc-cell--wide { grid-column: 1 / -1; }
+
+/* the panel: the mica card of the face (surface step 1, hairline, the
+   trylle shadow 2, the hover lift riding the doctrine micro rule) */
+.vc-plans, .vc-browse, .vc-console {
+  min-width: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklab, var(--color-s1) 88%, transparent);
+  box-shadow: var(--shadow-2);
+  transition: transform var(--sol-micro) var(--sol-ease-out), box-shadow var(--sol-micro) var(--sol-ease-out),
+    border-color var(--sol-micro) var(--sol-ease-out);
+}
+
+.vc-plans:hover, .vc-browse:hover, .vc-console:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-hairline-strong);
+  box-shadow: var(--shadow-3);
+}
+
+.vc-panel__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.vc-panel__title {
+  margin: 0;
+  color: var(--color-ink);
+  font: 650 13px/1.2 var(--font-sans);
+  letter-spacing: var(--sol-track-display);
+}
+
+.vc-panel__count {
+  margin: 0;
+  color: var(--color-ink-3);
+  font: 500 11px/1 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- the dense tables: the product proof ---- */
+.vc-tablescroll { overflow-x: auto; }
+
+.vc-table {
+  width: 100%;
+  min-width: 420px;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.vc-table__caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.vc-table th {
+  padding: 0 var(--space-3) var(--space-2);
+  border-bottom: 1px solid var(--color-hairline-strong);
+  color: var(--color-ink-3);
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: var(--sol-track-label);
+  text-transform: lowercase;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.vc-table td {
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--color-hairline);
+  vertical-align: top;
+}
+
+.vc-table tbody tr {
+  transition: background-color var(--sol-micro) var(--sol-ease-out), transform var(--sol-micro) var(--sol-ease-out);
+}
+
+.vc-table tbody tr:hover {
+  background-color: color-mix(in srgb, var(--color-win) 6%, transparent);
+}
+
+/* the featured row: the forever plan and the lfs channel, one raised step */
+.vc-table tr.is-featured td {
+  background: color-mix(in srgb, var(--color-signal) 4%, transparent);
+}
+
+.vc-cell__name {
+  display: block;
+  color: var(--color-ink);
+  font: 600 13px/1.3 var(--font-mono);
+  letter-spacing: -0.01em;
+}
+
+.vc-cell__note {
+  display: block;
+  margin-top: 2px;
+  max-width: 34ch;
+  color: var(--color-ink-3);
+  font: 400 11px/1.5 var(--font-sans);
+}
+
+.vc-cell__path {
+  display: block;
+  color: var(--color-ink);
+  font: 500 12.5px/1.3 var(--font-mono);
+  overflow-wrap: anywhere;
+}
+
+.vc-cell__bucket {
+  color: var(--color-ink-2);
+  font: 500 12px/1.3 var(--font-mono);
+}
+
+.vc-num {
+  color: var(--color-ink-2);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* the retention policy chip: the 4px control law, forever inverts */
+.vc-policy {
+  display: inline-block;
+  padding: 3px 8px;
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--win-radius-ctl);
+  color: var(--color-ink-2);
+  font: 600 10.5px/1 var(--font-mono);
+  white-space: nowrap;
+}
+
+.vc-policy[data-forever="true"] {
+  color: var(--color-signal-ink);
+  background: var(--color-signal);
+  border-color: transparent;
+}
+
+/* the lfs share bar: the hairline well, the windows accent filling */
+.vc-share {
+  display: block;
+  width: 72px;
+  height: 4px;
+  border-radius: var(--radius-3xl);
+  background: var(--win-hover);
+  overflow: hidden;
+}
+
+.vc-share i {
+  display: block;
+  height: 100%;
+  border-radius: var(--radius-3xl);
+  background: var(--color-win);
+  transition: width var(--dur-2) var(--ease-micro);
+}
+
+/* the channel dot: kind plus dot, never color alone */
+.vc-channel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-ink-2);
+  font: 500 11px/1 var(--font-mono);
+}
+
+.vc-channel i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-ok);
+}
+
+.vc-channel[data-channel="blob"] i { background: var(--color-info); }
+
+/* the digest: mono, truncated, the full sha under the data-tip */
+.vc-digest {
+  color: var(--color-ink-3);
+  font: 400 11px/1 var(--font-mono);
+  letter-spacing: 0.02em;
+}
+
+/* the seal state chip of the safe — intact rides the ok ink, broken the
+   err ink (the state never color alone: the word carries it) */
+.vc-seal {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border: 1px solid color-mix(in srgb, var(--color-ok) 34%, transparent);
+  border-radius: var(--radius-3xl);
+  color: var(--color-ok);
+  font: 600 10.5px/1 var(--font-mono);
+  white-space: nowrap;
+}
+
+.vc-seal[data-intact="false"] {
+  border-color: color-mix(in srgb, var(--color-err) 40%, transparent);
+  color: var(--color-err);
+}
+
+/* the kind chip and the state of the channel ledger (the moved rows) */
+.vc-kind {
+  display: inline-block;
+  padding: 3px 8px;
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--win-radius-ctl);
+  color: var(--color-ink-2);
+  font: 600 10.5px/1 var(--font-mono);
+}
+
+.vc-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-ink-2);
+  font: 500 11px/1 var(--font-mono);
+}
+
+.vc-state i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-ok);
+}
+
+/* ---- the browse tools: the bucket chips and the path filter ---- */
+.vc-browse__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.vc-buckets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.vc-bucketchip {
+  padding: 6px 11px;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--win-radius-ctl);
+  background: transparent;
+  color: var(--color-ink-2);
+  font: 500 11.5px/1 var(--font-mono);
+  transform-origin: center;
+  transition: background-color var(--sol-micro) var(--sol-ease-out), border-color var(--sol-micro) var(--sol-ease-out),
+    color var(--sol-micro) var(--sol-ease-out), transform var(--dur-press) ease-in-out;
+}
+
+.vc-bucketchip:hover {
+  color: var(--color-ink);
+  border-color: var(--color-hairline-strong);
+  background: var(--wash-soft);
+}
+
+.vc-bucketchip:active { transform: scale(0.97); }
+
+.vc-bucketchip:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.vc-bucketchip[aria-pressed="true"] {
+  color: var(--win-accent-ink);
+  background: var(--win-accent);
+  border-color: transparent;
+  font-weight: 600;
+}
+
+.vc-search {
+  flex: 1 1 160px;
+  min-width: 0;
+  height: 32px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--win-radius-ctl);
+  background: color-mix(in oklab, var(--color-s2) 70%, transparent);
+  color: var(--color-ink);
+  font: 400 12px/1 var(--font-mono);
+  transition: border-color var(--sol-micro) var(--sol-ease-out), box-shadow var(--sol-micro) var(--sol-ease-out);
+}
+
+.vc-search::placeholder { color: var(--color-ink-3); }
+
+.vc-search:focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--color-focus) 55%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-focus) 40%, transparent);
+}
+
+/* the honest empty of the browse */
+.vc-empty {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-1);
+  padding: var(--space-8) var(--space-4);
+  border: 1px dashed var(--color-hairline-strong);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+.vc-empty__title {
+  margin: 0;
+  color: var(--color-ink);
+  font: 600 13px/1.3 var(--font-sans);
+}
+
+.vc-empty__line {
+  margin: 0 0 var(--space-2);
+  max-width: 44ch;
+  color: var(--color-ink-3);
+  font: 400 12px/1.6 var(--font-sans);
+}
+
+/* ---- the database console pane: the mono readout ---- */
+.vc-console__pane {
+  margin-bottom: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-md);
+  background: color-mix(in oklab, var(--color-deep) 82%, transparent);
+}
+
+.vc-console__caption {
+  margin: 0 0 var(--space-2);
+  color: var(--color-ink-3);
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: var(--sol-track-label);
+  text-transform: lowercase;
+}
+
+.vc-console__line {
+  display: block;
+  margin: 0 0 4px;
+  color: var(--color-ink-2);
+  font: 400 11.5px/1.7 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.vc-console__prompt { margin-right: 6px; color: var(--color-win); }
+
+/* ---- the skeleton: the shimmer boot face ---- */
+.vc-skeleton {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.vc-skeleton__line {
+  display: block;
+  height: 14px;
+  border-radius: var(--win-radius-ctl);
+  background: var(--color-s3);
+  position: relative;
+  overflow: hidden;
+}
+
+.vc-skeleton__line--head { height: 10px; width: 38%; }
+.vc-skeleton__line[data-narrow="true"] { width: 62%; }
+
+.vc-skeleton__line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-signal) 9%, transparent), transparent);
+  animation: vcShimmer 1.4s linear infinite;
+}
+
+/* ---- the toaster: the sonner stack (bottom-right, acrylic, spring in,
+   swipe-out right) ---- */
+.vc-toaster {
+  position: fixed;
+  right: var(--space-4);
+  bottom: var(--space-4);
+  z-index: var(--z-toast);
+  display: grid;
+  gap: var(--space-2);
+  width: min(360px, calc(100vw - var(--space-8)));
+}
+
+.vc-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--radius-lg);
+  background: var(--acrylic-strong);
+  backdrop-filter: blur(var(--blur-chrome)) saturate(1.4);
+  -webkit-backdrop-filter: blur(var(--blur-chrome)) saturate(1.4);
+  box-shadow: var(--shadow-flyout);
+  animation: vcToastIn var(--dur-2) var(--ease-spring) backwards;
+}
+
+.vc-toast[data-leaving="true"] {
+  animation: vcToastOut var(--dur-1) var(--ease-exit) forwards;
+  pointer-events: none;
+}
+
+.vc-toast__dot {
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: var(--color-info);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-info) 18%, transparent);
+}
+
+.vc-toast[data-tone="ok"] .vc-toast__dot {
+  background: var(--color-ok);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-ok) 18%, transparent);
+}
+
+.vc-toast[data-tone="err"] .vc-toast__dot {
+  background: var(--color-err);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-err) 18%, transparent);
+}
+
+.vc-toast__body { min-width: 0; flex: 1; }
+
+.vc-toast__title {
+  margin: 0;
+  color: var(--color-ink);
+  font: 600 12.5px/1.4 var(--font-sans);
+}
+
+.vc-toast__line {
+  margin: 2px 0 0;
+  color: var(--color-ink-2);
+  font: 400 11.5px/1.5 var(--font-sans);
+  overflow-wrap: anywhere;
+}
+
+.vc-toast__close {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--win-radius-ctl);
+  background: transparent;
+  color: var(--color-ink-3);
+  cursor: pointer;
+  transition: background-color var(--sol-micro) var(--sol-ease-out), color var(--sol-micro) var(--sol-ease-out),
+    transform var(--dur-press) ease-in-out;
+}
+
+.vc-toast__close:hover {
+  background: var(--win-hover);
+  color: var(--color-ink);
+}
+
+.vc-toast__close:active { transform: scale(0.7); }
+
+.vc-toast__close:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* the physics of the pass (enter on the spring floor, exit the directional
+   swipe — the zero-floor entrance never rides the face: the menu floor
+   carries the scale) */
+@keyframes vcShimmer {
+  to { transform: translateX(100%); }
+}
+
+@keyframes vcToastIn {
+  from { opacity: 0; transform: translateY(12px) scale(var(--floor-menu, 0.97)); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes vcToastOut {
+  to { opacity: 0; transform: translateX(24px); }
+}
+
+/* ---- the narrow windows of the face ---- */
+@media (max-width: 900px) {
+  .vc-facegrid { grid-template-columns: 1fr; }
+  .vc-cell--wide { grid-column: auto; }
+  .vc-halo { opacity: 0.3; }
+  .vc-halo__canvas { left: 50%; width: min(80vw, 480px); height: min(80vw, 480px); }
+}
+
+/* ---- the hard stops of the pass (last, per the guard law) ---- */
+@media (prefers-reduced-motion: reduce) {
+  .vc-toast, .vc-toast[data-leaving="true"] { animation: none; }
+  .vc-skeleton__line::after { animation: none; display: none; }
+  .vc-plans, .vc-browse, .vc-console, .vc-table tbody tr, .vc-share i { transition: none; transform: none; }
+  .vc-bucketchip:active, .vc-toast__close:active { transform: none; }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .vc-toast {
+    background: var(--color-s1);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .vc-plans, .vc-browse, .vc-console { background: var(--color-s1); }
+  .vc-console__pane { background: var(--color-deep); }
+  .vc-search { background: var(--color-s2); }
+}

@@ -50,12 +50,23 @@ let memory: VisitorOnboarding | null = null;
 function readEnvBase(): string {
   try {
     const env = (import.meta as ImportMeta & { env?: { VITE_ONBOARDING_URL?: string } }).env;
-    return (typeof env?.VITE_ONBOARDING_URL === "string" ? env.VITE_ONBOARDING_URL : "")
-      .trim()
-      .replace(/\/+$/, "");
+    return (typeof env?.VITE_ONBOARDING_URL === "string" ? env.VITE_ONBOARDING_URL : "").trim().replace(/\/+$/, "");
   } catch {
     return "";
   }
+}
+
+/**
+ * Reads the validated platform base the platform lanes ride: the
+ * VITE_ONBOARDING_URL declaration when the host passes the public-https
+ * discipline (hostallowed), an empty string otherwise — the caller answers
+ * from its own store (the offline build law). Exported for the same-origin
+ * lanes that consult the gateway beside the flags (the ui copy store).
+ *
+ * @returns the validated base url, or an empty string when none answers.
+ */
+export function onboardingbase(): string {
+  return BASE !== "" && hostallowed(BASE) ? BASE : "";
 }
 
 /**

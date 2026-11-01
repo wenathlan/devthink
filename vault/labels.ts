@@ -22,7 +22,7 @@ import type { LabelRow } from "./db.ts";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 3;
+export const LABEL_REVISION = 4;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -33,7 +33,7 @@ export const LABEL_MANIFEST = {
   "app.boundary.reload": "reload the page",
   // the window shell widget (the one chrome of the application)
   "shell.window.aria": "vault window",
-  "ShellBrand": "vault",
+  ShellBrand: "vault",
   "shell.role": "the family vault",
   "shell.caption.minimize": "Minimize vault",
   "shell.caption.maximize": "Maximize vault",
@@ -76,7 +76,8 @@ export const LABEL_MANIFEST = {
   "home.facts.digests": "digests",
   "home.facts.sizes": "sizes",
   "home.channel.lfs.name": "lfs masters",
-  "home.channel.lfs.note": "binary masters and any row over the threshold ride the lfs objects — sha-256 sealed, 64-bit pointers.",
+  "home.channel.lfs.note":
+    "binary masters and any row over the threshold ride the lfs objects — sha-256 sealed, 64-bit pointers.",
   "home.channel.blobs.name": "in-db blobs",
   "home.channel.blobs.note": "small text-like rows ride the git objects inside the self-hosted database — sha-1 oid.",
   "home.channel.pointers.name": "lfs pointers",
@@ -86,7 +87,7 @@ export const LABEL_MANIFEST = {
   "home.ledger.eyebrow": "the vault ledger",
   "home.ledger.title": "what the safe keeps",
   "home.ledger.lede":
-    "no artifact rows are served by the staging surface yet — the ledger presents the storage contract itself, channel by channel.",
+    "no artifact rows are served by the staging surface yet — the safe runs on a three-step rhythm and the jobs rail answers what the vault keeps.",
   "home.ledger.caption": "the storage channels of the vault — kind, sealed size and status",
   "home.table.channel": "channel",
   "home.table.kind": "kind",
@@ -100,7 +101,8 @@ export const LABEL_MANIFEST = {
   "home.steps.attest.text": "the record answers for itself: path, mime, size and digest.",
   "home.jobs.eyebrow": "the three jobs",
   "home.jobs.db.title": "every site database",
-  "home.jobs.db.text": "vault keeps the databases of the whole family: one deployable clone of storage where every site state lives.",
+  "home.jobs.db.text":
+    "vault keeps the databases of the whole family: one deployable clone of storage where every site state lives.",
   "home.jobs.backups.title": "the data backups",
   "home.jobs.backups.text":
     "backups ride the same house tree — the network stores its recoverable copies here, beside the state they protect.",
@@ -179,7 +181,8 @@ export const LABEL_MANIFEST = {
   "buckets.card.shareAria": "lfs share {share} percent",
   "buckets.shelf.aria": "the bucket shelf",
   "buckets.empty.shelfTitle": "the shelf stands empty",
-  "buckets.empty.shelfLine": "No bucket holds a row of the rehearsal — restore the ledger on /objects to fill the shelf again.",
+  "buckets.empty.shelfLine":
+    "No bucket holds a row of the rehearsal — restore the ledger on /objects to fill the shelf again.",
   "buckets.empty.drawerTitle": "the {bucket} bucket keeps nothing",
   "buckets.empty.drawerLine": "The policy holds, the rows do not — seal a deposit into this bucket on /objects.",
   "buckets.drawer.aria": "the objects of the {bucket} bucket",
@@ -309,7 +312,7 @@ export async function seedLabels(): Promise<{ seeded: number; protected: number 
   let saved = 0;
   for (const [id, text] of Object.entries(LABEL_MANIFEST)) {
     const row = rows.get(id);
-    overrides.set(id, row && row.translated ? row.text : text);
+    overrides.set(id, row?.translated ? row.text : text);
     if (!row || (!row.translated && row.text !== text)) {
       rows.set(id, {
         id,

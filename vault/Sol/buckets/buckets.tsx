@@ -18,9 +18,10 @@ import {
 } from "@fluentui/react-icons";
 import { useMemo, useState } from "react";
 import { type BucketRule, type BucketShelf, retentionLabel, seedRules, shelfOf } from "../../buckets.ts";
-import { formatBytes, seedVault, type VaultObject } from "../../objects.ts";
 import { label, labelfill } from "../../labels";
-import { EmptyState } from "../wingets";
+import { formatBytes, seedVault, type VaultObject } from "../../objects.ts";
+import { uicopy, uicopyfill, useUicopy } from "../../uistore.ts";
+import { EmptyState, toast } from "../wingets";
 
 /** the seed of the rehearsal shelf (shown on the page, pinned by the tests) */
 export const SHELF_SEED = 912731;
@@ -82,6 +83,9 @@ function BucketObjectLine({ object }: { object: VaultObject }) {
 
 /** The buckets page: the retention shelf of the safe. */
 export default function Buckets() {
+  // the store mount: the live rows land once and the page re-renders
+  useUicopy();
+
   const [seed, setSeed] = useState(SHELF_SEED);
   const [rules, setRules] = useState<BucketRule[]>(() => seedRules(SHELF_SEED));
   const [objects] = useState<VaultObject[]>(() => seedVault(SHELF_SEED));
@@ -96,6 +100,25 @@ export default function Buckets() {
     setSeed(next);
     setRules(seedRules(next));
     setActive(undefined);
+    toast(uicopy("face.toast.reseedTitle"), uicopyfill("face.toast.reseedBody", { seed: String(next) }), "info");
+  }
+
+  /** opens a bucket drawer (the pick answers a toast with the rollup) */
+  function pick(bucket: string) {
+    const next = active === bucket ? undefined : bucket;
+    setActive(next);
+    if (!next) return;
+    const entry = shelf.find((row) => row.rule.bucket === next);
+    if (!entry) return;
+    toast(
+      uicopy("face.toast.pickTitle"),
+      uicopyfill("face.toast.pickBody", {
+        bucket: next,
+        rows: String(entry.objects),
+        bytes: formatBytes(entry.bytes),
+      }),
+      "info",
+    );
   }
 
   return (
@@ -122,6 +145,7 @@ export default function Buckets() {
               setSeed(SHELF_SEED);
               setRules(seedRules(SHELF_SEED));
               setActive(undefined);
+              toast(uicopy("face.toast.restoreTitle"), uicopy("face.toast.restoreBody"), "info");
             }}
           >
             <ArrowRotateCounterclockwiseRegular fontSize={14} aria-hidden="true" />
@@ -139,12 +163,7 @@ export default function Buckets() {
       ) : (
         <section className="vb-shelf" aria-label={label("buckets.shelf.aria")}>
           {shelf.map((entry) => (
-            <BucketCard
-              key={entry.rule.bucket}
-              entry={entry}
-              active={active === entry.rule.bucket}
-              onPick={(bucket) => setActive(active === bucket ? undefined : bucket)}
-            />
+            <BucketCard key={entry.rule.bucket} entry={entry} active={active === entry.rule.bucket} onPick={pick} />
           ))}
         </section>
       )}

@@ -39,6 +39,7 @@ import {
   usageOf,
 } from "./objectsledger.ts";
 import { type QuotaVerdict, quotaLimitFrom, quotaVerdict, readQuota, setQuota } from "./quota.ts";
+import { ensureuicopyingested, uistoreget, uistorelist } from "./uistore.ts";
 
 /** @section auth */
 
@@ -107,9 +108,7 @@ export function tokenVerdict(req: IncomingMessage): "open" | "refused" | "sealed
     return "refused";
   }
   const digest = createHash("sha256").update(presented, "utf8").digest();
-  return digest.length === vaultTokenDigest.length && timingSafeEqual(digest, vaultTokenDigest)
-    ? "open"
-    : "refused";
+  return digest.length === vaultTokenDigest.length && timingSafeEqual(digest, vaultTokenDigest) ? "open" : "refused";
 }
 
 /** @section routes */
@@ -117,6 +116,7 @@ export function tokenVerdict(req: IncomingMessage): "open" | "refused" | "sealed
 /** the route catalog of the vault http surface (health kept verbatim from the declaration it grew from). */
 export const routes = {
   health: "/api/health",
+  uicopy: "/api/v1/ui/copy",
   projects: "/api/v1/storage/projects",
   objects: "/api/v1/storage/objects",
   quota: "/api/v1/storage/quota",
@@ -179,6 +179,29 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
         storage: { driver: storageDriverKind() },
         auth: { required: true, configured: vaultTokenConfigured() },
       });
+      return;
+    }
+    /* the ui copy lane — the winget copy of the vault rides the uicopy
+     * table of the site store and answers same-origin beside the health
+     * probe (an open read: the interface text carries no secret — the
+     * storage truth past this line stays behind the token gate). One lane
+     * lists the rows for the mount loader, one lane answers a single key,
+     * and an unknown key refuses honestly instead of inventing a word. */
+    if (method === "GET" && pathname === routes.uicopy) {
+      await ensureuicopyingested();
+      const rows = await uistorelist(String(url.searchParams.get("locale") || "en"));
+      sendJson(res, 200, { rows });
+      return;
+    }
+    if (method === "GET" && pathname.startsWith(`${routes.uicopy}/`)) {
+      await ensureuicopyingested();
+      const key = safeDecode(pathname.slice(routes.uicopy.length + 1));
+      const row = await uistoreget(key, String(url.searchParams.get("locale") || "en"));
+      if (!row) {
+        sendError(res, 404, "VAULT_COPY", `no copy row answers ${key}`);
+        return;
+      }
+      sendJson(res, 200, row);
       return;
     }
     /* the faun lesson door: every route past the health probe demands the
@@ -559,10 +582,15 @@ function applyCors(res: ServerResponse): void {
   );
 }
 
-/** answers one json payload with the status. */
+/** answers one json payload with the status (the declared length rides the
+ * utf-8 byte count — the copy lanes carry em-dashes and middots, and a
+ * utf-16 char count would truncate every multibyte payload). */
 function sendJson(res: ServerResponse, status: number, body: unknown): void {
   const payload = JSON.stringify(body);
-  res.writeHead(status, { "content-type": "application/json", "content-length": String(payload.length) });
+  res.writeHead(status, {
+    "content-type": "application/json",
+    "content-length": String(Buffer.byteLength(payload, "utf8")),
+  });
   res.end(payload);
 }
 

@@ -7,7 +7,7 @@
 // the same seed always musters the same shelf. No clocks, no network.
 // This module is the testable core of the /buckets page.
 
-import { VAULT_BUCKETS, type VaultObject, mulberry32 } from "./objects.ts";
+import { mulberry32, VAULT_BUCKETS, type VaultObject } from "./objects.ts";
 
 /** the retention policy of one bucket: 0 days = sealed forever. */
 export interface BucketRule {
@@ -60,7 +60,11 @@ export function objectsOf(objects: readonly VaultObject[], bucket: string): Vaul
 }
 
 /** rolls one bucket up into its shelf row. */
-export function bucketShelf(objects: readonly VaultObject[], rules: readonly BucketRule[], bucket: string): BucketShelf {
+export function bucketShelf(
+  objects: readonly VaultObject[],
+  rules: readonly BucketRule[],
+  bucket: string,
+): BucketShelf {
   const rule = ruleFor(rules, bucket);
   const mine = objectsOf(objects, bucket);
   let bytes = 0;

@@ -31,6 +31,8 @@ import { Link, useLocation } from "wouter";
 import { FAMILY_SLUGS, familyAccentOf } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
 import { label, labelfill } from "../../labels";
+import { useUicopy } from "../../uistore.ts";
+import { Toaster } from "../wingets";
 
 /** the theme in memory: flips the data-theme attribute, stores nothing */
 type ThemeName = "dark" | "light";
@@ -118,7 +120,12 @@ export const RAIL_APPS: readonly RailApp[] = [
 function ThemeToggle() {
   const [current, setCurrent] = useState<ThemeName>(currentTheme());
   return (
-    <button type="button" className="win-theme" aria-label={label("shell.theme.aria")} onClick={() => setCurrent(toggleTheme())}>
+    <button
+      type="button"
+      className="win-theme"
+      aria-label={label("shell.theme.aria")}
+      onClick={() => setCurrent(toggleTheme())}
+    >
       {current === "dark" ? (
         <WeatherSunnyRegular fontSize={14} aria-hidden="true" />
       ) : (
@@ -137,6 +144,10 @@ function ThemeToggle() {
  * @returns the app surface element.
  */
 export function Shell({ children }: { children: ReactNode }) {
+  // the store mount: the live ui rows land once and every page of the
+  // window re-renders onto them (the seed answers the first paint)
+  useUicopy();
+
   // the embedded contract: inside the os power clip the app rides the host
   // window chrome — the seat class answers the mount, the surface tree
   // never changes between the two doors (the window-era law: one design)
@@ -220,6 +231,7 @@ export function Shell({ children }: { children: ReactNode }) {
         </nav>
         <div className="win-content">{children}</div>
       </div>
+      <Toaster />
     </div>
   );
 }

@@ -21,8 +21,8 @@ import {
 } from "@fluentui/react-icons";
 import { useMemo, useState } from "react";
 import { type BucketRule, retentionLabel, seedRules } from "../../buckets.ts";
-import { formatBytes, seedVault, type VaultObject } from "../../objects.ts";
 import { label, labelfill } from "../../labels";
+import { formatBytes, seedVault, type VaultObject } from "../../objects.ts";
 import {
   firstDueTick,
   horizonTick,
@@ -32,7 +32,8 @@ import {
   sweepPlan,
   tickLabel,
 } from "../../retention.ts";
-import { EmptyState } from "../wingets";
+import { uicopy, uicopyfill, useUicopy } from "../../uistore.ts";
+import { EmptyState, toast } from "../wingets";
 
 /** the seed of the rehearsal clock (shown on the page, pinned by the tests) */
 export const RETENTION_SEED = 440215;
@@ -62,6 +63,9 @@ function VerdictRow({ verdict }: { verdict: RetentionVerdict }) {
 
 /** The retention page: the clock and the sweep plan of the safe. */
 export default function Retention() {
+  // the store mount: the live rows land once and the page re-renders
+  useUicopy();
+
   const [seed, setSeed] = useState(RETENTION_SEED);
   const [rules, setRules] = useState<BucketRule[]>(() => seedRules(RETENTION_SEED));
   const [objects, setObjects] = useState<VaultObject[]>(() => seedVault(RETENTION_SEED));
@@ -81,7 +85,19 @@ export default function Retention() {
         <h1 className="pagehead__title">{label("retention.title")}</h1>
         <p className="pagehead__lede">{labelfill("retention.lede", { tick: tickLabel(now) })}</p>
         <div className="pagehead__actions">
-          <button type="button" className="btn" onClick={() => setNow((value) => value + ROLL_STEP)}>
+          <button
+            type="button"
+            className="btn"
+            onClick={() => {
+              const next = now + ROLL_STEP;
+              setNow(next);
+              toast(
+                uicopy("face.toast.rollTitle"),
+                uicopyfill("face.toast.rollBody", { tick: tickLabel(next) }),
+                "info",
+              );
+            }}
+          >
             <PlayFilled fontSize={14} aria-hidden="true" />
             {labelfill("retention.action.roll", { step: String(ROLL_STEP) })}
           </button>
@@ -93,6 +109,7 @@ export default function Retention() {
               setRules(seedRules(RETENTION_SEED));
               setObjects(seedVault(RETENTION_SEED));
               setNow(0);
+              toast(uicopy("face.toast.restoreTitle"), uicopy("face.toast.restoreBody"), "info");
             }}
           >
             <ArrowRotateCounterclockwiseRegular fontSize={14} aria-hidden="true" />
@@ -107,6 +124,11 @@ export default function Retention() {
               setRules(seedRules(next));
               setObjects(seedVault(next));
               setNow(0);
+              toast(
+                uicopy("face.toast.reseedTitle"),
+                uicopyfill("face.toast.reseedBody", { seed: String(next) }),
+                "info",
+              );
             }}
           >
             <HourglassRegular fontSize={14} aria-hidden="true" />

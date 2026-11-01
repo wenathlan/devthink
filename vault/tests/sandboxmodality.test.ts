@@ -11,16 +11,9 @@
 // vitest:
 //   pnpm vitest run tests/sandboxmodality.test.ts
 import assert from "node:assert/strict";
-import { describe, it } from "vitest";
 import { lanesof } from "@wenathlan/saddle/workloadlaw";
-import {
-  APPSLUG,
-  SANDBOXLANEENV,
-  WORKLOADLANES,
-  laneof,
-  lanesandbox,
-  lanesandboxfromenv,
-} from "../sandboxmodality.ts";
+import { describe, it } from "vitest";
+import { APPSLUG, laneof, lanesandbox, lanesandboxfromenv, SANDBOXLANEENV, WORKLOADLANES } from "../sandboxmodality.ts";
 
 describe("the workload lane mirror (the engine catalog lockstep)", () => {
   it("answers the engine catalog rows for vault — the byte pin", () => {

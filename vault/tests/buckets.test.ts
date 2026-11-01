@@ -16,7 +16,7 @@ import {
   shelfBytes,
   shelfOf,
 } from "../buckets.ts";
-import { VAULT_BUCKETS, seedVault } from "../objects.ts";
+import { seedVault, VAULT_BUCKETS } from "../objects.ts";
 
 describe("policies", () => {
   const rules = seedRules(912731);
@@ -92,7 +92,7 @@ describe("shelf", () => {
         continue;
       }
       const max = Math.max(...mine.map((object) => object.size));
-      assert.equal(entry.biggest!.size, max);
+      assert.equal(entry.biggest?.size, max);
     }
   });
 

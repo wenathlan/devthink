@@ -8,8 +8,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import {
-  VAULT_BUCKETS,
-  type VaultObject,
   channelPreview,
   digestFor,
   digestShort,
@@ -19,6 +17,8 @@ import {
   pointerTextOf,
   sealObject,
   seedVault,
+  VAULT_BUCKETS,
+  type VaultObject,
   vaultCensus,
   verifyObject,
 } from "../objects.ts";
@@ -102,7 +102,10 @@ describe("rehearsal vault", () => {
 
   it("rides only the named buckets and every row is sealed and verified", () => {
     for (const object of vault) {
-      assert.ok(VAULT_BUCKETS.includes(object.bucket as (typeof VAULT_BUCKETS)[number]), `${object.path} rides a named bucket`);
+      assert.ok(
+        VAULT_BUCKETS.includes(object.bucket as (typeof VAULT_BUCKETS)[number]),
+        `${object.path} rides a named bucket`,
+      );
       assert.equal(verifyObject(object), true, `${object.path} is sealed intact`);
       assert.ok(object.size >= 0);
       assert.ok(object.path.startsWith("/"));
@@ -122,7 +125,7 @@ describe("rehearsal vault", () => {
     assert.equal(census.total, vault.length);
     assert.ok(census.biggest, "the biggest row exists");
     for (const object of vault) {
-      assert.ok(census.biggest!.size >= object.size);
+      assert.ok(census.biggest?.size >= object.size);
     }
     assert.equal(vaultCensus([]).total, 0);
     assert.equal(vaultCensus([]).biggest, undefined);

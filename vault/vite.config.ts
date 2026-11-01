@@ -1,7 +1,8 @@
 /** Style: vault sol — static SPA built straight at the app root so the hashed bundles land beside the sources, with a repository-scoped base path that answers any deploy root (pages subpath, vercel, netlify, workers). The Tailwind 4 vite plugin compiles the theme stylesheet's `@import "tailwindcss"` head (the @theme source of truth + the light/hcf custom variants). */
+
+import path from "node:path";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
-import path from "node:path";
 import { defineConfig } from "vite";
 
 function pagesBasePath(value: string | undefined): string {

@@ -9,9 +9,9 @@ import { describe, it } from "vitest";
 import { seedRules } from "../buckets.ts";
 import { sealObject, seedVault } from "../objects.ts";
 import {
-  ROLL_STEP,
   firstDueTick,
   horizonTick,
+  ROLL_STEP,
   retentionVerdicts,
   sweepPlan,
   tickLabel,
