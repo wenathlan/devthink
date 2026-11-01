@@ -22,9 +22,9 @@ mkdirSync(path.dirname(path.resolve(file)), { recursive: true });
 
 /** the one sqlite connection of the runtime (WAL, foreign keys, patient locks). */
 export const db = new Database(file);
+db.pragma("busy_timeout = 5000");
 db.pragma("journal_mode = WAL");
 db.pragma("foreign_keys = ON");
-db.pragma("busy_timeout = 5000");
 
 /** the parameter types the helpers bind (sqlite stores them narrow). */
 export type SqlParam = string | number | bigint | boolean | null;

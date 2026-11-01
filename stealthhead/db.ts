@@ -38,6 +38,7 @@ function resolvedatabaseurl(): string {
 /** the sqlite connection (synchronous, wal by pragma below). */
 const sqlite = new Database(resolvedatabaseurl().replace(/^file:/, ""));
 
+sqlite.pragma("busy_timeout = 5000");
 sqlite.pragma("journal_mode = wal");
 
 /** the schema ddl: static strings only, safe to run on every boot. */
