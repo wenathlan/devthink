@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# devthink 2.0.153 — THE ONE CONTAINER FILE (the saddle standard: a single
+# devthink 2.0.154 — THE ONE CONTAINER FILE (the saddle standard: a single
 # Dockerfile manages every container concern of the repository, compose is
 # absorbed, and Containerfile is the same format under the OCI name —
 # Dockerfile is the universally compatible spelling, so it is the one file
@@ -111,7 +111,7 @@
 # assets (SHA256SUMS), never written into the sources.
 #
 # build args (all overridable, workflow-friendly):
-#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.153
+#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.154
 #   DEVTHINK_REVISION  git sha baked into the OCI revision label
 #
 # runtime contract (the compose.yml stack is MERGED INTO this file: the
@@ -153,7 +153,7 @@
 #     --tmpfs /tmp:size=2g,mode=1777 \
 #     -e DEVTHINK_MEMORY_ENGINE=ram -e DEVTHINK_PLATFORM= -e DEVTHINK_CDN_URL= \
 #     -p 31080:8080 \
-#     ghcr.io/wenathlan/devthink:2.0.153
+#     ghcr.io/wenathlan/devthink:2.0.154
 #
 #   network isolation notes: `--network none` is the default posture — the
 #   site, the relay and the loopback mcp listener all answer inside the
@@ -465,7 +465,7 @@ RUN set -eux; \
     test -x /out/devthink
 
 FROM gcr.io/distroless/cc-debian12:nonroot@sha256:9dac0a79194e45a7da0158a9c6da57b217585af0786db3845d1f0ec1a0dd182f AS binary-runtime
-ARG DEVTHINK_VERSION=2.0.153
+ARG DEVTHINK_VERSION=2.0.154
 ARG DEVTHINK_REVISION=unknown
 
 # OCI labels of the DevThink identity for the binary surface.
@@ -529,7 +529,7 @@ RUN set -eux; \
 # the file)
 # ---------------------------------------------------------------------------
 FROM debian:trixie-slim@sha256:f6b08b09a05725f9431502d3b5714f5c4576e82c1a84fa1debe0c24a7e0c3ec4 AS runtime
-ARG DEVTHINK_VERSION=2.0.153
+ARG DEVTHINK_VERSION=2.0.154
 ARG DEVTHINK_REVISION=unknown
 # the node runtime of the five-architecture surface: the verified tarball
 # the nodefetch stage extracted lands under /usr/local (bin/node, the npm
