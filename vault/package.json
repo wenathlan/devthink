@@ -112,6 +112,11 @@
       "types": "./utils.ts",
       "import": "./utils.ts",
       "default": "./utils.ts"
+    },
+    "./vaultclient": {
+      "types": "./vaultclient.ts",
+      "import": "./vaultclient.ts",
+      "default": "./vaultclient.ts"
     }
   },
   "files": [
@@ -138,6 +143,7 @@
     "sha.ts",
     "storage.ts",
     "utils.ts",
+    "vaultclient.ts",
     "!tests/tmp"
   ],
   "engines": {

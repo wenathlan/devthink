@@ -16,6 +16,7 @@ import { seedRules } from "../../buckets.ts";
 import { formatBytes, seedVault, vaultCensus } from "../../objects.ts";
 import { firstDueTick, sweepPlan } from "../../retention.ts";
 import { uicopy, uicopyfill } from "../../uistore.ts";
+import { useVaultUsage } from "../../vaultclient.ts";
 import { FACE_SEED } from "./HomePlanstable.tsx";
 
 /** the storage contract threshold the contract line reads (the real
@@ -82,6 +83,10 @@ function channels(): ChannelRow[] {
  * @returns the console element.
  */
 export function Dbconsole() {
+  /** the engine lane: when the configured origin answers, the live usage
+   * census renders its own console line (the engine answered — the
+   * rehearsal lines below stay declared, never pretending to be live). */
+  const { live } = useVaultUsage();
   const ledger = useMemo(() => seedVault(FACE_SEED), []);
   const rules = useMemo(() => seedRules(FACE_SEED), []);
   const census = useMemo(() => vaultCensus(ledger), [ledger]);
@@ -98,6 +103,18 @@ export function Dbconsole() {
       </header>
       <div className="vc-console__pane" role="log" aria-label={uicopy("face.console.caption")}>
         <p className="vc-console__caption">{uicopy("face.console.caption")}</p>
+        {live ? (
+          <p className="vc-console__line vc-console__line--live">
+            <span className="vc-console__prompt" aria-hidden="true">
+              »
+            </span>
+            {uicopyfill("face.console.line.live", {
+              objects: String(live.objects),
+              bytes: formatBytes(Number(live.bytes)),
+              chunks: String(live.chunks),
+            })}
+          </p>
+        ) : null}
         <p className="vc-console__line">
           <span className="vc-console__prompt" aria-hidden="true">
             »

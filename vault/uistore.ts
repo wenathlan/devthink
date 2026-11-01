@@ -84,6 +84,7 @@ const SEED: Readonly<Record<string, string>> = Object.freeze({
   "face.console.head": "database console",
   "face.console.caption": "census · channels · sweep plan",
   "face.console.line.census": "census  {rows} rows · {bytes} under seal",
+  "face.console.line.live": "live    {objects} objects · {bytes} · {chunks} chunks — the engine answered",
   "face.console.line.lanes": "lanes   lfs {lfsRows} rows · {lfsBytes}  ·  blob {blobRows} rows · {blobBytes}",
   "face.console.line.biggest": "biggest {path} · {bytes}",
   "face.console.line.sweep": "sweep   {rows} rows · {bytes} due at tick {tick} — a plan, never an action",

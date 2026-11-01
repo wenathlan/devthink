@@ -511,7 +511,7 @@ export class FileBlobStore implements BlobStore {
   private closed = false;
 
   constructor(root: string, options: FileBlobOptions = {}) {
-    this.root = root.replace(/\/+$/, "");
+    this.root = root.replace(/\/{1,64}$/, "");
     this.cap = options.capBytes ?? BLOB_DEFAULT_CAP_BYTES;
     this.now = options.now ?? Date.now;
   }
@@ -699,7 +699,7 @@ export class GatewayBlobStore implements BlobStore {
   private closed = false;
 
   constructor(origin: string, options: GatewayBlobOptions = {}) {
-    this.origin = origin.trim().replace(/\/+$/, "");
+    this.origin = origin.trim().replace(/\/{1,64}$/, "");
     this.fetchImpl = options.fetchImpl ?? globalThis.fetch;
     this.now = options.now ?? Date.now;
     this.timeoutMs = options.timeoutMs ?? BLOB_GATEWAY_TIMEOUT_MS;
@@ -1022,7 +1022,7 @@ async function vaultbody(response: Response): Promise<{ code: string; message: s
  * @returns the vault storage seam.
  */
 export function vaultclientseam(origin: string, options: VaultSeamOptions = {}): VaultStorageSeam {
-  const base = origin.trim().replace(/\/+$/, "");
+  const base = origin.trim().replace(/\/{1,64}$/, "");
   const fetchImpl = options.fetchImpl ?? globalThis.fetch;
   const token = options.token ?? "";
   const timeoutMs = options.timeoutMs ?? BLOB_GATEWAY_TIMEOUT_MS;
