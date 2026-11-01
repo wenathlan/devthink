@@ -729,7 +729,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
                 <button
                   key={app.id}
                   type="button"
-                  className="dt-start__app flex h-[84px] w-24 cursor-pointer flex-col items-center justify-center rounded-xs border-0 bg-transparent pt-2 text-ink transition-colors duration-100 ease-in-out hover:bg-white/10 focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none light:hover:bg-black/8 [&_.dt-tile]:h-8 [&_.dt-tile]:w-8 [&_.dt-tile]:rounded-sm [&_.dt-tile]:shadow-none"
+                  className="dt-start__app flex h-[84px] w-24 cursor-pointer flex-col items-center justify-center rounded-xs border-0 bg-transparent pt-2 text-ink transition-[background-color,transform] duration-150 ease-micro hover:-translate-y-px hover:bg-white/10 focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none light:hover:bg-black/8 motion-reduce:transition-none motion-reduce:hover:translate-y-0 hover:[&_.dt-tile]:shadow-[0_2px_4px_rgb(0_0_0/24%),0_10px_22px_-8px_rgb(0_0_0/45%)] [&_.dt-tile]:transition-[box-shadow] [&_.dt-tile]:duration-150 [&_.dt-tile]:ease-micro [&_.dt-tile]:h-8 [&_.dt-tile]:w-8 [&_.dt-tile]:rounded-sm [&_.dt-tile]:shadow-none"
                   style={{ "--stagger-i": index } as CSSProperties}
                   title={app.detail}
                   onClick={() => openApp(app)}
@@ -756,7 +756,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
                     <button
                       key={app.id}
                       type="button"
-                      className="dt-start__app flex h-[84px] w-24 cursor-pointer flex-col items-center justify-center rounded-xs border-0 bg-transparent pt-2 text-ink transition-colors duration-100 ease-in-out hover:bg-white/10 focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none light:hover:bg-black/8 [&_.dt-tile]:h-8 [&_.dt-tile]:w-8 [&_.dt-tile]:rounded-sm [&_.dt-tile]:shadow-none"
+                      className="dt-start__app flex h-[84px] w-24 cursor-pointer flex-col items-center justify-center rounded-xs border-0 bg-transparent pt-2 text-ink transition-[background-color,transform] duration-150 ease-micro hover:-translate-y-px hover:bg-white/10 focus-visible:shadow-[inset_0_-2px_0_var(--color-win)] focus-visible:outline-none light:hover:bg-black/8 motion-reduce:transition-none motion-reduce:hover:translate-y-0 hover:[&_.dt-tile]:shadow-[0_2px_4px_rgb(0_0_0/24%),0_10px_22px_-8px_rgb(0_0_0/45%)] [&_.dt-tile]:transition-[box-shadow] [&_.dt-tile]:duration-150 [&_.dt-tile]:ease-micro [&_.dt-tile]:h-8 [&_.dt-tile]:w-8 [&_.dt-tile]:rounded-sm [&_.dt-tile]:shadow-none"
                       style={{ "--stagger-i": index } as CSSProperties}
                       title={app.detail}
                       onClick={() => openApp(app)}
