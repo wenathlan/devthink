@@ -2,21 +2,22 @@
  * sandboxlane — the server-side sandbox of the run and storage lane
  * real filesystem round trips inside the session jail: write, list, read,
  * removal, the containment refusal, the invalid session gate, the honest
- * pending answers, the modalities report and the once-only welcome page,
- * and the vendored registry mirror pinned byte-identical to the engine
- * source (the single-source law of the catalog). every test drives a
- * unique session id so the .sandboxrun root under the package cwd stays
- * isolated per run.
+ * pending answers, the modalities report and the once-only welcome page
+ * (the registry the report reads answers through the library bridge —
+ * the single-source law of the catalog, one owner: the engine). every
+ * test drives a unique session id so the .sandboxrun root under the
+ * package cwd stays isolated per run.
  */
 
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 import { describe, expect, it } from "vitest";
 
 import { createsandboxsession, hostmodalityreport, runsandboxline } from "../sandboxlane.js";
 import type { SandboxAnswer } from "../sandboxlane.js";
-import { MODALITIES, MODALITYPLANCOUNT, planreport } from "../modalities.js";
+import { MODALITIES, MODALITYPLANCOUNT, planreport } from "@wenathlan/saddle/modalityregistry";
 
 let counter = 0;
 
@@ -317,34 +318,45 @@ describe("sandboxlane", () => {
   });
 });
 
-describe("the vendored registry mirror (the single-source law)", () => {
-  it("pins the devthink vendor byte-identical to the saddle engine source", async () => {
-    // the registry of record lives in the engine (saddle/modalityregistry.ts);
-    // the devthink tree carries the vendored mirror because the container
-    // build installs the published envelope (sources only, the stale
-    // catalog) and never sees the workspace — the byte pin is the law that
-    // keeps the vendor a mirror instead of a second author. the day the
-    // published envelope carries the built registry, the vendor retires and
-    // the lane returns to the library specifier. the tests village keeps
+describe("the registry the lane reads (the single-source law)", () => {
+  it("answers the engine source through the library bridge — the vendor retired", async () => {
+    // the registry of record lives in the engine (saddle/modalityregistry.ts)
+    // and the lane reads it through the published library specifier
+    // ("@wenathlan/saddle/modalityregistry") the config bridges resolve to
+    // the sibling owner source — the vendored mirror the container-era
+    // constraint once demanded retired the day the family envelope
+    // answered (the 2.0.152 tarball ships the built registry beside the
+    // source, and the family-context build answers the bridge exactly the
+    // way the checkout does). the pin the retirement carries: the module
+    // the lane imports IS the engine module (one owner, never a second
+    // author), and the vendor file stays gone (the tests village keeps
     // this suite inside the devthink app folder, so the paths resolve by
     // depth: the engine through the saddle owner folder two levels up,
-    // the vendor through the devthink application root one level up.
+    // the retired vendor through the devthink application root one level
+    // up — the container builder runs this suite from the devthink
+    // context alone, and the ownership pin answers everywhere the suite
+    // rides because it asserts the imported module itself, never a file
+    // the container never carries).
     const enginepath = path.join(import.meta.dirname, "..", "..", "saddle", "modalityregistry.ts");
-    if (!existsSync(enginepath)) {
-      // the container builder runs this suite from the devthink context
-      // alone (the saddle workspace never enters the image) — the byte pin
-      // answers everywhere the engine source rides (the workspace, the ci
-      // checkout) and the census below keeps pinning the vendor itself
-      return;
+    if (existsSync(enginepath)) {
+      // the workspace pin: the bridge the configs carry resolves the
+      // specifier to the sibling owner source the engine battery walks,
+      // so the engine module and the lane module are one module.
+      const enginemodule = (await import(pathToFileURL(enginepath).href)) as typeof import(
+        "@wenathlan/saddle/modalityregistry"
+      );
+      expect(enginemodule.MODALITIES).toBe(MODALITIES);
+      expect(enginemodule.planreport).toBe(planreport);
     }
-    const engine = await readFile(enginepath, "utf8");
-    const vendor = await readFile(path.join(import.meta.dirname, "..", "modalities.ts"), "utf8");
-    expect(vendor).toBe(engine);
+    // the retired vendor stays gone: a resurrected mirror is a second
+    // author the single-source law forbids.
+    await expect(readFile(path.join(import.meta.dirname, "..", "modalities.ts"), "utf8")).rejects.toThrow();
   });
 
-  it("answers the ninety plan from the vendored registry the lane reads", () => {
-    // the vendor the lane imports answers the same census the engine
-    // battery pins — the two suites hold the same truth from both ends
+  it("answers the ninety plan from the engine registry the lane reads", () => {
+    // the engine registry the lane imports answers the same census the
+    // engine battery pins — the two suites hold the same truth from both
+    // ends
     expect(MODALITYPLANCOUNT).toBe(90);
     expect(MODALITIES).toHaveLength(90);
     const report = planreport();

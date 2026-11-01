@@ -9,6 +9,7 @@
     "outDir": "dist",
     "paths": {
       "@/*": ["./Sol/*", "./*"],
+      "@wenathlan/saddle/modalityregistry": ["../saddle/modalityregistry.d.ts"],
       "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"],
       "@wenathlan/getry/thinking": ["../getry/thinking.d.ts"],
       "@wenathlan/devthink/server": ["./server.ts"]

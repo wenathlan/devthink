@@ -144,7 +144,7 @@ export const ENGINEOWNERS: readonly engineownerrow[] = [
     library: "@wenathlan/saddle",
     consumers: ["devthink", "forge", "foundry", "getry"],
     role:
-      "the master virtualization engine and the vm runner: devthink imports the sandbox lane through the library specifier @wenathlan/saddle/sandbox (the chat sandbox pane), and forge, foundry and getry declare the published dependency — the virtualization logic is never duplicated outside the saddle root.",
+      "the master virtualization engine and the vm runner: devthink imports the sandbox lane through the library specifier @wenathlan/saddle/sandbox (the chat sandbox pane) and the ninety-modality catalog through @wenathlan/saddle/modalityregistry (the sandbox lane's modality report — the vendored modalities.ts mirror retired the day the family envelope carried the built registry), and forge, foundry and getry declare the published dependency — the virtualization logic is never duplicated outside the saddle root.",
   },
   {
     owner: "stealthhead",

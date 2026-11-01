@@ -16,17 +16,16 @@ import { appendFile, copyFile, mkdir, readdir, readFile, rename, rm, stat, write
 import path from "node:path";
 // the modality registry of the saddle engine — the single source of the
 // catalog (this lane keeps no modality list of its own). The registry of
-// record lives in the engine (saddle/modalityregistry.ts); the devthink
-// tree carries the vendored mirror at ./modalities.ts because the
-// container build never sees the workspace: it installs the published
-// @wenathlan/saddle envelope from the registry, and that envelope ships
-// sources only — the ./modalities export points at a dist file the
-// tarball never carries (and the tarball's registry is the stale catalog
-// besides). The sandboxlane battery pins the mirror byte-identical to the
-// engine source, so the vendor can never drift from the registry in
-// silence — and the vendor retires the day the published envelope carries
-// the built registry (the import returns to the library specifier)
-import { MODALITIES, planreport } from "./modalities.js";
+// record lives in the engine (saddle/modalityregistry.ts) and the lane
+// reads it through the published library specifier
+// ("@wenathlan/saddle/modalityregistry") the config bridges resolve to
+// the sibling owner source — the vendored mirror the container-era
+// constraint once demanded (the published envelope carried no built
+// registry) retired the day the family envelope answered: the 2.0.152
+// tarball ships dist/modalityregistry.js beside the source, and the
+// family-context build answers the bridge exactly the way the checkout
+// does (the ownership law: the catalog has one owner, the engine).
+import { MODALITIES, planreport } from "@wenathlan/saddle/modalityregistry";
 
 /**
  * @section jail — the session root, the id gate and the path containment
