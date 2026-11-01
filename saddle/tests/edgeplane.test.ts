@@ -150,8 +150,19 @@ describe("the edge plane answers the visitor law", () => {
       );
     refused({ window: {}, navigator: {}, localStorage: {} });
     refused({ document: {} });
-    refused({ sessionStorage: {} });
     refused({ indexedDB: {} });
+    refused({ window: {}, sessionStorage: {} });
+    refused({ document: {}, localStorage: {} });
+    // the 2.0.153 extension rung: the webstorage globals alone are the
+    // node-engine shape (node ships them natively on the 22/26 lines),
+    // so a storage without a browser shell passes the guard — the same
+    // exemption the vestigial navigator already carries. The release
+    // lanes proved the law: the extension gates run on node 26.13 where
+    // sessionStorage is a native global, and the guard refused the very
+    // engine scope it was built to pass.
+    assert.doesNotThrow(() => assertvisitorfree({ sessionStorage: {} }));
+    assert.doesNotThrow(() => assertvisitorfree({ localStorage: {} }));
+    assert.doesNotThrow(() => assertvisitorfree({ navigator: {} }));
     assert.doesNotThrow(() => assertvisitorfree(globalThis));
     assert.doesNotThrow(() => assertvisitorfree({}));
     assert.doesNotThrow(() => assertvisitorfree(null));
