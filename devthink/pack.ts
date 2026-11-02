@@ -44,7 +44,7 @@ export function artifactchannels(): string[] {
 /** Resolves the publishing channels one artifact name belongs to: the version stamped artifact names map onto the channels the release workflow operates, and an unrecognized name still rides the github asset channel because every release artifact attaches to the release. The mappings answer under the devthink release asset names the merged release lane assembles (the names the release notes and their tests record) beside the extension lineage names the channel history still accepts (the historical artifact names of the 1.1.x line the artifact manifest tests exercise as accepted aliases). */
 export function artifactchannelof(name: string, version: string): string[] {
   const channels: string[] = ["github"];
-  if (name.startsWith("dist/")) return ["npmjs", "githubpackages"];
+  if (name.startsWith("build/")) return ["npmjs", "githubpackages"];
   if (name === `wenathlan-devthink-${version}.tgz`) return ["github", "npmjs", "githubpackages"];
   if (name === `devthink.${version}.nupkg`) return ["github", "nuget"];
   if (name === `devthink-${version}.pom`) return ["github", "maven"];
@@ -676,8 +676,8 @@ export function mavenattachedartifacts(version: string): mavenattachedartifact[]
       "The maven attached artifacts carry the release version; a non semver version never names an artifact.",
     );
   return [
-    { classifier: "extension", type: "zip", path: `dist/devthink${version}.zip` },
-    { classifier: "declarations", type: "zip", path: `dist/devthink-declarations-${version}.zip` },
+    { classifier: "extension", type: "zip", path: `build/devthink${version}.zip` },
+    { classifier: "declarations", type: "zip", path: `build/devthink-declarations-${version}.zip` },
   ];
 }
 
@@ -776,19 +776,19 @@ export function nugetcontententries(version: string): nugetcontententry[] {
       "The nuget content entries carry the release version; a non semver version never names an artifact.",
     );
   return [
-    { source: `dist/devthink${version}.zip`, contentpath: `contentFiles/any/any/devthink${version}.zip` },
-    { source: "dist/cli.js", contentpath: "contentFiles/any/any/cli.js" },
-    { source: "dist/headless.js", contentpath: "contentFiles/any/any/headless.js" },
-    { source: "dist/mcp.js", contentpath: "contentFiles/any/any/mcp.js" },
-    { source: "dist/devthink.umd.js", contentpath: "contentFiles/any/any/devthink.umd.js" },
-    { source: "dist/index.cjs", contentpath: "contentFiles/any/any/index.cjs" },
+    { source: `build/devthink${version}.zip`, contentpath: `contentFiles/any/any/devthink${version}.zip` },
+    { source: "build/cli.js", contentpath: "contentFiles/any/any/cli.js" },
+    { source: "build/headless.js", contentpath: "contentFiles/any/any/headless.js" },
+    { source: "build/mcp.js", contentpath: "contentFiles/any/any/mcp.js" },
+    { source: "build/devthink.umd.js", contentpath: "contentFiles/any/any/devthink.umd.js" },
+    { source: "build/index.cjs", contentpath: "contentFiles/any/any/index.cjs" },
   ];
 }
 
 /** The declaration entries the nupkg embeds for ide integration: the declaration files of the public modules land under the declarations folder of the content root so an editor resolves the devthink types from the package. */
 export function nugetdeclarationentries(): nugetcontententry[] {
   return ["index", "policy", "protocol", "memory", "progress", "cli", "headless", "mcp", "wsbridge", "nativehost"].map(
-    (entry) => ({ source: `dist/${entry}.d.ts`, contentpath: `contentFiles/any/any/declarations/${entry}.d.ts` }),
+    (entry) => ({ source: `build/${entry}.d.ts`, contentpath: `contentFiles/any/any/declarations/${entry}.d.ts` }),
   );
 }
 
@@ -796,18 +796,18 @@ export function nugetdeclarationentries(): nugetcontententry[] {
 export function nugetfixtureentries(): nugetcontententry[] {
   return [
     {
-      source: "dist/fixtures/example-org-pagestate.json",
+      source: "build/fixtures/example-org-pagestate.json",
       contentpath: "contentFiles/any/any/fixtures/example-org-pagestate.json",
     },
     {
-      source: "dist/fixtures/plans/release-notes-plan.json",
+      source: "build/fixtures/plans/release-notes-plan.json",
       contentpath: "contentFiles/any/any/fixtures/plans/release-notes-plan.json",
     },
     {
-      source: "dist/fixtures/plans/form-inventory-plan.json",
+      source: "build/fixtures/plans/form-inventory-plan.json",
       contentpath: "contentFiles/any/any/fixtures/plans/form-inventory-plan.json",
     },
-    { source: "dist/fixtures/mcp.client.ts", contentpath: "contentFiles/any/any/fixtures/mcp.client.ts" },
+    { source: "build/fixtures/mcp.client.ts", contentpath: "contentFiles/any/any/fixtures/mcp.client.ts" },
   ];
 }
 

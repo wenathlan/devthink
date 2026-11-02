@@ -4,7 +4,7 @@ import type { baseurlconfig } from "./types.ts";
 
 const server = await startgatewayfixtureserver();
 try {
-  const gateway = await import("./dist/llm.js");
+  const gateway = await import("./build/llm.js");
   const config: baseurlconfig = {
     providerid: "smoke",
     kind: "openaicompat",

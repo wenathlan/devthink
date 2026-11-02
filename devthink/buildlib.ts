@@ -43,7 +43,7 @@ console.log("[build-lib] esm engine entry bundled");
 
 // --- sanity ----------------------------------------------------------------
 
-const required = ["dist/server.js", "dist/engine.js", "dist/server.d.ts", "dist/engine.d.ts"];
+const required = ["build/server.js", "build/engine.js", "build/server.d.ts", "build/engine.d.ts"];
 const missing = required.filter((p) => !existsSync(`${root}/${p}`));
 if (missing.length > 0) {
   console.error(`[build-lib] missing bundle artifacts: ${missing.join(", ")}`);

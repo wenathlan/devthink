@@ -51,16 +51,16 @@ describe("package governance surface", () => {
     };
     const serverlib = packagejson.exports["./server"];
     expect(serverlib).toBeDefined();
-    expect(serverlib?.types).toBe("./dist/server.d.ts");
-    expect(serverlib?.import).toBe("./dist/server.js");
-    expect(serverlib?.default).toBe("./dist/server.js");
+    expect(serverlib?.types).toBe("./build/server.d.ts");
+    expect(serverlib?.import).toBe("./build/server.js");
+    expect(serverlib?.default).toBe("./build/server.js");
     /* the library surface is repository sources the build compiles: the source file exists before any
        build and the dist entries join the built set the validate chain asserts */
     if (!existsSync("server.ts")) throw new Error("The library surface server.ts of the grand merge is missing.");
     /* every non-dist exports target resolves unconditionally; the dist targets
      * follow the family convention — the validate chain runs the tests before
      * the build, the existence pass rides the lanes that build first */
-    if (!existsSync("dist/checksums.txt")) return;
+    if (!existsSync("build/checksums.txt")) return;
     const referenced = new Set<string>();
     for (const entry of Object.values(packagejson.exports))
       for (const target of Object.values(entry)) referenced.add(target.replace(/^\.\//, ""));

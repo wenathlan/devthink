@@ -81,7 +81,7 @@ for (const policy of policies) {
 }
 
 /* 3. the overlays stay consistent with the root policy: one dialect difference would weaken one browser. */
-const extensiondirectory = "dist/extension";
+const extensiondirectory = "build/extension";
 if (typeof rootpolicy === "string") {
   for (const policy of policies.filter((candidate) => candidate.surface !== "root")) {
     if (policy.text !== rootpolicy)

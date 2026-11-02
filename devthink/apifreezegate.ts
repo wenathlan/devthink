@@ -6,8 +6,8 @@ import { apifreezebaseline as storedbaseline, type apifreezebaseline } from "./t
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
 const baselinepath = "tests/freezebaseline.ts";
-const capsdirectory = "dist/caps";
-const schemadirectory = "dist/schemas";
+const capsdirectory = "build/caps";
+const schemadirectory = "build/schemas";
 const schemalabel = "schemas";
 const mode = process.argv[2] ?? "check";
 
@@ -77,7 +77,7 @@ if (new Set(catalogtypes).size !== catalogtypes.length)
 for (const entry of catalogentries) {
   if (!/^[a-z]+$/.test(entry.type))
     refuse(`The frozen message type ${entry.type} stays outside the lowercase grammar.`);
-  const schematext = await text(`dist/${entry.schema}`).catch(() => undefined);
+  const schematext = await text(`build/${entry.schema}`).catch(() => undefined);
   if (schematext === undefined)
     refuse(
       `The frozen message type ${entry.type} names the schema ${entry.schema} whose emitted artifact does not exist.`,
@@ -211,7 +211,7 @@ if (!typesource.includes("export const actionkindids: readonly actionkind[] = Ob
   refuse("The action kind identifiers of types.ts must stay immutable constants.");
 
 /* 5. the observation schema keeps its version field forward compatible. */
-const observationschema = JSON.parse(await text("dist/schemas/observation.schema.json"));
+const observationschema = JSON.parse(await text("build/schemas/observation.schema.json"));
 if (observationschema.properties?.schemaversion?.type !== "number")
   refuse("The observation schema must document the schemaversion field as the forward compatible version.");
 if (observationschema.properties?.reserved?.type !== "object")
@@ -224,7 +224,7 @@ if (!typesource.includes("reserved?: Record<string, unknown>;"))
   refuse("The observation interface of types.ts must keep the reserved fields map.");
 
 /* 6. the response envelope covers success, error and cancel outcomes. */
-const envelopeschema = JSON.parse(await text("dist/schemas/envelope.schema.json"));
+const envelopeschema = JSON.parse(await text("build/schemas/envelope.schema.json"));
 if (JSON.stringify(envelopeschema.outcomes?.values) !== JSON.stringify(["success", "error", "cancel"]))
   refuse("The frozen envelope schema must cover the success, error and cancel outcomes.");
 if (
@@ -454,7 +454,7 @@ for (const kind of mcpkindsfrozen) {
   if (!policyunion.has(kind)) refuse(`The frozen mcp surface kind ${kind} sits outside the policy classification.`);
 }
 sizes.mcp = frozentoolnames.length;
-const auditkindschema = JSON.parse(await text("dist/schemas/audit.schema.json"));
+const auditkindschema = JSON.parse(await text("build/schemas/audit.schema.json"));
 const typesauditkinds = [
   ...new Set(
     [...(/export type auditkind =\s*([\s\S]*?);/.exec(typesource)?.[1] ?? "").matchAll(/"([a-z0-9]+)"/g)].map(
@@ -468,12 +468,12 @@ if (
   typesauditkinds.some((kind) => !schemaauditkinds.includes(kind))
 )
   refuse("The frozen audit event names of the audit schema disagree with the auditkind union of types.ts.");
-const memoryschema = JSON.parse(await text("dist/schemas/memory.schema.json"));
+const memoryschema = JSON.parse(await text("build/schemas/memory.schema.json"));
 for (const field of memoryschema.provenancefields?.fields ?? []) {
   if (!protocolsource.includes(`provenance.${field}`))
     refuse(`The frozen memory provenance field ${field} validates at no protocol boundary.`);
 }
-const progressschema = JSON.parse(await text("dist/schemas/progress.schema.json"));
+const progressschema = JSON.parse(await text("build/schemas/progress.schema.json"));
 for (const eventname of progressschema.eventnames?.values ?? []) {
   if (!progresssource.includes(`export function ${eventname}(`))
     refuse(`The frozen progress event name ${eventname} matches no progress record family.`);

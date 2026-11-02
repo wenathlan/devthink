@@ -81,8 +81,8 @@ function usageline(over = {}) {
 
 /** The full accounting certification checklist of the release candidates. */
 export async function runcostcertsuite() {
-  const library = await import("./dist/index.js");
-  const memorymodule = await import("./dist/memory.js");
+  const library = await import("./build/index.js");
+  const memorymodule = await import("./build/memory.js");
 
   await entry(
     {

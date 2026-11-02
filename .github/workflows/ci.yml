@@ -76,7 +76,7 @@ jobs:
           cd devthink
           if [ "${{ matrix.runtime }}" = "node" ]; then
             node build.ts
-            node dist/cli.js --help
+            node build/cli.js --help
           elif [ "${{ matrix.runtime }}" = "deno" ]; then
             node build.ts
           else
@@ -93,10 +93,10 @@ jobs:
           set -euo pipefail
           cd devthink
           deno --version
-          deno check dist/deno.js
+          deno check build/deno.js
       - name: Deno import smoke over the deno entry
         if: matrix.runtime == 'deno'
-        run: cd devthink && deno eval "const library = await import('./dist/deno.js'); if (typeof library.denoadapter !== 'function') throw new Error('The deno mode lost its adapter.'); if (typeof library.surfacepalette !== 'function') throw new Error('The deno mode lost its surface.');"
+        run: cd devthink && deno eval "const library = await import('./build/deno.js'); if (typeof library.denoadapter !== 'function') throw new Error('The deno mode lost its adapter.'); if (typeof library.surfacepalette !== 'function') throw new Error('The deno mode lost its surface.');"
       - name: Run the accessibility sweep over the built tree
         # the readiness test the suite carries walks the committed evidence:
         # the sweep reruns here so the recorded wcag artifact reflects the
@@ -108,11 +108,11 @@ jobs:
           set -euo pipefail
           cd devthink
           if [ "${{ matrix.runtime }}" = "node" ]; then
-            node --input-type=commonjs --eval "const library = require('./dist/index.cjs'); if (typeof library.surfacepalette !== 'function') throw new Error('The cjs mode lost its public surface.'); if (library.bundlestamp().mode !== 'cjs') throw new Error('The cjs mode lost its stamp.');"
-            node --input-type=module --eval "import('./dist/index.js').then(library => { if (typeof library.surfacepalette !== 'function') throw new Error('The esm mode lost its public surface.'); if (library.bundlestamp().mode !== 'esm') throw new Error('The esm mode lost its stamp.'); });"
+            node --input-type=commonjs --eval "const library = require('./build/index.cjs'); if (typeof library.surfacepalette !== 'function') throw new Error('The cjs mode lost its public surface.'); if (library.bundlestamp().mode !== 'cjs') throw new Error('The cjs mode lost its stamp.');"
+            node --input-type=module --eval "import('./build/index.js').then(library => { if (typeof library.surfacepalette !== 'function') throw new Error('The esm mode lost its public surface.'); if (library.bundlestamp().mode !== 'esm') throw new Error('The esm mode lost its stamp.'); });"
             node --input-type=module --eval "
             import { readFileSync } from 'node:fs';
-            new Function('self', readFileSync('./dist/devthink.umd.js', 'utf8'))(globalThis);
+            new Function('self', readFileSync('./build/devthink.umd.js', 'utf8'))(globalThis);
             if (typeof globalThis.devthink.surfacepalette !== 'function') throw new Error('The umd mode lost its global surface.');
             if (globalThis.devthink.bundlestamp().mode !== 'umd') throw new Error('The umd mode lost its stamp.');
             "
@@ -347,9 +347,9 @@ jobs:
           # the two immutable webpack rungs the lane verified — webpack-cli
           # 6.0.1 (the webpack bin) with its webpack 5.112.2 peer — instead
           # of a floating npm install the dependency scan flags unpinned.
-          npx --yes -p webpack@5.112.2 -p webpack-cli@6.0.1 webpack --entry ./dist/index.js --output-path ./distpackage/webpack --output-filename devthink.webpack.js --mode production --target node
-          test -s ./distpackage/webpack/devthink.webpack.js
-          du -h ./distpackage/webpack/devthink.webpack.js
+          npx --yes -p webpack@5.112.2 -p webpack-cli@6.0.1 webpack --entry ./build/index.js --output-path ./build/webpack --output-filename devthink.webpack.js --mode production --target node
+          test -s ./build/webpack/devthink.webpack.js
+          du -h ./build/webpack/devthink.webpack.js
 
   configparity:
     # the family config parity lane (the configs workflow file folds here,

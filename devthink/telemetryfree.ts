@@ -19,7 +19,7 @@ function record(name: string, ok: boolean, detail: string) {
 
 /** Runs the telemetry free verification suite and answers the report the artifact records. */
 export async function runtelemetryfreesuite() {
-  if (!existsSync("dist/index.js") || !existsSync("dist/policy.js")) {
+  if (!existsSync("build/index.js") || !existsSync("build/policy.js")) {
     console.error(
       "TELEMETRYFREE The gate reads the compiled library and policy bundles; run pnpm build before the telemetry free verification.",
     );
@@ -46,10 +46,10 @@ export async function runtelemetryfreesuite() {
   );
 
   /* 2. the network capable paths with their gates: every outbound primitive sits behind a policy gate; the gate inventory maps each path to the gate that guards it. */
-  const library = await import("./dist/index.js");
-  const policy = await import("./dist/policy.js");
-  const dashdone = await import("./dist/dashdone.js");
-  const hardening = await import("./dist/hardening.js");
+  const library = await import("./build/index.js");
+  const policy = await import("./build/policy.js");
+  const dashdone = await import("./build/dashdone.js");
+  const hardening = await import("./build/hardening.js");
   const paths: Array<{ path: string; gate: Extract<keyof typeof policy, string> }> = [
     { path: "sendfetch of the http family", gate: "fetchconsentcovers" },
     { path: "opensocket of the net family", gate: "socketgate" },

@@ -4,7 +4,7 @@
 export const mcpclientexample = `/** One minimal mcp client script that lists the devthink tools over stdio: run \`node dist/fixtures/mcp.client.ts\` with the serve command of the extension cli in your path. */
 import { spawn } from "node:child_process";
 
-const child = spawn("node", ["dist/cli.js", "serve", "--stdio"], { stdio: ["pipe", "pipe", "inherit"] });
+const child = spawn("node", ["build/cli.js", "serve", "--stdio"], { stdio: ["pipe", "pipe", "inherit"] });
 const send = (id, method, params) => child.stdin.write(\`\${JSON.stringify({ jsonrpc: "2.0", id, method, params })}\\n\`);
 child.stdout.on("data", chunk => {
   for (const line of String(chunk).trim().split("\\n")) {

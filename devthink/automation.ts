@@ -311,7 +311,7 @@ export const surfaceformats = Object.freeze({
 export function surfacemanifest(options: Record<string, any> = {}) {
   const target = options.target ?? "library";
   if (!surfaces.includes(target)) throw new TypeError(`unsupported surface: ${target}`);
-  return { target, name: options.name ?? "saddle", entry: options.entry ?? "dist/index.js", runtime: options.runtime ?? "caller", formats: [...(options.formats ?? (surfaceformats as Record<string, readonly string[]>)[target] ?? [])], permissions: options.permissions ?? [], capabilities: options.capabilities ?? ["memory", "workflow"], metadata: options.metadata ?? {} };
+  return { target, name: options.name ?? "saddle", entry: options.entry ?? "build/index.js", runtime: options.runtime ?? "caller", formats: [...(options.formats ?? (surfaceformats as Record<string, readonly string[]>)[target] ?? [])], permissions: options.permissions ?? [], capabilities: options.capabilities ?? ["memory", "workflow"], metadata: options.metadata ?? {} };
 }
 
 /** Creates a desktop surface manifest with caller-selected packaging formats. */

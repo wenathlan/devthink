@@ -577,7 +577,7 @@ export const feed = `<!doctype html>
 </html>
 `;
 
-/** The umd example page — the script tag document that reads the lowercase devthink global the umd envelope exposes, carrying the ../../dist/devthink.umd.js reference the build rewrites to the dist root. The exact text of the former umd.html. */
+/** The umd example page — the script tag document that reads the lowercase devthink global the umd envelope exposes, carrying the ../../build/devthink.umd.js reference the build rewrites to the dist root. The exact text of the former umd.html. */
 export const umdexample = `<!doctype html>
 <html lang="en">
 <head>
@@ -588,7 +588,7 @@ export const umdexample = `<!doctype html>
   <h1>Devthink umd script tag example</h1>
   <p>This page loads the umd bundle from a file url and prints the bundle stamp of the running library; the consent gates stay intact inside the browser bundle.</p>
   <pre id="out">loading…</pre>
-  <script src="../../dist/devthink.umd.js"></script>
+  <script src="../../build/devthink.umd.js"></script>
   <script>
     const out = document.getElementById("out");
     out.textContent = JSON.stringify(window.devthink.bundlestamp(), null, 2) + "\\n" + Object.keys(window.devthink).length + " exports on window.devthink";

@@ -45,7 +45,7 @@ const faketabprovider = {
 };
 
 /** The compiled library bundle the certification drives, typed the way the runtime import resolves it: the built tree answers through its declaration emit while the declaration seam covers the clean tree. */
-type librarybundle = typeof import("./dist/index.js");
+type librarybundle = typeof import("./build/index.js");
 
 /** The fake agent fixture of the certification: five agents registered through the real registeragent with the roles the leader worker topology needs, bound to fake tabs of every browser kind. */
 function fiveagents(agentmodule: librarybundle) {
@@ -66,8 +66,8 @@ function fiveagents(agentmodule: librarybundle) {
 /** The full automated coordination certification checklist of the release candidates. */
 export async function runagentcertsuite() {
   /* the real compiled modules: the library index bundle carries the agent, swarm, memory and run families the coordination scenarios exercise, the policy bundle carries the coordination gates and the dashdone bundle carries the topology inventory export */
-  const library = await import("./dist/index.js");
-  const policy = await import("./dist/policy.js");
+  const library = await import("./build/index.js");
+  const policy = await import("./build/policy.js");
   const agent = library;
   const swarm = library;
 
@@ -682,7 +682,7 @@ export async function runagentcertsuite() {
   });
 
   await entry({ id: 30, title: "the certified topology inventory exports from the agent registry snapshot", family: "pool coverage", module: "dashdone.js" }, async () => {
-    const dashdone = await import("./dist/dashdone.js");
+    const dashdone = await import("./build/dashdone.js");
     const agents = fiveagents(agent);
     const topology = swarm.electleader({ agents, id: "top-inv", now: now() });
     const inventory = dashdone.topologyinventoryof({ agents, topology, spawns: [] });
@@ -710,7 +710,7 @@ export async function runagentcertsuite() {
 
 /** Runs the leader worker topology coordination scenario end to end for the chromium smoke: the five fake agents register on the fake tabs of every browser kind, the topology elects, the shared queue hands out every task exactly once and the review, verification and report close the loop — the scenario speaks through the one shipped library bundle so the smoke certifies exactly what the release packs. */
 export async function runleaderworkertopologyscenario() {
-  const library = await import("./dist/index.js");
+  const library = await import("./build/index.js");
   const agent = library;
   const swarm = library;
   const clock = fakeclock("fake");

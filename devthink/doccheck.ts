@@ -27,7 +27,7 @@ const release = String(packagejson.version);
 /** Runs the documentation consistency suite and answers the report the committed record carries: the module stays import safe (the sweep and the matrix read its record), so the checks run only under the direct invocation. */
 export async function rundocchecksuite(): Promise<doccheckreport> {
   /* the gate runs after the build: the kind catalog, the tool catalog and the message catalog live in the compiled modules. */
-  if (!existsSync("dist/policy.js") || !existsSync("dist/index.js") || !existsSync("dist/protocol.js")) {
+  if (!existsSync("build/policy.js") || !existsSync("build/index.js") || !existsSync("build/protocol.js")) {
     console.error(
       "DOCCHECK The gate reads the compiled kind, tool and message catalogs; run pnpm build before the documentation check.",
     );
@@ -46,9 +46,9 @@ export async function rundocchecksuite(): Promise<doccheckreport> {
       summary: { total: checks.length, passed: checks.filter((check) => check.ok).length, failed: checks.filter((check) => !check.ok).length },
     };
   }
-  const { actionkindcatalog, actionrisk, needstarget } = await import("./dist/policy.js");
-  const { alltools, buildtoolcatalog } = await import("./dist/index.js");
-  const { frozenmessagecatalog } = await import("./dist/protocol.js");
+  const { actionkindcatalog, actionrisk, needstarget } = await import("./build/policy.js");
+  const { alltools, buildtoolcatalog } = await import("./build/index.js");
+  const { frozenmessagecatalog } = await import("./build/protocol.js");
   const catalog: string[] = actionkindcatalog();
   const riskof = Object.fromEntries(catalog.map((kind) => [kind, actionrisk(kind as actionkind)]));
   const targetof = Object.fromEntries(catalog.map((kind) => [kind, needstarget(kind as actionkind)]));
@@ -250,7 +250,7 @@ export async function rundocchecksuite(): Promise<doccheckreport> {
   /* 8. the readme claims match the capability manifests: every surface the caps directory serves documents in the readme. */
   const readmeproblems = [];
   const readmetext = await text("README.md");
-  for (const file of (await readdir("dist/caps")).filter((name) => name.endsWith(".json"))) {
+  for (const file of (await readdir("build/caps")).filter((name) => name.endsWith(".json"))) {
     const surface = file.replace(".json", "");
     if (!readmetext.toLowerCase().includes(surface))
       readmeproblems.push(`the readme documents the ${surface} surface nowhere`);

@@ -58,8 +58,8 @@ describe("extension manifest", () => {
     const digest = createHash("sha256").update(der).digest("hex");
     expect(digest).toMatch(/^[0-9a-f]{64}$/);
     /* the identity pin rides the generated build artifact: the recorded digest never stays hard coded in a source file, the build writes it into dist/checksums.txt on every run and this pass verifies the manifest key against that artifact whenever the build ran */
-    if (existsSync("dist/checksums.txt")) {
-      const recorded = (await readFile("dist/checksums.txt", "utf8"))
+    if (existsSync("build/checksums.txt")) {
+      const recorded = (await readFile("build/checksums.txt", "utf8"))
         .split("\n")
         .find((line) => line.trim().endsWith("  manifest.json key"));
       expect(recorded?.split("  ")[0]).toBe(digest);
@@ -113,7 +113,7 @@ import { capmanifestof } from "../apifreeze.js";
 
 describe("the frozen capability manifest declarations", () => {
   it("matches the manifest permissions with the capmanifest declarations of every surface", async () => {
-    if (!existsSync("dist/caps"))
+    if (!existsSync("build/caps"))
       return; /* the capmanifest artifacts ride the build: the pass runs after pnpm build in the validate chain and the ci lanes */
     const manifest = JSON.parse(await readFile("manifest.json", "utf8")) as {
       version: string;
@@ -123,7 +123,7 @@ describe("the frozen capability manifest declarations", () => {
     };
     const declared = new Set<string>();
     for (const surface of ["background", "sidepanel", "popup", "mcp"] as const) {
-      const stored = JSON.parse(await readFile(`dist/caps/${surface}.json`, "utf8")) as {
+      const stored = JSON.parse(await readFile(`build/caps/${surface}.json`, "utf8")) as {
         surface: string;
         release: string;
         protocolmajor: number;

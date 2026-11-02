@@ -69,13 +69,13 @@ describe("nugetpack", () => {
     for (const entry of [...nugetcontententries("1.1.87"), ...nugetfixtureentries()]) {
       /* the extension zip packs through the $(PackageVersion) property so the pack stays version driven; every other content entry lands at its exact content path */
       const zipentry = entry.contentpath === "contentFiles/any/any/devthink1.1.87.zip";
-      const include = zipentry ? "dist/devthink$(PackageVersion).zip" : entry.source;
+      const include = zipentry ? "build/devthink$(PackageVersion).zip" : entry.source;
       const packagepath = zipentry ? "contentFiles/any/any/" : entry.contentpath;
       expect(csproj).toContain(`Include="${include}"`);
       expect(csproj).toContain(`PackagePath="${packagepath}"`);
     }
     /* the csproj packs the declarations as a directory include and the readme at the package root */
-    expect(csproj).toContain('dist/*.d.ts" Pack="true" PackagePath="contentFiles/any/any/declarations/"');
+    expect(csproj).toContain('build/*.d.ts" Pack="true" PackagePath="contentFiles/any/any/declarations/"');
     expect(csproj).toContain('<None Include="README.md" Pack="true" PackagePath="/" />');
     /* the framework targets match the profile */
     expect(csproj).toContain("<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>");

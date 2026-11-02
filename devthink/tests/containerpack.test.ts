@@ -129,9 +129,9 @@ describe("containerpack", () => {
     expect(dockerfile).toContain("DEVTHINK_MCP_BIND=127.0.0.1");
     expect(dockerfile).toContain("EXPOSE 8080 7436");
     expect(dockerfile).toContain('ENTRYPOINT ["node", "container.mjs"]');
-    expect(dockerfile).toContain("COPY --from=builder --chown=10000:10000 /devthink/dist/site /app/dist/site");
-    expect(dockerfile).toContain("COPY --from=builder --chown=10000:10000 /devthink/dist/cli.js /app/dist/cli.js");
-    expect(dockerfile).toContain("COPY --from=builder --chown=10000:10000 /devthink/dist/http.js /app/dist/http.js");
+    expect(dockerfile).toContain("COPY --from=builder --chown=10000:10000 /devthink/build/site /app/dist/site");
+    expect(dockerfile).toContain("COPY --from=builder --chown=10000:10000 /devthink/build/cli.js /app/dist/cli.js");
+    expect(dockerfile).toContain("COPY --from=builder --chown=10000:10000 /devthink/build/http.js /app/dist/http.js");
   });
 
   it("absorbs the retired compose behaviors into the one container file", async () => {

@@ -435,9 +435,9 @@ describe("the library modes of 1.1.81", () => {
     const root = packagejson.exports["."];
     if (root === undefined) throw new Error("The package exports map carries no root entry.");
     expect(Object.keys(root)).toEqual(["types", "browser", "import", "require", "default"]);
-    expect(root.browser).toBe("./dist/index.neutral.js");
-    expect(root.import).toBe("./dist/index.js");
-    expect(root.require).toBe("./dist/index.cjs");
+    expect(root.browser).toBe("./build/index.neutral.js");
+    expect(root.import).toBe("./build/index.js");
+    expect(root.require).toBe("./build/index.cjs");
     for (const entry of [
       "./policy",
       "./protocol",
@@ -453,10 +453,10 @@ describe("the library modes of 1.1.81", () => {
       if (packagejson.exports[entry] === undefined)
         throw new Error(`The package exports map lacks the ${entry} entry.`);
     }
-    expect(packagejson.exports["./umd"]?.default).toBe("./dist/devthink.umd.js");
-    expect(packagejson.exports["./policy"]?.import).toBe("./dist/policy.js");
-    expect(packagejson.exports["./progress"]?.import).toBe("./dist/progress.js");
-    expect(packagejson.exports["./cli"]?.import).toBe("./dist/cli.js");
+    expect(packagejson.exports["./umd"]?.default).toBe("./build/devthink.umd.js");
+    expect(packagejson.exports["./policy"]?.import).toBe("./build/policy.js");
+    expect(packagejson.exports["./progress"]?.import).toBe("./build/progress.js");
+    expect(packagejson.exports["./cli"]?.import).toBe("./build/cli.js");
     expect(packagejson.sideEffects).toBe(false);
     expect(packagejson.publishConfig?.registry).toBe("https://registry.npmjs.org/");
     const nvmversion = (await readFile(".nvmrc", "utf8")).trim();
@@ -490,8 +490,8 @@ describe("the library modes of 1.1.81", () => {
       tasks: Record<string, string>;
     };
     expect(denojson.imports["@wenathlan/devthink"]).toBe(`npm:@wenathlan/devthink@${packagejson.version}`);
-    expect(denojson.tasks.check).toContain("dist/deno.js");
-    if (!existsSync("dist/checksums.txt"))
+    expect(denojson.tasks.check).toContain("build/deno.js");
+    if (!existsSync("build/checksums.txt"))
       return; /* the validate chain runs the tests before the build; the file existence pass runs on the next pass and in the ci lanes that build first */
     const referenced = new Set<string>();
     for (const entry of Object.values(packagejson.exports))
@@ -502,10 +502,10 @@ describe("the library modes of 1.1.81", () => {
   it("stamps the version, the mode and the license banner into every built bundle", {
     timeout: Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 60000),
   }, async () => {
-    if (!existsSync("dist/checksums.txt"))
+    if (!existsSync("build/checksums.txt"))
       return; /* the validate chain runs the tests before the build; the stamp pass runs on the next pass and in the ci lanes that build first */
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
-    const checksums = (await readFile("dist/checksums.txt", "utf8")).trim().split("\n");
+    const checksums = (await readFile("build/checksums.txt", "utf8")).trim().split("\n");
     expect(checksums.length).toBeGreaterThan(20);
     for (const line of checksums) {
       const file = line.slice(66);
@@ -519,20 +519,20 @@ describe("the library modes of 1.1.81", () => {
         continue; /* the zipped declaration bundle of the publishing pipeline is an assembled binary artifact: its checksum and manifest entry carry it, no text banner rides a zip */
       if (file.startsWith("caps/") || file.startsWith("schemas/") || file.startsWith("fixtures/"))
         continue; /* the contract data artifacts the 1.1.98 consolidation emits for the packages carry the frozen lists and the example set: the checksum, the artifact manifest and the freeze gate cover them, no license banner rides a data file */
-      const content = await readFile(join("dist", file), "utf8");
+      const content = await readFile(join("build", file), "utf8");
       expect(content).toContain(`devthink ${packagejson.version}`);
       expect(content).toContain("GPL-3.0-only");
     }
-    const esm = await import(resolve("dist/index.js"));
-    const cjs = require(resolve("dist/index.cjs")) as Record<string, () => { version: string; mode: string }>;
-    const neutral = await import(resolve("dist/index.neutral.js"));
+    const esm = await import(resolve("build/index.js"));
+    const cjs = require(resolve("build/index.cjs")) as Record<string, () => { version: string; mode: string }>;
+    const neutral = await import(resolve("build/index.neutral.js"));
     expect(esm.bundlestamp().version).toBe(packagejson.version);
     expect(esm.bundlestamp().mode).toBe("esm");
     expect(cjs.bundlestamp!().version).toBe(packagejson.version);
     expect(cjs.bundlestamp!().mode).toBe("cjs");
     expect(neutral.bundlestamp().mode).toBe("neutral");
     expect(neutral.bundlestamp().version).toBe(packagejson.version);
-    const umdsource = await readFile("dist/devthink.umd.js", "utf8");
+    const umdsource = await readFile("build/devthink.umd.js", "utf8");
     const sandbox = umdglobal(umdsource);
     expect((sandbox.devthink as Record<string, () => { version: string }>).bundlestamp!().version).toBe(
       packagejson.version,
@@ -542,10 +542,10 @@ describe("the library modes of 1.1.81", () => {
   it("verifies the checksums, the sourcemaps and the minified parity of every dist target", {
     timeout: Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 60000),
   }, async () => {
-    if (!existsSync("dist/checksums.txt"))
+    if (!existsSync("build/checksums.txt"))
       return; /* the validate chain runs the tests before the build; the artifact pass runs on the next pass and in the ci lanes that build first */
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
-    const checksums = (await readFile("dist/checksums.txt", "utf8")).trim().split("\n");
+    const checksums = (await readFile("build/checksums.txt", "utf8")).trim().split("\n");
     for (const line of checksums) {
       const digest = line.slice(0, 64);
       const file = line.slice(66);
@@ -557,7 +557,7 @@ describe("the library modes of 1.1.81", () => {
       }
       expect(
         createHash("sha256")
-          .update(await readFile(join("dist", file)))
+          .update(await readFile(join("build", file)))
           .digest("hex"),
       ).toBe(digest);
       if (file.startsWith("site/")) continue; /* the static site assets carry no sourcemaps or minified pairs */
@@ -565,7 +565,7 @@ describe("the library modes of 1.1.81", () => {
         continue; /* the contract data artifacts ship as data for the packages, not as built bundles: no sourcemap and no minified pair */
       if (!file.endsWith(".js") && !file.endsWith(".cjs"))
         continue; /* the json template of the native bridge carries the banner and the checksum without a minified pair, because a manifest template is data the installer stamps, not a runnable bundle */
-      const map = JSON.parse(await readFile(join("dist", `${file}.map`), "utf8")) as {
+      const map = JSON.parse(await readFile(join("build", `${file}.map`), "utf8")) as {
         version: number;
         sources: string[];
       };
@@ -573,15 +573,15 @@ describe("the library modes of 1.1.81", () => {
       expect(map.sources.length).toBeGreaterThan(0);
       if (file.includes(".min.")) continue; /* the minified variant is itself the pair of its unminified bundle */
       const minified = file.replace(/\.js$/, ".min.js").replace(/\.cjs$/, ".min.cjs");
-      await access(join("dist", minified));
-      expect((await stat(join("dist", minified))).size).toBeLessThan((await stat(join("dist", file))).size);
+      await access(join("build", minified));
+      expect((await stat(join("build", minified))).size).toBeLessThan((await stat(join("build", file))).size);
     }
-    const minifiedesm = await import(resolve("dist/index.min.js"));
+    const minifiedesm = await import(resolve("build/index.min.js"));
     expect(typeof minifiedesm.surfacepalette).toBe("function");
     expect(minifiedesm.bundlestamp().version).toBe(packagejson.version);
-    const minifiedcjs = require(resolve("dist/index.min.cjs")) as Record<string, unknown>;
+    const minifiedcjs = require(resolve("build/index.min.cjs")) as Record<string, unknown>;
     expect(typeof minifiedcjs.surfacepalette).toBe("function");
-    const headless = await import(resolve("dist/headless.js"));
+    const headless = await import(resolve("build/headless.js"));
     expect(headless.bundlestamp().mode).toBe("headless");
   });
 
@@ -594,7 +594,7 @@ describe("the library modes of 1.1.81", () => {
         expect(source).not.toMatch(/require\(/);
         expect(source).not.toMatch(/import\(\s*["']node:/);
       }
-      if (!existsSync("dist/checksums.txt"))
+      if (!existsSync("build/checksums.txt"))
         return; /* the source purity holds on every pass; the bundle purity pass runs on the built dist */
       for (const file of [
         "index.neutral.js",
@@ -606,7 +606,7 @@ describe("the library modes of 1.1.81", () => {
         "progress.js",
         "memory.js",
       ]) {
-        const content = await readFile(join("dist", file), "utf8");
+        const content = await readFile(join("build", file), "utf8");
         expect(content).not.toMatch(/(?:from\s*|require\(\s*)["']node:/);
       }
       for (const file of [
@@ -621,7 +621,7 @@ describe("the library modes of 1.1.81", () => {
         "headless.js",
         "cli.js",
       ]) {
-        const stripped = stripstrings(await readFile(join("dist", file), "utf8"));
+        const stripped = stripstrings(await readFile(join("build", file), "utf8"));
         expect(underscorednames(stripped)).toHaveLength(0);
       }
       /* the platform sweep is the slowest single test of the battery: the

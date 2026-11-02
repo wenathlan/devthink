@@ -500,7 +500,7 @@ const edits: Array<[string, (content: string) => string]> = [
           /\| Gate \| Required evidence \| [0-9A-Za-z.-]+ status \|/,
           `| Gate | Required evidence | ${version} status |`,
         )
-        .replace(/(?:extension|dist)\/devthink[0-9A-Za-z.-]+\.zip/g, `dist/devthink${version}.zip`)
+        .replace(/(?:extension|dist)\/devthink[0-9A-Za-z.-]+\.zip/g, `build/devthink${version}.zip`)
         .replace(/Local validation for [0-9A-Za-z.-]+/g, `Local validation for ${version}`)
         .replace(
           /NuGet package contains `contentFiles\/any\/any\/devthink[0-9A-Za-z.-]+\.zip`/g,

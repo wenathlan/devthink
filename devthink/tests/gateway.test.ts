@@ -953,7 +953,7 @@ describe("api key literal scan of the built bundles", () => {
       if (!entry.endsWith(".js") && !entry.endsWith(".cjs")) continue;
       const content = await readFile(join(root, "dist", entry), "utf8");
       for (const shape of keyshapes)
-        expect(shape.test(content), `dist/${entry} carries an api key literal shape`).toBe(false);
+        expect(shape.test(content), `build/${entry} carries an api key literal shape`).toBe(false);
     }
   });
 });

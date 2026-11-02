@@ -459,13 +459,13 @@ export async function runwcagsuite() {
         if (Number(match[1]) > 0) offenders.push(`shell: tabindex ${match[1]}`);
       }
       check(offenders.length === 0, `positive tabindex values reorder the focus: ${offenders.join(", ")}`);
-      const built = await readdir("dist/extension").catch(() => []);
+      const built = await readdir("build/extension").catch(() => []);
       check(
         built.filter((name) => name.endsWith(".html")).length >= required.length - 1,
         `the built surface pages are absent; run node build.ts before the accessibility sweep`,
       );
       for (const page of built.filter((name) => name.endsWith(".html"))) {
-        const html = await readFile(join("dist/extension", page), "utf8");
+        const html = await readFile(join("build/extension", page), "utf8");
         for (const match of html.matchAll(/tabindex\s*=\s*"(\d+)"/g)) {
           scanned += 1;
           if (Number(match[1]) > 0) offenders.push(`${page}: tabindex ${match[1]}`);
@@ -495,10 +495,10 @@ export async function runwcagsuite() {
           `the ${surface.name} template overrides the html element the build stamps: ${override?.[0]}`,
         );
       }
-      const built = (await readdir("dist/extension").catch(() => [])).filter((name) => name.endsWith(".html"));
+      const built = (await readdir("build/extension").catch(() => [])).filter((name) => name.endsWith(".html"));
       const stamped: string[] = [];
       for (const page of built) {
-        const html = await readFile(join("dist/extension", page), "utf8");
+        const html = await readFile(join("build/extension", page), "utf8");
         const lang = /<html\s+lang="([^"]*)"/.exec(html)?.[1];
         check(lang === "en", `the built surface page ${page} stamps the lang ${lang ?? "none"} instead of en`);
         stamped.push(`${page}: ${lang}`);

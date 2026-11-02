@@ -141,8 +141,8 @@ async function migrateplanbridge() {
               : "tabular";
       try {
         const converted = join(scratch, `readiness-migrate-${format}.json`);
-        await execute("node", ["dist/cli.js", "migrateplan", path, "--format", format, "--out", converted]);
-        const lint = await execute("node", ["dist/cli.js", "planlint", converted]);
+        await execute("node", ["build/cli.js", "migrateplan", path, "--format", format, "--out", converted]);
+        const lint = await execute("node", ["build/cli.js", "planlint", converted]);
         if (!lint.stdout.includes("No planlint diagnostics"))
           failures.push(`${fixture} linted with diagnostics after the conversion`);
         /* the committed conversion record: every step, label, target, value and options payload the conversion produced when the record was committed must answer again — the version stamp rides the release and stays outside the comparison */
@@ -350,7 +350,7 @@ export async function runreadinesssuite() {
       "the forge rides outside the application container: the runner ladder answers this gate where the workflows live",
     );
   }
-  const cappins = existsSync("dist/caps");
+  const cappins = existsSync("build/caps");
   if (cappins) {
     const surfaces = ["background", "pagebridge", "sidepanel", "popup", "cli", "library", "mcp"];
     const unpinned = [];
@@ -375,7 +375,7 @@ export async function runreadinesssuite() {
       verdicts,
       "the capability manifests carry the release version pins",
       false,
-      "dist/caps sits absent; the build has not produced the capability manifests",
+      "build/caps sits absent; the build has not produced the capability manifests",
     );
   }
 

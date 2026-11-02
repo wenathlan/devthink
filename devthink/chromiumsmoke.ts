@@ -157,7 +157,7 @@ try {
       }
       if (popupchecked) {
         // Network observation smoke: fetch the reviewed DevTools url of the isolated browser through the shipped http client and parse its json.
-        const { sendfetch, readpath } = await import("./dist/index.js");
+        const { sendfetch, readpath } = await import("./build/index.js");
         const reviewedurl = `http://127.0.0.1:${port}/json/version`;
         const transport: fetchtransport = async (url, init) => {
           const response = await fetch(url, {
@@ -177,7 +177,7 @@ try {
         if (fields[0]?.missing === true)
           throw new Error("The reviewed smoke fetch did not parse the json body into named fields.");
         // Debugging smoke: capture the console output and one error of a fixture page through the shipped run timeline module.
-        const { consolecapture, errorcapture, stackframes } = await import("./dist/index.js");
+        const { consolecapture, errorcapture, stackframes } = await import("./build/index.js");
         const consoleentry = consolecapture({
           level: "warn",
           args: ["fixture", "page", { state: "loaded" }],
@@ -204,7 +204,7 @@ try {
         )
           throw new Error("The fixture error capture did not parse its stack frames.");
         // Profiling smoke: measure one flow from fixture performance entries and export one trace with a step annotation through the shipped profilers module.
-        const { measure, tracestart, annotatetrace, tracetofile, replaytrace } = await import("./dist/index.js");
+        const { measure, tracestart, annotatetrace, tracetofile, replaytrace } = await import("./build/index.js");
         const flowspec = { prefix: "smoke", steps: ["s1"], metrics: ["navigation", "blocking"] };
         const flowentries = [
           { name: "smoke:s1:start", type: "mark", start: 0, duration: 0 },
@@ -247,7 +247,7 @@ try {
           throw new Error("The fixture trace export did not carry its step annotation into the offline replay.");
         // Emulation smoke: apply one reviewed device layer with its prior state captured and revert it through the shipped emulation module.
         const { emulationstateof, newlayer, applylayer, revertalllayers, layernames } = await import(
-          "./dist/index.js"
+          "./build/index.js"
         );
         const devicelayer = newlayer({
           id: "smoke-device",
@@ -276,7 +276,7 @@ try {
           throw new Error("The fixture emulation revert did not restore the prior pixel ratio.");
         // Protocol negotiation smoke: exercise the protocolv2 negotiation, the versioned memory envelope and the served capability manifest through the shipped library bundle.
         const { capmanifestof, memoryitemframe, negotiateprotocol, sharedprotocolversion } = await import(
-          "./dist/index.js"
+          "./build/index.js"
         );
         const freshclient = negotiateprotocol({});
         const legacyclient = negotiateprotocol({ client: 1 });

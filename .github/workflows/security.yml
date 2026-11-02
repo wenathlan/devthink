@@ -357,7 +357,7 @@ jobs:
               }
             },
             "files": {
-              "includes": ["**", "!**/*.css", "!**/build/**", "!**/dist/**", "!**/dist/**", "!**/distpackage/**", "!**/node_modules/**", "!**/design.html"],
+              "includes": ["**", "!**/*.css", "!**/build/**", "!**/dist/**", "!**/dist/**", "!**/build/**", "!**/node_modules/**", "!**/design.html"],
               "maxSize": 2097152
             },
             "overrides": [

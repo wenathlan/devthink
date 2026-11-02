@@ -8031,9 +8031,9 @@ import { kindoptionfields } from "../policy.js";
 
 describe("the frozen option grammar of the api freeze", () => {
   it("keeps the option grammar of every kind aligned with the frozen plan schema", async () => {
-    if (!existsSync("dist/schemas/plan.schema.json"))
+    if (!existsSync("build/schemas/plan.schema.json"))
       return; /* the schema artifacts ride the build: the pass runs after pnpm build in the validate chain and the ci lanes */
-    const schema = JSON.parse(await readFile("dist/schemas/plan.schema.json", "utf8")) as {
+    const schema = JSON.parse(await readFile("build/schemas/plan.schema.json", "utf8")) as {
       options?: { properties?: Record<string, { type?: string; description?: string }> };
       step?: { properties?: Record<string, unknown> };
       reviewsurface?: { messages?: string[] };

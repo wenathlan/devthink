@@ -17,8 +17,8 @@ const repoRoot = resolve(process.cwd(), "..");
 
 /** Collects the compiled modules the runtime checks exercise, or null before the first build. */
 async function compiledmodules() {
-  if (!existsSync("dist/index.js") || !existsSync("dist/policy.js")) return null;
-  return { library: await import("./dist/index.js"), policy: await import("./dist/policy.js") };
+  if (!existsSync("build/index.js") || !existsSync("build/policy.js")) return null;
+  return { library: await import("./build/index.js"), policy: await import("./build/policy.js") };
 }
 
 /** One recorded row of a gate artifact trail: the entry or check fields the failure extraction reads, absent on the rows the trail shape never states. */
