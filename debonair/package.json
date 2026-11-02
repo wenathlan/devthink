@@ -49,8 +49,10 @@
     "analyze.ts",
     "hpss.ts",
     "ingest.ts",
+    "ingestrecon.ts",
     "patternminer.ts",
     "patternenums.ts",
+    "reconpayload.ts",
     "composer.ts",
     "coverpalette.ts",
     "audioengine.ts",
@@ -124,6 +126,16 @@
       "types": "./ingest.ts",
       "import": "./ingest.ts",
       "default": "./ingest.ts"
+    },
+    "./ingestrecon": {
+      "types": "./ingestrecon.ts",
+      "import": "./ingestrecon.ts",
+      "default": "./ingestrecon.ts"
+    },
+    "./reconpayload": {
+      "types": "./reconpayload.ts",
+      "import": "./reconpayload.ts",
+      "default": "./reconpayload.ts"
     },
     "./patternminer": {
       "types": "./patternminer.ts",
