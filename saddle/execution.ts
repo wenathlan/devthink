@@ -10,7 +10,7 @@
  * the pure re-export barrels (none in this domain) folded their surface into this file directly.
  */
 
-import { aserror, createjob, eventbus, idfactory, runnerunavailable, systemclock, validatesession } from "./foundation.js";
+import { aserror, createjob, eventbus, idfactory, runnerunavailable, systemclock, validatesession } from "./foundation.ts";
 import { appendFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 

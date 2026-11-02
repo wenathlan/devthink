@@ -24,7 +24,7 @@ import {
   rendererfactory,
   xvfbargs,
   xvfbdisplay,
-} from '../render.js';
+} from '../render.ts';
 
 /* ------------------------------------------------------------------ */
 /* stack anchors                                                       */

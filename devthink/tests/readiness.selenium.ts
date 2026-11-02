@@ -1,7 +1,7 @@
 /**
  * readiness.selenium.ts — the committed conversion record of the
  * selenium side fixture: what the cli migrateplan command produces when it
- * reads dist/fixtures/importers/selenium-side.json with --format selenium,
+ * reads build/fixtures/importers/selenium-side.json with --format selenium,
  * the evidence the readiness review's migrateplan bridge gate walks. The
  * record proves the selenium importer maps every command onto the plan
  * grammar the planlint command lints green.

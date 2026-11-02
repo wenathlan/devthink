@@ -113,7 +113,7 @@ export async function withmode(options, operation) { if (typeof operation !== "f
 /**
  * deploy surface exposes artifact planning without performing provider mutations.
  */
-export { publishplan, registrymanifest } from "./distribution.js";
+export { publishplan, registrymanifest } from "./distribution.ts";
 /* the packaging surface pair (surfacemanifest, surfacebundle) moved to
  * devthink with the automation domain (the saddle ownership law, wave a,
  * actions 108-112 — the deploy surface keeps the artifact planning pair
@@ -126,22 +126,22 @@ export { publishplan, registrymanifest } from "./distribution.js";
  * target profiles keep platform packaging open and describe capability boundaries.
  */
 export const targetprofiles = Object.freeze({
-  application: { runtime: "caller", entry: "dist/index.js", capabilities: ["memory", "storage", "network"], formats: ["zip", "tarball"] },
-  computer: { runtime: "node", entry: "dist/index.js", capabilities: ["memory", "storage", "runner"], formats: ["node", "bun", "deno", "singlefile"] },
+  application: { runtime: "caller", entry: "distpackage/index.js", capabilities: ["memory", "storage", "network"], formats: ["zip", "tarball"] },
+  computer: { runtime: "node", entry: "distpackage/index.js", capabilities: ["memory", "storage", "runner"], formats: ["node", "bun", "deno", "singlefile"] },
   desktopapp: { runtime: "tauri", entry: "desktop/src-tauri", capabilities: ["memory", "file", "visible"], formats: ["appimage", "deb", "rpm", "snap", "flatpak", "dmg", "pkg", "exe", "msi", "msix"] },
   mobileapp: { runtime: "capacitor", entry: "index.html", capabilities: ["memory", "network", "visible"], formats: ["apk", "aab", "ipa"] },
   android: { runtime: "capacitor", entry: "android", capabilities: ["memory", "network", "visible"], formats: ["apk", "aab"] },
   ios: { runtime: "capacitor", entry: "ios", capabilities: ["memory", "network", "visible"], formats: ["ipa"] },
-  cli: { runtime: "node", entry: "dist/cli/main.js", capabilities: ["memory", "storage", "network"], formats: ["node", "bun", "deno", "singlefile", "exe", "deb", "rpm"] },
-  binary: { runtime: "caller", entry: "dist/cli/main.js", capabilities: ["memory", "storage", "runner"], formats: ["sea", "singlefile", "wasm"] },
+  cli: { runtime: "node", entry: "distpackage/cli/main.js", capabilities: ["memory", "storage", "network"], formats: ["node", "bun", "deno", "singlefile", "exe", "deb", "rpm"] },
+  binary: { runtime: "caller", entry: "distpackage/cli/main.js", capabilities: ["memory", "storage", "runner"], formats: ["sea", "singlefile", "wasm"] },
   browser: { runtime: "tauri", entry: "desktop/src-tauri", capabilities: ["memory", "network", "visible"], formats: ["html", "pwa", "wasm", "appimage", "deb", "rpm", "dmg", "exe", "msi"] },
-  extension: { runtime: "browser", entry: "dist/extension/index.js", capabilities: ["browser", "network", "visible"], formats: ["crx", "xpi", "safariextz"] },
-  internet: { runtime: "caller", entry: "dist/index.js", capabilities: ["network", "webhook", "api"], formats: ["http", "websocket", "grpc", "rest"] },
+  extension: { runtime: "browser", entry: "distpackage/extension/index.js", capabilities: ["browser", "network", "visible"], formats: ["crx", "xpi", "safariextz"] },
+  internet: { runtime: "caller", entry: "distpackage/index.js", capabilities: ["network", "webhook", "api"], formats: ["http", "websocket", "grpc", "rest"] },
   web: { runtime: "browser", entry: "index.html", capabilities: ["network", "visible"], formats: ["html", "pwa", "ssg", "ssr", "wasm"] },
-  libreoffice: { runtime: "caller", entry: "dist/index.js", capabilities: ["file", "network"], formats: ["oxt", "zip"] },
-  mcp: { runtime: "caller", entry: "dist/adapters/mcpserver.js", capabilities: ["network", "api"], formats: ["stdio", "jsonrpc"] },
-  vsix: { runtime: "caller", entry: "dist/index.js", capabilities: ["network", "visible"], formats: ["vsix"] },
-  container: { runtime: "node", entry: "dist/index.js", capabilities: ["memory", "storage", "network"], formats: ["oci", "docker"] }
+  libreoffice: { runtime: "caller", entry: "distpackage/index.js", capabilities: ["file", "network"], formats: ["oxt", "zip"] },
+  mcp: { runtime: "caller", entry: "distpackage/adapters/mcpserver.js", capabilities: ["network", "api"], formats: ["stdio", "jsonrpc"] },
+  vsix: { runtime: "caller", entry: "distpackage/index.js", capabilities: ["network", "visible"], formats: ["vsix"] },
+  container: { runtime: "node", entry: "distpackage/index.js", capabilities: ["memory", "storage", "network"], formats: ["oci", "docker"] }
 });
 
 /** Creates a surface target with caller supplied entry and capabilities. */

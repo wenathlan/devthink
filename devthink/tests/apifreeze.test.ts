@@ -177,11 +177,11 @@ describe("the protocolv2 api freeze of 1.1.91", () => {
   });
 
   it("verifies every capmanifest matches its surface", async () => {
-    if (!existsSync("dist/caps"))
+    if (!existsSync("build/caps"))
       return; /* the capmanifest artifacts ride the build: the pass runs after pnpm build in the validate chain and the ci lanes */
     for (const surface of ["background", "pagebridge", "sidepanel", "popup", "cli", "library", "mcp"] as const) {
       const manifest = capmanifestof(surface);
-      const stored = JSON.parse(await readFile(`dist/caps/${surface}.json`, "utf8")) as {
+      const stored = JSON.parse(await readFile(`build/caps/${surface}.json`, "utf8")) as {
         surface: string;
         release: string;
         protocolmajor: number;
@@ -272,7 +272,7 @@ describe("the protocolv2 api freeze of 1.1.91", () => {
   });
 
   it("verifies the schema hash baseline stays stable", async () => {
-    if (!existsSync("dist/schemas"))
+    if (!existsSync("build/schemas"))
       return; /* the schema artifacts ride the build: the pass runs after pnpm build in the validate chain and the ci lanes */
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
     /* the freeze baseline stamps the release: a stale stamp regenerates from the built tree before the assertions read it */
@@ -285,11 +285,11 @@ describe("the protocolv2 api freeze of 1.1.91", () => {
     expect(artifact.release).toBe(packagejson.version);
     expect(artifact.frozezat).toBe("2026-08-31");
     expect(artifact.scope).toEqual(["background", "pagebridge", "sidepanel", "popup", "cli", "library", "mcp"]);
-    const schemafiles = (await readdir("dist/schemas")).filter((file) => file.endsWith(".json")).sort();
+    const schemafiles = (await readdir("build/schemas")).filter((file) => file.endsWith(".json")).sort();
     expect(schemafiles).toHaveLength(10);
     for (const file of schemafiles) {
       const digest = createHash("sha256")
-        .update(await readFile(`dist/schemas/${file}`))
+        .update(await readFile(`build/schemas/${file}`))
         .digest("hex");
       expect(artifact.hashes[`schemas/${file}`]).toBe(digest);
     }

@@ -1,7 +1,7 @@
 /**
  * readiness.v1.ts — the committed conversion record of the version
  * one plan fixture: what the cli migrateplan command produces when it reads
- * dist/fixtures/importers/v1-plan.json with --format v1, the evidence the
+ * build/fixtures/importers/v1-plan.json with --format v1, the evidence the
  * readiness review's migrateplan bridge gate walks. The record proves the
  * version one window closed clean — the converted plan lints green through
  * the same frozen grammar every authored plan answers.

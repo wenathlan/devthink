@@ -57,7 +57,7 @@ const casa = (nome: string, papel: string, logicas: string[]) => {
   );
   w(
     path.join(root, "tsconfig.json"),
-    `{\n  "include": ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"],\n  "exclude": ["node_modules", "dist", "**/*.test.ts"],\n  "compilerOptions": {\n    "noEmit": true,\n    "module": "ESNext",\n    "strict": true,\n    "lib": ["esnext", "dom", "dom.iterable"],\n    "jsx": "react-jsx",\n    "esModuleInterop": true,\n    "skipLibCheck": true,\n    "allowImportingTsExtensions": true,\n    "moduleResolution": "bundler",\n    "types": ["vite/client", "node"],\n    "baseUrl": ".",\n    "paths": { "@/*": ["Sol/*", "./*"] }\n  }\n}\n`,
+    `{\n  "include": ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"],\n  "exclude": ["node_modules", "build", "**/*.test.ts"],\n  "compilerOptions": {\n    "noEmit": true,\n    "module": "ESNext",\n    "strict": true,\n    "lib": ["esnext", "dom", "dom.iterable"],\n    "jsx": "react-jsx",\n    "esModuleInterop": true,\n    "skipLibCheck": true,\n    "allowImportingTsExtensions": true,\n    "moduleResolution": "bundler",\n    "types": ["vite/client", "node"],\n    "baseUrl": ".",\n    "paths": { "@/*": ["Sol/*", "./*"] }\n  }\n}\n`,
   );
   w(
     path.join(root, "package.json"),

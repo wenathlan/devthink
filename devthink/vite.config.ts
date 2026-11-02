@@ -282,7 +282,7 @@ export default defineConfig({
        * source the family app carries, so the engine logic is never
        * duplicated inside devthink. the entry retires when saddle 2.1.7
        * publishes: its package.json exports map gained exactly the missing
-       * "./sandbox": "./dist/sandbox.js" manifest piece. */
+       * "./sandbox": "./build/sandbox.js" manifest piece. */
       /** the modality registry bridge of the ownership law (the saddle
        * container law sibling): the sandbox lane reads the ninety-modality
        * catalog through the published library specifier

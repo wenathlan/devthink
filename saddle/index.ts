@@ -21,7 +21,7 @@ import { randomInt, randomUUID } from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { migprofileid } from './virtualmemory.js';
+import type { migprofileid } from './virtualmemory.ts';
 
 /* ------------------------------------------------------------------ */
 /* Section 1: reference versions                                       */
@@ -1399,7 +1399,7 @@ export function planlint(candidate: plan): readonly string[] {
 /** Re-exports the compute domain (wasm/wasmtime 48 lts, webgpu on
  * lavapipe, node 26 runtime surface, ai workload planners, wasm canary,
  * wasi:gfx, chatops, gpu ebpf telemetry, ai migration predictor). */
-export * from './compute.js';
+export * from './compute.ts';
 /* the media pipeline and transcode domain moved to devthink (the saddle
  * ownership law, wave a, actions 108-112: the master virtualization engine
  * keeps only the sandbox/vm/runner/vgpu/vcpu/ports/hardware-virtual
@@ -1420,12 +1420,12 @@ export {
   quantumsim,
   runbb84,
   rune91,
-} from './quantum.js';
+} from './quantum.ts';
 /** Re-exports the scheduling and allocation domain (typecheck sharding,
  * shared-memory cache, project graph, MIG/vCPU/RAM/GPU/NUMA/PCI
  * allocation, aipsched, psi lstm, tenant QoS, anomaly detector,
  * hot reload, otel, health, shutdown, plugin hooks). */
-export * from './scheduler.js';
+export * from './scheduler.ts';
 export {
   cgroupsv2slice,
   creatiersengine,
@@ -1445,19 +1445,19 @@ export {
   tierserror,
   tmpfsrecipe,
   zramrecipe,
-} from './tiers.js';
+} from './tiers.ts';
 /** Re-exports the virtual processor bank and cpuinfo generators. */
-export * from './virtualcpu.js';
+export * from './virtualcpu.ts';
 /** Re-exports the gpu passthrough surface (vfio, rom dump, vgpu data). */
-export * from './virtualgpu.js';
+export * from './virtualgpu.ts';
 /** Re-exports the virtualization surface (qemu turbo argv, passage,
  * mttg cgroups, mttg grid, checkpoint and restore, virtualizationcore
  * bridge). */
-export * from './virtualization.js';
+export * from './virtualization.ts';
 /** Re-exports the MIG profile union declared by the memory module. */
-export type { migprofileid } from './virtualmemory.js';
+export type { migprofileid } from './virtualmemory.ts';
 /** Re-exports the memory tier catalog and virtual memory manager. */
-export * from './virtualmemory.js';
+export * from './virtualmemory.ts';
 
 /* ── Section 2: the saddle domain routing barrel ── */
 
@@ -1466,21 +1466,21 @@ export * from './virtualmemory.js';
  * virtualization engine keeps only the sandbox/vm/runner/vgpu/vcpu/ports/
  * hardware-virtual modalities — the automation and intelligence lanes ride
  * their new owner). */
-export * from './browser.js';
-export * from './communication.js';
-export * from './distribution.js';
-export * from './execution.js';
-export * from './foundation.js';
-export * from './integration.js';
-export * from './isolation.js';
+export * from './browser.ts';
+export * from './communication.ts';
+export * from './distribution.ts';
+export * from './execution.ts';
+export * from './foundation.ts';
+export * from './integration.ts';
+export * from './isolation.ts';
 /** Re-exports the sandbox modality registry — the catalog the join
  * resolver reads (the spine of the sandbox modalities the engine opens). */
-export * from './modalityregistry.js';
-export * from './modes.js';
+export * from './modalityregistry.ts';
+export * from './modes.ts';
 /** Re-exports the script lanes — the sh execution through the universal
  * runner, the yml/yaml interpretation through the house yaml subset with
  * the babel compile roundtrip, the detached background runs on the house
  * job queue and the docker-ready descriptors (the PR15 lane surface the
  * webserver routes and the script cli command consume). */
-export * from './scriptlanes.js';
-export * from './virtual.js';
+export * from './scriptlanes.ts';
+export * from './virtual.ts';

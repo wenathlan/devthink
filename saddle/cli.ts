@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * cli.ts — the saddle command-line entry point.
  *
@@ -14,12 +15,12 @@ import { mkdtemp, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { argv } from "node:process";
-import { eventbus } from "./foundation.js";
-import { localmemory, localstorage } from "./virtual.js";
-import { engine, inprocess, scheduler } from "./execution.js";
-import { mcpserver } from "./integration.js";
-import { modecatalog } from "./modes.js";
-import { creategrid, defaultplan, dockerrun, multiplex, planlint, plantoml, qemucommand, type plan } from "./index.js";
+import { eventbus } from "./foundation.ts";
+import { localmemory, localstorage } from "./virtual.ts";
+import { engine, inprocess, scheduler } from "./execution.ts";
+import { mcpserver } from "./integration.ts";
+import { modecatalog } from "./modes.ts";
+import { creategrid, defaultplan, dockerrun, multiplex, planlint, plantoml, qemucommand, type plan } from "./index.ts";
 import {
   compilewithbabel,
   dockerdescriptor,
@@ -30,10 +31,10 @@ import {
   runscriptbackground,
   scriptRunStatus,
   type ScriptPlan,
-} from "./scriptlanes.js";
+} from "./scriptlanes.ts";
 
 /* ════════════════════════════════════════════════════════════════════ */
-/* Section 1: cli/main.ts — the saddle command-line entry point (the bin "saddle" resolves to dist/cli.js after the grand merge; the file is executable through the bin entry, not a shebang). */
+/* Section 1: cli/main.ts — the saddle command-line entry point (the bin "saddle" resolves to this source through the source-is-library law (node 26 strips the types, the shebang hands the file to the runtime)). */
 /* ════════════════════════════════════════════════════════════════════ */
 /**
  * the cli keeps local execution explicit and leaves remote dispatch to adapters.

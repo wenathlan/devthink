@@ -1405,7 +1405,7 @@ async function createserver(): Promise<Hono> {
     }
   }
 
-  // static web ui: the host build (cwd/dist — a host application or repo dev
+  // static web ui: the host build (cwd/build — a host application or repo dev
   // with its own vite build) wins, then the console that ships inside the
   // package (the bundled http transport lives in the package dist, so a
   // consumer running `npx @wenathlan/gateway serve` with no local build
@@ -1432,15 +1432,15 @@ async function createserver(): Promise<Hono> {
   return app;
 }
 
-/** consoleroots — the static roots in priority order: the local dist (the
- * host build — cwd relative), then the package's own dist when the http
- * transport itself runs from inside it (the bundled dist/http.js sits next
+/** consoleroots — the static roots in priority order: the local build (the
+ * host build — cwd relative), then the package's own build when the http
+ * transport itself runs from inside it (the bundled build/http.js sits next
  * to the console the package ships; repo-dev runs http.ts from the root, so
- * the module dir only joins the list when it IS a dist directory) */
+ * the module dir only joins the list when it IS a build directory) */
 function consoleroots(): string[] {
-  const roots: string[] = ["dist"];
+  const roots: string[] = ["build"];
   const moduledir = dirname(fileURLToPath(import.meta.url));
-  if (basename(moduledir) === "dist" && moduledir !== resolve("dist")) {
+  if (basename(moduledir) === "build" && moduledir !== resolve("build")) {
     roots.push(moduledir);
   }
   return roots;
@@ -1734,7 +1734,7 @@ function version(): string {
   const embedded = process.env.DEVTHINK_VERSION?.trim();
   if (embedded) return embedded;
   // probe both the module directory (source tree) and its parent (the
-  // built dist/ layout) so the bundled cli.js resolves the version too
+  // built build/ layout) so the bundled cli.js resolves the version too
   for (const candidate of ["./package.json", "../package.json"]) {
     try {
       const file = new URL(candidate, import.meta.url);

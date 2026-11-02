@@ -105,7 +105,7 @@ describe("the example gallery of the 2.0.0 release", () => {
   });
 
   it("runs the gallery suite green over the built tree", { timeout: 120_000 }, async () => {
-    const built = existsSync("dist/gallery.json");
+    const built = existsSync("build/gallery.json");
     /* the suite needs the built fixture copies the packages ship, so a lane without a build asserts the source pass only */
     if (!built) return;
     const report = await runrecipessuite();
@@ -125,7 +125,7 @@ describe("the example gallery of the 2.0.0 release", () => {
   it("covers every gallery entry of the index in the recorded record", {
     timeout: Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 120000),
   }, async () => {
-    const built = existsSync("dist/gallery.json");
+    const built = existsSync("build/gallery.json");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
     /* a built tree runs the gate itself, so every lane that builds before the suite verifies the committed gallery record without depending on gate ordering: the gate reruns the gallery over the built fixture set and verifies the record stays internally consistent */
     if (built) await execute("node", ["recipes.ts"]);
@@ -146,7 +146,7 @@ describe("the example gallery of the 2.0.0 release", () => {
     const sourcepages = new Set(Object.keys(fixturepages));
     for (const page of gallery.fixturepages) {
       expect(sourcepages.has(page.name)).toBe(true);
-      if (built) expect(existsSync(join("dist", "fixtures", "pages", page.name))).toBe(true);
+      if (built) expect(existsSync(join("build", "fixtures", "pages", page.name))).toBe(true);
     }
   });
 });

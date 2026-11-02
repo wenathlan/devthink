@@ -7,7 +7,7 @@ import { describe, it } from "vitest";
 import { readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { releaseartifactmatrix } from "../distribution.js";
+import { releaseartifactmatrix } from "../distribution.ts";
 
 /* The transport-neutral graph of the grand merge: the flat domain files
    bundle full-stack sections, so the browser-loadable surface is the curated
@@ -16,7 +16,7 @@ import { releaseartifactmatrix } from "../distribution.js";
    actions 108-112 moved the intelligence and automation domains to devthink,
    so their seats retire here). The node-only capabilities keep their deep
    exports (./memory-*, ./sessions-file, ./release-*, ...). */
-const transportneutral = ["dist/foundation.js", "dist/modalityregistry.js"];
+const transportneutral = ["foundation.ts", "modalityregistry.ts"];
 
 describe("the package surface", () => {
 it("imports every declared package export target in Node", async () => {
@@ -54,7 +54,7 @@ it("declares runtime metadata and an optional browser provider peer", async () =
   assert.equal(packagejson.packageManager, "pnpm@12.3.4");
   assert.equal(packagejson.peerDependencies.playwright, "^1.63.0");
   assert.equal(packagejson.peerDependenciesMeta.playwright.optional, true);
-  assert.equal(packagejson.exports["./browser-playwright"], "./dist/browser.js");
+  assert.equal(packagejson.exports["./browser-playwright"], "./browser.ts");
 });
 
 it("keeps transport-neutral export graphs free of Node-only imports", async () => {
@@ -74,8 +74,8 @@ it("keeps transport-neutral export graphs free of Node-only imports", async () =
       pending.push(child.endsWith(".js") ? child : `${child}.js`);
     }
   }
-  assert.equal(seen.has(resolve(root, "..", "dist/foundation.js")), true);
-  assert.equal(seen.has(resolve(root, "..", "dist/modalityregistry.js")), true);
+  assert.equal(seen.has(resolve(root, "..", "foundation.ts")), true);
+  assert.equal(seen.has(resolve(root, "..", "modalityregistry.ts")), true);
 });
 
 it("creates the expanded release matrix without vendor coupling", () => {

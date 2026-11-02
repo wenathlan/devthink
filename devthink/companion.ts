@@ -1,6 +1,6 @@
 /** The companion module of the 1.1.98 consolidation: the native host runtime interned in this one typescript module, so the companion family carries one source file the plain node recipe of the build compiles, stamps and ships beside the dist targets — never a binary blob, never a hand maintained runtime file. */
 
-/** The host manifest template the build stamps and emits as dist/nativehost.template.json: the chromium native messaging host manifest of the optional companion process, with the placeholders the installer fills (the host name, the companion path and the generated extension id) and the version placeholder the build stamps. */
+/** The host manifest template the build stamps and emits as build/nativehost.template.json: the chromium native messaging host manifest of the optional companion process, with the placeholders the installer fills (the host name, the companion path and the generated extension id) and the version placeholder the build stamps. */
 export const nativehosttemplatejson = `{
   "name": "__native_host_name__",
   "description": "The devthink companion process: an optional native host that speaks length prefixed json over stdio and never runs until the user installs it.",

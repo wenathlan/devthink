@@ -68,7 +68,7 @@ const CONVERT = [
 const SKIP = new Set([
   "node_modules",
   ".git",
-  "dist",
+  "build",
   "release",
   ".next",
   "build",

@@ -112,7 +112,7 @@ describe("artifactmanifest", () => {
     /* an unrecognized name still rides the github asset channel because every release artifact attaches to the release */
     expect(artifactchannelof("unknown-artifact.bin", "1.1.87")).toEqual(["github"]);
     /* the dist bundles ride the npm channels */
-    expect(artifactchannelof("dist/index.js", "1.1.87")).toEqual(["npmjs", "githubpackages"]);
+    expect(artifactchannelof("build/index.js", "1.1.87")).toEqual(["npmjs", "githubpackages"]);
   });
 
   it("names the manifest asset with the release version", () => {

@@ -3038,7 +3038,7 @@ async function tryimport(path: string): Promise<gatewaydefinition | null> {
 
 /** config search bases — cwd, module dir (source root) and module parent (dist)
  * relative dynamic imports resolve against the importing module url not
- * the process cwd, so the built dist/configloader.js must also probe the
+ * the process cwd, so the built build/configloader.js must also probe the
  * parent directory where config.mjs lives in a packaged install */
 function searchbases(): string[] {
   const moduledir = dirname(fileURLToPath(import.meta.url));

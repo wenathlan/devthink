@@ -117,11 +117,11 @@ describe("the publishing pipeline", () => {
   });
 
   it("covers every built artifact with names, sizes, checksums and channels in the local artifact manifest", async () => {
-    if (!existsSync("dist/checksums.txt"))
+    if (!existsSync("build/checksums.txt"))
       return; /* the validate chain runs the tests before the build; the built-set pass runs on the next pass and in the ci lanes that build first */
     const packagejson = JSON.parse(await readFile("package.json", "utf8"));
     const version = String(packagejson.version);
-    const manifest = JSON.parse(await readFile("dist/artifactmanifest.json", "utf8")) as {
+    const manifest = JSON.parse(await readFile("build/artifactmanifest.json", "utf8")) as {
       name: string;
       version: string;
       banner: string;
@@ -143,19 +143,19 @@ describe("the publishing pipeline", () => {
     }
     /* the manifest covers the artifacts of every channel of the release */
     const names = manifest.artifacts.map((entry) => entry.name);
-    expect(names).toContain(`dist/devthink${version}.zip`);
-    expect(names).toContain(`dist/devthink-firefox-${version}.xpi`);
-    expect(names).toContain(`dist/devthink-safari-${version}.zip`);
-    expect(names).toContain(`dist/devthink-vscode-${version}.vsix`);
-    expect(names).toContain(`dist/devthink-site-${version}.zip`);
-    expect(names).toContain(`dist/devthink-declarations-${version}.zip`);
-    /* the manifest never lists itself: a self entry would need its own checksum of itself, so the checksums file covers dist/artifactmanifest.json instead */
+    expect(names).toContain(`build/devthink${version}.zip`);
+    expect(names).toContain(`build/devthink-firefox-${version}.xpi`);
+    expect(names).toContain(`build/devthink-safari-${version}.zip`);
+    expect(names).toContain(`build/devthink-vscode-${version}.vsix`);
+    expect(names).toContain(`build/devthink-site-${version}.zip`);
+    expect(names).toContain(`build/devthink-declarations-${version}.zip`);
+    /* the manifest never lists itself: a self entry would need its own checksum of itself, so the checksums file covers build/artifactmanifest.json instead */
   });
 
-  it("covers every dist artifact the checksums file records with its true sha256 digest", async () => {
-    if (!existsSync("dist/checksums.txt"))
+  it("covers every build artifact the checksums file records with its true sha256 digest", async () => {
+    if (!existsSync("build/checksums.txt"))
       return; /* the validate chain runs the tests before the build; the checksum pass runs on the next pass and in the ci lanes that build first */
-    const lines = (await readFile("dist/checksums.txt", "utf8")).split("\n").filter((line) => line.trim() !== "");
+    const lines = (await readFile("build/checksums.txt", "utf8")).split("\n").filter((line) => line.trim() !== "");
     expect(lines.length).toBeGreaterThan(10);
     for (const line of lines) {
       const [digest, name] = line.split(/\s+/);
@@ -165,7 +165,7 @@ describe("the publishing pipeline", () => {
       if ((name ?? "").startsWith("site/"))
         continue; /* the static site assets carry their own manifest and hashed names, not the reviewed naming rule */
       expect(name ?? "").not.toContain("_");
-      const bytes = await readFile(`dist/${name}`);
+      const bytes = await readFile(`build/${name}`);
       expect(createHash("sha256").update(bytes).digest("hex")).toBe(digest);
     }
     /* the publishing pipeline bundles and the manifest itself join the covered set */
@@ -178,10 +178,10 @@ describe("the publishing pipeline", () => {
     const packagejson = JSON.parse(await readFile("package.json", "utf8"));
     const version = String(packagejson.version);
     expect(artifactmanifestnameof(version)).toBe(`devthink-artifactmanifest-${version}.json`);
-    if (!existsSync("dist/artifactmanifest.json"))
+    if (!existsSync("build/artifactmanifest.json"))
       return; /* the validate chain runs the tests before the build; the manifest check pass runs on the next pass and in the ci lanes that build first */
     /* the manifest check catches a drifted built set before the release ships */
-    const manifest = JSON.parse(await readFile("dist/artifactmanifest.json", "utf8")) as {
+    const manifest = JSON.parse(await readFile("build/artifactmanifest.json", "utf8")) as {
       name: string;
       version: string;
       banner: string;
@@ -194,7 +194,7 @@ describe("the publishing pipeline", () => {
   });
 
   it("keeps the npm tarball inside its size budget through the flat staged package", { timeout: 120_000 }, async () => {
-    if (!existsSync("dist/checksums.txt"))
+    if (!existsSync("build/checksums.txt"))
       return; /* the validate chain runs the tests before the build; the tarball pass runs on the next pass and in the ci lanes that build first */
     const packagejson = JSON.parse(await readFile("package.json", "utf8"));
     const stagedmanifest = JSON.parse(await readFile("distpackage/package.json", "utf8"));
@@ -290,17 +290,17 @@ describe("the publishing pipeline", () => {
     expect(exporttargets.length).toBeGreaterThan(20);
     for (const target of exporttargets) {
       expect(target.startsWith("./")).toBe(true);
-      expect(target.startsWith("./dist/")).toBe(false);
+      expect(target.startsWith("./build/")).toBe(false);
       expect(existsSync(join("distpackage", target.replace(/^\.\//, "")))).toBe(true);
     }
   });
 
   it("stamps the built vsix artifact with the manifest version and the consent fields", async () => {
-    if (!existsSync(`dist/devthink-vscode-${String(JSON.parse(await readFile("package.json", "utf8")).version)}.vsix`))
+    if (!existsSync(`build/devthink-vscode-${String(JSON.parse(await readFile("package.json", "utf8")).version)}.vsix`))
       return; /* the validate chain runs the tests before the build; the vsix pass runs on the next pass and in the ci lanes that build first */
     const packagejson = JSON.parse(await readFile("package.json", "utf8"));
     const version = String(packagejson.version);
-    const bytes = await readFile(`dist/devthink-vscode-${version}.vsix`);
+    const bytes = await readFile(`build/devthink-vscode-${version}.vsix`);
     /* the vsix is a stored zip: the local file header magic and the end of central directory record both read back */
     expect(bytes.readUInt32LE(0)).toBe(0x04034b50);
     const end = bytes.subarray(bytes.length - 22);
@@ -313,13 +313,13 @@ describe("the publishing pipeline", () => {
   });
 
   it("keeps the site and declaration artifacts beside the browser builds", async () => {
-    if (!existsSync("dist/checksums.txt"))
+    if (!existsSync("build/checksums.txt"))
       return; /* the validate chain runs the tests before the build; the artifact pass runs on the next pass and in the ci lanes that build first */
     const packagejson = JSON.parse(await readFile("package.json", "utf8"));
     const version = String(packagejson.version);
-    const site = await stat(`dist/devthink-site-${version}.zip`);
+    const site = await stat(`build/devthink-site-${version}.zip`);
     expect(site.size).toBeGreaterThan(100);
-    const declarations = await stat(`dist/devthink-declarations-${version}.zip`);
+    const declarations = await stat(`build/devthink-declarations-${version}.zip`);
     expect(declarations.size).toBeGreaterThan(100);
   });
 });

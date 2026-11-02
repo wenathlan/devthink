@@ -26,7 +26,7 @@ import {
   randomPort,
   resolveHost,
   validateSpec,
-} from '../index.js';
+} from '../index.ts';
 
 /* ------------------------------------------------------------------ */
 /* engineversions                                                      */

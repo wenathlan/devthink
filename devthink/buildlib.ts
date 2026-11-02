@@ -2,7 +2,7 @@
  * build-lib — npm library bundle of the @wenathlan/devthink server family
  * one file one responsibility — only the lib build orchestration lives here
  *
- * produces inside dist/ (beside the extension bundles tests/build.ts emits):
+ * produces inside build/ (beside the extension bundles tests/build.ts emits):
  *   server.js          esm library entry of the server surface (the embedded
  *                      gateway console, transport, auth and library barrel
  *                      beside the maene provider family barrel — one entry)
@@ -32,7 +32,7 @@ function run(cmd: string) {
 
 // --- esm entries -----------------------------------------------------------
 
-run("bun build engine.ts --target=node --format=esm --packages=external --outfile dist/engine.js");
+run("bun build engine.ts --target=node --format=esm --packages=external --outfile build/engine.js");
 console.log("[build-lib] esm engine entry bundled");
 
 // --- declarations ----------------------------------------------------------
@@ -43,7 +43,7 @@ console.log("[build-lib] esm engine entry bundled");
 
 // --- sanity ----------------------------------------------------------------
 
-const required = ["dist/server.js", "dist/engine.js", "dist/server.d.ts", "dist/engine.d.ts"];
+const required = ["build/server.js", "build/engine.js", "build/server.d.ts", "build/engine.d.ts"];
 const missing = required.filter((p) => !existsSync(`${root}/${p}`));
 if (missing.length > 0) {
   console.error(`[build-lib] missing bundle artifacts: ${missing.join(", ")}`);

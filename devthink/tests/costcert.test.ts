@@ -34,7 +34,7 @@ describe("the costcert reconciliation artifact", () => {
   });
 
   it("covers every accounting check with a passing outcome once the gate has run", async () => {
-    const built = existsSync("dist/extension/manifest.json");
+    const built = existsSync("build/extension/manifest.json");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
     /* a built tree runs the gate itself, so every lane that builds before the suite — the bun lane, the deno lane, a local two-pass validate — verifies the committed reconciliation record without depending on gate ordering: the gate replays the accounting families against the compiled modules and verifies the record stays internally consistent */
     if (built) await execute("node", ["costcert.ts"]);
@@ -64,8 +64,8 @@ describe("the costcert reconciliation artifact", () => {
 
   it("exercises the real compiled accounting modules and recomputes the cost lines from recorded evidence", async () => {
     const source = await readFile("costcert.ts", "utf8");
-    expect(source).toContain('import("./dist/index.js")');
-    expect(source).toContain('import("./dist/memory.js")');
+    expect(source).toContain('import("./build/index.js")');
+    expect(source).toContain('import("./build/memory.js")');
     expect(source).toContain("usagetotals");
     expect(source).toContain("recordagentusage");
     expect(source).toContain("swarmcosts");

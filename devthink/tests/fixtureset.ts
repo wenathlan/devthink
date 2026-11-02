@@ -1,4 +1,4 @@
-/** The example fixture set of the headless and packaging lanes as one dense typescript module: the recorded page state, the two example plans and the two example workflows the build materializes into dist/fixtures so the packages, the container smoke and the nuget content set ship them. Each export holds the exact original file text of its tests/code source. */
+/** The example fixture set of the headless and packaging lanes as one dense typescript module: the recorded page state, the two example plans and the two example workflows the build materializes into build/fixtures so the packages, the container smoke and the nuget content set ship them. Each export holds the exact original file text of its tests/code source. */
 
 /** The example.org page state fixture of the headless lane — the recorded observation (the url, the title, the text preview, the forms and the elements) the headless fixture loader parses under schemastrict and the library modes test resolves; the exact text of the former example-org-pagestate.json. */
 export const exampleorgpagestate = `{
@@ -39,7 +39,7 @@ export const forminventoryplan = `{
 }
 `;
 
-/** The release notes plan — the headless example plan the container smoke runs (node dist/cli.js headless dist/fixtures/plans/release-notes-plan.json --fixtures dist/fixtures); the exact text of the former release-notes-plan.json. */
+/** The release notes plan — the headless example plan the container smoke runs (node build/cli.js headless build/fixtures/plans/release-notes-plan.json --fixtures build/fixtures); the exact text of the former release-notes-plan.json. */
 export const releasenotesplan = `{
   "version": "1.1.79",
   "goal": "Read the release notes of the example project",

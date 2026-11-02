@@ -142,7 +142,7 @@ describe("native host manifest template and installer", () => {
   it("builds the host manifest template with the generated extension id placeholder", () => {
     const template = nativehostmanifesttemplate({
       hostname: "com.example.devthink",
-      companionpath: "/home/user/devthink/dist/companion.js",
+      companionpath: "/home/user/devthink/build/companion.js",
     });
     expect(template.manifest.name).toBe("com.example.devthink");
     expect(template.manifest.type).toBe("stdio");
@@ -150,7 +150,7 @@ describe("native host manifest template and installer", () => {
     expect(template.text).toContain(nativehostidplaceholder);
     const filled = nativehostmanifesttemplate({
       hostname: "com.example.devthink",
-      companionpath: "/home/user/devthink/dist/companion.js",
+      companionpath: "/home/user/devthink/build/companion.js",
       extensionid: "extensionid0000000000000000000",
     });
     expect(filled.manifest.allowed_origins).toEqual(["chrome-extension://extensionid0000000000000000000/"]);
@@ -183,7 +183,7 @@ describe("native host manifest template and installer", () => {
       profiledir,
       hostname: "com.example.devthink",
       extensionid: "extensionid0000000000000000000",
-      companionpath: "/home/user/devthink/dist/companion.js",
+      companionpath: "/home/user/devthink/build/companion.js",
       consent: false,
       now,
       io: {
@@ -201,7 +201,7 @@ describe("native host manifest template and installer", () => {
       profiledir,
       hostname: "com.example.devthink",
       extensionid: "extensionid0000000000000000000",
-      companionpath: "/home/user/devthink/dist/companion.js",
+      companionpath: "/home/user/devthink/build/companion.js",
       consent: true,
       now,
       io: {
@@ -254,7 +254,7 @@ describe("native host manifest template and installer", () => {
       profiledir,
       hostname: "com.example.devthink",
       extensionid: "extensionid0000000000000000000",
-      companionpath: "/home/user/devthink/dist/companion.js",
+      companionpath: "/home/user/devthink/build/companion.js",
       consent: true,
       now,
       io: {

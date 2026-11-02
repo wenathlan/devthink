@@ -942,18 +942,18 @@ describe("api key literal scan of the built bundles", () => {
     const root = process.cwd();
     let distexists = true;
     try {
-      await access(join(root, "dist"));
+      await access(join(root, "build"));
     } catch {
       distexists = false;
     }
     if (!distexists)
       return; /* the validate chain runs the tests before the build; the build gate scans every bundle itself and the next pass asserts the fresh dist */
     const keyshapes = [/sk-[A-Za-z0-9]{20,}/, /Bearer\s+[A-Za-z0-9]{20,}/, /x-api-key[":\s]+[A-Za-z0-9-]{20,}/];
-    for (const entry of await readdir(join(root, "dist"))) {
+    for (const entry of await readdir(join(root, "build"))) {
       if (!entry.endsWith(".js") && !entry.endsWith(".cjs")) continue;
-      const content = await readFile(join(root, "dist", entry), "utf8");
+      const content = await readFile(join(root, "build", entry), "utf8");
       for (const shape of keyshapes)
-        expect(shape.test(content), `dist/${entry} carries an api key literal shape`).toBe(false);
+        expect(shape.test(content), `build/${entry} carries an api key literal shape`).toBe(false);
     }
   });
 });

@@ -28,7 +28,7 @@ describe("the release candidate verification matrix record", () => {
    * walks past the default five second window the lottery hit on the
    * bun lane — the cell walk carries its own sixty second budget. */
   it("covers every matrix cell with a passing outcome once the gate has run", { timeout: 60_000 }, async () => {
-    const built = existsSync("dist/index.js");
+    const built = existsSync("build/index.js");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
     /* the matrix joins the committed records of the agent, cost, documentation and sweep gates beside its self contained subprocess cells, so a built tree runs the gate itself (the gate walks every cell and verifies the record stays internally consistent), while a lane that skipped the build asserts the committed record only and leaves the live cell walk to the gate chain that joins the matrix in order */
     if (built) await execute("node", ["matrixverify.ts"]);
@@ -65,7 +65,7 @@ describe("the release candidate verification matrix record", () => {
 
 describe("the release candidate pool audit record", () => {
   it("records the full pool disposition with no unknown item", async () => {
-    const built = existsSync("dist/index.js");
+    const built = existsSync("build/index.js");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
     /* a built tree runs the gate itself (the gate re-audits the pool against the shipped symbol corpus and verifies the record stays internally consistent), while a lane that skipped the build asserts the committed record only */
     if (built) await execute("node", ["poolaudit.ts"]);

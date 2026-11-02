@@ -443,7 +443,7 @@ export async function runwcagsuite() {
       title: "no positive tabindex reorders the focus order of any surface",
       criterion: "2.4.3",
       family: "focus order",
-      module: "index.html and dist/extension",
+      module: "index.html and build/extension",
     },
     async () => {
       let scanned = 0;
@@ -459,13 +459,13 @@ export async function runwcagsuite() {
         if (Number(match[1]) > 0) offenders.push(`shell: tabindex ${match[1]}`);
       }
       check(offenders.length === 0, `positive tabindex values reorder the focus: ${offenders.join(", ")}`);
-      const built = await readdir("dist/extension").catch(() => []);
+      const built = await readdir("build/extension").catch(() => []);
       check(
         built.filter((name) => name.endsWith(".html")).length >= required.length - 1,
         `the built surface pages are absent; run node build.ts before the accessibility sweep`,
       );
       for (const page of built.filter((name) => name.endsWith(".html"))) {
-        const html = await readFile(join("dist/extension", page), "utf8");
+        const html = await readFile(join("build/extension", page), "utf8");
         for (const match of html.matchAll(/tabindex\s*=\s*"(\d+)"/g)) {
           scanned += 1;
           if (Number(match[1]) > 0) offenders.push(`${page}: tabindex ${match[1]}`);
@@ -482,7 +482,7 @@ export async function runwcagsuite() {
       title: "every built surface page stamps its html lang and no template overrides it",
       criterion: "3.1.1",
       family: "language",
-      module: "index.html, tests/build.ts and dist/extension",
+      module: "index.html, tests/build.ts and build/extension",
     },
     async () => {
       const sourcelang = /<html\s+lang="([^"]*)"/.exec(design)?.[1];
@@ -495,10 +495,10 @@ export async function runwcagsuite() {
           `the ${surface.name} template overrides the html element the build stamps: ${override?.[0]}`,
         );
       }
-      const built = (await readdir("dist/extension").catch(() => [])).filter((name) => name.endsWith(".html"));
+      const built = (await readdir("build/extension").catch(() => [])).filter((name) => name.endsWith(".html"));
       const stamped: string[] = [];
       for (const page of built) {
-        const html = await readFile(join("dist/extension", page), "utf8");
+        const html = await readFile(join("build/extension", page), "utf8");
         const lang = /<html\s+lang="([^"]*)"/.exec(html)?.[1];
         check(lang === "en", `the built surface page ${page} stamps the lang ${lang ?? "none"} instead of en`);
         stamped.push(`${page}: ${lang}`);
@@ -738,7 +738,7 @@ export const wcagrecord: wcagreport = {
       "title": "no positive tabindex reorders the focus order of any surface",
       "criterion": "2.4.3",
       "family": "focus order",
-      "module": "index.html and dist/extension",
+      "module": "index.html and build/extension",
       "outcome": "pass",
       "detail": "3 tabindex attributes scanned across the 8 surface templates, the shell and the 7 built pages with zero positive values, so the focus order stays the document order."
     },
@@ -747,7 +747,7 @@ export const wcagrecord: wcagreport = {
       "title": "every built surface page stamps its html lang and no template overrides it",
       "criterion": "3.1.1",
       "family": "language",
-      "module": "index.html, tests/build.ts and dist/extension",
+      "module": "index.html, tests/build.ts and build/extension",
       "outcome": "pass",
       "detail": "the design document stamps lang=\"en\", no template body carries its own html element (the script strings of the hidden sandbox frame stay excluded from the markup scan) and every built page keeps the stamp the build writes: dashboardpage.html: en, offscreen.html: en, optionspage.html: en, popup.html: en, sandbox.html: en, sidepanel.html: en, transparencypage.html: en."
     },

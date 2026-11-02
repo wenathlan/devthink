@@ -22,7 +22,7 @@ import path from "node:path";
 // the sibling owner source — the vendored mirror the container-era
 // constraint once demanded (the published envelope carried no built
 // registry) retired the day the family envelope answered: the 2.0.152
-// tarball ships dist/modalityregistry.js beside the source, and the
+// tarball ships build/modalityregistry.js beside the source, and the
 // family-context build answers the bridge exactly the way the checkout
 // does (the ownership law: the catalog has one owner, the engine).
 import { MODALITIES, planreport } from "@wenathlan/saddle/modalityregistry";

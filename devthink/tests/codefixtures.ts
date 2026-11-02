@@ -1,10 +1,10 @@
-/** codefixtures.ts — The typescript example fixture set as one dense typescript module: the three runnable example scripts the 2.0.0 example gallery ships through dist/fixtures — the mcp client, the bun shell and the deno shell — each export holding the exact original file text of the former devthink/tests/code corpus. The flat typed folder law dissolved the tests/code directory, so the example texts answer from this module the same way every json, csv and html fixture answers from its family module; the build stamps them into dist/fixtures beside the recipe plans and the gallery pages. */
+/** codefixtures.ts — The typescript example fixture set as one dense typescript module: the three runnable example scripts the 2.0.0 example gallery ships through build/fixtures — the mcp client, the bun shell and the deno shell — each export holding the exact original file text of the former devthink/tests/code corpus. The flat typed folder law dissolved the tests/code directory, so the example texts answer from this module the same way every json, csv and html fixture answers from its family module; the build stamps them into build/fixtures beside the recipe plans and the gallery pages. */
 
-/** The mcp client example — one minimal script that lists the devthink tools over stdio: run \`node dist/fixtures/mcp.client.ts\` with the serve command of the extension cli in your path. Exactly the text of the former tests/code/mcp.client.ts. */
-export const mcpclientexample = `/** One minimal mcp client script that lists the devthink tools over stdio: run \`node dist/fixtures/mcp.client.ts\` with the serve command of the extension cli in your path. */
+/** The mcp client example — one minimal script that lists the devthink tools over stdio: run \`node build/fixtures/mcp.client.ts\` with the serve command of the extension cli in your path. Exactly the text of the former tests/code/mcp.client.ts. */
+export const mcpclientexample = `/** One minimal mcp client script that lists the devthink tools over stdio: run \`node build/fixtures/mcp.client.ts\` with the serve command of the extension cli in your path. */
 import { spawn } from "node:child_process";
 
-const child = spawn("node", ["dist/cli.js", "serve", "--stdio"], { stdio: ["pipe", "pipe", "inherit"] });
+const child = spawn("node", ["build/cli.js", "serve", "--stdio"], { stdio: ["pipe", "pipe", "inherit"] });
 const send = (id, method, params) => child.stdin.write(\`\${JSON.stringify({ jsonrpc: "2.0", id, method, params })}\\n\`);
 child.stdout.on("data", chunk => {
   for (const line of String(chunk).trim().split("\\n")) {

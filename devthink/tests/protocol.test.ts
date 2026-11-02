@@ -4387,14 +4387,14 @@ function freezeframe(id: number | string, method: string, params?: Record<string
 
 describe("the protocolv2 frozen contract of 1.1.91", () => {
   it("validates every frozen message against its schema file", async () => {
-    if (!existsSync("dist/schemas"))
+    if (!existsSync("build/schemas"))
       return; /* the schema artifacts ride the build: the pass runs after pnpm build in the validate chain and the ci lanes */
-    const schemafiles = (await readdir("dist/schemas")).filter((file) => file.endsWith(".json")).sort();
+    const schemafiles = (await readdir("build/schemas")).filter((file) => file.endsWith(".json")).sort();
     expect(schemafiles).toHaveLength(10);
     const catalogschemas = new Set(frozenmessagecatalog.map((entry) => entry.schema));
     for (const file of schemafiles) expect(catalogschemas.has(`schemas/${file}`)).toBe(true);
     for (const entry of frozenmessagecatalog) {
-      const schema = JSON.parse(await readFile(`dist/${entry.schema}`, "utf8")) as {
+      const schema = JSON.parse(await readFile(`build/${entry.schema}`, "utf8")) as {
         $id?: string;
         version?: string;
         title?: string;
@@ -4409,9 +4409,9 @@ describe("the protocolv2 frozen contract of 1.1.91", () => {
   });
 
   it("wraps concrete messages in the versioned envelope their schema freezes", async () => {
-    if (!existsSync("dist/schemas"))
+    if (!existsSync("build/schemas"))
       return; /* the schema artifacts ride the build: the pass runs after pnpm build in the validate chain and the ci lanes, and a lane that skipped the build asserts the frozen catalog above and leaves the envelope walk to the chain that builds first */
-    const planschema = JSON.parse(await readFile("dist/schemas/plan.schema.json", "utf8")) as {
+    const planschema = JSON.parse(await readFile("build/schemas/plan.schema.json", "utf8")) as {
       plan?: { properties?: Record<string, { type?: string }> };
     };
     const proposal = parseproposal(
@@ -4429,14 +4429,14 @@ describe("the protocolv2 frozen contract of 1.1.91", () => {
     expect(planschema.plan?.properties?.createdat?.type).toBe("number");
     expect(proposal.version).toBe(protocolversion);
     expect(proposal.plan.state).toBe("pending");
-    const memoryschema = JSON.parse(await readFile("dist/schemas/memory.schema.json", "utf8")) as {
+    const memoryschema = JSON.parse(await readFile("build/schemas/memory.schema.json", "utf8")) as {
       provenancefields?: { fields?: string[] };
     };
     const provenance = { origin: "https://example.com", runid: "run1", stepid: "step1", capturedat: 1 };
     for (const field of memoryschema.provenancefields?.fields ?? []) expect(provenance).toHaveProperty(field);
     const item = memoryitemframe({ version: protocolversion, key: "k", value: 1, provenance });
     expect(item.provenance.runid).toBe("run1");
-    const envelopeschema = JSON.parse(await readFile("dist/schemas/envelope.schema.json", "utf8")) as {
+    const envelopeschema = JSON.parse(await readFile("build/schemas/envelope.schema.json", "utf8")) as {
       outcomes?: { values?: string[] };
       errorcodetable?: { items?: Array<{ code?: string; retry?: string }> };
     };

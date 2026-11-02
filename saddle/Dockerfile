@@ -706,9 +706,7 @@ COPY saddle/ .
 # so the vault sources ride the context beside the saddle and land at
 # /vault where the import resolves (the family context fix).
 COPY vault/ /vault
-RUN npm run build:engine \
-    && node --check dist/cli.js \
-    && npm run web:build:pages \
+RUN npm run web:build:pages \
     # the theme build emits the hashed SPA bundles straight at the app
     # root (the family static-first vite contract): stage them into a
     # clean folder so the runtime stages copy exactly the console
@@ -1440,7 +1438,6 @@ RUN apt-get update \
     # degrades to a no-op at runtime - the sources are dead weight.
     && rm -rf node_modules/cpu-features/deps \
     && find node_modules -type f -name Dockerfile -delete
-COPY --from=saddle-build /app/dist ./dist
 # the web service surface (self-hosted console): the staged spa plus the
 # pure-node server stack - zero npm dependencies, the node 26 runtime
 # carries everything (node:sqlite, node:crypto, native type stripping
@@ -1464,7 +1461,16 @@ COPY --from=saddle-build /out/spa ./
 
 USER node
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 CMD ["node", "dist/cli.js", "help"]
+# the console service doors: the webserver answers the engine api and the
+# staged spa on the saddle port (the source-is-library law runs the .ts
+# graph natively - node 26 strips the types, zero npm dependencies).
+ENV SADDLE_PORT=8080 \
+    SADDLE_HOST=0.0.0.0
 
-ENTRYPOINT ["node", "dist/cli.js"]
-CMD ["help"]
+EXPOSE 8080
+
+# the health probe rides the public /health route the webserver answers
+# (node fetch, zero wget dependency on the slim debian base).
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD ["node", "-e", "fetch('http://127.0.0.1:8080/health').then((r)=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+
+ENTRYPOINT ["node", "webserver.ts"]

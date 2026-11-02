@@ -855,7 +855,7 @@ export const kvmcapnames: readonly string[] = [
 
 /** re-exports the gpu passthrough surface (vfio bind, rom dump, looking
  * glass, vgpu profiles) whose canonical home is virtualgpu.ts. */
-export * from './virtualgpu.js';
+export * from './virtualgpu.ts';
 
 /* ------------------------------------------------------------------ */
 /* context: checkpoint (criu planner, file snapshot, uffd, diff, live   */

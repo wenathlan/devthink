@@ -17,8 +17,8 @@ const repoRoot = resolve(process.cwd(), "..");
 
 /** Collects the compiled modules the runtime checks exercise, or null before the first build. */
 async function compiledmodules() {
-  if (!existsSync("dist/index.js") || !existsSync("dist/policy.js")) return null;
-  return { library: await import("./dist/index.js"), policy: await import("./dist/policy.js") };
+  if (!existsSync("build/index.js") || !existsSync("build/policy.js")) return null;
+  return { library: await import("./build/index.js"), policy: await import("./build/policy.js") };
 }
 
 /** One recorded row of a gate artifact trail: the entry or check fields the failure extraction reads, absent on the rows the trail shape never states. */
@@ -325,10 +325,10 @@ export async function runsweepsuite() {
 
   /* 5e. secret material: a literal key, token or password with a long value fails the scan over the shipped sources and the compiled bundles; the synthetic tokens of the test fixtures stay outside the scan because they are test data, not bundle content. */
   const secrets = [];
-  const bundlefiles = existsSync("dist")
-    ? (await readdir("dist"))
+  const bundlefiles = existsSync("build")
+    ? (await readdir("build"))
         .filter((file) => file.endsWith(".js") && !file.includes(".min."))
-        .map((file) => join("dist", file))
+        .map((file) => join("build", file))
     : [];
   for (const file of [...rootsources, ...solsources, ...bundlefiles]) {
     const text = await readFile(file, "utf8");
@@ -500,7 +500,7 @@ export async function runsweepsuite() {
       "offscreen.html",
       "sandbox.html",
     ];
-    const missingpages = pages.filter((page) => !existsSync(join("dist", "extension", page)));
+    const missingpages = pages.filter((page) => !existsSync(join("build", "extension", page)));
     let smokecovered = false;
     if (existsSync(join(repoRoot, ".github/workflows/verify.yml")))
       smokecovered = (await readFile(join(repoRoot, ".github/workflows/verify.yml"), "utf8")).includes("test:chromium");
@@ -525,7 +525,7 @@ export async function runsweepsuite() {
     ];
     const brokenpages = [];
     for (const page of pages) {
-      const path = join("dist", "extension", page);
+      const path = join("build", "extension", page);
       if (!existsSync(path)) continue;
       const html = await readFile(path, "utf8");
       if (!html.toLowerCase().includes("<script")) brokenpages.push(page);

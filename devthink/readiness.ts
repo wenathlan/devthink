@@ -125,7 +125,7 @@ async function migrateplanbridge() {
   const scratch = await mkdtemp(join(tmpdir(), "devthink-readiness-"));
   try {
     for (const fixture of fixtures) {
-      const path = join("dist", "fixtures", "importers", fixture);
+      const path = join("build", "fixtures", "importers", fixture);
       if (!existsSync(path)) {
         failures.push(`${fixture} sits absent from the built fixture set`);
         continue;
@@ -141,8 +141,8 @@ async function migrateplanbridge() {
               : "tabular";
       try {
         const converted = join(scratch, `readiness-migrate-${format}.json`);
-        await execute("node", ["dist/cli.js", "migrateplan", path, "--format", format, "--out", converted]);
-        const lint = await execute("node", ["dist/cli.js", "planlint", converted]);
+        await execute("node", ["build/cli.js", "migrateplan", path, "--format", format, "--out", converted]);
+        const lint = await execute("node", ["build/cli.js", "planlint", converted]);
         if (!lint.stdout.includes("No planlint diagnostics"))
           failures.push(`${fixture} linted with diagnostics after the conversion`);
         /* the committed conversion record: every step, label, target, value and options payload the conversion produced when the record was committed must answer again — the version stamp rides the release and stays outside the comparison */
@@ -208,7 +208,7 @@ export async function runreadinesssuite() {
     verdicts,
     "the importers cover their documented source formats",
     existsSync("docs/migrationguide.md") && (await readFile("docs/migrationguide.md", "utf8")).includes("tabular"),
-    "docs/migrationguide.md documents the v1, automa, selenium, ui vision and tabular importers the cli migrateplan command carries, and dist/fixtures/importers ships the fixture of every format",
+    "docs/migrationguide.md documents the v1, automa, selenium, ui vision and tabular importers the cli migrateplan command carries, and build/fixtures/importers ships the fixture of every format",
   );
   gate(
     verdicts,
@@ -245,7 +245,7 @@ export async function runreadinesssuite() {
   const transparencysource = await readFile("transparencypage.ts", "utf8");
   const livepermissions = [...(manifest.permissions ?? []), ...(manifest.optional_permissions ?? [])];
   const librarymodule = await import(
-    (await import("node:url")).pathToFileURL(join(process.cwd(), "dist", "index.js")).href
+    (await import("node:url")).pathToFileURL(join(process.cwd(), "build", "index.js")).href
   );
   const unlisted = livepermissions.filter(
     (permission) => !Object.prototype.hasOwnProperty.call(librarymodule.permissioncoverage, permission),
@@ -350,13 +350,13 @@ export async function runreadinesssuite() {
       "the forge rides outside the application container: the runner ladder answers this gate where the workflows live",
     );
   }
-  const cappins = existsSync("dist/caps");
+  const cappins = existsSync("build/caps");
   if (cappins) {
     const surfaces = ["background", "pagebridge", "sidepanel", "popup", "cli", "library", "mcp"];
     const unpinned = [];
     for (const surface of surfaces) {
       try {
-        const cap = JSON.parse(await readFile(join("dist", "caps", `${surface}.json`), "utf8"));
+        const cap = JSON.parse(await readFile(join("build", "caps", `${surface}.json`), "utf8"));
         if (cap.release !== release) unpinned.push(surface);
       } catch {
         unpinned.push(surface);
@@ -367,7 +367,7 @@ export async function runreadinesssuite() {
       "the capability manifests carry the release version pins",
       unpinned.length === 0,
       unpinned.length === 0
-        ? `the ${surfaces.length} capability manifests of dist/caps pin the release ${release}`
+        ? `the ${surfaces.length} capability manifests of build/caps pin the release ${release}`
         : `the capability manifests of ${unpinned.join(", ")} miss the release pin`,
     );
   } else {
@@ -375,7 +375,7 @@ export async function runreadinesssuite() {
       verdicts,
       "the capability manifests carry the release version pins",
       false,
-      "dist/caps sits absent; the build has not produced the capability manifests",
+      "build/caps sits absent; the build has not produced the capability manifests",
     );
   }
 
@@ -500,7 +500,7 @@ export const readinessrecord: readinessreport = {
     {
       "gate": "the importers cover their documented source formats",
       "ok": true,
-      "evidence": "docs/migrationguide.md documents the v1, automa, selenium, ui vision and tabular importers the cli migrateplan command carries, and dist/fixtures/importers ships the fixture of every format"
+      "evidence": "docs/migrationguide.md documents the v1, automa, selenium, ui vision and tabular importers the cli migrateplan command carries, and build/fixtures/importers ships the fixture of every format"
     },
     {
       "gate": "the cold start and budget gates hold their recorded budgets",
@@ -595,7 +595,7 @@ export const readinessrecord: readinessreport = {
     {
       "gate": "the capability manifests carry the release version pins",
       "ok": true,
-      "evidence": "the 7 capability manifests of dist/caps pin the release 2.1.7"
+      "evidence": "the 7 capability manifests of build/caps pin the release 2.1.7"
     },
     {
       "gate": "the soak run keeps a long workflow alive across the retention window without drift",

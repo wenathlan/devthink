@@ -7,10 +7,10 @@ import { describe, it } from "vitest";
 import { readFile, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createassets } from "../distribution.js";
-import { retentionplan } from "../distribution.js";
-import { verifyassets } from "../distribution.js";
-import { evaluateevidence, evidencefromverification } from "../distribution.js";
+import { createassets } from "../distribution.ts";
+import { retentionplan } from "../distribution.ts";
+import { verifyassets } from "../distribution.ts";
+import { evaluateevidence, evidencefromverification } from "../distribution.ts";
 
 describe("the release assets", () => {
 it("creates reproducible checksums, SBOM and provenance subjects", async () => {

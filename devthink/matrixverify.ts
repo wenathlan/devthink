@@ -62,7 +62,7 @@ interface gatereport {
 
 /** Runs the full matrix verification and answers the report the artifact records. */
 export async function runmatrixverifysuite() {
-  if (!existsSync("dist/index.js") || !existsSync("dist/policy.js") || !existsSync("dist/protocol.js")) {
+  if (!existsSync("build/index.js") || !existsSync("build/policy.js") || !existsSync("build/protocol.js")) {
     console.error(
       "MATRIXVERIFY The gate reads the compiled library, policy and protocol bundles; run pnpm build before the matrix verification.",
     );
@@ -75,8 +75,8 @@ export async function runmatrixverifysuite() {
       summary: { total: 1, passed: 0, failed: 1 },
     };
   }
-  const library = await import("./dist/index.js");
-  const policy = await import("./dist/policy.js");
+  const library = await import("./build/index.js");
+  const policy = await import("./build/policy.js");
   const catalog = policy.actionkindcatalog();
 
   /* 1. the kind cells: every action kind of the frozen catalog against the fake tab provider of every browser kind; the step policy answers every kind with a structured verdict and never crashes, and the risk classification stays coherent with the catalog grading. */
@@ -123,7 +123,7 @@ export async function runmatrixverifysuite() {
     const hostpages = ["offscreen.html", "sandbox.html"];
     const broken = [];
     for (const page of [...interfacepages, ...hostpages]) {
-      const path = join("dist", "extension", page);
+      const path = join("build", "extension", page);
       check(existsSync(path), `the built surface page ${page} is absent`);
       const html = await readFile(path, "utf8");
       check(html.toLowerCase().includes("<script"), `the surface page ${page} carries no script`);
@@ -137,8 +137,8 @@ export async function runmatrixverifysuite() {
   await cell(
     { family: "cli", name: "the cli surface answers the manifest and help commands in library mode" },
     async () => {
-      const manifest = await execute(process.execPath, ["dist/cli.js", "manifest"], { cwd: process.cwd() });
-      const help = await execute(process.execPath, ["dist/cli.js", "help"], { cwd: process.cwd() });
+      const manifest = await execute(process.execPath, ["build/cli.js", "manifest"], { cwd: process.cwd() });
+      const help = await execute(process.execPath, ["build/cli.js", "help"], { cwd: process.cwd() });
       check(
         manifest.stdout.includes("1.1.") || manifest.stdout.includes(release),
         "the manifest command printed no release line",
@@ -202,7 +202,7 @@ export async function runmatrixverifysuite() {
 
   /* 6. the importer cells: the plan fixtures parse, the workflow fixtures dry run and the session file round trips. */
   await cell({ family: "importers", name: "the plan importer parses every fixture of the dist set" }, async () => {
-    const plandirectory = join("dist", "fixtures", "plans");
+    const plandirectory = join("build", "fixtures", "plans");
     const files = (await readdir(plandirectory)).filter((file) => file.endsWith(".json"));
     check(files.length >= 2, `the dist plan fixture set holds ${files.length} plans under the expected two`);
     for (const file of files) {
@@ -214,13 +214,13 @@ export async function runmatrixverifysuite() {
   await cell(
     { family: "importers", name: "the workflow importer dry runs every workflow fixture of the dist set" },
     async () => {
-      const workflowdirectory = join("dist", "fixtures", "workflows");
+      const workflowdirectory = join("build", "fixtures", "workflows");
       const files = (await readdir(workflowdirectory)).filter((file) => file.endsWith(".json"));
       check(files.length >= 2, `the dist workflow fixture set holds ${files.length} workflows under the expected two`);
       for (const file of files) {
         const outcome = await execute(
           process.execPath,
-          ["dist/cli.js", "runworkflow", join(workflowdirectory, file), "--dryrun", "--quiet"],
+          ["build/cli.js", "runworkflow", join(workflowdirectory, file), "--dryrun", "--quiet"],
           { cwd: process.cwd() },
         );
         check(outcome.stdout.trim().length > 0, `the workflow fixture ${file} dry ran with no output`);

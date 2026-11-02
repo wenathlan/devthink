@@ -330,14 +330,14 @@ jobs:
           tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/index.d.ts"
           tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/devthink.umd.js"
           if tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -E "^package/([^/]+/){3}"; then echo "The npm tarball carries a path nested past two directories; the package stays flat." >&2; exit 1; fi
-          cp "dist/devthink${VERSION}.zip" release/
-          cp "dist/devthink-firefox-${VERSION}.xpi" release/
-          cp "dist/devthink-safari-${VERSION}.zip" release/
-          cp "dist/devthink-vscode-${VERSION}.vsix" release/
-          cp "dist/devthink-site-${VERSION}.zip" release/
-          cp "dist/devthink-declarations-${VERSION}.zip" release/
-          cp dist/devthink.umd.js dist/devthink.umd.min.js release/
-          cp dist/nativehost.template.json "release/devthink-nativehost-${VERSION}.template.json"
+          cp "build/devthink${VERSION}.zip" release/
+          cp "build/devthink-firefox-${VERSION}.xpi" release/
+          cp "build/devthink-safari-${VERSION}.zip" release/
+          cp "build/devthink-vscode-${VERSION}.vsix" release/
+          cp "build/devthink-site-${VERSION}.zip" release/
+          cp "build/devthink-declarations-${VERSION}.zip" release/
+          cp build/devthink.umd.js build/devthink.umd.min.js release/
+          cp build/nativehost.template.json "release/devthink-nativehost-${VERSION}.template.json"
           git archive --format=tar --prefix="devthink-${VERSION}/" HEAD | xz -9e -T0 > "release/devthink-${VERSION}-source.tar.xz"
           # the zip twin of the source archive (the control the checked test
           # scripts demand): git archive materializes the tracked tree of the
@@ -362,7 +362,7 @@ jobs:
             echo
             cat releasenotes-body.md
           } > release/RELEASENOTES.md
-          test -f dist/artifactmanifest.json
+          test -f build/artifactmanifest.json
           test -f "release/devthink-vscode-${VERSION}.vsix"
           test -f "release/devthink-site-${VERSION}.zip"
           test -f "release/devthink-declarations-${VERSION}.zip"
@@ -995,22 +995,19 @@ jobs:
         run: |
           set -euo pipefail
           npm --prefix saddle ci --ignore-scripts
-          npm --prefix saddle run build
-          test -f saddle/dist/index.js
-          test -f saddle/dist/index.d.ts
-          test -f saddle/dist/cli.js
-          test -f saddle/dist/automation.js
-          test -f saddle/dist/browser.js
-          test -f saddle/dist/distribution.js
-          test -f saddle/dist/execution.js
-          test -f saddle/dist/foundation.js
-          test -f saddle/dist/isolation.js
-          test -f saddle/dist/modalityregistry.js
-          test -f saddle/dist/modes.js
-          test -f saddle/dist/sandbox.js
-          test -f saddle/dist/server.js
-          test -f saddle/dist/virtual.js
-          test -f saddle/dist/workloadlaw.js
+          test -f saddle/index.ts
+          test -f saddle/cli.ts
+          test -f saddle/browser.ts
+          test -f saddle/distribution.ts
+          test -f saddle/execution.ts
+          test -f saddle/foundation.ts
+          test -f saddle/isolation.ts
+          test -f saddle/modalityregistry.ts
+          test -f saddle/modes.ts
+          test -f saddle/sandbox.ts
+          test -f saddle/server.ts
+          test -f saddle/virtual.ts
+          test -f saddle/workloadlaw.ts
       - name: Pack every family envelope beside the application tarball
         run: |
           set -euo pipefail

@@ -5,7 +5,7 @@ import { promisify } from "node:util";
 
 const execute = promisify(execFile);
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
-const archive = `dist/devthink${packagejson.version}.zip`;
+const archive = `build/devthink${packagejson.version}.zip`;
 const { stdout } = await execute("unzip", ["-Z1", archive]);
 const files = stdout.trim().split("\n");
 for (const required of [
@@ -29,13 +29,13 @@ for (const required of [
   "icons/128.png",
 ])
   if (!files.includes(required)) throw new Error(`Required extension artifact is missing: ${required}`);
-const manifest = JSON.parse(await readFile("dist/extension/manifest.json", "utf8"));
+const manifest = JSON.parse(await readFile("build/extension/manifest.json", "utf8"));
 if (manifest.version !== packagejson.version || manifest.manifest_version !== 3)
   throw new Error("Packaged manifest version is invalid.");
 /* the icon family check of the 2.0.2 final polish: every archived icon path answers inside the archive (the file list above), the materialized png bytes carry a real png header with the exact pixel size of their key, and the manifest icons block resolves every archived path, so the store set provably renders at the required sizes inside the shipped archive */
 const iconsignature = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
 for (const size of [16, 19, 32, 38, 48, 128]) {
-  const iconbuffer = await readFile(`dist/extension/icons/${size}.png`);
+  const iconbuffer = await readFile(`build/extension/icons/${size}.png`);
   if (iconbuffer.subarray(0, 8).equals(iconsignature) === false)
     throw new Error(
       `The ${size} pixel icon does not carry a png header; the icon family ships valid png bytes at every required size.`,

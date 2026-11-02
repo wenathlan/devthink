@@ -10,7 +10,7 @@
  * the pure re-export barrels (none in this domain) folded their surface into this file directly.
  */
 
-import { jsondecode, jsonencode } from "./communication.js";
+import { jsondecode, jsonencode } from "./communication.ts";
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 1: adapters/transport.ts — transport centralizes timeout retry and jitter without choosing a host or vendor. */

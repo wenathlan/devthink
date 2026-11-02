@@ -10,7 +10,7 @@
  * the pure re-export barrels (browser/index.ts, extension/index.ts) folded their surface into this file directly.
  */
 
-import { executiondecision, executionrequest } from "./isolation.js";
+import { executiondecision, executionrequest } from "./isolation.ts";
 import { access, cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { basename, dirname, resolve } from "node:path";

@@ -60,7 +60,7 @@
 #             the whole dependency tree as its own cacheable layer, so
 #             source edits never invalidate the install layer.
 #   builder   the deps layer plus the whole source tree: the library build
-#             (node build.ts — every dist target: the library
+#             (node build.ts — every build target: the library
 #             bundles, the extension surface, the static site with its
 #             hashed assets and immutable cache headers, the flat
 #             distpackage staging, the frozen schemas and the fixture set)
@@ -78,8 +78,8 @@
 #             answers amd64, arm64, ppc64le and s390x, the union the publish
 #             lane ships) with the node tree fetched from the verified
 #             nodejs.org tarballs: the lean output
-#             only (dist/site,
-#             dist/cli.js, dist/http.js, package.json) beside the
+#             only (build/site,
+#             build/cli.js, build/http.js, package.json) beside the
 #             self hosting runner embedded as a heredoc COPY — the one
 #             container file standard: no second container script exists
 #             anywhere in the repository. non-root user devthink
@@ -348,7 +348,7 @@ RUN bun install --frozen-lockfile --ignore-scripts
 # ../devthink, ../getry and ../saddle reference of the village
 # answers inside the image exactly the way it answers in the checkout
 # (the root .dockerignore keeps the context to exactly these inputs — no
-# prebuilt dist, no packaged artifacts, no caches).
+# prebuilt build, no packaged artifacts, no caches).
 COPY devthink .
 COPY getry /getry
 COPY saddle /saddle
@@ -358,7 +358,7 @@ COPY saddle /saddle
 # of the fifteen engines reads the field that grows without limit).
 COPY package.json /package.json
 
-# the library build: every dist target the publishing pipeline ships — the
+# the library build: every build target the publishing pipeline ships — the
 # esm/cjs/neutral library bundles, the cli, the headless entry, the mcp
 # server, the relay, the extension surface with its manifest and icons, the
 # static site with content-hashed file names and the immutable cache header
@@ -370,14 +370,14 @@ RUN node build.ts
 # the build checks the builder runs before the runtime stage ships — an
 # image whose checks fail never ships:
 # the cli manifest check (the built cli answers the manifest command).
-RUN node dist/cli.js manifest
+RUN node build/cli.js manifest
 
 # the cjs surface check (the commonjs entry kept its public surface and its
 # version stamp).
-RUN node --input-type=commonjs --eval "const library = require('./dist/index.cjs'); if (typeof library.surfacepalette !== 'function') throw new Error('The cjs entry lost its public surface.'); if (library.bundlestamp().version !== require('./package.json').version) throw new Error('The cjs entry lost its version stamp.');"
+RUN node --input-type=commonjs --eval "const library = require('./build/index.cjs'); if (typeof library.surfacepalette !== 'function') throw new Error('The cjs entry lost its public surface.'); if (library.bundlestamp().version !== require('./package.json').version) throw new Error('The cjs entry lost its version stamp.');"
 
 # the headless smoke (one example fixture runs through the headless entry).
-RUN node dist/cli.js headless dist/fixtures/plans/release-notes-plan.json --fixtures dist/fixtures
+RUN node build/cli.js headless build/fixtures/plans/release-notes-plan.json --fixtures build/fixtures
 
 # the native smoke (the companion recipe and the wsbridge answer against a
 # fake host process).
@@ -386,7 +386,7 @@ RUN node nativesmoke.ts
 # the firefox prep check (the overlay of manifest.json layers
 # onto the source manifest through the crossbrowser adapter: the host
 # permissions stay empty and the generated extension id survives).
-RUN node -e "import('./dist/crossbrowser.js').then(module => { const manifest = JSON.parse(require('fs').readFileSync('manifest.json', 'utf8')); const overlay = manifest.browsers.firefox; const adapted = module.firefoxprepadapt({ manifest, overlay, backgroundscripts: ['background.js'] }); if (adapted.manifest.host_permissions.length !== 0) throw new Error('The firefox overlay must keep host permissions empty.'); if (adapted.manifest.browser_specific_settings.gecko.id !== 'devthink@wenathlan') throw new Error('The firefox overlay must carry the generated extension id.'); console.log(JSON.stringify({ valid: true, browser: adapted.overlay.browser, changes: adapted.changes.length })); })"
+RUN node -e "import('./build/crossbrowser.js').then(module => { const manifest = JSON.parse(require('fs').readFileSync('manifest.json', 'utf8')); const overlay = manifest.browsers.firefox; const adapted = module.firefoxprepadapt({ manifest, overlay, backgroundscripts: ['background.js'] }); if (adapted.manifest.host_permissions.length !== 0) throw new Error('The firefox overlay must keep host permissions empty.'); if (adapted.manifest.browser_specific_settings.gecko.id !== 'devthink@wenathlan') throw new Error('The firefox overlay must carry the generated extension id.'); console.log(JSON.stringify({ valid: true, browser: adapted.overlay.browser, changes: adapted.changes.length })); })"
 
 # the secret scan (the merged suite carries detection regexes, not secrets).
 RUN bun run checksecrets.ts
@@ -411,7 +411,7 @@ RUN node wcag.ts
 # the torture budgets read the same env, so every budget scales together
 # whether the build node is native arm64 or the lane builds beside emulated
 # legs. the build already ran above, so the frozen-contract tests that read
-# dist/schemas answer.
+# build/schemas answer.
 RUN export DEVTHINK_TEST_TIMEOUT_MS=900000 DEVTHINK_TEST_BUDGET_MS=10000; \
     npm test
 
@@ -453,7 +453,7 @@ WORKDIR /devthink
 # the bun target the TARGETARCH of this leg resolves (x64 or arm64) — the
 # recipe stamps the package version into the binary itself, so the image
 # version label below is the only other version coordinate. the builder
-# already validated the whole dist, so the binary compiles from a proven
+# already validated the whole build, so the binary compiles from a proven
 # tree — an image whose build checks fail never ships.
 RUN set -eux; \
     case "${TARGETARCH}" in \
@@ -507,16 +507,16 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*; \
     version="${NODE_RUNTIME_VERSION}"; \
     case "${TARGETARCH}" in \
-        amd64) nodearch="x64"; dist="https://nodejs.org/dist" ;; \
-        arm64|aarch64) nodearch="arm64"; dist="https://nodejs.org/dist" ;; \
-        ppc64le) nodearch="ppc64le"; dist="https://nodejs.org/dist" ;; \
-        s390x) nodearch="s390x"; dist="https://nodejs.org/dist" ;; \
-        riscv64) nodearch="riscv64-pointer-compression"; dist="https://unofficial-builds.nodejs.org/download/release" ;; \
+        amd64) nodearch="x64"; build="https://nodejs.org/dist" ;; \
+        arm64|aarch64) nodearch="arm64"; build="https://nodejs.org/dist" ;; \
+        ppc64le) nodearch="ppc64le"; build="https://nodejs.org/dist" ;; \
+        s390x) nodearch="s390x"; build="https://nodejs.org/dist" ;; \
+        riscv64) nodearch="riscv64-pointer-compression"; build="https://unofficial-builds.nodejs.org/download/release" ;; \
         *) echo "the five-architecture family index does not carry TARGETARCH ${TARGETARCH}" >&2; exit 1 ;; \
     esac; \
     tarball="node-v${version}-linux-${nodearch}.tar.xz"; \
-    curl -fsSL "${dist}/v${version}/SHASUMS256.txt" -o /tmp/node-SHASUMS256.txt; \
-    curl -fsSL "${dist}/v${version}/${tarball}" -o "/tmp/${tarball}"; \
+    curl -fsSL "${build}/v${version}/SHASUMS256.txt" -o /tmp/node-SHASUMS256.txt; \
+    curl -fsSL "${build}/v${version}/${tarball}" -o "/tmp/${tarball}"; \
     (cd /tmp && grep -F "  ${tarball}" node-SHASUMS256.txt | sha256sum -c -); \
     mkdir -p /out; \
     tar -xJf "/tmp/${tarball}" -C /out --strip-components=1; \
@@ -586,16 +586,16 @@ ENV NODE_ENV=production \
 WORKDIR /app
 
 COPY --from=builder --chown=10000:10000 /devthink/package.json /app/package.json
-COPY --from=builder --chown=10000:10000 /devthink/dist/site /app/dist/site
-COPY --from=builder --chown=10000:10000 /devthink/dist/cli.js /app/dist/cli.js
-COPY --from=builder --chown=10000:10000 /devthink/dist/http.js /app/dist/http.js
+COPY --from=builder --chown=10000:10000 /devthink/build/site /app/build/site
+COPY --from=builder --chown=10000:10000 /devthink/build/cli.js /app/build/cli.js
+COPY --from=builder --chown=10000:10000 /devthink/build/http.js /app/build/http.js
 
 # The devthink self hosting runner of the 1.1.87 publishing pipeline family
 # (the 2.0.0 consolidation restores it as the runtime entry of THE Dockerfile).
 # This plain node script serves the static site the build emits (the hashed
 # assets with their immutable cache headers), upgrades websocket connections
 # at the relay path onto the socket relay that speaks the servercontract (the
-# pure state machine of dist/http.js driven with crypto randomness and sha256
+# pure state machine of build/http.js driven with crypto randomness and sha256
 # token hashes), and starts the mcp server listener as its own child process
 # bound to the address the operator chose. Every bind, port and path is an
 # environment choice the operator sets (DEVTHINK_HTTP_BIND, DEVTHINK_HTTP_PORT,
@@ -621,7 +621,7 @@ const mcppath = process.env.DEVTHINK_MCP_PATH ?? "/mcp";
 const relayidlewindow = Number(process.env.DEVTHINK_RELAY_IDLE_MS ?? 0);
 
 /** The pure relay state machine import: the runner drives the module the library ships, never a private copy of the contract. */
-const relaymodule = await import("./dist/http.js");
+const relaymodule = await import("./build/http.js");
 
 /** The websocket accept key handshake: the fixed guid the protocol defines and the sha1 digest the upgrade answer carries. */
 const websocketguid = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
@@ -706,7 +706,7 @@ async function answersite(request, response, sitedir, headers) {
 
 /** Starts the self hosting runner: the static site listener with the relay upgrade at the relay path, the mcp server child process on its own bind and port, and the idle sweep of the quiet relay connections. */
 async function start() {
-  const sitedir = join(process.cwd(), "dist", "site");
+  const sitedir = join(process.cwd(), "build", "site");
   const headers = await headermapof(sitedir);
   const sockets = new Map();
   let state = relaymodule.newrelayserverstate();
@@ -778,7 +778,7 @@ async function start() {
     }
   }, Math.max(50, Math.floor(relayidlewindow / 4))) : null;
 
-  const child = spawn(process.execPath, ["dist/cli.js", "serve", "--transport", "http", "--bind", mcpbind, "--port", String(mcpport)], { stdio: ["ignore", "ignore", "inherit"] });
+  const child = spawn(process.execPath, ["build/cli.js", "serve", "--transport", "http", "--bind", mcpbind, "--port", String(mcpport)], { stdio: ["ignore", "ignore", "inherit"] });
   child.on("error", (error) => { process.stderr.write(`The mcp server listener failed to start: ${error.message}\n`); });
 
   const stop = () => {
@@ -816,7 +816,7 @@ async function check() {
   if (health.status !== 200 || healthbody.ok !== true) throw new Error("The container health endpoint did not answer ok.");
   const index = await fetchwithretry(`${base}/index.html`, undefined, 90);
   if (index.status !== 200) throw new Error("The static site index did not answer.");
-  const sitefiles = await readdir(join(process.cwd(), "dist", "site"));
+  const sitefiles = await readdir(join(process.cwd(), "build", "site"));
   if (!sitefiles.includes("index.html")) throw new Error("The static site directory carries no index page.");
   const relayprobe = await fetchwithretry(`${base}${relaypath}`, undefined, 90);
   if (relayprobe.status === 101) throw new Error("The relay upgraded a plain http request without the websocket handshake.");

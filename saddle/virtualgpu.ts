@@ -53,7 +53,7 @@
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
-import { MIGPROFILES } from './virtualmemory.js';
+import { MIGPROFILES } from './virtualmemory.ts';
 
 /** pci bdf (bus:device.function) validator: strict hex format only.
  *  blocks any shell metacharacter or path traversal. */

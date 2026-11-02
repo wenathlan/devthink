@@ -6,7 +6,7 @@
     "emitDeclarationOnly": true,
     "stripInternal": true,
     "isolatedModules": true,
-    "outDir": "dist",
+    "outDir": "build",
     "rootDir": ".",
     "paths": {
       "@/*": ["./Sol/*", "./*"],

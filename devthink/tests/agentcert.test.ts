@@ -54,7 +54,7 @@ describe("the agentcert coordination artifact", () => {
   });
 
   it("covers every coordination scenario entry with a passing outcome once the gate has run", async () => {
-    const built = existsSync("dist/extension/manifest.json");
+    const built = existsSync("build/extension/manifest.json");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
     /* a built tree runs the gate itself, so every lane that builds before the suite — the bun lane, the deno lane, a local two-pass validate — verifies the committed coordination record without depending on the gate having run before the tests: the gate reruns the checklist against the compiled modules and verifies the record stays internally consistent */
     if (built) await execute("node", ["agentcert.ts"]);
@@ -80,9 +80,9 @@ describe("the agentcert coordination artifact", () => {
 
   it("exercises the real compiled modules the checklist names and stays deterministic", async () => {
     const source = await readFile("agentcert.ts", "utf8");
-    expect(source).toContain('import("./dist/index.js")');
-    expect(source).toContain('import("./dist/policy.js")');
-    expect(source).toContain('import("./dist/dashdone.js")');
+    expect(source).toContain('import("./build/index.js")');
+    expect(source).toContain('import("./build/policy.js")');
+    expect(source).toContain('import("./build/dashdone.js")');
     /* every fixture time flows from the fixed epoch of the fake clock that stays the default mode — the real clock exists only behind the explicit opt in switch the operator drives — and the committed record carries no timestamps so reruns stay byte identical */
     expect(source).toContain("fakeclock");
     expect(source).toContain("1_800_000_000_000");

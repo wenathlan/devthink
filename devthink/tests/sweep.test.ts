@@ -17,15 +17,15 @@ describe("the release candidate defect sweep record", () => {
     for (const family of ["audittrails", "todoentries", "replay", "scans", "runtime"])
       expect(source).toContain(`"${family}"`);
     /* the gate reads the compiled library, joins the validate chain after the build and carries its committed record inside its own module */
-    expect(source).toContain("dist/index.js");
-    expect(source).toContain("dist/policy.js");
+    expect(source).toContain("build/index.js");
+    expect(source).toContain("build/policy.js");
     expect(source).toContain("export const sweeprecord: sweepreport");
     expect(source).toContain("syncrecord");
     expect(source).toContain("process.exitCode = 1");
   });
 
   it("covers every check family with a passing outcome once the gate has run", async () => {
-    const built = existsSync("dist/index.js");
+    const built = existsSync("build/index.js");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
     /* the sweep aggregates the committed records the earlier gates carry, so the lane independence holds over the built tree: a built tree runs the gate itself (the gate walks the trails, the source scans and the runtime checks and verifies the record stays internally consistent), while a lane that skipped the build asserts the committed record only and leaves the live walk to the gate chain that joins the sweep in order */
     if (built) await execute("node", ["sweep.ts"]);

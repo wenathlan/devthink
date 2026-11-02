@@ -26,14 +26,14 @@ describe("the documentation consistency artifact", () => {
     ])
       expect(source).toContain(`record("${family}"`);
     /* the gate reads the compiled catalogs and joins the validate chain after the build */
-    expect(source).toContain("dist/policy.js");
-    expect(source).toContain("dist/index.js");
-    expect(source).toContain("dist/protocol.js");
+    expect(source).toContain("build/policy.js");
+    expect(source).toContain("build/index.js");
+    expect(source).toContain("build/protocol.js");
     expect(source).toContain("process.exitCode = 1");
   });
 
   it("covers every check family with a passing outcome once the gate has run", async () => {
-    const built = existsSync("dist/policy.js");
+    const built = existsSync("build/policy.js");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
     /* a built tree runs the gate itself, so every lane that builds before the suite verifies the committed documentation record without depending on gate ordering: the gate walks the documentation against the compiled catalogs and verifies the record stays internally consistent */
     if (built) await execute("node", ["doccheck.ts"]);

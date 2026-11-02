@@ -1,17 +1,19 @@
-/** Style: vault sol — the static SPA builds into the dedicated dist tree
- * (the deploy safety law: the engine keeps its runtime sqlite stores beside
- * the working directory, so the application root must never be a
- * publishable surface — the hashed bundles and the databases never share a
- * root), with a repository-scoped base path that answers any deploy root
- * (pages subpath, vercel, netlify, workers). The Tailwind 4 vite plugin
- * compiles the theme stylesheet's `@import "tailwindcss"` head (the @theme
- * source of truth + the light/hcf custom variants). */
+/** Style: vault sol — the static SPA builds straight at the application
+ * root (the family law the ten siblings ride: the hashed bundles land flat
+ * beside the entry html, no dist, no public, no assets folder). The
+ * deploy-safety law moves to the http surface: the api.ts static lane
+ * carries the face allowlist (only the built faces answer — the engine
+ * sources, the runtime sqlite stores and every non-face extension refuse),
+ * so the root emit never publishes what the lane must not serve. The base
+ * path answers any deploy root (pages subpath, vercel, netlify, workers)
+ * and the Tailwind 4 vite plugin compiles the theme stylesheet's
+ * `@import "tailwindcss"` head (the @theme source of truth + the
+ * light/hcf custom variants). */
 
-import { copyFileSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
-import { defineConfig, type Plugin } from "vite";
+import { defineConfig } from "vite";
 
 function pagesBasePath(value: string | undefined): string {
   const candidate = value?.trim() || "/";
@@ -19,35 +21,9 @@ function pagesBasePath(value: string | undefined): string {
   return candidate === "/" ? candidate : `/${candidate.replace(/^\/+|\/+$/g, "")}/`;
 }
 
-/** the deploy faces that never ride the bundle graph — the netlify headers
- * and redirects, the crawler faces (robots, sitemap) and the unhashed icons
- * the webmanifest cites. The build copies them verbatim into dist so every
- * publish lane (netlify, vercel, workers, the container) mounts one
- * self-contained output and the application root stays out of every deploy
- * surface. */
-const DEPLOY_FACES = ["_headers", "_redirects", "favicon.svg", "icon.svg", "robots.txt", "sitemap.xml"] as const;
-
-/** the dist copy of the deploy faces (the writeBundle hook answers only
- * after the emit landed the files on disk — the rolldown vite v8 lane
- * closes the bundle before the write, so the closeBundle seat never saw
- * the outDir; the mkdir keeps the copy lawful under every lane). */
-function copyDeployFaces(): Plugin {
-  const root = import.meta.dirname;
-  return {
-    name: "vault-deploy-faces",
-    writeBundle() {
-      const outDir = path.resolve(root, "dist");
-      mkdirSync(outDir, { recursive: true });
-      for (const face of DEPLOY_FACES) {
-        copyFileSync(path.resolve(root, face), path.join(outDir, face));
-      }
-    },
-  };
-}
-
 export default defineConfig({
   base: pagesBasePath(process.env.VITE_BASE_PATH),
-  plugins: [react(), tailwindcss(), copyDeployFaces()],
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "Sol"),
@@ -55,12 +31,12 @@ export default defineConfig({
   },
   root: import.meta.dirname,
   build: {
-    /** the faun seal of the build: the emit lands in the dedicated dist
-     * tree (emptied on every build), never beside the sources — the engine
-     * drops its sqlite stores in the working directory and a root emit
-     * would publish them with the site. */
-    outDir: path.resolve(import.meta.dirname, "dist"),
-    emptyOutDir: true,
+    /** the family build law: the emit lands flat at the application root
+     * (never emptied — the committed faces stay, the hashed bundles answer
+     * the gitignore lanes), and the faun seal rides the http surface where
+     * the api.ts static lane refuses every non-face extension. */
+    outDir: path.resolve(import.meta.dirname, "."),
+    emptyOutDir: false,
     assetsDir: "",
   },
   /** the theme sources live in the Sol folder of this app root: the pages import

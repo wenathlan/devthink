@@ -3,6 +3,6 @@
   "cleanUrls": true,
   "framework": "vite",
   "buildCommand": "pnpm build",
-  "outputDirectory": "dist",
+  "outputDirectory": ".",
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }

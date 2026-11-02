@@ -368,6 +368,7 @@ describe("the workflow contract", () => {
           entry.name === "docs" ||
           entry.name === "tests" ||
           entry.name === "build" ||
+          entry.name === "distpackage" ||
           entry.name === "dist" ||
           entry.name === ".git" ||
           entry.name === "node_modules" ||

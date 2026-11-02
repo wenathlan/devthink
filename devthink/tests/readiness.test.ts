@@ -43,7 +43,7 @@ describe("the release readiness review of the platform release", () => {
       expect(names.join("; ")).toContain(expected);
     }
     /* the go assertion runs where the lane built the candidate: the gate chain commits every candidate record inside its own gate module (the committed evidence the flat folder law keeps), so a built tree — the dist the capability manifest and transparency gates read and the cli the migrateplan bridge drives — answers the full green walk, while a lane without the build asserts the structure and the gate names above and leaves the go decision to the verify lane that joins the readiness after the build */
-    if (existsSync("dist/cli.js") && existsSync("dist/caps")) {
+    if (existsSync("build/cli.js") && existsSync("build/caps")) {
       expect(report.godecision).toBe("go");
       expect(report.summary.blocked).toBe(0);
       expect(report.summary.ok).toBe(report.summary.gates);

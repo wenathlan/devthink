@@ -62,9 +62,9 @@ describe("containerpack", () => {
   it("runs the library build and the deterministic build checks in the builder before the runtime ships", async () => {
     const dockerfile = await readFile("Dockerfile", "utf8");
     expect(dockerfile).toContain("RUN node build.ts");
-    expect(dockerfile).toContain("RUN node dist/cli.js manifest");
+    expect(dockerfile).toContain("RUN node build/cli.js manifest");
     expect(dockerfile).toContain(
-      "RUN node dist/cli.js headless dist/fixtures/plans/release-notes-plan.json --fixtures dist/fixtures",
+      "RUN node build/cli.js headless build/fixtures/plans/release-notes-plan.json --fixtures build/fixtures",
     );
     expect(dockerfile).toContain("RUN node nativesmoke.ts");
     expect(dockerfile).toContain("RUN node packageextension.ts");
@@ -129,9 +129,9 @@ describe("containerpack", () => {
     expect(dockerfile).toContain("DEVTHINK_MCP_BIND=127.0.0.1");
     expect(dockerfile).toContain("EXPOSE 8080 7436");
     expect(dockerfile).toContain('ENTRYPOINT ["node", "container.mjs"]');
-    expect(dockerfile).toContain("COPY --from=builder --chown=10000:10000 /devthink/dist/site /app/dist/site");
-    expect(dockerfile).toContain("COPY --from=builder --chown=10000:10000 /devthink/dist/cli.js /app/dist/cli.js");
-    expect(dockerfile).toContain("COPY --from=builder --chown=10000:10000 /devthink/dist/http.js /app/dist/http.js");
+    expect(dockerfile).toContain("COPY --from=builder --chown=10000:10000 /devthink/build/site /app/build/site");
+    expect(dockerfile).toContain("COPY --from=builder --chown=10000:10000 /devthink/build/cli.js /app/build/cli.js");
+    expect(dockerfile).toContain("COPY --from=builder --chown=10000:10000 /devthink/build/http.js /app/build/http.js");
   });
 
   it("absorbs the retired compose behaviors into the one container file", async () => {

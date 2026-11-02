@@ -32,8 +32,8 @@
 
 import { spawn } from "node:child_process";
 import { runInNewContext } from "node:vm";
-import { jobqueue, runrecord, runstatuses, transitionrun } from "./execution.js";
-import { aserror, idfactory, saddleerror, validationerror } from "./foundation.js";
+import { jobqueue, runrecord, runstatuses, transitionrun } from "./execution.ts";
+import { aserror, idfactory, saddleerror, validationerror } from "./foundation.ts";
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 1: the server context law and the plan nouns — the lanes never touch the visitor machine. */

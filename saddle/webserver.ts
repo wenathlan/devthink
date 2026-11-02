@@ -1953,7 +1953,7 @@ async function scriptlanes(): Promise<ScriptLaneModule | null> {
     scriptlane = (await import('./scriptlanes.ts')) as ScriptLaneModule;
   } catch {
     try {
-      scriptlane = (await import('./dist/scriptlanes.js')) as ScriptLaneModule;
+      scriptlane = (await import('./dist/scriptlanes.ts')) as ScriptLaneModule;
     } catch {
       scriptlane = null;
     }
@@ -1978,7 +1978,7 @@ function scriptlaneabsent(res: ServerResponse, headers: Record<string, string>):
       error: {
         code: 'script-lane-unavailable',
         message:
-          'the script lanes are not loadable on this host: the plain node host resolves neither the engine source graph (scriptlanes.ts imports ./execution.js) nor the built engine tree (dist/scriptlanes.js is absent) — run "npm run build:engine" once or serve behind a bundler host, and the script routes execute',
+          'the script lanes are not loadable on this host: the plain node host resolves the engine source graph natively (the source-is-library law rides the explicit .ts imports — node 26 strips the types), so the script routes execute',
       },
     },
     headers,

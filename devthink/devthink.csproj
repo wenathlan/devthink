@@ -19,16 +19,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="/" />
-    <None Include="dist/devthink$(PackageVersion).zip" Pack="true" PackagePath="contentFiles/any/any/" />
-    <None Include="dist/cli.js" Pack="true" PackagePath="contentFiles/any/any/cli.js" />
-    <None Include="dist/headless.js" Pack="true" PackagePath="contentFiles/any/any/headless.js" />
-    <None Include="dist/mcp.js" Pack="true" PackagePath="contentFiles/any/any/mcp.js" />
-    <None Include="dist/devthink.umd.js" Pack="true" PackagePath="contentFiles/any/any/devthink.umd.js" />
-    <None Include="dist/index.cjs" Pack="true" PackagePath="contentFiles/any/any/index.cjs" />
-    <None Include="dist/*.d.ts" Pack="true" PackagePath="contentFiles/any/any/declarations/" />
-    <None Include="dist/fixtures/example-org-pagestate.json" Pack="true" PackagePath="contentFiles/any/any/fixtures/example-org-pagestate.json" />
-    <None Include="dist/fixtures/plans/release-notes-plan.json" Pack="true" PackagePath="contentFiles/any/any/fixtures/plans/release-notes-plan.json" />
-    <None Include="dist/fixtures/plans/form-inventory-plan.json" Pack="true" PackagePath="contentFiles/any/any/fixtures/plans/form-inventory-plan.json" />
-    <None Include="dist/fixtures/mcp.client.ts" Pack="true" PackagePath="contentFiles/any/any/fixtures/mcp.client.ts" />
+    <None Include="build/devthink$(PackageVersion).zip" Pack="true" PackagePath="contentFiles/any/any/" />
+    <None Include="build/cli.js" Pack="true" PackagePath="contentFiles/any/any/cli.js" />
+    <None Include="build/headless.js" Pack="true" PackagePath="contentFiles/any/any/headless.js" />
+    <None Include="build/mcp.js" Pack="true" PackagePath="contentFiles/any/any/mcp.js" />
+    <None Include="build/devthink.umd.js" Pack="true" PackagePath="contentFiles/any/any/devthink.umd.js" />
+    <None Include="build/index.cjs" Pack="true" PackagePath="contentFiles/any/any/index.cjs" />
+    <None Include="build/*.d.ts" Pack="true" PackagePath="contentFiles/any/any/declarations/" />
+    <None Include="build/fixtures/example-org-pagestate.json" Pack="true" PackagePath="contentFiles/any/any/fixtures/example-org-pagestate.json" />
+    <None Include="build/fixtures/plans/release-notes-plan.json" Pack="true" PackagePath="contentFiles/any/any/fixtures/plans/release-notes-plan.json" />
+    <None Include="build/fixtures/plans/form-inventory-plan.json" Pack="true" PackagePath="contentFiles/any/any/fixtures/plans/form-inventory-plan.json" />
+    <None Include="build/fixtures/mcp.client.ts" Pack="true" PackagePath="contentFiles/any/any/fixtures/mcp.client.ts" />
   </ItemGroup>
 </Project>

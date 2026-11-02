@@ -4,11 +4,11 @@
 
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { createcommand, createerror, createsnapshot, isfreshsnapshot, snapshotdiff } from "../browser.js";
-import { createworkerrouter } from "../browser.js";
-import { startworker } from "../browser.js";
-import { extensionpermissions, permissionpolicy, requestpermission } from "../browser.js";
-import { buildextension } from "../browser.js";
+import { createcommand, createerror, createsnapshot, isfreshsnapshot, snapshotdiff } from "../browser.ts";
+import { createworkerrouter } from "../browser.ts";
+import { startworker } from "../browser.ts";
+import { extensionpermissions, permissionpolicy, requestpermission } from "../browser.ts";
+import { buildextension } from "../browser.ts";
 import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { tmpdir } from "node:os";

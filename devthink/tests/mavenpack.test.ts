@@ -20,8 +20,8 @@ describe("mavenpack", () => {
   it("attaches the declarations as classifier artifacts beside the extension zip", () => {
     const attached = mavenattachedartifacts("1.1.99");
     expect(attached).toEqual([
-      { classifier: "extension", type: "zip", path: "dist/devthink1.1.99.zip" },
-      { classifier: "declarations", type: "zip", path: "dist/devthink-declarations-1.1.99.zip" },
+      { classifier: "extension", type: "zip", path: "build/devthink1.1.99.zip" },
+      { classifier: "declarations", type: "zip", path: "build/devthink-declarations-1.1.99.zip" },
     ]);
     expect(() => mavenattachedartifacts("not-a-version")).toThrow();
   });

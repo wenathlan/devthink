@@ -436,22 +436,19 @@ jobs:
         run: |
           set -euo pipefail
           npm --prefix saddle ci --ignore-scripts
-          npm --prefix saddle run build
-          test -f saddle/dist/index.js
-          test -f saddle/dist/index.d.ts
-          test -f saddle/dist/cli.js
-          test -f saddle/dist/automation.js
-          test -f saddle/dist/browser.js
-          test -f saddle/dist/distribution.js
-          test -f saddle/dist/execution.js
-          test -f saddle/dist/foundation.js
-          test -f saddle/dist/isolation.js
-          test -f saddle/dist/modalityregistry.js
-          test -f saddle/dist/modes.js
-          test -f saddle/dist/sandbox.js
-          test -f saddle/dist/server.js
-          test -f saddle/dist/virtual.js
-          test -f saddle/dist/workloadlaw.js
+          test -f saddle/index.ts
+          test -f saddle/cli.ts
+          test -f saddle/browser.ts
+          test -f saddle/distribution.ts
+          test -f saddle/execution.ts
+          test -f saddle/foundation.ts
+          test -f saddle/isolation.ts
+          test -f saddle/modalityregistry.ts
+          test -f saddle/modes.ts
+          test -f saddle/sandbox.ts
+          test -f saddle/server.ts
+          test -f saddle/virtual.ts
+          test -f saddle/workloadlaw.ts
       - name: publish the family envelope when absent
         if: steps.token.outputs.available == 'true'
         shell: bash
@@ -944,8 +941,8 @@ jobs:
           mvn --batch-mode --file pom.xml --settings settings.xml -Drevision="${VERSION}" package
           # the single jar embeds every consumption mode and the build helper attaches both classifier zips
           test -f "target/devthink-${VERSION}.jar"
-          test -f "dist/devthink${VERSION}.zip"
-          test -f "dist/devthink-declarations-${VERSION}.zip"
+          test -f "build/devthink${VERSION}.zip"
+          test -f "build/devthink-declarations-${VERSION}.zip"
       - name: publish the single maven distribution
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -976,7 +973,7 @@ jobs:
           # devthink-<version>.pom (release.ts).
           cp pom.xml "mavenrelease/devthink-${VERSION}.pom"
           cp "target/devthink-${VERSION}.jar" "mavenrelease/"
-          cp "dist/devthink${VERSION}.zip" "dist/devthink-declarations-${VERSION}.zip" "mavenrelease/"
+          cp "build/devthink${VERSION}.zip" "build/devthink-declarations-${VERSION}.zip" "mavenrelease/"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-maven-${{ steps.release.outputs.version }}
@@ -3806,7 +3803,7 @@ jobs:
           set -euo pipefail
           cd devthink
           bun run build
-          test -f "dist/devthink${RELEASE_VERSION}.zip"
+          test -f "build/devthink${RELEASE_VERSION}.zip"
 
       # the pack verification (the retired pack:check composite answer for
       # the merged layout): the reproducible archive answers with every
@@ -3824,7 +3821,7 @@ jobs:
           set -euo pipefail
           cd devthink
           mkdir -p build/release-assets/extension
-          cp "dist/devthink${RELEASE_VERSION}.zip" "build/release-assets/extension/devthink.extension.${RELEASE_VERSION}.zip"
+          cp "build/devthink${RELEASE_VERSION}.zip" "build/release-assets/extension/devthink.extension.${RELEASE_VERSION}.zip"
           checksums="sha256.extension.${RELEASE_VERSION}"
           manifest="manifest.extension.${RELEASE_VERSION}.json"
           sha256sum "build/release-assets/extension/devthink.extension.${RELEASE_VERSION}.zip" | sed 's#build/release-assets/extension/##' > "build/release-assets/extension/${checksums}"
@@ -3986,17 +3983,17 @@ jobs:
           const sourceSha = process.env.SOURCE_SHA ?? "";
           const channels = (process.env.CHANNELS ?? "github").split(",").map(entry => entry.trim()).filter(entry => entry !== "");
           const version = JSON.parse(fs.readFileSync("package.json", "utf8")).version;
-          const manifest = JSON.parse(fs.readFileSync("dist/artifactmanifest.json", "utf8"));
+          const manifest = JSON.parse(fs.readFileSync("build/artifactmanifest.json", "utf8"));
           (async () => {
-            const pack = await import("./dist/pack.js");
+            const pack = await import("./build/pack.js");
             /* the channel resolution of the release channel resolver: a
                version stamped release asset answers under its release name
-               (the dist/ prefix the build stamps strips away), a plain
+               (the build/ prefix the build stamps strips away), a plain
                bundle keeps the npm channels the manifest records, and the
                default github answer of an unrecognized name never hides the
                manifest channels of the bundle it names. */
             const resolve = entry => {
-              const releasechannels = pack.artifactchannelof(entry.name.replace(/^dist\//, ""), version);
+              const releasechannels = pack.artifactchannelof(entry.name.replace(/^build//, ""), version);
               if (releasechannels.length === 1 && releasechannels[0] === "github" && entry.channels.length > 1) return entry.channels;
               return releasechannels;
             };
@@ -4012,7 +4009,7 @@ jobs:
                the mobile lane generates) falls back to the single distribution
                artifact — the one product every lane consumes. */
             if (selected.length === 0) {
-              const distribution = manifest.artifacts.find(entry => entry.name === `dist/devthink${version}.zip`);
+              const distribution = manifest.artifacts.find(entry => entry.name === `build/devthink${version}.zip`);
               if (distribution === undefined) throw new Error("The built set carries no distribution artifact to plan against.");
               const distributionchannels = resolve(distribution);
               selected = [{ name: distribution.name, channels: distributionchannels, primary: distributionchannels.some(channel => channel !== "github" && channels.includes(channel)) }];
@@ -4231,7 +4228,7 @@ jobs:
 
       - name: build extension
         working-directory: saddle
-        run: npm run build:engine && node dist/browser.js --version "${{ steps.release.outputs.version }}" --output build/extension
+        run: node --import tsx browser.ts --version "${{ steps.release.outputs.version }}" --output build/extension
 
       - name: create zip
         working-directory: saddle/build/extension
@@ -4345,7 +4342,7 @@ jobs:
         run: npm --prefix saddle run build:engine
       - name: write target plan
         working-directory: saddle
-        run: node dist/packager/targetcli.js "${{ matrix.target }}" "${{ matrix.format }}" build/targets
+        run: node build/packager/targetcli.js "${{ matrix.target }}" "${{ matrix.format }}" build/targets
       - name: upload target plan
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:

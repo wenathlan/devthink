@@ -261,7 +261,7 @@ jobs:
           node permdiff.ts
           node release.ts check
           npm pack ./distpackage --dry-run
-          bun dist/cli.js manifest
+          bun build/cli.js manifest
           git diff --check
       - name: Land the rung on main through the archive-tagged automation branch
         if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'

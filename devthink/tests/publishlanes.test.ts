@@ -22,7 +22,7 @@
  * ever ships.
  */
 import { existsSync } from "node:fs";
-import { readFile } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { parseDocument } from "yaml";
@@ -516,31 +516,30 @@ describe.skipIf(!inrepo)("the built envelope law (the exports promise)", () => {
    * need the engine build). the automation seat retired with the ownership
    * wave — the lane moved to the os (devthink/automation.ts) and the
    * saddle envelope no longer declares it. */
-  const EXPORTDISTTARGETS = [
-    "dist/browser.js",
-    "dist/distribution.js",
-    "dist/execution.js",
-    "dist/foundation.js",
-    "dist/index.js",
-    "dist/isolation.js",
-    "dist/modalityregistry.js",
-    "dist/modes.js",
-    "dist/sandbox.js",
-    "dist/server.js",
-    "dist/virtual.js",
-    "dist/workloadlaw.js",
+  const SOURCETARGETS = [
+    "browser.ts",
+    "distribution.ts",
+    "execution.ts",
+    "foundation.ts",
+    "index.ts",
+    "isolation.ts",
+    "modalityregistry.ts",
+    "modes.ts",
+    "sandbox.ts",
+    "server.ts",
+    "virtual.ts",
+    "workloadlaw.ts",
   ];
   const LANEASSERTIONS = [
-    ...EXPORTDISTTARGETS,
-    "dist/index.d.ts" /* the types pair of the main entry */,
-    "dist/cli.js" /* the bin the manifest declares */,
+    ...SOURCETARGETS,
+    "cli.ts" /* the bin the manifest declares */,
   ];
 
   /** the steps of a workflow job, name-indexed in declaration order. */
   const stepsof = (workflow: workflow, job: string): Array<{ name?: string; if?: string; run?: string }> =>
     (workflow.jobs?.[job]?.steps as Array<{ name?: string; if?: string; run?: string }>) ?? [];
 
-  it("the saddle manifest promises the dist the registry envelope must carry", async () => {
+  it("the saddle manifest promises the sources the registry envelope must carry", async () => {
     const saddle = JSON.parse(await readFile(join(repoRoot, "saddle", "package.json"), "utf8")) as {
       main?: string;
       types?: string;
@@ -549,40 +548,42 @@ describe.skipIf(!inrepo)("the built envelope law (the exports promise)", () => {
       exports?: Record<string, unknown>;
       scripts?: Record<string, string>;
     };
-    /* the entry pair, the bin and the files allowlist all answer the built
-     * dist — the 2.0.151 registry envelope shipped none of it. */
-    expect(saddle.main).toBe("./dist/index.js");
-    expect(saddle.types).toBe("./dist/index.d.ts");
-    expect(saddle.bin?.saddle).toBe("./dist/cli.js");
-    expect(saddle.files).toContain("dist");
-    /* every dist target the exports map resolves: the computed set is the
-     * lane's assertion list, so a new export can never silently promise a
-     * file the lanes do not compile-and-assert. */
+    /* the entry pair, the bin and the files allowlist all answer the root
+     * sources — the source-is-library law the vault doctrine brought (the
+     * 2.0.151 registry envelope shipped none of the dist era). */
+    expect(saddle.main).toBe("./index.ts");
+    expect(saddle.types).toBe("./index.ts");
+    expect(saddle.bin?.saddle).toBe("./cli.ts");
+    expect(saddle.files).toContain("index.ts");
+    /* every source target the exports map resolves exists as a committed
+     * file, and the core twelve the lanes assert are all present — a new
+     * export can never silently promise a file the lanes do not assert. */
     const targets = [
       ...new Set(
         Object.values(saddle.exports ?? {})
           .flatMap((value) => (typeof value === "string" ? [value] : Object.values(value as Record<string, string>)))
-          .filter((value): value is string => typeof value === "string" && value.startsWith("./dist/")),
+          .filter((value): value is string => typeof value === "string" && value.startsWith("./") && value.endsWith(".ts")),
       ),
     ].sort();
-    expect(targets.map((target) => target.replace(/^\.\//, ""))).toEqual(EXPORTDISTTARGETS);
+    for (const core of SOURCETARGETS) expect(targets).toContain(`./${core}`);
+    for (const target of targets)
+      await access(join(repoRoot, "saddle", target.replace(/^\.\//, "")));
   });
 
-  it("the saddle manifest gates publish on the built dist (the local contract)", async () => {
-    /* prepublishOnly → pack:check → check → build:engine: the chain a
-     * LOCAL publish from the saddle folder walks (the vitest suite and the
-     * formatcheck beside it). the CI lanes cannot lean on it — the saddle
-     * .npmrc carries ignore-scripts for the install lanes — so they build
-     * explicitly; this pin keeps the manifest gate honest for every
-     * publish that runs with scripts alive. */
+  it("the saddle manifest gates publish on the source check (the local contract)", async () => {
+    /* prepublishOnly → pack:check → check: the chain a LOCAL publish from
+     * the saddle folder walks (the tsc no-emit check beside the vitest
+     * suite and the formatcheck). the CI lanes cannot lean on it — the
+     * saddle .npmrc carries ignore-scripts for the install lanes — so they
+     * assert the source faces explicitly; this pin keeps the manifest gate
+     * honest for every publish that runs with scripts alive. */
     const saddle = JSON.parse(await readFile(join(repoRoot, "saddle", "package.json"), "utf8")) as {
       scripts?: Record<string, string>;
     };
     const scripts = saddle.scripts ?? {};
     expect(scripts.prepublishOnly).toContain("pack:check");
     expect(scripts["pack:check"]).toContain("npm run check");
-    expect(scripts.check).toContain("build:engine");
-    expect(scripts.check).toContain("node --check dist/index.js");
+    expect(scripts.check).toContain("tsc -p tsconfig.json --noEmit");
     expect(scripts["build:engine"]).toContain("scriptsbuildengine.ts");
     expect(scripts.build).toBe("npm run build:engine");
   });
@@ -600,7 +601,7 @@ describe.skipIf(!inrepo)("the built envelope law (the exports promise)", () => {
     expect(npmrc).toContain("ignore-scripts=true");
   });
 
-  it("the release ladder builds the saddle engine before the family pack", async () => {
+  it("the release ladder asserts the saddle sources before the family pack", async () => {
     const release = await parseworkflow("release.yml");
     const steps = stepsof(release, "family");
     const names = steps.map((step) => step.name ?? "");
@@ -610,11 +611,10 @@ describe.skipIf(!inrepo)("the built envelope law (the exports promise)", () => {
     expect(packindex).toBeGreaterThan(buildindex); /* the build precedes every pack */
     const build = steps[buildindex];
     expect(build?.run).toContain("npm --prefix saddle ci --ignore-scripts");
-    expect(build?.run).toContain("npm --prefix saddle run build");
     for (const entry of LANEASSERTIONS) expect(build?.run).toContain(`test -f saddle/${entry}`);
   });
 
-  it("the publish mirror builds the saddle leg before the envelope publish", async () => {
+  it("the publish mirror asserts the saddle sources before the envelope publish", async () => {
     const publish = await parseworkflow("publish.yml");
     const steps = stepsof(publish, "family-npmjs");
     const names = steps.map((step) => step.name ?? "");
@@ -630,7 +630,6 @@ describe.skipIf(!inrepo)("the built envelope law (the exports promise)", () => {
     const build = steps[buildindex];
     expect(build?.if).toBe("matrix.package == 'saddle' && steps.token.outputs.available == 'true'");
     expect(build?.run).toContain("npm --prefix saddle ci --ignore-scripts");
-    expect(build?.run).toContain("npm --prefix saddle run build");
     for (const entry of LANEASSERTIONS) expect(build?.run).toContain(`test -f saddle/${entry}`);
   });
 

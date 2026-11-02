@@ -9,9 +9,9 @@ const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
 
 /** The compiled library, policy and memory bundles the soak gate loads after the build, typed through the declaration seam: the dist tree carries no declarations, so the seam answers the runtime import surface. */
-type librarybundle = typeof import("./dist/index.js");
-type policybundle = typeof import("./dist/policy.js");
-type memorybundle = typeof import("./dist/memory.js");
+type librarybundle = typeof import("./build/index.js");
+type policybundle = typeof import("./build/policy.js");
+type memorybundle = typeof import("./build/memory.js");
 
 /** One dispatched workflow step the executor seam answers: the id, the kind and the target the repeated extraction reads. */
 interface seamstep {
@@ -349,7 +349,7 @@ async function runsoaksegmented(library: librarybundle, policy: policybundle, me
 
 /** Runs the full soak run verification suite and answers the report the artifact records. */
 export async function runsoaksuite() {
-  if (!existsSync("dist/index.js") || !existsSync("dist/policy.js") || !existsSync("dist/memory.js")) {
+  if (!existsSync("build/index.js") || !existsSync("build/policy.js") || !existsSync("build/memory.js")) {
     console.error(
       "SOAK The gate reads the compiled library, policy and memory bundles; run node build.ts before the soak run.",
     );
@@ -361,7 +361,7 @@ export async function runsoaksuite() {
           id: 1,
           title: "the compiled bundles exist",
           family: "build",
-          module: "dist",
+          module: "build",
           outcome: "fail",
           detail: "the dist bundles are absent",
         },
@@ -369,9 +369,9 @@ export async function runsoaksuite() {
       summary: { total: 1, passed: 0, failed: 1 },
     };
   }
-  const library = await import("./dist/index.js");
-  const policy = await import("./dist/policy.js");
-  const memorymodule = await import("./dist/memory.js");
+  const library = await import("./build/index.js");
+  const policy = await import("./build/policy.js");
+  const memorymodule = await import("./build/memory.js");
 
   /* the uninterrupted soak run every liveness, drift and memory check reads. */
   const full = await runsoakfull(library, policy, memorymodule);

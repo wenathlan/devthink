@@ -83,7 +83,7 @@ if (!(await readFile("dashdone.ts", "utf8").catch(() => undefined)))
 const dashdonedeclaration = await readFile("tsconfig.build.json", "utf8");
 if (!dashdonedeclaration.includes("dashdone.ts"))
   throw new Error(
-    "The declaration emit must include the dashdone module so dist/dashdone.d.ts ships beside the bundle.",
+    "The declaration emit must include the dashdone module so build/dashdone.d.ts ships beside the bundle.",
   );
 const dashboardmatch = /<template data-surface="dashboardpage">([\s\S]*?)<\/template>/.exec(webindex);
 if (dashboardmatch === null)

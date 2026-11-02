@@ -1,11 +1,11 @@
-// the saddle typescript baseline (the engine emission contract over the
-// app root and the Sol theme: one project covers both).
-// the grand-merge engine sources carry the loose typing baseline the
-// upstream saddle authored them under (strict: false with noCheck: true),
-// and the build engine emits the dist tree through this project — the
-// upstream options answer verbatim (outDir dist, NodeNext, declaration),
-// with the theme options (jsx, the vite client types) riding beside them
-// so the one project keeps covering the Sol surface.
+// the saddle typescript baseline (the source-is-library law the vault
+// doctrine brought to the family: the .ts sources ARE the engine — node 26
+// strips the types, the explicit .ts imports resolve natively, the browser
+// lanes bundle through vite and nothing ever emits a dist tree).
+// the grand-merge engine sources keep the loose typing baseline the
+// upstream saddle authored them under (strict: false, noCheck: true), with
+// the theme options (jsx, the vite client types) riding beside them so the
+// one project keeps covering the Sol surface.
 {
   "compilerOptions": {
     "module": "NodeNext",
@@ -13,9 +13,8 @@
     "target": "ES2024",
     "lib": ["ES2024", "dom", "dom.iterable"],
     "jsx": "react-jsx",
-    "outDir": "dist",
-    "rootDir": ".",
-    "declaration": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
     "strict": false,
     "noCheck": true,
     "esModuleInterop": true,

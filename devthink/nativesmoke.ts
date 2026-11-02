@@ -5,7 +5,7 @@ import { spawn } from "node:child_process";
 import type { Readable, Writable } from "node:stream";
 
 const fakehost = new URL("./fakehost.ts", import.meta.url);
-const bridge = await import("./dist/bridge.js");
+const bridge = await import("./build/bridge.js");
 const wsbridge = bridge;
 const nativehost = bridge;
 

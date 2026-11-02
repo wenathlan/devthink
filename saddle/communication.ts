@@ -10,7 +10,7 @@
  * the pure re-export barrels (none in this domain) folded their surface into this file directly.
  */
 
-import { constanttimeequal, hmacsha256 } from "./foundation.js";
+import { constanttimeequal, hmacsha256 } from "./foundation.ts";
 
 /* ══════════════════════════════════════════════════════════════════ */
 /* Section 0: api/controlsurface.ts — the operator control surface the */

@@ -1,4 +1,4 @@
-/** Runs the example gallery of the 2.0.0 release: the gate loads the 36 recipes of the recipesfixtures module through the same cli loader the planlint command uses (parseplanfile under schemastrict), validates every recipe against the frozen plan schema of the schemafixtures module (the origin, the steps and the step field vocabulary the plan authoring format shares with the frozen message schema, with the goal mapping onto the objective carrier, the label onto the summary carrier and the derived risk checked against the frozen risk enum), lints every recipe with the same portable rule set and capability set the cli planlint builds, verifies the gallery metadata of the index (the description, the difficulty, the fixture page, the declared capabilities, the consent classes, the agent topologies, the scraping export formats and the monitoring schedules), proves the consent gates hold by linting the consent recipes once with the fresh class consents the review flow would record and once without them (the refusal must name exactly the declared classes), verifies every sensitive step carries its gate declaration, verifies no step value, option or origin hardcodes a remote origin outside the reserved fixture family, resolves every step selector statically against the fixture page the entry names, dry runs every recipe through the runflow pipeline the extension runs (the grants gate, the workflow proposal validation, the per step consent gates routed to a recording provider and the dry run driver that touches no page), replays the cli planlint command over every consent free recipe copy of dist/fixtures/recipes so the gallery imports cleanly through the cli, records the outcome and duration of every executed entry in the committed record devthink/recipes.ts (the reciperecord const this module carries, migrated from devthink/artifacts/recipes.json when the flat folder law dissolved the artifacts folder) and exits nonzero on any failure. The diff mode reruns the suite and compares the gallery against the committed record: an entry added, removed, re-categorized, re-graded or drifted in its steps or kinds fails the diff so the gallery never drifts silently between releases. The sync mode (`node recipes.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
+/** Runs the example gallery of the 2.0.0 release: the gate loads the 36 recipes of the recipesfixtures module through the same cli loader the planlint command uses (parseplanfile under schemastrict), validates every recipe against the frozen plan schema of the schemafixtures module (the origin, the steps and the step field vocabulary the plan authoring format shares with the frozen message schema, with the goal mapping onto the objective carrier, the label onto the summary carrier and the derived risk checked against the frozen risk enum), lints every recipe with the same portable rule set and capability set the cli planlint builds, verifies the gallery metadata of the index (the description, the difficulty, the fixture page, the declared capabilities, the consent classes, the agent topologies, the scraping export formats and the monitoring schedules), proves the consent gates hold by linting the consent recipes once with the fresh class consents the review flow would record and once without them (the refusal must name exactly the declared classes), verifies every sensitive step carries its gate declaration, verifies no step value, option or origin hardcodes a remote origin outside the reserved fixture family, resolves every step selector statically against the fixture page the entry names, dry runs every recipe through the runflow pipeline the extension runs (the grants gate, the workflow proposal validation, the per step consent gates routed to a recording provider and the dry run driver that touches no page), replays the cli planlint command over every consent free recipe copy of build/fixtures/recipes so the gallery imports cleanly through the cli, records the outcome and duration of every executed entry in the committed record devthink/recipes.ts (the reciperecord const this module carries, migrated from devthink/artifacts/recipes.json when the flat folder law dissolved the artifacts folder) and exits nonzero on any failure. The diff mode reruns the suite and compares the gallery against the committed record: an entry added, removed, re-categorized, re-graded or drifted in its steps or kinds fails the diff so the gallery never drifts silently between releases. The sync mode (`node recipes.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
 import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
@@ -306,7 +306,7 @@ export async function runrecipessuite(): Promise<recipereport> {
   const startedall = Date.now();
 
   /* the gate reads the compiled modules the cli reads: the plan loader, the lint engine, the policy catalog, the flow pipeline and the runtime capability probes. */
-  if (!existsSync("dist/index.js") || !existsSync("dist/policy.js")) {
+  if (!existsSync("build/index.js") || !existsSync("build/policy.js")) {
     recordcheck(
       checks,
       "the compiled bundles exist for the gallery runner",
@@ -329,13 +329,13 @@ export async function runrecipessuite(): Promise<recipereport> {
       },
     };
   }
-  const library = await import("./dist/index.js");
-  const policy = await import("./dist/policy.js");
+  const library = await import("./build/index.js");
+  const policy = await import("./build/policy.js");
   recordcheck(
     checks,
     "the compiled bundles exist for the gallery runner",
     true,
-    "the gallery reads dist/index.js and dist/policy.js, the same compiled modules the cli planlint and flowrun commands read",
+    "the gallery reads build/index.js and build/policy.js, the same compiled modules the cli planlint and flowrun commands read",
   );
 
   /* the frozen schema, the gallery index and the fixture pages of the module sources. */
@@ -687,8 +687,8 @@ export async function runrecipessuite(): Promise<recipereport> {
     }
     const durationms = Date.now() - started;
 
-    /* 3h. the cli import cell: the planlint command lints the built recipe copy of dist/fixtures/recipes, so the gallery ships through the same terminal surface the packages document. */
-    const builtrecipe = join("dist", "fixtures", "recipes", `${entry.id}.json`);
+    /* 3h. the cli import cell: the planlint command lints the built recipe copy of build/fixtures/recipes, so the gallery ships through the same terminal surface the packages document. */
+    const builtrecipe = join("build", "fixtures", "recipes", `${entry.id}.json`);
     if ((entry.consentclasses ?? []).length === 0) {
       if (!existsSync(builtrecipe)) {
         failures.push(
@@ -697,7 +697,7 @@ export async function runrecipessuite(): Promise<recipereport> {
         gates.clifail += 1;
       } else {
         try {
-          await execute(process.execPath, ["dist/cli.js", "planlint", builtrecipe, "--format", "json"], {
+          await execute(process.execPath, ["build/cli.js", "planlint", builtrecipe, "--format", "json"], {
             cwd: process.cwd(),
           });
         } catch (error) {
@@ -711,7 +711,7 @@ export async function runrecipessuite(): Promise<recipereport> {
       /* the two consent demonstrations refuse the plain cli lint by design: the class consent the runner provides is the review the recipe documents, so the cell verifies the refusal names the class instead of a silent pass. */
       if (existsSync(builtrecipe)) {
         try {
-          await execute(process.execPath, ["dist/cli.js", "planlint", builtrecipe, "--format", "json"], {
+          await execute(process.execPath, ["build/cli.js", "planlint", builtrecipe, "--format", "json"], {
             cwd: process.cwd(),
           });
           failures.push("the consent recipe passed the plain cli lint; the consent demand no longer holds");
@@ -796,7 +796,7 @@ export async function runrecipessuite(): Promise<recipereport> {
         return true;
       }) &&
       (await fixturesetshipped()),
-    "the four fixture pages of the pagefixtures module copy into dist/fixtures/pages through the fixtureset rows of build.ts, so every package channel ships them from dist",
+    "the four fixture pages of the pagefixtures module copy into build/fixtures/pages through the fixtureset rows of build.ts, so every package channel ships them from dist",
   );
   recordcheck(
     checks,
@@ -961,7 +961,7 @@ export const reciperecord: recipereport = {
     {
       "name": "the compiled bundles exist for the gallery runner",
       "ok": true,
-      "detail": "the gallery reads dist/index.js and dist/policy.js, the same compiled modules the cli planlint and flowrun commands read"
+      "detail": "the gallery reads build/index.js and build/policy.js, the same compiled modules the cli planlint and flowrun commands read"
     },
     {
       "name": "the frozen plan schema carries its plan, step, options and review sections",
@@ -1009,7 +1009,7 @@ export const reciperecord: recipereport = {
         "ok": true,
         "detail": "the fixtureset carries the gallery index, the 36 recipes and the 4 fixture pages"
       },
-      "detail": "the four fixture pages of the pagefixtures module copy into dist/fixtures/pages through the fixtureset rows of build.ts, so every package channel ships them from dist"
+      "detail": "the four fixture pages of the pagefixtures module copy into build/fixtures/pages through the fixtureset rows of build.ts, so every package channel ships them from dist"
     },
     {
       "name": "the gallery runner dry runs every gallery entry without side effects",
