@@ -361,7 +361,7 @@ export async function runsoaksuite() {
           id: 1,
           title: "the compiled bundles exist",
           family: "build",
-          module: "dist",
+          module: "build",
           outcome: "fail",
           detail: "the dist bundles are absent",
         },

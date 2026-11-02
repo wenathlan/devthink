@@ -443,7 +443,7 @@ export async function runwcagsuite() {
       title: "no positive tabindex reorders the focus order of any surface",
       criterion: "2.4.3",
       family: "focus order",
-      module: "index.html and dist/extension",
+      module: "index.html and build/extension",
     },
     async () => {
       let scanned = 0;
@@ -482,7 +482,7 @@ export async function runwcagsuite() {
       title: "every built surface page stamps its html lang and no template overrides it",
       criterion: "3.1.1",
       family: "language",
-      module: "index.html, tests/build.ts and dist/extension",
+      module: "index.html, tests/build.ts and build/extension",
     },
     async () => {
       const sourcelang = /<html\s+lang="([^"]*)"/.exec(design)?.[1];
@@ -738,7 +738,7 @@ export const wcagrecord: wcagreport = {
       "title": "no positive tabindex reorders the focus order of any surface",
       "criterion": "2.4.3",
       "family": "focus order",
-      "module": "index.html and dist/extension",
+      "module": "index.html and build/extension",
       "outcome": "pass",
       "detail": "3 tabindex attributes scanned across the 8 surface templates, the shell and the 7 built pages with zero positive values, so the focus order stays the document order."
     },
@@ -747,7 +747,7 @@ export const wcagrecord: wcagreport = {
       "title": "every built surface page stamps its html lang and no template overrides it",
       "criterion": "3.1.1",
       "family": "language",
-      "module": "index.html, tests/build.ts and dist/extension",
+      "module": "index.html, tests/build.ts and build/extension",
       "outcome": "pass",
       "detail": "the design document stamps lang=\"en\", no template body carries its own html element (the script strings of the hidden sandbox frame stay excluded from the markup scan) and every built page keeps the stamp the build writes: dashboardpage.html: en, offscreen.html: en, optionspage.html: en, popup.html: en, sandbox.html: en, sidepanel.html: en, transparencypage.html: en."
     },

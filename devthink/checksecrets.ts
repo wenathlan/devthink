@@ -17,7 +17,7 @@ function productFiles(root: string): string[] {
     const stat = statSync(path);
     if (stat.isFile()) return files.push(path);
     for (const entry of readdirSync(path)) {
-      if (entry === "node_modules" || entry === ".git" || entry === "docs" || entry === "dist" || entry === "release")
+      if (entry === "node_modules" || entry === ".git" || entry === "docs" || entry === "build" || entry === "release")
         continue;
       visit(join(path, entry));
     }

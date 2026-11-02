@@ -873,7 +873,7 @@ describe("static site scan refuses serverless functions", () => {
     const sitefiles: string[] = [];
     const walksites = (dir: string): void => {
       for (const entry of readdirSync(dir)) {
-        if (entry === "node_modules" || entry === "dist")
+        if (entry === "node_modules" || entry === "build")
           continue; /* the installed toolchain and the build output never ship with the site sources */
         const path = join(dir, entry);
         if (statSync(path).isDirectory()) {
@@ -907,7 +907,7 @@ describe("static site scan refuses serverless functions", () => {
     const functionfiles = new Set(["serverless.yml", "serverless.yaml", "_worker.js", "_routes.json"]);
     /* temp rides the skip: the gitignored competitor clones the design waves
     study live there — study material, never shipped surface */
-    const skip = new Set(["node_modules", ".git", "dist", "web", "temp"]);
+    const skip = new Set(["node_modules", ".git", "build", "web", "temp"]);
     const found: string[] = [];
     const walk = (dir: string): void => {
       for (const entry of readdirSync(dir)) {

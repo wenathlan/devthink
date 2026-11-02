@@ -753,8 +753,8 @@ ${includes}
     </resources>
     <plugins><plugin><groupId>org.codehaus.mojo</groupId><artifactId>build-helper-maven-plugin</artifactId><version>3.6.1</version><executions>
       <execution><id>attach-extension-zip</id><phase>package</phase><goals><goal>attach-artifact</goal></goals><configuration><artifacts>
-        <artifact><file>\${project.basedir}/dist/devthink\${project.version}.zip</file><type>zip</type><classifier>extension</classifier></artifact>
-        <artifact><file>\${project.basedir}/dist/devthink-declarations-\${project.version}.zip</file><type>zip</type><classifier>declarations</classifier></artifact>
+        <artifact><file>\${project.basedir}/build/devthink\${project.version}.zip</file><type>zip</type><classifier>extension</classifier></artifact>
+        <artifact><file>\${project.basedir}/build/devthink-declarations-\${project.version}.zip</file><type>zip</type><classifier>declarations</classifier></artifact>
       </artifacts></configuration></execution>
     </executions></plugin></plugins>
   </build>
@@ -871,7 +871,7 @@ export function containerbuildstages(): containerbuildstage[] {
         "builds every dist target through node build.ts and runs the deterministic build checks, the vitest suite (native on both legs through the build platform pin, with the timeout guard a native arm64 build node reads) and the packageextension verification",
       checks: [
         "node build.ts",
-        "node dist/cli.js manifest",
+        "node build/cli.js manifest",
         "the cjs require check",
         "the headless smoke over the example fixture",
         "node nativesmoke.ts",
@@ -903,8 +903,8 @@ export function containerbuildstages(): containerbuildstage[] {
 /** The build checks the builder stage runs before the runtime stage ships: the cli manifest asserts the built cli answers, and the headless smoke runs one fixture through the headless entry — an image whose build checks fail never ships. */
 export function containerbuildchecks(): string[] {
   return [
-    "node dist/cli.js manifest",
-    "node dist/cli.js headless dist/fixtures/plans/release-notes-plan.json --fixtures dist/fixtures",
+    "node build/cli.js manifest",
+    "node build/cli.js headless build/fixtures/plans/release-notes-plan.json --fixtures build/fixtures",
   ];
 }
 

@@ -187,7 +187,7 @@ export function stampbundle(mode: librarymode, target: string): void {
   runningtarget = target;
 }
 
-/** Reads the stamp of the running bundle with the package version: one function answers the version, the consumption mode and the dist target of the bundle the caller loaded. Example: `bundlestamp().mode` answers `cjs` inside dist/index.cjs. */
+/** Reads the stamp of the running bundle with the package version: one function answers the version, the consumption mode and the dist target of the bundle the caller loaded. Example: `bundlestamp().mode` answers `cjs` inside build/index.cjs. */
 export function bundlestamp(): bundlemode {
   return { version: packageversion, mode: runningmode, target: runningtarget };
 }

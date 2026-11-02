@@ -146,7 +146,7 @@ describe("the example gallery of the 2.0.0 release", () => {
     const sourcepages = new Set(Object.keys(fixturepages));
     for (const page of gallery.fixturepages) {
       expect(sourcepages.has(page.name)).toBe(true);
-      if (built) expect(existsSync(join("dist", "fixtures", "pages", page.name))).toBe(true);
+      if (built) expect(existsSync(join("build", "fixtures", "pages", page.name))).toBe(true);
     }
   });
 });

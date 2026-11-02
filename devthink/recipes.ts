@@ -687,8 +687,8 @@ export async function runrecipessuite(): Promise<recipereport> {
     }
     const durationms = Date.now() - started;
 
-    /* 3h. the cli import cell: the planlint command lints the built recipe copy of dist/fixtures/recipes, so the gallery ships through the same terminal surface the packages document. */
-    const builtrecipe = join("dist", "fixtures", "recipes", `${entry.id}.json`);
+    /* 3h. the cli import cell: the planlint command lints the built recipe copy of build/fixtures/recipes, so the gallery ships through the same terminal surface the packages document. */
+    const builtrecipe = join("build", "fixtures", "recipes", `${entry.id}.json`);
     if ((entry.consentclasses ?? []).length === 0) {
       if (!existsSync(builtrecipe)) {
         failures.push(
@@ -796,7 +796,7 @@ export async function runrecipessuite(): Promise<recipereport> {
         return true;
       }) &&
       (await fixturesetshipped()),
-    "the four fixture pages of the pagefixtures module copy into dist/fixtures/pages through the fixtureset rows of build.ts, so every package channel ships them from dist",
+    "the four fixture pages of the pagefixtures module copy into build/fixtures/pages through the fixtureset rows of build.ts, so every package channel ships them from dist",
   );
   recordcheck(
     checks,
@@ -1009,7 +1009,7 @@ export const reciperecord: recipereport = {
         "ok": true,
         "detail": "the fixtureset carries the gallery index, the 36 recipes and the 4 fixture pages"
       },
-      "detail": "the four fixture pages of the pagefixtures module copy into dist/fixtures/pages through the fixtureset rows of build.ts, so every package channel ships them from dist"
+      "detail": "the four fixture pages of the pagefixtures module copy into build/fixtures/pages through the fixtureset rows of build.ts, so every package channel ships them from dist"
     },
     {
       "name": "the gallery runner dry runs every gallery entry without side effects",

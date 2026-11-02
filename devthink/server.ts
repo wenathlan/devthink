@@ -1734,7 +1734,7 @@ function version(): string {
   const embedded = process.env.DEVTHINK_VERSION?.trim();
   if (embedded) return embedded;
   // probe both the module directory (source tree) and its parent (the
-  // built dist/ layout) so the bundled cli.js resolves the version too
+  // built build/ layout) so the bundled cli.js resolves the version too
   for (const candidate of ["./package.json", "../package.json"]) {
     try {
       const file = new URL(candidate, import.meta.url);

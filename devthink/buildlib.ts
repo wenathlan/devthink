@@ -2,7 +2,7 @@
  * build-lib — npm library bundle of the @wenathlan/devthink server family
  * one file one responsibility — only the lib build orchestration lives here
  *
- * produces inside dist/ (beside the extension bundles tests/build.ts emits):
+ * produces inside build/ (beside the extension bundles tests/build.ts emits):
  *   server.js          esm library entry of the server surface (the embedded
  *                      gateway console, transport, auth and library barrel
  *                      beside the maene provider family barrel — one entry)
@@ -32,7 +32,7 @@ function run(cmd: string) {
 
 // --- esm entries -----------------------------------------------------------
 
-run("bun build engine.ts --target=node --format=esm --packages=external --outfile dist/engine.js");
+run("bun build engine.ts --target=node --format=esm --packages=external --outfile build/engine.js");
 console.log("[build-lib] esm engine entry bundled");
 
 // --- declarations ----------------------------------------------------------

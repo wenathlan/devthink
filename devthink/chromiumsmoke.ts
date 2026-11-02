@@ -14,7 +14,7 @@ const headlessarguments = process.env.CHROME_HEADLESS === "false" ? [] : ["--hea
 const temporarydirectory = await mkdtemp(join(tmpdir(), "devthink-chromium-"));
 const extensiondirectory = join(temporarydirectory, "extension");
 const profiledirectory = join(temporarydirectory, "profile");
-const zip = join(process.cwd(), "dist", `devthink${packagejson.version}.zip`);
+const zip = join(process.cwd(), "build", `devthink${packagejson.version}.zip`);
 let browser;
 let launcherror = "";
 let browserstderr = "";

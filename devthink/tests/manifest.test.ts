@@ -57,7 +57,7 @@ describe("extension manifest", () => {
     expect(der.readUInt16BE(2)).toBe(der.length - 4);
     const digest = createHash("sha256").update(der).digest("hex");
     expect(digest).toMatch(/^[0-9a-f]{64}$/);
-    /* the identity pin rides the generated build artifact: the recorded digest never stays hard coded in a source file, the build writes it into dist/checksums.txt on every run and this pass verifies the manifest key against that artifact whenever the build ran */
+    /* the identity pin rides the generated build artifact: the recorded digest never stays hard coded in a source file, the build writes it into build/checksums.txt on every run and this pass verifies the manifest key against that artifact whenever the build ran */
     if (existsSync("build/checksums.txt")) {
       const recorded = (await readFile("build/checksums.txt", "utf8"))
         .split("\n")

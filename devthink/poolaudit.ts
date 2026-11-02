@@ -99,9 +99,9 @@ async function symbolcorpus() {
   );
   for (const kind of auditkinds) corpus.add(kind);
   for (const message of protocol.frozenmessagecatalog) corpus.add(String(message.type));
-  const declarations = (await readdir("dist"))
+  const declarations = (await readdir("build"))
     .filter((file) => file.endsWith(".d.ts"))
-    .map((file) => readFile(join("dist", file), "utf8"));
+    .map((file) => readFile(join("build", file), "utf8"));
   for (const text of await Promise.all(declarations)) {
     for (const match of text.matchAll(/(?:interface|type|function|const|class)\s+([a-z][a-z0-9]+)/g))
       corpus.add(match[1]);

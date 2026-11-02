@@ -1,7 +1,7 @@
 /**
  * readiness.uivision.ts — the committed conversion record of the
  * ui vision macro fixture: what the cli migrateplan command produces when it
- * reads dist/fixtures/importers/uivision-macro.json with --format uivision,
+ * reads build/fixtures/importers/uivision-macro.json with --format uivision,
  * the evidence the readiness review's migrateplan bridge gate walks. The
  * record proves the ui vision importer maps every command onto the plan
  * grammar the planlint command lints green.

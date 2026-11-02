@@ -123,7 +123,7 @@ export async function runmatrixverifysuite() {
     const hostpages = ["offscreen.html", "sandbox.html"];
     const broken = [];
     for (const page of [...interfacepages, ...hostpages]) {
-      const path = join("dist", "extension", page);
+      const path = join("build", "extension", page);
       check(existsSync(path), `the built surface page ${page} is absent`);
       const html = await readFile(path, "utf8");
       check(html.toLowerCase().includes("<script"), `the surface page ${page} carries no script`);
@@ -202,7 +202,7 @@ export async function runmatrixverifysuite() {
 
   /* 6. the importer cells: the plan fixtures parse, the workflow fixtures dry run and the session file round trips. */
   await cell({ family: "importers", name: "the plan importer parses every fixture of the dist set" }, async () => {
-    const plandirectory = join("dist", "fixtures", "plans");
+    const plandirectory = join("build", "fixtures", "plans");
     const files = (await readdir(plandirectory)).filter((file) => file.endsWith(".json"));
     check(files.length >= 2, `the dist plan fixture set holds ${files.length} plans under the expected two`);
     for (const file of files) {
@@ -214,7 +214,7 @@ export async function runmatrixverifysuite() {
   await cell(
     { family: "importers", name: "the workflow importer dry runs every workflow fixture of the dist set" },
     async () => {
-      const workflowdirectory = join("dist", "fixtures", "workflows");
+      const workflowdirectory = join("build", "fixtures", "workflows");
       const files = (await readdir(workflowdirectory)).filter((file) => file.endsWith(".json"));
       check(files.length >= 2, `the dist workflow fixture set holds ${files.length} workflows under the expected two`);
       for (const file of files) {

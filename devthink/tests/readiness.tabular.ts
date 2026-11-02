@@ -1,7 +1,7 @@
 /**
  * readiness.tabular.ts — the committed conversion record of the
  * tabular csv fixture: what the cli migrateplan command produces when it
- * reads dist/fixtures/importers/tabular-plan.csv with --format tabular, the
+ * reads build/fixtures/importers/tabular-plan.csv with --format tabular, the
  * evidence the readiness review's migrateplan bridge gate walks. The record
  * proves the tabular importer maps every row onto the plan grammar the
  * planlint command lints green.

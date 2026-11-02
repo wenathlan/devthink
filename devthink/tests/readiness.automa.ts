@@ -1,7 +1,7 @@
 /**
  * readiness.automa.ts — the committed conversion record of the
  * automa workflow fixture: what the cli migrateplan command produces when it
- * reads dist/fixtures/importers/automa-workflow.json with --format automa,
+ * reads build/fixtures/importers/automa-workflow.json with --format automa,
  * the evidence the readiness review's migrateplan bridge gate walks. The
  * record proves the automa importer maps every block onto the plan grammar
  * the planlint command lints green.
