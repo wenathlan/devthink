@@ -123,15 +123,10 @@ jobs:
         run: |
           set -euo pipefail
           cd "${{ matrix.app }}"
-          # the emit dir the app declares: the vault answers from dist (the
-          # deploy-safety law — the runtime sqlite stores of the engine live
-          # at its app root), every other family app from its root
-          emit="."
-          if [ "${{ matrix.app }}" = "vault" ]; then emit="dist"; fi
           mkdir -p build/web
-          cp "${emit}/index.html" build/web/
+          cp index.html build/web/
           for kind in js css webmanifest xml txt svg png ico woff woff2; do
-            cp "${emit}"/*.${kind} build/web/ 2>/dev/null || true
+            cp *.${kind} build/web/ 2>/dev/null || true
           done
           test -f build/web/index.html
           node -e 'const fs=require("node:fs");const file="capacitor.config.ts";const source=fs.readFileSync(file,"utf8");const rewritten=source.replace(/webDir:\s*"[^"]*"/,`webDir: "build/web"`);if(rewritten===source)throw new Error("the capacitor config carries no webDir to aim");fs.writeFileSync(file,rewritten);'
@@ -412,15 +407,10 @@ jobs:
         run: |
           set -euo pipefail
           cd "${{ matrix.app }}"
-          # the emit dir the app declares: the vault answers from dist (the
-          # deploy-safety law — the runtime sqlite stores of the engine live
-          # at its app root), every other family app from its root
-          emit="."
-          if [ "${{ matrix.app }}" = "vault" ]; then emit="dist"; fi
           mkdir -p build/web
-          cp "${emit}/index.html" build/web/
+          cp index.html build/web/
           for kind in js css webmanifest xml txt svg png ico woff woff2; do
-            cp "${emit}"/*.${kind} build/web/ 2>/dev/null || true
+            cp *.${kind} build/web/ 2>/dev/null || true
           done
           test -f build/web/index.html
           node -e 'const fs=require("node:fs");const file="capacitor.config.ts";const source=fs.readFileSync(file,"utf8");const rewritten=source.replace(/webDir:\s*"[^"]*"/,`webDir: "build/web"`);if(rewritten===source)throw new Error("the capacitor config carries no webDir to aim");fs.writeFileSync(file,rewritten);'

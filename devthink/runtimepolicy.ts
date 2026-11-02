@@ -25,7 +25,7 @@ if (!typesource.includes("export const pinnedprotocolversion"))
   throw new Error("The library surface must export the pinned protocol version import.");
 if (!mcpsource.includes("negotiateprotocol"))
   throw new Error("The mcp negotiation must route through the protocolv2 negotiation family.");
-if (!verifyworkflow.includes("node apifreeze.gate.ts"))
+if (!verifyworkflow.includes("node apifreezegate.ts"))
   throw new Error("The verify workflow must gate the api freeze after the validation chain.");
 
 /* the 1.1.95 transparency surface acceptance: the one web design file declares the transparencypage surface with its completed sections, the options surface embeds it as its own page, the surface carries no remote resource, and the compiled page module ships beside the design */

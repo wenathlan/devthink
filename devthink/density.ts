@@ -3,7 +3,7 @@
  * answers every screen with ONE design; the only thing a platform changes is
  * the density it renders that design at. This module is the single token
  * splitter every surface reads — the web (vercel, cloudflare, netlify — the
- * same static build), the terminal conversion (build.terminal.ts rides these
+ * same static build), the terminal conversion (buildterminal.ts rides these
  * tokens when it maps the Sol widgets to cells), the TV 10-foot face and the
  * android dp face all resolve the SAME spacing rhythm through here, so a
  * second design can never fork in.

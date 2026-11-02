@@ -1,11 +1,13 @@
-// # windowclip.test — the cut-window fix battery (PR12): the six locks of
+// # windowclip.test — the cut-window fix battery (PR12): the seven locks of
 // the window era, pinned at the source. a window body answers the window
 // it rides in — never the browser viewport — and the os never opens a
 // window the screen cannot carry whole. the pure verdict (spawnfit) rides
 // windowspawn.test; the clip flag (the family window src) rides
 // routesdual.test; this battery pins the surfaces those cannot reach: the
-// container law of the css, the container hook, the zoom compensation and
-// the honesty laws of the window body.
+// container law of the css, the container hook, the zoom compensation,
+// the honesty laws of the window body, and the hydrate re-fit that heals
+// a persisted layout stored cut (the layout door of the law: the spawn
+// opens whole, the reload keeps answering whole).
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -136,5 +138,53 @@ describe("the doctrine handles of the window manager (wave 3)", () => {
     expect(moving?.[0]).toContain("will-change: transform");
     expect(windowframe).toContain('setAttribute("data-moving", "true")');
     expect(windowframe).toContain("requestAnimationFrame");
+  });
+});
+
+describe("the hydrate re-fit law (the cut never survives a reload — the PR12 answer at the layout door)", () => {
+  /** the persisted layout (dt.windows.v1) rode localStorage verbatim: a
+   * snapshot stored on a bigger screen — or in the era before the family
+   * band — hydrated cut (past the clipped shell box, under the taskbar,
+   * below the 961px+ breakpoints of the standalone tree) and the owner
+   * saw the app "cortado" on every panel boot while the direct url
+   * answered it whole. the re-fit answers the law at this door: every
+   * stored snapshot re-runs the live verdict before it renders. */
+  it("every stored snapshot re-fits the live screen before it renders", () => {
+    expect(workspace).toContain("function refitsnapshot(win: WindowSnapshot): WindowSnapshot {");
+    expect(workspace).toContain(".map((win, index) => ({ ...refitsnapshot(win), z: Z_BASE + index }));");
+  });
+
+  it("one verdict serves every door — the spawn and the re-fit ask the same live fit", () => {
+    expect(workspace).toContain("function livefit(id: string): SpawnFit {");
+    expect(workspace).toContain("const fit = livefit(id);");
+  });
+
+  it("a family window stored under its design band heals up to the band — the stored size never downgrades the design", () => {
+    // the 940px window of the pre-law era renders the narrow tree the
+    // direct url never shows: the band is the law, the size lifts to it
+    expect(workspace).toContain('if (windowapp(win.id)?.kind === "family") {');
+    expect(workspace).toContain("bounds.width = Math.max(bounds.width, fit.width);");
+    expect(workspace).toContain("bounds.height = Math.max(bounds.height, fit.height);");
+  });
+
+  it("the floating bounds clamp into the live desktop band — never past the clip, never under the taskbar", () => {
+    expect(workspace).toContain("function clampbounds(");
+    expect(workspace).toContain("Math.max(WINDOW_MIN_WIDTH, Math.round(bounds.width))");
+    expect(workspace).toContain("Math.max(WINDOW_MIN_HEIGHT, Math.round(bounds.height))");
+    expect(workspace).toContain("Math.max(0, fit.desktopWidth - width)");
+    expect(workspace).toContain("Math.max(0, fit.desktopHeight - height)");
+  });
+
+  it("a floating family pose whose band cannot fit the screen answers the full snap — the hydrate, the restore and the un-minimize", () => {
+    expect(workspace).toContain("win.state === \"normal\" || (win.state === \"minimized\" && (win.restoredState ?? \"normal\") === \"normal\")");
+    expect(workspace).toContain('{ ...next, float: keep, restoredState: "maximized" }');
+    expect(workspace).toContain('{ ...next, float: keep, state: "maximized" }');
+  });
+
+  it("the live viewport re-clamps the open windows — a monitor swap never leaves a window cut", () => {
+    expect(workspace).toContain("window.addEventListener(\"resize\", onResize);");
+    expect(workspace).toContain("current.map((win) => clampsnapshot(win))");
+    // the no-op guard: an in-band layout never re-renders on a resize
+    expect(workspace).toContain("if (samebounds(clamped, win) && samebounds(float, win.float)) return win;");
   });
 });

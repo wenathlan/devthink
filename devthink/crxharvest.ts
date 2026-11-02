@@ -6,7 +6,7 @@
  * script never evaluates package code. It performs static text analysis only,
  * deletes each raw artifact right after analysis and persists only derived
  * analysis records in tests/artifacts/harvestcache.json. The report is
- * written to docs/12.crxfeaturemining.md.
+ * written to docs/crxfeaturemining.md.
  *
  * Usage:
  *   node crxharvest.ts               analyze pending ids then rewrite the report
@@ -25,7 +25,7 @@ const root = process.cwd();
 const artifactsdir = join(root, "tests", "artifacts");
 const harvestdir = join(artifactsdir, "harvest");
 const cachepath = join(artifactsdir, "harvestcache.json");
-const reportpath = join(root, "docs", "12.crxfeaturemining.md");
+const reportpath = join(root, "docs", "crxfeaturemining.md");
 const updatebase =
   "https://clients2.google.com/service/update2/crx?response=redirect&prodversion=131.0.6778.265&acceptformat=crx2,crx3&x=id%3D";
 
@@ -2581,7 +2581,7 @@ async function main() {
   ];
   const labels = new Map<string, string>();
   try {
-    const catalog = await readFile(join(root, "docs", "06.userstorecatalog.md"), "utf8");
+    const catalog = await readFile(join(root, "docs", "userstorecatalog.md"), "utf8");
     for (const match of catalog.matchAll(/\| \d+ \| (.+?) \| ([a-z]{32}) \|/g)) labels.set(match[2], match[1].trim());
   } catch {
     // Labels are a convenience only.

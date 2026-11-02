@@ -1,126 +1,140 @@
 /**
  * saas.tsx — the SaaS face of the intro (layer 3, page body): the
- * redesigned landing the owner ordered — the pale canvas (#DCE2EE) with
- * the palco (#F2F5FC) at radius 30, the saddle rail at the left edge with
- * its snug fitted curve and its six stops, the ever rose hero with the
- * inline engine switch, and the minimal sections that present the real
- * studios of the monorepo (the mock decks — the film rail, the track
- * rail, the reel wall, the demo chat and the invented social proof —
- * retired). The six rail stops walk the body beside the header chrome (the
- * logo, the tabs, the sign-in and the launch keys) and the footer rows;
- * every launch path funnels to the login face: the panel is the last page
- * of the chain. The glyphs ride the fluent set, the type rides the Inter
- * Variable voice of the os and the materials ride the ever family with
- * the neutral fluent shadows (never a blue glow). The stylesheet injects
- * once at import time, scoped to the saas-* root and the reference class
- * names.
+ * nine-section reference landing restored by PR8 P1 at the 97% fidelity
+ * the owner ordered — the pale canvas (#DCE2EE) with the palco (#F2F5FC)
+ * at radius 30/34, the white header chrome (the h-1.5 bar, the saddle tab
+ * bridge with the five reference tabs, the Alerts, Sign In and Launch
+ * keys), the vertical saddle rail at the left edge with its six mandate
+ * stops (the saddle cloud key stays retired by the owner order — no
+ * seventh key ever answers the rail), the quick dock at the corner and
+ * the toast channel at the bottom center. Every section composes from the
+ * sections and rails wingets in the reference order: hero-os,
+ * creators-doo, workspace-subapps, the sawtooth ribbon with studio-flow,
+ * spatial-bento, explorer-wall, sonic-deck, advisor-dark and the
+ * editorial footer. The voice rides the Urbanist tiers of sol.css (the
+ * Google Fonts stylesheet injected once here; the house Inter Variable
+ * answers wherever the frozen CSP keeps the remote face from loading),
+ * the glyphs ride the lucide set of the reference and the materials ride
+ * the landing block of sol.css — the tactile keys with the one
+ * sanctioned indigo hover of the reference, never a blue glow elsewhere
+ * and never a solid blue key in the hero. The launch paths funnel to the
+ * login face: the panel is the last page of the chain.
  */
 
+import type { LucideIcon } from "lucide-react";
 import {
-  ArrowUpRightRegular as Arrowupright,
-  GridRegular as Grid,
-  DoorArrowRightRegular as Signin,
-  SparkleRegular as Sparkle,
-} from "@fluentui/react-icons";
-import { useCallback, useState } from "react";
+  ArrowUpRight,
+  Bell,
+  Compass,
+  Film,
+  Headphones,
+  Layers,
+  LogIn,
+  Maximize2,
+  MessageSquare,
+  Music,
+  Sparkles,
+  Star,
+  Tv,
+  Users,
+} from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { saaschrome, saasheadertabs, saasrailstops, saasspotlights } from "../../saascontent.ts";
+import { saaschrome, saasheadertabs, saasrailstops } from "../../saascontent.ts";
 import { SaddleTabBridge, VerticalSaddleBridge } from "./IntroSaaskit.tsx";
-import { SaasFooter, SaasStudioSpotlight } from "./IntroSaasrails.tsx";
-import { type glyphkind, SaasHero, SaasStudios, STUDIOGLYPH } from "./IntroSaassections.tsx";
+import { SaasAdvisor, SaasCadria, SaasDebonair, SaasExplorer, SaasFooter } from "./IntroSaasrails.tsx";
+import { SaasCreators, SaasHero, SaasStudioFlow, SaasWorkspace } from "./IntroSaassections.tsx";
 import { SolLogoMark, SolWordmark } from "./PanelLogo.tsx";
 
-const SAAS_CSS = `
-.saas-root { font-family: var(--font-display, "Inter Variable", ui-sans-serif, sans-serif); letter-spacing: -0.015em; background: #DCE2EE; }
-.saas-root ::selection { background: var(--color-ever-deep, #c92b86); color: #FFFFFF; }
-.saas-root button:focus-visible, .saas-root input:focus-visible { outline: 2px solid rgba(15,23,42,0.55); outline-offset: 2px; }
-.saas-root button, .saas-root input { outline: none; }
-.saas-root img { -webkit-user-drag: none; user-select: none; }
-
-.btn-tactile-3d { background: linear-gradient(180deg, #243047 0%, #090D16 100%); box-shadow: 0 14px 28px -8px rgba(9,13,22,0.55), 0 4px 10px -2px rgba(9,13,22,0.35), inset 0 1.5px 2px rgba(255,255,255,0.42), inset 0 -3px 6px rgba(0,0,0,0.65); border: 1px solid rgba(255,255,255,0.16); transition: transform 0.25s cubic-bezier(0.16,1,0.3,1), box-shadow 0.25s ease; }
-.btn-tactile-3d:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 20px 34px -8px rgba(9,13,22,0.55), inset 0 2px 3px rgba(255,255,255,0.55), inset 0 -3px 6px rgba(0,0,0,0.75); }
-.btn-tactile-3d:active { transform: translateY(0) scale(0.96); transition-duration: 0.08s; box-shadow: 0 8px 18px -8px rgba(9,13,22,0.55), inset 0 1.5px 2px rgba(255,255,255,0.32), inset 0 -2px 5px rgba(0,0,0,0.55); }
-.icon-frame-3d { background: rgba(255,255,255,0.92); border: 1px solid rgba(203,213,225,0.85); box-shadow: 0 8px 18px -6px rgba(15,23,42,0.10), inset 0 1px 2px rgba(255,255,255,1); transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease; }
-.icon-frame-3d:hover { transform: translateY(-1.5px); border-color: rgba(15,23,42,0.35); box-shadow: 0 12px 22px -6px rgba(15,23,42,0.16), inset 0 1px 2px rgba(255,255,255,1); }
-.icon-frame-3d:active { transform: translateY(0) scale(0.94); transition-duration: 0.08s; }
-.icon-frame-3d-active { background: #FFFFFF; border: 1px solid rgba(15,23,42,0.40); box-shadow: 0 10px 22px -6px rgba(15,23,42,0.18), inset 0 1px 2px rgba(255,255,255,1); }
-.surface-card { background: #FFFFFF; border: 1px solid rgba(226,232,240,0.95); box-shadow: 0 16px 36px -14px rgba(15,23,42,0.10); }
-.hero-inline-switch { background: linear-gradient(125deg, var(--color-ever, #f0509e) 0%, var(--color-ever-deep, #c92b86) 100%); box-shadow: 0 12px 26px -6px rgba(201,43,134,0.45), inset 0 2px 4px rgba(255,255,255,0.55); }
-.hero-switch-thumb { background: radial-gradient(circle at 30% 30%, #FFFFFF 0%, #F1F5F9 70%, #CBD5E1 100%); box-shadow: -3px 4px 10px rgba(15,23,42,0.35), inset 0 2px 3px rgba(255,255,255,1); }
-@keyframes shaderPulse { 0%,100% { transform: scale(1) translate(0,0); } 50% { transform: scale(1.05) translate(10px,-8px); } }
-.hero-gaussian-shader { background: radial-gradient(circle at 14% 70%, rgba(255,210,232,0.90) 0%, transparent 48%), radial-gradient(circle at 36% 80%, rgba(240,80,158,0.55) 0%, transparent 50%), radial-gradient(circle at 58% 65%, rgba(201,43,134,0.50) 0%, transparent 48%), radial-gradient(circle at 78% 75%, rgba(240,80,158,0.45) 0%, transparent 48%), radial-gradient(circle at 92% 65%, rgba(255,210,232,0.85) 0%, transparent 45%); filter: blur(56px) saturate(150%); animation: shaderPulse 9s ease-in-out infinite; }
-.text-gradient-brand { background: linear-gradient(92deg, var(--color-ever, #f0509e) 0%, var(--color-ever-deep, #c92b86) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-@media (prefers-reduced-motion: reduce) {
-  .hero-gaussian-shader { animation: none; }
-  .btn-tactile-3d, .icon-frame-3d, .hero-switch-thumb { transition: none; }
-}
-`;
+/** The reference voice: the Urbanist stylesheet of the Google Fonts CDN,
+ * injected once per document at import time (the reference @import). Where
+ * the frozen CSP of a target keeps the remote face from loading (the
+ * extension pages), the tier stacks of sol.css fall back to the house
+ * Inter Variable voice — the face never blanks. */
+const SAAS_FONT_CSS = "@import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;800&display=swap');";
 
 let saasCssReady = false;
 
-/** Injects the SaaS stylesheet exactly once per document, at import time. */
+/** Injects the Urbanist stylesheet exactly once per document, at import time. */
 function ensureSaasCss(): void {
   if (saasCssReady || typeof document === "undefined") return;
   saasCssReady = true;
   const tag = document.createElement("style");
   tag.setAttribute("data-dt-saas", "");
-  tag.textContent = SAAS_CSS;
+  tag.textContent = SAAS_FONT_CSS;
   document.head.appendChild(tag);
 }
 ensureSaasCss();
 
-/** The glyph each header tab of the saddle bridge wears — the OS spark, the
- * studio grid and the fluent glyph of the studio section the tab walks to. */
-const TABGLYPH: Record<string, glyphkind> = {
-  "hero-os": Sparkle,
-  "workspace-subapps": Grid,
-  "creators-doo": STUDIOGLYPH.doo,
-  "spatial-bento": STUDIOGLYPH.cadria,
-  "sonic-deck": STUDIOGLYPH.debonair,
+/** The lucide glyph and the ink color each header tab wears — the exact
+ * reference pair (the OS spark in indigo, the explorer compass in sky, the
+ * creators team in purple, the cadria film in pink, the debonair note in
+ * blue). */
+const TABICON: Record<string, { icon: LucideIcon; color: string }> = {
+  "hero-os": { icon: Sparkles, color: "text-indigo-600" },
+  "workspace-subapps": { icon: Compass, color: "text-sky-600" },
+  "creators-doo": { icon: Users, color: "text-purple-600" },
+  "spatial-bento": { icon: Film, color: "text-pink-600" },
+  "sonic-deck": { icon: Music, color: "text-blue-600" },
 };
 
-/** The glyph each left rail stop wears. */
-const RAILGLYPH: Record<string, glyphkind> = {
-  "hero-os": Sparkle,
-  "workspace-subapps": Grid,
-  "creators-doo": STUDIOGLYPH.doo,
-  "spatial-bento": STUDIOGLYPH.cadria,
-  "sonic-deck": STUDIOGLYPH.debonair,
-  "advisor-dark": STUDIOGLYPH.getry,
+/** The lucide glyph each left rail stop wears — the exact reference set. */
+const RAILICON: Record<string, LucideIcon> = {
+  "hero-os": Sparkles,
+  "creators-doo": Compass,
+  "workspace-subapps": Layers,
+  "spatial-bento": Tv,
+  "sonic-deck": Headphones,
+  "advisor-dark": MessageSquare,
 };
 
-/** The SaaS page: the redesigned landing, one scroll, every launch path
- * through the login face. The anchor hands the onDone callback — the
+/** The SaaS page: the restored reference landing, one scroll, every launch
+ * path through the login face. The anchor hands the onDone callback — the
  * intro flag rises on the way out, wherever the visitor leaves — and the
  * footer Explorer row walks the entry chain through the free exploration
  * face (/explore) on the way. */
 export default function Saas({ onDone }: { onDone: () => void }) {
   const [, navigate] = useLocation();
-  const [active, setActive] = useState<string>("hero-os");
+  const [active, setActive] = useState("hero-os");
+  const [toast, setToast] = useState<string | null>(null);
+
   const enter = useCallback(() => {
     onDone();
     navigate("/auth");
   }, [navigate, onDone]);
+
   const explore = useCallback(() => {
     onDone();
     navigate("/explore");
   }, [navigate, onDone]);
+
+  /** the toast channel of the reference: one pill at the bottom center,
+   * 2.2s per message */
+  const ontoast = useCallback((message: string) => setToast(message), []);
+
   const scrollto = useCallback((id: string) => {
     setActive(id);
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   }, []);
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = window.setTimeout(() => setToast(null), 2200);
+    return () => window.clearTimeout(t);
+  }, [toast]);
+
   return (
-    <div className="saas-root min-h-screen w-full overflow-x-hidden p-[2.5px] text-slate-900 select-none sm:select-auto">
+    <div className="saas-root min-h-screen w-full overflow-x-hidden bg-[#DCE2EE] p-[2.5px] text-slate-900 select-none sm:select-auto">
       {/* the left rail: the vertical saddle slab at the screen edge — the
-          hairline divider and the six mandate stops with the ever active
-          pill (the saddle cloud key retired with the owner order: the six
-          stops are the only keys of the landing body) */}
-      <aside className="fixed top-1/2 left-0 z-50 hidden -translate-y-1/2 flex-col items-center lg:flex">
+          hairline divider and the six mandate stops with the reference
+          indigo-to-sky active pill (the saddle cloud key retired by the
+          owner order: the six stops are the only keys of the rail) */}
+      <aside className="fixed top-1/2 left-0 z-50 hidden -translate-y-1/2 flex-col items-center p-0 lg:flex">
         <VerticalSaddleBridge fillColor="#0A0B0E" className="py-2">
           <div className="flex flex-col items-center gap-3 px-1">
             <div className="my-0.5 h-[1px] w-5 bg-white/15" aria-hidden="true" />
             {saasrailstops.map((item) => {
-              const Glyph = RAILGLYPH[item.id];
+              const Glyph = RAILICON[item.id];
               const current = active === item.id;
               return (
                 <button
@@ -129,10 +143,10 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                   onClick={() => scrollto(item.id)}
                   aria-label={item.label}
                   aria-pressed={current}
-                  className={`group relative flex h-10 w-10 items-center justify-center rounded-full transition-[transform,background-color,color] duration-300 ${current ? "scale-105 bg-gradient-to-tr from-ever to-ever-deep text-white" : "bg-white/10 text-slate-300 hover:bg-white/20 hover:text-white"}`}
+                  className={`group relative flex h-10 w-10 items-center justify-center rounded-full transition-all duration-300 ${current ? "scale-105 bg-gradient-to-tr from-indigo-600 to-sky-500 text-white" : "bg-white/10 text-slate-300 hover:bg-white/20 hover:text-white"}`}
                 >
-                  <Glyph className="h-4 w-4" aria-hidden="true" />
-                  <span className="pointer-events-none absolute left-14 rounded-lg border border-white/10 bg-slate-950 px-2.5 py-1 text-[11px] font-semibold tracking-[-0.018em] whitespace-nowrap text-white opacity-0 transition group-hover:opacity-100">
+                  {Glyph ? <Glyph className="h-4 w-4" aria-hidden="true" /> : null}
+                  <span className="pointer-events-none absolute left-14 rounded-lg border border-white/10 bg-slate-950 px-2.5 py-1 text-[11px] font-medium-tier whitespace-nowrap text-white opacity-0 transition group-hover:opacity-100">
                     {item.label}
                   </span>
                 </button>
@@ -142,83 +156,137 @@ export default function Saas({ onDone }: { onDone: () => void }) {
         </VerticalSaddleBridge>
       </aside>
 
-      <main className="relative z-10 min-h-[calc(100vh-5px)] w-full overflow-hidden rounded-[30px] border border-white bg-[#F2F5FC] shadow-[0_25px_80px_-15px_rgba(15,23,42,0.25)] sm:rounded-[34px]">
-        <section id="saas-header" className="relative bg-[#F2F5FC]">
-          <header className="relative z-40">
-            <div className="h-1.5 w-full bg-white" aria-hidden="true" />
-            <div className="-mt-[1px] flex w-full items-start justify-center gap-2 px-4 sm:gap-4 sm:px-8">
-              <div className="ml-1 flex shrink-0 items-center sm:ml-3">
-                <button
-                  type="button"
-                  onClick={() => scrollto("hero-os")}
-                  className="group inline-flex items-center gap-1 text-slate-950 transition hover:scale-[1.015] active:scale-[0.99]"
-                >
-                  <SolLogoMark size={28} className="h-7 w-7 sm:h-9 sm:w-9" title={saaschrome.title} />
-                  <SolWordmark height={16} className="h-4 sm:h-5" />
-                </button>
-              </div>
-              <div className="flex shrink-0 flex-col items-center drop-shadow-[0_10px_20px_rgba(15,23,42,0.06)]">
-                <SaddleTabBridge fillColor="#FFFFFF" className="h-[52px]">
-                  <nav className="flex items-center gap-2" aria-label="Sections">
-                    {saasheadertabs.map((tab) => {
-                      const Glyph = TABGLYPH[tab.id];
-                      const current = active === tab.id;
-                      return (
-                        <button
-                          key={tab.id}
-                          type="button"
-                          onClick={() => scrollto(tab.id)}
-                          className={`group flex items-center rounded-xl px-3 py-2 transition-[transform,box-shadow,border-color] ${current ? "icon-frame-3d-active text-slate-950" : "icon-frame-3d text-slate-800"}`}
-                          aria-label={tab.label}
-                        >
-                          <Glyph
-                            className={`h-4 w-4 ${current ? "text-ever-deep" : "text-slate-600"}`}
-                            aria-hidden="true"
-                          />
-                          <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-[margin,max-width,opacity] group-hover:ml-2 group-hover:max-w-[90px] group-hover:opacity-100">
-                            {tab.label}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </nav>
-                </SaddleTabBridge>
-              </div>
-              <div className="flex shrink-0 items-center gap-2 pt-1">
-                <button
-                  type="button"
-                  onClick={enter}
-                  className="icon-frame-3d group hidden items-center rounded-full p-2.5 text-slate-800 sm:flex"
-                  aria-label={saaschrome.signin}
-                >
-                  <Signin className="h-4 w-4" aria-hidden="true" />
-                  <span className="max-w-0 overflow-hidden text-xs font-semibold tracking-[-0.018em] whitespace-nowrap opacity-0 transition-[margin,max-width,opacity] group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
-                    {saaschrome.signin}
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  onClick={enter}
-                  className="btn-tactile-3d group flex items-center rounded-full p-2.5 text-white"
-                  aria-label={saaschrome.launch}
-                >
-                  <Arrowupright className="h-4 w-4 text-ever-soft" aria-hidden="true" />
-                  <span className="max-w-0 overflow-hidden text-xs font-extrabold tracking-[-0.035em] whitespace-nowrap opacity-0 transition-[margin,max-width,opacity] group-hover:mr-1 group-hover:ml-2 group-hover:max-w-[80px] group-hover:opacity-100">
-                    {saaschrome.launch}
-                  </span>
-                </button>
-              </div>
-            </div>
-          </header>
-        </section>
+      {/* the quick dock: the three corner keys of the reference on the
+          surface card — favorites, the studio walk and the return to the
+          top */}
+      <div className="surface-card fixed right-4 bottom-8 z-40 hidden flex-col items-center gap-2 rounded-2xl p-2 text-slate-700 md:flex">
+        <button
+          type="button"
+          onClick={() => ontoast("Saved to Favorites")}
+          aria-label="Favorites"
+          className="icon-frame-3d flex h-9 w-9 items-center justify-center rounded-xl"
+        >
+          <Star className="h-4 w-4" aria-hidden="true" />
+        </button>
+        <button
+          type="button"
+          onClick={() => scrollto("workspace-subapps")}
+          aria-label="Studios"
+          className="icon-frame-3d flex h-9 w-9 items-center justify-center rounded-xl"
+        >
+          <Layers className="h-4 w-4" aria-hidden="true" />
+        </button>
+        <button
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          aria-label="Back to top"
+          className="icon-frame-3d flex h-9 w-9 items-center justify-center rounded-xl"
+        >
+          <Maximize2 className="h-4 w-4" aria-hidden="true" />
+        </button>
+      </div>
 
-        <SaasHero onenter={enter} />
-        <SaasStudios />
-        {saasspotlights.map((stop, index) => (
-          <SaasStudioSpotlight key={stop.id} stop={stop} flip={index % 2 === 1} />
-        ))}
-        <SaasFooter onenter={enter} onexplore={explore} scrollto={scrollto} />
+      <main className="relative z-10 min-h-[calc(100vh-5px)] w-full overflow-hidden rounded-[30px] border border-white bg-[#F2F5FC] shadow-[0_25px_80px_-15px_rgba(15,23,42,0.25)] sm:rounded-[34px]">
+        {/* the header chrome: the white h-1.5 bar, the brand row, the five
+            reference tabs on the white saddle bridge and the Alerts, Sign
+            In and Launch keys — the two doors walk the entry chain to the
+            login face */}
+        <header className="relative z-30 inset-x-0 top-0 w-full">
+          <div className="h-1.5 w-full bg-white" aria-hidden="true" />
+          <div className="-mt-[1px] flex w-full items-start justify-center gap-2 px-4 sm:gap-4 sm:px-8">
+            <div className="ml-1 flex shrink-0 items-center sm:ml-3">
+              <button
+                type="button"
+                onClick={() => scrollto("hero-os")}
+                className="group inline-flex items-center gap-1 text-slate-950 transition hover:scale-[1.015]"
+                aria-label={saaschrome.title}
+              >
+                <SolLogoMark size={28} className="h-7 w-7 sm:h-9 sm:w-9" title={saaschrome.title} />
+                <SolWordmark height={16} className="h-4 sm:h-5" />
+              </button>
+            </div>
+            <div className="flex shrink-0 flex-col items-center drop-shadow-[0_10px_20px_rgba(15,23,42,0.06)]">
+              <SaddleTabBridge fillColor="#FFFFFF" className="h-[52px]">
+                <nav className="flex items-center gap-2" aria-label="Sections">
+                  {saasheadertabs.map((tab) => {
+                    const entry = TABICON[tab.id];
+                    const current = active === tab.id;
+                    return (
+                      <button
+                        key={tab.id}
+                        type="button"
+                        onClick={() => scrollto(tab.id)}
+                        aria-label={tab.label}
+                        className={`group flex items-center rounded-xl px-3 py-2 transition-all ${current ? "icon-frame-3d-active text-slate-950" : "icon-frame-3d text-slate-800"}`}
+                      >
+                        {entry ? (
+                          <entry.icon strokeWidth={1.7} className={`h-4 w-4 ${entry.color}`} aria-hidden="true" />
+                        ) : null}
+                        <span className="max-w-0 overflow-hidden text-xs font-medium-tier whitespace-nowrap opacity-0 transition-all group-hover:ml-2 group-hover:max-w-[90px] group-hover:opacity-100">
+                          {tab.label}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </nav>
+              </SaddleTabBridge>
+            </div>
+            <div className="flex shrink-0 items-center gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => ontoast("Notifications synced")}
+                className="icon-frame-3d group flex items-center rounded-full p-2.5 text-slate-800"
+                aria-label={saaschrome.alerts}
+              >
+                <Bell strokeWidth={1.7} className="h-4 w-4" aria-hidden="true" />
+                <span className="max-w-0 overflow-hidden text-xs font-medium-tier whitespace-nowrap opacity-0 transition-all group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
+                  {saaschrome.alerts}
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={enter}
+                className="icon-frame-3d group hidden items-center rounded-full p-2.5 text-slate-800 sm:flex"
+                aria-label={saaschrome.signin}
+              >
+                <LogIn strokeWidth={1.7} className="h-4 w-4" aria-hidden="true" />
+                <span className="max-w-0 overflow-hidden text-xs font-medium-tier whitespace-nowrap opacity-0 transition-all group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
+                  {saaschrome.signin}
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={enter}
+                className="btn-tactile-3d group flex items-center rounded-full p-2.5 text-white"
+                aria-label={saaschrome.launch}
+              >
+                <ArrowUpRight className="h-4 w-4 text-sky-400" aria-hidden="true" />
+                <span className="max-w-0 overflow-hidden text-xs font-bold-tier whitespace-nowrap opacity-0 transition-all group-hover:mr-1 group-hover:ml-2 group-hover:max-w-[80px] group-hover:opacity-100">
+                  {saaschrome.launch}
+                </span>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        {/* the nine sections in the reference order */}
+        <SaasHero scrollto={scrollto} />
+        <SaasCreators scrollto={scrollto} ontoast={ontoast} />
+        <SaasWorkspace scrollto={scrollto} />
+        <SaasStudioFlow scrollto={scrollto} />
+        <SaasCadria ontoast={ontoast} />
+        <SaasExplorer scrollto={scrollto} ontoast={ontoast} />
+        <SaasDebonair scrollto={scrollto} ontoast={ontoast} />
+        <SaasAdvisor scrollto={scrollto} ontoast={ontoast} />
+        <SaasFooter onenter={enter} onexplore={explore} scrollto={scrollto} ontoast={ontoast} />
       </main>
+
+      {/* the toast pill: bottom center, 2.2s */}
+      {toast ? (
+        <div className="fixed bottom-8 left-1/2 z-[60] -translate-x-1/2 rounded-full border border-white/10 bg-slate-950 px-5 py-3 text-[13px] font-medium-tier text-white shadow-2xl">
+          {toast}
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -118,7 +118,7 @@ beforeAll(async () => {
 
   configdir = mkdtempSync(join(tmpdir(), "gateway-e2e-"));
   writeFileSync(
-    join(configdir, "gateway.config.ts"),
+    join(configdir, "gatewayconfig.ts"),
     `export const config = {
   name: "e2e gateway",
   description: "spawned server test",

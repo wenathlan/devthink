@@ -1447,6 +1447,34 @@ code {
   text-transform: uppercase;
   animation: winintroFade 250ms var(--win-ease-entry) 420ms backwards;
 }
+/* the quiet construction chip under the role line: the splash keeps the
+   identity of the game and wears the honest notice — a mono rail, a hairline
+   coral frame and the pulsing dot of the in-development pass */
+.winintro__build {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 2px 0 0;
+  padding: 5px 12px;
+  border: 1px solid color-mix(in srgb, var(--sh-accent) 34%, transparent);
+  border-radius: var(--sol-radius-sm);
+  color: var(--sol-muted);
+  font-family: var(--sol-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: color-mix(in srgb, var(--sh-accent) 9%, transparent);
+  animation: winintroFade 250ms var(--win-ease-entry) 620ms backwards;
+}
+.winintro__builddot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--sh-accent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--sh-accent) 60%, transparent);
+  animation: shconstrPulse 2.8s var(--sol-ease-out) infinite;
+}
 .winintro__skip {
   position: absolute;
   bottom: 24px;
@@ -3152,13 +3180,16 @@ code {
    its own, so the reduced-motion hard stop above remains the closing rule
    the design contract pins — every pass of the face is stilled by it) ---- */
 /* the face every game page wears while the game is in development: one
-   coral scope light over the deep canvas, the glass panel centered in the
-   stage (it eats the slack of the stage column, so the face never floats in
-   a dead ledger), the breathing wrench glyph on its tinted tile, the mono
-   eyebrow of the route, the display title, one honest line and the two ways
-   on. the coral answers --sh-accent (never a second hue), the radius and
-   shadow steps answer the sol ladders, and the reveal stagger rides the
-   shared observer of the design engine. */
+   coral scope light over the deep canvas, the drawn scope reticle hanging
+   behind the panel as a faint slow-sweeping hologram (the tactical identity
+   of the platform), the glass panel centered in the stage (it eats the
+   slack of the stage column, so the face never floats in a dead ledger)
+   carrying the game's own brand mark with its flow band riding inside the
+   glyph strokes, the mono eyebrow of the route, the game title, the
+   pulsing construction chip, one honest line and the two ways on. the
+   coral answers --sh-accent (never a second hue), the radius and shadow
+   steps answer the sol ladders, and the reveal stagger rides the shared
+   observer of the design engine. */
 .shconstr {
   position: relative;
   display: grid;
@@ -3178,65 +3209,86 @@ code {
     transparent 70%
   );
 }
+/* the hologram of the face: the drawn scope reticle (the HomeScope winget)
+   hanging behind the panel at construction opacity — the same drawing of
+   the retired landing, slow-sweeping ±2° by its own ambient pass (shsSweep,
+   guarded by the no-preference block far above) and breathing between two
+   faint tints so the stage never sits dead */
+.shconstr__reticle {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  opacity: 0.34;
+  animation: shconstrHolo 9s var(--sol-ease-out) 1.2s infinite alternate;
+}
+.shconstr__reticle .shs-root {
+  width: min(58vmin, 480px);
+}
 .shconstr__panel {
+  position: relative;
   display: grid;
   gap: 12px;
   justify-items: start;
   width: min(620px, 100%);
   padding: clamp(26px, 5vw, 44px);
-}
-.shconstr__glyph {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 76px;
-  height: 76px;
-  border: 1px solid color-mix(in srgb, var(--sh-accent) 32%, transparent);
-  border-radius: var(--sol-radius-2xl);
-  background:
-    radial-gradient(
-      130% 130% at 18% 8%,
-      color-mix(in srgb, var(--sh-accent) 18%, transparent),
-      transparent 62%
-    ),
-    color-mix(in oklab, var(--sol-ink) 5%, transparent);
-  color: var(--sh-accent);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 12%),
-    0 18px 34px -18px color-mix(in srgb, var(--sh-accent) 45%, transparent);
   overflow: hidden;
 }
-/* the icon seats above the two decorative passes of the tile */
-.shconstr__glyph svg {
-  position: relative;
-  z-index: 1;
-}
-/* the one sheen pass: a soft light band crosses the tile once when the
-   reveal settles, then stays out of the frame (fill both, no loop) */
-.shconstr__glyph::before {
+/* the hologram scan of the panel: hairline rows drifting down the glass
+   at construction tempo — a whisper of the hologram pattern over the
+   whole surface (mark, copy and buttons read as one projected material),
+   fading at the top and bottom edges so the pass reads as material,
+   never as texture */
+.shconstr__panel::before {
   content: "";
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -45%;
-  width: 45%;
-  background: linear-gradient(105deg, transparent, rgb(255 255 255 / 18%), transparent);
-  transform: translateX(0);
-  animation: shconstrSheen 1100ms var(--win-ease-window) 620ms both;
-  pointer-events: none;
-}
-/* the quiet halo breathe: the coral ring fades between two low tints —
-   subtle by design, never a full-intensity loop, and the hard stop above
-   stills it for the visitors who ask for stillness */
-.shconstr__glyph::after {
-  content: "";
-  position: absolute;
-  inset: -1px;
+  inset: 0;
   border-radius: inherit;
-  border: 1px solid color-mix(in srgb, var(--sh-accent) 48%, transparent);
-  opacity: 0.18;
-  animation: shconstrBreathe 4.4s var(--sol-ease-out) 1.4s infinite alternate;
   pointer-events: none;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0 2px,
+    color-mix(in oklab, var(--sol-ink) 3%, transparent) 2px 3px
+  );
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 22%, #000 78%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 22%, #000 78%, transparent);
+  opacity: 0.7;
+  animation: shconstrScan 3.2s linear infinite;
+}
+/* the game's own mark seated on the panel — the coral squircle with the
+   flow band riding inside the glyph strokes (the signature micro-pass of
+   the face: the light travels the stroke, never behind it; the glow and
+   the crosshair breathe belong to the mark itself) */
+.shconstr__mark {
+  display: block;
+  width: 88px;
+  height: 88px;
+}
+/* the construction chip: the quiet status of the face — a mono rail with
+   the pulsing coral dot, never a second hue, never a pill */
+.shconstr__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 5px 12px;
+  border: 1px solid color-mix(in srgb, var(--sh-accent) 32%, transparent);
+  border-radius: var(--sol-radius-sm);
+  color: var(--sol-muted);
+  font: 600 11px var(--sol-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: color-mix(in srgb, var(--sh-accent) 8%, transparent);
+}
+.shconstr__pulsedot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--sh-accent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--sh-accent) 60%, transparent);
+  animation: shconstrPulse 2.8s var(--sol-ease-out) infinite;
 }
 .shconstr__title {
   margin: 0;
@@ -3287,19 +3339,30 @@ code {
   outline: 2px solid var(--win-accent);
   outline-offset: 3px;
 }
-@keyframes shconstrSheen {
+@keyframes shconstrScan {
   from {
-    transform: translateX(0);
+    background-position: 0 0;
   }
   to {
-    transform: translateX(340%);
+    background-position: 0 3px;
   }
 }
-@keyframes shconstrBreathe {
+@keyframes shconstrPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.82);
+  }
+}
+@keyframes shconstrHolo {
   from {
-    opacity: 0.18;
+    opacity: 0.26;
   }
   to {
-    opacity: 0.45;
+    opacity: 0.4;
   }
 }

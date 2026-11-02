@@ -11,7 +11,7 @@
  * the same web bundle. the native shells are generated on the runners
  * (`npx cap add android` / `npx cap add ios`) into android/ and ios/ beside
  * this config — a gitignored toolchain output that is never committed (see
- * docs/native.wrappers.md for the doctrine).
+ * docs/nativewrappers.md for the doctrine).
  *
  * the shape follows the family capacitor contract (the same shape every
  * family app declares, devthink first); the type import stays out so the web

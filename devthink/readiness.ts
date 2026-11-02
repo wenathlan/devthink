@@ -320,12 +320,12 @@ export async function runreadinesssuite() {
     releasenotes.includes(release) || releasenotes.includes("2.0.0"),
     "docs/releasenotes.md carries the release notes of the platform release",
   );
-  const roadmap = await readFile("docs/13.evolutionroadmap.md", "utf8");
+  const roadmap = await readFile("docs/evolutionroadmap.md", "utf8");
   gate(
     verdicts,
     "the roadmap chain rules held through every release",
     roadmap.includes("Progress") && roadmap.includes("2.0.0"),
-    "docs/13.evolutionroadmap.md carries the progress line of the chain with 2.0.0 as the closing release",
+    "docs/evolutionroadmap.md carries the progress line of the chain with 2.0.0 as the closing release",
   );
   /* the forge rides outside the application container: the image builds
   from the application tree alone, so the release pipeline gate answers
@@ -585,7 +585,7 @@ export const readinessrecord: readinessreport = {
     {
       "gate": "the roadmap chain rules held through every release",
       "ok": true,
-      "evidence": "docs/13.evolutionroadmap.md carries the progress line of the chain with 2.0.0 as the closing release"
+      "evidence": "docs/evolutionroadmap.md carries the progress line of the chain with 2.0.0 as the closing release"
     },
     {
       "gate": "the release pipeline dry run passed end to end",

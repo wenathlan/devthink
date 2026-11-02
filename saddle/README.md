@@ -3,8 +3,8 @@
 </p>
 
 <p align="center">
-  <strong>Storage-backed jobs, scraping contracts and portable runners for Node.js.</strong><br/>
-  <strong>Binary computing engine, agent browser, scraper and packager.</strong><br/>
+  <strong>Storage-backed jobs, ninety sandbox modalities and portable runners for Node.js.</strong><br/>
+  <strong>Binary computing engine, agent browser, sandbox plane and packager.</strong><br/>
   <a href="https://github.com/wenathlan/saddle/actions/workflows/ci.yml"><img src="https://github.com/wenathlan/saddle/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
   <a href="https://github.com/wenathlan/saddle/releases/tag/v2.0.0"><img src="https://img.shields.io/badge/release-v2.0.0-d35d3d" alt="Release 2.0.0" /></a>
   <a href="https://github.com/wenathlan/saddle/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0--only-202a2f" alt="GPL 3.0 only license" /></a>
@@ -36,7 +36,7 @@ domain modules land beside the saddle domains:
 | `specs/*` package exports | processors, gpus, cores, boards and the qemu/mttg/passage/docker envelopes |
 
 The full pre-merge documentation of the engine lives in
-[docs/e2ugh.engine.md](docs/e2ugh.engine.md) and its release history in
+[docs/e2ughengine.md](docs/e2ughengine.md) and its release history in
 [CHANGELOG.md (the e2ugh lineage sections)](CHANGELOG.md (the e2ugh lineage sections)).
 
 ## Start here
@@ -48,18 +48,18 @@ npm install @wenathlan/saddle
 ```
 
 ```js
-import { scrapeurl, formatforagent } from "@wenathlan/saddle";
+import { createVirtualEngine, planreport, resolvejoin } from "@wenathlan/saddle";
 
-const result = await scrapeurl("https://example.com", { format: "markdown" });
-const context = formatforagent(result, { maxchunksize: 2000, keypoints: 4 });
+const engine = createVirtualEngine({ model: "saddle-90", vcpus: 4, ramgb: 8 });
+const report = planreport(); // { plancount: 90, live: 81, host: 9, planned: 0, plananswered: true }
+const modalities = resolvejoin({ base: "balanced", gpu: false, network: false });
 
-console.log(context.summary);
+console.log(engine.id, report.plananswered, modalities[0].id);
 ```
 
-The deterministic examples and tests do not require network access or real credentials:
+The deterministic engine tests do not require network access or real credentials:
 
 ```bash
-node --import tsx docs/example-publicapi.ts
 npm test
 ```
 
@@ -90,9 +90,8 @@ The historical design treats the repository and its runner as a **virtual proces
 
 | Mode | Boundary | Typical use |
 | --- | --- | --- |
-| Fetch | no browser | Static HTML, APIs and deterministic extraction. |
+| Library | in-process function call | The npm package consumed directly by another program. |
 | Browser | caller-owned transport | Interactive pages, snapshots, tabs and actions. |
-| Auto | adaptive selection | Fetch first, then browser when the caller permits it. |
 | Headless | no visible UI | CI runners, servers and scheduled jobs. |
 | CLI or binary | packaged entry point | Operator tools or third-party compute jobs. |
 | Computer | storage-to-compute bridge | Bounded binary and memory processing. |
@@ -110,8 +109,9 @@ The engine coordinates serializable contracts rather than hiding providers. The 
 | Jobs | `engine`, `scheduler`, `inprocess` | `prepare -> process -> sync -> cleanup` |
 | Storage | local, chunked, content-addressed, S3-compatible, GitHub Contents and file-hosting adapters | durable objects, ranges, dedupe and sync |
 | Working set | memory bridge, modes, objects and transforms | storage-to-compute and compute-to-storage flows |
-| Scraping | robots, cache, extraction, semantic facts, schema and normalization | bounded text, metadata, links, controls and structured output |
-| Crawl | normalization, priority frontier, BFS crawler and persistent frontier contracts | domain-aware bounded crawling |
+| Sandbox modalities | the ninety-record modality registry with the join resolver and the honest live/host/planned census | the workload never names a modality — the platform resolves the join |
+| Edge lanes | the edgelandes lane tables (sandbox jails, language toolchains, runner seats, ram recipes, delivery protocols, storage wire speakers, virtual compositions) | ninety lanes probing the host, every run in a private temp dir under a hard deadline |
+| Script lanes | sh interpretation, the house yaml subset and detached background runs | deterministic local execution through the universal runner |
 | Browser | snapshots, tabs, frames, actions, fingerprint, session and replay contracts | caller-owned browser automation without a mandatory provider |
 | Operations | queues, idempotency, saga, retry, circuit breaker, health and heartbeat | controlled execution and recovery |
 | Protocols | JSON, NDJSON, SSE, blocks, API envelopes and MCP | transport-neutral messages |
@@ -136,9 +136,9 @@ The root entry point is transport-neutral. Node filesystem, HTTP server, persist
 
 The same contracts can be surfaced as an npm library, application archive, computer runtime, desktop installer, Android APK/AAB, iOS IPA, CLI, binary, browser package, Manifest V3 extension, web/PWA artifact, LibreOffice OXT, VSIX, webhook server, MCP transport, workflow action, container image, Maven package, NuGet package or RubyGem. These surfaces are declarative target plans and caller-owned adapters around the engine; they are not separate sources of truth.
 
-### Agent context and structured output
+### The ninety sandbox modalities
 
-The extraction path is **structured-first**: metadata and schema facts are selected before free-form text, then serialized to bounded Markdown, JSON or XML. Heading-aware chunks preserve source URL, content hash, heading path and token estimates for downstream retrieval. `generateLlmsTxt` and `generateLlmsFullTxt` expose concise agent indexes with absolute links, while `estimateTokens`, `fitsInContext` and the browser context budget prevent a caller from silently exceeding its chosen model or transport limit. No model provider is mandatory; parsing and context policies remain injectable.
+The sandbox plane answers the ninety modality plan. `modalityregistry.ts` holds one honest record per modality — isolation family, drivers, hardening gates, boot budget, gpu and network paths, and a live/host/planned state that never pretends — and `resolvejoin` reads a workload request (base profile, gpu, network, isolation depth, boot budget) and answers the modality set that satisfies it, so the person chooses none and the platform resolves the join of all. The edgelandes lane tables wire the plan: ninety lanes probing their host runtime (the sandbox jails, the language toolchains, the runner seats, the ram recipes, the delivery protocols, the virtual hardware compositions), every run in a private temp dir under a hard deadline, an absent runtime answering a coded absence that names it. `scriptlanes.ts` rides the same law for scripts — sh plans, the house yaml subset and detached background runs through the universal runner — and `workloadlaw.ts` catalogs the heavy workload lane of every family app as a demand the same join resolver answers. The self-hosted surface publishes the census at `/api/v1/modalities` and the lane table at `/api/v1/edge/lanes`.
 
 ### Third-party compute identity
 
@@ -148,23 +148,18 @@ Saddle can be connected to GitHub, GitLab, Forgejo, Gitea, Codeberg, Docker or a
 
 | Export | Purpose |
 | --- | --- |
-| `saddleurl` | choose a fetch or caller-injected browser path |
-| `scrapeurl` | fetch one URL and extract bounded content |
-| `scrapehtml` | extract from HTML without network access |
-| `extractcontent` | structured extraction |
-| `serializeresult` | serialize JSON, Markdown or XML results |
-| `formatforagent` | summary, chunks and token count |
-| `chunkMarkdown` / `formatChunksForRAG` | heading-aware bounded chunks for downstream context |
-| `generateLlmsTxt` / `generateLlmsFullTxt` | agent-readable documentation indexes |
-| `estimateTokens` / `fitsInContext` | model-neutral context and cost estimates |
-| `withRetry` | bounded retry and abort handling |
-| `createServer` | caller-owned HTTP surface |
-| `batchscrape` | bounded URL groups |
-| `crawlurl` | crawl contract with domain and budget controls |
+| `createVirtualEngine` / `VirtualEngine` / `probeengine` | virtual machine lifecycle, health probes and metrics |
+| `validateSpec` / `specschema` | engine specification validation and normalization |
+| `randomPort` / `resolveHost` / `buildEndpoint` | endpoint allocation without fixed addresses |
+| `InternalMemory` / `MetricsStore` / `enginebus` | the memory bank, the metrics store and the engine event bus |
+| `MODALITIES` / `planreport` | the ninety-record modality registry and its honest census |
+| `resolvejoin` / `getmodality` | the join resolver — the workload never names a modality |
+| `edgelanes` / `edgelandesreport` | the edge lane table and its probe report |
+| `interpretsh` / `interpretyml` / `runscriptbackground` | script lanes: sh plans, yaml plans and detached runs |
+| `engine` / `scheduler` / `inprocess` / `eventbus` | job lifecycle, runner dispatch and events |
 | `browseragent` | caller-owned navigation, click, type and screenshot actions |
 | `mcpserver` / `mcptransport` | MCP tools over JSONL or HTTP |
 | `nodeserver` | Web Request/Response handler |
-| `engine` / `scheduler` | job lifecycle and runner dispatch |
 | `release-assets` | SHA256SUMS, SBOM and provenance metadata for caller-selected artifacts |
 | `releaseevidence` / `evaluateevidence` | serializable release-evidence creation and evaluation |
 | `releasereadiness` / `evidencefromverification` | readiness assessment from caller-supplied verification evidence |
@@ -193,14 +188,14 @@ The base permission set is `activeTab`, `scripting` and `storage`. It does not r
 | --- | --- |
 | Credentials | injected by the caller or repository secret; never committed or printed |
 | Network | HTTP/HTTPS targets are validated; private-target access remains caller policy |
-| Crawling | robots rules, crawl delay, limits and budgets are explicit |
+| Edge lanes | every lane runs in a private temp dir under a hard deadline; the visitor law guard holds on every run |
 | Storage | adapters are replaceable; the core does not own a provider account |
 | Runtime | Node-only filesystem, HTTP, Playwright and release metadata stay outside the transport-neutral root |
 | Extension | page-world reads are bounded, token-correlated and read-only |
 | Failure | retry, circuit breaker, idempotency and resume are configurable |
 | Releases | version comes from the `vX.Y.Z` tag and must match `package.json` |
 
-Version 2.0.0 (the grand merge) absorbs the e2ugh virtual-hardware engine into the saddle engine: fifteen engine modules land at the repository root (virtualcpu, virtualmemory, virtualgpu, virtualization, orchestrator, scheduler, compute, media, render, security, performance, alternatives, tiers, quantum and the engine index core), the e2ugh static console and self-hosted API live at web, the hardware catalogs (processors, gpus, cores, boards) and the four virtual-hardware config envelopes (qemu, mttg, passage, docker) ship as package exports under specs/*, and the legacy WebScrape toolkit generation consolidates into webscrape.ts. The engine surface stays dependency-free at the root (node built-ins only). Version 1.8.19 previously while reorganizing implementation ownership into twenty correlated domains behind a transport-neutral root router. The migration groups foundation nouns, execution state, API protocols, MCP adapters, automation contracts, package delivery and mode profiles without adding a privileged effect. Existing package subpaths remain available through their updated compiled targets. The denied-by-default execution, policy, handoff and internal-API contracts remain plans or receipts until a separately approved caller adapter is supplied. The current container targets `linux/amd64`, `linux/arm64` and `linux/ppc64le`; release evidence, readiness and verification remain serializable and caller-owned.
+Version 2.0.0 (the grand merge) absorbs the e2ugh virtual-hardware engine into the saddle engine: fifteen engine modules land at the repository root (virtualcpu, virtualmemory, virtualgpu, virtualization, orchestrator, scheduler, compute, media, render, security, performance, alternatives, tiers, quantum and the engine index core), the e2ugh static console and self-hosted API live at web, the hardware catalogs (processors, gpus, cores, boards) and the four virtual-hardware config envelopes (qemu, mttg, passage, docker) ship as package exports under specs/*. The engine surface stays dependency-free at the root (node built-ins only). Version 1.8.19 previously while reorganizing implementation ownership into twenty correlated domains behind a transport-neutral root router. The migration groups foundation nouns, execution state, API protocols, MCP adapters, automation contracts, package delivery and mode profiles without adding a privileged effect. Existing package subpaths remain available through their updated compiled targets. The denied-by-default execution, policy, handoff and internal-API contracts remain plans or receipts until a separately approved caller adapter is supplied. The current container targets `linux/amd64`, `linux/arm64` and `linux/ppc64le`; release evidence, readiness and verification remain serializable and caller-owned.
 
 ## Package surfaces and release automation
 
@@ -223,7 +218,7 @@ Saddle is applying to the SignPath Foundation for open-source code signing. Unti
 
 The requested policy is: **Free code signing provided by SignPath.io, certificate by SignPath Foundation**. Committers and reviewers are maintainers with write access to the public repository. Approvers are repository owners or release approvers recorded in `governance.md`. Every signed release must be built from repository source, pass the security and packaging gates, and receive manual signing approval.
 
-The core program will not transfer information to other networked systems unless specifically requested by the user or the person installing or operating it. Browser sessions, storage adapters, runners and external services remain caller-configured and subject to their own policies. See [`privacy.policy.md`](privacy.policy.md) and [`SECURITY.md`](SECURITY.md).
+The core program will not transfer information to other networked systems unless specifically requested by the user or the person installing or operating it. Browser sessions, storage adapters, runners and external services remain caller-configured and subject to their own policies. See [`privacypolicy.md`](privacypolicy.md) and [`SECURITY.md`](SECURITY.md).
 
 ## GitHub Pages web surface
 
@@ -234,7 +229,7 @@ npm run web:check
 VITE_BASE_PATH=/saddle npm run web:build:pages
 ```
 
-Small public configuration and visual assets live under `web/public/`. The obsolete `web/public/__manus__` directory is intentionally absent; the development debug collector (the visitor-browser telemetry hook at the former `web/debugcollector.ts`) left the saddle together with the scrape lanes — the engine keeps no surface that watches the user's browser.
+Small public configuration and visual assets live under `web/public/`. The obsolete `web/public/__manus__` directory is intentionally absent; the development debug collector (the visitor-browser telemetry hook at the former `web/debugcollector.ts`) left the saddle — the engine keeps no surface that watches the user's browser.
 
 ## Development
 
@@ -267,24 +262,28 @@ Remote execution, provider credentials, browser transport, persistence, proxy se
 ## Repository map
 
 ```text
-core/          errors, events, identifiers, hashing, jobs, artifacts, sessions and providers
-memory/        working-set bridge, modes, objects and transforms
-storage/       local, chunked, remote and file-hosting adapters
-scrape/        robots, cache, extraction, schema, normalization and grouped crawl contracts
-runtime/       engine orchestration, queues, idempotency, saga, resumable and session contexts
-browser/       fingerprint, session, agent and Playwright adapter contracts
-extension/     Manifest V3 reference surface and packager
-desktop/       Tauri browser application for Windows, Linux and macOS
-android/       Capacitor Android conversion target and optimized Gradle release
-ios/           Capacitor iOS conversion target and caller-owned Xcode signing
-capacitor.config.ts shared web-to-native configuration for Android and iOS
-api/           envelopes, authentication, controls, JSON/NDJSON/SSE and webhooks
-adapters/      forge, app, socket and MCP integration adapters
-automation/    workflow, bot, permission and surface automation contracts
-release/       checksums, SBOM and provenance metadata
-packager/      distribution, delivery, binary, container and multi-target artifact plans
-modes/         target mode selection, deployment plans and surface profiles
-web/           root-based static marketing site with TypeScript React source
+index.ts       the transport-neutral root barrel re-exporting every domain
+foundation.ts  errors, events, identifiers, hashing, jobs, artifacts and sessions
+execution.ts   the engine, the scheduler, the inprocess runner and the working-set contracts
+virtual.ts     memory bridge, modes, objects, transforms and the local adapters
+isolation.ts   execution request, decision, handoff and the internal api envelopes
+modalityregistry.ts the ninety-record sandbox modality catalog, the join resolver and the census
+edgelandes*.ts the edge lane tables: host jails and toolchains, inproc recipes, virtual compositions, the ninety merge seat
+edgeplane.ts   the merged lane dispatch plane and the visitor law guard
+scriptlanes.ts sh plans, the house yaml subset and detached background runs
+workloadlaw.ts the family workload seat: every app declares the lanes its workloads ride
+sandbox*.ts    the sandbox state, the declared sandbox profile and its environment adapter
+virtualcpu.ts, virtualmemory.ts, virtualgpu.ts, virtualization.ts, orchestrator.ts,
+scheduler.ts, compute.ts, media.ts, render.ts, quantum.ts, tiers.ts, security.ts,
+performance.ts, alternatives.ts
+               the e2ugh virtual-hardware engine domains landed at the root by the grand merge
+automation.ts, browser.ts, communication.ts, distribution.ts, integration.ts,
+intelligence.ts, modes.ts
+               the saddle domain routing barrel files (bot, browser, delivery, integrations, profiles)
+server.ts, webserver.ts, api.ts, cli.ts
+               the self-hosted api surfaces, the web console and the stable cli
+Sol/           the Sol theme — the platform's web surface (one tsx app, one stylesheet per theme)
+specs          processors.json, gpus.json, cores.json, boards.json and the qemu/mttg/passage/docker/vm envelopes
 tests/         deterministic engine and extension coverage
 docs/          architecture, API, security, release and registry notes
 ```
@@ -293,7 +292,7 @@ The engine is TypeScript-first ESM with English JSDoc comments and a generated J
 
 ## Historical documentation
 
-The repository history contains 41 root README revisions and several surface-specific records. Their durable ideas are consolidated here: storage-backed execution, bounded working sets, replaceable runners, content extraction, browser actions, workflow delivery, multi-registry packaging, explicit recovery contracts and caller-owned integrations. Historical references that describe superseded identities, obsolete Node baselines, speculative provider quotas, unavailable hosted services or removed layouts remain historical evidence rather than current promises.
+The repository history contains 41 root README revisions and several surface-specific records. Their durable ideas are consolidated here: storage-backed execution, bounded working sets, replaceable runners, browser actions, workflow delivery, multi-registry packaging, explicit recovery contracts and caller-owned integrations. Historical references that describe superseded identities, obsolete Node baselines, speculative provider quotas, unavailable hosted services or removed layouts remain historical evidence rather than current promises.
 
 ## Current scope
 
@@ -309,7 +308,7 @@ Saddle is distributed under the [GNU General Public License v3.0 only](LICENSE).
 
 # Saddle Sol
 
-Saddle is the 20-modality sandbox platform of the DevThink family: one engine spanning compute, virtualization, media, mesh, automation and the other modalities, exposed as a self-hosted site. This Sol theme is the platform's web surface — a Vite + React SPA (console, dashboard, playground, integrations) served from the same sqlite database that `schema.prisma`, `init.sql` and `drizzle.config.ts` describe.
+Saddle is the 90-modality sandbox platform of the DevThink family: one engine spanning compute, virtualization, media, mesh, automation and the other modalities, exposed as a self-hosted site. This Sol theme is the platform's web surface — a Vite + React SPA (console, dashboard, playground, integrations) served from the same sqlite database that `schema.prisma`, `init.sql` and `drizzle.config.ts` describe.
 
 ```bash
 pnpm install

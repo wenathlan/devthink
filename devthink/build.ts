@@ -186,7 +186,7 @@ await execute(process.execPath, [join(root, "node_modules", "prisma", "build", "
 
 /* the ownership bridge of the thinking ladder: the getry engine owns the 7-level ladder and
    the os consumes it as a library — the declaration emit reads the owner's committed public
-   types (getry/thinking.d.ts, the declaration surface the path table of the build config
+   types (getry/thinkingtypes.ts, the declaration surface the path table of the build config
    carries, so the owner source never enters the program and the emit stays flat), while the
    runtime resolves the specifier through this node_modules link the same way the flat gate
    tree resolves its packages through the application node_modules (the tests village folded

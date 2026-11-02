@@ -31,10 +31,10 @@
  *     sandbox client (§6) and the storage-usage client (§7) live here, and
  *     the account client (account.ts §6) imports the same seam.
  *
- * The one deliberate exclusion: gateway.config.ts stays a file of its own.
+ * The one deliberate exclusion: gatewayconfig.ts stays a file of its own.
  * It is not an imported module but a runtime-discovered CONFIG FILE — the
  * loadconfig() candidate chain (config.ts / server.ts) probes the literal
- * file name `gateway.config.ts` on disk, and tests/server/server.e2e.test.ts
+ * file name `gatewayconfig.ts` on disk, and tests/server/server.e2e.test.ts
  * writes its own fixture under that name — so merging or deleting it would
  * change runtime behavior, which the family law forbids.
  *

@@ -95,7 +95,7 @@ kathesis b2 + 5-b (landed) # spectrum, fingerprint, analyze, vocalsynth, arrange
 kathesis b3 (landed)       # pianoroll, arrangement, timelinemodel edits, wavwriter, midiwriter, stems, cloudsync, db — the daw editing desk, the writers, the live viz, the gateway persistence
 pv0 (landed)               # hpss, ingest, ingeststore, the /ingest bench — the decomposition pipeline and the debonair.ingest/1 document
 pv1-pv4 (landed)           # bigintids, patternenums, blobstore, ingestdb, ingeststore, ingestworker, ingestclient, ialane, gatewayapi, patternminer, composer, renderworker, renderjobs, playerbus — the reconstruction's fourteen (the ingest lane, the miner, the composer, the render lane)
-pv5 (landed)               # the design reform (the os face) + the design verification (docs/design.verification.md — every route walked, the sol debt cleared)
+pv5 (landed)               # the design reform (the os face) + the design verification (docs/designverification.md — every route walked, the sol debt cleared)
 b4 backlog (open)          # viz/waveform, viz/spectrogram, viz/realtime, ml/onnx — the realtime and tier-2 upgrade path, gated behind the quality targets
 pv tail (open prs)         # #235 the vitrine publish (generateclient, the tracks routes, the visibility column, the with-voice key), #236 the npm face (the exports map, the module closure), #237 the family integration (the getry lane mount, vaultblobstore, sandboxmodality, mcplane) — pending merge, the state docs/worklog.md records
 ```

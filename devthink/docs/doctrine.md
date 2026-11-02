@@ -159,5 +159,5 @@
 - "40+ sandbox modalities" is not canonical; 20 walking to 30 is.
 - mimetypes.txt (28,583 lines, 5,584 types) was recovered from the allan blobs
   (added 11349cde, removed db641c69) and now lives at `docs/mimetypes.txt`.
-- The 16,511 GitHub links of the corpus live at `docs/corpus.github.links.txt` for
+- The 16,511 GitHub links of the corpus live at `docs/corpusgithublinks.txt` for
   the competitor campaign.
