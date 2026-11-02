@@ -257,10 +257,15 @@ describe("the voice (the Urbanist law of the reference)", () => {
     }
   });
 
-  it("the face injects the Urbanist stylesheet and falls back to the house voice", () => {
-    expect(saas).toContain("fonts.googleapis.com/css2?family=Urbanist:wght@400;600;800");
+  it("the face stays self-hosted and falls back to the house voice", () => {
+    // the self-hosted law retired the remote Urbanist stylesheet (the sweep
+    // forbids the hardcoded origin): the seat may carry no remote @import,
+    // and the tiers answer the house Inter Variable face sol.css ships
+    expect(saas).not.toContain("fonts.googleapis.com");
+    expect(saas).not.toContain("@import url(");
     const root = landingrule(".saas-root");
     expect(root).toContain('"Urbanist"');
+    expect(root).toContain('"Inter Variable"');
     expect(root).toContain("letter-spacing: -0.015em");
   });
 });
