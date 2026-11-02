@@ -473,7 +473,7 @@ The readiness gate answers **${report.godecision === "go" ? "go" : "no-go"}** fo
  * replays byte identical (the duration stays the live measurement the
  * recorded run took). */
 export const readinessrecord: readinessreport = {
-  "release": "2.0.154",
+  "release": "2.1.7",
   "mode": "sync",
   "generatedat": 1800000000000,
   "verdicts": [
@@ -525,7 +525,7 @@ export const readinessrecord: readinessreport = {
     {
       "gate": "the permission diff reports no unjustified drift",
       "ok": true,
-      "evidence": "the permbaseline module: clean over 2.0.153 to 2.0.154 with zero unjustified entries"
+      "evidence": "the permbaseline module: clean over 2.0.154 to 2.1.7 with zero unjustified entries"
     },
     {
       "gate": "the transparency page lists every live permission",
@@ -559,8 +559,8 @@ export const readinessrecord: readinessreport = {
     },
     {
       "gate": "the verification matrix covers every declared cell",
-      "ok": true,
-      "evidence": "matrixverify.ts: 18 cells, 0 failed"
+      "ok": false,
+      "evidence": "matrixverify.ts: 18 cells, 1 failed"
     },
     {
       "gate": "the telemetry free evidence covers the full candidate",
@@ -570,7 +570,7 @@ export const readinessrecord: readinessreport = {
     {
       "gate": "the changelog covers every version from 1.1.31",
       "ok": true,
-      "evidence": "the changelog carries every version of the chain from 1.1.31 through 2.0.154"
+      "evidence": "the changelog carries every version of the chain from 1.1.31 through 2.1.7"
     },
     {
       "gate": "the migration guide covers every supported path",
@@ -595,7 +595,7 @@ export const readinessrecord: readinessreport = {
     {
       "gate": "the capability manifests carry the release version pins",
       "ok": true,
-      "evidence": "the 7 capability manifests of dist/caps pin the release 2.0.154"
+      "evidence": "the 7 capability manifests of dist/caps pin the release 2.1.7"
     },
     {
       "gate": "the soak run keeps a long workflow alive across the retention window without drift",
@@ -615,11 +615,11 @@ export const readinessrecord: readinessreport = {
   ],
   "summary": {
     "gates": 27,
-    "ok": 27,
-    "blocked": 0,
+    "ok": 26,
+    "blocked": 1,
     "durationms": 0
   },
-  "godecision": "go"
+  "godecision": "no-go"
 };
 
 const invokeddirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;

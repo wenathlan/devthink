@@ -56,19 +56,26 @@ const imageavailable = await (async () => {
   }
   return stablecandidates[0] ?? lateststable;
 })();
-const declarednode = /^>=(\d+)\.\d+\.\d+ <\d+$/.exec(packagejson.engines?.node ?? "")?.[1];
-const declarednpm = /^>=(\d+)\.\d+\.\d+ <\d+$/.exec(packagejson.engines?.npm ?? "")?.[1];
-const declaredbun = /^>=(\d+)\.\d+\.\d+ <\d+$/.exec(packagejson.engines?.bun ?? "")?.[1];
-/* the merged repository carries bun as the root package manager (packageManager: bun@X) while
-   pnpm stays the web lane tool: the pnpm baseline reads the workflow pins, not the root field. */
-const declaredrootpm = /^bun@(\d+)\./.exec(packagejson.packageManager ?? "")?.[1];
+/* the dependency union law rides the engine floors on the caret forms beside the
+   bounded >= shapes and the manager seat on the pnpm rung, so the proposal reads
+   the floor of either declaration and the major of either manager seat. */
+const floorof = (declaration: unknown): string | undefined =>
+  /^>=(\d+)\.\d+\.\d+/.exec(String(declaration ?? ""))?.[1] ??
+  /^\^?(\d+)\.\d+\.\d+/.exec(String(declaration ?? "").trim())?.[1];
+const declarednode = floorof(packagejson.engines?.node);
+const declarednpm = floorof(packagejson.engines?.npm);
+const declaredbun = floorof(packagejson.engines?.bun);
+/* the merged repository carries the manager the union law pins (packageManager:
+   bun@X of the bun era or pnpm@X of the union) while the other lane stays the
+   workflow pins: the pnpm baseline reads the workflows, never the root field. */
+const declaredrootpm = /^(?:bun|pnpm)@(\d+)\./.exec(packagejson.packageManager ?? "")?.[1];
 const pnpmpin =
   /pnpm\/action-setup@.*\s*?\r?\n(?:.*\r?\n){0,3}?.*version: (\d+\.\d+\.\d+)/.exec(
     await readFile(join(repoRoot, ".github/workflows/verify.yml"), "utf8"),
   )?.[1] ?? "11.22.0";
 const declaredpnpm = pnpmpin.split(".")[0];
 if (!declarednode || !declarednpm || !declaredbun || !declaredrootpm)
-  throw new Error("Existing Node, npm, Bun and root package manager declarations must use the expected bounded forms.");
+  throw new Error("Existing Node, npm, Bun and root package manager declarations must use the expected bounded or caret forms.");
 const nodeversion = imageavailable.version.slice(1);
 const latestnodemajor = nodeversion.split(".")[0];
 const latestnpmmajor = npmversion.split(".")[0];
@@ -76,19 +83,21 @@ const latestbunmajor = bunversion.split(".")[0];
 const latestpnpmmajor = pnpmversion.split(".")[0];
 const nodemajor = allowmajors || latestnodemajor === declarednode ? latestnodemajor : declarednode;
 const npmnext =
-  allowmajors || latestnpmmajor === declarednpm ? npmversion : packagejson.engines.npm.match(/^>=(\d+\.\d+\.\d+)/)[1];
+  allowmajors || latestnpmmajor === declarednpm ? npmversion : (floorof(packagejson.engines.npm) as string);
 const bunnext =
-  allowmajors || latestbunmajor === declaredbun ? bunversion : packagejson.engines.bun.match(/^>=(\d+\.\d+\.\d+)/)[1];
+  allowmajors || latestbunmajor === declaredbun ? bunversion : (floorof(packagejson.engines.bun) as string);
 const pnpmnext = allowmajors || latestpnpmmajor === declaredpnpm ? pnpmversion : pnpmpin;
 const next = {
   ...packagejson,
   engines: {
     ...packagejson.engines,
-    node: `>=${allowmajors || latestnodemajor === declarednode ? nodeversion : packagejson.engines.node.match(/^>=(\d+\.\d+\.\d+)/)[1]} <${Number(nodemajor) + 1}`,
+    node: `>=${allowmajors || latestnodemajor === declarednode ? nodeversion : (floorof(packagejson.engines.node) as string)} <${Number(nodemajor) + 1}`,
     npm: `>=${npmnext} <${Number(npmnext.split(".")[0]) + 1}`,
     bun: `>=${bunnext} <${Number(bunnext.split(".")[0]) + 1}`,
   },
-  packageManager: `bun@${bunnext}`,
+  packageManager: packagejson.packageManager?.startsWith("pnpm@")
+    ? `pnpm@${pnpmnext}`
+    : `bun@${bunnext}`,
 };
 /* the workflow renders compose per file: one read, every pin replace applied in sequence — a
    second entry for the same file would resurrect the bytes the first entry retired (the duplicate

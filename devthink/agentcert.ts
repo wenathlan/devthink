@@ -766,7 +766,7 @@ export interface agentcertreport {
  * order with its outcome, no timestamps, so the record replays byte
  * identical. */
 export const agentcertrecord: agentcertreport = {
-  "release": "2.0.154",
+  "release": "2.1.7",
   "checklist": "docs/agentcert.md",
   "clockmode": "fake",
   "faketabkinds": [

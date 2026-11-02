@@ -15,8 +15,13 @@
         "@libsql/client": "^0.18.0",
         "@prisma/adapter-libsql": "^7.10.1",
         "@prisma/client": "^7.10.1",
+        "@wenathlan/cadria": "^2.0.154",
+        "@wenathlan/debonair": "^2.0.154",
+        "@wenathlan/getry": "^2.0.154",
         "@wenathlan/saddle": "^2.1.6",
         "@wenathlan/vault": "^2.0.154",
+        "better-sqlite3": "^13.0.3",
+        "drizzle-orm": "^0.45.4",
         "gsap": "^3.15.0",
         "hono": "^4.13.16",
         "ink": "^7.1.1",
@@ -128,8 +133,8 @@
         "vite": "^8.3.5",
         "vite-plugin-manus-runtime": "^0.0.59",
         "vitest": "^5.0.5",
-        "webpack": "5.112.2",
-        "webpack-cli": "6.0.1",
+        "webpack": "^5.112.2",
+        "webpack-cli": "^6.0.1",
         "wouter": "^3.13.0",
         "yaml": "^2.9.1",
         "zod": "^4.6.7",
@@ -901,6 +906,12 @@
     "@webpack-cli/info": ["@webpack-cli/info@3.0.1", "", { "peerDependencies": { "webpack": "^5.82.0", "webpack-cli": "6.x.x" } }, "sha512-coEmDzc2u/ffMvuW9aCjoRzNSPDl/XLuhPdlFRpT9tZHmJ/039az33CE7uH+8s0uL1j5ZNtfdv0HkfaKRBGJsQ=="],
 
     "@webpack-cli/serve": ["@webpack-cli/serve@3.0.1", "", { "peerDependencies": { "webpack": "^5.82.0", "webpack-cli": "6.x.x", "webpack-dev-server": "*" }, "optionalPeers": ["webpack-dev-server"] }, "sha512-sbgw03xQaCLiT6gcY/6u3qBDn01CWw/nbaXl3gTdTFuJJ75Gffv3E3DBpgvY2fkkrdS1fpjaXNOmJlnbtKauKg=="],
+
+    "@wenathlan/cadria": ["@wenathlan/cadria@2.0.154", "", { "dependencies": { "@fluentui/react-icons": "^2.0.345", "@fontsource-variable/bricolage-grotesque": "^5.3.0", "@fontsource-variable/geist-mono": "^5.3.0", "@fontsource-variable/inter": "^5.3.0", "@fontsource-variable/jetbrains-mono": "^5.3.0", "@fontsource-variable/outfit": "^5.3.0", "@hono/node-server": "^2.1.5", "@libsql/client": "^0.18.0", "@prisma/adapter-libsql": "^7.10.1", "@prisma/client": "^7.10.1", "@wenathlan/debonair": "^2.0.151", "@wenathlan/saddle": "^2.1.6", "@wenathlan/vault": "^2.0.153", "gsap": "^3.15.0", "hono": "^4.13.16", "ink": "^7.1.1", "lucide-react": "^1.66.0", "motion": "^12.43.0", "react": "^19.3.1", "react-devtools-core": "^8.0.0", "react-dom": "^19.3.1", "three": "^0.187.0", "wouter": "^3.13.0", "z-ai-web-dev-sdk": "^0.0.18" } }, "sha512-2VJ4/ibDgyNUSKWOxiEtQjkxsTjVhNTGcSp/EttQIOs/x1WBns9QfFi+ITErVHCl3IJCrAw31ULbg/1XgZ552w=="],
+
+    "@wenathlan/debonair": ["@wenathlan/debonair@2.0.154", "", { "dependencies": { "@fluentui/react-icons": "^2.0.345", "@fontsource-variable/bricolage-grotesque": "^5.3.0", "@fontsource-variable/geist-mono": "^5.3.0", "@fontsource-variable/inter": "^5.3.0", "@fontsource-variable/jetbrains-mono": "^5.3.0", "@fontsource-variable/outfit": "^5.3.0", "@hono/node-server": "^2.1.5", "@libsql/client": "^0.18.0", "@prisma/adapter-libsql": "^7.10.1", "@prisma/client": "^7.10.1", "@wenathlan/cadria": "^2.0.153", "@wenathlan/saddle": "^2.1.6", "@wenathlan/vault": "^2.0.153", "gsap": "^3.15.0", "hono": "^4.13.16", "ink": "^7.1.1", "lucide-react": "^1.66.0", "motion": "^12.43.0", "react": "^19.3.1", "react-devtools-core": "^8.0.0", "react-dom": "^19.3.1", "three": "^0.187.0", "wouter": "^3.13.0", "z-ai-web-dev-sdk": "^0.0.18" } }, "sha512-qFE2wRq7NYvICxSZXrxnzmhN56/NntKibxM1o77nEbEiBjz98t9iYjPE/hGbekMnFIsvkKKm2EyH/A2483nGiA=="],
+
+    "@wenathlan/getry": ["@wenathlan/getry@2.0.154", "", { "dependencies": { "@fluentui/react-icons": "^2.0.345", "@fontsource-variable/bricolage-grotesque": "^5.3.0", "@fontsource-variable/geist-mono": "^5.3.0", "@fontsource-variable/inter": "^5.3.0", "@fontsource-variable/jetbrains-mono": "^5.3.0", "@fontsource-variable/outfit": "^5.3.0", "@hono/node-server": "^2.1.5", "@libsql/client": "^0.18.0", "@prisma/adapter-libsql": "^7.10.1", "@prisma/client": "^7.10.1", "@wenathlan/saddle": "^2.1.6", "@wenathlan/vault": "^2.0.153", "gsap": "^3.15.0", "hono": "^4.13.16", "ink": "^7.1.1", "lucide-react": "^1.66.0", "motion": "^12.43.0", "react": "^19.3.1", "react-devtools-core": "^8.0.0", "react-dom": "^19.3.1", "three": "^0.187.0", "wouter": "^3.13.0", "z-ai-web-dev-sdk": "^0.0.18" } }, "sha512-edkDRzjFfACVCJT8jDiQp4Tsh6yG3EOHa0WNQETwBBvT2m6fGcxRvZj64mcIjWmAnHvcF2WqYI+NDcUscCIERQ=="],
 
     "@wenathlan/saddle": ["@wenathlan/saddle@2.1.6", "", { "optionalDependencies": { "commander": "^13.1.0", "dockerode": "^5.0.1", "express": "^5.1.0" }, "peerDependencies": { "playwright": "^1.63.0" }, "optionalPeers": ["playwright"], "bin": { "saddle": "dist/cli.js" } }, "sha512-P5t4blGys3LsCtzuPolf7AqZecn8t/AY0OUw2Umag3zyCMyndzX+sro5UcFi8o4b3iKItI1nbr6sue1b+e4G2w=="],
 
